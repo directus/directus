@@ -372,7 +372,7 @@
 			"placeholder": "Placeholder",
 			"placeholder_comment": "Enter placeholder text",
 			"localized": "Localizado",
-			"localized_comment": "Localize the output to the user's locale",
+			"localized_comment": "Localize the output to the user's language",
 			"icon_left": "Ícone à Esquerda",
 			"icon_left_comment": "Escolha um ícone opcional para exibir à esquerda da entrada",
 			"icon_right": "Ícone à Direita",

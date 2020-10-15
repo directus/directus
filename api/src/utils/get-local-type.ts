@@ -1,4 +1,5 @@
-import { types } from '../types';
+import { Column } from 'knex-schema-inspector/lib/types/column';
+import { FieldMeta, types } from '../types';
 
 /**
  * Typemap graciously provided by @gpetrov
@@ -80,14 +81,19 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 };
 
 export default function getLocalType(
-	databaseType: string,
-	special?: string[] | null
+	column: Column,
+	field?: FieldMeta
 ): typeof types[number] | 'unknown' {
-	const type = localTypeMap[databaseType.toLowerCase().split('(')[0]];
+	const type = localTypeMap[column.type.toLowerCase().split('(')[0]];
 
-	if (special?.includes('json')) return 'json';
-	if (special?.includes('csv')) return 'csv';
-	if (special?.includes('uuid')) return 'uuid';
+	/** Handle Postgres numeric decimals */
+	if (column.type === 'numeric' && column.precision !== null && column.scale !== null) {
+		return 'decimal';
+	}
+
+	if (field?.special?.includes('json')) return 'json';
+	if (field?.special?.includes('csv')) return 'csv';
+	if (field?.special?.includes('uuid')) return 'uuid';
 
 	if (type) {
 		return type.type;

@@ -52,14 +52,14 @@ export class FieldsService {
 		});
 
 		const columnsWithSystem = columns.map((column) => {
-			const field = fields.find(
-				(field) => field.field === column.name && field.collection === column.table
-			);
+			const field = fields.find((field) => {
+				return field.field === column.name && field.collection === column.table;
+			});
 
 			const data = {
 				collection: column.table,
 				field: column.name,
-				type: column ? getLocalType(column.type, field?.special) : 'alias',
+				type: column ? getLocalType(column, field) : 'alias',
 				schema: column,
 				meta: field || null,
 			};
@@ -171,7 +171,7 @@ export class FieldsService {
 		const data = {
 			collection,
 			field,
-			type: column ? getLocalType(column.type, fieldInfo?.special) : 'alias',
+			type: column ? getLocalType(column, fieldInfo) : 'alias',
 			meta: fieldInfo || null,
 			schema: column || null,
 		};
@@ -248,8 +248,11 @@ export class FieldsService {
 					);
 				} else if (['float', 'decimal'].includes(field.type)) {
 					const type = field.type as 'float' | 'decimal';
-					/** @todo add precision and scale support */
-					column = table[type](field.field /* precision, scale */);
+					column = table[type](
+						field.field,
+						field.schema?.precision || 10,
+						field.schema?.scale || 5
+					);
 				} else if (field.type === 'csv') {
 					column = table.string(field.field);
 				} else {
@@ -325,11 +328,13 @@ export class FieldsService {
 		for (const relation of relations) {
 			const isM2O = relation.many_collection === collection && relation.many_field === field;
 
+			/** @TODO M2A — Handle m2a case here */
+
 			if (isM2O) {
 				await this.knex('directus_relations')
 					.delete()
 					.where({ many_collection: collection, many_field: field });
-				await this.deleteField(relation.one_collection, relation.one_field);
+				await this.deleteField(relation.one_collection!, relation.one_field!);
 			} else {
 				await this.knex('directus_relations')
 					.update({ one_field: null })

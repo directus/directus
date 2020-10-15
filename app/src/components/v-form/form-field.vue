@@ -26,6 +26,7 @@
 				@edit-raw="showRaw = true"
 			/>
 		</v-menu>
+		<div class="label-spacer" v-else-if="['full', 'fill'].includes(field.meta && field.meta.width) === false" />
 
 		<form-field-interface
 			:value="_value"
@@ -202,5 +203,9 @@ export default defineComponent({
 
 .raw-value {
 	--v-textarea-font-family: var(--family-monospace);
+}
+
+.label-spacer {
+	height: 28px;
 }
 </style>

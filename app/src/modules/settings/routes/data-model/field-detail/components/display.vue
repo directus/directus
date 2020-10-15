@@ -22,13 +22,22 @@
 				v-model="fieldData.meta.display_options"
 			/>
 
-			<component v-model="fieldData" :is="`display-options-${selectedDisplay.id}`" v-else />
+			<component
+				v-model="fieldData.meta.display_options"
+				:collection="collection"
+				:field-data="fieldData"
+				:relations="relations"
+				:new-fields="newFields"
+				:new-collections="newCollections"
+				:is="`display-options-${selectedDisplay.id}`"
+				v-else
+			/>
 		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, toRefs } from '@vue/composition-api';
 import { getDisplays } from '@/displays';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
@@ -39,6 +48,10 @@ import { state, availableDisplays } from '../store';
 export default defineComponent({
 	props: {
 		type: {
+			type: String,
+			required: true,
+		},
+		collection: {
 			type: String,
 			required: true,
 		},
@@ -95,7 +108,9 @@ export default defineComponent({
 			return displays.value.find((display) => display.id === state.fieldData.meta.display);
 		});
 
-		return { fieldData: state.fieldData, selectItems, selectedDisplay };
+		const { fieldData, relations, newCollections, newFields } = toRefs(state);
+
+		return { fieldData, selectItems, selectedDisplay, relations, newCollections, newFields };
 	},
 });
 </script>

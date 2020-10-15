@@ -1,55 +1,60 @@
 <template>
-	<v-notice type="warning" v-if="!relations || relations.length !== 2">
+	<v-notice type="warning" v-if="!junction || !relation">
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div v-else class="files">
 		<v-table
 			inline
-			:items="previewItems"
+			:items="displayItems"
 			:loading="loading"
 			:headers.sync="tableHeaders"
-			:item-key="junctionCollectionPrimaryKeyField.field"
+			:item-key="relationFields.junctionPkField"
 			:disabled="disabled"
-			@click:row="editExisting"
+			@click:row="editItem"
 		>
 			<template #item.$thumbnail="{ item }">
 				<render-display
-					:value="get(item, [relationCurrentToJunction.junction_field])"
+					:value="item"
 					display="file"
-					:collection="junctionCollection"
-					:field="relationCurrentToJunction.junction_field"
+					:collection="relationFields.junctionCollection"
+					:field="relationFields.relationPkField"
 					type="file"
 				/>
 			</template>
 
 			<template #item-append="{ item }" v-if="!disabled">
-				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deselect(item)" />
+				<v-icon
+					name="close"
+					v-tooltip="$t('deselect')"
+					class="deselect"
+					@click.stop="deleteItem(item, items)"
+				/>
 			</template>
 		</v-table>
 
 		<div class="actions" v-if="!disabled">
 			<v-button class="new" @click="showUpload = true">{{ $t('upload_file') }}</v-button>
-			<v-button class="existing" @click="showBrowseModal = true">
+			<v-button class="existing" @click="selectModalActive = true">
 				{{ $t('add_existing') }}
 			</v-button>
 		</div>
 
-		<modal-detail
+		<modal-item
 			v-if="!disabled"
-			:active="showDetailModal"
-			:collection="junctionCollection"
-			:primary-key="junctionRowPrimaryKey"
+			:active="currentlyEditing !== null"
+			:collection="relationFields.junctionCollection"
+			:primary-key="currentlyEditing || '+'"
 			:edits="editsAtStart"
-			:junction-field="relationCurrentToJunction.junction_field"
-			:related-primary-key="relatedRowPrimaryKey"
+			:related-primary-key="relationFields.relationPkField"
+			:junction-field="relationFields.junctionRelation"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
 
-		<modal-browse
+		<modal-collection
 			v-if="!disabled"
-			:active.sync="showBrowseModal"
-			:collection="relationJunctionToRelated.one_collection"
+			:active.sync="selectModalActive"
+			:collection="relation.one_collection"
 			:selection="[]"
 			:filters="selectionFilters"
 			@input="stageSelection"
@@ -69,20 +74,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, toRefs } from '@vue/composition-api';
+import { defineComponent, ref, computed, toRefs, PropType } from '@vue/composition-api';
 import { Header as TableHeader } from '@/components/v-table/types';
-import ModalBrowse from '@/views/private/components/modal-browse';
-import ModalDetail from '@/views/private/components/modal-detail';
+import ModalCollection from '@/views/private/components/modal-collection';
+import ModalItem from '@/views/private/components/modal-item';
 import { get } from 'lodash';
 import i18n from '@/lang';
 
+import useActions from '@/interfaces/many-to-many/use-actions';
 import useRelation from '@/interfaces/many-to-many/use-relation';
 import useSelection from '@/interfaces/many-to-many/use-selection';
 import usePreview from '@/interfaces/many-to-many/use-preview';
 import useEdit from '@/interfaces/many-to-many/use-edit';
 
 export default defineComponent({
-	components: { ModalBrowse, ModalDetail },
+	components: { ModalCollection, ModalItem },
 	props: {
 		primaryKey: {
 			type: [Number, String],
@@ -97,8 +103,8 @@ export default defineComponent({
 			required: true,
 		},
 		value: {
-			type: Array,
-			default: undefined,
+			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
+			default: null,
 		},
 		disabled: {
 			type: Boolean,
@@ -108,24 +114,26 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { collection, field, value, primaryKey } = toRefs(props);
 
+		const { junction, junctionCollection, relation, relationCollection, relationFields } = useRelation(
+			collection,
+			field
+		);
+
+		function emitter(newVal: any[] | null) {
+			emit('input', newVal);
+		}
+
 		const {
-			relations,
-			relationCurrentToJunction,
-			relationJunctionToRelated,
-			junctionCollectionPrimaryKeyField,
-			junctionCollection,
-			relatedCollectionPrimaryKeyField,
-			relatedCollection,
-		} = useRelation({ collection, field });
+			deleteItem,
+			getUpdatedItems,
+			getNewItems,
+			getPrimaryKeys,
+			getNewSelectedItems,
+			getJunctionItem,
+			getJunctionFromRelatedId,
+		} = useActions(value, relationFields, emitter);
 
-		const fields = computed(() => {
-			if (!relationCurrentToJunction.value) return [];
-			if (!relationCurrentToJunction.value.junction_field) return [];
-
-			const jf = relationCurrentToJunction.value.junction_field;
-
-			return ['id', 'type', 'title'].map((key) => `${jf}.${key}`);
-		});
+		const fields = ref(['id', 'type', 'title']);
 
 		const tableHeaders = ref<TableHeader[]>([
 			{
@@ -138,133 +146,86 @@ export default defineComponent({
 			{
 				text: i18n.t('title'),
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				value: relationCurrentToJunction.value!.junction_field + '.title',
+				value: 'title',
 				align: 'left',
 				sortable: true,
 				width: 250,
 			},
 		]);
 
-		const { loading, previewItems, error } = usePreview({
+		const { loading, displayItems, error, items } = usePreview(
 			value,
-			primaryKey,
-			junctionCollectionPrimaryKeyField,
-			relatedCollectionPrimaryKeyField,
-			junctionCollection,
-			relatedCollection,
-			relationCurrentToJunction,
-			relationJunctionToRelated,
 			fields,
-		});
+			relationFields,
+			getNewSelectedItems,
+			getUpdatedItems,
+			getNewItems,
+			getPrimaryKeys
+		);
 
-		const {
-			showDetailModal,
-			cancelEdit,
-			stageEdits,
-			editsAtStart,
-			junctionRowPrimaryKey,
-			editExisting,
-			relatedRowPrimaryKey,
-			initialValues,
-		} = useEdit({
-			relationCurrentToJunction,
-			junctionCollectionPrimaryKeyField,
-			relatedCollectionPrimaryKeyField,
+		const { cancelEdit, stageEdits, editsAtStart, editItem, currentlyEditing } = useEdit(
 			value,
-			onEdit: (newValue) => emit('input', newValue),
-		});
+			items,
+			relationFields,
+			emitter,
+			getJunctionFromRelatedId
+		);
 
-		const { showBrowseModal, stageSelection, selectionFilters } = useSelection({
-			relationCurrentToJunction,
-			relatedCollectionPrimaryKeyField,
-			previewItems,
-			onStageSelection: (selectionAsJunctionRows) => {
-				emit('input', [...(props.value || []), ...selectionAsJunctionRows]);
-			},
-		});
+		const { stageSelection, selectModalActive, selectionFilters } = useSelection(
+			value,
+			displayItems,
+			relationFields,
+			emitter
+		);
 
 		const { showUpload, onUpload } = useUpload();
 
 		return {
-			relations,
-			relationCurrentToJunction,
-			relationJunctionToRelated,
+			junction,
+			relation,
 			tableHeaders,
-			junctionCollectionPrimaryKeyField,
 			junctionCollection,
 			loading,
-			previewItems,
+			displayItems,
 			error,
-			showDetailModal,
+			currentlyEditing,
 			cancelEdit,
 			showUpload,
 			stageEdits,
 			editsAtStart,
-			junctionRowPrimaryKey,
-			editExisting,
-			relatedRowPrimaryKey,
-			showBrowseModal,
+			selectModalActive,
 			stageSelection,
 			selectionFilters,
-			relatedCollection,
-			initialValues,
+			deleteItem,
+			items,
 			get,
-			deselect,
 			onUpload,
+			relationFields,
+			editItem,
 		};
-
-		/**
-		 * Deselect an item. This either means undoing any changes made (new item), or adding $delete: true
-		 * if the junction row already exists.
-		 */
-		function deselect(junctionRow: any) {
-			const primaryKey = junctionRow[junctionCollectionPrimaryKeyField.value.field];
-
-			// If the junction row has a primary key, it's an existing item in the junction row, and
-			// we want to add the $delete flag so the API can delete the row in the junction table,
-			// effectively deselecting the related item from this item
-			if (primaryKey) {
-				// Once you deselect an item, it's removed from the preview table. You can only
-				// deselect an item once, so we don't have to check if this item was already disabled
-				emit('input', [
-					...(props.value || []),
-					{
-						[junctionCollectionPrimaryKeyField.value.field]: primaryKey,
-						$delete: true,
-					},
-				]);
-
-				return;
-			}
-
-			// If the item doesn't exist yet, there must be a staged edit for it's creation, that's
-			// the thing we want to filter out of the staged edits.
-			emit(
-				'input',
-				props.value.filter((stagedValue) => {
-					return stagedValue !== junctionRow && stagedValue !== junctionRow['$stagedEdits'];
-				})
-			);
-		}
 
 		function useUpload() {
 			const showUpload = ref(false);
 
 			return { showUpload, onUpload };
 
-			function onUpload(file: { id: number; [key: string]: any }) {
-				if (!relationCurrentToJunction.value) return;
-				if (!relationCurrentToJunction.value.junction_field) return;
+			function onUpload(files: Record<string, any>[]) {
+				showUpload.value = false;
+
+				if (files.length === 0) return;
+
+				const { junctionRelation } = relationFields.value;
+				const file = files[0];
 
 				const fileAsJunctionRow = {
-					[relationCurrentToJunction.value.junction_field]: {
+					[junctionRelation]: {
 						id: file.id,
+						title: file.title,
+						type: file.type,
 					},
 				};
 
 				emit('input', [...(props.value || []), fileAsJunctionRow]);
-
-				showUpload.value = false;
 			}
 		}
 	},

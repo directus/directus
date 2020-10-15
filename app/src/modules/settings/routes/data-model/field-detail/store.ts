@@ -12,7 +12,8 @@ import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
 import { InterfaceConfig } from '@/interfaces/types';
 import { DisplayConfig } from '@/displays/types';
-import { Field } from '@/types';
+import { Field, localTypes } from '@/types';
+import Vue from 'vue';
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
@@ -24,11 +25,7 @@ let availableDisplays: ComputedRef<DisplayConfig[]>;
 
 export { state, availableInterfaces, availableDisplays, initLocalStore, clearLocalStore };
 
-function initLocalStore(
-	collection: string,
-	field: string,
-	type: 'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'
-) {
+function initLocalStore(collection: string, field: string, type: typeof localTypes[number]) {
 	const interfaces = getInterfaces();
 	const displays = getDisplays();
 
@@ -40,6 +37,8 @@ function initLocalStore(
 				default_value: undefined,
 				max_length: undefined,
 				is_nullable: true,
+				precision: null,
+				scale: null,
 			},
 			meta: {
 				hidden: false,
@@ -90,8 +89,8 @@ function initLocalStore(
 	availableDisplays = computed(() =>
 		displays.value.filter((display) => {
 			const matchesType = display.types.includes(state.fieldData?.type || 'alias');
-			const matchesRelation = true;
-			return matchesType && matchesRelation;
+			let matchesLocalType = display.localTypes?.includes(type);
+			return matchesType && (matchesLocalType === undefined || matchesLocalType);
 		})
 	);
 
@@ -518,9 +517,9 @@ function initLocalStore(
 					many_collection: '',
 					many_field: '',
 					many_primary: '',
-					one_collection: type === 'files' ? 'directus_files' : '',
+					one_collection: '',
 					one_field: null,
-					one_primary: type === 'files' ? 'id' : '',
+					one_primary: '',
 				},
 			];
 		}
@@ -591,6 +590,13 @@ function initLocalStore(
 				}
 			}
 		);
+
+		if (type === 'files') {
+			Vue.nextTick(() => {
+				state.relations[1].one_collection = 'directus_files';
+				state.relations[1].one_primary = 'id';
+			});
+		}
 
 		if (type !== 'translations') {
 			let stop: WatchStopHandle;
@@ -700,7 +706,7 @@ function initLocalStore(
 	}
 
 	function fieldExists(collection: string, field: string) {
-		return collectionExists(collection) && fieldsStore.getField(collection, field) !== null;
+		return collectionExists(collection) && !!fieldsStore.getField(collection, field);
 	}
 }
 

@@ -97,7 +97,7 @@
       "company": "Bedrijf",
       "title": "Titel",
       "timezone": "Tijdszone",
-      "locale": "Taal",
+      "language": "Taal",
       "avatar": "Avatar",
       "theme": "Thema",
       "2fa_secret": "2FA (Twee-Factor Authenticatie)"

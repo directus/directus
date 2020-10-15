@@ -4,11 +4,16 @@ import jwt from 'jsonwebtoken';
 import { sendInviteMail, sendPasswordResetMail } from '../mail';
 import database from '../database';
 import argon2 from 'argon2';
-import { InvalidPayloadException, ForbiddenException } from '../exceptions';
+import {
+	InvalidPayloadException,
+	ForbiddenException,
+	UnprocessableEntityException,
+} from '../exceptions';
 import { Accountability, PrimaryKey, Item, AbstractServiceOptions } from '../types';
 import Knex from 'knex';
 import env from '../env';
 import cache from '../cache';
+import { toArray } from '../utils/to-array';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
@@ -35,7 +40,7 @@ export class UsersService extends ItemsService {
 		 * This is just an extra bit of hardcoded security. We don't want anybody to be able to disable 2fa through
 		 * the regular /users endpoint. Period. You should only be able to manage the 2fa status through the /tfa endpoint.
 		 */
-		const payloads = Array.isArray(data) ? data : [data];
+		const payloads = toArray(data);
 
 		for (const payload of payloads) {
 			if (payload.hasOwnProperty('tfa_secret')) {
@@ -48,6 +53,30 @@ export class UsersService extends ItemsService {
 		}
 
 		return this.service.update(data, key as any);
+	}
+
+	delete(key: PrimaryKey): Promise<PrimaryKey>;
+	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
+		const keys = toArray(key);
+
+		// Make sure there's at least one admin user left after this deletion is done
+		const otherAdminUsers = await this.knex
+			.count('*', { as: 'count' })
+			.from('directus_users')
+			.whereNotIn('directus_users.id', keys)
+			.andWhere({ 'directus_roles.admin_access': true })
+			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
+			.first();
+
+		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
+
+		if (otherAdminUsersCount === 0)
+			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
+
+		await super.delete(keys as any);
+
+		return key;
 	}
 
 	async inviteUser(email: string, role: string) {

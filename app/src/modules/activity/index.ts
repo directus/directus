@@ -1,6 +1,6 @@
 import { defineModule } from '@/modules/define';
-import ActivityBrowse from './routes/browse.vue';
-import ActivityDetail from './routes/detail.vue';
+import ActivityCollection from './routes/collection.vue';
+import ActivityItem from './routes/item.vue';
 
 export default defineModule(({ i18n }) => ({
 	id: 'activity',
@@ -9,19 +9,19 @@ export default defineModule(({ i18n }) => ({
 	icon: 'notifications',
 	routes: [
 		{
-			name: 'activity-browse',
+			name: 'activity-collection',
 			path: '/',
-			component: ActivityBrowse,
+			component: ActivityCollection,
 			props: (route) => ({
 				queryFilters: route.query,
 				primaryKey: route.params.primaryKey,
 			}),
 			children: [
 				{
-					name: 'activity-detail',
+					name: 'activity-item',
 					path: ':primaryKey',
 					components: {
-						detail: ActivityDetail,
+						detail: ActivityItem,
 					},
 				},
 			],

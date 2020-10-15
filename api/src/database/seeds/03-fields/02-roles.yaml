@@ -50,7 +50,7 @@ fields:
     options:
       placeholder: Add allowed IP addresses, leave empty to allow all...
     locked: true
-    special: json
+    special: csv
     sort: 6
     width: full
   - collection: directus_roles
@@ -77,7 +77,7 @@ fields:
     locked: true
     options:
       template: '{{ name }}'
-      createItemText: Add Module
+      addLabel: Add New Module...
       fields:
         - name: Icon
           field: icon
@@ -112,7 +112,7 @@ fields:
     locked: true
     options:
       template: '{{ group_name }}'
-      createItemText: Add Group
+      addLabel: Add New Group...
       fields:
         - name: Group Name
           field: group_name
@@ -123,7 +123,9 @@ fields:
             options:
               iconRight: title
               placeholder: Label this group...
-        - name: Accordion
+          schema:
+            is_nullable: false
+        - name: Type
           field: accordion
           type: string
           schema:
@@ -145,7 +147,7 @@ fields:
           meta:
             interface: repeater
             options:
-              createItemText: Add Collection
+              addLabel: Add New Collection...
               template: '{{ collection }}'
               fields:
                 - name: Collection
@@ -154,6 +156,8 @@ fields:
                   meta:
                     interface: collection
                     width: full
+                  schema:
+                    is_nullable: false
     special: json
     sort: 10
     width: full

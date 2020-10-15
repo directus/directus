@@ -372,7 +372,7 @@
 			"placeholder": "Заповнювач",
 			"placeholder_comment": "Введіть текст заповнювача",
 			"localized": "Localized",
-			"localized_comment": "Localize the output to the user's locale",
+			"localized_comment": "Localize the output to the user's language",
 			"icon_left": "Icon Left",
 			"icon_left_comment": "Choose an optional icon to display on the left of the input",
 			"icon_right": "Icon Right",

@@ -8,7 +8,7 @@ post:
       application/json:
         schema:
           type: object
-          required: [ email, password ]
+          required: [email, password]
           properties:
             email:
               type: string
@@ -21,26 +21,29 @@ post:
               example: password
             mode:
               type: string
-              enum: [jwt, cookie]
-              default: jwt
+              enum: ["json", cookie]
+              default: "json"
               description: Choose between retrieving the token as a string, or setting it as a cookie.
             otp:
               type: string
               description: If 2FA is enabled, you need to pass the one time password.
   responses:
-    '200':
+    "200":
       description: Successful authentification
       content:
         application/json:
           schema:
             type: object
             properties:
-              public:
-                type: boolean
               data:
                 type: object
                 properties:
-                  token:
+                  access_token:
                     type: string
-                  user:
-                    $ref: '../../openapi.yaml#/components/schemas/User'
+                    example: eyJhbGciOiJI...
+                  expires:
+                    type: integer
+                    example: 900
+                  refresh_token:
+                    type: string
+                    example: yuOJkjdPXMd...

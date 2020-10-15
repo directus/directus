@@ -41,11 +41,25 @@
 				<dd>{{ file.checksum }}</dd>
 			</div>
 
-			<div v-if="user">
+			<div v-if="user_created">
 				<dt>{{ $t('owner') }}</dt>
 				<dd>
-					<user-popover :user="user.id">
-						<router-link :to="user.link">{{ user.name }}</router-link>
+					<user-popover :user="user_created.id">
+						<router-link :to="user_created.link">{{ user_created.name }}</router-link>
+					</user-popover>
+				</dd>
+			</div>
+
+			<div v-if="modificationDate">
+				<dt>{{ $t('modified') }}</dt>
+				<dd>{{ modificationDate }}</dd>
+			</div>
+
+			<div v-if="user_modified">
+				<dt>{{ $t('edited_by') }}</dt>
+				<dd>
+					<user-popover :user="user_modified.id">
+						<router-link :to="user_modified.link">{{ user_modified.name }}</router-link>
 					</user-popover>
 				</dd>
 			</div>
@@ -89,7 +103,7 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="marked($t('page_help_files_detail'))" />
+		<div class="page-description" v-html="marked($t('page_help_files_item'))" />
 	</drawer-detail>
 </template>
 
@@ -123,14 +137,15 @@ export default defineComponent({
 			return bytes(props.file.filesize, { decimalPlaces: 2, unitSeparator: ' ' }); // { locale: i18n.locale.split('-')[0] }
 		});
 
-		const { creationDate } = useCreationDate();
-		const { user } = useUser();
+		const { creationDate, modificationDate } = useDates();
+		const { userCreated, userModified } = useUser();
 		const { folder } = useFolder();
 
-		return { readableMimeType, size, creationDate, user, folder, marked };
+		return { readableMimeType, size, creationDate, modificationDate, userCreated, userModified, folder, marked };
 
-		function useCreationDate() {
+		function useDates() {
 			const creationDate = ref<string | null>(null);
+			const modificationDate = ref<string | null>(null);
 
 			watch(
 				() => props.file,
@@ -141,11 +156,18 @@ export default defineComponent({
 						new Date(props.file.uploaded_on),
 						String(i18n.t('date-fns_date_short'))
 					);
+
+					if (props.file.modified_on) {
+						modificationDate.value = await localizedFormat(
+							new Date(props.file.modified_on),
+							String(i18n.t('date-fns_date_short'))
+						);
+					}
 				},
 				{ immediate: true }
 			);
 
-			return { creationDate };
+			return { creationDate, modificationDate };
 		}
 
 		function useUser() {
@@ -156,11 +178,12 @@ export default defineComponent({
 			};
 
 			const loading = ref(false);
-			const user = ref<User | null>(null);
+			const userCreated = ref<User | null>(null);
+			const userModified = ref<User | null>(null);
 
 			watch(() => props.file, fetchUser, { immediate: true });
 
-			return { user };
+			return { userCreated, userModified };
 
 			async function fetchUser() {
 				if (!props.file) return null;
@@ -177,11 +200,27 @@ export default defineComponent({
 
 					const { id, first_name, last_name, role } = response.data.data;
 
-					user.value = {
+					userCreated.value = {
 						id: props.file.uploaded_by,
 						name: first_name + ' ' + last_name,
 						link: `/users/${id}`,
 					};
+
+					if (props.file.modified_by) {
+						const response = await api.get(`/users/${props.file.modified_by}`, {
+							params: {
+								fields: ['id', 'first_name', 'last_name', 'role'],
+							},
+						});
+
+						const { id, first_name, last_name, role } = response.data.data;
+
+						userModified.value = {
+							id: props.file.modified_by,
+							name: first_name + ' ' + last_name,
+							link: `/users/${id}`,
+						};
+					}
 				} finally {
 					loading.value = false;
 				}

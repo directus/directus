@@ -95,7 +95,7 @@
       "company": "Empresa",
       "title": "Título",
       "timezone": "Fuso Horário",
-      "locale": "Localidade",
+      "language": "Localidade",
       "avatar": "Imagem de Perfil",
       "theme": "Tema",
       "2fa_secret": "Autenticação em Duas Etapas"

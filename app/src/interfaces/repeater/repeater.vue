@@ -1,5 +1,5 @@
 <template>
-	<v-item-group class="repeater" v-model="selection">
+	<v-item-group class="repeater">
 		<draggable :value="value" handle=".drag-handle" @input="onSort" :set-data="hideDragImage">
 			<repeater-row
 				v-for="(row, index) in value"
@@ -10,6 +10,7 @@
 				@input="updateValues(index, $event)"
 				@delete="removeItem(row)"
 				:disabled="disabled"
+				:headerPlaceholder="headerPlaceholder"
 			/>
 		</draggable>
 		<button @click="addNew" class="add-new" v-if="showAddNew">
@@ -40,7 +41,7 @@ export default defineComponent({
 		},
 		template: {
 			type: String,
-			default: null
+			default: null,
 		},
 		addLabel: {
 			type: String,
@@ -54,14 +55,18 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		headerPlaceholder: {
+			type: String,
+			default: i18n.t('empty_item'),
+		},
 	},
 	setup(props, { emit }) {
 		const selection = ref<number[]>([]);
 
 		const _template = computed(() => {
-			if(props.template === null) return props.fields.length > 0 ? `{{${ props.fields[0].field}}}` : ''
-			return props.template
-		})
+			if (props.template === null) return props.fields.length > 0 ? `{{${props.fields[0].field}}}` : '';
+			return props.template;
+		});
 
 		const showAddNew = computed(() => {
 			if (props.disabled) return false;
@@ -105,9 +110,6 @@ export default defineComponent({
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				newDefaults[field.field!] = field.schema?.default_value;
 			});
-
-			// select the new row
-			selection.value = [props.value?.length || 0];
 
 			if (props.value !== null) {
 				emitValue([...props.value, newDefaults]);

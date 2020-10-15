@@ -1,7 +1,7 @@
 import { TranslateResult } from 'vue-i18n';
 
 type Translations = {
-	locale: string;
+	language: string;
 	translation: string;
 };
 
@@ -26,6 +26,8 @@ export const types = [
 	'csv',
 	'unknown',
 ] as const;
+
+export const localTypes = ['standard', 'file', 'files', 'm2o', 'o2m', 'm2m', 'presentation', 'translations'] as const;
 
 export type FieldSchema = {
 	/** @todo import this from knex-schema-inspector when that's launched */
@@ -70,7 +72,6 @@ export interface FieldRaw {
 	collection: string;
 	field: string;
 	type: typeof types[number];
-
 	schema: FieldSchema | null;
 	meta: FieldMeta | null;
 }

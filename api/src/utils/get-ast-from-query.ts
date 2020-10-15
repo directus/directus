@@ -4,17 +4,18 @@
 
 import {
 	AST,
-	NestedCollectionAST,
-	FieldAST,
+	NestedCollectionNode,
+	FieldNode,
 	Query,
 	Relation,
 	PermissionsAction,
 	Accountability,
 } from '../types';
 import database from '../database';
-import { clone } from 'lodash';
+import { cloneDeep } from 'lodash';
 import Knex from 'knex';
 import SchemaInspector from 'knex-schema-inspector';
+import { getRelationType } from '../utils/get-relation-type';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -27,7 +28,7 @@ export default async function getASTFromQuery(
 	query: Query,
 	options?: GetASTOptions
 ): Promise<AST> {
-	query = clone(query);
+	query = cloneDeep(query);
 
 	const accountability = options?.accountability;
 	const action = options?.action || 'read';
@@ -49,7 +50,7 @@ export default async function getASTFromQuery(
 			: null;
 
 	const ast: AST = {
-		type: 'collection',
+		type: 'root',
 		name: collection,
 		query: query,
 		children: [],
@@ -62,16 +63,120 @@ export default async function getASTFromQuery(
 	delete query.fields;
 	delete query.deep;
 
-	ast.children = (await parseFields(collection, fields, deep)).filter(filterEmptyChildCollections);
+	ast.children = await parseFields(collection, fields, deep);
 
 	return ast;
 
-	function convertWildcards(parentCollection: string, fields: string[]) {
+	async function parseFields(
+		parentCollection: string,
+		fields: string[],
+		deep?: Record<string, Query>
+	) {
+		fields = await convertWildcards(parentCollection, fields);
+
+		if (!fields) return [];
+
+		const children: (NestedCollectionNode | FieldNode)[] = [];
+
+		const relationalStructure: Record<string, string[]> = {};
+
+		for (const field of fields) {
+			const isRelational =
+				field.includes('.') ||
+				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
+				// anything
+				!!relations.find(
+					(relation) =>
+						relation.one_collection === parentCollection && relation.one_field === field
+				);
+
+			if (isRelational) {
+				// field is relational
+				const parts = field.split('.');
+
+				if (relationalStructure.hasOwnProperty(parts[0]) === false) {
+					relationalStructure[parts[0]] = [];
+				}
+
+				if (parts.length > 1) {
+					relationalStructure[parts[0]].push(parts.slice(1).join('.'));
+				}
+			} else {
+				children.push({ type: 'field', name: field });
+			}
+		}
+
+		for (const [relationalField, nestedFields] of Object.entries(relationalStructure)) {
+			const relatedCollection = getRelatedCollection(parentCollection, relationalField);
+			const relation = getRelation(parentCollection, relationalField);
+
+			if (!relation) continue;
+
+			const relationType = getRelationType({
+				relation,
+				collection: parentCollection,
+				field: relationalField,
+			});
+
+			if (!relationType) continue;
+
+			let child: NestedCollectionNode | null = null;
+
+			if (relationType === 'm2a') {
+				const allowedCollections = relation.one_allowed_collections!.split(',');
+
+				child = {
+					type: 'm2a',
+					names: allowedCollections,
+					children: {},
+					query: {},
+					relatedKey: {},
+					parentKey: await schemaInspector.primary(parentCollection),
+					fieldKey: relationalField,
+					relation: relation,
+				};
+
+				for (const relatedCollection of allowedCollections) {
+					child.children[relatedCollection] = await parseFields(
+						relatedCollection,
+						nestedFields
+					);
+					child.query[relatedCollection] = {};
+					child.relatedKey[relatedCollection] = await schemaInspector.primary(
+						relatedCollection
+					);
+				}
+			} else if (relatedCollection) {
+				child = {
+					type: relationType,
+					name: relatedCollection,
+					fieldKey: relationalField,
+					parentKey: await schemaInspector.primary(parentCollection),
+					relatedKey: await schemaInspector.primary(relatedCollection),
+					relation: relation,
+					query: deep?.[relationalField] || {},
+					children: await parseFields(relatedCollection, nestedFields),
+				};
+			}
+
+			if (child) {
+				children.push(child);
+			}
+		}
+
+		return children;
+	}
+
+	async function convertWildcards(parentCollection: string, fields: string[]) {
+		fields = cloneDeep(fields);
+
+		const fieldsInCollection = await getFieldsInCollection(parentCollection);
+
 		const allowedFields = permissions
 			? permissions
 					.find((permission) => parentCollection === permission.collection)
 					?.fields?.split(',')
-			: ['*'];
+			: fieldsInCollection;
 
 		if (!allowedFields || allowedFields.length === 0) return [];
 
@@ -81,8 +186,13 @@ export default async function getASTFromQuery(
 			if (fieldKey.includes('*') === false) continue;
 
 			if (fieldKey === '*') {
-				if (allowedFields.includes('*')) continue;
-				fields.splice(index, 1, ...allowedFields);
+				// Set to all fields in collection
+				if (allowedFields.includes('*')) {
+					fields.splice(index, 1, ...fieldsInCollection);
+				} else {
+					// Set to all allowed fields
+					fields.splice(index, 1, ...allowedFields);
+				}
 			}
 
 			// Swap *.* case for *,<relational-field>.*,<another-relational>.*
@@ -97,12 +207,12 @@ export default async function getASTFromQuery(
 									relation.one_collection === parentCollection
 							)
 							.map((relation) => {
-								const isM2O = relation.many_collection === parentCollection;
-								return isM2O ? relation.many_field : relation.one_field;
+								const isMany = relation.many_collection === parentCollection;
+								return isMany ? relation.many_field : relation.one_field;
 							})
 					: allowedFields.filter((fieldKey) => !!getRelation(parentCollection, fieldKey));
 
-				const nonRelationalFields = allowedFields.filter(
+				const nonRelationalFields = fieldsInCollection.filter(
 					(fieldKey) => relationalFields.includes(fieldKey) === false
 				);
 
@@ -122,57 +232,6 @@ export default async function getASTFromQuery(
 		return fields;
 	}
 
-	async function parseFields(parentCollection: string, fields: string[], deep?: Record<string, Query>) {
-		fields = convertWildcards(parentCollection, fields);
-
-		if (!fields) return [];
-
-		const children: (NestedCollectionAST | FieldAST)[] = [];
-
-		const relationalStructure: Record<string, string[]> = {};
-
-		for (const field of fields) {
-			if (field.includes('.') === false) {
-				children.push({ type: 'field', name: field });
-			} else {
-				// field is relational
-				const parts = field.split('.');
-
-				if (relationalStructure.hasOwnProperty(parts[0]) === false) {
-					relationalStructure[parts[0]] = [];
-				}
-
-				relationalStructure[parts[0]].push(parts.slice(1).join('.'));
-			}
-		}
-
-		for (const [relationalField, nestedFields] of Object.entries(relationalStructure)) {
-			const relatedCollection = getRelatedCollection(parentCollection, relationalField);
-
-			if (!relatedCollection) continue;
-
-			const relation = getRelation(parentCollection, relationalField);
-
-			if (!relation) continue;
-
-			const child: NestedCollectionAST = {
-				type: 'collection',
-				name: relatedCollection,
-				fieldKey: relationalField,
-				parentKey: await schemaInspector.primary(parentCollection),
-				relation: relation,
-				query: deep?.[relationalField] || {},
-				children: (await parseFields(relatedCollection, nestedFields)).filter(
-					filterEmptyChildCollections
-				),
-			};
-
-			children.push(child);
-		}
-
-		return children;
-	}
-
 	function getRelation(collection: string, field: string) {
 		const relation = relations.find((relation) => {
 			return (
@@ -184,22 +243,35 @@ export default async function getASTFromQuery(
 		return relation;
 	}
 
-	function getRelatedCollection(collection: string, field: string) {
+	function getRelatedCollection(collection: string, field: string): string | null {
 		const relation = getRelation(collection, field);
 
 		if (!relation) return null;
 
 		if (relation.many_collection === collection && relation.many_field === field) {
-			return relation.one_collection;
+			return relation.one_collection || null;
 		}
 
 		if (relation.one_collection === collection && relation.one_field === field) {
-			return relation.many_collection;
+			return relation.many_collection || null;
 		}
+
+		return null;
 	}
 
-	function filterEmptyChildCollections(childAST: FieldAST | NestedCollectionAST) {
-		if (childAST.type === 'collection' && childAST.children.length === 0) return false;
-		return true;
+	async function getFieldsInCollection(collection: string) {
+		const columns = (await schemaInspector.columns(collection)).map((column) => column.column);
+		const fields = (
+			await knex.select('field').from('directus_fields').where({ collection })
+		).map((field) => field.field);
+
+		const fieldsInCollection = [
+			...columns,
+			...fields.filter((field) => {
+				return columns.includes(field) === false;
+			}),
+		];
+
+		return fieldsInCollection;
 	}
 }

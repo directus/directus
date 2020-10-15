@@ -6,7 +6,7 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	binary: 'text-input',
 	boolean: 'toggle',
 	date: 'datetime',
-	dateTime: 'dateTime',
+	dateTime: 'datetime',
 	decimal: 'numeric',
 	float: 'numeric',
 	integer: 'numeric',
@@ -17,7 +17,7 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	timestamp: 'datetime',
 	uuid: 'text-input',
 	unknown: 'text-input',
-	csv: 'tags'
+	csv: 'tags',
 };
 
 /**

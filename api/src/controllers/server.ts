@@ -23,7 +23,7 @@ router.get(
 	(req, res, next) => {
 		const service = new ServerService({ accountability: req.accountability });
 		const data = service.serverInfo();
-		res.locals.payload = data;
+		res.locals.payload = { data };
 		return next();
 	},
 	respond

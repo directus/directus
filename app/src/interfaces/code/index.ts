@@ -3,12 +3,24 @@ import InterfaceCode from './code.vue';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta';
 
-const choices = CodeMirror.modeInfo.map((e) => ({
-	text: e.name,
-	value: e.mode,
-}));
+const choicesMap = CodeMirror.modeInfo.reduce((acc: Record<string, string>, choice) => {
+	if (['JSON', 'JSON-LD'].includes(choice.name)) {
+		acc['JSON'] = 'JSON';
+		return acc;
+	}
 
-choices.push({ text: 'JSON', value: 'JSON' });
+	if (choice.mode in acc) {
+		acc[choice.mode] += ' / ' + choice.name;
+	} else {
+		acc[choice.mode] = choice.name;
+	}
+	return acc;
+}, {});
+
+const choices = Object.entries(choicesMap).map(([key, value]) => ({
+	text: value,
+	value: key,
+}));
 
 export default defineInterface(({ i18n }) => ({
 	id: 'code',

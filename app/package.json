@@ -1,6 +1,6 @@
 {
   "name": "@directus/app",
-  "version": "9.0.0-beta.10",
+  "version": "9.0.0-beta.12",
   "private": false,
   "description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
   "author": "Rijk van Zanten <rijk@rngr.org>",
@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@directus/docs": "file:../docs",
-    "@directus/format-title": "^3.2.0",
+    "@directus/format-title": "file:../packages/format-title",
     "@popperjs/core": "^2.4.3",
     "@sindresorhus/slugify": "^1.0.0",
     "@tinymce/tinymce-vue": "^3.2.2",
@@ -51,7 +51,6 @@
     "color": "^3.1.2",
     "color-string": "^1.5.3",
     "cropperjs": "^1.5.7",
-    "csslint": "^1.0.5",
     "date-fns": "^2.14.0",
     "diff": "^4.0.2",
     "highlight.js": "^10.2.0",
@@ -83,15 +82,15 @@
   },
   "gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.6",
-    "@vue/cli-plugin-eslint": "^4.5.6",
-    "@vue/cli-plugin-router": "^4.5.6",
-    "@vue/cli-plugin-typescript": "^4.5.6",
-    "@vue/cli-plugin-unit-jest": "^4.5.6",
-    "@vue/cli-plugin-vuex": "^4.5.6",
-    "@vue/cli-service": "^4.5.6",
+    "@vue/cli-plugin-babel": "^4.5.7",
+    "@vue/cli-plugin-eslint": "^4.5.7",
+    "@vue/cli-plugin-router": "^4.5.7",
+    "@vue/cli-plugin-typescript": "^4.5.7",
+    "@vue/cli-plugin-unit-jest": "^4.5.7",
+    "@vue/cli-plugin-vuex": "^4.5.7",
+    "@vue/cli-service": "^4.5.7",
     "@vue/eslint-config-prettier": "^6.0.0",
-    "@vue/eslint-config-typescript": "^5.1.0",
+    "@vue/eslint-config-typescript": "^7.0.0",
     "@vue/test-utils": "^1.1.0"
   }
 }

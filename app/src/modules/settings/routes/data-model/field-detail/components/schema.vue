@@ -18,7 +18,7 @@
 				/>
 			</div>
 
-			<div class="field">
+			<div class="field half">
 				<div class="label type-label">
 					{{ $t('type') }}
 					<v-icon class="required" sup name="star" />
@@ -34,12 +34,54 @@
 				/>
 			</div>
 
-			<div class="field full">
-				<div class="label type-label">{{ $t('note') }}</div>
-				<v-input v-model="fieldData.meta.note" :placeholder="$t('add_note')" />
-			</div>
+			<template v-if="['decimal', 'float'].includes(fieldData.type) === false">
+				<div class="field half" v-if="fieldData.schema">
+					<div class="label type-label">{{ $t('length') }}</div>
+					<v-input
+						type="number"
+						:placeholder="fieldData.type !== 'string' ? $t('not_available_for_type') : '255'"
+						:disabled="isExisting || fieldData.type !== 'string'"
+						v-model="fieldData.schema.max_length"
+					/>
+				</div>
+			</template>
 
-			<div class="field full" v-if="fieldData.schema">
+			<template v-else>
+				<div class="field half" v-if="fieldData.schema">
+					<div class="label type-label">{{ $t('precision_scale') }}</div>
+					<div class="precision-scale">
+						<v-input type="number" :placeholder="10" v-model="fieldData.schema.precision" />
+
+						<v-input type="number" :placeholder="5" v-model="fieldData.schema.scale" />
+					</div>
+				</div>
+			</template>
+
+			<template v-if="['uuid', 'date', 'time', 'datetime', 'timestamp'].includes(fieldData.type)">
+				<div class="field half-left">
+					<div class="label type-label">{{ $t('on_create') }}</div>
+					<v-select :items="onCreateOptions" v-model="onCreateValue" />
+				</div>
+
+				<div class="field half-right">
+					<div class="label type-label">{{ $t('on_update') }}</div>
+					<v-select :items="onUpdateOptions" v-model="onUpdateValue" />
+				</div>
+			</template>
+
+			<!-- @TODO see https://github.com/directus/next/issues/639
+
+			<div class="field half-left" v-if="fieldData.schema">
+				<div class="label type-label">{{ $t('unique') }}</div>
+				<v-checkbox
+					:label="$t('value_unique')"
+					:input-value="fieldData.schema.is_unique === false"
+					@change="fieldData.schema.is_unique = !$event"
+					block
+				/>
+			</div> -->
+
+			<div class="field full" v-if="fieldData.schema && fieldData.schema.is_primary_key !== true">
 				<div class="label type-label">{{ $t('default_value') }}</div>
 				<v-input
 					v-if="['string', 'uuid'].includes(fieldData.type)"
@@ -82,29 +124,7 @@
 				/>
 			</div>
 
-			<template v-if="['uuid', 'date', 'time', 'datetime', 'timestamp'].includes(fieldData.type)">
-				<div class="field">
-					<div class="label type-label">{{ $t('on_create') }}</div>
-					<v-select :items="onCreateOptions" v-model="onCreateValue" />
-				</div>
-
-				<div class="field">
-					<div class="label type-label">{{ $t('on_update') }}</div>
-					<v-select :items="onUpdateOptions" v-model="onUpdateValue" />
-				</div>
-			</template>
-
-			<div class="field" v-if="fieldData.schema">
-				<div class="label type-label">{{ $t('length') }}</div>
-				<v-input
-					type="number"
-					:placeholder="fieldData.type !== 'string' ? $t('not_available_for_type') : '255'"
-					:disabled="isExisting || fieldData.type !== 'string'"
-					v-model="fieldData.schema.max_length"
-				/>
-			</div>
-
-			<div class="field" v-if="fieldData.schema">
+			<div class="field half-left" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('required') }}</div>
 				<v-checkbox
 					:input-value="fieldData.schema.is_nullable === false"
@@ -113,58 +133,6 @@
 					block
 				/>
 			</div>
-
-			<div class="field" v-if="fieldData.meta">
-				<div class="label type-label">{{ $t('readonly') }}</div>
-				<v-checkbox v-model="fieldData.meta.readonly" :label="$t('disabled_editing_value')" block />
-			</div>
-
-			<div class="field" v-if="fieldData.meta">
-				<div class="label type-label">{{ $t('hidden') }}</div>
-				<v-checkbox v-model="fieldData.meta.hidden" :label="$t('hidden_on_detail')" block />
-			</div>
-
-			<div class="field full">
-				<div class="label type-label">{{ $t('translations') }}</div>
-				<interface-repeater
-					v-model="fieldData.meta.translations"
-					:template="'{{ translation }} ({{ locale }})'"
-					:fields="[
-						{
-							field: 'locale',
-							type: 'string',
-							name: $t('language'),
-							meta: {
-								interface: 'system-language',
-								width: 'half',
-							},
-							schema: {
-								default_value: 'en-US',
-							},
-						},
-						{
-							field: 'translation',
-							type: 'string',
-							name: $t('translation'),
-							meta: {
-								interface: 'text-input',
-								width: 'half',
-								options: {
-									placeholder: 'Enter a translation...',
-								},
-							},
-						},
-					]"
-				/>
-			</div>
-
-			<!--
-			@todo add unique when the API supports it
-
-			<div class="field">
-				<div class="label type-label">{{ $t('unique') }}</div>
-				<v-input v-model="fieldData.schema.unique" />
-			</div> -->
 		</div>
 	</div>
 </template>
@@ -252,7 +220,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const typesWithLabels = computed(() => {
-			return fieldTypes
+			return fieldTypes;
 		});
 
 		const typeDisabled = computed(() => {
@@ -422,35 +390,17 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/breakpoint';
+@import '@/styles/mixins/form-grid';
 
 .type-title {
 	margin-bottom: 32px;
 }
 
 .form {
-	display: grid;
-	grid-gap: 32px;
-	grid-template-columns: 1fr 1fr;
-}
+	--v-form-vertical-gap: 32px;
+	--v-form-horizontal-gap: 32px;
 
-.field {
-	grid-column: 1 / span 2;
-
-	@include breakpoint(small) {
-		grid-column: auto;
-	}
-}
-
-.full {
-	grid-column: 1 / span 2;
-
-	@include breakpoint(small) {
-		grid-column: 1 / span 2;
-	}
-}
-
-.label {
-	margin-bottom: 8px;
+	@include form-grid;
 }
 
 .monospace {
@@ -459,5 +409,11 @@ export default defineComponent({
 
 .required {
 	--v-icon-color: var(--primary);
+}
+
+.precision-scale {
+	display: grid;
+	grid-gap: 12px;
+	grid-template-columns: 1fr 1fr;
 }
 </style>

@@ -12,6 +12,7 @@ import { UsersService, AuthenticationService } from '../services';
 import grantConfig from '../grant';
 import { RouteNotFoundException } from '../exceptions';
 import { respond } from '../middleware/respond';
+import { toArray } from '../utils/to-array';
 
 const router = Router();
 
@@ -213,7 +214,7 @@ router.post(
 router.get(
 	'/oauth',
 	asyncHandler(async (req, res, next) => {
-		const providers = env.OAUTH_PROVIDERS.split(',').filter((p: string) => p);
+		const providers = toArray(env.OAUTH_PROVIDERS);
 		res.locals.payload = { data: providers.length > 0 ? providers : null };
 		return next();
 	}),

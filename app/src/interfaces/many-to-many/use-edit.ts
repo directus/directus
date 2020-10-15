@@ -1,141 +1,77 @@
-import { ref, Ref } from '@vue/composition-api';
-import { Field, Relation } from '@/types';
-import { set } from 'lodash';
+import { Ref, ref } from '@vue/composition-api';
+import { RelationInfo } from './use-relation';
+import { isEqual } from 'lodash';
 
-type EditParam = {
-	relationCurrentToJunction: Ref<Relation | undefined>;
-	junctionCollectionPrimaryKeyField: Ref<Field>;
-	relatedCollectionPrimaryKeyField: Ref<Field>;
-	value: Ref<any[] | null>;
-	onEdit: (newValue: any[] | null) => void;
-};
+export default function useEdit(
+	value: Ref<(string | number | Record<string, any>)[] | null>,
+	items: Ref<Record<string, any>[]>,
+	relation: Ref<RelationInfo>,
+	emit: (newVal: any[] | null) => void,
+	getJunctionFromRelatedId: (id: string | number, items: Record<string, any>[]) => Record<string, any> | null
+) {
+	// Primary key of the item we're currently editing. If null, the edit modal should be
+	// closed
+	const currentlyEditing = ref<string | number | null>(null);
 
-/**
- * Everything regarding the edit experience in the detail modal. This also includes adding
- * a new item
- */
-export default function useEdit({
-	relationCurrentToJunction,
-	junctionCollectionPrimaryKeyField,
-	relatedCollectionPrimaryKeyField,
-	value,
-	onEdit,
-}: EditParam) {
-	const showDetailModal = ref(false);
-	// The previously made edits when we're starting to edit the item
-	const editsAtStart = ref<any>(null);
-	const junctionRowPrimaryKey = ref<number | string>('+');
-	const relatedRowPrimaryKey = ref<number | string>('+');
-	const initialValues = ref<any>(null);
-	const isNew = ref(false);
+	// This keeps track of the starting values so we can match with it
+	const editsAtStart = ref<Record<string, any>>({});
 
-	return {
-		showDetailModal,
-		editsAtStart,
-		addNew,
-		cancelEdit,
-		stageEdits,
-		junctionRowPrimaryKey,
-		editExisting,
-		relatedRowPrimaryKey,
-		initialValues,
-	};
+	function editItem(item: any) {
+		const { relationPkField } = relation.value;
+		const hasPrimaryKey = relationPkField in item;
 
-	function addNew() {
-		editsAtStart.value = null;
-		showDetailModal.value = true;
-		junctionRowPrimaryKey.value = '+';
-		relatedRowPrimaryKey.value = '+';
-		initialValues.value = null;
-		isNew.value = true;
+		editsAtStart.value = item;
+		currentlyEditing.value = hasPrimaryKey ? item[relationPkField] : -1;
 	}
 
-	// The row here is the item in previewItems that's passed to the table
-	function editExisting(item: any) {
-		if (!relationCurrentToJunction.value) return;
-		if (!relationCurrentToJunction.value.junction_field) return;
+	function stageEdits(edits: any) {
+		const { relationPkField, junctionRelation, junctionPkField } = relation.value;
+		const editsWrapped = { [junctionRelation]: edits };
+		const hasPrimaryKey = relationPkField in editsAtStart.value;
+		const junctionItem = hasPrimaryKey
+			? getJunctionFromRelatedId(editsAtStart.value[relationPkField], items.value)
+			: null;
 
-		if (item.$new === true) isNew.value = true;
+		const newValue = (value.value || []).map((item) => {
+			if (junctionItem !== null && junctionPkField in junctionItem) {
+				const id = junctionItem[junctionPkField];
 
-		if (isNew.value === true) {
-			editsAtStart.value = item;
-			junctionRowPrimaryKey.value = '+';
-			showDetailModal.value = true;
-			initialValues.value = null;
-			return;
+				if (typeof item === 'object' && junctionPkField in item) {
+					if (item[junctionPkField] === id) return { [junctionRelation]: edits, [junctionPkField]: id };
+				} else if (typeof item === 'number' || typeof item === 'string') {
+					if (item === id) return { [junctionRelation]: edits, [junctionPkField]: id };
+				}
+			}
+
+			if (typeof item === 'object' && relationPkField in edits && junctionRelation in item) {
+				const id = edits[relationPkField];
+				const relatedItem = item[junctionRelation] as string | number | Record<string, any>;
+				if (typeof relatedItem === 'object' && relationPkField in relatedItem) {
+					if (relatedItem[relationPkField] === id) return editsWrapped;
+				} else if (typeof relatedItem === 'string' || typeof relatedItem === 'number') {
+					if (relatedItem === id) return editsWrapped;
+				}
+			}
+
+			if (isEqual({ [junctionRelation]: editsAtStart.value }, item)) {
+				return editsWrapped;
+			}
+
+			return item;
+		});
+
+		if (hasPrimaryKey === false && newValue.includes(editsWrapped) === false) {
+			newValue.push(editsWrapped);
 		}
 
-		initialValues.value = item;
-
-		/**
-		 * @NOTE: Keep in mind there's a case where the junction row doesn't exist yet, but
-		 * the related item does (when selecting an existing item)
-		 */
-
-		const junctionPrimaryKey = junctionCollectionPrimaryKeyField.value.field;
-		const junctionField = relationCurrentToJunction.value.junction_field;
-		const relatedPrimaryKey = relatedCollectionPrimaryKeyField.value.field;
-
-		junctionRowPrimaryKey.value = item[junctionPrimaryKey] || '+';
-		relatedRowPrimaryKey.value = item[junctionField]?.[relatedPrimaryKey] || '+';
-		editsAtStart.value = item.$stagedEdits || null;
-		showDetailModal.value = true;
+		if (newValue.length === 0) emit(null);
+		else emit(newValue);
 	}
 
 	function cancelEdit() {
 		editsAtStart.value = {};
-		showDetailModal.value = false;
-		junctionRowPrimaryKey.value = '+';
+		currentlyEditing.value = null;
 	}
 
-	function stageEdits(edits: any) {
-		if (!relationCurrentToJunction.value) return;
-		if (!relationCurrentToJunction.value.junction_field) return;
-
-		const junctionPrimaryKey = junctionCollectionPrimaryKeyField.value.field;
-		const junctionField = relationCurrentToJunction.value.junction_field;
-		const relatedPrimaryKey = relatedCollectionPrimaryKeyField.value.field;
-
-		if (isNew.value) {
-			edits.$new = true;
-		}
-
-		const currentValue = [...(value.value || [])];
-
-		// If there weren't any previously made edits, it's safe to assume this change value
-		// doesn't exist yet in the staged value
-		if (!editsAtStart.value) {
-			// If the item that we edited has any of the primary keys (junction/related), we
-			// have to make sure we stage those as well. Otherwise the API will treat it as
-			// a newly created item instead of updated existing
-			if (junctionRowPrimaryKey.value !== '+') {
-				set(edits, junctionPrimaryKey, junctionRowPrimaryKey.value);
-			}
-
-			if (relatedRowPrimaryKey.value !== '+') {
-				set(edits, [junctionField, relatedPrimaryKey], relatedRowPrimaryKey.value);
-			}
-
-			onEdit([...currentValue, edits]);
-			reset();
-			return;
-		}
-
-		const newValue =
-			value.value?.map((stagedValue: any) => {
-				if (stagedValue === editsAtStart.value) return edits;
-				return stagedValue;
-			}) || null;
-
-		onEdit(newValue);
-		reset();
-
-		function reset() {
-			editsAtStart.value = null;
-			showDetailModal.value = true;
-			junctionRowPrimaryKey.value = '+';
-			relatedRowPrimaryKey.value = '+';
-			isNew.value = false;
-		}
-	}
+	return { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit };
 }

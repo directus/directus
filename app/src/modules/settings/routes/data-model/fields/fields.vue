@@ -52,7 +52,7 @@
 			<settings-navigation />
 		</template>
 
-		<div class="collections-detail">
+		<div class="collections-item">
 			<div class="fields">
 				<h2 class="title type-label">
 					{{ $t('fields_and_layout') }}
@@ -173,7 +173,7 @@ export default defineComponent({
 	}
 }
 
-.collections-detail {
+.collections-item {
 	padding: var(--content-padding);
 	padding-top: 0;
 	padding-bottom: var(--content-padding-bottom);

@@ -31,7 +31,7 @@
 
 		<v-divider />
 
-		<div class="page-description" v-html="marked($t('page_help_users_detail'))" />
+		<div class="page-description" v-html="marked($t('page_help_users_item'))" />
 	</drawer-detail>
 </template>
 

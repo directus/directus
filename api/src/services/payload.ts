@@ -6,7 +6,7 @@
 import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
-import { clone, isObject } from 'lodash';
+import { clone, isObject, cloneDeep } from 'lodash';
 import { Relation, Item, AbstractServiceOptions, Accountability, PrimaryKey } from '../types';
 import { ItemsService } from './items';
 import { URL } from 'url';
@@ -15,6 +15,8 @@ import env from '../env';
 import SchemaInspector from 'knex-schema-inspector';
 import getLocalType from '../utils/get-local-type';
 import { format, formatISO } from 'date-fns';
+import { ForbiddenException } from '../exceptions';
+import { toArray } from '../utils/to-array';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -140,7 +142,7 @@ export class PayloadService {
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		let processedPayload = (Array.isArray(payload) ? payload : [payload]) as Partial<Item>[];
+		let processedPayload = toArray(payload);
 
 		if (processedPayload.length === 0) return [];
 
@@ -235,7 +237,7 @@ export class PayloadService {
 
 		const columnsWithType = columnsInCollection.map((column) => ({
 			name: column.name,
-			type: getLocalType(column.type),
+			type: getLocalType(column),
 		}));
 
 		const dateColumns = columnsWithType.filter((column) =>
@@ -301,6 +303,8 @@ export class PayloadService {
 			});
 
 			for (const relation of relationsToProcess) {
+				if (!relation.one_collection || !relation.one_primary) continue;
+
 				const itemsService = new ItemsService(relation.one_collection, {
 					accountability: this.accountability,
 					knex: this.knex,
@@ -313,11 +317,7 @@ export class PayloadService {
 				const exists = hasPrimaryKey && !!(await itemsService.readByKey(relatedPrimaryKey));
 
 				if (exists) {
-					if (relatedRecord.hasOwnProperty('$delete') && relatedRecord.$delete) {
-						await itemsService.delete(relatedPrimaryKey);
-					} else {
-						await itemsService.update(relatedRecord, relatedPrimaryKey);
-					}
+					await itemsService.update(relatedRecord, relatedPrimaryKey);
 				} else {
 					relatedPrimaryKey = await itemsService.create(relatedRecord);
 				}
@@ -339,62 +339,81 @@ export class PayloadService {
 			.from('directus_relations')
 			.where({ one_collection: this.collection });
 
-		const payloads = clone(Array.isArray(payload) ? payload : [payload]);
+		const payloads = clone(toArray(payload));
 
 		for (let i = 0; i < payloads.length; i++) {
 			let payload = payloads[i];
 
 			// Only process related records that are actually in the payload
 			const relationsToProcess = relations.filter((relation) => {
-				return (
-					payload.hasOwnProperty(relation.one_field) &&
-					Array.isArray(payload[relation.one_field])
-				);
+				if (!relation.one_field) return false;
+
+				return payload.hasOwnProperty(relation.one_field);
 			});
 
 			for (const relation of relationsToProcess) {
-				const relatedRecords: Partial<Item>[] = payload[relation.one_field].map(
-					(record: string | number | Partial<Item>) => {
-						if (typeof record === 'string' || typeof record === 'number') {
-							record = {
-								[relation.many_primary]: record,
-							};
-						}
-
-						return {
-							...record,
-							[relation.many_field]: parent || payload[relation.one_primary],
-						};
-					}
-				);
-
 				const itemsService = new ItemsService(relation.many_collection, {
 					accountability: this.accountability,
 					knex: this.knex,
 				});
 
-				const toBeCreated = relatedRecords.filter(
-					(record) => record.hasOwnProperty(relation.many_primary) === false
+				const relatedRecords: Partial<Item>[] = [];
+				let savedPrimaryKeys: PrimaryKey[] = [];
+
+				if (payload[relation.one_field!] && Array.isArray(payload[relation.one_field!])) {
+					for (const relatedRecord of payload[relation.one_field!] || []) {
+						let record = cloneDeep(relatedRecord);
+
+						if (
+							typeof relatedRecord === 'string' ||
+							typeof relatedRecord === 'number'
+						) {
+							const exists = !!(await this.knex
+								.select(relation.many_primary)
+								.from(relation.many_collection)
+								.where({ [relation.many_primary]: record })
+								.first());
+
+							if (exists === false) {
+								throw new ForbiddenException(undefined, {
+									item: record,
+									collection: relation.many_collection,
+								});
+							}
+
+							record = {
+								[relation.many_primary]: relatedRecord,
+							};
+						}
+
+						relatedRecords.push({
+							...record,
+							[relation.many_field]: parent || payload[relation.one_primary!],
+						});
+					}
+
+					savedPrimaryKeys = await itemsService.upsert(relatedRecords);
+				}
+
+				await itemsService.updateByQuery(
+					{ [relation.many_field]: null },
+					{
+						filter: {
+							_and: [
+								{
+									[relation.many_field]: {
+										_eq: parent,
+									},
+								},
+								{
+									[relation.many_primary]: {
+										_nin: savedPrimaryKeys,
+									},
+								},
+							],
+						},
+					}
 				);
-
-				const toBeUpdated = relatedRecords.filter(
-					(record) =>
-						record.hasOwnProperty(relation.many_primary) === true &&
-						record.hasOwnProperty('$delete') === false
-				);
-
-				const toBeDeleted = relatedRecords
-					.filter(
-						(record) =>
-							record.hasOwnProperty(relation.many_primary) === true &&
-							record.hasOwnProperty('$delete') &&
-							record.$delete === true
-					)
-					.map((record) => record[relation.many_primary]);
-
-				await itemsService.create(toBeCreated);
-				await itemsService.update(toBeUpdated);
-				await itemsService.delete(toBeDeleted);
 			}
 		}
 	}

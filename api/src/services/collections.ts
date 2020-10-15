@@ -6,6 +6,7 @@ import SchemaInspector from 'knex-schema-inspector';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
 import cache from '../cache';
+import { toArray } from '../utils/to-array';
 
 export class CollectionsService {
 	knex: Knex;
@@ -23,7 +24,7 @@ export class CollectionsService {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
-		const payloads = (Array.isArray(data) ? data : [data]).map((collection) => {
+		const payloads = toArray(data).map((collection) => {
 			if (!collection.fields) collection.fields = [];
 
 			collection.fields = collection.fields.map((field) => {
@@ -105,7 +106,7 @@ export class CollectionsService {
 			knex: this.knex,
 			accountability: this.accountability,
 		});
-		const collectionKeys = Array.isArray(collection) ? collection : [collection];
+		const collectionKeys = toArray(collection);
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const permissions = await this.knex
@@ -132,9 +133,9 @@ export class CollectionsService {
 
 		const tablesInDatabase = await schemaInspector.tableInfo();
 		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
-		const meta = await collectionItemsService.readByQuery({
+		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: collectionKeys } },
-		}) as Collection['meta'][];
+		})) as Collection['meta'][];
 
 		const collections: Collection[] = [];
 
@@ -170,9 +171,9 @@ export class CollectionsService {
 		}
 
 		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
-		const meta = await collectionItemsService.readByQuery({
+		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: tablesToFetchInfoFor } },
-		}) as Collection['meta'][];
+		})) as Collection['meta'][];
 
 		const collections: Collection[] = [];
 
@@ -212,7 +213,7 @@ export class CollectionsService {
 				throw new InvalidPayloadException(`"meta" key is required`);
 			}
 
-			const keys = Array.isArray(key) ? key : [key];
+			const keys = toArray(key);
 
 			for (const key of keys) {
 				const exists =
@@ -232,7 +233,7 @@ export class CollectionsService {
 			return key;
 		}
 
-		const payloads = Array.isArray(data) ? data : [data];
+		const payloads = toArray(data);
 
 		const collectionUpdates = payloads.map((collection) => {
 			return {
@@ -264,7 +265,7 @@ export class CollectionsService {
 
 		const tablesInDatabase = await schemaInspector.tables();
 
-		const collectionKeys = Array.isArray(collection) ? collection : [collection];
+		const collectionKeys = toArray(collection);
 
 		for (const collectionKey of collectionKeys) {
 			if (tablesInDatabase.includes(collectionKey) === false) {
@@ -287,11 +288,14 @@ export class CollectionsService {
 		for (const relation of relations) {
 			const isM2O = relation.many_collection === collection;
 
+			/** @TODO M2A — Handle m2a case here */
+
 			if (isM2O) {
 				await this.knex('directus_relations')
 					.delete()
 					.where({ many_collection: collection, many_field: relation.many_field });
-				await fieldsService.deleteField(relation.one_collection, relation.one_field);
+
+				await fieldsService.deleteField(relation.one_collection!, relation.one_field!);
 			} else {
 				await this.knex('directus_relations')
 					.update({ one_field: null })

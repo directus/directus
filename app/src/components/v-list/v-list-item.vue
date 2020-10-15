@@ -25,6 +25,7 @@
 <script lang="ts">
 import { Location } from 'vue-router';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
 	props: {
@@ -64,12 +65,20 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		value: {
+			type: [String, Number],
+			default: undefined,
+		},
 	},
 	setup(props, { listeners }) {
 		const component = computed<string>(() => {
 			if (props.to) return 'router-link';
 			if (props.href) return 'a';
 			return 'li';
+		});
+
+		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
+			value: props.value,
 		});
 
 		const isClickable = computed(() => Boolean(props.to || props.href || listeners.click !== undefined));

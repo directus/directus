@@ -24,7 +24,6 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 This is *pre-release* software, therefore migrations will not be provided, breaking changes may occur at any time, and certain features might be missing or broken. You can follow along with [the issue tracker](https://github.com/directus/next/issues) for an in-depth list of upcoming enhancements, with the following notable features still under development:
 
-- [ ] GraphQL Endpoint
 - [ ] MS SQL Support
 - [ ] OracleDB Support
 - [ ] Import/Export Endpoints

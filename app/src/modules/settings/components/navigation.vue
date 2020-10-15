@@ -26,12 +26,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
+import { defineComponent, toRefs, computed } from '@vue/composition-api';
 import { i18n } from '@/lang';
 import { version } from '../../../../package.json';
+import { useProjectInfo } from '../composables/use-project-info';
 
 export default defineComponent({
 	setup() {
+		const { parsedInfo } = useProjectInfo();
+
 		const navItems = [
 			{
 				icon: 'public',
@@ -61,20 +64,33 @@ export default defineComponent({
 			},
 		];
 
-		const externalItems = [
-			{
-				icon: 'bug_report',
-				name: i18n.t('report_bug'),
-				href: 'https://github.com/directus/next/issues/new?body=%23%23%23+Project+Details%0A%60%60%60%0ADirectus+Version:+'+version+'%0AEnvironment:+Development%0AOS:+Mac%0ADatabase:+MySQL+5.2%0A%60%60%60',
-				outline: true,
-			},
-			{
-				icon: 'new_releases',
-				name: i18n.t('request_feature'),
-				href: 'https://github.com/directus/next/discussions/new',
-				outline: true,
-			},
-		];
+		const externalItems = computed(() => {
+			const debugInfo = `<!-- Please put a detailed explanation of the problem here. -->
+
+---
+
+### Project details
+Directus Version: ${parsedInfo.value?.directus.version}
+Environment: ${process.env.NODE_ENV}
+OS: ${parsedInfo.value?.os.type} ${parsedInfo.value?.os.version}
+Node: ${parsedInfo.value?.node.version}
+			`;
+
+			return [
+				{
+					icon: 'bug_report',
+					name: i18n.t('report_bug'),
+					href: `https://github.com/directus/next/issues/new?body=${encodeURIComponent(debugInfo)}`,
+					outline: true,
+				},
+				{
+					icon: 'new_releases',
+					name: i18n.t('request_feature'),
+					href: 'https://github.com/directus/next/discussions/new',
+					outline: true,
+				},
+			];
+		});
 
 		return { version, navItems, externalItems };
 	},

@@ -44,3 +44,5 @@ columns:
     default: all
   storage_asset_presets:
     type: json
+  custom_css:
+    type: text

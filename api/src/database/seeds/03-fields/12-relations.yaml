@@ -1,0 +1,7 @@
+table: directus_relations
+
+fields:
+  - collection: directus_relations
+    field: one_allowed_collections
+    locked: true
+    special: csv

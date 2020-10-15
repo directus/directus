@@ -52,7 +52,7 @@
 					</v-list>
 				</v-menu>
 
-				<modal-browse
+				<modal-collection
 					collection="directus_files"
 					:active="activeDialog === 'choose'"
 					@update:active="activeDialog = null"
@@ -83,12 +83,12 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import uploadFiles from '@/utils/upload-files';
-import ModalBrowse from '@/views/private/components/modal-browse';
+import ModalCollection from '@/views/private/components/modal-collection';
 import api from '@/api';
 import useItem from '@/composables/use-item';
 
 export default defineComponent({
-	components: { ModalBrowse },
+	components: { ModalCollection },
 	props: {
 		multiple: {
 			type: Boolean,
