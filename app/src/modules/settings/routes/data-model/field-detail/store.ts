@@ -37,6 +37,8 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				default_value: undefined,
 				max_length: undefined,
 				is_nullable: true,
+				precision: null,
+				scale: null,
 			},
 			meta: {
 				hidden: false,

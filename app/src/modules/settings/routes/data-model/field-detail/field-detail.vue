@@ -50,6 +50,13 @@
 			:type="localType"
 		/>
 
+		<setup-field
+			v-if="currentTab[0] === 'field'"
+			:is-existing="field !== '+'"
+			:collection="collection"
+			:type="localType"
+		/>
+
 		<setup-relationship
 			v-if="currentTab[0] === 'relationship'"
 			:is-existing="field !== '+'"
@@ -97,6 +104,7 @@ import { defineComponent, onMounted, ref, computed, reactive, PropType, watch, t
 import SetupTabs from './components/tabs.vue';
 import SetupActions from './components/actions.vue';
 import SetupSchema from './components/schema.vue';
+import SetupField from './components/field.vue';
 import SetupRelationship from './components/relationship.vue';
 import SetupTranslations from './components/translations.vue';
 import SetupInterface from './components/interface.vue';
@@ -119,6 +127,7 @@ export default defineComponent({
 		SetupTabs,
 		SetupActions,
 		SetupSchema,
+		SetupField,
 		SetupRelationship,
 		SetupTranslations,
 		SetupInterface,
@@ -195,6 +204,11 @@ export default defineComponent({
 						text: i18n.t('schema'),
 						value: 'schema',
 						disabled: false,
+					},
+					{
+						text: i18n.tc('field', 1),
+						value: 'field',
+						disabled: interfaceDisplayDisabled(),
 					},
 					{
 						text: i18n.t('interface'),
