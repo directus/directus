@@ -75,7 +75,6 @@ export default function usePreview(
 					);
 				}
 
-				console.log('responseData1', responseData);
 				// Insert the related items into the junction items
 				responseData = responseData.map((data) => {
 					const id = get(data, relationPkField);
@@ -91,10 +90,6 @@ export default function usePreview(
 				const updatedItems = getUpdatedItems();
 				const newItems = getNewItems();
 
-				console.log('updatedItems', updatedItems);
-				console.log('newItems', newItems);
-				console.log('responseData2', responseData);
-
 				// Replace existing items with it's updated counterparts
 				responseData = responseData
 					.map((item) => {
@@ -106,7 +101,6 @@ export default function usePreview(
 					})
 					.concat(...newItems);
 
-				console.log('responseData3', responseData);
 				items.value = responseData;
 			} catch (err) {
 				error.value = err;
@@ -123,7 +117,6 @@ export default function usePreview(
 		try {
 			let data: Record<string, any>[] = [];
 			const primaryKeys = getPrimaryKeys();
-			console.log('PKS', primaryKeys);
 
 			if (primaryKeys.length > 0) {
 				const filteredFields = getJunctionFields();

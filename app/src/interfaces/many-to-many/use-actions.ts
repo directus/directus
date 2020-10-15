@@ -89,8 +89,6 @@ export default function useActions(
 		const junctionId = get(deletingItem, junctionPkField) as number | string | undefined;
 		const relatedId = get(deletingItem, [junctionField, relationPkField]) as number | string | undefined;
 
-		console.log(junctionId, relatedId);
-
 		const newValue = value.value.filter((item) => {
 			if (junctionId !== undefined) {
 				if (typeof item === 'object') {
