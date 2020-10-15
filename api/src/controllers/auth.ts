@@ -213,7 +213,7 @@ router.post(
 router.get(
 	'/oauth',
 	asyncHandler(async (req, res, next) => {
-		const providers = env.OAUTH_PROVIDERS.split(',').filter((p: string) => p);
+		const providers = env.OAUTH_PROVIDERS as string[];
 		res.locals.payload = { data: providers.length > 0 ? providers : null };
 		return next();
 	}),

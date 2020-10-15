@@ -4,9 +4,9 @@
 
 import env from './env';
 
-const enabledProviders = (env.OAUTH_PROVIDERS as string)
-	.split(',')
-	.map((provider) => provider.trim().toLowerCase());
+const enabledProviders = (env.OAUTH_PROVIDERS as string[]).map((provider) =>
+	provider.toLowerCase()
+);
 
 const config: any = {
 	defaults: {

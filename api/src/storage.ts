@@ -25,7 +25,7 @@ function getStorageConfig(): StorageManagerConfig {
 		disks: {},
 	};
 
-	const locations = env.STORAGE_LOCATIONS.split(',');
+	const locations = env.STORAGE_LOCATIONS as string[];
 
 	locations.forEach((location: string) => {
 		location = location.trim();
