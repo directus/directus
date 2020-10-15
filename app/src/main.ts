@@ -52,12 +52,7 @@ import { registerDisplays } from './displays/register';
 import App from './app.vue';
 
 async function init() {
-	await Promise.all([
-		registerInterfaces(),
-		registerDisplays(),
-		registerLayouts(),
-		loadModules(),
-	]);
+	await Promise.all([registerInterfaces(), registerDisplays(), registerLayouts(), loadModules()]);
 
 	Vue.config.productionTip = false;
 
@@ -74,5 +69,9 @@ async function init() {
 	console.info(`%cEnvironment: ${process.env.NODE_ENV}`, 'color:DodgerBlue');
 	console.groupEnd();
 }
+
+// Prevent the browser from opening files that are dragged on the window
+window.addEventListener('dragover', (e) => e.preventDefault(), false);
+window.addEventListener('drop', (e) => e.preventDefault(), false);
 
 init();

@@ -28,6 +28,11 @@
 	"create_user": "Create User",
 	"create_webhook": "Create Webhook",
 
+	"connection_excellent": "Excellent Connection",
+	"connection_good": "Good Connection",
+	"connection_fair": "Fair Connection",
+	"connection_poor": "Poor Connection",
+
 	"rename_folder": "Rename Folder",
 	"delete_folder": "Delete Folder",
 	"reset_bookmark": "Reset Bookmark",
@@ -149,6 +154,7 @@
 	"focal_length": "Focal Length",
 
 	"schema_setup_title": "How should this field save to the database?",
+	"schema_field_title": "How should this field behave in the app?",
 
 	"create_field": "Create Field",
 	"update_field": "Update Field",
@@ -258,6 +264,7 @@
 	"enter_a_value": "Enter a value...",
 	"enter_a_placeholder": "Enter a placeholder...",
 	"length": "Length",
+	"precision_scale": "Precision & Scale",
 	"readonly": "Readonly",
 	"hide_on_detail": "Hide on Detail",
 	"hide_on_browse": "Hide on Browse",
@@ -753,6 +760,8 @@
 	"collection_setup": "Collection Setup",
 	"optional_system_fields": "Optional System Fields",
 
+	"value_unique": "Value has to be unique",
+
 	"all_activity": "All Activity",
 
 	"badge": "Badge",
@@ -1170,8 +1179,9 @@
   "field_already_exists": "Field Already Exists: {field}",
   "field_created": "Field Created",
   "field_removed": "Field Removed",
-  "field_setup_interface": "What type of field are you creating?",
   "field_setup_schema": "How should it store content in the database?",
+  "field_setup_field": "How should it store content in the database?",
+  "field_setup_interface": "What type of field are you creating?",
   "field_setup_relation": "How is the relationship's data stored?",
   "field_setup_options": "All set! Just review these interface options...",
   "field_type": "Field Type",

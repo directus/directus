@@ -6,6 +6,7 @@ import { Query, Item } from '../types';
 import { PayloadService } from '../services/payload';
 import applyQuery from '../utils/apply-query';
 import Knex, { QueryBuilder } from 'knex';
+import { toArray } from '../utils/to-array';
 
 type RunASTOptions = {
 	query?: AST['query'];
@@ -172,7 +173,7 @@ function applyParentFilters(
 	nestedCollectionNodes: NestedCollectionNode[],
 	parentItem: Item | Item[]
 ) {
-	const parentItems = Array.isArray(parentItem) ? parentItem : [parentItem];
+	const parentItems = toArray(parentItem);
 
 	for (const nestedNode of nestedCollectionNodes) {
 		if (!nestedNode.relation) continue;
@@ -245,8 +246,8 @@ function mergeWithParentItems(
 	nestedNode: NestedCollectionNode,
 	o2mLimit?: number | null
 ) {
-	const nestedItems = Array.isArray(nestedItem) ? nestedItem : [nestedItem];
-	const parentItems = clone(Array.isArray(parentItem) ? parentItem : [parentItem]);
+	const nestedItems = toArray(nestedItem);
+	const parentItems = clone(toArray(parentItem));
 
 	if (nestedNode.type === 'm2o') {
 		for (const parentItem of parentItems) {
@@ -307,7 +308,7 @@ function removeTemporaryFields(
 	primaryKeyField: string,
 	parentItem?: Item
 ): null | Item | Item[] {
-	const rawItems = cloneDeep(Array.isArray(rawItem) ? rawItem : [rawItem]);
+	const rawItems = cloneDeep(toArray(rawItem));
 	const items: Item[] = [];
 
 	if (ast.type === 'm2a') {

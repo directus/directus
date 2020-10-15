@@ -45,66 +45,13 @@ import { version } from '../../../../../../package.json';
 import bytes from 'bytes';
 import prettyMS from 'pretty-ms';
 import api from '@/api';
-
-type ServerInfo = {
-	directus: {
-		version: string;
-	};
-	node: {
-		version: string;
-		uptime: number;
-	};
-	os: {
-		type: string;
-		version: string;
-		uptime: number;
-		totalmem: number;
-	};
-};
+import { useProjectInfo } from '../../../composables/use-project-info';
 
 export default defineComponent({
 	setup() {
-		const info = ref<ServerInfo>();
-		const loading = ref(false);
-		const error = ref<any>();
+		const { parsedInfo } = useProjectInfo();
 
-		const parsedInfo = computed(() => {
-			if (!info.value) return null;
-
-			return {
-				directus: {
-					version: info.value.directus.version,
-				},
-				node: {
-					version: info.value.node.version,
-					uptime: prettyMS(info.value.node.uptime * 1000),
-				},
-				os: {
-					type: info.value.os.type,
-					version: info.value.os.version,
-					uptime: prettyMS(info.value.os.uptime * 1000),
-					totalmem: bytes(info.value.os.totalmem),
-				},
-			};
-		});
-
-		fetchInfo();
-
-		return { parsedInfo, loading, error, marked };
-
-		async function fetchInfo() {
-			loading.value = true;
-			error.value = null;
-
-			try {
-				const response = await api.get('/server/info');
-				info.value = response.data.data;
-			} catch (err) {
-				error.value = err;
-			} finally {
-				loading.value = false;
-			}
-		}
+		return { parsedInfo, marked };
 	},
 });
 </script>

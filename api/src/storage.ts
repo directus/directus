@@ -7,6 +7,7 @@ import {
 import env from './env';
 import { validateEnv } from './utils/validate-env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
+import { toArray } from './utils/to-array';
 
 /** @todo dynamically load these storage adapters */
 import { AmazonWebServicesS3Storage } from '@slynova/flydrive-s3';
@@ -25,7 +26,7 @@ function getStorageConfig(): StorageManagerConfig {
 		disks: {},
 	};
 
-	const locations = env.STORAGE_LOCATIONS.split(',');
+	const locations = toArray(env.STORAGE_LOCATIONS);
 
 	locations.forEach((location: string) => {
 		location = location.trim();

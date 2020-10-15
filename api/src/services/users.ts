@@ -13,6 +13,7 @@ import { Accountability, PrimaryKey, Item, AbstractServiceOptions } from '../typ
 import Knex from 'knex';
 import env from '../env';
 import cache from '../cache';
+import { toArray } from '../utils/to-array';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
@@ -39,7 +40,7 @@ export class UsersService extends ItemsService {
 		 * This is just an extra bit of hardcoded security. We don't want anybody to be able to disable 2fa through
 		 * the regular /users endpoint. Period. You should only be able to manage the 2fa status through the /tfa endpoint.
 		 */
-		const payloads = Array.isArray(data) ? data : [data];
+		const payloads = toArray(data);
 
 		for (const payload of payloads) {
 			if (payload.hasOwnProperty('tfa_secret')) {
@@ -57,7 +58,7 @@ export class UsersService extends ItemsService {
 	delete(key: PrimaryKey): Promise<PrimaryKey>;
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const keys = Array.isArray(key) ? key : [key];
+		const keys = toArray(key);
 
 		// Make sure there's at least one admin user left after this deletion is done
 		const otherAdminUsers = await this.knex

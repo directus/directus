@@ -1,5 +1,5 @@
 <template>
-	<v-modal v-model="_active" :title="title" persistent form-width>
+	<v-modal v-model="_active" :title="title" persistent form-width @esc="cancel">
 		<template v-if="junctionField">
 			<v-form
 				:loading="loading"

@@ -57,7 +57,12 @@
 		</template>
 
 		<template #actions>
-			<v-dialog v-if="!isNew" v-model="confirmDelete" :disabled="deleteAllowed === false">
+			<v-dialog
+				v-if="!isNew"
+				v-model="confirmDelete"
+				:disabled="deleteAllowed === false"
+				@esc="confirmDelete = false"
+			>
 				<template #activator="{ on }">
 					<v-button
 						rounded
@@ -89,6 +94,7 @@
 			<v-dialog
 				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
 				v-model="confirmArchive"
+				@esc="confirmArchive = false"
 				:disabled="archiveAllowed === false"
 			>
 				<template #activator="{ on }">
@@ -157,7 +163,7 @@
 			v-model="edits"
 		/>
 
-		<v-dialog v-model="confirmLeave">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
 				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>
@@ -241,6 +247,10 @@ export default defineComponent({
 		primaryKey: {
 			type: String,
 			default: null,
+		},
+		singleton: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -377,7 +387,7 @@ export default defineComponent({
 			if (saveAllowed.value === false || hasEdits.value === false) return;
 
 			await save();
-			router.push(`/collections/${props.collection}`);
+			if (props.singleton === false) router.push(`/collections/${props.collection}`);
 		}
 
 		async function saveAndStay() {

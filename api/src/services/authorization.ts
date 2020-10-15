@@ -18,6 +18,7 @@ import { uniq, merge, flatten } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 import { ItemsService } from './items';
 import { parseFilter } from '../utils/parse-filter';
+import { toArray } from '../utils/to-array';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -199,7 +200,7 @@ export class AuthorizationService {
 	): Promise<Partial<Item>[] | Partial<Item>> {
 		const validationErrors: FailedValidationException[] = [];
 
-		let payloads = Array.isArray(payload) ? payload : [payload];
+		let payloads = toArray(payload);
 
 		let permission: Permission | undefined;
 

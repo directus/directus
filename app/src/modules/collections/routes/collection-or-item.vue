@@ -2,8 +2,9 @@
 	<component
 		ref="component"
 		:bookmark="bookmark"
-		:is="isSingle ? 'item-route' : 'collection-route'"
+		:is="isSingleton ? 'item-route' : 'collection-route'"
 		:collection="collection"
+		:singleton="isSingleton"
 	/>
 </template>
 
@@ -33,12 +34,12 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const component = ref<Vue>();
 
-		const isSingle = computed(() => {
+		const isSingleton = computed(() => {
 			const collectionInfo = collectionsStore.getCollection(props.collection);
 			return !!collectionInfo?.meta?.singleton === true;
 		});
 
-		return { component, isSingle };
+		return { component, isSingleton };
 	},
 	beforeRouteLeave(to, from, next) {
 		if ((this as any).$refs?.component?.navigationGuard) {

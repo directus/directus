@@ -13,7 +13,14 @@
 				</template>
 
 				<template #append>
-					<v-icon @click="activate" name="expand_more" class="open-indicator" :class="{ open: active }" />
+					<v-icon v-if="value !== null" @click="setIcon(null)" name="close" />
+					<v-icon
+						v-else
+						@click="activate"
+						name="expand_more"
+						class="open-indicator"
+						:class="{ open: active }"
+					/>
 				</template>
 			</v-input>
 		</template>
@@ -83,7 +90,7 @@ export default defineComponent({
 			formatTitle,
 		};
 
-		function setIcon(icon: string) {
+		function setIcon(icon: string | null) {
 			emit('input', icon);
 		}
 	},

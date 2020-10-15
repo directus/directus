@@ -9,6 +9,7 @@ import { AbstractServiceOptions, File, PrimaryKey } from '../types';
 import { clone } from 'lodash';
 import cache from '../cache';
 import { ForbiddenException } from '../exceptions';
+import { toArray } from '../utils/to-array';
 
 export class FilesService extends ItemsService {
 	constructor(options?: AbstractServiceOptions) {
@@ -89,14 +90,14 @@ export class FilesService extends ItemsService {
 	delete(key: PrimaryKey): Promise<PrimaryKey>;
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const keys = Array.isArray(key) ? key : [key];
+		const keys = toArray(key);
 		let files = await super.readByKey(keys, { fields: ['id', 'storage'] });
 
 		if (!files) {
 			throw new ForbiddenException();
 		}
 
-		files = Array.isArray(files) ? files : [files];
+		files = toArray(files);
 
 		for (const file of files) {
 			const disk = storage.disk(file.storage);

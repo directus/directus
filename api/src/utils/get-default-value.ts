@@ -2,7 +2,7 @@ import { Column } from 'knex-schema-inspector/dist/types/column';
 import getLocalType from './get-local-type';
 
 export default function getDefaultValue(column: Column) {
-	const type = getLocalType(column.type);
+	const type = getLocalType(column);
 
 	let defaultValue = column.default_value || null;
 

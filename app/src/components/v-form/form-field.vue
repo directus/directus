@@ -26,6 +26,7 @@
 				@edit-raw="showRaw = true"
 			/>
 		</v-menu>
+		<div class="label-spacer" v-else-if="['full', 'fill'].includes(field.meta && field.meta.width) === false" />
 
 		<form-field-interface
 			:value="_value"
@@ -38,7 +39,7 @@
 			@input="$emit('input', $event)"
 		/>
 
-		<v-dialog v-model="showRaw">
+		<v-dialog v-model="showRaw" @esc="showRaw = false">
 			<v-card>
 				<v-card-title>{{ $t('edit_raw_value') }}</v-card-title>
 				<v-card-text>
@@ -202,5 +203,9 @@ export default defineComponent({
 
 .raw-value {
 	--v-textarea-font-family: var(--family-monospace);
+}
+
+.label-spacer {
+	height: 28px;
 }
 </style>

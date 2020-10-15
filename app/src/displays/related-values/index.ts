@@ -5,6 +5,7 @@ import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import getRelatedCollection from '@/utils/get-related-collection';
 import useCollection from '@/composables/use-collection';
 import { ref } from '@vue/composition-api';
+import options from './options.vue';
 
 type Options = {
 	template: string;
@@ -16,19 +17,9 @@ export default defineDisplay(({ i18n }) => ({
 	description: i18n.t('displays.related-values.description'),
 	icon: 'settings_ethernet',
 	handler: DisplayRelatedValues,
-	options: [
-		/** @todo make this a component so we have dynamic collection for display template component */
-		{
-			field: 'template',
-			name: i18n.t('display_template'),
-			type: 'string',
-			meta: {
-				interface: 'text-input',
-				width: 'full',
-			},
-		},
-	],
+	options: options,
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
+	localTypes: ['m2m', 'm2o', 'o2m'],
 	fields: (options: Options, { field, collection }) => {
 		const relatedCollection = getRelatedCollection(collection, field);
 		const { primaryKeyField } = useCollection(ref(relatedCollection as string));

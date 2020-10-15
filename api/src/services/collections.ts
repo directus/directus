@@ -6,6 +6,7 @@ import SchemaInspector from 'knex-schema-inspector';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
 import cache from '../cache';
+import { toArray } from '../utils/to-array';
 
 export class CollectionsService {
 	knex: Knex;
@@ -23,7 +24,7 @@ export class CollectionsService {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
-		const payloads = (Array.isArray(data) ? data : [data]).map((collection) => {
+		const payloads = toArray(data).map((collection) => {
 			if (!collection.fields) collection.fields = [];
 
 			collection.fields = collection.fields.map((field) => {
@@ -105,7 +106,7 @@ export class CollectionsService {
 			knex: this.knex,
 			accountability: this.accountability,
 		});
-		const collectionKeys = Array.isArray(collection) ? collection : [collection];
+		const collectionKeys = toArray(collection);
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const permissions = await this.knex
@@ -212,7 +213,7 @@ export class CollectionsService {
 				throw new InvalidPayloadException(`"meta" key is required`);
 			}
 
-			const keys = Array.isArray(key) ? key : [key];
+			const keys = toArray(key);
 
 			for (const key of keys) {
 				const exists =
@@ -232,7 +233,7 @@ export class CollectionsService {
 			return key;
 		}
 
-		const payloads = Array.isArray(data) ? data : [data];
+		const payloads = toArray(data);
 
 		const collectionUpdates = payloads.map((collection) => {
 			return {
@@ -264,7 +265,7 @@ export class CollectionsService {
 
 		const tablesInDatabase = await schemaInspector.tables();
 
-		const collectionKeys = Array.isArray(collection) ? collection : [collection];
+		const collectionKeys = toArray(collection);
 
 		for (const collectionKey of collectionKeys) {
 			if (tablesInDatabase.includes(collectionKey) === false) {

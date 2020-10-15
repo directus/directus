@@ -1,6 +1,7 @@
 import { ItemsService } from './items';
 import { AbstractServiceOptions, Query, PrimaryKey, PermissionsAction, Relation } from '../types';
 import { PermissionsService } from './permissions';
+import { toArray } from '../utils/to-array';
 
 /**
  * @TODO update foreign key constraints when relations are updated
@@ -62,7 +63,7 @@ export class RelationsService extends ItemsService {
 			'read'
 		);
 
-		relations = Array.isArray(relations) ? relations : [relations];
+		relations = toArray(relations);
 
 		return relations.filter((relation) => {
 			let collectionsAllowed = true;
