@@ -30,10 +30,6 @@ columns:
     type: json
   avatar:
     type: uuid
-  timezone:
-    type: string
-    length: 255
-    default: 'America/New_York'
   language:
     type: string
     length: 8
