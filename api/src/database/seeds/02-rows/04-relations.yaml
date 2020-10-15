@@ -63,3 +63,18 @@ data:
     many_primary: id
     one_collection: directus_users
     one_primary: id
+  - many_collection: directus_settings
+    many_field: project_logo
+    many_primary: id
+    one_collection: directus_files
+    one_primary: id
+  - many_collection: directus_settings
+    many_field: public_foreground
+    many_primary: id
+    one_collection: directus_files
+    one_primary: id
+  - many_collection: directus_settings
+    many_field: public_background
+    many_primary: id
+    one_collection: directus_files
+    one_primary: id
