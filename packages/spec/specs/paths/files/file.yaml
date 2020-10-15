@@ -4,7 +4,7 @@ get:
     - Files
   operationId: getFile
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -12,9 +12,9 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/File'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+                $ref: "../../openapi.yaml#/components/schemas/Files"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 patch:
   description: Update an existing file.
   tags:
@@ -26,7 +26,7 @@ patch:
         schema:
           type: object
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -34,18 +34,18 @@ patch:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/File'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+                $ref: "../../openapi.yaml#/components/schemas/Files"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 delete:
   description: Delete an existing file.
   tags:
     - Files
   operationId: deleteFile
   responses:
-    '200':
+    "200":
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
 parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Id'
+  - $ref: "../../openapi.yaml#/components/parameters/Id"

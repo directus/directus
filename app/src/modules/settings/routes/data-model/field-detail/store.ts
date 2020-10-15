@@ -13,6 +13,7 @@ import { getDisplays } from '@/displays';
 import { InterfaceConfig } from '@/interfaces/types';
 import { DisplayConfig } from '@/displays/types';
 import { Field } from '@/types';
+import Vue from 'vue';
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
@@ -518,9 +519,9 @@ function initLocalStore(
 					many_collection: '',
 					many_field: '',
 					many_primary: '',
-					one_collection: type === 'files' ? 'directus_files' : '',
+					one_collection: '',
 					one_field: null,
-					one_primary: type === 'files' ? 'id' : '',
+					one_primary: '',
 				},
 			];
 		}
@@ -591,6 +592,13 @@ function initLocalStore(
 				}
 			}
 		);
+
+		if (type === 'files') {
+			Vue.nextTick(() => {
+				state.relations[1].one_collection = 'directus_files';
+				state.relations[1].one_primary = 'id';
+			});
+		}
 
 		if (type !== 'translations') {
 			let stop: WatchStopHandle;
@@ -700,7 +708,7 @@ function initLocalStore(
 	}
 
 	function fieldExists(collection: string, field: string) {
-		return collectionExists(collection) && fieldsStore.getField(collection, field) !== null;
+		return collectionExists(collection) && !!fieldsStore.getField(collection, field);
 	}
 }
 

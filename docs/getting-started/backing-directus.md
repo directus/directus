@@ -32,7 +32,7 @@ Squashing bugs, optimizing the codebase, increasing test coverage, and adding ne
 
 ### Translations
 
-Every translation enables users in new locales to use our international platform. Our [Crowdin integration](#) makes polishing existing translations or creating new ones a breeze.
+Every translation enables users in new languages to use our international platform. Our [Crowdin integration](#) makes polishing existing translations or creating new ones a breeze.
 
 ### Bug Reporting
 

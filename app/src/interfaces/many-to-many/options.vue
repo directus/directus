@@ -1,16 +1,14 @@
 <template>
-	<v-notice type="warning" v-if="junctionCollection === null">
+	<v-notice type="warning" v-if="relatedCollection === null">
 		{{ $t('interfaces.one-to-many.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">
 			<p class="type-label">{{ $t('select_fields') }}</p>
 			<v-field-select
-				:collection="junctionCollection"
+				:collection="relatedCollection"
 				v-model="fields"
-				:inject="
-					junctionCollectionExists ? null : { fields: newFields, collections: newCollections, relations }
-				"
+				:inject="relatedCollectionExists ? null : { fields: newFields, collections: newCollections, relations }"
 			/>
 		</div>
 	</div>
@@ -66,22 +64,33 @@ export default defineComponent({
 			},
 		});
 
-		const junctionCollection = computed(() => {
+		const relatedCollection = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
+
 			const { field } = props.fieldData;
+
 			const junctionRelation = props.relations.find(
 				(relation) => relation.one_collection === props.collection && relation.one_field === field
 			);
-			return junctionRelation?.many_collection || null;
+
+			if (junctionRelation === undefined) return;
+
+			const relatedCollection = props.relations.find(
+				(relation) =>
+					relation.one_collection !== props.collection &&
+					relation.many_field === junctionRelation.junction_field
+			);
+
+			return relatedCollection?.one_collection || null;
 		});
 
-		const junctionCollectionExists = computed(() => {
+		const relatedCollectionExists = computed(() => {
 			return !!collectionsStore.state.collections.find(
-				(collection) => collection.collection === junctionCollection.value
+				(collection) => collection.collection === relatedCollection.value
 			);
 		});
 
-		return { fields, junctionCollection, junctionCollectionExists };
+		return { fields, relatedCollection, relatedCollectionExists };
 	},
 });
 </script>

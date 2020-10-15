@@ -95,7 +95,7 @@
       "company": "Firma",
       "title": "Title",
       "timezone": "Strefa czasowa",
-      "locale": "Język",
+      "language": "Język",
       "avatar": "Avatar",
       "theme": "Motyw",
       "2fa_secret": "Uwierzytelnianie dwuetapowe"

@@ -1,4 +1,5 @@
 type: object
+x-collection: directus_files
 properties:
   id:
     description: Unique identifier for the folder.
@@ -11,5 +12,7 @@ properties:
   parent:
     description: Unique identifier of the parent folder. This allows for nested folders.
     example: null
-    type: string
+    oneOf:
+      - type: string
+      - $ref: "../openapi.yaml#/components/schemas/Folders"
     nullable: true

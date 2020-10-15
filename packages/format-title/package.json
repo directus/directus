@@ -1,0 +1,69 @@
+{
+  "name": "@directus/format-title",
+  "version": "9.0.0-beta.11",
+  "description": "Custom string formatter that converts any string into [Title Case](http://www.grammar-monster.com/lessons/capital_letters_title_case.htm)",
+  "keywords": [
+    "title-case",
+    "title",
+    "case",
+    "directus",
+    "format",
+    "string",
+    "articles",
+    "conjunctions",
+    "prepositions"
+  ],
+  "main": "dist/format-title.umd.js",
+  "module": "dist/format-title.es5.js",
+  "typings": "dist/types/format-title.d.ts",
+  "files": [
+    "dist"
+  ],
+  "author": "rijkvanzanten <rijkvanzanten@me.com>",
+  "repository": "directus/format-title",
+  "license": "MIT",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts",
+    "start": "rollup -c rollup.config.ts -w",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "jest": {
+    "transform": {
+      ".(ts|tsx)": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
+      }
+    },
+    "collectCoverageFrom": [
+      "src/*.{js,ts}"
+    ]
+  },
+  "devDependencies": {
+    "jest": "^26.5.3",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.30.0",
+    "typescript": "^4.0.3"
+  }
+}

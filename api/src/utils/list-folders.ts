@@ -6,7 +6,7 @@ const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
 
 export default async function listFolders(location: string) {
-	const fullPath = path.join(process.cwd(), location);
+	const fullPath = path.resolve(location);
 	const files = await readdir(fullPath);
 
 	const directories: string[] = [];

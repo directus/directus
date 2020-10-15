@@ -1788,7 +1788,7 @@
 			"options": {
 				"fields": [
 					{
-						"field": "locale",
+						"field": "language",
 						"type": "string",
 						"interface": "language",
 						"options": {
@@ -2736,7 +2736,7 @@
 			"options": {
 				"fields": [
 					{
-						"field": "locale",
+						"field": "language",
 						"type": "string",
 						"interface": "language",
 						"options": {
@@ -5639,7 +5639,7 @@
 		},
 		{
 			"collection": "directus_users",
-			"field": "locale",
+			"field": "language",
 			"datatype": "VARCHAR",
 			"unique": false,
 			"primary_key": false,
@@ -5666,7 +5666,7 @@
 			"validation": null,
 			"group": null,
 			"length": "8",
-			"name": "Locale"
+			"name": "Language"
 		},
 		{
 			"collection": "directus_users",
@@ -5739,35 +5739,6 @@
 			"group": null,
 			"length": "16",
 			"name": "Status"
-		},
-		{
-			"collection": "directus_users",
-			"field": "locale_options",
-			"datatype": "TEXT",
-			"unique": false,
-			"primary_key": false,
-			"auto_increment": false,
-			"default_value": null,
-			"note": "",
-			"signed": true,
-			"id": 857,
-			"type": "json",
-			"sort": 16,
-			"interface": "json",
-			"display": null,
-			"display_options": null,
-			"hidden_detail": true,
-			"hidden_browse": true,
-			"required": false,
-			"options": null,
-			"locked": 1,
-			"translation": null,
-			"readonly": false,
-			"width": null,
-			"validation": null,
-			"group": null,
-			"length": null,
-			"name": "Locale Options"
 		},
 		{
 			"collection": "directus_users",
@@ -11001,7 +10972,7 @@
 		{
 			"id": 826,
 			"collection": "directus_settings",
-			"field": "default_locale",
+			"field": "default_language",
 			"type": "string",
 			"interface": "language",
 			"options": {
@@ -11018,9 +10989,9 @@
 			"sort": 8,
 			"width": "half",
 			"group": null,
-			"note": "Default locale for Directus Users",
+			"note": "Default language for Directus Users",
 			"translation": null,
-			"name": "Default Locale"
+			"name": "Default Language"
 		},
 		{
 			"id": 827,

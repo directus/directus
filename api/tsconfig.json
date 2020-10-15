@@ -10,7 +10,8 @@
 		"rootDir": "src",
 		"strict": true,
 		"lib": ["es2019"],
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"declaration": true
 	},
 	"exclude": [
 		"node_modules"

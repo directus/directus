@@ -3,6 +3,7 @@ import { AbstractServiceOptions, PrimaryKey } from '../types';
 import { PermissionsService } from './permissions';
 import { UsersService } from './users';
 import { PresetsService } from './presets';
+import { UnprocessableEntityException } from '../exceptions';
 
 export class RolesService extends ItemsService {
 	constructor(options?: AbstractServiceOptions) {
@@ -14,15 +15,28 @@ export class RolesService extends ItemsService {
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const keys = Array.isArray(key) ? key : [key];
 
+		// Make sure there's at least one admin role left after this deletion is done
+		const otherAdminRoles = await this.knex
+			.count('*', { as: 'count' })
+			.from('directus_roles')
+			.whereNotIn('id', keys)
+			.andWhere({ admin_access: true })
+			.first();
+		const otherAdminRolesCount = +(otherAdminRoles?.count || 0);
+		if (otherAdminRolesCount === 0)
+			throw new UnprocessableEntityException(`You can't delete the last admin role.`);
+
 		// Remove all permissions associated with this role
 		const permissionsService = new PermissionsService({
 			knex: this.knex,
 			accountability: this.accountability,
 		});
-		const permissionsForRole = await permissionsService.readByQuery({
+
+		const permissionsForRole = (await permissionsService.readByQuery({
 			fields: ['id'],
 			filter: { role: { _in: keys } },
-		}) as { id: number }[];
+		})) as { id: number }[];
+
 		const permissionIDs = permissionsForRole.map((permission) => permission.id);
 		await permissionsService.delete(permissionIDs);
 
@@ -31,10 +45,12 @@ export class RolesService extends ItemsService {
 			knex: this.knex,
 			accountability: this.accountability,
 		});
-		const presetsForRole = await presetsService.readByQuery({
+
+		const presetsForRole = (await presetsService.readByQuery({
 			fields: ['id'],
 			filter: { role: { _in: keys } },
-		}) as { id: string }[];
+		})) as { id: string }[];
+
 		const presetIDs = presetsForRole.map((preset) => preset.id);
 		await presetsService.delete(presetIDs);
 
@@ -43,10 +59,12 @@ export class RolesService extends ItemsService {
 			knex: this.knex,
 			accountability: this.accountability,
 		});
-		const usersInRole = await usersService.readByQuery({
+
+		const usersInRole = (await usersService.readByQuery({
 			fields: ['id'],
 			filter: { role: { _in: keys } },
-		}) as { id: string }[];
+		})) as { id: string }[];
+
 		const userIDs = usersInRole.map((user) => user.id);
 		await usersService.update({ status: 'suspended', role: null }, userIDs);
 

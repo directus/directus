@@ -2,10 +2,10 @@ get:
   description: Retrieve a single role by unique identifier.
   operationId: getRole
   parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Fields'
-  - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -13,19 +13,19 @@ get:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Role'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                $ref: "../../openapi.yaml#/components/schemas/Roles"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
-  - Roles
+    - Roles
 patch:
   description: Update an existing role
   operationId: updateRole
   parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/Fields'
-  - $ref: '../../openapi.yaml#/components/parameters/Meta'
+    - $ref: "../../openapi.yaml#/components/parameters/Fields"
+    - $ref: "../../openapi.yaml#/components/parameters/Meta"
   requestBody:
     content:
       application/json:
@@ -44,7 +44,8 @@ patch:
               description: ID used with external services in SCIM.
               type: string
             ip_whitelist:
-              description: Array of IP addresses that are allowed to connect to the
+              description:
+                Array of IP addresses that are allowed to connect to the
                 API as a user of this role.
               type: array
               items:
@@ -57,7 +58,7 @@ patch:
               type: string
           type: object
   responses:
-    '200':
+    "200":
       description: Successful request
       content:
         application/json:
@@ -65,24 +66,24 @@ patch:
             type: object
             properties:
               data:
-                $ref: '../../openapi.yaml#/components/schemas/Role'
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+                $ref: "../../openapi.yaml#/components/schemas/Roles"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
-  - Roles
+    - Roles
 delete:
   description: Delete an existing role
   operationId: deleteRole
   responses:
-    '200':
+    "200":
       description: Successful request
-    '401':
-      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-    '404':
-      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+    "404":
+      $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
-  - Roles
+    - Roles
 parameters:
-  - $ref: '../../openapi.yaml#/components/parameters/UUId'
+  - $ref: "../../openapi.yaml#/components/parameters/UUId"

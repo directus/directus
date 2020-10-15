@@ -31,19 +31,19 @@ export default defineModule(({ i18n }) => {
 		for (const doc of directory.children) {
 			if (doc.type === 'file') {
 				routes.push({
-					path: '/' + doc.path.replace('.md', ''),
+					path: '/' + doc.path.replace('.md', '').replaceAll('\\', '/'),
 					component: StaticDocs,
 				});
 			} else if (doc.type === 'directory') {
-				routes.push({
-					path: '/' + doc.path,
-					redirect: '/' + doc.children![0].path.replace('.md', ''),
-				});
+				if (doc.path && doc.children && doc.children.length > 0)
+					routes.push({
+						path: '/' + doc.path.replaceAll('\\', '/'),
+						redirect: '/' + doc.children![0].path.replace('.md', '').replaceAll('\\', '/'),
+					});
 
 				routes.push(...parseRoutes(doc));
 			}
 		}
-
 		return routes;
 	}
 });

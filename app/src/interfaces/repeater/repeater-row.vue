@@ -1,5 +1,5 @@
 <template>
-	<v-item class="row" v-slot:default="{ active, toggle }">
+	<v-item class="row" v-slot:default="{ active, toggle }" :active="true" :watch="false">
 		<repeater-row-header
 			:template="template"
 			:value="value"
@@ -7,6 +7,7 @@
 			:toggle="toggle"
 			@delete="$emit('delete')"
 			:disabled="disabled"
+			:placeholder="headerPlaceholder"
 		/>
 		<transition-expand>
 			<div v-if="active">
@@ -45,6 +46,10 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		headerPlaceholder: {
+			type: String,
+			default: null,
 		},
 	},
 });

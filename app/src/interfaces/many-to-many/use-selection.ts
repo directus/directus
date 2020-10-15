@@ -1,77 +1,54 @@
-import { Relation, Filter } from '@/types/';
-import { Field } from '@/types';
 import { Ref, ref, computed } from '@vue/composition-api';
+import { RelationInfo } from './use-relation';
+import { Filter } from '@/types';
 
-type SelectionParam = {
-	relationCurrentToJunction: Ref<Relation | undefined>;
-	relatedCollectionPrimaryKeyField: Ref<Field>;
-	previewItems: Ref<readonly any[]>;
-	onStageSelection: (selectionAsJunctionRows: any[]) => void;
-};
+export default function useSelection(
+	value: Ref<(string | number | Record<string, any>)[] | null>,
+	displayItems: Ref<Record<string, any>[]>,
+	relation: Ref<RelationInfo>,
+	emit: (newVal: any[] | null) => void
+) {
+	const selectModalActive = ref(false);
 
-export default function useSelection({
-	relationCurrentToJunction,
-	relatedCollectionPrimaryKeyField,
-	previewItems,
-	onStageSelection,
-}: SelectionParam) {
-	const showBrowseModal = ref(false);
+	const selectedPrimaryKeys = computed(() => {
+		if (displayItems.value === null) return [];
 
-	const alreadySelectedRelatedPrimaryKeys = computed(() => {
-		if (!relationCurrentToJunction.value) return [];
-		if (!relationCurrentToJunction.value.junction_field) return [];
+		const { relationPkField } = relation.value;
 
-		const junctionField = relationCurrentToJunction.value.junction_field;
-		const relatedPrimaryKey = relatedCollectionPrimaryKeyField.value.field;
+		const selectedKeys: (number | string)[] = displayItems.value
+			.filter((currentItem) => relationPkField in currentItem)
+			.map((currentItem) => currentItem[relationPkField]);
 
-		return previewItems.value
-			.filter((previewItem: any) => previewItem[junctionField])
-			.map((previewItem: any) => {
-				if (typeof previewItem[junctionField] === 'string' || typeof previewItem[junctionField] === 'number') {
-					return previewItem[junctionField];
-				}
-
-				return previewItem[junctionField][relatedPrimaryKey];
-			})
-			.filter((p) => p);
+		return selectedKeys;
 	});
 
 	const selectionFilters = computed<Filter[]>(() => {
-		const relatedPrimaryKey = relatedCollectionPrimaryKeyField.value.field;
+		const { relationPkField } = relation.value;
+
+		if (selectedPrimaryKeys.value.length === 0) return [];
+
 		const filter: Filter = {
 			key: 'selection',
-			field: relatedPrimaryKey,
+			field: relationPkField,
 			operator: 'nin',
-			value: alreadySelectedRelatedPrimaryKeys.value.join(','),
+			value: selectedPrimaryKeys.value.join(','),
 			locked: true,
 		};
 
 		return [filter];
 	});
 
-	return { showBrowseModal, stageSelection, selectionFilters };
+	function stageSelection(newSelection: (number | string)[]) {
+		const { junctionRelation } = relation.value;
 
-	function stageSelection(selection: any) {
-		const selectionAsJunctionRows = selection.map((relatedPrimaryKey: string | number) => {
-			if (!relationCurrentToJunction.value) return;
-			if (!relationCurrentToJunction.value.junction_field) return;
+		const selection = newSelection
+			.filter((item) => selectedPrimaryKeys.value.includes(item) === false)
+			.map((item) => ({ [junctionRelation]: item }));
 
-			const junctionField = relationCurrentToJunction.value.junction_field;
-			const relatedPrimaryKeyField = relatedCollectionPrimaryKeyField.value.field;
-
-			return {
-				[junctionField]: {
-					// Technically, "junctionField: primaryKey" should be enough for the api
-					// to do it's thing for newly selected items. However, that would require
-					// the previewItems check to be way more complex. This shouldn't introduce
-					// too much overhead in the API, while drastically simplifying this interface
-					[relatedPrimaryKeyField]: relatedPrimaryKey,
-				},
-			};
-		});
-
-		// Seeing the browse modal only shows items that haven't been selected yet (using the
-		// filter above), we can safely assume that the items don't exist yet in props.value
-		onStageSelection(selectionAsJunctionRows);
+		const newVal = [...selection, ...(value.value || [])];
+		if (newVal.length === 0) emit(null);
+		else emit(newVal);
 	}
+
+	return { stageSelection, selectModalActive, selectedPrimaryKeys, selectionFilters };
 }

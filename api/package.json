@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-beta.10",
+	"version": "9.0.0-beta.11",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/next#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -65,7 +65,7 @@
 	],
 	"dependencies": {
 		"@directus/app": "file:../app",
-		"@directus/format-title": "^3.2.0",
+		"@directus/format-title": "file:../packages/format-title",
 		"@directus/specs": "file:../packages/spec",
 		"@slynova/flydrive": "^1.0.2",
 		"@slynova/flydrive-gcs": "^1.0.2",
@@ -109,6 +109,7 @@
 		"nanoid": "^3.1.12",
 		"node-machine-id": "^1.1.12",
 		"nodemailer": "^6.4.11",
+		"openapi3-ts": "^2.0.0",
 		"ora": "^4.1.1",
 		"otplib": "^12.0.1",
 		"pino": "^6.4.1",
@@ -134,7 +135,7 @@
 	"devDependencies": {
 		"copyfiles": "^2.4.0",
 		"cross-env": "^7.0.2",
-		"ts-node-dev": "^1.0.0-pre.63",
+		"ts-node-dev": "^1.0.0-pre.64",
 		"typescript": "^4.0.3"
 	}
 }
