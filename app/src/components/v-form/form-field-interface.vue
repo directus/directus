@@ -10,7 +10,9 @@
 		<component
 			v-if="interfaceExists"
 			:is="
-				field.meta ? `interface-${field.meta.interface}` : `interface-${getDefaultInterfaceForType(field.type)}`
+				field.meta && field.meta.interface
+					? `interface-${field.meta.interface}`
+					: `interface-${getDefaultInterfaceForType(field.type)}`
 			"
 			v-bind="(field.meta && field.meta.options) || {}"
 			:disabled="disabled"

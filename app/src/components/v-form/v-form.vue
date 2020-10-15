@@ -106,7 +106,7 @@ export default defineComponent({
 		function useForm() {
 			const fields = computed(() => {
 				if (props.collection) {
-					return fieldsStore.getFieldsForCollection(props.collection)
+					return fieldsStore.getFieldsForCollection(props.collection);
 				}
 
 				if (props.fields) {
@@ -119,10 +119,11 @@ export default defineComponent({
 			const { formFields } = useFormFields(fields);
 
 			const formFieldsParsed = computed(() => {
-				if (props.primaryKey === '+') return formFields.value;
-
 				return formFields.value.map((field: Field) => {
-					if (field.schema?.is_primary_key === true) {
+					if (
+						field.schema?.has_auto_increment === true ||
+						(field.schema?.is_primary_key === true && props.primaryKey !== '+')
+					) {
 						const fieldClone = cloneDeep(field) as any;
 						if (!fieldClone.meta) fieldClone.meta = {};
 						fieldClone.meta.readonly = true;
