@@ -1,6 +1,6 @@
 <template>
 	<v-hover class="module-bar-avatar" v-slot="{ hover }">
-		<v-dialog v-model="signOutActive" @close="signOutActive = false">
+		<v-dialog v-model="signOutActive" @esc="signOutActive = false">
 			<template #activator="{ on }">
 				<v-button
 					@click="on"
@@ -75,6 +75,46 @@ export default defineComponent({
 .module-bar-avatar {
 	position: relative;
 
+	.v-avatar {
+		--v-button-color: var(--module-icon);
+		--v-button-color-hover: var(--white);
+		--v-avatar-color: var(--module-background);
+
+		overflow: visible;
+
+		.avatar-image {
+			opacity: 0.5;
+			transition: opacity var(--fast) var(--transition);
+		}
+
+		&.no-avatar {
+			&::after {
+				position: absolute;
+				top: -1px;
+				right: 8px;
+				left: 8px;
+				height: 2px;
+				background-color: var(--module-icon);
+				opacity: 0.25;
+				content: '';
+			}
+		}
+
+		.v-icon {
+			--v-icon-color: var(--module-icon);
+		}
+
+		&:hover {
+			.avatar-image {
+				opacity: 1;
+			}
+
+			.v-icon {
+				--v-icon-color: var(--white);
+			}
+		}
+	}
+
 	.sign-out {
 		--v-button-color: var(--module-icon);
 		--v-button-background-color: var(--module-background);
@@ -92,45 +132,6 @@ export default defineComponent({
 		&:hover {
 			.v-icon {
 				--v-icon-color: var(--warning);
-			}
-		}
-	}
-
-	.v-avatar {
-		overflow: visible;
-		--v-button-color: var(--module-icon);
-		--v-button-color-hover: var(--white);
-		--v-avatar-color: var(--module-background);
-
-		.avatar-image {
-			opacity: 0.5;
-			transition: opacity var(--fast) var(--transition);
-		}
-
-		&.no-avatar {
-			&:after {
-				content: "";
-				position: absolute;
-				left: 8px;
-				right: 8px;
-				top: -1px;
-				height: 2px;
-				background-color: var(--module-icon);
-				opacity: 0.25;
-			}
-		}
-
-		.v-icon {
-			--v-icon-color: var(--module-icon);
-		}
-
-		&:hover {
-			.avatar-image {
-				opacity: 1;
-			}
-
-			.v-icon {
-				--v-icon-color: var(--white);
 			}
 		}
 	}

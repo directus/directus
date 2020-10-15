@@ -7,7 +7,11 @@
 			</v-button>
 		</template>
 		<template #actions>
-			<v-dialog v-model="confirmDelete" v-if="[1, 2].includes(+primaryKey) === false" @close="confirmDelete = false">
+			<v-dialog
+				v-model="confirmDelete"
+				v-if="[1, 2].includes(+primaryKey) === false"
+				@esc="confirmDelete = false"
+			>
 				<template #activator="{ on }">
 					<v-button
 						rounded

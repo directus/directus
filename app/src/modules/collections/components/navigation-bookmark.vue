@@ -27,7 +27,7 @@
 			</v-list>
 		</v-menu>
 
-		<v-dialog v-model="renameActive" persistent @close="renameActive = false">
+		<v-dialog v-model="renameActive" persistent @esc="renameActive = false">
 			<v-card>
 				<v-card-title>{{ $t('rename_bookmark') }}</v-card-title>
 				<v-card-text>
@@ -40,7 +40,7 @@
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="deleteActive" persistent @close="deleteActive = false">
+		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
 			<v-card>
 				<v-card-title>{{ $t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
 				<v-card-actions>

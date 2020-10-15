@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="_active" @close="_active = false">
+	<v-dialog v-model="_active" @esc="_active = false">
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>

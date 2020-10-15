@@ -46,7 +46,7 @@
 			</v-menu>
 		</div>
 
-		<v-dialog v-model="confirmDelete" @close="confirmDelete = false">
+		<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 			<v-card>
 				<v-card-title>{{ $t('delete_comment') }}</v-card-title>
 				<v-card-text>{{ $t('delete_are_you_sure') }}</v-card-text>

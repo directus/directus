@@ -15,7 +15,7 @@
 				</v-list-item>
 			</v-list>
 		</v-menu>
-		<v-dialog v-model="deleteActive" @close="deleteActive = null">
+		<v-dialog v-model="deleteActive" @esc="deleteActive = null">
 			<v-card>
 				<v-card-title>{{ $t('delete_collection_are_you_sure') }}</v-card-title>
 				<v-card-actions>

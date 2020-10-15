@@ -1,5 +1,5 @@
 <template>
-	<v-modal v-model="_active" class="modal" :title="$t('editing_image')" persistent no-padding @close="_active = false">
+	<v-modal v-model="_active" class="modal" :title="$t('editing_image')" persistent no-padding @esc="_active = false">
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
@@ -12,9 +12,7 @@
 			<v-progress-circular indeterminate />
 		</div>
 
-		<v-notice type="error" v-else-if="error">
-			error
-		</v-notice>
+		<v-notice type="error" v-else-if="error">error</v-notice>
 
 		<div v-show="imageData && !loading && !error" class="editor-container">
 			<div class="editor">
@@ -102,12 +100,7 @@
 			<div class="dimensions" v-if="imageData">
 				<v-icon name="info_outline" />
 				{{ $n(imageData.width) }}x{{ $n(imageData.height) }}
-				<template
-					v-if="
-					(imageData.width !== newDimensions.width ||
-						imageData.height !== newDimensions.height)
-				"
-				>
+				<template v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height">
 					->
 					{{ $n(newDimensions.width) }}x{{ $n(newDimensions.height) }}
 				</template>

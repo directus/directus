@@ -11,7 +11,7 @@
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @close="confirmDelete = false">
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
 						rounded
@@ -42,7 +42,7 @@
 			<v-dialog
 				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
 				v-model="confirmArchive"
-				@close="confirmArchive = false"
+				@esc="confirmArchive = false"
 				:disabled="archiveAllowed === false"
 			>
 				<template #activator="{ on }">
@@ -130,7 +130,7 @@
 			/>
 		</div>
 
-		<v-dialog v-model="confirmLeave" @close="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 			<v-card>
 				<v-card-title>{{ $t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ $t('unsaved_changes_copy') }}</v-card-text>

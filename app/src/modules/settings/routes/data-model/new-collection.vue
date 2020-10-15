@@ -1,6 +1,12 @@
 <template>
-	<v-modal :title="$t('creating_new_collection')" :active="true" class="new-collection" persistent @close="$router.push('/settings/data-model')">
-		<v-dialog :active="saveError !== null" @toggle="saveError = null" @close="saveError = null">
+	<v-modal
+		:title="$t('creating_new_collection')"
+		:active="true"
+		class="new-collection"
+		persistent
+		@esc="$router.push('/settings/data-model')"
+	>
+		<v-dialog :active="saveError !== null" @toggle="saveError = null" @esc="saveError = null">
 			<v-card class="selectable">
 				<v-card-title>
 					{{ saveError && saveError.message }}

@@ -67,7 +67,7 @@
 			</v-list>
 		</v-menu>
 
-		<v-dialog :active="activeDialog === 'upload'" @close="activeDialog = null" @toggle="activeDialog = null">
+		<v-dialog :active="activeDialog === 'upload'" @esc="activeDialog = null" @toggle="activeDialog = null">
 			<v-card>
 				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
 				<v-card-text>
@@ -86,7 +86,12 @@
 			@input="setSelection"
 		/>
 
-		<v-dialog :active="activeDialog === 'url'" @toggle="activeDialog = null" @close="activeDialog = null" :persistent="urlLoading">
+		<v-dialog
+			:active="activeDialog === 'url'"
+			@toggle="activeDialog = null"
+			@esc="activeDialog = null"
+			:persistent="urlLoading"
+		>
 			<v-card>
 				<v-card-title>{{ $t('import_from_url') }}</v-card-title>
 				<v-card-text>

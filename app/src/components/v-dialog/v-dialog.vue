@@ -36,7 +36,7 @@ export default defineComponent({
 
 		useShortcut('escape', (event, cancelNext) => {
 			if (_active.value) {
-				emit('close')
+				emit('esc');
 				cancelNext();
 			}
 		});

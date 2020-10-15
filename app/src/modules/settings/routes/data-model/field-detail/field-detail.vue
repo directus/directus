@@ -2,7 +2,7 @@
 	<v-dialog
 		persistent
 		:active="true"
-		@close="cancelField"
+		@esc="cancelField"
 		v-if="localType === 'translations' && translationsManual === false && field === '+'"
 	>
 		<v-card class="auto-translations">
@@ -32,7 +32,7 @@
 		v-else
 		:active="true"
 		@toggle="cancelField"
-		@close="cancelField"
+		@esc="cancelField"
 		:title="
 			field === '+'
 				? $t('creating_new_field', { collection: collectionInfo.name })
