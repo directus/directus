@@ -16,12 +16,28 @@
 }
 ```
 
-### Example
+### Examples
 
 ```json
 {
 	"title": {
 		"_contains": "Directus"
+	}
+}
+```
+
+```json
+{
+	"owner": {
+		"_eq": "$CURRENT_USER"
+	}
+}
+```
+
+```json
+{
+	"datetime": {
+		"_lte": "$NOW"
 	}
 }
 ```
