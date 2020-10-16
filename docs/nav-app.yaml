@@ -40,6 +40,8 @@
     to: "/guides/collections"
   - name: Fields
     to: "/guides/fields"
+  - name: Files
+    to: "/guides/files"
   - name: Presets
     to: "/guides/presets"
   - name: Projects
