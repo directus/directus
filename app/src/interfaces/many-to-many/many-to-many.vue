@@ -38,7 +38,7 @@
 			</v-button>
 		</div>
 
-		<modal-item
+		<drawer-item
 			v-if="!disabled"
 			:active="editModalActive"
 			:collection="relationInfo.junctionCollection"
@@ -50,7 +50,7 @@
 			@update:active="cancelEdit"
 		/>
 
-		<modal-collection
+		<drawer-collection
 			v-if="!disabled"
 			:active.sync="selectModalActive"
 			:collection="relationCollection.collection"
@@ -64,8 +64,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
-import ModalItem from '@/views/private/components/modal-item';
-import ModalCollection from '@/views/private/components/modal-collection';
+import DrawerItem from '@/views/private/components/drawer-item';
+import DrawerCollection from '@/views/private/components/drawer-collection';
 import { get } from 'lodash';
 
 import useActions from './use-actions';
@@ -75,7 +75,7 @@ import useEdit from './use-edit';
 import useSelection from './use-selection';
 
 export default defineComponent({
-	components: { ModalItem, ModalCollection },
+	components: { DrawerItem, DrawerCollection },
 	props: {
 		value: {
 			type: Array as PropType<(number | string | Record<string, any>)[] | null>,

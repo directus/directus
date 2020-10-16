@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h2 class="type-title">{{ $t('schema_field_title') }}</h2>
+		<v-notice type="info">{{ $t('schema_field_title') }}</v-notice>
 
 		<div class="form">
 			<div class="field half-left" v-if="fieldData.meta">
@@ -102,5 +102,9 @@ export default defineComponent({
 
 .required {
 	--v-icon-color: var(--primary);
+}
+
+.v-notice {
+	margin-bottom: 36px;
 }
 </style>

@@ -1,6 +1,8 @@
 <template>
 	<div>
-		<h2 class="type-title">{{ $t('schema_setup_title') }}</h2>
+		<v-notice type="info">
+			{{ $t('schema_setup_title') }}
+		</v-notice>
 
 		<div class="form">
 			<div class="field">
@@ -392,10 +394,6 @@ export default defineComponent({
 @import '@/styles/mixins/breakpoint';
 @import '@/styles/mixins/form-grid';
 
-.type-title {
-	margin-bottom: 32px;
-}
-
 .form {
 	--v-form-vertical-gap: 32px;
 	--v-form-horizontal-gap: 32px;
@@ -415,5 +413,9 @@ export default defineComponent({
 	display: grid;
 	grid-gap: 12px;
 	grid-template-columns: 1fr 1fr;
+}
+
+.v-notice {
+	margin-bottom: 36px;
 }
 </style>

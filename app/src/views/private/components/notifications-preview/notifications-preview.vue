@@ -17,7 +17,7 @@
 			</div>
 		</transition-expand>
 
-		<drawer-button
+		<sidebar-button
 			:active="active"
 			@click="$emit('input', !active)"
 			v-tooltip.left="$t('notifications')"
@@ -25,23 +25,23 @@
 			icon="notifications"
 		>
 			{{ $t('notifications') }}
-		</drawer-button>
+		</sidebar-button>
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
-import DrawerButton from '../drawer-button';
+import SidebarButton from '../sidebar-button';
 import NotificationItem from '../notification-item';
 import { useNotificationsStore } from '@/stores/';
 
 export default defineComponent({
-	components: { DrawerButton, NotificationItem },
+	components: { SidebarButton, NotificationItem },
 	model: {
 		prop: 'active',
 	},
 	props: {
-		drawerOpen: {
+		sidebarOpen: {
 			type: Boolean,
 			default: false,
 		},
@@ -82,7 +82,7 @@ export default defineComponent({
 	width: 100%;
 }
 
-.drawer-button {
+.sidebar-button {
 	background-color: var(--background-normal-alt);
 }
 

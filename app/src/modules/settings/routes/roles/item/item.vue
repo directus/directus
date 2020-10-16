@@ -71,8 +71,8 @@
 			/>
 		</div>
 
-		<template #drawer>
-			<role-info-drawer-detail :role="item" />
+		<template #sidebar>
+			<role-info-sidebar-detail :role="item" />
 			<revisions-drawer-detail collection="directus_roles" :primary-key="primaryKey" />
 		</template>
 	</private-view>
@@ -86,7 +86,7 @@ import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import { useUserStore } from '@/stores/';
-import RoleInfoDrawerDetail from './components/role-info-drawer-detail.vue';
+import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
 
 type Values = {
@@ -95,7 +95,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'roles-item',
-	components: { SettingsNavigation, RevisionsDrawerDetail, RoleInfoDrawerDetail, PermissionsOverview },
+	components: { SettingsNavigation, RevisionsDrawerDetail, RoleInfoSidebarDetail, PermissionsOverview },
 	props: {
 		primaryKey: {
 			type: String,

@@ -1,14 +1,14 @@
 <template>
-	<v-modal active title="Activity Item" @toggle="close" @esc="close">
+	<v-drawer active title="Activity Item" @toggle="close" @cancel="close">
 		<v-progress-circular indeterminate v-if="loading" />
 
-		<template v-else-if="error">
+		<div class="content" v-else-if="error">
 			<v-notice type="danger">
 				{{ error }}
 			</v-notice>
-		</template>
+		</div>
 
-		<template v-else>
+		<div class="content" v-else>
 			<!-- @TODO add final design -->
 			<p class="type-label">User:</p>
 			<user-popover v-if="item.user" :user="item.user.id">
@@ -32,17 +32,18 @@
 
 			<p class="type-label">Item:</p>
 			<p>{{ item.item }}</p>
-		</template>
+		</div>
 
-		<template #footer>
-			<v-button v-if="openItemLink" :to="openItemLink">
-				<v-icon name="launch" left />
-				{{ $t('open') }}
+		<template #actions>
+			<v-button v-if="openItemLink" :to="openItemLink" icon rounded v-tooltip.bottom="$t('open')">
+				<v-icon name="launch" />
 			</v-button>
 
-			<v-button to="/activity">{{ $t('done') }}</v-button>
+			<v-button to="/activity" icon rounded v-tooltip.bottom="$t('done')">
+				<v-icon name="check" />
+			</v-button>
 		</template>
-	</v-modal>
+	</v-drawer>
 </template>
 
 <script lang="ts">
@@ -136,5 +137,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 .type-label:not(:first-child) {
 	margin-top: 24px;
+}
+
+.content {
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: var(--content-padding);
 }
 </style>

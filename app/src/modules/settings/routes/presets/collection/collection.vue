@@ -84,8 +84,8 @@
 			</v-table>
 		</div>
 
-		<template #drawer>
-			<presets-info-drawer-detail />
+		<template #sidebar>
+			<presets-info-sidebar-detail />
 		</template>
 	</private-view>
 </template>
@@ -102,7 +102,7 @@ import { getLayouts } from '@/layouts';
 import { TranslateResult } from 'vue-i18n';
 import router from '@/router';
 import ValueNull from '@/views/private/components/value-null';
-import PresetsInfoDrawerDetail from './components/presets-info-drawer-detail.vue';
+import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 
 type PresetRaw = {
 	id: number;
@@ -122,7 +122,7 @@ type Preset = {
 };
 
 export default defineComponent({
-	components: { SettingsNavigation, ValueNull, PresetsInfoDrawerDetail },
+	components: { SettingsNavigation, ValueNull, PresetsInfoSidebarDetail },
 	setup() {
 		const layouts = getLayouts();
 		const collectionsStore = useCollectionsStore();

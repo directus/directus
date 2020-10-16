@@ -21,8 +21,8 @@
 			<v-form :initial-values="initialValues" v-model="edits" :fields="fields" :primary-key="1" />
 		</div>
 
-		<template #drawer>
-			<project-info-drawer-detail />
+		<template #sidebar>
+			<project-info-sidebar-detail />
 		</template>
 	</private-view>
 </template>
@@ -32,11 +32,11 @@ import { defineComponent, ref, computed } from '@vue/composition-api';
 import SettingsNavigation from '../../components/navigation.vue';
 import useCollection from '@/composables/use-collection';
 import { useSettingsStore } from '@/stores';
-import ProjectInfoDrawerDetail from './components/project-info-drawer-detail.vue';
+import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 import { clone } from 'lodash';
 
 export default defineComponent({
-	components: { SettingsNavigation, ProjectInfoDrawerDetail },
+	components: { SettingsNavigation, ProjectInfoSidebarDetail },
 	setup() {
 		const settingsStore = useSettingsStore();
 

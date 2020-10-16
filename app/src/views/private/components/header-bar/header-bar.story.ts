@@ -22,8 +22,8 @@ export const basic = () =>
 			title: {
 				default: text('Title', 'Hello World'),
 			},
-			showDrawerToggle: {
-				default: boolean('Show Drawer Toggle', false),
+			showSidebarToggle: {
+				default: boolean('Show Sidebar Toggle', false),
 			},
 			dense: {
 				default: boolean('Dense', false),
@@ -31,19 +31,19 @@ export const basic = () =>
 		},
 		setup() {
 			const navToggle = action('update:nav-open');
-			const drawerToggle = action('update:drawer-open');
+			const sidebarToggle = action('update:sidebar-open');
 
-			return { navToggle, drawerToggle };
+			return { navToggle, sidebarToggle };
 		},
 		template: `
 			<header-bar
 				:title="title"
 				:nav-open="false"
-				:drawer-open="false"
-				:show-drawer-toggle="showDrawerToggle"
+				:sidebar-open="false"
+				:show-sidebar-toggle="showSidebarToggle"
 				:dense="dense"
 				@update:nav-open="navToggle"
-				@update:drawer-open="drawerToggle"
+				@update:sidebar-open="sidebarToggle"
 			/>
 		`,
 	});
@@ -56,8 +56,8 @@ export const withBreadcrumb = () =>
 			title: {
 				default: text('Title', 'Hello World'),
 			},
-			showDrawerToggle: {
-				default: boolean('Show Drawer Toggle', false),
+			showSidebarToggle: {
+				default: boolean('Show Sidebar Toggle', false),
 			},
 			dense: {
 				default: boolean('Dense', false),
@@ -65,19 +65,19 @@ export const withBreadcrumb = () =>
 		},
 		setup() {
 			const navToggle = action('update:nav-open');
-			const drawerToggle = action('update:drawer-open');
+			const sidebarToggle = action('update:sidebar-open');
 
-			return { navToggle, drawerToggle };
+			return { navToggle, sidebarToggle };
 		},
 		template: `
 			<header-bar
 				:title="title"
 				:nav-open="false"
-				:drawer-open="false"
-				:show-drawer-toggle="showDrawerToggle"
+				:sidebar-open="false"
+				:show-sidebar-toggle="showSidebarToggle"
 				:dense="dense"
 				@update:nav-open="navToggle"
-				@update:drawer-open="drawerToggle"
+				@update:sidebar-open="sidebarToggle"
 			>
 				<template #headline>
 					<v-breadcrumb :items="[
@@ -103,8 +103,8 @@ export const withBackButton = () =>
 			title: {
 				default: text('Title', 'Hello World'),
 			},
-			showDrawerToggle: {
-				default: boolean('Show Drawer Toggle', false),
+			showSidebarToggle: {
+				default: boolean('Show Sidebar Toggle', false),
 			},
 			dense: {
 				default: boolean('Dense', false),
@@ -112,19 +112,19 @@ export const withBackButton = () =>
 		},
 		setup() {
 			const navToggle = action('update:nav-open');
-			const drawerToggle = action('update:drawer-open');
+			const sidebarToggle = action('update:sidebar-open');
 
-			return { navToggle, drawerToggle };
+			return { navToggle, sidebarToggle };
 		},
 		template: `
 			<header-bar
 				:title="title"
 				:nav-open="false"
-				:drawer-open="false"
-				:show-drawer-toggle="showDrawerToggle"
+				:sidebar-open="false"
+				:show-sidebar-toggle="showSidebarToggle"
 				:dense="dense"
 				@update:nav-open="navToggle"
-				@update:drawer-open="drawerToggle"
+				@update:sidebar-open="sidebarToggle"
 			>
 				<template #title-outer:prepend>
 					<v-button icon rounded secondary>
@@ -146,8 +146,8 @@ export const slots = () => {
 			title: {
 				default: text('Title', 'Hello World'),
 			},
-			showDrawerToggle: {
-				default: boolean('Show Drawer Toggle', false),
+			showSidebarToggle: {
+				default: boolean('Show Sidebar Toggle', false),
 			},
 			dense: {
 				default: boolean('Dense', false),
@@ -155,19 +155,19 @@ export const slots = () => {
 		},
 		setup() {
 			const navToggle = action('update:nav-open');
-			const drawerToggle = action('update:drawer-open');
+			const sidebarToggle = action('update:sidebar-open');
 
-			return { navToggle, drawerToggle };
+			return { navToggle, sidebarToggle };
 		},
 		template: `
 			<header-bar
 				:title="title"
 				:nav-open="false"
-				:drawer-open="false"
-				:show-drawer-toggle="showDrawerToggle"
+				:sidebar-open="false"
+				:show-sidebar-toggle="showSidebarToggle"
 				:dense="dense"
 				@update:nav-open="navToggle"
-				@update:drawer-open="drawerToggle"
+				@update:sidebar-open="sidebarToggle"
 			>
 				<template #title-outer:prepend>
 					<slot-label>title-outer:prepend</slot-label>
@@ -205,8 +205,8 @@ export const withActions = () =>
 			title: {
 				default: text('Title', 'Hello World'),
 			},
-			showDrawerToggle: {
-				default: boolean('Show Drawer Toggle', false),
+			showSidebarToggle: {
+				default: boolean('Show Sidebar Toggle', false),
 			},
 			dense: {
 				default: boolean('Dense', false),
@@ -214,19 +214,19 @@ export const withActions = () =>
 		},
 		setup() {
 			const navToggle = action('update:nav-open');
-			const drawerToggle = action('update:drawer-open');
+			const sidebarToggle = action('update:sidebar-open');
 
-			return { navToggle, drawerToggle };
+			return { navToggle, sidebarToggle };
 		},
 		template: `
 			<header-bar
 				:title="title"
 				:nav-open="false"
-				:drawer-open="false"
-				:show-drawer-toggle="showDrawerToggle"
+				:sidebar-open="false"
+				:show-sidebar-toggle="showSidebarToggle"
 				:dense="dense"
 				@update:nav-open="navToggle"
-				@update:drawer-open="drawerToggle"
+				@update:sidebar-open="sidebarToggle"
 			>
 				<template #actions>
 					<v-button rounded icon style="--v-button-background-color: var(--success);">

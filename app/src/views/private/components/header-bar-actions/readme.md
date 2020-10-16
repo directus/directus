@@ -33,7 +33,7 @@ n/a
 ## Events
 | Event           | Description                                           | Value |
 |-----------------|-------------------------------------------------------|-------|
-| `toggle:drawer` | Emitted when the user clicks the toggle drawer button | --    |
+| `toggle:sidebar` | Emitted when the user clicks the toggle sidebar button | --    |
 
 ## CSS Variables
 n/a

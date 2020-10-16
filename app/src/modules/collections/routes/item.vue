@@ -176,10 +176,10 @@
 			</v-card>
 		</v-dialog>
 
-		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
-			</drawer-detail>
+			</sidebar-detail>
 			<revisions-drawer-detail
 				v-if="
 					collectionInfo.meta &&
@@ -192,7 +192,7 @@
 				ref="revisionsDrawerDetail"
 				@revert="refresh"
 			/>
-			<comments-drawer-detail
+			<comments-sidebar-detail
 				v-if="
 					collectionInfo.meta &&
 					collectionInfo.meta.singleton === false &&
@@ -215,7 +215,7 @@ import router from '@/router';
 import CollectionsNotFound from './not-found.vue';
 import useCollection from '@/composables/use-collection';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import CommentsDrawerDetail from '@/views/private/components/comments-drawer-detail';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import i18n from '@/lang';
@@ -236,7 +236,7 @@ export default defineComponent({
 		CollectionsNavigation,
 		CollectionsNotFound,
 		RevisionsDrawerDetail,
-		CommentsDrawerDetail,
+		CommentsSidebarDetail,
 		SaveOptions,
 	},
 	props: {

@@ -1,10 +1,10 @@
 <template>
-	<v-modal
+	<v-drawer
 		:title="$t('creating_new_collection')"
 		:active="true"
 		class="new-collection"
 		persistent
-		@esc="$router.push('/settings/data-model')"
+		@cancel="$router.push('/settings/data-model')"
 	>
 		<v-dialog :active="saveError !== null" @toggle="saveError = null" @esc="saveError = null">
 			<v-card class="selectable">
@@ -29,9 +29,10 @@
 			</v-tabs>
 		</template>
 
-		<v-tabs-items v-model="currentTab">
+		<v-tabs-items class="content" v-model="currentTab">
 			<v-tab-item value="collection">
-				<h2 class="type-title">{{ $t('creating_collection_info') }}</h2>
+				<v-notice type="info">{{ $t('creating_collection_info') }}</v-notice>
+
 				<div class="grid">
 					<div>
 						<div class="type-label">
@@ -83,7 +84,8 @@
 				</div>
 			</v-tab-item>
 			<v-tab-item value="system">
-				<h2 class="type-title">{{ $t('creating_collection_system') }}</h2>
+				<v-notice type="info">{{ $t('creating_collection_system') }}</v-notice>
+
 				<div class="grid system">
 					<div v-for="(info, field) in systemFields" :key="field">
 						<div class="type-label">{{ $t(info.label) }}</div>
@@ -106,23 +108,29 @@
 			</v-tab-item>
 		</v-tabs-items>
 
-		<template #footer>
-			<v-button secondary to="/settings/data-model">
-				{{ $t('cancel') }}
-			</v-button>
-			<div class="spacer" />
+		<template #actions>
 			<v-button
 				:disabled="!collectionName || collectionName.length === 0"
 				v-if="currentTab[0] === 'collection'"
 				@click="currentTab = ['system']"
+				v-tooltip.bottom="$t('next')"
+				icon
+				rounded
 			>
-				{{ $t('next') }}
+				<v-icon name="arrow_forward" />
 			</v-button>
-			<v-button v-if="currentTab[0] === 'system'" @click="save" :loading="saving">
-				{{ $t('finish_setup') }}
+			<v-button
+				v-if="currentTab[0] === 'system'"
+				@click="save"
+				:loading="saving"
+				v-tooltip.bottom="$t('finish_setup')"
+				icon
+				rounded
+			>
+				<v-icon name="check" />
 			</v-button>
 		</template>
-	</v-modal>
+	</v-drawer>
 </template>
 
 <script lang="ts">
@@ -468,5 +476,15 @@ export default defineComponent({
 
 .required {
 	color: var(--primary);
+}
+
+.content {
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: var(--content-padding);
+}
+
+.v-notice {
+	margin-bottom: 36px;
 }
 </style>

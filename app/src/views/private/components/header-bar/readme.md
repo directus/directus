@@ -43,7 +43,7 @@ put any view critical actions in this slot.
 | Event           | Description                              | Value |
 |-----------------|------------------------------------------|-------|
 | `toggle:nav`    | When the nav toggle button is clicked    | --    |
-| `toggle:drawer` | When the drawer toggle button is clicked | --    |
+| `toggle:sidebar` | When the sidebar toggle button is clicked | --    |
 
 ## CSS Variables
 n/a

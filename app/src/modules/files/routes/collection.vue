@@ -126,12 +126,12 @@
 
 		<router-view name="addNew" :preset="queryFilters" @upload="refresh" />
 
-		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_files_collection'))" />
-			</drawer-detail>
-			<layout-drawer-detail @input="layout = $event" :value="layout" />
-			<portal-target name="drawer" />
+			</sidebar-detail>
+			<layout-sidebar-detail @input="layout = $event" :value="layout" />
+			<portal-target name="sidebar" />
 		</template>
 
 		<template v-if="showDropEffect">
@@ -150,8 +150,8 @@ import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-preset';
-import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
-import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
+import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import AddFolder from '../components/add-folder.vue';
 import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
@@ -171,7 +171,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'files-collection',
-	components: { FilesNavigation, FilterDrawerDetail, LayoutDrawerDetail, AddFolder, SearchInput, FolderPicker },
+	components: { FilesNavigation, FilterSidebarDetail, LayoutSidebarDetail, AddFolder, SearchInput, FolderPicker },
 	props: {
 		queryFilters: {
 			type: Object as PropType<Record<string, string>>,

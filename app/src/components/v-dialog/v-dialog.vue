@@ -3,7 +3,7 @@
 		<slot name="activator" v-bind="{ on: () => (_active = true) }" />
 
 		<portal to="dialog-outlet">
-			<div v-if="_active" class="container" :class="[className]" :key="id">
+			<div v-if="_active" class="container" :class="[className, placement]" :key="id">
 				<v-overlay active absolute @click="emitToggle" />
 				<slot />
 			</div>
@@ -29,6 +29,11 @@ export default defineComponent({
 		persistent: {
 			type: Boolean,
 			default: false,
+		},
+		placement: {
+			type: String,
+			default: 'center',
+			validator: (val: string) => ['center', 'right'].includes(val),
 		},
 	},
 	setup(props, { emit }) {
@@ -92,11 +97,32 @@ export default defineComponent({
 	left: 0;
 	z-index: 500;
 	display: flex;
-	align-items: center;
-	justify-content: center;
 	width: 100%;
 	height: 100%;
-	transition: opacity var(--medium) var(--transition);
+
+	::v-deep > * {
+		z-index: 2;
+		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
+	}
+
+	&.center {
+		align-items: center;
+		justify-content: center;
+
+		&.nudge > ::v-deep *:not(:first-child) {
+			animation: nudge 200ms;
+		}
+	}
+
+	&.right {
+		align-items: center;
+		justify-content: flex-end;
+
+		&.nudge > ::v-deep *:not(:first-child) {
+			transform-origin: right;
+			animation: shake 200ms;
+		}
+	}
 
 	::v-deep .v-card {
 		--v-card-min-width: 540px;
@@ -112,15 +138,6 @@ export default defineComponent({
 	.v-overlay {
 		--v-overlay-z-index: 1;
 	}
-
-	&.nudge {
-		animation: nudge 200ms;
-	}
-
-	::v-deep > * {
-		z-index: 2;
-		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
-	}
 }
 
 @keyframes nudge {
@@ -134,6 +151,20 @@ export default defineComponent({
 
 	100% {
 		transform: scale(1);
+	}
+}
+
+@keyframes shake {
+	0% {
+		transform: scaleX(1);
+	}
+
+	50% {
+		transform: scaleX(0.98);
+	}
+
+	100% {
+		transform: scaleX(1);
 	}
 }
 </style>

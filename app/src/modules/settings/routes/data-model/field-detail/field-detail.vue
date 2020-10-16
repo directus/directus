@@ -28,11 +28,11 @@
 		</v-card>
 	</v-dialog>
 
-	<v-modal
+	<v-drawer
 		v-else
 		:active="true"
 		@toggle="cancelField"
-		@esc="cancelField"
+		@cancel="cancelField"
 		:title="
 			field === '+'
 				? $t('creating_new_field', { collection: collectionInfo.name })
@@ -45,49 +45,51 @@
 			<setup-tabs :current.sync="currentTab" :tabs="tabs" :type="localType" />
 		</template>
 
-		<setup-schema
-			v-if="currentTab[0] === 'schema'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
+		<div class="content">
+			<setup-schema
+				v-if="currentTab[0] === 'schema'"
+				:is-existing="field !== '+'"
+				:collection="collection"
+				:type="localType"
+			/>
 
-		<setup-field
-			v-if="currentTab[0] === 'field'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
+			<setup-field
+				v-if="currentTab[0] === 'field'"
+				:is-existing="field !== '+'"
+				:collection="collection"
+				:type="localType"
+			/>
 
-		<setup-relationship
-			v-if="currentTab[0] === 'relationship'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
+			<setup-relationship
+				v-if="currentTab[0] === 'relationship'"
+				:is-existing="field !== '+'"
+				:collection="collection"
+				:type="localType"
+			/>
 
-		<setup-translations
-			v-if="currentTab[0] === 'translations'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
+			<setup-translations
+				v-if="currentTab[0] === 'translations'"
+				:is-existing="field !== '+'"
+				:collection="collection"
+				:type="localType"
+			/>
 
-		<setup-interface
-			v-if="currentTab[0] === 'interface'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
+			<setup-interface
+				v-if="currentTab[0] === 'interface'"
+				:is-existing="field !== '+'"
+				:collection="collection"
+				:type="localType"
+			/>
 
-		<setup-display
-			v-if="currentTab[0] === 'display'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
+			<setup-display
+				v-if="currentTab[0] === 'display'"
+				:is-existing="field !== '+'"
+				:collection="collection"
+				:type="localType"
+			/>
+		</div>
 
-		<template #footer>
+		<template #actions>
 			<setup-actions
 				:saving="saving"
 				:collection="collection"
@@ -98,7 +100,7 @@
 				@cancel="cancelField"
 			/>
 		</template>
-	</v-modal>
+	</v-drawer>
 </template>
 
 <script lang="ts">
@@ -403,5 +405,11 @@ export default defineComponent({
 	.manual-toggle {
 		color: var(--primary);
 	}
+}
+
+.content {
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: var(--content-padding);
 }
 </style>

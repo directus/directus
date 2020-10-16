@@ -139,10 +139,10 @@ export default defineComponent({
 			const gridClass = computed<string | null>(() => {
 				if (el.value === null) return null;
 
-				if (width.value > 588 && width.value <= 792) {
-					return 'grid';
-				} else {
+				if (width.value > 792) {
 					return 'grid with-fill';
+				} else {
+					return 'grid';
 				}
 
 				return null;

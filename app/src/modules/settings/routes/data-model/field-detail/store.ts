@@ -474,7 +474,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 								name: 'German',
 							},
 							{
-								code: 'fr-Fr',
+								code: 'fr-FR',
 								name: 'French',
 							},
 							{
