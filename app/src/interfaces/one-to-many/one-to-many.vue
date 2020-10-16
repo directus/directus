@@ -5,10 +5,12 @@
 	<div class="one-to-many" v-else>
 		<v-table
 			:loading="loading"
-			:items.sync="displayItems"
+			:items="sortedItems || items"
 			:headers.sync="tableHeaders"
 			show-resize
 			inline
+			:sort.sync="sort"
+			@update:items="sortItems($event)"
 			@click:row="editItem"
 			:disabled="disabled"
 			:show-manual-sort="sortField !== null"
@@ -69,9 +71,10 @@ import useCollection from '@/composables/use-collection';
 import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';
 import ModalItem from '@/views/private/components/modal-item';
 import ModalCollection from '@/views/private/components/modal-collection';
+import { Sort } from '@/components/v-table/types';
 import { Filter, Field } from '@/types';
 import { Header } from '@/components/v-table/types';
-import { isEqual } from 'lodash';
+import { isEqual, sortBy } from 'lodash';
 
 export default defineComponent({
 	components: { ModalItem, ModalCollection },
@@ -96,6 +99,10 @@ export default defineComponent({
 			type: Array as PropType<string[]>,
 			default: () => [],
 		},
+		sortField: {
+			type: String,
+			default: null,
+		},
 		disabled: {
 			type: Boolean,
 			default: false,
@@ -106,14 +113,11 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
-		const sortField = computed(() => {
-			return relatedCollection.value.meta?.sort_field || null;
-		});
-
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
-		const { tableHeaders, displayItems, loading, error } = useTable();
+		const { tableHeaders, items, loading, error } = useTable();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
+		const { sort, sortItems, sortedItems } = useSort();
 
 		return {
 			relation,
@@ -128,9 +132,11 @@ export default defineComponent({
 			stageSelection,
 			selectModalActive,
 			deleteItem,
-			displayItems,
+			items,
+			sortItems,
 			selectionFilters,
-			sortField,
+			sort,
+			sortedItems,
 		};
 
 		function getItem(id: string | number) {
@@ -207,6 +213,31 @@ export default defineComponent({
 			);
 		}
 
+		function useSort() {
+			const sort = ref<Sort>({ by: props.sortField || props.fields[0], desc: false });
+
+			function sortItems(newItems: Record<string, any>[]) {
+				if (props.sortField === null) return;
+
+				const itemsSorted = newItems.map((item, i) => {
+					item[props.sortField] = i;
+					return item;
+				});
+
+				emit('input', itemsSorted);
+			}
+
+			const sortedItems = computed(() => {
+				if (props.sortField === null || sort.value.by !== props.sortField) return null;
+
+				const desc = sort.value.desc;
+				const sorted = sortBy(items.value, [props.sortField]);
+				return desc ? sorted.reverse() : sorted;
+			});
+
+			return { sort, sortItems, sortedItems };
+		}
+
 		/**
 		 * Holds info about the current relationship, like related collection, primary key field
 		 * of the other collection etc
@@ -230,7 +261,7 @@ export default defineComponent({
 			// values if it needs to. This allows the user to manually resize the columns for example
 			const tableHeaders = ref<Header[]>([]);
 			const loading = ref(false);
-			const displayItems = ref<Record<string, any>[]>([]);
+			const items = ref<Record<string, any>[]>([]);
 			const error = ref(null);
 
 			watch(
@@ -245,8 +276,8 @@ export default defineComponent({
 						fields.push(pkField);
 					}
 
-					if (sortField.value !== null && fields.includes(sortField.value) === false)
-						fields.push(sortField.value);
+					if (props.sortField !== null && fields.includes(props.sortField) === false)
+						fields.push(props.sortField);
 
 					try {
 						const endpoint = relatedCollection.value.collection.startsWith('directus_')
@@ -271,7 +302,7 @@ export default defineComponent({
 						const updatedItems = getUpdatedItems();
 						const newItems = getNewItems();
 
-						displayItems.value = existingItems
+						items.value = existingItems
 							.map((item) => {
 								const updatedItem = updatedItems.find((updated) => updated[pkField] === item[pkField]);
 								if (updatedItem !== undefined) return updatedItem;
@@ -321,7 +352,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { tableHeaders, displayItems, loading, error };
+			return { tableHeaders, items, loading, error };
 		}
 
 		function useEdits() {
@@ -386,11 +417,11 @@ export default defineComponent({
 			const selectModalActive = ref(false);
 
 			const selectedPrimaryKeys = computed<(number | string)[]>(() => {
-				if (displayItems.value === null) return [];
+				if (items.value === null) return [];
 
 				const pkField = relatedPrimaryKeyField.value.field;
 
-				return displayItems.value
+				return items.value
 					.filter((currentItem) => pkField in currentItem)
 					.map((currentItem) => currentItem[pkField]);
 			});
