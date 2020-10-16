@@ -8,6 +8,7 @@
 			<v-button class="cancel" @click="$emit('cancel')" icon rounded secondary v-tooltip.bottom="$t('cancel')">
 				<v-icon name="close" />
 			</v-button>
+
 			<!-- <header class="header">
 				<v-icon class="menu-toggle" name="menu" @click="sidebarActive = !sidebarActive" />
 				<h2 class="title">{{ title }}</h2>
@@ -29,6 +30,21 @@
 					<slot name="sidebar" />
 				</nav>
 				<main ref="mainEl" class="main">
+					<header-bar :title="title">
+						<template #headline>
+							<slot name="subtitle">
+								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
+							</slot>
+						</template>
+						<template #title-outer:prepend>
+							<v-button class="header-icon" rounded icon secondary disabled>
+								<v-icon :name="icon" />
+							</v-button>
+						</template>
+						<template #actions><slot name="actions" /></template>
+						<template #title:append><slot name="header:append" /></template>
+					</header-bar>
+
 					<slot />
 				</main>
 			</div>
@@ -38,8 +54,12 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, provide } from '@vue/composition-api';
+import HeaderBar from '@/views/private/components/header-bar/header-bar.vue';
 
 export default defineComponent({
+	components: {
+		HeaderBar,
+	},
 	model: {
 		prop: 'active',
 		event: 'toggle',
@@ -64,6 +84,10 @@ export default defineComponent({
 		noPadding: {
 			type: Boolean,
 			default: false,
+		},
+		icon: {
+			type: String,
+			default: 'box',
 		},
 	},
 	setup(props, { emit }) {
@@ -116,36 +140,16 @@ body {
 		flex-grow: 1;
 	}
 
-	// .header {
-	// 	display: flex;
-	// 	flex-shrink: 0;
-	// 	align-items: center;
-	// 	height: 60px;
-	// 	padding: 0 16px;
-	// 	border-bottom: 2px solid var(--background-normal);
+	.header-icon {
+		--v-button-background-color: var(--background-normal);
+		--v-button-background-color-activated: var(--background-normal);
+		--v-button-background-color-hover: var(--background-normal-alt);
+		--v-button-color-disabled: var(--foreground-normal);
+	}
 
-	// 	.title {
-	// 		margin-right: 12px;
-	// 		font-size: 16px;
-	// 	}
-
-	// 	.subtitle {
-	// 		color: var(--foreground-subdued);
-	// 		font-size: 16px;
-	// 	}
-
-	// 	.menu-toggle {
-	// 		margin-right: 8px;
-
-	// 		@include breakpoint(medium) {
-	// 			display: none;
-	// 		}
-	// 	}
-
-	// 	@include breakpoint(medium) {
-	// 		padding: 0 24px;
-	// 	}
-	// }
+	.header-bar {
+		padding: 0 !important;
+	}
 
 	.content {
 		position: relative;
@@ -191,10 +195,12 @@ body {
 		.main {
 			flex-grow: 1;
 			padding: 16px 16px 32px;
+			padding-top: 0;
 			overflow: auto;
 
 			@include breakpoint(medium) {
 				padding: 32px;
+				padding-top: 0;
 			}
 		}
 

@@ -591,12 +591,12 @@ export default defineComponent({
 	--v-button-background-color-hover: var(--background-normal-alt);
 }
 
-.layout {
-	--layout-offset-top: 64px;
-}
-
 .header-icon {
 	--v-button-color-disabled: var(--foreground-normal);
+}
+
+.layout {
+	--layout-offset-top: 64px;
 }
 
 .bookmark-controls {
