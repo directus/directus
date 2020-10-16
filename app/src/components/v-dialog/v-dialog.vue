@@ -99,16 +99,29 @@ export default defineComponent({
 	display: flex;
 	width: 100%;
 	height: 100%;
-	transition: opacity var(--medium) var(--transition);
+
+	::v-deep > * {
+		z-index: 2;
+		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
+	}
 
 	&.center {
 		align-items: center;
 		justify-content: center;
+
+		&.nudge > ::v-deep *:not(:first-child) {
+			animation: nudge 200ms;
+		}
 	}
 
 	&.right {
 		align-items: center;
 		justify-content: flex-end;
+
+		&.nudge > ::v-deep *:not(:first-child) {
+			transform-origin: right;
+			animation: shake 200ms;
+		}
 	}
 
 	::v-deep .v-card {
@@ -125,15 +138,6 @@ export default defineComponent({
 	.v-overlay {
 		--v-overlay-z-index: 1;
 	}
-
-	&.nudge {
-		animation: nudge 200ms;
-	}
-
-	::v-deep > * {
-		z-index: 2;
-		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
-	}
 }
 
 @keyframes nudge {
@@ -147,6 +151,20 @@ export default defineComponent({
 
 	100% {
 		transform: scale(1);
+	}
+}
+
+@keyframes shake {
+	0% {
+		transform: scaleX(1);
+	}
+
+	50% {
+		transform: scaleX(0.98);
+	}
+
+	100% {
+		transform: scaleX(1);
 	}
 }
 </style>
