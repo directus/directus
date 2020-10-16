@@ -20,9 +20,10 @@
 			</template>
 		</component>
 
-		<template #footer>
-			<v-button @click="cancel" secondary>{{ $t('cancel') }}</v-button>
-			<v-button @click="save">{{ $t('save') }}</v-button>
+		<template #actions>
+			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
+				<v-icon name="check" />
+			</v-button>
 		</template>
 	</v-drawer>
 </template>

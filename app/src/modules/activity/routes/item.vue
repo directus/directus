@@ -34,13 +34,14 @@
 			<p>{{ item.item }}</p>
 		</template>
 
-		<template #footer>
-			<v-button v-if="openItemLink" :to="openItemLink">
-				<v-icon name="launch" left />
-				{{ $t('open') }}
+		<template #actions>
+			<v-button v-if="openItemLink" :to="openItemLink" icon rounded v-tooltip.bottom="$t('open')">
+				<v-icon name="launch" />
 			</v-button>
 
-			<v-button to="/activity">{{ $t('done') }}</v-button>
+			<v-button to="/activity" icon rounded v-tooltip.bottom="$t('done')">
+				<v-icon name="check" />
+			</v-button>
 		</template>
 	</v-drawer>
 </template>

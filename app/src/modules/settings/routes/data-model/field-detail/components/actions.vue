@@ -1,14 +1,18 @@
 <template>
 	<div class="actions">
-		<v-button secondary @click="$emit('cancel')">
-			{{ $t('cancel') }}
+		<v-button
+			v-if="!isExisting && currentTabIndex < tabs.length - 1"
+			@click="nextTab"
+			:disabled="nextDisabled"
+			icon
+			rounded
+			v-tooltip.bottom="$t('next')"
+		>
+			<v-icon name="arrow_forward" />
 		</v-button>
-		<div class="spacer" />
-		<v-button v-if="!isExisting && currentTabIndex < tabs.length - 1" @click="nextTab" :disabled="nextDisabled">
-			{{ $t('next') }}
-		</v-button>
-		<v-button v-else @click="$emit('save')" :loading="saving">
-			{{ $t('save') }}
+
+		<v-button v-else @click="$emit('save')" :loading="saving" icon rounded v-tooltip.bottom="$t('save')">
+			<v-icon name="check" />
 		</v-button>
 	</div>
 </template>

@@ -22,11 +22,13 @@
 				/>
 			</div>
 
-			<template #footer="{ close }">
-				<v-button @click="confirmRevert = true" class="revert">
-					{{ $t('revert') }}
+			<template #actions>
+				<v-button @click="confirmRevert = true" class="revert" icon rounded v-tooltip.bottom="$t('revert')">
+					<v-icon name="restore" />
 				</v-button>
-				<v-button @click="close">{{ $t('done') }}</v-button>
+				<v-button @click="_active = false" icon rounded v-tooltip.bottom="$t('done')">
+					<v-icon name="check" />
+				</v-button>
 			</template>
 		</v-drawer>
 

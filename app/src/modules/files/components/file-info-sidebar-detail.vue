@@ -1,5 +1,5 @@
 <template>
-	<drawer-detail icon="info_outline" :title="$t('file_details')" close>
+	<sidebar-detail icon="info_outline" :title="$t('file_details')" close>
 		<dl v-if="file">
 			<div v-if="file.type">
 				<dt>{{ $t('type') }}</dt>
@@ -104,7 +104,7 @@
 		<v-divider />
 
 		<div class="page-description" v-html="marked($t('page_help_files_item'))" />
-	</drawer-detail>
+	</sidebar-detail>
 </template>
 
 <script lang="ts">

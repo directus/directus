@@ -11,7 +11,7 @@
 			<presets v-if="currentTab[0] === 'presets'" :permission.sync="permission" :role="role" />
 		</template>
 
-		<template #footer v-if="!loading">
+		<template #actions v-if="!loading">
 			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', +permissionKey)" />
 		</template>
 	</v-drawer>

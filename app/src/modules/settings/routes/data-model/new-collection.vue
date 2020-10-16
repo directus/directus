@@ -106,20 +106,26 @@
 			</v-tab-item>
 		</v-tabs-items>
 
-		<template #footer>
-			<v-button secondary to="/settings/data-model">
-				{{ $t('cancel') }}
-			</v-button>
-			<div class="spacer" />
+		<template #actions>
 			<v-button
 				:disabled="!collectionName || collectionName.length === 0"
 				v-if="currentTab[0] === 'collection'"
 				@click="currentTab = ['system']"
+				v-tooltip.bottom="$t('next')"
+				icon
+				rounded
 			>
-				{{ $t('next') }}
+				<v-icon name="arrow_forward" />
 			</v-button>
-			<v-button v-if="currentTab[0] === 'system'" @click="save" :loading="saving">
-				{{ $t('finish_setup') }}
+			<v-button
+				v-if="currentTab[0] === 'system'"
+				@click="save"
+				:loading="saving"
+				v-tooltip.bottom="$t('finish_setup')"
+				icon
+				rounded
+			>
+				<v-icon name="check" />
 			</v-button>
 		</template>
 	</v-drawer>

@@ -87,7 +87,7 @@
 			:type="localType"
 		/>
 
-		<template #footer>
+		<template #actions>
 			<setup-actions
 				:saving="saving"
 				:collection="collection"
