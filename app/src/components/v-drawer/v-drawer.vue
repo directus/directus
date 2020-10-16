@@ -9,7 +9,7 @@
 				<v-icon name="close" />
 			</v-button>
 
-			<div class="content" :class="{ 'no-padding': noPadding }">
+			<div class="content">
 				<v-overlay v-if="$slots.sidebar" absolute :active="sidebarActive" @click="sidebarActive = false" />
 				<nav
 					v-if="$slots.sidebar"
@@ -20,7 +20,7 @@
 					<slot name="sidebar" />
 				</nav>
 				<main ref="mainEl" class="main">
-					<header-bar ref="headerBarEl" :title="title">
+					<header-bar :title="title">
 						<template #headline>
 							<slot name="subtitle">
 								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
@@ -39,9 +39,7 @@
 						<template #title:append><slot name="header:append" /></template>
 					</header-bar>
 
-					<div class="padding-box">
-						<slot />
-					</div>
+					<slot />
 				</main>
 			</div>
 		</article>
@@ -51,7 +49,6 @@
 <script lang="ts">
 import { defineComponent, ref, computed, provide } from '@vue/composition-api';
 import HeaderBar from '@/views/private/components/header-bar/header-bar.vue';
-import useElementSize from '@/composables/use-element-size';
 
 export default defineComponent({
 	components: {
@@ -78,10 +75,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		noPadding: {
-			type: Boolean,
-			default: false,
-		},
 		icon: {
 			type: String,
 			default: 'box',
@@ -91,7 +84,6 @@ export default defineComponent({
 		const sidebarActive = ref(false);
 		const localActive = ref(false);
 
-		const headerBarEl = ref<Vue>();
 		const mainEl = ref<Element>();
 
 		provide('main-element', mainEl);
@@ -106,9 +98,7 @@ export default defineComponent({
 			},
 		});
 
-		const { height } = useElementSize(mainEl);
-
-		return { sidebarActive, _active, mainEl, headerBarEl, headerHeight: height };
+		return { sidebarActive, _active, mainEl };
 	},
 });
 </script>
@@ -189,29 +179,15 @@ body {
 		}
 
 		.main {
-			flex-grow: 1;
-			overflow: auto;
-		}
-
-		.padding-box {
 			--content-padding: 16px;
 			--content-padding-bottom: 32px;
 
-			height: 1px; // allow height: 100% children
-			min-height: calc(100% - (65px + 24px + 24px)); // header height + 2x margin
-			padding: 16px 16px 32px;
-			padding-top: 0;
+			flex-grow: 1;
+			overflow: auto;
 
 			@include breakpoint(medium) {
 				--content-padding: 32px;
-
-				padding: 32px;
-				padding-top: 0;
 			}
-		}
-
-		&.no-padding .padding-box {
-			padding: 0px !important;
 		}
 	}
 

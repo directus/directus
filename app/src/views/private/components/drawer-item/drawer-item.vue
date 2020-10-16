@@ -1,31 +1,33 @@
 <template>
 	<v-drawer v-model="_active" :title="title" persistent @cancel="cancel">
-		<template v-if="junctionField">
-			<v-form
-				:loading="loading"
-				:initial-values="item && item[junctionField]"
-				:collection="junctionRelatedCollection"
-				:primary-key="relatedPrimaryKey"
-				:edits="_edits[junctionField]"
-				@input="setJunctionEdits"
-			/>
-
-			<v-divider v-if="showDivider" />
-		</template>
-
-		<v-form
-			:loading="loading"
-			:initial-values="item"
-			:collection="collection"
-			:primary-key="primaryKey"
-			v-model="_edits"
-		/>
-
 		<template #actions>
 			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
 			</v-button>
 		</template>
+
+		<div class="drawer-item-content">
+			<template v-if="junctionField">
+				<v-form
+					:loading="loading"
+					:initial-values="item && item[junctionField]"
+					:collection="junctionRelatedCollection"
+					:primary-key="relatedPrimaryKey"
+					:edits="_edits[junctionField]"
+					@input="setJunctionEdits"
+				/>
+
+				<v-divider v-if="showDivider" />
+			</template>
+
+			<v-form
+				:loading="loading"
+				:initial-values="item"
+				:collection="collection"
+				:primary-key="primaryKey"
+				v-model="_edits"
+			/>
+		</div>
 	</v-drawer>
 </template>
 
@@ -288,5 +290,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-divider {
 	margin: 52px 0;
+}
+
+.drawer-item-content {
+	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
 }
 </style>

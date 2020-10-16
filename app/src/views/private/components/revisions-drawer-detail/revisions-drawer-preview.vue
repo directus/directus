@@ -1,6 +1,11 @@
 <template>
 	<div>
-		<v-drawer-heading :heading="$t('revision_post_update')" :subheading="$t('no_relational_data')" />
+		<v-notice type="info">
+			{{ $t('revision_post_update') }}
+			<br />
+			{{ $t('no_relational_data') }}
+		</v-notice>
+
 		<v-form
 			disabled
 			:collection="revision.collection"
@@ -23,3 +28,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-notice {
+	margin-bottom: 36px;
+}
+</style>

@@ -1,12 +1,5 @@
 <template>
-	<v-drawer
-		v-model="_active"
-		class="modal"
-		:title="$t('editing_image')"
-		persistent
-		no-padding
-		@cancel="_active = false"
-	>
+	<v-drawer v-model="_active" class="modal" :title="$t('editing_image')" persistent @cancel="_active = false">
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
@@ -439,7 +432,7 @@ export default defineComponent({
 
 .editor-container {
 	width: 100%;
-	height: 100%;
+	height: calc(100% - (65px + 24px + 24px)); // header height + 2x margin
 	overflow: hidden;
 	background-color: var(--background-subdued);
 

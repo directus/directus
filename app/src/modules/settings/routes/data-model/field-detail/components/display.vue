@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h2 class="type-title">{{ $t('display_setup_title') }}</h2>
+		<v-notice type="info">{{ $t('display_setup_title') }}</v-notice>
 
 		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.display" />
 
@@ -129,5 +129,9 @@ export default defineComponent({
 	button {
 		text-decoration: underline;
 	}
+}
+
+.v-notice {
+	margin-bottom: 36px;
 }
 </style>

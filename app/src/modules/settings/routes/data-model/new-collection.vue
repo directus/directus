@@ -29,9 +29,10 @@
 			</v-tabs>
 		</template>
 
-		<v-tabs-items v-model="currentTab">
+		<v-tabs-items class="content" v-model="currentTab">
 			<v-tab-item value="collection">
-				<h2 class="type-title">{{ $t('creating_collection_info') }}</h2>
+				<v-notice type="info">{{ $t('creating_collection_info') }}</v-notice>
+
 				<div class="grid">
 					<div>
 						<div class="type-label">
@@ -83,7 +84,8 @@
 				</div>
 			</v-tab-item>
 			<v-tab-item value="system">
-				<h2 class="type-title">{{ $t('creating_collection_system') }}</h2>
+				<v-notice type="info">{{ $t('creating_collection_system') }}</v-notice>
+
 				<div class="grid system">
 					<div v-for="(info, field) in systemFields" :key="field">
 						<div class="type-label">{{ $t(info.label) }}</div>
@@ -474,5 +476,15 @@ export default defineComponent({
 
 .required {
 	color: var(--primary);
+}
+
+.content {
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: var(--content-padding);
+}
+
+.v-notice {
+	margin-bottom: 36px;
 }
 </style>

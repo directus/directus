@@ -1,6 +1,10 @@
 <template>
 	<div class="updates">
-		<v-drawer-heading :heading="$t('changes_made')" :subheading="$t('no_relational_data')" />
+		<v-notice type="info">
+			{{ $t('changes_made') }}
+			<br />
+			{{ $t('no_relational_data') }}
+		</v-notice>
 
 		<div class="change" v-for="change in changes" :key="change.name">
 			<div class="type-label">{{ change.name }}</div>
@@ -91,5 +95,9 @@ export default defineComponent({
 
 .change-line {
 	margin-bottom: 4px;
+}
+
+.v-notice {
+	margin-bottom: 36px;
 }
 </style>

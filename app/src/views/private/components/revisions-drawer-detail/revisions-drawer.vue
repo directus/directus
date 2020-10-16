@@ -141,4 +141,10 @@ export default defineComponent({
 	--v-button-background-color: var(--warning);
 	--v-button-background-color-hover: var(--warning-125);
 }
+
+.content {
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: var(--content-padding);
+}
 </style>

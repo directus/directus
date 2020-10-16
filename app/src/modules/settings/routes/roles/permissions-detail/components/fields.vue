@@ -1,13 +1,14 @@
 <template>
 	<div>
-		<v-drawer-heading
-			:heading="
+		<v-notice type="info">
+			{{
 				$t('fields_for_role', {
 					role: role ? role.name : $t('public'),
 					action: $t(permission.action).toLowerCase(),
 				})
-			"
-		/>
+			}}
+		</v-notice>
+
 		<p class="type-label">{{ $tc('field', 0) }}</p>
 		<interface-checkboxes v-model="fields" type="json" :choices="fieldsInCollection" />
 	</div>
@@ -82,5 +83,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .type-label {
 	margin-bottom: 8px;
+}
+
+.v-notice {
+	margin-bottom: 36px;
 }
 </style>

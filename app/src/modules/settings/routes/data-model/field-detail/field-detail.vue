@@ -45,47 +45,49 @@
 			<setup-tabs :current.sync="currentTab" :tabs="tabs" :type="localType" />
 		</template>
 
-		<setup-schema
-			v-if="currentTab[0] === 'schema'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
+		<div class="content">
+			<setup-schema
+				v-if="currentTab[0] === 'schema'"
+				:is-existing="field !== '+'"
+				:collection="collection"
+				:type="localType"
+			/>
 
-		<setup-field
-			v-if="currentTab[0] === 'field'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
+			<setup-field
+				v-if="currentTab[0] === 'field'"
+				:is-existing="field !== '+'"
+				:collection="collection"
+				:type="localType"
+			/>
 
-		<setup-relationship
-			v-if="currentTab[0] === 'relationship'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
+			<setup-relationship
+				v-if="currentTab[0] === 'relationship'"
+				:is-existing="field !== '+'"
+				:collection="collection"
+				:type="localType"
+			/>
 
-		<setup-translations
-			v-if="currentTab[0] === 'translations'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
+			<setup-translations
+				v-if="currentTab[0] === 'translations'"
+				:is-existing="field !== '+'"
+				:collection="collection"
+				:type="localType"
+			/>
 
-		<setup-interface
-			v-if="currentTab[0] === 'interface'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
+			<setup-interface
+				v-if="currentTab[0] === 'interface'"
+				:is-existing="field !== '+'"
+				:collection="collection"
+				:type="localType"
+			/>
 
-		<setup-display
-			v-if="currentTab[0] === 'display'"
-			:is-existing="field !== '+'"
-			:collection="collection"
-			:type="localType"
-		/>
+			<setup-display
+				v-if="currentTab[0] === 'display'"
+				:is-existing="field !== '+'"
+				:collection="collection"
+				:type="localType"
+			/>
+		</div>
 
 		<template #actions>
 			<setup-actions
@@ -403,5 +405,11 @@ export default defineComponent({
 	.manual-toggle {
 		color: var(--primary);
 	}
+}
+
+.content {
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: var(--content-padding);
 }
 </style>

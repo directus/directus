@@ -1,13 +1,13 @@
 <template>
 	<div>
-		<v-drawer-heading
-			:heading="
+		<v-notice type="info">
+			{{
 				$t('presets_for_role', {
 					action: $t(permission.action).toLowerCase(),
 					role: role ? role.name : $t('public'),
 				})
-			"
-		/>
+			}}
+		</v-notice>
 		<interface-code v-model="presets" language="json" type="json" />
 	</div>
 </template>
@@ -47,3 +47,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-notice {
+	margin-bottom: 36px;
+}
+</style>
