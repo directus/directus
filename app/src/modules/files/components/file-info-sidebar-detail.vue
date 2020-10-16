@@ -41,11 +41,11 @@
 				<dd>{{ file.checksum }}</dd>
 			</div>
 
-			<div v-if="user_created">
+			<div v-if="userCreated">
 				<dt>{{ $t('owner') }}</dt>
 				<dd>
-					<user-popover :user="user_created.id">
-						<router-link :to="user_created.link">{{ user_created.name }}</router-link>
+					<user-popover :user="userCreated.id">
+						<router-link :to="userCreated.link">{{ userCreated.name }}</router-link>
 					</user-popover>
 				</dd>
 			</div>
@@ -55,11 +55,11 @@
 				<dd>{{ modificationDate }}</dd>
 			</div>
 
-			<div v-if="user_modified">
+			<div v-if="userModified">
 				<dt>{{ $t('edited_by') }}</dt>
 				<dd>
-					<user-popover :user="user_modified.id">
-						<router-link :to="user_modified.link">{{ user_modified.name }}</router-link>
+					<user-popover :user="userModified.id">
+						<router-link :to="userModified.link">{{ userModified.name }}</router-link>
 					</user-popover>
 				</dd>
 			</div>
