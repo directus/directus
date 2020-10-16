@@ -1,5 +1,5 @@
 <template>
-	<v-drawer v-model="_active" :title="title" persistent @esc="cancel">
+	<v-drawer v-model="_active" :title="title" persistent @cancel="cancel">
 		<template v-if="junctionField">
 			<v-form
 				:loading="loading"

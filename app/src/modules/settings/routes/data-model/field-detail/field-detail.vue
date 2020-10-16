@@ -32,7 +32,7 @@
 		v-else
 		:active="true"
 		@toggle="cancelField"
-		@esc="cancelField"
+		@cancel="cancelField"
 		:title="
 			field === '+'
 				? $t('creating_new_field', { collection: collectionInfo.name })

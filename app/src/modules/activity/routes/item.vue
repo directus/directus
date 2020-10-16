@@ -1,5 +1,5 @@
 <template>
-	<v-drawer active title="Activity Item" @toggle="close" @esc="close">
+	<v-drawer active title="Activity Item" @toggle="close" @cancel="close">
 		<v-progress-circular indeterminate v-if="loading" />
 
 		<template v-else-if="error">

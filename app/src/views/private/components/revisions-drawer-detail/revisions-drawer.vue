@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-drawer v-model="_active" :title="$t('item_revision')" @esc="_active = false">
+		<v-drawer v-model="_active" :title="$t('item_revision')" @cancel="_active = false">
 			<template #subtitle>
 				<revisions-drawer-picker :revisions="revisions" :current.sync="_current" />
 			</template>

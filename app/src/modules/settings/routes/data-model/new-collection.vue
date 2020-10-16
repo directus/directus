@@ -4,7 +4,7 @@
 		:active="true"
 		class="new-collection"
 		persistent
-		@esc="$router.push('/settings/data-model')"
+		@cancel="$router.push('/settings/data-model')"
 	>
 		<v-dialog :active="saveError !== null" @toggle="saveError = null" @esc="saveError = null">
 			<v-card class="selectable">

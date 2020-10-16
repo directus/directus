@@ -1,5 +1,12 @@
 <template>
-	<v-drawer v-model="_active" class="modal" :title="$t('editing_image')" persistent no-padding @esc="_active = false">
+	<v-drawer
+		v-model="_active"
+		class="modal"
+		:title="$t('editing_image')"
+		persistent
+		no-padding
+		@cancel="_active = false"
+	>
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>

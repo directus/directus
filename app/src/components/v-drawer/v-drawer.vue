@@ -1,10 +1,13 @@
 <template>
-	<v-dialog v-model="_active" @esc="$emit('esc')" :persistent="persistent" placement="right">
+	<v-dialog v-model="_active" @esc="$emit('cancel')" :persistent="persistent" placement="right">
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />
 		</template>
 
 		<article class="v-drawer">
+			<v-button class="cancel" @click="$emit('cancel')" icon rounded secondary v-tooltip.bottom="$t('cancel')">
+				<v-icon name="close" />
+			</v-button>
 			<!-- <header class="header">
 				<v-icon class="menu-toggle" name="menu" @click="sidebarActive = !sidebarActive" />
 				<h2 class="title">{{ title }}</h2>
@@ -96,11 +99,18 @@ body {
 @import '@/styles/mixins/breakpoint';
 
 .v-drawer {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	max-width: var(--v-drawer-max-width);
 	height: 100%;
 	background-color: var(--background-page);
+
+	.cancel {
+		position: absolute;
+		top: 32px;
+		left: -76px;
+	}
 
 	.spacer {
 		flex-grow: 1;
