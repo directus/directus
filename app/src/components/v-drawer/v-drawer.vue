@@ -9,16 +9,6 @@
 				<v-icon name="close" />
 			</v-button>
 
-			<!-- <header class="header">
-				<v-icon class="menu-toggle" name="menu" @click="sidebarActive = !sidebarActive" />
-				<h2 class="title">{{ title }}</h2>
-				<slot name="subtitle">
-					<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
-				</slot>
-				<div class="spacer" />
-				<slot name="header:append" />
-			</header> -->
-
 			<div class="content" :class="{ 'no-padding': noPadding }">
 				<v-overlay v-if="$slots.sidebar" absolute :active="sidebarActive" @click="sidebarActive = false" />
 				<nav
@@ -36,16 +26,21 @@
 								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
 							</slot>
 						</template>
+
 						<template #title-outer:prepend>
 							<v-button class="header-icon" rounded icon secondary disabled>
 								<v-icon :name="icon" />
 							</v-button>
 						</template>
+
 						<template #actions><slot name="actions" /></template>
+
 						<template #title:append><slot name="header:append" /></template>
 					</header-bar>
 
-					<slot />
+					<div class="padding-box">
+						<slot />
+					</div>
 				</main>
 			</div>
 		</article>
@@ -147,10 +142,6 @@ body {
 		--v-button-color-disabled: var(--foreground-normal);
 	}
 
-	.header-bar {
-		padding: 0 !important;
-	}
-
 	.content {
 		position: relative;
 		display: flex;
@@ -194,9 +185,12 @@ body {
 
 		.main {
 			flex-grow: 1;
+			overflow: auto;
+		}
+
+		.padding-box {
 			padding: 16px 16px 32px;
 			padding-top: 0;
-			overflow: auto;
 
 			@include breakpoint(medium) {
 				padding: 32px;
@@ -204,8 +198,8 @@ body {
 			}
 		}
 
-		&.no-padding .main {
-			padding: 0px;
+		&.no-padding .padding-box {
+			padding: 0px !important;
 		}
 	}
 
