@@ -177,7 +177,8 @@ export default defineComponent({
 						item.value = null;
 						localEdits.value = {};
 					}
-				}
+				},
+				{ immediate: true }
 			);
 
 			return { _edits, loading, error, item, fetchItem };
