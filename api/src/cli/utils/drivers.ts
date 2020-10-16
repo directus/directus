@@ -1,9 +1,9 @@
 export const drivers = {
-	sqlite3: 'SQLite',
-	mysql: 'MySQL / MariaDB / Aurora',
 	pg: 'PostgreSQL / Redshift',
-	oracledb: 'Oracle Database',
-	mssql: 'Microsoft SQL Server',
+	mysql: 'MySQL / MariaDB / Aurora',
+	sqlite3: 'SQLite (Beta)',
+	oracledb: 'Oracle Database (Alpha)',
+	mssql: 'Microsoft SQL Server (Alpha)',
 };
 
 export function getDriverForClient(client: string): keyof typeof drivers | null {
