@@ -5,12 +5,14 @@
 	<div class="one-to-many" v-else>
 		<v-table
 			:loading="loading"
-			:items="displayItems"
+			:items.sync="displayItems"
 			:headers.sync="tableHeaders"
 			show-resize
 			inline
 			@click:row="editItem"
 			:disabled="disabled"
+			:show-manual-sort="sortField !== null"
+			:manual-sort-key="sortField"
 		>
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
@@ -104,6 +106,10 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
+		const sortField = computed(() => {
+			return relatedCollection.value.meta?.sort_field || null;
+		});
+
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
 		const { tableHeaders, displayItems, loading, error } = useTable();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
@@ -124,6 +130,7 @@ export default defineComponent({
 			deleteItem,
 			displayItems,
 			selectionFilters,
+			sortField,
 		};
 
 		function getItem(id: string | number) {
@@ -237,6 +244,9 @@ export default defineComponent({
 					if (fields.includes(pkField) === false) {
 						fields.push(pkField);
 					}
+
+					if (sortField.value !== null && fields.includes(sortField.value) === false)
+						fields.push(sortField.value);
 
 					try {
 						const endpoint = relatedCollection.value.collection.startsWith('directus_')
