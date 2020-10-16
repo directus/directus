@@ -4,12 +4,12 @@
 			<tabs :current-tab.sync="currentTab" :tabs="tabs" />
 		</template>
 
-		<template v-if="!loading">
+		<div class="content" v-if="!loading">
 			<permissions v-if="currentTab[0] === 'permissions'" :permission.sync="permission" :role="role" />
 			<fields v-if="currentTab[0] === 'fields'" :permission.sync="permission" :role="role" />
 			<validation v-if="currentTab[0] === 'validation'" :permission.sync="permission" :role="role" />
 			<presets v-if="currentTab[0] === 'presets'" :permission.sync="permission" :role="role" />
-		</template>
+		</div>
 
 		<template #actions v-if="!loading">
 			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', +permissionKey)" />
@@ -149,3 +149,11 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.content {
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: var(--content-padding);
+}
+</style>

@@ -5,7 +5,15 @@
 		</template>
 
 		<article class="v-drawer">
-			<v-button class="cancel" @click="$emit('cancel')" icon rounded secondary v-tooltip.bottom="$t('cancel')">
+			<v-button
+				v-if="showCancel"
+				class="cancel"
+				@click="$emit('cancel')"
+				icon
+				rounded
+				secondary
+				v-tooltip.bottom="$t('cancel')"
+			>
 				<v-icon name="close" />
 			</v-button>
 
@@ -80,7 +88,7 @@ export default defineComponent({
 			default: 'box',
 		},
 	},
-	setup(props, { emit }) {
+	setup(props, { emit, listeners }) {
 		const sidebarActive = ref(false);
 		const localActive = ref(false);
 
@@ -98,7 +106,11 @@ export default defineComponent({
 			},
 		});
 
-		return { sidebarActive, _active, mainEl };
+		const showCancel = computed(() => {
+			return listeners.hasOwnProperty('cancel');
+		});
+
+		return { sidebarActive, _active, mainEl, showCancel };
 	},
 });
 </script>
