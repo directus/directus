@@ -298,7 +298,10 @@ export default defineComponent({
 			const duplicateTo = ref(props.field.collection);
 
 			const duplicateable = computed(() => {
-				return ['o2m', 'm2m', 'm2o', 'files', 'file'].includes(props.field.type) === false;
+				return (
+					['o2m', 'm2m', 'm2o', 'files', 'file'].includes(props.field.type) === false &&
+					props.field.schema?.is_primary_key === false
+				);
 			});
 
 			return {
