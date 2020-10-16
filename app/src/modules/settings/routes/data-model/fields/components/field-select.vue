@@ -90,7 +90,7 @@
 								</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item v-if="duplicateable" @click="duplicateActive = true">
+							<v-list-item v-if="duplicable" @click="duplicateActive = true">
 								<v-list-item-icon>
 									<v-icon name="content_copy" />
 								</v-list-item-icon>
@@ -224,7 +224,7 @@ export default defineComponent({
 			duplicateTo,
 			saveDuplicate,
 			duplicating,
-			duplicateable,
+			duplicable,
 		} = useDuplicate();
 
 		const interfaceName = computed(() => {
@@ -256,7 +256,7 @@ export default defineComponent({
 			localType,
 			translationsCollection,
 			translationsFieldsCount,
-			duplicateable,
+			duplicable,
 		};
 
 		function setWidth(width: string) {
@@ -297,9 +297,9 @@ export default defineComponent({
 			);
 			const duplicateTo = ref(props.field.collection);
 
-			const duplicateable = computed(() => {
+			const duplicable = computed(() => {
 				return (
-					['o2m', 'm2m', 'm2o', 'files', 'file'].includes(props.field.type) === false &&
+					['o2m', 'm2m', 'm2o', 'files', 'file', 'm2a'].includes(props.field.type) === false &&
 					props.field.schema?.is_primary_key === false
 				);
 			});
@@ -311,7 +311,7 @@ export default defineComponent({
 				duplicateTo,
 				saveDuplicate,
 				duplicating,
-				duplicateable,
+				duplicable,
 			};
 
 			async function saveDuplicate() {
