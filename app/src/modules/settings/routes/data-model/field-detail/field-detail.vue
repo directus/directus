@@ -28,7 +28,7 @@
 		</v-card>
 	</v-dialog>
 
-	<v-modal
+	<v-drawer
 		v-else
 		:active="true"
 		@toggle="cancelField"
@@ -98,7 +98,7 @@
 				@cancel="cancelField"
 			/>
 		</template>
-	</v-modal>
+	</v-drawer>
 </template>
 
 <script lang="ts">

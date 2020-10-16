@@ -1,11 +1,11 @@
 <template>
 	<div class="updates">
-		<v-modal-heading :heading="$t('changes_made')" :subheading="$t('no_relational_data')" />
+		<v-drawer-heading :heading="$t('changes_made')" :subheading="$t('no_relational_data')" />
 
 		<div class="change" v-for="change in changes" :key="change.name">
 			<div class="type-label">{{ change.name }}</div>
-			<revisions-modal-updates-change deleted :changes="change.changes" />
-			<revisions-modal-updates-change added :changes="change.changes" />
+			<revisions-drawer-updates-change deleted :changes="change.changes" />
+			<revisions-drawer-updates-change added :changes="change.changes" />
 		</div>
 	</div>
 </template>
@@ -15,10 +15,10 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { Revision } from './types';
 import { useFieldsStore } from '@/stores';
 import { diffWordsWithSpace, diffJson, diffArrays } from 'diff';
-import RevisionsModalUpdatesChange from './revisions-modal-updates-change.vue';
+import RevisionsDrawerUpdatesChange from './revisions-drawer-updates-change.vue';
 
 export default defineComponent({
-	components: { RevisionsModalUpdatesChange },
+	components: { RevisionsDrawerUpdatesChange },
 	props: {
 		revision: {
 			type: Object as PropType<Revision>,

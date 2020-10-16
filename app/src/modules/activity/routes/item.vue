@@ -1,5 +1,5 @@
 <template>
-	<v-modal active title="Activity Item" @toggle="close" @esc="close">
+	<v-drawer active title="Activity Item" @toggle="close" @esc="close">
 		<v-progress-circular indeterminate v-if="loading" />
 
 		<template v-else-if="error">
@@ -42,7 +42,7 @@
 
 			<v-button to="/activity">{{ $t('done') }}</v-button>
 		</template>
-	</v-modal>
+	</v-drawer>
 </template>
 
 <script lang="ts">

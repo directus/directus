@@ -1,5 +1,5 @@
 <template>
-	<v-modal v-model="_active" :title="$t('select_item')" no-padding @esc="cancel">
+	<v-drawer v-model="_active" :title="$t('select_item')" no-padding @esc="cancel">
 		<component
 			:is="`layout-${localLayout}`"
 			:collection="collection"
@@ -24,7 +24,7 @@
 			<v-button @click="cancel" secondary>{{ $t('cancel') }}</v-button>
 			<v-button @click="save">{{ $t('save') }}</v-button>
 		</template>
-	</v-modal>
+	</v-drawer>
 </template>
 
 <script lang="ts">

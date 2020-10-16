@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-modal-heading
+		<v-drawer-heading
 			:heading="
 				$t('presets_for_role', {
 					action: $t(permission.action).toLowerCase(),

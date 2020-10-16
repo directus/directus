@@ -180,7 +180,7 @@
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
 			</sidebar-detail>
-			<revisions-sidebar-detail
+			<revisions-drawer-detail
 				v-if="
 					collectionInfo.meta &&
 					collectionInfo.meta.singleton === false &&
@@ -189,7 +189,7 @@
 				"
 				:collection="collection"
 				:primary-key="primaryKey"
-				ref="revisionsSidebarDetail"
+				ref="revisionsDrawerDetail"
 				@revert="refresh"
 			/>
 			<comments-sidebar-detail
@@ -214,7 +214,7 @@ import CollectionsNavigation from '../components/navigation.vue';
 import router from '@/router';
 import CollectionsNotFound from './not-found.vue';
 import useCollection from '@/composables/use-collection';
-import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
@@ -235,7 +235,7 @@ export default defineComponent({
 	components: {
 		CollectionsNavigation,
 		CollectionsNotFound,
-		RevisionsSidebarDetail,
+		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
 		SaveOptions,
 	},
@@ -260,7 +260,7 @@ export default defineComponent({
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
-		const revisionsSidebarDetail = ref<Vue | null>(null);
+		const revisionsDrawerDetail = ref<Vue | null>(null);
 
 		const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
@@ -355,7 +355,7 @@ export default defineComponent({
 			archiveTooltip,
 			breadcrumb,
 			title,
-			revisionsSidebarDetail,
+			revisionsDrawerDetail,
 			marked,
 			refresh,
 			confirmLeave,
@@ -395,7 +395,7 @@ export default defineComponent({
 
 			const savedItem: Record<string, any> = await save();
 
-			revisionsSidebarDetail.value?.$data?.refresh?.();
+			revisionsDrawerDetail.value?.$data?.refresh?.();
 
 			if (props.primaryKey === '+') {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

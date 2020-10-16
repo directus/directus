@@ -1,5 +1,5 @@
 <template>
-	<v-modal
+	<v-drawer
 		:title="$t('creating_new_collection')"
 		:active="true"
 		class="new-collection"
@@ -122,7 +122,7 @@
 				{{ $t('finish_setup') }}
 			</v-button>
 		</template>
-	</v-modal>
+	</v-drawer>
 </template>
 
 <script lang="ts">

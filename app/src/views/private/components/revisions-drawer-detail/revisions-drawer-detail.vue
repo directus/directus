@@ -26,7 +26,7 @@
 			</div>
 		</template>
 
-		<revisions-modal
+		<revisions-drawer
 			v-if="revisions"
 			:revisions="revisions"
 			:current.sync="modalCurrentRevision"
@@ -47,10 +47,10 @@ import { TranslateResult } from 'vue-i18n';
 import i18n from '@/lang';
 import formatLocalized from '@/utils/localized-format';
 import RevisionItem from './revision-item.vue';
-import RevisionsModal from './revisions-modal.vue';
+import RevisionsDrawer from './revisions-drawer.vue';
 
 export default defineComponent({
-	components: { RevisionItem, RevisionsModal },
+	components: { RevisionItem, RevisionsDrawer },
 	props: {
 		collection: {
 			type: String,

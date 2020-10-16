@@ -1,5 +1,5 @@
 <template>
-	<div class="v-modal-heading">
+	<div class="v-drawer-heading">
 		<div class="type-title">{{ heading }}</div>
 		<div v-if="subheading" class="subheading">{{ subheading }}</div>
 	</div>
@@ -23,7 +23,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.v-modal-heading {
+.v-drawer-heading {
 	margin-bottom: 48px;
 
 	.subheading {

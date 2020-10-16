@@ -3,7 +3,7 @@
 		<slot name="activator" v-bind="{ on: () => (_active = true) }" />
 
 		<portal to="dialog-outlet">
-			<div v-if="_active" class="container" :class="[className]" :key="id">
+			<div v-if="_active" class="container" :class="[className, placement]" :key="id">
 				<v-overlay active absolute @click="emitToggle" />
 				<slot />
 			</div>
@@ -29,6 +29,11 @@ export default defineComponent({
 		persistent: {
 			type: Boolean,
 			default: false,
+		},
+		placement: {
+			type: String,
+			default: 'center',
+			validator: (val: string) => ['center', 'right'].includes(val),
 		},
 	},
 	setup(props, { emit }) {
@@ -92,11 +97,19 @@ export default defineComponent({
 	left: 0;
 	z-index: 500;
 	display: flex;
-	align-items: center;
-	justify-content: center;
 	width: 100%;
 	height: 100%;
 	transition: opacity var(--medium) var(--transition);
+
+	&.center {
+		align-items: center;
+		justify-content: center;
+	}
+
+	&.right {
+		align-items: center;
+		justify-content: flex-end;
+	}
 
 	::v-deep .v-card {
 		--v-card-min-width: 540px;

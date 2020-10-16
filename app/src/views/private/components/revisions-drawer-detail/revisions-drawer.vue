@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<v-modal v-model="_active" :title="$t('item_revision')" @esc="_active = false">
+		<v-drawer v-model="_active" :title="$t('item_revision')" @esc="_active = false">
 			<template #subtitle>
-				<revisions-modal-picker :revisions="revisions" :current.sync="_current" />
+				<revisions-drawer-picker :revisions="revisions" :current.sync="_current" />
 			</template>
 
 			<template #sidebar>
@@ -14,8 +14,8 @@
 			</template>
 
 			<div class="content">
-				<revisions-modal-preview v-if="currentTab[0] === 'preview'" :revision="currentRevision" />
-				<revisions-modal-updates
+				<revisions-drawer-preview v-if="currentTab[0] === 'preview'" :revision="currentRevision" />
+				<revisions-drawer-updates
 					v-if="currentTab[0] === 'updates'"
 					:revision="currentRevision"
 					:revisions="revisions"
@@ -28,7 +28,7 @@
 				</v-button>
 				<v-button @click="close">{{ $t('done') }}</v-button>
 			</template>
-		</v-modal>
+		</v-drawer>
 
 		<v-dialog v-model="confirmRevert" :persistent="reverting" @esc="confirmRevert = false">
 			<v-card>
@@ -52,13 +52,13 @@ import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import useSync from '@/composables/use-sync';
 import { Revision } from './types';
 import i18n from '@/lang';
-import RevisionsModalPicker from './revisions-modal-picker.vue';
-import RevisionsModalPreview from './revisions-modal-preview.vue';
-import RevisionsModalUpdates from './revisions-modal-updates.vue';
+import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
+import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
+import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 import api from '@/api';
 
 export default defineComponent({
-	components: { RevisionsModalPicker, RevisionsModalPreview, RevisionsModalUpdates },
+	components: { RevisionsDrawerPicker, RevisionsDrawerPreview, RevisionsDrawerUpdates },
 	props: {
 		revisions: {
 			type: Array as PropType<Revision[]>,

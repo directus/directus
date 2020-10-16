@@ -1,11 +1,11 @@
 <template>
-	<v-dialog v-model="_active" @esc="$emit('esc')" :persistent="persistent">
+	<v-dialog v-model="_active" @esc="$emit('esc')" :persistent="persistent" placement="right">
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />
 		</template>
 
-		<article class="v-modal" :class="{ 'form-width': formWidth }">
-			<header class="header">
+		<article class="v-drawer">
+			<!-- <header class="header">
 				<v-icon class="menu-toggle" name="menu" @click="sidebarActive = !sidebarActive" />
 				<h2 class="title">{{ title }}</h2>
 				<slot name="subtitle">
@@ -13,7 +13,8 @@
 				</slot>
 				<div class="spacer" />
 				<slot name="header:append" />
-			</header>
+			</header> -->
+
 			<div class="content" :class="{ 'no-padding': noPadding }">
 				<v-overlay v-if="$slots.sidebar" absolute :active="sidebarActive" @click="sidebarActive = false" />
 				<nav
@@ -28,9 +29,6 @@
 					<slot />
 				</main>
 			</div>
-			<footer class="footer" v-if="$slots.footer || $scopedSlots.footer">
-				<slot name="footer" v-bind="{ close: () => (_active = false) }" />
-			</footer>
 		</article>
 	</v-dialog>
 </template>
@@ -64,12 +62,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		formWidth: {
-			// If the modal is used to just render a form, it needs to be a little smaller to
-			// allow the form to be rendered in it's correct full size
-			type: Boolean,
-			default: false,
-		},
 	},
 	setup(props, { emit }) {
 		const sidebarActive = ref(false);
@@ -96,57 +88,54 @@ export default defineComponent({
 
 <style>
 body {
-	--v-modal-max-width: 916px;
+	--v-drawer-max-width: 856px;
 }
 </style>
 
 <style lang="scss" scoped>
 @import '@/styles/mixins/breakpoint';
 
-.v-modal {
+.v-drawer {
 	display: flex;
 	flex-direction: column;
-	width: calc(100% - 16px);
-	max-width: var(--v-modal-max-width);
-	height: calc(100% - 16px);
-	max-height: 800px;
+	max-width: var(--v-drawer-max-width);
+	height: 100%;
 	background-color: var(--background-page);
-	border-radius: 4px;
 
 	.spacer {
 		flex-grow: 1;
 	}
 
-	.header {
-		display: flex;
-		flex-shrink: 0;
-		align-items: center;
-		height: 60px;
-		padding: 0 16px;
-		border-bottom: 2px solid var(--background-normal);
+	// .header {
+	// 	display: flex;
+	// 	flex-shrink: 0;
+	// 	align-items: center;
+	// 	height: 60px;
+	// 	padding: 0 16px;
+	// 	border-bottom: 2px solid var(--background-normal);
 
-		.title {
-			margin-right: 12px;
-			font-size: 16px;
-		}
+	// 	.title {
+	// 		margin-right: 12px;
+	// 		font-size: 16px;
+	// 	}
 
-		.subtitle {
-			color: var(--foreground-subdued);
-			font-size: 16px;
-		}
+	// 	.subtitle {
+	// 		color: var(--foreground-subdued);
+	// 		font-size: 16px;
+	// 	}
 
-		.menu-toggle {
-			margin-right: 8px;
+	// 	.menu-toggle {
+	// 		margin-right: 8px;
 
-			@include breakpoint(medium) {
-				display: none;
-			}
-		}
+	// 		@include breakpoint(medium) {
+	// 			display: none;
+	// 		}
+	// 	}
 
-		@include breakpoint(medium) {
-			padding: 0 24px;
-		}
-	}
+	// 	@include breakpoint(medium) {
+	// 		padding: 0 24px;
+	// 	}
+	// }
 
 	.content {
 		position: relative;
@@ -204,31 +193,8 @@ body {
 		}
 	}
 
-	.footer {
-		display: flex;
-		flex-shrink: 0;
-		align-items: center;
-		justify-content: flex-end;
-		height: 60px;
-		padding: 0 16px;
-		border-top: 2px solid var(--background-normal);
-
-		::v-deep > *:not(:last-child) {
-			margin-right: 8px;
-		}
-
-		@include breakpoint(medium) {
-			padding: 0 24px;
-		}
-	}
-
 	@include breakpoint(medium) {
 		width: calc(100% - 64px);
-		height: calc(100% - 64px);
 	}
-}
-
-.form-width {
-	--v-modal-max-width: 856px;
 }
 </style>

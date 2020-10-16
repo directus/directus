@@ -1,5 +1,5 @@
 <template>
-	<v-modal v-model="_active" class="modal" :title="$t('editing_image')" persistent no-padding @esc="_active = false">
+	<v-drawer v-model="_active" class="modal" :title="$t('editing_image')" persistent no-padding @esc="_active = false">
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
@@ -110,7 +110,7 @@
 			<v-button @click="close" secondary>{{ $t('cancel') }}</v-button>
 			<v-button @click="save" :loading="saving">{{ $t('save') }}</v-button>
 		</template>
-	</v-modal>
+	</v-drawer>
 </template>
 
 <script lang="ts">
@@ -425,8 +425,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal {
-	--v-modal-content-padding-small: 0px;
-	--v-modal-content-padding: 0px;
+	--v-drawer-content-padding-small: 0px;
+	--v-drawer-content-padding: 0px;
 }
 
 .editor-container {

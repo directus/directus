@@ -157,11 +157,11 @@
 
 		<template #sidebar>
 			<file-info-sidebar-detail :file="item" @move-folder="moveToDialogActive = true" />
-			<revisions-sidebar-detail
+			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_files"
 				:primary-key="primaryKey"
-				ref="revisionsSidebarDetail"
+				ref="revisionsDrawerDetail"
 			/>
 			<comments-sidebar-detail
 				v-if="isBatch === false && isNew === false"
@@ -177,7 +177,7 @@ import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-
 import FilesNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
 import router from '@/router';
-import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
@@ -215,7 +215,7 @@ export default defineComponent({
 	},
 	components: {
 		FilesNavigation,
-		RevisionsSidebarDetail,
+		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
 		SaveOptions,
 		FilePreview,
@@ -237,7 +237,7 @@ export default defineComponent({
 		const { breadcrumb } = useBreadcrumb();
 		const fieldsStore = useFieldsStore();
 
-		const revisionsSidebarDetail = ref<Vue | null>(null);
+		const revisionsDrawerDetail = ref<Vue | null>(null);
 
 		const {
 			isNew,
@@ -322,7 +322,7 @@ export default defineComponent({
 			cacheBuster,
 			editActive,
 			previewActive,
-			revisionsSidebarDetail,
+			revisionsDrawerDetail,
 			formFields,
 			confirmLeave,
 			leaveTo,
@@ -375,7 +375,7 @@ export default defineComponent({
 
 		async function saveAndStay() {
 			await save();
-			revisionsSidebarDetail.value?.$data?.refresh?.();
+			revisionsDrawerDetail.value?.$data?.refresh?.();
 		}
 
 		async function saveAsCopyAndNavigate() {

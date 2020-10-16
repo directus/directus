@@ -1,5 +1,5 @@
 <template>
-	<v-modal :title="modalTitle" :active="true" class="new-collection" persistent>
+	<v-drawer :title="modalTitle" :active="true" class="new-collection" persistent>
 		<template #sidebar v-if="!loading">
 			<tabs :current-tab.sync="currentTab" :tabs="tabs" />
 		</template>
@@ -14,7 +14,7 @@
 		<template #footer v-if="!loading">
 			<actions :role-key="roleKey" :permission="permission" @refresh="$emit('refresh', +permissionKey)" />
 		</template>
-	</v-modal>
+	</v-drawer>
 </template>
 
 <script lang="ts">

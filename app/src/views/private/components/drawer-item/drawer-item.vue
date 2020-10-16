@@ -1,5 +1,5 @@
 <template>
-	<v-modal v-model="_active" :title="title" persistent form-width @esc="cancel">
+	<v-drawer v-model="_active" :title="title" persistent @esc="cancel">
 		<template v-if="junctionField">
 			<v-form
 				:loading="loading"
@@ -25,7 +25,7 @@
 			<v-button @click="cancel" secondary>{{ $t('cancel') }}</v-button>
 			<v-button @click="save">{{ $t('save') }}</v-button>
 		</template>
-	</v-modal>
+	</v-drawer>
 </template>
 
 <script lang="ts">

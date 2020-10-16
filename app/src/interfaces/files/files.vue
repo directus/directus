@@ -34,7 +34,7 @@
 			</v-button>
 		</div>
 
-		<modal-item
+		<drawer-item
 			v-if="!disabled"
 			:active="editModalActive"
 			:collection="relationInfo.junctionCollection"
@@ -46,7 +46,7 @@
 			@update:active="cancelEdit"
 		/>
 
-		<modal-collection
+		<drawer-collection
 			v-if="!disabled"
 			:active.sync="selectModalActive"
 			:collection="relationInfo.relationCollection"
@@ -71,8 +71,8 @@
 <script lang="ts">
 import { defineComponent, ref, computed, toRefs, PropType } from '@vue/composition-api';
 import { Header as TableHeader } from '@/components/v-table/types';
-import ModalCollection from '@/views/private/components/modal-collection';
-import ModalItem from '@/views/private/components/modal-item';
+import DrawerCollection from '@/views/private/components/drawer-collection';
+import DrawerItem from '@/views/private/components/drawer-item';
 import { get } from 'lodash';
 import i18n from '@/lang';
 
@@ -83,7 +83,7 @@ import usePreview from '@/interfaces/many-to-many/use-preview';
 import useEdit from '@/interfaces/many-to-many/use-edit';
 
 export default defineComponent({
-	components: { ModalCollection, ModalItem },
+	components: { DrawerCollection, DrawerItem },
 	props: {
 		primaryKey: {
 			type: [Number, String],

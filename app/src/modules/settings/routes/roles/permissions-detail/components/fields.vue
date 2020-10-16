@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-modal-heading
+		<v-drawer-heading
 			:heading="
 				$t('fields_for_role', {
 					role: role ? role.name : $t('public'),

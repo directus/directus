@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-modal-heading :heading="$t('revision_post_update')" :subheading="$t('no_relational_data')" />
+		<v-drawer-heading :heading="$t('revision_post_update')" :subheading="$t('no_relational_data')" />
 		<v-form
 			disabled
 			:collection="revision.collection"

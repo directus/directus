@@ -145,11 +145,11 @@
 
 		<template #sidebar>
 			<user-info-sidebar-detail :is-new="isNew" :user="item" />
-			<revisions-sidebar-detail
+			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_users"
 				:primary-key="primaryKey"
-				ref="revisionsSidebarDetail"
+				ref="revisionsDrawerDetail"
 			/>
 			<comments-sidebar-detail
 				v-if="isBatch === false && isNew === false"
@@ -166,7 +166,7 @@ import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-
 import UsersNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
 import router from '@/router';
-import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
@@ -198,7 +198,7 @@ export default defineComponent({
 
 		return next();
 	},
-	components: { UsersNavigation, RevisionsSidebarDetail, SaveOptions, CommentsSidebarDetail, UserInfoSidebarDetail },
+	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions, CommentsSidebarDetail, UserInfoSidebarDetail },
 	props: {
 		primaryKey: {
 			type: String,
@@ -219,7 +219,7 @@ export default defineComponent({
 
 		const { info: collectionInfo } = useCollection(ref('directus_users'));
 
-		const revisionsSidebarDetail = ref<Vue | null>(null);
+		const revisionsDrawerDetail = ref<Vue | null>(null);
 
 		const {
 			isNew,
@@ -315,7 +315,7 @@ export default defineComponent({
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
-			revisionsSidebarDetail,
+			revisionsDrawerDetail,
 			previewLoading,
 			avatarSrc,
 			roleName,
@@ -356,7 +356,7 @@ export default defineComponent({
 		async function saveAndStay() {
 			const savedItem: Record<string, any> = await save();
 
-			revisionsSidebarDetail.value?.$data?.refresh?.();
+			revisionsDrawerDetail.value?.$data?.refresh?.();
 
 			if (props.primaryKey === '+') {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
