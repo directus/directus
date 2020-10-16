@@ -4,8 +4,16 @@
 	</div>
 
 	<div class="translations" v-else>
-		<button v-for="languageItem in languages" :key="languageItem[languagesPrimaryKeyField]">
+		<button
+			v-for="languageItem in languages"
+			:key="languageItem[languagesPrimaryKeyField]"
+			@click="startEditing(languageItem[languagesPrimaryKeyField])"
+			class="language-row"
+		>
+			<v-icon class="translate" name="translate" />
 			<render-template :template="languagesTemplate" :collection="languagesCollection" :item="languageItem" />
+			<div class="spacer" />
+			<v-icon class="launch" name="launch" />
 		</button>
 	</div>
 </template>
@@ -45,6 +53,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const { relationsForField, relationTranslations, relationLanguages } = useRelations();
+
 		const {
 			languages,
 			loading: languagesLoading,
@@ -53,6 +62,8 @@ export default defineComponent({
 			collection: languagesCollection,
 			primaryKeyField: languagesPrimaryKeyField,
 		} = useLanguages();
+
+		const { startEditing } = useEdits();
 
 		return {
 			relationsForField,
@@ -63,6 +74,7 @@ export default defineComponent({
 			languagesCollection,
 			languagesPrimaryKeyField,
 			languagesLoading,
+			startEditing,
 		};
 
 		function useRelations() {
@@ -132,10 +144,48 @@ export default defineComponent({
 				}
 			}
 		}
+
+		function useEdits() {
+			return { startEditing };
+
+			function startEditing(language: string | number) {
+				console.log('start editing ' + language);
+			}
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-//
+.language-row {
+	--v-icon-color: var(--foreground-subdued);
+
+	display: flex;
+	align-items: center;
+	width: 100%;
+	padding: 12px;
+	text-align: left;
+	background-color: var(--background-subdued);
+	border-radius: var(--border-radius);
+
+	& + & {
+		margin-top: 8px;
+	}
+
+	.translate {
+		margin-right: 12px;
+	}
+
+	.spacer {
+		flex-grow: 1;
+	}
+
+	.launch {
+		transition: color var(--fast) var(--transition);
+	}
+
+	&:hover .launch {
+		--v-icon-color: var(--foreground-normal);
+	}
+}
 </style>
