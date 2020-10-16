@@ -11,7 +11,7 @@
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
 
-		<template #header:append>
+		<template #subtitle>
 			<span class="warning">{{ $t('changes_are_immediate_and_permanent') }}</span>
 		</template>
 
@@ -103,19 +103,20 @@
 			</div>
 		</div>
 
-		<template #footer="{ close }">
+		<template #actions:prepend>
 			<div class="dimensions" v-if="imageData">
-				<v-icon name="info_outline" />
 				{{ $n(imageData.width) }}x{{ $n(imageData.height) }}
 				<template v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height">
 					->
 					{{ $n(newDimensions.width) }}x{{ $n(newDimensions.height) }}
 				</template>
 			</div>
+		</template>
 
-			<div class="spacer" />
-			<v-button @click="close" secondary>{{ $t('cancel') }}</v-button>
-			<v-button @click="save" :loading="saving">{{ $t('save') }}</v-button>
+		<template #actions>
+			<v-button @click="save" :loading="saving" icon rounded v-tooltip.bottom="$t('save')">
+				<v-icon name="check" />
+			</v-button>
 		</template>
 	</v-drawer>
 </template>
@@ -482,6 +483,7 @@ export default defineComponent({
 }
 
 .dimensions {
+	margin-right: 12px;
 	color: var(--foreground-subdued);
 	font-feature-settings: 'tnum';
 }

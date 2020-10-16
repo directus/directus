@@ -1,6 +1,7 @@
 import { Ref, ref, isRef, onMounted, onUnmounted } from '@vue/composition-api';
 import { notEmpty } from '@/utils/is-empty';
 import { ResizeObserver as ResizeObserverPolyfill } from 'resize-observer';
+import Vue from 'vue';
 
 declare global {
 	interface Window {
@@ -8,7 +9,7 @@ declare global {
 	}
 }
 
-export default function useElementSize<T extends Element>(target: T | Ref<T> | Ref<null>) {
+export default function useElementSize<T extends Element>(target: T | Ref<undefined | null | T | Vue>) {
 	const width = ref(0);
 	const height = ref(0);
 
@@ -24,10 +25,19 @@ export default function useElementSize<T extends Element>(target: T | Ref<T> | R
 	});
 
 	onMounted(() => {
-		const t = isRef(target) ? target.value : target;
+		const deref = isRef(target) ? target.value : target;
+		console.log(deref);
 
-		if (notEmpty(t)) {
-			resizeObserver.observe(t);
+		let targetElement: Element;
+
+		if (deref instanceof Vue) {
+			targetElement = (deref as Vue).$el;
+		} else {
+			targetElement = deref as Element;
+		}
+
+		if (notEmpty(targetElement)) {
+			resizeObserver.observe(targetElement);
 		}
 	});
 

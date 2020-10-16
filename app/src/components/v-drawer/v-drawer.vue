@@ -20,7 +20,7 @@
 					<slot name="sidebar" />
 				</nav>
 				<main ref="mainEl" class="main">
-					<header-bar :title="title">
+					<header-bar ref="headerBarEl" :title="title">
 						<template #headline>
 							<slot name="subtitle">
 								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
@@ -33,6 +33,7 @@
 							</v-button>
 						</template>
 
+						<template #actions:prepend><slot name="actions:prepend" /></template>
 						<template #actions><slot name="actions" /></template>
 
 						<template #title:append><slot name="header:append" /></template>
@@ -50,6 +51,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, provide } from '@vue/composition-api';
 import HeaderBar from '@/views/private/components/header-bar/header-bar.vue';
+import useElementSize from '@/composables/use-element-size';
 
 export default defineComponent({
 	components: {
@@ -89,6 +91,7 @@ export default defineComponent({
 		const sidebarActive = ref(false);
 		const localActive = ref(false);
 
+		const headerBarEl = ref<Vue>();
 		const mainEl = ref<Element>();
 
 		provide('main-element', mainEl);
@@ -103,7 +106,9 @@ export default defineComponent({
 			},
 		});
 
-		return { sidebarActive, _active, mainEl };
+		const { height } = useElementSize(mainEl);
+
+		return { sidebarActive, _active, mainEl, headerBarEl, headerHeight: height };
 	},
 });
 </script>
@@ -189,10 +194,17 @@ body {
 		}
 
 		.padding-box {
+			--content-padding: 16px;
+			--content-padding-bottom: 32px;
+
+			height: 1px; // allow height: 100% children
+			min-height: calc(100% - (65px + 24px + 24px)); // header height + 2x margin
 			padding: 16px 16px 32px;
 			padding-top: 0;
 
 			@include breakpoint(medium) {
+				--content-padding: 32px;
+
 				padding: 32px;
 				padding-top: 0;
 			}
