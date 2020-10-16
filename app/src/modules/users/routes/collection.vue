@@ -91,12 +91,12 @@
 			</template>
 		</component>
 
-		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_users_collection'))" />
-			</drawer-detail>
-			<layout-drawer-detail @input="layout = $event" :value="layout" />
-			<portal-target name="drawer" />
+			</sidebar-detail>
+			<layout-sidebar-detail @input="layout = $event" :value="layout" />
+			<portal-target name="sidebar" />
 		</template>
 	</private-view>
 </template>
@@ -109,7 +109,7 @@ import { i18n } from '@/lang';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-preset';
-import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
 import useNavigation from '../composables/use-navigation';
@@ -120,7 +120,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'users-collection',
-	components: { UsersNavigation, LayoutDrawerDetail, SearchInput },
+	components: { UsersNavigation, LayoutSidebarDetail, SearchInput },
 	props: {
 		queryFilters: {
 			type: Object as PropType<Record<string, string>>,

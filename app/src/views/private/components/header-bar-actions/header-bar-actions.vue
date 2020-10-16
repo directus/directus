@@ -5,7 +5,7 @@
 		</v-button>
 
 		<div class="action-buttons">
-			<v-button class="drawer-toggle" icon rounded secondary outlined @click="$emit('toggle:drawer')">
+			<v-button class="sidebar-toggle" icon rounded secondary outlined @click="$emit('toggle:sidebar')">
 				<v-icon name="info" outline />
 			</v-button>
 
@@ -40,6 +40,7 @@ export default defineComponent({
 
 	.expand {
 		--v-icon-color: var(--foreground-normal);
+
 		flex-shrink: 0;
 		margin-right: 8px;
 
@@ -61,7 +62,7 @@ export default defineComponent({
 			margin-right: 8px;
 		}
 
-		.drawer-toggle {
+		.sidebar-toggle {
 			flex-shrink: 0;
 
 			@include breakpoint(medium) {
@@ -94,7 +95,7 @@ export default defineComponent({
 
 	@include breakpoint(medium) {
 		.action-buttons ::v-deep {
-			> *:not(.drawer-toggle) {
+			> *:not(.sidebar-toggle) {
 				display: inherit !important;
 			}
 		}

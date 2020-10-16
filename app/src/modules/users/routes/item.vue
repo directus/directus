@@ -143,15 +143,15 @@
 			</v-card>
 		</v-dialog>
 
-		<template #drawer>
-			<user-info-drawer-detail :is-new="isNew" :user="item" />
-			<revisions-drawer-detail
+		<template #sidebar>
+			<user-info-sidebar-detail :is-new="isNew" :user="item" />
+			<revisions-sidebar-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_users"
 				:primary-key="primaryKey"
-				ref="revisionsDrawerDetail"
+				ref="revisionsSidebarDetail"
 			/>
-			<comments-drawer-detail
+			<comments-sidebar-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_users"
 				:primary-key="primaryKey"
@@ -166,15 +166,15 @@ import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-
 import UsersNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
 import router from '@/router';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import CommentsDrawerDetail from '@/views/private/components/comments-drawer-detail';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
 import { useFieldsStore, useUserStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@/types';
-import UserInfoDrawerDetail from '../components/user-info-drawer-detail.vue';
+import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 import { getRootPath } from '@/utils/get-root-path';
 import useShortcut from '@/composables/use-shortcut';
 import { isAllowed } from '@/utils/is-allowed';
@@ -198,7 +198,7 @@ export default defineComponent({
 
 		return next();
 	},
-	components: { UsersNavigation, RevisionsDrawerDetail, SaveOptions, CommentsDrawerDetail, UserInfoDrawerDetail },
+	components: { UsersNavigation, RevisionsSidebarDetail, SaveOptions, CommentsSidebarDetail, UserInfoSidebarDetail },
 	props: {
 		primaryKey: {
 			type: String,
@@ -219,7 +219,7 @@ export default defineComponent({
 
 		const { info: collectionInfo } = useCollection(ref('directus_users'));
 
-		const revisionsDrawerDetail = ref<Vue | null>(null);
+		const revisionsSidebarDetail = ref<Vue | null>(null);
 
 		const {
 			isNew,
@@ -315,7 +315,7 @@ export default defineComponent({
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
 			isBatch,
-			revisionsDrawerDetail,
+			revisionsSidebarDetail,
 			previewLoading,
 			avatarSrc,
 			roleName,
@@ -356,7 +356,7 @@ export default defineComponent({
 		async function saveAndStay() {
 			const savedItem: Record<string, any> = await save();
 
-			revisionsDrawerDetail.value?.$data?.refresh?.();
+			revisionsSidebarDetail.value?.$data?.refresh?.();
 
 			if (props.primaryKey === '+') {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

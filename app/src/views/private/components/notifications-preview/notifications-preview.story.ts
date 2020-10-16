@@ -2,7 +2,7 @@ import readme from './readme.md';
 import { defineComponent, ref } from '@vue/composition-api';
 import NotificationsPreview from './notifications-preview.vue';
 import NotificationItem from '../notification-item/';
-import DrawerButton from '../drawer-button/';
+import SidebarButton from '../sidebar-button/';
 import { NotificationRaw } from '@/types';
 import { i18n } from '@/lang';
 import withPadding from '../../../../../.storybook/decorators/with-padding';
@@ -47,13 +47,13 @@ export const basic = () =>
 	defineComponent({
 		i18n,
 		router: new VueRouter(),
-		components: { NotificationsPreview, NotificationItem, DrawerButton },
+		components: { NotificationsPreview, NotificationItem, SidebarButton },
 		setup() {
 			const notificationsStore = useNotificationsStore({});
 			const active = ref(false);
 
 			const appStore = useAppStore({});
-			appStore.state.drawerOpen = true;
+			appStore.state.sidebarOpen = true;
 
 			return { add, active };
 

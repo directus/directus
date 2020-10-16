@@ -26,7 +26,7 @@
 		<div class="spacer" />
 
 		<slot name="actions:prepend" />
-		<header-bar-actions @toggle:drawer="$emit('toggle:drawer')">
+		<header-bar-actions @toggle:sidebar="$emit('toggle:sidebar')">
 			<slot name="actions" />
 		</header-bar-actions>
 		<slot name="actions:append" />
@@ -169,7 +169,7 @@ export default defineComponent({
 		flex-grow: 1;
 	}
 
-	.drawer-toggle {
+	.sidebar-toggle {
 		flex-shrink: 0;
 		margin-left: 8px;
 

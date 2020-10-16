@@ -58,11 +58,11 @@
 			v-model="edits"
 		/>
 
-		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_item'))" />
-			</drawer-detail>
-			<revisions-drawer-detail v-if="isNew === false" collection="directus_webhooks" :primary-key="primaryKey" />
+			</sidebar-detail>
+			<revisions-sidebar-detail v-if="isNew === false" collection="directus_webhooks" :primary-key="primaryKey" />
 		</template>
 	</private-view>
 </template>
@@ -72,7 +72,7 @@ import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 
 import SettingsNavigation from '../../components/navigation.vue';
 import router from '@/router';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import marked from 'marked';
@@ -84,7 +84,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'webhooks-item',
-	components: { SettingsNavigation, RevisionsDrawerDetail, SaveOptions },
+	components: { SettingsNavigation, RevisionsSidebarDetail, SaveOptions },
 	props: {
 		primaryKey: {
 			type: String,

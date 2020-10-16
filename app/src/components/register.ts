@@ -104,14 +104,14 @@ Vue.component('transition-expand', TransitionExpand);
 
 import RenderDisplay from '@/views/private/components/render-display';
 import RenderTemplate from '@/views/private/components/render-template';
-import DrawerDetail from '@/views/private/components/drawer-detail/';
-import FilterDrawerDetail from '@/views/private/components/filter-drawer-detail';
+import SidebarDetail from '@/views/private/components/sidebar-detail/';
+import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
 import UserPopover from '@/views/private/components/user-popover';
 import ValueNull from '@/views/private/components/value-null';
 
 Vue.component('render-display', RenderDisplay);
 Vue.component('render-template', RenderTemplate);
-Vue.component('filter-drawer-detail', FilterDrawerDetail);
-Vue.component('drawer-detail', DrawerDetail);
+Vue.component('filter-sidebar-detail', FilterSidebarDetail);
+Vue.component('sidebar-detail', SidebarDetail);
 Vue.component('user-popover', UserPopover);
 Vue.component('value-null', ValueNull);

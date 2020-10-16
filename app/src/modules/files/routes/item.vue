@@ -155,15 +155,15 @@
 			</v-card>
 		</v-dialog>
 
-		<template #drawer>
-			<file-info-drawer-detail :file="item" @move-folder="moveToDialogActive = true" />
-			<revisions-drawer-detail
+		<template #sidebar>
+			<file-info-sidebar-detail :file="item" @move-folder="moveToDialogActive = true" />
+			<revisions-sidebar-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_files"
 				:primary-key="primaryKey"
-				ref="revisionsDrawerDetail"
+				ref="revisionsSidebarDetail"
 			/>
-			<comments-drawer-detail
+			<comments-sidebar-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_files"
 				:primary-key="primaryKey"
@@ -177,8 +177,8 @@ import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-
 import FilesNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
 import router from '@/router';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import CommentsDrawerDetail from '@/views/private/components/comments-drawer-detail';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import FilePreview from '@/views/private/components/file-preview';
@@ -187,7 +187,7 @@ import { nanoid } from 'nanoid';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
-import FileInfoDrawerDetail from '../components/file-info-drawer-detail.vue';
+import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import useFormFields from '@/composables/use-form-fields';
 import FolderPicker from '../components/folder-picker.vue';
 import api from '@/api';
@@ -215,13 +215,13 @@ export default defineComponent({
 	},
 	components: {
 		FilesNavigation,
-		RevisionsDrawerDetail,
-		CommentsDrawerDetail,
+		RevisionsSidebarDetail,
+		CommentsSidebarDetail,
 		SaveOptions,
 		FilePreview,
 		ImageEditor,
 		FileLightbox,
-		FileInfoDrawerDetail,
+		FileInfoSidebarDetail,
 		FolderPicker,
 		FilesNotFound,
 	},
@@ -237,7 +237,7 @@ export default defineComponent({
 		const { breadcrumb } = useBreadcrumb();
 		const fieldsStore = useFieldsStore();
 
-		const revisionsDrawerDetail = ref<Vue | null>(null);
+		const revisionsSidebarDetail = ref<Vue | null>(null);
 
 		const {
 			isNew,
@@ -322,7 +322,7 @@ export default defineComponent({
 			cacheBuster,
 			editActive,
 			previewActive,
-			revisionsDrawerDetail,
+			revisionsSidebarDetail,
 			formFields,
 			confirmLeave,
 			leaveTo,
@@ -375,7 +375,7 @@ export default defineComponent({
 
 		async function saveAndStay() {
 			await save();
-			revisionsDrawerDetail.value?.$data?.refresh?.();
+			revisionsSidebarDetail.value?.$data?.refresh?.();
 		}
 
 		async function saveAsCopyAndNavigate() {

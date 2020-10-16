@@ -48,7 +48,7 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const settingsStore = useSettingsStore();
 
-		const { hydrating, drawerOpen } = toRefs(appStore.state);
+		const { hydrating, sidebarOpen } = toRefs(appStore.state);
 
 		const brandStyle = computed(() => {
 			return {
@@ -73,9 +73,9 @@ export default defineComponent({
 				if (newWidth === oldWidth) return;
 
 				if (newWidth >= 1424) {
-					if (drawerOpen.value === false) drawerOpen.value = true;
+					if (sidebarOpen.value === false) sidebarOpen.value = true;
 				} else {
-					if (drawerOpen.value === true) drawerOpen.value = false;
+					if (sidebarOpen.value === true) sidebarOpen.value = false;
 				}
 			},
 			{ immediate: true }

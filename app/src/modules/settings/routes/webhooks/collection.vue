@@ -85,12 +85,12 @@
 			</template>
 		</component>
 
-		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_collection'))" />
-			</drawer-detail>
-			<layout-drawer-detail />
-			<portal-target name="drawer" />
+			</sidebar-detail>
+			<layout-sidebar-detail />
+			<portal-target name="sidebar" />
 		</template>
 	</private-view>
 </template>
@@ -98,7 +98,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import SettingsNavigation from '../../components/navigation.vue';
-import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import marked from 'marked';
 import { LayoutComponent } from '@/layouts/types';
 import { usePreset } from '@/composables/use-preset';
@@ -112,7 +112,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'webhooks-collection',
-	components: { SettingsNavigation, LayoutDrawerDetail, SearchInput },
+	components: { SettingsNavigation, LayoutSidebarDetail, SearchInput },
 	setup(props) {
 		const layoutRef = ref<LayoutComponent | null>(null);
 

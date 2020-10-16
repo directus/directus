@@ -176,11 +176,11 @@
 			</v-card>
 		</v-dialog>
 
-		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
-			</drawer-detail>
-			<revisions-drawer-detail
+			</sidebar-detail>
+			<revisions-sidebar-detail
 				v-if="
 					collectionInfo.meta &&
 					collectionInfo.meta.singleton === false &&
@@ -189,10 +189,10 @@
 				"
 				:collection="collection"
 				:primary-key="primaryKey"
-				ref="revisionsDrawerDetail"
+				ref="revisionsSidebarDetail"
 				@revert="refresh"
 			/>
-			<comments-drawer-detail
+			<comments-sidebar-detail
 				v-if="
 					collectionInfo.meta &&
 					collectionInfo.meta.singleton === false &&
@@ -214,8 +214,8 @@ import CollectionsNavigation from '../components/navigation.vue';
 import router from '@/router';
 import CollectionsNotFound from './not-found.vue';
 import useCollection from '@/composables/use-collection';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import CommentsDrawerDetail from '@/views/private/components/comments-drawer-detail';
+import RevisionsSidebarDetail from '@/views/private/components/revisions-sidebar-detail';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import i18n from '@/lang';
@@ -235,8 +235,8 @@ export default defineComponent({
 	components: {
 		CollectionsNavigation,
 		CollectionsNotFound,
-		RevisionsDrawerDetail,
-		CommentsDrawerDetail,
+		RevisionsSidebarDetail,
+		CommentsSidebarDetail,
 		SaveOptions,
 	},
 	props: {
@@ -260,7 +260,7 @@ export default defineComponent({
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
-		const revisionsDrawerDetail = ref<Vue | null>(null);
+		const revisionsSidebarDetail = ref<Vue | null>(null);
 
 		const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
@@ -355,7 +355,7 @@ export default defineComponent({
 			archiveTooltip,
 			breadcrumb,
 			title,
-			revisionsDrawerDetail,
+			revisionsSidebarDetail,
 			marked,
 			refresh,
 			confirmLeave,
@@ -395,7 +395,7 @@ export default defineComponent({
 
 			const savedItem: Record<string, any> = await save();
 
-			revisionsDrawerDetail.value?.$data?.refresh?.();
+			revisionsSidebarDetail.value?.$data?.refresh?.();
 
 			if (props.primaryKey === '+') {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

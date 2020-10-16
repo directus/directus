@@ -203,8 +203,8 @@
 			</template>
 		</component>
 
-		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div
 					class="page-description"
 					v-html="
@@ -215,10 +215,10 @@
 						)
 					"
 				/>
-			</drawer-detail>
-			<layout-drawer-detail @input="layout = $event" :value="layout" />
-			<portal-target name="drawer" />
-			<export-drawer-detail
+			</sidebar-detail>
+			<layout-sidebar-detail @input="layout = $event" :value="layout" />
+			<portal-target name="sidebar" />
+			<export-sidebar-detail
 				:layout-query="layoutQuery"
 				:search-query="searchQuery"
 				:collection="currentCollection"
@@ -247,8 +247,8 @@ import { LayoutComponent } from '@/layouts/types';
 import CollectionsNotFound from './not-found.vue';
 import useCollection from '@/composables/use-collection';
 import usePreset from '@/composables/use-preset';
-import LayoutDrawerDetail from '@/views/private/components/layout-drawer-detail';
-import ExportDrawerDetail from '@/views/private/components/export-drawer-detail';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
+import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
@@ -265,8 +265,8 @@ export default defineComponent({
 	components: {
 		CollectionsNavigation,
 		CollectionsNotFound,
-		LayoutDrawerDetail,
-		ExportDrawerDetail,
+		LayoutSidebarDetail,
+		ExportSidebarDetail,
 		SearchInput,
 		BookmarkAdd,
 		BookmarkEdit,

@@ -35,9 +35,9 @@ describe('Views / Private / Header Bar', () => {
 
 		expect(component.emitted('toggle:nav')?.[0]).toBeTruthy();
 
-		const drawerToggle = component.find('.drawer-toggle > .button');
-		drawerToggle.trigger('click');
+		const sidebarToggle = component.find('.sidebar-toggle > .button');
+		sidebarToggle.trigger('click');
 
-		expect(component.emitted('toggle:drawer')?.[0]).toBeTruthy();
+		expect(component.emitted('toggle:sidebar')?.[0]).toBeTruthy();
 	});
 });

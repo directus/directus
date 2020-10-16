@@ -40,7 +40,7 @@
 					<v-icon
 						class="icon"
 						:class="{
-							hidden: item.meta && item.meta.hidden || false,
+							hidden: (item.meta && item.meta.hidden) || false,
 							system: item.collection.startsWith('directus_'),
 							unmanaged: item.meta === null && item.collection.startsWith('directus_') === false,
 						}"
@@ -52,7 +52,7 @@
 					<span
 						class="collection"
 						:class="{
-							hidden: item.meta && item.meta.hidden || false,
+							hidden: (item.meta && item.meta.hidden) || false,
 							system: item.collection.startsWith('directus_'),
 							unmanaged: item.meta === null && item.collection.startsWith('directus_') === false,
 						}"
@@ -86,10 +86,10 @@
 
 		<router-view name="add" />
 
-		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_settings_datamodel_collections'))" />
-			</drawer-detail>
+			</sidebar-detail>
 			<collections-filter v-model="activeTypes" />
 		</template>
 	</private-view>
