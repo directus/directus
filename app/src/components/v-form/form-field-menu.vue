@@ -1,6 +1,10 @@
 <template>
 	<v-list>
-		<v-list-item :disabled="value === null" @click="$emit('input', null)">
+		<v-list-item
+			v-if="defaultValue === null || !isRequired"
+			:disabled="value === null"
+			@click="$emit('input', null)"
+		>
 			<v-list-item-icon><v-icon name="delete_outline" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('clear_value') }}</v-list-item-content>
 		</v-list-item>
@@ -56,7 +60,12 @@ export default defineComponent({
 			return savedValue !== undefined ? savedValue : null;
 		});
 
-		return { defaultValue };
+		const isRequired = computed(() => {
+			const isNullable = props.field?.schema?.is_nullable;
+			return !isNullable;
+		});
+
+		return { defaultValue, isRequired };
 	},
 });
 </script>
