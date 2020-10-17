@@ -57,7 +57,7 @@ export async function hydrate(stores = useStores()) {
 		 */
 		await userStore.hydrate();
 
-		setLanguage((userStore.state.currentUser?.language as Language) || 'en-US');
+		await setLanguage((userStore.state.currentUser?.language as Language) || 'en-US');
 
 		await Promise.all(stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.()));
 
