@@ -161,7 +161,7 @@ export default defineComponent({
 				}
 			}
 
-			if (props.slug === true) {
+			if (props.dbSafe === true) {
 				const dbSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890-_~ '.split('');
 
 				const isAllowed = dbSafeCharacters.includes(key) || systemKeys.includes(key);
