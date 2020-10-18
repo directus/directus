@@ -1,5 +1,5 @@
 - name: Getting Started
-  icon: play_arrow
+  icon: play_circle_outline
   to: "/getting-started"
   children:
   - name: Introduction

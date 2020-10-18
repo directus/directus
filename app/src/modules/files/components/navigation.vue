@@ -34,7 +34,7 @@
 		</v-list-item>
 
 		<v-list-item to="/files/mine" exact>
-			<v-list-item-icon><v-icon name="face" /></v-list-item-icon>
+			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('my_files') }}</v-list-item-content>
 		</v-list-item>
 

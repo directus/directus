@@ -49,7 +49,7 @@
 
 		<v-list-item to="/activity?action=comment" exact>
 			<v-list-item-icon>
-				<v-icon name="notes" />
+				<v-icon name="chat_bubble_outline" />
 			</v-list-item-icon>
 			<v-list-item-content>
 				{{ $t('comment') }}
