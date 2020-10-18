@@ -40,14 +40,15 @@ The **Storage Asset Transform** can be used in conjunction with the presets to f
 
 Fetching thumbnails is as easy as adding query parameters to the original file's URL. If a requested thumbnail doesn't yet exist, it is dynamically generated and immediately returned. When requesting a thumbnail, the following parameters are all required.
 
-* **`f`** — The **fit** of the thumbnail, either `crop` or `contain`
-* **`w`** — The **width** of the thumbnail in pixels
-* **`h`** — The **height** of the thumbnail in pixels
-* **`q`** — The **quality** of the thumbnail (`0` to `100`)
+* **`fit`** — The **fit** of the thumbnail, either `crop` or `contain`
+* **`width`** — The **width** of the thumbnail in pixels
+* **`height`** — The **height** of the thumbnail in pixels
+* **`quality`** — The **quality** of the thumbnail (`0` to `100`)
+* **`noupscale`** — Disable image up-scaling
 
 ```
-example.com/assets/<file-id>?f=<fit>&w=<width>&h=<height>&q=<quality>
-example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4?f=crop&w=200&h=200&q=80
+example.com/assets/<file-id>?fit=<fit>&width=<width>&height=<height>&quality=<quality>
+example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4?fit=crop&width=200&height=200&quality=80
 ```
 
 Alternatively, you can reference a specific thumbnail by its preset key.

@@ -71,12 +71,17 @@ properties:
           enum:
             - cover
             - contain
+            - inside
+            - outside
         width:
           description: Width of the thumbnail.
           type: integer
         height:
           description: Height of the thumbnail.
           type: integer
+        noupscale:
+          description: No image upscale
+          type: boolean
         quality:
           description: Quality of the compression used.
           type: integer

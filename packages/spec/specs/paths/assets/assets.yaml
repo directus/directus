@@ -17,23 +17,28 @@ get:
       description: The key of the asset size configured in settings.
       schema:
         type: string
-    - name: w
+    - name: width
       in: query
       description: Width of the file in pixels.
       schema:
         type: integer
-    - name: h
+    - name: height
       in: query
       description: Height of the file in pixels.
       schema:
         type: integer
-    - name: f
+    - name: fit
       in: query
       description: Fit of the file
       schema:
         type: string
-        enum: [crop, contain]
-    - name: q
+        enum: [crop, contain, inside, outside]
+    - name: noupscale
+      in: query
+      description: No image upscale.
+      schema:
+        type: boolean
+    - name: quality
       in: query
       description: Quality of compression.
       schema:

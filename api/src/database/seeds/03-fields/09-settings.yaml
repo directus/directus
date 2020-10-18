@@ -152,6 +152,10 @@ fields:
                   text: Contain (preserve aspect ratio)
                 - value: cover
                   text: Cover (forces exact size)
+                - value: inside
+                  text: Fit inside
+                - value: outside
+                  text: Fit outside
             required: true
             width: half
         - field: width
@@ -168,6 +172,15 @@ fields:
             interface: numeric
             required: true
             width: half
+        - field: noupscale
+          type: boolean
+          schema:
+            default_value: false
+          meta:
+            interface: toggle
+            width: half
+            options:
+              label: No image upscale
         - field: quality
           type: integer
           name: Quality
@@ -180,7 +193,7 @@ fields:
               min: 0
               step: 1
             required: true
-            width: full
+            width: half
       template: '{{key}}'
     special: json
     sort: 13
