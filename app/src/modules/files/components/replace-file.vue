@@ -1,9 +1,9 @@
 <template>
 	<v-dialog :active="active" @toggle="$emit('toggle', false)" @esc="$emit('toggle', false)">
-		<v-card>
+		<v-card v-if="file">
 			<v-card-title>{{ $t('replace_file') }}</v-card-title>
 			<v-card-text>
-				<v-upload :preset="preset" @input="replaceFile" from-url />
+				<v-upload :preset="preset" :replace-with-id="file.id" @input="uploaded" from-url />
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="$emit('toggle', false)">{{ $t('done') }}</v-button>
@@ -37,35 +37,11 @@ export default defineComponent({
 			default: () => ({}),
 		},
 	},
-	setup(props) {
-		const dialogActive = ref(false);
-		const saving = ref(false);
-		const savingError = ref(null);
-
-		return { replaceFile, dialogActive, saving, savingError };
-
-		async function replaceFile(uploadedFile: any) {
-			saving.value = true;
-
-			try {
-				await api.delete(`/files/${props.file.id}`);
-
-				const newFile = await api.patch(`/files/${uploadedFile.id}`, {
-					id: props.file.id,
-					title: props.file.title,
-					description: props.file.description,
-					tags: props.file.tags,
-					location: props.file.location,
-					folder: props.file.folder,
-					filename_download: props.file.filename_download,
-				});
-				dialogActive.value = false;
-				window.location.reload();
-			} catch (err) {
-				savingError.value = err;
-			} finally {
-				saving.value = false;
-			}
+	setup(props, { emit }) {
+		return { uploaded };
+		function uploaded() {
+			emit('toggle', false);
+			emit('replaced');
 		}
 	},
 });

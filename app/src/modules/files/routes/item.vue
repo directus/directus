@@ -119,15 +119,13 @@
 				:width="item.width"
 				:height="item.height"
 				:title="item.title"
-				@click="previewActive = true"
+				@click="replaceFileDialogActive = true"
 			/>
-
-			<file-lightbox v-if="item" :id="item.id" v-model="previewActive" />
 
 			<image-editor
 				v-if="item && item.type.startsWith('image')"
 				:id="item.id"
-				@refresh="changeCacheBuster"
+				@refresh="refresh"
 				v-model="editActive"
 			/>
 
@@ -156,11 +154,7 @@
 		</v-dialog>
 
 		<template #sidebar>
-			<file-info-sidebar-detail
-				:file="item"
-				@move-folder="moveToDialogActive = true"
-				@replace-file="replaceFileDialogActive = true"
-			/>
+			<file-info-sidebar-detail :file="item" />
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_files"
@@ -174,7 +168,7 @@
 			/>
 		</template>
 
-		<replace-file v-model="replaceFileDialogActive" :file="item" />
+		<replace-file v-model="replaceFileDialogActive" @replaced="refresh" :file="item" />
 	</private-view>
 </template>
 
@@ -190,7 +184,6 @@ import SaveOptions from '@/views/private/components/save-options';
 import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
-import FileLightbox from '@/views/private/components/file-lightbox';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
@@ -227,7 +220,6 @@ export default defineComponent({
 		SaveOptions,
 		FilePreview,
 		ImageEditor,
-		FileLightbox,
 		FileInfoSidebarDetail,
 		FolderPicker,
 		FilesNotFound,
@@ -265,13 +257,15 @@ export default defineComponent({
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 		const confirmDelete = ref(false);
-		const cacheBuster = ref(nanoid());
 		const editActive = ref(false);
-		const previewActive = ref(false);
 		const fileSrc = computed(() => {
-			return (
-				getRootPath() + `assets/${props.primaryKey}?cache-buster=${cacheBuster.value}&key=system-large-contain`
-			);
+			if (item.value && item.value.modified_on) {
+				return (
+					getRootPath() +
+					`assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`
+				);
+			}
+			return getRootPath() + `assets/${props.primaryKey}?key=system-large-contain`;
 		});
 
 		// These are the fields that will be prevented from showing up in the form because they'll be shown in the sidebar
@@ -327,10 +321,7 @@ export default defineComponent({
 			saveAndStay,
 			saveAsCopyAndNavigate,
 			isBatch,
-			changeCacheBuster,
-			cacheBuster,
 			editActive,
-			previewActive,
 			revisionsDrawerDetail,
 			formFields,
 			confirmLeave,
@@ -345,11 +336,8 @@ export default defineComponent({
 			form,
 			to,
 			replaceFileDialogActive,
+			refresh,
 		};
-
-		function changeCacheBuster() {
-			cacheBuster.value = nanoid();
-		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {
@@ -405,7 +393,7 @@ export default defineComponent({
 		}
 
 		function downloadFile() {
-			const filePath = getRootPath() + `assets/${props.primaryKey}`;
+			const filePath = getRootPath() + `assets/${props.primaryKey}?download=true`;
 			window.open(filePath, '_blank');
 		}
 
@@ -415,7 +403,7 @@ export default defineComponent({
 			const selectedFolder = ref<number | null>();
 
 			watch(item, () => {
-				selectedFolder.value = item.value.folder;
+				selectedFolder.value = item.value?.folder || null;
 			});
 
 			return { moveToDialogActive, moving, moveToFolder, selectedFolder };

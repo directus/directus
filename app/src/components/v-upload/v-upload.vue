@@ -103,6 +103,10 @@ export default defineComponent({
 			type: Object,
 			default: () => ({}),
 		},
+		replaceWithId: {
+			type: String,
+			default: null,
+		},
 		fromUrl: {
 			type: Boolean,
 			default: false,
@@ -160,6 +164,7 @@ export default defineComponent({
 							progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
 							done.value = percentage.filter((p) => p === 100).length;
 						},
+						replaceWithId: props.replaceWithId,
 						preset: props.preset,
 					});
 

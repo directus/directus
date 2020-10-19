@@ -67,16 +67,14 @@
 			<div>
 				<dt>{{ $t('file') }}</dt>
 				<dd>
-					<button @click="$emit('open-file')">{{ $t('open') }}</button>
-					{{ $t('or') }}
-					<button @click="$emit('replace-file')">{{ $t('replace') }}</button>
+					<a :href="`${getRootPath()}assets/${file.id}`" target="_blank">{{ $t('open') }}</a>
 				</dd>
 			</div>
 
 			<div>
 				<dt>{{ $t('folder') }}</dt>
 				<dd>
-					<button @click="$emit('move-folder')">{{ folder ? folder.name : $t('file_library') }}</button>
+					<router-link :to="folderLink">{{ folder ? folder.name : $t('file_library') }}</router-link>
 				</dd>
 			</div>
 
@@ -124,6 +122,7 @@ import i18n from '@/lang';
 import marked from 'marked';
 import localizedFormat from '@/utils/localized-format';
 import api from '@/api';
+import getRootPath from '@/utils/get-root-path';
 
 export default defineComponent({
 	inheritAttrs: false,
@@ -148,9 +147,20 @@ export default defineComponent({
 
 		const { creationDate, modificationDate } = useDates();
 		const { userCreated, userModified } = useUser();
-		const { folder } = useFolder();
+		const { folder, folderLink } = useFolder();
 
-		return { readableMimeType, size, creationDate, modificationDate, userCreated, userModified, folder, marked };
+		return {
+			readableMimeType,
+			size,
+			creationDate,
+			modificationDate,
+			userCreated,
+			userModified,
+			folder,
+			marked,
+			folderLink,
+			getRootPath,
+		};
 
 		function useDates() {
 			const creationDate = ref<string | null>(null);
@@ -238,16 +248,23 @@ export default defineComponent({
 
 		function useFolder() {
 			type Folder = {
-				id: number;
+				id: string;
 				name: string;
 			};
 
 			const loading = ref(false);
 			const folder = ref<Folder | null>(null);
 
+			const folderLink = computed(() => {
+				if (folder.value === null) {
+					return `/files`;
+				}
+				return `/files/?folder=${folder.value.id}`;
+			});
+
 			watch(() => props.file, fetchFolder, { immediate: true });
 
-			return { folder };
+			return { folder, folderLink };
 
 			async function fetchFolder() {
 				if (!props.file) return null;

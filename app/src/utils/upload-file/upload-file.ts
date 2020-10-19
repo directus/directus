@@ -11,6 +11,7 @@ export default async function uploadFile(
 		onProgressChange?: (percentage: number) => void;
 		notifications?: boolean;
 		preset?: Record<string, any>;
+		replaceWithId?: string;
 	}
 ) {
 	const progressHandler = options?.onProgressChange || (() => undefined);
@@ -25,9 +26,17 @@ export default async function uploadFile(
 	formData.append('file', file);
 
 	try {
-		const response = await api.post(`/files`, formData, {
-			onUploadProgress,
-		});
+		let response = null;
+
+		if (options?.replaceWithId !== undefined) {
+			response = await api.patch(`/files/${options.replaceWithId}`, formData, {
+				onUploadProgress,
+			});
+		} else {
+			response = await api.post(`/files`, formData, {
+				onUploadProgress,
+			});
+		}
 
 		if (options?.notifications) {
 			notify({
