@@ -8,8 +8,10 @@ if (require.main === module) {
 }
 
 export default async function start() {
-	const server = require('./server').default;
+	const createServer = require('./server').default;
 	const { validateDBConnection } = require('./database');
+
+	const server = await createServer();
 
 	await validateDBConnection();
 
