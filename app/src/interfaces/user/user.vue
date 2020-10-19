@@ -12,11 +12,7 @@
 				>
 					<template #input v-if="currentUser">
 						<div class="preview">
-							<render-template
-								collection="directus_users"
-								:item="currentUser"
-								:template="displayTemplate"
-							/>
+							{{ userName(currentUser) }}
 						</div>
 					</template>
 
@@ -65,7 +61,7 @@
 						@click="setCurrent(item)"
 					>
 						<v-list-item-content>
-							<render-template collection="directus_users" :template="displayTemplate" :item="item" />
+							{{ userName(currentUser) }}
 						</v-list-item-content>
 					</v-list-item>
 				</template>
@@ -105,10 +101,6 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		template: {
-			type: String,
-			default: null,
-		},
 		selectMode: {
 			type: String as PropType<'auto' | 'dropdown' | 'modal'>,
 			default: 'auto',
@@ -122,7 +114,7 @@ export default defineComponent({
 		const { usesMenu, menuActive } = useMenu();
 		const { info: collectionInfo } = useCollection(ref('directus_users'));
 		const { selection, stageSelection, selectModalActive } = useSelection();
-		const { displayTemplate, onPreviewClick, requiredFields } = usePreview();
+		const { onPreviewClick } = usePreview();
 		const { totalCount, loading: usersLoading, fetchUsers, users } = useUsers();
 
 		const { setCurrent, currentUser, loading: loadingCurrent, currentPrimaryKey } = useCurrent();
@@ -134,7 +126,6 @@ export default defineComponent({
 		return {
 			collectionInfo,
 			currentUser,
-			displayTemplate,
 			users,
 			usersLoading,
 			loadingCurrent,
@@ -192,16 +183,10 @@ export default defineComponent({
 			async function fetchCurrent() {
 				loading.value = true;
 
-				const fields = requiredFields;
-
-				if (fields.includes('id') === false) {
-					fields.push('id');
-				}
-
 				try {
 					const response = await api.get(`/users/${props.value}`, {
 						params: {
-							fields: fields,
+							fields: ['id', 'email', 'first_name', 'last_name'],
 						},
 					});
 
@@ -231,11 +216,7 @@ export default defineComponent({
 
 				loading.value = true;
 
-				const fields = requiredFields;
-
-				if (fields.includes('id') === false) {
-					fields.push('id');
-				}
+				const fields = ['id', 'email', 'first_name', 'last_name'];
 
 				try {
 					const response = await api.get(`/users`, {
@@ -280,10 +261,7 @@ export default defineComponent({
 		}
 
 		function usePreview() {
-			const displayTemplate = '{{ first_name }} {{ last_name }}';
-			const requiredFields = ['first_name', 'last_name'];
-
-			return { onPreviewClick, displayTemplate, requiredFields };
+			return { onPreviewClick };
 
 			function onPreviewClick() {
 				if (props.disabled) return;

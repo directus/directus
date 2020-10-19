@@ -5,17 +5,17 @@
 				v-if="(display === 'avatar' || display === 'both') && src"
 				:src="src"
 				role="presentation"
-				:alt="value && `${value.first_name} ${value.last_name}`"
+				:alt="value && userName(value)"
 				:class="{ circle }"
 			/>
 			<img
 				v-else-if="(display === 'avatar' || display === 'both') && src === null"
 				src="../../assets/avatar-placeholder.svg"
 				role="presentation"
-				:alt="value && `${value.first_name} ${value.last_name}`"
+				:alt="value && userName(value)"
 				:class="{ circle }"
 			/>
-			<span v-if="display === 'name' || display === 'both'">{{ value.first_name }} {{ value.last_name }}</span>
+			<span v-if="display === 'name' || display === 'both'">{{ userName(value) }}</span>
 		</div>
 	</user-popover>
 </template>
@@ -23,6 +23,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { getRootPath } from '@/utils/get-root-path';
+import { userName } from '@/utils/user-name';
 
 type User = {
 	id: number;
@@ -58,7 +59,7 @@ export default defineComponent({
 			return null;
 		});
 
-		return { src };
+		return { src, userName };
 	},
 });
 </script>

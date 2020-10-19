@@ -3,6 +3,7 @@ import api from '@/api';
 import { useLatencyStore } from '@/stores';
 
 import { User } from '@/types';
+import { userName } from '@/utils/user-name';
 
 export const useUserStore = createStore({
 	id: 'userStore',
@@ -14,7 +15,7 @@ export const useUserStore = createStore({
 	getters: {
 		fullName(state) {
 			if (state.currentUser === null) return null;
-			return state.currentUser.first_name + ' ' + state.currentUser.last_name;
+			return userName(state.currentUser);
 		},
 		isAdmin(state) {
 			return state.currentUser?.role.admin_access === true || false;
