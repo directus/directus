@@ -1,46 +1,43 @@
 <template>
-	<div v-if="itemsLoading || languagesLoading" class="loader">
+	<div v-if="languagesLoading">
 		<v-skeleton-loader v-for="n in 5" :key="n" />
 	</div>
 
-	<v-item-group v-else scope="translations" class="translations">
-		<v-item
-			scope="translations"
-			class="row"
-			v-for="(item, index) in languages"
-			:key="item[languagesPrimaryKeyField.field]"
-			#default="{ active, toggle }"
+	<div class="translations" v-else>
+		<button
+			v-for="languageItem in languages"
+			:key="languageItem[languagesPrimaryKeyField]"
+			@click="startEditing(languageItem[languagesPrimaryKeyField])"
+			class="language-row"
 		>
-			<div class="header" @click="toggle">
-				<render-template :template="rowTemplate" :collection="languagesCollection" :item="item" />
-			</div>
-			<transition-expand>
-				<div v-if="active">
-					<div class="form">
-						<v-divider />
-						<v-form
-							:initial-values="existing[index]"
-							:collection="translationsCollection"
-							:primary-key="existing[index][translationsPrimaryKeyField.field] || '+'"
-							:edits="edits[index]"
-							@input="emitValue($event, existing[index][translationsPrimaryKeyField.field])"
-						/>
-					</div>
-				</div>
-			</transition-expand>
-		</v-item>
-	</v-item-group>
+			<v-icon class="translate" name="translate" />
+			<render-template :template="languagesTemplate" :collection="languagesCollection" :item="languageItem" />
+			<div class="spacer" />
+			<v-icon class="launch" name="launch" />
+		</button>
+
+		<drawer-item
+			v-if="editing"
+			active
+			:collection="translationsCollection"
+			:primary-key="editing"
+			:edits="edits"
+			@input="stageEdits"
+			@update:active="cancelEdit"
+		/>
+	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, toRefs, watch, PropType } from '@vue/composition-api';
-import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';
-import useCollection from '@/composables/use-collection';
+import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
+import { useRelationsStore } from '@/stores/';
 import api from '@/api';
-import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import { Relation } from '@/types';
+import getFieldsFromTemplate from '@/utils/get-fields-from-template';
+import DrawerItem from '@/views/private/components/drawer-item/drawer-item.vue';
 
 export default defineComponent({
+	components: { DrawerItem },
 	props: {
 		collection: {
 			type: String,
@@ -59,70 +56,63 @@ export default defineComponent({
 			default: null,
 		},
 		value: {
-			type: Array as PropType<Record<string, any>[]>,
+			type: Array as PropType<(string | number | Record<string, any>)[]>,
 			default: () => [],
 		},
 	},
 	setup(props, { emit }) {
-		const collectionsStore = useCollectionsStore();
-		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
 		const {
-			relations,
+			relationsForField,
+			translationsRelation,
 			translationsCollection,
-			languagesCollection,
-			languageField,
 			translationsPrimaryKeyField,
-		} = useRelation();
+			languagesRelation,
+			languagesCollection,
+			languagesPrimaryKeyField,
+			translationsLanguageField,
+		} = useRelations();
 
 		const {
 			languages,
 			loading: languagesLoading,
 			error: languagesError,
-			primaryKeyField: languagesPrimaryKeyField,
+			template: languagesTemplate,
 		} = useLanguages();
 
-		const { items, loading: itemsLoading, error: itemsError } = useCurrent();
-		const { existing, edits, emitValue } = useValues();
-
-		const rowTemplate = computed(() => {
-			const { info, primaryKeyField } = useCollection(languagesCollection);
-			const defaultTemplate = info.value?.meta?.display_template;
-
-			return props.template || defaultTemplate || `{{ ${primaryKeyField.value.field} }}`;
-		});
+		const { startEditing, editing, edits, stageEdits, cancelEdit } = useEdits();
 
 		return {
-			relations,
+			relationsForField,
+			translationsRelation,
 			translationsCollection,
-			languagesCollection,
+			languagesRelation,
 			languages,
-			languagesLoading,
-			languagesError,
+			languagesTemplate,
+			languagesCollection,
 			languagesPrimaryKeyField,
-			items,
-			itemsLoading,
-			itemsError,
-			existing,
+			languagesLoading,
+			startEditing,
+			translationsLanguageField,
+			editing,
+			stageEdits,
+			cancelEdit,
 			edits,
-			emitValue,
-			rowTemplate,
-			translationsPrimaryKeyField,
 		};
 
-		function useRelation() {
-			const relations = computed(() => {
+		function useRelations() {
+			const relationsForField = computed(() => {
 				return relationsStore.getRelationsForField(props.collection, props.field);
 			});
 
 			const translationsRelation = computed(() => {
-				if (!relations.value || relations.value.length === 0) return null;
-
+				if (!relationsForField.value) return null;
 				return (
-					relations.value.find((relation: Relation) => {
-						return relation.one_collection === props.collection && relation.one_field === props.field;
-					}) || null
+					relationsForField.value.find(
+						(relation: Relation) =>
+							relation.one_collection === props.collection && relation.one_field === props.field
+					) || null
 				);
 			});
 
@@ -132,16 +122,15 @@ export default defineComponent({
 			});
 
 			const translationsPrimaryKeyField = computed(() => {
-				return fieldsStore.getPrimaryKeyFieldForCollection(translationsCollection.value);
+				if (!translationsRelation.value) return null;
+				return translationsRelation.value.many_primary;
 			});
 
 			const languagesRelation = computed(() => {
-				if (!relations.value || relations.value.length === 0) return null;
-
+				if (!relationsForField.value) return null;
 				return (
-					relations.value.find((relation: Relation) => {
-						return relation.one_collection !== props.collection && relation.one_field !== props.field;
-					}) || null
+					relationsForField.value.find((relation: Relation) => relation !== translationsRelation.value) ||
+					null
 				);
 			});
 
@@ -150,49 +139,51 @@ export default defineComponent({
 				return languagesRelation.value.one_collection;
 			});
 
-			const languageField = computed(() => {
+			const languagesPrimaryKeyField = computed(() => {
+				if (!languagesRelation.value) return null;
+				return languagesRelation.value.one_primary;
+			});
+
+			const translationsLanguageField = computed(() => {
 				if (!languagesRelation.value) return null;
 				return languagesRelation.value.many_field;
 			});
 
 			return {
-				relations,
+				relationsForField,
+				translationsRelation,
 				translationsCollection,
-				languagesCollection,
-				languageField,
 				translationsPrimaryKeyField,
+				languagesRelation,
+				languagesCollection,
+				languagesPrimaryKeyField,
+				translationsLanguageField,
 			};
 		}
 
 		function useLanguages() {
-			const languages = ref<Record<string, any> | null>(null);
+			const languages = ref();
 			const loading = ref(false);
-			const error = ref(null);
+			const error = ref<any>(null);
 
-			const { primaryKeyField } = useCollection(languagesCollection);
+			const template = computed(() => {
+				if (!languagesPrimaryKeyField.value) return '';
+				return props.template || `{{ ${languagesPrimaryKeyField.value} }}`;
+			});
 
 			watch(languagesCollection, fetchLanguages, { immediate: true });
 
-			return { languages, loading, error, primaryKeyField };
+			return { languages, loading, error, template };
 
 			async function fetchLanguages() {
+				if (!languagesCollection.value) return;
+
+				const fields = getFieldsFromTemplate(template.value);
+
 				loading.value = true;
 
-				// const fields = getFieldsFromTemplate(props.template);
-				const fields = ['*'];
-
-				if (fields.includes(primaryKeyField.value.field) === false) {
-					fields.push(primaryKeyField.value.field);
-				}
-
 				try {
-					const response = await api.get(`/items/${languagesCollection.value}`, {
-						params: {
-							fields: fields,
-							limit: -1,
-						},
-					});
-
+					const response = await api.get(`/items/${languagesCollection.value}`, { params: { fields } });
 					languages.value = response.data.data;
 				} catch (err) {
 					error.value = err;
@@ -202,100 +193,135 @@ export default defineComponent({
 			}
 		}
 
-		function useCurrent() {
+		function useEdits() {
+			const keyMap = ref<Record<string, string | number>[]>();
+
 			const loading = ref(false);
-			const items = ref<any[]>([]);
-			const error = ref(null);
+			const error = ref<any>(null);
 
-			watch(
-				() => props.primaryKey,
-				(newKey) => {
-					if (newKey !== null && newKey !== '+') {
-						fetchCurrent();
-					}
-				},
-				{
-					immediate: true,
+			const editing = ref<boolean | string | number>(false);
+			const edits = ref<Record<string, any>>();
+
+			const existingPrimaryKeys = computed(() => {
+				return (props.value || [])
+					.map((value) => {
+						if (typeof value === 'string' || typeof value === 'number') return value;
+						return value[translationsPrimaryKeyField.value];
+					})
+					.filter((key) => key);
+			});
+
+			watch(() => props.value, fetchKeyMap, { immediate: true });
+
+			return { startEditing, editing, edits, stageEdits, cancelEdit };
+
+			function startEditing(language: string | number) {
+				edits.value = {
+					[translationsLanguageField.value]: language,
+				};
+
+				const existingEdits = (props.value || []).find((val) => {
+					if (typeof val === 'string' || typeof val === 'number') return false;
+					return val[translationsLanguageField.value] === language;
+				});
+
+				if (existingEdits) {
+					edits.value = {
+						...edits.value,
+						...(existingEdits as Record<string, any>),
+					};
 				}
-			);
 
-			return { loading, items, error };
+				const primaryKey =
+					keyMap.value?.find((record) => record[translationsLanguageField.value] === language)?.[
+						translationsPrimaryKeyField.value
+					] || '+';
 
-			async function fetchCurrent() {
+				if (primaryKey !== '+') {
+					edits.value = {
+						...edits.value,
+						[translationsPrimaryKeyField.value]: primaryKey,
+					};
+				}
+
+				editing.value = primaryKey;
+			}
+
+			async function fetchKeyMap() {
+				if (!props.value) return;
+				if (keyMap.value) return;
+
+				const collection = translationsRelation.value.many_collection;
+				const fields = [translationsPrimaryKeyField.value, translationsLanguageField.value];
+
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/items/${props.collection}/${props.primaryKey}`, {
+					const response = await api.get(`/items/${collection}`, {
 						params: {
-							fields: props.field + '.*',
+							fields,
+							filter: {
+								[translationsPrimaryKeyField.value]: {
+									_in: existingPrimaryKeys.value,
+								},
+							},
 						},
 					});
 
-					items.value = response.data.data[props.field];
+					keyMap.value = response.data.data;
 				} catch (err) {
 					error.value = err;
 				} finally {
 					loading.value = false;
 				}
 			}
-		}
 
-		function useValues() {
-			const existing = computed(() => {
-				if (!languages.value) return [];
+			function stageEdits(edits: any) {
+				const editedLanguage = edits[translationsLanguageField.value];
 
-				return languages.value.map((language: any) => {
-					const existing =
-						items.value.find(
-							(item) => item[languageField.value] === language[languagesPrimaryKeyField.value.field]
-						) || {};
-
-					return existing;
+				const languageAlreadyEdited = !!(props.value || []).find((val) => {
+					if (typeof val === 'string' || typeof val === 'number') return false;
+					return val[translationsLanguageField.value] === editedLanguage;
 				});
-			});
 
-			const edits = computed(() => {
-				if (!languages.value) return [];
-
-				return languages.value.map((language: any) => {
-					const edits =
-						(props.value || []).find(
-							(edit) => edit[languageField.value] === language[languagesPrimaryKeyField.value.field]
-						) || {};
-
-					edits[languageField.value] = language[languagesPrimaryKeyField.value.field];
-
-					return edits;
-				});
-			});
-
-			return { existing, edits, emitValue };
-
-			function emitValue(newEdit: any, existingPrimaryKey: undefined | string | number) {
-				const currentEdits = [...(props.value || [])];
-
-				if (existingPrimaryKey) {
-					newEdit = {
-						...newEdit,
-						[translationsPrimaryKeyField.value.field]: existingPrimaryKey,
-					};
-				}
-
-				if (currentEdits.some((edit) => edit[languageField.value] === newEdit[languageField.value])) {
+				if (languageAlreadyEdited === true) {
 					emit(
 						'input',
-						currentEdits.map((edit) => {
-							if (edit[languageField.value] === newEdit[languageField.value]) {
-								return newEdit;
+						props.value.map((val) => {
+							if (typeof val === 'string' || typeof val === 'number') return val;
+
+							if (val[translationsLanguageField.value] === editedLanguage) {
+								return edits;
 							}
 
-							return edit;
+							return val;
 						})
 					);
 				} else {
-					currentEdits.push(newEdit);
-					emit('input', currentEdits);
+					if (editing.value === '+') {
+						emit('input', [...(props.value || []), edits]);
+					} else {
+						emit(
+							'input',
+							props.value.map((val) => {
+								if (typeof val === 'string' || typeof val === 'number') {
+									if (val === editing.value) return edits;
+								} else {
+									if (val[translationsPrimaryKeyField.value] === editing.value) return edits;
+								}
+
+								return val;
+							})
+						);
+					}
 				}
+
+				editing.value = false;
+			}
+
+			function cancelEdit() {
+				edits.value = {};
+				editing.value = false;
 			}
 		}
 	},
@@ -303,41 +329,35 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/type-styles.scss';
+.language-row {
+	--v-icon-color: var(--foreground-subdued);
 
-.loader .v-skeleton-loader + .v-skeleton-loader {
-	margin-top: 8px;
-}
-
-.header {
 	display: flex;
 	align-items: center;
+	width: 100%;
 	padding: 12px;
-	cursor: pointer;
-}
-
-.row {
+	text-align: left;
 	background-color: var(--background-subdued);
 	border-radius: var(--border-radius);
 
-	& + .row {
+	& + & {
 		margin-top: 8px;
 	}
-}
 
-.v-divider {
-	margin-bottom: 12px;
-}
+	.translate {
+		margin-right: 12px;
+	}
 
-.form {
-	--v-form-vertical-gap: 24px;
-	--v-form-horizontal-gap: 12px;
+	.spacer {
+		flex-grow: 1;
+	}
 
-	padding: 12px;
-	padding-top: 0;
+	.launch {
+		transition: color var(--fast) var(--transition);
+	}
 
-	::v-deep .type-label {
-		@include type-text;
+	&:hover .launch {
+		--v-icon-color: var(--foreground-normal);
 	}
 }
 </style>

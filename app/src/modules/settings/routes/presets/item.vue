@@ -75,18 +75,18 @@
 			</div>
 		</div>
 
-		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_settings_presets_item'))" />
-			</drawer-detail>
+			</sidebar-detail>
 
-			<portal-target class="layout-drawer" name="drawer" />
+			<portal-target class="layout-sidebar" name="sidebar" />
 
-			<drawer-detail class="layout-drawer" icon="layers" :title="$t('layout_options')">
+			<sidebar-detail class="layout-sidebar" icon="layers" :title="$t('layout_options')">
 				<div class="layout-options">
 					<portal-target name="layout-options" class="portal-contents" />
 				</div>
-			</drawer-detail>
+			</sidebar-detail>
 		</template>
 	</private-view>
 </template>
@@ -547,10 +547,10 @@ export default defineComponent({
 	overflow: auto;
 }
 
-.layout-drawer {
-	--drawer-detail-icon-color: var(--warning);
-	--drawer-detail-color: var(--warning);
-	--drawer-detail-color-active: var(--warning);
+.layout-sidebar {
+	--sidebar-detail-icon-color: var(--warning);
+	--sidebar-detail-color: var(--warning);
+	--sidebar-detail-color-active: var(--warning);
 	--v-form-vertical-gap: 24px;
 }
 

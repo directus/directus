@@ -72,7 +72,7 @@
 			</v-list>
 		</v-menu>
 
-		<modal-item
+		<drawer-item
 			:active.sync="editModalActive"
 			collection="directus_users"
 			:primary-key="currentPrimaryKey"
@@ -81,7 +81,7 @@
 			v-if="!disabled"
 		/>
 
-		<modal-collection
+		<drawer-collection
 			:active.sync="selectModalActive"
 			collection="directus_users"
 			:selection="selection"
@@ -95,11 +95,11 @@
 import { defineComponent, computed, ref, watch, PropType } from '@vue/composition-api';
 import useCollection from '@/composables/use-collection';
 import api from '@/api';
-import ModalItem from '@/views/private/components/modal-item';
-import ModalCollection from '@/views/private/components/modal-collection';
+import DrawerItem from '@/views/private/components/drawer-item';
+import DrawerCollection from '@/views/private/components/drawer-collection';
 
 export default defineComponent({
-	components: { ModalItem, ModalCollection },
+	components: { DrawerItem, DrawerCollection },
 	props: {
 		value: {
 			type: String,

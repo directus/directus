@@ -136,15 +136,15 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get('/permissions', {
-						params: {
-							filter: {
-								role: {
-									_eq: props.role,
-								},
-							},
-						},
-					});
+					const params: any = { filter: { role: {} } };
+
+					if (props.role === null) {
+						params.filter.role = { _null: true };
+					} else {
+						params.filter.role = { _eq: props.role };
+					}
+
+					const response = await api.get('/permissions', params);
 
 					permissions.value = response.data.data;
 				} catch (err) {

@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<h2 class="type-title">{{ $t('configure_m2m') }}</h2>
+		<v-notice type="info">{{ $t('configure_m2m') }}</v-notice>
+
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
@@ -451,5 +452,9 @@ export default defineComponent({
 		left: 50%;
 		transform: translateX(-50%);
 	}
+}
+
+.v-notice {
+	margin-bottom: 36px;
 }
 </style>

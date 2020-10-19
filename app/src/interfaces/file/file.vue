@@ -79,7 +79,7 @@
 			</v-card>
 		</v-dialog>
 
-		<modal-collection
+		<drawer-collection
 			collection="directus_files"
 			:active="activeDialog === 'choose'"
 			@update:active="activeDialog = null"
@@ -112,7 +112,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
-import ModalCollection from '@/views/private/components/modal-collection';
+import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
 import getRootPath from '@/utils/get-root-path';
@@ -124,7 +124,7 @@ type FileInfo = {
 };
 
 export default defineComponent({
-	components: { ModalCollection },
+	components: { DrawerCollection },
 	props: {
 		value: {
 			type: String,

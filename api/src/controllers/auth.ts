@@ -215,7 +215,7 @@ router.get(
 	'/oauth',
 	asyncHandler(async (req, res, next) => {
 		const providers = toArray(env.OAUTH_PROVIDERS);
-		res.locals.payload = { data: providers.length > 0 ? providers : null };
+		res.locals.payload = { data: env.OAUTH_PROVIDERS ? providers : null };
 		return next();
 	}),
 	respond

@@ -1,5 +1,13 @@
 <template>
-	<div class="private-view" :class="{ theme }">
+	<v-info v-if="appAccess === false" center :title="$t('no_app_access')" type="danger" icon="block">
+		{{ $t('no_app_access_copy') }}
+
+		<template #append>
+			<v-button to="/logout">Switch User</v-button>
+		</template>
+	</v-info>
+
+	<div v-else class="private-view" :class="{ theme }">
 		<aside role="navigation" aria-label="Module Navigation" class="navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
 			<div class="module-nav alt-colors">
@@ -11,7 +19,7 @@
 			</div>
 		</aside>
 		<div class="content" ref="contentEl">
-			<header-bar :title="title" @toggle:drawer="drawerOpen = !drawerOpen" @toggle:nav="navOpen = !navOpen">
+			<header-bar :title="title" @toggle:sidebar="sidebarOpen = !sidebarOpen" @toggle:nav="navOpen = !navOpen">
 				<template v-for="(_, scopedSlotName) in $scopedSlots" v-slot:[scopedSlotName]="slotData">
 					<slot :name="scopedSlotName" v-bind="slotData" />
 				</template>
@@ -23,36 +31,36 @@
 		</div>
 		<aside
 			role="contentinfo"
-			class="drawer alt-colors"
-			aria-label="Module Drawer"
-			:class="{ 'is-open': drawerOpen }"
-			@click="openDrawer"
+			class="sidebar alt-colors"
+			aria-label="Module Sidebar"
+			:class="{ 'is-open': sidebarOpen }"
+			@click="openSidebar"
 		>
 			<div class="flex-container">
-				<drawer-detail-group :drawer-open="drawerOpen">
-					<slot name="drawer" />
-				</drawer-detail-group>
+				<sidebar-detail-group :sidebar-open="sidebarOpen">
+					<slot name="sidebar" />
+				</sidebar-detail-group>
 
 				<div class="spacer" />
 
-				<notifications-preview v-model="notificationsPreviewActive" :drawer-open="drawerOpen" />
+				<notifications-preview v-model="notificationsPreviewActive" :sidebar-open="sidebarOpen" />
 			</div>
 		</aside>
 
 		<v-overlay class="nav-overlay" :active="navOpen" @click="navOpen = false" />
-		<v-overlay class="drawer-overlay" :active="drawerOpen" @click="drawerOpen = false" />
+		<v-overlay class="sidebar-overlay" :active="sidebarOpen" @click="sidebarOpen = false" />
 
-		<notifications-group v-if="notificationsPreviewActive === false" :dense="drawerOpen === false" />
+		<notifications-group v-if="notificationsPreviewActive === false" :dense="sidebarOpen === false" />
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, provide, toRefs, computed } from '@vue/composition-api';
 import ModuleBar from './components/module-bar/';
-import DrawerDetailGroup from './components/drawer-detail-group/';
+import SidebarDetailGroup from './components/sidebar-detail-group/';
 import HeaderBar from './components/header-bar';
 import ProjectInfo from './components/project-info';
-import DrawerButton from './components/drawer-button/';
+import SidebarButton from './components/sidebar-button/';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
 import { useUserStore, useAppStore } from '@/stores';
@@ -62,10 +70,10 @@ import emitter, { Events } from '@/events';
 export default defineComponent({
 	components: {
 		ModuleBar,
-		DrawerDetailGroup,
+		SidebarDetailGroup,
 		HeaderBar,
 		ProjectInfo,
-		DrawerButton,
+		SidebarButton,
 		NotificationsGroup,
 		NotificationsPreview,
 	},
@@ -81,9 +89,14 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const appStore = useAppStore();
 
+		const appAccess = computed(() => {
+			if (!userStore.state.currentUser) return true;
+			return userStore.state.currentUser?.role?.app_access || false;
+		});
+
 		const notificationsPreviewActive = ref(false);
 
-		const { drawerOpen } = toRefs(appStore.state);
+		const { sidebarOpen } = toRefs(appStore.state);
 
 		const theme = computed(() => {
 			return userStore.state.currentUser?.theme || 'auto';
@@ -95,14 +108,15 @@ export default defineComponent({
 			navOpen,
 			contentEl,
 			theme,
-			drawerOpen,
-			openDrawer,
+			sidebarOpen,
+			openSidebar,
 			notificationsPreviewActive,
+			appAccess,
 		};
 
-		function openDrawer(event: PointerEvent) {
+		function openSidebar(event: PointerEvent) {
 			if (event.target && (event.target as HTMLElement).classList.contains('close') === false) {
-				drawerOpen.value = true;
+				sidebarOpen.value = true;
 			}
 		}
 	},
@@ -129,7 +143,7 @@ export default defineComponent({
 		}
 	}
 
-	.drawer-overlay {
+	.sidebar-overlay {
 		--v-overlay-z-index: 29;
 
 		@include breakpoint(large) {
@@ -185,7 +199,7 @@ export default defineComponent({
 			display: contents;
 		}
 
-		// Offset for partially visible drawer
+		// Offset for partially visible sidebar
 		@include breakpoint(medium) {
 			margin-right: 64px;
 		}
@@ -195,7 +209,7 @@ export default defineComponent({
 		}
 	}
 
-	.drawer {
+	.sidebar {
 		position: fixed;
 		top: 0;
 		right: 0;

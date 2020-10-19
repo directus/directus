@@ -14,15 +14,7 @@
 			</template>
 		</v-info>
 
-		<router-view v-else-if="!hydrating && appAccess" />
-
-		<v-info v-else-if="appAccess === false" center :title="$t('no_app_access')" type="danger" icon="block">
-			{{ $t('no_app_access_copy') }}
-
-			<template #append>
-				<v-button to="/logout">Switch User</v-button>
-			</template>
-		</v-info>
+		<router-view v-else-if="!hydrating" />
 
 		<portal-target name="dialog-outlet" transition="transition-dialog" multiple />
 		<portal-target name="menu-outlet" transition="transition-bounce" multiple />
@@ -48,7 +40,7 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const settingsStore = useSettingsStore();
 
-		const { hydrating, drawerOpen } = toRefs(appStore.state);
+		const { hydrating, sidebarOpen } = toRefs(appStore.state);
 
 		const brandStyle = computed(() => {
 			return {
@@ -73,9 +65,9 @@ export default defineComponent({
 				if (newWidth === oldWidth) return;
 
 				if (newWidth >= 1424) {
-					if (drawerOpen.value === false) drawerOpen.value = true;
+					if (sidebarOpen.value === false) sidebarOpen.value = true;
 				} else {
-					if (drawerOpen.value === true) drawerOpen.value = false;
+					if (sidebarOpen.value === true) sidebarOpen.value = false;
 				}
 			},
 			{ immediate: true }
@@ -88,7 +80,7 @@ export default defineComponent({
 				document.body.classList.remove('light');
 				document.body.classList.remove('auto');
 
-				if (newUser !== undefined && newUser !== null) {
+				if (newUser !== undefined && newUser !== null && newUser.theme) {
 					document.body.classList.add(newUser.theme);
 				} else {
 					// Default to light mode
@@ -108,11 +100,6 @@ export default defineComponent({
 			return settingsStore.state?.settings?.custom_css || '';
 		});
 
-		const appAccess = computed(() => {
-			if (!userStore.state.currentUser) return true;
-			return userStore.state.currentUser?.role?.app_access || false;
-		});
-
 		const error = computed(() => appStore.state.error);
 
 		/**
@@ -124,7 +111,7 @@ export default defineComponent({
 			axios,
 		});
 
-		return { hydrating, brandStyle, appAccess, error, customCSS };
+		return { hydrating, brandStyle, error, customCSS };
 	},
 });
 </script>

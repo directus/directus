@@ -49,7 +49,15 @@
 
 			<template #input>
 				<div class="label">
-					<span class="name" v-tooltip="field.name">{{ field.field }}</span>
+					<span class="name" v-tooltip="field.name">
+						{{ field.field }}
+						<v-icon
+							name="star"
+							class="required"
+							sup
+							v-if="field.schema && field.schema.is_nullable === false"
+						/>
+					</span>
 					<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
 					<span v-else class="interface">{{ $t('db_only_click_to_configure') }}</span>
 				</div>
@@ -90,7 +98,7 @@
 								</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item @click="duplicateActive = true">
+							<v-list-item v-if="duplicable" @click="duplicateActive = true">
 								<v-list-item-icon>
 									<v-icon name="content_copy" />
 								</v-list-item-icon>
@@ -217,7 +225,15 @@ export default defineComponent({
 		const editActive = ref(false);
 
 		const { deleteActive, deleting, deleteField } = useDeleteField();
-		const { duplicateActive, duplicateName, collections, duplicateTo, saveDuplicate, duplicating } = useDuplicate();
+		const {
+			duplicateActive,
+			duplicateName,
+			collections,
+			duplicateTo,
+			saveDuplicate,
+			duplicating,
+			duplicable,
+		} = useDuplicate();
 
 		const interfaceName = computed(() => {
 			return interfaces.value.find((inter) => inter.id === props.field.meta?.interface)?.name;
@@ -248,6 +264,7 @@ export default defineComponent({
 			localType,
 			translationsCollection,
 			translationsFieldsCount,
+			duplicable,
 		};
 
 		function setWidth(width: string) {
@@ -288,6 +305,13 @@ export default defineComponent({
 			);
 			const duplicateTo = ref(props.field.collection);
 
+			const duplicable = computed(() => {
+				return (
+					['o2m', 'm2m', 'm2o', 'files', 'file', 'm2a'].includes(props.field.type) === false &&
+					props.field.schema?.is_primary_key === false
+				);
+			});
+
 			return {
 				duplicateActive,
 				duplicateName,
@@ -295,6 +319,7 @@ export default defineComponent({
 				duplicateTo,
 				saveDuplicate,
 				duplicating,
+				duplicable,
 			};
 
 			async function saveDuplicate() {
@@ -504,5 +529,9 @@ export default defineComponent({
 .delete {
 	--v-button-background-color: var(--danger);
 	--v-button-background-color-hover: var(--danger-125);
+}
+
+.required {
+	color: var(--primary);
 }
 </style>

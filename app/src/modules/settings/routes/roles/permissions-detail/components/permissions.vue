@@ -1,13 +1,14 @@
 <template>
 	<div>
-		<v-modal-heading
-			:heading="
+		<v-notice type="info">
+			{{
 				$t('permissions_for_role', {
 					action: $t(permission.action).toLowerCase(),
 					role: role ? role.name : $t('public'),
 				})
-			"
-		/>
+			}}
+		</v-notice>
+
 		<interface-code v-model="permissions" language="json" type="json" />
 	</div>
 </template>
@@ -47,3 +48,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-notice {
+	margin-bottom: 36px;
+}
+</style>

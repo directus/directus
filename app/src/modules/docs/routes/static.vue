@@ -16,10 +16,10 @@
 			<markdown>{{ markdownWithoutTitle }}</markdown>
 		</div>
 
-		<template #drawer>
-			<drawer-detail icon="info_outline" :title="$t('information')" close>
+		<template #sidebar>
+			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_docs_global'))" />
-			</drawer-detail>
+			</sidebar-detail>
 		</template>
 	</private-view>
 </template>

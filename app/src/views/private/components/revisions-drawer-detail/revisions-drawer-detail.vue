@@ -1,5 +1,5 @@
 <template>
-	<drawer-detail
+	<sidebar-detail
 		:title="$t('revisions')"
 		icon="change_history"
 		:badge="!loading && revisions ? revisions.length : null"
@@ -26,14 +26,14 @@
 			</div>
 		</template>
 
-		<revisions-modal
+		<revisions-drawer
 			v-if="revisions"
 			:revisions="revisions"
 			:current.sync="modalCurrentRevision"
 			:active.sync="modalActive"
 			@revert="onRevert"
 		/>
-	</drawer-detail>
+	</sidebar-detail>
 </template>
 
 <script lang="ts">
@@ -47,10 +47,10 @@ import { TranslateResult } from 'vue-i18n';
 import i18n from '@/lang';
 import formatLocalized from '@/utils/localized-format';
 import RevisionItem from './revision-item.vue';
-import RevisionsModal from './revisions-modal.vue';
+import RevisionsDrawer from './revisions-drawer.vue';
 
 export default defineComponent({
-	components: { RevisionItem, RevisionsModal },
+	components: { RevisionItem, RevisionsDrawer },
 	props: {
 		collection: {
 			type: String,
@@ -191,7 +191,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.drawer-detail {
+.sidebar-detail {
 	--v-badge-color: var(--background-normal);
 	--v-badge-background-color: var(--foreground-normal);
 }

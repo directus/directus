@@ -7,7 +7,7 @@
 	font-family: var(--family-sans-serif);
 	font-style: normal;
 	line-height: 29px;
-	letter-spacing: -0.8px;
+	letter-spacing: 0;
 
 	@include breakpoint(small) {
 		font-size: 24px;

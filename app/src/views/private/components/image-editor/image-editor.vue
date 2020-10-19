@@ -1,11 +1,11 @@
 <template>
-	<v-modal v-model="_active" class="modal" :title="$t('editing_image')" persistent no-padding @esc="_active = false">
+	<v-drawer v-model="_active" class="modal" :title="$t('editing_image')" persistent @cancel="_active = false">
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
 		</template>
 
-		<template #header:append>
-			<span class="warning">{{ $t('changes_are_immediate_and_permanent') }}</span>
+		<template #subtitle>
+			<span class="warning">{{ $t('changes_are_permanent') }}</span>
 		</template>
 
 		<div class="loader" v-if="loading">
@@ -21,7 +21,7 @@
 
 			<div class="toolbar">
 				<div
-					v-tooltip.bottom.inverted="$t('drag_mode')"
+					v-tooltip.top.inverted="$t('drag_mode')"
 					class="drag-mode toolbar-button"
 					@click="dragMode = dragMode === 'crop' ? 'move' : 'crop'"
 				>
@@ -29,27 +29,19 @@
 					<v-icon name="crop" :class="{ active: dragMode === 'crop' }" />
 				</div>
 
-				<v-icon name="rotate_90_degrees_ccw" @click="rotate" v-tooltip.bottom.inverted="$t('rotate')" />
+				<v-icon name="rotate_90_degrees_ccw" @click="rotate" v-tooltip.top.inverted="$t('rotate')" />
 
 				<v-icon
 					name="flip_horizontal"
 					@click="flip('horizontal')"
-					v-tooltip.bottom.inverted="$t('flip_horizontal')"
+					v-tooltip.top.inverted="$t('flip_horizontal')"
 				/>
 
-				<v-icon
-					name="flip_vertical"
-					@click="flip('vertical')"
-					v-tooltip.bottom.inverted="$t('flip_vertical')"
-				/>
+				<v-icon name="flip_vertical" @click="flip('vertical')" v-tooltip.top.inverted="$t('flip_vertical')" />
 
 				<v-menu placement="top" show-arrow>
 					<template #activator="{ toggle }">
-						<v-icon
-							:name="aspectRatioIcon"
-							@click="toggle"
-							v-tooltip.bottom.inverted="$t('aspect_ratio')"
-						/>
+						<v-icon :name="aspectRatioIcon" @click="toggle" v-tooltip.top.inverted="$t('aspect_ratio')" />
 					</template>
 
 					<v-list>
@@ -90,32 +82,34 @@
 
 				<div class="spacer" />
 
+				<div class="dimensions" v-if="imageData">
+					{{ $n(imageData.width) }}x{{ $n(imageData.height) }}
+					<template
+						v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height"
+					>
+						->
+						{{ $n(newDimensions.width) }}x{{ $n(newDimensions.height) }}
+					</template>
+				</div>
+
 				<button class="toolbar-button cancel" v-show="cropping" @click="cropping = false">
 					{{ $t('cancel_crop') }}
 				</button>
 			</div>
 		</div>
 
-		<template #footer="{ close }">
-			<div class="dimensions" v-if="imageData">
-				<v-icon name="info_outline" />
-				{{ $n(imageData.width) }}x{{ $n(imageData.height) }}
-				<template v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height">
-					->
-					{{ $n(newDimensions.width) }}x{{ $n(newDimensions.height) }}
-				</template>
-			</div>
-
-			<div class="spacer" />
-			<v-button @click="close" secondary>{{ $t('cancel') }}</v-button>
-			<v-button @click="save" :loading="saving">{{ $t('save') }}</v-button>
+		<template #actions>
+			<v-button @click="save" :loading="saving" icon rounded v-tooltip.bottom="$t('save')">
+				<v-icon name="check" />
+			</v-button>
 		</template>
-	</v-modal>
+	</v-drawer>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed, reactive } from '@vue/composition-api';
 import api from '@/api';
+import Vue from 'vue';
 
 import Cropper from 'cropperjs';
 import { nanoid } from 'nanoid';
@@ -273,7 +267,8 @@ export default defineComponent({
 					}, imageData.value?.type);
 			}
 
-			function onImageLoad() {
+			async function onImageLoad() {
+				await Vue.nextTick();
 				initCropper();
 			}
 		}
@@ -425,13 +420,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .modal {
-	--v-modal-content-padding-small: 0px;
-	--v-modal-content-padding: 0px;
+	--v-drawer-content-padding-small: 0px;
+	--v-drawer-content-padding: 0px;
 }
 
 .editor-container {
 	width: 100%;
-	height: 100%;
+	height: calc(100% - (65px + 24px + 24px)); // header height + 2x margin
 	overflow: hidden;
 	background-color: var(--background-subdued);
 
@@ -475,7 +470,9 @@ export default defineComponent({
 }
 
 .dimensions {
+	margin-right: 12px;
 	color: var(--foreground-subdued);
+	letter-spacing: 0;
 	font-feature-settings: 'tnum';
 }
 

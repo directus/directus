@@ -49,8 +49,8 @@
 			</div>
 		</portal>
 
-		<portal to="drawer">
-			<filter-drawer-detail v-model="_filters" :collection="collection" :loading="loading" />
+		<portal to="sidebar">
+			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
 		</portal>
 
 		<portal to="actions:prepend">

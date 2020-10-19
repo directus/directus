@@ -52,7 +52,7 @@
 					</v-list>
 				</v-menu>
 
-				<modal-collection
+				<drawer-collection
 					collection="directus_files"
 					:active="activeDialog === 'choose'"
 					@update:active="activeDialog = null"
@@ -88,12 +88,12 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import uploadFiles from '@/utils/upload-files';
-import ModalCollection from '@/views/private/components/modal-collection';
+import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import useItem from '@/composables/use-item';
 
 export default defineComponent({
-	components: { ModalCollection },
+	components: { DrawerCollection },
 	props: {
 		multiple: {
 			type: Boolean,

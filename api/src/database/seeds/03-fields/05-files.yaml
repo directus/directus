@@ -101,7 +101,7 @@ fields:
     display: user
   - collection: directus_files
     field: modified_on
-    interface: dateTime
+    interface: datetime
     locked: true
     special: date-updated
     width: half
