@@ -14,7 +14,6 @@ import rateLimiter from './middleware/rate-limiter';
 import cache from './middleware/cache';
 import extractToken from './middleware/extract-token';
 import authenticate from './middleware/authenticate';
-import responseHook from './middleware/response-hook';
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
@@ -55,7 +54,6 @@ app.disable('x-powered-by');
 app.set('trust proxy', true);
 
 app.use(expressLogger({ logger }));
-app.use(responseHook);
 
 app.use((req, res, next) => {
 	bodyParser.json()(req, res, (err) => {
