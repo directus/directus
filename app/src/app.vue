@@ -88,7 +88,7 @@ export default defineComponent({
 				document.body.classList.remove('light');
 				document.body.classList.remove('auto');
 
-				if (newUser !== undefined && newUser !== null) {
+				if (newUser !== undefined && newUser !== null && newUser.theme) {
 					document.body.classList.add(newUser.theme);
 				} else {
 					// Default to light mode
