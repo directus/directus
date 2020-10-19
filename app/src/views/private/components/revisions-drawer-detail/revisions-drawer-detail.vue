@@ -191,11 +191,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.sidebar-detail {
-	--v-badge-color: var(--background-normal);
-	--v-badge-background-color: var(--foreground-normal);
-}
-
 .v-progress-linear {
 	margin: 24px 0;
 }
