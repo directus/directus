@@ -45,6 +45,11 @@ get:
         type: integer
         minimum: 1
         maximum: 100
+    - name: download
+      in: query
+      description: Download the asset to your computer
+      schema:
+        type: boolean
   responses:
     "200":
       description: Successful request

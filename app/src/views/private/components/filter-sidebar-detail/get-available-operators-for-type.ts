@@ -19,7 +19,7 @@ export default function getAvailableOperatorsForType(type: string) {
 		case 'string':
 			return {
 				type: 'text',
-				operators: ['eq', 'neq', 'contains', 'ncontains', 'empty', 'nempty', 'in', 'nin'],
+				operators: ['contains', 'ncontains', 'eq', 'neq', 'empty', 'nempty', 'in', 'nin'],
 			};
 		// Boolean
 		case 'boolean':

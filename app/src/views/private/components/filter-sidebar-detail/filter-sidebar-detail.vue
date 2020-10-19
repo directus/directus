@@ -52,6 +52,7 @@ import { debounce } from 'lodash';
 import { FieldTree } from './types';
 import FieldListItem from './field-list-item.vue';
 import { useCollection } from '@/composables/use-collection';
+import getAvailableOperatorsForType from './get-available-operators-for-type';
 
 export default defineComponent({
 	components: { FieldFilter, FieldListItem },
@@ -189,12 +190,15 @@ export default defineComponent({
 		return { fieldTree, addFilterForField, filters, removeFilter, updateFilter, showArchiveToggle, archived };
 
 		function addFilterForField(fieldKey: string) {
+			const field = fieldsStore.getField(props.collection, fieldKey);
+			const defaultOperator = getAvailableOperatorsForType(field.type).operators[0];
+
 			emit('input', [
 				...props.value,
 				{
 					key: nanoid(),
 					field: fieldKey,
-					operator: 'contains',
+					operator: defaultOperator || 'contains',
 					value: '',
 				},
 			]);

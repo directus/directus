@@ -162,8 +162,8 @@
 	"create_field": "Create Field",
 	"update_field": "Update Field",
 
-	"creating_new_field": "{collection}: New Field",
-	"updating_field_field": "{collection}: \"{field}\" Field",
+	"creating_new_field": "New Field ({collection})",
+	"updating_field_field": "{field} ({collection})",
 	"within_collection": "Within {collection}",
 
 	"field_standard": "Standard",

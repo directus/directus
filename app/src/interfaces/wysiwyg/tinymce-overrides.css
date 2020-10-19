@@ -1,5 +1,9 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
 
+.tox {
+	font-family: var(--family-sans-serif);
+}
+
 .tox .tox-tbtn {
 	margin: 2px 2px 4px 0;
 	color: var(--foreground-normal);
@@ -138,8 +142,9 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-dialog__header {
-	padding: 16px 24px 0 24px;
+	padding: 20px;
 	color: var(--foreground-normal);
+	font-size: 16px;
 	background-color: var(--background-page);
 }
 
@@ -156,16 +161,59 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-textfield,
+.tox .tox-listboxfield .tox-listbox,
 .tox .tox-toolbar-textfield,
 .tox .tox-selectfield select,
 .tox .tox-textarea {
 	padding: 12px;
 	color: var(--foreground-normal);
-	font-family: monospace;
+	font-weight: 500;
+	font-size: 14px;
+	font-family: var(--family-sans-serif);
 	background-color: var(--background-page);
 	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
 	transition: var(--fast) var(--transition);
+}
+
+.tox .tox-textarea {
+	font-family: var(--family-monospace);
+}
+
+.tox .tox-textfield:focus,
+.tox .tox-listboxfield .tox-listbox:focus,
+.tox .tox-toolbar-textfield:focus,
+.tox .tox-selectfield select:focus,
+.tox .tox-textarea:focus {
+	background-color: var(--background-page);
+}
+
+.tox .tox-menu {
+	box-sizing: border-box;
+	padding: 4px !important;
+	color: var(--foreground-normal);
+	font-family: var(--family-sans-serif);
+	background-color: var(--background-subdued);
+	border: 2px solid var(--border-normal);
+	border-radius: var(--border-radius);
+}
+
+.tox .tox-collection__item {
+	border-radius: var(--border-radius);
+}
+
+.tox .tox-collection--list .tox-collection__item {
+	color: var(--foreground-normal);
+}
+
+.tox .tox-collection--list .tox-collection__item--active {
+	color: var(--foreground-normal) !important;
+	background-color: var(--background-page) !important;
+}
+
+.tox .tox-collection--list .tox-collection__item--enabled {
+	color: var(--foreground-normal);
+	background-color: var(--background-page);
 }
 
 .tox .tox-textfield:focus,
@@ -184,6 +232,7 @@ body.dark .tox .tox-toolbar__overflow {
 	color: var(--white);
 	font-weight: 500;
 	font-size: 16px;
+	font-family: var(--family-sans-serif);
 	line-height: 19px;
 	background-color: var(--primary);
 	border: 2px solid var(--primary);
@@ -228,12 +277,45 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-form__group {
-	margin-top: 24px;
+	margin-bottom: 24px;
 }
 
 .tox .tox-label,
 .tox .tox-toolbar-label {
-	margin-bottom: 10px;
+	margin-bottom: 4px;
 	color: var(--foreground-normal);
+	font-weight: 500;
+	font-size: 16px;
+}
+
+.tox .tox-dialog__body-nav-item {
+	box-sizing: border-box;
+	width: 100%;
+	margin-bottom: 4px;
+	padding: 12px 16px;
+	color: var(--foreground-normal);
+	font-weight: 500;
 	font-size: 14px;
+	border-bottom: none;
+	border-radius: var(--border-radius);
+	transition: var(--fast) var(--transition);
+	transition-property: background-color, color;
+}
+
+.tox .tox-dialog__body-nav-item:hover {
+	background-color: var(--background-normal-alt);
+}
+
+.tox .tox-dialog__body-nav-item--active {
+	background-color: var(--background-normal-alt);
+}
+
+.tox .tox-dialog__body-nav-item--active:focus {
+	background-color: var(--background-normal-alt);
+}
+
+@media screen and (max-width: 767px) {
+	.tox .tox-dialog__body-nav-item {
+		text-align: center;
+	}
 }
