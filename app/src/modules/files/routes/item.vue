@@ -156,7 +156,11 @@
 		</v-dialog>
 
 		<template #sidebar>
-			<file-info-sidebar-detail :file="item" @move-folder="moveToDialogActive = true" />
+			<file-info-sidebar-detail
+				:file="item"
+				@move-folder="moveToDialogActive = true"
+				@replace-file="replaceFileDialogActive = true"
+			/>
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_files"
@@ -169,6 +173,8 @@
 				:primary-key="primaryKey"
 			/>
 		</template>
+
+		<replace-file v-model="replaceFileDialogActive" :file="item" />
 	</private-view>
 </template>
 
@@ -194,6 +200,7 @@ import api from '@/api';
 import getRootPath from '@/utils/get-root-path';
 import FilesNotFound from './not-found.vue';
 import useShortcut from '@/composables/use-shortcut';
+import ReplaceFile from '../components/replace-file.vue';
 
 type Values = {
 	[field: string]: any;
@@ -224,6 +231,7 @@ export default defineComponent({
 		FileInfoSidebarDetail,
 		FolderPicker,
 		FilesNotFound,
+		ReplaceFile,
 	},
 	props: {
 		primaryKey: {
@@ -236,6 +244,7 @@ export default defineComponent({
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 		const fieldsStore = useFieldsStore();
+		const replaceFileDialogActive = ref(false);
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
@@ -335,6 +344,7 @@ export default defineComponent({
 			fileSrc,
 			form,
 			to,
+			replaceFileDialogActive,
 		};
 
 		function changeCacheBuster() {

@@ -442,6 +442,8 @@
 	"zoom": "Zoom",
 	"download": "Download",
 	"open": "Open",
+	"or": "or",
+	"replace": "Replace",
 
 	"foreground_color": "Foreground Color",
 	"background_color": "Background Color",
@@ -786,6 +788,7 @@
 	"create_folder": "Create Folder",
 	"folder_name": "Folder Name...",
 	"add_file": "Add File",
+	"replace_file": "Replace File",
 
 	"no_results": "No Results",
 	"no_results_copy": "Adjust or clear search filters to see results.",

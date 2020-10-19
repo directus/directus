@@ -65,6 +65,15 @@
 			</div>
 
 			<div>
+				<dt>{{ $t('file') }}</dt>
+				<dd>
+					<button @click="$emit('open-file')">{{ $t('open') }}</button>
+					{{ $t('or') }}
+					<button @click="$emit('replace-file')">{{ $t('replace') }}</button>
+				</dd>
+			</div>
+
+			<div>
 				<dt>{{ $t('folder') }}</dt>
 				<dd>
 					<button @click="$emit('move-folder')">{{ folder ? folder.name : $t('file_library') }}</button>
