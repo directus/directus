@@ -532,6 +532,8 @@ export default defineComponent({
 }
 
 .required {
+	position: relative;
+	left: -8px;
 	color: var(--primary);
 }
 </style>
