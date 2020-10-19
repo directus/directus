@@ -27,6 +27,7 @@ import { Revision } from './types';
 import useSync from '@/composables/use-sync';
 import localizedFormat from '@/utils/localized-format';
 import i18n from '@/lang';
+import { userName } from '@/utils/user-name';
 
 type Option = {
 	text: string;
@@ -59,8 +60,8 @@ export default defineComponent({
 					let user = i18n.t('private_user');
 
 					if (typeof revision.activity.user === 'object') {
-						const { first_name, last_name } = revision.activity.user;
-						user = `${first_name} ${last_name}`;
+						const userInfo = revision.activity.user;
+						user = userName(userInfo);
 					}
 
 					const text = String(i18n.t('revision_delta_by', { date, user }));

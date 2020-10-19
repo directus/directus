@@ -901,6 +901,8 @@
 	"statuses_not_configured": "Status mapping configured incorrectly",
 	"status_mapping": "Status Mapping",
 
+	"unknown_user": "Unknown User",
+
 	"creating_in": "Creating Item in {collection}",
 	"editing_in": "Editing Item in {collection}",
 	"editing_in_batch": "Batch Editing {count} Items",

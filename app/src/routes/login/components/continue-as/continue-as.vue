@@ -17,6 +17,7 @@ import { defineComponent, computed, watch, ref } from '@vue/composition-api';
 import api from '@/api';
 import { hydrate } from '@/hydrate';
 import router from '@/router';
+import { userName } from '@/utils/user-name';
 
 export default defineComponent({
 	setup() {
@@ -36,11 +37,11 @@ export default defineComponent({
 			try {
 				const response = await api.get(`/users/me`, {
 					params: {
-						fields: ['first_name', 'last_name', 'last_page'],
+						fields: ['email', 'first_name', 'last_name', 'last_page'],
 					},
 				});
 
-				name.value = response.data.data.first_name + ' ' + response.data.data.last_name;
+				name.value = userName(response.data.data);
 				lastPage.value = response.data.data.last_page;
 			} catch (err) {
 				error.value = err;
