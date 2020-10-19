@@ -57,11 +57,11 @@ export async function hydrate(stores = useStores()) {
 		 */
 		await userStore.hydrate();
 
-		await setLanguage((userStore.state.currentUser?.language as Language) || 'en-US');
-
-		await Promise.all(stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.()));
-
-		await registerModules();
+		if (userStore.state.currentUser?.role) {
+			await setLanguage((userStore.state.currentUser?.language as Language) || 'en-US');
+			await Promise.all(stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.()));
+			await registerModules();
+		}
 	} catch (error) {
 		appStore.state.error = error;
 	} finally {
