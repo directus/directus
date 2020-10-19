@@ -61,8 +61,7 @@ export default defineComponent({
 		});
 
 		const isRequired = computed(() => {
-			const isNullable = props.field?.schema?.is_nullable;
-			return !isNullable;
+			return props.field?.schema?.is_nullable === false;
 		});
 
 		return { defaultValue, isRequired };
