@@ -33,7 +33,7 @@ get:
       schema:
         type: string
         enum: [crop, contain, inside, outside]
-    - name: noupscale
+    - name: withoutEnlargement
       in: query
       description: No image upscale.
       schema:

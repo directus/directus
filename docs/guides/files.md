@@ -44,7 +44,8 @@ Fetching thumbnails is as easy as adding query parameters to the original file's
 * **`width`** — The **width** of the thumbnail in pixels
 * **`height`** — The **height** of the thumbnail in pixels
 * **`quality`** — The **quality** of the thumbnail (`0` to `100`)
-* **`noupscale`** — Disable image up-scaling
+* **`withoutEnlargement`** — Disable image up-scaling
+* **`download`** — Add `Content-Disposition` header and force browser to download file
 
 ```
 example.com/assets/<file-id>?fit=<fit>&width=<width>&height=<height>&quality=<quality>

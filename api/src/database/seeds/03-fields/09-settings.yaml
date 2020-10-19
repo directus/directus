@@ -172,7 +172,7 @@ fields:
             interface: numeric
             required: true
             width: half
-        - field: noupscale
+        - field: withoutEnlargement
           type: boolean
           schema:
             default_value: false

@@ -51,8 +51,8 @@ export class AssetsService {
 		if (transformation.width) resizeOptions.width = Number(transformation.width);
 		if (transformation.height) resizeOptions.height = Number(transformation.height);
 		if (transformation.fit) resizeOptions.fit = transformation.fit;
-		if (transformation.noupscale)
-			resizeOptions.withoutEnlargement = Boolean(transformation.noupscale);
+		if (transformation.withoutEnlargement)
+			resizeOptions.withoutEnlargement = Boolean(transformation.withoutEnlargement);
 
 		return resizeOptions;
 	}

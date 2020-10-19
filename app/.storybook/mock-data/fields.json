@@ -11391,7 +11391,7 @@
 					},
 					{
 						"default_value": false,
-						"field": "noupscale",
+						"field": "withoutEnlargement",
 						"interface": "toggle",
 						"name": "No image upscale",
 						"required": false,

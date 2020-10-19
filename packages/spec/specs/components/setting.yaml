@@ -79,7 +79,7 @@ properties:
         height:
           description: Height of the thumbnail.
           type: integer
-        noupscale:
+        withoutEnlargement:
           description: No image upscale
           type: boolean
         quality:

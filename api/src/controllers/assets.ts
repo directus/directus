@@ -117,7 +117,6 @@ router.get(
 
 		res.attachment(file.filename_download);
 		res.setHeader('Content-Type', file.type);
-		res.removeHeader('Content-Disposition');
 
 		if (req.query.hasOwnProperty('download') === false) {
 			res.removeHeader('Content-Disposition');
