@@ -7,7 +7,10 @@ export function parseFilter(filter: Filter, accountability: Accountability | nul
 		if (val === 'true') return true;
 		if (val === 'false') return false;
 
-		if (key === '_in' || key === '_nin') return toArray(val);
+		if (key === '_in' || key === '_nin') {
+			if (typeof val === 'string' && val.includes(',')) return val.split(',');
+			else return toArray(val);
+		}
 
 		if (val === '$NOW') return new Date();
 		if (val === '$CURRENT_USER') return accountability?.user || null;

@@ -91,6 +91,8 @@ export default defineComponent({
 		};
 
 		function setIcon(icon: string | null) {
+			searchQuery.value = '';
+
 			emit('input', icon);
 		}
 	},

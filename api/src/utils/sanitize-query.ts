@@ -1,6 +1,7 @@
 import { Accountability, Query, Sort, Filter, Meta } from '../types';
 import logger from '../logger';
 import { parseFilter } from '../utils/parse-filter';
+import { flatten } from 'lodash';
 
 export function sanitizeQuery(
 	rawQuery: Record<string, any>,
@@ -74,6 +75,9 @@ function sanitizeFields(rawFields: any) {
 
 	if (typeof rawFields === 'string') fields = rawFields.split(',');
 	else if (Array.isArray(rawFields)) fields = rawFields as string[];
+
+	// Case where array item includes CSV (fe fields[]=id,name):
+	fields = flatten(fields.map((field) => (field.includes(',') ? field.split(',') : field)));
 
 	return fields;
 }

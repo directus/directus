@@ -58,11 +58,21 @@ router.get(
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
+
 		const service = new UsersService({ accountability: req.accountability });
 
-		const item = await service.readByKey(req.accountability.user, req.sanitizedQuery);
+		try {
+			const item = await service.readByKey(req.accountability.user, req.sanitizedQuery);
+			res.locals.payload = { data: item || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				res.locals.payload = { data: { id: req.accountability.user } };
+				return next();
+			}
 
-		res.locals.payload = { data: item || null };
+			throw error;
+		}
+
 		return next();
 	}),
 	respond

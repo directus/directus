@@ -338,8 +338,12 @@ export default defineComponent({
 		table tr {
 			margin: 0;
 			padding: 0;
-			background-color: white;
+			background-color: var(--background-normal);
 			border-top: 1px solid var(--background-normal);
+		}
+
+		table thead tr {
+			background-color: var(--background-normal-alt);
 		}
 
 		table tr:nth-child(2n) {

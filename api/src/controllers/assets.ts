@@ -119,6 +119,10 @@ router.get(
 		res.attachment(file.filename_download);
 		res.setHeader('Content-Type', file.type);
 
+		if (req.query.hasOwnProperty('download') === false) {
+			res.removeHeader('Content-Disposition');
+		}
+
 		stream.pipe(res);
 	})
 );

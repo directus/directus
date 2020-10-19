@@ -1,5 +1,13 @@
 <template>
-	<div class="private-view" :class="{ theme }">
+	<v-info v-if="appAccess === false" center :title="$t('no_app_access')" type="danger" icon="block">
+		{{ $t('no_app_access_copy') }}
+
+		<template #append>
+			<v-button to="/logout">Switch User</v-button>
+		</template>
+	</v-info>
+
+	<div v-else class="private-view" :class="{ theme }">
 		<aside role="navigation" aria-label="Module Navigation" class="navigation" :class="{ 'is-open': navOpen }">
 			<module-bar />
 			<div class="module-nav alt-colors">
@@ -81,6 +89,11 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const appStore = useAppStore();
 
+		const appAccess = computed(() => {
+			if (!userStore.state.currentUser) return true;
+			return userStore.state.currentUser?.role?.app_access || false;
+		});
+
 		const notificationsPreviewActive = ref(false);
 
 		const { sidebarOpen } = toRefs(appStore.state);
@@ -98,6 +111,7 @@ export default defineComponent({
 			sidebarOpen,
 			openSidebar,
 			notificationsPreviewActive,
+			appAccess,
 		};
 
 		function openSidebar(event: PointerEvent) {
