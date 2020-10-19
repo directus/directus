@@ -125,9 +125,42 @@ export default defineComponent({
 	}
 
 	::v-deep .v-card {
-		--v-card-min-width: 540px;
+		--v-card-min-width: calc(100vw - 40px);
 		--v-card-padding: 20px;
 		--v-card-background-color: var(--background-page);
+
+		.v-card-actions {
+			flex-wrap: wrap;
+			flex-direction: column-reverse;
+			& > .v-button + .v-button {
+				margin-left: 0;
+				margin-bottom: 20px;
+			}
+			.v-button {
+				width: 100%;
+				.button {
+					width: 100%;
+				}
+			}
+		}
+
+		@include breakpoint(small) {
+			--v-card-min-width: 540px;
+			.v-card-actions {
+				flex-wrap: nowrap;
+				flex-direction: inherit;
+				& > .v-button + .v-button {
+					margin-left: 12px;
+					margin-bottom: 0;
+				}
+				.v-button {
+					width: auto;
+					.button {
+						width: auto;
+					}
+				}
+			}
+		}
 	}
 
 	::v-deep .v-sheet {
