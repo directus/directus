@@ -24,7 +24,6 @@
 				<template #activator="{ toggle, active }">
 					<v-icon class="more" :class="{ active }" name="more_horiz" @click="toggle" />
 					<div class="time">
-						<span class="dot" v-tooltip="editedOnFormatted" />
 						{{ formattedTime }}
 					</div>
 				</template>
@@ -83,20 +82,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const editedOnFormatted = ref('');
-
-		watch(
-			() => props.activity,
-			async () => {
-				if (props.activity.edited_on) {
-					editedOnFormatted.value = await localizedFormat(
-						new Date(props.activity.edited_on),
-						String(i18n.t('date-fns_datetime'))
-					);
-				}
-			}
-		);
-
 		const formattedTime = computed(() => {
 			if (props.activity.timestamp) {
 				// timestamp is in iso-8601
@@ -114,7 +99,7 @@ export default defineComponent({
 
 		const { confirmDelete, deleting, remove } = useDelete();
 
-		return { formattedTime, avatarSource, confirmDelete, deleting, remove, editedOnFormatted, userName };
+		return { formattedTime, avatarSource, confirmDelete, deleting, remove, userName };
 
 		function useDelete() {
 			const confirmDelete = ref(false);
