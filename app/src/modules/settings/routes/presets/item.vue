@@ -102,6 +102,7 @@ import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
 import router from '@/router';
 import marked from 'marked';
+import { userName } from '@/utils/user-name';
 
 type User = {
 	id: number;
@@ -365,12 +366,12 @@ export default defineComponent({
 				try {
 					const response = await api.get(`/users`, {
 						params: {
-							fields: ['first_name', 'last_name', 'id'],
+							fields: ['email', 'first_name', 'last_name', 'id'],
 						},
 					});
 
 					users.value = response.data.data.map((user: any) => ({
-						name: user.first_name + ' ' + user.last_name,
+						name: userName(user),
 						id: user.id,
 					}));
 				} catch (err) {

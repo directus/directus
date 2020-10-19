@@ -123,6 +123,7 @@ import marked from 'marked';
 import localizedFormat from '@/utils/localized-format';
 import api from '@/api';
 import getRootPath from '@/utils/get-root-path';
+import { userName } from '@/utils/user-name';
 
 export default defineComponent({
 	inheritAttrs: false,
@@ -213,31 +214,31 @@ export default defineComponent({
 				try {
 					const response = await api.get(`/users/${props.file.uploaded_by}`, {
 						params: {
-							fields: ['id', 'first_name', 'last_name', 'role'],
+							fields: ['id', 'email', 'first_name', 'last_name', 'role'],
 						},
 					});
 
-					const { id, first_name, last_name, role } = response.data.data;
+					const user = response.data.data;
 
 					userCreated.value = {
 						id: props.file.uploaded_by,
-						name: first_name + ' ' + last_name,
-						link: `/users/${id}`,
+						name: userName(user),
+						link: `/users/${user.id}`,
 					};
 
 					if (props.file.modified_by) {
 						const response = await api.get(`/users/${props.file.modified_by}`, {
 							params: {
-								fields: ['id', 'first_name', 'last_name', 'role'],
+								fields: ['id', 'email', 'first_name', 'last_name', 'role'],
 							},
 						});
 
-						const { id, first_name, last_name, role } = response.data.data;
+						const user = response.data.data;
 
 						userModified.value = {
 							id: props.file.modified_by,
-							name: first_name + ' ' + last_name,
-							link: `/users/${id}`,
+							name: userName(user),
+							link: `/users/${user.id}`,
 						};
 					}
 				} finally {

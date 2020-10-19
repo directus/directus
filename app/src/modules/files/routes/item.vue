@@ -393,7 +393,7 @@ export default defineComponent({
 		}
 
 		function downloadFile() {
-			const filePath = getRootPath() + `assets/${props.primaryKey}?download=true`;
+			const filePath = getRootPath() + `assets/${props.primaryKey}?download`;
 			window.open(filePath, '_blank');
 		}
 

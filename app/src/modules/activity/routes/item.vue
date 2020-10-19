@@ -12,7 +12,7 @@
 			<!-- @TODO add final design -->
 			<p class="type-label">User:</p>
 			<user-popover v-if="item.user" :user="item.user.id">
-				{{ item.user.first_name }} {{ item.user.last_name }}
+				{{ userName(item.user) }}
 			</user-popover>
 
 			<p class="type-label">Action:</p>
@@ -51,6 +51,7 @@ import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-
 import { i18n } from '@/lang';
 import router from '@/router';
 import api from '@/api';
+import { userName } from '@/utils/user-name';
 
 type Values = {
 	[field: string]: any;
@@ -58,6 +59,7 @@ type Values = {
 
 type ActivityRecord = {
 	user: {
+		email: string;
 		first_name: string;
 		last_name: string;
 	} | null;
@@ -97,6 +99,7 @@ export default defineComponent({
 			error,
 			close,
 			openItemLink,
+			userName,
 		};
 
 		async function loadActivity() {
@@ -107,6 +110,7 @@ export default defineComponent({
 					params: {
 						fields: [
 							'user.id',
+							'user.email',
 							'user.first_name',
 							'user.last_name',
 							'action',

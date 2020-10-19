@@ -49,7 +49,7 @@ router.get(
 router.get(
 	'/me',
 	asyncHandler(async (req, res, next) => {
-		if (!req.accountability?.user || !req.accountability?.role) {
+		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
 

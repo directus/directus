@@ -53,5 +53,5 @@ export default defineDisplay(({ i18n }) => ({
 			},
 		},
 	],
-	fields: ['id', 'avatar.id', 'first_name', 'last_name'],
+	fields: ['id', 'avatar.id', 'email', 'first_name', 'last_name'],
 }));

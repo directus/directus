@@ -49,7 +49,15 @@
 
 			<template #input>
 				<div class="label">
-					<span class="name" v-tooltip="field.name">{{ field.field }}</span>
+					<span class="name" v-tooltip="field.name">
+						{{ field.field }}
+						<v-icon
+							name="star"
+							class="required"
+							sup
+							v-if="field.schema && field.schema.is_nullable === false"
+						/>
+					</span>
 					<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
 					<span v-else class="interface">{{ $t('db_only_click_to_configure') }}</span>
 				</div>
@@ -521,5 +529,11 @@ export default defineComponent({
 .delete {
 	--v-button-background-color: var(--danger);
 	--v-button-background-color-hover: var(--danger-125);
+}
+
+.required {
+	position: relative;
+	left: -8px;
+	color: var(--primary);
 }
 </style>

@@ -1,11 +1,7 @@
 <template>
 	<div class="comment-header">
 		<v-avatar x-small>
-			<img
-				v-if="avatarSource"
-				:src="avatarSource"
-				:alt="activity.user.first_name + ' ' + activity.user.last_name"
-			/>
+			<img v-if="avatarSource" :src="avatarSource" :alt="userName(activity.user)" />
 			<v-icon v-else name="person_outline" />
 		</v-avatar>
 
@@ -13,7 +9,7 @@
 			<user-popover v-if="activity.user && activity.user.id" :user="activity.user.id">
 				<span>
 					<template v-if="activity.user && activity.user">
-						{{ activity.user.first_name }} {{ activity.user.last_name }}
+						{{ userName(activity.user) }}
 					</template>
 
 					<template v-else>
@@ -28,7 +24,7 @@
 				<template #activator="{ toggle, active }">
 					<v-icon class="more" :class="{ active }" name="more_horiz" @click="toggle" />
 					<div class="time">
-						<span class="dot" v-if="activity.revisions.length > 0" v-tooltip="editedOnFormatted" />
+						<span class="dot" v-tooltip="editedOnFormatted" />
 						{{ formattedTime }}
 					</div>
 				</template>
@@ -70,6 +66,7 @@ import { Activity } from './types';
 import format from 'date-fns/format';
 import i18n from '@/lang';
 import getRootPath from '@/utils/get-root-path';
+import { userName } from '@/utils/user-name';
 
 import api from '@/api';
 import localizedFormat from '@/utils/localized-format';
@@ -117,7 +114,7 @@ export default defineComponent({
 
 		const { confirmDelete, deleting, remove } = useDelete();
 
-		return { formattedTime, avatarSource, confirmDelete, deleting, remove, editedOnFormatted };
+		return { formattedTime, avatarSource, confirmDelete, deleting, remove, editedOnFormatted, userName };
 
 		function useDelete() {
 			const confirmDelete = ref(false);
