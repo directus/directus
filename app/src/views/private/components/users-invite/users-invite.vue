@@ -8,14 +8,14 @@
 					<div class="type-label">{{ $t('emails') }}</div>
 					<interface-tags
 						v-model="emails"
-						:placeholder="$t('add_to_invite_user')"
+						:placeholder="$t('email_examples')"
 						icon-right="email"
 						whitespace=""
-					></interface-tags>
+					/>
 				</div>
 				<div class="field" v-if="role === null">
 					<div class="type-label">{{ $t('role') }}</div>
-					<v-select v-model="roleSelected" :items="roles"></v-select>
+					<v-select v-model="roleSelected" :items="roles" />
 				</div>
 			</v-card-text>
 
