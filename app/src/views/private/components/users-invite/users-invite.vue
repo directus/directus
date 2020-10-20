@@ -11,11 +11,11 @@
 						:placeholder="$t('add_to_invite_user')"
 						icon-right="email"
 						whitespace=""
-					></interface-tags>
+					/>
 				</div>
 				<div class="field" v-if="role === null">
 					<div class="type-label">{{ $t('role') }}</div>
-					<v-select v-model="roleSelected" :items="roles"></v-select>
+					<v-select v-model="roleSelected" :items="roles" />
 				</div>
 			</v-card-text>
 
