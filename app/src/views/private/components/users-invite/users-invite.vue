@@ -5,7 +5,7 @@
 
 			<v-card-text class="grid">
 				<div class="field">
-					<span class="type-label">{{ $t('emails') }}</span>
+					<div class="type-label">{{ $t('emails') }}</div>
 					<interface-tags
 						v-model="emails"
 						:placeholder="$t('add_to_invite_user')"
@@ -14,7 +14,7 @@
 					></interface-tags>
 				</div>
 				<div class="field" v-if="role === null">
-					<span class="type-label">{{ $t('role') }}</span>
+					<div class="type-label">{{ $t('role') }}</div>
 					<v-select v-model="roleSelected" :items="roles"></v-select>
 				</div>
 			</v-card-text>
