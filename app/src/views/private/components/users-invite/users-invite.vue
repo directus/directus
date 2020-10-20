@@ -8,7 +8,7 @@
 					<div class="type-label">{{ $t('emails') }}</div>
 					<interface-tags
 						v-model="emails"
-						:placeholder="$t('add_to_invite_user')"
+						:placeholder="$t('email_examples')"
 						icon-right="email"
 						whitespace=""
 					/>

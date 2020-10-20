@@ -32,10 +32,10 @@
 	"create_webhook": "Create Webhook",
 
 	"invite_users": "Invite Users",
-	"add_to_invite_user": "admin@example.com, user@example.com...",
+	"email_examples": "admin@example.com, user@example.com...",
 	"invite": "Invite",
 	"emails": "Emails",
-	
+
 	"connection_excellent": "Excellent Connection",
 	"connection_good": "Good Connection",
 	"connection_fair": "Fair Connection",
@@ -393,8 +393,9 @@
 
 	"date-fns_datetime": "PPP h:mma",
 	"date-fns_date": "PPP",
-	"date-fns_time": "h:mma",
+	"date-fns_time": "h:mm:ss a",
 	"date-fns_date_short": "MMM d, u",
+	"date-fns_time_short": "h:mma",
 	"date-fns_date_short_no_year": "MMM d",
 	"month": "Month",
 	"year": "Year",
