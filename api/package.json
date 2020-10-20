@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-rc.0",
+	"version": "9.0.0-rc.1",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/next#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -115,6 +115,7 @@
 		"otplib": "^12.0.1",
 		"pino": "^6.4.1",
 		"pino-colada": "^2.1.0",
+		"qs": "^6.9.4",
 		"rate-limiter-flexible": "^2.1.10",
 		"resolve-cwd": "^3.0.0",
 		"sharp": "^0.25.4",

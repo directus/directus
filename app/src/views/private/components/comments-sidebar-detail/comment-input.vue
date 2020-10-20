@@ -7,8 +7,8 @@
 		ref="textarea"
 	>
 		<template #append>
-			<v-icon name="alternate_email" class="add-mention" />
-			<v-icon name="insert_emoticon" class="add-emoji" />
+			<!-- <v-icon name="alternate_email" class="add-mention" />
+			<v-icon name="insert_emoticon" class="add-emoji" /> -->
 			<v-button
 				:disabled="!newCommentContent || newCommentContent.length === 0"
 				:loading="saving"
