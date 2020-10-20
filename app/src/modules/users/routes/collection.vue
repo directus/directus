@@ -49,6 +49,10 @@
 				<v-icon name="edit" outline />
 			</v-button>
 
+			<v-button rounded icon @click="userInviteModalActive = true" v-tooltip.bottom="$t('invite_users')">
+				<v-icon name="person_add" />
+			</v-button>
+
 			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_user')">
 				<v-icon name="add" />
 			</v-button>
@@ -57,6 +61,8 @@
 		<template #navigation>
 			<users-navigation :current-role="queryFilters && queryFilters.role" />
 		</template>
+
+		<users-invite v-model="userInviteModalActive" />
 
 		<component
 			class="layout"
@@ -104,6 +110,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
 import UsersNavigation from '../components/navigation.vue';
+import UsersInvite from '@/views/private/components/users-invite';
 
 import { i18n } from '@/lang';
 import api from '@/api';
@@ -120,7 +127,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'users-collection',
-	components: { UsersNavigation, LayoutSidebarDetail, SearchInput },
+	components: { UsersNavigation, LayoutSidebarDetail, SearchInput, UsersInvite },
 	props: {
 		queryFilters: {
 			type: Object as PropType<Record<string, string>>,
@@ -130,6 +137,7 @@ export default defineComponent({
 	setup(props) {
 		const { roles } = useNavigation();
 		const layoutRef = ref<LayoutComponent | null>(null);
+		const userInviteModalActive = ref(false);
 
 		const selection = ref<Item[]>([]);
 
@@ -175,6 +183,7 @@ export default defineComponent({
 			searchQuery,
 			marked,
 			clearFilters,
+			userInviteModalActive,
 		};
 
 		function useBatchDelete() {

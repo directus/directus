@@ -39,6 +39,10 @@
 				</v-card>
 			</v-dialog>
 
+			<v-button rounded icon @click="userInviteModalActive = true" v-tooltip.bottom="$t('invite_users')">
+				<v-icon name="person_add" />
+			</v-button>
+
 			<v-button
 				rounded
 				icon
@@ -54,6 +58,8 @@
 		<template #navigation>
 			<settings-navigation />
 		</template>
+
+		<users-invite v-model="userInviteModalActive" :role="primaryKey" />
 
 		<div class="roles">
 			<v-notice v-if="adminEnabled" type="info">
@@ -88,6 +94,7 @@ import useItem from '@/composables/use-item';
 import { useUserStore } from '@/stores/';
 import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
+import UsersInvite from '@/views/private/components/users-invite';
 
 type Values = {
 	[field: string]: any;
@@ -95,7 +102,7 @@ type Values = {
 
 export default defineComponent({
 	name: 'roles-item',
-	components: { SettingsNavigation, RevisionsDrawerDetail, RoleInfoSidebarDetail, PermissionsOverview },
+	components: { SettingsNavigation, RevisionsDrawerDetail, RoleInfoSidebarDetail, PermissionsOverview, UsersInvite },
 	props: {
 		primaryKey: {
 			type: String,
@@ -108,7 +115,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const userStore = useUserStore();
-
+		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
 
 		const { edits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
@@ -142,6 +149,7 @@ export default defineComponent({
 			deleting,
 			isBatch,
 			adminEnabled,
+			userInviteModalActive,
 		};
 
 		/**
