@@ -9,7 +9,6 @@ import { Transformation } from '../types/assets';
 import storage from '../storage';
 import { PayloadService, AssetsService } from '../services';
 import useCollection from '../middleware/use-collection';
-import { respond } from '../middleware/respond';
 
 const router = Router();
 
