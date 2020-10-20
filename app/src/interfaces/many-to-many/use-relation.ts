@@ -20,11 +20,18 @@ export default function useRelation(collection: Ref<string>, field: Ref<string>)
 	});
 
 	const junction = computed(() => {
-		return relations.value.find((relation) => relation.one_collection === collection.value) as Relation;
+		return relations.value.find(
+			(relation) => relation.one_collection === collection.value && relation.one_field === field.value
+		) as Relation;
 	});
 
 	const relation = computed(() => {
-		return relations.value.find((relation) => relation.one_collection !== collection.value) as Relation;
+		return relations.value.find(
+			(relation) =>
+				relation.many_collection === junction.value.many_collection &&
+				relation.many_field !== junction.value.many_field &&
+				relation.many_field === junction.value.junction_field
+		) as Relation;
 	});
 
 	const junctionCollection = computed(() => {

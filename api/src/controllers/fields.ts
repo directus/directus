@@ -60,7 +60,6 @@ const newFieldSchema = Joi.object({
 	field: Joi.string().required(),
 	type: Joi.string().valid(...types, null),
 	schema: Joi.object({
-		comment: Joi.string().allow(null),
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
 		is_nullable: Joi.bool(),

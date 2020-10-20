@@ -131,6 +131,7 @@ export default defineComponent({
 								'activity.action',
 								'activity.timestamp',
 								'activity.user.id',
+								'activity.user.email',
 								'activity.user.first_name',
 								'activity.user.last_name',
 								'activity.ip',

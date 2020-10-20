@@ -24,6 +24,7 @@ import { AuthorizationService } from './authorization';
 import { pick, clone, cloneDeep } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
 import { InvalidPayloadException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
 
 export class ItemsService implements AbstractService {
 	collection: string;
@@ -256,6 +257,9 @@ export class ItemsService implements AbstractService {
 		}
 
 		const result = await runAST(ast, { knex: this.knex });
+
+		if (result === null) throw new ForbiddenException();
+
 		return result;
 	}
 

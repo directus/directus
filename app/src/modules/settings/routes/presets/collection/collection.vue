@@ -103,11 +103,12 @@ import { TranslateResult } from 'vue-i18n';
 import router from '@/router';
 import ValueNull from '@/views/private/components/value-null';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
+import { userName } from '@/utils/user-name';
 
 type PresetRaw = {
 	id: number;
 	bookmark: null | string;
-	user: null | { first_name: string; last_name: string };
+	user: null | { email: string; first_name: string; last_name: string };
 	role: null | { name: string };
 	collection: string;
 	layout: string;
@@ -173,7 +174,7 @@ export default defineComponent({
 					}
 
 					if (preset.user) {
-						scope = `${preset.user.first_name} ${preset.user.last_name}`;
+						scope = userName(preset.user);
 					}
 
 					const collection = collectionsStore.getCollection(preset.collection)?.name;
@@ -200,6 +201,7 @@ export default defineComponent({
 							fields: [
 								'id',
 								'bookmark',
+								'user.email',
 								'user.first_name',
 								'user.last_name',
 								'role.name',

@@ -21,6 +21,7 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { Revision } from './types';
 import i18n from '@/lang';
 import { format } from 'date-fns';
+import { userName } from '@/utils/user-name';
 
 export default defineComponent({
 	props: {
@@ -61,11 +62,7 @@ export default defineComponent({
 
 		const user = computed(() => {
 			if (props.revision?.activity?.user && typeof props.revision.activity.user === 'object') {
-				const { first_name, last_name } = props.revision.activity.user as {
-					first_name: string;
-					last_name: string;
-				};
-				return `${first_name} ${last_name}`;
+				return userName(props.revision.activity.user);
 			}
 
 			return i18n.t('private_user');

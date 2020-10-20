@@ -100,12 +100,16 @@ export function useItems(collection: Ref<string>, query: Query) {
 		}
 	});
 
+	let loadingTimeout: any = null;
+
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
 	async function getItems() {
+		if (loadingTimeout) return;
+
 		error.value = null;
 
-		const loadingTimeout = setTimeout(() => {
+		loadingTimeout = setTimeout(() => {
 			loading.value = true;
 		}, 250);
 
@@ -182,6 +186,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			error.value = err;
 		} finally {
 			clearTimeout(loadingTimeout);
+			loadingTimeout = null;
 			loading.value = false;
 		}
 	}

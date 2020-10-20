@@ -31,7 +31,7 @@ data:
       cards:
         icon: account_circle
         title: '{{ first_name }} {{ last_name }}'
-        subtitle: '{{ title }}'
+        subtitle: '{{ email }}'
         size: 4
 
   - collection: directus_activity
