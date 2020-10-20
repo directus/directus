@@ -79,7 +79,10 @@ router.get(
 		];
 
 		// For use in the next request handler
-		res.locals.shortcuts = [...SYSTEM_ASSET_ALLOW_LIST, ...assetSettings.storage_asset_presets];
+		res.locals.shortcuts = [
+			...SYSTEM_ASSET_ALLOW_LIST,
+			...(assetSettings.storage_asset_presets || []),
+		];
 		res.locals.transformation = transformation;
 
 		if (Object.keys(transformation).length === 0) {
