@@ -100,7 +100,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 		}
 	});
 
-	let loadingTimeout: number | null = null;
+	let loadingTimeout: any = null;
 
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
