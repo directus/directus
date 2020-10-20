@@ -26,6 +26,10 @@
 		"datetime": {
 			"datetime": "Datetime",
 			"description": "Display values related to time",
+			"format": "Format",
+			"format_note": "The custom format accetps the __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__",
+			"long": "Long",
+			"short": "Short",
 			"relative": "Relative",
 			"relative_label": "Show relative time, eg: 5 minutes ago"
 		},
