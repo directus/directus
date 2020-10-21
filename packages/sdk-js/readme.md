@@ -7,8 +7,8 @@
 - [ ] Docs
 
 - [ ] Items
-	- [ ] Create
-	- [ ] Read
+	- [x] Create
+	- [x] Read
 	- [ ] Update
 	- [ ] Delete
 - [ ] Activity
