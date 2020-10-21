@@ -1,0 +1,24 @@
+{
+  "name": "@directus/sdk-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "api",
+    "client",
+    "cms",
+    "directus",
+    "headless",
+    "javascript",
+    "node",
+    "sdk"
+  ],
+  "author": "Rijk van Zanten <rijkvanzanten@me.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  }
+}
