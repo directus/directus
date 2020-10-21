@@ -47,7 +47,7 @@
 	- [ ] Read
 	- [ ] Update
 	- [ ] Delete
-- [ ] GraphQL
+- [ ] GraphQL??? (not sure if needed)
 	- [ ] Run
 - [ ] Permissions
 	- [ ] Create
