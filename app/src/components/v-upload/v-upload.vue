@@ -103,7 +103,7 @@ export default defineComponent({
 			type: Object,
 			default: () => ({}),
 		},
-		replaceWithId: {
+		fileId: {
 			type: String,
 			default: null,
 		},
@@ -164,7 +164,7 @@ export default defineComponent({
 							progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
 							done.value = percentage.filter((p) => p === 100).length;
 						},
-						replaceWithId: props.replaceWithId,
+						fileId: props.fileId,
 						preset: props.preset,
 					});
 

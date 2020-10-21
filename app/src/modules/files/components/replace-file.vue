@@ -3,7 +3,7 @@
 		<v-card v-if="file">
 			<v-card-title>{{ $t('replace_file') }}</v-card-title>
 			<v-card-text>
-				<v-upload :preset="preset" :replace-with-id="file.id" @input="uploaded" from-url />
+				<v-upload :preset="preset" :file-id="file.id" @input="uploaded" from-url />
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="$emit('toggle', false)">{{ $t('done') }}</v-button>
