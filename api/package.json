@@ -106,6 +106,7 @@
 		"liquidjs": "^9.14.1",
 		"lodash": "^4.17.19",
 		"macos-release": "^2.4.1",
+		"mime-types": "^2.1.27",
 		"ms": "^2.1.2",
 		"nanoid": "^3.1.12",
 		"node-machine-id": "^1.1.12",
