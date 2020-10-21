@@ -1,4 +1,4 @@
-import { Query, Item, Payload, Response } from '../types';
+import { Query, Item, Payload, Response, PrimaryKey } from '../types';
 import { AxiosInstance } from 'axios';
 
 export class ItemsHandler {
@@ -27,13 +27,13 @@ export class ItemsHandler {
 	}
 
 	async read(query?: Query): Promise<Response<Item | Item[]>>;
-	async read(key: string | number, query?: Query): Promise<Response<Item>>;
-	async read(keys: (string | number)[], query?: Query): Promise<Response<Item | Item[]>>;
+	async read(key: PrimaryKey, query?: Query): Promise<Response<Item>>;
+	async read(keys: PrimaryKey[], query?: Query): Promise<Response<Item | Item[]>>;
 	async read(
-		keysOrQuery?: string | number | (string | number)[] | Query,
+		keysOrQuery?: PrimaryKey | PrimaryKey[] | Query,
 		query?: Query & { single: boolean }
 	): Promise<Response<Item | Item[]>> {
-		let keys: string | number | (string | number)[] | null = null;
+		let keys: PrimaryKey | PrimaryKey[] | null = null;
 
 		if (
 			keysOrQuery &&
@@ -67,16 +67,12 @@ export class ItemsHandler {
 		return result.data;
 	}
 
-	async update(key: string | number, payload: Payload, query?: Query): Promise<Response<Item>>;
-	async update(
-		keys: (string | number)[],
-		payload: Payload,
-		query?: Query
-	): Promise<Response<Item[]>>;
+	async update(key: PrimaryKey, payload: Payload, query?: Query): Promise<Response<Item>>;
+	async update(keys: PrimaryKey[], payload: Payload, query?: Query): Promise<Response<Item[]>>;
 	async update(payload: Payload[], query?: Query): Promise<Response<Item[]>>;
 	async update(payload: Payload, query: Query): Promise<Response<Item[]>>;
 	async update(
-		keyOrPayload: string | number | (string | number)[] | Payload | Payload[],
+		keyOrPayload: PrimaryKey | PrimaryKey[] | Payload | Payload[],
 		payloadOrQuery?: Payload | Query,
 		query?: Query
 	): Promise<Response<Item | Item[]>> {
@@ -86,7 +82,7 @@ export class ItemsHandler {
 			(Array.isArray(keyOrPayload) &&
 				(keyOrPayload as any[]).every((key) => ['string', 'number'].includes(typeof key)))
 		) {
-			const key = keyOrPayload as string | number | (string | number)[];
+			const key = keyOrPayload as PrimaryKey | PrimaryKey[];
 			const payload = payloadOrQuery as Payload;
 
 			const result = await this.axios.patch(`/items/${this.collection}/${key}`, payload, {
@@ -101,9 +97,9 @@ export class ItemsHandler {
 		}
 	}
 
-	async delete(key: string | number): Promise<void>;
-	async delete(keys: (string | number)[]): Promise<void>;
-	async delete(keys: string | number | (string | number)[]): Promise<void> {
+	async delete(key: PrimaryKey): Promise<void>;
+	async delete(keys: PrimaryKey[]): Promise<void>;
+	async delete(keys: PrimaryKey | PrimaryKey[]): Promise<void> {
 		await this.axios.delete(`/items/${this.collection}/${keys}`);
 	}
 }
