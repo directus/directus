@@ -11,6 +11,7 @@
 				@delete="removeItem(row)"
 				:disabled="disabled"
 				:headerPlaceholder="headerPlaceholder"
+				:initialActive="addedIndex === index"
 			/>
 		</draggable>
 		<button @click="addNew" class="add-new" v-if="showAddNew">
@@ -32,7 +33,7 @@ export default defineComponent({
 	components: { RepeaterRow, Draggable },
 	props: {
 		value: {
-			type: Array,
+			type: Array as PropType<Record<string, any>[]>,
 			default: null,
 		},
 		fields: {
@@ -61,7 +62,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const selection = ref<number[]>([]);
+		const addedIndex = ref<number | null>(null);
 
 		const _template = computed(() => {
 			if (props.template === null) return props.fields.length > 0 ? `{{${props.fields[0].field}}}` : '';
@@ -76,11 +77,11 @@ export default defineComponent({
 			return false;
 		});
 
-		return { updateValues, onSort, removeItem, addNew, showAddNew, hideDragImage, selection, _template };
+		return { updateValues, onSort, removeItem, addNew, showAddNew, hideDragImage, addedIndex, _template };
 
 		function updateValues(index: number, updatedValues: any) {
 			emitValue(
-				props.value.map((item, i) => {
+				props.value.map((item: any, i: number) => {
 					if (i === index) {
 						return updatedValues;
 					}
@@ -95,7 +96,7 @@ export default defineComponent({
 		}
 
 		function removeItem(row: any) {
-			selection.value = [];
+			addedIndex.value = null;
 			if (props.value) {
 				emitValue(props.value.filter((existingItem) => existingItem !== row));
 			} else {
@@ -110,6 +111,8 @@ export default defineComponent({
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				newDefaults[field.field!] = field.schema?.default_value;
 			});
+
+			addedIndex.value = props.value === null ? 0 : props.value.length;
 
 			if (props.value !== null) {
 				emitValue([...props.value, newDefaults]);

@@ -40,7 +40,7 @@ export default defineComponent({
 			set(newVal: FieldMeta[] | null) {
 				const fields = (newVal || []).map((meta: Record<string, any>) => ({
 					field: meta.field,
-					name: meta.field,
+					name: meta.name || meta.field,
 					type: meta.type,
 					meta,
 				}));
@@ -54,13 +54,28 @@ export default defineComponent({
 
 		const repeaterFields: DeepPartial<Field>[] = [
 			{
+				name: i18n.tc('name'),
+				field: 'name',
+				type: 'string',
+				meta: {
+					interface: 'text-input',
+					width: 'full',
+					sort: 1,
+					options: {
+						font: 'monospace',
+						placeholder: i18n.t('interfaces.repeater.field_name_placeholder'),
+					},
+				},
+				schema: null,
+			},
+			{
 				name: i18n.tc('field', 1),
 				field: 'field',
 				type: 'string',
 				meta: {
 					interface: 'text-input',
 					width: 'half',
-					sort: 1,
+					sort: 2,
 					options: {
 						font: 'monospace',
 						placeholder: i18n.t('interfaces.repeater.field_name_placeholder'),
@@ -75,7 +90,7 @@ export default defineComponent({
 				meta: {
 					interface: 'dropdown',
 					width: 'half',
-					sort: 2,
+					sort: 3,
 					options: {
 						choices: [
 							{
@@ -98,13 +113,13 @@ export default defineComponent({
 				meta: {
 					interface: 'dropdown',
 					width: 'half',
-					sort: 3,
+					sort: 4,
 					options: {
-						choices: fieldTypes
-					}
+						choices: fieldTypes,
+					},
 				},
 				schema: {
-					default_value: 'string'
+					default_value: 'string',
 				},
 			},
 			{
@@ -114,10 +129,10 @@ export default defineComponent({
 				meta: {
 					interface: 'interface',
 					width: 'half',
-					sort: 4,
+					sort: 5,
 					options: {
-						typeField: 'type'
-					}
+						typeField: 'type',
+					},
 				},
 				schema: null,
 			},
@@ -128,7 +143,7 @@ export default defineComponent({
 				meta: {
 					interface: 'text-input',
 					width: 'full',
-					sort: 5,
+					sort: 6,
 					options: {
 						placeholder: i18n.t('interfaces.repeater.field_note_placeholder'),
 					},
@@ -142,7 +157,7 @@ export default defineComponent({
 				meta: {
 					interface: 'interface-options',
 					width: 'full',
-					sort: 6,
+					sort: 7,
 					options: {
 						interfaceField: 'interface',
 					},
