@@ -175,7 +175,7 @@ export default defineComponent({
 		});
 
 		const canInviteUsers = computed(() => {
-			const isAdmin = !!userStore.state.currentUser.role.admin_access;
+			const isAdmin = !!userStore.state.currentUser?.role?.admin_access;
 
 			if (isAdmin) return true;
 
