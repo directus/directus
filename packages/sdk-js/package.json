@@ -18,6 +18,9 @@
   ],
   "author": "Rijk van Zanten <rijkvanzanten@me.com>",
   "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.2"
+  },
   "devDependencies": {
     "typescript": "^4.0.3"
   }
