@@ -207,6 +207,7 @@ import { getInterfaces } from '@/interfaces';
 import router from '@/router';
 import notify from '@/utils/notify';
 import { i18n } from '@/lang';
+import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
 
 export default defineComponent({
@@ -323,8 +324,8 @@ export default defineComponent({
 			};
 
 			async function saveDuplicate() {
-				const newField: any = {
-					...props.field,
+				const newField: Record<string, any> = {
+					...cloneDeep(props.field),
 					field: duplicateName.value,
 					collection: duplicateTo.value,
 				};
@@ -332,6 +333,10 @@ export default defineComponent({
 				if (newField.meta) {
 					delete newField.meta.id;
 					delete newField.meta.sort;
+				}
+
+				if (newField.schema) {
+					delete newField.schema.comment;
 				}
 
 				delete newField.name;
@@ -532,6 +537,8 @@ export default defineComponent({
 }
 
 .required {
+	position: relative;
+	left: -8px;
 	color: var(--primary);
 }
 </style>

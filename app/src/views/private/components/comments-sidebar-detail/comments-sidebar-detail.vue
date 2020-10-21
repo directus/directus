@@ -81,6 +81,7 @@ export default defineComponent({
 								'action',
 								'timestamp',
 								'user.id',
+								'user.email',
 								'user.first_name',
 								'user.last_name',
 								'user.avatar.id',

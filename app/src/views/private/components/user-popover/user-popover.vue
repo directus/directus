@@ -21,7 +21,7 @@
 				<v-icon name="person" outline v-else />
 			</v-avatar>
 			<div class="data">
-				<div class="name type-title">{{ data.first_name }} {{ data.last_name }}</div>
+				<div class="name type-title">{{ userName(data) }}</div>
 				<div class="status-role" :class="data.status">{{ $t(data.status) }} {{ data.role.name }}</div>
 				<div class="email">{{ data.email }}</div>
 			</div>
@@ -33,6 +33,7 @@
 import { defineComponent, ref, watch, onUnmounted, computed } from '@vue/composition-api';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import { userName } from '@/utils/user-name';
 
 type User = {
 	first_name: string;
@@ -77,7 +78,7 @@ export default defineComponent({
 			data.value = null;
 		});
 
-		return { loading, error, data, active, avatarSrc };
+		return { loading, error, data, active, avatarSrc, userName };
 
 		async function fetchUser() {
 			loading.value = true;
@@ -86,7 +87,7 @@ export default defineComponent({
 			try {
 				const response = await api.get(`/users/${props.user}`, {
 					params: {
-						fields: ['first_name', 'last_name', 'avatar.id', 'role.name', 'status', 'email'],
+						fields: ['email', 'first_name', 'last_name', 'avatar.id', 'role.name', 'status', 'email'],
 					},
 				});
 				data.value = response.data.data;

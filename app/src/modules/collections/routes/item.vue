@@ -10,7 +10,12 @@
 			</h1>
 		</template>
 
-		<template #title v-else-if="isNew === false && isBatch === false && collectionInfo.meta.display_template">
+		<template
+			#title
+			v-else-if="
+				isNew === false && isBatch === false && collectionInfo.meta && collectionInfo.meta.display_template
+			"
+		>
 			<v-skeleton-loader class="title-loader" type="text" v-if="loading" />
 
 			<h1 class="type-title" v-else>

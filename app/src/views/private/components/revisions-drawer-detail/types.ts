@@ -10,9 +10,10 @@ export type Revision = {
 		user_agent: string;
 		timestamp: string;
 		user:
-			| number
+			| string
 			| {
-					id: number;
+					id: string;
+					email: string;
 					first_name: string;
 					last_name: string;
 			  };

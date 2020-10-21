@@ -260,7 +260,13 @@ export class FieldsService {
 				}
 
 				if (field.schema.default_value) {
-					column.defaultTo(field.schema.default_value);
+					const defaultValue = field.schema.default_value.toLowerCase();
+
+					if (defaultValue === 'now()') {
+						column.defaultTo(this.knex.fn.now());
+					} else {
+						column.defaultTo(field.schema.default_value);
+					}
 				}
 
 				if (field.schema.is_nullable !== undefined && field.schema.is_nullable === false) {

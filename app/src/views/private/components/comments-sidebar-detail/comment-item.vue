@@ -2,14 +2,20 @@
 	<div class="comment-item">
 		<comment-item-header :refresh="refresh" :activity="activity" @edit="editing = true" />
 
-		<v-textarea v-if="editing" v-model="edits">
+		<v-textarea ref="textarea" v-if="editing" v-model="edits">
 			<template #append>
 				<div class="buttons">
 					<v-button class="cancel" @click="cancelEditing" secondary x-small>
 						{{ $t('cancel') }}
 					</v-button>
 
-					<v-button :loading="savingEdits" class="post-comment" @click="saveEdits" x-small>
+					<v-button
+						:loading="savingEdits"
+						class="post-comment"
+						@click="saveEdits"
+						x-small
+						:disabled="edits === activity.comment"
+					>
 						{{ $t('save') }}
 					</v-button>
 				</div>
@@ -32,6 +38,7 @@ import { defineComponent, PropType, ref, computed, watch } from '@vue/compositio
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
 import marked from 'marked';
+import useShortcut from '@/composables/use-shortcut';
 
 import api from '@/api';
 
@@ -48,11 +55,14 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const textarea = ref<Vue>();
 		const htmlContent = computed(() => (props.activity.comment ? marked(props.activity.comment) : null));
 
 		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();
 
-		return { htmlContent, edits, editing, savingEdits, saveEdits, cancelEditing };
+		useShortcut('meta+enter', saveEdits, textarea);
+
+		return { htmlContent, edits, editing, savingEdits, saveEdits, cancelEditing, textarea };
 
 		function useEdits() {
 			const edits = ref(props.activity.comment);

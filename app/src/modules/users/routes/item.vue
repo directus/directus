@@ -102,7 +102,7 @@
 			<div class="user-box" v-if="isNew === false">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading || previewLoading" />
-					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="item.first_name" />
+					<img v-else-if="avatarSrc" :src="avatarSrc" :alt="item.email" />
 					<v-icon v-else name="account_circle" outline x-large />
 				</div>
 				<div class="user-box-content">
@@ -112,7 +112,7 @@
 						<v-skeleton-loader type="text" />
 					</template>
 					<template v-else-if="isNew === false">
-						<div class="name type-title">{{ item.first_name }} {{ item.last_name }}</div>
+						<div class="name type-title">{{ userName(item) }}</div>
 						<div class="email">{{ item.email }}</div>
 						<v-chip :class="item.status" small>{{ roleName }}</v-chip>
 					</template>
@@ -179,6 +179,7 @@ import { getRootPath } from '@/utils/get-root-path';
 import useShortcut from '@/composables/use-shortcut';
 import { isAllowed } from '@/utils/is-allowed';
 import useCollection from '@/composables/use-collection';
+import { userName } from '@/utils/user-name';
 
 type Values = {
 	[field: string]: any;
@@ -255,7 +256,7 @@ export default defineComponent({
 
 			if (isNew.value === false && item.value !== null) {
 				const user = item.value as any;
-				return `${user.first_name} ${user.last_name}`;
+				return userName(user);
 			}
 
 			return i18n.t('adding_user');
@@ -334,6 +335,7 @@ export default defineComponent({
 			archiving,
 			archiveTooltip,
 			form,
+			userName,
 		};
 
 		function useBreadcrumb() {

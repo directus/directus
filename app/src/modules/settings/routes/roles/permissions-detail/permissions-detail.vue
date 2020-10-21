@@ -142,6 +142,10 @@ export default defineComponent({
 				permission.value = response.data.data;
 			} catch (err) {
 				error.value = err;
+
+				if (err?.response?.status === 403) {
+					router.push(`/settings/roles/${props.roleKey || 'public'}`);
+				}
 			} finally {
 				loading.value = false;
 			}

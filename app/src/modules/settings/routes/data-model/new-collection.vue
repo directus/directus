@@ -373,7 +373,6 @@ export default defineComponent({
 						special: ['user-created'],
 						interface: 'user',
 						options: {
-							template: '{{first_name}} {{last_name}}',
 							display: 'both',
 						},
 						readonly: true,
@@ -407,7 +406,6 @@ export default defineComponent({
 						special: ['user-updated'],
 						interface: 'user',
 						options: {
-							template: '{{first_name}} {{last_name}}',
 							display: 'both',
 						},
 						readonly: true,
