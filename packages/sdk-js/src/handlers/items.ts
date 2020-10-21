@@ -1,9 +1,9 @@
 import { Query, Item, Payload, Response } from '../types';
 import { AxiosInstance } from 'axios';
 
-export class Items {
-	collection: string;
-	axios: AxiosInstance;
+export class ItemsHandler {
+	private collection: string;
+	private axios: AxiosInstance;
 
 	constructor(collection: string, axios: AxiosInstance) {
 		this.collection = collection;

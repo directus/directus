@@ -1,5 +1,6 @@
 export type Item = Record<string, any>;
 export type Payload = Record<string, any>;
+export type PrimaryKey = string | number;
 
 export enum Meta {
 	TOTAL_COUNT = 'total_count',

@@ -4,9 +4,7 @@
 
 ## To-Do
 
-- [ ] Docs
-
-- [ ] Items
+- [x] Items
 	- [x] Create
 	- [x] Read
 	- [x] Update
@@ -76,11 +74,11 @@
 	- [ ] Read
 	- [ ] Update
 	- [ ] Delete
-- [ ] Server
-	- [ ] Specs
-		- [ ] OAS
-	- [ ] Ping
-	- [ ] Info
+- [x] Server
+	- [x] Specs
+		- [x] OAS
+	- [x] Ping
+	- [x] Info
 - [ ] Settings
 	- [ ] Read
 	- [ ] Update
@@ -93,12 +91,12 @@
 	- [ ] Accept Invite
 	- [ ] Enable TFA
 	- [ ] Disable TFA
-- [ ] Utils
-	- [ ] Get random string
-	- [ ] Hash a value
-	- [ ] Verify a hashed value
-	- [ ] Sort in collection
-	- [ ] Revert revision
+- [x] Utils
+	- [x] Get random string
+	- [x] Hash a value
+	- [x] Verify a hashed value
+	- [x] Sort in collection
+	- [x] Revert revision
 
 
 ## Installation
@@ -261,4 +259,76 @@ directus.items('articles').delete(15);
 
 // Delete multiple items
 directus.items('articles').delete([15, 42]);
+```
+
+
+---
+
+Bunch of others go here
+
+---
+
+### Server
+
+#### Specs
+
+##### OAS
+
+```js
+// Get the OAS specs for the current API instance
+directus.server.specs.oas();
+```
+
+#### Ping
+
+```js
+directus.server.ping();
+```
+
+#### Info
+
+```js
+directus.server.info();
+```
+
+---
+
+Settings
+
+Users
+
+---
+
+### Utils
+
+#### Random
+
+```js
+// Get a random string (w/ optional length)
+directus.utils.random.string();
+directus.utils.random.string(42);
+```
+
+#### Hash
+
+```js
+// Generate a hash for a string
+directus.utils.hash.generate('Hello World');
+
+// Verify if a hash is valid
+directus.utils.hash.verify('$argon2.hash', 'Hello World');
+```
+
+#### Sort
+
+```js
+// Re-sort a collection based on a start / end position
+directus.utils.sort('articles', 15, 42);
+```
+
+#### Revert
+
+```js
+// Revert a given revision
+directus.utils.revert(13);
 ```
