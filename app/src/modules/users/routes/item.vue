@@ -384,7 +384,7 @@ export default defineComponent({
 		}
 
 		async function refreshCurrentUser() {
-			if (userStore.state.currentUser!.id === item.value.id) {
+			if (userStore.state.currentUser!.id === item.value?.id) {
 				await userStore.hydrate();
 			}
 		}
