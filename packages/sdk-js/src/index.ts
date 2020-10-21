@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { Items } from './items';
+import { Items } from './handlers/items';
 
 export default class DirectusSDK {
 	axios: AxiosInstance;

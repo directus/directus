@@ -9,8 +9,8 @@
 - [ ] Items
 	- [x] Create
 	- [x] Read
-	- [ ] Update
-	- [ ] Delete
+	- [x] Update
+	- [x] Delete
 - [ ] Activity
 	- [ ] Read
 	- [ ] Create Comment
@@ -214,7 +214,7 @@ directus.items('articles').update(
 	{ fields: ['title'] }
 );
 
-// Update multiple items (w/ optional query)
+// Update multiple items to the same value (w/ optional query)
 directus.items('articles').update([15, 42], {
 	title: 'An Updated title'
 });
@@ -223,6 +223,28 @@ directus.items('articles').update(
 	{ title: 'An Updated title' },
 	{ fields: ['title'] }
 );
+
+// Update multiple items to multiple values (w/ optional query)
+directus.items('articles').update([
+	{
+		id: 15,
+		title: 'Article 15',
+	},
+	{
+		id: 42,
+		title: 'Article 42',
+	},
+]);
+directus.items('articles').update([
+	{
+		id: 15,
+		title: 'Article 15',
+	},
+	{
+		id: 42,
+		title: 'Article 42',
+	},
+], { fields: ['title'] });
 
 // Update by query
 directus.items('articles').update(
