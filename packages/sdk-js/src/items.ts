@@ -1,4 +1,4 @@
-import { Query, Item } from './types';
+import { Query, Item, Payload, Response } from './types';
 import { AxiosInstance } from 'axios';
 
 export class Items {
@@ -10,15 +10,22 @@ export class Items {
 		this.axios = axios;
 	}
 
-	async read(query?: Query): Promise<Item[]>;
-	async read(query: Query & { single: true }): Promise<Item>;
-	async read(key: string | number, query?: Query): Promise<Item>;
-	async read(keys: (string | number)[], query?: Query): Promise<Item[]>;
-	async read(keys: (string | number)[], query: Query & { single: true }): Promise<Item>;
+	async create(payload: Payload, query?: Query): Promise<Response<Item>>;
+	async create(payloads: Payload[], query?: Query): Promise<Response<Item | Item[]>>;
+	async create(payloads: Payload | Payload[], query?: Query): Promise<Response<Item | Item[]>> {
+		const result = await this.axios.post(`/items/${this.collection}/`, payloads, {
+			params: query,
+		});
+		return result.data;
+	}
+
+	async read(query?: Query): Promise<Response<Item | Item[]>>;
+	async read(key: string | number, query?: Query): Promise<Response<Item>>;
+	async read(keys: (string | number)[], query?: Query): Promise<Response<Item | Item[]>>;
 	async read(
 		keysOrQuery?: string | number | (string | number)[] | Query,
 		query?: Query & { single: boolean }
-	): Promise<Item | Item[]> {
+	): Promise<Response<Item | Item[]>> {
 		let keys: string | number | (string | number)[] | null = null;
 
 		if (
@@ -42,7 +49,7 @@ export class Items {
 			params = keysOrQuery as Query;
 		}
 
-		let endpoint = `/items/`;
+		let endpoint = `/items/${this.collection}/`;
 
 		if (keys) {
 			endpoint += keys;

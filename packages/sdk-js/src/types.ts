@@ -6,6 +6,11 @@ export enum Meta {
 	FILTER_COUNT = 'filter_count',
 }
 
+export type Response<T> = {
+	data: T | null;
+	meta?: Record<Meta, number>;
+};
+
 export type Query = {
 	fields?: string | string[];
 	sort?: string;
