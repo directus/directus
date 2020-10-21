@@ -2,6 +2,7 @@
 /* eslint-disable */
 
 const WebpackAssetsManifest = require('webpack-assets-manifest');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
 	lintOnSave: false,
@@ -22,7 +23,12 @@ module.exports = {
 	},
 
 	configureWebpack: {
-		plugins: [new WebpackAssetsManifest({ output: 'assets.json' })],
+		plugins: [
+			new WebpackAssetsManifest({ output: 'assets.json' }),
+			new CopyWebpackPlugin({
+				patterns: [{ from: 'node_modules/@directus/docs/assets', to: 'img/docs' }],
+			}),
+		],
 	},
 
 	// There are so many chunks (from all the interfaces / layouts) that we need to make sure to not

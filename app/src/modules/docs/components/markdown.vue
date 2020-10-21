@@ -43,6 +43,11 @@ export default defineComponent({
 						${text}
 					</h${level}>`;
 				},
+				image(href, title, text) {
+					console.log(href, title, text);
+					const imageLink = href?.replace('../assets', '/docs');
+					return `<img src="${imageLink}" alt="${text}"/>`;
+				},
 			};
 
 			// Marked merges it's default rendered with our extension. It's typed as a full rendered however

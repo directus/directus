@@ -91,6 +91,7 @@
     "@vue/cli-service": "^4.5.7",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
-    "@vue/test-utils": "^1.1.0"
+    "@vue/test-utils": "^1.1.0",
+    "copy-webpack-plugin": "^6.2.1"
   }
 }
