@@ -49,7 +49,13 @@
 				<v-icon name="edit" outline />
 			</v-button>
 
-			<v-button rounded icon @click="userInviteModalActive = true" v-tooltip.bottom="$t('invite_users')">
+			<v-button
+				v-if="canInviteUsers"
+				rounded
+				icon
+				@click="userInviteModalActive = true"
+				v-tooltip.bottom="$t('invite_users')"
+			>
 				<v-icon name="person_add" />
 			</v-button>
 
@@ -62,7 +68,7 @@
 			<users-navigation :current-role="queryFilters && queryFilters.role" />
 		</template>
 
-		<users-invite v-model="userInviteModalActive" />
+		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" />
 
 		<component
 			class="layout"
@@ -118,6 +124,7 @@ import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
+import { useUserStore, usePermissionsStore } from '@/stores';
 import marked from 'marked';
 import useNavigation from '../composables/use-navigation';
 
@@ -138,6 +145,8 @@ export default defineComponent({
 		const { roles } = useNavigation();
 		const layoutRef = ref<LayoutComponent | null>(null);
 		const userInviteModalActive = ref(false);
+		const userStore = useUserStore();
+		const permissionsStore = usePermissionsStore();
 
 		const selection = ref<Item[]>([]);
 
@@ -165,7 +174,23 @@ export default defineComponent({
 			return filters.value;
 		});
 
+		const canInviteUsers = computed(() => {
+			const isAdmin = !!userStore.state.currentUser.role.admin_access;
+
+			if (isAdmin) return true;
+
+			const usersCreatePermission = permissionsStore.state.permissions.find(
+				(permission) => permission.collection === 'directus_users' && permission.action === 'create'
+			);
+			const rolesReadPermission = permissionsStore.state.permissions.find(
+				(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
+			);
+
+			return !!usersCreatePermission && !!rolesReadPermission;
+		});
+
 		return {
+			canInviteUsers,
 			_filters,
 			addNewLink,
 			batchDelete,

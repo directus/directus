@@ -91,10 +91,11 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
-import { useUserStore } from '@/stores/';
+import { useUserStore, usePermissionsStore } from '@/stores/';
 import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
 import UsersInvite from '@/views/private/components/users-invite';
+import usersCreate from '../../../../../../../api/dist/cli/commands/users/create';
 
 type Values = {
 	[field: string]: any;
@@ -115,6 +116,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const userStore = useUserStore();
+		const permissionsStore = usePermissionsStore();
 		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
 
