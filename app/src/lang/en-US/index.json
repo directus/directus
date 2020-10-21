@@ -31,6 +31,11 @@
 	"create_user": "Create User",
 	"create_webhook": "Create Webhook",
 
+	"invite_users": "Invite Users",
+	"email_examples": "admin@example.com, user@example.com...",
+	"invite": "Invite",
+	"emails": "Emails",
+
 	"connection_excellent": "Excellent Connection",
 	"connection_good": "Good Connection",
 	"connection_fair": "Fair Connection",
