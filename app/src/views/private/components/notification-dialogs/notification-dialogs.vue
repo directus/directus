@@ -50,12 +50,6 @@ Node: ${parsedInfo.value?.node.version}
 
 Name: ${notify.error?.name || notify.error || 'none'}
 Message: ${notify.error?.message || 'none'}
-Action: ${notify.text || 'none'}
-<details>
-	<summary>Error Stack</summary>
-
-	${notify.error?.stack?.replace(/^/gm, '    ').replace('    ', '')}
-</details>
 			`;
 
 			return `https://github.com/directus/next/issues/new?body=${encodeURIComponent(debugInfo)}`;

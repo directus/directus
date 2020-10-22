@@ -115,7 +115,7 @@ export default defineComponent({
 		const notify = useNotificationsStore();
 
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
-		const { tableHeaders, items, loading, error } = useTable();
+		const { tableHeaders, items, loading } = useTable();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
 		const { sort, sortItems, sortedItems } = useSort();
@@ -263,7 +263,6 @@ export default defineComponent({
 			const tableHeaders = ref<Header[]>([]);
 			const loading = ref(false);
 			const items = ref<Record<string, any>[]>([]);
-			const error = ref(null);
 
 			watch(
 				() => props.value,
@@ -311,7 +310,6 @@ export default defineComponent({
 							})
 							.concat(...newItems);
 					} catch (err) {
-						error.value = err;
 						notify.add({
 							title: i18n.t('unexpected_error'),
 							type: 'error',
@@ -359,7 +357,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { tableHeaders, items, loading, error };
+			return { tableHeaders, items, loading };
 		}
 
 		function useEdits() {

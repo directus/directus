@@ -136,12 +136,6 @@ export default defineComponent({
 				error.value = null;
 			} catch (err) {
 				error.value = err;
-				notify.add({
-					title: i18n.t('unexpected_error'),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
 			} finally {
 				loading.value = false;
 			}
@@ -157,12 +151,6 @@ export default defineComponent({
 				disableActive.value = false;
 			} catch (err) {
 				error.value = err;
-				notify.add({
-					title: i18n.t('unexpected_error'),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
 			} finally {
 				loading.value = false;
 			}

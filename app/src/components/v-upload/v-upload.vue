@@ -115,7 +115,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { uploading, progress, error, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
+		const { uploading, progress, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
 		const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
 		const { url, isValidURL, loading: urlLoading, error: urlError, importFromURL } = useURLImport();
 		const { setSelection } = useSelection();
@@ -125,7 +125,6 @@ export default defineComponent({
 		return {
 			uploading,
 			progress,
-			error,
 			onDragEnter,
 			onDragLeave,
 			onDrop,
@@ -146,14 +145,12 @@ export default defineComponent({
 			const progress = ref(0);
 			const numberOfFiles = ref(0);
 			const done = ref(0);
-			const error = ref(null);
 
-			return { uploading, progress, error, upload, onBrowseSelect, numberOfFiles, done };
+			return { uploading, progress, upload, onBrowseSelect, numberOfFiles, done };
 
 			async function upload(files: FileList) {
 				uploading.value = true;
 				progress.value = 0;
-				error.value = null;
 
 				try {
 					numberOfFiles.value = files.length;
@@ -171,7 +168,6 @@ export default defineComponent({
 					}
 				} catch (err) {
 					console.error(err);
-					error.value = err;
 				} finally {
 					uploading.value = false;
 					done.value = 0;

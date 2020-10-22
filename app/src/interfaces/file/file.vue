@@ -140,7 +140,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const notify = useNotificationsStore();
 		const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
-		const { loading, error, file, fetchFile } = useFile();
+		const { loading, file, fetchFile } = useFile();
 
 		watch(() => props.value, fetchFile, { immediate: true });
 
@@ -158,20 +158,18 @@ export default defineComponent({
 			return assetURL.value + `?key=system-small-cover`;
 		});
 
-		const { url, isValidURL, loading: urlLoading, error: urlError, importFromURL } = useURLImport();
+		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 
 		return {
 			activeDialog,
 			setSelection,
 			loading,
-			error,
 			file,
 			fileExtension,
 			imageThumbnail,
 			onUpload,
 			url,
 			urlLoading,
-			urlError,
 			importFromURL,
 			isValidURL,
 			assetURL,
@@ -179,16 +177,14 @@ export default defineComponent({
 
 		function useFile() {
 			const loading = ref(false);
-			const error = ref(null);
 			const file = ref<FileInfo | null>(null);
 
-			return { loading, error, file, fetchFile };
+			return { loading, file, fetchFile };
 
 			async function fetchFile() {
 				if (props.value === null) {
 					file.value = null;
 					loading.value = false;
-					error.value = null;
 					return;
 				}
 
@@ -203,9 +199,9 @@ export default defineComponent({
 
 					file.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					console.error(err);
 					notify.add({
-						title: i18n.t('unexpected_error'),
+						title: i18n.t('could_not_load_file'),
 						type: 'error',
 						dialog: true,
 						error: err,
@@ -233,7 +229,6 @@ export default defineComponent({
 		function useURLImport() {
 			const url = ref('');
 			const loading = ref(false);
-			const error = ref(null);
 
 			const isValidURL = computed(() => {
 				try {
@@ -244,7 +239,7 @@ export default defineComponent({
 				}
 			});
 
-			return { url, loading, error, isValidURL, importFromURL };
+			return { url, loading, isValidURL, importFromURL };
 
 			async function importFromURL() {
 				loading.value = true;
@@ -260,7 +255,13 @@ export default defineComponent({
 					url.value = '';
 					emit('input', file.value?.id);
 				} catch (err) {
-					error.value = err;
+					console.error(err);
+					notify.add({
+						title: i18n.t('no_file_from_url'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					loading.value = false;
 				}

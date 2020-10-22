@@ -85,7 +85,6 @@ export default defineComponent({
 		const notify = useNotificationsStore();
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
-		const error = ref(null);
 		const lightboxActive = ref(false);
 		const editorActive = ref(false);
 
@@ -137,7 +136,6 @@ export default defineComponent({
 		return {
 			loading,
 			image,
-			error,
 			src,
 			meta,
 			lightboxActive,
@@ -160,7 +158,7 @@ export default defineComponent({
 
 				image.value = response.data.data;
 			} catch (err) {
-				error.value = err;
+				console.error(err);
 				notify.add({
 					title: i18n.t('unexpected_error'),
 					type: 'error',
@@ -186,7 +184,6 @@ export default defineComponent({
 
 			loading.value = false;
 			image.value = null;
-			error.value = null;
 			lightboxActive.value = false;
 			editorActive.value = false;
 		}

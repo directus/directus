@@ -194,7 +194,6 @@ export default defineComponent({
 		function useCurrent() {
 			const currentItem = ref<Record<string, any> | null>(null);
 			const loading = ref(false);
-			const error = ref(null);
 
 			watch(
 				() => props.value,
@@ -264,7 +263,7 @@ export default defineComponent({
 
 					currentItem.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					console.error(err);
 					notify.add({
 						title: i18n.t('unexpected_error'),
 						type: 'error',
@@ -316,7 +315,7 @@ export default defineComponent({
 
 					items.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					console.error(err);
 					notify.add({
 						title: i18n.t('unexpected_error'),
 						type: 'error',
