@@ -207,7 +207,6 @@ export default defineComponent({
 
 		const fileFields = computed(() => {
 			return fieldsInCollection.value.filter((field) => {
-				console.log(field);
 				if (field.field === '$file') return true;
 
 				const relation = relationsStore.state.relations.find((relation) => {
@@ -338,6 +337,7 @@ export default defineComponent({
 				const fields = [primaryKeyField.value.field];
 
 				if (imageSource.value) {
+					fields.push(`${imageSource.value}.modified_on`);
 					fields.push(`${imageSource.value}.type`);
 					fields.push(`${imageSource.value}.filename_disk`);
 					fields.push(`${imageSource.value}.storage`);
@@ -345,6 +345,7 @@ export default defineComponent({
 				}
 
 				if (props.collection === 'directus_files' && imageSource.value === '$file') {
+					fields.push('modified_on');
 					fields.push('type');
 				}
 
