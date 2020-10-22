@@ -97,7 +97,7 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import api from '@/api';
 import { Header } from '@/components/v-table/types';
 import i18n from '@/lang';
-import { useCollectionsStore } from '@/stores/';
+import { useCollectionsStore, useNotificationsStore } from '@/stores/';
 import { getLayouts } from '@/layouts';
 import { TranslateResult } from 'vue-i18n';
 import router from '@/router';
@@ -125,6 +125,7 @@ type Preset = {
 export default defineComponent({
 	components: { SettingsNavigation, ValueNull, PresetsInfoSidebarDetail },
 	setup() {
+		const notify = useNotificationsStore();
 		const layouts = getLayouts();
 		const collectionsStore = useCollectionsStore();
 
@@ -214,6 +215,12 @@ export default defineComponent({
 					presetsRaw.value = response.data.data;
 				} catch (err) {
 					error.value = err;
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					loading.value = false;
 				}

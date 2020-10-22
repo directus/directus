@@ -39,26 +39,27 @@ import { defineComponent, ref } from '@vue/composition-api';
 import api from '@/api';
 import router from '@/router';
 import { permissions } from './app-required-permissions';
+import i18n from '@/lang';
+import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	setup() {
+		const notify = useNotificationsStore();
 		const roleName = ref<string>();
 		const appAccess = ref(true);
 		const adminAccess = ref(false);
 
-		const { saving, error, save } = useSave();
+		const { saving, save } = useSave();
 
-		return { roleName, saving, error, save, appAccess, adminAccess };
+		return { roleName, saving, save, appAccess, adminAccess };
 
 		function useSave() {
 			const saving = ref(false);
-			const error = ref<any>();
 
-			return { saving, error, save };
+			return { saving, save };
 
 			async function save() {
 				saving.value = true;
-				error.value = null;
 
 				try {
 					const roleResponse = await api.post('/roles', {
@@ -79,7 +80,13 @@ export default defineComponent({
 
 					router.push(`/settings/roles/${roleResponse.data.data.id}`);
 				} catch (err) {
-					error.value = err;
+					console.error(err);
+					notify.add({
+						title: i18n.t('could_not_add_role'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					saving.value = false;
 				}

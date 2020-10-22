@@ -65,6 +65,8 @@ import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
 import api from '@/api';
 import qrcode from 'qrcode';
 import { nanoid } from 'nanoid';
+import { useNotificationsStore } from '@/stores';
+import i18n from '@/lang';
 
 export default defineComponent({
 	props: {
@@ -74,6 +76,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const tfaEnabled = ref(!!props.value);
 		const enableActive = ref(false);
 		const disableActive = ref(false);
@@ -133,6 +136,12 @@ export default defineComponent({
 				error.value = null;
 			} catch (err) {
 				error.value = err;
+				notify.add({
+					title: i18n.t('unexpected_error'),
+					type: 'error',
+					dialog: true,
+					error: err,
+				});
 			} finally {
 				loading.value = false;
 			}
@@ -148,6 +157,12 @@ export default defineComponent({
 				disableActive.value = false;
 			} catch (err) {
 				error.value = err;
+				notify.add({
+					title: i18n.t('unexpected_error'),
+					type: 'error',
+					dialog: true,
+					error: err,
+				});
 			} finally {
 				loading.value = false;
 			}

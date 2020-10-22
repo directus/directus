@@ -57,7 +57,8 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 import { Preset } from '@/types';
-import { useUserStore, usePresetsStore } from '@/stores';
+import { useUserStore, usePresetsStore, useNotificationsStore } from '@/stores';
+import i18n from '@/lang';
 
 export default defineComponent({
 	props: {
@@ -70,6 +71,7 @@ export default defineComponent({
 		const contextMenu = ref();
 		const userStore = useUserStore();
 		const presetsStore = usePresetsStore();
+		const notify = useNotificationsStore();
 
 		const isMine = computed(() => props.bookmark.user === userStore.state.currentUser!.id);
 
@@ -108,6 +110,12 @@ export default defineComponent({
 					renameActive.value = false;
 				} catch (error) {
 					console.error(error);
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error,
+					});
 				} finally {
 					renameSaving.value = false;
 				}
@@ -129,6 +137,12 @@ export default defineComponent({
 					deleteActive.value = false;
 				} catch (error) {
 					console.error(error);
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error,
+					});
 				} finally {
 					deleteSaving.value = false;
 				}

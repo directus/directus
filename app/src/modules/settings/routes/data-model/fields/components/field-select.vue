@@ -202,10 +202,9 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 import { Field, Relation } from '@/types';
-import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
+import { useCollectionsStore, useFieldsStore, useRelationsStore, useNotificationsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';
 import router from '@/router';
-import notify from '@/utils/notify';
 import { i18n } from '@/lang';
 import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
@@ -218,6 +217,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
@@ -346,14 +346,20 @@ export default defineComponent({
 				try {
 					await fieldsStore.createField(duplicateTo.value, newField);
 
-					notify({
+					notify.add({
 						title: i18n.t('field_create_success', { field: newField.name }),
 						type: 'success',
 					});
 
 					duplicateActive.value = false;
 				} catch (error) {
-					console.log(error);
+					console.error(error);
+					notify.add({
+						title: i18n.t('could_not_duplicate_field'),
+						type: 'error',
+						dialog: true,
+						error,
+					});
 				} finally {
 					duplicating.value = false;
 				}

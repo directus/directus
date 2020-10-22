@@ -117,11 +117,10 @@ import { i18n } from '@/lang';
 import { isEmpty, cloneDeep } from 'lodash';
 import api from '@/api';
 import { Relation, Collection } from '@/types';
-import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
+import { useFieldsStore, useRelationsStore, useCollectionsStore, useNotificationsStore } from '@/stores/';
 import { Field } from '@/types';
 import router from '@/router';
 import useCollection from '@/composables/use-collection';
-import notify from '@/utils/notify';
 import { getLocalTypeForField } from '../get-local-type';
 
 import { initLocalStore, state, clearLocalStore } from './store';
@@ -154,6 +153,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
@@ -360,12 +360,12 @@ export default defineComponent({
 				await relationsStore.hydrate();
 
 				if (props.field !== '+') {
-					notify({
+					notify.add({
 						title: i18n.t('field_update_success', { field: props.field }),
 						type: 'success',
 					});
 				} else {
-					notify({
+					notify.add({
 						title: i18n.t('field_create_success', { field: fieldData.field }),
 						type: 'success',
 					});
@@ -375,6 +375,12 @@ export default defineComponent({
 				clearLocalStore();
 			} catch (error) {
 				console.error(error);
+				notify.add({
+					title: i18n.t('could_not_save_field'),
+					type: 'error',
+					dialog: true,
+					error,
+				});
 			} finally {
 				saving.value = false;
 			}

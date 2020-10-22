@@ -254,7 +254,8 @@ import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import router from '@/router';
 import marked from 'marked';
-import { usePermissionsStore, useUserStore } from '@/stores';
+import { useNotificationsStore, usePermissionsStore, useUserStore } from '@/stores';
+import i18n from '@/lang';
 
 type Item = {
 	[field: string]: any;
@@ -282,6 +283,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref<LayoutComponent | null>(null);
@@ -430,6 +432,12 @@ export default defineComponent({
 					confirmDelete.value = false;
 				} catch (err) {
 					error.value = err;
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					deleting.value = false;
 				}
@@ -450,6 +458,12 @@ export default defineComponent({
 					confirmArchive.value = false;
 				} catch (err) {
 					error.value = err;
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					archiving.value = false;
 				}
@@ -496,6 +510,12 @@ export default defineComponent({
 					bookmarkDialogActive.value = false;
 				} catch (error) {
 					console.log(error);
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error,
+					});
 				} finally {
 					creatingBookmark.value = false;
 				}

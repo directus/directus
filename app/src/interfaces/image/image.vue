@@ -56,7 +56,7 @@ import formatFilesize from '@/utils/format-filesize';
 import i18n from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import ImageEditor from '@/views/private/components/image-editor';
-
+import { useNotificationsStore } from '@/stores';
 import { nanoid } from 'nanoid';
 import getRootPath from '@/utils/get-root-path';
 
@@ -82,6 +82,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const notify = useNotificationsStore();
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
 		const error = ref(null);
@@ -160,6 +161,12 @@ export default defineComponent({
 				image.value = response.data.data;
 			} catch (err) {
 				error.value = err;
+				notify.add({
+					title: i18n.t('unexpected_error'),
+					type: 'error',
+					dialog: true,
+					error: err,
+				});
 			} finally {
 				loading.value = false;
 			}

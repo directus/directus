@@ -2,6 +2,8 @@ import { ref, computed } from '@vue/composition-api';
 import prettyMS from 'pretty-ms';
 import bytes from 'bytes';
 import api from '@/api';
+import i18n from '@/lang';
+import { useNotificationsStore } from '@/stores';
 
 type ServerInfo = {
 	directus: {
@@ -20,6 +22,7 @@ type ServerInfo = {
 };
 
 export function useProjectInfo() {
+	const notify = useNotificationsStore();
 	const info = ref<ServerInfo>();
 	const loading = ref(false);
 	const error = ref<any>();
@@ -59,6 +62,12 @@ export function useProjectInfo() {
 			info.value = response.data.data;
 		} catch (err) {
 			error.value = err;
+			notify.add({
+				title: i18n.t('could_not_load_server_info'),
+				type: 'error',
+				dialog: true,
+				error: err,
+			});
 		} finally {
 			loading.value = false;
 		}

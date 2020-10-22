@@ -185,7 +185,7 @@ import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
 import FileLightbox from '@/views/private/components/file-lightbox';
-import { useFieldsStore } from '@/stores/';
+import { useFieldsStore, useNotificationsStore } from '@/stores/';
 import { Field } from '@/types';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import useFormFields from '@/composables/use-form-fields';
@@ -403,6 +403,7 @@ export default defineComponent({
 			const moveToDialogActive = ref(false);
 			const moving = ref(false);
 			const selectedFolder = ref<number | null>();
+			const notification = useNotificationsStore();
 
 			watch(item, () => {
 				selectedFolder.value = item.value.folder;
@@ -414,12 +415,32 @@ export default defineComponent({
 				moving.value = true;
 
 				try {
-					await api.patch(`/files/${props.primaryKey}`, {
-						folder: selectedFolder.value,
-					});
+					const response = await api.patch(
+						`/files/${props.primaryKey}`,
+						{
+							folder: selectedFolder.value,
+						},
+						{
+							params: {
+								fields: '*,folder.*',
+							},
+						}
+					);
 					await refresh();
-				} catch (err) {
-					console.error(err);
+					const folder = response.data.data.folder?.name || i18n.t('file_library');
+
+					notification.add({
+						title: i18n.t('file_moved', { folder }),
+						type: 'success',
+						icon: 'folder_move',
+					});
+				} catch (error) {
+					notification.add({
+						title: i18n.t('could_not_move_to_folder'),
+						type: 'error',
+						dialog: true,
+						error,
+					});
 				} finally {
 					moveToDialogActive.value = false;
 					moving.value = false;

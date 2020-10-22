@@ -26,6 +26,8 @@ import { defineComponent, ref } from '@vue/composition-api';
 import useFolders from '../composables/use-folders';
 import api from '@/api';
 import router from '@/router';
+import i18n from '@/lang';
+import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	props: {
@@ -35,6 +37,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const dialogActive = ref(false);
 		const saving = ref(false);
 		const newFolderName = ref(null);
@@ -61,6 +64,12 @@ export default defineComponent({
 				router.push({ path: '/files', query: { folder: newFolder.data.data.id } });
 			} catch (err) {
 				savingError.value = err;
+				notify.add({
+					title: i18n.t('could_not_create_file'),
+					type: 'error',
+					dialog: true,
+					error: err,
+				});
 			} finally {
 				saving.value = false;
 			}

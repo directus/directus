@@ -1,6 +1,5 @@
 import api from '@/api';
-
-import notify from '@/utils/notify';
+import { useNotificationsStore } from '@/stores';
 import i18n from '@/lang';
 
 import emitter, { Events } from '@/events';
@@ -13,6 +12,7 @@ export default async function uploadFile(
 		preset?: Record<string, any>;
 	}
 ) {
+	const notify = useNotificationsStore();
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const formData = new FormData();
 
@@ -30,7 +30,7 @@ export default async function uploadFile(
 		});
 
 		if (options?.notifications) {
-			notify({
+			notify.add({
 				title: i18n.t('upload_file_success'),
 				type: 'success',
 			});
@@ -41,8 +41,11 @@ export default async function uploadFile(
 		return response.data.data;
 	} catch (error) {
 		if (options?.notifications) {
-			notify({
+			notify.add({
 				title: i18n.t('upload_file_failed'),
+				type: 'error',
+				dialog: true,
+				error,
 			});
 		}
 	}

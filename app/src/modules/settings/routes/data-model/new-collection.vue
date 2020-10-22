@@ -6,22 +6,6 @@
 		persistent
 		@cancel="$router.push('/settings/data-model')"
 	>
-		<v-dialog :active="saveError !== null" @toggle="saveError = null" @esc="saveError = null">
-			<v-card class="selectable">
-				<v-card-title>
-					{{ saveError && saveError.message }}
-				</v-card-title>
-
-				<v-card-text>
-					{{ saveError && saveError.response && saveError.response.data.errors[0].message }}
-				</v-card-text>
-
-				<v-card-actions>
-					<v-button @click="saveError = null">{{ $t('dismiss') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
 		<template #sidebar>
 			<v-tabs vertical v-model="currentTab">
 				<v-tab value="collection">{{ $t('collection_setup') }}</v-tab>
@@ -137,12 +121,13 @@
 import { defineComponent, ref, reactive } from '@vue/composition-api';
 import api from '@/api';
 import { Field } from '@/types';
-import { useFieldsStore, useCollectionsStore } from '@/stores/';
-import notify from '@/utils/notify';
+import { useFieldsStore, useCollectionsStore, useNotificationsStore } from '@/stores/';
 import router from '@/router';
+import i18n from '@/lang';
 
 export default defineComponent({
 	setup() {
+		const notify = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
@@ -199,7 +184,6 @@ export default defineComponent({
 		});
 
 		const saving = ref(false);
-		const saveError = ref(null);
 
 		return {
 			currentTab,
@@ -208,7 +192,6 @@ export default defineComponent({
 			primaryKeyFieldName,
 			primaryKeyFieldType,
 			collectionName,
-			saveError,
 			saving,
 			singleton,
 		};
@@ -232,15 +215,20 @@ export default defineComponent({
 				await collectionsStore.hydrate();
 				await fieldsStore.hydrate();
 
-				notify({
+				notify.add({
 					title: 'Collection Created',
 					type: 'success',
 				});
 
 				router.push(`/settings/data-model/${collectionName.value}`);
 			} catch (error) {
-				console.log(error);
-				saveError.value = error;
+				console.error(error);
+				notify.add({
+					title: i18n.t('could_not_save_collection'),
+					type: 'error',
+					dialog: true,
+					error,
+				});
 			} finally {
 				saving.value = false;
 			}

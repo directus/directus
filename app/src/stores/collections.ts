@@ -5,7 +5,7 @@ import i18n from '@/lang/';
 import { notEmpty } from '@/utils/is-empty/';
 import VueI18n from 'vue-i18n';
 import formatTitle from '@directus/format-title';
-import notify from '@/utils/notify';
+import { useNotificationsStore } from '@/stores';
 
 export const useCollectionsStore = createStore({
 	id: 'collectionsStore',
@@ -56,35 +56,40 @@ export const useCollectionsStore = createStore({
 			this.reset();
 		},
 		async updateCollection(collection: string, updates: Partial<Collection>) {
+			const notify = useNotificationsStore();
+
 			try {
 				await api.patch(`/collections/${collection}`, updates);
 				await this.hydrate();
-				notify({
+				notify.add({
 					type: 'success',
 					title: i18n.t('update_collection_success'),
 				});
 			} catch (error) {
-				notify({
-					type: 'error',
+				notify.add({
 					title: i18n.t('update_collection_failed'),
-					text: collection,
+					type: 'error',
+					dialog: true,
+					error,
 				});
 				throw error;
 			}
 		},
 		async deleteCollection(collection: string) {
+			const notify = useNotificationsStore();
 			try {
 				await api.delete(`/collections/${collection}`);
 				await this.hydrate();
-				notify({
+				notify.add({
 					type: 'success',
 					title: i18n.t('delete_collection_success'),
 				});
 			} catch (error) {
-				notify({
-					type: 'error',
+				notify.add({
 					title: i18n.t('delete_collection_failed'),
-					text: collection,
+					type: 'error',
+					dialog: true,
+					error,
 				});
 				throw error;
 			}

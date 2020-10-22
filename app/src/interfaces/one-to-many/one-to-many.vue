@@ -68,12 +68,13 @@
 import { defineComponent, ref, computed, watch, PropType } from '@vue/composition-api';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
-import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';
+import { useCollectionsStore, useRelationsStore, useFieldsStore, useNotificationsStore } from '@/stores/';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { Filter, Field } from '@/types';
 import { Header, Sort } from '@/components/v-table/types';
 import { isEqual, sortBy } from 'lodash';
+import i18n from '@/lang';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection },
@@ -111,6 +112,7 @@ export default defineComponent({
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
+		const notify = useNotificationsStore();
 
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
 		const { tableHeaders, items, loading, error } = useTable();
@@ -310,6 +312,12 @@ export default defineComponent({
 							.concat(...newItems);
 					} catch (err) {
 						error.value = err;
+						notify.add({
+							title: i18n.t('unexpected_error'),
+							type: 'error',
+							dialog: true,
+							error: err,
+						});
 					} finally {
 						loading.value = false;
 					}

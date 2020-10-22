@@ -103,12 +103,13 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, toRefs, watch, PropType } from '@vue/composition-api';
-import { useCollectionsStore, useRelationsStore } from '@/stores/';
+import { useCollectionsStore, useNotificationsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
+import i18n from '@/lang';
 
 /**
  * @NOTE
@@ -149,6 +150,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { collection } = toRefs(props);
 
+		const notify = useNotificationsStore();
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 
@@ -263,6 +265,12 @@ export default defineComponent({
 					currentItem.value = response.data.data;
 				} catch (err) {
 					error.value = err;
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					loading.value = false;
 				}
@@ -309,6 +317,12 @@ export default defineComponent({
 					items.value = response.data.data;
 				} catch (err) {
 					error.value = err;
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					loading.value = false;
 				}

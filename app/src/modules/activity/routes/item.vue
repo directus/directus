@@ -52,6 +52,7 @@ import { i18n } from '@/lang';
 import router from '@/router';
 import api from '@/api';
 import { userName } from '@/utils/user-name';
+import { useNotificationsStore } from '@/stores';
 
 type Values = {
 	[field: string]: any;
@@ -80,6 +81,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const { primaryKey } = toRefs(props);
 		const item = ref<ActivityRecord>();
 		const loading = ref(false);
@@ -126,6 +128,12 @@ export default defineComponent({
 				item.value = response.data.data;
 			} catch (err) {
 				error.value = err;
+				notify.add({
+					title: i18n.t('unexpected_error'),
+					type: 'error',
+					dialog: true,
+					error: err,
+				});
 			} finally {
 				loading.value = false;
 			}

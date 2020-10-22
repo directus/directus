@@ -36,7 +36,7 @@ import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/co
 import api from '@/api';
 
 import useCollection from '@/composables/use-collection';
-import { useFieldsStore, useRelationsStore } from '@/stores';
+import { useFieldsStore, useNotificationsStore, useRelationsStore } from '@/stores';
 import i18n from '@/lang';
 import { Relation, Field } from '@/types';
 
@@ -74,6 +74,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const notify = useNotificationsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
@@ -84,7 +85,7 @@ export default defineComponent({
 			junctionRelatedCollectionInfo,
 			setJunctionEdits,
 		} = useJunction();
-		const { _edits, loading, error, item } = useItem();
+		const { _edits, loading, item } = useItem();
 		const { save, cancel } = useActions();
 
 		const { collection } = toRefs(props);
@@ -115,7 +116,6 @@ export default defineComponent({
 			_active,
 			_edits,
 			loading,
-			error,
 			item,
 			save,
 			cancel,
@@ -162,7 +162,6 @@ export default defineComponent({
 			});
 
 			const loading = ref(false);
-			const error = ref(null);
 			const item = ref<Record<string, any> | null>(null);
 
 			watch(
@@ -173,7 +172,6 @@ export default defineComponent({
 						if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
 					} else {
 						loading.value = false;
-						error.value = null;
 						item.value = null;
 						localEdits.value = {};
 					}
@@ -181,7 +179,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { _edits, loading, error, item, fetchItem };
+			return { _edits, loading, item, fetchItem };
 
 			async function fetchItem() {
 				loading.value = true;
@@ -201,7 +199,13 @@ export default defineComponent({
 
 					item.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					console.error(err);
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					loading.value = false;
 				}
@@ -224,7 +228,13 @@ export default defineComponent({
 						[junctionFieldInfo.value.field]: response.data.data,
 					};
 				} catch (err) {
-					error.value = err;
+					console.error(err);
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					loading.value = false;
 				}

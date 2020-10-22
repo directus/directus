@@ -183,12 +183,12 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const { folders } = useFolders();
 		const layoutRef = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
 
 		const userStore = useUserStore();
-		const notificationsStore = useNotificationsStore();
 
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_files'));
 		const { batchLink } = useLinks();
@@ -308,6 +308,12 @@ export default defineComponent({
 					await layoutRef.value?.refresh();
 				} catch (err) {
 					console.error(err);
+					notify.add({
+						title: i18n.t('could_not_delete_files'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					deleting.value = false;
 				}
@@ -388,6 +394,12 @@ export default defineComponent({
 					await refresh();
 				} catch (err) {
 					console.error(err);
+					notify.add({
+						title: i18n.t('could_not_move_folder'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					moveToDialogActive.value = false;
 					moving.value = false;
@@ -419,7 +431,7 @@ export default defineComponent({
 			function enableDropEffect() {
 				showDropEffect.value = true;
 
-				dragNotificationID = notificationsStore.add({
+				dragNotificationID = notify.add({
 					title: i18n.t('drop_to_upload'),
 					icon: 'cloud_upload',
 					type: 'info',
@@ -432,7 +444,7 @@ export default defineComponent({
 				showDropEffect.value = false;
 
 				if (dragNotificationID) {
-					notificationsStore.remove(dragNotificationID);
+					notify.remove(dragNotificationID);
 				}
 			}
 
@@ -489,12 +501,12 @@ export default defineComponent({
 				dragCounter.value = 0;
 
 				if (dragNotificationID) {
-					notificationsStore.remove(dragNotificationID);
+					notify.remove(dragNotificationID);
 				}
 
 				const files = [...event.dataTransfer.files];
 
-				fileUploadNotificationID = notificationsStore.add({
+				fileUploadNotificationID = notify.add({
 					title: i18n.tc('upload_file_indeterminate', files.length, {
 						done: 0,
 						total: files.length,
@@ -517,7 +529,7 @@ export default defineComponent({
 						const total = files.length;
 						const done = progress.filter((p) => p === 100).length;
 
-						notificationsStore.update(fileUploadNotificationID, {
+						notify.update(fileUploadNotificationID, {
 							title: i18n.tc('upload_file_indeterminate', files.length, {
 								done,
 								total,
@@ -528,7 +540,7 @@ export default defineComponent({
 					},
 				});
 
-				notificationsStore.remove(fileUploadNotificationID);
+				notify.remove(fileUploadNotificationID);
 				emitter.emit(Events.upload);
 			}
 		}

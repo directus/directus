@@ -171,7 +171,7 @@ import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-d
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
-import { useFieldsStore, useUserStore } from '@/stores/';
+import { useFieldsStore, useNotificationsStore, useUserStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
@@ -211,6 +211,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const form = ref<HTMLElement>();
 		const fieldsStore = useFieldsStore();
 		const userStore = useUserStore();
@@ -302,7 +303,6 @@ export default defineComponent({
 			title,
 			item,
 			loading,
-			error,
 			isNew,
 			breadcrumb,
 			edits,
@@ -391,13 +391,12 @@ export default defineComponent({
 
 		function useUserPreview() {
 			const loading = ref(false);
-			const error = ref(null);
 			const avatarSrc = ref<string | null>(null);
 			const roleName = ref<string | null>(null);
 
 			watch(() => props.primaryKey, getUserPreviewData, { immediate: true });
 
-			return { loading, error, avatarSrc, roleName };
+			return { loading, avatarSrc, roleName };
 
 			async function getUserPreviewData() {
 				if (props.primaryKey === '+') return;
@@ -416,7 +415,13 @@ export default defineComponent({
 						: null;
 					roleName.value = response.data.data.role.name;
 				} catch (err) {
-					error.value = err;
+					console.error(err);
+					notify.add({
+						title: i18n.t('could_not_load_user'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					loading.value = false;
 				}

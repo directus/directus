@@ -1,10 +1,10 @@
 import api from '@/api';
 import { Ref, ref, watch, computed } from '@vue/composition-api';
-import notify from '@/utils/notify';
 import i18n from '@/lang';
 import useCollection from '@/composables/use-collection';
 import { AxiosResponse } from 'axios';
 import { APIError } from '@/types';
+import { useNotificationsStore } from '@/stores';
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
@@ -20,6 +20,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const isNew = computed(() => primaryKey.value === '+');
 	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
+	const notify = useNotificationsStore();
 
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;
@@ -75,6 +76,12 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			const response = await api.get(itemEndpoint.value);
 			setItemValueToResponse(response);
 		} catch (err) {
+			notify.add({
+				title: i18n.t('unexpected_error'),
+				dialog: true,
+				type: 'error',
+				error: err,
+			});
 			error.value = err;
 		} finally {
 			loading.value = false;
@@ -91,14 +98,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			if (isNew.value === true) {
 				response = await api.post(endpoint.value, edits.value);
 
-				notify({
+				notify.add({
 					title: i18n.tc('item_create_success', isBatch.value ? 2 : 1),
 					type: 'success',
 				});
 			} else {
 				response = await api.patch(itemEndpoint.value, edits.value);
 
-				notify({
+				notify.add({
 					title: i18n.tc('item_update_success', isBatch.value ? 2 : 1),
 					type: 'success',
 				});
@@ -109,12 +116,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			return response.data.data;
 		} catch (err) {
 			if (isNew.value) {
-				notify({
+				notify.add({
 					title: i18n.tc('item_create_failed', isBatch.value ? 2 : 1),
 					type: 'error',
+					dialog: true,
+					error: err,
 				});
 			} else {
-				notify({
+				notify.add({
 					title: i18n.tc('item_update_failed', isBatch.value ? 2 : 1),
 					text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 						collection: collection.value,
@@ -123,6 +132,8 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 							: primaryKey.value,
 					}),
 					type: 'error',
+					dialog: true,
+					error: err,
 				});
 			}
 
@@ -134,7 +145,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					});
 			}
 
-			throw err;
+			throw error;
 		} finally {
 			saving.value = false;
 		}
@@ -157,20 +168,22 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		try {
 			const response = await api.post(endpoint.value, newItem);
 
-			notify({
+			notify.add({
 				title: i18n.t('item_create_success'),
 				type: 'success',
 			});
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
 		} catch (err) {
-			notify({
+			notify.add({
 				title: i18n.t('item_create_failed'),
 				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 					collection: collection.value,
 					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
 				}),
 				type: 'error',
+				dialog: true,
+				error: err,
 			});
 
 			if (err?.response?.data?.errors) {
@@ -180,7 +193,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 						return err.extensions;
 					});
 			} else {
-				throw err;
+				throw error;
 			}
 		} finally {
 			saving.value = false;
@@ -217,18 +230,20 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				[field]: value,
 			});
 
-			notify({
+			notify.add({
 				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
 		} catch (err) {
-			notify({
+			notify.add({
 				title: i18n.tc('item_delete_failed', isBatch.value ? 2 : 1),
 				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 					collection: collection.value,
 					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
 				}),
 				type: 'error',
+				dialog: true,
+				error: err,
 			});
 
 			throw err;
@@ -245,18 +260,20 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			item.value = null;
 
-			notify({
+			notify.add({
 				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
 		} catch (err) {
-			notify({
+			notify.add({
 				title: i18n.tc('item_delete_failed', isBatch.value ? 2 : 1),
 				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
 					collection: collection.value,
 					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
 				}),
 				type: 'error',
+				dialog: true,
+				error: err,
 			});
 
 			throw err;

@@ -1,6 +1,6 @@
 import { createStore } from 'pinia';
 import api from '@/api';
-import notify from '@/utils/notify';
+import { useNotificationsStore } from '@/stores';
 import { i18n } from '@/lang';
 import { merge } from 'lodash';
 
@@ -14,7 +14,9 @@ export const useSettingsStore = createStore({
 			try {
 				const response = await api.get(`/settings`);
 				this.state.settings = response.data.data;
-			} catch {}
+			} catch (err) {
+				console.error(err);
+			}
 		},
 
 		async dehydrate() {
@@ -22,6 +24,7 @@ export const useSettingsStore = createStore({
 		},
 
 		async updateSettings(updates: { [key: string]: any }) {
+			const notify = useNotificationsStore();
 			const settingsCopy = { ...this.state.settings };
 			const newSettings = merge({}, this.state.settings, updates);
 
@@ -32,17 +35,17 @@ export const useSettingsStore = createStore({
 
 				this.state.settings = response.data.data;
 
-				notify({
+				notify.add({
 					title: i18n.t('settings_update_success'),
 					type: 'success',
 				});
 			} catch (error) {
 				this.state.settings = settingsCopy;
-
-				notify({
+				notify.add({
 					title: i18n.t('settings_update_failed'),
-					text: Object.keys(updates).join(', '),
 					type: 'error',
+					dialog: true,
+					error,
 				});
 			}
 		},

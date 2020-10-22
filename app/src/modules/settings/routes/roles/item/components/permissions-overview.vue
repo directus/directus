@@ -62,12 +62,13 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, provide } from '@vue/composition-api';
-import { useCollectionsStore } from '@/stores';
+import { useCollectionsStore, useNotificationsStore } from '@/stores';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 import { Permission } from '@/types';
 import api from '@/api';
 import { permissions as appRequiredPermissions } from '../../app-required-permissions';
+import i18n from '@/lang';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
@@ -83,6 +84,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 
 		const regularCollections = computed(() =>
@@ -99,7 +101,7 @@ export default defineComponent({
 
 		const systemVisible = ref(false);
 
-		const { permissions, loading, error, fetchPermissions, refreshPermission, refreshing } = usePermissions();
+		const { permissions, loading, fetchPermissions, refreshPermission, refreshing } = usePermissions();
 
 		const { resetActive, resetSystemPermissions, resetting, resetError } = useReset();
 
@@ -113,7 +115,6 @@ export default defineComponent({
 			systemCollections,
 			permissions,
 			loading,
-			error,
 			fetchPermissions,
 			refreshPermission,
 			refreshing,
@@ -127,12 +128,10 @@ export default defineComponent({
 			const permissions = ref<Permission[]>([]);
 			const loading = ref(false);
 			const refreshing = ref<number[]>([]);
-			const error = ref();
 
-			return { permissions, loading, error, fetchPermissions, refreshPermission, refreshing };
+			return { permissions, loading, fetchPermissions, refreshPermission, refreshing };
 
 			async function fetchPermissions() {
-				error.value = null;
 				loading.value = true;
 
 				try {
@@ -148,7 +147,13 @@ export default defineComponent({
 
 					permissions.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					console.error(err);
+					notify.add({
+						title: i18n.t('could_not_load_permission'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					loading.value = false;
 				}
@@ -167,7 +172,13 @@ export default defineComponent({
 						return permission;
 					});
 				} catch (err) {
-					console.log(`Couldn't refresh permissions ${id}`);
+					console.error(err);
+					notify.add({
+						title: i18n.t('could_not_refresh_permission'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
 				}
@@ -206,6 +217,12 @@ export default defineComponent({
 					resetActive.value = false;
 				} catch (err) {
 					resetError.value = err;
+					notify.add({
+						title: i18n.t('could_not_reset_permissions'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					resetting.value = false;
 				}

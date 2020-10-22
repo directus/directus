@@ -154,6 +154,7 @@ export default defineComponent({
 		const { loading, error, items } = usePreview(
 			value,
 			fields,
+			ref(null),
 			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,

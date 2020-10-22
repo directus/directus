@@ -51,6 +51,7 @@
 		<v-overlay class="sidebar-overlay" :active="sidebarOpen" @click="sidebarOpen = false" />
 
 		<notifications-group v-if="notificationsPreviewActive === false" :dense="sidebarOpen === false" />
+		<notification-dialogs />
 	</div>
 </template>
 
@@ -63,6 +64,7 @@ import ProjectInfo from './components/project-info';
 import SidebarButton from './components/sidebar-button/';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
+import NotificationDialogs from './components/notification-dialogs/';
 import { useUserStore, useAppStore } from '@/stores';
 import i18n from '@/lang';
 import emitter, { Events } from '@/events';
@@ -76,6 +78,7 @@ export default defineComponent({
 		SidebarButton,
 		NotificationsGroup,
 		NotificationsPreview,
+		NotificationDialogs,
 	},
 	props: {
 		title: {

@@ -112,10 +112,11 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, watch, computed } from '@vue/composition-api';
 import useFolders, { Folder } from '../composables/use-folders';
-import notify from '@/utils/notify';
 import api from '@/api';
 import FolderPicker from './folder-picker.vue';
 import router from '@/router';
+import i18n from '@/lang';
+import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	name: 'navigation-folder',
@@ -135,6 +136,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
 		const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
 		const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
@@ -171,6 +173,12 @@ export default defineComponent({
 					});
 				} catch (error) {
 					console.error(error);
+					notify.add({
+						title: i18n.t('could_not_rename_folder'),
+						type: 'error',
+						dialog: true,
+						error,
+					});
 				} finally {
 					renameSaving.value = false;
 					await fetchFolders();
@@ -195,6 +203,12 @@ export default defineComponent({
 					});
 				} catch (error) {
 					console.error(error);
+					notify.add({
+						title: i18n.t('could_not_move_folder'),
+						type: 'error',
+						dialog: true,
+						error,
+					});
 				} finally {
 					moveSaving.value = false;
 					await fetchFolders();
@@ -257,6 +271,12 @@ export default defineComponent({
 					deleteActive.value = false;
 				} catch (error) {
 					console.error(error);
+					notify.add({
+						title: i18n.t('could_not_delete_folder'),
+						type: 'error',
+						dialog: true,
+						error,
+					});
 				} finally {
 					await fetchFolders();
 					deleteSaving.value = false;

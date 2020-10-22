@@ -98,7 +98,7 @@ import SettingsNavigation from '../../components/navigation.vue';
 import { Preset, Filter } from '@/types';
 import api from '@/api';
 import i18n from '@/lang';
-import { useCollectionsStore, usePresetsStore } from '@/stores';
+import { useCollectionsStore, useNotificationsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
 import router from '@/router';
 import marked from 'marked';
@@ -136,6 +136,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 		const presetsStore = usePresetsStore();
 		const layouts = getLayouts();
@@ -214,6 +215,12 @@ export default defineComponent({
 					edits.value = {};
 				} catch (err) {
 					console.error(err);
+					notify.add({
+						title: i18n.t('could_not_save_item'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					saving.value = false;
 					router.push(`/settings/presets`);
@@ -233,8 +240,14 @@ export default defineComponent({
 				try {
 					await api.delete(`/presets/${props.id}`);
 					router.push(`/settings/presets`);
-				} catch (error) {
+				} catch (err) {
 					console.error(error);
+					notify.add({
+						title: i18n.t('could_not_delete_item'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					deleting.value = false;
 				}
@@ -337,6 +350,12 @@ export default defineComponent({
 					preset.value = response.data.data;
 				} catch (err) {
 					error.value = err;
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					loading.value = false;
 				}
@@ -376,6 +395,12 @@ export default defineComponent({
 					}));
 				} catch (err) {
 					error.value = err;
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					loading.value = false;
 				}
@@ -404,6 +429,12 @@ export default defineComponent({
 					roles.value = response.data.data;
 				} catch (err) {
 					error.value = err;
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					loading.value = false;
 				}

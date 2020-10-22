@@ -116,6 +116,8 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
 import getRootPath from '@/utils/get-root-path';
+import i18n from '@/lang';
+import { useNotificationsStore } from '@/stores';
 
 type FileInfo = {
 	id: number;
@@ -136,6 +138,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const notify = useNotificationsStore();
 		const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 		const { loading, error, file, fetchFile } = useFile();
 
@@ -201,6 +204,12 @@ export default defineComponent({
 					file.value = response.data.data;
 				} catch (err) {
 					error.value = err;
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					loading.value = false;
 				}

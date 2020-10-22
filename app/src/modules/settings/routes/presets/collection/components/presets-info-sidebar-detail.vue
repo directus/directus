@@ -21,9 +21,12 @@
 import { defineComponent, ref } from '@vue/composition-api';
 import api from '@/api';
 import marked from 'marked';
+import i18n from '@/lang';
+import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	setup() {
+		const notify = useNotificationsStore();
 		const loading = ref(false);
 		const error = ref<any>(null);
 		const bookmarksCount = ref<number | null>(null);
@@ -49,6 +52,12 @@ export default defineComponent({
 				presetsCount.value = (response.data.meta.total_count as number) - bookmarksCount.value;
 			} catch (err) {
 				error.value = err;
+				notify.add({
+					title: i18n.t('unexpected_error'),
+					type: 'error',
+					dialog: true,
+					error: err,
+				});
 			} finally {
 				loading.value = false;
 			}

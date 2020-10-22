@@ -58,6 +58,7 @@ import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
 import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
 import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 import api from '@/api';
+import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	components: { RevisionsDrawerPicker, RevisionsDrawerPreview, RevisionsDrawerUpdates },
@@ -76,6 +77,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const notify = useNotificationsStore();
 		const _active = useSync(props, 'active', emit);
 		const _current = useSync(props, 'current', emit);
 
@@ -127,6 +129,12 @@ export default defineComponent({
 					emit('revert');
 				} catch (err) {
 					console.error(err);
+					notify.add({
+						title: i18n.t('unexpected_error'),
+						type: 'error',
+						dialog: true,
+						error: err,
+					});
 				} finally {
 					reverting.value = false;
 				}

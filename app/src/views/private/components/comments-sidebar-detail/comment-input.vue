@@ -24,8 +24,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
-
-import notify from '@/utils/notify';
+import { useNotificationsStore } from '@/stores';
 import api from '@/api';
 import i18n from '@/lang';
 import useShortcut from '@/composables/use-shortcut';
@@ -46,6 +45,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const textarea = ref<HTMLElement>();
 		useShortcut('meta+enter', postComment, textarea);
 		const newCommentContent = ref<string | null>(null);
@@ -68,14 +68,16 @@ export default defineComponent({
 
 				newCommentContent.value = null;
 
-				notify({
+				notify.add({
 					title: i18n.t('post_comment_success'),
 					type: 'success',
 				});
-			} catch {
-				notify({
+			} catch (err) {
+				notify.add({
 					title: i18n.t('post_comment_failed'),
 					type: 'error',
+					dialog: true,
+					error: err,
 				});
 			} finally {
 				saving.value = false;

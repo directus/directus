@@ -56,6 +56,7 @@ export default defineComponent({
 
 				done.value = true;
 			} catch (err) {
+				console.error(err);
 				error.value = err;
 			} finally {
 				sending.value = false;

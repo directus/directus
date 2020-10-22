@@ -21,8 +21,7 @@
 import { defineComponent, ref, reactive, computed, watch } from '@vue/composition-api';
 import api from '@/api';
 import { Permission, Role } from '@/types';
-import { useFieldsStore, useCollectionsStore } from '@/stores/';
-import notify from '@/utils/notify';
+import { useFieldsStore, useCollectionsStore, useNotificationsStore } from '@/stores/';
 import router from '@/router';
 import i18n from '@/lang';
 import Actions from './components/actions.vue';
@@ -46,11 +45,11 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notify = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 
 		const permission = ref<Permission>();
 		const role = ref<Role>();
-		const error = ref<any>();
 		const loading = ref(false);
 
 		const collectionName = computed(() => {
@@ -127,7 +126,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { permission, role, error, loading, modalTitle, tabs, currentTab };
+		return { permission, role, loading, modalTitle, tabs, currentTab };
 
 		async function load() {
 			loading.value = true;
@@ -141,7 +140,13 @@ export default defineComponent({
 				const response = await api.get(`/permissions/${props.permissionKey}`);
 				permission.value = response.data.data;
 			} catch (err) {
-				error.value = err;
+				console.error(err);
+				notify.add({
+					title: i18n.t('unexpected_error'),
+					type: 'error',
+					dialog: true,
+					error: err,
+				});
 
 				if (err?.response?.status === 403) {
 					router.push(`/settings/roles/${props.roleKey || 'public'}`);

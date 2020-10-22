@@ -114,6 +114,8 @@ import Vue from 'vue';
 import Cropper from 'cropperjs';
 import { nanoid } from 'nanoid';
 import throttle from 'lodash/throttle';
+import i18n from '@/lang';
+import { useNotificationsStore } from '@/stores';
 
 type Image = {
 	type: string;
@@ -139,6 +141,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const notify = useNotificationsStore();
 		const localActive = ref(false);
 
 		const _active = computed({
@@ -261,6 +264,12 @@ export default defineComponent({
 							_active.value = false;
 						} catch (err) {
 							console.error(err);
+							notify.add({
+								title: i18n.t('unexpected_error'),
+								type: 'error',
+								dialog: true,
+								error: err,
+							});
 						} finally {
 							saving.value = false;
 						}
