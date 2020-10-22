@@ -207,6 +207,7 @@ export default defineComponent({
 
 		const fileFields = computed(() => {
 			return fieldsInCollection.value.filter((field) => {
+				console.log(field);
 				if (field.field === '$file') return true;
 
 				const relation = relationsStore.state.relations.find((relation) => {
