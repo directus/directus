@@ -470,6 +470,12 @@ export default defineComponent({
 			return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed };
 		}
 	},
+	beforeRouteLeave(to, from, next) {
+		return (this as any).navigationGuard(to, from, next);
+	},
+	beforeRouteUpdate(to, from, next) {
+		return (this as any).navigationGuard(to, from, next);
+	},
 });
 </script>
 
