@@ -324,9 +324,7 @@ export default defineComponent({
 		useShortcut('meta+shift+s', saveAndAddNew, form);
 
 		const navigationGuard: NavigationGuard = (to, from, next) => {
-			const hasEdits = Object.keys(edits.value).length > 0;
-
-			if (hasEdits) {
+			if (hasEdits.value) {
 				confirmLeave.value = true;
 				leaveTo.value = to.fullPath;
 				return next(false);
