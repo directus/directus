@@ -342,6 +342,7 @@ export default defineComponent({
 					},
 					schema: {
 						default_value: 'draft',
+						is_nullable: false,
 					},
 				});
 
