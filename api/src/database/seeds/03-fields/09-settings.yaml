@@ -135,6 +135,8 @@ fields:
         - field: key
           name: Key
           type: string
+          schema:
+            is_nullable: false
           meta:
             interface: slug
             options:
@@ -144,6 +146,8 @@ fields:
         - field: fit
           name: Fit
           type: string
+          schema:
+            is_nullable: false
           meta:
             interface: dropdown
             options:
@@ -157,6 +161,8 @@ fields:
         - field: width
           name: Width
           type: integer
+          schema:
+            is_nullable: false
           meta:
             interface: numeric
             required: true
@@ -164,6 +170,8 @@ fields:
         - field: height
           name: Height
           type: integer
+          schema:
+            is_nullable: false
           meta:
             interface: numeric
             required: true
@@ -173,6 +181,7 @@ fields:
           name: Quality
           schema:
             default_value: 80
+            is_nullable: false
           meta:
             interface: slider
             options:
