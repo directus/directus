@@ -134,7 +134,7 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="saveAllowed === false || hasEdits === false"
+				:disabled="isSavable === false"
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 				@click="saveAndQuit"
 			>
@@ -143,7 +143,7 @@
 				<template #append-outer>
 					<save-options
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true"
-						:disabled="hasEdits === false"
+						:disabled="isSavable === false"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
@@ -290,6 +290,10 @@ export default defineComponent({
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
+		const isSavable = computed<boolean>(
+			() => saveAllowed.value === true && (hasEdits.value === true || isNew.value === true)
+		);
+
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
 
@@ -343,7 +347,7 @@ export default defineComponent({
 			error,
 			isNew,
 			edits,
-			hasEdits,
+			isSavable,
 			saving,
 			collectionInfo,
 			saveAndQuit,
@@ -389,14 +393,14 @@ export default defineComponent({
 		}
 
 		async function saveAndQuit() {
-			if (saveAllowed.value === false || hasEdits.value === false) return;
+			if (isSavable.value === false) return;
 
 			await save();
 			if (props.singleton === false) router.push(`/collections/${props.collection}`);
 		}
 
 		async function saveAndStay() {
-			if (saveAllowed.value === false || hasEdits.value === false) return;
+			if (isSavable.value === false) return;
 
 			const savedItem: Record<string, any> = await save();
 
@@ -410,7 +414,7 @@ export default defineComponent({
 		}
 
 		async function saveAndAddNew() {
-			if (saveAllowed.value === false || hasEdits.value === false) return;
+			if (isSavable.value === false) return;
 
 			await save();
 
