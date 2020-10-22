@@ -30,7 +30,7 @@ export default function usePreview(
 
 		return fields.reduce((acc: string[], field) => {
 			const sections = field.split('.');
-			if (junctionField === sections[0] && sections.length === 2) acc.push(sections[1]);
+			if (junctionField === sections[0] && sections.length >= 2) acc.push(sections.slice(1).join('.'));
 			return acc;
 		}, []);
 	}
