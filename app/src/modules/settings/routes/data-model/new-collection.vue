@@ -304,7 +304,6 @@ export default defineComponent({
 					type: 'string',
 					meta: {
 						width: 'full',
-						required: true,
 						options: {
 							choices: [
 								{

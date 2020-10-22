@@ -27,7 +27,6 @@ const fakeFilesField: Field = {
 		display_options: null,
 		hidden: false,
 		locked: true,
-		required: false,
 		translations: null,
 		readonly: true,
 		width: 'full',

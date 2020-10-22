@@ -141,7 +141,6 @@ fields:
             interface: slug
             options:
               onlyOnCreate: false
-            required: true
             width: half
         - field: fit
           name: Fit
@@ -156,7 +155,6 @@ fields:
                   text: Contain (preserve aspect ratio)
                 - value: cover
                   text: Cover (forces exact size)
-            required: true
             width: half
         - field: width
           name: Width
@@ -165,7 +163,6 @@ fields:
             is_nullable: false
           meta:
             interface: numeric
-            required: true
             width: half
         - field: height
           name: Height
@@ -174,7 +171,6 @@ fields:
             is_nullable: false
           meta:
             interface: numeric
-            required: true
             width: half
         - field: quality
           type: integer
@@ -188,7 +184,6 @@ fields:
               max: 100
               min: 0
               step: 1
-            required: true
             width: full
       template: '{{key}}'
     special: json
