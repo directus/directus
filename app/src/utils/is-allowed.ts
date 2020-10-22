@@ -2,7 +2,7 @@ import { usePermissionsStore, useUserStore } from '@/stores';
 import { Permission } from '@/types';
 import generateJoi from '@/utils/generate-joi';
 
-export function isAllowed(collection: string, action: Permission['action'], value: Record<string, any>) {
+export function isAllowed(collection: string, action: Permission['action'], value: Record<string, any> | null) {
 	const permissionsStore = usePermissionsStore();
 	const userStore = useUserStore();
 

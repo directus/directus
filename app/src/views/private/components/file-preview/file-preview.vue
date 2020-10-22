@@ -1,16 +1,21 @@
 <template>
 	<div class="file-preview" v-if="type">
-		<div v-if="type === 'image'" class="image" :class="{ svg: isSVG, 'max-size': inModal === false }" @click="$emit('click')">
+		<div
+			v-if="type === 'image'"
+			class="image"
+			:class="{ svg: isSVG, 'max-size': inModal === false }"
+			@click="$emit('click')"
+		>
 			<img
 				:src="src"
 				:width="width"
 				:height="height"
 				:style="{
-					'maxWidth': width ? width + 'px' : '100%'
+					maxWidth: width ? width + 'px' : '100%',
 				}"
 				:alt="title"
 			/>
-			<v-icon v-if="inModal === false" name="fullscreen" />
+			<v-icon v-if="inModal === false" name="upload" />
 		</div>
 
 		<video v-else-if="type === 'video'" controls :src="src" />
@@ -106,9 +111,9 @@ audio {
 	}
 
 	img {
-		max-height: inherit;
 		z-index: 1;
 		display: block;
+		max-height: inherit;
 		margin: 0 auto;
 	}
 
