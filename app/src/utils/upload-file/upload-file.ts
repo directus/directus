@@ -28,7 +28,7 @@ export default async function uploadFile(
 	try {
 		let response = null;
 
-		if (options?.fileId !== undefined) {
+		if (options?.fileId) {
 			response = await api.patch(`/files/${options.fileId}`, formData, {
 				onUploadProgress,
 			});
