@@ -9,6 +9,7 @@ export default async function uploadFiles(
 		onProgressChange?: (percentages: number[]) => void;
 		notifications?: boolean;
 		preset?: Record<string, any>;
+		folder?: string;
 	}
 ) {
 	const progressHandler = options?.onProgressChange || (() => undefined);
