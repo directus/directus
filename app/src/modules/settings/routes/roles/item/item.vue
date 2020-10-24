@@ -133,7 +133,7 @@ export default defineComponent({
 			const values = {
 				...item.value,
 				...edits.value,
-			};
+			} as Record<string, any>;
 
 			return !!values.admin_access;
 		});

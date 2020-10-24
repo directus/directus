@@ -119,15 +119,13 @@
 				:width="item.width"
 				:height="item.height"
 				:title="item.title"
-				@click="previewActive = true"
+				@click="replaceFileDialogActive = true"
 			/>
-
-			<file-lightbox v-if="item" :id="item.id" v-model="previewActive" />
 
 			<image-editor
 				v-if="item && item.type.startsWith('image')"
 				:id="item.id"
-				@refresh="changeCacheBuster"
+				@refresh="refresh"
 				v-model="editActive"
 			/>
 
@@ -156,7 +154,7 @@
 		</v-dialog>
 
 		<template #sidebar>
-			<file-info-sidebar-detail :file="item" @move-folder="moveToDialogActive = true" />
+			<file-info-sidebar-detail :file="item" />
 			<revisions-drawer-detail
 				v-if="isBatch === false && isNew === false"
 				collection="directus_files"
@@ -169,6 +167,8 @@
 				:primary-key="primaryKey"
 			/>
 		</template>
+
+		<replace-file v-model="replaceFileDialogActive" @replaced="refresh" :file="item" />
 	</private-view>
 </template>
 
@@ -194,6 +194,7 @@ import api from '@/api';
 import getRootPath from '@/utils/get-root-path';
 import FilesNotFound from './not-found.vue';
 import useShortcut from '@/composables/use-shortcut';
+import ReplaceFile from '../components/replace-file.vue';
 
 type Values = {
 	[field: string]: any;
@@ -220,10 +221,10 @@ export default defineComponent({
 		SaveOptions,
 		FilePreview,
 		ImageEditor,
-		FileLightbox,
 		FileInfoSidebarDetail,
 		FolderPicker,
 		FilesNotFound,
+		ReplaceFile,
 	},
 	props: {
 		primaryKey: {
@@ -236,6 +237,7 @@ export default defineComponent({
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 		const fieldsStore = useFieldsStore();
+		const replaceFileDialogActive = ref(false);
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
@@ -256,13 +258,15 @@ export default defineComponent({
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 		const confirmDelete = ref(false);
-		const cacheBuster = ref(nanoid());
 		const editActive = ref(false);
-		const previewActive = ref(false);
 		const fileSrc = computed(() => {
-			return (
-				getRootPath() + `assets/${props.primaryKey}?cache-buster=${cacheBuster.value}&key=system-large-contain`
-			);
+			if (item.value && item.value.modified_on) {
+				return (
+					getRootPath() +
+					`assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`
+				);
+			}
+			return getRootPath() + `assets/${props.primaryKey}?key=system-large-contain`;
 		});
 
 		// These are the fields that will be prevented from showing up in the form because they'll be shown in the sidebar
@@ -318,10 +322,7 @@ export default defineComponent({
 			saveAndStay,
 			saveAsCopyAndNavigate,
 			isBatch,
-			changeCacheBuster,
-			cacheBuster,
 			editActive,
-			previewActive,
 			revisionsDrawerDetail,
 			formFields,
 			confirmLeave,
@@ -335,11 +336,9 @@ export default defineComponent({
 			fileSrc,
 			form,
 			to,
+			replaceFileDialogActive,
+			refresh,
 		};
-
-		function changeCacheBuster() {
-			cacheBuster.value = nanoid();
-		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => {
@@ -406,7 +405,7 @@ export default defineComponent({
 			const notification = useNotificationsStore();
 
 			watch(item, () => {
-				selectedFolder.value = item.value.folder;
+				selectedFolder.value = item.value?.folder || null;
 			});
 
 			return { moveToDialogActive, moving, moveToFolder, selectedFolder };

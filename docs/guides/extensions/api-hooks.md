@@ -148,7 +148,7 @@ module.exports = function registerHook({ services, exceptions }) {
 
 	return {
 		// Force everything to be admin-only at all times
-		'items.*.*': async function({ item, accountability }) {
+		'items.*': async function({ item, accountability }) {
 			if (accountability.admin !== true) throw new ForbiddenException();
 		},
 		// Sync with external recipes service, cancel creation on failure

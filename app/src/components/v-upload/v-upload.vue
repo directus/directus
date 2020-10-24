@@ -88,6 +88,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import uploadFiles from '@/utils/upload-files';
+import uploadFile from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import useItem from '@/composables/use-item';
@@ -102,6 +103,10 @@ export default defineComponent({
 		preset: {
 			type: Object,
 			default: () => ({}),
+		},
+		fileId: {
+			type: String,
+			default: null,
 		},
 		fromUrl: {
 			type: Boolean,
@@ -152,16 +157,29 @@ export default defineComponent({
 				try {
 					numberOfFiles.value = files.length;
 
-					const uploadedFiles = await uploadFiles(Array.from(files), {
-						onProgressChange: (percentage) => {
-							progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
-							done.value = percentage.filter((p) => p === 100).length;
-						},
-						preset: props.preset,
-					});
+					if (props.multiple === true) {
+						const uploadedFiles = await uploadFiles(Array.from(files), {
+							onProgressChange: (percentage) => {
+								progress.value = Math.round(
+									percentage.reduce((acc, cur) => (acc += cur)) / files.length
+								);
+								done.value = percentage.filter((p) => p === 100).length;
+							},
+							preset: props.preset,
+						});
 
-					if (uploadedFiles) {
-						emit('input', props.multiple ? uploadedFiles : uploadedFiles[0]);
+						uploadedFiles && emit('input', uploadedFiles);
+					} else {
+						const uploadedFile = await uploadFile(Array.from(files)[0], {
+							onProgressChange: (percentage) => {
+								progress.value = percentage;
+								done.value = percentage === 100 ? 1 : 0;
+							},
+							fileId: props.fileId,
+							preset: props.preset,
+						});
+
+						uploadedFile && emit('input', uploadedFile);
 					}
 				} catch (err) {
 					console.error(err);

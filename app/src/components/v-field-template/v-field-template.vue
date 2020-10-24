@@ -263,7 +263,7 @@ export default defineComponent({
 						if (part.startsWith('{{') === false) {
 							return `<span class="text">${part}</span>`;
 						}
-						const fieldKey = part.replaceAll(/({|})/g, '').trim();
+						const fieldKey = part.replace(/({|})/g, '').trim();
 						const field = findTree(tree.value, fieldKey.split('.'));
 
 						if (!field) return '';

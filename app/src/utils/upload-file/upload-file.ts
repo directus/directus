@@ -10,6 +10,7 @@ export default async function uploadFile(
 		onProgressChange?: (percentage: number) => void;
 		notifications?: boolean;
 		preset?: Record<string, any>;
+		fileId?: string;
 	}
 ) {
 	const notify = useNotificationsStore();
@@ -25,9 +26,17 @@ export default async function uploadFile(
 	formData.append('file', file);
 
 	try {
-		const response = await api.post(`/files`, formData, {
-			onUploadProgress,
-		});
+		let response = null;
+
+		if (options?.fileId) {
+			response = await api.patch(`/files/${options.fileId}`, formData, {
+				onUploadProgress,
+			});
+		} else {
+			response = await api.post(`/files`, formData, {
+				onUploadProgress,
+			});
+		}
 
 		if (options?.notifications) {
 			notify.add({
