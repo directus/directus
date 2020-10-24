@@ -2,43 +2,50 @@
 	<div class="permissions-overview-row">
 		<span class="name">
 			{{ collection.name }}
+			<span class="actions">
+				<span class="all" @click="setFullAccessAll">{{ $t('allow_all') }}</span>
+				|
+				<span class="none" @click="setNoAccessAll">{{ $t('allow_none') }}</span>
+			</span>
 		</span>
 
 		<permissions-overview-toggle
 			action="create"
 			:collection="collection"
 			:role="role"
-			:permission="getPermission('create')"
+			:permissions="permissions"
 			:loading="isLoading('create')"
 		/>
 		<permissions-overview-toggle
 			action="read"
 			:collection="collection"
 			:role="role"
-			:permission="getPermission('read')"
+			:permissions="permissions"
 			:loading="isLoading('read')"
 		/>
 		<permissions-overview-toggle
 			action="update"
 			:collection="collection"
 			:role="role"
-			:permission="getPermission('update')"
+			:permissions="permissions"
 			:loading="isLoading('update')"
 		/>
 		<permissions-overview-toggle
 			action="delete"
 			:collection="collection"
 			:role="role"
-			:permission="getPermission('delete')"
+			:permissions="permissions"
 			:loading="isLoading('delete')"
 		/>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType, ref, inject, toRefs } from '@vue/composition-api';
+import api from '@/api';
 import { Collection, Permission } from '@/types';
 import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
+import useUpdatePermissions from '../composables/use-update-permissions';
 
 export default defineComponent({
 	components: { PermissionsOverviewToggle },
@@ -61,11 +68,10 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		return { getPermission, isLoading };
+		const { collection, role, permissions } = toRefs(props);
+		const { setFullAccessAll, setNoAccessAll, getPermission } = useUpdatePermissions(collection, permissions, role);
 
-		function getPermission(action: string) {
-			return props.permissions.find((permission) => permission.action === action);
-		}
+		return { getPermission, isLoading, setFullAccessAll, setNoAccessAll };
 
 		function isLoading(action: string) {
 			const permission = getPermission(action);
@@ -86,6 +92,30 @@ export default defineComponent({
 
 	.name {
 		flex-grow: 1;
+
+		.actions {
+			margin-left: 20px;
+			color: var(--foreground-subdued);
+			font-size: 12px;
+			opacity: 0;
+
+			span {
+				cursor: pointer;
+
+				&:hover {
+					&.all {
+						color: var(--success);
+					}
+					&.none {
+						color: var(--danger);
+					}
+				}
+			}
+		}
+	}
+
+	&:hover .name .actions {
+		opacity: 1;
 	}
 
 	.permissions-overview-toggle + .permissions-overview-toggle {
