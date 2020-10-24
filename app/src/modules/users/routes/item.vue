@@ -416,12 +416,6 @@ export default defineComponent({
 					roleName.value = response.data.data.role.name;
 				} catch (err) {
 					console.error(err);
-					notify.add({
-						title: i18n.t('could_not_load_user'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					loading.value = false;
 				}

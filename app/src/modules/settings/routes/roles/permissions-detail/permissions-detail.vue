@@ -141,12 +141,6 @@ export default defineComponent({
 				permission.value = response.data.data;
 			} catch (err) {
 				console.error(err);
-				notify.add({
-					title: i18n.t('unexpected_error'),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
 
 				if (err?.response?.status === 403) {
 					router.push(`/settings/roles/${props.roleKey || 'public'}`);

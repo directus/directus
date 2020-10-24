@@ -432,12 +432,6 @@ export default defineComponent({
 					confirmDelete.value = false;
 				} catch (err) {
 					error.value = err;
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					deleting.value = false;
 				}
@@ -458,12 +452,6 @@ export default defineComponent({
 					confirmArchive.value = false;
 				} catch (err) {
 					error.value = err;
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					archiving.value = false;
 				}
@@ -508,14 +496,8 @@ export default defineComponent({
 					router.push(`/collections/${newBookmark.collection}?bookmark=${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
-				} catch (error) {
-					console.log(error);
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error,
-					});
+				} catch (err) {
+					console.error(err);
 				} finally {
 					creatingBookmark.value = false;
 				}

@@ -3,12 +3,11 @@
 		<v-dialog :active="true" v-for="notify in lastFour" :key="notify.id">
 			<v-card :class="[notify.type]">
 				<v-card-title>{{ notify.title }}</v-card-title>
-				<v-card-text>
-					<p v-if="notify.text">{{ notify.text }}</p>
-					<v-error v-if="notify.error" :error="notify.error"></v-error>
+				<v-card-text v-if="notify.text">
+					{{ notify.text }}
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary v-if="notify.error">
+					<v-button secondary v-if="notify.type === 'error'">
 						<a target="_blank" :href="getGitHubIssueLink(notify.id, notify)">{{ $t('report_error') }}</a>
 					</v-button>
 					<v-button @click="done(notify.id)">{{ $t('dismiss') }}</v-button>
@@ -48,8 +47,8 @@ Node: ${parsedInfo.value?.node.version}
 
 ### Error
 
-Name: ${notify.error?.name || notify.error || 'none'}
-Message: ${notify.error?.message || 'none'}
+Title: ${notify.title || 'none'}
+Text: ${notify.text || 'none'}
 			`;
 
 			return `https://github.com/directus/next/issues/new?body=${encodeURIComponent(debugInfo)}`;

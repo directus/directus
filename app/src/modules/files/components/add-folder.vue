@@ -41,11 +41,10 @@ export default defineComponent({
 		const dialogActive = ref(false);
 		const saving = ref(false);
 		const newFolderName = ref(null);
-		const savingError = ref(null);
 
 		const { fetchFolders } = useFolders();
 
-		return { addFolder, dialogActive, newFolderName, saving, savingError };
+		return { addFolder, dialogActive, newFolderName, saving };
 
 		async function addFolder() {
 			saving.value = true;
@@ -63,13 +62,7 @@ export default defineComponent({
 
 				router.push({ path: '/files', query: { folder: newFolder.data.data.id } });
 			} catch (err) {
-				savingError.value = err;
-				notify.add({
-					title: i18n.t('could_not_create_file'),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
+				console.error(err);
 			} finally {
 				saving.value = false;
 			}

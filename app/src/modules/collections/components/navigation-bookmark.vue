@@ -110,12 +110,6 @@ export default defineComponent({
 					renameActive.value = false;
 				} catch (error) {
 					console.error(error);
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error,
-					});
 				} finally {
 					renameSaving.value = false;
 				}
@@ -137,12 +131,6 @@ export default defineComponent({
 					deleteActive.value = false;
 				} catch (error) {
 					console.error(error);
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error,
-					});
 				} finally {
 					deleteSaving.value = false;
 				}

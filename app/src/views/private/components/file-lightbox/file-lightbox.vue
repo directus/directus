@@ -106,12 +106,6 @@ export default defineComponent({
 				file.value = response.data.data;
 			} catch (err) {
 				console.error(err);
-				notify.add({
-					title: i18n.t('could_not_load_file'),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
 			} finally {
 				loading.value = false;
 			}

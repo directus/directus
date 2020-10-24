@@ -36,15 +36,6 @@ export default async function uploadFiles(
 
 		return uploadedFiles;
 	} catch (error) {
-		if (options?.notifications) {
-			notify.add({
-				title: i18n.t('upload_files_failed', { count: files.length }),
-				type: 'error',
-				dialog: true,
-				error,
-			});
-		}
-
 		throw error;
 	}
 }

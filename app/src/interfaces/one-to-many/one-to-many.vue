@@ -310,12 +310,7 @@ export default defineComponent({
 							})
 							.concat(...newItems);
 					} catch (err) {
-						notify.add({
-							title: i18n.t('unexpected_error'),
-							type: 'error',
-							dialog: true,
-							error: err,
-						});
+						console.error(err);
 					} finally {
 						loading.value = false;
 					}

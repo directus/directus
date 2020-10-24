@@ -354,12 +354,6 @@ export default defineComponent({
 					duplicateActive.value = false;
 				} catch (error) {
 					console.error(error);
-					notify.add({
-						title: i18n.t('could_not_duplicate_field'),
-						type: 'error',
-						dialog: true,
-						error,
-					});
 				} finally {
 					duplicating.value = false;
 				}

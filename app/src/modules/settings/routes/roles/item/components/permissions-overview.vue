@@ -148,12 +148,6 @@ export default defineComponent({
 					permissions.value = response.data.data;
 				} catch (err) {
 					console.error(err);
-					notify.add({
-						title: i18n.t('could_not_load_permission'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					loading.value = false;
 				}
@@ -173,12 +167,6 @@ export default defineComponent({
 					});
 				} catch (err) {
 					console.error(err);
-					notify.add({
-						title: i18n.t('could_not_refresh_permission'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
 				}
@@ -217,12 +205,6 @@ export default defineComponent({
 					resetActive.value = false;
 				} catch (err) {
 					resetError.value = err;
-					notify.add({
-						title: i18n.t('could_not_reset_permissions'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					resetting.value = false;
 				}

@@ -76,12 +76,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			const response = await api.get(itemEndpoint.value);
 			setItemValueToResponse(response);
 		} catch (err) {
-			notify.add({
-				title: i18n.t('unexpected_error'),
-				dialog: true,
-				type: 'error',
-				error: err,
-			});
 			error.value = err;
 		} finally {
 			loading.value = false;
@@ -96,7 +90,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			let response;
 
 			if (isNew.value === true) {
-				response = await api.post(endpoint.value, edits.value);
+				response = await api.post('A' + endpoint.value, edits.value);
 
 				notify.add({
 					title: i18n.tc('item_create_success', isBatch.value ? 2 : 1),
@@ -115,28 +109,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			edits.value = {};
 			return response.data.data;
 		} catch (err) {
-			if (isNew.value) {
-				notify.add({
-					title: i18n.tc('item_create_failed', isBatch.value ? 2 : 1),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
-			} else {
-				notify.add({
-					title: i18n.tc('item_update_failed', isBatch.value ? 2 : 1),
-					text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-						collection: collection.value,
-						primaryKey: isBatch.value
-							? (primaryKey.value as string).split(',').join(', ')
-							: primaryKey.value,
-					}),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
-			}
-
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
 					.filter((err: APIError) => err.extensions.code === 'FAILED_VALIDATION')
@@ -175,17 +147,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
 		} catch (err) {
-			notify.add({
-				title: i18n.t('item_create_failed'),
-				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-					collection: collection.value,
-					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
-				}),
-				type: 'error',
-				dialog: true,
-				error: err,
-			});
-
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
 					.filter((err: APIError) => err.extensions.code === 'FAILED_VALIDATION')
@@ -235,17 +196,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				type: 'success',
 			});
 		} catch (err) {
-			notify.add({
-				title: i18n.tc('item_delete_failed', isBatch.value ? 2 : 1),
-				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-					collection: collection.value,
-					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
-				}),
-				type: 'error',
-				dialog: true,
-				error: err,
-			});
-
 			throw err;
 		} finally {
 			archiving.value = false;
@@ -265,17 +215,6 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				type: 'success',
 			});
 		} catch (err) {
-			notify.add({
-				title: i18n.tc('item_delete_failed', isBatch.value ? 2 : 1),
-				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-					collection: collection.value,
-					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
-				}),
-				type: 'error',
-				dialog: true,
-				error: err,
-			});
-
 			throw err;
 		} finally {
 			deleting.value = false;

@@ -129,12 +129,6 @@ export default defineComponent({
 					emit('revert');
 				} catch (err) {
 					console.error(err);
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					reverting.value = false;
 				}

@@ -223,12 +223,6 @@ export default defineComponent({
 				router.push(`/settings/data-model/${collectionName.value}`);
 			} catch (error) {
 				console.error(error);
-				notify.add({
-					title: i18n.t('could_not_save_collection'),
-					type: 'error',
-					dialog: true,
-					error,
-				});
 			} finally {
 				saving.value = false;
 			}

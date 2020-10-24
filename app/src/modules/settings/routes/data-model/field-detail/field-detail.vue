@@ -375,12 +375,6 @@ export default defineComponent({
 				clearLocalStore();
 			} catch (error) {
 				console.error(error);
-				notify.add({
-					title: i18n.t('could_not_save_field'),
-					type: 'error',
-					dialog: true,
-					error,
-				});
 			} finally {
 				saving.value = false;
 			}

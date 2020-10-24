@@ -83,7 +83,6 @@ export default defineComponent({
 		const notify = useNotificationsStore();
 		const roles = ref<Role[]>([]);
 		const loading = ref(false);
-		const error = ref<any>(null);
 
 		const tableHeaders: TableHeader[] = [
 			{
@@ -122,7 +121,7 @@ export default defineComponent({
 			return `/settings/roles/+`;
 		});
 
-		return { marked, loading, roles, error, tableHeaders, addNewLink, navigateToRole };
+		return { marked, loading, roles, tableHeaders, addNewLink, navigateToRole };
 
 		async function fetchRoles() {
 			loading.value = true;
@@ -148,13 +147,7 @@ export default defineComponent({
 					}),
 				];
 			} catch (err) {
-				error.value = err;
-				notify.add({
-					title: i18n.t('unexpected_error'),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
+				console.error(err);
 			} finally {
 				loading.value = false;
 			}

@@ -52,13 +52,6 @@ export default function usePermissions(role: Ref<number>) {
 			permissions.value = response.data.data;
 		} catch (err) {
 			error.value = err;
-			console.error(err);
-			notify.add({
-				title: i18n.t('could_not_load_permissions'),
-				type: 'error',
-				dialog: true,
-				error: err,
-			});
 		} finally {
 			loading.value = false;
 		}
@@ -76,14 +69,7 @@ export default function usePermissions(role: Ref<number>) {
 
 			await fetchPermissions();
 		} catch (err) {
-			console.error(err);
 			error.value = err;
-			notify.add({
-				title: i18n.t('could_not_save_permission'),
-				type: 'error',
-				dialog: true,
-				error: err,
-			});
 		}
 	}
 
@@ -99,14 +85,7 @@ export default function usePermissions(role: Ref<number>) {
 
 			await fetchPermissions();
 		} catch (err) {
-			console.error(err);
 			error.value = err;
-			notify.add({
-				title: i18n.t('could_not_save_permissions'),
-				type: 'error',
-				dialog: true,
-				error: err,
-			});
 		}
 	}
 }

@@ -117,7 +117,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { uploading, progress, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
 		const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
-		const { url, isValidURL, loading: urlLoading, error: urlError, importFromURL } = useURLImport();
+		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 		const { setSelection } = useSelection();
 		const activeDialog = ref<'choose' | 'url' | null>(null);
 		const notify = useNotificationsStore();
@@ -236,7 +236,6 @@ export default defineComponent({
 		function useURLImport() {
 			const url = ref('');
 			const loading = ref(false);
-			const error = ref(null);
 
 			const isValidURL = computed(() => {
 				try {
@@ -247,7 +246,7 @@ export default defineComponent({
 				}
 			});
 
-			return { url, loading, error, isValidURL, importFromURL };
+			return { url, loading, isValidURL, importFromURL };
 
 			async function importFromURL() {
 				loading.value = true;
@@ -261,7 +260,7 @@ export default defineComponent({
 					activeDialog.value = null;
 					url.value = '';
 				} catch (err) {
-					error.value = err;
+					console.error(err);
 				} finally {
 					loading.value = false;
 				}

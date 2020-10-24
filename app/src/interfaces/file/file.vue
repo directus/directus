@@ -200,12 +200,6 @@ export default defineComponent({
 					file.value = response.data.data;
 				} catch (err) {
 					console.error(err);
-					notify.add({
-						title: i18n.t('could_not_load_file'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					loading.value = false;
 				}
@@ -256,12 +250,6 @@ export default defineComponent({
 					emit('input', file.value?.id);
 				} catch (err) {
 					console.error(err);
-					notify.add({
-						title: i18n.t('no_file_from_url'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					loading.value = false;
 				}

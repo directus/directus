@@ -66,12 +66,6 @@ export const useCollectionsStore = createStore({
 					title: i18n.t('update_collection_success'),
 				});
 			} catch (error) {
-				notify.add({
-					title: i18n.t('update_collection_failed'),
-					type: 'error',
-					dialog: true,
-					error,
-				});
 				throw error;
 			}
 		},
@@ -85,12 +79,6 @@ export const useCollectionsStore = createStore({
 					title: i18n.t('delete_collection_success'),
 				});
 			} catch (error) {
-				notify.add({
-					title: i18n.t('delete_collection_failed'),
-					type: 'error',
-					dialog: true,
-					error,
-				});
 				throw error;
 			}
 		},

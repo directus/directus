@@ -118,12 +118,6 @@ export default defineComponent({
 					confirmDelete.value = false;
 				} catch (error) {
 					console.error(error);
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error,
-					});
 				} finally {
 					deleting.value = false;
 				}

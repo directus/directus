@@ -308,12 +308,6 @@ export default defineComponent({
 					await layoutRef.value?.refresh();
 				} catch (err) {
 					console.error(err);
-					notify.add({
-						title: i18n.t('could_not_delete_files'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					deleting.value = false;
 				}
@@ -394,12 +388,6 @@ export default defineComponent({
 					await refresh();
 				} catch (err) {
 					console.error(err);
-					notify.add({
-						title: i18n.t('could_not_move_folder'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					moveToDialogActive.value = false;
 					moving.value = false;

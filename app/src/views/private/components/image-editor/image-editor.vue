@@ -264,12 +264,6 @@ export default defineComponent({
 							_active.value = false;
 						} catch (err) {
 							console.error(err);
-							notify.add({
-								title: i18n.t('unexpected_error'),
-								type: 'error',
-								dialog: true,
-								error: err,
-							});
 						} finally {
 							saving.value = false;
 						}

@@ -173,12 +173,6 @@ export default defineComponent({
 					});
 				} catch (error) {
 					console.error(error);
-					notify.add({
-						title: i18n.t('could_not_rename_folder'),
-						type: 'error',
-						dialog: true,
-						error,
-					});
 				} finally {
 					renameSaving.value = false;
 					await fetchFolders();
@@ -203,12 +197,6 @@ export default defineComponent({
 					});
 				} catch (error) {
 					console.error(error);
-					notify.add({
-						title: i18n.t('could_not_move_folder'),
-						type: 'error',
-						dialog: true,
-						error,
-					});
 				} finally {
 					moveSaving.value = false;
 					await fetchFolders();
@@ -271,12 +259,6 @@ export default defineComponent({
 					deleteActive.value = false;
 				} catch (error) {
 					console.error(error);
-					notify.add({
-						title: i18n.t('could_not_delete_folder'),
-						type: 'error',
-						dialog: true,
-						error,
-					});
 				} finally {
 					await fetchFolders();
 					deleteSaving.value = false;

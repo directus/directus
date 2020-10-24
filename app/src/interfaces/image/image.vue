@@ -159,12 +159,6 @@ export default defineComponent({
 				image.value = response.data.data;
 			} catch (err) {
 				console.error(err);
-				notify.add({
-					title: i18n.t('unexpected_error'),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
 			} finally {
 				loading.value = false;
 			}

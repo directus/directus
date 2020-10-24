@@ -89,12 +89,6 @@ export default defineComponent({
 					await props.refresh();
 				} catch (error) {
 					console.error(error);
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error,
-					});
 				} finally {
 					savingEdits.value = false;
 					editing.value = false;

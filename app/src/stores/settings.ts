@@ -40,13 +40,8 @@ export const useSettingsStore = createStore({
 					type: 'success',
 				});
 			} catch (error) {
+				console.error(error);
 				this.state.settings = settingsCopy;
-				notify.add({
-					title: i18n.t('settings_update_failed'),
-					type: 'error',
-					dialog: true,
-					error,
-				});
 			}
 		},
 	},

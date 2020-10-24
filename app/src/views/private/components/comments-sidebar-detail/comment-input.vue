@@ -73,12 +73,7 @@ export default defineComponent({
 					type: 'success',
 				});
 			} catch (err) {
-				notify.add({
-					title: i18n.t('post_comment_failed'),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
+				console.error(err);
 			} finally {
 				saving.value = false;
 			}

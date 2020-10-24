@@ -28,7 +28,6 @@ export default defineComponent({
 	setup() {
 		const notify = useNotificationsStore();
 		const loading = ref(false);
-		const error = ref<any>(null);
 		const bookmarksCount = ref<number | null>(null);
 		const presetsCount = ref<number | null>(null);
 
@@ -51,13 +50,7 @@ export default defineComponent({
 				bookmarksCount.value = response.data.meta.filter_count as number;
 				presetsCount.value = (response.data.meta.total_count as number) - bookmarksCount.value;
 			} catch (err) {
-				error.value = err;
-				notify.add({
-					title: i18n.t('unexpected_error'),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
+				console.error(err);
 			} finally {
 				loading.value = false;
 			}

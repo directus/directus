@@ -122,12 +122,6 @@ export default defineComponent({
 					});
 				} catch (err) {
 					console.error(err);
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					await refresh?.();
 					saving.value = false;
@@ -142,12 +136,6 @@ export default defineComponent({
 					});
 				} catch (err) {
 					console.error(err);
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					await refresh?.();
 					saving.value = false;
@@ -164,12 +152,6 @@ export default defineComponent({
 				await api.delete(`/permissions/${props.permission.id}`);
 			} catch (err) {
 				console.error(err);
-				notify.add({
-					title: i18n.t('unexpected_error'),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
 			} finally {
 				await refresh?.();
 				saving.value = false;

@@ -40,12 +40,6 @@ export default defineComponent({
 				router.push(`/settings/roles/${props.roleKey || 'public'}`);
 			} catch (err) {
 				console.error(err);
-				notify.add({
-					title: i18n.t('unexpected_error'),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
 			} finally {
 				loading.value = false;
 			}

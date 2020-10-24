@@ -1,7 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { useRequestsStore } from '@/stores/';
+import { useNotificationsStore, useRequestsStore } from '@/stores/';
 import { LogoutReason, logout, refresh } from '@/auth';
 import getRootPath from '@/utils/get-root-path';
+import i18n from './lang';
 
 const api = axios.create({
 	baseURL: getRootPath(),
@@ -40,6 +41,7 @@ export const onResponse = (response: AxiosResponse | Response) => {
 };
 
 export const onError = async (error: RequestError) => {
+	const notify = useNotificationsStore();
 	const requestsStore = useRequestsStore();
 	const id = (error.response.config as RequestConfig).id;
 	requestsStore.endRequest(id);
@@ -52,6 +54,7 @@ export const onError = async (error: RequestError) => {
 	const status = error.response?.status;
 	/* istanbul ignore next */
 	const code = error.response?.data?.errors?.[0]?.extensions?.code;
+	const message = error.response.data.errors[0].message || undefined;
 
 	if (
 		status === 401 &&
@@ -78,6 +81,15 @@ export const onError = async (error: RequestError) => {
 			});
 		}
 	}
+
+	console.log(notify);
+
+	notify.add({
+		title: i18n.t(`errors.${code}`),
+		text: message,
+		type: 'error',
+		dialog: true,
+	});
 
 	return Promise.reject(error);
 };

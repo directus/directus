@@ -187,12 +187,6 @@ export function useItems(collection: Ref<string>, query: Query) {
 			}
 		} catch (err) {
 			error.value = err;
-			notify.add({
-				title: i18n.t('unexpected_error'),
-				type: 'error',
-				dialog: true,
-				error: err,
-			});
 		} finally {
 			clearTimeout(loadingTimeout);
 			loadingTimeout = null;

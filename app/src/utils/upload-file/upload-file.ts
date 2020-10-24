@@ -40,14 +40,7 @@ export default async function uploadFile(
 
 		return response.data.data;
 	} catch (error) {
-		if (options?.notifications) {
-			notify.add({
-				title: i18n.t('upload_file_failed'),
-				type: 'error',
-				dialog: true,
-				error,
-			});
-		}
+		console.error(error);
 	}
 
 	function onUploadProgress(progressEvent: { loaded: number; total: number }) {

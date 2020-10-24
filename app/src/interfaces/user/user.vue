@@ -149,7 +149,6 @@ export default defineComponent({
 		function useCurrent() {
 			const currentUser = ref<Record<string, any> | null>(null);
 			const loading = ref(false);
-			const error = ref(null);
 
 			watch(
 				() => props.value,
@@ -195,13 +194,7 @@ export default defineComponent({
 
 					currentUser.value = response.data.data;
 				} catch (err) {
-					error.value = err;
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
+					console.error(err);
 				} finally {
 					loading.value = false;
 				}
@@ -213,7 +206,6 @@ export default defineComponent({
 
 			const users = ref<Record<string, any>[] | null>(null);
 			const loading = ref(false);
-			const error = ref(null);
 
 			fetchTotalCount();
 			users.value = null;
@@ -237,13 +229,7 @@ export default defineComponent({
 
 					users.value = response.data.data;
 				} catch (err) {
-					error.value = err;
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
+					console.error(err);
 				} finally {
 					loading.value = false;
 				}

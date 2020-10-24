@@ -58,12 +58,6 @@ export default function useFolders() {
 			nestedFolders.value = nestFolders(response.data.data);
 		} catch (err) {
 			error.value = err;
-			notify.add({
-				title: i18n.t('unexpected_error'),
-				type: 'error',
-				dialog: true,
-				error: err,
-			});
 		} finally {
 			loading.value = false;
 		}

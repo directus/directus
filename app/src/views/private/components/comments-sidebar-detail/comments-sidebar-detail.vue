@@ -127,12 +127,6 @@ export default defineComponent({
 					activity.value = orderBy(activityGrouped, ['date'], ['desc']);
 				} catch (error) {
 					error.value = error;
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error,
-					});
 				} finally {
 					loading.value = false;
 				}

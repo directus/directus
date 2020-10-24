@@ -107,12 +107,6 @@ export default function usePreview(
 				items.value = responseData;
 			} catch (err) {
 				error.value = err;
-				notify.add({
-					title: i18n.t('unexpected_error'),
-					type: 'error',
-					dialog: true,
-					error: err,
-				});
 			} finally {
 				loading.value = false;
 			}

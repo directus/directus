@@ -79,12 +79,7 @@ export default defineComponent({
 				);
 				emit('toggle', false);
 			} catch (err) {
-				notifications.add({
-					title: i18n.t('server_error'),
-					text: err.message,
-					persist: true,
-					type: 'error',
-				});
+				console.error(err);
 			} finally {
 				loading.value = false;
 			}

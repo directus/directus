@@ -434,13 +434,8 @@ export default defineComponent({
 						type: 'success',
 						icon: 'folder_move',
 					});
-				} catch (error) {
-					notification.add({
-						title: i18n.t('could_not_move_to_folder'),
-						type: 'error',
-						dialog: true,
-						error,
-					});
+				} catch (err) {
+					console.error(err);
 				} finally {
 					moveToDialogActive.value = false;
 					moving.value = false;

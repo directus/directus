@@ -132,7 +132,7 @@ export default defineComponent({
 		const selection = ref<Preset[]>([]);
 
 		const { addNewLink } = useLinks();
-		const { loading, presets, error, getPresets } = usePresets();
+		const { loading, presets, getPresets } = usePresets();
 		const { headers } = useTable();
 		const { confirmDelete, deleting, deleteSelection } = useDelete();
 
@@ -143,7 +143,6 @@ export default defineComponent({
 			usePresets,
 			loading,
 			presets,
-			error,
 			getPresets,
 			headers,
 			selection,
@@ -164,7 +163,6 @@ export default defineComponent({
 		function usePresets() {
 			const loading = ref(false);
 			const presetsRaw = ref<PresetRaw[] | null>(null);
-			const error = ref(null);
 
 			const presets = computed<Preset[]>(() => {
 				return (presetsRaw.value || []).map((preset) => {
@@ -191,7 +189,7 @@ export default defineComponent({
 				});
 			});
 
-			return { loading, presetsRaw, error, getPresets, presets };
+			return { loading, presetsRaw, getPresets, presets };
 
 			async function getPresets() {
 				loading.value = true;
@@ -214,13 +212,7 @@ export default defineComponent({
 					});
 					presetsRaw.value = response.data.data;
 				} catch (err) {
-					error.value = err;
-					notify.add({
-						title: i18n.t('unexpected_error'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
+					console.error(err);
 				} finally {
 					loading.value = false;
 				}

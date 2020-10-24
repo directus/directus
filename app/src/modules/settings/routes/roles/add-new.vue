@@ -81,12 +81,6 @@ export default defineComponent({
 					router.push(`/settings/roles/${roleResponse.data.data.id}`);
 				} catch (err) {
 					console.error(err);
-					notify.add({
-						title: i18n.t('could_not_add_role'),
-						type: 'error',
-						dialog: true,
-						error: err,
-					});
 				} finally {
 					saving.value = false;
 				}
