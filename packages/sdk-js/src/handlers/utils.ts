@@ -21,7 +21,7 @@ export class UtilsHandler {
 			return result.data;
 		},
 		verify: async (string: string, hash: string) => {
-			const result = await this.axios.post('/utils/hash/generate', { string, hash });
+			const result = await this.axios.post('/utils/hash/verify', { string, hash });
 			return result.data;
 		},
 	};
