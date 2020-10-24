@@ -41,8 +41,6 @@ import marked from 'marked';
 import useShortcut from '@/composables/use-shortcut';
 
 import api from '@/api';
-import { useNotificationsStore } from '@/stores';
-import i18n from '@/lang';
 
 export default defineComponent({
 	components: { CommentItemHeader },
@@ -57,7 +55,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
 		const textarea = ref<Vue>();
 		const htmlContent = computed(() => (props.activity.comment ? marked(props.activity.comment) : null));
 

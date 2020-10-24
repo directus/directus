@@ -96,14 +96,14 @@ import SettingsNavigation from '../../../components/navigation.vue';
 
 import api from '@/api';
 import { Header } from '@/components/v-table/types';
-import i18n from '@/lang';
-import { useCollectionsStore, useNotificationsStore } from '@/stores/';
+import { useCollectionsStore } from '@/stores/';
 import { getLayouts } from '@/layouts';
 import { TranslateResult } from 'vue-i18n';
 import router from '@/router';
 import ValueNull from '@/views/private/components/value-null';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 import { userName } from '@/utils/user-name';
+import i18n from '@/lang';
 
 type PresetRaw = {
 	id: number;
@@ -125,7 +125,6 @@ type Preset = {
 export default defineComponent({
 	components: { SettingsNavigation, ValueNull, PresetsInfoSidebarDetail },
 	setup() {
-		const notify = useNotificationsStore();
 		const layouts = getLayouts();
 		const collectionsStore = useCollectionsStore();
 

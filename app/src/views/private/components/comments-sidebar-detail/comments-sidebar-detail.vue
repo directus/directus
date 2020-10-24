@@ -31,7 +31,6 @@ import { isToday, isYesterday, isThisYear } from 'date-fns';
 import { TranslateResult } from 'vue-i18n';
 import CommentItem from './comment-item.vue';
 import { orderBy } from 'lodash';
-import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	components: { CommentInput, CommentItem },
@@ -46,7 +45,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
 		const { activity, loading, error, refresh, count } = useActivity(props.collection, props.primaryKey);
 
 		return {

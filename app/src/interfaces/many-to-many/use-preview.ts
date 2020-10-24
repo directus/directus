@@ -1,11 +1,9 @@
-import { Ref, ref, watch, computed } from '@vue/composition-api';
+import { Ref, ref, watch } from '@vue/composition-api';
 import { Header } from '@/components/v-table/types';
 import { RelationInfo } from './use-relation';
-import { useFieldsStore, useNotificationsStore } from '@/stores/';
-import { Field, Collection } from '@/types';
+import { useFieldsStore } from '@/stores/';
+import { Field } from '@/types';
 import api from '@/api';
-import { cloneDeep, get } from 'lodash';
-import i18n from '@/lang';
 
 export default function usePreview(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
@@ -20,7 +18,6 @@ export default function usePreview(
 	// Using a ref for the table headers here means that the table itself can update the
 	// values if it needs to. This allows the user to manually resize the columns for example
 
-	const notify = useNotificationsStore();
 	const fieldsStore = useFieldsStore();
 	const tableHeaders = ref<Header[]>([]);
 	const loading = ref(false);

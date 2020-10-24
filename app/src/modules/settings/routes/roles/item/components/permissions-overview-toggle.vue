@@ -52,8 +52,6 @@ import { defineComponent, PropType, computed, inject, ref } from '@vue/compositi
 import { Collection, Permission } from '@/types';
 import api from '@/api';
 import router from '@/router';
-import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	props: {
@@ -79,7 +77,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
 		const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
 			if (props.permission === null) return 'none';
 			if (hasAll() === true) return 'all';

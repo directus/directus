@@ -254,8 +254,7 @@ import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import router from '@/router';
 import marked from 'marked';
-import { useNotificationsStore, usePermissionsStore, useUserStore } from '@/stores';
-import i18n from '@/lang';
+import { usePermissionsStore, useUserStore } from '@/stores';
 
 type Item = {
 	[field: string]: any;
@@ -283,7 +282,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref<LayoutComponent | null>(null);

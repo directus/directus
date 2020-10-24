@@ -65,8 +65,6 @@ import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
 import api from '@/api';
 import qrcode from 'qrcode';
 import { nanoid } from 'nanoid';
-import { useNotificationsStore } from '@/stores';
-import i18n from '@/lang';
 
 export default defineComponent({
 	props: {
@@ -76,7 +74,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
 		const tfaEnabled = ref(!!props.value);
 		const enableActive = ref(false);
 		const disableActive = ref(false);

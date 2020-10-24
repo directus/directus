@@ -1,7 +1,5 @@
 import { ref, Ref, watch } from '@vue/composition-api';
 import api from '@/api';
-import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
 
 export type Permission = {
 	id?: number;
@@ -19,7 +17,6 @@ export type Permission = {
 };
 
 export default function usePermissions(role: Ref<number>) {
-	const notify = useNotificationsStore();
 	const loading = ref(false);
 	const error = ref(null);
 	const permissions = ref<Permission[] | null>(null);

@@ -62,13 +62,12 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, provide } from '@vue/composition-api';
-import { useCollectionsStore, useNotificationsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 import { Permission } from '@/types';
 import api from '@/api';
 import { permissions as appRequiredPermissions } from '../../app-required-permissions';
-import i18n from '@/lang';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
@@ -84,7 +83,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 
 		const regularCollections = computed(() =>

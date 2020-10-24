@@ -36,7 +36,7 @@ import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/co
 import api from '@/api';
 
 import useCollection from '@/composables/use-collection';
-import { useFieldsStore, useNotificationsStore, useRelationsStore } from '@/stores';
+import { useFieldsStore, useRelationsStore } from '@/stores';
 import i18n from '@/lang';
 import { Relation, Field } from '@/types';
 
@@ -74,7 +74,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const notify = useNotificationsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 

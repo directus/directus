@@ -18,12 +18,9 @@ import api from '@/api';
 import { hydrate } from '@/hydrate';
 import router from '@/router';
 import { userName } from '@/utils/user-name';
-import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	setup() {
-		const notify = useNotificationsStore();
 		const loading = ref(false);
 		const name = ref<string | null>(null);
 		const lastPage = ref<string | null>(null);

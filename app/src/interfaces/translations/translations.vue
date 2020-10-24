@@ -30,12 +30,11 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
-import { useNotificationsStore, useRelationsStore } from '@/stores/';
+import { useRelationsStore } from '@/stores/';
 import api from '@/api';
 import { Relation } from '@/types';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import DrawerItem from '@/views/private/components/drawer-item/drawer-item.vue';
-import i18n from '@/lang';
 
 export default defineComponent({
 	components: { DrawerItem },
@@ -63,7 +62,6 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
-		const notify = useNotificationsStore();
 
 		const {
 			relationsForField,

@@ -39,12 +39,9 @@ import { defineComponent, ref } from '@vue/composition-api';
 import api from '@/api';
 import router from '@/router';
 import { permissions } from './app-required-permissions';
-import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	setup() {
-		const notify = useNotificationsStore();
 		const roleName = ref<string>();
 		const appAccess = ref(true);
 		const adminAccess = ref(false);

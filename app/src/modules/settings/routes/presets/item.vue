@@ -98,7 +98,7 @@ import SettingsNavigation from '../../components/navigation.vue';
 import { Preset, Filter } from '@/types';
 import api from '@/api';
 import i18n from '@/lang';
-import { useCollectionsStore, useNotificationsStore, usePresetsStore } from '@/stores';
+import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
 import router from '@/router';
 import marked from 'marked';
@@ -136,7 +136,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 		const presetsStore = usePresetsStore();
 		const layouts = getLayouts();

@@ -116,8 +116,6 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
 import getRootPath from '@/utils/get-root-path';
-import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
 
 type FileInfo = {
 	id: number;
@@ -138,7 +136,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const notify = useNotificationsStore();
 		const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 		const { loading, file, fetchFile } = useFile();
 

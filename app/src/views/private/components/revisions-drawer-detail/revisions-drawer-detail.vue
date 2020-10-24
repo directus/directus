@@ -48,7 +48,6 @@ import i18n from '@/lang';
 import formatLocalized from '@/utils/localized-format';
 import RevisionItem from './revision-item.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
-import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	components: { RevisionItem, RevisionsDrawer },
@@ -63,7 +62,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const notify = useNotificationsStore();
 		const { revisions, revisionsByDate, loading, refresh } = useRevisions(props.collection, props.primaryKey);
 
 		const hasCreate = computed(() => {

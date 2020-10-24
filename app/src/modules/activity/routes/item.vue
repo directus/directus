@@ -48,11 +48,9 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
-import { i18n } from '@/lang';
 import router from '@/router';
 import api from '@/api';
 import { userName } from '@/utils/user-name';
-import { useNotificationsStore } from '@/stores';
 
 type Values = {
 	[field: string]: any;
@@ -81,7 +79,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
 		const { primaryKey } = toRefs(props);
 		const item = ref<ActivityRecord>();
 		const loading = ref(false);

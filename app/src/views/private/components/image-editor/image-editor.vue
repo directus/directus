@@ -114,8 +114,6 @@ import Vue from 'vue';
 import Cropper from 'cropperjs';
 import { nanoid } from 'nanoid';
 import throttle from 'lodash/throttle';
-import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
 
 type Image = {
 	type: string;
@@ -141,7 +139,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const notify = useNotificationsStore();
 		const localActive = ref(false);
 
 		const _active = computed({

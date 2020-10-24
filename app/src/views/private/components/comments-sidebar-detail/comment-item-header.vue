@@ -69,7 +69,6 @@ import { userName } from '@/utils/user-name';
 
 import api from '@/api';
 import localizedFormat from '@/utils/localized-format';
-import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	props: {
@@ -83,7 +82,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
 		const formattedTime = computed(() => {
 			if (props.activity.timestamp) {
 				// timestamp is in iso-8601

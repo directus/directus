@@ -14,12 +14,9 @@
 import { defineComponent, ref, onMounted } from '@vue/composition-api';
 import api from '@/api';
 import getRootPath from '@/utils/get-root-path';
-import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	setup() {
-		const notify = useNotificationsStore();
 		const providers = ref([]);
 		const loading = ref(false);
 

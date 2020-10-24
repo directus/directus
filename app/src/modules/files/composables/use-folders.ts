@@ -1,6 +1,4 @@
 import api from '@/api';
-import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
 import { ref, Ref } from '@vue/composition-api';
 import { TranslateResult } from 'vue-i18n';
 
@@ -25,7 +23,6 @@ let openFolders: Ref<string[] | null> | null = null;
 let error: Ref<any> | null = null;
 
 export default function useFolders() {
-	const notify = useNotificationsStore();
 	if (loading === null) loading = ref(false);
 	if (folders === null) folders = ref<Folder[] | null>(null);
 	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);

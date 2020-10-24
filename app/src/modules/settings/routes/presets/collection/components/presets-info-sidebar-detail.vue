@@ -21,12 +21,9 @@
 import { defineComponent, ref } from '@vue/composition-api';
 import api from '@/api';
 import marked from 'marked';
-import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	setup() {
-		const notify = useNotificationsStore();
 		const loading = ref(false);
 		const bookmarksCount = ref<number | null>(null);
 		const presetsCount = ref<number | null>(null);

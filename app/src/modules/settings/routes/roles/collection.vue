@@ -66,7 +66,6 @@ import marked from 'marked';
 import { Header as TableHeader } from '@/components/v-table/types';
 import ValueNull from '@/views/private/components/value-null';
 import router from '@/router';
-import { useNotificationsStore } from '@/stores';
 
 type Role = {
 	id: number;
@@ -80,7 +79,6 @@ export default defineComponent({
 	components: { SettingsNavigation, ValueNull },
 	props: {},
 	setup() {
-		const notify = useNotificationsStore();
 		const roles = ref<Role[]>([]);
 		const loading = ref(false);
 

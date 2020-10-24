@@ -21,7 +21,7 @@
 import { defineComponent, ref, reactive, computed, watch } from '@vue/composition-api';
 import api from '@/api';
 import { Permission, Role } from '@/types';
-import { useFieldsStore, useCollectionsStore, useNotificationsStore } from '@/stores/';
+import { useFieldsStore, useCollectionsStore } from '@/stores/';
 import router from '@/router';
 import i18n from '@/lang';
 import Actions from './components/actions.vue';
@@ -45,7 +45,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 
 		const permission = ref<Permission>();

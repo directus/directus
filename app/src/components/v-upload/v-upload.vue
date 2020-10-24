@@ -91,8 +91,6 @@ import uploadFiles from '@/utils/upload-files';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import useItem from '@/composables/use-item';
-import { useNotificationsStore } from '@/stores';
-import i18n from '@/lang';
 
 export default defineComponent({
 	components: { DrawerCollection },
@@ -120,7 +118,6 @@ export default defineComponent({
 		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 		const { setSelection } = useSelection();
 		const activeDialog = ref<'choose' | 'url' | null>(null);
-		const notify = useNotificationsStore();
 
 		return {
 			uploading,

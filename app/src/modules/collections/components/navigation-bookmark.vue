@@ -57,8 +57,7 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 import { Preset } from '@/types';
-import { useUserStore, usePresetsStore, useNotificationsStore } from '@/stores';
-import i18n from '@/lang';
+import { useUserStore, usePresetsStore } from '@/stores';
 
 export default defineComponent({
 	props: {
@@ -71,7 +70,6 @@ export default defineComponent({
 		const contextMenu = ref();
 		const userStore = useUserStore();
 		const presetsStore = usePresetsStore();
-		const notify = useNotificationsStore();
 
 		const isMine = computed(() => props.bookmark.user === userStore.state.currentUser!.id);
 

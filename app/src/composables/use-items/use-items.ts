@@ -1,14 +1,12 @@
 import { computed, ref, Ref, watch } from '@vue/composition-api';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
-import { useNotificationsStore } from '@/stores';
 import Vue from 'vue';
 import { isEqual } from 'lodash';
 import { Filter } from '@/types/';
 import filtersToQuery from '@/utils/filters-to-query';
 import { orderBy } from 'lodash';
 import moveInArray from '@/utils/move-in-array';
-import i18n from '@/lang';
 
 type Query = {
 	limit: Ref<number>;
@@ -21,7 +19,6 @@ type Query = {
 
 export function useItems(collection: Ref<string>, query: Query) {
 	const { primaryKeyField, sortField } = useCollection(collection);
-	const notify = useNotificationsStore();
 
 	let loadingTimeout: any = null;
 

@@ -36,8 +36,6 @@
 import { defineComponent, ref, computed, PropType } from '@vue/composition-api';
 import api from '@/api';
 import FolderPickerListItem from './folder-picker-list-item.vue';
-import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
 
 type FolderRaw = {
 	id: string;
@@ -64,7 +62,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
 		const loading = ref(false);
 		const folders = ref<FolderRaw[]>([]);
 		const tree = computed<Folder[]>(() => {

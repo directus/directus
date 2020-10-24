@@ -31,8 +31,6 @@ import { nanoid } from 'nanoid';
 import FilePreview from '@/views/private/components/file-preview';
 
 import getRootPath from '@/utils/get-root-path';
-import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
 
 type File = {
 	type: string;
@@ -58,7 +56,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const notify = useNotificationsStore();
 		const localActive = ref(false);
 
 		const _active = computed({

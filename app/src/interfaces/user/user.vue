@@ -93,8 +93,6 @@ import useCollection from '@/composables/use-collection';
 import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
-import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection },
@@ -113,7 +111,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const notify = useNotificationsStore();
 		const { usesMenu, menuActive } = useMenu();
 		const { info: collectionInfo } = useCollection(ref('directus_users'));
 		const { selection, stageSelection, selectModalActive } = useSelection();

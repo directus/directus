@@ -171,7 +171,7 @@ import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-d
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
-import { useFieldsStore, useNotificationsStore, useUserStore } from '@/stores/';
+import { useFieldsStore, useUserStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
@@ -211,7 +211,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
 		const form = ref<HTMLElement>();
 		const fieldsStore = useFieldsStore();
 		const userStore = useUserStore();

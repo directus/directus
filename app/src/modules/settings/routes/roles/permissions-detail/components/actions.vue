@@ -11,8 +11,6 @@ import { defineComponent, PropType, ref, inject } from '@vue/composition-api';
 import { Permission } from '@/types';
 import api from '@/api';
 import router from '@/router';
-import { useNotificationsStore } from '@/stores';
-import i18n from '@/lang';
 
 export default defineComponent({
 	props: {
@@ -26,7 +24,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const notify = useNotificationsStore();
 		const loading = ref(false);
 
 		return { save, loading };
