@@ -90,33 +90,31 @@ export default function useUpdatePermissions(
 		const actions = ['create', 'read', 'update', 'delete'];
 
 		await Promise.all(
-			actions.map((action) =>
-				(async () => {
-					const permission = getPermission(action);
-					if (permission) {
-						try {
-							await api.patch(`/permissions/${permission.id}`, {
-								fields: '*',
-								permissions: null,
-								validation: null,
-							});
-						} catch (err) {
-							console.error(err);
-						}
-					} else {
-						try {
-							await api.post('/permissions/', {
-								role: role.value,
-								collection: collection.value.collection,
-								action: action,
-								fields: '*',
-							});
-						} catch (err) {
-							console.error(err);
-						}
+			actions.map(async (action) => {
+				const permission = getPermission(action);
+				if (permission) {
+					try {
+						await api.patch(`/permissions/${permission.id}`, {
+							fields: '*',
+							permissions: null,
+							validation: null,
+						});
+					} catch (err) {
+						console.error(err);
 					}
-				})()
-			)
+				} else {
+					try {
+						await api.post('/permissions/', {
+							role: role.value,
+							collection: collection.value.collection,
+							action: action,
+							fields: '*',
+						});
+					} catch (err) {
+						console.error(err);
+					}
+				}
+			})
 		);
 
 		await refresh?.();
