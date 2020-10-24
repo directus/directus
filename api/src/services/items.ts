@@ -6,7 +6,7 @@ import {
 	Action,
 	Accountability,
 	PermissionsAction,
-	Item,
+	Item as AnyItem,
 	Query,
 	PrimaryKey,
 	AbstractService,
@@ -26,7 +26,7 @@ import getDefaultValue from '../utils/get-default-value';
 import { InvalidPayloadException } from '../exceptions';
 import { ForbiddenException } from '../exceptions';
 
-export class ItemsService implements AbstractService {
+export class ItemsService<Item extends AnyItem> implements AbstractService {
 	collection: string;
 	knex: Knex;
 	accountability: Accountability | null;
@@ -52,7 +52,7 @@ export class ItemsService implements AbstractService {
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 		const columns = await this.schemaInspector.columns(this.collection);
 
-		let payloads = clone(toArray(data));
+		let payloads: AnyItem[] = clone(toArray(data));
 
 		const savedPrimaryKeys = await this.knex.transaction(async (trx) => {
 			const payloadService = new PayloadService(this.collection, {
@@ -210,7 +210,7 @@ export class ItemsService implements AbstractService {
 		}
 
 		const records = await runAST(ast, { knex: this.knex });
-		return records;
+		return records as Item | Item[] | null;
 	}
 
 	readByKey(
@@ -260,7 +260,7 @@ export class ItemsService implements AbstractService {
 
 		if (result === null) throw new ForbiddenException();
 
-		return result;
+		return result as Item | Item[] | null;
 	}
 
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
@@ -277,7 +277,7 @@ export class ItemsService implements AbstractService {
 		if (data && key) {
 			const keys = toArray(key);
 
-			let payload = clone(data);
+			let payload: Partial<AnyItem> | Partial<AnyItem>[] = clone(data);
 
 			const customProcessed = await emitter.emitAsync(
 				`${this.eventScope}.update.before`,
