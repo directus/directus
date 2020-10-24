@@ -2,7 +2,6 @@ import { createStore } from 'pinia';
 import { Notification, NotificationRaw } from '@/types';
 import { nanoid } from 'nanoid';
 import { reverse, sortBy } from 'lodash';
-import VueI18n from 'vue-i18n';
 
 export const useNotificationsStore = createStore({
 	id: 'notificationsStore',
