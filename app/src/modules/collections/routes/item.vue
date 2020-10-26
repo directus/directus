@@ -267,7 +267,7 @@ export default defineComponent({
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
-		const { info: collectionInfo, primaryKeyField } = useCollection(collection);
+		const { info: collectionInfo, defaults, primaryKeyField } = useCollection(collection);
 
 		const {
 			isNew,
@@ -288,11 +288,24 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(collection, primaryKey);
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+		const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
-		const isSavable = computed<boolean>(
-			() => saveAllowed.value === true && (hasEdits.value === true || isNew.value === true)
-		);
+		const isSavable = computed(() => {
+			if (saveAllowed.value === false) return false;
+
+			if (
+				!primaryKeyField.value?.schema?.has_auto_increment &&
+				!primaryKeyField.value?.meta?.special?.includes('uuid')
+			) {
+				return !!edits.value?.[primaryKeyField.value.field];
+			}
+
+			if (isNew.value === true) {
+				return Object.keys(defaults.value).length > 0 || hasEdits.value;
+			}
+
+			return hasEdits.value;
+		});
 
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
