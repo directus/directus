@@ -20,6 +20,10 @@ export default defineComponent({
 			required: true,
 			validator: (val: string) => ['dateTime', 'date', 'time', 'timestamp'].includes(val),
 		},
+		format: {
+			type: String,
+			default: 'long',
+		},
 		relative: {
 			type: Boolean,
 			default: false,
@@ -57,9 +61,18 @@ export default defineComponent({
 						addSuffix: true,
 					});
 				} else {
-					let format = `${i18n.t('date-fns_date')} ${i18n.t('date-fns_time')}`;
-					if (props.type === 'date') format = String(i18n.t('date-fns_date'));
-					if (props.type === 'time') format = String(i18n.t('date-fns_time'));
+					let format;
+					if (props.format === 'long') {
+						format = `${i18n.t('date-fns_date')} ${i18n.t('date-fns_time')}`;
+						if (props.type === 'date') format = String(i18n.t('date-fns_date'));
+						if (props.type === 'time') format = String(i18n.t('date-fns_time'));
+					} else if (props.format === 'short') {
+						format = `${i18n.t('date-fns_date_short')} ${i18n.t('date-fns_time_short')}`;
+						if (props.type === 'date') format = String(i18n.t('date-fns_date_short'));
+						if (props.type === 'time') format = String(i18n.t('date-fns_time_short'));
+					} else {
+						format = props.format;
+					}
 
 					displayValue.value = await localizedFormat(newValue, format);
 				}

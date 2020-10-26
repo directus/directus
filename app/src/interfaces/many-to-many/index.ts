@@ -10,6 +10,7 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceManyToMany,
 	relationship: 'm2m',
 	types: ['alias'],
+	localTypes: ['m2m'],
 	options: Options,
 	recommendedDisplays: ['related-values'],
 }));

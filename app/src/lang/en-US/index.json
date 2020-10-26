@@ -31,6 +31,11 @@
 	"create_user": "Create User",
 	"create_webhook": "Create Webhook",
 
+	"invite_users": "Invite Users",
+	"email_examples": "admin@example.com, user@example.com...",
+	"invite": "Invite",
+	"emails": "Emails",
+
 	"connection_excellent": "Excellent Connection",
 	"connection_good": "Good Connection",
 	"connection_fair": "Fair Connection",
@@ -388,8 +393,9 @@
 
 	"date-fns_datetime": "PPP h:mma",
 	"date-fns_date": "PPP",
-	"date-fns_time": "h:mma",
+	"date-fns_time": "h:mm:ss a",
 	"date-fns_date_short": "MMM d, u",
+	"date-fns_time_short": "h:mma",
 	"date-fns_date_short_no_year": "MMM d",
 	"month": "Month",
 	"year": "Year",
@@ -786,6 +792,7 @@
 	"create_folder": "Create Folder",
 	"folder_name": "Folder Name...",
 	"add_file": "Add File",
+	"replace_file": "Replace File",
 
 	"no_results": "No Results",
 	"no_results_copy": "Adjust or clear search filters to see results.",

@@ -115,7 +115,7 @@ export default defineComponent({
 		const title = computed(() => {
 			if (loading.value) return i18n.t('loading');
 			if (isNew.value) return i18n.t('creating_webhook');
-			return item.value.name;
+			return item.value?.name;
 		});
 
 		return {

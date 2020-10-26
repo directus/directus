@@ -4,12 +4,13 @@ import sharp from 'sharp';
 import { parse as parseICC } from 'icc';
 import parseEXIF from 'exif-reader';
 import parseIPTC from '../utils/parse-iptc';
-import path from 'path';
 import { AbstractServiceOptions, File, PrimaryKey } from '../types';
 import { clone } from 'lodash';
 import cache from '../cache';
 import { ForbiddenException } from '../exceptions';
 import { toArray } from '../utils/to-array';
+import { extension } from 'mime-types';
+import path from 'path';
 
 export class FilesService extends ItemsService {
 	constructor(options?: AbstractServiceOptions) {
@@ -37,7 +38,10 @@ export class FilesService extends ItemsService {
 			primaryKey = await this.create(payload);
 		}
 
-		payload.filename_disk = primaryKey + path.extname(payload.filename_download);
+		const fileExtension =
+			(payload.type && extension(payload.type)) || path.extname(payload.filename_download);
+
+		payload.filename_disk = primaryKey + fileExtension;
 
 		if (!payload.type) {
 			payload.type = 'application/octet-stream';

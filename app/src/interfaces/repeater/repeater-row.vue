@@ -1,5 +1,5 @@
 <template>
-	<v-item class="row" v-slot:default="{ active, toggle }" :active="true" :watch="false">
+	<v-item class="row" v-slot:default="{ active, toggle }" :active="initialActive" :watch="false">
 		<repeater-row-header
 			:template="template"
 			:value="value"
@@ -38,6 +38,10 @@ export default defineComponent({
 		fields: {
 			type: Array as PropType<Partial<Field>[]>,
 			default: () => [],
+		},
+		initialActive: {
+			type: Boolean,
+			default: false,
 		},
 		template: {
 			type: String,

@@ -5,12 +5,16 @@
 	<div class="one-to-many" v-else>
 		<v-table
 			:loading="loading"
-			:items="items"
+			:items="sortedItems || items"
 			:headers.sync="tableHeaders"
 			show-resize
 			inline
+			:sort.sync="sort"
+			@update:items="sortItems($event)"
 			@click:row="editItem"
 			:disabled="disabled"
+			:show-manual-sort="sortField !== null"
+			:manual-sort-key="sortField"
 		>
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
@@ -73,6 +77,7 @@ import useRelation from './use-relation';
 import usePreview from './use-preview';
 import useEdit from './use-edit';
 import useSelection from './use-selection';
+import useSort from './use-sort';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection },
@@ -93,6 +98,10 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		sortField: {
+			type: String,
+			default: null,
+		},
 		fields: {
 			type: Array as PropType<string[]>,
 			default: () => [],
@@ -103,7 +112,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { value, collection, field, fields } = toRefs(props);
+		const { value, collection, field, fields, sortField } = toRefs(props);
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
@@ -127,6 +136,7 @@ export default defineComponent({
 		const { tableHeaders, items, loading, error } = usePreview(
 			value,
 			fields,
+			sortField,
 			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,
@@ -151,6 +161,8 @@ export default defineComponent({
 			emitter
 		);
 
+		const { sort, sortItems, sortedItems } = useSort(sortField, fields, items, emitter);
+
 		return {
 			junction,
 			relation,
@@ -172,6 +184,9 @@ export default defineComponent({
 			relatedPrimaryKey,
 			get,
 			editModalActive,
+			sort,
+			sortItems,
+			sortedItems,
 		};
 	},
 });

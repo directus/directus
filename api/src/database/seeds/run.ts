@@ -99,8 +99,9 @@ async function createTables(database: Knex) {
 				if (columnInfo.default !== undefined) {
 					let defaultValue = columnInfo.default;
 
-					if (isObject(defaultValue) || Array.isArray(defaultValue))
+					if (isObject(defaultValue) || Array.isArray(defaultValue)) {
 						defaultValue = JSON.stringify(defaultValue);
+					}
 
 					if (defaultValue === '$now') {
 						defaultValue = database!.fn.now();

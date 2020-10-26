@@ -20,6 +20,8 @@ type Query = {
 export function useItems(collection: Ref<string>, query: Query) {
 	const { primaryKeyField, sortField } = useCollection(collection);
 
+	let loadingTimeout: any = null;
+
 	const { limit, fields, sort, page, filters, searchQuery } = query;
 
 	const endpoint = computed(() => {
@@ -103,9 +105,11 @@ export function useItems(collection: Ref<string>, query: Query) {
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
 	async function getItems() {
+		if (loadingTimeout) return;
+
 		error.value = null;
 
-		const loadingTimeout = setTimeout(() => {
+		loadingTimeout = setTimeout(() => {
 			loading.value = true;
 		}, 250);
 
@@ -182,6 +186,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			error.value = err;
 		} finally {
 			clearTimeout(loadingTimeout);
+			loadingTimeout = null;
 			loading.value = false;
 		}
 	}
