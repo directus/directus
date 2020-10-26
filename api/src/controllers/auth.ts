@@ -9,7 +9,7 @@ import ms from 'ms';
 import cookieParser from 'cookie-parser';
 import env from '../env';
 import { UsersService, AuthenticationService } from '../services';
-import grantConfig from '../grant';
+import { oauthConfig } from '../auth';
 import { RouteNotFoundException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { toArray } from '../utils/to-array';
@@ -212,6 +212,39 @@ router.post(
 );
 
 router.get(
+	'/oidc',
+	asyncHandler(async (req, res, next) => {
+		const providers = toArray(env.OIDC_PROVIDERS);
+		res.locals.payload = { data: env.OIDC_PROVIDERS ? providers : null };
+		return next();
+	}),
+	respond
+);
+
+router.use(
+	'/oidc',
+	session({ secret: env.SECRET as string, saveUninitialized: false, resave: false })
+);
+
+router.get(
+	'/oidc/:provider',
+	asyncHandler(async (req, res, next) => {
+		const providers = toArray(env.OIDC_PROVIDERS);
+
+		if (providers.includes(req.params.provider) === false) {
+			throw new RouteNotFoundException(`/auth/oauth/${req.params.provider}`);
+		}
+
+		if (req.query?.redirect && req.session) {
+			req.session.redirect = req.query.redirect;
+		}
+
+		next();
+	}),
+	respond
+);
+
+router.get(
 	'/oauth',
 	asyncHandler(async (req, res, next) => {
 		const providers = toArray(env.OAUTH_PROVIDERS);
@@ -229,7 +262,7 @@ router.use(
 router.get(
 	'/oauth/:provider',
 	asyncHandler(async (req, res, next) => {
-		const config = { ...grantConfig };
+		const config = { ...oauthConfig };
 		delete config.defaults;
 
 		const availableProviders = Object.keys(config);
@@ -247,7 +280,7 @@ router.get(
 	respond
 );
 
-router.use(grant.express()(grantConfig));
+router.use(grant.express()(oauthConfig));
 
 router.get(
 	'/oauth/:provider/callback',

@@ -43,9 +43,12 @@ import { InvalidPayloadException } from './exceptions';
 
 import { registerExtensions } from './extensions';
 import emitter from './emitter';
+import { registerOIDC } from './auth';
 
 export default async function createApp() {
 	validateEnv(['KEY', 'SECRET']);
+
+	await registerOIDC();
 
 	const app = express();
 

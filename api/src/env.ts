@@ -35,6 +35,7 @@ const defaults: Record<string, any> = {
 	CACHE_NAMESPACE: 'system-cache',
 
 	OAUTH_PROVIDERS: '',
+	OIDC_PROVIDERS: '',
 
 	EXTENSIONS_PATH: './extensions',
 
