@@ -63,11 +63,6 @@ function processValues(env: Record<string, any>) {
 		if (value === 'false') env[key] = false;
 		if (value === 'null') env[key] = null;
 		if (isNaN(value) === false && value.length > 0) env[key] = Number(value);
-		if (typeof value === 'string' && value.includes(','))
-			env[key] = value
-				.split(',')
-				.map((val) => val.trim())
-				.filter((val) => val);
 	}
 
 	return env;
