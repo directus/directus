@@ -33,13 +33,13 @@ export class ServerService {
 
 		info.project = projectInfo
 			? {
-					name: projectInfo.project_name,
-					logo: projectInfo.project_logo,
-					color: projectInfo.project_color,
-					foreground: projectInfo.public_foreground,
-					background: projectInfo.public_background,
-					note: projectInfo.public_note,
-					customCSS: projectInfo.custom_css,
+					project_name: projectInfo.project_name,
+					project_logo: projectInfo.project_logo,
+					project_color: projectInfo.project_color,
+					public_foreground: projectInfo.public_foreground,
+					public_background: projectInfo.public_background,
+					public_note: projectInfo.public_note,
+					custom_css: projectInfo.custom_css,
 			  }
 			: null;
 

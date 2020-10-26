@@ -34,25 +34,25 @@ import setFavicon from '@/utils/set-favicon';
 
 export default defineComponent({
 	setup() {
-		const { useAppStore, useUserStore, useSettingsStore } = stores;
+		const { useAppStore, useUserStore, useServerStore } = stores;
 
 		const appStore = useAppStore();
 		const userStore = useUserStore();
-		const settingsStore = useSettingsStore();
+		const serverStore = useServerStore();
 
 		const { hydrating, sidebarOpen } = toRefs(appStore.state);
 
 		const brandStyle = computed(() => {
 			return {
-				'--brand': settingsStore.state.settings?.project_color || 'var(--primary)',
+				'--brand': serverStore.state.info?.project?.project_color || 'var(--primary)',
 			};
 		});
 
 		watch(
-			[() => settingsStore.state.settings?.project_color, () => settingsStore.state.settings?.project_logo],
+			[() => serverStore.state.info?.project?.project_color, () => serverStore.state.info?.project?.project_logo],
 			() => {
-				const hasCustomLogo = !!settingsStore.state.settings?.project_logo;
-				setFavicon(settingsStore.state.settings?.project_color || '#2f80ed', hasCustomLogo);
+				const hasCustomLogo = !!serverStore.state.info?.project?.project_logo;
+				setFavicon(serverStore.state.info?.project?.project_color || '#2f80ed', hasCustomLogo);
 			}
 		);
 
@@ -90,14 +90,14 @@ export default defineComponent({
 		);
 
 		watch(
-			() => settingsStore.state.settings?.project_name,
+			() => serverStore.state.info?.project?.project_name,
 			(projectName) => {
-				document.title = projectName;
+				document.title = projectName || 'Directus';
 			}
 		);
 
 		const customCSS = computed(() => {
-			return settingsStore.state?.settings?.custom_css || '';
+			return serverStore.state?.info?.project?.custom_css || '';
 		});
 
 		const error = computed(() => appStore.state.error);

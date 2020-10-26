@@ -1,5 +1,5 @@
 <template>
-	<div class="public-view" :class="{ branded : isBranded }">
+	<div class="public-view" :class="{ branded: isBranded }">
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
 				<div
@@ -32,7 +32,7 @@
 <script lang="ts">
 import { version } from '../../../package.json';
 import { defineComponent, computed } from '@vue/composition-api';
-import { useSettingsStore } from '@/stores';
+import { useServerStore } from '@/stores';
 import marked from 'marked';
 import getRootPath from '../../utils/get-root-path';
 
@@ -44,21 +44,21 @@ export default defineComponent({
 		},
 	},
 	setup() {
-		const settingsStore = useSettingsStore();
+		const serverStore = useServerStore();
 
 		const isBranded = computed(() => {
-			return (settingsStore.state.settings?.project_color) ? true : false;
+			return serverStore.state.info?.project?.project_color ? true : false;
 		});
 
 		const backgroundStyles = computed<string>(() => {
 			const defaultColor = '#263238';
 
-			if (settingsStore.state.settings?.public_background) {
-				const url = getRootPath() + `assets/${settingsStore.state.settings.public_background}`;
+			if (serverStore.state.info?.project?.public_background) {
+				const url = getRootPath() + `assets/${serverStore.state.info.project?.public_background}`;
 				return `url(${url})`;
 			}
 
-			return settingsStore.state.settings?.project_color || defaultColor;
+			return serverStore.state.info?.project?.project_color || defaultColor;
 		});
 
 		const artStyles = computed(() => ({
@@ -68,16 +68,16 @@ export default defineComponent({
 		}));
 
 		const foregroundURL = computed(() => {
-			if (!settingsStore.state.settings?.public_foreground) return null;
-			return getRootPath() + `assets/${settingsStore.state.settings.public_foreground}`;
+			if (!serverStore.state.info?.project?.public_foreground) return null;
+			return getRootPath() + `assets/${serverStore.state.info.project?.public_foreground}`;
 		});
 
 		const logoURL = computed<string | null>(() => {
-			if (!settingsStore.state.settings?.project_logo) return null;
-			return getRootPath() + `assets/${settingsStore.state.settings.project_logo}`;
+			if (!serverStore.state.info?.project?.project_logo) return null;
+			return getRootPath() + `assets/${serverStore.state.info.project?.project_logo}`;
 		});
 
-		return { version, artStyles, marked, settings: settingsStore.state.settings, foregroundURL, logoURL, isBranded };
+		return { version, artStyles, marked, settings: serverStore.state.info, foregroundURL, logoURL, isBranded };
 	},
 });
 </script>
