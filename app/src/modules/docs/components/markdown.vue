@@ -54,12 +54,9 @@ export default defineComponent({
 				},
 			});
 
-			htmlString = htmlString.replaceAll(
-				hintRegex,
-				(match: string, type: string, title: string, body: string) => {
-					return `<div class="hint ${type}"><p class="hint-title">${title}</p><p class="hint-body">${body}</p></div>`;
-				}
-			);
+			htmlString = htmlString.replace(hintRegex, (match: string, type: string, title: string, body: string) => {
+				return `<div class="hint ${type}"><p class="hint-title">${title}</p><p class="hint-body">${body}</p></div>`;
+			});
 
 			html.value = htmlString;
 		}

@@ -72,7 +72,7 @@ function registerHooks(hooks: string[]) {
 			registerHook(hook);
 		} catch (error) {
 			logger.warn(`Couldn't register hook "${hook}"`);
-			logger.info(error);
+			logger.warn(error);
 		}
 	}
 
@@ -104,7 +104,7 @@ function registerEndpoints(endpoints: string[], router: Router) {
 			registerEndpoint(endpoint);
 		} catch (error) {
 			logger.warn(`Couldn't register endpoint "${endpoint}"`);
-			logger.info(error);
+			logger.warn(error);
 		}
 	}
 

@@ -38,6 +38,7 @@ type File = {
 	[key: string]: any;
 	id: string;
 	type: string;
+	modified_on: Date;
 };
 
 export default defineComponent({
@@ -101,7 +102,7 @@ export default defineComponent({
 				key = 'system-medium-contain';
 			}
 
-			return getRootPath() + `assets/${props.file.id}?key=${key}`;
+			return getRootPath() + `assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
 		});
 
 		const svgSource = computed(() => {
@@ -109,7 +110,7 @@ export default defineComponent({
 			if (props.file.type.startsWith('image') === false) return null;
 			if (props.file.type.includes('svg') === false) return null;
 
-			return getRootPath() + `assets/${props.file.id}`;
+			return getRootPath() + `assets/${props.file.id}&modified=${props.file.modified_on}`;
 		});
 
 		const selectionIcon = computed(() => {

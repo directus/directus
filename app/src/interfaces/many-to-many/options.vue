@@ -13,6 +13,15 @@
 				"
 			/>
 		</div>
+		<div class="field half">
+			<p class="type-label">{{ $t('sort_field') }}</p>
+			<interface-field
+				v-model="sortField"
+				:collection="junctionCollection"
+				:type-allow-list="['bigInteger', 'integer']"
+				allowNone
+			></interface-field>
+		</div>
 	</div>
 </template>
 
@@ -52,6 +61,19 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
 		const relationsStore = useRelationsStore();
+
+		const sortField = computed({
+			get() {
+				return props.value?.sortField;
+			},
+			set(newFields: string) {
+				emit('input', {
+					...(props.value || {}),
+					sortField: newFields,
+				});
+			},
+		});
+
 		const fields = computed({
 			get() {
 				return props.value?.fields;
@@ -63,6 +85,7 @@ export default defineComponent({
 				});
 			},
 		});
+
 		const junctionCollection = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
@@ -71,12 +94,14 @@ export default defineComponent({
 			);
 			return junctionRelation?.many_collection || null;
 		});
+
 		const junctionCollectionExists = computed(() => {
 			return !!collectionsStore.state.collections.find(
 				(collection) => collection.collection === junctionCollection.value
 			);
 		});
-		return { fields, junctionCollection, junctionCollectionExists };
+
+		return { fields, sortField, junctionCollection, junctionCollectionExists };
 	},
 });
 </script>

@@ -17,22 +17,25 @@ import { ForbiddenException, FailedValidationException } from '../exceptions';
 import { uniq, merge, flatten } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 import { ItemsService } from './items';
+import { PayloadService } from './payload';
 import { parseFilter } from '../utils/parse-filter';
 import { toArray } from '../utils/to-array';
 
 export class AuthorizationService {
 	knex: Knex;
 	accountability: Accountability | null;
+	payloadService: PayloadService;
 
 	constructor(options?: AbstractServiceOptions) {
 		this.knex = options?.knex || database;
 		this.accountability = options?.accountability || null;
+		this.payloadService = new PayloadService('directus_permissions', { knex: this.knex });
 	}
 
 	async processAST(ast: AST, action: PermissionsAction = 'read'): Promise<AST> {
 		const collectionsRequested = getCollectionsFromAST(ast);
 
-		const permissionsForCollections = await this.knex
+		let permissionsForCollections = await this.knex
 			.select<Permission[]>('*')
 			.from('directus_permissions')
 			.where({ action, role: this.accountability?.role })
@@ -40,6 +43,11 @@ export class AuthorizationService {
 				'collection',
 				collectionsRequested.map(({ collection }) => collection)
 			);
+
+		permissionsForCollections = (await this.payloadService.processValues(
+			'read',
+			permissionsForCollections
+		)) as Permission[];
 
 		// If the permissions don't match the collections, you don't have permission to read all of them
 		const uniqueCollectionsRequestedCount = uniq(
@@ -111,7 +119,7 @@ export class AuthorizationService {
 					(permission) => permission.collection === collection
 				)!;
 
-				const allowedFields = permissions.fields?.split(',') || [];
+				const allowedFields = permissions.fields || [];
 
 				for (const childNode of ast.children) {
 					if (childNode.type !== 'field') {
@@ -213,21 +221,26 @@ export class AuthorizationService {
 				permissions: {},
 				validation: {},
 				limit: null,
-				fields: '*',
+				fields: ['*'],
 				presets: {},
 			};
 		} else {
 			permission = await this.knex
-				.select<Permission>('*')
+				.select('*')
 				.from('directus_permissions')
 				.where({ action, collection, role: this.accountability?.role || null })
 				.first();
+
+			permission = (await this.payloadService.processValues(
+				'read',
+				permission as Item
+			)) as Permission;
 
 			// Check if you have permission to access the fields you're trying to acces
 
 			if (!permission) throw new ForbiddenException();
 
-			const allowedFields = permission.fields?.split(',') || [];
+			const allowedFields = permission.fields || [];
 
 			if (allowedFields.includes('*') === false) {
 				for (const payload of payloads) {
@@ -260,13 +273,16 @@ export class AuthorizationService {
 				.from('directus_fields')
 				.where({ collection, field: column.name })
 				.first();
+
 			const specials = (field?.special || '').split(',');
+
 			const hasGenerateSpecial = [
 				'uuid',
 				'date-created',
 				'role-created',
 				'user-created',
 			].some((name) => specials.includes(name));
+
 			const isRequired =
 				column.is_nullable === false &&
 				column.has_auto_increment === false &&

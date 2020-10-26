@@ -1,5 +1,5 @@
 <template>
-	<v-notice v-if="!collectionField" type="warning">
+	<v-notice v-if="!collectionField && !collection" type="warning">
 		{{ $t('collection_field_not_setup') }}
 	</v-notice>
 	<v-notice v-else-if="selectItems.length === 0" type="warning">
@@ -24,6 +24,10 @@ import { Field } from '@/types';
 export default defineComponent({
 	props: {
 		collectionField: {
+			type: String,
+			default: null,
+		},
+		collection: {
 			type: String,
 			default: null,
 		},
@@ -54,8 +58,8 @@ export default defineComponent({
 		const values = inject('values', ref<Record<string, any>>({}));
 
 		const fields = computed(() => {
-			if (!props.collectionField) return [];
-			return fieldsStore.getFieldsForCollection(values.value[props.collectionField]);
+			if (!props.collectionField && !props.collection) return [];
+			return fieldsStore.getFieldsForCollection(props.collection || values.value[props.collectionField]);
 		});
 
 		const selectItems = computed(() =>
@@ -74,7 +78,7 @@ export default defineComponent({
 			})
 		);
 
-		return { selectItems };
+		return { selectItems, values };
 	},
 });
 </script>
