@@ -9,6 +9,20 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceImage,
 	types: ['uuid'],
 	relationship: 'm2o',
-	options: [],
+	options: [
+		{
+			field: 'folder',
+			name: i18n.t('interfaces.folder.folder'),
+			type: 'uuid',
+			meta: {
+				width: 'full',
+				interface: 'folder',
+				note: i18n.t('interfaces.folder.field_hint'),
+			},
+			schema: {
+				default_value: null,
+			},
+		},
+	],
 	recommendedDisplays: ['image'],
 }));

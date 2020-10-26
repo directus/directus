@@ -9,6 +9,20 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceFiles,
 	types: ['alias'],
 	relationship: 'm2m',
-	options: [],
+	options: [
+		{
+			field: 'folder',
+			name: i18n.t('interfaces.folder.folder'),
+			type: 'uuid',
+			meta: {
+				width: 'full',
+				interface: 'folder',
+				note: i18n.t('interfaces.folder.field_hint'),
+			},
+			schema: {
+				default_value: null,
+			},
+		},
+	],
 	recommendedDisplays: ['files'],
 }));

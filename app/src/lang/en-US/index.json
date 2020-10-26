@@ -175,7 +175,6 @@
 	"field_presentation": "Presentation & Aliases",
 	"field_file": "Single File",
 	"field_files": "Multiple Files",
-	"field_files_new_files_folder": "Place newly created files under target folder.",
 	"field_m2o": "M2O Relationship",
 	"field_o2m": "O2M Relationship",
 	"field_m2m": "M2M Relationship",
