@@ -11393,12 +11393,12 @@
 						"default_value": false,
 						"field": "withoutEnlargement",
 						"interface": "toggle",
-						"name": "No image upscale",
+						"name": "Don't upscale images",
 						"required": false,
 						"type": "boolean",
 						"width": "half",
 						"options": {
-							"label": "No image upscale"
+							"label": "Don't upscale images"
 						}
 					},
 					{

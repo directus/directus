@@ -11,6 +11,15 @@
 				:inject="relatedCollectionExists ? null : { fields: newFields, collections: newCollections, relations }"
 			/>
 		</div>
+		<div class="field half">
+			<p class="type-label">{{ $t('sort_field') }}</p>
+			<interface-field
+				v-model="sortField"
+				:collection="relatedCollection"
+				:type-allow-list="['bigInteger', 'integer']"
+				allowNone
+			></interface-field>
+		</div>
 	</div>
 </template>
 
@@ -62,6 +71,18 @@ export default defineComponent({
 			},
 		});
 
+		const sortField = computed({
+			get() {
+				return props.value?.sortField;
+			},
+			set(newFields: string) {
+				emit('input', {
+					...(props.value || {}),
+					sortField: newFields,
+				});
+			},
+		});
+
 		const relatedCollection = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
@@ -77,7 +98,7 @@ export default defineComponent({
 			);
 		});
 
-		return { fields, relatedCollection, relatedCollectionExists };
+		return { fields, sortField, relatedCollection, relatedCollectionExists };
 	},
 });
 </script>

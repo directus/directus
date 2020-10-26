@@ -61,7 +61,7 @@
 						@click="setCurrent(item)"
 					>
 						<v-list-item-content>
-							{{ userName(currentUser) }}
+							{{ userName(item) }}
 						</v-list-item-content>
 					</v-list-item>
 				</template>
@@ -93,6 +93,7 @@ import useCollection from '@/composables/use-collection';
 import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
+import { userName } from '@/utils/user-name';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection },
@@ -141,6 +142,7 @@ export default defineComponent({
 			edits,
 			stageEdits,
 			editModalActive,
+			userName,
 		};
 
 		function useCurrent() {

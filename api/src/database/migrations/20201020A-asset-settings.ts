@@ -78,7 +78,7 @@ export async function up(knex: Knex) {
 							interface: 'toggle',
 							width: 'half',
 							options: {
-								label: 'No image upscale',
+								label: `Don't upscale images`,
 							},
 						},
 					},

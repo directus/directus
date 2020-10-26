@@ -18,7 +18,6 @@ import {
 	GraphQLInputObjectType,
 	ObjectFieldNode,
 	GraphQLID,
-	ValueNode,
 	FieldNode,
 	GraphQLFieldConfigMap,
 	GraphQLInt,
@@ -26,11 +25,9 @@ import {
 	StringValueNode,
 	BooleanValueNode,
 	ArgumentNode,
-	GraphQLScalarType,
 	GraphQLBoolean,
 	ObjectValueNode,
 	GraphQLUnionType,
-	GraphQLUnionTypeConfig,
 } from 'graphql';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
@@ -65,7 +62,7 @@ export class GraphQLService {
 		this.knex = options?.knex || database;
 		this.fieldsService = new FieldsService(options);
 		this.collectionsService = new CollectionsService(options);
-		this.relationsService = new RelationsService({ knex: this.knex });
+		this.relationsService = new RelationsService(options);
 	}
 
 	args = {
@@ -138,6 +135,7 @@ export class GraphQLService {
 									const relatedIsSystem = relationForField.one_collection!.startsWith(
 										'directus_'
 									);
+
 									const relatedType = relatedIsSystem
 										? schema[relationForField.one_collection!.substring(9)].type
 										: schema.items[relationForField.one_collection!].type;

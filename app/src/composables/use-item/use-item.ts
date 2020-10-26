@@ -9,14 +9,14 @@ import { APIError } from '@/types';
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
-	const item = ref<any>(null);
+	const item = ref<Record<string, any> | null>(null);
 	const error = ref(null);
 	const validationErrors = ref([]);
 	const loading = ref(false);
 	const saving = ref(false);
 	const deleting = ref(false);
 	const archiving = ref(false);
-	const edits = ref({});
+	const edits = ref<Record<string, any>>({});
 	const isNew = computed(() => primaryKey.value === '+');
 	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
@@ -203,7 +203,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		if (unarchiveValue === 'false') unarchiveValue = false;
 
 		try {
-			let value: any = item.value[field] === archiveValue ? unarchiveValue : archiveValue;
+			let value: any = item.value && item.value[field] === archiveValue ? unarchiveValue : archiveValue;
 
 			if (value === 'true') value = true;
 			if (value === 'false') value = false;

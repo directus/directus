@@ -9,6 +9,7 @@ import { cloneDeep, get } from 'lodash';
 export default function usePreview(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
 	fields: Ref<string[]>,
+	sortField: Ref<string | null>,
 	relation: Ref<RelationInfo>,
 	getNewSelectedItems: () => Record<string, any>[],
 	getUpdatedItems: () => Record<string, any>[],
@@ -29,7 +30,7 @@ export default function usePreview(
 
 		return fields.reduce((acc: string[], field) => {
 			const sections = field.split('.');
-			if (junctionField === sections[0] && sections.length === 2) acc.push(sections[1]);
+			if (junctionField === sections[0] && sections.length >= 2) acc.push(sections.slice(1).join('.'));
 			return acc;
 		}, []);
 	}
@@ -123,6 +124,9 @@ export default function usePreview(
 
 				if (filteredFields.includes(junctionPkField) === false) filteredFields.push(junctionPkField);
 				if (filteredFields.includes(junctionField) === false) filteredFields.push(junctionField);
+
+				if (sortField.value !== null && filteredFields.includes(sortField.value) === false)
+					filteredFields.push(sortField.value);
 
 				data = await request(junctionCollection, filteredFields, junctionPkField, primaryKeys);
 			}

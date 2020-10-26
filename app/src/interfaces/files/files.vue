@@ -97,6 +97,10 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		sortField: {
+			type: String,
+			default: null,
+		},
 		value: {
 			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
 			default: null,
@@ -107,7 +111,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { collection, field, value, primaryKey } = toRefs(props);
+		const { collection, field, value, primaryKey, sortField } = toRefs(props);
 
 		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(
 			collection,
@@ -154,6 +158,7 @@ export default defineComponent({
 		const { loading, error, items } = usePreview(
 			value,
 			fields,
+			sortField,
 			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,

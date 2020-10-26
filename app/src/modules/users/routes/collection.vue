@@ -49,6 +49,16 @@
 				<v-icon name="edit" outline />
 			</v-button>
 
+			<v-button
+				v-if="canInviteUsers"
+				rounded
+				icon
+				@click="userInviteModalActive = true"
+				v-tooltip.bottom="$t('invite_users')"
+			>
+				<v-icon name="person_add" />
+			</v-button>
+
 			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_user')">
 				<v-icon name="add" />
 			</v-button>
@@ -57,6 +67,8 @@
 		<template #navigation>
 			<users-navigation :current-role="queryFilters && queryFilters.role" />
 		</template>
+
+		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" />
 
 		<component
 			class="layout"
@@ -104,6 +116,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
 import UsersNavigation from '../components/navigation.vue';
+import UsersInvite from '@/views/private/components/users-invite';
 
 import { i18n } from '@/lang';
 import api from '@/api';
@@ -111,6 +124,7 @@ import { LayoutComponent } from '@/layouts/types';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
+import { useUserStore, usePermissionsStore } from '@/stores';
 import marked from 'marked';
 import useNavigation from '../composables/use-navigation';
 
@@ -120,7 +134,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'users-collection',
-	components: { UsersNavigation, LayoutSidebarDetail, SearchInput },
+	components: { UsersNavigation, LayoutSidebarDetail, SearchInput, UsersInvite },
 	props: {
 		queryFilters: {
 			type: Object as PropType<Record<string, string>>,
@@ -130,6 +144,9 @@ export default defineComponent({
 	setup(props) {
 		const { roles } = useNavigation();
 		const layoutRef = ref<LayoutComponent | null>(null);
+		const userInviteModalActive = ref(false);
+		const userStore = useUserStore();
+		const permissionsStore = usePermissionsStore();
 
 		const selection = ref<Item[]>([]);
 
@@ -157,7 +174,23 @@ export default defineComponent({
 			return filters.value;
 		});
 
+		const canInviteUsers = computed(() => {
+			const isAdmin = !!userStore.state.currentUser?.role?.admin_access;
+
+			if (isAdmin) return true;
+
+			const usersCreatePermission = permissionsStore.state.permissions.find(
+				(permission) => permission.collection === 'directus_users' && permission.action === 'create'
+			);
+			const rolesReadPermission = permissionsStore.state.permissions.find(
+				(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
+			);
+
+			return !!usersCreatePermission && !!rolesReadPermission;
+		});
+
 		return {
+			canInviteUsers,
 			_filters,
 			addNewLink,
 			batchDelete,
@@ -175,6 +208,7 @@ export default defineComponent({
 			searchQuery,
 			marked,
 			clearFilters,
+			userInviteModalActive,
 		};
 
 		function useBatchDelete() {

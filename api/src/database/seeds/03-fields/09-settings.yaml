@@ -135,15 +135,18 @@ fields:
         - field: key
           name: Key
           type: string
+          schema:
+            is_nullable: false
           meta:
             interface: slug
             options:
               onlyOnCreate: false
-            required: true
             width: half
         - field: fit
           name: Fit
           type: string
+          schema:
+            is_nullable: false
           meta:
             interface: dropdown
             options:
@@ -161,15 +164,31 @@ fields:
         - field: width
           name: Width
           type: integer
+          schema:
+            is_nullable: false
           meta:
             interface: numeric
-            required: true
             width: half
         - field: height
           name: Height
           type: integer
+          schema:
+            is_nullable: false
           meta:
             interface: numeric
+            width: half
+        - field: quality
+          type: integer
+          name: Quality
+          schema:
+            default_value: 80
+            is_nullable: false
+          meta:
+            interface: slider
+            options:
+              max: 100
+              min: 0
+              step: 1
             required: true
             width: half
         - field: withoutEnlargement
@@ -180,20 +199,7 @@ fields:
             interface: toggle
             width: half
             options:
-              label: No image upscale
-        - field: quality
-          type: integer
-          name: Quality
-          schema:
-            default_value: 80
-          meta:
-            interface: slider
-            options:
-              max: 100
-              min: 0
-              step: 1
-            required: true
-            width: half
+              label: Don't upscale images
       template: '{{key}}'
     special: json
     sort: 13

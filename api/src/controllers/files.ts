@@ -12,6 +12,7 @@ import url from 'url';
 import path from 'path';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
+import { toArray } from '../utils/to-array';
 
 const router = express.Router();
 
@@ -32,7 +33,7 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 	 * the row in directus_files async during the upload of the actual file.
 	 */
 
-	let disk: string = (env.STORAGE_LOCATIONS as string).split(',')[0].trim();
+	let disk: string = toArray(env.STORAGE_LOCATIONS)[0];
 	let payload: Partial<File> = {};
 	let fileCount = 0;
 
@@ -155,7 +156,7 @@ router.post(
 
 		const payload = {
 			filename_download: filename,
-			storage: (env.STORAGE_LOCATIONS as string).split(',')[0].trim(),
+			storage: toArray(env.STORAGE_LOCATIONS)[0],
 			type: fileResponse.headers['content-type'],
 			title: formatTitle(filename),
 			...(req.body.data || {}),
