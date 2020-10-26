@@ -31,6 +31,10 @@ describe('DirectusSDK', () => {
 		expect(directus.items('articles')).to.be.instanceOf(ItemsHandler);
 	});
 
+	it('Errors when trying to read a system collection directly', () => {
+		expect(() => directus.items('directus_files')).to.throw();
+	});
+
 	it('Returns UtilsHandler instance for #utils', () => {
 		expect(directus.utils).to.be.instanceOf(UtilsHandler);
 	});

@@ -22,19 +22,53 @@ describe('ItemsHandler', () => {
 	});
 
 	describe('constructor', () => {
-		it('Sets the passed collection to this.collection', () => {
+		it('Sets the correct endpoint', () => {
 			const handler = new ItemsHandler('test', axiosInstance);
-			expect(handler['collection']).to.equal('test');
+			expect(handler['endpoint']).to.equal('/items/test/');
+
+			const handler2 = new ItemsHandler('directus_activity', axiosInstance);
+			expect(handler2['endpoint']).to.equal('/activity/');
 		});
 	});
 
-	// describe('specs.oas', () => {
-	// 	it('Calls the /server/specs/oas endpoint', async () => {
-	// 		const stub = sandbox
-	// 			.stub(handler['axios'], 'get')
-	// 			.returns(Promise.resolve({ data: '' }));
-	// 		await handler.specs.oas();
-	// 		expect(stub).to.have.been.calledWith('/server/specs/oas');
-	// 	});
-	// });
+	describe('create', () => {
+		it('Calls the /items/:collection endpoint', async () => {
+			const stub = sandbox
+				.stub(handler['axios'], 'post')
+				.returns(Promise.resolve({ data: '' }));
+			await handler.create({});
+			expect(stub).to.have.been.calledWith('/items/test/');
+		});
+
+		it('Passes the payload(s)', async () => {
+			const stub = sandbox
+				.stub(handler['axios'], 'post')
+				.returns(Promise.resolve({ data: '' }));
+
+			await handler.create({ title: 'new item' });
+			expect(stub).to.have.been.calledWith('/items/test/', { title: 'new item' });
+
+			await handler.create([{ title: 'new item' }, { title: 'another new item' }]);
+			expect(stub).to.have.been.calledWith('/items/test/', [
+				{ title: 'new item' },
+				{ title: 'another new item' },
+			]);
+		});
+
+		it('Adds the optional query', async () => {
+			const stub = sandbox
+				.stub(handler['axios'], 'post')
+				.returns(Promise.resolve({ data: '' }));
+
+			await handler.create({});
+			expect(stub).to.have.been.calledWith('/items/test/', {});
+
+			await handler.create({}, { fields: ['title'] });
+			expect(stub).to.have.been.calledWith(
+				'/items/test/',
+				{},
+				{ params: { fields: ['title'] } }
+			);
+		});
+	});
 });

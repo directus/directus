@@ -19,6 +19,10 @@ export default class DirectusSDK {
 	}
 
 	items(collection: string) {
+		if (collection.startsWith('directus_')) {
+			throw new Error(`You can't read the "${collection}" collection directly.`);
+		}
+
 		return new ItemsHandler(collection, this.axios);
 	}
 
@@ -30,5 +34,3 @@ export default class DirectusSDK {
 		return new UtilsHandler(this.axios);
 	}
 }
-
-const directus = new DirectusSDK('https://example.com');

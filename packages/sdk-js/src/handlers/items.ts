@@ -2,12 +2,14 @@ import { Query, Item, Payload, Response, PrimaryKey } from '../types';
 import { AxiosInstance } from 'axios';
 
 export class ItemsHandler {
-	private collection: string;
 	private axios: AxiosInstance;
+	private endpoint: string;
 
 	constructor(collection: string, axios: AxiosInstance) {
-		this.collection = collection;
 		this.axios = axios;
+		this.endpoint = collection.startsWith('directus_')
+			? `/${collection.substring(9)}/`
+			: `/items/${collection}/`;
 	}
 
 	/**
@@ -19,7 +21,7 @@ export class ItemsHandler {
 	 */
 	async create(payloads: Payload[], query?: Query): Promise<Response<Item | Item[]>>;
 	async create(payloads: Payload | Payload[], query?: Query): Promise<Response<Item | Item[]>> {
-		const result = await this.axios.post(`/items/${this.collection}/`, payloads, {
+		const result = await this.axios.post(this.endpoint, payloads, {
 			params: query,
 		});
 
@@ -56,7 +58,7 @@ export class ItemsHandler {
 			params = keysOrQuery as Query;
 		}
 
-		let endpoint = `/items/${this.collection}/`;
+		let endpoint = this.endpoint;
 
 		if (keys) {
 			endpoint += keys;
@@ -85,14 +87,15 @@ export class ItemsHandler {
 			const key = keyOrPayload as PrimaryKey | PrimaryKey[];
 			const payload = payloadOrQuery as Payload;
 
-			const result = await this.axios.patch(`/items/${this.collection}/${key}`, payload, {
+			const result = await this.axios.patch(`${this.endpoint}${key}`, payload, {
 				params: query,
 			});
 			return result.data;
 		} else {
-			const result = await this.axios.patch(`/items/${this.collection}/`, keyOrPayload, {
+			const result = await this.axios.patch(`${this.endpoint}`, keyOrPayload, {
 				params: payloadOrQuery,
 			});
+
 			return result.data;
 		}
 	}
@@ -100,6 +103,6 @@ export class ItemsHandler {
 	async delete(key: PrimaryKey): Promise<void>;
 	async delete(keys: PrimaryKey[]): Promise<void>;
 	async delete(keys: PrimaryKey | PrimaryKey[]): Promise<void> {
-		await this.axios.delete(`/items/${this.collection}/${keys}`);
+		await this.axios.delete(`${this.endpoint}${keys}`);
 	}
 }
