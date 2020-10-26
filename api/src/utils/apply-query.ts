@@ -1,7 +1,7 @@
 import { QueryBuilder } from 'knex';
 import { Query, Filter } from '../types';
 import database, { schemaInspector } from '../database';
-import { clone } from 'lodash';
+import { clone, isPlainObject } from 'lodash';
 
 export default async function applyQuery(collection: string, dbQuery: QueryBuilder, query: Query) {
 	if (query.filter) {
@@ -226,7 +226,11 @@ export async function applyFilter(rootQuery: QueryBuilder, rootFilter: Filter, c
 function getFilterPath(key: string, value: Record<string, any>) {
 	const path = [key];
 
-	if (Object.keys(value)[0].startsWith('_') === false) {
+	if (Object.keys(value)[0].startsWith('_') === true) {
+		return path;
+	}
+
+	if (isPlainObject(value)) {
 		path.push(...getFilterPath(Object.keys(value)[0], Object.values(value)[0]));
 	}
 
@@ -234,7 +238,11 @@ function getFilterPath(key: string, value: Record<string, any>) {
 }
 
 function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
-	if (key.startsWith('_') && key !== '_and' && key !== '_or')
+	if (key.startsWith('_') && key !== '_and' && key !== '_or') {
 		return { operator: key as string, value };
+	} else if (isPlainObject(value) === false) {
+		return { operator: '_eq', value };
+	}
+
 	return getOperation(Object.keys(value)[0], Object.values(value)[0]);
 }
