@@ -25,7 +25,9 @@ export class RelationsService extends ItemsService {
 			| ParsedRelation
 			| ParsedRelation[]
 			| null;
+
 		const filteredResults = await this.filterForbidden(results);
+
 		return filteredResults;
 	}
 
@@ -58,6 +60,7 @@ export class RelationsService extends ItemsService {
 			this.accountability?.role || null,
 			'read'
 		);
+
 		const allowedFields = await this.permissionsService.getAllowedFields(
 			this.accountability?.role || null,
 			'read'
