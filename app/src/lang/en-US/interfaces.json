@@ -76,6 +76,11 @@
 			"files": "Files",
 			"description": "Select or upload multiple files"
 		},
+		"folder": {
+			"folder": "Folder",
+			"description":  "Select folder",
+			"field_hint": "Place newly created files under target folder."
+		},
 		"hash": {
 			"hash": "Hash",
 			"description": "Enter a value to be hashed",

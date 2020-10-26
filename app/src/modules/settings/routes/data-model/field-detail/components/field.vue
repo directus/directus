@@ -13,12 +13,6 @@
 				<v-checkbox v-model="fieldData.meta.hidden" :label="$t('hidden_on_detail')" block />
 			</div>
 
-			<div class="field full" v-if="['file', 'files'].includes(fieldType)">
-				<div class="label type-label">{{ $t('folder') }}</div>
-				<folder-picker v-model="_folder" />
-				<div class="note" v-html="$t('field_files_new_files_folder')" />
-			</div>
-
 			<div class="field full">
 				<div class="label type-label">{{ $t('note') }}</div>
 				<v-input v-model="fieldData.meta.note" :placeholder="$t('add_note')" />
@@ -66,11 +60,9 @@ import { defineComponent, computed } from '@vue/composition-api';
 import useSync from '@/composables/use-sync';
 import { types } from '@/types';
 import i18n from '@/lang';
-import FolderPicker from '@/modules/files/components/folder-picker.vue';
 import { state } from '../store';
 
 export default defineComponent({
-	components: { FolderPicker },
 	props: {
 		isExisting: {
 			type: Boolean,
@@ -82,27 +74,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _folder = computed({
-			get() {
-				return state.fieldData?.meta?.options?.folder;
-			},
-			set(folder: string | null) {
-				const newFieldData = {
-					...state.fieldData,
-				};
-				if (!newFieldData.meta) {
-					newFieldData.meta = {};
-				}
-				if (!newFieldData.meta.options) {
-					newFieldData.meta.options = {};
-				}
-				newFieldData.meta.options.folder = folder;
-				state.fieldData = newFieldData;
-			},
-		});
-
 		return {
-			_folder,
 			fieldType: props.type,
 			fieldData: state.fieldData,
 		};
@@ -135,12 +107,5 @@ export default defineComponent({
 
 .v-notice {
 	margin-bottom: 36px;
-}
-
-.note {
-	display: block;
-	margin-top: 4px;
-	color: var(--foreground-subdued);
-	font-style: italic;
 }
 </style>
