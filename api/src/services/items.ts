@@ -561,11 +561,11 @@ export class ItemsService<Item extends AnyItem> implements AbstractService {
 		return await this.delete(keys);
 	}
 
-	async readSingleton(query: Query) {
+	async readSingleton<T extends AnyItem = Item>(query: Query): Promise<T> {
 		query = clone(query);
 		query.single = true;
 
-		const record = (await this.readByQuery(query)) as Item;
+		const record = (await this.readByQuery<T>(query)) as T;
 
 		if (!record) {
 			const columns = await this.schemaInspector.columnInfo(this.collection);
@@ -575,7 +575,7 @@ export class ItemsService<Item extends AnyItem> implements AbstractService {
 				defaults[column.name] = getDefaultValue(column);
 			}
 
-			return defaults;
+			return defaults as T;
 		}
 
 		return record;
