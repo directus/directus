@@ -4,6 +4,7 @@ import { RelationInfo } from './use-relation';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import api from '@/api';
+import { cloneDeep, get } from 'lodash';
 
 export default function usePreview(
 	value: Ref<(string | number | Record<string, any>)[] | null>,

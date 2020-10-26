@@ -20,7 +20,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const isNew = computed(() => primaryKey.value === '+');
 	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
-	const notify = useNotificationsStore();
+	const notificationsStore = useNotificationsStore();
 
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;
@@ -92,14 +92,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			if (isNew.value === true) {
 				response = await api.post('A' + endpoint.value, edits.value);
 
-				notify.add({
+				notificationsStore.add({
 					title: i18n.tc('item_create_success', isBatch.value ? 2 : 1),
 					type: 'success',
 				});
 			} else {
 				response = await api.patch(itemEndpoint.value, edits.value);
 
-				notify.add({
+				notificationsStore.add({
 					title: i18n.tc('item_update_success', isBatch.value ? 2 : 1),
 					type: 'success',
 				});
@@ -140,7 +140,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		try {
 			const response = await api.post(endpoint.value, newItem);
 
-			notify.add({
+			notificationsStore.add({
 				title: i18n.t('item_create_success'),
 				type: 'success',
 			});
@@ -191,7 +191,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				[field]: value,
 			});
 
-			notify.add({
+			notificationsStore.add({
 				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});
@@ -210,7 +210,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 
 			item.value = null;
 
-			notify.add({
+			notificationsStore.add({
 				title: i18n.tc('item_delete_success', isBatch.value ? 2 : 1),
 				type: 'success',
 			});

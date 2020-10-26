@@ -24,7 +24,7 @@ export const useSettingsStore = createStore({
 		},
 
 		async updateSettings(updates: { [key: string]: any }) {
-			const notify = useNotificationsStore();
+			const notificationsStore = useNotificationsStore();
 			const settingsCopy = { ...this.state.settings };
 			const newSettings = merge({}, this.state.settings, updates);
 
@@ -35,7 +35,7 @@ export const useSettingsStore = createStore({
 
 				this.state.settings = response.data.data;
 
-				notify.add({
+				notificationsStore.add({
 					title: i18n.t('settings_update_success'),
 					type: 'success',
 				});

@@ -13,7 +13,7 @@ export default async function uploadFile(
 		fileId?: string;
 	}
 ) {
-	const notify = useNotificationsStore();
+	const notificationsStore = useNotificationsStore();
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const formData = new FormData();
 
@@ -39,7 +39,7 @@ export default async function uploadFile(
 		}
 
 		if (options?.notifications) {
-			notify.add({
+			notificationsStore.add({
 				title: i18n.t('upload_file_success'),
 				type: 'success',
 			});

@@ -45,7 +45,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
+		const notificationsStore = useNotificationsStore();
 		const textarea = ref<HTMLElement>();
 		useShortcut('meta+enter', postComment, textarea);
 		const newCommentContent = ref<string | null>(null);
@@ -68,7 +68,7 @@ export default defineComponent({
 
 				newCommentContent.value = null;
 
-				notify.add({
+				notificationsStore.add({
 					title: i18n.t('post_comment_success'),
 					type: 'success',
 				});

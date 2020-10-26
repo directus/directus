@@ -41,7 +41,7 @@ export const onResponse = (response: AxiosResponse | Response) => {
 };
 
 export const onError = async (error: RequestError) => {
-	const notify = useNotificationsStore();
+	const notificationsStore = useNotificationsStore();
 	const requestsStore = useRequestsStore();
 	const id = (error.response.config as RequestConfig).id;
 	requestsStore.endRequest(id);
@@ -82,7 +82,7 @@ export const onError = async (error: RequestError) => {
 		}
 	}
 
-	notify.add({
+	notificationsStore.add({
 		title: i18n.t(`errors.${code}`),
 		text: message,
 		type: 'error',

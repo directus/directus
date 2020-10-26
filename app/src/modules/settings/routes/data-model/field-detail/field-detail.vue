@@ -153,7 +153,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
+		const notificationsStore = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
@@ -360,12 +360,12 @@ export default defineComponent({
 				await relationsStore.hydrate();
 
 				if (props.field !== '+') {
-					notify.add({
+					notificationsStore.add({
 						title: i18n.t('field_update_success', { field: props.field }),
 						type: 'success',
 					});
 				} else {
-					notify.add({
+					notificationsStore.add({
 						title: i18n.t('field_create_success', { field: fieldData.field }),
 						type: 'success',
 					});

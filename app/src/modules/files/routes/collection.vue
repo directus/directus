@@ -183,7 +183,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
+		const notificationsStore = useNotificationsStore();
 		const { folders } = useFolders();
 		const layoutRef = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
@@ -419,7 +419,7 @@ export default defineComponent({
 			function enableDropEffect() {
 				showDropEffect.value = true;
 
-				dragNotificationID = notify.add({
+				dragNotificationID = notificationsStore.add({
 					title: i18n.t('drop_to_upload'),
 					icon: 'cloud_upload',
 					type: 'info',
@@ -432,7 +432,7 @@ export default defineComponent({
 				showDropEffect.value = false;
 
 				if (dragNotificationID) {
-					notify.remove(dragNotificationID);
+					notificationsStore.remove(dragNotificationID);
 				}
 			}
 
@@ -489,12 +489,12 @@ export default defineComponent({
 				dragCounter.value = 0;
 
 				if (dragNotificationID) {
-					notify.remove(dragNotificationID);
+					notificationsStore.remove(dragNotificationID);
 				}
 
 				const files = [...event.dataTransfer.files];
 
-				fileUploadNotificationID = notify.add({
+				fileUploadNotificationID = notificationsStore.add({
 					title: i18n.tc('upload_file_indeterminate', files.length, {
 						done: 0,
 						total: files.length,
@@ -517,7 +517,7 @@ export default defineComponent({
 						const total = files.length;
 						const done = progress.filter((p) => p === 100).length;
 
-						notify.update(fileUploadNotificationID, {
+						notificationsStore.update(fileUploadNotificationID, {
 							title: i18n.tc('upload_file_indeterminate', files.length, {
 								done,
 								total,
@@ -528,7 +528,7 @@ export default defineComponent({
 					},
 				});
 
-				notify.remove(fileUploadNotificationID);
+				notificationsStore.remove(fileUploadNotificationID);
 				emitter.emit(Events.upload);
 			}
 		}

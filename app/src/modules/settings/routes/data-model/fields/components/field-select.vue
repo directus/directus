@@ -217,7 +217,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notify = useNotificationsStore();
+		const notificationsStore = useNotificationsStore();
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
@@ -346,7 +346,7 @@ export default defineComponent({
 				try {
 					await fieldsStore.createField(duplicateTo.value, newField);
 
-					notify.add({
+					notificationsStore.add({
 						title: i18n.t('field_create_success', { field: newField.name }),
 						type: 'success',
 					});

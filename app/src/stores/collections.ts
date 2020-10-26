@@ -56,12 +56,12 @@ export const useCollectionsStore = createStore({
 			this.reset();
 		},
 		async updateCollection(collection: string, updates: Partial<Collection>) {
-			const notify = useNotificationsStore();
+			const notificationsStore = useNotificationsStore();
 
 			try {
 				await api.patch(`/collections/${collection}`, updates);
 				await this.hydrate();
-				notify.add({
+				notificationsStore.add({
 					type: 'success',
 					title: i18n.t('update_collection_success'),
 				});
@@ -70,11 +70,11 @@ export const useCollectionsStore = createStore({
 			}
 		},
 		async deleteCollection(collection: string) {
-			const notify = useNotificationsStore();
+			const notificationsStore = useNotificationsStore();
 			try {
 				await api.delete(`/collections/${collection}`);
 				await this.hydrate();
-				notify.add({
+				notificationsStore.add({
 					type: 'success',
 					title: i18n.t('delete_collection_success'),
 				});

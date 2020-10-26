@@ -127,7 +127,7 @@ import i18n from '@/lang';
 
 export default defineComponent({
 	setup() {
-		const notify = useNotificationsStore();
+		const notificationsStore = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
@@ -215,7 +215,7 @@ export default defineComponent({
 				await collectionsStore.hydrate();
 				await fieldsStore.hydrate();
 
-				notify.add({
+				notificationsStore.add({
 					title: 'Collection Created',
 					type: 'success',
 				});
