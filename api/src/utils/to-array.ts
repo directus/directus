@@ -1,7 +1,6 @@
-export function toArray(val: string): string[];
-export function toArray(val: any | any[]): any[] {
+export function toArray<T = any>(val: T | T[]): T[] {
 	if (typeof val === 'string') {
-		return val.split(',');
+		return (val.split(',') as unknown) as T[];
 	}
 
 	return Array.isArray(val) ? val : [val];
