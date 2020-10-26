@@ -46,9 +46,11 @@ export class ItemsService<Item extends AnyItem> implements AbstractService {
 		return this;
 	}
 
-	async create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async create(data: Partial<Item>): Promise<PrimaryKey>;
-	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
+	async create<T extends AnyItem = Partial<Item>>(data: T[]): Promise<PrimaryKey[]>;
+	async create<T extends AnyItem = Partial<Item>>(data: T): Promise<PrimaryKey>;
+	async create<T extends AnyItem = Partial<Item>>(
+		data: T | T[]
+	): Promise<PrimaryKey | PrimaryKey[]> {
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 		const columns = await this.schemaInspector.columns(this.collection);
 
@@ -194,7 +196,7 @@ export class ItemsService<Item extends AnyItem> implements AbstractService {
 		return Array.isArray(data) ? savedPrimaryKeys : savedPrimaryKeys[0];
 	}
 
-	async readByQuery(query: Query): Promise<null | Item | Item[]> {
+	async readByQuery<T extends AnyItem = Item>(query: Query): Promise<null | T | T[]> {
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
 			knex: this.knex,
@@ -210,20 +212,24 @@ export class ItemsService<Item extends AnyItem> implements AbstractService {
 		}
 
 		const records = await runAST(ast, { knex: this.knex });
-		return records as Item | Item[] | null;
+		return records as T | T[] | null;
 	}
 
-	readByKey(
+	readByKey<T extends AnyItem = Item>(
 		keys: PrimaryKey[],
 		query?: Query,
 		action?: PermissionsAction
-	): Promise<null | Item[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Item>;
-	async readByKey(
+	): Promise<null | T[]>;
+	readByKey<T extends AnyItem = Item>(
+		key: PrimaryKey,
+		query?: Query,
+		action?: PermissionsAction
+	): Promise<null | T>;
+	async readByKey<T extends AnyItem = Item>(
 		key: PrimaryKey | PrimaryKey[],
 		query: Query = {},
 		action: PermissionsAction = 'read'
-	): Promise<null | Item | Item[]> {
+	): Promise<null | T | T[]> {
 		query = clone(query);
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 		const keys = toArray(key);
@@ -260,14 +266,14 @@ export class ItemsService<Item extends AnyItem> implements AbstractService {
 
 		if (result === null) throw new ForbiddenException();
 
-		return result as Item | Item[] | null;
+		return result as T | T[] | null;
 	}
 
-	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
-	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async update(
-		data: Partial<Item> | Partial<Item>[],
+	update<T extends AnyItem = Partial<Item>>(data: T, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	update<T extends AnyItem = Partial<Item>>(data: T, key: PrimaryKey): Promise<PrimaryKey>;
+	update<T extends AnyItem = Partial<Item>>(data: T[]): Promise<PrimaryKey[]>;
+	async update<T extends AnyItem = Partial<Item>>(
+		data: T | T[],
 		key?: PrimaryKey | PrimaryKey[]
 	): Promise<PrimaryKey | PrimaryKey[]> {
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
@@ -428,7 +434,10 @@ export class ItemsService<Item extends AnyItem> implements AbstractService {
 		return keys;
 	}
 
-	async updateByQuery(data: Partial<Item>, query: Query): Promise<PrimaryKey[]> {
+	async updateByQuery<T extends AnyItem = Partial<Item>>(
+		data: T,
+		query: Query
+	): Promise<PrimaryKey[]> {
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
@@ -446,9 +455,11 @@ export class ItemsService<Item extends AnyItem> implements AbstractService {
 		return await this.update(data, keys);
 	}
 
-	upsert(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	upsert(data: Partial<Item>): Promise<PrimaryKey>;
-	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
+	upsert<T extends AnyItem = Partial<Item>>(data: T[]): Promise<PrimaryKey[]>;
+	upsert<T extends AnyItem = Partial<Item>>(data: T): Promise<PrimaryKey>;
+	async upsert<T extends AnyItem = Partial<Item>>(
+		data: T | T[]
+	): Promise<PrimaryKey | PrimaryKey[]> {
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 		const payloads = toArray(data);
 		const primaryKeys: PrimaryKey[] = [];
@@ -570,7 +581,7 @@ export class ItemsService<Item extends AnyItem> implements AbstractService {
 		return record;
 	}
 
-	async upsertSingleton(data: Partial<Item>) {
+	async upsertSingleton<T extends AnyItem = Partial<Item>>(data: T) {
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 
 		const record = await this.knex
