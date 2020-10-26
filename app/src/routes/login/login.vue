@@ -25,7 +25,7 @@
 import { defineComponent, computed, PropType } from '@vue/composition-api';
 import LoginForm from './components/login-form/';
 import ContinueAs from './components/continue-as/';
-import { useAppStore, useSettingsStore } from '@/stores';
+import { useAppStore } from '@/stores';
 
 import { LogoutReason } from '@/auth';
 
@@ -43,12 +43,10 @@ export default defineComponent({
 	components: { LoginForm, ContinueAs },
 	setup() {
 		const appStore = useAppStore();
-		const settingsStore = useSettingsStore();
 
 		const authenticated = computed(() => appStore.state.authenticated);
-		const currentProject = computed(() => settingsStore.state.settings);
 
-		return { authenticated, currentProject };
+		return { authenticated };
 	},
 });
 </script>

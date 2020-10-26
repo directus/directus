@@ -4,7 +4,7 @@ import LogoutRoute from '@/routes/logout';
 import ResetPasswordRoute from '@/routes/reset-password';
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
-import { useAppStore, useUserStore, useSettingsStore } from '@/stores/';
+import { useAppStore, useUserStore, useServerStore } from '@/stores/';
 import PrivateNotFoundRoute from '@/routes/private-not-found';
 
 import getRootPath from '@/utils/get-root-path';
@@ -81,7 +81,7 @@ export function replaceRoutes(routeFilter: (routes: RouteConfig[]) => RouteConfi
 
 export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	const appStore = useAppStore();
-	const settingsStore = useSettingsStore();
+	const serverStore = useServerStore();
 
 	// First load
 	if (from.name === null) {
@@ -91,8 +91,8 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 		} catch {}
 	}
 
-	if (settingsStore.state.settings === null) {
-		await settingsStore.hydrate();
+	if (serverStore.state.info === null) {
+		await serverStore.hydrate();
 	}
 
 	if (to.meta?.public !== true && appStore.state.hydrated === false) {

@@ -2,6 +2,7 @@ import { createStore } from 'pinia';
 import { Preset } from '@/types';
 import { useUserStore } from '@/stores/';
 import api from '@/api';
+import { nanoid } from 'nanoid';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
 	bookmark: null,
@@ -13,6 +14,8 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	layout_query: null,
 	layout_options: null,
 };
+
+let currentUpdate: Record<number, string> = {};
 
 export const usePresetsStore = createStore({
 	id: 'presetsStore',
@@ -60,17 +63,22 @@ export const usePresetsStore = createStore({
 			return response.data.data;
 		},
 		async update(id: number, updates: Partial<Preset>) {
+			const updateID = nanoid();
+			currentUpdate[id] = updateID;
+
 			const response = await api.patch(`/presets/${id}`, updates);
 
-			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
-				const updatedPreset = response.data.data;
+			if (currentUpdate[id] === updateID) {
+				this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
+					const updatedPreset = response.data.data;
 
-				if (preset.id === updatedPreset.id) {
-					return updatedPreset;
-				}
+					if (preset.id === updatedPreset.id) {
+						return updatedPreset;
+					}
 
-				return preset;
-			});
+					return preset;
+				});
+			}
 
 			return response.data.data;
 		},
