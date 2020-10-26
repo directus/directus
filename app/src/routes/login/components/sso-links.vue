@@ -30,16 +30,18 @@ export default defineComponent({
 			error.value = null;
 
 			try {
-				const response = await api.get('/auth/oauth/');
+				const response = await api.get('/auth/');
 
-				providers.value = response.data.data?.map((providerName: string) => {
-					return {
-						name: providerName,
-						link: `${getRootPath()}auth/oauth/${providerName.toLowerCase()}?redirect=${
-							window.location.href
-						}`,
-					};
-				});
+				providers.value = response.data.data?.providers?.map(
+					({ provider, driver }: { provider: string; driver: string }) => {
+						return {
+							name: provider,
+							link: `${getRootPath()}auth/${driver}/${provider.toLowerCase()}?redirect=${
+								window.location.href
+							}`,
+						};
+					}
+				);
 			} catch (err) {
 				error.value = err;
 				console.error(err);

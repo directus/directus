@@ -27,7 +27,17 @@ router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
 		const providers = toArray(env.AUTH_PROVIDERS);
-		res.locals.payload = { data: { providers: env.AUTH_PROVIDERS ? providers : null } };
+		res.locals.payload = {
+			data: {
+				providers: env.AUTH_PROVIDERS
+					? providers.map((provider) => ({
+							provider,
+							driver: env[`AUTH_${provider.toUpperCase()}_DRIVER`],
+					  }))
+					: null,
+			},
+		};
+
 		return next();
 	}),
 	respond
