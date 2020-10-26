@@ -49,14 +49,16 @@ export default async function applyQuery(collection: string, dbQuery: QueryBuild
 export async function applyFilter(rootQuery: QueryBuilder, rootFilter: Filter, collection: string) {
 	const relations = await database.select('*').from('directus_relations');
 
-	parseLevel(rootQuery, rootFilter, collection);
+	addWhereClauses(rootQuery, rootFilter, collection);
+	addJoins(rootQuery, rootFilter, collection);
 
-	function parseLevel(dbQuery: QueryBuilder, filter: Filter, collection: string) {
+	function addWhereClauses(dbQuery: QueryBuilder, filter: Filter, collection: string) {
 		for (const [key, value] of Object.entries(filter)) {
 			if (key === '_or') {
+				/** @NOTE these callback functions aren't called until Knex runs the query */
 				dbQuery.orWhere((subQuery) => {
 					value.forEach((subFilter: Record<string, any>) => {
-						parseLevel(subQuery, subFilter, collection);
+						addWhereClauses(subQuery, subFilter, collection);
 					});
 				});
 
@@ -64,9 +66,10 @@ export async function applyFilter(rootQuery: QueryBuilder, rootFilter: Filter, c
 			}
 
 			if (key === '_and') {
+				/** @NOTE these callback functions aren't called until Knex runs the query */
 				dbQuery.andWhere((subQuery) => {
 					value.forEach((subFilter: Record<string, any>) => {
-						parseLevel(subQuery, subFilter, collection);
+						addWhereClauses(subQuery, subFilter, collection);
 					});
 				});
 
@@ -76,12 +79,12 @@ export async function applyFilter(rootQuery: QueryBuilder, rootFilter: Filter, c
 			const filterPath = getFilterPath(key, value);
 			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
-			const column =
-				filterPath.length > 1
-					? applyJoins(filterPath, collection)
-					: `${collection}.${filterPath[0]}`;
-
-			applyFilterToQuery(column, filterOperator, filterValue);
+			if (filterPath.length > 1) {
+				const columnName = getWhereColumn(filterPath, collection);
+				applyFilterToQuery(columnName, filterOperator, filterValue);
+			} else {
+				applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue);
+			}
 		}
 
 		function applyFilterToQuery(key: string, operator: string, compareValue: any) {
@@ -167,57 +170,119 @@ export async function applyFilter(rootQuery: QueryBuilder, rootFilter: Filter, c
 				dbQuery.whereNotBetween(key, value);
 			}
 		}
+
+		function getWhereColumn(path: string[], collection: string) {
+			path = clone(path);
+
+			let columnName = '';
+
+			followRelation(path);
+
+			return columnName;
+
+			function followRelation(pathParts: string[], parentCollection: string = collection) {
+				const relation = relations.find((relation) => {
+					return (
+						(relation.many_collection === parentCollection &&
+							relation.many_field === pathParts[0]) ||
+						(relation.one_collection === parentCollection &&
+							relation.one_field === pathParts[0])
+					);
+				});
+
+				if (!relation) return;
+
+				const isM2O =
+					relation.many_collection === parentCollection &&
+					relation.many_field === pathParts[0];
+
+				pathParts.shift();
+
+				const parent = isM2O ? relation.one_collection! : relation.many_collection;
+
+				if (pathParts.length === 1) {
+					columnName = `${parent}.${pathParts[0]}`;
+				}
+
+				if (pathParts.length) {
+					followRelation(pathParts, parent);
+				}
+			}
+		}
 	}
 
-	function applyJoins(path: string[], collection: string) {
-		path = clone(path);
+	/**
+	 * @NOTE Yes this is very similar in structure and functionality as the other loop. However,
+	 * due to the order of execution that Knex has in the nested andWhere / orWhere structures,
+	 * joins that are added in there aren't added in time
+	 */
+	function addJoins(dbQuery: QueryBuilder, filter: Filter, collection: string) {
+		for (const [key, value] of Object.entries(filter)) {
+			if (key === '_or') {
+				value.forEach((subFilter: Record<string, any>) => {
+					addJoins(dbQuery, subFilter, collection);
+				});
 
-		let keyName = '';
-
-		addJoins(path);
-
-		return keyName;
-
-		function addJoins(pathParts: string[], parentCollection: string = collection) {
-			const relation = relations.find((relation) => {
-				return (
-					(relation.many_collection === parentCollection &&
-						relation.many_field === pathParts[0]) ||
-					(relation.one_collection === parentCollection &&
-						relation.one_field === pathParts[0])
-				);
-			});
-
-			if (!relation) return;
-
-			const isM2O =
-				relation.many_collection === parentCollection &&
-				relation.many_field === pathParts[0];
-
-			if (isM2O) {
-				rootQuery.leftJoin(
-					relation.one_collection!,
-					`${parentCollection}.${relation.many_field}`,
-					`${relation.one_collection}.${relation.one_primary}`
-				);
-			} else {
-				rootQuery.leftJoin(
-					relation.many_collection,
-					`${parentCollection}.${relation.one_primary}`,
-					`${relation.many_collection}.${relation.many_field}`
-				);
+				continue;
 			}
 
-			pathParts.shift();
+			if (key === '_and') {
+				value.forEach((subFilter: Record<string, any>) => {
+					addJoins(dbQuery, subFilter, collection);
+				});
 
-			const parent = isM2O ? relation.one_collection! : relation.many_collection;
-
-			if (pathParts.length === 1) {
-				keyName = `${parent}.${pathParts[0]}`;
+				continue;
 			}
 
-			if (pathParts.length) {
-				addJoins(pathParts, parent);
+			const filterPath = getFilterPath(key, value);
+
+			if (filterPath.length > 1) {
+				addJoin(filterPath, collection);
+			}
+		}
+
+		function addJoin(path: string[], collection: string) {
+			path = clone(path);
+
+			followRelation(path);
+
+			function followRelation(pathParts: string[], parentCollection: string = collection) {
+				const relation = relations.find((relation) => {
+					return (
+						(relation.many_collection === parentCollection &&
+							relation.many_field === pathParts[0]) ||
+						(relation.one_collection === parentCollection &&
+							relation.one_field === pathParts[0])
+					);
+				});
+
+				if (!relation) return;
+
+				const isM2O =
+					relation.many_collection === parentCollection &&
+					relation.many_field === pathParts[0];
+
+				if (isM2O) {
+					dbQuery.leftJoin(
+						relation.one_collection!,
+						`${parentCollection}.${relation.many_field}`,
+						`${relation.one_collection}.${relation.one_primary}`
+					);
+				} else {
+					dbQuery.leftJoin(
+						relation.many_collection,
+						`${parentCollection}.${relation.one_primary}`,
+						`${relation.many_collection}.${relation.many_field}`
+					);
+				}
+
+				pathParts.shift();
+
+				const parent = isM2O ? relation.one_collection! : relation.many_collection;
+
+				if (pathParts.length) {
+					followRelation(pathParts, parent);
+				}
 			}
 		}
 	}
