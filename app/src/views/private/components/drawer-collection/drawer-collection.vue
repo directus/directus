@@ -1,5 +1,13 @@
 <template>
 	<v-drawer v-model="_active" :title="$t('select_item')" @cancel="cancel">
+		<template #actions>
+			<search-input v-model="searchQuery" />
+
+			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
+				<v-icon name="check" />
+			</v-button>
+		</template>
+
 		<component
 			:is="`layout-${localLayout}`"
 			:collection="collection"
@@ -19,12 +27,6 @@
 				<v-info :title="$tc('item_count', 0)" :icon="collectionInfo.icon" center />
 			</template>
 		</component>
-
-		<template #actions>
-			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
-				<v-icon name="check" />
-			</v-button>
-		</template>
 	</v-drawer>
 </template>
 
@@ -33,8 +35,10 @@ import { defineComponent, PropType, ref, computed, toRefs, onUnmounted } from '@
 import { Filter } from '@/types';
 import usePreset from '@/composables/use-preset';
 import useCollection from '@/composables/use-collection';
+import SearchInput from '@/views/private/components/search-input';
 
 export default defineComponent({
+	components: { SearchInput },
 	props: {
 		active: {
 			type: Boolean,
