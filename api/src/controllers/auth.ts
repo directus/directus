@@ -23,6 +23,16 @@ const loginSchema = Joi.object({
 	otp: Joi.string(),
 });
 
+router.get(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		const providers = toArray(env.AUTH_PROVIDERS);
+		res.locals.payload = { data: { providers: env.AUTH_PROVIDERS ? providers : null } };
+		return next();
+	}),
+	respond
+);
+
 router.post(
 	'/login',
 	asyncHandler(async (req, res, next) => {
@@ -211,48 +221,38 @@ router.post(
 	respond
 );
 
-router.get(
-	'/oidc',
-	asyncHandler(async (req, res, next) => {
-		const providers = toArray(env.OIDC_PROVIDERS);
-		res.locals.payload = { data: env.OIDC_PROVIDERS ? providers : null };
-		return next();
-	}),
-	respond
-);
+// router.get(
+// 	'/oidc',
+// 	asyncHandler(async (req, res, next) => {
+// 		const providers = toArray(env.OIDC_PROVIDERS);
+// 		res.locals.payload = { data: env.OIDC_PROVIDERS ? providers : null };
+// 		return next();
+// 	}),
+// 	respond
+// );
 
-router.use(
-	'/oidc',
-	session({ secret: env.SECRET as string, saveUninitialized: false, resave: false })
-);
+// router.use(
+// 	'/oidc',
+// 	session({ secret: env.SECRET as string, saveUninitialized: false, resave: false })
+// );
 
-router.get(
-	'/oidc/:provider',
-	asyncHandler(async (req, res, next) => {
-		const providers = toArray(env.OIDC_PROVIDERS);
+// router.get(
+// 	'/oidc/:provider',
+// 	asyncHandler(async (req, res, next) => {
+// 		const providers = toArray(env.OIDC_PROVIDERS);
 
-		if (providers.includes(req.params.provider) === false) {
-			throw new RouteNotFoundException(`/auth/oauth/${req.params.provider}`);
-		}
+// 		if (providers.includes(req.params.provider) === false) {
+// 			throw new RouteNotFoundException(`/auth/oauth/${req.params.provider}`);
+// 		}
 
-		if (req.query?.redirect && req.session) {
-			req.session.redirect = req.query.redirect;
-		}
+// 		if (req.query?.redirect && req.session) {
+// 			req.session.redirect = req.query.redirect;
+// 		}
 
-		next();
-	}),
-	respond
-);
-
-router.get(
-	'/oauth',
-	asyncHandler(async (req, res, next) => {
-		const providers = toArray(env.OAUTH_PROVIDERS);
-		res.locals.payload = { data: env.OAUTH_PROVIDERS ? providers : null };
-		return next();
-	}),
-	respond
-);
+// 		next();
+// 	}),
+// 	respond
+// );
 
 router.use(
 	'/oauth',

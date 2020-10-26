@@ -3,7 +3,7 @@ import { toArray } from './utils/to-array';
 import { Issuer } from 'openid-client';
 
 // oAuth 2 /////////////////////////////////////////////////////////////////////////////////////////
-const oauthProviders = toArray(env.OAUTH_PROVIDERS).map((provider) => provider.toLowerCase());
+const authProviders = toArray(env.AUTH_PROVIDERS).map((provider) => provider.toLowerCase());
 
 export const oauthConfig: any = {
 	defaults: {
@@ -20,7 +20,7 @@ for (const [key, value] of Object.entries(env)) {
 	const parts = key.split('_');
 	const provider = parts[1].toLowerCase();
 
-	if (oauthProviders.includes(provider) === false) continue;
+	if (authProviders.includes(provider) === false) continue;
 
 	// OAUTH <PROVIDER> SETTING = VALUE
 	parts.splice(0, 2);

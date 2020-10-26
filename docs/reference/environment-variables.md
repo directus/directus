@@ -211,15 +211,22 @@ Based on your configured driver, you must also provide the following configurati
 	* **`STORAGE_<LOCATION>_BUCKET`** — Google Cloud Storage bucket
 
 
-## oAuth
+## External Auth
 
-### `OAUTH_PROVIDERS`
+### `AUTH_PROVIDERS`
 
-CSV of oAuth providers you want to use. For each of the oAuth providers you list, you must also provide the following configurations.
+CSV of auth providers you want to use. For each of the auth providers you list, you must also provide the following configurations.
 
-* **`OAUTH_<PROVIDER>_KEY`** — oAuth key for the external service
-* **`OAUTH_<PROVIDER>_SECRET`** — oAuth secret for the external service.
+* **`AUTH_<PROVIDER>_DRIVER`** — What auth driver to use. One of `oauth2`, `oidc`
 
+When using `oauth` as a storage driver, you also need to provide the following configurations:
+
+* **`AUTH_<PROVIDER>_KEY`** — oAuth key for the external service
+* **`AUTH_<PROVIDER>_SECRET`** — oAuth secret for the external service.
+
+When using `oidc` as a storage driver, you also need to provide the following configurations:
+
+@TODO
 
 ## Extensions
 

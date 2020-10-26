@@ -57,7 +57,7 @@ async function getEnvInfo(event: string) {
 			transport: env.EMAIL_TRANSPORT,
 		},
 		oauth: {
-			providers: env.OAUTH_PROVIDERS,
+			providers: env.AUTH_PROVIDERS,
 		},
 		db_client: env.DB_CLIENT,
 	};
