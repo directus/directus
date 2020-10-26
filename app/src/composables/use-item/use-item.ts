@@ -9,7 +9,7 @@ import { APIError } from '@/types';
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
-	const item = ref<any>(null);
+	const item = ref<Record<string, any> | null>(null);
 	const error = ref(null);
 	const validationErrors = ref([]);
 	const loading = ref(false);
@@ -203,7 +203,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		if (unarchiveValue === 'false') unarchiveValue = false;
 
 		try {
-			let value: any = item.value[field] === archiveValue ? unarchiveValue : archiveValue;
+			let value: any = item.value && item.value[field] === archiveValue ? unarchiveValue : archiveValue;
 
 			if (value === 'true') value = true;
 			if (value === 'false') value = false;

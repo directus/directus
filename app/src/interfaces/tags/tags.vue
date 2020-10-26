@@ -131,7 +131,7 @@ export default defineComponent({
 
 				if (props.capitalization === 'auto-format') val = formatTitle(val, new RegExp(whitespace));
 
-				val = val.replaceAll(/ +/g, whitespace);
+				val = val.replace(/ +/g, whitespace);
 
 				return val;
 			});

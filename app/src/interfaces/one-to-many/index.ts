@@ -9,6 +9,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'arrow_right_alt',
 	component: InterfaceOneToMany,
 	types: ['alias'],
+	localTypes: ['o2m'],
 	relationship: 'o2m',
 	options: Options,
 	recommendedDisplays: ['related-values'],

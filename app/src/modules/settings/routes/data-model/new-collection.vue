@@ -304,7 +304,6 @@ export default defineComponent({
 					type: 'string',
 					meta: {
 						width: 'full',
-						required: true,
 						options: {
 							choices: [
 								{
@@ -342,6 +341,7 @@ export default defineComponent({
 					},
 					schema: {
 						default_value: 'draft',
+						is_nullable: false,
 					},
 				});
 

@@ -328,9 +328,7 @@ export default defineComponent({
 		useShortcut('meta+shift+s', saveAndAddNew, form);
 
 		const navigationGuard: NavigationGuard = (to, from, next) => {
-			const hasEdits = Object.keys(edits.value).length > 0;
-
-			if (hasEdits) {
+			if (hasEdits.value) {
 				confirmLeave.value = true;
 				leaveTo.value = to.fullPath;
 				return next(false);
@@ -473,6 +471,12 @@ export default defineComponent({
 
 			return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed };
 		}
+	},
+	beforeRouteLeave(to, from, next) {
+		return (this as any).navigationGuard(to, from, next);
+	},
+	beforeRouteUpdate(to, from, next) {
+		return (this as any).navigationGuard(to, from, next);
 	},
 });
 </script>

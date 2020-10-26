@@ -60,7 +60,6 @@ export type FieldMeta = {
 	options: null | Record<string, any>;
 	display_options: null | Record<string, any>;
 	readonly: boolean;
-	required: boolean;
 	sort: number | null;
 	special: string[] | null;
 	translations: null | Translations[];
