@@ -29,7 +29,7 @@ describe('ActivityHandler', () => {
 	});
 
 	describe('read', () => {
-		it('Calls the ItemsHandler with the provided params', async () => {
+		it('Calls ItemsHandler#read with the provided params', async () => {
 			const stub = sandbox
 				.stub(handler['itemsHandler'], 'read')
 				.returns(Promise.resolve({ data: {} }));
@@ -49,7 +49,7 @@ describe('ActivityHandler', () => {
 	});
 
 	describe('comments.create', () => {
-		it('Calls the right endpoint', async () => {
+		it('Calls the /activity/comments endpoint', async () => {
 			const stub = sandbox
 				.stub(handler['axios'], 'post')
 				.returns(Promise.resolve({ data: {} }));
@@ -69,7 +69,7 @@ describe('ActivityHandler', () => {
 	});
 
 	describe('comments.update', () => {
-		it('Calls the right endpoint', async () => {
+		it('Calls the /activity/comments/:id endpoint', async () => {
 			const stub = sandbox
 				.stub(handler['axios'], 'patch')
 				.returns(Promise.resolve({ data: {} }));
@@ -83,7 +83,7 @@ describe('ActivityHandler', () => {
 	});
 
 	describe('comments.delete', () => {
-		it('Calls the right endpoint', async () => {
+		it('Calls the /activity/comments/:id endpoint', async () => {
 			const stub = sandbox.stub(handler['axios'], 'delete').returns(Promise.resolve());
 
 			await handler.comments.delete(15);

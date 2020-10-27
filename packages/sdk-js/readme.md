@@ -42,18 +42,18 @@
 	- [ ] Read
 	- [ ] Update
 	- [ ] Delete
-- [ ] Folders
-	- [ ] Create
-	- [ ] Read
-	- [ ] Update
-	- [ ] Delete
+- [x] Folders
+	- [x] Create
+	- [x] Read
+	- [x] Update
+	- [x] Delete
 - [ ] GraphQL??? (not sure if needed)
 	- [ ] Run
-- [ ] Permissions
-	- [ ] Create
-	- [ ] Read
-	- [ ] Update
-	- [ ] Delete
+- [x] Permissions
+	- [x] Create
+	- [x] Read
+	- [x] Update
+	- [x] Delete
 - [ ] Presets
 	- [ ] Create
 	- [ ] Read

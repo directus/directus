@@ -1,6 +1,12 @@
 import DirectusSDK from '../src/index';
-import { ItemsHandler } from '../src/handlers/items';
-import { UtilsHandler } from '../src/handlers/utils';
+import {
+	ItemsHandler,
+	UtilsHandler,
+	ActivityHandler,
+	FoldersHandler,
+	PermissionsHandler,
+	PresetsHandler,
+} from '../src/handlers/';
 
 import { expect } from 'chai';
 
@@ -37,5 +43,21 @@ describe('DirectusSDK', () => {
 
 	it('Returns UtilsHandler instance for #utils', () => {
 		expect(directus.utils).to.be.instanceOf(UtilsHandler);
+	});
+
+	it('Returns ActivityHandler instance for #activity', () => {
+		expect(directus.activity).to.be.instanceOf(ActivityHandler);
+	});
+
+	it('Returns FoldersHandler for #folders', () => {
+		expect(directus.folders).to.be.instanceOf(FoldersHandler);
+	});
+
+	it('Returns PermissionsHandler for #permissions', () => {
+		expect(directus.permissions).to.be.instanceOf(PermissionsHandler);
+	});
+
+	it('Returns PresetsHandler for #presets', () => {
+		expect(directus.presets).to.be.instanceOf(PresetsHandler);
 	});
 });

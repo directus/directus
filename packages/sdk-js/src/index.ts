@@ -1,5 +1,13 @@
 import axios, { AxiosInstance } from 'axios';
-import { ItemsHandler, ServerHandler, UtilsHandler, ActivityHandler } from './handlers';
+import {
+	ItemsHandler,
+	ServerHandler,
+	UtilsHandler,
+	ActivityHandler,
+	FoldersHandler,
+	PermissionsHandler,
+	PresetsHandler,
+} from './handlers';
 
 export default class DirectusSDK {
 	axios: AxiosInstance;
@@ -36,5 +44,17 @@ export default class DirectusSDK {
 
 	get activity() {
 		return new ActivityHandler(this.axios);
+	}
+
+	get folders() {
+		return new FoldersHandler(this.axios);
+	}
+
+	get permissions() {
+		return new PermissionsHandler(this.axios);
+	}
+
+	get presets() {
+		return new PresetsHandler(this.axios);
 	}
 }
