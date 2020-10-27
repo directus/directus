@@ -79,4 +79,40 @@ describe('UsersHandler', () => {
 			});
 		});
 	});
+
+	describe('me.read', () => {
+		it('Calls the /users/me endpoint', async () => {
+			const stub = sandbox.stub(handler.axios, 'get').resolves(Promise.resolve({ data: {} }));
+
+			await handler.me.read();
+			expect(stub).to.have.been.calledWith('/users/me');
+
+			await handler.me.read({ fields: ['first_name'] });
+			expect(stub).to.have.been.calledWith('/users/me', {
+				params: { fields: ['first_name'] },
+			});
+		});
+	});
+
+	describe('me.update', () => {
+		it('Calls the /users/me endpoint', async () => {
+			const stub = sandbox
+				.stub(handler.axios, 'patch')
+				.resolves(Promise.resolve({ data: {} }));
+
+			await handler.me.update({ first_name: 'Rijk' });
+			expect(stub).to.have.been.calledWith(
+				'/users/me',
+				{ first_name: 'Rijk' },
+				{ params: undefined }
+			);
+
+			await handler.me.update({ first_name: 'Rijk' }, { fields: ['first_name'] });
+			expect(stub).to.have.been.calledWith(
+				'/users/me',
+				{ first_name: 'Rijk' },
+				{ params: { fields: ['first_name'] } }
+			);
+		});
+	});
 });

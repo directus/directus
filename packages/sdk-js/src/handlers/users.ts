@@ -1,5 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { ItemsHandler } from './items';
+import { Query, Payload } from '../types';
 
 export class UsersHandler extends ItemsHandler {
 	constructor(axios: AxiosInstance) {
@@ -20,6 +21,17 @@ export class UsersHandler extends ItemsHandler {
 		},
 		disable: async (otp: string) => {
 			await this.axios.post('/users/tfa/disable', { otp });
+		},
+	};
+
+	me = {
+		read: async (query?: Query) => {
+			const response = await this.axios.get('/users/me', { params: query });
+			return response.data;
+		},
+		update: async (payload: Payload, query?: Query) => {
+			const response = await this.axios.patch('/users/me', payload, { params: query });
+			return response.data;
 		},
 	};
 }
