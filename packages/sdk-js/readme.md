@@ -9,11 +9,11 @@
 	- [x] Read
 	- [x] Update
 	- [x] Delete
-- [ ] Activity
-	- [ ] Read
-	- [ ] Create Comment
-	- [ ] Update Comment
-	- [ ] Delete Comment
+- [x] Activity
+	- [x] Read
+	- [x] Create Comment
+	- [x] Update Comment
+	- [x] Delete Comment
 - [ ] Assets??? (not sure if needed)
 	- [ ] Read
 - [ ] Auth

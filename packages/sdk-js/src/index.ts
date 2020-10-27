@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { ItemsHandler, ServerHandler, UtilsHandler } from './handlers';
+import { ItemsHandler, ServerHandler, UtilsHandler, ActivityHandler } from './handlers';
 
 export default class DirectusSDK {
 	axios: AxiosInstance;
@@ -32,5 +32,9 @@ export default class DirectusSDK {
 
 	get utils() {
 		return new UtilsHandler(this.axios);
+	}
+
+	get activity() {
+		return new ActivityHandler(this.axios);
 	}
 }

@@ -12,13 +12,7 @@ export class ItemsHandler {
 			: `/items/${collection}/`;
 	}
 
-	/**
-	 * Create a single new item
-	 */
 	async create(payload: Payload, query?: Query): Promise<Response<Item>>;
-	/**
-	 * Create multiple new items at once
-	 */
 	async create(payloads: Payload[], query?: Query): Promise<Response<Item | Item[]>>;
 	async create(payloads: Payload | Payload[], query?: Query): Promise<Response<Item | Item[]>> {
 		const result = await this.axios.post(this.endpoint, payloads, {
