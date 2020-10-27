@@ -4,6 +4,10 @@
 
 ## To-Do
 
+Research private class property used in extended class.
+
+`ItemsService.axios` is privé, maar moet publiek om 't te kunnen gebruiken in andere classes met extend, zoals users
+
 - [x] Items
 	- [x] Create
 	- [x] Read
@@ -14,8 +18,6 @@
 	- [x] Create Comment
 	- [x] Update Comment
 	- [x] Delete Comment
-- [ ] Assets??? (not sure if needed)
-	- [ ] Read
 - [ ] Auth
 	- [ ] Login
 	- [ ] Refresh
@@ -25,18 +27,16 @@
 	- [ ] oAuth
 		- [ ] Get available providers
 		- [ ] Login with provider
-- [ ] Collections
-	- [ ] Create
-	- [ ] Read
-	- [ ] Update
-	- [ ] Delete
-- [ ] Extensions??? (not sure if needed)
-	- [ ] Read
-- [ ] Fields
-	- [ ] Create
-	- [ ] Read
-	- [ ] Update
-	- [ ] Delete
+- [x] Collections
+	- [x] Create
+	- [x] Read
+	- [x] Update
+	- [x] Delete
+- [x] Fields
+	- [x] Create
+	- [x] Read
+	- [x] Update
+	- [x] Delete
 - [x] Files
 	- [x] Create
 	- [x] Read
@@ -88,7 +88,7 @@
 	- [x] Read
 	- [x] Update
 	- [x] Delete
-	- [ ] Invite
+	- [x] Invite
 	- [ ] Accept Invite
 	- [ ] Enable TFA
 	- [ ] Disable TFA

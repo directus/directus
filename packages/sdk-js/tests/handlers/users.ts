@@ -24,4 +24,22 @@ describe('UsersHandler', () => {
 	it('Extends ItemsHandler', () => {
 		expect(handler).to.be.instanceOf(ItemsHandler);
 	});
+
+	describe('invite', () => {
+		it('Calls the /users/invite endpoint', async () => {
+			const stub = sandbox.stub(handler.axios, 'post').resolves(Promise.resolve());
+
+			await handler.invite('admin@example.com', 'abc');
+			expect(stub).to.have.been.calledWith('/users/invite', {
+				email: 'admin@example.com',
+				role: 'abc',
+			});
+
+			await handler.invite(['admin@example.com', 'user@example.com'], 'abc');
+			expect(stub).to.have.been.calledWith('/users/invite', {
+				email: ['admin@example.com', 'user@example.com'],
+				role: 'abc',
+			});
+		});
+	});
 });
