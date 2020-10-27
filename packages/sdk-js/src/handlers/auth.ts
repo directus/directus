@@ -24,6 +24,10 @@ export class AuthHandler {
 		this.storage = options.storage;
 		this.mode = options.mode;
 		this.autoRefresh = options.autoRefresh;
+
+		if (this.autoRefresh) {
+			this.refresh();
+		}
 	}
 
 	get token() {
@@ -52,11 +56,14 @@ export class AuthHandler {
 	}
 
 	async refresh() {
-		const refreshToken = await this.storage.get('directus_refresh_token');
-		const response = await this.axios.post('/auth/refresh', {
-			refresh_token: refreshToken,
-			mode: this.mode,
-		});
+		const payload: Record<string, any> = { mode: this.mode };
+
+		if (this.mode === 'json') {
+			const refreshToken = await this.storage.get('directus_refresh_token');
+			payload['refresh_token'] = refreshToken;
+		}
+
+		const response = await this.axios.post('/auth/refresh', payload);
 
 		this.token = response.data.data.access_token;
 
