@@ -37,11 +37,12 @@
 	- [ ] Read
 	- [ ] Update
 	- [ ] Delete
-- [ ] Files
-	- [ ] Create (upload)
-	- [ ] Read
-	- [ ] Update
-	- [ ] Delete
+- [x] Files
+	- [x] Create
+	- [x] Read
+	- [x] Update
+	- [x] Delete
+	- [ ] Upload
 - [x] Folders
 	- [x] Create
 	- [x] Read
@@ -54,39 +55,39 @@
 	- [x] Read
 	- [x] Update
 	- [x] Delete
-- [ ] Presets
-	- [ ] Create
-	- [ ] Read
-	- [ ] Update
-	- [ ] Delete
-- [ ] Relations
-	- [ ] Create
-	- [ ] Read
-	- [ ] Update
-	- [ ] Delete
-- [ ] Revisions
-	- [ ] Create
-	- [ ] Read
-	- [ ] Update
-	- [ ] Delete
-- [ ] Roles
-	- [ ] Create
-	- [ ] Read
-	- [ ] Update
-	- [ ] Delete
+- [x] Presets
+	- [x] Create
+	- [x] Read
+	- [x] Update
+	- [x] Delete
+- [x] Relations
+	- [x] Create
+	- [x] Read
+	- [x] Update
+	- [x] Delete
+- [x] Revisions
+	- [x] Create
+	- [x] Read
+	- [x] Update
+	- [x] Delete
+- [x] Roles
+	- [x] Create
+	- [x] Read
+	- [x] Update
+	- [x] Delete
 - [x] Server
 	- [x] Specs
 		- [x] OAS
 	- [x] Ping
 	- [x] Info
-- [ ] Settings
-	- [ ] Read
-	- [ ] Update
-- [ ] Users
-	- [ ] Create
-	- [ ] Read
-	- [ ] Update
-	- [ ] Delete
+- [x] Settings
+	- [x] Read
+	- [x] Update
+- [x] Users
+	- [x] Create
+	- [x] Read
+	- [x] Update
+	- [x] Delete
 	- [ ] Invite
 	- [ ] Accept Invite
 	- [ ] Enable TFA

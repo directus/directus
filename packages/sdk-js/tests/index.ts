@@ -6,6 +6,10 @@ import {
 	FoldersHandler,
 	PermissionsHandler,
 	PresetsHandler,
+	RolesHandler,
+	UsersHandler,
+	SettingsHandler,
+	FilesHandler,
 } from '../src/handlers/';
 
 import { expect } from 'chai';
@@ -59,5 +63,21 @@ describe('DirectusSDK', () => {
 
 	it('Returns PresetsHandler for #presets', () => {
 		expect(directus.presets).to.be.instanceOf(PresetsHandler);
+	});
+
+	it('Returns RolesHandler for #roles', () => {
+		expect(directus.roles).to.be.instanceOf(RolesHandler);
+	});
+
+	it('Returns UsersHandler for #users', () => {
+		expect(directus.users).to.be.instanceOf(UsersHandler);
+	});
+
+	it('Returns SettingsHandler for #users', () => {
+		expect(directus.settings).to.be.instanceOf(SettingsHandler);
+	});
+
+	it('Returns FilesHandler for #users', () => {
+		expect(directus.files).to.be.instanceOf(FilesHandler);
 	});
 });

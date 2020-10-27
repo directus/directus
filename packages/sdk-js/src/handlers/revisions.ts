@@ -1,8 +1,8 @@
 import { AxiosInstance } from 'axios';
 import { ItemsHandler } from './items';
 
-export class FoldersHandler extends ItemsHandler {
+export class RevisionsHandler extends ItemsHandler {
 	constructor(axios: AxiosInstance) {
-		super('directus_folders', axios);
+		super('directus_revisions', axios);
 	}
 }

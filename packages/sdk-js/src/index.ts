@@ -7,6 +7,10 @@ import {
 	FoldersHandler,
 	PermissionsHandler,
 	PresetsHandler,
+	RolesHandler,
+	UsersHandler,
+	SettingsHandler,
+	FilesHandler,
 } from './handlers';
 
 export default class DirectusSDK {
@@ -56,5 +60,21 @@ export default class DirectusSDK {
 
 	get presets() {
 		return new PresetsHandler(this.axios);
+	}
+
+	get roles() {
+		return new RolesHandler(this.axios);
+	}
+
+	get users() {
+		return new UsersHandler(this.axios);
+	}
+
+	get settings() {
+		return new SettingsHandler(this.axios);
+	}
+
+	get files() {
+		return new FilesHandler(this.axios);
 	}
 }
