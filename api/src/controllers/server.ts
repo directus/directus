@@ -20,12 +20,12 @@ router.get('/ping', (req, res) => res.send('pong'));
 
 router.get(
 	'/info',
-	(req, res, next) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new ServerService({ accountability: req.accountability });
-		const data = service.serverInfo();
+		const data = await service.serverInfo();
 		res.locals.payload = { data };
 		return next();
-	},
+	}),
 	respond
 );
 

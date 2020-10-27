@@ -60,18 +60,28 @@ export async function sendInviteMail(email: string, url: string) {
 	/**
 	 * @TODO pull this from directus_settings
 	 */
-	const projectName = 'directus';
+	const projectName = 'Directus';
 
 	const html = await liquidEngine.renderFile('user-invitation', { email, url, projectName });
-	await transporter.sendMail({ from: env.EMAIL_FROM, to: email, html: html });
+	await transporter.sendMail({
+		from: env.EMAIL_FROM,
+		to: email,
+		html: html,
+		subject: `[${projectName}] You've been invited`,
+	});
 }
 
 export async function sendPasswordResetMail(email: string, url: string) {
 	/**
 	 * @TODO pull this from directus_settings
 	 */
-	const projectName = 'directus';
+	const projectName = 'Directus';
 
 	const html = await liquidEngine.renderFile('password-reset', { email, url, projectName });
-	await transporter.sendMail({ from: env.EMAIL_FROM, to: email, html: html });
+	await transporter.sendMail({
+		from: env.EMAIL_FROM,
+		to: email,
+		html: html,
+		subject: `[${projectName}] Password Reset Request`,
+	});
 }

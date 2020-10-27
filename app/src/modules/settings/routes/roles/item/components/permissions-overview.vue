@@ -144,7 +144,7 @@ export default defineComponent({
 						params.filter.role = { _eq: props.role };
 					}
 
-					const response = await api.get('/permissions', params);
+					const response = await api.get('/permissions', { params });
 
 					permissions.value = response.data.data;
 				} catch (err) {
