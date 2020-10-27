@@ -1,11 +1,17 @@
 import { QueryBuilder } from 'knex';
 import { Query, Filter } from '../types';
-import database, { schemaInspector } from '../database';
+import { schemaInspector } from '../database';
+import Knex from 'knex';
 import { clone, isPlainObject } from 'lodash';
 
-export default async function applyQuery(collection: string, dbQuery: QueryBuilder, query: Query) {
+export default async function applyQuery(
+	knex: Knex,
+	collection: string,
+	dbQuery: QueryBuilder,
+	query: Query
+) {
 	if (query.filter) {
-		await applyFilter(dbQuery, query.filter, collection);
+		await applyFilter(knex, dbQuery, query.filter, collection);
 	}
 
 	if (query.sort) {
@@ -46,8 +52,13 @@ export default async function applyQuery(collection: string, dbQuery: QueryBuild
 	}
 }
 
-export async function applyFilter(rootQuery: QueryBuilder, rootFilter: Filter, collection: string) {
-	const relations = await database.select('*').from('directus_relations');
+export async function applyFilter(
+	knex: Knex,
+	rootQuery: QueryBuilder,
+	rootFilter: Filter,
+	collection: string
+) {
+	const relations = await knex.select('*').from('directus_relations');
 
 	addWhereClauses(rootQuery, rootFilter, collection);
 	addJoins(rootQuery, rootFilter, collection);
