@@ -55,4 +55,28 @@ describe('UsersHandler', () => {
 			});
 		});
 	});
+
+	describe('tfa.enable', () => {
+		it('Calls the /users/tfa/enable endpoint', async () => {
+			const stub = sandbox.stub(handler.axios, 'post').resolves(Promise.resolve());
+
+			await handler.tfa.enable('p455w0rd');
+
+			expect(stub).to.have.been.calledWith('/users/tfa/enable', {
+				password: 'p455w0rd',
+			});
+		});
+	});
+
+	describe('tfa.disable', () => {
+		it('Calls the /users/tfa/disable endpoint', async () => {
+			const stub = sandbox.stub(handler.axios, 'post').resolves(Promise.resolve());
+
+			await handler.tfa.disable('351851');
+
+			expect(stub).to.have.been.calledWith('/users/tfa/disable', {
+				otp: '351851',
+			});
+		});
+	});
 });

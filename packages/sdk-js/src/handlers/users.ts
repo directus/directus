@@ -13,4 +13,13 @@ export class UsersHandler extends ItemsHandler {
 	async acceptInvite(token: string, password: string) {
 		await this.axios.post('/users/invite/accept', { token, password });
 	}
+
+	tfa = {
+		enable: async (password: string) => {
+			await this.axios.post('/users/tfa/enable', { password });
+		},
+		disable: async (otp: string) => {
+			await this.axios.post('/users/tfa/disable', { otp });
+		},
+	};
 }

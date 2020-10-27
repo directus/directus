@@ -89,9 +89,10 @@ Research private class property used in extended class.
 	- [x] Update
 	- [x] Delete
 	- [x] Invite
-	- [ ] Accept Invite
-	- [ ] Enable TFA
-	- [ ] Disable TFA
+	- [x] Accept Invite
+	- [x] Enable TFA
+	- [x] Disable TFA
+	- [ ] Me
 - [x] Utils
 	- [x] Get random string
 	- [x] Hash a value
