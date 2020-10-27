@@ -136,7 +136,6 @@ router.post(
 
 const importSchema = Joi.object({
 	url: Joi.string().required(),
-	folder: Joi.string(),
 	data: Joi.object(),
 });
 
@@ -167,7 +166,6 @@ router.post(
 			type: fileResponse.headers['content-type'],
 			title: formatTitle(filename),
 			...(req.body.data || {}),
-			folder: req.body.folder,
 		};
 
 		const primaryKey = await service.upload(fileResponse.data, payload);

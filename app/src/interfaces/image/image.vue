@@ -45,7 +45,7 @@
 			/>
 			<file-lightbox v-model="lightboxActive" :id="image.id" />
 		</div>
-		<v-upload v-else @input="setImage" from-library from-url :folder="$attrs.folder" />
+		<v-upload v-else @input="setImage" from-library from-url :folder="folder" />
 	</div>
 </template>
 
@@ -80,6 +80,10 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		folder: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {

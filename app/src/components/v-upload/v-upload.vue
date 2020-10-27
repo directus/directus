@@ -170,8 +170,10 @@ export default defineComponent({
 								);
 								done.value = percentage.filter((p) => p === 100).length;
 							},
-							preset: props.preset,
-							folder: props.folder,
+							preset: {
+								...props.preset,
+								folder: props.folder,
+							},
 						});
 
 						uploadedFiles && emit('input', uploadedFiles);
@@ -182,8 +184,10 @@ export default defineComponent({
 								done.value = percentage === 100 ? 1 : 0;
 							},
 							fileId: props.fileId,
-							preset: props.preset,
-							folder: props.folder,
+							preset: {
+								...props.preset,
+								folder: props.folder,
+							},
 						});
 
 						uploadedFile && emit('input', uploadedFile);
@@ -276,7 +280,9 @@ export default defineComponent({
 				try {
 					const response = await api.post(`/files/import`, {
 						url: url.value,
-						folder: props.folder,
+						data: {
+							folder: props.folder,
+						},
 					});
 
 					emit('input', response.data.data);

@@ -12,7 +12,6 @@ export default async function uploadFile(
 		notifications?: boolean;
 		preset?: Record<string, any>;
 		fileId?: string;
-		folder?: string;
 	}
 ) {
 	const progressHandler = options?.onProgressChange || (() => undefined);
@@ -22,10 +21,6 @@ export default async function uploadFile(
 		for (const [key, value] of Object.entries(options.preset)) {
 			formData.append(key, value);
 		}
-	}
-
-	if (options?.folder) {
-		formData.append('folder', options.folder);
 	}
 
 	formData.append('file', file);

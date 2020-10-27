@@ -71,7 +71,7 @@
 			<v-card>
 				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload @input="onUpload" :folder="$attrs.folder" from-url />
+					<v-upload @input="onUpload" :folder="folder" from-url />
 				</v-card-text>
 				<v-card-actions>
 					<v-button @click="activeDialog = null" secondary>{{ $t('cancel') }}</v-button>
@@ -136,8 +136,12 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		folder: {
+			type: String,
+			default: null,
+		},
 	},
-	setup(props, { emit, attrs }) {
+	setup(props, { emit }) {
 		const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
 		const { loading, file, fetchFile } = useFile();
 
@@ -241,7 +245,9 @@ export default defineComponent({
 				try {
 					const response = await api.post(`/files/import`, {
 						url: url.value,
-						folder: attrs.folder,
+						data: {
+							folder: props.folder,
+						},
 					});
 
 					file.value = response.data.data;
