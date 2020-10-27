@@ -11,3 +11,5 @@ export * from './roles';
 export * from './users';
 export * from './settings';
 export * from './files';
+export * from './collections';
+export * from './fields';

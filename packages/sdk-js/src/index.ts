@@ -11,6 +11,8 @@ import {
 	UsersHandler,
 	SettingsHandler,
 	FilesHandler,
+	CollectionsHandler,
+	FieldsHandler,
 } from './handlers';
 
 export default class DirectusSDK {
@@ -76,5 +78,13 @@ export default class DirectusSDK {
 
 	get files() {
 		return new FilesHandler(this.axios);
+	}
+
+	get collections() {
+		return new CollectionsHandler(this.axios);
+	}
+
+	get fields() {
+		return new FieldsHandler(this.axios);
 	}
 }
