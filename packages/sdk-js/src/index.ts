@@ -14,15 +14,24 @@ import {
 	CollectionsHandler,
 	FieldsHandler,
 	AuthHandler,
+	AuthOptions,
 } from './handlers';
+import { MemoryStore } from './utils';
 
 export default class DirectusSDK {
 	axios: AxiosInstance;
+	authOptions: AuthOptions;
 
-	constructor(url: string) {
+	constructor(url: string, options?: { auth: Partial<AuthOptions> }) {
 		this.axios = axios.create({
 			baseURL: url,
 		});
+
+		this.authOptions = {
+			storage: options?.auth?.storage || new MemoryStore(),
+			mode: options?.auth?.mode || 'cookie',
+			autoRefresh: options?.auth?.autoRefresh || true,
+		};
 	}
 
 	get url() {
@@ -90,6 +99,6 @@ export default class DirectusSDK {
 	}
 
 	get auth() {
-		return new AuthHandler(this.axios);
+		return new AuthHandler(this.axios, this.authOptions);
 	}
 }
