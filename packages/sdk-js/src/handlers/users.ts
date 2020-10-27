@@ -9,4 +9,8 @@ export class UsersHandler extends ItemsHandler {
 	async invite(email: string | string[], role: string) {
 		await this.axios.post('/users/invite', { email, role });
 	}
+
+	async acceptInvite(token: string, password: string) {
+		await this.axios.post('/users/invite/accept', { token, password });
+	}
 }

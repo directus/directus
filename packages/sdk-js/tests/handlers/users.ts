@@ -42,4 +42,17 @@ describe('UsersHandler', () => {
 			});
 		});
 	});
+
+	describe('acceptInvite', () => {
+		it('Calls the /users/invite/accept endpoint', async () => {
+			const stub = sandbox.stub(handler.axios, 'post').resolves(Promise.resolve());
+
+			await handler.acceptInvite('abc.def.ghi', 'p455w0rd');
+
+			expect(stub).to.have.been.calledWith('/users/invite/accept', {
+				token: 'abc.def.ghi',
+				password: 'p455w0rd',
+			});
+		});
+	});
 });
