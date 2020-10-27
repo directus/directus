@@ -22,9 +22,9 @@ Research private class property used in extended class.
 	- [ ] Login
 	- [ ] Refresh
 	- [ ] Logout
-	- [ ] Request Password Reset
-	- [ ] Reset Password
-	- [ ] oAuth
+	- [x] Request Password Reset
+	- [x] Reset Password
+	- [ ] oAuth (TBD, SEE OIDC PR)
 		- [ ] Get available providers
 		- [ ] Login with provider
 - [x] Collections

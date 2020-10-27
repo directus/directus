@@ -13,3 +13,4 @@ export * from './settings';
 export * from './files';
 export * from './collections';
 export * from './fields';
+export * from './auth';

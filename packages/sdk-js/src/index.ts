@@ -13,6 +13,7 @@ import {
 	FilesHandler,
 	CollectionsHandler,
 	FieldsHandler,
+	AuthHandler,
 } from './handlers';
 
 export default class DirectusSDK {
@@ -86,5 +87,9 @@ export default class DirectusSDK {
 
 	get fields() {
 		return new FieldsHandler(this.axios);
+	}
+
+	get auth() {
+		return new AuthHandler(this.axios);
 	}
 }

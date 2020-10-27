@@ -10,6 +10,7 @@ import {
 	UsersHandler,
 	SettingsHandler,
 	FilesHandler,
+	AuthHandler,
 } from '../src/handlers/';
 
 import { expect } from 'chai';
@@ -79,5 +80,9 @@ describe('DirectusSDK', () => {
 
 	it('Returns FilesHandler for #users', () => {
 		expect(directus.files).to.be.instanceOf(FilesHandler);
+	});
+
+	it('Returns AuthHandler for #auth', () => {
+		expect(directus.auth).to.be.instanceOf(AuthHandler);
 	});
 });
