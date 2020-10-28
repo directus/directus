@@ -7,7 +7,6 @@ import {
 	Field,
 	Relation,
 	Query,
-	AbstractService,
 } from '../types';
 import {
 	GraphQLString,
@@ -49,6 +48,7 @@ import { UsersService } from './users';
 import { WebhooksService } from './webhooks';
 
 import { getRelationType } from '../utils/get-relation-type';
+import { systemCollectionRows } from '../database/system-data/collections';
 
 export class GraphQLService {
 	accountability: Accountability | null;
@@ -504,11 +504,16 @@ export class GraphQLService {
 				});
 		}
 
-		const collectionInfo = await this.knex
-			.select('singleton')
-			.from('directus_collections')
-			.where({ collection: collection })
-			.first();
+		const collectionInfo =
+			(await this.knex
+				.select('singleton')
+				.from('directus_collections')
+				.where({ collection: collection })
+				.first()) ||
+			systemCollectionRows.find(
+				(collectionMeta) => collectionMeta?.collection === collection
+			);
+
 		const result =
 			collectionInfo?.singleton === true
 				? await service.readSingleton(query)
