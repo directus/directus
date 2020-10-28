@@ -326,9 +326,11 @@ export class AuthorizationService {
 	}
 
 	validateJoi(
-		validation: Record<string, any>,
+		validation: null | Record<string, any>,
 		payloads: Partial<Record<string, any>>[]
 	): FailedValidationException[] {
+		if (!validation) return [];
+
 		const errors: FailedValidationException[] = [];
 
 		/**
