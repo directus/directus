@@ -17,7 +17,7 @@
 						:disabled="item === null"
 						@click="on"
 						v-tooltip.bottom="$t('delete_collection')"
-						v-if="item.collection.startsWith('directus_') === false"
+						v-if="item && item.collection.startsWith('directus_') === false"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
@@ -71,7 +71,7 @@
 				:batch-mode="isBatch"
 				:primary-key="collection"
 				v-model="edits.meta"
-				:disabled="item.collection.startsWith('directus_')"
+				:disabled="item && item.collection.startsWith('directus_')"
 			/>
 		</div>
 
