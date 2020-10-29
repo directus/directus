@@ -80,7 +80,7 @@ export class FieldsService {
 			aliasQuery.andWhere('collection', collection);
 		}
 
-		let aliasFields = await aliasQuery;
+		let aliasFields = [...(await aliasQuery), ...systemFieldRows];
 
 		const aliasTypes = ['alias', 'o2m', 'm2m', 'files', 'files', 'translations'];
 
