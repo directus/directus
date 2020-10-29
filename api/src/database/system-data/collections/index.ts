@@ -6,6 +6,6 @@ const systemData = requireYAML(require.resolve('./collections.yaml'));
 
 export const systemCollectionRows: CollectionMeta[] = systemData.data.map(
 	(row: Record<string, any>) => {
-		return merge({}, systemData.defaults, row);
+		return merge({ system: true }, systemData.defaults, row);
 	}
 );

@@ -5,5 +5,5 @@ import { Relation } from '../../../types';
 const systemData = requireYAML(require.resolve('./relations.yaml'));
 
 export const systemRelationRows: Relation[] = systemData.data.map((row: Record<string, any>) => {
-	return merge({}, systemData.defaults, row);
+	return merge({ system: true }, systemData.defaults, row);
 });

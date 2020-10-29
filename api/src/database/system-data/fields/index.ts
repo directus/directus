@@ -15,6 +15,6 @@ for (const filepath of fieldData) {
 	const systemFields = requireYAML(path.resolve(__dirname, filepath));
 
 	for (const field of systemFields.fields) {
-		systemFieldRows.push(merge({}, defaults, field));
+		systemFieldRows.push(merge({ system: true }, defaults, field));
 	}
 }
