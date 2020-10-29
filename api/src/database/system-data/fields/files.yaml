@@ -1,114 +1,117 @@
 table: directus_files
 
 fields:
-  - collection: directus_files
-    field: id
+  - field: id
     hidden: true
     interface: text-input
-    locked: true
     special: uuid
-  - collection: directus_files
-    field: title
+
+  - field: title
     interface: text-input
-    locked: true
     options:
       iconRight: title
       placeholder: A unique title...
-    sort: 1
     width: full
-  - collection: directus_files
-    field: description
+
+  - field: description
     interface: textarea
-    locked: true
-    sort: 2
     width: full
     options:
       placeholder: An optional description...
-  - collection: directus_files
-    field: tags
+
+  - field: tags
     interface: tags
-    locked: true
     options:
       iconRight: local_offer
     special: json
-    sort: 3
     width: full
     display: tags
-  - collection: directus_files
-    field: location
+
+  - field: location
     interface: text-input
-    locked: true
     options:
       iconRight: place
       placeholder: An optional location...
-    sort: 4
     width: half
-  - collection: directus_files
-    field: storage
+
+  - field: storage
     interface: text-input
-    locked: true
     options:
       iconRight: storage
-    sort: 5
     width: half
     readonly: true
-  - collection: directus_files
-    field: storage_divider
+
+  - field: storage_divider
     interface: divider
-    locked: true
     options:
       icon: insert_drive_file
       title: File Naming
       color: '#2F80ED'
     special: alias
-    sort: 6
     width: full
-  - collection: directus_files
-    field: filename_disk
+
+  - field: filename_disk
     interface: text-input
-    locked: true
     options:
       iconRight: publish
       placeholder: Name on disk storage...
-    sort: 7
     width: half
-  - collection: directus_files
-    field: filename_download
+
+  - field: filename_download
     interface: text-input
-    locked: true
     options:
       iconRight: get_app
       placeholder: Name when downloading...
-    sort: 8
     width: half
-  - collection: directus_files
-    field: metadata
+
+  - field: metadata
     hidden: true
-    locked: true
     special: json
-  - collection: directus_files
-    field: type
+
+  - field: type
     display: mime-type
-  - collection: directus_files
-    field: filesize
+
+  - field: filesize
     display: filesize
-  - collection: directus_files
-    field: modified_by
+
+  - field: modified_by
     interface: user
-    locked: true
     special: user-updated
     width: half
     display: user
-  - collection: directus_files
-    field: modified_on
+
+  - field: modified_on
     interface: datetime
-    locked: true
     special: date-updated
     width: half
     display: datetime
-  - collection: directus_files
-    field: created_on
+
+  - field: created_on
     display: datetime
-  - collection: directus_files
-    field: created_by
+
+  - field: created_by
     display: user
+
+  - field: embed
+    width: half
+
+  - field: uploaded_by
+    width: half
+
+  - field: folder
+    width: half
+
+  - field: width
+    width: half
+
+  - field: uploaded_on
+    width: half
+
+  - field: height
+    width: half
+
+  - field: charset
+    width: half
+
+  - field: duration
+    width: half

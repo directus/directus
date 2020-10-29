@@ -1,5 +1,6 @@
 import database, { schemaInspector } from '../database';
 import { uniq } from 'lodash';
+import { systemFieldRows } from '../database/system-data/fields';
 
 export default async function hasFields(fields: { collection: string; field: string }[]) {
 	const fieldsObject: { [collection: string]: string[] } = {};
@@ -33,6 +34,9 @@ export async function collectionHasFields(collection: string, fieldKeys: string[
 	const existingFields = uniq([
 		...columns.map(({ column }) => column),
 		...fields.map(({ field }) => field),
+		...systemFieldRows
+			.filter((fieldMeta) => fieldMeta.collection === collection)
+			.map((fieldMeta) => fieldMeta.field),
 	]);
 
 	for (const key of fieldKeys) {

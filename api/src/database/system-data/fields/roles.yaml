@@ -1,80 +1,61 @@
 table: directus_roles
 
 fields:
-  - collection: directus_roles
-    field: id
+  - field: id
     hidden: true
     interface: text-input
-    locked: true
     special: uuid
-  - collection: directus_roles
-    field: name
+
+  - field: name
     interface: text-input
     options:
       placeholder: The unique name for this role...
-    locked: true
-    sort: 1
     width: half
-  - collection: directus_roles
-    field: icon
+
+  - field: icon
     interface: icon
     display: icon
-    locked: true
-    sort: 2
     width: half
-  - collection: directus_roles
-    field: description
+
+  - field: description
     interface: text-input
     options:
       placeholder: A description of this role...
-    locked: true
-    sort: 3
     width: full
-  - collection: directus_roles
-    field: app_access
+
+  - field: app_access
     interface: toggle
-    locked: true
     special: boolean
-    sort: 4
     width: half
-  - collection: directus_roles
-    field: admin_access
+
+  - field: admin_access
     interface: toggle
-    locked: true
     special: boolean
-    sort: 5
     width: half
-  - collection: directus_roles
-    field: ip_access
+
+  - field: ip_access
     interface: tags
     options:
       placeholder: Add allowed IP addresses, leave empty to allow all...
-    locked: true
     special: csv
-    sort: 6
     width: full
-  - collection: directus_roles
-    field: enforce_tfa
+
+  - field: enforce_tfa
     interface: toggle
-    locked: true
-    sort: 7
     special: boolean
     width: half
-  - collection: directus_roles
-    field: users
+
+  - field: users
     interface: one-to-many
-    locked: true
     special: o2m
-    sort: 8
     options:
       fields:
         - first_name
         - last_name
     width: full
-  - collection: directus_roles
-    field: module_list
+
+  - field: module_list
     interface: repeater
-    locked: true
     options:
       template: '{{ name }}'
       addLabel: Add New Module...
@@ -104,12 +85,10 @@ fields:
               iconRight: link
               placeholder: Relative or absolute URL...
     special: json
-    sort: 9
     width: full
-  - collection: directus_roles
-    field: collection_list
+
+  - field: collection_list
     interface: repeater
-    locked: true
     options:
       template: '{{ group_name }}'
       addLabel: Add New Group...
@@ -159,5 +138,4 @@ fields:
                   schema:
                     is_nullable: false
     special: json
-    sort: 10
     width: full

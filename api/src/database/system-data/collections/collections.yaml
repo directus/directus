@@ -23,6 +23,8 @@ data:
     note: Metadata for all managed file assets
   - collection: directus_folders
     note: Provides virtual directories for files
+  - collection: directus_migrations
+    note: What version of the database you're using
   - collection: directus_permissions
     icon: admin_panel_settings
     note: Access permissions for each role

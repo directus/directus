@@ -48,9 +48,11 @@ export class AssetsService {
 	private parseTransformation(transformation: Transformation): ResizeOptions {
 		const resizeOptions: ResizeOptions = {};
 
-		if (transformation.w) resizeOptions.width = Number(transformation.w);
-		if (transformation.h) resizeOptions.height = Number(transformation.h);
-		if (transformation.f) resizeOptions.fit = transformation.f;
+		if (transformation.width) resizeOptions.width = Number(transformation.width);
+		if (transformation.height) resizeOptions.height = Number(transformation.height);
+		if (transformation.fit) resizeOptions.fit = transformation.fit;
+		if (transformation.withoutEnlargement)
+			resizeOptions.withoutEnlargement = Boolean(transformation.withoutEnlargement);
 
 		return resizeOptions;
 	}

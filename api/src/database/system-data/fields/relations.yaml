@@ -1,0 +1,33 @@
+table: directus_relations
+
+fields:
+  - field: id
+    width: half
+
+  - field: many_collection
+    width: half
+
+  - field: many_field
+    width: half
+
+  - field: many_primary
+    width: half
+
+  - field: one_collection
+    width: half
+
+  - field: one_field
+    width: half
+
+  - field: one_primary
+    width: half
+
+  - field: one_collection_field
+    width: half
+
+  - field: one_allowed_collections
+    special: csv
+    width: half
+
+  - field: junction_field
+    width: half
