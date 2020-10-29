@@ -3,14 +3,14 @@
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
 				<div
-					v-if="settings && settings.project && settings.project.project_logo"
+					v-if="branding && branding.project_logo"
 					class="logo"
-					:style="{ backgroundColor: settings.project.project_color }"
+					:style="{ backgroundColor: branding.project_color }"
 				>
-					<img :src="logoURL" :alt="settings.project.project_name || 'Logo'" />
+					<img :src="logoURL" :alt="branding.project_name || 'Logo'" />
 				</div>
 				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
-				<h1 class="title type-title">{{ settings && settings.project && settings.project.project_name }}</h1>
+				<h1 class="title type-title">{{ branding && branding.project_name }}</h1>
 			</div>
 
 			<div class="content">
@@ -26,14 +26,10 @@
 					class="foreground"
 					v-if="foregroundURL"
 					:src="foregroundURL"
-					:alt="settings && settings.project && settings.project.project_name"
+					:alt="branding && branding.project_name"
 				/>
 			</transition>
-			<div
-				class="note"
-				v-if="settings && settings.project && settings.project.public_note"
-				v-html="marked(settings.project.public_note)"
-			/>
+			<div class="note" v-if="branding && branding.public_note" v-html="marked(branding.public_note)" />
 		</div>
 	</div>
 </template>
@@ -86,7 +82,15 @@ export default defineComponent({
 			return getRootPath() + `assets/${serverStore.state.info.project?.project_logo}`;
 		});
 
-		return { version, artStyles, marked, settings: serverStore.state.info, foregroundURL, logoURL, isBranded };
+		return {
+			version,
+			artStyles,
+			marked,
+			branding: serverStore.state.info?.project,
+			foregroundURL,
+			logoURL,
+			isBranded,
+		};
 	},
 });
 </script>
