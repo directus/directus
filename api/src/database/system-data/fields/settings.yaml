@@ -132,6 +132,11 @@ fields:
                   text: Contain (preserve aspect ratio)
                 - value: cover
                   text: Cover (forces exact size)
+                - value: inside
+                  text: Fit inside
+                - value: outside
+                  text: Fit outside
+            required: true
             width: half
         - field: width
           name: Width
@@ -161,7 +166,17 @@ fields:
               max: 100
               min: 0
               step: 1
-            width: full
+            required: true
+            width: half
+        - field: withoutEnlargement
+          type: boolean
+          schema:
+            default_value: false
+          meta:
+            interface: toggle
+            width: half
+            options:
+              label: Don't upscale images
       template: '{{key}}'
     special: json
     width: full

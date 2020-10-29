@@ -32,7 +32,12 @@ get:
       description: Fit of the file
       schema:
         type: string
-        enum: [crop, contain]
+        enum: [crop, contain, inside, outside]
+    - name: withoutEnlargement
+      in: query
+      description: No image upscale.
+      schema:
+        type: boolean
     - name: quality
       in: query
       description: Quality of compression.
