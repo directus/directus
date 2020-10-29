@@ -74,7 +74,9 @@ export default defineComponent({
 				codemirror.value = CodeMirror.fromTextArea(codemirrorElVal, cmOptions.value);
 				codemirror.value.setValue(stringValue.value || '');
 				await setLanguage();
-				codemirror.value.on('change', (cm) => {
+				codemirror.value.on('change', (cm, { origin }) => {
+					if (origin === 'setValue') return;
+
 					const content = cm.getValue();
 
 					if (props.type === 'json') {
