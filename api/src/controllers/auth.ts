@@ -46,15 +46,13 @@ router.post(
 		const ip = req.ip;
 		const userAgent = req.get('user-agent');
 
-		const { accessToken, refreshToken, expires, id } = await authenticationService.authenticate(
-			{
-				ip,
-				userAgent,
-				email,
-				password,
-				otp,
-			}
-		);
+		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
+			ip,
+			userAgent,
+			email,
+			password,
+			otp,
+		});
 
 		const payload = {
 			data: { access_token: accessToken, expires },

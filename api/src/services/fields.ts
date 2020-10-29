@@ -11,6 +11,9 @@ import { PayloadService } from '../services/payload';
 import getDefaultValue from '../utils/get-default-value';
 import cache from '../cache';
 import SchemaInspector from 'knex-schema-inspector';
+import { toArray } from '../utils/to-array';
+
+import { systemFieldRows } from '../database/system-data/fields/';
 
 type RawField = Partial<Field> & { field: string; type: typeof types[number] };
 
@@ -38,8 +41,13 @@ export class FieldsService {
 				filter: { collection: { _eq: collection } },
 				limit: -1,
 			})) as FieldMeta[];
+
+			fields.push(
+				...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection)
+			);
 		} else {
 			fields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })) as FieldMeta[];
+			fields.push(...systemFieldRows);
 		}
 
 		let columns = await schemaInspector.columnInfo(collection);
@@ -73,12 +81,15 @@ export class FieldsService {
 			aliasQuery.andWhere('collection', collection);
 		}
 
-		let aliasFields = await aliasQuery;
+		let aliasFields = [
+			...((await this.payloadService.processValues('read', await aliasQuery)) as FieldMeta[]),
+			...systemFieldRows,
+		];
 
 		const aliasTypes = ['alias', 'o2m', 'm2m', 'files', 'files', 'translations'];
 
 		aliasFields = aliasFields.filter((field) => {
-			const specials = (field.special || '').split(',');
+			const specials = toArray(field.special);
 
 			for (const type of aliasTypes) {
 				if (specials.includes(type)) return true;
@@ -87,19 +98,17 @@ export class FieldsService {
 			return false;
 		});
 
-		aliasFields = (await this.payloadService.processValues('read', aliasFields)) as FieldMeta[];
-
 		const aliasFieldsAsField = aliasFields.map((field) => {
 			const data = {
 				collection: field.collection,
 				field: field.field,
-				type: field.special[0],
+				type: field.special?.[0],
 				schema: null,
 				meta: field,
 			};
 
 			return data;
-		});
+		}) as Field[];
 
 		const result = [...columnsWithSystem, ...aliasFieldsAsField];
 
@@ -162,6 +171,12 @@ export class FieldsService {
 		if (fieldInfo) {
 			fieldInfo = (await this.payloadService.processValues('read', fieldInfo)) as FieldMeta[];
 		}
+
+		fieldInfo =
+			fieldInfo ||
+			systemFieldRows.find(
+				(fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field
+			);
 
 		try {
 			column = await schemaInspector.columnInfo(collection, field);

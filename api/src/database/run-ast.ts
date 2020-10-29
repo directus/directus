@@ -164,7 +164,7 @@ async function getDBQuery(
 
 	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
 
-	await applyQuery(table, dbQuery, queryCopy);
+	await applyQuery(knex, table, dbQuery, queryCopy);
 
 	return dbQuery;
 }

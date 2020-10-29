@@ -31,7 +31,7 @@
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import SettingsNavigation from '../../components/navigation.vue';
 import useCollection from '@/composables/use-collection';
-import { useSettingsStore } from '@/stores';
+import { useSettingsStore, useServerStore } from '@/stores';
 import ProjectInfoSidebarDetail from './components/project-info-sidebar-detail.vue';
 import { clone } from 'lodash';
 
@@ -39,6 +39,7 @@ export default defineComponent({
 	components: { SettingsNavigation, ProjectInfoSidebarDetail },
 	setup() {
 		const settingsStore = useSettingsStore();
+		const serverStore = useServerStore();
 
 		const { fields } = useCollection(ref('directus_settings'));
 
@@ -56,6 +57,7 @@ export default defineComponent({
 			if (edits.value === null) return;
 			saving.value = true;
 			await settingsStore.updateSettings(edits.value);
+			await serverStore.hydrate();
 			edits.value = null;
 			saving.value = false;
 			initialValues.value = clone(settingsStore.state.settings);

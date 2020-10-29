@@ -1,87 +1,70 @@
 table: directus_users
 
 fields:
-  - collection: directus_users
-    field: first_name
+  - field: first_name
     interface: text-input
-    locked: true
     options:
       iconRight: account_circle
-    sort: 1
     width: half
-  - collection: directus_users
-    field: last_name
+
+  - field: last_name
     interface: text-input
-    locked: true
     options:
       iconRight: account_circle
-    sort: 2
     width: half
-  - collection: directus_users
-    field: email
+
+  - field: email
     interface: text-input
-    locked: true
     options:
       iconRight: email
-    sort: 3
     width: half
-  - collection: directus_users
-    field: password
+
+  - field: password
     special: hash, conceal
     interface: hash
-    locked: true
     options:
       iconRight: lock
       masked: true
-    sort: 4
     width: half
-  - collection: directus_users
-    field: avatar
+
+  - field: avatar
     interface: file
-    locked: true
-    sort: 5
     width: full
-  - collection: directus_users
-    field: location
+
+  - field: location
     interface: text-input
     options:
       iconRight: place
-    sort: 6
     width: half
-  - collection: directus_users
-    field: title
+
+  - field: title
     interface: text-input
     options:
       iconRight: work
-    sort: 7
     width: half
-  - collection: directus_users
-    field: description
+
+  - field: description
     interface: textarea
-    sort: 8
     width: full
-  - collection: directus_users
-    field: tags
+
+  - field: tags
     interface: tags
     special: json
-    sort: 9
     width: full
     options:
       iconRight: local_offer
-  - collection: directus_users
-    field: preferences_divider
+
+  - field: preferences_divider
     interface: divider
     options:
       icon: face
       title: User Preferences
       color: '#2F80ED'
     special: alias
-    sort: 10
     width: full
-  - collection: directus_users
-    field: language
+
+  - field: language
     interface: dropdown
-    locked: true
     options:
       choices:
         - text: Afrikaans (South Africa)
@@ -146,12 +129,10 @@ fields:
           value: uk-UA
         - text: Vietnamese (Vietnam)
           value: vi-VN
-    sort: 11
     width: half
-  - collection: directus_users
-    field: theme
+
+  - field: theme
     interface: dropdown
-    locked: true
     options:
       choices:
         - value: auto
@@ -160,30 +141,24 @@ fields:
           text: Light Mode
         - value: dark
           text: Dark Mode
-    sort: 12
     width: half
-  - collection: directus_users
-    field: tfa_secret
+
+  - field: tfa_secret
     interface: tfa-setup
-    locked: true
     special: conceal
-    sort: 13
     width: half
-  - collection: directus_users
-    field: admin_divider
+
+  - field: admin_divider
     interface: divider
-    locked: true
     options:
       icon: verified_user
       title: Admin Options
       color: '#F2994A'
     special: alias
-    sort: 14
     width: full
-  - collection: directus_users
-    field: status
+
+  - field: status
     interface: dropdown
-    locked: true
     options:
       choices:
         - text: Draft
@@ -196,32 +171,31 @@ fields:
           value: suspended
         - text: Archived
           value: archived
-    sort: 15
     width: half
-  - collection: directus_users
-    field: role
+
+  - field: role
     interface: many-to-one
-    locked: true
     options:
       template: '{{ name }}'
     special: m2o
-    sort: 16
     width: half
-  - collection: directus_users
-    field: token
+
+  - field: token
     interface: token
-    locked: true
     options:
       iconRight: vpn_key
       placeholder: Enter a secure access token...
-    sort: 17
     width: full
-  - collection: directus_users
-    field: id
+
+  - field: id
     special: uuid
     interface: text-input
-    locked: true
     options:
       iconRight: vpn_key
-    sort: 18
     width: full
+
+  - field: last_page
+    width: half
+
+  - field: last_access
+    width: half
