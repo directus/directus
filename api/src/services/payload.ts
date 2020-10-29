@@ -17,6 +17,8 @@ import getLocalType from '../utils/get-local-type';
 import { format, formatISO } from 'date-fns';
 import { ForbiddenException } from '../exceptions';
 import { toArray } from '../utils/to-array';
+import { FieldMeta } from '../types';
+import { systemFieldRows } from '../database/system-data/fields';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -148,17 +150,21 @@ export class PayloadService {
 
 		const fieldsInPayload = Object.keys(processedPayload[0]);
 
-		const specialFieldsQuery = this.knex
+		let specialFieldsInCollection: FieldMeta[] = await this.knex
 			.select('field', 'special')
 			.from('directus_fields')
 			.where({ collection: this.collection })
 			.whereNotNull('special');
 
-		if (action === 'read') {
-			specialFieldsQuery.whereIn('field', fieldsInPayload);
-		}
+		specialFieldsInCollection.push(
+			...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === this.collection)
+		);
 
-		const specialFieldsInCollection = await specialFieldsQuery;
+		if (action === 'read') {
+			specialFieldsInCollection = specialFieldsInCollection.filter((fieldMeta) => {
+				return fieldsInPayload.includes(fieldMeta.field);
+			});
+		}
 
 		await Promise.all(
 			processedPayload.map(async (record: any) => {
@@ -203,13 +209,13 @@ export class PayloadService {
 	}
 
 	async processField(
-		field: { field: string; special: string },
+		field: FieldMeta,
 		payload: Partial<Item>,
 		action: Action,
 		accountability: Accountability | null
 	) {
 		if (!field.special) return payload[field.field];
-		const fieldSpecials = field.special.split(',').map((s) => s.trim());
+		const fieldSpecials = field.special ? toArray(field.special) : [];
 
 		let value = clone(payload[field.field]);
 

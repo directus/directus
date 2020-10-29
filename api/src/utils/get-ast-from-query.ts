@@ -16,6 +16,7 @@ import { cloneDeep } from 'lodash';
 import Knex from 'knex';
 import SchemaInspector from 'knex-schema-inspector';
 import { getRelationType } from '../utils/get-relation-type';
+import { systemFieldRows } from '../database/system-data/fields';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -261,9 +262,12 @@ export default async function getASTFromQuery(
 
 	async function getFieldsInCollection(collection: string) {
 		const columns = (await schemaInspector.columns(collection)).map((column) => column.column);
-		const fields = (
-			await knex.select('field').from('directus_fields').where({ collection })
-		).map((field) => field.field);
+		const fields = [
+			...(await knex.select('field').from('directus_fields').where({ collection })).map(
+				(field) => field.field
+			),
+			...systemFieldRows.map((fieldMeta) => fieldMeta.field),
+		];
 
 		const fieldsInCollection = [
 			...columns,

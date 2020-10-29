@@ -12,6 +12,8 @@ import getDefaultValue from '../utils/get-default-value';
 import cache from '../cache';
 import SchemaInspector from 'knex-schema-inspector';
 
+import { systemFieldRows } from '../database/system-data/fields/';
+
 type RawField = Partial<Field> & { field: string; type: typeof types[number] };
 
 export class FieldsService {
@@ -38,8 +40,13 @@ export class FieldsService {
 				filter: { collection: { _eq: collection } },
 				limit: -1,
 			})) as FieldMeta[];
+
+			fields.push(
+				...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection)
+			);
 		} else {
 			fields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })) as FieldMeta[];
+			fields.push(...systemFieldRows);
 		}
 
 		let columns = await schemaInspector.columnInfo(collection);
@@ -162,6 +169,12 @@ export class FieldsService {
 		if (fieldInfo) {
 			fieldInfo = (await this.payloadService.processValues('read', fieldInfo)) as FieldMeta[];
 		}
+
+		fieldInfo =
+			fieldInfo ||
+			systemFieldRows.find(
+				(fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field
+			);
 
 		try {
 			column = await schemaInspector.columnInfo(collection, field);
