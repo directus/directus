@@ -104,6 +104,11 @@
 			"many-to-many": "Many to Many",
 			"description": "Select multiple related junction items"
 		},
+		"many-to-many-reference": {
+			"many-to-many-reference": "Many to Many Referencing",
+			"description": "Select multiple related junction items in tagging style",
+			"reference-field": "Referencing Field"
+		},
 		"many-to-one": {
 			"many-to-one": "Many to One",
 			"description": "Select a single related item",

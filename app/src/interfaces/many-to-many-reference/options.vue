@@ -1,13 +1,14 @@
 <template>
-	<v-form :fields="options" primary-key="+" v-model="fieldData.meta.options" />
+	<v-notice type="warning" v-if="collection === null">
+		{{ $t('interfaces.one-to-many.no_collection') }}
+	</v-notice>
+	<v-form v-else :fields="options" primary-key="+" v-model="fieldData.meta.options" />
 </template>
 
 <script lang="ts">
 import { Field } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { useRelationsStore } from '@/stores/';
 import { Relation, Collection } from '@/types';
-import { useCollectionsStore } from '../../stores';
 import i18n from '@/lang';
 export default defineComponent({
 	props: {
@@ -36,50 +37,43 @@ export default defineComponent({
 			default: () => [],
 		},
 	},
-	setup(props, { emit }) {
-		const collectionsStore = useCollectionsStore();
-		const relationsStore = useRelationsStore();
+	setup(props) {
+		const junctionRelation = props.relations.find(
+			(relation) => relation.one_collection === props.collection && relation.one_field === props.fieldData.field
+		);
 
-		const sortField = computed({
-			get() {
-				return props.value?.sortField;
-			},
-			set(newFields: string) {
-				emit('input', {
-					...(props.value || {}),
-					sortField: newFields,
-				});
-			},
-		});
+		let manyCollection = null;
 
-		const fields = computed({
-			get() {
-				return props.value?.fields;
-			},
-			set(newFields: string) {
-				emit('input', {
-					...(props.value || {}),
-					fields: newFields,
-				});
-			},
-		});
-
-		const junctionCollection = computed(() => {
-			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
-			const { field } = props.fieldData;
-			const junctionRelation = props.relations.find(
-				(relation) => relation.one_collection === props.collection && relation.one_field === field
-			);
-			return junctionRelation?.many_collection || null;
-		});
-
-		const junctionCollectionExists = computed(() => {
-			return !!collectionsStore.state.collections.find(
-				(collection) => collection.collection === junctionCollection.value
-			);
-		});
+		if (junctionRelation) {
+			manyCollection = props.relations.find(
+				(relation) =>
+					relation.many_collection === junctionRelation.many_collection &&
+					junctionRelation.many_field === relation.junction_field
+			)?.one_collection;
+		}
 
 		const options = [
+			{
+				field: 'referencingField',
+				name: i18n.t('interfaces.many-to-many-reference.reference-field'),
+				type: 'string',
+				collection: manyCollection,
+				required: true,
+				meta: {
+					width: 'full',
+					interface: 'field',
+				},
+			},
+			{
+				field: 'displayTemplate',
+				name: i18n.t('display'),
+				type: 'string',
+				collection: manyCollection,
+				meta: {
+					width: 'full',
+					interface: 'display-template',
+				},
+			},
 			{
 				field: 'placeholder',
 				name: i18n.t('placeholder'),
@@ -89,18 +83,6 @@ export default defineComponent({
 					interface: 'text-input',
 					options: {
 						placeholder: i18n.t('enter_a_placeholder'),
-					},
-				},
-			},
-			{
-				field: 'referencingField',
-				name: i18n.t('interfaces.many-to-many-reference.reference-field'),
-				type: 'string',
-				meta: {
-					width: 'full',
-					interface: 'text-input',
-					options: {
-						placeholder: i18n.t('interfaces.many-to-many-reference.reference-field'),
 					},
 				},
 			},
@@ -154,14 +136,10 @@ export default defineComponent({
 			},
 		];
 
-		return { options, fields, sortField, junctionCollection, junctionCollectionExists };
+		return {
+			manyCollection,
+			options,
+		};
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-.form-grid {
-	@include form-grid;
-}
-</style>
