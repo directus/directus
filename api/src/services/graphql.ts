@@ -514,10 +514,9 @@ export class GraphQLService {
 				(collectionMeta) => collectionMeta?.collection === collection
 			);
 
-		const result =
-			collectionInfo?.singleton === true
-				? await service.readSingleton(query)
-				: await service.readByQuery(query);
+		const result = collectionInfo?.singleton
+			? await service.readSingleton(query)
+			: await service.readByQuery(query);
 
 		return result;
 	}
