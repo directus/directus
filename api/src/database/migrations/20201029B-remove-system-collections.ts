@@ -85,7 +85,15 @@ export async function down(knex: Knex) {
 			collection: 'directus_webhooks',
 			note: 'Configuration for event-based HTTP requests',
 		},
-	].map((row) => merge({}, defaults, row));
+	].map((row) => {
+		for (const [key, value] of Object.entries(row)) {
+			if (value !== null && (typeof value === 'object' || Array.isArray(value))) {
+				(row as any)[key] = JSON.stringify(value);
+			}
+		}
+
+		return merge({}, defaults, row);
+	});
 
 	await knex.insert(systemCollections).into('directus_collections');
 }

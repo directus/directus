@@ -114,7 +114,15 @@ export async function down(knex: Knex) {
 			one_collection: 'directus_files',
 			one_primary: 'id',
 		},
-	].map((row) => merge({}, defaults, row));
+	].map((row) => {
+		for (const [key, value] of Object.entries(row)) {
+			if (value !== null && (typeof value === 'object' || Array.isArray(value))) {
+				(row as any)[key] = JSON.stringify(value);
+			}
+		}
+
+		return merge({}, defaults, row);
+	});
 
 	await knex.insert(systemRelations).into('directus_relations');
 }

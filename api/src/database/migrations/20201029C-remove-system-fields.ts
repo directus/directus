@@ -1630,7 +1630,15 @@ const systemFields = [
 		locked: true,
 		special: 'csv',
 	},
-].map((row) => merge({}, defaults, row));
+].map((row) => {
+	for (const [key, value] of Object.entries(row)) {
+		if (value !== null && (typeof value === 'object' || Array.isArray(value))) {
+			(row as any)[key] = JSON.stringify(value);
+		}
+	}
+
+	return merge({}, defaults, row);
+});
 
 export async function up(knex: Knex) {
 	const fieldKeys = uniq(systemFields.map((field: any) => field.field));
