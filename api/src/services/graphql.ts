@@ -240,19 +240,36 @@ export class GraphQLService {
 			}
 		}
 
-		schemaWithLists.items = {
-			type: new GraphQLObjectType({
-				name: 'items',
-				fields: schemaWithLists.items,
-			}),
-			resolve: () => ({}),
+		const queryBase: any = {
+			name: 'Directus',
+			fields: {
+				server: {
+					type: new GraphQLObjectType({
+						name: 'server',
+						fields: {
+							ping: {
+								type: GraphQLString,
+								resolve: () => 'pong',
+							},
+						},
+					}),
+					resolve: () => ({}),
+				},
+			},
 		};
 
+		if (Object.keys(schemaWithLists.items).length > 0) {
+			queryBase.fields.items = {
+				type: new GraphQLObjectType({
+					name: 'items',
+					fields: schemaWithLists.items,
+				}),
+				resolve: () => ({}),
+			};
+		}
+
 		return new GraphQLSchema({
-			query: new GraphQLObjectType({
-				name: 'Directus',
-				fields: schemaWithLists,
-			}),
+			query: new GraphQLObjectType(queryBase),
 		});
 	}
 
