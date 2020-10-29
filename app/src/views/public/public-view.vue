@@ -3,14 +3,14 @@
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
 				<div
-					v-if="settings && settings.project_logo"
+					v-if="settings && settings.project && settings.project.project_logo"
 					class="logo"
-					:style="{ backgroundColor: settings.project_color }"
+					:style="{ backgroundColor: settings.project.project_color }"
 				>
-					<img :src="logoURL" :alt="settings.project_name || 'Logo'" />
+					<img :src="logoURL" :alt="settings.project.project_name || 'Logo'" />
 				</div>
 				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
-				<h1 class="title type-title">{{ settings && settings.project_name }}</h1>
+				<h1 class="title type-title">{{ settings && settings.project && settings.project.project_name }}</h1>
 			</div>
 
 			<div class="content">
@@ -22,9 +22,18 @@
 		</div>
 		<div class="art" :style="artStyles">
 			<transition name="scale">
-				<img class="foreground" v-if="foregroundURL" :src="foregroundURL" :alt="settings.project_name" />
+				<img
+					class="foreground"
+					v-if="foregroundURL"
+					:src="foregroundURL"
+					:alt="settings && settings.project && settings.project.project_name"
+				/>
 			</transition>
-			<div class="note" v-if="settings && settings.public_note" v-html="marked(settings.public_note)" />
+			<div
+				class="note"
+				v-if="settings && settings.project && settings.project.public_note"
+				v-html="marked(settings.project.public_note)"
+			/>
 		</div>
 	</div>
 </template>
