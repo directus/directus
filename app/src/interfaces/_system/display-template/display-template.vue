@@ -1,8 +1,8 @@
 <template>
-	<v-notice v-if="!collectionField" type="warning">
+	<v-notice v-if="!collectionField && !collection" type="warning">
 		{{ $t('interfaces.display-template.collection_field_not_setup') }}
 	</v-notice>
-	<v-notice v-else-if="collection === null" type="warning">
+	<v-notice v-else-if="!collection" type="warning">
 		{{ $t('interfaces.display-template.select_a_collection') }}
 	</v-notice>
 	<v-field-template v-else :collection="collection" @input="$listeners.input" :value="value" :disabled="disabled" />
@@ -26,15 +26,19 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		collection: {
+			type: String,
+			default: null,
+		},
 	},
 	setup(props) {
 		const collectionsStore = useCollectionsStore();
 
 		const values = inject('values', ref<Record<string, any>>({}));
 
-		const collection = computed(() => {
-			if (!props.collectionField) return null;
-			const collectionName = values.value[props.collectionField];
+		const collectionName = computed(() => {
+			if (!props.collectionField && !props.collection) return [];
+			const collectionName = props.collection || values.value[props.collectionField];
 			const collectionExists = !!collectionsStore.state.collections.find(
 				(collection) => collection.collection === collectionName
 			);
@@ -42,7 +46,7 @@ export default defineComponent({
 			return collectionName;
 		});
 
-		return { collection };
+		return { collectionName };
 	},
 });
 </script>
