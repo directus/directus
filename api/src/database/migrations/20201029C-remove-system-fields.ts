@@ -1,5 +1,23 @@
 import Knex from 'knex';
-import { uniq } from 'lodash';
+import { uniq, merge } from 'lodash';
+
+const defaults = {
+	collection: null,
+	field: null,
+	special: null,
+	interface: null,
+	options: null,
+	display: null,
+	display_options: null,
+	locked: false,
+	readonly: false,
+	hidden: false,
+	sort: null,
+	width: 'full',
+	group: null,
+	translations: null,
+	note: null,
+};
 
 const systemFields = [
 	{
@@ -1612,10 +1630,11 @@ const systemFields = [
 		locked: true,
 		special: 'csv',
 	},
-];
+].map((row) => merge({}, defaults, row));
 
 export async function up(knex: Knex) {
-	const fieldKeys = uniq(systemFields.map((field) => field.field));
+	const fieldKeys = uniq(systemFields.map((field: any) => field.field));
+
 	await knex('directus_fields')
 		.delete()
 		.where('collection', 'like', 'directus_%')

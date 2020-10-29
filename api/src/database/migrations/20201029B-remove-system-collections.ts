@@ -1,10 +1,21 @@
 import Knex from 'knex';
+import { merge } from 'lodash';
 
 export async function up(knex: Knex) {
 	await knex('directus_collections').delete().where('collection', 'like', 'directus_%');
 }
 
 export async function down(knex: Knex) {
+	const defaults = {
+		collection: null,
+		hidden: false,
+		singleton: false,
+		icon: null,
+		note: null,
+		translations: null,
+		display_template: null,
+	};
+
 	const systemCollections = [
 		{
 			collection: 'directus_activity',
@@ -74,7 +85,7 @@ export async function down(knex: Knex) {
 			collection: 'directus_webhooks',
 			note: 'Configuration for event-based HTTP requests',
 		},
-	];
+	].map((row) => merge({}, defaults, row));
 
 	await knex.insert(systemCollections).into('directus_collections');
 }

@@ -1,4 +1,5 @@
 import Knex from 'knex';
+import { merge } from 'lodash';
 
 export async function up(knex: Knex) {
 	await knex('directus_relations')
@@ -8,6 +9,16 @@ export async function up(knex: Knex) {
 }
 
 export async function down(knex: Knex) {
+	const defaults = {
+		many_collection: 'directus_users',
+		many_field: null,
+		many_primary: null,
+		one_collection: null,
+		one_field: null,
+		one_primary: null,
+		junction_field: null,
+	};
+
 	const systemRelations = [
 		{
 			many_collection: 'directus_users',
@@ -103,7 +114,7 @@ export async function down(knex: Knex) {
 			one_collection: 'directus_files',
 			one_primary: 'id',
 		},
-	];
+	].map((row) => merge({}, defaults, row));
 
 	await knex.insert(systemRelations).into('directus_relations');
 }
