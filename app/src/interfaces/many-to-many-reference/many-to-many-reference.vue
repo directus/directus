@@ -8,19 +8,35 @@
 				<v-input
 					:placeholder="placeholder"
 					:disabled="disabled"
+					:value="localInput"
 					@keydown="onKeyDown"
 					@keyup="onType"
 					@focus="onFocus"
 					@blur="onBlur"
-					:value="localInput"
 				>
 					<template #prepend><v-icon v-if="iconLeft" :name="iconLeft" /></template>
 					<template #append><v-icon v-if="iconRight" :name="iconRight" /></template>
 				</v-input>
 			</template>
 			<v-list v-if="suggestedItems.length">
-				<v-list-item :key="item.id" v-for="item in suggestedItems" @click="() => addItemSuggestion(item)">
-					<v-list-item-content>{{ displayItem(item) }}</v-list-item-content>
+				<v-list-item
+					:key="item.id"
+					v-for="(item, index) in suggestedItems"
+					@click="() => addItemSuggestion(item)"
+					:active="index === suggestedItemsSelected"
+				>
+					<v-list-item-content>
+						<render-template
+							:template="displayTemplate"
+							:item="relatedItem(item)"
+							:collection="relation.one_collection"
+						/>
+					</v-list-item-content>
+				</v-list-item>
+			</v-list>
+			<v-list v-else>
+				<v-list-item>
+					{{ $t('no_items') }}
 				</v-list-item>
 			</v-list>
 		</v-menu>
@@ -34,7 +50,11 @@
 				label
 				@click="() => deleteItem(item)"
 			>
-				{{ displayItem(item) }}
+				<render-template
+					:template="displayTemplate"
+					:item="relatedItem(item)"
+					:collection="relation.one_collection"
+				/>
 			</v-chip>
 		</div>
 	</div>
@@ -78,9 +98,13 @@ export default defineComponent({
 		},
 		allowCustom: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		referencingField: {
+			type: String,
+			default: '',
+		},
+		displayTemplate: {
 			type: String,
 			default: '',
 		},
@@ -102,12 +126,13 @@ export default defineComponent({
 		const typeTimer = ref<any>(null);
 		const localInput = ref<string>('');
 		const suggestedItems = ref<object[]>([]);
+		const suggestedItemsSelected = ref<number | null>(null);
 		const active = ref(false);
 		const sortField = ref<string>(props.referencingField);
 
 		const { junction, relation, relationInfo } = useRelation(collection, field);
 
-		const fields = ref<string[]>([relationInfo.value.junctionField + '.' + props.referencingField]);
+		const fields = ref<string[]>([]);
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
@@ -118,6 +143,12 @@ export default defineComponent({
 			relationInfo,
 			emitter
 		);
+
+		const displayTemplateFields = props.displayTemplate
+			? (props.displayTemplate.match(/{{([^}]+)}}/g) || []).map((field) => field.replace(/[{}]/g, ''))
+			: [props.referencingField];
+
+		fields.value = displayTemplateFields.map((field) => relationInfo.value.junctionField + '.' + field);
 
 		const { items } = usePreview(
 			value,
@@ -134,9 +165,7 @@ export default defineComponent({
 
 		const { stageSelection } = useSelection(value, items, relationInfo, emitter);
 
-		watch(suggestedItems, () => {
-			active.value = suggestedItems.value.length > 0;
-		});
+		watch(suggestedItems, () => onFocus());
 
 		watch(localInput, () => {
 			if (!localInput.value.trim()) {
@@ -155,19 +184,18 @@ export default defineComponent({
 			suggestedItems,
 			localInput,
 			items,
-			displayItem,
+			suggestedItemsSelected,
+			relatedItem,
 			addItemSuggestion,
 			addItemByReferencingValue,
 			deleteItem,
 			stageSelection,
 		};
 
-		function displayItem(item: any) {
-			return (
-				(item[relationInfo.value.junctionField as string]
-					? item[relationInfo.value.junctionField as string][props.referencingField]
-					: item[props.referencingField]) || ''
-			);
+		function relatedItem(item: any) {
+			return item[relationInfo.value.junctionField as string]
+				? item[relationInfo.value.junctionField as string]
+				: item;
 		}
 
 		function addItemSuggestion(item: any) {
@@ -189,6 +217,7 @@ export default defineComponent({
 		}
 
 		function updateSuggestions(keyword: string) {
+			suggestedItemsSelected.value = null;
 			if (keyword.length < 1) {
 				suggestedItems.value = [];
 				return;
@@ -204,30 +233,73 @@ export default defineComponent({
 		async function onKeyDown(event: KeyboardEvent) {
 			if (event.key === 'Tab') {
 				event.preventDefault();
-				localInput.value = displayItem(suggestedItems.value[0]);
 			}
 		}
 
 		async function onType(event: KeyboardEvent) {
 			const value = (event.target as HTMLInputElement).value;
 
-			if (typeTimer.value) clearTimeout(typeTimer.value);
-
-			if (event.key === 'Enter') {
+			if (event.key === 'Escape') {
 				event.preventDefault();
-				addItemByReferencingValue(value.trim());
+				active.value = false;
+			} else if (event.key === 'Enter') {
+				event.preventDefault();
+				if (suggestedItemsSelected.value === null) {
+					addItemByReferencingValue(value.trim());
+				} else {
+					if (suggestedItems.value[suggestedItemsSelected.value]) {
+						addItemSuggestion(suggestedItems.value[suggestedItemsSelected.value]);
+					} else {
+						return;
+					}
+				}
 				localInput.value = '';
+			} else if (event.key === 'ArrowUp') {
+				event.preventDefault();
+				if (suggestedItems.value.length < 1) {
+					return;
+				}
+				if (
+					suggestedItemsSelected.value === null ||
+					suggestedItemsSelected.value < 1 ||
+					!suggestedItems.value[suggestedItemsSelected.value]
+				) {
+					suggestedItemsSelected.value = suggestedItems.value.length - 1;
+				} else {
+					suggestedItemsSelected.value--;
+				}
+			} else if (event.key === 'ArrowDown' || event.key === 'Tab') {
+				event.preventDefault();
+				if (suggestedItems.value.length < 1) {
+					return;
+				}
+				if (
+					suggestedItemsSelected.value === null ||
+					suggestedItemsSelected.value >= suggestedItems.value.length - 1 ||
+					!suggestedItems.value[suggestedItemsSelected.value]
+				) {
+					suggestedItemsSelected.value = 0;
+				} else {
+					suggestedItemsSelected.value++;
+				}
 			} else {
-				localInput.value = value;
+				if (localInput.value === value) {
+					return;
+				}
+				if (typeTimer.value) {
+					clearTimeout(typeTimer.value);
+					typeTimer.value = null;
+				}
 				typeTimer.value = setTimeout(async () => {
 					typeTimer.value = null;
+					localInput.value = value;
 					updateSuggestions(value.trim());
 				}, 500);
 			}
 		}
 
 		function onFocus() {
-			active.value = suggestedItems.value.length > 0;
+			active.value = suggestedItems.value.length > 0 || (!props.allowCustom && !!localInput.value.trim());
 		}
 
 		function onBlur() {
@@ -238,19 +310,17 @@ export default defineComponent({
 			const query = {
 				params: {
 					limit: 10,
-					fields: [relationInfo.value.relationPkField, props.referencingField],
+					fields: [relationInfo.value.relationPkField, ...displayTemplateFields],
 					filter: {
 						[props.referencingField]: {
 							_contains: keyword,
 						},
+						[relationInfo.value.relationPkField]: {
+							_nin: excludeIds.join(','),
+						},
 					},
 				},
 			};
-			if (excludeIds.length) {
-				query.params.filter[relationInfo.value.relationPkField] = {
-					_nin: excludeIds,
-				};
-			}
 			const response = await api.get(`items/${relationInfo.value.relationCollection}`, query);
 			return response?.data.data as Record<string, any>[];
 		}
@@ -259,7 +329,7 @@ export default defineComponent({
 			const response = await api.get(`items/${relationInfo.value.relationCollection}`, {
 				params: {
 					single: true,
-					fields: [relationInfo.value.relationPkField, props.referencingField],
+					fields: [relationInfo.value.relationPkField, ...displayTemplateFields],
 					filter: {
 						[props.referencingField]: {
 							_eq: keyword,
@@ -279,7 +349,7 @@ export default defineComponent({
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 4px 0px 0px;
+	padding: 4px 0 0;
 
 	.tag {
 		margin-top: 8px;
