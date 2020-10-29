@@ -28,13 +28,9 @@ export default async function init(options: Record<string, any>) {
 
 	const dbClient = getDriverForClient(client)!;
 
-	try {
-		require.resolve(dbClient);
-	} catch {
-		const spinnerDriver = ora('Installing Database Driver...').start();
-		await execa('npm', ['install', dbClient, '--production']);
-		spinnerDriver.stop();
-	}
+	const spinnerDriver = ora('Installing Database Driver...').start();
+	await execa('npm', ['install', dbClient, '--production']);
+	spinnerDriver.stop();
 
 	let attemptsRemaining = 5;
 
