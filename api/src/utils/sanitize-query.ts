@@ -29,10 +29,6 @@ export function sanitizeQuery(
 		query.filter = sanitizeFilter(rawQuery.filter, accountability || null);
 	}
 
-	if (rawQuery.limit == '-1') {
-		delete query.limit;
-	}
-
 	if (rawQuery.offset) {
 		query.offset = sanitizeOffset(rawQuery.offset);
 	}
