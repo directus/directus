@@ -561,8 +561,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const record = (await this.readByQuery(query)) as Partial<Item>;
 
 		if (!record) {
-			const columns = await this.schemaInspector.columnInfo(this.collection);
+			let columns = await this.schemaInspector.columnInfo(this.collection);
 			const defaults: Record<string, any> = {};
+
+			if (query.fields && query.fields.includes('*') === false) {
+				columns = columns.filter((column) => {
+					return query.fields!.includes(column.name);
+				});
+			}
 
 			for (const column of columns) {
 				defaults[column.name] = getDefaultValue(column);
