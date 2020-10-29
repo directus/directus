@@ -17,6 +17,9 @@ import getLocalType from '../utils/get-local-type';
 import { format, formatISO } from 'date-fns';
 import { ForbiddenException } from '../exceptions';
 import { toArray } from '../utils/to-array';
+import { FieldMeta } from '../types';
+import { systemFieldRows } from '../database/system-data/fields';
+import { systemRelationRows } from '../database/system-data/relations';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -148,17 +151,21 @@ export class PayloadService {
 
 		const fieldsInPayload = Object.keys(processedPayload[0]);
 
-		const specialFieldsQuery = this.knex
+		let specialFieldsInCollection: FieldMeta[] = await this.knex
 			.select('field', 'special')
 			.from('directus_fields')
 			.where({ collection: this.collection })
 			.whereNotNull('special');
 
-		if (action === 'read') {
-			specialFieldsQuery.whereIn('field', fieldsInPayload);
-		}
+		specialFieldsInCollection.push(
+			...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === this.collection)
+		);
 
-		const specialFieldsInCollection = await specialFieldsQuery;
+		if (action === 'read') {
+			specialFieldsInCollection = specialFieldsInCollection.filter((fieldMeta) => {
+				return fieldsInPayload.includes(fieldMeta.field);
+			});
+		}
 
 		await Promise.all(
 			processedPayload.map(async (record: any) => {
@@ -203,13 +210,13 @@ export class PayloadService {
 	}
 
 	async processField(
-		field: { field: string; special: string },
+		field: FieldMeta,
 		payload: Partial<Item>,
 		action: Action,
 		accountability: Accountability | null
 	) {
 		if (!field.special) return payload[field.field];
-		const fieldSpecials = field.special.split(',').map((s) => s.trim());
+		const fieldSpecials = field.special ? toArray(field.special) : [];
 
 		let value = clone(payload[field.field]);
 
@@ -284,10 +291,15 @@ export class PayloadService {
 	async processM2O(
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		const relations = await this.knex
-			.select<Relation[]>('*')
-			.from('directus_relations')
-			.where({ many_collection: this.collection });
+		const relations = [
+			...(await this.knex
+				.select<Relation[]>('*')
+				.from('directus_relations')
+				.where({ many_collection: this.collection })),
+			...systemRelationRows.filter(
+				(systemRelation) => systemRelation.many_collection === this.collection
+			),
+		];
 
 		const payloads = clone(Array.isArray(payload) ? payload : [payload]);
 
@@ -334,10 +346,15 @@ export class PayloadService {
 	 * Recursively save/update all nested related o2m items
 	 */
 	async processO2M(payload: Partial<Item> | Partial<Item>[], parent?: PrimaryKey) {
-		const relations = await this.knex
-			.select<Relation[]>('*')
-			.from('directus_relations')
-			.where({ one_collection: this.collection });
+		const relations = [
+			...(await this.knex
+				.select<Relation[]>('*')
+				.from('directus_relations')
+				.where({ one_collection: this.collection })),
+			...systemRelationRows.filter(
+				(systemRelation) => systemRelation.one_collection === this.collection
+			),
+		];
 
 		const payloads = clone(toArray(payload));
 

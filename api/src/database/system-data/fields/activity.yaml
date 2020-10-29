@@ -1,8 +1,13 @@
 table: directus_activity
 
 fields:
-  - collection: directus_activity
-    field: action
+  - field: id
+    width: half
+
+  - field: item
+    width: half
+
+  - field: action
     display: labels
     display_options:
       defaultForeground: '#263238'
@@ -24,41 +29,47 @@ fields:
           value: authenticate
           foreground: '#9b51e0'
           background: '#e6d3f7'
-  - collection: directus_activity
-    field: collection
+    width: half
+
+  - field: collection
     display: collection
     display_options:
       icon: true
-  - collection: directus_activity
-    field: timestamp
+    width: half
+
+  - field: timestamp
     display: datetime
     options:
       relative: true
-  - collection: directus_activity
-    field: user
+    width: half
+
+  - field: user
     display: user
-  - collection: directus_activity
-    field: comment
+    width: half
+
+  - field: comment
     display: formatted-text
     display_options:
       subdued: true
-  - collection: directus_activity
-    field: user_agent
+    width: half
+
+  - field: user_agent
     display: formatted-text
     display_options:
       font: monospace
-  - collection: directus_activity
-    field: ip
+    width: half
+
+  - field: ip
     display: formatted-text
     display_options:
       font: monospace
-  - collection: directus_activity
-    field: revisions
+    width: half
+
+  - field: revisions
     interface: one-to-many
-    locked: true
     special: o2m
     options:
       fields:
         - collection
         - item
-    width: full
+    width: half

@@ -1,8 +1,9 @@
 import { QueryBuilder } from 'knex';
-import { Query, Filter } from '../types';
+import { Query, Filter, Relation } from '../types';
 import { schemaInspector } from '../database';
 import Knex from 'knex';
 import { clone, isPlainObject } from 'lodash';
+import { systemRelationRows } from '../database/system-data/relations';
 
 export default async function applyQuery(
 	knex: Knex,
@@ -58,7 +59,10 @@ export async function applyFilter(
 	rootFilter: Filter,
 	collection: string
 ) {
-	const relations = await knex.select('*').from('directus_relations');
+	const relations: Relation[] = [
+		...(await knex.select('*').from('directus_relations')),
+		...systemRelationRows,
+	];
 
 	addWhereClauses(rootQuery, rootFilter, collection);
 	addJoins(rootQuery, rootFilter, collection);
