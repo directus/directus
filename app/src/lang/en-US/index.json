@@ -1049,7 +1049,7 @@
       "company": "Company",
       "title": "Title",
       "timezone": "Timezone",
-      "language": "language",
+      "language": "Language",
       "avatar": "Avatar",
       "theme": "Theme",
       "tfa_secret": "Two-Factor Authentication"
