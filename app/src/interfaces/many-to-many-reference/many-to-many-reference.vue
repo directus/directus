@@ -2,28 +2,28 @@
 	<v-notice type="warning" v-if="!junction || !relation || !junction.junction_field">
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
-	<div class="one-to-many" v-else>
-		<v-menu attached :disabled="disabled">
-			<template #activator="{ activate }">
+	<div v-else>
+		<v-menu v-model="active" :close-on-click="false" :close-on-content-click="false" attached :disabled="disabled">
+			<template #activator>
 				<v-input
-					:placeholder="placeholder || $t('interfaces.tags.add_tags')"
+					:placeholder="placeholder"
 					:disabled="disabled"
 					@keydown="onKeyDown"
 					@keyup="onType"
-					@focus="activate"
+					@focus="onFocus"
+					@blur="onBlur"
 					:value="localInput"
 				>
 					<template #prepend><v-icon v-if="iconLeft" :name="iconLeft" /></template>
 					<template #append><v-icon v-if="iconRight" :name="iconRight" /></template>
 				</v-input>
 			</template>
-			<v-list>
+			<v-list v-if="suggestedItems.length">
 				<v-list-item :key="item.id" v-for="item in suggestedItems" @click="() => addItemSuggestion(item)">
 					<v-list-item-content>{{ displayItem(item) }}</v-list-item-content>
 				</v-list-item>
 			</v-list>
 		</v-menu>
-
 		<div class="tags" v-if="items.length > 0">
 			<v-chip
 				v-for="(item, index) in items"
@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType, toRefs } from '@vue/composition-api';
+import { defineComponent, ref, PropType, toRefs, watch } from '@vue/composition-api';
 
 import useActions from '../many-to-many/use-actions';
 import useRelation from '../many-to-many/use-relation';
@@ -72,15 +72,13 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-
-		// from tags
 		placeholder: {
 			type: String,
 			default: null,
 		},
 		allowCustom: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 		referencingField: {
 			type: String,
@@ -92,11 +90,11 @@ export default defineComponent({
 		},
 		iconLeft: {
 			type: String,
-			default: null,
+			default: 'local_offer',
 		},
 		iconRight: {
 			type: String,
-			default: 'local_offer',
+			default: null,
 		},
 	},
 	setup(props, { emit }) {
@@ -104,6 +102,7 @@ export default defineComponent({
 		const typeTimer = ref<any>(null);
 		const localInput = ref<string>('');
 		const suggestedItems = ref<object[]>([]);
+		const active = ref(false);
 		const sortField = ref<string>(props.referencingField);
 
 		const { junction, relation, relationInfo } = useRelation(collection, field);
@@ -135,16 +134,30 @@ export default defineComponent({
 
 		const { stageSelection } = useSelection(value, items, relationInfo, emitter);
 
+		watch(suggestedItems, () => {
+			active.value = suggestedItems.value.length > 0;
+		});
+
+		watch(localInput, () => {
+			if (!localInput.value.trim()) {
+				active.value = false;
+			}
+		});
+
 		return {
+			active,
 			junction,
 			relation,
 			onKeyDown,
 			onType,
+			onFocus,
+			onBlur,
 			suggestedItems,
 			localInput,
 			items,
 			displayItem,
 			addItemSuggestion,
+			addItemByReferencingValue,
 			deleteItem,
 			stageSelection,
 		};
@@ -159,14 +172,13 @@ export default defineComponent({
 
 		function addItemSuggestion(item: any) {
 			stageSelection([item[relationInfo.value.relationPkField]]);
-			localInput.value = '';
 		}
 
 		function addItemByReferencingValue(value: string) {
 			findByKeyword(value).then((item) => {
 				if (item) {
 					stageSelection([item[relationInfo.value.relationPkField]]);
-				} else {
+				} else if (props.allowCustom) {
 					stageEdits({
 						[relationInfo.value.junctionField as string]: {
 							[props.referencingField]: value,
@@ -177,51 +189,55 @@ export default defineComponent({
 		}
 
 		function updateSuggestions(keyword: string) {
-			findSuggestions(keyword)
-				.then((itemsFound) =>
-					itemsFound.filter((item) => {
-						return !items.value.find(
-							(i) =>
-								i[relationInfo.value.junctionField][relationInfo.value.relationPkField] ===
-								item[relationInfo.value.junctionPkField]
-						);
-					})
-				)
-				.then((itemsFound) => {
-					suggestedItems.value = itemsFound;
-				});
+			if (keyword.length < 1) {
+				suggestedItems.value = [];
+				return;
+			}
+			const currentIds = items.value
+				.map((i) => i[relationInfo.value.junctionField][relationInfo.value.relationPkField])
+				.filter((i) => !!i);
+			findSuggestions(keyword, currentIds).then((itemsFound) => {
+				suggestedItems.value = itemsFound;
+			});
 		}
 
 		async function onKeyDown(event: KeyboardEvent) {
-			if (event.key === 'Tab' && suggestedItems.value.length > 0) {
+			if (event.key === 'Tab') {
 				event.preventDefault();
 				localInput.value = displayItem(suggestedItems.value[0]);
 			}
 		}
 
 		async function onType(event: KeyboardEvent) {
-			const value = (event.target as HTMLInputElement).value.trim();
+			const value = (event.target as HTMLInputElement).value;
 
-			if (!value) return;
+			if (typeTimer.value) clearTimeout(typeTimer.value);
 
 			if (event.key === 'Enter') {
 				event.preventDefault();
-				addItemByReferencingValue(value);
+				addItemByReferencingValue(value.trim());
 				localInput.value = '';
 			} else {
-				if (typeTimer.value) clearTimeout(typeTimer.value);
+				localInput.value = value;
 				typeTimer.value = setTimeout(async () => {
 					typeTimer.value = null;
-					localInput.value = value;
-					updateSuggestions(value);
+					updateSuggestions(value.trim());
 				}, 500);
 			}
 		}
 
-		async function findSuggestions(keyword: string) {
-			const response = await api.get(`items/${relationInfo.value.relationCollection}`, {
+		function onFocus() {
+			active.value = suggestedItems.value.length > 0;
+		}
+
+		function onBlur() {
+			active.value = false;
+		}
+
+		async function findSuggestions(keyword: string, excludeIds: string[] | number[]) {
+			const query = {
 				params: {
-					limit: 25,
+					limit: 10,
 					fields: [relationInfo.value.relationPkField, props.referencingField],
 					filter: {
 						[props.referencingField]: {
@@ -229,14 +245,20 @@ export default defineComponent({
 						},
 					},
 				},
-			});
+			};
+			if (excludeIds.length) {
+				query.params.filter[relationInfo.value.relationPkField] = {
+					_nin: excludeIds,
+				};
+			}
+			const response = await api.get(`items/${relationInfo.value.relationCollection}`, query);
 			return response?.data.data as Record<string, any>[];
 		}
 
 		async function findByKeyword(keyword: string) {
 			const response = await api.get(`items/${relationInfo.value.relationCollection}`, {
 				params: {
-					single: 1,
+					single: true,
 					fields: [relationInfo.value.relationPkField, props.referencingField],
 					filter: {
 						[props.referencingField]: {
