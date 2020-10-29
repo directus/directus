@@ -3,37 +3,79 @@ table: directus_fields
 
 fields:
   - collection: directus_fields
-    field: options
-    hidden: true
-    locked: true
-    special: json
+    field: id
+    width: half
+
   - collection: directus_fields
-    field: display_options
-    hidden: true
-    locked: true
-    special: json
+    field: collection
+    width: half
+
   - collection: directus_fields
-    field: locked
-    hidden: true
-    locked: true
-    special: boolean
-  - collection: directus_fields
-    field: readonly
-    hidden: true
-    locked: true
-    special: boolean
-  - collection: directus_fields
-    field: hidden
-    hidden: true
-    locked: true
-    special: boolean
+    field: field
+    width: half
+
   - collection: directus_fields
     field: special
     hidden: true
-    locked: true
     special: csv
+    width: half
+
+  - collection: directus_fields
+    field: interface
+    width: half
+
+  - collection: directus_fields
+    field: options
+    hidden: true
+    special: json
+    width: half
+
+  - collection: directus_fields
+    field: display
+    width: half
+
+  - collection: directus_fields
+    field: display_options
+    hidden: true
+    special: json
+    width: half
+
+  - collection: directus_fields
+    field: locked
+    hidden: true
+    special: boolean
+    width: half
+
+  - collection: directus_fields
+    field: readonly
+    hidden: true
+    special: boolean
+    width: half
+
+  - collection: directus_fields
+    field: hidden
+    hidden: true
+    special: boolean
+    width: half
+
+  - collection: directus_fields
+    field: sort
+    width: half
+
+  - collection: directus_fields
+    field: width
+    width: half
+
+  - collection: directus_fields
+    field: group
+    width: half
+
   - collection: directus_fields
     field: translations
     hidden: true
-    locked: true
     special: json
+    width: half
+
+  - collection: directus_fields
+    field: note
+    width: half

@@ -2,13 +2,33 @@
 table: directus_permissions
 
 fields:
-  - collection: directus_permissions
-    field: permissions
+  - field: permissions
     hidden: true
-    locked: true
     special: json
-  - collection: directus_permissions
-    field: presets
+    width: half
+
+  - field: presets
     hidden: true
-    locked: true
     special: json
+    width: half
+
+  - field: role
+    width: half
+
+  - field: limit
+    width: half
+
+  - field: collection
+    width: half
+
+  - field: id
+    width: half
+
+  - field: fields
+    width: half
+
+  - field: action
+    width: half
+
+  - field: validation
+    width: half

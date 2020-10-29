@@ -1,102 +1,85 @@
 table: directus_settings
 
 fields:
-  - collection: directus_settings
-    field: project_name
+  - field: id
+    hidden: true
+
+  - field: project_name
     interface: text-input
-    locked: true
     options:
       iconRight: title
       placeholder: My project...
-    sort: 1
     translations:
       language: en-US
       translations: Name
     width: half
-  - collection: directus_settings
-    field: project_url
+
+  - field: project_url
     interface: text-input
-    locked: true
     options:
       iconRight: link
       placeholder: https://example.com
-    sort: 2
     translations:
       language: en-US
       translations: Website
     width: half
-  - collection: directus_settings
-    field: project_color
+
+  - field: project_color
     interface: color
-    locked: true
     note: Login & Logo Background
-    sort: 3
     translations:
       language: en-US
       translations: Brand Color
     width: half
-  - collection: directus_settings
-    field: project_logo
+
+  - field: project_logo
     interface: file
-    locked: true
     note: White 40x40 SVG/PNG
-    sort: 4
     translations:
       language: en-US
       translations: Brand Logo
     width: half
-  - collection: directus_settings
-    field: public_divider
+
+  - field: public_divider
     interface: divider
-    locked: true
     options:
       icon: public
       title: Public Pages
       color: '#2F80ED'
     special: alias
-    sort: 5
     width: full
-  - collection: directus_settings
-    field: public_foreground
+
+  - field: public_foreground
     interface: file
-    locked: true
-    sort: 6
     translations:
       language: en-US
       translations: Login Foreground
     width: half
-  - collection: directus_settings
-    field: public_background
+
+  - field: public_background
     interface: file
-    locked: true
-    sort: 7
     translations:
       language: en-US
       translations: Login Background
     width: half
-  - collection: directus_settings
-    field: public_note
+
+  - field: public_note
     interface: textarea
-    locked: true
     options:
       placeholder: A short, public message that supports markdown formatting...
-    sort: 8
     width: full
-  - collection: directus_settings
-    field: security_divider
+
+  - field: security_divider
     interface: divider
-    locked: true
     options:
       icon: security
       title: Security
       color: '#2F80ED'
     special: alias
-    sort: 9
     width: full
-  - collection: directus_settings
-    field: auth_password_policy
+
+  - field: auth_password_policy
     interface: dropdown
-    locked: true
     options:
       choices:
         - value: null
@@ -105,31 +88,25 @@ fields:
           text: Weak – Minimum 8 Characters
         - value: "/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/"
           text: Strong – Upper / Lowercase / Numbers / Special
-    sort: 10
     width: half
-  - collection: directus_settings
-    field: auth_login_attempts
+
+  - field: auth_login_attempts
     interface: numeric
-    locked: true
     options:
       iconRight: lock
-    sort: 11
     width: half
-  - collection: directus_settings
-    field: files_divider
+
+  - field: files_divider
     interface: divider
-    locked: true
     options:
       icon: storage
       title: Files & Thumbnails
       color: '#2F80ED'
     special: alias
-    sort: 12
     width: full
-  - collection: directus_settings
-    field: storage_asset_presets
+
+  - field: storage_asset_presets
     interface: repeater
-    locked: true
     options:
       fields:
         - field: key
@@ -187,12 +164,10 @@ fields:
             width: full
       template: '{{key}}'
     special: json
-    sort: 13
     width: full
-  - collection: directus_settings
-    field: storage_asset_transform
+
+  - field: storage_asset_transform
     interface: dropdown
-    locked: true
     options:
       choices:
         - value: all
@@ -201,29 +176,20 @@ fields:
           text: None
         - value: presets
           text: Presets Only
-    sort: 14
     width: half
-  - collection: directus_settings
-    field: id
-    hidden: true
-    locked: true
-  - collection: directus_settings
-    field: overrides_divider
+
+  - field: overrides_divider
     interface: divider
-    locked: true
     options:
       icon: brush
       title: App Overrides
       color: '#2F80ED'
     special: alias
-    sort: 15
     width: full
-  - collection: directus_settings
-    field: custom_css
+
+  - field: custom_css
     interface: code
-    locked: true
     options:
       language: css
       lineNumber: true
-    sort: 16
     width: full

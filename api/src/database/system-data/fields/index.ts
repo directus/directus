@@ -14,7 +14,12 @@ for (const filepath of fieldData) {
 
 	const systemFields = requireYAML(path.resolve(__dirname, filepath));
 
-	for (const field of systemFields.fields) {
-		systemFieldRows.push(merge({ system: true }, defaults, field));
-	}
+	(systemFields.fields as FieldMeta[]).forEach((field, index) => {
+		systemFieldRows.push(
+			merge({ system: true }, defaults, field, {
+				collection: systemFields.table,
+				sort: index + 1,
+			})
+		);
+	});
 }
