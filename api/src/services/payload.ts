@@ -19,6 +19,7 @@ import { ForbiddenException } from '../exceptions';
 import { toArray } from '../utils/to-array';
 import { FieldMeta } from '../types';
 import { systemFieldRows } from '../database/system-data/fields';
+import { systemRelationRows } from '../database/system-data/relations';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -290,10 +291,15 @@ export class PayloadService {
 	async processM2O(
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		const relations = await this.knex
-			.select<Relation[]>('*')
-			.from('directus_relations')
-			.where({ many_collection: this.collection });
+		const relations = [
+			...(await this.knex
+				.select<Relation[]>('*')
+				.from('directus_relations')
+				.where({ many_collection: this.collection })),
+			...systemRelationRows.filter(
+				(systemRelation) => systemRelation.many_collection === this.collection
+			),
+		];
 
 		const payloads = clone(Array.isArray(payload) ? payload : [payload]);
 
@@ -340,10 +346,15 @@ export class PayloadService {
 	 * Recursively save/update all nested related o2m items
 	 */
 	async processO2M(payload: Partial<Item> | Partial<Item>[], parent?: PrimaryKey) {
-		const relations = await this.knex
-			.select<Relation[]>('*')
-			.from('directus_relations')
-			.where({ one_collection: this.collection });
+		const relations = [
+			...(await this.knex
+				.select<Relation[]>('*')
+				.from('directus_relations')
+				.where({ one_collection: this.collection })),
+			...systemRelationRows.filter(
+				(systemRelation) => systemRelation.one_collection === this.collection
+			),
+		];
 
 		const payloads = clone(toArray(payload));
 

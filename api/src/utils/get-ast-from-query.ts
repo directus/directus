@@ -17,6 +17,7 @@ import Knex from 'knex';
 import SchemaInspector from 'knex-schema-inspector';
 import { getRelationType } from '../utils/get-relation-type';
 import { systemFieldRows } from '../database/system-data/fields';
+import { systemRelationRows } from '../database/system-data/relations';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -40,7 +41,10 @@ export default async function getASTFromQuery(
 	 * we might not need al this info at all times, but it's easier to fetch it all once, than trying to fetch it for every
 	 * requested field. @todo look into utilizing graphql/dataloader for this purpose
 	 */
-	const relations = await knex.select<Relation[]>('*').from('directus_relations');
+	const relations = [
+		...(await knex.select<Relation[]>('*').from('directus_relations')),
+		...systemRelationRows,
+	];
 
 	const permissions =
 		accountability && accountability.admin !== true
