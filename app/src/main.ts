@@ -1,6 +1,6 @@
 import getRootPath from './utils/get-root-path';
 
-__webpack_public_path__ = getRootPath() + '/admin/';
+__webpack_public_path__ = getRootPath() + 'admin/';
 
 import { version } from '../package.json';
 
