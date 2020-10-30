@@ -11,7 +11,9 @@ type Migration = {
 
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest') {
 	let migrationFiles = await fse.readdir(__dirname);
-	migrationFiles = migrationFiles.filter((file: string) => file !== 'run.ts');
+	migrationFiles = migrationFiles.filter(
+		(file: string) => file.startsWith('run') === false && file.endsWith('.ts') === false
+	);
 
 	const completedMigrations = await database
 		.select<Migration[]>('*')
