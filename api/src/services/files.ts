@@ -41,7 +41,7 @@ export class FilesService extends ItemsService {
 		const fileExtension =
 			(payload.type && extension(payload.type)) || path.extname(payload.filename_download);
 
-		payload.filename_disk = primaryKey + fileExtension;
+		payload.filename_disk = primaryKey + '.' + fileExtension;
 
 		if (!payload.type) {
 			payload.type = 'application/octet-stream';

@@ -1002,6 +1002,9 @@
   "singleton": "Singleton",
   "singleton_label": "Treat as single object",
 
+
+  "system_fields_locked": "System fields are locked and can't be edited",
+
   "fields": {
     "directus_activity": {
       "action": "Action",
@@ -1046,7 +1049,7 @@
       "company": "Company",
       "title": "Title",
       "timezone": "Timezone",
-      "language": "language",
+      "language": "Language",
       "avatar": "Avatar",
       "theme": "Theme",
       "tfa_secret": "Two-Factor Authentication"

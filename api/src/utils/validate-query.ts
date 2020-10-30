@@ -1,6 +1,7 @@
 import { Query } from '../types';
 import Joi from 'joi';
 import { InvalidQueryException } from '../exceptions';
+import { isPlainObject } from 'lodash';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
@@ -38,7 +39,7 @@ export function validateQuery(query: Query) {
 function validateFilter(filter: Query['filter']) {
 	if (!filter) throw new InvalidQueryException('Invalid filter object');
 
-	for (const [key, nested] of Object.entries(filter)) {
+	for (let [key, nested] of Object.entries(filter)) {
 		if (key === '_and' || key === '_or') {
 			nested.forEach(validateFilter);
 		} else if (key.startsWith('_')) {
@@ -67,6 +68,8 @@ function validateFilter(filter: Query['filter']) {
 					validateBoolean(value, key);
 					break;
 			}
+		} else if (isPlainObject(nested) === false && Array.isArray(nested) === false) {
+			validateFilterPrimitive(nested, '_eq');
 		} else {
 			validateFilter(nested);
 		}

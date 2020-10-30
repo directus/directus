@@ -6,7 +6,7 @@ import {
 	Action,
 	Accountability,
 	PermissionsAction,
-	Item,
+	Item as AnyItem,
 	Query,
 	PrimaryKey,
 	AbstractService,
@@ -26,7 +26,7 @@ import getDefaultValue from '../utils/get-default-value';
 import { InvalidPayloadException } from '../exceptions';
 import { ForbiddenException } from '../exceptions';
 
-export class ItemsService implements AbstractService {
+export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
 	collection: string;
 	knex: Knex;
 	accountability: Accountability | null;
@@ -52,7 +52,7 @@ export class ItemsService implements AbstractService {
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 		const columns = await this.schemaInspector.columns(this.collection);
 
-		let payloads = clone(toArray(data));
+		let payloads: AnyItem[] = clone(toArray(data));
 
 		const savedPrimaryKeys = await this.knex.transaction(async (trx) => {
 			const payloadService = new PayloadService(this.collection, {
@@ -194,7 +194,7 @@ export class ItemsService implements AbstractService {
 		return Array.isArray(data) ? savedPrimaryKeys : savedPrimaryKeys[0];
 	}
 
-	async readByQuery(query: Query): Promise<null | Item | Item[]> {
+	async readByQuery(query: Query): Promise<null | Partial<Item> | Partial<Item>[]> {
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
 			knex: this.knex,
@@ -210,20 +210,24 @@ export class ItemsService implements AbstractService {
 		}
 
 		const records = await runAST(ast, { knex: this.knex });
-		return records;
+		return records as Partial<Item> | Partial<Item>[] | null;
 	}
 
 	readByKey(
 		keys: PrimaryKey[],
 		query?: Query,
 		action?: PermissionsAction
-	): Promise<null | Item[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Item>;
+	): Promise<null | Partial<Item>[]>;
+	readByKey(
+		key: PrimaryKey,
+		query?: Query,
+		action?: PermissionsAction
+	): Promise<null | Partial<Item>>;
 	async readByKey(
 		key: PrimaryKey | PrimaryKey[],
 		query: Query = {},
 		action: PermissionsAction = 'read'
-	): Promise<null | Item | Item[]> {
+	): Promise<null | Partial<Item> | Partial<Item>[]> {
 		query = clone(query);
 		const primaryKeyField = await this.schemaInspector.primary(this.collection);
 		const keys = toArray(key);
@@ -260,7 +264,7 @@ export class ItemsService implements AbstractService {
 
 		if (result === null) throw new ForbiddenException();
 
-		return result;
+		return result as Partial<Item> | Partial<Item>[] | null;
 	}
 
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
@@ -277,7 +281,7 @@ export class ItemsService implements AbstractService {
 		if (data && key) {
 			const keys = toArray(key);
 
-			let payload = clone(data);
+			let payload: Partial<AnyItem> | Partial<AnyItem>[] = clone(data);
 
 			const customProcessed = await emitter.emitAsync(
 				`${this.eventScope}.update.before`,
@@ -550,21 +554,27 @@ export class ItemsService implements AbstractService {
 		return await this.delete(keys);
 	}
 
-	async readSingleton(query: Query) {
+	async readSingleton(query: Query): Promise<Partial<Item>> {
 		query = clone(query);
 		query.single = true;
 
-		const record = (await this.readByQuery(query)) as Item;
+		const record = (await this.readByQuery(query)) as Partial<Item>;
 
 		if (!record) {
-			const columns = await this.schemaInspector.columnInfo(this.collection);
+			let columns = await this.schemaInspector.columnInfo(this.collection);
 			const defaults: Record<string, any> = {};
+
+			if (query.fields && query.fields.includes('*') === false) {
+				columns = columns.filter((column) => {
+					return query.fields!.includes(column.name);
+				});
+			}
 
 			for (const column of columns) {
 				defaults[column.name] = getDefaultValue(column);
 			}
 
-			return defaults;
+			return defaults as Partial<Item>;
 		}
 
 		return record;

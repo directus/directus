@@ -3,6 +3,7 @@ import { replaceRoutes } from '@/router';
 import { getModules } from './index';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import api from '@/api';
+import { merge } from 'lodash';
 
 const modules = getModules();
 let loadedModules: any = [];
@@ -19,10 +20,21 @@ export async function loadModules() {
 	try {
 		const customResponse = await api.get('/extensions/modules');
 
-		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
+		if (
+			customResponse.data.data &&
+			Array.isArray(customResponse.data.data) &&
+			customResponse.data.data.length > 0
+		) {
 			for (const customKey of customResponse.data.data) {
 				try {
 					const module = await import(/* webpackIgnore: true */ `/extensions/modules/${customKey}/index.js`);
+					module.default.routes = module.default.routes.map((route: RouteConfig) => {
+						if (route.path) {
+							route.path = `/${module.default.id}/${route.path}`;
+						}
+
+						return route;
+					});
 					loadedModules.push(module.default);
 				} catch (err) {
 					console.error(`Couldn't load custom module "${customKey}"`);

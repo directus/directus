@@ -9,7 +9,6 @@ import { Transformation } from '../types/assets';
 import storage from '../storage';
 import { PayloadService, AssetsService } from '../services';
 import useCollection from '../middleware/use-collection';
-import { respond } from '../middleware/respond';
 
 const router = Router();
 
@@ -79,18 +78,20 @@ router.get(
 		];
 
 		// For use in the next request handler
-		res.locals.shortcuts = [...SYSTEM_ASSET_ALLOW_LIST, assetSettings.storage_asset_presets];
+		res.locals.shortcuts = [
+			...SYSTEM_ASSET_ALLOW_LIST,
+			...(assetSettings.storage_asset_presets || []),
+		];
 		res.locals.transformation = transformation;
 
 		if (Object.keys(transformation).length === 0) {
 			return next();
 		}
-
-		if (assetSettings.asset_generation === 'all') {
+		if (assetSettings.storage_asset_transform === 'all') {
 			if (transformation.key && allKeys.includes(transformation.key as string) === false)
 				throw new InvalidQueryException(`Key "${transformation.key}" isn't configured.`);
 			return next();
-		} else if (assetSettings.asset_generation === 'shortcut') {
+		} else if (assetSettings.storage_asset_transform === 'shortcut') {
 			if (allKeys.includes(transformation.key as string)) return next();
 			throw new InvalidQueryException(
 				`Only configured shortcuts can be used in asset generation.`

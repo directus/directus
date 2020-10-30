@@ -19,9 +19,6 @@ columns:
   collection:
     type: string
     length: 64
-    references:
-      table: directus_collections
-      column: collection
   search:
     type: string
     length: 100

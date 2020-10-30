@@ -1,43 +1,35 @@
 table: directus_webhooks
 
 fields:
-  - collection: directus_webhooks
-    field: id
+  - field: id
     hidden: true
-    locked: true
-  - collection: directus_webhooks
-    field: name
+
+  - field: name
     interface: text-input
-    locked: true
     options:
       iconRight: title
-    sort: 1
     width: full
-  - collection: directus_webhooks
-    field: method
+
+  - field: method
     interface: dropdown
     display: labels
     display_options:
       defaultBackground: "#ECEFF1"
       choices: null
       format: false
-    locked: true
     options:
       choices:
         - GET
         - POST
-    sort: 2
     width: half
-  - collection: directus_webhooks
-    field: url
+
+  - field: url
     interface: text-input
-    locked: true
     options:
       iconRight: link
-    sort: 3
     width: half
-  - collection: directus_webhooks
-    field: status
+
+  - field: status
     interface: dropdown
     display: labels
     display_options:
@@ -53,36 +45,31 @@ fields:
         value: inactive
         foreground: "#607D8B"
         background: "#ECEFF1"
-    locked: true
     options:
       choices:
         - text: Active
           value: active
         - text: Inactive
           value: inactive
-    sort: 4
     width: half
-  - collection: directus_webhooks
-    field: data
+
+  - field: data
     interface: toggle
-    locked: true
     options:
       label: Send Event Data
     special: boolean
-    sort: 5
     width: half
-  - collection: directus_webhooks
-    field: triggers_divider
+
+  - field: triggers_divider
     interface: divider
     options:
       icon: api
       title: Triggers
       color: '#2F80ED'
     special: alias
-    sort: 6
     width: full
-  - collection: directus_webhooks
-    field: actions
+
+  - field: actions
     interface: checkboxes
     options:
       choices:
@@ -93,11 +80,9 @@ fields:
         - text: Delete
           value: delete
     special: csv
-    sort: 7
     width: full
-  - collection: directus_webhooks
-    field: collections
+
+  - field: collections
     interface: collections
     special: csv
-    sort: 8
     width: full

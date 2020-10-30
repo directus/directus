@@ -110,7 +110,7 @@ export default defineComponent({
 			if (props.file.type.startsWith('image') === false) return null;
 			if (props.file.type.includes('svg') === false) return null;
 
-			return getRootPath() + `assets/${props.file.id}&modified=${props.file.modified_on}`;
+			return getRootPath() + `assets/${props.file.id}?modified=${props.file.modified_on}`;
 		});
 
 		const selectionIcon = computed(() => {

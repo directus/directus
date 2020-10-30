@@ -40,7 +40,7 @@ export class MetaService {
 		const dbQuery = database(collection).count('*', { as: 'count' });
 
 		if (query.filter) {
-			await applyFilter(dbQuery, query.filter, collection);
+			await applyFilter(this.knex, dbQuery, query.filter, collection);
 		}
 
 		const records = await dbQuery;
