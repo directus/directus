@@ -35,7 +35,7 @@ export default async function runSeed(database: Knex) {
 	const tableSeeds = await fse.readdir(path.resolve(__dirname));
 
 	for (const tableSeedFile of tableSeeds) {
-		if (tableSeedFile === 'run.ts') continue;
+		if (tableSeedFile.startsWith('run')) continue;
 
 		const yamlRaw = await fse.readFile(path.resolve(__dirname, tableSeedFile), 'utf8');
 
