@@ -46,7 +46,7 @@
 			"url": "https://github.com/benhaynes"
 		}
 	],
-	"main": "dist/app.js",
+	"main": "index.js",
 	"bin": {
 		"directus": "cli.js"
 	},

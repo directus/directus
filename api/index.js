@@ -1,1 +1,5 @@
-module.exports = require('/dist/app').default;
+module.exports = {
+	createApp: require('./dist/app').default,
+	...require('./dist/exceptions'),
+	...require('./dist/services'),
+};
