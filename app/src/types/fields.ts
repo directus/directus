@@ -65,6 +65,7 @@ export type FieldMeta = {
 	translations: null | Translations[];
 	width: Width | null;
 	note: string | TranslateResult | null;
+	system?: true;
 };
 
 export interface FieldRaw {

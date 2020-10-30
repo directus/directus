@@ -1,5 +1,11 @@
 import database, { schemaInspector } from '../database';
-import { AbstractServiceOptions, Accountability, Collection, Relation } from '../types';
+import {
+	AbstractServiceOptions,
+	Accountability,
+	Collection,
+	CollectionMeta,
+	Relation,
+} from '../types';
 import Knex from 'knex';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import SchemaInspector from 'knex-schema-inspector';
@@ -7,6 +13,7 @@ import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
 import cache from '../cache';
 import { toArray } from '../utils/to-array';
+import { systemCollectionRows } from '../database/system-data/collections';
 
 export class CollectionsService {
 	knex: Knex;
@@ -106,6 +113,7 @@ export class CollectionsService {
 			knex: this.knex,
 			accountability: this.accountability,
 		});
+
 		const collectionKeys = toArray(collection);
 
 		if (this.accountability && this.accountability.admin !== true) {
@@ -135,7 +143,9 @@ export class CollectionsService {
 		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
 		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: collectionKeys } },
-		})) as Collection['meta'][];
+		})) as CollectionMeta[];
+
+		meta.push(...systemCollectionRows);
 
 		const collections: Collection[] = [];
 
@@ -173,7 +183,9 @@ export class CollectionsService {
 		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
 		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: tablesToFetchInfoFor } },
-		})) as Collection['meta'][];
+		})) as CollectionMeta[];
+
+		meta.push(...systemCollectionRows);
 
 		const collections: Collection[] = [];
 

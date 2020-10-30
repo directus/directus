@@ -7,7 +7,6 @@ import {
 	Field,
 	Relation,
 	Query,
-	AbstractService,
 } from '../types';
 import {
 	GraphQLString,
@@ -49,6 +48,7 @@ import { UsersService } from './users';
 import { WebhooksService } from './webhooks';
 
 import { getRelationType } from '../utils/get-relation-type';
+import { systemCollectionRows } from '../database/system-data/collections';
 
 export class GraphQLService {
 	accountability: Accountability | null;
@@ -240,19 +240,36 @@ export class GraphQLService {
 			}
 		}
 
-		schemaWithLists.items = {
-			type: new GraphQLObjectType({
-				name: 'items',
-				fields: schemaWithLists.items,
-			}),
-			resolve: () => ({}),
+		const queryBase: any = {
+			name: 'Directus',
+			fields: {
+				server: {
+					type: new GraphQLObjectType({
+						name: 'server',
+						fields: {
+							ping: {
+								type: GraphQLString,
+								resolve: () => 'pong',
+							},
+						},
+					}),
+					resolve: () => ({}),
+				},
+			},
 		};
 
+		if (Object.keys(schemaWithLists.items).length > 0) {
+			queryBase.fields.items = {
+				type: new GraphQLObjectType({
+					name: 'items',
+					fields: schemaWithLists.items,
+				}),
+				resolve: () => ({}),
+			};
+		}
+
 		return new GraphQLSchema({
-			query: new GraphQLObjectType({
-				name: 'Directus',
-				fields: schemaWithLists,
-			}),
+			query: new GraphQLObjectType(queryBase),
 		});
 	}
 
@@ -504,15 +521,19 @@ export class GraphQLService {
 				});
 		}
 
-		const collectionInfo = await this.knex
-			.select('singleton')
-			.from('directus_collections')
-			.where({ collection: collection })
-			.first();
-		const result =
-			collectionInfo?.singleton === true
-				? await service.readSingleton(query)
-				: await service.readByQuery(query);
+		const collectionInfo =
+			(await this.knex
+				.select('singleton')
+				.from('directus_collections')
+				.where({ collection: collection })
+				.first()) ||
+			systemCollectionRows.find(
+				(collectionMeta) => collectionMeta?.collection === collection
+			);
+
+		const result = collectionInfo?.singleton
+			? await service.readSingleton(query)
+			: await service.readByQuery(query);
 
 		return result;
 	}

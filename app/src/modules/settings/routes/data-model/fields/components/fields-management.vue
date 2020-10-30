@@ -1,14 +1,18 @@
 <template>
 	<div class="fields-management">
+		<div class="field-grid">
+			<field-select disabled v-for="field in lockedFields" :key="field.field" :field="field" />
+		</div>
+
 		<draggable
 			class="field-grid"
-			:value="sortedFields"
+			:value="usableFields"
 			handle=".drag-handle"
 			group="fields"
 			:set-data="hideDragImage"
 			@input="setSort"
 		>
-			<field-select v-for="field in sortedFields" :key="field.field" :field="field" />
+			<field-select v-for="field in usableFields" :key="field.field" :field="field" />
 		</draggable>
 
 		<v-menu attached>
@@ -85,8 +89,18 @@ export default defineComponent({
 		const { fields } = useCollection(collection);
 		const fieldsStore = useFieldsStore();
 
-		const sortedFields = computed(() => {
-			return orderBy(fields.value, [(o) => o.meta?.sort || null, (o) => o.meta?.id]);
+		const parsedFields = computed(() => {
+			return orderBy(fields.value, [(o) => o.meta?.sort || null, (o) => o.meta?.id]).filter(
+				(field) => field.field.startsWith('$') === false
+			);
+		});
+
+		const lockedFields = computed(() => {
+			return parsedFields.value.filter((field) => field.meta?.system === true);
+		});
+
+		const usableFields = computed(() => {
+			return parsedFields.value.filter((field) => field.meta?.system !== true);
 		});
 
 		const addOptions = computed(() => [
@@ -142,7 +156,8 @@ export default defineComponent({
 		]);
 
 		return {
-			sortedFields,
+			usableFields,
+			lockedFields,
 			setSort,
 			hideDragImage,
 			addOptions,
@@ -176,6 +191,10 @@ export default defineComponent({
 	display: grid;
 	grid-gap: 12px;
 	grid-template-columns: 1fr 1fr;
+
+	& + & {
+		margin-top: 12px;
+	}
 }
 
 .add-field {

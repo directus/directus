@@ -9,6 +9,7 @@ export type NavItem = {
 	name: string | VueI18n.TranslateResult;
 	to: string;
 	icon: string;
+	note: string | null;
 };
 
 export type NavItemGroup = {
@@ -40,6 +41,7 @@ export default function useNavigation() {
 							collection: collection,
 							name: collectionInfo.name,
 							icon: collectionInfo.meta?.icon || 'label',
+							note: collectionInfo.meta?.note || null,
 							to: `/collections/${collection}`,
 						};
 
@@ -59,6 +61,7 @@ export default function useNavigation() {
 					collection: collection.collection,
 					name: collection.name,
 					icon: collection.meta?.icon || 'label',
+					note: collection.meta?.note || null,
 					to: `/collections/${collection.collection}`,
 				};
 

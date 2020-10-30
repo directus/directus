@@ -197,8 +197,9 @@ body {
 			flex-grow: 1;
 			overflow: auto;
 
-			@include breakpoint(medium) {
+			@include breakpoint(small) {
 				--content-padding: 32px;
+				--content-padding-bottom: 132px;
 			}
 		}
 	}
