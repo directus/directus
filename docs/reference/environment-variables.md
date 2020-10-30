@@ -26,7 +26,7 @@ Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.<br>*
 
 ### `DB_CLIENT`
 
-What database client to use. One of `pg`, `mysql`, `mysql2`, `oracledb`, `mssql`, or `sqlite3`. For all database clients except SQLite, you will also need to configure the following variables:
+What database client to use. One of `pg` or `postgres`, `mysql`, `mysql2`, `oracledb`, `mssql`, or `sqlite3`. For all database clients except SQLite, you will also need to configure the following variables:
 
 ### `DB_HOST`
 
