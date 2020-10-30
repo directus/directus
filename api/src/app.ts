@@ -88,7 +88,7 @@ export default async function createApp() {
 		html = html.replace(/href="\//g, `href="${env.PUBLIC_URL}`);
 		html = html.replace(/src="\//g, `src="${env.PUBLIC_URL}`);
 
-		app.get('/', (req, res) => res.redirect(`${env.PUBLIC_URL}/admin/`));
+		app.get('/', (req, res) => res.redirect(`${env.PUBLIC_URL}admin/`));
 		app.get('/admin', (req, res) => res.send(html));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
 		app.use('/admin/*', (req, res) => {
