@@ -7,6 +7,9 @@ columns:
     type: string
     length: 64
     nullable: false
+    references:
+      table: directus_collections
+      column: collection
   many_field:
     type: string
     length: 64
@@ -18,6 +21,9 @@ columns:
   one_collection:
     type: string
     length: 64
+    references:
+      table: directus_collections
+      column: collection
   one_field:
     type: string
     length: 64

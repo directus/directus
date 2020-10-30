@@ -12,6 +12,9 @@ columns:
     type: string
     length: 64
     nullable: false
+    references:
+      table: directus_collections
+      column: collection
   action:
     type: string
     length: 10

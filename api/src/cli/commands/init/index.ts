@@ -10,6 +10,7 @@ import ora from 'ora';
 import argon2 from 'argon2';
 
 import runSeed from '../../../database/seeds/run';
+import runMigrations from '../../../database/migrations/run';
 
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';
 import Knex from 'knex';
@@ -47,6 +48,7 @@ export default async function init(options: Record<string, any>) {
 
 		try {
 			await runSeed(db);
+			await runMigrations(db, 'latest');
 		} catch (err) {
 			console.log();
 			console.log('Something went wrong while seeding the database:');
