@@ -57,7 +57,9 @@ async function getEnvInfo(event: string) {
 			transport: env.EMAIL_TRANSPORT,
 		},
 		oauth: {
-			providers: env.OAUTH_PROVIDERS,
+			providers: env.OAUTH_PROVIDERS.split(',')
+				.map((v: string) => v.trim())
+				.filter((v: string) => v),
 		},
 		db_client: env.DB_CLIENT,
 	};
@@ -65,7 +67,9 @@ async function getEnvInfo(event: string) {
 
 function getStorageDrivers() {
 	const drivers: string[] = [];
-	const locations = env.STORAGE_LOCATIONS;
+	const locations = env.STORAGE_LOCATIONS.split(',')
+		.map((v: string) => v.trim())
+		.filter((v: string) => v);
 
 	for (const location of locations) {
 		const driver = env[`STORAGE_${location.toUpperCase()}_DRIVER`];

@@ -44,6 +44,8 @@ import { InvalidPayloadException } from './exceptions';
 import { registerExtensions } from './extensions';
 import emitter from './emitter';
 
+import fse from 'fs-extra';
+
 export default async function createApp() {
 	validateEnv(['KEY', 'SECRET']);
 
@@ -81,10 +83,16 @@ export default async function createApp() {
 	if (env.NODE_ENV !== 'development') {
 		const adminPath = require.resolve('@directus/app/dist/index.html');
 
-		app.get('/', (req, res) => res.redirect('/admin/'));
+		// Prefix all href/src in the index html with the APIs public path
+		let html = fse.readFileSync(adminPath, 'utf-8');
+		html = html.replace(/href="\//g, `href="${env.PUBLIC_URL}`);
+		html = html.replace(/src="\//g, `src="${env.PUBLIC_URL}`);
+
+		app.get('/', (req, res) => res.redirect(`${env.PUBLIC_URL}/admin/`));
+		app.get('/admin', (req, res) => res.send(html));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
 		app.use('/admin/*', (req, res) => {
-			res.sendFile(adminPath);
+			res.send(html);
 		});
 	}
 
