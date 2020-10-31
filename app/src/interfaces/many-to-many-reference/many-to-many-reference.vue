@@ -28,7 +28,7 @@
 					<v-list-item-content>
 						<render-template
 							:template="displayTemplate"
-							:item="relatedItem(item)"
+							:item="item"
 							:collection="relation.one_collection"
 						/>
 					</v-list-item-content>
@@ -42,7 +42,7 @@
 		</v-menu>
 		<div class="tags" v-if="items.length > 0">
 			<v-chip
-				v-for="(item, index) in items"
+				v-for="(item, index) in sortedItems"
 				:disabled="disabled"
 				:key="index"
 				class="tag"
@@ -52,7 +52,7 @@
 			>
 				<render-template
 					:template="displayTemplate"
-					:item="relatedItem(item)"
+					:item="item[junction.junction_field]"
 					:collection="relation.one_collection"
 				/>
 			</v-chip>
@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType, toRefs, watch } from '@vue/composition-api';
+import { defineComponent, ref, PropType, toRefs, watch, computed } from '@vue/composition-api';
 
 import useActions from '../many-to-many/use-actions';
 import useRelation from '../many-to-many/use-relation';
@@ -128,11 +128,17 @@ export default defineComponent({
 		const suggestedItems = ref<object[]>([]);
 		const suggestedItemsSelected = ref<number | null>(null);
 		const active = ref(false);
-		const sortField = ref<string>(props.referencingField);
+
+		const displayTemplateFields = props.displayTemplate
+			? (props.displayTemplate.match(/{{([^}]+)}}/g) || []).map((field) => field.replace(/[{}]/g, ''))
+			: [props.referencingField];
+
+		const fields = ref<string[]>(
+			displayTemplateFields.map((field) => relationInfo.value.junctionField + '.' + field)
+		);
 
 		const { junction, relation, relationInfo } = useRelation(collection, field);
-
-		const fields = ref<string[]>([]);
+		const sortField = ref<string>(props.referencingField);
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
@@ -143,12 +149,6 @@ export default defineComponent({
 			relationInfo,
 			emitter
 		);
-
-		const displayTemplateFields = props.displayTemplate
-			? (props.displayTemplate.match(/{{([^}]+)}}/g) || []).map((field) => field.replace(/[{}]/g, ''))
-			: [props.referencingField];
-
-		fields.value = displayTemplateFields.map((field) => relationInfo.value.junctionField + '.' + field);
 
 		const { items } = usePreview(
 			value,
@@ -164,6 +164,16 @@ export default defineComponent({
 		const { stageEdits } = useEdit(value, relationInfo, emitter);
 
 		const { stageSelection } = useSelection(value, items, relationInfo, emitter);
+
+		const sortedItems = computed(() => {
+			if (!props.alphabetize) return items.value;
+
+			return items.value.sort((a, b) => {
+				return a[relationInfo.value.junctionField][sortField.value].localeCompare(
+					b[relationInfo.value.junctionField][sortField.value]
+				);
+			});
+		});
 
 		watch(suggestedItems, () => onFocus());
 
@@ -183,26 +193,28 @@ export default defineComponent({
 			onBlur,
 			suggestedItems,
 			localInput,
+			sortedItems,
 			items,
 			suggestedItemsSelected,
-			relatedItem,
 			addItemSuggestion,
 			addItemByReferencingValue,
 			deleteItem,
 			stageSelection,
 		};
 
-		function relatedItem(item: any) {
-			return item[relationInfo.value.junctionField as string]
-				? item[relationInfo.value.junctionField as string]
-				: item;
-		}
-
 		function addItemSuggestion(item: any) {
 			stageSelection([item[relationInfo.value.relationPkField]]);
 		}
 
+		function itemValueExists(value: string) {
+			return items.value.find((item) => item[relationInfo.value.junctionField][props.referencingField] === value);
+		}
+
 		function addItemByReferencingValue(value: string) {
+			if (itemValueExists(value)) {
+				return;
+			}
+
 			findByKeyword(value).then((item) => {
 				if (item) {
 					stageSelection([item[relationInfo.value.relationPkField]]);
@@ -286,6 +298,7 @@ export default defineComponent({
 				if (localInput.value === value) {
 					return;
 				}
+				localInput.value = value;
 				if (typeTimer.value) {
 					clearTimeout(typeTimer.value);
 					typeTimer.value = null;
@@ -294,7 +307,7 @@ export default defineComponent({
 					typeTimer.value = null;
 					localInput.value = value;
 					updateSuggestions(value.trim());
-				}, 500);
+				}, 1000);
 			}
 		}
 
@@ -319,6 +332,7 @@ export default defineComponent({
 							_nin: excludeIds.join(','),
 						},
 					},
+					sort: props.referencingField,
 				},
 			};
 			const response = await api.get(`items/${relationInfo.value.relationCollection}`, query);
@@ -354,6 +368,12 @@ export default defineComponent({
 	.tag {
 		margin-top: 8px;
 		margin-right: 8px;
+
+		.render-template {
+			.null {
+				display: none;
+			}
+		}
 	}
 
 	.v-chip {
