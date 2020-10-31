@@ -82,13 +82,14 @@ export default async function createApp() {
 
 	if (env.NODE_ENV !== 'development') {
 		const adminPath = require.resolve('@directus/app/dist/index.html');
+		const publicUrl = env.PUBLIC_URL.endsWith('/') ? env.PUBLIC_URL : env.PUBLIC_URL + '/';
 
 		// Prefix all href/src in the index html with the APIs public path
 		let html = fse.readFileSync(adminPath, 'utf-8');
-		html = html.replace(/href="\//g, `href="${env.PUBLIC_URL}`);
-		html = html.replace(/src="\//g, `src="${env.PUBLIC_URL}`);
+		html = html.replace(/href="\//g, `href="${publicUrl}`);
+		html = html.replace(/src="\//g, `src="${publicUrl}`);
 
-		app.get('/', (req, res) => res.redirect(`${env.PUBLIC_URL}admin/`));
+		app.get('/', (req, res) => res.redirect(`./admin/`));
 		app.get('/admin', (req, res) => res.send(html));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
 		app.use('/admin/*', (req, res) => {
