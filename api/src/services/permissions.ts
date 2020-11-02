@@ -1,4 +1,4 @@
-import { AbstractServiceOptions, PermissionsAction, Item, PrimaryKey } from '../types';
+import { AbstractServiceOptions, PermissionsAction } from '../types';
 import { ItemsService } from '../services/items';
 
 export class PermissionsService extends ItemsService {

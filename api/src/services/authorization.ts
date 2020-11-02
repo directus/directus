@@ -259,7 +259,7 @@ export class AuthorizationService {
 			}
 		}
 
-		const preset = permission.presets || {};
+		const preset = parseFilter(permission.presets || {}, this.accountability);
 
 		payloads = payloads.map((payload) => merge({}, preset, payload));
 
