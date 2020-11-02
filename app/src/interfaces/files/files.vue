@@ -230,17 +230,14 @@ export default defineComponent({
 				if (files.length === 0) return;
 
 				const { junctionField } = relationInfo.value;
-				const file = files[0];
 
-				const fileAsJunctionRow = {
-					[junctionField]: {
-						id: file.id,
-						title: file.title,
-						type: file.type,
-					},
-				};
+				const filesAsJunctionRows = files.map((file) => {
+					return {
+						[junctionField]: file.id,
+					};
+				});
 
-				emit('input', [...(props.value || []), fileAsJunctionRow]);
+				emit('input', [...(props.value || []), ...filesAsJunctionRows]);
 			}
 		}
 	},
