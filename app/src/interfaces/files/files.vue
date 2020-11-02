@@ -5,12 +5,15 @@
 	<div v-else class="files">
 		<v-table
 			inline
-			:items="items"
+			:items="sortedItems || items"
 			:loading="loading"
 			:headers.sync="tableHeaders"
 			:item-key="relationInfo.junctionPkField"
 			:disabled="disabled"
+			@update:items="sortItems($event)"
 			@click:row="editItem"
+			:show-manual-sort="sortField !== null"
+			:manual-sort-key="sortField"
 		>
 			<template #item.$thumbnail="{ item }">
 				<render-display
@@ -81,6 +84,7 @@ import useRelation from '@/interfaces/many-to-many/use-relation';
 import useSelection from '@/interfaces/many-to-many/use-selection';
 import usePreview from '@/interfaces/many-to-many/use-preview';
 import useEdit from '@/interfaces/many-to-many/use-edit';
+import useSort from '@/interfaces/many-to-many/use-sort';
 
 export default defineComponent({
 	components: { DrawerCollection, DrawerItem },
@@ -185,6 +189,8 @@ export default defineComponent({
 
 		const { showUpload, onUpload } = useUpload();
 
+		const { sort, sortItems, sortedItems } = useSort(sortField, fields, items, emitter);
+
 		return {
 			junction,
 			relation,
@@ -208,6 +214,9 @@ export default defineComponent({
 			editItem,
 			editModalActive,
 			relatedPrimaryKey,
+			sort,
+			sortItems,
+			sortedItems,
 		};
 
 		function useUpload() {

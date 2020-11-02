@@ -2,7 +2,7 @@
 	<v-notice type="warning" v-if="!junction || !relation">
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
-	<div class="one-to-many" v-else>
+	<div class="many-to-many" v-else>
 		<v-table
 			:loading="loading"
 			:items="sortedItems || items"
