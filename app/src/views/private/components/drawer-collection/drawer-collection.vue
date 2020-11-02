@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, toRefs, onUnmounted } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, toRefs, watch } from '@vue/composition-api';
 import { Filter } from '@/types';
 import usePreset from '@/composables/use-preset';
 import useCollection from '@/composables/use-collection';
@@ -65,7 +65,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { save, cancel } = useActions();
 		const { _active } = useActiveState();
-		const { _selection, onSelect } = useSelection();
+		const { _selection, localSelection, onSelect } = useSelection();
 
 		const { collection } = toRefs(props);
 
@@ -83,6 +83,7 @@ export default defineComponent({
 			cancel,
 			_active,
 			_selection,
+			localSelection,
 			onSelect,
 			localLayout,
 			localOptions,
@@ -110,10 +111,6 @@ export default defineComponent({
 		function useSelection() {
 			const localSelection = ref<(string | number)[] | null>(null);
 
-			onUnmounted(() => {
-				localSelection.value = null;
-			});
-
 			const _selection = computed({
 				get() {
 					if (localSelection.value === null) {
@@ -127,7 +124,14 @@ export default defineComponent({
 				},
 			});
 
-			return { _selection, onSelect };
+			watch(
+				() => props.active,
+				() => {
+					localSelection.value = null;
+				}
+			);
+
+			return { _selection, localSelection, onSelect };
 
 			function onSelect(newSelection: (string | number)[]) {
 				if (newSelection.length === 0) {
