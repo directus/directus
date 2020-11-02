@@ -465,6 +465,7 @@ export default defineComponent({
 
 		function usePermissions() {
 			const deleteAllowed = computed(() => isAllowed(collection.value, 'delete', item.value));
+
 			const saveAllowed = computed(() => {
 				if (isNew.value) {
 					return true;
@@ -472,6 +473,7 @@ export default defineComponent({
 
 				return isAllowed(collection.value, 'update', item.value);
 			});
+
 			const updateAllowed = computed(() => isAllowed(collection.value, 'update', item.value));
 
 			const archiveAllowed = computed(() => {

@@ -1,6 +1,7 @@
 import { usePermissionsStore, useUserStore } from '@/stores';
 import { Permission } from '@/types';
 import generateJoi from '@/utils/generate-joi';
+import { parseFilter } from './parse-filter';
 
 export function isAllowed(collection: string, action: Permission['action'], value: Record<string, any> | null) {
 	const permissionsStore = usePermissionsStore();
@@ -16,7 +17,9 @@ export function isAllowed(collection: string, action: Permission['action'], valu
 
 	if (!permissionInfo) return false;
 
-	const schema = generateJoi(permissionInfo.permissions, { allowUnknown: permissionInfo.fields === '*' });
+	const permissionsForAction = parseFilter(permissionInfo.permissions || {});
+
+	const schema = generateJoi(permissionsForAction, { allowUnknown: permissionInfo.fields === '*' });
 	const { error } = schema.validate(value);
 
 	if (!error) {
