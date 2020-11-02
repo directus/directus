@@ -25,7 +25,7 @@ export default defineComponent({
 		},
 		role: {
 			type: Object as PropType<Role>,
-			required: true,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {
