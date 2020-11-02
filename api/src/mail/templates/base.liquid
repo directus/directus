@@ -3,20 +3,25 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Directus Email Service</title>
 	<meta name="viewport" content="width=device-width">
 	<meta name="format-detection" content="telephone=no">
+
+	<title>{{ projectName }} Email Service</title>
+
 	<style type="text/css">
 		a {
+			padding: 12px 45px;
+			border-radius: 4px;
+			background-color: {{ projectColor }};
+			font-weight: bold; 
+			color: white !important;
 			border: none;
 			text-decoration: none;
-			color: #2196f3;
-			outline: none !important;
-			color: #2196f3 !important;
+			outline: none;
 		}
 
 		a:hover {
-			color: #2196f3 !important;
+			filter: brightness(105%);
 		}
 
 		p {
@@ -33,9 +38,9 @@
 				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600"
 					style="border: 0 solid #263238; border-collapse: collapse;">
 					<tr>
-						<td align="center" bgcolor="#263238"
+						<td align="center" bgcolor="{{ projectColor }}"
 							style="padding: 30px 0 30px 0; border-radius: 4px 4px 0 0;">
-							<img src="https://directus.io/assets/directus-white.png" alt="Directus" width="130"
+							<img src="{{ projectLogo }}" alt="{{ projectName }}" width="130"
 								style="display: block;" />
 						</td>
 					</tr>
