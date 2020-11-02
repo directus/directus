@@ -51,11 +51,7 @@
 	"date-fns_date": "PPP",
 	"date-fns_time": "HH:mm",
   "collections_and_fields": "Collecties & Velden",
-  "collections": {
-    "directus_activity": "Activiteit",
-    "directus_files": "Bestanden",
-    "directus_users": "Gebruikers"
-  },
+  "collections": "Collecties",
   "fields": {
     "directus_activity": {
       "action": "Actie",
