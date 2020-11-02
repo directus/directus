@@ -116,7 +116,7 @@ export async function applyFilter(
 			}
 
 			if (operator === '_ncontains') {
-				dbQuery.where(key, 'like', `%${compareValue}%`);
+				dbQuery.whereNot(key, 'like', `%${compareValue}%`);
 			}
 
 			if (operator === '_gt') {
