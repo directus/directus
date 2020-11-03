@@ -292,6 +292,7 @@ export default defineComponent({
 
 		const isSavable = computed(() => {
 			if (saveAllowed.value === false) return false;
+			if (hasEdits.value === true) return true;
 
 			if (
 				!primaryKeyField.value?.schema?.has_auto_increment &&
@@ -359,6 +360,7 @@ export default defineComponent({
 			isNew,
 			edits,
 			isSavable,
+			hasEdits,
 			saving,
 			collectionInfo,
 			saveAndQuit,
