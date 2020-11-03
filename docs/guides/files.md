@@ -40,7 +40,11 @@ The **Storage Asset Transform** can be used in conjunction with the presets to f
 
 Fetching thumbnails is as easy as adding query parameters to the original file's URL. If a requested thumbnail doesn't yet exist, it is dynamically generated and immediately returned. When requesting a thumbnail, the following parameters are all required.
 
-* **`fit`** — The **fit** of the thumbnail, either `crop` or `contain`
+* **`fit`** — The **fit** of the thumbnail while always preserving the aspect ratio, can be any of the following options:
+  * `cover` — Covers both width/height by cropping/clipping to fit
+  * `contain` — Contain within both width/height using "letterboxing" as needed
+  * `inside` — Resize to be as large as possible, ensuring dimensions are less than or equal to the requested width and height
+  * `outside` — Resize to be as small as possible, ensuring dimensions are greater than or equal to the requested width and height
 * **`width`** — The **width** of the thumbnail in pixels
 * **`height`** — The **height** of the thumbnail in pixels
 * **`quality`** — The **quality** of the thumbnail (`0` to `100`)
