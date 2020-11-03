@@ -136,7 +136,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const params: any = { filter: { role: {} } };
+					const params: any = { filter: { role: {} }, limit: -1 };
 
 					if (props.role === null) {
 						params.filter.role = { _null: true };
