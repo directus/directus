@@ -321,19 +321,20 @@ export default defineComponent({
 							],
 						},
 						interface: 'dropdown',
-						display: 'color-dot',
+						display: 'labels',
 						display_options: {
+							showAsDot: true,
 							choices: [
 								{
-									color: '#2F80ED',
+									background: '#2F80ED',
 									value: 'published',
 								},
 								{
-									color: '#ECEFF1',
+									background: '#ECEFF1',
 									value: 'draft',
 								},
 								{
-									color: '#F2994A',
+									background: '#F2994A',
 									value: 'archived',
 								},
 							],
