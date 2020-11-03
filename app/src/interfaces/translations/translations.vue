@@ -187,6 +187,10 @@ export default defineComponent({
 
 				const fields = getFieldsFromTemplate(template.value);
 
+				if (fields.includes(languagesPrimaryKeyField.value) === false) {
+					fields.push(languagesPrimaryKeyField.value);
+				}
+
 				loading.value = true;
 
 				try {
