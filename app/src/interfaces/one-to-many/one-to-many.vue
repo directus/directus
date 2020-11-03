@@ -306,7 +306,14 @@ export default defineComponent({
 						items.value = existingItems
 							.map((item) => {
 								const updatedItem = updatedItems.find((updated) => updated[pkField] === item[pkField]);
-								if (updatedItem !== undefined) return updatedItem;
+
+								if (updatedItem !== undefined) {
+									return {
+										...item,
+										...updatedItem,
+									};
+								}
+
 								return item;
 							})
 							.concat(...newItems);
@@ -370,7 +377,9 @@ export default defineComponent({
 				const pkField = relatedPrimaryKeyField.value.field;
 				const hasPrimaryKey = pkField in item;
 
-				editsAtStart.value = item;
+				const edits = (props.value || []).find((edit: any) => edit === item);
+
+				editsAtStart.value = edits || { [pkField]: item[pkField] || -1 };
 				currentlyEditing.value = hasPrimaryKey ? item[pkField] : -1;
 			}
 
