@@ -136,8 +136,8 @@
 <script lang="ts">
 import { defineComponent, ref, reactive } from '@vue/composition-api';
 import api from '@/api';
-import { Field } from '@/types';
-import { useFieldsStore, useCollectionsStore } from '@/stores/';
+import { Field, Relation } from '@/types';
+import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import notify from '@/utils/notify';
 import router from '@/router';
 
@@ -145,6 +145,7 @@ export default defineComponent({
 	setup() {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
 
 		const currentTab = ref(['collection']);
 
@@ -228,6 +229,13 @@ export default defineComponent({
 						singleton: singleton.value,
 					},
 				});
+
+				const relations = getSystemRelations();
+
+				if (relations.length > 0) {
+					await api.post('/relations', relations);
+					await relationsStore.hydrate();
+				}
 
 				await collectionsStore.hydrate();
 				await fieldsStore.hydrate();
@@ -376,6 +384,7 @@ export default defineComponent({
 						options: {
 							display: 'both',
 						},
+						display: 'user',
 						readonly: true,
 						hidden: true,
 						width: 'half',
@@ -409,6 +418,7 @@ export default defineComponent({
 						options: {
 							display: 'both',
 						},
+						display: 'user',
 						readonly: true,
 						hidden: true,
 						width: 'half',
@@ -433,6 +443,32 @@ export default defineComponent({
 			}
 
 			return fields;
+		}
+
+		function getSystemRelations() {
+			const relations: Partial<Relation>[] = [];
+
+			if (systemFields.userCreated.enabled === true) {
+				relations.push({
+					many_collection: collectionName.value!,
+					many_field: systemFields.userCreated.name,
+					many_primary: primaryKeyFieldName.value,
+					one_collection: 'directus_users',
+					one_primary: 'id',
+				});
+			}
+
+			if (systemFields.userUpdated.enabled === true) {
+				relations.push({
+					many_collection: collectionName.value!,
+					many_field: systemFields.userUpdated.name,
+					many_primary: primaryKeyFieldName.value,
+					one_collection: 'directus_users',
+					one_primary: 'id',
+				});
+			}
+
+			return relations;
 		}
 	},
 });
