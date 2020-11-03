@@ -365,9 +365,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					$type: 'manyCurrent',
 					collection: junctionCollection,
 					field: manyCurrent,
-					type: collectionExists(junctionCollection)
-						? fieldsStore.getPrimaryKeyFieldForCollection(junctionCollection)?.type
-						: 'integer',
+					type: fieldsStore.getPrimaryKeyFieldForCollection(collection)!.type,
 					schema: {},
 					meta: {
 						hidden: true,
