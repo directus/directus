@@ -133,6 +133,7 @@ export default defineComponent({
 		transition: max-width var(--medium) var(--transition);
 
 		.content {
+			max-width: 100%;
 			width: 340px;
 		}
 
@@ -161,6 +162,7 @@ export default defineComponent({
 
 		.foreground {
 			max-width: 400px;
+			width: 80%;
 		}
 
 		.note {
@@ -190,6 +192,7 @@ export default defineComponent({
 		display: flex;
 		align-items: center;
 		width: max-content;
+		max-width: 100%;
 		height: 64px;
 		cursor: pointer;
 	}
