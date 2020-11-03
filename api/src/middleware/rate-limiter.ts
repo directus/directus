@@ -63,6 +63,7 @@ function getConfig(
 
 	if (store === 'redis') {
 		const Redis = require('ioredis');
+		delete config.redis;
 		config.storeClient = new Redis(
 			env.RATE_LIMITER_REDIS || getConfigFromEnv('RATE_LIMITER_REDIS_')
 		);
