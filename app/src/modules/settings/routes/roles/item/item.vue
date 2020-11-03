@@ -39,7 +39,7 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon @click="userInviteModalActive = true" v-tooltip.bottom="$t('invite_users')">
+			<v-button rounded icon @click="userInviteModalActive = true" v-tooltip.bottom="$t('invite_users')" class="invite-user">
 				<v-icon name="person_add" />
 			</v-button>
 
@@ -202,5 +202,12 @@ export default defineComponent({
 .permissions-overview,
 .roles .v-notice {
 	margin-bottom: 48px;
+}
+
+.invite-user {
+	--v-button-background-color: var(--primary-25);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-50);
+	--v-button-color-hover: var(--primary);
 }
 </style>
