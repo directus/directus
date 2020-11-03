@@ -275,9 +275,10 @@ export class FieldsService {
 				}
 
 				if (field.schema.default_value) {
-					const defaultValue = field.schema.default_value.toLowerCase();
-
-					if (defaultValue === 'now()') {
+					if (
+						typeof field.schema.default_value === 'string' &&
+						field.schema.default_value.toLowerCase() === 'now()'
+					) {
 						column.defaultTo(this.knex.fn.now());
 					} else {
 						column.defaultTo(field.schema.default_value);
