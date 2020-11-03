@@ -325,6 +325,8 @@ export class PayloadService {
 				const relatedRecord: Partial<Item> = payload[relation.many_field];
 				const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.one_primary);
 
+				if (['string', 'number'].includes(typeof relatedRecord)) continue;
+
 				let relatedPrimaryKey: PrimaryKey = relatedRecord[relation.one_primary];
 				const exists = hasPrimaryKey && !!(await itemsService.readByKey(relatedPrimaryKey));
 
