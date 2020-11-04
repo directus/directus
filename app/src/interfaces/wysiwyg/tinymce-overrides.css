@@ -79,6 +79,11 @@
 	font-feature-settings: 'liga';
 }
 
+.tox-tbtn--disabled {
+	opacity: 0.8;
+	pointer-events: none;
+}
+
 .tox .tox-edit-area__iframe {
 	background-color: var(--background-page);
 }
@@ -92,11 +97,11 @@
 	transition-property: color, border-color;
 }
 
-.tox-tinymce:hover {
+.wysiwyg:not(.disabled) .tox-tinymce:hover {
 	border-color: var(--border-normal-alt);
 }
 
-.tox-tinymce.focus {
+.wysiwyg:not(.disabled) .tox-tinymce.focus {
 	border-color: var(--primary) !important;
 }
 
