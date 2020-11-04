@@ -165,7 +165,8 @@ export default defineComponent({
 					if (newValue === null) {
 						currentUser.value = null;
 					}
-				}
+				},
+				{ immediate: true }
 			);
 
 			const currentPrimaryKey = computed<string | number>(() => {
