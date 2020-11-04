@@ -54,7 +54,7 @@ export class UtilsService {
 			}
 		}
 
-		const primaryKeyField = await schemaInspector.primary(collection);
+		const primaryKeyField = (await schemaInspector.primary(collection)) as string;
 
 		// Make sure all rows have a sort value
 		const countResponse = await this.knex

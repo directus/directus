@@ -136,7 +136,7 @@ export default async function getASTFromQuery(
 					children: {},
 					query: {},
 					relatedKey: {},
-					parentKey: await schemaInspector.primary(parentCollection),
+					parentKey: (await schemaInspector.primary(parentCollection)) as string,
 					fieldKey: relationalField,
 					relation: relation,
 				};
@@ -147,17 +147,17 @@ export default async function getASTFromQuery(
 						nestedFields
 					);
 					child.query[relatedCollection] = {};
-					child.relatedKey[relatedCollection] = await schemaInspector.primary(
+					child.relatedKey[relatedCollection] = (await schemaInspector.primary(
 						relatedCollection
-					);
+					)) as string;
 				}
 			} else if (relatedCollection) {
 				child = {
 					type: relationType,
 					name: relatedCollection,
 					fieldKey: relationalField,
-					parentKey: await schemaInspector.primary(parentCollection),
-					relatedKey: await schemaInspector.primary(relatedCollection),
+					parentKey: (await schemaInspector.primary(parentCollection)) as string,
+					relatedKey: (await schemaInspector.primary(relatedCollection)) as string,
 					relation: relation,
 					query: deep?.[relationalField] || {},
 					children: await parseFields(relatedCollection, nestedFields),

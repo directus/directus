@@ -49,7 +49,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
 	async create(data: Partial<Item>): Promise<PrimaryKey>;
 	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const primaryKeyField = (await this.schemaInspector.primary(this.collection)) as string;
 		const columns = await this.schemaInspector.columns(this.collection);
 
 		let payloads: AnyItem[] = clone(toArray(data));
@@ -229,7 +229,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		action: PermissionsAction = 'read'
 	): Promise<null | Partial<Item> | Partial<Item>[]> {
 		query = clone(query);
-		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const primaryKeyField = (await this.schemaInspector.primary(this.collection)) as string;
 		const keys = toArray(key);
 
 		if (keys.length === 1) {
@@ -275,7 +275,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		data: Partial<Item> | Partial<Item>[],
 		key?: PrimaryKey | PrimaryKey[]
 	): Promise<PrimaryKey | PrimaryKey[]> {
-		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const primaryKeyField = (await this.schemaInspector.primary(this.collection)) as string;
 		const columns = await this.schemaInspector.columns(this.collection);
 
 		// Updating one or more items to the same payload
@@ -434,7 +434,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	async updateByQuery(data: Partial<Item>, query: Query): Promise<PrimaryKey[]> {
-		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const primaryKeyField = (await this.schemaInspector.primary(this.collection)) as string;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
 
@@ -454,7 +454,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	upsert(data: Partial<Item>[]): Promise<PrimaryKey[]>;
 	upsert(data: Partial<Item>): Promise<PrimaryKey>;
 	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const primaryKeyField = (await this.schemaInspector.primary(this.collection)) as string;
 		const payloads = toArray(data);
 		const primaryKeys: PrimaryKey[] = [];
 
@@ -484,7 +484,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const keys = toArray(key);
-		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const primaryKeyField = (await this.schemaInspector.primary(this.collection)) as string;
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
@@ -539,7 +539,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	async deleteByQuery(query: Query): Promise<PrimaryKey[]> {
-		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const primaryKeyField = (await this.schemaInspector.primary(this.collection)) as string;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
 
@@ -582,7 +582,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	async upsertSingleton(data: Partial<Item>) {
-		const primaryKeyField = await this.schemaInspector.primary(this.collection);
+		const primaryKeyField = (await this.schemaInspector.primary(this.collection)) as string;
 
 		const record = await this.knex
 			.select(primaryKeyField)

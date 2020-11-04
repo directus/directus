@@ -105,7 +105,7 @@ async function parseCurrentLevel(
 ) {
 	const schemaInspector = SchemaInspector(knex);
 
-	const primaryKeyField = await schemaInspector.primary(collection);
+	const primaryKeyField = (await schemaInspector.primary(collection)) as string;
 
 	const columnsInCollection = (await schemaInspector.columns(collection)).map(
 		({ column }) => column
