@@ -399,7 +399,7 @@ export class AuthorizationService {
 			const result = await itemsService.readByKey(pk as any, query, action);
 
 			if (!result) throw '';
-			if (Array.isArray(pk) && result.length !== pk.length) throw '';
+			if (Array.isArray(pk) && pk.length > 1 && result.length !== pk.length) throw '';
 		} catch {
 			throw new ForbiddenException(
 				`You're not allowed to ${action} item "${pk}" in collection "${collection}".`,

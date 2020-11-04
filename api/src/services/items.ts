@@ -257,6 +257,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				accountability: this.accountability,
 				knex: this.knex,
 			});
+
 			ast = await authorizationService.processAST(ast, action);
 		}
 
