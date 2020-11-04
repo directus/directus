@@ -26,6 +26,7 @@ fields:
 
   - field: fields
     width: half
+    special: csv
 
   - field: action
     width: half

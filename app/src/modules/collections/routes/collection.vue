@@ -533,8 +533,8 @@ export default defineComponent({
 				);
 				if (!updatePermissions) return false;
 				if (!updatePermissions.fields) return false;
-				if (updatePermissions.fields === '*') return true;
-				return updatePermissions.fields.split(',').includes(currentCollection.value.meta.archive_field);
+				if (updatePermissions.fields.includes('*')) return true;
+				return updatePermissions.fields.includes(currentCollection.value.meta.archive_field);
 			});
 
 			const batchDeleteAllowed = computed(() => {

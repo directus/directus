@@ -161,7 +161,7 @@
 			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
 			:initial-values="item"
-			:collection="collection"
+			:fields="fields"
 			:batch-mode="isBatch"
 			:primary-key="primaryKey || '+'"
 			:validation-errors="validationErrors"
@@ -227,9 +227,11 @@ import i18n from '@/lang';
 import marked from 'marked';
 import useShortcut from '@/composables/use-shortcut';
 import { NavigationGuard } from 'vue-router';
-import { useUserStore } from '@/stores';
+import { useUserStore, usePermissionsStore } from '@/stores';
 import generateJoi from '@/utils/generate-joi';
 import { isAllowed } from '@/utils/is-allowed';
+import { cloneDeep } from 'lodash';
+import { Field } from '@/types';
 
 type Values = {
 	[field: string]: any;
@@ -261,13 +263,14 @@ export default defineComponent({
 	setup(props) {
 		const form = ref<HTMLElement>();
 		const userStore = useUserStore();
+		const permissionsStore = usePermissionsStore();
 
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
-		const { info: collectionInfo, defaults, primaryKeyField } = useCollection(collection);
+		const { info: collectionInfo, defaults, primaryKeyField, fields: rawFields } = useCollection(collection);
 
 		const {
 			isNew,
@@ -351,7 +354,7 @@ export default defineComponent({
 			return next();
 		};
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed } = usePermissions();
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields } = usePermissions();
 
 		return {
 			item,
@@ -392,6 +395,7 @@ export default defineComponent({
 			toggleArchive,
 			validationErrors,
 			form,
+			fields,
 		};
 
 		function useBreadcrumb() {
@@ -486,7 +490,31 @@ export default defineComponent({
 				});
 			});
 
-			return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed };
+			const fields = computed(() => {
+				if (userStore.state.currentUser?.role?.admin_access === true) return rawFields.value;
+
+				const permissions = permissionsStore.getPermissionsForUser(
+					props.collection,
+					isNew.value ? 'create' : 'update'
+				);
+
+				if (permissions?.fields?.includes('*') === true) return rawFields.value;
+
+				return rawFields.value.map((field: Field) => {
+					field = cloneDeep(field);
+
+					if (permissions.fields.includes(field.field) === false) {
+						field.meta = {
+							...(field.meta || {}),
+							readonly: true,
+						} as any;
+					}
+
+					return field;
+				});
+			});
+
+			return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed, fields };
 		}
 	},
 	beforeRouteLeave(to, from, next) {
