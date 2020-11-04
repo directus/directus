@@ -15,10 +15,10 @@
   "license": "GPL-3.0-only",
   "dependencies": {
     "chalk": "^4.1.0",
-    "commander": "^6.0.0",
-    "execa": "^4.0.3",
+    "commander": "^6.2.0",
+    "execa": "^4.1.0",
     "fs-extra": "^9.0.1",
-    "ora": "^4.0.5"
+    "ora": "^5.1.0"
   },
   "gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec"
 }
