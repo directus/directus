@@ -57,4 +57,12 @@ export async function validateDBConnection() {
 }
 
 export const schemaInspector = SchemaInspector(database);
+
+export async function isInstalled() {
+	// The existence of a directus_collections table alone isn't a "proper" check to see if everything
+	// is installed correctly of course, but it's safe enough to assume that this collection only
+	// exists when using the installer CLI.
+	return await schemaInspector.hasTable('directus_collections');
+}
+
 export default database;
