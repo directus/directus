@@ -29,7 +29,7 @@ const defaults: Record<string, any> = {
 
 	CORS_ENABLED: false,
 
-	CACHE_ENABLED: false,
+	CACHE_ENABLED: true,
 	CACHE_STORE: 'memory',
 	CACHE_TTL: '30m',
 	CACHE_NAMESPACE: 'system-cache',
