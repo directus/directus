@@ -36,6 +36,8 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 
 		const permissions = permissionsStore.getPermissionsForUser(collection.value, isNew.value ? 'create' : 'update');
 
+		if (!permissions) return rawFields.value;
+
 		if (permissions?.fields?.includes('*') === true) return rawFields.value;
 
 		return rawFields.value.map((field: Field) => {
