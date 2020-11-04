@@ -232,6 +232,7 @@ import generateJoi from '@/utils/generate-joi';
 import { isAllowed } from '@/utils/is-allowed';
 import { cloneDeep } from 'lodash';
 import { Field } from '@/types';
+import { usePermissions } from '@/composables/use-permissions';
 
 type Values = {
 	[field: string]: any;
@@ -270,7 +271,7 @@ export default defineComponent({
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
-		const { info: collectionInfo, defaults, primaryKeyField, fields: rawFields } = useCollection(collection);
+		const { info: collectionInfo, defaults, primaryKeyField } = useCollection(collection);
 
 		const {
 			isNew,
@@ -354,7 +355,11 @@ export default defineComponent({
 			return next();
 		};
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields } = usePermissions();
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields } = usePermissions(
+			collection,
+			item,
+			isNew
+		);
 
 		return {
 			item,
@@ -467,54 +472,6 @@ export default defineComponent({
 			if (!leaveTo.value) return;
 			edits.value = {};
 			router.push(leaveTo.value);
-		}
-
-		function usePermissions() {
-			const deleteAllowed = computed(() => isAllowed(collection.value, 'delete', item.value));
-
-			const saveAllowed = computed(() => {
-				if (isNew.value) {
-					return true;
-				}
-
-				return isAllowed(collection.value, 'update', item.value);
-			});
-
-			const updateAllowed = computed(() => isAllowed(collection.value, 'update', item.value));
-
-			const archiveAllowed = computed(() => {
-				if (!collectionInfo.value?.meta?.archive_field) return false;
-
-				return isAllowed(collection.value, 'update', {
-					[collectionInfo.value.meta.archive_field]: collectionInfo.value.meta.archive_value,
-				});
-			});
-
-			const fields = computed(() => {
-				if (userStore.state.currentUser?.role?.admin_access === true) return rawFields.value;
-
-				const permissions = permissionsStore.getPermissionsForUser(
-					props.collection,
-					isNew.value ? 'create' : 'update'
-				);
-
-				if (permissions?.fields?.includes('*') === true) return rawFields.value;
-
-				return rawFields.value.map((field: Field) => {
-					field = cloneDeep(field);
-
-					if (permissions.fields.includes(field.field) === false) {
-						field.meta = {
-							...(field.meta || {}),
-							readonly: true,
-						} as any;
-					}
-
-					return field;
-				});
-			});
-
-			return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed, fields };
 		}
 	},
 	beforeRouteLeave(to, from, next) {

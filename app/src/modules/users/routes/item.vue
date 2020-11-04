@@ -180,6 +180,7 @@ import useShortcut from '@/composables/use-shortcut';
 import { isAllowed } from '@/utils/is-allowed';
 import useCollection from '@/composables/use-collection';
 import { userName } from '@/utils/user-name';
+import { usePermissions } from '@/composables/use-permissions';
 
 type Values = {
 	[field: string]: any;
@@ -288,7 +289,11 @@ export default defineComponent({
 
 		const { formFields } = useFormFields(fieldsFiltered);
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed } = usePermissions();
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed } = usePermissions(
+			ref('directus_users'),
+			item,
+			isNew
+		);
 
 		const archiveTooltip = computed(() => {
 			if (archiveAllowed.value === false) return i18n.t('not_allowed');
@@ -442,28 +447,6 @@ export default defineComponent({
 			if (!leaveTo.value) return;
 			edits.value = {};
 			router.push(leaveTo.value);
-		}
-
-		function usePermissions() {
-			const deleteAllowed = computed(() => isAllowed('directus_users', 'delete', item.value));
-			const saveAllowed = computed(() => {
-				if (isNew.value) {
-					return true;
-				}
-
-				return isAllowed('directus_users', 'update', item.value);
-			});
-			const updateAllowed = computed(() => isAllowed('directus_users', 'update', item.value));
-
-			const archiveAllowed = computed(() => {
-				if (!collectionInfo.value?.meta?.archive_field) return false;
-
-				return isAllowed('directus_users', 'update', {
-					[collectionInfo.value.meta.archive_field]: collectionInfo.value.meta.archive_value,
-				});
-			});
-
-			return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed };
 		}
 
 		async function toggleArchive() {
