@@ -37,13 +37,13 @@ export async function loadModules() {
 					});
 					loadedModules.push(module.default);
 				} catch (err) {
-					console.error(`Couldn't load custom module "${customKey}"`);
-					console.error(err);
+					console.warn(`Couldn't load custom module "${customKey}"`);
+					console.warn(err);
 				}
 			}
 		}
 	} catch {
-		console.error(`Couldn't load custom modules`);
+		console.warn(`Couldn't load custom modules`);
 	}
 }
 

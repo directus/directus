@@ -18,6 +18,7 @@ import api from '@/api';
 import { hydrate } from '@/hydrate';
 import router from '@/router';
 import { userName } from '@/utils/user-name';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
@@ -42,7 +43,7 @@ export default defineComponent({
 				name.value = userName(response.data.data);
 				lastPage.value = response.data.data.last_page;
 			} catch (err) {
-				console.error(err);
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}

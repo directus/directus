@@ -125,6 +125,7 @@ import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores
 import { notify } from '@/utils/notify';
 import router from '@/router';
 import i18n from '@/lang';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
@@ -229,8 +230,8 @@ export default defineComponent({
 				});
 
 				router.push(`/settings/data-model/${collectionName.value}`);
-			} catch (error) {
-				console.error(error);
+			} catch (err) {
+				unexpectedError(err);
 			} finally {
 				saving.value = false;
 			}

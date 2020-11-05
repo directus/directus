@@ -31,6 +31,7 @@ import { nanoid } from 'nanoid';
 import FilePreview from '@/views/private/components/file-preview';
 
 import getRootPath from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type File = {
 	type: string;
@@ -102,7 +103,7 @@ export default defineComponent({
 
 				file.value = response.data.data;
 			} catch (err) {
-				console.error(err);
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}

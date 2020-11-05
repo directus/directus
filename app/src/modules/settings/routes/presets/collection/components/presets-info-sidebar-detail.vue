@@ -21,6 +21,7 @@
 import { defineComponent, ref } from '@vue/composition-api';
 import api from '@/api';
 import marked from 'marked';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
@@ -47,7 +48,7 @@ export default defineComponent({
 				bookmarksCount.value = response.data.meta.filter_count as number;
 				presetsCount.value = (response.data.meta.total_count as number) - bookmarksCount.value;
 			} catch (err) {
-				console.error(err);
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}

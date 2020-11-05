@@ -9,7 +9,10 @@
 					<v-error v-if="notification.error" :error="notification.error" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary v-if="notification.type === 'error'">
+					<v-button
+						secondary
+						v-if="notification.type === 'error' && admin && notification.code === 'UNKNOWN'"
+					>
 						<a target="_blank" :href="getGitHubIssueLink(notification.id, notification)">
 							{{ $t('report_error') }}
 						</a>
@@ -25,7 +28,7 @@
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import SidebarButton from '../sidebar-button';
 import NotificationItem from '../notification-item';
-import { useNotificationsStore } from '@/stores/';
+import { useNotificationsStore, useUserStore } from '@/stores/';
 import router from '@/router';
 import { Notification } from '@/types';
 import { useProjectInfo } from '@/modules/settings/composables/use-project-info';
@@ -35,10 +38,11 @@ export default defineComponent({
 	setup(props) {
 		const { parsedInfo } = useProjectInfo();
 		const notificationsStore = useNotificationsStore();
+		const userStore = useUserStore();
 
 		const notifications = computed(() => notificationsStore.state.dialogs);
 
-		return { notifications, done, getGitHubIssueLink };
+		return { notifications, admin: userStore.isAdmin, done, getGitHubIssueLink };
 
 		function getGitHubIssueLink(id: string, notification: Notification) {
 			const debugInfo = `<!-- Please put a detailed explanation of the problem here. -->
@@ -77,5 +81,9 @@ ${JSON.stringify(notification.error, Object.getOwnPropertyNames(notification.err
 <style lang="scss" scoped>
 .notification-dialogs {
 	position: relative;
+}
+
+.v-error {
+	margin-top: 12px;
 }
 </style>

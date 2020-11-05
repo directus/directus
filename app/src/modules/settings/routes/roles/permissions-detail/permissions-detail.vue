@@ -31,6 +31,7 @@ import Permissions from './components/permissions.vue';
 import Fields from './components/fields.vue';
 import Validation from './components/validation.vue';
 import Presets from './components/presets.vue';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { Actions, Tabs, Permissions, Fields, Validation, Presets },
@@ -139,10 +140,10 @@ export default defineComponent({
 				const response = await api.get(`/permissions/${props.permissionKey}`);
 				permission.value = response.data.data;
 			} catch (err) {
-				console.error(err);
-
 				if (err?.response?.status === 403) {
 					router.push(`/settings/roles/${props.roleKey || 'public'}`);
+				} else {
+					unexpectedError(err);
 				}
 			} finally {
 				loading.value = false;

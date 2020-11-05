@@ -109,6 +109,7 @@ import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 /**
  * @NOTE
@@ -261,7 +262,7 @@ export default defineComponent({
 
 					currentItem.value = response.data.data;
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -273,7 +274,6 @@ export default defineComponent({
 
 			const items = ref<Record<string, any>[] | null>(null);
 			const loading = ref(false);
-			const error = ref(null);
 
 			watch(relatedCollection, () => {
 				fetchTotalCount();
@@ -307,7 +307,7 @@ export default defineComponent({
 
 					items.value = response.data.data;
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

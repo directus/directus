@@ -36,6 +36,7 @@
 import { defineComponent, ref, computed, PropType } from '@vue/composition-api';
 import api from '@/api';
 import FolderPickerListItem from './folder-picker-list-item.vue';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type FolderRaw = {
 	id: string;
@@ -124,7 +125,7 @@ export default defineComponent({
 
 				folders.value = response.data.data;
 			} catch (err) {
-				console.error(err);
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}

@@ -5,6 +5,7 @@ import useCollection from '@/composables/use-collection';
 import { AxiosResponse } from 'axios';
 import { APIError } from '@/types';
 import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
@@ -114,9 +115,9 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					.map((err: APIError) => {
 						return err.extensions;
 					});
+			} else {
+				unexpectedError(err);
 			}
-
-			throw error;
 		} finally {
 			saving.value = false;
 		}
@@ -153,7 +154,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 						return err.extensions;
 					});
 			} else {
-				throw error;
+				unexpectedError(err);
 			}
 		} finally {
 			saving.value = false;
@@ -195,7 +196,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				type: 'success',
 			});
 		} catch (err) {
-			throw err;
+			unexpectedError(err);
 		} finally {
 			archiving.value = false;
 		}
@@ -214,7 +215,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				type: 'success',
 			});
 		} catch (err) {
-			throw err;
+			unexpectedError(err);
 		} finally {
 			deleting.value = false;
 		}

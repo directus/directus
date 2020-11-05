@@ -158,8 +158,6 @@ export default defineComponent({
 				try {
 					numberOfFiles.value = files.length;
 
-					throw new Error('jammer');
-
 					if (props.multiple === true) {
 						const uploadedFiles = await uploadFiles(Array.from(files), {
 							onProgressChange: (percentage) => {
@@ -278,7 +276,7 @@ export default defineComponent({
 					activeDialog.value = null;
 					url.value = '';
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

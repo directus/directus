@@ -14,6 +14,7 @@
 import { defineComponent, ref, onMounted } from '@vue/composition-api';
 import api from '@/api';
 import getRootPath from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
@@ -39,7 +40,7 @@ export default defineComponent({
 					};
 				});
 			} catch (err) {
-				console.error(err);
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}

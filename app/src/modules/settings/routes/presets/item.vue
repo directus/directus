@@ -103,6 +103,7 @@ import { getLayouts } from '@/layouts';
 import router from '@/router';
 import marked from 'marked';
 import { userName } from '@/utils/user-name';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type User = {
 	id: number;
@@ -212,7 +213,7 @@ export default defineComponent({
 
 					edits.value = {};
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					saving.value = false;
 					router.push(`/settings/presets`);
@@ -233,7 +234,7 @@ export default defineComponent({
 					await api.delete(`/presets/${props.id}`);
 					router.push(`/settings/presets`);
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					deleting.value = false;
 				}
@@ -334,7 +335,7 @@ export default defineComponent({
 
 					preset.value = response.data.data;
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -372,7 +373,7 @@ export default defineComponent({
 						id: user.id,
 					}));
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -399,7 +400,7 @@ export default defineComponent({
 
 					roles.value = response.data.data;
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

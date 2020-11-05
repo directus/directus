@@ -3,6 +3,7 @@ import i18n from '@/lang';
 import { notify } from '@/utils/notify';
 
 import emitter, { Events } from '@/events';
+import { unexpectedError } from '../unexpected-error';
 
 export default async function uploadFile(
 	file: File,
@@ -47,8 +48,8 @@ export default async function uploadFile(
 		emitter.emit(Events.upload);
 
 		return response.data.data;
-	} catch (error) {
-		console.error(error);
+	} catch (err) {
+		unexpectedError(err);
 	}
 
 	function onUploadProgress(progressEvent: { loaded: number; total: number }) {

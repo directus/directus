@@ -116,6 +116,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
 import getRootPath from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type FileInfo = {
 	id: number;
@@ -196,7 +197,7 @@ export default defineComponent({
 
 					file.value = response.data.data;
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -246,7 +247,7 @@ export default defineComponent({
 					url.value = '';
 					emit('input', file.value?.id);
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

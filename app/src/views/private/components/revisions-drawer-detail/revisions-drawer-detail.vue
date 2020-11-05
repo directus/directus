@@ -48,6 +48,7 @@ import i18n from '@/lang';
 import formatLocalized from '@/utils/localized-format';
 import RevisionItem from './revision-item.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { RevisionItem, RevisionsDrawer },
@@ -166,7 +167,7 @@ export default defineComponent({
 					revisionsByDate.value = orderBy(revisionsGrouped, ['date'], ['desc']);
 					revisions.value = orderBy(response.data.data, ['activity.timestamp'], ['desc']);
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

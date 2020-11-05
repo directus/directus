@@ -1,6 +1,7 @@
 import uploadFile from '@/utils/upload-file';
 import i18n from '@/lang';
 import { notify } from '@/utils/notify';
+import { unexpectedError } from '../unexpected-error';
 
 export default async function uploadFiles(
 	files: File[],
@@ -34,7 +35,7 @@ export default async function uploadFiles(
 		}
 
 		return uploadedFiles;
-	} catch (error) {
-		throw error;
+	} catch (err) {
+		unexpectedError(err);
 	}
 }

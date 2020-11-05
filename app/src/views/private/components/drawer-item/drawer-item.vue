@@ -39,6 +39,7 @@ import useCollection from '@/composables/use-collection';
 import { useFieldsStore, useRelationsStore } from '@/stores';
 import i18n from '@/lang';
 import { Relation, Field } from '@/types';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	model: {
@@ -198,7 +199,7 @@ export default defineComponent({
 
 					item.value = response.data.data;
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -221,7 +222,7 @@ export default defineComponent({
 						[junctionFieldInfo.value.field]: response.data.data,
 					};
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

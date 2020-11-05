@@ -39,6 +39,7 @@ import { defineComponent, ref } from '@vue/composition-api';
 import api from '@/api';
 import router from '@/router';
 import { permissions } from './app-required-permissions';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
@@ -77,7 +78,7 @@ export default defineComponent({
 
 					router.push(`/settings/roles/${roleResponse.data.data.id}`);
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					saving.value = false;
 				}

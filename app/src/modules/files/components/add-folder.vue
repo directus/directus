@@ -26,6 +26,7 @@ import { defineComponent, ref } from '@vue/composition-api';
 import useFolders from '../composables/use-folders';
 import api from '@/api';
 import router from '@/router';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
@@ -59,7 +60,7 @@ export default defineComponent({
 
 				router.push({ path: '/files', query: { folder: newFolder.data.data.id } });
 			} catch (err) {
-				console.error(err);
+				unexpectedError(err);
 			} finally {
 				saving.value = false;
 			}

@@ -58,6 +58,7 @@
 import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 import { Preset } from '@/types';
 import { useUserStore, usePresetsStore } from '@/stores';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
@@ -106,8 +107,8 @@ export default defineComponent({
 					});
 
 					renameActive.value = false;
-				} catch (error) {
-					console.error(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					renameSaving.value = false;
 				}
@@ -127,8 +128,8 @@ export default defineComponent({
 				try {
 					await presetsStore.delete(props.bookmark.id);
 					deleteActive.value = false;
-				} catch (error) {
-					console.error(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					deleteSaving.value = false;
 				}

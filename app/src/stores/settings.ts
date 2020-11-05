@@ -3,6 +3,7 @@ import api from '@/api';
 import { i18n } from '@/lang';
 import { merge } from 'lodash';
 import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export const useSettingsStore = createStore({
 	id: 'settingsStore',
@@ -11,12 +12,8 @@ export const useSettingsStore = createStore({
 	}),
 	actions: {
 		async hydrate() {
-			try {
-				const response = await api.get(`/settings`);
-				this.state.settings = response.data.data;
-			} catch (err) {
-				console.error(err);
-			}
+			const response = await api.get(`/settings`);
+			this.state.settings = response.data.data;
 		},
 
 		async dehydrate() {
@@ -38,9 +35,9 @@ export const useSettingsStore = createStore({
 					title: i18n.t('settings_update_success'),
 					type: 'success',
 				});
-			} catch (error) {
-				console.error(error);
+			} catch (err) {
 				this.state.settings = settingsCopy;
+				unexpectedError(err);
 			}
 		},
 	},

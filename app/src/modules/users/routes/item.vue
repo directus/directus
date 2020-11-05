@@ -181,6 +181,7 @@ import { isAllowed } from '@/utils/is-allowed';
 import useCollection from '@/composables/use-collection';
 import { userName } from '@/utils/user-name';
 import { usePermissions } from '@/composables/use-permissions';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Values = {
 	[field: string]: any;
@@ -434,7 +435,7 @@ export default defineComponent({
 						: null;
 					roleName.value = response.data.data.role.name;
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

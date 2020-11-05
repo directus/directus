@@ -28,6 +28,7 @@ import api from '@/api';
 import i18n from '@/lang';
 import useShortcut from '@/composables/use-shortcut';
 import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
@@ -72,7 +73,7 @@ export default defineComponent({
 					type: 'success',
 				});
 			} catch (err) {
-				console.error(err);
+				unexpectedError(err);
 			} finally {
 				saving.value = false;
 			}

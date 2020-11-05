@@ -66,6 +66,7 @@ import marked from 'marked';
 import { Header as TableHeader } from '@/components/v-table/types';
 import ValueNull from '@/views/private/components/value-null';
 import router from '@/router';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Role = {
 	id: number;
@@ -145,7 +146,7 @@ export default defineComponent({
 					}),
 				];
 			} catch (err) {
-				console.error(err);
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}

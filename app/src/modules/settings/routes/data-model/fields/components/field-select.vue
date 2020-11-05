@@ -221,6 +221,7 @@ import { i18n } from '@/lang';
 import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
 import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
@@ -368,8 +369,8 @@ export default defineComponent({
 					});
 
 					duplicateActive.value = false;
-				} catch (error) {
-					console.error(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					duplicating.value = false;
 				}

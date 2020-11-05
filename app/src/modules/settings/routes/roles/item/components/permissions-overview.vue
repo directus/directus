@@ -68,6 +68,7 @@ import PermissionsOverviewRow from './permissions-overview-row.vue';
 import { Permission } from '@/types';
 import api from '@/api';
 import { permissions as appRequiredPermissions } from '../../app-required-permissions';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
@@ -145,7 +146,7 @@ export default defineComponent({
 
 					permissions.value = response.data.data;
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -164,7 +165,7 @@ export default defineComponent({
 						return permission;
 					});
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
 				}

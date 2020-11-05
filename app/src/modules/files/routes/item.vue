@@ -198,6 +198,7 @@ import useShortcut from '@/composables/use-shortcut';
 import ReplaceFile from '../components/replace-file.vue';
 import { usePermissions } from '@/composables/use-permissions';
 import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Values = {
 	[field: string]: any;
@@ -443,7 +444,7 @@ export default defineComponent({
 						icon: 'folder_move',
 					});
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					moveToDialogActive.value = false;
 					moving.value = false;

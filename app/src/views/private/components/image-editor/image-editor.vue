@@ -114,6 +114,7 @@ import Vue from 'vue';
 import Cropper from 'cropperjs';
 import { nanoid } from 'nanoid';
 import throttle from 'lodash/throttle';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Image = {
 	type: string;
@@ -260,7 +261,7 @@ export default defineComponent({
 							emit('refresh');
 							_active.value = false;
 						} catch (err) {
-							console.error(err);
+							unexpectedError(err);
 						} finally {
 							saving.value = false;
 						}

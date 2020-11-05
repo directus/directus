@@ -263,6 +263,7 @@ import router from '@/router';
 import marked from 'marked';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Item = {
 	[field: string]: any;
@@ -514,7 +515,7 @@ export default defineComponent({
 
 					bookmarkDialogActive.value = false;
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					creatingBookmark.value = false;
 				}

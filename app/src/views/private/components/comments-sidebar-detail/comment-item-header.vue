@@ -69,6 +69,7 @@ import { userName } from '@/utils/user-name';
 
 import api from '@/api';
 import localizedFormat from '@/utils/localized-format';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
@@ -114,8 +115,8 @@ export default defineComponent({
 					await api.delete(`/activity/comment/${props.activity.id}`);
 					await props.refresh();
 					confirmDelete.value = false;
-				} catch (error) {
-					console.error(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					deleting.value = false;
 				}

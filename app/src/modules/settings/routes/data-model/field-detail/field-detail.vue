@@ -125,6 +125,7 @@ import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
 
 import { initLocalStore, state, clearLocalStore } from './store';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: {
@@ -373,8 +374,8 @@ export default defineComponent({
 
 				router.push(`/settings/data-model/${props.collection}`);
 				clearLocalStore();
-			} catch (error) {
-				console.error(error);
+			} catch (err) {
+				unexpectedError(err);
 			} finally {
 				saving.value = false;
 			}

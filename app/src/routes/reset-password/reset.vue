@@ -73,7 +73,6 @@ export default defineComponent({
 
 				done.value = true;
 			} catch (err) {
-				console.error(err);
 				error.value = err;
 			} finally {
 				resetting.value = false;

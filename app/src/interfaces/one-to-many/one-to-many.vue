@@ -75,6 +75,7 @@ import { Filter, Field } from '@/types';
 import { Header, Sort } from '@/components/v-table/types';
 import { isEqual, sortBy } from 'lodash';
 import { get } from 'lodash';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection },
@@ -317,7 +318,7 @@ export default defineComponent({
 							})
 							.concat(...newItems);
 					} catch (err) {
-						console.error(err);
+						unexpectedError(err);
 					} finally {
 						loading.value = false;
 					}

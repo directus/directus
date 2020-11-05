@@ -36,6 +36,7 @@ import { Relation } from '@/types';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import DrawerItem from '@/views/private/components/drawer-item/drawer-item.vue';
 import { useCollection } from '../../composables/use-collection';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { DrawerItem },
@@ -197,7 +198,7 @@ export default defineComponent({
 					const response = await api.get(`/items/${languagesCollection.value}`, { params: { fields } });
 					languages.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

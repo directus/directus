@@ -34,7 +34,6 @@ export const useUserStore = createStore({
 
 				this.state.currentUser = data.data;
 			} catch (error) {
-				console.error(error);
 				this.state.error = error;
 			} finally {
 				this.state.loading = false;
