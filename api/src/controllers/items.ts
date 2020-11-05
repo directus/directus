@@ -2,10 +2,15 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import collectionExists from '../middleware/collection-exists';
 import { ItemsService, MetaService } from '../services';
-import { RouteNotFoundException, ForbiddenException } from '../exceptions';
+import {
+	RouteNotFoundException,
+	ForbiddenException,
+	FailedValidationException,
+} from '../exceptions';
 import { respond } from '../middleware/respond';
 import { InvalidPayloadException } from '../exceptions';
 import { PrimaryKey } from '../types';
+import Joi from 'joi';
 
 const router = express.Router();
 
@@ -92,7 +97,35 @@ router.patch(
 			return next();
 		}
 
-		const primaryKeys = await service.update(req.body);
+		if (Array.isArray(req.body)) {
+			const primaryKeys = await service.update(req.body);
+
+			try {
+				const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
+				res.locals.payload = { data: result || null };
+			} catch (error) {
+				if (error instanceof ForbiddenException) {
+					return next();
+				}
+
+				throw error;
+			}
+
+			return next();
+		}
+
+		const updateSchema = Joi.object({
+			keys: Joi.array().items(Joi.alternatives(Joi.string(), Joi.number())).required(),
+			data: Joi.object().required().unknown(),
+		});
+
+		const { error } = updateSchema.validate(req.body);
+
+		if (error) {
+			throw new FailedValidationException(error.details[0]);
+		}
+
+		const primaryKeys = await service.update(req.body.data, req.body.keys);
 
 		try {
 			const result = await service.readByKey(primaryKeys, req.sanitizedQuery);

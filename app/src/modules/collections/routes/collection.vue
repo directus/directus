@@ -96,7 +96,7 @@
 
 			<v-dialog
 				v-model="confirmArchive"
-				@dsc="confirmArchive = false"
+				@esc="confirmArchive = false"
 				v-if="selection.length > 0 && currentCollection.meta && currentCollection.meta.archive_field"
 			>
 				<template #activator="{ on }">
@@ -130,10 +130,10 @@
 				rounded
 				icon
 				class="action-batch"
-				v-if="selection.length > 1"
-				:to="batchLink"
-				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 				:disabled="batchEditAllowed === false"
+				@click="batchEditActive = true"
+				v-if="selection.length > 1"
+				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
@@ -203,6 +203,13 @@
 			</template>
 		</component>
 
+		<drawer-batch
+			:primary-keys="selection"
+			:active.sync="batchEditActive"
+			:collection="collection"
+			@refresh="refresh"
+		/>
+
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div
@@ -255,6 +262,7 @@ import BookmarkEdit from '@/views/private/components/bookmark-edit';
 import router from '@/router';
 import marked from 'marked';
 import { usePermissionsStore, useUserStore } from '@/stores';
+import DrawerBatch from '@/views/private/components/drawer-batch';
 
 type Item = {
 	[field: string]: any;
@@ -270,6 +278,7 @@ export default defineComponent({
 		SearchInput,
 		BookmarkAdd,
 		BookmarkEdit,
+		DrawerBatch,
 	},
 	props: {
 		collection: {
@@ -291,7 +300,7 @@ export default defineComponent({
 
 		const { selection } = useSelection();
 		const { info: currentCollection } = useCollection(collection);
-		const { addNewLink, batchLink, currentCollectionLink } = useLinks();
+		const { addNewLink, currentCollectionLink } = useLinks();
 		const { breadcrumb } = useBreadcrumb();
 
 		const {
@@ -319,7 +328,8 @@ export default defineComponent({
 			archive,
 			archiving,
 			error: deleteError,
-		} = useBatchDelete();
+			batchEditActive,
+		} = useBatch();
 
 		const {
 			bookmarkDialogActive,
@@ -344,7 +354,7 @@ export default defineComponent({
 		return {
 			addNewLink,
 			batchDelete,
-			batchLink,
+			batchEditActive,
 
 			confirmDelete,
 			currentCollection,
@@ -381,7 +391,12 @@ export default defineComponent({
 			bookmarkIsMine,
 			bookmarkSaving,
 			clearLocalSave,
+			refresh,
 		};
+
+		function refresh() {
+			layoutRef.value?.refresh?.();
+		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
@@ -406,16 +421,18 @@ export default defineComponent({
 			return { selection };
 		}
 
-		function useBatchDelete() {
+		function useBatch() {
 			const confirmDelete = ref(false);
 			const deleting = ref(false);
+
+			const batchEditActive = ref(false);
 
 			const confirmArchive = ref(false);
 			const archiving = ref(false);
 
 			const error = ref<any>();
 
-			return { confirmDelete, deleting, batchDelete, confirmArchive, archiving, archive, error };
+			return { batchEditActive, confirmDelete, deleting, batchDelete, confirmArchive, archiving, archive, error };
 
 			async function batchDelete() {
 				deleting.value = true;
@@ -464,16 +481,11 @@ export default defineComponent({
 				return `/collections/${props.collection}/+`;
 			});
 
-			const batchLink = computed<string>(() => {
-				const batchPrimaryKeys = selection.value.join();
-				return `/collections/${props.collection}/${batchPrimaryKeys}`;
-			});
-
 			const currentCollectionLink = computed<string>(() => {
 				return `/collections/${props.collection}`;
 			});
 
-			return { addNewLink, batchLink, currentCollectionLink };
+			return { addNewLink, currentCollectionLink };
 		}
 
 		function useBookmarks() {

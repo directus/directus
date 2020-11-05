@@ -10,12 +10,7 @@
 			</h1>
 		</template>
 
-		<template
-			#title
-			v-else-if="
-				isNew === false && isBatch === false && collectionInfo.meta && collectionInfo.meta.display_template
-			"
-		>
+		<template #title v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template">
 			<v-skeleton-loader class="title-loader" type="text" v-if="loading" />
 
 			<h1 class="type-title" v-else>
@@ -162,7 +157,6 @@
 			:loading="loading"
 			:initial-values="item"
 			:fields="fields"
-			:batch-mode="isBatch"
 			:primary-key="primaryKey || '+'"
 			:validation-errors="validationErrors"
 			v-model="edits"
@@ -186,24 +180,14 @@
 				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="
-					collectionInfo.meta &&
-					collectionInfo.meta.singleton === false &&
-					isBatch === false &&
-					isNew === false
-				"
+				v-if="collectionInfo.meta && collectionInfo.meta.singleton === false && isNew === false"
 				:collection="collection"
 				:primary-key="primaryKey"
 				ref="revisionsDrawerDetail"
 				@revert="refresh"
 			/>
 			<comments-sidebar-detail
-				v-if="
-					collectionInfo.meta &&
-					collectionInfo.meta.singleton === false &&
-					isBatch === false &&
-					isNew === false
-				"
+				v-if="collectionInfo.meta && collectionInfo.meta.singleton === false && isNew === false"
 				:collection="collection"
 				:primary-key="primaryKey"
 			/>
@@ -287,7 +271,6 @@ export default defineComponent({
 			archiving,
 			isArchived,
 			saveAsCopy,
-			isBatch,
 			refresh,
 			validationErrors,
 		} = useItem(collection, primaryKey);
@@ -326,11 +309,6 @@ export default defineComponent({
 		});
 
 		const title = computed(() => {
-			if (isBatch.value) {
-				const itemCount = props.primaryKey.split(',').length;
-				return i18n.t('editing_in_batch', { count: itemCount });
-			}
-
 			return isNew.value
 				? i18n.t('creating_in', { collection: collectionInfo.value?.name })
 				: i18n.t('editing_in', { collection: collectionInfo.value?.name });
@@ -380,7 +358,6 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
-			isBatch,
 			templateValues,
 			archiveTooltip,
 			breadcrumb,
