@@ -1,7 +1,9 @@
 import { useNotificationsStore } from '@/stores/';
 import { NotificationRaw } from '@/types';
 
+let store: any;
+
 export function notify(notification: NotificationRaw) {
-	const notificationsStore = useNotificationsStore();
-	notificationsStore.add(notification);
+	if (!store) store = useNotificationsStore();
+	store.add(notification);
 }

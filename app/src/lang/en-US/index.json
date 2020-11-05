@@ -612,6 +612,7 @@
 		"ITEM_LIMIT_REACHED": "Item limit reached.",
 		"ITEM_NOT_FOUND": "Item not found.",
 		"ROUTE_NOT_FOUND": "Not found.",
+		"UNKNOWN": "Unexpected Error",
 		"-1": "Couldn't Reach API"
 	},
 
