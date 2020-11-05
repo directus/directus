@@ -64,9 +64,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		// Note: can be null when the form is used in batch mode
 		primaryKey: {
 			type: [String, Number],
-			required: true,
+			default: null,
 		},
 		disabled: {
 			type: Boolean,
