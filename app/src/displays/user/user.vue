@@ -24,6 +24,7 @@
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
+import { addTokenToURL } from '@/api';
 
 type User = {
 	id: number;
@@ -55,8 +56,10 @@ export default defineComponent({
 			if (props.value === null) return null;
 
 			if (props.value.avatar?.id) {
-				return `${getRootPath()}assets/${props.value.avatar.id}?key=system-small-cover`;
+				const url = `${getRootPath()}assets/${props.value.avatar.id}?key=system-small-cover`;
+				return addTokenToURL(url);
 			}
+
 			return null;
 		});
 
