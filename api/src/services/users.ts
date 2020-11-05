@@ -71,8 +71,9 @@ export class UsersService extends ItemsService {
 
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
 
-		if (otherAdminUsersCount === 0)
+		if (otherAdminUsersCount === 0) {
 			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
+		}
 
 		await super.delete(keys as any);
 
