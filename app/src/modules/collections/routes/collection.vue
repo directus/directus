@@ -460,14 +460,18 @@ export default defineComponent({
 
 				archiving.value = true;
 
-				const batchPrimaryKeys = selection.value;
-
 				try {
-					await api.patch(`/items/${props.collection}/${batchPrimaryKeys}`);
-					await layoutRef.value?.refresh?.();
+					await api.patch(`/items/${props.collection}`, {
+						keys: selection.value,
+						data: {
+							[currentCollection.value.meta.archive_field]: currentCollection.value.meta.archive_value,
+						},
+					});
 
-					selection.value = [];
 					confirmArchive.value = false;
+					selection.value = [];
+
+					await layoutRef.value?.refresh?.();
 				} catch (err) {
 					error.value = err;
 				} finally {
