@@ -67,7 +67,7 @@ import i18n from '@/lang';
 import getRootPath from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
 import localizedFormat from '@/utils/localized-format';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -95,7 +95,7 @@ export default defineComponent({
 		const avatarSource = computed(() => {
 			if (!props.activity.user?.avatar) return null;
 
-			return getRootPath() + `assets/${props.activity.user.avatar.id}?key=system-small-cover`;
+			return addTokenToURL(getRootPath() + `assets/${props.activity.user.avatar.id}?key=system-small-cover`);
 		});
 
 		const { confirmDelete, deleting, remove } = useDelete();

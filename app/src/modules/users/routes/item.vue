@@ -182,6 +182,7 @@ import useCollection from '@/composables/use-collection';
 import { userName } from '@/utils/user-name';
 import { usePermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { addTokenToURL } from '@/api';
 
 type Values = {
 	[field: string]: any;
@@ -431,7 +432,9 @@ export default defineComponent({
 					});
 
 					avatarSrc.value = response.data.data.avatar?.id
-						? getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover`
+						? addTokenToURL(
+								getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover`
+						  )
 						: null;
 					roleName.value = response.data.data.role.name;
 				} catch (err) {

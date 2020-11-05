@@ -115,6 +115,7 @@ import Cropper from 'cropperjs';
 import { nanoid } from 'nanoid';
 import throttle from 'lodash/throttle';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { addTokenToURL } from '@/api';
 
 type Image = {
 	type: string;
@@ -181,7 +182,7 @@ export default defineComponent({
 		});
 
 		const imageURL = computed(() => {
-			return `/assets/${props.id}?${nanoid()}`;
+			return addTokenToURL(`/assets/${props.id}?${nanoid()}`);
 		});
 
 		return {

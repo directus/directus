@@ -33,6 +33,7 @@
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import router from '@/router';
 import getRootPath from '@/utils/get-root-path';
+import { addTokenToURL } from '@/api';
 
 type File = {
 	[key: string]: any;
@@ -102,7 +103,8 @@ export default defineComponent({
 				key = 'system-medium-contain';
 			}
 
-			return getRootPath() + `assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
+			const url = getRootPath() + `assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
+			return addTokenToURL(url);
 		});
 
 		const svgSource = computed(() => {
@@ -110,7 +112,8 @@ export default defineComponent({
 			if (props.file.type.startsWith('image') === false) return null;
 			if (props.file.type.includes('svg') === false) return null;
 
-			return getRootPath() + `assets/${props.file.id}?modified=${props.file.modified_on}`;
+			const url = getRootPath() + `assets/${props.file.id}?modified=${props.file.modified_on}`;
+			return addTokenToURL(url);
 		});
 
 		const selectionIcon = computed(() => {

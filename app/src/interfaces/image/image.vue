@@ -59,6 +59,7 @@ import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
 import getRootPath from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { addTokenToURL } from '@/api';
 
 type Image = {
 	id: string; // uuid
@@ -93,13 +94,14 @@ export default defineComponent({
 			if (!image.value) return null;
 
 			if (image.value.type.includes('svg')) {
-				return getRootPath() + `assets/${image.value.id}`;
+				return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
 			}
 
 			if (image.value.type.includes('image')) {
-				return (
-					getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`
-				);
+				const url =
+					getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`;
+
+				return addTokenToURL(url);
 			}
 
 			return null;

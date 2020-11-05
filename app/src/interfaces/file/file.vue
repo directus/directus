@@ -117,6 +117,7 @@ import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
 import getRootPath from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { addTokenToURL } from '@/api';
 
 type FileInfo = {
 	id: number;
@@ -151,9 +152,10 @@ export default defineComponent({
 
 		const imageThumbnail = computed(() => {
 			if (file.value === null || props.value === null) return null;
-			if (file.value.type.includes('svg')) return assetURL.value;
+			if (file.value.type.includes('svg')) return addTokenToURL(assetURL.value);
 			if (file.value.type.includes('image') === false) return null;
-			return assetURL.value + `?key=system-small-cover`;
+			const url = assetURL.value + `?key=system-small-cover`;
+			return addTokenToURL(url);
 		});
 
 		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
