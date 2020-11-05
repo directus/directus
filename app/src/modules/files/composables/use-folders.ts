@@ -1,5 +1,4 @@
 import api from '@/api';
-import i18n from '@/lang';
 import { ref, Ref } from '@vue/composition-api';
 import { TranslateResult } from 'vue-i18n';
 

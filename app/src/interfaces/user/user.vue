@@ -94,6 +94,7 @@ import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { userName } from '@/utils/user-name';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection },
@@ -148,7 +149,6 @@ export default defineComponent({
 		function useCurrent() {
 			const currentUser = ref<Record<string, any> | null>(null);
 			const loading = ref(false);
-			const error = ref(null);
 
 			watch(
 				() => props.value,
@@ -195,7 +195,7 @@ export default defineComponent({
 
 					currentUser.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -207,7 +207,6 @@ export default defineComponent({
 
 			const users = ref<Record<string, any>[] | null>(null);
 			const loading = ref(false);
-			const error = ref(null);
 
 			fetchTotalCount();
 			users.value = null;
@@ -231,7 +230,7 @@ export default defineComponent({
 
 					users.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

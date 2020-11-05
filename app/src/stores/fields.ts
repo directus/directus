@@ -8,6 +8,7 @@ import { useRelationsStore } from '@/stores/';
 import { Relation, FieldRaw, Field } from '@/types';
 import { merge } from 'lodash';
 import { nanoid } from 'nanoid';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 const fakeFilesField: Field = {
 	collection: 'directus_files',
@@ -120,10 +121,10 @@ export const useFieldsStore = createStore({
 				});
 
 				return field;
-			} catch (error) {
+			} catch (err) {
 				// reset the changes if the api sync failed
 				this.state.fields = stateClone;
-				throw error;
+				unexpectedError(err);
 			}
 		},
 		async updateField(collectionKey: string, fieldKey: string, updates: Record<string, Partial<Field>>) {
@@ -150,10 +151,10 @@ export const useFieldsStore = createStore({
 
 					return field;
 				});
-			} catch (error) {
+			} catch (err) {
 				// reset the changes if the api sync failed
 				this.state.fields = stateClone;
-				throw error;
+				unexpectedError(err);
 			}
 		},
 		async updateFields(collectionKey: string, updates: Partial<Field>[]) {
@@ -192,10 +193,10 @@ export const useFieldsStore = createStore({
 						return field;
 					});
 				}
-			} catch (error) {
+			} catch (err) {
 				// reset the changes if the api sync failed
 				this.state.fields = stateClone;
-				throw error;
+				unexpectedError(err);
 			}
 		},
 		async deleteField(collectionKey: string, fieldKey: string) {
@@ -208,9 +209,9 @@ export const useFieldsStore = createStore({
 
 			try {
 				await api.delete(`/fields/${collectionKey}/${fieldKey}`);
-			} catch (error) {
+			} catch (err) {
 				this.state.fields = stateClone;
-				throw error;
+				unexpectedError(err);
 			}
 		},
 		getPrimaryKeyFieldForCollection(collection: string) {

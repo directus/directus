@@ -68,6 +68,7 @@ import PermissionsOverviewRow from './permissions-overview-row.vue';
 import { Permission } from '@/types';
 import api from '@/api';
 import { permissions as appRequiredPermissions } from '../../app-required-permissions';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
@@ -99,7 +100,7 @@ export default defineComponent({
 
 		const systemVisible = ref(false);
 
-		const { permissions, loading, error, fetchPermissions, refreshPermission, refreshing } = usePermissions();
+		const { permissions, loading, fetchPermissions, refreshPermission, refreshing } = usePermissions();
 
 		const { resetActive, resetSystemPermissions, resetting, resetError } = useReset();
 
@@ -113,7 +114,6 @@ export default defineComponent({
 			systemCollections,
 			permissions,
 			loading,
-			error,
 			fetchPermissions,
 			refreshPermission,
 			refreshing,
@@ -127,12 +127,10 @@ export default defineComponent({
 			const permissions = ref<Permission[]>([]);
 			const loading = ref(false);
 			const refreshing = ref<number[]>([]);
-			const error = ref();
 
-			return { permissions, loading, error, fetchPermissions, refreshPermission, refreshing };
+			return { permissions, loading, fetchPermissions, refreshPermission, refreshing };
 
 			async function fetchPermissions() {
-				error.value = null;
 				loading.value = true;
 
 				try {
@@ -148,7 +146,7 @@ export default defineComponent({
 
 					permissions.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -167,7 +165,7 @@ export default defineComponent({
 						return permission;
 					});
 				} catch (err) {
-					console.log(`Couldn't refresh permissions ${id}`);
+					unexpectedError(err);
 				} finally {
 					refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
 				}

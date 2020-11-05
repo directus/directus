@@ -31,6 +31,7 @@ import { nanoid } from 'nanoid';
 import FilePreview from '@/views/private/components/file-preview';
 
 import getRootPath from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type File = {
 	type: string;
@@ -69,7 +70,6 @@ export default defineComponent({
 		});
 
 		const loading = ref(false);
-		const error = ref(null);
 		const file = ref<File | null>(null);
 		const cacheBuster = ref(nanoid());
 
@@ -87,7 +87,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { _active, cacheBuster, loading, error, file, fileSrc };
+		return { _active, cacheBuster, loading, file, fileSrc };
 
 		async function fetchFile() {
 			cacheBuster.value = nanoid();
@@ -103,7 +103,7 @@ export default defineComponent({
 
 				file.value = response.data.data;
 			} catch (err) {
-				error.value = err;
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}

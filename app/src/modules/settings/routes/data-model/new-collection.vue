@@ -6,22 +6,6 @@
 		persistent
 		@cancel="$router.push('/settings/data-model')"
 	>
-		<v-dialog :active="saveError !== null" @toggle="saveError = null" @esc="saveError = null">
-			<v-card class="selectable">
-				<v-card-title>
-					{{ saveError && saveError.message }}
-				</v-card-title>
-
-				<v-card-text>
-					{{ saveError && saveError.response && saveError.response.data.errors[0].message }}
-				</v-card-text>
-
-				<v-card-actions>
-					<v-button @click="saveError = null">{{ $t('dismiss') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
 		<template #sidebar>
 			<v-tabs vertical v-model="currentTab">
 				<v-tab value="collection">{{ $t('collection_setup') }}</v-tab>
@@ -138,8 +122,10 @@ import { defineComponent, ref, reactive } from '@vue/composition-api';
 import api from '@/api';
 import { Field, Relation } from '@/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
-import notify from '@/utils/notify';
+import { notify } from '@/utils/notify';
 import router from '@/router';
+import i18n from '@/lang';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
@@ -200,7 +186,6 @@ export default defineComponent({
 		});
 
 		const saving = ref(false);
-		const saveError = ref(null);
 
 		return {
 			currentTab,
@@ -209,7 +194,6 @@ export default defineComponent({
 			primaryKeyFieldName,
 			primaryKeyFieldType,
 			collectionName,
-			saveError,
 			saving,
 			singleton,
 		};
@@ -246,9 +230,8 @@ export default defineComponent({
 				});
 
 				router.push(`/settings/data-model/${collectionName.value}`);
-			} catch (error) {
-				console.log(error);
-				saveError.value = error;
+			} catch (err) {
+				unexpectedError(err);
 			} finally {
 				saving.value = false;
 			}

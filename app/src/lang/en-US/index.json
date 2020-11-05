@@ -612,6 +612,7 @@
 		"ITEM_LIMIT_REACHED": "Item limit reached.",
 		"ITEM_NOT_FOUND": "Item not found.",
 		"ROUTE_NOT_FOUND": "Not found.",
+		"UNKNOWN": "Unexpected Error",
 		"-1": "Couldn't Reach API"
 	},
 
@@ -1017,10 +1018,10 @@
       "ip": "IP Address",
       "user_agent": "User Agent",
       "comment": "Comment"
-	},
-	"directus_collections": {
-		"translations": "Collection Name Translations"
-	},
+    },
+    "directus_collections": {
+      "translations": "Collection Name Translations"
+    },
     "directus_files": {
       "title": "Title",
       "tags": "Tags",
@@ -1053,55 +1054,51 @@
       "avatar": "Avatar",
       "theme": "Theme",
       "tfa_secret": "Two-Factor Authentication"
-	},
-	"directus_settings": {
-		"project_name": "Project Name",
-		"project_url": "Project URL",
-		"project_color": "Project Color",
-		"project_logo": "Project Logo",
-		"public_foreground": "Public Foreground",
-		"public_background": "Public Background",
-		"public_note": "Public Note",
-		"auth_password_policy": "Auth Password Policy",
-		"auth_idle_timeout": "Auth Idle Timeout",
-		"auth_login_attempts": "Auth Login Attempts",
-		"storage_asset_presets": "Storage Asset Presets",
-		"storage_asset_transform": "Storage Asset Transform",
-		"telemetry": "Telemetry"
-	},
-	"directus_fields": {
-		"collection": "Collection Name",
-		"icon": "Collection Icon",
-		"note": "Note",
-		"hidden": "Hidden",
-		"singleton": "Singleton",
-		"translation": "Field Name Translations",
-		"display_template": "Template"
-	},
-	"directus_roles": {
-		"name": "Role Name",
-		"icon": "Role Icon",
-		"description": "Description",
-		"ip_access": "IP Access",
-		"app_access": "App Access",
-		"admin_access": "Admin Access",
-		"enforce_tfa": "Require 2FA",
-		"users": "Users in Role",
-		"module_list": "Module Navigation",
-		"collection_list": "Collection Navigation"
-	}
+    },
+    "directus_settings": {
+      "project_name": "Project Name",
+      "project_url": "Project URL",
+      "project_color": "Project Color",
+      "project_logo": "Project Logo",
+      "public_foreground": "Public Foreground",
+      "public_background": "Public Background",
+      "public_note": "Public Note",
+      "auth_password_policy": "Auth Password Policy",
+      "auth_idle_timeout": "Auth Idle Timeout",
+      "auth_login_attempts": "Auth Login Attempts",
+      "storage_asset_presets": "Storage Asset Presets",
+      "storage_asset_transform": "Storage Asset Transform",
+      "telemetry": "Telemetry"
+    },
+    "directus_fields": {
+      "collection": "Collection Name",
+      "icon": "Collection Icon",
+      "note": "Note",
+      "hidden": "Hidden",
+      "singleton": "Singleton",
+      "translation": "Field Name Translations",
+      "display_template": "Template"
+    },
+    "directus_roles": {
+      "name": "Role Name",
+      "icon": "Role Icon",
+      "description": "Description",
+      "ip_access": "IP Access",
+      "app_access": "App Access",
+      "admin_access": "Admin Access",
+      "enforce_tfa": "Require 2FA",
+      "users": "Users in Role",
+      "module_list": "Module Navigation",
+      "collection_list": "Collection Navigation"
+    }
   },
-
   "no_fields_in_collection": "There are no fields in \"{collection}\" yet",
-
   "do_nothing": "Do Nothing",
   "generate_and_save_uuid": "Generate and Save UUID",
   "save_current_user_id": "Save Current User ID",
   "save_current_user_role": "Save Current User Role",
   "save_current_datetime": "Save Current Date/Time",
-
   "modules": {},
-
   "coming_soon": "Coming Soon",
   "comment": "Comment",
   "config_error": "Missing Config",
@@ -1150,7 +1147,6 @@
   "db_updated": "Database successfully updated",
   "default": "Default",
   "delete": "Delete",
-
   "delete_are_you_sure": "This action is permanent and can not be undone. Are you sure you would like to proceed?",
   "delete_confirmation": "Delete Confirmation",
   "delete_field_are_you_sure": "Are you sure you want to delete the field \"{field}\"? This action can not be undone.",
@@ -1232,12 +1228,12 @@
     "uuid": "A Universally Unique Identifier"
   },
   "js_types": {
-	"object": "Object",
-	"array": "Array",
-	"string": "String",
-	"number": "Number",
-	"boolean": "Boolean",
-	"undefined": "Undefined"
+    "object": "Object",
+    "array": "Array",
+    "string": "String",
+    "number": "Number",
+    "boolean": "Boolean",
+    "undefined": "Undefined"
   },
   "file": "File",
   "file_library": "File Library",
@@ -1426,5 +1422,6 @@
   "wrapping_up": "Wrapping Up",
   "wrong_super_admin_password": "The super admin password you provided is incorrect.",
   "writable_fields_copy": "Select the fields that the user can edit",
-  "yes": "Yes"
+  "yes": "Yes",
+  "report_error": "Report Error"
 }

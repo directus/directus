@@ -6,6 +6,7 @@ import { reverse, sortBy } from 'lodash';
 export const useNotificationsStore = createStore({
 	id: 'notificationsStore',
 	state: () => ({
+		dialogs: [] as Notification[],
 		queue: [] as Notification[],
 		previous: [] as Notification[],
 	}),
@@ -14,14 +15,27 @@ export const useNotificationsStore = createStore({
 			const id = nanoid();
 			const timestamp = Date.now();
 
-			this.state.queue = [
-				...this.state.queue,
-				{
-					...notification,
-					id,
-					timestamp,
-				},
-			];
+			if (notification.dialog === true) {
+				notification.persist = true;
+
+				this.state.dialogs = [
+					...this.state.dialogs,
+					{
+						...notification,
+						id,
+						timestamp,
+					},
+				];
+			} else {
+				this.state.queue = [
+					...this.state.queue,
+					{
+						...notification,
+						id,
+						timestamp,
+					},
+				];
+			}
 
 			if (notification.persist !== true) {
 				setTimeout(() => {
@@ -32,20 +46,27 @@ export const useNotificationsStore = createStore({
 			return id;
 		},
 		hide(id: string) {
-			const toBeHidden = this.state.queue.find((n) => n.id === id);
+			const queues = [...this.state.queue, ...this.state.dialogs];
+			const toBeHidden = queues.find((n) => n.id === id);
 			if (!toBeHidden) return;
 
-			this.state.queue = this.state.queue.filter((n) => n.id !== id);
+			if (toBeHidden.dialog === true) this.state.dialogs = this.state.dialogs.filter((n) => n.id !== id);
+			else this.state.queue = this.state.queue.filter((n) => n.id !== id);
+
 			this.state.previous = [...this.state.previous, toBeHidden];
 		},
 		remove(id: string) {
-			const toBeRemoved = this.state.queue.find((n) => n.id === id);
+			const queues = [...this.state.queue, ...this.state.dialogs];
+
+			const toBeRemoved = queues.find((n) => n.id === id);
 			if (!toBeRemoved) return;
 
-			this.state.queue = this.state.queue.filter((n) => n.id !== id);
+			if (toBeRemoved.dialog === true) this.state.dialogs = this.state.dialogs.filter((n) => n.id !== id);
+			else this.state.queue = this.state.queue.filter((n) => n.id !== id);
 		},
 		update(id: string, updates: Partial<Notification>) {
 			this.state.queue = this.state.queue.map(updateIfNeeded);
+			this.state.dialogs = this.state.dialogs.map(updateIfNeeded);
 			this.state.previous = this.state.queue.map(updateIfNeeded);
 
 			function updateIfNeeded(notification: Notification) {
@@ -61,7 +82,7 @@ export const useNotificationsStore = createStore({
 	},
 	getters: {
 		lastFour(state) {
-			const all = [...state.queue, ...state.previous];
+			const all = [...state.queue, ...state.previous.filter((l) => l.dialog !== true)];
 			const chronologicalAll = reverse(sortBy(all, ['timestamp']));
 			const newestFour = chronologicalAll.slice(0, 4);
 			return reverse(newestFour);

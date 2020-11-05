@@ -39,7 +39,13 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon @click="userInviteModalActive = true" v-tooltip.bottom="$t('invite_users')" class="invite-user">
+			<v-button
+				rounded
+				icon
+				@click="userInviteModalActive = true"
+				v-tooltip.bottom="$t('invite_users')"
+				class="invite-user"
+			>
 				<v-icon name="person_add" />
 			</v-button>
 

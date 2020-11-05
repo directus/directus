@@ -56,9 +56,9 @@ import formatFilesize from '@/utils/format-filesize';
 import i18n from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import ImageEditor from '@/views/private/components/image-editor';
-
 import { nanoid } from 'nanoid';
 import getRootPath from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Image = {
 	id: string; // uuid
@@ -84,7 +84,6 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
-		const error = ref(null);
 		const lightboxActive = ref(false);
 		const editorActive = ref(false);
 
@@ -136,7 +135,6 @@ export default defineComponent({
 		return {
 			loading,
 			image,
-			error,
 			src,
 			meta,
 			lightboxActive,
@@ -159,7 +157,7 @@ export default defineComponent({
 
 				image.value = response.data.data;
 			} catch (err) {
-				error.value = err;
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}
@@ -179,7 +177,6 @@ export default defineComponent({
 
 			loading.value = false;
 			image.value = null;
-			error.value = null;
 			lightboxActive.value = false;
 			editorActive.value = false;
 		}

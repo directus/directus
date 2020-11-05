@@ -1,6 +1,7 @@
 import uploadFile from '@/utils/upload-file';
-import notify from '@/utils/notify';
 import i18n from '@/lang';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '../unexpected-error';
 
 export default async function uploadFiles(
 	files: File[],
@@ -34,14 +35,7 @@ export default async function uploadFiles(
 		}
 
 		return uploadedFiles;
-	} catch (error) {
-		if (options?.notifications) {
-			notify({
-				title: i18n.t('upload_files_failed', { count: files.length }),
-				type: 'error',
-			});
-		}
-
-		throw error;
+	} catch (err) {
+		unexpectedError(err);
 	}
 }

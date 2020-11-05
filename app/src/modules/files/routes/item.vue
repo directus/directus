@@ -185,6 +185,7 @@ import SaveOptions from '@/views/private/components/save-options';
 import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
+import FileLightbox from '@/views/private/components/file-lightbox';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
@@ -196,6 +197,8 @@ import FilesNotFound from './not-found.vue';
 import useShortcut from '@/composables/use-shortcut';
 import ReplaceFile from '../components/replace-file.vue';
 import { usePermissions } from '@/composables/use-permissions';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Values = {
 	[field: string]: any;
@@ -420,12 +423,28 @@ export default defineComponent({
 				moving.value = true;
 
 				try {
-					await api.patch(`/files/${props.primaryKey}`, {
-						folder: selectedFolder.value,
-					});
+					const response = await api.patch(
+						`/files/${props.primaryKey}`,
+						{
+							folder: selectedFolder.value,
+						},
+						{
+							params: {
+								fields: 'folder.name',
+							},
+						}
+					);
+
 					await refresh();
+					const folder = response.data.data.folder?.name || i18n.t('file_library');
+
+					notify({
+						title: i18n.t('file_moved', { folder }),
+						type: 'success',
+						icon: 'folder_move',
+					});
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					moveToDialogActive.value = false;
 					moving.value = false;

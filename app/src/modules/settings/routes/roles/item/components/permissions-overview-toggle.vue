@@ -52,6 +52,7 @@ import { defineComponent, PropType, computed, inject, ref } from '@vue/compositi
 import { Collection, Permission } from '@/types';
 import api from '@/api';
 import router from '@/router';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
@@ -118,7 +119,7 @@ export default defineComponent({
 						validation: null,
 					});
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					await refresh?.();
 					saving.value = false;
@@ -132,7 +133,7 @@ export default defineComponent({
 						fields: '*',
 					});
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					await refresh?.();
 					saving.value = false;
@@ -148,7 +149,7 @@ export default defineComponent({
 			try {
 				await api.delete(`/permissions/${props.permission.id}`);
 			} catch (err) {
-				console.error(err);
+				unexpectedError(err);
 			} finally {
 				await refresh?.();
 				saving.value = false;

@@ -133,8 +133,8 @@ export default defineComponent({
 		transition: max-width var(--medium) var(--transition);
 
 		.content {
-			max-width: 100%;
 			width: 340px;
+			max-width: 100%;
 		}
 
 		&.wide {
@@ -161,8 +161,8 @@ export default defineComponent({
 		background-size: cover;
 
 		.foreground {
-			max-width: 400px;
 			width: 80%;
+			max-width: 400px;
 		}
 
 		.note {

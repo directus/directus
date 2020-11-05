@@ -181,6 +181,7 @@ import { isAllowed } from '@/utils/is-allowed';
 import useCollection from '@/composables/use-collection';
 import { userName } from '@/utils/user-name';
 import { usePermissions } from '@/composables/use-permissions';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Values = {
 	[field: string]: any;
@@ -308,7 +309,6 @@ export default defineComponent({
 			title,
 			item,
 			loading,
-			error,
 			isNew,
 			breadcrumb,
 			edits,
@@ -411,13 +411,12 @@ export default defineComponent({
 
 		function useUserPreview() {
 			const loading = ref(false);
-			const error = ref(null);
 			const avatarSrc = ref<string | null>(null);
 			const roleName = ref<string | null>(null);
 
 			watch(() => props.primaryKey, getUserPreviewData, { immediate: true });
 
-			return { loading, error, avatarSrc, roleName };
+			return { loading, avatarSrc, roleName };
 
 			async function getUserPreviewData() {
 				if (props.primaryKey === '+') return;
@@ -436,7 +435,7 @@ export default defineComponent({
 						: null;
 					roleName.value = response.data.data.role.name;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

@@ -75,6 +75,7 @@ import { Filter, Field } from '@/types';
 import { Header, Sort } from '@/components/v-table/types';
 import { isEqual, sortBy } from 'lodash';
 import { get } from 'lodash';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection },
@@ -114,7 +115,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
-		const { tableHeaders, items, loading, error } = useTable();
+		const { tableHeaders, items, loading } = useTable();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
 		const { sort, sortItems, sortedItems } = useSort();
@@ -263,7 +264,6 @@ export default defineComponent({
 			const tableHeaders = ref<Header[]>([]);
 			const loading = ref(false);
 			const items = ref<Record<string, any>[]>([]);
-			const error = ref(null);
 
 			watch(
 				() => props.value,
@@ -318,7 +318,7 @@ export default defineComponent({
 							})
 							.concat(...newItems);
 					} catch (err) {
-						error.value = err;
+						unexpectedError(err);
 					} finally {
 						loading.value = false;
 					}
@@ -360,7 +360,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { tableHeaders, items, loading, error };
+			return { tableHeaders, items, loading };
 		}
 
 		function useEdits() {

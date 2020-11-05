@@ -34,6 +34,7 @@ import { defineComponent, computed, ref, PropType, watch } from '@vue/compositio
 import api from '@/api';
 import { useNotificationsStore } from '@/stores';
 import i18n from '@/lang';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	model: {
@@ -79,12 +80,7 @@ export default defineComponent({
 				);
 				emit('toggle', false);
 			} catch (err) {
-				notifications.add({
-					title: i18n.t('server_error'),
-					text: err.message,
-					persist: true,
-					type: 'error',
-				});
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}

@@ -164,6 +164,7 @@ import { subDays } from 'date-fns';
 import useFolders from '../composables/use-folders';
 import useEventListener from '@/composables/use-event-listener';
 import uploadFiles from '@/utils/upload-files';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Item = {
 	[field: string]: any;
@@ -183,12 +184,12 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notificationsStore = useNotificationsStore();
 		const { folders } = useFolders();
 		const layoutRef = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
 
 		const userStore = useUserStore();
-		const notificationsStore = useNotificationsStore();
 
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_files'));
 		const { batchLink } = useLinks();
@@ -307,7 +308,7 @@ export default defineComponent({
 					selection.value = [];
 					await layoutRef.value?.refresh();
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					deleting.value = false;
 				}
@@ -387,7 +388,7 @@ export default defineComponent({
 					await Vue.nextTick();
 					await refresh();
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					moveToDialogActive.value = false;
 					moving.value = false;

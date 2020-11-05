@@ -58,6 +58,7 @@ import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
 import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
 import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { RevisionsDrawerPicker, RevisionsDrawerPreview, RevisionsDrawerUpdates },
@@ -126,7 +127,7 @@ export default defineComponent({
 					_active.value = false;
 					emit('revert');
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					reverting.value = false;
 				}
