@@ -2,45 +2,62 @@ import { AbstractServiceOptions, Accountability } from '../types';
 import Knex from 'knex';
 import database from '../database';
 import os from 'os';
-import { ForbiddenException } from '../exceptions';
 // @ts-ignore
 import { version } from '../../package.json';
 import macosRelease from 'macos-release';
+import { SettingsService } from './settings';
 
 export class ServerService {
 	knex: Knex;
 	accountability: Accountability | null;
+	settingsService: SettingsService;
 
 	constructor(options?: AbstractServiceOptions) {
 		this.knex = options?.knex || database;
 		this.accountability = options?.accountability || null;
+		this.settingsService = new SettingsService({ knex: this.knex });
 	}
 
-	serverInfo() {
-		if (this.accountability?.admin !== true) {
-			throw new ForbiddenException();
-		}
+	async serverInfo() {
+		const info: Record<string, any> = {};
 
-		const osType = os.type() === 'Darwin' ? 'macOS' : os.type();
-		const osVersion =
-			osType === 'macOS'
-				? `${macosRelease().name} (${macosRelease().version})`
-				: os.release();
+		const projectInfo = await this.settingsService.readSingleton({
+			fields: [
+				'project_name',
+				'project_logo',
+				'project_color',
+				'public_foreground',
+				'public_background',
+				'public_note',
+				'custom_css',
+			],
+		});
 
-		return {
-			directus: {
+		info.project = projectInfo;
+
+		if (this.accountability?.admin === true) {
+			const osType = os.type() === 'Darwin' ? 'macOS' : os.type();
+
+			const osVersion =
+				osType === 'macOS'
+					? `${macosRelease().name} (${macosRelease().version})`
+					: os.release();
+
+			info.directus = {
 				version,
-			},
-			node: {
+			};
+			info.node = {
 				version: process.versions.node,
 				uptime: Math.round(process.uptime()),
-			},
-			os: {
+			};
+			info.os = {
 				type: osType,
 				version: osVersion,
 				uptime: Math.round(os.uptime()),
 				totalmem: os.totalmem(),
-			},
-		};
+			};
+		}
+
+		return info;
 	}
 }

@@ -10,12 +10,7 @@
 			</h1>
 		</template>
 
-		<template
-			#title
-			v-else-if="
-				isNew === false && isBatch === false && collectionInfo.meta && collectionInfo.meta.display_template
-			"
-		>
+		<template #title v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template">
 			<v-skeleton-loader class="title-loader" type="text" v-if="loading" />
 
 			<h1 class="type-title" v-else>
@@ -134,7 +129,7 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="saveAllowed === false || hasEdits === false"
+				:disabled="isSavable === false"
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 				@click="saveAndQuit"
 			>
@@ -143,7 +138,7 @@
 				<template #append-outer>
 					<save-options
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true"
-						:disabled="hasEdits === false"
+						:disabled="isSavable === false"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
@@ -161,8 +156,7 @@
 			:disabled="isNew ? false : updateAllowed === false"
 			:loading="loading"
 			:initial-values="item"
-			:collection="collection"
-			:batch-mode="isBatch"
+			:fields="fields"
 			:primary-key="primaryKey || '+'"
 			:validation-errors="validationErrors"
 			v-model="edits"
@@ -186,24 +180,14 @@
 				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="
-					collectionInfo.meta &&
-					collectionInfo.meta.singleton === false &&
-					isBatch === false &&
-					isNew === false
-				"
+				v-if="collectionInfo.meta && collectionInfo.meta.singleton === false && isNew === false"
 				:collection="collection"
 				:primary-key="primaryKey"
 				ref="revisionsDrawerDetail"
 				@revert="refresh"
 			/>
 			<comments-sidebar-detail
-				v-if="
-					collectionInfo.meta &&
-					collectionInfo.meta.singleton === false &&
-					isBatch === false &&
-					isNew === false
-				"
+				v-if="collectionInfo.meta && collectionInfo.meta.singleton === false && isNew === false"
 				:collection="collection"
 				:primary-key="primaryKey"
 			/>
@@ -227,9 +211,12 @@ import i18n from '@/lang';
 import marked from 'marked';
 import useShortcut from '@/composables/use-shortcut';
 import { NavigationGuard } from 'vue-router';
-import { useUserStore } from '@/stores';
+import { useUserStore, usePermissionsStore } from '@/stores';
 import generateJoi from '@/utils/generate-joi';
 import { isAllowed } from '@/utils/is-allowed';
+import { cloneDeep } from 'lodash';
+import { Field } from '@/types';
+import { usePermissions } from '@/composables/use-permissions';
 
 type Values = {
 	[field: string]: any;
@@ -261,13 +248,14 @@ export default defineComponent({
 	setup(props) {
 		const form = ref<HTMLElement>();
 		const userStore = useUserStore();
+		const permissionsStore = usePermissionsStore();
 
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
-		const { info: collectionInfo, primaryKeyField } = useCollection(collection);
+		const { info: collectionInfo, defaults, primaryKeyField } = useCollection(collection);
 
 		const {
 			isNew,
@@ -283,12 +271,29 @@ export default defineComponent({
 			archiving,
 			isArchived,
 			saveAsCopy,
-			isBatch,
 			refresh,
 			validationErrors,
 		} = useItem(collection, primaryKey);
 
-		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+		const hasEdits = computed(() => Object.keys(edits.value).length > 0);
+
+		const isSavable = computed(() => {
+			if (saveAllowed.value === false) return false;
+			if (hasEdits.value === true) return true;
+
+			if (
+				!primaryKeyField.value?.schema?.has_auto_increment &&
+				!primaryKeyField.value?.meta?.special?.includes('uuid')
+			) {
+				return !!edits.value?.[primaryKeyField.value.field];
+			}
+
+			if (isNew.value === true) {
+				return Object.keys(defaults.value).length > 0 || hasEdits.value;
+			}
+
+			return hasEdits.value;
+		});
 
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
@@ -304,11 +309,6 @@ export default defineComponent({
 		});
 
 		const title = computed(() => {
-			if (isBatch.value) {
-				const itemCount = props.primaryKey.split(',').length;
-				return i18n.t('editing_in_batch', { count: itemCount });
-			}
-
 			return isNew.value
 				? i18n.t('creating_in', { collection: collectionInfo.value?.name })
 				: i18n.t('editing_in', { collection: collectionInfo.value?.name });
@@ -333,7 +333,11 @@ export default defineComponent({
 			return next();
 		};
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed } = usePermissions();
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields } = usePermissions(
+			collection,
+			item,
+			isNew
+		);
 
 		return {
 			item,
@@ -341,6 +345,7 @@ export default defineComponent({
 			error,
 			isNew,
 			edits,
+			isSavable,
 			hasEdits,
 			saving,
 			collectionInfo,
@@ -353,7 +358,6 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
-			isBatch,
 			templateValues,
 			archiveTooltip,
 			breadcrumb,
@@ -373,6 +377,7 @@ export default defineComponent({
 			toggleArchive,
 			validationErrors,
 			form,
+			fields,
 		};
 
 		function useBreadcrumb() {
@@ -387,14 +392,14 @@ export default defineComponent({
 		}
 
 		async function saveAndQuit() {
-			if (saveAllowed.value === false || hasEdits.value === false) return;
+			if (isSavable.value === false) return;
 
 			await save();
 			if (props.singleton === false) router.push(`/collections/${props.collection}`);
 		}
 
 		async function saveAndStay() {
-			if (saveAllowed.value === false || hasEdits.value === false) return;
+			if (isSavable.value === false) return;
 
 			const savedItem: Record<string, any> = await save();
 
@@ -408,7 +413,7 @@ export default defineComponent({
 		}
 
 		async function saveAndAddNew() {
-			if (saveAllowed.value === false || hasEdits.value === false) return;
+			if (isSavable.value === false) return;
 
 			await save();
 
@@ -444,28 +449,6 @@ export default defineComponent({
 			if (!leaveTo.value) return;
 			edits.value = {};
 			router.push(leaveTo.value);
-		}
-
-		function usePermissions() {
-			const deleteAllowed = computed(() => isAllowed(collection.value, 'delete', item.value));
-			const saveAllowed = computed(() => {
-				if (isNew.value) {
-					return true;
-				}
-
-				return isAllowed(collection.value, 'update', item.value);
-			});
-			const updateAllowed = computed(() => isAllowed(collection.value, 'update', item.value));
-
-			const archiveAllowed = computed(() => {
-				if (!collectionInfo.value?.meta?.archive_field) return false;
-
-				return isAllowed(collection.value, 'update', {
-					[collectionInfo.value.meta.archive_field]: collectionInfo.value.meta.archive_value,
-				});
-			});
-
-			return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed };
 		}
 	},
 	beforeRouteLeave(to, from, next) {

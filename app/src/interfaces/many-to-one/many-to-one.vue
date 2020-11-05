@@ -360,7 +360,7 @@ export default defineComponent({
 		function usePreview() {
 			const displayTemplate = computed(() => {
 				if (props.template !== null) return props.template;
-				return collectionInfo.value?.meta?.display_template;
+				return collectionInfo.value?.meta?.display_template || `{{ ${relatedPrimaryKeyField.value.field} }}`;
 			});
 
 			const requiredFields = computed(() => {

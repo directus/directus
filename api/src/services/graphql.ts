@@ -7,7 +7,6 @@ import {
 	Field,
 	Relation,
 	Query,
-	AbstractService,
 } from '../types';
 import {
 	GraphQLString,
@@ -18,7 +17,6 @@ import {
 	GraphQLInputObjectType,
 	ObjectFieldNode,
 	GraphQLID,
-	ValueNode,
 	FieldNode,
 	GraphQLFieldConfigMap,
 	GraphQLInt,
@@ -26,11 +24,9 @@ import {
 	StringValueNode,
 	BooleanValueNode,
 	ArgumentNode,
-	GraphQLScalarType,
 	GraphQLBoolean,
 	ObjectValueNode,
 	GraphQLUnionType,
-	GraphQLUnionTypeConfig,
 } from 'graphql';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
@@ -52,6 +48,7 @@ import { UsersService } from './users';
 import { WebhooksService } from './webhooks';
 
 import { getRelationType } from '../utils/get-relation-type';
+import { systemCollectionRows } from '../database/system-data/collections';
 
 export class GraphQLService {
 	accountability: Accountability | null;
@@ -65,7 +62,7 @@ export class GraphQLService {
 		this.knex = options?.knex || database;
 		this.fieldsService = new FieldsService(options);
 		this.collectionsService = new CollectionsService(options);
-		this.relationsService = new RelationsService({ knex: this.knex });
+		this.relationsService = new RelationsService(options);
 	}
 
 	args = {
@@ -138,6 +135,7 @@ export class GraphQLService {
 									const relatedIsSystem = relationForField.one_collection!.startsWith(
 										'directus_'
 									);
+
 									const relatedType = relatedIsSystem
 										? schema[relationForField.one_collection!.substring(9)].type
 										: schema.items[relationForField.one_collection!].type;
@@ -242,19 +240,36 @@ export class GraphQLService {
 			}
 		}
 
-		schemaWithLists.items = {
-			type: new GraphQLObjectType({
-				name: 'items',
-				fields: schemaWithLists.items,
-			}),
-			resolve: () => ({}),
+		const queryBase: any = {
+			name: 'Directus',
+			fields: {
+				server: {
+					type: new GraphQLObjectType({
+						name: 'server',
+						fields: {
+							ping: {
+								type: GraphQLString,
+								resolve: () => 'pong',
+							},
+						},
+					}),
+					resolve: () => ({}),
+				},
+			},
 		};
 
+		if (Object.keys(schemaWithLists.items).length > 0) {
+			queryBase.fields.items = {
+				type: new GraphQLObjectType({
+					name: 'items',
+					fields: schemaWithLists.items,
+				}),
+				resolve: () => ({}),
+			};
+		}
+
 		return new GraphQLSchema({
-			query: new GraphQLObjectType({
-				name: 'Directus',
-				fields: schemaWithLists,
-			}),
+			query: new GraphQLObjectType(queryBase),
 		});
 	}
 
@@ -506,15 +521,19 @@ export class GraphQLService {
 				});
 		}
 
-		const collectionInfo = await this.knex
-			.select('singleton')
-			.from('directus_collections')
-			.where({ collection: collection })
-			.first();
-		const result =
-			collectionInfo?.singleton === true
-				? await service.readSingleton(query)
-				: await service.readByQuery(query);
+		const collectionInfo =
+			(await this.knex
+				.select('singleton')
+				.from('directus_collections')
+				.where({ collection: collection })
+				.first()) ||
+			systemCollectionRows.find(
+				(collectionMeta) => collectionMeta?.collection === collection
+			);
+
+		const result = collectionInfo?.singleton
+			? await service.readSingleton(query)
+			: await service.readByQuery(query);
 
 		return result;
 	}

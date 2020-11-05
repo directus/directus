@@ -141,11 +141,6 @@ body {
 		border-color: var(--primary);
 	}
 
-	&.disabled {
-		color: var(--foreground-subdued);
-		background-color: var(--background-subdued);
-	}
-
 	textarea {
 		position: relative;
 		display: block;
@@ -162,6 +157,11 @@ body {
 		&::placeholder {
 			color: var(--foreground-subdued);
 		}
+	}
+
+	&.disabled textarea {
+		color: var(--foreground-subdued);
+		background-color: var(--background-subdued);
 	}
 }
 </style>

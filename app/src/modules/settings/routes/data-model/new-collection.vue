@@ -120,16 +120,18 @@
 <script lang="ts">
 import { defineComponent, ref, reactive } from '@vue/composition-api';
 import api from '@/api';
-import { Field } from '@/types';
-import { useFieldsStore, useCollectionsStore, useNotificationsStore } from '@/stores/';
+import { Field, Relation } from '@/types';
+import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
+// import notify from '@/utils/notify';
 import router from '@/router';
 import i18n from '@/lang';
 
 export default defineComponent({
 	setup() {
-		const notificationsStore = useNotificationsStore();
+		// const notificationsStore = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
 
 		const currentTab = ref(['collection']);
 
@@ -212,13 +214,20 @@ export default defineComponent({
 					},
 				});
 
+				const relations = getSystemRelations();
+
+				if (relations.length > 0) {
+					await api.post('/relations', relations);
+					await relationsStore.hydrate();
+				}
+
 				await collectionsStore.hydrate();
 				await fieldsStore.hydrate();
 
-				notificationsStore.add({
-					title: 'Collection Created',
-					type: 'success',
-				});
+				// notificationsStore.add({
+				// 	title: 'Collection Created',
+				// 	type: 'success',
+				// });
 
 				router.push(`/settings/data-model/${collectionName.value}`);
 			} catch (error) {
@@ -303,19 +312,20 @@ export default defineComponent({
 							],
 						},
 						interface: 'dropdown',
-						display: 'color-dot',
+						display: 'labels',
 						display_options: {
+							showAsDot: true,
 							choices: [
 								{
-									color: '#2F80ED',
+									background: '#2F80ED',
 									value: 'published',
 								},
 								{
-									color: '#ECEFF1',
+									background: '#ECEFF1',
 									value: 'draft',
 								},
 								{
-									color: '#F2994A',
+									background: '#F2994A',
 									value: 'archived',
 								},
 							],
@@ -357,6 +367,7 @@ export default defineComponent({
 						options: {
 							display: 'both',
 						},
+						display: 'user',
 						readonly: true,
 						hidden: true,
 						width: 'half',
@@ -390,6 +401,7 @@ export default defineComponent({
 						options: {
 							display: 'both',
 						},
+						display: 'user',
 						readonly: true,
 						hidden: true,
 						width: 'half',
@@ -414,6 +426,32 @@ export default defineComponent({
 			}
 
 			return fields;
+		}
+
+		function getSystemRelations() {
+			const relations: Partial<Relation>[] = [];
+
+			if (systemFields.userCreated.enabled === true) {
+				relations.push({
+					many_collection: collectionName.value!,
+					many_field: systemFields.userCreated.name,
+					many_primary: primaryKeyFieldName.value,
+					one_collection: 'directus_users',
+					one_primary: 'id',
+				});
+			}
+
+			if (systemFields.userUpdated.enabled === true) {
+				relations.push({
+					many_collection: collectionName.value!,
+					many_field: systemFields.userUpdated.name,
+					many_primary: primaryKeyFieldName.value,
+					one_collection: 'directus_users',
+					one_primary: 'id',
+				});
+			}
+
+			return relations;
 		}
 	},
 });

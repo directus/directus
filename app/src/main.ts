@@ -1,4 +1,6 @@
-__webpack_public_path__ = (window as any).$directusAssetBasePath || '/admin/';
+import getRootPath from './utils/get-root-path';
+
+__webpack_public_path__ = getRootPath() + 'admin/';
 
 import { version } from '../package.json';
 

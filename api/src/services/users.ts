@@ -71,8 +71,9 @@ export class UsersService extends ItemsService {
 
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
 
-		if (otherAdminUsersCount === 0)
+		if (otherAdminUsersCount === 0) {
 			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
+		}
 
 		await super.delete(keys as any);
 
@@ -123,7 +124,7 @@ export class UsersService extends ItemsService {
 		if (!user) throw new ForbiddenException();
 
 		const payload = { email, scope: 'password-reset' };
-		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
+		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
 		const acceptURL = env.PUBLIC_URL + '/admin/reset-password?token=' + token;
 
 		await sendPasswordResetMail(email, acceptURL);

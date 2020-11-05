@@ -1,6 +1,6 @@
 import VueI18n from 'vue-i18n';
 import { Component } from 'vue';
-import { Field, types } from '@/types';
+import { Field, types, localTypes } from '@/types';
 
 export type InterfaceConfig = {
 	id: string;
@@ -10,6 +10,7 @@ export type InterfaceConfig = {
 	component: Component;
 	options: DeepPartial<Field>[] | Component;
 	types: typeof types[number][];
+	localTypes?: readonly typeof localTypes[number][];
 	relationship?: null | 'm2o' | 'o2m' | 'm2m' | 'translations';
 	hideLabel?: boolean;
 	hideLoader?: boolean;

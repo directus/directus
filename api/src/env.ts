@@ -27,7 +27,7 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_COOKIE_SECURE: false,
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
 
-	CORS_ENABLED: false,
+	CORS_ENABLED: true,
 
 	CACHE_ENABLED: false,
 	CACHE_STORE: 'memory',
@@ -63,11 +63,6 @@ function processValues(env: Record<string, any>) {
 		if (value === 'false') env[key] = false;
 		if (value === 'null') env[key] = null;
 		if (isNaN(value) === false && value.length > 0) env[key] = Number(value);
-		if (typeof value === 'string' && value.includes(','))
-			env[key] = value
-				.split(',')
-				.map((val) => val.trim())
-				.filter((val) => val);
 	}
 
 	return env;

@@ -4,6 +4,8 @@ import logger from './logger';
 import expressLogger from 'express-pino-logger';
 import path from 'path';
 
+import { validateDBConnection, isInstalled } from './database';
+
 import { validateEnv } from './utils/validate-env';
 import env from './env';
 import { track } from './utils/track';
@@ -44,8 +46,17 @@ import { InvalidPayloadException } from './exceptions';
 import { registerExtensions } from './extensions';
 import emitter from './emitter';
 
+import fse from 'fs-extra';
+
 export default async function createApp() {
 	validateEnv(['KEY', 'SECRET']);
+
+	await validateDBConnection();
+
+	if ((await isInstalled()) === false) {
+		logger.fatal(`Database doesn't have Directus tables installed.`);
+		process.exit(1);
+	}
 
 	const app = express();
 
@@ -80,11 +91,18 @@ export default async function createApp() {
 
 	if (env.NODE_ENV !== 'development') {
 		const adminPath = require.resolve('@directus/app/dist/index.html');
+		const publicUrl = env.PUBLIC_URL.endsWith('/') ? env.PUBLIC_URL : env.PUBLIC_URL + '/';
 
-		app.get('/', (req, res) => res.redirect('/admin/'));
+		// Prefix all href/src in the index html with the APIs public path
+		let html = fse.readFileSync(adminPath, 'utf-8');
+		html = html.replace(/href="\//g, `href="${publicUrl}`);
+		html = html.replace(/src="\//g, `src="${publicUrl}`);
+
+		app.get('/', (req, res) => res.redirect(`./admin/`));
+		app.get('/admin', (req, res) => res.send(html));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
 		app.use('/admin/*', (req, res) => {
-			res.sendFile(adminPath);
+			res.send(html);
 		});
 	}
 

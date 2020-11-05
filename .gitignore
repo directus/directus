@@ -8,3 +8,5 @@ lerna-debug.log
 .nova
 *.code-workspace
 dist
+*.sublime-settings
+

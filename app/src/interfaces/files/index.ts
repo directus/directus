@@ -1,5 +1,6 @@
 import { defineInterface } from '../define';
 import InterfaceFiles from './files.vue';
+import FilesOptions from './options.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'files',
@@ -8,7 +9,8 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'note_add',
 	component: InterfaceFiles,
 	types: ['alias'],
+	localTypes: ['files'],
 	relationship: 'm2m',
-	options: [],
+	options: FilesOptions,
 	recommendedDisplays: ['files'],
 }));

@@ -1,6 +1,18 @@
 <template>
 	<div :class="(field.meta && field.meta.width) || 'full'">
-		<div v-if="localType === 'translations'" class="group">
+		<v-input disabled v-if="disabled" class="field">
+			<template #prepend>
+				<v-icon name="lock" v-tooltip="$t('system_fields_locked')" />
+			</template>
+
+			<template #input>
+				<div class="label">
+					<span class="name">{{ field.field }}</span>
+				</div>
+			</template>
+		</v-input>
+
+		<div v-else-if="localType === 'translations'" class="group">
 			<div class="header">
 				<v-icon class="drag-handle" name="drag_indicator" />
 				<span class="name" v-tooltip="field.name">{{ field.field }}</span>
@@ -214,6 +226,10 @@ export default defineComponent({
 		field: {
 			type: Object as PropType<Field>,
 			required: true,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {

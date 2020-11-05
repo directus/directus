@@ -10,6 +10,7 @@ export default defineInterface(({ i18n }) => ({
 	component: InterfaceManyToOne,
 	types: ['uuid', 'string', 'text', 'integer', 'bigInteger'],
 	relationship: 'm2o',
+	localTypes: ['m2o'],
 	options: Options,
 	recommendedDisplays: ['related-values'],
 }));

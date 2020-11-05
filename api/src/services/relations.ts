@@ -3,6 +3,8 @@ import { AbstractServiceOptions, Query, PrimaryKey, PermissionsAction, Relation 
 import { PermissionsService } from './permissions';
 import { toArray } from '../utils/to-array';
 
+import { systemRelationRows } from '../database/system-data/relations';
+
 /**
  * @TODO update foreign key constraints when relations are updated
  */
@@ -25,7 +27,13 @@ export class RelationsService extends ItemsService {
 			| ParsedRelation
 			| ParsedRelation[]
 			| null;
+
+		if (results && Array.isArray(results)) {
+			results.push(...(systemRelationRows as ParsedRelation[]));
+		}
+
 		const filteredResults = await this.filterForbidden(results);
+
 		return filteredResults;
 	}
 
@@ -46,6 +54,9 @@ export class RelationsService extends ItemsService {
 			| ParsedRelation[]
 			| null;
 
+		// No need to merge system relations here. They don't have PKs so can never be directly
+		// targetted
+
 		const filteredResults = await this.filterForbidden(results);
 		return filteredResults;
 	}
@@ -58,6 +69,7 @@ export class RelationsService extends ItemsService {
 			this.accountability?.role || null,
 			'read'
 		);
+
 		const allowedFields = await this.permissionsService.getAllowedFields(
 			this.accountability?.role || null,
 			'read'

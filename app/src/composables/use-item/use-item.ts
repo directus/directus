@@ -16,7 +16,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 	const saving = ref(false);
 	const deleting = ref(false);
 	const archiving = ref(false);
-	const edits = ref({});
+	const edits = ref<Record<string, any>>({});
 	const isNew = computed(() => primaryKey.value === '+');
 	const isBatch = computed(() => typeof primaryKey.value === 'string' && primaryKey.value.includes(','));
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);

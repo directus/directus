@@ -1,5 +1,4 @@
 import express from 'express';
-import argon2 from 'argon2';
 import asyncHandler from 'express-async-handler';
 import Joi from 'joi';
 import {
@@ -10,6 +9,7 @@ import {
 import { UsersService, MetaService, AuthenticationService } from '../services';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
+import { PrimaryKey } from '../types';
 
 const router = express.Router();
 
@@ -144,6 +144,21 @@ router.patch(
 
 			throw error;
 		}
+
+		return next();
+	}),
+	respond
+);
+
+router.delete(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		if (!req.body || Array.isArray(req.body) === false) {
+			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
+		}
+
+		const service = new UsersService({ accountability: req.accountability });
+		await service.delete(req.body as PrimaryKey[]);
 
 		return next();
 	}),

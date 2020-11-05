@@ -26,7 +26,7 @@
 				<v-list>
 					<field-list-item
 						v-for="field in availableFields"
-						:key="field.field"
+						:key="field.key"
 						:field="field"
 						:depth="depth"
 						@add="addField"
@@ -137,6 +137,7 @@ export default defineComponent({
 				return {
 					name: field.name,
 					field: field.field,
+					key: field.key,
 					disabled: _value.value.includes(prefix + field.field),
 					children: parseTree(field.children, prefix + field.field + '.'),
 				};

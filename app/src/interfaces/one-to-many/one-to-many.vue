@@ -19,7 +19,7 @@
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
 					:key="header.value"
-					:value="item[header.value]"
+					:value="get(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
@@ -74,6 +74,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import { Filter, Field } from '@/types';
 import { Header, Sort } from '@/components/v-table/types';
 import { isEqual, sortBy } from 'lodash';
+import { get } from 'lodash';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection },
@@ -136,6 +137,7 @@ export default defineComponent({
 			selectionFilters,
 			sort,
 			sortedItems,
+			get,
 		};
 
 		function getItem(id: string | number) {
@@ -303,7 +305,14 @@ export default defineComponent({
 						items.value = existingItems
 							.map((item) => {
 								const updatedItem = updatedItems.find((updated) => updated[pkField] === item[pkField]);
-								if (updatedItem !== undefined) return updatedItem;
+
+								if (updatedItem !== undefined) {
+									return {
+										...item,
+										...updatedItem,
+									};
+								}
+
 								return item;
 							})
 							.concat(...newItems);
@@ -367,7 +376,9 @@ export default defineComponent({
 				const pkField = relatedPrimaryKeyField.value.field;
 				const hasPrimaryKey = pkField in item;
 
-				editsAtStart.value = item;
+				const edits = (props.value || []).find((edit: any) => edit === item);
+
+				editsAtStart.value = edits || { [pkField]: item[pkField] || -1 };
 				currentlyEditing.value = hasPrimaryKey ? item[pkField] : -1;
 			}
 

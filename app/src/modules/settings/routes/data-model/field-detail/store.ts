@@ -67,6 +67,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				if (inter.system === true) return false;
 
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
+				const matchesLocalType = inter.localTypes?.includes(type);
 				let matchesRelation = false;
 
 				if (type === 'standard' || type === 'presentation') {
@@ -81,7 +82,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					matchesRelation = inter.relationship === type;
 				}
 
-				return matchesType && matchesRelation;
+				return matchesType && matchesRelation && (matchesLocalType === undefined || matchesLocalType);
 			})
 			.sort((a, b) => (a.name > b.name ? 1 : -1));
 	});
@@ -364,9 +365,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					$type: 'manyCurrent',
 					collection: junctionCollection,
 					field: manyCurrent,
-					type: collectionExists(junctionCollection)
-						? fieldsStore.getPrimaryKeyFieldForCollection(junctionCollection)?.type
-						: 'integer',
+					type: fieldsStore.getPrimaryKeyFieldForCollection(collection)!.type,
 					schema: {},
 					meta: {
 						hidden: true,

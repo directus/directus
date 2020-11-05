@@ -1,15 +1,19 @@
 {% layout "base" %}
 {% block content %}
 
-<p>You have been invited to {{ projectName }}. Please click the link below to join:</p>
+<p>
+    You have been invited to join {{ projectName }}. Please click the button below to join:
+</p>
 
-<p><a href="{{ url }}">{{ url }}</a></p>
+<p style="text-align: center; padding: 20px 0;">
+    <a href="{{ url }}">
+        Click to join {{ projectName }}
+    </a>
+</p>
 
-{% comment %}
-@TODO
-Make this white-labeled
-{% endcomment %}
-
-<p>Love,<br>Directus</p>
+<p>
+    Thank You,<br>
+    {{ projectName }}
+</p>
 
 {% endblock %}

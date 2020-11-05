@@ -164,14 +164,14 @@
 import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 
 import UsersNavigation from '../components/navigation.vue';
-import { i18n } from '@/lang';
+import { i18n, setLanguage } from '@/lang';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
-import { useFieldsStore, useUserStore } from '@/stores/';
+import { useFieldsStore, useCollectionsStore, useUserStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
@@ -180,6 +180,7 @@ import useShortcut from '@/composables/use-shortcut';
 import { isAllowed } from '@/utils/is-allowed';
 import useCollection from '@/composables/use-collection';
 import { userName } from '@/utils/user-name';
+import { usePermissions } from '@/composables/use-permissions';
 
 type Values = {
 	[field: string]: any;
@@ -213,6 +214,7 @@ export default defineComponent({
 	setup(props) {
 		const form = ref<HTMLElement>();
 		const fieldsStore = useFieldsStore();
+		const collectionsStore = useCollectionsStore();
 		const userStore = useUserStore();
 
 		const { primaryKey } = toRefs(props);
@@ -287,7 +289,11 @@ export default defineComponent({
 
 		const { formFields } = useFormFields(fieldsFiltered);
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed } = usePermissions();
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed } = usePermissions(
+			ref('directus_users'),
+			item,
+			isNew
+		);
 
 		const archiveTooltip = computed(() => {
 			if (archiveAllowed.value === false) return i18n.t('not_allowed');
@@ -349,13 +355,15 @@ export default defineComponent({
 		}
 
 		async function saveAndQuit() {
-			await save();
+			const savedItem: Record<string, any> = await save();
+			await setLang(savedItem);
 			await refreshCurrentUser();
 			router.push(`/users`);
 		}
 
 		async function saveAndStay() {
 			const savedItem: Record<string, any> = await save();
+			await setLang(savedItem);
 
 			revisionsDrawerDetail.value?.$data?.refresh?.();
 
@@ -367,7 +375,8 @@ export default defineComponent({
 		}
 
 		async function saveAndAddNew() {
-			await save();
+			const savedItem: Record<string, any> = await save();
+			await setLang(savedItem);
 			await refreshCurrentUser();
 			router.push(`/users/+`);
 		}
@@ -380,6 +389,17 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			await remove();
 			router.push(`/users`);
+		}
+
+		async function setLang(user: Record<string, any>) {
+			const newLang = user?.language;
+
+			if (newLang && newLang !== i18n.locale) {
+				await setLanguage(newLang);
+
+				await fieldsStore.hydrate();
+				await collectionsStore.hydrate();
+			}
 		}
 
 		async function refreshCurrentUser() {
@@ -425,28 +445,6 @@ export default defineComponent({
 			if (!leaveTo.value) return;
 			edits.value = {};
 			router.push(leaveTo.value);
-		}
-
-		function usePermissions() {
-			const deleteAllowed = computed(() => isAllowed('directus_users', 'delete', item.value));
-			const saveAllowed = computed(() => {
-				if (isNew.value) {
-					return true;
-				}
-
-				return isAllowed('directus_users', 'update', item.value);
-			});
-			const updateAllowed = computed(() => isAllowed('directus_users', 'update', item.value));
-
-			const archiveAllowed = computed(() => {
-				if (!collectionInfo.value?.meta?.archive_field) return false;
-
-				return isAllowed('directus_users', 'update', {
-					[collectionInfo.value.meta.archive_field]: collectionInfo.value.meta.archive_value,
-				});
-			});
-
-			return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed };
 		}
 
 		async function toggleArchive() {

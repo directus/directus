@@ -85,7 +85,7 @@ export default defineComponent({
 
 			function hasAll() {
 				if (!props.permission) return false;
-				if (props.permission.fields !== '*') return false;
+				if (props.permission.fields?.includes('*') !== true) return false;
 				if (Object.keys(props.permission.permissions || {}).length > 0) return false;
 				if (Object.keys(props.permission.validation || {}).length > 0) return false;
 

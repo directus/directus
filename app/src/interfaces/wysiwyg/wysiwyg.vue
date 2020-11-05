@@ -1,11 +1,14 @@
 <template>
-	<Editor
-		ref="editorElement"
-		:init="editorOptions"
-		v-model="_value"
-		@onFocusIn="setFocus(true)"
-		@onFocusOut="setFocus(false)"
-	/>
+	<div class="wysiwyg" :class="{ disabled }">
+		<Editor
+			ref="editorElement"
+			:init="editorOptions"
+			:disabled="disabled"
+			v-model="_value"
+			@onFocusIn="setFocus(true)"
+			@onFocusOut="setFocus(false)"
+		/>
+	</div>
 </template>
 
 <script lang="ts">
@@ -116,7 +119,7 @@ export default defineComponent({
 				skin: false,
 				skin_url: false,
 				content_css: false,
-				content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
+				content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', props.disabled),
 				plugins:
 					'media table hr lists image link pagebreak code insertdatetime autoresize paste preview fullscreen directionality',
 				branding: false,
@@ -125,7 +128,6 @@ export default defineComponent({
 				statusbar: false,
 				menubar: false,
 				convert_urls: false,
-				readonly: props.disabled,
 				extended_valid_elements: 'audio[loop],source',
 				toolbar: toolbarString,
 				style_formats: styleFormats,

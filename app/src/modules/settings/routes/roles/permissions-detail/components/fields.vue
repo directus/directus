@@ -38,6 +38,7 @@ export default defineComponent({
 
 		const fieldsInCollection = computed(() => {
 			const fields = fieldsStore.getFieldsForCollection(props.permission.collection);
+
 			return fields.map((field: Field) => {
 				return {
 					text: field.name,
@@ -49,21 +50,24 @@ export default defineComponent({
 		const fields = computed({
 			get() {
 				if (!_permission.value.fields) return [];
-				if (_permission.value.fields === '*')
+
+				if (_permission.value.fields.includes('*')) {
 					return fieldsInCollection.value.map(({ value }: { value: string }) => value);
-				return _permission.value.fields.split(',');
+				}
+
+				return _permission.value.fields;
 			},
 			set(newFields: string[] | null) {
 				if (newFields && newFields.length > 0) {
 					if (newFields.length === fieldsInCollection.value.length) {
 						_permission.value = {
 							..._permission.value,
-							fields: '*',
+							fields: ['*'],
 						};
 					} else {
 						_permission.value = {
 							..._permission.value,
-							fields: newFields.join(','),
+							fields: newFields,
 						};
 					}
 				} else {

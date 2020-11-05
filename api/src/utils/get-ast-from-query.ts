@@ -16,6 +16,8 @@ import { cloneDeep } from 'lodash';
 import Knex from 'knex';
 import SchemaInspector from 'knex-schema-inspector';
 import { getRelationType } from '../utils/get-relation-type';
+import { systemFieldRows } from '../database/system-data/fields';
+import { systemRelationRows } from '../database/system-data/relations';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -39,7 +41,10 @@ export default async function getASTFromQuery(
 	 * we might not need al this info at all times, but it's easier to fetch it all once, than trying to fetch it for every
 	 * requested field. @todo look into utilizing graphql/dataloader for this purpose
 	 */
-	const relations = await knex.select<Relation[]>('*').from('directus_relations');
+	const relations = [
+		...(await knex.select<Relation[]>('*').from('directus_relations')),
+		...systemRelationRows,
+	];
 
 	const permissions =
 		accountability && accountability.admin !== true
@@ -131,7 +136,7 @@ export default async function getASTFromQuery(
 					children: {},
 					query: {},
 					relatedKey: {},
-					parentKey: await schemaInspector.primary(parentCollection),
+					parentKey: (await schemaInspector.primary(parentCollection)) as string,
 					fieldKey: relationalField,
 					relation: relation,
 				};
@@ -142,17 +147,17 @@ export default async function getASTFromQuery(
 						nestedFields
 					);
 					child.query[relatedCollection] = {};
-					child.relatedKey[relatedCollection] = await schemaInspector.primary(
+					child.relatedKey[relatedCollection] = (await schemaInspector.primary(
 						relatedCollection
-					);
+					)) as string;
 				}
 			} else if (relatedCollection) {
 				child = {
 					type: relationType,
 					name: relatedCollection,
 					fieldKey: relationalField,
-					parentKey: await schemaInspector.primary(parentCollection),
-					relatedKey: await schemaInspector.primary(relatedCollection),
+					parentKey: (await schemaInspector.primary(parentCollection)) as string,
+					relatedKey: (await schemaInspector.primary(relatedCollection)) as string,
 					relation: relation,
 					query: deep?.[relationalField] || {},
 					children: await parseFields(relatedCollection, nestedFields),
@@ -261,9 +266,12 @@ export default async function getASTFromQuery(
 
 	async function getFieldsInCollection(collection: string) {
 		const columns = (await schemaInspector.columns(collection)).map((column) => column.column);
-		const fields = (
-			await knex.select('field').from('directus_fields').where({ collection })
-		).map((field) => field.field);
+		const fields = [
+			...(await knex.select('field').from('directus_fields').where({ collection })).map(
+				(field) => field.field
+			),
+			...systemFieldRows.map((fieldMeta) => fieldMeta.field),
+		];
 
 		const fieldsInCollection = [
 			...columns,

@@ -16,7 +16,7 @@ export function isAllowed(collection: string, action: Permission['action'], valu
 
 	if (!permissionInfo) return false;
 
-	const schema = generateJoi(permissionInfo.permissions, { allowUnknown: permissionInfo.fields === '*' });
+	const schema = generateJoi(permissionInfo.permissions, { allowUnknown: true });
 	const { error } = schema.validate(value);
 
 	if (!error) {
