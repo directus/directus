@@ -76,7 +76,6 @@ git checkout -b YOUR-BRANCH-NAME
 
 ```bash
 npm install
-npm run setup
 ```
 
 ### 5. Setup the Database & Env File
