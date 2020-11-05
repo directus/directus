@@ -111,7 +111,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		} catch (err) {
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => err.extensions.code === 'FAILED_VALIDATION')
+					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
 					.map((err: APIError) => {
 						return err.extensions;
 					});
@@ -149,7 +149,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		} catch (err) {
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => err.extensions.code === 'FAILED_VALIDATION')
+					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
 					.map((err: APIError) => {
 						return err.extensions;
 					});
