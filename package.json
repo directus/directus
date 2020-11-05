@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "lerna run dev --stream --parallel",
     "release": "lerna publish --force-publish",
-    "setup": "lerna clean -y && lerna exec npm install && lerna run build"
+    "cli": "cross-env NODE_ENV=development ts-node --script-mode --transpile-only api/src/cli/index.ts"
   },
   "repository": {
     "type": "git",
