@@ -10,7 +10,7 @@ let cache: Keyv | null = null;
 if (env.CACHE_ENABLED === true) {
 	validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
 	cache = getKevyInstance();
-	cache.on('error', logger.error);
+	cache.on('error', (err) => logger.error(err));
 }
 
 export default cache;
