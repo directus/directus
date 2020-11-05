@@ -4,6 +4,8 @@ import collectionExists from '../middleware/collection-exists';
 import { ItemsService, MetaService } from '../services';
 import { RouteNotFoundException, ForbiddenException } from '../exceptions';
 import { respond } from '../middleware/respond';
+import { InvalidPayloadException } from '../../dist/exceptions';
+import { PrimaryKey } from '../types';
 
 const router = express.Router();
 
@@ -132,6 +134,21 @@ router.patch(
 			throw error;
 		}
 
+		return next();
+	}),
+	respond
+);
+
+router.delete(
+	'/:collection',
+	collectionExists,
+	asyncHandler(async (req, res, next) => {
+		if (!req.body || Array.isArray(req.body) === false) {
+			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
+		}
+
+		const service = new ItemsService(req.collection, { accountability: req.accountability });
+		await service.delete(req.body as PrimaryKey[]);
 		return next();
 	}),
 	respond

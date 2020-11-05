@@ -423,7 +423,10 @@ export default defineComponent({
 				const batchPrimaryKeys = selection.value;
 
 				try {
-					await api.delete(`/items/${props.collection}/${batchPrimaryKeys}`);
+					await api.delete(`/items/${props.collection}`, {
+						data: batchPrimaryKeys,
+					});
+
 					await layoutRef.value?.refresh?.();
 
 					selection.value = [];
