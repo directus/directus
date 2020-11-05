@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import { CollectionsService, MetaService } from '../services';
-import { ForbiddenException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 
 const router = Router();
@@ -78,6 +78,21 @@ router.patch(
 
 			throw error;
 		}
+
+		return next();
+	}),
+	respond
+);
+
+router.delete(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		if (!req.body || Array.isArray(req.body) === false) {
+			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
+		}
+
+		const collectionsService = new CollectionsService({ accountability: req.accountability });
+		await collectionsService.delete(req.body as string[]);
 
 		return next();
 	}),

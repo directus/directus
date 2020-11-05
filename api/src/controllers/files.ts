@@ -238,6 +238,20 @@ router.patch(
 );
 
 router.delete(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		if (!req.body || Array.isArray(req.body) === false) {
+			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
+		}
+
+		const service = new FilesService({ accountability: req.accountability });
+		await service.delete(req.body as PrimaryKey[]);
+		return next();
+	}),
+	respond
+);
+
+router.delete(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		const keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
