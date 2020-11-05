@@ -11,6 +11,7 @@ export interface NotificationRaw {
 	progress?: number;
 	loading?: boolean;
 	dialog?: boolean;
+	error?: Error;
 }
 
 export interface Notification extends NotificationRaw {

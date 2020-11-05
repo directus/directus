@@ -1,16 +1,20 @@
 <template>
 	<div class="notification-dialogs">
-		<v-dialog :active="true" v-for="notify in lastFour" :key="notify.id">
-			<v-card :class="[notify.type]">
-				<v-card-title>{{ notify.title }}</v-card-title>
-				<v-card-text v-if="notify.text">
-					{{ notify.text }}
+		<v-dialog :active="true" v-for="notification in notifications" :key="notification.id" persist>
+			<v-card :class="[notification.type]">
+				<v-card-title>{{ notification.title }}</v-card-title>
+				<v-card-text v-if="notification.text">
+					{{ notification.text }}
+
+					<v-error v-if="notification.error" :error="notification.error" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary v-if="notify.type === 'error'">
-						<a target="_blank" :href="getGitHubIssueLink(notify.id, notify)">{{ $t('report_error') }}</a>
+					<v-button secondary v-if="notification.type === 'error'">
+						<a target="_blank" :href="getGitHubIssueLink(notification.id, notification)">
+							{{ $t('report_error') }}
+						</a>
 					</v-button>
-					<v-button @click="done(notify.id)">{{ $t('dismiss') }}</v-button>
+					<v-button @click="done(notification.id)">{{ $t('dismiss') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -32,9 +36,11 @@ export default defineComponent({
 		const { parsedInfo } = useProjectInfo();
 		const notificationsStore = useNotificationsStore();
 
-		return { lastFour: notificationsStore.lastFourDialogs, done, getGitHubIssueLink };
+		const notifications = computed(() => notificationsStore.state.dialogs);
 
-		function getGitHubIssueLink(id: string, notify: Notification) {
+		return { notifications, done, getGitHubIssueLink };
+
+		function getGitHubIssueLink(id: string, notification: Notification) {
 			const debugInfo = `<!-- Please put a detailed explanation of the problem here. -->
 
 ---
@@ -47,8 +53,15 @@ Node: ${parsedInfo.value?.node.version}
 
 ### Error
 
-Title: ${notify.title || 'none'}
-Text: ${notify.text || 'none'}
+Title: ${notification.title || 'none'}
+Message: ${notification.text || 'none'}
+
+<details>
+<summary>Stack Trace</summary>
+<pre>
+${JSON.stringify(notification.error, Object.getOwnPropertyNames(notification.error), 2)}
+</pre>
+</details>
 			`;
 
 			return `https://github.com/directus/next/issues/new?body=${encodeURIComponent(debugInfo)}`;
@@ -64,30 +77,5 @@ Text: ${notify.text || 'none'}
 <style lang="scss" scoped>
 .notification-dialogs {
 	position: relative;
-}
-
-.v-card {
-	border-left-width: 4px;
-	border-left-style: solid;
-
-	.v-error {
-		margin-top: 8px;
-	}
-
-	&.info {
-		border-left-color: var(--primary);
-	}
-
-	&.success {
-		border-left-color: var(--success);
-	}
-
-	&.warning {
-		border-left-color: var(--warning);
-	}
-
-	&.error {
-		border-left-color: var(--danger);
-	}
 }
 </style>

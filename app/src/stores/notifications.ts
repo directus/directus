@@ -87,11 +87,5 @@ export const useNotificationsStore = createStore({
 			const newestFour = chronologicalAll.slice(0, 4);
 			return reverse(newestFour);
 		},
-		lastFourDialogs(state) {
-			const all = [...state.dialogs, ...state.previous.filter((l) => l.dialog === true)];
-			const chronologicalAll = reverse(sortBy(all, ['timestamp']));
-			const newestFour = chronologicalAll.slice(0, 4);
-			return reverse(newestFour);
-		},
 	},
 });

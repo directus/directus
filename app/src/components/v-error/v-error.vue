@@ -35,7 +35,7 @@ export default defineComponent({
 
 		async function copyError() {
 			const error = props.error?.response?.data || props.error;
-			await navigator.clipboard.writeText(JSON.stringify(error, null, 2));
+			await navigator.clipboard.writeText(JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
 			copied.value = true;
 		}
 	},

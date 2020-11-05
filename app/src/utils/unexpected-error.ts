@@ -10,10 +10,13 @@ export function unexpectedError(error: Error | RequestError) {
 	const code = (error as RequestError).response?.data?.errors?.[0]?.extensions?.code || 'UNKNOWN';
 	const message = (error as RequestError).response?.data?.errors?.[0]?.message || error.message || undefined;
 
+	console.warn(error);
+
 	store.add({
 		title: i18n.t(`errors.${code}`),
 		text: message,
 		type: 'error',
 		dialog: true,
+		error,
 	});
 }

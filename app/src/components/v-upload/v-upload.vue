@@ -92,6 +92,7 @@ import uploadFile from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import useItem from '@/composables/use-item';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { DrawerCollection },
@@ -157,6 +158,8 @@ export default defineComponent({
 				try {
 					numberOfFiles.value = files.length;
 
+					throw new Error('jammer');
+
 					if (props.multiple === true) {
 						const uploadedFiles = await uploadFiles(Array.from(files), {
 							onProgressChange: (percentage) => {
@@ -182,7 +185,7 @@ export default defineComponent({
 						uploadedFile && emit('input', uploadedFile);
 					}
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					uploading.value = false;
 					done.value = 0;
