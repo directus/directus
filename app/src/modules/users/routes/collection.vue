@@ -69,7 +69,7 @@
 			<users-navigation :current-role="queryFilters && queryFilters.role" />
 		</template>
 
-		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" />
+		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @toggle="refresh" />
 
 		<component
 			class="layout"
@@ -210,7 +210,12 @@ export default defineComponent({
 			marked,
 			clearFilters,
 			userInviteModalActive,
+			refresh,
 		};
+
+		async function refresh() {
+			await layoutRef.value?.refresh();
+		}
 
 		function useBatchDelete() {
 			const confirmDelete = ref(false);

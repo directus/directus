@@ -80,14 +80,18 @@ export class UsersService extends ItemsService {
 		return key;
 	}
 
-	async inviteUser(email: string, role: string) {
-		await this.service.create({ email, role, status: 'invited' });
+	async inviteUser(email: string | string[], role: string) {
+		const emails = toArray(email);
 
-		const payload = { email, scope: 'invite' };
-		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
-		const acceptURL = env.PUBLIC_URL + '/admin/accept-invite?token=' + token;
+		for (const email of emails) {
+			await this.service.create({ email, role, status: 'invited' });
 
-		await sendInviteMail(email, acceptURL);
+			const payload = { email, scope: 'invite' };
+			const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
+			const acceptURL = env.PUBLIC_URL + '/admin/accept-invite?token=' + token;
+
+			await sendInviteMail(email, acceptURL);
+		}
 	}
 
 	async acceptInvite(token: string, password: string) {

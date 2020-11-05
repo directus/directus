@@ -6,7 +6,6 @@ import path from 'path';
 import fs from 'fs';
 import { promisify } from 'util';
 import env from '../env';
-import { URL } from 'url';
 
 const readFile = promisify(fs.readFile);
 
@@ -54,11 +53,19 @@ async function getDefaultTemplateOptions() {
 		fields: ['project_name', 'project_logo', 'project_color'],
 	});
 
+	let projectLogoURL = env.PUBLIC_URL;
+
+	if (projectLogoURL.endsWith('/') === false) {
+		projectLogoURL += '/';
+	}
+
+	projectLogoURL += 'assets/${projectInfo.project_logo}';
+
 	return {
 		projectName: projectInfo.project_name || 'Directus',
 		projectColor: projectInfo.project_color || '#546e7a',
 		projectLogo: projectInfo.project_logo
-			? new URL(`/assets/${projectInfo.project_logo}`, env.PUBLIC_URL)
+			? projectLogoURL
 			: 'https://directus.io/assets/directus-white.png',
 	};
 }

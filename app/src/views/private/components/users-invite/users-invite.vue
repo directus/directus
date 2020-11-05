@@ -3,19 +3,16 @@
 		<v-card>
 			<v-card-title>{{ $t('invite_users') }}</v-card-title>
 
-			<v-card-text class="grid">
-				<div class="field">
-					<div class="type-label">{{ $t('emails') }}</div>
-					<interface-tags
-						v-model="emails"
-						:placeholder="$t('email_examples')"
-						icon-right="email"
-						whitespace=""
-					/>
-				</div>
-				<div class="field" v-if="role === null">
-					<div class="type-label">{{ $t('role') }}</div>
-					<v-select v-model="roleSelected" :items="roles" />
+			<v-card-text>
+				<div class="grid">
+					<div class="field">
+						<div class="type-label">{{ $t('emails') }}</div>
+						<v-textarea v-model="emails" :placeholder="$t('email_examples')" />
+					</div>
+					<div class="field" v-if="role === null">
+						<div class="type-label">{{ $t('role') }}</div>
+						<v-select v-model="roleSelected" :items="roles" />
+					</div>
 				</div>
 			</v-card-text>
 
@@ -53,7 +50,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const notifications = useNotificationsStore();
-		const emails = ref<string[]>([]);
+		const emails = ref<string>('');
 		const roles = ref<Record<string, any>[]>([]);
 		const roleSelected = ref<string | null>(props.role);
 		const loading = ref(false);
@@ -69,15 +66,18 @@ export default defineComponent({
 
 		async function inviteUsers() {
 			loading.value = true;
+
 			try {
-				await Promise.all(
-					emails.value.map((email) => {
-						return api.post('/users/invite', {
-							email,
-							role: roleSelected.value,
-						});
-					})
-				);
+				const emailsParsed = emails.value
+					.split(/,|\n/)
+					.filter((e) => e)
+					.map((email) => email.trim());
+
+				await api.post('/users/invite', {
+					email: emailsParsed,
+					role: roleSelected.value,
+				});
+
 				emit('toggle', false);
 			} catch (err) {
 				unexpectedError(err);
@@ -105,7 +105,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.v-card-text {
+.grid {
 	--v-form-vertical-gap: 20px;
 
 	@include form-grid;

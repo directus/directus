@@ -597,6 +597,9 @@
 	"inline_title": "Inline Title",
 	"auto_format_casing": "Auto-format casing",
 
+	"create_account": "Create Account",
+	"account_created_successfully": "Account Created Successfully",
+
 	"auto_fill": "Auto Fill",
 
 	"corresponding_field": "Corresponding Field",
