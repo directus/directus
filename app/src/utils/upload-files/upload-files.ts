@@ -1,6 +1,6 @@
 import uploadFile from '@/utils/upload-file';
 import i18n from '@/lang';
-import { useNotificationsStore } from '@/stores';
+import { notify } from '@/utils/notify';
 
 export default async function uploadFiles(
 	files: File[],
@@ -10,7 +10,6 @@ export default async function uploadFiles(
 		preset?: Record<string, any>;
 	}
 ) {
-	const notificationsStore = useNotificationsStore();
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const progressForFiles = files.map(() => 0);
 
@@ -28,7 +27,7 @@ export default async function uploadFiles(
 		);
 
 		if (options?.notifications) {
-			notificationsStore.add({
+			notify({
 				title: i18n.t('upload_files_success', { count: files.length }),
 				type: 'success',
 			});

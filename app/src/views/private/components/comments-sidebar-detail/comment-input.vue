@@ -24,10 +24,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
-import { useNotificationsStore } from '@/stores';
 import api from '@/api';
 import i18n from '@/lang';
 import useShortcut from '@/composables/use-shortcut';
+import { notify } from '@/utils/notify';
 
 export default defineComponent({
 	props: {
@@ -45,7 +45,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notificationsStore = useNotificationsStore();
 		const textarea = ref<HTMLElement>();
 		useShortcut('meta+enter', postComment, textarea);
 		const newCommentContent = ref<string | null>(null);
@@ -68,7 +67,7 @@ export default defineComponent({
 
 				newCommentContent.value = null;
 
-				notificationsStore.add({
+				notify({
 					title: i18n.t('post_comment_success'),
 					type: 'success',
 				});

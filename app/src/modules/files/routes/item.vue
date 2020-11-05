@@ -186,7 +186,7 @@ import FilePreview from '@/views/private/components/file-preview';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
 import FileLightbox from '@/views/private/components/file-lightbox';
-import { useFieldsStore, useNotificationsStore } from '@/stores/';
+import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import useFormFields from '@/composables/use-form-fields';
@@ -197,6 +197,7 @@ import FilesNotFound from './not-found.vue';
 import useShortcut from '@/composables/use-shortcut';
 import ReplaceFile from '../components/replace-file.vue';
 import { usePermissions } from '@/composables/use-permissions';
+import { notify } from '@/utils/notify';
 
 type Values = {
 	[field: string]: any;
@@ -410,7 +411,6 @@ export default defineComponent({
 			const moveToDialogActive = ref(false);
 			const moving = ref(false);
 			const selectedFolder = ref<number | null>();
-			const notification = useNotificationsStore();
 
 			watch(item, () => {
 				selectedFolder.value = item.value?.folder || null;
@@ -429,14 +429,15 @@ export default defineComponent({
 						},
 						{
 							params: {
-								fields: '*,folder.*',
+								fields: 'folder.name',
 							},
 						}
 					);
+
 					await refresh();
 					const folder = response.data.data.folder?.name || i18n.t('file_library');
 
-					notification.add({
+					notify({
 						title: i18n.t('file_moved', { folder }),
 						type: 'success',
 						icon: 'folder_move',

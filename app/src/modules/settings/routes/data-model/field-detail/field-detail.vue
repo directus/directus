@@ -117,11 +117,12 @@ import { i18n } from '@/lang';
 import { isEmpty, cloneDeep } from 'lodash';
 import api from '@/api';
 import { Relation, Collection } from '@/types';
-import { useFieldsStore, useRelationsStore, useCollectionsStore, useNotificationsStore } from '@/stores/';
+import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
 import { Field } from '@/types';
 import router from '@/router';
 import useCollection from '@/composables/use-collection';
 import { getLocalTypeForField } from '../get-local-type';
+import { notify } from '@/utils/notify';
 
 import { initLocalStore, state, clearLocalStore } from './store';
 
@@ -153,7 +154,6 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const notificationsStore = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
@@ -360,12 +360,12 @@ export default defineComponent({
 				await relationsStore.hydrate();
 
 				if (props.field !== '+') {
-					notificationsStore.add({
+					notify({
 						title: i18n.t('field_update_success', { field: props.field }),
 						type: 'success',
 					});
 				} else {
-					notificationsStore.add({
+					notify({
 						title: i18n.t('field_create_success', { field: fieldData.field }),
 						type: 'success',
 					});

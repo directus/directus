@@ -1,8 +1,8 @@
 import { createStore } from 'pinia';
 import api from '@/api';
-import { useNotificationsStore } from '@/stores';
 import { i18n } from '@/lang';
 import { merge } from 'lodash';
+import { notify } from '@/utils/notify';
 
 export const useSettingsStore = createStore({
 	id: 'settingsStore',
@@ -24,7 +24,6 @@ export const useSettingsStore = createStore({
 		},
 
 		async updateSettings(updates: { [key: string]: any }) {
-			const notificationsStore = useNotificationsStore();
 			const settingsCopy = { ...this.state.settings };
 			const newSettings = merge({}, this.state.settings, updates);
 
@@ -35,7 +34,7 @@ export const useSettingsStore = createStore({
 
 				this.state.settings = response.data.data;
 
-				notificationsStore.add({
+				notify({
 					title: i18n.t('settings_update_success'),
 					type: 'success',
 				});

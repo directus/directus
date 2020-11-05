@@ -122,13 +122,12 @@ import { defineComponent, ref, reactive } from '@vue/composition-api';
 import api from '@/api';
 import { Field, Relation } from '@/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
-// import notify from '@/utils/notify';
+import { notify } from '@/utils/notify';
 import router from '@/router';
 import i18n from '@/lang';
 
 export default defineComponent({
 	setup() {
-		// const notificationsStore = useNotificationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
@@ -224,10 +223,10 @@ export default defineComponent({
 				await collectionsStore.hydrate();
 				await fieldsStore.hydrate();
 
-				// notificationsStore.add({
-				// 	title: 'Collection Created',
-				// 	type: 'success',
-				// });
+				notify({
+					title: 'Collection Created',
+					type: 'success',
+				});
 
 				router.push(`/settings/data-model/${collectionName.value}`);
 			} catch (error) {

@@ -1,6 +1,6 @@
 import api from '@/api';
-import { useNotificationsStore } from '@/stores';
 import i18n from '@/lang';
+import { notify } from '@/utils/notify';
 
 import emitter, { Events } from '@/events';
 
@@ -13,7 +13,6 @@ export default async function uploadFile(
 		fileId?: string;
 	}
 ) {
-	const notificationsStore = useNotificationsStore();
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const formData = new FormData();
 
@@ -39,7 +38,7 @@ export default async function uploadFile(
 		}
 
 		if (options?.notifications) {
-			notificationsStore.add({
+			notify({
 				title: i18n.t('upload_file_success'),
 				type: 'success',
 			});

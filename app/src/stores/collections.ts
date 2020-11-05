@@ -5,7 +5,7 @@ import i18n from '@/lang/';
 import { notEmpty } from '@/utils/is-empty/';
 import VueI18n from 'vue-i18n';
 import formatTitle from '@directus/format-title';
-import { useNotificationsStore } from '@/stores';
+import { notify } from '@/utils/notify';
 
 export const useCollectionsStore = createStore({
 	id: 'collectionsStore',
@@ -56,12 +56,10 @@ export const useCollectionsStore = createStore({
 			this.reset();
 		},
 		async updateCollection(collection: string, updates: Partial<Collection>) {
-			const notificationsStore = useNotificationsStore();
-
 			try {
 				await api.patch(`/collections/${collection}`, updates);
 				await this.hydrate();
-				notificationsStore.add({
+				notify({
 					type: 'success',
 					title: i18n.t('update_collection_success'),
 				});
@@ -70,11 +68,10 @@ export const useCollectionsStore = createStore({
 			}
 		},
 		async deleteCollection(collection: string) {
-			const notificationsStore = useNotificationsStore();
 			try {
 				await api.delete(`/collections/${collection}`);
 				await this.hydrate();
-				notificationsStore.add({
+				notify({
 					type: 'success',
 					title: i18n.t('delete_collection_success'),
 				});
