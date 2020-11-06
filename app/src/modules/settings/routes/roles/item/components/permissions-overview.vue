@@ -34,6 +34,10 @@
 					/>
 				</div>
 			</transition-expand>
+
+			<button v-if="systemVisible" class="reset-toggle" @click="resetActive = true">
+				{{ $t('reset_system_permissions') }}
+			</button>
 		</div>
 
 		<router-view
@@ -42,10 +46,6 @@
 			:permission-key="permission"
 			@refresh="refreshPermission"
 		/>
-
-		<button v-if="systemVisible" class="reset-toggle" @click="resetActive = true">
-			{{ $t('reset_system_permissions') }}
-		</button>
 
 		<v-dialog v-model="resetActive" @esc="resetActive = false">
 			<v-card>
@@ -81,6 +81,10 @@ export default defineComponent({
 			// the permission row primary key in case we're on the permission detail modal view
 			type: String,
 			default: null,
+		},
+		appAccess: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -191,13 +195,15 @@ export default defineComponent({
 						await api.delete(`/permissions/${toBeDeleted.join(',')}`);
 					}
 
-					await api.post(
-						'/permissions',
-						appRequiredPermissions.map((permission) => ({
-							...permission,
-							role: props.role,
-						}))
-					);
+					if (props.role !== null && props.appAccess === true) {
+						await api.post(
+							'/permissions',
+							appRequiredPermissions.map((permission) => ({
+								...permission,
+								role: props.role,
+							}))
+						);
+					}
 
 					await fetchPermissions();
 

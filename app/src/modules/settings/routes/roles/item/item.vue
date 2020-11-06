@@ -71,7 +71,7 @@
 			<v-notice v-if="adminEnabled" type="info">
 				{{ $t('admins_have_all_permissions') }}
 			</v-notice>
-			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" />
+			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
 
 			<v-form
 				collection="directus_roles"
@@ -143,6 +143,15 @@ export default defineComponent({
 			return !!values.admin_access;
 		});
 
+		const appAccess = computed(() => {
+			const values = {
+				...item.value,
+				...edits.value,
+			} as Record<string, any>;
+
+			return !!values.app_access;
+		});
+
 		return {
 			item,
 			loading,
@@ -157,6 +166,7 @@ export default defineComponent({
 			isBatch,
 			adminEnabled,
 			userInviteModalActive,
+			appAccess,
 		};
 
 		/**
