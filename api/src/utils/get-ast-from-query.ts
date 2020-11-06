@@ -128,7 +128,14 @@ export default async function getASTFromQuery(
 			let child: NestedCollectionNode | null = null;
 
 			if (relationType === 'm2a') {
-				const allowedCollections = relation.one_allowed_collections!.split(',');
+				const allowedCollections = relation
+					.one_allowed_collections!.split(',')
+					.filter((collection) => {
+						if (!permissions) return true;
+						return permissions.some(
+							(permission) => permission.collection === collection
+						);
+					});
 
 				child = {
 					type: 'm2a',
@@ -152,6 +159,15 @@ export default async function getASTFromQuery(
 					)) as string;
 				}
 			} else if (relatedCollection) {
+				if (
+					permissions &&
+					permissions.some(
+						(permission) => permission.collection === relatedCollection
+					) === false
+				) {
+					continue;
+				}
+
 				child = {
 					type: relationType,
 					name: relatedCollection,
