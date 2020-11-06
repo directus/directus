@@ -270,7 +270,9 @@ export default async function getASTFromQuery(
 			...(await knex.select('field').from('directus_fields').where({ collection })).map(
 				(field) => field.field
 			),
-			...systemFieldRows.map((fieldMeta) => fieldMeta.field),
+			...systemFieldRows
+				.filter((fieldMeta) => fieldMeta.collection === collection)
+				.map((fieldMeta) => fieldMeta.field),
 		];
 
 		const fieldsInCollection = [

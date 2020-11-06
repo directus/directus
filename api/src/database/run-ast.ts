@@ -82,6 +82,7 @@ export default async function runAST(
 
 			if (nestedItems) {
 				// Merge all fetched nested records with the parent items
+
 				items = mergeWithParentItems(nestedItems, items, nestedNode, tempLimit);
 			}
 		}
@@ -269,7 +270,7 @@ function mergeWithParentItems(
 					nestedItem[nestedNode.relation.many_field] ===
 						parentItem[nestedNode.relation.one_primary!] ||
 					nestedItem[nestedNode.relation.many_field]?.[
-						nestedNode.relation.many_primary
+						nestedNode.relation.one_primary!
 					] === parentItem[nestedNode.relation.one_primary!]
 				);
 			});
