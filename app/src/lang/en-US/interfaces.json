@@ -151,7 +151,8 @@
 		},
 		"slider": {
 			"slider": "Slider",
-			"description": "Select a number using a slider"
+			"description": "Select a number using a slider",
+			"always_show_value": "Always show value"
 		},
 		"slug": {
 			"slug": "Slug",
