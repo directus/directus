@@ -114,7 +114,7 @@
 					<template v-else-if="isNew === false">
 						<div class="name type-title">{{ userName(item) }}</div>
 						<div class="email">{{ item.email }}</div>
-						<v-chip :class="item.status" small>{{ roleName }}</v-chip>
+						<v-chip :class="item.status" small v-if="roleName">{{ roleName }}</v-chip>
 					</template>
 				</div>
 			</div>
@@ -435,7 +435,8 @@ export default defineComponent({
 								getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover`
 						  )
 						: null;
-					roleName.value = response.data.data.role.name;
+
+					roleName.value = response.data.data?.role?.name;
 				} catch (err) {
 					unexpectedError(err);
 				} finally {
