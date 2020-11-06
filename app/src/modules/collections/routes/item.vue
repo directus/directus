@@ -213,7 +213,6 @@ import useShortcut from '@/composables/use-shortcut';
 import { NavigationGuard } from 'vue-router';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import generateJoi from '@/utils/generate-joi';
-import { isAllowed } from '@/utils/is-allowed';
 import { cloneDeep } from 'lodash';
 import { Field } from '@/types';
 import { usePermissions } from '@/composables/use-permissions';
@@ -223,7 +222,7 @@ type Values = {
 };
 
 export default defineComponent({
-	name: 'collections-detail',
+	name: 'collections-item',
 	components: {
 		CollectionsNavigation,
 		CollectionsNotFound,

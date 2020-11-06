@@ -177,7 +177,6 @@ import { Field } from '@/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 import { getRootPath } from '@/utils/get-root-path';
 import useShortcut from '@/composables/use-shortcut';
-import { isAllowed } from '@/utils/is-allowed';
 import useCollection from '@/composables/use-collection';
 import { userName } from '@/utils/user-name';
 import { usePermissions } from '@/composables/use-permissions';

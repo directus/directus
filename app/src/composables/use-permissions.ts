@@ -26,9 +26,14 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 	const archiveAllowed = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return false;
 
-		return isAllowed(collection.value, 'update', {
-			[collectionInfo.value.meta.archive_field]: collectionInfo.value.meta.archive_value,
-		});
+		return isAllowed(
+			collection.value,
+			'update',
+			{
+				[collectionInfo.value.meta.archive_field]: collectionInfo.value.meta.archive_value,
+			},
+			true
+		);
 	});
 
 	const fields = computed(() => {
