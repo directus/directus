@@ -238,7 +238,7 @@ Email address from which emails are sent.<br>**Default: `no-reply@directus.io`**
 
 What to use to send emails. One of `sendmail`, `smtp`. Based on the transport used, you must also provide the following configurations.<br>**Default: `sendmail`**
 
-* **Sendmail** (`sendgrid`)
+* **Sendmail** (`sendmail`)
 	* **`EMAIL_SENDMAIL_NEW_LINE`** — What new line style to use in sendmail. **Default: `unix`**
 	* **`EMAIL_SENDMAIL_PATH`** — Path to your sendmail executable. **Default: `/usr/sbin/sendmail`**
 * **SMTP** (`smtp`)
