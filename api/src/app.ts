@@ -36,6 +36,7 @@ import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
 import graphqlRouter from './controllers/graphql';
+import schema from './middleware/schema';
 
 import notFoundHandler from './controllers/not-found';
 import sanitizeQuery from './middleware/sanitize-query';
@@ -110,6 +111,8 @@ export default async function createApp() {
 	if (env.RATE_LIMITER_ENABLED === true) {
 		app.use(rateLimiter);
 	}
+
+	app.use(schema);
 
 	app.use(sanitizeQuery);
 

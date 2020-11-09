@@ -5,10 +5,21 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc --build",
+    "build": "tsc --build && echo \"Built successfully\"",
     "prepare": "npm run build",
     "lint": "prettier --check .",
-    "test": "npm run lint && ts-mocha test/**/*.spec.ts"
+    "test": "npm run lint && ts-mocha test/**/*.spec.ts",
+    "dev": "npm-watch build"
+  },
+  "watch": {
+    "build": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "ts",
+      "quiet": true,
+      "silent": true
+    }
   },
   "repository": {
     "type": "git",
@@ -30,7 +41,8 @@
   },
   "homepage": "https://github.com/directus/next#readme",
   "devDependencies": {
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.5",
+    "npm-watch": "^0.7.0"
   },
   "peerDependencies": {
     "knex": "^0.21.12"

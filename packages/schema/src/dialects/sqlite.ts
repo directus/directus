@@ -1,6 +1,6 @@
 import Knex from 'knex';
 import { flatten } from 'lodash';
-import { Schema } from '../types/schema-inspector';
+import { Schema } from '../types/schema';
 import { Table } from '../types/table';
 import { Column } from '../types/column';
 import extractMaxLength from '../utils/extract-max-length';
@@ -19,6 +19,13 @@ export default class SQLite implements Schema {
 
 	constructor(knex: Knex) {
 		this.knex = knex;
+	}
+
+	// Overview
+	// ===============================================================================================
+	async overview() {
+		/** @TODO */
+		return {};
 	}
 
 	// Tables
