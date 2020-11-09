@@ -1,4 +1,4 @@
-export default async function rolesCreate(collection: string) {
+export default async function count(collection: string) {
 	const database = require('../../../database/index').default;
 
 	if (!collection) {
