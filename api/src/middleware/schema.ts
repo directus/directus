@@ -9,9 +9,6 @@ import { schemaInspector } from '../database';
 
 const sanitizeQueryMiddleware: RequestHandler = asyncHandler(async (req, res, next) => {
 	const schemaOverview = await schemaInspector.overview();
-
-	console.log(schemaOverview);
-
 	req.schema = schemaOverview;
 
 	return next();
