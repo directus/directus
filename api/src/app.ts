@@ -41,7 +41,6 @@ import schema from './middleware/schema';
 import notFoundHandler from './controllers/not-found';
 import sanitizeQuery from './middleware/sanitize-query';
 import { checkIP } from './middleware/check-ip';
-import { WebhooksService } from './services/webhooks';
 import { InvalidPayloadException } from './exceptions';
 
 import { registerExtensions } from './extensions';
