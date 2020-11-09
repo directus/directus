@@ -11,9 +11,9 @@ export class AssetsService {
 	accountability: Accountability | null;
 	authorizationService: AuthorizationService;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
 		this.authorizationService = new AuthorizationService(options);
 	}
 

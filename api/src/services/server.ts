@@ -1,4 +1,4 @@
-import { AbstractServiceOptions, Accountability } from '../types';
+import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import Knex from 'knex';
 import database from '../database';
 import os from 'os';
@@ -11,11 +11,13 @@ export class ServerService {
 	knex: Knex;
 	accountability: Accountability | null;
 	settingsService: SettingsService;
+	schema: SchemaOverview;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
-		this.settingsService = new SettingsService({ knex: this.knex });
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
+		this.schema = options.schema;
+		this.settingsService = new SettingsService({ knex: this.knex, schema: this.schema });
 	}
 
 	async serverInfo() {

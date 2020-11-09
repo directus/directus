@@ -129,12 +129,12 @@ export default class SQLite implements Schema {
 					return {
 						name: raw.name,
 						table: table,
-						type: raw.type,
+						data_type: raw.type,
 						default_value: raw.dflt_value,
 						max_length: extractMaxLength(raw.dflt_value),
 						/** @NOTE SQLite3 doesn't support precision/scale */
-						precision: null,
-						scale: null,
+						numeric_precision: null,
+						numeric_scale: null,
 						is_nullable: raw.notnull === 0,
 						is_primary_key: raw.pk === 1,
 						has_auto_increment: raw.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table),

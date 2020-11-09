@@ -92,7 +92,7 @@ export default class Postgres implements Schema {
         SELECT
           table_name,
           column_name,
-          column_default,
+          column_default as default_value,
           is_nullable,
           data_type
         FROM
@@ -334,13 +334,13 @@ export default class Postgres implements Schema {
 			return {
 				name: rawColumn.column_name,
 				table: rawColumn.table_name,
-				type: rawColumn.data_type,
+				data_type: rawColumn.data_type,
 				default_value: rawColumn.column_default
 					? this.parseDefaultValue(rawColumn.column_default)
 					: null,
 				max_length: rawColumn.character_maximum_length,
-				precision: rawColumn.numeric_precision,
-				scale: rawColumn.numeric_scale,
+				numeric_precision: rawColumn.numeric_precision,
+				numeric_scale: rawColumn.numeric_scale,
 				is_nullable: rawColumn.is_nullable === 'YES',
 				is_primary_key: rawColumn.is_primary === 'YES',
 				has_auto_increment: rawColumn.serial !== null,
@@ -359,13 +359,13 @@ export default class Postgres implements Schema {
 				return {
 					name: rawColumn.column_name,
 					table: rawColumn.table_name,
-					type: rawColumn.data_type,
+					data_type: rawColumn.data_type,
 					default_value: rawColumn.column_default
 						? this.parseDefaultValue(rawColumn.column_default)
 						: null,
 					max_length: rawColumn.character_maximum_length,
-					precision: rawColumn.numeric_precision,
-					scale: rawColumn.numeric_scale,
+					numeric_precision: rawColumn.numeric_precision,
+					numeric_scale: rawColumn.numeric_scale,
 					is_nullable: rawColumn.is_nullable === 'YES',
 					is_primary_key: rawColumn.is_primary === 'YES',
 					has_auto_increment: rawColumn.serial !== null,

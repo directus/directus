@@ -2,7 +2,7 @@ import { AbstractServiceOptions, PermissionsAction } from '../types';
 import { ItemsService } from '../services/items';
 
 export class PermissionsService extends ItemsService {
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		super('directus_permissions', options);
 	}
 

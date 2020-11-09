@@ -1,6 +1,12 @@
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
-import { Accountability, AbstractServiceOptions, FieldMeta, Relation } from '../types';
+import {
+	Accountability,
+	AbstractServiceOptions,
+	FieldMeta,
+	Relation,
+	SchemaOverview,
+} from '../types';
 import { ItemsService } from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
@@ -23,18 +29,23 @@ export class FieldsService {
 	itemsService: ItemsService;
 	payloadService: PayloadService;
 	schemaInspector: typeof schemaInspector;
+	schema: SchemaOverview;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.schemaInspector = options?.knex ? SchemaInspector(options.knex) : schemaInspector;
-		this.accountability = options?.accountability || null;
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : schemaInspector;
+		this.accountability = options.accountability || null;
 		this.itemsService = new ItemsService('directus_fields', options);
-		this.payloadService = new PayloadService('directus_fields');
+		this.payloadService = new PayloadService('directus_fields', options);
+		this.schema = options.schema;
 	}
 
 	async readAll(collection?: string): Promise<Field[]> {
 		let fields: FieldMeta[];
-		const nonAuthorizedItemsService = new ItemsService('directus_fields', { knex: this.knex });
+		const nonAuthorizedItemsService = new ItemsService('directus_fields', {
+			knex: this.knex,
+			schema: this.schema,
+		});
 
 		if (collection) {
 			fields = (await nonAuthorizedItemsService.readByQuery({
@@ -50,7 +61,7 @@ export class FieldsService {
 			fields.push(...systemFieldRows);
 		}
 
-		let columns = await schemaInspector.columnInfo(collection);
+		let columns = await this.schemaInspector.columnInfo(collection);
 
 		columns = columns.map((column) => {
 			return {
@@ -179,7 +190,7 @@ export class FieldsService {
 			);
 
 		try {
-			column = await schemaInspector.columnInfo(collection, field);
+			column = await this.schemaInspector.columnInfo(collection, field);
 			column.default_value = getDefaultValue(column);
 		} catch {}
 
@@ -204,7 +215,7 @@ export class FieldsService {
 		}
 
 		// Check if field already exists, either as a column, or as a row in directus_fields
-		if (await this.schemaInspector.hasColumn(collection, field.field)) {
+		if (field.field in this.schema[collection].columns) {
 			throw new InvalidPayloadException(
 				`Field "${field.field}" already exists in collection "${collection}"`
 			);
@@ -265,8 +276,8 @@ export class FieldsService {
 					const type = field.type as 'float' | 'decimal';
 					column = table[type](
 						field.field,
-						field.schema?.precision || 10,
-						field.schema?.scale || 5
+						field.schema?.numeric_precision || 10,
+						field.schema?.numeric_scale || 5
 					);
 				} else if (field.type === 'csv') {
 					column = table.string(field.field);
@@ -335,7 +346,7 @@ export class FieldsService {
 
 		await this.knex('directus_fields').delete().where({ collection, field });
 
-		if (await schemaInspector.hasColumn(collection, field)) {
+		if (field in this.schema[collection].columns) {
 			await this.knex.schema.table(collection, (table) => {
 				table.dropColumn(field);
 			});

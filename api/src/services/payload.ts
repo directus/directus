@@ -7,12 +7,18 @@ import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { clone, isObject, cloneDeep } from 'lodash';
-import { Relation, Item, AbstractServiceOptions, Accountability, PrimaryKey } from '../types';
+import {
+	Relation,
+	Item,
+	AbstractServiceOptions,
+	Accountability,
+	PrimaryKey,
+	SchemaOverview,
+} from '../types';
 import { ItemsService } from './items';
 import { URL } from 'url';
 import Knex from 'knex';
 import env from '../env';
-import SchemaInspector from '@directus/schema';
 import getLocalType from '../utils/get-local-type';
 import { format, formatISO } from 'date-fns';
 import { ForbiddenException } from '../exceptions';
@@ -36,11 +42,13 @@ export class PayloadService {
 	accountability: Accountability | null;
 	knex: Knex;
 	collection: string;
+	schema: SchemaOverview;
 
-	constructor(collection: string, options?: AbstractServiceOptions) {
-		this.accountability = options?.accountability || null;
-		this.knex = options?.knex || database;
+	constructor(collection: string, options: AbstractServiceOptions) {
+		this.accountability = options.accountability || null;
+		this.knex = options.knex || database;
 		this.collection = collection;
+		this.schema = options.schema;
 
 		return this;
 	}
@@ -239,11 +247,10 @@ export class PayloadService {
 	 * shouldn't return with time / timezone info respectively
 	 */
 	async processDates(payloads: Partial<Record<string, any>>[]) {
-		const schemaInspector = SchemaInspector(this.knex);
-		const columnsInCollection = await schemaInspector.columnInfo(this.collection);
+		const columnsInCollection = Object.values(this.schema[this.collection].columns);
 
 		const columnsWithType = columnsInCollection.map((column) => ({
-			name: column.name,
+			name: column.column_name,
 			type: getLocalType(column),
 		}));
 
@@ -320,6 +327,7 @@ export class PayloadService {
 				const itemsService = new ItemsService(relation.one_collection, {
 					accountability: this.accountability,
 					knex: this.knex,
+					schema: this.schema,
 				});
 
 				const relatedRecord: Partial<Item> = payload[relation.many_field];
@@ -374,6 +382,7 @@ export class PayloadService {
 				const itemsService = new ItemsService(relation.many_collection, {
 					accountability: this.accountability,
 					knex: this.knex,
+					schema: this.schema,
 				});
 
 				const relatedRecords: Partial<Item>[] = [];

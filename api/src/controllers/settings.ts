@@ -12,7 +12,10 @@ router.use(useCollection('directus_settings'));
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const service = new SettingsService({ accountability: req.accountability });
+		const service = new SettingsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const records = await service.readSingleton(req.sanitizedQuery);
 		res.locals.payload = { data: records || null };
 		return next();
@@ -23,7 +26,10 @@ router.get(
 router.patch(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const service = new SettingsService({ accountability: req.accountability });
+		const service = new SettingsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		await service.upsertSingleton(req.body);
 
 		try {

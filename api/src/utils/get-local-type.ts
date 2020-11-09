@@ -1,5 +1,5 @@
+import { FieldMeta, types, SchemaOverview } from '../types';
 import { Column } from '@directus/schema/dist/types/column';
-import { FieldMeta, types } from '../types';
 
 /**
  * Typemap graciously provided by @gpetrov
@@ -81,13 +81,17 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 };
 
 export default function getLocalType(
-	column: Column,
+	column: SchemaOverview[string]['columns'][string] | Column,
 	field?: FieldMeta
 ): typeof types[number] | 'unknown' {
-	const type = localTypeMap[column.type.toLowerCase().split('(')[0]];
+	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
 	/** Handle Postgres numeric decimals */
-	if (column.type === 'numeric' && column.precision !== null && column.scale !== null) {
+	if (
+		column.data_type === 'numeric' &&
+		column.numeric_precision !== null &&
+		column.numeric_scale !== null
+	) {
 		return 'decimal';
 	}
 

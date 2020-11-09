@@ -9,7 +9,7 @@ import {
 	ForbiddenException,
 	UnprocessableEntityException,
 } from '../exceptions';
-import { Accountability, PrimaryKey, Item, AbstractServiceOptions } from '../types';
+import { Accountability, PrimaryKey, Item, AbstractServiceOptions, SchemaOverview } from '../types';
 import Knex from 'knex';
 import env from '../env';
 import cache from '../cache';
@@ -18,14 +18,16 @@ import { toArray } from '../utils/to-array';
 export class UsersService extends ItemsService {
 	knex: Knex;
 	accountability: Accountability | null;
+	schema: SchemaOverview;
 	service: ItemsService;
 
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		super('directus_users', options);
 
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
 		this.service = new ItemsService('directus_users', options);
+		this.schema = options.schema;
 	}
 
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
@@ -174,7 +176,11 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException('TFA Secret is already set for this user');
 		}
 
-		const authService = new AuthenticationService();
+		const authService = new AuthenticationService({
+			knex: this.knex,
+			schema: this.schema,
+			accountability: this.accountability,
+		});
 		const secret = authService.generateTFASecret();
 
 		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });

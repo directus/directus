@@ -1,11 +1,13 @@
-import { Column } from '@directus/schema/dist/types/column';
 import getLocalType from './get-local-type';
+import { Column } from '@directus/schema/dist/types/column';
+import { SchemaOverview } from '../types';
 
-export default function getDefaultValue(column: Column) {
+export default function getDefaultValue(
+	column: SchemaOverview[string]['columns'][string] | Column
+) {
 	const type = getLocalType(column);
 
 	let defaultValue = column.default_value || null;
-
 	if (defaultValue === null) return null;
 
 	// Check if the default is wrapped in an extra pair of quotes, this happens in SQLite

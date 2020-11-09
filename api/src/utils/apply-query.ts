@@ -1,6 +1,5 @@
 import { QueryBuilder } from 'knex';
-import { Query, Filter, Relation } from '../types';
-import { schemaInspector } from '../database';
+import { Query, Filter, Relation, SchemaOverview } from '../types';
 import Knex from 'knex';
 import { clone, isPlainObject } from 'lodash';
 import { systemRelationRows } from '../database/system-data/relations';
@@ -9,7 +8,8 @@ export default async function applyQuery(
 	knex: Knex,
 	collection: string,
 	dbQuery: QueryBuilder,
-	query: Query
+	query: Query,
+	schema: SchemaOverview
 ) {
 	if (query.filter) {
 		await applyFilter(knex, dbQuery, query.filter, collection);
@@ -36,18 +36,18 @@ export default async function applyQuery(
 	}
 
 	if (query.search) {
-		const columns = await schemaInspector.columnInfo(collection);
+		const columns = Object.values(schema[collection].columns);
 
 		dbQuery.andWhere(function () {
 			columns
 				/** @todo Check if this scales between SQL vendors */
 				.filter(
 					(column) =>
-						column.type.toLowerCase().includes('text') ||
-						column.type.toLowerCase().includes('char')
+						column.data_type.toLowerCase().includes('text') ||
+						column.data_type.toLowerCase().includes('char')
 				)
 				.forEach((column) => {
-					this.orWhereRaw(`LOWER(??) LIKE ?`, [column.name, `%${query.search!}%`]);
+					this.orWhereRaw(`LOWER(??) LIKE ?`, [column.column_name, `%${query.search!}%`]);
 				});
 		});
 	}

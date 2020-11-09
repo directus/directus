@@ -34,6 +34,7 @@ router.post(
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
+			schema: req.schema,
 		});
 
 		const { error } = loginSchema.validate(req.body);
@@ -90,6 +91,7 @@ router.post(
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
+			schema: req.schema,
 		});
 
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
@@ -142,6 +144,7 @@ router.post(
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
+			schema: req.schema,
 		});
 
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
@@ -171,7 +174,7 @@ router.post(
 			role: null,
 		};
 
-		const service = new UsersService({ accountability });
+		const service = new UsersService({ accountability, schema: req.schema });
 
 		try {
 			await service.requestPasswordReset(req.body.email);
@@ -202,7 +205,7 @@ router.post(
 			role: null,
 		};
 
-		const service = new UsersService({ accountability });
+		const service = new UsersService({ accountability, schema: req.schema });
 		await service.resetPassword(req.body.token, req.body.password);
 		return next();
 	}),
@@ -260,6 +263,7 @@ router.get(
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
+			schema: req.schema,
 		});
 
 		const email = getEmailFromProfile(

@@ -3,10 +3,12 @@ import { Accountability } from './accountability';
 import { Item, PrimaryKey } from './items';
 import { Query } from './query';
 import { PermissionsAction } from './permissions';
+import { SchemaOverview } from '../types';
 
 export type AbstractServiceOptions = {
 	knex?: Knex;
 	accountability?: Accountability | null;
+	schema: SchemaOverview;
 };
 
 export interface AbstractService {

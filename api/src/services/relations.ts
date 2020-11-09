@@ -16,13 +16,16 @@ type ParsedRelation = Relation & {
 export class RelationsService extends ItemsService {
 	permissionsService: PermissionsService;
 
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		super('directus_relations', options);
 		this.permissionsService = new PermissionsService(options);
 	}
 
 	async readByQuery(query: Query): Promise<null | Relation | Relation[]> {
-		const service = new ItemsService('directus_relations', { knex: this.knex });
+		const service = new ItemsService('directus_relations', {
+			knex: this.knex,
+			schema: this.schema,
+		});
 		const results = (await service.readByQuery(query)) as
 			| ParsedRelation
 			| ParsedRelation[]
@@ -48,7 +51,10 @@ export class RelationsService extends ItemsService {
 		query: Query = {},
 		action: PermissionsAction = 'read'
 	): Promise<null | Relation | Relation[]> {
-		const service = new ItemsService('directus_relations', { knex: this.knex });
+		const service = new ItemsService('directus_relations', {
+			knex: this.knex,
+			schema: this.schema,
+		});
 		const results = (await service.readByKey(key as any, query, action)) as
 			| ParsedRelation
 			| ParsedRelation[]

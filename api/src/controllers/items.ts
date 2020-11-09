@@ -22,7 +22,10 @@ router.post(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const service = new ItemsService(req.collection, { accountability: req.accountability });
+		const service = new ItemsService(req.collection, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const primaryKey = await service.create(req.body);
 
 		try {
@@ -45,8 +48,14 @@ router.get(
 	'/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		const service = new ItemsService(req.collection, { accountability: req.accountability });
-		const metaService = new MetaService({ accountability: req.accountability });
+		const service = new ItemsService(req.collection, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		const metaService = new MetaService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		const records = req.singleton
 			? await service.readSingleton(req.sanitizedQuery)
@@ -71,7 +80,10 @@ router.get(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const service = new ItemsService(req.collection, { accountability: req.accountability });
+		const service = new ItemsService(req.collection, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const result = await service.readByKey(primaryKey as any, req.sanitizedQuery);
 
@@ -87,7 +99,10 @@ router.patch(
 	'/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		const service = new ItemsService(req.collection, { accountability: req.accountability });
+		const service = new ItemsService(req.collection, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		if (req.singleton === true) {
 			await service.upsertSingleton(req.body);
@@ -151,7 +166,10 @@ router.patch(
 			throw new RouteNotFoundException(req.path);
 		}
 
-		const service = new ItemsService(req.collection, { accountability: req.accountability });
+		const service = new ItemsService(req.collection, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 
 		const updatedPrimaryKey = await service.update(req.body, primaryKey as any);
@@ -180,7 +198,10 @@ router.delete(
 			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
 		}
 
-		const service = new ItemsService(req.collection, { accountability: req.accountability });
+		const service = new ItemsService(req.collection, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		await service.delete(req.body as PrimaryKey[]);
 		return next();
 	}),
@@ -191,7 +212,10 @@ router.delete(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		const service = new ItemsService(req.collection, { accountability: req.accountability });
+		const service = new ItemsService(req.collection, {
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		await service.delete(pk as any);
 		return next();

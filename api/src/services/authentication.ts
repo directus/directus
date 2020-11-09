@@ -27,10 +27,10 @@ export class AuthenticationService {
 	accountability: Accountability | null;
 	activityService: ActivityService;
 
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		this.knex = options?.knex || database;
 		this.accountability = options?.accountability || null;
-		this.activityService = new ActivityService();
+		this.activityService = new ActivityService(options);
 	}
 
 	/**

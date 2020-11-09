@@ -10,8 +10,8 @@ import {
 	PermissionsAction,
 	Item,
 	PrimaryKey,
+	SchemaOverview,
 } from '../types';
-import SchemaInspector from '@directus/schema';
 import Knex from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
 import { uniq, merge, flatten } from 'lodash';
@@ -26,11 +26,16 @@ export class AuthorizationService {
 	knex: Knex;
 	accountability: Accountability | null;
 	payloadService: PayloadService;
+	schema: SchemaOverview;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
-		this.payloadService = new PayloadService('directus_permissions', { knex: this.knex });
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
+		this.schema = options.schema;
+		this.payloadService = new PayloadService('directus_permissions', {
+			knex: this.knex,
+			schema: this.schema,
+		});
 	}
 
 	async processAST(ast: AST, action: PermissionsAction = 'read'): Promise<AST> {
@@ -263,8 +268,7 @@ export class AuthorizationService {
 
 		payloads = payloads.map((payload) => merge({}, preset, payload));
 
-		const schemaInspector = SchemaInspector(this.knex);
-		const columns = await schemaInspector.columnInfo(collection);
+		const columns = Object.values(this.schema[collection].columns);
 
 		let requiredColumns: string[] = [];
 
@@ -273,11 +277,12 @@ export class AuthorizationService {
 				(await this.knex
 					.select<{ special: string }>('special')
 					.from('directus_fields')
-					.where({ collection, field: column.name })
+					.where({ collection, field: column.column_name })
 					.first()) ||
 				systemFieldRows.find(
 					(fieldMeta) =>
-						fieldMeta.field === column.name && fieldMeta.collection === collection
+						fieldMeta.field === column.column_name &&
+						fieldMeta.collection === collection
 				);
 
 			const specials = field?.special ? toArray(field.special) : [];
@@ -291,12 +296,11 @@ export class AuthorizationService {
 
 			const isRequired =
 				column.is_nullable === false &&
-				column.has_auto_increment === false &&
 				column.default_value === null &&
 				hasGenerateSpecial === false;
 
 			if (isRequired) {
-				requiredColumns.push(column.name);
+				requiredColumns.push(column.column_name);
 			}
 		}
 
@@ -389,7 +393,11 @@ export class AuthorizationService {
 	) {
 		if (this.accountability?.admin === true) return;
 
-		const itemsService = new ItemsService(collection, { accountability: this.accountability });
+		const itemsService = new ItemsService(collection, {
+			accountability: this.accountability,
+			knex: this.knex,
+			schema: this.schema,
+		});
 
 		try {
 			const query: Query = {

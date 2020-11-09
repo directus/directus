@@ -3,7 +3,9 @@ export type SchemaOverview = {
 		primary: string;
 		columns: {
 			[column: string]: {
-				column_default: any;
+				table_name: string;
+				column_name: string;
+				default_value: any;
 				is_nullable: boolean;
 				data_type: string;
 				numeric_precision: number | null;

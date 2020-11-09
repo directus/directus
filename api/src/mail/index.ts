@@ -1,4 +1,4 @@
-import { SettingsService } from './../services/settings';
+import database from '../database';
 import logger from '../logger';
 import nodemailer, { Transporter } from 'nodemailer';
 import { Liquid } from 'liquidjs';
@@ -13,8 +13,6 @@ const liquidEngine = new Liquid({
 	root: path.resolve(__dirname, 'templates'),
 	extname: '.liquid',
 });
-
-const settingsService = new SettingsService();
 
 let transporter: Transporter;
 
@@ -49,25 +47,28 @@ export type EmailOptions = {
  * Get an object with default template options to pass to the email templates.
  */
 async function getDefaultTemplateOptions() {
-	const projectInfo = await settingsService.readSingleton({
-		fields: ['project_name', 'project_logo', 'project_color'],
-	});
-
-	let projectLogoURL = env.PUBLIC_URL;
-
-	if (projectLogoURL.endsWith('/') === false) {
-		projectLogoURL += '/';
-	}
-
-	projectLogoURL += 'assets/${projectInfo.project_logo}';
+	const projectInfo = await database
+		.select(['project_name', 'project_logo', 'project_color'])
+		.from('directus_settings')
+		.first();
 
 	return {
-		projectName: projectInfo.project_name || 'Directus',
-		projectColor: projectInfo.project_color || '#546e7a',
-		projectLogo: projectInfo.project_logo
-			? projectLogoURL
+		projectName: projectInfo?.project_name || 'Directus',
+		projectColor: projectInfo?.project_color || '#546e7a',
+		projectLogo: projectInfo?.project_logo
+			? getProjectLogoURL(projectInfo.project_logo)
 			: 'https://directus.io/assets/directus-white.png',
 	};
+
+	function getProjectLogoURL(logoID: string) {
+		let projectLogoURL = env.PUBLIC_URL;
+
+		if (projectLogoURL.endsWith('/') === false) {
+			projectLogoURL += '/';
+		}
+
+		projectLogoURL += `assets/${logoID}`;
+	}
 }
 
 export default async function sendMail(options: EmailOptions) {

@@ -2,7 +2,6 @@ import { Router } from 'express';
 import asyncHandler from 'express-async-handler';
 import { FieldsService } from '../services/fields';
 import validateCollection from '../middleware/collection-exists';
-import { schemaInspector } from '../database';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import Joi from 'joi';
 import { types, Field } from '../types';
@@ -16,7 +15,10 @@ router.use(useCollection('directus_fields'));
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const service = new FieldsService({ accountability: req.accountability });
+		const service = new FieldsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const fields = await service.readAll();
 
 		res.locals.payload = { data: fields || null };
@@ -29,7 +31,10 @@ router.get(
 	'/:collection',
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
-		const service = new FieldsService({ accountability: req.accountability });
+		const service = new FieldsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const fields = await service.readAll(req.params.collection);
 
 		res.locals.payload = { data: fields || null };
@@ -42,10 +47,13 @@ router.get(
 	'/:collection/:field',
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
-		const service = new FieldsService({ accountability: req.accountability });
+		const service = new FieldsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
-		const exists = await schemaInspector.hasColumn(req.params.collection, req.params.field);
-		if (exists === false) throw new ForbiddenException();
+		if (req.params.field in req.schema[req.params.collection].columns === false)
+			throw new ForbiddenException();
 
 		const field = await service.readOne(req.params.collection, req.params.field);
 
@@ -75,7 +83,10 @@ router.post(
 		if (!req.body.schema && !req.body.meta)
 			throw new InvalidPayloadException(`"schema" or "meta" is required`);
 
-		const service = new FieldsService({ accountability: req.accountability });
+		const service = new FieldsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		const { error } = newFieldSchema.validate(req.body);
 
@@ -107,7 +118,10 @@ router.patch(
 	'/:collection',
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
-		const service = new FieldsService({ accountability: req.accountability });
+		const service = new FieldsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		if (Array.isArray(req.body) === false) {
 			throw new InvalidPayloadException('Submitted body has to be an array.');
@@ -142,7 +156,10 @@ router.patch(
 	validateCollection,
 	// @todo: validate field
 	asyncHandler(async (req, res, next) => {
-		const service = new FieldsService({ accountability: req.accountability });
+		const service = new FieldsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
 		if (!fieldData.field) fieldData.field = req.params.field;
@@ -169,7 +186,10 @@ router.delete(
 	'/:collection/:field',
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
-		const service = new FieldsService({ accountability: req.accountability });
+		const service = new FieldsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		await service.deleteField(req.params.collection, req.params.field);
 		return next();
 	}),
