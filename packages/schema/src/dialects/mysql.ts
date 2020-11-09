@@ -2,6 +2,7 @@ import Knex from 'knex';
 import { Schema } from '../types/schema';
 import { Table } from '../types/table';
 import { Column } from '../types/column';
+import { SchemaOverview } from '../types/overview';
 
 type RawTable = {
 	TABLE_NAME: string;
@@ -43,8 +44,47 @@ export default class MySQL implements Schema {
 	// Overview
 	// ===============================================================================================
 	async overview() {
-		/** @TODO */
-		return {};
+		const columns = await this.knex.raw(
+			`
+		SELECT
+			TABLE_NAME as table_name,
+			COLUMN_NAME as column_name,
+			COLUMN_DEFAULT as default_value,
+			IS_NULLABLE as is_nullable,
+			DATA_TYPE as data_type,
+			COLUMN_KEY as column_key
+		FROM
+			INFORMATION_SCHEMA.COLUMNS
+		WHERE
+			table_schema = ?;
+		`,
+			[this.knex.client.database()]
+		);
+
+		const overview: SchemaOverview = {};
+
+		for (const column of columns[0]) {
+			if (column.table_name in overview === false) {
+				overview[column.table_name] = {
+					primary: columns[0].find(
+						(nested: { column_key: string; table_name: string }) => {
+							return (
+								nested.table_name === column.table_name &&
+								nested.column_key === 'PRI'
+							);
+						}
+					)?.column_name,
+					columns: {},
+				};
+			}
+
+			overview[column.table_name].columns[column.column_name] = {
+				...column,
+				is_nullable: column.is_nullable === 'YES',
+			};
+		}
+
+		return overview;
 	}
 
 	// Tables
@@ -263,7 +303,7 @@ export default class MySQL implements Schema {
 	 */
 	async primary(table: string) {
 		const results = await this.knex.raw(`SHOW KEYS FROM ?? WHERE Key_name = 'PRIMARY'`, table);
-		if (results.length && results[0].length) {
+		if (results && results.length && results[0].length) {
 			return results[0][0]['Column_name'] as string;
 		}
 		return null;

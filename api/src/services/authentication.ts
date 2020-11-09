@@ -28,9 +28,9 @@ export class AuthenticationService {
 	activityService: ActivityService;
 
 	constructor(options: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
-		this.activityService = new ActivityService(options);
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
+		this.activityService = new ActivityService({ knex: this.knex, schema: options.schema });
 	}
 
 	/**

@@ -237,14 +237,14 @@ export class AuthorizationService {
 				.where({ action, collection, role: this.accountability?.role || null })
 				.first();
 
+			if (!permission) throw new ForbiddenException();
+
 			permission = (await this.payloadService.processValues(
 				'read',
 				permission as Item
 			)) as Permission;
 
 			// Check if you have permission to access the fields you're trying to acces
-
-			if (!permission) throw new ForbiddenException();
 
 			const allowedFields = permission.fields || [];
 
