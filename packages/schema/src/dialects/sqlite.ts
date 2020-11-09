@@ -4,6 +4,7 @@ import { Schema } from '../types/schema';
 import { Table } from '../types/table';
 import { Column } from '../types/column';
 import extractMaxLength from '../utils/extract-max-length';
+import { SchemaOverview } from '../types/overview';
 
 type RawColumn = {
 	cid: number;
@@ -24,8 +25,33 @@ export default class SQLite implements Schema {
 	// Overview
 	// ===============================================================================================
 	async overview() {
-		/** @TODO */
-		return {};
+		const tables = await this.tables();
+		const overview: SchemaOverview = {};
+
+		for (const table of tables) {
+			const columns = await this.knex.raw<RawColumn[]>(`PRAGMA table_info(??)`, table);
+
+			if (table in overview === false) {
+				overview[table] = {
+					primary: columns.find((column) => column.pk == 1)?.name!,
+					columns: {},
+				};
+			}
+
+			for (const column of columns) {
+				overview[table].columns[column.name] = {
+					table_name: table,
+					column_name: column.name,
+					default_value: column.dflt_value,
+					is_nullable: column.notnull == 0,
+					data_type: column.type,
+					numeric_precision: null,
+					numeric_scale: null,
+				};
+			}
+		}
+
+		return overview;
 	}
 
 	// Tables
@@ -112,7 +138,10 @@ export default class SQLite implements Schema {
 	async columnInfo(table?: string, column?: string) {
 		const getColumnsForTable = async (table: string): Promise<Column[]> => {
 			const tablesWithAutoIncrementPrimaryKeys = (
-				await this.knex.select('name').from('sqlite_master').whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
+				await this.knex
+					.select('name')
+					.from('sqlite_master')
+					.whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
 			).map(({ name }) => name);
 
 			const columns: RawColumn[] = await this.knex.raw(`PRAGMA table_info(??)`, table);
@@ -137,7 +166,8 @@ export default class SQLite implements Schema {
 						numeric_scale: null,
 						is_nullable: raw.notnull === 0,
 						is_primary_key: raw.pk === 1,
-						has_auto_increment: raw.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table),
+						has_auto_increment:
+							raw.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table),
 						foreign_key_column: foreignKey?.to || null,
 						foreign_key_table: foreignKey?.table || null,
 					};
