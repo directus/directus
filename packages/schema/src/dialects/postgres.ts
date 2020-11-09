@@ -65,7 +65,9 @@ export default class Postgres implements Schema {
 	 * Eg `'example'::character varying` => `example`
 	 */
 	parseDefaultValue(type: string) {
-		if (type.startsWith('nextval(')) return null; // auto-increment
+		if (!type) return null;
+
+		if (type.startsWith('nextval(')) return 'AUTO_INCREMENT';
 
 		const parts = type.split('::');
 
@@ -76,7 +78,8 @@ export default class Postgres implements Schema {
 		}
 
 		if (parts[1] && parts[1].includes('json')) return JSON.parse(value);
-		if (parts[1] && (parts[1].includes('char') || parts[1].includes('text'))) return String(value);
+		if (parts[1] && (parts[1].includes('char') || parts[1].includes('text')))
+			return String(value);
 
 		if (Number.isNaN(Number(value))) return value;
 
@@ -141,6 +144,9 @@ export default class Postgres implements Schema {
 				};
 
 			overview[column.table_name].columns[column.column_name] = column;
+			overview[column.table_name].columns[
+				column.column_name
+			].default_value = this.parseDefaultValue(column.default_value);
 		}
 
 		return overview;
