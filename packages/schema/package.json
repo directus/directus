@@ -45,6 +45,9 @@
     "ts-mocha": "^7.0.0",
     "typescript": "^3.9.5"
   },
+  "peerDependencies": {
+    "knex": "^0.21.12"
+  },
   "dependencies": {
     "lodash.flatten": "^4.4.0"
   }
