@@ -6,7 +6,7 @@ import logger from '../logger';
 import env from '../env';
 import { performance } from 'perf_hooks';
 
-import SchemaInspector from 'knex-schema-inspector';
+import SchemaInspector from '@directus/schema';
 
 dotenv.config({ path: path.resolve(__dirname, '../../', '.env') });
 

@@ -2,7 +2,7 @@ import { AbstractServiceOptions, Accountability, PrimaryKey } from '../types';
 import database from '../database';
 import Knex from 'knex';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
-import SchemaInspector from 'knex-schema-inspector';
+import SchemaInspector from '@directus/schema';
 import { systemCollectionRows } from '../database/system-data/collections';
 
 export class UtilsService {

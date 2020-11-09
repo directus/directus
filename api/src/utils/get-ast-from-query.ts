@@ -14,7 +14,7 @@ import {
 import database from '../database';
 import { cloneDeep } from 'lodash';
 import Knex from 'knex';
-import SchemaInspector from 'knex-schema-inspector';
+import SchemaInspector from '@directus/schema';
 import { getRelationType } from '../utils/get-relation-type';
 import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';

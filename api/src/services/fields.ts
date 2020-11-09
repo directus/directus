@@ -10,7 +10,7 @@ import Knex, { CreateTableBuilder } from 'knex';
 import { PayloadService } from '../services/payload';
 import getDefaultValue from '../utils/get-default-value';
 import cache from '../cache';
-import SchemaInspector from 'knex-schema-inspector';
+import SchemaInspector from '@directus/schema';
 import { toArray } from '../utils/to-array';
 
 import { systemFieldRows } from '../database/system-data/fields/';

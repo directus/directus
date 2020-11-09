@@ -8,7 +8,7 @@ import {
 } from '../types';
 import Knex from 'knex';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import SchemaInspector from 'knex-schema-inspector';
+import SchemaInspector from '@directus/schema';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
 import cache from '../cache';

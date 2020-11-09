@@ -30,7 +30,7 @@ export const types = [
 export const localTypes = ['standard', 'file', 'files', 'm2o', 'o2m', 'm2m', 'presentation', 'translations'] as const;
 
 export type FieldSchema = {
-	/** @todo import this from knex-schema-inspector when that's launched */
+	/** @todo import this from @directus/schema when that's launched */
 	name: string;
 	table: string;
 	type: string;

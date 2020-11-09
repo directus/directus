@@ -1,7 +1,7 @@
 import { AST, NestedCollectionNode, FieldNode, M2ONode, O2MNode } from '../types/ast';
 import { clone, cloneDeep, uniq, pick } from 'lodash';
 import database from './index';
-import SchemaInspector from 'knex-schema-inspector';
+import SchemaInspector from '@directus/schema';
 import { Query, Item } from '../types';
 import { PayloadService } from '../services/payload';
 import applyQuery from '../utils/apply-query';

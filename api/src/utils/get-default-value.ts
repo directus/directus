@@ -1,4 +1,4 @@
-import { Column } from 'knex-schema-inspector/dist/types/column';
+import { Column } from '@directus/schema/dist/types/column';
 import getLocalType from './get-local-type';
 
 export default function getDefaultValue(column: Column) {

@@ -1,5 +1,5 @@
 import database from '../database';
-import SchemaInspector from 'knex-schema-inspector';
+import SchemaInspector from '@directus/schema';
 import runAST from '../database/run-ast';
 import getASTFromQuery from '../utils/get-ast-from-query';
 import {
