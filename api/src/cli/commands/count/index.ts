@@ -6,10 +6,14 @@ export default async function count(collection: string) {
 		process.exit(1);
 	}
 
-	const records = await database(collection).count('*', { as: 'count' });
-	const count = Number(records[0].count);
+	try {
+		const records = await database(collection).count('*', { as: 'count' });
+		const count = Number(records[0].count);
 
-	console.log(count);
-
-	database.destroy();
+		console.log(count);
+	} catch (err) {
+		console.error(err);
+	} finally {
+		database.destroy();
+	}
 }
