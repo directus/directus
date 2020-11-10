@@ -186,7 +186,7 @@ export default class Postgres implements Schema {
 			)
 			.from('information_schema.tables')
 			.whereIn('table_schema', this.explodedSchema)
-			.andWhere({ table_catalog: this.knex.client.database() })
+			.andWhereRaw(`"table_catalog" = current_database()`)
 			.andWhere({ table_type: 'BASE TABLE' })
 			.orderBy('table_name', 'asc');
 
