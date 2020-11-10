@@ -1,5 +1,5 @@
 <template>
-	<div class="display-tags">
+	<div class="display-labels">
 		<template v-if="!showAsDot">
 			<v-chip
 				v-for="item in items"
@@ -104,8 +104,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.display-tags {
-	display: flex;
+.display-labels {
+	display: inline-flex;
 }
 
 .v-chip + .v-chip {
