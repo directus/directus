@@ -32,16 +32,4 @@ module.exports = {
 	parserOptions: {
 		parser: '@typescript-eslint/parser',
 	},
-	overrides: [
-		{
-			files: ['**/*.test.{js,ts}?(x)', '**/*.story.{js,ts}?(x)'],
-			env: {
-				jest: true,
-			},
-			rules: {
-				'@typescript-eslint/no-empty-function': 0,
-				'@typescript-eslint/no-non-null-assertion': 0,
-			},
-		},
-	],
 };

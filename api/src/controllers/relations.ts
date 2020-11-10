@@ -13,7 +13,10 @@ router.use(useCollection('directus_relations'));
 router.post(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const service = new RelationsService({ accountability: req.accountability });
+		const service = new RelationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const primaryKey = await service.create(req.body);
 
 		try {
@@ -35,8 +38,14 @@ router.post(
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const service = new RelationsService({ accountability: req.accountability });
-		const metaService = new MetaService({ accountability: req.accountability });
+		const service = new RelationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		const metaService = new MetaService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		const records = await service.readByQuery(req.sanitizedQuery);
 		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
@@ -50,7 +59,10 @@ router.get(
 router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new RelationsService({ accountability: req.accountability });
+		const service = new RelationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const record = await service.readByKey(pk as any, req.sanitizedQuery);
 		res.locals.payload = { data: record || null };
@@ -62,7 +74,10 @@ router.get(
 router.patch(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new RelationsService({ accountability: req.accountability });
+		const service = new RelationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const primaryKey = await service.update(req.body, pk as any);
 
@@ -89,7 +104,10 @@ router.delete(
 			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
 		}
 
-		const service = new RelationsService({ accountability: req.accountability });
+		const service = new RelationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		await service.delete(req.body as PrimaryKey[]);
 		return next();
 	}),
@@ -99,7 +117,10 @@ router.delete(
 router.delete(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new RelationsService({ accountability: req.accountability });
+		const service = new RelationsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		await service.delete(pk as any);
 		return next();

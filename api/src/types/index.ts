@@ -15,3 +15,4 @@ export * from './revision';
 export * from './services';
 export * from './sessions';
 export * from './webhooks';
+export * from './schema';

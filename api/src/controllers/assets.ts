@@ -47,7 +47,7 @@ router.get(
 
 	// Validate query params
 	asyncHandler(async (req, res, next) => {
-		const payloadService = new PayloadService('directus_settings');
+		const payloadService = new PayloadService('directus_settings', { schema: req.schema });
 		const defaults = { storage_asset_presets: [], storage_asset_transform: 'all' };
 
 		let savedAssetSettings = await database
@@ -107,7 +107,10 @@ router.get(
 
 	// Return file
 	asyncHandler(async (req, res) => {
-		const service = new AssetsService({ accountability: req.accountability });
+		const service = new AssetsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const transformation: Transformation = res.locals.transformation.key
 			? res.locals.shortcuts.find(
 					(transformation: Transformation) =>

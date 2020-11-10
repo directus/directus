@@ -26,32 +26,26 @@ If you want to help out in the new version, please open an issue to discuss what
 
 ## Development
 
-You need Node.js v10+ and Yarn.
+You need Node.js v10+
 
 After cloning the repo, run:
 
 ```
-$ yarn # install all dependencies of the project
+$ npm install # install all dependencies of the project
 ```
 
 ### Scripts
 
-#### `yarn serve`
+#### `npm run serve`
 
 Bundles the app in dev mode and watches for changes.
 
 Combine this with the `API_URL` environment variable to point it to a running API instance to debug fully:
 
 ```
-$ API_URL=https://local.api.com yarn serve
+$ API_URL=https://local.api.com npm serve
 ```
 
-#### `yarn storybook`
+#### `npm run storybook`
 
 Fires up an instance of Storybook and watches for changes. Very useful to develop individual components in isolation.
-
-#### `yarn test`
-
-Runs all Jest tests in the app. Add the `--coverage` flag to see a print of what test coverage you've achieved.
-
-Please aim for 100% coverage for newly added code.

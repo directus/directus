@@ -13,7 +13,7 @@ import { extension } from 'mime-types';
 import path from 'path';
 
 export class FilesService extends ItemsService {
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		super('directus_files', options);
 	}
 
@@ -81,7 +81,10 @@ export class FilesService extends ItemsService {
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
 		// we still want to be able to set the extracted values from the file on create
-		const sudoService = new ItemsService('directus_files');
+		const sudoService = new ItemsService('directus_files', {
+			knex: this.knex,
+			schema: this.schema,
+		});
 		await sudoService.update(payload, primaryKey);
 
 		if (cache) {

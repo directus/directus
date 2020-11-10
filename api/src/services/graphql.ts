@@ -7,6 +7,7 @@ import {
 	Field,
 	Relation,
 	Query,
+	SchemaOverview,
 } from '../types';
 import {
 	GraphQLString,
@@ -56,13 +57,15 @@ export class GraphQLService {
 	fieldsService: FieldsService;
 	collectionsService: CollectionsService;
 	relationsService: RelationsService;
+	schema: SchemaOverview;
 
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		this.accountability = options?.accountability || null;
 		this.knex = options?.knex || database;
 		this.fieldsService = new FieldsService(options);
 		this.collectionsService = new CollectionsService(options);
 		this.relationsService = new RelationsService(options);
+		this.schema = options.schema;
 	}
 
 	args = {
@@ -454,6 +457,7 @@ export class GraphQLService {
 				service = new ActivityService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			// case 'directus_collections':
 			// 	service = new CollectionsService({ knex: this.knex, accountability: this.accountability });
@@ -463,61 +467,73 @@ export class GraphQLService {
 				service = new FilesService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_folders':
 				service = new FoldersService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_folders':
 				service = new FoldersService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_permissions':
 				service = new PermissionsService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_presets':
 				service = new PresetsService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_relations':
 				service = new RelationsService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_revisions':
 				service = new RevisionsService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_roles':
 				service = new RolesService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_settings':
 				service = new SettingsService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_users':
 				service = new UsersService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_webhooks':
 				service = new WebhooksService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			default:
 				service = new ItemsService(collection, {
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 		}
 

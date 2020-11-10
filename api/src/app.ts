@@ -36,14 +36,15 @@ import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
 import graphqlRouter from './controllers/graphql';
+import schema from './middleware/schema';
 
 import notFoundHandler from './controllers/not-found';
 import sanitizeQuery from './middleware/sanitize-query';
 import { checkIP } from './middleware/check-ip';
-import { WebhooksService } from './services/webhooks';
 import { InvalidPayloadException } from './exceptions';
 
 import { registerExtensions } from './extensions';
+import { register as registerWebhooks } from './webhooks';
 import emitter from './emitter';
 
 import fse from 'fs-extra';
@@ -111,6 +112,8 @@ export default async function createApp() {
 		app.use(rateLimiter);
 	}
 
+	app.use(schema);
+
 	app.use(sanitizeQuery);
 
 	app.use('/auth', authRouter);
@@ -146,8 +149,7 @@ export default async function createApp() {
 	app.use(errorHandler);
 
 	// Register all webhooks
-	const webhooksService = new WebhooksService();
-	await webhooksService.register();
+	await registerWebhooks();
 
 	// Register custom hooks / endpoints
 	await registerExtensions(customRouter);

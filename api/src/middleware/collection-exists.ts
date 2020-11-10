@@ -7,14 +7,11 @@ import asyncHandler from 'express-async-handler';
 import database from '../database';
 import { ForbiddenException } from '../exceptions';
 import { systemCollectionRows } from '../database/system-data/collections';
-import { Collection } from '../types';
 
 const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.params.collection) return next();
 
-	const exists = await database.schema.hasTable(req.params.collection);
-
-	if (exists === false) {
+	if (req.params.collection in req.schema === false) {
 		throw new ForbiddenException();
 	}
 

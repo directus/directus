@@ -7,7 +7,7 @@ import { InvalidPayloadException, ForbiddenException } from '../exceptions';
  */
 
 export class RevisionsService extends ItemsService {
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		super('directus_revisions', options);
 	}
 
@@ -21,7 +21,9 @@ export class RevisionsService extends ItemsService {
 		const service = new ItemsService(revision.collection, {
 			accountability: this.accountability,
 			knex: this.knex,
+			schema: this.schema,
 		});
+
 		await service.update(revision.data, revision.item);
 	}
 }

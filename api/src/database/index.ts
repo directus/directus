@@ -4,8 +4,9 @@ import camelCase from 'camelcase';
 import path from 'path';
 import logger from '../logger';
 import env from '../env';
+import { performance } from 'perf_hooks';
 
-import SchemaInspector from 'knex-schema-inspector';
+import SchemaInspector from '@directus/schema';
 
 dotenv.config({ path: path.resolve(__dirname, '../../', '.env') });
 
@@ -45,6 +46,17 @@ if (env.DB_CLIENT === 'sqlite3') {
 }
 
 const database = knex(knexConfig);
+
+const times: Record<string, number> = {};
+
+database
+	.on('query', (queryInfo) => {
+		times[queryInfo.__knexUid] = performance.now();
+	})
+	.on('query-response', (response, queryInfo) => {
+		const delta = performance.now() - times[queryInfo.__knexUid];
+		logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings.join(', ')}]`);
+	});
 
 export async function validateDBConnection() {
 	try {

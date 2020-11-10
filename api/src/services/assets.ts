@@ -11,22 +11,24 @@ export class AssetsService {
 	accountability: Accountability | null;
 	authorizationService: AuthorizationService;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
 		this.authorizationService = new AuthorizationService(options);
 	}
 
 	async getAsset(id: string, transformation: Transformation) {
-		const systemPublicKeys = Object.values(
-			await this.knex
-				.select('project_logo', 'public_background', 'public_foreground')
-				.from('directus_settings')
-				.first()
-		);
+		const publicSettings = await this.knex
+			.select('project_logo', 'public_background', 'public_foreground')
+			.from('directus_settings')
+			.first();
 
-		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
-			await this.authorizationService.checkAccess('read', 'directus_files', id);
+		if (publicSettings) {
+			const systemPublicKeys = Object.values(publicSettings);
+
+			if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
+				await this.authorizationService.checkAccess('read', 'directus_files', id);
+			}
 		}
 
 		const file = await database.select('*').from('directus_files').where({ id }).first();
