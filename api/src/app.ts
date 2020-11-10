@@ -112,17 +112,17 @@ export default async function createApp() {
 		app.use(rateLimiter);
 	}
 
-	app.use(schema);
-
 	app.use(sanitizeQuery);
+
+	app.use(cache);
+
+	app.use(schema);
 
 	app.use('/auth', authRouter);
 
 	app.use(authenticate);
 
 	app.use(checkIP);
-
-	app.use(cache);
 
 	app.use('/graphql', graphqlRouter);
 
