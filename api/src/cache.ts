@@ -34,12 +34,8 @@ function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory'): Options<a
 	};
 
 	if (store === 'redis') {
-		const Redis = require('ioredis');
 		const KeyvRedis = require('@keyv/redis');
-
-		config.store = new KeyvRedis(
-			new Redis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'))
-		);
+		config.store = new KeyvRedis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'));
 	}
 
 	if (store === 'memcache') {
