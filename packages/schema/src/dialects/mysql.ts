@@ -52,7 +52,8 @@ export default class MySQL implements Schema {
 			COLUMN_DEFAULT as default_value,
 			IS_NULLABLE as is_nullable,
 			DATA_TYPE as data_type,
-			COLUMN_KEY as column_key
+			COLUMN_KEY as column_key,
+			EXTRA as extra
 		FROM
 			INFORMATION_SCHEMA.COLUMNS
 		WHERE
@@ -80,6 +81,8 @@ export default class MySQL implements Schema {
 
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
+				default_value:
+					column.extra === 'auto_increment' ? 'AUTO_INCREMENT' : column.default_value,
 				is_nullable: column.is_nullable === 'YES',
 			};
 		}
