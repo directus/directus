@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-rc.8",
+	"version": "9.0.0-rc.9",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/next#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -66,8 +66,8 @@
 	"dependencies": {
 		"@directus/app": "file:../app",
 		"@directus/format-title": "file:../packages/format-title",
-    "@directus/specs": "file:../packages/specs",
-    "@directus/schema": "file:../packages/schema",
+		"@directus/schema": "file:../packages/schema",
+		"@directus/specs": "file:../packages/specs",
 		"@godaddy/terminus": "^4.4.1",
 		"@slynova/flydrive": "^1.0.3",
 		"@slynova/flydrive-gcs": "^1.0.3",

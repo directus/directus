@@ -1,6 +1,6 @@
 {
   "name": "@directus/schema",
-  "version": "0.0.25",
+  "version": "9.0.0-rc.9",
   "description": "Utility for extracting information about existing DB schema",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -41,8 +41,8 @@
   },
   "homepage": "https://github.com/directus/next#readme",
   "devDependencies": {
-    "typescript": "^3.9.5",
-    "npm-watch": "^0.7.0"
+    "npm-watch": "^0.7.0",
+    "typescript": "^3.9.5"
   },
   "peerDependencies": {
     "knex": "^0.21.12"
