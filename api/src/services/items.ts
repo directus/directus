@@ -70,6 +70,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					item: null,
 					action: 'create',
 					payload: payloads,
+					schema: this.schema,
 				}
 			);
 
@@ -181,6 +182,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					item: primaryKeys,
 					action: 'create',
 					payload: payloads,
+					schema: this.schema,
 				})
 				.catch((err) => logger.warn(err));
 
@@ -292,6 +294,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					item: null,
 					action: 'update',
 					payload,
+					schema: this.schema,
 				}
 			);
 
@@ -400,6 +403,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					item: key,
 					action: 'update',
 					payload,
+					schema: this.schema,
 				})
 				.catch((err) => logger.warn(err));
 
@@ -506,6 +510,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			item: keys,
 			action: 'delete',
 			payload: null,
+			schema: this.schema,
 		});
 
 		await this.knex.transaction(async (trx) => {
@@ -537,6 +542,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				item: keys,
 				action: 'delete',
 				payload: null,
+				schema: this.schema,
 			})
 			.catch((err) => logger.warn(err));
 
