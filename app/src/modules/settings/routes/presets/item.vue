@@ -328,6 +328,8 @@ export default defineComponent({
 			return { loading, preset, fetchPreset };
 
 			async function fetchPreset() {
+				if (props.id === '+') return;
+
 				loading.value = true;
 
 				try {
