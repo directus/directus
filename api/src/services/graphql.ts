@@ -207,8 +207,9 @@ export class GraphQLService {
 						return fieldsObject;
 					},
 				}),
-				resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) =>
-					this.resolve(info),
+				resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) => {
+					return this.resolve(info);
+				},
 				args: {
 					...this.args,
 					filter: {
@@ -400,20 +401,28 @@ export class GraphQLService {
 		const systemField = info.path.prev?.key !== 'items';
 
 		const collection = systemField ? `directus_${info.fieldName}` : info.fieldName;
+
 		const selections = info.fieldNodes[0]?.selectionSet?.selections?.filter(
 			(node) => node.kind === 'Field'
 		) as FieldNode[] | undefined;
+
 		if (!selections) return null;
 
-		return await this.getData(collection, selections, info.fieldNodes[0].arguments);
+		return await this.getData(
+			collection,
+			selections,
+			info.fieldNodes[0].arguments || [],
+			info.variableValues
+		);
 	}
 
 	async getData(
 		collection: string,
 		selections: FieldNode[],
-		argsArray?: readonly ArgumentNode[]
+		argsArray: readonly ArgumentNode[],
+		variableValues: GraphQLResolveInfo['variableValues']
 	) {
-		const args: Record<string, any> = this.parseArgs(argsArray);
+		const args: Record<string, any> = this.parseArgs(argsArray, variableValues);
 
 		const query: Query = sanitizeQuery(args, this.accountability);
 
@@ -438,7 +447,10 @@ export class GraphQLService {
 				if (selection.arguments && selection.arguments.length > 0) {
 					if (!query.deep) query.deep = {};
 
-					const args: Record<string, any> = this.parseArgs(selection.arguments);
+					const args: Record<string, any> = this.parseArgs(
+						selection.arguments,
+						variableValues
+					);
 					query.deep[current] = sanitizeQuery(args, this.accountability);
 				}
 			}
@@ -554,11 +566,14 @@ export class GraphQLService {
 		return result;
 	}
 
-	parseArgs(args?: readonly ArgumentNode[] | readonly ObjectFieldNode[]): Record<string, any> {
-		if (!args) return {};
+	parseArgs(
+		args: readonly ArgumentNode[] | readonly ObjectFieldNode[],
+		variableValues: GraphQLResolveInfo['variableValues']
+	): Record<string, any> {
+		if (!args || args.length === 0) return {};
 
 		const parseObjectValue = (arg: ObjectValueNode) => {
-			return this.parseArgs(arg.fields);
+			return this.parseArgs(arg.fields, variableValues);
 		};
 
 		const argsObject: any = {};
@@ -566,12 +581,14 @@ export class GraphQLService {
 		for (const argument of args) {
 			if (argument.value.kind === 'ObjectValue') {
 				argsObject[argument.name.value] = parseObjectValue(argument.value);
+			} else if (argument.value.kind === 'Variable') {
+				argsObject[argument.name.value] = variableValues[argument.value.name.value];
 			} else if (argument.value.kind === 'ListValue') {
 				const values: any = [];
 
 				for (const valueNode of argument.value.values) {
 					if (valueNode.kind === 'ObjectValue') {
-						values.push(this.parseArgs(valueNode.fields));
+						values.push(this.parseArgs(valueNode.fields, variableValues));
 					} else {
 						values.push((valueNode as any).value);
 					}
