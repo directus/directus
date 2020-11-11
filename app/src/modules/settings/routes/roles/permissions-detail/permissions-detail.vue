@@ -1,5 +1,11 @@
 <template>
-	<v-drawer :title="modalTitle" :active="true" class="new-collection" persistent>
+	<v-drawer
+		:title="modalTitle"
+		:active="true"
+		class="new-collection"
+		persistent
+		:sidebar-label="currentTabInfo && currentTabInfo.text"
+	>
 		<template #sidebar v-if="!loading">
 			<tabs :current-tab.sync="currentTab" :tabs="tabs" />
 		</template>
@@ -117,6 +123,12 @@ export default defineComponent({
 
 		const currentTab = ref<string[]>([]);
 
+		const currentTabInfo = computed(() => {
+			const tabKey = currentTab.value?.[0];
+			if (!tabKey) return null;
+			return tabs.value.find((tab) => tab.value === tabKey);
+		});
+
 		watch(
 			tabs,
 			(newTabs, oldTabs) => {
@@ -126,7 +138,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { permission, role, loading, modalTitle, tabs, currentTab };
+		return { permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo };
 
 		async function load() {
 			loading.value = true;

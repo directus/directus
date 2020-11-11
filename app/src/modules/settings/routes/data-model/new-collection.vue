@@ -5,16 +5,19 @@
 		class="new-collection"
 		persistent
 		@cancel="$router.push('/settings/data-model')"
+		:sidebar-label="$t(currentTab)"
 	>
 		<template #sidebar>
 			<v-tabs vertical v-model="currentTab">
-				<v-tab value="collection">{{ $t('collection_setup') }}</v-tab>
-				<v-tab value="system" :disabled="!collectionName">{{ $t('optional_system_fields') }}</v-tab>
+				<v-tab value="collection_setup">{{ $t('collection_setup') }}</v-tab>
+				<v-tab value="optional_system_fields" :disabled="!collectionName">
+					{{ $t('optional_system_fields') }}
+				</v-tab>
 			</v-tabs>
 		</template>
 
 		<v-tabs-items class="content" v-model="currentTab">
-			<v-tab-item value="collection">
+			<v-tab-item value="collection_setup">
 				<v-notice type="info">{{ $t('creating_collection_info') }}</v-notice>
 
 				<div class="grid">
@@ -67,7 +70,7 @@
 					</div>
 				</div>
 			</v-tab-item>
-			<v-tab-item value="system">
+			<v-tab-item value="optional_system_fields">
 				<v-notice type="info">{{ $t('creating_collection_system') }}</v-notice>
 
 				<div class="grid system">
@@ -95,8 +98,8 @@
 		<template #actions>
 			<v-button
 				:disabled="!collectionName || collectionName.length === 0"
-				v-if="currentTab[0] === 'collection'"
-				@click="currentTab = ['system']"
+				v-if="currentTab[0] === 'collection_setup'"
+				@click="currentTab = ['optional_system_fields']"
 				v-tooltip.bottom="$t('next')"
 				icon
 				rounded
@@ -104,7 +107,7 @@
 				<v-icon name="arrow_forward" />
 			</v-button>
 			<v-button
-				v-if="currentTab[0] === 'system'"
+				v-if="currentTab[0] === 'optional_system_fields'"
 				@click="save"
 				:loading="saving"
 				v-tooltip.bottom="$t('finish_setup')"
@@ -133,7 +136,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 
-		const currentTab = ref(['collection']);
+		const currentTab = ref(['collection_setup']);
 
 		const collectionName = ref(null);
 		const singleton = ref(false);
@@ -225,7 +228,7 @@ export default defineComponent({
 				await fieldsStore.hydrate();
 
 				notify({
-					title: 'Collection Created',
+					title: i18n.t('collection_created'),
 					type: 'success',
 				});
 

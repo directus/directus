@@ -40,6 +40,7 @@
 		"
 		:subtitle="localType ? $t(`field_${localType}`) : null"
 		persistent
+		:sidebar-label="currentTabInfo.text"
 	>
 		<template #sidebar>
 			<setup-tabs :current.sync="currentTab" :tabs="tabs" :type="localType" />
@@ -183,7 +184,7 @@ export default defineComponent({
 
 		initLocalStore(props.collection, props.field, localType.value);
 
-		const { tabs, currentTab } = useTabs();
+		const { tabs, currentTab, currentTabInfo } = useTabs();
 
 		const saving = ref(false);
 
@@ -200,6 +201,7 @@ export default defineComponent({
 			existingField,
 			collectionInfo,
 			translationsManual,
+			currentTabInfo,
 		};
 
 		function useTabs() {
@@ -257,7 +259,12 @@ export default defineComponent({
 
 			const currentTab = ref(['schema']);
 
-			return { tabs, currentTab };
+			const currentTabInfo = computed(() => {
+				const tabKey = currentTab.value[0];
+				return tabs.value.find((tab) => tab.value === tabKey);
+			});
+
+			return { tabs, currentTab, currentTabInfo };
 
 			function relationshipDisabled() {
 				return isEmpty(state.fieldData.field);
