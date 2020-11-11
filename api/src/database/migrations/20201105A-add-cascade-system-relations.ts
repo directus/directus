@@ -7,7 +7,7 @@ const updates = [
 			{
 				column: 'group',
 				references: 'directus_fields.id',
-				onDelete: 'SET DEFAULT',
+				onDelete: 'SET NULL',
 			},
 		],
 	},
@@ -17,17 +17,17 @@ const updates = [
 			{
 				column: 'folder',
 				references: 'directus_folders.id',
-				onDelete: 'SET DEFAULT',
+				onDelete: 'SET NULL',
 			},
 			{
 				column: 'uploaded_by',
 				references: 'directus_users.id',
-				onDelete: 'SET DEFAULT',
+				onDelete: 'SET NULL',
 			},
 			{
 				column: 'modified_by',
 				references: 'directus_users.id',
-				onDelete: 'SET DEFAULT',
+				onDelete: 'SET NULL',
 			},
 		],
 	},
@@ -77,7 +77,7 @@ const updates = [
 			{
 				column: 'parent',
 				references: 'directus_revisions.id',
-				onDelete: 'SET DEFAULT',
+				onDelete: 'SET NULL',
 			},
 		],
 	},
@@ -97,17 +97,17 @@ const updates = [
 			{
 				column: 'project_logo',
 				references: 'directus_files.id',
-				onDelete: 'SET DEFAULT',
+				onDelete: 'SET NULL',
 			},
 			{
 				column: 'public_foreground',
 				references: 'directus_files.id',
-				onDelete: 'SET DEFAULT',
+				onDelete: 'SET NULL',
 			},
 			{
 				column: 'public_background',
 				references: 'directus_files.id',
-				onDelete: 'SET DEFAULT',
+				onDelete: 'SET NULL',
 			},
 		],
 	},
@@ -117,7 +117,7 @@ const updates = [
 			{
 				column: 'role',
 				references: 'directus_roles.id',
-				onDelete: 'SET DEFAULT',
+				onDelete: 'SET NULL',
 			},
 		],
 	},
