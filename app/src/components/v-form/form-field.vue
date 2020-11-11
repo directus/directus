@@ -61,13 +61,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
-import { Field } from '@/types/';
+import { Field } from '../../types/';
 import marked from 'marked';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
 import { ValidationError } from './types';
-import { getJSType } from '@/utils/get-js-type';
+import { getJSType } from '../../utils/get-js-type';
 import { isEqual } from 'lodash';
 
 export default defineComponent({

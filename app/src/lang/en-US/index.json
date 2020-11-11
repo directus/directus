@@ -85,6 +85,8 @@
 	"markdown": "Markdown",
 	"tabbed": "Tabbed",
 
+	"unknown_validation_errors": "There were validation errors for the following hidden fields:",
+
 	"validationError": {
 		"eq": "Value has to be {valid}",
 		"neq": "Value can't be {invalid}",
