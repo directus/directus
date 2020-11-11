@@ -264,6 +264,11 @@ export class PayloadService {
 			for (const payload of payloads) {
 				let value: string | Date = payload[dateColumn.name];
 
+				if (value === null || value === '0000-00-00') {
+					payload[dateColumn.name] = null;
+					continue;
+				}
+
 				if (typeof value === 'string') value = new Date(value);
 
 				if (value) {
