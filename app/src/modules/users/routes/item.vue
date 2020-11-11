@@ -356,35 +356,51 @@ export default defineComponent({
 		}
 
 		async function saveAndQuit() {
-			const savedItem: Record<string, any> = await save();
-			await setLang(savedItem);
-			await refreshCurrentUser();
-			router.push(`/users`);
+			try {
+				const savedItem: Record<string, any> = await save();
+				await setLang(savedItem);
+				await refreshCurrentUser();
+				router.push(`/users`);
+			} catch {
+				// `save` will show unexpected error dialog
+			}
 		}
 
 		async function saveAndStay() {
-			const savedItem: Record<string, any> = await save();
-			await setLang(savedItem);
+			try {
+				const savedItem: Record<string, any> = await save();
+				await setLang(savedItem);
 
-			revisionsDrawerDetail.value?.$data?.refresh?.();
+				revisionsDrawerDetail.value?.$data?.refresh?.();
 
-			if (props.primaryKey === '+') {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				const newPrimaryKey = savedItem.id;
-				router.replace(`/collections/users/${newPrimaryKey}`);
+				if (props.primaryKey === '+') {
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					const newPrimaryKey = savedItem.id;
+					router.replace(`/collections/users/${newPrimaryKey}`);
+				}
+			} catch {
+				// `save` will show unexpected error dialog
 			}
 		}
 
 		async function saveAndAddNew() {
-			const savedItem: Record<string, any> = await save();
-			await setLang(savedItem);
-			await refreshCurrentUser();
-			router.push(`/users/+`);
+			try {
+				const savedItem: Record<string, any> = await save();
+				await setLang(savedItem);
+				await refreshCurrentUser();
+				router.push(`/users/+`);
+			} catch {
+				// `save` will show unexpected error dialog
+			}
 		}
 
 		async function saveAsCopyAndNavigate() {
-			const newPrimaryKey = await saveAsCopy();
-			router.push(`/users/${newPrimaryKey}`);
+			try {
+				const newPrimaryKey = await saveAsCopy();
+				router.push(`/users/${newPrimaryKey}`);
+			} catch {
+				// `save` will show unexpected error dialog
+			}
 		}
 
 		async function deleteAndQuit() {

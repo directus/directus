@@ -379,13 +379,21 @@ export default defineComponent({
 		}
 
 		async function saveAndQuit() {
-			await save();
-			router.push(`/files`);
+			try {
+				await save();
+				router.push(`/files`);
+			} catch {
+				// `save` will show unexpected error dialog
+			}
 		}
 
 		async function saveAndStay() {
-			await save();
-			revisionsDrawerDetail.value?.$data?.refresh?.();
+			try {
+				await save();
+				revisionsDrawerDetail.value?.$data?.refresh?.();
+			} catch {
+				// `save` will show unexpected error dialog
+			}
 		}
 
 		async function saveAsCopyAndNavigate() {

@@ -393,39 +393,55 @@ export default defineComponent({
 		async function saveAndQuit() {
 			if (isSavable.value === false) return;
 
-			await save();
-			if (props.singleton === false) router.push(`/collections/${props.collection}`);
+			try {
+				await save();
+				if (props.singleton === false) router.push(`/collections/${props.collection}`);
+			} catch {
+				// Save shows unexpected error dialog
+			}
 		}
 
 		async function saveAndStay() {
 			if (isSavable.value === false) return;
 
-			const savedItem: Record<string, any> = await save();
+			try {
+				const savedItem: Record<string, any> = await save();
 
-			revisionsDrawerDetail.value?.$data?.refresh?.();
+				revisionsDrawerDetail.value?.$data?.refresh?.();
 
-			if (props.primaryKey === '+') {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				const newPrimaryKey = savedItem[primaryKeyField.value!.field];
-				router.replace(`/collections/${props.collection}/${newPrimaryKey}`);
+				if (props.primaryKey === '+') {
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					const newPrimaryKey = savedItem[primaryKeyField.value!.field];
+					router.replace(`/collections/${props.collection}/${newPrimaryKey}`);
+				}
+			} catch {
+				// Save shows unexpected error dialog
 			}
 		}
 
 		async function saveAndAddNew() {
 			if (isSavable.value === false) return;
 
-			await save();
+			try {
+				await save();
 
-			if (isNew.value === true) {
-				refresh();
-			} else {
-				router.push(`/collections/${props.collection}/+`);
+				if (isNew.value === true) {
+					refresh();
+				} else {
+					router.push(`/collections/${props.collection}/+`);
+				}
+			} catch {
+				// Save shows unexpected error dialog
 			}
 		}
 
 		async function saveAsCopyAndNavigate() {
-			const newPrimaryKey = await saveAsCopy();
-			router.push(`/collections/${props.collection}/${newPrimaryKey}`);
+			try {
+				const newPrimaryKey = await saveAsCopy();
+				router.push(`/collections/${props.collection}/${newPrimaryKey}`);
+			} catch {
+				// Save shows unexpected error dialog
+			}
 		}
 
 		async function deleteAndQuit() {
@@ -438,12 +454,16 @@ export default defineComponent({
 		}
 
 		async function toggleArchive() {
-			await archive();
+			try {
+				await archive();
 
-			if (isArchived.value === true) {
-				router.push(`/collections/${props.collection}`);
-			} else {
-				confirmArchive.value = false;
+				if (isArchived.value === true) {
+					router.push(`/collections/${props.collection}`);
+				} else {
+					confirmArchive.value = false;
+				}
+			} catch {
+				// `archive` will show the unexpected error dialog
 			}
 		}
 

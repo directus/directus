@@ -117,8 +117,9 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					});
 			} else {
 				unexpectedError(err);
-				throw err;
 			}
+
+			throw err;
 		} finally {
 			saving.value = false;
 		}
