@@ -19,7 +19,14 @@
 
 			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" @click="on">
+					<v-button
+						rounded
+						icon
+						class="action-delete"
+						@click="on"
+						:disabled="batchDeleteAllowed !== true"
+						v-tooltip.bottom="batchDeleteAllowed ? $t('delete') : $t('not_allowed')"
+					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
@@ -44,7 +51,8 @@
 				class="action-batch"
 				v-if="selection.length > 1"
 				:to="batchLink"
-				v-tooltip.bottom="$t('edit')"
+				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
+				:disabled="batchEditAllowed === false"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
@@ -60,7 +68,13 @@
 				<v-icon name="person_add" />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_user')">
+			<v-button
+				rounded
+				icon
+				:to="addNewLink"
+				v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
+				:disabled="createAllowed === false"
+			>
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -117,15 +131,15 @@
 <script lang="ts">
 import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
 import UsersNavigation from '../components/navigation.vue';
-import UsersInvite from '@/views/private/components/users-invite';
+import UsersInvite from '../../../views/private/components/users-invite';
 
-import { i18n } from '@/lang';
-import api from '@/api';
-import { LayoutComponent } from '@/layouts/types';
-import usePreset from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import SearchInput from '@/views/private/components/search-input';
-import { useUserStore, usePermissionsStore } from '@/stores';
+import { i18n } from '../../../lang';
+import api from '../../../api';
+import { LayoutComponent } from '../../../layouts/types';
+import usePreset from '../../../composables/use-preset';
+import LayoutSidebarDetail from '../../../views/private/components/layout-sidebar-detail';
+import SearchInput from '../../../views/private/components/search-input';
+import { useUserStore, usePermissionsStore } from '../../../stores';
 import marked from 'marked';
 import useNavigation from '../composables/use-navigation';
 
@@ -190,6 +204,8 @@ export default defineComponent({
 			return !!usersCreatePermission && !!rolesReadPermission;
 		});
 
+		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
+
 		return {
 			canInviteUsers,
 			_filters,
@@ -211,6 +227,9 @@ export default defineComponent({
 			clearFilters,
 			userInviteModalActive,
 			refresh,
+			batchEditAllowed,
+			batchDeleteAllowed,
+			createAllowed,
 		};
 
 		async function refresh() {
@@ -276,6 +295,40 @@ export default defineComponent({
 		function clearFilters() {
 			filters.value = [];
 			searchQuery.value = null;
+		}
+
+		function usePermissions() {
+			const batchEditAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const updatePermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'update' && permission.collection === 'directus_users'
+				);
+				return !!updatePermissions;
+			});
+
+			const batchDeleteAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const deletePermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'delete' && permission.collection === 'directus_users'
+				);
+				return !!deletePermissions;
+			});
+
+			const createAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const createPermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'create' && permission.collection === 'directus_users'
+				);
+				return !!createPermissions;
+			});
+
+			return { batchEditAllowed, batchDeleteAllowed, createAllowed };
 		}
 	},
 });

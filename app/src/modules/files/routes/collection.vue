@@ -17,7 +17,7 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<add-folder :parent="queryFilters && queryFilters.folder" />
+			<add-folder :parent="queryFilters && queryFilters.folder" :disabled="createFolderAllowed !== true" />
 
 			<v-dialog v-model="moveToDialogActive" v-if="selection.length > 0" @esc="moveToDialogActive = false">
 				<template #activator="{ on }">
@@ -46,7 +46,14 @@
 
 			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" @click="on" v-tooltip.bottom="$t('delete')">
+					<v-button
+						rounded
+						icon
+						class="action-delete"
+						@click="on"
+						v-tooltip.bottom="batchDeleteAllowed ? $t('delete') : $t('not_allowed')"
+						:disabled="batchDeleteAllowed !== true"
+					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
@@ -71,7 +78,8 @@
 				class="action-batch"
 				v-if="selection.length > 1"
 				:to="batchLink"
-				v-tooltip.bottom="$t('edit')"
+				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
+				:disabled="batchEditAllowed === false"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
@@ -81,7 +89,8 @@
 				icon
 				class="add-new"
 				:to="{ path: '/files/+', query: queryFilters }"
-				v-tooltip.bottom="$t('add_file')"
+				v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
+				:disabled="createAllowed === false"
 			>
 				<v-icon name="add" />
 			</v-button>
@@ -146,25 +155,25 @@
 <script lang="ts">
 import { defineComponent, computed, ref, PropType, onMounted, onUnmounted } from '@vue/composition-api';
 import FilesNavigation from '../components/navigation.vue';
-import { i18n } from '@/lang';
-import api from '@/api';
-import { LayoutComponent } from '@/layouts/types';
-import usePreset from '@/composables/use-preset';
-import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
+import { i18n } from '../../../lang';
+import api from '../../../api';
+import { LayoutComponent } from '../../../layouts/types';
+import usePreset from '../../../composables/use-preset';
+import FilterSidebarDetail from '../../../views/private/components/filter-sidebar-detail';
+import LayoutSidebarDetail from '../../../views/private/components/layout-sidebar-detail';
 import AddFolder from '../components/add-folder.vue';
-import SearchInput from '@/views/private/components/search-input';
+import SearchInput from '../../../views/private/components/search-input';
 import marked from 'marked';
 import FolderPicker from '../components/folder-picker.vue';
-import emitter, { Events } from '@/events';
-import router from '@/router';
+import emitter, { Events } from '../../../events';
+import router from '../../../router';
 import Vue from 'vue';
-import { useNotificationsStore, useUserStore } from '@/stores';
+import { useNotificationsStore, useUserStore, usePermissionsStore } from '../../../stores';
 import { subDays } from 'date-fns';
 import useFolders from '../composables/use-folders';
-import useEventListener from '@/composables/use-event-listener';
-import uploadFiles from '@/utils/upload-files';
-import { unexpectedError } from '@/utils/unexpected-error';
+import useEventListener from '../../../composables/use-event-listener';
+import uploadFiles from '../../../utils/upload-files';
+import { unexpectedError } from '../../../utils/unexpected-error';
 
 type Item = {
 	[field: string]: any;
@@ -185,6 +194,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const notificationsStore = useNotificationsStore();
+		const permissionsStore = usePermissionsStore();
 		const { folders } = useFolders();
 		const layoutRef = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
@@ -260,6 +270,8 @@ export default defineComponent({
 		useEventListener(window, 'dragleave', onDragLeave);
 		useEventListener(window, 'drop', onDrop);
 
+		const { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed } = usePermissions();
+
 		return {
 			batchDelete,
 			batchLink,
@@ -287,6 +299,10 @@ export default defineComponent({
 			showDropEffect,
 			onDrop,
 			dragging,
+			batchEditAllowed,
+			batchDeleteAllowed,
+			createAllowed,
+			createFolderAllowed,
 		};
 
 		function useBatchDelete() {
@@ -405,6 +421,50 @@ export default defineComponent({
 			searchQuery.value = null;
 		}
 
+		function usePermissions() {
+			const batchEditAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const updatePermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'update' && permission.collection === 'directus_files'
+				);
+				return !!updatePermissions;
+			});
+
+			const batchDeleteAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const deletePermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'delete' && permission.collection === 'directus_files'
+				);
+				return !!deletePermissions;
+			});
+
+			const createAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const createPermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'create' && permission.collection === 'directus_files'
+				);
+				return !!createPermissions;
+			});
+
+			const createFolderAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const createPermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'create' && permission.collection === 'directus_folders'
+				);
+				return !!createPermissions;
+			});
+
+			return { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed };
+		}
+
 		function useFileUpload() {
 			const showDropEffect = ref(false);
 
@@ -493,7 +553,7 @@ export default defineComponent({
 					notificationsStore.remove(dragNotificationID);
 				}
 
-				const files = [...event.dataTransfer.files];
+				const files = [...(event.dataTransfer.files as any)];
 
 				fileUploadNotificationID = notificationsStore.add({
 					title: i18n.tc('upload_file_indeterminate', files.length, {

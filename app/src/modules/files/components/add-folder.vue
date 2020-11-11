@@ -1,7 +1,14 @@
 <template>
 	<v-dialog v-model="dialogActive" @esc="dialogActive = false">
 		<template #activator="{ on }">
-			<v-button rounded icon class="add-new" @click="on" v-tooltip.bottom="$t('create_folder')">
+			<v-button
+				rounded
+				icon
+				class="add-new"
+				@click="on"
+				v-tooltip.bottom="disabled ? $t('not_allowed') : $t('create_folder')"
+				:disabled="disabled"
+			>
 				<v-icon name="create_new_folder" outline />
 			</v-button>
 		</template>
@@ -24,15 +31,19 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import useFolders from '../composables/use-folders';
-import api from '@/api';
-import router from '@/router';
-import { unexpectedError } from '@/utils/unexpected-error';
+import api from '../../../api';
+import router from '../../../router';
+import { unexpectedError } from '../../../utils/unexpected-error';
 
 export default defineComponent({
 	props: {
 		parent: {
 			type: String,
 			default: null,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {

@@ -164,24 +164,24 @@
 import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 
 import UsersNavigation from '../components/navigation.vue';
-import { i18n, setLanguage } from '@/lang';
-import router from '@/router';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
-import useItem from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options';
-import api from '@/api';
-import { useFieldsStore, useCollectionsStore, useUserStore } from '@/stores/';
-import useFormFields from '@/composables/use-form-fields';
-import { Field } from '@/types';
+import { i18n, setLanguage } from '../../../lang';
+import router from '../../../router';
+import RevisionsDrawerDetail from '../../../views/private/components/revisions-drawer-detail';
+import CommentsSidebarDetail from '../../../views/private/components/comments-sidebar-detail';
+import useItem from '../../../composables/use-item';
+import SaveOptions from '../../../views/private/components/save-options';
+import api from '../../../api';
+import { useFieldsStore, useCollectionsStore, useUserStore } from '../../../stores/';
+import useFormFields from '../../../composables/use-form-fields';
+import { Field } from '../../../types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
-import { getRootPath } from '@/utils/get-root-path';
-import useShortcut from '@/composables/use-shortcut';
-import useCollection from '@/composables/use-collection';
-import { userName } from '@/utils/user-name';
-import { usePermissions } from '@/composables/use-permissions';
-import { unexpectedError } from '@/utils/unexpected-error';
-import { addTokenToURL } from '@/api';
+import { getRootPath } from '../../../utils/get-root-path';
+import useShortcut from '../../../composables/use-shortcut';
+import useCollection from '../../../composables/use-collection';
+import { userName } from '../../../utils/user-name';
+import { usePermissions } from '../../../composables/use-permissions';
+import { unexpectedError } from '../../../utils/unexpected-error';
+import { addTokenToURL } from '../../../api';
 
 type Values = {
 	[field: string]: any;
@@ -465,7 +465,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
+@import '../../../styles/mixins/breakpoint';
 
 .action-delete {
 	--v-button-background-color: var(--danger-25);
