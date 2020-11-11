@@ -388,8 +388,12 @@ export default defineComponent({
 		}
 
 		async function deleteAndQuit() {
-			await remove();
-			router.push(`/users`);
+			try {
+				await remove();
+				router.push(`/users`);
+			} catch {
+				// `remove` will show the unexpected error dialog
+			}
 		}
 
 		async function setLang(user: Record<string, any>) {

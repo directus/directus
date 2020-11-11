@@ -200,22 +200,22 @@ import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 import Vue from 'vue';
 
 import CollectionsNavigation from '../components/navigation.vue';
-import router from '@/router';
+import router from '../../../router';
 import CollectionsNotFound from './not-found.vue';
-import useCollection from '@/composables/use-collection';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
-import useItem from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options';
-import i18n from '@/lang';
+import useCollection from '../../../composables/use-collection';
+import RevisionsDrawerDetail from '../../../views/private/components/revisions-drawer-detail';
+import CommentsSidebarDetail from '../../../views/private/components/comments-sidebar-detail';
+import useItem from '../../../composables/use-item';
+import SaveOptions from '../../../views/private/components/save-options';
+import i18n from '../../../lang';
 import marked from 'marked';
-import useShortcut from '@/composables/use-shortcut';
+import useShortcut from '../../../composables/use-shortcut';
 import { NavigationGuard } from 'vue-router';
-import { useUserStore, usePermissionsStore } from '@/stores';
-import generateJoi from '@/utils/generate-joi';
+import { useUserStore, usePermissionsStore } from '../../../stores';
+import generateJoi from '../../../utils/generate-joi';
 import { cloneDeep } from 'lodash';
-import { Field } from '@/types';
-import { usePermissions } from '@/composables/use-permissions';
+import { Field } from '../../../types';
+import { usePermissions } from '../../../composables/use-permissions';
 
 type Values = {
 	[field: string]: any;
@@ -429,9 +429,12 @@ export default defineComponent({
 		}
 
 		async function deleteAndQuit() {
-			await remove();
-
-			router.push(`/collections/${props.collection}`);
+			try {
+				await remove();
+				router.push(`/collections/${props.collection}`);
+			} catch {
+				// `remove` will show the unexpected error dialog
+			}
 		}
 
 		async function toggleArchive() {
@@ -460,7 +463,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
+@import '../../../styles/mixins/breakpoint';
 
 .action-delete {
 	--v-button-background-color: var(--danger-25);

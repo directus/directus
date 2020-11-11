@@ -117,6 +117,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					});
 			} else {
 				unexpectedError(err);
+				throw err;
 			}
 		} finally {
 			saving.value = false;
@@ -155,6 +156,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					});
 			} else {
 				unexpectedError(err);
+				throw err;
 			}
 		} finally {
 			saving.value = false;
@@ -197,6 +199,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			});
 		} catch (err) {
 			unexpectedError(err);
+			throw err;
 		} finally {
 			archiving.value = false;
 		}
@@ -216,6 +219,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			});
 		} catch (err) {
 			unexpectedError(err);
+			throw err;
 		} finally {
 			deleting.value = false;
 		}

@@ -86,12 +86,12 @@
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 import SettingsNavigation from '../../../components/navigation.vue';
-import useCollection from '@/composables/use-collection/';
+import useCollection from '../../../../../composables/use-collection/';
 import FieldsManagement from './components/fields-management.vue';
 
-import useItem from '@/composables/use-item';
-import router from '@/router';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import useItem from '../../../../../composables/use-item';
+import router from '../../../../../router';
+import { useCollectionsStore, useFieldsStore } from '../../../../../stores';
 import marked from 'marked';
 
 export default defineComponent({
