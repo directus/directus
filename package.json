@@ -42,7 +42,7 @@
     "@types/diff": "^4.0.2",
     "@types/express": "^4.17.7",
     "@types/express-pino-logger": "^4.0.2",
-    "@types/express-session": "^1.17.0",
+    "@types/express-session": "^1.17.1",
     "@types/fs-extra": "^9.0.1",
     "@types/highlight.js": "^9.12.4",
     "@types/inquirer": "^6.5.0",
