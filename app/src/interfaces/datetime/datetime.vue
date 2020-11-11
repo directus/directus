@@ -56,8 +56,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed, reactive, PropType } from '@vue/composition-api';
-import formatLocalized from '@/utils/localized-format';
-import { i18n } from '@/lang';
+import formatLocalized from '../../utils/localized-format';
+import { i18n } from '../../lang';
 import { formatISO, parseISO, format, parse } from 'date-fns';
 
 type LocalValue = {
@@ -266,10 +266,12 @@ export default defineComponent({
 					return;
 				}
 
-				let format = `${i18n.t('date-fns_date')} ${i18n.t('date-fns_time')}`;
+				const timeFormat = props.includeSeconds ? 'date-fns_time' : 'date-fns_time_no_seconds';
+
+				let format = `${i18n.t('date-fns_date')} ${i18n.t(timeFormat)}`;
 
 				if (props.type === 'date') format = String(i18n.t('date-fns_date'));
-				if (props.type === 'time') format = String(i18n.t('date-fns_time'));
+				if (props.type === 'time') format = String(i18n.t(timeFormat));
 
 				displayValue.value = await formatLocalized(_value.value, format);
 			}
