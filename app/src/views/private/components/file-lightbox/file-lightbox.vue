@@ -25,13 +25,13 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, computed } from '@vue/composition-api';
-import api from '@/api';
+import api, { addTokenToURL } from '../../../../api';
 
 import { nanoid } from 'nanoid';
-import FilePreview from '@/views/private/components/file-preview';
+import FilePreview from '../../../../views/private/components/file-preview';
 
-import getRootPath from '@/utils/get-root-path';
-import { unexpectedError } from '@/utils/unexpected-error';
+import getRootPath from '../../../../utils/get-root-path';
+import { unexpectedError } from '../../../../utils/unexpected-error';
 
 type File = {
 	type: string;
@@ -74,7 +74,7 @@ export default defineComponent({
 		const cacheBuster = ref(nanoid());
 
 		const fileSrc = computed(() => {
-			return getRootPath() + `assets/${props.id}?cache-buster=${cacheBuster.value}`;
+			return addTokenToURL(getRootPath() + `assets/${props.id}?cache-buster=${cacheBuster.value}`);
 		});
 
 		watch(

@@ -191,7 +191,7 @@ import { Field } from '../../../types';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import useFormFields from '../../../composables/use-form-fields';
 import FolderPicker from '../components/folder-picker.vue';
-import api from '../../../api';
+import api, { addTokenToURL } from '../../../api';
 import getRootPath from '../../../utils/get-root-path';
 import FilesNotFound from './not-found.vue';
 import useShortcut from '../../../composables/use-shortcut';
@@ -265,12 +265,13 @@ export default defineComponent({
 		const editActive = ref(false);
 		const fileSrc = computed(() => {
 			if (item.value && item.value.modified_on) {
-				return (
+				return addTokenToURL(
 					getRootPath() +
-					`assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`
+						`assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`
 				);
 			}
-			return getRootPath() + `assets/${props.primaryKey}?key=system-large-contain`;
+
+			return addTokenToURL(getRootPath() + `assets/${props.primaryKey}?key=system-large-contain`);
 		});
 
 		// These are the fields that will be prevented from showing up in the form because they'll be shown in the sidebar
