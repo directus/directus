@@ -42,8 +42,8 @@
 						<template #title:append><slot name="header:append" /></template>
 					</header-bar>
 
-					<v-detail class="mobile-sidebar" :label="sidebarLabel">
-						<nav v-if="$slots.sidebar">
+					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel">
+						<nav>
 							<slot name="sidebar" />
 						</nav>
 					</v-detail>
@@ -212,6 +212,10 @@ body {
 	nav {
 		background-color: var(--background-subdued);
 		border-radius: var(--border-radius);
+	}
+
+	@include breakpoint(medium) {
+		display: none;
 	}
 }
 </style>
