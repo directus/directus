@@ -292,7 +292,7 @@ export class FieldsService {
 					column = table[field.type](field.field);
 				}
 
-				if (field.schema.default_value) {
+				if (field.schema.default_value !== undefined) {
 					if (
 						typeof field.schema.default_value === 'string' &&
 						field.schema.default_value.toLowerCase() === 'now()'

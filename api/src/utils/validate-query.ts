@@ -77,13 +77,16 @@ function validateFilter(filter: Query['filter']) {
 }
 
 function validateFilterPrimitive(value: any, key: string) {
-	if ((typeof value === 'string' || typeof value === 'number') === false) {
+	if (
+		(typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') ===
+		false
+	) {
 		throw new InvalidQueryException(
 			`The filter value for "${key}" has to be a string or a number`
 		);
 	}
 
-	if (Number.isNaN(value)) {
+	if (typeof value === 'number' && Number.isNaN(value)) {
 		throw new InvalidQueryException(`The filter value for "${key}" is not a valid number`);
 	}
 
