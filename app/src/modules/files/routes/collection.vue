@@ -110,6 +110,7 @@
 			:layout-query.sync="layoutQuery"
 			:filters="filtersWithFolderAndType"
 			:search-query="searchQuery"
+			:reset-preset="resetPreset"
 			@update:filters="filters = $event"
 		>
 			<template #no-results>
@@ -201,7 +202,9 @@ export default defineComponent({
 
 		const userStore = useUserStore();
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_files'));
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(
+			ref('directus_files')
+		);
 		const { batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb, title } = useBreadcrumb();
@@ -303,6 +306,7 @@ export default defineComponent({
 			batchDeleteAllowed,
 			createAllowed,
 			createFolderAllowed,
+			resetPreset,
 		};
 
 		function useBatchDelete() {

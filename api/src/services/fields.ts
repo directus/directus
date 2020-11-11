@@ -94,8 +94,15 @@ export class FieldsService {
 
 		let aliasFields = [
 			...((await this.payloadService.processValues('read', await aliasQuery)) as FieldMeta[]),
-			...systemFieldRows,
 		];
+
+		if (collection) {
+			aliasFields.push(
+				...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection)
+			);
+		} else {
+			aliasFields.push(...systemFieldRows);
+		}
 
 		const aliasTypes = ['alias', 'o2m', 'm2m', 'files', 'files', 'translations'];
 
@@ -113,7 +120,7 @@ export class FieldsService {
 			const data = {
 				collection: field.collection,
 				field: field.field,
-				type: field.special?.[0],
+				type: Array.isArray(field.special) ? field.special[0] : field.special,
 				schema: null,
 				meta: field,
 			};

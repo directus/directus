@@ -95,6 +95,7 @@
 			:layout-query.sync="layoutQuery"
 			:filters="_filters"
 			:search-query="searchQuery"
+			:reset-preset="resetPreset"
 			@update:filters="filters = $event"
 		>
 			<template #no-results>
@@ -165,7 +166,9 @@ export default defineComponent({
 
 		const selection = ref<Item[]>([]);
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_users'));
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(
+			ref('directus_users')
+		);
 		const { addNewLink, batchLink } = useLinks();
 		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
 		const { breadcrumb, title } = useBreadcrumb();
@@ -230,6 +233,7 @@ export default defineComponent({
 			batchEditAllowed,
 			batchDeleteAllowed,
 			createAllowed,
+			resetPreset,
 		};
 
 		async function refresh() {
