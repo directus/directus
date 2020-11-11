@@ -1,4 +1,4 @@
-import { computed } from '@vue/composition-api';
+import { computed, Ref, ref } from '@vue/composition-api';
 
 import { useCollectionsStore, useUserStore } from '@/stores/';
 import { Collection } from '@/types';
@@ -18,7 +18,11 @@ export type NavItemGroup = {
 	items: NavItem[];
 };
 
+let activeGroups: Ref<string[]>;
+
 export default function useNavigation() {
+	if (!activeGroups) activeGroups = ref([]);
+
 	const collectionsStore = useCollectionsStore();
 
 	const userStore = useUserStore();
@@ -72,5 +76,5 @@ export default function useNavigation() {
 			});
 	});
 
-	return { customNavItems, navItems };
+	return { customNavItems, navItems, activeGroups };
 }

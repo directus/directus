@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
-import { i18n } from '@/lang';
+import { i18n } from '../../lang';
 
 export default defineComponent({
 	model: {
@@ -38,7 +38,7 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
-		}
+		},
 	},
 
 	setup(props, { emit }) {
@@ -69,6 +69,7 @@ export default defineComponent({
 
 .v-detail:not(.disabled) .v-divider:hover {
 	--v-divider-label-color: var(--foreground-normal);
+
 	cursor: pointer;
 }
 
