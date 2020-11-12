@@ -13,7 +13,18 @@ export default function filtersToQuery(filters: readonly Filter[]) {
 
 		if (!value) continue;
 
-		filterList.push({ [field]: { [`_${operator}`]: value } });
+		if (field.includes('.')) {
+			let filter: Record<string, any> = { [`_${operator}`]: value };
+			const path = field.split('.');
+
+			for (const field of path.reverse()) {
+				filter = { [field]: filter };
+			}
+
+			filterList.push(filter);
+		} else {
+			filterList.push({ [field]: { [`_${operator}`]: value } });
+		}
 	}
 
 	let filterQuery: Record<string, any> = {};

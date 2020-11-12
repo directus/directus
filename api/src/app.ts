@@ -112,6 +112,10 @@ export default async function createApp() {
 		app.use(rateLimiter);
 	}
 
+	app.use(authenticate);
+
+	app.use(checkIP);
+
 	app.use(sanitizeQuery);
 
 	app.use(cache);
@@ -119,10 +123,6 @@ export default async function createApp() {
 	app.use(schema);
 
 	app.use('/auth', authRouter);
-
-	app.use(authenticate);
-
-	app.use(checkIP);
 
 	app.use('/graphql', graphqlRouter);
 
