@@ -33,3 +33,4 @@ fields:
 
   - field: validation
     width: half
+    special: json
