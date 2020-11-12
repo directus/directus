@@ -1,84 +1,107 @@
-- name: Getting Started
-  emoji: 🐰
-  children:
-  - name: Introduction
-    to: "/getting-started/introduction"
-  - name: Support & FAQ
-    to: "/getting-started/support"
-  - name: Contributing
-    to: "/getting-started/contributing"
-  - name: Backing Directus
-    to: "/getting-started/backing-directus"
+# Note: this uses VuePress' sidebar syntax
 
-- name: Concepts
-  emoji: 🎓
+- title: 🐰 Getting Started
+  collapsable: false
   children:
-  - name: Platform Overview
-    to: "/concepts/platform-overview"
-  - name: App Overview
-    to: "/concepts/app-overview"
-  - name: App Extensions
-    to: "/concepts/app-extensions"
-  - name: Activity & Versions
-    to: "/concepts/activity-and-versions"
-  - name: Files & Thumbnails
-    to: "/concepts/files-and-thumbnails"
-  - name: Internationalization
-    to: "/concepts/internationalization"
-  - name: Relationships
-    to: "/concepts/relationships"
-  - name: Users, Roles & Permissions
-    to: "/concepts/users-roles-and-permissions"
+    - type: page
+      path: /getting-started/introduction
+      title: Introduction
+    - type: page
+      path: /getting-started/support
+      title: Support
+    - type: page
+      path: /getting-started/contributing
+      title: Contributing
+    - type: page
+      path: /getting-started/backing-directus
+      title: Backing Directus
 
-- name: Guides
-  emoji: 📖
+- title: 🎓 Concepts
   children:
-  - name: Collections
-    to: "/guides/collections"
-  - name: Fields
-    to: "/guides/fields"
-  - name: Presets
-    to: "/guides/presets"
-  - name: Projects
-    to: "/guides/projects"
-  - name: Roles & Permissions
-    to: "/guides/roles-and-permissions"
-  - name: Users
-    to: "/guides/users"
-  - name: Webhooks
-    to: "/guides/webhooks"
-  - name: White-Labeling
-    to: "/guides/white-labeling"
-  - name: Extensions
-    to: "/guides/extensions"
-    children:
-    - name: Custom Displays
-      to: "/guides/extensions/creating-a-custom-display"
-    - name: Custom Interfaces
-      to: "/guides/extensions/creating-a-custom-interface"
-    - name: Custom Layouts
-      to: "/guides/extensions/creating-a-custom-layout"
-    - name: Custom Modules
-      to: "/guides/extensions/creating-a-custom-module"
-    - name: Custom API Endpoints
-      to: "/guides/extensions/creating-a-custom-api-endpoint"
-    - name: Custom API Hooks
-      to: "/guides/extensions/creating-a-custom-api-hook"
-    - name: Custom Email Templates
-      to: "/guides/extensions/creating-a-custom-email-template"
-    - name: Custom Storage Adapters
-      to: "/guides/extensions/creating-a-custom-storage-adapter"
-    - name: Accessing Data
-      to: "/guides/extensions/accessing-data"
+    - type: page
+      path: /concepts/platform-overview
+      title: Platform Overview
+    - type: page
+      path: /concepts/app-overview
+      title: App Overview
+    - type: page
+      path: /concepts/app-extensions
+      title: App Extensions
+    - type: page
+      path: /concepts/activity-and-versions
+      title: Activity & Versions
+    - type: page
+      path: /concepts/files-and-thumbnails
+      title: Files & Thumbnails
+    - type: page
+      path: /concepts/internationalization
+      title: Internationalization
+    - type: page
+      path: /concepts/relationships
+      title: Relationships
+    - type: page
+      path: /concepts/users-roles-and-permissions
+      title: Users, Roles, and Permissions
 
-- name: Reference
-  emoji: 🚀
+- title: 📖 Guides
   children:
-  - name: Environment Variables
-    to: "/reference/environment-variables"
-  - name: Command Line Interface
-    to: "/reference/command-line-interface"
-  - name: Error Codes
-    to: "/reference/error-codes"
-  - name: Item Rules
-    to: "/reference/item-rules"
+    - type: page
+      path: /guides/collections
+      title: Collections
+    - type: page
+      path: /guides/fields
+      title: Fields
+    - type: page
+      path: /guides/projects
+      title: Projects
+    - type: page
+      path: /guides/roles-and-permissions
+      title: Roles & Permissions
+    - type: page
+      path: /guides/presets
+      title: Presets
+    - type: group
+      title: Extensions
+      children:
+        - type: page
+          path: /guides/extensions/creating-a-custom-display
+          title: Creating a Custom Display
+        - type: page
+          path: /guides/extensions/creating-a-custom-interface
+          title: Creating a Custom Interface
+        - type: page
+          path: /guides/extensions/creating-a-custom-layout
+          title: Creating a Custom Layout
+        - type: page
+          path: /guides/extensions/creating-a-custom-module
+          title: Creating a Custom Module
+        - type: page
+          path: /guides/extensions/creating-a-custom-api-endpoint
+          title: Creating a Custom API Endpoint
+        - type: page
+          path: /guides/extensions/creating-a-custom-api-hook
+          title: Creating a Custom API Hook
+        - type: page
+          path: /guides/extensions/creating-a-custom-email-template
+          title: Creating a Custom Email Template
+        - type: page
+          path: /guides/extensions/creating-a-custom-storage-adapter
+          title: Creating a Custom Storage Adapter
+        - type: page
+          path: /guides/extensions/accessing-data
+          title: Accessing Data
+
+- title: 🚀 Reference
+  children:
+    - type: page
+      path: /reference/environment-variables
+      title: Environment Variables
+    - type: page
+      path: /reference/command-line-interface
+      title: Command Line Interface
+    - type: page
+      path: /reference/error-codes
+      title: Error Codes
+    - type: page
+      path: /reference/item-rules
+      title: Item Rules
