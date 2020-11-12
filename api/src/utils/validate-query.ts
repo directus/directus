@@ -19,7 +19,7 @@ const querySchema = Joi.object({
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
 	export: Joi.string().valid('json', 'csv'),
-	deep: Joi.link('#query'),
+	deep: Joi.object().pattern(/\w+/, Joi.link('#query')),
 }).id('query');
 
 export function validateQuery(query: Query) {
