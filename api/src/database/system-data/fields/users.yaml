@@ -20,7 +20,7 @@ fields:
     width: half
 
   - field: password
-    special: hash, conceal
+    special: hash,conceal
     interface: hash
     options:
       iconRight: lock
