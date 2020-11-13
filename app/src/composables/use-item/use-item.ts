@@ -143,9 +143,12 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			const response = await api.post(endpoint.value, newItem);
 
 			notify({
-				title: i18n.t('item_create_success'),
+				title: i18n.tc('item_create_success', 1),
 				type: 'success',
 			});
+
+			// Reset edits to the current item
+			edits.value = {};
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
 		} catch (err) {

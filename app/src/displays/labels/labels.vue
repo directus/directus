@@ -66,7 +66,7 @@ export default defineComponent({
 		},
 		type: {
 			type: String,
-			validator: (val: string) => ['text', 'string'].includes(val),
+			validator: (val: string) => ['text', 'string', 'json', 'csv'].includes(val),
 		},
 	},
 	setup(props) {
