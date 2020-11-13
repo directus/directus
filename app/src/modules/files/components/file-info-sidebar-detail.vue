@@ -67,14 +67,16 @@
 			<div>
 				<dt>{{ $t('file') }}</dt>
 				<dd>
-					<a :href="`${getRootPath()}assets/${file.id}`" target="_blank">{{ $t('open_in_new_window') }}</a>
+					<a :href="fileLink" target="_blank">{{ $t('open_in_new_window') }}</a>
 				</dd>
 			</div>
 
 			<div>
 				<dt>{{ $t('folder') }}</dt>
 				<dd>
-					<router-link :to="folderLink">{{ $t('open') }} "{{ folder ? folder.name : $t('file_library') }}" {{ $t('folder') }}</router-link>
+					<router-link :to="folderLink">
+						{{ $t('open') }} "{{ folder ? folder.name : $t('file_library') }}" {{ $t('folder') }}
+					</router-link>
 				</dd>
 			</div>
 
@@ -116,14 +118,14 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
-import readableMimeType from '@/utils/readable-mime-type';
+import readableMimeType from '../../../utils/readable-mime-type';
 import bytes from 'bytes';
-import i18n from '@/lang';
+import i18n from '../../../lang';
 import marked from 'marked';
-import localizedFormat from '@/utils/localized-format';
-import api from '@/api';
-import getRootPath from '@/utils/get-root-path';
-import { userName } from '@/utils/user-name';
+import localizedFormat from '../../../utils/localized-format';
+import api, { addTokenToURL } from '../../../api';
+import getRootPath from '../../../utils/get-root-path';
+import { userName } from '../../../utils/user-name';
 
 export default defineComponent({
 	inheritAttrs: false,
@@ -150,6 +152,10 @@ export default defineComponent({
 		const { userCreated, userModified } = useUser();
 		const { folder, folderLink } = useFolder();
 
+		const fileLink = computed(() => {
+			return addTokenToURL(`${getRootPath()}assets/${props.file.id}`);
+		});
+
 		return {
 			readableMimeType,
 			size,
@@ -161,6 +167,7 @@ export default defineComponent({
 			marked,
 			folderLink,
 			getRootPath,
+			fileLink,
 		};
 
 		function useDates() {
