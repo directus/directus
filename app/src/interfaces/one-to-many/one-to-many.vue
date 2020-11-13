@@ -379,8 +379,8 @@ export default defineComponent({
 
 				const edits = (props.value || []).find((edit: any) => edit === item);
 
-				editsAtStart.value = edits || { [pkField]: item[pkField] || -1 };
-				currentlyEditing.value = hasPrimaryKey ? item[pkField] : -1;
+				editsAtStart.value = edits || { [pkField]: item[pkField] || {} };
+				currentlyEditing.value = hasPrimaryKey ? item[pkField] : '+';
 			}
 
 			function stageEdits(edits: any) {
