@@ -111,6 +111,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const transformation: Transformation = res.locals.transformation.key
 			? res.locals.shortcuts.find(
 					(transformation: Transformation) =>

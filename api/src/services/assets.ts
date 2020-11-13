@@ -23,12 +23,10 @@ export class AssetsService {
 			.from('directus_settings')
 			.first();
 
-		if (publicSettings) {
-			const systemPublicKeys = Object.values(publicSettings);
+		const systemPublicKeys = Object.values(publicSettings || {});
 
-			if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
-				await this.authorizationService.checkAccess('read', 'directus_files', id);
-			}
+		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
+			await this.authorizationService.checkAccess('read', 'directus_files', id);
 		}
 
 		const file = await database.select('*').from('directus_files').where({ id }).first();
