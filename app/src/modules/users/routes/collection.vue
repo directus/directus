@@ -20,11 +20,11 @@
 			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
+						:disabled="batchDeleteAllowed !== true"
 						rounded
 						icon
 						class="action-delete"
 						@click="on"
-						:disabled="batchDeleteAllowed !== true"
 						v-tooltip.bottom="batchDeleteAllowed ? $t('delete') : $t('not_allowed')"
 					>
 						<v-icon name="delete" outline />
@@ -49,10 +49,10 @@
 				rounded
 				icon
 				class="action-batch"
-				v-if="selection.length > 1"
-				:to="batchLink"
-				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 				:disabled="batchEditAllowed === false"
+				@click="batchEditActive = true"
+				v-if="selection.length > 1"
+				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
@@ -119,6 +119,13 @@
 			</template>
 		</component>
 
+		<drawer-batch
+			:primary-keys="selection"
+			:active.sync="batchEditActive"
+			collection="directus_users"
+			@refresh="refresh"
+		/>
+
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_users_collection'))" />
@@ -143,6 +150,7 @@ import SearchInput from '../../../views/private/components/search-input';
 import { useUserStore, usePermissionsStore } from '../../../stores';
 import marked from 'marked';
 import useNavigation from '../composables/use-navigation';
+import DrawerBatch from '../../../views/private/components/drawer-batch';
 
 type Item = {
 	[field: string]: any;
@@ -150,7 +158,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'users-collection',
-	components: { UsersNavigation, LayoutSidebarDetail, SearchInput, UsersInvite },
+	components: { UsersNavigation, LayoutSidebarDetail, SearchInput, UsersInvite, DrawerBatch },
 	props: {
 		queryFilters: {
 			type: Object as PropType<Record<string, string>>,
@@ -169,8 +177,10 @@ export default defineComponent({
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(
 			ref('directus_users')
 		);
-		const { addNewLink, batchLink } = useLinks();
-		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
+		const { addNewLink } = useLinks();
+
+		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
+
 		const { breadcrumb, title } = useBreadcrumb();
 
 		const _filters = computed(() => {
@@ -213,12 +223,8 @@ export default defineComponent({
 			canInviteUsers,
 			_filters,
 			addNewLink,
-			batchDelete,
-			batchLink,
 			breadcrumb,
 			title,
-			confirmDelete,
-			deleting,
 			filters,
 			layoutRef,
 			selection,
@@ -234,32 +240,46 @@ export default defineComponent({
 			batchDeleteAllowed,
 			createAllowed,
 			resetPreset,
+			confirmDelete,
+			deleting,
+			batchDelete,
+			deleteError,
+			batchEditActive,
 		};
 
 		async function refresh() {
 			await layoutRef.value?.refresh();
 		}
 
-		function useBatchDelete() {
+		function useBatch() {
 			const confirmDelete = ref(false);
 			const deleting = ref(false);
 
-			return { confirmDelete, deleting, batchDelete };
+			const batchEditActive = ref(false);
+
+			const error = ref<any>();
+
+			return { batchEditActive, confirmDelete, deleting, batchDelete, error };
 
 			async function batchDelete() {
 				deleting.value = true;
 
-				confirmDelete.value = false;
-
 				const batchPrimaryKeys = selection.value;
 
-				await api.delete(`/users/${batchPrimaryKeys}`);
+				try {
+					await api.delete('/users', {
+						data: batchPrimaryKeys,
+					});
 
-				await layoutRef.value?.refresh();
+					await layoutRef.value?.refresh?.();
 
-				selection.value = [];
-				deleting.value = false;
-				confirmDelete.value = false;
+					selection.value = [];
+					confirmDelete.value = false;
+				} catch (err) {
+					error.value = err;
+				} finally {
+					deleting.value = false;
+				}
 			}
 		}
 
@@ -268,12 +288,7 @@ export default defineComponent({
 				return `/users/+`;
 			});
 
-			const batchLink = computed<string>(() => {
-				const batchPrimaryKeys = selection.value;
-				return `/users/${batchPrimaryKeys}`;
-			});
-
-			return { addNewLink, batchLink };
+			return { addNewLink };
 		}
 
 		function useBreadcrumb() {

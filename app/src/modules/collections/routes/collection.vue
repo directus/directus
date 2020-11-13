@@ -249,21 +249,21 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, toRefs } from '@vue/composition-api';
 import CollectionsNavigation from '../components/navigation.vue';
-import api from '@/api';
-import { LayoutComponent } from '@/layouts/types';
+import api from '../../../api';
+import { LayoutComponent } from '../../../layouts/types';
 import CollectionsNotFound from './not-found.vue';
-import useCollection from '@/composables/use-collection';
-import usePreset from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
-import SearchInput from '@/views/private/components/search-input';
-import BookmarkAdd from '@/views/private/components/bookmark-add';
-import BookmarkEdit from '@/views/private/components/bookmark-edit';
-import router from '@/router';
+import useCollection from '../../../composables/use-collection';
+import usePreset from '../../../composables/use-preset';
+import LayoutSidebarDetail from '../../../views/private/components/layout-sidebar-detail';
+import ExportSidebarDetail from '../../../views/private/components/export-sidebar-detail';
+import SearchInput from '../../../views/private/components/search-input';
+import BookmarkAdd from '../../../views/private/components/bookmark-add';
+import BookmarkEdit from '../../../views/private/components/bookmark-edit';
+import router from '../../../router';
 import marked from 'marked';
-import { usePermissionsStore, useUserStore } from '@/stores';
-import DrawerBatch from '@/views/private/components/drawer-batch';
-import { unexpectedError } from '@/utils/unexpected-error';
+import { usePermissionsStore, useUserStore } from '../../../stores';
+import DrawerBatch from '../../../views/private/components/drawer-batch';
+import { unexpectedError } from '../../../utils/unexpected-error';
 
 type Item = {
 	[field: string]: any;
