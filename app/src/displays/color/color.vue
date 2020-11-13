@@ -38,7 +38,7 @@ export default defineComponent({
 			const pageColorRGB = Color(pageColorString);
 			const colorRGB = props.value === null ? Color(props.defaultColor) : Color(props.value);
 
-			if (colorRGB.contrast(pageColorRGB) < 3) style['border'] = '1px solid var(--border-normal-alt)';
+			if (colorRGB.contrast(pageColorRGB) < 1.5) style['border'] = '1px solid var(--border-normal-alt)';
 
 			return style;
 		});
