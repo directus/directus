@@ -86,8 +86,7 @@ export default async function runSeed(database: Knex) {
 				}
 
 				if (columnInfo.references) {
-					tableBuilder
-						.foreign(columnName)
+					column
 						.references(columnInfo.references.column)
 						.inTable(columnInfo.references.table);
 				}
