@@ -180,16 +180,16 @@
 				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="collectionInfo.meta && collectionInfo.meta.singleton === false && isNew === false"
+				v-if="isNew === false && _primaryKey"
 				:collection="collection"
-				:primary-key="primaryKey"
+				:primary-key="_primaryKey"
 				ref="revisionsDrawerDetail"
 				@revert="refresh"
 			/>
 			<comments-sidebar-detail
-				v-if="collectionInfo.meta && collectionInfo.meta.singleton === false && isNew === false"
+				v-if="isNew === false && _primaryKey"
 				:collection="collection"
-				:primary-key="primaryKey"
+				:primary-key="_primaryKey"
 			/>
 		</template>
 	</private-view>
@@ -254,7 +254,7 @@ export default defineComponent({
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
-		const { info: collectionInfo, defaults, primaryKeyField } = useCollection(collection);
+		const { info: collectionInfo, defaults, primaryKeyField, isSingleton } = useCollection(collection);
 
 		const {
 			isNew,
@@ -338,6 +338,14 @@ export default defineComponent({
 			isNew
 		);
 
+		const _primaryKey = computed(() => {
+			if (isNew.value) return '+';
+
+			if (isSingleton.value) return item.value?.[primaryKeyField.value?.field];
+
+			return props.primaryKey;
+		});
+
 		return {
 			item,
 			loading,
@@ -377,6 +385,8 @@ export default defineComponent({
 			validationErrors,
 			form,
 			fields,
+			isSingleton,
+			_primaryKey,
 		};
 
 		function useBreadcrumb() {
