@@ -112,8 +112,9 @@
 						<v-skeleton-loader type="text" />
 					</template>
 					<template v-else-if="isNew === false">
-						<div class="name type-title">{{ userName(item) }}</div>
+						<div class="name type-title">{{ userName(item) }}<span v-if="item.title" class="title">, {{ item.title }}</span></div>
 						<div class="email">{{ item.email }}</div>
+						<div class="location" v-if="item.location">{{ item.location }}</div>
 						<v-chip :class="item.status" small v-if="roleName">{{ roleName }}</v-chip>
 					</template>
 				</div>
@@ -582,7 +583,9 @@ export default defineComponent({
 				--v-chip-background-color-hover: var(--primary-25);
 			}
 		}
-		.email {
+		.title,
+		.email,
+		.location {
 			color: var(--foreground-subdued);
 		}
 	}
