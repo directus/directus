@@ -67,14 +67,14 @@
 			<div>
 				<dt>{{ $t('file') }}</dt>
 				<dd>
-					<a :href="`${getRootPath()}assets/${file.id}`" target="_blank">{{ $t('open') }}</a>
+					<a :href="`${getRootPath()}assets/${file.id}`" target="_blank">{{ $t('open_in_new_window') }}</a>
 				</dd>
 			</div>
 
 			<div>
 				<dt>{{ $t('folder') }}</dt>
 				<dd>
-					<router-link :to="folderLink">{{ folder ? folder.name : $t('file_library') }}</router-link>
+					<router-link :to="folderLink">{{ $t('open') }} "{{ folder ? folder.name : $t('file_library') }}" {{ $t('folder') }}</router-link>
 				</dd>
 			</div>
 

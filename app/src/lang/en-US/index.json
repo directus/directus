@@ -451,6 +451,8 @@
 	"zoom": "Zoom",
 	"download": "Download",
 	"open": "Open",
+	"got_to": "Go to",
+	"open_in_new_window": "Open in New Window",
 
 	"foreground_color": "Foreground Color",
 	"background_color": "Background Color",
