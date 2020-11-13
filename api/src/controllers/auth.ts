@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import session, { InitializedSession } from 'express-session';
+import session from 'express-session';
 import asyncHandler from 'express-async-handler';
 import Joi from 'joi';
 import grant from 'grant';
@@ -240,7 +240,7 @@ router.get(
 		}
 
 		if (req.query?.redirect && req.session) {
-			(req.session as InitializedSession).redirect = req.query.redirect as string;
+			req.session.redirect = req.query.redirect as string;
 		}
 
 		next();
@@ -253,7 +253,7 @@ router.use(grant.express()(grantConfig));
 router.get(
 	'/oauth/:provider/callback',
 	asyncHandler(async (req, res, next) => {
-		const redirect = (req.session as InitializedSession)?.redirect;
+		const redirect = req.session.redirect;
 
 		const accountability = {
 			ip: req.ip,
@@ -266,10 +266,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const email = getEmailFromProfile(
-			req.params.provider,
-			(req.session as InitializedSession).grant.response?.profile
-		);
+		const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
 
 		req.session?.destroy(() => {});
 
