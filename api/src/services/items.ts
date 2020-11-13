@@ -291,7 +291,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					event: `${this.eventScope}.update.before`,
 					accountability: this.accountability,
 					collection: this.collection,
-					item: null,
+					item: key,
 					action: 'update',
 					payload,
 					schema: this.schema,
