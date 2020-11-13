@@ -9,4 +9,4 @@ lerna-debug.log
 *.code-workspace
 dist
 *.sublime-settings
-
+*.db
