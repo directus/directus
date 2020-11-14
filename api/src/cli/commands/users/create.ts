@@ -1,5 +1,5 @@
 export default async function usersCreate({ email, password, role }: any) {
-	const { default: database, schemaInspector } = require('../../../database/index').default;
+	const { default: database, schemaInspector } = require('../../../database/index');
 	const { UsersService } = require('../../../services/users');
 
 	if (!email || !password || !role) {
