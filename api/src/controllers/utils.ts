@@ -24,7 +24,7 @@ router.get(
 );
 
 router.post(
-	'/hash',
+	'/hash/generate',
 	asyncHandler(async (req, res) => {
 		if (!req.body?.string) {
 			throw new InvalidPayloadException(`"string" is required`);
