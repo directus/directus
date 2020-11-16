@@ -5,7 +5,8 @@ import i18n from '@/lang/';
 import { notEmpty } from '@/utils/is-empty/';
 import VueI18n from 'vue-i18n';
 import formatTitle from '@directus/format-title';
-import notify from '@/utils/notify';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export const useCollectionsStore = createStore({
 	id: 'collectionsStore',
@@ -63,13 +64,8 @@ export const useCollectionsStore = createStore({
 					type: 'success',
 					title: i18n.t('update_collection_success'),
 				});
-			} catch (error) {
-				notify({
-					type: 'error',
-					title: i18n.t('update_collection_failed'),
-					text: collection,
-				});
-				throw error;
+			} catch (err) {
+				unexpectedError(err);
 			}
 		},
 		async deleteCollection(collection: string) {
@@ -80,13 +76,8 @@ export const useCollectionsStore = createStore({
 					type: 'success',
 					title: i18n.t('delete_collection_success'),
 				});
-			} catch (error) {
-				notify({
-					type: 'error',
-					title: i18n.t('delete_collection_failed'),
-					text: collection,
-				});
-				throw error;
+			} catch (err) {
+				unexpectedError(err);
 			}
 		},
 		getCollection(collectionKey: string): Collection | null {

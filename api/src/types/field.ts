@@ -1,4 +1,4 @@
-import { Column } from 'knex-schema-inspector/lib/types/column';
+import { Column } from '@directus/schema/dist/types/column';
 
 export const types = [
 	'bigInteger',

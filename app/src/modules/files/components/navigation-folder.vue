@@ -112,10 +112,10 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, watch, computed } from '@vue/composition-api';
 import useFolders, { Folder } from '../composables/use-folders';
-import notify from '@/utils/notify';
 import api from '@/api';
 import FolderPicker from './folder-picker.vue';
 import router from '@/router';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	name: 'navigation-folder',
@@ -169,8 +169,8 @@ export default defineComponent({
 					await api.patch(`/folders/${props.folder.id}`, {
 						name: renameValue.value,
 					});
-				} catch (error) {
-					console.error(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					renameSaving.value = false;
 					await fetchFolders();
@@ -193,8 +193,8 @@ export default defineComponent({
 					await api.patch(`/folders/${props.folder.id}`, {
 						parent: moveValue.value,
 					});
-				} catch (error) {
-					console.error(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					moveSaving.value = false;
 					await fetchFolders();
@@ -255,8 +255,8 @@ export default defineComponent({
 					}
 
 					deleteActive.value = false;
-				} catch (error) {
-					console.error(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					await fetchFolders();
 					deleteSaving.value = false;

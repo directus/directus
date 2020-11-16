@@ -1,10 +1,11 @@
 import api from '@/api';
 import { Ref, ref, watch, computed } from '@vue/composition-api';
-import notify from '@/utils/notify';
 import i18n from '@/lang';
 import useCollection from '@/composables/use-collection';
 import { AxiosResponse } from 'axios';
 import { APIError } from '@/types';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
@@ -108,30 +109,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			edits.value = {};
 			return response.data.data;
 		} catch (err) {
-			if (isNew.value) {
-				notify({
-					title: i18n.tc('item_create_failed', isBatch.value ? 2 : 1),
-					type: 'error',
-				});
-			} else {
-				notify({
-					title: i18n.tc('item_update_failed', isBatch.value ? 2 : 1),
-					text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-						collection: collection.value,
-						primaryKey: isBatch.value
-							? (primaryKey.value as string).split(',').join(', ')
-							: primaryKey.value,
-					}),
-					type: 'error',
-				});
-			}
-
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => err.extensions.code === 'FAILED_VALIDATION')
+					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
 					.map((err: APIError) => {
 						return err.extensions;
 					});
+			} else {
+				unexpectedError(err);
 			}
 
 			throw err;
@@ -158,28 +143,23 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			const response = await api.post(endpoint.value, newItem);
 
 			notify({
-				title: i18n.t('item_create_success'),
+				title: i18n.tc('item_create_success', 1),
 				type: 'success',
 			});
 
+			// Reset edits to the current item
+			edits.value = {};
+
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
 		} catch (err) {
-			notify({
-				title: i18n.t('item_create_failed'),
-				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-					collection: collection.value,
-					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
-				}),
-				type: 'error',
-			});
-
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => err.extensions.code === 'FAILED_VALIDATION')
+					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
 					.map((err: APIError) => {
 						return err.extensions;
 					});
 			} else {
+				unexpectedError(err);
 				throw err;
 			}
 		} finally {
@@ -222,15 +202,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				type: 'success',
 			});
 		} catch (err) {
-			notify({
-				title: i18n.tc('item_delete_failed', isBatch.value ? 2 : 1),
-				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-					collection: collection.value,
-					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
-				}),
-				type: 'error',
-			});
-
+			unexpectedError(err);
 			throw err;
 		} finally {
 			archiving.value = false;
@@ -250,15 +222,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 				type: 'success',
 			});
 		} catch (err) {
-			notify({
-				title: i18n.tc('item_delete_failed', isBatch.value ? 2 : 1),
-				text: i18n.tc('item_in', isBatch.value ? 2 : 1, {
-					collection: collection.value,
-					primaryKey: isBatch.value ? (primaryKey.value as string).split(',').join(', ') : primaryKey.value,
-				}),
-				type: 'error',
-			});
-
+			unexpectedError(err);
 			throw err;
 		} finally {
 			deleting.value = false;

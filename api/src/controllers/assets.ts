@@ -47,7 +47,7 @@ router.get(
 
 	// Validate query params
 	asyncHandler(async (req, res, next) => {
-		const payloadService = new PayloadService('directus_settings');
+		const payloadService = new PayloadService('directus_settings', { schema: req.schema });
 		const defaults = { storage_asset_presets: [], storage_asset_transform: 'all' };
 
 		let savedAssetSettings = await database
@@ -78,18 +78,20 @@ router.get(
 		];
 
 		// For use in the next request handler
-		res.locals.shortcuts = [...SYSTEM_ASSET_ALLOW_LIST, assetSettings.storage_asset_presets];
+		res.locals.shortcuts = [
+			...SYSTEM_ASSET_ALLOW_LIST,
+			...(assetSettings.storage_asset_presets || []),
+		];
 		res.locals.transformation = transformation;
 
 		if (Object.keys(transformation).length === 0) {
 			return next();
 		}
-
-		if (assetSettings.asset_generation === 'all') {
+		if (assetSettings.storage_asset_transform === 'all') {
 			if (transformation.key && allKeys.includes(transformation.key as string) === false)
 				throw new InvalidQueryException(`Key "${transformation.key}" isn't configured.`);
 			return next();
-		} else if (assetSettings.asset_generation === 'shortcut') {
+		} else if (assetSettings.storage_asset_transform === 'shortcut') {
 			if (allKeys.includes(transformation.key as string)) return next();
 			throw new InvalidQueryException(
 				`Only configured shortcuts can be used in asset generation.`
@@ -105,7 +107,11 @@ router.get(
 
 	// Return file
 	asyncHandler(async (req, res) => {
-		const service = new AssetsService({ accountability: req.accountability });
+		const service = new AssetsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
 		const transformation: Transformation = res.locals.transformation.key
 			? res.locals.shortcuts.find(
 					(transformation: Transformation) =>

@@ -7,4 +7,6 @@ export type Relation = {
 	one_field: null | string;
 	one_primary: string;
 	junction_field: null | string;
+	one_collection_field: null | string;
+	one_allowed_collections: null | string[];
 };

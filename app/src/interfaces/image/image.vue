@@ -56,9 +56,10 @@ import formatFilesize from '@/utils/format-filesize';
 import i18n from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import ImageEditor from '@/views/private/components/image-editor';
-
 import { nanoid } from 'nanoid';
 import getRootPath from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { addTokenToURL } from '@/api';
 
 type Image = {
 	id: string; // uuid
@@ -84,7 +85,6 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
-		const error = ref(null);
 		const lightboxActive = ref(false);
 		const editorActive = ref(false);
 
@@ -94,13 +94,14 @@ export default defineComponent({
 			if (!image.value) return null;
 
 			if (image.value.type.includes('svg')) {
-				return getRootPath() + `assets/${image.value.id}`;
+				return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
 			}
 
 			if (image.value.type.includes('image')) {
-				return (
-					getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`
-				);
+				const url =
+					getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`;
+
+				return addTokenToURL(url);
 			}
 
 			return null;
@@ -136,7 +137,6 @@ export default defineComponent({
 		return {
 			loading,
 			image,
-			error,
 			src,
 			meta,
 			lightboxActive,
@@ -159,7 +159,7 @@ export default defineComponent({
 
 				image.value = response.data.data;
 			} catch (err) {
-				error.value = err;
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}
@@ -179,7 +179,6 @@ export default defineComponent({
 
 			loading.value = false;
 			image.value = null;
-			error.value = null;
 			lightboxActive.value = false;
 			editorActive.value = false;
 		}

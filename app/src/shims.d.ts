@@ -23,21 +23,6 @@ declare module 'jsonlint-mod' {
 	export default x;
 }
 
-declare module 'jshint' {
-	const x: any;
-	export default x;
-}
-
-declare module 'csslint' {
-	const x: any;
-	export default x;
-}
-
-declare module 'js-yaml' {
-	const x: any;
-	export default x;
-}
-
 type Primitive = string | number | boolean | bigint | symbol | undefined | null;
 type Builtin = Primitive | Function | Date | Error | RegExp;
 type IsTuple<T> = T extends [infer A]

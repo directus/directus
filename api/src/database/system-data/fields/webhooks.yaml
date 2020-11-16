@@ -1,0 +1,88 @@
+table: directus_webhooks
+
+fields:
+  - field: id
+    hidden: true
+
+  - field: name
+    interface: text-input
+    options:
+      iconRight: title
+    width: full
+
+  - field: method
+    interface: dropdown
+    display: labels
+    display_options:
+      defaultBackground: "#ECEFF1"
+      choices: null
+      format: false
+    options:
+      choices:
+        - GET
+        - POST
+    width: half
+
+  - field: url
+    interface: text-input
+    options:
+      iconRight: link
+    width: half
+
+  - field: status
+    interface: dropdown
+    display: labels
+    display_options:
+      defaultColor: "#B0BEC5"
+      defaultBackground: "#ECEFF1"
+      showAsDot: true
+      choices:
+      - text: Active
+        value: active
+        foreground: "#607D8B"
+        background: "#2F80ED"
+      - text: Inactive
+        value: inactive
+        foreground: "#607D8B"
+        background: "#ECEFF1"
+    options:
+      choices:
+        - text: Active
+          value: active
+        - text: Inactive
+          value: inactive
+    width: half
+
+  - field: data
+    interface: toggle
+    options:
+      label: Send Event Data
+    special: boolean
+    width: half
+
+  - field: triggers_divider
+    interface: divider
+    options:
+      icon: api
+      title: Triggers
+      color: '#2F80ED'
+    special: alias
+    width: full
+
+  - field: actions
+    interface: checkboxes
+    options:
+      choices:
+        - text: Create
+          value: create
+        - text: Update
+          value: update
+        - text: Delete
+          value: delete
+    special: csv
+    width: full
+
+  - field: collections
+    interface: collections
+    special: csv
+    width: full

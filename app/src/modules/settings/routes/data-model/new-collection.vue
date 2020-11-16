@@ -5,32 +5,19 @@
 		class="new-collection"
 		persistent
 		@cancel="$router.push('/settings/data-model')"
+		:sidebar-label="$t(currentTab)"
 	>
-		<v-dialog :active="saveError !== null" @toggle="saveError = null" @esc="saveError = null">
-			<v-card class="selectable">
-				<v-card-title>
-					{{ saveError && saveError.message }}
-				</v-card-title>
-
-				<v-card-text>
-					{{ saveError && saveError.response && saveError.response.data.errors[0].message }}
-				</v-card-text>
-
-				<v-card-actions>
-					<v-button @click="saveError = null">{{ $t('dismiss') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
 		<template #sidebar>
 			<v-tabs vertical v-model="currentTab">
-				<v-tab value="collection">{{ $t('collection_setup') }}</v-tab>
-				<v-tab value="system" :disabled="!collectionName">{{ $t('optional_system_fields') }}</v-tab>
+				<v-tab value="collection_setup">{{ $t('collection_setup') }}</v-tab>
+				<v-tab value="optional_system_fields" :disabled="!collectionName">
+					{{ $t('optional_system_fields') }}
+				</v-tab>
 			</v-tabs>
 		</template>
 
 		<v-tabs-items class="content" v-model="currentTab">
-			<v-tab-item value="collection">
+			<v-tab-item value="collection_setup">
 				<v-notice type="info">{{ $t('creating_collection_info') }}</v-notice>
 
 				<div class="grid">
@@ -83,7 +70,7 @@
 					</div>
 				</div>
 			</v-tab-item>
-			<v-tab-item value="system">
+			<v-tab-item value="optional_system_fields">
 				<v-notice type="info">{{ $t('creating_collection_system') }}</v-notice>
 
 				<div class="grid system">
@@ -111,8 +98,8 @@
 		<template #actions>
 			<v-button
 				:disabled="!collectionName || collectionName.length === 0"
-				v-if="currentTab[0] === 'collection'"
-				@click="currentTab = ['system']"
+				v-if="currentTab[0] === 'collection_setup'"
+				@click="currentTab = ['optional_system_fields']"
 				v-tooltip.bottom="$t('next')"
 				icon
 				rounded
@@ -120,7 +107,7 @@
 				<v-icon name="arrow_forward" />
 			</v-button>
 			<v-button
-				v-if="currentTab[0] === 'system'"
+				v-if="currentTab[0] === 'optional_system_fields'"
 				@click="save"
 				:loading="saving"
 				v-tooltip.bottom="$t('finish_setup')"
@@ -136,17 +123,20 @@
 <script lang="ts">
 import { defineComponent, ref, reactive } from '@vue/composition-api';
 import api from '@/api';
-import { Field } from '@/types';
-import { useFieldsStore, useCollectionsStore } from '@/stores/';
-import notify from '@/utils/notify';
+import { Field, Relation } from '@/types';
+import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
+import { notify } from '@/utils/notify';
 import router from '@/router';
+import i18n from '@/lang';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
+		const relationsStore = useRelationsStore();
 
-		const currentTab = ref(['collection']);
+		const currentTab = ref(['collection_setup']);
 
 		const collectionName = ref(null);
 		const singleton = ref(false);
@@ -199,7 +189,6 @@ export default defineComponent({
 		});
 
 		const saving = ref(false);
-		const saveError = ref(null);
 
 		return {
 			currentTab,
@@ -208,7 +197,6 @@ export default defineComponent({
 			primaryKeyFieldName,
 			primaryKeyFieldType,
 			collectionName,
-			saveError,
 			saving,
 			singleton,
 		};
@@ -229,18 +217,24 @@ export default defineComponent({
 					},
 				});
 
+				const relations = getSystemRelations();
+
+				if (relations.length > 0) {
+					await api.post('/relations', relations);
+					await relationsStore.hydrate();
+				}
+
 				await collectionsStore.hydrate();
 				await fieldsStore.hydrate();
 
 				notify({
-					title: 'Collection Created',
+					title: i18n.t('collection_created'),
 					type: 'success',
 				});
 
 				router.push(`/settings/data-model/${collectionName.value}`);
-			} catch (error) {
-				console.log(error);
-				saveError.value = error;
+			} catch (err) {
+				unexpectedError(err);
 			} finally {
 				saving.value = false;
 			}
@@ -321,19 +315,20 @@ export default defineComponent({
 							],
 						},
 						interface: 'dropdown',
-						display: 'color-dot',
+						display: 'labels',
 						display_options: {
+							showAsDot: true,
 							choices: [
 								{
-									color: '#2F80ED',
+									background: '#2F80ED',
 									value: 'published',
 								},
 								{
-									color: '#ECEFF1',
+									background: '#ECEFF1',
 									value: 'draft',
 								},
 								{
-									color: '#F2994A',
+									background: '#F2994A',
 									value: 'archived',
 								},
 							],
@@ -375,6 +370,7 @@ export default defineComponent({
 						options: {
 							display: 'both',
 						},
+						display: 'user',
 						readonly: true,
 						hidden: true,
 						width: 'half',
@@ -408,6 +404,7 @@ export default defineComponent({
 						options: {
 							display: 'both',
 						},
+						display: 'user',
 						readonly: true,
 						hidden: true,
 						width: 'half',
@@ -432,6 +429,32 @@ export default defineComponent({
 			}
 
 			return fields;
+		}
+
+		function getSystemRelations() {
+			const relations: Partial<Relation>[] = [];
+
+			if (systemFields.userCreated.enabled === true) {
+				relations.push({
+					many_collection: collectionName.value!,
+					many_field: systemFields.userCreated.name,
+					many_primary: primaryKeyFieldName.value,
+					one_collection: 'directus_users',
+					one_primary: 'id',
+				});
+			}
+
+			if (systemFields.userUpdated.enabled === true) {
+				relations.push({
+					many_collection: collectionName.value!,
+					many_field: systemFields.userUpdated.name,
+					many_primary: primaryKeyFieldName.value,
+					one_collection: 'directus_users',
+					one_primary: 'id',
+				});
+			}
+
+			return relations;
 		}
 	},
 });

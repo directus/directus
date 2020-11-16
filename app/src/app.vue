@@ -82,6 +82,9 @@ export default defineComponent({
 
 				if (newUser !== undefined && newUser !== null && newUser.theme) {
 					document.body.classList.add(newUser.theme);
+					document
+						.querySelector('head meta[name="theme-color"]')
+						?.setAttribute('content', newUser.theme === 'light' ? '#ffffff' : '#263238');
 				} else {
 					// Default to light mode
 					document.body.classList.add('light');

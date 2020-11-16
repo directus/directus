@@ -72,10 +72,10 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 
 	if (loadedLanguages.includes(lang) === false) {
 		const translations = await Promise.all([
-			import(`@/lang/${lang}/index.json`),
-			import(`@/lang/${lang}/interfaces.json`),
-			import(`@/lang/${lang}/displays.json`),
-			import(`@/lang/${lang}/layouts.json`),
+			import(`@/lang/${lang}/index.json`).catch((err) => console.warn(err)),
+			import(`@/lang/${lang}/interfaces.json`).catch((err) => console.warn(err)),
+			import(`@/lang/${lang}/displays.json`).catch((err) => console.warn(err)),
+			import(`@/lang/${lang}/layouts.json`).catch((err) => console.warn(err)),
 		]);
 
 		translations.forEach((msgs) => i18n.mergeLocaleMessage(lang, msgs));

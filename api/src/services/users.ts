@@ -9,7 +9,7 @@ import {
 	ForbiddenException,
 	UnprocessableEntityException,
 } from '../exceptions';
-import { Accountability, PrimaryKey, Item, AbstractServiceOptions } from '../types';
+import { Accountability, PrimaryKey, Item, AbstractServiceOptions, SchemaOverview } from '../types';
 import Knex from 'knex';
 import env from '../env';
 import cache from '../cache';
@@ -18,14 +18,16 @@ import { toArray } from '../utils/to-array';
 export class UsersService extends ItemsService {
 	knex: Knex;
 	accountability: Accountability | null;
+	schema: SchemaOverview;
 	service: ItemsService;
 
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		super('directus_users', options);
 
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
 		this.service = new ItemsService('directus_users', options);
+		this.schema = options.schema;
 	}
 
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
@@ -71,22 +73,27 @@ export class UsersService extends ItemsService {
 
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
 
-		if (otherAdminUsersCount === 0)
+		if (otherAdminUsersCount === 0) {
 			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
+		}
 
 		await super.delete(keys as any);
 
 		return key;
 	}
 
-	async inviteUser(email: string, role: string) {
-		await this.service.create({ email, role, status: 'invited' });
+	async inviteUser(email: string | string[], role: string) {
+		const emails = toArray(email);
 
-		const payload = { email, scope: 'invite' };
-		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
-		const acceptURL = env.PUBLIC_URL + '/admin/accept-invite?token=' + token;
+		for (const email of emails) {
+			await this.service.create({ email, role, status: 'invited' });
 
-		await sendInviteMail(email, acceptURL);
+			const payload = { email, scope: 'invite' };
+			const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
+			const acceptURL = env.PUBLIC_URL + '/admin/accept-invite?token=' + token;
+
+			await sendInviteMail(email, acceptURL);
+		}
 	}
 
 	async acceptInvite(token: string, password: string) {
@@ -123,7 +130,7 @@ export class UsersService extends ItemsService {
 		if (!user) throw new ForbiddenException();
 
 		const payload = { email, scope: 'password-reset' };
-		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
+		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
 		const acceptURL = env.PUBLIC_URL + '/admin/reset-password?token=' + token;
 
 		await sendPasswordResetMail(email, acceptURL);
@@ -169,7 +176,11 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException('TFA Secret is already set for this user');
 		}
 
-		const authService = new AuthenticationService();
+		const authService = new AuthenticationService({
+			knex: this.knex,
+			schema: this.schema,
+			accountability: this.accountability,
+		});
 		const secret = authService.generateTFASecret();
 
 		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });

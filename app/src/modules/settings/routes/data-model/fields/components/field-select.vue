@@ -1,6 +1,18 @@
 <template>
 	<div :class="(field.meta && field.meta.width) || 'full'">
-		<div v-if="localType === 'translations'" class="group">
+		<v-input disabled v-if="disabled" class="field">
+			<template #prepend>
+				<v-icon name="lock" v-tooltip="$t('system_fields_locked')" />
+			</template>
+
+			<template #input>
+				<div class="label">
+					<span class="name">{{ field.field }}</span>
+				</div>
+			</template>
+		</v-input>
+
+		<div v-else-if="localType === 'translations'" class="group">
 			<div class="header">
 				<v-icon class="drag-handle" name="drag_indicator" />
 				<span class="name" v-tooltip="field.name">{{ field.field }}</span>
@@ -205,16 +217,21 @@ import { Field, Relation } from '@/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';
 import router from '@/router';
-import notify from '@/utils/notify';
 import { i18n } from '@/lang';
 import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
 		field: {
 			type: Object as PropType<Field>,
 			required: true,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -352,8 +369,8 @@ export default defineComponent({
 					});
 
 					duplicateActive.value = false;
-				} catch (error) {
-					console.log(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					duplicating.value = false;
 				}

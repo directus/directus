@@ -46,5 +46,9 @@ export function useCollection(collectionKey: string | Ref<string>) {
 		return info.value?.meta?.sort_field || null;
 	});
 
-	return { info, fields, defaults, primaryKeyField, userCreatedField, sortField };
+	const isSingleton = computed(() => {
+		return info.value?.meta?.singleton === true;
+	});
+
+	return { info, fields, defaults, primaryKeyField, userCreatedField, sortField, isSingleton };
 }

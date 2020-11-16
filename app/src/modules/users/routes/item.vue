@@ -112,9 +112,10 @@
 						<v-skeleton-loader type="text" />
 					</template>
 					<template v-else-if="isNew === false">
-						<div class="name type-title">{{ userName(item) }}</div>
+						<div class="name type-title">{{ userName(item) }}<span v-if="item.title" class="title">, {{ item.title }}</span></div>
 						<div class="email">{{ item.email }}</div>
-						<v-chip :class="item.status" small>{{ roleName }}</v-chip>
+						<div class="location" v-if="item.location">{{ item.location }}</div>
+						<v-chip :class="item.status" small v-if="roleName">{{ roleName }}</v-chip>
 					</template>
 				</div>
 			</div>
@@ -164,22 +165,24 @@
 import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 
 import UsersNavigation from '../components/navigation.vue';
-import { i18n } from '@/lang';
-import router from '@/router';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
-import useItem from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options';
-import api from '@/api';
-import { useFieldsStore, useUserStore } from '@/stores/';
-import useFormFields from '@/composables/use-form-fields';
-import { Field } from '@/types';
+import { i18n, setLanguage } from '../../../lang';
+import router from '../../../router';
+import RevisionsDrawerDetail from '../../../views/private/components/revisions-drawer-detail';
+import CommentsSidebarDetail from '../../../views/private/components/comments-sidebar-detail';
+import useItem from '../../../composables/use-item';
+import SaveOptions from '../../../views/private/components/save-options';
+import api from '../../../api';
+import { useFieldsStore, useCollectionsStore, useUserStore } from '../../../stores/';
+import useFormFields from '../../../composables/use-form-fields';
+import { Field } from '../../../types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
-import { getRootPath } from '@/utils/get-root-path';
-import useShortcut from '@/composables/use-shortcut';
-import { isAllowed } from '@/utils/is-allowed';
-import useCollection from '@/composables/use-collection';
-import { userName } from '@/utils/user-name';
+import { getRootPath } from '../../../utils/get-root-path';
+import useShortcut from '../../../composables/use-shortcut';
+import useCollection from '../../../composables/use-collection';
+import { userName } from '../../../utils/user-name';
+import { usePermissions } from '../../../composables/use-permissions';
+import { unexpectedError } from '../../../utils/unexpected-error';
+import { addTokenToURL } from '../../../api';
 
 type Values = {
 	[field: string]: any;
@@ -213,6 +216,7 @@ export default defineComponent({
 	setup(props) {
 		const form = ref<HTMLElement>();
 		const fieldsStore = useFieldsStore();
+		const collectionsStore = useCollectionsStore();
 		const userStore = useUserStore();
 
 		const { primaryKey } = toRefs(props);
@@ -287,7 +291,11 @@ export default defineComponent({
 
 		const { formFields } = useFormFields(fieldsFiltered);
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed } = usePermissions();
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed } = usePermissions(
+			ref('directus_users'),
+			item,
+			isNew
+		);
 
 		const archiveTooltip = computed(() => {
 			if (archiveAllowed.value === false) return i18n.t('not_allowed');
@@ -302,7 +310,6 @@ export default defineComponent({
 			title,
 			item,
 			loading,
-			error,
 			isNew,
 			breadcrumb,
 			edits,
@@ -350,37 +357,71 @@ export default defineComponent({
 		}
 
 		async function saveAndQuit() {
-			await save();
-			await refreshCurrentUser();
-			router.push(`/users`);
+			try {
+				const savedItem: Record<string, any> = await save();
+				await setLang(savedItem);
+				await refreshCurrentUser();
+				router.push(`/users`);
+			} catch {
+				// `save` will show unexpected error dialog
+			}
 		}
 
 		async function saveAndStay() {
-			const savedItem: Record<string, any> = await save();
+			try {
+				const savedItem: Record<string, any> = await save();
+				await setLang(savedItem);
 
-			revisionsDrawerDetail.value?.$data?.refresh?.();
+				revisionsDrawerDetail.value?.$data?.refresh?.();
 
-			if (props.primaryKey === '+') {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				const newPrimaryKey = savedItem.id;
-				router.replace(`/collections/users/${newPrimaryKey}`);
+				if (props.primaryKey === '+') {
+					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+					const newPrimaryKey = savedItem.id;
+					router.replace(`/collections/users/${newPrimaryKey}`);
+				}
+			} catch {
+				// `save` will show unexpected error dialog
 			}
 		}
 
 		async function saveAndAddNew() {
-			await save();
-			await refreshCurrentUser();
-			router.push(`/users/+`);
+			try {
+				const savedItem: Record<string, any> = await save();
+				await setLang(savedItem);
+				await refreshCurrentUser();
+				router.push(`/users/+`);
+			} catch {
+				// `save` will show unexpected error dialog
+			}
 		}
 
 		async function saveAsCopyAndNavigate() {
-			const newPrimaryKey = await saveAsCopy();
-			router.push(`/users/${newPrimaryKey}`);
+			try {
+				const newPrimaryKey = await saveAsCopy();
+				router.push(`/users/${newPrimaryKey}`);
+			} catch {
+				// `save` will show unexpected error dialog
+			}
 		}
 
 		async function deleteAndQuit() {
-			await remove();
-			router.push(`/users`);
+			try {
+				await remove();
+				router.push(`/users`);
+			} catch {
+				// `remove` will show the unexpected error dialog
+			}
+		}
+
+		async function setLang(user: Record<string, any>) {
+			const newLang = user?.language;
+
+			if (newLang && newLang !== i18n.locale) {
+				await setLanguage(newLang);
+
+				await fieldsStore.hydrate();
+				await collectionsStore.hydrate();
+			}
 		}
 
 		async function refreshCurrentUser() {
@@ -391,13 +432,12 @@ export default defineComponent({
 
 		function useUserPreview() {
 			const loading = ref(false);
-			const error = ref(null);
 			const avatarSrc = ref<string | null>(null);
 			const roleName = ref<string | null>(null);
 
 			watch(() => props.primaryKey, getUserPreviewData, { immediate: true });
 
-			return { loading, error, avatarSrc, roleName };
+			return { loading, avatarSrc, roleName };
 
 			async function getUserPreviewData() {
 				if (props.primaryKey === '+') return;
@@ -412,11 +452,14 @@ export default defineComponent({
 					});
 
 					avatarSrc.value = response.data.data.avatar?.id
-						? getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover`
+						? addTokenToURL(
+								getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover`
+						  )
 						: null;
-					roleName.value = response.data.data.role.name;
+
+					roleName.value = response.data.data?.role?.name;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -427,28 +470,6 @@ export default defineComponent({
 			if (!leaveTo.value) return;
 			edits.value = {};
 			router.push(leaveTo.value);
-		}
-
-		function usePermissions() {
-			const deleteAllowed = computed(() => isAllowed('directus_users', 'delete', item.value));
-			const saveAllowed = computed(() => {
-				if (isNew.value) {
-					return true;
-				}
-
-				return isAllowed('directus_users', 'update', item.value);
-			});
-			const updateAllowed = computed(() => isAllowed('directus_users', 'update', item.value));
-
-			const archiveAllowed = computed(() => {
-				if (!collectionInfo.value?.meta?.archive_field) return false;
-
-				return isAllowed('directus_users', 'update', {
-					[collectionInfo.value.meta.archive_field]: collectionInfo.value.meta.archive_value,
-				});
-			});
-
-			return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed };
 		}
 
 		async function toggleArchive() {
@@ -465,7 +486,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
+@import '../../../styles/mixins/breakpoint';
 
 .action-delete {
 	--v-button-background-color: var(--danger-25);
@@ -562,7 +583,9 @@ export default defineComponent({
 				--v-chip-background-color-hover: var(--primary-25);
 			}
 		}
-		.email {
+		.title,
+		.email,
+		.location {
 			color: var(--foreground-subdued);
 		}
 	}

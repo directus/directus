@@ -66,8 +66,7 @@ export default function usePermissions(role: Ref<number>) {
 
 			await fetchPermissions();
 		} catch (err) {
-			console.error(err);
-			throw err;
+			error.value = err;
 		}
 	}
 
@@ -83,8 +82,7 @@ export default function usePermissions(role: Ref<number>) {
 
 			await fetchPermissions();
 		} catch (err) {
-			console.error(err);
-			throw err;
+			error.value = err;
 		}
 	}
 }

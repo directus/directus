@@ -6,7 +6,7 @@ import { AbstractServiceOptions } from '../types';
  */
 
 export class ActivityService extends ItemsService {
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		super('directus_activity', options);
 	}
 }

@@ -1,20 +1,29 @@
 import database, { schemaInspector } from '../database';
-import { AbstractServiceOptions, Accountability, Collection, Relation } from '../types';
+import {
+	AbstractServiceOptions,
+	Accountability,
+	Collection,
+	CollectionMeta,
+	Relation,
+	SchemaOverview,
+} from '../types';
 import Knex from 'knex';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import SchemaInspector from 'knex-schema-inspector';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
 import cache from '../cache';
 import { toArray } from '../utils/to-array';
+import { systemCollectionRows } from '../database/system-data/collections';
 
 export class CollectionsService {
 	knex: Knex;
 	accountability: Accountability | null;
+	schema: SchemaOverview;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
+		this.schema = options.schema;
 	}
 
 	create(data: Partial<Collection>[]): Promise<string[]>;
@@ -45,15 +54,18 @@ export class CollectionsService {
 		const createdCollections: string[] = [];
 
 		await this.knex.transaction(async (trx) => {
-			const schemaInspector = SchemaInspector(trx);
-			const fieldsService = new FieldsService({ knex: trx });
+			const fieldsService = new FieldsService({ knex: trx, schema: this.schema });
+
 			const collectionItemsService = new ItemsService('directus_collections', {
 				knex: trx,
 				accountability: this.accountability,
+				schema: this.schema,
 			});
+
 			const fieldItemsService = new ItemsService('directus_fields', {
 				knex: trx,
 				accountability: this.accountability,
+				schema: this.schema,
 			});
 
 			for (const payload of payloads) {
@@ -65,7 +77,7 @@ export class CollectionsService {
 					throw new InvalidPayloadException(`Collections can't start with "directus_"`);
 				}
 
-				if (await schemaInspector.hasTable(payload.collection)) {
+				if (payload.collection in this.schema) {
 					throw new InvalidPayloadException(
 						`Collection "${payload.collection}" already exists.`
 					);
@@ -105,7 +117,9 @@ export class CollectionsService {
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
 			accountability: this.accountability,
+			schema: this.schema,
 		});
+
 		const collectionKeys = toArray(collection);
 
 		if (this.accountability && this.accountability.admin !== true) {
@@ -135,7 +149,9 @@ export class CollectionsService {
 		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
 		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: collectionKeys } },
-		})) as Collection['meta'][];
+		})) as CollectionMeta[];
+
+		meta.push(...systemCollectionRows);
 
 		const collections: Collection[] = [];
 
@@ -154,7 +170,10 @@ export class CollectionsService {
 
 	/** @todo, read by query without query support is a bit ironic, isnt it */
 	async readByQuery(): Promise<Collection[]> {
-		const collectionItemsService = new ItemsService('directus_collections');
+		const collectionItemsService = new ItemsService('directus_collections', {
+			knex: this.knex,
+			schema: this.schema,
+		});
 		let tablesInDatabase = await schemaInspector.tableInfo();
 
 		if (this.accountability && this.accountability.admin !== true) {
@@ -173,7 +192,9 @@ export class CollectionsService {
 		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
 		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: tablesToFetchInfoFor } },
-		})) as Collection['meta'][];
+		})) as CollectionMeta[];
+
+		meta.push(...systemCollectionRows);
 
 		const collections: Collection[] = [];
 
@@ -204,6 +225,7 @@ export class CollectionsService {
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
 			accountability: this.accountability,
+			schema: this.schema,
 		});
 
 		if (data && key) {
@@ -261,9 +283,10 @@ export class CollectionsService {
 		const fieldsService = new FieldsService({
 			knex: this.knex,
 			accountability: this.accountability,
+			schema: this.schema,
 		});
 
-		const tablesInDatabase = await schemaInspector.tables();
+		const tablesInDatabase = Object.keys(this.schema);
 
 		const collectionKeys = toArray(collection);
 
@@ -307,7 +330,9 @@ export class CollectionsService {
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
 			accountability: this.accountability,
+			schema: this.schema,
 		});
+
 		await collectionItemsService.delete(collectionKeys);
 
 		for (const collectionKey of collectionKeys) {

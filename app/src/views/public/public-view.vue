@@ -3,14 +3,14 @@
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
 				<div
-					v-if="settings && settings.project_logo"
+					v-if="branding && branding.project_logo"
 					class="logo"
-					:style="{ backgroundColor: settings.project_color }"
+					:style="{ backgroundColor: branding.project_color }"
 				>
-					<img :src="logoURL" :alt="settings.project_name || 'Logo'" />
+					<img :src="logoURL" :alt="branding.project_name || 'Logo'" />
 				</div>
 				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
-				<h1 class="title type-title">{{ settings && settings.project_name }}</h1>
+				<h1 class="title type-title">{{ branding && branding.project_name }}</h1>
 			</div>
 
 			<div class="content">
@@ -22,9 +22,14 @@
 		</div>
 		<div class="art" :style="artStyles">
 			<transition name="scale">
-				<img class="foreground" v-if="foregroundURL" :src="foregroundURL" :alt="settings.project_name" />
+				<img
+					class="foreground"
+					v-if="foregroundURL"
+					:src="foregroundURL"
+					:alt="branding && branding.project_name"
+				/>
 			</transition>
-			<div class="note" v-if="settings && settings.public_note" v-html="marked(settings.public_note)" />
+			<div class="note" v-if="branding && branding.public_note" v-html="marked(branding.public_note)" />
 		</div>
 	</div>
 </template>
@@ -77,7 +82,15 @@ export default defineComponent({
 			return getRootPath() + `assets/${serverStore.state.info.project?.project_logo}`;
 		});
 
-		return { version, artStyles, marked, settings: serverStore.state.info, foregroundURL, logoURL, isBranded };
+		return {
+			version,
+			artStyles,
+			marked,
+			branding: serverStore.state.info?.project,
+			foregroundURL,
+			logoURL,
+			isBranded,
+		};
 	},
 });
 </script>
@@ -121,6 +134,7 @@ export default defineComponent({
 
 		.content {
 			width: 340px;
+			max-width: 100%;
 		}
 
 		&.wide {
@@ -147,6 +161,7 @@ export default defineComponent({
 		background-size: cover;
 
 		.foreground {
+			width: 80%;
 			max-width: 400px;
 		}
 
@@ -177,6 +192,7 @@ export default defineComponent({
 		display: flex;
 		align-items: center;
 		width: max-content;
+		max-width: 100%;
 		height: 64px;
 		cursor: pointer;
 	}

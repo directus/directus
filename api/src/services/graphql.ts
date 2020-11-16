@@ -7,7 +7,7 @@ import {
 	Field,
 	Relation,
 	Query,
-	AbstractService,
+	SchemaOverview,
 } from '../types';
 import {
 	GraphQLString,
@@ -49,6 +49,7 @@ import { UsersService } from './users';
 import { WebhooksService } from './webhooks';
 
 import { getRelationType } from '../utils/get-relation-type';
+import { systemCollectionRows } from '../database/system-data/collections';
 
 export class GraphQLService {
 	accountability: Accountability | null;
@@ -56,13 +57,15 @@ export class GraphQLService {
 	fieldsService: FieldsService;
 	collectionsService: CollectionsService;
 	relationsService: RelationsService;
+	schema: SchemaOverview;
 
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		this.accountability = options?.accountability || null;
 		this.knex = options?.knex || database;
 		this.fieldsService = new FieldsService(options);
 		this.collectionsService = new CollectionsService(options);
 		this.relationsService = new RelationsService(options);
+		this.schema = options.schema;
 	}
 
 	args = {
@@ -204,8 +207,9 @@ export class GraphQLService {
 						return fieldsObject;
 					},
 				}),
-				resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) =>
-					this.resolve(info),
+				resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) => {
+					return this.resolve(info);
+				},
 				args: {
 					...this.args,
 					filter: {
@@ -240,19 +244,36 @@ export class GraphQLService {
 			}
 		}
 
-		schemaWithLists.items = {
-			type: new GraphQLObjectType({
-				name: 'items',
-				fields: schemaWithLists.items,
-			}),
-			resolve: () => ({}),
+		const queryBase: any = {
+			name: 'Directus',
+			fields: {
+				server: {
+					type: new GraphQLObjectType({
+						name: 'server',
+						fields: {
+							ping: {
+								type: GraphQLString,
+								resolve: () => 'pong',
+							},
+						},
+					}),
+					resolve: () => ({}),
+				},
+			},
 		};
 
+		if (Object.keys(schemaWithLists.items).length > 0) {
+			queryBase.fields.items = {
+				type: new GraphQLObjectType({
+					name: 'items',
+					fields: schemaWithLists.items,
+				}),
+				resolve: () => ({}),
+			};
+		}
+
 		return new GraphQLSchema({
-			query: new GraphQLObjectType({
-				name: 'Directus',
-				fields: schemaWithLists,
-			}),
+			query: new GraphQLObjectType(queryBase),
 		});
 	}
 
@@ -380,20 +401,28 @@ export class GraphQLService {
 		const systemField = info.path.prev?.key !== 'items';
 
 		const collection = systemField ? `directus_${info.fieldName}` : info.fieldName;
+
 		const selections = info.fieldNodes[0]?.selectionSet?.selections?.filter(
 			(node) => node.kind === 'Field'
 		) as FieldNode[] | undefined;
+
 		if (!selections) return null;
 
-		return await this.getData(collection, selections, info.fieldNodes[0].arguments);
+		return await this.getData(
+			collection,
+			selections,
+			info.fieldNodes[0].arguments || [],
+			info.variableValues
+		);
 	}
 
 	async getData(
 		collection: string,
 		selections: FieldNode[],
-		argsArray?: readonly ArgumentNode[]
+		argsArray: readonly ArgumentNode[],
+		variableValues: GraphQLResolveInfo['variableValues']
 	) {
-		const args: Record<string, any> = this.parseArgs(argsArray);
+		const args: Record<string, any> = this.parseArgs(argsArray, variableValues);
 
 		const query: Query = sanitizeQuery(args, this.accountability);
 
@@ -418,7 +447,10 @@ export class GraphQLService {
 				if (selection.arguments && selection.arguments.length > 0) {
 					if (!query.deep) query.deep = {};
 
-					const args: Record<string, any> = this.parseArgs(selection.arguments);
+					const args: Record<string, any> = this.parseArgs(
+						selection.arguments,
+						variableValues
+					);
 					query.deep[current] = sanitizeQuery(args, this.accountability);
 				}
 			}
@@ -437,6 +469,7 @@ export class GraphQLService {
 				service = new ActivityService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			// case 'directus_collections':
 			// 	service = new CollectionsService({ knex: this.knex, accountability: this.accountability });
@@ -446,82 +479,101 @@ export class GraphQLService {
 				service = new FilesService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_folders':
 				service = new FoldersService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_folders':
 				service = new FoldersService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_permissions':
 				service = new PermissionsService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_presets':
 				service = new PresetsService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_relations':
 				service = new RelationsService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_revisions':
 				service = new RevisionsService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_roles':
 				service = new RolesService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_settings':
 				service = new SettingsService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_users':
 				service = new UsersService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			case 'directus_webhooks':
 				service = new WebhooksService({
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 			default:
 				service = new ItemsService(collection, {
 					knex: this.knex,
 					accountability: this.accountability,
+					schema: this.schema,
 				});
 		}
 
-		const collectionInfo = await this.knex
-			.select('singleton')
-			.from('directus_collections')
-			.where({ collection: collection })
-			.first();
-		const result =
-			collectionInfo?.singleton === true
-				? await service.readSingleton(query)
-				: await service.readByQuery(query);
+		const collectionInfo =
+			(await this.knex
+				.select('singleton')
+				.from('directus_collections')
+				.where({ collection: collection })
+				.first()) ||
+			systemCollectionRows.find(
+				(collectionMeta) => collectionMeta?.collection === collection
+			);
+
+		const result = collectionInfo?.singleton
+			? await service.readSingleton(query)
+			: await service.readByQuery(query);
 
 		return result;
 	}
 
-	parseArgs(args?: readonly ArgumentNode[] | readonly ObjectFieldNode[]): Record<string, any> {
-		if (!args) return {};
+	parseArgs(
+		args: readonly ArgumentNode[] | readonly ObjectFieldNode[],
+		variableValues: GraphQLResolveInfo['variableValues']
+	): Record<string, any> {
+		if (!args || args.length === 0) return {};
 
 		const parseObjectValue = (arg: ObjectValueNode) => {
-			return this.parseArgs(arg.fields);
+			return this.parseArgs(arg.fields, variableValues);
 		};
 
 		const argsObject: any = {};
@@ -529,12 +581,14 @@ export class GraphQLService {
 		for (const argument of args) {
 			if (argument.value.kind === 'ObjectValue') {
 				argsObject[argument.name.value] = parseObjectValue(argument.value);
+			} else if (argument.value.kind === 'Variable') {
+				argsObject[argument.name.value] = variableValues[argument.value.name.value];
 			} else if (argument.value.kind === 'ListValue') {
 				const values: any = [];
 
 				for (const valueNode of argument.value.values) {
 					if (valueNode.kind === 'ObjectValue') {
-						values.push(this.parseArgs(valueNode.fields));
+						values.push(this.parseArgs(valueNode.fields, variableValues));
 					} else {
 						values.push((valueNode as any).value);
 					}

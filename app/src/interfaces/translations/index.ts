@@ -1,5 +1,6 @@
 import { defineInterface } from '../define';
 import InterfaceTranslations from './translations.vue';
+import TranslationsOptions from './options.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'translations',
@@ -8,7 +9,5 @@ export default defineInterface(({ i18n }) => ({
 	types: ['alias'],
 	relationship: 'translations',
 	component: InterfaceTranslations,
-	options: [
-		/** @todo add custom options component */
-	],
+	options: TranslationsOptions,
 }));

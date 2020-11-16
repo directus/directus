@@ -1,6 +1,11 @@
 <template>
 	<div>
-		<v-drawer v-model="_active" :title="$t('item_revision')" @cancel="_active = false">
+		<v-drawer
+			v-model="_active"
+			:title="$t('item_revision')"
+			@cancel="_active = false"
+			:sidebar-label="$t(currentTab[0])"
+		>
 			<template #subtitle>
 				<revisions-drawer-picker :revisions="revisions" :current.sync="_current" />
 			</template>
@@ -14,9 +19,9 @@
 			</template>
 
 			<div class="content">
-				<revisions-drawer-preview v-if="currentTab[0] === 'preview'" :revision="currentRevision" />
+				<revisions-drawer-preview v-if="currentTab[0] === 'revision_preview'" :revision="currentRevision" />
 				<revisions-drawer-updates
-					v-if="currentTab[0] === 'updates'"
+					v-if="currentTab[0] === 'updates_made'"
 					:revision="currentRevision"
 					:revisions="revisions"
 				/>
@@ -58,6 +63,7 @@ import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
 import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
 import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { RevisionsDrawerPicker, RevisionsDrawerPreview, RevisionsDrawerUpdates },
@@ -79,7 +85,7 @@ export default defineComponent({
 		const _active = useSync(props, 'active', emit);
 		const _current = useSync(props, 'current', emit);
 
-		const currentTab = ref(['preview']);
+		const currentTab = ref(['revision_preview']);
 
 		const currentRevision = computed(() => {
 			return props.revisions.find((revision) => revision.id === props.current);
@@ -88,11 +94,11 @@ export default defineComponent({
 		const tabs = [
 			{
 				text: i18n.t('revision_preview'),
-				value: 'preview',
+				value: 'revision_preview',
 			},
 			{
 				text: i18n.t('updates_made'),
-				value: 'updates',
+				value: 'updates_made',
 			},
 		];
 
@@ -126,7 +132,7 @@ export default defineComponent({
 					_active.value = false;
 					emit('revert');
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					reverting.value = false;
 				}

@@ -1,11 +1,18 @@
 import { QueryBuilder } from 'knex';
-import { Query, Filter } from '../types';
-import database, { schemaInspector } from '../database';
+import { Query, Filter, Relation, SchemaOverview } from '../types';
+import Knex from 'knex';
 import { clone, isPlainObject } from 'lodash';
+import { systemRelationRows } from '../database/system-data/relations';
 
-export default async function applyQuery(collection: string, dbQuery: QueryBuilder, query: Query) {
+export default async function applyQuery(
+	knex: Knex,
+	collection: string,
+	dbQuery: QueryBuilder,
+	query: Query,
+	schema: SchemaOverview
+) {
 	if (query.filter) {
-		await applyFilter(dbQuery, query.filter, collection);
+		await applyFilter(knex, dbQuery, query.filter, collection);
 	}
 
 	if (query.sort) {
@@ -29,25 +36,33 @@ export default async function applyQuery(collection: string, dbQuery: QueryBuild
 	}
 
 	if (query.search) {
-		const columns = await schemaInspector.columnInfo(collection);
+		const columns = Object.values(schema[collection].columns);
 
 		dbQuery.andWhere(function () {
 			columns
 				/** @todo Check if this scales between SQL vendors */
 				.filter(
 					(column) =>
-						column.type.toLowerCase().includes('text') ||
-						column.type.toLowerCase().includes('char')
+						column.data_type.toLowerCase().includes('text') ||
+						column.data_type.toLowerCase().includes('char')
 				)
 				.forEach((column) => {
-					this.orWhereRaw(`LOWER(??) LIKE ?`, [column.name, `%${query.search!}%`]);
+					this.orWhereRaw(`LOWER(??) LIKE ?`, [column.column_name, `%${query.search!}%`]);
 				});
 		});
 	}
 }
 
-export async function applyFilter(rootQuery: QueryBuilder, rootFilter: Filter, collection: string) {
-	const relations = await database.select('*').from('directus_relations');
+export async function applyFilter(
+	knex: Knex,
+	rootQuery: QueryBuilder,
+	rootFilter: Filter,
+	collection: string
+) {
+	const relations: Relation[] = [
+		...(await knex.select('*').from('directus_relations')),
+		...systemRelationRows,
+	];
 
 	addWhereClauses(rootQuery, rootFilter, collection);
 	addJoins(rootQuery, rootFilter, collection);
@@ -101,7 +116,7 @@ export async function applyFilter(rootQuery: QueryBuilder, rootFilter: Filter, c
 			}
 
 			if (operator === '_ncontains') {
-				dbQuery.where(key, 'like', `%${compareValue}%`);
+				dbQuery.whereNot(key, 'like', `%${compareValue}%`);
 			}
 
 			if (operator === '_gt') {

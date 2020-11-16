@@ -1,0 +1,210 @@
+table: directus_settings
+
+fields:
+  - field: id
+    hidden: true
+
+  - field: project_name
+    interface: text-input
+    options:
+      iconRight: title
+      placeholder: My project...
+    translations:
+      language: en-US
+      translations: Name
+    width: half
+
+  - field: project_url
+    interface: text-input
+    options:
+      iconRight: link
+      placeholder: https://example.com
+    translations:
+      language: en-US
+      translations: Website
+    width: half
+
+  - field: project_color
+    interface: color
+    note: Login & Logo Background
+    translations:
+      language: en-US
+      translations: Brand Color
+    width: half
+
+  - field: project_logo
+    interface: file
+    note: White 40x40 SVG/PNG
+    translations:
+      language: en-US
+      translations: Brand Logo
+    width: half
+
+  - field: public_divider
+    interface: divider
+    options:
+      icon: public
+      title: Public Pages
+      color: '#2F80ED'
+    special: alias
+    width: full
+
+  - field: public_foreground
+    interface: file
+    translations:
+      language: en-US
+      translations: Login Foreground
+    width: half
+
+  - field: public_background
+    interface: file
+    translations:
+      language: en-US
+      translations: Login Background
+    width: half
+
+  - field: public_note
+    interface: textarea
+    options:
+      placeholder: A short, public message that supports markdown formatting...
+    width: full
+
+  - field: security_divider
+    interface: divider
+    options:
+      icon: security
+      title: Security
+      color: '#2F80ED'
+    special: alias
+    width: full
+
+  - field: auth_password_policy
+    interface: dropdown
+    options:
+      choices:
+        - value: null
+          text: None – Not Recommended
+        - value: '/^.{8,}$/'
+          text: Weak – Minimum 8 Characters
+        - value: "/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/"
+          text: Strong – Upper / Lowercase / Numbers / Special
+    width: half
+
+  - field: auth_login_attempts
+    interface: numeric
+    options:
+      iconRight: lock
+    width: half
+
+  - field: files_divider
+    interface: divider
+    options:
+      icon: storage
+      title: Files & Thumbnails
+      color: '#2F80ED'
+    special: alias
+    width: full
+
+  - field: storage_asset_presets
+    interface: repeater
+    options:
+      fields:
+        - field: key
+          name: Key
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: slug
+            options:
+              onlyOnCreate: false
+            width: half
+        - field: fit
+          name: Fit
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: dropdown
+            options:
+              choices:
+                - value: contain
+                  text: Contain (preserve aspect ratio)
+                - value: cover
+                  text: Cover (forces exact size)
+                - value: inside
+                  text: Fit inside
+                - value: outside
+                  text: Fit outside
+            required: true
+            width: half
+        - field: width
+          name: Width
+          type: integer
+          schema:
+            is_nullable: false
+          meta:
+            interface: numeric
+            width: half
+        - field: height
+          name: Height
+          type: integer
+          schema:
+            is_nullable: false
+          meta:
+            interface: numeric
+            width: half
+        - field: quality
+          type: integer
+          name: Quality
+          schema:
+            default_value: 80
+            is_nullable: false
+          meta:
+            interface: slider
+            options:
+              max: 100
+              min: 0
+              step: 1
+            required: true
+            width: half
+        - field: withoutEnlargement
+          type: boolean
+          schema:
+            default_value: false
+          meta:
+            interface: toggle
+            width: half
+            options:
+              label: Don't upscale images
+      template: '{{key}}'
+    special: json
+    width: full
+
+  - field: storage_asset_transform
+    interface: dropdown
+    options:
+      choices:
+        - value: all
+          text: All
+        - value: none
+          text: None
+        - value: presets
+          text: Presets Only
+    width: half
+
+  - field: overrides_divider
+    interface: divider
+    options:
+      icon: brush
+      title: App Overrides
+      color: '#2F80ED'
+    special: alias
+    width: full
+
+  - field: custom_css
+    interface: code
+    options:
+      language: css
+      lineNumber: true
+    width: full

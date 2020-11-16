@@ -1,26 +1,27 @@
-import { AbstractServiceOptions, Accountability, PrimaryKey } from '../types';
+import { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
 import database from '../database';
 import Knex from 'knex';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
-import SchemaInspector from 'knex-schema-inspector';
+import { systemCollectionRows } from '../database/system-data/collections';
 
 export class UtilsService {
 	knex: Knex;
 	accountability: Accountability | null;
+	schema: SchemaOverview;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
+		this.schema = options.schema;
 	}
 
 	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }) {
-		const schemaInspector = SchemaInspector(this.knex);
-
-		const sortFieldResponse = await this.knex
-			.select('sort_field')
-			.from('directus_collections')
-			.where({ collection })
-			.first();
+		const sortFieldResponse =
+			(await this.knex
+				.select('sort_field')
+				.from('directus_collections')
+				.where({ collection })
+				.first()) || systemCollectionRows;
 
 		const sortField = sortFieldResponse?.sort_field;
 
@@ -52,7 +53,7 @@ export class UtilsService {
 			}
 		}
 
-		const primaryKeyField = await schemaInspector.primary(collection);
+		const primaryKeyField = this.schema[collection].primary;
 
 		// Make sure all rows have a sort value
 		const countResponse = await this.knex

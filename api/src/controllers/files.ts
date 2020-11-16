@@ -23,7 +23,7 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 
 	const busboy = new Busboy({ headers: req.headers });
 	const savedFiles: PrimaryKey[] = [];
-	const service = new FilesService({ accountability: req.accountability });
+	const service = new FilesService({ accountability: req.accountability, schema: req.schema });
 
 	const existingPrimaryKey = req.params.pk || undefined;
 
@@ -102,7 +102,10 @@ router.post(
 	'/',
 	multipartHandler,
 	asyncHandler(async (req, res, next) => {
-		const service = new FilesService({ accountability: req.accountability });
+		const service = new FilesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		let keys: PrimaryKey | PrimaryKey[] = [];
 
 		if (req.is('multipart/form-data')) {
@@ -145,7 +148,10 @@ router.post(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const service = new FilesService({ accountability: req.accountability });
+		const service = new FilesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		const fileResponse = await axios.get<NodeJS.ReadableStream>(req.body.url, {
 			responseType: 'stream',
@@ -183,8 +189,14 @@ router.post(
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const service = new FilesService({ accountability: req.accountability });
-		const metaService = new MetaService({ accountability: req.accountability });
+		const service = new FilesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		const metaService = new MetaService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		const records = await service.readByQuery(req.sanitizedQuery);
 		const meta = await metaService.getMetaForQuery('directus_files', req.sanitizedQuery);
@@ -199,7 +211,10 @@ router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		const keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const service = new FilesService({ accountability: req.accountability });
+		const service = new FilesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const record = await service.readByKey(keys as any, req.sanitizedQuery);
 		res.locals.payload = { data: record || null };
 		return next();
@@ -211,7 +226,10 @@ router.patch(
 	'/:pk',
 	multipartHandler,
 	asyncHandler(async (req, res, next) => {
-		const service = new FilesService({ accountability: req.accountability });
+		const service = new FilesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		let keys: PrimaryKey | PrimaryKey[] = [];
 
 		if (req.is('multipart/form-data')) {
@@ -238,10 +256,30 @@ router.patch(
 );
 
 router.delete(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		if (!req.body || Array.isArray(req.body) === false) {
+			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
+		}
+
+		const service = new FilesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		await service.delete(req.body as PrimaryKey[]);
+		return next();
+	}),
+	respond
+);
+
+router.delete(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		const keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const service = new FilesService({ accountability: req.accountability });
+		const service = new FilesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		await service.delete(keys as any);
 		return next();
 	}),

@@ -4,17 +4,31 @@ import database from '../database';
 import path from 'path';
 import Knex from 'knex';
 import { Accountability, AbstractServiceOptions, Transformation } from '../types';
+import { AuthorizationService } from './authorization';
 
 export class AssetsService {
 	knex: Knex;
 	accountability: Accountability | null;
+	authorizationService: AuthorizationService;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
+		this.authorizationService = new AuthorizationService(options);
 	}
 
 	async getAsset(id: string, transformation: Transformation) {
+		const publicSettings = await this.knex
+			.select('project_logo', 'public_background', 'public_foreground')
+			.from('directus_settings')
+			.first();
+
+		const systemPublicKeys = Object.values(publicSettings || {});
+
+		if (systemPublicKeys.includes(id) === false && this.accountability?.admin !== true) {
+			await this.authorizationService.checkAccess('read', 'directus_files', id);
+		}
+
 		const file = await database.select('*').from('directus_files').where({ id }).first();
 
 		const type = file.type;
@@ -48,9 +62,11 @@ export class AssetsService {
 	private parseTransformation(transformation: Transformation): ResizeOptions {
 		const resizeOptions: ResizeOptions = {};
 
-		if (transformation.w) resizeOptions.width = Number(transformation.w);
-		if (transformation.h) resizeOptions.height = Number(transformation.h);
-		if (transformation.f) resizeOptions.fit = transformation.f;
+		if (transformation.width) resizeOptions.width = Number(transformation.width);
+		if (transformation.height) resizeOptions.height = Number(transformation.height);
+		if (transformation.fit) resizeOptions.fit = transformation.fit;
+		if (transformation.withoutEnlargement)
+			resizeOptions.withoutEnlargement = Boolean(transformation.withoutEnlargement);
 
 		return resizeOptions;
 	}

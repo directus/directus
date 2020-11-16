@@ -39,7 +39,13 @@
 				</v-card>
 			</v-dialog>
 
-			<v-button rounded icon @click="userInviteModalActive = true" v-tooltip.bottom="$t('invite_users')">
+			<v-button
+				rounded
+				icon
+				@click="userInviteModalActive = true"
+				v-tooltip.bottom="$t('invite_users')"
+				class="invite-user"
+			>
 				<v-icon name="person_add" />
 			</v-button>
 
@@ -65,7 +71,7 @@
 			<v-notice v-if="adminEnabled" type="info">
 				{{ $t('admins_have_all_permissions') }}
 			</v-notice>
-			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" />
+			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
 
 			<v-form
 				collection="directus_roles"
@@ -95,7 +101,6 @@ import { useUserStore, usePermissionsStore } from '@/stores/';
 import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
 import UsersInvite from '@/views/private/components/users-invite';
-import usersCreate from '../../../../../../../api/dist/cli/commands/users/create';
 
 type Values = {
 	[field: string]: any;
@@ -138,6 +143,15 @@ export default defineComponent({
 			return !!values.admin_access;
 		});
 
+		const appAccess = computed(() => {
+			const values = {
+				...item.value,
+				...edits.value,
+			} as Record<string, any>;
+
+			return !!values.app_access;
+		});
+
 		return {
 			item,
 			loading,
@@ -152,6 +166,7 @@ export default defineComponent({
 			isBatch,
 			adminEnabled,
 			userInviteModalActive,
+			appAccess,
 		};
 
 		/**
@@ -203,5 +218,12 @@ export default defineComponent({
 .permissions-overview,
 .roles .v-notice {
 	margin-bottom: 48px;
+}
+
+.invite-user {
+	--v-button-background-color: var(--primary-25);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-50);
+	--v-button-color-hover: var(--primary);
 }
 </style>

@@ -9,6 +9,7 @@ import {
 import { UsersService, MetaService, AuthenticationService } from '../services';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
+import { PrimaryKey } from '../types';
 
 const router = express.Router();
 
@@ -17,7 +18,10 @@ router.use(useCollection('directus_users'));
 router.post(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const service = new UsersService({ accountability: req.accountability });
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const primaryKey = await service.create(req.body);
 
 		try {
@@ -39,8 +43,14 @@ router.post(
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const service = new UsersService({ accountability: req.accountability });
-		const metaService = new MetaService({ accountability: req.accountability });
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		const metaService = new MetaService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		const item = await service.readByQuery(req.sanitizedQuery);
 		const meta = await metaService.getMetaForQuery('directus_users', req.sanitizedQuery);
@@ -58,7 +68,10 @@ router.get(
 			throw new InvalidCredentialsException();
 		}
 
-		const service = new UsersService({ accountability: req.accountability });
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		try {
 			const item = await service.readByKey(req.accountability.user, req.sanitizedQuery);
@@ -81,7 +94,10 @@ router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		if (req.path.endsWith('me')) return next();
-		const service = new UsersService({ accountability: req.accountability });
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const items = await service.readByKey(pk as any, req.sanitizedQuery);
 		res.locals.payload = { data: items || null };
@@ -97,7 +113,10 @@ router.patch(
 			throw new InvalidCredentialsException();
 		}
 
-		const service = new UsersService({ accountability: req.accountability });
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const primaryKey = await service.update(req.body, req.accountability.user);
 		const item = await service.readByKey(primaryKey, req.sanitizedQuery);
 
@@ -118,7 +137,7 @@ router.patch(
 			throw new InvalidPayloadException(`"last_page" key is required.`);
 		}
 
-		const service = new UsersService();
+		const service = new UsersService({ schema: req.schema });
 		await service.update({ last_page: req.body.last_page }, req.accountability.user);
 
 		return next();
@@ -129,7 +148,10 @@ router.patch(
 router.patch(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new UsersService({ accountability: req.accountability });
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const primaryKey = await service.update(req.body, pk as any);
 
@@ -150,9 +172,30 @@ router.patch(
 );
 
 router.delete(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		if (!req.body || Array.isArray(req.body) === false) {
+			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
+		}
+
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		await service.delete(req.body as PrimaryKey[]);
+
+		return next();
+	}),
+	respond
+);
+
+router.delete(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new UsersService({ accountability: req.accountability });
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		await service.delete(pk as any);
 
@@ -162,7 +205,10 @@ router.delete(
 );
 
 const inviteSchema = Joi.object({
-	email: Joi.string().email().required(),
+	email: Joi.alternatives(
+		Joi.string().email(),
+		Joi.array().items(Joi.string().email())
+	).required(),
 	role: Joi.string().uuid({ version: 'uuidv4' }).required(),
 });
 
@@ -172,7 +218,10 @@ router.post(
 		const { error } = inviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 
-		const service = new UsersService({ accountability: req.accountability });
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		await service.inviteUser(req.body.email, req.body.role);
 		return next();
 	}),
@@ -189,7 +238,10 @@ router.post(
 	asyncHandler(async (req, res, next) => {
 		const { error } = acceptInviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
-		const service = new UsersService({ accountability: req.accountability });
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		await service.acceptInvite(req.body.token, req.body.password);
 		return next();
 	}),
@@ -207,9 +259,15 @@ router.post(
 			throw new InvalidPayloadException(`"password" is required`);
 		}
 
-		const service = new UsersService({ accountability: req.accountability });
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
-		const authService = new AuthenticationService({ accountability: req.accountability });
+		const authService = new AuthenticationService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		await authService.verifyPassword(req.accountability.user, req.body.password);
 
 		const { url, secret } = await service.enableTFA(req.accountability.user);
@@ -231,8 +289,14 @@ router.post(
 			throw new InvalidPayloadException(`"otp" is required`);
 		}
 
-		const service = new UsersService({ accountability: req.accountability });
-		const authService = new AuthenticationService({ accountability: req.accountability });
+		const service = new UsersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		const authService = new AuthenticationService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		const otpValid = await authService.verifyOTP(req.accountability.user, req.body.otp);
 

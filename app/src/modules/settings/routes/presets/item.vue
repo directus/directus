@@ -103,6 +103,7 @@ import { getLayouts } from '@/layouts';
 import router from '@/router';
 import marked from 'marked';
 import { userName } from '@/utils/user-name';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type User = {
 	id: number;
@@ -145,7 +146,7 @@ export default defineComponent({
 
 		const { loading: usersLoading, users } = useUsers();
 		const { loading: rolesLoading, roles } = useRoles();
-		const { loading: presetLoading, error, preset } = usePreset();
+		const { loading: presetLoading, preset } = usePreset();
 		const { fields } = useForm();
 		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions } = useValues();
 		const { save, saving } = useSave();
@@ -156,7 +157,6 @@ export default defineComponent({
 		return {
 			backLink,
 			loading,
-			error,
 			preset,
 			edits,
 			fields,
@@ -213,7 +213,7 @@ export default defineComponent({
 
 					edits.value = {};
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					saving.value = false;
 					router.push(`/settings/presets`);
@@ -233,8 +233,8 @@ export default defineComponent({
 				try {
 					await api.delete(`/presets/${props.id}`);
 					router.push(`/settings/presets`);
-				} catch (error) {
-					console.error(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					deleting.value = false;
 				}
@@ -321,14 +321,15 @@ export default defineComponent({
 
 		function usePreset() {
 			const loading = ref(false);
-			const error = ref(null);
 			const preset = ref<Preset | null>(null);
 
 			fetchPreset();
 
-			return { loading, error, preset, fetchPreset };
+			return { loading, preset, fetchPreset };
 
 			async function fetchPreset() {
+				if (props.id === '+') return;
+
 				loading.value = true;
 
 				try {
@@ -336,7 +337,7 @@ export default defineComponent({
 
 					preset.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -353,12 +354,11 @@ export default defineComponent({
 
 		function useUsers() {
 			const loading = ref(false);
-			const error = ref(null);
 			const users = ref<User[] | null>(null);
 
 			fetchUsers();
 
-			return { loading, error, users };
+			return { loading, users };
 
 			async function fetchUsers() {
 				loading.value = true;
@@ -375,7 +375,7 @@ export default defineComponent({
 						id: user.id,
 					}));
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -384,12 +384,11 @@ export default defineComponent({
 
 		function useRoles() {
 			const loading = ref(false);
-			const error = ref(null);
 			const roles = ref<Role[] | null>(null);
 
 			fetchRoles();
 
-			return { loading, error, roles };
+			return { loading, roles };
 
 			async function fetchRoles() {
 				loading.value = true;
@@ -403,7 +402,7 @@ export default defineComponent({
 
 					roles.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

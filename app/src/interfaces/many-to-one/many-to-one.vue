@@ -109,6 +109,7 @@ import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 /**
  * @NOTE
@@ -192,7 +193,6 @@ export default defineComponent({
 		function useCurrent() {
 			const currentItem = ref<Record<string, any> | null>(null);
 			const loading = ref(false);
-			const error = ref(null);
 
 			watch(
 				() => props.value,
@@ -262,7 +262,7 @@ export default defineComponent({
 
 					currentItem.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -274,7 +274,6 @@ export default defineComponent({
 
 			const items = ref<Record<string, any>[] | null>(null);
 			const loading = ref(false);
-			const error = ref(null);
 
 			watch(relatedCollection, () => {
 				fetchTotalCount();
@@ -308,7 +307,7 @@ export default defineComponent({
 
 					items.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -361,7 +360,7 @@ export default defineComponent({
 		function usePreview() {
 			const displayTemplate = computed(() => {
 				if (props.template !== null) return props.template;
-				return collectionInfo.value?.meta?.display_template;
+				return collectionInfo.value?.meta?.display_template || `{{ ${relatedPrimaryKeyField.value.field} }}`;
 			});
 
 			const requiredFields = computed(() => {

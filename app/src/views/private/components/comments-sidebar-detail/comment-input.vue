@@ -24,11 +24,11 @@
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
-
-import notify from '@/utils/notify';
 import api from '@/api';
 import i18n from '@/lang';
 import useShortcut from '@/composables/use-shortcut';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
@@ -72,11 +72,8 @@ export default defineComponent({
 					title: i18n.t('post_comment_success'),
 					type: 'success',
 				});
-			} catch {
-				notify({
-					title: i18n.t('post_comment_failed'),
-					type: 'error',
-				});
+			} catch (err) {
+				unexpectedError(err);
 			} finally {
 				saving.value = false;
 			}

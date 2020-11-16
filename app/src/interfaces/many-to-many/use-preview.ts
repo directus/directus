@@ -1,8 +1,8 @@
-import { Ref, ref, watch, computed } from '@vue/composition-api';
+import { Ref, ref, watch } from '@vue/composition-api';
 import { Header } from '@/components/v-table/types';
 import { RelationInfo } from './use-relation';
 import { useFieldsStore } from '@/stores/';
-import { Field, Collection } from '@/types';
+import { Field } from '@/types';
 import api from '@/api';
 import { cloneDeep, get } from 'lodash';
 
@@ -24,20 +24,6 @@ export default function usePreview(
 	const loading = ref(false);
 	const items = ref<Record<string, any>[]>([]);
 	const error = ref(null);
-
-	function getRelatedFields(fields: string[]) {
-		const { junctionField } = relation.value;
-
-		return fields.reduce((acc: string[], field) => {
-			const sections = field.split('.');
-			if (junctionField === sections[0] && sections.length >= 2) acc.push(sections.slice(1).join('.'));
-			return acc;
-		}, []);
-	}
-
-	function getJunctionFields() {
-		return (fields.value || []).filter((field) => field.includes('.') === false);
-	}
 
 	watch(
 		() => value.value,
@@ -112,6 +98,61 @@ export default function usePreview(
 		{ immediate: true }
 	);
 
+	// Seeing we don't care about saving those tableHeaders, we can reset it whenever the
+	// fields prop changes (most likely when we're navigating to a different o2m context)
+	watch(
+		() => fields.value,
+		() => {
+			const { junctionField, junctionCollection } = relation.value;
+
+			tableHeaders.value = (fields.value.length > 0
+				? fields.value
+				: getDefaultFields().map((field) => `${junctionField}.${field}`)
+			)
+				.map((fieldKey) => {
+					let field = fieldsStore.getField(junctionCollection, fieldKey);
+
+					if (!field) return null;
+
+					const header: Header = {
+						text: field.name,
+						value: fieldKey,
+						align: 'left',
+						sortable: true,
+						width: null,
+						field: {
+							display: field.meta?.display,
+							displayOptions: field.meta?.display_options,
+							interface: field.meta?.interface,
+							interfaceOptions: field.meta?.options,
+							type: field.type,
+							field: field.field,
+						},
+					};
+
+					return header;
+				})
+				.filter((h) => h) as Header[];
+		},
+		{ immediate: true }
+	);
+
+	return { tableHeaders, items, loading, error };
+
+	function getRelatedFields(fields: string[]) {
+		const { junctionField } = relation.value;
+
+		return fields.reduce((acc: string[], field) => {
+			const sections = field.split('.');
+			if (junctionField === sections[0] && sections.length >= 2) acc.push(sections.slice(1).join('.'));
+			return acc;
+		}, []);
+	}
+
+	function getJunctionFields() {
+		return (fields.value || []).filter((field) => field.includes('.') === false);
+	}
+
 	async function loadRelatedIds() {
 		const { junctionPkField, junctionField, relationPkField, junctionCollection } = relation.value;
 
@@ -162,49 +203,8 @@ export default function usePreview(
 		return response?.data.data as Record<string, any>[];
 	}
 
-	// Seeing we don't care about saving those tableHeaders, we can reset it whenever the
-	// fields prop changes (most likely when we're navigating to a different o2m context)
-	watch(
-		() => fields.value,
-		() => {
-			const { junctionField, junctionCollection } = relation.value;
-
-			tableHeaders.value = (fields.value.length > 0
-				? fields.value
-				: getDefaultFields().map((field) => `${junctionField}.${field}`)
-			)
-				.map((fieldKey) => {
-					let field = fieldsStore.getField(junctionCollection, fieldKey);
-
-					if (!field) return null;
-
-					const header: Header = {
-						text: field.name,
-						value: fieldKey,
-						align: 'left',
-						sortable: true,
-						width: null,
-						field: {
-							display: field.meta?.display,
-							displayOptions: field.meta?.display_options,
-							interface: field.meta?.interface,
-							interfaceOptions: field.meta?.options,
-							type: field.type,
-							field: field.field,
-						},
-					};
-
-					return header;
-				})
-				.filter((h) => h) as Header[];
-		},
-		{ immediate: true }
-	);
-
 	function getDefaultFields(): string[] {
 		const fields = fieldsStore.getFieldsForCollection(relation.value.relationCollection);
 		return fields.slice(0, 3).map((field: Field) => field.field);
 	}
-
-	return { tableHeaders, items, loading, error };
 }

@@ -3,6 +3,8 @@ import { AbstractServiceOptions, Query, PrimaryKey, PermissionsAction, Relation 
 import { PermissionsService } from './permissions';
 import { toArray } from '../utils/to-array';
 
+import { systemRelationRows } from '../database/system-data/relations';
+
 /**
  * @TODO update foreign key constraints when relations are updated
  */
@@ -14,17 +16,24 @@ type ParsedRelation = Relation & {
 export class RelationsService extends ItemsService {
 	permissionsService: PermissionsService;
 
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		super('directus_relations', options);
 		this.permissionsService = new PermissionsService(options);
 	}
 
 	async readByQuery(query: Query): Promise<null | Relation | Relation[]> {
-		const service = new ItemsService('directus_relations', { knex: this.knex });
+		const service = new ItemsService('directus_relations', {
+			knex: this.knex,
+			schema: this.schema,
+		});
 		const results = (await service.readByQuery(query)) as
 			| ParsedRelation
 			| ParsedRelation[]
 			| null;
+
+		if (results && Array.isArray(results)) {
+			results.push(...(systemRelationRows as ParsedRelation[]));
+		}
 
 		const filteredResults = await this.filterForbidden(results);
 
@@ -42,11 +51,17 @@ export class RelationsService extends ItemsService {
 		query: Query = {},
 		action: PermissionsAction = 'read'
 	): Promise<null | Relation | Relation[]> {
-		const service = new ItemsService('directus_relations', { knex: this.knex });
+		const service = new ItemsService('directus_relations', {
+			knex: this.knex,
+			schema: this.schema,
+		});
 		const results = (await service.readByKey(key as any, query, action)) as
 			| ParsedRelation
 			| ParsedRelation[]
 			| null;
+
+		// No need to merge system relations here. They don't have PKs so can never be directly
+		// targetted
 
 		const filteredResults = await this.filterForbidden(results);
 		return filteredResults;

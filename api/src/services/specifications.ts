@@ -5,6 +5,7 @@ import {
 	Field,
 	Permission,
 	Relation,
+	SchemaOverview,
 	types,
 } from '../types';
 import { CollectionsService } from './collections';
@@ -32,6 +33,7 @@ import { getRelationType } from '../utils/get-relation-type';
 export class SpecificationService {
 	accountability: Accountability | null;
 	knex: Knex;
+	schema: SchemaOverview;
 
 	fieldsService: FieldsService;
 	collectionsService: CollectionsService;
@@ -39,16 +41,17 @@ export class SpecificationService {
 
 	oas: OASService;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.accountability = options?.accountability || null;
-		this.knex = options?.knex || database;
+	constructor(options: AbstractServiceOptions) {
+		this.accountability = options.accountability || null;
+		this.knex = options.knex || database;
+		this.schema = options.schema;
 
 		this.fieldsService = new FieldsService(options);
 		this.collectionsService = new CollectionsService(options);
 		this.relationsService = new RelationsService(options);
 
 		this.oas = new OASService(
-			{ knex: this.knex, accountability: this.accountability },
+			{ knex: this.knex, accountability: this.accountability, schema: this.schema },
 			{
 				fieldsService: this.fieldsService,
 				collectionsService: this.collectionsService,
@@ -83,7 +86,7 @@ class OASService implements SpecificationSubService {
 		}
 	) {
 		this.accountability = options.accountability || null;
-		this.knex = options?.knex || database;
+		this.knex = options.knex || database;
 
 		this.fieldsService = fieldsService;
 		this.collectionsService = collectionsService;

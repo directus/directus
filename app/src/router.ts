@@ -2,6 +2,7 @@ import VueRouter, { NavigationGuard, RouteConfig, Route } from 'vue-router';
 import LoginRoute from '@/routes/login';
 import LogoutRoute from '@/routes/logout';
 import ResetPasswordRoute from '@/routes/reset-password';
+import AcceptInviteRoute from '@/routes/accept-invite';
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
 import { useAppStore, useUserStore, useServerStore } from '@/stores/';
@@ -30,6 +31,14 @@ export const defaultRoutes: RouteConfig[] = [
 		name: 'reset-password',
 		path: '/reset-password',
 		component: ResetPasswordRoute,
+		meta: {
+			public: true,
+		},
+	},
+	{
+		name: 'accept-invite',
+		path: '/accept-invite',
+		component: AcceptInviteRoute,
 		meta: {
 			public: true,
 		},

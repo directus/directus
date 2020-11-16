@@ -1,3 +1,4 @@
+import database from '../database';
 import logger from '../logger';
 import nodemailer, { Transporter } from 'nodemailer';
 import { Liquid } from 'liquidjs';
@@ -42,6 +43,34 @@ export type EmailOptions = {
 	html: string;
 };
 
+/**
+ * Get an object with default template options to pass to the email templates.
+ */
+async function getDefaultTemplateOptions() {
+	const projectInfo = await database
+		.select(['project_name', 'project_logo', 'project_color'])
+		.from('directus_settings')
+		.first();
+
+	return {
+		projectName: projectInfo?.project_name || 'Directus',
+		projectColor: projectInfo?.project_color || '#546e7a',
+		projectLogo: projectInfo?.project_logo
+			? getProjectLogoURL(projectInfo.project_logo)
+			: 'https://directus.io/assets/directus-white.png',
+	};
+
+	function getProjectLogoURL(logoID: string) {
+		let projectLogoURL = env.PUBLIC_URL;
+
+		if (projectLogoURL.endsWith('/') === false) {
+			projectLogoURL += '/';
+		}
+
+		projectLogoURL += `assets/${logoID}`;
+	}
+}
+
 export default async function sendMail(options: EmailOptions) {
 	const templateString = await readFile(path.join(__dirname, 'templates/base.liquid'), 'utf8');
 	const html = await liquidEngine.parseAndRender(templateString, { html: options.html });
@@ -57,31 +86,35 @@ export default async function sendMail(options: EmailOptions) {
 }
 
 export async function sendInviteMail(email: string, url: string) {
-	/**
-	 * @TODO pull this from directus_settings
-	 */
-	const projectName = 'Directus';
+	const defaultOptions = await getDefaultTemplateOptions();
 
-	const html = await liquidEngine.renderFile('user-invitation', { email, url, projectName });
+	const html = await liquidEngine.renderFile('user-invitation', {
+		...defaultOptions,
+		email,
+		url,
+	});
+
 	await transporter.sendMail({
 		from: env.EMAIL_FROM,
 		to: email,
 		html: html,
-		subject: `[${projectName}] You've been invited`,
+		subject: `[${defaultOptions.projectName}] You've been invited`,
 	});
 }
 
 export async function sendPasswordResetMail(email: string, url: string) {
-	/**
-	 * @TODO pull this from directus_settings
-	 */
-	const projectName = 'Directus';
+	const defaultOptions = await getDefaultTemplateOptions();
 
-	const html = await liquidEngine.renderFile('password-reset', { email, url, projectName });
+	const html = await liquidEngine.renderFile('password-reset', {
+		...defaultOptions,
+		email,
+		url,
+	});
+
 	await transporter.sendMail({
 		from: env.EMAIL_FROM,
 		to: email,
 		html: html,
-		subject: `[${projectName}] Password Reset Request`,
+		subject: `[${defaultOptions.projectName}] Password Reset Request`,
 	});
 }

@@ -19,7 +19,14 @@
 
 			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" @click="on">
+					<v-button
+						:disabled="batchDeleteAllowed !== true"
+						rounded
+						icon
+						class="action-delete"
+						@click="on"
+						v-tooltip.bottom="batchDeleteAllowed ? $t('delete') : $t('not_allowed')"
+					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
@@ -42,9 +49,10 @@
 				rounded
 				icon
 				class="action-batch"
+				:disabled="batchEditAllowed === false"
+				@click="batchEditActive = true"
 				v-if="selection.length > 1"
-				:to="batchLink"
-				v-tooltip.bottom="$t('edit')"
+				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
@@ -55,11 +63,18 @@
 				icon
 				@click="userInviteModalActive = true"
 				v-tooltip.bottom="$t('invite_users')"
+				class="invite-user"
 			>
 				<v-icon name="person_add" />
 			</v-button>
 
-			<v-button rounded icon :to="addNewLink" v-tooltip.bottom="$t('create_user')">
+			<v-button
+				rounded
+				icon
+				:to="addNewLink"
+				v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
+				:disabled="createAllowed === false"
+			>
 				<v-icon name="add" />
 			</v-button>
 		</template>
@@ -68,7 +83,7 @@
 			<users-navigation :current-role="queryFilters && queryFilters.role" />
 		</template>
 
-		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" />
+		<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @toggle="refresh" />
 
 		<component
 			class="layout"
@@ -80,6 +95,7 @@
 			:layout-query.sync="layoutQuery"
 			:filters="_filters"
 			:search-query="searchQuery"
+			:reset-preset="resetPreset"
 			@update:filters="filters = $event"
 		>
 			<template #no-results>
@@ -103,6 +119,13 @@
 			</template>
 		</component>
 
+		<drawer-batch
+			:primary-keys="selection"
+			:active.sync="batchEditActive"
+			collection="directus_users"
+			@refresh="refresh"
+		/>
+
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_users_collection'))" />
@@ -116,17 +139,18 @@
 <script lang="ts">
 import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
 import UsersNavigation from '../components/navigation.vue';
-import UsersInvite from '@/views/private/components/users-invite';
+import UsersInvite from '../../../views/private/components/users-invite';
 
-import { i18n } from '@/lang';
-import api from '@/api';
-import { LayoutComponent } from '@/layouts/types';
-import usePreset from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import SearchInput from '@/views/private/components/search-input';
-import { useUserStore, usePermissionsStore } from '@/stores';
+import { i18n } from '../../../lang';
+import api from '../../../api';
+import { LayoutComponent } from '../../../layouts/types';
+import usePreset from '../../../composables/use-preset';
+import LayoutSidebarDetail from '../../../views/private/components/layout-sidebar-detail';
+import SearchInput from '../../../views/private/components/search-input';
+import { useUserStore, usePermissionsStore } from '../../../stores';
 import marked from 'marked';
 import useNavigation from '../composables/use-navigation';
+import DrawerBatch from '../../../views/private/components/drawer-batch';
 
 type Item = {
 	[field: string]: any;
@@ -134,7 +158,7 @@ type Item = {
 
 export default defineComponent({
 	name: 'users-collection',
-	components: { UsersNavigation, LayoutSidebarDetail, SearchInput, UsersInvite },
+	components: { UsersNavigation, LayoutSidebarDetail, SearchInput, UsersInvite, DrawerBatch },
 	props: {
 		queryFilters: {
 			type: Object as PropType<Record<string, string>>,
@@ -150,9 +174,13 @@ export default defineComponent({
 
 		const selection = ref<Item[]>([]);
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_users'));
-		const { addNewLink, batchLink } = useLinks();
-		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(
+			ref('directus_users')
+		);
+		const { addNewLink } = useLinks();
+
+		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
+
 		const { breadcrumb, title } = useBreadcrumb();
 
 		const _filters = computed(() => {
@@ -189,16 +217,14 @@ export default defineComponent({
 			return !!usersCreatePermission && !!rolesReadPermission;
 		});
 
+		const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
+
 		return {
 			canInviteUsers,
 			_filters,
 			addNewLink,
-			batchDelete,
-			batchLink,
 			breadcrumb,
 			title,
-			confirmDelete,
-			deleting,
 			filters,
 			layoutRef,
 			selection,
@@ -209,28 +235,51 @@ export default defineComponent({
 			marked,
 			clearFilters,
 			userInviteModalActive,
+			refresh,
+			batchEditAllowed,
+			batchDeleteAllowed,
+			createAllowed,
+			resetPreset,
+			confirmDelete,
+			deleting,
+			batchDelete,
+			deleteError,
+			batchEditActive,
 		};
 
-		function useBatchDelete() {
+		async function refresh() {
+			await layoutRef.value?.refresh();
+		}
+
+		function useBatch() {
 			const confirmDelete = ref(false);
 			const deleting = ref(false);
 
-			return { confirmDelete, deleting, batchDelete };
+			const batchEditActive = ref(false);
+
+			const error = ref<any>();
+
+			return { batchEditActive, confirmDelete, deleting, batchDelete, error };
 
 			async function batchDelete() {
 				deleting.value = true;
 
-				confirmDelete.value = false;
-
 				const batchPrimaryKeys = selection.value;
 
-				await api.delete(`/users/${batchPrimaryKeys}`);
+				try {
+					await api.delete('/users', {
+						data: batchPrimaryKeys,
+					});
 
-				await layoutRef.value?.refresh();
+					await layoutRef.value?.refresh?.();
 
-				selection.value = [];
-				deleting.value = false;
-				confirmDelete.value = false;
+					selection.value = [];
+					confirmDelete.value = false;
+				} catch (err) {
+					error.value = err;
+				} finally {
+					deleting.value = false;
+				}
 			}
 		}
 
@@ -239,12 +288,7 @@ export default defineComponent({
 				return `/users/+`;
 			});
 
-			const batchLink = computed<string>(() => {
-				const batchPrimaryKeys = selection.value;
-				return `/users/${batchPrimaryKeys}`;
-			});
-
-			return { addNewLink, batchLink };
+			return { addNewLink };
 		}
 
 		function useBreadcrumb() {
@@ -271,6 +315,40 @@ export default defineComponent({
 			filters.value = [];
 			searchQuery.value = null;
 		}
+
+		function usePermissions() {
+			const batchEditAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const updatePermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'update' && permission.collection === 'directus_users'
+				);
+				return !!updatePermissions;
+			});
+
+			const batchDeleteAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const deletePermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'delete' && permission.collection === 'directus_users'
+				);
+				return !!deletePermissions;
+			});
+
+			const createAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const createPermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'create' && permission.collection === 'directus_users'
+				);
+				return !!createPermissions;
+			});
+
+			return { batchEditAllowed, batchDeleteAllowed, createAllowed };
+		}
 	},
 });
 </script>
@@ -296,5 +374,12 @@ export default defineComponent({
 
 .layout {
 	--layout-offset-top: 64px;
+}
+
+.invite-user {
+	--v-button-background-color: var(--primary-25);
+	--v-button-color: var(--primary);
+	--v-button-background-color-hover: var(--primary-50);
+	--v-button-color-hover: var(--primary);
 }
 </style>

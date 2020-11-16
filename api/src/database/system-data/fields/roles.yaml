@@ -1,0 +1,141 @@
+table: directus_roles
+
+fields:
+  - field: id
+    hidden: true
+    interface: text-input
+    special: uuid
+
+  - field: name
+    interface: text-input
+    options:
+      placeholder: The unique name for this role...
+    width: half
+
+  - field: icon
+    interface: icon
+    display: icon
+    width: half
+
+  - field: description
+    interface: text-input
+    options:
+      placeholder: A description of this role...
+    width: full
+
+  - field: app_access
+    interface: toggle
+    special: boolean
+    width: half
+
+  - field: admin_access
+    interface: toggle
+    special: boolean
+    width: half
+
+  - field: ip_access
+    interface: tags
+    options:
+      placeholder: Add allowed IP addresses, leave empty to allow all...
+    special: csv
+    width: full
+
+  - field: enforce_tfa
+    interface: toggle
+    special: boolean
+    width: half
+
+  - field: users
+    interface: one-to-many
+    special: o2m
+    options:
+      fields:
+        - first_name
+        - last_name
+    width: full
+
+  - field: module_list
+    interface: repeater
+    options:
+      template: '{{ name }}'
+      addLabel: Add New Module...
+      fields:
+        - name: Icon
+          field: icon
+          type: string
+          meta:
+            interface: icon
+            width: half
+        - name: Name
+          field: name
+          type: string
+          meta:
+            interface: text-input
+            width: half
+            options:
+              iconRight: title
+              placeholder: Enter a title...
+        - name: Link
+          field: link
+          type: string
+          meta:
+            interface: text-input
+            width: full
+            options:
+              iconRight: link
+              placeholder: Relative or absolute URL...
+    special: json
+    width: full
+
+  - field: collection_list
+    interface: repeater
+    options:
+      template: '{{ group_name }}'
+      addLabel: Add New Group...
+      fields:
+        - name: Group Name
+          field: group_name
+          type: string
+          meta:
+            width: half
+            interface: text-input
+            options:
+              iconRight: title
+              placeholder: Label this group...
+          schema:
+            is_nullable: false
+        - name: Type
+          field: accordion
+          type: string
+          schema:
+            default_value: always_open
+          meta:
+            width: half
+            interface: dropdown
+            options:
+              choices:
+                - value: always_open
+                  text: Always Open
+                - value: start_open
+                  text: Start Open
+                - value: start_collapsed
+                  text: Start Collapsed
+        - name: Collections
+          field: collections
+          type: JSON
+          meta:
+            interface: repeater
+            options:
+              addLabel: Add New Collection...
+              template: '{{ collection }}'
+              fields:
+                - name: Collection
+                  field: collection
+                  type: string
+                  meta:
+                    interface: collection
+                    width: full
+                  schema:
+                    is_nullable: false
+    special: json
+    width: full

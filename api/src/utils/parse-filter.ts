@@ -3,7 +3,7 @@ import { deepMap } from './deep-map';
 import { toArray } from '../utils/to-array';
 
 export function parseFilter(filter: Filter, accountability: Accountability | null) {
-	return deepMap(filter, (val: any, key: string) => {
+	return deepMap(filter, (val, key) => {
 		if (val === 'true') return true;
 		if (val === 'false') return false;
 

@@ -66,6 +66,7 @@ import marked from 'marked';
 import { Header as TableHeader } from '@/components/v-table/types';
 import ValueNull from '@/views/private/components/value-null';
 import router from '@/router';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type Role = {
 	id: number;
@@ -81,7 +82,6 @@ export default defineComponent({
 	setup() {
 		const roles = ref<Role[]>([]);
 		const loading = ref(false);
-		const error = ref<any>(null);
 
 		const tableHeaders: TableHeader[] = [
 			{
@@ -120,7 +120,7 @@ export default defineComponent({
 			return `/settings/roles/+`;
 		});
 
-		return { marked, loading, roles, error, tableHeaders, addNewLink, navigateToRole };
+		return { marked, loading, roles, tableHeaders, addNewLink, navigateToRole };
 
 		async function fetchRoles() {
 			loading.value = true;
@@ -146,7 +146,7 @@ export default defineComponent({
 					}),
 				];
 			} catch (err) {
-				error.value = err;
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}

@@ -90,5 +90,6 @@ export default defineComponent({
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	line-height: 1.15;
 }
 </style>

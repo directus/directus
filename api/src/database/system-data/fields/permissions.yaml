@@ -1,0 +1,36 @@
+# directus_permissions isn't surfaced in the app
+table: directus_permissions
+
+fields:
+  - field: permissions
+    hidden: true
+    special: json
+    width: half
+
+  - field: presets
+    hidden: true
+    special: json
+    width: half
+
+  - field: role
+    width: half
+
+  - field: limit
+    width: half
+
+  - field: collection
+    width: half
+
+  - field: id
+    width: half
+
+  - field: fields
+    width: half
+    special: csv
+
+  - field: action
+    width: half
+
+  - field: validation
+    width: half
+    special: json

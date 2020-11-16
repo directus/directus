@@ -1,0 +1,117 @@
+table: directus_files
+
+fields:
+  - field: id
+    hidden: true
+    interface: text-input
+    special: uuid
+
+  - field: title
+    interface: text-input
+    options:
+      iconRight: title
+      placeholder: A unique title...
+    width: full
+
+  - field: description
+    interface: textarea
+    width: full
+    options:
+      placeholder: An optional description...
+
+  - field: tags
+    interface: tags
+    options:
+      iconRight: local_offer
+    special: json
+    width: full
+    display: tags
+
+  - field: location
+    interface: text-input
+    options:
+      iconRight: place
+      placeholder: An optional location...
+    width: half
+
+  - field: storage
+    interface: text-input
+    options:
+      iconRight: storage
+    width: half
+    readonly: true
+
+  - field: storage_divider
+    interface: divider
+    options:
+      icon: insert_drive_file
+      title: File Naming
+      color: '#2F80ED'
+    special: alias
+    width: full
+
+  - field: filename_disk
+    interface: text-input
+    options:
+      iconRight: publish
+      placeholder: Name on disk storage...
+    width: half
+
+  - field: filename_download
+    interface: text-input
+    options:
+      iconRight: get_app
+      placeholder: Name when downloading...
+    width: half
+
+  - field: metadata
+    hidden: true
+    special: json
+
+  - field: type
+    display: mime-type
+
+  - field: filesize
+    display: filesize
+
+  - field: modified_by
+    interface: user
+    special: user-updated
+    width: half
+    display: user
+
+  - field: modified_on
+    interface: datetime
+    special: date-updated
+    width: half
+    display: datetime
+
+  - field: created_on
+    display: datetime
+
+  - field: created_by
+    display: user
+
+  - field: embed
+    width: half
+
+  - field: uploaded_by
+    width: half
+
+  - field: folder
+    width: half
+
+  - field: width
+    width: half
+
+  - field: uploaded_on
+    width: half
+
+  - field: height
+    width: half
+
+  - field: charset
+    width: half
+
+  - field: duration
+    width: half

@@ -10,7 +10,14 @@
 			<collections-navigation />
 		</template>
 
-		<v-table v-if="navItems.length > 0" :headers="tableHeaders" :items="navItems" @click:row="navigateToCollection">
+		<v-table
+			v-if="navItems.length > 0"
+			:headers.sync="tableHeaders"
+			:items="navItems"
+			show-resize
+			fixed-header
+			@click:row="navigateToCollection"
+		>
 			<template #item.icon="{ item }">
 				<v-icon class="icon" :name="item.icon" />
 			</template>
@@ -63,13 +70,14 @@ export default defineComponent({
 				sortable: false,
 			},
 			{
-				text: i18n.tc('collection', 1),
+				text: i18n.t('name'),
 				value: 'name',
-				width: 300,
+				width: 240,
 			},
 			{
 				text: i18n.t('note'),
 				value: 'note',
+				width: 360,
 			},
 		];
 

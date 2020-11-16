@@ -34,6 +34,7 @@ router.post(
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
+			schema: req.schema,
 		});
 
 		const { error } = loginSchema.validate(req.body);
@@ -46,15 +47,13 @@ router.post(
 		const ip = req.ip;
 		const userAgent = req.get('user-agent');
 
-		const { accessToken, refreshToken, expires, id } = await authenticationService.authenticate(
-			{
-				ip,
-				userAgent,
-				email,
-				password,
-				otp,
-			}
-		);
+		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
+			ip,
+			userAgent,
+			email,
+			password,
+			otp,
+		});
 
 		const payload = {
 			data: { access_token: accessToken, expires },
@@ -92,6 +91,7 @@ router.post(
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
+			schema: req.schema,
 		});
 
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
@@ -144,6 +144,7 @@ router.post(
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
+			schema: req.schema,
 		});
 
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
@@ -173,7 +174,7 @@ router.post(
 			role: null,
 		};
 
-		const service = new UsersService({ accountability });
+		const service = new UsersService({ accountability, schema: req.schema });
 
 		try {
 			await service.requestPasswordReset(req.body.email);
@@ -204,7 +205,7 @@ router.post(
 			role: null,
 		};
 
-		const service = new UsersService({ accountability });
+		const service = new UsersService({ accountability, schema: req.schema });
 		await service.resetPassword(req.body.token, req.body.password);
 		return next();
 	}),
@@ -239,7 +240,7 @@ router.get(
 		}
 
 		if (req.query?.redirect && req.session) {
-			req.session.redirect = req.query.redirect;
+			req.session.redirect = req.query.redirect as string;
 		}
 
 		next();
@@ -252,7 +253,7 @@ router.use(grant.express()(grantConfig));
 router.get(
 	'/oauth/:provider/callback',
 	asyncHandler(async (req, res, next) => {
-		const redirect = req.session?.redirect;
+		const redirect = req.session.redirect;
 
 		const accountability = {
 			ip: req.ip,
@@ -262,12 +263,10 @@ router.get(
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
+			schema: req.schema,
 		});
 
-		const email = getEmailFromProfile(
-			req.params.provider,
-			req.session!.grant.response?.profile
-		);
+		const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
 
 		req.session?.destroy(() => {});
 

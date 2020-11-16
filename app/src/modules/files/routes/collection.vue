@@ -17,7 +17,7 @@
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
-			<add-folder :parent="queryFilters && queryFilters.folder" />
+			<add-folder :parent="queryFilters && queryFilters.folder" :disabled="createFolderAllowed !== true" />
 
 			<v-dialog v-model="moveToDialogActive" v-if="selection.length > 0" @esc="moveToDialogActive = false">
 				<template #activator="{ on }">
@@ -46,7 +46,14 @@
 
 			<v-dialog v-model="confirmDelete" v-if="selection.length > 0" @esc="confirmDelete = false">
 				<template #activator="{ on }">
-					<v-button rounded icon class="action-delete" @click="on" v-tooltip.bottom="$t('delete')">
+					<v-button
+						:disabled="batchDeleteAllowed !== true"
+						rounded
+						icon
+						class="action-delete"
+						@click="on"
+						v-tooltip.bottom="batchDeleteAllowed ? $t('delete') : $t('not_allowed')"
+					>
 						<v-icon name="delete" outline />
 					</v-button>
 				</template>
@@ -69,9 +76,10 @@
 				rounded
 				icon
 				class="action-batch"
+				:disabled="batchEditAllowed === false"
+				@click="batchEditActive = true"
 				v-if="selection.length > 1"
-				:to="batchLink"
-				v-tooltip.bottom="$t('edit')"
+				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
@@ -81,7 +89,8 @@
 				icon
 				class="add-new"
 				:to="{ path: '/files/+', query: queryFilters }"
-				v-tooltip.bottom="$t('add_file')"
+				v-tooltip.bottom="createAllowed ? $t('create_item') : $t('not_allowed')"
+				:disabled="createAllowed === false"
 			>
 				<v-icon name="add" />
 			</v-button>
@@ -101,6 +110,7 @@
 			:layout-query.sync="layoutQuery"
 			:filters="filtersWithFolderAndType"
 			:search-query="searchQuery"
+			:reset-preset="resetPreset"
 			@update:filters="filters = $event"
 		>
 			<template #no-results>
@@ -126,6 +136,13 @@
 
 		<router-view name="addNew" :preset="queryFilters" @upload="refresh" />
 
+		<drawer-batch
+			:primary-keys="selection"
+			:active.sync="batchEditActive"
+			collection="directus_files"
+			@refresh="refresh"
+		/>
+
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_files_collection'))" />
@@ -146,24 +163,27 @@
 <script lang="ts">
 import { defineComponent, computed, ref, PropType, onMounted, onUnmounted } from '@vue/composition-api';
 import FilesNavigation from '../components/navigation.vue';
-import { i18n } from '@/lang';
-import api from '@/api';
-import { LayoutComponent } from '@/layouts/types';
-import usePreset from '@/composables/use-preset';
-import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
+import { i18n } from '../../../lang';
+import api from '../../../api';
+import { LayoutComponent } from '../../../layouts/types';
+import usePreset from '../../../composables/use-preset';
+import FilterSidebarDetail from '../../../views/private/components/filter-sidebar-detail';
+import LayoutSidebarDetail from '../../../views/private/components/layout-sidebar-detail';
 import AddFolder from '../components/add-folder.vue';
-import SearchInput from '@/views/private/components/search-input';
+import SearchInput from '../../../views/private/components/search-input';
 import marked from 'marked';
 import FolderPicker from '../components/folder-picker.vue';
-import emitter, { Events } from '@/events';
-import router from '@/router';
+import emitter, { Events } from '../../../events';
+import router from '../../../router';
 import Vue from 'vue';
-import { useNotificationsStore, useUserStore } from '@/stores';
+import { useNotificationsStore, useUserStore, usePermissionsStore } from '../../../stores';
 import { subDays } from 'date-fns';
 import useFolders from '../composables/use-folders';
-import useEventListener from '@/composables/use-event-listener';
-import uploadFiles from '@/utils/upload-files';
+import useEventListener from '../../../composables/use-event-listener';
+import uploadFiles from '../../../utils/upload-files';
+import { unexpectedError } from '../../../utils/unexpected-error';
+import DrawerBatch from '../../../views/private/components/drawer-batch';
+import { useCollection } from '../../../composables/use-collection';
 
 type Item = {
 	[field: string]: any;
@@ -171,7 +191,15 @@ type Item = {
 
 export default defineComponent({
 	name: 'files-collection',
-	components: { FilesNavigation, FilterSidebarDetail, LayoutSidebarDetail, AddFolder, SearchInput, FolderPicker },
+	components: {
+		FilesNavigation,
+		FilterSidebarDetail,
+		LayoutSidebarDetail,
+		AddFolder,
+		SearchInput,
+		FolderPicker,
+		DrawerBatch,
+	},
 	props: {
 		queryFilters: {
 			type: Object as PropType<Record<string, string>>,
@@ -183,16 +211,22 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const notificationsStore = useNotificationsStore();
+		const permissionsStore = usePermissionsStore();
 		const { folders } = useFolders();
 		const layoutRef = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
 
-		const userStore = useUserStore();
-		const notificationsStore = useNotificationsStore();
+		const { info: currentCollection } = useCollection(ref('directus_files'));
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_files'));
-		const { batchLink } = useLinks();
-		const { confirmDelete, deleting, batchDelete } = useBatchDelete();
+		const userStore = useUserStore();
+
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(
+			ref('directus_files')
+		);
+
+		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
+
 		const { breadcrumb, title } = useBreadcrumb();
 
 		const filtersWithFolderAndType = computed(() => {
@@ -259,13 +293,11 @@ export default defineComponent({
 		useEventListener(window, 'dragleave', onDragLeave);
 		useEventListener(window, 'drop', onDrop);
 
+		const { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed } = usePermissions();
+
 		return {
-			batchDelete,
-			batchLink,
 			breadcrumb,
 			title,
-			confirmDelete,
-			deleting,
 			filters,
 			layoutRef,
 			selection,
@@ -286,41 +318,48 @@ export default defineComponent({
 			showDropEffect,
 			onDrop,
 			dragging,
+			batchEditAllowed,
+			batchDeleteAllowed,
+			createAllowed,
+			createFolderAllowed,
+			resetPreset,
+			confirmDelete,
+			deleting,
+			batchDelete,
+			deleteError,
+			batchEditActive,
 		};
 
-		function useBatchDelete() {
+		function useBatch() {
 			const confirmDelete = ref(false);
 			const deleting = ref(false);
 
-			return { confirmDelete, deleting, batchDelete };
+			const batchEditActive = ref(false);
+
+			const error = ref<any>();
+
+			return { batchEditActive, confirmDelete, deleting, batchDelete, error };
 
 			async function batchDelete() {
 				deleting.value = true;
 
-				confirmDelete.value = false;
-
 				const batchPrimaryKeys = selection.value;
 
 				try {
-					await api.delete(`/files/${batchPrimaryKeys}`);
-					confirmDelete.value = false;
+					await api.delete('/files', {
+						data: batchPrimaryKeys,
+					});
+
+					await layoutRef.value?.refresh?.();
+
 					selection.value = [];
-					await layoutRef.value?.refresh();
+					confirmDelete.value = false;
 				} catch (err) {
-					console.error(err);
+					error.value = err;
 				} finally {
 					deleting.value = false;
 				}
 			}
-		}
-
-		function useLinks() {
-			const batchLink = computed<string>(() => {
-				const batchPrimaryKeys = selection.value;
-				return `/files/${batchPrimaryKeys}`;
-			});
-
-			return { batchLink };
 		}
 
 		function useBreadcrumb() {
@@ -387,7 +426,7 @@ export default defineComponent({
 					await Vue.nextTick();
 					await refresh();
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					moveToDialogActive.value = false;
 					moving.value = false;
@@ -402,6 +441,50 @@ export default defineComponent({
 		function clearFilters() {
 			filters.value = [];
 			searchQuery.value = null;
+		}
+
+		function usePermissions() {
+			const batchEditAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const updatePermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'update' && permission.collection === 'directus_files'
+				);
+				return !!updatePermissions;
+			});
+
+			const batchDeleteAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const deletePermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'delete' && permission.collection === 'directus_files'
+				);
+				return !!deletePermissions;
+			});
+
+			const createAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const createPermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'create' && permission.collection === 'directus_files'
+				);
+				return !!createPermissions;
+			});
+
+			const createFolderAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const createPermissions = permissionsStore.state.permissions.find(
+					(permission) => permission.action === 'create' && permission.collection === 'directus_folders'
+				);
+				return !!createPermissions;
+			});
+
+			return { batchEditAllowed, batchDeleteAllowed, createAllowed, createFolderAllowed };
 		}
 
 		function useFileUpload() {
@@ -492,7 +575,7 @@ export default defineComponent({
 					notificationsStore.remove(dragNotificationID);
 				}
 
-				const files = [...event.dataTransfer.files];
+				const files = [...(event.dataTransfer.files as any)];
 
 				fileUploadNotificationID = notificationsStore.add({
 					title: i18n.tc('upload_file_indeterminate', files.length, {

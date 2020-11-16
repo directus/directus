@@ -7,6 +7,7 @@
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import ValueNull from '@/views/private/components/value-null';
 import getRootPath from '@/utils/get-root-path';
+import { addTokenToURL } from '@/api';
 
 type Image = {
 	id: string;
@@ -29,7 +30,9 @@ export default defineComponent({
 	setup(props) {
 		const src = computed(() => {
 			if (props.value === null) return null;
-			return getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
+			const url = getRootPath() + `assets/${props.value.id}?key=system-small-cover`;
+
+			return addTokenToURL(url);
 		});
 
 		return { src };

@@ -67,8 +67,9 @@ import i18n from '@/lang';
 import getRootPath from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
 import localizedFormat from '@/utils/localized-format';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
@@ -85,7 +86,7 @@ export default defineComponent({
 		const formattedTime = computed(() => {
 			if (props.activity.timestamp) {
 				// timestamp is in iso-8601
-				return format(new Date(props.activity.timestamp), String(i18n.t('date-fns_time')));
+				return format(new Date(props.activity.timestamp), String(i18n.t('date-fns_time_no_seconds')));
 			}
 
 			return null;
@@ -94,7 +95,7 @@ export default defineComponent({
 		const avatarSource = computed(() => {
 			if (!props.activity.user?.avatar) return null;
 
-			return getRootPath() + `assets/${props.activity.user.avatar.id}?key=system-small-cover`;
+			return addTokenToURL(getRootPath() + `assets/${props.activity.user.avatar.id}?key=system-small-cover`);
 		});
 
 		const { confirmDelete, deleting, remove } = useDelete();
@@ -114,8 +115,8 @@ export default defineComponent({
 					await api.delete(`/activity/comment/${props.activity.id}`);
 					await props.refresh();
 					confirmDelete.value = false;
-				} catch (error) {
-					console.error(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					deleting.value = false;
 				}
@@ -180,6 +181,7 @@ export default defineComponent({
 			opacity: 1;
 			transition: opacity var(--slow) var(--transition);
 			pointer-events: none;
+			white-space: nowrap;
 		}
 
 		.more.active + .time {

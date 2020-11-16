@@ -10,6 +10,7 @@ import ora from 'ora';
 import argon2 from 'argon2';
 
 import runSeed from '../../../database/seeds/run';
+import runMigrations from '../../../database/migrations/run';
 
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';
 import Knex from 'knex';
@@ -28,13 +29,9 @@ export default async function init(options: Record<string, any>) {
 
 	const dbClient = getDriverForClient(client)!;
 
-	try {
-		require.resolve(dbClient);
-	} catch {
-		const spinnerDriver = ora('Installing Database Driver...').start();
-		await execa('npm', ['install', dbClient, '--production']);
-		spinnerDriver.stop();
-	}
+	const spinnerDriver = ora('Installing Database Driver...').start();
+	await execa('npm', ['install', dbClient, '--production']);
+	spinnerDriver.stop();
 
 	let attemptsRemaining = 5;
 
@@ -51,6 +48,7 @@ export default async function init(options: Record<string, any>) {
 
 		try {
 			await runSeed(db);
+			await runMigrations(db, 'latest');
 		} catch (err) {
 			console.log();
 			console.log('Something went wrong while seeding the database:');
@@ -102,7 +100,7 @@ export default async function init(options: Record<string, any>) {
 	await db('directus_roles').insert({
 		id: roleID,
 		name: 'Administrator',
-		icon: 'verified_user',
+		icon: 'verified',
 		admin_access: true,
 		description: 'Initial administrative role with unrestricted App/API access',
 	});

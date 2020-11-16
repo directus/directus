@@ -10,8 +10,8 @@ import {
 	PermissionsAction,
 	Item,
 	PrimaryKey,
+	SchemaOverview,
 } from '../types';
-import SchemaInspector from 'knex-schema-inspector';
 import Knex from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
 import { uniq, merge, flatten } from 'lodash';
@@ -20,16 +20,22 @@ import { ItemsService } from './items';
 import { PayloadService } from './payload';
 import { parseFilter } from '../utils/parse-filter';
 import { toArray } from '../utils/to-array';
+import { systemFieldRows } from '../database/system-data/fields';
 
 export class AuthorizationService {
 	knex: Knex;
 	accountability: Accountability | null;
 	payloadService: PayloadService;
+	schema: SchemaOverview;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
-		this.payloadService = new PayloadService('directus_permissions', { knex: this.knex });
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
+		this.schema = options.schema;
+		this.payloadService = new PayloadService('directus_permissions', {
+			knex: this.knex,
+			schema: this.schema,
+		});
 	}
 
 	async processAST(ast: AST, action: PermissionsAction = 'read'): Promise<AST> {
@@ -231,14 +237,14 @@ export class AuthorizationService {
 				.where({ action, collection, role: this.accountability?.role || null })
 				.first();
 
+			if (!permission) throw new ForbiddenException();
+
 			permission = (await this.payloadService.processValues(
 				'read',
 				permission as Item
 			)) as Permission;
 
 			// Check if you have permission to access the fields you're trying to acces
-
-			if (!permission) throw new ForbiddenException();
 
 			const allowedFields = permission.fields || [];
 
@@ -258,23 +264,28 @@ export class AuthorizationService {
 			}
 		}
 
-		const preset = permission.presets || {};
+		const preset = parseFilter(permission.presets || {}, this.accountability);
 
 		payloads = payloads.map((payload) => merge({}, preset, payload));
 
-		const schemaInspector = SchemaInspector(this.knex);
-		const columns = await schemaInspector.columnInfo(collection);
+		const columns = Object.values(this.schema[collection].columns);
 
 		let requiredColumns: string[] = [];
 
 		for (const column of columns) {
-			const field = await this.knex
-				.select<{ special: string }>('special')
-				.from('directus_fields')
-				.where({ collection, field: column.name })
-				.first();
+			const field =
+				(await this.knex
+					.select<{ special: string }>('special')
+					.from('directus_fields')
+					.where({ collection, field: column.column_name })
+					.first()) ||
+				systemFieldRows.find(
+					(fieldMeta) =>
+						fieldMeta.field === column.column_name &&
+						fieldMeta.collection === collection
+				);
 
-			const specials = (field?.special || '').split(',');
+			const specials = field?.special ? toArray(field.special) : [];
 
 			const hasGenerateSpecial = [
 				'uuid',
@@ -285,12 +296,11 @@ export class AuthorizationService {
 
 			const isRequired =
 				column.is_nullable === false &&
-				column.has_auto_increment === false &&
 				column.default_value === null &&
 				hasGenerateSpecial === false;
 
 			if (isRequired) {
-				requiredColumns.push(column.name);
+				requiredColumns.push(column.column_name);
 			}
 		}
 
@@ -326,9 +336,11 @@ export class AuthorizationService {
 	}
 
 	validateJoi(
-		validation: Record<string, any>,
+		validation: null | Record<string, any>,
 		payloads: Partial<Record<string, any>>[]
 	): FailedValidationException[] {
+		if (!validation) return [];
+
 		const errors: FailedValidationException[] = [];
 
 		/**
@@ -381,7 +393,11 @@ export class AuthorizationService {
 	) {
 		if (this.accountability?.admin === true) return;
 
-		const itemsService = new ItemsService(collection, { accountability: this.accountability });
+		const itemsService = new ItemsService(collection, {
+			accountability: this.accountability,
+			knex: this.knex,
+			schema: this.schema,
+		});
 
 		try {
 			const query: Query = {
@@ -391,7 +407,7 @@ export class AuthorizationService {
 			const result = await itemsService.readByKey(pk as any, query, action);
 
 			if (!result) throw '';
-			if (Array.isArray(pk) && result.length !== pk.length) throw '';
+			if (Array.isArray(pk) && pk.length > 1 && result.length !== pk.length) throw '';
 		} catch {
 			throw new ForbiddenException(
 				`You're not allowed to ${action} item "${pk}" in collection "${collection}".`,

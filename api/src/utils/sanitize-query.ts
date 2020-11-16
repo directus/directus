@@ -29,10 +29,6 @@ export function sanitizeQuery(
 		query.filter = sanitizeFilter(rawQuery.filter, accountability || null);
 	}
 
-	if (rawQuery.limit == '-1') {
-		delete query.limit;
-	}
-
 	if (rawQuery.offset) {
 		query.offset = sanitizeOffset(rawQuery.offset);
 	}
@@ -41,7 +37,7 @@ export function sanitizeQuery(
 		query.page = sanitizePage(rawQuery.page);
 	}
 
-	if (rawQuery.single) {
+	if (rawQuery.single || rawQuery.single === '') {
 		query.single = sanitizeSingle(rawQuery.single);
 	}
 
@@ -125,7 +121,11 @@ function sanitizePage(rawPage: any) {
 }
 
 function sanitizeSingle(rawSingle: any) {
-	return true;
+	if (rawSingle !== undefined && rawSingle !== null && ['', 'true', 1, '1'].includes(rawSingle)) {
+		return true;
+	}
+
+	return false;
 }
 
 function sanitizeMeta(rawMeta: any) {

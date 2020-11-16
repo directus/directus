@@ -110,12 +110,24 @@
 					v-model="defaultValue"
 					:placeholder="$t('add_a_default_value')"
 				/>
-				<v-checkbox
+				<v-select
 					v-else-if="fieldData.type === 'boolean'"
 					class="monospace"
 					v-model="defaultValue"
-					:label="defaultValue ? $t('true') : $t('false')"
-					block
+					:items="[
+						{
+							text: 'true',
+							value: true,
+						},
+						{
+							text: 'false',
+							value: false,
+						},
+						{
+							text: 'NULL',
+							value: null,
+						},
+					]"
 				/>
 				<v-input
 					v-else
@@ -141,9 +153,9 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import useSync from '@/composables/use-sync';
-import { types } from '@/types';
-import i18n from '@/lang';
+import useSync from '../../../../../../composables/use-sync';
+import { types } from '../../../../../../types';
+import i18n from '../../../../../../lang';
 import { state } from '../store';
 
 export const fieldTypes = [
@@ -403,6 +415,7 @@ export default defineComponent({
 
 .monospace {
 	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--family-monospace);
 }
 
 .required {

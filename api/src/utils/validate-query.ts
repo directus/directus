@@ -1,6 +1,7 @@
 import { Query } from '../types';
 import Joi from 'joi';
 import { InvalidQueryException } from '../exceptions';
+import { isPlainObject } from 'lodash';
 
 const querySchema = Joi.object({
 	fields: Joi.array().items(Joi.string()),
@@ -18,7 +19,7 @@ const querySchema = Joi.object({
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
 	export: Joi.string().valid('json', 'csv'),
-	deep: Joi.link('#query'),
+	deep: Joi.object().pattern(/\w+/, Joi.link('#query')),
 }).id('query');
 
 export function validateQuery(query: Query) {
@@ -38,9 +39,11 @@ export function validateQuery(query: Query) {
 function validateFilter(filter: Query['filter']) {
 	if (!filter) throw new InvalidQueryException('Invalid filter object');
 
-	for (const [key, nested] of Object.entries(filter)) {
+	for (let [key, nested] of Object.entries(filter)) {
 		if (key === '_and' || key === '_or') {
 			nested.forEach(validateFilter);
+		} else if (isPlainObject(nested)) {
+			validateFilter(nested);
 		} else if (key.startsWith('_')) {
 			const value = nested;
 
@@ -67,6 +70,8 @@ function validateFilter(filter: Query['filter']) {
 					validateBoolean(value, key);
 					break;
 			}
+		} else if (isPlainObject(nested) === false && Array.isArray(nested) === false) {
+			validateFilterPrimitive(nested, '_eq');
 		} else {
 			validateFilter(nested);
 		}
@@ -74,13 +79,16 @@ function validateFilter(filter: Query['filter']) {
 }
 
 function validateFilterPrimitive(value: any, key: string) {
-	if ((typeof value === 'string' || typeof value === 'number') === false) {
+	if (
+		(typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') ===
+		false
+	) {
 		throw new InvalidQueryException(
 			`The filter value for "${key}" has to be a string or a number`
 		);
 	}
 
-	if (Number.isNaN(value)) {
+	if (typeof value === 'number' && Number.isNaN(value)) {
 		throw new InvalidQueryException(`The filter value for "${key}" is not a valid number`);
 	}
 

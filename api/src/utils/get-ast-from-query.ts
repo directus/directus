@@ -10,12 +10,14 @@ import {
 	Relation,
 	PermissionsAction,
 	Accountability,
+	SchemaOverview,
 } from '../types';
 import database from '../database';
 import { cloneDeep } from 'lodash';
 import Knex from 'knex';
-import SchemaInspector from 'knex-schema-inspector';
 import { getRelationType } from '../utils/get-relation-type';
+import { systemFieldRows } from '../database/system-data/fields';
+import { systemRelationRows } from '../database/system-data/relations';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -26,6 +28,7 @@ type GetASTOptions = {
 export default async function getASTFromQuery(
 	collection: string,
 	query: Query,
+	schema: SchemaOverview,
 	options?: GetASTOptions
 ): Promise<AST> {
 	query = cloneDeep(query);
@@ -33,13 +36,15 @@ export default async function getASTFromQuery(
 	const accountability = options?.accountability;
 	const action = options?.action || 'read';
 	const knex = options?.knex || database;
-	const schemaInspector = SchemaInspector(knex);
 
 	/**
 	 * we might not need al this info at all times, but it's easier to fetch it all once, than trying to fetch it for every
 	 * requested field. @todo look into utilizing graphql/dataloader for this purpose
 	 */
-	const relations = await knex.select<Relation[]>('*').from('directus_relations');
+	const relations = [
+		...(await knex.select<Relation[]>('*').from('directus_relations')),
+		...systemRelationRows,
+	];
 
 	const permissions =
 		accountability && accountability.admin !== true
@@ -123,7 +128,14 @@ export default async function getASTFromQuery(
 			let child: NestedCollectionNode | null = null;
 
 			if (relationType === 'm2a') {
-				const allowedCollections = relation.one_allowed_collections!.split(',');
+				const allowedCollections = relation
+					.one_allowed_collections!.split(',')
+					.filter((collection) => {
+						if (!permissions) return true;
+						return permissions.some(
+							(permission) => permission.collection === collection
+						);
+					});
 
 				child = {
 					type: 'm2a',
@@ -131,7 +143,7 @@ export default async function getASTFromQuery(
 					children: {},
 					query: {},
 					relatedKey: {},
-					parentKey: await schemaInspector.primary(parentCollection),
+					parentKey: schema[parentCollection].primary,
 					fieldKey: relationalField,
 					relation: relation,
 				};
@@ -142,17 +154,24 @@ export default async function getASTFromQuery(
 						nestedFields
 					);
 					child.query[relatedCollection] = {};
-					child.relatedKey[relatedCollection] = await schemaInspector.primary(
-						relatedCollection
-					);
+					child.relatedKey[relatedCollection] = schema[relatedCollection].primary;
 				}
 			} else if (relatedCollection) {
+				if (
+					permissions &&
+					permissions.some(
+						(permission) => permission.collection === relatedCollection
+					) === false
+				) {
+					continue;
+				}
+
 				child = {
 					type: relationType,
 					name: relatedCollection,
 					fieldKey: relationalField,
-					parentKey: await schemaInspector.primary(parentCollection),
-					relatedKey: await schemaInspector.primary(relatedCollection),
+					parentKey: schema[parentCollection].primary,
+					relatedKey: schema[relatedCollection].primary,
 					relation: relation,
 					query: deep?.[relationalField] || {},
 					children: await parseFields(relatedCollection, nestedFields),
@@ -260,10 +279,15 @@ export default async function getASTFromQuery(
 	}
 
 	async function getFieldsInCollection(collection: string) {
-		const columns = (await schemaInspector.columns(collection)).map((column) => column.column);
-		const fields = (
-			await knex.select('field').from('directus_fields').where({ collection })
-		).map((field) => field.field);
+		const columns = Object.keys(schema[collection].columns);
+		const fields = [
+			...(await knex.select('field').from('directus_fields').where({ collection })).map(
+				(field) => field.field
+			),
+			...systemFieldRows
+				.filter((fieldMeta) => fieldMeta.collection === collection)
+				.map((fieldMeta) => fieldMeta.field),
+		];
 
 		const fieldsInCollection = [
 			...columns,

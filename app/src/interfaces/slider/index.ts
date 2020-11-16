@@ -36,5 +36,14 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'numeric',
 			},
 		},
+		{
+			field: 'alwaysShowValue',
+			name: i18n.t('interfaces.slider.always_show_value'),
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+			},
+		},
 	],
 }));
