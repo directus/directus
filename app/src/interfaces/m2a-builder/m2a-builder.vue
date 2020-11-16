@@ -1,5 +1,7 @@
 <template>
 	<div class="m2a-builder">
+		{{ value }}
+
 		<v-menu attached>
 			<template #activator="{ toggle }">
 				<v-button dashed outlined full-width @click="toggle">
@@ -8,21 +10,38 @@
 			</template>
 
 			<v-list>
-				<v-list-item v-for="collection of collections" :key="collection.collection">
+				<v-list-item
+					@click="selectingFrom = collection.collection"
+					v-for="collection of collections"
+					:key="collection.collection"
+				>
 					<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
 					<v-list-item-text>{{ $t('from_collection', { collection: collection.name }) }}</v-list-item-text>
 				</v-list-item>
 			</v-list>
 		</v-menu>
+
+		<drawer-collection
+			multiple
+			v-if="!disabled && !!selectingFrom"
+			:active="!!selectingFrom"
+			:collection="selectingFrom"
+			:selection="[]"
+			@input="stageSelection"
+			@update:active="selectingFrom = null"
+		/>
+		<!-- :filters="selectionFilters" -->
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType, ref } from '@vue/composition-api';
 import { useRelationsStore, useCollectionsStore } from '../../stores';
 import { Relation, Collection } from '../../types/';
+import DrawerCollection from '../../views/private/components/drawer-collection/';
 
 export default defineComponent({
+	components: { DrawerCollection },
 	props: {
 		collection: {
 			type: String,
@@ -36,15 +55,20 @@ export default defineComponent({
 			type: Array as PropType<any[]>,
 			default: null,
 		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 
 		const { o2mRelation, anyRelation } = useRelations();
 		const { collections } = useCollections();
+		const { selectingFrom, stageSelection } = useSelection();
 
-		return { collections };
+		return { collections, selectingFrom, stageSelection };
 
 		function useRelations() {
 			const relationsForField = computed<Relation[]>(() => {
@@ -73,12 +97,33 @@ export default defineComponent({
 
 			return { collections };
 		}
+
+		function useSelection() {
+			const selectingFrom = ref<string | null>(null);
+
+			return { selectingFrom, stageSelection };
+
+			function stageSelection(selection: (number | string)[]) {
+				const { one_collection_field, many_field } = anyRelation.value;
+
+				const currentValue = props.value || [];
+
+				const selectionAsJunctionRows = selection.map((key) => {
+					return {
+						[one_collection_field]: selectingFrom.value,
+						[many_field]: key,
+					};
+				});
+
+				emit('input', [...currentValue, ...selectionAsJunctionRows]);
+			}
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .m2a-builder {
-	background-color: red;
+	background-color: white;
 }
 </style>
