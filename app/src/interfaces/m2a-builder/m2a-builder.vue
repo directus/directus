@@ -35,10 +35,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref } from '@vue/composition-api';
+import { defineComponent, computed, PropType, ref, watch } from '@vue/composition-api';
 import { useRelationsStore, useCollectionsStore } from '../../stores';
 import { Relation, Collection } from '../../types/';
 import DrawerCollection from '../../views/private/components/drawer-collection/';
+import api from '../../api';
+import { unexpectedError } from '../../utils/unexpected-error';
 
 export default defineComponent({
 	components: { DrawerCollection },
@@ -59,6 +61,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		primaryKey: {
+			type: [String, Number] as PropType<string | number>,
+			required: true,
+		},
 	},
 	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
@@ -66,7 +72,10 @@ export default defineComponent({
 
 		const { o2mRelation, anyRelation } = useRelations();
 		const { collections } = useCollections();
+		const { values, fetchValues } = useValues();
 		const { selectingFrom, stageSelection } = useSelection();
+
+		watch(props, fetchValues, { immediate: true });
 
 		return { collections, selectingFrom, stageSelection };
 
@@ -96,6 +105,33 @@ export default defineComponent({
 			);
 
 			return { collections };
+		}
+
+		function useValues() {
+			const loading = ref(false);
+			const values = ref<any[]>([]);
+
+			return { values, fetchValues };
+
+			async function fetchValues() {
+				loading.value = true;
+
+				try {
+					const response = await api.get(`/items/${o2mRelation.value.many_collection}`, {
+						params: {
+							filter: {
+								[o2mRelation.value.many_field]: props.primaryKey,
+							},
+						},
+					});
+
+					console.log(response.data.data);
+				} catch (err) {
+					unexpectedError(err);
+				} finally {
+					loading.value = false;
+				}
+			}
 		}
 
 		function useSelection() {
