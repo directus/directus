@@ -14,10 +14,10 @@ export type AuthOptions = {
 };
 
 export class AuthHandler {
-	axios: AxiosInstance;
-	storage: AuthStorage;
-	mode: 'cookie' | 'json';
-	autoRefresh: boolean;
+	private axios: AxiosInstance;
+	private storage: AuthStorage;
+	private mode: 'cookie' | 'json';
+	private autoRefresh: boolean;
 
 	constructor(axios: AxiosInstance, options: AuthOptions) {
 		this.axios = axios;
@@ -37,7 +37,7 @@ export class AuthHandler {
 	set token(val: string | null) {
 		this.axios.defaults.headers = {
 			...(this.axios.defaults.headers || {}),
-			Authorization: `Bearer ${val}`,
+			Authorization: val ? `Bearer ${val}` : undefined,
 		};
 	}
 
@@ -46,7 +46,9 @@ export class AuthHandler {
 
 		this.token = response.data.data.access_token;
 
-		await this.storage.set('directus_refresh_token', response.data.data.refresh_token);
+		if (this.mode === 'json') {
+			await this.storage.set('directus_refresh_token', response.data.data.refresh_token);
+		}
 
 		if (this.autoRefresh) {
 			setTimeout(() => this.refresh(), response.data.data.expires - 10000);
@@ -67,7 +69,9 @@ export class AuthHandler {
 
 		this.token = response.data.data.access_token;
 
-		await this.storage.set('directus_refresh_token', response.data.data.refresh_token);
+		if (this.mode === 'json') {
+			await this.storage.set('directus_refresh_token', response.data.data.refresh_token);
+		}
 
 		if (this.autoRefresh) {
 			setTimeout(() => this.refresh(), response.data.data.expires - 10000);

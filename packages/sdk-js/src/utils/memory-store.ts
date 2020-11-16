@@ -1,5 +1,5 @@
 export class MemoryStore {
-	values: Record<string, any> = {};
+	private values: Record<string, any> = {};
 
 	async get(key: string) {
 		return this.values[key];

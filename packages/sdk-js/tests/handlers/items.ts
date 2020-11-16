@@ -33,17 +33,13 @@ describe('ItemsHandler', () => {
 
 	describe('create', () => {
 		it('Calls the /items/:collection endpoint', async () => {
-			const stub = sandbox
-				.stub(handler['axios'], 'post')
-				.returns(Promise.resolve({ data: '' }));
+			const stub = sandbox.stub(handler['axios'], 'post').resolves({ data: '' });
 			await handler.create({});
 			expect(stub).to.have.been.calledWith('/items/test/');
 		});
 
 		it('Passes the payload(s)', async () => {
-			const stub = sandbox
-				.stub(handler['axios'], 'post')
-				.returns(Promise.resolve({ data: '' }));
+			const stub = sandbox.stub(handler['axios'], 'post').resolves({ data: '' });
 
 			await handler.create({ title: 'new item' });
 			expect(stub).to.have.been.calledWith('/items/test/', { title: 'new item' });
@@ -56,9 +52,7 @@ describe('ItemsHandler', () => {
 		});
 
 		it('Adds the optional query', async () => {
-			const stub = sandbox
-				.stub(handler['axios'], 'post')
-				.returns(Promise.resolve({ data: '' }));
+			const stub = sandbox.stub(handler['axios'], 'post').resolves({ data: '' });
 
 			await handler.create({});
 			expect(stub).to.have.been.calledWith('/items/test/', {});

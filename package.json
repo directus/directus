@@ -98,6 +98,7 @@
     "lerna": "^3.22.1",
     "lint-staged": "^10.3.0",
     "lodash.camelcase": "^4.3.0",
+    "mocha": "^8.2.1",
     "mockdate": "^3.0.2",
     "npm-watch": "^0.7.0",
     "prettier": "^2.1.1",
