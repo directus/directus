@@ -104,7 +104,7 @@ export class FieldsService {
 			aliasFields.push(...systemFieldRows);
 		}
 
-		const aliasTypes = ['alias', 'o2m', 'm2m', 'files', 'files', 'translations'];
+		const aliasTypes = ['alias', 'o2m', 'm2m', 'm2a', 'files', 'files', 'translations'];
 
 		aliasFields = aliasFields.filter((field) => {
 			const specials = toArray(field.special);

@@ -517,6 +517,8 @@
 	"display_not_found": "Display \"{display}\" not found.",
 	"reset_display": "Reset Display",
 
+	"m2a_builder": "Builder (M2A)",
+
 	"item_count": "No Items | One Item | {count} Items",
 	"no_items_copy": "There are no items in this collection yet.",
 
@@ -973,6 +975,7 @@
   "activity_feed": "Activity Feed",
   "add_field_filter": "Add a field filter",
   "add_new": "Add New",
+  "from_collection": "From “{collection}” Collection",
   "create_new": "Create New",
   "additional_info": "Additional Info",
   "admin_email": "Admin Email",

@@ -11,7 +11,7 @@ export type InterfaceConfig = {
 	options: DeepPartial<Field>[] | Component;
 	types: typeof types[number][];
 	localTypes?: readonly typeof localTypes[number][];
-	relationship?: null | 'm2o' | 'o2m' | 'm2m' | 'translations';
+	relationship?: null | 'm2o' | 'o2m' | 'm2m' | 'm2a' | 'translations';
 	hideLabel?: boolean;
 	hideLoader?: boolean;
 	system?: boolean;

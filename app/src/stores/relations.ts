@@ -22,7 +22,7 @@ export const useRelationsStore = createStore({
 				return relation.many_collection === collection || relation.one_collection === collection;
 			});
 		},
-		getRelationsForField(collection: string, field: string) {
+		getRelationsForField(collection: string, field: string): Relation[] {
 			const fieldsStore = useFieldsStore();
 			const fieldInfo = fieldsStore.getField(collection, field);
 
