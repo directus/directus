@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { ItemsHandler } from './items';
-import { Query, PrimaryKey, Item, Response, Payload } from '../types';
+import { Query, PrimaryKey, Item, Response } from '../types';
 
 export class ActivityHandler {
 	private axios: AxiosInstance;

@@ -47,6 +47,6 @@ export type FilterOperator =
 	| '_nempty';
 
 export type AuthStorage = {
-	get: (key: string) => Promise<any>;
-	set: (key: string, value: any) => Promise<any>;
+	getItem: (key: string) => Promise<any>;
+	setItem: (key: string, value: any) => Promise<any>;
 };

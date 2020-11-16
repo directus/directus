@@ -47,7 +47,7 @@ export class AuthHandler {
 		this.token = response.data.data.access_token;
 
 		if (this.mode === 'json') {
-			await this.storage.set('directus_refresh_token', response.data.data.refresh_token);
+			await this.storage.setItem('directus_refresh_token', response.data.data.refresh_token);
 		}
 
 		if (this.autoRefresh) {
@@ -61,7 +61,7 @@ export class AuthHandler {
 		const payload: Record<string, any> = { mode: this.mode };
 
 		if (this.mode === 'json') {
-			const refreshToken = await this.storage.get('directus_refresh_token');
+			const refreshToken = await this.storage.getItem('directus_refresh_token');
 			payload['refresh_token'] = refreshToken;
 		}
 
@@ -70,7 +70,7 @@ export class AuthHandler {
 		this.token = response.data.data.access_token;
 
 		if (this.mode === 'json') {
-			await this.storage.set('directus_refresh_token', response.data.data.refresh_token);
+			await this.storage.setItem('directus_refresh_token', response.data.data.refresh_token);
 		}
 
 		if (this.autoRefresh) {

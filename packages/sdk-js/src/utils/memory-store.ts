@@ -1,11 +1,13 @@
-export class MemoryStore {
+import { AuthStorage } from '../types';
+
+export class MemoryStore implements AuthStorage {
 	private values: Record<string, any> = {};
 
-	async get(key: string) {
+	async getItem(key: string) {
 		return this.values[key];
 	}
 
-	async set(key: string, value: any) {
+	async setItem(key: string, value: any) {
 		this.values[key] = value;
 	}
 }

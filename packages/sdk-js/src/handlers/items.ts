@@ -2,7 +2,7 @@ import { Query, Item, Payload, Response, PrimaryKey } from '../types';
 import { AxiosInstance } from 'axios';
 
 export class ItemsHandler {
-	axios: AxiosInstance;
+	private axios: AxiosInstance;
 	private endpoint: string;
 
 	constructor(collection: string, axios: AxiosInstance) {

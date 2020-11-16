@@ -14,13 +14,15 @@ import {
 	CollectionsHandler,
 	FieldsHandler,
 	AuthHandler,
+	RelationsHandler,
 	AuthOptions,
+	RevisionsHandler,
 } from './handlers';
 import { MemoryStore } from './utils';
 
 export default class DirectusSDK {
 	axios: AxiosInstance;
-	authOptions: AuthOptions;
+	private authOptions: AuthOptions;
 
 	constructor(url: string, options?: { auth: Partial<AuthOptions> }) {
 		this.axios = axios.create({
@@ -34,6 +36,9 @@ export default class DirectusSDK {
 		};
 	}
 
+	// Global helpers
+	////////////////////////////////////////////////////////////////////////////////////////////////
+
 	get url() {
 		return this.axios.defaults.baseURL!;
 	}
@@ -41,6 +46,9 @@ export default class DirectusSDK {
 	set url(val: string) {
 		this.axios.defaults.baseURL = val;
 	}
+
+	// Handlers
+	////////////////////////////////////////////////////////////////////////////////////////////////
 
 	items(collection: string) {
 		if (collection.startsWith('directus_')) {
@@ -50,16 +58,24 @@ export default class DirectusSDK {
 		return new ItemsHandler(collection, this.axios);
 	}
 
-	get server() {
-		return new ServerHandler(this.axios);
-	}
-
-	get utils() {
-		return new UtilsHandler(this.axios);
-	}
-
 	get activity() {
 		return new ActivityHandler(this.axios);
+	}
+
+	get auth() {
+		return new AuthHandler(this.axios, this.authOptions);
+	}
+
+	get collections() {
+		return new CollectionsHandler(this.axios);
+	}
+
+	get fields() {
+		return new FieldsHandler(this.axios);
+	}
+
+	get files() {
+		return new FilesHandler(this.axios);
 	}
 
 	get folders() {
@@ -74,31 +90,31 @@ export default class DirectusSDK {
 		return new PresetsHandler(this.axios);
 	}
 
+	get relations() {
+		return new RelationsHandler(this.axios);
+	}
+
+	get revisions() {
+		return new RevisionsHandler(this.axios);
+	}
+
 	get roles() {
 		return new RolesHandler(this.axios);
 	}
 
-	get users() {
-		return new UsersHandler(this.axios);
+	get server() {
+		return new ServerHandler(this.axios);
 	}
 
 	get settings() {
 		return new SettingsHandler(this.axios);
 	}
 
-	get files() {
-		return new FilesHandler(this.axios);
+	get users() {
+		return new UsersHandler(this.axios);
 	}
 
-	get collections() {
-		return new CollectionsHandler(this.axios);
-	}
-
-	get fields() {
-		return new FieldsHandler(this.axios);
-	}
-
-	get auth() {
-		return new AuthHandler(this.axios, this.authOptions);
+	get utils() {
+		return new UtilsHandler(this.axios);
 	}
 }
