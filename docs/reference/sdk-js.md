@@ -52,9 +52,11 @@ The SDK accepts a second optional `options` parameter:
 import DirectusSDK from '@directus/sdk-js';
 
 const directus = new DirectusSDK('https://api.example.com/', {
-	storage: new MemoryStore(), // Storage adapter where refresh tokens are stored in JSON mode
-	mode: 'json', // What login mode to use. One of `json`, `cookie`
-	autoRefresh: true, // Whether or not to automatically refresh the access token on login
+	auth: {
+		storage: new MemoryStore(), // Storage adapter where refresh tokens are stored in JSON mode
+		mode: 'json', // What login mode to use. One of `json`, `cookie`
+		autoRefresh: true, // Whether or not to automatically refresh the access token on login
+	}
 });
 ```
 
@@ -200,6 +202,23 @@ directus.items('articles').update([
 		title: 'Article 42',
 	},
 ], { fields: ['title'] });
+```
+
+##### Multiple Items by Query, Single Value
+
+```js
+directus.items('articles').update(
+	{
+		archived: true
+	},
+	{
+		filter: {
+			publish_date: {
+				_gte: '$NOW'
+			}
+		}
+	}
+);
 ```
 
 #### Delete

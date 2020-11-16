@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "test": "mocha -r ts-node/register 'tests/**/*.ts'"
+    "test": "mocha -r ts-node/register/transpile-only -r source-map-support/register --recursive 'tests/**/*.ts'",
+    "coverage": "nyc npm test"
   },
   "keywords": [
     "api",
@@ -27,5 +28,11 @@
     "mocha": "^8.2.0",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.3"
+  },
+  "nyc": {
+    "extension": [".ts"],
+    "include": ["src/**/*.ts"],
+    "exclude": ["**/*.d.ts"],
+    "all": true
   }
 }

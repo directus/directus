@@ -55,6 +55,33 @@ describe('AuthHandler', () => {
 			handler['axios'].defaults.headers.Authorization = 'Bearer test';
 			expect(handler.token).to.equal('test');
 		});
+
+		it('Returns null if headers do not exist, or if token is not set', () => {
+			handler['axios'].defaults.headers = null;
+			expect(handler.token).to.be.null;
+
+			handler['axios'].defaults.headers = { Authorization: null };
+			expect(handler.token).to.be.null;
+
+			handler['axios'].defaults.headers.Authorization = 'Invalid';
+			expect(handler.token).to.be.null;
+		});
+
+		it('Preserves the other existing default headers', () => {
+			handler['axios'].defaults.headers = {
+				Test: 'example',
+			};
+
+			handler.token = 'Rijk';
+
+			expect(handler['axios'].defaults.headers.Test).to.exist;
+		});
+
+		it('Defaults to {} if no default headers exist yet', () => {
+			handler['axios'].defaults.headers = null;
+			handler.token = 'Rijk';
+			expect(handler['axios'].defaults.headers.Authorization).to.exist;
+		});
 	});
 
 	describe('login', () => {
@@ -77,7 +104,7 @@ describe('AuthHandler', () => {
 		it('Adds the refresh token to the passed store in JSON mode', async () => {
 			sandbox.stub(handler['axios'], 'post').resolves({ data: mockResponse });
 			const testStore = new MemoryStore();
-			const stub = sandbox.stub(testStore, 'set');
+			const stub = sandbox.stub(testStore, 'setItem');
 
 			handler['storage'] = testStore;
 
@@ -89,7 +116,7 @@ describe('AuthHandler', () => {
 		it('Does not attempt to set the refresh token in cookie mode', async () => {
 			sandbox.stub(handler['axios'], 'post').resolves({ data: mockResponse });
 			const testStore = new MemoryStore();
-			const stub = sandbox.stub(testStore, 'set');
+			const stub = sandbox.stub(testStore, 'setItem');
 
 			handler['mode'] = 'cookie';
 			await handler.login({ email: 'test@example.com', password: 'test' });
@@ -150,7 +177,7 @@ describe('AuthHandler', () => {
 		it('Adds the refresh token to the passed store in JSON mode', async () => {
 			sandbox.stub(handler['axios'], 'post').resolves({ data: mockResponse });
 			const testStore = new MemoryStore();
-			const stub = sandbox.stub(testStore, 'set');
+			const stub = sandbox.stub(testStore, 'setItem');
 
 			handler['storage'] = testStore;
 

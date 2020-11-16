@@ -10,3 +10,4 @@ lerna-debug.log
 dist
 *.sublime-settings
 *.db
+.nyc_output
