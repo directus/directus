@@ -143,8 +143,6 @@ export default async function getASTFromQuery(
 			}
 		}
 
-		console.log(relationalStructure);
-
 		for (const [relationalField, nestedFields] of Object.entries(relationalStructure)) {
 			const relatedCollection = getRelatedCollection(parentCollection, relationalField);
 			const relation = getRelation(parentCollection, relationalField);
@@ -185,7 +183,9 @@ export default async function getASTFromQuery(
 				for (const relatedCollection of allowedCollections) {
 					child.children[relatedCollection] = await parseFields(
 						relatedCollection,
-						(nestedFields as anyNested)[relatedCollection] || null
+						Array.isArray(nestedFields)
+							? nestedFields
+							: (nestedFields as anyNested)[relatedCollection] || ['*']
 					);
 					child.query[relatedCollection] = {};
 					child.relatedKey[relatedCollection] = schema[relatedCollection].primary;
