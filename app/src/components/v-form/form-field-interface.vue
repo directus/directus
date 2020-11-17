@@ -4,6 +4,7 @@
 		:class="{
 			subdued: batchMode && batchActive === false,
 		}"
+		ref="interfaceEl"
 	>
 		<v-skeleton-loader v-if="loading && field.hideLoader !== true" />
 
@@ -17,7 +18,7 @@
 			v-bind="(field.meta && field.meta.options) || {}"
 			:disabled="disabled"
 			:value="value === undefined ? field.schema.default_value : value"
-			:width="(field.meta && field.meta.width) || 'full'"
+			:width="selectSize"
 			:type="field.type"
 			:collection="field.collection"
 			:field="field.field"
@@ -33,10 +34,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import { Field } from '@/types';
 import { getInterfaces } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
+import { useElementSize } from '../../composables/use-element-size';
 
 export default defineComponent({
 	props: {
@@ -70,13 +72,37 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const interfaceEl = ref<Element | null>(null);
+
 		const interfaces = getInterfaces();
 
 		const interfaceExists = computed(() => {
 			return !!interfaces.value.find((inter) => inter.id === props.field?.meta?.interface || 'text-input');
 		});
 
-		return { interfaceExists, getDefaultInterfaceForType };
+		const { width } = useElementSize(interfaceEl);
+
+		const sizeClass = computed<string | null>(() => {
+			if (interfaceEl.value === null) return 'half'; // Fallback
+
+			if (width.value > 576) {
+				return 'full';
+			} else {
+				return 'half';
+			}
+
+			return 'half'; // Fallback
+		});
+
+		const selectSize = computed<string | null>(() => {
+			const givenWidth = (props.field.meta && props.field.meta.width) || 'full';
+
+			// If the static givenWidth (half or full) is `full`, overwrite it on small screens
+			// Otherwise just pass the static givenWidth along
+			return givenWidth === 'full' ? sizeClass.value : givenWidth;
+		});
+
+		return { interfaceExists, getDefaultInterfaceForType, interfaceEl, selectSize };
 	},
 });
 </script>
