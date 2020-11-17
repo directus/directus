@@ -1,6 +1,6 @@
 <template>
 	<div class="m2a-builder">
-		<div class="m2a-row" v-for="(item, index) of previewValues" :key="index">
+		<div class="m2a-row" v-for="(item, index) of previewValues" :key="index" @click="editExisting(item)">
 			<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
 			<render-template
 				:collection="item[anyRelation.one_collection_field]"
@@ -12,6 +12,27 @@
 		</div>
 
 		<div class="buttons">
+			<v-menu attached>
+				<template #activator="{ toggle }">
+					<v-button dashed outlined full-width @click="toggle">
+						{{ $t('create_new') }}
+					</v-button>
+				</template>
+
+				<v-list>
+					<v-list-item
+						@click="createNew(collection.collection)"
+						v-for="collection of collections"
+						:key="collection.collection"
+					>
+						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
+						<v-list-item-text>
+							{{ $t('from_collection', { collection: collection.name }) }}
+						</v-list-item-text>
+					</v-list-item>
+				</v-list>
+			</v-menu>
+
 			<v-menu attached>
 				<template #activator="{ toggle }">
 					<v-button dashed outlined full-width @click="toggle">
@@ -44,6 +65,18 @@
 			@update:active="selectingFrom = null"
 		/>
 		<!-- :filters="selectionFilters" -->
+
+		<drawer-item
+			v-if="!disabled"
+			:active="!!currentlyEditing"
+			:collection="o2mRelation.many_collection"
+			:primary-key="currentlyEditing || '+'"
+			:related-primary-key="relatedPrimaryKey || '+'"
+			:junction-field="o2mRelation.junction_field"
+			:edits="itemAtStart"
+			@input="stageEdits"
+			@update:active="cancelEdit"
+		/>
 	</div>
 </template>
 
@@ -52,12 +85,13 @@ import { defineComponent, computed, PropType, ref, watch } from '@vue/compositio
 import { useRelationsStore, useCollectionsStore, useFieldsStore } from '../../stores';
 import { Relation, Collection } from '../../types/';
 import DrawerCollection from '../../views/private/components/drawer-collection/';
+import DrawerItem from '../../views/private/components/drawer-item/';
 import api from '../../api';
 import { unexpectedError } from '../../utils/unexpected-error';
 import { getFieldsFromTemplate } from '../../utils/get-fields-from-template';
 
 export default defineComponent({
-	components: { DrawerCollection },
+	components: { DrawerCollection, DrawerItem },
 	props: {
 		collection: {
 			type: String,
@@ -89,10 +123,11 @@ export default defineComponent({
 		const { collections, templates } = useCollections();
 		const { previewValues, fetchValues } = useValues();
 		const { selectingFrom, stageSelection } = useSelection();
+		const { currentlyEditing, relatedPrimaryKey, itemAtStart, stageEdits, cancelEdit, editExisting, createNew } = useEdits();
 
 		watch(props, fetchValues, { immediate: true });
 
-		return { collections, selectingFrom, stageSelection, previewValues, templates, o2mRelation, anyRelation };
+		return { collections, selectingFrom, stageSelection, previewValues, templates, o2mRelation, anyRelation, currentlyEditing, relatedPrimaryKey, itemAtStart, stageEdits, cancelEdit, editExisting, createNew };
 
 		function useRelations() {
 			const relationsForField = computed<Relation[]>(() => {
@@ -155,12 +190,24 @@ export default defineComponent({
 				for (const collection of Object.values(collections.value)) {
 					const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection);
 					const fieldsInCollection = getFieldsFromTemplate(templates.value[collection.collection]);
+
 					fields.push(
 						...fieldsInCollection.map(
 							(field: string) => `${anyRelation.value.many_field}:${collection.collection}.${field}`
 						)
 					);
 				}
+
+				/**
+				 * @TODO
+				 *
+				 * Fetch the items based on the original collections, instead of trying to read everything through
+				 * the junction table. When adding new items or selecting existing, this 👇 will fail.
+				 * We should extract all related items from props.value, and fetch them based on the related keys instead
+				 *
+				 * After that, the rows themselves can loop over props.value instead of previewValues, allowing us to
+				 * do the edits on the actual value instead of the preview.
+				 */
 
 				try {
 					const response = await api.get(`/items/${o2mRelation.value.many_collection}`, {
@@ -201,6 +248,42 @@ export default defineComponent({
 				emit('input', [...currentValue, ...selectionAsJunctionRows]);
 			}
 		}
+
+		function useEdits() {
+			const currentlyEditing = ref<string | number | null>(null);
+			const relatedPrimaryKey = ref<string | number | null>(null);
+			const itemAtStart = ref<Record<string, any>>({});
+
+			return { currentlyEditing, relatedPrimaryKey, itemAtStart, stageEdits, cancelEdit, editExisting, createNew };
+
+			function stageEdits(edits: Record<string, any>) {
+
+			}
+
+			function cancelEdit() {
+				currentlyEditing.value = null;
+				relatedPrimaryKey.value = null;
+				itemAtStart.value = {};
+			}
+
+			function editExisting(item: Record<string, any>) {
+
+			}
+
+			function createNew(collection: string) {
+				const currentValue = props.value || [];
+
+				const newItem = {
+					[anyRelation.value.one_collection_field!]: collection,
+				};
+
+				emit('input', [...currentValue, newItem]);
+
+				itemAtStart.value = newItem;
+				relatedPrimaryKey.value = '+';
+				currentlyEditing.value = '+';
+			}
+		}
 	},
 });
 </script>
@@ -219,7 +302,7 @@ export default defineComponent({
 	border-radius: var(--border-radius);
 
 	& + .m2a-row {
-		margin-top: 8px;
+		margin-top: 12px;
 	}
 
 	.collection {
@@ -229,7 +312,10 @@ export default defineComponent({
 }
 
 .buttons {
-	margin-top: 8px;
+	margin-top: 12px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 12px;
 }
 
 .spacer {
