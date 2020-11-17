@@ -125,13 +125,15 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	async requestPasswordReset(email: string) {
+	async requestPasswordReset(email: string, url: string) {
 		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
 		if (!user) throw new ForbiddenException();
 
 		const payload = { email, scope: 'password-reset' };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
-		const acceptURL = env.PUBLIC_URL + '/admin/reset-password?token=' + token;
+		
+		let acceptURL = env.PUBLIC_URL + '/admin/reset-password?token=' + token
+		if(url && url !== '') acceptURL = url + '?token=' + token
 
 		await sendPasswordResetMail(email, acceptURL);
 	}
