@@ -50,7 +50,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .color-dot {
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 
 	.dot {
