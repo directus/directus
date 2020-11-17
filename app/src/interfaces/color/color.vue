@@ -30,7 +30,7 @@
 			</v-input>
 		</template>
 
-		<div class="color-data-inputs">
+		<div class="color-data-inputs" :class="{ stacked: width === 'half' }">
 			<div class="color-data-input color-type">
 				<v-select :items="colorTypes" v-model="colorType" />
 			</div>
@@ -136,6 +136,10 @@ export default defineComponent({
 				},
 			],
 		},
+		width: {
+			type: String,
+			required: true,
+		},
 	},
 	setup(props, { emit }) {
 		const htmlColorInput = ref<Vue | null>(null);
@@ -151,13 +155,13 @@ export default defineComponent({
 		const isValidColor = computed<boolean>(() => rgb.value !== null && props.value !== null);
 
 		const lowContrast = computed(() => {
-			if (color.value === null) return true
+			if (color.value === null) return true;
 
 			const pageColorString = getComputedStyle(document.body).getPropertyValue('--background-page').trim();
 			const pageColor = Color(pageColorString);
 
-			return color.value.contrast(pageColor) < 2
-		})
+			return color.value.contrast(pageColor) < 2;
+		});
 
 		const { hsl, rgb, hex, color } = useColor();
 
@@ -175,7 +179,7 @@ export default defineComponent({
 			menuActive,
 			Color,
 			setValue,
-			lowContrast
+			lowContrast,
 		};
 
 		function setValue(type: 'rgb' | 'hsl', i: number, val: number) {
@@ -236,7 +240,7 @@ export default defineComponent({
 					return color.value !== null ? color.value.hex() : null;
 				},
 				set(newHex) {
-					if(newHex === '') color.value = null;
+					if (newHex === '') color.value = null;
 					if (newHex === null || isHex(newHex) === false) return;
 					color.value = Color(newHex);
 				},
@@ -326,17 +330,43 @@ export default defineComponent({
 			margin-left: calc(-1 * var(--border-width));
 		}
 
-		/* stylelint-disable indentation */
-		&:not(:last-child)::v-deep .input:not(.active):not(:focus-within):not(:hover):not(:active):not(:focus) {
-			border-right-color: transparent;
-		}
-
 		&:first-child {
 			--border-radius: 4px 0px 0px 4px;
 		}
 
 		&:last-child {
 			--border-radius: 0px 4px 4px 0px;
+		}
+	}
+
+	&.stacked {
+		grid-template-columns: repeat(3, 1fr);
+
+		.color-type {
+			grid-column: 1 / span 3;
+		}
+
+		.color-data-input {
+			&:not(:first-child)::v-deep .input {
+				margin-top: calc(-2 * var(--border-width));
+				margin-left: initial;
+			}
+
+			&:not(:first-child):not(:nth-child(2))::v-deep .input {
+				margin-left: calc(-1 * var(--border-width));
+			}
+
+			&:first-child {
+				--border-radius: 4px 4px 0px 0px;
+			}
+
+			&:nth-child(2) {
+				--border-radius: 0px 0px 0px 4px;
+			}
+
+			&:last-child {
+				--border-radius: 0px 0px 4px 0px;
+			}
 		}
 	}
 }
