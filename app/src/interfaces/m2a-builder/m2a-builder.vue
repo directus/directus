@@ -129,11 +129,35 @@ export default defineComponent({
 		const { collections, templates, primaryKeys } = useCollections();
 		const { fetchValues, previewValues, loading: previewLoading } = useValues();
 		const { selectingFrom, stageSelection } = useSelection();
-		const { currentlyEditing, relatedPrimaryKey, itemAtStart, stageEdits, cancelEdit, editExisting, createNew } = useEdits();
+		const {
+			currentlyEditing,
+			relatedPrimaryKey,
+			itemAtStart,
+			stageEdits,
+			cancelEdit,
+			editExisting,
+			createNew,
+		} = useEdits();
 
 		watch(props, fetchValues, { immediate: true });
 
-		return { previewValues, collections, selectingFrom, stageSelection, templates, o2mRelation, anyRelation, currentlyEditing, relatedPrimaryKey, itemAtStart, stageEdits, cancelEdit, editExisting, createNew, previewLoading };
+		return {
+			previewValues,
+			collections,
+			selectingFrom,
+			stageSelection,
+			templates,
+			o2mRelation,
+			anyRelation,
+			currentlyEditing,
+			relatedPrimaryKey,
+			itemAtStart,
+			stageEdits,
+			cancelEdit,
+			editExisting,
+			createNew,
+			previewLoading,
+		};
 
 		function useRelations() {
 			const relationsForField = computed<Relation[]>(() => {
@@ -171,7 +195,9 @@ export default defineComponent({
 				const keys: Record<string, string> = {};
 
 				for (const collection of Object.values(collections.value)) {
-					keys[collection.collection] = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection).field!;
+					keys[collection.collection] = fieldsStore.getPrimaryKeyFieldForCollection(
+						collection.collection
+					).field!;
 				}
 
 				return keys;
@@ -203,22 +229,33 @@ export default defineComponent({
 			const previewValues = computed(() => {
 				// Convert all string/number junction rows into junction row records from the map so we can inject the
 				// related values
-				const values = (cloneDeep(props.value) || []).map((val) => {
-					if (isPlainObject(val)) {
-						return val;
-					}
+				const values = (cloneDeep(props.value) || [])
+					.map((val) => {
+						if (isPlainObject(val)) {
+							return val;
+						}
 
-					return junctionRowMap.value.find((junctionRow) => junctionRow[o2mRelation.value.many_primary] === val);
-				}).filter(val => val);
+						return junctionRowMap.value.find(
+							(junctionRow) => junctionRow[o2mRelation.value.many_primary] === val
+						);
+					})
+					.filter((val) => val);
 
 				return values.map((val) => {
 					// Find and nest the related item values for use in the preview
 					const collection = val[anyRelation.value.one_collection_field!];
 					const key = val[anyRelation.value.many_field];
 
-					// Note: it's important to use == instead of === here. When you have a mixed column (integers and strings), it's possible that the junction
-					// row will contain `"1"` instead of `1`
-					val[anyRelation.value.many_field] = relatedItemValues.value[collection]?.find((relatedVal) => relatedVal[primaryKeys.value[collection]] == key);
+					// When this item is created new and it has a uuid / auto increment id, there's no key to lookup
+					if (key) {
+						// Note: it's important to use == instead of === here. When you have a mixed column (integers and strings), it's possible that the junction
+						// row will contain `"1"` instead of `1`
+						// We'll default to the original val if nothing could be found, in case it's a newly created item with a manual string primary key
+						val[anyRelation.value.many_field] =
+							relatedItemValues.value[collection]?.find(
+								(relatedVal) => relatedVal[primaryKeys.value[collection]] == key
+							) || val[anyRelation.value.many_field];
+					}
 
 					return val;
 				});
@@ -243,7 +280,7 @@ export default defineComponent({
 					}
 
 					// Reminder: props.value holds junction table rows/ids
-					for (const stagedValue of (props.value || [])) {
+					for (const stagedValue of props.value || []) {
 						// If the staged value is a primitive string or number, it's the ID of the junction row
 						// In that case, we have to fetch the row in order to get the info we need on the related item
 						if (typeof stagedValue === 'string' || typeof stagedValue === 'number') {
@@ -259,7 +296,9 @@ export default defineComponent({
 
 							// stagedValue could contain the primary key as a primitive in many_field or nested as primaryKeyField
 							// in an object
-							const relatedKey = isPlainObject(stagedValue[anyRelation.value.many_field]) ? stagedValue[anyRelation.value.many_field][relatedCollectionPrimaryKey] : stagedValue[anyRelation.value.many_field];
+							const relatedKey = isPlainObject(stagedValue[anyRelation.value.many_field])
+								? stagedValue[anyRelation.value.many_field][relatedCollectionPrimaryKey]
+								: stagedValue[anyRelation.value.many_field];
 
 							// Could be that the key doesn't exist (add new item without manual primary key)
 							if (relatedKey) {
@@ -275,45 +314,50 @@ export default defineComponent({
 							params: {
 								filter: {
 									[o2mRelation.value.many_primary]: {
-										_in: junctionRowsToInspect
-									}
+										_in: junctionRowsToInspect,
+									},
 								},
 								fields: [
 									o2mRelation.value.many_primary,
 									anyRelation.value.many_field,
-									anyRelation.value.one_collection_field!
-								]
-							}
+									anyRelation.value.one_collection_field!,
+								],
+							},
 						});
 
 						for (const junctionRow of junctionInfoResponse.data.data) {
-							itemsToFetchPerCollection[junctionRow[anyRelation.value.one_collection_field!]].push(junctionRow[anyRelation.value.many_field]);
+							itemsToFetchPerCollection[junctionRow[anyRelation.value.one_collection_field!]].push(
+								junctionRow[anyRelation.value.many_field]
+							);
 						}
 
 						junctionRowMap.value = junctionInfoResponse.data.data;
 					}
 
 					// Fetch all related items from their individual endpoints using the fields from their templates
-					const responses = await Promise.all(Object.entries(itemsToFetchPerCollection).map(([collection, relatedKeys]) => {
-						// Don't attempt fetching anything if there's no keys to fetch
-						if (relatedKeys.length === 0) return Promise.resolve({ data: { data: [] }} as any);
+					const responses = await Promise.all(
+						Object.entries(itemsToFetchPerCollection).map(([collection, relatedKeys]) => {
+							// Don't attempt fetching anything if there's no keys to fetch
+							if (relatedKeys.length === 0) return Promise.resolve({ data: { data: [] } } as any);
 
-						const fields = getFieldsFromTemplate(templates.value[collection]);
+							const fields = getFieldsFromTemplate(templates.value[collection]);
 
-						// Make sure to always fetch the primary key, so we can match that with the value
-						if (fields.includes(primaryKeys.value[collection]) === false) fields.push(primaryKeys.value[collection]);
+							// Make sure to always fetch the primary key, so we can match that with the value
+							if (fields.includes(primaryKeys.value[collection]) === false)
+								fields.push(primaryKeys.value[collection]);
 
-						return api.get(getEndpoint(collection), {
-							params: {
-								filter: {
-									[primaryKeys.value[collection]]: {
-										_in: relatedKeys,
-									}
+							return api.get(getEndpoint(collection), {
+								params: {
+									filter: {
+										[primaryKeys.value[collection]]: {
+											_in: relatedKeys,
+										},
+									},
+									fields,
 								},
-								fields
-							}
-						});
-					}));
+							});
+						})
+					);
 
 					for (let i = 0; i < Object.keys(itemsToFetchPerCollection).length; i++) {
 						const collection = Object.keys(itemsToFetchPerCollection)[i];
@@ -353,10 +397,22 @@ export default defineComponent({
 			const relatedPrimaryKey = ref<string | number | null>(null);
 			const itemAtStart = ref<Record<string, any>>({});
 
-			return { currentlyEditing, relatedPrimaryKey, itemAtStart, stageEdits, cancelEdit, editExisting, createNew };
+			return {
+				currentlyEditing,
+				relatedPrimaryKey,
+				itemAtStart,
+				stageEdits,
+				cancelEdit,
+				editExisting,
+				createNew,
+			};
 
 			function stageEdits(edits: Record<string, any>) {
+				const currentValue = props.value || [];
 
+				if (currentlyEditing.value === '+' && relatedPrimaryKey.value === '+') {
+					emit('input', [...currentValue, edits]);
+				}
 			}
 
 			function cancelEdit() {
@@ -366,18 +422,14 @@ export default defineComponent({
 			}
 
 			function editExisting(item: Record<string, any>) {
-
+				// @TODO
 			}
 
 			function createNew(collection: string) {
-				const currentValue = props.value || [];
-
 				const newItem = {
 					[anyRelation.value.one_collection_field!]: collection,
-					[anyRelation.value.many_field]: {}
+					[anyRelation.value.many_field]: {},
 				};
-
-				emit('input', [...currentValue, newItem]);
 
 				itemAtStart.value = newItem;
 				relatedPrimaryKey.value = '+';
@@ -412,10 +464,10 @@ export default defineComponent({
 }
 
 .buttons {
-	margin-top: 12px;
 	display: grid;
-	grid-template-columns: 1fr 1fr;
 	grid-gap: 12px;
+	grid-template-columns: 1fr 1fr;
+	margin-top: 12px;
 }
 
 .spacer {
