@@ -1,10 +1,25 @@
+<!--
+
+@TODO
+
+- sort (dnd)
+- processM2A in PayloadService
+
+-->
+
 <template>
 	<div class="m2a-builder">
 		<div v-if="previewLoading" class="loader">
 			<v-skeleton-loader v-for="n in 5" :key="n" />
 		</div>
 
-		<div v-else class="m2a-row" v-for="(item, index) of previewValues" :key="index" @click="editExisting(item)">
+		<div
+			v-else
+			class="m2a-row"
+			v-for="(item, index) of previewValues"
+			:key="index"
+			@click="editExisting((value || [])[index])"
+		>
 			<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
 			<render-template
 				:collection="item[anyRelation.one_collection_field]"
@@ -77,7 +92,7 @@
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="o2mRelation.junction_field"
-			:edits="itemAtStart"
+			:edits="editsAtStart"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -127,12 +142,12 @@ export default defineComponent({
 
 		const { o2mRelation, anyRelation } = useRelations();
 		const { collections, templates, primaryKeys } = useCollections();
-		const { fetchValues, previewValues, loading: previewLoading } = useValues();
+		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap } = useValues();
 		const { selectingFrom, stageSelection } = useSelection();
 		const {
 			currentlyEditing,
 			relatedPrimaryKey,
-			itemAtStart,
+			editsAtStart,
 			stageEdits,
 			cancelEdit,
 			editExisting,
@@ -151,7 +166,7 @@ export default defineComponent({
 			anyRelation,
 			currentlyEditing,
 			relatedPrimaryKey,
-			itemAtStart,
+			editsAtStart,
 			stageEdits,
 			cancelEdit,
 			editExisting,
@@ -229,7 +244,7 @@ export default defineComponent({
 			const previewValues = computed(() => {
 				// Convert all string/number junction rows into junction row records from the map so we can inject the
 				// related values
-				const values = (cloneDeep(props.value) || [])
+				const values = cloneDeep(props.value || [])
 					.map((val) => {
 						if (isPlainObject(val)) {
 							return val;
@@ -244,24 +259,30 @@ export default defineComponent({
 				return values.map((val) => {
 					// Find and nest the related item values for use in the preview
 					const collection = val[anyRelation.value.one_collection_field!];
-					const key = val[anyRelation.value.many_field];
+					const key = isPlainObject(val[anyRelation.value.many_field])
+						? val[anyRelation.value.many_field][primaryKeys.value[collection]]
+						: val[anyRelation.value.many_field];
+					const item = relatedItemValues.value[collection].find(
+						(item) => item[primaryKeys.value[collection]] == key
+					);
 
 					// When this item is created new and it has a uuid / auto increment id, there's no key to lookup
-					if (key) {
-						// Note: it's important to use == instead of === here. When you have a mixed column (integers and strings), it's possible that the junction
-						// row will contain `"1"` instead of `1`
-						// We'll default to the original val if nothing could be found, in case it's a newly created item with a manual string primary key
-						val[anyRelation.value.many_field] =
-							relatedItemValues.value[collection]?.find(
-								(relatedVal) => relatedVal[primaryKeys.value[collection]] == key
-							) || val[anyRelation.value.many_field];
+					if (key && item) {
+						if (isPlainObject(val[anyRelation.value.many_field])) {
+							val[anyRelation.value.many_field] = {
+								...item,
+								...val[anyRelation.value.many_field],
+							};
+						} else {
+							val[anyRelation.value.many_field] = cloneDeep(item);
+						}
 					}
 
 					return val;
 				});
 			});
 
-			return { fetchValues, previewValues, loading };
+			return { fetchValues, previewValues, loading, junctionRowMap };
 
 			async function fetchValues() {
 				loading.value = true;
@@ -395,12 +416,12 @@ export default defineComponent({
 		function useEdits() {
 			const currentlyEditing = ref<string | number | null>(null);
 			const relatedPrimaryKey = ref<string | number | null>(null);
-			const itemAtStart = ref<Record<string, any>>({});
+			const editsAtStart = ref<Record<string, any>>({});
 
 			return {
 				currentlyEditing,
 				relatedPrimaryKey,
-				itemAtStart,
+				editsAtStart,
 				stageEdits,
 				cancelEdit,
 				editExisting,
@@ -412,17 +433,61 @@ export default defineComponent({
 
 				if (currentlyEditing.value === '+' && relatedPrimaryKey.value === '+') {
 					emit('input', [...currentValue, edits]);
+				} else {
+					emit(
+						'input',
+						currentValue.map((val) => {
+							if (val === editsAtStart.value || val == currentlyEditing.value) {
+								return edits;
+							}
+
+							return val;
+						})
+					);
 				}
 			}
 
 			function cancelEdit() {
 				currentlyEditing.value = null;
 				relatedPrimaryKey.value = null;
-				itemAtStart.value = {};
+				editsAtStart.value = {};
 			}
 
 			function editExisting(item: Record<string, any>) {
-				// @TODO
+				if (typeof item === 'string' || typeof item === 'number') {
+					const junctionRow = junctionRowMap.value.find((row) => {
+						return row[o2mRelation.value.many_primary] == item;
+					});
+
+					const collection = junctionRow[anyRelation.value.one_collection_field!];
+					const relatedKey = isPlainObject(junctionRow[anyRelation.value.many_field])
+						? junctionRow[anyRelation.value.many_field][primaryKeys.value[collection]]
+						: junctionRow[anyRelation.value.many_field];
+
+					editsAtStart.value = {
+						[o2mRelation.value.many_primary]: item,
+						[anyRelation.value.one_collection_field!]: collection,
+						[anyRelation.value.many_field]: {
+							[primaryKeys.value[collection]]: relatedKey,
+						},
+					};
+
+					relatedPrimaryKey.value = relatedKey || '+';
+					currentlyEditing.value = item;
+					return;
+				}
+
+				const junctionPrimaryKey = item[o2mRelation.value.many_primary];
+				const relatedCollectiom = item[anyRelation.value.one_collection_field!];
+				let relatedKey = item[anyRelation.value.many_field];
+
+				if (isPlainObject(relatedKey)) {
+					relatedKey = item[anyRelation.value.many_field][primaryKeys.value[relatedCollectiom]];
+				}
+
+				editsAtStart.value = item;
+				relatedPrimaryKey.value = relatedKey || '+';
+				currentlyEditing.value = junctionPrimaryKey || '+';
 			}
 
 			function createNew(collection: string) {
@@ -431,7 +496,7 @@ export default defineComponent({
 					[anyRelation.value.many_field]: {},
 				};
 
-				itemAtStart.value = newItem;
+				editsAtStart.value = newItem;
 				relatedPrimaryKey.value = '+';
 				currentlyEditing.value = '+';
 			}
