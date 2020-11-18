@@ -292,7 +292,7 @@ export default defineComponent({
 						// though the primary key could be a newly created one
 						else {
 							const relatedCollection = stagedValue[anyRelation.value.one_collection_field!];
-							const relatedCollectionPrimaryKey = primaryKeys[relatedCollection];
+							const relatedCollectionPrimaryKey = primaryKeys.value[relatedCollection];
 
 							// stagedValue could contain the primary key as a primitive in many_field or nested as primaryKeyField
 							// in an object
