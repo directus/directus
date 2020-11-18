@@ -1,6 +1,10 @@
 <template>
 	<div class="m2a-builder">
-		<div class="m2a-row" v-for="(item, index) of previewValues" :key="index" @click="editExisting(item)">
+		<div v-if="previewLoading" class="loader">
+			<v-skeleton-loader v-for="n in 5" :key="n" />
+		</div>
+
+		<div v-else class="m2a-row" v-for="(item, index) of previewValues" :key="index" @click="editExisting(item)">
 			<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
 			<render-template
 				:collection="item[anyRelation.one_collection_field]"
@@ -89,6 +93,8 @@ import DrawerItem from '../../views/private/components/drawer-item/';
 import api from '../../api';
 import { unexpectedError } from '../../utils/unexpected-error';
 import { getFieldsFromTemplate } from '../../utils/get-fields-from-template';
+import { isPlainObject, cloneDeep } from 'lodash';
+import { getEndpoint } from '../../utils/get-endpoint';
 
 export default defineComponent({
 	components: { DrawerCollection, DrawerItem },
@@ -120,14 +126,14 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const { o2mRelation, anyRelation } = useRelations();
-		const { collections, templates } = useCollections();
-		const { previewValues, fetchValues } = useValues();
+		const { collections, templates, primaryKeys } = useCollections();
+		const { fetchValues, previewValues, loading: previewLoading } = useValues();
 		const { selectingFrom, stageSelection } = useSelection();
 		const { currentlyEditing, relatedPrimaryKey, itemAtStart, stageEdits, cancelEdit, editExisting, createNew } = useEdits();
 
 		watch(props, fetchValues, { immediate: true });
 
-		return { collections, selectingFrom, stageSelection, previewValues, templates, o2mRelation, anyRelation, currentlyEditing, relatedPrimaryKey, itemAtStart, stageEdits, cancelEdit, editExisting, createNew };
+		return { previewValues, collections, selectingFrom, stageSelection, templates, o2mRelation, anyRelation, currentlyEditing, relatedPrimaryKey, itemAtStart, stageEdits, cancelEdit, editExisting, createNew, previewLoading };
 
 		function useRelations() {
 			const relationsForField = computed<Relation[]>(() => {
@@ -161,6 +167,16 @@ export default defineComponent({
 				return collections;
 			});
 
+			const primaryKeys = computed(() => {
+				const keys: Record<string, string> = {};
+
+				for (const collection of Object.values(collections.value)) {
+					keys[collection.collection] = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection).field!;
+				}
+
+				return keys;
+			});
+
 			const templates = computed(() => {
 				const templates: Record<string, string> = {};
 
@@ -173,53 +189,136 @@ export default defineComponent({
 				return templates;
 			});
 
-			return { collections, templates };
+			return { collections, primaryKeys, templates };
 		}
 
 		function useValues() {
 			const loading = ref(false);
-			const previewValues = ref<any[]>([]);
+			const relatedItemValues = ref<Record<string, any[]>>({});
 
-			return { previewValues, fetchValues };
+			// Holds "expanded" junction rows so we can lookup what "raw" junction row ID in props.value goes with
+			// what related item for pre-saved-unchanged-items
+			const junctionRowMap = ref<any[]>([]);
+
+			const previewValues = computed(() => {
+				// Convert all string/number junction rows into junction row records from the map so we can inject the
+				// related values
+				const values = (cloneDeep(props.value) || []).map((val) => {
+					if (isPlainObject(val)) {
+						return val;
+					}
+
+					return junctionRowMap.value.find((junctionRow) => junctionRow[o2mRelation.value.many_primary] === val);
+				}).filter(val => val);
+
+				return values.map((val) => {
+					// Find and nest the related item values for use in the preview
+					const collection = val[anyRelation.value.one_collection_field!];
+					const key = val[anyRelation.value.many_field];
+
+					// Note: it's important to use == instead of === here. When you have a mixed column (integers and strings), it's possible that the junction
+					// row will contain `"1"` instead of `1`
+					val[anyRelation.value.many_field] = relatedItemValues.value[collection]?.find((relatedVal) => relatedVal[primaryKeys.value[collection]] == key);
+
+					return val;
+				});
+			});
+
+			return { fetchValues, previewValues, loading };
 
 			async function fetchValues() {
 				loading.value = true;
 
-				const fields: string[] = [o2mRelation.value.many_primary, anyRelation.value.one_collection_field!];
-
-				for (const collection of Object.values(collections.value)) {
-					const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection);
-					const fieldsInCollection = getFieldsFromTemplate(templates.value[collection.collection]);
-
-					fields.push(
-						...fieldsInCollection.map(
-							(field: string) => `${anyRelation.value.many_field}:${collection.collection}.${field}`
-						)
-					);
-				}
-
-				/**
-				 * @TODO
-				 *
-				 * Fetch the items based on the original collections, instead of trying to read everything through
-				 * the junction table. When adding new items or selecting existing, this 👇 will fail.
-				 * We should extract all related items from props.value, and fetch them based on the related keys instead
-				 *
-				 * After that, the rows themselves can loop over props.value instead of previewValues, allowing us to
-				 * do the edits on the actual value instead of the preview.
-				 */
-
 				try {
-					const response = await api.get(`/items/${o2mRelation.value.many_collection}`, {
-						params: {
-							filter: {
-								[o2mRelation.value.many_field]: props.primaryKey,
-							},
-							fields,
-						},
-					});
+					// When we only know the ID of the junction row, we'll have to retrieve those rows to get to the related
+					// item primary key
+					const junctionRowsToInspect: (string | number)[] = [];
 
-					previewValues.value = response.data.data;
+					// We want to fetch the minimal data needed to render the preview rows from the source collections
+					// These will be the IDs per related collection in the m2a that have to be read
+					const itemsToFetchPerCollection: Record<string, (string | number)[]> = {};
+
+					for (const collection of Object.values(collections.value)) {
+						itemsToFetchPerCollection[collection.collection] = [];
+					}
+
+					// Reminder: props.value holds junction table rows/ids
+					for (const stagedValue of (props.value || [])) {
+						// If the staged value is a primitive string or number, it's the ID of the junction row
+						// In that case, we have to fetch the row in order to get the info we need on the related item
+						if (typeof stagedValue === 'string' || typeof stagedValue === 'number') {
+							junctionRowsToInspect.push(stagedValue);
+						}
+
+						// Otherwise, it's an object with the edits on an existing item, or a newly added item
+						// In both cases, it'll have the "one_collection_field" set. Both theoretically can have a primary key
+						// though the primary key could be a newly created one
+						else {
+							const relatedCollection = stagedValue[anyRelation.value.one_collection_field!];
+							const relatedCollectionPrimaryKey = primaryKeys[relatedCollection];
+
+							// stagedValue could contain the primary key as a primitive in many_field or nested as primaryKeyField
+							// in an object
+							const relatedKey = isPlainObject(stagedValue[anyRelation.value.many_field]) ? stagedValue[anyRelation.value.many_field][relatedCollectionPrimaryKey] : stagedValue[anyRelation.value.many_field];
+
+							// Could be that the key doesn't exist (add new item without manual primary key)
+							if (relatedKey) {
+								itemsToFetchPerCollection[relatedCollection].push(relatedKey);
+							}
+						}
+					}
+
+					// If there's junction row IDs, we'll have to fetch the related collection / key from them in order to fetch
+					// the correct data from those related collections
+					if (junctionRowsToInspect.length > 0) {
+						const junctionInfoResponse = await api.get(`/items/${o2mRelation.value.many_collection}`, {
+							params: {
+								filter: {
+									[o2mRelation.value.many_primary]: {
+										_in: junctionRowsToInspect
+									}
+								},
+								fields: [
+									o2mRelation.value.many_primary,
+									anyRelation.value.many_field,
+									anyRelation.value.one_collection_field!
+								]
+							}
+						});
+
+						for (const junctionRow of junctionInfoResponse.data.data) {
+							itemsToFetchPerCollection[junctionRow[anyRelation.value.one_collection_field!]].push(junctionRow[anyRelation.value.many_field]);
+						}
+
+						junctionRowMap.value = junctionInfoResponse.data.data;
+					}
+
+					// Fetch all related items from their individual endpoints using the fields from their templates
+					const responses = await Promise.all(Object.entries(itemsToFetchPerCollection).map(([collection, relatedKeys]) => {
+						// Don't attempt fetching anything if there's no keys to fetch
+						if (relatedKeys.length === 0) return Promise.resolve({ data: { data: [] }} as any);
+
+						const fields = getFieldsFromTemplate(templates.value[collection]);
+
+						// Make sure to always fetch the primary key, so we can match that with the value
+						if (fields.includes(primaryKeys.value[collection]) === false) fields.push(primaryKeys.value[collection]);
+
+						return api.get(getEndpoint(collection), {
+							params: {
+								filter: {
+									[primaryKeys.value[collection]]: {
+										_in: relatedKeys,
+									}
+								},
+								fields
+							}
+						});
+					}));
+
+					for (let i = 0; i < Object.keys(itemsToFetchPerCollection).length; i++) {
+						const collection = Object.keys(itemsToFetchPerCollection)[i];
+						relatedItemValues.value[collection] = responses[i].data.data;
+					}
 				} catch (err) {
 					unexpectedError(err);
 				} finally {
@@ -275,6 +374,7 @@ export default defineComponent({
 
 				const newItem = {
 					[anyRelation.value.one_collection_field!]: collection,
+					[anyRelation.value.many_field]: {}
 				};
 
 				emit('input', [...currentValue, newItem]);
