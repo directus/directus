@@ -1,4 +1,5 @@
 post:
+  summary: Sort Items
   description: Re-sort items in collection based on start and to value of item
   operationId: sort
   requestBody:

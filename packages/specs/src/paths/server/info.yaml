@@ -1,4 +1,5 @@
 get:
+  summary: System Info
   description: Perform a system status check and return the options.
   operationId: serverInfo
   parameters:

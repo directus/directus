@@ -1,4 +1,5 @@
 get:
+  summary: List My Permissions
   description: List the permissions that apply to the current user.
   operationId: getMyPermissions
   responses:

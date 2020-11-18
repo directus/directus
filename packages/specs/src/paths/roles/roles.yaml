@@ -1,4 +1,5 @@
 get:
+  summary: List Roles
   description: List the roles.
   operationId: getRoles
   parameters:
@@ -29,7 +30,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Roles
+
 post:
+  summary: Create a Role
   description: Create a new role.
   operationId: createRole
   parameters:

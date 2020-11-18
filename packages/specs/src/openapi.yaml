@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: Directus API
-  description: Template for generating any kind of SDK.
+  title: Directus
+  description: A real-time API and App dashboard for managing SQL database content.
   contact:
     email: contact@directus.io
   license:
@@ -135,10 +135,6 @@ paths:
     $ref: "./paths/files/files.yaml"
   /files/{id}:
     $ref: "./paths/files/file.yaml"
-  /files/{id}/revisions:
-    $ref: "./paths/files/revisions.yaml"
-  /files/{id}/revisions/{offset}:
-    $ref: "./paths/files/revision.yaml"
 
   # Folders
   /folders:
@@ -187,8 +183,6 @@ paths:
     $ref: "./paths/users/users.yaml"
   /users/{id}:
     $ref: "./paths/users/user.yaml"
-  /users/{id}/track/page:
-    $ref: "./paths/users/user-tracking.yaml"
   /users/invite:
     $ref: "./paths/users/user-invite.yaml"
   /users/invite/accept:
@@ -202,11 +196,6 @@ paths:
   /users/me/tfa/disable:
     $ref: "./paths/users/me-tfa-disable.yaml"
 
-  # Utilities
-  /utils/hash:
-    $ref: "./paths/utils/hash.yaml"
-  /utils/hash/verify:
-    $ref: "./paths/utils/hash-match.yaml"
   /utils/random/string:
     $ref: "./paths/utils/random.yaml"
   /utils/sort/{collection}:

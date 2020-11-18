@@ -1,4 +1,5 @@
 get:
+  summary: List Users
   description: List the users.
   operationId: getUsers
   parameters:
@@ -28,7 +29,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Users
+
 post:
+  summary: Create a User
   description: Create a new user.
   operationId: createUser
   parameters:

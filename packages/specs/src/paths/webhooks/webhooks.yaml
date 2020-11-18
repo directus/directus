@@ -1,4 +1,5 @@
 get:
+  summary: List Webhooks
   description: Get all webhooks.
   operationId: getWebhooks
   responses:
@@ -17,7 +18,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Webhooks
+
 post:
+  summary: Create a Webhook
   description: Create a new webhook.
   operationId: createWebhook
   parameters:

@@ -1,4 +1,5 @@
 post:
+  summary: Disable 2FA
   description: Disables two-factor authentication for the currently authenticated user.
   operationId: meTfaDisable
   responses:

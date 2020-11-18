@@ -1,4 +1,5 @@
 get:
+  summary: List Relations
   description: List the relations.
   operationId: getRelations
   parameters:
@@ -29,7 +30,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Relations
+
 post:
+  summary: Create a Relation
   description: Create a new relation.
   operationId: createRelation
   parameters:
