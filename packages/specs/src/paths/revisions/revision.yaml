@@ -1,4 +1,5 @@
 get:
+  summary: Retrieve a Revision
   description: Retrieve a single revision by unique identifier.
   operationId: getRevision
   parameters:

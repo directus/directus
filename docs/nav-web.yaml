@@ -64,28 +64,28 @@
       title: Extensions
       children:
         - type: page
-          path: /guides/extensions/creating-a-custom-display
+          path: /guides/extensions/displays
           title: Creating a Custom Display
         - type: page
-          path: /guides/extensions/creating-a-custom-interface
+          path: /guides/extensions/interfaces
           title: Creating a Custom Interface
         - type: page
-          path: /guides/extensions/creating-a-custom-layout
+          path: /guides/extensions/layouts
           title: Creating a Custom Layout
         - type: page
-          path: /guides/extensions/creating-a-custom-module
+          path: /guides/extensions/modules
           title: Creating a Custom Module
         - type: page
-          path: /guides/extensions/creating-a-custom-api-endpoint
+          path: /guides/extensions/api-endpoints
           title: Creating a Custom API Endpoint
         - type: page
-          path: /guides/extensions/creating-a-custom-api-hook
+          path: /guides/extensions/api-hooks
           title: Creating a Custom API Hook
         - type: page
-          path: /guides/extensions/creating-a-custom-email-template
+          path: /guides/extensions/email-templates
           title: Creating a Custom Email Template
         - type: page
-          path: /guides/extensions/creating-a-custom-storage-adapter
+          path: /guides/extensions/storage-adapters
           title: Creating a Custom Storage Adapter
         - type: page
           path: /guides/extensions/accessing-data
@@ -103,5 +103,71 @@
       path: /reference/error-codes
       title: Error Codes
     - type: page
-      path: /reference/item-rules
-      title: Item Rules
+      path: /reference/filter-rules
+      title: Filter Rules
+    - type: page
+      path: /reference/item-objects
+      title: Item Objects
+    - type: group
+      title: API
+      children:
+        - type: page
+          path: /reference/api/introduction
+          title: Introduction
+        - type: page
+          path: /reference/api/items
+          title: Items
+        - type: page
+          path: /reference/api/activity
+          title: Activity
+        - type: page
+          path: /reference/api/assets
+          title: Assets
+        - type: page
+          path: /reference/api/authentication
+          title: Authentication
+        - type: page
+          path: /reference/api/collections
+          title: Collections
+        - type: page
+          path: /reference/api/extensions
+          title: Extensions
+        - type: page
+          path: /reference/api/fields
+          title: Fields
+        - type: page
+          path: /reference/api/files
+          title: Files
+        - type: page
+          path: /reference/api/folders
+          title: Folders
+        - type: page
+          path: /reference/api/permissions
+          title: Permissions
+        - type: page
+          path: /reference/api/presets
+          title: Presets
+        - type: page
+          path: /reference/api/relations
+          title: Relations
+        - type: page
+          path: /reference/api/revisions
+          title: Revisions
+        - type: page
+          path: /reference/api/roles
+          title: Roles
+        - type: page
+          path: /reference/api/server
+          title: Server
+        - type: page
+          path: /reference/api/settings
+          title: Settings
+        - type: page
+          path: /reference/api/users
+          title: Users
+        - type: page
+          path: /reference/api/utilities
+          title: Utilities
+        - type: page
+          path: /reference/api/webhooks
+          title: Webhooks

@@ -1,4 +1,5 @@
 get:
+  summary: List Permissions
   description: List all permissions.
   operationId: getPermissions
   parameters:
@@ -29,7 +30,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Permissions
+
 post:
+  summary: Create a Permission
   description: Create a new permission.
   operationId: createPermission
   parameters:

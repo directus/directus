@@ -1,4 +1,5 @@
 get:
+  summary: Retrieve a Permission
   description: Retrieve a single permissions object by unique identifier.
   operationId: getPermission
   parameters:
@@ -20,7 +21,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Permissions
+
 patch:
+  summary: Update a Permission
   description: Update an existing permission
   operationId: updatePermission
   parameters:
@@ -90,7 +93,9 @@ patch:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Permissions
+
 delete:
+  summary: Delete a Permission
   description: Delete an existing permission
   operationId: deletePermission
   responses:
@@ -102,5 +107,6 @@ delete:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Permissions
+
 parameters:
   - $ref: "../../openapi.yaml#/components/parameters/Id"

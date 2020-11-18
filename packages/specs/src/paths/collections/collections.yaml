@@ -1,4 +1,5 @@
 get:
+  summary: List Collections
   description: Returns a list of the collections available in the project.
   operationId: getCollections
   parameters:
@@ -23,7 +24,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Collections
+
 post:
+  summary: Create a Collection
   description: Create a new collection in Directus.
   operationId: createCollection
   parameters:

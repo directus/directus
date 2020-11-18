@@ -2,9 +2,8 @@ get:
   tags:
     - Assets
   operationId: getAsset
+  summary: Get an Asset
   description: Image typed files can be dynamically resized and transformed to fit any need.
-  security:
-    - Auth: []
   parameters:
     - name: id
       in: path

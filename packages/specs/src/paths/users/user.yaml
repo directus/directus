@@ -1,4 +1,5 @@
 get:
+  summary: Retrieve a User
   description: Retrieve a single user by unique identifier.
   operationId: getUser
   parameters:
@@ -20,7 +21,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Users
+
 patch:
+  summary: Update a User
   description: Update an existing user
   operationId: updateUser
   parameters:
@@ -47,7 +50,9 @@ patch:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Users
+
 delete:
+  summary: Delete a User
   description: Delete an existing user
   operationId: deleteUser
   responses:

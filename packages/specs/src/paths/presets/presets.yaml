@@ -2,6 +2,7 @@ get:
   tags:
     - Presets
   operationId: getPresets
+  summary: List Presets
   description: List the presets.
   security:
     - Auth: []
@@ -29,10 +30,12 @@ get:
                   $ref: "../../openapi.yaml#/components/schemas/Presets"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+
 post:
   tags:
     - Presets
   operationId: createPreset
+  summary: Create a Preset
   description: Create a new preset.
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/Fields"

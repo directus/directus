@@ -1,4 +1,5 @@
 get:
+  summary: Retrieve a Role
   description: Retrieve a single role by unique identifier.
   operationId: getRole
   parameters:
@@ -20,7 +21,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Roles
+
 patch:
+  summary: Update a Role
   description: Update an existing role
   operationId: updateRole
   parameters:
@@ -73,7 +76,9 @@ patch:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Roles
+
 delete:
+  summary: Delete a Role
   description: Delete an existing role
   operationId: deleteRole
   responses:

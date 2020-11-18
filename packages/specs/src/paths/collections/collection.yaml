@@ -1,4 +1,5 @@
 get:
+  summary: Retrieve a Collection
   description: Retrieves the details of a single collection.
   operationId: getCollection
   parameters:
@@ -20,6 +21,7 @@ get:
   tags:
     - Collections
 patch:
+  summary: Update a Collection
   description: Update an existing collection.
   operationId: updateCollection
   parameters:
@@ -103,7 +105,9 @@ patch:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Collections
+
 delete:
+  summary: Delete a Collection
   description: "Delete an existing collection. Warning: This will delete the whole collection, including the items within. Proceed with caution."
   operationId: deleteCollection
   responses:
@@ -115,6 +119,7 @@ delete:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Collections
+
 parameters:
   - name: id
     in: path
