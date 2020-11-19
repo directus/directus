@@ -1,6 +1,6 @@
 {
   "name": "@directus/sdk-js",
-  "version": "9.0.0-rc.14",
+  "version": "9.0.0-rc.15",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -30,9 +30,15 @@
     "typescript": "^4.0.3"
   },
   "nyc": {
-    "extension": [".ts"],
-    "include": ["src/**/*.ts"],
-    "exclude": ["**/*.d.ts"],
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
     "all": true
   }
 }
