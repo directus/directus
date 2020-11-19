@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "lerna run dev --stream --parallel",
     "build": "lerna run build",
-    "release": "lerna run test && lerna publish --force-publish",
+    "release": "lerna publish --force-publish",
     "cli": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/index.ts",
     "postinstall": "npm run build"
   },
