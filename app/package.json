@@ -20,7 +20,6 @@
   "scripts": {
     "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "lint:styles": "stylelint \"**/*.{vue,scss}\"",
     "fix": "prettier --write \"src/**/*.{js,vue,ts}\"",
