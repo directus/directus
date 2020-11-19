@@ -23,7 +23,7 @@ TODO
 
 ## 🔧 Contributing
 
-Please report any and all quirks / issues you come across as [an issue](https://github.com/directus/next/issues/new).
+Please report any and all quirks / issues you come across as [an issue](https://github.com/directus/directus/issues/new).
 
 Pull requests are more than welcome and always appreciated. Seeing this is in active development, please make sure to reach out a member of the core team in an issue or [on Discord](http://discord.gg/directus) before you start working on a feature or bug to ensure you don't work on the same thing as somebody else :)
 

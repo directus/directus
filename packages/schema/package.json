@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/directus/next.git"
+    "url": "git+https://github.com/directus/directus.git"
   },
   "keywords": [
     "sql",
@@ -37,9 +37,9 @@
   "author": "Rijk van Zanten <rijkvanzanten@me.com>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/directus/next/issues"
+    "url": "https://github.com/directus/directus/issues"
   },
-  "homepage": "https://github.com/directus/next#readme",
+  "homepage": "https://github.com/directus/directus#readme",
   "devDependencies": {
     "npm-watch": "^0.7.0",
     "typescript": "^3.9.5"

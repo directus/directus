@@ -10,12 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/directus/next.git"
+    "url": "git+https://github.com/directus/directus.git"
   },
   "author": "Rijk van Zanten <rijkvanzanten@me.com>",
   "license": "GPL-3.0-only",
   "bugs": {
-    "url": "https://github.com/directus/next/issues"
+    "url": "https://github.com/directus/directus/issues"
   },
   "devDependencies": {
     "@apidevtools/swagger-cli": "^4.0.4",

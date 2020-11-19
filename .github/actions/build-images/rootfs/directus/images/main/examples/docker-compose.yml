@@ -14,7 +14,7 @@ services:
       context: "../"
       args:
         VERSION: "v9.0.0-rc.5"
-        REPOSITORY: "directus/next"
+        REPOSITORY: "directus/directus"
     ports:
       - 8055:8055
     networks:
