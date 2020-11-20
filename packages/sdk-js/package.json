@@ -1,6 +1,6 @@
 {
   "name": "@directus/sdk-js",
-  "version": "9.0.0-rc.16",
+  "version": "9.0.0-rc.17",
   "description": "",
   "main": "index.js",
   "scripts": {
