@@ -1,5 +1,6 @@
 import storage from '../storage';
 import sharp, { ResizeOptions } from 'sharp';
+import { contentType } from 'mime-types';
 import database from '../database';
 import path from 'path';
 import Knex from 'knex';
@@ -33,15 +34,22 @@ export class AssetsService {
 
 		const type = file.type;
 
-		// We can only transform JPEG, PNG, and WebP
-		if (['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
+		// We can only transform JPEG, PNG, TIFF and WebP
+		if (['image/jpeg', 'image/png', 'image/webp', 'image/tiff'].includes(type)) {
 			const resizeOptions = this.parseTransformation(transformation);
+			const reformat =
+				transformation.format &&
+				['jpeg', 'png', 'webp', 'tiff'].includes(transformation.format);
 			const assetFilename =
 				path.basename(file.filename_disk, path.extname(file.filename_disk)) +
 				this.getAssetSuffix(resizeOptions) +
-				path.extname(file.filename_disk);
+				(reformat ? `.${transformation.format}` : path.extname(file.filename_disk));
 
 			const { exists } = await storage.disk(file.storage).exists(assetFilename);
+
+			if (reformat && transformation.format) {
+				file.type = contentType(assetFilename);
+			}
 
 			if (exists) {
 				return { stream: storage.disk(file.storage).getStream(assetFilename), file };
@@ -49,6 +57,10 @@ export class AssetsService {
 
 			const readStream = storage.disk(file.storage).getStream(file.filename_disk);
 			const transformer = sharp().resize(resizeOptions);
+
+			if (reformat && transformation.format) {
+				transformer.toFormat(transformation.format);
+			}
 
 			await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer));
 
