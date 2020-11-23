@@ -4,7 +4,7 @@ export type Transformation = {
 	height?: number; // height
 	fit?: 'cover' | 'contain' | 'inside' | 'outside'; // fit
 	withoutEnlargement?: boolean; // Without Enlargement
-	format?: string; // override destination format
+	format?: '' | 'jpeg' | 'png' | 'webp' | 'tiff'; // override destination format
 };
 
 // @NOTE Keys used in Transformation should match ASSET_GENERATION_QUERY_KEYS in constants.ts

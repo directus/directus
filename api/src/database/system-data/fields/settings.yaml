@@ -177,6 +177,28 @@ fields:
             width: half
             options:
               label: Don't upscale images
+        - field: format
+          name: Format
+          type: string
+          schema:
+            is_nullable: false
+            default_value: ""
+          meta:
+            interface: dropdown
+            options:
+              choices:
+                - value: ""
+                  text: Same as source
+                - value: jpeg
+                  text: JPEG
+                - value: png
+                  text: PNG
+                - value: webp
+                  text: WebP
+                - value: tiff
+                  text: Tiff
+            required: false
+            width: half
       template: '{{key}}'
     special: json
     width: full

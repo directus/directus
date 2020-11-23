@@ -49,6 +49,12 @@ get:
       description: Download the asset to your computer
       schema:
         type: boolean
+    - name: format
+      in: query
+      description: Reformat output image
+      schema:
+        type: string
+        enum: ["", jpeg, png, webp, tiff]
   responses:
     "200":
       description: Successful request

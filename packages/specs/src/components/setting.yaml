@@ -85,5 +85,14 @@ properties:
         quality:
           description: Quality of the compression used.
           type: integer
+        format:
+          description: Reformat output image
+          type: string
+          enum:
+            - ""
+            - jpeg
+            - png
+            - webp
+            - tiff
     example: null
     nullable: true

@@ -11414,6 +11414,24 @@
 						"required": true,
 						"type": "integer",
 						"width": "half"
+					},
+					{
+						"field": "format",
+						"interface": "dropdown",
+						"default_value": "",
+						"name": "Format",
+						"options": {
+							"choices": {
+								"": "Same as source",
+								"jpeg": "JPEG",
+								"png": "PNG",
+								"webp": "WebP",
+								"tiff": "Tiff"
+							}
+						},
+						"required": false,
+						"type": "string",
+						"width": "half"
 					}
 				],
 				"template": "{{key}}"
