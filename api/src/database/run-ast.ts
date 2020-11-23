@@ -29,6 +29,7 @@ export default async function runAST(
 				`Collection "${collection}" doesn't have a primary key column`,
 				{
 					service: 'database',
+					table: collection,
 				}
 			);
 		}
