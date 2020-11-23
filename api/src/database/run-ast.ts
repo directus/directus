@@ -6,7 +6,7 @@ import { PayloadService } from '../services/payload';
 import applyQuery from '../utils/apply-query';
 import Knex, { QueryBuilder } from 'knex';
 import { toArray } from '../utils/to-array';
-import { ServiceUnavailableException } from '../../dist/exceptions';
+import { ServiceUnavailableException } from '../exceptions';
 
 type RunASTOptions = {
 	query?: AST['query'];
