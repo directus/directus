@@ -6,6 +6,7 @@ import { PayloadService } from '../services/payload';
 import applyQuery from '../utils/apply-query';
 import Knex, { QueryBuilder } from 'knex';
 import { toArray } from '../utils/to-array';
+import { ServiceUnavailableException } from '../../dist/exceptions';
 
 type RunASTOptions = {
 	query?: AST['query'];
@@ -21,6 +22,17 @@ export default async function runAST(
 	const ast = cloneDeep(originalAST);
 
 	const knex = options?.knex || database;
+
+	for (const [collection, info] of Object.entries(schema)) {
+		if (!info.primary) {
+			throw new ServiceUnavailableException(
+				`Collection "${collection}" doesn't have a primary key column`,
+				{
+					service: 'database',
+				}
+			);
+		}
+	}
 
 	if (ast.type === 'm2a') {
 		const results: { [collection: string]: null | Item | Item[] } = {};
