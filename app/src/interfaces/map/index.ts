@@ -60,8 +60,8 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 		{
-			field: 'marker',
-			name: i18n.t('interfaces.map.marker'),
+			field: 'mode',
+			name: i18n.t('interfaces.map.mode'),
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -124,11 +124,11 @@ export default defineInterface(({ i18n }) => ({
 						},
 						{
 							text: i18n.t('Colored'),
-							value: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+							value: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
 						},
 						{
 							text: i18n.t('Grayscale'),
-							value: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
+							value: 'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
 						},
 						{
 							text: i18n.t('Dark'),
@@ -136,7 +136,7 @@ export default defineInterface(({ i18n }) => ({
 						},
 						{
 							text: i18n.t('Terrain'),
-							value: 'https://tile.stamen.com/terrain/{z}/{x}/{y}.jpg',
+							value: 'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
 						},
 					],
 				},
