@@ -11,9 +11,9 @@ export type ServerInfo = {
 		public_note: string | null;
 		custom_css: null;
 	};
-	directus: { version: string };
-	node: { uptime: number; version: string };
-	os: { totalmem: number; type: string; uptime: number; version: string };
+	directus?: { version: string };
+	node?: { uptime: number; version: string };
+	os?: { totalmem: number; type: string; uptime: number; version: string };
 };
 
 export class ServerHandler {
