@@ -9,7 +9,7 @@ export default defineInterface(({ i18n }) => ({
 	description: i18n.t('interfaces.map.description'),
 	icon: 'map',
 	component: InterfaceMap,
-	types: ['csv', 'json'],
+	types: ['json'],
 	options: [
 		{
 			field: 'lat',
@@ -98,7 +98,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'height',
-			name: i18n.t('height'),
+			name: i18n.t('interfaces.map.height'),
 			type: 'integer',
 			meta: {
 				width: 'half',
