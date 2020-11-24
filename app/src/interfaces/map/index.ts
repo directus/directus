@@ -119,7 +119,7 @@ export default defineInterface(({ i18n }) => ({
 					allowOther: true,
 					choices: [
 						{
-							text: 'OpenStreetmaps',
+							text: 'OpenStreetMaps',
 							value: '',
 						},
 						{
@@ -130,11 +130,19 @@ export default defineInterface(({ i18n }) => ({
 							text: i18n.t('Grayscale'),
 							value: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
 						},
+						{
+							text: i18n.t('Dark'),
+							value: 'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png',
+						},
+						{
+							text: i18n.t('Terrain'),
+							value: 'https://tile.stamen.com/terrain/{z}/{x}/{y}.jpg',
+						},
 					],
 				},
 			},
 			schema: {
-				default_value: 'pin',
+				default_value: '',
 			},
 		},
 	],
