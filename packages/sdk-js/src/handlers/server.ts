@@ -1,4 +1,5 @@
 import { AxiosInstance } from 'axios';
+import type { OpenAPIObject } from 'openapi3-ts';
 
 export type ServerInfo = {
 	project: {
@@ -15,19 +16,6 @@ export type ServerInfo = {
 	os: { totalmem: number; type: string; uptime: number; version: string };
 };
 
-export type OasData = {
-	openapi: string;
-	info: {
-		title: string;
-		description: string;
-		versions: string;
-	};
-	servers: { url: string; description: string }[];
-	tags: { name: string; description: string }[];
-	paths: Record<string, any>;
-	components: Record<string, any>;
-};
-
 export class ServerHandler {
 	private axios: AxiosInstance;
 
@@ -36,7 +24,7 @@ export class ServerHandler {
 	}
 
 	specs = {
-		oas: async (): Promise<OasData> => {
+		oas: async (): Promise<OpenAPIObject> => {
 			const result = await this.axios.get('/server/specs/oas');
 			return result.data;
 		},
