@@ -13,6 +13,13 @@
 			/>
 		</div>
 	</div>
+	<div class="form-grid">
+		<div class="field full">
+			<p class="type-label">{{ $t('interfaces.folder.folder') }}</p>
+			<folder v-model="folderValue" />
+			<small class="note" v-html="marked($t('interfaces.folder.field_hint'))" />
+		</div>
+	</div>
 </template>
 
 <script lang="ts">
@@ -21,7 +28,9 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/';
 import { Relation, Collection } from '@/types';
 import { useCollectionsStore } from '../../stores';
+import Folder from "@/interfaces/_system/folder/folder";
 export default defineComponent({
+	components: { Folder },
 	props: {
 		collection: {
 			type: String,
@@ -64,6 +73,18 @@ export default defineComponent({
 			},
 		});
 
+		const folderValue = computed({
+			get() {
+				return props.value?.folder;
+			},
+			set(folder: string) {
+				emit('input', {
+					...(props.value || {}),
+					folder,
+				});
+			},
+		});
+
 		const junctionCollection = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
@@ -79,7 +100,7 @@ export default defineComponent({
 			);
 		});
 
-		return { sortField, junctionCollection, junctionCollectionExists };
+		return { sortField, junctionCollection, junctionCollectionExists, folderValue };
 	},
 });
 </script>
