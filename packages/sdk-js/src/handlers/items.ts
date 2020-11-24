@@ -25,8 +25,11 @@ export class ItemsHandler {
 		return result.data;
 	}
 
-	async read<T extends Item>(query?: Query): Promise<Response<T | T[]>>;
+	async read<T extends Item>(): Promise<Response<T | T[]>>;
 	async read<T extends Item>(query: Query & { single: true }): Promise<Response<T>>;
+	async read<T extends Item>(
+		query: Query & { single: false | undefined }
+	): Promise<Response<T[]>>;
 	async read<T extends Item>(key: PrimaryKey, query?: Query): Promise<Response<T>>;
 	async read<T extends Item>(keys: PrimaryKey[], query?: Query): Promise<Response<T | T[]>>;
 	async read<T extends Item>(
