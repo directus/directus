@@ -11,14 +11,14 @@ export class ActivityHandler {
 		this.itemsHandler = new ItemsHandler('directus_activity', axios);
 	}
 
-	async read(query?: Query): Promise<Response<Item | Item[]>>;
-	async read(key: PrimaryKey, query?: Query): Promise<Response<Item>>;
-	async read(keys: PrimaryKey[], query?: Query): Promise<Response<Item | Item[]>>;
-	async read(
+	async read<T extends Item>(query?: Query): Promise<Response<T | T[]>>;
+	async read<T extends Item>(key: PrimaryKey, query?: Query): Promise<Response<T>>;
+	async read<T extends Item>(keys: PrimaryKey[], query?: Query): Promise<Response<T | T[]>>;
+	async read<T extends Item>(
 		keysOrQuery?: PrimaryKey | PrimaryKey[] | Query,
 		query?: Query & { single: boolean }
-	): Promise<Response<Item | Item[]>> {
-		const result = await this.itemsHandler.read(keysOrQuery as any, query as any);
+	): Promise<Response<T | T[]>> {
+		const result = await this.itemsHandler.read<T>(keysOrQuery as any, query as any);
 		return result;
 	}
 
