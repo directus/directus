@@ -1,24 +1,43 @@
 import { AxiosInstance } from 'axios';
 import { ItemsHandler } from './items';
-import { Query, PrimaryKey, Item, Response } from '../types';
+import { Query, PrimaryKey, Item, ItemsResponse } from '../types';
 
+export type ActivityItem = {
+	action: string;
+	ip: string;
+	item: PrimaryKey;
+	user_agent: string;
+	timestamp: string;
+	id: number;
+	user: string;
+	comment: string | null;
+	collection: string;
+	revisions: [number] | null;
+};
+
+/**
+ * @TODO I'm not sure why revisions return [number], but it's what api returns
+ */
 export class ActivityHandler {
 	private axios: AxiosInstance;
-	private itemsHandler: ItemsHandler;
+	private itemsHandler: ItemsHandler<ActivityItem>;
 
 	constructor(axios: AxiosInstance) {
 		this.axios = axios;
-		this.itemsHandler = new ItemsHandler('directus_activity', axios);
+		this.itemsHandler = new ItemsHandler<ActivityItem>('directus_activity', axios);
 	}
 
-	async read<T extends Item>(query?: Query): Promise<Response<T | T[]>>;
-	async read<T extends Item>(key: PrimaryKey, query?: Query): Promise<Response<T>>;
-	async read<T extends Item>(keys: PrimaryKey[], query?: Query): Promise<Response<T | T[]>>;
-	async read<T extends Item>(
+	async read(query?: Query): Promise<ItemsResponse<ActivityItem>>;
+	async read(key: PrimaryKey, query?: Query): Promise<ItemsResponse<ActivityItem>>;
+	async read(
+		keys: PrimaryKey[],
+		query?: Query
+	): Promise<ItemsResponse<ActivityItem | ActivityItem[]>>;
+	async read(
 		keysOrQuery?: PrimaryKey | PrimaryKey[] | Query,
 		query?: Query & { single: boolean }
-	): Promise<Response<T | T[]>> {
-		const result = await this.itemsHandler.read<T>(keysOrQuery as any, query as any);
+	): Promise<ItemsResponse<ActivityItem | ActivityItem[]>> {
+		const result = await this.itemsHandler.read(keysOrQuery as any, query as any);
 		return result;
 	}
 
@@ -27,7 +46,7 @@ export class ActivityHandler {
 			collection: string;
 			item: string;
 			comment: string;
-		}): Promise<Response<Item>> => {
+		}): Promise<ItemsResponse<Item>> => {
 			const response = await this.axios.post('/activity/comments', payload);
 			return response.data;
 		},

@@ -1,7 +1,7 @@
-import { Query, Item, Payload, Response, PrimaryKey } from '../types';
+import { Query, Item, Payload, ItemsResponse, PrimaryKey } from '../types';
 import { AxiosInstance } from 'axios';
 
-export class ItemsHandler {
+export class ItemsHandler<T extends Item = Item> {
 	axios: AxiosInstance;
 	private endpoint: string;
 
@@ -12,12 +12,9 @@ export class ItemsHandler {
 			: `/items/${collection}/`;
 	}
 
-	async create<T extends Item>(payload: Payload, query?: Query): Promise<Response<T>>;
-	async create<T extends Item>(payloads: Payload[], query?: Query): Promise<Response<T[]>>;
-	async create<T extends Item>(
-		payloads: Payload | Payload[],
-		query?: Query
-	): Promise<Response<T | T[]>> {
+	async create(payload: Payload, query?: Query): Promise<ItemsResponse<T>>;
+	async create(payloads: Payload[], query?: Query): Promise<ItemsResponse<T[]>>;
+	async create(payloads: Payload | Payload[], query?: Query): Promise<ItemsResponse<T | T[]>> {
 		const result = await this.axios.post(this.endpoint, payloads, {
 			params: query,
 		});
@@ -25,17 +22,15 @@ export class ItemsHandler {
 		return result.data;
 	}
 
-	async read<T extends Item>(): Promise<Response<T | T[]>>;
-	async read<T extends Item>(query: Query & { single: true }): Promise<Response<T>>;
-	async read<T extends Item>(
-		query: Query & { single: false | undefined }
-	): Promise<Response<T[]>>;
-	async read<T extends Item>(key: PrimaryKey, query?: Query): Promise<Response<T>>;
-	async read<T extends Item>(keys: PrimaryKey[], query?: Query): Promise<Response<T | T[]>>;
-	async read<T extends Item>(
+	async read(): Promise<ItemsResponse<T | T[]>>;
+	async read(query: Query & { single: true }): Promise<ItemsResponse<T>>;
+	async read(query: Query & { single: false | undefined }): Promise<ItemsResponse<T[]>>;
+	async read(key: PrimaryKey, query?: Query): Promise<ItemsResponse<T>>;
+	async read(keys: PrimaryKey[], query?: Query): Promise<ItemsResponse<T | T[]>>;
+	async read(
 		keysOrQuery?: PrimaryKey | PrimaryKey[] | Query,
 		query?: Query & { single: boolean }
-	): Promise<Response<T | T[]>> {
+	): Promise<ItemsResponse<T | T[]>> {
 		let keys: PrimaryKey | PrimaryKey[] | null = null;
 
 		if (
@@ -70,23 +65,15 @@ export class ItemsHandler {
 		return result.data;
 	}
 
-	async update<T extends Item>(
-		key: PrimaryKey,
-		payload: Payload,
-		query?: Query
-	): Promise<Response<T>>;
-	async update<T extends Item>(
-		keys: PrimaryKey[],
-		payload: Payload,
-		query?: Query
-	): Promise<Response<T[]>>;
-	async update<T extends Item>(payload: Payload[], query?: Query): Promise<Response<T[]>>;
-	async update<T extends Item>(payload: Payload, query: Query): Promise<Response<T[]>>;
-	async update<T extends Item>(
+	async update(key: PrimaryKey, payload: Payload, query?: Query): Promise<ItemsResponse<T>>;
+	async update(keys: PrimaryKey[], payload: Payload, query?: Query): Promise<ItemsResponse<T[]>>;
+	async update(payload: Payload[], query?: Query): Promise<ItemsResponse<T[]>>;
+	async update(payload: Payload, query: Query): Promise<ItemsResponse<T[]>>;
+	async update(
 		keyOrPayload: PrimaryKey | PrimaryKey[] | Payload | Payload[],
 		payloadOrQuery?: Payload | Query,
 		query?: Query
-	): Promise<Response<T | T[]>> {
+	): Promise<ItemsResponse<T | T[]>> {
 		if (
 			typeof keyOrPayload === 'string' ||
 			typeof keyOrPayload === 'number' ||
