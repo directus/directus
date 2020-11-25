@@ -28,7 +28,7 @@
 				</v-list-item-icon>
 				<v-list-item-content>{{ $t('interfaces.folder.root_name') }}</v-list-item-content>
 			</v-list-item>
-			<v-divider />
+			<v-divider v-if="nestedFolders && nestedFolders.length > 0" />
 			<folder-list-item
 				v-for="folder in nestedFolders"
 				:key="folder.id"

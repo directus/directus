@@ -79,6 +79,16 @@ export class FilesService extends ItemsService {
 			payload.filesize = size;
 		}
 
+		if (!payload.folder) {
+			const { folder } = await this.knex
+				.select('storage_default_folder')
+				.from('directus_settings')
+				.first();
+			if (folder) {
+				payload.folder = folder;
+			}
+		}
+
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
 		// we still want to be able to set the extracted values from the file on create
 		const sudoService = new ItemsService('directus_files', {

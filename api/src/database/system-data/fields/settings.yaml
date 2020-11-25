@@ -193,6 +193,10 @@ fields:
           text: Presets Only
     width: half
 
+  - field: storage_default_folder
+    interface: folder
+    width: full
+
   - field: overrides_divider
     interface: divider
     options:

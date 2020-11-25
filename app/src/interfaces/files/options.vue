@@ -28,7 +28,7 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/';
 import { Relation, Collection } from '@/types';
 import { useCollectionsStore } from '../../stores';
-import Folder from "@/interfaces/_system/folder/folder";
+import Folder from "@/interfaces/_system/folder";
 export default defineComponent({
 	components: { Folder },
 	props: {
