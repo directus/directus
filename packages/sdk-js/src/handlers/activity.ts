@@ -1,6 +1,6 @@
 import { AxiosInstance } from 'axios';
 import { ItemsHandler } from './items';
-import { Query, PrimaryKey, Item, ItemsResponse } from '../types';
+import { Query, PrimaryKey, Item, Response } from '../types';
 
 export type ActivityItem = {
 	action: string;
@@ -27,16 +27,16 @@ export class ActivityHandler {
 		this.itemsHandler = new ItemsHandler<ActivityItem>('directus_activity', axios);
 	}
 
-	async read(query?: Query): Promise<ItemsResponse<ActivityItem>>;
-	async read(key: PrimaryKey, query?: Query): Promise<ItemsResponse<ActivityItem>>;
+	async read(query?: Query): Promise<Response<Partial<ActivityItem>>>;
+	async read(key: PrimaryKey, query?: Query): Promise<Response<Partial<ActivityItem>>>;
 	async read(
 		keys: PrimaryKey[],
 		query?: Query
-	): Promise<ItemsResponse<ActivityItem | ActivityItem[]>>;
+	): Promise<Response<Partial<ActivityItem> | Partial<ActivityItem>[]>>;
 	async read(
 		keysOrQuery?: PrimaryKey | PrimaryKey[] | Query,
 		query?: Query & { single: boolean }
-	): Promise<ItemsResponse<ActivityItem | ActivityItem[]>> {
+	): Promise<Response<Partial<ActivityItem> | Partial<ActivityItem>[]>> {
 		const result = await this.itemsHandler.read(keysOrQuery as any, query as any);
 		return result;
 	}
@@ -46,7 +46,7 @@ export class ActivityHandler {
 			collection: string;
 			item: string;
 			comment: string;
-		}): Promise<ItemsResponse<Item>> => {
+		}): Promise<Response<Item>> => {
 			const response = await this.axios.post('/activity/comments', payload);
 			return response.data;
 		},

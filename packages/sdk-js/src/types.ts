@@ -8,11 +8,7 @@ export enum Meta {
 }
 
 export type Response<T> = {
-	data: T;
-};
-
-export type ItemsResponse<T> = {
-	data: T;
+	data: T | null;
 	meta?: Record<Meta, number>;
 };
 

@@ -1,4 +1,5 @@
 import { AxiosInstance } from 'axios';
+import { Item } from '../types';
 import { ItemsHandler } from './items';
 
 export type DirectusSettigns = {
@@ -26,7 +27,7 @@ export type DirectusSettigns = {
 	storage_asset_transform: 'none' | 'all' | 'presets';
 };
 
-export class SettingsHandler extends ItemsHandler<DirectusSettigns> {
+export class SettingsHandler<T extends Item> extends ItemsHandler<DirectusSettigns & T> {
 	constructor(axios: AxiosInstance) {
 		super('directus_settings', axios);
 	}
