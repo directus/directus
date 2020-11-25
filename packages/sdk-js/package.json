@@ -1,7 +1,7 @@
 {
   "name": "@directus/sdk-js",
   "version": "9.0.0-rc.17",
-  "description": "",
+  "description": "The official Directus SDK for use in JavaScript!",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
