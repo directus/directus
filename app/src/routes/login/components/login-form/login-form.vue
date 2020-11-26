@@ -77,7 +77,7 @@ export default defineComponent({
 				loggingIn.value = true;
 
 				const credentials: Credentials = {
-					email: email.value,
+					email: email.value.toLowerCase(),
 					password: password.value,
 				};
 
