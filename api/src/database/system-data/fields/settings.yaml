@@ -195,8 +195,8 @@ fields:
 
   - field: storage_default_folder
     interface: folder
-    width: full
-    note: interfaces.folder.field_hint
+    width: half
+    note: Default folder to place files
 
   - field: overrides_divider
     interface: divider
