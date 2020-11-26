@@ -51,7 +51,7 @@ export default defineComponent({
 
 			try {
 				await api.post(`/auth/password/request`, {
-					email: email.value,
+					email: email.value.toLowerCase(),
 				});
 
 				done.value = true;
