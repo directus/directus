@@ -19,6 +19,9 @@ export default defineInterface(({ i18n }) => ({
 				width: 'full',
 				interface: 'folder',
 				note: i18n.t('interfaces.folder.field_hint'),
+				options: {
+					defaultLabel: 'system',
+				},
 			},
 			schema: {
 				default_value: null,

@@ -12,12 +12,10 @@
 				allowNone
 			/>
 		</div>
-	</div>
-	<div class="form-grid">
 		<div class="field full">
 			<p class="type-label">{{ $t('interfaces.folder.folder') }}</p>
-			<folder v-model="folderValue" />
-			<small class="note" v-html="marked($t('interfaces.folder.field_hint'))" />
+			<folder :folder="folderValue" default-label="system" />
+			<small class="note" v-html="$t('interfaces.folder.field_hint')" />
 		</div>
 	</div>
 </template>
@@ -28,7 +26,7 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/';
 import { Relation, Collection } from '@/types';
 import { useCollectionsStore } from '../../stores';
-import Folder from "@/interfaces/_system/folder";
+import Folder from '@/interfaces/_system/folder/folder.vue';
 export default defineComponent({
 	components: { Folder },
 	props: {
@@ -109,5 +107,11 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 .form-grid {
 	@include form-grid;
+}
+.note {
+	display: block;
+	margin-top: 4px;
+	color: var(--foreground-subdued);
+	font-style: italic;
 }
 </style>

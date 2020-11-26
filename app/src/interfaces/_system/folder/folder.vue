@@ -26,7 +26,13 @@
 				<v-list-item-icon>
 					<v-icon name="folder_special" />
 				</v-list-item-icon>
-				<v-list-item-content>{{ $t('interfaces.folder.root_name') }}</v-list-item-content>
+				<v-list-item-content>
+					{{
+						defaultLabel === 'system'
+							? $t('interfaces.folder.system_default')
+							: $t('interfaces.folder.root_name')
+					}}
+				</v-list-item-content>
 			</v-list-item>
 			<v-divider v-if="nestedFolders && nestedFolders.length > 0" />
 			<folder-list-item
@@ -46,7 +52,7 @@
 import { computed, defineComponent, PropType, ref } from '@vue/composition-api';
 import FolderListItem from './folder-list-item.vue';
 import useFolders, { Folder } from '@/modules/files/composables/use-folders';
-import i18n from "@/lang";
+import i18n from '@/lang';
 
 export default defineComponent({
 	components: { FolderListItem },
@@ -67,6 +73,11 @@ export default defineComponent({
 			type: String,
 			default: '',
 		},
+		defaultLabel: {
+			type: String,
+			enum: ['root', 'system'],
+			default: 'root',
+		},
 	},
 	setup(props, { emit }) {
 		const toggle = ref<boolean>(false);
@@ -74,7 +85,9 @@ export default defineComponent({
 
 		const folderPath = computed(() => {
 			if (!props.value || !folders.value) {
-				return i18n.t('interfaces.folder.root_name');
+				return props.defaultLabel === 'system'
+					? i18n.t('interfaces.folder.system_default')
+					: i18n.t('interfaces.folder.root_name');
 			}
 			const folder = folders.value.find((folder) => folder.id === props.value);
 			return folder

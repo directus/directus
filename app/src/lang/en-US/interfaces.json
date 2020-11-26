@@ -79,8 +79,9 @@
 		"folder": {
 			"folder": "Folder",
 			"description":  "Select folder",
-			"field_hint": "Place newly created files in selected folder.",
-			"root_name": "File Library root"
+			"field_hint": "Place the new files in selected folder. Does not affects already added files.",
+			"root_name": "File Library root",
+			"system_default": "System Defaults"
 		},
 		"hash": {
 			"hash": "Hash",

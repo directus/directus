@@ -196,6 +196,7 @@ fields:
   - field: storage_default_folder
     interface: folder
     width: full
+    note: interfaces.folder.field_hint
 
   - field: overrides_divider
     interface: divider
