@@ -159,6 +159,12 @@ export default defineComponent({
 				uploading.value = true;
 				progress.value = 0;
 
+				const customPresets: any = {};
+
+				if (props.folder) {
+					customPresets.folder = props.folder;
+				}
+
 				try {
 					numberOfFiles.value = files.length;
 
@@ -172,7 +178,7 @@ export default defineComponent({
 							},
 							preset: {
 								...props.preset,
-								folder: props.folder,
+								...customPresets,
 							},
 						});
 
@@ -186,7 +192,7 @@ export default defineComponent({
 							fileId: props.fileId,
 							preset: {
 								...props.preset,
-								folder: props.folder,
+								...customPresets,
 							},
 						});
 
