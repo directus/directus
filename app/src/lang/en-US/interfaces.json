@@ -176,7 +176,7 @@
 		"text-input": {
 			"text-input": "Text Input",
 			"description": "Enter a single line text",
-			"trim": "Trimed",
+			"trim": "Trim",
 			"trim_label": "Trim the start and end",
 			"mask": "Masked",
 			"mask_label": "Hide the real value"

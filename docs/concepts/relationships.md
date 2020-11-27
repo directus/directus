@@ -106,3 +106,22 @@ An example of a O2O is: a _person_ only has one unique set of _fingerprints_, an
 Sometimes called a "matrix field" or "replicator", the Many-to-Any (M2X) relationship is essentially the same as a M2M, but with one crucial difference: the junction table also stores the _parent collection name of the FK_. This "compound key" combines the collection name and FK to provide a unique reference to _any_ other item within the project. You can then artificially limit which collections are valid through an "allow list".
 
 An example of a M2X is a "page layout builder". These typically will have modular components across several different collections (eg: "Heading", "Text Block", "Media Asset", etc), and a _Pages_ collections where you can piece them together. Therefore, the junction table will link a specific page with specific components, allowing the creation of relational page layouts.
+
+---
+
+@TODO
+
+```
+[ ] o2o
+[x] m2o           (dropdown)
+[x] o2m           (table, repeater)
+
+[x] m2m [o2m-m2o] (table, repeater)
+
+[ ] o2a           (builder)
+[x] a2o
+
+[x] m2a [o2m-a2o] (builder)
+[ ] a2m [o2a-m2o]
+[ ] a2a [o2a-a2o] (dynamic builder)
+```

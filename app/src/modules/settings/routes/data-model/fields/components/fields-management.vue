@@ -146,6 +146,11 @@ export default defineComponent({
 				text: i18n.t('m2m_relationship'),
 			},
 			{
+				type: 'm2a',
+				icon: 'gesture',
+				text: i18n.t('m2a_relationship'),
+			},
+			{
 				divider: true,
 			},
 			{

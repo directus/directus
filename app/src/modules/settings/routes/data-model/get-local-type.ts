@@ -4,7 +4,7 @@ import { Relation } from '@/types';
 export function getLocalTypeForField(
 	collection: string,
 	field: string
-): 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' {
+): 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2a' | 'm2o' | 'presentation' | 'translations' {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 
@@ -26,6 +26,9 @@ export function getLocalTypeForField(
 	if (relations.length === 2) {
 		if ((fieldInfo.meta?.special || []).includes('translations')) {
 			return 'translations';
+		}
+		if ((fieldInfo.meta?.special || []).includes('m2a')) {
+			return 'm2a';
 		}
 
 		const relationForCurrent = relations.find((relation: Relation) => {
