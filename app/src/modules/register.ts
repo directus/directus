@@ -3,7 +3,6 @@ import { replaceRoutes } from '@/router';
 import { getModules } from './index';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import api from '@/api';
-import { merge } from 'lodash';
 
 const modules = getModules();
 let loadedModules: any = [];
