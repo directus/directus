@@ -14,7 +14,7 @@ While the Node.js version of Directus defines the official specification and is 
 
 ## Feature Requests
 
-Feature requests are a great way to let our team know what should be prioritized next. You can [submit a feature request](https://github.com/directus/next/discussions/category_choices) or upvote [existing submissions](https://github.com/directus/next/discussions) all via our GitHub Discussions board.
+Feature requests are a great way to let our team know what should be prioritized next. You can [submit a feature request](https://github.com/directus/directus/discussions/category_choices) or upvote [existing submissions](https://github.com/directus/directus/discussions) all via our GitHub Discussions board.
 
 :::warning The 80/20 Rule
 To keep the Directus codebase as clean and simple as possible, we will only consider approving features that we feel at least 80% of our user-base will find valuable. If your feature request falls within the 20% range, it is considered an edge-case and should be implemented as an extension.
@@ -26,7 +26,7 @@ Some Directus features/fixes may require additional design, strategy, and/or dis
 
 ## Bug Reporting
 
-Reporting any bugs you come across is an invaluable part of helping keep Directus stable. After confirming a similar issue doesn't already exist, you can [submit a bug report](https://github.com/directus/next/issues/new) via GitHub Issues. Please ensure the following for all submissions:
+Reporting any bugs you come across is an invaluable part of helping keep Directus stable. After confirming a similar issue doesn't already exist, you can [submit a bug report](https://github.com/directus/directus/issues/new) via GitHub Issues. Please ensure the following for all submissions:
 
 * You are experiencing an actual bug, not a configuration issue
 * You are not asking a question or requesting a new feature
@@ -50,7 +50,7 @@ We value the members of the independent security research community who find sec
 
 ## Code of Conduct
 
-The Directus [Code of Conduct](https://github.com/directus/next/blob/main/code_of_conduct.md) is one of the ways we put our values into practice. We expect all of our staff, contractors and contributors to know and follow this code.
+The Directus [Code of Conduct](https://github.com/directus/directus/blob/main/code_of_conduct.md) is one of the ways we put our values into practice. We expect all of our staff, contractors and contributors to know and follow this code.
 
 ## Development Workflow
 
@@ -58,7 +58,7 @@ Before getting started, ensure you your local environment meets our [minimum req
 
 ### 1. Fork the Directus repository
 
-Go to the [repository](https://github.com/directus/next) and fork it to your GitHub account.
+Go to the [repository](https://github.com/directus/directus) and fork it to your GitHub account.
 
 ### 2. Clone from your repository
 

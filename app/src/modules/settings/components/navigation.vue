@@ -80,13 +80,13 @@ Node: ${parsedInfo.value?.node.version}
 				{
 					icon: 'bug_report',
 					name: i18n.t('report_bug'),
-					href: `https://github.com/directus/next/issues/new?body=${encodeURIComponent(debugInfo)}`,
+					href: `https://github.com/directus/directus/issues/new?body=${encodeURIComponent(debugInfo)}`,
 					outline: true,
 				},
 				{
 					icon: 'new_releases',
 					name: i18n.t('request_feature'),
-					href: 'https://github.com/directus/next/discussions/new',
+					href: 'https://github.com/directus/directus/discussions/new',
 					outline: true,
 				},
 			];

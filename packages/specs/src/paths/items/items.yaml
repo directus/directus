@@ -1,4 +1,5 @@
 get:
+  summary: List Items
   description: List the items.
   tags:
     - Items
@@ -28,7 +29,9 @@ get:
                   type: object
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+
 post:
+  summary: Create an Item
   description: Create a new item.
   tags:
     - Items

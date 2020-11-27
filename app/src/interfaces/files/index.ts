@@ -9,8 +9,8 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'note_add',
 	component: InterfaceFiles,
 	types: ['alias'],
-	localTypes: ['files'],
-	relationship: 'm2m',
+	groups: ['files'],
+	relational: true,
 	options: FilesOptions,
 	recommendedDisplays: ['files'],
 }));

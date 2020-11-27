@@ -8,7 +8,7 @@ export function useCustomSelection(currentValue: Ref<string>, items: Ref<any[]>,
 
 	const otherValue = computed({
 		get() {
-			return localOtherValue.value;
+			return localOtherValue.value || (usesOtherValue.value ? currentValue.value : '');
 		},
 		set(newValue: string | null) {
 			if (newValue === null) {

@@ -29,7 +29,7 @@ export default {
 * `component` — A reference to your Vue component.
 
 :::
-See [the TypeScript definition](https://github.com/directus/next/blob/20355fee5eba514dd75565f60269311187010c66/app/src/layouts/types.ts#L4-L9) for more info on what can go into this object.
+See [the TypeScript definition](https://github.com/directus/directus/blob/20355fee5eba514dd75565f60269311187010c66/app/src/layouts/types.ts#L4-L9) for more info on what can go into this object.
 :::
 
 ### src/layout.vue

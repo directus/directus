@@ -8,9 +8,9 @@ export default defineInterface(({ i18n }) => ({
 	description: i18n.t('interfaces.many-to-many.description'),
 	icon: 'note_add',
 	component: InterfaceManyToMany,
-	relationship: 'm2m',
+	relational: true,
 	types: ['alias'],
-	localTypes: ['m2m'],
+	groups: ['m2m'],
 	options: Options,
 	recommendedDisplays: ['related-values'],
 }));

@@ -1,8 +1,8 @@
 {
 	"name": "directus",
-	"version": "9.0.0-rc.14",
+	"version": "9.0.0-rc.18",
 	"license": "GPL-3.0-only",
-	"homepage": "https://github.com/directus/next#readme",
+	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
 	"keywords": [
 		"directus",
@@ -24,10 +24,10 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/directus/next.git"
+		"url": "git+https://github.com/directus/directus.git"
 	},
 	"bugs": {
-		"url": "https://github.com/directus/next/issues"
+		"url": "https://github.com/directus/directus/issues"
 	},
 	"author": {
 		"name": "Monospace Inc",

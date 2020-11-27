@@ -71,7 +71,7 @@
 				</div>
 			</template>
 
-			<!-- @TODO see https://github.com/directus/next/issues/639
+			<!-- @TODO see https://github.com/directus/directus/issues/639
 
 			<div class="field half-left" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('unique') }}</div>
@@ -238,7 +238,7 @@ export default defineComponent({
 		});
 
 		const typeDisabled = computed(() => {
-			return ['file', 'files', 'o2m', 'm2m', 'm2o', 'translations'].includes(props.type);
+			return ['file', 'files', 'o2m', 'm2m', 'm2a', 'm2o', 'translations'].includes(props.type);
 		});
 
 		const typePlaceholder = computed(() => {

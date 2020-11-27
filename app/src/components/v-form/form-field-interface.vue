@@ -23,7 +23,7 @@
 			:collection="field.collection"
 			:field="field.field"
 			:primary-key="primaryKey"
-			:length="field.length"
+			:length="field.schema && field.schema.max_length"
 			@input="$emit('input', $event)"
 		/>
 

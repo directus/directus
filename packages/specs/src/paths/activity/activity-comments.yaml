@@ -1,4 +1,5 @@
 post:
+  summary: Create a Comment
   description: Creates a new comment.
   operationId: createComment
   parameters:

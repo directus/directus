@@ -67,24 +67,23 @@ export async function applyFilter(
 	addWhereClauses(rootQuery, rootFilter, collection);
 	addJoins(rootQuery, rootFilter, collection);
 
-	function addWhereClauses(dbQuery: QueryBuilder, filter: Filter, collection: string) {
+	function addWhereClauses(
+		dbQuery: QueryBuilder,
+		filter: Filter,
+		collection: string,
+		logical: 'and' | 'or' = 'and'
+	) {
 		for (const [key, value] of Object.entries(filter)) {
-			if (key === '_or') {
-				/** @NOTE these callback functions aren't called until Knex runs the query */
-				dbQuery.orWhere((subQuery) => {
+			if (key === '_or' || key === '_and') {
+				/** @NOTE this callback function isn't called until Knex runs the query */
+				dbQuery.where((subQuery) => {
 					value.forEach((subFilter: Record<string, any>) => {
-						addWhereClauses(subQuery, subFilter, collection);
-					});
-				});
-
-				continue;
-			}
-
-			if (key === '_and') {
-				/** @NOTE these callback functions aren't called until Knex runs the query */
-				dbQuery.andWhere((subQuery) => {
-					value.forEach((subFilter: Record<string, any>) => {
-						addWhereClauses(subQuery, subFilter, collection);
+						addWhereClauses(
+							subQuery,
+							subFilter,
+							collection,
+							key === '_and' ? 'and' : 'or'
+						);
 					});
 				});
 
@@ -96,76 +95,86 @@ export async function applyFilter(
 
 			if (filterPath.length > 1) {
 				const columnName = getWhereColumn(filterPath, collection);
-				applyFilterToQuery(columnName, filterOperator, filterValue);
+				applyFilterToQuery(columnName, filterOperator, filterValue, logical);
 			} else {
-				applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue);
+				applyFilterToQuery(
+					`${collection}.${filterPath[0]}`,
+					filterOperator,
+					filterValue,
+					logical
+				);
 			}
 		}
 
-		function applyFilterToQuery(key: string, operator: string, compareValue: any) {
+		function applyFilterToQuery(
+			key: string,
+			operator: string,
+			compareValue: any,
+			logical: 'and' | 'or' = 'and'
+		) {
 			if (operator === '_eq') {
-				dbQuery.where({ [key]: compareValue });
+				dbQuery[logical].where({ [key]: compareValue });
 			}
 
 			if (operator === '_neq') {
-				dbQuery.whereNot({ [key]: compareValue });
+				dbQuery[logical].whereNot({ [key]: compareValue });
 			}
 
 			if (operator === '_contains') {
-				dbQuery.where(key, 'like', `%${compareValue}%`);
+				dbQuery[logical].where(key, 'like', `%${compareValue}%`);
 			}
 
 			if (operator === '_ncontains') {
-				dbQuery.whereNot(key, 'like', `%${compareValue}%`);
+				dbQuery[logical].whereNot(key, 'like', `%${compareValue}%`);
 			}
 
 			if (operator === '_gt') {
-				dbQuery.where(key, '>', compareValue);
+				dbQuery[logical].where(key, '>', compareValue);
 			}
 
 			if (operator === '_gte') {
-				dbQuery.where(key, '>=', compareValue);
+				dbQuery[logical].where(key, '>=', compareValue);
 			}
 
 			if (operator === '_lt') {
-				dbQuery.where(key, '<', compareValue);
+				dbQuery[logical].where(key, '<', compareValue);
 			}
 
 			if (operator === '_lte') {
-				dbQuery.where(key, '<=', compareValue);
+				dbQuery[logical].where(key, '<=', compareValue);
 			}
 
 			if (operator === '_in') {
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
-				dbQuery.whereIn(key, value as string[]);
+				dbQuery[logical].whereIn(key, value as string[]);
 			}
 
 			if (operator === '_nin') {
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
-				dbQuery.whereNotIn(key, value as string[]);
+				dbQuery[logical].whereNotIn(key, value as string[]);
 			}
 
 			if (operator === '_null') {
-				dbQuery.whereNull(key);
+				dbQuery[logical].whereNull(key);
 			}
 
 			if (operator === '_nnull') {
-				dbQuery.whereNotNull(key);
+				dbQuery[logical].whereNotNull(key);
 			}
 
 			if (operator === '_empty') {
-				dbQuery.andWhere((query) => {
+				dbQuery[logical].andWhere((query) => {
 					query.whereNull(key);
 					query.orWhere(key, '=', '');
 				});
 			}
 
 			if (operator === '_nempty') {
-				dbQuery.andWhere((query) => {
+				dbQuery[logical].andWhere((query) => {
 					query.whereNotNull(key);
 					query.orWhere(key, '!=', '');
 				});
@@ -175,14 +184,14 @@ export async function applyFilter(
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
-				dbQuery.whereBetween(key, value);
+				dbQuery[logical].whereBetween(key, value);
 			}
 
 			if (operator === '_nbetween') {
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
-				dbQuery.whereNotBetween(key, value);
+				dbQuery[logical].whereNotBetween(key, value);
 			}
 		}
 

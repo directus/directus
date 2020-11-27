@@ -1,8 +1,9 @@
 {
   "name": "@directus/sdk-js",
-  "version": "9.0.0-rc.14",
-  "description": "",
-  "main": "index.js",
+  "version": "9.0.0-rc.18-1",
+  "description": "The official Directus SDK for use in JavaScript!",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "mocha -r ts-node/register/transpile-only -r source-map-support/register --recursive 'tests/**/*.ts'",
@@ -30,9 +31,15 @@
     "typescript": "^4.0.3"
   },
   "nyc": {
-    "extension": [".ts"],
-    "include": ["src/**/*.ts"],
-    "exclude": ["**/*.d.ts"],
+    "extension": [
+      ".ts"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.d.ts"
+    ],
     "all": true
   }
 }

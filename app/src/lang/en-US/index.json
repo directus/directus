@@ -180,6 +180,7 @@
 	"field_m2o": "M2O Relationship",
 	"field_o2m": "O2M Relationship",
 	"field_m2m": "M2M Relationship",
+	"field_m2a": "M2A Relationship",
 	"field_translations": "Translations",
 	"languages": "Languages",
 
@@ -229,6 +230,7 @@
 	"configure_m2o": "Configure your Many-to-One Relationship...",
 	"configure_o2m": "Configure your One-to-Many Relationship...",
 	"configure_m2m": "Configure your Many-to-Many Relationship...",
+	"configure_m2a": "Configure your Many-to-Any Relationship...",
 	"configure_translations": "Configure your Translations...",
 	"configure_languages": "Configure your Languages...",
 
@@ -264,6 +266,7 @@
 	"m2o_relationship": "Many to One Relationship",
 	"o2m_relationship": "One to Many Relationship",
 	"m2m_relationship": "Many to Many Relationship",
+	"m2a_relationship": "Many to Any Relationship",
 
 	"next": "Next",
 	"previous": "Previous",
@@ -346,6 +349,7 @@
 	"item_in": "Item {primaryKey} in {collection} | Items {primaryKey} in {collection}",
 	"this_collection": "This Collection",
 	"related_collection": "Related Collection",
+	"related_collections": "Related Collections",
 	"translations_collection": "Translations Collection",
 	"languages_collection": "Languages Collection",
 
@@ -469,6 +473,8 @@
 	"replace_from_library": "Replace File from Library",
 	"replace_from_url": "Replace File from URL",
 
+	"collection_key": "Collection Key",
+
 	"name": "Name",
 	"primary_key_field": "Primary Key Field",
 	"type": "Type",
@@ -516,6 +522,8 @@
 
 	"display_not_found": "Display \"{display}\" not found.",
 	"reset_display": "Reset Display",
+
+	"m2a_builder": "Builder (M2A)",
 
 	"item_count": "No Items | One Item | {count} Items",
 	"no_items_copy": "There are no items in this collection yet.",
@@ -711,7 +719,7 @@
 	"step_interval": "Step Interval",
 	"icon_left": "Icon Left",
 	"icon_right": "Icon Right",
-	"trimed": "Trimed",
+	"trim": "Trim",
 	"font_family": "Font Family",
 	"font": "Font",
 	"numeric": "Numeric",
@@ -973,6 +981,7 @@
   "activity_feed": "Activity Feed",
   "add_field_filter": "Add a field filter",
   "add_new": "Add New",
+  "from_collection": "From “{collection}” Collection",
   "create_new": "Create New",
   "additional_info": "Additional Info",
   "admin_email": "Admin Email",

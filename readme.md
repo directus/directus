@@ -18,15 +18,14 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 <br>
 
-## 🚧 Beta
+## 🚧 Release Candidate
 
-**DO NOT USE THIS VERSION IN PRODUCTION.**
-
-This is *pre-release* software, therefore migrations will not be provided, breaking changes may occur at any time, and certain features might be missing or broken. You can follow along with [the issue tracker](https://github.com/directus/next/issues) for an in-depth list of upcoming enhancements, with the following notable features still under development:
+This is *pre-release* software. While we're providing migrations between versions, breaking changes may occur at any time, and certain features might be missing or broken. You can follow along with [the issue tracker](https://github.com/directus/directus/issues) for an in-depth list of upcoming enhancements, with the following notable features still under development:
 
 - [ ] MS SQL Support
 - [ ] OracleDB Support
 - [ ] Import/Export Endpoints
+- [ ] Many to Any (Page Builder)
 
 <br>
 
@@ -68,7 +67,7 @@ Directus only requires Node.js (or [PHP](https://github.com/directus/api-next)),
 
 * Ubuntu 18.04
 * CentOS / RHEL 8
-* macOS Catalina
+* macOS Catalina or newer
 * Windows 10
 * Docker ([DockerHub](https://hub.docker.com/r/directus/directus) + [Docker Repo](https://github.com/directus/docker))
 
@@ -81,8 +80,8 @@ _Other operating systems may also work, but are not officially supported._
 In addition to the [Directus Documentation](https://docs.directus.io), you can also request help via the following channels:
 
 * [Discord](http://discord.gg/directus) (Live Discussions)
-* [GitHub Issues](https://github.com/directus/next/issues) (Report Bugs)
-* [GitHub Discussions](https://github.com/directus/next/discussions/category_choices) (Questions, Feature Requests)
+* [GitHub Issues](https://github.com/directus/directus/issues) (Report Bugs)
+* [GitHub Discussions](https://github.com/directus/directus/discussions/category_choices) (Questions, Feature Requests)
 * [Twitter](https://twitter.com/directus) (Latest News)
 * [YouTube](https://www.youtube.com/c/DirectusVideos/featured) (Video Tutorials)
 

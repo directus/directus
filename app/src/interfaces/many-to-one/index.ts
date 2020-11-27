@@ -9,8 +9,8 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'arrow_right_alt',
 	component: InterfaceManyToOne,
 	types: ['uuid', 'string', 'text', 'integer', 'bigInteger'],
-	relationship: 'm2o',
-	localTypes: ['m2o'],
+	relational: true,
+	groups: ['m2o'],
 	options: Options,
 	recommendedDisplays: ['related-values'],
 }));

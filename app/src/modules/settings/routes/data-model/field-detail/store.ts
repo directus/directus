@@ -67,33 +67,23 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				if (inter.system === true) return false;
 
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
-				const matchesLocalType = inter.localTypes?.includes(type);
-				let matchesRelation = false;
+				const matchesLocalType = (inter.groups || ['standard']).includes(type);
 
-				if (type === 'standard' || type === 'presentation') {
-					matchesRelation = inter.relationship === null || inter.relationship === undefined;
-				} else if (type === 'file') {
-					matchesRelation = inter.relationship === 'm2o';
-				} else if (type === 'files') {
-					matchesRelation = inter.relationship === 'm2m';
-				} else if (type === 'translations') {
-					matchesRelation = inter.relationship === 'translations';
-				} else {
-					matchesRelation = inter.relationship === type;
-				}
-
-				return matchesType && matchesRelation && (matchesLocalType === undefined || matchesLocalType);
+				return matchesType && matchesLocalType;
 			})
 			.sort((a, b) => (a.name > b.name ? 1 : -1));
 	});
 
-	availableDisplays = computed(() =>
-		displays.value.filter((display) => {
-			const matchesType = display.types.includes(state.fieldData?.type || 'alias');
-			let matchesLocalType = display.localTypes?.includes(type);
-			return matchesType && (matchesLocalType === undefined || matchesLocalType);
-		})
-	);
+	availableDisplays = computed(() => {
+		return displays.value
+			.filter((inter) => {
+				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
+				const matchesLocalType = (inter.groups || ['standard']).includes(type) || true;
+
+				return matchesType && matchesLocalType;
+			})
+			.sort((a, b) => (a.name > b.name ? 1 : -1));
+	});
 
 	const isExisting = field !== '+';
 
@@ -126,7 +116,15 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		);
 	}
 
-	if (type === 'file') {
+	if (type === 'file') useFile();
+	else if (type === 'm2o') useM2O();
+	else if (type === 'm2m' || type === 'files' || type === 'translations') useM2M();
+	else if (type === 'o2m') useO2M();
+	else if (type === 'presentation') usePresentation();
+	else if (type === 'm2a') useM2A();
+	else useStandard();
+
+	function useFile() {
 		if (!isExisting) {
 			state.fieldData.type = 'uuid';
 
@@ -149,7 +147,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		);
 	}
 
-	if (type === 'm2o') {
+	function useM2O() {
 		const syncNewCollectionsM2O = throttle(() => {
 			const collectionName = state.relations[0].one_collection;
 
@@ -224,7 +222,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		watch([() => state.relations[0].one_collection, () => state.relations[0].one_primary], syncNewCollectionsM2O);
 	}
 
-	if (type === 'o2m') {
+	function useO2M() {
 		delete state.fieldData.schema;
 		state.fieldData.type = null;
 
@@ -321,7 +319,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		watch([() => state.relations[0].many_collection, () => state.relations[0].many_field], syncNewCollectionsO2M);
 	}
 
-	if (type === 'm2m' || type === 'files' || type === 'translations') {
+	function useM2M() {
 		delete state.fieldData.schema;
 		state.fieldData.type = null;
 
@@ -660,14 +658,184 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		}
 	}
 
-	if (type === 'presentation') {
+	function useM2A() {
+		delete state.fieldData.schema;
+		state.fieldData.type = null;
+
+		const syncNewCollectionsM2A = throttle(([junctionCollection, manyCurrent, manyRelated, oneCollectionField]) => {
+			state.newCollections = state.newCollections.filter(
+				(col: any) => ['junction', 'related'].includes(col.$type) === false
+			);
+
+			state.newFields = state.newFields.filter(
+				(field: Partial<Field> & { $type: string }) =>
+					['manyCurrent', 'manyRelated', 'collectionField'].includes(field.$type) === false
+			);
+
+			if (collectionExists(junctionCollection) === false) {
+				state.newCollections.push({
+					$type: 'junction',
+					collection: junctionCollection,
+					meta: {
+						hidden: true,
+						icon: 'import_export',
+					},
+					fields: [
+						{
+							field: 'id',
+							type: 'integer',
+							schema: {
+								has_auto_increment: true,
+							},
+							meta: {
+								hidden: true,
+							},
+						},
+					],
+				});
+
+				state.relations[0].many_primary = 'id';
+				state.relations[1].many_primary = 'id';
+			}
+
+			if (fieldExists(junctionCollection, manyCurrent) === false) {
+				state.newFields.push({
+					$type: 'manyCurrent',
+					collection: junctionCollection,
+					field: manyCurrent,
+					type: fieldsStore.getPrimaryKeyFieldForCollection(collection)!.type,
+					schema: {},
+					meta: {
+						hidden: true,
+					},
+				});
+			}
+
+			if (fieldExists(junctionCollection, manyRelated) === false) {
+				state.newFields.push({
+					$type: 'manyRelated',
+					collection: junctionCollection,
+					field: manyRelated,
+					// We'll have to save the foreign key as a string, as that's the only way to safely
+					// be able to store the PK of multiple typed collections
+					type: 'string',
+					schema: {},
+					meta: {
+						hidden: true,
+					},
+				});
+			}
+
+			if (fieldExists(junctionCollection, oneCollectionField) === false) {
+				state.newFields.push({
+					$type: 'collectionField',
+					collection: junctionCollection,
+					field: oneCollectionField,
+					type: 'string', // directus_collections.collection is a string
+					schema: {},
+					meta: {
+						hidden: true,
+					},
+				});
+			}
+		}, 50);
+
+		if (!isExisting) {
+			state.fieldData.meta.special = [type];
+
+			state.relations = [
+				{
+					many_collection: '',
+					many_field: '',
+					many_primary: '',
+					one_collection: collection,
+					one_field: state.fieldData.field,
+					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+				},
+				{
+					many_collection: '',
+					many_field: '',
+					many_primary: '',
+					one_collection: null,
+					one_field: null,
+					one_primary: null,
+					one_allowed_collections: [],
+					one_collection_field: '',
+				},
+			];
+		}
+
+		watch(
+			() => state.relations[0].many_collection,
+			() => {
+				if (collectionExists(state.relations[0].many_collection)) {
+					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)
+						?.field;
+					state.relations[0].many_primary = pkField;
+					state.relations[1].many_primary = pkField;
+				}
+			}
+		);
+
+		watch(
+			() => state.relations[0].many_field,
+			() => {
+				state.relations[1].junction_field = state.relations[0].many_field;
+			}
+		);
+
+		watch(
+			() => state.relations[1].many_field,
+			() => {
+				state.relations[0].junction_field = state.relations[1].many_field;
+			}
+		);
+
+		watch(
+			[
+				() => state.relations[0].many_collection,
+				() => state.relations[0].many_field,
+				() => state.relations[1].many_field,
+				() => state.relations[1].one_collection_field,
+			],
+			syncNewCollectionsM2A
+		);
+
+		watch(
+			() => state.fieldData.field,
+			() => {
+				state.relations[0].one_field = state.fieldData.field;
+
+				if (state.autoFillJunctionRelation) {
+					state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.fieldData.field}`;
+					state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.fieldData.field}`;
+				}
+			}
+		);
+
+		watch(
+			() => state.autoFillJunctionRelation,
+			() => {
+				if (state.autoFillJunctionRelation === true) {
+					state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.fieldData.field}`;
+					state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.fieldData.field}`;
+					state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
+					state.relations[1].one_collection_field = 'collection';
+					state.relations[1].many_field = 'item';
+				}
+			},
+			{ immediate: true }
+		);
+	}
+
+	function usePresentation() {
 		delete state.fieldData.schema;
 		state.fieldData.type = null;
 
 		state.fieldData.meta.special = ['alias', 'no-data'];
 	}
 
-	if (type === 'standard') {
+	function useStandard() {
 		watch(
 			() => state.fieldData.type,
 			() => {

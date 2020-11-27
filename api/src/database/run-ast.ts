@@ -6,6 +6,7 @@ import { PayloadService } from '../services/payload';
 import applyQuery from '../utils/apply-query';
 import Knex, { QueryBuilder } from 'knex';
 import { toArray } from '../utils/to-array';
+import { ServiceUnavailableException } from '../exceptions';
 
 type RunASTOptions = {
 	query?: AST['query'];
@@ -21,6 +22,18 @@ export default async function runAST(
 	const ast = cloneDeep(originalAST);
 
 	const knex = options?.knex || database;
+
+	for (const [collection, info] of Object.entries(schema)) {
+		if (!info.primary) {
+			throw new ServiceUnavailableException(
+				`Collection "${collection}" doesn't have a primary key column`,
+				{
+					service: 'database',
+					table: collection,
+				}
+			);
+		}
+	}
 
 	if (ast.type === 'm2a') {
 		const results: { [collection: string]: null | Item | Item[] } = {};
@@ -257,7 +270,7 @@ function mergeWithParentItems(
 		for (const parentItem of parentItems) {
 			const itemChild = nestedItems.find((nestedItem) => {
 				return (
-					nestedItem[nestedNode.relation.one_primary!] === parentItem[nestedNode.fieldKey]
+					nestedItem[nestedNode.relation.one_primary!] == parentItem[nestedNode.fieldKey]
 				);
 			});
 
@@ -270,11 +283,11 @@ function mergeWithParentItems(
 				if (Array.isArray(nestedItem[nestedNode.relation.many_field])) return true;
 
 				return (
-					nestedItem[nestedNode.relation.many_field] ===
+					nestedItem[nestedNode.relation.many_field] ==
 						parentItem[nestedNode.relation.one_primary!] ||
 					nestedItem[nestedNode.relation.many_field]?.[
 						nestedNode.relation.one_primary!
-					] === parentItem[nestedNode.relation.one_primary!]
+					] == parentItem[nestedNode.relation.one_primary!]
 				);
 			});
 
@@ -293,7 +306,7 @@ function mergeWithParentItems(
 			const itemChild = (nestedItem as Record<string, any[]>)[relatedCollection].find(
 				(nestedItem) => {
 					return (
-						nestedItem[nestedNode.relatedKey[relatedCollection]] ===
+						nestedItem[nestedNode.relatedKey[relatedCollection]] ==
 						parentItem[nestedNode.fieldKey]
 					);
 				}
