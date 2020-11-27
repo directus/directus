@@ -133,6 +133,7 @@ export default defineComponent({
 			...listeners,
 			input: emitValue,
 			keydown: processValue,
+			blur: trimIfEnabled,
 		}));
 
 		const hasClick = computed(() => {
@@ -179,16 +180,18 @@ export default defineComponent({
 			emit('keydown', event);
 		}
 
+		function trimIfEnabled() {
+			if (props.value && props.trim) {
+				emit('input', String(props.value).trim());
+			}
+		}
+
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
 
 			if (props.type === 'number') {
 				emit('input', Number(value));
 			} else {
-				if (props.trim === true) {
-					value = value.trim();
-				}
-
 				if (props.slug === true) {
 					const endsWithSpace = value.endsWith(' ');
 					value = slugify(value, { separator: props.slugSeparator });
