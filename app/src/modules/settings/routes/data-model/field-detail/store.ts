@@ -67,22 +67,9 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				if (inter.system === true) return false;
 
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
-				const matchesLocalType = inter.localTypes?.includes(type);
-				let matchesRelation = false;
+				const matchesLocalType = inter.localTypes?.includes(type) || true;
 
-				if (type === 'standard' || type === 'presentation') {
-					matchesRelation = inter.relationship === null || inter.relationship === undefined;
-				} else if (type === 'file') {
-					matchesRelation = inter.relationship === 'm2o';
-				} else if (type === 'files') {
-					matchesRelation = inter.relationship === 'm2m';
-				} else if (type === 'translations') {
-					matchesRelation = inter.relationship === 'translations';
-				} else {
-					matchesRelation = inter.relationship === type;
-				}
-
-				return matchesType && matchesRelation && (matchesLocalType === undefined || matchesLocalType);
+				return matchesType && matchesLocalType;
 			})
 			.sort((a, b) => (a.name > b.name ? 1 : -1));
 	});
@@ -127,6 +114,10 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 	}
 
 	if (type === 'file') {
+		useFile();
+	}
+
+	function useFile() {
 		if (!isExisting) {
 			state.fieldData.type = 'uuid';
 
