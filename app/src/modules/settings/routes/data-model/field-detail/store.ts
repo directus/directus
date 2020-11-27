@@ -67,20 +67,23 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				if (inter.system === true) return false;
 
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
-				const matchesLocalType = inter.localTypes?.includes(type) || true;
+				const matchesLocalType = (inter.groups || ['standard']).includes(type);
 
 				return matchesType && matchesLocalType;
 			})
 			.sort((a, b) => (a.name > b.name ? 1 : -1));
 	});
 
-	availableDisplays = computed(() =>
-		displays.value.filter((display) => {
-			const matchesType = display.types.includes(state.fieldData?.type || 'alias');
-			let matchesLocalType = display.localTypes?.includes(type);
-			return matchesType && (matchesLocalType === undefined || matchesLocalType);
-		})
-	);
+	availableDisplays = computed(() => {
+		return displays.value
+			.filter((inter) => {
+				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
+				const matchesLocalType = (inter.groups || ['standard']).includes(type) || true;
+
+				return matchesType && matchesLocalType;
+			})
+			.sort((a, b) => (a.name > b.name ? 1 : -1));
+	});
 
 	const isExisting = field !== '+';
 

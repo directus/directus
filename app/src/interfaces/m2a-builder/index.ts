@@ -6,8 +6,8 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('m2a_builder'),
 	icon: 'note_add',
 	component: InterfaceManyToAny,
-	relationship: 'm2a',
+	relational: true,
 	types: ['alias'],
-	localTypes: ['m2a'],
+	groups: ['m2a'],
 	options: [],
 }));
