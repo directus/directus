@@ -36,9 +36,9 @@ When a Public Background image is not set, the right-side pane of public pages u
 
 The Directus App has been developed with customization and extensibility in mind. Colors and styles referenced within the codebase all use CSS variables, and therefore it is easy to make comprehensive changes to the App styling.
 
-* **Themes** — See the [Light Theme](https://github.com/directus/next/blob/main/app/src/styles/themes/_light.scss) or [Dark Theme](https://github.com/directus/next/blob/main/app/src/styles/themes/_dark.scss)
-* **Typography** — See the [Fonts](https://github.com/directus/next/blob/main/app/src/styles/_type-styles.scss) and [Type Styles](https://github.com/directus/next/blob/main/app/src/styles/mixins/type-styles.scss)
-* **Variables** — See the [Global Variables](https://github.com/directus/next/blob/main/app/src/styles/_variables.scss)
+* **Themes** — See the [Light Theme](https://github.com/directus/directus/blob/main/app/src/styles/themes/_light.scss) or [Dark Theme](https://github.com/directus/directus/blob/main/app/src/styles/themes/_dark.scss)
+* **Typography** — See the [Fonts](https://github.com/directus/directus/blob/main/app/src/styles/_type-styles.scss) and [Type Styles](https://github.com/directus/directus/blob/main/app/src/styles/mixins/type-styles.scss)
+* **Variables** — See the [Global Variables](https://github.com/directus/directus/blob/main/app/src/styles/_variables.scss)
 
 You can override any core CSS, including the above variables, directly within the App through project Settings.
 

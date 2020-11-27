@@ -20,7 +20,7 @@ import {
 } from './handlers';
 import { MemoryStore } from './utils';
 
-export default class DirectusSDK {
+class DirectusSDK {
 	axios: AxiosInstance;
 	private authOptions: AuthOptions;
 
@@ -33,7 +33,8 @@ export default class DirectusSDK {
 			storage:
 				options?.auth?.storage !== undefined ? options.auth.storage : new MemoryStore(),
 			mode: options?.auth?.mode !== undefined ? options.auth.mode : 'cookie',
-			autoRefresh: options?.auth?.autoRefresh !== undefined ? options.auth.autoRefresh : true,
+			autoRefresh:
+				options?.auth?.autoRefresh !== undefined ? options.auth.autoRefresh : false,
 		};
 	}
 
@@ -119,3 +120,5 @@ export default class DirectusSDK {
 		return new UtilsHandler(this.axios);
 	}
 }
+
+export = DirectusSDK;
