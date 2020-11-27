@@ -294,7 +294,7 @@ export default defineComponent({
 						? val[anyRelation.value.many_field][primaryKeys.value[collection]]
 						: val[anyRelation.value.many_field];
 
-					const item = relatedItemValues.value[collection].find(
+					const item = relatedItemValues.value[collection]?.find(
 						(item) => item[primaryKeys.value[collection]] == key
 					);
 
@@ -317,6 +317,8 @@ export default defineComponent({
 			return { fetchValues, previewValues, loading, junctionRowMap, relatedItemValues };
 
 			async function fetchValues() {
+				if (props.value === null) return;
+
 				loading.value = true;
 
 				try {
