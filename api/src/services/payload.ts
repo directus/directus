@@ -26,6 +26,8 @@ import { toArray } from '../utils/to-array';
 import { FieldMeta } from '../types';
 import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';
+import { InvalidPayloadException } from '../../dist/exceptions';
+import { isPlainObject } from 'lodash';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -296,6 +298,87 @@ export class PayloadService {
 	}
 
 	/**
+	 * Recursively save/update all nested related Any-to-One items
+	 */
+	processA2O(payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
+	processA2O(payloads: Partial<Item>): Promise<Partial<Item>>;
+	async processA2O(
+		payload: Partial<Item> | Partial<Item>[]
+	): Promise<Partial<Item> | Partial<Item>[]> {
+		const relations = [
+			...(await this.knex
+				.select<Relation[]>('*')
+				.from('directus_relations')
+				.where({ many_collection: this.collection })),
+			...systemRelationRows.filter(
+				(systemRelation) => systemRelation.many_collection === this.collection
+			),
+		];
+
+		const payloads = clone(toArray(payload));
+
+		for (let i = 0; i < payloads.length; i++) {
+			let payload = payloads[i];
+
+			// Only process related records that are actually in the payload
+			const relationsToProcess = relations.filter((relation) => {
+				return (
+					payload.hasOwnProperty(relation.many_field) &&
+					isObject(payload[relation.many_field])
+				);
+			});
+
+			for (const relation of relationsToProcess) {
+				if (!relation.one_collection_field || !relation.one_allowed_collections) continue;
+
+				if (isPlainObject(payload[relation.many_field]) === false) continue;
+
+				const relatedCollection = payload[relation.one_collection_field];
+
+				if (!relatedCollection) {
+					throw new InvalidPayloadException(
+						`Can't update nested record "${relation.many_collection}.${relation.many_field}" without field "${relation.many_collection}.${relation.one_collection_field}" being set`
+					);
+				}
+
+				const allowedCollections = relation.one_allowed_collections.split(',');
+
+				if (allowedCollections.includes(relatedCollection) === false) {
+					throw new InvalidPayloadException(
+						`"${relation.many_collection}.${relation.many_field}" can't be linked to collection "${relatedCollection}`
+					);
+				}
+
+				const itemsService = new ItemsService(relatedCollection, {
+					accountability: this.accountability,
+					knex: this.knex,
+					schema: this.schema,
+				});
+
+				const relatedPrimary = this.schema[relatedCollection].primary;
+				const relatedRecord: Partial<Item> = payload[relation.many_field];
+				const hasPrimaryKey = relatedRecord.hasOwnProperty(relatedPrimary);
+
+				let relatedPrimaryKey: PrimaryKey = relatedRecord[relatedPrimary];
+				const exists =
+					hasPrimaryKey &&
+					!!(await this.knex.select(relatedPrimary).from(relatedCollection).first());
+
+				if (exists) {
+					await itemsService.update(relatedRecord, relatedPrimaryKey);
+				} else {
+					relatedPrimaryKey = await itemsService.create(relatedRecord);
+				}
+
+				// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
+				payload[relation.many_field] = relatedPrimaryKey;
+			}
+		}
+
+		return Array.isArray(payload) ? payloads : payloads[0];
+	}
+
+	/**
 	 * Recursively save/update all nested related m2o items
 	 */
 	processM2O(payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
@@ -313,7 +396,7 @@ export class PayloadService {
 			),
 		];
 
-		const payloads = clone(Array.isArray(payload) ? payload : [payload]);
+		const payloads = clone(toArray(payload));
 
 		for (let i = 0; i < payloads.length; i++) {
 			let payload = payloads[i];
@@ -341,7 +424,12 @@ export class PayloadService {
 				if (['string', 'number'].includes(typeof relatedRecord)) continue;
 
 				let relatedPrimaryKey: PrimaryKey = relatedRecord[relation.one_primary];
-				const exists = hasPrimaryKey && !!(await itemsService.readByKey(relatedPrimaryKey));
+				const exists =
+					hasPrimaryKey &&
+					!!(await this.knex
+						.select(relation.one_primary)
+						.from(relation.one_collection)
+						.first());
 
 				if (exists) {
 					await itemsService.update(relatedRecord, relatedPrimaryKey);

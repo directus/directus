@@ -107,6 +107,8 @@ Sometimes called a "matrix field" or "replicator", the Many-to-Any (M2X) relatio
 
 An example of a M2X is a "page layout builder". These typically will have modular components across several different collections (eg: "Heading", "Text Block", "Media Asset", etc), and a _Pages_ collections where you can piece them together. Therefore, the junction table will link a specific page with specific components, allowing the creation of relational page layouts.
 
+---
+
 @TODO
 
 ```

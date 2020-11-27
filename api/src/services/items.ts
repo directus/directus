@@ -93,6 +93,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 
 			payloads = await payloadService.processM2O(payloads);
+			payloads = await payloadService.processA2O(payloads);
 
 			let payloadsWithoutAliases = payloads.map((payload) => pick(payload, columns));
 
@@ -326,6 +327,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				});
 
 				payload = await payloadService.processM2O(payload);
+				payload = await payloadService.processA2O(payload);
 
 				let payloadWithoutAliases = pick(payload, columns);
 
