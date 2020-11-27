@@ -30,7 +30,7 @@ fields:
     translations:
       language: en-US
       translations: Brand Color
-    width: half
+    width: full
 
   - field: project_logo
     interface: file
