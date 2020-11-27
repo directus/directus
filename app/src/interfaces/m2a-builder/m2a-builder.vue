@@ -27,6 +27,7 @@
 				:item="item[anyRelation.many_field]"
 			/>
 			<div class="spacer" />
+			<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[index])" />
 			<v-icon class="launch-icon" name="launch" />
 		</div>
 
@@ -143,7 +144,7 @@ export default defineComponent({
 		const { o2mRelation, anyRelation } = useRelations();
 		const { collections, templates, primaryKeys } = useCollections();
 		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap } = useValues();
-		const { selectingFrom, stageSelection } = useSelection();
+		const { selectingFrom, stageSelection, deselect } = useSelection();
 		const {
 			currentlyEditing,
 			relatedPrimaryKey,
@@ -172,6 +173,7 @@ export default defineComponent({
 			editExisting,
 			createNew,
 			previewLoading,
+			deselect,
 		};
 
 		function useRelations() {
@@ -395,7 +397,7 @@ export default defineComponent({
 		function useSelection() {
 			const selectingFrom = ref<string | null>(null);
 
-			return { selectingFrom, stageSelection };
+			return { selectingFrom, stageSelection, deselect };
 
 			function stageSelection(selection: (number | string)[]) {
 				const { one_collection_field, many_field } = anyRelation.value;
@@ -410,6 +412,13 @@ export default defineComponent({
 				});
 
 				emit('input', [...currentValue, ...selectionAsJunctionRows]);
+			}
+
+			function deselect(item: any) {
+				emit(
+					'input',
+					(props.value || []).filter((current) => current !== item)
+				);
 			}
 		}
 
@@ -517,6 +526,7 @@ export default defineComponent({
 	background-color: var(--background-subdued);
 	border: 2px solid var(--border-subdued);
 	border-radius: var(--border-radius);
+	cursor: pointer;
 
 	& + .m2a-row {
 		margin-top: 12px;
@@ -537,6 +547,19 @@ export default defineComponent({
 
 .spacer {
 	flex-grow: 1;
+}
+
+.clear-icon {
+	--v-icon-color: var(--foreground-subdued);
+	--v-icon-color-hover: var(--danger);
+
+	margin-right: 8px;
+	color: var(--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+
+	&:hover {
+		color: var(--danger);
+	}
 }
 
 .launch-icon {
