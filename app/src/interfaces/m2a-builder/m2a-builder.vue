@@ -13,31 +13,41 @@
 			<v-skeleton-loader v-for="n in 5" :key="n" />
 		</div>
 
-		<div
+		<draggable
 			v-else
-			class="m2a-row"
-			v-for="(item, index) of previewValues"
-			:key="index"
-			@click="editExisting((value || [])[index])"
+			:value="value"
+			handle=".drag-handle"
+			@input="onSort"
+			:set-data="hideDragImage"
+			:disabled="!sortField"
 		>
-			<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
-			<span
-				v-if="
-					typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'
-				"
+			<div
+				class="m2a-row"
+				v-for="(item, index) of previewValues"
+				:key="index"
+				@click="editExisting((value || [])[index])"
 			>
-				{{ item[anyRelation.many_field] }}
-			</span>
-			<render-template
-				v-else
-				:collection="item[anyRelation.one_collection_field]"
-				:template="templates[item[anyRelation.one_collection_field]]"
-				:item="item[anyRelation.many_field]"
-			/>
-			<div class="spacer" />
-			<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[index])" />
-			<v-icon class="launch-icon" name="launch" />
-		</div>
+				<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="sortField" />
+				<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
+				<span
+					v-if="
+						typeof item[anyRelation.many_field] === 'number' ||
+						typeof item[anyRelation.many_field] === 'string'
+					"
+				>
+					{{ item[anyRelation.many_field] }}
+				</span>
+				<render-template
+					v-else
+					:collection="item[anyRelation.one_collection_field]"
+					:template="templates[item[anyRelation.one_collection_field]]"
+					:item="item[anyRelation.many_field]"
+				/>
+				<div class="spacer" />
+				<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[index])" />
+				<v-icon class="launch-icon" name="launch" />
+			</div>
+		</draggable>
 
 		<div class="buttons">
 			<v-menu attached>
@@ -119,9 +129,11 @@ import { unexpectedError } from '../../utils/unexpected-error';
 import { getFieldsFromTemplate } from '../../utils/get-fields-from-template';
 import { isPlainObject, cloneDeep } from 'lodash';
 import { getEndpoint } from '../../utils/get-endpoint';
+import { hideDragImage } from '../../utils/hide-drag-image';
+import Draggable from 'vuedraggable';
 
 export default defineComponent({
-	components: { DrawerCollection, DrawerItem },
+	components: { DrawerCollection, DrawerItem, Draggable },
 	props: {
 		collection: {
 			type: String,
@@ -143,6 +155,10 @@ export default defineComponent({
 			type: [String, Number] as PropType<string | number>,
 			required: true,
 		},
+		sortField: {
+			type: String,
+			default: null,
+		},
 	},
 	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
@@ -162,6 +178,7 @@ export default defineComponent({
 			editExisting,
 			createNew,
 		} = useEdits();
+		const { onSort } = useManualSort();
 
 		watch(props, fetchValues, { immediate: true, deep: true });
 
@@ -183,6 +200,8 @@ export default defineComponent({
 			previewLoading,
 			deselect,
 			relatedItemValues,
+			hideDragImage,
+			onSort,
 		};
 
 		function useRelations() {
@@ -527,6 +546,29 @@ export default defineComponent({
 				currentlyEditing.value = '+';
 			}
 		}
+
+		function useManualSort() {
+			return { onSort };
+
+			function onSort(sortedItems: any[]) {
+				emit(
+					'input',
+					sortedItems.map((sortedItem, index) => {
+						if (isPlainObject(sortedItem)) {
+							return {
+								...sortedItem,
+								[props.sortField]: index + 1,
+							};
+						} else {
+							return {
+								[o2mRelation.value.many_primary]: sortedItem,
+								[props.sortField]: index + 1,
+							};
+						}
+					})
+				);
+			}
+		}
 	},
 });
 </script>
@@ -564,6 +606,11 @@ export default defineComponent({
 
 .spacer {
 	flex-grow: 1;
+}
+
+.drag-handle {
+	margin-right: 8px;
+	cursor: grab !important;
 }
 
 .clear-icon {
