@@ -311,15 +311,13 @@ export class CollectionsService {
 		for (const relation of relations) {
 			const isM2O = relation.many_collection === collection;
 
-			/** @TODO M2A — Handle m2a case here */
-
 			if (isM2O) {
 				await this.knex('directus_relations')
 					.delete()
 					.where({ many_collection: collection, many_field: relation.many_field });
 
 				await fieldsService.deleteField(relation.one_collection!, relation.one_field!);
-			} else {
+			} else if (!!relation.one_collection) {
 				await this.knex('directus_relations')
 					.update({ one_field: null })
 					.where({ one_collection: collection, one_field: relation.one_field });
