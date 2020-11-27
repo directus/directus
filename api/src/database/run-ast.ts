@@ -270,7 +270,7 @@ function mergeWithParentItems(
 		for (const parentItem of parentItems) {
 			const itemChild = nestedItems.find((nestedItem) => {
 				return (
-					nestedItem[nestedNode.relation.one_primary!] === parentItem[nestedNode.fieldKey]
+					nestedItem[nestedNode.relation.one_primary!] == parentItem[nestedNode.fieldKey]
 				);
 			});
 
@@ -283,11 +283,11 @@ function mergeWithParentItems(
 				if (Array.isArray(nestedItem[nestedNode.relation.many_field])) return true;
 
 				return (
-					nestedItem[nestedNode.relation.many_field] ===
+					nestedItem[nestedNode.relation.many_field] ==
 						parentItem[nestedNode.relation.one_primary!] ||
 					nestedItem[nestedNode.relation.many_field]?.[
 						nestedNode.relation.one_primary!
-					] === parentItem[nestedNode.relation.one_primary!]
+					] == parentItem[nestedNode.relation.one_primary!]
 				);
 			});
 
@@ -306,7 +306,7 @@ function mergeWithParentItems(
 			const itemChild = (nestedItem as Record<string, any[]>)[relatedCollection].find(
 				(nestedItem) => {
 					return (
-						nestedItem[nestedNode.relatedKey[relatedCollection]] ===
+						nestedItem[nestedNode.relatedKey[relatedCollection]] ==
 						parentItem[nestedNode.fieldKey]
 					);
 				}

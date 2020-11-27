@@ -25,6 +25,10 @@ type GetASTOptions = {
 	knex?: Knex;
 };
 
+type anyNested = {
+	[collectionScope: string]: string[];
+};
+
 export default async function getASTFromQuery(
 	collection: string,
 	query: Query,
@@ -74,16 +78,18 @@ export default async function getASTFromQuery(
 
 	async function parseFields(
 		parentCollection: string,
-		fields: string[],
+		fields: string[] | null,
 		deep?: Record<string, Query>
 	) {
+		if (!fields) return [];
+
 		fields = await convertWildcards(parentCollection, fields);
 
 		if (!fields) return [];
 
 		const children: (NestedCollectionNode | FieldNode)[] = [];
 
-		const relationalStructure: Record<string, string[]> = {};
+		const relationalStructure: Record<string, string[] | anyNested> = {};
 
 		for (const field of fields) {
 			const isRelational =
@@ -99,12 +105,38 @@ export default async function getASTFromQuery(
 				// field is relational
 				const parts = field.split('.');
 
-				if (relationalStructure.hasOwnProperty(parts[0]) === false) {
-					relationalStructure[parts[0]] = [];
+				let fieldKey = parts[0];
+				let collectionScope: string | null = null;
+
+				// m2a related collection scoped field selector `fields=sections.section_id:headings.title`
+				if (fieldKey.includes(':')) {
+					const [key, scope] = fieldKey.split(':');
+					fieldKey = key;
+					collectionScope = scope;
+				}
+
+				if (relationalStructure.hasOwnProperty(fieldKey) === false) {
+					if (collectionScope) {
+						relationalStructure[fieldKey] = { [collectionScope]: [] };
+					} else {
+						relationalStructure[fieldKey] = [];
+					}
 				}
 
 				if (parts.length > 1) {
-					relationalStructure[parts[0]].push(parts.slice(1).join('.'));
+					const childKey = parts.slice(1).join('.');
+
+					if (collectionScope) {
+						if (collectionScope in relationalStructure[fieldKey] === false) {
+							(relationalStructure[fieldKey] as anyNested)[collectionScope] = [];
+						}
+
+						(relationalStructure[fieldKey] as anyNested)[collectionScope].push(
+							childKey
+						);
+					} else {
+						(relationalStructure[fieldKey] as string[]).push(childKey);
+					}
 				}
 			} else {
 				children.push({ type: 'field', name: field });
@@ -151,7 +183,9 @@ export default async function getASTFromQuery(
 				for (const relatedCollection of allowedCollections) {
 					child.children[relatedCollection] = await parseFields(
 						relatedCollection,
-						nestedFields
+						Array.isArray(nestedFields)
+							? nestedFields
+							: (nestedFields as anyNested)[relatedCollection] || ['*']
 					);
 					child.query[relatedCollection] = {};
 					child.relatedKey[relatedCollection] = schema[relatedCollection].primary;
@@ -174,7 +208,7 @@ export default async function getASTFromQuery(
 					relatedKey: schema[relatedCollection].primary,
 					relation: relation,
 					query: deep?.[relationalField] || {},
-					children: await parseFields(relatedCollection, nestedFields),
+					children: await parseFields(relatedCollection, nestedFields as string[]),
 				};
 			}
 

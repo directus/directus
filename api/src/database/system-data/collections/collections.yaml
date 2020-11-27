@@ -21,8 +21,10 @@ data:
   - collection: directus_files
     icon: folder
     note: Metadata for all managed file assets
+    display_template: "{{ title }}"
   - collection: directus_folders
     note: Provides virtual directories for files
+    display_template: "{{ name }}"
   - collection: directus_migrations
     note: What version of the database you're using
   - collection: directus_permissions
@@ -50,5 +52,6 @@ data:
     unarchive_value: draft
     icon: people_alt
     note: System users for the platform
+    display_template: "{{ first_name }} {{ last_name }}"
   - collection: directus_webhooks
     note: Configuration for event-based HTTP requests
