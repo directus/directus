@@ -21,7 +21,15 @@
 			@click="editExisting((value || [])[index])"
 		>
 			<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
+			<span
+				v-if="
+					typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'
+				"
+			>
+				{{ item[anyRelation.many_field] }}
+			</span>
 			<render-template
+				v-else
 				:collection="item[anyRelation.one_collection_field]"
 				:template="templates[item[anyRelation.one_collection_field]]"
 				:item="item[anyRelation.many_field]"
@@ -143,7 +151,7 @@ export default defineComponent({
 
 		const { o2mRelation, anyRelation } = useRelations();
 		const { collections, templates, primaryKeys } = useCollections();
-		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap } = useValues();
+		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
 		const { selectingFrom, stageSelection, deselect } = useSelection();
 		const {
 			currentlyEditing,
@@ -155,7 +163,7 @@ export default defineComponent({
 			createNew,
 		} = useEdits();
 
-		watch(props, fetchValues, { immediate: true });
+		watch(props, fetchValues, { immediate: true, deep: true });
 
 		return {
 			previewValues,
@@ -174,6 +182,7 @@ export default defineComponent({
 			createNew,
 			previewLoading,
 			deselect,
+			relatedItemValues,
 		};
 
 		function useRelations() {
@@ -261,9 +270,11 @@ export default defineComponent({
 				return values.map((val) => {
 					// Find and nest the related item values for use in the preview
 					const collection = val[anyRelation.value.one_collection_field!];
+
 					const key = isPlainObject(val[anyRelation.value.many_field])
 						? val[anyRelation.value.many_field][primaryKeys.value[collection]]
 						: val[anyRelation.value.many_field];
+
 					const item = relatedItemValues.value[collection].find(
 						(item) => item[primaryKeys.value[collection]] == key
 					);
@@ -284,7 +295,7 @@ export default defineComponent({
 				});
 			});
 
-			return { fetchValues, previewValues, loading, junctionRowMap };
+			return { fetchValues, previewValues, loading, junctionRowMap, relatedItemValues };
 
 			async function fetchValues() {
 				loading.value = true;
@@ -382,9 +393,15 @@ export default defineComponent({
 						})
 					);
 
+					if (!relatedItemValues.value) relatedItemValues.value = {};
+
 					for (let i = 0; i < Object.keys(itemsToFetchPerCollection).length; i++) {
 						const collection = Object.keys(itemsToFetchPerCollection)[i];
-						relatedItemValues.value[collection] = responses[i].data.data;
+
+						relatedItemValues.value = {
+							...relatedItemValues.value,
+							[collection]: responses[i].data.data,
+						};
 					}
 				} catch (err) {
 					unexpectedError(err);
