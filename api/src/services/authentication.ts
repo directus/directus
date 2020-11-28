@@ -43,7 +43,7 @@ export class AuthenticationService {
 		const user = await database
 			.select('id', 'password', 'role', 'tfa_secret', 'status')
 			.from('directus_users')
-			.where({ email })
+			.where('email', 'like', `%${email}%`)
 			.first();
 
 		if (!user || user.status !== 'active') {

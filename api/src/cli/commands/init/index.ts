@@ -108,7 +108,7 @@ export default async function init(options: Record<string, any>) {
 	await db('directus_users').insert({
 		id: userID,
 		status: 'active',
-		email: firstUser.email,
+		email: firstUser.email.toLowerCase(),
 		password: firstUser.password,
 		first_name: 'Admin',
 		last_name: 'User',

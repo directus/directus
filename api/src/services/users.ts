@@ -85,7 +85,9 @@ export class UsersService extends ItemsService {
 	async inviteUser(email: string | string[], role: string) {
 		const emails = toArray(email);
 
-		for (const email of emails) {
+		for (const emailRaw of emails) {
+			const email = emailRaw.toLowerCase();
+
 			await this.service.create({ email, role, status: 'invited' });
 
 			const payload = { email, scope: 'invite' };
@@ -107,7 +109,7 @@ export class UsersService extends ItemsService {
 		const user = await this.knex
 			.select('id', 'status')
 			.from('directus_users')
-			.where({ email })
+			.where('email', 'like', `%${email}%`)
 			.first();
 
 		if (!user || user.status !== 'invited') {
@@ -126,14 +128,20 @@ export class UsersService extends ItemsService {
 	}
 
 	async requestPasswordReset(email: string) {
-		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
+		const emailCaseInsensitive = email.toLowerCase();
+
+		const user = await this.knex
+			.select('id')
+			.from('directus_users')
+			.where('email', 'like', `%${email}%`)
+			.first();
 		if (!user) throw new ForbiddenException();
 
-		const payload = { email, scope: 'password-reset' };
+		const payload = { email: emailCaseInsensitive, scope: 'password-reset' };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
 		const acceptURL = env.PUBLIC_URL + '/admin/reset-password?token=' + token;
 
-		await sendPasswordResetMail(email, acceptURL);
+		await sendPasswordResetMail(emailCaseInsensitive, acceptURL);
 	}
 
 	async resetPassword(token: string, password: string) {
@@ -147,7 +155,7 @@ export class UsersService extends ItemsService {
 		const user = await this.knex
 			.select('id', 'status')
 			.from('directus_users')
-			.where({ email })
+			.where('email', 'like', `%${email}%`)
 			.first();
 
 		if (!user || user.status !== 'active') {

@@ -222,7 +222,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.inviteUser(req.body.email, req.body.role);
+		await service.inviteUser(req.body.email.toLowerCase(), req.body.role);
 		return next();
 	}),
 	respond

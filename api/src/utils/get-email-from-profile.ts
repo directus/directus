@@ -22,8 +22,11 @@ export default function getEmailFromProfile(provider: string, profile: Record<st
 	const email = get(profile, path);
 
 	if (!email) {
-		throw new ServiceUnavailableException("Couldn't extract email address from SSO provider response", { service: 'oauth', provider });
+		throw new ServiceUnavailableException(
+			"Couldn't extract email address from SSO provider response",
+			{ service: 'oauth', provider }
+		);
 	}
 
-	return email;
+	return email.toLowerCase();
 }

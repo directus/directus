@@ -47,10 +47,12 @@ router.post(
 		const ip = req.ip;
 		const userAgent = req.get('user-agent');
 
+		const emailLowerCase = email.toLowerCase();
+
 		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
 			ip,
 			userAgent,
-			email,
+			email: emailLowerCase,
 			password,
 			otp,
 		});
@@ -177,7 +179,7 @@ router.post(
 		const service = new UsersService({ accountability, schema: req.schema });
 
 		try {
-			await service.requestPasswordReset(req.body.email);
+			await service.requestPasswordReset(req.body.email.toLowerCase());
 		} catch {
 			// We don't want to give away what email addresses exist, so we'll always return a 200
 			// from this endpoint
@@ -271,7 +273,7 @@ router.get(
 		req.session?.destroy(() => {});
 
 		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
-			email,
+			email: email.toLowerCase(),
 		});
 
 		if (redirect) {
