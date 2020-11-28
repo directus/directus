@@ -94,7 +94,7 @@ export default async function runAST(
 			// to the "standard" item limit. Instead of _n_ nested items per parent item, it would mean
 			// that there's _n_ items, which are then divided on the parent items. (no good)
 			if (nestedNode.type === 'o2m') {
-				tempLimit = nestedNode.query.limit;
+				tempLimit = nestedNode.query.limit || 100;
 				nestedNode.query.limit = -1;
 			}
 
