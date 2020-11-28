@@ -9,12 +9,14 @@ export default function getDefaultValue(
 
 	let defaultValue = column.default_value || null;
 	if (defaultValue === null) return null;
+	if (defaultValue === 'null') return null;
+	if (defaultValue === 'NULL') return null;
 
 	// Check if the default is wrapped in an extra pair of quotes, this happens in SQLite
 	if (
 		typeof defaultValue === 'string' &&
-		defaultValue.startsWith(`'`) &&
-		defaultValue.endsWith(`'`)
+		((defaultValue.startsWith(`'`) && defaultValue.endsWith(`'`)) ||
+			(defaultValue.startsWith(`"`) && defaultValue.endsWith(`"`)))
 	) {
 		defaultValue = defaultValue.slice(1, -1);
 	}
