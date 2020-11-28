@@ -6,6 +6,7 @@ import os from 'os';
 import { version } from '../../package.json';
 import macosRelease from 'macos-release';
 import { SettingsService } from './settings';
+import env from '../env';
 
 export class ServerService {
 	knex: Knex;
@@ -36,6 +37,10 @@ export class ServerService {
 		});
 
 		info.project = projectInfo;
+
+		if (env.PROJECT_NAME) {
+			info.project.project_name = env.PROJECT_NAME;
+		}
 
 		if (this.accountability?.admin === true) {
 			const osType = os.type() === 'Darwin' ? 'macOS' : os.type();

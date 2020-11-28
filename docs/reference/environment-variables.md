@@ -5,6 +5,12 @@
 
 ## General
 
+### `PROJECT_NAME`
+
+What is the name of the project.<br>**Default: empty value**
+
+If the `PROJECT_NAME` is set, it will be set automatically as the project name.
+
 ### `PORT`
 
 What port to run the API under.<br>**Default: `8055`**
