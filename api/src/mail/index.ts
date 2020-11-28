@@ -53,7 +53,7 @@ async function getDefaultTemplateOptions() {
 		.first();
 
 	return {
-		projectName: projectInfo?.project_name || 'Directus',
+		projectName: env.PROJECT_NAME || projectInfo?.project_name || 'Directus',
 		projectColor: projectInfo?.project_color || '#546e7a',
 		projectLogo: projectInfo?.project_logo
 			? getProjectLogoURL(projectInfo.project_logo)
