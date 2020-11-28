@@ -281,7 +281,7 @@ export default class Postgres implements Schema {
 							knex.raw('pg_attribute.attnum = any(pg_index.indkey)')
 						);
 					})
-					.whereRaw('pg_index.indrelid = c.table_name::regclass')
+					.whereRaw('pg_index.indrelid = quote_ident(c.table_name)::regclass')
 					.andWhere(knex.raw('pg_attribute.attname = c.column_name'))
 					.andWhere(knex.raw('pg_index.indisprimary'))
 					.as('is_primary'),
@@ -299,7 +299,9 @@ export default class Postgres implements Schema {
 					.andWhere({ 'pg_catalog.pg_class.relname': 'c.table_name' })
 					.as('column_comment'),
 
-				knex.raw('pg_get_serial_sequence(c.table_name, c.column_name) as serial'),
+				knex.raw(
+					'pg_get_serial_sequence(quote_ident(c.table_name), c.column_name) as serial'
+				),
 
 				'ffk.referenced_table_schema',
 				'ffk.referenced_table_name',

@@ -52,6 +52,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const metaService = new MetaService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -67,6 +68,7 @@ router.get(
 			meta: meta,
 			data: records || null,
 		};
+
 		return next();
 	}),
 	respond
