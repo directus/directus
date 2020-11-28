@@ -239,6 +239,7 @@ export default async function getASTFromQuery(
 			if (fieldKey.includes('*') === false) continue;
 
 			if (fieldKey === '*') {
+				console.log(allowedFields);
 				// Set to all fields in collection
 				if (allowedFields.includes('*')) {
 					fields.splice(index, 1, ...fieldsInCollection);
@@ -265,7 +266,7 @@ export default async function getASTFromQuery(
 							})
 					: allowedFields.filter((fieldKey) => !!getRelation(parentCollection, fieldKey));
 
-				const nonRelationalFields = fieldsInCollection.filter(
+				const nonRelationalFields = allowedFields.filter(
 					(fieldKey) => relationalFields.includes(fieldKey) === false
 				);
 
