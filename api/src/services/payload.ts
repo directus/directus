@@ -26,7 +26,7 @@ import { toArray } from '../utils/to-array';
 import { FieldMeta } from '../types';
 import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';
-import { InvalidPayloadException } from '../../dist/exceptions';
+import { InvalidPayloadException } from '../exceptions';
 import { isPlainObject } from 'lodash';
 
 type Action = 'create' | 'read' | 'update';
