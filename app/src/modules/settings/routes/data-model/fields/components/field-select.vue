@@ -184,7 +184,7 @@
 
 						<div class="field">
 							<span class="type-label">{{ $tc('field', 0) }}</span>
-							<v-input class="monospace" v-model="duplicateName" />
+							<v-input class="monospace" v-model="duplicateName" db-safe />
 						</div>
 					</div>
 				</v-card-text>
