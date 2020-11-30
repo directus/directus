@@ -48,6 +48,10 @@
 			"format_title_label": "Auto-format casing",
 			"bold_label": "Use bold style"
 		},
+		"formatted-json-value": {
+			"formatted-json-value": "Formatted JSON value",
+			"description": "Display a formatted version of the object"
+		},
 		"icon": {
 			"icon": "Icon",
 			"description": "Display an icon",
