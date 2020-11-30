@@ -90,18 +90,23 @@ export default class Postgres implements Schema {
 	// ===============================================================================================
 	async overview() {
 		const [columnsResult, primaryKeysResult] = await Promise.all([
+			// Only select columns from BASE TABLEs to exclude views (Postgres views
+			// cannot have primary keys so they cannot be used)
 			this.knex.raw(
 				`
         SELECT
-          table_name,
-          column_name,
-          column_default as default_value,
-          is_nullable,
-          data_type
+          c.table_name,
+          c.column_name,
+          c.column_default as default_value,
+          c.is_nullable,
+          c.data_type
         FROM
-          information_schema.columns
+          information_schema.columns c
+        LEFT JOIN information_schema.tables t
+          ON c.table_name = t.table_name
         WHERE
-          table_schema IN (?);
+          t.table_type = 'BASE TABLE'
+          AND c.table_schema IN (?);
       `,
 				[this.explodedSchema.join(',')]
 			),
