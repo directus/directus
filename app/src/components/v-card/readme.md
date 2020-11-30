@@ -8,10 +8,10 @@ Renders a card. A card is nothing but a v-sheet with predefined building blocks 
 <v-card>
 	<v-card-title>Hello, world!</v-card-title>
 	<v-card-subtitle>This is a card</v-card-subtitle>
-	<v-card-text>Consectetur enim ullamco sint sit deserunt proident consectetur.</v-card-test>
+	<v-card-text>Consectetur enim ullamco sint sit deserunt proident consectetur.</v-card-text>
 	<v-card-actions>
 		<v-button>Save</v-button>
-	<v-card-actions>
+	</v-card-actions>
 </v-card>
 ```
 
