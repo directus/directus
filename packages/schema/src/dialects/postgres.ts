@@ -148,10 +148,11 @@ export default class Postgres implements Schema {
 					columns: {},
 				};
 
-			overview[column.table_name].columns[column.column_name] = column;
-			overview[column.table_name].columns[
-				column.column_name
-			].default_value = this.parseDefaultValue(column.default_value);
+			overview[column.table_name].columns[column.column_name] = {
+				...column,
+				default_value: this.parseDefaultValue(column.default_value),
+				is_nullable: column.is_nullable === 'YES',
+			};
 		}
 
 		return overview;
