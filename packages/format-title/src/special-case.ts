@@ -23,4 +23,5 @@ export default [
 	'YouTube',
 	'UUID',
 	'SEO',
+	'CTA'
 ];
