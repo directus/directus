@@ -6,7 +6,7 @@
 
 **Directus is an open-source platform that provides a real-time API and intuitive Admin App for your custom database.** Built on node.js and vue.js 3, it allows both administrators and non-technical users to view and manage the content/data stored within pure SQL databases. It can be used as a headless CMS for managing project content, a database client for modeling and viewing raw data, or as a standalone customizable WebApp.
 
-::: What's in a name?
+::: details What's in a name?
 Directus ([duh REKT iss](http://audio.pronouncekiwi.com/Salli/Directus)) is latin for: _laid straight, arranged in lines_. The broadest goal of Directus is to present data in a simple, orderly, and intuitive way.
 :::
 
@@ -41,18 +41,18 @@ Dedicated hardware, custom limits, full white-labeling, uptime SLAs, and more ar
 
 ### Documentation
 
-[Our online documentation](#) describes the most version of our platform. They are written in publicly managed markdown files so the community can help keep them clean and up-to-date!
+[Our online documentation](https://docs.directus.io) describes the most version of our platform. They are written in publicly managed markdown files so the community can help keep them clean and up-to-date!
 
 * Getting Started: Novice Oriented. For a platform intro and installation.
 * Concepts: Learning Oriented. For understanding the platfom.
 * Guides: Problem Oriented. Follow along with steps while working.
 * Reference: Information Oriented. Look up info and specs while working.
 
-::: Versioned Docs
+::: tip Versioned Docs
 Docs for specific versions of Directus 9+ are available within the individual Project's App Documentation module.
 :::
 
-### Online Demo
+<!-- ### Online Demo
 
 [Our online demo](https://demo.directus.io) (`admin@example.com` + `password`) is a quick way to try things out in an isolated sandbox. This entire instance resets each hour.
 
@@ -60,13 +60,11 @@ Docs for specific versions of Directus 9+ are available within the individual Pr
 
 The [Status Page](https://status.directus.io) provides up-to-date information on our various systems, including current and historical incident details and our 30-day uptime percentage.
 
+-->
+
 ### Marketing Website
 
 Our [marketing site](https://directus.io) provides general information, resources, and team info for the project.
-
-### Blog
-
-Long-form updates, major release details, and strategic organization information.
 
 ### Social
 
@@ -74,7 +72,7 @@ For the latest product info and sneak-peeks into upcoming releases, be sure to f
 
 ### Community
 
-Join our growing community of 2,600+ developers on [Discord](https://discord.gg/directus) and [Slack](https://directus.chat). From community support to seeing where the platform is heading next, it's a great way to get more involved.
+Join our growing community of 2,600+ developers on [Discord](https://directus.chat). From community support to seeing where the platform is heading next, it's a great way to get more involved.
 
 ### Languages
 

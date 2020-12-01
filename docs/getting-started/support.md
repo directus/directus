@@ -4,9 +4,9 @@
 
 ## Community Support
 
-[Github Discussions](#) is great first place to reach out for help. Our community and core developers often check this platform and answer posts. It has the added benefit of being an archival resource for others developers with similar questions.
+[Github Discussions](https://github.com/directus/directus/discussions) is great first place to reach out for help. Our community and core developers often check this platform and answer posts. It has the added benefit of being an archival resource for others developers with similar questions.
 
-Our [Discord](https://discord.gg/directus) community is another great way to get assisstance. Please keep all questions on the `#help` channel, be considerate, and remember that you are getting free help for a free product.
+Our [Discord](https://directus.chat) community is another great way to get assisstance. Please keep all questions on the `#help` channel, be considerate, and remember that you are getting free help for a free product.
 
 ## Premium Support
 
@@ -16,7 +16,7 @@ Premium support is included with our Enterprise Cloud service. On-Demand Cloud c
 
 ### Commissioned Features
 
-If you need a specific feature added to Directus faster than the normal development timeline, [reach out to us](#) for a quote. Our parent agency will often help subsidize the cost of developing new features if they pass our [80/20 Rule](#) and can be merged into the core codebase. Other custom/proprietary development will be built bespoke within our robust extension system.
+If you need a specific feature added to Directus faster than the normal development timeline, [reach out to us](https://directus.io/contact/) for a quote. Our parent agency will often help subsidize the cost of developing new features if they pass our [80/20 Rule](/getting-started/contributing) and can be merged into the core codebase. Other custom/proprietary development will be built bespoke within our robust extension system.
 
 ### Expedited Fixes
 
@@ -38,7 +38,7 @@ Not currently. Directus has been built specifically for wrapping _relational_ da
 
 Directus is primarily a free and open-source project, maintained by a small core team and community contributors who donate their time and resources.
 
-Our platform is feature-rich, however we strictly adhere to our [80/20 Rule](#) to avoid a messy/bloated codebase. Directus is also quite stable, however new issues still arise, some of which may be triaged with a lower prioritization.
+Our platform is feature-rich, however we strictly adhere to our [80/20 Rule](/getting-started/contributing) to avoid a messy/bloated codebase. Directus is also quite stable, however new issues still arise, some of which may be triaged with a lower prioritization.
 
 If you require more expeditious updates, you can contact us regarding [sponsoring expedited fixes](#) or [commissioning new features](#). You can also [submit a pull request](#) — after all, it is open-source!
 

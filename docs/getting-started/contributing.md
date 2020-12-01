@@ -8,7 +8,7 @@ Our Node.js repository is located at `directus/directus` and houses the Admin Ap
 
 To contribute to the project, please follow the instructions located within our GitHub repoitory's [contributing.md file](#).
 
-::: PHP API Port
+::: info PHP API Port
 While the Node.js version of Directus defines the official specification and is our team's primary focus, we also support a community-lead PHP API port in Laravel. This secondary codebase is located in a separate git repository at [`directus/php`](#).
 :::
 
@@ -16,7 +16,7 @@ While the Node.js version of Directus defines the official specification and is 
 
 Feature requests are a great way to let our team know what should be prioritized next. You can [submit a feature request](https://github.com/directus/directus/discussions/category_choices) or upvote [existing submissions](https://github.com/directus/directus/discussions) all via our GitHub Discussions board.
 
-:::warning The 80/20 Rule
+::: warning The 80/20 Rule
 To keep the Directus codebase as clean and simple as possible, we will only consider approving features that we feel at least 80% of our user-base will find valuable. If your feature request falls within the 20% range, it is considered an edge-case and should be implemented as an extension.
 :::
 
