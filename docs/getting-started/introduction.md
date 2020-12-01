@@ -84,8 +84,12 @@ up-to-date!
 -   Guides: Problem Oriented. Follow along with steps while working.
 -   Reference: Information Oriented. Look up info and specs while working.
 
-::: tip Versioned Docs Docs for specific versions of Directus 9+ are available within the individual
-Project's App Documentation module. :::
+<!-- prettier-ignore-start -->
+::: tip Versioned Docs
+Docs for specific versions of Directus 9+ are available within the individual
+Project's App Documentation module.
+:::
+<!-- prettier-ignore-end -->
 
 <!-- ### Online Demo
 

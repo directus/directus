@@ -27,10 +27,14 @@ Feature requests are a great way to let our team know what should be prioritized
 upvote [existing submissions](https://github.com/directus/directus/discussions) all via our GitHub
 Discussions board.
 
-::: warning The 80/20 Rule To keep the Directus codebase as clean and simple as possible, we will
+<!-- prettier-ignore-start -->
+::: warning The 80/20 Rule
+To keep the Directus codebase as clean and simple as possible, we will
 only consider approving features that we feel at least 80% of our user-base will find valuable. If
 your feature request falls within the 20% range, it is considered an edge-case and should be
-implemented as an extension. :::
+implemented as an extension.
+:::
+<!-- prettier-ignore-end -->
 
 ## RFCs
 
