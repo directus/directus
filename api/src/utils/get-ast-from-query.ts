@@ -239,7 +239,6 @@ export default async function getASTFromQuery(
 			if (fieldKey.includes('*') === false) continue;
 
 			if (fieldKey === '*') {
-				console.log(allowedFields);
 				// Set to all fields in collection
 				if (allowedFields.includes('*')) {
 					fields.splice(index, 1, ...fieldsInCollection);
