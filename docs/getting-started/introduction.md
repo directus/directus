@@ -3,6 +3,13 @@
 > These Docs will help get you up-and-running quickly, guide you through advanced features, and
 > explain the concepts that make Directus so unique.
 
+<!-- prettier-ignore-start -->
+::: warning
+Important: This is the documentation for the new Directus 9 platform written in Node.js.
+If you are looking for the previous Directus 8 (PHP) docs, you can find them [here](https://v8.docs.directus.io).
+:::
+<!-- prettier-ignore-end -->
+
 ## What is Directus?
 
 **Directus is an open-source platform that provides a real-time API and intuitive Admin App for your
