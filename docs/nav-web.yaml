@@ -114,6 +114,12 @@
         - type: page
           path: /reference/api/introduction
           title: Introduction
+        - type: group
+          title: Query Parameters
+          children:
+            - type: page
+              path: /reference/api/query/fields
+              title: Fields
         - type: page
           path: /reference/api/items
           title: Items

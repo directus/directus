@@ -6,8 +6,8 @@ Directus can be installed in many different ways, on several different stacks. C
 * [Docker](/guides/installation/docker.md)
 * [Manually](/guides/installation/manual.md)
 
-::: Development Environment
-Developers looking to work on the project's source code should follow our [Contributing Guide](#).
+::: tip Development Environment
+Developers looking to work on the project's source code should follow our [Contributing Guide](/getting-started/contributing).
 :::
 
 ## Deployment Guides
