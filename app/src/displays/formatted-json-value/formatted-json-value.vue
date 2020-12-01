@@ -18,14 +18,14 @@ export default defineComponent({
 		},
 		format: {
 			type: String,
-			default: false,
+			default: null,
 		},
 	},
 	setup(props) {
 		const displayValue = computed(() => {
 			if (!props.value) return null;
 			try {
-				return render(props.format, props.value);
+				return render(props.format || '', props.value);
 			} catch (error) {
 				return null;
 			}
