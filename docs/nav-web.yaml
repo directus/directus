@@ -7,6 +7,9 @@
       path: /getting-started/introduction
       title: Introduction
     - type: page
+      path: /getting-started/installation
+      title: Installation
+    - type: page
       path: /getting-started/support
       title: Support
     - type: page
@@ -27,6 +30,9 @@
     - type: page
       path: /concepts/app-extensions
       title: App Extensions
+    - type: page
+      path: /concepts/api-extensions
+      title: API Extensions
     - type: page
       path: /concepts/activity-and-versions
       title: Activity & Versions

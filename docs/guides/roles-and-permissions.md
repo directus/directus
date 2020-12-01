@@ -67,11 +67,19 @@ Module Navigation field using the Raw Value field label option.
 ]
 ```
 
-:::warning Settings Module The settings module is not controlled by this configuration. It is always
-added to the end of the list for any user's with Admin Access. :::
+<!-- prettier-ignore-start -->
+::: warning Settings Module
+The settings module is not controlled by this configuration. It is always
+added to the end of the list for any user's with Admin Access.
+:::
+<!-- prettier-ignore-end -->
 
-::: Customizing Existing Modules You can enter the link to an existing module to customize its name
-or icon. For example, you can use `/collections` to override the Collections module. :::
+<!-- prettier-ignore-start -->
+::: tip Customizing Existing Modules
+You can enter the link to an existing module to customize its name
+or icon. For example, you can use `/collections` to override the Collections module.
+:::
+<!-- prettier-ignore-end -->
 
 ### Customizing the Collection Navigation
 
@@ -158,7 +166,7 @@ simply click the "System Collections" toggle, and then edit permissions using th
 project collections.
 
 <!-- prettier-ignore-start -->
-::: Resetting System Permissions
+::: tip Resetting System Permissions
 To reset the role's system permissions for proper App access,
 expand the system collections and then click "Reset System Permissions" at the bottom of the
 listing.
@@ -180,14 +188,14 @@ permissions. They can then be reassigned to a new role by an admin.
 <!-- prettier-ignore-end -->
 
 <!-- prettier-ignore-start -->
-:::warning Last Admin
+::: warning Last Admin
 You must maintain at least one role/user with Admin Access so that you can
 still properly manage the project.
 :::
 <!-- prettier-ignore-end -->
 
 <!-- prettier-ignore-start -->
-:::warning Public Role
+::: warning Public Role
 You can not delete the Public role, as it is part of the core platform. To
 disable it completely, simply turn off all Public access permissions.
 :::

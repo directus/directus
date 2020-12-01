@@ -24,13 +24,21 @@
     - Updated By
 6. Click the **Finish Setup** button
 
-:::danger Immutable Keys The collection name, primary key name/type, and system field names can not
-be modified after the collection is created. :::
+<!-- prettier-ignore-start -->
+::: danger Immutable Keys
+The collection name, primary key name/type, and system field names can not
+be modified after the collection is created.
+:::
+<!-- prettier-ignore-end -->
 
-::: Database Tables Keep in mind that Directus Collections are just a database tables. Therefore you
+<!-- prettier-ignore-start -->
+::: tip Database Tables
+Keep in mind that Directus Collections are just a database tables. Therefore you
 can import or create a table directly in the database, and it will automatically appear within
 Directus. The first time you manage that table, a `directus_collections` record will be created with
-default values. :::
+default values.
+:::
+<!-- prettier-ignore-end -->
 
 ## Configuring a Collection
 
@@ -108,6 +116,6 @@ configured for you.
 <!-- prettier-ignore-start -->
 ::: danger Irreversible Change
 This action is permanent and can not be undone. Please proceed with
-caution. 
+caution.
 :::
 <!-- prettier-ignore-end -->
