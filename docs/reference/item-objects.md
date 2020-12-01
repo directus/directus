@@ -4,8 +4,8 @@
 
 ## Syntax
 
-* **Field** — Any valid root field or [relational field](#)
-* **Value** — Any valid static value, or [dynamic variable](#)
+-   **Field** — Any valid root field or [relational field](#)
+-   **Value** — Any valid static value, or [dynamic variable](#)
 
 ```
 {
@@ -23,8 +23,9 @@
 
 ## Relational
 
-You can set related values by nesting field names. For example, if you have a relational [Many-to-One](#)
-`author` field, you can set a rule for the `author.name` field using the following syntax.
+You can set related values by nesting field names. For example, if you have a relational
+[Many-to-One](#) `author` field, you can set a rule for the `author.name` field using the following
+syntax.
 
 ```json
 {
@@ -38,6 +39,6 @@ You can set related values by nesting field names. For example, if you have a re
 
 In addition to static values, you can also set _dynamic_ values using the following variables.
 
-* `$CURRENT_USER` — The primary key of the currently authenticated user
-* `$CURRENT_ROLE` — The primary key of the role for the currently authenticated user
-* `$NOW` — The current timestamp
+-   `$CURRENT_USER` — The primary key of the currently authenticated user
+-   `$CURRENT_ROLE` — The primary key of the role for the currently authenticated user
+-   `$NOW` — The current timestamp

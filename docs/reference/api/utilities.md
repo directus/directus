@@ -4,7 +4,9 @@
     'tag':
         {
             'name': 'Utilities',
-            'description': 'Directus comes with various utility endpoints you can use to simplify your development flow.',
+            'description':
+                'Directus comes with various utility endpoints you can use to simplify your
+                development flow.',
         },
 }
 ---

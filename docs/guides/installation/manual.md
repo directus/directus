@@ -28,4 +28,5 @@ At this point you have the option of installing other dependencies, such as Redi
 
 ## 5. Setup a Configuration File
 
-Finally, you'll need to setup your `.env` file, or configure the environment variables through other means, such as Docker, etc.
+Finally, you'll need to setup your `.env` file, or configure the environment variables through other
+means, such as Docker, etc.

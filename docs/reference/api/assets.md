@@ -4,7 +4,8 @@
     'tag':
         {
             'name': 'Assets',
-            'description': 'Image typed files can be dynamically resized and transformed to fit any need.',
+            'description':
+                'Image typed files can be dynamically resized and transformed to fit any need.',
         },
 }
 ---

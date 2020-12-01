@@ -1,6 +1,8 @@
 # Fields
 
-> You can manage your fields within the Data Model section of the App's Settings, via the [API Fields Endpoint](#), or directly within the database. If you're unfamiliar with Directus Fields, please start by reading our [Understanding Fields](#) docs.
+> You can manage your fields within the Data Model section of the App's Settings, via the
+> [API Fields Endpoint](#), or directly within the database. If you're unfamiliar with Directus
+> Fields, please start by reading our [Understanding Fields](#) docs.
 
 ## Creating a Field
 
@@ -16,9 +18,10 @@
 -   [Many-to-Any Field](#)
 -   [Translated Fields](#)
 
-::: tip Database Fields
-Keep in mind that Directus Fields are just a database columns. Therefore you can import or create a column directly in the database, and it will automatically appear within Directus. The first time you manage that column, a `directus_fields` record will be created with default values.
-:::
+::: tip Database Fields Keep in mind that Directus Fields are just a database columns. Therefore you
+can import or create a column directly in the database, and it will automatically appear within
+Directus. The first time you manage that column, a `directus_fields` record will be created with
+default values. :::
 
 ## Duplicating a Field
 
@@ -26,9 +29,8 @@ Keep in mind that Directus Fields are just a database columns. Therefore you can
 2. Click the **More Options** icon for the field you want to delete
 3. Click the **Duplicate Field** option
 
-:::warning Relational and Primary Key Fields
-It is not currently possible to duplicate relational fields or a collection's primary key.
-:::
+:::warning Relational and Primary Key Fields It is not currently possible to duplicate relational
+fields or a collection's primary key. :::
 
 ## Adjusting Field Layout
 
@@ -54,6 +56,5 @@ The layout of the collection's form is determined by the following field options
 3. Click the **Delete Field** option
 4. Confirm this decision by clicking **Delete** in the dialog
 
-::: danger Irreversible Change
-This action is permanent and can not be undone. Please proceed with caution.
-:::
+::: danger Irreversible Change This action is permanent and can not be undone. Please proceed with
+caution. :::

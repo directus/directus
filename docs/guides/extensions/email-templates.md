@@ -1,6 +1,7 @@
 # Creating a Custom Email Template
 
-> Custom email templates give you control over the presentation of transactional emails sent from the API.
+> Custom email templates give you control over the presentation of transactional emails sent from
+> the API.
 
 ## 1. Setup the Boilerplate
 
