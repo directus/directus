@@ -4,7 +4,7 @@
 
 ## Understanding Relationships
 
-While it may seem complex at first, relational data is actually quite straightforward once you understand what's happeneing behind the confusing terminology. Before diving into the details of each type, let's first cover a few basics that will help you better visualize each in your mind's eye.
+While it may seem complex at first, relational data is actually quite straightforward once you understand what's happening behind the confusing terminology. Before diving into the details of each type, let's first cover a few basics that will help you better visualize each in your mind's eye.
 
 ### PKs vs FKs
 

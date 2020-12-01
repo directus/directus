@@ -8,7 +8,7 @@ Our Node.js repository is located at `directus/directus` and houses the Admin Ap
 
 To contribute to the project, please follow the instructions located within our GitHub repoitory's [contributing.md file](#).
 
-::: info PHP API Port
+::: tip PHP API Port
 While the Node.js version of Directus defines the official specification and is our team's primary focus, we also support a community-lead PHP API port in Laravel. This secondary codebase is located in a separate git repository at [`directus/php`](#).
 :::
 
@@ -22,22 +22,22 @@ To keep the Directus codebase as clean and simple as possible, we will only cons
 
 ## RFCs
 
-Some Directus features/fixes may require additional design, strategy, and/or discussion before beginning work. For these notable pull-requests, you should first submit an RFC (Request For Comments) to our core team via [Discord](https://discord.gg/directus). This process is relatively informal, but ensures proper alignment, and helps avoid squandered development time by contributors.
+Some Directus features/fixes may require additional design, strategy, and/or discussion before beginning work. For these notable pull-requests, you should first submit an RFC (Request For Comments) to our core team via [Discord](https://directus.chat). This process is relatively informal, but ensures proper alignment, and helps avoid squandered development time by contributors.
 
 ## Bug Reporting
 
 Reporting any bugs you come across is an invaluable part of helping keep Directus stable. After confirming a similar issue doesn't already exist, you can [submit a bug report](https://github.com/directus/directus/issues/new) via GitHub Issues. Please ensure the following for all submissions:
 
-* You are experiencing an actual bug, not a configuration issue
-* You are not asking a question or requesting a new feature
-* You have checked that no similar issue already exists
-* You have entered a clear and concise title
-* You have followed the issue template, with stack details and steps to reproduce
-* You have already tried the following troubleshooting steps:
-    * You are on the latest version of Directus
-    * You have stopped (`CTRL+C`) and restarted the server
-    * You have confirmed the issue is not related to your own custom code
-    * Dev Only: You have cleared and reinstalled all dependencies
+-   You are experiencing an actual bug, not a configuration issue
+-   You are not asking a question or requesting a new feature
+-   You have checked that no similar issue already exists
+-   You have entered a clear and concise title
+-   You have followed the issue template, with stack details and steps to reproduce
+-   You have already tried the following troubleshooting steps:
+    -   You are on the latest version of Directus
+    -   You have stopped (`CTRL+C`) and restarted the server
+    -   You have confirmed the issue is not related to your own custom code
+    -   Dev Only: You have cleared and reinstalled all dependencies
 
 ## Reporting Security Vulnerabilities
 
@@ -45,8 +45,8 @@ If you believe you have discovered a security issue within a Directus product or
 
 We value the members of the independent security research community who find security vulnerabilities and work with our team so that proper fixes can be issued to users. Our policy is to credit all researchers in the fix's release notes. In order to receive credit, security researchers must follow responsible disclosure practices, including:
 
-* They do not publish the vulnerability prior to the Directus team releasing a fix for it
-* They do not divulge exact details of the issue, for example, through exploits or proof-of-concepts
+-   They do not publish the vulnerability prior to the Directus team releasing a fix for it
+-   They do not divulge exact details of the issue, for example, through exploits or proof-of-concepts
 
 ## Code of Conduct
 
@@ -54,7 +54,7 @@ The Directus [Code of Conduct](https://github.com/directus/directus/blob/main/co
 
 ## Development Workflow
 
-Before getting started, ensure you your local environment meets our [minimum requirements](#) and you are familiar with Git.
+Before getting started, ensure you your local environment meets our [minimum requirements](/guides/installation/cli) and you are familiar with Git.
 
 ### 1. Fork the Directus repository
 
@@ -80,10 +80,10 @@ npm install
 
 ### 5. Setup the Database & Env File
 
-For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver, which will create the database for you. Run the following command from within the `/api` directory.
+For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver, which will create the database for you. Run the following command from within root of the project:
 
 ```bash
-./cli.js init
+npm run cli -- init
 ```
 
 ### 6. Start the development server
@@ -128,7 +128,7 @@ Contains the Directus API (REST+GraphQL), written in node.js.
 
 ### `/app`
 
-Contains the Directus Admin App, written in vue.js 3.
+Contains the Directus Admin App, written in Vue.js 3.
 
 ### `/docs`
 

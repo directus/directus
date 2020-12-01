@@ -197,7 +197,7 @@
     }
   },
   "lint-staged": {
-    "**/*.{js,ts}": [
+    "**/*.{js,ts,md}": [
       "prettier --write"
     ],
     "**/*.{css,scss}": [
