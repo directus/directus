@@ -21,8 +21,11 @@ vendor's official support/LTS.
 | OracleDB      | TBD     |
 | MariaDB       | 10.1+   |
 
-::: Variants In addition to the databases above, other variants are also supported, including **AWS
-Aurora** (MySQL), and **AWS Redshift** (PostgreSQL). :::
+<!-- prettier-ignore-start -->
+::: tip
+Variants In addition to the databases above, other variants are also supported, including **AWS Aurora** (MySQL), and **AWS Redshift** (PostgreSQL).
+:::
+<!-- prettier-ignore-end -->
 
 ## 2. Create a Project
 
@@ -32,8 +35,12 @@ Create a new Directus project by running the following npm command.
 npx create-directus-project my-project
 ```
 
-:::warning Except for SQLite, the database must already be running before creating your Directus
-project. :::
+<!-- prettier-ignore-start -->
+::: warning 
+Except for SQLite, the database must already be running before creating your Directus
+project.
+:::
+<!-- prettier-ignore-end -->
 
 ## 3. Start your Project
 

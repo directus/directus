@@ -32,10 +32,12 @@ custom/proprietary development will be built bespoke within our robust extension
 ### Expedited Fixes
 
 We triage all reported bugs based on priority and how long the fix is estimated to take. If you need
-a specific issue resolved sooner, [reach out to us](#) for a quote.
+a specific issue resolved sooner, [reach out to us](https://directus.io/contact/) for a quote.
 
 ## Frequently Asked Questions
 
+<!--
+@TODO
 ### Does Directus handle deploying or migrating projects?
 
 Directus includes [export](#) and [backup](#) tools to assist in deploying data changes between
@@ -43,7 +45,7 @@ environments (eg: from _development_ to _production_), however there is no forma
 workflow.
 
 Additionally, since Directus stores all of your data in pure SQL, you can use almost any preexisting
-workflow or toolkit for this process.
+workflow or toolkit for this process. -->
 
 ### Does Directus support Mongo/NoSQL?
 
@@ -63,16 +65,18 @@ quite stable, however new issues still arise, some of which may be triaged with 
 prioritization.
 
 If you require more expeditious updates, you can contact us regarding
-[sponsoring expedited fixes](#) or [commissioning new features](#). You can also
-[submit a pull request](#) — after all, it is open-source!
+[sponsoring expedited fixes](#expedited-fixes) or
+[commissioning new features](#commisioned-features). You can also
+[submit a pull request](https://github.com/directus/directus/pulls) — after all, it is open-source!
 
 ### Can you give an ETA for this feature/fix?
 
-If it is [sponsored work](#), then yes, delivery dates are part of our statement of work agreements.
+If it is sponsored work, then yes, delivery dates are part of our statement of work agreements.
 Otherwise, most likely not. This is open-source software, work is prioritized internally, and all
 timelines are subject to change.
 
 ### But this is an emergency, my very important project requires it now!
 
 We understand, and are here to help. If you need something prioritized, you can reach out to us to
-discuss [premium support](#), [sponsoring expedited fixes](#) or [commissioning new features](#).
+discuss [premium support](#premium-support), [sponsoring expedited fixes](#expedited-features) or
+[commissioning new features](#commissioned-features).

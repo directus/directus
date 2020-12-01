@@ -1,5 +1,7 @@
 # Error Codes
 
+@TODO
+
 | Error Code            | Description                                    |
 | --------------------- | ---------------------------------------------- |
 | `FAILED_VALIDATION`   | Validation for this particular item failed     |
@@ -12,5 +14,9 @@
 | `ROUTE_NOT_FOUND`     | Endpoint does not exist                        |
 | `SERVICE_UNAVAILABLE` | Could not use external service                 |
 
-:::warning Security To prevent leaking which items exist, all actions for non-existing items will
-return a `FORBIDDEN` error. :::
+<!-- prettier-ignore-start -->
+::: warning Security
+To prevent leaking which items exist, all actions for non-existing items will
+return a `FORBIDDEN` error.
+:::
+<!-- prettier-ignore-end -->

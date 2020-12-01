@@ -1,8 +1,8 @@
 # Webhooks
 
-> In addition to writing custom code for more complex [event hooks](#), Directus provides a way to
-> quickly configure webhooks through the App. These send HTTP requests when a specific event is
-> triggered within the project.
+> In addition to writing custom code for more complex [event hooks](/concepts/api-extensions),
+> Directus provides a way to quickly configure webhooks through the App. These send HTTP requests
+> when a specific event is triggered within the project.
 
 ## Creating Webhooks
 
@@ -30,5 +30,8 @@
 2. Click the red **Delete Webhook** action button in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
-:::danger Irreversible Change This action is permanent and can not be undone. Please proceed with
-caution. :::
+<!-- prettier-ignore-start -->
+::: danger Irreversible Change
+This action is permanent and can not be undone. Please proceed with caution.
+:::
+<!-- prettier-ignore-end -->

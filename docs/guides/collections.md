@@ -70,12 +70,20 @@ easy recovery.
 -   **Archive Value** — The value saved in the Archive Field when archived
 -   **Unarchive Value** — The value saved in the Archive Field when unarchived
 
-:::warning API Responses Items that have been archived are still returned normally via the API. It
-is up to you to filter them out as needed. :::
+<!-- prettier-ignore-start -->
+::: warning API Responses
+Items that have been archived are still returned normally via the API. It
+is up to you to filter them out as needed.
+:::
+<!-- prettier-ignore-end -->
 
-::: Status Field When creating a new Collection, you have the option of creating an optional
+<!-- prettier-ignore-start -->
+::: tip Status Field
+When creating a new Collection, you have the option of creating an optional
 "Status" field. If you choose to include this field, the collection's archive settings will
-automatically be configured for you. :::
+automatically be configured for you.
+:::
+<!-- prettier-ignore-end -->
 
 ### Sort
 
@@ -83,9 +91,13 @@ The sort feature enables manual drag-and-drop item reordering within the Directu
 typically shown on the [Collection Detail](#) page/modal, and can also be used for sorting items
 within a [Junction Table](#).
 
-::: Sort Field When creating a new Collection, you have the option of creating an optional "Sort"
+<!-- prettier-ignore-start -->
+::: tip Sort Field
+When creating a new Collection, you have the option of creating an optional "Sort"
 field. If you choose to include this field, the collection's sort settings will automatically be
-configured for you. :::
+configured for you.
+:::
+<!-- prettier-ignore-end -->
 
 ## Deleting a Collection
 
@@ -93,5 +105,9 @@ configured for you. :::
 2. Click the red **Delete Collection** action button in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
-:::danger Irreversible Change This action is permanent and can not be undone. Please proceed with
-caution. :::
+<!-- prettier-ignore-start -->
+::: danger Irreversible Change
+This action is permanent and can not be undone. Please proceed with
+caution. 
+:::
+<!-- prettier-ignore-end -->

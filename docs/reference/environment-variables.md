@@ -55,10 +55,13 @@ Database user's password. Required when using `pg`, `mysql`, `mysql2`, `oracledb
 
 Where to read/write the SQLite database. Required when using `sqlite3`.
 
-::: Additional Database Variables All `DB_*` environment variables are passed to the `connection`
+<!-- prettier-ignore-start -->
+::: tip Additional Database Variables
+All `DB_*` environment variables are passed to the `connection`
 configuration of a [`Knex` instance](http://knexjs.org). Based on your project's needs, you can
 extend the `DB_*` environment variables with any config you need to pass to the database instance.
 :::
+<!-- prettier-ignore-end -->
 
 ## Security
 
@@ -145,11 +148,13 @@ limiter used, you must also provide the following configurations.<br>**Default: 
 -   **Memcache**
     -   **`RATE_LIMITER_MEMCACHE`** — Location of your memcache instance
 
-::: Additional Rate Limiter Variables All `RATE_LIMITER_*` variables are passed directly to a
+<!-- prettier-ignore-start -->
+::: tip Additional Rate Limiter Variables All `RATE_LIMITER_*` variables are passed directly to a
 `rate-limiter-flexible` instance. Depending on your project's needs, you can extend the above
 environment variables to configure any of
 [the `rate-limiter-flexible` options](https://github.com/animir/node-rate-limiter-flexible/wiki/Options).
 :::
+<!-- prettier-ignore-end -->
 
 ## Cache
 
@@ -161,8 +166,12 @@ Whether or not caching is enabled.<br>**Default: `false`**
 
 How long the cache is persisted.<br>**Default: `30m`**
 
-:::warning Forced Flush Regardless of TTL, the cache is always flushed for every create, update, and
-delete action. :::
+<!-- prettier-ignore-start -->
+::: warning Forced Flush
+Regardless of TTL, the cache is always flushed for every create, update, and
+delete action.
+:::
+<!-- prettier-ignore-end -->
 
 ### `CACHE_NAMESPACE`
 

@@ -9,14 +9,16 @@
 Our Node.js repository is located at `directus/directus` and houses the Admin App (vue.js 3),
 Node.js API, project documentation (markdown), and API Specification (OpenAPI). Directus follows a
 monorepo design similar to React or Babel — to learn more about our monorepo's design and structure,
-see our [Codebase Overview](#) below.
+see our [Codebase Overview](#codebase-overview) below.
 
 To contribute to the project, please follow the instructions located within our GitHub repoitory's
-[contributing.md file](#).
+[contributing.md file](https://github.com/directus/directus/blob/main/contributing.md).
 
-::: tip PHP API Port While the Node.js version of Directus defines the official specification and is
+<!-- ::: tip PHP API Port
+While the Node.js version of Directus defines the official specification and is
 our team's primary focus, we also support a community-lead PHP API port in Laravel. This secondary
-codebase is located in a separate git repository at [`directus/php`](#). :::
+codebase is located in a separate git repository at [`directus/php`](#).
+::: -->
 
 ## Feature Requests
 

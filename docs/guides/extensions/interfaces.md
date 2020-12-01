@@ -37,9 +37,11 @@ export default {
 -   `component` — A reference to your Vue component.
 -   `types` — A CSV of supported [types](#).
 
-::: See
-[the TypeScript definition](https://github.com/directus/directus/blob/20355fee5eba514dd75565f60269311187010c66/app/src/interfaces/types.ts#L5-L18)
-for more info on what can go into this object. :::
+<!-- prettier-ignore-start -->
+::: tip
+See [the TypeScript definition](https://github.com/directus/directus/blob/20355fee5eba514dd75565f60269311187010c66/app/src/interfaces/types.ts#L5-L18) for more info on what can go into this object.
+:::
+<!-- prettier-ignore-end -->
 
 ### src/interface.vue
 

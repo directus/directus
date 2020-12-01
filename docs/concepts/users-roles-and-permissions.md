@@ -8,26 +8,35 @@
 To use the App or API, you'll need a valid Directus User. Each user is assigned to a role that
 determines what they have access to see and do. For instance, some users have access to the App,
 while others can only connect to the API. Directus ships with a number of profile fields that help
-create a full-featured [User Directory](#), and setting fields that allow customizing your
-experience.
+create a full-featured [User Directory](/concepts/app-overview#user-directory), and setting fields
+that allow customizing your experience.
 
-All Directus users are aggregated and shown on the [User Directory](#) page of the App
+All Directus users are aggregated and shown on the
+[User Directory](/concepts/app-overview#user-directory) page of the App
 
-::: Extending Directus Users While the included fields within Directus Users are required/locked,
+<!-- prettier-ignore-start -->
+::: tip Extending Directus Users
+While the included fields within Directus Users are required/locked,
 you can still _extend_ this collection with additional custom fields as needed. You can do this via
-the normal [Create a new Field](#) process from within the system collection. :::
+the normal [Create a new Field](#) process from within the system collection.
+:::
+<!-- prettier-ignore-end -->
 
-::: System vs Custom Users If your project requires a users, members, customers, etc., we recommend
+<!-- prettier-ignore-start -->
+::: tip
+System vs Custom Users If your project requires a users, members, customers, etc., we recommend
 creating your own collection to manage these instead of trying to repurpose the Directus Users
-system. :::
+system.
+:::
+<!-- prettier-ignore-end -->
 
 ### Relevant Guides
 
--   [Setting up your User Profile](#)
--   [Inviting a User](#)
--   [Creating a User](#)
--   [Archiving a User](#)
--   [Deleting a User](#)
+-   [Setting up your User Profile](/guides/users#setting-up-your-user-profile)
+-   [Inviting a User](/guides/users#inviting-a-user)
+-   [Creating a User](/guides/users#creating-a-user)
+-   [Archiving a User](/guides/users#archiving-a-user)
+-   [Deleting a User](/guides/users#deleting-a-user)
 
 ## Roles
 
@@ -45,12 +54,12 @@ users. This role can not be deleted, and has no permissions by default.
 
 Upon installation, Directus automatically creates this initial role to grant access to the first
 admin user. It is just a normal role, and like any other it can be updated, renamed or deleted,
-however your project must maintain at least one role with [Admin Access](#) at all times.
+however your project must maintain at least one role with Admin Access at all times.
 
 ### Relevant Guides
 
--   [Creating a Role](#)
--   [Deleting a Role](#)
+-   [Creating a Role](/guides/roles-and-permissions#creating-a-role)
+-   [Deleting a Role](/guides/roles-and-permissions#deleting-a-role)
 
 ## Permissions
 
@@ -58,4 +67,4 @@ Directus gives you granular, filter-based permissions for managing access-contro
 
 ### Relevant Guides
 
--   [Managing Permissions](#)
+-   [Managing Permissions](/guides/roles-and-permissions)

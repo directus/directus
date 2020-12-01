@@ -11,10 +11,13 @@ users to view and manage the content/data stored within pure SQL databases. It c
 headless CMS for managing project content, a database client for modeling and viewing raw data, or
 as a standalone customizable WebApp.
 
-::: details What's in a name? Directus
-([duh REKT iss](http://audio.pronouncekiwi.com/Salli/Directus)) is latin for: _laid straight,
+<!-- prettier-ignore-start -->
+::: details What's in a name?
+Directus ([duh REKT iss](http://audio.pronouncekiwi.com/Salli/Directus)) is latin for: _laid straight,
 arranged in lines_. The broadest goal of Directus is to present data in a simple, orderly, and
-intuitive way. :::
+intuitive way.
+:::
+<!-- prettier-ignore-end -->
 
 ## What makes it unique?
 
@@ -48,7 +51,7 @@ guided by the following core principles:
 
 ### Open-Source Engine
 
-Completely free and open-source on the GPLv3 license, Directus is publically available within our
+Completely free and open-source on the GPLv3 license, Directus is publicly available within our
 [npm package](https://www.npmjs.com/package/directus) and main
 [GitHub repository](https://github.com/directus/directus). It includes our dynamic API engine
 (node.js), the intuitive Admin App (vue.js 3), this documentation (markdown), and all dependencies.
@@ -70,7 +73,7 @@ They are written in publicly managed markdown files so the community can help ke
 up-to-date!
 
 -   Getting Started: Novice Oriented. For a platform intro and installation.
--   Concepts: Learning Oriented. For understanding the platfom.
+-   Concepts: Learning Oriented. For understanding the platform.
 -   Guides: Problem Oriented. Follow along with steps while working.
 -   Reference: Information Oriented. Look up info and specs while working.
 

@@ -127,9 +127,13 @@ The sidebar's info component also includes the following readonly details:
 -   **Last Access** — The timestamp of the user's last App or API action
 -   **Last Page** — The last App page accessed by the user
 
-::: tip Extending Users While the fields included out-of-the-box are locked from schema changes, you
+<!-- prettier-ignore-start -->
+::: tip Extending Users
+While the fields included out-of-the-box are locked from schema changes, you
 can extend Directus Users to include additional proprietary fields within
-[Settings > Data Model](/concepts/data-model). :::
+[Settings > Data Model](/concepts/data-model).
+:::
+<!-- prettier-ignore-end -->
 
 ## File Library
 
@@ -161,9 +165,13 @@ The sidebar's info component also includes the following readonly details:
 -   **Folder** — The current parent folder that contains the file
 -   **Metadata** — Metadata JSON dump of the file's EXIF, IPTC, and ICC information
 
-::: tip Extending Files While the fields included out-of-the-box are locked from schema changes, you
+<!-- prettier-ignore-start -->
+::: tip Extending Files
+While the fields included out-of-the-box are locked from schema changes, you
 can extend Directus Files to include additional proprietary fields within
-[Settings > Data Model](/concepts/data-model). :::
+[Settings > Data Model](/concepts/data-model).
+:::
+<!-- prettier-ignore-end -->
 
 ## Documentation
 
@@ -179,9 +187,13 @@ dynamically tailored to your custom schema. The docs are organized into four dis
 -   [Reference](/reference/api/introduction)\*\* — Information Oriented. Look up info and specs
     while working.
 
-::: tip Updating the Docs Our docs are written in markdown (with some additional VuePress styling
+<!-- prettier-ignore-start -->
+::: tip Updating the Docs
+Our docs are written in markdown (with some additional VuePress styling
 like this hint box), and available for editing/fixing via
-[GitHub](https://github.com/directus/directus). :::
+[GitHub](https://github.com/directus/directus).
+:::
+<!-- prettier-ignore-end -->
 
 ## Activity History
 

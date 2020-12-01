@@ -6,7 +6,7 @@
 
 ## Activity
 
-This is a log of all events that have occured within the project. Activity can be accessed in two
+This is a log of all events that have occurred within the project. Activity can be accessed in two
 ways, via the main [Activity Module](/concepts/app-overview#actvity-history), or within the sidebar
 of individual [Item Detail](/concepts/app-overview#item-detail) pages. The following information is
 stored for each event's activity item:
@@ -20,12 +20,20 @@ stored for each event's activity item:
 -   Item
 -   Comment (when applicable)
 
-::: tip Readonly For proper accountability, activity records are readonly. Administrators should
-avoid changing, deleting, or truncating this data. :::
+<!-- prettier-ignore-start -->
+::: tip Readonly
+For proper accountability, activity records are readonly. Administrators should
+avoid changing, deleting, or truncating this data.
+:::
+<!-- prettier-ignore-end -->
 
-::: warning External Events Directus can only track events that pass through the platform's
+<!-- prettier-ignore-start -->
+::: warning External Events
+Directus can only track events that pass through the platform's
 middleware. Changes made directly to the database, or by other external means, are not included in
-the activity log. :::
+the activity log.
+:::
+<!-- prettier-ignore-end -->
 
 ## Versions
 
@@ -36,15 +44,21 @@ information stored for each version:
 -   Data — A full snapshot of the item _after_ the event
 -   Delta — The specific field data changed by this event
 
-::: tip Customizing Version Data Since versions store a full data snapshot and delta, the
+<!-- @TODO ::: tip Customizing Version Data
+Since versions store a full data snapshot and delta, the
 `directus_revisions` collection can quickly grow quite large, increasing database size and
 potentially decreasing performance. To remedy this, Directus allows
 [configuring version scope](/concepts/app-overview) per collection to set the exact field data
-saved. :::
+saved.
+::: -->
 
-::: tip Creating Detached Versions You can also create a new version for an item without saving the
+<!-- prettier-ignore-start -->
+::: tip Creating Detached Versions
+You can also create a new version for an item without saving the
 data to the parent item itself. This allows you to "stage" changes to an item that may already be
-live/published. :::
+live/published.
+:::
+<!-- prettier-ignore-end -->
 
 ### Relevant Guides
 

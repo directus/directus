@@ -59,12 +59,16 @@ Directus automatically uses a built-in [title formatter](/concepts/app-extension
 database table names prettified, and you can use [translations](/concepts/data-model) to completely
 rename them if needed.
 
-::: tip Usage Collections can be organized in any way that is appropriate for your project. You can
+<!-- prettier-ignore-start -->
+::: tip Usage
+Collections can be organized in any way that is appropriate for your project. You can
 architect them platform-specific (eg: _pages_ of a website), or in a more platform-agnostic way (eg:
 raw _customers_ of your business). While there's no right or wrong way to structure your data-model,
 we recommend keeping your data as agnostic as possible so it is easier to repurpose in the future.
 In short, **learn to see your data as its own asset — not only through the lens of your immediate
-project needs**. :::
+project needs**.
+:::
+<!-- prettier-ignore-end -->
 
 ### Relevant Guides
 
@@ -92,17 +96,29 @@ completely rename them if needed.
 Each field also mirrors other characteristics from the column, including its `type`, `default`,
 `length`, `allow_null`, etc.
 
-::: tip Usage You might have `title`, `body`, `author`, and `date_published` fields within an
-`articles` collection. :::
+<!-- prettier-ignore-start -->
+::: tip Usage 
+You might have `title`, `body`, `author`, and `date_published` fields within an
+`articles` collection.
+:::
+<!-- prettier-ignore-end -->
 
-::: tip Aliases Not all fields in Directus map directly to an actual database column within their
+<!-- prettier-ignore-start -->
+::: tip Aliases 
+Not all fields in Directus map directly to an actual database column within their
 table. Some relational fields, like One-to-Many (O2M) and Many-to-Many (M2M), represent data that is
 stored in different tables. Other fields are only for presentation and don't save data at all, such
-as a divider. These are called "alias" fields. :::
+as a divider. These are called "alias" fields.
+:::
+<!-- prettier-ignore-end -->
 
-::: tip Relational Fields Fields that reference other items (in the same collection or different)
+<!-- prettier-ignore-start -->
+::: tip Relational Fields 
+Fields that reference other items (in the same collection or different)
 are called relational fields. Linking or connecting data relationally is an immensely powerful
-feature of relational databases and SQL queries. :::
+feature of relational databases and SQL queries.
+:::
+<!-- prettier-ignore-end -->
 
 ### Relevant Guides
 

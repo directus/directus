@@ -12,18 +12,23 @@ type, let's first cover a few basics that will help you better visualize each in
 
 ### PKs vs FKs
 
-Every [item](#) in a relational database has a unique "key" that identifies it within its
-[collection](#). Because it's required, the key is the first [field](#) created within a collection,
-typically storing an "auto-increment" number, an automatically generated unique hash, or a manually
-entered value. They are often abbreviated to "PK" (Primary Key), "ID" (Identifier), "UID" (Unique
-Identifier), or "UUID" (Universally Unique Identifier), depending on the type of value they store.
-After it's created, the value of an item's PK should _never_ change.
+Every [item](/concepts/platform-overview#items) in a relational database has a unique "key" that
+identifies it within its [collection](/concepts/platform-overview#collections). Because it's
+required, the key is the first [field](/concepts/platform-overview#fields) created within a
+collection, typically storing an "auto-increment" number, an automatically generated unique hash, or
+a manually entered value. They are often abbreviated to "PK" (Primary Key), "ID" (Identifier), "UID"
+(Unique Identifier), or "UUID" (Universally Unique Identifier), depending on the type of value they
+store. After it's created, the value of an item's PK should _never_ change.
 
 To link items together relationally, you simply save a reference of an item's PK in a different
 field. That _reference_ is called a Foreign Key (FK).
 
-::: Compound Keys We've ignored compound keys in this explanation to help keep things as simple as
-possible. :::
+<!-- prettier-ignore-start -->
+::: tip Compound Keys
+We've ignored compound keys in this explanation to help keep things as simple as
+possible.
+:::
+<!-- prettier-ignore-end -->
 
 ### Perspective Matters
 
@@ -50,9 +55,9 @@ country ("One" Collection)
 
 ## One-to-Many (O2M)
 
-A One-to-Many (O2M) relationship uses an [alias](#) field to reference one or more FKs in a M2O.
-This is the _exact same_ relationship as the M2O above, but looking at it from the opposite
-perspective (see [Perspective Matters](#)). So the O2M data model is the same, but adds an alias
+A One-to-Many (O2M) relationship uses an alias field to reference one or more FKs in a M2O. This is
+the _exact same_ relationship as the M2O above, but looking at it from the opposite perspective (see
+[Perspective Matters](#perspective-matters)). So the O2M data model is the same, but adds an alias
 "cities" field to the Country collection, like this:
 
 ```
@@ -67,12 +72,20 @@ cities ("Many" Collection)
 - country (stores the FK to a country)
 ```
 
-::: Manual Reordering To enable manual reordering for a O2M, simply add a field with the `sort` type
-to the "many" side (`cities` in the above example). :::
+<!-- prettier-ignore-start -->
+::: tip
+Manual Reordering To enable manual reordering for a O2M, simply add a field with the `sort` type
+to the "many" side (`cities` in the above example).
+:::
+<!-- prettier-ignore-end -->
 
-::: Translations The Translations interface allows [creating multilingual content](#) relationally.
-It is a standard O2M relatinship, but also includes an additional field on the "many" collection to
-hold the language key :::
+<!-- prettier-ignore-start -->
+::: tip Translations
+The Translations interface allows [creating multilingual content](/concepts/internationalization#content-translations) relationally.
+It is a standard O2M relationship, but also includes an additional field on the "many" collection to
+hold the language key
+:::
+<!-- prettier-ignore-end -->
 
 ## Many-to-Many (M2M)
 
@@ -101,15 +114,27 @@ recipe_ingredients (Junction Collection)
 Notice that the example above also has a `quantity` field on the junction table. You can add any
 contextual fields to the junction, and they will also be included in the App's relational edit form.
 
-:::warning M2M == O2M x2 An M2M is technically two relationships viewed as one. Each side has a O2M
-to the Junction Table that sits in the middle. In that sense, there really is no "M2M". :::
+<!-- prettier-ignore-start -->
+::: warning M2M == O2Mx2
+An M2M is technically two relationships viewed as one. Each side has a O2M
+to the Junction Table that sits in the middle. In that sense, there really is no "M2M".
+:::
+<!-- prettier-ignore-end -->
 
-::: Manual Reordering To enable manual reordering for a M2M, simply add a numeric field to the
-junction table and set it as the [Collection Sort](#). :::
+<!-- prettier-ignore-start -->
+::: tip
+Manual Reordering To enable manual reordering for a M2M, simply add a numeric field to the
+junction table and set it as the [Collection Sort](#).
+:::
+<!-- prettier-ignore-end -->
 
-::: Self-Referencing You can also have a M2M relationship that connects items within the _same_
+<!-- prettier-ignore-start -->
+::: tip
+Self-Referencing You can also have a M2M relationship that connects items within the _same_
 collection. A common example of this is "Related Articles", where each article might relate to many
-other articles. :::
+other articles.
+:::
+<!-- prettier-ignore-end -->
 
 ## One-to-One (O2O)
 
@@ -117,20 +142,21 @@ Directus does not include a one-to-one (O2O) relationship type or interface. How
 essentially the same as a M2O (storing a foreign key). The only difference is that a O2O enforces
 the cardinality. In other words, selecting a relational item in a O2O means that item can not be
 selected elsewhere (it can only be used once). This functionality can be added by checking and
-constraining uniqueness via a [custom event hook](#) or [custom interface](#).
+constraining uniqueness via a [custom event hook](/concepts/api-extensions) or
+[custom interface](/concepts/app-extensions).
 
 An example of a O2O is: a _person_ only has one unique set of _fingerprints_, and those
 _fingerprints_ only belong to one _person_.
 
-## Many-to-Any (M2X)
+## Many-to-Any (M2A)
 
-Sometimes called a "matrix field" or "replicator", the Many-to-Any (M2X) relationship is essentially
+Sometimes called a "matrix field" or "replicator", the Many-to-Any (M2A) relationship is essentially
 the same as a M2M, but with one crucial difference: the junction table also stores the _parent
 collection name of the FK_. This "compound key" combines the collection name and FK to provide a
 unique reference to _any_ other item within the project. You can then artificially limit which
 collections are valid through an "allow list".
 
-An example of a M2X is a "page layout builder". These typically will have modular components across
+An example of a M2A is a "page layout builder". These typically will have modular components across
 several different collections (eg: "Heading", "Text Block", "Media Asset", etc), and a _Pages_
 collections where you can piece them together. Therefore, the junction table will link a specific
 page with specific components, allowing the creation of relational page layouts.

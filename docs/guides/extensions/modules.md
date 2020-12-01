@@ -37,9 +37,12 @@ export default {
 -   `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
 -   `routes` — Details the routes in your module per the Vue router.
 
-::: See
-[the TypeScript definition](https://github.com/directus/directus/blob/20355fee5eba514dd75565f60269311187010c66/app/src/modules/types.ts#L6-L17)
-for more info on what can go into this object. :::
+<!-- prettier-ignore-start -->
+::: tip
+See [the TypeScript definition](https://github.com/directus/directus/blob/20355fee5eba514dd75565f60269311187010c66/app/src/modules/types.ts#L6-L17)
+for more info on what can go into this object.
+:::
+<!-- prettier-ignore-end -->
 
 ### src/module.vue
 
