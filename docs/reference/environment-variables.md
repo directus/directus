@@ -260,3 +260,18 @@ provide the following configurations.<br>**Default: `sendmail`**
     -   **`EMAIL_SMTP_PASSWORD`** — SMTP Password
     -   **`EMAIL_SMTP_POOL`** — Use SMTP pooling
     -   **`EMAIL_SMTP_SECURE`** — Enable TLS
+
+## Misc.
+
+If you're relying on Docker and/or the `directus bootstrap` CLI command, you can pass the following
+two environment variables to automatically configure the first user:
+
+### `ADMIN_EMAIL`
+
+The email address of the first user that's automatically created when using `directus bootstrap`.
+Defaults to `admin@example.com`
+
+### `ADMIN_PASSWORD`
+
+The password of the first user that's automatically created when using `directus bootstrap`.
+Defaults to a random string of 12 characters.
