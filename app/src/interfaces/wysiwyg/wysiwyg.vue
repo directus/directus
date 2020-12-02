@@ -8,6 +8,17 @@
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
 		/>
+		<v-dialog :active="_uploadDialogActive" @toggle="hideUploadDialog" @esc="hideUploadDialog">
+			<v-card>
+				<v-card-title>{{ $t('interfaces.file.description') }}</v-card-title>
+				<v-card-text>
+					<v-upload @input="handleUpload" :multiple="false" from-library from-url />
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="hideUploadDialog">{{ $t('cancel') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
@@ -36,6 +47,8 @@ import 'tinymce/icons/default';
 import Editor from '@tinymce/tinymce-vue';
 
 import getEditorStyles from './get-editor-styles';
+
+import getRootPath from '@/utils/get-root-path';
 
 type CustomFormat = {
 	title: string;
@@ -92,6 +105,9 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const editorElement = ref<Vue | null>(null);
+		const uploadHandler = ref<CallableFunction | null>(null);
+
+		const _uploadDialogActive = computed(() => !!uploadHandler.value);
 
 		const _value = computed({
 			get() {
@@ -131,11 +147,45 @@ export default defineComponent({
 				extended_valid_elements: 'audio[loop],source',
 				toolbar: toolbarString,
 				style_formats: styleFormats,
+				file_picker_types: 'file image media',
+				file_picker_callback: setupUploadHandler,
 				...(props.tinymceOverrides || {}),
 			};
 		});
 
-		return { editorElement, editorOptions, _value, setFocus };
+		return {
+			editorElement,
+			editorOptions,
+			_value,
+			setFocus,
+			uploadHandler,
+			hideUploadDialog,
+			handleUpload,
+			_uploadDialogActive,
+		};
+
+		function handleUpload(event) {
+			if (uploadHandler.value) {
+				uploadHandler.value(event);
+			}
+			hideUploadDialog();
+		}
+
+		function setupUploadHandler(cb: CallableFunction) {
+			uploadHandler.value = (result: Record<string, any>) => {
+				const fileUri = window.location.origin + getRootPath() + 'assets/' + result.id;
+				cb(fileUri, {
+					alt: result.title,
+					title: result.title,
+					width: (result.width || '').toString(),
+					height: (result.height || '').toString(),
+				});
+			};
+		}
+
+		function hideUploadDialog() {
+			uploadHandler.value = null;
+		}
 
 		function setFocus(val: boolean) {
 			if (editorElement.value == null) return;
