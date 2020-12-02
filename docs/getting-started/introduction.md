@@ -20,7 +20,7 @@ as a standalone customizable WebApp.
 
 <!-- prettier-ignore-start -->
 ::: tip What's in a name?
-Directus ([duh REKT iss](http://audio.pronouncekiwi.com/Salli/Directus)) is latin for: _laid straight,
+"Directus" ([duh REKT iss](http://audio.pronouncekiwi.com/Salli/Directus)) is latin for: _laid straight,
 arranged in lines_. The broadest goal of Directus is to present data in a simple, orderly, and
 intuitive way.
 :::
