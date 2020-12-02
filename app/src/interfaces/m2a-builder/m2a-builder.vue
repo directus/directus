@@ -576,9 +576,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.m2a-builder {
-	background-color: white;
-}
+// .m2a-builder {
+// background-color: white;
+// }
 
 .m2a-row {
 	display: flex;
