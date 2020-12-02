@@ -164,15 +164,15 @@ export default defineComponent({
 			_uploadDialogActive,
 		};
 
-		function handleUpload(event) {
-			if (uploadHandler.value) {
-				uploadHandler.value(event);
-			}
+		function handleUpload(file: Record<string, any>) {
+			if (uploadHandler.value) uploadHandler.value(file);
 			hideUploadDialog();
 		}
 
-		function setupUploadHandler(cb: CallableFunction) {
+		function setupUploadHandler(cb: CallableFunction, value: any, meta: Record<string, any>) {
 			uploadHandler.value = (result: Record<string, any>) => {
+				if (meta.filetype === 'image' && !/^image\//.test(result.type)) return;
+
 				const fileUri = window.location.origin + getRootPath() + 'assets/' + result.id;
 				cb(fileUri, {
 					alt: result.title,
