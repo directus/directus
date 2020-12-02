@@ -2,6 +2,7 @@ import fse from 'fs-extra';
 import Knex from 'knex';
 import path from 'path';
 import formatTitle from '@directus/format-title';
+import env from '../../env';
 
 type Migration = {
 	version: string;
@@ -12,6 +13,12 @@ type Migration = {
 export default async function run(database: Knex, direction: 'up' | 'down' | 'latest') {
 	let migrationFiles = await fse.readdir(__dirname);
 
+	const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
+	const customMigrationFiles =
+		((await fse.pathExists(customMigrationsPath)) &&
+			(await fse.readdir(customMigrationsPath))) ||
+		[];
+
 	migrationFiles = migrationFiles.filter(
 		(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false
 	);
@@ -21,18 +28,25 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		.from('directus_migrations')
 		.orderBy('version');
 
-	const migrations = migrationFiles.map((migrationFile) => {
-		const version = migrationFile.split('-')[0];
-		const name = formatTitle(migrationFile.split('-').slice(1).join('_').split('.')[0]);
+	const migrations = [
+		...migrationFiles.map((path) => parseFilePath(path)),
+		...customMigrationFiles.map((path) => parseFilePath(path, true)),
+	];
+
+	function parseFilePath(filePath: string, custom: boolean = false) {
+		const version = filePath.split('-')[0];
+		const name = formatTitle(filePath.split('-').slice(1).join('_').split('.')[0]);
 		const completed = !!completedMigrations.find((migration) => migration.version === version);
 
 		return {
-			file: migrationFile,
+			file: custom
+				? path.join(customMigrationsPath, filePath)
+				: path.join(__dirname, filePath),
 			version,
 			name,
 			completed,
 		};
-	});
+	}
 
 	if (direction === 'up') await up();
 	if (direction === 'down') await down();
@@ -55,7 +69,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			throw Error('Nothing to upgrade');
 		}
 
-		const { up } = require(path.join(__dirname, nextVersion.file));
+		const { up } = require(nextVersion.file);
 		await up(database);
 		await database
 			.insert({ version: nextVersion.version, name: nextVersion.name })
@@ -77,7 +91,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			throw new Error('Couldnt find migration');
 		}
 
-		const { down } = require(path.join(__dirname, migration.file));
+		const { down } = require(migration.file);
 		await down(database);
 		await database('directus_migrations').delete().where({ version: migration.version });
 	}
@@ -85,7 +99,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	async function latest() {
 		for (const migration of migrations) {
 			if (migration.completed === false) {
-				const { up } = require(path.join(__dirname, migration.file));
+				const { up } = require(migration.file);
 				await up(database);
 				await database
 					.insert({ version: migration.version, name: migration.name })
