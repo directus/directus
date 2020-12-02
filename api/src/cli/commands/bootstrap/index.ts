@@ -7,16 +7,6 @@ import { nanoid } from 'nanoid';
 export default async function bootstrap() {
 	logger.info('Initializing bootstrap...');
 
-	if (!('KEY' in env) || env.KEY == '') {
-		logger.error('Missing KEY environment variable.');
-		process.exit(1);
-	}
-
-	if (!('SECRET' in env) || env.SECRET == '') {
-		logger.error('Missing SECRET environment variable.');
-		process.exit(1);
-	}
-
 	if ((await isDatabaseAvailable()) === false) {
 		logger.error(`Can't connect to the database`);
 		process.exit(1);
