@@ -6,15 +6,19 @@
 
 ## Node Monorepo
 
-Our Node.js repository is located at `directus/directus` and houses the Admin App (vue.js 3),
-Node.js API, project documentation (markdown), and API Specification (OpenAPI). Directus follows a
-monorepo design similar to React or Babel — to learn more about our monorepo's design and structure,
-see our [Codebase Overview](#codebase-overview) below.
+Our Node.js repository is located at `directus/directus` and houses the Admin App (Vue.js 3),
+Node.js API, project documentation (Markdown), API Specification (OpenAPI), and other smaller
+packages used internally. Directus follows a monorepo design similar to React or Babel — to learn
+more about our monorepo's design and structure, see our [Codebase Overview](#codebase-overview)
+below.
 
-To contribute to the project, please follow the instructions located within our GitHub repoitory's
+To contribute to the project, please follow the instructions located within our GitHub repository's
 [contributing.md file](https://github.com/directus/directus/blob/main/contributing.md).
 
-<!-- ::: tip PHP API Port
+<!--
+@TODO
+
+::: tip PHP API Port
 While the Node.js version of Directus defines the official specification and is
 our team's primary focus, we also support a community-lead PHP API port in Laravel. This secondary
 codebase is located in a separate git repository at [`directus/php`](#).
@@ -61,11 +65,14 @@ ensure the following for all submissions:
     -   You have confirmed the issue is not related to your own custom code
     -   Dev Only: You have cleared and reinstalled all dependencies
 
+Please make sure to include all information required to reproduce your exact setup and issue in the
+issue report.
+
 ## Reporting Security Vulnerabilities
 
 If you believe you have discovered a security issue within a Directus product or service, please
-reach out to us directly over email: [support@directus.io](mailto:support@directus.io). We will then
-open a [GitHub Security Advisory](https://github.com/directus/directus/security/advisories) for
+reach out to us directly over email: [security@directus.io](mailto:security@directus.io). We will
+then open a [GitHub Security Advisory](https://github.com/directus/directus/security/advisories) for
 tracking the fix.
 
 We value the members of the independent security research community who find security

@@ -1,3 +1,0 @@
-# Microsoft Azure
-
-@TODO

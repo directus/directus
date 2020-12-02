@@ -215,7 +215,7 @@ in a modal window with the following fields:
 -   **Collection** — The collection affected by the action
 -   **Item** — The item (within the above Collection) affected by the action
 
-# Settings
+## Settings
 
 This module is only available to users within
 [admin roles](/concepts/users-roles-and-permissions#administrators-role). This is where your project

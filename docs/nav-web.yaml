@@ -1,6 +1,6 @@
 # Note: this uses VuePress' sidebar syntax
 
-- title: 🐰 Getting Started
+- title: Getting Started
   collapsable: false
   children:
     - type: page
@@ -19,7 +19,7 @@
       path: /getting-started/backing-directus
       title: Backing Directus
 
-- title: 🎓 Concepts
+- title: Concepts
   children:
     - type: page
       path: /concepts/platform-overview
@@ -49,8 +49,11 @@
       path: /concepts/users-roles-and-permissions
       title: Users, Roles, and Permissions
 
-- title: 📖 Guides
+- title: Guides
   children:
+    - type: page
+      path: /guides/projects
+      title: Projects
     - type: page
       path: /guides/collections
       title: Collections
@@ -58,14 +61,29 @@
       path: /guides/fields
       title: Fields
     - type: page
-      path: /guides/projects
-      title: Projects
-    - type: page
       path: /guides/roles-and-permissions
       title: Roles & Permissions
     - type: page
       path: /guides/presets
       title: Presets
+    - type : group
+      title: Installation
+      children:
+        - type: page
+          path: /guides/installation/cli
+          title: CLI (Recommended)
+        - type: page
+          path: /guides/installation/manual
+          title: Manually
+        - type: page
+          path: /guides/installation/docker
+          title: Docker
+        - type: page
+          path: /guides/installation/digitalocean-app-platform
+          title: DigitalOcean App Platform
+        - type: page
+          path: /guides/installation/aws
+          title: AWS
     - type: group
       title: Extensions
       children:
@@ -97,7 +115,7 @@
           path: /guides/extensions/accessing-data
           title: Accessing Data
 
-- title: 🚀 Reference
+- title: Reference
   children:
     - type: page
       path: /reference/environment-variables

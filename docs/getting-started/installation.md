@@ -8,18 +8,23 @@ needs.
 -   [Docker](/guides/installation/docker)
 -   [Manually](/guides/installation/manual)
 
-::: tip Development Environment Developers looking to work on the project's source code should
-follow our [Contributing Guide](/getting-started/contributing). :::
+<!-- prettier-ignore-start -->
+::: tip Development
+Environment Developers looking to work on the project's source code should
+follow our [Contributing Guide](/getting-started/contributing).
+:::
+<!-- prettier-ignore-end -->
 
 ## Deployment Guides
 
 -   [Amazon AWS](/guides/installation/aws)
--   [DigitalOcean Droplet](/guides/installation/digitalocean-droplet)
--   [DigitalOcean One-Click](/guides/installation/digitalocean-one-click)
 -   [DigitalOcean App Platform](/guides/installation/digitalocean-app-platform)
+
+<!--
+@TODO
 -   [Google App Engine](/guides/installation/google-app-engine)
--   [Heroku](/guides/installation/heroku)
--   [Microsoft Azure](/guides/installation/microsoft-azure)
+-   [One-Clicks](/guides/installation/one-clicks) (heroku / do / platform sh / etc)
+-   [Microsoft Azure](/guides/installation/microsoft-azure) -->
 
 ## Optional Setup Guides
 
