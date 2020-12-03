@@ -20,12 +20,11 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 ## 🚧 Release Candidate
 
-This is *pre-release* software. While we're providing migrations between versions, breaking changes may occur at any time, and certain features might be missing or broken. You can follow along with [the issue tracker](https://github.com/directus/directus/issues) for an in-depth list of upcoming enhancements, with the following notable features still under development:
+This is *pre-release* software. While we're providing migrations between versions, changes may occur at any time, and certain features might be missing or broken. You can follow along with [the issue tracker](https://github.com/directus/directus/issues) for an in-depth list of upcoming enhancements, with the following notable features still under development:
 
 - [ ] MS SQL Support
 - [ ] OracleDB Support
 - [ ] Import/Export Endpoints
-- [ ] Many to Any (Page Builder)
 
 <br>
 
