@@ -1,16 +1,7 @@
-<!--
-
-@TODO
-
-- sort (dnd)
-- processM2A in PayloadService
-
--->
-
 <template>
 	<div class="m2a-builder">
 		<div v-if="previewLoading" class="loader">
-			<v-skeleton-loader v-for="n in 5" :key="n" />
+			<v-skeleton-loader v-for="n in (value || []).length" :key="n" />
 		</div>
 
 		<draggable
@@ -276,13 +267,20 @@ export default defineComponent({
 				// related values
 				const values = cloneDeep(props.value || [])
 					.map((val) => {
-						if (isPlainObject(val)) {
-							return val;
-						}
+						const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
 
-						return junctionRowMap.value.find(
-							(junctionRow) => junctionRow[o2mRelation.value.many_primary] === val
+						const savedValues = junctionRowMap.value.find(
+							(junctionRow) => junctionRow[o2mRelation.value.many_primary] === junctionKey
 						);
+
+						if (isPlainObject(val)) {
+							return {
+								...savedValues,
+								...val,
+							};
+						} else {
+							return savedValues;
+						}
 					})
 					.filter((val) => val);
 
@@ -340,6 +338,12 @@ export default defineComponent({
 						// In that case, we have to fetch the row in order to get the info we need on the related item
 						if (typeof stagedValue === 'string' || typeof stagedValue === 'number') {
 							junctionRowsToInspect.push(stagedValue);
+						}
+
+						// There's a case where you sort with no other changes where the one_collection_field doesn't exist
+						// and there's no further changes nested in the many field
+						else if (anyRelation.value.one_collection_field! in stagedValue === false) {
+							junctionRowsToInspect.push(stagedValue[o2mRelation.value.many_primary]);
 						}
 
 						// Otherwise, it's an object with the edits on an existing item, or a newly added item
@@ -592,6 +596,12 @@ export default defineComponent({
 	.collection {
 		margin-right: 1ch;
 		color: var(--primary);
+	}
+}
+
+.loader {
+	.v-skeleton-loader + .v-skeleton-loader {
+		margin-top: 12px;
 	}
 }
 
