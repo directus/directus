@@ -46,6 +46,16 @@ Simply follow the setup prompts and the CLI will create your new project directo
 
 <br>
 
+## :rocket: Deploy on Platform.sh
+
+An empty [Directus project](https://github.com/platformsh-templates/directus) repository is maintained by [Platform.sh](https://platform.sh) that you can quickly deploy using the button below.
+
+<p align="center">
+<a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/platformsh/template-builder/master/templates/directus/.platform.template.yaml&utm_content=directus&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform">
+    <img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px" />
+</a>
+</p>
+
 ## 📌 Requirements
 
 Directus only requires Node.js (or [PHP](https://github.com/directus/api-next)), and supports most operating systems and SQL database vendors.
