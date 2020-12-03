@@ -136,7 +136,7 @@
       path: /reference/sdk-js
       title: JavaScript SDK
 
-- title: API
+- title: API Reference
   children:
     - type: page
       path: /reference/api/introduction
