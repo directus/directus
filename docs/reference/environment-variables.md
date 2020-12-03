@@ -63,6 +63,10 @@ extend the `DB_*` environment variables with any config you need to pass to the 
 :::
 <!-- prettier-ignore-end -->
 
+### `DB_CONNECTION_STRING` (Postgres Only)
+
+When using Postgres, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings.
+
 ## Security
 
 ### `KEY`
