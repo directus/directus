@@ -4,9 +4,6 @@
 
 Welcome to the preview release of the next major version of Directus.
 
-**NOTE:** This is pre-release software and should be treated as such. DO NOT use this in production.
-Migrations between versions aren't provided, and breaking changes might happen at any release.
-
 ## ⚙️ Installation
 
 _Directus requires NodeJS 10+_
