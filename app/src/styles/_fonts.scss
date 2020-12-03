@@ -40,6 +40,26 @@
 	font-display: block;
 }
 
+@font-face {
+	font-weight: 700;
+	font-family: 'Inter';
+	font-style: normal;
+	src:
+		url('../assets/fonts/Inter-Bold.woff2') format('woff2'),
+		url('../assets/fonts/Inter-Bold.woff') format('woff');
+	font-display: block;
+}
+
+@font-face {
+	font-weight: 800;
+	font-family: 'Inter';
+	font-style: normal;
+	src:
+		url('../assets/fonts/Inter-Black.woff2') format('woff2'),
+		url('../assets/fonts/Inter-Black.woff') format('woff');
+	font-display: block;
+}
+
 // Monospace
 
 @font-face {

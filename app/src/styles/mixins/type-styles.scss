@@ -1,13 +1,13 @@
 @import '@/styles/mixins/breakpoint';
 
 @mixin type-title {
-	color: var(--foreground-normal);
-	font-weight: normal;
-	font-size: 20px;
+	color: var(--foreground-normal-alt);
+	font-weight: 700;
+	font-size: 24px;
 	font-family: var(--family-sans-serif);
 	font-style: normal;
-	line-height: 29px;
-	letter-spacing: 0;
+	line-height: 34px;
+	// letter-spacing: -0.32px;
 
 	@include breakpoint(small) {
 		font-size: 24px;
@@ -15,7 +15,7 @@
 }
 
 @mixin type-label {
-	color: var(--foreground-normal);
+	color: var(--foreground-normal-alt);
 	font-weight: 600;
 	font-size: 16px;
 	font-family: var(--family-sans-serif);
@@ -27,7 +27,7 @@
 @mixin type-text {
 	color: var(--foreground-normal);
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 15px;
 	font-family: var(--family-sans-serif);
 	font-style: normal;
 	line-height: 22px;

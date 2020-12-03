@@ -63,6 +63,7 @@ body {
 		}
 
 		&-link {
+			font-size: 14px;
 			display: inline-flex;
 			align-items: center;
 			color: var(--v-breadcrumb-color);

@@ -40,6 +40,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .margin {
-	margin-top: 12px;
+	margin-top: 28px;
 }
 </style>

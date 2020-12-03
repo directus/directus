@@ -10,7 +10,10 @@
 					<img :src="logoURL" :alt="branding.project_name || 'Logo'" />
 				</div>
 				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
-				<h1 class="title type-title">{{ branding && branding.project_name }}</h1>
+				<div class="title">
+					<h1 class="type-title">{{ branding && branding.project_name }}</h1>
+					<p class="subtitle">Production</p>
+				</div>
 			</div>
 
 			<div class="content">
@@ -167,9 +170,9 @@ export default defineComponent({
 
 		.note {
 			position: absolute;
-			right: 0;
-			bottom: 40px;
-			left: 0;
+			bottom: 34px;
+			left: 50%;
+			transform: translateX(-50%);
 			max-width: 340px;
 			margin: 0 auto;
 			padding: 8px 12px;
@@ -194,7 +197,24 @@ export default defineComponent({
 		width: max-content;
 		max-width: 100%;
 		height: 64px;
-		cursor: pointer;
+
+		.title {
+			margin-top: 2px;
+			margin-left: 16px;
+			h1 {
+				font-size: 24px;
+				line-height: 24px;
+				font-weight: 700;
+				color: var(--foreground-subdued);
+				color: var(--brand);
+			}
+			.subtitle {
+				width: 100%;
+				color: var(--foreground-subdued);
+				color: var(--brand);
+				opacity: 0.6;
+			}
+		}
 	}
 
 	.logo {
@@ -216,10 +236,6 @@ export default defineComponent({
 
 	.default-logo {
 		width: 64px;
-	}
-
-	.title {
-		margin-left: 12px;
 	}
 
 	.v-icon {
