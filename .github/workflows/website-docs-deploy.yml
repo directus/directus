@@ -12,10 +12,10 @@ jobs:
     steps:
       - uses: satak/webrequest-action@master
         with:
-          url: {{ secrets.BUILD_HOOK_WEBSITE }}
+          url: ${{ secrets.BUILD_HOOK_WEBSITE }}
           method: POST
           
       - uses: satak/webrequest-action@master
         with:
-          url: {{ secrets.BUILD_HOOK_DOCS }}
+          url: ${{ secrets.BUILD_HOOK_DOCS }}
           method: POST
