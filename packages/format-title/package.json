@@ -13,8 +13,9 @@
     "conjunctions",
     "prepositions"
   ],
-  "main": "dist/format-title.umd.js",
-  "module": "dist/format-title.es5.js",
+  "main": "dist/format-title.cjs.js",
+  "module": "dist/format-title.bundler.js",
+  "unpkg": "dist/format-title.global.min.js",
   "types": "dist/types/index.d.ts",
   "files": [
     "dist"
@@ -27,7 +28,7 @@
   },
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs && rollup -c rollup.config.js",
+    "build": "rollup -c rollup.config.js",
     "start": "rollup -c rollup.config.js -w",
     "prepublishOnly": "npm run build",
     "lint": "eslint \"src/**/*.ts\""

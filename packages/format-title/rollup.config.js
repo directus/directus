@@ -1,43 +1,100 @@
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import sourceMaps from 'rollup-plugin-sourcemaps';
-import camelCase from 'lodash.camelcase';
+import json from '@rollup/plugin-json';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
-import json from 'rollup-plugin-json';
+import sourceMaps from 'rollup-plugin-sourcemaps';
+import { terser } from 'rollup-plugin-terser';
 
-const pkg = require('./package.json');
+import pkg from './package.json';
 
-const libraryName = 'format-title';
+const globalName = 'formatTitle';
 
-export default {
-	input: 'src/index.ts',
-	output: [
-		{
-			file: pkg.main,
-			name: camelCase(libraryName),
-			format: 'umd',
+const configs = {
+	global: {
+		file: pkg.unpkg,
+		format: 'iife',
+		target: 'es5',
+		mode: 'production',
+		browser: true,
+	},
+	browser: {
+		file: pkg.module.replace('bundler', 'esm'),
+		format: 'es',
+		target: 'es2018',
+		mode: 'production',
+		browser: true,
+	},
+	bundler: {
+		file: pkg.module,
+		format: 'es',
+		target: 'esnext',
+		mode: 'development',
+	},
+	cjs: {
+		file: pkg.main,
+		format: 'cjs',
+		target: 'esnext',
+		mode: 'development',
+	},
+};
+
+function createConfig({
+	file,
+	format,
+	target,
+	mode,
+	browser = false,
+	external = Object.fromEntries(Object.keys(pkg.dependencies || {}).map((x) => [x, x])),
+}) {
+	const isProduction = mode === 'production';
+
+	const config = {
+		input: 'src/index.ts',
+		output: {
+			file: isProduction && !file.endsWith('.min.js') ? file.replace('.js', '.min.js') : file,
+			format,
+			exports: 'auto',
 			sourcemap: true,
 		},
-		{ file: pkg.module, format: 'es', sourcemap: true },
-	],
-	// Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-	external: [],
-	watch: {
-		include: 'src/**',
-	},
-	plugins: [
-		// Allow json resolution
-		json(),
-		// Compile TypeScript files
-		typescript({ useTsconfigDeclarationDir: true }),
-		// Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
-		commonjs(),
-		// Allow node_modules resolution, so you can use 'external' to control
-		// which external modules to include in the bundle
-		// https://github.com/rollup/rollup-plugin-node-resolve#usage
-		resolve(),
+		external: Object.keys(external),
+		watch: {
+			include: 'src/**/*',
+		},
+		plugins: [
+			json(),
+			typescript({
+				useTsconfigDeclarationDir: true,
+				tsconfigOverride: {
+					compilerOptions: {
+						target,
+						lib: [target],
+					},
+				},
+			}),
+			resolve({ browser }),
+			commonjs(),
+			sourceMaps(),
+		],
+	};
 
-		// Resolve source maps to the original source
-		sourceMaps(),
-	],
-};
+	if (format === 'iife') {
+		config.output.name = globalName;
+		config.output.globals = external;
+	}
+
+	if (isProduction) {
+		config.plugins.push(
+			terser({
+				ecma: target.replace('es', ''),
+			})
+		);
+	}
+
+	return config;
+}
+
+function createConfigs(configs) {
+	return Object.keys(configs).map((key) => createConfig(configs[key]));
+}
+
+export default createConfigs(configs);
