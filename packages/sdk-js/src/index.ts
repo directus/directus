@@ -121,4 +121,4 @@ class DirectusSDK {
 	}
 }
 
-export = DirectusSDK;
+export default DirectusSDK;
