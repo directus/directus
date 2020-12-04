@@ -27,8 +27,8 @@
   },
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts",
-    "start": "rollup -c rollup.config.ts -w",
+    "build": "tsc --module commonjs && rollup -c rollup.config.js",
+    "start": "rollup -c rollup.config.js -w",
     "prepublishOnly": "npm run build",
     "lint": "eslint \"src/**/*.ts\""
   },
