@@ -29,6 +29,9 @@
     "prepublishOnly": "npm run build"
   },
   "gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
+  "dependencies": {
+    "@directus/format-title": "file:../packages/format-title"
+  },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.8",
     "@vue/cli-plugin-eslint": "^4.5.8",
