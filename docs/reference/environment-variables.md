@@ -65,7 +65,8 @@ extend the `DB_*` environment variables with any config you need to pass to the 
 
 ### `DB_CONNECTION_STRING` (Postgres Only)
 
-When using Postgres, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings.
+When using Postgres, you can submit a connection string instead of individual properties. Using this
+will ignore any of the other connection settings.
 
 ## Security
 
@@ -99,6 +100,14 @@ Value for `sameSite` in the refresh token cookie when in cookie mode.<br>**Defau
 ### `CORS_ENABLED`
 
 Whether or not to enable the CORS headers.<br>**Default: `true`**
+
+### `CORS_ORIGIN`
+
+Value for the `Access-Control-Allow-Origin` header. Possible values:
+
+-   `true` - reflect the Origin header
+-   String - set the origin to a specific domain
+-   CSV - multiple domains
 
 ### `CORS_METHODS`
 
