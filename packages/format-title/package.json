@@ -15,7 +15,7 @@
   ],
   "main": "dist/format-title.umd.js",
   "module": "dist/format-title.es5.js",
-  "typings": "dist/types/format-title.d.ts",
+  "types": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
