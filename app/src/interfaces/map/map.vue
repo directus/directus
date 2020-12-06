@@ -1,10 +1,12 @@
 <template>
 	<div class="map">
-		<v-notice v-if="feedback" class="full" type="warning">
-			<a @click="clearFeedback">
-				{{ feedback }}
-			</a>
-		</v-notice>
+		<transition-expand>
+			<v-notice v-if="warningMessage" class="full" type="warning">
+				<a @click="clearWarningMessage">
+					{{ warningMessage }}
+				</a>
+			</v-notice>
+		</transition-expand>
 		<div :style="{ height: height + 'px' }" ref="mapElement"></div>
 		<div
 			v-if="addressToCode"
@@ -22,18 +24,25 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, watch, ref } from '@vue/composition-api';
-
+import i18n from '@/lang';
 import axios from 'axios';
+
+import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
 
 // Fix wrong build because of webpack.
 // https://github.com/Leaflet/Leaflet/issues/4968
-import leafletIconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
-import leafletIconUrl from 'leaflet/dist/images/marker-icon.png';
-import leafletIconShadowUrl from 'leaflet/dist/images/marker-shadow.png';
-import i18n from "@/lang";
 
+// @ts-ignore this is marker icon and is not defined in @types/leaflet
+import leafletIconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+
+// @ts-ignore this is marker icon and is not defined in @types/leaflet
+import leafletIconUrl from 'leaflet/dist/images/marker-icon.png';
+
+// @ts-ignore this is marker icon and is not defined in @types/leaflet
+import leafletIconShadowUrl from 'leaflet/dist/images/marker-shadow.png';
+
+// @ts-ignore
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
 	iconRetinaUrl: leafletIconRetinaUrl,
@@ -82,13 +91,13 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const mapElement = ref<HTMLElement | null>(null);
-		const feedback = ref<string | null>(null);
+		const warningMessage = ref<string | null>(null);
 		const mapInstance = ref<any>(null);
 		const showAddressToCode = ref<boolean>(false);
 		const addressToCodeLatestFound = ref<Record<string, any> | null>(null);
-		const markers = ref<L.MarketType[]>([]);
-		const selectedMarker = ref<L.MarketType | null>(null);
-		const singleMarker = ref<L.MarketType | null>(null);
+		const markers = ref<L.Marker[]>([]);
+		const selectedMarker = ref<L.Marker | null>(null);
+		const singleMarker = ref<L.Marker | null>(null);
 		const tilesUrl = props.theme || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
 		onMounted(initMap);
@@ -96,8 +105,6 @@ export default defineComponent({
 		onUnmounted(() => {
 			mapInstance.value.remove();
 		});
-
-		window.feedback = feedback;
 
 		watch(
 			() => props.value,
@@ -114,12 +121,12 @@ export default defineComponent({
 			addressToCodeHandler,
 			showAddressToCode,
 			mapElement,
-			feedback,
-			clearFeedback,
+			warningMessage,
+			clearWarningMessage,
 		};
 
 		function initMap() {
-			mapInstance.value = L.map(mapElement.value, {
+			mapInstance.value = L.map(mapElement.value as HTMLElement, {
 				center: [props.lat, props.lng],
 				zoom: props.zoom,
 				preferCanvas: true,
@@ -149,41 +156,27 @@ export default defineComponent({
 
 			const controlMyLocation = L.DomUtil.create(
 				'a',
-				'directus-leaflet-custom-button-icon',
+				'directus-leaflet-custom-button',
 				mapInstance.value.zoomControl.getContainer()
 			);
-			controlMyLocation.innerText = 'my_location';
+			controlMyLocation.innerHTML = '<i class="icon">my_location</i>';
 			controlMyLocation.addEventListener('click', (event: MouseEvent) => {
 				event.preventDefault();
-				if (event.target.classList.contains('loading')) {
+				const element = event.target as HTMLElement;
+				if (element.classList.contains('loading')) {
 					return;
 				}
-				event.target.classList.add('loading');
-				navigator.geolocation.getCurrentPosition(
-					(success) => {
-						event.target.classList.remove('loading');
-						// Set some fancy zoom level based on accuracy.
-						const zoom = 13 + (4 - Math.round(Math.min(200, parseInt(success.accuracy || 100)) / 50));
-						mapInstance.value.setView([success.coords.latitude, success.coords.longitude], zoom);
-					},
-					(error) => {
-						event.target.classList.remove('loading');
-						if (error.code === 1) {
-							feedback.value = i18n.t('interfaces.map.user_location_error_blocked');
-						} else {
-							feedback.value = i18n.t('interfaces.map.user_location_error');
-						}
-					}
-				);
+				element.classList.add('loading');
+				findMyLocation(() => element.classList.remove('loading'));
 			});
 
 			if (props.addressToCode) {
 				const controlLocationByAddress = L.DomUtil.create(
 					'a',
-					'directus-leaflet-custom-button-icon',
+					'directus-leaflet-custom-button',
 					mapInstance.value.zoomControl.getContainer()
 				);
-				controlLocationByAddress.innerText = 'search';
+				controlLocationByAddress.innerHTML = '<i class="icon">search</i>';
 				controlLocationByAddress.addEventListener('dblclick', (event: MouseEvent) => {
 					event.preventDefault();
 					event.stopPropagation();
@@ -198,13 +191,15 @@ export default defineComponent({
 			if (props.mode === 'pin') {
 				const controlMoveSinglePin = L.DomUtil.create(
 					'a',
-					'directus-leaflet-custom-button-icon',
+					'directus-leaflet-custom-button',
 					mapInstance.value.zoomControl.getContainer()
 				);
-				controlMoveSinglePin.innerText = 'location_on';
+				controlMoveSinglePin.innerHTML = '<i class="icon">location_on</i>';
 				controlMoveSinglePin.addEventListener('click', (event: MouseEvent) => {
 					event.preventDefault();
-					singleMarker.value.setLatLng(mapInstance.value.getCenter());
+					if (singleMarker.value) {
+						singleMarker.value.setLatLng(mapInstance.value.getCenter());
+					}
 					emitValue();
 				});
 
@@ -214,10 +209,10 @@ export default defineComponent({
 			} else if (props.mode === 'pins') {
 				const controlAddMarker = L.DomUtil.create(
 					'a',
-					'directus-leaflet-custom-button-icon',
+					'directus-leaflet-custom-button',
 					mapInstance.value.zoomControl.getContainer()
 				);
-				controlAddMarker.innerText = 'add_location';
+				controlAddMarker.innerHTML = '<i class="icon">add_location</i>';
 				controlAddMarker.addEventListener('click', (event: MouseEvent) => {
 					event.preventDefault();
 					addMarker(mapInstance.value.getCenter());
@@ -226,15 +221,15 @@ export default defineComponent({
 
 				const controlRemoveMarker = L.DomUtil.create(
 					'a',
-					'directus-leaflet-custom-button-icon',
+					'directus-leaflet-custom-button',
 					mapInstance.value.zoomControl.getContainer()
 				);
-				controlRemoveMarker.innerText = 'location_off';
+				controlRemoveMarker.innerHTML = '<i class="icon">location_off</i>';
 				controlRemoveMarker.style.display = 'none';
 				controlRemoveMarker.addEventListener('click', (event: MouseEvent) => {
 					event.preventDefault();
 					if (selectedMarker.value) {
-						const inArrayIndex = markers.value.indexOf(selectedMarker.value);
+						const inArrayIndex = markers.value.indexOf(selectedMarker.value as L.Marker);
 						if (inArrayIndex > -1) {
 							markers.value.splice(inArrayIndex, 1);
 						}
@@ -247,7 +242,7 @@ export default defineComponent({
 				watch(
 					() => selectedMarker.value,
 					() => {
-						controlRemoveMarker.style.display = !!selectedMarker.value ? null : 'none';
+						controlRemoveMarker.style.display = !!selectedMarker.value ? 'block' : 'none';
 					}
 				);
 			}
@@ -258,46 +253,56 @@ export default defineComponent({
 		}
 
 		function addressToCodeKeyHandler(event: KeyboardEvent) {
+			const element = event.target as HTMLInputElement;
 			if (event.key === 'Escape') {
 				showAddressToCode.value = false;
-			} else if (event.key === 'Enter' && event.target.value && addressToCodeLatestFound.value) {
-				mapInstance.value.setView(addressToCodeLatestFound.value, 15);
+			} else if (event.key === 'Enter' && element.value && addressToCodeLatestFound.value) {
+				mapInstance.value.setView(addressToCodeLatestFound.value, props.zoom);
 			}
 		}
 
 		function updateMap(value: any) {
-			mapInstance.value.setView([value.lat, value.lng], value.zoom);
+			if (!('lat' in value) || !('lng' in value)) {
+				return;
+			}
+
+			mapInstance.value.setView([value.lat, value.lng], value.zoom || 10);
 			markers.value.forEach((markerItem) => {
-				markerItem.value.remove();
+				markerItem.remove();
 			});
 
 			if (props.mode === 'pins') {
 				if (value.markers) {
 					value.markers.forEach(addMarker);
 				}
-			} else if (props.mode === 'pin') {
+			} else if (props.mode === 'pin' && singleMarker.value) {
 				singleMarker.value.setLatLng([value.lat, value.lng]);
 			}
 
 			selectedMarker.value = null;
 		}
 
-		function addMarker(latlng: any[]) {
+		function addMarker(latlng: L.LatLngTuple) {
 			const marker = L.marker(latlng, { draggable: true });
 			marker.addTo(mapInstance.value);
 			marker.on('moveend', () => emitValue());
-			marker.on('click', (event: MouseEvent) => {
-				selectedMarker.value = event.target;
+			marker.on('click', (event: L.LeafletEvent) => {
+				selectedMarker.value = event.target as L.Marker;
 			});
 			markers.value.push(marker);
 		}
 
-		function clearFeedback() {
-			feedback.value = null;
+		function clearWarningMessage() {
+			warningMessage.value = null;
 		}
 
 		function emitValue() {
-			const value = {
+			const value: {
+				zoom: number;
+				lat: number;
+				lng: number;
+				markers: L.LatLngLiteral[];
+			} = {
 				zoom: mapInstance.value.getZoom(),
 				lat: mapInstance.value.getCenter().lat,
 				lng: mapInstance.value.getCenter().lng,
@@ -308,19 +313,48 @@ export default defineComponent({
 				value.lat = singleMarker.value.getLatLng().lat;
 				value.lng = singleMarker.value.getLatLng().lng;
 			} else if (props.mode === 'pins' && markers.value) {
-				value.markers = markers.value.map((markerItem: L.MarkerType) => ({
-					lat: markerItem.getLatLng().lat,
-					lng: markerItem.getLatLng().lng,
-				}));
+				value.markers = markers.value.map(
+					(markerItem: L.Marker) =>
+						({
+							lat: markerItem.getLatLng().lat,
+							lng: markerItem.getLatLng().lng,
+						} as L.LatLngLiteral)
+				);
 			}
 
 			emit('input', value);
 		}
 
 		function addressToCodeHandler(event: MouseEvent) {
-			if (event.target.value && event.target.value.trim()) {
-				addressToCode(event.target.value);
+			const element = event.target as HTMLInputElement;
+			if (element.value && element.value.trim()) {
+				addressToCode(element.value);
 			}
+		}
+
+		function findMyLocation(onFinish: CallableFunction | null = null) {
+			mapInstance.value
+				.locate({ enableHighAccuracy: true })
+				.on('locationfound', (event: any) => {
+					const zoom = 13 + (4 - Math.round(Math.min(200, parseInt(event.accuracy || 100)) / 50));
+					if (props.mode === 'pin' && singleMarker.value) {
+						(singleMarker.value as L.Marker).setLatLng(event.latlng);
+					}
+					mapInstance.value.flyTo(event.latlng, zoom);
+					if (onFinish) {
+						onFinish();
+					}
+				})
+				.on('locationerror', (error: any) => {
+					if (onFinish) {
+						onFinish();
+					}
+					if (error.code === 1) {
+						warningMessage.value = i18n.t('interfaces.map.user-location-error-blocked').toString();
+					} else {
+						warningMessage.value = i18n.t('interfaces.map.user-location-error').toString();
+					}
+				});
 		}
 
 		function addressToCode(query: string) {
@@ -330,41 +364,31 @@ export default defineComponent({
 				.get(url)
 				.then((response) => {
 					if (response.status === 200 && response.data[0]) {
-						const latlng = [response.data[0].lat, response.data[0].lon];
-						mapInstance.value.setView(latlng);
+						const latlng: L.LatLngTuple = [response.data[0].lat, response.data[0].lon];
+						mapInstance.value.setView(latlng, mapInstance.value.getZoom());
 						addressToCodeLatestFound.value = latlng;
-						if (props.mode === 'pin') {
+						if (props.mode === 'pin' && singleMarker.value) {
 							singleMarker.value.setLatLng(latlng);
 						}
 					} else {
-						feedback.value = i18n.t('interfaces.map.address_to_code_error').toString();
+						warningMessage.value = i18n.t('interfaces.map.address-to-code-error').toString();
 					}
 				})
 				.catch((error) => {
-					feedback.value = error.toString();
+					warningMessage.value = error.toString();
 				});
 		}
 	},
 });
 </script>
 
-<style>
-.directus-leaflet-custom-button-icon.loading {
-	cursor: wait;
-}
-
-.directus-leaflet-custom-button-icon {
-	display: inline-block;
-	font-size: 1.53em;
-	font-family: 'Material Icons';
-	cursor: pointer;
-	content: 'format_bold';
-	-webkit-font-feature-settings: 'liga';
-	font-feature-settings: 'liga';
-}
-</style>
-
 <style lang="scss" scoped>
+@keyframes spin {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
 .address-to-code-control {
 	height: 30px;
 	margin-top: 100px;
@@ -378,5 +402,26 @@ export default defineComponent({
 .map {
 	position: relative;
 	z-index: 1;
+}
+
+::v-deep .directus-leaflet-custom-button {
+	font-size: 1em;
+	cursor: pointer;
+
+	.icon {
+		display: inline-block;
+		font-size: 1.53em;
+		/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
+		font-family: 'Material Icons';
+		font-style: normal;
+		-webkit-font-feature-settings: 'liga';
+		font-feature-settings: 'liga';
+
+		&.loading {
+			cursor: wait;
+			animation: spin 1.5s infinite;
+			animation-timing-function: linear;
+		}
+	}
 }
 </style>

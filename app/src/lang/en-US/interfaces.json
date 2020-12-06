@@ -131,10 +131,10 @@
 			"pins": "Multiple Pins",
 			"theme": "Interface Theme",
 			"address-to-code": "Address Input",
-			"addres-input-note": "Add an input field to automatically get the geocodes from an address. Uses {service}. Please check their usage policy.",
-			"user_location_error_blocked": "You've disabled the location access. Kindly enable it from the browser addressbar to auto detect your location.",
-			"user_location_error": "There was an error while trying to get your location. Please try again.",
-			"address_to_code_error": "No geocode found for this address"
+			"address-input-note": "Address Input Uses {service} to automatically get the geocodes from an address. Please check their usage policy.",
+			"user-location-error-blocked": "You've disabled the location access. Kindly enable it from the browser addressbar to auto detect your location.",
+			"user-location-error": "There was an error while trying to get your location. Please try again.",
+			"address-to-code-error": "No geocode found for this address"
 		},
 		"notice": {
 			"notice": "Notice",

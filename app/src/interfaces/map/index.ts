@@ -8,6 +8,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('interfaces.map.map'),
 	description: i18n.t('interfaces.map.description'),
 	icon: 'map',
+	recommendedDisplays: ['formatted-json-value'],
 	component: InterfaceMap,
 	types: ['json'],
 	options: [
@@ -85,12 +86,6 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'toggle',
-				options: {
-					label: i18n
-						.t('interfaces.map.addres-input-note')
-						.toString()
-						.replace('{service}', mapsAddressServiceLink),
-				},
 			},
 			schema: {
 				default_value: false,
@@ -145,6 +140,19 @@ export default defineInterface(({ i18n }) => ({
 				default_value: '',
 			},
 		},
+		{
+			field: 'address-input-note',
+			type: 'alias',
+			meta: {
+				width: 'full',
+				interface: 'notice',
+				options: {
+					text: i18n
+						.t('interfaces.map.address-input-note')
+						.toString()
+						.replace('{service}', mapsAddressServiceLink),
+				},
+			},
+		},
 	],
-	recommendedDisplays: [],
 }));
