@@ -46,7 +46,7 @@
 			</v-button>
 		</template>
 		<template v-else-if="['empty', 'nempty'].includes(operator) === false">
-			<v-checkbox v-if="type === 'checkbox'" :inputValue="_value" :disabled="disabled" />
+			<v-checkbox block :label="$t('active')" v-if="type === 'checkbox'" v-model="_value" :disabled="disabled" />
 			<v-input
 				:disabled="disabled"
 				v-else
@@ -66,7 +66,7 @@ import { FilterOperator } from '@/types';
 export default defineComponent({
 	props: {
 		value: {
-			type: String,
+			type: [String, Boolean],
 			required: true,
 		},
 		type: {
