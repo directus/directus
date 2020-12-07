@@ -8,10 +8,11 @@ export default async function start() {
 	try {
 		await installSeeds(database);
 		await runMigrations(database, 'latest');
+		database.destroy();
+		process.exit(0);
 	} catch (err) {
 		console.log(err);
-		process.exit(1);
-	} finally {
 		database.destroy();
+		process.exit(1);
 	}
 }

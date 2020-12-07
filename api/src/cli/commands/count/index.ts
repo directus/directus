@@ -11,9 +11,11 @@ export default async function count(collection: string) {
 		const count = Number(records[0].count);
 
 		console.log(count);
+		database.destroy();
+		process.exit(0);
 	} catch (err) {
 		console.error(err);
-	} finally {
 		database.destroy();
+		process.exit(1);
 	}
 }

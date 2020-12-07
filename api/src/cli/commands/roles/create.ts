@@ -13,9 +13,10 @@ export default async function rolesCreate({ name, admin }: any) {
 
 		const id = await service.create({ name, admin_access: admin });
 		console.log(id);
+		database.destroy();
+		process.exit(0);
 	} catch (err) {
 		console.error(err);
-	} finally {
-		database.destroy();
+		process.exit(1);
 	}
 }
