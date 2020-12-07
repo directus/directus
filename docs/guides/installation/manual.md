@@ -51,4 +51,4 @@ Redis/Memcached, make sure to install `ioredis`/`memcached` respectively.
 Finally, you'll need to setup your `.env` file, or configure the environment variables through other
 means, such as Docker, etc.
 
-See [Environment Variables](/references/environment-variables) for all available variables.
+See [Environment Variables](/reference/environment-variables) for all available variables.
