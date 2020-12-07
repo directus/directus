@@ -53,7 +53,7 @@ export default async function init(options: Record<string, any>) {
 			console.log();
 			console.log('Something went wrong while seeding the database:');
 			console.log();
-			console.log(`${err.code && chalk.red(`[${err.code}]`)} ${err.message}`);
+			console.log(`${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}`);
 			console.log();
 			console.log('Please try again');
 			console.log();
