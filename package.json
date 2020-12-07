@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "lerna run dev --stream --parallel",
     "build": "lerna run build",
+    "lint": "lerna run lint",
     "release": "lerna publish --force-publish",
     "cli": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/index.ts",
     "postinstall": "npm run build"
@@ -167,8 +168,6 @@
     "tinymce": "^5.5.1",
     "ts-node-dev": "^1.0.0-pre.63",
     "ts-node": "^8.10.2",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint": "^6.1.3",
     "typescript": "^3.9.7",
     "vue-cli-plugin-storybook": "^1.3.0",
     "vue-i18n": "^8.22.1",
