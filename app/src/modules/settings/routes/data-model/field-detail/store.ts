@@ -328,8 +328,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				(col: any) => ['junction', 'related'].includes(col.$type) === false
 			);
 			state.newFields = state.newFields.filter(
-				(field: Partial<Field> & { $type: string }) =>
-					['manyCurrent', 'manyRelated'].includes(field.$type) === false
+				(field: Partial<Field> & { $type: string }) => ['manyCurrent', 'manyRelated'].includes(field.$type) === false
 			);
 
 			if (collectionExists(junctionCollection) === false) {
@@ -525,8 +524,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			() => state.relations[0].many_collection,
 			() => {
 				if (collectionExists(state.relations[0].many_collection)) {
-					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)
-						?.field;
+					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)?.field;
 					state.relations[0].many_primary = pkField;
 					state.relations[1].many_primary = pkField;
 				}
@@ -574,9 +572,13 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				state.relations[0].one_field = state.fieldData.field;
 
 				if (collectionExists(state.fieldData.field) && type !== 'translations') {
-					state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+					state.relations[0].many_collection = getAutomaticJunctionCollectionName(
+						state.relations[0].one_collection,
+						state.relations[1].one_collection
+					);
 					state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
 					state.relations[1].one_collection = state.fieldData.field;
+
 					state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field;
 					state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
 					state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
@@ -606,8 +608,14 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 							[() => state.relations[1].one_collection, () => state.relations[1].one_primary],
 							([newRelatedCollection, newRelatedPrimary]: string[]) => {
 								if (newRelatedCollection) {
-									state.relations[0].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
-									state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+									state.relations[0].many_collection = getAutomaticJunctionCollectionName(
+										state.relations[0].one_collection,
+										state.relations[1].one_collection
+									);
+									state.relations[1].many_collection = getAutomaticJunctionCollectionName(
+										state.relations[0].one_collection,
+										state.relations[1].one_collection
+									);
 									state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
 								}
 
@@ -639,9 +647,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 			state.relations[0].many_collection = `${collection}_translations`;
 
-			state.relations[0].many_field = `${collection}_${
-				fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field
-			}`;
+			state.relations[0].many_field = `${collection}_${fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field}`;
 
 			state.relations[1].one_collection = 'languages';
 
@@ -655,6 +661,24 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 			state.fieldData.field = 'translations';
 			state.relations[0].one_field = 'translations';
+		}
+
+		function getAutomaticJunctionCollectionName(left: string, right: string) {
+			let index = 2;
+			let name = getName(index);
+
+			while (collectionExists(name)) {
+				index++;
+				name = getName(index);
+			}
+
+			return name;
+
+			function getName(index: number) {
+				const name = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
+				if (index) return name + '_' + index;
+				return name;
+			}
 		}
 	}
 
@@ -769,8 +793,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			() => state.relations[0].many_collection,
 			() => {
 				if (collectionExists(state.relations[0].many_collection)) {
-					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)
-						?.field;
+					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)?.field;
 					state.relations[0].many_primary = pkField;
 					state.relations[1].many_primary = pkField;
 				}
