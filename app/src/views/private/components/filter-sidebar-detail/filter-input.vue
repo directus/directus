@@ -83,7 +83,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _value = computed<string | string[]>({
+		const _value = computed<string | string[] | boolean>({
 			get() {
 				return props.value;
 			},
@@ -94,7 +94,7 @@ export default defineComponent({
 
 		const csvValue = computed({
 			get() {
-				return (props.value || '').split(',');
+				return typeof props.value === 'string' ? props.value.split(',') : [];
 			},
 			set(newVal: string[]) {
 				_value.value = newVal.join(',');
