@@ -165,7 +165,7 @@ export default defineComponent({
 			if (props.dbSafe === true) {
 				const dbSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890_ '.split('');
 
-				const isAllowed = dbSafeCharacters.includes(key) || systemKeys.includes(key);
+				const isAllowed = dbSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
 
 				if (isAllowed === false) {
 					event.preventDefault();
