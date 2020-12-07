@@ -23,27 +23,11 @@ export default async function runAST(
 
 	const knex = options?.knex || database;
 
-	for (const [collection, info] of Object.entries(schema)) {
-		if (!info.primary) {
-			throw new ServiceUnavailableException(
-				`Collection "${collection}" doesn't have a primary key column`,
-				{
-					service: 'database',
-					table: collection,
-				}
-			);
-		}
-	}
-
 	if (ast.type === 'm2a') {
 		const results: { [collection: string]: null | Item | Item[] } = {};
 
 		for (const collection of ast.names) {
-			results[collection] = await run(
-				collection,
-				ast.children[collection],
-				ast.query[collection]
-			);
+			results[collection] = await run(collection, ast.children[collection], ast.query[collection]);
 		}
 
 		return results;
@@ -201,9 +185,9 @@ function applyParentFilters(
 				filter: {
 					...(nestedNode.query.filter || {}),
 					[nestedNode.relation.one_primary!]: {
-						_in: uniq(
-							parentItems.map((res) => res[nestedNode.relation.many_field])
-						).filter((id) => id),
+						_in: uniq(parentItems.map((res) => res[nestedNode.relation.many_field])).filter(
+							(id) => id
+						),
 					},
 				},
 			};
@@ -221,9 +205,7 @@ function applyParentFilters(
 				filter: {
 					...(nestedNode.query.filter || {}),
 					[nestedNode.relation.many_field]: {
-						_in: uniq(parentItems.map((res) => res[nestedNode.parentKey])).filter(
-							(id) => id
-						),
+						_in: uniq(parentItems.map((res) => res[nestedNode.parentKey])).filter((id) => id),
 					},
 				},
 			};
@@ -269,9 +251,7 @@ function mergeWithParentItems(
 	if (nestedNode.type === 'm2o') {
 		for (const parentItem of parentItems) {
 			const itemChild = nestedItems.find((nestedItem) => {
-				return (
-					nestedItem[nestedNode.relation.one_primary!] == parentItem[nestedNode.fieldKey]
-				);
+				return nestedItem[nestedNode.relation.one_primary!] == parentItem[nestedNode.fieldKey];
 			});
 
 			parentItem[nestedNode.fieldKey] = itemChild || null;
@@ -285,9 +265,8 @@ function mergeWithParentItems(
 				return (
 					nestedItem[nestedNode.relation.many_field] ==
 						parentItem[nestedNode.relation.one_primary!] ||
-					nestedItem[nestedNode.relation.many_field]?.[
-						nestedNode.relation.one_primary!
-					] == parentItem[nestedNode.relation.one_primary!]
+					nestedItem[nestedNode.relation.many_field]?.[nestedNode.relation.one_primary!] ==
+						parentItem[nestedNode.relation.one_primary!]
 				);
 			});
 
@@ -306,8 +285,7 @@ function mergeWithParentItems(
 			const itemChild = (nestedItem as Record<string, any[]>)[relatedCollection].find(
 				(nestedItem) => {
 					return (
-						nestedItem[nestedNode.relatedKey[relatedCollection]] ==
-						parentItem[nestedNode.fieldKey]
+						nestedItem[nestedNode.relatedKey[relatedCollection]] == parentItem[nestedNode.fieldKey]
 					);
 				}
 			);
@@ -334,8 +312,7 @@ function removeTemporaryFields(
 
 		for (const relatedCollection of ast.names) {
 			if (!fields[relatedCollection]) fields[relatedCollection] = [];
-			if (!nestedCollectionNodes[relatedCollection])
-				nestedCollectionNodes[relatedCollection] = [];
+			if (!nestedCollectionNodes[relatedCollection]) nestedCollectionNodes[relatedCollection] = [];
 
 			for (const child of ast.children[relatedCollection]) {
 				if (child.type === 'field') {
