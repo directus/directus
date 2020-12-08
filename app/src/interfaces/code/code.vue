@@ -55,7 +55,7 @@ export default defineComponent({
 		},
 		language: {
 			type: String,
-			default: 'text/plain',
+			default: 'plaintext',
 		},
 		type: {
 			type: String,
@@ -154,7 +154,7 @@ export default defineComponent({
 						}
 						return found;
 					});
-				} else if (lang === 'text/plain') {
+				} else if (lang === 'plaintext') {
 					codemirror.value.setOption('mode', { name: null });
 				} else {
 					await import(`codemirror/mode/${lang}/${lang}.js`);

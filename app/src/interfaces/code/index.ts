@@ -9,11 +9,16 @@ const choicesMap = CodeMirror.modeInfo.reduce((acc: Record<string, string>, choi
 		return acc;
 	}
 
+	if (choice.mode == null || choice.mode == 'null') {
+		choice.mode = 'plaintext';
+	}
+
 	if (choice.mode in acc) {
 		acc[choice.mode] += ' / ' + choice.name;
 	} else {
 		acc[choice.mode] = choice.name;
 	}
+
 	return acc;
 }, {});
 
