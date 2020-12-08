@@ -1,0 +1,192 @@
+---
+full_width: 最大幅
+required: 必須
+create_role: 権限作成
+delete_bookmark: ブックマーク削除
+directus_version: Directus Version
+create_field: 入力欄作成
+hidden_on_detail: 詳細に表示しない
+text: テキスト
+auto_generate: 自動生成
+add_note: ユーザーに有益な注釈を追加...
+default_value: 初期値
+next: 次
+note: 説明
+length: 長さ
+readonly: 読取り専用
+unique: 単一
+primary_key: 主キー
+clear_value: 値の削除
+reset_to_default: 初期化
+undo_changes: 変更を元に戻す
+notifications: 通知
+page_not_found: ページが見つかりませんでした
+page_not_found_body: お探しのページは存在しません。
+title: 標題
+leave_comment: コメントを残す...
+this_collection: このコレクション
+related_collection: 関連するコレクション
+submit: 実行
+months:
+  january: 1月
+  february: 2月
+  march: 3月
+  april: 4月
+  may: 5月
+  june: 6月
+  july: 7月
+  august: 8月
+  september: 9月
+  october: 10月
+  november: 11月
+  december: 12月
+name: 名前
+created_by: 作成者
+created_on: 作成日時
+save_and_stay: 保存してページに留まる
+save_as_copy: 複製として保存
+comments: コメント
+request_feature: 機能リクエスト
+item_count: 'アイテムなし | 1つのアイテム | {count} 個のアイテム'
+create_collection: コレクション作成
+activity: 操作履歴
+webhooks: Webhook
+field_width: 入力欄幅
+user_directory: ユーザーディレクトリ
+modified_on: 修正日時
+bookmarks: ブックマーク
+back: 戻る
+operators:
+  lt: より少ない
+  gt: より大きい
+  lte: より少ないまたは等しい
+  gte: より大きいまたは等しい
+  contains: 含む
+  ncontains: 含まない
+  empty: 空
+loading: 読み込み中...
+no_results: 結果なし
+create: 作成
+on_update: 更新時
+read: 読取り
+update: 更新
+select_fields: 入力欄の選択
+wysiwyg_options:
+  remove: 削除
+  table: テーブル
+deselect: 選択解除
+editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
+settings_permissions: 役割・権限
+settings_project: プロジェクト設定
+settings_webhooks: Webhook
+unsaved_changes_copy: このページを離れてもよろしいですか？
+discard_changes: 変更の破棄
+keep_editing: 編集を続ける
+add_new: 新規追加
+all: すべて
+batch_delete_confirm: >-
+  項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count} 個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
+cancel: キャンセル
+collections: コレクション
+fields:
+  directus_activity:
+    ip: IPアドレス
+    comment: コメント
+  directus_files:
+    title: 標題
+    description: 説明
+    width: 幅
+    height: 高さ
+  directus_users:
+    status: 状態
+    first_name: 名
+    last_name: 姓
+    email: メールアドレス
+    password: パスワード
+    title: 標題
+    timezone: タイムゾーン
+    theme: テーマ
+  directus_settings:
+    project_name: プロジェクト名
+  directus_fields:
+    note: 説明
+    hidden: 非表示
+  directus_roles:
+    description: 説明
+comment: コメント
+continue: 続ける
+default: デフォルト
+delete: 削除
+delete_field_are_you_sure: >-
+  このフィールド：\"{field}\"を削除してよろしいですか？この操作を取り消すことはできません。
+description: 説明
+done: 完了
+duplicate: 複製
+email: メールアドレス
+embed: 埋め込む
+file: ファイル
+file_library: ファイルライブラリー
+forgot_password: パスワード忘れ
+hidden: 非表示
+icon: アイコン
+info: 情報
+junction_collection: 中継コレクション
+latency: 待ち時間
+login: ログイン
+my_activity: 操作
+not_authenticated: ' 認証されていません'
+options: オプション
+otp: ワンタイムパスワード
+password: パスワード
+permissions: 許可
+relationship: 関連
+reset: リセット
+reset_password: パスワードリセット
+revert: 元に戻す
+save: 保存
+schema: スキーマ
+search: 検索
+select_existing: 既存から選択
+select_interface: インターフェースを選択してください
+settings: 設定
+sign_in: サインイン
+sign_out: サインアウト
+sign_out_confirm: サインアウトしてもよろしいですか？
+something_went_wrong: 問題が発生しました
+sort_direction: ソート順
+translation: 翻訳
+value: 値
+interfaces:
+  checkboxes:
+    checkboxes: チェックボックス
+  collections:
+    collections: コレクション
+  file:
+    file: ファイル
+  files:
+    files: ファイル
+  icon:
+    icon: アイコン
+  numeric:
+    numeric: 数値
+displays:
+  file:
+    file: ファイル
+  icon:
+    icon: アイコン
+  user:
+    name: 名前
+    both: 両方
+layouts:
+  cards:
+    cards: カード
+    image_source: 画像ソース
+    title: 標題
+    subtitle: サブタイトル
+  tabular:
+    tabular: テーブル
+    fields: 入力欄
+    spacing: 間隔
+    comfortable: 広め
+    compact: コンパクト
+    cozy: 普通
