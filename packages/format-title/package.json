@@ -1,6 +1,6 @@
 {
   "name": "@directus/format-title",
-  "version": "9.0.0-rc.20",
+  "version": "9.0.0-rc.21",
   "description": "Custom string formatter that converts any string into [Title Case](http://www.grammar-monster.com/lessons/capital_letters_title_case.htm)",
   "keywords": [
     "title-case",
@@ -29,8 +29,8 @@
     "prebuild": "rimraf dist",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts",
     "start": "rollup -c rollup.config.ts -w",
-	"prepublishOnly": "npm run build",
-	"lint": "eslint \"src/**/*.ts\""
+    "prepublishOnly": "npm run build",
+    "lint": "eslint \"src/**/*.ts\""
   },
   "devDependencies": {
     "rimraf": "^3.0.2",
