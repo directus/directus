@@ -1,0 +1,251 @@
+---
+full_width: Пълна ширина
+delete_bookmark: Изтрий отметка
+directus_version: Версия на Directus
+language: Език
+hidden_on_detail: Скрити в детайлен изглед
+date: Дата
+decimal: Десетичен
+time: Час
+auto_generate: Автоматично генерирано
+add_note: Добави полезна забележка за потребителите...
+default_value: Стойност по подразбиране
+note: Бележка
+readonly: Само за четене
+primary_key: Първичен ключ
+clear_value: Изчисти стойността
+display: Показване
+title: Заглавие
+revision_delta_deleted: Изтрито
+format: Формат
+months:
+  january: Януари
+  february: Февруари
+  march: Март
+  april: Април
+  may: Май
+  june: Юни
+  july: Юли
+  august: Август
+  september: Септември
+  october: Октомври
+  november: Ноември
+  december: Декември
+size: Големина
+checksum: Checksum
+owner: Собственик
+download: Изтегли
+name: Име
+created_on: Създаден на
+save_and_stay: Запазване и оставане
+comments: Коментари
+request_feature: Заявка за функционалност
+item_count: 'Няма записи | Един запис | {count} записа'
+relationship_not_setup: Връзката не е конфигурирана правилно
+users: Потребители
+activity: Активности
+field_width: Ширина на полето
+duration: Продължителност
+sort_field: Поле за сортиране
+edit: Редактиране
+bookmarks: Маркировка
+back: Назад
+placeholder: Заместител (placeholder)
+icon_left: Икона вляво
+icon_right: Икона вдясно
+monospace: Monospace
+divider: Разделител
+color: Цвят
+operators:
+  gt: По-голямо от
+  gte: По-голямо или равно на
+  contains: Съдържа
+  empty: Е празно
+display_template: Шаблон за показване
+no_results: Няма резултати
+role: Роля
+user: Потребител
+on_update: При промяна
+read: Четене
+update: Обновяване
+wysiwyg_options:
+  remove: Премахване
+  table: Таблица
+dropdown: Падащо меню
+choices: Избори
+deselect: Отмяна на избора
+editing_in_batch: 'Масово редактуране {count} на записи'
+discard_changes: Отмяна на промените
+keep_editing: Продължаване на редакцията
+add_new: Добави нов запис
+all: Всички
+batch_delete_confirm: >-
+  Няма избрани елементи | Наистина ли искате да изтриете този елемент? Това действие не може да бъде отменено. | Наистина ли искате да изтриете тези {count} елементи? Това действие не може да бъде отменено.
+cancel: Отмени
+collection: Колекция
+collections: Колекция
+fields:
+  directus_activity:
+    action: Действие
+    collection: Колекция
+    item: Основен ключ (primary key) на запис
+    user: Действие от
+    timestamp: Действие на
+    edited_on: Редактирано на
+    comment_deleted_on: Коментарът е изтрит на
+    ip: IP Address
+    user_agent: Потребителски агент
+    comment: Кометнар
+  directus_files:
+    title: Заглавие
+    tags: Тагове
+    location: Местоположение
+    description: Описание
+    filename_download: Име на файла за сваляне
+    filename_disk: Име на файла на диска
+    private_hash: Private Hash
+    checksum: Checksum
+    uploaded_on: Редактирано на
+    uploaded_by: Качено от
+    width: Ширина
+    height: Височина
+    duration: Продължителност
+    filesize: Размер на файла
+    metadata: Метаданни
+  directus_users:
+    status: Статус
+    first_name: Име
+    last_name: Фамилия
+    email: Имейл
+    email_notifications: Известия по имейл
+    password: Парола
+    role: Роля
+    company: Компания
+    title: Заглавие
+    timezone: Часова зона
+    language: Език
+    avatar: Аватар
+    theme: Тема
+    tfa_secret: Двуфакторно удостоверяване
+  directus_fields:
+    note: Бележка
+    hidden: Скрити
+    display_template: Шаблон
+  directus_roles:
+    description: Описание
+comment: Кометнар
+default: По подразбиране
+delete: Изтриване
+delete_field_are_you_sure: >-
+  Наистина ли искате да изтриете това поле "{field}"? Това действие не може да бъде отменено.
+description: Описание
+done: Завършено
+duplicate: Дублиране
+email: Имейл
+embed: Вграждане
+file: Файл
+file_library: Файлова библиотека
+forgot_password: Забравена парола
+hidden: Скрити
+icon: Икона
+info: Информация
+junction_collection: Свързваща колекция
+password: Парола
+permissions: Позволения
+reset: Нулиране
+reset_password: Нулиране на паролата
+template: Шаблон
+value: Стойност
+interfaces:
+  checkboxes:
+    checkboxes: Отметки
+    allow_other: Позволи други
+  code:
+    code: Код
+    line_number: Номер на ред
+  collection:
+    collection: Колекция
+  collections:
+    collections: Колекция
+  color:
+    color: Цвят
+  datetime:
+    datetime: Дата и час
+  display-template:
+    display-template: Шаблон за показване
+  divider:
+    divider: Разделител
+  dropdown:
+    allow_other: Позволи други
+  file:
+    file: Файл
+  files:
+    files: Файлове
+  icon:
+    icon: Икона
+  interface-options:
+    interface-options: Опции за интерфейса
+  many-to-many:
+    many-to-many: Много към много
+  many-to-one:
+    many-to-one: Много към един
+    display_template: Шаблон за показване
+  markdown:
+    markdown: Markdown
+    edit: Редактиране
+    preview: Преглед
+  one-to-many:
+    one-to-many: Едно към много
+  radio-buttons:
+    radio-buttons: Радио бутон
+  repeater:
+    repeater: Repeater
+  slider:
+    slider: Плъзгач
+  slug:
+    slug: Slug
+  tags:
+    tags: Тагове
+  text-input:
+    text-input: Поле за текст
+    trim: Trim
+  translations:
+    display_template: Шаблон за показване
+  user:
+    user: Потребител
+    modes:
+      dropdown: Падащо меню
+  wysiwyg:
+    custom_formats: Специфични формати
+displays:
+  collection:
+    collection: Колекция
+  color:
+    color: Цвят
+  datetime:
+    datetime: Дата и час
+    format: Формат
+  file:
+    file: Файл
+  filesize:
+    filesize: Големина на файла
+  icon:
+    icon: Икона
+  rating:
+    rating: Оценка
+  user:
+    user: Потребител
+    avatar: Аватар
+    name: Име
+    both: И двете
+layouts:
+  cards:
+    cards: Картички
+    image_source: Източник на изображението
+    title: Заглавие
+    subtitle: Подзаглавие
+  tabular:
+    tabular: Таблица
+    fields: Полета
+    comfortable: Практично
+    compact: Компактно
