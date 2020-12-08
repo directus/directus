@@ -13,6 +13,11 @@ declare module '*.md' {
 	export default value;
 }
 
+declare module '*.yaml' {
+	const value: Record<string, any>;
+	export default value;
+}
+
 declare module '*.json' {
 	const value: { [key: string]: any };
 	export default value;

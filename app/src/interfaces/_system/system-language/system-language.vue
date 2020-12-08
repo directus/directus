@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@vue/composition-api';
-import { availableLanguages } from '@/lang';
+import availableLanguages from '@/lang/available-languages.yaml';
 
 export default defineComponent({
 	props: {
