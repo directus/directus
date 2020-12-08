@@ -86,9 +86,7 @@ export default async function runSeed(database: Knex) {
 				}
 
 				if (columnInfo.references) {
-					column
-						.references(columnInfo.references.column)
-						.inTable(columnInfo.references.table);
+					column.references(columnInfo.references.column).inTable(columnInfo.references.table);
 				}
 			}
 		});

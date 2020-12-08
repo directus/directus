@@ -68,11 +68,7 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 		};
 
 		try {
-			const primaryKey = await service.upload(
-				fileStream,
-				payloadWithRequiredFields,
-				existingPrimaryKey
-			);
+			const primaryKey = await service.upload(fileStream, payloadWithRequiredFields, existingPrimaryKey);
 			savedFiles.push(primaryKey);
 			tryDone();
 		} catch (error) {

@@ -33,20 +33,7 @@ export default function getAvailableOperatorsForType(type: string) {
 		case 'sort':
 			return {
 				type: 'number',
-				operators: [
-					'eq',
-					'neq',
-					'lt',
-					'lte',
-					'gt',
-					'gte',
-					'between',
-					'nbetween',
-					'empty',
-					'nempty',
-					'in',
-					'nin',
-				],
+				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'],
 			};
 		// Datetime
 		case 'datetime':
@@ -56,20 +43,7 @@ export default function getAvailableOperatorsForType(type: string) {
 		case 'datetime_updated':
 			return {
 				type: 'datetime',
-				operators: [
-					'eq',
-					'neq',
-					'lt',
-					'lte',
-					'gt',
-					'gte',
-					'between',
-					'nbetween',
-					'empty',
-					'nempty',
-					'in',
-					'nin',
-				],
+				operators: ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'between', 'nbetween', 'empty', 'nempty', 'in', 'nin'],
 			};
 		default:
 			return {

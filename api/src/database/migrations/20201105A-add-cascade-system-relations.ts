@@ -145,11 +145,7 @@ export async function down(knex: Knex) {
 			for (const constraint of update.constraints) {
 				table.dropForeign([constraint.column]);
 
-				table
-					.foreign(constraint.column)
-					.references(constraint.references)
-					.onUpdate('NO ACTION')
-					.onDelete('NO ACTION');
+				table.foreign(constraint.column).references(constraint.references).onUpdate('NO ACTION').onDelete('NO ACTION');
 			}
 		});
 	}

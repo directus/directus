@@ -7,7 +7,8 @@
     "lint": "lerna run lint",
     "release": "lerna publish --force-publish",
     "cli": "cross-env NODE_ENV=development DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/index.ts",
-    "postinstall": "npm run build"
+    "postinstall": "npm run build",
+    "prettier": "lerna run prettier"
   },
   "repository": {
     "type": "git",
@@ -134,7 +135,7 @@
     "nyc": "^15.1.0",
     "pinia": "0.0.7",
     "portal-vue": "^2.1.7",
-    "prettier": "^2.1.1",
+    "prettier": "^2.2.1",
     "pretty-ms": "^7.0.1",
     "qrcode": "^1.4.4",
     "raw-loader": "^4.0.1",

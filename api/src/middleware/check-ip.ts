@@ -12,7 +12,6 @@ export const checkIP: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	const ipAllowlist = (role?.ip_access || '').split(',').filter((ip: string) => ip);
 
-	if (ipAllowlist.length > 0 && ipAllowlist.includes(req.accountability!.ip) === false)
-		throw new InvalidIPException();
+	if (ipAllowlist.length > 0 && ipAllowlist.includes(req.accountability!.ip) === false) throw new InvalidIPException();
 	return next();
 });

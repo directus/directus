@@ -30,11 +30,7 @@ router.get(
 		const isValidUUID = validate(id, 4);
 		if (isValidUUID === false) throw new ForbiddenException();
 
-		const file = await database
-			.select('id', 'storage', 'filename_disk')
-			.from('directus_files')
-			.where({ id })
-			.first();
+		const file = await database.select('id', 'storage', 'filename_disk').from('directus_files').where({ id }).first();
 
 		if (!file) throw new ForbiddenException();
 
@@ -64,24 +60,17 @@ router.get(
 		const transformation = pick(req.query, ASSET_TRANSFORM_QUERY_KEYS);
 
 		if (transformation.hasOwnProperty('key') && Object.keys(transformation).length > 1) {
-			throw new InvalidQueryException(
-				`You can't combine the "key" query parameter with any other transformation.`
-			);
+			throw new InvalidQueryException(`You can't combine the "key" query parameter with any other transformation.`);
 		}
 
 		const systemKeys = SYSTEM_ASSET_ALLOW_LIST.map((transformation) => transformation.key);
 		const allKeys: string[] = [
 			...systemKeys,
-			...(assetSettings.storage_asset_presets || []).map(
-				(transformation: Transformation) => transformation.key
-			),
+			...(assetSettings.storage_asset_presets || []).map((transformation: Transformation) => transformation.key),
 		];
 
 		// For use in the next request handler
-		res.locals.shortcuts = [
-			...SYSTEM_ASSET_ALLOW_LIST,
-			...(assetSettings.storage_asset_presets || []),
-		];
+		res.locals.shortcuts = [...SYSTEM_ASSET_ALLOW_LIST, ...(assetSettings.storage_asset_presets || [])];
 		res.locals.transformation = transformation;
 
 		if (Object.keys(transformation).length === 0) {
@@ -93,15 +82,10 @@ router.get(
 			return next();
 		} else if (assetSettings.storage_asset_transform === 'shortcut') {
 			if (allKeys.includes(transformation.key as string)) return next();
-			throw new InvalidQueryException(
-				`Only configured shortcuts can be used in asset generation.`
-			);
+			throw new InvalidQueryException(`Only configured shortcuts can be used in asset generation.`);
 		} else {
-			if (transformation.key && systemKeys.includes(transformation.key as string))
-				return next();
-			throw new InvalidQueryException(
-				`Dynamic asset generation has been disabled for this project.`
-			);
+			if (transformation.key && systemKeys.includes(transformation.key as string)) return next();
+			throw new InvalidQueryException(`Dynamic asset generation has been disabled for this project.`);
 		}
 	}),
 
@@ -114,8 +98,7 @@ router.get(
 
 		const transformation: Transformation = res.locals.transformation.key
 			? res.locals.shortcuts.find(
-					(transformation: Transformation) =>
-						transformation.key === res.locals.transformation.key
+					(transformation: Transformation) => transformation.key === res.locals.transformation.key
 			  )
 			: res.locals.transformation;
 

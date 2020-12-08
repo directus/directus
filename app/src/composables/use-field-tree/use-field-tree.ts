@@ -17,8 +17,7 @@ export default function useFieldTree(collection: Ref<string>, inject?: { fields:
 		const fieldsInLevel = cloneDeep(fieldsStore.getFieldsForCollection(collection))
 			.filter((field: Field) => {
 				const shown =
-					field.meta?.special?.includes('alias') !== true &&
-					field.meta?.special?.includes('no-data') !== true;
+					field.meta?.special?.includes('alias') !== true && field.meta?.special?.includes('no-data') !== true;
 				return shown;
 			})
 			.map((field: Field) => ({

@@ -56,7 +56,8 @@
 		"dev": "cross-env NODE_ENV=development ts-node-dev --files src/start.ts --respawn --watch \"src/**/*.ts\" --watch \".env\" --transpile-only",
 		"cli": "cross-env NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
 		"lint": "eslint \"src/**/*.ts\" cli.js index.js",
-		"prepublishOnly": "npm run build"
+		"prepublishOnly": "npm run build",
+		"prettier": "prettier --write \"src/**/*.ts\" cli.js index.js"
 	},
 	"files": [
 		"dist",

@@ -3,10 +3,7 @@ import logger from '../logger';
 import { parseFilter } from '../utils/parse-filter';
 import { flatten } from 'lodash';
 
-export function sanitizeQuery(
-	rawQuery: Record<string, any>,
-	accountability: Accountability | null
-) {
+export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Accountability | null) {
 	const query: Query = {};
 
 	if (rawQuery.limit !== undefined) {

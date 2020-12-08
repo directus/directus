@@ -74,9 +74,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	}
 
 	if (req.accountability?.user) {
-		await database('directus_users')
-			.update({ last_access: new Date() })
-			.where({ id: req.accountability.user });
+		await database('directus_users').update({ last_access: new Date() }).where({ id: req.accountability.user });
 	}
 
 	return next();

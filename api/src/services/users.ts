@@ -4,11 +4,7 @@ import jwt from 'jsonwebtoken';
 import { sendInviteMail, sendPasswordResetMail } from '../mail';
 import database from '../database';
 import argon2 from 'argon2';
-import {
-	InvalidPayloadException,
-	ForbiddenException,
-	UnprocessableEntityException,
-} from '../exceptions';
+import { InvalidPayloadException, ForbiddenException, UnprocessableEntityException } from '../exceptions';
 import { Accountability, PrimaryKey, Item, AbstractServiceOptions, SchemaOverview } from '../types';
 import Knex from 'knex';
 import env from '../env';
@@ -104,11 +100,7 @@ export class UsersService extends ItemsService {
 
 		if (scope !== 'invite') throw new ForbiddenException();
 
-		const user = await this.knex
-			.select('id', 'status')
-			.from('directus_users')
-			.where({ email })
-			.first();
+		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
 
 		if (!user || user.status !== 'invited') {
 			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
@@ -116,9 +108,7 @@ export class UsersService extends ItemsService {
 
 		const passwordHashed = await argon2.hash(password);
 
-		await this.knex('directus_users')
-			.update({ password: passwordHashed, status: 'active' })
-			.where({ id: user.id });
+		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
 		if (cache) {
 			await cache.clear();
@@ -144,11 +134,7 @@ export class UsersService extends ItemsService {
 
 		if (scope !== 'password-reset') throw new ForbiddenException();
 
-		const user = await this.knex
-			.select('id', 'status')
-			.from('directus_users')
-			.where({ email })
-			.first();
+		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
 
 		if (!user || user.status !== 'active') {
 			throw new ForbiddenException();
@@ -156,9 +142,7 @@ export class UsersService extends ItemsService {
 
 		const passwordHashed = await argon2.hash(password);
 
-		await this.knex('directus_users')
-			.update({ password: passwordHashed, status: 'active' })
-			.where({ id: user.id });
+		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
 		if (cache) {
 			await cache.clear();
@@ -166,11 +150,7 @@ export class UsersService extends ItemsService {
 	}
 
 	async enableTFA(pk: string) {
-		const user = await this.knex
-			.select('tfa_secret')
-			.from('directus_users')
-			.where({ id: pk })
-			.first();
+		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
 
 		if (user?.tfa_secret !== null) {
 			throw new InvalidPayloadException('TFA Secret is already set for this user');

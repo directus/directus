@@ -40,10 +40,7 @@ export class ServerService {
 		if (this.accountability?.admin === true) {
 			const osType = os.type() === 'Darwin' ? 'macOS' : os.type();
 
-			const osVersion =
-				osType === 'macOS'
-					? `${macosRelease().name} (${macosRelease().version})`
-					: os.release();
+			const osVersion = osType === 'macOS' ? `${macosRelease().name} (${macosRelease().version})` : os.release();
 
 			info.directus = {
 				version,

@@ -16,7 +16,7 @@ export default defineInterface(({ i18n }) => ({
 			type: 'string',
 			meta: {
 				width: 'full',
-				interface: 'text-input'
+				interface: 'text-input',
 			},
 			schema: {
 				default_value: null,

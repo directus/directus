@@ -68,8 +68,7 @@ router.post(
 				httpOnly: true,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
 				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
-				sameSite:
-					(env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
 
@@ -97,16 +96,12 @@ router.post(
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
 
 		if (!currentRefreshToken) {
-			throw new InvalidPayloadException(
-				`"refresh_token" is required in either the JSON payload or Cookie`
-			);
+			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 		}
 
 		const mode: 'json' | 'cookie' = req.body.mode || req.body.refresh_token ? 'json' : 'cookie';
 
-		const { accessToken, refreshToken, expires } = await authenticationService.refresh(
-			currentRefreshToken
-		);
+		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken);
 
 		const payload = {
 			data: { access_token: accessToken, expires },
@@ -121,8 +116,7 @@ router.post(
 				httpOnly: true,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
 				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
-				sameSite:
-					(env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
 
@@ -150,9 +144,7 @@ router.post(
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
 
 		if (!currentRefreshToken) {
-			throw new InvalidPayloadException(
-				`"refresh_token" is required in either the JSON payload or Cookie`
-			);
+			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 		}
 
 		await authenticationService.logout(currentRefreshToken);
@@ -222,10 +214,7 @@ router.get(
 	respond
 );
 
-router.use(
-	'/oauth',
-	session({ secret: env.SECRET as string, saveUninitialized: false, resave: false })
-);
+router.use('/oauth', session({ secret: env.SECRET as string, saveUninitialized: false, resave: false }));
 
 router.get(
 	'/oauth/:provider',
@@ -279,8 +268,7 @@ router.get(
 				httpOnly: true,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
 				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
-				sameSite:
-					(env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 
 			return res.redirect(redirect);

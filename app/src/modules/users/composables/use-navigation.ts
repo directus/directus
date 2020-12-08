@@ -28,7 +28,7 @@ export default function useNavigation() {
 		const rolesResponse = await api.get(`/roles`, {
 			params: {
 				sort: 'name',
-			}
+			},
 		});
 		roles.value = rolesResponse.data.data;
 		loading.value = false;

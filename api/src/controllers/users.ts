@@ -1,11 +1,7 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Joi from 'joi';
-import {
-	InvalidPayloadException,
-	InvalidCredentialsException,
-	ForbiddenException,
-} from '../exceptions';
+import { InvalidPayloadException, InvalidCredentialsException, ForbiddenException } from '../exceptions';
 import { UsersService, MetaService, AuthenticationService } from '../services';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
@@ -205,10 +201,7 @@ router.delete(
 );
 
 const inviteSchema = Joi.object({
-	email: Joi.alternatives(
-		Joi.string().email(),
-		Joi.array().items(Joi.string().email())
-	).required(),
+	email: Joi.alternatives(Joi.string().email(), Joi.array().items(Joi.string().email())).required(),
 	role: Joi.string().uuid({ version: 'uuidv4' }).required(),
 });
 

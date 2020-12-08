@@ -7,12 +7,7 @@ import { Transform, transforms } from 'json2csv';
 import { PassThrough } from 'stream';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
-	if (
-		req.method.toLowerCase() === 'get' &&
-		env.CACHE_ENABLED === true &&
-		cache &&
-		!req.sanitizedQuery.export
-	) {
+	if (req.method.toLowerCase() === 'get' && env.CACHE_ENABLED === true && cache && !req.sanitizedQuery.export) {
 		const key = getCacheKey(req);
 		await cache.set(key, res.locals.payload);
 	}

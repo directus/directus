@@ -149,15 +149,15 @@ export function useGroupableParent(
 	// Register a child within the context of this group
 	function register(item: GroupableInstance) {
 		items.value = [...items.value, item];
-		const value = getValueForItem(item)
+		const value = getValueForItem(item);
 
 		// If you're required to select a value, make sure a value is selected on first render
 		if (selection.value.length === 0 && options?.mandatory?.value === true && items.value.length === 1) {
 			selection.value = [value];
 		}
 
-		if(item.active.value && selection.value.includes(value) === false) {
-			toggle(item)
+		if (item.active.value && selection.value.includes(value) === false) {
+			toggle(item);
 		}
 	}
 
