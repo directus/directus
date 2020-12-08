@@ -3,19 +3,18 @@
 ## 1. Confirm Minimum Requirements are Met
 
 **The only requirements for Directus is an actively maintained version of
-[Node.js](https://nodejs.org/en/about/releases/).** Currently that is v10+, however in April 2021,
-node v10 will leave _Maintenance Long-Term Support (LTS)_ status, and node v12+ will become the new
-minimum requirement.
+[Node.js](https://nodejs.org/en/about/releases/).** Currently that is v10+, however in April 2021, node v10 will leave
+_Maintenance Long-Term Support (LTS)_ status, and node v12+ will become the new minimum requirement.
 
 ### Databases
 
-Directus currently supports the following databases, with our minimum version being based on each
-vendor's official support/LTS.
+Directus currently supports the following databases, with our minimum version being based on each vendor's official
+support/LTS.
 
 | Database      | Version |
 | ------------- | ------- |
-| PostgreSQL    | 9.5+    |
-| MySQL         | 5.6+    |
+| PostgreSQL    | 10+     |
+| MySQL         | 5.7.8+  |
 | SQLite        | 3+      |
 | MS-SQL Server | 13.0+   |
 | OracleDB      | TBD     |
@@ -36,7 +35,7 @@ npx create-directus-project my-project
 ```
 
 <!-- prettier-ignore-start -->
-::: warning 
+::: warning
 Except for SQLite, the database must already be running before creating your Directus
 project.
 :::
