@@ -1,0 +1,312 @@
+---
+full_width: Rộng toàn bộ
+required: Bắt buộc
+create_role: Tạo vai trò (phân quyền)
+delete_bookmark: Xoá dấu trang
+directus_version: Phiên bản hệ thống
+language: Ngôn ngữ
+create_field: Tạo thêm trường
+hidden_on_detail: Ẩn tại chi tiết
+date: Ngày tháng
+decimal: Dạng thập phân
+text: Đoạn văn bản
+time: Thời gian
+auto_generate: Tự khởi tạo
+add_note: Tạo ghi chú hữu ích cho người dùng...
+default_value: Giá trị mặc định
+next: Tiếp theo
+note: Lưu ý
+length: Độ dài
+readonly: Chỉ đọc
+unique: Duy nhất
+primary_key: Khoá chính
+clear_value: Xoá giá trị
+reset_to_default: Khôi phục về mặc định
+undo_changes: Hoàn tác các thay đổi
+notifications: Thông báo
+page_not_found: Không tìm thấy trang này
+page_not_found_body: Trang bạn đang tìm kiếm không tồn tại.
+display: Hiển thị
+title: Tiêu đề
+revision_delta_deleted: Đã xóa
+leave_comment: Để lại bình luận...
+this_collection: Danh mục này
+related_collection: Danh mục liên quan
+format: Định dạng
+submit: Gửi đi
+months:
+  january: Tháng một
+  february: Tháng hai
+  march: Tháng ba
+  april: Tháng tư
+  may: Tháng năm
+  june: Tháng sáu
+  july: Tháng bảy
+  august: Tháng tám
+  september: Tháng chín
+  october: Tháng mười
+  november: Tháng mười một
+  december: Tháng mười hai
+size: Kích thước
+checksum: Giá trị checksum
+owner: Sở hữu bởi
+download: Tải xuống
+name: Tên
+created_by: Tạo bởi
+created_on: Tạo lúc
+save_and_stay: Lưu và ở nguyên vị trí
+save_as_copy: Lưu dạng bản sao
+comments: Bình luận
+request_feature: Yêu cầu tính năng
+item_count: 'Không có bản ghi | Có 1 bản ghi | Có {count} bản ghi'
+create_collection: Tạo danh mục mới
+relationship_not_setup: Quan hệ thiết đặt chưa đúng
+users: Tài khoản
+activity: Hoạt động
+webhooks: Webhooks
+field_width: Độ rộng trường
+user_directory: Danh mục tài khoản
+duration: Thời lượng
+modified_on: Sửa đổi vào
+sort_field: Sắp xếp theo trường
+edit: Sửa
+bookmarks: Đánh dấu
+back: Trở lại
+placeholder: Chỗ điền
+icon_left: Biểu tượng bên trái
+icon_right: Biểu tượng bên phải
+monospace: Khoảng cách như nhau
+divider: Bộ chia
+color: Màu sắc
+operators:
+  lt: Nhỏ hơn
+  gt: Lớn hơn
+  lte: Nhỏ hơn hoặc bằng
+  gte: Lớn hơn hoặc bằng
+  contains: Bao gồm
+  ncontains: Không chứa
+  empty: Bị rỗng
+loading: Đang tải...
+display_template: Biểu mẫu hiển thị
+no_results: Không có kết quả
+role: Phân quyền
+user: Người dùng
+create: Tạo
+on_update: Khi cập nhật
+read: Đọc
+update: Cập nhật
+select_fields: Chọn trường
+wysiwyg_options:
+  remove: Xoá
+  table: Bảng
+dropdown: Tuỳ chọn dạng thả xuống
+choices: Lựa chọn
+deselect: Bỏ chọn
+editing_in_batch: 'Sửa cùng lúc {count} mục'
+settings_permissions: Vai trò & Quyền hạn
+settings_project: Các thiết lập cho dự án
+settings_webhooks: Webhooks
+unsaved_changes: Những thay đổi chưa được lưu
+unsaved_changes_copy: Bạn có chắc chắn muốn rời khỏi trang này không?
+discard_changes: Hủy thay đổi
+keep_editing: Tiếp tục chỉnh sửa
+add_new: Thêm mới
+all: Tất cả
+batch_delete_confirm: >-
+  Không có mục nào được chọn | Bạn có chắc chắc xoá mục này? Hành động sẽ không thể hoàn tác. | Bạn có chắc chắn xoá {count} mục đã chọn? Hành động sẽ không thể hoàn tác.
+cancel: Huỷ
+collection: Danh mục
+collections: Danh mục
+fields:
+  directus_activity:
+    action: Hành động
+    collection: Danh mục
+    item: Trường khoá chính định danh
+    user: Thực hiện bởi
+    timestamp: Hành động tại
+    edited_on: Chỉnh sửa cuối lúc
+    comment_deleted_on: Thời điểm bình luận được xoá
+    ip: Địa chỉ IP
+    user_agent: Tài khoản người dùng
+    comment: Bình luận
+  directus_files:
+    title: Tiêu đề
+    tags: Tags
+    location: Vị trí
+    description: Mô tả
+    filename_download: Tên tệp tải xuống
+    filename_disk: Tên tệp trên hệ thống
+    private_hash: Chuỗi kết quả mã hoá riêng tư
+    checksum: Giá trị checksum
+    uploaded_on: Thời điểm tải lên
+    uploaded_by: Tài khoản tải lên
+    width: Độ rộng
+    height: Độ dài
+    duration: Thời lượng
+    filesize: Kích thước tệp
+    metadata: Thông tin metadata
+  directus_users:
+    status: Trạng thái
+    first_name: Tên
+    last_name: Họ
+    email: Địa chỉ email
+    email_notifications: Thông báo email
+    password: Mật khẩu
+    role: Phân quyền
+    company: Công ty
+    title: Tiêu đề
+    timezone: Múi giờ
+    language: Ngôn ngữ
+    avatar: Ảnh đại diện
+    theme: Theme
+    tfa_secret: Xác thực hai yếu tố
+  directus_settings:
+    project_name: Tên dự án
+  directus_fields:
+    note: Lưu ý
+    hidden: Ẩn
+    display_template: Mẫu
+  directus_roles:
+    description: Mô tả
+comment: Bình luận
+continue: Tiếp tục
+default: Mặc định
+delete: Xóa
+delete_field_are_you_sure: >-
+  Bạn có chắc chắn muốn xóa trường "{field}"? Hành động này không thể hoàn tác.
+description: Mô tả
+done: Hoàn thành
+duplicate: Nhân bản
+email: Địa chỉ email
+embed: Nhúng
+field: Trường | Các trường
+file: Tệp
+file_library: Thư viện tệp
+forgot_password: Quên mật khẩu
+hidden: Ẩn
+icon: Biểu tượng
+info: Thông tin
+junction_collection: Bảng danh mục nối
+latency: Đỗ trễ
+login: Đăng nhập
+my_activity: Hoạt động cá nhân
+not_authenticated: Chưa xác thực
+options: Tuỳ chọn
+otp: Mật khẩu sử dụng một lần
+password: Mật khẩu
+permissions: Các quyền
+relationship: Quan hệ
+reset: Thiết lập lại
+reset_password: Đặt lại Mật khẩu
+revert: Hoàn tác
+save: Lưu
+schema: Cấu trúc dữ liệu
+search: Tìm kiếm
+select_existing: Chọn có sẵn
+select_interface: Chọn một giao diện
+settings: Cài đặt
+sign_in: Đăng nhập
+sign_out: Đăng xuất
+sign_out_confirm: Bạn có chắc bạn muốn đăng xuất không?
+something_went_wrong: Đã xảy ra lỗi.
+sort_direction: Chiều sắp xếp
+template: Mẫu
+translation: Bản dịch
+value: Giá trị
+interfaces:
+  checkboxes:
+    checkboxes: Ô tích
+    allow_other: Cho phép những đối tượng khác
+  code:
+    code: Mã nguồn
+    line_number: Dòng số
+  collection:
+    collection: Danh mục
+  collections:
+    collections: Danh mục
+  color:
+    color: Màu sắc
+  datetime:
+    datetime: Ngày giờ
+  display-template:
+    display-template: Biểu mẫu hiển thị
+  divider:
+    divider: Bộ chia
+  dropdown:
+    allow_other: Cho phép những đối tượng khác
+  file:
+    file: Tệp
+  files:
+    files: Tệp
+  icon:
+    icon: Biểu tượng
+  interface-options:
+    interface-options: Tùy chọn giao diện
+  many-to-many:
+    many-to-many: Quan hệ nhiều - nhiều
+  many-to-one:
+    many-to-one: Quan hệ nhiều - một
+    display_template: Biểu mẫu hiển thị
+  markdown:
+    markdown: Gạch nhớ
+    edit: Sửa
+    preview: Xem trước
+  numeric:
+    numeric: Kiểu số
+  one-to-many:
+    one-to-many: Quan hệ một - nhiều
+  radio-buttons:
+    radio-buttons: Ô chọn tròn
+  repeater:
+    repeater: Vòng lặp
+  slider:
+    slider: Thanh trượt
+  slug:
+    slug: Viết tắt
+  tags:
+    tags: Tags
+  text-input:
+    text-input: Văn bản đầu vào
+    trim: Rút gọn
+  translations:
+    display_template: Biểu mẫu hiển thị
+  user:
+    user: Người dùng
+    modes:
+      dropdown: Tuỳ chọn dạng thả xuống
+  wysiwyg:
+    custom_formats: Tuỳ chỉnh định dạng
+displays:
+  collection:
+    collection: Danh mục
+  color:
+    color: Màu sắc
+  datetime:
+    datetime: Ngày giờ
+    format: Định dạng
+  file:
+    file: Tệp
+  filesize:
+    filesize: Kích thước tệp
+  icon:
+    icon: Biểu tượng
+  rating:
+    rating: Xếp hạng
+  user:
+    user: Người dùng
+    avatar: Ảnh đại diện
+    name: Tên
+    both: Cả hai
+layouts:
+  cards:
+    cards: Thẻ
+    image_source: Nguồn ảnh
+    title: Tiêu đề
+    subtitle: Tiêu đề phụ
+  tabular:
+    tabular: Bảng
+    fields: Các trường
+    spacing: Khoảng cách
+    comfortable: Thoải mái
+    compact: Thu gọn
+    cozy: Ấm cúng

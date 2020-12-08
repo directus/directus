@@ -1,0 +1,44 @@
+---
+auto_generate: Automaticky generovať
+add_note: Pridať užitočnú poznámku pre užívateľov...
+comments: Komentáre
+activity: Aktivita
+bookmarks: Záložky
+back: Späť
+role: Rola
+add_new: Pridať nový
+all: Všetko
+cancel: Zrušiť
+collection: Zbierka
+fields:
+  directus_activity:
+    collection: Zbierka
+    user: Akciu vykonal/a
+    ip: IP adresa
+    user_agent: Užívateľský agent
+  directus_users:
+    first_name: Meno
+    last_name: Priezvisko
+    email: E-mail
+    email_notifications: E-mailové notifikácie
+    password: Heslo
+    role: Rola
+    company: Spoločnosť
+    timezone: Časové pásmo
+    avatar: Avatar
+    theme: Téma
+    tfa_secret: Dvojfaktorová autentifikácia
+email: E-mail
+password: Heslo
+interfaces:
+  collection:
+    collection: Zbierka
+displays:
+  collection:
+    collection: Zbierka
+  user:
+    avatar: Avatar
+    both: Oboje
+layouts:
+  tabular:
+    comfortable: Pohodlná

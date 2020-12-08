@@ -1,0 +1,193 @@
+---
+full_width: Fullbredde
+required: Påkrevd
+create_role: Opprett rolle
+delete_bookmark: Slett bokmerke
+directus_version: Directus versjon
+create_field: Opprett felt
+hidden_on_detail: Skjult ved detaljer
+text: Tekst
+auto_generate: Autogenerer
+add_note: Legg til en god beskrivelse til brukerne...
+default_value: Standardverdi
+next: Neste
+note: Notat
+length: Lengde
+readonly: Skrivebeskyttet
+unique: Unik
+primary_key: Primærnøkkel
+clear_value: Tøm innhold
+reset_to_default: Tilbakestill til standard
+undo_changes: Angre endringer
+notifications: Varsler
+page_not_found: Side ikke funnet
+page_not_found_body: Siden du leter etter finnes ikke.
+title: Tittel
+leave_comment: Legg igjen en kommentar...
+this_collection: Denne kolleksjonen
+related_collection: Relatert kolleksjon
+submit: Send inn
+months:
+  january: januar
+  february: februar
+  march: mars
+  april: april
+  may: mai
+  june: juni
+  july: juli
+  august: august
+  september: september
+  october: oktober
+  november: november
+  december: desember
+owner: Eier
+name: Navn
+created_by: Opprettet av
+created_on: Opprettet den
+save_and_stay: Lagre og fortsett
+save_as_copy: Lagre som kopi
+comments: Kommentarer
+request_feature: Foreslå ny funksjon
+item_count: 'Ingen elementer | Ett element | {count} elementer'
+create_collection: Opprett kolleksjon
+users: Brukere
+activity: Aktivitet
+field_width: Feltbredde
+user_directory: Brukeroversikt
+modified_on: Modifisert den
+bookmarks: Bokmerke
+back: Tilbake
+operators:
+  lt: Mindre enn
+  gt: Større enn
+  lte: Mindre enn eller lik
+  gte: Større enn eller lik
+  contains: Inneholder
+  ncontains: Inneholder ikke
+  empty: Er tom
+loading: Laster...
+no_results: Ingen treff
+create: Opprett
+on_update: Ved oppdatering
+read: Les
+update: Oppdater
+select_fields: Velg felter
+wysiwyg_options:
+  remove: Fjern
+  table: Tabell
+deselect: Velg bort
+editing_in_batch: 'Batch Editing {count} elementer'
+settings_permissions: Roller og tilganger
+settings_project: Prosjektinnstillinger
+discard_changes: Forkast endringer
+keep_editing: Fortsett å rediger
+add_new: Legg til ny
+all: Alle
+batch_delete_confirm: >-
+  Ingen elementer har blitt valgt | Er du sikker på at du vil slette dette elementet? Handlingen kan ikke angres. | Er du sikker på at du vil slette disse {count} elementene? Handlingen kan ikke angres.
+cancel: Avbryt
+collection: Kolleksjon
+collections: Kolleksjoner
+fields:
+  directus_activity:
+    collection: Kolleksjon
+    item: Element Hovednøkkel
+    edited_on: Redigert den
+    comment_deleted_on: Kommentar slettet på
+    ip: IP-addresse
+    user_agent: Brukeragent
+    comment: Kommenter
+  directus_files:
+    title: Tittel
+    tags: Etiketter
+    location: Lokasjon
+    description: Beskrivelse
+  directus_users:
+    status: Status
+    email: E-post
+    password: Passord
+    title: Tittel
+  directus_settings:
+    project_name: Prosjektnavn
+  directus_fields:
+    note: Notat
+    hidden: Skjult
+  directus_roles:
+    description: Beskrivelse
+comment: Kommenter
+continue: Fortsett
+default: Standard
+delete: Slett
+delete_field_are_you_sure: >-
+  Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
+description: Beskrivelse
+done: Ferdig
+duplicate: Dupliser
+email: E-post
+embed: Embed
+file: Fil
+file_library: Filbibliotek
+forgot_password: Glemt passord
+hidden: Skjult
+icon: Ikon
+info: Info
+junction_collection: Junction Collection
+latency: Ventetid
+login: Logg inn
+my_activity: Min aktivitet
+options: Alternativer
+otp: Engangspassord
+password: Passord
+permissions: Tilganger
+relationship: Relasjon
+reset_password: Tilbakestill passord
+revert: Reverter
+save: Lagre
+schema: Skjema
+search: Søk
+select_existing: Velg eksisterende
+select_interface: Velg ett grensesnitt
+settings: Innstillinger
+sign_in: Logg inn
+sign_out: Logg ut
+sign_out_confirm: Er du sikker på at du vil logge ut?
+something_went_wrong: Noe gikk galt.
+value: Verdi
+interfaces:
+  collection:
+    collection: Kolleksjon
+  collections:
+    collections: Kolleksjoner
+  file:
+    file: Fil
+  files:
+    files: Filer
+  icon:
+    icon: Ikon
+  numeric:
+    numeric: Nummerisk
+  tags:
+    tags: Etiketter
+displays:
+  collection:
+    collection: Kolleksjon
+  file:
+    file: Fil
+  icon:
+    icon: Ikon
+  user:
+    name: Navn
+    both: Begge
+layouts:
+  cards:
+    cards: Kort
+    image_source: Bilde Kilde
+    title: Tittel
+    subtitle: Undertittel
+  tabular:
+    tabular: Tabell
+    fields: Felter
+    spacing: Mellomrom
+    comfortable: Komfortabel
+    compact: Kompakt
+    cozy: Cozy

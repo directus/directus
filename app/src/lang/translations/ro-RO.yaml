@@ -1,0 +1,133 @@
+---
+create_role: Creează Rol
+delete_bookmark: Șterge semn de carte
+directus_version: Versiune Directus
+create_field: Creează Câmp
+auto_generate: Generare automată
+add_note: Adaugă o notă ajutătoare pentru utilizatori...
+default_value: Valoare implicită
+clear_value: Șterge valoarea
+title: Titlu
+checksum: Sumă de control
+owner: Proprietar
+download: Descărcați
+created_by: Creat De
+created_on: Creat Pe
+comments: Comentarii
+create_collection: Creează Colecție
+users: Utilizatori
+activity: Activitate
+duration: Durată
+bookmarks: Semne de carte
+back: Înapoi
+operators:
+  gt: Mai mare ca
+  gte: Mai mare sau egal cu
+  contains: Conține
+role: Rol
+create: Creează
+wysiwyg_options:
+  table: Tabel
+choices: Opțiuni
+deselect: Deselectaţi
+editing_in_batch: 'Editare lot de {count} elemente'
+discard_changes: Renunță la modificări
+add_new: Adaugare intrare nouă
+all: Tot
+batch_delete_confirm: >-
+  Nu au fost selectate articole | Sigur doriți să ștergeți acest articol? Această acțiune nu poate fi anulată. | Sigur doriți să ștergeți aceste {count} elemente? Această acțiune nu poate fi anulată.
+cancel: Anulează
+collection: Colecție
+collections: Colecții
+fields:
+  directus_activity:
+    action: Acţiune
+    collection: Colecție
+    item: Cheia primară a elementului
+    user: Acțiune de
+    timestamp: Acțiune pe
+    edited_on: Modificat la data de
+    comment_deleted_on: Comentariu șters la data de
+    ip: Adresă IP
+    user_agent: User Agent
+    comment: Comentariu
+  directus_files:
+    title: Titlu
+    tags: Etichete
+    location: Locație
+    description: Descriere
+    filename_download: Descărcare Nume Fișier
+    filename_disk: Nume Fișier Disc
+    private_hash: Hash privat
+    checksum: Sumă de control
+    uploaded_on: Încărcat pe
+    uploaded_by: Încărcat de
+    width: Lățime
+    height: Înălţime
+    duration: Durată
+    filesize: Dimensiune fişier
+    metadata: Metadate
+  directus_users:
+    status: Stare
+    first_name: Prenume
+    last_name: Nume
+    email: Email
+    email_notifications: Notificări prin e-mail
+    password: Parolă
+    role: Rol
+    company: Companie
+    title: Titlu
+    timezone: Fus orar
+    avatar: Avatar
+    theme: Temă
+    tfa_secret: Autentificare în doi pași
+  directus_fields:
+    hidden: Ascuns
+  directus_roles:
+    description: Descriere
+comment: Comentariu
+continue: Continuă
+default: Implicit
+delete: Ştergeţi
+delete_field_are_you_sure: >-
+  Sunteţi sigur că doriţi să ştergeţi câmpul "{field}"? Această acţiune nu poate fi modificată ulterior.
+description: Descriere
+done: Efectuat
+duplicate: Duplicare
+email: Email
+embed: Încorporați
+field: Câmp | Câmpuri
+hidden: Ascuns
+icon: Iconiță
+info: Info
+password: Parolă
+interfaces:
+  collection:
+    collection: Colecție
+  collections:
+    collections: Colecții
+  files:
+    files: Fişiere
+  icon:
+    icon: Iconiță
+  tags:
+    tags: Etichete
+displays:
+  collection:
+    collection: Colecție
+  icon:
+    icon: Iconiță
+  user:
+    avatar: Avatar
+    both: Ambele
+layouts:
+  cards:
+    cards: Carduri
+    image_source: Sursa Imaginii
+    title: Titlu
+    subtitle: Subtitlu
+  tabular:
+    tabular: Tabel
+    comfortable: Confortabil
+    compact: Compact
+    cozy: Comod

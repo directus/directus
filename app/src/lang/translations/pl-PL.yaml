@@ -1,0 +1,276 @@
+---
+full_width: Pełna szerokość
+required: Wymagane
+create_role: Stwórz rolę
+delete_bookmark: Usuń zakładkę
+directus_version: Wersja aplikacji Directus
+language: Język
+create_field: Stwórz pole
+hidden_on_detail: Ukryte w detalu
+date: Data
+decimal: Liczba dziesiętna
+text: Tekst
+time: Czas
+auto_generate: Automatycznie generuj
+add_note: Dodaj użyteczną informację dla użytkowników...
+default_value: Domyślna wartość
+next: Następny
+note: Notatka
+length: Długość
+readonly: Tylko do odczytu
+unique: Unikalne
+primary_key: Klucz podstawowy
+clear_value: Wyczyść wartość
+reset_to_default: Zresetuj do ustawień domyślnych
+undo_changes: Cofnij zmiany
+notifications: Powiadomienia
+page_not_found: Nie odnaleziono strony
+page_not_found_body: Strona, której poszukujesz, nie istnieje.
+title: Tytuł
+leave_comment: Napisz komentarz...
+this_collection: Ta kolekcja
+related_collection: Powiązana kolekcja
+format: Formatowanie
+submit: Zatwierdź
+months:
+  january: Styczeń
+  february: Luty
+  march: Marzec
+  april: Kwiecień
+  may: Maj
+  june: Czerwiec
+  july: Lipiec
+  august: Sierpień
+  september: Wrzesień
+  october: Październik
+  november: Listopad
+  december: Grudzień
+size: Wielkość
+checksum: Suma kontrolna
+owner: Właściciel
+download: Pobierz
+name: Nazwa
+created_by: Stworzone przez
+created_on: Stworzony dnia
+save_and_stay: Zapisz i zostań
+save_as_copy: Zapisz jako kopię
+comments: Komentarze
+request_feature: Zaproponuj nową funkcjonalność
+item_count: 'Brak elementów | Jeden element | {count} elementy/ów'
+create_collection: Stwórz kolekcję
+users: Użytkownicy
+activity: Aktywność
+webhooks: Webhooki
+field_width: Szerokość pola
+user_directory: Katalog użytkownika
+duration: Czas trwania
+modified_on: Modyfikowane Dnia
+edit: Edytuj
+bookmarks: Zakładki
+back: Wstecz
+placeholder: Tekst zastępczy
+icon_left: Ikona po lewej stronie
+icon_right: Ikona po prawej
+divider: Separator
+color: Kolor
+operators:
+  lt: Mniejsze od
+  gt: Większe od
+  lte: Równe lub mniejsze od
+  gte: Większe lub równe od
+  contains: Zawiera
+  ncontains: Nie zawiera
+  empty: Jest pusty
+loading: Wczytywanie...
+no_results: Brak wyników
+role: Rola
+create: Stwórz
+on_update: Po zaktualizowaniu
+read: Odczyt
+update: Zaktualizuj
+select_fields: Wybierz pola
+wysiwyg_options:
+  remove: Usuń
+  table: Tabela
+dropdown: Lista rozwijana
+choices: Opcje
+deselect: Odznacz
+editing_in_batch: 'Grupowa edycja {count} elementów'
+settings_permissions: Role i uprawnienia
+settings_project: Ustawienia projektu
+settings_webhooks: Webhooki
+unsaved_changes: Niezapisane zmiany
+unsaved_changes_copy: Czy na pewno chcesz opuścić tę stronę?
+discard_changes: Odrzuć zmiany.
+keep_editing: Kontynuuj edycję
+add_new: Dodaj nowy
+all: Wszystkie
+batch_delete_confirm: >-
+  Żaden element nie został zaznaczony | Na pewno chcesz usunąć ten element? Tej akcji nie będzie można cofnąć. | Na pewno chcesz usunąć {count} elementów? Tej akcji nie będzie można cofnąć.
+cancel: Anuluj
+collection: Kolekcja
+collections: Kolekcje
+fields:
+  directus_activity:
+    action: Czynność
+    collection: Kolekcja
+    item: Klucz główny produktu
+    user: Czynność przez
+    timestamp: Czynność na
+    edited_on: Edytowano
+    comment_deleted_on: Komentarz usunięty
+    ip: Adres IP
+    user_agent: User agent
+    comment: Komentarz
+  directus_files:
+    title: Tytuł
+    tags: Etykiety
+    location: Lokalizacja
+    description: Opis
+    filename_download: Pobierz nazwę pliku
+    filename_disk: Filename Disk
+    private_hash: Prywatny hash
+    checksum: Suma kontrolna
+    uploaded_on: Przesłano
+    uploaded_by: Przesłane przez
+    width: Szerokość
+    height: Wysokość
+    duration: Czas trwania
+    filesize: Rozmiar pliku
+    metadata: Metadane
+  directus_users:
+    status: Status
+    first_name: Imię
+    last_name: Nazwisko
+    email: E-Mail
+    email_notifications: Powiadomienia e-mail
+    password: Hasło
+    role: Rola
+    company: Firma
+    title: Tytuł
+    timezone: Strefa czasowa
+    language: Język
+    avatar: Awatar
+    theme: Motyw
+    tfa_secret: Uwierzytelnianie dwuetapowe
+  directus_settings:
+    project_name: Nazwa projektu
+  directus_fields:
+    note: Notatka
+    hidden: Ukryte
+    display_template: Szablon
+  directus_roles:
+    description: Opis
+comment: Komentarz
+continue: Kontynuuj
+default: Domyślnie
+delete: Usuń
+delete_field_are_you_sure: >-
+  Na pewno chcesz usunąć pole "{field}"? Tej akcji nie będzie można cofnąć.
+description: Opis
+done: Skończone
+duplicate: Zduplikuj
+email: E-Mail
+embed: Osadzony
+field: Pole | Pola
+file: Plik
+file_library: Biblioteka plików
+forgot_password: Zapomniałem hasła
+hidden: Ukryte
+icon: Ikona
+info: Informacja
+junction_collection: Kolekcja Junction
+latency: Opóźnienie
+login: Zaloguj się
+my_activity: Moje aktywność
+not_authenticated: Brak uwierzytelnienia
+options: Opcje
+otp: Jednorazowe hasło
+password: Hasło
+permissions: Uprawnienia
+relationship: Powiązanie
+reset: Wyczyść
+reset_password: Resetuj hasło
+revert: Przywróć
+save: Zapisz
+schema: Schemat
+search: Wyszukaj
+select_existing: Wybierz istniejące
+select_interface: Wybierz interfejs
+settings: Ustawienia
+sign_in: Zarejestruj się
+sign_out: Wyloguj się
+sign_out_confirm: Na pewno chcesz się wylogować?
+something_went_wrong: Coś poszło nie tak.
+sort_direction: Kierunek sortowania
+template: Szablon
+translation: Tłumaczenia
+value: Wartość
+interfaces:
+  checkboxes:
+    checkboxes: Pola wyboru
+    allow_other: Zezwól na inne
+  code:
+    code: Kod
+    line_number: Numer linii
+  collection:
+    collection: Kolekcja
+  collections:
+    collections: Kolekcje
+  color:
+    color: Kolor
+  datetime:
+    datetime: Data i godzina
+  divider:
+    divider: Separator
+  dropdown:
+    allow_other: Zezwól na inne
+  file:
+    file: Plik
+  files:
+    files: Pliki
+  icon:
+    icon: Ikona
+  interface-options:
+    interface-options: Opcje interfejsu
+  markdown:
+    edit: Edytuj
+    preview: Podgląd
+  numeric:
+    numeric: Numeryczne
+  tags:
+    tags: Etykiety
+  user:
+    modes:
+      dropdown: Lista rozwijana
+displays:
+  collection:
+    collection: Kolekcja
+  color:
+    color: Kolor
+  datetime:
+    datetime: Data i godzina
+    format: Formatowanie
+  file:
+    file: Plik
+  filesize:
+    filesize: Rozmiar pliku
+  icon:
+    icon: Ikona
+  user:
+    avatar: Awatar
+    name: Nazwa
+    both: Oba
+layouts:
+  cards:
+    cards: Karty
+    image_source: Źródło obrazu
+    title: Tytuł
+    subtitle: Subtytuł
+  tabular:
+    tabular: Tabela
+    fields: Pola
+    spacing: Odstępy
+    comfortable: Wygodny
+    compact: Kompaktowy
+    cozy: Przytulny
