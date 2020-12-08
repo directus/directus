@@ -5,8 +5,8 @@
 
 <!-- prettier-ignore-start -->
 ::: warning
-Important: This is the documentation for the new Directus 9 platform written in Node.js.
-If you are looking for the previous Directus 8 (PHP) docs, you can find them [here](https://v8.docs.directus.io).
+This is the documentation for the new **[Directus 9](https://github.com/directus/directus)** platform written in Node.js.
+If you are looking for the previous **[Directus 8](https://github.com/directus/v8-archive/releases/latest)** (PHP) docs, you can find them [here](https://v8.docs.directus.io).
 :::
 <!-- prettier-ignore-end -->
 
@@ -21,7 +21,7 @@ as a standalone customizable WebApp.
 <!-- prettier-ignore-start -->
 ::: tip What's in a name?
 "Directus" ([duh REKT iss](http://audio.pronouncekiwi.com/Salli/Directus)) is latin for: _laid straight,
-arranged in lines_. The broadest goal of Directus is to present data in a simple, orderly, and
+arranged in lines_. The broadest goal of our platform is to present data in a simple, orderly, and
 intuitive way.
 :::
 <!-- prettier-ignore-end -->
