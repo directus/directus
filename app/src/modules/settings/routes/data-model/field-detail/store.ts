@@ -116,6 +116,11 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		);
 	}
 
+	// Auto generate translations
+	if (isExisting === false && type === 'translations') {
+		state.fieldData.meta.interface = 'translations';
+	}
+
 	if (type === 'file') useFile();
 	else if (type === 'm2o') useM2O();
 	else if (type === 'm2m' || type === 'files' || type === 'translations') useM2M();
