@@ -1,0 +1,252 @@
+---
+full_width: Full bredd
+required: Obligatoriskt
+create_role: Skapa roll
+delete_bookmark: Radera bokmärke
+directus_version: Directus Version
+language: Språk
+create_field: Skapa fält
+date: Datum
+text: Text
+auto_generate: Generera automatiskt
+add_note: Lägg till kommentar för användare...
+default_value: Standardvärde
+next: Nästa
+note: Anteckning
+length: Längd
+readonly: Skrivskyddad
+unique: Unik
+primary_key: Primärnyckel
+clear_value: Rensa fält
+undo_changes: Ångra ändringar
+notifications: Aviseringar
+page_not_found: Sidan hittades inte
+title: Rubrik
+leave_comment: Lämna en kommentar...
+this_collection: Den här samlingen
+related_collection: Relaterad samling
+format: Format
+submit: Skicka
+months:
+  january: Januari
+  february: Februari
+  march: Mars
+  april: April
+  may: Maj
+  june: Juni
+  july: Juli
+  august: Augusti
+  september: September
+  october: Oktober
+  november: November
+  december: December
+size: Storlek
+checksum: Kontrollsumma
+owner: Ägare
+download: Ladda ner
+name: Namn
+created_by: Skapad av
+created_on: Skapad den
+save_and_stay: Spara och stanna
+save_as_copy: Spara som kopia
+comments: Kommentarer
+item_count: 'Inga objekt | Ett objekt | {count} objekt'
+create_collection: Skapa samling
+users: Användare
+activity: Händelser
+field_width: Fältbredd
+duration: Varaktighet
+modified_on: Ändrad den
+edit: Redigera
+bookmarks: Bokmärken
+back: Tillbaka
+icon_left: Ikon till vänster
+icon_right: Ikon höger
+divider: Avdelare
+operators:
+  lt: Mindre än
+  gt: Större än
+  lte: Mindre än eller lika med
+  contains: Innehåller
+  ncontains: Innehåller ej
+  empty: Är tom
+loading: Laddar...
+display_template: Visningsmall
+no_results: Inga resultat
+role: Roll
+create: Skapa
+on_update: Vid uppdatering
+read: Läsning
+update: Uppdatera
+select_fields: Välj fält
+wysiwyg_options:
+  remove: Ta bort
+  table: Tabell
+dropdown: Rullgardinsmeny
+choices: Alternativ
+deselect: Avmarkera
+editing_in_batch: 'Massredigerar {count} objekt'
+settings_permissions: Roller & behörigheter
+settings_project: Projektinställningar
+discard_changes: Ignorera ändringar
+keep_editing: Fortsätt redigera
+add_new: Lägg till ny
+all: Alla
+batch_delete_confirm: >-
+  Inga objekt har valts | Är du säker på att du vill radera det här objektet? Den här åtgärden kan inte ångras. | Är du säker på att du vill radera de här {count} objekten? Den här åtgärden kan inte ångras.
+cancel: Avbryt
+collection: Samling
+collections: Samlingar
+fields:
+  directus_activity:
+    action: Åtgärd
+    collection: Samling
+    item: Primärnyckel för objekt
+    user: Åtgärd av
+    timestamp: Åtgärd på
+    edited_on: Redigerad den
+    comment_deleted_on: Kommentar borttagen
+    ip: IP-adress
+    user_agent: Användaragent
+    comment: Kommentera
+  directus_files:
+    title: Rubrik
+    tags: Etiketter
+    location: Position
+    description: Beskrivning
+    filename_download: Filnamn Ladda ner
+    filename_disk: Filnamn Disk
+    private_hash: Privat hasch
+    checksum: Kontrollsumma
+    uploaded_on: Uppladdad den
+    uploaded_by: Uppladdad av
+    width: Bredd
+    height: Höjd
+    duration: Varaktighet
+    filesize: Filstorlek
+    metadata: Metadata
+  directus_users:
+    status: Status
+    first_name: Förnamn
+    last_name: Efternamn
+    email: E-post
+    email_notifications: E-postaviseringar
+    password: Lösenord
+    role: Roll
+    company: Företag
+    title: Rubrik
+    timezone: Tidszon
+    language: Språk
+    avatar: Profilbild
+    theme: Tema
+    tfa_secret: Tvåfaktorsautentisering
+  directus_settings:
+    project_name: Projektnamn
+  directus_fields:
+    note: Anteckning
+    hidden: Dold
+    display_template: Mall
+  directus_roles:
+    description: Beskrivning
+comment: Kommentera
+continue: Fortsätt
+default: Standard
+delete: Radera
+delete_field_are_you_sure: >-
+  Är du säker på att du vill radera fältet "{field}"? Den här åtgärden kan inte ångras.
+description: Beskrivning
+done: Klart
+duplicate: Duplicera
+email: E-post
+embed: Bädda in
+field: Fält | Fält
+file: Fil
+file_library: Fil bibliotek
+forgot_password: Glömt lösenord
+hidden: Dold
+icon: Ikon
+info: Info
+latency: Latens
+login: Logga in
+my_activity: Mina aktiviteter
+options: Alternativ
+otp: Engångslösenord
+password: Lösenord
+permissions: Behörigheter
+reset: Återställ
+reset_password: Återställ lösenord
+save: Spara
+schema: Schema
+search: Sök
+settings: Inställningar
+sign_in: Logga in
+sign_out: Logga ut
+sign_out_confirm: Är du säker på att du vill logga ut?
+sort_direction: Sorteringsordning
+template: Mall
+value: Värde
+interfaces:
+  checkboxes:
+    checkboxes: Kryssrutor
+  code:
+    code: Kod
+    line_number: Radnummer
+  collection:
+    collection: Samling
+  collections:
+    collections: Samlingar
+  datetime:
+    datetime: Datum och tid
+  display-template:
+    display-template: Visningsmall
+  divider:
+    divider: Avdelare
+  file:
+    file: Fil
+  files:
+    files: Filer
+  icon:
+    icon: Ikon
+  many-to-many:
+    many-to-many: Många till många
+  many-to-one:
+    many-to-one: Många till en
+    display_template: Visningsmall
+  markdown:
+    edit: Redigera
+  numeric:
+    numeric: Numerisk
+  tags:
+    tags: Etiketter
+  translations:
+    display_template: Visningsmall
+  user:
+    modes:
+      dropdown: Rullgardinsmeny
+displays:
+  collection:
+    collection: Samling
+  datetime:
+    datetime: Datum och tid
+    format: Format
+  file:
+    file: Fil
+  icon:
+    icon: Ikon
+  user:
+    avatar: Profilbild
+    name: Namn
+    both: Båda
+layouts:
+  cards:
+    cards: Kort
+    image_source: Bildkälla
+    title: Rubrik
+    subtitle: Underrubrik
+  tabular:
+    tabular: Tabell
+    fields: Fält
+    spacing: Mellanrum
+    comfortable: Bekväm
+    compact: Kompakt
+    cozy: Mysig
