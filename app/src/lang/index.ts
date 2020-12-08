@@ -1,13 +1,11 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
-import { merge } from 'lodash';
 import { RequestError } from '@/api';
 
-import enUSBase from './en-US/index.json';
-import enUSInterfaces from './en-US/interfaces.json';
-import enUSDisplays from './en-US/displays.json';
-import enUSLayouts from './en-US/layouts.json';
-import defaultDateTimeFormats from './en-US/date-format.json';
+import availableLanguages from './available-languages.yaml';
+
+import enUSBase from './en-US/translations.yaml';
+import dateFormats from './date-formats.yaml';
 
 Vue.use(VueI18n);
 
@@ -15,47 +13,11 @@ export const i18n = new VueI18n({
 	locale: 'en-US',
 	fallbackLocale: 'en-US',
 	messages: {
-		'en-US': merge(enUSBase, enUSInterfaces, enUSDisplays, enUSLayouts),
+		'en-US': enUSBase,
 	},
-	dateTimeFormats: {
-		'en-US': defaultDateTimeFormats,
-	},
+	dateTimeFormats: dateFormats,
 	silentTranslationWarn: true,
 });
-
-export const availableLanguages = {
-	'af-ZA': 'Afrikaans (South Africa)',
-	'ar-SA': 'Arabic (Saudi Arabia)',
-	'ca-ES': 'Catalan (Spain)',
-	'zh-CN': 'Chinese (Simplified)',
-	'cs-CZ': 'Czech (Czech Republic)',
-	'da-DK': 'Danish (Denmark)',
-	'nl-NL': 'Dutch (Netherlands)',
-	'en-US': 'English (United States)',
-	'fi-FI': 'Finnish (Finland)',
-	'fr-FR': 'French (France)',
-	'de-DE': 'German (Germany)',
-	'el-GR': 'Greek (Greece)',
-	'he-IL': 'Hebrew (Israel)',
-	'hu-HU': 'Hungarian (Hungary)',
-	'is-IS': 'Icelandic (Iceland)',
-	'id-ID': 'Indonesian (Indonesia)',
-	'it-IT': 'Italian (Italy)',
-	'ja-JP': 'Japanese (Japan)',
-	'ko-KR': 'Korean (Korea)',
-	'ms-MY': 'Malay (Malaysia)',
-	'no-NO': 'Norwegian (Norway)',
-	'pl-PL': 'Polish (Poland)',
-	'pt-BR': 'Portuguese (Brazil)',
-	'pt-PT': 'Portuguese (Portugal)',
-	'ru-RU': 'Russian (Russian Federation)',
-	'es-ES': 'Spanish (Spain)',
-	'es-419': 'Spanish (Latin America)',
-	'zh-TW': 'Taiwanese Mandarin (Taiwan)',
-	'tr-TR': 'Turkish (Turkey)',
-	'uk-UA': 'Ukrainian (Ukraine)',
-	'vi-VN': 'Vietnamese (Vietnam)',
-};
 
 export type Language = keyof typeof availableLanguages;
 
@@ -71,25 +33,9 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	}
 
 	if (loadedLanguages.includes(lang) === false) {
-		const translations = await Promise.all([
-			import(`@/lang/${lang}/index.json`).catch((err) => console.warn(err)),
-			import(`@/lang/${lang}/interfaces.json`).catch((err) => console.warn(err)),
-			import(`@/lang/${lang}/displays.json`).catch((err) => console.warn(err)),
-			import(`@/lang/${lang}/layouts.json`).catch((err) => console.warn(err)),
-		]);
-
-		translations.forEach((msgs) => i18n.mergeLocaleMessage(lang, msgs));
+		const translations = await import(`@/lang/${lang}/translations.yaml`).catch((err) => console.warn(err));
+		i18n.mergeLocaleMessage(lang, translations);
 		loadedLanguages.push(lang);
-
-		// The date-format json file may or may not exist, as it's not handled by Crowdin.
-		// If it doesn't exist, i18n will fall back to en-US as default
-		// istanbul ignore next catch
-		try {
-			const dateTimeFormats = await import(`@/lang/${lang}/date-format.json`);
-			i18n.setDateTimeFormat(lang, dateTimeFormats);
-		} catch {
-			console.log(`[setCurrentLanguage] ❌ Couldn't fetch date time formats for language "${lang}"`);
-		}
 	}
 
 	i18n.locale = lang;
