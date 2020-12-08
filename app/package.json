@@ -43,6 +43,7 @@
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
     "@vue/test-utils": "^1.1.1",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "vue-cli-plugin-yaml": "^1.0.2"
   }
 }
