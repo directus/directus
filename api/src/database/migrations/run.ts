@@ -15,18 +15,13 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 	const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
 	const customMigrationFiles =
-		((await fse.pathExists(customMigrationsPath)) &&
-			(await fse.readdir(customMigrationsPath))) ||
-		[];
+		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
 	migrationFiles = migrationFiles.filter(
 		(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false
 	);
 
-	const completedMigrations = await database
-		.select<Migration[]>('*')
-		.from('directus_migrations')
-		.orderBy('version');
+	const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
 
 	const migrations = [
 		...migrationFiles.map((path) => parseFilePath(path)),
@@ -39,9 +34,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		const completed = !!completedMigrations.find((migration) => migration.version === version);
 
 		return {
-			file: custom
-				? path.join(customMigrationsPath, filePath)
-				: path.join(__dirname, filePath),
+			file: custom ? path.join(customMigrationsPath, filePath) : path.join(__dirname, filePath),
 			version,
 			name,
 			completed,
@@ -71,9 +64,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 
 		const { up } = require(nextVersion.file);
 		await up(database);
-		await database
-			.insert({ version: nextVersion.version, name: nextVersion.name })
-			.into('directus_migrations');
+		await database.insert({ version: nextVersion.version, name: nextVersion.name }).into('directus_migrations');
 	}
 
 	async function down() {
@@ -83,9 +74,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			throw Error('Nothing to downgrade');
 		}
 
-		const migration = migrations.find(
-			(migration) => migration.version === currentVersion.version
-		);
+		const migration = migrations.find((migration) => migration.version === currentVersion.version);
 
 		if (!migration) {
 			throw new Error('Couldnt find migration');
@@ -101,9 +90,7 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 			if (migration.completed === false) {
 				const { up } = require(migration.file);
 				await up(database);
-				await database
-					.insert({ version: migration.version, name: migration.name })
-					.into('directus_migrations');
+				await database.insert({ version: migration.version, name: migration.name }).into('directus_migrations');
 			}
 		}
 	}

@@ -37,10 +37,7 @@ export default async function createServer() {
 			// Compatibility when supporting serving with certificates
 			const protocol = server instanceof https.Server ? 'https' : 'http';
 
-			const url = new URL(
-				(req.originalUrl || req.url) as string,
-				`${protocol}://${req.headers.host}`
-			);
+			const url = new URL((req.originalUrl || req.url) as string, `${protocol}://${req.headers.host}`);
 			const query = url.search.startsWith('?') ? url.search.substr(1) : url.search;
 
 			const info = {
@@ -62,10 +59,7 @@ export default async function createServer() {
 					size: metrics.out,
 					headers: res.getHeaders(),
 				},
-				ip:
-					req.headers['x-forwarded-for'] ||
-					req.connection?.remoteAddress ||
-					req.socket?.remoteAddress,
+				ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || req.socket?.remoteAddress,
 				duration: elapsedMilliseconds.toFixed(),
 			};
 

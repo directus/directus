@@ -1,12 +1,6 @@
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
-import {
-	Accountability,
-	AbstractServiceOptions,
-	FieldMeta,
-	Relation,
-	SchemaOverview,
-} from '../types';
+import { Accountability, AbstractServiceOptions, FieldMeta, Relation, SchemaOverview } from '../types';
 import { ItemsService } from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
@@ -53,9 +47,7 @@ export class FieldsService {
 				limit: -1,
 			})) as FieldMeta[];
 
-			fields.push(
-				...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection)
-			);
+			fields.push(...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection));
 		} else {
 			fields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })) as FieldMeta[];
 			fields.push(...systemFieldRows);
@@ -92,14 +84,10 @@ export class FieldsService {
 			aliasQuery.andWhere('collection', collection);
 		}
 
-		let aliasFields = [
-			...((await this.payloadService.processValues('read', await aliasQuery)) as FieldMeta[]),
-		];
+		let aliasFields = [...((await this.payloadService.processValues('read', await aliasQuery)) as FieldMeta[])];
 
 		if (collection) {
-			aliasFields.push(
-				...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection)
-			);
+			aliasFields.push(...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection));
 		} else {
 			aliasFields.push(...systemFieldRows);
 		}
@@ -139,9 +127,7 @@ export class FieldsService {
 			const allowedFieldsInCollection: Record<string, string[]> = {};
 
 			permissions.forEach((permission) => {
-				allowedFieldsInCollection[permission.collection] = (permission.fields || '').split(
-					','
-				);
+				allowedFieldsInCollection[permission.collection] = (permission.fields || '').split(',');
 			});
 
 			if (collection && allowedFieldsInCollection.hasOwnProperty(collection) === false) {
@@ -149,8 +135,7 @@ export class FieldsService {
 			}
 
 			return result.filter((field) => {
-				if (allowedFieldsInCollection.hasOwnProperty(field.collection) === false)
-					return false;
+				if (allowedFieldsInCollection.hasOwnProperty(field.collection) === false) return false;
 				const allowedFields = allowedFieldsInCollection[field.collection];
 				if (allowedFields[0] === '*') return true;
 				return allowedFields.includes(field.field);
@@ -180,11 +165,7 @@ export class FieldsService {
 		}
 
 		let column;
-		let fieldInfo = await this.knex
-			.select('*')
-			.from('directus_fields')
-			.where({ collection, field })
-			.first();
+		let fieldInfo = await this.knex.select('*').from('directus_fields').where({ collection, field }).first();
 
 		if (fieldInfo) {
 			fieldInfo = (await this.payloadService.processValues('read', fieldInfo)) as FieldMeta[];
@@ -192,9 +173,7 @@ export class FieldsService {
 
 		fieldInfo =
 			fieldInfo ||
-			systemFieldRows.find(
-				(fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field
-			);
+			systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field);
 
 		try {
 			column = await this.schemaInspector.columnInfo(collection, field);
@@ -223,19 +202,11 @@ export class FieldsService {
 
 		// Check if field already exists, either as a column, or as a row in directus_fields
 		if (field.field in this.schema[collection].columns) {
-			throw new InvalidPayloadException(
-				`Field "${field.field}" already exists in collection "${collection}"`
-			);
+			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		} else if (
-			!!(await this.knex
-				.select('id')
-				.from('directus_fields')
-				.where({ collection, field: field.field })
-				.first())
+			!!(await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first())
 		) {
-			throw new InvalidPayloadException(
-				`Field "${field.field}" already exists in collection "${collection}"`
-			);
+			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
 		if (field.schema) {
@@ -275,17 +246,10 @@ export class FieldsService {
 				if (!field.schema) return;
 
 				if (field.type === 'string') {
-					column = table.string(
-						field.field,
-						field.schema.max_length !== null ? field.schema.max_length : undefined
-					);
+					column = table.string(field.field, field.schema.max_length !== null ? field.schema.max_length : undefined);
 				} else if (['float', 'decimal'].includes(field.type)) {
 					const type = field.type as 'float' | 'decimal';
-					column = table[type](
-						field.field,
-						field.schema?.numeric_precision || 10,
-						field.schema?.numeric_scale || 5
-					);
+					column = table[type](field.field, field.schema?.numeric_precision || 10, field.schema?.numeric_scale || 5);
 				} else if (field.type === 'csv') {
 					column = table.string(field.field);
 				} else {
@@ -293,10 +257,7 @@ export class FieldsService {
 				}
 
 				if (field.schema.default_value !== undefined) {
-					if (
-						typeof field.schema.default_value === 'string' &&
-						field.schema.default_value.toLowerCase() === 'now()'
-					) {
+					if (typeof field.schema.default_value === 'string' && field.schema.default_value.toLowerCase() === 'now()') {
 						column.defaultTo(this.knex.fn.now());
 					} else {
 						column.defaultTo(field.schema.default_value);
@@ -371,9 +332,7 @@ export class FieldsService {
 			/** @TODO M2A — Handle m2a case here */
 
 			if (isM2O) {
-				await this.knex('directus_relations')
-					.delete()
-					.where({ many_collection: collection, many_field: field });
+				await this.knex('directus_relations').delete().where({ many_collection: collection, many_field: field });
 				await this.deleteField(relation.one_collection!, relation.one_field!);
 			} else {
 				await this.knex('directus_relations')

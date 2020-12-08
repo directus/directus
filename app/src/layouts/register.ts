@@ -16,11 +16,7 @@ export async function registerLayouts() {
 	try {
 		const customResponse = await api.get('/extensions/layouts');
 
-		if (
-			customResponse.data.data &&
-			Array.isArray(customResponse.data.data) &&
-			customResponse.data.data.length > 0
-		) {
+		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
 			for (const customKey of customResponse.data.data) {
 				try {
 					const module = await import(/* webpackIgnore: true */ `/extensions/layouts/${customKey}/index.js`);

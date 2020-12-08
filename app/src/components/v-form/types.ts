@@ -14,4 +14,4 @@ export type ValidationError = {
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;
-}
+};

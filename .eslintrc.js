@@ -3,16 +3,8 @@ module.exports = {
 	env: {
 		node: true,
 	},
-	extends: [
-		'plugin:@typescript-eslint/recommended',
-		// 'plugin:prettier/recommended'
-		// Uncomment when we are ready to prettify everything
-	],
-	plugins: [
-		'@typescript-eslint',
-		// 'prettier'
-		// Uncomment when we are ready to prettify everything
-	],
+	extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
+	plugins: ['@typescript-eslint', 'prettier'],
 	rules: {
 		'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 		'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -21,6 +13,7 @@ module.exports = {
 		'@typescript-eslint/ban-ts-ignore': 0,
 		'@typescript-eslint/no-explicit-any': 0,
 		'@typescript-eslint/no-var-requires': 0,
+		'prettier/prettier': ['error', { singleQuote: true }],
 		'comma-dangle': [
 			'error',
 			{

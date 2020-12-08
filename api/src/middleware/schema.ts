@@ -8,9 +8,7 @@ const getSchema: RequestHandler = asyncHandler(async (req, res, next) => {
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
 		if (!info.primary) {
-			logger.warn(
-				`Collection "${collection}" doesn't have a primary key column and will be ignored`
-			);
+			logger.warn(`Collection "${collection}" doesn't have a primary key column and will be ignored`);
 			delete schemaOverview[collection];
 		}
 	}

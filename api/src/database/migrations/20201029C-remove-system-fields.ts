@@ -1206,8 +1206,7 @@ const systemFields = [
 					text: 'Weak – Minimum 8 Characters',
 				},
 				{
-					value:
-						"/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/",
+					value: "/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/",
 					text: 'Strong – Upper / Lowercase / Numbers / Special',
 				},
 			],
@@ -1643,10 +1642,7 @@ const systemFields = [
 export async function up(knex: Knex) {
 	const fieldKeys = uniq(systemFields.map((field: any) => field.field));
 
-	await knex('directus_fields')
-		.delete()
-		.where('collection', 'like', 'directus_%')
-		.whereIn('field', fieldKeys);
+	await knex('directus_fields').delete().where('collection', 'like', 'directus_%').whereIn('field', fieldKeys);
 }
 
 export async function down(knex: Knex) {

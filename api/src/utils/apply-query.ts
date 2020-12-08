@@ -42,9 +42,7 @@ export default async function applyQuery(
 			columns
 				/** @todo Check if this scales between SQL vendors */
 				.filter(
-					(column) =>
-						column.data_type.toLowerCase().includes('text') ||
-						column.data_type.toLowerCase().includes('char')
+					(column) => column.data_type.toLowerCase().includes('text') || column.data_type.toLowerCase().includes('char')
 				)
 				.forEach((column) => {
 					this.orWhereRaw(`LOWER(??) LIKE ?`, [column.column_name, `%${query.search!}%`]);
@@ -53,37 +51,19 @@ export default async function applyQuery(
 	}
 }
 
-export async function applyFilter(
-	knex: Knex,
-	rootQuery: QueryBuilder,
-	rootFilter: Filter,
-	collection: string
-) {
-	const relations: Relation[] = [
-		...(await knex.select('*').from('directus_relations')),
-		...systemRelationRows,
-	];
+export async function applyFilter(knex: Knex, rootQuery: QueryBuilder, rootFilter: Filter, collection: string) {
+	const relations: Relation[] = [...(await knex.select('*').from('directus_relations')), ...systemRelationRows];
 
 	addWhereClauses(rootQuery, rootFilter, collection);
 	addJoins(rootQuery, rootFilter, collection);
 
-	function addWhereClauses(
-		dbQuery: QueryBuilder,
-		filter: Filter,
-		collection: string,
-		logical: 'and' | 'or' = 'and'
-	) {
+	function addWhereClauses(dbQuery: QueryBuilder, filter: Filter, collection: string, logical: 'and' | 'or' = 'and') {
 		for (const [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
 				/** @NOTE this callback function isn't called until Knex runs the query */
 				dbQuery.where((subQuery) => {
 					value.forEach((subFilter: Record<string, any>) => {
-						addWhereClauses(
-							subQuery,
-							subFilter,
-							collection,
-							key === '_and' ? 'and' : 'or'
-						);
+						addWhereClauses(subQuery, subFilter, collection, key === '_and' ? 'and' : 'or');
 					});
 				});
 
@@ -97,21 +77,11 @@ export async function applyFilter(
 				const columnName = getWhereColumn(filterPath, collection);
 				applyFilterToQuery(columnName, filterOperator, filterValue, logical);
 			} else {
-				applyFilterToQuery(
-					`${collection}.${filterPath[0]}`,
-					filterOperator,
-					filterValue,
-					logical
-				);
+				applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 			}
 		}
 
-		function applyFilterToQuery(
-			key: string,
-			operator: string,
-			compareValue: any,
-			logical: 'and' | 'or' = 'and'
-		) {
+		function applyFilterToQuery(key: string, operator: string, compareValue: any, logical: 'and' | 'or' = 'and') {
 			if (operator === '_eq') {
 				dbQuery[logical].where({ [key]: compareValue });
 			}
@@ -207,18 +177,14 @@ export async function applyFilter(
 			function followRelation(pathParts: string[], parentCollection: string = collection) {
 				const relation = relations.find((relation) => {
 					return (
-						(relation.many_collection === parentCollection &&
-							relation.many_field === pathParts[0]) ||
-						(relation.one_collection === parentCollection &&
-							relation.one_field === pathParts[0])
+						(relation.many_collection === parentCollection && relation.many_field === pathParts[0]) ||
+						(relation.one_collection === parentCollection && relation.one_field === pathParts[0])
 					);
 				});
 
 				if (!relation) return;
 
-				const isM2O =
-					relation.many_collection === parentCollection &&
-					relation.many_field === pathParts[0];
+				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
 
 				pathParts.shift();
 
@@ -273,18 +239,14 @@ export async function applyFilter(
 			function followRelation(pathParts: string[], parentCollection: string = collection) {
 				const relation = relations.find((relation) => {
 					return (
-						(relation.many_collection === parentCollection &&
-							relation.many_field === pathParts[0]) ||
-						(relation.one_collection === parentCollection &&
-							relation.one_field === pathParts[0])
+						(relation.many_collection === parentCollection && relation.many_field === pathParts[0]) ||
+						(relation.one_collection === parentCollection && relation.one_field === pathParts[0])
 					);
 				});
 
 				if (!relation) return;
 
-				const isM2O =
-					relation.many_collection === parentCollection &&
-					relation.many_field === pathParts[0];
+				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
 
 				if (isM2O) {
 					dbQuery.leftJoin(

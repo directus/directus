@@ -53,10 +53,7 @@ rolesCommand
 	.option('--admin', `whether or not the role has admin access`)
 	.action(rolesCreate);
 
-program
-	.command('count <collection>')
-	.description('Count the amount of items in a given collection')
-	.action(count);
+program.command('count <collection>').description('Count the amount of items in a given collection').action(count);
 
 program.command('bootstrap').description('Initialize or update the database').action(bootstrap);
 

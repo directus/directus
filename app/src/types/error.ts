@@ -3,5 +3,5 @@ export type APIError = {
 	extensions: {
 		code: string;
 		[key: string]: any;
-	}
-}
+	};
+};

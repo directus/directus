@@ -1,9 +1,4 @@
-import {
-	StorageManager,
-	LocalFileSystemStorage,
-	StorageManagerConfig,
-	Storage,
-} from '@slynova/flydrive';
+import { StorageManager, LocalFileSystemStorage, StorageManagerConfig, Storage } from '@slynova/flydrive';
 import env from './env';
 import { validateEnv } from './utils/validate-env';
 import { getConfigFromEnv } from './utils/get-config-from-env';

@@ -54,12 +54,7 @@ export default function usePreview(
 				let responseData: Record<string, any>[] = [];
 
 				if (relatedPrimaryKeys.length > 0) {
-					responseData = await request(
-						relationCollection,
-						filteredFields,
-						relationPkField,
-						relatedPrimaryKeys
-					);
+					responseData = await request(relationCollection, filteredFields, relationPkField, relatedPrimaryKeys);
 				}
 
 				// Insert the related items into the junction items
@@ -80,9 +75,7 @@ export default function usePreview(
 				// Replace existing items with it's updated counterparts
 				responseData = responseData
 					.map((item) => {
-						const updatedItem = updatedItems.find(
-							(updated) => updated[junctionPkField] === item[junctionPkField]
-						);
+						const updatedItem = updatedItems.find((updated) => updated[junctionPkField] === item[junctionPkField]);
 						if (updatedItem !== undefined) return updatedItem;
 						return item;
 					})

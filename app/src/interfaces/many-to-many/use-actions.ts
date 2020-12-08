@@ -37,8 +37,7 @@ export default function useActions(
 		if (value.value === null || junctionField === null) return [];
 
 		return value.value.filter(
-			(item) =>
-				typeof get(item, junctionField) === 'object' && has(item, [junctionField, relationPkField]) === false
+			(item) => typeof get(item, junctionField) === 'object' && has(item, [junctionField, relationPkField]) === false
 		) as Record<string, any>[];
 	}
 

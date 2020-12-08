@@ -2,11 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import { PermissionsService, MetaService } from '../services';
 import { clone } from 'lodash';
-import {
-	InvalidCredentialsException,
-	ForbiddenException,
-	InvalidPayloadException,
-} from '../exceptions';
+import { InvalidCredentialsException, ForbiddenException, InvalidPayloadException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
 import { PrimaryKey } from '../types';

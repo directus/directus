@@ -12,9 +12,7 @@ export function getConfigFromEnv(prefix: string, omitPrefix?: string | string[])
 			let matches = false;
 
 			if (Array.isArray(omitPrefix)) {
-				matches = omitPrefix.some((prefix) =>
-					key.toLowerCase().startsWith(prefix.toLowerCase())
-				);
+				matches = omitPrefix.some((prefix) => key.toLowerCase().startsWith(prefix.toLowerCase()));
 			} else {
 				matches = key.toLowerCase().startsWith(omitPrefix.toLowerCase());
 			}
@@ -25,9 +23,7 @@ export function getConfigFromEnv(prefix: string, omitPrefix?: string | string[])
 		if (key.includes('__')) {
 			const path = key
 				.split('__')
-				.map((key, index) =>
-					index === 0 ? camelcase(camelcase(key.slice(prefix.length))) : camelcase(key)
-				);
+				.map((key, index) => (index === 0 ? camelcase(camelcase(key.slice(prefix.length))) : camelcase(key)));
 			set(config, path.join('.'), value);
 		} else {
 			config[camelcase(key.slice(prefix.length))] = value;

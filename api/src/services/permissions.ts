@@ -7,19 +7,13 @@ export class PermissionsService extends ItemsService {
 	}
 
 	async getAllowedCollections(role: string | null, action: PermissionsAction) {
-		const query = this.knex
-			.select('collection')
-			.from('directus_permissions')
-			.where({ role, action });
+		const query = this.knex.select('collection').from('directus_permissions').where({ role, action });
 		const results = await query;
 		return results.map((result) => result.collection);
 	}
 
 	async getAllowedFields(role: string | null, action: PermissionsAction, collection?: string) {
-		const query = this.knex
-			.select('collection', 'fields')
-			.from('directus_permissions')
-			.where({ role, action });
+		const query = this.knex.select('collection', 'fields').from('directus_permissions').where({ role, action });
 
 		if (collection) {
 			query.andWhere({ collection });

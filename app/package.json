@@ -26,7 +26,8 @@
     "fix:styles": "stylelint --fix \"**/*.{vue,scss}\"",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prettier": "prettier --write \"src/**/*.ts\""
   },
   "gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
   "dependencies": {
@@ -41,6 +42,7 @@
     "@vue/cli-service": "^4.5.8",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
-    "@vue/test-utils": "^1.1.1"
+    "@vue/test-utils": "^1.1.1",
+    "prettier": "^2.2.1"
   }
 }
