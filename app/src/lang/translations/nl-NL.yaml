@@ -1,0 +1,312 @@
+---
+full_width: Volledige breedte
+required: Vereist
+create_role: Maak rol
+delete_bookmark: Verwijder Bladwijzer
+directus_version: Directus Versie
+language: Taal
+create_field: Maak veld
+hidden_on_detail: Verborgen op het detail scherm
+date: Datum
+decimal: Decimaal
+text: Tekst
+time: Tijd
+auto_generate: Genereer automatisch
+add_note: Voeg een hint toe voor de eindgebruiker...
+default_value: Standaardwaarde
+next: Volgende
+note: Notitie
+length: Lengte
+readonly: Alleen lezen
+unique: Uniek
+primary_key: Primary Key
+clear_value: Verwijder waarde
+reset_to_default: Terug naar standaardwaarde
+undo_changes: Ongedaan maken
+notifications: Notificaties
+page_not_found: Pagina niet gevonden
+page_not_found_body: Deze pagina of item bestaat niet of is recentelijk verwijderd.
+display: Toon
+title: Titel
+revision_delta_deleted: Verwijderd
+leave_comment: Plaats een reactie...
+this_collection: Deze collectie
+related_collection: Gerelateerde collecties
+format: Format
+submit: Verstuur
+months:
+  january: Januari
+  february: Februari
+  march: Maart
+  april: April
+  may: Mei
+  june: Juni
+  july: Juli
+  august: Augustus
+  september: September
+  october: Oktober
+  november: November
+  december: December
+size: Grootte
+checksum: Checksum
+owner: Eigenaar
+download: Downloaden
+name: Naam
+created_by: Aangemaakt door
+created_on: Aangemaakt op
+save_and_stay: Sla op en blijf bewerken
+save_as_copy: Sla op als een kopie
+comments: Reacties
+request_feature: Vraag nieuwe feature aan
+item_count: 'Geen items | Één item | {count} items'
+create_collection: Maak collectie
+relationship_not_setup: De relatie is niet correct geconfigureerd
+users: Gebruikers
+activity: Activiteit
+webhooks: Webhooks
+field_width: Veld breedte
+user_directory: Gebruikers
+duration: Duur
+modified_on: Aangepast op
+sort_field: Sorteerveld
+edit: Wijzig
+bookmarks: Bladwijzers
+back: Terug
+placeholder: Tijdelijke plaatshouder
+icon_left: Icoon links
+icon_right: Icoon rechts
+monospace: Monospace
+divider: Scheidingslijn
+color: Kleur
+operators:
+  lt: Minder dan
+  gt: Groter dan
+  lte: Minder dan of gelijk aan
+  gte: Groter dan of gelijk aan
+  contains: Bevat
+  ncontains: Bevat niet
+  empty: Is leeg
+loading: Aan het laden...
+display_template: Weergavesjabloon
+no_results: Geen resultaten
+role: Rol
+user: Gebruiker
+create: Maak
+on_update: Tijdens updaten
+read: Zichtbaar
+update: Updaten
+select_fields: Selecteer velden
+wysiwyg_options:
+  remove: Verwijder
+  table: Tabel
+dropdown: Keuzemenu
+choices: Keuzes
+deselect: Deselecteer
+editing_in_batch: '{count} items aan het wijzigen'
+settings_permissions: Rollen & Permissies
+settings_project: Project Instellingen
+settings_webhooks: Webhooks
+unsaved_changes: Niet-opgeslagen wijzigingen
+unsaved_changes_copy: Weet je zeker dat je pagina wilt verlaten?
+discard_changes: Wijzigingen ongedaan maken
+keep_editing: Blijf wijzigen
+add_new: Nieuw Toevoegen
+all: Alle
+batch_delete_confirm: >-
+  Geen items geselecteerd | Weet je zeker dat je dit item wilt verwijderen? Dit kan niet ongedaan gemaakt worden. | Weet je zeker dat je {count} items wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+cancel: Annuleer
+collection: Collectie
+collections: Collecties
+fields:
+  directus_activity:
+    action: Actie
+    collection: Collectie
+    item: Item Primary Key
+    user: Actie door
+    timestamp: Actie op
+    edited_on: Aangepast op
+    comment_deleted_on: Reactie verwijderd op
+    ip: IP Adres
+    user_agent: User Agent
+    comment: Reactie
+  directus_files:
+    title: Titel
+    tags: Tags
+    location: Locatie
+    description: Beschrijving
+    filename_download: Bestandsnaam Download
+    filename_disk: Bestandsnaam op Schijf
+    private_hash: Privé naam
+    checksum: Checksum
+    uploaded_on: Geüpload op
+    uploaded_by: Geüpload door
+    width: Breedte
+    height: Hoogte
+    duration: Duur
+    filesize: Bestandsgrootte
+    metadata: Metadata
+  directus_users:
+    status: Status
+    first_name: Voornaam
+    last_name: Achternaam
+    email: Email
+    email_notifications: Email Notificaties
+    password: Wachtwoord
+    role: Rol
+    company: Bedrijf
+    title: Titel
+    timezone: Tijdszone
+    language: Taal
+    avatar: Profielafbeelding
+    theme: Thema
+    tfa_secret: 2FA (Twee-Factor Authenticatie)
+  directus_settings:
+    project_name: Project Naam
+  directus_fields:
+    note: Notitie
+    hidden: Verborgen
+    display_template: Sjabloon
+  directus_roles:
+    description: Beschrijving
+comment: Reactie
+continue: Doorgaan
+default: Standaard
+delete: Verwijder
+delete_field_are_you_sure: >-
+  Weet je zeker dat je het {field} veld wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+description: Beschrijving
+done: Klaar
+duplicate: Dupliceer
+email: Email
+embed: Insluiten
+field: Veld | Velden
+file: Bestand
+file_library: Bestandsbibliotheek
+forgot_password: Wachtwoord vergeten
+hidden: Verborgen
+icon: Icoon
+info: Info
+junction_collection: Verbindingscollectie
+latency: Vertraging
+login: Log in
+my_activity: Mijn Activiteit
+not_authenticated: Niet Ingelogd
+options: Opties
+otp: Eenmalig wachtwoord
+password: Wachtwoord
+permissions: Permissies
+relationship: Relatie
+reset: Reset
+reset_password: Reset wachtwoord
+revert: Terugzetten
+save: Sla op
+schema: Schema
+search: Zoek
+select_existing: Selecteer bestaande
+select_interface: Kies een interface
+settings: Instellingen
+sign_in: Log in
+sign_out: Log out
+sign_out_confirm: Weet je zeker dat je uit wilt loggen?
+something_went_wrong: Iets ging mis.
+sort_direction: Sorteerrichting
+template: Sjabloon
+translation: Vertaling
+value: Waarde
+interfaces:
+  checkboxes:
+    checkboxes: Vinkjes
+    allow_other: Andere toestaan
+  code:
+    code: Code
+    line_number: Regelnummer
+  collection:
+    collection: Collectie
+  collections:
+    collections: Collecties
+  color:
+    color: Kleur
+  datetime:
+    datetime: Datum/tijd
+  display-template:
+    display-template: Weergavesjabloon
+  divider:
+    divider: Scheidingslijn
+  dropdown:
+    allow_other: Andere toestaan
+  file:
+    file: Bestand
+  files:
+    files: Bestanden
+  icon:
+    icon: Icoon
+  interface-options:
+    interface-options: Interface opties
+  many-to-many:
+    many-to-many: Veel op Veel
+  many-to-one:
+    many-to-one: Veel op één
+    display_template: Weergavesjabloon
+  markdown:
+    markdown: Markdown
+    edit: Wijzig
+    preview: Voorvertoning
+  numeric:
+    numeric: Nummer
+  one-to-many:
+    one-to-many: Één op veel
+  radio-buttons:
+    radio-buttons: Keuzerondjes
+  repeater:
+    repeater: Herhaler
+  slider:
+    slider: Schuifregelaar
+  slug:
+    slug: Url
+  tags:
+    tags: Tags
+  text-input:
+    text-input: Tekstinvoer
+    trim: Bijsnijden
+  translations:
+    display_template: Weergavesjabloon
+  user:
+    user: Gebruiker
+    modes:
+      dropdown: Keuzemenu
+  wysiwyg:
+    custom_formats: Aangepaste formaten
+displays:
+  collection:
+    collection: Collectie
+  color:
+    color: Kleur
+  datetime:
+    datetime: Datum/tijd
+    format: Format
+  file:
+    file: Bestand
+  filesize:
+    filesize: Bestandsgrootte
+  icon:
+    icon: Icoon
+  rating:
+    rating: Beoordeling
+  user:
+    user: Gebruiker
+    avatar: Profielafbeelding
+    name: Naam
+    both: Beiden
+layouts:
+  cards:
+    cards: Kaarten
+    image_source: Afbeeldingsbron
+    title: Titel
+    subtitle: Ondertitel
+  tabular:
+    tabular: Tabel
+    fields: Velden
+    spacing: Ruimte
+    comfortable: Comfortabel
+    compact: Compact
+    cozy: Knus
