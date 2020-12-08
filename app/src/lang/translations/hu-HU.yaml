@@ -1,0 +1,147 @@
+---
+create_role: Szerepkör létrehozása
+delete_bookmark: Könyvjelző törlése
+directus_version: Directus verzió
+language: Nyelv
+create_field: Mező létrehozása
+auto_generate: Automatikusan generált
+add_note: Segítő jelzés a kitöltő felhasználónak...
+default_value: Alapértelmezett érték
+clear_value: Érték törlése
+title: Cím
+checksum: Ellenőrző
+owner: Tulajdonos
+download: Letöltés
+created_by: Készítette
+created_on: Létrehozva
+comments: Hozzászólások
+create_collection: Kollekció létrehozása
+users: Felhasználók
+activity: Tevékenységek
+webhooks: Webhookok
+field_width: Mező szélessége
+duration: Időtartam
+bookmarks: Könyvjelzők
+back: Vissza
+icon_left: Ikon Balra
+icon_right: Ikon Jobbra
+color: Szín
+operators:
+  gt: Nagyobb mint
+  gte: Nagyobb vagy egyenlő
+  contains: Tartalmaz
+role: Szerepkör
+create: Létrehozás
+select_fields: Válassz mezőket
+wysiwyg_options:
+  table: Táblázat
+choices: Lehetőségek
+deselect: Kijelölés megszüntetése
+editing_in_batch: '{count} elem szerkesztése'
+settings_permissions: Szerepkörök és jogosultságok
+settings_project: Projekt beállításai
+settings_webhooks: Webhookok
+discard_changes: Változtatások elvetése
+add_new: Új hozzáadása
+all: Összes
+batch_delete_confirm: >-
+  Nincs elem kiválasztva | Biztosan törölni szeretnéd az elemet? A művelet nem visszavonható. | Biztosan törölni szeretnéd az összes elemet ({count} db)? A művelet nem visszavonható.
+cancel: Mégse
+collection: Gyűjtemény
+collections: Kollekciók
+fields:
+  directus_activity:
+    action: Művelet
+    collection: Gyűjtemény
+    item: Elem elsődleges kulcsa
+    ip: IP Cím
+    comment: Hozzászólás
+  directus_files:
+    title: Cím
+    tags: Cimkék
+    location: Pozíció
+    description: Leírás
+    private_hash: Privát hash
+    checksum: Ellenőrző
+    uploaded_on: Feltöltve
+    uploaded_by: Feltöltve
+    width: Szélesség
+    height: Magasság
+    duration: Időtartam
+    filesize: File mérete
+    metadata: Metadata
+  directus_users:
+    status: Állapot
+    first_name: Családnév
+    last_name: Vezetéknév
+    email: E-mail
+    email_notifications: Email értesítések
+    password: Jelszó
+    role: Szerepkör
+    company: Cég
+    title: Cím
+    timezone: Időzóna
+    language: Nyelv
+    avatar: Profilkép
+    theme: Téma
+    tfa_secret: Kétlépcsős hitelesítés
+  directus_fields:
+    hidden: Rejtett
+    display_template: Sablon
+  directus_roles:
+    description: Leírás
+comment: Hozzászólás
+continue: Tovább
+default: Alapértelmezett
+delete: Törlés
+delete_field_are_you_sure: >-
+  Biztosan törölni szeretnéd ezt a mezőt ({field})? Ha törlöd, nem lehet visszaállítani.
+description: Leírás
+done: Kész
+duplicate: Duplikálás
+email: E-mail
+embed: Beágyazás
+file: File
+file_library: File könyvtár
+forgot_password: Elfelejtett jelszó
+hidden: Rejtett
+password: Jelszó
+select_existing: Létező kiválasztása
+settings: Beállítások
+template: Sablon
+interfaces:
+  code:
+    code: Kód
+    line_number: Sor szám
+  collection:
+    collection: Gyűjtemény
+  collections:
+    collections: Kollekciók
+  color:
+    color: Szín
+  file:
+    file: File
+  files:
+    files: Fájlok
+  tags:
+    tags: Cimkék
+displays:
+  collection:
+    collection: Gyűjtemény
+  color:
+    color: Szín
+  file:
+    file: File
+  user:
+    avatar: Profilkép
+    both: Mindkettő
+layouts:
+  cards:
+    cards: Kártya
+    image_source: Kép forrása
+    title: Cím
+    subtitle: Alcím
+  tabular:
+    tabular: Táblázat
+    comfortable: Kényelmes
+    compact: Kompakt
