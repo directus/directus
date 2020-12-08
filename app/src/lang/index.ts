@@ -4,7 +4,7 @@ import { RequestError } from '@/api';
 
 import availableLanguages from './available-languages.yaml';
 
-import enUSBase from './en-US/translations.yaml';
+import enUSBase from './translations/en-US.yaml';
 import dateFormats from './date-formats.yaml';
 
 Vue.use(VueI18n);
@@ -33,7 +33,7 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	}
 
 	if (loadedLanguages.includes(lang) === false) {
-		const translations = await import(`@/lang/${lang}/translations.yaml`).catch((err) => console.warn(err));
+		const translations = await import(`@/lang/translations/${lang}.yaml`).catch((err) => console.warn(err));
 		i18n.mergeLocaleMessage(lang, translations);
 		loadedLanguages.push(lang);
 	}
