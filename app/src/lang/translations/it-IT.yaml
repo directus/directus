@@ -1,17 +1,90 @@
 ---
+edit_field: Modifica campo
+item_revision: Revisione elemento
+duplicate_field: Campo duplicato
+half_width: Metà larghezza
 full_width: Larghezza Massima
+fill_width: Riempi larghezza
+field_name_translations: Traduzioni nome del campo
+enter_password_to_enable_tfa: Inserisci la tua password per abilitare l'autenticazione a due fattori
+add_field: Aggiungi campo
+role_name: Nome ruolo
+db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
+show_archived_items: Mostra le elementi archiviati
 required: Obbligatorio
+requires_value: Richiede un valore
+create_preset: Crea preimpostazione
 create_role: Crea ruolo
+create_user: Crea utente
+create_webhook: Crea webhook
+invite_users: Invita utenti
+email_examples: 'admin@example.com, user@example.com...'
+invite: Invita
+emails: Email
+connection_excellent: Connessione Eccellente
+connection_good: Buona connessione
+connection_fair: Connessione adeguata
+connection_poor: Scarca connessione
+rename_folder: Rinomina cartella
+delete_folder: Elimina cartella
+reset_bookmark: Reinizializza segnalibro
+rename_bookmark: Rinomina segnalibro
+update_bookmark: Aggiorna segnalibro
 delete_bookmark: Elimina segnalibro
+delete_bookmark_copy: >-
+  Sei sicuro di voler eliminare il segnalibro "{bookmark}"? Questa azione é irreversibile.
+logoutReason:
+  SIGN_OUT: Disconnesso
+  SESSION_EXPIRED: Sessione scaduta
+public: Pubblico
+public_description: Controlla quali dati API sono disponibili senza autenticarsi.
+not_allowed: Non consentito
 directus_version: Versione di Directus
+node_version: Versione Node
+node_uptime: Uptime Node
+os_type: Typo di sistema operativo
+os_version: Verione sistema operativo
+os_uptime: Uptime sistema operativo
+os_totalmem: Memoria sistema operativo
+archive: Archivio
+archive_confirm: Sei sicuro*a di voler archiviare questo elemento?
+archive_confirm_count: >-
+  Nessun elemento selezionato | Sei sicuro*a di voler archiviare questo elemento? | Sei sicuro*a di voler archiviare {count} elementi?
+reset_system_permissions: Reinizializza permessi di sistema
+reset_system_permissions_copy: Reinizializza tutte le autorizzazioni di sistema ai valori predefiniti
+unarchive: Ripristina
+unarchive_confirm: Sei sicuro*a di voler ripristinare questo elemento?
+nested_files_folders_will_be_moved: I file e le cartelle annidate verranno spostate di un livello in su.
+unknown_validation_errors: 'Si sono verificati errori di validazione per i seguenti campi nascosti:'
+validationError:
+  eq: Il valore deve essere {valid}
 language: Linguaggio
 create_field: Crea campo
 hidden_on_detail: Nascosto nei dettagli
+key: Chiave
+alias: Alias
+bigInteger: Big Integer
+boolean: Boolean
 date: Data
+datetime: DateTime
 decimal: Decimale
+float: Float
+integer: Integer
+json: JSON
+string: String
 text: Testo
 time: Ora
+timestamp: Timestamp
+uuid: UUID
+not_available_for_type: Non disponibile per questo typo
+create_translations: Crea traduzioni
 auto_generate: Generare automaticamente
+this_will_auto_setup_fields_relations: Questo imposterà automaticamente tutti i campi e le relazioni richieste.
+click_here: Clicca qui
+to_manually_setup_translations: per configurare manualmente le traduzioni.
+click_to_manage_translated_fields: >-
+  Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
+fields_group: Gruppo campi
 add_note: Aggiungi una nota utile per gli utenti ...
 default_value: Valore predefinito
 next: Il prossimo
@@ -165,8 +238,10 @@ fields:
   directus_fields:
     note: Nota
     hidden: Nascosto
+    translation: Traduzioni nome del campo
     display_template: Template
   directus_roles:
+    name: Nome ruolo
     description: Descrizione
 comment: Commento
 continue: Continua
@@ -277,6 +352,8 @@ interfaces:
   wysiwyg:
     custom_formats: Formati personalizzati
 displays:
+  boolean:
+    boolean: Boolean
   collection:
     collection: Collezione
   color:
