@@ -1,12 +1,117 @@
 ---
+edit_field: Wijzig Veld
+item_revision: Item Revisie
+duplicate_field: Dupliceer Veld
+half_width: Halve Breedte
 full_width: Volledige breedte
+fill_width: Vul Breedte
+field_name_translations: Veld-naam Vertalingen
+enter_password_to_enable_tfa: Voer je wachtwoord in om Two-Factor Authentication te activeren
+add_field: Voeg Veld Toe
+role_name: Rol Naam
+db_only_click_to_configure: 'Alleen in de Database: Klik om te configureren '
+show_archived_items: Toon Gearchiveerde Items
 required: Vereist
+requires_value: Vereist waarde
+create_preset: Preset Aanmaken
 create_role: Maak rol
+create_user: Gebruiker Aanmaken
+create_webhook: Webhook Aanmaken
+invite_users: Gebruikers Uitnodigen
+email_examples: 'admin@example.nl, gebruiker@example.nl...'
+invite: Nodig uit
+emails: E-mails
+connection_excellent: Uitstekende Verbinding
+connection_good: Goede Verbinding
+connection_fair: Matige Verbinding
+connection_poor: Slechte Verbinding
+rename_folder: Mapnaam wijzigen
+delete_folder: Verwijder Map
+reset_bookmark: Reset Bladwijzer
+rename_bookmark: Hernoem Bladwijzer
+update_bookmark: Update Bladwijzer
 delete_bookmark: Verwijder Bladwijzer
+delete_bookmark_copy: >-
+  Weet je zeker dat je de bladwijzer "{bookmark}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+logoutReason:
+  SIGN_OUT: Uitgelogd
+  SESSION_EXPIRED: Sessie verlopen
+public: Openbaar
+public_description: Bepaalt welke data beschikbaar is in the API zonder in te loggen.
+not_allowed: Niet toegestaan
 directus_version: Directus Versie
+node_version: Node Versie
+node_uptime: Node Uptime
+os_type: OS Type
+os_version: OS Versie
+os_uptime: OS Uptime
+os_totalmem: OS Geheugen
+archive: Archiveren
+archive_confirm: Weet je zeker dat je dit item wilt archiveren?
+archive_confirm_count: >-
+  Geen Items Geselecteerd | Weet je zeker dat je dit item wilt archiveren? | Weet je zeker dat je deze {count} items wilt archiveren?
+reset_system_permissions: Reset Systeem Permissies
+reset_system_permissions_copy: Reset alle systeem permissies
+unarchive: Terugzetten
+unarchive_confirm: Weet je zeker dat je dit item wilt terugzetten?
+nested_files_folders_will_be_moved: Bestanden en mappen in deze map zullen een map omhoog worden geplaatst.
+unknown_validation_errors: 'Er waren validatie-fouten voor de volgende verborgen velden:'
+validationError:
+  eq: Waarde moet {valid} zijn
+  neq: Waarde kan niet {invalid} zijn
+  in: 'Waar moet een van de volgende zijn: {valid}'
+  nin: 'Waarde kan niet een van de volgende zijn: {invalid}'
+  contains: Waarde moet "{substring}" bevatten
+  ncontains: Waarde kan niet "{substring}" bevatten
+  gt: Waarde moet meer zijn dan {valid}
+  gte: Waarde moet meer zijn dan of gelijk zijn aan {valid}
+  lt: Waarde moet minder zijn dan {valid}
+  lte: Waarde moet minder zijn dan of gelijk zijn aan {valid}
+  empty: Waarde moet leeg zijn
+  nempty: Waarde kan niet leeg zijn
+  null: Waarde moet "null" zijn
+  nnull: Waarde kan niet "null" zijn
+  required: Waarde is vereist
+all_access: Alle toegang
+no_access: Geen toegang
+use_custom: Gebruik aangepaste
+item_permissions: Item Permissies
+field_permissions: Veld Permissies
+field_validation: Veld Validatie
+field_presets: Veld Presets
+permissions_for_role: 'Items die de rol "{role}" kan {action}.'
+fields_for_role: 'Velden die de rol "{role}" kan {action}.'
+validation_for_role: 'Veld {action} regels die de rol "{role}" moet gehoorzamen.'
+presets_for_role: 'Standaardwaarden voor de velden voor rol {role}.'
+presentation_and_aliases: Presentatie & Aliasen
+revision_post_update: Hier is hoe dit item eruit zag na de update...
+changes_made: Dit zijn de specifieke wijzigingen die zijn aangebracht...
+no_relational_data: Houd er rekening mee dat dit geen relationele gegevens omvat.
+hide_field_on_detail: Veld Verbergen
+show_field_on_detail: Veld Tonen
+delete_field: Veld Verwijderen
+fields_and_layout: Velden & Layout
+field_create_success: 'Veld aangemaakt: "{field}"'
+field_update_success: 'Veld bijgewerkt: "{field}"'
+duplicate_where_to: Waar wil je dit veld naar dupliceren?
 language: Taal
+global: Wereldwijd
+admins_have_all_permissions: Admins hebben alle permissies
+camera: Camera
+exposure: Exposure
+shutter: Sluitertijd
+iso: ISO
+focal_length: Brandpuntsafstand
+schema_setup_title: Hoe moet dit veld worden opgeslagen in de database?
+schema_field_title: Hoe moet dit veld zich gedragen in de app?
 create_field: Maak veld
+creating_new_field: 'Nieuw veld ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Pagina-voorkeuren resetten
+hidden_field: Verborgen veld
 hidden_on_detail: Verborgen op het detail scherm
+disabled_editing_value: Bewerken van waarde uitschakelen
+key: Key
 date: Datum
 decimal: Decimaal
 text: Tekst
@@ -27,13 +132,56 @@ notifications: Notificaties
 page_not_found: Pagina niet gevonden
 page_not_found_body: Deze pagina of item bestaat niet of is recentelijk verwijderd.
 display: Toon
+settings_update_success: Instellingen bijgewerkt
 title: Titel
+revision_delta_created: Aangemaakt
+revision_delta_created_externally: Extern aangemaakt
+revision_delta_updated: '1 veld bijgewerkt | {count} velden bijgewerkt'
 revision_delta_deleted: Verwijderd
+revision_delta_reverted: Teruggedraaid
+revision_delta_other: Revisie
+revision_delta_by: '{date} door {user}'
+private_user: Privé gebruiker
+revision_preview: Revisie voorbeeld
+updates_made: Gemaakte updates
 leave_comment: Plaats een reactie...
+post_comment_success: Reactie geplaatst
+item_create_success: Item Aangemaakt | Items Aangemaakt
+item_update_success: Item Bijgewerkt | Items Bijgewerkt
+item_delete_success: Item Verwijderd | Items Verwijderd
 this_collection: Deze collectie
 related_collection: Gerelateerde collecties
+related_collections: Gerelateerde collecties
+translations_collection: Vertalingen Collectie
+languages_collection: Talen Collectie
+export_data: Gegevens exporteren
 format: Format
+use_current_filters_settings: Gebruik huidige filters & instellingen
+export_collection: 'Exporteer {collection}'
+last_page: Laatste pagina
+last_access: Laatste toegang
+fill_template: Vul met sjabloonwaarde
+a_unique_table_name: Een unieke tabelnaam...
+a_unique_column_name: Een unieke kolomnaam...
+enable_custom_values: Aangepaste waarden inschakelen
 submit: Verstuur
+move_to_folder: Verplaats naar map
+move: Verplaatsen
+system: Systeem
+add_field_related: Veld toevoegen aan gerelateerde collectie
+interface: Interface
+today: Vandaag
+yesterday: Gisteren
+delete_comment: Reactie verwijderen
+date-fns_date: PPP
+date-fns_time: 'H:mm:ss'
+date-fns_time_no_seconds: 'H:mm'
+date-fns_date_short: 'd MMM u'
+date-fns_time_short: 'H:mm'
+date-fns_date_short_no_year: d MMM
+month: Maand
+year: Jaar
+select_all: Alles selecteren
 months:
   january: Januari
   february: Februari
@@ -47,17 +195,59 @@ months:
   october: Oktober
   november: November
   december: December
+drag_mode: Sleep modus
+cancel_crop: Annuleer bijsnijden
+original: Origineel
+url: URL
+import: Importeren
+file_details: Bestand Details
+dimensions: Afmetingen
 size: Grootte
+created: Aangemaakt
+modified: Aangepast
 checksum: Checksum
 owner: Eigenaar
+edited_by: Aangepast door
+folder: Map
+zoom: Zoom
 download: Downloaden
+open: Openen
+open_in_new_window: Openen in nieuw venster
+foreground_color: Voorgrondkleur
+background_color: Achtergrond kleur
+upload_from_device: Bestand uploaden van apparaat
+choose_from_library: Kies bestand uit de bibliotheek
+import_from_url: Importeer bestand van URL
+no_file_selected: Geen bestand geselecteerd
+download_file: Download bestand
+collection_key: Collectie Key
 name: Naam
+primary_key_field: Primary Key veld
+type: Type
+creating_new_collection: Nieuwe collectie aanmaken
 created_by: Aangemaakt door
 created_on: Aangemaakt op
+creating_collection_info: Geef de collectie een naam en stel het unieke "key" veld in...
+creating_collection_system: Schakel een van deze optionele velden in.
+auto_increment_integer: Auto-incremented integer
+generated_uuid: Gegenereerde UUID
+manual_string: Handmatig ingevoerde tekst
+save_and_create_new: Opslaan en nieuwe aanmaken
 save_and_stay: Sla op en blijf bewerken
 save_as_copy: Sla op als een kopie
+add_existing: Bestaande toevoegen
 comments: Reacties
+no_comments: Nog geen reacties
+click_to_expand: Klik om uit te breiden
+select_item: Selecteer Item
+no_items: Geen items
+disabled: Uitgeschakeld
+information: Informatie
+report_bug: Bug melden
 request_feature: Vraag nieuwe feature aan
+interface_not_found: 'Interface "{interface}" niet gevonden.'
+reset_interface: Interface resetten
+display_not_found: 'Display "{display}" niet gevonden.'
 item_count: 'Geen items | Één item | {count} items'
 create_collection: Maak collectie
 relationship_not_setup: De relatie is niet correct geconfigureerd
@@ -70,7 +260,18 @@ duration: Duur
 modified_on: Aangepast op
 sort_field: Sorteerveld
 edit: Wijzig
+errors:
+  ITEM_LIMIT_REACHED: Item limiet bereikt
+  ITEM_NOT_FOUND: Item niet gevonden
+  ROUTE_NOT_FOUND: Niet gevonden
+  UNKNOWN: Onverwachte fout
+value_hashed: Waarde veilig opgeslagen
+bookmark_name: Bladwijzer naam...
+create_bookmark: Bladwijzer aanmaken
+edit_bookmark: Bladwijzer bewerken
 bookmarks: Bladwijzers
+presets: Presets
+unexpected_error: Onverwachte fout
 back: Terug
 placeholder: Tijdelijke plaatshouder
 icon_left: Icoon links
@@ -91,13 +292,19 @@ display_template: Weergavesjabloon
 no_results: Geen resultaten
 role: Rol
 user: Gebruiker
+no_presets: Geen Voorkeuren
+no_presets_copy: Geen voorkeuren of bladwijzers.
+no_presets_cta: Voorkeur Aanmaken
 create: Maak
 on_update: Tijdens updaten
 read: Zichtbaar
 update: Updaten
 select_fields: Selecteer velden
 wysiwyg_options:
+  forecolor: Voorgrondkleur
+  backcolor: Achtergrond kleur
   remove: Verwijder
+  selectall: Alles selecteren
   table: Tabel
 dropdown: Keuzemenu
 choices: Keuzes
@@ -106,6 +313,8 @@ editing_in_batch: '{count} items aan het wijzigen'
 settings_permissions: Rollen & Permissies
 settings_project: Project Instellingen
 settings_webhooks: Webhooks
+settings_presets: Voorkeuren & Bladwijzers
+editing_preset: Voorkeur aan het Wijzigen
 unsaved_changes: Niet-opgeslagen wijzigingen
 unsaved_changes_copy: Weet je zeker dat je pagina wilt verlaten?
 discard_changes: Wijzigingen ongedaan maken
@@ -165,8 +374,10 @@ fields:
   directus_fields:
     note: Notitie
     hidden: Verborgen
+    translation: Veld-naam Vertalingen
     display_template: Sjabloon
   directus_roles:
+    name: Rol Naam
     description: Beschrijving
 comment: Reactie
 continue: Doorgaan
@@ -240,6 +451,8 @@ interfaces:
     files: Bestanden
   icon:
     icon: Icoon
+  interface:
+    interface: Interface
   interface-options:
     interface-options: Interface opties
   many-to-many:
