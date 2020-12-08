@@ -8,7 +8,7 @@
 </v-avatar>
 
 <v-avatar>
-	<v-icon name="person">
+	<v-icon name="person" />
 </v-avatar>
 ```
 
