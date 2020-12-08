@@ -2,44 +2,8 @@
 
 set -e
 
-function seed() {
-  # TODO: move users to a separate check, outside database installation
-  local show=false
-  local email=${DIRECTUS_ADMIN_EMAIL:-"admin@example.com"}
-  local password=${DIRECTUS_ADMIN_PASSWORD:-""}
-
-  if [ "${password}" == "" ] ; then
-    password=$(node -e 'console.log(require("nanoid").nanoid(12))')
-    show=true
-  fi
-
-  print --level=info "Creating administrator role"
-  local role=$(npx directus roles create --name Administrator --admin)
-
-  print --level=info "Creating administrator user"
-  local user=$(npx directus users create --email "${email}" --password "${password}" --role "${role}")
-
-  if [ "${show}" == "true" ] ; then
-    print --level=info --stdin <<MSG
->
->        Email: $email
->     Password: $password
->
-MSG
-  else
-    print --level=info --stdin <<MSG
->
->        Email: $email
->     Password: <env>
->
-MSG
-  fi
-}
-
 function bootstrap() {
   local warn=false
-
-  print --level=info "Initializing..."
 
   if [ "${KEY}" == "" ] ; then
     export KEY=$(uuidgen)
@@ -54,20 +18,20 @@ function bootstrap() {
   if [ "${warn}" == "true" ] ; then
     print --level=warn --stdin <<WARN
 >
->                      WARNING!
+>                         WARNING!
 >
->  The KEY and SECRET environment variables are not set.
-> Some temporar
-y variables were generated to fill the gap,
->   but in production this is going to cause problems.
+>  The KEY and SECRET environment variables are not set. Some
+>  temporary variables were generated to fill the gap, but in
+>        production this is going to cause problems.
 >
->  Please refer to the docs at https://docs.directus.io/
->       on how and why to configure them properly
+>                        Reference:
+> https://docs.directus.io/reference/environment-variables.html
+>
 >
 WARN
   fi
 
-  # Install database if using sqlite and file doesn't exist
+  # Create folder if using sqlite and file doesn't exist
   if [ "${DB_CLIENT}" == "sqlite3" ] ; then
     if [ "${DB_FILENAME}" == "" ] ; then
       print --level=error "Missing DB_FILENAME environment variable"
@@ -77,28 +41,9 @@ WARN
     if [ ! -f "${DB_FILENAME}" ] ; then
       mkdir -p $(dirname ${DB_FILENAME})
     fi
-  else
-    print --level=info "Checking database connection"
-    timeout ${DB_TIMEOUT:-"30"} bash -c 'until nc -z -w 1 "$0" $1; do sleep 1; done' "${DB_HOST}" ${DB_PORT}
-    #while ! nc -z -w 1 "${DB_HOST}" ${DB_PORT}; do
-    #  print --level=warn "Cannot connect to the database, waiting for the server."
-    #  sleep 1
-    #done
   fi
 
-  should_seed=false
-
-  set +e
-  npx directus database install &>/dev/null
-  if [ "$?" == "0" ] ; then
-    print --level=info "Database installed"
-    should_seed=true
-  fi
-  set -e
-
-  if [ "${should_seed}" == "true" ] ; then
-    seed
-  fi
+  npx directus database bootstrap
 }
 
 command=""
