@@ -277,6 +277,7 @@ on_update: Pós-alteração
 read: Leitura
 update: Alteração
 select_fields: Selecionar campos
+label: Rótulo
 wysiwyg_options:
   alignleft: Alinhar à esquerda
   alignright: Alinhar à direita
@@ -442,23 +443,36 @@ interfaces:
     collections: Coleções
   color:
     color: Cor
+    preset_colors_add_label: Adicionar nova cor...
   datetime:
     datetime: Data e Hora
+    use_24: Usar formato de 24 horas
   display-template:
     display-template: Modelo de exibição
   divider:
     divider: Divisor
     title_placeholder: Insira um título...
+    inline_title_label: Mostrar título dentro da linha
   dropdown:
     choices_placeholder: Adicionar uma nova escolha
     allow_other: Permitir Outros
+    allow_other_label: Permitir outros valores
+    allow_none: Permitir nenhum
+    allow_none_label: Permitir nenhuma seleção
+    choices_name_placeholder: Insira um nome...
     choices_value_placeholder: Insira um valor...
+  dropdown-multiselect:
+    dropdown-multiselect: Dropdown (Múltiplo)
   file:
     file: Arquivo
+    description: Selecione ou envie um arquivo
   files:
     files: Arquivos
+  hash:
+    masked_label: Ocultar os valores verdadeiros
   icon:
     icon: Ícone
+    search_for_icon: Procurar por um ícone...
   image:
     image: Imagem
   interface:
@@ -491,24 +505,33 @@ interfaces:
   repeater:
     repeater: Repetidor
     edit_fields: Editar campos
+    field_name_placeholder: Inserir nome do campo...
   slider:
     slider: Slider
   slug:
     slug: Slug
   tags:
     tags: Tags
+    whitespace: Espaço em branco
   text-input:
     text-input: Entrada de texto
     trim: Aparar
+    mask_label: Ocultar o valor real
   toggle:
     label_default: Habilitado
   translations:
     display_template: Modelo de exibição
+    no_collection: Nenhuma coleção
   user:
     user: Usuário
+    description: Selecione um usuário Directus existente
+    select_mode: Selecionar modo
     modes:
+      auto: Automático
       dropdown: Menu suspenso
   wysiwyg:
+    wysiwyg: WYSIWYG
+    toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
 displays:
   boolean:
@@ -527,6 +550,7 @@ displays:
     long: Longo
     short: Curto
     relative: Relativo
+    relative_label: 'Mostrar tempo relativo, por exemplo: 5 minutos atrás'
   file:
     file: Arquivo
     description: Exibir arquivos
@@ -537,22 +561,32 @@ displays:
     formatted-value: Valor formatado
     format_title: Formatar título
     bold_label: Usar estilo negrito
+  formatted-json-value:
+    formatted-json-value: Valor JSON formatado
   icon:
     icon: Ícone
     description: Exibir um ícone
     filled: Preenchido
+    filled_label: Usar a variante preenchida
   image:
     image: Imagem
+    circle_label: Exibir como um círculo
   labels:
     labels: Rótulos
+    default_background: Plano de fundo padrão
+    format_label: Formatar cada rótulo
+    show_as_dot: Mostrar como ponto
     choices_value_placeholder: Insira um valor...
     choices_text_placeholder: Insira um texto...
   mime-type:
+    mime-type: Tipo MIME
+    description: Mostrar o tipo MIME de um arquivo
     extension_only: Extensão apenas
     extension_only_label: Exibir apenas a extensão do arquivo
   rating:
     rating: Avaliação
     simple: Simples
+    simple_label: Mostrar estrelas em um formato simples
   raw:
     raw: Valor bruto
   related-values:
