@@ -191,7 +191,6 @@ title: Title
 revision_delta_created: Created
 revision_delta_created_externally: Created Externally
 revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
-revision_delta_soft_deleted: Soft Deleted
 revision_delta_deleted: Deleted
 revision_delta_reverted: Reverted
 revision_delta_other: Revision
@@ -671,7 +670,6 @@ fields:
     auth_login_attempts: Auth Login Attempts
     storage_asset_presets: Storage Asset Presets
     storage_asset_transform: Storage Asset Transform
-    telemetry: Telemetry
   directus_fields:
     collection: Collection Name
     icon: Collection Icon
