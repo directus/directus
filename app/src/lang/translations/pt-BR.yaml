@@ -1,9 +1,35 @@
 ---
+edit_field: Editar campo
+duplicate_field: Campo duplicado
+half_width: Meia largura
 full_width: Largura total
+fill_width: Preencher
+enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
+add_field: Adicionar Campo
+role_name: Nome do Cargo
 required: Obrigatório
 create_role: Criar Função
+create_user: Criar usuário
+create_webhook: Criar Webhook
+invite_users: Convidar Usuários
+invite: Convidar
+emails: Emails
+connection_excellent: Conexão excelente
+connection_good: Conexão boa
+connection_fair: Conexão razoável
+connection_poor: Conexão ruim
+rename_folder: Renomear Pasta
+delete_folder: Excluir Pasta
+reset_bookmark: Redefinir marcadores
+rename_bookmark: Renomear marcador
+update_bookmark: Atualizar Marcador
 delete_bookmark: Deletar Marcador
+delete_bookmark_copy: >-
+  Tem certeza que deseja deletar o marcador "{bookmark}"? Esta ação não pode ser desfeita.
+logoutReason:
+  SIGN_OUT: Deslogado
 directus_version: Versão do Directus
+unarchive: Desarquivar
 language: Idioma
 create_field: Criar Campo
 hidden_on_detail: Oculto em Detalhe
@@ -167,6 +193,7 @@ fields:
     hidden: Oculto
     display_template: Template
   directus_roles:
+    name: Nome do Cargo
     description: Descrição
 comment: Comentário
 continue: Continuar
