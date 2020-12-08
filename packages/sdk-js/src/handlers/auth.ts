@@ -62,6 +62,9 @@ export class AuthHandler {
 
 		if (this.mode === 'json') {
 			const refreshToken = await this.storage.getItem('directus_refresh_token');
+			if (!refreshToken){
+				return false;
+			}
 			payload['refresh_token'] = refreshToken;
 		}
 
@@ -83,6 +86,9 @@ export class AuthHandler {
 	async logout() {
 		await this.axios.post('/auth/logout');
 		this.token = null;
+		if (this.mode === 'json'){
+			this.storage.removeItem('directus_refresh_token');
+		}
 	}
 
 	password = {
