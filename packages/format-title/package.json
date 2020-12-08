@@ -29,7 +29,8 @@
     "prebuild": "rimraf dist",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts",
     "start": "rollup -c rollup.config.ts -w",
-    "prepublishOnly": "npm run build"
+	"prepublishOnly": "npm run build",
+	"lint": "eslint \"src/**/*.ts\""
   },
   "devDependencies": {
     "rimraf": "^3.0.2",

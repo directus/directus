@@ -47,7 +47,7 @@ export default function useSelection(
 		const selection = newSelection.reduce((acc, item) => {
 			if (selectedPrimaryKeys.value.includes(item) === false) acc.push({ [junctionField]: item });
 			return acc;
-		}, new Array());
+		}, [] as Record<string, any>[]);
 
 		const newVal = [...selection, ...(value.value || [])];
 		if (newVal.length === 0) emit(null);

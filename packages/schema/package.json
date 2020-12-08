@@ -7,9 +7,9 @@
   "scripts": {
     "build": "tsc --build && echo \"Built successfully\"",
     "prepare": "npm run build",
-    "lint": "prettier --check .",
     "test": "npm run lint && ts-mocha test/**/*.spec.ts",
-    "dev": "npm-watch build"
+    "dev": "npm-watch build",
+    "lint": "eslint \"src/**/*.ts\""
   },
   "watch": {
     "build": {

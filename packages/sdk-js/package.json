@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc",
     "test": "mocha -r ts-node/register/transpile-only -r source-map-support/register --recursive 'tests/**/*.ts'",
-    "coverage": "nyc npm test"
+    "coverage": "nyc npm test",
+    "lint": "eslint \"src/**/*.ts\""
   },
   "keywords": [
     "api",

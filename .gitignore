@@ -11,3 +11,4 @@ dist
 *.sublime-settings
 *.db
 .nyc_output
+/.idea/
