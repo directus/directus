@@ -1,25 +1,124 @@
 ---
+edit_field: Editar campo
+duplicate_field: Campo duplicado
+half_width: Meia largura
 full_width: Largura total
+fill_width: Preencher
+enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
+add_field: Adicionar Campo
+role_name: Nome do cargo
+db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar'
+show_archived_items: Mostrar itens arquivados
 required: Obrigatório
+requires_value: Requer valor
+create_preset: Criar predefinição
 create_role: Criar Função
+create_user: Criar usuário
+create_webhook: Criar Webhook
+invite_users: Convidar Usuários
+email_examples: 'admin@example.com, usuário@example.com...'
+invite: Convidar
+emails: Emails
+connection_excellent: Conexão excelente
+connection_good: Conexão boa
+connection_fair: Conexão razoável
+connection_poor: Conexão ruim
+rename_folder: Renomear Pasta
+delete_folder: Excluir Pasta
+reset_bookmark: Redefinir marcadores
+rename_bookmark: Renomear marcador
+update_bookmark: Atualizar Marcador
 delete_bookmark: Deletar Marcador
+delete_bookmark_copy: >-
+  Tem certeza que deseja deletar o marcador "{bookmark}"? Esta ação não pode ser desfeita.
+logoutReason:
+  SIGN_OUT: Deslogado
+  SESSION_EXPIRED: Sessão expirada
+public: Público
+not_allowed: Não permitido
 directus_version: Versão do Directus
+node_version: Versão Node
+node_uptime: Node Uptime
+os_type: Tipo de SO
+os_version: Versão do SO
+os_uptime: Uptime do SO
+os_totalmem: Memória do SO
+archive: Arquivar
+archive_confirm: Tem certeza de que deseja arquivar este item?
+archive_confirm_count: >-
+  Nenhum Item Selecionado | Tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
+reset_system_permissions: Redefinir permissões do sistema
+reset_system_permissions_copy: Redefinir todas as permissões do sistema para os padrões
+unarchive: Desarquivar
+unarchive_confirm: Tem certeza de que deseja desarquivar este item?
+nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos a um nível acima.
+unknown_validation_errors: 'Houve erros de validação para os seguintes campos ocultos:'
+validationError:
+  eq: O valor tem de ser {valid}
+  neq: O valor não pode ser {invalid}
+use_custom: Usar Personalizado
+changes_made: Estas são as mudanças específicas que foram feitas...
+no_relational_data: Tenha em mente que isso não inclui dados relacionais.
+hide_field_on_detail: Ocultar Campo em Detalhes
+show_field_on_detail: Exibir Campo em Detalhes
+delete_field: Excluir campo
+fields_and_layout: Campos e Layout
 language: Idioma
+global: Global
+admins_have_all_permissions: Administradores têm todas as permissões
+camera: Câmera
+exposure: Exposição
+shutter: Obturador
+focal_length: Distância focal
 create_field: Criar Campo
+hidden_field: Campo oculto
 hidden_on_detail: Oculto em Detalhe
+disabled_editing_value: Desativar edição do valor
+key: Chave
+alias: Alias
+bigInteger: Big Integer
+boolean: Boolean
 date: Data
+datetime: DateTime
 decimal: Decimal
+float: Float
+integer: Integer
+json: JSON
+string: String
 text: Texto
 time: Hora
+timestamp: Timestamp
+uuid: UUID
+not_available_for_type: Não disponível para este tipo
+create_translations: Criar Traduções
 auto_generate: Gerar automaticamente
+this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
+click_here: Clique aqui
+click_to_manage_translated_fields: >-
+  Ainda não há campos traduzidos. Clique aqui para criá-los. | Há um campo traduzido. Clique aqui para gerenciá-lo. | Há {count} campos traduzidos. Clique aqui para gerenciá-los.
+fields_group: Grupo de Campos
+choose_a_type: Escolha um tipo...
+determined_by_relationship: Determinado por Relacionamento
 add_note: Crie uma nota de ajuda para os usuários...
 default_value: Valor padrão
+add_a_default_value: Adicionar um valor padrão...
+display_setup_title: Como o valor deste campo deve ser exibido?
+standard_field: Campo Padrão
+single_file: Arquivo único
+multiple_files: Múltiplos arquivos
 next: Próximo
+field_name: Nome do campo
+translations: Traduções
 note: Nota
+enter_a_value: Insira um valor...
+enter_a_placeholder: Adicionar um placeholder...
 length: Comprimento
+precision_scale: Precisão e Escala
 readonly: Leitura apenas
 unique: Único
 primary_key: Chave primária
+finish_setup: Concluir a instalação
+dismiss: Dispensar
 clear_value: Limpar valor
 reset_to_default: Redefinir para o padrão
 undo_changes: Desfazer alterações
@@ -34,6 +133,9 @@ this_collection: Esta coleção
 related_collection: Coleções relacionadas
 format: Formato
 submit: Enviar
+month: Mês
+year: Ano
+select_all: Selecionar todos
 months:
   january: Janeiro
   february: Fevereiro
@@ -47,31 +149,92 @@ months:
   october: Outubro
   november: Novembro
   december: Dezembro
+drag_mode: Modo de arrastar
+cancel_crop: Cancelar Recorte
+original: Original
+url: URL
+import: Importar
+file_details: Detalhes do Arquivo
+dimensions: Dimensões
 size: Tamanho
+modified: Modificado
 checksum: Checksum
 owner: Proprietário
+edited_by: Editado por
+folder: Pasta
+zoom: Zoom
 download: Download
+open: Abrir
+open_in_new_window: Abrir em nova janela
+foreground_color: Cor da fonte
+background_color: Cor de fundo
+upload_from_device: Carregar do dispositivo
+choose_from_library: Selecionar a partir da biblioteca
+import_from_url: Importar arquivo de URL
+no_file_selected: Nenhum arquivo selecionado
+download_file: Baixar arquivo
+collection_key: Chave da coleção
 name: Nome
+type: Tipo
 created_by: Criado por
 created_on: Criado em
+generated_uuid: UUID gerado
 save_and_stay: Salvar e manter aqui
 save_as_copy: Salvar e Copiar
+add_existing: Adicionar existente
 comments: Comentários
+no_comments: Nenhum comentário ainda
+click_to_expand: Clique para expandir
+select_item: Selecionar item
+no_items: Nenhum item
+disabled: Desabilitado
+information: Informação
+report_bug: Relatar erro
 request_feature: Pedir funcionalidade
+reset_display: Redefinir Exibição
 item_count: 'Sem Itens | Um Item | {count} Itens'
+no_webhooks_copy: Ainda não possui Webhooks.
+csv: CSV
 create_collection: Criar Coleção
 relationship_not_setup: O relacionamento não foi configurado corretamente
+active: Ativo
 users: Usuários
 activity: Atividade
 webhooks: Webhooks
 field_width: Largura do campo
+add_a_new_item: Novo item...
+add_filter: Adicionar filtro
+upper_limit: Limite superior...
+lower_limit: Limite inferior...
 user_directory: Usuários
+documentation: Documentação
+sidebar: Barra lateral
 duration: Duração
+charset: Codificação de caracteres
+file_moved: Arquivo movido
 modified_on: Modificado em
 sort_field: Campo de ordenação
+select_an_item: Selecione um item...
 edit: Editar
+enabled: Habilitado
+disable_tfa: Desativar verificação em duas etapas
+auto_fill: Preench. automático
+errors:
+  ITEM_NOT_FOUND: Item não encontrado
+  ROUTE_NOT_FOUND: Não encontrado
+edit_bookmark: Editar marcador
 bookmarks: Favoritos
+copy_details: Copiar detalhes
+password_reset_successful: Senha redefinida com sucesso
 back: Voltar
+free: Livre
+delete_collection: Excluir coleção
+update_collection_success: Coleção atualizada
+delete_collection_success: Coleção excluída
+start_end_of_count_items: '{start}-{end} de {count} itens'
+delete_collection_are_you_sure: >-
+  Tem certeza que deseja excluir esta coleção? Isto irá apagar a coleção e todos os itens nela. Esta ação é permanente.
+collections_shown: Coleções mostradas
 placeholder: Placeholder
 icon_left: Ícone à Esquerda
 icon_right: Ícone à Direita
@@ -87,8 +250,26 @@ operators:
   ncontains: Não contém
   empty: Está vazio
 loading: Carregando...
+drop_to_upload: Solte para enviar
+upload_file_success: Arquivo enviado
+upload_files_indeterminate: 'Enviando arquivos {done}/{total}'
+upload_files_success: '{count} arquivos enviados'
+layout_options: Opções de Layout
+value_unique: O valor deve ser único
+all_activity: Todas as atividades
+create_item: Criar item
 display_template: Modelo de exibição
+n_items_selected: 'Não há itens selecionados | 1 item selecionado | {n} itens selecionados'
+per_page: Por página
+all_files: Todos os arquivos
+my_files: Meus arquivos
+recent_files: Arquivos recentes
+create_folder: Criar pasta
+folder_name: Nome da pasta...
+add_file: Adicionar arquivo
+replace_file: Substituir arquivo
 no_results: Sem resultados
+no_results_copy: Ajuste ou limpe os filtros de busca para ver resultados.
 role: Função
 user: Usuário
 create: Criar
@@ -96,9 +277,37 @@ on_update: Pós-alteração
 read: Leitura
 update: Alteração
 select_fields: Selecionar campos
+label: Rótulo
 wysiwyg_options:
+  alignleft: Alinhar à esquerda
+  alignright: Alinhar à direita
+  forecolor: Cor da fonte
+  backcolor: Cor de fundo
+  italic: Itálico
+  underline: Sublinhado
+  strikethrough: Tachado
+  blockquote: Bloco de citação
+  bullist: Lista de itens
+  numlist: Lista numerada
+  link: Adicionar Link
+  unlink: Excluir Link
+  media: Adicionar mídia
+  image: Adicionar Imagem
+  copy: Copiar
+  cut: Recortar
+  paste: Colar
+  h1: Cabeçalho 1
+  h2: Cabeçalho 2
+  h3: Cabeçalho 3
+  h4: Cabeçalho 4
+  h5: Cabeçalho 5
+  h6: Cabeçalho 6
+  fontselect: Selecionar fonte
+  fontsizeselect: Selecionar tamanho da fonte
   remove: Remover
+  selectall: Selecionar todos
   table: Tabela
+  fullscreen: Tela cheia
 dropdown: Menu suspenso
 choices: Escolhas
 deselect: Desmarcar
@@ -117,6 +326,8 @@ batch_delete_confirm: >-
 cancel: Cancelar
 collection: Coleção
 collections: Coleções
+singleton_label: Tratar como objeto único
+system_fields_locked: Os campos do sistema estão bloqueados e não podem ser editados
 fields:
   directus_activity:
     action: Ação
@@ -162,11 +373,13 @@ fields:
     tfa_secret: Autenticação em Duas Etapas
   directus_settings:
     project_name: Nome do projeto
+    project_logo: Logotipo do projeto
   directus_fields:
     note: Nota
     hidden: Oculto
     display_template: Template
   directus_roles:
+    name: Nome do cargo
     description: Descrição
 comment: Comentário
 continue: Continuar
@@ -191,6 +404,7 @@ latency: Latência
 login: Entrar
 my_activity: Minha Atividade
 not_authenticated: Não autenticado
+authenticated: Autenticado
 options: Opções
 otp: Senha de uso único
 password: Senha
@@ -198,6 +412,7 @@ permissions: Permissões
 relationship: Relacionamento
 reset: Redefinir
 reset_password: Recuperar senha
+revisions: Revisões
 revert: Reverter
 save: Salvar
 schema: Esquema
@@ -217,6 +432,8 @@ interfaces:
   checkboxes:
     checkboxes: Caixas de Seleção
     allow_other: Permitir Outros
+    show_more: 'Exibir mais {count}'
+    items_shown: Itens mostrados
   code:
     code: Código
     line_number: Número da Linha
@@ -226,20 +443,40 @@ interfaces:
     collections: Coleções
   color:
     color: Cor
+    preset_colors_add_label: Adicionar nova cor...
   datetime:
     datetime: Data e Hora
+    use_24: Usar formato de 24 horas
   display-template:
     display-template: Modelo de exibição
   divider:
     divider: Divisor
+    title_placeholder: Insira um título...
+    inline_title_label: Mostrar título dentro da linha
   dropdown:
+    choices_placeholder: Adicionar uma nova escolha
     allow_other: Permitir Outros
+    allow_other_label: Permitir outros valores
+    allow_none: Permitir nenhum
+    allow_none_label: Permitir nenhuma seleção
+    choices_name_placeholder: Insira um nome...
+    choices_value_placeholder: Insira um valor...
+  dropdown-multiselect:
+    dropdown-multiselect: Dropdown (Múltiplo)
   file:
     file: Arquivo
+    description: Selecione ou envie um arquivo
   files:
     files: Arquivos
+  hash:
+    masked_label: Ocultar os valores verdadeiros
   icon:
     icon: Ícone
+    search_for_icon: Procurar por um ícone...
+  image:
+    image: Imagem
+  interface:
+    placeholder: Selecione uma interface...
   interface-options:
     interface-options: Opções de Interface
   many-to-many:
@@ -251,56 +488,124 @@ interfaces:
     markdown: Markdown
     edit: Editar
     preview: Pré-visualizar
+  notice:
+    notice: Aviso
+    description: Mostrar um breve aviso
+    text: Digite o conteúdo do aviso aqui...
   numeric:
     numeric: Numérico
+    description: Digite um número
+    minimum_value: Valor mínimo
+    maximum_value: Valor máximo
+    step_interval: Intervalo dos passos
   one-to-many:
     one-to-many: Um-para-muitos (1 para N)
   radio-buttons:
     radio-buttons: Botões de radio
   repeater:
     repeater: Repetidor
+    edit_fields: Editar campos
+    field_name_placeholder: Inserir nome do campo...
   slider:
     slider: Slider
   slug:
     slug: Slug
   tags:
     tags: Tags
+    whitespace: Espaço em branco
   text-input:
     text-input: Entrada de texto
     trim: Aparar
+    mask_label: Ocultar o valor real
+  toggle:
+    label_default: Habilitado
   translations:
     display_template: Modelo de exibição
+    no_collection: Nenhuma coleção
   user:
     user: Usuário
+    description: Selecione um usuário Directus existente
+    select_mode: Selecionar modo
     modes:
+      auto: Automático
       dropdown: Menu suspenso
   wysiwyg:
+    wysiwyg: WYSIWYG
+    toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
 displays:
+  boolean:
+    boolean: Boolean
   collection:
     collection: Coleção
+    description: Exibir uma coleção
+    icon_label: Exibir o ícone da coleção
   color:
     color: Cor
+    description: Exibir um ponto colorido
+    default_color: Cor padrão
   datetime:
     datetime: Data e Hora
     format: Formato
+    long: Longo
+    short: Curto
+    relative: Relativo
+    relative_label: 'Mostrar tempo relativo, por exemplo: 5 minutos atrás'
   file:
     file: Arquivo
+    description: Exibir arquivos
   filesize:
     filesize: Tamanho de Arquivo
+    description: Exibe o tamanho de um arquivo
+  formatted-value:
+    formatted-value: Valor formatado
+    format_title: Formatar título
+    bold_label: Usar estilo negrito
+  formatted-json-value:
+    formatted-json-value: Valor JSON formatado
   icon:
     icon: Ícone
+    description: Exibir um ícone
+    filled: Preenchido
+    filled_label: Usar a variante preenchida
+  image:
+    image: Imagem
+    circle_label: Exibir como um círculo
+  labels:
+    labels: Rótulos
+    default_background: Plano de fundo padrão
+    format_label: Formatar cada rótulo
+    show_as_dot: Mostrar como ponto
+    choices_value_placeholder: Insira um valor...
+    choices_text_placeholder: Insira um texto...
+  mime-type:
+    mime-type: Tipo MIME
+    description: Mostrar o tipo MIME de um arquivo
+    extension_only: Extensão apenas
+    extension_only_label: Exibir apenas a extensão do arquivo
   rating:
     rating: Avaliação
+    simple: Simples
+    simple_label: Mostrar estrelas em um formato simples
+  raw:
+    raw: Valor bruto
+  related-values:
+    related-values: Valores Relacionados
+    description: Exibir valores relativos
   user:
     user: Usuário
+    description: Exibe um usuário do Directus
     avatar: Imagem de Perfil
     name: Nome
     both: Ambos
+    circle_label: Exibir usuário em um círculo
 layouts:
   cards:
     cards: Cartões
     image_source: Fonte da Imagem
+    image_fit: Ajustar Imagem
+    crop: Recortar
+    contain: Conter
     title: Título
     subtitle: Subtítulo
   tabular:

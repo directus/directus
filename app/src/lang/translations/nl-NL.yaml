@@ -299,19 +299,68 @@ request_feature: Vraag nieuwe feature aan
 interface_not_found: 'Interface "{interface}" niet gevonden.'
 reset_interface: Interface resetten
 display_not_found: 'Display "{display}" niet gevonden.'
+reset_display: Reset Display
+m2a_builder: Bouwer (M2A)
 item_count: 'Geen items | Één item | {count} items'
+no_items_copy: Er zijn nog geen items in deze collectie.
+file_count: 'Geen bestanden | Één Bestand | {count} bestanden'
+no_files_copy: Er zijn geen bestanden hier.
+user_count: 'Geen gebruikers | Één gebruiker | {count} gebruikers'
+no_users_copy: Er zijn nog geen gebruikers in deze rol.
+webhooks_count: 'Geen webhooks | 1 Webhook | {count} Webhooks'
+no_webhooks_copy: Er zijn nog geen webhooks.
+all_items: Alle items
+csv: CSV
+no_collections: Geen collecties
 create_collection: Maak collectie
+no_collections_copy_admin: Je hebt nog geen Collecties. Klik op de knop hieronder om te beginnen.
+no_collections_copy: Je hebt nog geen collecties. Neem contact op met je systeembeheerder.
 relationship_not_setup: De relatie is niet correct geconfigureerd
+display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
+collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
+select_a_collection: Selecteer een collectie
+active: Actief
 users: Gebruikers
 activity: Activiteit
 webhooks: Webhooks
 field_width: Veld breedte
+add_a_new_item: Nieuw item toevoegen...
+add_filter: Filter toevoegen
+upper_limit: Bovengrens...
+lower_limit: Lagere limiet...
 user_directory: Gebruikers
+documentation: Documentatie
+sidebar: Sidebar
 duration: Duur
+charset: Karakterset
+second: Seconde
+file_moved: Bestand verplaatst
+collection_created: Collectie aangemaakt
 modified_on: Aangepast op
+card_size: Kaart grootte
 sort_field: Sorteerveld
+toggle_manual_sorting: Activeer handmatige volgorde
+bookmark_doesnt_exist: Bladwijzer bestaat niet
+bookmark_doesnt_exist_copy: De bladwijzer die je probeert te openen kon niet worden gevonden.
+bookmark_doesnt_exist_cta: Terug naar de collectie
+select_an_item: Selecteer een item...
 edit: Wijzig
+enabled: Ingeschakeld
+disable_tfa: 2FA uitzetten
+tfa_scan_code: Scan de code in uw authenticatie-app om de instelling van 2FA te voltooien
+enter_otp_to_disable_tfa: Voer de OTP in om 2FA uit te schakelen
+create_account: Account aanmaken
+account_created_successfully: Account succesvol aangemaakt
+auto_fill: Automatisch vullen
+corresponding_field: Corresponderende veld
 errors:
+  COLLECTION_NOT_FOUND: "Collectie bestaat niet"
+  FIELD_NOT_FOUND: Veld niet gevonden
+  FORBIDDEN: Verboden
+  INVALID_CREDENTIALS: Verkeerde gebruikersnaam of wachtwoord
+  INVALID_OTP: Verkeerd eenmalig wachtwoord
+  INVALID_PAYLOAD: Invalid payload
+  INVALID_QUERY: Ongeldige zoekopdracht
   ITEM_LIMIT_REACHED: Item limiet bereikt
   ITEM_NOT_FOUND: Item niet gevonden
   ROUTE_NOT_FOUND: Niet gevonden
@@ -555,6 +604,8 @@ fields:
     ip: IP Adres
     user_agent: User Agent
     comment: Reactie
+  directus_collections:
+    translations: Collectie-naam vertalingen
   directus_files:
     title: Titel
     tags: Tags
@@ -588,8 +639,20 @@ fields:
     tfa_secret: 2FA (Twee-Factor Authenticatie)
   directus_settings:
     project_name: Project Naam
+    project_url: Project URL
+    project_color: Project kleur
+    project_logo: Project logo
+    public_foreground: Openbare voorgrond
+    public_background: Openbare achtergrond
+    public_note: Openbare notitie
+    auth_password_policy: Wachtwoordbeleid
+    auth_idle_timeout: Idle Time-out
+    auth_login_attempts: Login pogingen
     storage_asset_presets: Bestand Voorkeuren
+    storage_asset_transform: Storage Asset Transform
   directus_fields:
+    collection: Collectie naam
+    icon: Collectie Icoon
     note: Notitie
     hidden: Verborgen
     singleton: Singleton
@@ -597,11 +660,31 @@ fields:
     display_template: Sjabloon
   directus_roles:
     name: Rol Naam
+    icon: Rol Icoon
     description: Beschrijving
+    ip_access: IP Toegang
+    app_access: App toegang
+    admin_access: Admin toegang
+    enforce_tfa: 2FA vereist
+    users: Gebruikers in rol
+    module_list: Module Navigatie
+    collection_list: Collectie navigatie
+no_fields_in_collection: 'Er zijn nog geen velden in "{collection}"'
+do_nothing: Niets doen
+generate_and_save_uuid: Genereer een UUID
+save_current_user_id: Huidige gebruikers-ID opslaan
+save_current_user_role: Huidige gebruikersrol opslaan
+save_current_datetime: Huidige datum/tijd opslaan
 comment: Reactie
 continue: Doorgaan
+continue_as: >-
+  <b>{name}</b> is momenteel ingelogd. Als je dit account herkent, druk dan op 'Doorgaan'.
+editing_role: '{role} Rol'
+creating_webhook: Webhook Aanmaken
 default: Standaard
 delete: Verwijder
+delete_are_you_sure: >-
+  Deze actie is permanent en kan niet ongedaan worden gemaakt. Weet u zeker dat u wilt doorgaan?
 delete_field_are_you_sure: >-
   Weet je zeker dat je het {field} veld wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
 description: Beschrijving
@@ -609,6 +692,7 @@ done: Klaar
 duplicate: Dupliceer
 email: Email
 embed: Insluiten
+fallback_icon: Standaard Icoon
 field: Veld | Velden
 file: Bestand
 file_library: Bestandsbibliotheek
@@ -616,11 +700,16 @@ forgot_password: Wachtwoord vergeten
 hidden: Verborgen
 icon: Icoon
 info: Info
+normal: Normaal
+success: Geslaagd
+warning: Waarschuwing
+danger: Gevaar
 junction_collection: Verbindingscollectie
 latency: Vertraging
 login: Log in
 my_activity: Mijn Activiteit
 not_authenticated: Niet Ingelogd
+authenticated: Ingelogd
 options: Opties
 otp: Eenmalig wachtwoord
 password: Wachtwoord
@@ -628,11 +717,13 @@ permissions: Permissies
 relationship: Relatie
 reset: Reset
 reset_password: Reset wachtwoord
+revisions: Revisies
 revert: Terugzetten
 save: Sla op
 schema: Schema
 search: Zoek
 select_existing: Selecteer bestaande
+select_field_type: Selecteer een veldtype
 select_interface: Kies een interface
 settings: Instellingen
 sign_in: Log in
@@ -643,19 +734,32 @@ sort_direction: Sorteerrichting
 template: Sjabloon
 translation: Vertaling
 value: Waarde
+view_project: Bekijk project
+weeks: { }
+report_error: Rapporteer fout
 interfaces:
   checkboxes:
     checkboxes: Vinkjes
+    description: Kies tussen meerdere opties via selectievakjes
     allow_other: Andere toestaan
+    show_more: 'Toon {count} meer'
+    items_shown: Items weergegeven
   code:
     code: Code
+    description: Schrijf of deel code snippets
     line_number: Regelnummer
+    placeholder: Voer code in...
   collection:
     collection: Collectie
+    description: Selecteer tussen bestaande collecties
+    include_system_collections: Toon systeem collecties
   collections:
     collections: Collecties
+    description: Selecteer tussen bestaande collecties
+    include_system_collections: Toon systeem collecties
   color:
     color: Kleur
+    description: Voer in of selecteer een kleurwaarde
     placeholder: Kies een kleur...
     preset_colors: Voorafbepaalde kleuren
     preset_colors_add_label: Nieuwe kleur toevoegen...
@@ -670,6 +774,8 @@ interfaces:
     display-template: Weergavesjabloon
     description: Mix statische tekst en dynamische veld waarden
     collection_field: Collectie veld
+    collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
+    select_a_collection: Selecteer een collectie
   divider:
     divider: Scheidingslijn
     description: Label en verdeel velden in secties
@@ -786,6 +892,7 @@ interfaces:
     toggle: Schakel
     description: Schakel tussen aan en uit
     label_placeholder: Voer een label in...
+    label_default: Ingeschakeld
   translations:
     display_template: Weergavesjabloon
     no_collection: Geen collectie
@@ -830,6 +937,8 @@ displays:
     format_note: >-
       Het aangepaste formaat werkt met de __[Date Field Symbols](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Lang
+    short: Kort
+    relative: Relatief
     relative_label: 'Relatieve tijd tonen, bijvoorbeeld 5 minuten geleden'
   file:
     file: Bestand
@@ -841,6 +950,7 @@ displays:
     formatted-value: Opgemaakte waarde
     description: Een geformatteerde versie van de tekst weergeven
     format_title: Formatteer titel
+    format_title_label: Fix hoofdletters automatisch
     bold_label: Gebruik bold
   formatted-json-value:
     formatted-json-value: Geformatteerde JSON waarde

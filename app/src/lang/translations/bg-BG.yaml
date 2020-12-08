@@ -1,5 +1,31 @@
 ---
+edit_field: Редактиране на поле
+duplicate_field: Дублиране на поле
+half_width: Половин ширина
 full_width: Пълна ширина
+fill_width: Изпълване
+field_name_translations: Превод на имената на полетата
+enter_password_to_enable_tfa: Въвеждане на парола за активиране на двуфакторната автентикация
+add_field: Добавяне на поле
+role_name: Име на роля
+db_only_click_to_configure: 'Само в базата данни: Кликнете за конфигурация '
+required: Задължително
+requires_value: Изисквана стойност
+create_preset: Създаване на шаблон
+create_role: Създаване на роля
+create_webhook: Създаване на уеб-кука
+invite_users: Поканване на потребители
+email_examples: 'admin@example.com, potrebitel@example.com...'
+invite: Покана
+connection_excellent: Отлична свързаност
+connection_good: Добра свързаност
+connection_fair: Връзката е приемлива
+connection_poor: Връзката е лоша
+rename_folder: Преименуване на папка
+delete_folder: Изтриване на папка
+reset_bookmark: Нулиране на отметки
+rename_bookmark: Преименуване на отметка
+update_bookmark: Обновяване на отметка
 delete_bookmark: Изтрий отметка
 directus_version: Версия на Directus
 language: Език
@@ -130,8 +156,10 @@ fields:
   directus_fields:
     note: Бележка
     hidden: Скрити
+    translation: Превод на имената на полетата
     display_template: Шаблон
   directus_roles:
+    name: Име на роля
     description: Описание
 comment: Кометнар
 default: По подразбиране

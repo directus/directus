@@ -4,6 +4,29 @@ required: Erforderlich
 create_role: Rolle erstellen
 delete_bookmark: Lesezeichen löschen
 directus_version: Directus Version
+reset_system_permissions_copy: Setzen Sie alle Systemberechtigungen auf die Standardeinstellungen zurück
+unarchive: Archivierung zurücksetzen
+unarchive_confirm: Sind Sie sicher, dass das Item aus dem Archiv zurückgeholt werden soll?
+nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene höher gesetzt.
+unknown_validation_errors: 'Es gab Validierungsfehler für folgende verstecke Felder:'
+validationError:
+  eq: Der Wert muss {valid} sein
+  gte: Der Wert muss größer oder gleich {valid} sein
+  lt: Der Wert muss kleiner als {valid} sein
+  lte: Der Wert muss kleiner oder gleich {valid} sein
+  empty: Der Wert muss leer sein
+  nempty: Der Wert darf nicht leer sein
+  null: Der Wert muss leer sein
+  nnull: Der Wert darf nicht leer sein
+  required: Wert erforderlich
+all_access: Zugriff auf alles
+no_access: Kein Zugriff
+use_custom: Benutzerdefiniert
+item_permissions: Item Berechtigungen
+field_permissions: Feldberechtigungen
+field_validation: Feldüberprüfung
+field_presets: Feldvorgaben
+permissions_for_role: 'Items die {role} Rolle kann {action}.'
 language: Sprache
 create_field: Feld erstellen
 hidden_on_detail: In Detailansicht ausblenden
