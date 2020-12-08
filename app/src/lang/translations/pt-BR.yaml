@@ -6,12 +6,13 @@ full_width: Largura total
 fill_width: Preencher
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
 add_field: Adicionar Campo
-role_name: Nome do Cargo
+role_name: Nome do cargo
 required: Obrigatório
 create_role: Criar Função
 create_user: Criar usuário
 create_webhook: Criar Webhook
 invite_users: Convidar Usuários
+email_examples: 'admin@example.com, usuário@example.com...'
 invite: Convidar
 emails: Emails
 connection_excellent: Conexão excelente
@@ -28,21 +29,57 @@ delete_bookmark_copy: >-
   Tem certeza que deseja deletar o marcador "{bookmark}"? Esta ação não pode ser desfeita.
 logoutReason:
   SIGN_OUT: Deslogado
+  SESSION_EXPIRED: Sessão expirada
+not_allowed: Não permitido
 directus_version: Versão do Directus
+node_version: Versão Node
+node_uptime: Node Uptime
+os_type: Tipo de SO
+os_version: Versão do SO
+os_uptime: Uptime do SO
+os_totalmem: Memória do SO
+archive: Arquivar
+archive_confirm: Tem certeza de que deseja arquivar este item?
+archive_confirm_count: >-
+  Nenhum Item Selecionado | Tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
+reset_system_permissions: Redefinir permissões do sistema
+reset_system_permissions_copy: Redefinir todas as permissões do sistema para os padrões
 unarchive: Desarquivar
+unarchive_confirm: Tem certeza de que deseja desarquivar este item?
+nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos a um nível acima.
+unknown_validation_errors: 'Houve erros de validação para os seguintes campos ocultos:'
+validationError:
+  eq: O valor tem de ser {valid}
+  neq: O valor não pode ser {invalid}
+delete_field: Excluir campo
 language: Idioma
+global: Global
+camera: Câmera
+exposure: Exposição
+shutter: Obturador
 create_field: Criar Campo
+hidden_field: Campo oculto
 hidden_on_detail: Oculto em Detalhe
+disabled_editing_value: Desativar edição do valor
+key: Chave
 date: Data
 decimal: Decimal
+json: JSON
 text: Texto
 time: Hora
+uuid: UUID
+not_available_for_type: Não disponível para este tipo
+create_translations: Criar Traduções
 auto_generate: Gerar automaticamente
+click_here: Clique aqui
 add_note: Crie uma nota de ajuda para os usuários...
 default_value: Valor padrão
 next: Próximo
+field_name: Nome do campo
 note: Nota
+enter_a_value: Insira um valor...
 length: Comprimento
+precision_scale: Precisão e Escala
 readonly: Leitura apenas
 unique: Único
 primary_key: Chave primária
@@ -193,7 +230,7 @@ fields:
     hidden: Oculto
     display_template: Template
   directus_roles:
-    name: Nome do Cargo
+    name: Nome do cargo
     description: Descrição
 comment: Comentário
 continue: Continuar
@@ -261,6 +298,7 @@ interfaces:
     divider: Divisor
   dropdown:
     allow_other: Permitir Outros
+    choices_value_placeholder: Insira um valor...
   file:
     file: Arquivo
   files:
@@ -306,28 +344,61 @@ interfaces:
 displays:
   collection:
     collection: Coleção
+    description: Exibir uma coleção
+    icon_label: Exibir o ícone da coleção
   color:
     color: Cor
+    description: Exibir um ponto colorido
+    default_color: Cor padrão
   datetime:
     datetime: Data e Hora
     format: Formato
+    long: Longo
+    short: Curto
+    relative: Relativo
   file:
     file: Arquivo
+    description: Exibir arquivos
   filesize:
     filesize: Tamanho de Arquivo
+    description: Exibe o tamanho de um arquivo
+  formatted-value:
+    formatted-value: Valor formatado
+    format_title: Formatar título
+    bold_label: Usar estilo negrito
   icon:
     icon: Ícone
+    description: Exibir um ícone
+    filled: Preenchido
+  labels:
+    labels: Rótulos
+    choices_value_placeholder: Insira um valor...
+    choices_text_placeholder: Insira um texto...
+  mime-type:
+    extension_only: Extensão apenas
+    extension_only_label: Exibir apenas a extensão do arquivo
   rating:
     rating: Avaliação
+    simple: Simples
+  raw:
+    raw: Valor bruto
+  related-values:
+    related-values: Valores Relacionados
+    description: Exibir valores relativos
   user:
     user: Usuário
+    description: Exibe um usuário do Directus
     avatar: Imagem de Perfil
     name: Nome
     both: Ambos
+    circle_label: Exibir usuário em um círculo
 layouts:
   cards:
     cards: Cartões
     image_source: Fonte da Imagem
+    image_fit: Ajustar Imagem
+    crop: Recortar
+    contain: Conter
     title: Título
     subtitle: Subtítulo
   tabular:
