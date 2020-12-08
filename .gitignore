@@ -1,6 +1,6 @@
 .DS_Store
 node_modules
-.vs_code
+.vscode
 .env
 .secrets
 npm-debug.log
