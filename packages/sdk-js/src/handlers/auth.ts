@@ -65,6 +65,7 @@ export class AuthHandler {
 			if (!refreshToken){
 				return false;
 			}
+			this.storage.removeItem('directus_refresh_token');
 			payload['refresh_token'] = refreshToken;
 		}
 
