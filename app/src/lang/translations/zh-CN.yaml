@@ -1,0 +1,312 @@
+---
+full_width: 全宽
+required: 必填
+create_role: 创建角色
+delete_bookmark: 删除书签
+directus_version: Directus 版本
+language: 语言
+create_field: 创建字段
+hidden_on_detail: 隐藏于详情
+date: 日期
+decimal: 十进制
+text: 文字
+time: 时间
+auto_generate: 自动生成
+add_note: 为用户添加有用的注释...
+default_value: 默认值
+next: 下一条
+note: 注解
+length: 长度
+readonly: 只读
+unique: 唯一
+primary_key: 主键
+clear_value: 清除值
+reset_to_default: 重置为默认值
+undo_changes: 撤销更改
+notifications: 通知
+page_not_found: 找不到页面
+page_not_found_body: 您正在寻找的页面似乎不存在。
+display: 显示
+title: 标题
+revision_delta_deleted: 已删除
+leave_comment: 留下注释...
+this_collection: 此集合
+related_collection: 相关集合
+format: 格式
+submit: 提交
+months:
+  january: 1 月
+  february: 2 月
+  march: 3 月
+  april: 4 月
+  may: 5 月
+  june: 6 月
+  july: 7 月
+  august: 8 月
+  september: 9 月
+  october: 10 月
+  november: 11 月
+  december: 12 月
+size: 大小
+checksum: 校验和
+owner: 所有者
+download: 下载
+name: 名称
+created_by: 创建自
+created_on: 创建于
+save_and_stay: 保存并继续
+save_as_copy: 另存为
+comments: 注释
+request_feature: 功能建议
+item_count: '暂无数据 | 找到一条数据 | 找到 {count} 条数据'
+create_collection: 创建集合
+relationship_not_setup: 关系配置不正确
+users: 用户
+activity: 活动
+webhooks: Webhook
+field_width: 字段宽度
+user_directory: 用户列表
+duration: 持续时间
+modified_on: 修改于
+sort_field: 排序字段
+edit: 编辑
+bookmarks: 书签
+back: 后退
+placeholder: 占位文本
+icon_left: 左图标
+icon_right: 右图标
+monospace: 等宽
+divider: 分隔线
+color: 颜色
+operators:
+  lt: 小于
+  gt: 大于
+  lte: 小于或等于
+  gte: 大于或等于
+  contains: 包含
+  ncontains: 不包含
+  empty: 空
+loading: 正在载入...
+display_template: 显示模板
+no_results: 找不到查询结果
+role: 角色
+user: 用户
+create: 创建
+on_update: 在更新操作上
+read: 查看
+update: 更新
+select_fields: 选择字段
+wysiwyg_options:
+  remove: 移除
+  table: 表
+dropdown: 下拉列表
+choices: 选择项
+deselect: 取消选择
+editing_in_batch: '批量编辑 {count} 条数据'
+settings_permissions: 角色与权限
+settings_project: 项目设置
+settings_webhooks: Webhook
+unsaved_changes: 修改还未保存
+unsaved_changes_copy: 您确定要离开此页面吗？
+discard_changes: 不保存修改并离开此页
+keep_editing: 继续编辑
+add_new: 新增
+all: 全部
+batch_delete_confirm: >-
+  您还没有选择数据 | 您确定要删除此条数据吗? 此操作无法撤消。 | 您确定要删除这 {count} 条数据吗?  此操作无法撤消。
+cancel: 取消
+collection: 集合
+collections: 集合
+fields:
+  directus_activity:
+    action: 操作
+    collection: 集合
+    item: 项目主键
+    user: 操作人
+    timestamp: 操作于
+    edited_on: 编辑于
+    comment_deleted_on: 评论删除于
+    ip: IP 地址
+    user_agent: 用户代理（User Agent）
+    comment: 注释
+  directus_files:
+    title: 标题
+    tags: 标签
+    location: 地理位置
+    description: 描述
+    filename_download: 下载文件名
+    filename_disk: 磁盘文件名
+    private_hash: 私有哈希值
+    checksum: 校验和
+    uploaded_on: 上传于
+    uploaded_by: 上传人
+    width: 宽
+    height: 高度
+    duration: 持续时间
+    filesize: 文件大小
+    metadata: 元数据（Metadata）
+  directus_users:
+    status: 状态
+    first_name: 名
+    last_name: 姓
+    email: 邮箱
+    email_notifications: 邮件通知
+    password: 密码
+    role: 角色
+    company: 公司
+    title: 标题
+    timezone: 时区
+    language: 语言
+    avatar: 头像
+    theme: 主题
+    tfa_secret: 2FA（双因素身份验证）
+  directus_settings:
+    project_name: 项目名称
+  directus_fields:
+    note: 注解
+    hidden: 隐藏
+    display_template: 模板
+  directus_roles:
+    description: 描述
+comment: 注释
+continue: 继续
+default: 默认
+delete: 删除
+delete_field_are_you_sure: >-
+  您确定要删除字段 "{field}" 吗? 此操作无法撤消。
+description: 描述
+done: 已完成
+duplicate: 复制
+email: 邮箱
+embed: 嵌入
+field: 字段 | 字段
+file: 文件
+file_library: 文件管理
+forgot_password: 忘记密码
+hidden: 隐藏
+icon: 图标
+info: 更多信息
+junction_collection: 交叉集合
+latency: 延迟
+login: 登录
+my_activity: 操作记录
+not_authenticated: 未认证
+options: 选项
+otp: 一次性密码
+password: 密码
+permissions: 权限
+relationship: 关联
+reset: 重置
+reset_password: 重置密码
+revert: 还原
+save: 保存
+schema: Schema
+search: 搜索
+select_existing: 选择现有
+select_interface: 选择接口
+settings: 设置
+sign_in: 登录
+sign_out: 退出登录
+sign_out_confirm: 您确定要退出登录吗?
+something_went_wrong: 出了点问题。
+sort_direction: 排序
+template: 模板
+translation: 翻译
+value: 值
+interfaces:
+  checkboxes:
+    checkboxes: 复选框
+    allow_other: 允许其他选项
+  code:
+    code: 代码
+    line_number: 行号
+  collection:
+    collection: 集合
+  collections:
+    collections: 集合
+  color:
+    color: 颜色
+  datetime:
+    datetime: 日期时间
+  display-template:
+    display-template: 显示模板
+  divider:
+    divider: 分隔线
+  dropdown:
+    allow_other: 允许其他选项
+  file:
+    file: 文件
+  files:
+    files: 多个文件
+  icon:
+    icon: 图标
+  interface-options:
+    interface-options: 界面选项
+  many-to-many:
+    many-to-many: 多对多
+  many-to-one:
+    many-to-one: 多对一
+    display_template: 显示模板
+  markdown:
+    markdown: Markdown
+    edit: 编辑
+    preview: 预览
+  numeric:
+    numeric: 数字
+  one-to-many:
+    one-to-many: 一对多
+  radio-buttons:
+    radio-buttons: 单选按钮
+  repeater:
+    repeater: 中继器
+  slider:
+    slider: 滑块
+  slug:
+    slug: 别名
+  tags:
+    tags: 标签
+  text-input:
+    text-input: 文本输入
+    trim: 修剪
+  translations:
+    display_template: 显示模板
+  user:
+    user: 用户
+    modes:
+      dropdown: 下拉列表
+  wysiwyg:
+    custom_formats: 自定义格式
+displays:
+  collection:
+    collection: 集合
+  color:
+    color: 颜色
+  datetime:
+    datetime: 日期时间
+    format: 格式
+  file:
+    file: 文件
+  filesize:
+    filesize: 文件大小
+  icon:
+    icon: 图标
+  rating:
+    rating: 评分
+  user:
+    user: 用户
+    avatar: 头像
+    name: 名称
+    both: 两个
+layouts:
+  cards:
+    cards: 卡片
+    image_source: 图像来源
+    title: 标题
+    subtitle: 副标题
+  tabular:
+    tabular: 表
+    fields: 字段
+    spacing: 间距
+    comfortable: 宽松
+    compact: 紧凑
+    cozy: 适中
