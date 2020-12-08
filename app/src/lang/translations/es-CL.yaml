@@ -1,0 +1,312 @@
+---
+full_width: Ancho completo
+required: Necesario
+create_role: Crear Rol
+delete_bookmark: Eliminar Marcador
+directus_version: Versión Directus
+language: Idioma
+create_field: Crear Campo
+hidden_on_detail: Oculto en detalle
+date: Fecha
+decimal: Decimal
+text: Texto
+time: Hora
+auto_generate: Autogenerar
+add_note: Añadir una nota útil para los usuarios...
+default_value: Valor por Defecto
+next: Próximo
+note: Nota
+length: Longitud
+readonly: Solo lectura
+unique: Único
+primary_key: Clave primaria
+clear_value: Limpiar valor
+reset_to_default: Restablecen a los predeterminados
+undo_changes: Deshacer cambios
+notifications: Notificaciones
+page_not_found: Página no encontrada
+page_not_found_body: La página que estás buscando no parece existir.
+display: Mostrar
+title: Título
+revision_delta_deleted: Eliminado
+leave_comment: Deja un comentario...
+this_collection: Esta colección
+related_collection: Colección relacionada
+format: Formato
+submit: Enviar
+months:
+  january: Enero
+  february: Febrero
+  march: Marzo
+  april: Abril
+  may: Mayo
+  june: Junio
+  july: Julio
+  august: Agosto
+  september: Septiembre
+  october: Octubre
+  november: Noviembre
+  december: Diciembre
+size: Tamaño
+checksum: Suma de verificación
+owner: Propietario
+download: Descargar
+name: Nombre
+created_by: Creado Por
+created_on: Creado El
+save_and_stay: Guardar y quedarse
+save_as_copy: Guardar como copia
+comments: Comentarios
+request_feature: Característica de solicitud
+item_count: 'No hay artículos | Un ítem | {count} Ítems'
+create_collection: Crear colección
+relationship_not_setup: La relación no se ha configurado correctamente
+users: Usuarios
+activity: Actividad
+webhooks: Webhooks
+field_width: Ancho de campo
+user_directory: Directorio de usuarios
+duration: Duración
+modified_on: Modificado en
+sort_field: Campo de Ordenación
+edit: Editar
+bookmarks: Marcadores
+back: Volver
+placeholder: Texto de Ejemplo
+icon_left: Icono izquierdo
+icon_right: Icono Derecho
+monospace: Monoespaciado/a
+divider: Divisor
+color: Color
+operators:
+  lt: Menos que
+  gt: Más grande que
+  lte: Menos que o igual a
+  gte: Mayor qué o igual a
+  contains: Contiene
+  ncontains: No contiene
+  empty: Esta vacío
+loading: Cargando...
+display_template: Mostrar Plantilla
+no_results: No hay resultados
+role: Rol
+user: Usuario
+create: Crear
+on_update: En actualización
+read: Leer
+update: Actualizar
+select_fields: Selecciona campos
+wysiwyg_options:
+  remove: Eliminar
+  table: Tabular
+dropdown: Lista desplegable
+choices: Opciones
+deselect: Deseleccionar
+editing_in_batch: 'Edición por lotes {count} Artículos'
+settings_permissions: Roles y permisos
+settings_project: Configuración de proyecto
+settings_webhooks: Webhooks
+unsaved_changes: Cambio sin guardar
+unsaved_changes_copy: '¿Estás seguro de que quieres salir de esta página?'
+discard_changes: Descartar los cambios
+keep_editing: Sigue editando
+add_new: Añadir Nuevo
+all: Todo
+batch_delete_confirm: >-
+  No se han seleccionado elementos | ¿Está seguro de que desea eliminar este elemento? Esta acción no puede deshacerse. | Está seguro de que desea eliminar estos {count} ítems? Esta acción no puede deshacerse.
+cancel: Cancelar
+collection: Colección
+collections: Colecciones
+fields:
+  directus_activity:
+    action: Acción
+    collection: Colección
+    item: Clave primaria del ítem
+    user: Realizado por
+    timestamp: Realizado el
+    edited_on: Editado el
+    comment_deleted_on: Comentario eliminado el
+    ip: Dirección IP
+    user_agent: Agente de usuario
+    comment: Comentar
+  directus_files:
+    title: Título
+    tags: Etiquetas
+    location: Ubicación
+    description: Descripción
+    filename_download: Descarga del nombre de archivo
+    filename_disk: Nombre del archivo en el disco
+    private_hash: Hash privado
+    checksum: Suma de verificación
+    uploaded_on: Subido el
+    uploaded_by: Subido por
+    width: Ancho
+    height: Altura
+    duration: Duración
+    filesize: Tamaño del archivo
+    metadata: Metadatos
+  directus_users:
+    status: Estado
+    first_name: Primer nombre
+    last_name: Apellido
+    email: Correo electrónico
+    email_notifications: Notificaciones por email
+    password: Contraseña
+    role: Rol
+    company: Empresa
+    title: Título
+    timezone: Zona horaria
+    language: Idioma
+    avatar: Avatar
+    theme: Tema
+    tfa_secret: Autenticación de dos factores
+  directus_settings:
+    project_name: Nombre de proyecto
+  directus_fields:
+    note: Nota
+    hidden: Oculto
+    display_template: Plantilla
+  directus_roles:
+    description: Descripción
+comment: Comentar
+continue: Hacer continuación
+default: Por defecto
+delete: Eliminar
+delete_field_are_you_sure: >-
+  ¿Está seguro de que desea eliminar el campo? "{field}"? Esta acción no se puede deshacer.
+description: Descripción
+done: Hecho
+duplicate: Duplicado
+email: Correo electrónico
+embed: Empotrar
+field: Campo | Campos
+file: Archivo
+file_library: Biblioteca de archivos
+forgot_password: Se te olvidó tu contraseña
+hidden: Oculto
+icon: Icono
+info: Informacion
+junction_collection: Colección de unión
+latency: Latencia
+login: Iniciar sesión
+my_activity: Mi actividad
+not_authenticated: No autenticado
+options: Opciones
+otp: Contraseña de un solo uso
+password: Contraseña
+permissions: Permisos
+relationship: Relación
+reset: Reiniciar
+reset_password: Restablecer la contraseña
+revert: Revertir
+save: Guardar
+schema: Esquema
+search: Búsqueda
+select_existing: Seleccione existente
+select_interface: Selecciona una interfaz
+settings: Configuración
+sign_in: Ingresar
+sign_out: Desconectar
+sign_out_confirm: '¿Seguro que quieres cerrar sesión?'
+something_went_wrong: Algo salió mal.
+sort_direction: Dirección de ordenado
+template: Plantilla
+translation: Traduccion
+value: Valor
+interfaces:
+  checkboxes:
+    checkboxes: Casillas de Selección
+    allow_other: Permitir Otro
+  code:
+    code: Código
+    line_number: Número de línea
+  collection:
+    collection: Colección
+  collections:
+    collections: Colecciones
+  color:
+    color: Color
+  datetime:
+    datetime: Fecha/hora
+  display-template:
+    display-template: Mostrar Plantilla
+  divider:
+    divider: Divisor
+  dropdown:
+    allow_other: Permitir Otro
+  file:
+    file: Archivo
+  files:
+    files: Archivos
+  icon:
+    icon: Icono
+  interface-options:
+    interface-options: Opciones de Interfaz
+  many-to-many:
+    many-to-many: Muchos a Muchos
+  many-to-one:
+    many-to-one: Muchos a Uno
+    display_template: Mostrar Plantilla
+  markdown:
+    markdown: Markdown
+    edit: Editar
+    preview: Vista preliminar
+  numeric:
+    numeric: Numérico
+  one-to-many:
+    one-to-many: Uno a Muchos
+  radio-buttons:
+    radio-buttons: Botones de radio
+  repeater:
+    repeater: Repetidor
+  slider:
+    slider: Deslizador
+  slug:
+    slug: Slug
+  tags:
+    tags: Etiquetas
+  text-input:
+    text-input: Control de Texto
+    trim: Eliminar Espacios en Blanco
+  translations:
+    display_template: Mostrar Plantilla
+  user:
+    user: Usuario
+    modes:
+      dropdown: Lista desplegable
+  wysiwyg:
+    custom_formats: Formatos Personalizados
+displays:
+  collection:
+    collection: Colección
+  color:
+    color: Color
+  datetime:
+    datetime: Fecha/hora
+    format: Formato
+  file:
+    file: Archivo
+  filesize:
+    filesize: Tamaño del archivo
+  icon:
+    icon: Icono
+  rating:
+    rating: Valoración
+  user:
+    user: Usuario
+    avatar: Avatar
+    name: Nombre
+    both: Ambos
+layouts:
+  cards:
+    cards: Tarjetas
+    image_source: Fuente de imagen
+    title: Título
+    subtitle: Subtítulo
+  tabular:
+    tabular: Tabular
+    fields: Campos
+    spacing: Espaciado
+    comfortable: Cómoda
+    compact: Compactar
+    cozy: Cómoda
