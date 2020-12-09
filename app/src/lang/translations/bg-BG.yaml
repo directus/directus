@@ -42,7 +42,13 @@ archive: Архивиране
 archive_confirm: Сигурни ли сте, че искате да изтриете елемента?
 unarchive: Разархивиране
 nested_files_folders_will_be_moved: Вложените файлове и папки ще бъдат преместени една папка по-нагоре.
+validationError:
+  eq: Стойността трябва да е {valid}
+  neq: Стойността не трябва да е {invalid}
 delete_field: Изтриване на поле
+fields_and_layout: Полета и подредба
+field_create_success: 'Създадено поле: "{field}"'
+field_update_success: 'Обновено поле: "{field}"'
 language: Език
 global: Глобални
 admins_have_all_permissions: Администраторите имат всички позволения
@@ -58,6 +64,7 @@ creating_new_field: 'Ново поле ({collection})'
 updating_field_field: '{field} ({collection})'
 hidden_field: Скрито поле
 hidden_on_detail: Скрити в детайлен изглед
+disabled_editing_value: Изключване на промяната на стойностите
 key: Ключ
 alias: Псевдоним
 date: Дата
@@ -81,20 +88,28 @@ next: Напред
 field_name: Име на поле
 translations: Преводи
 note: Бележка
+enter_a_value: Въвеждане на стойност...
+enter_a_placeholder: Въвеждане на текстов заместител...
 length: Дължина
 readonly: Само за четене
 primary_key: Първичен ключ
+raw_value: Първична стойност
+enter_raw_value: Въвеждане на първична стойност...
 clear_value: Изчисти стойността
 notifications: Известия
 display: Показване
 title: Заглавие
+revision_delta_updated: '1 поле е обновено | {count} полета са обновени'
 revision_delta_deleted: Изтрито
 revision_delta_other: Ревизия
 revision_delta_by: '{date} от {user}'
 revision_preview: Преглед на ревизия
+updates_made: Направени промени
 leave_comment: Оставяне на коментар...
 this_collection: Тази колекция
+export_data: Експорт на данни
 format: Формат
+export_collection: 'Експорт на {collection}'
 move_to_folder: Преместване в папка
 move: Преместване
 system: Система
@@ -155,6 +170,8 @@ reset_display: Нулиране на изглед
 m2a_builder: Строител (M2A)
 item_count: 'Няма записи | Един запис | {count} записа'
 no_files_copy: Тук не са открити файлове.
+webhooks_count: "Няма уеб-куки | 1 уеб-кука | {count} уеб-куки\n"
+no_webhooks_copy: Все още няма уеб-куки.
 csv: CSV
 no_collections: Няма колекции
 create_collection: Създаване на колекция
@@ -163,6 +180,7 @@ users: Потребители
 activity: Активности
 webhooks: Уеб-куки
 field_width: Ширина на полето
+user_directory: Потребители
 documentation: Документация
 sidebar: Страничен панел
 duration: Продължителност
@@ -182,6 +200,11 @@ flip_vertical: Вертикално завъртане
 aspect_ratio: Съотношение
 rotate: Завъртане
 all_users: Всички потребители
+collections_shown: Показани колекции
+visible_collections: Видими колекции
+hidden_collections: Скрити колекции
+unmanaged_collections: Неконфигурирани колекции
+system_collections: Системни колекции
 placeholder: Заместител (placeholder)
 icon_left: Икона вляво
 icon_right: Икона вдясно
@@ -293,6 +316,7 @@ unsaved_changes: Незапазени промени
 unsaved_changes_copy: Сигурни ли сте, че искате да напуснете тази страница?
 discard_changes: Отмяна на промените
 keep_editing: Продължаване на редакцията
+page_help_users_collection: '**Потребители** — Показване на всички системни потребители в проекта'
 add_new: Добави нов запис
 all: Всички
 batch_delete_confirm: >-
@@ -362,6 +386,7 @@ fields:
 do_nothing: Без действие
 generate_and_save_uuid: Генериране и запазване на UUID
 comment: Кометнар
+creating_webhook: Създаване на уеб-кука
 default: По подразбиране
 delete: Изтриване
 delete_field_are_you_sure: >-
@@ -372,7 +397,7 @@ duplicate: Дублиране
 email: Имейл
 embed: Вграждане
 file: Файл
-file_library: Файлова библиотека
+file_library: Библиотека
 forgot_password: Забравена парола
 hidden: Скрити
 icon: Икона
@@ -395,6 +420,7 @@ search: Търсене
 settings: Настройки
 sign_in: Вход
 sign_out: Изход
+sign_out_confirm: Сигурни ли сте, че искате да излезете?
 template: Шаблон
 value: Стойност
 interfaces:
@@ -406,8 +432,10 @@ interfaces:
     line_number: Номер на ред
   collection:
     collection: Колекция
+    include_system_collections: Включване на системните колекции
   collections:
     collections: Колекция
+    include_system_collections: Включване на системните колекции
   color:
     color: Цвят
   datetime:
@@ -420,6 +448,7 @@ interfaces:
     divider: Разделител
   dropdown:
     allow_other: Позволи други
+    choices_value_placeholder: Въвеждане на стойност...
   file:
     file: Файл
   files:
@@ -481,33 +510,64 @@ interfaces:
     custom_formats: Специфични формати
 displays:
   boolean:
+    description: Показване на активно и неактивно състояние
+    label_on: Активен текст
+    label_on_placeholder: Въвеждане на активен текст...
+    label_off: Неактивен текст
+    label_off_placeholder: Въвеждане на неактивен текст...
     icon_on: Активна икона
     icon_off: Неактивна икона
+    color_on: Активен цвят
+    color_off: Неактивен цвят
   collection:
     collection: Колекция
+    description: Показване на колекция
+    icon_label: Показване на иконката на колекцията
   color:
     color: Цвят
+    description: Показване на цветна точка
     default_color: Свят по подразбиране
   datetime:
     datetime: Дата и час
     format: Формат
+    format_note: >-
+      Персонализирания формат приема стойности от следната __[Таблица със символи](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Дълго
     short: Късо
+    relative: Относително
+    relative_label: 'Показване на относително време, пр. преди 5 минути'
   file:
     file: Файл
+    description: Показване на файлове
   filesize:
     filesize: Големина на файла
+    description: Показване на големината на файл
+  formatted-value:
+    formatted-value: Формат на стойността
+    description: Показване на форматирана стойност на текст
+    format_title: Формат на заглавие
+    bold_label: Използване на удебелен стил
+  formatted-json-value:
+    formatted-json-value: Форматирана JSON стойност
+    description: Показване на форматирана стойност на JSON обект
   icon:
     icon: Икона
+    description: Показване като икона
+    filled: Изпълнен
+    filled_label: Използване на вариант с изпълване
   image:
     image: Изображение
+    description: Показване на малко изображение
     circle: Кръг
+    circle_label: Показване като кръг
   labels:
     labels: Етикети
+    description: Въвеждане както на единичен, така и на множество етикети
     default_foreground: Основа по подразбиране
     default_background: Фон по подразбиране
     format_label: Форматиране на всеки етикет
     show_as_dot: Показване като точка
+    choices_value_placeholder: Въвеждане на стойност...
     choices_text_placeholder: Въвеждане на текст...
   mime-type:
     mime-type: MIME тип
