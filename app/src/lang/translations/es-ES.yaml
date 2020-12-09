@@ -333,42 +333,195 @@ sidebar: Barra Lateral
 duration: Duración
 charset: Codificación
 second: Segundo
+file_moved: Archivo Movido
+collection_created: Colección Creada
 modified_on: Modificado en
-sort_field: Campo de Ordenación
+card_size: Tamaño de Tarjeta
+sort_field: Campo Ordenamiento
+toggle_manual_sorting: Alternar Ordenamiento Manual
+bookmark_doesnt_exist: El Marcador no existe
+bookmark_doesnt_exist_copy: El Marcador que está intentando abrir no pudo ser encontrado.
+bookmark_doesnt_exist_cta: Regresar a Colección
+select_an_item: Seleccionar un Elemento...
 edit: Editar
+enabled: Habilitado
+disable_tfa: Desactivar 2FA
+tfa_scan_code: Escanee el código en tu aplicación de Autentificación para finalizar la configuración de 2FA
+enter_otp_to_disable_tfa: Ingrese el OTP para desactivar 2FA
+create_account: Crear Cuenta
+account_created_successfully: La Cuenta ha sido creada exitósamente
+auto_fill: Auto Rellenar
+corresponding_field: Campo Correspondiente
+errors:
+  COLLECTION_NOT_FOUND: "La Colección no existe"
+  FIELD_NOT_FOUND: Campo no encontrado
+  FORBIDDEN: Prohibido
+  INVALID_CREDENTIALS: Usuario o contraseña incorrecta
+  INVALID_OTP: Contraseña Temporal Incorrecta
+  INVALID_PAYLOAD: Payload Inválido
+  INVALID_QUERY: Consulta Inválida
+  ITEM_LIMIT_REACHED: Límite de elementos alcanzado
+  ITEM_NOT_FOUND: Elemento no encontrado
+  ROUTE_NOT_FOUND: No encontrado
+  UNKNOWN: Error Inesperado
+value_hashed: Valor Hasheado de Manera Segura
+bookmark_name: Nombre del Marcador...
+create_bookmark: Crear Marcador
+edit_bookmark: Editar Marcador
 bookmarks: Marcadores
+presets: Predefinidos
+unexpected_error: Error Inesperado
+unexpected_error_copy: Ha ocurrido un error inesperado. Por favor inténtelo más tarde.
+copy_details: Copiar Detalles
+no_app_access: Sin Acceso al App
+no_app_access_copy: Este usuario no tiene permitido usar la app administrativa.
+password_reset_sent: Le hemos enviado un enlace seguro para restablecer su contraseña
+password_reset_successful: Contraseña restablecida exitósamente
 back: Volver
-placeholder: Texto de Ejemplo
-icon_left: Icono izquierdo
+editing_image: Editar Imagen
+square: Cuadrado
+free: Libre
+flip_horizontal: Voltear Horizontal
+flip_vertical: Voltear Vertical
+aspect_ratio: Relación de Aspecto
+rotate: Rotar
+all_users: Todos los Usuarios
+delete_collection: Eliminar Colección
+update_collection_success: Colección Actualizada
+delete_collection_success: Colección Eliminada
+start_end_of_count_items: '{start}-{end} de {count} elementos'
+delete_collection_are_you_sure: >-
+  ¿Realmente desea eliminar esta colección? Esto eliminará la colección y todos los elementos en ella. Esta acción es permanente y no reversible.
+collections_shown: Colecciones Mostradas
+visible_collections: Colecciones Visibles
+hidden_collections: Colecciones Ocultas
+unmanaged_collections: Colecciones No Configuradas
+system_collections: Colecciones del Sistema
+placeholder: Valor de Ejemplo
+icon_left: Icono Izquierdo
 icon_right: Icono Derecho
-monospace: Monoespaciado/a
-divider: Divisor
+font: Fuente
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Separador
 color: Color
+circle: Círculo
+empty_item: Elemento Vacío
+log_in_with: 'Iniciar Sesión con {provider}'
+advanced_filter: Filtro Avanzado
 operators:
-  lt: Menos que
+  eq: Igual a
+  neq: No es igual a
+  lt: Menor que
   gt: Mayor que
-  lte: Menos que o igual a
+  lte: Menor o igual a
   gte: Mayor o igual a
+  in: Es uno de
+  nin: No es uno de
+  null: Es Nulo
+  nnull: No es Nulo
   contains: Contiene
   ncontains: No contiene
+  between: Está Entre
+  nbetween: No está Entre
   empty: Está vacío
+  nempty: No está Vacío
+  all: Contiene estas llaves
+  has: Contiene alguna de estas llaves
 loading: Cargando...
-display_template: Mostrar Plantilla
+drop_to_upload: Arrastrar para Subir
+upload_file: Subir Archivo
+upload_file_indeterminate: Subiendo Archivo...
+upload_file_success: Archivo Subido
+upload_files_indeterminate: 'Subiendo archivos {done}/{total}'
+upload_files_success: '{count} Archivos Subidos'
+upload_pending: Subida Pendiente
+drag_file_here: Arrastre y Suelte un Archivo Aquí
+click_to_browse: Haga Clic para Navegar
+layout_options: Opciones de Diseño
+collection_setup: Configuración de Colección
+optional_system_fields: Campos Opcionales del Sistema
+value_unique: El Valor tiene que ser único
+all_activity: Toda la Actividad
+create_item: Crear Elemento
+display_template: Plantilla de Presentación
+n_items_selected: 'No hay Elementos Seleccionados | 1 Elemento Seleccionado | {n} Elementos Seleccionados'
+per_page: Por Página
+all_files: Todos los Archivos
+my_files: Mis Archivos
+recent_files: Archivos Recientes
+create_folder: Crear Directorio
+folder_name: Nombre del Directorio...
+add_file: Agregar Archivo
+replace_file: Reemplazar Archivo
 no_results: Sin Resultados
+no_results_copy: Ajustar o limpiar filtros de búsqueda para ver los resultados.
+clear_filters: Limpiar Filtros
+saves_automatically: Guardar Automáticamente
 role: Rol
 user: Usuario
+no_presets: Sin Predefinidos
+no_presets_copy: Los Predefinidos o Marcadores no se han guardado aún.
+no_presets_cta: Agregar Predefinido
 create: Crear
-on_update: Al actualizar
+on_create: Al Crear
+on_update: Al Actualizar
 read: Leer
 update: Actualización
-select_fields: Seleccionar campos
+select_fields: Seleccionar Campos
+format_text: Formatear Texto
+bold: Negrita
+toggle: Alternar
+icon_on: Icono Activado
+icon_off: Icono Desactivado
+label: Etiqueta
 wysiwyg_options:
+  aligncenter: Alinear al Centro
+  alignjustify: Alinear Justificado
+  alignleft: Alinear a la Izquierda
+  alignnone: No Alinear
+  alignright: Alinear a la Derecha
   forecolor: Color de Letra
   backcolor: Color de Fondo
+  bold: Negrita
+  italic: Cursiva
+  underline: Subrayado
+  strikethrough: Tachado
+  subscript: Subíndice
+  superscript: Superíndice
+  blockquote: Bloque de Cita
+  bullist: Lista con viñetas
+  numlist: Lista Numerada
+  hr: Regla Horizontal
+  link: Agregar Enlace
+  unlink: Remover Enlace
+  media: Agregar Multimedia
+  image: Agregar Imagen
+  copy: Copiar
+  cut: Cortar
+  paste: Pegar
+  h1: Título 1
+  h2: Título 2
+  h3: Título 3
+  h4: Título 4
+  h5: Título 5
+  h6: Título 6
+  fontselect: Seleccionar Fuente
+  fontsizeselect: Seleccionar Tamaño de Fuente
+  indent: Indentar
+  outdent: Anular Indentación
+  undo: Deshacer
+  redo: Rehacer
   remove: Eliminar
+  removeformat: Quitar Formato
   selectall: Seleccionar Todo
   table: Tabla
-dropdown: Lista desplegable
+  visualaid: Ver elementos invisibles
+  code: Ver Fuente
+  fullscreen: Pantalla Completa
+  directionality: Direccionalidad
+dropdown: Lista Desplegable
 choices: Opciones
 deselect: Quitar selección
 editing_in_batch: 'Editando por lotes {count} entradas'
@@ -500,11 +653,11 @@ interfaces:
   datetime:
     datetime: Fecha/hora
   display-template:
-    display-template: Mostrar Plantilla
+    display-template: Plantilla de Presentación
     collection_field_not_setup: La opción del campo de colección está mal configurada
     select_a_collection: Seleccionar una Colección
   divider:
-    divider: Divisor
+    divider: Separador
   dropdown:
     allow_other: Permitir otro
     choices_value_placeholder: Ingrese un valor...
@@ -522,7 +675,7 @@ interfaces:
     many-to-many: Muchos a Muchos
   many-to-one:
     many-to-one: Muchos a Uno
-    display_template: Mostrar Plantilla
+    display_template: Plantilla de Presentación
   markdown:
     markdown: Markdown
     edit: Editar
@@ -544,17 +697,22 @@ interfaces:
   text-input:
     text-input: Control de Texto
     trim: Eliminar Espacios en Blanco
+  toggle:
+    toggle: Alternar
+    label_default: Habilitado
   translations:
-    display_template: Mostrar Plantilla
+    display_template: Plantilla de Presentación
   user:
     user: Usuario
     modes:
-      dropdown: Lista desplegable
+      dropdown: Lista Desplegable
   wysiwyg:
     custom_formats: Formatos Personalizados
 displays:
   boolean:
     boolean: Booleano
+    icon_on: Icono Activado
+    icon_off: Icono Desactivado
   collection:
     collection: Colección
   color:
@@ -568,6 +726,8 @@ displays:
     filesize: Tamaño del archivo
   icon:
     icon: Icono
+  image:
+    circle: Círculo
   labels:
     choices_value_placeholder: Ingrese un valor...
   rating:
