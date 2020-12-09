@@ -57,21 +57,45 @@ unknown_validation_errors: 'Houve erros de validação para os seguintes campos 
 validationError:
   eq: O valor tem de ser {valid}
   neq: O valor não pode ser {invalid}
+  in: O valor tem de ser um de {valid}
+  nin: O valor não pode ser um de {invalid}
+  contains: O valor tem de conter {substring}
+  ncontains: O valor não pode conter {substring}
+  gt: O valor tem de ser maior que {valid}
+  gte: O valor tem de ser maior ou igual a {valid}
+  lt: O valor tem de ser menor que {valid}
+  lte: O valor tem de ser menor ou igual a {valid}
+  empty: O valor tem de ser vazio
+  nempty: Valor não pode estar vazio
+  null: Valor precisa ser nulo
+  nnull: Valor não pode ser nulo
+  required: Valor obrigatório
+all_access: Acesso Total
+no_access: Sem acesso
 use_custom: Usar Personalizado
+item_permissions: Permissões do Item
 changes_made: Estas são as mudanças específicas que foram feitas...
 no_relational_data: Tenha em mente que isso não inclui dados relacionais.
 hide_field_on_detail: Ocultar Campo em Detalhes
 show_field_on_detail: Exibir Campo em Detalhes
 delete_field: Excluir campo
 fields_and_layout: Campos e Layout
+field_create_success: 'Campo criado: "{field}"'
+field_update_success: 'Campo atualizado: "{field}"'
+duplicate_where_to: Para onde você gostaria de duplicar este campo?
 language: Idioma
 global: Global
 admins_have_all_permissions: Administradores têm todas as permissões
 camera: Câmera
 exposure: Exposição
 shutter: Obturador
+iso: ISO
 focal_length: Distância focal
+schema_setup_title: Como este campo deve ser salvo no banco de dados?
+schema_field_title: Como este campo deve se comportar no aplicativo?
 create_field: Criar Campo
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Redefinir preferências da página
 hidden_field: Campo oculto
 hidden_on_detail: Oculto em Detalhe
 disabled_editing_value: Desativar edição do valor
@@ -103,10 +127,15 @@ determined_by_relationship: Determinado por Relacionamento
 add_note: Crie uma nota de ajuda para os usuários...
 default_value: Valor padrão
 add_a_default_value: Adicionar um valor padrão...
+interface_setup_title: Como os usuários interagirão com este campo?
 display_setup_title: Como o valor deste campo deve ser exibido?
 standard_field: Campo Padrão
 single_file: Arquivo único
 multiple_files: Múltiplos arquivos
+m2o_relationship: Relacionamento Muitos-pra-Um
+o2m_relationship: Relacionamento Um-pra-Muitos
+m2m_relationship: Relacionamento Muitos-pra-Muitos
+m2a_relationship: Relacionamento Muitos-pra-Qualquer
 next: Próximo
 field_name: Nome do campo
 translations: Traduções
@@ -230,10 +259,19 @@ report_bug: Relatar erro
 request_feature: Pedir funcionalidade
 reset_display: Redefinir Exibição
 item_count: 'Sem Itens | Um Item | {count} Itens'
+no_files_copy: Ainda não há arquivos aqui.
+user_count: 'Nenhum usuário | Um usuário | {count} usuários'
+no_users_copy: Não há usuários neste cargo ainda.
+webhooks_count: 'Nenhum Webhook | Um Webhook | {count} Webhooks'
 no_webhooks_copy: Ainda não possui Webhooks.
+all_items: Todos os itens
 csv: CSV
+no_collections: Sem coleções
 create_collection: Criar Coleção
+no_collections_copy_admin: Você ainda não tem nenhuma coleção. Clique no botão abaixo para começar.
+no_collections_copy: Você ainda não tem nenhuma coleção. Entre em contato com o administrador do sistema.
 relationship_not_setup: O relacionamento não foi configurado corretamente
+select_a_collection: Selecione uma coleção
 active: Ativo
 users: Usuários
 activity: Atividade
@@ -248,15 +286,25 @@ documentation: Documentação
 sidebar: Barra lateral
 duration: Duração
 charset: Codificação de caracteres
+second: Segundo
 file_moved: Arquivo movido
+collection_created: Coleção criada
 modified_on: Modificado em
+card_size: Tamanho do cartão
 sort_field: Campo de ordenação
+bookmark_doesnt_exist: Marcador não existe
+bookmark_doesnt_exist_cta: Voltar à coleção
 select_an_item: Selecione um item...
 edit: Editar
 enabled: Habilitado
 disable_tfa: Desativar verificação em duas etapas
+create_account: Criar conta
 auto_fill: Preench. automático
+corresponding_field: Campo correspondente
 errors:
+  COLLECTION_NOT_FOUND: "A coleção não existe"
+  FIELD_NOT_FOUND: Campo não encontrado
+  FORBIDDEN: Não permitido
   INVALID_CREDENTIALS: Nome de usuário ou senha incorreta
   INVALID_OTP: Senha de uso único incorreta
   INVALID_PAYLOAD: Payload inválido
@@ -264,6 +312,7 @@ errors:
   ITEM_NOT_FOUND: Item não encontrado
   ROUTE_NOT_FOUND: Não encontrado
   UNKNOWN: Erro inesperado
+value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
 create_bookmark: Criar marcador
 edit_bookmark: Editar marcador
@@ -293,6 +342,9 @@ collections_shown: Coleções mostradas
 placeholder: Placeholder
 icon_left: Ícone à Esquerda
 icon_right: Ícone à Direita
+font: Fonte
+sans_serif: Sans Serif
+serif: Serif
 monospace: Monoespaçada
 divider: Divisor
 color: Cor
@@ -301,13 +353,22 @@ empty_item: Item vazio
 log_in_with: 'Entrar com {provider}'
 advanced_filter: Filtro avançado
 operators:
+  eq: É igual
+  neq: Não é igual
   lt: Menor que
   gt: Maior
   lte: Menor ou igual à
   gte: Maior ou igual a
+  in: É um de
+  nin: Não é um de
+  null: É nulo
+  nnull: Não é nulo
   contains: Contém
   ncontains: Não contém
+  between: Está entre
+  nbetween: Não está entre
   empty: Está vazio
+  nempty: Não está vazio
 loading: Carregando...
 drop_to_upload: Solte para enviar
 upload_file: Enviar arquivo
@@ -340,12 +401,16 @@ role: Função
 user: Usuário
 no_presets: Sem predefinições
 create: Criar
+on_create: Ao Criar
 on_update: Pós-alteração
 read: Leitura
 update: Alteração
 select_fields: Selecionar campos
+format_text: Formatar texto
 bold: Negrito
 toggle: Alternar
+icon_on: Ícone ligado
+icon_off: Ícone desligado
 label: Rótulo
 wysiwyg_options:
   aligncenter: Alinhar ao centro
@@ -409,6 +474,7 @@ settings_presets: Predefinições & Marcadores
 scope: Escopo
 layout: Layout
 changes_are_permanent: As alterações são permanentes
+preset_name_placeholder: Nome do marcador...
 editing_preset: Editando predefinição
 layout_preview: Pré-visualização do Layout
 layout_setup: Configuração de Layout
@@ -420,6 +486,7 @@ page_help_collections_overview: '**Visão geral das coleções** — Lista de to
 activity_feed: Feed de atividade
 add_new: Adicionar Novo
 from_collection: 'Da coleção “{collection}”'
+create_new: Criar novo
 all: Tudo
 batch_delete_confirm: >-
   Nenhum item foi selecionado | Você tem certeza que deseja deletar esse item? Essa ação não pode ser desfeita. | Você tem certeza que deseja deletar esses {count} itens? Essa ação não pode ser desfeita.
@@ -490,8 +557,11 @@ do_nothing: Não fazer nada
 comment: Comentário
 continue: Continuar
 editing_role: 'Cargo {role}'
+creating_webhook: Criando Webhook
 default: Padrão
 delete: Deletar
+delete_are_you_sure: >-
+  Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
 delete_field_are_you_sure: >-
   Tem certeza que deseja deletar o campo "{field}"? Esta ação não pode ser desfeita.
 description: Descrição
@@ -506,6 +576,7 @@ forgot_password: Esqueci minha Senha
 hidden: Oculto
 icon: Ícone
 info: Informação
+normal: Normal
 success: Sucesso
 warning: Atenção
 danger: Perigo
@@ -557,14 +628,19 @@ interfaces:
     collections: Coleções
   color:
     color: Cor
+    placeholder: Escolha uma cor...
+    preset_colors: Cores predefinidas
     preset_colors_add_label: Adicionar nova cor...
     name_placeholder: Inserir nome da cor...
   datetime:
     datetime: Data e Hora
+    description: Insira datas e horas
+    include_seconds: Incluir segundos
     set_to_now: Definir como Agora
     use_24: Usar formato de 24 horas
   display-template:
     display-template: Modelo de exibição
+    select_a_collection: Selecione uma coleção
   divider:
     divider: Divisor
     title_placeholder: Insira um título...
@@ -586,6 +662,8 @@ interfaces:
     files: Arquivos
     description: Selecione ou envie vários arquivos
   hash:
+    hash: Hash
+    description: Insira um valor para ser hasheado
     masked_label: Ocultar os valores verdadeiros
   icon:
     icon: Ícone
@@ -618,6 +696,7 @@ interfaces:
     step_interval: Intervalo dos passos
   one-to-many:
     one-to-many: Um-para-muitos (1 para N)
+    no_collection: A coleção não pôde ser encontrada
   radio-buttons:
     radio-buttons: Botões de radio
   repeater:
@@ -631,7 +710,13 @@ interfaces:
     slug: Slug
   tags:
     tags: Tags
+    description: Selecione ou adicione tags
     whitespace: Espaço em branco
+    hyphen: Substituir com hífen
+    underscore: Substituir com sublinhado
+    remove: Remover espaço em branco
+    uppercase: Converter em maiúsculas
+    lowercase: Converter em minúsculas
     add_tags: Adicionar tags...
   text-input:
     text-input: Entrada de texto
@@ -657,6 +742,8 @@ interfaces:
 displays:
   boolean:
     boolean: Boolean
+    icon_on: Ícone ligado
+    icon_off: Ícone desligado
   collection:
     collection: Coleção
     description: Exibir uma coleção
