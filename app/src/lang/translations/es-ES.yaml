@@ -83,18 +83,83 @@ fields_for_role: 'Campos que el Rol {role} puede {action}.'
 validation_for_role: 'Reglas de campo al {action} que el Rol {role} tiene que obedecer.'
 presets_for_role: 'Valores por defecto del Campo para el Rol {role}.'
 presentation_and_aliases: Presentación y Alias
+revision_post_update: Así se vería el elemento después de la actualización...
+changes_made: Estos son los cambios específicos que se hicieron...
+no_relational_data: Tener en cuenta que esto no incluye datos relacionales.
+hide_field_on_detail: Ocultar campo en el Detalle
+show_field_on_detail: Mostrar campo en el Detalle
+delete_field: Eliminar Campo
+fields_and_layout: Campos y Diseño
+field_create_success: 'Campo Creado: "{field}"'
+field_update_success: 'Campo Actualizado: "{field}"'
+duplicate_where_to: '¿A dónde le gustaría duplicar este campo?'
 language: Idioma
+global: Global
+admins_have_all_permissions: Los Administradores tienen todos los permisos
+camera: Cámara
+exposure: Exposición
+shutter: Obturación
+iso: ISO
+focal_length: Distancia Focal
+schema_setup_title: '¿Cómo debería guardarse este campo en la base de datos?'
+schema_field_title: '¿Cómo debería comportarse este campo en la aplicación?'
 create_field: Crear Campo
-hidden_on_detail: Oculto en la vista de detalle
+creating_new_field: 'Nuevo Campo ({collection})'
+updating_field_field: '{field}({collection})'
+reset_page_preferences: Restablecer Preferencias de Página
+hidden_field: Campo Oculto
+hidden_on_detail: Oculto en el Detalle
+disabled_editing_value: Desactivar edición de valor
+key: Llave
+alias: Alias
+bigInteger: Número Entero (Grande)
+boolean: Booleano
 date: Fecha
+datetime: Fecha y Hora
 decimal: Decimal
+float: Número Flotante
+integer: Número Entero
+json: JSON
+string: Cadena de Texto
 text: Texto
 time: Hora
+timestamp: Marca de Tiempo
+uuid: UUID
+not_available_for_type: No disponible para este Tipo
+create_translations: Crear Traducciones
 auto_generate: Auto-generar
+this_will_auto_setup_fields_relations: Esto configurará automáticamente todos los campos y relaciones requeridas.
+click_here: Clic aquí
+to_manually_setup_translations: configurar manualmente las traducciones.
+click_to_manage_translated_fields: >-
+  Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
+fields_group: Grupo de Campos
+configure_m2o: Configurar tu Relación Muchos-a-Uno...
+configure_o2m: Configurar tu Relación Uno-A-Muchos...
+configure_m2m: Configurar tu Relación Muchos-A-Muchos...
+configure_m2a: Configurar tu Relación Muchos-A-Cualquiera...
+add_m2o_to_collection: 'Agregar Muchos-A-Uno a "{collection}"'
+add_o2m_to_collection: 'Agregar Uno-A-Muchos a "{collection}"'
+add_m2m_to_collection: 'Agregar Muchos-A-Muchos a "{collection}"'
+choose_a_type: Elegir un Tipo...
+determined_by_relationship: Determinado por la Relación
 add_note: Añadir una nota útil para los usuarios...
 default_value: Valor por Defecto
+add_a_default_value: Agregar un valor por defecto...
+interface_setup_title: '¿Cómo los usuarios interactuarán con este campo?'
+display_setup_title: '¿Cómo el valor de este campo debería ser presentado?'
+standard_field: Campo Estándar
+single_file: Un Archivo
+multiple_files: Múltiples Archivos
+m2o_relationship: Relación Muchos-a-Uno
+o2m_relationship: Relación Uno-A-Muchos
+m2m_relationship: Relación Muchos-A-Muchos
+m2a_relationship: Relación Muchos-A-Cualquiera
 next: Siguiente
+field_name: Nombre del Campo
+translations: Traducciones
 note: Nota
+enter_a_value: Ingrese un valor...
 length: Longitud
 readonly: Sólo lectura
 unique: Único
@@ -315,6 +380,7 @@ interfaces:
     divider: Divisor
   dropdown:
     allow_other: Permitir otro
+    choices_value_placeholder: Ingrese un valor...
   file:
     file: Archivo
   files:
@@ -358,6 +424,8 @@ interfaces:
   wysiwyg:
     custom_formats: Formatos Personalizados
 displays:
+  boolean:
+    boolean: Booleano
   collection:
     collection: Colección
   color:
@@ -371,6 +439,8 @@ displays:
     filesize: Tamaño del archivo
   icon:
     icon: Icono
+  labels:
+    choices_value_placeholder: Ingrese un valor...
   rating:
     rating: Valoración
   user:
