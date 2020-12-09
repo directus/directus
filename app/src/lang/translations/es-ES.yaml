@@ -623,13 +623,13 @@ fields:
     metadata: Metadatos
   directus_users:
     status: Estado
-    first_name: Nombre
-    last_name: Apellido
+    first_name: Nombres
+    last_name: Apellidos
     email: Correo electrónico
-    email_notifications: Notificaciones por email
+    email_notifications: Notificaciones por Correo Electrónico
     password: Contraseña
     role: Rol
-    company: Empresa
+    company: Compañía
     title: Título
     timezone: Zona horaria
     language: Idioma
