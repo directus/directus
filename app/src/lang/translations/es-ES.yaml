@@ -36,7 +36,48 @@ logoutReason:
   SIGN_OUT: Sesión terminada
   SESSION_EXPIRED: Sesión expirada
 public: Público
+public_description: Controla qué datos de la API estarán disponibles sin requerir autenticarse
+not_allowed: No Permitido
 directus_version: Versión de Directus
+node_version: Versión de Node
+node_uptime: Tiempo de actividad de Node
+os_type: Tipo de SO
+os_version: Versión de SO
+os_uptime: Tiempo de actividad del SO
+os_totalmem: Memoria del SO
+archive: Archivar
+archive_confirm: '¿Está seguro que desea archivar este elemento?'
+archive_confirm_count: >-
+  Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
+reset_system_permissions: Restablecer Permisos del Sistema
+reset_system_permissions_copy: Restablecer todos los permisos del sistema a sus valores por defecto
+unarchive: Desarchivar
+unarchive_confirm: '¿Realmente desea desarchivar este elemento?'
+nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
+unknown_validation_errors: 'Ocurrieron errores de validación para los siguientes campos ocultos:'
+validationError:
+  eq: El valor tiene que ser {valid}
+  neq: El valor no puede ser {invalid}
+  in: 'El valor tiene que ser uno de estos: {valid}'
+  nin: 'El valor no puede ser uno de estos: {invalid}'
+  contains: El valor tiene que contener {substring}
+  ncontains: El valor no puede contener {substring}
+  gt: El valor tiene que ser mayor a {valid}
+  gte: El valor tiene que ser mayor o igual a {valid}
+  lt: El valor tiene que ser menor a {valid}
+  lte: El valor tiene que ser menor o igual a {valid}
+  empty: El valor tiene que estar vacío
+  nempty: El valor no puede estar vacío
+  null: El valor tiene que ser nulo
+  nnull: El valor no puede ser nulo
+  required: El valor es requerido
+all_access: Todos los accesos
+no_access: Sin Acceso
+use_custom: Personalizar
+item_permissions: Permisos de Elemento
+field_permissions: Permisos de Campo
+field_validation: Validación de Campo
+field_presets: Predefinidos para Campo
 language: Idioma
 create_field: Crear Campo
 hidden_on_detail: Oculto en la vista de detalle
