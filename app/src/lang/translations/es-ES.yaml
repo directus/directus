@@ -685,76 +685,106 @@ delete: Eliminar
 delete_are_you_sure: >-
   Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
 delete_field_are_you_sure: >-
-  ¿Esta seguro de querer borrar el campo "{field}"? Esta acción no se puede deshacer.
+  ¿Realmente desea borrar el campo "{field}"? Esta acción no es reversible.
 description: Descripción
 done: Completado
 duplicate: Duplicado
 email: Correo electrónico
-embed: Incrustar
+embed: Incrustado
+fallback_icon: Ícono de Reserva
 field: Campo | Campos
 file: Archivo
-file_library: Biblioteca de archivos
-forgot_password: Olvide la contraseña
+file_library: Biblioteca de Archivos
+forgot_password: He olvidado mi Contraseña
 hidden: Oculto
-icon: Icono
+icon: Ícono
 info: Información
-junction_collection: Colección de empalme
+normal: Normal
+success: Éxito
+warning: Advertencia
+danger: Peligro
+junction_collection: Colección de Unión
 latency: Latencia
-login: Iniciar sesión
+login: Iniciar Sesión
 my_activity: Mi actividad
-not_authenticated: No autenticado
+not_authenticated: No Autenticado
+authenticated: Autenticado
 options: Opciones
 otp: Contraseña de un solo uso
 password: Contraseña
 permissions: Permisos
 relationship: Relación
 reset: Restablecer
-reset_password: Restablecer contraseña
+reset_password: Restablecer Contraseña
+revisions: Revisiones
 revert: Revertir
 save: Guardar
 schema: Esquema
 search: Buscar
-select_existing: Seleccionar existente
+select_existing: Seleccionar Existente
+select_field_type: Seleccione un tipo de campo
 select_interface: Seleccione una interfaz
-settings: Configuración
-sign_in: Registrarse
-sign_out: Cerrar sesión
-sign_out_confirm: '¿Está seguro de cerrar sesión?'
+settings: Ajustes
+sign_in: Iniciar Sesión
+sign_out: Cerrar Sesión
+sign_out_confirm: '¿Realmente desea cerrar sesión?'
 something_went_wrong: Algo salió mal.
-sort_direction: Dirección de ordenado
+sort_direction: Dirección de Ordenamiento
 template: Plantilla
-translation: Traduccion
+translation: Traducción
 value: Valor
+view_project: Ver Proyecto
+report_error: Reportar Error
 interfaces:
   checkboxes:
     checkboxes: Casillas De Selección
-    allow_other: Permitir otro
+    description: Elegir entre múltiples opciones a través de casillas de selección
+    allow_other: Permitir Otro
+    show_more: 'Mostrar {count} más'
+    items_shown: Elementos Mostrados
   code:
     code: Código
+    description: Escribir o compartir fragmentos de código
     line_number: Número de línea
+    placeholder: Ingrese el código aquí...
   collection:
     collection: Colección
+    description: Seleccionar entre colecciones existentes
+    include_system_collections: Incluir Colecciones del Sistema
   collections:
     collections: Colecciones
+    description: Seleccionar entre colecciones existentes
+    include_system_collections: Incluir Colecciones del Sistema
   color:
     color: Color
+    description: Ingrese o seleccione un color
+    placeholder: Seleccionar un color...
+    preset_colors: Colores Predefinidos
+    preset_colors_add_label: Agregar nuevo color...
+    name_placeholder: Ingresar nombre del color...
   datetime:
     datetime: Fecha/hora
+    description: Ingrese fechas y horas
+    include_seconds: Incluir Segundos
+    set_to_now: Ajustar a Ahora Mismo
+    use_24: Usar Formato 24 horas
   display-template:
     display-template: Plantilla de Presentación
+    description: Combinar texto estático y valores de campos dinámicos
+    collection_field: Campo Colección
     collection_field_not_setup: La opción del campo de colección está mal configurada
     select_a_collection: Seleccionar una Colección
   divider:
     divider: Separador
   dropdown:
-    allow_other: Permitir otro
+    allow_other: Permitir Otro
     choices_value_placeholder: Ingrese un valor...
   file:
     file: Archivo
   files:
     files: Archivos
   icon:
-    icon: Icono
+    icon: Ícono
   interface:
     interface: Interfaz
   interface-options:
@@ -813,7 +843,7 @@ displays:
   filesize:
     filesize: Tamaño del archivo
   icon:
-    icon: Icono
+    icon: Ícono
   image:
     circle: Círculo
   labels:
