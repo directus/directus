@@ -43,7 +43,7 @@ WARN
     fi
   fi
 
-  npx directus database bootstrap
+  npx directus bootstrap
 }
 
 command=""
