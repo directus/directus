@@ -160,24 +160,78 @@ field_name: Nombre del Campo
 translations: Traducciones
 note: Nota
 enter_a_value: Ingrese un valor...
+enter_a_placeholder: Ingrese un placeholder...
 length: Longitud
+precision_scale: Precisión y Escala
 readonly: Sólo lectura
 unique: Único
-primary_key: Clave primaria
+primary_key: Llave primaria
+foreign_key: Llave Foránea
+finish_setup: Finalizar Configuración
+dismiss: Cerrar
+raw_value: Valor Plano
+edit_raw_value: Editar Valor Plano
+enter_raw_value: Ingresar valor plano...
 clear_value: Limpiar valor
 reset_to_default: Restablecer ajustes
 undo_changes: Deshacer cambios
 notifications: Notificaciones
-page_not_found: Página no encontrada
-page_not_found_body: La página que buscas no existe.
+show_all_activity: Presentar toda la actividad
+page_not_found: Página No Encontrada
+page_not_found_body: Parece que la página que está buscando no existe.
+confirm_revert: Confirmar reversión
+confirm_revert_body: Esto revertirá el elemento al estado seleccionado.
 display: Mostrar
+settings_update_success: Ajustes actualizados
 title: Título
+revision_delta_created: Creado
+revision_delta_created_externally: Creado Externamente
+revision_delta_updated: '1 Campo Actualizado | {count} Campos Actualizados'
 revision_delta_deleted: Eliminado
+revision_delta_reverted: Revertido
+revision_delta_other: Revisión
+revision_delta_by: '{date} por {user}'
+private_user: Usuario Privado
+revision_preview: Vista Previa de Revisión
+updates_made: Actualizaciones Realizadas
 leave_comment: Deja un comentario...
-this_collection: Esta colección
+post_comment_success: Comentario publicado
+item_create_success: Elemento Creado | Elementos Creados
+item_update_success: Elemento Actualizado | Elementos Actualizados
+item_delete_success: Elemento Eliminado | Elementos Eliminados
+this_collection: Esta Colección
 related_collection: Colección Relacionada
+related_collections: Colecciones Relacionadas
+translations_collection: Colección de Traducciones
+languages_collection: Colección de Idiomas
+export_data: Exportar Datos
 format: Formato
+use_current_filters_settings: Usar Filtros y Ajustes Actuales
+export_collection: 'Exportar {collection}'
+last_page: Última Página
+last_access: Último Acceso
+fill_template: Rellenar con Valor de Plantilla
+a_unique_table_name: Un nombre de tabla único...
+a_unique_column_name: Un nombre de columna único...
+enable_custom_values: Habilitar valores personalizados
 submit: Enviar
+move_to_folder: Mover a Directorio
+move: Mover
+system: Sistema
+add_field_related: Agregar Campo a Colección Relacionada
+interface: Interfaz
+today: Hoy
+yesterday: Ayer
+delete_comment: Eliminar Comentario
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+month: Mes
+year: Año
+select_all: Seleccionar Todo
 months:
   january: Enero
   february: Febrero
@@ -191,26 +245,94 @@ months:
   october: Octubre
   november: Noviembre
   december: Diciembre
+drag_mode: Modo Arrastrar
+cancel_crop: No Cortar
+original: Original
+url: URL
+import: Importar
+file_details: Detalles de Archivo
+dimensions: Dimensiones
 size: Tamaño
-checksum: Cadena de verificación
+created: Creado
+modified: Modificado
+checksum: Checksum
 owner: Propietario
+edited_by: Editado por
+folder: Directorio
+zoom: Zoom
 download: Descargar
+open: Abrir
+open_in_new_window: Abrir en Nueva Ventana
+foreground_color: Color de Letra
+background_color: Color de Fondo
+upload_from_device: Subir Archivo desde Dispositivo
+choose_from_library: Seleccionar Archivo desde Biblioteca
+import_from_url: Importar Archivo desde URL
+no_file_selected: Sin Archivos Seleccionados
+download_file: Descargar Archivo
+collection_key: Llave de Colección
 name: Nombre
+primary_key_field: Campo Llave Primaria
+type: Tipo
+creating_new_collection: Crear Nueva Colección
 created_by: Creado Por
 created_on: Creado El
-save_and_stay: Guardar y permanecear
+creating_collection_info: Defina un nombre para la colección y configure su campo de "llave" única...
+creating_collection_system: Habilitar y renombrar cualquiera de estos campos opcionales.
+auto_increment_integer: Número Entero Auto-Incrementado
+generated_uuid: UUID Generado
+manual_string: Cadena de Texto introducida Manualmente
+save_and_create_new: Guardar y Crear Nuevo
+save_and_stay: Guardar y Permanecer
 save_as_copy: Guardar como Copia
+add_existing: Agregar Existente
 comments: Comentarios
-request_feature: Solicita una funcionalidad
-item_count: 'No hay entradas | Una entrada | {count} entradas'
+no_comments: Aún Sin Comentarios
+click_to_expand: Haga Clic para Expandir
+select_item: Seleccionar Elemento
+no_items: Sin Elementos
+disabled: Desactivado
+information: Información
+report_bug: Reportar Problema
+request_feature: Solicitar Características
+interface_not_found: 'Interfaz "{interface}" no encontrada.'
+reset_interface: Restablecer Interfaz
+display_not_found: 'Presentación "{display}" no encontrada.'
+reset_display: Restablecer Presentación
+m2a_builder: Constructor (M2A)
+item_count: 'Sin Elementos | Un Elemento | {count} Elementos'
+no_items_copy: Aún no hay Elementos en esta colección.
+file_count: 'Sin Archivos | Un Archivo | {count} Archivos'
+no_files_copy: Aquí no hay archivos.
+user_count: 'Sin Usuarios | Un Usuario | {count} Usuarios'
+no_users_copy: No hay usuarios con este Rol aún.
+webhooks_count: 'Sin Webhooks | Un Webhook | {count} Webhooks'
+no_webhooks_copy: Aún no hay Webhooks.
+all_items: Todos los Elementos
+csv: CSV
+no_collections: Sin Colecciones
 create_collection: Crear colección
+no_collections_copy_admin: Aún no tiene alguna Colección. Haga clic en el botón para empezar.
+no_collections_copy: Aún no tiene alguna Colección. Por favor contacte al administrador del sistema.
 relationship_not_setup: La relación no se ha configurado correctamente
+display_template_not_setup: La opción de plantilla de Presentación está mal configurada
+collection_field_not_setup: La opción del campo de colección está mal configurada
+select_a_collection: Seleccionar una Colección
+active: Activo
 users: Usuarios
 activity: Actividad
 webhooks: Webhooks
-field_width: Longitud de entrada
-user_directory: Directorio de usuarios
+field_width: Ancho de Campo
+add_a_new_item: Agregar un nuevo Elemento...
+add_filter: Agregar Filtro
+upper_limit: Límite Superior...
+lower_limit: Límite Inferior...
+user_directory: Directorio de Usuarios
+documentation: Documentación
+sidebar: Barra Lateral
 duration: Duración
+charset: Codificación
+second: Segundo
 modified_on: Modificado en
 sort_field: Campo de Ordenación
 edit: Editar
@@ -241,7 +363,10 @@ read: Leer
 update: Actualización
 select_fields: Seleccionar campos
 wysiwyg_options:
+  forecolor: Color de Letra
+  backcolor: Color de Fondo
   remove: Eliminar
+  selectall: Seleccionar Todo
   table: Tabla
 dropdown: Lista desplegable
 choices: Opciones
@@ -281,7 +406,7 @@ fields:
     filename_download: Nombre del archivo a descargar
     filename_disk: Nombre del archivo en el disco
     private_hash: Hash privado
-    checksum: Cadena de verificación
+    checksum: Checksum
     uploaded_on: Subido el
     uploaded_by: Subido por
     width: Ancho
@@ -376,6 +501,8 @@ interfaces:
     datetime: Fecha/hora
   display-template:
     display-template: Mostrar Plantilla
+    collection_field_not_setup: La opción del campo de colección está mal configurada
+    select_a_collection: Seleccionar una Colección
   divider:
     divider: Divisor
   dropdown:
@@ -387,6 +514,8 @@ interfaces:
     files: Archivos
   icon:
     icon: Icono
+  interface:
+    interface: Interfaz
   interface-options:
     interface-options: Opciones de Interfaz
   many-to-many:
