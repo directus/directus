@@ -565,25 +565,46 @@ page_help_files_item: >-
 page_help_settings_project: '**Ajustes del Proyecto** — Sus opciones de ajustes globales para el proyecto.'
 page_help_settings_datamodel_collections: >-
   **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
+page_help_settings_datamodel_fields: >-
+  **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
+page_help_settings_roles_collection: '**Navegar en Roles** — Lista los roles de Usuario Admin, Public y Personalizados.'
+page_help_settings_roles_item: '**Detalle de Rol** — Administra los permisos del Rol y otros ajustes.'
+page_help_settings_presets_collection: >-
+  **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
+page_help_settings_presets_item: >-
+  **Detalle de Predefinido** — Una manera de administrar Marcadores y Predefinidos por defecto de Colecciones.
+page_help_settings_webhooks_collection: '**Navegar en Webhooks** — Lista todos los webhooks en el proyecto.'
+page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
+page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
+page_help_users_item: >-
+  **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
+activity_feed: Actividad
 add_new: Añadir Nuevo
+from_collection: 'De la colección "{collection}"'
+create_new: Crear Nuevo
 all: Todo
 batch_delete_confirm: >-
   No se han seleccionado entradas | ¿Está seguro de que desea eliminar esta entrada? Esta acción no puede deshacerse. | Está seguro de que desea eliminar estas {count} entradas? Esta acción no puede deshacerse.
 cancel: Cancelar
 collection: Colección
 collections: Colecciones
+singleton: Singleton
+singleton_label: Tratar como un sólo objeto
+system_fields_locked: Los campos del sistema están bloqueados y no pueden ser editados
 fields:
   directus_activity:
     action: Acción
     collection: Colección
     item: Clave Primaria del Item
     user: Realizado por
-    timestamp: Realizado el
+    timestamp: Realizado El
     edited_on: Editado el
     comment_deleted_on: Comentario eliminado el
     ip: Dirección IP
-    user_agent: Navegador
+    user_agent: Agente de Usuario (Navegador)
     comment: Comentar
+  directus_collections:
+    translations: Traducciones para Nombre de Colección
   directus_files:
     title: Título
     tags: Etiquetas
@@ -620,6 +641,7 @@ fields:
   directus_fields:
     note: Nota
     hidden: Oculto
+    singleton: Singleton
     translation: Traducciones del Nombre del Campo
     display_template: Plantilla
   directus_roles:
