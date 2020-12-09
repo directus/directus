@@ -47,7 +47,7 @@ yarn create directus-project my-project
 
 Simply follow the setup prompts and the CLI will create your new project directory (eg: `my-project`), configuration
 file, and initial database. To get the most out of Directus, and to ensure you have the latest security patches, it is
-important to keep your projects up-to-date. For more information, view our docs on [Updates & Migrations](#).
+important to keep your projects up-to-date.
 
 <br>
 
@@ -64,8 +64,7 @@ An empty [Directus project](https://github.com/platformsh-templates/directus) re
 
 ## 📌 Requirements
 
-Directus only requires Node.js (or [PHP](https://github.com/directus/api-next)), and supports most operating systems and
-SQL database vendors.
+Directus only requires Node.js and supports most operating systems and SQL database vendors.
 
 - Node.js 10+
 - npm 6.x+
