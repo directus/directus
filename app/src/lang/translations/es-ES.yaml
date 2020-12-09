@@ -7,9 +7,35 @@ full_width: Ancho Completo
 fill_width: Llenar Ancho
 field_name_translations: Traducciones del Nombre del Campo
 enter_password_to_enable_tfa: Ingrese su contraseña para habilitar la Autentificación en Dos Pasos
+add_field: Agregar Campo
+role_name: Nombre del Rol
+db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
+show_archived_items: Mostrar Elementos Archivados
 required: Requerido
+requires_value: Se requiere un valor
+create_preset: Crear Predefinido
 create_role: Crear Rol
+create_user: Crear Usuario
+create_webhook: Crear Webhook
+invite_users: Invitar Usuarios
+email_examples: 'admin@example.com, user@example.com...'
+invite: Invitar
+emails: Correos Electrónicos
+connection_excellent: Excelente Conexión
+connection_good: Buena Conexión
+connection_poor: Conexión Pobre
+rename_folder: Renombrar Directorio
+delete_folder: Eliminar Directorio
+reset_bookmark: Restablecer Marcador
+rename_bookmark: Renombrar Marcador
+update_bookmark: Actualizar Marcador
 delete_bookmark: Eliminar Marcador
+delete_bookmark_copy: >-
+  ¿Está seguro que desea eliminar el Marcador "{bookmark}"? Esta acción no es reversible.
+logoutReason:
+  SIGN_OUT: Sesión terminada
+  SESSION_EXPIRED: Sesión expirada
+public: Público
 directus_version: Versión de Directus
 language: Idioma
 create_field: Crear Campo
@@ -175,6 +201,7 @@ fields:
     translation: Traducciones del Nombre del Campo
     display_template: Plantilla
   directus_roles:
+    name: Nombre del Rol
     description: Descripción
 comment: Comentar
 continue: Continuar
