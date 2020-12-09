@@ -1,5 +1,12 @@
 ---
-full_width: Anchura completa
+edit_field: Editar Campo
+item_revision: Revisión de Elemento
+duplicate_field: Duplicar Campo
+half_width: Media Ancho
+full_width: Ancho Completo
+fill_width: Llenar Ancho
+field_name_translations: Traducciones del Nombre del Campo
+enter_password_to_enable_tfa: Ingrese su contraseña para habilitar la Autentificación en Dos Pasos
 required: Requerido
 create_role: Crear Rol
 delete_bookmark: Eliminar Marcador
@@ -165,6 +172,7 @@ fields:
   directus_fields:
     note: Nota
     hidden: Oculto
+    translation: Traducciones del Nombre del Campo
     display_template: Plantilla
   directus_roles:
     description: Descripción
