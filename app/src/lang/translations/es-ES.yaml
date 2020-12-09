@@ -549,6 +549,15 @@ unsaved_changes: Cambios sin Guardar
 unsaved_changes_copy: '¿Realmente desea salir de esta página?'
 discard_changes: Descartar Cambios
 keep_editing: Seguir Editando
+page_help_collections_overview: '**Resumen de Colecciones** - Listas de todas las colecciones a las que tiene acceso.'
+page_help_collections_collection: >-
+  **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
+page_help_collections_item: >-
+  **Detalle de Elemento** - Una forma de visualizar y administrar este Elemento. Esta barra lateral también contiene un historial completo de revisiones y comentarios incluidos.
+page_help_activity_collection: >-
+  **Navegar en Actividad** - Una lista completa de todas las actividades del sistema y del contenido de su usuario.
+page_help_docs_global: >-
+  **Resumen de la Documentación** — Documentos específicamente diseñados para la versión y esquema de este proyecto.
 add_new: Añadir Nuevo
 all: Todo
 batch_delete_confirm: >-
