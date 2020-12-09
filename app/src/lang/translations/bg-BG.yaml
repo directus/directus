@@ -20,6 +20,7 @@ create_webhook: Създаване на уеб-кука
 invite_users: Поканване на потребители
 email_examples: 'admin@example.com, potrebitel@example.com...'
 invite: Покана
+emails: Емейли
 connection_excellent: Отлична свързаност
 connection_good: Добра свързаност
 connection_fair: Връзката е приемлива
@@ -50,6 +51,8 @@ validationError:
   neq: Стойността не трябва да е {invalid}
   in: Стойността трябва да е някоя от {valid}
   nin: Стойността не трябва да е някоя от {invalid}
+all_access: Пълен достъп
+no_access: Без достъп
 item_permissions: Позволения за обект
 permissions_for_role: 'Обекти които {role} ролята може да {action}.'
 presentation_and_aliases: Презентационни и псевдоними
@@ -239,12 +242,19 @@ sort_field: Поле за сортиране
 toggle_manual_sorting: Ръчна подредба
 select_an_item: Избор на обект...
 edit: Редактиране
+disable_tfa: Изключване на 2FA
 tfa_scan_code: Сканиране на кода във вашето приложение за авторизация, за да завършите настройването на 2FA
+create_account: Създаване на профил
+account_created_successfully: Профилът е създаден
 errors:
   INVALID_QUERY: Невалидна заявка
   ITEM_LIMIT_REACHED: Достигнат лимит за обекти
   ITEM_NOT_FOUND: Обектът не е намерен
+  UNKNOWN: Неочаквана грешка
+create_bookmark: Създаване на отметка
+edit_bookmark: Редактиране на отметката
 bookmarks: Маркировка
+unexpected_error: Неочаквана грешка
 copy_details: Копиране на детайли
 no_app_access: Без достъп до приложението
 no_app_access_copy: Не е позволено използването на администраторското приложение от този потребител.
