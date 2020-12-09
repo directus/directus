@@ -960,20 +960,47 @@ displays:
     filled_label: Usar una variante de llenado
   image:
     image: Imagen
+    description: Presentar una previsualización pequeña de la imagen
     circle: Círculo
+    circle_label: Presentar como un círculo
   labels:
+    labels: Etiquetas
+    description: Presentar ya sea una sola etiqueta o una lista de ellas
+    default_foreground: Color de letra por defecto
+    default_background: Fondo por defecto
+    format_label: Formatear cada etiqueta
+    show_as_dot: Presentar como Punto
     choices_value_placeholder: Ingrese un valor...
+    choices_text_placeholder: Ingresar un texto...
+  mime-type:
+    mime-type: Tipo MIME
+    description: Presentar el Tipo MIME del archivo
+    extension_only: Sólo Extensión
+    extension_only_label: Presentar sólo la extensión del archivo
   rating:
     rating: Valoración
+    description: Visualizar un número de estrellas relativas al valor máximo
+    simple: Simple
+    simple_label: Presentar estrellas en un formato simple
+  raw:
+    raw: Valor Plano
+  related-values:
+    related-values: Valores Relacionados
+    description: Presentar valores relativos
   user:
     user: Usuario
+    description: Presentar un usuario de Directus
     avatar: Avatar
     name: Nombre
     both: Ambos
+    circle_label: Presentar usuario en un círculo
 layouts:
   cards:
     cards: Tarjetas
     image_source: Orígen de la imágen
+    image_fit: Ajuste de Imagen
+    crop: Recortar
+    contain: Contiene
     title: Título
     subtitle: Subtítulo
   tabular:
