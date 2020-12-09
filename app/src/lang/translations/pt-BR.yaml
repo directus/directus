@@ -36,6 +36,7 @@ logoutReason:
   SIGN_OUT: Deslogado
   SESSION_EXPIRED: Sessão expirada
 public: Público
+public_description: Controla quais dados da API estão disponíveis sem autenticação.
 not_allowed: Não permitido
 directus_version: Versão do Directus
 node_version: Versão Node
@@ -74,6 +75,8 @@ all_access: Acesso Total
 no_access: Sem acesso
 use_custom: Usar Personalizado
 item_permissions: Permissões do Item
+field_permissions: Permissões dos campos
+field_validation: Validação dos campos
 changes_made: Estas são as mudanças específicas que foram feitas...
 no_relational_data: Tenha em mente que isso não inclui dados relacionais.
 hide_field_on_detail: Ocultar Campo em Detalhes
@@ -94,6 +97,7 @@ focal_length: Distância focal
 schema_setup_title: Como este campo deve ser salvo no banco de dados?
 schema_field_title: Como este campo deve se comportar no aplicativo?
 create_field: Criar Campo
+creating_new_field: 'Novo campo ({collection})'
 updating_field_field: '{field} ({collection})'
 reset_page_preferences: Redefinir preferências da página
 hidden_field: Campo oculto
@@ -122,6 +126,13 @@ click_here: Clique aqui
 click_to_manage_translated_fields: >-
   Ainda não há campos traduzidos. Clique aqui para criá-los. | Há um campo traduzido. Clique aqui para gerenciá-lo. | Há {count} campos traduzidos. Clique aqui para gerenciá-los.
 fields_group: Grupo de Campos
+configure_m2o: Configure seu relacionamento Muitos-para-Um...
+configure_o2m: Configure seu relacionamento Um-para-Muitos...
+configure_m2m: Configure seu relacionamento Muitos-para-Muitos...
+configure_m2a: Configure seu relacionamento Muitos-para-Qualquer...
+add_m2o_to_collection: 'Adicionar Muitos-para-Um a "{collection}"'
+add_o2m_to_collection: 'Adicionar Um-para-Muitos a "{collection}"'
+add_m2m_to_collection: 'Adicionar Muitos-para-Muitos a "{collection}"'
 choose_a_type: Escolha um tipo...
 determined_by_relationship: Determinado por Relacionamento
 add_note: Crie uma nota de ajuda para os usuários...
@@ -244,7 +255,10 @@ type: Tipo
 creating_new_collection: Criando nova coleção
 created_by: Criado por
 created_on: Criado em
+auto_increment_integer: Integer auto-incremental
 generated_uuid: UUID gerado
+manual_string: String inserida manualmente
+save_and_create_new: Salvar e criar novo
 save_and_stay: Salvar e manter aqui
 save_as_copy: Salvar e Copiar
 add_existing: Adicionar existente
@@ -257,8 +271,14 @@ disabled: Desabilitado
 information: Informação
 report_bug: Relatar erro
 request_feature: Pedir funcionalidade
+interface_not_found: 'Interface "{interface}" não encontrada.'
+reset_interface: Redefinir interface
+display_not_found: 'Exibição "{display}" não foi encontrada.'
 reset_display: Redefinir Exibição
+m2a_builder: Construtor (M2A)
 item_count: 'Sem Itens | Um Item | {count} Itens'
+no_items_copy: Ainda não há itens nesta coleção.
+file_count: 'Nenhum arquivo | Um arquivo | {count} arquivos'
 no_files_copy: Ainda não há arquivos aqui.
 user_count: 'Nenhum usuário | Um usuário | {count} usuários'
 no_users_copy: Não há usuários neste cargo ainda.
@@ -293,12 +313,16 @@ modified_on: Modificado em
 card_size: Tamanho do cartão
 sort_field: Campo de ordenação
 bookmark_doesnt_exist: Marcador não existe
+bookmark_doesnt_exist_copy: O marcador que você está tentando abrir não pôde ser encontrado.
 bookmark_doesnt_exist_cta: Voltar à coleção
 select_an_item: Selecione um item...
 edit: Editar
 enabled: Habilitado
 disable_tfa: Desativar verificação em duas etapas
+tfa_scan_code: Escaneie o código no seu aplicativo de autenticação para terminar de configurar a 2FA
+enter_otp_to_disable_tfa: Digite o OTP para desativar a 2FA
 create_account: Criar conta
+account_created_successfully: Conta criada com sucesso
 auto_fill: Preench. automático
 corresponding_field: Campo correspondente
 errors:
@@ -321,6 +345,7 @@ presets: Predefinições
 unexpected_error: Erro inesperado
 unexpected_error_copy: Um erro inesperado ocorreu. Tente novamente mais tarde.
 copy_details: Copiar detalhes
+no_app_access_copy: Este usuário não tem permissão para usar o admin app.
 password_reset_sent: Enviamos um link seguro para redefinir sua senha
 password_reset_successful: Senha redefinida com sucesso
 back: Voltar
@@ -339,6 +364,10 @@ start_end_of_count_items: '{start}-{end} de {count} itens'
 delete_collection_are_you_sure: >-
   Tem certeza que deseja excluir esta coleção? Isto irá apagar a coleção e todos os itens nela. Esta ação é permanente.
 collections_shown: Coleções mostradas
+visible_collections: Coleções visíveis
+hidden_collections: Coleções ocultas
+unmanaged_collections: Coleções não configuradas
+system_collections: Coleções do sistema
 placeholder: Placeholder
 icon_left: Ícone à Esquerda
 icon_right: Ícone à Direita
@@ -369,6 +398,8 @@ operators:
   nbetween: Não está entre
   empty: Está vazio
   nempty: Não está vazio
+  all: Contém essas chaves
+  has: Contém algumas dessas chaves
 loading: Carregando...
 drop_to_upload: Solte para enviar
 upload_file: Enviar arquivo
@@ -400,6 +431,8 @@ saves_automatically: Salva automaticamente
 role: Função
 user: Usuário
 no_presets: Sem predefinições
+no_presets_copy: Nenhuma predefinição ou marcador foi salvo ainda.
+no_presets_cta: Adicionar predefinição
 create: Criar
 on_create: Ao Criar
 on_update: Pós-alteração
@@ -544,18 +577,25 @@ fields:
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
   directus_fields:
+    collection: Nome da coleção
     icon: Ícone da coleção
     note: Nota
     hidden: Oculto
     display_template: Template
   directus_roles:
     name: Nome do cargo
+    icon: Ícone do cargo
     description: Descrição
     enforce_tfa: Exigir 2FA
+    users: Usuários no cargo
 no_fields_in_collection: 'Ainda não há campos em "{collection}"'
 do_nothing: Não fazer nada
+generate_and_save_uuid: Gerar e salvar UUID
+save_current_user_id: Salvar ID de usuário atual
 comment: Comentário
 continue: Continuar
+continue_as: >-
+  <b>{name}</b> está atualmente autenticado. Se você reconhecer esta conta, clique em continuar.
 editing_role: 'Cargo {role}'
 creating_webhook: Criando Webhook
 default: Padrão
@@ -620,14 +660,18 @@ interfaces:
     items_shown: Itens mostrados
   code:
     code: Código
+    description: Escreva ou compartilhe trechos de código
     line_number: Número da Linha
     placeholder: Inserir código aqui...
   collection:
     collection: Coleção
+    include_system_collections: Incluir coleções do sistema
   collections:
     collections: Coleções
+    include_system_collections: Incluir coleções do sistema
   color:
     color: Cor
+    description: Digite ou selecione um valor de cor
     placeholder: Escolha uma cor...
     preset_colors: Cores predefinidas
     preset_colors_add_label: Adicionar nova cor...
@@ -670,8 +714,10 @@ interfaces:
     search_for_icon: Procurar por um ícone...
   image:
     image: Imagem
+    description: Selecione ou envie uma imagem
   interface:
     interface: Interface
+    description: Selecione uma interface existente
     placeholder: Selecione uma interface...
   interface-options:
     interface-options: Opções de Interface
@@ -717,10 +763,14 @@ interfaces:
     remove: Remover espaço em branco
     uppercase: Converter em maiúsculas
     lowercase: Converter em minúsculas
+    alphabetize: Alfabetizar
+    alphabetize_label: Forçar ordem alfabética
     add_tags: Adicionar tags...
   text-input:
     text-input: Entrada de texto
+    description: Digite um texto de linha única
     trim: Aparar
+    trim_label: Aparar o início e fim
     mask_label: Ocultar o valor real
   toggle:
     toggle: Alternar
@@ -737,13 +787,21 @@ interfaces:
       dropdown: Menu suspenso
   wysiwyg:
     wysiwyg: WYSIWYG
+    description: Um editor de rich-text que gera HTML
     toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
 displays:
   boolean:
     boolean: Boolean
+    description: Exibir estados ativados e desativados
+    label_on: Rótulo ligado
+    label_on_placeholder: Digite o rótulo para ligado...
+    label_off: Rótulo desligado
+    label_off_placeholder: Digite o rótulo para desligado...
     icon_on: Ícone ligado
     icon_off: Ícone desligado
+    color_on: Cor ligada
+    color_off: Cor desligada
   collection:
     collection: Coleção
     description: Exibir uma coleção
@@ -754,6 +812,7 @@ displays:
     default_color: Cor padrão
   datetime:
     datetime: Data e Hora
+    description: Exibir valores relacionados ao tempo
     format: Formato
     long: Longo
     short: Curto
