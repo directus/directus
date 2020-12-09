@@ -776,75 +776,190 @@ interfaces:
     select_a_collection: Seleccionar una Colección
   divider:
     divider: Separador
+    description: Etiqueta y a la vez permite dividir los campos en secciones
+    title_placeholder: Ingresar un título...
+    inline_title: Titulo en línea
+    inline_title_label: Mostrar título en línea
   dropdown:
+    description: Seleccine un valor de la lista desplegable
+    choices_placeholder: Agregar una nueva opción
     allow_other: Permitir Otro
+    allow_other_label: Permitir Otros Valores
+    allow_none: Permitir "Nada"
+    allow_none_label: Permitir No Selección
+    choices_name_placeholder: Ingrese un nombre...
     choices_value_placeholder: Ingrese un valor...
+  dropdown-multiselect:
+    dropdown-multiselect: Lista Desplegable (Múltiple)
+    description: Seleccione múltiples valores de la lista de selección
   file:
     file: Archivo
+    description: Seleccionar o subir un archivo
   files:
     files: Archivos
+    description: Seleccionar o subir múltiples archivos
+  hash:
+    hash: Hash
+    description: Ingresar un valor para ser "Hasheado"
+    masked: Enmascarado
+    masked_label: Ocultar los verdaderos valores
   icon:
     icon: Ícono
+    description: Seleccione un ícono de la lista
+    search_for_icon: Buscar un ícono...
+  image:
+    image: Imagen
+    description: Seleccionar o subir una imagen
   interface:
     interface: Interfaz
+    description: Seleccionar una interfaz existente
+    placeholder: Seleccionar una interfaz...
   interface-options:
     interface-options: Opciones de Interfaz
+    description: Un diálogo para seleccionar opciones de una interfaz
   many-to-many:
     many-to-many: Muchos a Muchos
+    description: Seleccionar múltiples elementos de unión relacionados
   many-to-one:
     many-to-one: Muchos a Uno
+    description: Seleccionar un elemento único relacionado
     display_template: Plantilla de Presentación
   markdown:
     markdown: Markdown
+    description: Ingresar y previsualizar Markdown
+    tabbed: Pestaña
+    tabbed_label: Mostrar previsualización en una pestaña separada
     edit: Editar
     preview: Vista preliminar
+  notice:
+    notice: Aviso
+    description: Presentar un aviso corto
+    text: Ingresar contenido del aviso aquí...
   numeric:
     numeric: Numérico
+    description: Ingresar un número
+    minimum_value: Valor Mínimo
+    maximum_value: Valor Máximo
+    step_interval: Intervalo de Pasos
   one-to-many:
     one-to-many: Uno a Muchos
+    description: Seleccionar múltiples elementos relacionados
+    no_collection: No se encontró la colección
   radio-buttons:
-    radio-buttons: Botones de radio
+    radio-buttons: Botones de Radio
+    description: Seleccionar una de las opciones múltiples
   repeater:
     repeater: Repetidor
+    description: Crear múltiples entradas para la misma estructura
+    edit_fields: Editar Campos
+    add_label: 'Etiqueta "Agregar Nueva Fila"'
+    field_name_placeholder: Ingrese el nombre del campo...
+    field_note_placeholder: Ingrese la nota del campo...
   slider:
     slider: Deslizador
+    description: Seleccionar un número usando un deslizador
+    always_show_value: Siemrpe presentar valor
   slug:
     slug: Slug
+    description: Ingresar una palabra conectada con guiones
   tags:
     tags: Etiquetas
+    description: Seleccionar o agregar etiquetas
+    whitespace: Espacio en Blanco
+    hyphen: Reemplazar con guiones
+    underscore: Reemplazar con guiones bajos
+    remove: Remover espacios en blanco
+    capitalization: Capitalización
+    uppercase: Convertir a Mayúsculas
+    lowercase: Convertir a Minúsculas
+    auto_formatter: Usar Auto-Formateador de Título
+    alphabetize: Alfabetización
+    alphabetize_label: Forzar Orden Alfabético
+    add_tags: Agregar etiquetas...
   text-input:
-    text-input: Control de Texto
+    text-input: Campo de Texto
+    description: Ingresar texto de una línea
     trim: Eliminar Espacios en Blanco
+    trim_label: Eliminar espacios al inicio y al final
+    mask: Enmascarado
+    mask_label: Ocultar el valor real
+  textarea:
+    textarea: Área de Texto
+    description: Ingresar texto plano multi-línea
   toggle:
     toggle: Alternar
+    description: Alternar entre Activado y Desactivado
+    label_placeholder: Ingresar una etiqueta...
     label_default: Habilitado
   translations:
     display_template: Plantilla de Presentación
+    no_collection: Sin Colección
   user:
     user: Usuario
+    description: Seleccionar un usuario existente de Directus
+    select_mode: Seleccionar Modo
     modes:
+      auto: Automático
       dropdown: Lista Desplegable
+      modal: Diálogo
   wysiwyg:
+    wysiwyg: WYSIWYG
+    description: Un editor de texto enriquecido para escribir contenido HTML
+    toolbar: Barra de Herramientas
     custom_formats: Formatos Personalizados
+    options_override: Sobrescribir Opciones
 displays:
   boolean:
     boolean: Booleano
+    description: Presentar estados Activo e Inactivo
+    label_on: Etiqueta Activo
+    label_on_placeholder: Ingrese una etiqueta para Activo...
+    label_off: Etiqueta Inactivo
+    label_off_placeholder: Ingrese una etiqueta para Inactivo...
     icon_on: Icono Activado
     icon_off: Icono Desactivado
+    color_on: Color para Activo
+    color_off: Color para Inactivo
   collection:
     collection: Colección
+    description: Presentar una colección
+    icon_label: Presentar el ícono de la colección
   color:
     color: Color
+    description: Presentar un punto coloreado
+    default_color: Color por Defecto
   datetime:
     datetime: Fecha/hora
+    description: Presentar valores relacionados a la hora
     format: Formato
+    format_note: >-
+      El formato personalizado acepta el __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Larga
+    short: Corta
+    relative: Relativa
+    relative_label: 'Presentar hora relativa, ej: hace 5 minutos'
   file:
     file: Archivo
+    description: Presentar archivos
   filesize:
     filesize: Tamaño del archivo
+    description: Presentar el tamaño de un archivo
+  formatted-value:
+    formatted-value: Valor Formateado
+    description: Presentar una versión formateada del texto
+    format_title: Formatear Título
+    format_title_label: Auto-formato
+    bold_label: Usar negritas
+  formatted-json-value:
+    formatted-json-value: Valor JSON Formateado
+    description: Presentar una versión formateada del objeto
   icon:
     icon: Ícono
+    description: Presentar un ícono
+    filled: Lleno
+    filled_label: Usar una variante de llenado
   image:
+    image: Imagen
     circle: Círculo
   labels:
     choices_value_placeholder: Ingrese un valor...
