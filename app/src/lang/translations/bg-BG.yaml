@@ -424,6 +424,9 @@ interfaces:
     file: Файл
   files:
     files: Файлове
+  hash:
+    hash: Хеш
+    masked: Маскиране
   icon:
     icon: Икона
   image:
@@ -441,6 +444,8 @@ interfaces:
     markdown: Markdown
     edit: Редактиране
     preview: Преглед
+  notice:
+    notice: Бележка
   numeric:
     minimum_value: Минимална стойност
     maximum_value: Максимална стойност
@@ -456,10 +461,12 @@ interfaces:
     slug: Slug
   tags:
     tags: Тагове
+    whitespace: Интервали
     alphabetize: По азбучен ред
   text-input:
     text-input: Поле за текст
     trim: Trim
+    mask: Маскиране
   toggle:
     toggle: Превключване
   translations:
@@ -467,7 +474,9 @@ interfaces:
   user:
     user: Потребител
     modes:
+      auto: Автоматичен
       dropdown: Падащо меню
+      modal: Модал
   wysiwyg:
     custom_formats: Специфични формати
 displays:
@@ -478,6 +487,7 @@ displays:
     collection: Колекция
   color:
     color: Цвят
+    default_color: Свят по подразбиране
   datetime:
     datetime: Дата и час
     format: Формат
@@ -492,8 +502,13 @@ displays:
   image:
     image: Изображение
     circle: Кръг
+  mime-type:
+    mime-type: MIME тип
   rating:
     rating: Оценка
+    simple: Опростен
+  raw:
+    raw: Първична стойност
   user:
     user: Потребител
     avatar: Аватар
