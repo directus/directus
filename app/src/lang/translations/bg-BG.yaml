@@ -502,23 +502,42 @@ displays:
   image:
     image: Изображение
     circle: Кръг
+  labels:
+    labels: Етикети
+    default_foreground: Основа по подразбиране
+    default_background: Фон по подразбиране
+    format_label: Форматиране на всеки етикет
+    show_as_dot: Показване като точка
+    choices_text_placeholder: Въвеждане на текст...
   mime-type:
     mime-type: MIME тип
+    description: Показване на MIME типа на файла
+    extension_only: Само разширение
+    extension_only_label: Показване само на разширението
   rating:
     rating: Оценка
+    description: Показване на числото като звезди до максималната стойност
     simple: Опростен
+    simple_label: Показване на звездите в опростен вид
   raw:
     raw: Първична стойност
+  related-values:
+    related-values: Релативни стойности
+    description: Показване на релативни стойности
   user:
     user: Потребител
+    description: Показване на потребител от Directus
     avatar: Аватар
     name: Име
     both: И двете
+    circle_label: Показване на потребител в кръг
 layouts:
   cards:
     cards: Картички
     image_source: Източник на изображението
+    image_fit: Напасване на изображението
     crop: Изрязване
+    contain: Напасване
     title: Заглавие
     subtitle: Подзаглавие
   tabular:
