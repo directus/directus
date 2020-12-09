@@ -93,14 +93,36 @@ duration: Dauer
 modified_on: Geändert am
 sort_field: Sortierfeld
 edit: Bearbeiten
+enter_otp_to_disable_tfa: OTP zum deaktivieren der 2FA eingeben
+create_account: Konto erstellen
+account_created_successfully: Konto wurde erfolgreich erstellt
+auto_fill: Autom. ausfüllen
+corresponding_field: Korrespondierendes Feld
+errors:
+  COLLECTION_NOT_FOUND: "Sammlung existiert nicht"
+  FIELD_NOT_FOUND: Feld nicht gefunden
+  FORBIDDEN: Verweigert
+  INVALID_CREDENTIALS: Benutzername oder Passwort falsch
+  INVALID_OTP: Falsches Einmalpasswort
+  INVALID_QUERY: Ungültige anfrage
+  ROUTE_NOT_FOUND: Nicht gefunden
+  UNKNOWN: Unerwarteter Fehler
 bookmarks: Lesezeichen
+unexpected_error: Unerwarteter Fehler
 back: Zurück
+square: Quadratisch
+free: Frei
 placeholder: Platzhalter
 icon_left: Icon links
 icon_right: Icon rechts
+font: Schriftart
+sans_serif: Sans Serif
+serif: Serif
 monospace: Monospace
 divider: Divider
 color: Farbe
+circle: Kreis
+empty_item: Leeres Element
 operators:
   lt: Weniger als
   gt: Größer als
@@ -108,8 +130,12 @@ operators:
   gte: Größer oder gleich
   contains: Enthält
   ncontains: Enthält nicht
+  nbetween: Ist nicht zwischen
   empty: Ist leer
+  nempty: Ist nicht leer
 loading: Wird geladen...
+upload_pending: Upload ausstehend
+click_to_browse: Zum Durchsuchen klicken
 display_template: Anzeigevorlage
 no_results: Keine Ergebnisse
 role: Rolle
@@ -119,7 +145,12 @@ on_update: Beim Aktualisieren
 read: Lesen
 update: Aktualisieren
 select_fields: Fielder auswählen
+bold: Fett
+toggle: Umschalten
+icon_on: Symbol an
+icon_off: Symbol aus
 wysiwyg_options:
+  bold: Fett
   remove: Löschen
   table: Tabelle
 dropdown: Dropdown
@@ -291,6 +322,8 @@ interfaces:
   text-input:
     text-input: Texteingabe
     trim: Beschneiden
+  toggle:
+    toggle: Umschalten
   translations:
     display_template: Anzeigevorlage
   user:
@@ -300,6 +333,9 @@ interfaces:
   wysiwyg:
     custom_formats: Benutzerdefiniertes Format
 displays:
+  boolean:
+    icon_on: Symbol an
+    icon_off: Symbol aus
   collection:
     collection: Sammlung
   color:
@@ -313,6 +349,8 @@ displays:
     filesize: Dateigröße
   icon:
     icon: Symbol
+  image:
+    circle: Kreis
   rating:
     rating: Bewertung
   user:
