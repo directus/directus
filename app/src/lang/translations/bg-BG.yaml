@@ -31,9 +31,12 @@ reset_bookmark: Нулиране на отметки
 rename_bookmark: Преименуване на отметка
 update_bookmark: Обновяване на отметка
 delete_bookmark: Изтрий отметка
+delete_bookmark_copy: >-
+  Сигурни ли сте че искате да изтриете отметката "{bookmark}"? Това действие не може да бъде отменено.
 logoutReason:
   SESSION_EXPIRED: Сесията е изтекла
 public: Обществен
+not_allowed: Не е позволено
 directus_version: Версия на Directus
 node_version: Версия на Node
 node_uptime: Ъптайм на Node
@@ -124,6 +127,8 @@ enter_raw_value: Въвеждане на първична стойност...
 clear_value: Изчистване на стойност
 notifications: Известия
 show_all_activity: Показване на цялата активност
+confirm_revert: Потвърждание за връщане
+confirm_revert_body: Връщане на обекта към избрано състояние.
 display: Показване
 settings_update_success: Настройките са обновени
 title: Заглавие
@@ -131,6 +136,7 @@ revision_delta_created: Създаден
 revision_delta_created_externally: Външно създадени
 revision_delta_updated: '1 поле е обновено | {count} полета са обновени'
 revision_delta_deleted: Изтрито
+revision_delta_reverted: Върнат
 revision_delta_other: Ревизия
 revision_delta_by: '{date} от {user}'
 revision_preview: Преглед на ревизия
@@ -547,6 +553,7 @@ permissions: Позволения
 reset: Нулиране
 reset_password: Нулиране на паролата
 revisions: Ревизии
+revert: Връщане
 save: Запазване
 schema: Схема
 search: Търсене
