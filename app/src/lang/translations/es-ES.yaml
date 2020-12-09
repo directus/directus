@@ -523,15 +523,32 @@ wysiwyg_options:
   directionality: Direccionalidad
 dropdown: Lista Desplegable
 choices: Opciones
+choices_option_configured_incorrectly: Opciones configuradas incorrectamente
 deselect: Quitar selección
-editing_in_batch: 'Editando por lotes {count} entradas'
+deselect_all: Deseleccionar Todo
+other: Otro...
+adding_user: Agregando Usuario
+unknown_user: Usuario Desconocido
+creating_in: 'Creando Elemento en {collection}'
+editing_in: 'Editando Elemento en {collection}'
+editing_in_batch: 'Editando {count} Elementos por lote'
+no_options_available: Sin opciones disponibles
+settings_data_model: Modelo de Datos
 settings_permissions: Roles y Permisos
-settings_project: Configuración del proyecto
+settings_project: Configuración del Proyecto
 settings_webhooks: Webhooks
-unsaved_changes: Cambio sin guardar
-unsaved_changes_copy: '¿Estás seguro de dejar esta página?'
+settings_presets: Predefinidos y Marcadores
+scope: Alcance
+layout: Diseño
+changes_are_permanent: Los cambios son permanentes
+preset_name_placeholder: Nombre del Marcador...
+editing_preset: Editar Predefinido
+layout_preview: Vista Previa de Diseño
+layout_setup: Configuración del Diseño
+unsaved_changes: Cambios sin Guardar
+unsaved_changes_copy: '¿Realmente desea salir de esta página?'
 discard_changes: Descartar Cambios
-keep_editing: Seguir editando
+keep_editing: Seguir Editando
 add_new: Añadir Nuevo
 all: Todo
 batch_delete_confirm: >-
