@@ -1,5 +1,6 @@
 ---
 edit_field: Editar campo
+item_revision: Revisão do item
 duplicate_field: Campo duplicado
 half_width: Meia largura
 full_width: Largura total
@@ -123,16 +124,49 @@ clear_value: Limpar valor
 reset_to_default: Redefinir para o padrão
 undo_changes: Desfazer alterações
 notifications: Notificações
+show_all_activity: Mostrar todas as atividades
 page_not_found: Página não encontrada
 page_not_found_body: A página que você está procurando não existe.
+confirm_revert: Confirmar Reverter
+confirm_revert_body: Isto irá reverter o item para o estado selecionado.
 display: Exibir
+settings_update_success: Configurações atualizadas
 title: Título
+revision_delta_created: Criado
+revision_delta_created_externally: Criado externamente
+revision_delta_updated: '1 campo atualizado | {count} campos atualizados'
 revision_delta_deleted: Excluído
+revision_delta_reverted: Revertido
+revision_delta_other: Revisão
+revision_delta_by: '{date} por {user}'
+private_user: Usuário privado
+revision_preview: Pré-visualização de revisão
+updates_made: Atualizações feitas
 leave_comment: Deixe um comentário...
+post_comment_success: Comentário postado
+item_create_success: Item criado | Itens criados
+item_update_success: Item atualizado | Itens atualizados
+item_delete_success: Item deletado | Itens deletados
 this_collection: Esta coleção
 related_collection: Coleções relacionadas
+related_collections: Coleções relacionadas
+export_data: Exportar dados
 format: Formato
+use_current_filters_settings: Usar filtros e configurações atuais
+export_collection: 'Exportar {collection}'
+last_page: Última página
+last_access: Último acesso
+enable_custom_values: Habilitar valores customizados
 submit: Enviar
+move_to_folder: Mover para pasta
+move: Mover
+system: Sistema
+add_field_related: Adicionar Campo à Coleção Relacionada
+interface: Interface
+today: Hoje
+yesterday: Ontem
+delete_comment: Excluir comentário
+date-fns_date: PPP
 month: Mês
 year: Ano
 select_all: Selecionar todos
@@ -157,6 +191,7 @@ import: Importar
 file_details: Detalhes do Arquivo
 dimensions: Dimensões
 size: Tamanho
+created: Criado
 modified: Modificado
 checksum: Checksum
 owner: Proprietário
@@ -175,7 +210,9 @@ no_file_selected: Nenhum arquivo selecionado
 download_file: Baixar arquivo
 collection_key: Chave da coleção
 name: Nome
+primary_key_field: Campo de chave primária
 type: Tipo
+creating_new_collection: Criando nova coleção
 created_by: Criado por
 created_on: Criado em
 generated_uuid: UUID gerado
@@ -220,14 +257,32 @@ enabled: Habilitado
 disable_tfa: Desativar verificação em duas etapas
 auto_fill: Preench. automático
 errors:
+  INVALID_CREDENTIALS: Nome de usuário ou senha incorreta
+  INVALID_OTP: Senha de uso único incorreta
+  INVALID_PAYLOAD: Payload inválido
+  INVALID_QUERY: Consulta inválida
   ITEM_NOT_FOUND: Item não encontrado
   ROUTE_NOT_FOUND: Não encontrado
+  UNKNOWN: Erro inesperado
+bookmark_name: Nome do marcador...
+create_bookmark: Criar marcador
 edit_bookmark: Editar marcador
 bookmarks: Favoritos
+presets: Predefinições
+unexpected_error: Erro inesperado
+unexpected_error_copy: Um erro inesperado ocorreu. Tente novamente mais tarde.
 copy_details: Copiar detalhes
+password_reset_sent: Enviamos um link seguro para redefinir sua senha
 password_reset_successful: Senha redefinida com sucesso
 back: Voltar
+editing_image: Editando Imagem
+square: Quadrado
 free: Livre
+flip_horizontal: Inverter horizontalmente
+flip_vertical: Inverter verticalmente
+aspect_ratio: Proporção da imagem
+rotate: Girar
+all_users: Todos os usuários
 delete_collection: Excluir coleção
 update_collection_success: Coleção atualizada
 delete_collection_success: Coleção excluída
@@ -241,6 +296,10 @@ icon_right: Ícone à Direita
 monospace: Monoespaçada
 divider: Divisor
 color: Cor
+circle: Círculo
+empty_item: Item vazio
+log_in_with: 'Entrar com {provider}'
+advanced_filter: Filtro avançado
 operators:
   lt: Menor que
   gt: Maior
@@ -251,9 +310,14 @@ operators:
   empty: Está vazio
 loading: Carregando...
 drop_to_upload: Solte para enviar
+upload_file: Enviar arquivo
+upload_file_indeterminate: Enviando arquivo...
 upload_file_success: Arquivo enviado
 upload_files_indeterminate: 'Enviando arquivos {done}/{total}'
 upload_files_success: '{count} arquivos enviados'
+upload_pending: Envio pendente
+drag_file_here: Arraste e solte arquivos aqui para enviar
+click_to_browse: Clique para pesquisar
 layout_options: Opções de Layout
 value_unique: O valor deve ser único
 all_activity: Todas as atividades
@@ -270,19 +334,28 @@ add_file: Adicionar arquivo
 replace_file: Substituir arquivo
 no_results: Sem resultados
 no_results_copy: Ajuste ou limpe os filtros de busca para ver resultados.
+clear_filters: Limpar filtros
+saves_automatically: Salva automaticamente
 role: Função
 user: Usuário
+no_presets: Sem predefinições
 create: Criar
 on_update: Pós-alteração
 read: Leitura
 update: Alteração
 select_fields: Selecionar campos
+bold: Negrito
+toggle: Alternar
 label: Rótulo
 wysiwyg_options:
+  aligncenter: Alinhar ao centro
+  alignjustify: Justificar
   alignleft: Alinhar à esquerda
+  alignnone: Não alinhar
   alignright: Alinhar à direita
   forecolor: Cor da fonte
   backcolor: Cor de fundo
+  bold: Negrito
   italic: Itálico
   underline: Sublinhado
   strikethrough: Tachado
@@ -304,22 +377,49 @@ wysiwyg_options:
   h6: Cabeçalho 6
   fontselect: Selecionar fonte
   fontsizeselect: Selecionar tamanho da fonte
+  indent: Indentar
+  outdent: Desindentar
+  undo: Desfazer
+  redo: Refazer
   remove: Remover
+  removeformat: Remover formatação
   selectall: Selecionar todos
   table: Tabela
+  visualaid: Ver elementos invisíveis
+  code: Ver Fonte
   fullscreen: Tela cheia
+  directionality: Direcionalidade
 dropdown: Menu suspenso
 choices: Escolhas
+choices_option_configured_incorrectly: Opções configuradas incorretamente
 deselect: Desmarcar
+deselect_all: Desmarcar tudo
+other: Outros...
+adding_user: Adicionando usuário
+unknown_user: Usuário desconhecido
+creating_in: 'Criando Item em {collection}'
+editing_in: 'Editando Item em {collection}'
 editing_in_batch: 'Editando Lote {count} Itens'
+no_options_available: Nenhuma opção disponível
+settings_data_model: Modelo de dados
 settings_permissions: Funções & Permissões
 settings_project: Configurações do projeto
 settings_webhooks: Webhooks
+settings_presets: Predefinições & Marcadores
+scope: Escopo
+layout: Layout
+changes_are_permanent: As alterações são permanentes
+editing_preset: Editando predefinição
+layout_preview: Pré-visualização do Layout
+layout_setup: Configuração de Layout
 unsaved_changes: Alterações Não Salvas
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Descartar Mudanças
 keep_editing: Continuar editando
+page_help_collections_overview: '**Visão geral das coleções** — Lista de todas as coleções que você tem acesso.'
+activity_feed: Feed de atividade
 add_new: Adicionar Novo
+from_collection: 'Da coleção “{collection}”'
 all: Tudo
 batch_delete_confirm: >-
   Nenhum item foi selecionado | Você tem certeza que deseja deletar esse item? Essa ação não pode ser desfeita. | Você tem certeza que deseja deletar esses {count} itens? Essa ação não pode ser desfeita.
@@ -373,16 +473,23 @@ fields:
     tfa_secret: Autenticação em Duas Etapas
   directus_settings:
     project_name: Nome do projeto
+    project_url: URL do projeto
+    project_color: Cor do projeto
     project_logo: Logotipo do projeto
   directus_fields:
+    icon: Ícone da coleção
     note: Nota
     hidden: Oculto
     display_template: Template
   directus_roles:
     name: Nome do cargo
     description: Descrição
+    enforce_tfa: Exigir 2FA
+no_fields_in_collection: 'Ainda não há campos em "{collection}"'
+do_nothing: Não fazer nada
 comment: Comentário
 continue: Continuar
+editing_role: 'Cargo {role}'
 default: Padrão
 delete: Deletar
 delete_field_are_you_sure: >-
@@ -399,6 +506,9 @@ forgot_password: Esqueci minha Senha
 hidden: Oculto
 icon: Ícone
 info: Informação
+success: Sucesso
+warning: Atenção
+danger: Perigo
 junction_collection: Jução da coleção
 latency: Latência
 login: Entrar
@@ -418,6 +528,7 @@ save: Salvar
 schema: Esquema
 search: Buscar
 select_existing: Selecionar existente
+select_field_type: Selecionar tipo de campo
 select_interface: Selecione uma interface
 settings: Configurações
 sign_in: Entrar
@@ -428,6 +539,8 @@ sort_direction: Direção da ordenação
 template: Template
 translation: Tradução
 value: Valor
+view_project: Visualizar projeto
+report_error: Relatar erro
 interfaces:
   checkboxes:
     checkboxes: Caixas de Seleção
@@ -437,6 +550,7 @@ interfaces:
   code:
     code: Código
     line_number: Número da Linha
+    placeholder: Inserir código aqui...
   collection:
     collection: Coleção
   collections:
@@ -444,8 +558,10 @@ interfaces:
   color:
     color: Cor
     preset_colors_add_label: Adicionar nova cor...
+    name_placeholder: Inserir nome da cor...
   datetime:
     datetime: Data e Hora
+    set_to_now: Definir como Agora
     use_24: Usar formato de 24 horas
   display-template:
     display-template: Modelo de exibição
@@ -468,6 +584,7 @@ interfaces:
     description: Selecione ou envie um arquivo
   files:
     files: Arquivos
+    description: Selecione ou envie vários arquivos
   hash:
     masked_label: Ocultar os valores verdadeiros
   icon:
@@ -476,6 +593,7 @@ interfaces:
   image:
     image: Imagem
   interface:
+    interface: Interface
     placeholder: Selecione uma interface...
   interface-options:
     interface-options: Opções de Interface
@@ -508,16 +626,19 @@ interfaces:
     field_name_placeholder: Inserir nome do campo...
   slider:
     slider: Slider
+    always_show_value: Sempre mostrar valor
   slug:
     slug: Slug
   tags:
     tags: Tags
     whitespace: Espaço em branco
+    add_tags: Adicionar tags...
   text-input:
     text-input: Entrada de texto
     trim: Aparar
     mask_label: Ocultar o valor real
   toggle:
+    toggle: Alternar
     label_default: Habilitado
   translations:
     display_template: Modelo de exibição
@@ -570,6 +691,7 @@ displays:
     filled_label: Usar a variante preenchida
   image:
     image: Imagem
+    circle: Círculo
     circle_label: Exibir como um círculo
   labels:
     labels: Rótulos
