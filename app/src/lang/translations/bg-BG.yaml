@@ -174,12 +174,13 @@ file_details: Детайли за файл
 dimensions: Размери
 size: Големина
 created: Създаден
+modified: Променен
 checksum: Checksum
 owner: Собственик
 edited_by: Променен от
 folder: Папка
 zoom: Увеличение
-download: Изтегли
+download: Изтегляне
 open: Отваряне
 open_in_new_window: Отваряне в нов прозорец
 foreground_color: Основен цвят
@@ -237,6 +238,7 @@ documentation: Документация
 sidebar: Страничен панел
 duration: Продължителност
 charset: Набор символи
+modified_on: Променен на
 card_size: Големина на картите
 sort_field: Поле за сортиране
 toggle_manual_sorting: Ръчна подредба
@@ -251,6 +253,7 @@ errors:
   ITEM_LIMIT_REACHED: Достигнат лимит за обекти
   ITEM_NOT_FOUND: Обектът не е намерен
   UNKNOWN: Неочаквана грешка
+bookmark_name: Име на отметка...
 create_bookmark: Създаване на отметка
 edit_bookmark: Редактиране на отметката
 bookmarks: Маркировка
@@ -263,8 +266,8 @@ back: Назад
 editing_image: Редактиране на изображение
 square: Квадрат
 free: Свободно
-flip_horizontal: Хоризонтално завъртане
-flip_vertical: Вертикално завъртане
+flip_horizontal: Хоризонтално обръщане
+flip_vertical: Вертикално обръщане
 aspect_ratio: Съотношение
 rotate: Завъртане
 all_users: Всички потребители
@@ -310,7 +313,7 @@ loading: Зареждане...
 upload_files_success: '{count} файла са качени'
 layout_options: Опции за оформлението
 collection_setup: Настройване на колекция
-all_activity: Всички активности
+all_activity: Цялостна активност
 create_item: Създаване на обект
 display_template: Шаблон за показване
 n_items_selected: 'Не са избрани обекти | 1 избран обект | {n} избрани обекти'
@@ -395,22 +398,23 @@ settings_project: Настройки на проект
 settings_webhooks: Уеб-куки
 scope: Обхват
 layout: Оформление
+changes_are_permanent: Промените са постоянни
 preset_name_placeholder: Име на отметка...
 layout_preview: Преглед на оформление
 layout_setup: Настройка на оформление
 unsaved_changes: Незапазени промени
 unsaved_changes_copy: Сигурни ли сте, че искате да напуснете тази страница?
 discard_changes: Отмяна на промените
-keep_editing: Продължаване на редакцията
+keep_editing: Продължаване с промените
 page_help_users_collection: '**Потребители** — Показване на всички системни потребители в проекта'
-activity_feed: Активностна хранилка
+activity_feed: Емисия на активността
 add_new: Добави нов запис
 all: Всички
 batch_delete_confirm: >-
   Няма избрани обекти | Наистина ли искате да изтриете този обект? Това действие не може да бъде отменено. | Наистина ли искате да изтриете тези {count} обекти? Това действие не може да бъде отменено.
 cancel: Отмяна
 collection: Колекция
-collections: Колекция
+collections: Колекции
 singleton: Сек
 singleton_label: Единичен обект
 fields:
@@ -430,8 +434,8 @@ fields:
     tags: Тагове
     location: Местоположение
     description: Описание
-    filename_download: Име на файла за сваляне
-    filename_disk: Име на файла на диска
+    filename_download: Име на файл при сваляне
+    filename_disk: Име на файл на диска
     private_hash: Private Hash
     checksum: Checksum
     uploaded_on: Редактирано на
@@ -549,7 +553,7 @@ interfaces:
     collection: Колекция
     include_system_collections: Включване на системните колекции
   collections:
-    collections: Колекция
+    collections: Колекции
     include_system_collections: Включване на системните колекции
   color:
     color: Цвят
