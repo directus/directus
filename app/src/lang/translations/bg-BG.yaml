@@ -87,6 +87,8 @@ time: Час
 not_available_for_type: Не е налично за този тип
 create_translations: Създаване на преводи
 auto_generate: Автоматично генерирано
+click_here: Натиснете тук
+to_manually_setup_translations: за ръчна настройка на преводи.
 fields_group: Групи от полета
 add_m2o_to_collection: 'Добавяне на "много към едо" към "{collection}"'
 add_o2m_to_collection: 'Добавяне на "едно към много" към "{collection}"'
@@ -113,11 +115,13 @@ enter_a_value: Въвеждане на стойност...
 enter_a_placeholder: Въвеждане на текстов заместител...
 length: Дължина
 readonly: Само за четене
+unique: Без повторения
 primary_key: Първичен ключ
 finish_setup: Завършване на настройката
 raw_value: Първична стойност
+edit_raw_value: Редактиране на първичната стойност
 enter_raw_value: Въвеждане на първична стойност...
-clear_value: Изчисти стойността
+clear_value: Изчистване на стойност
 notifications: Известия
 show_all_activity: Показване на цялата активност
 display: Показване
@@ -136,6 +140,8 @@ item_create_success: Създаден обект | Създадени обект
 item_update_success: Обновен обект | Обновени обекти
 item_delete_success: Изтрит обект | Изтрити обекти
 this_collection: Тази колекция
+related_collection: Релационна колекция
+related_collections: Релационни колекции
 export_data: Експорт на данни
 format: Формат
 use_current_filters_settings: Използване на текущите филтри и нстройки
@@ -143,10 +149,12 @@ export_collection: 'Експорт на {collection}'
 last_page: Последна страница
 last_access: Последно посещение
 a_unique_table_name: Уникално име на таблица...
+a_unique_column_name: Уникално име на колона...
 submit: Изпращане
 move_to_folder: Преместване в папка
 move: Преместване
 system: Система
+add_field_related: Добавяне на поле към релационната колекция
 interface: Интерфейс
 today: Днес
 yesterday: Вчера
@@ -208,6 +216,7 @@ save_as_copy: Запазване като копие
 add_existing: Добавяне на съществуващ
 comments: Коментари
 no_comments: Все още няма коментари
+click_to_expand: Натиснете за разширяване
 select_item: Избор на обект
 no_items: Няма обекти
 information: Информация
@@ -226,6 +235,7 @@ all_items: Всички обекти
 csv: CSV
 no_collections: Няма колекции
 create_collection: Създаване на колекция
+no_collections_copy_admin: Все още няма колекции. Натиснете бутона по-долу за да започнете.
 relationship_not_setup: Връзката не е конфигурирана правилно
 active: Активен
 users: Потребители
@@ -316,8 +326,11 @@ operators:
   has: Съдържа някои от
 loading: Зареждане...
 upload_files_success: '{count} файла са качени'
+drag_file_here: За добавяне, придърпайте файл тук
+click_to_browse: Натиснете за разглеждане
 layout_options: Опции за оформлението
 collection_setup: Настройване на колекция
+value_unique: Стойността трябва да е уникална
 all_activity: Цялостна активност
 create_item: Създаване на обект
 display_template: Шаблон за показване
@@ -537,6 +550,7 @@ revisions: Ревизии
 save: Запазване
 schema: Схема
 search: Търсене
+select_existing: Избор на съществуващ
 settings: Настройки
 sign_in: Вход
 sign_out: Изход
@@ -558,9 +572,11 @@ interfaces:
     line_number: Номер на ред
   collection:
     collection: Колекция
+    description: Избор от съществуващи колекции
     include_system_collections: Включване на системните колекции
   collections:
     collections: Колекции
+    description: Избор от съществуващи колекции
     include_system_collections: Включване на системните колекции
   color:
     color: Цвят
@@ -573,6 +589,7 @@ interfaces:
     use_24: Използване на 24 часов формат
   display-template:
     display-template: Шаблон за показване
+    collection_field: Поле на колекцията
   divider:
     divider: Разделител
     inline_title_label: Показване на заглавията в реда
@@ -594,6 +611,7 @@ interfaces:
     image: Изображение
   interface:
     interface: Интерфейс
+    description: Избор на съществуващ интерфейс
   interface-options:
     interface-options: Опции за интерфейса
   many-to-many:
@@ -614,7 +632,7 @@ interfaces:
     minimum_value: Минимална стойност
     maximum_value: Максимална стойност
   one-to-many:
-    one-to-many: Едно към много
+    one-to-many: Едно към много (O2M)
     description: Избор на множество свързани обекти
     no_collection: Колекцията не може да бъде намерена
   radio-buttons:
@@ -644,6 +662,7 @@ interfaces:
     no_collection: Няма колекция
   user:
     user: Потребител
+    description: Избор на съществуващ потребител
     modes:
       auto: Автоматичен
       dropdown: Падащо меню
