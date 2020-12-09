@@ -119,7 +119,7 @@ raw_value: Първична стойност
 enter_raw_value: Въвеждане на първична стойност...
 clear_value: Изчисти стойността
 notifications: Известия
-show_all_activity: Показване на всички активности
+show_all_activity: Показване на цялата активност
 display: Показване
 settings_update_success: Настройките са обновени
 title: Заглавие
@@ -512,7 +512,7 @@ success: Успех
 warning: Внимание
 danger: Опасност
 junction_collection: Свързваща колекция
-latency: Латентност
+latency: Забавяне
 login: Влизане
 my_activity: Моя активност
 not_authenticated: Неавторизиран
