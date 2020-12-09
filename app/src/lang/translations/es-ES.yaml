@@ -78,6 +78,11 @@ item_permissions: Permisos de Elemento
 field_permissions: Permisos de Campo
 field_validation: Validación de Campo
 field_presets: Predefinidos para Campo
+permissions_for_role: 'Elementos que el Rol {role} puede {action}.'
+fields_for_role: 'Campos que el Rol {role} puede {action}.'
+validation_for_role: 'Reglas de campo al {action} que el Rol {role} tiene que obedecer.'
+presets_for_role: 'Valores por defecto del Campo para el Rol {role}.'
+presentation_and_aliases: Presentación y Alias
 language: Idioma
 create_field: Crear Campo
 hidden_on_detail: Oculto en la vista de detalle
