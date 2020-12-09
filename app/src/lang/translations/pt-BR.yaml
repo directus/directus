@@ -77,6 +77,7 @@ use_custom: Usar Personalizado
 item_permissions: Permissões do Item
 field_permissions: Permissões dos campos
 field_validation: Validação dos campos
+revision_post_update: Aqui está como este item ficou após a atualização...
 changes_made: Estas são as mudanças específicas que foram feitas...
 no_relational_data: Tenha em mente que isso não inclui dados relacionais.
 hide_field_on_detail: Ocultar Campo em Detalhes
@@ -160,6 +161,9 @@ unique: Único
 primary_key: Chave primária
 finish_setup: Concluir a instalação
 dismiss: Dispensar
+raw_value: Valor bruto
+edit_raw_value: Editar valor bruto
+enter_raw_value: Insira valor bruto...
 clear_value: Limpar valor
 reset_to_default: Redefinir para o padrão
 undo_changes: Desfazer alterações
@@ -190,12 +194,17 @@ item_delete_success: Item deletado | Itens deletados
 this_collection: Esta coleção
 related_collection: Coleções relacionadas
 related_collections: Coleções relacionadas
+translations_collection: Coleção de traduções
+languages_collection: Coleção de idiomas
 export_data: Exportar dados
 format: Formato
 use_current_filters_settings: Usar filtros e configurações atuais
 export_collection: 'Exportar {collection}'
 last_page: Última página
 last_access: Último acesso
+fill_template: Preencher com valor de template
+a_unique_table_name: Um nome de tabela único...
+a_unique_column_name: Um nome de coluna único...
 enable_custom_values: Habilitar valores customizados
 submit: Enviar
 move_to_folder: Mover para pasta
@@ -255,6 +264,7 @@ type: Tipo
 creating_new_collection: Criando nova coleção
 created_by: Criado por
 created_on: Criado em
+creating_collection_info: Nomeie a coleção e configure seu campo de "chave" única...
 auto_increment_integer: Integer auto-incremental
 generated_uuid: UUID gerado
 manual_string: String inserida manualmente
@@ -411,6 +421,7 @@ upload_pending: Envio pendente
 drag_file_here: Arraste e solte arquivos aqui para enviar
 click_to_browse: Clique para pesquisar
 layout_options: Opções de Layout
+optional_system_fields: Campos de sistema opcionais
 value_unique: O valor deve ser único
 all_activity: Todas as atividades
 create_item: Criar item
@@ -526,6 +537,7 @@ batch_delete_confirm: >-
 cancel: Cancelar
 collection: Coleção
 collections: Coleções
+singleton: Singleton
 singleton_label: Tratar como objeto único
 system_fields_locked: Os campos do sistema estão bloqueados e não podem ser editados
 fields:
@@ -576,11 +588,13 @@ fields:
     project_url: URL do projeto
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
+    public_note: Nota pública
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção
     note: Nota
     hidden: Oculto
+    singleton: Singleton
     display_template: Template
   directus_roles:
     name: Nome do cargo
@@ -609,6 +623,7 @@ done: Finalizar
 duplicate: Duplicado
 email: E-mail
 embed: Incorporar
+fallback_icon: Ícone de reserva
 field: Campo | Campos
 file: Arquivo
 file_library: Galeria de Arquivos
@@ -665,9 +680,11 @@ interfaces:
     placeholder: Inserir código aqui...
   collection:
     collection: Coleção
+    description: Selecione entre coleções existentes
     include_system_collections: Incluir coleções do sistema
   collections:
     collections: Coleções
+    description: Selecione entre coleções existentes
     include_system_collections: Incluir coleções do sistema
   color:
     color: Cor
@@ -749,11 +766,14 @@ interfaces:
     repeater: Repetidor
     edit_fields: Editar campos
     field_name_placeholder: Inserir nome do campo...
+    field_note_placeholder: Insira uma nota pro campo...
   slider:
     slider: Slider
+    description: Selecione um número usando um controle deslizante
     always_show_value: Sempre mostrar valor
   slug:
     slug: Slug
+    description: Digite uma palavra conectada com hífens
   tags:
     tags: Tags
     description: Selecione ou adicione tags
@@ -761,6 +781,7 @@ interfaces:
     hyphen: Substituir com hífen
     underscore: Substituir com sublinhado
     remove: Remover espaço em branco
+    capitalization: Capitalização
     uppercase: Converter em maiúsculas
     lowercase: Converter em minúsculas
     alphabetize: Alfabetizar
@@ -774,6 +795,8 @@ interfaces:
     mask_label: Ocultar o valor real
   toggle:
     toggle: Alternar
+    description: Alternar entre ligado e desligado
+    label_placeholder: Insira uma etiqueta...
     label_default: Habilitado
   translations:
     display_template: Modelo de exibição
@@ -785,11 +808,13 @@ interfaces:
     modes:
       auto: Automático
       dropdown: Menu suspenso
+      modal: Modal
   wysiwyg:
     wysiwyg: WYSIWYG
     description: Um editor de rich-text que gera HTML
     toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
+    options_override: Sobrescrever opções
 displays:
   boolean:
     boolean: Boolean
