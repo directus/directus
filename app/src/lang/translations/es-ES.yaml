@@ -631,14 +631,27 @@ fields:
     role: Rol
     company: Compañía
     title: Título
-    timezone: Zona horaria
+    timezone: Zona Horaria
     language: Idioma
     avatar: Avatar
     theme: Tema
-    tfa_secret: Autenticación de dos factores
+    tfa_secret: Autentificación en 2 Pasos
   directus_settings:
     project_name: Nombre del Proyecto
+    project_url: URL del Proyecto
+    project_color: Color del Proyecto
+    project_logo: Logo del Proyecto
+    public_foreground: Superficie Pública
+    public_background: Fondo Público
+    public_note: Notas Públicas
+    auth_password_policy: Política de Contraseña para Autentificación
+    auth_idle_timeout: Tiempo de Espera de Inactividad para Autentificarse
+    auth_login_attempts: Intentos de Inicio de Sesión al Autentificarse
+    storage_asset_presets: Predefinidos de Activos en Almacenamiento
+    storage_asset_transform: Transformación de Activos en Almacenamiento
   directus_fields:
+    collection: Nombre de Colección
+    icon: Ícono de Colección
     note: Nota
     hidden: Oculto
     singleton: Singleton
@@ -646,11 +659,31 @@ fields:
     display_template: Plantilla
   directus_roles:
     name: Nombre del Rol
+    icon: Ícono del Rol
     description: Descripción
+    ip_access: Acceso IP
+    app_access: Acceso a App
+    admin_access: Acceso Admin
+    enforce_tfa: Requiere 2FA
+    users: Usuarios en el Rol
+    module_list: Navegación en Módulo
+    collection_list: Navegación en Colección
+no_fields_in_collection: 'Aún no hay campos en "{collection}"'
+do_nothing: No hacer nada
+generate_and_save_uuid: Generar y Guardar UUID
+save_current_user_id: Guardar ID de Usuario Actual
+save_current_user_role: Guardar Rol Actual de Usuario
+save_current_datetime: Guardar Fecha y Hora Actual
 comment: Comentar
 continue: Continuar
+continue_as: >-
+  Actualmente <b>{name}</b> ha iniciado sesión. Si reconoce esta cuenta, presione continuar.
+editing_role: 'Rol {role}'
+creating_webhook: Creando Webhook
 default: Por defecto
 delete: Eliminar
+delete_are_you_sure: >-
+  Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
 delete_field_are_you_sure: >-
   ¿Esta seguro de querer borrar el campo "{field}"? Esta acción no se puede deshacer.
 description: Descripción
