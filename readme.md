@@ -105,7 +105,7 @@ channels:
 
 ## ❤️ Contributing & Sponsoring
 
-Please read our [Contributing Guide](./CONTRIBUTING.md) before submitting Pull Requests.
+Please read our [Contributing Guide](./contributing.md) before submitting Pull Requests.
 
 Directus is a premium open-source ([GPLv3](./license)) project, made possible with support from our passionate core
 team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!
