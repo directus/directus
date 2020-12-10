@@ -45,6 +45,16 @@ node_uptime: Thời gian Hoạt động
 os_type: Hệ điều hành
 os_version: Phiên bản hệ điều hành
 os_uptime: Thời gian Hoạt động
+os_totalmem: Bộ nhớ
+archive: Lưu trữ
+archive_confirm: Bạn có chắc chắn muốn lưu trữ mục này không?
+archive_confirm_count: >-
+  Chưa chọn mục nào | Bạn có chắc chắn muốn lưu trữ mục này không? | Bạn có chắc chắn muốn lưu trữ {count} mục này không?
+reset_system_permissions: Đặt lại Quyền Hệ Thống
+reset_system_permissions_copy: Đặt lại tất cả các quyền hệ thống về mặc định
+unarchive: Ngừng lưu trữ
+unarchive_confirm: Bạn có chắc chắn muốn mở lưu trữ mục này không?
+nested_files_folders_will_be_moved: Các files và thư mục sẽ được di chuyển lên thư mục trên.
 language: Ngôn ngữ
 create_field: Tạo thêm trường
 hidden_on_detail: Ẩn tại chi tiết
