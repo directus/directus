@@ -163,10 +163,13 @@ note: Бележка
 enter_a_value: Въвеждане на стойност...
 enter_a_placeholder: Въвеждане на текстов заместител...
 length: Дължина
+precision_scale: Прецизност и мащаб
 readonly: Само за четене
 unique: Без повторения
 primary_key: Първичен ключ
+foreign_key: Външен ключ
 finish_setup: Завършване на настройката
+dismiss: Отхвърляне
 raw_value: Първична стойност
 edit_raw_value: Редактиране на първичната стойност
 enter_raw_value: Въвеждане на първична стойност...
@@ -189,6 +192,7 @@ revision_delta_deleted: Изтрито
 revision_delta_reverted: Върнат
 revision_delta_other: Ревизия
 revision_delta_by: '{date} от {user}'
+private_user: Частни потребители
 revision_preview: Преглед на ревизия
 updates_made: Направени промени
 leave_comment: Коментар...
@@ -329,6 +333,7 @@ documentation: Документация
 sidebar: Страничен панел
 duration: Продължителност
 charset: Набор символи
+second: Секунди
 file_moved: Файлът е преместен
 collection_created: Колекцията е създадена
 modified_on: Променен на
@@ -346,6 +351,7 @@ tfa_scan_code: Сканиране на кода във вашето прилож
 enter_otp_to_disable_tfa: Въвеждане на OTP за изключване на 2FA
 create_account: Създаване на профил
 account_created_successfully: Профилът е създаден
+auto_fill: Автоматично попълване
 corresponding_field: Кореспондиращо поле
 errors:
   COLLECTION_NOT_FOUND: "Колекцията не съществува"
@@ -564,6 +570,10 @@ page_help_settings_datamodel_fields: >-
   **Модел на данни: Колекция** — Формуляр за управление на тази колекци и нейните полета.
 page_help_settings_roles_collection: '**Преглед на роли** — Показва администраторската, публичната и всички потребителски роли.'
 page_help_settings_roles_item: '**Детайли за роля** — Управление на позволенията на ролята, както и някои други настройки.'
+page_help_settings_presets_collection: >-
+  **Преглед на готовите настройки** — Показване на списък с готовите настройки, за отделните: потребител, роля, и глобални отметки, както и изгледите по подразбиране.
+page_help_settings_presets_item: >-
+  **Детайли за готови настройки** — Формуляр за управление на отметки и готови настройки за колекциите по подразбиране.
 page_help_settings_webhooks_collection: '**Преглед на уеб-куки** — Показва всички уеб-куки в проекта.'
 page_help_settings_webhooks_item: '**Детайли за уеб-кука** — Формуляр за създаване и управление на уеб-куките в проекта.'
 page_help_users_collection: '**Потребители** — Показване на всички системни потребители в проекта'
@@ -632,11 +642,14 @@ fields:
     project_url: URL на проекта
     project_color: Цвят на проекта
     project_logo: Лого на проекта
+    public_foreground: На преден план
     public_background: Публичен фон
     public_note: Публична бележка
     auth_password_policy: Политика за пароли
     auth_idle_timeout: Изчакване при бездействие
     auth_login_attempts: Брой за опити за вход
+    storage_asset_presets: Съхранение и настройки за файл
+    storage_asset_transform: Трансформации за съхранение на файлове
   directus_fields:
     collection: Име на колекцията
     icon: Икона на колекцията
@@ -722,6 +735,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   checkboxes:
@@ -954,7 +968,7 @@ displays:
   labels:
     labels: Етикети
     description: Въвеждане както на единичен, така и на множество етикети
-    default_foreground: Основа по подразбиране
+    default_foreground: Преден план по подразбиране
     default_background: Фон по подразбиране
     format_label: Форматиране на всеки етикет
     show_as_dot: Показване като точка
