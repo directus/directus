@@ -81,7 +81,7 @@ field_validation: Валидация на поле
 field_presets: Готови настройки за поле
 permissions_for_role: 'Обекти които {role} ролята може да {action}.'
 fields_for_role: 'Полета, които {role} ролята може да {action}.'
-validation_for_role: 'Правила за {action} на полетo, които трябва да спазва {role} роля.'
+validation_for_role: 'Правила за {action} на полетo, които {role} ролята трябва да спазва.'
 presets_for_role: 'Стойност за полето по подразбиране за {role} ролята.'
 presentation_and_aliases: Презентационни и псевдоними
 revision_post_update: Ето как изглежда обекта след направените промени...
@@ -347,7 +347,7 @@ select_an_item: Избор на обект...
 edit: Редактиране
 enabled: Включване
 disable_tfa: Изключване на 2FA
-tfa_scan_code: Сканиране на кода във вашето приложение за авторизация, за да завършите настройването на 2FA
+tfa_scan_code: Сканиране на кода във вашето приложение за оторизация, за да завършите настройването на 2FA
 enter_otp_to_disable_tfa: Въвеждане на OTP за изключване на 2FA
 create_account: Създаване на профил
 account_created_successfully: Профилът е създаден
@@ -636,7 +636,7 @@ fields:
     language: Език
     avatar: Аватар
     theme: Тема
-    tfa_secret: Двуфакторна авторизация
+    tfa_secret: Двуфакторна автентикация
   directus_settings:
     project_name: Име на проекта
     project_url: URL на проекта
