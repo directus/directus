@@ -4,7 +4,7 @@ item_revision: Ревизии на обект
 duplicate_field: Дублиране на поле
 half_width: Половин ширина
 full_width: Пълна ширина
-fill_width: Пълна ширина
+fill_width: Изпълване по ширина
 field_name_translations: Превод на имената на полетата
 enter_password_to_enable_tfa: Въвеждане на парола за активиране на двуфакторната автентикация
 add_field: Добавяне на поле
@@ -74,15 +74,15 @@ validationError:
   required: Изисква се стойност
 all_access: Пълен достъп
 no_access: Без достъп
-use_custom: Персонализирана
+use_custom: Персонализирани
 item_permissions: Позволения за обект
 field_permissions: Позволения за поле
 field_validation: Валидация на поле
 field_presets: Готови настройки за поле
-permissions_for_role: 'Обекти които {role} ролята може да {action}.'
-fields_for_role: 'Полета, които {role} ролята може да {action}.'
-validation_for_role: 'Правила за {action} на полетo, които {role} ролята трябва да спазва.'
-presets_for_role: 'Стойност за полето по подразбиране за {role} ролята.'
+permissions_for_role: 'Обекти които "{role}" ролята може да {action}.'
+fields_for_role: 'Полета, които "{role}" ролята може да {action}.'
+validation_for_role: 'Правила за {action} на полетo, които "{role}" ролята трябва да спазва.'
+presets_for_role: 'Стойност за полето по подразбиране за "{role}" ролята.'
 presentation_and_aliases: Презентационни и псевдоними
 revision_post_update: Ето как изглежда обекта след направените промени...
 changes_made: Направените промени са следните...
@@ -180,7 +180,7 @@ notifications: Известия
 show_all_activity: Показване на цялата активност
 page_not_found: Страницата не е намерена
 page_not_found_body: Страницата, която търсите, не съществува.
-confirm_revert: Потвърждание за връщане
+confirm_revert: Потвърждание за възстановяване
 confirm_revert_body: Връщане на обекта към избрано състояние.
 display: Показване
 settings_update_success: Настройките са обновени
@@ -189,7 +189,7 @@ revision_delta_created: Създаден
 revision_delta_created_externally: Външно създадени
 revision_delta_updated: '1 поле е обновено | {count} полета са обновени'
 revision_delta_deleted: Изтрито
-revision_delta_reverted: Върнат
+revision_delta_reverted: Възстановен
 revision_delta_other: Ревизия
 revision_delta_by: '{date} от {user}'
 private_user: Частни потребители
@@ -369,7 +369,7 @@ value_hashed: Хеширана стойност
 bookmark_name: Име на отметка...
 create_bookmark: Създаване на отметка
 edit_bookmark: Редактиране на отметката
-bookmarks: Маркировка
+bookmarks: Отметки
 presets: Готови настройки
 unexpected_error: Неочаквана грешка
 unexpected_error_copy: Възникна неочаквана грешка, опитайте отново по-късно.
@@ -654,7 +654,7 @@ fields:
     collection: Име на колекцията
     icon: Икона на колекцията
     note: Бележка
-    hidden: Скрити
+    hidden: Скрито
     singleton: Сек
     translation: Превод на имената на полетата
     display_template: Шаблон
@@ -697,7 +697,7 @@ field: Поле | Полета
 file: Файл
 file_library: Библиотека
 forgot_password: Забравена парола
-hidden: Скрити
+hidden: Скрито
 icon: Икона
 info: Информация
 normal: Нормално
@@ -718,7 +718,7 @@ relationship: Релация
 reset: Нулиране
 reset_password: Нулиране на паролата
 revisions: Ревизии
-revert: Връщане
+revert: Възстановяване
 save: Запазване
 schema: Схема
 search: Търсене
@@ -763,7 +763,7 @@ interfaces:
     placeholder: Избор на цвят...
     preset_colors: Предварително зададени цветове
     preset_colors_add_label: Добавяне на нов цвят...
-    name_placeholder: Въвеждане на име на цвят...
+    name_placeholder: Въвеждане на име на цвета...
   datetime:
     datetime: Дата и час
     description: Въвеждане на дати и часове
@@ -789,7 +789,7 @@ interfaces:
     allow_other_label: Позволяване на други стойности
     allow_none: Позволяване на нищо
     allow_none_label: Празен избор
-    choices_name_placeholder: Въвеждане на име...
+    choices_name_placeholder: Въвеждане на името...
     choices_value_placeholder: Въвеждане на стойност...
   dropdown-multiselect:
     dropdown-multiselect: Падащ лист (множествен избор)
@@ -855,8 +855,8 @@ interfaces:
     description: Създаване на множество записи със същата структура
     edit_fields: Редактиране на полета
     add_label: 'Етикет за "Добавяне на ред"'
-    field_name_placeholder: Въвеждане име на поле...
-    field_note_placeholder: Въвеждане бележка към поле...
+    field_name_placeholder: Въвеждане име на полето...
+    field_note_placeholder: Въвеждане бележка към полето...
   slider:
     slider: Плъзгач
     description: Избор на число чрез плъзгач
