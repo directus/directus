@@ -77,6 +77,8 @@ use_custom: Usar Personalizado
 item_permissions: Permissões do Item
 field_permissions: Permissões dos campos
 field_validation: Validação dos campos
+permissions_for_role: 'Itens que o cargo {role} pode {action}.'
+fields_for_role: 'Campos que o cargo {role} pode {action}.'
 revision_post_update: Aqui está como este item ficou após a atualização...
 changes_made: Estas são as mudanças específicas que foram feitas...
 no_relational_data: Tenha em mente que isso não inclui dados relacionais.
@@ -527,6 +529,32 @@ unsaved_changes_copy: Tem certeza que deseja sair desta página?
 discard_changes: Descartar Mudanças
 keep_editing: Continuar editando
 page_help_collections_overview: '**Visão geral das coleções** — Lista de todas as coleções que você tem acesso.'
+page_help_collections_collection: >-
+  **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
+page_help_collections_item: >-
+  **Detalhes do Item** — Um formulário para visualizar e gerenciar este item. Esta barra lateral também contém um histórico completo de revisões e comentários incorporados.
+page_help_activity_collection: >-
+  **Navegando em atividades** — Uma listagem abrangente do sistema de todos os seus usuários e atividade de conteúdo.
+page_help_docs_global: >-
+  **Visão geral de documentação** — Documentação feita especificamente para esta versão e esquema deste projeto.
+page_help_files_collection: >-
+  **Biblioteca de Arquivos** - Lista todos os arquivos enviados para este projeto. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
+page_help_files_item: >-
+  **Detalhe do Arquivo** — Um formulário para gerenciar os metadados do arquivo, editar o asset original e atualizar as configurações de acesso.
+page_help_settings_project: '**Configurações do projeto** — Opções de configuração globais do seu projeto.'
+page_help_settings_datamodel_collections: >-
+  **Modelo de Dados: Coleções** — Lista todas as coleções disponíveis. Isso inclui coleções visíveis, escondidas e do sistema, bem como tabelas de banco de dados não gerenciadas que podem ser adicionadas.
+page_help_settings_datamodel_fields: >-
+  **Modelo de Dados: Coleção** — Um formulário para gerenciar esta coleção e seus campos.
+page_help_settings_roles_collection: '**Navegando em cargos** - Lista os cargos de administrador, público e também personalizados.'
+page_help_settings_roles_item: '**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações.'
+page_help_settings_presets_collection: >-
+  **Navegando em predefinições** — Lista todas as predefinições no projeto, incluindo: usuário, cargo e marcadores globais, bem como visualizações padrão.
+page_help_settings_webhooks_collection: '**Navegando em Webhooks** — Lista todos os webhooks dentro do projeto.'
+page_help_settings_webhooks_item: '**Detalhe de Webhook** — Um formulário para criar e gerenciar os webhooks do projeto.'
+page_help_users_collection: '**Diretório do Usuário** — Lista todos os usuários do sistema neste projeto.'
+page_help_users_item: >-
+  **Detalhe do Usuário** — Gerencie as informações da sua conta, ou veja os detalhes de outros usuários.
 activity_feed: Feed de atividade
 add_new: Adicionar Novo
 from_collection: 'Da coleção “{collection}”'
