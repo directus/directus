@@ -36,6 +36,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SESSION_EXPIRED: Сесията е изтекла
 public: Обществен
+public_description: Контрол върху това, каква част от данните в API-то ще бъде видима без нужда от авторизиране.
 not_allowed: Не е позволено
 directus_version: Версия на Directus
 node_version: Версия на Node
@@ -49,9 +50,11 @@ archive_confirm: Сигурни ли сте, че искате да изтрие
 archive_confirm_count: >-
   Няма избрани обекти | Сигурни ли сте, че искате да архивирате този обект? | Сигурни ли сте, че искате да архивирате тези {count} обекта?
 reset_system_permissions: Нулиране на системните позволения
+reset_system_permissions_copy: Нулиране на всички системни позволения към техните първоначални стойности
 unarchive: Разархивиране
 unarchive_confirm: Сигурни ли сте, че искате да разархивирате този обект?
 nested_files_folders_will_be_moved: Вложените файлове и папки ще бъдат преместени една папка по-нагоре.
+unknown_validation_errors: 'Има грешки при валидацията на следните скрити полета:'
 validationError:
   eq: Стойността трябва да е {valid}
   neq: Стойността не трябва да е {invalid}
@@ -59,6 +62,7 @@ validationError:
   nin: Стойността не трябва да е някоя от {invalid}
 all_access: Пълен достъп
 no_access: Без достъп
+use_custom: Персонализирана
 item_permissions: Позволения за обект
 permissions_for_role: 'Обекти които {role} ролята може да {action}.'
 presentation_and_aliases: Презентационни и псевдоними
@@ -94,6 +98,7 @@ time: Час
 not_available_for_type: Не е налично за този тип
 create_translations: Създаване на преводи
 auto_generate: Автоматично генерирано
+this_will_auto_setup_fields_relations: Автоматично настройване на задължителните полета и релации.
 click_here: Натиснете тук
 to_manually_setup_translations: за ръчна настройка на преводи.
 fields_group: Групи от полета
@@ -134,6 +139,7 @@ undo_changes: Отмяна на промените
 notifications: Известия
 show_all_activity: Показване на цялата активност
 page_not_found: Страницата не е намерена
+page_not_found_body: Страницата, която търсите, не съществува.
 confirm_revert: Потвърждание за връщане
 confirm_revert_body: Връщане на обекта към избрано състояние.
 display: Показване
@@ -156,6 +162,8 @@ item_delete_success: Изтрит обект | Изтрити обекти
 this_collection: Тази колекция
 related_collection: Релационна колекция
 related_collections: Релационни колекции
+translations_collection: Колекция с преводи
+languages_collection: Колекция с езици
 export_data: Експорт на данни
 format: Формат
 use_current_filters_settings: Използване на текущите филтри и нстройки
@@ -165,6 +173,7 @@ last_access: Последно посещение
 fill_template: Попълване със стойност от шаблон
 a_unique_table_name: Уникално име на таблица...
 a_unique_column_name: Уникално име на колона...
+enable_custom_values: Персонализирани стойности
 submit: Изпращане
 move_to_folder: Преместване в папка
 move: Преместване
@@ -174,6 +183,12 @@ interface: Интерфейс
 today: Днес
 yesterday: Вчера
 delete_comment: Изтриване на коментар
+date-fns_date: PPP
+date-fns_time: 'HH:mm:ss'
+date-fns_time_no_seconds: 'HH:mm'
+date-fns_date_short: 'd MMM, u'
+date-fns_time_short: 'HH:mm'
+date-fns_date_short_no_year: d MMM
 month: Месец
 year: Година
 select_all: Избиране на всичко
@@ -222,6 +237,7 @@ type: Тип
 creating_new_collection: Създаване на колекция
 created_by: Създадено от
 created_on: Създаден на
+creating_collection_info: Именуване на колекцията и настройка на уникално ключово поле...
 creating_collection_system: Разрешаване и применуване на някои от следните незадължителни полета.
 auto_increment_integer: Автоматично увеличено число
 generated_uuid: Генериран UUID
@@ -268,6 +284,8 @@ webhooks: Уеб-куки
 field_width: Ширина на полето
 add_a_new_item: Добавяне на нов обект...
 add_filter: Добавяне на филтър
+upper_limit: Горна граница...
+lower_limit: Долна граница...
 user_directory: Потребители
 documentation: Документация
 sidebar: Страничен панел
@@ -280,6 +298,7 @@ card_size: Големина на картите
 sort_field: Поле за сортиране
 toggle_manual_sorting: Ръчна подредба
 bookmark_doesnt_exist: Отметката не съществива
+bookmark_doesnt_exist_copy: Отметката която се опитвате да отворите не може да бъде намерена.
 bookmark_doesnt_exist_cta: Връщане в колекция
 select_an_item: Избор на обект...
 edit: Редактиране
@@ -480,6 +499,7 @@ page_help_users_item: >-
   **Детайли за потребител** — Управление на информация за вашия потребителския профил, или преглед на детайли за други потребители.
 activity_feed: Емисия на активността
 add_new: Добави нов запис
+create_new: Създаване
 all: Всички
 batch_delete_confirm: >-
   Няма избрани обекти | Наистина ли искате да изтриете този обект? Това действие не може да бъде отменено. | Наистина ли искате да изтриете тези {count} обекта? Това действие не може да бъде отменено.
@@ -547,6 +567,7 @@ fields:
     display_template: Шаблон
   directus_roles:
     name: Име на роля
+    icon: Икона за ролята
     description: Описание
     ip_access: IP адрес
     app_access: Достъп до приложението
@@ -597,6 +618,7 @@ authenticated: Авторизиран
 options: Опции
 password: Парола
 permissions: Позволения
+relationship: Релация
 reset: Нулиране
 reset_password: Нулиране на паролата
 revisions: Ревизии
@@ -624,6 +646,7 @@ interfaces:
   code:
     code: Код
     line_number: Номер на ред
+    placeholder: Въвеждане на кода...
   collection:
     collection: Колекция
     description: Избор от съществуващи колекции
@@ -634,11 +657,14 @@ interfaces:
     include_system_collections: Включване на системните колекции
   color:
     color: Цвят
+    description: Въвеждане или избор на стойност за цвят
     placeholder: Избор на цвят...
     preset_colors_add_label: Добавяне на нов цвят...
     name_placeholder: Въвеждане на име на цвят...
   datetime:
     datetime: Дата и час
+    description: Въвеждане на дати и часове
+    include_seconds: Вклчване на секундите
     set_to_now: Задаване като сега
     use_24: Използване на 24 часов формат
   display-template:
@@ -649,11 +675,15 @@ interfaces:
     select_a_collection: Избор на колекция
   divider:
     divider: Разделител
+    title_placeholder: Въвеждане на заглавие...
     inline_title_label: Показване на заглавията в реда
   dropdown:
     allow_other: Позволи други
     allow_none_label: Празен избор
+    choices_name_placeholder: Въвеждане на име...
     choices_value_placeholder: Въвеждане на стойност...
+  dropdown-multiselect:
+    dropdown-multiselect: Падащ лист (множествен избор)
   file:
     file: Файл
   files:
@@ -669,6 +699,7 @@ interfaces:
   interface:
     interface: Интерфейс
     description: Избор на съществуващ интерфейс
+    placeholder: Избор на интерфейс...
   interface-options:
     interface-options: Опции за интерфейса
   many-to-many:
@@ -685,7 +716,10 @@ interfaces:
     preview: Преглед
   notice:
     notice: Бележка
+    description: Показване на кратка бележка
+    text: Въвеждане на бележката...
   numeric:
+    numeric: Числен
     description: Въвеждане на число
     minimum_value: Минимална стойност
     maximum_value: Максимална стойност
@@ -712,6 +746,9 @@ interfaces:
   tags:
     tags: Тагове
     whitespace: Интервали
+    hyphen: Замяна с тире
+    underscore: Замяна с долна черта
+    remove: Премахване на интервали
     uppercase: Обръщане към големи букви
     lowercase: Обръщане към малки букви
     alphabetize: По азбучен ред
