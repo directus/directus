@@ -1,9 +1,60 @@
 ---
+edit_field: Sửa trường
+item_revision: Xem Phiên bản
+duplicate_field: Nhân bản Trường
+half_width: Nửa chiều Rộng
 full_width: Rộng toàn bộ
+fill_width: Rộng toàn bộ
+field_name_translations: Hiển thị Ngôn ngữ Khác
+enter_password_to_enable_tfa: Nhập mật khẩu của bạn để kích hoạt Bảo Mật 2 Lớp
+add_field: Thêm trường
+role_name: Tên Quyền
+db_only_click_to_configure: 'Chỉ Cở Sở Dữ Liệu: Bấm để Cấu Hình '
+show_archived_items: Hiển thị các mục đã Lưu Trữ
 required: Bắt buộc
+requires_value: Giá trị bắt buộc
+create_preset: Tạo Định dạng
 create_role: Tạo vai trò (phân quyền)
+create_user: Tạo Người dùng
+create_webhook: Tạo Webhook
+invite_users: Mời Người dùng
+email_examples: 'admin@example.com, user@example.com...'
+invite: Mời
+emails: Email
+connection_excellent: Kết nối Tuyệt vời
+connection_good: Kết nối Tốt
+connection_fair: Kết nối Kém
+connection_poor: Kết nối Yếu
+rename_folder: Đổi Tên Thư Mục
+delete_folder: Xóa thư mục
+reset_bookmark: Đặt lại Dấu trang
+rename_bookmark: Đổi tên Dấu trang
+update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
+delete_bookmark_copy: >-
+  Bạn có chắc chắn muốn xóa đánh dấu "{bookmark}" này? Hành động này không thể hoàn tác.
+logoutReason:
+  SIGN_OUT: Đăng xuất
+  SESSION_EXPIRED: Phiên làm việc đã Hết hạn
+public: Công cộng
+public_description: Kiểm soát dữ liệu API nào có thể truy cập mà không cần đăng nhập.
+not_allowed: Không Cho Phép
 directus_version: Phiên bản hệ thống
+node_version: Phiên bản Node
+node_uptime: Thời gian Hoạt động
+os_type: Hệ điều hành
+os_version: Phiên bản hệ điều hành
+os_uptime: Thời gian Hoạt động
+os_totalmem: Bộ nhớ
+archive: Lưu trữ
+archive_confirm: Bạn có chắc chắn muốn lưu trữ mục này không?
+archive_confirm_count: >-
+  Chưa chọn mục nào | Bạn có chắc chắn muốn lưu trữ mục này không? | Bạn có chắc chắn muốn lưu trữ {count} mục này không?
+reset_system_permissions: Đặt lại Quyền Hệ Thống
+reset_system_permissions_copy: Đặt lại tất cả các quyền hệ thống về mặc định
+unarchive: Ngừng lưu trữ
+unarchive_confirm: Bạn có chắc chắn muốn mở lưu trữ mục này không?
+nested_files_folders_will_be_moved: Các files và thư mục sẽ được di chuyển lên thư mục trên.
 language: Ngôn ngữ
 create_field: Tạo thêm trường
 hidden_on_detail: Ẩn tại chi tiết
@@ -165,8 +216,10 @@ fields:
   directus_fields:
     note: Lưu ý
     hidden: Ẩn
+    translation: Hiển thị Ngôn ngữ Khác
     display_template: Mẫu
   directus_roles:
+    name: Tên Quyền
     description: Mô tả
 comment: Bình luận
 continue: Tiếp tục

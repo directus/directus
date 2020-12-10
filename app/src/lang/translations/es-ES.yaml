@@ -558,25 +558,53 @@ page_help_activity_collection: >-
   **Navegar en Actividad** - Una lista completa de todas las actividades del sistema y del contenido de su usuario.
 page_help_docs_global: >-
   **Resumen de la Documentación** — Documentos específicamente diseñados para la versión y esquema de este proyecto.
+page_help_files_collection: >-
+  **Biblioteca de Archivos** — Lista todos los activos subidos a este proyecto. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
+page_help_files_item: >-
+  **Detalle de Archivo** — Una manera de manejar metadatos de archivos, editar el activo original, y actualizar ajustes de acceso.
+page_help_settings_project: '**Ajustes del Proyecto** — Sus opciones de ajustes globales para el proyecto.'
+page_help_settings_datamodel_collections: >-
+  **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
+page_help_settings_datamodel_fields: >-
+  **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
+page_help_settings_roles_collection: '**Navegar en Roles** — Lista los roles de Usuario Admin, Public y Personalizados.'
+page_help_settings_roles_item: '**Detalle de Rol** — Administra los permisos del Rol y otros ajustes.'
+page_help_settings_presets_collection: >-
+  **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
+page_help_settings_presets_item: >-
+  **Detalle de Predefinido** — Una manera de administrar Marcadores y Predefinidos por defecto de Colecciones.
+page_help_settings_webhooks_collection: '**Navegar en Webhooks** — Lista todos los webhooks en el proyecto.'
+page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
+page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
+page_help_users_item: >-
+  **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
+activity_feed: Actividad
 add_new: Añadir Nuevo
+from_collection: 'De la colección "{collection}"'
+create_new: Crear Nuevo
 all: Todo
 batch_delete_confirm: >-
   No se han seleccionado entradas | ¿Está seguro de que desea eliminar esta entrada? Esta acción no puede deshacerse. | Está seguro de que desea eliminar estas {count} entradas? Esta acción no puede deshacerse.
 cancel: Cancelar
 collection: Colección
 collections: Colecciones
+singleton: Singleton
+singleton_label: Tratar como un sólo objeto
+system_fields_locked: Los campos del sistema están bloqueados y no pueden ser editados
 fields:
   directus_activity:
     action: Acción
     collection: Colección
     item: Clave Primaria del Item
     user: Realizado por
-    timestamp: Realizado el
+    timestamp: Realizado El
     edited_on: Editado el
     comment_deleted_on: Comentario eliminado el
     ip: Dirección IP
-    user_agent: Navegador
+    user_agent: Agente de Usuario (Navegador)
     comment: Comentar
+  directus_collections:
+    translations: Traducciones para Nombre de Colección
   directus_files:
     title: Título
     tags: Etiquetas
@@ -595,178 +623,384 @@ fields:
     metadata: Metadatos
   directus_users:
     status: Estado
-    first_name: Nombre
-    last_name: Apellido
+    first_name: Nombres
+    last_name: Apellidos
     email: Correo electrónico
-    email_notifications: Notificaciones por email
+    email_notifications: Notificaciones por Correo Electrónico
     password: Contraseña
     role: Rol
-    company: Empresa
+    company: Compañía
     title: Título
-    timezone: Zona horaria
+    timezone: Zona Horaria
     language: Idioma
     avatar: Avatar
     theme: Tema
-    tfa_secret: Autenticación de dos factores
+    tfa_secret: Autentificación en 2 Pasos
   directus_settings:
     project_name: Nombre del Proyecto
+    project_url: URL del Proyecto
+    project_color: Color del Proyecto
+    project_logo: Logo del Proyecto
+    public_foreground: Superficie Pública
+    public_background: Fondo Público
+    public_note: Notas Públicas
+    auth_password_policy: Política de Contraseña para Autentificación
+    auth_idle_timeout: Tiempo de Espera de Inactividad para Autentificarse
+    auth_login_attempts: Intentos de Inicio de Sesión al Autentificarse
+    storage_asset_presets: Predefinidos de Activos en Almacenamiento
+    storage_asset_transform: Transformación de Activos en Almacenamiento
   directus_fields:
+    collection: Nombre de Colección
+    icon: Ícono de Colección
     note: Nota
     hidden: Oculto
+    singleton: Singleton
     translation: Traducciones del Nombre del Campo
     display_template: Plantilla
   directus_roles:
     name: Nombre del Rol
+    icon: Ícono del Rol
     description: Descripción
+    ip_access: Acceso IP
+    app_access: Acceso a App
+    admin_access: Acceso Admin
+    enforce_tfa: Requiere 2FA
+    users: Usuarios en el Rol
+    module_list: Navegación en Módulo
+    collection_list: Navegación en Colección
+no_fields_in_collection: 'Aún no hay campos en "{collection}"'
+do_nothing: No hacer nada
+generate_and_save_uuid: Generar y Guardar UUID
+save_current_user_id: Guardar ID de Usuario Actual
+save_current_user_role: Guardar Rol Actual de Usuario
+save_current_datetime: Guardar Fecha y Hora Actual
 comment: Comentar
 continue: Continuar
+continue_as: >-
+  Actualmente <b>{name}</b> ha iniciado sesión. Si reconoce esta cuenta, presione continuar.
+editing_role: 'Rol {role}'
+creating_webhook: Creando Webhook
 default: Por defecto
 delete: Eliminar
+delete_are_you_sure: >-
+  Esta acción es permanente y no puede ser revertida. ¿Realmente le gustaría proceder?
 delete_field_are_you_sure: >-
-  ¿Esta seguro de querer borrar el campo "{field}"? Esta acción no se puede deshacer.
+  ¿Realmente desea borrar el campo "{field}"? Esta acción no es reversible.
 description: Descripción
 done: Completado
 duplicate: Duplicado
 email: Correo electrónico
-embed: Incrustar
+embed: Incrustado
+fallback_icon: Ícono de Reserva
 field: Campo | Campos
 file: Archivo
-file_library: Biblioteca de archivos
-forgot_password: Olvide la contraseña
+file_library: Biblioteca de Archivos
+forgot_password: He olvidado mi Contraseña
 hidden: Oculto
-icon: Icono
+icon: Ícono
 info: Información
-junction_collection: Colección de empalme
+normal: Normal
+success: Éxito
+warning: Advertencia
+danger: Peligro
+junction_collection: Colección de Unión
 latency: Latencia
-login: Iniciar sesión
+login: Iniciar Sesión
 my_activity: Mi actividad
-not_authenticated: No autenticado
+not_authenticated: No Autenticado
+authenticated: Autenticado
 options: Opciones
 otp: Contraseña de un solo uso
 password: Contraseña
 permissions: Permisos
 relationship: Relación
 reset: Restablecer
-reset_password: Restablecer contraseña
+reset_password: Restablecer Contraseña
+revisions: Revisiones
 revert: Revertir
 save: Guardar
 schema: Esquema
 search: Buscar
-select_existing: Seleccionar existente
+select_existing: Seleccionar Existente
+select_field_type: Seleccione un tipo de campo
 select_interface: Seleccione una interfaz
-settings: Configuración
-sign_in: Registrarse
-sign_out: Cerrar sesión
-sign_out_confirm: '¿Está seguro de cerrar sesión?'
+settings: Ajustes
+sign_in: Iniciar Sesión
+sign_out: Cerrar Sesión
+sign_out_confirm: '¿Realmente desea cerrar sesión?'
 something_went_wrong: Algo salió mal.
-sort_direction: Dirección de ordenado
+sort_direction: Dirección de Ordenamiento
 template: Plantilla
-translation: Traduccion
+translation: Traducción
 value: Valor
+view_project: Ver Proyecto
+report_error: Reportar Error
 interfaces:
   checkboxes:
     checkboxes: Casillas De Selección
-    allow_other: Permitir otro
+    description: Elegir entre múltiples opciones a través de casillas de selección
+    allow_other: Permitir Otro
+    show_more: 'Mostrar {count} más'
+    items_shown: Elementos Mostrados
   code:
     code: Código
+    description: Escribir o compartir fragmentos de código
     line_number: Número de línea
+    placeholder: Ingrese el código aquí...
   collection:
     collection: Colección
+    description: Seleccionar entre colecciones existentes
+    include_system_collections: Incluir Colecciones del Sistema
   collections:
     collections: Colecciones
+    description: Seleccionar entre colecciones existentes
+    include_system_collections: Incluir Colecciones del Sistema
   color:
     color: Color
+    description: Ingrese o seleccione un color
+    placeholder: Seleccionar un color...
+    preset_colors: Colores Predefinidos
+    preset_colors_add_label: Agregar nuevo color...
+    name_placeholder: Ingresar nombre del color...
   datetime:
     datetime: Fecha/hora
+    description: Ingrese fechas y horas
+    include_seconds: Incluir Segundos
+    set_to_now: Ajustar a Ahora Mismo
+    use_24: Usar Formato 24 horas
   display-template:
     display-template: Plantilla de Presentación
+    description: Combinar texto estático y valores de campos dinámicos
+    collection_field: Campo Colección
     collection_field_not_setup: La opción del campo de colección está mal configurada
     select_a_collection: Seleccionar una Colección
   divider:
     divider: Separador
+    description: Etiqueta y a la vez permite dividir los campos en secciones
+    title_placeholder: Ingresar un título...
+    inline_title: Titulo en línea
+    inline_title_label: Mostrar título en línea
   dropdown:
-    allow_other: Permitir otro
+    description: Seleccine un valor de la lista desplegable
+    choices_placeholder: Agregar una nueva opción
+    allow_other: Permitir Otro
+    allow_other_label: Permitir Otros Valores
+    allow_none: Permitir "Nada"
+    allow_none_label: Permitir No Selección
+    choices_name_placeholder: Ingrese un nombre...
     choices_value_placeholder: Ingrese un valor...
+  dropdown-multiselect:
+    dropdown-multiselect: Lista Desplegable (Múltiple)
+    description: Seleccione múltiples valores de la lista de selección
   file:
     file: Archivo
+    description: Seleccionar o subir un archivo
   files:
     files: Archivos
+    description: Seleccionar o subir múltiples archivos
+  hash:
+    hash: Hash
+    description: Ingresar un valor para ser "Hasheado"
+    masked: Enmascarado
+    masked_label: Ocultar los verdaderos valores
   icon:
-    icon: Icono
+    icon: Ícono
+    description: Seleccione un ícono de la lista
+    search_for_icon: Buscar un ícono...
+  image:
+    image: Imagen
+    description: Seleccionar o subir una imagen
   interface:
     interface: Interfaz
+    description: Seleccionar una interfaz existente
+    placeholder: Seleccionar una interfaz...
   interface-options:
     interface-options: Opciones de Interfaz
+    description: Un diálogo para seleccionar opciones de una interfaz
   many-to-many:
     many-to-many: Muchos a Muchos
+    description: Seleccionar múltiples elementos de unión relacionados
   many-to-one:
     many-to-one: Muchos a Uno
+    description: Seleccionar un elemento único relacionado
     display_template: Plantilla de Presentación
   markdown:
     markdown: Markdown
+    description: Ingresar y previsualizar Markdown
+    tabbed: Pestaña
+    tabbed_label: Mostrar previsualización en una pestaña separada
     edit: Editar
     preview: Vista preliminar
+  notice:
+    notice: Aviso
+    description: Presentar un aviso corto
+    text: Ingresar contenido del aviso aquí...
   numeric:
     numeric: Numérico
+    description: Ingresar un número
+    minimum_value: Valor Mínimo
+    maximum_value: Valor Máximo
+    step_interval: Intervalo de Pasos
   one-to-many:
     one-to-many: Uno a Muchos
+    description: Seleccionar múltiples elementos relacionados
+    no_collection: No se encontró la colección
   radio-buttons:
-    radio-buttons: Botones de radio
+    radio-buttons: Botones de Radio
+    description: Seleccionar una de las opciones múltiples
   repeater:
     repeater: Repetidor
+    description: Crear múltiples entradas para la misma estructura
+    edit_fields: Editar Campos
+    add_label: 'Etiqueta "Agregar Nueva Fila"'
+    field_name_placeholder: Ingrese el nombre del campo...
+    field_note_placeholder: Ingrese la nota del campo...
   slider:
     slider: Deslizador
+    description: Seleccionar un número usando un deslizador
+    always_show_value: Siemrpe presentar valor
   slug:
     slug: Slug
+    description: Ingresar una palabra conectada con guiones
   tags:
     tags: Etiquetas
+    description: Seleccionar o agregar etiquetas
+    whitespace: Espacio en Blanco
+    hyphen: Reemplazar con guiones
+    underscore: Reemplazar con guiones bajos
+    remove: Remover espacios en blanco
+    capitalization: Capitalización
+    uppercase: Convertir a Mayúsculas
+    lowercase: Convertir a Minúsculas
+    auto_formatter: Usar Auto-Formateador de Título
+    alphabetize: Alfabetización
+    alphabetize_label: Forzar Orden Alfabético
+    add_tags: Agregar etiquetas...
   text-input:
-    text-input: Control de Texto
+    text-input: Campo de Texto
+    description: Ingresar texto de una línea
     trim: Eliminar Espacios en Blanco
+    trim_label: Eliminar espacios al inicio y al final
+    mask: Enmascarado
+    mask_label: Ocultar el valor real
+  textarea:
+    textarea: Área de Texto
+    description: Ingresar texto plano multi-línea
   toggle:
     toggle: Alternar
+    description: Alternar entre Activado y Desactivado
+    label_placeholder: Ingresar una etiqueta...
     label_default: Habilitado
   translations:
     display_template: Plantilla de Presentación
+    no_collection: Sin Colección
   user:
     user: Usuario
+    description: Seleccionar un usuario existente de Directus
+    select_mode: Seleccionar Modo
     modes:
+      auto: Automático
       dropdown: Lista Desplegable
+      modal: Diálogo
   wysiwyg:
+    wysiwyg: WYSIWYG
+    description: Un editor de texto enriquecido para escribir contenido HTML
+    toolbar: Barra de Herramientas
     custom_formats: Formatos Personalizados
+    options_override: Sobrescribir Opciones
 displays:
   boolean:
     boolean: Booleano
+    description: Presentar estados Activo e Inactivo
+    label_on: Etiqueta Activo
+    label_on_placeholder: Ingrese una etiqueta para Activo...
+    label_off: Etiqueta Inactivo
+    label_off_placeholder: Ingrese una etiqueta para Inactivo...
     icon_on: Icono Activado
     icon_off: Icono Desactivado
+    color_on: Color para Activo
+    color_off: Color para Inactivo
   collection:
     collection: Colección
+    description: Presentar una colección
+    icon_label: Presentar el ícono de la colección
   color:
     color: Color
+    description: Presentar un punto coloreado
+    default_color: Color por Defecto
   datetime:
     datetime: Fecha/hora
+    description: Presentar valores relacionados a la hora
     format: Formato
+    format_note: >-
+      El formato personalizado acepta el __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Larga
+    short: Corta
+    relative: Relativa
+    relative_label: 'Presentar hora relativa, ej: hace 5 minutos'
   file:
     file: Archivo
+    description: Presentar archivos
   filesize:
     filesize: Tamaño del archivo
+    description: Presentar el tamaño de un archivo
+  formatted-value:
+    formatted-value: Valor Formateado
+    description: Presentar una versión formateada del texto
+    format_title: Formatear Título
+    format_title_label: Auto-formato
+    bold_label: Usar negritas
+  formatted-json-value:
+    formatted-json-value: Valor JSON Formateado
+    description: Presentar una versión formateada del objeto
   icon:
-    icon: Icono
+    icon: Ícono
+    description: Presentar un ícono
+    filled: Lleno
+    filled_label: Usar una variante de llenado
   image:
+    image: Imagen
+    description: Presentar una previsualización pequeña de la imagen
     circle: Círculo
+    circle_label: Presentar como un círculo
   labels:
+    labels: Etiquetas
+    description: Presentar ya sea una sola etiqueta o una lista de ellas
+    default_foreground: Color de letra por defecto
+    default_background: Fondo por defecto
+    format_label: Formatear cada etiqueta
+    show_as_dot: Presentar como Punto
     choices_value_placeholder: Ingrese un valor...
+    choices_text_placeholder: Ingresar un texto...
+  mime-type:
+    mime-type: Tipo MIME
+    description: Presentar el Tipo MIME del archivo
+    extension_only: Sólo Extensión
+    extension_only_label: Presentar sólo la extensión del archivo
   rating:
     rating: Valoración
+    description: Visualizar un número de estrellas relativas al valor máximo
+    simple: Simple
+    simple_label: Presentar estrellas en un formato simple
+  raw:
+    raw: Valor Plano
+  related-values:
+    related-values: Valores Relacionados
+    description: Presentar valores relativos
   user:
     user: Usuario
+    description: Presentar un usuario de Directus
     avatar: Avatar
     name: Nombre
     both: Ambos
+    circle_label: Presentar usuario en un círculo
 layouts:
   cards:
     cards: Tarjetas
     image_source: Orígen de la imágen
+    image_fit: Ajuste de Imagen
+    crop: Recortar
+    contain: Contiene
     title: Título
     subtitle: Subtítulo
   tabular:
