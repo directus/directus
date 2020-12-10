@@ -15,9 +15,10 @@ export default async function migrate(direction: 'latest' | 'up' | 'down') {
 		} else {
 			console.log('✨ Database up to date');
 		}
+		database.destroy();
+		process.exit();
 	} catch (err) {
 		console.log(err);
-	} finally {
 		database.destroy();
 		process.exit(1);
 	}
