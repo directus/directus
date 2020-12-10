@@ -38,6 +38,11 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 	directus_users: {
 		collection: 'directus_users',
 		layout: 'cards',
+		layout_query: {
+			cards: {
+				sort: 'email',
+			},
+		},
 		layout_options: {
 			cards: {
 				icon: 'account_circle',
