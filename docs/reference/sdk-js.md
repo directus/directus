@@ -326,7 +326,7 @@ you to plugin things like [`localforage`](https://github.com/localForage/localF
 import localforage from 'localforage';
 import DirectusSDK from '@directus/sdk-js';
 
-const directus = new DirectusSDK('https://api.example.com', { storage: localforage });
+const directus = new DirectusSDK('https://api.example.com', { auth: { storage: localforage, mode: 'json' }});
 ```
 
 ##### autoRefresh
