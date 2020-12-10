@@ -12,7 +12,7 @@ role_name: Име на роля
 db_only_click_to_configure: 'Само в базата данни: Кликнете за конфигурация '
 show_archived_items: Показване на архивираните обекти
 required: Задължително
-requires_value: Изисквана стойност
+requires_value: Изисква стойност
 create_preset: Създаване на шаблон
 create_role: Създаване на роля
 create_user: Създаване на потребител
@@ -60,19 +60,36 @@ validationError:
   neq: Стойността не трябва да е {invalid}
   in: Стойността трябва да е някоя от {valid}
   nin: Стойността не трябва да е някоя от {invalid}
+  contains: Стойността трябва да съдържа {substring}
+  ncontains: Стойността не може да съдържа {substring}
+  gt: Стойността трябва да е по-голяма от {valid}
+  gte: Стойността трябва да е по-голяма или равна на {valid}
+  lt: Стойността трябва да е по-малка от {valid}
+  lte: Стойността трябва да е по-малка или равна на {valid}
+  empty: Стойността трябва да е празна
+  nempty: Стойността не може да е празна
+  null: Стойността трябва да е null
+  nnull: Стойността не трябва да е null
+  required: Изисква се стойност
 all_access: Пълен достъп
 no_access: Без достъп
 use_custom: Персонализирана
 item_permissions: Позволения за обект
+field_permissions: Позволения за поле
+field_validation: Валидация на поле
 permissions_for_role: 'Обекти които {role} ролята може да {action}.'
+fields_for_role: 'Полета, които {role} ролята може да {action}.'
 presentation_and_aliases: Презентационни и псевдоними
 revision_post_update: Ето как изглежда обекта след направените промени...
+changes_made: Направените промени са следните...
+no_relational_data: Имайте в предвид, че това не съдържа данните от свързаните обекти.
 hide_field_on_detail: Скриване в детайлен изглед
 show_field_on_detail: Показване в детайлния изглед
 delete_field: Изтриване на поле
 fields_and_layout: Полета и оформление
 field_create_success: 'Създадено поле: "{field}"'
 field_update_success: 'Обновено поле: "{field}"'
+duplicate_where_to: Къде искате да дублирате полето?
 language: Език
 global: Глобални
 admins_have_all_permissions: Администраторите имат всички позволения
@@ -109,7 +126,7 @@ choose_a_type: Избиранена тип...
 determined_by_relationship: Определен от типа връзка
 add_note: Добави полезна забележка за потребителите...
 default_value: Стойност по подразбиране
-add_a_default_value: Добавяне на стойност по подразбиране...
+add_a_default_value: Стойност по подразбиране...
 interface_setup_title: Как потребителите ще взаимодействат с това поле?
 display_setup_title: Как ще бъде показвана стойността на това поле?
 standard_field: Стандартно поле
@@ -154,7 +171,7 @@ revision_delta_other: Ревизия
 revision_delta_by: '{date} от {user}'
 revision_preview: Преглед на ревизия
 updates_made: Направени промени
-leave_comment: Оставяне на коментар...
+leave_comment: Коментар...
 post_comment_success: Коментарът е публикуван
 item_create_success: Създаден обект | Създадени обекти
 item_update_success: Обновен обект | Обновени обекти
@@ -251,6 +268,7 @@ no_comments: Все още няма коментари
 click_to_expand: Натиснете за разширяване
 select_item: Избор на обект
 no_items: Няма обекти
+disabled: Изключване
 information: Информация
 report_bug: Доклад за проблем
 request_feature: Заявка за функция
@@ -302,8 +320,10 @@ bookmark_doesnt_exist_copy: Отметката която се опитвате 
 bookmark_doesnt_exist_cta: Връщане в колекция
 select_an_item: Избор на обект...
 edit: Редактиране
+enabled: Включване
 disable_tfa: Изключване на 2FA
 tfa_scan_code: Сканиране на кода във вашето приложение за авторизация, за да завършите настройването на 2FA
+enter_otp_to_disable_tfa: Въвеждане на OTP за изключване на 2FA
 create_account: Създаване на профил
 account_created_successfully: Профилът е създаден
 corresponding_field: Кореспондиращо поле
@@ -383,7 +403,7 @@ upload_files_indeterminate: 'Качване на файлове {done}/{total}'
 upload_files_success: '{count} файла са качени'
 upload_pending: Качване в изчакване
 drag_file_here: За добавяне, придърпайте файл тук
-click_to_browse: Натиснете за разглеждане
+click_to_browse: Натиснете за избор
 layout_options: Опции за оформлението
 collection_setup: Настройване на колекция
 optional_system_fields: Системни полета по желание
@@ -411,6 +431,7 @@ on_create: При създаване
 on_update: При промяна
 read: Четене
 update: Обновяване
+select_fields: Избор на полета
 format_text: Форматиране на текст
 bold: Удебелен
 toggle: Превключване
@@ -458,6 +479,7 @@ wysiwyg_options:
   removeformat: Премахване на форматиране
   selectall: Избиране на всичко
   table: Таблица
+  code: Преглед на кода
   fullscreen: Пълен Екран
 dropdown: Падащо меню
 choices: Избори
@@ -484,14 +506,22 @@ unsaved_changes: Незапазени промени
 unsaved_changes_copy: Сигурни ли сте, че искате да напуснете тази страница?
 discard_changes: Отмяна на промените
 keep_editing: Продължаване с промените
+page_help_collections_overview: '**Обзор от колекции** — Показва всички колекции до които имате достъп.'
 page_help_collections_collection: >-
   **Преглед на обекти** — Показване на всички обекти от {collection} до които имате достъп. Персонализиране на оформлението, филтрите и подредбата за да могат да се впишат по-добре във вашите нужди, дори имате възможност да добавите отметки с тези конфигурации за по-бърз достъп.
 page_help_collections_item: >-
   **Детайли за обект** — Формуляр за преглед и управление на този обект. Страничният панел също съдържа и пълна история на ревизиите и коментарите към него.
+page_help_activity_collection: >-
+  **Преглед на активност** — Подробен списък на активността за съдържанието, потребителите и системата.
+page_help_docs_global: >-
+  **Обзор на документацията** — Показва документи, специфични за този проект, версия и схема.
 page_help_files_collection: >-
   **Файлова библиотека** — Показва всички файлове добавени към този проект. Персонализиране на оформлението, филтрите и подредбата за да могат да се впишат по-добре във вашите нужди, дори имате възможност да добавите отметки с тези конфигурации за по-бърз достъп.
 page_help_files_item: >-
   **Детайли за файл** — Формуляр за управление на мета-данните, редакция на оригинала и обновяване на настройките за достъп.
+page_help_settings_project: '**Настройки за проекта** — Глобални настройки и конфигурация на вашият проект.'
+page_help_settings_datamodel_collections: >-
+  **Модел на данни: Колекции** — Показва всички налични колекции. Това включва видими, невидими и системни, както и неконтролираните таблици от базите данни които могат да бъдат добавяни като колекции.
 page_help_settings_roles_item: '**Детайли за роля** — Управление на позволенията на ролята, както и някои други настройки.'
 page_help_settings_webhooks_item: '**Детайли за уеб-кука** — Формуляр за създаване и управление на уеб-куките в проекта.'
 page_help_users_collection: '**Потребители** — Показване на всички системни потребители в проекта'
@@ -631,6 +661,7 @@ settings: Настройки
 sign_in: Вход
 sign_out: Изход
 sign_out_confirm: Сигурни ли сте, че искате да излезете?
+something_went_wrong: Нещо се обърка.
 sort_direction: Ред на подредба
 template: Шаблон
 translation: Превод
@@ -675,10 +706,15 @@ interfaces:
     select_a_collection: Избор на колекция
   divider:
     divider: Разделител
+    description: Именуване и разделяне на полетата по секции
     title_placeholder: Въвеждане на заглавие...
     inline_title_label: Показване на заглавията в реда
   dropdown:
+    description: Избор на стойност от падащо меню
+    choices_placeholder: Добавяне на избор
     allow_other: Позволи други
+    allow_other_label: Позволяване на други стойности
+    allow_none: Позволяване на нищо
     allow_none_label: Празен избор
     choices_name_placeholder: Въвеждане на име...
     choices_value_placeholder: Въвеждане на стойност...
@@ -696,6 +732,7 @@ interfaces:
     search_for_icon: Търсене на икона...
   image:
     image: Изображение
+    description: Избор или качване на изображение
   interface:
     interface: Интерфейс
     description: Избор на съществуващ интерфейс
@@ -711,6 +748,7 @@ interfaces:
     display_template: Шаблон при показване
   markdown:
     markdown: Markdown
+    description: Въвеждане и преглед за markdown
     tabbed_label: Показване на предварителния изглед в отделен подпрозорец
     edit: Редактиране
     preview: Преглед
@@ -743,6 +781,7 @@ interfaces:
     always_show_value: Показване на стойностите винаги
   slug:
     slug: Slug
+    description: Въвеждане на думи свързани чрез тире
   tags:
     tags: Тагове
     whitespace: Интервали
@@ -768,6 +807,7 @@ interfaces:
     toggle: Превключване
     description: Превключване между вкл. и изкл.
     label_placeholder: Въвеждане на етикет...
+    label_default: Включване
   translations:
     display_template: Шаблон при показване
     no_collection: Няма колекция
@@ -823,6 +863,7 @@ displays:
     formatted-value: Формат на стойността
     description: Показване на форматирана стойност на текст
     format_title: Формат на заглавие
+    format_title_label: Автоматично форматиране на регистъра
     bold_label: Използване на удебелен стил
   formatted-json-value:
     formatted-json-value: Форматирана JSON стойност
