@@ -77,8 +77,10 @@ use_custom: Usar Personalizado
 item_permissions: Permissões do Item
 field_permissions: Permissões dos campos
 field_validation: Validação dos campos
+field_presets: Predefinições de campo
 permissions_for_role: 'Itens que o cargo {role} pode {action}.'
 fields_for_role: 'Campos que o cargo {role} pode {action}.'
+presentation_and_aliases: Apresentação e pseudônimos
 revision_post_update: Aqui está como este item ficou após a atualização...
 changes_made: Estas são as mudanças específicas que foram feitas...
 no_relational_data: Tenha em mente que isso não inclui dados relacionais.
@@ -324,6 +326,7 @@ collection_created: Coleção criada
 modified_on: Modificado em
 card_size: Tamanho do cartão
 sort_field: Campo de ordenação
+toggle_manual_sorting: Alternar ordenação manual
 bookmark_doesnt_exist: Marcador não existe
 bookmark_doesnt_exist_copy: O marcador que você está tentando abrir não pôde ser encontrado.
 bookmark_doesnt_exist_cta: Voltar à coleção
@@ -345,6 +348,7 @@ errors:
   INVALID_OTP: Senha de uso único incorreta
   INVALID_PAYLOAD: Payload inválido
   INVALID_QUERY: Consulta inválida
+  ITEM_LIMIT_REACHED: Limite de elementos alcançado
   ITEM_NOT_FOUND: Item não encontrado
   ROUTE_NOT_FOUND: Não encontrado
   UNKNOWN: Erro inesperado
@@ -357,6 +361,7 @@ presets: Predefinições
 unexpected_error: Erro inesperado
 unexpected_error_copy: Um erro inesperado ocorreu. Tente novamente mais tarde.
 copy_details: Copiar detalhes
+no_app_access: Sem acesso ao app
 no_app_access_copy: Este usuário não tem permissão para usar o admin app.
 password_reset_sent: Enviamos um link seguro para redefinir sua senha
 password_reset_successful: Senha redefinida com sucesso
@@ -423,6 +428,7 @@ upload_pending: Envio pendente
 drag_file_here: Arraste e solte arquivos aqui para enviar
 click_to_browse: Clique para pesquisar
 layout_options: Opções de Layout
+collection_setup: Configurando coleção
 optional_system_fields: Campos de sistema opcionais
 value_unique: O valor deve ser único
 all_activity: Todas as atividades
@@ -500,7 +506,7 @@ wysiwyg_options:
   code: Ver Fonte
   fullscreen: Tela cheia
   directionality: Direcionalidade
-dropdown: Menu suspenso
+dropdown: Seleção
 choices: Escolhas
 choices_option_configured_incorrectly: Opções configuradas incorretamente
 deselect: Desmarcar
@@ -550,6 +556,8 @@ page_help_settings_roles_collection: '**Navegando em cargos** - Lista os cargos 
 page_help_settings_roles_item: '**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações.'
 page_help_settings_presets_collection: >-
   **Navegando em predefinições** — Lista todas as predefinições no projeto, incluindo: usuário, cargo e marcadores globais, bem como visualizações padrão.
+page_help_settings_presets_item: >-
+  **Detalhe da predefinição** — Um formulário para gerenciar marcadores e predefinições de coleção padrão.
 page_help_settings_webhooks_collection: '**Navegando em Webhooks** — Lista todos os webhooks dentro do projeto.'
 page_help_settings_webhooks_item: '**Detalhe de Webhook** — Um formulário para criar e gerenciar os webhooks do projeto.'
 page_help_users_collection: '**Diretório do Usuário** — Lista todos os usuários do sistema neste projeto.'
@@ -616,7 +624,11 @@ fields:
     project_url: URL do projeto
     project_color: Cor do projeto
     project_logo: Logotipo do projeto
+    public_foreground: Primeiro plano público
+    public_background: Fundo público
     public_note: Nota pública
+    auth_password_policy: Política de senha para autenticação
+    auth_login_attempts: Tentativas de autenticação
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção
@@ -628,12 +640,16 @@ fields:
     name: Nome do cargo
     icon: Ícone do cargo
     description: Descrição
+    ip_access: Acesso IP
+    app_access: Acesso ao app
+    admin_access: Acesso de administrador
     enforce_tfa: Exigir 2FA
     users: Usuários no cargo
 no_fields_in_collection: 'Ainda não há campos em "{collection}"'
 do_nothing: Não fazer nada
 generate_and_save_uuid: Gerar e salvar UUID
 save_current_user_id: Salvar ID de usuário atual
+save_current_datetime: Salvar data/hora atual
 comment: Comentário
 continue: Continuar
 continue_as: >-
@@ -698,6 +714,7 @@ report_error: Relatar erro
 interfaces:
   checkboxes:
     checkboxes: Caixas de Seleção
+    description: Escolha entre várias opções através de caixas de seleção
     allow_other: Permitir Outros
     show_more: 'Exibir mais {count}'
     items_shown: Itens mostrados
@@ -735,6 +752,7 @@ interfaces:
     title_placeholder: Insira um título...
     inline_title_label: Mostrar título dentro da linha
   dropdown:
+    description: Selecione um valor a partir de uma seleção
     choices_placeholder: Adicionar uma nova escolha
     allow_other: Permitir Outros
     allow_other_label: Permitir outros valores
@@ -743,7 +761,8 @@ interfaces:
     choices_name_placeholder: Insira um nome...
     choices_value_placeholder: Insira um valor...
   dropdown-multiselect:
-    dropdown-multiselect: Dropdown (Múltiplo)
+    dropdown-multiselect: Seleção (Múltipla)
+    description: Selecione vários valores a partir de uma seleção
   file:
     file: Arquivo
     description: Selecione ou envie um arquivo
@@ -753,9 +772,11 @@ interfaces:
   hash:
     hash: Hash
     description: Insira um valor para ser hasheado
+    masked: Mascarado
     masked_label: Ocultar os valores verdadeiros
   icon:
     icon: Ícone
+    description: Selecione um ícone a partir de uma seleção
     search_for_icon: Procurar por um ícone...
   image:
     image: Imagem
@@ -770,9 +791,12 @@ interfaces:
     many-to-many: Muitos-para-muitos (N para N)
   many-to-one:
     many-to-one: Muitos-para-um (N para 1)
+    description: Selecione um único item relacionado
     display_template: Modelo de exibição
   markdown:
     markdown: Markdown
+    description: Inserir e pré-visualizar markdown
+    tabbed_label: Mostrar pré-visualização em guia separada
     edit: Editar
     preview: Pré-visualizar
   notice:
@@ -787,12 +811,16 @@ interfaces:
     step_interval: Intervalo dos passos
   one-to-many:
     one-to-many: Um-para-muitos (1 para N)
+    description: Selecione vários itens relacionados
     no_collection: A coleção não pôde ser encontrada
   radio-buttons:
     radio-buttons: Botões de radio
+    description: Selecione uma das múltiplas escolhas
   repeater:
     repeater: Repetidor
+    description: Criar múltiplas entradas da mesma estrutura
     edit_fields: Editar campos
+    add_label: 'Rótulo "Adicionar nova linha"'
     field_name_placeholder: Inserir nome do campo...
     field_note_placeholder: Insira uma nota pro campo...
   slider:
@@ -820,7 +848,11 @@ interfaces:
     description: Digite um texto de linha única
     trim: Aparar
     trim_label: Aparar o início e fim
+    mask: Mascarado
     mask_label: Ocultar o valor real
+  textarea:
+    textarea: Área de texto
+    description: Insira texto puro de múltiplas linhas
   toggle:
     toggle: Alternar
     description: Alternar entre ligado e desligado
@@ -835,7 +867,7 @@ interfaces:
     select_mode: Selecionar modo
     modes:
       auto: Automático
-      dropdown: Menu suspenso
+      dropdown: Seleção
       modal: Modal
   wysiwyg:
     wysiwyg: WYSIWYG
@@ -879,10 +911,13 @@ displays:
     description: Exibe o tamanho de um arquivo
   formatted-value:
     formatted-value: Valor formatado
+    description: Exibe uma versão formatada do texto
     format_title: Formatar título
+    format_title_label: Auto-formatar capitalização
     bold_label: Usar estilo negrito
   formatted-json-value:
     formatted-json-value: Valor JSON formatado
+    description: Exibe uma versão formatada do objeto
   icon:
     icon: Ícone
     description: Exibir um ícone
@@ -890,10 +925,13 @@ displays:
     filled_label: Usar a variante preenchida
   image:
     image: Imagem
+    description: Exibe uma visualização de imagem minúscula
     circle: Círculo
     circle_label: Exibir como um círculo
   labels:
     labels: Rótulos
+    description: Exibir uma única ou uma lista de rótulos
+    default_foreground: Primeiro plano padrão
     default_background: Plano de fundo padrão
     format_label: Formatar cada rótulo
     show_as_dot: Mostrar como ponto
@@ -906,6 +944,7 @@ displays:
     extension_only_label: Exibir apenas a extensão do arquivo
   rating:
     rating: Avaliação
+    description: Visualizar um número como estrelas relativo ao valor máximo
     simple: Simples
     simple_label: Mostrar estrelas em um formato simples
   raw:
