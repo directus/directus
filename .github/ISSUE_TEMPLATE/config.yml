@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Bug Report
+    url: https://github.com/directus/directus/issues/new?template=bug_report.md
+    about: Create a report to help us improve.
+  - name: Feature Request
+    url: https://github.com/directus/directus/discussions/new
+    about: Share your ideas on how to make Directus better.
+  - name: Directus Community Support
+    url: https://directus.chat/
+    about: Please ask and answer questions here.
+  - name: Report a Security Vulnerability
+    url: https://github.com/directus/directus/security/policy
+    about: Please review our security policy for more details.
