@@ -1,8 +1,8 @@
 # Items
 
-@TODO
+> TK
 
-Browse:
+From Collection Detail pages...
 
 ## Creating Items
 
@@ -26,7 +26,7 @@ Browse:
 
 ---
 
-Detail:
+From Item Detail pages...
 
 ## Creating an Item
 

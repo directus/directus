@@ -84,6 +84,9 @@
         - type: page
           path: /guides/installation/aws
           title: AWS
+        - type: page
+          path: /guides/installation/platformsh-one-click
+          title: Platform.sh One-Click
     - type: group
       title: Extensions
       children:
@@ -133,6 +136,9 @@
       path: /reference/item-objects
       title: Item Objects
     - type: page
+      path: /reference/internal-helpers
+      title: Internal Helpers
+    - type: page
       path: /reference/sdk-js
       title: JavaScript SDK
 
@@ -141,15 +147,15 @@
     - type: page
       path: /reference/api/introduction
       title: Introduction
+    - type: page
+      path: /reference/api/items
+      title: Items
     - type: group
       title: Query Parameters
       children:
         - type: page
           path: /reference/api/query/fields
           title: Fields
-    - type: page
-      path: /reference/api/items
-      title: Items
     - type: page
       path: /reference/api/activity
       title: Activity

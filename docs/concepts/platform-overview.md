@@ -1,7 +1,7 @@
 # Platform Overview
 
-> The Directus platform is primarily comprised of an API and App, working in concert to manage the
-> content of your SQL database.
+> The Directus platform is primarily comprised of an API and App, working in concert to "mirror" the
+> schema and content of your SQL database.
 
 ## Database Mirroring
 
@@ -97,14 +97,14 @@ Each field also mirrors other characteristics from the column, including its `ty
 `length`, `allow_null`, etc.
 
 <!-- prettier-ignore-start -->
-::: tip Usage 
+::: tip Usage
 You might have `title`, `body`, `author`, and `date_published` fields within an
 `articles` collection.
 :::
 <!-- prettier-ignore-end -->
 
 <!-- prettier-ignore-start -->
-::: tip Aliases 
+::: tip Aliases
 Not all fields in Directus map directly to an actual database column within their
 table. Some relational fields, like One-to-Many (O2M) and Many-to-Many (M2M), represent data that is
 stored in different tables. Other fields are only for presentation and don't save data at all, such
@@ -113,7 +113,7 @@ as a divider. These are called "alias" fields.
 <!-- prettier-ignore-end -->
 
 <!-- prettier-ignore-start -->
-::: tip Relational Fields 
+::: tip Relational Fields
 Fields that reference other items (in the same collection or different)
 are called relational fields. Linking or connecting data relationally is an immensely powerful
 feature of relational databases and SQL queries.
