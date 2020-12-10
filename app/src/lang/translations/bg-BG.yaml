@@ -78,8 +78,10 @@ use_custom: Персонализирана
 item_permissions: Позволения за обект
 field_permissions: Позволения за поле
 field_validation: Валидация на поле
+field_presets: Готови настройки за поле
 permissions_for_role: 'Обекти които {role} ролята може да {action}.'
 fields_for_role: 'Полета, които {role} ролята може да {action}.'
+validation_for_role: 'Правила за {action} на полетo, които трябва да спазва {role} роля.'
 presets_for_role: 'Стойност за полето по подразбиране за {role} ролята.'
 presentation_and_aliases: Презентационни и псевдоними
 revision_post_update: Ето как изглежда обекта след направените промени...
@@ -111,16 +113,32 @@ hidden_on_detail: Скриване в детайлния изглед
 disabled_editing_value: Без промени по стойността
 key: Ключ
 alias: Псевдоним
+bigInteger: Голямо цяло число
+boolean: Булев
 date: Дата
+datetime: Дата и час
 decimal: Десетичен
+float: Реално число
+integer: Цяло число
+json: JSON
+string: Низ
+text: Текст
 time: Час
+timestamp: Времеви печат
+uuid: UUID
 not_available_for_type: Не е налично за този тип
 create_translations: Създаване на преводи
 auto_generate: Автоматично генерирано
 this_will_auto_setup_fields_relations: Автоматично настройване на задължителните полета и релации.
 click_here: Натиснете тук
 to_manually_setup_translations: за ръчна настройка на преводи.
+click_to_manage_translated_fields: >-
+  Все още няма преведени полета. Натиснете тук за да ги създадете. | Има едно преведено поле. Натиснете тук за да го управлявате. | Има {count} преведени полета. Натиснете тук за да ги управлявате.
 fields_group: Групи от полета
+configure_m2o: Конфигуриране на връзка тип много към едно (M2O) ...
+configure_o2m: Конфигуриране на връзка тип едно към много (О2М) ...
+configure_m2m: Конфигуриране на връзка тип много към много (M2M) ...
+configure_m2a: Конфигуриране на връзка тип много към някое (M2A) ...
 add_m2o_to_collection: 'Добавяне на "много към едо" към "{collection}"'
 add_o2m_to_collection: 'Добавяне на "едно към много" към "{collection}"'
 add_m2m_to_collection: 'Добавяне на "много към много" към "{collection}"'
@@ -330,21 +348,29 @@ create_account: Създаване на профил
 account_created_successfully: Профилът е създаден
 corresponding_field: Кореспондиращо поле
 errors:
+  COLLECTION_NOT_FOUND: "Колекцията не съществува"
   FIELD_NOT_FOUND: Полето не е намерено
   FORBIDDEN: Забранен
+  INVALID_CREDENTIALS: Грешно потребителско име или парола
+  INVALID_OTP: Грешна еднократна парола
+  INVALID_PAYLOAD: Невалиден payload
   INVALID_QUERY: Невалидна заявка
   ITEM_LIMIT_REACHED: Достигнат лимит за обекти
   ITEM_NOT_FOUND: Обектът не е намерен
   ROUTE_NOT_FOUND: Не е намерен
   UNKNOWN: Неочаквана грешка
+value_hashed: Хеширана стойност
 bookmark_name: Име на отметка...
 create_bookmark: Създаване на отметка
 edit_bookmark: Редактиране на отметката
 bookmarks: Маркировка
+presets: Готови настройки
 unexpected_error: Неочаквана грешка
+unexpected_error_copy: Възникна неочаквана грешка, опитайте отново по-късно.
 copy_details: Копиране на детайли
 no_app_access: Без достъп до приложението
 no_app_access_copy: Не е позволено използването на администраторското приложение от този потребител.
+password_reset_sent: Изпратена ви е подсигурена връзка за възстановяване на вашата парола
 password_reset_successful: Успешно нулирана парола
 back: Назад
 editing_image: Редактиране на изображение
@@ -356,6 +382,7 @@ aspect_ratio: Съотношение
 rotate: Завъртане
 all_users: Всички потребители
 delete_collection: Изтриване на колекция
+update_collection_success: Обновена колекция
 delete_collection_success: Изтрита колекция
 start_end_of_count_items: '{start}-{end} от {count} обекти'
 delete_collection_are_you_sure: >-
@@ -429,6 +456,9 @@ clear_filters: Изчистване на филтрите
 saves_automatically: Автоматично запазване
 role: Роля
 user: Потребител
+no_presets: Няма готови настройки
+no_presets_copy: Все още няма запазени готови настройки или отметки.
+no_presets_cta: Добавяне на готови настройки
 create: Създаване
 on_create: При създаване
 on_update: При промяна
@@ -485,6 +515,7 @@ wysiwyg_options:
   visualaid: Преглед на невидимите елементи
   code: Преглед на кода
   fullscreen: Пълен Екран
+  directionality: Подравняване
 dropdown: Падащо меню
 choices: Избори
 choices_option_configured_incorrectly: Изборите не са конфигурирани правилно
@@ -501,10 +532,12 @@ settings_data_model: Модел на данни
 settings_permissions: Роли и позволения
 settings_project: Настройки на проект
 settings_webhooks: Уеб-куки
+settings_presets: Готови настройки и отметки
 scope: Обхват
 layout: Оформление
 changes_are_permanent: Промените са завинаги
 preset_name_placeholder: Име на отметка...
+editing_preset: Редактиране на готови настройки
 layout_preview: Предварителен преглед
 layout_setup: Настройка на оформление
 unsaved_changes: Незапазени промени
@@ -602,6 +635,8 @@ fields:
     public_background: Публичен фон
     public_note: Публична бележка
     auth_password_policy: Политика за пароли
+    auth_idle_timeout: Изчакване при бездействие
+    auth_login_attempts: Брой за опити за вход
   directus_fields:
     collection: Име на колекцията
     icon: Икона на колекцията
@@ -712,6 +747,7 @@ interfaces:
     color: Цвят
     description: Въвеждане или избор на стойност за цвят
     placeholder: Избор на цвят...
+    preset_colors: Предварително зададени цветове
     preset_colors_add_label: Добавяне на нов цвят...
     name_placeholder: Въвеждане на име на цвят...
   datetime:
@@ -730,6 +766,7 @@ interfaces:
     divider: Разделител
     description: Именуване и разделяне на полетата по секции
     title_placeholder: Въвеждане на заглавие...
+    inline_title: Заглавие в линия
     inline_title_label: Показване на заглавията в реда
   dropdown:
     description: Избор на стойност от падащо меню
@@ -742,14 +779,18 @@ interfaces:
     choices_value_placeholder: Въвеждане на стойност...
   dropdown-multiselect:
     dropdown-multiselect: Падащ лист (множествен избор)
+    description: Избор на множество стойности от падащо меню
   file:
     file: Файл
     description: Избор или качване на файл
   files:
     files: Файлове
+    description: Избор или качване на множество файлове
   hash:
     hash: Хеш
+    description: Въвеждане на стойност за хеширане
     masked: Маскиране
+    masked_label: Скриване на истинските стойности
   icon:
     icon: Икона
     description: Избор на икона от падащото меню
@@ -857,6 +898,7 @@ interfaces:
     options_override: Наслагване на опции
 displays:
   boolean:
+    boolean: Булев
     description: Показване на активно и неактивно състояние
     label_on: Активен текст
     label_on_placeholder: Въвеждане на активен текст...
