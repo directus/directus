@@ -735,7 +735,6 @@ template: Sjabloon
 translation: Vertaling
 value: Waarde
 view_project: Bekijk project
-weeks: { }
 report_error: Rapporteer fout
 interfaces:
   checkboxes:
