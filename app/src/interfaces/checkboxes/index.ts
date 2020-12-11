@@ -112,5 +112,5 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-	recommendedDisplays: ['tags'],
+	recommendedDisplays: ['labels'],
 }));
