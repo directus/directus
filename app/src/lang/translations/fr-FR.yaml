@@ -5,8 +5,19 @@ duplicate_field: Dupliquer le champ
 half_width: Demi-largeur
 full_width: Pleine largeur
 fill_width: Largeur de remplissage
+field_name_translations: Traductions des noms de champs
+enter_password_to_enable_tfa: Entrez votre mot de passe pour activer l'authentification à deux facteurs
+add_field: Ajouter un champ
+role_name: Nom de rôle
+db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
+show_archived_items: Afficher les éléments archivés
 required: Requis
+requires_value: Valeurs obligatoire
+create_preset: Créer un préréglage
 create_role: Créer un rôle
+create_user: Créer un utilisateur
+create_webhook: Créer un Webhook
+invite_users: Inviter des utilisateurs
 delete_bookmark: Retirer des favoris
 directus_version: Version de Directus
 language: Langue
@@ -170,8 +181,10 @@ fields:
   directus_fields:
     note: Remarque
     hidden: Caché
+    translation: Traductions des noms de champs
     display_template: Modèle
   directus_roles:
+    name: Nom de rôle
     description: Description
 comment: Commentaire
 continue: Continuer
