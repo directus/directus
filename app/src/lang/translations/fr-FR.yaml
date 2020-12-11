@@ -1,5 +1,10 @@
 ---
+edit_field: Modifiez le Champ
+item_revision: Révision de l'article
+duplicate_field: Dupliquer le champ
+half_width: Demi-largeur
 full_width: Pleine largeur
+fill_width: Largeur de remplissage
 required: Requis
 create_role: Créer un rôle
 delete_bookmark: Retirer des favoris
