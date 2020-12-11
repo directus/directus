@@ -37,7 +37,7 @@ logoutReason:
   SIGN_OUT: Отписан
   SESSION_EXPIRED: Сесията е изтекла
 public: Обществен
-public_description: Контрол върху това, каква част от данните в API-то ще бъде видима без нужда от авторизиране.
+public_description: Контрол върху това, каква част от данните в API-то ще бъде видима без нужда от оторизиране.
 not_allowed: Не е позволено
 directus_version: Версия на Directus
 node_version: Версия на Node
@@ -347,7 +347,7 @@ select_an_item: Избор на обект...
 edit: Редактиране
 enabled: Включване
 disable_tfa: Изключване на 2FA
-tfa_scan_code: Сканиране на кода във вашето приложение за оторизация, за да завършите настройването на 2FA
+tfa_scan_code: За да завършите настройването на 2FA, сканиране на кода във вашето приложение за оторизация
 enter_otp_to_disable_tfa: Въвеждане на OTP за изключване на 2FA
 create_account: Създаване на профил
 account_created_successfully: Профилът е създаден
@@ -678,7 +678,7 @@ save_current_datetime: Запазване на текущия дата/час
 comment: Кометнар
 continue: Продължение
 continue_as: >-
-  <b>{name}</b> в момента е авторизиран. Ако разпознавате този профил, изберете тук за продължение.
+  <b>{name}</b> в момента е оторизиран. Ако разпознавате този профил, изберете тук за продължение.
 editing_role: '{role} Роля'
 creating_webhook: Създаване на уеб-кука
 default: По подразбиране
@@ -708,8 +708,8 @@ junction_collection: Свързваща колекция
 latency: Забавяне
 login: Влизане
 my_activity: Моя активност
-not_authenticated: Неавторизиран
-authenticated: Авторизиран
+not_authenticated: Неоторизиран
+authenticated: Оторизиран
 options: Опции
 otp: Еднократна парола
 password: Парола
