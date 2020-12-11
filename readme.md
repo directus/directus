@@ -73,7 +73,7 @@ Directus only requires Node.js and supports most operating systems and SQL datab
 
 - PostgreSQL 10+
 - MySQL 5.7.8+
-- MariaDB 10.1+
+- MariaDB 10.2+
 - SQLite 3+
 - MS-SQL X.X+
 - OracleDB X.X+
