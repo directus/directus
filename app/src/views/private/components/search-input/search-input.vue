@@ -7,7 +7,7 @@
 		v-tooltip.bottom="active ? null : $t('search')"
 	>
 		<v-icon name="search" />
-		<input ref="input" :value="value" @input="emitValue" placeholder="Search items..." />
+		<input ref="input" :value="value" @input="emitValue" :placeholder="$t('search_items')" />
 		<v-icon v-if="value" class="empty" name="close" @click.stop="emptyAndClose" />
 	</div>
 </template>
