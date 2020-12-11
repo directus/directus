@@ -30,7 +30,7 @@ delete_folder: Изтриване на папка
 reset_bookmark: Нулиране на отметки
 rename_bookmark: Преименуване на отметка
 update_bookmark: Обновяване на отметка
-delete_bookmark: Изтрий отметка
+delete_bookmark: Изтриване на отметка
 delete_bookmark_copy: >-
   Сигурни ли сте, че искате да изтриете "{bookmark}" отметката? Това действие не може да бъде отменено.
 logoutReason:
@@ -292,6 +292,7 @@ no_comments: Все още няма коментари
 click_to_expand: Натиснете за разширяване
 select_item: Избор на обект
 no_items: Няма обекти
+search_items: Търсене на обекти...
 disabled: Изключване
 information: Информация
 report_bug: Доклад за проблем
@@ -735,6 +736,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   checkboxes:
