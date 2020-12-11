@@ -365,8 +365,12 @@ export class FieldsService {
 			column = table[field.type](field.field);
 		}
 
-		if (field.schema?.default_value) {
-			column.defaultTo(field.schema.default_value);
+		if (field.schema?.default_value !== undefined) {
+			if (typeof field.schema.default_value === 'string' && field.schema.default_value.toLowerCase() === 'now()') {
+				column.defaultTo(this.knex.fn.now());
+			} else {
+				column.defaultTo(field.schema.default_value);
+			}
 		}
 
 		if (field.schema?.is_nullable !== undefined && field.schema.is_nullable === false) {
