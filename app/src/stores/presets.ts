@@ -109,6 +109,7 @@ export const usePresetsStore = createStore({
 				api.get(`/presets`, {
 					params: {
 						'filter[user][_eq]': id,
+						limit: -1,
 					},
 				}),
 				// All role saved bookmarks and presets
@@ -116,6 +117,7 @@ export const usePresetsStore = createStore({
 					params: {
 						'filter[role][_eq]': role.id,
 						'filter[user][_null]': true,
+						limit: -1,
 					},
 				}),
 				// All global saved bookmarks and presets
@@ -123,6 +125,7 @@ export const usePresetsStore = createStore({
 					params: {
 						'filter[role][_null]': true,
 						'filter[user][_null]': true,
+						limit: -1,
 					},
 				}),
 			]);

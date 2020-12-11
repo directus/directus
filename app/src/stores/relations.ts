@@ -10,8 +10,7 @@ export const useRelationsStore = createStore({
 	}),
 	actions: {
 		async hydrate() {
-			const response = await api.get(`/relations`);
-
+			const response = await api.get(`/relations`, { params: { limit: -1 } });
 			this.state.relations = response.data.data;
 		},
 		async dehydrate() {

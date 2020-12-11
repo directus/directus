@@ -52,7 +52,7 @@ export const useFieldsStore = createStore({
 	}),
 	actions: {
 		async hydrate() {
-			const fieldsResponse = await api.get(`/fields`);
+			const fieldsResponse = await api.get(`/fields`, { params: { limit: -1 } });
 
 			const fields: FieldRaw[] = fieldsResponse.data.data;
 
