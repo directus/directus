@@ -5,7 +5,7 @@ export default defineDisplay(({ i18n }) => ({
 	id: 'labels',
 	name: i18n.t('displays.labels.labels'),
 	description: i18n.t('displays.labels.description'),
-	types: ['string', 'json'],
+	types: ['string', 'json', 'csv'],
 	icon: 'flag',
 	handler: DisplayLabels,
 	options: [
