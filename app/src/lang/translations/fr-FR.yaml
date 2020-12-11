@@ -18,6 +18,17 @@ create_role: Créer un rôle
 create_user: Créer un utilisateur
 create_webhook: Créer un Webhook
 invite_users: Inviter des utilisateurs
+email_examples: 'admin@exemple.com, utilisateur@exemple.com...'
+invite: Inviter
+emails: E-mails
+connection_excellent: Excellente connexion
+connection_good: Bonne connexion
+connection_fair: Connexion Modérée
+connection_poor: Mauvaise connexion
+rename_folder: Renommer le fichier
+delete_folder: Supprimer le fichier
+reset_bookmark: Réinitialiser le signet
+rename_bookmark: Renommer le signet
 delete_bookmark: Retirer des favoris
 directus_version: Version de Directus
 language: Langue
