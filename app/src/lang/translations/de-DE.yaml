@@ -1,9 +1,19 @@
 ---
+edit_field: Feld bearbeiten
 duplicate_field: Feld duplizieren
+half_width: Halbe Breite
 full_width: Volle Breite
+add_field: Feld hinzufügen
 required: Erforderlich
 create_role: Rolle erstellen
+create_user: Benutzer erstellen
+invite: Einladen
+emails: E-Mails
+reset_bookmark: Lesezeichen zurücksetzen
+rename_bookmark: Lesezeichen umbenennen
+update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
+public: Öffentlich
 directus_version: Directus Version
 reset_system_permissions_copy: Setzen Sie alle Systemberechtigungen auf die Standardeinstellungen zurück
 unarchive: Archivierung zurücksetzen
