@@ -9,6 +9,8 @@ create_role: Rolle erstellen
 create_user: Benutzer erstellen
 invite: Einladen
 emails: E-Mails
+rename_folder: Ordner umbenennen
+delete_folder: Ordner löschen
 reset_bookmark: Lesezeichen zurücksetzen
 rename_bookmark: Lesezeichen umbenennen
 update_bookmark: Lesezeichen bearbeiten
@@ -45,7 +47,9 @@ date: Datum
 decimal: Dezimal
 text: Text
 time: Zeit
+uuid: UUID
 auto_generate: Automatisch generieren
+choose_a_type: Wähle einen Typ...
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
 default_value: Standardwert
 next: Weiter
@@ -62,12 +66,16 @@ page_not_found: Seite nicht gefunden
 page_not_found_body: Die Seite, nach der Du gesucht hast, wurde nicht gefunden.
 display: Anzeige
 title: Titel
+revision_delta_created: Erstellt
 revision_delta_deleted: Gelöscht
 leave_comment: Kommentieren...
 this_collection: Diese Sammlung
 related_collection: Verknüpfte Sammlung
 format: Format
 submit: Absenden
+system: System
+yesterday: Gestern
+month: Monat
 months:
   january: Januar
   february: Februar
@@ -82,6 +90,7 @@ months:
   november: November
   december: Dezember
 size: Größe
+created: Erstellt
 checksum: Prüfsumme
 owner: Besitzer
 download: Herunterladen
