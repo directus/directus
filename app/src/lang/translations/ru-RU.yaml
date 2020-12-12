@@ -1,11 +1,31 @@
 ---
 edit_field: Редактировать поле
 full_width: Полная ширина
+add_field: Добавить поле
+role_name: Название роли
 required: Необходимые
 create_role: Создать Роль
+create_user: Создать пользователя
+rename_folder: Переименовать папку
+delete_folder: Удалить папку
+reset_bookmark: Сбросить закладку
+rename_bookmark: Переименовать закладку
+update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
 directus_version: Версия Directus
+validationError:
+  in: Значение должно быть одним из {valid}
+  nin: Значение не может быть одним из {invalid}
+  contains: Значение должно содержать {substring}
+  ncontains: Значение не может содержать {substring}
+  gt: Значение должно быть больше {valid}
+all_access: Полный доступ
+no_access: Нет Доступа
+delete_field: Удалить поле
+field_create_success: 'Создано поле: "{field}"'
+field_update_success: 'Обновлено поле: "{field}"'
 language: Язык
+camera: Камера
 create_field: Создать Поле
 hidden_on_detail: Скрывать в карточке
 date: Дата
@@ -16,6 +36,8 @@ auto_generate: Авто-Генерация
 add_note: Добавить заметку для пользователей...
 default_value: Значение По умолчанию
 next: Дальше
+field_name: Название поля
+translations: Переводы
 note: Заметка
 length: Длина
 readonly: Только для чтения
@@ -28,6 +50,7 @@ notifications: Уведомления
 page_not_found: Страница не найдена
 page_not_found_body: Страница, которую вы ищете, кажется, не существует.
 display: Отображение
+settings_update_success: Настройки обновлены
 title: Заголовок
 revision_delta_deleted: Удалено
 leave_comment: Оставить комментарий...
@@ -35,6 +58,12 @@ this_collection: Эта коллекция
 related_collection: Связанная Коллекция
 format: Формат
 submit: Отправить
+move_to_folder: Переместить в папку
+move: Переместить
+interface: Интерфейс
+today: Сегодня
+yesterday: Вчера
+delete_comment: Удалить комментарий
 months:
   january: Январь
   february: Февраль
@@ -52,6 +81,8 @@ size: Размер
 checksum: Контрольная сумма
 owner: Владелец
 download: Загрузить
+open: Открыть
+open_in_new_window: Открыть в новом окне
 name: Имя
 created_by: Кем создано
 created_on: Дата создания
@@ -168,6 +199,7 @@ fields:
     hidden: Скрыто
     display_template: Шаблон
   directus_roles:
+    name: Название роли
     description: Описание
 comment: Комментарий
 continue: Продолжить
@@ -241,6 +273,8 @@ interfaces:
     files: Файлы
   icon:
     icon: Иконка
+  interface:
+    interface: Интерфейс
   interface-options:
     interface-options: Настройки интерфейса
   many-to-many:
