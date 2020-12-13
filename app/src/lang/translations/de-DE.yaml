@@ -3,10 +3,14 @@ edit_field: Feld bearbeiten
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
+fill_width: Breite füllen
 add_field: Feld hinzufügen
+role_name: Rollenname
+show_archived_items: Zeige archivierte Elemente
 required: Erforderlich
 create_role: Rolle erstellen
 create_user: Benutzer erstellen
+create_webhook: Webhook erstellen
 invite: Einladen
 emails: E-Mails
 rename_folder: Ordner umbenennen
@@ -15,6 +19,9 @@ reset_bookmark: Lesezeichen zurücksetzen
 rename_bookmark: Lesezeichen umbenennen
 update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
+logoutReason:
+  SIGN_OUT: Abgemeldet
+  SESSION_EXPIRED: Sitzung abgelaufen
 public: Öffentlich
 not_allowed: Nicht erlaubt
 directus_version: Directus Version
@@ -41,6 +48,7 @@ field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
 field_presets: Feldvorgaben
 permissions_for_role: 'Items die {role} Rolle kann {action}.'
+delete_field: Feld löschen
 language: Sprache
 create_field: Feld erstellen
 hidden_on_detail: In Detailansicht ausblenden
@@ -74,6 +82,7 @@ title: Titel
 revision_delta_created: Erstellt
 revision_delta_deleted: Gelöscht
 leave_comment: Kommentieren...
+item_create_success: Element erstellt | Elemente erstellt
 this_collection: Diese Sammlung
 related_collection: Verknüpfte Sammlung
 export_data: Daten exportieren
@@ -117,6 +126,7 @@ save_as_copy: Als Kopie speichern
 comments: Kommentare
 request_feature: Feature anfragen
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
+no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
 csv: CSV
 create_collection: Sammlung erstellen
 relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
@@ -181,6 +191,7 @@ operators:
 loading: Wird geladen...
 upload_pending: Upload ausstehend
 click_to_browse: Zum Durchsuchen klicken
+create_item: Element erstellen
 display_template: Anzeigevorlage
 no_results: Keine Ergebnisse
 role: Rolle
@@ -267,6 +278,7 @@ fields:
     hidden: Ausgeblendet
     display_template: Vorlage
   directus_roles:
+    name: Rollenname
     description: Beschreibung
 comment: Kommentar
 continue: Weiter
