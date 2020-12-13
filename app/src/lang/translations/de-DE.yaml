@@ -16,6 +16,7 @@ rename_bookmark: Lesezeichen umbenennen
 update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
 public: Öffentlich
+not_allowed: Nicht erlaubt
 directus_version: Directus Version
 reset_system_permissions_copy: Setzen Sie alle Systemberechtigungen auf die Standardeinstellungen zurück
 unarchive: Archivierung zurücksetzen
