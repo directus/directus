@@ -7,7 +7,7 @@
 		"moduleResolution": "node",
 		"sourceMap": false,
 		"outDir": "dist",
-		"rootDir": ".",
+		"rootDir": "src",
 		"strict": true,
 		"lib": ["es2019"],
 		"skipLibCheck": true,
@@ -16,6 +16,6 @@
 	"exclude": [
 		"node_modules",
 		"dist",
-	    "test"
+		"test"
 	]
 }
