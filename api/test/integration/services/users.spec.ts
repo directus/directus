@@ -8,12 +8,13 @@ describe('UsersService', () => {
 	getAllDbs().forEach((db) => {
 		describe(db, () => {
 			let knex: Knex;
-			const users = new UsersService({
-				knex,
-				schema: {},
-			});
+			let users: UsersService;
 			before(() => {
 				knex = getKnexForDb(db);
+				users = new UsersService({
+					knex,
+					schema: {},
+				});
 			});
 
 			after(() => {
