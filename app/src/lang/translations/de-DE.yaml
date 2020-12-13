@@ -45,19 +45,23 @@ create_field: Feld erstellen
 hidden_on_detail: In Detailansicht ausblenden
 date: Datum
 decimal: Dezimal
+json: JSON
 text: Text
 time: Zeit
 uuid: UUID
 auto_generate: Automatisch generieren
+click_here: Hier klicken
 choose_a_type: Wähle einen Typ...
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
 default_value: Standardwert
 next: Weiter
+translations: Übersetzungen
 note: Notiz
 length: Länge
 readonly: Lesezugriff
 unique: Eindeutig
 primary_key: Primärschlüssel
+foreign_key: Fremdschlüssel
 clear_value: Wert löschen
 reset_to_default: Auf Standard zurücksetzen
 undo_changes: Änderungen verwerfen
@@ -71,11 +75,17 @@ revision_delta_deleted: Gelöscht
 leave_comment: Kommentieren...
 this_collection: Diese Sammlung
 related_collection: Verknüpfte Sammlung
+export_data: Daten exportieren
 format: Format
+export_collection: '{collection} exportieren'
 submit: Absenden
 system: System
+today: Heute
 yesterday: Gestern
+delete_comment: Kommentar löschen
 month: Monat
+year: Jahr
+select_all: Alles auswählen
 months:
   january: Januar
   february: Februar
@@ -89,10 +99,14 @@ months:
   october: Oktober
   november: November
   december: Dezember
+url: URL
+import: Importieren
 size: Größe
 created: Erstellt
 checksum: Prüfsumme
 owner: Besitzer
+folder: Ordner
+zoom: Zoom
 download: Herunterladen
 name: Name
 created_by: Erstellt von
@@ -102,13 +116,16 @@ save_as_copy: Als Kopie speichern
 comments: Kommentare
 request_feature: Feature anfragen
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
+csv: CSV
 create_collection: Sammlung erstellen
 relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
+active: Aktiv
 users: Benutzer
 activity: Aktivität
 webhooks: Webhooks
 field_width: Feldbreite
 user_directory: Benutzerverzeichnis
+documentation: Dokumentation
 duration: Dauer
 modified_on: Geändert am
 sort_field: Sortierfeld
@@ -127,11 +144,18 @@ errors:
   INVALID_QUERY: Ungültige anfrage
   ROUTE_NOT_FOUND: Nicht gefunden
   UNKNOWN: Unerwarteter Fehler
+create_bookmark: Lesezeichen erstellen
+edit_bookmark: Lesezeichen bearbeiten
 bookmarks: Lesezeichen
 unexpected_error: Unerwarteter Fehler
 back: Zurück
 square: Quadratisch
 free: Frei
+flip_horizontal: Horizontal spiegeln
+flip_vertical: Vertikal spiegeln
+aspect_ratio: Seitenverhältnis
+rotate: Drehen
+all_users: Alle Benutzer
 placeholder: Platzhalter
 icon_left: Icon links
 icon_right: Icon rechts
@@ -172,6 +196,7 @@ icon_off: Symbol aus
 wysiwyg_options:
   bold: Fett
   remove: Löschen
+  selectall: Alles auswählen
   table: Tabelle
 dropdown: Dropdown
 choices: Optionen
