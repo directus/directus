@@ -48,21 +48,32 @@ field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
 field_presets: Feldvorgaben
 permissions_for_role: 'Items die {role} Rolle kann {action}.'
+hide_field_on_detail: In Detailansicht ausblenden
+show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
 language: Sprache
+iso: ISO
 create_field: Feld erstellen
 hidden_on_detail: In Detailansicht ausblenden
+alias: Alias
 date: Datum
 decimal: Dezimal
 json: JSON
 text: Text
 time: Zeit
+timestamp: Zeitstempel
 uuid: UUID
 auto_generate: Automatisch generieren
 click_here: Hier klicken
 choose_a_type: Wähle einen Typ...
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
 default_value: Standardwert
+add_a_default_value: Standardwert hinzufügen...
+single_file: Eine Datei
+multiple_files: Mehrere Dateien
+m2o_relationship: n:1-Beziehung
+o2m_relationship: 1:n-Beziehung
+m2m_relationship: n:m-Beziehung
 next: Weiter
 translations: Übersetzungen
 note: Notiz
@@ -81,6 +92,8 @@ display: Anzeige
 title: Titel
 revision_delta_created: Erstellt
 revision_delta_deleted: Gelöscht
+revision_delta_other: Revision
+revision_delta_by: '{date} von {user}'
 leave_comment: Kommentieren...
 item_create_success: Element erstellt | Elemente erstellt
 this_collection: Diese Sammlung
@@ -88,7 +101,11 @@ related_collection: Verknüpfte Sammlung
 export_data: Daten exportieren
 format: Format
 export_collection: '{collection} exportieren'
+last_page: Letzte Seite
+last_access: Letzter Zugriff
 submit: Absenden
+move_to_folder: In Ordner verschieben
+move: Verschieben
 system: System
 today: Heute
 yesterday: Gestern
@@ -119,15 +136,26 @@ folder: Ordner
 zoom: Zoom
 download: Herunterladen
 name: Name
+type: Typ
 created_by: Erstellt von
 created_on: Erstellt am
 save_and_stay: Speichern und Bleiben
 save_as_copy: Als Kopie speichern
 comments: Kommentare
+click_to_expand: Zum Erweitern klicken
+select_item: Element auswählen
+no_items: Keine Elemente
+search_items: Elemente suchen...
+information: Information
+report_bug: Bug melden
 request_feature: Feature anfragen
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
 no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
+user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
+no_webhooks_copy: Es gibt noch keine Webhooks.
+all_items: Alle Elemente
 csv: CSV
+no_collections: Keine Sammlungen
 create_collection: Sammlung erstellen
 relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
 active: Aktiv
@@ -160,6 +188,7 @@ edit_bookmark: Lesezeichen bearbeiten
 bookmarks: Lesezeichen
 unexpected_error: Unerwarteter Fehler
 back: Zurück
+editing_image: Bild bearbeiten
 square: Quadratisch
 free: Frei
 flip_horizontal: Horizontal spiegeln
@@ -179,6 +208,8 @@ color: Farbe
 circle: Kreis
 empty_item: Leeres Element
 operators:
+  eq: Gleich
+  neq: Ungleich
   lt: Weniger als
   gt: Größer als
   lte: Weniger oder gleich
@@ -193,6 +224,12 @@ upload_pending: Upload ausstehend
 click_to_browse: Zum Durchsuchen klicken
 create_item: Element erstellen
 display_template: Anzeigevorlage
+all_files: Alle Dateien
+my_files: Meine Dateien
+recent_files: Zuletzt verwendete Dateien
+create_folder: Ordner erstellen
+add_file: Datei hinzufügen
+replace_file: Datei ersetzen
 no_results: Keine Ergebnisse
 role: Rolle
 user: Benutzer
@@ -207,9 +244,28 @@ icon_on: Symbol an
 icon_off: Symbol aus
 wysiwyg_options:
   bold: Fett
+  italic: Kursiv
+  underline: Unterstrichen
+  strikethrough: Durchgestrichen
+  bullist: Aufzählung
+  numlist: Nummerierte Liste
+  copy: Kopieren
+  cut: Ausschneiden
+  paste: Einfügen
+  h1: Überschrift 1
+  h2: Überschrift 2
+  h3: Überschrift 3
+  h4: Überschrift 4
+  h5: Überschrift 5
+  h6: Überschrift 6
+  indent: Einrücken
+  undo: Rückgängig
+  redo: Wiederherstellen
   remove: Löschen
   selectall: Alles auswählen
   table: Tabelle
+  code: Quelltext anzeigen
+  fullscreen: Vollbild
 dropdown: Dropdown
 choices: Optionen
 deselect: Abwählen
@@ -273,6 +329,10 @@ fields:
     tfa_secret: Zwei-Faktor-Authentifizierung
   directus_settings:
     project_name: Projektname
+    project_url: Projekt URL
+    project_color: Projekt Farbe
+    project_logo: Projekt Logo
+    public_background: Öffentlicher Hintergrund
   directus_fields:
     note: Notiz
     hidden: Ausgeblendet
@@ -282,6 +342,8 @@ fields:
     description: Beschreibung
 comment: Kommentar
 continue: Weiter
+editing_role: '{role} Rolle'
+creating_webhook: Webhook erstellen
 default: Standard
 delete: Löschen
 delete_field_are_you_sure: >-
@@ -298,6 +360,10 @@ forgot_password: Passwort vergessen
 hidden: Ausgeblendet
 icon: Symbol
 info: Information
+normal: Normal
+success: Erfolgreich
+warning: Warnung
+danger: Achtung
 junction_collection: Verbindungssammlung
 latency: Latenz
 login: Login
@@ -340,6 +406,7 @@ interfaces:
     color: Farbe
   datetime:
     datetime: Datum & Uhrzeit
+    use_24: 24-Stunden-Format verwenden
   display-template:
     display-template: Anzeigevorlage
   divider:
@@ -352,6 +419,8 @@ interfaces:
     files: Dateien
   icon:
     icon: Symbol
+  image:
+    image: Bild
   interface-options:
     interface-options: Schnittstellenoptionen
   many-to-many:
@@ -389,6 +458,7 @@ interfaces:
     modes:
       dropdown: Dropdown
   wysiwyg:
+    wysiwyg: WYSIWYG
     custom_formats: Benutzerdefiniertes Format
 displays:
   boolean:
@@ -408,6 +478,7 @@ displays:
   icon:
     icon: Symbol
   image:
+    image: Bild
     circle: Kreis
   rating:
     rating: Bewertung
@@ -420,6 +491,7 @@ layouts:
   cards:
     cards: Karten
     image_source: Bildquelle
+    crop: Zuschneiden
     title: Titel
     subtitle: Untertitel
   tabular:
