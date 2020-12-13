@@ -6,6 +6,5 @@ uploads
 extensions
 debug.db
 *.db
-test
 dist
 tmp

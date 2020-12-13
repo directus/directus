@@ -1,0 +1,91 @@
+version: '3'
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    ports:
+      - '21433:1433'
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=S0meVeryHardPassword
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P 'S0meVeryHardPassword' -Q 'select 1'
+  initmssqlknexdb:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    links:
+      - mssql
+    depends_on:
+      - mssql
+    entrypoint:
+      - bash
+      - -c
+      # https://docs.microsoft.com/en-us/sql/relational-databases/logs/control-transaction-durability?view=sql-server-ver15#bkmk_DbControl
+      - 'until /opt/mssql-tools/bin/sqlcmd -S mssql -U sa -P S0meVeryHardPassword -d master -Q "CREATE DATABASE knex_test; ALTER DATABASE knex_test SET DELAYED_DURABILITY = FORCED"; do sleep 5; done'
+
+  mysql:
+    image: mysql
+    # https://dev.mysql.com/doc/refman/8.0/en/mysql-acid.html
+    # https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_flush_method
+    # nosync only for unix, edit for local start on other systems
+    command: --default-authentication-plugin=mysql_native_password --sync_binlog=0 --innodb_doublewrite=OFF  --innodb-flush-log-at-trx-commit=0 --innodb-flush-method=nosync
+    ports:
+      - '23306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=testrootpassword
+      - MYSQL_DATABASE=knex_test
+      - MYSQL_USER=testuser
+      - MYSQL_PASSWORD=testpassword
+    healthcheck:
+      test:
+        [
+          'CMD',
+          '/usr/bin/mysql',
+          '-hlocalhost',
+          '-utestuser',
+          '-ptestpassword',
+          '-e',
+          'SELECT 1',
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: always
+    volumes:
+      - mysql_data:/var/lib/mysql
+  waitmysql:
+    image: mysql
+    links:
+      - mysql
+    depends_on:
+      - mysql
+    entrypoint:
+      - bash
+      - -c
+      - 'until /usr/bin/mysql -hmysql -utestuser -ptestpassword -e "SELECT 1"; do sleep 5; done'
+
+  postgres:
+    image: postgres:alpine
+    # see https://www.postgresql.org/docs/current/non-durability.html
+    command: '-c full_page_writes=off -c fsync=off -c synchronous_commit=off'
+    ports:
+      - '25432:5432'
+    environment:
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=knextest
+      - POSTGRES_DB=knex_test
+  waitpostgres:
+    image: postgres:alpine
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    entrypoint:
+      - bash
+      - -c
+      - 'until /usr/local/bin/psql postgres://testuser:knextest@postgres/knex_test -c "SELECT 1"; do sleep 5; done'
+
+volumes:
+  mysql_data:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
