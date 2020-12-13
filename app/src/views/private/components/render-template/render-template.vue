@@ -10,6 +10,8 @@
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
 				:type="part.type"
+				:collection="part.collection"
+				:field="part.fieldKey"
 				v-bind="part.options"
 			/>
 			<span :key="index" v-else>{{ part }}</span>
@@ -86,6 +88,8 @@ export default defineComponent({
 						interface: field.meta?.interface,
 						interfaceOptions: field.meta?.options,
 						type: field.type,
+						fieldKey,
+						collection: props.collection,
 					};
 				})
 				.map((p) => p || null)
