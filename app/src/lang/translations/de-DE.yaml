@@ -4,29 +4,49 @@ duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
 fill_width: Breite füllen
+field_name_translations: Feldnamen-Übersetzungen
+enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
 add_field: Feld hinzufügen
 role_name: Rollenname
+db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
 required: Erforderlich
+create_preset: Vorlage erstellen
 create_role: Rolle erstellen
 create_user: Benutzer erstellen
 create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
 invite: Einladen
 emails: E-Mails
+connection_excellent: Ausgezeichnete Verbindung
+connection_good: Gute Verbindung
+connection_fair: Brauchbare Verbindung
+connection_poor: Schlechte Verbindung
 rename_folder: Ordner umbenennen
 delete_folder: Ordner löschen
 reset_bookmark: Lesezeichen zurücksetzen
 rename_bookmark: Lesezeichen umbenennen
 update_bookmark: Lesezeichen bearbeiten
 delete_bookmark: Lesezeichen löschen
+delete_bookmark_copy: >-
+  Möchten Sie das Lesezeichen "{bookmark}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 logoutReason:
   SIGN_OUT: Abgemeldet
   SESSION_EXPIRED: Sitzung abgelaufen
 public: Öffentlich
+public_description: Bestimmt welche API-Daten ohne authentifizierung zugänglich sind.
 not_allowed: Nicht erlaubt
 directus_version: Directus Version
+node_version: Version
+node_uptime: Betriebszeit
+os_type: Betriebssystem
+os_version: OS Version
+os_totalmem: Arbeitsspeicher
+archive: Archiv
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
+archive_confirm_count: >-
+  Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente wirklich archivieren?
+reset_system_permissions: Systemberechtigungen zurücksetzen
 reset_system_permissions_copy: Setzen Sie alle Systemberechtigungen auf die Standardeinstellungen zurück
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Sind Sie sicher, dass das Item aus dem Archiv zurückgeholt werden soll?
@@ -35,6 +55,7 @@ unknown_validation_errors: 'Es gab Validierungsfehler für folgende verstecke Fe
 validationError:
   eq: Der Wert muss {valid} sein
   neq: Der Wert kann nicht {invalid} sein
+  in: 'Gültige Werte sind: {valid}'
   contains: Der Wert muss {substring} enthalten
   ncontains: Der Wert darf {substring} nicht enthalten
   gt: Der Wert muss größer sein als {valid}
@@ -54,6 +75,7 @@ field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
 field_presets: Feldvorgaben
 permissions_for_role: 'Items die {role} Rolle kann {action}.'
+fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
@@ -371,6 +393,7 @@ fields:
   directus_fields:
     note: Notiz
     hidden: Ausgeblendet
+    translation: Feldnamen-Übersetzungen
     display_template: Vorlage
   directus_roles:
     name: Rollenname
