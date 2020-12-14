@@ -1,5 +1,13 @@
 ---
+edit_field: Edytuj pole
+half_width: Połowa szerokości
 full_width: Pełna szerokość
+fill_width: Szerokość wypełnienia
+field_name_translations: Tłumaczenie nazwy pola
+enter_password_to_enable_tfa: Wprowadź hasło, aby włączyć uwierzytelnianie dwuetapowe
+add_field: Dodaj pole
+role_name: Nazwa roli
+db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować '
 required: Wymagane
 create_role: Stwórz rolę
 delete_bookmark: Usuń zakładkę
@@ -158,8 +166,10 @@ fields:
   directus_fields:
     note: Notatka
     hidden: Ukryte
+    translation: Tłumaczenie nazwy pola
     display_template: Szablon
   directus_roles:
+    name: Nazwa roli
     description: Opis
 comment: Komentarz
 continue: Kontynuuj
