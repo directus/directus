@@ -37,6 +37,7 @@ validationError:
   neq: Der Wert kann nicht {invalid} sein
   contains: Der Wert muss {substring} enthalten
   ncontains: Der Wert darf {substring} nicht enthalten
+  gt: Der Wert muss größer sein als {valid}
   gte: Der Wert muss größer oder gleich {valid} sein
   lt: Der Wert muss kleiner als {valid} sein
   lte: Der Wert muss kleiner oder gleich {valid} sein
@@ -56,14 +57,22 @@ permissions_for_role: 'Items die {role} Rolle kann {action}.'
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
+duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
 language: Sprache
+admins_have_all_permissions: Administratoren haben alle Berechtigungen
+camera: Kamera
+exposure: Belichtung
 iso: ISO
 create_field: Feld erstellen
+updating_field_field: '{field} ({collection})'
 hidden_on_detail: In Detailansicht ausblenden
+key: Schlüssel
 alias: Alias
 date: Datum
+datetime: Datum mit Uhrzeit
 decimal: Dezimal
 json: JSON
+string: Zeichenkette
 text: Text
 time: Zeit
 timestamp: Zeitstempel
@@ -74,6 +83,7 @@ choose_a_type: Wähle einen Typ...
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
 default_value: Standardwert
 add_a_default_value: Standardwert hinzufügen...
+standard_field: Standardfeld
 single_file: Eine Datei
 multiple_files: Mehrere Dateien
 m2o_relationship: n:1-Beziehung
@@ -100,6 +110,7 @@ revision_delta_deleted: Gelöscht
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
 leave_comment: Kommentieren...
+post_comment_success: Kommentar veröffentlicht
 item_create_success: Element erstellt | Elemente erstellt
 this_collection: Diese Sammlung
 related_collection: Verknüpfte Sammlung
@@ -137,9 +148,13 @@ size: Größe
 created: Erstellt
 checksum: Prüfsumme
 owner: Besitzer
+edited_by: Editiert von
 folder: Ordner
 zoom: Zoom
 download: Herunterladen
+open: Öffnen
+open_in_new_window: In neuem Fenster öffnen
+download_file: Datei herunterladen
 name: Name
 type: Typ
 created_by: Erstellt von
@@ -163,6 +178,7 @@ csv: CSV
 no_collections: Keine Sammlungen
 create_collection: Sammlung erstellen
 relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
+select_a_collection: Sammlung auswählen
 active: Aktiv
 users: Benutzer
 activity: Aktivität
@@ -170,9 +186,11 @@ webhooks: Webhooks
 field_width: Feldbreite
 user_directory: Benutzerverzeichnis
 documentation: Dokumentation
+sidebar: Seitenleiste
 duration: Dauer
 modified_on: Geändert am
 sort_field: Sortierfeld
+select_an_item: Element auswählen...
 edit: Bearbeiten
 enter_otp_to_disable_tfa: OTP zum deaktivieren der 2FA eingeben
 create_account: Konto erstellen
@@ -192,6 +210,7 @@ create_bookmark: Lesezeichen erstellen
 edit_bookmark: Lesezeichen bearbeiten
 bookmarks: Lesezeichen
 unexpected_error: Unerwarteter Fehler
+password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
 back: Zurück
 editing_image: Bild bearbeiten
 square: Quadratisch
@@ -201,6 +220,11 @@ flip_vertical: Vertikal spiegeln
 aspect_ratio: Seitenverhältnis
 rotate: Drehen
 all_users: Alle Benutzer
+delete_collection: Sammlung löschen
+start_end_of_count_items: '{start}-{end} von {count} Elementen'
+visible_collections: Sichtbare Sammlungen
+hidden_collections: Versteckte Sammlungen
+unmanaged_collections: Nicht konfigurierte Sammlungen
 placeholder: Platzhalter
 icon_left: Icon links
 icon_right: Icon rechts
@@ -212,6 +236,7 @@ divider: Divider
 color: Farbe
 circle: Kreis
 empty_item: Leeres Element
+log_in_with: 'Einloggen mit {provider}'
 operators:
   eq: Gleich
   neq: Ungleich
@@ -225,6 +250,11 @@ operators:
   empty: Ist leer
   nempty: Ist nicht leer
 loading: Wird geladen...
+upload_file: Datei hochladen
+upload_file_indeterminate: Datei wird hochgeladen...
+upload_file_success: Datei wurde hochgeladen
+upload_files_indeterminate: 'Hochladen von Dateien {done}/{total}'
+upload_files_success: '{count} Dateien hochgeladen'
 upload_pending: Upload ausstehend
 click_to_browse: Zum Durchsuchen klicken
 create_item: Element erstellen
@@ -414,6 +444,7 @@ interfaces:
     use_24: 24-Stunden-Format verwenden
   display-template:
     display-template: Anzeigevorlage
+    select_a_collection: Sammlung auswählen
   divider:
     divider: Divider
   dropdown:
