@@ -16,6 +16,7 @@ create_role: Rolle erstellen
 create_user: Benutzer erstellen
 create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
+email_examples: 'admin@example.com, user@example.com...'
 invite: Einladen
 emails: E-Mails
 connection_excellent: Ausgezeichnete Verbindung
@@ -76,6 +77,8 @@ field_validation: Feldüberprüfung
 field_presets: Feldvorgaben
 permissions_for_role: 'Items die {role} Rolle kann {action}.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
+validation_for_role: 'Feld {action} Regeln welche durch die {role} Rolle befolgt werden muss.'
+presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
