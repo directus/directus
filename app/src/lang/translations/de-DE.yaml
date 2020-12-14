@@ -11,6 +11,7 @@ required: Erforderlich
 create_role: Rolle erstellen
 create_user: Benutzer erstellen
 create_webhook: Webhook erstellen
+invite_users: Benutzer einladen
 invite: Einladen
 emails: E-Mails
 rename_folder: Ordner umbenennen
@@ -25,6 +26,7 @@ logoutReason:
 public: Öffentlich
 not_allowed: Nicht erlaubt
 directus_version: Directus Version
+archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
 reset_system_permissions_copy: Setzen Sie alle Systemberechtigungen auf die Standardeinstellungen zurück
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Sind Sie sicher, dass das Item aus dem Archiv zurückgeholt werden soll?
@@ -32,6 +34,9 @@ nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden ein
 unknown_validation_errors: 'Es gab Validierungsfehler für folgende verstecke Felder:'
 validationError:
   eq: Der Wert muss {valid} sein
+  neq: Der Wert kann nicht {invalid} sein
+  contains: Der Wert muss {substring} enthalten
+  ncontains: Der Wert darf {substring} nicht enthalten
   gte: Der Wert muss größer oder gleich {valid} sein
   lt: Der Wert muss kleiner als {valid} sein
   lte: Der Wert muss kleiner oder gleich {valid} sein
