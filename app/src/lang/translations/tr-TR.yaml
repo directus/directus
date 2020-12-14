@@ -1,5 +1,11 @@
 ---
+edit_field: Alanı Düzenle
+item_revision: Revizyonları Göster
+duplicate_field: Yinelenen Alan
+half_width: Yarı Genişlik
 full_width: Tam Genişlik
+fill_width: Tam Genişlik
+field_name_translations: Alan İsim Çevirileri
 required: Gerekli
 create_role: Rol Oluştur
 delete_bookmark: Yer imini kaldır
@@ -165,6 +171,7 @@ fields:
   directus_fields:
     note: Not
     hidden: Gizli
+    translation: Alan İsim Çevirileri
     display_template: Şablon
   directus_roles:
     description: Açıklama

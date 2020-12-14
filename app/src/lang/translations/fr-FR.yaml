@@ -1,7 +1,34 @@
 ---
+edit_field: Modifiez le Champ
+item_revision: Révision de l'article
+duplicate_field: Dupliquer le champ
+half_width: Demi-largeur
 full_width: Pleine largeur
+fill_width: Largeur de remplissage
+field_name_translations: Traductions des noms de champs
+enter_password_to_enable_tfa: Entrez votre mot de passe pour activer l'authentification à deux facteurs
+add_field: Ajouter un champ
+role_name: Nom de rôle
+db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
+show_archived_items: Afficher les éléments archivés
 required: Requis
+requires_value: Valeurs obligatoire
+create_preset: Créer un préréglage
 create_role: Créer un rôle
+create_user: Créer un utilisateur
+create_webhook: Créer un Webhook
+invite_users: Inviter des utilisateurs
+email_examples: 'admin@exemple.com, utilisateur@exemple.com...'
+invite: Inviter
+emails: E-mails
+connection_excellent: Excellente connexion
+connection_good: Bonne connexion
+connection_fair: Connexion Modérée
+connection_poor: Mauvaise connexion
+rename_folder: Renommer le fichier
+delete_folder: Supprimer le fichier
+reset_bookmark: Réinitialiser le signet
+rename_bookmark: Renommer le signet
 delete_bookmark: Retirer des favoris
 directus_version: Version de Directus
 language: Langue
@@ -165,8 +192,10 @@ fields:
   directus_fields:
     note: Remarque
     hidden: Caché
+    translation: Traductions des noms de champs
     display_template: Modèle
   directus_roles:
+    name: Nom de rôle
     description: Description
 comment: Commentaire
 continue: Continuer

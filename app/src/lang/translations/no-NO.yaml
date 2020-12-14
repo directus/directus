@@ -1,9 +1,63 @@
 ---
+edit_field: Rediger felt
+item_revision: Element revisjoner
+duplicate_field: Dupliser felt
+half_width: Halv vidde
 full_width: Fullbredde
+fill_width: Fyll vidde
+field_name_translations: Feltnavn oversettelser
+enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
+add_field: Legg til felt
+role_name: Rollenavn
+db_only_click_to_configure: 'Kun database: Klikk for å konfigurere '
+show_archived_items: Vis arkiverte elementer
 required: Påkrevd
+requires_value: Krever verdi
+create_preset: Opprett forhåndsinnstilling
 create_role: Opprett rolle
+create_user: Opprett bruker
+create_webhook: Lag Webhook
+invite_users: Invitere brukere
+email_examples: 'admin@example.com, user@example.com...'
+invite: Inviter
+emails: E-post
+connection_excellent: Utmerket tilkobling
+connection_good: God tilkobling
+connection_fair: Ok tilkobling
+connection_poor: Dårlig tilkobling
+rename_folder: Endre mappenavn
+delete_folder: Slett mappe
+reset_bookmark: Tilbakestill bokmerke
+rename_bookmark: Endre navn på bokmerke
+update_bookmark: Oppdater bokmerke
 delete_bookmark: Slett bokmerke
+delete_bookmark_copy: >-
+  Er du sikker på at du vil slette "{bookmark}"? Handlingen kan ikke angres.
+logoutReason:
+  SIGN_OUT: Utlogget
+  SESSION_EXPIRED: Økt utløpt
+public: Offentlig
+public_description: Kontrollerer hvilke API-data som er tilgjengelige uten å autentisere.
+not_allowed: Ikke tillatt
 directus_version: Directus versjon
+node_version: Node versjon
+node_uptime: Node oppetid
+os_type: OS Type
+os_version: OS versjon
+os_uptime: OS oppetid
+os_totalmem: OS minne
+archive: Arkiv
+archive_confirm: Er du sikker på at du vil arkivere dette elementet?
+archive_confirm_count: >-
+  Ingen elementer valgt | Er du sikker på at du vil arkivere dette elementet? | Er du sikker på at du vil arkivere disse {count} elementene?
+reset_system_permissions: Tilbakestill systemrettigheter
+reset_system_permissions_copy: Tilbakestill alle systemrettigheter til standardinnstillingene
+unarchive: Uarkivér
+unarchive_confirm: Er du sikker på at du vil uarkivere dette elementet?
+nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett nivå opp.
+unknown_validation_errors: 'Det oppstod valideringsfeil for følgende skjulte felter:'
+validationError:
+  eq: Verdien må være {valid}
 create_field: Opprett felt
 hidden_on_detail: Skjult ved detaljer
 text: Tekst
@@ -112,7 +166,9 @@ fields:
   directus_fields:
     note: Notat
     hidden: Skjult
+    translation: Feltnavn oversettelser
   directus_roles:
+    name: Rollenavn
     description: Beskrivelse
 comment: Kommenter
 continue: Fortsett
