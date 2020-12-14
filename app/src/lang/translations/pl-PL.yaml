@@ -42,14 +42,31 @@ reset_system_permissions: Resetuj uprawnienia systemowe
 reset_system_permissions_copy: Resetuj wszystkie uprawnienia systemowe do ich domyślnych ustawień
 nested_files_folders_will_be_moved: Zagnieżdżone pliki i foldery zostaną przeniesione o jeden poziom.
 unknown_validation_errors: 'Wystąpiły błędy walidacji dla następujących ukrytych pól:'
+validationError:
+  in: Wartość musi być jednym z {valid}
+  nin: Wartość nie może być jednym z {invalid}
+  contains: Wartość musi zawierać {substring}
+  ncontains: Wartość nie może zawierać {substring}
+  gt: Wartość musi być większa niż {valid}
+  gte: Wartość musi być większa lub równa {valid}
+  lt: Wartość musi być mniejsza niż {valid}
+  lte: Wartość musi być mniejsza lub równa {valid}
+  empty: Wartość musi być pusta
+  nempty: Wartość nie może być pusta
+  null: Wartość musi być pusta
+  nnull: Wartość nie może być pusta
+  required: Wartość jest wymagana
 no_access: Brak dostępu
 field_validation: Walidacja pola
+presets_for_role: 'Wartość domyślna dla roli {role}.'
 fields_and_layout: Pola i układ
 field_update_success: 'Zaktualizowano pole: "{field}"'
 language: Język
 admins_have_all_permissions: Administratorzy mają wszystkie uprawnienia
 camera: Aparat
 iso: ISO
+schema_setup_title: Jak to pole powinno być zapisywane w bazie danych?
+schema_field_title: Jak to pole powinno zachowywać się w aplikacji?
 create_field: Stwórz pole
 creating_new_field: 'Nowe pole ({collection})'
 updating_field_field: '{field} ({collection})'
@@ -76,6 +93,8 @@ create_translations: Utwórz tłumaczenia
 auto_generate: Automatycznie generuj
 this_will_auto_setup_fields_relations: Spowoduje to automatyczne ustawienie wszystkich wymaganych pól i relacji.
 click_here: Kliknij tutaj
+click_to_manage_translated_fields: >-
+  Nie ma jeszcze tłumaczonych pól. Kliknij tutaj, aby je stworzyć. | Istnieje jedno tłumaczone pole. Kliknij tutaj, aby nim zarządzać. | Istnieją {count} tłumaczone pól. Kliknij tutaj, aby nimi zarządzać.
 fields_group: Grupa pól
 configure_m2o: Skonfiguruj relację wiele do jednego...
 configure_o2m: Skonfiguruj relację jeden do wielu...
@@ -116,13 +135,35 @@ notifications: Powiadomienia
 show_all_activity: Pokaż wszystkie aktywności
 page_not_found: Nie odnaleziono strony
 page_not_found_body: Strona, której poszukujesz, nie istnieje.
+confirm_revert: Potwierdź cofnięcie
+confirm_revert_body: Spowoduje to przywrócenie elementu do wybranego stanu.
 settings_update_success: Ustawienia zaktualizowane
 title: Tytuł
+revision_delta_updated: 'Zaktualizowano 1 pole | Zaktualizowano {count} pól'
+revision_delta_by: '{date} przez {user}'
 leave_comment: Napisz komentarz...
+post_comment_success: Komentarz dodany
+item_create_success: Element utworzony | Elementy utworzone
+item_update_success: Element zaktualizowany | Elementy zaktualizowane
+item_delete_success: Element usunięty | Elementy usunięte
 this_collection: Ta kolekcja
 related_collection: Powiązana kolekcja
+related_collections: Powiązane kolekcje
+export_data: Eksportuj dane
 format: Formatowanie
+export_collection: 'Eksportuj {collection}'
+last_page: Ostatnia strona
+last_access: Ostatni dostęp
+a_unique_table_name: Unikalna nazwa tabeli...
+a_unique_column_name: Unikalna nazwa kolumny...
 submit: Zatwierdź
+move_to_folder: Przenieś do folderu
+move: Przenieś
+add_field_related: Dodaj pole do powiązanej kolekcji
+interface: Interfejs
+today: Dziś
+yesterday: Wczoraj
+delete_comment: Usuń komentarz
 month: Miesiąc
 year: Rok
 select_all: Wybierz wszystkie
@@ -187,15 +228,39 @@ request_feature: Zaproponuj nową funkcjonalność
 interface_not_found: 'Interfejs "{interface}" nie został znaleziony.'
 reset_interface: Resetuj interfejs
 item_count: 'Brak elementów | Jeden element | {count} elementy/ów'
+no_items_copy: Nie ma jeszcze żadnych elementów w tej kolekcji.
+file_count: 'Brak plików | Jeden plik | {count} plików'
+no_files_copy: Brak plików.
+user_count: 'Brak użytkowników | Jeden użytkownik | {count} użytkowników'
+no_users_copy: Nie ma jeszcze użytkowników w tej roli.
+webhooks_count: 'Brak webhooków | Jeden Webhook | {count} Webhooków'
+no_webhooks_copy: Brak webhooków.
+all_items: Wszystkie elementy
+csv: CSV
+no_collections: Brak kolekcji
 create_collection: Stwórz kolekcję
+no_collections_copy_admin: Nie masz jeszcze żadnych kolekcji. Kliknij poniższy przycisk, aby rozpocząć.
 users: Użytkownicy
 activity: Aktywność
 webhooks: Webhooki
 field_width: Szerokość pola
 user_directory: Katalog użytkownika
 duration: Czas trwania
+second: Drugi
+file_moved: Plik przeniesiony
+collection_created: Utworzono kolekcję
 modified_on: Modyfikowane Dnia
+sort_field: Pole sortowania
+toggle_manual_sorting: Przełącz ręczne sortowanie
+bookmark_doesnt_exist: Zakładka nie istnieje
+bookmark_doesnt_exist_copy: Nie znaleziono zakładki, którą próbujesz otworzyć.
+bookmark_doesnt_exist_cta: Wróć do kolekcji
+select_an_item: Wybierz element...
 edit: Edytuj
+enabled: Włączone
+disable_tfa: Wyłącz weryfikację dwuetapową
+tfa_scan_code: Zeskanuj kod w swojej aplikacji uwierzytelniającej, aby zakończyć konfigurację 2FA
+enter_otp_to_disable_tfa: Wprowadź kod jednorazowy, aby wyłączyć 2FA
 create_account: Utwórz konto
 account_created_successfully: Konto utworzone pomyślnie
 auto_fill: Automatyczne wypełnianie
@@ -247,16 +312,45 @@ divider: Separator
 color: Kolor
 circle: Okrąg
 empty_item: Pusty element
+log_in_with: 'Zaloguj się za pomocą {provider}'
+advanced_filter: Filtr zaawansowany
 operators:
+  eq: Równa się
+  neq: Różne od
   lt: Mniejsze od
   gt: Większe od
   lte: Równe lub mniejsze od
   gte: Większe lub równe od
+  in: Jest jednym z
+  nin: Nie jest jednym z
+  null: Jest puste
+  nnull: Nie jest puste
   contains: Zawiera
   ncontains: Nie zawiera
+  between: Jest pomiędzy
+  nbetween: Nie jest pomiędzy
   empty: Jest pusty
+  nempty: Nie jest puste
+  all: Zawiera te klucze
+  has: Zawiera niektóre z tych kluczy
 loading: Wczytywanie...
+drop_to_upload: Upuść, aby przesłać
+upload_file: Prześlij plik
+upload_file_indeterminate: Przesyłanie pliku...
+upload_file_success: Plik przesłany
+upload_files_indeterminate: 'Przesyłanie plików {done}/{total}'
+upload_files_success: 'Przesłano {count} plików'
+drag_file_here: Przeciągnij i upuść plik tutaj
+click_to_browse: Kliknij, aby przeglądać
+collection_setup: Ustawienia kolekcji
+value_unique: Wartość musi być unikalna
+all_activity: Wszystkie aktywności
+all_files: Wszystkie pliki
+my_files: Moje pliki
+recent_files: Ostatnie pliki
+add_file: Dodaj plik
 no_results: Brak wyników
+no_results_copy: Dostosuj lub wyczyść filtry wyszukiwania, aby zobaczyć wyniki.
 role: Rola
 user: Użytkownik
 create: Stwórz
@@ -312,6 +406,7 @@ dropdown: Lista rozwijana
 choices: Opcje
 deselect: Odznacz
 editing_in_batch: 'Grupowa edycja {count} elementów'
+settings_data_model: Model danych
 settings_permissions: Role i uprawnienia
 settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
@@ -320,12 +415,14 @@ unsaved_changes_copy: Czy na pewno chcesz opuścić tę stronę?
 discard_changes: Odrzuć zmiany.
 keep_editing: Kontynuuj edycję
 add_new: Dodaj nowy
+create_new: Utwórz nowy
 all: Wszystkie
 batch_delete_confirm: >-
   Żaden element nie został zaznaczony | Na pewno chcesz usunąć ten element? Tej akcji nie będzie można cofnąć. | Na pewno chcesz usunąć {count} elementów? Tej akcji nie będzie można cofnąć.
 cancel: Anuluj
 collection: Kolekcja
 collections: Kolekcje
+system_fields_locked: Pola systemowe są zablokowane i nie można ich edytować
 fields:
   directus_activity:
     action: Czynność
@@ -479,22 +576,50 @@ interfaces:
   color:
     color: Kolor
     description: Wprowadź lub wybierz kolor
+    placeholder: Wybierz kolor...
+    preset_colors_add_label: Dodaj nowy kolor...
+    name_placeholder: Wprowadź nazwę koloru...
   datetime:
     datetime: Data i godzina
+    description: Wprowadź daty i godziny
+    include_seconds: Uwzględnij sekundy
+    set_to_now: Ustaw na teraz
+    use_24: Użyj 24-godzinnego formatu
+  display-template:
+    collection_field: Pole kolekcji
   divider:
     divider: Separator
   dropdown:
     allow_other: Zezwól na inne
     choices_value_placeholder: Wprowadź wartość...
+  dropdown-multiselect:
+    description: Wybierz wiele wartości z listy rozwijanej
   file:
     file: Plik
+    description: Wybierz lub prześlij plik
   files:
     files: Pliki
+    description: Wybierz lub prześlij wiele plików
+  hash:
+    masked_label: Ukryj rzeczywiste wartości
   icon:
     icon: Ikona
+    description: Wybierz ikonę z listy rozwijanej
+    search_for_icon: Szukaj ikony...
+  image:
+    image: Obraz
+    description: Wybierz lub prześlij plik
+  interface:
+    interface: Interfejs
+    description: Wybierz istniejący interfejs
+    placeholder: Wybierz interfejs...
   interface-options:
     interface-options: Opcje interfejsu
+    description: Okno do wyboru opcji interfejsu
+  many-to-many:
+    many-to-many: Wiele do wielu
   many-to-one:
+    many-to-one: Wiele do jednego
     description: Wybierz pojedynczy powiązany element
   markdown:
     markdown: Markdown
@@ -532,6 +657,7 @@ interfaces:
     hyphen: Zastąp myślnikiem
     underscore: Zastąp podkreśleniem
     remove: Usuń białe znaki
+    alphabetize: Alfabetycznie
     alphabetize_label: Wymuś kolejność alfabetyczną
     add_tags: Dodaj tagi...
   text-input:
@@ -545,19 +671,28 @@ interfaces:
   toggle:
     toggle: Przełącz
     label_placeholder: Wprowadź etykietę...
+    label_default: Włączone
   translations:
     no_collection: Brak kolekcji
   user:
     user: Użytkownik
     modes:
       dropdown: Lista rozwijana
+      modal: Okno
+  wysiwyg:
+    wysiwyg: WYSIWYG
+    toolbar: Pasek narzędzi
+    custom_formats: Niestandardowe formaty
 displays:
   boolean:
     boolean: Wartość logiczna
+    label_on: Etykieta włączona
     icon_on: Ikona włączona
     icon_off: Ikona wyłączona
   collection:
     collection: Kolekcja
+    description: Wyświetl kolekcję
+    icon_label: Pokaż ikonę kolekcji
   color:
     color: Kolor
   datetime:
@@ -572,6 +707,7 @@ displays:
     description: Wyświetl ikonę
     filled: Wypełniony
   image:
+    image: Obraz
     description: Wyświetl mały podgląd obrazu
     circle: Okrąg
     circle_label: Wyświetl jako okrąg
