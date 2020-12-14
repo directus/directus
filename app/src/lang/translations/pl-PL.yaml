@@ -1,5 +1,7 @@
 ---
 edit_field: Edytuj pole
+item_revision: Wersja elementu
+duplicate_field: Duplikuj pole
 half_width: Połowa szerokości
 full_width: Pełna szerokość
 fill_width: Szerokość wypełnienia
@@ -8,38 +10,122 @@ enter_password_to_enable_tfa: Wprowadź hasło, aby włączyć uwierzytelnianie 
 add_field: Dodaj pole
 role_name: Nazwa roli
 db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować '
+show_archived_items: Pokaż zarchiwizowane elementy
 required: Wymagane
+requires_value: Wymaga wartości
 create_role: Stwórz rolę
+create_user: Utwórz użytkownika
+create_webhook: Stwórz webhook
+invite_users: Zaproś użytkowników
+email_examples: 'admin@example.com, użytkownik@example.com...'
+invite: Zaproś
+emails: E-maile
+connection_excellent: Doskonałe połączenie
+connection_good: Dobre połączenie
+connection_poor: Słabe połączenie
+rename_folder: Zmień nazwę folderu
+delete_folder: Usuń folder
+reset_bookmark: Zresetuj zakładkę
+rename_bookmark: Zmień nazwę zakładki
+update_bookmark: Aktualizuj zakładkę
 delete_bookmark: Usuń zakładkę
+delete_bookmark_copy: >-
+  Czy na pewno chcesz usunąć zakładkę "{bookmark}"? Tej akcji nie można cofnąć.
+logoutReason:
+  SIGN_OUT: Wylogowano
+  SESSION_EXPIRED: Sesja wygasła
+public_description: Kontroluje dostępność danych API bez uwierzytelniania.
+not_allowed: Niedozwolone
 directus_version: Wersja aplikacji Directus
+archive: Archiwum
+reset_system_permissions: Resetuj uprawnienia systemowe
+reset_system_permissions_copy: Resetuj wszystkie uprawnienia systemowe do ich domyślnych ustawień
+nested_files_folders_will_be_moved: Zagnieżdżone pliki i foldery zostaną przeniesione o jeden poziom.
+unknown_validation_errors: 'Wystąpiły błędy walidacji dla następujących ukrytych pól:'
+no_access: Brak dostępu
+field_validation: Walidacja pola
+fields_and_layout: Pola i układ
+field_update_success: 'Zaktualizowano pole: "{field}"'
 language: Język
+admins_have_all_permissions: Administratorzy mają wszystkie uprawnienia
+camera: Aparat
+iso: ISO
 create_field: Stwórz pole
+creating_new_field: 'Nowe pole ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Resetuj ustawienia strony
+hidden_field: Ukryte pole
 hidden_on_detail: Ukryte w detalu
+key: Klucz
+alias: Alias
+bigInteger: Duża liczba całkowita
+boolean: Wartość logiczna
 date: Data
+datetime: Data i godzina
 decimal: Liczba dziesiętna
+float: Liczba zmiennoprzecinkowa
+integer: Liczba całkowita
+json: JSON
+string: Ciąg znaków
 text: Tekst
 time: Czas
+timestamp: Sygnatura czasowa
+uuid: UUID
+not_available_for_type: Niedostępne dla tego typu
+create_translations: Utwórz tłumaczenia
 auto_generate: Automatycznie generuj
+this_will_auto_setup_fields_relations: Spowoduje to automatyczne ustawienie wszystkich wymaganych pól i relacji.
+click_here: Kliknij tutaj
+fields_group: Grupa pól
+configure_m2o: Skonfiguruj relację wiele do jednego...
+configure_o2m: Skonfiguruj relację jeden do wielu...
+configure_m2m: Skonfiguruj relację wiele do wielu...
+add_m2o_to_collection: 'Dodaj relację wiele do jednego do "{collection}"'
+add_o2m_to_collection: 'Dodaj relację jeden do wielu do "{collection}"'
+add_m2m_to_collection: 'Dodaj relację wiele do wielu do "{collection}"'
+choose_a_type: Wybierz typ...
+determined_by_relationship: Określone przez relację
 add_note: Dodaj użyteczną informację dla użytkowników...
 default_value: Domyślna wartość
+add_a_default_value: Dodaj domyślną wartość...
+interface_setup_title: Jak użytkownicy będą wchodzić w interakcje z tym polem?
+display_setup_title: Jak powinna być wyświetlana wartość tego pola?
+standard_field: Pole standardowe
+single_file: Pojedynczy plik
+multiple_files: Wiele plików
+m2o_relationship: Relacja wiele do jednego
+o2m_relationship: Relacja jeden do wielu
+m2m_relationship: Relacja wiele do wielu
 next: Następny
+field_name: Nazwa pola
+translations: Tłumaczenia
 note: Notatka
+enter_a_value: Wprowadź wartość...
+enter_a_placeholder: Wprowadź tekst zastępczy...
 length: Długość
 readonly: Tylko do odczytu
 unique: Unikalne
 primary_key: Klucz podstawowy
+foreign_key: Klucz obcy
+finish_setup: Zakończ konfigurację
+dismiss: Anuluj
 clear_value: Wyczyść wartość
 reset_to_default: Zresetuj do ustawień domyślnych
 undo_changes: Cofnij zmiany
 notifications: Powiadomienia
+show_all_activity: Pokaż wszystkie aktywności
 page_not_found: Nie odnaleziono strony
 page_not_found_body: Strona, której poszukujesz, nie istnieje.
+settings_update_success: Ustawienia zaktualizowane
 title: Tytuł
 leave_comment: Napisz komentarz...
 this_collection: Ta kolekcja
 related_collection: Powiązana kolekcja
 format: Formatowanie
 submit: Zatwierdź
+month: Miesiąc
+year: Rok
+select_all: Wybierz wszystkie
 months:
   january: Styczeń
   february: Luty
@@ -53,11 +139,30 @@ months:
   october: Październik
   november: Listopad
   december: Grudzień
+drag_mode: Tryb przeciągania
+original: Oryginalny
+url: Adres URL
+import: Importuj
+file_details: Szczegóły pliku
+dimensions: Wymiary
 size: Wielkość
 checksum: Suma kontrolna
 owner: Właściciel
+edited_by: Edytowane przez
+folder: Folder
 download: Pobierz
+open: Otwórz
+open_in_new_window: Otwórz w nowym oknie
+background_color: Kolor tła
+upload_from_device: Prześlij plik z urządzenia
+choose_from_library: Wybierz plik z biblioteki
+import_from_url: Załaduj za pośrednictwem adresu URL
+no_file_selected: Nie wybrano pliku
+download_file: Pobierz plik
+collection_key: Klucz kolekcji
 name: Nazwa
+primary_key_field: Pole klucza podstawowego
+type: Typ
 created_by: Stworzone przez
 created_on: Stworzony dnia
 save_and_stay: Zapisz i zostań
@@ -98,7 +203,9 @@ read: Odczyt
 update: Zaktualizuj
 select_fields: Wybierz pola
 wysiwyg_options:
+  backcolor: Kolor tła
   remove: Usuń
+  selectall: Wybierz wszystkie
   table: Tabela
 dropdown: Lista rozwijana
 choices: Opcje
@@ -235,6 +342,7 @@ interfaces:
     divider: Separator
   dropdown:
     allow_other: Zezwól na inne
+    choices_value_placeholder: Wprowadź wartość...
   file:
     file: Plik
   files:
@@ -254,6 +362,8 @@ interfaces:
     modes:
       dropdown: Lista rozwijana
 displays:
+  boolean:
+    boolean: Wartość logiczna
   collection:
     collection: Kolekcja
   color:
@@ -267,6 +377,8 @@ displays:
     filesize: Rozmiar pliku
   icon:
     icon: Ikona
+  labels:
+    choices_value_placeholder: Wprowadź wartość...
   user:
     avatar: Awatar
     name: Nazwa
