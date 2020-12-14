@@ -1,6 +1,18 @@
 ---
+edit_field: Rediger felt
+item_revision: Element revisjoner
+duplicate_field: Dupliser felt
+half_width: Halv vidde
 full_width: Fullbredde
+fill_width: Fyll vidde
+field_name_translations: Feltnavn oversettelser
+enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
+add_field: Legg til felt
+role_name: Rollenavn
+db_only_click_to_configure: 'Kun database: Klikk for å konfigurere '
+show_archived_items: Vis arkiverte elementer
 required: Påkrevd
+requires_value: Krever verdi
 create_role: Opprett rolle
 delete_bookmark: Slett bokmerke
 directus_version: Directus versjon
@@ -112,7 +124,9 @@ fields:
   directus_fields:
     note: Notat
     hidden: Skjult
+    translation: Feltnavn oversettelser
   directus_roles:
+    name: Rollenavn
     description: Beskrivelse
 comment: Kommenter
 continue: Fortsett
