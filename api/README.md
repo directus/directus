@@ -1,10 +1,10 @@
 <p>&nbsp;</p>
 
-<p align="center"><a href="https://directus.io" target="_blank" rel="noopener noreferrer"><img width="250" alt="Logo" src="https://user-images.githubusercontent.com/9141017/88821768-0dc99800-d191-11ea-8c66-09c55ab451a2.png"></a></p>
+<a href="https://directus.io" target="_blank" rel="noopener noreferrer"><img width="250" alt="Logo" src="https://user-images.githubusercontent.com/9141017/88821768-0dc99800-d191-11ea-8c66-09c55ab451a2.png"></a>
 
 <p>&nbsp;</p>
 
-<h2 align="center">Introduction</h2>
+## Introduction
 
 **Directus is a free and open-source data platform for headless content management**. It can be installed on top of any new or existing SQL database, instantly providing a dynamic API (REST+GraphQL) and accompanying App for managing content. Built entirely in TypeScript (in Node and Vue), Directus is completely modular and end-to-end extensible... with absolutely no paywalls or artificial limitations.
 
