@@ -611,6 +611,7 @@ add_new: Add New
 from_collection: 'From “{collection}” Collection'
 create_new: Create New
 all: All
+no_layout_collection_selected_yet: No layout/collection selected yet
 batch_delete_confirm: >-
   No items have been selected | Are you sure you want to delete this item? This
   action can not be undone. | Are you sure you want to delete these {count}
