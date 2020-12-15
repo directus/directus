@@ -232,8 +232,6 @@ export class FieldsService {
 		}
 	}
 
-	/** @todo research how to make this happen in SQLite / Redshift */
-
 	async updateField(collection: string, field: RawField) {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException('Only admins can perform this action');
@@ -241,36 +239,8 @@ export class FieldsService {
 
 		if (field.schema) {
 			await this.knex.schema.alterTable(collection, (table) => {
-				let column: ColumnBuilder;
-
 				if (!field.schema) return;
-
-				if (field.type === 'string') {
-					column = table.string(field.field, field.schema.max_length !== null ? field.schema.max_length : undefined);
-				} else if (['float', 'decimal'].includes(field.type)) {
-					const type = field.type as 'float' | 'decimal';
-					column = table[type](field.field, field.schema?.numeric_precision || 10, field.schema?.numeric_scale || 5);
-				} else if (field.type === 'csv') {
-					column = table.string(field.field);
-				} else {
-					column = table[field.type](field.field);
-				}
-
-				if (field.schema.default_value !== undefined) {
-					if (typeof field.schema.default_value === 'string' && field.schema.default_value.toLowerCase() === 'now()') {
-						column.defaultTo(this.knex.fn.now());
-					} else {
-						column.defaultTo(field.schema.default_value);
-					}
-				}
-
-				if (field.schema.is_nullable !== undefined && field.schema.is_nullable === false) {
-					column.notNullable();
-				} else {
-					column.nullable();
-				}
-
-				column.alter();
+				this.addColumnToTable(table, field, true);
 			});
 		}
 
@@ -346,26 +316,25 @@ export class FieldsService {
 		}
 	}
 
-	public addColumnToTable(table: CreateTableBuilder, field: Field) {
+	public addColumnToTable(table: CreateTableBuilder, field: RawField | Field, alter: boolean = false) {
+		if (!field.schema) return;
+
 		let column: ColumnBuilder;
 
 		if (field.schema?.has_auto_increment) {
 			column = table.increments(field.field);
 		} else if (field.type === 'string') {
-			column = table.string(field.field, field.schema?.max_length || undefined);
+			column = table.string(field.field, field.schema.max_length !== null ? field.schema.max_length : undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
-			/** @todo add precision and scale support */
-			column = table[type](field.field /* precision, scale */);
+			column = table[type](field.field, field.schema?.numeric_precision || 10, field.schema?.numeric_scale || 5);
 		} else if (field.type === 'csv') {
 			column = table.string(field.field);
-		} else if (field.type === 'dateTime') {
-			column = table.dateTime(field.field, { useTz: false });
 		} else {
 			column = table[field.type](field.field);
 		}
 
-		if (field.schema?.default_value !== undefined) {
+		if (field.schema.default_value !== undefined) {
 			if (typeof field.schema.default_value === 'string' && field.schema.default_value.toLowerCase() === 'now()') {
 				column.defaultTo(this.knex.fn.now());
 			} else {
@@ -373,7 +342,7 @@ export class FieldsService {
 			}
 		}
 
-		if (field.schema?.is_nullable !== undefined && field.schema.is_nullable === false) {
+		if (field.schema.is_nullable !== undefined && field.schema.is_nullable === false) {
 			column.notNullable();
 		} else {
 			column.nullable();
@@ -381,6 +350,10 @@ export class FieldsService {
 
 		if (field.schema?.is_primary_key) {
 			column.primary();
+		}
+
+		if (alter) {
+			column.alter();
 		}
 	}
 }
