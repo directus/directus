@@ -6,8 +6,23 @@ half_width: Yarı Genişlik
 full_width: Tam Genişlik
 fill_width: Tam Genişlik
 field_name_translations: Alan İsim Çevirileri
+enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için şifrenizi girin
+add_field: Alan Ekle
+role_name: Rol Adı
+db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın '
+show_archived_items: Arşivlenmiş Öğeleri Göster
 required: Gerekli
+requires_value: Gerekli değer
+create_preset: Ön Ayar Oluştur
 create_role: Rol Oluştur
+create_user: Kullanıcı Oluştur
+create_webhook: Webhook Oluşturun
+invite_users: Kullanıcıları Davet Et
+email_examples: 'admin@example.com, user@example.com...'
+invite: Davet et
+emails: E-postalar
+connection_excellent: Mükemmel Bağlantı
+connection_good: İyi Bağlantı
 delete_bookmark: Yer imini kaldır
 directus_version: Directus Versiyon
 reset_system_permissions: Sistem Yetkilerini Sıfırla
@@ -175,6 +190,7 @@ fields:
     translation: Alan İsim Çevirileri
     display_template: Şablon
   directus_roles:
+    name: Rol Adı
     description: Açıklama
 comment: Yorum
 continue: Devam
