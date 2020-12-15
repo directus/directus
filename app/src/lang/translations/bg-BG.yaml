@@ -802,7 +802,7 @@ interfaces:
     choices_name_placeholder: Въвеждане на името...
     choices_value_placeholder: Въвеждане на стойност...
   dropdown-multiselect:
-    dropdown-multiselect: Падащ лист (множествен избор)
+    dropdown-multiselect: Падащо меню (множествен избор)
     description: Избор на множество стойности от падащо меню
   file:
     file: Файл
