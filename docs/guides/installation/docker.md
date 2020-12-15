@@ -27,8 +27,8 @@ The published Docker image will automatically populate the database, and create 
 for this first user, pass the following env vars:
 
 ```bash
-DIRECTUS_ADMIN_EMAIL="admin@example.com"
-DIRECTUS_ADMIN_PASSWORD="d1r3ctu5"
+ADMIN_EMAIL="admin@example.com"
+ADMIN_PASSWORD="d1r3ctu5"
 ```
 
 ## Docker Compose
