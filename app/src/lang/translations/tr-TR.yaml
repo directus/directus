@@ -10,6 +10,7 @@ required: Gerekli
 create_role: Rol Oluştur
 delete_bookmark: Yer imini kaldır
 directus_version: Directus Versiyon
+reset_system_permissions: Sistem Yetkilerini Sıfırla
 language: Dil
 create_field: Alan Ekle
 hidden_on_detail: Detayda Gizli
