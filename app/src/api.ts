@@ -8,8 +8,6 @@ const api = axios.create({
 	withCredentials: true,
 	headers: {
 		'Cache-Control': 'no-cache',
-		Pragma: 'no-cache',
-		Expires: '0',
 	},
 });
 
