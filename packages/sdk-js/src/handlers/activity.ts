@@ -23,18 +23,11 @@ export class ActivityHandler {
 	}
 
 	comments = {
-		create: async (payload: {
-			collection: string;
-			item: string;
-			comment: string;
-		}): Promise<Response<Item>> => {
+		create: async (payload: { collection: string; item: string; comment: string }): Promise<Response<Item>> => {
 			const response = await this.axios.post('/activity/comments', payload);
 			return response.data;
 		},
-		update: async (
-			key: PrimaryKey,
-			payload: { comment: string }
-		): Promise<{ data: Item | null }> => {
+		update: async (key: PrimaryKey, payload: { comment: string }): Promise<{ data: Item | null }> => {
 			const response = await this.axios.patch(`/activity/comments/${key}`, payload);
 			return response.data;
 		},

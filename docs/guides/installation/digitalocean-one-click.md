@@ -2,7 +2,8 @@
 
 ## 1. Navigate to Directus on the DigitalOcean Marketplace
 
-The [Directus page can be found here](https://marketplace.digitalocean.com/apps/directus), or you can browse for Directus within the [entire marketplace](https://marketplace.digitalocean.com/).
+The [Directus page can be found here](https://marketplace.digitalocean.com/apps/directus), or you can browse for
+Directus within the [entire marketplace](https://marketplace.digitalocean.com/).
 
 ## 2. Click on "Create Directus Droplet"
 

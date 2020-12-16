@@ -1,7 +1,7 @@
 # SDK JS
 
-The JS SDK is a small wrapper around [Axios](https://npmjs.com/axios) that makes it a little easier
-to use the Directus API from a JavaScript powered project.
+The JS SDK is a small wrapper around [Axios](https://npmjs.com/axios) that makes it a little easier to use the Directus
+API from a JavaScript powered project.
 
 ## Installation
 
@@ -308,31 +308,29 @@ Note: these configuration options are passed in the top level SDK constructor.
 
 ##### mode
 
-`cookie` or `json`. When in cookie mode, the API will set the refresh token in a `httpOnly` secure
-cookie that can't be accessed from client side JS. This is the most secure way to connect to the API
-from a public front-end website.
+`cookie` or `json`. When in cookie mode, the API will set the refresh token in a `httpOnly` secure cookie that can't be
+accessed from client side JS. This is the most secure way to connect to the API from a public front-end website.
 
-When you can't rely on cookies, or need more control over handling the storage of the cookie, use
-`json` mode. This will return the refresh token like "regular" in the payload. You can use the
-`storage` option (see below) to control where the refresh token is stored / read from
+When you can't rely on cookies, or need more control over handling the storage of the cookie, use `json` mode. This will
+return the refresh token like "regular" in the payload. You can use the `storage` option (see below) to control where
+the refresh token is stored / read from
 
 ##### storage
 
-When using `json` for mode, the refresh token needs to be stored somewhere. The `storage` option
-allows you to plug in any object that has an async `setItem()` and `getItem()` method. This allows
-you to plugin things like [`localforage`](https://github.com/localForage/localForage) directly:
+When using `json` for mode, the refresh token needs to be stored somewhere. The `storage` option allows you to plug in
+any object that has an async `setItem()` and `getItem()` method. This allows you to plugin things like
+[`localforage`](https://github.com/localForage/localForage) directly:
 
 ```js
 import localforage from 'localforage';
 import DirectusSDK from '@directus/sdk-js';
 
-const directus = new DirectusSDK('https://api.example.com', { auth: { storage: localforage, mode: 'json' }});
+const directus = new DirectusSDK('https://api.example.com', { auth: { storage: localforage, mode: 'json' } });
 ```
 
 ##### autoRefresh
 
-Whether or not to automatically call `refresh()` when the access token is about to expire. Defaults
-to `true`
+Whether or not to automatically call `refresh()` when the access token is about to expire. Defaults to `true`
 
 #### Get / Set Token
 

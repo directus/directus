@@ -4,7 +4,6 @@ about: Create a report to help us improve
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
 <!--
@@ -17,7 +16,7 @@ Can you please provide:
     The _ _ does _ _ when _ _ while it should _ _
 
 2) Exact steps to reproduce this issue
-    Click this, tap that, see error _ _ 
+    Click this, tap that, see error _ _
 
 3) Your environment:
     Which DBMS are you using (MySQL 8, Postgres 12, ...).
