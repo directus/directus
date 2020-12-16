@@ -1,0 +1,341 @@
+---
+edit_field: Modifiez le Champ
+item_revision: Révision de l'article
+duplicate_field: Dupliquer le champ
+half_width: Demi-largeur
+full_width: Pleine largeur
+fill_width: Largeur de remplissage
+field_name_translations: Traductions des noms de champs
+enter_password_to_enable_tfa: Entrez votre mot de passe pour activer l'authentification à deux facteurs
+add_field: Ajouter un champ
+role_name: Nom de rôle
+db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
+show_archived_items: Afficher les éléments archivés
+required: Requis
+requires_value: Valeurs obligatoire
+create_preset: Créer un préréglage
+create_role: Créer un rôle
+create_user: Créer un utilisateur
+create_webhook: Créer un Webhook
+invite_users: Inviter des utilisateurs
+email_examples: 'admin@exemple.com, utilisateur@exemple.com...'
+invite: Inviter
+emails: E-mails
+connection_excellent: Excellente connexion
+connection_good: Bonne connexion
+connection_fair: Connexion Modérée
+connection_poor: Mauvaise connexion
+rename_folder: Renommer le fichier
+delete_folder: Supprimer le fichier
+reset_bookmark: Réinitialiser le signet
+rename_bookmark: Renommer le signet
+delete_bookmark: Retirer des favoris
+directus_version: Version de Directus
+language: Langue
+create_field: Créer un champ
+hidden_on_detail: Caché dans les détails
+date: Date
+decimal: Décimale
+text: Texte
+time: Date et heure
+auto_generate: Générer automatiquement
+add_note: Ajouter une note utile aux utilisateurs…
+default_value: Valeur par défaut
+next: Suivant
+note: Remarque
+length: Taille
+readonly: Lecture seule
+unique: Unique
+primary_key: Clef primaire
+clear_value: Effacer la valeur
+reset_to_default: Rétablir les paramètres par défaut
+undo_changes: Annuler les modifications
+notifications: Notifications
+page_not_found: Page non trouvée
+page_not_found_body: La page que vous recherchez ne semble pas exister.
+display: Affichage
+title: Titre
+revision_delta_deleted: Supprimé
+leave_comment: Laisser un commentaire…
+this_collection: Cette collection
+related_collection: Collection associée
+format: Format
+submit: Envoyer
+months:
+  january: Janvier
+  february: Février
+  march: Mars
+  april: Avril
+  may: Mai
+  june: Juin
+  july: Juillet
+  august: Août
+  september: Septembre
+  october: Octobre
+  november: Novembre
+  december: Décembre
+size: Taille
+checksum: Code de vérification
+owner: Propriétaire
+download: Télécharger
+name: Nom
+created_by: Créé par
+created_on: Créé le
+save_and_stay: Enregistrer et rester
+save_as_copy: Enregistrer une copie
+comments: Commentaires
+request_feature: Demander une fonctionnalité
+item_count: 'Aucun élément | Un élément | {count} éléments'
+create_collection: Créer une collection
+relationship_not_setup: La relation n'a pas été configurée correctement
+users: Utilisateurs
+activity: Activité
+webhooks: Webhooks
+field_width: Largeur du champ
+user_directory: Utilisateurs
+duration: Durée
+modified_on: Modifié le
+sort_field: Trié
+edit: Modifier
+bookmarks: Favoris
+back: Retour
+placeholder: Indication
+icon_left: Icône gauche
+icon_right: Icône droite
+monospace: Monospace
+divider: Séparateur
+color: Couleur
+operators:
+  lt: Moins que
+  gt: Plus grand que
+  lte: Inférieur ou égal à
+  gte: Plus grand ou égal à
+  contains: Contient
+  ncontains: Ne contient pas
+  empty: Est vide
+loading: Chargement…
+display_template: Modèle d'affichage
+no_results: Aucun résultat
+role: Rôle
+user: Utilisateur
+create: Créer
+on_update: À la mise à jour
+read: Lecture
+update: Mettre à jour
+select_fields: Sélectionner des champs
+wysiwyg_options:
+  remove: Retirer
+  table: Table
+dropdown: Liste déroulante
+choices: Choix
+deselect: Désélectionner
+editing_in_batch: 'Édition par lot de {count} élément(s)'
+settings_permissions: Rôles et autorisations
+settings_project: Paramètres du projet
+settings_webhooks: Webhooks
+unsaved_changes: Modifications non enregistrées
+unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
+discard_changes: Annuler les modifications
+keep_editing: Continuer l’édition
+add_new: Nouveau
+all: Tout
+batch_delete_confirm: >-
+  Aucun élément n’a été sélectionné | Êtes-vous sûr de bien vouloir supprimer cet élément ? Vous ne pourrez pas revenir en arrière ! | Êtes-vous sûr de bien vouloir supprimer ces {count} éléments ?  Vous ne pourrez pas revenir en arrière !
+cancel: Annuler
+collection: Collection
+collections: Collections
+fields:
+  directus_activity:
+    action: Action
+    collection: Collection
+    item: Clé principale de l'élément
+    user: Action par
+    timestamp: Action quand
+    edited_on: Modifié le
+    comment_deleted_on: Commentaire supprimé le
+    ip: Adresse IP
+    user_agent: Agent utilisateur
+    comment: Commentaire
+  directus_files:
+    title: Titre
+    tags: Étiquettes
+    location: Localisation
+    description: Description
+    filename_download: Téléchargement du nom du fichier
+    filename_disk: Disque du nom de fichier
+    private_hash: Hachage privé
+    checksum: Code de vérification
+    uploaded_on: Transféré le
+    uploaded_by: Transféré par
+    width: Largeur
+    height: Hauteur
+    duration: Durée
+    filesize: Taille du fichier
+    metadata: Métadonnée
+  directus_users:
+    status: Etat
+    first_name: Prénom
+    last_name: Nom
+    email: Courriel
+    email_notifications: Notifications par email
+    password: Mot de passe
+    role: Rôle
+    company: Entreprise
+    title: Titre
+    timezone: Fuseau horaire
+    language: Langue
+    avatar: Avatar
+    theme: Thème
+    tfa_secret: Authentification à deux facteurs
+  directus_settings:
+    project_name: Nom du projet
+  directus_fields:
+    note: Remarque
+    hidden: Caché
+    translation: Traductions des noms de champs
+    display_template: Modèle
+  directus_roles:
+    name: Nom de rôle
+    description: Description
+comment: Commentaire
+continue: Continuer
+default: Défaut
+delete: Supprimer
+delete_field_are_you_sure: >-
+  Êtes-vous sûr de vouloir supprimer le champ « {field} » ? Cette action ne peut pas être annulée !
+description: Description
+done: Fait
+duplicate: Dupliquer
+email: Courriel
+embed: Encapsulation
+field: Champ | Champs
+file: Fichier
+file_library: Fichiers
+forgot_password: Mot de passe oublié
+hidden: Caché
+icon: Icone
+info: Information
+junction_collection: Collection de jonction
+latency: Latence
+login: S’identifier
+my_activity: Mon activité
+not_authenticated: Non authentifié
+options: Paramètres
+otp: Mot de passe à usage unique
+password: Mot de passe
+permissions: Autorisations
+relationship: Relation
+reset: Réinitialiser
+reset_password: Réinitialiser le mot de passe
+revert: Revenir en arriére
+save: Enregistrer
+schema: Schéma
+search: Recherche
+select_existing: Sélectionner un existant
+select_interface: Sélectionner une interface
+settings: Réglages
+sign_in: Se connecter
+sign_out: Déconnexion
+sign_out_confirm: Êtes-vous certain de vouloir vous déconnecter ?
+something_went_wrong: Quelque chose s’est mal passé.
+sort_direction: Ordre de tri
+template: Modèle
+translation: Traduction
+value: Valeur
+interfaces:
+  checkboxes:
+    checkboxes: Cases à cocher
+    allow_other: Autoriser les autres
+  code:
+    code: Code
+    line_number: Numéro de ligne
+  collection:
+    collection: Collection
+  collections:
+    collections: Collections
+  color:
+    color: Couleur
+  datetime:
+    datetime: Date / Heure
+  display-template:
+    display-template: Modèle d'affichage
+  divider:
+    divider: Séparateur
+  dropdown:
+    allow_other: Autoriser les autres
+  file:
+    file: Fichier
+  files:
+    files: Fichiers
+  icon:
+    icon: Icone
+  interface-options:
+    interface-options: Options d'interface
+  many-to-many:
+    many-to-many: Plusieurs à plusieurs
+  many-to-one:
+    many-to-one: Plusieurs à un
+    display_template: Modèle d'affichage
+  markdown:
+    markdown: Markdown
+    edit: Modifier
+    preview: Aperçu
+  numeric:
+    numeric: Numérique
+  one-to-many:
+    one-to-many: Un à plusieurs
+  radio-buttons:
+    radio-buttons: Boutons radio
+  repeater:
+    repeater: Répéteur
+  slider:
+    slider: Slider
+  slug:
+    slug: Slug
+  tags:
+    tags: Étiquettes
+  text-input:
+    text-input: Entrée de texte
+    trim: Ajuster
+  translations:
+    display_template: Modèle d'affichage
+  user:
+    user: Utilisateur
+    modes:
+      dropdown: Liste déroulante
+  wysiwyg:
+    custom_formats: Format personnalisé
+displays:
+  collection:
+    collection: Collection
+  color:
+    color: Couleur
+  datetime:
+    datetime: Date / Heure
+    format: Format
+  file:
+    file: Fichier
+  filesize:
+    filesize: Taille du fichier
+  icon:
+    icon: Icone
+  rating:
+    rating: Évaluation
+  user:
+    user: Utilisateur
+    avatar: Avatar
+    name: Nom
+    both: Tous
+layouts:
+  cards:
+    cards: Cartes
+    image_source: Source de l'image
+    title: Titre
+    subtitle: Sous-titre
+  tabular:
+    tabular: Table
+    fields: Champs
+    spacing: Espacement
+    comfortable: Confortable
+    compact: Compact
+    cozy: Intermédiaire

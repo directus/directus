@@ -30,7 +30,7 @@ fields:
     translations:
       language: en-US
       translations: Brand Color
-    width: half
+    width: full
 
   - field: project_logo
     interface: file
@@ -136,7 +136,6 @@ fields:
                   text: Fit inside
                 - value: outside
                   text: Fit outside
-            required: true
             width: half
         - field: width
           name: Width
@@ -166,7 +165,6 @@ fields:
               max: 100
               min: 0
               step: 1
-            required: true
             width: half
         - field: withoutEnlargement
           type: boolean

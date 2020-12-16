@@ -115,7 +115,7 @@ export default defineComponent({
 	}
 
 	.content {
-		flex-grow: 1;
+		flex: 1;
 
 		.description {
 			opacity: 0.6;

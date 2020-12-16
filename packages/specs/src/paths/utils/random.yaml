@@ -1,4 +1,5 @@
 get:
+  summary: Get a Random String
   description: Returns a random string of given length.
   operationId: random
   parameters:

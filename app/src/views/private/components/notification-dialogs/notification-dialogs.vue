@@ -68,7 +68,7 @@ ${JSON.stringify(notification.error, Object.getOwnPropertyNames(notification.err
 </details>
 			`;
 
-			return `https://github.com/directus/next/issues/new?body=${encodeURIComponent(debugInfo)}`;
+			return `https://github.com/directus/directus/issues/new?body=${encodeURIComponent(debugInfo)}`;
 		}
 
 		function done(id: string) {

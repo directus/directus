@@ -4,7 +4,8 @@
 
 ## 1. Setup the Boilerplate
 
-Every module is a standalone "package" that contains at least a metadata file and a Vue component. We recommend using the following file structure:
+Every module is a standalone "package" that contains at least a metadata file and a Vue component.
+We recommend using the following file structure:
 
 ```
 src/
@@ -18,36 +19,40 @@ src/
 import ModuleComponent from './module.vue';
 
 export default {
-    id: 'custom',
-    name: 'Custom',
+	id: 'custom',
+	name: 'Custom',
 	icon: 'box',
 	routes: [
 		{
 			path: '/',
-			component: ModuleComponent
-		}
-	]
-}
+			component: ModuleComponent,
+		},
+	],
+};
 ```
 
-* `id` — The unique key for this module. It is good practice to scope proprietary interfaces with an author prefix.
-* `name` — The human-readable name for this module.
-* `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
-* `routes` — Details the routes in your module per the Vue router.
+-   `id` — The unique key for this module. It is good practice to scope proprietary interfaces with
+    an author prefix.
+-   `name` — The human-readable name for this module.
+-   `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
+-   `routes` — Details the routes in your module per the Vue router.
 
+<!-- prettier-ignore-start -->
+::: tip
+See [the TypeScript definition](https://github.com/directus/directus/blob/20355fee5eba514dd75565f60269311187010c66/app/src/modules/types.ts#L6-L17)
+for more info on what can go into this object.
 :::
-See [the TypeScript definition](https://github.com/directus/next/blob/20355fee5eba514dd75565f60269311187010c66/app/src/modules/types.ts#L6-L17) for more info on what can go into this object.
-:::
+<!-- prettier-ignore-end -->
 
 ### src/module.vue
 
 ```vue
 <template>
-    <div>My Custom Module</div>
+	<div>My Custom Module</div>
 </template>
 
 <script>
-export default {}
+export default {};
 </script>
 ```
 
@@ -63,7 +68,9 @@ Set up a package.json file by running:
 npm init -y
 ```
 
-To be read by the Admin App, your custom module's Vue component must first be bundled into a single `index.js` file. We recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
+To be read by the Admin App, your custom module's Vue component must first be bundled into a single
+`index.js` file. We recommend bundling your code using Rollup. To install this and the other
+development dependencies, run this command:
 
 ```bash
 npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler
@@ -74,27 +81,23 @@ You can then use the following Rollup configuration within `rollup.config.js`:
 ```js
 import { terser } from 'rollup-plugin-terser';
 import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs'
-import vue from 'rollup-plugin-vue'
+import commonjs from 'rollup-plugin-commonjs';
+import vue from 'rollup-plugin-vue';
 
 export default {
-    input: 'src/index.js',
-    output: {
-        format: 'es',
-        file: 'dist/index.js'
-    },
-    plugins: [
-        terser(),
-        resolve(),
-        commonjs(),
-        vue(),
-    ]
-}
+	input: 'src/index.js',
+	output: {
+		format: 'es',
+		file: 'dist/index.js',
+	},
+	plugins: [terser(), resolve(), commonjs(), vue()],
+};
 ```
 
 ## 3. Develop Your Custom Module
 
-The module itself is simply a Vue component, which provides an blank canvas for creating anything you need.
+The module itself is simply a Vue component, which provides an blank canvas for creating anything
+you need.
 
 ## 4. Build and Deploy
 
@@ -104,4 +107,6 @@ To build the module for use within Directus, run:
 npx rollup -c
 ```
 
-Finally, move the output from your module's `dist` folder into your project's `/extensions/modules` folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your module's `dist` folder into your project's `/extensions/modules`
+folder. Keep in mind that the extensions directory is configurable within your env file, and may be
+located elsewhere.

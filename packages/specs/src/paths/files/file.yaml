@@ -1,4 +1,5 @@
 get:
+  summary: Retrieve a Files
   description: Retrieve a single file by unique identifier.
   tags:
     - Files
@@ -15,7 +16,9 @@ get:
                 $ref: "../../openapi.yaml#/components/schemas/Files"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+
 patch:
+  summary: Update a File
   description: Update an existing file.
   tags:
     - Files
@@ -37,7 +40,9 @@ patch:
                 $ref: "../../openapi.yaml#/components/schemas/Files"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+
 delete:
+  summary: Delete a File
   description: Delete an existing file.
   tags:
     - Files

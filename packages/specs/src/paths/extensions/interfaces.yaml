@@ -1,4 +1,5 @@
 get:
+  summary: List Interfaces
   description: List all installed custom interfaces.
   operationId: getInterfaces
   responses:

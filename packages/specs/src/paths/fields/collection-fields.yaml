@@ -1,4 +1,5 @@
 get:
+  summary: List Fields in Collection
   description: Returns a list of the fields available in the given collection.
   operationId: getCollectionFields
   parameters:
@@ -21,7 +22,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Fields
+
 post:
+  summary: Create Field in Collection
   description: Create a new field in a given collection.
   operationId: createField
   requestBody:

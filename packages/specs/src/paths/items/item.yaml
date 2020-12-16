@@ -1,4 +1,5 @@
 get:
+  summary: Retrieve an Item
   description: Retrieve a single item by unique identifier.
   tags:
     - Items
@@ -20,7 +21,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+
 patch:
+  summary: Update an Item
   description: Update an existing item.
   tags:
     - Items
@@ -47,7 +50,9 @@ patch:
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
     "404":
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
+
 delete:
+  summary: Delete an Item
   description: Delete an existing item.
   tags:
     - Items

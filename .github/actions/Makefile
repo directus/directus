@@ -5,7 +5,7 @@ tag=$(version)
 cmd=
 user=directus
 registry=ghcr.io
-repository=directus/next
+repository=directus/directus
 
 .PHONY: build
 

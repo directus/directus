@@ -24,8 +24,7 @@ export class RolesService extends ItemsService {
 			.andWhere({ admin_access: true })
 			.first();
 		const otherAdminRolesCount = +(otherAdminRoles?.count || 0);
-		if (otherAdminRolesCount === 0)
-			throw new UnprocessableEntityException(`You can't delete the last admin role.`);
+		if (otherAdminRolesCount === 0) throw new UnprocessableEntityException(`You can't delete the last admin role.`);
 
 		// Remove all permissions associated with this role
 		const permissionsService = new PermissionsService({

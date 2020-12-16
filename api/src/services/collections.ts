@@ -1,12 +1,5 @@
 import database, { schemaInspector } from '../database';
-import {
-	AbstractServiceOptions,
-	Accountability,
-	Collection,
-	CollectionMeta,
-	Relation,
-	SchemaOverview,
-} from '../types';
+import { AbstractServiceOptions, Accountability, Collection, CollectionMeta, Relation, SchemaOverview } from '../types';
 import Knex from 'knex';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
@@ -14,6 +7,7 @@ import { ItemsService } from '../services/items';
 import cache from '../cache';
 import { toArray } from '../utils/to-array';
 import { systemCollectionRows } from '../database/system-data/collections';
+import env from '../env';
 
 export class CollectionsService {
 	knex: Knex;
@@ -78,9 +72,7 @@ export class CollectionsService {
 				}
 
 				if (payload.collection in this.schema) {
-					throw new InvalidPayloadException(
-						`Collection "${payload.collection}" already exists.`
-					);
+					throw new InvalidPayloadException(`Collection "${payload.collection}" already exists.`);
 				}
 
 				await trx.schema.createTable(payload.collection, (table) => {
@@ -94,9 +86,7 @@ export class CollectionsService {
 					collection: payload.collection,
 				});
 
-				const fieldPayloads = payload
-					.fields!.filter((field) => field.meta)
-					.map((field) => field.meta);
+				const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta);
 
 				await fieldItemsService.create(fieldPayloads);
 
@@ -104,7 +94,7 @@ export class CollectionsService {
 			}
 		});
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
@@ -131,15 +121,11 @@ export class CollectionsService {
 				.whereIn('collection', collectionKeys);
 
 			if (collectionKeys.length !== permissions.length) {
-				const collectionsYouHavePermissionToRead = permissions.map(
-					({ collection }) => collection
-				);
+				const collectionsYouHavePermissionToRead = permissions.map(({ collection }) => collection);
 
 				for (const collectionKey of collectionKeys) {
 					if (collectionsYouHavePermissionToRead.includes(collectionKey) === false) {
-						throw new ForbiddenException(
-							`You don't have access to the "${collectionKey}" collection.`
-						);
+						throw new ForbiddenException(`You don't have access to the "${collectionKey}" collection.`);
 					}
 				}
 			}
@@ -218,10 +204,7 @@ export class CollectionsService {
 	update(data: Partial<Collection>, keys: string[]): Promise<string[]>;
 	update(data: Partial<Collection>, key: string): Promise<string>;
 	update(data: Partial<Collection>[]): Promise<string[]>;
-	async update(
-		data: Partial<Collection> | Partial<Collection>[],
-		key?: string | string[]
-	): Promise<string | string[]> {
+	async update(data: Partial<Collection> | Partial<Collection>[], key?: string | string[]): Promise<string | string[]> {
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
 			accountability: this.accountability,
@@ -239,11 +222,8 @@ export class CollectionsService {
 
 			for (const key of keys) {
 				const exists =
-					(await this.knex
-						.select('collection')
-						.from('directus_collections')
-						.where({ collection: key })
-						.first()) !== undefined;
+					(await this.knex.select('collection').from('directus_collections').where({ collection: key }).first()) !==
+					undefined;
 
 				if (exists) {
 					await collectionItemsService.update(payload.meta, key);
@@ -266,7 +246,7 @@ export class CollectionsService {
 
 		await collectionItemsService.update(collectionUpdates);
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
@@ -311,15 +291,13 @@ export class CollectionsService {
 		for (const relation of relations) {
 			const isM2O = relation.many_collection === collection;
 
-			/** @TODO M2A — Handle m2a case here */
-
 			if (isM2O) {
 				await this.knex('directus_relations')
 					.delete()
 					.where({ many_collection: collection, many_field: relation.many_field });
 
 				await fieldsService.deleteField(relation.one_collection!, relation.one_field!);
-			} else {
+			} else if (!!relation.one_collection) {
 				await this.knex('directus_relations')
 					.update({ one_field: null })
 					.where({ one_collection: collection, one_field: relation.one_field });
@@ -339,7 +317,7 @@ export class CollectionsService {
 			await this.knex.schema.dropTable(collectionKey);
 		}
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 

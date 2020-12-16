@@ -1,4 +1,5 @@
 post:
+  summary: Invite User(s)
   description:
     Invites one or more users to this project. It creates a user with an
     invited status, and then sends an email to the user with instructions on how to

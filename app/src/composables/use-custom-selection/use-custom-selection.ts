@@ -8,7 +8,7 @@ export function useCustomSelection(currentValue: Ref<string>, items: Ref<any[]>,
 
 	const otherValue = computed({
 		get() {
-			return localOtherValue.value;
+			return localOtherValue.value || (usesOtherValue.value ? currentValue.value : '');
 		},
 		set(newValue: string | null) {
 			if (newValue === null) {
@@ -27,9 +27,7 @@ export function useCustomSelection(currentValue: Ref<string>, items: Ref<any[]>,
 		// Check if set value is one of the existing keys
 		const values = items.value.map((item) => item.value);
 		return (
-			currentValue.value !== null &&
-			currentValue.value.length > 0 &&
-			values.includes(currentValue.value) === false
+			currentValue.value !== null && currentValue.value.length > 0 && values.includes(currentValue.value) === false
 		);
 	});
 

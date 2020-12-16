@@ -1,4 +1,5 @@
 get:
+  summary: Retrieve a Relation
   description: Retrieve a single relation by unique identifier.
   operationId: getRelation
   parameters:
@@ -20,7 +21,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Relations
+
 patch:
+  summary: Update a Relation
   description: Update an existing relation
   operationId: updateRelation
   parameters:
@@ -68,7 +71,9 @@ patch:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Relations
+
 delete:
+  summary: Delete a Relation
   description: Delete an existing relation.
   operationId: deleteRelation
   responses:

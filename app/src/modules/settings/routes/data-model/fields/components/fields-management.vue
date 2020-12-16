@@ -35,11 +35,7 @@
 			<v-list>
 				<template v-for="(option, index) in addOptions">
 					<v-divider v-if="option.divider === true" :key="index" />
-					<v-list-item
-						v-else
-						:key="option.type"
-						:to="`/settings/data-model/${collection}/+?type=${option.type}`"
-					>
+					<v-list-item v-else :key="option.type" :to="`/settings/data-model/${collection}/+?type=${option.type}`">
 						<v-list-item-icon>
 							<v-icon :name="option.icon" />
 						</v-list-item-icon>
@@ -146,6 +142,11 @@ export default defineComponent({
 				text: i18n.t('m2m_relationship'),
 			},
 			{
+				type: 'm2a',
+				icon: 'gesture',
+				text: i18n.t('m2a_relationship'),
+			},
+			{
 				divider: true,
 			},
 			{
@@ -190,7 +191,7 @@ export default defineComponent({
 	position: relative;
 	display: grid;
 	grid-gap: 12px;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
 	& + & {
 		margin-top: 12px;

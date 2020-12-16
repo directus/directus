@@ -1,4 +1,5 @@
 get:
+  summary: Retrieve Settings
   description: List the settings.
   operationId: getSettings
   parameters:
@@ -23,8 +24,10 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Settings
+
 patch:
-  description: Update an existing setting
+  summary: Update Settings
+  description: Update the settings
   operationId: updateSetting
   requestBody:
     content:
@@ -47,29 +50,3 @@ patch:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Settings
-# post:
-#   description: Create a new setting.
-#   operationId: createSettings
-#   parameters:
-#     - $ref: '../../openapi.yaml#/components/parameters/Meta'
-#   requestBody:
-#     content:
-#       application/json:
-#         schema:
-#           type: object
-#   responses:
-#     '200':
-#       description: Successful request
-#       content:
-#         application/json:
-#           schema:
-#             type: object
-#             properties:
-#               data:
-#                 $ref: '../../openapi.yaml#/components/schemas/Settings'
-#     '401':
-#       $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
-#     '404':
-#       $ref: '../../openapi.yaml#/components/responses/NotFoundError'
-#   tags:
-#   - Settings

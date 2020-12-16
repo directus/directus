@@ -11,6 +11,7 @@ import { ForbiddenException } from '../exceptions';
 import { toArray } from '../utils/to-array';
 import { extension } from 'mime-types';
 import path from 'path';
+import env from '../env';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -38,8 +39,7 @@ export class FilesService extends ItemsService {
 			primaryKey = await this.create(payload);
 		}
 
-		const fileExtension =
-			(payload.type && extension(payload.type)) || path.extname(payload.filename_download);
+		const fileExtension = (payload.type && extension(payload.type)) || path.extname(payload.filename_download);
 
 		payload.filename_disk = primaryKey + '.' + fileExtension;
 
@@ -87,7 +87,7 @@ export class FilesService extends ItemsService {
 		});
 		await sudoService.update(payload, primaryKey);
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
@@ -117,7 +117,7 @@ export class FilesService extends ItemsService {
 
 		await super.delete(keys);
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 

@@ -187,6 +187,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		multiplePreviewThreshold: {
+			type: Number,
+			default: 3,
+		},
 	},
 	setup(props, { emit }) {
 		const { _items } = useItems();
@@ -238,7 +242,7 @@ export default defineComponent({
 		function useDisplayValue() {
 			const displayValue = computed(() => {
 				if (Array.isArray(props.value)) {
-					if (props.value.length < 3) {
+					if (props.value.length < props.multiplePreviewThreshold) {
 						return props.value
 							.map((value) => {
 								return getTextForValue(value) || value;

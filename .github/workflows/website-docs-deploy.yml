@@ -1,0 +1,21 @@
+name: Deploy Website / Docs
+
+on:
+  schedule:
+    - cron: '59 23 * * *'
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: satak/webrequest-action@master
+        with:
+          url: ${{ secrets.BUILD_HOOK_WEBSITE }}
+          method: POST
+          
+      - uses: satak/webrequest-action@master
+        with:
+          url: ${{ secrets.BUILD_HOOK_DOCS }}
+          method: POST

@@ -11,6 +11,7 @@ import dbMigrate from './commands/database/migrate';
 import usersCreate from './commands/users/create';
 import rolesCreate from './commands/roles/create';
 import count from './commands/count';
+import bootstrap from './commands/bootstrap';
 
 program.name('directus').usage('[command] [options]');
 program.version(pkg.version, '-v, --version');
@@ -52,10 +53,9 @@ rolesCommand
 	.option('--admin', `whether or not the role has admin access`)
 	.action(rolesCreate);
 
-program
-	.command('count <collection>')
-	.description('Count the amount of items in a given collection')
-	.action(count);
+program.command('count <collection>').description('Count the amount of items in a given collection').action(count);
+
+program.command('bootstrap').description('Initialize or update the database').action(bootstrap);
 
 program.parseAsync(process.argv).catch((err) => {
 	console.error(err);

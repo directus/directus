@@ -7,7 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	name: i18n.t('translations'),
 	icon: 'replay',
 	types: ['alias'],
-	relationship: 'translations',
+	relational: true,
 	component: InterfaceTranslations,
 	options: TranslationsOptions,
 }));

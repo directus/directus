@@ -18,7 +18,7 @@ export default defineComponent({
 		},
 		formatTitle: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		bold: {
 			type: Boolean,

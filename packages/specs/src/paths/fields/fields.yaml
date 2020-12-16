@@ -1,4 +1,5 @@
 get:
+  summary: List All Fields
   description: Returns a list of the fields available in the project.
   operationId: getFields
   parameters:

@@ -2,6 +2,7 @@ get:
   tags:
     - Authentication
   operationId: sso
+  summary: List SSO Providers
   description: List the SSO providers.
   responses:
     "200":

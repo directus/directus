@@ -1,4 +1,5 @@
 get:
+  summary: List Files
   description: List the files.
   tags:
     - Files
@@ -17,8 +18,10 @@ get:
                   $ref: "../../openapi.yaml#/components/schemas/Files"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+
 post:
-  description: Create a new file.
+  summary: Create a File
+  description: Create a new file
   tags:
     - Files
   operationId: createFile

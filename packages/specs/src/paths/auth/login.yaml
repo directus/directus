@@ -1,5 +1,6 @@
 post:
-  description: Retrieve a Temporary Access Token.
+  summary: Retrieve a Temporary Access Token
+  description: Retrieve a Temporary Access Token
   tags:
     - Authentication
   operationId: login

@@ -22,7 +22,7 @@
 			:collection="field.collection"
 			:field="field.field"
 			:primary-key="primaryKey"
-			:length="field.length"
+			:length="field.schema && field.schema.max_length"
 			@input="$emit('input', $event)"
 		/>
 
@@ -33,10 +33,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import { Field } from '@/types';
 import { getInterfaces } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
+import { useElementSize } from '../../composables/use-element-size';
 
 export default defineComponent({
 	props: {

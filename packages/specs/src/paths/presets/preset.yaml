@@ -2,6 +2,7 @@ get:
   tags:
     - Presets
   operationId: getPreset
+  summary: Retrieve a Preset
   description: Retrieve a single preset by unique identifier.
   security:
     - Auth: []
@@ -20,10 +21,12 @@ get:
                 $ref: "../../openapi.yaml#/components/schemas/Presets"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+
 patch:
   tags:
     - Presets
   operationId: updatePreset
+  summary: Update a Preset
   description: Update an existing preset.
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/Fields"
@@ -87,10 +90,12 @@ patch:
                 $ref: "../../openapi.yaml#/components/schemas/Presets"
     "401":
       $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+
 delete:
   tags:
     - Presets
   operationId: deletePreset
+  summary: Delete a Preset
   description: Delete an existing preset.
   security:
     - Auth: []

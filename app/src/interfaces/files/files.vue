@@ -25,7 +25,7 @@
 				/>
 			</template>
 
-			<template #item-append="{ item }" v-if="!disabled">
+			<template #item-append="{ item }" v-show="!disabled">
 				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
 			</template>
 		</v-table>
@@ -117,10 +117,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { collection, field, value, primaryKey, sortField } = toRefs(props);
 
-		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(
-			collection,
-			field
-		);
+		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
@@ -180,12 +177,7 @@ export default defineComponent({
 			relatedPrimaryKey,
 		} = useEdit(value, relationInfo, emitter);
 
-		const { stageSelection, selectModalActive, selectionFilters } = useSelection(
-			value,
-			items,
-			relationInfo,
-			emitter
-		);
+		const { stageSelection, selectModalActive, selectionFilters } = useSelection(value, items, relationInfo, emitter);
 
 		const { showUpload, onUpload } = useUpload();
 

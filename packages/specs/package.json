@@ -1,6 +1,6 @@
 {
 	"name": "@directus/specs",
-	"version": "9.0.0-rc.14",
+	"version": "9.0.0-rc.23",
 	"description": "OpenAPI Specification of the Directus API",
 	"main": "index.js",
 	"scripts": {
@@ -23,14 +23,14 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/directus/next.git"
+		"url": "git+https://github.com/directus/directus.git"
 	},
 	"author": "Nils Twelker",
 	"license": "GPL-3.0",
 	"bugs": {
-		"url": "https://github.com/directus/next/issues"
+		"url": "https://github.com/directus/directus/issues"
 	},
-	"homepage": "https://github.com/directus/next#readme",
+	"homepage": "https://github.com/directus/directus#readme",
 	"files": [
 		"dist",
 		"LICENSE",

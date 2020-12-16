@@ -417,7 +417,7 @@ export default defineComponent({
 		}
 
 		function downloadFile() {
-			const filePath = getRootPath() + `assets/${props.primaryKey}?download`;
+			const filePath = addTokenToURL(getRootPath() + `assets/${props.primaryKey}?download`);
 			window.open(filePath, '_blank');
 		}
 

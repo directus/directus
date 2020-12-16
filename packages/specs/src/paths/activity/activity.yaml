@@ -1,4 +1,5 @@
 get:
+  summary: Retrieve an Activity Action
   description:
     Retrieves the details of an existing activity action. Provide the primary
     key of the activity action and Directus will return the corresponding information.

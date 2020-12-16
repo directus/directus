@@ -1,4 +1,5 @@
 get:
+  summary: Retrieve Current User
   description: Retrieve the currently authenticated user.
   operationId: me
   parameters:
@@ -20,7 +21,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Users
+
 patch:
+  summary: Update Current User
   description: Update the currently authenticated user.
   operationId: me
   responses:

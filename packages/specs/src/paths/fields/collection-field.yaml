@@ -1,4 +1,5 @@
 get:
+  summary: Retrieve a Field
   description: Retrieves the details of a single field in a given collection.
   operationId: getCollectionField
   responses:
@@ -17,7 +18,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Fields
+
 patch:
+  summary: Update a Field
   description: Update an existing field.
   operationId: updateField
   requestBody:
@@ -204,7 +207,9 @@ patch:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Fields
+
 delete:
+  summary: Delete a Field
   description: Delete an existing field.
   operationId: deleteField
   responses:
@@ -216,6 +221,7 @@ delete:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Fields
+
 parameters:
   - name: collection
     in: path

@@ -1,4 +1,5 @@
 get:
+  summary: Ping
   description: Ping, pong. Ping.. pong.
   operationId: ping
   responses:

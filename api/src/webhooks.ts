@@ -10,10 +10,7 @@ let registered: { event: string; handler: ListenerFn }[] = [];
 export async function register() {
 	unregister();
 
-	const webhooks = await database
-		.select<Webhook[]>('*')
-		.from('directus_webhooks')
-		.where({ status: 'active' });
+	const webhooks = await database.select<Webhook[]>('*').from('directus_webhooks').where({ status: 'active' });
 
 	for (const webhook of webhooks) {
 		if (webhook.actions === '*') {
@@ -43,11 +40,7 @@ export function unregister() {
 function createHandler(webhook: Webhook): ListenerFn {
 	return async (data) => {
 		const collectionAllowList = webhook.collections.split(',');
-		if (
-			collectionAllowList.includes('*') === false &&
-			collectionAllowList.includes(data.collection) === false
-		)
-			return;
+		if (collectionAllowList.includes('*') === false && collectionAllowList.includes(data.collection) === false) return;
 
 		try {
 			await axios({

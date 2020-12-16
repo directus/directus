@@ -5,9 +5,7 @@ export function deepMap(
 ): any {
 	if (Array.isArray(object)) {
 		return object.map(function (val, key) {
-			return typeof val === 'object'
-				? deepMap(val, iterator, context)
-				: iterator.call(context, val, key);
+			return typeof val === 'object' ? deepMap(val, iterator, context) : iterator.call(context, val, key);
 		});
 	} else if (typeof object === 'object') {
 		const res: Record<string, any> = {};

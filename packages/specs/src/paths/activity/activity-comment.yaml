@@ -1,4 +1,5 @@
 patch:
+  summary: Update a Comment
   description: Update the content of an existing comment.
   operationId: updateComment
   parameters:
@@ -30,6 +31,7 @@ patch:
   tags:
     - Activity
 delete:
+  summary: Delete a Comment
   description: Delete an existing comment. Deleted comments can not be retrieved.
   operationId: deleteComment
   parameters:

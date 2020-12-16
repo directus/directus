@@ -17,6 +17,7 @@ import cache from '../cache';
 import emitter from '../emitter';
 import logger from '../logger';
 import { toArray } from '../utils/to-array';
+import env from '../env';
 
 import { PayloadService } from './payload';
 import { AuthorizationService } from './authorization';
@@ -37,9 +38,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		this.collection = collection;
 		this.knex = options.knex || database;
 		this.accountability = options.accountability || null;
-		this.eventScope = this.collection.startsWith('directus_')
-			? this.collection.substring(9)
-			: 'items';
+		this.eventScope = this.collection.startsWith('directus_') ? this.collection.substring(9) : 'items';
 		this.schema = options.schema;
 
 		return this;
@@ -60,19 +59,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 			});
 
-			const customProcessed = await emitter.emitAsync(
-				`${this.eventScope}.create.before`,
-				payloads,
-				{
-					event: `${this.eventScope}.create.before`,
-					accountability: this.accountability,
-					collection: this.collection,
-					item: null,
-					action: 'create',
-					payload: payloads,
-					schema: this.schema,
-				}
-			);
+			const customProcessed = await emitter.emitAsync(`${this.eventScope}.create.before`, payloads, {
+				event: `${this.eventScope}.create.before`,
+				accountability: this.accountability,
+				collection: this.collection,
+				item: null,
+				action: 'create',
+				payload: payloads,
+				schema: this.schema,
+			});
 
 			if (customProcessed) {
 				payloads = customProcessed[customProcessed.length - 1];
@@ -85,21 +80,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					schema: this.schema,
 				});
 
-				payloads = await authorizationService.validatePayload(
-					'create',
-					this.collection,
-					payloads
-				);
+				payloads = await authorizationService.validatePayload('create', this.collection, payloads);
 			}
 
 			payloads = await payloadService.processM2O(payloads);
+			payloads = await payloadService.processA2O(payloads);
 
 			let payloadsWithoutAliases = payloads.map((payload) => pick(payload, columns));
 
-			payloadsWithoutAliases = await payloadService.processValues(
-				'create',
-				payloadsWithoutAliases
-			);
+			payloadsWithoutAliases = await payloadService.processValues('create', payloadsWithoutAliases);
 
 			const primaryKeys: PrimaryKey[] = [];
 
@@ -148,11 +137,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 					let primaryKey;
 
-					const result = await trx
-						.select('id')
-						.from('directus_activity')
-						.orderBy('id', 'desc')
-						.first();
+					const result = await trx.select('id').from('directus_activity').orderBy('id', 'desc').first();
 
 					primaryKey = result.id;
 
@@ -170,7 +155,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				await trx.insert(revisionRecords).into('directus_revisions');
 			}
 
-			if (cache) {
+			if (cache && env.CACHE_AUTO_PURGE) {
 				await cache.clear();
 			}
 
@@ -212,16 +197,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return records as Partial<Item> | Partial<Item>[] | null;
 	}
 
-	readByKey(
-		keys: PrimaryKey[],
-		query?: Query,
-		action?: PermissionsAction
-	): Promise<null | Partial<Item>[]>;
-	readByKey(
-		key: PrimaryKey,
-		query?: Query,
-		action?: PermissionsAction
-	): Promise<null | Partial<Item>>;
+	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>[]>;
+	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>>;
 	async readByKey(
 		key: PrimaryKey | PrimaryKey[],
 		query: Query = {},
@@ -284,19 +261,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			let payload: Partial<AnyItem> | Partial<AnyItem>[] = clone(data);
 
-			const customProcessed = await emitter.emitAsync(
-				`${this.eventScope}.update.before`,
+			const customProcessed = await emitter.emitAsync(`${this.eventScope}.update.before`, payload, {
+				event: `${this.eventScope}.update.before`,
+				accountability: this.accountability,
+				collection: this.collection,
+				item: key,
+				action: 'update',
 				payload,
-				{
-					event: `${this.eventScope}.update.before`,
-					accountability: this.accountability,
-					collection: this.collection,
-					item: key,
-					action: 'update',
-					payload,
-					schema: this.schema,
-				}
-			);
+				schema: this.schema,
+			});
 
 			if (customProcessed) {
 				payload = customProcessed[customProcessed.length - 1];
@@ -311,11 +284,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 				await authorizationService.checkAccess('update', this.collection, keys);
 
-				payload = await authorizationService.validatePayload(
-					'update',
-					this.collection,
-					payload
-				);
+				payload = await authorizationService.validatePayload('update', this.collection, payload);
 			}
 
 			await this.knex.transaction(async (trx) => {
@@ -326,18 +295,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				});
 
 				payload = await payloadService.processM2O(payload);
+				payload = await payloadService.processA2O(payload);
 
 				let payloadWithoutAliases = pick(payload, columns);
 
-				payloadWithoutAliases = await payloadService.processValues(
-					'update',
-					payloadWithoutAliases
-				);
+				payloadWithoutAliases = await payloadService.processValues('update', payloadWithoutAliases);
 
 				if (Object.keys(payloadWithoutAliases).length > 0) {
-					await trx(this.collection)
-						.update(payloadWithoutAliases)
-						.whereIn(primaryKeyField, keys);
+					await trx(this.collection).update(payloadWithoutAliases).whereIn(primaryKeyField, keys);
 				}
 
 				for (const key of keys) {
@@ -360,11 +325,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						await trx.insert(activityRecord).into('directus_activity');
 						let primaryKey;
 
-						const result = await trx
-							.select('id')
-							.from('directus_activity')
-							.orderBy('id', 'desc')
-							.first();
+						const result = await trx.select('id').from('directus_activity').orderBy('id', 'desc').first();
 
 						primaryKey = result.id;
 						activityPrimaryKeys.push(primaryKey);
@@ -381,9 +342,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						collection: this.collection,
 						item: keys[index],
 						data:
-							snapshots && Array.isArray(snapshots)
-								? JSON.stringify(snapshots?.[index])
-								: JSON.stringify(snapshots),
+							snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots?.[index]) : JSON.stringify(snapshots),
 						delta: JSON.stringify(payloadWithoutAliases),
 					}));
 
@@ -391,7 +350,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				}
 			});
 
-			if (cache) {
+			if (cache && env.CACHE_AUTO_PURGE) {
 				await cache.clear();
 			}
 
@@ -452,9 +411,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		let itemsToUpdate = await itemsService.readByQuery(readQuery);
 		itemsToUpdate = toArray(itemsToUpdate);
 
-		const keys: PrimaryKey[] = itemsToUpdate.map(
-			(item: Partial<Item>) => item[primaryKeyField]
-		);
+		const keys: PrimaryKey[] = itemsToUpdate.map((item: Partial<Item>) => item[primaryKeyField]);
 
 		return await this.update(data, keys);
 	}
@@ -530,7 +487,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
@@ -563,9 +520,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		let itemsToDelete = await itemsService.readByQuery(readQuery);
 		itemsToDelete = toArray(itemsToDelete);
 
-		const keys: PrimaryKey[] = itemsToDelete.map(
-			(item: Partial<Item>) => item[primaryKeyField]
-		);
+		const keys: PrimaryKey[] = itemsToDelete.map((item: Partial<Item>) => item[primaryKeyField]);
 		return await this.delete(keys);
 	}
 
@@ -598,11 +553,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async upsertSingleton(data: Partial<Item>) {
 		const primaryKeyField = this.schema[this.collection].primary;
 
-		const record = await this.knex
-			.select(primaryKeyField)
-			.from(this.collection)
-			.limit(1)
-			.first();
+		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
 
 		if (record) {
 			return await this.update(data, record.id);

@@ -1,5 +1,6 @@
 get:
   operationId: getActivities
+  summary: List Activity Actions
   description: Returns a list of activity actions.
   parameters:
     - $ref: "../../openapi.yaml#/components/parameters/Fields"

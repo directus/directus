@@ -1,4 +1,5 @@
 get:
+  summary: List Folders
   description: List the folders.
   operationId: getFolders
   parameters:
@@ -28,7 +29,9 @@ get:
       $ref: "../../openapi.yaml#/components/responses/NotFoundError"
   tags:
     - Folders
+
 post:
+  summary: Create a Folder
   description: Create a new folder.
   operationId: createFolder
   parameters:

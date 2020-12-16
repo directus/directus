@@ -1,4 +1,5 @@
 get:
+  summary: List Displays
   description: List all installed custom displays.
   operationId: getDisplays
   responses:
