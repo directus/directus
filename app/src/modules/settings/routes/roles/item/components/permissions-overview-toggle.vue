@@ -92,7 +92,7 @@ export default defineComponent({
 
 			function hasAll() {
 				if (!permission.value) return false;
-				if (permission.value.fields !== '*') return false;
+				if (permission.value.fields?.includes('*') === false) return false;
 				if (Object.keys(permission.value.permissions || {}).length > 0) return false;
 				if (Object.keys(permission.value.validation || {}).length > 0) return false;
 
