@@ -60,6 +60,31 @@ validationError:
   eq: Dữ liệu phải là {valid}
   neq: Dữ liệu không thể là {invalid}
   in: Dữ liệu phải là một trong số {valid}
+  nin: Dữ liệu không thể là một trong số {invalid}
+  contains: Dữ liệu phải chứa {substring}
+  ncontains: Dữ liệu không thể chứa {substring}
+  gt: Giá trị phải lớn hơn {valid}
+  gte: Giá trị phải lớn hơn hoặc bằng {valid}
+  lt: Giá trị phải nhỏ hơn {valid}
+  lte: Giá trị phải nhỏ hơn hoặc bằng {valid}
+  empty: Dữ liệu phải để trống
+  nempty: Dữ liệu không thể để trống
+  null: Dữ liệu phải là null
+  nnull: Dữ liệu không thể là null
+  required: Dữ liệu là bắt buộc
+all_access: Toàn Quyền
+no_access: Cấm Truy Cập
+use_custom: Chọn Lọc
+field_standard: Chuẩn
+field_presentation: Trình Bày và Bí Danh
+field_file: Một Tập Tin
+field_files: Nhiều Tập Tin
+field_m2o: Quan hệ Nhiều -> Một
+field_o2m: Quan hệ Một -> Nhiều
+field_m2m: Quan hệ Nhiều -> Nhiều
+field_translations: Các Bản Dịch
+item_permissions: Quyền truy cập Bảng ghi
+field_permissions: Quyền truy cập Trường
 language: Ngôn ngữ
 create_field: Tạo thêm trường
 hidden_on_detail: Ẩn tại chi tiết
