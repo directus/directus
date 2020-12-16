@@ -3,9 +3,9 @@
 		<span class="name">
 			{{ collection.name }}
 			<span class="actions">
-				<span class="all" @click="setFullAccessAll">{{ $t('allow_all') }}</span>
-				|
-				<span class="none" @click="setNoAccessAll">{{ $t('allow_none') }}</span>
+				<span class="all" @click="setFullAccessAll">{{ $t('all') }}</span>
+				<span class="divider">/</span>
+				<span class="none" @click="setNoAccessAll">{{ $t('none') }}</span>
 			</span>
 		</span>
 
@@ -94,10 +94,11 @@ export default defineComponent({
 		flex-grow: 1;
 
 		.actions {
-			margin-left: 20px;
+			margin-left: 8px;
 			color: var(--foreground-subdued);
 			font-size: 12px;
 			opacity: 0;
+			transition: opacity var(--fast) var(--transition);
 
 			span {
 				cursor: pointer;
@@ -110,6 +111,11 @@ export default defineComponent({
 						color: var(--danger);
 					}
 				}
+			}
+
+			.divider {
+				margin: 0 6px;
+				cursor: default;
 			}
 		}
 	}

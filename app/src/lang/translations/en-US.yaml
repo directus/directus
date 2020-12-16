@@ -42,8 +42,6 @@ not_allowed: Not Allowed
 directus_version: Directus Version
 node_version: Node Version
 node_uptime: Node Uptime
-allow_all: Allow All
-allow_none: Allow None
 os_type: OS Type
 os_version: OS Version
 os_uptime: OS Uptime
@@ -613,6 +611,7 @@ add_new: Add New
 from_collection: 'From “{collection}” Collection'
 create_new: Create New
 all: All
+none: None
 no_layout_collection_selected_yet: No layout/collection selected yet
 batch_delete_confirm: >-
   No items have been selected | Are you sure you want to delete this item? This
