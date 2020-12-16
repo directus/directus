@@ -58,6 +58,26 @@ nested_files_folders_will_be_moved: I file e le cartelle annidate verranno spost
 unknown_validation_errors: 'Si sono verificati errori di validazione per i seguenti campi nascosti:'
 validationError:
   eq: Il valore deve essere {valid}
+  neq: Il valore non può essere {invalid}
+  in: Il valore deve essere uno di {valid}
+  nin: Il valore non può essere uno di {invalid}
+  contains: Il valore deve contenere {substring}
+  ncontains: Il valore non può contenere {substring}
+  gt: Il valore deve essere maggiore di {valid}
+  gte: Il valore deve essere maggiore o uguale di {valid}
+  lt: Il valore deve essere inferiore a {valid}
+  lte: Il valore deve essere minore o uguale a {valid}
+  empty: Il valore deve essere vuoto
+  nempty: Il valore non può essere vuoto
+  null: Il valore deve essere nullo
+  nnull: Il valore non può essere nullo
+  required: Il valore è obbligatorio
+no_access: Nessun Accesso
+use_custom: Usa Personalizzato
+item_permissions: Permessi Oggetto
+field_permissions: Permessi di Campo
+field_validation: Convalida di Campo
+field_presets: Preset di Campo
 language: Linguaggio
 create_field: Crea campo
 hidden_on_detail: Nascosto nei dettagli

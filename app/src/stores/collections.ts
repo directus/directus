@@ -22,7 +22,7 @@ export const useCollectionsStore = createStore({
 	},
 	actions: {
 		async hydrate() {
-			const response = await api.get(`/collections`);
+			const response = await api.get(`/collections`, { params: { limit: -1 } });
 
 			const collections: CollectionRaw[] = response.data.data;
 

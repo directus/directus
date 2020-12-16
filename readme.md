@@ -73,7 +73,7 @@ Directus only requires Node.js and supports most operating systems and SQL datab
 
 - PostgreSQL 10+
 - MySQL 5.7.8+
-- MariaDB 10.1+
+- MariaDB 10.2+
 - SQLite 3+
 - MS-SQL X.X+
 - OracleDB X.X+
@@ -105,7 +105,7 @@ channels:
 
 ## ❤️ Contributing & Sponsoring
 
-Please read our [Contributing Guide](./CONTRIBUTING.md) before submitting Pull Requests.
+Please read our [Contributing Guide](./contributing.md) before submitting Pull Requests.
 
 Directus is a premium open-source ([GPLv3](./license)) project, made possible with support from our passionate core
 team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!

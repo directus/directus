@@ -1,5 +1,10 @@
 ---
+edit_field: تعديل الحقل
+half_width: نصف العرض
 full_width: العرض الكامل
+fill_width: العرض الكامل
+enter_password_to_enable_tfa: أدخل كلمة المرور الخاصة بك لتمكين المصادقة الثنائية
+add_field: إضافة حقل
 required: مطلوب
 create_role: إنشاء دور أو صلاحية
 delete_bookmark: حذف إشارة مرجعية

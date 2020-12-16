@@ -47,14 +47,7 @@
 		</template>
 		<template v-else-if="['empty', 'nempty'].includes(operator) === false">
 			<v-checkbox block :label="$t('active')" v-if="type === 'checkbox'" v-model="_value" :disabled="disabled" />
-			<v-input
-				:disabled="disabled"
-				v-else
-				autofocus
-				v-model="_value"
-				:type="type"
-				:placeholder="$t('enter_a_value')"
-			/>
+			<v-input :disabled="disabled" v-else autofocus v-model="_value" :type="type" :placeholder="$t('enter_a_value')" />
 		</template>
 	</div>
 </template>
@@ -66,7 +59,7 @@ import { FilterOperator } from '@/types';
 export default defineComponent({
 	props: {
 		value: {
-			type: [String, Boolean],
+			type: [String, Number, Boolean],
 			required: true,
 		},
 		type: {
@@ -83,7 +76,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _value = computed<string | string[] | boolean>({
+		const _value = computed<string | string[] | boolean | number>({
 			get() {
 				return props.value;
 			},

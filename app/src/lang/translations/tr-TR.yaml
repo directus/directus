@@ -1,21 +1,123 @@
 ---
+edit_field: Alanı Düzenle
+item_revision: Revizyonları Göster
+duplicate_field: Yinelenen Alan
+half_width: Yarı Genişlik
 full_width: Tam Genişlik
+fill_width: Tam Genişlik
+field_name_translations: Alan İsim Çevirileri
+enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için şifrenizi girin
+add_field: Alan Ekle
+role_name: Rol Adı
+db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın '
+show_archived_items: Arşivlenmiş Öğeleri Göster
 required: Gerekli
+requires_value: Gerekli değer
+create_preset: Ön Ayar Oluştur
 create_role: Rol Oluştur
+create_user: Kullanıcı Oluştur
+create_webhook: Webhook Oluşturun
+invite_users: Kullanıcıları Davet Et
+email_examples: 'admin@example.com, user@example.com...'
+invite: Davet et
+emails: E-postalar
+connection_excellent: Mükemmel Bağlantı
+connection_good: İyi Bağlantı
+connection_fair: Makul Bağlantı
+connection_poor: Kötü Bağlantı
+rename_folder: Klasörü Yeniden Adlandır
+delete_folder: Klasörü Sil
+reset_bookmark: Yer İşaretini Sıfırla
+rename_bookmark: Yer İşaretini Yeniden Adlandır
+update_bookmark: Yer İşaretini Güncelle
 delete_bookmark: Yer imini kaldır
+delete_bookmark_copy: >-
+  {bookmark} yer işareti kaldırmak istediğinize emin misiniz? Bu işlem geri alınamaz.
+logoutReason:
+  SIGN_OUT: Oturum kapatıldı
+  SESSION_EXPIRED: Oturumun süresi doldu
+public: Herkese Açık
+public_description: Kimlik doğrulaması olmadan hangi API verilerinin kullanılabileceğini kontrol eder.
+not_allowed: İzin Verilmedi
 directus_version: Directus Versiyon
+node_version: Node Versiyon
+node_uptime: Node Uptime
+os_type: OS Tip
+os_version: OS Versiyon
+os_uptime: OS Uptime
+os_totalmem: OS Hafıza
+archive: Arşiv
+archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
+archive_confirm_count: >-
+  Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin misiniz?
+reset_system_permissions: Sistem Yetkilerini Sıfırla
+reset_system_permissions_copy: Tüm sistem izinlerini varsayılan değerlerine sıfırlayın
+unarchive: Arşivden çıkar
+unarchive_confirm: Bu öğeyi arşivden çıkarmak istediğinizden emin misiniz?
+nested_files_folders_will_be_moved: İç içe geçmiş dosyalar ve klasörler bir seviye yukarı taşınacaktır.
+unknown_validation_errors: 'Aşağıdaki gizli alanlar için doğrulama hataları vardı:'
+validationError:
+  eq: Değer {valid} olmalıdır
+  neq: Değer {invalid} olamaz
+  in: Değer, {valid} değerlerinden biri olmalıdır
+  nin: Değer, {invalid} değerlerinden biri olamaz
+  contains: Değer, {substring} içermelidir
+  ncontains: Değer, {substring} içeremez
+  gt: Değer, {valid} değerinden büyük olmalıdır
+  gte: Değer, {valid} değerinden büyük veya ona eşit olmalıdır
 language: Dil
 create_field: Alan Ekle
 hidden_on_detail: Detayda Gizli
+disabled_editing_value: Düzenleme değerini devre dışı bırakın
+key: Key
+alias: Takma Ad
+bigInteger: Büyük Tamsayı
+boolean: Evet/Hayır
 date: Tarih
+datetime: Tarih Saat
 decimal: Ondalık
+float: Ondalıklı sayı
+integer: Tamsayı
+json: JSON
+string: Yazı
 text: Metin
 time: Zaman
+timestamp: Zaman damgası
+uuid: UUID
+not_available_for_type: Bu Tip için Mevcut Değil
+create_translations: Çeviriler Oluşturun
 auto_generate: Otomatik Oluştur
+this_will_auto_setup_fields_relations: Bu, gerekli tüm alanları ve ilişkileri otomatik olarak kuracaktır.
+click_here: Buraya tıklayın
+to_manually_setup_translations: çevirileri manuel olarak ayarlamak için.
+click_to_manage_translated_fields: >-
+  Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
+fields_group: Alanlar Grubu
+configure_m2o: Çoktan Bire İlişkinizi Yapılandırın...
+configure_o2m: Bire Çoğa İlişkinizi Yapılandırın...
+configure_m2m: Çoktan Çoğa İlişkinizi Yapılandırın...
+configure_m2a: Çoktan Herhangi Bir İlişkinizi Yapılandırın...
+add_m2o_to_collection: '"{collection}" koleksiyonuna Çoktan Bire''yi ekleyin'
+add_o2m_to_collection: '"{collection}" koleksiyonuna Bire Çok ekleyin'
+add_m2m_to_collection: '"{collection}" koleksiyonuna Çoktan Çoğa ekle'
+choose_a_type: Bir Tür Seçin...
 add_note: Kullanıcılar için yardımcı bir not ekleyin...
 default_value: Öntanımlı Değer
+add_a_default_value: Varsayılan bir değer ekleyin...
+interface_setup_title: Kullanıcılar bu alanla nasıl etkileşim kuracak?
+display_setup_title: Bu alanın değeri nasıl görüntülenmelidir?
+standard_field: Standart Alan
+single_file: Tek Dosya
+multiple_files: Birden Fazla Dosya
+m2o_relationship: Çoktan Bire İlişki
+o2m_relationship: Bire Çok İlişki
+m2m_relationship: Çoktan Çoka İlişki
+m2a_relationship: Çoktan Herhangi Bir İlişki
 next: Sonraki
+field_name: Alan adı
+translations: Çeviriler
 note: Not
+enter_a_value: Bir değer girin...
 length: Uzunluk
 readonly: Salt-Okunur
 unique: Benzersiz
@@ -165,8 +267,10 @@ fields:
   directus_fields:
     note: Not
     hidden: Gizli
+    translation: Alan İsim Çevirileri
     display_template: Şablon
   directus_roles:
+    name: Rol Adı
     description: Açıklama
 comment: Yorum
 continue: Devam
@@ -234,6 +338,7 @@ interfaces:
     divider: Ayırıcı
   dropdown:
     allow_other: Diğerlerine İzin Ver
+    choices_value_placeholder: Bir değer girin...
   file:
     file: Dosya
   files:
@@ -277,6 +382,8 @@ interfaces:
   wysiwyg:
     custom_formats: Özel Biçimler
 displays:
+  boolean:
+    boolean: Evet/Hayır
   collection:
     collection: Koleksiyon
   color:
@@ -290,6 +397,8 @@ displays:
     filesize: Dosya Boyutu
   icon:
     icon: İkon
+  labels:
+    choices_value_placeholder: Bir değer girin...
   rating:
     rating: Puanlama
   user:

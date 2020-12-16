@@ -1,6 +1,6 @@
 {
   "name": "@directus/sdk-js",
-  "version": "9.0.0-rc.22",
+  "version": "9.0.0-rc.23",
   "description": "The official Directus SDK for use in JavaScript!",
   "main": "dist/sdk-js.cjs.js",
   "module": "dist/sdk-js.bundler.js",
@@ -30,15 +30,8 @@
   "author": "Rijk van Zanten <rijkvanzanten@me.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.19.2"
-  },
-  "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^8.2.0",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.34.1",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.3"
+    "axios": "^0.19.2",
+    "openapi3-ts": "^2.0.0"
   },
   "nyc": {
     "extension": [

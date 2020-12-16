@@ -33,6 +33,8 @@ const defaults: Record<string, any> = {
 	CACHE_STORE: 'memory',
 	CACHE_TTL: '30m',
 	CACHE_NAMESPACE: 'system-cache',
+	CACHE_AUTO_PURGE: false,
+	ASSETS_CACHE_TTL: '30m',
 
 	OAUTH_PROVIDERS: '',
 

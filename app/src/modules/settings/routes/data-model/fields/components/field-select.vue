@@ -63,12 +63,7 @@
 				<div class="label">
 					<span class="name" v-tooltip="field.name">
 						{{ field.field }}
-						<v-icon
-							name="star"
-							class="required"
-							sup
-							v-if="field.schema && field.schema.is_nullable === false"
-						/>
+						<v-icon name="star" class="required" sup v-if="field.schema && field.schema.is_nullable === false" />
 					</span>
 					<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
 					<span v-else class="interface">{{ $t('db_only_click_to_configure') }}</span>
@@ -90,13 +85,7 @@
 						small
 						v-tooltip="$t('db_only_click_to_configure')"
 					/>
-					<v-icon
-						v-if="hidden"
-						name="visibility_off"
-						class="hidden-icon"
-						v-tooltip="$t('hidden_field')"
-						small
-					/>
+					<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="$t('hidden_field')" small />
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon @click.stop="toggle" name="more_vert" />
@@ -130,26 +119,17 @@
 
 							<v-divider />
 
-							<v-list-item
-								@click="setWidth('half')"
-								:disabled="field.meta && field.meta.width === 'half'"
-							>
+							<v-list-item @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
 								<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item
-								@click="setWidth('full')"
-								:disabled="field.meta && field.meta.width === 'full'"
-							>
+							<v-list-item @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
 								<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item
-								@click="setWidth('fill')"
-								:disabled="field.meta && field.meta.width === 'fill'"
-							>
+							<v-list-item @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
 								<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 							</v-list-item>
@@ -390,9 +370,7 @@ export default defineComponent({
 				if (localType.value !== 'translations') return null;
 
 				const relation = relationsStore.state.relations.find((relation: Relation) => {
-					return (
-						relation.one_collection === props.field.collection && relation.one_field === props.field.field
-					);
+					return relation.one_collection === props.field.collection && relation.one_field === props.field.field;
 				});
 
 				if (!relation) return null;
@@ -499,6 +477,8 @@ export default defineComponent({
 .field {
 	.label {
 		flex-grow: 1;
+		overflow: hidden;
+		text-overflow: ellipsis;
 
 		.name {
 			font-family: var(--family-monospace);

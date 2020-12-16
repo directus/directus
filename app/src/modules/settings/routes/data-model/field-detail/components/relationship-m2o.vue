@@ -20,12 +20,7 @@
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon
-									name="list_alt"
-									@click="toggle"
-									v-tooltip="$t('select_existing')"
-									:disabled="isExisting"
-								/>
+								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
 							</template>
 
 							<v-list class="monospace">
@@ -172,14 +167,14 @@ export default defineComponent({
 					if (enabled === true) {
 						state.newFields.push({
 							$type: 'corresponding',
-							field: state.relations[0].one_collection,
-							collection: state.relations[0].one_collection,
+							field: state.relations[0].many_collection,
+							collection: state.relations[0].many_collection,
 							meta: {
 								special: 'o2m',
 								interface: 'one-to-many',
 							},
 						});
-						state.relations[0].one_field = state.relations[0].one_collection;
+						state.relations[0].one_field = state.relations[0].many_collection;
 					} else {
 						state.newFields = state.newFields.filter((field: any) => field.$type !== 'corresponding');
 					}

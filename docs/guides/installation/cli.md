@@ -18,7 +18,7 @@ support/LTS.
 | SQLite        | 3+      |
 | MS-SQL Server | 13.0+   |
 | OracleDB      | TBD     |
-| MariaDB       | 10.1+   |
+| MariaDB       | 10.2+   |
 
 <!-- prettier-ignore-start -->
 ::: tip
