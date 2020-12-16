@@ -31,11 +31,14 @@ export class ActivityHandler {
 			const response = await this.axios.post('/activity/comments', payload);
 			return response.data;
 		},
-		update: async (key: PrimaryKey, payload: { comment: string }) => {
+		update: async (
+			key: PrimaryKey,
+			payload: { comment: string }
+		): Promise<{ data: Item | null }> => {
 			const response = await this.axios.patch(`/activity/comments/${key}`, payload);
 			return response.data;
 		},
-		delete: async (key: PrimaryKey) => {
+		delete: async (key: PrimaryKey): Promise<void> => {
 			await this.axios.delete(`/activity/comments/${key}`);
 		},
 	};
