@@ -10,6 +10,7 @@ import storage from '../storage';
 import { PayloadService, AssetsService } from '../services';
 import useCollection from '../middleware/use-collection';
 import env from '../env';
+import ms from 'ms';
 
 const router = Router();
 
@@ -112,7 +113,8 @@ router.get(
 			res.removeHeader('Content-Disposition');
 		}
 
-		res.setHeader('Cache-Control', env.ASSETS_CACHE_CONTROL);
+		const access = !!req.accountability?.role ? 'private' : 'public';
+		res.setHeader('Cache-Control', `${access}, max-age="${ms(env.ASSETS_CACHE_TTL as string)}"`);
 		stream.pipe(res);
 	})
 );

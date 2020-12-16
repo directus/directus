@@ -211,10 +211,9 @@ Controls whether or not the cache will be auto-purged on create/update/delete ac
 feature means that the API will remain real-time, while caching subsequent read calls when no changes have happened.
 **Note**: enabling auto-purge will remove the `Cache-Control` header, as the cache can be invalidated at any point.
 
-### `ASSETS_CACHE_CONTROL`
+### `ASSETS_CACHE_TTL`
 
-The value for the `Cache-Control` header for the static assets in the /assets endpoint. Defaults to
-`public, max-age=604800`.
+How long assets will be cached for in the browser. Sets the `max-age` value of the `Cache-Control` header.
 
 ## File Storage
 
