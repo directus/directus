@@ -1,6 +1,7 @@
 import { ref, inject, Ref } from '@vue/composition-api';
 import api from '@/api';
 import { Collection, Permission } from '@/types';
+import { unexpectedError } from '../../../../../../utils/unexpected-error';
 
 export default function useUpdatePermissions(
 	collection: Ref<Collection>,
@@ -37,7 +38,7 @@ export default function useUpdatePermissions(
 					validation: null,
 				});
 			} catch (err) {
-				console.error(err);
+				unexpectedError(err);
 			} finally {
 				await refresh?.();
 				saving.value = false;
@@ -51,7 +52,7 @@ export default function useUpdatePermissions(
 					fields: '*',
 				});
 			} catch (err) {
-				console.error(err);
+				unexpectedError(err);
 			} finally {
 				await refresh?.();
 				saving.value = false;
@@ -69,7 +70,7 @@ export default function useUpdatePermissions(
 		try {
 			await api.delete(`/permissions/${permission.id}`);
 		} catch (err) {
-			console.error(err);
+			unexpectedError(err);
 		} finally {
 			await refresh?.();
 			saving.value = false;
@@ -100,7 +101,7 @@ export default function useUpdatePermissions(
 							validation: null,
 						});
 					} catch (err) {
-						console.error(err);
+						unexpectedError(err);
 					}
 				} else {
 					try {
@@ -111,7 +112,7 @@ export default function useUpdatePermissions(
 							fields: '*',
 						});
 					} catch (err) {
-						console.error(err);
+						unexpectedError(err);
 					}
 				}
 			})
@@ -127,7 +128,7 @@ export default function useUpdatePermissions(
 		try {
 			await api.delete(`/permissions/${permissions.value.map((p) => p.id).join(',')}`);
 		} catch (err) {
-			console.error(err);
+			unexpectedError(err);
 		} finally {
 			await refresh?.();
 			saving.value = false;
