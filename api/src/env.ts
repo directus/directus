@@ -44,6 +44,8 @@ const defaults: Record<string, any> = {
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
 
 	TELEMETRY: true,
+
+	ASSETS_CACHE_CONTROL: 'public, max-age=604800',
 };
 
 let env: Record<string, any> = {
