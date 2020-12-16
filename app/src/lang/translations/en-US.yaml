@@ -42,6 +42,8 @@ not_allowed: Not Allowed
 directus_version: Directus Version
 node_version: Node Version
 node_uptime: Node Uptime
+allow_all: Allow All
+allow_none: Allow None
 os_type: OS Type
 os_version: OS Version
 os_uptime: OS Uptime
