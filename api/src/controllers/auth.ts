@@ -169,7 +169,7 @@ router.post(
 		const service = new UsersService({ accountability, schema: req.schema });
 
 		try {
-			await service.requestPasswordReset(req.body.email);
+			await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
 		} catch {
 			// We don't want to give away what email addresses exist, so we'll always return a 200
 			// from this endpoint
