@@ -745,7 +745,6 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 interfaces:
   checkboxes:
