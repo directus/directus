@@ -46,11 +46,11 @@ export class UsersHandler extends ItemsHandler {
 	};
 
 	me = {
-		read: async (query?: Query): Promise<{ data: UserInfo }> => {
+		read: async (query?: Query): Promise<{ data: Partial<UserInfo> }> => {
 			const response = await this.axios.get('/users/me', { params: query });
 			return response.data;
 		},
-		update: async (payload: Payload, query?: Query): Promise<{ data: UserInfo }> => {
+		update: async (payload: Payload, query?: Query): Promise<{ data: Partial<UserInfo> }> => {
 			const response = await this.axios.patch('/users/me', payload, { params: query });
 			return response.data;
 		},
