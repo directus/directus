@@ -100,7 +100,6 @@
 				<v-checkbox
 					block
 					:disabled="isExisting"
-					:checked="isExisting"
 					:label="correspondingLabel"
 					v-model="hasCorresponding"
 				/>
