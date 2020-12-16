@@ -71,6 +71,7 @@ validationError:
 all_access: Zugriff auf alles
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
+field_files: Mehrere Dateien,
 item_permissions: Item Berechtigungen
 field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
@@ -136,7 +137,7 @@ revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
 leave_comment: Kommentieren...
 post_comment_success: Kommentar veröffentlicht
-item_create_success: Element erstellt | Elemente erstellt
+item_create_success: Eintrag erstellt | Einträge erstellt
 this_collection: Diese Sammlung
 related_collection: Verknüpfte Sammlung
 export_data: Daten exportieren
@@ -282,7 +283,7 @@ upload_files_indeterminate: 'Hochladen von Dateien {done}/{total}'
 upload_files_success: '{count} Dateien hochgeladen'
 upload_pending: Upload ausstehend
 click_to_browse: Zum Durchsuchen klicken
-create_item: Element erstellen
+create_item: Eintrag erstellen
 display_template: Anzeigevorlage
 all_files: Alle Dateien
 my_files: Meine Dateien
