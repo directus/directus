@@ -47,10 +47,17 @@ export async function register() {
 	const permissionsStore = usePermissionsStore();
 
 	const registeredModules = loadedModules.filter((mod: any) => {
-		if (!userStore.state.currentUser) return false;
+		const user = userStore.state.currentUser;
+		if (!user) return false;
+
+		if (!user.role.admin_access && user.role.module_list) {
+			const re = new RegExp('^/' + mod.id + '(/|$)');
+			const match = user.role.module_list.find((m) => re.test(m.link));
+			if (!match) return false;
+		}
 
 		if (mod.preRegisterCheck) {
-			return mod.preRegisterCheck(userStore.state.currentUser, permissionsStore.state.permissions);
+			return mod.preRegisterCheck(user, permissionsStore.state.permissions);
 		}
 
 		return true;
