@@ -205,6 +205,12 @@ the following configurations.<br>**Default: `memory`**
 - **Memcache**
   - **`CACHE_MEMCACHE`** — Location of your memcache instance
 
+### `CACHE_AUTO_PURGE`
+
+Controls whether or not the cache will be auto-purged on create/update/delete actions within the system. Enabling this
+feature means that the API will remain real-time, while caching subsequent read calls when no changes have happened.
+**Note**: enabling auto-purge will remove the `Cache-Control` header, as the cache can be invalidated at any point.
+
 ### `ASSETS_CACHE_CONTROL`
 
 The value for the `Cache-Control` header for the static assets in the /assets endpoint. Defaults to
