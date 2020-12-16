@@ -46,7 +46,7 @@ export class UsersService extends ItemsService {
 			}
 		}
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
@@ -110,7 +110,7 @@ export class UsersService extends ItemsService {
 
 		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 	}
@@ -144,7 +144,7 @@ export class UsersService extends ItemsService {
 
 		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 	}

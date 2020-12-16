@@ -9,6 +9,7 @@ import { Transformation } from '../types/assets';
 import storage from '../storage';
 import { PayloadService, AssetsService } from '../services';
 import useCollection from '../middleware/use-collection';
+import env from '../env';
 
 const router = Router();
 
@@ -111,6 +112,7 @@ router.get(
 			res.removeHeader('Content-Disposition');
 		}
 
+		res.setHeader('Cache-Control', env.ASSETS_CACHE_CONTROL);
 		stream.pipe(res);
 	})
 );

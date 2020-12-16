@@ -12,6 +12,7 @@ import getDefaultValue from '../utils/get-default-value';
 import cache from '../cache';
 import SchemaInspector from '@directus/schema';
 import { toArray } from '../utils/to-array';
+import env from '../env';
 
 import { systemFieldRows } from '../database/system-data/fields/';
 
@@ -227,7 +228,7 @@ export class FieldsService {
 			});
 		}
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 	}
@@ -269,7 +270,7 @@ export class FieldsService {
 			}
 		}
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
@@ -311,7 +312,7 @@ export class FieldsService {
 			}
 		}
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 	}

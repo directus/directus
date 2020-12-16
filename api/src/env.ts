@@ -33,6 +33,7 @@ const defaults: Record<string, any> = {
 	CACHE_STORE: 'memory',
 	CACHE_TTL: '30m',
 	CACHE_NAMESPACE: 'system-cache',
+	CACHE_AUTO_PURGE: false,
 
 	OAUTH_PROVIDERS: '',
 
@@ -44,6 +45,8 @@ const defaults: Record<string, any> = {
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
 
 	TELEMETRY: true,
+
+	ASSETS_CACHE_CONTROL: 'public, max-age=604800',
 };
 
 let env: Record<string, any> = {
