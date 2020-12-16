@@ -52,14 +52,13 @@
 				<div class="field half" v-if="fieldData.schema">
 					<div class="label type-label">{{ $t('precision_scale') }}</div>
 					<div class="precision-scale">
-						<v-input type="number" :placeholder="10" v-model="fieldData.schema.precision" />
-
-						<v-input type="number" :placeholder="5" v-model="fieldData.schema.scale" />
+						<v-input type="number" :placeholder="10" v-model="fieldData.schema.numeric_precision" />
+						<v-input type="number" :placeholder="5" v-model="fieldData.schema.numeric_scale" />
 					</div>
 				</div>
 			</template>
 
-			<template v-if="['uuid', 'date', 'time', 'datetime', 'timestamp'].includes(fieldData.type)">
+			<template v-if="['uuid', 'date', 'time', 'datetime', 'timestamp'].includes(fieldData.type) && type !== 'file'">
 				<div class="field half-left">
 					<div class="label type-label">{{ $t('on_create') }}</div>
 					<v-select :items="onCreateOptions" v-model="onCreateValue" />
@@ -71,7 +70,7 @@
 				</div>
 			</template>
 
-			<!-- @TODO see https://github.com/directus/next/issues/639
+			<!-- @TODO see https://github.com/directus/directus/issues/639
 
 			<div class="field half-left" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('unique') }}</div>
@@ -110,20 +109,26 @@
 					v-model="defaultValue"
 					:placeholder="$t('add_a_default_value')"
 				/>
-				<v-checkbox
+				<v-select
 					v-else-if="fieldData.type === 'boolean'"
 					class="monospace"
 					v-model="defaultValue"
-					:label="defaultValue ? $t('true') : $t('false')"
-					block
+					:items="[
+						{
+							text: 'true',
+							value: true,
+						},
+						{
+							text: 'false',
+							value: false,
+						},
+						{
+							text: 'NULL',
+							value: null,
+						},
+					]"
 				/>
-				<v-input
-					v-else
-					class="monospace"
-					v-model="defaultValue"
-					disabled
-					:placeholder="$t('add_a_default_value')"
-				/>
+				<v-input v-else class="monospace" v-model="defaultValue" disabled :placeholder="$t('add_a_default_value')" />
 			</div>
 
 			<div class="field half-left" v-if="fieldData.schema">
@@ -141,9 +146,9 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import useSync from '@/composables/use-sync';
-import { types } from '@/types';
-import i18n from '@/lang';
+import useSync from '../../../../../../composables/use-sync';
+import { types } from '../../../../../../types';
+import i18n from '../../../../../../lang';
 import { state } from '../store';
 
 export const fieldTypes = [
@@ -226,7 +231,7 @@ export default defineComponent({
 		});
 
 		const typeDisabled = computed(() => {
-			return ['file', 'files', 'o2m', 'm2m', 'm2o', 'translations'].includes(props.type);
+			return ['file', 'files', 'o2m', 'm2m', 'm2a', 'm2o', 'translations'].includes(props.type);
 		});
 
 		const typePlaceholder = computed(() => {
@@ -403,6 +408,7 @@ export default defineComponent({
 
 .monospace {
 	--v-input-font-family: var(--family-monospace);
+	--v-select-font-family: var(--family-monospace);
 }
 
 .required {

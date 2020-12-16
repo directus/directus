@@ -1,6 +1,6 @@
 {
   "name": "@directus/format-title",
-  "version": "9.0.0-rc.2",
+  "version": "9.0.0-rc.23",
   "description": "Custom string formatter that converts any string into [Title Case](http://www.grammar-monster.com/lessons/capital_letters_title_case.htm)",
   "keywords": [
     "title-case",
@@ -13,9 +13,10 @@
     "conjunctions",
     "prepositions"
   ],
-  "main": "dist/format-title.umd.js",
-  "module": "dist/format-title.es5.js",
-  "typings": "dist/types/format-title.d.ts",
+  "main": "dist/format-title.cjs.js",
+  "module": "dist/format-title.bundler.js",
+  "unpkg": "dist/format-title.global.min.js",
+  "types": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
@@ -27,43 +28,14 @@
   },
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts",
-    "start": "rollup -c rollup.config.ts -w",
-    "test": "jest --coverage",
-    "test:watch": "jest --coverage --watch",
-    "prepublishOnly": "npm run build"
-  },
-  "jest": {
-    "transform": {
-      ".(ts|tsx)": "ts-jest"
-    },
-    "testEnvironment": "node",
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/test/"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 90,
-        "functions": 95,
-        "lines": 95,
-        "statements": 95
-      }
-    },
-    "collectCoverageFrom": [
-      "src/*.{js,ts}"
-    ]
+    "build": "rollup -c rollup.config.js",
+    "start": "rollup -c rollup.config.js -w",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint \"src/**/*.ts\""
   },
   "devDependencies": {
-    "jest": "^26.5.3",
     "rimraf": "^3.0.2",
-    "rollup": "^2.30.0",
-    "typescript": "^4.0.3"
+    "rollup": "^2.33.1",
+    "typescript": "^4.0.5"
   }
 }

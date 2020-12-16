@@ -1,5 +1,13 @@
 <template>
 	<v-drawer v-model="_active" :title="$t('select_item')" @cancel="cancel">
+		<template #actions>
+			<search-input v-model="searchQuery" />
+
+			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
+				<v-icon name="check" />
+			</v-button>
+		</template>
+
 		<component
 			:is="`layout-${localLayout}`"
 			:collection="collection"
@@ -7,6 +15,7 @@
 			:filters="filters"
 			:layout-query.sync="localQuery"
 			:layout-options.sync="localOptions"
+			:search-query="searchQuery"
 			@update:selection="onSelect"
 			select-mode
 			class="layout"
@@ -19,22 +28,18 @@
 				<v-info :title="$tc('item_count', 0)" :icon="collectionInfo.icon" center />
 			</template>
 		</component>
-
-		<template #actions>
-			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
-				<v-icon name="check" />
-			</v-button>
-		</template>
 	</v-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, toRefs, onUnmounted } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, toRefs, watch } from '@vue/composition-api';
 import { Filter } from '@/types';
 import usePreset from '@/composables/use-preset';
 import useCollection from '@/composables/use-collection';
+import SearchInput from '@/views/private/components/search-input';
 
 export default defineComponent({
+	components: { SearchInput },
 	props: {
 		active: {
 			type: Boolean,
@@ -60,12 +65,12 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { save, cancel } = useActions();
 		const { _active } = useActiveState();
-		const { _selection, onSelect } = useSelection();
+		const { _selection, localSelection, onSelect } = useSelection();
 
 		const { collection } = toRefs(props);
 
 		const { info: collectionInfo } = useCollection(collection);
-		const { layout, layoutOptions, layoutQuery } = usePreset(collection);
+		const { layout, layoutOptions, layoutQuery, searchQuery } = usePreset(collection);
 
 		// This is a local copy of the layout. This means that we can sync it the layout without
 		// having use-preset auto-save the values
@@ -73,7 +78,19 @@ export default defineComponent({
 		const localOptions = ref(layoutOptions.value);
 		const localQuery = ref(layoutQuery.value);
 
-		return { save, cancel, _active, _selection, onSelect, localLayout, localOptions, localQuery, collectionInfo };
+		return {
+			save,
+			cancel,
+			_active,
+			_selection,
+			localSelection,
+			onSelect,
+			localLayout,
+			localOptions,
+			localQuery,
+			collectionInfo,
+			searchQuery,
+		};
 
 		function useActiveState() {
 			const localActive = ref(false);
@@ -94,10 +111,6 @@ export default defineComponent({
 		function useSelection() {
 			const localSelection = ref<(string | number)[] | null>(null);
 
-			onUnmounted(() => {
-				localSelection.value = null;
-			});
-
 			const _selection = computed({
 				get() {
 					if (localSelection.value === null) {
@@ -111,7 +124,14 @@ export default defineComponent({
 				},
 			});
 
-			return { _selection, onSelect };
+			watch(
+				() => props.active,
+				() => {
+					localSelection.value = null;
+				}
+			);
+
+			return { _selection, localSelection, onSelect };
 
 			function onSelect(newSelection: (string | number)[]) {
 				if (newSelection.length === 0) {

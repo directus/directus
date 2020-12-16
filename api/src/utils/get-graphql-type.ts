@@ -1,4 +1,5 @@
 import { GraphQLBoolean, GraphQLFloat, GraphQLInt, GraphQLString } from 'graphql';
+import GraphQLJSON from 'graphql-type-json';
 import { types } from '../types';
 
 export function getGraphQLType(localType: typeof types[number]) {
@@ -11,6 +12,9 @@ export function getGraphQLType(localType: typeof types[number]) {
 		case 'decimal':
 		case 'float':
 			return GraphQLFloat;
+		case 'csv':
+		case 'json':
+			return GraphQLJSON;
 		default:
 			return GraphQLString;
 	}

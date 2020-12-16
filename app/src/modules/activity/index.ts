@@ -12,10 +12,7 @@ export default defineModule(({ i18n }) => ({
 			name: 'activity-collection',
 			path: '/',
 			component: ActivityCollection,
-			props: (route) => ({
-				queryFilters: route.query,
-				primaryKey: route.params.primaryKey,
-			}),
+			props: true,
 			children: [
 				{
 					name: 'activity-item',

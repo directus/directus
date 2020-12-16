@@ -3,10 +3,7 @@ import logger from '../logger';
 import { parseFilter } from '../utils/parse-filter';
 import { flatten } from 'lodash';
 
-export function sanitizeQuery(
-	rawQuery: Record<string, any>,
-	accountability: Accountability | null
-) {
+export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Accountability | null) {
 	const query: Query = {};
 
 	if (rawQuery.limit !== undefined) {
@@ -29,10 +26,6 @@ export function sanitizeQuery(
 		query.filter = sanitizeFilter(rawQuery.filter, accountability || null);
 	}
 
-	if (rawQuery.limit == '-1') {
-		delete query.limit;
-	}
-
 	if (rawQuery.offset) {
 		query.offset = sanitizeOffset(rawQuery.offset);
 	}
@@ -41,7 +34,7 @@ export function sanitizeQuery(
 		query.page = sanitizePage(rawQuery.page);
 	}
 
-	if (rawQuery.single) {
+	if (rawQuery.single || rawQuery.single === '') {
 		query.single = sanitizeSingle(rawQuery.single);
 	}
 
@@ -78,6 +71,8 @@ function sanitizeFields(rawFields: any) {
 
 	// Case where array item includes CSV (fe fields[]=id,name):
 	fields = flatten(fields.map((field) => (field.includes(',') ? field.split(',') : field)));
+
+	fields = fields.map((field) => field.trim());
 
 	return fields;
 }
@@ -125,7 +120,11 @@ function sanitizePage(rawPage: any) {
 }
 
 function sanitizeSingle(rawSingle: any) {
-	return true;
+	if (rawSingle !== undefined && rawSingle !== null && ['', 'true', 1, '1'].includes(rawSingle)) {
+		return true;
+	}
+
+	return false;
 }
 
 function sanitizeMeta(rawMeta: any) {

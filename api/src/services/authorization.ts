@@ -10,29 +10,38 @@ import {
 	PermissionsAction,
 	Item,
 	PrimaryKey,
+	SchemaOverview,
 } from '../types';
-import SchemaInspector from 'knex-schema-inspector';
 import Knex from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
 import { uniq, merge, flatten } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 import { ItemsService } from './items';
+import { PayloadService } from './payload';
 import { parseFilter } from '../utils/parse-filter';
 import { toArray } from '../utils/to-array';
+import { systemFieldRows } from '../database/system-data/fields';
 
 export class AuthorizationService {
 	knex: Knex;
 	accountability: Accountability | null;
+	payloadService: PayloadService;
+	schema: SchemaOverview;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
+		this.schema = options.schema;
+		this.payloadService = new PayloadService('directus_permissions', {
+			knex: this.knex,
+			schema: this.schema,
+		});
 	}
 
 	async processAST(ast: AST, action: PermissionsAction = 'read'): Promise<AST> {
 		const collectionsRequested = getCollectionsFromAST(ast);
 
-		const permissionsForCollections = await this.knex
+		let permissionsForCollections = await this.knex
 			.select<Permission[]>('*')
 			.from('directus_permissions')
 			.where({ action, role: this.accountability?.role })
@@ -41,28 +50,25 @@ export class AuthorizationService {
 				collectionsRequested.map(({ collection }) => collection)
 			);
 
+		permissionsForCollections = (await this.payloadService.processValues(
+			'read',
+			permissionsForCollections
+		)) as Permission[];
+
 		// If the permissions don't match the collections, you don't have permission to read all of them
-		const uniqueCollectionsRequestedCount = uniq(
-			collectionsRequested.map(({ collection }) => collection)
-		).length;
+		const uniqueCollectionsRequestedCount = uniq(collectionsRequested.map(({ collection }) => collection)).length;
 
 		if (uniqueCollectionsRequestedCount !== permissionsForCollections.length) {
 			// Find the first collection that doesn't have permissions configured
 			const { collection, field } = collectionsRequested.find(
 				({ collection }) =>
-					permissionsForCollections.find(
-						(permission) => permission.collection === collection
-					) === undefined
+					permissionsForCollections.find((permission) => permission.collection === collection) === undefined
 			)!;
 
 			if (field) {
-				throw new ForbiddenException(
-					`You don't have permission to access the "${field}" field.`
-				);
+				throw new ForbiddenException(`You don't have permission to access the "${field}" field.`);
 			} else {
-				throw new ForbiddenException(
-					`You don't have permission to access the "${collection}" collection.`
-				);
+				throw new ForbiddenException(`You don't have permission to access the "${collection}" collection.`);
 			}
 		}
 
@@ -74,15 +80,11 @@ export class AuthorizationService {
 		/**
 		 * Traverses the AST and returns an array of all collections that are being fetched
 		 */
-		function getCollectionsFromAST(
-			ast: AST | NestedCollectionNode
-		): { collection: string; field: string }[] {
+		function getCollectionsFromAST(ast: AST | NestedCollectionNode): { collection: string; field: string }[] {
 			const collections = [];
 
 			if (ast.type === 'm2a') {
-				collections.push(
-					...ast.names.map((name) => ({ collection: name, field: ast.fieldKey }))
-				);
+				collections.push(...ast.names.map((name) => ({ collection: name, field: ast.fieldKey })));
 
 				/** @TODO add nestedNode */
 			} else {
@@ -107,11 +109,9 @@ export class AuthorizationService {
 				const collection = ast.name;
 
 				// We check the availability of the permissions in the step before this is run
-				const permissions = permissionsForCollections.find(
-					(permission) => permission.collection === collection
-				)!;
+				const permissions = permissionsForCollections.find((permission) => permission.collection === collection)!;
 
-				const allowedFields = permissions.fields?.split(',') || [];
+				const allowedFields = permissions.fields || [];
 
 				for (const childNode of ast.children) {
 					if (childNode.type !== 'field') {
@@ -124,9 +124,7 @@ export class AuthorizationService {
 					const fieldKey = childNode.name;
 
 					if (allowedFields.includes(fieldKey) === false) {
-						throw new ForbiddenException(
-							`You don't have permission to access the "${fieldKey}" field.`
-						);
+						throw new ForbiddenException(`You don't have permission to access the "${fieldKey}" field.`);
 					}
 				}
 			}
@@ -141,9 +139,7 @@ export class AuthorizationService {
 				const collection = ast.name;
 
 				// We check the availability of the permissions in the step before this is run
-				const permissions = permissionsForCollections.find(
-					(permission) => permission.collection === collection
-				)!;
+				const permissions = permissionsForCollections.find((permission) => permission.collection === collection)!;
 
 				const parsedPermissions = parseFilter(permissions.permissions, accountability);
 
@@ -160,9 +156,7 @@ export class AuthorizationService {
 				if (ast.query.filter._and.length === 0) delete ast.query.filter._and;
 
 				if (permissions.limit && ast.query.limit && ast.query.limit > permissions.limit) {
-					throw new ForbiddenException(
-						`You can't read more than ${permissions.limit} items at a time.`
-					);
+					throw new ForbiddenException(`You can't read more than ${permissions.limit} items at a time.`);
 				}
 
 				// Default to the permissions limit if limit hasn't been set
@@ -183,16 +177,8 @@ export class AuthorizationService {
 	/**
 	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
 	 */
-	validatePayload(
-		action: PermissionsAction,
-		collection: string,
-		payloads: Partial<Item>[]
-	): Promise<Partial<Item>[]>;
-	validatePayload(
-		action: PermissionsAction,
-		collection: string,
-		payload: Partial<Item>
-	): Promise<Partial<Item>>;
+	validatePayload(action: PermissionsAction, collection: string, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
+	validatePayload(action: PermissionsAction, collection: string, payload: Partial<Item>): Promise<Partial<Item>>;
 	async validatePayload(
 		action: PermissionsAction,
 		collection: string,
@@ -213,28 +199,28 @@ export class AuthorizationService {
 				permissions: {},
 				validation: {},
 				limit: null,
-				fields: '*',
+				fields: ['*'],
 				presets: {},
 			};
 		} else {
 			permission = await this.knex
-				.select<Permission>('*')
+				.select('*')
 				.from('directus_permissions')
 				.where({ action, collection, role: this.accountability?.role || null })
 				.first();
 
-			// Check if you have permission to access the fields you're trying to acces
-
 			if (!permission) throw new ForbiddenException();
 
-			const allowedFields = permission.fields?.split(',') || [];
+			permission = (await this.payloadService.processValues('read', permission as Item)) as Permission;
+
+			// Check if you have permission to access the fields you're trying to acces
+
+			const allowedFields = permission.fields || [];
 
 			if (allowedFields.includes('*') === false) {
 				for (const payload of payloads) {
 					const keysInData = Object.keys(payload);
-					const invalidKeys = keysInData.filter(
-						(fieldKey) => allowedFields.includes(fieldKey) === false
-					);
+					const invalidKeys = keysInData.filter((fieldKey) => allowedFields.includes(fieldKey) === false);
 
 					if (invalidKeys.length > 0) {
 						throw new ForbiddenException(
@@ -245,36 +231,35 @@ export class AuthorizationService {
 			}
 		}
 
-		const preset = permission.presets || {};
+		const preset = parseFilter(permission.presets || {}, this.accountability);
 
 		payloads = payloads.map((payload) => merge({}, preset, payload));
 
-		const schemaInspector = SchemaInspector(this.knex);
-		const columns = await schemaInspector.columnInfo(collection);
+		const columns = Object.values(this.schema[collection].columns);
 
 		let requiredColumns: string[] = [];
 
 		for (const column of columns) {
-			const field = await this.knex
-				.select<{ special: string }>('special')
-				.from('directus_fields')
-				.where({ collection, field: column.name })
-				.first();
-			const specials = (field?.special || '').split(',');
-			const hasGenerateSpecial = [
-				'uuid',
-				'date-created',
-				'role-created',
-				'user-created',
-			].some((name) => specials.includes(name));
-			const isRequired =
-				column.is_nullable === false &&
-				column.has_auto_increment === false &&
-				column.default_value === null &&
-				hasGenerateSpecial === false;
+			const field =
+				(await this.knex
+					.select<{ special: string }>('special')
+					.from('directus_fields')
+					.where({ collection, field: column.column_name })
+					.first()) ||
+				systemFieldRows.find(
+					(fieldMeta) => fieldMeta.field === column.column_name && fieldMeta.collection === collection
+				);
+
+			const specials = field?.special ? toArray(field.special) : [];
+
+			const hasGenerateSpecial = ['uuid', 'date-created', 'role-created', 'user-created'].some((name) =>
+				specials.includes(name)
+			);
+
+			const isRequired = column.is_nullable === false && column.default_value === null && hasGenerateSpecial === false;
 
 			if (isRequired) {
-				requiredColumns.push(column.name);
+				requiredColumns.push(column.column_name);
 			}
 		}
 
@@ -310,9 +295,11 @@ export class AuthorizationService {
 	}
 
 	validateJoi(
-		validation: Record<string, any>,
+		validation: null | Record<string, any>,
 		payloads: Partial<Record<string, any>>[]
 	): FailedValidationException[] {
+		if (!validation) return [];
+
 		const errors: FailedValidationException[] = [];
 
 		/**
@@ -322,9 +309,7 @@ export class AuthorizationService {
 		if (Object.keys(validation)[0] === '_and') {
 			const subValidation = Object.values(validation)[0];
 			const nestedErrors = flatten<FailedValidationException>(
-				subValidation.map((subObj: Record<string, any>) =>
-					this.validateJoi(subObj, payloads)
-				)
+				subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads))
 			).filter((err?: FailedValidationException) => err);
 			errors.push(...nestedErrors);
 		}
@@ -332,9 +317,7 @@ export class AuthorizationService {
 		if (Object.keys(validation)[0] === '_or') {
 			const subValidation = Object.values(validation)[0];
 			const nestedErrors = flatten<FailedValidationException>(
-				subValidation.map((subObj: Record<string, any>) =>
-					this.validateJoi(subObj, payloads)
-				)
+				subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads))
 			);
 			const allErrored = nestedErrors.every((err?: FailedValidationException) => err);
 
@@ -349,23 +332,21 @@ export class AuthorizationService {
 			const { error } = schema.validate(payload, { abortEarly: false });
 
 			if (error) {
-				errors.push(
-					...error.details.map((details) => new FailedValidationException(details))
-				);
+				errors.push(...error.details.map((details) => new FailedValidationException(details)));
 			}
 		}
 
 		return errors;
 	}
 
-	async checkAccess(
-		action: PermissionsAction,
-		collection: string,
-		pk: PrimaryKey | PrimaryKey[]
-	) {
+	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]) {
 		if (this.accountability?.admin === true) return;
 
-		const itemsService = new ItemsService(collection, { accountability: this.accountability });
+		const itemsService = new ItemsService(collection, {
+			accountability: this.accountability,
+			knex: this.knex,
+			schema: this.schema,
+		});
 
 		try {
 			const query: Query = {
@@ -375,16 +356,13 @@ export class AuthorizationService {
 			const result = await itemsService.readByKey(pk as any, query, action);
 
 			if (!result) throw '';
-			if (Array.isArray(pk) && result.length !== pk.length) throw '';
+			if (Array.isArray(pk) && pk.length > 1 && result.length !== pk.length) throw '';
 		} catch {
-			throw new ForbiddenException(
-				`You're not allowed to ${action} item "${pk}" in collection "${collection}".`,
-				{
-					collection,
-					item: pk,
-					action,
-				}
-			);
+			throw new ForbiddenException(`You're not allowed to ${action} item "${pk}" in collection "${collection}".`, {
+				collection,
+				item: pk,
+				action,
+			});
 		}
 	}
 }

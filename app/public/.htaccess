@@ -7,6 +7,6 @@
   RewriteCond %{REQUEST_FILENAME} !-d
 
   # Otherwise use index.html (you might need to update path)
-  RewriteRule ^.*$ /index.html [L,QSA]
+  RewriteRule . /index.html [L,QSA]
 
 </ifModule>

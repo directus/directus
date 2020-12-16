@@ -1,0 +1,57 @@
+table: directus_collections
+
+defaults:
+  collection: null
+  hidden: false
+  singleton: false
+  icon: null
+  note: null
+  translations: null
+  display_template: null
+
+data:
+  - collection: directus_activity
+    note: Accountability logs for all events
+  - collection: directus_collections
+    icon: list_alt
+    note: Additional collection configuration and metadata
+  - collection: directus_fields
+    icon: input
+    note: Additional field configuration and metadata
+  - collection: directus_files
+    icon: folder
+    note: Metadata for all managed file assets
+    display_template: "{{ title }}"
+  - collection: directus_folders
+    note: Provides virtual directories for files
+    display_template: "{{ name }}"
+  - collection: directus_migrations
+    note: What version of the database you're using
+  - collection: directus_permissions
+    icon: admin_panel_settings
+    note: Access permissions for each role
+  - collection: directus_presets
+    icon: bookmark_border
+    note: Presets for collection defaults and bookmarks
+  - collection: directus_relations
+    icon: merge_type
+    note: Relationship configuration and metadata
+  - collection: directus_revisions
+    note: Data snapshots for all activity
+  - collection: directus_roles
+    icon: supervised_user_circle
+    note: Permission groups for system users
+  - collection: directus_sessions
+    note: User session information
+  - collection: directus_settings
+    singleton: true
+    note: Project configuration options
+  - collection: directus_users
+    archive_field: status
+    archive_value: archived
+    unarchive_value: draft
+    icon: people_alt
+    note: System users for the platform
+    display_template: "{{ first_name }} {{ last_name }}"
+  - collection: directus_webhooks
+    note: Configuration for event-based HTTP requests

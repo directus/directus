@@ -1,0 +1,100 @@
+---
+full_width: Pilno pločio
+create_role: Kurti vaidmenį
+directus_version: Directus versija
+create_field: Kurti lauką
+auto_generate: Generuoti Automatiškai
+add_note: Pridėkite paaiškinimą vartotojui...
+clear_value: Išvalyti reikšmę
+title: Pavadinmas
+checksum: Kontrolinė suma
+owner: Savininkas
+created_by: Sukūrė
+created_on: Sukurta
+comments: Komentarai
+create_collection: Kurti rinkinį
+users: Vartotojai
+activity: Veiksmas
+field_width: Laukelio plotis
+duration: Trukmė
+bookmarks: Žymės
+back: Atgal
+operators:
+  contains: Turi
+role: Vaidmuo
+create: Kurti
+add_new: Pridėti Naują
+all: Visi
+batch_delete_confirm: >-
+  Įrašai nepažymėti | Ar įsitikinę, jog norite trinti įrašą? Išsitrins negrįštamai. | Ar įsitikinę, jog norite trinti šiuos {count} įrašus? Išsitrins negrįštamai.
+cancel: Atšaukti
+collection: Rinkinys
+fields:
+  directus_activity:
+    action: Veiksmas
+    collection: Rinkinys
+    item: Įrašo Pirminis Raktas
+    user: Veiksmas atliktas
+    timestamp: Atlikta
+    edited_on: Redaguota
+    comment_deleted_on: Komentaras ištrintas
+    ip: IP adresas
+    user_agent: Naršyklė
+    comment: Komentaras
+  directus_files:
+    title: Pavadinmas
+    tags: Žymos
+    location: Vietovė
+    description: Aprašymas
+    private_hash: Privati maiša (hash)
+    checksum: Kontrolinė suma
+    uploaded_on: Įkelta
+    uploaded_by: Įkelta
+    width: Plotis
+    height: Aukštis
+    duration: Trukmė
+    filesize: Failo dydis
+    metadata: Meta duomenys
+  directus_users:
+    status: Būklė
+    first_name: Vardas
+    last_name: Pavardė
+    email: El. paštas
+    email_notifications: El. pašto pranešimai
+    password: Slaptažodis
+    role: Vaidmuo
+    company: Įmonė
+    title: Pavadinmas
+    timezone: Laiko zona
+    avatar: Nuotrauka
+    theme: Tema
+    tfa_secret: Dviejų lygių autentifikavimas
+  directus_roles:
+    description: Aprašymas
+comment: Komentaras
+continue: Tęsti
+description: Aprašymas
+done: Atlikta
+email: El. paštas
+field: Laukelis | Laukeliai
+password: Slaptažodis
+interfaces:
+  collection:
+    collection: Rinkinys
+  files:
+    files: Failai
+  tags:
+    tags: Žymos
+displays:
+  collection:
+    collection: Rinkinys
+  user:
+    avatar: Nuotrauka
+    both: Abu
+layouts:
+  cards:
+    title: Pavadinmas
+  tabular:
+    comfortable: Patogus
+    compact: Kompaktiškas
+    cozy: Jaukus

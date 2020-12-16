@@ -4,12 +4,8 @@ import jwt from 'jsonwebtoken';
 import { sendInviteMail, sendPasswordResetMail } from '../mail';
 import database from '../database';
 import argon2 from 'argon2';
-import {
-	InvalidPayloadException,
-	ForbiddenException,
-	UnprocessableEntityException,
-} from '../exceptions';
-import { Accountability, PrimaryKey, Item, AbstractServiceOptions } from '../types';
+import { InvalidPayloadException, ForbiddenException, UnprocessableEntityException } from '../exceptions';
+import { Accountability, PrimaryKey, Item, AbstractServiceOptions, SchemaOverview } from '../types';
 import Knex from 'knex';
 import env from '../env';
 import cache from '../cache';
@@ -18,14 +14,16 @@ import { toArray } from '../utils/to-array';
 export class UsersService extends ItemsService {
 	knex: Knex;
 	accountability: Accountability | null;
+	schema: SchemaOverview;
 	service: ItemsService;
 
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		super('directus_users', options);
 
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
 		this.service = new ItemsService('directus_users', options);
+		this.schema = options.schema;
 	}
 
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
@@ -48,7 +46,7 @@ export class UsersService extends ItemsService {
 			}
 		}
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
@@ -71,22 +69,27 @@ export class UsersService extends ItemsService {
 
 		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
 
-		if (otherAdminUsersCount === 0)
+		if (otherAdminUsersCount === 0) {
 			throw new UnprocessableEntityException(`You can't delete the last admin user.`);
+		}
 
 		await super.delete(keys as any);
 
 		return key;
 	}
 
-	async inviteUser(email: string, role: string) {
-		await this.service.create({ email, role, status: 'invited' });
+	async inviteUser(email: string | string[], role: string) {
+		const emails = toArray(email);
 
-		const payload = { email, scope: 'invite' };
-		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
-		const acceptURL = env.PUBLIC_URL + '/admin/accept-invite?token=' + token;
+		for (const email of emails) {
+			await this.service.create({ email, role, status: 'invited' });
 
-		await sendInviteMail(email, acceptURL);
+			const payload = { email, scope: 'invite' };
+			const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
+			const acceptURL = env.PUBLIC_URL + '/admin/accept-invite?token=' + token;
+
+			await sendInviteMail(email, acceptURL);
+		}
 	}
 
 	async acceptInvite(token: string, password: string) {
@@ -97,11 +100,7 @@ export class UsersService extends ItemsService {
 
 		if (scope !== 'invite') throw new ForbiddenException();
 
-		const user = await this.knex
-			.select('id', 'status')
-			.from('directus_users')
-			.where({ email })
-			.first();
+		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
 
 		if (!user || user.status !== 'invited') {
 			throw new InvalidPayloadException(`Email address ${email} hasn't been invited.`);
@@ -109,22 +108,21 @@ export class UsersService extends ItemsService {
 
 		const passwordHashed = await argon2.hash(password);
 
-		await this.knex('directus_users')
-			.update({ password: passwordHashed, status: 'active' })
-			.where({ id: user.id });
+		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 	}
 
-	async requestPasswordReset(email: string) {
+	async requestPasswordReset(email: string, url: string | null) {
 		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
 		if (!user) throw new ForbiddenException();
 
 		const payload = { email, scope: 'password-reset' };
-		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
-		const acceptURL = env.PUBLIC_URL + '/admin/reset-password?token=' + token;
+		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
+
+		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
 
 		await sendPasswordResetMail(email, acceptURL);
 	}
@@ -137,11 +135,7 @@ export class UsersService extends ItemsService {
 
 		if (scope !== 'password-reset') throw new ForbiddenException();
 
-		const user = await this.knex
-			.select('id', 'status')
-			.from('directus_users')
-			.where({ email })
-			.first();
+		const user = await this.knex.select('id', 'status').from('directus_users').where({ email }).first();
 
 		if (!user || user.status !== 'active') {
 			throw new ForbiddenException();
@@ -149,27 +143,25 @@ export class UsersService extends ItemsService {
 
 		const passwordHashed = await argon2.hash(password);
 
-		await this.knex('directus_users')
-			.update({ password: passwordHashed, status: 'active' })
-			.where({ id: user.id });
+		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 	}
 
 	async enableTFA(pk: string) {
-		const user = await this.knex
-			.select('tfa_secret')
-			.from('directus_users')
-			.where({ id: pk })
-			.first();
+		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
 
 		if (user?.tfa_secret !== null) {
 			throw new InvalidPayloadException('TFA Secret is already set for this user');
 		}
 
-		const authService = new AuthenticationService();
+		const authService = new AuthenticationService({
+			knex: this.knex,
+			schema: this.schema,
+			accountability: this.accountability,
+		});
 		const secret = authService.generateTFASecret();
 
 		await this.knex('directus_users').update({ tfa_secret: secret }).where({ id: pk });

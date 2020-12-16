@@ -21,7 +21,7 @@
 				:field="field"
 				:value="_value"
 				:initial-value="initialValue"
-				@input="$emit('input', $event)"
+				@input="emitValue($event)"
 				@unset="$emit('unset', $event)"
 				@edit-raw="showRaw = true"
 			/>
@@ -36,7 +36,7 @@
 			:batch-active="batchActive"
 			:disabled="isDisabled"
 			:primary-key="primaryKey"
-			@input="$emit('input', $event)"
+			@input="emitValue($event)"
 		/>
 
 		<v-dialog v-model="showRaw" @esc="showRaw = false">
@@ -61,13 +61,14 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
-import { Field } from '@/types/';
+import { Field } from '../../types/';
 import marked from 'marked';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
 import { ValidationError } from './types';
-import { getJSType } from '@/utils/get-js-type';
+import { getJSType } from '../../utils/get-js-type';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	components: { FormFieldLabel, FormFieldMenu, FormFieldInterface },
@@ -125,7 +126,15 @@ export default defineComponent({
 
 		const { showRaw, rawValue } = useRaw();
 
-		return { isDisabled, marked, _value, showRaw, rawValue };
+		return { isDisabled, marked, _value, emitValue, showRaw, rawValue };
+
+		function emitValue(value: any) {
+			if (isEqual(value, props.initialValue) || (value === null && props.initialValue === undefined)) {
+				emit('unset', props.field);
+			} else {
+				emit('input', value);
+			}
+		}
 
 		function useRaw() {
 			const showRaw = ref(false);

@@ -2,6 +2,8 @@ import { createStore } from 'pinia';
 import { Preset } from '@/types';
 import { useUserStore } from '@/stores/';
 import api from '@/api';
+import { nanoid } from 'nanoid';
+import { merge } from 'lodash';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
 	bookmark: null,
@@ -13,6 +15,84 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	layout_query: null,
 	layout_options: null,
 };
+
+const systemDefaults: Record<string, Partial<Preset>> = {
+	directus_files: {
+		collection: 'directus_files',
+		layout: 'cards',
+		layout_query: {
+			cards: {
+				sort: '-uploaded_on',
+			},
+		},
+		layout_options: {
+			cards: {
+				icon: 'insert_drive_file',
+				title: '{{ title }}',
+				subtitle: '{{ type }} • {{ filesize }}',
+				size: 4,
+				imageFit: 'crop',
+			},
+		},
+	},
+	directus_users: {
+		collection: 'directus_users',
+		layout: 'cards',
+		layout_query: {
+			cards: {
+				sort: 'email',
+			},
+		},
+		layout_options: {
+			cards: {
+				icon: 'account_circle',
+				title: '{{ first_name }} {{ last_name }}',
+				subtitle: '{{ email }}',
+				size: 4,
+			},
+		},
+	},
+	directus_activity: {
+		collection: 'directus_activity',
+		layout: 'tabular',
+		layout_query: {
+			tabular: {
+				sort: '-timestamp',
+				fields: ['action', 'collection', 'timestamp', 'user'],
+			},
+		},
+		layout_options: {
+			tabular: {
+				widths: {
+					action: 100,
+					collection: 210,
+					timestamp: 240,
+					user: 240,
+				},
+			},
+		},
+	},
+	directus_roles: {
+		collection: 'directus_roles',
+		layout: 'tabular',
+		layout_query: {
+			tabular: {
+				fields: ['icon', 'name', 'description'],
+			},
+		},
+		layout_options: {
+			tabular: {
+				widths: {
+					icon: 36,
+					name: 248,
+					description: 500,
+				},
+			},
+		},
+	},
+};
+
+let currentUpdate: Record<number, string> = {};
 
 export const usePresetsStore = createStore({
 	id: 'presetsStore',
@@ -29,6 +109,7 @@ export const usePresetsStore = createStore({
 				api.get(`/presets`, {
 					params: {
 						'filter[user][_eq]': id,
+						limit: -1,
 					},
 				}),
 				// All role saved bookmarks and presets
@@ -36,6 +117,7 @@ export const usePresetsStore = createStore({
 					params: {
 						'filter[role][_eq]': role.id,
 						'filter[user][_null]': true,
+						limit: -1,
 					},
 				}),
 				// All global saved bookmarks and presets
@@ -43,11 +125,25 @@ export const usePresetsStore = createStore({
 					params: {
 						'filter[role][_null]': true,
 						'filter[user][_null]': true,
+						limit: -1,
 					},
 				}),
 			]);
 
-			this.state.collectionPresets = values.map((response) => response.data.data).flat();
+			const presets = values.map((response) => response.data.data).flat();
+
+			// Inject system defaults if they don't exist
+			for (const systemCollection of Object.keys(systemDefaults)) {
+				const existingGlobalDefault = presets.find((preset) => {
+					return preset.collection === systemCollection && !preset.user && !preset.role && !preset.bookmark;
+				});
+
+				if (!existingGlobalDefault) {
+					presets.push(merge({}, defaultPreset, systemDefaults[systemCollection]));
+				}
+			}
+
+			this.state.collectionPresets = presets;
 		},
 		async dehydrate() {
 			this.reset();
@@ -60,17 +156,22 @@ export const usePresetsStore = createStore({
 			return response.data.data;
 		},
 		async update(id: number, updates: Partial<Preset>) {
+			const updateID = nanoid();
+			currentUpdate[id] = updateID;
+
 			const response = await api.patch(`/presets/${id}`, updates);
 
-			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
-				const updatedPreset = response.data.data;
+			if (currentUpdate[id] === updateID) {
+				this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
+					const updatedPreset = response.data.data;
 
-				if (preset.id === updatedPreset.id) {
-					return updatedPreset;
-				}
+					if (preset.id === updatedPreset.id) {
+						return updatedPreset;
+					}
 
-				return preset;
-			});
+					return preset;
+				});
+			}
 
 			return response.data.data;
 		},

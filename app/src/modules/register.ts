@@ -23,15 +23,22 @@ export async function loadModules() {
 			for (const customKey of customResponse.data.data) {
 				try {
 					const module = await import(/* webpackIgnore: true */ `/extensions/modules/${customKey}/index.js`);
+					module.default.routes = module.default.routes.map((route: RouteConfig) => {
+						if (route.path) {
+							route.path = `/${module.default.id}/${route.path}`;
+						}
+
+						return route;
+					});
 					loadedModules.push(module.default);
 				} catch (err) {
-					console.error(`Couldn't load custom module "${customKey}"`);
-					console.error(err);
+					console.warn(`Couldn't load custom module "${customKey}"`);
+					console.warn(err);
 				}
 			}
 		}
 	} catch {
-		console.error(`Couldn't load custom modules`);
+		console.warn(`Couldn't load custom modules`);
 	}
 }
 

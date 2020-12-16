@@ -92,6 +92,7 @@ import uploadFile from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import useItem from '@/composables/use-item';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { DrawerCollection },
@@ -118,16 +119,15 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { uploading, progress, error, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
+		const { uploading, progress, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
 		const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
-		const { url, isValidURL, loading: urlLoading, error: urlError, importFromURL } = useURLImport();
+		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 		const { setSelection } = useSelection();
 		const activeDialog = ref<'choose' | 'url' | null>(null);
 
 		return {
 			uploading,
 			progress,
-			error,
 			onDragEnter,
 			onDragLeave,
 			onDrop,
@@ -148,14 +148,12 @@ export default defineComponent({
 			const progress = ref(0);
 			const numberOfFiles = ref(0);
 			const done = ref(0);
-			const error = ref(null);
 
-			return { uploading, progress, error, upload, onBrowseSelect, numberOfFiles, done };
+			return { uploading, progress, upload, onBrowseSelect, numberOfFiles, done };
 
 			async function upload(files: FileList) {
 				uploading.value = true;
 				progress.value = 0;
-				error.value = null;
 
 				try {
 					numberOfFiles.value = files.length;
@@ -185,8 +183,7 @@ export default defineComponent({
 						uploadedFile && emit('input', uploadedFile);
 					}
 				} catch (err) {
-					console.error(err);
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					uploading.value = false;
 					done.value = 0;
@@ -255,7 +252,6 @@ export default defineComponent({
 		function useURLImport() {
 			const url = ref('');
 			const loading = ref(false);
-			const error = ref(null);
 
 			const isValidURL = computed(() => {
 				try {
@@ -266,7 +262,7 @@ export default defineComponent({
 				}
 			});
 
-			return { url, loading, error, isValidURL, importFromURL };
+			return { url, loading, isValidURL, importFromURL };
 
 			async function importFromURL() {
 				loading.value = true;
@@ -280,7 +276,7 @@ export default defineComponent({
 					activeDialog.value = null;
 					url.value = '';
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

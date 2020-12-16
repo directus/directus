@@ -2,11 +2,11 @@ function cssVar(name: string) {
 	return getComputedStyle(document.body).getPropertyValue(name);
 }
 
-export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace') {
+export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace', disabled: boolean) {
 	return `
 body {
-	color: ${cssVar('--foreground-normal')};
-	background-color: ${cssVar('--background-page')};
+	color: ${disabled ? cssVar('--foreground-subdued') : cssVar('--foreground-normal')};
+	background-color: ${disabled ? cssVar('--background-subdued') : cssVar('--background-page')};
 	margin: 20px;
 	font-family: 'Roboto', sans-serif;
 	-webkit-font-smoothing: antialiased;

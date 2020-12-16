@@ -9,5 +9,5 @@ export type Permission = {
 	validation: Record<string, any>;
 	limit: number | null;
 	presets: Record<string, any> | null;
-	fields: string | null;
+	fields: string[] | null;
 };

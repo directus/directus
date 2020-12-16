@@ -16,11 +16,12 @@
 				</template>
 				<template v-else>
 					<v-detail
-						:active="group.accordion === 'always_open' || undefined"
+						:active="group.accordion === 'always_open' || isActive(group.name)"
 						:disabled="group.accordion === 'always_open'"
 						:start-open="group.accordion === 'start_open'"
 						:label="group.name || null"
 						:key="group.name"
+						@toggle="toggleActive(group.name)"
 					>
 						<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
 							<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
@@ -56,7 +57,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import useNavigation from '../composables/use-navigation';
-import { usePresetsStore, useUserStore } from '@/stores/';
+import { usePresetsStore, useUserStore } from '../../../stores/';
 import { orderBy } from 'lodash';
 import NavigationBookmark from './navigation-bookmark.vue';
 
@@ -70,7 +71,7 @@ export default defineComponent({
 	},
 	setup() {
 		const presetsStore = usePresetsStore();
-		const { customNavItems, navItems } = useNavigation();
+		const { customNavItems, navItems, activeGroups } = useNavigation();
 		const userStore = useUserStore();
 		const isAdmin = computed(() => userStore.state.currentUser?.role.admin_access === true);
 
@@ -96,7 +97,19 @@ export default defineComponent({
 			);
 		});
 
-		return { navItems, bookmarks, customNavItems, isAdmin };
+		return { navItems, bookmarks, customNavItems, isAdmin, activeGroups, isActive, toggleActive };
+
+		function isActive(name: string) {
+			return activeGroups.value.includes(name);
+		}
+
+		function toggleActive(name: string) {
+			if (activeGroups.value.includes(name)) {
+				activeGroups.value = activeGroups.value.filter((current: string) => current !== name);
+			} else {
+				activeGroups.value.push(name);
+			}
+		}
 	},
 });
 </script>

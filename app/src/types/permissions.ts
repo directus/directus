@@ -6,6 +6,6 @@ export type Permission = {
 	permissions: Record<string, any> | null;
 	validation: Record<string, any> | null;
 	presets: Record<string, any> | null;
-	fields: string | null;
+	fields: string[] | null;
 	limit: number | null;
 };

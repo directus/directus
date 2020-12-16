@@ -1,16 +1,16 @@
 <template>
-	<div class="public-view" :class="{ branded : isBranded }">
+	<div class="public-view" :class="{ branded: isBranded }">
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
 				<div
-					v-if="settings && settings.project_logo"
+					v-if="branding && branding.project_logo"
 					class="logo"
-					:style="{ backgroundColor: settings.project_color }"
+					:style="{ backgroundColor: branding.project_color }"
 				>
-					<img :src="logoURL" :alt="settings.project_name || 'Logo'" />
+					<img :src="logoURL" :alt="branding.project_name || 'Logo'" />
 				</div>
 				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
-				<h1 class="title type-title">{{ settings && settings.project_name }}</h1>
+				<h1 class="title type-title">{{ branding && branding.project_name }}</h1>
 			</div>
 
 			<div class="content">
@@ -22,9 +22,14 @@
 		</div>
 		<div class="art" :style="artStyles">
 			<transition name="scale">
-				<img class="foreground" v-if="foregroundURL" :src="foregroundURL" :alt="settings.project_name" />
+				<img
+					class="foreground"
+					v-if="foregroundURL"
+					:src="foregroundURL"
+					:alt="branding && branding.project_name"
+				/>
 			</transition>
-			<div class="note" v-if="settings && settings.public_note" v-html="marked(settings.public_note)" />
+			<div class="note" v-if="branding && branding.public_note" v-html="marked(branding.public_note)" />
 		</div>
 	</div>
 </template>
@@ -32,7 +37,7 @@
 <script lang="ts">
 import { version } from '../../../package.json';
 import { defineComponent, computed } from '@vue/composition-api';
-import { useSettingsStore } from '@/stores';
+import { useServerStore } from '@/stores';
 import marked from 'marked';
 import getRootPath from '../../utils/get-root-path';
 
@@ -44,21 +49,21 @@ export default defineComponent({
 		},
 	},
 	setup() {
-		const settingsStore = useSettingsStore();
+		const serverStore = useServerStore();
 
 		const isBranded = computed(() => {
-			return (settingsStore.state.settings?.project_color) ? true : false;
+			return serverStore.state.info?.project?.project_color ? true : false;
 		});
 
 		const backgroundStyles = computed<string>(() => {
 			const defaultColor = '#263238';
 
-			if (settingsStore.state.settings?.public_background) {
-				const url = getRootPath() + `assets/${settingsStore.state.settings.public_background}`;
+			if (serverStore.state.info?.project?.public_background) {
+				const url = getRootPath() + `assets/${serverStore.state.info.project?.public_background}`;
 				return `url(${url})`;
 			}
 
-			return settingsStore.state.settings?.project_color || defaultColor;
+			return serverStore.state.info?.project?.project_color || defaultColor;
 		});
 
 		const artStyles = computed(() => ({
@@ -68,16 +73,24 @@ export default defineComponent({
 		}));
 
 		const foregroundURL = computed(() => {
-			if (!settingsStore.state.settings?.public_foreground) return null;
-			return getRootPath() + `assets/${settingsStore.state.settings.public_foreground}`;
+			if (!serverStore.state.info?.project?.public_foreground) return null;
+			return getRootPath() + `assets/${serverStore.state.info.project?.public_foreground}`;
 		});
 
 		const logoURL = computed<string | null>(() => {
-			if (!settingsStore.state.settings?.project_logo) return null;
-			return getRootPath() + `assets/${settingsStore.state.settings.project_logo}`;
+			if (!serverStore.state.info?.project?.project_logo) return null;
+			return getRootPath() + `assets/${serverStore.state.info.project?.project_logo}`;
 		});
 
-		return { version, artStyles, marked, settings: settingsStore.state.settings, foregroundURL, logoURL, isBranded };
+		return {
+			version,
+			artStyles,
+			marked,
+			branding: serverStore.state.info?.project,
+			foregroundURL,
+			logoURL,
+			isBranded,
+		};
 	},
 });
 </script>
@@ -121,6 +134,7 @@ export default defineComponent({
 
 		.content {
 			width: 340px;
+			max-width: 100%;
 		}
 
 		&.wide {
@@ -147,6 +161,7 @@ export default defineComponent({
 		background-size: cover;
 
 		.foreground {
+			width: 80%;
 			max-width: 400px;
 		}
 
@@ -177,6 +192,7 @@ export default defineComponent({
 		display: flex;
 		align-items: center;
 		width: max-content;
+		max-width: 100%;
 		height: 64px;
 		cursor: pointer;
 	}

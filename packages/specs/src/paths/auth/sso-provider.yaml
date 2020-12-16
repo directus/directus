@@ -1,0 +1,37 @@
+get:
+  summary: List SSO providers
+  description: List the SSO providers.
+  tags:
+    - Authentication
+  operationId: ssoProvider
+  parameters:
+    - name: provider
+      in: path
+      description: Key of the activated SSO provider.
+      required: true
+      schema:
+        type: string
+    - $ref: "../../openapi.yaml#/components/parameters/Mode"
+    - name: redirect_url
+      in: query
+      required: true
+      description: Where to redirect on successful login.
+      schema:
+        type: string
+  responses:
+    "200":
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              public:
+                type: boolean
+              data:
+                type: object
+                properties:
+                  token:
+                    type: string
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"

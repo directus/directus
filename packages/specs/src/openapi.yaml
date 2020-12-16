@@ -1,0 +1,286 @@
+openapi: 3.0.1
+info:
+  title: Directus
+  description: A real-time API and App dashboard for managing SQL database content.
+  contact:
+    email: contact@directus.io
+  license:
+    name: GPL-3.0
+    url: "https://www.gnu.org/licenses/gpl-3.0.html"
+  version: 9.0.0
+externalDocs:
+  description: Directus Docs
+  url: "https://docs.directus.io"
+tags:
+  - name: Activity
+    description: All events that happen within Directus are tracked and stored in the activities collection. This gives you full accountability over everything that happens.
+    x-collection: directus_activity
+  - name: Assets
+    description: Image typed files can be dynamically resized and transformed to fit any need.
+  - name: Authentication
+    description: All events that happen within Directus are tracked and stored in the activities collection. This gives you full accountability over everything that happens.
+  - name: Presets
+    description: Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom item listings for users of the app.
+    x-collection: directus_presets
+  - name: Collections
+    description: Collections are the individual collections of items, similar to tables in a database. Changes to collections will alter the schema of the database.
+    x-collection: directus_collections
+  - name: Extensions
+    description: Directus can easily be extended through the addition of several types of extensions, including layouts, interfaces, and modules.
+  - name: Fields
+    description: Fields are individual pieces of content within an item. They are mapped to columns in the database.
+    x-collection: directus_fields
+  - name: Files
+    description: Files can be saved in any given location. Directus has a powerful assets endpoint that can be used to generate thumbnails for images on the fly.
+    x-collection: directus_files
+  - name: Folders
+    description: Group files by virtual folders.
+    x-collection: directus_folders
+  - name: Items
+    description: Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
+  - name: Permissions
+    description: Permissions control who has access to what and when.
+    x-collection: directus_permissions
+  - name: Relations
+    description: What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever other structures you can think of.
+    x-collection: directus_relations
+  - name: Revisions
+    description: Revisions are individual changes to items made. Directus keeps track of changes made, so you're able to revert to a previous state at will.
+    x-collection: directus_revisions
+  - name: Roles
+    description: Roles are groups of users that share permissions.
+    x-collection: directus_roles
+  - name: Server
+    description: Access to where Directus runs. Allows you to make sure your server has everything needed to run the platform, and check what kind of latency we're dealing with.
+  - name: Settings
+    description: Settings control the way the platform works and acts.
+    x-collection: directus_settings
+  - name: Users
+    description: Users are what gives you access to the data.
+    x-collection: directus_users
+  - name: Utilities
+    description: Directus comes with various utility endpoints you can use to simplify your development flow.
+  - name: Webhooks
+    description: Webhooks.
+    x-collection: directus_webhooks
+paths:
+  # Activity
+  /activity:
+    $ref: "./paths/activity/activities.yaml"
+  /activity/comment:
+    $ref: "./paths/activity/activity-comments.yaml"
+  /activity/{id}:
+    $ref: "./paths/activity/activity.yaml"
+  /activity/comment/{id}:
+    $ref: "./paths/activity/activity-comment.yaml"
+
+  # Assets
+  /assets/{id}:
+    $ref: "./paths/assets/assets.yaml"
+
+  # Authentication
+  /auth/login:
+    $ref: "./paths/auth/login.yaml"
+  /auth/refresh:
+    $ref: "./paths/auth/refresh.yaml"
+  /auth/logout:
+    $ref: "./paths/auth/logout.yaml"
+  /auth/password/request:
+    $ref: "./paths/auth/password-request.yaml"
+  /auth/password/reset:
+    $ref: "./paths/auth/password-reset.yaml"
+  /auth/sso:
+    $ref: "./paths/auth/sso.yaml"
+  /auth/sso/{provider}:
+    $ref: "./paths/auth/sso-provider.yaml"
+
+  # Items
+  /items/{collection}:
+    $ref: "./paths/items/items.yaml"
+  /items/{collection}/{id}:
+    $ref: "./paths/items/item.yaml"
+
+  # Presets
+  /presets:
+    $ref: "./paths/presets/presets.yaml"
+  /presets/{id}:
+    $ref: "./paths/presets/preset.yaml"
+
+  # Collections
+  /collections:
+    $ref: "./paths/collections/collections.yaml"
+  /collections/{id}:
+    $ref: "./paths/collections/collection.yaml"
+
+  # Extensions
+  /extensions/interfaces:
+    $ref: "./paths/extensions/interfaces.yaml"
+  /extensions/layouts:
+    $ref: "./paths/extensions/layouts.yaml"
+  /extensions/displays:
+    $ref: "./paths/extensions/displays.yaml"
+  /extensions/modules:
+    $ref: "./paths/extensions/modules.yaml"
+
+  # Fields
+  /fields:
+    $ref: "./paths/fields/fields.yaml"
+  /fields/{collection}:
+    $ref: "./paths/fields/collection-fields.yaml"
+  /fields/{collection}/{id}:
+    $ref: "./paths/fields/collection-field.yaml"
+
+  # Files
+  /files:
+    $ref: "./paths/files/files.yaml"
+  /files/{id}:
+    $ref: "./paths/files/file.yaml"
+
+  # Folders
+  /folders:
+    $ref: "./paths/folders/folders.yaml"
+  /folders/{id}:
+    $ref: "./paths/folders/folder.yaml"
+
+  # Permissions
+  /permissions:
+    $ref: "./paths/permissions/permissions.yaml"
+  /permissions/me:
+    $ref: "./paths/permissions/permissions-me.yaml"
+  /permissions/{id}:
+    $ref: "./paths/permissions/permission.yaml"
+
+  # Relations
+  /relations:
+    $ref: "./paths/relations/relations.yaml"
+  /relations/{id}:
+    $ref: "./paths/relations/relation.yaml"
+
+  # Revisions
+  /revisions:
+    $ref: "./paths/revisions/revisions.yaml"
+  /revisions/{id}:
+    $ref: "./paths/revisions/revision.yaml"
+
+  # Roles
+  /roles:
+    $ref: "./paths/roles/roles.yaml"
+  /roles/{id}:
+    $ref: "./paths/roles/role.yaml"
+
+  # Server
+  /server/info:
+    $ref: "./paths/server/info.yaml"
+  /server/ping:
+    $ref: "./paths/server/ping.yaml"
+
+  # Settings
+  /settings:
+    $ref: "./paths/settings/settings.yaml"
+
+  # Users
+  /users:
+    $ref: "./paths/users/users.yaml"
+  /users/{id}:
+    $ref: "./paths/users/user.yaml"
+  /users/invite:
+    $ref: "./paths/users/user-invite.yaml"
+  /users/invite/accept:
+    $ref: "./paths/users/user-invite-accept.yaml"
+  /users/me:
+    $ref: "./paths/users/me.yaml"
+  /users/me/track/page:
+    $ref: "./paths/users/me-tracking.yaml"
+  /users/me/tfa/enable:
+    $ref: "./paths/users/me-tfa-enable.yaml"
+  /users/me/tfa/disable:
+    $ref: "./paths/users/me-tfa-disable.yaml"
+
+  /utils/random/string:
+    $ref: "./paths/utils/random.yaml"
+  /utils/sort/{collection}:
+    $ref: "./paths/utils/sort.yaml"
+
+  # Webhooks
+  /webhooks:
+    $ref: "./paths/webhooks/webhooks.yaml"
+  /webhooks/{id}:
+    $ref: "./paths/webhooks/webhook.yaml"
+
+components:
+  schemas:
+    Activity:
+      $ref: "./components/activity.yaml"
+    Presets:
+      $ref: "./components/preset.yaml"
+    Collections:
+      $ref: "./components/collection.yaml"
+    Fields:
+      $ref: "./components/field.yaml"
+    Files:
+      $ref: "./components/file.yaml"
+    Folders:
+      $ref: "./components/folder.yaml"
+    Items:
+      $ref: "./components/item.yaml"
+    Permissions:
+      $ref: "./components/permissions.yaml"
+    Relations:
+      $ref: "./components/relation.yaml"
+    Revisions:
+      $ref: "./components/revision.yaml"
+    Roles:
+      $ref: "./components/role.yaml"
+    Settings:
+      $ref: "./components/setting.yaml"
+    Users:
+      $ref: "./components/user.yaml"
+    Webhooks:
+      $ref: "./components/webhook.yaml"
+  parameters:
+    # All path parameters
+    Id:
+      $ref: "./parameters/id.yaml"
+    UUId:
+      $ref: "./parameters/uuid.yaml"
+    Collection:
+      $ref: "./parameters/collection.yaml"
+
+    # All query parameters
+    Search:
+      $ref: "./parameters/search.yaml"
+    Page:
+      $ref: "./parameters/page.yaml"
+    Offset:
+      $ref: "./parameters/offset.yaml"
+    Single:
+      $ref: "./parameters/single.yaml"
+    Sort:
+      $ref: "./parameters/sort.yaml"
+    Meta:
+      $ref: "./parameters/meta.yaml"
+    Limit:
+      $ref: "./parameters/limit.yaml"
+    Filter:
+      $ref: "./parameters/filter.yaml"
+    Fields:
+      $ref: "./parameters/fields.yaml"
+    Mode:
+      $ref: "./parameters/mode.yaml"
+  responses:
+    NotFoundError:
+      $ref: "./responses/notFoundError.yaml"
+    UnauthorizedError:
+      $ref: "./responses/unauthorizedError.yaml"
+  securitySchemes:
+    KeyAuth:
+      type: apiKey
+      in: query
+      name: access_token
+    Auth:
+      type: apiKey
+      in: header
+      name: "Authorization"
+security:
+  - Auth: []
+  - KeyAuth: []

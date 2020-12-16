@@ -96,7 +96,6 @@ import SettingsNavigation from '../../../components/navigation.vue';
 
 import api from '@/api';
 import { Header } from '@/components/v-table/types';
-import i18n from '@/lang';
 import { useCollectionsStore } from '@/stores/';
 import { getLayouts } from '@/layouts';
 import { TranslateResult } from 'vue-i18n';
@@ -104,6 +103,8 @@ import router from '@/router';
 import ValueNull from '@/views/private/components/value-null';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 import { userName } from '@/utils/user-name';
+import i18n from '@/lang';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type PresetRaw = {
 	id: number;
@@ -131,7 +132,7 @@ export default defineComponent({
 		const selection = ref<Preset[]>([]);
 
 		const { addNewLink } = useLinks();
-		const { loading, presets, error, getPresets } = usePresets();
+		const { loading, presets, getPresets } = usePresets();
 		const { headers } = useTable();
 		const { confirmDelete, deleting, deleteSelection } = useDelete();
 
@@ -142,7 +143,6 @@ export default defineComponent({
 			usePresets,
 			loading,
 			presets,
-			error,
 			getPresets,
 			headers,
 			selection,
@@ -163,7 +163,6 @@ export default defineComponent({
 		function usePresets() {
 			const loading = ref(false);
 			const presetsRaw = ref<PresetRaw[] | null>(null);
-			const error = ref(null);
 
 			const presets = computed<Preset[]>(() => {
 				return (presetsRaw.value || []).map((preset) => {
@@ -190,7 +189,7 @@ export default defineComponent({
 				});
 			});
 
-			return { loading, presetsRaw, error, getPresets, presets };
+			return { loading, presetsRaw, getPresets, presets };
 
 			async function getPresets() {
 				loading.value = true;
@@ -213,7 +212,7 @@ export default defineComponent({
 					});
 					presetsRaw.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

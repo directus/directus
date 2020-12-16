@@ -10,6 +10,17 @@ export default function useSort(
 ) {
 	const sort = ref<Sort>({ by: sortField.value || fields.value[0], desc: false });
 
+	const sortedItems = computed(() => {
+		const sField = sortField.value;
+		if (sField === null || sort.value.by !== sField) return null;
+
+		const desc = sort.value.desc;
+		const sorted = sortBy(items.value, [sField]);
+		return desc ? sorted.reverse() : sorted;
+	});
+
+	return { sort, sortItems, sortedItems };
+
 	function sortItems(newItems: Record<string, any>[]) {
 		const sField = sortField.value;
 		if (sField === null) return;
@@ -21,15 +32,4 @@ export default function useSort(
 
 		emit(itemsSorted);
 	}
-
-	const sortedItems = computed(() => {
-		const sField = sortField.value;
-		if (sField === null || sort.value.by !== sField) return null;
-
-		const desc = sort.value.desc;
-		const sorted = sortBy(items.value, [sField]);
-		return desc ? sorted.reverse() : sorted;
-	});
-
-	return { sort, sortItems, sortedItems };
 }

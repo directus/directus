@@ -5,7 +5,15 @@
 		</v-button>
 
 		<div class="action-buttons">
-			<v-button class="sidebar-toggle" icon rounded secondary outlined @click="$emit('toggle:sidebar')">
+			<v-button
+				class="sidebar-toggle"
+				icon
+				rounded
+				secondary
+				outlined
+				@click="$emit('toggle:sidebar')"
+				v-if="showSidebarToggle"
+			>
 				<v-icon name="info" outline />
 			</v-button>
 
@@ -18,7 +26,12 @@
 import { defineComponent, ref } from '@vue/composition-api';
 
 export default defineComponent({
-	props: {},
+	props: {
+		showSidebarToggle: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	setup() {
 		const active = ref(false);
 		return { active };

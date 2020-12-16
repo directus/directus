@@ -10,7 +10,7 @@
 		<template #activator>{{ field.name || formatTitle(field.field) }}</template>
 		<field-list-item
 			v-for="childField in field.children"
-			:key="field.field + childField.field"
+			:key="childField.key"
 			:parent="`${parent ? parent + '.' : ''}${field.field}`"
 			:field="childField"
 			:depth="depth - 1"

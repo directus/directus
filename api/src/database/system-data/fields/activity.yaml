@@ -1,0 +1,75 @@
+table: directus_activity
+
+fields:
+  - field: id
+    width: half
+
+  - field: item
+    width: half
+
+  - field: action
+    display: labels
+    display_options:
+      defaultForeground: '#263238'
+      defaultBackground: '#eceff1'
+      choices:
+        - text: Create
+          value: create
+          foreground: '#27ae60'
+          background: '#c9ebd7'
+        - text: Update
+          value: update
+          foreground: '#2f80ed'
+          background: '#cbdffb'
+        - text: Delete
+          value: delete
+          foreground: '#eb5757'
+          background: '#fad5d5'
+        - text: Login
+          value: authenticate
+          foreground: '#9b51e0'
+          background: '#e6d3f7'
+    width: half
+
+  - field: collection
+    display: collection
+    display_options:
+      icon: true
+    width: half
+
+  - field: timestamp
+    display: datetime
+    options:
+      relative: true
+    width: half
+
+  - field: user
+    display: user
+    width: half
+
+  - field: comment
+    display: formatted-text
+    display_options:
+      subdued: true
+    width: half
+
+  - field: user_agent
+    display: formatted-text
+    display_options:
+      font: monospace
+    width: half
+
+  - field: ip
+    display: formatted-text
+    display_options:
+      font: monospace
+    width: half
+
+  - field: revisions
+    interface: one-to-many
+    special: o2m
+    options:
+      fields:
+        - collection
+        - item
+    width: half

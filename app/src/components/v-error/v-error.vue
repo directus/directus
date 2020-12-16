@@ -14,6 +14,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, PropType, ref } from '@vue/composition-api';
+import { isPlainObject } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -35,7 +36,9 @@ export default defineComponent({
 
 		async function copyError() {
 			const error = props.error?.response?.data || props.error;
-			await navigator.clipboard.writeText(JSON.stringify(error, null, 2));
+			await navigator.clipboard.writeText(
+				JSON.stringify(error, isPlainObject(error) ? null : Object.getOwnPropertyNames(error), 2)
+			);
 			copied.value = true;
 		}
 	},

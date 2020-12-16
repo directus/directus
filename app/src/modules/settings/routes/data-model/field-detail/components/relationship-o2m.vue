@@ -97,7 +97,12 @@
 		<div class="corresponding" v-if="!isExisting">
 			<div class="field">
 				<div class="type-label">{{ $t('create_field') }}</div>
-				<v-checkbox block :label="correspondingLabel" v-model="hasCorresponding" />
+				<v-checkbox
+					block
+					:disabled="isExisting"
+					:label="correspondingLabel"
+					v-model="hasCorresponding"
+				/>
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('field_name') }}</div>

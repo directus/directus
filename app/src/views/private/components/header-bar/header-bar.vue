@@ -1,7 +1,7 @@
 <template>
 	<header class="header-bar" ref="headerEl" :class="{ collapsed: collapsed }">
-		<v-button secondary class="nav-toggle" icon rounded @click="$emit('toggle:nav')">
-			<v-icon name="menu" />
+		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')" v-if="$listeners.primary">
+			<v-icon :name="primaryActionIcon" />
 		</v-button>
 
 		<div class="title-outer-prepend" v-if="$scopedSlots['title-outer:prepend']">
@@ -12,6 +12,7 @@
 			<div class="headline">
 				<slot name="headline" />
 			</div>
+
 			<div class="title">
 				<slot name="title">
 					<slot name="title:prepend" />
@@ -26,9 +27,11 @@
 		<div class="spacer" />
 
 		<slot name="actions:prepend" />
-		<header-bar-actions @toggle:sidebar="$emit('toggle:sidebar')">
+
+		<header-bar-actions :show-sidebar-toggle="showSidebarToggle" @toggle:sidebar="$emit('toggle:sidebar')">
 			<slot name="actions" />
 		</header-bar-actions>
+
 		<slot name="actions:append" />
 	</header>
 </template>
@@ -43,6 +46,14 @@ export default defineComponent({
 		title: {
 			type: String,
 			default: null,
+		},
+		showSidebarToggle: {
+			type: Boolean,
+			default: false,
+		},
+		primaryActionIcon: {
+			type: String,
+			default: 'menu',
 		},
 	},
 	setup() {

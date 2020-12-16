@@ -8,7 +8,8 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'insert_photo',
 	component: InterfaceImage,
 	types: ['uuid'],
-	relationship: 'm2o',
+	groups: ['file'],
+	relational: true,
 	options: [],
 	recommendedDisplays: ['image'],
 }));

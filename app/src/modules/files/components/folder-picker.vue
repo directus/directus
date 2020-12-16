@@ -36,6 +36,7 @@
 import { defineComponent, ref, computed, PropType } from '@vue/composition-api';
 import api from '@/api';
 import FolderPickerListItem from './folder-picker-list-item.vue';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type FolderRaw = {
 	id: string;
@@ -64,7 +65,6 @@ export default defineComponent({
 	setup(props) {
 		const loading = ref(false);
 		const folders = ref<FolderRaw[]>([]);
-		const error = ref<any>(null);
 		const tree = computed<Folder[]>(() => {
 			return folders.value
 				.filter((folder) => folder.parent === null)
@@ -125,7 +125,7 @@ export default defineComponent({
 
 				folders.value = response.data.data;
 			} catch (err) {
-				error.value = err;
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}

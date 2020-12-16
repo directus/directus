@@ -116,6 +116,8 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
 import getRootPath from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { addTokenToURL } from '@/api';
 
 type FileInfo = {
 	id: number;
@@ -137,7 +139,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const activeDialog = ref<'upload' | 'choose' | 'url' | null>(null);
-		const { loading, error, file, fetchFile } = useFile();
+		const { loading, file, fetchFile } = useFile();
 
 		watch(() => props.value, fetchFile, { immediate: true });
 
@@ -150,25 +152,24 @@ export default defineComponent({
 
 		const imageThumbnail = computed(() => {
 			if (file.value === null || props.value === null) return null;
-			if (file.value.type.includes('svg')) return assetURL.value;
+			if (file.value.type.includes('svg')) return addTokenToURL(assetURL.value);
 			if (file.value.type.includes('image') === false) return null;
-			return assetURL.value + `?key=system-small-cover`;
+			const url = assetURL.value + `?key=system-small-cover`;
+			return addTokenToURL(url);
 		});
 
-		const { url, isValidURL, loading: urlLoading, error: urlError, importFromURL } = useURLImport();
+		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 
 		return {
 			activeDialog,
 			setSelection,
 			loading,
-			error,
 			file,
 			fileExtension,
 			imageThumbnail,
 			onUpload,
 			url,
 			urlLoading,
-			urlError,
 			importFromURL,
 			isValidURL,
 			assetURL,
@@ -176,16 +177,14 @@ export default defineComponent({
 
 		function useFile() {
 			const loading = ref(false);
-			const error = ref(null);
 			const file = ref<FileInfo | null>(null);
 
-			return { loading, error, file, fetchFile };
+			return { loading, file, fetchFile };
 
 			async function fetchFile() {
 				if (props.value === null) {
 					file.value = null;
 					loading.value = false;
-					error.value = null;
 					return;
 				}
 
@@ -200,7 +199,7 @@ export default defineComponent({
 
 					file.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -224,7 +223,6 @@ export default defineComponent({
 		function useURLImport() {
 			const url = ref('');
 			const loading = ref(false);
-			const error = ref(null);
 
 			const isValidURL = computed(() => {
 				try {
@@ -235,7 +233,7 @@ export default defineComponent({
 				}
 			});
 
-			return { url, loading, error, isValidURL, importFromURL };
+			return { url, loading, isValidURL, importFromURL };
 
 			async function importFromURL() {
 				loading.value = true;
@@ -251,7 +249,7 @@ export default defineComponent({
 					url.value = '';
 					emit('input', file.value?.id);
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

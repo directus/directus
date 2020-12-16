@@ -53,6 +53,7 @@ import { Collection, Permission } from '@/types';
 import api from '@/api';
 import router from '@/router';
 import useUpdatePermissions from '../composables/use-update-permissions';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {

@@ -20,10 +20,7 @@ export default function parseIPTC(buffer: Buffer) {
 	let lastIptcEntryPos = buffer.indexOf(IPTC_ENTRY_MARKER);
 
 	while (lastIptcEntryPos !== -1) {
-		lastIptcEntryPos = buffer.indexOf(
-			IPTC_ENTRY_MARKER,
-			lastIptcEntryPos + IPTC_ENTRY_MARKER.byteLength
-		);
+		lastIptcEntryPos = buffer.indexOf(IPTC_ENTRY_MARKER, lastIptcEntryPos + IPTC_ENTRY_MARKER.byteLength);
 
 		let iptcBlockTypePos = lastIptcEntryPos + IPTC_ENTRY_MARKER.byteLength;
 		let iptcBlockSizePos = iptcBlockTypePos + 1;

@@ -18,17 +18,12 @@
 			</v-button>
 
 			<div class="content">
-				<v-overlay v-if="$slots.sidebar" absolute :active="sidebarActive" @click="sidebarActive = false" />
-				<nav
-					v-if="$slots.sidebar"
-					class="sidebar"
-					:class="{ active: sidebarActive }"
-					@click="sidebarActive = false"
-				>
+				<v-overlay v-if="$slots.sidebar" absolute @click="sidebarActive = false" />
+				<nav v-if="$slots.sidebar" class="sidebar">
 					<slot name="sidebar" />
 				</nav>
 				<main ref="mainEl" class="main">
-					<header-bar :title="title">
+					<header-bar :title="title" @primary="$emit('cancel')" primary-action-icon="close">
 						<template #headline>
 							<slot name="subtitle">
 								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
@@ -47,6 +42,12 @@
 						<template #title:append><slot name="header:append" /></template>
 					</header-bar>
 
+					<v-detail v-if="$slots.sidebar" class="mobile-sidebar" :label="sidebarLabel">
+						<nav>
+							<slot name="sidebar" />
+						</nav>
+					</v-detail>
+
 					<slot />
 				</main>
 			</div>
@@ -57,6 +58,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, provide } from '@vue/composition-api';
 import HeaderBar from '@/views/private/components/header-bar/header-bar.vue';
+import i18n from '../../lang';
 
 export default defineComponent({
 	components: {
@@ -87,9 +89,12 @@ export default defineComponent({
 			type: String,
 			default: 'box',
 		},
+		sidebarLabel: {
+			type: String,
+			default: i18n.t('sidebar'),
+		},
 	},
 	setup(props, { emit, listeners }) {
-		const sidebarActive = ref(false);
 		const localActive = ref(false);
 
 		const mainEl = ref<Element>();
@@ -110,7 +115,7 @@ export default defineComponent({
 			return listeners.hasOwnProperty('cancel');
 		});
 
-		return { sidebarActive, _active, mainEl, showCancel };
+		return { _active, mainEl, showCancel };
 	},
 });
 </script>
@@ -128,6 +133,7 @@ body {
 	position: relative;
 	display: flex;
 	flex-direction: column;
+	width: 100%;
 	max-width: var(--v-drawer-max-width);
 	height: 100%;
 	background-color: var(--background-page);
@@ -156,27 +162,18 @@ body {
 		overflow: hidden;
 
 		.sidebar {
-			position: absolute;
-			top: 0;
-			left: 0;
-			z-index: 2;
-			flex-basis: 220px;
-			flex-shrink: 0;
-			width: 220px;
-			height: 100%;
-			background-color: var(--background-normal);
-			transform: translateX(-100%);
-			transition: transform var(--slow) var(--transition-out);
-
-			&.active {
-				transform: translateX(0);
-				transition-timing-function: var(--transition-in);
-			}
+			display: none;
 
 			@include breakpoint(medium) {
 				position: relative;
+				z-index: 2;
+				display: block;
+				flex-basis: 220px;
+				flex-shrink: 0;
+				width: 220px;
+				height: 100%;
 				height: auto;
-				transform: translateX(0);
+				background-color: var(--background-normal);
 			}
 		}
 
@@ -197,14 +194,28 @@ body {
 			flex-grow: 1;
 			overflow: auto;
 
-			@include breakpoint(medium) {
+			@include breakpoint(small) {
 				--content-padding: 32px;
+				--content-padding-bottom: 132px;
 			}
 		}
 	}
 
 	@include breakpoint(medium) {
 		width: calc(100% - 64px);
+	}
+}
+
+.mobile-sidebar {
+	margin: var(--content-padding);
+
+	nav {
+		background-color: var(--background-subdued);
+		border-radius: var(--border-radius);
+	}
+
+	@include breakpoint(medium) {
+		display: none;
 	}
 }
 </style>

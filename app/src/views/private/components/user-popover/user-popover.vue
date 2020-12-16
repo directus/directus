@@ -34,6 +34,7 @@ import { defineComponent, ref, watch, onUnmounted, computed } from '@vue/composi
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
+import { addTokenToURL } from '@/api';
 
 type User = {
 	first_name: string;
@@ -60,7 +61,7 @@ export default defineComponent({
 			if (data.value === null) return null;
 
 			if (data.value.avatar?.id) {
-				return `${getRootPath()}assets/${data.value.avatar.id}?key=system-medium-cover`;
+				return addTokenToURL(`${getRootPath()}assets/${data.value.avatar.id}?key=system-medium-cover`);
 			}
 		});
 

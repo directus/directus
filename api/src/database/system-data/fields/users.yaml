@@ -1,0 +1,137 @@
+table: directus_users
+
+fields:
+  - field: first_name
+    interface: text-input
+    options:
+      iconRight: account_circle
+    width: half
+
+  - field: last_name
+    interface: text-input
+    options:
+      iconRight: account_circle
+    width: half
+
+  - field: email
+    interface: text-input
+    options:
+      iconRight: email
+    width: half
+
+  - field: password
+    special: hash,conceal
+    interface: hash
+    options:
+      iconRight: lock
+      masked: true
+    width: half
+
+  - field: avatar
+    interface: file
+    width: full
+
+  - field: location
+    interface: text-input
+    options:
+      iconRight: place
+    width: half
+
+  - field: title
+    interface: text-input
+    options:
+      iconRight: work
+    width: half
+
+  - field: description
+    interface: textarea
+    width: full
+
+  - field: tags
+    interface: tags
+    special: json
+    width: full
+    options:
+      iconRight: local_offer
+
+  - field: preferences_divider
+    interface: divider
+    options:
+      icon: face
+      title: User Preferences
+      color: '#2F80ED'
+    special: alias
+    width: full
+
+  - field: language
+    interface: system-language
+    width: half
+
+  - field: theme
+    interface: dropdown
+    options:
+      choices:
+        - value: auto
+          text: Automatic (Based on System)
+        - value: light
+          text: Light Mode
+        - value: dark
+          text: Dark Mode
+    width: half
+
+  - field: tfa_secret
+    interface: tfa-setup
+    special: conceal
+    width: half
+
+  - field: admin_divider
+    interface: divider
+    options:
+      icon: verified_user
+      title: Admin Options
+      color: '#F2994A'
+    special: alias
+    width: full
+
+  - field: status
+    interface: dropdown
+    options:
+      choices:
+        - text: Draft
+          value: draft
+        - text: Invited
+          value: invited
+        - text: Active
+          value: active
+        - text: Suspended
+          value: suspended
+        - text: Archived
+          value: archived
+    width: half
+
+  - field: role
+    interface: many-to-one
+    options:
+      template: '{{ name }}'
+    special: m2o
+    width: half
+
+  - field: token
+    interface: token
+    options:
+      iconRight: vpn_key
+      placeholder: Enter a secure access token...
+    width: full
+
+  - field: id
+    special: uuid
+    interface: text-input
+    options:
+      iconRight: vpn_key
+    width: full
+
+  - field: last_page
+    width: half
+
+  - field: last_access
+    width: half

@@ -1,6 +1,18 @@
 <template>
 	<div :class="(field.meta && field.meta.width) || 'full'">
-		<div v-if="localType === 'translations'" class="group">
+		<v-input disabled v-if="disabled" class="field">
+			<template #prepend>
+				<v-icon name="lock" v-tooltip="$t('system_fields_locked')" />
+			</template>
+
+			<template #input>
+				<div class="label">
+					<span class="name">{{ field.field }}</span>
+				</div>
+			</template>
+		</v-input>
+
+		<div v-else-if="localType === 'translations'" class="group">
 			<div class="header">
 				<v-icon class="drag-handle" name="drag_indicator" />
 				<span class="name" v-tooltip="field.name">{{ field.field }}</span>
@@ -51,12 +63,7 @@
 				<div class="label">
 					<span class="name" v-tooltip="field.name">
 						{{ field.field }}
-						<v-icon
-							name="star"
-							class="required"
-							sup
-							v-if="field.schema && field.schema.is_nullable === false"
-						/>
+						<v-icon name="star" class="required" sup v-if="field.schema && field.schema.is_nullable === false" />
 					</span>
 					<span v-if="field.meta" class="interface">{{ interfaceName }}</span>
 					<span v-else class="interface">{{ $t('db_only_click_to_configure') }}</span>
@@ -78,13 +85,7 @@
 						small
 						v-tooltip="$t('db_only_click_to_configure')"
 					/>
-					<v-icon
-						v-if="hidden"
-						name="visibility_off"
-						class="hidden-icon"
-						v-tooltip="$t('hidden_field')"
-						small
-					/>
+					<v-icon v-if="hidden" name="visibility_off" class="hidden-icon" v-tooltip="$t('hidden_field')" small />
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon @click.stop="toggle" name="more_vert" />
@@ -118,26 +119,17 @@
 
 							<v-divider />
 
-							<v-list-item
-								@click="setWidth('half')"
-								:disabled="field.meta && field.meta.width === 'half'"
-							>
+							<v-list-item @click="setWidth('half')" :disabled="field.meta && field.meta.width === 'half'">
 								<v-list-item-icon><v-icon name="border_vertical" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('half_width') }}</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item
-								@click="setWidth('full')"
-								:disabled="field.meta && field.meta.width === 'full'"
-							>
+							<v-list-item @click="setWidth('full')" :disabled="field.meta && field.meta.width === 'full'">
 								<v-list-item-icon><v-icon name="border_right" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('full_width') }}</v-list-item-content>
 							</v-list-item>
 
-							<v-list-item
-								@click="setWidth('fill')"
-								:disabled="field.meta && field.meta.width === 'fill'"
-							>
+							<v-list-item @click="setWidth('fill')" :disabled="field.meta && field.meta.width === 'fill'">
 								<v-list-item-icon><v-icon name="aspect_ratio" /></v-list-item-icon>
 								<v-list-item-content>{{ $t('fill_width') }}</v-list-item-content>
 							</v-list-item>
@@ -172,7 +164,7 @@
 
 						<div class="field">
 							<span class="type-label">{{ $tc('field', 0) }}</span>
-							<v-input class="monospace" v-model="duplicateName" />
+							<v-input class="monospace" v-model="duplicateName" db-safe />
 						</div>
 					</div>
 				</v-card-text>
@@ -205,16 +197,21 @@ import { Field, Relation } from '@/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';
 import router from '@/router';
-import notify from '@/utils/notify';
 import { i18n } from '@/lang';
 import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
 		field: {
 			type: Object as PropType<Field>,
 			required: true,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -352,8 +349,8 @@ export default defineComponent({
 					});
 
 					duplicateActive.value = false;
-				} catch (error) {
-					console.log(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					duplicating.value = false;
 				}
@@ -373,9 +370,7 @@ export default defineComponent({
 				if (localType.value !== 'translations') return null;
 
 				const relation = relationsStore.state.relations.find((relation: Relation) => {
-					return (
-						relation.one_collection === props.field.collection && relation.one_field === props.field.field
-					);
+					return relation.one_collection === props.field.collection && relation.one_field === props.field.field;
 				});
 
 				if (!relation) return null;
@@ -482,6 +477,8 @@ export default defineComponent({
 .field {
 	.label {
 		flex-grow: 1;
+		overflow: hidden;
+		text-overflow: ellipsis;
 
 		.name {
 			font-family: var(--family-monospace);

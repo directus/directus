@@ -112,6 +112,18 @@
 			</div>
 		</template>
 
+		<v-info v-else-if="error" type="danger" :title="$t('unexpected_error')" icon="error" center>
+			{{ $t('unexpected_error_copy') }}
+
+			<template #append>
+				<v-error :error="error" />
+
+				<v-button small @click="resetPresetAndRefresh" class="reset-preset">
+					{{ $t('reset_page_preferences') }}
+				</v-button>
+			</template>
+		</v-info>
+
 		<slot v-else-if="itemCount === 0 && activeFilterCount > 0" name="no-results" />
 		<slot v-else-if="itemCount === 0" name="no-items" />
 	</div>
@@ -119,18 +131,18 @@
 
 <script lang="ts">
 import { defineComponent, PropType, toRefs, inject, computed, ref } from '@vue/composition-api';
-import { Filter } from '@/types';
-import useSync from '@/composables/use-sync/';
-import useCollection from '@/composables/use-collection/';
-import useItems from '@/composables/use-items';
+import { Filter } from '../../types';
+import useSync from '../../composables/use-sync/';
+import useCollection from '../../composables/use-collection/';
+import useItems from '../../composables/use-items';
 import Card from './components/card.vue';
-import getFieldsFromTemplate from '@/utils/get-fields-from-template';
-import { useRelationsStore } from '@/stores/';
+import getFieldsFromTemplate from '../../utils/get-fields-from-template';
+import { useRelationsStore } from '../../stores/';
 
 import CardsHeader from './components/header.vue';
-import i18n from '@/lang';
-import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
-import useElementSize from '@/composables/use-element-size';
+import i18n from '../../lang';
+import adjustFieldsForDisplays from '../../utils/adjust-fields-for-displays';
+import useElementSize from '../../composables/use-element-size';
 import { clone } from 'lodash';
 
 type Item = Record<string, any>;
@@ -189,6 +201,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		resetPreset: {
+			type: Function as PropType<() => Promise<void>>,
+			default: null,
+		},
 	},
 	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
@@ -230,7 +246,7 @@ export default defineComponent({
 			page,
 			fields: fields,
 			filters: _filters,
-			searchQuery: _searchQuery,
+			searchQuery: _searchQuery as any,
 		});
 
 		const newLink = computed(() => {
@@ -287,7 +303,13 @@ export default defineComponent({
 			activeFilterCount,
 			refresh,
 			selectAll,
+			resetPresetAndRefresh,
 		};
+
+		async function resetPresetAndRefresh() {
+			await props?.resetPreset?.();
+			refresh();
+		}
 
 		function refresh() {
 			getItems();
@@ -405,8 +427,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/breakpoint';
-@import '@/styles/mixins/form-grid';
+@import '../../styles/mixins/breakpoint';
+@import '../../styles/mixins/form-grid';
 
 .layout-cards {
 	padding: var(--content-padding);
@@ -475,5 +497,9 @@ export default defineComponent({
 
 .nested-options {
 	@include form-grid;
+}
+
+.reset-preset {
+	margin-top: 24px;
 }
 </style>

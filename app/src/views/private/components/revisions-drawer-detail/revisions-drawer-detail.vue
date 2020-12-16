@@ -48,6 +48,7 @@ import i18n from '@/lang';
 import formatLocalized from '@/utils/localized-format';
 import RevisionItem from './revision-item.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { RevisionItem, RevisionsDrawer },
@@ -62,10 +63,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { revisions, revisionsByDate, loading, error, refresh } = useRevisions(
-			props.collection,
-			props.primaryKey
-		);
+		const { revisions, revisionsByDate, loading, refresh } = useRevisions(props.collection, props.primaryKey);
 
 		const hasCreate = computed(() => {
 			// We expect the very first revision record to be a creation
@@ -83,7 +81,6 @@ export default defineComponent({
 			revisions,
 			revisionsByDate,
 			loading,
-			error,
 			refresh,
 			hasCreate,
 			modalActive,
@@ -100,15 +97,13 @@ export default defineComponent({
 		function useRevisions(collection: string, primaryKey: number | string) {
 			const revisions = ref<Revision[] | null>(null);
 			const revisionsByDate = ref<RevisionsByDate[] | null>(null);
-			const error = ref(null);
 			const loading = ref(false);
 
 			getRevisions();
 
-			return { revisions, revisionsByDate, error, loading, refresh };
+			return { revisions, revisionsByDate, loading, refresh };
 
 			async function getRevisions() {
-				error.value = null;
 				loading.value = true;
 
 				try {
@@ -172,7 +167,7 @@ export default defineComponent({
 					revisionsByDate.value = orderBy(revisionsGrouped, ['date'], ['desc']);
 					revisions.value = orderBy(response.data.data, ['activity.timestamp'], ['desc']);
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

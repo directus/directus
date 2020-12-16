@@ -51,6 +51,7 @@ import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detai
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import { nanoid } from 'nanoid';
+import { useNavigation } from '../composables/use-navigation';
 
 type Item = {
 	[field: string]: any;
@@ -64,20 +65,18 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		queryFilters: {
-			type: Object,
-			default: () => ({}),
-		},
 	},
 	setup(props) {
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery } = usePreset(ref('directus_activity'));
 		const { breadcrumb } = useBreadcrumb();
 
+		const { navFilter } = useNavigation();
+
 		const _filters = computed(() => {
 			const filtersFormatted = [...filters.value];
 
-			if (props.queryFilters) {
-				for (const [key, value] of Object.entries(props.queryFilters)) {
+			if (navFilter.value) {
+				for (const [key, value] of Object.entries(navFilter.value)) {
 					filtersFormatted.push({
 						key: nanoid(),
 						locked: true,

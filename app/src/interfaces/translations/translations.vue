@@ -35,6 +35,8 @@ import api from '@/api';
 import { Relation } from '@/types';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import DrawerItem from '@/views/private/components/drawer-item/drawer-item.vue';
+import { useCollection } from '../../composables/use-collection';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { DrawerItem },
@@ -166,9 +168,15 @@ export default defineComponent({
 			const loading = ref(false);
 			const error = ref<any>(null);
 
+			const { info: languagesCollectionInfo } = useCollection(languagesCollection);
+
 			const template = computed(() => {
 				if (!languagesPrimaryKeyField.value) return '';
-				return props.template || `{{ ${languagesPrimaryKeyField.value} }}`;
+				return (
+					props.template ||
+					languagesCollectionInfo.value?.meta?.display_template ||
+					`{{ ${languagesPrimaryKeyField.value} }}`
+				);
 			});
 
 			watch(languagesCollection, fetchLanguages, { immediate: true });
@@ -180,13 +188,17 @@ export default defineComponent({
 
 				const fields = getFieldsFromTemplate(template.value);
 
+				if (fields.includes(languagesPrimaryKeyField.value) === false) {
+					fields.push(languagesPrimaryKeyField.value);
+				}
+
 				loading.value = true;
 
 				try {
 					const response = await api.get(`/items/${languagesCollection.value}`, { params: { fields } });
 					languages.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}

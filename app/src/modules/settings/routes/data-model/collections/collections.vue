@@ -76,10 +76,10 @@
 						small
 						class="no-meta"
 						name="report_problem"
-						v-if="!item.meta"
+						v-if="!item.meta && item.collection.startsWith('directus_') === false"
 						v-tooltip="$t('db_only_click_to_configure')"
 					/>
-					<collection-options :collection="item" />
+					<collection-options v-if="item.collection.startsWith('directus_') === false" :collection="item" />
 				</template>
 			</v-table>
 		</div>

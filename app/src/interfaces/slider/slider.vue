@@ -5,6 +5,7 @@
 		:min="minValue"
 		:max="maxValue"
 		:step="stepInterval"
+		:alwaysShowValue="alwaysShowValue"
 		show-thumb-label
 		show-ticks
 		@input="$listeners.input"
@@ -35,6 +36,10 @@ export default defineComponent({
 		stepInterval: {
 			type: Number,
 			default: 1,
+		},
+		alwaysShowValue: {
+			type: Boolean,
+			default: false,
 		},
 	},
 });

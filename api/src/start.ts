@@ -9,11 +9,8 @@ if (require.main === module) {
 
 export default async function start() {
 	const createServer = require('./server').default;
-	const { validateDBConnection } = require('./database');
 
 	const server = await createServer();
-
-	await validateDBConnection();
 
 	await emitter.emitAsync('server.start.before', { server });
 

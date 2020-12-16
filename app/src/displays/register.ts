@@ -23,13 +23,13 @@ export async function registerDisplays() {
 					const module = await import(/* webpackIgnore: true */ `/extensions/displays/${customKey}/index.js`);
 					modules.push(module.default);
 				} catch (err) {
-					console.error(`Couldn't load custom displays "${customKey}"`);
-					console.error(err);
+					console.warn(`Couldn't load custom displays "${customKey}"`);
+					console.warn(err);
 				}
 			}
 		}
 	} catch {
-		console.error(`Couldn't load custom displays`);
+		console.warn(`Couldn't load custom displays`);
 	}
 
 	displays.value = modules;

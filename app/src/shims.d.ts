@@ -13,27 +13,17 @@ declare module '*.md' {
 	export default value;
 }
 
+declare module '*.yaml' {
+	const value: Record<string, any>;
+	export default value;
+}
+
 declare module '*.json' {
 	const value: { [key: string]: any };
 	export default value;
 }
 
 declare module 'jsonlint-mod' {
-	const x: any;
-	export default x;
-}
-
-declare module 'jshint' {
-	const x: any;
-	export default x;
-}
-
-declare module 'csslint' {
-	const x: any;
-	export default x;
-}
-
-declare module 'js-yaml' {
 	const x: any;
 	export default x;
 }

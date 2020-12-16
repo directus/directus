@@ -1,0 +1,349 @@
+---
+edit_field: Редактировать поле
+full_width: Полная ширина
+add_field: Добавить поле
+role_name: Название роли
+required: Необходимые
+create_role: Создать Роль
+create_user: Создать пользователя
+rename_folder: Переименовать папку
+delete_folder: Удалить папку
+reset_bookmark: Сбросить закладку
+rename_bookmark: Переименовать закладку
+update_bookmark: Обновить закладку
+delete_bookmark: Удалить закладку
+directus_version: Версия Directus
+validationError:
+  in: Значение должно быть одним из {valid}
+  nin: Значение не может быть одним из {invalid}
+  contains: Значение должно содержать {substring}
+  ncontains: Значение не может содержать {substring}
+  gt: Значение должно быть больше {valid}
+all_access: Полный доступ
+no_access: Нет Доступа
+delete_field: Удалить поле
+field_create_success: 'Создано поле: "{field}"'
+field_update_success: 'Обновлено поле: "{field}"'
+language: Язык
+camera: Камера
+create_field: Создать Поле
+hidden_on_detail: Скрывать в карточке
+date: Дата
+decimal: Десятичная
+text: Текст
+time: Время
+auto_generate: Авто-Генерация
+add_note: Добавить заметку для пользователей...
+default_value: Значение По умолчанию
+next: Дальше
+field_name: Название поля
+translations: Переводы
+note: Заметка
+length: Длина
+readonly: Только для чтения
+unique: Уникальный
+primary_key: Первичный ключ
+clear_value: Очистить значение
+reset_to_default: Вернуться к настройкам по умолчанию
+undo_changes: Отменить изменения
+notifications: Уведомления
+page_not_found: Страница не найдена
+page_not_found_body: Страница, которую вы ищете, кажется, не существует.
+display: Отображение
+settings_update_success: Настройки обновлены
+title: Заголовок
+revision_delta_deleted: Удалено
+leave_comment: Оставить комментарий...
+this_collection: Эта коллекция
+related_collection: Связанная Коллекция
+format: Формат
+submit: Отправить
+move_to_folder: Переместить в папку
+move: Переместить
+interface: Интерфейс
+today: Сегодня
+yesterday: Вчера
+delete_comment: Удалить комментарий
+months:
+  january: Январь
+  february: Февраль
+  march: Март
+  april: Апрель
+  may: Май
+  june: Июнь
+  july: Июль
+  august: Август
+  september: Сентябрь
+  october: Октябрь
+  november: Ноябрь
+  december: Декабрь
+size: Размер
+checksum: Контрольная сумма
+owner: Владелец
+download: Загрузить
+open: Открыть
+open_in_new_window: Открыть в новом окне
+name: Имя
+created_by: Кем создано
+created_on: Дата создания
+save_and_stay: Сохранить и Остаться
+save_as_copy: Сохранить и Копировать
+comments: Комментарии
+request_feature: Запросить Фичи
+item_count: 'Нет элементов | Один элемент | {count} элементов'
+create_collection: Создать Коллекцию
+relationship_not_setup: Связь не была настроена правильно
+users: Пользователи
+activity: Активность
+webhooks: Webhooks
+field_width: Ширина поля
+user_directory: Папка пользователя
+duration: Продолжительность
+modified_on: Дата изменения
+sort_field: Поле сортировки
+edit: Редактирование
+bookmarks: Закладки
+back: Назад
+all_users: Все пользователи
+system_collections: Системные коллекции
+placeholder: Плейсхолдер
+icon_left: Значок слева
+icon_right: Значок справа
+monospace: Моноширинный
+divider: Разделитель
+color: Цвет
+operators:
+  lt: Меньше
+  gt: Больше
+  lte: Меньше или равно
+  gte: Больше или равно
+  contains: Содержит
+  ncontains: Не содержит
+  empty: Пустой
+loading: Загрузка...
+display_template: Шаблон отображения
+no_results: Нет результатов
+role: Роль
+user: Пользователь
+create: Создать
+on_update: Во время обновления
+read: Чтение
+update: Обновление
+select_fields: Выбрать поля
+wysiwyg_options:
+  remove: Удалить
+  table: Таблица
+dropdown: Выпадающий список
+choices: Варианты
+deselect: Отменить выбор
+editing_in_batch: 'Пакетное редактирование {count} элементов'
+settings_permissions: Роли и права доступа
+settings_project: Настройки Проекта
+settings_webhooks: Webhooks
+unsaved_changes: Несохранённые изменения
+unsaved_changes_copy: Вы уверены, что хотите покинуть эту страницу?
+discard_changes: Отменить изменения
+keep_editing: Продолжайте редактировать
+add_new: Создать
+all: Все
+batch_delete_confirm: >-
+  Никаких элементов не выбрано | Вы уверены, что хотите удалить этот элемент? Это действие не может быть отменено. | Вы уверены, что хотите удалить эти элементы {count}? Это действие не может быть отменено.
+cancel: Отмена
+collection: Коллекция
+collections: Коллекции
+fields:
+  directus_activity:
+    action: Действие
+    collection: Коллекция
+    item: Ключ предмета
+    user: Действовал
+    timestamp: Действие на
+    edited_on: Изменено
+    comment_deleted_on: Комментарий удалён
+    ip: IP-адрес
+    user_agent: Пользовательский агент
+    comment: Комментарий
+  directus_files:
+    title: Заголовок
+    tags: Теги
+    location: Местоположение
+    description: Описание
+    filename_download: Загрузка имени файла
+    filename_disk: Диск с именем файла
+    private_hash: Приватный хэш
+    checksum: Контрольная сумма
+    uploaded_on: Загружено
+    uploaded_by: Загружено
+    width: Ширина
+    height: Высота
+    duration: Продолжительность
+    filesize: Размер файла
+    metadata: Метаданные
+  directus_users:
+    status: Статус
+    first_name: Имя
+    last_name: Фамилия
+    email: Email
+    email_notifications: Уведомления по Email
+    password: Пароль
+    role: Роль
+    company: Компания
+    title: Заголовок
+    timezone: Часовой пояс
+    language: Язык
+    avatar: Аватар
+    theme: Тема
+    tfa_secret: Двухфакторная аутентификация
+  directus_settings:
+    project_name: Имя Проекта
+  directus_fields:
+    note: Заметка
+    hidden: Скрыто
+    display_template: Шаблон
+  directus_roles:
+    name: Название роли
+    description: Описание
+comment: Комментарий
+continue: Продолжить
+default: По умолчанию
+delete: Удалить
+delete_field_are_you_sure: >-
+  Вы уверены, что хотите удалить поле "{field}"? Это действие не может быть отменено.
+description: Описание
+done: Готово
+duplicate: Дублировать
+email: Email
+embed: Встроить
+field: Поле | Поля
+file: Файл
+file_library: Библиотека Файлов
+forgot_password: Забыли пароль
+hidden: Скрыто
+icon: Иконка
+info: Инфо
+junction_collection: Узловая Коллекция
+latency: Задержка
+login: Войти
+my_activity: Мои активности
+not_authenticated: Не аутентифицирован
+options: Параметры
+otp: Одноразовый пароль
+password: Пароль
+permissions: Права доступа
+relationship: Связи
+reset: Сбросить
+reset_password: Сбросить Пароль
+revert: Вернуть
+save: Сохранить
+schema: Схема
+search: Поиск
+select_existing: Выбрать из существующего
+select_interface: Выберите интерфейс
+settings: Настройки
+sign_in: Войти
+sign_out: Выйти
+sign_out_confirm: Вы уверены, что хотите выйти?
+something_went_wrong: Что-то пошло не так.
+sort_direction: Направление сортировки
+template: Шаблон
+translation: Перевод
+value: Значение
+interfaces:
+  checkboxes:
+    checkboxes: Флажки
+    allow_other: Разрешить другие
+  code:
+    code: Код
+    line_number: Номер строки
+  collection:
+    collection: Коллекция
+  collections:
+    collections: Коллекции
+  color:
+    color: Цвет
+  datetime:
+    datetime: Дата и время
+  display-template:
+    display-template: Шаблон отображения
+  divider:
+    divider: Разделитель
+  dropdown:
+    allow_other: Разрешить другие
+  file:
+    file: Файл
+  files:
+    files: Файлы
+  icon:
+    icon: Иконка
+  interface:
+    interface: Интерфейс
+  interface-options:
+    interface-options: Настройки интерфейса
+  many-to-many:
+    many-to-many: Многие ко многим
+  many-to-one:
+    many-to-one: Многие к одному
+    display_template: Шаблон отображения
+  markdown:
+    markdown: Markdown
+    edit: Редактирование
+    preview: Предпросмотр
+  numeric:
+    numeric: Числовой
+  one-to-many:
+    one-to-many: Один ко многим
+  radio-buttons:
+    radio-buttons: Радио кнопки
+  repeater:
+    repeater: Репитер
+  slider:
+    slider: Слайдер
+  slug:
+    slug: Слаг
+  tags:
+    tags: Теги
+  text-input:
+    text-input: Text Input
+    trim: Обрезать
+  translations:
+    display_template: Шаблон отображения
+  user:
+    user: Пользователь
+    modes:
+      dropdown: Выпадающий список
+  wysiwyg:
+    custom_formats: Пользовательские форматы
+displays:
+  collection:
+    collection: Коллекция
+  color:
+    color: Цвет
+  datetime:
+    datetime: Дата и время
+    format: Формат
+  file:
+    file: Файл
+  filesize:
+    filesize: Размер файла
+  icon:
+    icon: Иконка
+  rating:
+    rating: Рейтинг
+  user:
+    user: Пользователь
+    avatar: Аватар
+    name: Имя
+    both: Оба
+layouts:
+  cards:
+    cards: Карты
+    image_source: Источник изображения
+    title: Заголовок
+    subtitle: Подзаголовок
+  tabular:
+    tabular: Таблица
+    fields: Поля
+    spacing: Отступы
+    comfortable: Удобный
+    compact: Компактный
+    cozy: Уютный

@@ -27,12 +27,14 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_COOKIE_SECURE: false,
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
 
-	CORS_ENABLED: false,
+	CORS_ENABLED: true,
 
 	CACHE_ENABLED: false,
 	CACHE_STORE: 'memory',
 	CACHE_TTL: '30m',
 	CACHE_NAMESPACE: 'system-cache',
+	CACHE_AUTO_PURGE: false,
+	ASSETS_CACHE_TTL: '30m',
 
 	OAUTH_PROVIDERS: '',
 
@@ -62,12 +64,7 @@ function processValues(env: Record<string, any>) {
 		if (value === 'true') env[key] = true;
 		if (value === 'false') env[key] = false;
 		if (value === 'null') env[key] = null;
-		if (isNaN(value) === false && value.length > 0) env[key] = Number(value);
-		if (typeof value === 'string' && value.includes(','))
-			env[key] = value
-				.split(',')
-				.map((val) => val.trim())
-				.filter((val) => val);
+		if (String(value).startsWith('0') === false && isNaN(value) === false && value.length > 0) env[key] = Number(value);
 	}
 
 	return env;

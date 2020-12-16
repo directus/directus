@@ -21,7 +21,7 @@ export default defineDisplay(({ i18n }) => ({
 				},
 			},
 			schema: {
-				default_value: true,
+				default_value: false,
 			},
 		},
 		{

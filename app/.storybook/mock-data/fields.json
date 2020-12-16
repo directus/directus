@@ -11364,7 +11364,9 @@
 						"options": {
 							"choices": {
 								"contain": "Contain (preserve aspect ratio)",
-								"crop": "Crop (forces exact size)"
+								"crop": "Crop (forces exact size)",
+								"inside": "Fit inside",
+								"outside": "Fit outside"
 							}
 						},
 						"required": true,
@@ -11388,6 +11390,18 @@
 						"width": "half"
 					},
 					{
+						"default_value": false,
+						"field": "withoutEnlargement",
+						"interface": "toggle",
+						"name": "Don't upscale images",
+						"required": false,
+						"type": "boolean",
+						"width": "half",
+						"options": {
+							"label": "Don't upscale images"
+						}
+					},
+					{
 						"default_value": 80,
 						"field": "quality",
 						"interface": "slider",
@@ -11399,7 +11413,7 @@
 						},
 						"required": true,
 						"type": "integer",
-						"width": "full"
+						"width": "half"
 					}
 				],
 				"template": "{{key}}"

@@ -10,7 +10,7 @@
 				<span class="tick" v-for="i in (max - min) / step + 1" :key="i" />
 			</div>
 			<div v-if="showThumbLabel" class="thumb-label-wrapper">
-				<div class="thumb-label">
+				<div class="thumb-label" :class="{ visible: alwaysShowValue }">
 					<slot name="thumb-label type-text" :value="value">
 						{{ value }}
 					</slot>
@@ -46,6 +46,10 @@ export default defineComponent({
 			default: 1,
 		},
 		showTicks: {
+			type: Boolean,
+			default: false,
+		},
+		alwaysShowValue: {
 			type: Boolean,
 			default: false,
 		},
@@ -85,8 +89,8 @@ export default defineComponent({
 <style>
 body {
 	--v-slider-color: var(--border-normal);
-	--v-slider-thumb-color: var(--foreground-normal);
-	--v-slider-fill-color: var(--foreground-normal);
+	--v-slider-thumb-color: var(--primary);
+	--v-slider-fill-color: var(--primary);
 }
 </style>
 
@@ -106,57 +110,85 @@ body {
 
 		input {
 			width: 100%;
-			height: 2px;
+			height: 4px;
 			-webkit-appearance: none;
 			appearance: none;
+			cursor: pointer;
+			padding: 8px 0;
+			background-color: var(--background-page);
 
 			&::-webkit-slider-runnable-track {
-				height: 2px;
+				height: 4px;
 				background: var(--v-slider-color);
 				border: none;
-				border-radius: 2px;
+				border-radius: 4px;
 				box-shadow: none;
 			}
 
 			&::-moz-range-track {
-				height: 2px;
+				height: 4px;
 				background: var(--v-slider-color);
 				border: none;
-				border-radius: 2px;
+				border-radius: 4px;
 				box-shadow: none;
 			}
 
 			&::-webkit-slider-thumb {
+				transition: all var(--fast) var(--transition);
 				position: relative;
 				z-index: 3;
-				width: 14px;
-				height: 14px;
-				margin-top: -6px;
-				background: var(--v-slider-thumb-color);
+				width: 8px;
+				height: 8px;
+				margin-top: -2px;
+				background: var(--background-page);
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;
-				box-shadow: 0 0 0 4px var(--background-page);
+				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
 				cursor: ew-resize;
 				-webkit-appearance: none;
 				appearance: none;
 			}
 
 			&::-moz-range-thumb {
+				transition: all var(--fast) var(--transition);
 				position: relative;
 				z-index: 3;
-				width: 14px;
-				height: 14px;
-				margin-top: -6px;
+				width: 8px;
+				height: 8px;
+				margin-top: -2px;
 				background: var(--v-slider-thumb-color);
 				border: none;
 				border-radius: 50%;
 				box-shadow: none;
-				box-shadow: 0 0 0 4px var(--background-page);
+				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
 				cursor: ew-resize;
 				-webkit-appearance: none;
 				appearance: none;
 			}
+		}
+
+		&:hover,
+		&:focus-within {
+		    input {
+		        height: 4px;
+		        &::-webkit-slider-thumb {
+		            width: 12px;
+		            height: 12px;
+		            margin-top: -4px;
+		            box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
+		        }
+
+		        &::-moz-range-thumb {
+		            width: 12px;
+		            height: 12px;
+		            margin-top: -4px;
+		            box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
+		        }
+		    }
+		    .thumb-label {
+		        opacity: 1;
+		    }
 		}
 
 		.fill {
@@ -166,16 +198,17 @@ body {
 			left: 0;
 			z-index: 2;
 			width: 100%;
-			height: 2px;
+			height: 4px;
+			border-radius: 4px;
 			background-color: var(--v-slider-fill-color);
-			transform: translateY(3px) scaleX(calc(var(--_v-slider-percentage) / 100));
+			transform: translateY(-5px) scaleX(calc(var(--_v-slider-percentage) / 100));
 			transform-origin: left;
 			pointer-events: none;
 		}
 
 		.ticks {
 			position: absolute;
-			top: 13px;
+			top: 14px;
 			left: 0;
 			display: flex;
 			align-items: center;
@@ -186,12 +219,13 @@ body {
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 			pointer-events: none;
+			z-index: 2;
 
 			.tick {
 				display: inline-block;
 				width: 4px;
 				height: 4px;
-				background-color: var(--v-slider-fill-color);
+				background-color: var(--v-slider-color);
 				border-radius: 50%;
 			}
 		}
@@ -202,14 +236,15 @@ body {
 			left: 7px;
 			width: calc(100% - 14px);
 			overflow: visible;
+			pointer-events: none;
 		}
 
 		.thumb-label {
 			position: absolute;
-			top: 10px;
+			top: 0px;
 			left: calc(var(--_v-slider-percentage) * 1%);
 			width: max-content;
-			padding: 4px 8px;
+			padding: 2px 6px;
 			color: var(--foreground-inverted);
 			font-weight: 600;
 			background-color: var(--primary);
@@ -217,17 +252,8 @@ body {
 			transform: translateX(-50%);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
-
-			&::before {
-				position: absolute;
-				top: -4px;
-				left: calc(50%);
-				width: 10px;
-				height: 10px;
-				background-color: var(--primary);
-				border-radius: 2px;
-				transform: translateX(-50%) rotate(45deg);
-				content: '';
+			&.visible {
+				opacity: 1;
 			}
 		}
 

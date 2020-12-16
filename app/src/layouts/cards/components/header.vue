@@ -29,6 +29,7 @@
 					<v-list-item
 						v-for="field in fieldsWithoutFake"
 						:key="field.field"
+						:disabled="field.disabled"
 						:active="field.field === sortKey"
 						@click="_sort = field.field"
 					>
@@ -49,8 +50,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Field } from '@/types';
-import useSync from '@/composables/use-sync';
+import { Field } from '../../../types';
+import useSync from '../../../composables/use-sync';
 
 export default defineComponent({
 	props: {
@@ -83,7 +84,15 @@ export default defineComponent({
 			return props.fields.find((field) => field.field === sortKey.value);
 		});
 
-		const fieldsWithoutFake = computed(() => props.fields.filter((field) => field.field.startsWith('$') === false));
+		const fieldsWithoutFake = computed(() => {
+			return props.fields
+				.filter((field) => field.field.startsWith('$') === false)
+				.map((field) => ({
+					field: field.field,
+					name: field.name,
+					disabled: ['json', 'o2m', 'm2o', 'file', 'files', 'alias', 'presentation'].includes(field.type),
+				}));
+		});
 
 		return {
 			toggleSize,

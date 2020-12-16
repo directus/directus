@@ -1,4 +1,4 @@
-import { computed } from '@vue/composition-api';
+import { computed, Ref, ref } from '@vue/composition-api';
 
 import { useCollectionsStore, useUserStore } from '@/stores/';
 import { Collection } from '@/types';
@@ -9,6 +9,7 @@ export type NavItem = {
 	name: string | VueI18n.TranslateResult;
 	to: string;
 	icon: string;
+	note: string | null;
 };
 
 export type NavItemGroup = {
@@ -17,9 +18,10 @@ export type NavItemGroup = {
 	items: NavItem[];
 };
 
+let activeGroups: Ref<string[]>;
+
 export default function useNavigation() {
 	const collectionsStore = useCollectionsStore();
-
 	const userStore = useUserStore();
 
 	const customNavItems = computed<NavItemGroup[] | null>(() => {
@@ -40,6 +42,7 @@ export default function useNavigation() {
 							collection: collection,
 							name: collectionInfo.name,
 							icon: collectionInfo.meta?.icon || 'label',
+							note: collectionInfo.meta?.note || null,
 							to: `/collections/${collection}`,
 						};
 
@@ -59,6 +62,7 @@ export default function useNavigation() {
 					collection: collection.collection,
 					name: collection.name,
 					icon: collection.meta?.icon || 'label',
+					note: collection.meta?.note || null,
 					to: `/collections/${collection.collection}`,
 				};
 
@@ -69,5 +73,12 @@ export default function useNavigation() {
 			});
 	});
 
-	return { customNavItems, navItems };
+	if (!activeGroups)
+		activeGroups = ref(
+			customNavItems.value
+				? customNavItems.value.filter((navItem) => navItem.accordion === 'start_open').map((navItem) => navItem.name)
+				: []
+		);
+
+	return { customNavItems, navItems, activeGroups };
 }

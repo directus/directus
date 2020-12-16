@@ -22,4 +22,6 @@ export default [
 	'PostgreSQL',
 	'YouTube',
 	'UUID',
+	'SEO',
+	'CTA'
 ];

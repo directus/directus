@@ -7,7 +7,7 @@ import { UnprocessableEntityException } from '../exceptions';
 import { toArray } from '../utils/to-array';
 
 export class RolesService extends ItemsService {
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		super('directus_roles', options);
 	}
 
@@ -24,13 +24,13 @@ export class RolesService extends ItemsService {
 			.andWhere({ admin_access: true })
 			.first();
 		const otherAdminRolesCount = +(otherAdminRoles?.count || 0);
-		if (otherAdminRolesCount === 0)
-			throw new UnprocessableEntityException(`You can't delete the last admin role.`);
+		if (otherAdminRolesCount === 0) throw new UnprocessableEntityException(`You can't delete the last admin role.`);
 
 		// Remove all permissions associated with this role
 		const permissionsService = new PermissionsService({
 			knex: this.knex,
 			accountability: this.accountability,
+			schema: this.schema,
 		});
 
 		const permissionsForRole = (await permissionsService.readByQuery({
@@ -45,6 +45,7 @@ export class RolesService extends ItemsService {
 		const presetsService = new PresetsService({
 			knex: this.knex,
 			accountability: this.accountability,
+			schema: this.schema,
 		});
 
 		const presetsForRole = (await presetsService.readByQuery({
@@ -59,6 +60,7 @@ export class RolesService extends ItemsService {
 		const usersService = new UsersService({
 			knex: this.knex,
 			accountability: this.accountability,
+			schema: this.schema,
 		});
 
 		const usersInRole = (await usersService.readByQuery({

@@ -1,6 +1,6 @@
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
-import { Accountability, AbstractServiceOptions, FieldMeta, Relation } from '../types';
+import { Accountability, AbstractServiceOptions, FieldMeta, Relation, SchemaOverview } from '../types';
 import { ItemsService } from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
@@ -10,7 +10,11 @@ import Knex, { CreateTableBuilder } from 'knex';
 import { PayloadService } from '../services/payload';
 import getDefaultValue from '../utils/get-default-value';
 import cache from '../cache';
-import SchemaInspector from 'knex-schema-inspector';
+import SchemaInspector from '@directus/schema';
+import { toArray } from '../utils/to-array';
+import env from '../env';
+
+import { systemFieldRows } from '../database/system-data/fields/';
 
 type RawField = Partial<Field> & { field: string; type: typeof types[number] };
 
@@ -20,29 +24,37 @@ export class FieldsService {
 	itemsService: ItemsService;
 	payloadService: PayloadService;
 	schemaInspector: typeof schemaInspector;
+	schema: SchemaOverview;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.schemaInspector = options?.knex ? SchemaInspector(options.knex) : schemaInspector;
-		this.accountability = options?.accountability || null;
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : schemaInspector;
+		this.accountability = options.accountability || null;
 		this.itemsService = new ItemsService('directus_fields', options);
-		this.payloadService = new PayloadService('directus_fields');
+		this.payloadService = new PayloadService('directus_fields', options);
+		this.schema = options.schema;
 	}
 
 	async readAll(collection?: string): Promise<Field[]> {
 		let fields: FieldMeta[];
-		const nonAuthorizedItemsService = new ItemsService('directus_fields', { knex: this.knex });
+		const nonAuthorizedItemsService = new ItemsService('directus_fields', {
+			knex: this.knex,
+			schema: this.schema,
+		});
 
 		if (collection) {
 			fields = (await nonAuthorizedItemsService.readByQuery({
 				filter: { collection: { _eq: collection } },
 				limit: -1,
 			})) as FieldMeta[];
+
+			fields.push(...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection));
 		} else {
 			fields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })) as FieldMeta[];
+			fields.push(...systemFieldRows);
 		}
 
-		let columns = await schemaInspector.columnInfo(collection);
+		let columns = await this.schemaInspector.columnInfo(collection);
 
 		columns = columns.map((column) => {
 			return {
@@ -73,12 +85,18 @@ export class FieldsService {
 			aliasQuery.andWhere('collection', collection);
 		}
 
-		let aliasFields = await aliasQuery;
+		let aliasFields = [...((await this.payloadService.processValues('read', await aliasQuery)) as FieldMeta[])];
 
-		const aliasTypes = ['alias', 'o2m', 'm2m', 'files', 'files', 'translations'];
+		if (collection) {
+			aliasFields.push(...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection));
+		} else {
+			aliasFields.push(...systemFieldRows);
+		}
+
+		const aliasTypes = ['alias', 'o2m', 'm2m', 'm2a', 'files', 'files', 'translations'];
 
 		aliasFields = aliasFields.filter((field) => {
-			const specials = (field.special || '').split(',');
+			const specials = toArray(field.special);
 
 			for (const type of aliasTypes) {
 				if (specials.includes(type)) return true;
@@ -87,19 +105,17 @@ export class FieldsService {
 			return false;
 		});
 
-		aliasFields = (await this.payloadService.processValues('read', aliasFields)) as FieldMeta[];
-
 		const aliasFieldsAsField = aliasFields.map((field) => {
 			const data = {
 				collection: field.collection,
 				field: field.field,
-				type: field.special[0],
+				type: Array.isArray(field.special) ? field.special[0] : field.special,
 				schema: null,
 				meta: field,
 			};
 
 			return data;
-		});
+		}) as Field[];
 
 		const result = [...columnsWithSystem, ...aliasFieldsAsField];
 
@@ -112,9 +128,7 @@ export class FieldsService {
 			const allowedFieldsInCollection: Record<string, string[]> = {};
 
 			permissions.forEach((permission) => {
-				allowedFieldsInCollection[permission.collection] = (permission.fields || '').split(
-					','
-				);
+				allowedFieldsInCollection[permission.collection] = (permission.fields || '').split(',');
 			});
 
 			if (collection && allowedFieldsInCollection.hasOwnProperty(collection) === false) {
@@ -122,8 +136,7 @@ export class FieldsService {
 			}
 
 			return result.filter((field) => {
-				if (allowedFieldsInCollection.hasOwnProperty(field.collection) === false)
-					return false;
+				if (allowedFieldsInCollection.hasOwnProperty(field.collection) === false) return false;
 				const allowedFields = allowedFieldsInCollection[field.collection];
 				if (allowedFields[0] === '*') return true;
 				return allowedFields.includes(field.field);
@@ -153,18 +166,18 @@ export class FieldsService {
 		}
 
 		let column;
-		let fieldInfo = await this.knex
-			.select('*')
-			.from('directus_fields')
-			.where({ collection, field })
-			.first();
+		let fieldInfo = await this.knex.select('*').from('directus_fields').where({ collection, field }).first();
 
 		if (fieldInfo) {
 			fieldInfo = (await this.payloadService.processValues('read', fieldInfo)) as FieldMeta[];
 		}
 
+		fieldInfo =
+			fieldInfo ||
+			systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field);
+
 		try {
-			column = await schemaInspector.columnInfo(collection, field);
+			column = await this.schemaInspector.columnInfo(collection, field);
 			column.default_value = getDefaultValue(column);
 		} catch {}
 
@@ -189,20 +202,12 @@ export class FieldsService {
 		}
 
 		// Check if field already exists, either as a column, or as a row in directus_fields
-		if (await this.schemaInspector.hasColumn(collection, field.field)) {
-			throw new InvalidPayloadException(
-				`Field "${field.field}" already exists in collection "${collection}"`
-			);
+		if (field.field in this.schema[collection].columns) {
+			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		} else if (
-			!!(await this.knex
-				.select('id')
-				.from('directus_fields')
-				.where({ collection, field: field.field })
-				.first())
+			!!(await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first())
 		) {
-			throw new InvalidPayloadException(
-				`Field "${field.field}" already exists in collection "${collection}"`
-			);
+			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
 		if (field.schema) {
@@ -223,12 +228,10 @@ export class FieldsService {
 			});
 		}
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 	}
-
-	/** @todo research how to make this happen in SQLite / Redshift */
 
 	async updateField(collection: string, field: RawField) {
 		if (this.accountability && this.accountability.admin !== true) {
@@ -237,45 +240,8 @@ export class FieldsService {
 
 		if (field.schema) {
 			await this.knex.schema.alterTable(collection, (table) => {
-				let column: ColumnBuilder;
-
 				if (!field.schema) return;
-
-				if (field.type === 'string') {
-					column = table.string(
-						field.field,
-						field.schema.max_length !== null ? field.schema.max_length : undefined
-					);
-				} else if (['float', 'decimal'].includes(field.type)) {
-					const type = field.type as 'float' | 'decimal';
-					column = table[type](
-						field.field,
-						field.schema?.precision || 10,
-						field.schema?.scale || 5
-					);
-				} else if (field.type === 'csv') {
-					column = table.string(field.field);
-				} else {
-					column = table[field.type](field.field);
-				}
-
-				if (field.schema.default_value) {
-					const defaultValue = field.schema.default_value.toLowerCase();
-
-					if (defaultValue === 'now()') {
-						column.defaultTo(this.knex.fn.now());
-					} else {
-						column.defaultTo(field.schema.default_value);
-					}
-				}
-
-				if (field.schema.is_nullable !== undefined && field.schema.is_nullable === false) {
-					column.notNullable();
-				} else {
-					column.nullable();
-				}
-
-				column.alter();
+				this.addColumnToTable(table, field, true);
 			});
 		}
 
@@ -304,7 +270,7 @@ export class FieldsService {
 			}
 		}
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
@@ -319,7 +285,7 @@ export class FieldsService {
 
 		await this.knex('directus_fields').delete().where({ collection, field });
 
-		if (await schemaInspector.hasColumn(collection, field)) {
+		if (field in this.schema[collection].columns) {
 			await this.knex.schema.table(collection, (table) => {
 				table.dropColumn(field);
 			});
@@ -337,9 +303,7 @@ export class FieldsService {
 			/** @TODO M2A — Handle m2a case here */
 
 			if (isM2O) {
-				await this.knex('directus_relations')
-					.delete()
-					.where({ many_collection: collection, many_field: field });
+				await this.knex('directus_relations').delete().where({ many_collection: collection, many_field: field });
 				await this.deleteField(relation.one_collection!, relation.one_field!);
 			} else {
 				await this.knex('directus_relations')
@@ -348,35 +312,38 @@ export class FieldsService {
 			}
 		}
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 	}
 
-	public addColumnToTable(table: CreateTableBuilder, field: Field) {
+	public addColumnToTable(table: CreateTableBuilder, field: RawField | Field, alter: boolean = false) {
+		if (!field.schema) return;
+
 		let column: ColumnBuilder;
 
 		if (field.schema?.has_auto_increment) {
 			column = table.increments(field.field);
 		} else if (field.type === 'string') {
-			column = table.string(field.field, field.schema?.max_length || undefined);
+			column = table.string(field.field, field.schema.max_length !== null ? field.schema.max_length : undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
-			/** @todo add precision and scale support */
-			column = table[type](field.field /* precision, scale */);
+			column = table[type](field.field, field.schema?.numeric_precision || 10, field.schema?.numeric_scale || 5);
 		} else if (field.type === 'csv') {
 			column = table.string(field.field);
-		} else if (field.type === 'dateTime') {
-			column = table.dateTime(field.field, { useTz: false });
 		} else {
 			column = table[field.type](field.field);
 		}
 
-		if (field.schema?.default_value) {
-			column.defaultTo(field.schema.default_value);
+		if (field.schema.default_value !== undefined) {
+			if (typeof field.schema.default_value === 'string' && field.schema.default_value.toLowerCase() === 'now()') {
+				column.defaultTo(this.knex.fn.now());
+			} else {
+				column.defaultTo(field.schema.default_value);
+			}
 		}
 
-		if (field.schema?.is_nullable !== undefined && field.schema.is_nullable === false) {
+		if (field.schema.is_nullable !== undefined && field.schema.is_nullable === false) {
 			column.notNullable();
 		} else {
 			column.nullable();
@@ -384,6 +351,10 @@ export class FieldsService {
 
 		if (field.schema?.is_primary_key) {
 			column.primary();
+		}
+
+		if (alter) {
+			column.alter();
 		}
 	}
 }

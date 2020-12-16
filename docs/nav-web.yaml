@@ -1,84 +1,212 @@
-- name: Getting Started
-  emoji: 🐰
-  children:
-  - name: Introduction
-    to: "/getting-started/introduction"
-  - name: Support & FAQ
-    to: "/getting-started/support"
-  - name: Contributing
-    to: "/getting-started/contributing"
-  - name: Backing Directus
-    to: "/getting-started/backing-directus"
+# Note: this uses VuePress' sidebar syntax
 
-- name: Concepts
-  emoji: 🎓
+- title: Getting Started
+  collapsable: false
   children:
-  - name: Platform Overview
-    to: "/concepts/platform-overview"
-  - name: App Overview
-    to: "/concepts/app-overview"
-  - name: App Extensions
-    to: "/concepts/app-extensions"
-  - name: Activity & Versions
-    to: "/concepts/activity-and-versions"
-  - name: Files & Thumbnails
-    to: "/concepts/files-and-thumbnails"
-  - name: Internationalization
-    to: "/concepts/internationalization"
-  - name: Relationships
-    to: "/concepts/relationships"
-  - name: Users, Roles & Permissions
-    to: "/concepts/users-roles-and-permissions"
+    - type: page
+      path: /getting-started/introduction
+      title: Introduction
+    - type: page
+      path: /getting-started/installation
+      title: Installation
+    - type: page
+      path: /getting-started/support
+      title: Support
+    - type: page
+      path: /getting-started/contributing
+      title: Contributing
+    - type: page
+      path: /getting-started/backing-directus
+      title: Backing Directus
 
-- name: Guides
-  emoji: 📖
+- title: Concepts
   children:
-  - name: Collections
-    to: "/guides/collections"
-  - name: Fields
-    to: "/guides/fields"
-  - name: Presets
-    to: "/guides/presets"
-  - name: Projects
-    to: "/guides/projects"
-  - name: Roles & Permissions
-    to: "/guides/roles-and-permissions"
-  - name: Users
-    to: "/guides/users"
-  - name: Webhooks
-    to: "/guides/webhooks"
-  - name: White-Labeling
-    to: "/guides/white-labeling"
-  - name: Extensions
-    to: "/guides/extensions"
-    children:
-    - name: Custom Displays
-      to: "/guides/extensions/creating-a-custom-display"
-    - name: Custom Interfaces
-      to: "/guides/extensions/creating-a-custom-interface"
-    - name: Custom Layouts
-      to: "/guides/extensions/creating-a-custom-layout"
-    - name: Custom Modules
-      to: "/guides/extensions/creating-a-custom-module"
-    - name: Custom API Endpoints
-      to: "/guides/extensions/creating-a-custom-api-endpoint"
-    - name: Custom API Hooks
-      to: "/guides/extensions/creating-a-custom-api-hook"
-    - name: Custom Email Templates
-      to: "/guides/extensions/creating-a-custom-email-template"
-    - name: Custom Storage Adapters
-      to: "/guides/extensions/creating-a-custom-storage-adapter"
-    - name: Accessing Data
-      to: "/guides/extensions/accessing-data"
+    - type: page
+      path: /concepts/platform-overview
+      title: Platform Overview
+    - type: page
+      path: /concepts/app-overview
+      title: App Overview
+    - type: page
+      path: /concepts/app-extensions
+      title: App Extensions
+    - type: page
+      path: /concepts/api-extensions
+      title: API Extensions
+    - type: page
+      path: /concepts/activity-and-versions
+      title: Activity & Versions
+    - type: page
+      path: /concepts/files-and-thumbnails
+      title: Files & Thumbnails
+    - type: page
+      path: /concepts/internationalization
+      title: Internationalization
+    - type: page
+      path: /concepts/relationships
+      title: Relationships
+    - type: page
+      path: /concepts/users-roles-and-permissions
+      title: Users, Roles, and Permissions
 
-- name: Reference
-  emoji: 🚀
+- title: Guides
   children:
-  - name: Environment Variables
-    to: "/reference/environment-variables"
-  - name: Command Line Interface
-    to: "/reference/command-line-interface"
-  - name: Error Codes
-    to: "/reference/error-codes"
-  - name: Item Rules
-    to: "/reference/item-rules"
+    - type: page
+      path: /guides/projects
+      title: Projects
+    - type: page
+      path: /guides/collections
+      title: Collections
+    - type: page
+      path: /guides/fields
+      title: Fields
+    - type: page
+      path: /guides/roles-and-permissions
+      title: Roles & Permissions
+    - type: page
+      path: /guides/presets
+      title: Presets
+    - type : group
+      title: Installation
+      children:
+        - type: page
+          path: /guides/installation/cli
+          title: CLI (Recommended)
+        - type: page
+          path: /guides/installation/manual
+          title: Manually
+        - type: page
+          path: /guides/installation/docker
+          title: Docker
+        - type: page
+          path: /guides/installation/digitalocean-app-platform
+          title: DigitalOcean App Platform
+        - type: page
+          path: /guides/installation/aws
+          title: AWS
+        - type: page
+          path: /guides/installation/platformsh-one-click
+          title: Platform.sh One-Click
+    - type: group
+      title: Extensions
+      children:
+        - type: page
+          path: /guides/extensions/displays
+          title: Creating a Custom Display
+        - type: page
+          path: /guides/extensions/interfaces
+          title: Creating a Custom Interface
+        - type: page
+          path: /guides/extensions/layouts
+          title: Creating a Custom Layout
+        - type: page
+          path: /guides/extensions/modules
+          title: Creating a Custom Module
+        - type: page
+          path: /guides/extensions/api-endpoints
+          title: Creating a Custom API Endpoint
+        - type: page
+          path: /guides/extensions/api-hooks
+          title: Creating a Custom API Hook
+        - type: page
+          path: /guides/extensions/email-templates
+          title: Creating a Custom Email Template
+        - type: page
+          path: /guides/extensions/storage-adapters
+          title: Creating a Custom Storage Adapter
+        - type: page
+          path: /guides/extensions/accessing-data
+          title: Accessing Data
+
+- title: Reference
+  children:
+    - type: page
+      path: /reference/command-line-interface
+      title: Command Line Interface
+    - type: page
+      path: /reference/environment-variables
+      title: Environment Variables
+    - type: page
+      path: /reference/error-codes
+      title: Error Codes
+    - type: page
+      path: /reference/filter-rules
+      title: Filter Rules
+    - type: page
+      path: /reference/item-objects
+      title: Item Objects
+    - type: page
+      path: /reference/internal-helpers
+      title: Internal Helpers
+    - type: page
+      path: /reference/sdk-js
+      title: JavaScript SDK
+
+- title: API Reference
+  children:
+    - type: page
+      path: /reference/api/introduction
+      title: Introduction
+    - type: page
+      path: /reference/api/items
+      title: Items
+    - type: group
+      title: Query Parameters
+      children:
+        - type: page
+          path: /reference/api/query/fields
+          title: Fields
+    - type: page
+      path: /reference/api/activity
+      title: Activity
+    - type: page
+      path: /reference/api/assets
+      title: Assets
+    - type: page
+      path: /reference/api/authentication
+      title: Authentication
+    - type: page
+      path: /reference/api/collections
+      title: Collections
+    - type: page
+      path: /reference/api/extensions
+      title: Extensions
+    - type: page
+      path: /reference/api/fields
+      title: Fields
+    - type: page
+      path: /reference/api/files
+      title: Files
+    - type: page
+      path: /reference/api/folders
+      title: Folders
+    - type: page
+      path: /reference/api/permissions
+      title: Permissions
+    - type: page
+      path: /reference/api/presets
+      title: Presets
+    - type: page
+      path: /reference/api/relations
+      title: Relations
+    - type: page
+      path: /reference/api/revisions
+      title: Revisions
+    - type: page
+      path: /reference/api/roles
+      title: Roles
+    - type: page
+      path: /reference/api/server
+      title: Server
+    - type: page
+      path: /reference/api/settings
+      title: Settings
+    - type: page
+      path: /reference/api/users
+      title: Users
+    - type: page
+      path: /reference/api/utilities
+      title: Utilities
+    - type: page
+      path: /reference/api/webhooks
+      title: Webhooks

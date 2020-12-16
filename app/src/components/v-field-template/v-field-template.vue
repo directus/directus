@@ -1,7 +1,7 @@
 <template>
 	<v-menu attached v-model="menuActive">
 		<template #activator="{ toggle }">
-			<v-input>
+			<v-input :disabled="disabled">
 				<template #input>
 					<span
 						ref="contentEl"
@@ -16,12 +16,12 @@
 				</template>
 
 				<template #append>
-					<v-icon name="add_box" outline @click="toggle" />
+					<v-icon name="add_box" outline @click="toggle" :disabled="disabled" />
 				</template>
 			</v-input>
 		</template>
 
-		<v-list>
+		<v-list v-if="!disabled">
 			<field-list-item @add="addField" v-for="field in tree" :key="field.field" :field="field" :depth="depth" />
 		</v-list>
 	</v-menu>

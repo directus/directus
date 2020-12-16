@@ -11,6 +11,7 @@ import { defineComponent, PropType, ref, inject } from '@vue/composition-api';
 import { Permission } from '@/types';
 import api from '@/api';
 import router from '@/router';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
@@ -25,20 +26,18 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const loading = ref(false);
-		const error = ref<any>();
 
 		return { save, loading };
 
 		async function save() {
 			loading.value = true;
-			error.value = null;
 
 			try {
 				await api.patch(`/permissions/${props.permission.id}`, props.permission);
 				emit('refresh');
 				router.push(`/settings/roles/${props.roleKey || 'public'}`);
 			} catch (err) {
-				error.value = err;
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}

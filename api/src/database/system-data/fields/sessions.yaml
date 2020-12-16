@@ -1,0 +1,17 @@
+table: directus_sessions
+
+fields:
+  - field: token
+    width: half
+
+  - field: user
+    width: half
+
+  - field: expires
+    width: half
+
+  - field: ip
+    width: half
+
+  - field: user_agent
+    width: half

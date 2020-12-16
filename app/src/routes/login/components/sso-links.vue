@@ -14,12 +14,12 @@
 import { defineComponent, ref, onMounted } from '@vue/composition-api';
 import api from '@/api';
 import getRootPath from '@/utils/get-root-path';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
 		const providers = ref([]);
 		const loading = ref(false);
-		const error = ref(null);
 
 		onMounted(() => fetchProviders());
 
@@ -27,7 +27,6 @@ export default defineComponent({
 
 		async function fetchProviders() {
 			loading.value = true;
-			error.value = null;
 
 			try {
 				const response = await api.get('/auth/oauth/');
@@ -41,8 +40,7 @@ export default defineComponent({
 					};
 				});
 			} catch (err) {
-				error.value = err;
-				console.error(err);
+				unexpectedError(err);
 			} finally {
 				loading.value = false;
 			}

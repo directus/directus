@@ -52,7 +52,9 @@
 					:disabled="item.disabled"
 					@click="multiple ? null : $emit('input', item.value)"
 				>
-					<v-list-item-icon v-if="multiple === false && allowOther === false && itemIcon !== null && item.icon">
+					<v-list-item-icon
+						v-if="multiple === false && allowOther === false && itemIcon !== null && item.icon"
+					>
 						<v-icon :name="item.icon" />
 					</v-list-item-icon>
 					<v-list-item-content>
@@ -119,8 +121,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, toRefs, Ref } from '@vue/composition-api';
-import i18n from '@/lang';
-import { useCustomSelection, useCustomSelectionMultiple } from '@/composables/use-custom-selection';
+import i18n from '../../lang';
+import { useCustomSelection, useCustomSelectionMultiple } from '../../composables/use-custom-selection';
 
 type Item = {
 	text: string;
@@ -150,7 +152,7 @@ export default defineComponent({
 			default: null,
 		},
 		value: {
-			type: [Array, String, Number] as PropType<InputValue>,
+			type: [Array, String, Number, Boolean] as PropType<InputValue>,
 			default: null,
 		},
 		multiple: {
@@ -184,6 +186,10 @@ export default defineComponent({
 		inline: {
 			type: Boolean,
 			default: false,
+		},
+		multiplePreviewThreshold: {
+			type: Number,
+			default: 3,
 		},
 	},
 	setup(props, { emit }) {
@@ -236,7 +242,7 @@ export default defineComponent({
 		function useDisplayValue() {
 			const displayValue = computed(() => {
 				if (Array.isArray(props.value)) {
-					if (props.value.length < 3) {
+					if (props.value.length < props.multiplePreviewThreshold) {
 						return props.value
 							.map((value) => {
 								return getTextForValue(value) || value;

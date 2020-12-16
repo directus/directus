@@ -53,13 +53,7 @@
 		</template>
 
 		<div class="preset-item">
-			<v-form
-				:fields="fields"
-				:loading="loading"
-				:initial-values="initialValues"
-				:primary-key="id"
-				v-model="edits"
-			/>
+			<v-form :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" v-model="edits" />
 
 			<div class="layout">
 				<component
@@ -69,9 +63,25 @@
 					:layout-options.sync="layoutOptions"
 					:layout-query.sync="layoutQuery"
 					:filters="values.filters || []"
-					@update:filters="edits.filters = $event"
+					@update:filters="updateFilters"
 					readonly
-				/>
+				>
+					<template #no-results>
+						<v-info :title="$t('no_results')" icon="search" center>
+							{{ $t('no_results_copy') }}
+						</v-info>
+					</template>
+
+					<template #no-items>
+						<v-info :title="$tc('item_count', 0)" center>
+							{{ $t('no_items_copy') }}
+						</v-info>
+					</template>
+				</component>
+
+				<v-notice v-else>
+					{{ $t('no_layout_collection_selected_yet') }}
+				</v-notice>
 			</div>
 		</div>
 
@@ -103,6 +113,7 @@ import { getLayouts } from '@/layouts';
 import router from '@/router';
 import marked from 'marked';
 import { userName } from '@/utils/user-name';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type User = {
 	id: number;
@@ -145,9 +156,9 @@ export default defineComponent({
 
 		const { loading: usersLoading, users } = useUsers();
 		const { loading: rolesLoading, roles } = useRoles();
-		const { loading: presetLoading, error, preset } = usePreset();
+		const { loading: presetLoading, preset } = usePreset();
 		const { fields } = useForm();
-		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions } = useValues();
+		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters } = useValues();
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
@@ -156,7 +167,6 @@ export default defineComponent({
 		return {
 			backLink,
 			loading,
-			error,
 			preset,
 			edits,
 			fields,
@@ -171,6 +181,7 @@ export default defineComponent({
 			deleteAndQuit,
 			confirmDelete,
 			marked,
+			updateFilters,
 		};
 
 		function useSave() {
@@ -213,7 +224,7 @@ export default defineComponent({
 
 					edits.value = {};
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					saving.value = false;
 					router.push(`/settings/presets`);
@@ -233,8 +244,8 @@ export default defineComponent({
 				try {
 					await api.delete(`/presets/${props.id}`);
 					router.push(`/settings/presets`);
-				} catch (error) {
-					console.error(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					deleting.value = false;
 				}
@@ -316,19 +327,27 @@ export default defineComponent({
 				},
 			});
 
-			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits };
+			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters };
+
+			function updateFilters(newFilters: Filter) {
+				edits.value = {
+					...edits.value,
+					filters: newFilters,
+				};
+			}
 		}
 
 		function usePreset() {
 			const loading = ref(false);
-			const error = ref(null);
 			const preset = ref<Preset | null>(null);
 
 			fetchPreset();
 
-			return { loading, error, preset, fetchPreset };
+			return { loading, preset, fetchPreset };
 
 			async function fetchPreset() {
+				if (props.id === '+') return;
+
 				loading.value = true;
 
 				try {
@@ -336,7 +355,7 @@ export default defineComponent({
 
 					preset.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -353,12 +372,11 @@ export default defineComponent({
 
 		function useUsers() {
 			const loading = ref(false);
-			const error = ref(null);
 			const users = ref<User[] | null>(null);
 
 			fetchUsers();
 
-			return { loading, error, users };
+			return { loading, users };
 
 			async function fetchUsers() {
 				loading.value = true;
@@ -375,7 +393,7 @@ export default defineComponent({
 						id: user.id,
 					}));
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -384,12 +402,11 @@ export default defineComponent({
 
 		function useRoles() {
 			const loading = ref(false);
-			const error = ref(null);
 			const roles = ref<Role[] | null>(null);
 
 			fetchRoles();
 
-			return { loading, error, roles };
+			return { loading, roles };
 
 			async function fetchRoles() {
 				loading.value = true;
@@ -403,7 +420,7 @@ export default defineComponent({
 
 					roles.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -448,8 +465,7 @@ export default defineComponent({
 									value: collection.collection,
 								}))
 								.filter((option) => {
-									if (option.value.startsWith('directus_'))
-										return systemCollectionWhiteList.includes(option.value);
+									if (option.value.startsWith('directus_')) return systemCollectionWhiteList.includes(option.value);
 
 									return true;
 								}),

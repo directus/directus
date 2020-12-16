@@ -5,12 +5,16 @@ import asyncHandler from 'express-async-handler';
 
 const router = Router();
 
-router.use(asyncHandler(async (req, res) => {
-	const service = new GraphQLService({ accountability: req.accountability });
-	const schema = await service.getSchema();
+router.use(
+	asyncHandler(async (req, res) => {
+		const service = new GraphQLService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		const schema = await service.getSchema();
 
-	graphqlHTTP({ schema, graphiql: true })(req, res);
-}));
+		graphqlHTTP({ schema, graphiql: true })(req, res);
+	})
+);
 
 export default router;
-

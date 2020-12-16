@@ -3,11 +3,7 @@ import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
 import { nanoid } from 'nanoid';
 import ms from 'ms';
-import {
-	InvalidCredentialsException,
-	InvalidPayloadException,
-	InvalidOTPException,
-} from '../exceptions';
+import { InvalidCredentialsException, InvalidPayloadException, InvalidOTPException } from '../exceptions';
 import { Session, Accountability, AbstractServiceOptions, Action } from '../types';
 import Knex from 'knex';
 import { ActivityService } from '../services/activity';
@@ -27,10 +23,10 @@ export class AuthenticationService {
 	accountability: Accountability | null;
 	activityService: ActivityService;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
-		this.activityService = new ActivityService();
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
+		this.activityService = new ActivityService({ knex: this.knex, schema: options.schema });
 	}
 
 	/**
@@ -158,21 +154,13 @@ export class AuthenticationService {
 	}
 
 	async generateOTPAuthURL(pk: string, secret: string) {
-		const user = await this.knex
-			.select('first_name', 'last_name')
-			.from('directus_users')
-			.where({ id: pk })
-			.first();
+		const user = await this.knex.select('first_name', 'last_name').from('directus_users').where({ id: pk }).first();
 		const name = `${user.first_name} ${user.last_name}`;
 		return authenticator.keyuri(name, 'Directus', secret);
 	}
 
 	async verifyOTP(pk: string, otp: string): Promise<boolean> {
-		const user = await this.knex
-			.select('tfa_secret')
-			.from('directus_users')
-			.where({ id: pk })
-			.first();
+		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
 
 		if (!user.tfa_secret) {
 			throw new InvalidPayloadException(`User "${pk}" doesn't have TFA enabled.`);
@@ -183,11 +171,7 @@ export class AuthenticationService {
 	}
 
 	async verifyPassword(pk: string, password: string) {
-		const userRecord = await this.knex
-			.select('password')
-			.from('directus_users')
-			.where({ id: pk })
-			.first();
+		const userRecord = await this.knex.select('password').from('directus_users').where({ id: pk }).first();
 
 		if (!userRecord || !userRecord.password) {
 			throw new InvalidCredentialsException();

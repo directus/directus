@@ -1,0 +1,23 @@
+get:
+  tags:
+    - Authentication
+  operationId: sso
+  summary: List SSO Providers
+  description: List the SSO providers.
+  responses:
+    "200":
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              public:
+                type: boolean
+              data:
+                type: array
+                example: ["github", "facebook"]
+                items:
+                  type: string
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"

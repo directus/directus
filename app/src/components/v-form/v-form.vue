@@ -1,5 +1,17 @@
 <template>
 	<div class="v-form" ref="el" :class="gridClass">
+		<v-notice type="danger" v-if="unknownValidationErrors.length > 0" class="full">
+			<div>
+				<p>{{ $t('unknown_validation_errors') }}</p>
+				<ul>
+					<li v-for="(validationError, index) of unknownValidationErrors" :key="index">
+						<strong>{{ validationError.field }}</strong>
+						: {{ $t(`validationError.${validationError.type}`, validationError) }}
+					</li>
+				</ul>
+			</div>
+		</v-notice>
+
 		<form-field
 			v-for="field in formFields"
 			:field="field"
@@ -21,13 +33,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, provide } from '@vue/composition-api';
-import { useFieldsStore } from '@/stores/';
-import { Field, FilterOperator } from '@/types';
-import { useElementSize } from '@/composables/use-element-size';
+import { useFieldsStore } from '../../stores/';
+import { Field, FilterOperator } from '../../types';
+import { useElementSize } from '../../composables/use-element-size';
 import { clone, cloneDeep } from 'lodash';
 import marked from 'marked';
 import FormField from './form-field.vue';
-import useFormFields from '@/composables/use-form-fields';
+import useFormFields from '../../composables/use-form-fields';
 import { ValidationError } from './types';
 
 type FieldValues = {
@@ -64,9 +76,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		// Note: can be null when the form is used in batch mode
 		primaryKey: {
 			type: [String, Number],
-			required: true,
+			default: null,
 		},
 		disabled: {
 			type: Boolean,
@@ -86,8 +99,17 @@ export default defineComponent({
 		});
 
 		const { formFields, gridClass } = useForm();
-
 		const { toggleBatchField, batchActiveFields } = useBatch();
+
+		/**
+		 * The validation errors that don't apply to any visible fields. This can occur if an admin accidentally
+		 * made a hidden field required for example. We want to show these errors at the top of the page, so the
+		 * admin can be made aware
+		 */
+		const unknownValidationErrors = computed(() => {
+			const fieldKeys = formFields.value.map((field) => field.field);
+			return props.validationErrors.filter((error) => fieldKeys.includes(error.field) === false);
+		});
 
 		provide('values', values);
 
@@ -101,6 +123,7 @@ export default defineComponent({
 			toggleBatchField,
 			unsetValue,
 			marked,
+			unknownValidationErrors,
 		};
 
 		function useForm() {
@@ -204,7 +227,7 @@ body {
 </style>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@import '../../styles/mixins/form-grid';
 
 .v-form {
 	@include form-grid;

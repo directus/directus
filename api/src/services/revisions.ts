@@ -7,7 +7,7 @@ import { InvalidPayloadException, ForbiddenException } from '../exceptions';
  */
 
 export class RevisionsService extends ItemsService {
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		super('directus_revisions', options);
 	}
 
@@ -15,13 +15,14 @@ export class RevisionsService extends ItemsService {
 		const revision = (await super.readByKey(pk)) as Revision | null;
 		if (!revision) throw new ForbiddenException();
 
-		if (!revision.data)
-			throw new InvalidPayloadException(`Revision doesn't contain data to revert to`);
+		if (!revision.data) throw new InvalidPayloadException(`Revision doesn't contain data to revert to`);
 
 		const service = new ItemsService(revision.collection, {
 			accountability: this.accountability,
 			knex: this.knex,
+			schema: this.schema,
 		});
+
 		await service.update(revision.data, revision.item);
 	}
 }

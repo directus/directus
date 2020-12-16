@@ -96,7 +96,7 @@
 
 			<v-dialog
 				v-model="confirmArchive"
-				@dsc="confirmArchive = false"
+				@esc="confirmArchive = false"
 				v-if="selection.length > 0 && currentCollection.meta && currentCollection.meta.archive_field"
 			>
 				<template #activator="{ on }">
@@ -130,10 +130,10 @@
 				rounded
 				icon
 				class="action-batch"
-				v-if="selection.length > 1"
-				:to="batchLink"
-				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 				:disabled="batchEditAllowed === false"
+				@click="batchEditActive = true"
+				v-if="selection.length > 1"
+				v-tooltip.bottom="batchEditAllowed ? $t('edit') : $t('not_allowed')"
 			>
 				<v-icon name="edit" outline />
 			</v-button>
@@ -203,6 +203,13 @@
 			</template>
 		</component>
 
+		<drawer-batch
+			:primary-keys="selection"
+			:active.sync="batchEditActive"
+			:collection="collection"
+			@refresh="refresh"
+		/>
+
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div
@@ -242,19 +249,21 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, toRefs } from '@vue/composition-api';
 import CollectionsNavigation from '../components/navigation.vue';
-import api from '@/api';
-import { LayoutComponent } from '@/layouts/types';
+import api from '../../../api';
+import { LayoutComponent } from '../../../layouts/types';
 import CollectionsNotFound from './not-found.vue';
-import useCollection from '@/composables/use-collection';
-import usePreset from '@/composables/use-preset';
-import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
-import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
-import SearchInput from '@/views/private/components/search-input';
-import BookmarkAdd from '@/views/private/components/bookmark-add';
-import BookmarkEdit from '@/views/private/components/bookmark-edit';
-import router from '@/router';
+import useCollection from '../../../composables/use-collection';
+import usePreset from '../../../composables/use-preset';
+import LayoutSidebarDetail from '../../../views/private/components/layout-sidebar-detail';
+import ExportSidebarDetail from '../../../views/private/components/export-sidebar-detail';
+import SearchInput from '../../../views/private/components/search-input';
+import BookmarkAdd from '../../../views/private/components/bookmark-add';
+import BookmarkEdit from '../../../views/private/components/bookmark-edit';
+import router from '../../../router';
 import marked from 'marked';
-import { usePermissionsStore, useUserStore } from '@/stores';
+import { usePermissionsStore, useUserStore } from '../../../stores';
+import DrawerBatch from '../../../views/private/components/drawer-batch';
+import { unexpectedError } from '../../../utils/unexpected-error';
 
 type Item = {
 	[field: string]: any;
@@ -270,6 +279,7 @@ export default defineComponent({
 		SearchInput,
 		BookmarkAdd,
 		BookmarkEdit,
+		DrawerBatch,
 	},
 	props: {
 		collection: {
@@ -291,7 +301,7 @@ export default defineComponent({
 
 		const { selection } = useSelection();
 		const { info: currentCollection } = useCollection(collection);
-		const { addNewLink, batchLink, currentCollectionLink } = useLinks();
+		const { addNewLink, currentCollectionLink } = useLinks();
 		const { breadcrumb } = useBreadcrumb();
 
 		const {
@@ -319,7 +329,8 @@ export default defineComponent({
 			archive,
 			archiving,
 			error: deleteError,
-		} = useBatchDelete();
+			batchEditActive,
+		} = useBatch();
 
 		const {
 			bookmarkDialogActive,
@@ -344,7 +355,7 @@ export default defineComponent({
 		return {
 			addNewLink,
 			batchDelete,
-			batchLink,
+			batchEditActive,
 
 			confirmDelete,
 			currentCollection,
@@ -381,7 +392,12 @@ export default defineComponent({
 			bookmarkIsMine,
 			bookmarkSaving,
 			clearLocalSave,
+			refresh,
 		};
+
+		function refresh() {
+			layoutRef.value?.refresh?.();
+		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
@@ -406,16 +422,18 @@ export default defineComponent({
 			return { selection };
 		}
 
-		function useBatchDelete() {
+		function useBatch() {
 			const confirmDelete = ref(false);
 			const deleting = ref(false);
+
+			const batchEditActive = ref(false);
 
 			const confirmArchive = ref(false);
 			const archiving = ref(false);
 
 			const error = ref<any>();
 
-			return { confirmDelete, deleting, batchDelete, confirmArchive, archiving, archive, error };
+			return { batchEditActive, confirmDelete, deleting, batchDelete, confirmArchive, archiving, archive, error };
 
 			async function batchDelete() {
 				deleting.value = true;
@@ -423,7 +441,10 @@ export default defineComponent({
 				const batchPrimaryKeys = selection.value;
 
 				try {
-					await api.delete(`/items/${props.collection}/${batchPrimaryKeys}`);
+					await api.delete(`/items/${props.collection}`, {
+						data: batchPrimaryKeys,
+					});
+
 					await layoutRef.value?.refresh?.();
 
 					selection.value = [];
@@ -440,14 +461,18 @@ export default defineComponent({
 
 				archiving.value = true;
 
-				const batchPrimaryKeys = selection.value;
-
 				try {
-					await api.patch(`/items/${props.collection}/${batchPrimaryKeys}`);
-					await layoutRef.value?.refresh?.();
+					await api.patch(`/items/${props.collection}`, {
+						keys: selection.value,
+						data: {
+							[currentCollection.value.meta.archive_field]: currentCollection.value.meta.archive_value,
+						},
+					});
 
-					selection.value = [];
 					confirmArchive.value = false;
+					selection.value = [];
+
+					await layoutRef.value?.refresh?.();
 				} catch (err) {
 					error.value = err;
 				} finally {
@@ -461,16 +486,11 @@ export default defineComponent({
 				return `/collections/${props.collection}/+`;
 			});
 
-			const batchLink = computed<string>(() => {
-				const batchPrimaryKeys = selection.value.join();
-				return `/collections/${props.collection}/${batchPrimaryKeys}`;
-			});
-
 			const currentCollectionLink = computed<string>(() => {
 				return `/collections/${props.collection}`;
 			});
 
-			return { addNewLink, batchLink, currentCollectionLink };
+			return { addNewLink, currentCollectionLink };
 		}
 
 		function useBookmarks() {
@@ -494,8 +514,8 @@ export default defineComponent({
 					router.push(`/collections/${newBookmark.collection}?bookmark=${newBookmark.id}`);
 
 					bookmarkDialogActive.value = false;
-				} catch (error) {
-					console.log(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					creatingBookmark.value = false;
 				}
@@ -533,8 +553,8 @@ export default defineComponent({
 				);
 				if (!updatePermissions) return false;
 				if (!updatePermissions.fields) return false;
-				if (updatePermissions.fields === '*') return true;
-				return updatePermissions.fields.split(',').includes(currentCollection.value.meta.archive_field);
+				if (updatePermissions.fields.includes('*')) return true;
+				return updatePermissions.fields.includes(currentCollection.value.meta.archive_field);
 			});
 
 			const batchDeleteAllowed = computed(() => {

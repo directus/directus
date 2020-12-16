@@ -32,15 +32,15 @@ export class MetaService {
 	}
 
 	async totalCount(collection: string) {
-		const records = await database(collection).count('*', { as: 'count' });
+		const records = await this.knex(collection).count('*', { as: 'count' });
 		return Number(records[0].count);
 	}
 
 	async filterCount(collection: string, query: Query) {
-		const dbQuery = database(collection).count('*', { as: 'count' });
+		const dbQuery = this.knex(collection).count('*', { as: 'count' });
 
 		if (query.filter) {
-			applyFilter(dbQuery, query.filter, collection);
+			await applyFilter(this.knex, dbQuery, query.filter, collection);
 		}
 
 		const records = await dbQuery;

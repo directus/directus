@@ -19,7 +19,7 @@
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
 					:key="header.value"
-					:value="item[header.value]"
+					:value="get(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
@@ -30,7 +30,7 @@
 				/>
 			</template>
 
-			<template #item-append="{ item }" v-if="!disabled">
+			<template #item-append="{ item }" v-show="!disabled">
 				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
 			</template>
 		</v-table>
@@ -74,6 +74,8 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import { Filter, Field } from '@/types';
 import { Header, Sort } from '@/components/v-table/types';
 import { isEqual, sortBy } from 'lodash';
+import { get } from 'lodash';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection },
@@ -113,7 +115,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
-		const { tableHeaders, items, loading, error } = useTable();
+		const { tableHeaders, items, loading } = useTable();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
 		const { sort, sortItems, sortedItems } = useSort();
@@ -136,6 +138,7 @@ export default defineComponent({
 			selectionFilters,
 			sort,
 			sortedItems,
+			get,
 		};
 
 		function getItem(id: string | number) {
@@ -261,7 +264,6 @@ export default defineComponent({
 			const tableHeaders = ref<Header[]>([]);
 			const loading = ref(false);
 			const items = ref<Record<string, any>[]>([]);
-			const error = ref(null);
 
 			watch(
 				() => props.value,
@@ -275,8 +277,7 @@ export default defineComponent({
 						fields.push(pkField);
 					}
 
-					if (props.sortField !== null && fields.includes(props.sortField) === false)
-						fields.push(props.sortField);
+					if (props.sortField !== null && fields.includes(props.sortField) === false) fields.push(props.sortField);
 
 					try {
 						const endpoint = relatedCollection.value.collection.startsWith('directus_')
@@ -304,12 +305,19 @@ export default defineComponent({
 						items.value = existingItems
 							.map((item) => {
 								const updatedItem = updatedItems.find((updated) => updated[pkField] === item[pkField]);
-								if (updatedItem !== undefined) return updatedItem;
+
+								if (updatedItem !== undefined) {
+									return {
+										...item,
+										...updatedItem,
+									};
+								}
+
 								return item;
 							})
 							.concat(...newItems);
 					} catch (err) {
-						error.value = err;
+						unexpectedError(err);
 					} finally {
 						loading.value = false;
 					}
@@ -351,7 +359,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { tableHeaders, items, loading, error };
+			return { tableHeaders, items, loading };
 		}
 
 		function useEdits() {
@@ -368,8 +376,10 @@ export default defineComponent({
 				const pkField = relatedPrimaryKeyField.value.field;
 				const hasPrimaryKey = pkField in item;
 
-				editsAtStart.value = item;
-				currentlyEditing.value = hasPrimaryKey ? item[pkField] : -1;
+				const edits = (props.value || []).find((edit: any) => edit === item);
+
+				editsAtStart.value = edits || { [pkField]: item[pkField] || {} };
+				currentlyEditing.value = hasPrimaryKey ? item[pkField] : '+';
 			}
 
 			function stageEdits(edits: any) {
@@ -378,12 +388,7 @@ export default defineComponent({
 				const hasPrimaryKey = pkField in edits;
 
 				const newValue = (props.value || []).map((item) => {
-					if (
-						typeof item === 'object' &&
-						pkField in item &&
-						pkField in edits &&
-						item[pkField] === edits[pkField]
-					) {
+					if (typeof item === 'object' && pkField in item && pkField in edits && item[pkField] === edits[pkField]) {
 						return edits;
 					}
 
@@ -420,9 +425,7 @@ export default defineComponent({
 
 				const pkField = relatedPrimaryKeyField.value.field;
 
-				return items.value
-					.filter((currentItem) => pkField in currentItem)
-					.map((currentItem) => currentItem[pkField]);
+				return items.value.filter((currentItem) => pkField in currentItem).map((currentItem) => currentItem[pkField]);
 			});
 
 			const selectionFilters = computed<Filter[]>(() => {

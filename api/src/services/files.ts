@@ -11,9 +11,10 @@ import { ForbiddenException } from '../exceptions';
 import { toArray } from '../utils/to-array';
 import { extension } from 'mime-types';
 import path from 'path';
+import env from '../env';
 
 export class FilesService extends ItemsService {
-	constructor(options?: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions) {
 		super('directus_files', options);
 	}
 
@@ -38,10 +39,9 @@ export class FilesService extends ItemsService {
 			primaryKey = await this.create(payload);
 		}
 
-		const fileExtension =
-			(payload.type && extension(payload.type)) || path.extname(payload.filename_download);
+		const fileExtension = (payload.type && extension(payload.type)) || path.extname(payload.filename_download);
 
-		payload.filename_disk = primaryKey + fileExtension;
+		payload.filename_disk = primaryKey + '.' + fileExtension;
 
 		if (!payload.type) {
 			payload.type = 'application/octet-stream';
@@ -81,10 +81,13 @@ export class FilesService extends ItemsService {
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
 		// we still want to be able to set the extracted values from the file on create
-		const sudoService = new ItemsService('directus_files');
+		const sudoService = new ItemsService('directus_files', {
+			knex: this.knex,
+			schema: this.schema,
+		});
 		await sudoService.update(payload, primaryKey);
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
@@ -114,7 +117,7 @@ export class FilesService extends ItemsService {
 
 		await super.delete(keys);
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 

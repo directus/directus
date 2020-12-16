@@ -27,10 +27,20 @@ export const types = [
 	'unknown',
 ] as const;
 
-export const localTypes = ['standard', 'file', 'files', 'm2o', 'o2m', 'm2m', 'presentation', 'translations'] as const;
+export const localTypes = [
+	'standard',
+	'file',
+	'files',
+	'm2o',
+	'o2m',
+	'm2m',
+	'm2a',
+	'presentation',
+	'translations',
+] as const;
 
 export type FieldSchema = {
-	/** @todo import this from knex-schema-inspector when that's launched */
+	/** @todo import this from @directus/schema when that's launched */
 	name: string;
 	table: string;
 	type: string;
@@ -65,6 +75,7 @@ export type FieldMeta = {
 	translations: null | Translations[];
 	width: Width | null;
 	note: string | TranslateResult | null;
+	system?: true;
 };
 
 export interface FieldRaw {

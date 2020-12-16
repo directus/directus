@@ -59,7 +59,7 @@ export default defineComponent({
 
 		const fields = computed(() => {
 			if (!props.collectionField && !props.collection) return [];
-			return fieldsStore.getFieldsForCollection(props.collection || values.value[props.collectionField]);
+			return fieldsStore.getFieldsForCollection(values.value[props.collectionField] || props.collection);
 		});
 
 		const selectItems = computed(() =>
@@ -78,7 +78,7 @@ export default defineComponent({
 			})
 		);
 
-		return { selectItems, values };
+		return { selectItems, values, fields };
 	},
 });
 </script>

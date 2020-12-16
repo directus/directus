@@ -6,7 +6,9 @@ export function validateEnv(requiredKeys: string[]) {
 		requiredKeys.push('DB_FILENAME');
 	} else {
 		if (env.DB_CLIENT === 'pg') {
-			requiredKeys.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER');
+			if (!env.DB_CONNECTION_STRING) {
+				requiredKeys.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER');
+			}
 		} else {
 			requiredKeys.push('DB_HOST', 'DB_PORT', 'DB_DATABASE', 'DB_USER', 'DB_PASSWORD');
 		}

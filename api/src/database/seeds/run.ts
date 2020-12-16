@@ -25,33 +25,6 @@ type TableSeed = {
 	};
 };
 
-type RowSeed = {
-	table: string;
-	defaults: Record<string, any>;
-	data: Record<string, any>[];
-};
-
-type FieldSeed = {
-	table: string;
-	fields: {
-		collection: string;
-		field: string;
-		special: string | null;
-		interface: string | null;
-		options: Record<string, any> | null;
-		display: string | null;
-		display_options: Record<string, any> | null;
-		locked: boolean;
-		readonly: boolean;
-		hidden: boolean;
-		sort: number | null;
-		width: string | null;
-		group: number | null;
-		translations: Record<string, any> | null;
-		note: string | null;
-	}[];
-};
-
 export default async function runSeed(database: Knex) {
 	const exists = await database.schema.hasTable('directus_collections');
 
@@ -59,19 +32,13 @@ export default async function runSeed(database: Knex) {
 		throw new Error('Database is already installed');
 	}
 
-	await createTables(database);
-	await insertRows(database);
-	await insertFields(database);
-}
-
-async function createTables(database: Knex) {
-	const tableSeeds = await fse.readdir(path.resolve(__dirname, './01-tables/'));
+	const tableSeeds = await fse.readdir(path.resolve(__dirname));
 
 	for (const tableSeedFile of tableSeeds) {
-		const yamlRaw = await fse.readFile(
-			path.resolve(__dirname, './01-tables', tableSeedFile),
-			'utf8'
-		);
+		if (tableSeedFile.startsWith('run')) continue;
+
+		const yamlRaw = await fse.readFile(path.resolve(__dirname, tableSeedFile), 'utf8');
+
 		const seedData = yaml.safeLoad(yamlRaw) as TableSeed;
 
 		await database.schema.createTable(seedData.table, (tableBuilder) => {
@@ -119,70 +86,9 @@ async function createTables(database: Knex) {
 				}
 
 				if (columnInfo.references) {
-					tableBuilder
-						.foreign(columnName)
-						.references(columnInfo.references.column)
-						.inTable(columnInfo.references.table);
+					column.references(columnInfo.references.column).inTable(columnInfo.references.table);
 				}
 			}
 		});
-	}
-}
-
-async function insertRows(database: Knex) {
-	const rowSeeds = await fse.readdir(path.resolve(__dirname, './02-rows/'));
-
-	for (const rowSeedFile of rowSeeds) {
-		const yamlRaw = await fse.readFile(
-			path.resolve(__dirname, './02-rows', rowSeedFile),
-			'utf8'
-		);
-		const seedData = yaml.safeLoad(yamlRaw) as RowSeed;
-
-		const dataWithDefaults = seedData.data.map((row) => {
-			for (const [key, value] of Object.entries(row)) {
-				if (value !== null && (typeof value === 'object' || Array.isArray(value))) {
-					row[key] = JSON.stringify(value);
-				}
-			}
-
-			return merge({}, seedData.defaults, row);
-		});
-
-		await database.batchInsert(seedData.table, dataWithDefaults);
-	}
-}
-
-async function insertFields(database: Knex) {
-	const fieldSeeds = await fse.readdir(path.resolve(__dirname, './03-fields/'));
-
-	const defaultsYaml = await fse.readFile(
-		path.resolve(__dirname, './03-fields/_defaults.yaml'),
-		'utf8'
-	);
-	const defaults = yaml.safeLoad(defaultsYaml) as FieldSeed;
-
-	for (const fieldSeedFile of fieldSeeds) {
-		const yamlRaw = await fse.readFile(
-			path.resolve(__dirname, './03-fields', fieldSeedFile),
-			'utf8'
-		);
-		const seedData = yaml.safeLoad(yamlRaw) as FieldSeed;
-
-		if (fieldSeedFile === '_defaults.yaml') {
-			continue;
-		}
-
-		const dataWithDefaults = seedData.fields.map((row) => {
-			for (const [key, value] of Object.entries(row)) {
-				if (value !== null && (typeof value === 'object' || Array.isArray(value))) {
-					(row as any)[key] = JSON.stringify(value);
-				}
-			}
-
-			return merge({}, defaults, row);
-		});
-
-		await database.batchInsert('directus_fields', dataWithDefaults);
 	}
 }

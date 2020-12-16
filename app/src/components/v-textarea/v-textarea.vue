@@ -52,13 +52,14 @@ export default defineComponent({
 		},
 		trim: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 	},
 	setup(props, { emit, listeners }) {
 		const _listeners = computed(() => ({
 			...listeners,
 			input: emitValue,
+			blur: trimIfEnabled,
 		}));
 
 		const hasContent = computed(() => props.value && props.value.length > 0);
@@ -66,11 +67,14 @@ export default defineComponent({
 		return { _listeners, hasContent };
 
 		function emitValue(event: InputEvent) {
-			let value = (event.target as HTMLInputElement).value;
-			if (props.trim === true) {
-				value = value.trim();
-			}
+			const value = (event.target as HTMLInputElement).value;
 			emit('input', value);
+		}
+
+		function trimIfEnabled() {
+			if (props.value && props.trim) {
+				emit('input', props.value.trim());
+			}
 		}
 	},
 });
@@ -141,11 +145,6 @@ body {
 		border-color: var(--primary);
 	}
 
-	&.disabled {
-		color: var(--foreground-subdued);
-		background-color: var(--background-subdued);
-	}
-
 	textarea {
 		position: relative;
 		display: block;
@@ -162,6 +161,11 @@ body {
 		&::placeholder {
 			color: var(--foreground-subdued);
 		}
+	}
+
+	&.disabled textarea {
+		color: var(--foreground-subdued);
+		background-color: var(--background-subdued);
 	}
 }
 </style>

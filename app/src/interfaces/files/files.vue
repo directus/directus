@@ -5,12 +5,15 @@
 	<div v-else class="files">
 		<v-table
 			inline
-			:items="items"
+			:items="sortedItems || items"
 			:loading="loading"
 			:headers.sync="tableHeaders"
 			:item-key="relationInfo.junctionPkField"
 			:disabled="disabled"
+			@update:items="sortItems($event)"
 			@click:row="editItem"
+			:show-manual-sort="sortField !== null"
+			:manual-sort-key="sortField"
 		>
 			<template #item.$thumbnail="{ item }">
 				<render-display
@@ -22,7 +25,7 @@
 				/>
 			</template>
 
-			<template #item-append="{ item }" v-if="!disabled">
+			<template #item-append="{ item }" v-show="!disabled">
 				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
 			</template>
 		</v-table>
@@ -81,6 +84,7 @@ import useRelation from '@/interfaces/many-to-many/use-relation';
 import useSelection from '@/interfaces/many-to-many/use-selection';
 import usePreview from '@/interfaces/many-to-many/use-preview';
 import useEdit from '@/interfaces/many-to-many/use-edit';
+import useSort from '@/interfaces/many-to-many/use-sort';
 
 export default defineComponent({
 	components: { DrawerCollection, DrawerItem },
@@ -113,10 +117,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { collection, field, value, primaryKey, sortField } = toRefs(props);
 
-		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(
-			collection,
-			field
-		);
+		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
@@ -176,14 +177,11 @@ export default defineComponent({
 			relatedPrimaryKey,
 		} = useEdit(value, relationInfo, emitter);
 
-		const { stageSelection, selectModalActive, selectionFilters } = useSelection(
-			value,
-			items,
-			relationInfo,
-			emitter
-		);
+		const { stageSelection, selectModalActive, selectionFilters } = useSelection(value, items, relationInfo, emitter);
 
 		const { showUpload, onUpload } = useUpload();
+
+		const { sort, sortItems, sortedItems } = useSort(sortField, fields, items, emitter);
 
 		return {
 			junction,
@@ -208,6 +206,9 @@ export default defineComponent({
 			editItem,
 			editModalActive,
 			relatedPrimaryKey,
+			sort,
+			sortItems,
+			sortedItems,
 		};
 
 		function useUpload() {
@@ -221,17 +222,14 @@ export default defineComponent({
 				if (files.length === 0) return;
 
 				const { junctionField } = relationInfo.value;
-				const file = files[0];
 
-				const fileAsJunctionRow = {
-					[junctionField]: {
-						id: file.id,
-						title: file.title,
-						type: file.type,
-					},
-				};
+				const filesAsJunctionRows = files.map((file) => {
+					return {
+						[junctionField]: file.id,
+					};
+				});
 
-				emit('input', [...(props.value || []), fileAsJunctionRow]);
+				emit('input', [...(props.value || []), ...filesAsJunctionRows]);
 			}
 		}
 	},

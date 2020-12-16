@@ -69,7 +69,7 @@ function main() {
   registry=$(argument registry "")
   registry=$(echo "${registry}" | tr '[:upper:]' '[:lower:]')
 
-  repository=$(argument repository "directus/next")
+  repository=$(argument repository "directus/directus")
   repository=$(echo "${repository}" | tr '[:upper:]' '[:lower:]')
 
   version=$(argument version "")

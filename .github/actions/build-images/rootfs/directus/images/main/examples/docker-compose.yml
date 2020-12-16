@@ -1,0 +1,33 @@
+version: "3"
+services:
+  database:
+    image: postgres:12
+    networks:
+      - "directus"
+    environment:
+      POSTGRES_DB: "directus"
+      POSTGRES_USER: "directus"
+      POSTGRES_PASSWORD: "directus"
+
+  directus:
+    build:
+      context: "../"
+      args:
+        VERSION: "v9.0.0-rc.5"
+        REPOSITORY: "directus/directus"
+    ports:
+      - 8055:8055
+    networks:
+      - "directus"
+    environment:
+      KEY: mykey
+      SECRET: mysecret
+      DB_CLIENT: "pg"
+      DB_HOST: "database"
+      DB_PORT: "5432"
+      DB_USER: "directus"
+      DB_PASSWORD: "directus"
+      DB_DATABASE: "directus"
+
+networks:
+  directus:

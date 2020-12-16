@@ -18,9 +18,9 @@
 						rounded
 						icon
 						class="action-delete"
-						:disabled="item === null"
+						:disabled="item === null || deleteAllowed === false"
 						@click="on"
-						v-tooltip.bottom="$t('delete')"
+						v-tooltip.bottom="deleteAllowed ? $t('delete') : $t('not_allowed')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
@@ -91,15 +91,15 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="hasEdits === false"
+				:disabled="hasEdits === false || saveAllowed === false"
 				@click="saveAndQuit"
-				v-tooltip.bottom="$t('save')"
+				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 			>
 				<v-icon name="check" />
 
 				<template #append-outer>
 					<save-options
-						:disabled="hasEdits === false"
+						:disabled="hasEdits === false || saveAllowed === false"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
 					/>
@@ -131,11 +131,12 @@
 
 			<v-form
 				ref="form"
-				:fields="formFields"
+				:fields="fieldsFiltered"
 				:loading="loading"
 				:initial-values="item"
 				:batch-mode="isBatch"
 				:primary-key="primaryKey"
+				:disabled="updateAllowed === false"
 				v-model="edits"
 			/>
 		</div>
@@ -175,25 +176,29 @@
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 import FilesNavigation from '../components/navigation.vue';
-import { i18n } from '@/lang';
-import router from '@/router';
-import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
-import useItem from '@/composables/use-item';
-import SaveOptions from '@/views/private/components/save-options';
-import FilePreview from '@/views/private/components/file-preview';
-import ImageEditor from '@/views/private/components/image-editor';
+import { i18n } from '../../../lang';
+import router from '../../../router';
+import RevisionsDrawerDetail from '../../../views/private/components/revisions-drawer-detail';
+import CommentsSidebarDetail from '../../../views/private/components/comments-sidebar-detail';
+import useItem from '../../../composables/use-item';
+import SaveOptions from '../../../views/private/components/save-options';
+import FilePreview from '../../../views/private/components/file-preview';
+import ImageEditor from '../../../views/private/components/image-editor';
 import { nanoid } from 'nanoid';
-import { useFieldsStore } from '@/stores/';
-import { Field } from '@/types';
+import FileLightbox from '../../../views/private/components/file-lightbox';
+import { useFieldsStore } from '../../../stores/';
+import { Field } from '../../../types';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import useFormFields from '@/composables/use-form-fields';
+import useFormFields from '../../../composables/use-form-fields';
 import FolderPicker from '../components/folder-picker.vue';
-import api from '@/api';
-import getRootPath from '@/utils/get-root-path';
+import api, { addTokenToURL } from '../../../api';
+import getRootPath from '../../../utils/get-root-path';
 import FilesNotFound from './not-found.vue';
-import useShortcut from '@/composables/use-shortcut';
+import useShortcut from '../../../composables/use-shortcut';
 import ReplaceFile from '../components/replace-file.vue';
+import { usePermissions } from '../../../composables/use-permissions';
+import { notify } from '../../../utils/notify';
+import { unexpectedError } from '../../../utils/unexpected-error';
 
 type Values = {
 	[field: string]: any;
@@ -217,13 +222,13 @@ export default defineComponent({
 		FilesNavigation,
 		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
-		SaveOptions,
 		FilePreview,
 		ImageEditor,
 		FileInfoSidebarDetail,
 		FolderPicker,
 		FilesNotFound,
 		ReplaceFile,
+		SaveOptions,
 	},
 	props: {
 		primaryKey: {
@@ -260,12 +265,13 @@ export default defineComponent({
 		const editActive = ref(false);
 		const fileSrc = computed(() => {
 			if (item.value && item.value.modified_on) {
-				return (
+				return addTokenToURL(
 					getRootPath() +
-					`assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`
+						`assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`
 				);
 			}
-			return getRootPath() + `assets/${props.primaryKey}?key=system-large-contain`;
+
+			return addTokenToURL(getRootPath() + `assets/${props.primaryKey}?key=system-large-contain`);
 		});
 
 		// These are the fields that will be prevented from showing up in the form because they'll be shown in the sidebar
@@ -285,18 +291,10 @@ export default defineComponent({
 			'embed',
 		];
 
-		const fieldsFiltered = computed(() => {
-			return fieldsStore
-				.getFieldsForCollection('directus_files')
-				.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
-		});
-
 		const to = computed(() => {
 			if (item.value && item.value?.folder) return `/files?folder=${item.value.folder}`;
 			else return '/files';
 		});
-
-		const { formFields } = useFormFields(fieldsFiltered);
 
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
@@ -304,6 +302,16 @@ export default defineComponent({
 		const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
 		useShortcut('meta+s', saveAndStay, form);
+
+		const { deleteAllowed, saveAllowed, updateAllowed, fields } = usePermissions(
+			ref('directus_files'),
+			item,
+			isNew
+		);
+
+		const fieldsFiltered = computed(() => {
+			return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
+		});
 
 		return {
 			item,
@@ -323,7 +331,6 @@ export default defineComponent({
 			isBatch,
 			editActive,
 			revisionsDrawerDetail,
-			formFields,
 			confirmLeave,
 			leaveTo,
 			discardAndLeave,
@@ -337,6 +344,11 @@ export default defineComponent({
 			to,
 			replaceFileDialogActive,
 			refresh,
+			deleteAllowed,
+			saveAllowed,
+			updateAllowed,
+			fields,
+			fieldsFiltered,
 		};
 
 		function useBreadcrumb() {
@@ -367,13 +379,21 @@ export default defineComponent({
 		}
 
 		async function saveAndQuit() {
-			await save();
-			router.push(`/files`);
+			try {
+				await save();
+				router.push(`/files`);
+			} catch {
+				// `save` will show unexpected error dialog
+			}
 		}
 
 		async function saveAndStay() {
-			await save();
-			revisionsDrawerDetail.value?.$data?.refresh?.();
+			try {
+				await save();
+				revisionsDrawerDetail.value?.$data?.refresh?.();
+			} catch {
+				// `save` will show unexpected error dialog
+			}
 		}
 
 		async function saveAsCopyAndNavigate() {
@@ -382,8 +402,12 @@ export default defineComponent({
 		}
 
 		async function deleteAndQuit() {
-			await remove();
-			router.push(`/files`);
+			try {
+				await remove();
+				router.push(`/files`);
+			} catch {
+				// `remove` will show the unexpected error dialog
+			}
 		}
 
 		function discardAndLeave() {
@@ -393,7 +417,7 @@ export default defineComponent({
 		}
 
 		function downloadFile() {
-			const filePath = getRootPath() + `assets/${props.primaryKey}?download`;
+			const filePath = addTokenToURL(getRootPath() + `assets/${props.primaryKey}?download`);
 			window.open(filePath, '_blank');
 		}
 
@@ -412,12 +436,28 @@ export default defineComponent({
 				moving.value = true;
 
 				try {
-					await api.patch(`/files/${props.primaryKey}`, {
-						folder: selectedFolder.value,
-					});
+					const response = await api.patch(
+						`/files/${props.primaryKey}`,
+						{
+							folder: selectedFolder.value,
+						},
+						{
+							params: {
+								fields: 'folder.name',
+							},
+						}
+					);
+
 					await refresh();
+					const folder = response.data.data.folder?.name || i18n.t('file_library');
+
+					notify({
+						title: i18n.t('file_moved', { folder }),
+						type: 'success',
+						icon: 'folder_move',
+					});
 				} catch (err) {
-					console.error(err);
+					unexpectedError(err);
 				} finally {
 					moveToDialogActive.value = false;
 					moving.value = false;

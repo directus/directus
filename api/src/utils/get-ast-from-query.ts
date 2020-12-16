@@ -10,12 +10,14 @@ import {
 	Relation,
 	PermissionsAction,
 	Accountability,
+	SchemaOverview,
 } from '../types';
 import database from '../database';
 import { cloneDeep } from 'lodash';
 import Knex from 'knex';
-import SchemaInspector from 'knex-schema-inspector';
 import { getRelationType } from '../utils/get-relation-type';
+import { systemFieldRows } from '../database/system-data/fields';
+import { systemRelationRows } from '../database/system-data/relations';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -23,9 +25,14 @@ type GetASTOptions = {
 	knex?: Knex;
 };
 
+type anyNested = {
+	[collectionScope: string]: string[];
+};
+
 export default async function getASTFromQuery(
 	collection: string,
 	query: Query,
+	schema: SchemaOverview,
 	options?: GetASTOptions
 ): Promise<AST> {
 	query = cloneDeep(query);
@@ -33,13 +40,12 @@ export default async function getASTFromQuery(
 	const accountability = options?.accountability;
 	const action = options?.action || 'read';
 	const knex = options?.knex || database;
-	const schemaInspector = SchemaInspector(knex);
 
 	/**
 	 * we might not need al this info at all times, but it's easier to fetch it all once, than trying to fetch it for every
 	 * requested field. @todo look into utilizing graphql/dataloader for this purpose
 	 */
-	const relations = await knex.select<Relation[]>('*').from('directus_relations');
+	const relations = [...(await knex.select<Relation[]>('*').from('directus_relations')), ...systemRelationRows];
 
 	const permissions =
 		accountability && accountability.admin !== true
@@ -67,39 +73,58 @@ export default async function getASTFromQuery(
 
 	return ast;
 
-	async function parseFields(
-		parentCollection: string,
-		fields: string[],
-		deep?: Record<string, Query>
-	) {
+	async function parseFields(parentCollection: string, fields: string[] | null, deep?: Record<string, Query>) {
+		if (!fields) return [];
+
 		fields = await convertWildcards(parentCollection, fields);
 
 		if (!fields) return [];
 
 		const children: (NestedCollectionNode | FieldNode)[] = [];
 
-		const relationalStructure: Record<string, string[]> = {};
+		const relationalStructure: Record<string, string[] | anyNested> = {};
 
 		for (const field of fields) {
 			const isRelational =
 				field.includes('.') ||
 				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
 				// anything
-				!!relations.find(
-					(relation) =>
-						relation.one_collection === parentCollection && relation.one_field === field
-				);
+				!!relations.find((relation) => relation.one_collection === parentCollection && relation.one_field === field);
 
 			if (isRelational) {
 				// field is relational
 				const parts = field.split('.');
 
-				if (relationalStructure.hasOwnProperty(parts[0]) === false) {
-					relationalStructure[parts[0]] = [];
+				let fieldKey = parts[0];
+				let collectionScope: string | null = null;
+
+				// m2a related collection scoped field selector `fields=sections.section_id:headings.title`
+				if (fieldKey.includes(':')) {
+					const [key, scope] = fieldKey.split(':');
+					fieldKey = key;
+					collectionScope = scope;
+				}
+
+				if (relationalStructure.hasOwnProperty(fieldKey) === false) {
+					if (collectionScope) {
+						relationalStructure[fieldKey] = { [collectionScope]: [] };
+					} else {
+						relationalStructure[fieldKey] = [];
+					}
 				}
 
 				if (parts.length > 1) {
-					relationalStructure[parts[0]].push(parts.slice(1).join('.'));
+					const childKey = parts.slice(1).join('.');
+
+					if (collectionScope) {
+						if (collectionScope in relationalStructure[fieldKey] === false) {
+							(relationalStructure[fieldKey] as anyNested)[collectionScope] = [];
+						}
+
+						(relationalStructure[fieldKey] as anyNested)[collectionScope].push(childKey);
+					} else {
+						(relationalStructure[fieldKey] as string[]).push(childKey);
+					}
 				}
 			} else {
 				children.push({ type: 'field', name: field });
@@ -123,7 +148,10 @@ export default async function getASTFromQuery(
 			let child: NestedCollectionNode | null = null;
 
 			if (relationType === 'm2a') {
-				const allowedCollections = relation.one_allowed_collections!.split(',');
+				const allowedCollections = relation.one_allowed_collections!.split(',').filter((collection) => {
+					if (!permissions) return true;
+					return permissions.some((permission) => permission.collection === collection);
+				});
 
 				child = {
 					type: 'm2a',
@@ -131,7 +159,7 @@ export default async function getASTFromQuery(
 					children: {},
 					query: {},
 					relatedKey: {},
-					parentKey: await schemaInspector.primary(parentCollection),
+					parentKey: schema[parentCollection].primary,
 					fieldKey: relationalField,
 					relation: relation,
 				};
@@ -139,23 +167,25 @@ export default async function getASTFromQuery(
 				for (const relatedCollection of allowedCollections) {
 					child.children[relatedCollection] = await parseFields(
 						relatedCollection,
-						nestedFields
+						Array.isArray(nestedFields) ? nestedFields : (nestedFields as anyNested)[relatedCollection] || ['*']
 					);
 					child.query[relatedCollection] = {};
-					child.relatedKey[relatedCollection] = await schemaInspector.primary(
-						relatedCollection
-					);
+					child.relatedKey[relatedCollection] = schema[relatedCollection].primary;
 				}
 			} else if (relatedCollection) {
+				if (permissions && permissions.some((permission) => permission.collection === relatedCollection) === false) {
+					continue;
+				}
+
 				child = {
 					type: relationType,
 					name: relatedCollection,
 					fieldKey: relationalField,
-					parentKey: await schemaInspector.primary(parentCollection),
-					relatedKey: await schemaInspector.primary(relatedCollection),
+					parentKey: schema[parentCollection].primary,
+					relatedKey: schema[relatedCollection].primary,
 					relation: relation,
 					query: deep?.[relationalField] || {},
-					children: await parseFields(relatedCollection, nestedFields),
+					children: await parseFields(relatedCollection, nestedFields as string[]),
 				};
 			}
 
@@ -173,9 +203,7 @@ export default async function getASTFromQuery(
 		const fieldsInCollection = await getFieldsInCollection(parentCollection);
 
 		const allowedFields = permissions
-			? permissions
-					.find((permission) => parentCollection === permission.collection)
-					?.fields?.split(',')
+			? permissions.find((permission) => parentCollection === permission.collection)?.fields?.split(',')
 			: fieldsInCollection;
 
 		if (!allowedFields || allowedFields.length === 0) return [];
@@ -203,8 +231,7 @@ export default async function getASTFromQuery(
 					? relations
 							.filter(
 								(relation) =>
-									relation.many_collection === parentCollection ||
-									relation.one_collection === parentCollection
+									relation.many_collection === parentCollection || relation.one_collection === parentCollection
 							)
 							.map((relation) => {
 								const isMany = relation.many_collection === parentCollection;
@@ -212,9 +239,7 @@ export default async function getASTFromQuery(
 							})
 					: allowedFields.filter((fieldKey) => !!getRelation(parentCollection, fieldKey));
 
-				const nonRelationalFields = fieldsInCollection.filter(
-					(fieldKey) => relationalFields.includes(fieldKey) === false
-				);
+				const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 
 				fields.splice(
 					index,
@@ -260,10 +285,11 @@ export default async function getASTFromQuery(
 	}
 
 	async function getFieldsInCollection(collection: string) {
-		const columns = (await schemaInspector.columns(collection)).map((column) => column.column);
-		const fields = (
-			await knex.select('field').from('directus_fields').where({ collection })
-		).map((field) => field.field);
+		const columns = Object.keys(schema[collection].columns);
+		const fields = [
+			...(await knex.select('field').from('directus_fields').where({ collection })).map((field) => field.field),
+			...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection).map((fieldMeta) => fieldMeta.field),
+		];
 
 		const fieldsInCollection = [
 			...columns,

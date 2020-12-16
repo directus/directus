@@ -69,14 +69,7 @@ function mapKeys(key: string) {
 	};
 
 	key = map.hasOwnProperty(key) ? map[key] : key;
-
-	if (key.match(/^[a-z]$/) !== null) {
-		if (keysdown.has('shift')) key = key.toUpperCase();
-	} else if (key.match(/^[A-Z]$/) !== null) {
-		if (keysdown.has('shift')) key = key.toLowerCase();
-	} else {
-		key = key.toLowerCase();
-	}
+	key = key.toLowerCase();
 
 	return key;
 }
@@ -88,6 +81,7 @@ function callHandlers(event: KeyboardEvent) {
 		for (key of keysdown) {
 			if (keys.includes(key) === false) return;
 		}
+
 		for (key of keys) {
 			if (keysdown.has(key) === false) return;
 		}

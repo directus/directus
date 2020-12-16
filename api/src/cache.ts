@@ -9,13 +9,13 @@ let cache: Keyv | null = null;
 
 if (env.CACHE_ENABLED === true) {
 	validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-	cache = getKevyInstance();
-	cache.on('error', logger.error);
+	cache = getKeyvInstance();
+	cache.on('error', (err) => logger.error(err));
 }
 
 export default cache;
 
-function getKevyInstance() {
+function getKeyvInstance() {
 	switch (env.CACHE_STORE) {
 		case 'redis':
 			return new Keyv(getConfig('redis'));
@@ -34,12 +34,8 @@ function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory'): Options<a
 	};
 
 	if (store === 'redis') {
-		const Redis = require('ioredis');
 		const KeyvRedis = require('@keyv/redis');
-
-		config.store = new KeyvRedis(
-			new Redis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'))
-		);
+		config.store = new KeyvRedis(env.CACHE_REDIS || getConfigFromEnv('CACHE_REDIS_'));
 	}
 
 	if (store === 'memcache') {

@@ -16,6 +16,20 @@ export function useCollection(collectionKey: string | Ref<string>) {
 		return fieldsStore.getFieldsForCollection(collection.value);
 	});
 
+	const defaults = computed(() => {
+		if (!fields.value) return {};
+
+		const defaults: Record<string, any> = {};
+
+		for (const field of fields.value) {
+			if (field.schema?.default_value) {
+				defaults[field.field] = field.schema.default_value;
+			}
+		}
+
+		return defaults;
+	});
+
 	const primaryKeyField = computed(() => {
 		// Every collection has a primary key; rules of the land
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -32,5 +46,9 @@ export function useCollection(collectionKey: string | Ref<string>) {
 		return info.value?.meta?.sort_field || null;
 	});
 
-	return { info, fields, primaryKeyField, userCreatedField, sortField };
+	const isSingleton = computed(() => {
+		return info.value?.meta?.singleton === true;
+	});
+
+	return { info, fields, defaults, primaryKeyField, userCreatedField, sortField, isSingleton };
 }

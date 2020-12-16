@@ -34,6 +34,10 @@
 					/>
 				</div>
 			</transition-expand>
+
+			<button v-if="systemVisible" class="reset-toggle" @click="resetActive = true">
+				{{ $t('reset_system_permissions') }}
+			</button>
 		</div>
 
 		<router-view
@@ -42,10 +46,6 @@
 			:permission-key="permission"
 			@refresh="refreshPermission"
 		/>
-
-		<button v-if="systemVisible" class="reset-toggle" @click="resetActive = true">
-			{{ $t('reset_system_permissions') }}
-		</button>
 
 		<v-dialog v-model="resetActive" @esc="resetActive = false">
 			<v-card>
@@ -68,6 +68,7 @@ import PermissionsOverviewRow from './permissions-overview-row.vue';
 import { Permission } from '@/types';
 import api from '@/api';
 import { permissions as appRequiredPermissions } from '../../app-required-permissions';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
@@ -80,6 +81,10 @@ export default defineComponent({
 			// the permission row primary key in case we're on the permission detail modal view
 			type: String,
 			default: null,
+		},
+		appAccess: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
@@ -99,7 +104,7 @@ export default defineComponent({
 
 		const systemVisible = ref(false);
 
-		const { permissions, loading, error, fetchPermissions, refreshPermission, refreshing } = usePermissions();
+		const { permissions, loading, fetchPermissions, refreshPermission, refreshing } = usePermissions();
 
 		const { resetActive, resetSystemPermissions, resetting, resetError } = useReset();
 
@@ -113,7 +118,6 @@ export default defineComponent({
 			systemCollections,
 			permissions,
 			loading,
-			error,
 			fetchPermissions,
 			refreshPermission,
 			refreshing,
@@ -127,16 +131,14 @@ export default defineComponent({
 			const permissions = ref<Permission[]>([]);
 			const loading = ref(false);
 			const refreshing = ref<number[]>([]);
-			const error = ref();
 
-			return { permissions, loading, error, fetchPermissions, refreshPermission, refreshing };
+			return { permissions, loading, fetchPermissions, refreshPermission, refreshing };
 
 			async function fetchPermissions() {
-				error.value = null;
 				loading.value = true;
 
 				try {
-					const params: any = { filter: { role: {} } };
+					const params: any = { filter: { role: {} }, limit: -1 };
 
 					if (props.role === null) {
 						params.filter.role = { _null: true };
@@ -144,11 +146,11 @@ export default defineComponent({
 						params.filter.role = { _eq: props.role };
 					}
 
-					const response = await api.get('/permissions', params);
+					const response = await api.get('/permissions', { params });
 
 					permissions.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -167,7 +169,7 @@ export default defineComponent({
 						return permission;
 					});
 				} catch (err) {
-					console.log(`Couldn't refresh permissions ${id}`);
+					unexpectedError(err);
 				} finally {
 					refreshing.value = refreshing.value.filter((inProgressID) => inProgressID !== id);
 				}
@@ -193,13 +195,15 @@ export default defineComponent({
 						await api.delete(`/permissions/${toBeDeleted.join(',')}`);
 					}
 
-					await api.post(
-						'/permissions',
-						appRequiredPermissions.map((permission) => ({
-							...permission,
-							role: props.role,
-						}))
-					);
+					if (props.role !== null && props.appAccess === true) {
+						await api.post(
+							'/permissions',
+							appRequiredPermissions.map((permission) => ({
+								...permission,
+								role: props.role,
+							}))
+						);
+					}
 
 					await fetchPermissions();
 

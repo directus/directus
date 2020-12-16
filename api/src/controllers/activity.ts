@@ -13,8 +13,14 @@ router.use(useCollection('directus_activity'));
 router.get(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const service = new ActivityService({ accountability: req.accountability });
-		const metaService = new MetaService({ accountability: req.accountability });
+		const service = new ActivityService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+		const metaService = new MetaService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		const records = await service.readByQuery(req.sanitizedQuery);
 		const meta = await metaService.getMetaForQuery('directus_activity', req.sanitizedQuery);
@@ -32,7 +38,10 @@ router.get(
 router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new ActivityService({ accountability: req.accountability });
+		const service = new ActivityService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
 
 		res.locals.payload = {
@@ -47,7 +56,10 @@ router.get(
 router.post(
 	'/comment',
 	asyncHandler(async (req, res, next) => {
-		const service = new ActivityService({ accountability: req.accountability });
+		const service = new ActivityService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
 		const primaryKey = await service.create({
 			...req.body,
@@ -79,7 +91,10 @@ router.post(
 router.patch(
 	'/comment/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new ActivityService({ accountability: req.accountability });
+		const service = new ActivityService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		const primaryKey = await service.update(req.body, req.params.pk);
 
 		try {
@@ -104,7 +119,10 @@ router.patch(
 router.delete(
 	'/comment/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new ActivityService({ accountability: req.accountability });
+		const service = new ActivityService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		await service.delete(req.params.pk);
 
 		return next();

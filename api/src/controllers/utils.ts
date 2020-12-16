@@ -24,7 +24,7 @@ router.get(
 );
 
 router.post(
-	'/hash',
+	'/hash/generate',
 	asyncHandler(async (req, res) => {
 		if (!req.body?.string) {
 			throw new InvalidPayloadException(`"string" is required`);
@@ -67,7 +67,10 @@ router.post(
 		const { error } = SortSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 
-		const service = new UtilsService({ accountability: req.accountability });
+		const service = new UtilsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		await service.sort(req.collection, req.body);
 
 		return res.status(200).end();
@@ -78,7 +81,10 @@ router.post(
 router.post(
 	'/revert/:revision',
 	asyncHandler(async (req, res, next) => {
-		const service = new RevisionsService({ accountability: req.accountability });
+		const service = new RevisionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 		await service.revert(req.params.revision);
 		next();
 	}),

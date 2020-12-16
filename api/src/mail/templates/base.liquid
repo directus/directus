@@ -3,20 +3,30 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Directus Email Service</title>
 	<meta name="viewport" content="width=device-width">
 	<meta name="format-detection" content="telephone=no">
+
+	<title>{{ projectName }} Email Service</title>
+
 	<style type="text/css">
 		a {
-			border: none;
-			text-decoration: none;
-			color: #2196f3;
-			outline: none !important;
-			color: #2196f3 !important;
+			display: inline-block;
+			height: 52px;
+			width: auto;
+			min-width: 154px;
+			padding: 0 20px;
+			font-size: 16px;
+			font-weight: bold;
+			line-height: 52px;
+			cursor: pointer;
+			border-radius: 4px;
+			text-decoration: none !important;
+			color: white !important;
+			background-color: {{ projectColor }};
 		}
 
 		a:hover {
-			color: #2196f3 !important;
+			filter: brightness(105%);
 		}
 
 		p {
@@ -33,14 +43,14 @@
 				<table align="center" border="0" cellpadding="0" cellspacing="0" width="600"
 					style="border: 0 solid #263238; border-collapse: collapse;">
 					<tr>
-						<td align="center" bgcolor="#263238"
+						<td align="center" bgcolor="{{ projectColor }}"
 							style="padding: 30px 0 30px 0; border-radius: 4px 4px 0 0;">
-							<img src="https://directus.io/assets/directus-white.png" alt="Directus" width="130"
+							<img src="{{ projectLogo }}" alt="{{ projectName }}" width="130"
 								style="display: block;" />
 						</td>
 					</tr>
 					<tr>
-						<td bgcolor="#ffffff" style="padding: 60px 30px 60px 30px; border-radius: 0 0 4px 4px;">
+						<td bgcolor="#ffffff" style="padding: 30px; border-radius: 0 0 4px 4px;">
 							<table border="0" cellpadding="0" cellspacing="0" width="100%">
 								<tr>
 									<td

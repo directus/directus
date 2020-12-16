@@ -1,0 +1,14 @@
+table: directus_folders
+
+fields:
+  - field: id
+    interface: text-input
+    special: uuid
+    width: half
+
+  - field: parent
+    width: half
+
+  - field: name
+    width: full
+

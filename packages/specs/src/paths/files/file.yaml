@@ -1,0 +1,56 @@
+get:
+  summary: Retrieve a Files
+  description: Retrieve a single file by unique identifier.
+  tags:
+    - Files
+  operationId: getFile
+  responses:
+    "200":
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: "../../openapi.yaml#/components/schemas/Files"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+
+patch:
+  summary: Update a File
+  description: Update an existing file.
+  tags:
+    - Files
+  operationId: updateFile
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+  responses:
+    "200":
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: "../../openapi.yaml#/components/schemas/Files"
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+
+delete:
+  summary: Delete a File
+  description: Delete an existing file.
+  tags:
+    - Files
+  operationId: deleteFile
+  responses:
+    "200":
+      description: Successful request
+    "401":
+      $ref: "../../openapi.yaml#/components/responses/UnauthorizedError"
+parameters:
+  - $ref: "../../openapi.yaml#/components/parameters/Id"

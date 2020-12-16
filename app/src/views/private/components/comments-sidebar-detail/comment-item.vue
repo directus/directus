@@ -41,6 +41,7 @@ import marked from 'marked';
 import useShortcut from '@/composables/use-shortcut';
 
 import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: { CommentItemHeader },
@@ -84,8 +85,8 @@ export default defineComponent({
 						comment: edits.value,
 					});
 					await props.refresh();
-				} catch (error) {
-					console.error(error);
+				} catch (err) {
+					unexpectedError(err);
 				} finally {
 					savingEdits.value = false;
 					editing.value = false;

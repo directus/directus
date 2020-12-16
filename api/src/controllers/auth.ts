@@ -34,6 +34,7 @@ router.post(
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
+			schema: req.schema,
 		});
 
 		const { error } = loginSchema.validate(req.body);
@@ -46,15 +47,13 @@ router.post(
 		const ip = req.ip;
 		const userAgent = req.get('user-agent');
 
-		const { accessToken, refreshToken, expires, id } = await authenticationService.authenticate(
-			{
-				ip,
-				userAgent,
-				email,
-				password,
-				otp,
-			}
-		);
+		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
+			ip,
+			userAgent,
+			email,
+			password,
+			otp,
+		});
 
 		const payload = {
 			data: { access_token: accessToken, expires },
@@ -69,8 +68,7 @@ router.post(
 				httpOnly: true,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
 				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
-				sameSite:
-					(env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
 
@@ -92,21 +90,18 @@ router.post(
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
+			schema: req.schema,
 		});
 
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
 
 		if (!currentRefreshToken) {
-			throw new InvalidPayloadException(
-				`"refresh_token" is required in either the JSON payload or Cookie`
-			);
+			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 		}
 
 		const mode: 'json' | 'cookie' = req.body.mode || req.body.refresh_token ? 'json' : 'cookie';
 
-		const { accessToken, refreshToken, expires } = await authenticationService.refresh(
-			currentRefreshToken
-		);
+		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken);
 
 		const payload = {
 			data: { access_token: accessToken, expires },
@@ -121,8 +116,7 @@ router.post(
 				httpOnly: true,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
 				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
-				sameSite:
-					(env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
 
@@ -144,14 +138,13 @@ router.post(
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
+			schema: req.schema,
 		});
 
 		const currentRefreshToken = req.body.refresh_token || req.cookies.directus_refresh_token;
 
 		if (!currentRefreshToken) {
-			throw new InvalidPayloadException(
-				`"refresh_token" is required in either the JSON payload or Cookie`
-			);
+			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 		}
 
 		await authenticationService.logout(currentRefreshToken);
@@ -173,10 +166,10 @@ router.post(
 			role: null,
 		};
 
-		const service = new UsersService({ accountability });
+		const service = new UsersService({ accountability, schema: req.schema });
 
 		try {
-			await service.requestPasswordReset(req.body.email);
+			await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
 		} catch {
 			// We don't want to give away what email addresses exist, so we'll always return a 200
 			// from this endpoint
@@ -204,7 +197,7 @@ router.post(
 			role: null,
 		};
 
-		const service = new UsersService({ accountability });
+		const service = new UsersService({ accountability, schema: req.schema });
 		await service.resetPassword(req.body.token, req.body.password);
 		return next();
 	}),
@@ -221,10 +214,7 @@ router.get(
 	respond
 );
 
-router.use(
-	'/oauth',
-	session({ secret: env.SECRET as string, saveUninitialized: false, resave: false })
-);
+router.use('/oauth', session({ secret: env.SECRET as string, saveUninitialized: false, resave: false }));
 
 router.get(
 	'/oauth/:provider',
@@ -239,7 +229,7 @@ router.get(
 		}
 
 		if (req.query?.redirect && req.session) {
-			req.session.redirect = req.query.redirect;
+			req.session.redirect = req.query.redirect as string;
 		}
 
 		next();
@@ -252,7 +242,7 @@ router.use(grant.express()(grantConfig));
 router.get(
 	'/oauth/:provider/callback',
 	asyncHandler(async (req, res, next) => {
-		const redirect = req.session?.redirect;
+		const redirect = req.session.redirect;
 
 		const accountability = {
 			ip: req.ip,
@@ -262,12 +252,10 @@ router.get(
 
 		const authenticationService = new AuthenticationService({
 			accountability: accountability,
+			schema: req.schema,
 		});
 
-		const email = getEmailFromProfile(
-			req.params.provider,
-			req.session!.grant.response?.profile
-		);
+		const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
 
 		req.session?.destroy(() => {});
 
@@ -280,8 +268,7 @@ router.get(
 				httpOnly: true,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
 				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
-				sameSite:
-					(env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 
 			return res.redirect(redirect);

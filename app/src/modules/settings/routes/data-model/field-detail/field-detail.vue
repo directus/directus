@@ -40,6 +40,7 @@
 		"
 		:subtitle="localType ? $t(`field_${localType}`) : null"
 		persistent
+		:sidebar-label="currentTabInfo.text"
 	>
 		<template #sidebar>
 			<setup-tabs :current.sync="currentTab" :tabs="tabs" :type="localType" />
@@ -121,10 +122,11 @@ import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores
 import { Field } from '@/types';
 import router from '@/router';
 import useCollection from '@/composables/use-collection';
-import notify from '@/utils/notify';
 import { getLocalTypeForField } from '../get-local-type';
+import { notify } from '@/utils/notify';
 
 import { initLocalStore, state, clearLocalStore } from './store';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	components: {
@@ -148,7 +150,7 @@ export default defineComponent({
 		},
 		type: {
 			type: String as PropType<
-				'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'
+				'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'm2a' | 'presentation' | 'translations'
 			>,
 			default: null,
 		},
@@ -173,7 +175,7 @@ export default defineComponent({
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
-			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' =
+			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2a' | 'm2o' | 'presentation' | 'translations' =
 				'standard';
 			type = getLocalTypeForField(props.collection, props.field);
 
@@ -182,7 +184,7 @@ export default defineComponent({
 
 		initLocalStore(props.collection, props.field, localType.value);
 
-		const { tabs, currentTab } = useTabs();
+		const { tabs, currentTab, currentTabInfo } = useTabs();
 
 		const saving = ref(false);
 
@@ -199,6 +201,7 @@ export default defineComponent({
 			existingField,
 			collectionInfo,
 			translationsManual,
+			currentTabInfo,
 		};
 
 		function useTabs() {
@@ -229,7 +232,7 @@ export default defineComponent({
 					});
 				}
 
-				if (['o2m', 'm2o', 'm2m', 'files'].includes(localType.value)) {
+				if (['o2m', 'm2o', 'm2m', 'm2a', 'files'].includes(localType.value)) {
 					tabs.splice(1, 0, {
 						text: i18n.t('relationship'),
 						value: 'relationship',
@@ -256,7 +259,12 @@ export default defineComponent({
 
 			const currentTab = ref(['schema']);
 
-			return { tabs, currentTab };
+			const currentTabInfo = computed(() => {
+				const tabKey = currentTab.value[0];
+				return tabs.value.find((tab) => tab.value === tabKey);
+			});
+
+			return { tabs, currentTab, currentTabInfo };
 
 			function relationshipDisabled() {
 				return isEmpty(state.fieldData.field);
@@ -287,6 +295,19 @@ export default defineComponent({
 						isEmpty(state.relations[1].many_field) ||
 						isEmpty(state.relations[1].one_collection) ||
 						isEmpty(state.relations[1].one_primary)
+					);
+				}
+
+				if (localType.value === 'm2a') {
+					return (
+						state.relations.length !== 2 ||
+						isEmpty(state.relations[0].many_collection) ||
+						isEmpty(state.relations[0].many_field) ||
+						isEmpty(state.relations[0].one_field) ||
+						isEmpty(state.relations[1].many_collection) ||
+						isEmpty(state.relations[1].many_field) ||
+						isEmpty(state.relations[1].one_collection_field) ||
+						isEmpty(state.relations[1].one_allowed_collections)
 					);
 				}
 
@@ -373,8 +394,8 @@ export default defineComponent({
 
 				router.push(`/settings/data-model/${props.collection}`);
 				clearLocalStore();
-			} catch (error) {
-				console.error(error);
+			} catch (err) {
+				unexpectedError(err);
 			} finally {
 				saving.value = false;
 			}

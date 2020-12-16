@@ -1,0 +1,35 @@
+table: directus_presets
+
+fields:
+  - field: filters
+    hidden: true
+    special: json
+
+  - field: layout_query
+    hidden: true
+    special: json
+
+  - field: layout_options
+    hidden: true
+    special: json
+
+  - field: role
+    width: half
+
+  - field: user
+    width: half
+
+  - field: id
+    width: half
+
+  - field: bookmark
+    width: half
+
+  - field: search
+    width: half
+
+  - field: collection
+    width: half
+
+  - field: layout
+    width: half

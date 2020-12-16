@@ -6,6 +6,11 @@ import getRootPath from '@/utils/get-root-path';
 const api = axios.create({
 	baseURL: getRootPath(),
 	withCredentials: true,
+	headers: {
+		'Cache-Control': 'no-cache',
+		Pragma: 'no-cache',
+		Expires: '0',
+	},
 });
 
 interface RequestConfig extends AxiosRequestConfig {
@@ -86,3 +91,17 @@ api.interceptors.request.use(onRequest);
 api.interceptors.response.use(onResponse, onError);
 
 export default api;
+
+function getToken() {
+	return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
+}
+
+export function addTokenToURL(url: string) {
+	const token = getToken();
+
+	if (url.includes('?')) {
+		return (url += '&access_token=' + token);
+	} else {
+		return (url += '?access_token=' + token);
+	}
+}

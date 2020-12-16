@@ -33,12 +33,13 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
-import api from '@/api';
+import api from '../../../../api';
 
-import useCollection from '@/composables/use-collection';
-import { useFieldsStore, useRelationsStore } from '@/stores';
-import i18n from '@/lang';
-import { Relation, Field } from '@/types';
+import useCollection from '../../../../composables/use-collection';
+import { useFieldsStore, useRelationsStore } from '../../../../stores';
+import i18n from '../../../../lang';
+import { Relation, Field } from '../../../../types';
+import { unexpectedError } from '../../../../utils/unexpected-error';
 
 export default defineComponent({
 	model: {
@@ -84,7 +85,7 @@ export default defineComponent({
 			junctionRelatedCollectionInfo,
 			setJunctionEdits,
 		} = useJunction();
-		const { _edits, loading, error, item } = useItem();
+		const { _edits, loading, item } = useItem();
 		const { save, cancel } = useActions();
 
 		const { collection } = toRefs(props);
@@ -115,7 +116,6 @@ export default defineComponent({
 			_active,
 			_edits,
 			loading,
-			error,
 			item,
 			save,
 			cancel,
@@ -162,7 +162,6 @@ export default defineComponent({
 			});
 
 			const loading = ref(false);
-			const error = ref(null);
 			const item = ref<Record<string, any> | null>(null);
 
 			watch(
@@ -173,7 +172,6 @@ export default defineComponent({
 						if (props.relatedPrimaryKey !== '+') fetchRelatedItem();
 					} else {
 						loading.value = false;
-						error.value = null;
 						item.value = null;
 						localEdits.value = {};
 					}
@@ -181,7 +179,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			return { _edits, loading, error, item, fetchItem };
+			return { _edits, loading, item, fetchItem };
 
 			async function fetchItem() {
 				loading.value = true;
@@ -201,7 +199,7 @@ export default defineComponent({
 
 					item.value = response.data.data;
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -224,7 +222,7 @@ export default defineComponent({
 						[junctionFieldInfo.value.field]: response.data.data,
 					};
 				} catch (err) {
-					error.value = err;
+					unexpectedError(err);
 				} finally {
 					loading.value = false;
 				}
@@ -241,15 +239,18 @@ export default defineComponent({
 			const junctionRelatedCollection = computed(() => {
 				if (!props.junctionField) return null;
 
-				// If this is a m2m (likely), there will be 2 relations associated with this field
+				// If this is a m2m/m2a, there will be 2 relations associated with this field
 				const relations = relationsStore.getRelationsForField(props.collection, props.junctionField);
-				return (
-					relations.find((relation: Relation) => {
-						return (
-							relation.many_collection === props.collection && relation.many_field === props.junctionField
-						);
-					})?.one_collection || null
-				);
+
+				const relationForField = relations.find((relation: Relation) => {
+					return (
+						relation.many_collection === props.collection && relation.many_field === props.junctionField
+					);
+				});
+
+				if (relationForField.one_collection) return relationForField.one_collection;
+				if (relationForField.one_collection_field) return props.edits[relationForField.one_collection_field];
+				return null;
 			});
 
 			const junctionRelatedCollectionInfo = computed(() => {

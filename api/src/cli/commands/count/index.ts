@@ -1,4 +1,4 @@
-export default async function rolesCreate(collection: string) {
+export default async function count(collection: string) {
 	const database = require('../../../database/index').default;
 
 	if (!collection) {
@@ -6,10 +6,16 @@ export default async function rolesCreate(collection: string) {
 		process.exit(1);
 	}
 
-	const records = await database(collection).count('*', { as: 'count' });
-	const count = Number(records[0].count);
+	try {
+		const records = await database(collection).count('*', { as: 'count' });
+		const count = Number(records[0].count);
 
-	console.log(count);
-
-	database.destroy();
+		console.log(count);
+		database.destroy();
+		process.exit(0);
+	} catch (err) {
+		console.error(err);
+		database.destroy();
+		process.exit(1);
+	}
 }

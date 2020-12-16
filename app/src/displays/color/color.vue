@@ -38,7 +38,7 @@ export default defineComponent({
 			const pageColorRGB = Color(pageColorString);
 			const colorRGB = props.value === null ? Color(props.defaultColor) : Color(props.value);
 
-			if (colorRGB.contrast(pageColorRGB) < 3) style['border'] = '1px solid var(--border-normal-alt)';
+			if (colorRGB.contrast(pageColorRGB) < 1.5) style['border'] = '1px solid var(--border-normal-alt)';
 
 			return style;
 		});
@@ -50,7 +50,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .color-dot {
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 
 	.dot {
@@ -58,7 +58,6 @@ export default defineComponent({
 		flex-shrink: 0;
 		width: 12px;
 		height: 12px;
-		margin: 0 4px;
 		border-radius: 6px;
 	}
 }

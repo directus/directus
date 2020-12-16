@@ -19,7 +19,7 @@ export default defineDisplay(({ i18n }) => ({
 	handler: DisplayRelatedValues,
 	options: options,
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
-	localTypes: ['m2m', 'm2o', 'o2m'],
+	groups: ['m2m', 'm2o', 'o2m'],
 	fields: (options: Options, { field, collection }) => {
 		const relatedCollection = getRelatedCollection(collection, field);
 		const { primaryKeyField } = useCollection(ref(relatedCollection as string));

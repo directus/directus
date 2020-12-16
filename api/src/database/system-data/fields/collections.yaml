@@ -1,0 +1,134 @@
+table: directus_collections
+
+fields:
+  - field: collection_divider
+    special: alias
+    interface: divider
+    options:
+      icon: box
+      title: Collection Setup
+      color: '#2F80ED'
+    width: full
+
+  - field: collection
+    interface: text-input
+    options:
+      font: monospace
+    readonly: true
+    width: half
+
+  - field: icon
+    interface: icon
+    options:
+    width: half
+
+  - field: note
+    interface: text-input
+    options:
+      placeholder: A description of this collection...
+    width: full
+
+  - field: display_template
+    interface: display-template
+    options:
+      collectionField: collection
+    width: full
+
+  - field: hidden
+    special: boolean
+    interface: toggle
+    options:
+      label: Hide within the App
+    width: half
+
+  - field: singleton
+    special: boolean
+    interface: toggle
+    options:
+      label: Treat as single object
+    width: half
+
+  - field: translations
+    special: json
+    interface: repeater
+    options:
+      template: '{{ translation }} ({{ language }})'
+      fields:
+        - field: language
+          name: Language
+          type: string
+          schema:
+            default_value: en-US
+          meta:
+            interface: system-language
+            width: half
+        - field: translation
+          name: translation
+          type: string
+          meta:
+            interface: text-input
+            width: half
+            options:
+              placeholder: Enter a translation...
+    width: full
+
+  - field: archive_divider
+    special: alias
+    interface: divider
+    options:
+      icon: archive
+      title: Archive
+      color: '#2F80ED'
+    width: full
+
+  - field: archive_field
+    interface: field
+    options:
+      collectionField: collection
+      allowNone: true
+      placeholder: Choose a field...
+    width: half
+
+  - field: archive_app_filter
+    interface: toggle
+    special: boolean
+    options:
+      label: Enable App Archive Filter
+    width: half
+
+  - field: archive_value
+    interface: text-input
+    options:
+      font: monospace
+      iconRight: archive
+      placeholder: Value set when archiving...
+    width: half
+
+  - field: unarchive_value
+    interface: text-input
+    options:
+      font: monospace
+      iconRight: unarchive
+      placeholder: Value set when unarchiving...
+    width: half
+
+  - field: sort_divider
+    special: alias
+    interface: divider
+    options:
+      icon: sort
+      title: Sort
+      color: '#2F80ED'
+    width: full
+
+  - field: sort_field
+    interface: field
+    options:
+      collectionField: collection
+      placeholder: Choose a field...
+      typeAllowList:
+        - float
+        - decimal
+        - integer
+      allowNone: true
+    width: half

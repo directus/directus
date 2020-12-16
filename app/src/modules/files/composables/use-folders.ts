@@ -1,5 +1,4 @@
 import api from '@/api';
-import i18n from '@/lang';
 import { ref, Ref } from '@vue/composition-api';
 import { TranslateResult } from 'vue-i18n';
 
@@ -63,9 +62,7 @@ export default function useFolders() {
 }
 
 export function nestFolders(rawFolders: FolderRaw[]) {
-	return rawFolders
-		.map((rawFolder) => nestChildren(rawFolder, rawFolders))
-		.filter((folder) => folder.parent === null);
+	return rawFolders.map((rawFolder) => nestChildren(rawFolder, rawFolders)).filter((folder) => folder.parent === null);
 }
 
 export function nestChildren(rawFolder: FolderRaw, rawFolders: FolderRaw[]) {

@@ -1,11 +1,19 @@
 import { QueryBuilder } from 'knex';
-import { Query, Filter } from '../types';
-import database, { schemaInspector } from '../database';
-import { clone } from 'lodash';
+import { Query, Filter, Relation, SchemaOverview } from '../types';
+import Knex from 'knex';
+import { clone, isPlainObject } from 'lodash';
+import { systemRelationRows } from '../database/system-data/relations';
+import { nanoid } from 'nanoid';
 
-export default async function applyQuery(collection: string, dbQuery: QueryBuilder, query: Query) {
+export default async function applyQuery(
+	knex: Knex,
+	collection: string,
+	dbQuery: QueryBuilder,
+	query: Query,
+	schema: SchemaOverview
+) {
 	if (query.filter) {
-		await applyFilter(dbQuery, query.filter, collection);
+		await applyFilter(knex, dbQuery, query.filter, collection);
 	}
 
 	if (query.sort) {
@@ -29,133 +37,233 @@ export default async function applyQuery(collection: string, dbQuery: QueryBuild
 	}
 
 	if (query.search) {
-		const columns = await schemaInspector.columnInfo(collection);
+		const columns = Object.values(schema[collection].columns);
 
 		dbQuery.andWhere(function () {
 			columns
 				/** @todo Check if this scales between SQL vendors */
 				.filter(
-					(column) =>
-						column.type.toLowerCase().includes('text') ||
-						column.type.toLowerCase().includes('char')
+					(column) => column.data_type.toLowerCase().includes('text') || column.data_type.toLowerCase().includes('char')
 				)
 				.forEach((column) => {
-					this.orWhereRaw(`LOWER(??) LIKE ?`, [column.name, `%${query.search!}%`]);
+					this.orWhereRaw(`LOWER(??) LIKE ?`, [column.column_name, `%${query.search!}%`]);
 				});
 		});
 	}
 }
 
-export async function applyFilter(dbQuery: QueryBuilder, filter: Filter, collection: string) {
-	for (const [key, value] of Object.entries(filter)) {
-		if (key === '_or') {
-			value.forEach((subFilter: Record<string, any>) => {
-				dbQuery.orWhere((subQuery) => applyFilter(subQuery, subFilter, collection));
-			});
+export async function applyFilter(knex: Knex, rootQuery: QueryBuilder, rootFilter: Filter, collection: string) {
+	const relations: Relation[] = [...(await knex.select('*').from('directus_relations')), ...systemRelationRows];
 
-			continue;
+	const aliasMap: Record<string, string> = {};
+
+	addJoins(rootQuery, rootFilter, collection);
+	addWhereClauses(rootQuery, rootFilter, collection);
+
+	function addJoins(dbQuery: QueryBuilder, filter: Filter, collection: string) {
+		for (const [key, value] of Object.entries(filter)) {
+			if (key === '_or' || key === '_and') {
+				value.forEach((subFilter: Record<string, any>) => {
+					addJoins(dbQuery, subFilter, collection);
+				});
+
+				continue;
+			}
+
+			const filterPath = getFilterPath(key, value);
+
+			if (filterPath.length > 1) {
+				addJoin(filterPath, collection);
+			}
 		}
 
-		if (key === '_and') {
-			value.forEach((subFilter: Record<string, any>) => {
-				dbQuery.andWhere((subQuery) => applyFilter(subQuery, subFilter, collection));
-			});
+		function addJoin(path: string[], collection: string) {
+			path = clone(path);
 
-			continue;
+			followRelation(path);
+
+			function followRelation(pathParts: string[], parentCollection: string = collection, parentAlias?: string) {
+				const relation = relations.find((relation) => {
+					return (
+						(relation.many_collection === parentCollection && relation.many_field === pathParts[0]) ||
+						(relation.one_collection === parentCollection && relation.one_field === pathParts[0])
+					);
+				});
+
+				if (!relation) return;
+
+				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
+
+				const alias = nanoid(8);
+				aliasMap[pathParts.join('+')] = alias;
+
+				if (isM2O) {
+					dbQuery.leftJoin(
+						{ [alias]: relation.one_collection! },
+						`${parentAlias || parentCollection}.${relation.many_field}`,
+						`${alias}.${relation.one_primary}`
+					);
+				} else {
+					dbQuery.leftJoin(
+						{ [alias]: relation.many_collection },
+						`${parentAlias || parentCollection}.${relation.one_primary}`,
+						`${alias}.${relation.many_field}`
+					);
+				}
+
+				pathParts.shift();
+
+				const parent = isM2O ? relation.one_collection! : relation.many_collection;
+
+				if (pathParts.length) {
+					followRelation(pathParts, parent, alias);
+				}
+			}
 		}
-
-		const filterPath = getFilterPath(key, value);
-		const { operator: filterOperator, value: filterValue } = getOperation(key, value);
-
-		const column =
-			filterPath.length > 1
-				? await applyJoins(dbQuery, filterPath, collection)
-				: `${collection}.${filterPath[0]}`;
-
-		applyFilterToQuery(column, filterOperator, filterValue);
 	}
 
-	function applyFilterToQuery(key: string, operator: string, compareValue: any) {
-		if (operator === '_eq') {
-			dbQuery.where({ [key]: compareValue });
+	function addWhereClauses(dbQuery: QueryBuilder, filter: Filter, collection: string, logical: 'and' | 'or' = 'and') {
+		for (const [key, value] of Object.entries(filter)) {
+			if (key === '_or' || key === '_and') {
+				/** @NOTE this callback function isn't called until Knex runs the query */
+				dbQuery.where((subQuery) => {
+					value.forEach((subFilter: Record<string, any>) => {
+						addWhereClauses(subQuery, subFilter, collection, key === '_and' ? 'and' : 'or');
+					});
+				});
+
+				continue;
+			}
+
+			const filterPath = getFilterPath(key, value);
+			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
+
+			if (filterPath.length > 1) {
+				const columnName = getWhereColumn(filterPath, collection);
+				applyFilterToQuery(columnName, filterOperator, filterValue, logical);
+			} else {
+				applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+			}
 		}
 
-		if (operator === '_neq') {
-			dbQuery.whereNot({ [key]: compareValue });
+		function applyFilterToQuery(key: string, operator: string, compareValue: any, logical: 'and' | 'or' = 'and') {
+			if (operator === '_eq') {
+				dbQuery[logical].where({ [key]: compareValue });
+			}
+
+			if (operator === '_neq') {
+				dbQuery[logical].whereNot({ [key]: compareValue });
+			}
+
+			if (operator === '_contains') {
+				dbQuery[logical].where(key, 'like', `%${compareValue}%`);
+			}
+
+			if (operator === '_ncontains') {
+				dbQuery[logical].whereNot(key, 'like', `%${compareValue}%`);
+			}
+
+			if (operator === '_gt') {
+				dbQuery[logical].where(key, '>', compareValue);
+			}
+
+			if (operator === '_gte') {
+				dbQuery[logical].where(key, '>=', compareValue);
+			}
+
+			if (operator === '_lt') {
+				dbQuery[logical].where(key, '<', compareValue);
+			}
+
+			if (operator === '_lte') {
+				dbQuery[logical].where(key, '<=', compareValue);
+			}
+
+			if (operator === '_in') {
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery[logical].whereIn(key, value as string[]);
+			}
+
+			if (operator === '_nin') {
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery[logical].whereNotIn(key, value as string[]);
+			}
+
+			if (operator === '_null') {
+				dbQuery[logical].whereNull(key);
+			}
+
+			if (operator === '_nnull') {
+				dbQuery[logical].whereNotNull(key);
+			}
+
+			if (operator === '_empty') {
+				dbQuery[logical].andWhere((query) => {
+					query.whereNull(key);
+					query.orWhere(key, '=', '');
+				});
+			}
+
+			if (operator === '_nempty') {
+				dbQuery[logical].andWhere((query) => {
+					query.whereNotNull(key);
+					query.orWhere(key, '!=', '');
+				});
+			}
+
+			if (operator === '_between') {
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery[logical].whereBetween(key, value);
+			}
+
+			if (operator === '_nbetween') {
+				let value = compareValue;
+				if (typeof value === 'string') value = value.split(',');
+
+				dbQuery[logical].whereNotBetween(key, value);
+			}
 		}
 
-		if (operator === '_contains') {
-			dbQuery.where(key, 'like', `%${compareValue}%`);
-		}
+		function getWhereColumn(path: string[], collection: string) {
+			path = clone(path);
 
-		if (operator === '_ncontains') {
-			dbQuery.where(key, 'like', `%${compareValue}%`);
-		}
+			let columnName = '';
 
-		if (operator === '_gt') {
-			dbQuery.where(key, '>', compareValue);
-		}
+			followRelation(path);
 
-		if (operator === '_gte') {
-			dbQuery.where(key, '>=', compareValue);
-		}
+			return columnName;
 
-		if (operator === '_lt') {
-			dbQuery.where(key, '<', compareValue);
-		}
+			function followRelation(pathParts: string[], parentCollection: string = collection) {
+				const relation = relations.find((relation) => {
+					return (
+						(relation.many_collection === parentCollection && relation.many_field === pathParts[0]) ||
+						(relation.one_collection === parentCollection && relation.one_field === pathParts[0])
+					);
+				});
 
-		if (operator === '_lte') {
-			dbQuery.where(key, '<=', compareValue);
-		}
+				if (!relation) return;
 
-		if (operator === '_in') {
-			let value = compareValue;
-			if (typeof value === 'string') value = value.split(',');
+				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
+				const alias = aliasMap[pathParts.join('+')];
 
-			dbQuery.whereIn(key, value as string[]);
-		}
+				pathParts.shift();
 
-		if (operator === '_nin') {
-			let value = compareValue;
-			if (typeof value === 'string') value = value.split(',');
+				const parent = isM2O ? relation.one_collection! : relation.many_collection;
 
-			dbQuery.whereNotIn(key, value as string[]);
-		}
+				if (pathParts.length === 1) {
+					columnName = `${alias || parent}.${pathParts[0]}`;
+				}
 
-		if (operator === '_null') {
-			dbQuery.whereNull(key);
-		}
-
-		if (operator === '_nnull') {
-			dbQuery.whereNotNull(key);
-		}
-
-		if (operator === '_empty') {
-			dbQuery.andWhere((query) => {
-				query.whereNull(key);
-				query.orWhere(key, '=', '');
-			});
-		}
-
-		if (operator === '_nempty') {
-			dbQuery.andWhere((query) => {
-				query.whereNotNull(key);
-				query.orWhere(key, '!=', '');
-			});
-		}
-
-		if (operator === '_between') {
-			let value = compareValue;
-			if (typeof value === 'string') value = value.split(',');
-
-			dbQuery.whereBetween(key, value);
-		}
-
-		if (operator === '_nbetween') {
-			let value = compareValue;
-			if (typeof value === 'string') value = value.split(',');
-
-			dbQuery.whereNotBetween(key, value);
+				if (pathParts.length) {
+					followRelation(pathParts, parent);
+				}
+			}
 		}
 	}
 }
@@ -163,7 +271,11 @@ export async function applyFilter(dbQuery: QueryBuilder, filter: Filter, collect
 function getFilterPath(key: string, value: Record<string, any>) {
 	const path = [key];
 
-	if (Object.keys(value)[0].startsWith('_') === false) {
+	if (Object.keys(value)[0].startsWith('_') === true) {
+		return path;
+	}
+
+	if (isPlainObject(value)) {
 		path.push(...getFilterPath(Object.keys(value)[0], Object.values(value)[0]));
 	}
 
@@ -171,57 +283,11 @@ function getFilterPath(key: string, value: Record<string, any>) {
 }
 
 function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
-	if (key.startsWith('_') && key !== '_and' && key !== '_or')
+	if (key.startsWith('_') && key !== '_and' && key !== '_or') {
 		return { operator: key as string, value };
-	return getOperation(Object.keys(value)[0], Object.values(value)[0]);
-}
-
-async function applyJoins(dbQuery: QueryBuilder, path: string[], collection: string) {
-	path = clone(path);
-
-	let keyName = '';
-
-	await addJoins(path);
-
-	return keyName;
-
-	async function addJoins(pathParts: string[], parentCollection: string = collection) {
-		const relation = await database
-			.select('*')
-			.from('directus_relations')
-			.where({ one_collection: parentCollection, one_field: pathParts[0] })
-			.orWhere({ many_collection: parentCollection, many_field: pathParts[0] })
-			.first();
-
-		if (!relation) return;
-
-		const isM2O =
-			relation.many_collection === parentCollection && relation.many_field === pathParts[0];
-
-		if (isM2O) {
-			dbQuery.leftJoin(
-				relation.one_collection,
-				`${parentCollection}.${relation.many_field}`,
-				`${relation.one_collection}.${relation.one_primary}`
-			);
-		} else {
-			dbQuery.leftJoin(
-				relation.many_collection,
-				`${relation.one_collection}.${relation.one_primary}`,
-				`${relation.many_collection}.${relation.many_field}`
-			);
-		}
-
-		pathParts.shift();
-
-		const parent = isM2O ? relation.one_collection : relation.many_collection;
-
-		if (pathParts.length === 1) {
-			keyName = `${parent}.${pathParts[0]}`;
-		}
-
-		if (pathParts.length) {
-			await addJoins(pathParts, parent);
-		}
+	} else if (isPlainObject(value) === false) {
+		return { operator: '_eq', value };
 	}
+
+	return getOperation(Object.keys(value)[0], Object.values(value)[0]);
 }

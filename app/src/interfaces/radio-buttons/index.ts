@@ -54,8 +54,8 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'icon',
 			},
 			schema: {
-				default_value: 'radio_button_checked'
-			}
+				default_value: 'radio_button_checked',
+			},
 		},
 		{
 			field: 'iconOff',
@@ -66,8 +66,8 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'icon',
 			},
 			schema: {
-				default_value: 'radio_button_unchecked'
-			}
+				default_value: 'radio_button_unchecked',
+			},
 		},
 		{
 			field: 'color',
