@@ -55,6 +55,11 @@ reset_system_permissions_copy: Đặt lại tất cả các quyền hệ thống
 unarchive: Ngừng lưu trữ
 unarchive_confirm: Bạn có chắc chắn muốn mở lưu trữ mục này không?
 nested_files_folders_will_be_moved: Các files và thư mục sẽ được di chuyển lên thư mục trên.
+unknown_validation_errors: 'Có một số lỗi xảy ra với những trường ẩn sau:'
+validationError:
+  eq: Dữ liệu phải là {valid}
+  neq: Dữ liệu không thể là {invalid}
+  in: Dữ liệu phải là một trong số {valid}
 language: Ngôn ngữ
 create_field: Tạo thêm trường
 hidden_on_detail: Ẩn tại chi tiết
