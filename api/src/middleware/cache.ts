@@ -10,6 +10,8 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 	if (env.CACHE_ENABLED !== true) return next();
 	if (!cache) return next();
 
+	if (req.headers['cache-control']?.includes('no-cache')) return next();
+
 	const key = getCacheKey(req);
 	const cachedData = await cache.get(key);
 
