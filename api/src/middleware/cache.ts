@@ -19,7 +19,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 		// Set cache-control header
 		if (env.CACHE_AUTO_PURGE !== true) {
 			const expiresAt = await cache.get(`${key}__expires_at`);
-			const maxAge = `max-age="${expiresAt - Date.now()}"`;
+			const maxAge = `max-age=${expiresAt - Date.now()}`;
 			const access = !!req.accountability?.role === false ? 'public' : 'private';
 			res.setHeader('Cache-Control', `${access}, ${maxAge}`);
 		}

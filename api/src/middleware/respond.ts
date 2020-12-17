@@ -15,7 +15,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 		// Set cache-control header
 		if (env.CACHE_AUTO_PURGE !== true) {
-			const maxAge = `max-age="${ms(env.CACHE_TTL as string)}"`;
+			const maxAge = `max-age=${ms(env.CACHE_TTL as string)}`;
 			const access = !!req.accountability?.role === false ? 'public' : 'private';
 			res.setHeader('Cache-Control', `${access}, ${maxAge}`);
 		}

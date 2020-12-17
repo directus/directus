@@ -114,7 +114,7 @@ router.get(
 		}
 
 		const access = !!req.accountability?.role ? 'private' : 'public';
-		res.setHeader('Cache-Control', `${access}, max-age="${ms(env.ASSETS_CACHE_TTL as string)}"`);
+		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string)}`);
 		stream.pipe(res);
 	})
 );
