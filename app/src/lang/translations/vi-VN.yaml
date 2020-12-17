@@ -85,9 +85,28 @@ field_m2m: Quan hệ Nhiều -> Nhiều
 field_translations: Các Bản Dịch
 item_permissions: Quyền truy cập Bảng ghi
 field_permissions: Quyền truy cập Trường
+delete_field: Xóa Trường
+field_create_success: 'Trường đã tạo: "{field}"'
+field_update_success: 'Trường đã cập nhật: "{field}"'
+duplicate_where_to: Bạn muốn nhân bản trường này đến đâu?
 language: Ngôn ngữ
+global: Toàn cục
+admins_have_all_permissions: Các quản trị viên có toàn quyền
+camera: Camera
+exposure: Độ phơi sáng
+shutter: Màn trập
+iso: ISO
+focal_length: Tiêu cự
+schema_setup_title: Trường này nên lưu xuống cơ sở dữ liệu như thế nào?
+schema_field_title: Trường này nên hoạt động như thế nào trong chương trình?
 create_field: Tạo thêm trường
+creating_new_field: 'Trường Mới ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Đặt Lại Tùy Chọn cho Trang
+hidden_field: Trường Ẩn
 hidden_on_detail: Ẩn tại chi tiết
+disabled_editing_value: Cấm sửa đổi dữ liệu
+key: Khóa
 date: Ngày tháng
 decimal: Dạng thập phân
 text: Đoạn văn bản
