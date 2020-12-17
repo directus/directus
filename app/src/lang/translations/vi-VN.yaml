@@ -107,11 +107,26 @@ hidden_field: Trường Ẩn
 hidden_on_detail: Ẩn tại chi tiết
 disabled_editing_value: Cấm sửa đổi dữ liệu
 key: Khóa
+alias: Bí danh
+bigInteger: Big Integer
+boolean: Boolean
 date: Ngày tháng
+datetime: Ngày Giờ
 decimal: Dạng thập phân
+float: Số thực
+integer: Số nguyên
+json: JSON
+string: Chuỗi
 text: Đoạn văn bản
 time: Thời gian
+timestamp: Mốc thời gian
+uuid: UUID
+not_available_for_type: Không khả dụng đối với Kiểu này
+create_translations: Tạo Các Bản Dịch
 auto_generate: Tự khởi tạo
+this_will_auto_setup_fields_relations: Các trường và mối quan hệ bắt buộc sẽ được tự động tạo ra.
+click_here: Nhấn vào đây
+to_manually_setup_translations: để tạo các bản dịch một cách thủ công.
 add_note: Tạo ghi chú hữu ích cho người dùng...
 default_value: Giá trị mặc định
 next: Tiếp theo
@@ -379,6 +394,8 @@ interfaces:
   wysiwyg:
     custom_formats: Tuỳ chỉnh định dạng
 displays:
+  boolean:
+    boolean: Boolean
   collection:
     collection: Danh mục
   color:
