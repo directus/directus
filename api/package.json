@@ -58,8 +58,9 @@
 		"lint": "eslint \"src/**/*.ts\" cli.js index.js",
 		"prepublishOnly": "npm run build",
 		"prettier": "prettier --write \"src/**/*.ts\" cli.js index.js",
-		"db:start": "docker-compose -f scripts/docker-compose.yml up --build -d mysql postgres mssql; docker-compose -f scripts/docker-compose.yml up initmssqlknexdb waitmysql waitpostgres",
-		"db:stop": "docker-compose -f scripts/docker-compose.yml down"
+		"db:start": "docker-compose -f test/scripts/docker-compose.yml up --build -d mysql postgres mssql; docker-compose -f scripts/docker-compose.yml up initmssqlknexdb waitmysql waitpostgres",
+		"db:stop": "docker-compose -f test/scripts/docker-compose.yml down",
+		"test": "jest --runInBand"
 	},
 	"files": [
 		"dist",
