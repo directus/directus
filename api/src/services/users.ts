@@ -46,7 +46,7 @@ export class UsersService extends ItemsService {
 			}
 		}
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
@@ -110,18 +110,19 @@ export class UsersService extends ItemsService {
 
 		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 	}
 
-	async requestPasswordReset(email: string) {
+	async requestPasswordReset(email: string, url: string | null) {
 		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
 		if (!user) throw new ForbiddenException();
 
 		const payload = { email, scope: 'password-reset' };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
-		const acceptURL = env.PUBLIC_URL + '/admin/reset-password?token=' + token;
+
+		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
 
 		await sendPasswordResetMail(email, acceptURL);
 	}
@@ -144,7 +145,7 @@ export class UsersService extends ItemsService {
 
 		await this.knex('directus_users').update({ password: passwordHashed, status: 'active' }).where({ id: user.id });
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 	}

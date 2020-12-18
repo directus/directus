@@ -2,7 +2,9 @@
 
 ## 1. Click the Install Link
 
-As the name suggests, simply click on this direct link to: [Install Directus on Platform.sh](https://console.platform.sh/projects/create-project?template=https%3A%2F%2Fraw.githubusercontent.com%2Fplatformsh%2Ftemplate-builder%2Fmaster%2Ftemplates%2Fdirectus%2F.platform.template.yaml) ... or manually browse for "Directus" on the [Platform.sh Marketplace](https://platform.sh/marketplace/).
+As the name suggests, simply click on this direct link to:
+[Install Directus on Platform.sh](https://console.platform.sh/projects/create-project?template=https%3A%2F%2Fraw.githubusercontent.com%2Fplatformsh%2Ftemplate-builder%2Fmaster%2Ftemplates%2Fdirectus%2F.platform.template.yaml)
+... or manually browse for "Directus" on the [Platform.sh Marketplace](https://platform.sh/marketplace/).
 
 <!-- prettier-ignore-start -->
 ::: warning Paid Service

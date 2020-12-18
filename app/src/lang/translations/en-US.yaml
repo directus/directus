@@ -76,6 +76,14 @@ validationError:
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
+field_standard: Standard,
+field_presentation: Presentation & Aliases,
+field_file: Single File,
+field_files: Multiple Files,
+field_m2o: M2O Relationship,
+field_o2m: O2M Relationship,
+field_m2m: M2M Relationship,
+field_translations: Translations,
 item_permissions: Item Permissions
 field_permissions: Field Permissions
 field_validation: Field Validation
@@ -272,6 +280,9 @@ background_color: Background Color
 upload_from_device: Upload File from Device
 choose_from_library: Choose File from Library
 import_from_url: Import File from URL
+replace_from_device: Replace File from Device
+replace_from_library: Replace File from Library
+replace_from_url: Replace File from URL
 no_file_selected: No File Selected
 download_file: Download File
 collection_key: Collection Key
@@ -603,6 +614,8 @@ add_new: Add New
 from_collection: 'From “{collection}” Collection'
 create_new: Create New
 all: All
+none: None
+no_layout_collection_selected_yet: No layout/collection selected yet
 batch_delete_confirm: >-
   No items have been selected | Are you sure you want to delete this item? This
   action can not be undone. | Are you sure you want to delete these {count}

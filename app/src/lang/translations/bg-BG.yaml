@@ -30,7 +30,7 @@ delete_folder: Изтриване на папка
 reset_bookmark: Нулиране на отметки
 rename_bookmark: Преименуване на отметка
 update_bookmark: Обновяване на отметка
-delete_bookmark: Изтрий отметка
+delete_bookmark: Изтриване на отметка
 delete_bookmark_copy: >-
   Сигурни ли сте, че искате да изтриете "{bookmark}" отметката? Това действие не може да бъде отменено.
 logoutReason:
@@ -75,6 +75,14 @@ validationError:
 all_access: Пълен достъп
 no_access: Без достъп
 use_custom: Персонализирани
+field_standard: Стандартно,
+field_presentation: Презентационни и псевдоними,
+field_file: Единичен файл,
+field_files: Множество файлове,
+field_m2o: M2O релация,
+field_o2m: O2M релация,
+field_m2m: M2M релация,
+field_translations: Преводи,
 item_permissions: Позволения за обект
 field_permissions: Позволения за поле
 field_validation: Валидация на поле
@@ -269,6 +277,9 @@ background_color: Цвят на фона
 upload_from_device: Добавяне на файл от устройство
 choose_from_library: Избиране на файл от библиотеката
 import_from_url: Импортиране на файл от URL
+replace_from_device: Замяна на файл от устройство
+replace_from_library: Зямяна на файл от библиотеката
+replace_from_url: Замяна на файл от URL
 no_file_selected: Не е избран файл
 download_file: Изтегляне на файл
 collection_key: Ключ на колекция
@@ -292,6 +303,7 @@ no_comments: Все още няма коментари
 click_to_expand: Натиснете за разширяване
 select_item: Избор на обект
 no_items: Няма обекти
+search_items: Търсене на обекти...
 disabled: Изключване
 information: Информация
 report_bug: Доклад за проблем
@@ -584,6 +596,8 @@ add_new: Добави нов запис
 from_collection: 'От колекцията - {collection}'
 create_new: Създаване
 all: Всички
+none: Нищо
+no_layout_collection_selected_yet: Все още не е избран изглед/колекция
 batch_delete_confirm: >-
   Няма избрани обекти | Наистина ли искате да изтриете този обект? Това действие не може да бъде отменено. | Наистина ли искате да изтриете тези {count} обекта? Това действие не може да бъде отменено.
 cancel: Отмяна
@@ -792,7 +806,7 @@ interfaces:
     choices_name_placeholder: Въвеждане на името...
     choices_value_placeholder: Въвеждане на стойност...
   dropdown-multiselect:
-    dropdown-multiselect: Падащ лист (множествен избор)
+    dropdown-multiselect: Падащо меню (множествен избор)
     description: Избор на множество стойности от падащо меню
   file:
     file: Файл

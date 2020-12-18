@@ -6,6 +6,9 @@ import getRootPath from '@/utils/get-root-path';
 const api = axios.create({
 	baseURL: getRootPath(),
 	withCredentials: true,
+	headers: {
+		'Cache-Control': 'no-cache',
+	},
 });
 
 interface RequestConfig extends AxiosRequestConfig {

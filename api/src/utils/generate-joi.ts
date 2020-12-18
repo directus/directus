@@ -64,7 +64,7 @@ export default function generateJoi(filter: Filter | null): AnySchema {
 			if (!schema) schema = {};
 
 			const operator = Object.keys(value)[0];
-			const val = Object.keys(value)[1];
+			const val = Object.values(value)[0];
 
 			schema[key] = getJoi(operator, val);
 		}

@@ -1,11 +1,11 @@
 # Installation
 
-Directus can be installed in many different ways, on several different stacks. While our CLI is the
-easiest method, feel free to use whichever option best suits your needs.
+Directus can be installed in many different ways, on several different stacks. While our CLI is the easiest method, feel
+free to use whichever option best suits your needs.
 
--   [Command Line Interface (CLI)](/guides/installation/cli)
--   [Docker](/guides/installation/docker)
--   [Manually](/guides/installation/manual)
+- [Command Line Interface (CLI)](/guides/installation/cli)
+- [Docker](/guides/installation/docker)
+- [Manually](/guides/installation/manual)
 
 <!-- prettier-ignore-start -->
 ::: tip Development Environment
@@ -16,12 +16,12 @@ follow our [Contributing Guide](/getting-started/contributing).
 
 ## Deployment Guides
 
--   [Amazon AWS](/guides/installation/aws)
--   [DigitalOcean App Platform](/guides/installation/digitalocean-app-platform)
+- [Amazon AWS](/guides/installation/aws)
+- [DigitalOcean App Platform](/guides/installation/digitalocean-app-platform)
 
 ## One-Click Install Guides
 
--   [Platform.sh](/guides/installation/platformsh-one-click)
+- [Platform.sh](/guides/installation/platformsh-one-click)
 
 <!--
 @TODO
@@ -31,5 +31,5 @@ follow our [Contributing Guide](/getting-started/contributing).
 
 ## Optional Setup Guides
 
--   [Caddy](/guides/setup/caddy)
--   [Nginx](/guides/setup/nginx)
+- [Caddy](/guides/setup/caddy)
+- [Nginx](/guides/setup/nginx)

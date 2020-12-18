@@ -53,13 +53,7 @@
 		</template>
 
 		<div class="preset-item">
-			<v-form
-				:fields="fields"
-				:loading="loading"
-				:initial-values="initialValues"
-				:primary-key="id"
-				v-model="edits"
-			/>
+			<v-form :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" v-model="edits" />
 
 			<div class="layout">
 				<component
@@ -69,9 +63,25 @@
 					:layout-options.sync="layoutOptions"
 					:layout-query.sync="layoutQuery"
 					:filters="values.filters || []"
-					@update:filters="edits.filters = $event"
+					@update:filters="updateFilters"
 					readonly
-				/>
+				>
+					<template #no-results>
+						<v-info :title="$t('no_results')" icon="search" center>
+							{{ $t('no_results_copy') }}
+						</v-info>
+					</template>
+
+					<template #no-items>
+						<v-info :title="$tc('item_count', 0)" center>
+							{{ $t('no_items_copy') }}
+						</v-info>
+					</template>
+				</component>
+
+				<v-notice v-else>
+					{{ $t('no_layout_collection_selected_yet') }}
+				</v-notice>
 			</div>
 		</div>
 
@@ -148,7 +158,7 @@ export default defineComponent({
 		const { loading: rolesLoading, roles } = useRoles();
 		const { loading: presetLoading, preset } = usePreset();
 		const { fields } = useForm();
-		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions } = useValues();
+		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters } = useValues();
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
@@ -171,6 +181,7 @@ export default defineComponent({
 			deleteAndQuit,
 			confirmDelete,
 			marked,
+			updateFilters,
 		};
 
 		function useSave() {
@@ -316,7 +327,14 @@ export default defineComponent({
 				},
 			});
 
-			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits };
+			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters };
+
+			function updateFilters(newFilters: Filter) {
+				edits.value = {
+					...edits.value,
+					filters: newFilters,
+				};
+			}
 		}
 
 		function usePreset() {
@@ -447,8 +465,7 @@ export default defineComponent({
 									value: collection.collection,
 								}))
 								.filter((option) => {
-									if (option.value.startsWith('directus_'))
-										return systemCollectionWhiteList.includes(option.value);
+									if (option.value.startsWith('directus_')) return systemCollectionWhiteList.includes(option.value);
 
 									return true;
 								}),

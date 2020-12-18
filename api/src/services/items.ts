@@ -17,6 +17,7 @@ import cache from '../cache';
 import emitter from '../emitter';
 import logger from '../logger';
 import { toArray } from '../utils/to-array';
+import env from '../env';
 
 import { PayloadService } from './payload';
 import { AuthorizationService } from './authorization';
@@ -154,7 +155,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				await trx.insert(revisionRecords).into('directus_revisions');
 			}
 
-			if (cache) {
+			if (cache && env.CACHE_AUTO_PURGE) {
 				await cache.clear();
 			}
 
@@ -349,7 +350,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				}
 			});
 
-			if (cache) {
+			if (cache && env.CACHE_AUTO_PURGE) {
 				await cache.clear();
 			}
 
@@ -486,7 +487,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 

@@ -85,7 +85,7 @@ export default async function createServer() {
 	async function beforeShutdown() {
 		await emitter.emitAsync('server.stop.before', { server });
 
-		if (process.env.NODE_ENV === 'development') {
+		if ('DIRECTUS_DEV' in process.env) {
 			logger.info('Restarting...');
 		} else {
 			logger.info('Shutting down...');
@@ -100,7 +100,7 @@ export default async function createServer() {
 	async function onShutdown() {
 		emitter.emitAsync('server.stop').catch((err) => logger.warn(err));
 
-		if (process.env.NODE_ENV !== 'development') {
+		if (!('DIRECTUS_DEV' in process.env)) {
 			logger.info('Directus shut down OK. Bye bye!');
 		}
 	}

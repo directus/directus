@@ -7,6 +7,7 @@ import { ItemsService } from '../services/items';
 import cache from '../cache';
 import { toArray } from '../utils/to-array';
 import { systemCollectionRows } from '../database/system-data/collections';
+import env from '../env';
 
 export class CollectionsService {
 	knex: Knex;
@@ -93,7 +94,7 @@ export class CollectionsService {
 			}
 		});
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
@@ -245,7 +246,7 @@ export class CollectionsService {
 
 		await collectionItemsService.update(collectionUpdates);
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
@@ -316,7 +317,7 @@ export class CollectionsService {
 			await this.knex.schema.dropTable(collectionKey);
 		}
 
-		if (cache) {
+		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
 
