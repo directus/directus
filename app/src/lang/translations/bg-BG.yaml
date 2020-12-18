@@ -277,6 +277,9 @@ background_color: Цвят на фона
 upload_from_device: Добавяне на файл от устройство
 choose_from_library: Избиране на файл от библиотеката
 import_from_url: Импортиране на файл от URL
+replace_from_device: Замяна на файл от устройство
+replace_from_library: Зямяна на файл от библиотеката
+replace_from_url: Замяна на файл от URL
 no_file_selected: Не е избран файл
 download_file: Изтегляне на файл
 collection_key: Ключ на колекция
@@ -593,6 +596,7 @@ add_new: Добави нов запис
 from_collection: 'От колекцията - {collection}'
 create_new: Създаване
 all: Всички
+none: Нищо
 no_layout_collection_selected_yet: Все още не е избран изглед/колекция
 batch_delete_confirm: >-
   Няма избрани обекти | Наистина ли искате да изтриете този обект? Това действие не може да бъде отменено. | Наистина ли искате да изтриете тези {count} обекта? Това действие не може да бъде отменено.
@@ -745,6 +749,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   checkboxes:

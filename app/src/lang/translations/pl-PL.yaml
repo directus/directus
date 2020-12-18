@@ -13,6 +13,7 @@ db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować '
 show_archived_items: Pokaż zarchiwizowane elementy
 required: Wymagane
 requires_value: Wymaga wartości
+create_preset: Utwórz projekt
 create_role: Stwórz rolę
 create_user: Utwórz użytkownika
 create_webhook: Stwórz webhook
@@ -22,6 +23,7 @@ invite: Zaproś
 emails: E-maile
 connection_excellent: Doskonałe połączenie
 connection_good: Dobre połączenie
+connection_fair: Dobre połączenie
 connection_poor: Słabe połączenie
 rename_folder: Zmień nazwę folderu
 delete_folder: Usuń folder
@@ -345,6 +347,7 @@ click_to_browse: Kliknij, aby przeglądać
 collection_setup: Ustawienia kolekcji
 value_unique: Wartość musi być unikalna
 all_activity: Wszystkie aktywności
+per_page: Na stronę
 all_files: Wszystkie pliki
 my_files: Moje pliki
 recent_files: Ostatnie pliki
