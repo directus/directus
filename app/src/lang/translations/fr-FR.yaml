@@ -29,15 +29,41 @@ rename_folder: Renommer le fichier
 delete_folder: Supprimer le fichier
 reset_bookmark: Réinitialiser le signet
 rename_bookmark: Renommer le signet
+update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
 directus_version: Version de Directus
+os_version: Version de l'OS
+validationError:
+  empty: La valeur doit être vide
+  nempty: La valeur ne peut être vide
+  null: La valeur doit être nulle
+  nnull: La valeur ne peut être nulle
+  required: Une valeur est requise
+all_access: Accès total
+no_access: Pas d'accès
 language: Langue
+camera: Appareil photo
+exposure: Exposition
+shutter: Obturateur
+iso: ISO
+focal_length: Distance focale
 create_field: Créer un champ
+hidden_field: Champ caché
 hidden_on_detail: Caché dans les détails
+key: Clé
+alias: Alias
+bigInteger: Grand entier
+boolean: Booléen
 date: Date
+datetime: Date et heure
 decimal: Décimale
+float: Décimal
+integer: Entier
+json: JSON
+string: Chaine de caractères
 text: Texte
 time: Date et heure
+timestamp: Horodatage
 auto_generate: Générer automatiquement
 add_note: Ajouter une note utile aux utilisateurs…
 default_value: Valeur par défaut
@@ -306,6 +332,8 @@ interfaces:
   wysiwyg:
     custom_formats: Format personnalisé
 displays:
+  boolean:
+    boolean: Booléen
   collection:
     collection: Collection
   color:
