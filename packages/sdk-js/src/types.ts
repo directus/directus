@@ -12,8 +12,14 @@ export type Response<T> = {
 	meta?: Record<Meta, number>;
 };
 
-export type Query = {
+export type OneQuery = {
 	fields?: string | string[];
+	search?: string;
+	deep?: Record<string, Query>;
+	export?: 'json' | 'csv';
+};
+
+export type Query = OneQuery & {
 	sort?: string;
 	filter?: Filter;
 	limit?: number;
@@ -21,9 +27,6 @@ export type Query = {
 	page?: number;
 	single?: boolean;
 	meta?: Meta[];
-	search?: string;
-	export?: 'json' | 'csv';
-	deep?: Record<string, Query>;
 };
 
 export type Filter = {
