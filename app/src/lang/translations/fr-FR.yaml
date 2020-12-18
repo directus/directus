@@ -90,6 +90,8 @@ display: Affichage
 settings_update_success: Paramètres enregistrés
 title: Titre
 revision_delta_deleted: Supprimé
+revision_delta_other: Historique
+revision_preview: Aperçu de l'historique
 leave_comment: Laisser un commentaire…
 this_collection: Cette collection
 related_collection: Collection associée
@@ -114,6 +116,7 @@ months:
   december: Décembre
 drag_mode: Mode Glisser
 cancel_crop: Annuler le recadrage
+file_details: Détails du fichier
 size: Taille
 checksum: Code de vérification
 owner: Propriétaire
@@ -134,6 +137,7 @@ download_file: Télécharger le fichier
 name: Nom
 created_by: Créé par
 created_on: Créé le
+creating_collection_system: Activer et renommer l'un de ces champs optionnels.
 save_and_stay: Enregistrer et rester
 save_as_copy: Enregistrer une copie
 comments: Commentaires
@@ -181,6 +185,7 @@ copy_details: Copier les détails
 no_app_access: Pas d'accès à l'application
 no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'application d'administration.
 back: Retour
+editing_image: Modification de l'image
 square: Carré
 rotate: Faire pivoter
 all_users: Tous les utilisateurs
@@ -194,6 +199,7 @@ serif: Sérif
 monospace: Monospace
 divider: Séparateur
 color: Couleur
+advanced_filter: Filtre avancé
 operators:
   lt: Moins que
   gt: Plus grand que
@@ -203,6 +209,7 @@ operators:
   ncontains: Ne contient pas
   empty: Est vide
 loading: Chargement…
+layout_options: Options d'affichage
 create_item: Créer un élément
 display_template: Modèle d'affichage
 per_page: Par Page
@@ -243,6 +250,7 @@ settings_data_model: Modèle de données
 settings_permissions: Rôles et autorisations
 settings_project: Paramètres du projet
 settings_webhooks: Webhooks
+changes_are_permanent: Les modifications sont irréversibles
 unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
@@ -271,8 +279,8 @@ fields:
     tags: Étiquettes
     location: Localisation
     description: Description
-    filename_download: Téléchargement du nom du fichier
-    filename_disk: Disque du nom de fichier
+    filename_download: Nom du fichier téléchargeable
+    filename_disk: Nom du fichier sur le disque
     private_hash: Hachage privé
     checksum: Code de vérification
     uploaded_on: Transféré le
@@ -286,8 +294,8 @@ fields:
     status: Etat
     first_name: Prénom
     last_name: Nom
-    email: Courriel
-    email_notifications: Notifications par email
+    email: E-mail
+    email_notifications: Notifications par e-mail
     password: Mot de passe
     role: Rôle
     company: Entreprise
@@ -320,7 +328,7 @@ delete_field_are_you_sure: >-
 description: Description
 done: Fait
 duplicate: Dupliquer
-email: Courriel
+email: E-mail
 embed: Encapsulation
 field: Champ | Champs
 file: Fichier
@@ -342,6 +350,7 @@ permissions: Autorisations
 relationship: Relation
 reset: Réinitialiser
 reset_password: Réinitialiser le mot de passe
+revisions: Historique
 revert: Revenir en arriére
 save: Enregistrer
 schema: Schéma
