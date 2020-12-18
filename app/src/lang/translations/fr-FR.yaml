@@ -89,15 +89,29 @@ fields_for_role: 'Champs que le rôle {role} peut {action}.'
 validation_for_role: 'Règles pour {action} le champ que le rôle {role} doit suivre.'
 presets_for_role: 'Valeur par défaut du champ pour le rôle {role}.'
 presentation_and_aliases: Présentation & Alias
+revision_post_update: Voici à quoi ressemblait cet élément après la mise à jour...
+changes_made: Voici les changements spécifiques qui ont été apportés...
+no_relational_data: Gardez à l'esprit que cela n'inclut pas les données relationnelles.
+hide_field_on_detail: Masquer le champ dans le détail
+field_create_success: 'Champ créé : "{field}"'
+field_update_success: 'Champ mis à jour : "{field}"'
+duplicate_where_to: Vers où souhaitez-vous dupliquer ce champ ?
 language: Langue
+admins_have_all_permissions: Les administrateurs ont toutes les autorisations
 camera: Appareil photo
 exposure: Exposition
 shutter: Obturateur
 iso: ISO
 focal_length: Distance focale
+schema_setup_title: Comment ce champ doit-il être sauvegardé dans la base de données?
+schema_field_title: Comment ce champ doit-il se comporter dans l'application ?
 create_field: Créer un champ
+creating_new_field: 'Nouveau champ ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Réinitialiser les préférences de la page
 hidden_field: Champ caché
 hidden_on_detail: Caché dans les détails
+disabled_editing_value: Désactiver l'édition de la valeur
 key: Clé
 alias: Alias
 bigInteger: Grand entier
@@ -113,13 +127,42 @@ text: Texte
 time: Date et heure
 timestamp: Horodatage
 uuid: UUID (IDentifiant Unique Universel)
+not_available_for_type: Non disponible pour ce type
+create_translations: Créer des traductions
 auto_generate: Générer automatiquement
+this_will_auto_setup_fields_relations: Tous les champs et relations requis seront configurés automatiquement.
 click_here: Cliquez ici
+to_manually_setup_translations: pour configurer manuellement les traductions.
+click_to_manage_translated_fields: >-
+  Il n'y a pas encore de champ traduit. Cliquez-ici pour en créer un. | Il y a un champ traduit. Cliquez ici pour le gérer. | Il y a {count} champs traduits. Cliquez ici pour les gérer.
+fields_group: Groupe de champs
+configure_m2o: Configurez votre relation Many-to-One...
+configure_o2m: Configurez votre relation One-to-Many...
+configure_m2m: Configurez votre relation Many-to-Many...
+configure_m2a: Configurez votre relation Many-to-Any...
+add_m2o_to_collection: 'Ajouter une relation Many-to-One à "{collection}"'
+add_o2m_to_collection: 'Ajouter une relation One-to-Many à "{collection}"'
+add_m2m_to_collection: 'Ajouter une relation Many-to-Many à "{collection}"'
+choose_a_type: Choisir un type...
+determined_by_relationship: Déterminé par la relation
 add_note: Ajouter une note utile aux utilisateurs…
 default_value: Valeur par défaut
+add_a_default_value: Ajouter une valeur par défaut...
+interface_setup_title: Comment les utilisateurs interagiront-ils avec ce champ ?
+display_setup_title: Comment la valeur de ce champ doit-elle être affichée ?
+standard_field: Champ standard
+single_file: Fichier simple
+multiple_files: Fichiers multiples
+m2o_relationship: Relation Many-to-One
+o2m_relationship: Relation One-to-Many
+m2m_relationship: Relation Many-to-Many
+m2a_relationship: Relation Many-to-Any
 next: Suivant
+field_name: Nom du champ
+translations: Traductions
 note: Remarque
 enter_a_value: Saisissez une valeur...
+enter_a_placeholder: Entrez un placeholder...
 length: Taille
 readonly: Lecture seule
 unique: Unique
