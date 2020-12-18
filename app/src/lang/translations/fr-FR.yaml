@@ -31,12 +31,39 @@ reset_bookmark: Réinitialiser le signet
 rename_bookmark: Renommer le signet
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
+delete_bookmark_copy: >-
+  Êtes-vous sûr de vouloir supprimer le favori "{bookmark}" ? Cette action ne peut pas être annulée.
 logoutReason:
   SIGN_OUT: Déconnecté
+  SESSION_EXPIRED: Votre session a expiré
+public: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
+not_allowed: Non autorisé
 directus_version: Version de Directus
+node_version: Version de Node
+node_uptime: Temps de disponibilité de Node
+os_type: Type d'OS
 os_version: Version de l'OS
+os_uptime: Temps de disponibilité de l'OS
+os_totalmem: Mémoire de l'OS
+archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
+archive_confirm_count: >-
+  Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
+reset_system_permissions: Réinitialiser les autorisations système
+reset_system_permissions_copy: Réinitialiser toutes les autorisations système à leur valeur par défaut
+unarchive: Restaurer
+unarchive_confirm: Êtes-vous sûr de vouloir restaurer cet élément ?
+nested_files_folders_will_be_moved: Le contenu du dossier sera déplacé vers le dossier parent.
+unknown_validation_errors: 'Il y a eu des erreurs de validation pour les champs cachés suivants :'
 validationError:
+  eq: La valeur doit être {valid}
+  neq: La valeur ne peut pas être {invalid}
+  contains: La valeur doit contenir {substring}
+  ncontains: La valeur ne peut pas contenir {substring}
+  gt: La valeur doit être supérieure à {valid}
+  gte: La valeur doit être supérieure ou égale à {valid}
+  lt: La valeur doit être inférieure à {valid}
+  lte: La valeur doit être inférieure ou égale à {valid}
   empty: La valeur doit être vide
   nempty: La valeur ne peut être vide
   null: La valeur doit être nulle
@@ -44,6 +71,24 @@ validationError:
   required: Une valeur est requise
 all_access: Accès total
 no_access: Pas d'accès
+use_custom: Personnalisé
+field_standard: Standard,
+field_presentation: Présentation & Alias,
+field_file: Fichier simple,
+field_files: Fichiers multiples,
+field_m2o: Relation M2O,
+field_o2m: Relation O2M,
+field_m2m: Relation M2M,
+field_translations: Traductions,
+item_permissions: Permissions de l'élément
+field_permissions: Permissions du champ
+field_validation: Validation du champ
+field_presets: Préréglages du champ
+permissions_for_role: 'Éléments que le rôle {role} peut {action}.'
+fields_for_role: 'Champs que le rôle {role} peut {action}.'
+validation_for_role: 'Règles pour {action} le champ que le rôle {role} doit suivre.'
+presets_for_role: 'Valeur par défaut du champ pour le rôle {role}.'
+presentation_and_aliases: Présentation & Alias
 language: Langue
 camera: Appareil photo
 exposure: Exposition
