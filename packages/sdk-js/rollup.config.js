@@ -28,7 +28,7 @@ const configs = {
 	bundler: {
 		file: pkg.module,
 		format: 'es',
-		target: 'esnext',
+		target: 'es2015',
 		mode: 'development',
 	},
 	cjs: {
