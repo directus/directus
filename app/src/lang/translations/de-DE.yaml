@@ -330,6 +330,7 @@ wysiwyg_options:
 dropdown: Dropdown
 choices: Optionen
 deselect: Abwählen
+creating_in: 'Erstelle Element in {collection}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
 settings_permissions: Rollen & Berechtigungen
 settings_project: Projekt-Einstellungen
