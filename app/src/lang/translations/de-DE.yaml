@@ -118,6 +118,7 @@ m2m_relationship: n:m-Beziehung
 next: Weiter
 translations: Übersetzungen
 note: Notiz
+enter_a_value: Gib einen Wert ein...
 length: Länge
 readonly: Lesezugriff
 unique: Eindeutig
@@ -479,6 +480,7 @@ interfaces:
     divider: Divider
   dropdown:
     allow_other: Andere erlauben
+    choices_value_placeholder: Gib einen Wert ein...
   file:
     file: Datei
   files:
@@ -546,6 +548,8 @@ displays:
   image:
     image: Bild
     circle: Kreis
+  labels:
+    choices_value_placeholder: Gib einen Wert ein...
   rating:
     rating: Bewertung
   user:
