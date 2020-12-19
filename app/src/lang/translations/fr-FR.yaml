@@ -93,10 +93,14 @@ revision_post_update: Voici à quoi ressemblait cet élément après la mise à 
 changes_made: Voici les changements spécifiques qui ont été apportés...
 no_relational_data: Gardez à l'esprit que cela n'inclut pas les données relationnelles.
 hide_field_on_detail: Masquer le champ dans le détail
+show_field_on_detail: Afficher le champ dans le détail
+delete_field: Supprimer le champ
+fields_and_layout: Champs & Disposition
 field_create_success: 'Champ créé : "{field}"'
 field_update_success: 'Champ mis à jour : "{field}"'
 duplicate_where_to: Vers où souhaitez-vous dupliquer ce champ ?
 language: Langue
+global: Global
 admins_have_all_permissions: Les administrateurs ont toutes les autorisations
 camera: Appareil photo
 exposure: Exposition
@@ -167,6 +171,8 @@ length: Taille
 readonly: Lecture seule
 unique: Unique
 primary_key: Clef primaire
+foreign_key: Clé étrangère
+finish_setup: Terminer la configuration
 enter_raw_value: Saisissez une valeur brute...
 clear_value: Effacer la valeur
 reset_to_default: Rétablir les paramètres par défaut
