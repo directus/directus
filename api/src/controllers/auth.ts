@@ -99,7 +99,7 @@ router.post(
 			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 		}
 
-		const mode: 'json' | 'cookie' = req.body.mode || req.body.refresh_token ? 'json' : 'cookie';
+		const mode: 'json' | 'cookie' = req.body.mode || (req.body.refresh_token ? 'json' : 'cookie');
 
 		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken);
 

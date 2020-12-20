@@ -7,17 +7,12 @@ export class ItemsHandler {
 
 	constructor(collection: string, axios: AxiosInstance) {
 		this.axios = axios;
-		this.endpoint = collection.startsWith('directus_')
-			? `/${collection.substring(9)}/`
-			: `/items/${collection}/`;
+		this.endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}/` : `/items/${collection}/`;
 	}
 
 	async create<T extends Item>(payload: Payload, query?: Query): Promise<Response<T>>;
 	async create<T extends Item>(payloads: Payload[], query?: Query): Promise<Response<T[]>>;
-	async create<T extends Item>(
-		payloads: Payload | Payload[],
-		query?: Query
-	): Promise<Response<T | T[]>> {
+	async create<T extends Item>(payloads: Payload | Payload[], query?: Query): Promise<Response<T | T[]>> {
 		const result = await this.axios.post(this.endpoint, payloads, {
 			params: query,
 		});
@@ -38,9 +33,7 @@ export class ItemsHandler {
 
 		if (
 			keysOrQuery &&
-			(Array.isArray(keysOrQuery) ||
-				typeof keysOrQuery === 'string' ||
-				typeof keysOrQuery === 'number')
+			(Array.isArray(keysOrQuery) || typeof keysOrQuery === 'string' || typeof keysOrQuery === 'number')
 		) {
 			keys = keysOrQuery;
 		}
@@ -49,11 +42,7 @@ export class ItemsHandler {
 
 		if (query) {
 			params = query;
-		} else if (
-			!query &&
-			typeof keysOrQuery === 'object' &&
-			Array.isArray(keysOrQuery) === false
-		) {
+		} else if (!query && typeof keysOrQuery === 'object' && Array.isArray(keysOrQuery) === false) {
 			params = keysOrQuery as Query;
 		}
 
@@ -68,16 +57,8 @@ export class ItemsHandler {
 		return result.data;
 	}
 
-	async update<T extends Item>(
-		key: PrimaryKey,
-		payload: Payload,
-		query?: Query
-	): Promise<Response<T>>;
-	async update<T extends Item>(
-		keys: PrimaryKey[],
-		payload: Payload,
-		query?: Query
-	): Promise<Response<T[]>>;
+	async update<T extends Item>(key: PrimaryKey, payload: Payload, query?: Query): Promise<Response<T>>;
+	async update<T extends Item>(keys: PrimaryKey[], payload: Payload, query?: Query): Promise<Response<T[]>>;
 	async update<T extends Item>(payload: Payload[], query?: Query): Promise<Response<T[]>>;
 	async update<T extends Item>(payload: Payload, query: Query): Promise<Response<T[]>>;
 	async update<T extends Item>(
@@ -88,8 +69,7 @@ export class ItemsHandler {
 		if (
 			typeof keyOrPayload === 'string' ||
 			typeof keyOrPayload === 'number' ||
-			(Array.isArray(keyOrPayload) &&
-				(keyOrPayload as any[]).every((key) => ['string', 'number'].includes(typeof key)))
+			(Array.isArray(keyOrPayload) && (keyOrPayload as any[]).every((key) => ['string', 'number'].includes(typeof key)))
 		) {
 			const key = keyOrPayload as PrimaryKey | PrimaryKey[];
 			const payload = payloadOrQuery as Payload;

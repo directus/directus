@@ -20,6 +20,7 @@ import {
 
 import { expect } from 'chai';
 import { MemoryStore } from '../src/utils';
+import { BrowserStore } from '../src/utils/browser-store';
 
 describe('DirectusSDK', () => {
 	let directus: DirectusSDK;
@@ -46,9 +47,23 @@ describe('DirectusSDK', () => {
 	});
 
 	it('Defaults to the correct auth options', () => {
-		expect(directus['authOptions'].autoRefresh).to.be.true;
+		expect(directus['authOptions'].autoRefresh).to.be.false;
 		expect(directus['authOptions'].mode).to.equal('cookie');
 		expect(directus['authOptions'].storage).to.be.instanceOf(MemoryStore);
+	});
+
+	it('Defaults to the BrowserStore in browser, and MemoryStore in Node', () => {
+		const defaultWindow = globalThis.window;
+
+		globalThis.window = undefined;
+		let customDirectus = new DirectusSDK('http://example.com');
+		expect(customDirectus['authOptions'].storage).to.be.instanceOf(MemoryStore);
+
+		globalThis.window = {} as any;
+		customDirectus = new DirectusSDK('http://example.com');
+		expect(customDirectus['authOptions'].storage).to.be.instanceOf(BrowserStore);
+
+		globalThis.window = defaultWindow;
 	});
 
 	it('Gets / Sets URL', () => {
