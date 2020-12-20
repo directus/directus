@@ -17,10 +17,10 @@ create_preset: Създаване на шаблон
 create_role: Създаване на роля
 create_user: Създаване на потребител
 create_webhook: Създаване на уеб-кука
-invite_users: Поканване на потребители
+invite_users: Покана към потребители
 email_examples: 'admin@example.com, potrebitel@example.com...'
 invite: Покана
-emails: Емейли
+emails: E-мейли
 connection_excellent: Отлична свързаност
 connection_good: Добра свързаност
 connection_fair: Връзката е приемлива
@@ -640,8 +640,8 @@ fields:
     status: Статус
     first_name: Име
     last_name: Фамилия
-    email: Имейл
-    email_notifications: Известия по имейл
+    email: Е-мейл
+    email_notifications: Известия по е-мейл
     password: Парола
     role: Роля
     company: Компания
@@ -704,7 +704,7 @@ delete_field_are_you_sure: >-
 description: Описание
 done: Готово
 duplicate: Дублиране
-email: Имейл
+email: Е-мейл
 embed: Вграждане
 fallback_icon: Резервна икона
 field: Поле | Полета
