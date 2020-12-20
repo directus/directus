@@ -30,29 +30,26 @@ describe('ActivityHandler', () => {
 
 	describe('read', () => {
 		it('Calls ItemsHandler#read with the provided params', async () => {
-			const stub = sandbox
-				.stub(handler['itemsHandler'], 'read')
-				.returns(Promise.resolve({ data: {} }));
+			const stubReadOne = sandbox.stub(handler['itemsHandler'], 'readOne').returns(Promise.resolve({ data: {} }));
+			const stubReadMany = sandbox.stub(handler['itemsHandler'], 'readMany').returns(Promise.resolve({ data: [] }));
 
-			await handler.read();
-			expect(stub).to.have.been.calledWith();
+			await handler.readMany();
+			expect(stubReadMany).to.have.been.calledWith();
 
-			await handler.read(15);
-			expect(stub).to.have.been.calledWith(15);
+			await handler.readOne(15);
+			expect(stubReadOne).to.have.been.calledWith(15);
 
-			await handler.read([15, 41]);
-			expect(stub).to.have.been.calledWith([15, 41]);
+			await handler.readMany([15, 41]);
+			expect(stubReadMany).to.have.been.calledWith([15, 41]);
 
-			await handler.read([15, 41], { fields: ['title'] });
-			expect(stub).to.have.been.calledWith([15, 41], { fields: ['title'] });
+			await handler.readMany([15, 41], { fields: ['title'] });
+			expect(stubReadMany).to.have.been.calledWith([15, 41], { fields: ['title'] });
 		});
 	});
 
 	describe('comments.create', () => {
 		it('Calls the /activity/comments endpoint', async () => {
-			const stub = sandbox
-				.stub(handler['axios'], 'post')
-				.returns(Promise.resolve({ data: {} }));
+			const stub = sandbox.stub(handler['axios'], 'post').returns(Promise.resolve({ data: {} }));
 
 			await handler.comments.create({
 				collection: 'articles',
@@ -70,9 +67,7 @@ describe('ActivityHandler', () => {
 
 	describe('comments.update', () => {
 		it('Calls the /activity/comments/:id endpoint', async () => {
-			const stub = sandbox
-				.stub(handler['axios'], 'patch')
-				.returns(Promise.resolve({ data: {} }));
+			const stub = sandbox.stub(handler['axios'], 'patch').returns(Promise.resolve({ data: {} }));
 
 			await handler.comments.update(15, { comment: 'Hello Update' });
 

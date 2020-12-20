@@ -1,6 +1,5 @@
 import { Query, Item, Payload, Response, PrimaryKey, OneQuery } from '../types';
 import { AxiosInstance } from 'axios';
-import { type } from 'os';
 
 export class ItemsHandler {
 	axios: AxiosInstance;
@@ -58,10 +57,18 @@ export class ItemsHandler {
 		return response.data;
 	}
 
-	async readMany<T extends Item>(query: Query = {}): Promise<Response<T[]>> {
-		query.single = false;
-		const result = await this.axios.get(this.endpoint, { params: query });
-		return result.data;
+	readMany<T extends Item>(query?: Query): Promise<Response<T>>;
+	readMany<T extends Item>(ids: PrimaryKey[], query?: Query): Promise<Response<T>>;
+	async readMany<T extends Item>(keysOrQuery?: Query | PrimaryKey[], query?: Query): Promise<Response<T[]>> {
+		if (Array.isArray(keysOrQuery)) {
+			const result = await this.axios.get(`${this.endpoint}${keysOrQuery}`, {
+				params: { ...(query ?? {}), single: false },
+			});
+			return result.data;
+		} else {
+			const result = await this.axios.get(this.endpoint, { params: { ...(keysOrQuery ?? {}), single: false } });
+			return result.data;
+		}
 	}
 
 	// async read<T extends Item>(): Promise<Response<T | T[]>>;
@@ -100,11 +107,15 @@ export class ItemsHandler {
 
 	// 	return result.data;
 	// }
-	updateOne<T extends Item>(payload: Payload, key: PrimaryKey): Promise<Response<T>>;
+	updateOne<T extends Item>(payload: Payload, key: PrimaryKey, query?: OneQuery): Promise<Response<T>>;
 	updateOne<T extends Item>(payload: Payload, query: OneQuery): Promise<Response<T>>;
-	async updateOne<T extends Item>(payload: Payload, keyOrQuery: PrimaryKey | OneQuery): Promise<Response<T>> {
+	async updateOne<T extends Item>(
+		payload: Payload,
+		keyOrQuery: PrimaryKey | OneQuery,
+		query?: OneQuery
+	): Promise<Response<T>> {
 		if (typeof keyOrQuery === 'string' || typeof keyOrQuery === 'number') {
-			const result = await this.axios.patch(`${this.endpoint}${keyOrQuery}`, payload);
+			const result = await this.axios.patch(`${this.endpoint}${keyOrQuery}`, payload, { params: query });
 			return result.data;
 		} else {
 			const result = await this.axios.patch(`${this.endpoint}`, payload, {

@@ -17,11 +17,11 @@ export type OneQuery = {
 	search?: string;
 	deep?: Record<string, Query>;
 	export?: 'json' | 'csv';
+	filter?: Filter;
 };
 
 export type Query = OneQuery & {
 	sort?: string;
-	filter?: Filter;
 	limit?: number;
 	offset?: number;
 	page?: number;
