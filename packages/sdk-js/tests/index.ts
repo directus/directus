@@ -32,7 +32,14 @@ describe('DirectusSDK', () => {
 	});
 
 	it('Sets the passed authOptions', () => {
-		const fakeStore = { async getItem() {}, async setItem() {} };
+		const fakeStore = {
+			async getItem() {
+				return;
+			},
+			async setItem() {
+				return;
+			},
+		};
 		const directusWithOptions = new DirectusSDK('http://example.com', {
 			auth: {
 				autoRefresh: false,
