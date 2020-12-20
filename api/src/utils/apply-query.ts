@@ -193,22 +193,22 @@ export async function applyFilter(knex: Knex, rootQuery: QueryBuilder, rootFilte
 				dbQuery[logical].whereNotIn(key, value as string[]);
 			}
 
-			if (operator === '_null') {
+			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
 				dbQuery[logical].whereNull(key);
 			}
 
-			if (operator === '_nnull') {
+			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
 				dbQuery[logical].whereNotNull(key);
 			}
 
-			if (operator === '_empty') {
+			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
 					query.whereNull(key);
 					query.orWhere(key, '=', '');
 				});
 			}
 
-			if (operator === '_nempty') {
+			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
 				dbQuery[logical].andWhere((query) => {
 					query.whereNotNull(key);
 					query.orWhere(key, '!=', '');
