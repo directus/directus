@@ -116,7 +116,11 @@ export class ServerService {
 			if (data.status === 'error') break;
 		}
 
-		return data;
+		if (this.accountability?.admin !== true) {
+			return { status: data.status };
+		} else {
+			return data;
+		}
 
 		async function testDatabase(): Promise<Record<string, HealthCheck[]>> {
 			const client = env.DB_CLIENT;
