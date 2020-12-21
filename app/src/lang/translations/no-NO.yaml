@@ -86,29 +86,140 @@ field_translations: Oversettelser,
 item_permissions: Element Tillatelser
 field_permissions: Felt Tillatelser
 field_validation: Felt validering
+field_presets: Forhåndsinnstilling av felter
+permissions_for_role: 'Elementer {role} rollen kan {action}.'
+fields_for_role: 'Felter {role} rollen kan {action}.'
+validation_for_role: 'Felt {action} regler {role} rollen må følge.'
+presets_for_role: 'Felt standardverdi for rollen {role}.'
+presentation_and_aliases: Presentation & Aliaser
+revision_post_update: Her er hvordan dette produktet så ut etter oppdateringen...
+changes_made: Dette er de spesifikke endringene som ble gjort...
+no_relational_data: Husk at dette ikke inkluderer relasjonsdata.
+hide_field_on_detail: Skjul felt ved detaljert visning
+show_field_on_detail: Vis felt ved detaljert visning
+delete_field: Slett felt
+fields_and_layout: Felter og oppsett
+field_create_success: 'Opprettet felt: "{field}"'
+field_update_success: 'Oppdatert Felt: "{field}"'
+duplicate_where_to: Hvor vil du duplisere dette feltet til?
+language: Språk
+global: Globalt
+admins_have_all_permissions: Administratorer har alle rettigheter
+camera: Kamera
+exposure: Eksponering
+shutter: Utløser
+iso: ISO
+focal_length: Brennvidde
+schema_setup_title: Hvordan skal dette feltet lagre i databasen?
+schema_field_title: Hvordan skal dette feltet oppføre seg i applikasjonen?
 create_field: Opprett felt
+creating_new_field: 'Nytt felt ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Tilbakestill sideinnstillinger
+hidden_field: Skjult felt
 hidden_on_detail: Skjult ved detaljer
+disabled_editing_value: Deaktiver redigering av felt
+key: Nøkkel
+alias: Alias
+bigInteger: Stort heltall
+boolean: Sann/usann
+date: Dato
+datetime: Dato og tid
+decimal: Desimaltall
+float: Flyttall
+integer: Heltall
+json: JSON
+string: Tekststreng
 text: Tekst
+time: Tid
+timestamp: Tidsstempel
+uuid: UUID
+not_available_for_type: Ikke tilgjengelig for denne typen
+create_translations: Lag oversettelser
 auto_generate: Autogenerer
+this_will_auto_setup_fields_relations: Dette vil automatisk sette opp alle obligatoriske felt og relasjoner.
+click_here: Klikk her
+to_manually_setup_translations: for manuelt å sette opp oversettelser.
+fields_group: Feltgruppe
+configure_m2o: Konfigurer din mange-til-En relasjon...
+configure_o2m: Konfigurer din en-til-mange relasjon...
+configure_m2m: Konfigurer din mange-til-mange relasjon...
+configure_m2a: Konfigurer din mange-til-alt relasjon...
+add_m2o_to_collection: 'Legg til mange-til-en til "{collection}"'
+add_o2m_to_collection: 'Legg til en-til-mange til "{collection}"'
+add_m2m_to_collection: 'Legg til mange-til mange til "{collection}'
+choose_a_type: Velg en Type...
+determined_by_relationship: Fastsatt av relasjon
 add_note: Legg til en god beskrivelse til brukerne...
 default_value: Standardverdi
+add_a_default_value: Legg til en standardverdi...
 next: Neste
+translations: Oversettelser
 note: Notat
+enter_a_value: Legg inn verdi...
+enter_a_placeholder: Legg inn en plassholder...
 length: Lengde
+precision_scale: Presisjon og skala
 readonly: Skrivebeskyttet
 unique: Unik
 primary_key: Primærnøkkel
+foreign_key: Fremmednøkkel
+finish_setup: Fullfør oppsett
+dismiss: Lukk
+raw_value: Rå verdi
+edit_raw_value: Rediger råverdi
+enter_raw_value: Legg inn råverdi...
 clear_value: Tøm innhold
 reset_to_default: Tilbakestill til standard
 undo_changes: Angre endringer
 notifications: Varsler
+show_all_activity: Vis all aktivitet
 page_not_found: Side ikke funnet
 page_not_found_body: Siden du leter etter finnes ikke.
+confirm_revert: Bekreft tilbakestilling
+confirm_revert_body: Dette vil reversere elementet til valgte tilstand.
+display: Visning
+settings_update_success: Innstillingene er oppdatert
 title: Tittel
+revision_delta_created: Opprettet
+revision_delta_created_externally: Opprettet eksternt
+revision_delta_updated: 'Oppdatert 1 felt | Oppdatert {count} felter'
+revision_delta_deleted: Slettet
+revision_delta_reverted: Tilbakestilt
+revision_delta_other: Revisjon
+revision_delta_by: '{date} av {user}'
+private_user: Privat bruker
+revision_preview: Revisjon forhåndsvisning
+updates_made: Oppdateringer Laget
 leave_comment: Legg igjen en kommentar...
+post_comment_success: Kommentaren ble lagt til
+item_create_success: Elementet ble opprettet | Elementene ble opprettet
+item_update_success: Elementet ble oppdatert | Elementene ble oppdaterte
+item_delete_success: Elementet ble slettet | Elementene ble slettet
 this_collection: Denne kolleksjonen
 related_collection: Relatert kolleksjon
+related_collections: Relaterte kolleksjoner
+translations_collection: Oversettelseskolleksjon
+languages_collection: Språkkolleksjon
+export_data: Eksporter data
+format: Format
+use_current_filters_settings: Bruk gjeldende filtre og innstillinger
+export_collection: 'Eksporter {collection}'
+last_page: Siste side
+last_access: Siste tilgang
+fill_template: Fyll med malverdi
+a_unique_table_name: Et unikt tabellnavn...
+a_unique_column_name: Et unikt kolonnenavn...
+enable_custom_values: Aktiver egendefinerte verdier
 submit: Send inn
+move_to_folder: Flytt til mappe
+move: Flytt
+system: System
+add_field_related: Legg til felt til relatert kolleksjon
+interface: Grensesnitt
+today: Idag
+yesterday: Igår
+delete_comment: Slett kommentar
 months:
   january: januar
   february: februar
@@ -122,6 +233,7 @@ months:
   october: oktober
   november: november
   december: desember
+created: Opprettet
 owner: Eier
 name: Navn
 created_by: Opprettet av
@@ -189,6 +301,7 @@ fields:
     email: E-post
     password: Passord
     title: Tittel
+    language: Språk
   directus_settings:
     project_name: Prosjektnavn
   directus_fields:
@@ -242,23 +355,33 @@ interfaces:
     collection: Kolleksjon
   collections:
     collections: Kolleksjoner
+  dropdown:
+    choices_value_placeholder: Legg inn verdi...
   file:
     file: Fil
   files:
     files: Filer
   icon:
     icon: Ikon
+  interface:
+    interface: Grensesnitt
   numeric:
     numeric: Nummerisk
   tags:
     tags: Etiketter
 displays:
+  boolean:
+    boolean: Sann/usann
   collection:
     collection: Kolleksjon
+  datetime:
+    format: Format
   file:
     file: Fil
   icon:
     icon: Ikon
+  labels:
+    choices_value_placeholder: Legg inn verdi...
   user:
     name: Navn
     both: Begge
