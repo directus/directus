@@ -111,13 +111,14 @@ describe('ItemsHandler', () => {
 			);
 		});
 
-		it('Allows updating by query', async () => {
-			const stub = sandbox.stub(handler['axios'], 'patch').resolves({ data: '' });
+		// API currently does not support this
+		// it('Allows updating by query', async () => {
+		// 	const stub = sandbox.stub(handler['axios'], 'patch').resolves({ data: '' });
 
-			await handler.updateOne({ archived: true }, { filter: {} });
+		// 	await handler.updateOne({ archived: true }, { filter: {} });
 
-			expect(stub).to.have.been.calledWith('/items/test/', { archived: true }, { params: { filter: {} } });
-		});
+		// 	expect(stub).to.have.been.calledWith('/items/test/', { archived: true }, { params: { filter: {} } });
+		// });
 	});
 
 	describe('delete', () => {

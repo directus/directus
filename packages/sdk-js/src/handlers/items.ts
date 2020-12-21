@@ -26,16 +26,6 @@ export class ItemsHandler {
 		return result.data;
 	}
 
-	// async create<T extends Item>(payload: Payload, query?: Query): Promise<Response<T>>;
-	// async create<T extends Item>(payloads: Payload[], query?: Query): Promise<Response<T[]>>;
-	// async create<T extends Item>(payloads: Payload | Payload[], query?: Query): Promise<Response<T | T[]>> {
-	// 	const result = await this.axios.post(this.endpoint, payloads, {
-	// 		params: query,
-	// 	});
-
-	// 	return result.data;
-	// }
-
 	readOne<T extends Item>(key?: PrimaryKey, query?: OneQuery): Promise<Response<T>>;
 	readOne<T extends Item>(query?: OneQuery): Promise<Response<T>>;
 	async readOne<T extends Item>(keyOrQuery?: PrimaryKey | OneQuery, query?: OneQuery): Promise<Response<T>> {
@@ -43,7 +33,7 @@ export class ItemsHandler {
 		let params: Query = {};
 
 		if (typeof keyOrQuery === 'string' || typeof keyOrQuery === 'number') {
-			endpoint = this.endpoint + keyOrQuery;
+			endpoint += keyOrQuery;
 			if (query) {
 				params = query;
 			}
@@ -71,63 +61,20 @@ export class ItemsHandler {
 		}
 	}
 
-	// async read<T extends Item>(): Promise<Response<T | T[]>>;
-	// async read<T extends Item>(query: Query & { single: true }): Promise<Response<T>>;
-	// async read<T extends Item>(query: Query): Promise<Response<T | T[]>>;
-	// async read<T extends Item>(key: PrimaryKey, query?: Query): Promise<Response<T>>;
-	// async read<T extends Item>(keys: PrimaryKey[], query?: Query): Promise<Response<T | T[]>>;
-	// async read<T extends Item>(
-	// 	keysOrQuery?: PrimaryKey | PrimaryKey[] | Query,
-	// 	query?: Query & { single: boolean }
-	// ): Promise<Response<T | T[]>> {
-	// 	let keys: PrimaryKey | PrimaryKey[] | null = null;
-
-	// 	if (
-	// 		keysOrQuery &&
-	// 		(Array.isArray(keysOrQuery) || typeof keysOrQuery === 'string' || typeof keysOrQuery === 'number')
-	// 	) {
-	// 		keys = keysOrQuery;
-	// 	}
-
-	// 	let params: Query = {};
-
-	// 	if (query) {
-	// 		params = query;
-	// 	} else if (!query && typeof keysOrQuery === 'object' && Array.isArray(keysOrQuery) === false) {
-	// 		params = keysOrQuery as Query;
-	// 	}
-
-	// 	let endpoint = this.endpoint;
-
-	// 	if (keys) {
-	// 		endpoint += keys;
-	// 	}
-
-	// 	const result = await this.axios.get(endpoint, { params });
-
-	// 	return result.data;
-	// }
+	// There is no support in the API for this signature
+	// updateOne<T extends Item>(payload: Payload, query: OneQuery): Promise<Response<T>>;
 	updateOne<T extends Item>(payload: Payload, key: PrimaryKey, query?: OneQuery): Promise<Response<T>>;
-	updateOne<T extends Item>(payload: Payload, query: OneQuery): Promise<Response<T>>;
-	async updateOne<T extends Item>(
-		payload: Payload,
-		keyOrQuery: PrimaryKey | OneQuery,
-		query?: OneQuery
-	): Promise<Response<T>> {
-		if (typeof keyOrQuery === 'string' || typeof keyOrQuery === 'number') {
-			const result = await this.axios.patch(`${this.endpoint}${keyOrQuery}`, payload, { params: query });
-			return result.data;
-		} else {
-			const result = await this.axios.patch(`${this.endpoint}`, payload, {
-				params: keyOrQuery,
-			});
-			return result.data;
-		}
+	async updateOne<T extends Item>(payload: Payload, keys: PrimaryKey, query?: OneQuery): Promise<Response<T>> {
+		const result = await this.axios.patch(`${this.endpoint}${keys}`, payload, { params: query });
+		return result.data;
 	}
 
+	// There is no support in the API for this signature
+	// Uncomment parts of codes that are not needed for now when it's added to API
+	// https://github.com/directus/directus/blob/9f58589a43c6bd66e5248fe536429cc1bf020445/api/src/controllers/items.ts#L130
+	// updateMany<T extends Item>(payload: Payload, query?: Query): Promise<Response<T[]>>;
 	updateMany<T extends Item>(payload: Payload, keys: PrimaryKey[], query?: Query): Promise<Response<T[]>>;
 	updateMany<T extends Item>(payload: Payload[], query?: Query): Promise<Response<T[]>>;
-	updateMany<T extends Item>(payload: Payload, query?: Query): Promise<Response<T[]>>;
 	async updateMany<T extends Item>(
 		payload: Payload | Payload[],
 		keysOrQuery?: PrimaryKey[] | Query,
@@ -139,48 +86,18 @@ export class ItemsHandler {
 			});
 			return result.data;
 		}
-		if (Array.isArray(keysOrQuery)) {
-			const result = await this.axios.patch(`${this.endpoint}${keysOrQuery}`, payload, {
-				params: query,
-			});
-			return result.data;
-		}
-
-		const result = await this.axios.patch(this.endpoint, payload, {
+		// if (Array.isArray(keysOrQuery)) {
+		const result = await this.axios.patch(`${this.endpoint}${keysOrQuery}`, payload, {
 			params: query,
 		});
 		return result.data;
+		// }
+
+		// const result = await this.axios.patch(this.endpoint, payload, {
+		// 	params: query,
+		// });
+		// return result.data;
 	}
-
-	// async update<T extends Item>(key: PrimaryKey, payload: Payload, query?: Query): Promise<Response<T>>;
-	// async update<T extends Item>(keys: PrimaryKey[], payload: Payload, query?: Query): Promise<Response<T[]>>;
-	// async update<T extends Item>(payload: Payload[], query?: Query): Promise<Response<T[]>>;
-	// async update<T extends Item>(payload: Payload, query: Query): Promise<Response<T[]>>;
-	// async update<T extends Item>(
-	// 	keyOrPayload: PrimaryKey | PrimaryKey[] | Payload | Payload[],
-	// 	payloadOrQuery?: Payload | Query,
-	// 	query?: Query
-	// ): Promise<Response<T | T[]>> {
-	// 	if (
-	// 		typeof keyOrPayload === 'string' ||
-	// 		typeof keyOrPayload === 'number' ||
-	// 		(Array.isArray(keyOrPayload) && (keyOrPayload as any[]).every((key) => ['string', 'number'].includes(typeof key)))
-	// 	) {
-	// 		const key = keyOrPayload as PrimaryKey | PrimaryKey[];
-	// 		const payload = payloadOrQuery as Payload;
-
-	// 		const result = await this.axios.patch(`${this.endpoint}${key}`, payload, {
-	// 			params: query,
-	// 		});
-	// 		return result.data;
-	// 	} else {
-	// 		const result = await this.axios.patch(`${this.endpoint}`, keyOrPayload, {
-	// 			params: payloadOrQuery,
-	// 		});
-
-	// 		return result.data;
-	// 	}
-	// }
 
 	async deleteOne(key: PrimaryKey): Promise<void> {
 		await this.axios.delete(`${this.endpoint}${key}`);
@@ -189,10 +106,4 @@ export class ItemsHandler {
 	async deleteMany(keys: PrimaryKey[]): Promise<void> {
 		await this.axios.delete(`${this.endpoint}${keys}`);
 	}
-
-	// async delete(key: PrimaryKey): Promise<void>;
-	// async delete(keys: PrimaryKey[]): Promise<void>;
-	// async delete(keys: PrimaryKey | PrimaryKey[]): Promise<void> {
-	// 	await this.axios.delete(`${this.endpoint}${keys}`);
-	// }
 }
