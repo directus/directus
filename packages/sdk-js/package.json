@@ -1,6 +1,6 @@
 {
   "name": "@directus/sdk-js",
-  "version": "9.0.0-rc.25",
+  "version": "9.0.0-rc.26",
   "description": "The official Directus SDK for use in JavaScript!",
   "main": "dist/sdk-js.cjs.js",
   "module": "dist/sdk-js.bundler.js",
