@@ -58,6 +58,34 @@ nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett
 unknown_validation_errors: 'Det oppstod valideringsfeil for følgende skjulte felter:'
 validationError:
   eq: Verdien må være {valid}
+  neq: Verdien kan ikke være {invalid}
+  in: Verdien må være en av {valid}
+  nin: Verdien kan ikke være en av {invalid}
+  contains: Verdien må inneholde {substring}
+  ncontains: Verdien kan ikke inneholde {substring}
+  gt: Verdien må være større enn {valid}
+  gte: Verdien må være større enn eller lik {valid}
+  lt: Verdien må være mindre enn {valid}
+  lte: Verdien må være mindre enn eller lik {valid}
+  empty: Verdien må være tom
+  nempty: Verdien kan ikke være tom
+  null: Verdien må være null
+  nnull: Verdien kan ikke være null
+  required: Verdi er påkrevd
+all_access: All tilgang
+no_access: Ingen tilgang
+use_custom: Bruk egendefinert
+field_standard: Standard,
+field_presentation: Presentation & Aliaser,
+field_file: Enkelt-fil
+field_files: Flere filer,
+field_m2o: M2O Relasjon,
+field_o2m: O2M Relasjon,
+field_m2m: M2M Relasjon,
+field_translations: Oversettelser,
+item_permissions: Element Tillatelser
+field_permissions: Felt Tillatelser
+field_validation: Felt validering
 create_field: Opprett felt
 hidden_on_detail: Skjult ved detaljer
 text: Tekst
