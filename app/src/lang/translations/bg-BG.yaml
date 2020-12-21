@@ -13,14 +13,14 @@ db_only_click_to_configure: 'Само в базата данни: Кликнет
 show_archived_items: Показване на архивираните обекти
 required: Задължително
 requires_value: Изисква стойност
-create_preset: Създаване на шаблон
+create_preset: Създаване на изгледи
 create_role: Създаване на роля
 create_user: Създаване на потребител
 create_webhook: Създаване на уеб-кука
-invite_users: Поканване на потребители
+invite_users: Покана към потребители
 email_examples: 'admin@example.com, potrebitel@example.com...'
 invite: Покана
-emails: Емейли
+emails: E-мейли
 connection_excellent: Отлична свързаност
 connection_good: Добра свързаност
 connection_fair: Връзката е приемлива
@@ -382,7 +382,7 @@ bookmark_name: Име на отметка...
 create_bookmark: Създаване на отметка
 edit_bookmark: Редактиране на отметката
 bookmarks: Отметки
-presets: Готови настройки
+presets: Готови изгледи
 unexpected_error: Неочаквана грешка
 unexpected_error_copy: Възникна неочаквана грешка, опитайте отново по-късно.
 copy_details: Копиране на детайли
@@ -474,9 +474,9 @@ clear_filters: Изчистване на филтрите
 saves_automatically: Автоматично запазване
 role: Роля
 user: Потребител
-no_presets: Няма готови настройки
-no_presets_copy: Все още няма запазени готови настройки или отметки.
-no_presets_cta: Добавяне на готови настройки
+no_presets: Няма готови изгледи
+no_presets_copy: Все още няма запазени готови изгледи или отметки.
+no_presets_cta: Добавяне на готови изгледи
 create: Създаване
 on_create: При създаване
 on_update: При промяна
@@ -550,12 +550,12 @@ settings_data_model: Модел на данни
 settings_permissions: Роли и позволения
 settings_project: Настройки на проект
 settings_webhooks: Уеб-куки
-settings_presets: Готови настройки и отметки
+settings_presets: Готови изгледи и отметки
 scope: Обхват
 layout: Оформление
 changes_are_permanent: Промените са завинаги
 preset_name_placeholder: Име на отметка...
-editing_preset: Редактиране на готови настройки
+editing_preset: Редактиране на готовите изгледи
 layout_preview: Предварителен преглед
 layout_setup: Настройка на оформление
 unsaved_changes: Незапазени промени
@@ -568,7 +568,7 @@ page_help_collections_collection: >-
 page_help_collections_item: >-
   **Детайли за обект** — Формуляр за преглед и управление на този обект. Страничният панел също съдържа и пълна история на ревизиите и коментарите към него.
 page_help_activity_collection: >-
-  **Преглед на активност** — Подробен списък на активността за съдържанието, потребителите и системата.
+  **Емисия на активността** — Подробен списък на активността за съдържанието, потребителите и системата.
 page_help_docs_global: >-
   **Обзор на документацията** — Показва документи, специфични за този проект, версия и схема.
 page_help_files_collection: >-
@@ -583,9 +583,9 @@ page_help_settings_datamodel_fields: >-
 page_help_settings_roles_collection: '**Преглед на роли** — Показва администраторската, публичната и всички потребителски роли.'
 page_help_settings_roles_item: '**Детайли за роля** — Управление на позволенията на ролята, както и някои други настройки.'
 page_help_settings_presets_collection: >-
-  **Преглед на готовите настройки** — Показване на списък с готовите настройки, за отделните: потребител, роля, и глобални отметки, както и изгледите по подразбиране.
+  **Преглед на готовите изгледи** — Показване на списък с готовите настройки, за отделните: потребител, роля, и глобални отметки, както и изгледите по подразбиране.
 page_help_settings_presets_item: >-
-  **Детайли за готови настройки** — Формуляр за управление на отметки и готови настройки за колекциите по подразбиране.
+  **Детайли за готовите изгледи** — Формуляр за управление на отметки и готови настройки за колекциите по подразбиране.
 page_help_settings_webhooks_collection: '**Преглед на уеб-куки** — Показва всички уеб-куки в проекта.'
 page_help_settings_webhooks_item: '**Детайли за уеб-кука** — Формуляр за създаване и управление на уеб-куките в проекта.'
 page_help_users_collection: '**Потребители** — Показване на всички системни потребители в проекта'
@@ -640,8 +640,8 @@ fields:
     status: Статус
     first_name: Име
     last_name: Фамилия
-    email: Имейл
-    email_notifications: Известия по имейл
+    email: Е-мейл
+    email_notifications: Известия по е-мейл
     password: Парола
     role: Роля
     company: Компания
@@ -704,7 +704,7 @@ delete_field_are_you_sure: >-
 description: Описание
 done: Готово
 duplicate: Дублиране
-email: Имейл
+email: Е-мейл
 embed: Вграждане
 fallback_icon: Резервна икона
 field: Поле | Полета
@@ -730,7 +730,7 @@ password: Парола
 permissions: Позволения
 relationship: Релация
 reset: Нулиране
-reset_password: Нулиране на паролата
+reset_password: Нулиране на парола
 revisions: Ревизии
 revert: Възстановяване
 save: Запазване

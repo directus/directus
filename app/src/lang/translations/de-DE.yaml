@@ -118,6 +118,7 @@ m2m_relationship: n:m-Beziehung
 next: Weiter
 translations: Übersetzungen
 note: Notiz
+enter_a_value: Gib einen Wert ein...
 length: Länge
 readonly: Lesezugriff
 unique: Eindeutig
@@ -187,6 +188,7 @@ created_by: Erstellt von
 created_on: Erstellt am
 save_and_stay: Speichern und Bleiben
 save_as_copy: Als Kopie speichern
+add_existing: Vorhandene hinzufügen
 comments: Kommentare
 click_to_expand: Zum Erweitern klicken
 select_item: Element auswählen
@@ -330,6 +332,7 @@ wysiwyg_options:
 dropdown: Dropdown
 choices: Optionen
 deselect: Abwählen
+creating_in: 'Erstelle Element in {collection}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
 settings_permissions: Rollen & Berechtigungen
 settings_project: Projekt-Einstellungen
@@ -339,6 +342,7 @@ unsaved_changes_copy: Bist Du sicher, dass Du diese Seite verlassen willst?
 discard_changes: Änderungen verwerfen
 keep_editing: Weiter bearbeiten
 add_new: Neu erstellen
+create_new: Neu anlegen
 all: Alles
 batch_delete_confirm: >-
   Keine Elemente ausgewählt | Bist Du sicher, dass Du dieses Element löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden. | Bist Du sicher, dass Du diese {count} Elemente löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.
@@ -476,6 +480,7 @@ interfaces:
     divider: Divider
   dropdown:
     allow_other: Andere erlauben
+    choices_value_placeholder: Gib einen Wert ein...
   file:
     file: Datei
   files:
@@ -543,6 +548,8 @@ displays:
   image:
     image: Bild
     circle: Kreis
+  labels:
+    choices_value_placeholder: Gib einen Wert ein...
   rating:
     rating: Bewertung
   user:
