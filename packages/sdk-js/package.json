@@ -13,7 +13,7 @@
     "prebuild": "rimraf dist",
     "build": "rollup -c rollup.config.js",
     "start": "rollup -c rollup.config.js -w",
-    "test": "mocha -r ts-node/register/transpile-only -r source-map-support/register --recursive 'tests/**/*.ts'",
+    "test": "cross-env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register/transpile-only -r source-map-support/register --recursive 'tests/**/*.ts'",
     "coverage": "nyc npm test",
     "lint": "eslint \"src/**/*.ts\""
   },
