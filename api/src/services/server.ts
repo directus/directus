@@ -151,7 +151,7 @@ export class ServerService {
 				checks[`${client}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks[`${client}:responseTime`][0].observedValue! > 10 &&
+					checks[`${client}:responseTime`][0].observedValue! > 50 &&
 					checks[`${client}:responseTime`][0].status !== 'error'
 				) {
 					checks[`${client}:responseTime`][0].status = 'warn';
@@ -160,7 +160,7 @@ export class ServerService {
 
 			checks[`${client}:connectionsAvailable`] = [
 				{
-					status: database.client.pool.numFree() > 0 ? 'ok' : 'warn',
+					status: 'ok',
 					componentType: 'datastore',
 					observedValue: database.client.pool.numFree(),
 				},
@@ -205,7 +205,7 @@ export class ServerService {
 				const endTime = performance.now();
 				checks['cache:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
 
-				if (checks['cache:responseTime'][0].observedValue > 15 && checks['cache:responseTime'][0].status !== 'error') {
+				if (checks['cache:responseTime'][0].observedValue > 50 && checks['cache:responseTime'][0].status !== 'error') {
 					checks['cache:responseTime'][0].status = 'warn';
 				}
 			}
@@ -242,7 +242,7 @@ export class ServerService {
 				checks['rateLimiter:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks['rateLimiter:responseTime'][0].observedValue > 15 &&
+					checks['rateLimiter:responseTime'][0].observedValue > 50 &&
 					checks['rateLimiter:responseTime'][0].status !== 'error'
 				) {
 					checks['rateLimiter:responseTime'][0].status = 'warn';
@@ -281,7 +281,7 @@ export class ServerService {
 					checks[`storage:${location}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
 
 					if (
-						checks[`storage:${location}:responseTime`][0].observedValue! > 200 &&
+						checks[`storage:${location}:responseTime`][0].observedValue! > 500 &&
 						checks[`storage:${location}:responseTime`][0].status !== 'error'
 					) {
 						checks[`storage:${location}:responseTime`][0].status = 'warn';
