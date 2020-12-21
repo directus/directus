@@ -8,7 +8,13 @@ import { PassThrough } from 'stream';
 import ms from 'ms';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
-	if (req.method.toLowerCase() === 'get' && env.CACHE_ENABLED === true && cache && !req.sanitizedQuery.export) {
+	if (
+		req.method.toLowerCase() === 'get' &&
+		env.CACHE_ENABLED === true &&
+		cache &&
+		!req.sanitizedQuery.export &&
+		res.locals.cache !== false
+	) {
 		const key = getCacheKey(req);
 		await cache.set(key, res.locals.payload, ms(env.CACHE_TTL as string));
 		await cache.set(`${key}__expires_at`, Date.now() + ms(env.CACHE_TTL as string));

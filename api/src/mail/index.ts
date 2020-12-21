@@ -14,7 +14,7 @@ const liquidEngine = new Liquid({
 	extname: '.liquid',
 });
 
-let transporter: Transporter | null = null;
+export let transporter: Transporter | null = null;
 
 if (env.EMAIL_TRANSPORT === 'sendmail') {
 	transporter = nodemailer.createTransport({

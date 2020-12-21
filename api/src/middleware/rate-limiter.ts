@@ -14,11 +14,12 @@ import ms from 'ms';
 import { validateEnv } from '../utils/validate-env';
 
 let checkRateLimit: RequestHandler = (req, res, next) => next();
+export let rateLimiter: RateLimiterRedis | RateLimiterMemcache | RateLimiterMemory;
 
 if (env.RATE_LIMITER_ENABLED === true) {
 	validateEnv(['RATE_LIMITER_STORE', 'RATE_LIMITER_DURATION', 'RATE_LIMITER_POINTS']);
 
-	const rateLimiter = getRateLimiter();
+	rateLimiter = getRateLimiter();
 
 	checkRateLimit = asyncHandler(async (req, res, next) => {
 		try {
