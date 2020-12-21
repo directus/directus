@@ -90,7 +90,7 @@ export default async function createApp() {
 		app.use(cors);
 	}
 
-	if ('DIRECTUS_DEV' in process.env) {
+	if (!('DIRECTUS_DEV' in process.env)) {
 		const adminPath = require.resolve('@directus/app/dist/index.html');
 		const publicUrl = env.PUBLIC_URL.endsWith('/') ? env.PUBLIC_URL : env.PUBLIC_URL + '/';
 
