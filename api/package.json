@@ -53,7 +53,7 @@
 	"scripts": {
 		"start": "npx directus start",
 		"build": "rimraf dist && tsc --build && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
-		"dev": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node-dev --files src/start.ts --respawn --watch \"src/**/*.ts\" --watch \".env\" --transpile-only",
+		"dev": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node-dev --files --transpile-only --respawn --watch \".env\" src/start.ts",
 		"cli": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
 		"lint": "eslint \"src/**/*.ts\" cli.js index.js",
 		"prepublishOnly": "npm run build",
