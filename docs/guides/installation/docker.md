@@ -59,7 +59,7 @@ services:
       - 6379:6379
 
   directus:
-    image: directus/directus:v9.0.0-rc.19
+    image: directus/directus:v9.0.0-rc.24
     ports:
       - 8055:8055
     networks:
@@ -78,6 +78,9 @@ services:
       CACHE_ENABLED: 'true'
       CACHE_STORE: 'redis'
       CACHE_REDIS: 'redis://cache:6379'
+
+      ADMIN_EMAIL: 'admin@example.com'
+      ADMIN_PASSWORD: 'password'
 
 networks:
   directus:
