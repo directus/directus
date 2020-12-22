@@ -8,6 +8,7 @@ const updates = [
 				column: 'group',
 				references: 'directus_fields.id',
 				onDelete: 'SET NULL',
+				
 			},
 		],
 	},
@@ -132,8 +133,8 @@ export async function up(knex: Knex) {
 				table
 					.foreign(constraint.column)
 					.references(constraint.references)
-					.onUpdate('CASCADE')
-					.onDelete(constraint.onDelete);
+					.onUpdate('NO ACTION')
+					.onDelete('NO ACTION');
 			}
 		});
 	}
