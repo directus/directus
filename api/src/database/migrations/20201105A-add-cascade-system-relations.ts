@@ -8,7 +8,6 @@ const updates = [
 				column: 'group',
 				references: 'directus_fields.id',
 				onDelete: 'SET NULL',
-				
 			},
 		],
 	},
@@ -125,16 +124,28 @@ const updates = [
 ];
 
 export async function up(knex: Knex) {
+	console.log(knex.client.config.client);
+
 	for (const update of updates) {
 		await knex.schema.alterTable(update.table, (table) => {
 			for (const constraint of update.constraints) {
 				table.dropForeign([constraint.column]);
 
-				table
-					.foreign(constraint.column)
-					.references(constraint.references)
-					.onUpdate('NO ACTION')
-					.onDelete('NO ACTION');
+				if (knex.client.config.client === 'mssql') {
+					/* MSSQL do not like circular cascading actions */
+					/* TODO: find an alternative */
+					table
+						.foreign(constraint.column)
+						.references(constraint.references)
+						.onUpdate('NO ACTION')
+						.onDelete('NO ACTION');
+				} else {
+					table
+						.foreign(constraint.column)
+						.references(constraint.references)
+						.onUpdate('NO ACTION')
+						.onDelete(constraint.onDelete);
+				}
 			}
 		});
 	}
