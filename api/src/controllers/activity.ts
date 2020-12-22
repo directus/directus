@@ -1,5 +1,5 @@
-import express from 'express';
-import asyncHandler from 'express-async-handler';
+import express, { NextFunction, Request, Response } from 'express';
+import asyncHandler from '../utils/async-handler';
 import { ActivityService, MetaService } from '../services';
 import { Action } from '../types';
 import { ForbiddenException } from '../exceptions';
@@ -12,7 +12,7 @@ router.use(useCollection('directus_activity'));
 
 router.get(
 	'/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new ActivityService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -37,7 +37,7 @@ router.get(
 
 router.get(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new ActivityService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -55,7 +55,7 @@ router.get(
 
 router.post(
 	'/comment',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new ActivityService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -90,7 +90,7 @@ router.post(
 
 router.patch(
 	'/comment/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new ActivityService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -118,7 +118,7 @@ router.patch(
 
 router.delete(
 	'/comment/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new ActivityService({
 			accountability: req.accountability,
 			schema: req.schema,

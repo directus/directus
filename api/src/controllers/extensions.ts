@@ -1,5 +1,5 @@
-import express, { Router } from 'express';
-import asyncHandler from 'express-async-handler';
+import express, { NextFunction, Request, Response, Router } from 'express';
+import asyncHandler from '../utils/async-handler';
 import { RouteNotFoundException } from '../exceptions';
 import { listExtensions } from '../extensions';
 import env from '../env';
@@ -12,7 +12,7 @@ router.use(express.static(extensionsPath));
 
 router.get(
 	'/:type',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const typeAllowList = ['interfaces', 'layouts', 'displays', 'modules'];
 
 		if (typeAllowList.includes(req.params.type) === false) {

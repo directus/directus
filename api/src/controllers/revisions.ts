@@ -1,5 +1,5 @@
-import express from 'express';
-import asyncHandler from 'express-async-handler';
+import express, { NextFunction, Request, Response } from 'express';
+import asyncHandler from '../utils/async-handler';
 import { RevisionsService, MetaService } from '../services';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
@@ -10,7 +10,7 @@ router.use(useCollection('directus_revisions'));
 
 router.get(
 	'/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new RevisionsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -31,7 +31,7 @@ router.get(
 
 router.get(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new RevisionsService({
 			accountability: req.accountability,
 			schema: req.schema,

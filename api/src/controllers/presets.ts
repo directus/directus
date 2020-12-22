@@ -1,5 +1,5 @@
-import express from 'express';
-import asyncHandler from 'express-async-handler';
+import express, { NextFunction, Request, Response } from 'express';
+import asyncHandler from '../utils/async-handler';
 import { PresetsService, MetaService } from '../services';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
@@ -12,7 +12,7 @@ router.use(useCollection('directus_presets'));
 
 router.post(
 	'/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new PresetsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -37,7 +37,7 @@ router.post(
 
 router.get(
 	'/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new PresetsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -58,7 +58,7 @@ router.get(
 
 router.get(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new PresetsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -74,7 +74,7 @@ router.get(
 
 router.patch(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new PresetsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -100,7 +100,7 @@ router.patch(
 
 router.delete(
 	'/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		if (!req.body || Array.isArray(req.body) === false) {
 			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
 		}
@@ -117,7 +117,7 @@ router.delete(
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new PresetsService({
 			accountability: req.accountability,
 			schema: req.schema,

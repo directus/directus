@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import asyncHandler from 'express-async-handler';
+import { NextFunction, Request, Response, Router } from 'express';
+import asyncHandler from '../utils/async-handler';
 import database from '../database';
 import { SYSTEM_ASSET_ALLOW_LIST, ASSET_TRANSFORM_QUERY_KEYS } from '../constants';
 import { InvalidQueryException, ForbiddenException } from '../exceptions';
@@ -20,7 +20,7 @@ router.get(
 	'/:pk',
 
 	// Check if file exists
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const id = req.params.pk;
 
 		/**
@@ -44,7 +44,7 @@ router.get(
 	}),
 
 	// Validate query params
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const payloadService = new PayloadService('directus_settings', { schema: req.schema });
 		const defaults = { storage_asset_presets: [], storage_asset_transform: 'all' };
 
@@ -92,7 +92,7 @@ router.get(
 	}),
 
 	// Return file
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req: Request, res: Response) => {
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,

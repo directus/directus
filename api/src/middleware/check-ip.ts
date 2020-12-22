@@ -1,9 +1,9 @@
-import { RequestHandler } from 'express';
-import asyncHandler from 'express-async-handler';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
+import asyncHandler from '../utils/async-handler';
 import database from '../database';
 import { InvalidIPException } from '../exceptions';
 
-export const checkIP: RequestHandler = asyncHandler(async (req, res, next) => {
+export const checkIP: RequestHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 	const role = await database
 		.select('ip_access')
 		.from('directus_roles')

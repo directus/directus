@@ -1,14 +1,14 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { ServerService } from '../services';
 import { SpecificationService } from '../services';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import { respond } from '../middleware/respond';
 
 const router = Router();
 
 router.get(
 	'/specs/oas',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new SpecificationService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -23,7 +23,7 @@ router.get('/ping', (req, res) => res.send('pong'));
 
 router.get(
 	'/info',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new ServerService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -37,7 +37,7 @@ router.get(
 
 router.get(
 	'/health',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new ServerService({
 			accountability: req.accountability,
 			schema: req.schema,

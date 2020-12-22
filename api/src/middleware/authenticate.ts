@@ -1,15 +1,15 @@
-import { RequestHandler } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import jwt, { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import isJWT from '../utils/is-jwt';
 import database from '../database';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import { InvalidCredentialsException } from '../exceptions';
 import env from '../env';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
  */
-const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
+const authenticate: RequestHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 	req.accountability = {
 		user: null,
 		role: null,

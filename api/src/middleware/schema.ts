@@ -1,9 +1,9 @@
-import { RequestHandler } from 'express';
-import asyncHandler from 'express-async-handler';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
+import asyncHandler from '../utils/async-handler';
 import { schemaInspector } from '../database';
 import logger from '../logger';
 
-const getSchema: RequestHandler = asyncHandler(async (req, res, next) => {
+const getSchema: RequestHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 	const schemaOverview = await schemaInspector.overview();
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {

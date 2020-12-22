@@ -91,7 +91,6 @@
 		"execa": "^4.1.0",
 		"exif-reader": "^1.0.3",
 		"express": "^4.17.1",
-		"express-async-handler": "^1.1.4",
 		"express-graphql": "^0.11.0",
 		"express-pino-logger": "^5.0.0",
 		"express-session": "^1.17.1",

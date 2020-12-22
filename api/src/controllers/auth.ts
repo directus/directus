@@ -1,6 +1,6 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import session from 'express-session';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import Joi from 'joi';
 import grant from 'grant';
 import getEmailFromProfile from '../utils/get-email-from-profile';
@@ -25,7 +25,7 @@ const loginSchema = Joi.object({
 
 router.post(
 	'/login',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const accountability = {
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
@@ -81,7 +81,7 @@ router.post(
 router.post(
 	'/refresh',
 	cookieParser(),
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const accountability = {
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
@@ -129,7 +129,7 @@ router.post(
 router.post(
 	'/logout',
 	cookieParser(),
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const accountability = {
 			ip: req.ip,
 			userAgent: req.get('user-agent'),
@@ -155,7 +155,7 @@ router.post(
 
 router.post(
 	'/password/request',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		if (!req.body.email) {
 			throw new InvalidPayloadException(`"email" field is required.`);
 		}
@@ -182,7 +182,7 @@ router.post(
 
 router.post(
 	'/password/reset',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		if (!req.body.token) {
 			throw new InvalidPayloadException(`"token" field is required.`);
 		}
@@ -206,7 +206,7 @@ router.post(
 
 router.get(
 	'/oauth',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const providers = toArray(env.OAUTH_PROVIDERS);
 		res.locals.payload = { data: env.OAUTH_PROVIDERS ? providers : null };
 		return next();
@@ -218,7 +218,7 @@ router.use('/oauth', session({ secret: env.SECRET as string, saveUninitialized: 
 
 router.get(
 	'/oauth/:provider',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const config = { ...grantConfig };
 		delete config.defaults;
 
@@ -241,7 +241,7 @@ router.use(grant.express()(grantConfig));
 
 router.get(
 	'/oauth/:provider/callback',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const redirect = req.session.redirect;
 
 		const accountability = {

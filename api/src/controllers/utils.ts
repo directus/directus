@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import asyncHandler from 'express-async-handler';
+import { NextFunction, Request, Response, Router } from 'express';
+import asyncHandler from '../utils/async-handler';
 import { nanoid } from 'nanoid';
 import { InvalidQueryException, InvalidPayloadException } from '../exceptions';
 import argon2 from 'argon2';
@@ -12,7 +12,7 @@ const router = Router();
 
 router.get(
 	'/random/string',
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req: Request, res: Response) => {
 		if (req.query && req.query.length && Number(req.query.length) > 500)
 			throw new InvalidQueryException(`"length" can't be more than 500 characters`);
 
@@ -25,7 +25,7 @@ router.get(
 
 router.post(
 	'/hash/generate',
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req: Request, res: Response) => {
 		if (!req.body?.string) {
 			throw new InvalidPayloadException(`"string" is required`);
 		}
@@ -39,7 +39,7 @@ router.post(
 
 router.post(
 	'/hash/verify',
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req: Request, res: Response) => {
 		if (!req.body?.string) {
 			throw new InvalidPayloadException(`"string" is required`);
 		}
@@ -63,7 +63,7 @@ const SortSchema = Joi.object({
 router.post(
 	'/sort/:collection',
 	collectionExists,
-	asyncHandler(async (req, res) => {
+	asyncHandler(async (req: Request, res: Response) => {
 		const { error } = SortSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 
@@ -80,7 +80,7 @@ router.post(
 
 router.post(
 	'/revert/:revision',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new RevisionsService({
 			accountability: req.accountability,
 			schema: req.schema,

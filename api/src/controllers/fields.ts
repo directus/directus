@@ -1,5 +1,5 @@
-import { Router } from 'express';
-import asyncHandler from 'express-async-handler';
+import { NextFunction, Request, Response, Router } from 'express';
+import asyncHandler from '../utils/async-handler';
 import { FieldsService } from '../services/fields';
 import validateCollection from '../middleware/collection-exists';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
@@ -14,7 +14,7 @@ router.use(useCollection('directus_fields'));
 
 router.get(
 	'/',
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -30,7 +30,7 @@ router.get(
 router.get(
 	'/:collection',
 	validateCollection,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -46,7 +46,7 @@ router.get(
 router.get(
 	'/:collection/:field',
 	validateCollection,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -78,7 +78,7 @@ const newFieldSchema = Joi.object({
 router.post(
 	'/:collection',
 	validateCollection,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		if (!req.body.schema && !req.body.meta) throw new InvalidPayloadException(`"schema" or "meta" is required`);
 
 		const service = new FieldsService({
@@ -115,7 +115,7 @@ router.post(
 router.patch(
 	'/:collection',
 	validateCollection,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -153,7 +153,7 @@ router.patch(
 	'/:collection/:field',
 	validateCollection,
 	// @todo: validate field
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -183,7 +183,7 @@ router.patch(
 router.delete(
 	'/:collection/:field',
 	validateCollection,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
 			schema: req.schema,

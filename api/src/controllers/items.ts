@@ -1,5 +1,5 @@
-import express from 'express';
-import asyncHandler from 'express-async-handler';
+import express, { NextFunction, Request, Response } from 'express';
+import asyncHandler from '../utils/async-handler';
 import collectionExists from '../middleware/collection-exists';
 import { ItemsService, MetaService } from '../services';
 import { RouteNotFoundException, ForbiddenException, FailedValidationException } from '../exceptions';
@@ -13,7 +13,7 @@ const router = express.Router();
 router.post(
 	'/:collection',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
@@ -43,7 +43,7 @@ router.post(
 router.get(
 	'/:collection',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,
@@ -73,7 +73,7 @@ router.get(
 router.get(
 	'/:collection/:pk',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
@@ -96,7 +96,7 @@ router.get(
 router.patch(
 	'/:collection',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,
@@ -159,7 +159,7 @@ router.patch(
 router.patch(
 	'/:collection/:pk',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
@@ -191,7 +191,7 @@ router.patch(
 router.delete(
 	'/:collection',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		if (!req.body || Array.isArray(req.body) === false) {
 			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
 		}
@@ -209,7 +209,7 @@ router.delete(
 router.delete(
 	'/:collection/:pk',
 	collectionExists,
-	asyncHandler(async (req, res, next) => {
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,

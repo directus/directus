@@ -1,5 +1,5 @@
-import { RequestHandler } from 'express';
-import asyncHandler from 'express-async-handler';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
+import asyncHandler from '../utils/async-handler';
 import {
 	RateLimiterMemory,
 	RateLimiterRedis,
@@ -21,7 +21,7 @@ if (env.RATE_LIMITER_ENABLED === true) {
 
 	rateLimiter = getRateLimiter();
 
-	checkRateLimit = asyncHandler(async (req, res, next) => {
+	checkRateLimit = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 		try {
 			await rateLimiter.consume(req.ip, 1);
 		} catch (rateLimiterRes) {
