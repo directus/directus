@@ -99,13 +99,13 @@ async function parseCurrentLevel(
 	const primaryKeyField = schema[collection].primary;
 	const columnsInCollection = Object.keys(schema[collection].columns);
 
-	const columnsToSelect: string[] = [];
+	const columnsToSelectInternal: string[] = [];
 	const nestedCollectionNodes: NestedCollectionNode[] = [];
 
 	for (const child of children) {
 		if (child.type === 'field') {
 			if (columnsInCollection.includes(child.name) || child.name === '*') {
-				columnsToSelect.push(child.name);
+				columnsToSelectInternal.push(child.name);
 			}
 
 			continue;
@@ -114,21 +114,24 @@ async function parseCurrentLevel(
 		if (!child.relation) continue;
 
 		if (child.type === 'm2o') {
-			columnsToSelect.push(child.relation.many_field);
+			columnsToSelectInternal.push(child.relation.many_field);
 		}
 
 		if (child.type === 'm2a') {
-			columnsToSelect.push(child.relation.many_field);
-			columnsToSelect.push(child.relation.one_collection_field!);
+			columnsToSelectInternal.push(child.relation.many_field);
+			columnsToSelectInternal.push(child.relation.one_collection_field!);
 		}
 
 		nestedCollectionNodes.push(child);
 	}
 
 	/** Always fetch primary key in case there's a nested relation that needs it */
-	if (columnsToSelect.includes(primaryKeyField) === false) {
-		columnsToSelect.push(primaryKeyField);
+	if (columnsToSelectInternal.includes(primaryKeyField) === false) {
+		columnsToSelectInternal.push(primaryKeyField);
 	}
+
+	/** Make sure select list has unique values */
+	const columnsToSelect = [...new Set(columnsToSelectInternal)];
 
 	return { columnsToSelect, nestedCollectionNodes, primaryKeyField };
 }
