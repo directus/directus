@@ -124,8 +124,6 @@ const updates = [
 ];
 
 export async function up(knex: Knex) {
-	console.log(knex.client.config.client);
-
 	for (const update of updates) {
 		await knex.schema.alterTable(update.table, (table) => {
 			for (const constraint of update.constraints) {
