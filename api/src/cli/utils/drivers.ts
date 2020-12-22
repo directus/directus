@@ -3,7 +3,7 @@ export const drivers = {
 	mysql: 'MySQL / MariaDB / Aurora',
 	sqlite3: 'SQLite (Beta)',
 	oracledb: 'Oracle Database (Alpha)',
-	mssql: 'Microsoft SQL Server (Alpha)',
+	mssql: 'Azure SQL and Microsoft SQL Server (Beta)',
 };
 
 export function getDriverForClient(client: string): keyof typeof drivers | null {
