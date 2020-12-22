@@ -3,6 +3,7 @@ import { Schema } from '../types/schema';
 import { Table } from '../types/table';
 import { Column } from '../types/column';
 import { SchemaOverview } from '../types/overview';
+import { over } from 'lodash';
 
 type RawTable = {
 	TABLE_NAME: string;
@@ -38,6 +39,27 @@ export default class MSSQL implements Schema {
 		this.knex = knex;
 	}
 
+	/**
+	 * Converts Azure SQL / SQL Server default value to JS
+	 */
+	parseDefaultValue(value: string, isIdentity: boolean) {
+		if (!value && !isIdentity) return null;
+
+		if (isIdentity) return 'AUTO_INCREMENT';
+
+		if (value.startsWith('(') && value.endsWith(')')) {
+			value = value.slice(1, -1);
+		}
+
+		if (value.startsWith("'") && value.endsWith("'")) {
+			value = value.slice(1, -1);
+		}
+
+		if (Number.isNaN(Number(value))) return String(value);
+
+		return Number(value);
+	}
+
 	// Overview
 	// ===============================================================================================
 	async overview() {
@@ -49,12 +71,16 @@ export default class MSSQL implements Schema {
 			c.COLUMN_DEFAULT as default_value,
 			c.IS_NULLABLE as is_nullable,
 			c.DATA_TYPE as data_type,
-			pk.PK_SET as column_key
+			pk.PK_SET as column_key,
+			COLUMNPROPERTY(OBJECT_ID(TABLE_SCHEMA + '.' + TABLE_NAME), COLUMN_NAME, 'IsIdentity') as is_identity
 		FROM
 			${this.knex.client.database()}.INFORMATION_SCHEMA.COLUMNS as c
 		LEFT JOIN (
 			SELECT
-				PK_SET = CASE WHEN CONSTRAINT_NAME LIKE '%pk%' THEN 'PRIMARY' ELSE NULL END
+				PK_SET = CASE WHEN CONSTRAINT_NAME LIKE '%pk%' THEN 'PRIMARY' ELSE NULL END,				
+				[TABLE_NAME] AS [CONSTRAINT_TABLE_NAME],
+				[CONSTRAINT_CATALOG],
+				[COLUMN_NAME] AS [CONSTRAINT_COLUMN_NAME]
 			FROM ${this.knex.client.database()}.INFORMATION_SCHEMA.KEY_COLUMN_USAGE
 		) as pk
 		ON [c].[TABLE_NAME] = [pk].[CONSTRAINT_TABLE_NAME]
@@ -65,25 +91,23 @@ export default class MSSQL implements Schema {
 
 		const overview: SchemaOverview = {};
 
-		for (const column of columns[0]) {
+		for (const column of columns) {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = {
-					primary: columns[0].find(
-						(nested: { column_key: string; table_name: string }) => {
-							return (
-								nested.table_name === column.table_name &&
-								nested.column_key === 'PRIMARY'
-							);
-						}
-					)?.column_name,
+					primary: columns.find((nested: { column_key: string; table_name: string }) => {
+						return nested.table_name === column.table_name && nested.column_key === 'PRIMARY';
+					})?.column_name,
 					columns: {},
 				};
 			}
 
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
+				default_value: this.parseDefaultValue(column.default_value, column.is_identity),
 				is_nullable: column.is_nullable === 'YES',
 			};
+
+			//console.log(overview[column.table_name]);
 		}
 
 		return overview;
@@ -257,11 +281,11 @@ export default class MSSQL implements Schema {
 		if (column) {
 			const rawColumn: RawColumn = await query.andWhere({ 'c.column_name': column }).first();
 
-			return {
+			const c = {
 				name: rawColumn.COLUMN_NAME,
 				table: rawColumn.TABLE_NAME,
 				data_type: rawColumn.DATA_TYPE,
-				default_value: parseDefault(rawColumn.COLUMN_DEFAULT),
+				default_value: this.parseDefaultValue(rawColumn.COLUMN_DEFAULT, false),
 				max_length: rawColumn.CHARACTER_MAXIMUM_LENGTH,
 				numeric_precision: rawColumn.NUMERIC_PRECISION,
 				numeric_scale: rawColumn.NUMERIC_SCALE,
@@ -271,17 +295,20 @@ export default class MSSQL implements Schema {
 				foreign_key_column: rawColumn.CONSTRAINT_COLUMN_NAME,
 				foreign_key_table: rawColumn.CONSTRAINT_TABLE_NAME,
 			} as Column;
+
+			//console.log(c);
+			return c;
 		}
 
 		const records: RawColumn[] = await query;
 
-		return records.map(
+		const r = records.map(
 			(rawColumn): Column => {
 				return {
 					name: rawColumn.COLUMN_NAME,
 					table: rawColumn.TABLE_NAME,
 					data_type: rawColumn.DATA_TYPE,
-					default_value: parseDefault(rawColumn.COLUMN_DEFAULT),
+					default_value: this.parseDefaultValue(rawColumn.COLUMN_DEFAULT, false),
 					max_length: rawColumn.CHARACTER_MAXIMUM_LENGTH,
 					numeric_precision: rawColumn.NUMERIC_PRECISION,
 					numeric_scale: rawColumn.NUMERIC_SCALE,
@@ -294,11 +321,8 @@ export default class MSSQL implements Schema {
 			}
 		) as Column[];
 
-		function parseDefault(value: any) {
-			// MariaDB returns string NULL for not-nullable varchar fields
-			if (value === 'NULL' || value === 'null') return null;
-			return value;
-		}
+		//console.log(r);
+		return r;
 	}
 
 	/**
