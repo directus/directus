@@ -16,8 +16,8 @@ view, author, and manage your raw database content. Our performant and flexible 
 schema, and includes rule-based permissions, event/web hooks, custom endpoints, numerous auth options, configurable
 storage adapters, and much more.
 
-Current database support includes: PostgreSQL, MySQL, SQLite, MS-SQL Server, OracleDB, MariaDB, and varients such as AWS
-Aurora/Redshift or Google Cloud Platform SQL.
+Current database support includes: PostgreSQL, MySQL, SQLite, MS-SQL Server, Azure SQL, OracleDB, MariaDB, and varients
+such as AWS Aurora/Redshift or Google Cloud Platform SQL.
 
 Learn more at...
 
