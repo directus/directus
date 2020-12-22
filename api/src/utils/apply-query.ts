@@ -183,14 +183,20 @@ export async function applyFilter(knex: Knex, rootQuery: QueryBuilder, rootFilte
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
-				dbQuery[logical].whereIn(key, value as string[]);
+				let flattened = [].concat(...value);
+				let flattenedUnique = [...new Set(flattened)];
+
+				dbQuery[logical].whereIn(key, flattenedUnique as string[]);
 			}
 
 			if (operator === '_nin') {
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
 
-				dbQuery[logical].whereNotIn(key, value as string[]);
+				let flattened = [].concat(...value);
+				let flattenedUnique = [...new Set(flattened)];
+
+				dbQuery[logical].whereNotIn(key, flattenedUnique as string[]);
 			}
 
 			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
