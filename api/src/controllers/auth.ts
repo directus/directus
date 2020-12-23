@@ -47,12 +47,10 @@ router.post(
 		const ip = req.ip;
 		const userAgent = req.get('user-agent');
 
-		const emailLowerCase = email.toLowerCase();
-
 		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
 			ip,
 			userAgent,
-			email: emailLowerCase,
+			email: email.toLowerCase(),
 			password,
 			otp,
 		});

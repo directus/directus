@@ -86,36 +86,34 @@ export default async function sendMail(options: EmailOptions) {
 }
 
 export async function sendInviteMail(email: string, url: string) {
-	const emailCaseInsensitive = email.toLowerCase();
 	const defaultOptions = await getDefaultTemplateOptions();
 
 	const html = await liquidEngine.renderFile('user-invitation', {
 		...defaultOptions,
-		email: emailCaseInsensitive,
+		email,
 		url,
 	});
 
 	await transporter.sendMail({
 		from: env.EMAIL_FROM,
-		to: emailCaseInsensitive,
+		to: email,
 		html: html,
 		subject: `[${defaultOptions.projectName}] You've been invited`,
 	});
 }
 
 export async function sendPasswordResetMail(email: string, url: string) {
-	const emailCaseInsensitive = email.toLowerCase();
 	const defaultOptions = await getDefaultTemplateOptions();
 
 	const html = await liquidEngine.renderFile('password-reset', {
 		...defaultOptions,
-		email: emailCaseInsensitive,
+		email,
 		url,
 	});
 
 	await transporter.sendMail({
 		from: env.EMAIL_FROM,
-		to: emailCaseInsensitive,
+		to: email,
 		html: html,
 		subject: `[${defaultOptions.projectName}] Password Reset Request`,
 	});
