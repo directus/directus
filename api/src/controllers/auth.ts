@@ -233,8 +233,7 @@ router.get(
 		}
 
 		next();
-	}),
-	respond
+	})
 );
 
 router.use(grant.express()(grantConfig));
