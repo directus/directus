@@ -45,8 +45,6 @@ export default defineComponent({
 					return i18n.t('revision_delta_created');
 				case 'update':
 					return i18n.tc('revision_delta_updated', revisionCount.value);
-				case 'soft-delete':
-					return i18n.t('revision_delta_soft_deleted');
 				case 'delete':
 					return i18n.t('revision_delta_deleted');
 				case 'revert':

@@ -30,18 +30,16 @@ class DirectusSDK {
 		});
 
 		this.authOptions = {
-			storage:
-				options?.auth?.storage !== undefined ? options.auth.storage : new MemoryStore(),
+			storage: options?.auth?.storage !== undefined ? options.auth.storage : new MemoryStore(),
 			mode: options?.auth?.mode !== undefined ? options.auth.mode : 'cookie',
-			autoRefresh:
-				options?.auth?.autoRefresh !== undefined ? options.auth.autoRefresh : false,
+			autoRefresh: options?.auth?.autoRefresh !== undefined ? options.auth.autoRefresh : false,
 		};
 	}
 
 	// Global helpers
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
-	get url() {
+	get url(): string {
 		return this.axios.defaults.baseURL!;
 	}
 
@@ -121,4 +119,4 @@ class DirectusSDK {
 	}
 }
 
-export = DirectusSDK;
+export default DirectusSDK;

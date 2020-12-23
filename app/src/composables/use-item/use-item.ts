@@ -115,6 +115,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 					.map((err: APIError) => {
 						return err.extensions;
 					});
+
+				const otherErrors = err.response.data.errors.filter(
+					(err: APIError) => err?.extensions?.code !== 'FAILED_VALIDATION'
+				);
+
+				if (otherErrors.length > 0) {
+					otherErrors.forEach(unexpectedError);
+				}
 			} else {
 				unexpectedError(err);
 			}

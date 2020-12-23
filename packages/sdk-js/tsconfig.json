@@ -1,16 +1,19 @@
 {
-  "compilerOptions": {
-    "target": "es2018",
-    "module": "commonjs",
-    "declaration": true,
-    "outDir": "./dist",
-	"strict": true,
-	"esModuleInterop": true,
-	"sourceMap": true,
-	"lib": ["es2018"],
-	"rootDir": "src",
-	"skipLibCheck": true
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "tests", "dist"]
+	"compilerOptions": {
+		"target": "es5",
+		"lib": ["es5"],
+		"module": "es2015",
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"declaration": true,
+		"declarationDir": "dist/types",
+		"noEmit": true,
+		"noEmitOnError": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules"]
 }

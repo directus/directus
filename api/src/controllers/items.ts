@@ -2,11 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import collectionExists from '../middleware/collection-exists';
 import { ItemsService, MetaService } from '../services';
-import {
-	RouteNotFoundException,
-	ForbiddenException,
-	FailedValidationException,
-} from '../exceptions';
+import { RouteNotFoundException, ForbiddenException, FailedValidationException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { InvalidPayloadException } from '../exceptions';
 import { PrimaryKey } from '../types';
@@ -52,6 +48,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const metaService = new MetaService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -67,6 +64,7 @@ router.get(
 			meta: meta,
 			data: records || null,
 		};
+
 		return next();
 	}),
 	respond

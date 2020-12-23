@@ -33,7 +33,7 @@ export const useServerStore = createStore({
 	}),
 	actions: {
 		async hydrate() {
-			const response = await api.get(`/server/info`);
+			const response = await api.get(`/server/info`, { params: { limit: -1 } });
 			this.state.info = response.data.data;
 		},
 		dehydrate() {

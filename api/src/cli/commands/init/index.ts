@@ -53,7 +53,7 @@ export default async function init(options: Record<string, any>) {
 			console.log();
 			console.log('Something went wrong while seeding the database:');
 			console.log();
-			console.log(`${err.code && chalk.red(`[${err.code}]`)} ${err.message}`);
+			console.log(`${chalk.red(`[${err.code || 'Error'}]`)} ${err.message}`);
 			console.log();
 			console.log('Please try again');
 			console.log();
@@ -115,7 +115,7 @@ export default async function init(options: Record<string, any>) {
 		role: roleID,
 	});
 
-	db.destroy();
+	await db.destroy();
 
 	console.log(`
 Your project has been created at ${chalk.green(rootPath)}.
@@ -126,4 +126,6 @@ Start Directus by running:
   ${chalk.blue('cd')} ${rootPath}
   ${chalk.blue('npx directus')} start
 `);
+
+	process.exit(0);
 }

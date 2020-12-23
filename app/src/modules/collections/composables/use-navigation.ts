@@ -21,10 +21,7 @@ export type NavItemGroup = {
 let activeGroups: Ref<string[]>;
 
 export default function useNavigation() {
-	if (!activeGroups) activeGroups = ref([]);
-
 	const collectionsStore = useCollectionsStore();
-
 	const userStore = useUserStore();
 
 	const customNavItems = computed<NavItemGroup[] | null>(() => {
@@ -75,6 +72,13 @@ export default function useNavigation() {
 				return navA.name > navB.name ? 1 : -1;
 			});
 	});
+
+	if (!activeGroups)
+		activeGroups = ref(
+			customNavItems.value
+				? customNavItems.value.filter((navItem) => navItem.accordion === 'start_open').map((navItem) => navItem.name)
+				: []
+		);
 
 	return { customNavItems, navItems, activeGroups };
 }

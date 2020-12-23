@@ -52,8 +52,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		if (req.params.field in req.schema[req.params.collection].columns === false)
-			throw new ForbiddenException();
+		if (req.params.field in req.schema[req.params.collection].columns === false) throw new ForbiddenException();
 
 		const field = await service.readOne(req.params.collection, req.params.field);
 
@@ -80,8 +79,7 @@ router.post(
 	'/:collection',
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
-		if (!req.body.schema && !req.body.meta)
-			throw new InvalidPayloadException(`"schema" or "meta" is required`);
+		if (!req.body.schema && !req.body.meta) throw new InvalidPayloadException(`"schema" or "meta" is required`);
 
 		const service = new FieldsService({
 			accountability: req.accountability,

@@ -326,6 +326,12 @@ export default defineComponent({
 		function useItemOptions() {
 			const page = ref(1);
 
+			watch(
+				() => props.collection,
+				() => (page.value = 1),
+				{ immediate: true }
+			);
+
 			const sort = computed({
 				get() {
 					return _layoutQuery.value?.sort || primaryKeyField.value?.field;

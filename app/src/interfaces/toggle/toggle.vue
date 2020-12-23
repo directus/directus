@@ -5,6 +5,7 @@
 		:icon-off="iconOff"
 		:label="label"
 		:input-value="value"
+		:indeterminate="value === null"
 		@change="$listeners.input"
 		:style="{
 			'--v-checkbox-color': color,

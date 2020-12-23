@@ -52,7 +52,7 @@ export const useFieldsStore = createStore({
 	}),
 	actions: {
 		async hydrate() {
-			const fieldsResponse = await api.get(`/fields`);
+			const fieldsResponse = await api.get(`/fields`, { params: { limit: -1 } });
 
 			const fields: FieldRaw[] = fieldsResponse.data.data;
 
@@ -184,9 +184,7 @@ export const useFieldsStore = createStore({
 				if (currentUpdate === updateID) {
 					this.state.fields = this.state.fields.map((field) => {
 						if (field.collection === collectionKey) {
-							const newDataForField = response.data.data.find(
-								(update: Field) => update.field === field.field
-							);
+							const newDataForField = response.data.data.find((update: Field) => update.field === field.field);
 							if (newDataForField) return this.parseField(newDataForField);
 						}
 

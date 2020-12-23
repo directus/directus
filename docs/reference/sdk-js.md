@@ -1,6 +1,7 @@
 # SDK JS
 
-The JS SDK is a small wrapper around [Axios](https://npmjs.com/axios) that makes it a little easier to use the Directus API from a JavaScript powered project.
+The JS SDK is a small wrapper around [Axios](https://npmjs.com/axios) that makes it a little easier to use the Directus
+API from a JavaScript powered project.
 
 ## Installation
 
@@ -56,7 +57,7 @@ const directus = new DirectusSDK('https://api.example.com/', {
 		storage: new MemoryStore(), // Storage adapter where refresh tokens are stored in JSON mode
 		mode: 'json', // What login mode to use. One of `json`, `cookie`
 		autoRefresh: true, // Whether or not to automatically refresh the access token on login
-	}
+	},
 });
 ```
 
@@ -85,18 +86,19 @@ You can tap into the Axios instance used directly through `directus.axios`.
 
 ```js
 directus.items('articles').create({
-	title: 'My New Article'
+	title: 'My New Article',
 });
 ```
 
 ##### Multiple Items
+
 ```js
 directus.items('articles').create([
 	{
-		title: 'My First Article'
+		title: 'My First Article',
 	},
 	{
-		title: 'My Second Article'
+		title: 'My Second Article',
 	},
 ]);
 ```
@@ -116,9 +118,9 @@ directus.items('articles').read({
 	search: 'Directus',
 	filter: {
 		date_published: {
-			_gte: '$NOW'
-		}
-	}
+			_gte: '$NOW',
+		},
+	},
 });
 ```
 
@@ -149,29 +151,21 @@ directus.items('articles').read([15, 42], { fields: ['title'] });
 ```js
 // One
 directus.items('articles').update(15, {
-	title: 'An Updated title'
+	title: 'An Updated title',
 });
 
 // Multiple
 directus.items('articles').update([15, 42], {
-	title: 'An Updated title'
+	title: 'An Updated title',
 });
 ```
 
 Supports optional query:
 
 ```js
-directus.items('articles').update(
-	15,
-	{ title: 'An Updated title' },
-	{ fields: ['title'] }
-);
+directus.items('articles').update(15, { title: 'An Updated title' }, { fields: ['title'] });
 
-directus.items('articles').update(
-	[15, 42],
-	{ title: 'An Updated title' },
-	{ fields: ['title'] }
-);
+directus.items('articles').update([15, 42], { title: 'An Updated title' }, { fields: ['title'] });
 ```
 
 ##### Multiple Items, Multiple Values
@@ -192,16 +186,19 @@ directus.items('articles').update([
 Supports optional query:
 
 ```js
-directus.items('articles').update([
-	{
-		id: 15,
-		title: 'Article 15',
-	},
-	{
-		id: 42,
-		title: 'Article 42',
-	},
-], { fields: ['title'] });
+directus.items('articles').update(
+	[
+		{
+			id: 15,
+			title: 'Article 15',
+		},
+		{
+			id: 42,
+			title: 'Article 42',
+		},
+	],
+	{ fields: ['title'] }
+);
 ```
 
 ##### Multiple Items by Query, Single Value
@@ -209,14 +206,14 @@ directus.items('articles').update([
 ```js
 directus.items('articles').update(
 	{
-		archived: true
+		archived: true,
 	},
 	{
 		filter: {
 			publish_date: {
-				_gte: '$NOW'
-			}
-		}
+				_gte: '$NOW',
+			},
+		},
 	}
 );
 ```
@@ -249,9 +246,9 @@ directus.activity.read();
 directus.activity.read({
 	filter: {
 		action: {
-			_eq: 'create'
-		}
-	}
+			_eq: 'create',
+		},
+	},
 });
 ```
 
@@ -281,7 +278,7 @@ directus.activity.read([15, 42], { fields: ['action'] });
 directus.activity.comments.create({
 	collection: 'articles',
 	item: 15,
-	comment: 'Hello, world!'
+	comment: 'Hello, world!',
 });
 ```
 
@@ -311,19 +308,24 @@ Note: these configuration options are passed in the top level SDK constructor.
 
 ##### mode
 
-`cookie` or `json`. When in cookie mode, the API will set the refresh token in a `httpOnly` secure cookie that can't be accessed from client side JS. This is the most secure way to connect to the API from a public front-end website.
+`cookie` or `json`. When in cookie mode, the API will set the refresh token in a `httpOnly` secure cookie that can't be
+accessed from client side JS. This is the most secure way to connect to the API from a public front-end website.
 
-When you can't rely on cookies, or need more control over handling the storage of the cookie, use `json` mode. This will return the refresh token like "regular" in the payload. You can use the `storage` option (see below) to control where the refresh token is stored / read from
+When you can't rely on cookies, or need more control over handling the storage of the cookie, use `json` mode. This will
+return the refresh token like "regular" in the payload. You can use the `storage` option (see below) to control where
+the refresh token is stored / read from
 
 ##### storage
 
-When using `json` for mode, the refresh token needs to be stored somewhere. The `storage` option allows you to plug in any object that has an async `setItem()` and `getItem()` method. This allows you to plugin things like [`localforage`](https://github.com/localForage/localForage) directly:
+When using `json` for mode, the refresh token needs to be stored somewhere. The `storage` option allows you to plug in
+any object that has an async `setItem()` and `getItem()` method. This allows you to plugin things like
+[`localforage`](https://github.com/localForage/localForage) directly:
 
 ```js
 import localforage from 'localforage';
 import DirectusSDK from '@directus/sdk-js';
 
-const directus = new DirectusSDK('https://api.example.com', { storage: localforage });
+const directus = new DirectusSDK('https://api.example.com', { auth: { storage: localforage, mode: 'json' } });
 ```
 
 ##### autoRefresh
@@ -473,7 +475,7 @@ directus.server.specs.oas();
 #### Ping the Server
 
 ```js
-directus.server.ping()
+directus.server.ping();
 ```
 
 #### Get Server/Project Info
@@ -540,7 +542,7 @@ Supports optional query:
 
 ```js
 directus.users.me.read({
-	fields: ['last_access']
+	fields: ['last_access'],
 });
 ```
 
@@ -553,10 +555,7 @@ directus.users.me.update({ first_name: 'Admin' });
 Supports optional query:
 
 ```js
-directus.users.me.update(
-	{ first_name: 'Admin' },
-	{ fields: ['last_access'] }
-);
+directus.users.me.update({ first_name: 'Admin' }, { fields: ['last_access'] });
 ```
 
 ---

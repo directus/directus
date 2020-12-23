@@ -8,7 +8,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'person',
 	component: InterfaceUser,
 	types: ['uuid'],
-	relationship: 'm2o',
+	relational: true,
 	options: [
 		{
 			field: 'selectMode',

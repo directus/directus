@@ -13,6 +13,12 @@ export type AuthOptions = {
 	storage: AuthStorage;
 };
 
+export type AuthResponse = {
+	access_token: string;
+	expires: number;
+	refresh_token?: string;
+};
+
 export class AuthHandler {
 	private axios: AxiosInstance;
 	private storage: AuthStorage;
@@ -30,7 +36,7 @@ export class AuthHandler {
 		}
 	}
 
-	get token() {
+	get token(): string | null {
 		return this.axios.defaults.headers?.Authorization?.split(' ')[1] || null;
 	}
 
@@ -41,8 +47,11 @@ export class AuthHandler {
 		};
 	}
 
-	async login(credentials: LoginCredentials) {
-		const response = await this.axios.post('/auth/login', { ...credentials, mode: this.mode });
+	async login(credentials: LoginCredentials): Promise<{ data: AuthResponse }> {
+		const response = await this.axios.post<{ data: AuthResponse }>('/auth/login', {
+			...credentials,
+			mode: this.mode,
+		});
 
 		this.token = response.data.data.access_token;
 
@@ -57,7 +66,7 @@ export class AuthHandler {
 		return response.data;
 	}
 
-	async refresh() {
+	async refresh(): Promise<{ data: AuthResponse }> {
 		const payload: Record<string, any> = { mode: this.mode };
 
 		if (this.mode === 'json') {
@@ -65,7 +74,7 @@ export class AuthHandler {
 			payload['refresh_token'] = refreshToken;
 		}
 
-		const response = await this.axios.post('/auth/refresh', payload);
+		const response = await this.axios.post<{ data: AuthResponse }>('/auth/refresh', payload);
 
 		this.token = response.data.data.access_token;
 
@@ -80,17 +89,17 @@ export class AuthHandler {
 		return response.data;
 	}
 
-	async logout() {
+	async logout(): Promise<void> {
 		await this.axios.post('/auth/logout');
 		this.token = null;
 	}
 
 	password = {
-		request: async (email: string) => {
+		request: async (email: string): Promise<void> => {
 			await this.axios.post('/auth/password/request', { email });
 		},
 
-		reset: async (token: string, password: string) => {
+		reset: async (token: string, password: string): Promise<void> => {
 			await this.axios.post('/auth/password/reset', { token, password });
 		},
 	};

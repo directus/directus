@@ -1,7 +1,9 @@
 # Error Codes
 
+> TK
+
 | Error Code            | Description                                    |
-|-----------------------|------------------------------------------------|
+| --------------------- | ---------------------------------------------- |
 | `FAILED_VALIDATION`   | Validation for this particular item failed     |
 | `FORBIDDEN`           | You are not allowed to do the current action   |
 | `INVALID_CREDENTIALS` | Username / password or access token is wrong   |
@@ -12,6 +14,9 @@
 | `ROUTE_NOT_FOUND`     | Endpoint does not exist                        |
 | `SERVICE_UNAVAILABLE` | Could not use external service                 |
 
-:::warning Security
-To prevent leaking which items exist, all actions for non-existing items will return a `FORBIDDEN` error.
+<!-- prettier-ignore-start -->
+::: warning Security
+To prevent leaking which items exist, all actions for non-existing items will
+return a `FORBIDDEN` error.
 :::
+<!-- prettier-ignore-end -->

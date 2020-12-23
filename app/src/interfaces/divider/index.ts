@@ -10,6 +10,7 @@ export default defineInterface(({ i18n }) => ({
 	hideLabel: true,
 	hideLoader: true,
 	types: ['alias'],
+	groups: ['presentation'],
 	options: [
 		{
 			field: 'color',

@@ -33,6 +33,8 @@ const defaults: Record<string, any> = {
 	CACHE_STORE: 'memory',
 	CACHE_TTL: '30m',
 	CACHE_NAMESPACE: 'system-cache',
+	CACHE_AUTO_PURGE: false,
+	ASSETS_CACHE_TTL: '30m',
 
 	OAUTH_PROVIDERS: '',
 
@@ -62,7 +64,7 @@ function processValues(env: Record<string, any>) {
 		if (value === 'true') env[key] = true;
 		if (value === 'false') env[key] = false;
 		if (value === 'null') env[key] = null;
-		if (isNaN(value) === false && value.length > 0) env[key] = Number(value);
+		if (String(value).startsWith('0') === false && isNaN(value) === false && value.length > 0) env[key] = Number(value);
 	}
 
 	return env;

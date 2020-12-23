@@ -78,7 +78,7 @@ export default defineComponent({
 			})
 		);
 
-		return { selectItems, values };
+		return { selectItems, values, fields };
 	},
 });
 </script>

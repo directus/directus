@@ -1,15 +1,15 @@
 {
   "name": "@directus/schema",
-  "version": "9.0.0-rc.18",
+  "version": "9.0.0-rc.26",
   "description": "Utility for extracting information about existing DB schema",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build && echo \"Built successfully\"",
     "prepare": "npm run build",
-    "lint": "prettier --check .",
     "test": "npm run lint && ts-mocha test/**/*.spec.ts",
-    "dev": "npm-watch build"
+    "dev": "npm-watch build",
+    "lint": "eslint \"src/**/*.ts\""
   },
   "watch": {
     "build": {

@@ -30,7 +30,7 @@
 				/>
 			</template>
 
-			<template #item-append="{ item }" v-if="!disabled">
+			<template #item-append="{ item }" v-show="!disabled">
 				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
 			</template>
 		</v-table>
@@ -277,8 +277,7 @@ export default defineComponent({
 						fields.push(pkField);
 					}
 
-					if (props.sortField !== null && fields.includes(props.sortField) === false)
-						fields.push(props.sortField);
+					if (props.sortField !== null && fields.includes(props.sortField) === false) fields.push(props.sortField);
 
 					try {
 						const endpoint = relatedCollection.value.collection.startsWith('directus_')
@@ -389,12 +388,7 @@ export default defineComponent({
 				const hasPrimaryKey = pkField in edits;
 
 				const newValue = (props.value || []).map((item) => {
-					if (
-						typeof item === 'object' &&
-						pkField in item &&
-						pkField in edits &&
-						item[pkField] === edits[pkField]
-					) {
+					if (typeof item === 'object' && pkField in item && pkField in edits && item[pkField] === edits[pkField]) {
 						return edits;
 					}
 
@@ -431,9 +425,7 @@ export default defineComponent({
 
 				const pkField = relatedPrimaryKeyField.value.field;
 
-				return items.value
-					.filter((currentItem) => pkField in currentItem)
-					.map((currentItem) => currentItem[pkField]);
+				return items.value.filter((currentItem) => pkField in currentItem).map((currentItem) => currentItem[pkField]);
 			});
 
 			const selectionFilters = computed<Filter[]>(() => {

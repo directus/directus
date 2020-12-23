@@ -35,4 +35,24 @@ router.get(
 	respond
 );
 
+router.get(
+	'/health',
+	asyncHandler(async (req, res, next) => {
+		const service = new ServerService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const data = await service.health();
+
+		res.setHeader('Content-Type', 'application/health+json');
+
+		if (data.status === 'error') res.status(503);
+		res.locals.payload = data;
+		res.locals.cache = false;
+		return next();
+	}),
+	respond
+);
+
 export default router;
