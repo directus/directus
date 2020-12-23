@@ -1,8 +1,10 @@
 import { ItemsHandler } from '../../src/handlers/items';
-import axios, { AxiosInstance } from 'axios';
+import { createAxiosInstance } from '../../src/utils/create-axios';
+import { AxiosInstance } from 'axios';
 import sinon, { SinonSandbox } from 'sinon';
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
+import nock from 'nock';
 
 chai.use(sinonChai);
 
@@ -13,7 +15,7 @@ describe('ItemsHandler', () => {
 
 	beforeEach(() => {
 		sandbox = sinon.createSandbox();
-		axiosInstance = axios.create();
+		axiosInstance = createAxiosInstance();
 		handler = new ItemsHandler('test', axiosInstance);
 	});
 
@@ -97,6 +99,13 @@ describe('ItemsHandler', () => {
 			expect(stub).to.have.been.calledWith('/items/test/15', {
 				params: { fields: ['test'] },
 			});
+		});
+
+		it('Returns {errors} with 400 bad request', async () => {
+			const mockErrors = { errors: [{ message: 'MOCK_ERROR' }] };
+			nock('http://localhost').get('/items/test/1').reply(400, mockErrors);
+			const res = await handler.read(1);
+			expect(res).to.eql(mockErrors);
 		});
 	});
 

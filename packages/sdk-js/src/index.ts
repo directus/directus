@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import { AxiosInstance } from 'axios';
 import {
 	ItemsHandler,
 	ServerHandler,
@@ -19,13 +19,14 @@ import {
 	RevisionsHandler,
 } from './handlers';
 import { MemoryStore, BrowserStore } from './utils';
+import { createAxiosInstance } from './utils/create-axios';
 
 class DirectusSDK {
 	axios: AxiosInstance;
 	private authOptions: AuthOptions;
 
 	constructor(url: string, options?: { auth: Partial<AuthOptions> }) {
-		this.axios = axios.create({
+		this.axios = createAxiosInstance({
 			baseURL: url,
 			withCredentials: true,
 		});

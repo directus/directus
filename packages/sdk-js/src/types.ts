@@ -7,9 +7,17 @@ export enum Meta {
 	FILTER_COUNT = 'filter_count',
 }
 
+export type APIError = {
+	message: string;
+	extensions: {
+		code: string;
+	};
+};
+
 export type Response<T> = {
 	data: T | null;
 	meta?: Record<Meta, number>;
+	errors?: APIError[];
 };
 
 export type Query = {
