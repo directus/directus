@@ -1,24 +1,75 @@
 ---
 edit_field: Редактировать поле
+item_revision: Версия Элемента
+duplicate_field: Дубликат Поля
+half_width: Половина Ширины
 full_width: Полная ширина
+fill_width: Полная Ширина
+field_name_translations: Переводы Названия Поля
+enter_password_to_enable_tfa: Введите свой пароль для включения Двухфакторной Аутентификации
 add_field: Добавить поле
 role_name: Название роли
+db_only_click_to_configure: 'Только База данных: Нажмите для Настройки '
+show_archived_items: Показать Архивные Элементы
 required: Необходимые
+requires_value: Требуется значение
+create_preset: Создать Пресет
 create_role: Создать Роль
 create_user: Создать пользователя
+create_webhook: Создать Веб-хук
+invite_users: Пригласить Пользователей
+email_examples: 'admin@example.com, user@example.com...'
+invite: Пригласить
+emails: Email-адреса
+connection_excellent: Отличное Подключение
+connection_good: Хорошее Подключение
+connection_fair: Нормальное Подключение
+connection_poor: Плохое Подключение
 rename_folder: Переименовать папку
 delete_folder: Удалить папку
 reset_bookmark: Сбросить закладку
 rename_bookmark: Переименовать закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
+delete_bookmark_copy: >-
+  Вы уверены, что хотите удалить закладку "{bookmark}"? Это действие не может быть отменено.
+logoutReason:
+  SIGN_OUT: Вы вышли
+  SESSION_EXPIRED: Сессия истекла
+public: Публичный
+public_description: Управляет какие данные доступны по API без аутентификации.
+not_allowed: Не Разрешено
 directus_version: Версия Directus
+node_version: Версия Node
+node_uptime: Время работы Node
+os_type: Тип ОС
+os_version: Версия ОС
+os_uptime: Время работы ОС
+os_totalmem: Память ОС
+archive: Архив
+archive_confirm: Вы уверены, что хотите архивировать этот элемент?
+archive_confirm_count: >-
+  Элементы не выбраны | Вы уверены, что хотите архивировать этот элемент? | Вы уверены, что хотите архивировать эти {count} элементов?
+reset_system_permissions: Сбросить Системные Разрешения
+reset_system_permissions_copy: Сбросить все системные разрешения к значениям по умолчанию
+unarchive: Разархивировать
+unarchive_confirm: Вы уверены, что хотите разархивировать этот элемент?
 validationError:
+  eq: Значение должно быть {valid}
+  neq: Значение не может быть {invalid}
   in: Значение должно быть одним из {valid}
   nin: Значение не может быть одним из {invalid}
   contains: Значение должно содержать {substring}
   ncontains: Значение не может содержать {substring}
   gt: Значение должно быть больше {valid}
+  gte: Значение должно быть больше или равно {valid}
+  lt: Значение должно быть меньше {valid}
+  lte: Значение должно быть меньше или равно {valid}
+  empty: Значение должно быть пустым
+  nempty: Значение не может быть пустым
+  null: Значение должно быть null
+  nnull: Значение не может быть null
+  required: Значение обязательно
 all_access: Полный доступ
 no_access: Нет Доступа
 delete_field: Удалить поле
@@ -32,9 +83,17 @@ date: Дата
 decimal: Десятичная
 text: Текст
 time: Время
+uuid: UUID
+not_available_for_type: Недоступно для этого Типа
+create_translations: Создать Переводы
 auto_generate: Авто-Генерация
+click_here: Нажмите здесь
+fields_group: Группа Полей
 add_note: Добавить заметку для пользователей...
 default_value: Значение По умолчанию
+single_file: Один Файл
+multiple_files: Несколько Файлов
+m2o_relationship: Связка Many to One
 next: Дальше
 field_name: Название поля
 translations: Переводы
@@ -199,6 +258,7 @@ fields:
   directus_fields:
     note: Заметка
     hidden: Скрыто
+    translation: Переводы Названия Поля
     display_template: Шаблон
   directus_roles:
     name: Название роли
