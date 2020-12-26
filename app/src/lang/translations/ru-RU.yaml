@@ -226,6 +226,7 @@ owner: Владелец
 download: Загрузить
 open: Открыть
 open_in_new_window: Открыть в новом окне
+no_file_selected: Файл Не Выбран
 download_file: Скачать Файл
 collection_key: Ключ Коллекции
 name: Имя
@@ -234,10 +235,28 @@ type: Тип
 creating_new_collection: Создание Новой Коллекции
 created_by: Кем создано
 created_on: Дата создания
+creating_collection_info: Назовите коллекцию и настройте ее уникальное поле “ключ”...
+auto_increment_integer: Авто-возрастающее число
+generated_uuid: Сгенерированный UUID
+manual_string: Введенная вручную строка
+save_and_create_new: Сохранить и Создать Новый
 save_and_stay: Сохранить и Остаться
 save_as_copy: Сохранить и Копировать
+add_existing: Добавить Существующий
 comments: Комментарии
+no_comments: Комментариев Пока Нет
+click_to_expand: Нажмите, чтобы Раскрыть
+select_item: Выбрать Элемент
+no_items: Нет элементов
+search_items: Найти элементы...
+disabled: Выключен
+information: Информация
+report_bug: Сообщить об Ошибке
 request_feature: Запросить Фичи
+interface_not_found: 'Интерфейс "{interface}" не найден.'
+reset_interface: Сбросить Интерфейс
+display_not_found: 'Отображение "{display}" не найдено.'
+reset_display: Сбросить Отображение
 m2a_builder: Строитель (M2A)
 item_count: 'Нет элементов | Один элемент | {count} элементов'
 no_items_copy: В этой коллекции пока нет элементов.
@@ -277,6 +296,7 @@ card_size: Размер Карточки
 sort_field: Поле сортировки
 toggle_manual_sorting: Переключить Ручную Сортировку
 bookmark_doesnt_exist: Закладка Не Существует
+bookmark_doesnt_exist_cta: Вернуться в коллекцию
 select_an_item: Выбрать элемент...
 edit: Редактирование
 enabled: Включен
@@ -286,7 +306,27 @@ enter_otp_to_disable_tfa: Введите OTP для выключения 2FA
 create_account: Создать Аккаунт
 account_created_successfully: Аккаунт Успешно Создан
 auto_fill: Автозаполнение
+corresponding_field: Соответствующее Поле
+errors:
+  COLLECTION_NOT_FOUND: "Коллекция не существует"
+  FIELD_NOT_FOUND: Поле не найдено
+  FORBIDDEN: Запрещено
+  INVALID_CREDENTIALS: Неверное имя пользователя или пароль
+  INVALID_OTP: Неверный одноразовый пароль
+  INVALID_QUERY: Некорректный запрос
+  ITEM_LIMIT_REACHED: Достигнут лимит элементов
+  ITEM_NOT_FOUND: Элемент не найден
+  ROUTE_NOT_FOUND: Не найдено
+  UNKNOWN: Неожиданная Ошибка
+value_hashed: Значение Безопасно Хэшировано
+bookmark_name: Название закладки...
+create_bookmark: Создать Закладку
+edit_bookmark: Редактировать Закладку
 bookmarks: Закладки
+presets: Пресеты
+unexpected_error: Неожиданная Ошибка
+copy_details: Скопировать Подробности
+no_app_access: Нет Доступа к Приложению
 back: Назад
 all_users: Все пользователи
 system_collections: Системные коллекции
@@ -412,6 +452,7 @@ fields:
     display_template: Шаблон
   directus_roles:
     name: Название роли
+    icon: Иконка Роли
     description: Описание
 comment: Комментарий
 continue: Продолжить
