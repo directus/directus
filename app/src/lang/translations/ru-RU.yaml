@@ -72,49 +72,132 @@ validationError:
   required: Значение обязательно
 all_access: Полный доступ
 no_access: Нет Доступа
+field_file: Один Файл,
+field_files: Несколько Файлов,
+field_m2o: Связка M2O,
+field_o2m: Связка O2M,
+field_m2m: Связка M2M,
+field_translations: Переводы,
+item_permissions: Разрешения Элемента
+field_permissions: Разрешения Поля
+field_validation: Валидация Поля
+field_presets: Пресеты Поля
+permissions_for_role: 'Элементы, которые Роль {role} может {action}.'
+fields_for_role: 'Поля, которые Роль {role} может {action}.'
+validation_for_role: 'Правила {action} поля, которые Роль {role} должна соблюдать.'
+presets_for_role: 'Значения поля по умолчанию для Роли {role}.'
+presentation_and_aliases: Представление и Алиасы
+hide_field_on_detail: Скрыть Поле в Карточке
+show_field_on_detail: Показать Поле в Карточке
 delete_field: Удалить поле
+fields_and_layout: Поля и Макет
 field_create_success: 'Создано поле: "{field}"'
 field_update_success: 'Обновлено поле: "{field}"'
+duplicate_where_to: Куда вы хотите дублировать это поле?
 language: Язык
+global: Глобальный
+admins_have_all_permissions: Администраторы имеют все права
 camera: Камера
+exposure: Экспозиция
+shutter: Затвор
+iso: ISO
+focal_length: Фокусное Расстояние
+schema_setup_title: Как это поле должно сохранить в базе данных?
+schema_field_title: Как это поле должно вести в приложении?
 create_field: Создать Поле
+creating_new_field: 'Новое Поле ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Сбросить Настройки Страницы
+hidden_field: Скрытое Поле
 hidden_on_detail: Скрывать в карточке
+disabled_editing_value: Отключить редактирование значения
+key: Ключ
+alias: Алиас
+bigInteger: Big Integer
+boolean: Логическое
 date: Дата
+datetime: ДатаВремя
 decimal: Десятичная
+float: Десятичное
+integer: Целое
+json: JSON
+string: Строка
 text: Текст
 time: Время
+timestamp: Отметка времени
 uuid: UUID
 not_available_for_type: Недоступно для этого Типа
 create_translations: Создать Переводы
 auto_generate: Авто-Генерация
 click_here: Нажмите здесь
 fields_group: Группа Полей
+add_m2o_to_collection: 'Добавить Many-to-One в "{collection}"'
+add_o2m_to_collection: 'Добавить One-to-Many в "{collection}"'
+add_m2m_to_collection: 'Добавить Many-to-Many в "{collection}"'
+choose_a_type: Выберите Тип...
+determined_by_relationship: Определяется Связкой
 add_note: Добавить заметку для пользователей...
 default_value: Значение По умолчанию
+add_a_default_value: Добавить значение по умолчанию...
+interface_setup_title: Как пользователи будут взаимодействовать с этим полем?
+display_setup_title: Как будет отображаться значение этого поля?
+standard_field: Стандартное Поле
 single_file: Один Файл
 multiple_files: Несколько Файлов
 m2o_relationship: Связка Many to One
+o2m_relationship: Связка One to Many
+m2m_relationship: Связка Many to Many
+m2a_relationship: Связка Many to Any
 next: Дальше
 field_name: Название поля
 translations: Переводы
 note: Заметка
+enter_a_value: Введите значение...
+enter_a_placeholder: Введите плейсхолдер...
 length: Длина
+precision_scale: Точность и Масштаб
 readonly: Только для чтения
 unique: Уникальный
 primary_key: Первичный ключ
+foreign_key: Внешний Ключ
+finish_setup: Завершить Настройку
+dismiss: Скрыть
+raw_value: Сырое значение
+edit_raw_value: Редактировать Сырое Значение
+enter_raw_value: Введите сырое значение...
 clear_value: Очистить значение
 reset_to_default: Вернуться к настройкам по умолчанию
 undo_changes: Отменить изменения
 notifications: Уведомления
+show_all_activity: Показать Всю Активность
 page_not_found: Страница не найдена
 page_not_found_body: Страница, которую вы ищете, кажется, не существует.
+confirm_revert: Подтвердите Откат
+confirm_revert_body: Это вернет элемент в выбранное состояние.
 display: Отображение
 settings_update_success: Настройки обновлены
 title: Заголовок
+revision_delta_created: Создано
+revision_delta_created_externally: Создано Извне
+revision_delta_updated: 'Обновлено 1 Поле | Обновлено {count} Полей'
 revision_delta_deleted: Удалено
+revision_delta_reverted: Возвращено
+revision_delta_other: Ревизия
+revision_delta_by: '{date} пользователем {user}'
+private_user: Скрытый Пользователь
+revision_preview: Просмотр Ревизии
+updates_made: Обновления Выполнены
 leave_comment: Оставить комментарий...
+post_comment_success: Комментарий отправлен
+item_create_success: Элемент Создан | Элементы Созданы
+item_update_success: Элемент Обновлен | Элементы Обновлены
+item_delete_success: Элемент Удален | Элементы Удалены
 this_collection: Эта коллекция
 related_collection: Связанная Коллекция
+related_collections: Связанные Коллекции
+translations_collection: Коллекция Переводов
+languages_collection: Коллекция Языков
+export_data: Экспорт Данных
 format: Формат
 submit: Отправить
 move_to_folder: Переместить в папку
@@ -137,30 +220,72 @@ months:
   november: Ноябрь
   december: Декабрь
 size: Размер
+created: Создано
 checksum: Контрольная сумма
 owner: Владелец
 download: Загрузить
 open: Открыть
 open_in_new_window: Открыть в новом окне
+download_file: Скачать Файл
+collection_key: Ключ Коллекции
 name: Имя
+primary_key_field: Поле Основного Ключа
+type: Тип
+creating_new_collection: Создание Новой Коллекции
 created_by: Кем создано
 created_on: Дата создания
 save_and_stay: Сохранить и Остаться
 save_as_copy: Сохранить и Копировать
 comments: Комментарии
 request_feature: Запросить Фичи
+m2a_builder: Строитель (M2A)
 item_count: 'Нет элементов | Один элемент | {count} элементов'
+no_items_copy: В этой коллекции пока нет элементов.
+file_count: 'Нет Файлов | Один Файл | {count} Файлов'
+no_files_copy: Здесь нет файлов.
+user_count: 'Нет Пользователей | Один Пользователь | {count} Пользователей'
+no_users_copy: В этой роли пока нет пользователей.
+webhooks_count: 'Нет Веб-хуков | Один Веб-хук | {count} Веб-хуков'
+no_webhooks_copy: Веб-хуков пока нет.
+all_items: Все Элементы
+csv: CSV
+no_collections: Нет Коллекций
 create_collection: Создать Коллекцию
+no_collections_copy_admin: У вас пока нет Коллекций. Нажмите кнопку ниже, чтобы начать.
+no_collections_copy: У вас пока нет Коллекций. Пожалуйста, обратитесь к системному администратору.
 relationship_not_setup: Связь не была настроена правильно
+select_a_collection: Выберите Коллекцию
+active: Активный
 users: Пользователи
 activity: Активность
 webhooks: Webhooks
 field_width: Ширина поля
+add_a_new_item: Добавить новый элемент...
+add_filter: Добавить Фильтр
+upper_limit: Верхний предел...
+lower_limit: Нижний предел...
 user_directory: Папка пользователя
+documentation: Документация
+sidebar: Боковая панель
 duration: Продолжительность
+charset: Кодировка
+second: Секунд
+file_moved: Файл Перемещен
+collection_created: Коллекция Создана
 modified_on: Дата изменения
+card_size: Размер Карточки
 sort_field: Поле сортировки
+toggle_manual_sorting: Переключить Ручную Сортировку
+bookmark_doesnt_exist: Закладка Не Существует
+select_an_item: Выбрать элемент...
 edit: Редактирование
+enabled: Включен
+disable_tfa: Выключить 2FA
+tfa_scan_code: Сканируйте код в приложении аутентификаторе для завершения настройки 2FA
+enter_otp_to_disable_tfa: Введите OTP для выключения 2FA
+create_account: Создать Аккаунт
+account_created_successfully: Аккаунт Успешно Создан
+auto_fill: Автозаполнение
 bookmarks: Закладки
 back: Назад
 all_users: Все пользователи
@@ -168,18 +293,43 @@ system_collections: Системные коллекции
 placeholder: Плейсхолдер
 icon_left: Значок слева
 icon_right: Значок справа
+font: Шрифт
+sans_serif: Sans Serif
+serif: Serif
 monospace: Моноширинный
 divider: Разделитель
 color: Цвет
+circle: Круг
+empty_item: Пустой Элемент
+log_in_with: 'Войти с помощью {provider}'
+advanced_filter: Расширенный Фильтр
 operators:
+  eq: Равно
+  neq: Не равно
   lt: Меньше
   gt: Больше
   lte: Меньше или равно
   gte: Больше или равно
+  in: Один из
+  nin: Не один из
+  null: "Null"
+  nnull: Не null
   contains: Содержит
   ncontains: Не содержит
+  between: Между
+  nbetween: Не между
   empty: Пустой
+  nempty: Не пустой
+  all: Содержит эти ключи
+  has: Содержит некоторые из этих ключей
 loading: Загрузка...
+drop_to_upload: Перетащите для Загрузки
+upload_file: Загрузить Файл
+upload_file_indeterminate: Загрузка Файла...
+upload_file_success: Файл Загружен
+upload_files_indeterminate: 'Загрузка файлов {done}/{total}'
+upload_files_success: '{count} Файлов Загружено'
+upload_pending: Ожидание Загрузки
 display_template: Шаблон отображения
 no_results: Нет результатов
 role: Роль
@@ -325,10 +475,12 @@ interfaces:
     datetime: Дата и время
   display-template:
     display-template: Шаблон отображения
+    select_a_collection: Выберите Коллекцию
   divider:
     divider: Разделитель
   dropdown:
     allow_other: Разрешить другие
+    choices_value_placeholder: Введите значение...
   file:
     file: Файл
   files:
@@ -365,6 +517,8 @@ interfaces:
   text-input:
     text-input: Text Input
     trim: Обрезать
+  toggle:
+    label_default: Включен
   translations:
     display_template: Шаблон отображения
   user:
@@ -374,6 +528,8 @@ interfaces:
   wysiwyg:
     custom_formats: Пользовательские форматы
 displays:
+  boolean:
+    boolean: Логическое
   collection:
     collection: Коллекция
   color:
@@ -387,6 +543,10 @@ displays:
     filesize: Размер файла
   icon:
     icon: Иконка
+  image:
+    circle: Круг
+  labels:
+    choices_value_placeholder: Введите значение...
   rating:
     rating: Рейтинг
   user:
