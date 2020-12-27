@@ -110,7 +110,9 @@ export default async function createApp() {
 		html = html.replace(/href="\//g, `href="${publicUrl}`);
 		html = html.replace(/src="\//g, `src="${publicUrl}`);
 
-		app.get('/', (req, res) => res.redirect(`./admin/`));
+    app.get('/', (req, res) =>
+			env.REDIRECT_TO_ADMIN ? res.redirect(`./admin/`) : res.status(403).send('Access denied')
+		);
 		app.get('/admin', (req, res) => res.send(html));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
 		app.use('/admin/*', (req, res) => {
