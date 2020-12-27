@@ -54,6 +54,7 @@ reset_system_permissions: Сбросить Системные Разрешени
 reset_system_permissions_copy: Сбросить все системные разрешения к значениям по умолчанию
 unarchive: Разархивировать
 unarchive_confirm: Вы уверены, что хотите разархивировать этот элемент?
+nested_files_folders_will_be_moved: Вложенные файлы и папки будут перемещены на один уровень вверх.
 unknown_validation_errors: 'Обнаружены ошибки валидации для следующих скрытых полей:'
 validationError:
   eq: Значение должно быть {valid}
@@ -91,6 +92,9 @@ fields_for_role: 'Поля, которые Роль {role} может {action}.'
 validation_for_role: 'Правила {action} поля, которые Роль {role} должна соблюдать.'
 presets_for_role: 'Значения поля по умолчанию для Роли {role}.'
 presentation_and_aliases: Представление и Алиасы
+revision_post_update: Вот как этот элемент выглядел после обновления...
+changes_made: Вот конкретные изменения, которые были сделаны...
+no_relational_data: Помните, что это не включает относительные данные.
 hide_field_on_detail: Скрыть Поле в Карточке
 show_field_on_detail: Показать Поле в Карточке
 delete_field: Удалить поле
@@ -133,6 +137,7 @@ uuid: UUID
 not_available_for_type: Недоступно для этого Типа
 create_translations: Создать Переводы
 auto_generate: Авто-Генерация
+this_will_auto_setup_fields_relations: Это автоматически настроит все необходимые поля и отношения.
 click_here: Нажмите здесь
 to_manually_setup_translations: для ручной настройки переводов.
 fields_group: Группа Полей
@@ -248,13 +253,31 @@ months:
   november: Ноябрь
   december: Декабрь
 drag_mode: Режим Перетаскивания
+cancel_crop: Отменить Обрезку
+original: Исходный
+url: URL
+import: Импорт
+file_details: Информация о Файле
+dimensions: Размеры
 size: Размер
 created: Создано
+modified: Изменено
 checksum: Контрольная сумма
 owner: Владелец
+edited_by: Изменено
+folder: Папка
+zoom: Масштаб
 download: Загрузить
 open: Открыть
 open_in_new_window: Открыть в новом окне
+foreground_color: Цвет Переднего Плана
+background_color: Цвет Фона
+upload_from_device: Загрузить Файл с Устройства
+choose_from_library: Выбрать Файл из Библиотеки
+import_from_url: Импортировать Файл из URL
+replace_from_device: Заменить Файл с Устройства
+replace_from_library: Заменить Файл из Библиотеки
+replace_from_url: Заменить Файл из URL
 no_file_selected: Файл Не Выбран
 download_file: Скачать Файл
 collection_key: Ключ Коллекции
@@ -342,6 +365,7 @@ errors:
   FORBIDDEN: Запрещено
   INVALID_CREDENTIALS: Неверное имя пользователя или пароль
   INVALID_OTP: Неверный одноразовый пароль
+  INVALID_PAYLOAD: Некорректное содержимое
   INVALID_QUERY: Некорректный запрос
   ITEM_LIMIT_REACHED: Достигнут лимит элементов
   ITEM_NOT_FOUND: Элемент не найден
@@ -354,10 +378,31 @@ edit_bookmark: Редактировать Закладку
 bookmarks: Закладки
 presets: Пресеты
 unexpected_error: Неожиданная Ошибка
+unexpected_error_copy: Произошла неожиданная ошибка. Пожалуйста, попробуйте позже.
 copy_details: Скопировать Подробности
 no_app_access: Нет Доступа к Приложению
+no_app_access_copy: Этому пользователю не разрешено использовать приложение администратора.
+password_reset_sent: Мы отправили вам безопасную ссылку для сброса пароля
+password_reset_successful: Пароль успешно сброшен
 back: Назад
+editing_image: Редактирование Изображения
+square: Квадрат
+free: Свободный
+flip_horizontal: Отразить по Горизонтали
+flip_vertical: Отразить по Вертикали
+aspect_ratio: Соотношение Сторон
+rotate: Повернуть
 all_users: Все пользователи
+delete_collection: Удалить Уоллекцию
+update_collection_success: Коллекция Обновлена
+delete_collection_success: Коллекция Удалена
+start_end_of_count_items: '{start}-{end} из {count} элементов'
+delete_collection_are_you_sure: >-
+  Вы уверены, что хотите удалить эту коллекцию? Это действие приведет к удалению коллекции и всех ее элементов. Это действие необратимо.
+collections_shown: Коллекций Показано
+visible_collections: Видимые Коллекции
+hidden_collections: Скрытые Коллекции
+unmanaged_collections: Ненастроенные Коллекции
 system_collections: Системные коллекции
 placeholder: Плейсхолдер
 icon_left: Значок слева
@@ -399,30 +444,113 @@ upload_file_success: Файл Загружен
 upload_files_indeterminate: 'Загрузка файлов {done}/{total}'
 upload_files_success: '{count} Файлов Загружено'
 upload_pending: Ожидание Загрузки
+drag_file_here: Перетащите Файлы Сюда
+click_to_browse: Нажмите для Просмотра
+layout_options: Параметры Макета
+collection_setup: Настройки Коллекции
+optional_system_fields: Необязательные Системные Поля
+value_unique: Значение должно быть уникальным
+all_activity: Вся Активность
+create_item: Создать Элемент
 display_template: Шаблон отображения
+n_items_selected: 'Не Выбраны Элементы | Выбран 1 Элемент | Выбрано {n} Элементов'
+per_page: На Страницу
+all_files: Все Файлы
+my_files: Мои Файлы
+recent_files: Недавние Файлы
+create_folder: Создать Папку
+folder_name: Название Папки...
+add_file: Добавить Файл
+replace_file: Заменить Файл
 no_results: Нет результатов
+no_results_copy: Настройте или сбросьте фильтры поиска, чтобы увидеть результаты.
+clear_filters: Сбросить Фильтры
+saves_automatically: Сохраняется Автоматически
 role: Роль
 user: Пользователь
+no_presets: Нет Пресетов
+no_presets_cta: Добавить Пресет
 create: Создать
+on_create: При Создании
 on_update: Во время обновления
 read: Чтение
 update: Обновление
 select_fields: Выбрать поля
+format_text: Форматировать Текст
+bold: Жирный
+toggle: Переключить
+icon_on: Значок Вкл
+icon_off: Значок Выкл
+label: Метка
 wysiwyg_options:
+  aligncenter: По Середине
+  alignjustify: По Ширине
+  alignleft: По Левому Краю
+  alignnone: Без Выравнивания
+  alignright: По Правому Краю
+  forecolor: Цвет Переднего Плана
+  backcolor: Цвет Фона
+  bold: Жирный
+  italic: Наклонный
+  underline: Подчеркнутый
+  strikethrough: Зачеркнутый
+  subscript: Подстрочный
+  superscript: Надстрочный
+  blockquote: Цитата
+  bullist: Маркированный Список
+  numlist: Нумерованный Список
+  hr: Горизонтальный Разделитель
+  link: Добавить Ссылку
+  unlink: Удалить Ссылку
+  media: Добавить Медиа
+  image: Добавить Изображение
+  copy: Копировать
+  cut: Вырезать
+  paste: Вставить
+  h1: Заголовок 1
+  h2: Заголовок 2
+  h3: Заголовок 3
+  h4: Заголовок 4
+  h5: Заголовок 5
+  h6: Заголовок 6
+  fontselect: Выберите Шрифт
+  fontsizeselect: Выберите Размер Шрифта
+  indent: Отступ
+  outdent: Выступ
+  undo: Отменить
+  redo: Повторить
   remove: Удалить
+  removeformat: Убрать Форматирование
   selectall: Выбрать Все
   table: Таблица
+  visualaid: Показать невидимые элементы
+  code: Показать Исходник
+  fullscreen: Во Весь Экран
+  directionality: Направленность
 dropdown: Выпадающий список
 choices: Варианты
+choices_option_configured_incorrectly: Выбор настроен некорректно
 deselect: Отменить выбор
+deselect_all: Отменить Выбор
+other: Другой...
+adding_user: Добавление Пользователя
+unknown_user: Неизвестный Пользователь
+creating_in: 'Создание Элемента в {collection}'
+editing_in: 'Редактирование Элемента в {collection}'
 editing_in_batch: 'Пакетное редактирование {count} элементов'
+no_options_available: Нет доступных опций
+settings_data_model: Модель Данных
 settings_permissions: Роли и права доступа
 settings_project: Настройки Проекта
 settings_webhooks: Webhooks
+settings_presets: Пресеты и Закладки
+layout_preview: Предпросмотр Макета
+layout_setup: Настройка Макета
 unsaved_changes: Несохранённые изменения
 unsaved_changes_copy: Вы уверены, что хотите покинуть эту страницу?
 discard_changes: Отменить изменения
 keep_editing: Продолжайте редактировать
+page_help_collections_overview: '**Обзор Коллекций** — Списки всех коллекций, к которым у вас есть доступ.'
 add_new: Создать
 all: Все
 batch_delete_confirm: >-
@@ -484,8 +612,25 @@ fields:
     name: Название роли
     icon: Иконка Роли
     description: Описание
+    ip_access: Доступ IP
+    app_access: Доступ к Приложению
+    admin_access: Доступ Администратора
+    enforce_tfa: Требуется 2FA
+    users: Пользователи в Роли
+    module_list: Навигация по Модулям
+    collection_list: Навигация по Коллекциям
+no_fields_in_collection: 'В коллекции "{collection}" пока нет полей'
+do_nothing: Ничего не Делать
+generate_and_save_uuid: Создать и Сохранить UUID
+save_current_user_id: Сохранить ID Текущего Пользователя
+save_current_user_role: Сохранить Роль Текущего Пользователя
+save_current_datetime: Сохранить Текущую Дату/Время
 comment: Комментарий
 continue: Продолжить
+continue_as: >-
+  <b>{name}</b> в настоящее время аутентифицирован. Если вы узнаете этот аккаунт, нажмите продолжить.
+editing_role: '{role} Роль'
+creating_webhook: Создание Веб-хука
 default: По умолчанию
 delete: Удалить
 delete_field_are_you_sure: >-
@@ -502,11 +647,16 @@ forgot_password: Забыли пароль
 hidden: Скрыто
 icon: Иконка
 info: Инфо
+normal: Нормальный
+success: Успех
+warning: Предупреждение
+danger: Опасность
 junction_collection: Узловая Коллекция
 latency: Задержка
 login: Войти
 my_activity: Мои активности
 not_authenticated: Не аутентифицирован
+authenticated: Аутентифицирован
 options: Параметры
 otp: Одноразовый пароль
 password: Пароль
@@ -514,11 +664,13 @@ permissions: Права доступа
 relationship: Связи
 reset: Сбросить
 reset_password: Сбросить Пароль
+revisions: Ревизии
 revert: Вернуть
 save: Сохранить
 schema: Схема
 search: Поиск
 select_existing: Выбрать из существующего
+select_field_type: Выберите тип поля
 select_interface: Выберите интерфейс
 settings: Настройки
 sign_in: Войти
@@ -529,10 +681,14 @@ sort_direction: Направление сортировки
 template: Шаблон
 translation: Перевод
 value: Значение
+view_project: Просмотр Проекта
+report_error: Сообщить об Ошибке
 interfaces:
   checkboxes:
     checkboxes: Флажки
+    description: Выбрать из нескольких опций с помощью флажков
     allow_other: Разрешить другие
+    show_more: 'Показать еще {count}'
   code:
     code: Код
     line_number: Номер строки
@@ -551,15 +707,30 @@ interfaces:
     divider: Разделитель
   dropdown:
     allow_other: Разрешить другие
+    choices_name_placeholder: Введите название...
     choices_value_placeholder: Введите значение...
+  dropdown-multiselect:
+    dropdown-multiselect: Выпадающий Список (Несколько)
   file:
     file: Файл
   files:
     files: Файлы
+  hash:
+    hash: Хэш
+    description: Введите значение для хэширования
+    masked: Маскированный
+    masked_label: Скрыть настоящие значения
   icon:
     icon: Иконка
+    description: Выберите значок из выпадающего списка
+    search_for_icon: Найти значок...
+  image:
+    image: Изображение
+    description: Выберите или загрузите изображение
   interface:
     interface: Интерфейс
+    description: Выберите существующий интерфейс
+    placeholder: Выберите интерфейс...
   interface-options:
     interface-options: Настройки интерфейса
   many-to-many:
@@ -571,51 +742,121 @@ interfaces:
     markdown: Markdown
     edit: Редактирование
     preview: Предпросмотр
+  notice:
+    notice: Примечание
+    description: Показать короткое примечание
+    text: Введите содержимое примечания здесь...
   numeric:
     numeric: Числовой
+    description: Введите число
+    minimum_value: Минимальное Значение
+    maximum_value: Максимальное Значение
+    step_interval: Интервал Шага
   one-to-many:
     one-to-many: Один ко многим
+    description: Выберите несколько связанных элементов
+    no_collection: Коллекция не найдена
   radio-buttons:
     radio-buttons: Радио кнопки
+    description: Выберите один из нескольких вариантов
   repeater:
     repeater: Репитер
+    description: Создать несколько записей одной структуры
+    edit_fields: Редактировать Поля
+    add_label: 'Метка "Добавить Новую Строку"'
+    field_name_placeholder: Введите название поля...
+    field_note_placeholder: Введите примечание к полю...
   slider:
     slider: Слайдер
+    description: Выберите номер с помощью слайдера
+    always_show_value: Всегда показывать значение
   slug:
     slug: Слаг
+    description: Введите слово, связанное дефисами
   tags:
     tags: Теги
+    description: Выбрать или добавить теги
+    whitespace: Пробел
+    hyphen: Заменить дефисом
+    underscore: Заменить подчеркиванием
+    remove: Удалить пробелы
+    capitalization: Заглавные буквы
+    uppercase: Преобразовать в Верхний Регистр
+    lowercase: Преобразовать в Нижний Регистр
+    add_tags: Добавить метки...
   text-input:
     text-input: Text Input
     trim: Обрезать
+    mask: Маскированный
+  textarea:
+    textarea: Текстовое поле
   toggle:
+    toggle: Переключить
     label_default: Включен
   translations:
     display_template: Шаблон отображения
+    no_collection: Нет Коллекций
   user:
     user: Пользователь
+    description: Выберите существующего пользователя directus
+    select_mode: Режим Выбора
     modes:
+      auto: Авто
       dropdown: Выпадающий список
+      modal: Модальный
   wysiwyg:
+    wysiwyg: WYSIWYG
     custom_formats: Пользовательские форматы
 displays:
   boolean:
     boolean: Логическое
+    label_on: Метка Вкл
+    label_off: Метка Выкл
+    icon_on: Значок Вкл
+    icon_off: Значок Выкл
+    color_on: Цвет Вкл
+    color_off: Цвет Выкл
   collection:
     collection: Коллекция
+    description: Показать коллекцию
+    icon_label: Показать иконку коллекции
   color:
     color: Цвет
+    description: Отображать цветную точку
+    default_color: Цвет по Умолчанию
   datetime:
     datetime: Дата и время
+    description: Показывать значения, относящиеся ко времени
     format: Формат
+    long: Длинный
+    short: Короткий
+    relative: Относительный
+    relative_label: 'Показывать относительное время, прим.: 5 минут назад'
   file:
     file: Файл
+    description: Показать файлы
   filesize:
     filesize: Размер файла
+    description: Показать размер файла
+  formatted-value:
+    formatted-value: Форматированное Значение
+    description: Показывать форматированную версию текста
+    format_title: Форматировать Заголовок
+    format_title_label: Авто-форматировать заглавные
+    bold_label: Использовать жирный шрифт
+  formatted-json-value:
+    formatted-json-value: Форматированное значение JSON
+    description: Показывать форматированную версию объекта
   icon:
     icon: Иконка
+    description: Отображать иконку
+    filled: Заполненный
+    filled_label: Использовать заполненный вариант
   image:
+    image: Изображение
+    description: Отображение маленького предпросмотра изображения
     circle: Круг
+    circle_label: Показать как круг
   labels:
     choices_value_placeholder: Введите значение...
   rating:
