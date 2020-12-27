@@ -888,11 +888,9 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						break;
 					case 'boolean':
 						state.fieldData.meta.special = ['boolean'];
-						state.fieldData.schema.is_nullable = false;
 						state.fieldData.schema.default_value = false;
+						state.fieldData.schema.is_nullable = false;
 						break;
-					default:
-						state.fieldData.schema.default_value = undefined;
 				}
 			}
 		);
