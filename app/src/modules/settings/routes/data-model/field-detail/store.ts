@@ -873,6 +873,8 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				state.fieldData.meta.display_options = null;
 				state.fieldData.meta.special = null;
 				state.fieldData.schema.default_value = undefined;
+				state.fieldData.schema.max_length = undefined;
+				state.fieldData.schema.is_nullable = true;
 
 				switch (state.fieldData.type) {
 					case 'uuid':
