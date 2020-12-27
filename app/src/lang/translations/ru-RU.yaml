@@ -54,6 +54,7 @@ reset_system_permissions: Сбросить Системные Разрешени
 reset_system_permissions_copy: Сбросить все системные разрешения к значениям по умолчанию
 unarchive: Разархивировать
 unarchive_confirm: Вы уверены, что хотите разархивировать этот элемент?
+unknown_validation_errors: 'Обнаружены ошибки валидации для следующих скрытых полей:'
 validationError:
   eq: Значение должно быть {valid}
   neq: Значение не может быть {invalid}
@@ -72,6 +73,9 @@ validationError:
   required: Значение обязательно
 all_access: Полный доступ
 no_access: Нет Доступа
+use_custom: Использовать Свой
+field_standard: Стандартный,
+field_presentation: Представление и Алиасы,
 field_file: Один Файл,
 field_files: Несколько Файлов,
 field_m2o: Связка M2O,
@@ -130,7 +134,12 @@ not_available_for_type: Недоступно для этого Типа
 create_translations: Создать Переводы
 auto_generate: Авто-Генерация
 click_here: Нажмите здесь
+to_manually_setup_translations: для ручной настройки переводов.
 fields_group: Группа Полей
+configure_m2o: Настройте вашу связку Many-to-One...
+configure_o2m: Настройте вашу связку One-to-Many...
+configure_m2m: Настройте вашу связку Many-to-Many...
+configure_m2a: Настройте вашу связку Many-to-Any...
 add_m2o_to_collection: 'Добавить Many-to-One в "{collection}"'
 add_o2m_to_collection: 'Добавить One-to-Many в "{collection}"'
 add_m2m_to_collection: 'Добавить Many-to-Many в "{collection}"'
@@ -199,13 +208,32 @@ translations_collection: Коллекция Переводов
 languages_collection: Коллекция Языков
 export_data: Экспорт Данных
 format: Формат
+use_current_filters_settings: Использовать Текущие Фильтры и Настройки
+export_collection: 'Экспорт {collection}'
+last_page: Последняя Страница
+last_access: Последний Доступ
+fill_template: Заполнить Шаблонным Значением
+a_unique_table_name: Уникальное название таблицы...
+a_unique_column_name: Уникальное название столбца...
+enable_custom_values: Включить пользовательские значения
 submit: Отправить
 move_to_folder: Переместить в папку
 move: Переместить
+system: Система
+add_field_related: Добавить поле в Связанную Коллекцию
 interface: Интерфейс
 today: Сегодня
 yesterday: Вчера
 delete_comment: Удалить комментарий
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+month: Месяц
+year: Год
+select_all: Выбрать Все
 months:
   january: Январь
   february: Февраль
@@ -219,6 +247,7 @@ months:
   october: Октябрь
   november: Ноябрь
   december: Декабрь
+drag_mode: Режим Перетаскивания
 size: Размер
 created: Создано
 checksum: Контрольная сумма
@@ -381,6 +410,7 @@ update: Обновление
 select_fields: Выбрать поля
 wysiwyg_options:
   remove: Удалить
+  selectall: Выбрать Все
   table: Таблица
 dropdown: Выпадающий список
 choices: Варианты
