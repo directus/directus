@@ -662,6 +662,8 @@ fields:
     auth_password_policy: Политика Паролей Входа
     auth_idle_timeout: Тайм-аут при Бездействии
     auth_login_attempts: Попыток Входа
+    storage_asset_presets: Пресеты Элементов Хранилища
+    storage_asset_transform: Преобразование Элементов Хранилища
   directus_fields:
     collection: Название Коллекции
     icon: Значок Коллекции
@@ -747,6 +749,7 @@ template: Шаблон
 translation: Перевод
 value: Значение
 view_project: Просмотр Проекта
+weeks: { }
 report_error: Сообщить об Ошибке
 interfaces:
   checkboxes:
@@ -757,6 +760,7 @@ interfaces:
     items_shown: Показано Элементов
   code:
     code: Код
+    description: Написать или поделиться фрагментами кода
     line_number: Номер строки
     placeholder: Введите код здесь...
   collection:
@@ -769,6 +773,7 @@ interfaces:
     include_system_collections: Включить Системные Коллекции
   color:
     color: Цвет
+    description: Введите или выберите значение цвета
     placeholder: Выберите цвет...
     preset_colors: Цвета Пресета
     preset_colors_add_label: Добавить новый цвет...
@@ -787,6 +792,7 @@ interfaces:
     select_a_collection: Выберите Коллекцию
   divider:
     divider: Разделитель
+    description: Разметить и разделить поля на разделы
     title_placeholder: Введите название...
     inline_title: Встроенный Заголовок
     inline_title_label: Показать заголовок внутри строки
