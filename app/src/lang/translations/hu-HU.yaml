@@ -161,12 +161,42 @@ download: Letöltés
 created_by: Készítette
 created_on: Létrehozva
 comments: Hozzászólások
+item_count: 'Nincsenek elemek | Egy elem | {count} elem'
+no_items_copy: Nincsenek még elemek ebben a gyűjteményben.
+file_count: 'Nincsenek fileok | Egy file | {count} file'
+no_files_copy: Nincsenek fileok.
+user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasználó'
+no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
+webhooks_count: 'Nincsenek webhook-ok | Egy webhook | {count} webhook'
+no_webhooks_copy: Még nincsenek webhook-ok.
+all_items: Minden elem
+csv: CSV
+no_collections: Nincsenek gyűjtemények
 create_collection: Kollekció létrehozása
+no_collections_copy_admin: Még nem hoztál létre gyűjteményt. Kattints az alábbi gombra a kezdéshez.
+no_collections_copy: Még nem hoztál létre gyűjteményt. Lépj kapcsolatba a rendszeradminisztrátorral.
+relationship_not_setup: Ez a kapcsolat nincs megfelelően beállítva
+display_template_not_setup: A megjelenítő sablon nem megfelelően van beállítva
+collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
+select_a_collection: Gyűjtemény kiválasztása
+active: aktív
 users: Felhasználók
 activity: Tevékenységek
 webhooks: Webhookok
 field_width: Mező szélessége
+add_a_new_item: Új elem hozzáadása...
+add_filter: Szűrő hozzáadása
+upper_limit: Felső határ...
+lower_limit: Alsó határ...
+user_directory: Felhasználók listája
+documentation: Dokumentáció
+sidebar: Oldalsáv
 duration: Időtartam
+charset: Karakterkészlet
+second: Másodperc
+file_moved: A fájl átmozgatva
+collection_created: Gyűjtemény létrehozva
+modified_on: Változtatás dátuma
 bookmarks: Könyvjelzők
 back: Vissza
 icon_left: Ikon Balra
@@ -268,6 +298,9 @@ interfaces:
     collections: Kollekciók
   color:
     color: Szín
+  display-template:
+    collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
+    select_a_collection: Gyűjtemény kiválasztása
   file:
     file: File
   files:
