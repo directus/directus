@@ -39,6 +39,7 @@ reset_system_permissions_copy: 重設所有系統權限回到預設值
 unarchive: 取消封存
 unarchive_confirm: 您確定要解除封存這個項目嗎？
 nested_files_folders_will_be_moved: 巢狀的檔案與資料夾將會被上移一層
+unknown_validation_errors: '下列的隱藏欄位驗證錯誤：'
 language: 語言
 create_field: 新建欄位
 hidden_on_detail: 從詳細內容隱藏
