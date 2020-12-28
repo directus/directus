@@ -74,6 +74,10 @@ validationError:
 all_access: Todos los accesos
 no_access: Sin Acceso
 use_custom: Personalizar
+field_standard: Estándar,
+field_file: Archivo único,
+field_files: Múltiples archivos,
+field_translations: Traducciones,
 item_permissions: Permisos de Elemento
 field_permissions: Permisos de Campo
 field_validation: Validación de Campo
@@ -268,6 +272,9 @@ background_color: Color de Fondo
 upload_from_device: Subir Archivo desde Dispositivo
 choose_from_library: Seleccionar Archivo desde Biblioteca
 import_from_url: Importar Archivo desde URL
+replace_from_device: Reemplazar Archivo desde Dispositivo
+replace_from_library: Reemplazar Archivo desde Biblioteca
+replace_from_url: Reemplazar Archivo desde URL
 no_file_selected: Sin Archivos Seleccionados
 download_file: Descargar Archivo
 collection_key: Llave de Colección
@@ -291,6 +298,7 @@ no_comments: Aún Sin Comentarios
 click_to_expand: Haga Clic para Expandir
 select_item: Seleccionar Elemento
 no_items: Sin Elementos
+search_items: Buscar elementos...
 disabled: Desactivado
 information: Información
 report_bug: Reportar Problema
@@ -583,6 +591,8 @@ add_new: Añadir Nuevo
 from_collection: 'De la colección "{collection}"'
 create_new: Crear Nuevo
 all: Todo
+none: Ninguno/a
+no_layout_collection_selected_yet: Plantilla/Colección No seleccionada aún
 batch_delete_confirm: >-
   No se han seleccionado entradas | ¿Está seguro de que desea eliminar esta entrada? Esta acción no puede deshacerse. | Está seguro de que desea eliminar estas {count} entradas? Esta acción no puede deshacerse.
 cancel: Cancelar
