@@ -23,6 +23,7 @@ invite: Invitar
 emails: Correos Electrónicos
 connection_excellent: Excelente Conexión
 connection_good: Buena Conexión
+connection_fair: Conexión Suficiente
 connection_poor: Conexión Pobre
 rename_folder: Renombrar Directorio
 delete_folder: Eliminar Directorio
@@ -75,8 +76,12 @@ all_access: Todos los accesos
 no_access: Sin Acceso
 use_custom: Personalizar
 field_standard: Estándar,
+field_presentation: Presentación y Alias,
 field_file: Archivo único,
 field_files: Múltiples archivos,
+field_m2o: Relación M2O,
+field_o2m: Relación O2M,
+field_m2m: Relación M2M,
 field_translations: Traducciones,
 item_permissions: Permisos de Elemento
 field_permissions: Permisos de Campo
@@ -591,7 +596,7 @@ add_new: Añadir Nuevo
 from_collection: 'De la colección "{collection}"'
 create_new: Crear Nuevo
 all: Todo
-none: Ninguno/a
+none: Nada
 no_layout_collection_selected_yet: Plantilla/Colección No seleccionada aún
 batch_delete_confirm: >-
   No se han seleccionado entradas | ¿Está seguro de que desea eliminar esta entrada? Esta acción no puede deshacerse. | Está seguro de que desea eliminar estas {count} entradas? Esta acción no puede deshacerse.
@@ -744,6 +749,7 @@ template: Plantilla
 translation: Traducción
 value: Valor
 view_project: Ver Proyecto
+weeks: { }
 report_error: Reportar Error
 interfaces:
   checkboxes:
