@@ -38,6 +38,8 @@
   children:
   - name: Collections
     to: "/guides/collections"
+  - name: Items
+    to: "/guides/items"
   - name: Fields
     to: "/guides/fields"
   - name: Files
