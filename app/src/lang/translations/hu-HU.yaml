@@ -41,13 +41,120 @@ node_uptime: Node futásidő
 os_type: Operációs rendszer típusa
 os_version: Operációs rendszer verzió
 os_uptime: Operációs rendszer futásideje
+os_totalmem: Operációs rendszer memória
+archive: Archívum
+archive_confirm: Biztosan törölni szeretnéd ezt az elemet?
+archive_confirm_count: >-
+  Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count} elemet?
+reset_system_permissions: Rendszer hozzáférések visszaállítása
+reset_system_permissions_copy: Minden rendszer hozzáférés visszaállítása alapállapotba
+unarchive: Archiválás visszavonása
+unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
+nested_files_folders_will_be_moved: Egymás alatti fileok és könyvtárak egy szinttel feljebb kerülnek.
 language: Nyelv
+global: Globális
+admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
+camera: Fényképezőgép
+exposure: Megvilágítás
+shutter: Exponálógomb
+iso: ISO
+focal_length: Fókusztávolság
+schema_setup_title: Hogyan kerüljön ez a mező az adatbázisba?
+schema_field_title: Hogyan viselkedjen ez a mező az alkalmazásban?
 create_field: Mező létrehozása
+creating_new_field: 'Új mező ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Oldalbeállítások visszaállítása
+hidden_field: Rejtett mező
+hidden_on_detail: Elrejtés a részleteknél
+disabled_editing_value: Szerkesztés tiltása
+key: Kulcs
+alias: Álnév
+bigInteger: Nagy egész számok
+boolean: Logikai
+date: Dátum
+datetime: Dátum és idő
+decimal: Tizedes szám
+float: Törtszám
+integer: Egész szám
+json: JSON
+string: Karaktersor
+text: Szöveg
+time: Idő
+timestamp: Időbélyeg
+uuid: UUID
+not_available_for_type: Ehhez a típushoz nem elérhető
+create_translations: Fordítás létrehozása
 auto_generate: Automatikusan generált
+this_will_auto_setup_fields_relations: Ez automatikusan létrehozza az összes szükséges mezőt és kapcsolatokat.
+click_here: Kattints ide
+to_manually_setup_translations: a fordítások kézi elkészítéséhez.
+click_to_manage_translated_fields: >-
+  Ezek a mezők még nem lettek lefordítva. Kattints ide, hogy létrehozd őket. | Egy mező van lefordítva. Kattints ide a szerkesztéshez. | {count} mező van lefordítva. Kattints ide a szerkesztésükhöz.
+fields_group: Mező-csoport
+configure_m2o: A Sok-az-Egyhez kapcsolatok beállítása...
+configure_o2m: Az Egy-a-Sokhoz kapcsolatok beállítása...
+configure_m2m: A Sok-a-Sokhoz kapcsolatok beállítása...
+configure_m2a: A Sok-az-Akárhányhoz kapcsolatok beállítása...
+add_m2o_to_collection: 'Egy Sok-az-Egyhez kapcsolat hozzáadása a {collection} kollekcióhoz'
+add_o2m_to_collection: 'Egy Egy-a-Sokhoz kapcsolat hozzáadása a {collection} kollekcióhoz'
+add_m2m_to_collection: 'Egy Sok-a-Sokhoz kapcsolat hozzáadása a {collection} kollekcióhoz'
+choose_a_type: Válassz típust...
+determined_by_relationship: A kapcsolat által meghatározott
 add_note: Segítő jelzés a kitöltő felhasználónak...
 default_value: Alapértelmezett érték
+add_a_default_value: Alapértelmezett érték hozzáadása...
+interface_setup_title: Hogyan fogják a felhasználók ezt a mezőt használni?
+display_setup_title: Hogyan kell ennek a mezőnek az értékét megjeleníteni?
+standard_field: Általános mező
 clear_value: Érték törlése
 title: Cím
+related_collections: Kapcsolódó gyűjtemények
+translations_collection: Fordítások gyűjteménye
+languages_collection: Nyelvek gyűjteménye
+export_data: Adatok exportálása
+format: Formátum
+use_current_filters_settings: Aktuális szűrők és beállítások használata
+export_collection: '{collection} exportálása'
+last_page: Utolsó oldal
+last_access: Utolsó hozzáférés
+fill_template: Kitöltés sablon értékkel
+a_unique_table_name: Egyedi tábla név...
+a_unique_column_name: Egyedi oszlop név...
+enable_custom_values: Egyéni értékek engedélyezése
+submit: Beküldés
+move_to_folder: Áthelyezés mappába
+move: Áthelyezés
+system: Rendszer
+add_field_related: Mező hozzáadása kapcsolódó gyűjteményhez
+interface: Kezelőfelület
+today: Ma
+yesterday: Tegnap
+delete_comment: Hozzászólás törlése
+date-fns_date: PPP
+month: hónap
+year: év
+select_all: Összes kijelölése
+months:
+  january: január
+  february: február
+  march: március
+  april: április
+  may: május
+  june: június
+  july: július
+  august: augusztus
+  september: szeptember
+  october: október
+  november: november
+  december: december
+drag_mode: Vonszolási mód
+cancel_crop: Körbevágás megszakítása
+original: Eredeti
+url: URL
+import: Importálás
+file_details: Fájl adatok
+dimensions: Méretek
 checksum: Ellenőrző
 owner: Tulajdonos
 download: Letöltés
@@ -73,6 +180,7 @@ role: Szerepkör
 create: Létrehozás
 select_fields: Válassz mezőket
 wysiwyg_options:
+  selectall: Összes kijelölése
   table: Táblázat
 choices: Lehetőségek
 deselect: Kijelölés megszüntetése
@@ -164,13 +272,19 @@ interfaces:
     file: File
   files:
     files: Fájlok
+  interface:
+    interface: Kezelőfelület
   tags:
     tags: Cimkék
 displays:
+  boolean:
+    boolean: Logikai
   collection:
     collection: Gyűjtemény
   color:
     color: Szín
+  datetime:
+    format: Formátum
   file:
     file: File
   user:
