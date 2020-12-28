@@ -918,7 +918,7 @@ interfaces:
     mask: Masked
     mask_label: Hide the real value
     nullable: Nullable
-    nullable_label: Send NULL as empty
+    nullable_label: Save empty value as NULL
   textarea:
     textarea: Textarea
     description: Enter multiline plain-text
