@@ -1,7 +1,46 @@
 ---
+edit_field: Mező szerkesztése
+duplicate_field: Mező másolása
+half_width: Félszélességű
+full_width: Teljes szélesség
+fill_width: Teret kitöltő
+field_name_translations: Lefordított mezőnevek
+enter_password_to_enable_tfa: Írd be a jelszót a kétfaktoros ellenőrzés bekapcsolásához
+add_field: Új mező
+role_name: Szerepkör neve
+show_archived_items: Archivált elemek megjelenítése
+required: Kötelező
+requires_value: Kötelező adat
 create_role: Szerepkör létrehozása
+create_user: Felhasználó létrehozása
+invite_users: Felhasználók meghívása
+email_examples: 'admin@example.com, felhaszalo@pelda.hu...'
+invite: Meghívás
+emails: E-mailek
+connection_excellent: Kiváló kapcsolat
+connection_good: Jó kapcsolat
+connection_fair: Megfelelő kapcsolat
+connection_poor: Gyenge kapcsolat
+rename_folder: Mappa átnevezése
+delete_folder: Mappa törlése
+reset_bookmark: Könyvjelző visszaállítása
+rename_bookmark: Könyvjelző átnevezése
+update_bookmark: Könyvjelző frissítése
 delete_bookmark: Könyvjelző törlése
+delete_bookmark_copy: >-
+  Biztosan törölni szeretnéd a "{bookmark}" könyvjelzőt? Ez a művelet nem visszavonható.
+logoutReason:
+  SIGN_OUT: Kijelentkezve
+  SESSION_EXPIRED: A munkamenet lejárt
+public: Nyilvános
+public_description: API adatok hozzáférése bejelentkezés nélkül.
+not_allowed: Nem engedélyezett
 directus_version: Directus verzió
+node_version: Node verzió
+node_uptime: Node futásidő
+os_type: Operációs rendszer típusa
+os_version: Operációs rendszer verzió
+os_uptime: Operációs rendszer futásideje
 language: Nyelv
 create_field: Mező létrehozása
 auto_generate: Automatikusan generált
@@ -87,8 +126,10 @@ fields:
     tfa_secret: Kétlépcsős hitelesítés
   directus_fields:
     hidden: Rejtett
+    translation: Lefordított mezőnevek
     display_template: Sablon
   directus_roles:
+    name: Szerepkör neve
     description: Leírás
 comment: Hozzászólás
 continue: Tovább
