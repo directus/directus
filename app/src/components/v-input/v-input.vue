@@ -141,11 +141,11 @@ export default defineComponent({
 		});
 
 		const isStepUpAllowed = computed(() => {
-			return props.disabled === false && (props.max === null || parseInt(props.value, 10) < props.max);
+			return props.disabled === false && (props.max === null || parseInt(String(props.value), 10) < props.max);
 		});
 
 		const isStepDownAllowed = computed(() => {
-			return props.disabled === false && (props.min === null || parseInt(props.value, 10) > props.min);
+			return props.disabled === false && (props.min === null || parseInt(String(props.value), 10) > props.min);
 		});
 
 		return { _listeners, hasClick, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
