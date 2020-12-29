@@ -22,9 +22,61 @@ email_examples: 'admin@example.com, user@example.com...'
 invite: Bjud in
 emails: E-postadresser
 connection_excellent: Utmärkt anslutning
+connection_good: Bra anslutning
+connection_fair: God anslutning
+connection_poor: Dålig anslutning
+rename_folder: Döp om mapp
+delete_folder: Ta bort mapp
+reset_bookmark: Återställ bokmärke
+rename_bookmark: Döp om bokmärke
+update_bookmark: Uppdatera bokmärke
 delete_bookmark: Radera bokmärke
+delete_bookmark_copy: >-
+  Är du säker på att du vill ta bort bokmärket "{bookmark}"? Denna åtgärd kan inte ångras.
+logoutReason:
+  SIGN_OUT: Utloggad
+  SESSION_EXPIRED: Sessionen har upphört
+public: Publik
+public_description: Kontrollerar vilken data som är tillgängliga via APIet utan autentisering.
+not_allowed: Inte tillåtet
 directus_version: Directus Version
+node_version: Node version
+node_uptime: Node upptid
+os_type: Operativsystem
+os_version: Operativsystemets version
+os_uptime: Operativsystemets upptid
+os_totalmem: Operativsystemets minne
+archive: Arkivera
+archive_confirm: Är du säker på att du vill arkivera detta objekt?
+archive_confirm_count: >-
+  Inga objekt valda | Är du säker på att du vill arkivera detta objekt? | Är du säker på att du vill arkivera dessa {count} objekt?
+reset_system_permissions: Återställ systemets behörigheter
+reset_system_permissions_copy: Återställ systemets behörigheter till sina standardvärden
+unarchive: Ångra arkivering
+unarchive_confirm: Är du säker på att du vill ångra arkivering av detta objekt?
+nested_files_folders_will_be_moved: Nästlade filer och mappar kommer flyttas upp en nivå.
+unknown_validation_errors: 'Det är fel i valideringen av följande dolda fält:'
+validationError:
+  eq: Värdet måste vara {valid}
+  neq: Värdet kan inte vara {invalid}
+  in: Värdet måste vara en av {valid}
+  nin: Värdet kan inte vara en av {invalid}
+  contains: Värdet måste innehålla {substring}
+  ncontains: Värdet får inte innehålla {substring}
+  gt: Värdet måste vara större än {valid}
+  gte: Värdet måste vara större än eller lika med {valid}
+  lt: Värdet måste vara mindre än {valid}
+  lte: Värdet måste vara mindre än eller lika med {valid}
+  empty: Värdet måste vara tomt
+  nempty: Värdet kan inte vara tomt
+  null: Värdet måste vara null
+  nnull: Värdet kan inte vara null
+  required: Ett värde är obligatoriskt
+all_access: Alla behörigheter
+no_access: Ingen åtkomst
+use_custom: Använd anpassad
 language: Språk
+focal_length: Skärpedjup
 create_field: Skapa fält
 date: Datum
 text: Text
