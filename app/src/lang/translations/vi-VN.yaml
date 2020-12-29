@@ -258,6 +258,8 @@ m2a_builder: Xây dựng (Nhiều-Bất Kỳ)
 item_count: 'Không có bản ghi | Có 1 bản ghi | Có {count} bản ghi'
 no_items_copy: Chưa có bản ghi nào trong danh mục này.
 file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'
+no_files_copy: Không có tập tin nào ở đây.
+user_count: 'Không Có Người Dùng | Có Một Người Dùng | {count} Người Dùng'
 create_collection: Tạo Danh mục mới
 relationship_not_setup: Quan hệ thiết đặt chưa đúng
 users: Tài khoản
