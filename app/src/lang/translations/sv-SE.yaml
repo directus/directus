@@ -156,10 +156,32 @@ leave_comment: Lämna en kommentar...
 post_comment_success: Kommentar inskickad
 item_create_success: Objekt skapat | Objekt skapade
 item_update_success: Objekt uppdaterat | Objekt uppdaterade
+item_delete_success: Objekt raderat | Objekt raderade
 this_collection: Den här samlingen
 related_collection: Relaterad samling
+related_collections: Relaterade kollektioner
+translations_collection: Kollektion med översättningar
+languages_collection: Kollektion med språk
+export_data: Exportera data
 format: Format
+use_current_filters_settings: Använd befintliga filter & inställningar
+export_collection: 'Exportera {collection}'
+last_page: Sista sidan
+last_access: Senaste åtkomsten
+fill_template: Fyll med mallens värden
+a_unique_table_name: Ett unikt tabellnamn...
+a_unique_column_name: Ett unikt kolumnnamn...
+enable_custom_values: Aktivera anpassade värden
 submit: Skicka
+move_to_folder: Flytta till mapp
+move: Flytta
+system: System
+add_field_related: Lägg till fält i relaterad kollektion
+interface: Gränssnitt
+today: Idag
+yesterday: Igår
+delete_comment: Ta bort kommentar
+date-fns_date: PPP
 months:
   january: Januari
   february: Februari
@@ -343,6 +365,8 @@ interfaces:
     files: Filer
   icon:
     icon: Ikon
+  interface:
+    interface: Gränssnitt
   many-to-many:
     many-to-many: Många till många
   many-to-one:
