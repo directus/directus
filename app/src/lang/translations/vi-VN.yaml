@@ -127,28 +127,63 @@ auto_generate: Tự khởi tạo
 this_will_auto_setup_fields_relations: Các trường và mối quan hệ bắt buộc sẽ được tự động tạo ra.
 click_here: Nhấn vào đây
 to_manually_setup_translations: để tạo các bản dịch một cách thủ công.
+choose_a_type: Chọn một Kiểu...
+determined_by_relationship: Xác định theo Quan hệ
 add_note: Tạo ghi chú hữu ích cho người dùng...
 default_value: Giá trị mặc định
+add_a_default_value: Thêm một giá trị mặc định...
+interface_setup_title: Người dùng sẽ tương tác với trường này như thế naof?
+display_setup_title: Giá trị của trường này sẽ được hiển thị như thế nào?
+standard_field: Trường tiêu chuẩn
+single_file: Tập tin đơn
+multiple_files: Nhiều Tập Tin
+m2o_relationship: Quan hệ Nhiều - Một
+o2m_relationship: Quan hệ Một - Nhiều
+m2m_relationship: Quan hệ Nhiều - Nhiều
+m2a_relationship: Quan hệ Nhiều - Bất Kỳ
 next: Tiếp theo
+field_name: Tên Trường
+translations: Các Bản Dịch
 note: Lưu ý
+enter_a_value: Nhập vào một giá trị...
+enter_a_placeholder: Nhập vào dòng nhắc...
 length: Độ dài
 readonly: Chỉ đọc
 unique: Duy nhất
 primary_key: Khoá chính
+foreign_key: Khóa Ngoại
+finish_setup: Hoàn Tất Cài Đặt
+dismiss: Bỏ qua
+raw_value: Dữ liệu thực tế
+edit_raw_value: Thay đổi dữ liệu thực tế
+enter_raw_value: Nhập vào giá trị thực tế...
 clear_value: Xoá giá trị
 reset_to_default: Khôi phục về mặc định
 undo_changes: Hoàn tác các thay đổi
 notifications: Thông báo
+show_all_activity: Hiển Thị Tất Cả Hoạt Động
 page_not_found: Không tìm thấy trang này
 page_not_found_body: Trang bạn đang tìm kiếm không tồn tại.
+confirm_revert: Xác Nhận Hoàn Nguyên
+confirm_revert_body: Bản ghi sẽ được cập nhật về mốc thời gian đã chọn.
 display: Hiển thị
+settings_update_success: Cài đặt đã được cập nhật
 title: Tiêu đề
+revision_delta_created: Đã tạo
 revision_delta_deleted: Đã xóa
 leave_comment: Để lại bình luận...
 this_collection: Danh mục này
 related_collection: Danh mục liên quan
 format: Định dạng
 submit: Gửi đi
+add_field_related: Thêm Trường vào Bộ Sưu Tập Liên Quan
+interface: Giao diện
+today: Hôm nay
+yesterday: Hôm qua
+delete_comment: Xóa Bình luận
+month: Tháng
+year: Năm
+select_all: Chọn Tất Cả
 months:
   january: Tháng một
   february: Tháng hai
@@ -162,11 +197,35 @@ months:
   october: Tháng mười
   november: Tháng mười một
   december: Tháng mười hai
+drag_mode: Chế Độ Kéo Thả
+cancel_crop: Hủy Cắt Xén
+original: Nguyên bản
+url: Đường Dẫn
+file_details: Thông Tin Chi Tiết của Tập Tin
+dimensions: Kích thước
 size: Kích thước
+created: Đã tạo
+modified: Đã sửa đổi
 checksum: Giá trị checksum
 owner: Sở hữu bởi
+edited_by: Chỉnh sửa bởi
+folder: Thư mục
+zoom: Thu phóng
 download: Tải xuống
+open: Mở
+open_in_new_window: Mở trong Cửa Sổ Mới
+foreground_color: Màu Tô
+background_color: Màu Nền
+upload_from_device: Tải Tập Tin lên từ Thiết Bị
+choose_from_library: Chọn Tập Tin từ Thư viện
+replace_from_device: Hoán đổi với Tập Tin từ Thiết Bị
+replace_from_library: Hoán đổi với Tập Tin từ Thư Viện
+replace_from_url: Hoán đổi với Tập Tin từ một Đường Dẫn
+no_file_selected: Chưa Có Tập Tin Nào Được Chọn
+download_file: Tải Xuống Tập Tin
+collection_key: Khóa Của Bộ Sưu Tập
 name: Tên
+primary_key_field: Khóa Chính
 created_by: Tạo bởi
 created_on: Tạo lúc
 save_and_stay: Lưu và ở nguyên vị trí
@@ -212,7 +271,10 @@ read: Đọc
 update: Cập nhật
 select_fields: Chọn trường
 wysiwyg_options:
+  forecolor: Màu Tô
+  backcolor: Màu Nền
   remove: Xoá
+  selectall: Chọn Tất Cả
   table: Bảng
 dropdown: Tuỳ chọn dạng thả xuống
 choices: Lựa chọn
@@ -351,12 +413,15 @@ interfaces:
     divider: Bộ chia
   dropdown:
     allow_other: Cho phép những đối tượng khác
+    choices_value_placeholder: Nhập vào một giá trị...
   file:
     file: Tệp
   files:
     files: Tệp
   icon:
     icon: Biểu tượng
+  interface:
+    interface: Giao diện
   interface-options:
     interface-options: Tùy chọn giao diện
   many-to-many:
@@ -409,6 +474,8 @@ displays:
     filesize: Kích thước tệp
   icon:
     icon: Biểu tượng
+  labels:
+    choices_value_placeholder: Nhập vào một giá trị...
   rating:
     rating: Xếp hạng
   user:
