@@ -32,7 +32,7 @@
 							{{ header.text }}
 						</slot>
 					</span>
-					<v-icon v-if="header.sortable" name="sort" class="sort-icon" small />
+					<v-icon v-if="header.sortable" name="sort" class="sort-icon" small v-tooltip.top="$t(getTooltipForSortIcon(header))"/>
 				</div>
 				<span
 					class="resize-handle"
@@ -121,6 +121,7 @@ export default defineComponent({
 			onResizeHandleMouseDown,
 			toggleManualSort,
 			toggleSelectAll,
+			getTooltipForSortIcon,
 		};
 
 		function getClassesForHeader(header: Header) {
@@ -143,6 +144,10 @@ export default defineComponent({
 			}
 
 			return classes;
+		}
+
+		function getTooltipForSortIcon(header: Header) {
+			return props.sort.by === header.value && props.sort.desc === false ? 'sort_direction.desc' : 'sort_direction.asc';
 		}
 
 		function changeSort(header: Header) {
