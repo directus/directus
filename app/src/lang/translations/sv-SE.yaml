@@ -75,7 +75,40 @@ validationError:
 all_access: Alla behörigheter
 no_access: Ingen åtkomst
 use_custom: Använd anpassad
+field_standard: Standard,
+field_presentation: Presentation & alias,
+field_file: Enskild fil
+field_files: Flera filer,
+field_m2o: M2O relation,
+field_o2m: M2O relation,
+field_m2m: M2M relation,
+field_translations: Översättningar,
+item_permissions: Behörigheter för objekt
+field_permissions: Behörigheter för fält
+field_validation: Validering av fält
+field_presets: Fältets förvalda inställningar
+permissions_for_role: 'Objekt som {role} rollen kan {action}.'
+fields_for_role: 'Fält {role} rollen kan {action}.'
+validation_for_role: 'Fältets {action} regler {role} rollen måste lyda.'
+presets_for_role: 'Förvalt fältvärde för rollen {role}.'
+presentation_and_aliases: Presentation & alias
+revision_post_update: Så här såg objektet ut efter uppdateringen...
+changes_made: Dessa är de specifika ändringarna som gjordes...
+no_relational_data: Tänk på att detta inte inkluderar datans relationer.
+hide_field_on_detail: Dölj fältet på detaljnivå
+show_field_on_detail: Visa fältet på detaljnivå
+delete_field: Radera fält
+fields_and_layout: Fält & layout
+field_create_success: 'Skapade fältet: "{field}"'
+field_update_success: 'Uppdaterade fältet: "{field}"'
+duplicate_where_to: Vart vill du duplicera det här fältet någonstans?
 language: Språk
+global: Global
+admins_have_all_permissions: Administratörer har alla behörigheter
+camera: Kamera
+exposure: Exponering
+shutter: Slutare
+iso: ISO
 focal_length: Skärpedjup
 create_field: Skapa fält
 date: Datum
@@ -85,16 +118,44 @@ add_note: Lägg till kommentar för användare...
 default_value: Standardvärde
 next: Nästa
 note: Anteckning
+enter_a_placeholder: Ange en platshållare...
 length: Längd
+precision_scale: Precision & skala
 readonly: Skrivskyddad
 unique: Unik
 primary_key: Primärnyckel
+foreign_key: Främmande nyckel
+finish_setup: Slutför installation
+dismiss: Avfärda
+raw_value: Obearbetat värde
+edit_raw_value: Redigera obearbetat värde
+enter_raw_value: Ange obearbetat värde...
 clear_value: Rensa fält
+reset_to_default: Återställ till förval
 undo_changes: Ångra ändringar
 notifications: Aviseringar
+show_all_activity: Visa all aktivitet
 page_not_found: Sidan hittades inte
+page_not_found_body: Sidan du letar efter verkar inte finnas.
+confirm_revert: Bekräfta annullering
+confirm_revert_body: Det här objektet kommer återgå till vald position.
+display: Visa
+settings_update_success: Inställningar uppdaterade
 title: Rubrik
+revision_delta_created: Skapad
+revision_delta_created_externally: Skapad externt
+revision_delta_updated: 'Uppdaterade 1 fält | Uppdaterade {count} fält'
+revision_delta_deleted: Raderad
+revision_delta_reverted: Annullerad
+revision_delta_other: Revision
+revision_delta_by: '{date} av {user}'
+private_user: Privat användare
+revision_preview: Förhandsgranska revision
+updates_made: Uppdateringar gjorda
 leave_comment: Lämna en kommentar...
+post_comment_success: Kommentar inskickad
+item_create_success: Objekt skapat | Objekt skapade
+item_update_success: Objekt uppdaterat | Objekt uppdaterade
 this_collection: Den här samlingen
 related_collection: Relaterad samling
 format: Format
@@ -113,6 +174,7 @@ months:
   november: November
   december: December
 size: Storlek
+created: Skapad
 checksum: Kontrollsumma
 owner: Ägare
 download: Ladda ner
