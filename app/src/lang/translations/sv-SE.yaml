@@ -1,7 +1,27 @@
 ---
+edit_field: Redigera fält
+item_revision: Revision objekt
+duplicate_field: Duplicera fält
+half_width: Halv bredd
 full_width: Full bredd
+fill_width: Full bredd
+field_name_translations: Översättningar fältnamn
+enter_password_to_enable_tfa: Ange ditt lösenord för att aktivera tvåfaktorsautentisering
+add_field: Lägg till fält
+role_name: Rollens namn
+db_only_click_to_configure: 'Endast databas: Klicka för att konfigurera '
+show_archived_items: Visa arkiverade objekt
 required: Obligatoriskt
+requires_value: Kräver ett värde
+create_preset: Skapa förval
 create_role: Skapa roll
+create_user: Skapa användare
+create_webhook: Skapa webhook
+invite_users: Bjud in användare
+email_examples: 'admin@example.com, user@example.com...'
+invite: Bjud in
+emails: E-postadresser
+connection_excellent: Utmärkt anslutning
 delete_bookmark: Radera bokmärke
 directus_version: Directus Version
 language: Språk
@@ -145,8 +165,10 @@ fields:
   directus_fields:
     note: Anteckning
     hidden: Dold
+    translation: Översättningar fältnamn
     display_template: Mall
   directus_roles:
+    name: Rollens namn
     description: Beskrivning
 comment: Kommentera
 continue: Fortsätt
