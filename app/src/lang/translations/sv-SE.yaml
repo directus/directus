@@ -111,10 +111,46 @@ shutter: Slutare
 iso: ISO
 focal_length: Skärpedjup
 schema_setup_title: Hur ska detta fält spara till databasen?
+schema_field_title: Hur ska detta fält bete sig i appen?
 create_field: Skapa fält
+creating_new_field: 'Nytt fält ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Återställ sidans inställningar
+hidden_field: Dolt fält
+hidden_on_detail: Dolt på detaljnivå
+disabled_editing_value: Inaktivera redigering av värde
+key: Nyckel
+alias: Alias
+bigInteger: Big Integer
+boolean: Boolean
 date: Datum
+datetime: DateTime
+decimal: Decimal
+float: Float
+integer: Integer
+json: JSON
+string: String
 text: Text
+time: Time
+timestamp: Timestamp
+uuid: UUID
+not_available_for_type: Inte tillgänglig för denna typ
+create_translations: Skapa översättningar
 auto_generate: Generera automatiskt
+this_will_auto_setup_fields_relations: Detta kommer automatiskt att ställa in alla obligatoriska fält och relationer.
+click_here: Klicka här
+to_manually_setup_translations: för att manuellt konfigurera översättningar.
+click_to_manage_translated_fields: >-
+  Det finns inga översatta fält ännu. Klicka här för att skapa dem. | Det finns ett översatt fält. Klicka här för att administrera det. | Det finns {count} översatta fält. Klicka här för att administrera dem.
+fields_group: Fältens grupp
+configure_m2o: Konfigurera din Many-to-One relation...
+configure_o2m: Konfigurera din One-to-Many relation...
+configure_m2m: Konfigurera din Many-to-Many relation...
+configure_m2a: Konfigurera din Many-to-Any relation...
+add_m2o_to_collection: 'Lägg till Many-to-One i "{collection}"'
+add_o2m_to_collection: 'Lägg till One-to-Many i "{collection}"'
+add_m2m_to_collection: 'Lägg till Many-to-Many i "{collection}"'
+choose_a_type: Välj en typ...
 add_note: Lägg till kommentar för användare...
 default_value: Standardvärde
 next: Nästa
@@ -385,6 +421,8 @@ interfaces:
     modes:
       dropdown: Rullgardinsmeny
 displays:
+  boolean:
+    boolean: Boolean
   collection:
     collection: Samling
   datetime:
