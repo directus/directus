@@ -749,7 +749,6 @@ template: Plantilla
 translation: Traducción
 value: Valor
 view_project: Ver Proyecto
-weeks: { }
 report_error: Reportar Error
 interfaces:
   checkboxes:
