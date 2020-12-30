@@ -770,8 +770,9 @@ sign_out: Sign Out
 sign_out_confirm: Are you sure you want to sign out?
 something_went_wrong: Something went wrong.
 sort_direction: Sort Direction
-sort_direction.asc: Sort Ascending
-sort_direction.desc: Sort Descending
+sort_direction:
+  asc: Sort Ascending
+  desc: Sort Descending
 template: Template
 translation: Translation
 value: Value
