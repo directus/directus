@@ -23,7 +23,7 @@ export class CollectionsService {
 	create(data: Partial<Collection>[]): Promise<string[]>;
 	create(data: Partial<Collection>): Promise<string>;
 	async create(data: Partial<Collection> | Partial<Collection>[]): Promise<string | string[]> {
-		if (this.accountability && this.accountability.admin !== true) {
+		if (!this.accountability || this.accountability.admin !== true) {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
@@ -256,7 +256,7 @@ export class CollectionsService {
 	delete(collections: string[]): Promise<string[]>;
 	delete(collection: string): Promise<string>;
 	async delete(collection: string[] | string): Promise<string[] | string> {
-		if (this.accountability && this.accountability.admin !== true) {
+		if (!this.accountability || this.accountability.admin !== true) {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 

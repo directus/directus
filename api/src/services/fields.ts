@@ -197,7 +197,7 @@ export class FieldsService {
 		field: Partial<Field> & { field: string; type: typeof types[number] },
 		table?: CreateTableBuilder // allows collection creation to
 	) {
-		if (this.accountability && this.accountability.admin !== true) {
+		if (!this.accountability || this.accountability.admin !== true) {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
@@ -234,7 +234,7 @@ export class FieldsService {
 	}
 
 	async updateField(collection: string, field: RawField) {
-		if (this.accountability && this.accountability.admin !== true) {
+		if (!this.accountability || this.accountability.admin !== true) {
 			throw new ForbiddenException('Only admins can perform this action');
 		}
 
@@ -279,7 +279,7 @@ export class FieldsService {
 
 	/** @todo save accountability */
 	async deleteField(collection: string, field: string) {
-		if (this.accountability && this.accountability.admin !== true) {
+		if (!this.accountability || this.accountability.admin !== true) {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
