@@ -22,7 +22,12 @@
 					:saving="creatingBookmark"
 				>
 					<template #activator="{ on }">
-						<v-icon class="toggle" name="bookmark_outline" @click="on" />
+						<v-icon
+							class="toggle"
+							@click="on"
+							name="bookmark_outline"
+							v-tooltip.right="$t('create_bookmark')"
+						/>
 					</template>
 				</bookmark-add>
 

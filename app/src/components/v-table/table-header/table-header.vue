@@ -12,27 +12,23 @@
 			</th>
 
 			<th v-if="showSelect" class="select cell" scope="col">
-				<v-checkbox
-					:inputValue="allItemsSelected"
-					:indeterminate="someItemsSelected"
-					@change="toggleSelectAll"
-				/>
+				<v-checkbox :inputValue="allItemsSelected" :indeterminate="someItemsSelected" @change="toggleSelectAll" />
 			</th>
 
-			<th
-				v-for="header in headers"
-				:key="header.value"
-				:class="getClassesForHeader(header)"
-				class="cell"
-				scope="col"
-			>
+			<th v-for="header in headers" :key="header.value" :class="getClassesForHeader(header)" class="cell" scope="col">
 				<div class="content" @click="changeSort(header)">
 					<span v-show="header.width > 90 || header.width === null">
 						<slot :name="`header.${header.value}`" :header="header">
 							{{ header.text }}
 						</slot>
 					</span>
-					<v-icon v-if="header.sortable" name="sort" class="sort-icon" small />
+					<v-icon
+						v-if="header.sortable"
+						name="sort"
+						class="sort-icon"
+						small
+						v-tooltip.top="$t(getTooltipForSortIcon(header))"
+					/>
 				</div>
 				<span
 					class="resize-handle"
@@ -121,6 +117,7 @@ export default defineComponent({
 			onResizeHandleMouseDown,
 			toggleManualSort,
 			toggleSelectAll,
+			getTooltipForSortIcon,
 		};
 
 		function getClassesForHeader(header: Header) {
@@ -143,6 +140,10 @@ export default defineComponent({
 			}
 
 			return classes;
+		}
+
+		function getTooltipForSortIcon(header: Header) {
+			return props.sort.by === header.value && props.sort.desc === false ? 'sort_desc' : 'sort_asc';
 		}
 
 		function changeSort(header: Header) {
