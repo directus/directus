@@ -110,6 +110,7 @@ exposure: Exponering
 shutter: Slutare
 iso: ISO
 focal_length: Skärpedjup
+schema_setup_title: Hur ska detta fält spara till databasen?
 create_field: Skapa fält
 date: Datum
 text: Text
