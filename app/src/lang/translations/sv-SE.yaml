@@ -151,8 +151,14 @@ add_m2o_to_collection: 'Lägg till Many-to-One i "{collection}"'
 add_o2m_to_collection: 'Lägg till One-to-Many i "{collection}"'
 add_m2m_to_collection: 'Lägg till Many-to-Many i "{collection}"'
 choose_a_type: Välj en typ...
+determined_by_relationship: Bestämd av relation
 add_note: Lägg till kommentar för användare...
 default_value: Standardvärde
+add_a_default_value: Lägg till ett standardvärde...
+interface_setup_title: Hur kommer användarna att interagera med detta fält?
+display_setup_title: Hur ska det här fältets värde visas?
+standard_field: Standardfält
+single_file: Enskild fil
 next: Nästa
 note: Anteckning
 enter_a_placeholder: Ange en platshållare...
@@ -283,6 +289,8 @@ settings_permissions: Roller & behörigheter
 settings_project: Projektinställningar
 discard_changes: Ignorera ändringar
 keep_editing: Fortsätt redigera
+page_help_settings_presets_collection: >-
+  **Bläddra i förinställningar** — Visar alla förinställningar i projektet, inklusive: användare, roll och globala bokmärken, samt standardvyer.
 add_new: Lägg till ny
 all: Alla
 batch_delete_confirm: >-
@@ -425,6 +433,8 @@ displays:
     boolean: Boolean
   collection:
     collection: Samling
+  color:
+    default_color: Förvald färg
   datetime:
     datetime: Datum och tid
     format: Format
@@ -432,6 +442,9 @@ displays:
     file: Fil
   icon:
     icon: Ikon
+  labels:
+    default_foreground: Förvald förgrund
+    default_background: Förvald bakgrund
   user:
     avatar: Profilbild
     name: Namn
