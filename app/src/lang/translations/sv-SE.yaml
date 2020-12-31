@@ -1,32 +1,230 @@
 ---
+edit_field: Redigera fält
+item_revision: Revision objekt
+duplicate_field: Duplicera fält
+half_width: Halv bredd
 full_width: Full bredd
+fill_width: Full bredd
+field_name_translations: Översättningar fältnamn
+enter_password_to_enable_tfa: Ange ditt lösenord för att aktivera tvåfaktorsautentisering
+add_field: Lägg till fält
+role_name: Rollens namn
+db_only_click_to_configure: 'Endast databas: Klicka för att konfigurera '
+show_archived_items: Visa arkiverade objekt
 required: Obligatoriskt
+requires_value: Kräver ett värde
+create_preset: Skapa förval
 create_role: Skapa roll
+create_user: Skapa användare
+create_webhook: Skapa webhook
+invite_users: Bjud in användare
+email_examples: 'admin@example.com, user@example.com...'
+invite: Bjud in
+emails: E-postadresser
+connection_excellent: Utmärkt anslutning
+connection_good: Bra anslutning
+connection_fair: God anslutning
+connection_poor: Dålig anslutning
+rename_folder: Döp om mapp
+delete_folder: Ta bort mapp
+reset_bookmark: Återställ bokmärke
+rename_bookmark: Döp om bokmärke
+update_bookmark: Uppdatera bokmärke
 delete_bookmark: Radera bokmärke
+delete_bookmark_copy: >-
+  Är du säker på att du vill ta bort bokmärket "{bookmark}"? Denna åtgärd kan inte ångras.
+logoutReason:
+  SIGN_OUT: Utloggad
+  SESSION_EXPIRED: Sessionen har upphört
+public: Publik
+public_description: Kontrollerar vilken data som är tillgängliga via APIet utan autentisering.
+not_allowed: Inte tillåtet
 directus_version: Directus Version
+node_version: Node version
+node_uptime: Node upptid
+os_type: Operativsystem
+os_version: Operativsystemets version
+os_uptime: Operativsystemets upptid
+os_totalmem: Operativsystemets minne
+archive: Arkivera
+archive_confirm: Är du säker på att du vill arkivera detta objekt?
+archive_confirm_count: >-
+  Inga objekt valda | Är du säker på att du vill arkivera detta objekt? | Är du säker på att du vill arkivera dessa {count} objekt?
+reset_system_permissions: Återställ systemets behörigheter
+reset_system_permissions_copy: Återställ systemets behörigheter till sina standardvärden
+unarchive: Ångra arkivering
+unarchive_confirm: Är du säker på att du vill ångra arkivering av detta objekt?
+nested_files_folders_will_be_moved: Nästlade filer och mappar kommer flyttas upp en nivå.
+unknown_validation_errors: 'Det är fel i valideringen av följande dolda fält:'
+validationError:
+  eq: Värdet måste vara {valid}
+  neq: Värdet kan inte vara {invalid}
+  in: Värdet måste vara en av {valid}
+  nin: Värdet kan inte vara en av {invalid}
+  contains: Värdet måste innehålla {substring}
+  ncontains: Värdet får inte innehålla {substring}
+  gt: Värdet måste vara större än {valid}
+  gte: Värdet måste vara större än eller lika med {valid}
+  lt: Värdet måste vara mindre än {valid}
+  lte: Värdet måste vara mindre än eller lika med {valid}
+  empty: Värdet måste vara tomt
+  nempty: Värdet kan inte vara tomt
+  null: Värdet måste vara null
+  nnull: Värdet kan inte vara null
+  required: Ett värde är obligatoriskt
+all_access: Alla behörigheter
+no_access: Ingen åtkomst
+use_custom: Använd anpassad
+field_standard: Standard,
+field_presentation: Presentation & alias,
+field_file: Enskild fil
+field_files: Flera filer,
+field_m2o: M2O relation,
+field_o2m: M2O relation,
+field_m2m: M2M relation,
+field_translations: Översättningar,
+item_permissions: Behörigheter för objekt
+field_permissions: Behörigheter för fält
+field_validation: Validering av fält
+field_presets: Fältets förvalda inställningar
+permissions_for_role: 'Objekt som {role} rollen kan {action}.'
+fields_for_role: 'Fält {role} rollen kan {action}.'
+validation_for_role: 'Fältets {action} regler {role} rollen måste lyda.'
+presets_for_role: 'Förvalt fältvärde för rollen {role}.'
+presentation_and_aliases: Presentation & alias
+revision_post_update: Så här såg objektet ut efter uppdateringen...
+changes_made: Dessa är de specifika ändringarna som gjordes...
+no_relational_data: Tänk på att detta inte inkluderar datans relationer.
+hide_field_on_detail: Dölj fältet på detaljnivå
+show_field_on_detail: Visa fältet på detaljnivå
+delete_field: Radera fält
+fields_and_layout: Fält & layout
+field_create_success: 'Skapade fältet: "{field}"'
+field_update_success: 'Uppdaterade fältet: "{field}"'
+duplicate_where_to: Vart vill du duplicera det här fältet någonstans?
 language: Språk
+global: Global
+admins_have_all_permissions: Administratörer har alla behörigheter
+camera: Kamera
+exposure: Exponering
+shutter: Slutare
+iso: ISO
+focal_length: Skärpedjup
+schema_setup_title: Hur ska detta fält spara till databasen?
+schema_field_title: Hur ska detta fält bete sig i appen?
 create_field: Skapa fält
+creating_new_field: 'Nytt fält ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Återställ sidans inställningar
+hidden_field: Dolt fält
+hidden_on_detail: Dolt på detaljnivå
+disabled_editing_value: Inaktivera redigering av värde
+key: Nyckel
+alias: Alias
+bigInteger: Big Integer
+boolean: Boolean
 date: Datum
+datetime: DateTime
+decimal: Decimal
+float: Float
+integer: Integer
+json: JSON
+string: String
 text: Text
+time: Time
+timestamp: Timestamp
+uuid: UUID
+not_available_for_type: Inte tillgänglig för denna typ
+create_translations: Skapa översättningar
 auto_generate: Generera automatiskt
+this_will_auto_setup_fields_relations: Detta kommer automatiskt att ställa in alla obligatoriska fält och relationer.
+click_here: Klicka här
+to_manually_setup_translations: för att manuellt konfigurera översättningar.
+click_to_manage_translated_fields: >-
+  Det finns inga översatta fält ännu. Klicka här för att skapa dem. | Det finns ett översatt fält. Klicka här för att administrera det. | Det finns {count} översatta fält. Klicka här för att administrera dem.
+fields_group: Fältens grupp
+configure_m2o: Konfigurera din Many-to-One relation...
+configure_o2m: Konfigurera din One-to-Many relation...
+configure_m2m: Konfigurera din Many-to-Many relation...
+configure_m2a: Konfigurera din Many-to-Any relation...
+add_m2o_to_collection: 'Lägg till Many-to-One i "{collection}"'
+add_o2m_to_collection: 'Lägg till One-to-Many i "{collection}"'
+add_m2m_to_collection: 'Lägg till Many-to-Many i "{collection}"'
+choose_a_type: Välj en typ...
+determined_by_relationship: Bestämd av relation
 add_note: Lägg till kommentar för användare...
 default_value: Standardvärde
+add_a_default_value: Lägg till ett standardvärde...
+interface_setup_title: Hur kommer användarna att interagera med detta fält?
+display_setup_title: Hur ska det här fältets värde visas?
+standard_field: Standardfält
+single_file: Enskild fil
 next: Nästa
 note: Anteckning
+enter_a_placeholder: Ange en platshållare...
 length: Längd
+precision_scale: Precision & skala
 readonly: Skrivskyddad
 unique: Unik
 primary_key: Primärnyckel
+foreign_key: Främmande nyckel
+finish_setup: Slutför installation
+dismiss: Avfärda
+raw_value: Obearbetat värde
+edit_raw_value: Redigera obearbetat värde
+enter_raw_value: Ange obearbetat värde...
 clear_value: Rensa fält
+reset_to_default: Återställ till förval
 undo_changes: Ångra ändringar
 notifications: Aviseringar
+show_all_activity: Visa all aktivitet
 page_not_found: Sidan hittades inte
+page_not_found_body: Sidan du letar efter verkar inte finnas.
+confirm_revert: Bekräfta annullering
+confirm_revert_body: Det här objektet kommer återgå till vald position.
+display: Visa
+settings_update_success: Inställningar uppdaterade
 title: Rubrik
+revision_delta_created: Skapad
+revision_delta_created_externally: Skapad externt
+revision_delta_updated: 'Uppdaterade 1 fält | Uppdaterade {count} fält'
+revision_delta_deleted: Raderad
+revision_delta_reverted: Annullerad
+revision_delta_other: Revision
+revision_delta_by: '{date} av {user}'
+private_user: Privat användare
+revision_preview: Förhandsgranska revision
+updates_made: Uppdateringar gjorda
 leave_comment: Lämna en kommentar...
+post_comment_success: Kommentar inskickad
+item_create_success: Objekt skapat | Objekt skapade
+item_update_success: Objekt uppdaterat | Objekt uppdaterade
+item_delete_success: Objekt raderat | Objekt raderade
 this_collection: Den här samlingen
 related_collection: Relaterad samling
+related_collections: Relaterade kollektioner
+translations_collection: Kollektion med översättningar
+languages_collection: Kollektion med språk
+export_data: Exportera data
 format: Format
+use_current_filters_settings: Använd befintliga filter & inställningar
+export_collection: 'Exportera {collection}'
+last_page: Sista sidan
+last_access: Senaste åtkomsten
+fill_template: Fyll med mallens värden
+a_unique_table_name: Ett unikt tabellnamn...
+a_unique_column_name: Ett unikt kolumnnamn...
+enable_custom_values: Aktivera anpassade värden
 submit: Skicka
+move_to_folder: Flytta till mapp
+move: Flytta
+system: System
+add_field_related: Lägg till fält i relaterad kollektion
+interface: Gränssnitt
+today: Idag
+yesterday: Igår
+delete_comment: Ta bort kommentar
+date-fns_date: PPP
 months:
   january: Januari
   february: Februari
@@ -41,6 +239,7 @@ months:
   november: November
   december: December
 size: Storlek
+created: Skapad
 checksum: Kontrollsumma
 owner: Ägare
 download: Ladda ner
@@ -90,6 +289,8 @@ settings_permissions: Roller & behörigheter
 settings_project: Projektinställningar
 discard_changes: Ignorera ändringar
 keep_editing: Fortsätt redigera
+page_help_settings_presets_collection: >-
+  **Bläddra i förinställningar** — Visar alla förinställningar i projektet, inklusive: användare, roll och globala bokmärken, samt standardvyer.
 add_new: Lägg till ny
 all: Alla
 batch_delete_confirm: >-
@@ -145,8 +346,10 @@ fields:
   directus_fields:
     note: Anteckning
     hidden: Dold
+    translation: Översättningar fältnamn
     display_template: Mall
   directus_roles:
+    name: Rollens namn
     description: Beskrivning
 comment: Kommentera
 continue: Fortsätt
@@ -207,6 +410,8 @@ interfaces:
     files: Filer
   icon:
     icon: Ikon
+  interface:
+    interface: Gränssnitt
   many-to-many:
     many-to-many: Många till många
   many-to-one:
@@ -224,8 +429,12 @@ interfaces:
     modes:
       dropdown: Rullgardinsmeny
 displays:
+  boolean:
+    boolean: Boolean
   collection:
     collection: Samling
+  color:
+    default_color: Förvald färg
   datetime:
     datetime: Datum och tid
     format: Format
@@ -233,6 +442,9 @@ displays:
     file: Fil
   icon:
     icon: Ikon
+  labels:
+    default_foreground: Förvald förgrund
+    default_background: Förvald bakgrund
   user:
     avatar: Profilbild
     name: Namn
