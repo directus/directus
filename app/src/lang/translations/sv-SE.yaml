@@ -159,6 +159,10 @@ interface_setup_title: Hur kommer användarna att interagera med detta fält?
 display_setup_title: Hur ska det här fältets värde visas?
 standard_field: Standardfält
 single_file: Enskild fil
+multiple_files: Flera filer
+m2o_relationship: Many to One relation
+o2m_relationship: One to Many relation
+m2m_relationship: Many to Many relation
 next: Nästa
 note: Anteckning
 enter_a_placeholder: Ange en platshållare...
