@@ -6,7 +6,7 @@
 ## Database Mirroring
 
 Instead of using a predefined "one-size-fits-all" data model to store your content, Directus "mirrors" your actual SQL
-database in real-time. The principle is akin to a database client (eg: _phpMyAdmin_), but includes far mor advanced
+database in real-time. The principle is akin to a database client (eg: _phpMyAdmin_), but includes far more advanced
 tools, and is safe and intuitive enough for non-technical users. This approach has many unique advantages:
 
 - A custom SQL database schema, tailored to your exact requirements
