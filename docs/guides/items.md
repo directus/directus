@@ -4,7 +4,7 @@
 
 # Managing Items
 
-Managing items includes the basics of Create, Read, Update, and Delete — as well as more specific features such as Archving, Reverting, Commenting, and Reordering. Each of the guides below also includes a link to any relevant concepts.
+Managing items includes the basics of Create, Read, Update, and Delete — as well as more specific features such as Archiving, Reverting, Commenting, and Reordering. Each of the guides below also includes a link to any relevant concepts.
 
 <!-- prettier-ignore-start -->
 :::warning Permissions
