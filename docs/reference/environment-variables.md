@@ -225,7 +225,7 @@ but each must have a matching `<LOCATION>` configuration.<br>**Default: `local`*
 For each of the storage locations listed, you must provide the following configuration:
 
 - **`STORAGE_<LOCATION>_PUBLIC_URL`** — Location on the internet where the files are accessible
-- **`STORAGE_<LOCATION>_DRIVER`** — Which driver to use, either `local`, `s3`, or `gcl`
+- **`STORAGE_<LOCATION>_DRIVER`** — Which driver to use, either `local`, `s3`, or `gcs`
 
 Based on your configured driver, you must also provide the following configurations.
 
