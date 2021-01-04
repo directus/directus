@@ -423,6 +423,8 @@ circle: Кръг
 empty_item: Празен обект
 log_in_with: 'Вход чрез {provider}'
 advanced_filter: Разширен филтър
+delete_advanced_filter: Изтриване на филтър
+change_advanced_filter_operator: Промяна на оператор
 operators:
   eq: Равно
   neq: Различно
@@ -745,10 +747,13 @@ sign_out: Изход
 sign_out_confirm: Сигурни ли сте, че искате да излезете?
 something_went_wrong: Нещо се обърка.
 sort_direction: Ред на подредба
+sort_asc: Възходящо сортиране
+sort_desc: Низходящо сортиране
 template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   checkboxes:
