@@ -2,10 +2,11 @@
 edit_field: フィールドの編集
 item_revision: 履歴
 full_width: 最大幅
+field_name_translations: 項目名の翻訳を追加する
 add_field: フィールドの追加
 role_name: 権限名
 required: 必須
-requires_value: 必須項目
+requires_value: この項目は必須です
 create_preset: プリセットの作成
 create_role: 権限作成
 create_user: ユーザーの作成
@@ -20,28 +21,36 @@ logoutReason:
   SIGN_OUT: ログアウト
 public: 公開
 directus_version: Directus Version
+validationError:
+  required: 必須項目です
 field_files: 複数のファイル
 field_translations: 翻訳,
+fields_and_layout: 項目とレイアウト
 language: 言語
+schema_setup_title: この項目をどのように保存するか設定しましょう。
+schema_field_title: この項目のエディタでの表示を設定できます。
 create_field: 入力欄作成
 hidden_on_detail: 詳細に表示しない
+disabled_editing_value: 項目の編集を無効にする
 boolean: 真偽値
 date: 日付
 text: テキスト
+uuid: UUID
 auto_generate: 自動生成
 add_note: ユーザーに有益な注釈を追加...
 default_value: 初期値
+interface_setup_title: 項目の入力に使用する方法を選択してください。
 single_file: 1つのファイル
 multiple_files: 複数のファイル
 next: 次
 field_name: 項目名
 translations: 翻訳
-note: 説明
+note: 備考
 enter_a_value: 値を入力...
 length: 長さ
 readonly: 読取り専用
 unique: 単一
-primary_key: 主キー
+primary_key: プライマリーキー
 clear_value: 値の削除
 reset_to_default: 初期化
 undo_changes: 変更を元に戻す
@@ -96,10 +105,15 @@ import_from_url: URLからファイルをインポート
 no_file_selected: ファイルが選択されていません
 download_file: ファイルをダウンロード
 name: 名前
+primary_key_field: プライマリーキー
 type: タイプ
 creating_new_collection: 新しいコレクションの作成
 created_by: 作成者
 created_on: 作成日時
+creating_collection_info: コレクション名（半角英数字を推奨）と投稿を識別するプライマリーキーを設定しましょう。
+creating_collection_system: オプションフィールドの有効化および名称の変更ができます。
+auto_increment_integer: 整数を自動生成
+generated_uuid: UUIDを生成
 save_and_stay: 保存してページに留まる
 save_as_copy: 複製として保存
 comments: コメント
@@ -117,11 +131,13 @@ no_collections_copy_admin: まだコレクションを作成していません�
 activity: 操作履歴
 webhooks: Webhook
 field_width: 入力欄幅
+add_a_new_item: 項目の追加
 user_directory: ユーザーディレクトリ
 modified_on: 修正日時
 bookmarks: ブックマーク
 back: 戻る
 all_users: すべてのユーザー
+color: 色
 operators:
   lt: より少ない
   gt: より大きい
@@ -134,6 +150,7 @@ loading: 読み込み中...
 upload_files_indeterminate: '{done}/{total} ファイルをアップロードしています'
 upload_files_success: '{count} 個のファイルがアップロードされました'
 collection_setup: コレクションの作成
+optional_system_fields: システムフィールドのオプション
 all_files: すべてのファイル
 my_files: マイファイル
 recent_files: 最近使用したファイル
@@ -180,7 +197,7 @@ fields:
     height: 高さ
     filesize: ファイルサイズ
   directus_users:
-    status: 状態
+    status: ステータス
     first_name: 名
     last_name: 姓
     email: メールアドレス
@@ -192,12 +209,15 @@ fields:
   directus_settings:
     project_name: プロジェクト名
   directus_fields:
-    note: 説明
+    note: 備考
     hidden: 非表示
     singleton: シングルトン
+    translation: 項目名の翻訳を追加する
   directus_roles:
     name: 権限名
     description: 説明
+do_nothing: 何もしない
+save_current_datetime: 現在の日付/時刻を保存
 comment: コメント
 continue: 続ける
 default: デフォルト
@@ -244,9 +264,15 @@ value: 値
 interfaces:
   checkboxes:
     checkboxes: チェックボックス
+  code:
+    description: コードスニペットでコードを共有
   collections:
     collections: コレクション
+  color:
+    color: 色
+    description: 色の入力または選択
   dropdown:
+    description: ドロップダウンから値を選択
     choices_value_placeholder: 値を入力...
   file:
     file: ファイル
@@ -258,11 +284,16 @@ interfaces:
     numeric: 数値
   tags:
     tags: タグ
+  text-input:
+    text-input: テキスト入力
+    description: 単一行での文字列入力
   user:
     user: ユーザー
 displays:
   boolean:
     boolean: 真偽値
+  color:
+    color: 色
   datetime:
     format: 書式
   file:
