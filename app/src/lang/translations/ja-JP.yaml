@@ -51,6 +51,7 @@ length: 長さ
 readonly: 読取り専用
 unique: 単一
 primary_key: プライマリーキー
+raw_value: 値を加工しない
 clear_value: 値の削除
 reset_to_default: 初期化
 undo_changes: 変更を元に戻す
@@ -137,6 +138,8 @@ modified_on: 修正日時
 bookmarks: ブックマーク
 back: 戻る
 all_users: すべてのユーザー
+icon_left: 左側に表示するアイコン
+icon_right: 右側に表示するアイコン
 color: 色
 operators:
   lt: より少ない
@@ -156,6 +159,7 @@ my_files: マイファイル
 recent_files: 最近使用したファイル
 add_file: ファイルを追加する
 no_results: 結果なし
+saves_automatically: 変更は自動的に保存されます
 user: ユーザー
 create: 作成
 on_update: 更新時
@@ -278,15 +282,26 @@ interfaces:
     file: ファイル
   files:
     files: ファイル
+  hash:
+    hash: ハッシュ値
+    description: 入力した値をハッシュ値に変換します
+    masked: 入力値を非表示にします（暗号化する値など）
+    masked_label: 入力値を非表示にする
   icon:
     icon: アイコン
+    description: ドロップダウンからアイコンを選択
   numeric:
     numeric: 数値
+  radio-buttons:
+    description: 1つあるいは複数の値を選択できます
+  slug:
+    description: 半角英数字およびハイフンで構成される文字列を入力します（URLなどに使用するのに向いています）
   tags:
     tags: タグ
   text-input:
     text-input: テキスト入力
     description: 単一行での文字列入力
+    mask: 入力値を非表示にします（暗号化する値など）
   user:
     user: ユーザー
 displays:
