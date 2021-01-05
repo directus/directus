@@ -1,17 +1,43 @@
 ---
+edit_field: フィールドの編集
+item_revision: 履歴
 full_width: 最大幅
+add_field: フィールドの追加
+role_name: 権限名
 required: 必須
+requires_value: 必須項目
+create_preset: プリセットの作成
 create_role: 権限作成
+create_user: ユーザーの作成
+create_webhook: Webhookの作成
+invite_users: ユーザーを招待
+invite: 招待する
+emails: メールアドレス
+rename_folder: フォルダ名の変更
+delete_folder: フォルダーの削除
 delete_bookmark: ブックマーク削除
+logoutReason:
+  SIGN_OUT: ログアウト
+public: 公開
 directus_version: Directus Version
+field_files: 複数のファイル
+field_translations: 翻訳,
+language: 言語
 create_field: 入力欄作成
 hidden_on_detail: 詳細に表示しない
+boolean: 真偽値
+date: 日付
 text: テキスト
 auto_generate: 自動生成
 add_note: ユーザーに有益な注釈を追加...
 default_value: 初期値
+single_file: 1つのファイル
+multiple_files: 複数のファイル
 next: 次
+field_name: 項目名
+translations: 翻訳
 note: 説明
+enter_a_value: 値を入力...
 length: 長さ
 readonly: 読取り専用
 unique: 単一
@@ -22,11 +48,26 @@ undo_changes: 変更を元に戻す
 notifications: 通知
 page_not_found: ページが見つかりませんでした
 page_not_found_body: お探しのページは存在しません。
-title: 標題
+title: タイトル
+revision_delta_other: 履歴
+private_user: 非公開ユーザー
+revision_preview: 履歴のプレビュー
 leave_comment: コメントを残す...
+item_create_success: 作成されたアイテム|作成されたアイテム
+item_update_success: 更新されたアイテム | 更新されたアイテム
+item_delete_success: 削除されたアイテム|削除されたアイテム
 this_collection: このコレクション
 related_collection: 関連するコレクション
-submit: 実行
+related_collections: 関連するコレクション
+format: 書式
+submit: 送信
+move_to_folder: フォルダに移動
+move: 移動
+today: 今日
+yesterday: 昨日
+delete_comment: コメントの削除
+month: 月
+year: 年
 select_all: すべて
 months:
   january: 1月
@@ -41,14 +82,34 @@ months:
   october: 10月
   november: 11月
   december: 12月
+file_details: ファイルの詳細
+size: サイズ
+modified: 修正されました
+owner: 所有者
+edited_by: '編集者:'
+folder: フォルダ
+download: ダウンロード
+open: 開く
+open_in_new_window: 新しいウィンドウで開く
+background_color: 背景色
+import_from_url: URLからファイルをインポート
+no_file_selected: ファイルが選択されていません
+download_file: ファイルをダウンロード
 name: 名前
+type: タイプ
+creating_new_collection: 新しいコレクションの作成
 created_by: 作成者
 created_on: 作成日時
 save_and_stay: 保存してページに留まる
 save_as_copy: 複製として保存
 comments: コメント
+no_items: アイテムがありません
+disabled: 無効
+information: インフォメーション
+report_bug: 不具合の報告
 request_feature: 機能リクエスト
 item_count: 'アイテムなし | 1つのアイテム | {count} 個のアイテム'
+file_count: 'ファイルがありません | 1個のファイル | {count} 個のファイル'
 no_files_copy: まだファイルがありません。
 no_collections: コレクションがありません
 create_collection: コレクションを作成する
@@ -70,6 +131,13 @@ operators:
   ncontains: 含まない
   empty: 空
 loading: 読み込み中...
+upload_files_indeterminate: '{done}/{total} ファイルをアップロードしています'
+upload_files_success: '{count} 個のファイルがアップロードされました'
+collection_setup: コレクションの作成
+all_files: すべてのファイル
+my_files: マイファイル
+recent_files: 最近使用したファイル
+add_file: ファイルを追加する
 no_results: 結果なし
 user: ユーザー
 create: 作成
@@ -78,11 +146,13 @@ read: 読取り
 update: 更新
 select_fields: 入力欄の選択
 wysiwyg_options:
+  backcolor: 背景色
   remove: 削除
   selectall: すべて
   table: テーブル
 deselect: 選択解除
 editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
+settings_data_model: データモデル
 settings_permissions: 役割・権限
 settings_project: プロジェクト設定
 settings_webhooks: Webhook
@@ -95,30 +165,38 @@ batch_delete_confirm: >-
   項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count} 個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
 cancel: キャンセル
 collections: コレクション
+singleton: シングルトン
+singleton_label: シングルオブジェクトに設定する
 fields:
   directus_activity:
     ip: IPアドレス
     comment: コメント
   directus_files:
-    title: 標題
+    title: タイトル
+    tags: タグ
+    location: 場所
     description: 説明
     width: 幅
     height: 高さ
+    filesize: ファイルサイズ
   directus_users:
     status: 状態
     first_name: 名
     last_name: 姓
     email: メールアドレス
     password: パスワード
-    title: 標題
+    title: タイトル
     timezone: タイムゾーン
+    language: 言語
     theme: テーマ
   directus_settings:
     project_name: プロジェクト名
   directus_fields:
     note: 説明
     hidden: 非表示
+    singleton: シングルトン
   directus_roles:
+    name: 権限名
     description: 説明
 comment: コメント
 continue: 続ける
@@ -168,6 +246,8 @@ interfaces:
     checkboxes: チェックボックス
   collections:
     collections: コレクション
+  dropdown:
+    choices_value_placeholder: 値を入力...
   file:
     file: ファイル
   files:
@@ -176,13 +256,23 @@ interfaces:
     icon: アイコン
   numeric:
     numeric: 数値
+  tags:
+    tags: タグ
   user:
     user: ユーザー
 displays:
+  boolean:
+    boolean: 真偽値
+  datetime:
+    format: 書式
   file:
     file: ファイル
+  filesize:
+    filesize: ファイルサイズ
   icon:
     icon: アイコン
+  labels:
+    choices_value_placeholder: 値を入力...
   user:
     user: ユーザー
     name: 名前
@@ -191,7 +281,7 @@ layouts:
   cards:
     cards: カード
     image_source: 画像ソース
-    title: 標題
+    title: タイトル
     subtitle: サブタイトル
   tabular:
     tabular: テーブル
