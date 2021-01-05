@@ -1,6 +1,25 @@
 ---
+edit_field: Уреди поља
+item_revision: Ревизија итема
+duplicate_field: Дуплирај поље
+half_width: Пола ширине
+full_width: Пуна ширина
+fill_width: Попуни ширину
+required: Захтјева се
 create_role: Креирајте улогу
+emails: Е-мејлови
+public: Јавно
+not_allowed: Није дозвољено
 directus_version: Верзија Директуса
+node_version: Верзија нода
+node_uptime: Вријеме рада нода
+os_type: Тип OS-а
+os_version: Верзија OS-а
+os_uptime: Вријеме рада OS-а
+os_totalmem: Меморија OS-а
+archive: Архивирај
+unarchive: Деархивирај
+unarchive_confirm: Да ли сте сигурни да желите да деархивирате овај итем?
 language: Језик
 create_field: Креирајте поље
 text: Текст
