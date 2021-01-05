@@ -27,6 +27,7 @@ leave_comment: コメントを残す...
 this_collection: このコレクション
 related_collection: 関連するコレクション
 submit: 実行
+select_all: すべて
 months:
   january: 1月
   february: 2月
@@ -48,7 +49,10 @@ save_as_copy: 複製として保存
 comments: コメント
 request_feature: 機能リクエスト
 item_count: 'アイテムなし | 1つのアイテム | {count} 個のアイテム'
-create_collection: コレクション作成
+no_files_copy: まだファイルがありません。
+no_collections: コレクションがありません
+create_collection: コレクションを作成する
+no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
 activity: 操作履歴
 webhooks: Webhook
 field_width: 入力欄幅
@@ -56,6 +60,7 @@ user_directory: ユーザーディレクトリ
 modified_on: 修正日時
 bookmarks: ブックマーク
 back: 戻る
+all_users: すべてのユーザー
 operators:
   lt: より少ない
   gt: より大きい
@@ -66,6 +71,7 @@ operators:
   empty: 空
 loading: 読み込み中...
 no_results: 結果なし
+user: ユーザー
 create: 作成
 on_update: 更新時
 read: 読取り
@@ -73,6 +79,7 @@ update: 更新
 select_fields: 入力欄の選択
 wysiwyg_options:
   remove: 削除
+  selectall: すべて
   table: テーブル
 deselect: 選択解除
 editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
@@ -169,12 +176,15 @@ interfaces:
     icon: アイコン
   numeric:
     numeric: 数値
+  user:
+    user: ユーザー
 displays:
   file:
     file: ファイル
   icon:
     icon: アイコン
   user:
+    user: ユーザー
     name: 名前
     both: 両方
 layouts:
