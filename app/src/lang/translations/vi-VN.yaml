@@ -355,6 +355,7 @@ dropdown: Tuỳ chọn dạng thả xuống
 choices: Lựa chọn
 deselect: Bỏ chọn
 editing_in_batch: 'Sửa cùng lúc {count} mục'
+settings_data_model: Mô Hình Dữ Liệu
 settings_permissions: Vai trò & Quyền hạn
 settings_project: Các thiết lập cho dự án
 settings_webhooks: Webhooks
