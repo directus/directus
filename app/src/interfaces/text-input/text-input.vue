@@ -4,7 +4,7 @@
 		:placeholder="placeholder"
 		:disabled="disabled"
 		:trim="trim"
-		:type="masked ? 'password' : 'text'"
+		:type="this.getInputType()"
 		:class="font"
 		@input="$listeners.input"
 	>
@@ -36,7 +36,7 @@ import inputValidator from '@/utils/input-validator';
 export default defineComponent({
 	props: {
 		value: {
-			type: String,
+			type: [String, Number, Date],
 			default: null,
 		},
 		disabled: {
@@ -74,12 +74,14 @@ export default defineComponent({
 	},
 	setup(props, { attrs }) {
 		const charsRemaining = computed(() => {
+			if (typeof props.value !== 'string') return null;
 			if (!props.length) return null;
 			if (!props.value) return null;
 			return +props.length - props.value.length;
 		});
 
 		const percentageRemaining = computed(() => {
+			if (typeof props.value !== 'string') return null;
 			if (!props.length) return false;
 			if (!props.value) return false;
 			return 100 - (props.value.length / +props.length) * 100;
@@ -91,13 +93,41 @@ export default defineComponent({
 			() => props.value,
 			(value) => {
 				if (attrs.inputValidator) {
-					const valiationPassed = inputValidator(value, 'dataType'); // TODO DOM: set validation-rule for DT
+					const valiationPassed = inputValidator(value, attrs.type); // TODO DOM: set validation-rule for DT, if validator get's used
 					return valiationPassed;
 				}
 			}
 		);
 
 		return { charsRemaining, percentageRemaining, validationPassed };
+	},
+
+	methods: {
+		getInputType() {
+			let inputType = 'string';
+
+			if (this.masked) {
+				inputType = 'password';
+			}
+			if (
+				this.$attrs.type === 'integer' ||
+				this.$attrs.type === 'decimal' ||
+				this.$attrs.type === 'float' ||
+				this.$attrs.type === 'bigInteger'
+			) {
+				inputType = 'number';
+			}
+			if (
+				this.$attrs.type === 'dateTime' ||
+				this.$attrs.type === 'date' ||
+				this.$attrs.type === 'time' ||
+				this.$attrs.type === 'timestamp'
+			) {
+				inputType = 'date';
+			}
+
+			return inputType;
+		},
 	},
 });
 </script>

@@ -40,6 +40,7 @@
 import { defineComponent, computed, watch, toRefs } from '@vue/composition-api';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
+import { InterfaceConfig } from '@/interfaces/types';
 
 import { state, availableInterfaces } from '../store';
 
@@ -114,7 +115,34 @@ export default defineComponent({
 		});
 
 		const selectedInterface = computed(() => {
-			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
+			// get the default interface
+			const customInterface: InterfaceConfig | undefined = interfaces.value.find(
+				(inter: InterfaceConfig) => inter.id === state.fieldData.meta.interface
+			);
+
+			if (customInterface) {
+				if (customInterface.component.name === 'interface-dropdown') {
+					// update the interface-value to the specific one to only allow values of the correct type
+					// NOTE: the solution via a deep clone is not ideal,
+					// but the only safe option that came to my mind
+					const deepClone = JSON.parse(JSON.stringify(customInterface)); // deep-copy to bo able to modify safely
+
+					const choicesIndex: number = deepClone.options.findIndex((option: any) => {
+						return option.field === 'choices';
+					});
+					const fieldValueIndex: number = deepClone.options[choicesIndex].meta.options.fields.findIndex(
+						(field: any) => {
+							return field.field === 'value';
+						}
+					);
+
+					deepClone.options[choicesIndex].meta.options.fields[fieldValueIndex].type = state.fieldData.type;
+					return deepClone;
+				}
+
+				return customInterface;
+			}
+			return {};
 		});
 
 		const { fieldData, relations, newCollections, newFields } = toRefs(state);
