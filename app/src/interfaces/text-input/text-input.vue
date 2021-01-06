@@ -30,7 +30,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed, watch } from '@vue/composition-api';
+import inputValidator from '@/utils/input-validator';
 
 export default defineComponent({
 	props: {
@@ -71,7 +72,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	setup(props) {
+	setup(props, { attrs }) {
 		const charsRemaining = computed(() => {
 			if (!props.length) return null;
 			if (!props.value) return null;
@@ -84,7 +85,19 @@ export default defineComponent({
 			return 100 - (props.value.length / +props.length) * 100;
 		});
 
-		return { charsRemaining, percentageRemaining };
+		const validationPassed = true;
+
+		watch(
+			() => props.value,
+			(value) => {
+				if (attrs.inputValidator) {
+					const valiationPassed = inputValidator(value, 'dataType'); // TODO DOM: set validation-rule for DT
+					return valiationPassed;
+				}
+			}
+		);
+
+		return { charsRemaining, percentageRemaining, validationPassed };
 	},
 });
 </script>

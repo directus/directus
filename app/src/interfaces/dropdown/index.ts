@@ -7,7 +7,19 @@ export default defineInterface(({ i18n }) => ({
 	description: i18n.t('interfaces.dropdown.description'),
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceDropdown,
-	types: ['string'],
+	types: [
+		'string',
+		'text',
+		'boolean',
+		'integer',
+		'decimal',
+		'float',
+		'bigInteger',
+		'dateTime',
+		'date',
+		'time',
+		'timestamp',
+	],
 	options: [
 		{
 			field: 'choices',
@@ -34,13 +46,17 @@ export default defineInterface(({ i18n }) => ({
 						},
 						{
 							field: 'value',
-							type: 'string',
+							type: 'string', // TODO DOM: add Number as alternative
 							name: i18n.t('value'),
 							meta: {
 								interface: 'text-input',
 								options: {
 									font: 'monospace',
 									placeholder: i18n.t('interfaces.dropdown.choices_value_placeholder'),
+									inputValidator: {
+										rule: 'string', // TODO DOM: Add dynamic Rule
+										errorMessage: 'ERROR', // TODO DOM: Add dynamic error Message
+									},
 								},
 								width: 'half',
 							},
