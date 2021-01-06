@@ -237,7 +237,7 @@ auto_increment_integer: Số nguyên tự-động-tăng-dần
 generated_uuid: Chuỗi ngẫu nhiên đã tạo
 manual_string: Chuỗi nhập thủ công
 save_and_create_new: Lưu và Tạo Mới
-save_and_stay: Lưu và ở nguyên vị trí
+save_and_stay: Lưu và Tiếp Tục Sửa Đổi
 save_as_copy: Lưu dạng bản sao
 add_existing: Thêm Dữ Liệu Sẵn Có
 comments: Bình luận
@@ -317,7 +317,7 @@ all_users: Tất cả Người dùng
 delete_collection: Xoá Danh Mục
 update_collection_success: Đã Cập Nhật Danh Mục
 delete_collection_success: Đã Xoá Danh Mục
-start_end_of_count_items: 'Bản ghi {start}-{end} trong {count}'
+start_end_of_count_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 delete_collection_are_you_sure: >-
   Bạn có chắc rằng bạn muốn xoá danh mục này? Thao tác này sẽ xóa danh mục và tất cả dữ liệu trong đó. Bạn không thể khôi phục danh mục này sau khi đã xóa.
 collections_shown: Những Danh Mục Đang Hiển Thị
@@ -354,6 +354,7 @@ wysiwyg_options:
 dropdown: Tuỳ chọn dạng thả xuống
 choices: Lựa chọn
 deselect: Bỏ chọn
+creating_in: 'Đang Tạo Bản Ghi {collection} Mới'
 editing_in_batch: 'Sửa cùng lúc {count} mục'
 settings_data_model: Mô Hình Dữ Liệu
 settings_permissions: Vai trò & Quyền hạn
