@@ -104,7 +104,7 @@ creating_new_field: 'Trường Mới ({collection})'
 updating_field_field: '{field} ({collection})'
 reset_page_preferences: Đặt Lại Tùy Chọn cho Trang
 hidden_field: Trường Ẩn
-hidden_on_detail: Ẩn tại chi tiết
+hidden_on_detail: Không hiển thị trong trang chi tiết
 disabled_editing_value: Cấm sửa đổi dữ liệu
 key: Khóa
 alias: Bí danh
