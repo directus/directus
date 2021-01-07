@@ -370,7 +370,7 @@ creating_in: 'Đang Tạo Bản Ghi {collection} Mới'
 editing_in_batch: 'Sửa cùng lúc {count} mục'
 settings_data_model: Mô Hình Dữ Liệu
 settings_permissions: Vai trò & Quyền hạn
-settings_project: Các thiết lập cho dự án
+settings_project: Cài Đặt Chung
 settings_webhooks: Webhooks
 layout: Bố cục
 layout_preview: Xem Trước Bố Cục
@@ -431,7 +431,7 @@ fields:
     theme: Theme
     tfa_secret: Xác thực hai yếu tố
   directus_settings:
-    project_name: Tên dự án
+    project_name: Tên Dự Án
   directus_fields:
     icon: Biểu tượng của Danh mục
     note: Ghi chú
