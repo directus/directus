@@ -607,7 +607,7 @@ export default defineComponent({
 
 .buttons {
 	display: grid;
-	grid-gap: 12px;
+	grid-gap: var(--form-horizontal-gap);
 	grid-template-columns: 1fr 1fr;
 	margin-top: 12px;
 }
