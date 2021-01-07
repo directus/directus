@@ -50,10 +50,14 @@ export class AuthHandler {
 	}
 
 	set token(val: string | null) {
-		this.axios.defaults.headers = {
-			...(this.axios.defaults.headers || {}),
-			Authorization: val ? `Bearer ${val}` : undefined,
-		};
+		if (val === null) {
+			delete this.axios.defaults.headers?.Authorization;
+		} else {
+			this.axios.defaults.headers = {
+				...(this.axios.defaults.headers || {}),
+				Authorization: `Bearer ${val}`,
+			};
+		}
 	}
 
 	async login(credentials: LoginCredentials): Promise<{ data: AuthResponse }> {
