@@ -240,7 +240,7 @@ created_on: Tạo lúc
 creating_collection_info: Đặt tên cho danh mục và thiết lập trường "khóa" duy nhất của nó...
 creating_collection_system: Bật và đổi tên bất kỳ trường tùy chọn nào trong số này.
 auto_increment_integer: Số nguyên tự-động-tăng-dần
-generated_uuid: Chuỗi ngẫu nhiên đã tạo
+generated_uuid: Chuỗi ngẫu nhiên
 manual_string: Chuỗi nhập thủ công
 save_and_create_new: Lưu và Tạo Mới
 save_and_stay: Lưu và Tiếp Tục Sửa Đổi
@@ -502,6 +502,7 @@ interfaces:
     color: Màu sắc
   datetime:
     datetime: Ngày giờ
+    use_24: Sử dụng Định dạng 24-giờ
   display-template:
     display-template: Mẫu hiển thị
   divider:
