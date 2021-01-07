@@ -380,6 +380,7 @@ unsaved_changes_copy: Bạn có chắc chắn muốn rời khỏi trang này kh
 discard_changes: Hủy thay đổi
 keep_editing: Tiếp tục chỉnh sửa
 add_new: Thêm mới
+create_new: Tạo Mới
 all: Tất cả
 no_layout_collection_selected_yet: Không có bố cục/danh mục nào được chọn
 batch_delete_confirm: >-
