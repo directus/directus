@@ -171,9 +171,11 @@ display: Hiển thị
 settings_update_success: Cài đặt đã được cập nhật
 title: Tiêu đề
 revision_delta_created: Đã tạo
+revision_delta_updated: 'Cập nhật 1 Trường | Cập nhật {count} Trường'
 revision_delta_deleted: Đã xóa
 leave_comment: Để lại bình luận...
 item_create_success: Bản Ghi Đã Được Tạo | Các Bản Ghi Đã Được Tạo
+item_update_success: Bản Ghi Đã Được Cập Nhật | Các Bản Ghi Đã Được Cập Nhật
 this_collection: Danh mục này
 related_collection: Danh mục liên quan
 related_collections: Những Danh mục liên quan
