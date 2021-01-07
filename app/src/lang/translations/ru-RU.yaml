@@ -423,6 +423,7 @@ circle: Круг
 empty_item: Пустой Элемент
 log_in_with: 'Войти с помощью {provider}'
 advanced_filter: Расширенный Фильтр
+delete_advanced_filter: Удалить Фильтр
 operators:
   eq: Равно
   neq: Не равно
@@ -611,7 +612,7 @@ fields:
     action: Действие
     collection: Коллекция
     item: Ключ предмета
-    user: Действовал
+    user: Пользователь
     timestamp: Действие на
     edited_on: Изменено
     comment_deleted_on: Комментарий удалён
@@ -721,7 +722,7 @@ danger: Опасность
 junction_collection: Узловая Коллекция
 latency: Задержка
 login: Войти
-my_activity: Мои активности
+my_activity: Моя Активность
 not_authenticated: Не аутентифицирован
 authenticated: Аутентифицирован
 options: Параметры
@@ -745,6 +746,8 @@ sign_out: Выйти
 sign_out_confirm: Вы уверены, что хотите выйти?
 something_went_wrong: Что-то пошло не так.
 sort_direction: Направление сортировки
+sort_asc: По Возрастанию
+sort_desc: По Убыванию
 template: Шаблон
 translation: Перевод
 value: Значение
