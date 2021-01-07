@@ -15,7 +15,7 @@ required: Необходимые
 requires_value: Требуется значение
 create_preset: Создать Пресет
 create_role: Создать Роль
-create_user: Создать пользователя
+create_user: Создать Пользователя
 create_webhook: Создать Веб-хук
 invite_users: Пригласить Пользователей
 email_examples: 'admin@example.com, user@example.com...'
@@ -46,7 +46,7 @@ os_type: Тип ОС
 os_version: Версия ОС
 os_uptime: Время работы ОС
 os_totalmem: Память ОС
-archive: Архив
+archive: Архивировать
 archive_confirm: Вы уверены, что хотите архивировать этот элемент?
 archive_confirm_count: >-
   Элементы не выбраны | Вы уверены, что хотите архивировать этот элемент? | Вы уверены, что хотите архивировать эти {count} элементов?
@@ -424,6 +424,7 @@ empty_item: Пустой Элемент
 log_in_with: 'Войти с помощью {provider}'
 advanced_filter: Расширенный Фильтр
 delete_advanced_filter: Удалить Фильтр
+change_advanced_filter_operator: Изменить Оператор
 operators:
   eq: Равно
   neq: Не равно
@@ -482,7 +483,7 @@ create: Создать
 on_create: При Создании
 on_update: Во время обновления
 read: Чтение
-update: Обновление
+update: Обновить
 select_fields: Выбрать поля
 format_text: Форматировать Текст
 bold: Жирный
@@ -562,7 +563,7 @@ layout_setup: Настройка Макета
 unsaved_changes: Несохранённые изменения
 unsaved_changes_copy: Вы уверены, что хотите покинуть эту страницу?
 discard_changes: Отменить изменения
-keep_editing: Продолжайте редактировать
+keep_editing: Продолжить Редактирование
 page_help_collections_overview: '**Обзор Коллекций** — Списки всех коллекций, к которым у вас есть доступ.'
 page_help_collections_collection: >-
   **Просмотр Элементов** — Список всех элементов в {collection}, к которым у вас есть доступ. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
@@ -611,9 +612,9 @@ fields:
   directus_activity:
     action: Действие
     collection: Коллекция
-    item: Ключ предмета
+    item: Ключ Элемента
     user: Пользователь
-    timestamp: Действие на
+    timestamp: Время Действия
     edited_on: Изменено
     comment_deleted_on: Комментарий удалён
     ip: IP-адрес
@@ -626,8 +627,8 @@ fields:
     tags: Теги
     location: Местоположение
     description: Описание
-    filename_download: Загрузка имени файла
-    filename_disk: Диск с именем файла
+    filename_download: Имя для Загрузки
+    filename_disk: Имя на Диске
     private_hash: Приватный хэш
     checksum: Контрольная сумма
     uploaded_on: Загружено
@@ -752,6 +753,7 @@ template: Шаблон
 translation: Перевод
 value: Значение
 view_project: Просмотр Проекта
+weeks: { }
 report_error: Сообщить об Ошибке
 interfaces:
   checkboxes:
