@@ -104,6 +104,7 @@ export default defineComponent({
 		}
 
 		function updateBackground(id: string, previous?: string) {
+			if (id in map.getStyle().sources! == false) return;
 			const before = previous || map.getStyle().layers?.[0]?.id;
 			map.addLayer({ id, source: id, type: 'raster' }, before);
 			previous && map.removeLayer(previous);
@@ -123,7 +124,9 @@ export default defineComponent({
 				map.addSource(id, data);
 			}
 			for (const layer of layers.value || []) {
-				map.addLayer(layer);
+				// this is a hack, unsolvable error otherwise
+				// map.addLayer(layer)
+				setTimeout(() => map.addLayer(layer));
 			}
 			const source = map.getSource('__directus') as GeoJSONSource;
 			source?.setData(data.value);
@@ -146,6 +149,12 @@ export default defineComponent({
 				attributionControl: false,
 			});
 
+			
+			let marker = new Image(32,32)
+			marker.crossOrigin = "Anonymous";
+			marker.onload = () => map.addImage('place', marker, { sdf: true });
+			marker.src = 'https://s.svgbox.net/materialui.svg?ic=place';
+
 			watch(
 				() => sidebarOpen.value,
 				(opened) => {
@@ -161,20 +170,16 @@ export default defineComponent({
 				setupLayers(map);
 				watch(() => backgroundLayer.value, updateBackground, { immediate: true });
 				map.once('styledata', () => {
-					console.log(map.getStyle().sources);
 					watch(() => source.value, updateSource, { immediate: true });
 					watch(() => layers.value, updateLayers);
-					fitDataControl.click();
+					fitDataBounds();
 				});
 			});
-			watch(
-				() => data.value,
-				(data) => {
-					const source = map.getSource('__directus') as GeoJSONSource;
-					source?.setData(data);
-					fitDataControl.click();
-				}
-			);
+			watch( () => data.value, (data) => {
+				const source = map.getSource('__directus') as GeoJSONSource;
+				source?.setData(data);
+				fitDataBounds();
+			});
 		}
 
 		function setupLayers(map: Map) {

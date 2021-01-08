@@ -1054,3 +1054,25 @@ layouts:
     comfortable: Comfortable
     compact: Compact
     cozy: Cozy
+  map:
+    map: Map
+    layers: Layers
+    cluster_options: Clustering
+    cluster: Activate clustering
+    cluster_radius: Cluster radius
+    cluster_minpoints: Cluster minimum size
+    cluster_maxzoom: Maximum zoom for clustering
+    fit_options: Bounds fitting
+    fit_padding: Bounds padding
+    fit_animate: Animate transitions
+    fit_speed: Animation speed
+    fit_duration: Animation duration
+    preview: Preview
+    format: Format
+    field: Geometry
+    lnglat: Longitude | Latitude
+    longitude: Longitude
+    latitude: Latitude
+    wrong_geometry: Invalid geometry
+    missing_option: Unspecified geometry field or format
+    simplify: Geometry simplification tolerance
