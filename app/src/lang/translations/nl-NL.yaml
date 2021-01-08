@@ -731,6 +731,8 @@ sign_out: Log out
 sign_out_confirm: Weet je zeker dat je uit wilt loggen?
 something_went_wrong: Iets ging mis.
 sort_direction: Sorteerrichting
+sort_asc: Sorteer Oplopend
+sort_desc: Sorteer Aflopend
 template: Sjabloon
 translation: Vertaling
 value: Waarde
