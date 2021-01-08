@@ -55,7 +55,6 @@ function createConfig({
 			format,
 			exports: 'auto',
 			sourcemap: true,
-			globalObject: 'globalThis',
 		},
 		external: Object.keys(external),
 		watch: {
