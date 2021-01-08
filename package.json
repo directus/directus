@@ -181,7 +181,8 @@
 		"vuepress": "^1.5.2",
 		"webpack": "^4.43.0",
 		"webpack-assets-manifest": "^3.1.1",
-		"webpack-merge": "^5.4.0"
+		"webpack-merge": "^5.4.0",
+		"worker-plugin": "^5.0.0"
 	},
 	"dependencies": {
 		"@directus/app": "file:app",
@@ -189,8 +190,12 @@
 		"@directus/format-title": "file:packages/format-title",
 		"@directus/sdk-js": "file:packages/sdk-js",
 		"@directus/specs": "file:packages/specs",
+		"@turf/meta": "^6.0.2",
+		"comlink": "^4.3.0",
 		"create-directus-project": "file:packages/create-directus-project",
-		"directus": "file:api"
+		"directus": "file:api",
+		"maplibre-gl": "^1.13.0-rc.4",
+		"wkx": "^0.5.0"
 	},
 	"husky": {
 		"hooks": {
