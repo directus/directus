@@ -30,7 +30,7 @@
   "author": "Rijk van Zanten <rijkvanzanten@me.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "openapi3-ts": "^2.0.0"
   },
   "nyc": {
