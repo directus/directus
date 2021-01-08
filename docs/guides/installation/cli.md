@@ -36,12 +36,6 @@ Navigate to the directory where you wish to create a new Directus project.
 The new project and directory will be created inside the current directory.
 Create a new Directus project by running the following npm command.
 
-<!-- prettier-ignore-start -->
-::: warning
-To avoid installation issues, do not name your project _directus_.
-:::
-<!-- prettier-ignore-end -->
-
 ```bash
 npx create-directus-project my-project
 ```
