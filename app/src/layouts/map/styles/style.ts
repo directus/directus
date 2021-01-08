@@ -1,10 +1,7 @@
 import type { Style } from 'maplibre-gl';
-
-export default <Style>{
-	version: 8,
-	glyphs:
-		'https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf',
-	sources: {
+export default <Style> {
+    version: 8,
+    sources: {
 		__directus: {
 			type: 'geojson',
 			data: { type: 'FeatureCollection', features: [] },
@@ -16,14 +13,18 @@ export default <Style>{
 	layers: [
 		{
 			id: '__directus_points',
-			type: 'circle',
+			type: 'symbol',
 			source: '__directus',
-			filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
-			paint: {
-				'circle-stroke-color': '#fff',
-				'circle-color': '#09f',
-				'circle-radius': 4,
-			},
+            filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
+            layout: {
+                'icon-anchor': 'bottom',
+                'icon-image': 'place',
+                'icon-size': 1,
+                'icon-allow-overlap': true,
+            },
+            paint: {
+                'icon-color': '#07c',
+            }
 		},
 		{
 			id: '__directus_polygons',

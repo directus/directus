@@ -1091,3 +1091,22 @@ layouts:
     comfortable: Confortable
     compact: Compact
     cozy: Intermédiaire
+  map:
+    map: Carte
+    layers: Couches
+    cluster_options: Clustering
+    cluster: Activer le partitionnement
+    cluster_radius: Rayon de partitionnement
+    cluster_minpoints: Taille minimum de partitionnement
+    cluster_maxzoom: Zoom maximum du partitionnement
+    fit_options: Bounds fitting
+    fit_padding: Bounds padding
+    fit_animate: Animate transitions
+    fit_speed: Animation speed
+    fit_duration: Animation duration
+    preview: Preview
+    format: Format
+    field: Géométrie
+    wrong_geometry: Géométrie invalide
+    missing_option: Champ ou format de geometrie non renseigne
+    simplify: Tolerance de simplification des géométries

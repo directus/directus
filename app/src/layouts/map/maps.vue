@@ -225,13 +225,9 @@ function isArray(obj: any): boolean {
 	return Array.isArray(obj);
 }
 
-function clone<A>(a: A): A {
+function clone<A>(a: A): A  {
 	// @ts-ignore
-	return !isObject(a)
-		? a
-		: isArray(a)
-		? [...a].map(clone)
-		: Object.keys(a).reduce((r, k) => ({ ...r, [k]: clone(a[k]) }), {});
+	return !isObject(a) ? a : isArray(a) ? [...a].map(clone) : Object.keys(a).reduce((r, k) => ({ ...r, [k]: clone(a[k]) }), {});
 }
 function assign(a: any, b: any): any {
 	if (![a, b].every(isObject)) return (a = b);
@@ -343,14 +339,18 @@ export default defineComponent({
 			clusterMinPoints,
 		} = uselayoutOptions();
 
-		const geometryFields = computed(() => {
-			return [primaryKeyField.value, geometryField.value, latitudeField.value, longitudeField.value].filter((e) => !!e);
+		const queryFields = computed(() => {
+			return [geometryField, latitudeField, longitudeField]
+			.map(ref => ref.value)
+			.concat(primaryKeyField.value?.field)
+			.filter((e) => !!e);
 		});
+		
 		const { items, loading, error, totalPages, itemCount, getItems } = useItems(collection, {
 			sort,
 			limit,
 			page,
-			fields,
+			fields: queryFields,
 			filters: _filters,
 			searchQuery: _searchQuery,
 		});
@@ -358,7 +358,9 @@ export default defineComponent({
 		function onQueryChange() {
 			resetWorker();
 			page.value = 1;
+			geojson.value = { type: 'FeatureCollection', features: [] }
 		}
+
 		watch(() => props.collection, onQueryChange);
 		watch(() => _searchQuery.value, onQueryChange);
 		watch(() => _layoutQuery.value, onQueryChange);
@@ -380,9 +382,6 @@ export default defineComponent({
 		}
 		onMounted(resetWorker);
 
-		// Is there a better way ? Using a single watch function with all dependencies
-		// results in updateGeojson being called multiple times. Same with setting
-		// geojson as computed
 		watch(() => _layoutOptions.value?.geometryField, updateGeojson);
 		watch(() => _layoutOptions.value?.latitudeField, updateGeojson);
 		watch(() => _layoutOptions.value?.longitudeField, updateGeojson);
@@ -456,8 +455,7 @@ export default defineComponent({
 			const key = e.features?.[0].properties?.[pkf];
 			if (!key) return;
 			const url = `/collections/${collection.value}/${key}`;
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			router.push(url, () => {});
+			router.push(url);
 		}
 
 		const showingCount = computed(() => {
@@ -497,7 +495,6 @@ export default defineComponent({
 					return [];
 			}
 		}
-
 		const mapStyleOptions = basemapNames;
 
 		return {
@@ -587,7 +584,7 @@ export default defineComponent({
 
 			const customLayers = createOption<Array<AnyLayer>>('layers', dataStyle.layers);
 
-			const simplification = createOption<boolean>('simplification', 0.375);
+			const simplification = createOption<number>('simplification', 0.375);
 			const fitBoundsAnimate = createOption<boolean>('fitBoundsAnimate', true);
 			const fitBoundsPadding = createOption<number>('fitBoundsPadding', 100);
 			const fitBoundsSpeed = createOption<number>('fitBoundsSpeed', 1.4);
