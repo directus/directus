@@ -20,7 +20,7 @@ create_webhook: Създаване на уеб-кука
 invite_users: Покана към потребители
 email_examples: 'admin@example.com, potrebitel@example.com...'
 invite: Покана
-emails: E-мейли
+emails: E-пощи
 connection_excellent: Отлична свързаност
 connection_good: Добра свързаност
 connection_fair: Връзката е приемлива
@@ -178,11 +178,11 @@ primary_key: Първичен ключ
 foreign_key: Външен ключ
 finish_setup: Завършване на настройката
 dismiss: Отхвърляне
-raw_value: Първична стойност
-edit_raw_value: Редактиране на първичната стойност
-enter_raw_value: Въвеждане на първична стойност...
+raw_value: Стойност в суров вид
+edit_raw_value: Редактиране в суров вид
+enter_raw_value: Въвеждане на стойността в суров вид...
 clear_value: Изчистване на стойност
-reset_to_default: Възстанови по подразбиране
+reset_to_default: Възстановяване към начално състояние
 undo_changes: Отмяна на промените
 notifications: Известия
 show_all_activity: Показване на цялата активност
@@ -581,7 +581,7 @@ page_help_settings_project: '**Настройки за проекта** — Гл
 page_help_settings_datamodel_collections: >-
   **Модел на данни: Колекции** — Показва всички налични колекции. Това включва видими, невидими и системни, както и неконтролираните таблици от базата данни, които могат да бъдат добавяни като колекции.
 page_help_settings_datamodel_fields: >-
-  **Модел на данни: Колекция** — Формуляр за управление на тази колекци и нейните полета.
+  **Модел на данни: Колекция** — Формуляр за управление на тази колекция и нейните полета.
 page_help_settings_roles_collection: '**Преглед на роли** — Показва администраторската, обществената и всички потребителски роли.'
 page_help_settings_roles_item: '**Детайли за роля** — Управление на позволенията на ролята, както и някои други настройки.'
 page_help_settings_presets_collection: >-
@@ -617,7 +617,7 @@ fields:
     timestamp: Действие на
     edited_on: Редактирано на
     comment_deleted_on: Коментарът е изтрит на
-    ip: IP Address
+    ip: IP адрес
     user_agent: Потребителски агент
     comment: Кометнар
   directus_collections:
@@ -642,8 +642,8 @@ fields:
     status: Статус
     first_name: Име
     last_name: Фамилия
-    email: Е-мейл
-    email_notifications: Известия по е-мейл
+    email: Е-поща
+    email_notifications: Известия по е-поща
     password: Парола
     role: Роля
     company: Компания
@@ -706,7 +706,7 @@ delete_field_are_you_sure: >-
 description: Описание
 done: Готово
 duplicate: Дублиране
-email: Е-мейл
+email: Е-поща
 embed: Вграждане
 fallback_icon: Резервна икона
 field: Поле | Полета
@@ -869,7 +869,7 @@ interfaces:
     radio-buttons: Радио бутон
     description: Един или няколко избора
   repeater:
-    repeater: Repeater
+    repeater: Повторение
     description: Създаване на множество записи със същата структура
     edit_fields: Редактиране на полета
     add_label: 'Етикет за "Добавяне на ред"'
@@ -880,7 +880,7 @@ interfaces:
     description: Избор на число чрез плъзгач
     always_show_value: Показване на стойностите винаги
   slug:
-    slug: Slug
+    slug: Кратко име
     description: Въвеждане на думи свързани чрез тире
   tags:
     tags: Тагове
@@ -1003,7 +1003,7 @@ displays:
     simple: Опростен
     simple_label: Показване на звездите в опростен вид
   raw:
-    raw: Първична стойност
+    raw: Стойност в суров вид
   related-values:
     related-values: Релативни стойности
     description: Показване на релативни стойности
