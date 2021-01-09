@@ -254,7 +254,7 @@ months:
   october: Октомври
   november: Ноември
   december: Декември
-drag_mode: Режим на дърпане
+drag_mode: Режим при дърпане
 cancel_crop: Отказване на изрязването
 original: Оригинал
 url: URL
@@ -452,7 +452,7 @@ upload_file_success: Файлът е качен
 upload_files_indeterminate: 'Качване на файлове {done}/{total}'
 upload_files_success: '{count} файла са качени'
 upload_pending: Качване в изчакване
-drag_file_here: За добавяне, придърпайте файл тук
+drag_file_here: За да качите файловете, пуснете ги тук
 click_to_browse: Натиснете за избор
 layout_options: Опции за оформление
 collection_setup: Настройване на колекция
@@ -469,7 +469,7 @@ recent_files: Последни файлове
 create_folder: Създаване на папка
 folder_name: Име на папка...
 add_file: Добавяне на файл
-replace_file: Заменяне на файл
+replace_file: Заместване на файл
 no_results: Няма резултати
 no_results_copy: Променете или изчистете филтрите за да видите резултат.
 clear_filters: Изчистване на филтрите
