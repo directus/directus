@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, ref, toRefs, onMounted, onUnmounted } from '@vue/composition-api';
 import HeaderBarActions from '../header-bar-actions';
 import { useAppStore } from '@/stores';
 
