@@ -2,7 +2,7 @@
 edit_field: Editar Campo
 item_revision: Revisión de Elemento
 duplicate_field: Duplicar Campo
-half_width: Media Ancho
+half_width: Anchura 50%
 full_width: Ancho Completo
 fill_width: Llenar Ancho
 field_name_translations: Traducciones del Nombre del Campo
@@ -12,7 +12,7 @@ role_name: Nombre del Rol
 db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
 show_archived_items: Mostrar Elementos Archivados
 required: Requerido
-requires_value: Se requiere un valor
+requires_value: Valor obligatorio
 create_preset: Crear Predefinido
 create_role: Crear Rol
 create_user: Crear Usuario
