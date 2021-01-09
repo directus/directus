@@ -128,7 +128,7 @@
 
 		<map-component
 			class="mapboxgl-map"
-			:class="{ error: error || geojsonError || itemCount === 0, loading }"
+			:class="{ loading, error: error || geojsonError || missingOptions || itemCount === 0 }"
 			:data="geojson"
 			:onClick="gotoEdit"
 			:rootStyle="rootStyle"
