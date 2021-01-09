@@ -36,9 +36,12 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Wylogowano
   SESSION_EXPIRED: Sesja wygasła
+public: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
 not_allowed: Niedozwolone
 directus_version: Wersja aplikacji Directus
+os_type: Typ Systemu
+os_version: Wersja Systemu
 archive: Archiwum
 reset_system_permissions: Resetuj uprawnienia systemowe
 reset_system_permissions_copy: Resetuj wszystkie uprawnienia systemowe do ich domyślnych ustawień
