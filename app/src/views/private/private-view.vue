@@ -137,11 +137,17 @@ export default defineComponent({
 .private-view {
 	--content-padding: 12px;
 	--content-padding-bottom: 60px;
+	--header-height: 65px;
+	--header-margin-vertical: 24px;
 
 	display: flex;
 	width: 100%;
 	height: 100%;
 	background-color: var(--background-page);
+
+	&.full-page {
+		--header-margin-vertical: 0px;
+	}
 
 	.nav-overlay {
 		--v-overlay-z-index: 49;

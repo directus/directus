@@ -95,7 +95,7 @@ export default defineComponent({
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	height: 65px;
+	height: calc(1px + var(--header-height));
 	margin: 0;
 	padding: 0 12px;
 	background-color: var(--background-page);
@@ -192,7 +192,7 @@ export default defineComponent({
 	}
 
 	@include breakpoint(small) {
-		margin: 24px 0;
+		margin: var(--header-margin-vertical) 0;
 		padding: 0 32px;
 	}
 }
