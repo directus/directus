@@ -295,7 +295,7 @@ auto_increment_integer: Автоматично увеличено число
 generated_uuid: Генериран UUID
 manual_string: Ръчно въведена стойност
 save_and_create_new: Запазване и преминаване към нов
-save_and_stay: Запазване
+save_and_stay: Запазване и оставане
 save_as_copy: Запазване като копие
 add_existing: Добавяне на съществуващ
 comments: Коментари
