@@ -371,7 +371,7 @@ errors:
   FORBIDDEN: Забранен
   INVALID_CREDENTIALS: Грешно потребителско име или парола
   INVALID_OTP: Грешна еднократна парола
-  INVALID_PAYLOAD: Невалиден payload
+  INVALID_PAYLOAD: Невалидни данни
   INVALID_QUERY: Невалидна заявка
   ITEM_LIMIT_REACHED: Достигнат лимит на записи
   ITEM_NOT_FOUND: Записът не е намерен
