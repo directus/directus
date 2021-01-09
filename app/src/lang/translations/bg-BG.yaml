@@ -1,6 +1,6 @@
 ---
 edit_field: Редактиране на поле
-item_revision: Ревизии на обект
+item_revision: Ревизии на запис
 duplicate_field: Дублиране на поле
 half_width: Половин ширина
 full_width: Пълна ширина
@@ -10,7 +10,7 @@ enter_password_to_enable_tfa: Въвеждане на парола за акти
 add_field: Добавяне на поле
 role_name: Име на роля
 db_only_click_to_configure: 'Само в базата данни: Кликнете за конфигурация '
-show_archived_items: Показване на архивираните обекти
+show_archived_items: Показване на архивираните записи
 required: Задължително
 requires_value: Изисква стойност
 create_preset: Създаване на изгледи
@@ -47,13 +47,13 @@ os_version: Версия на ОС
 os_uptime: Ъптайм на ОС
 os_totalmem: Памет на ОС
 archive: Архивиране
-archive_confirm: Сигурни ли сте, че искате да изтриете този обект?
+archive_confirm: Сигурни ли сте, че искате да изтриете този запис?
 archive_confirm_count: >-
-  Няма избрани обекти | Сигурни ли сте, че искате да архивирате този обект? | Сигурни ли сте, че искате да архивирате тези {count} обекта?
+  Няма избрани записи | Сигурни ли сте, че искате да архивирате този запис? | Сигурни ли сте, че искате да архивирате тези {count} записа?
 reset_system_permissions: Нулиране на системните позволения
 reset_system_permissions_copy: Нулиране на всички системни позволения към техните първоначални стойности
 unarchive: Разархивиране
-unarchive_confirm: Сигурни ли сте, че искате да разархивирате този обект?
+unarchive_confirm: Сигурни ли сте, че искате да разархивирате този запис?
 nested_files_folders_will_be_moved: Вложените файлове и папки ще бъдат преместени една папка по-нагоре.
 unknown_validation_errors: 'Има грешки при валидацията на следните скрити полета:'
 validationError:
@@ -83,18 +83,18 @@ field_m2o: M2O релация,
 field_o2m: O2M релация,
 field_m2m: M2M релация,
 field_translations: Преводи,
-item_permissions: Позволения за обект
+item_permissions: Позволения на запис
 field_permissions: Позволения за поле
 field_validation: Валидация на поле
 field_presets: Готови настройки за поле
-permissions_for_role: 'Обекти които "{role}" ролята може да {action}.'
+permissions_for_role: 'Записи, които "{role}" ролята може да {action}.'
 fields_for_role: 'Полета, които "{role}" ролята може да {action}.'
 validation_for_role: 'Правила за {action} на полетo, които "{role}" ролята трябва да спазва.'
 presets_for_role: 'Стойност за полето по подразбиране за "{role}" ролята.'
 presentation_and_aliases: Презентационни и псевдоними
-revision_post_update: Ето как изглежда обекта след направените промени...
+revision_post_update: Ето как изглежда записът след направените промени...
 changes_made: Направените промени са следните...
-no_relational_data: Имайте в предвид, че това не съдържа данните от свързаните обекти.
+no_relational_data: Имайте в предвид, че това не съдържа данните от свързаните записи.
 hide_field_on_detail: Скриване в детайлен изглед
 show_field_on_detail: Показване в детайлния изглед
 delete_field: Изтриване на поле
@@ -189,7 +189,7 @@ show_all_activity: Показване на цялата активност
 page_not_found: Страницата не е намерена
 page_not_found_body: Страницата, която търсите, не съществува.
 confirm_revert: Потвърждание за възстановяване
-confirm_revert_body: Връщане на обекта към избрано състояние.
+confirm_revert_body: Възстановяване на записа към избраното състояние.
 display: Показване
 settings_update_success: Настройките са обновени
 title: Заглавие
@@ -205,17 +205,17 @@ revision_preview: Преглед на ревизия
 updates_made: Направени промени
 leave_comment: Коментар...
 post_comment_success: Коментарът е публикуван
-item_create_success: Създаден обект | Създадени обекти
-item_update_success: Обновен обект | Обновени обекти
-item_delete_success: Изтрит обект | Изтрити обекти
+item_create_success: Създаден запис | Създадени записи
+item_update_success: Обновен запис | Обновени записи
+item_delete_success: Изтрит запис | Изтрити записи
 this_collection: Тази колекция
 related_collection: Релационна колекция
 related_collections: Релационни колекции
 translations_collection: Колекция с преводи
 languages_collection: Колекция с езици
-export_data: Експорт на данни
+export_data: Експорт на данните
 format: Формат
-use_current_filters_settings: Използване на текущите филтри и нстройки
+use_current_filters_settings: С текущите филтри
 export_collection: 'Експорт на {collection}'
 last_page: Последна страница
 last_access: Последно посещение
@@ -301,9 +301,9 @@ add_existing: Добавяне на съществуващ
 comments: Коментари
 no_comments: Все още няма коментари
 click_to_expand: Натиснете за разширяване
-select_item: Избор на обект
-no_items: Няма обекти
-search_items: Търсене на обекти...
+select_item: Избор на запис
+no_items: Няма записи
+search_items: Търсене в записите...
 disabled: Изключване
 information: Информация
 report_bug: Доклад за проблем
@@ -313,15 +313,15 @@ reset_interface: Нулиране на интерфейс
 display_not_found: 'Изгледът "{display}" не е намерен.'
 reset_display: Нулиране на изглед
 m2a_builder: Строител (M2A)
-item_count: 'Няма обекти | Един обект | {count} обекта'
-no_items_copy: Все още няма обекти в тази колекция.
+item_count: 'Няма записи | Един запис | {count} записа'
+no_items_copy: Все още няма записи в тази колекция.
 file_count: 'Няма файлове | Един файл | {count} файла'
 no_files_copy: Тук не са открити файлове.
 user_count: 'Няма потребители | Един потребител | {count} потребителя'
 no_users_copy: Все още няма потребители в тази роля.
 webhooks_count: "Няма уеб-куки | 1 уеб-кука | {count} уеб-куки\n"
 no_webhooks_copy: Все още няма уеб-куки.
-all_items: Всички обекти
+all_items: Всички записи
 csv: CSV
 no_collections: Няма колекции
 create_collection: Създаване на колекция
@@ -336,7 +336,7 @@ users: Потребители
 activity: Активности
 webhooks: Уеб-куки
 field_width: Ширина на полето
-add_a_new_item: Добавяне на нов обект...
+add_a_new_item: Добавяне на нов запис...
 add_filter: Добавяне на филтър
 upper_limit: Горна граница...
 lower_limit: Долна граница...
@@ -355,7 +355,7 @@ toggle_manual_sorting: Ръчна подредба
 bookmark_doesnt_exist: Отметката не съществива
 bookmark_doesnt_exist_copy: Отметката която се опитвате да отворите не може да бъде намерена.
 bookmark_doesnt_exist_cta: Връщане в колекция
-select_an_item: Избор на обект...
+select_an_item: Избор на запис...
 edit: Редактиране
 enabled: Включване
 disable_tfa: Изключване на 2FA
@@ -373,8 +373,8 @@ errors:
   INVALID_OTP: Грешна еднократна парола
   INVALID_PAYLOAD: Невалиден payload
   INVALID_QUERY: Невалидна заявка
-  ITEM_LIMIT_REACHED: Достигнат лимит за обекти
-  ITEM_NOT_FOUND: Обектът не е намерен
+  ITEM_LIMIT_REACHED: Достигнат лимит за записи
+  ITEM_NOT_FOUND: Записът не е намерен
   ROUTE_NOT_FOUND: Не е намерен
   UNKNOWN: Неочаквана грешка
 value_hashed: Хеширана стойност
@@ -402,9 +402,9 @@ all_users: Всички потребители
 delete_collection: Изтриване на колекция
 update_collection_success: Обновена колекция
 delete_collection_success: Изтрита колекция
-start_end_of_count_items: '{start}-{end} от {count} обекти'
+start_end_of_count_items: '{start}-{end} от {count} записа'
 delete_collection_are_you_sure: >-
-  Сигурни ли сте, че искате да изтриете тази колекция? Това действие ще изтрие колекцията и всички нейни обекти. Действието е завинаги.
+  Сигурни ли сте, че искате да изтриете тази колекция? Това действие ще изтрие колекцията и всички нейни записи. Действието е постоянно.
 collections_shown: Показани колекции
 visible_collections: Видими колекции
 hidden_collections: Скрити колекции
@@ -420,7 +420,7 @@ monospace: Monospace
 divider: Разделител
 color: Цвят
 circle: Кръг
-empty_item: Празен обект
+empty_item: Празен запис
 log_in_with: 'Вход чрез {provider}'
 advanced_filter: Разширен филтър
 delete_advanced_filter: Изтриване на филтър
@@ -459,9 +459,9 @@ collection_setup: Настройване на колекция
 optional_system_fields: Системни полета по желание
 value_unique: Стойността трябва да е уникална
 all_activity: Цялостна активност
-create_item: Създаване на обект
+create_item: Създаване на запис
 display_template: Шаблон при показване
-n_items_selected: 'Не са избрани обекти | 1 избран обект | {n} избрани обекти'
+n_items_selected: 'Не са избрани записи | 1 избран запис | {n} избрани записа'
 per_page: На страница
 all_files: Всички файлове
 my_files: Мои файлове
@@ -544,9 +544,9 @@ deselect_all: Премахване на избора
 other: Друго...
 adding_user: Добавяне на потребител
 unknown_user: Неизвестен потребител
-creating_in: 'Създаване на обект в {collection}'
-editing_in: 'Редактиране на обект в {collection}'
-editing_in_batch: 'Масово редактиране {count} на обекти'
+creating_in: 'Създаване на запис в {collection}'
+editing_in: 'Редактиране на запис от {collection}'
+editing_in_batch: 'Масово редактиране {count} на записа'
 no_options_available: Не са налични опции
 settings_data_model: Модел на данни
 settings_permissions: Роли и позволения
@@ -721,7 +721,7 @@ success: Успех
 warning: Внимание
 danger: Опасност
 junction_collection: Свързваща колекция
-latency: Забавяне
+latency: забавяне
 login: Влизане
 my_activity: Моя активност
 not_authenticated: Неоторизиран
