@@ -42,12 +42,20 @@ not_allowed: Niedozwolone
 directus_version: Wersja aplikacji Directus
 os_type: Typ Systemu
 os_version: Wersja Systemu
+os_uptime: Czas pracy systemu
+os_totalmem: Pamięć Systemu
 archive: Archiwum
+archive_confirm: Jesteś pewien, że chcesz zarchiwizować ten element?
+archive_confirm_count: >-
+  Brak zaznaczonych elementów | Czy na pewno chcesz zarchiwizować ten element? | Czy na pewno chcesz zarchiwizować te {count} elementy?
 reset_system_permissions: Resetuj uprawnienia systemowe
 reset_system_permissions_copy: Resetuj wszystkie uprawnienia systemowe do ich domyślnych ustawień
+unarchive: Przywróć z archiwum
 nested_files_folders_will_be_moved: Zagnieżdżone pliki i foldery zostaną przeniesione o jeden poziom.
 unknown_validation_errors: 'Wystąpiły błędy walidacji dla następujących ukrytych pól:'
 validationError:
+  eq: Wartość musi być {valid}
+  neq: Wartość nie może być {invalid}
   in: Wartość musi być jednym z {valid}
   nin: Wartość nie może być jednym z {invalid}
   contains: Wartość musi zawierać {substring}
@@ -61,12 +69,27 @@ validationError:
   null: Wartość musi być pusta
   nnull: Wartość nie może być pusta
   required: Wartość jest wymagana
+all_access: Pełny Dostęp
 no_access: Brak dostępu
+use_custom: Użyj niestandardowych
+field_standard: Standard,
+field_presentation: Prezentacja i aliasy,
+field_file: Pojedynczy plik,
+field_files: Wiele plików,
+field_translations: Tłumaczenia,
 field_validation: Walidacja pola
+permissions_for_role: 'Przedmioty roli {role} mogą {action}.'
 presets_for_role: 'Wartość domyślna dla roli {role}.'
+presentation_and_aliases: Prezentacja i aliasy
+revision_post_update: Oto jak wyglądał ten element po aktualizacji...
+changes_made: To są konkretne zmiany, które zostały wprowadzone...
+delete_field: Usuń pole
 fields_and_layout: Pola i układ
+field_create_success: 'Utworzono pole: "{field}"'
 field_update_success: 'Zaktualizowano pole: "{field}"'
+duplicate_where_to: Gdzie chcesz zduplikować to pole?
 language: Język
+global: Globalny
 admins_have_all_permissions: Administratorzy mają wszystkie uprawnienia
 camera: Aparat
 iso: ISO
@@ -144,8 +167,14 @@ confirm_revert: Potwierdź cofnięcie
 confirm_revert_body: Spowoduje to przywrócenie elementu do wybranego stanu.
 settings_update_success: Ustawienia zaktualizowane
 title: Tytuł
+revision_delta_created: Utworzony
 revision_delta_updated: 'Zaktualizowano 1 pole | Zaktualizowano {count} pól'
+revision_delta_deleted: Usunięty
+revision_delta_reverted: Odwrócony
+revision_delta_other: Rewizja
 revision_delta_by: '{date} przez {user}'
+private_user: Prywatny Użytkownik
+updates_made: Aktualizacje wykonane
 leave_comment: Napisz komentarz...
 post_comment_success: Komentarz dodany
 item_create_success: Element utworzony | Elementy utworzone
@@ -154,16 +183,21 @@ item_delete_success: Element usunięty | Elementy usunięte
 this_collection: Ta kolekcja
 related_collection: Powiązana kolekcja
 related_collections: Powiązane kolekcje
+translations_collection: Kolekcja tłumaczeń
+languages_collection: Kolekcja języków
 export_data: Eksportuj dane
 format: Formatowanie
+use_current_filters_settings: Użyj obecnych filtrów i ustawień
 export_collection: 'Eksportuj {collection}'
 last_page: Ostatnia strona
 last_access: Ostatni dostęp
+fill_template: Wypełnij wartością szablonu
 a_unique_table_name: Unikalna nazwa tabeli...
 a_unique_column_name: Unikalna nazwa kolumny...
 submit: Zatwierdź
 move_to_folder: Przenieś do folderu
 move: Przenieś
+system: System
 add_field_related: Dodaj pole do powiązanej kolekcji
 interface: Interfejs
 today: Dziś
@@ -186,19 +220,24 @@ months:
   november: Listopad
   december: Grudzień
 drag_mode: Tryb przeciągania
+cancel_crop: Anuluj przycinanie
 original: Oryginalny
 url: Adres URL
 import: Importuj
 file_details: Szczegóły pliku
 dimensions: Wymiary
 size: Wielkość
+created: Utworzony
+modified: Zmodyfikowane
 checksum: Suma kontrolna
 owner: Właściciel
 edited_by: Edytowane przez
 folder: Folder
+zoom: Powiększ
 download: Pobierz
 open: Otwórz
 open_in_new_window: Otwórz w nowym oknie
+foreground_color: Kolor pierwszego planu
 background_color: Kolor tła
 upload_from_device: Prześlij plik z urządzenia
 choose_from_library: Wybierz plik z biblioteki
@@ -300,6 +339,8 @@ aspect_ratio: Proporcje
 rotate: Obróć
 all_users: Wszyscy użytkownicy
 delete_collection: Usuń kolekcję
+update_collection_success: Zaktualizowana kolekcja
+delete_collection_success: Usunięta kolekcja
 start_end_of_count_items: '{start}-{end} z {count} elementów'
 delete_collection_are_you_sure: >-
   Czy na pewno chcesz usunąć tę kolekcję? Spowoduje to usunięcie kolekcji i wszystkich jej elementów. Ta akcja jest trwała.
@@ -319,6 +360,8 @@ circle: Okrąg
 empty_item: Pusty element
 log_in_with: 'Zaloguj się za pomocą {provider}'
 advanced_filter: Filtr zaawansowany
+delete_advanced_filter: Usuń filtr
+change_advanced_filter_operator: Zmień operatora
 operators:
   eq: Równa się
   neq: Różne od
@@ -345,25 +388,41 @@ upload_file_indeterminate: Przesyłanie pliku...
 upload_file_success: Plik przesłany
 upload_files_indeterminate: 'Przesyłanie plików {done}/{total}'
 upload_files_success: 'Przesłano {count} plików'
+upload_pending: Prześlij oczekujące
 drag_file_here: Przeciągnij i upuść plik tutaj
 click_to_browse: Kliknij, aby przeglądać
+layout_options: Opcje Układu
 collection_setup: Ustawienia kolekcji
+optional_system_fields: Opcjonalne pola systemu
 value_unique: Wartość musi być unikalna
 all_activity: Wszystkie aktywności
+create_item: Utwórz element
+display_template: Wyświetl szablon
+n_items_selected: 'Nie wybrano elementów | 1 wybrany element | {n} wybranych elementów'
 per_page: Na stronę
 all_files: Wszystkie pliki
 my_files: Moje pliki
 recent_files: Ostatnie pliki
+create_folder: Utwórz Folder
+folder_name: Nazwa folderu...
 add_file: Dodaj plik
+replace_file: Zastąp plik
 no_results: Brak wyników
 no_results_copy: Dostosuj lub wyczyść filtry wyszukiwania, aby zobaczyć wyniki.
+clear_filters: Wyczyść filtry
+saves_automatically: Zapisuje automatycznie
 role: Rola
 user: Użytkownik
+no_presets: Brak szablonów
+no_presets_copy: Nie zapisano jeszcze żadnych szablonów lub zakładek.
+no_presets_cta: Dodaj szablon
 create: Stwórz
 on_update: Po zaktualizowaniu
 read: Odczyt
 update: Zaktualizuj
 select_fields: Wybierz pola
+format_text: Formatuj tekst
+bold: Pogrubiony
 toggle: Przełącz
 icon_on: Ikona włączona
 icon_off: Ikona wyłączona
@@ -373,7 +432,9 @@ wysiwyg_options:
   alignjustify: Wyjustuj
   alignleft: Wyrównaj do lewej
   alignright: Wyrównaj do prawej
+  forecolor: Kolor pierwszego planu
   backcolor: Kolor tła
+  bold: Pogrubiony
   italic: Kursywa
   underline: Podkreślenie
   strikethrough: Przekreślenie
@@ -411,15 +472,30 @@ wysiwyg_options:
 dropdown: Lista rozwijana
 choices: Opcje
 deselect: Odznacz
+deselect_all: Odznacz Wszystko
+other: Inne...
+adding_user: Dodawanie użytkownika
+unknown_user: Nieznany użytkownik
+creating_in: 'Tworzenie elementu w {collection}'
+editing_in: 'Edycja elementu w {collection}'
 editing_in_batch: 'Grupowa edycja {count} elementów'
+no_options_available: Brak dostępnych opcji
 settings_data_model: Model danych
 settings_permissions: Role i uprawnienia
 settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
+settings_presets: Szablony i zakładki
+changes_are_permanent: Zmiany są trwałe
+preset_name_placeholder: Nazwa zakładki...
+editing_preset: Edycja szablonu
+layout_preview: Podgląd układu
 unsaved_changes: Niezapisane zmiany
 unsaved_changes_copy: Czy na pewno chcesz opuścić tę stronę?
 discard_changes: Odrzuć zmiany.
 keep_editing: Kontynuuj edycję
+page_help_collections_overview: '**Przegląd kolekcji** — Lista wszystkich kolekcji, do których masz dostęp.'
+page_help_collections_collection: >-
+  **Przeglądaj przedmioty** — Lista wszystkich {collection} elementów, do których masz dostęp. Dostosuj układ, filtry i sortowanie w celu dostosowania widoku, a nawet zapisz zakładki z tych różnych konfiguracji, aby uzyskać szybki dostęp.
 add_new: Dodaj nowy
 create_new: Utwórz nowy
 all: Wszystkie
@@ -592,6 +668,7 @@ interfaces:
     set_to_now: Ustaw na teraz
     use_24: Użyj 24-godzinnego formatu
   display-template:
+    display-template: Wyświetl szablon
     collection_field: Pole kolekcji
   divider:
     divider: Separator
@@ -627,6 +704,7 @@ interfaces:
   many-to-one:
     many-to-one: Wiele do jednego
     description: Wybierz pojedynczy powiązany element
+    display_template: Wyświetl szablon
   markdown:
     markdown: Markdown
     description: Wprowadź i zobacz markdown
@@ -679,6 +757,7 @@ interfaces:
     label_placeholder: Wprowadź etykietę...
     label_default: Włączone
   translations:
+    display_template: Wyświetl szablon
     no_collection: Brak kolekcji
   user:
     user: Użytkownik
@@ -706,6 +785,7 @@ displays:
     format: Formatowanie
   file:
     file: Plik
+    description: Wyświetl pliki
   filesize:
     filesize: Rozmiar pliku
   icon:
