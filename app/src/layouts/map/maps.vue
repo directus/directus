@@ -236,8 +236,10 @@ function clone<A>(a: A): A {
 	return !isObject(a)
 		? a
 		: isArray(a)
-		? [...a].map(clone)
-		: Object.keys(a).reduce((r, k) => ({ ...r, [k]: clone(a[k]) }), {});
+		? // @ts-ignore
+		  [...a].map(clone)
+		: // @ts-ignore
+		  Object.keys(a).reduce((r, k) => ({ ...r, [k]: clone(a[k]) }), {});
 }
 function assign(a: any, b: any): any {
 	if (![a, b].every(isObject)) return (a = b);
