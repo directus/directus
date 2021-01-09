@@ -68,6 +68,9 @@
 			</template>
 
 			<div class="field">
+				<v-checkbox v-model="fitDataBounds" :label="$t('layouts.map.fit_auto')" />
+			</div>
+			<div class="field">
 				<v-checkbox v-model="clusterActive" :label="$t('layouts.map.cluster')" />
 			</div>
 			<template v-if="clusterActive">
@@ -128,12 +131,15 @@
 
 		<map-component
 			class="mapboxgl-map"
-			:class="{ error: error || geojsonError || itemCount === 0, loading }"
+			:class="{ loading, error: error || geojsonError || missingOptions || itemCount === 0 }"
 			:data="geojson"
 			:onClick="gotoEdit"
 			:rootStyle="rootStyle"
 			:source="userSource"
 			:layers="userLayers"
+			:camera="cameraOptions"
+			:autoFit="fitDataBounds"
+			@moveend="cameraOptions = $event"
 			:backgroundLayer="backgroundLayer"
 			:animateOptions="{
 				animate: fitBoundsAnimate,
@@ -153,7 +159,7 @@
 				</template>
 			</v-info>
 			<v-info
-				v-else-if="geojsonError == 'missing_option'"
+				v-else-if="missingOptions"
 				icon="not_listed_location"
 				center
 				:title="$t('layouts.map.missing_option')"
@@ -168,7 +174,13 @@
 				{{ geojsonError }}
 			</v-info>
 			<v-progress-circular v-else-if="loading" indeterminate x-large class="center" />
-			<v-progress-circular v-else-if="geojsonLoading" :value="geojsonProgress * 100" x-large class="center" />
+			<v-progress-circular
+				v-else-if="geojsonLoading"
+				x-large
+				class="center"
+				:value="geojsonProgress * 100"
+				:indeterminate="geojsonProgress == 1"
+			/>
 			<slot v-else-if="itemCount === 0 && (_searchQuery || activeFilterCount > 0)" name="no-results" />
 			<slot v-else-if="itemCount === 0" name="no-items" />
 		</transition>
@@ -187,7 +199,12 @@
 				</div>
 				<div v-if="loading === false && items.length >= 25" class="per-page">
 					<span>{{ $t('per_page') }}</span>
-					<v-select @input="limit = +$event" :value="`${limit}`" :items="['100', '1000', '10000', '100000']" inline />
+					<v-select
+						@input="limit = +$event"
+						:value="`${limit}`"
+						:items="['1e2', '1e3', '1e4', '1e5', '1e6', '1e7']"
+						inline
+					/>
 				</div>
 			</div>
 		</template>
@@ -196,7 +213,7 @@
 
 <script lang="ts">
 import MapComponent from './components/map.vue';
-import type { Style, AnyLayer, MapLayerMouseEvent } from 'maplibre-gl';
+import type { CameraOptions, Style, AnyLayer, MapLayerMouseEvent } from 'maplibre-gl';
 import { basemapNames, rootStyle, dataStyle } from './styles';
 import type { GeoJSONSerializer } from './worker';
 
@@ -225,14 +242,20 @@ function isArray(obj: any): boolean {
 	return Array.isArray(obj);
 }
 
-function clone<A>(a: A): A  {
+function clone<A>(a: A): A {
 	// @ts-ignore
-	return !isObject(a) ? a : isArray(a) ? [...a].map(clone) : Object.keys(a).reduce((r, k) => ({ ...r, [k]: clone(a[k]) }), {});
+	return !isObject(a)
+		? a
+		: isArray(a)
+		? // @ts-ignore
+		  [...a].map(clone)
+		: // @ts-ignore
+		  Object.keys(a).reduce((r, k) => ({ ...r, [k]: clone(a[k]) }), {});
 }
 function assign(a: any, b: any): any {
 	if (![a, b].every(isObject)) return (a = b);
 	if ([a, b].every(isArray)) return a.concat(b);
-	for (let key in b) a[key] = assign(a[key], b[key]);
+	for (const key in b) a[key] = assign(a[key], b[key]);
 	return a;
 }
 
@@ -245,14 +268,16 @@ type layoutQuery = {
 };
 
 type layoutOptions = {
+	cameraOptions?: CameraOptions;
+	customLayers?: Array<Style>;
 	backgroundLayer?: Record<string, any>;
 	geometryFormat?: GeometryFormat;
 	geometryField?: string;
 	longitudeField?: string;
 	latitudeField?: string;
 	geometrySRID?: string;
-	customLayers?: Array<Style>;
 	simplification?: number;
+	fitDataBounds?: boolean;
 	fitBoundsAnimate?: boolean;
 	fitBoundsPadding?: number;
 	fitBoundsSpeed?: number;
@@ -320,16 +345,18 @@ export default defineComponent({
 		const _layoutOptions: Ref<any> = useSync(props, 'layoutOptions', emit);
 		const { collection, searchQuery } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
-		const { sort, limit, page, fields } = uselayoutQuery();
+		const { sort, limit, page } = uselayoutQuery();
 		const {
+			cameraOptions,
+			customLayers,
 			backgroundLayer,
 			geometrySRID,
 			geometryFormat,
 			geometryField,
 			longitudeField,
 			latitudeField,
-			customLayers,
 			simplification,
+			fitDataBounds,
 			fitBoundsAnimate,
 			fitBoundsPadding,
 			fitBoundsSpeed,
@@ -341,11 +368,11 @@ export default defineComponent({
 
 		const queryFields = computed(() => {
 			return [geometryField, latitudeField, longitudeField]
-			.map(ref => ref.value)
-			.concat(primaryKeyField.value?.field)
-			.filter((e) => !!e);
+				.map((ref) => ref.value)
+				.concat(primaryKeyField.value?.field)
+				.filter((e) => !!e);
 		});
-		
+
 		const { items, loading, error, totalPages, itemCount, getItems } = useItems(collection, {
 			sort,
 			limit,
@@ -355,62 +382,59 @@ export default defineComponent({
 			searchQuery: _searchQuery,
 		});
 
-		function onQueryChange() {
+		function onQueryChange(next: any, prev: any) {
 			resetWorker();
 			page.value = 1;
-			geojson.value = { type: 'FeatureCollection', features: [] }
 		}
-
-		watch(() => props.collection, onQueryChange);
-		watch(() => _searchQuery.value, onQueryChange);
-		watch(() => _layoutQuery.value, onQueryChange);
 
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
+		const missingOptions = ref<boolean>(false);
 		const geojsonError = ref<string | null>();
 		const geojsonLoading = ref<boolean>(false);
-		const geojsonProgress = ref<number>(-1);
-		function onProgress(progress: number) {
-			geojsonProgress.value = progress;
-		}
-
+		const geojsonProgress = ref<number>(0);
 		let geojsonWorker: Worker;
 		let workerProxy: Remote<GeoJSONSerializer>;
+
+		resetWorker();
+		watch(() => searchQuery.value, onQueryChange);
+		watch(() => collection.value, onQueryChange);
+		watch(() => limit.value, onQueryChange);
+		watch(() => sort.value, onQueryChange);
+		watch(() => page.value, resetWorker);
+		watch(() => geometrySRID.value, updateGeojson);
+		watch(() => items.value, updateGeojson);
+
 		function resetWorker() {
 			geojsonLoading.value && geojsonWorker && geojsonWorker.terminate();
 			geojsonWorker = new Worker('./worker', { name: 'geojson-converter', type: 'module' });
 			workerProxy = wrap(geojsonWorker);
 		}
-		onMounted(resetWorker);
 
-		watch(() => _layoutOptions.value?.geometryField, updateGeojson);
-		watch(() => _layoutOptions.value?.latitudeField, updateGeojson);
-		watch(() => _layoutOptions.value?.longitudeField, updateGeojson);
-		watch(() => _layoutOptions.value?.geometrySRID, updateGeojson);
-		watch(() => items?.value, updateGeojson);
-
-		function validateGeometryOptions(): boolean {
-			if (_layoutOptions.value == null) return false;
-			if (_layoutOptions.value.geometryFormat === 'lnglat') {
-				if (_layoutOptions.value.longitudeField && _layoutOptions.value.latitudeField) {
-					return true;
-				}
+		function validateGeometryOptions() {
+			if (geometryFormat.value === 'lnglat' && longitudeField.value && latitudeField.value) {
+				return true;
+			} else if (geometryFormat.value && geometryField.value) {
+				return true;
 			} else {
-				if (_layoutOptions.value.geometryFormat && _layoutOptions.value.geometryField) {
-					return true;
-				}
+				return false;
 			}
-			return false;
 		}
 
+		function onProgress(progress: number) {
+			geojsonProgress.value = progress;
+		}
+		const first = true;
 		async function updateGeojson() {
 			const validate = validateGeometryOptions();
 			if (validate) {
+				missingOptions.value = false;
 				try {
 					geojson.value = { type: 'FeatureCollection', features: [] };
 					geojsonLoading.value = true;
 					geojsonProgress.value = 0;
 					geojsonError.value = null;
 					geojson.value = await workerProxy(items.value, _layoutOptions.value, proxy(onProgress));
+					console.log(geojson.value.bbox);
 					geojsonLoading.value = false;
 				} catch (error) {
 					geojsonLoading.value = false;
@@ -418,7 +442,7 @@ export default defineComponent({
 					geojson.value = { type: 'FeatureCollection', features: [] };
 				}
 			} else {
-				geojsonError.value = 'missing_option';
+				missingOptions.value = true;
 				geojson.value = { type: 'FeatureCollection', features: [] };
 			}
 		}
@@ -427,15 +451,20 @@ export default defineComponent({
 		const userSource = ref(userStyle.sources);
 		const userLayers = ref(userStyle.layers);
 		updateSource();
+		watch(() => clusterActive.value, updateSource);
+		watch(() => clusterRadius.value, updateSource);
+		watch(() => clusterMinPoints.value, updateSource);
+		watch(() => clusterMaxZoom.value, updateSource);
+		watch(() => simplification.value, updateSource);
+
 		function updateLayers() {
 			userLayers.value = customLayers.value;
 		}
+
 		function resetLayers() {
 			userLayers.value = clone(dataStyle.layers);
 		}
-		for (const key of ['clusterActive', 'clusterRadius', 'clusterMinPoints', 'clusterMaxZoom', 'simplification']) {
-			watch(() => _layoutOptions.value?.[key], updateSource);
-		}
+
 		function updateSource() {
 			assign(userSource.value, {
 				__directus: {
@@ -498,6 +527,7 @@ export default defineComponent({
 		const mapStyleOptions = basemapNames;
 
 		return {
+			cameraOptions,
 			geojson,
 			rootStyle,
 			userSource,
@@ -507,6 +537,7 @@ export default defineComponent({
 			resetLayers,
 			mapStyleOptions,
 			backgroundLayer,
+			missingOptions,
 			geojsonLoading,
 			geojsonProgress,
 			geojsonError,
@@ -517,6 +548,7 @@ export default defineComponent({
 			longitudeField,
 			latitudeField,
 			simplification,
+			fitDataBounds,
 			fitBoundsAnimate,
 			fitBoundsPadding,
 			fitBoundsSpeed,
@@ -564,6 +596,8 @@ export default defineComponent({
 		function uselayoutOptions() {
 			const createOption = refOptionGenerator(_layoutOptions);
 
+			const cameraOptions = createOption<CameraOptions>('cameraOptions', null);
+			const customLayers = createOption<Array<AnyLayer>>('layers', dataStyle.layers);
 			const backgroundLayer = createOption<string>('backgroundLayer', 'CartoDB_PositronNoLabels');
 			const geometrySRID = createOption<string>('geometrySRID', '2154');
 			const longitudeField = createOption<string>('longitudeField', null);
@@ -582,9 +616,8 @@ export default defineComponent({
 				},
 			});
 
-			const customLayers = createOption<Array<AnyLayer>>('layers', dataStyle.layers);
-
 			const simplification = createOption<number>('simplification', 0.375);
+			const fitDataBounds = createOption<boolean>('fitDataBounds', true);
 			const fitBoundsAnimate = createOption<boolean>('fitBoundsAnimate', true);
 			const fitBoundsPadding = createOption<number>('fitBoundsPadding', 100);
 			const fitBoundsSpeed = createOption<number>('fitBoundsSpeed', 1.4);
@@ -594,16 +627,18 @@ export default defineComponent({
 			const clusterMinPoints = createOption<number>('clusterMinPoints', 2);
 
 			return {
+				cameraOptions,
+				customLayers,
 				backgroundLayer,
+
 				geometrySRID,
 				geometryFormat,
 				geometryField,
 				longitudeField,
 				latitudeField,
 
-				customLayers,
-
 				simplification,
+				fitDataBounds,
 				fitBoundsAnimate,
 				fitBoundsPadding,
 				fitBoundsSpeed,
@@ -619,19 +654,7 @@ export default defineComponent({
 			const page = ref(1);
 			const sort = createOption<string>('sort', fieldsInCollection.value[0].field);
 			const limit = createOption<number>('limit', 1000);
-			const fields = computed({
-				get: () => {
-					[];
-					return valueOr(
-						fieldsInCollection.value?.map(({ field }) => field),
-						[]
-					);
-				},
-				set: (fields: string[]) => {
-					_layoutQuery.value = { ...valueOr(_layoutQuery.value, {}), fields };
-				},
-			});
-			return { sort, limit, page, fields };
+			return { sort, limit, page };
 		}
 
 		function refOptionGenerator<R>(ref: Ref<R>) {
@@ -684,10 +707,10 @@ export default defineComponent({
 	max-height: 300px !important;
 }
 
-// .v-button.reset {
-// 	--v-button-background-color: var(--warning-125);
-// 	--v-button-background-color-hover: var(--warning-150);
-// }
+.form .v-button {
+	--v-button-background-color: var(--foreground-subdued);
+	--v-button-background-color-hover: var(--foreground-normal);
+}
 
 .v-progress-circular {
 	--v-progress-circular-background-color: var(--primary-25);
