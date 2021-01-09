@@ -39,6 +39,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, onUnmounted } from '@vue/composition-api';
 import HeaderBarActions from '../header-bar-actions';
+import { useAppStore } from '@/stores';
 
 export default defineComponent({
 	components: { HeaderBarActions },
@@ -58,8 +59,9 @@ export default defineComponent({
 	},
 	setup() {
 		const headerEl = ref<Element>();
+		const appStore = useAppStore();
 
-		const collapsed = ref(false);
+		const { headerBarCollapsed: collapsed } = toRefs(appStore.state);
 
 		const observer = new IntersectionObserver(
 			([e]) => {
