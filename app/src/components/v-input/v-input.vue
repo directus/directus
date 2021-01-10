@@ -29,18 +29,18 @@
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="type === 'number' && !hideArrows">
 				<v-icon
-					:class="{ disabled: max !== null && parseInt(value, 10) >= max }"
+					:class="{ disabled: !isStepUpAllowed }"
 					name="keyboard_arrow_up"
 					class="step-up"
 					@click="stepUp"
-					:disabled="disabled"
+					:disabled="!isStepUpAllowed"
 				/>
 				<v-icon
-					:class="{ disabled: min !== null && parseInt(value, 10) <= min }"
+					:class="{ disabled: !isStepDownAllowed }"
 					name="keyboard_arrow_down"
 					class="step-down"
 					@click="stepDown"
-					:disabled="disabled"
+					:disabled="!isStepDownAllowed"
 				/>
 			</span>
 			<div v-if="$slots.append" class="append">
@@ -140,7 +140,15 @@ export default defineComponent({
 			return listeners.click !== undefined;
 		});
 
-		return { _listeners, hasClick, stepUp, stepDown, input };
+		const isStepUpAllowed = computed(() => {
+			return props.disabled === false && (props.max === null || parseInt(String(props.value), 10) < props.max);
+		});
+
+		const isStepDownAllowed = computed(() => {
+			return props.disabled === false && (props.min === null || parseInt(String(props.value), 10) > props.min);
+		});
+
+		return { _listeners, hasClick, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
 
 		function processValue(event: KeyboardEvent) {
 			if (!event.key) return;
@@ -211,8 +219,7 @@ export default defineComponent({
 
 		function stepUp() {
 			if (!input.value) return;
-			if (props.disabled === true) return;
-			if (props.max !== null && props.value >= props.max) return;
+			if (isStepUpAllowed.value === false) return;
 
 			input.value.stepUp();
 
@@ -223,8 +230,7 @@ export default defineComponent({
 
 		function stepDown() {
 			if (!input.value) return;
-			if (props.disabled === true) return;
-			if (props.min !== null && props.value <= props.min) return;
+			if (isStepDownAllowed.value === false) return;
 
 			input.value.stepDown();
 

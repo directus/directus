@@ -15,6 +15,7 @@ export default async function bootstrap() {
 	const { isInstalled, default: database, schemaInspector } = require('../../../database');
 	const { RolesService } = require('../../../services/roles');
 	const { UsersService } = require('../../../services/users');
+	const { SettingsService } = require('../../../services/settings');
 
 	if ((await isInstalled()) === false) {
 		logger.info('Installing Directus system tables...');
@@ -45,6 +46,11 @@ export default async function bootstrap() {
 		}
 
 		await usersService.create({ email: adminEmail, password: adminPassword, role });
+
+		if (env.PROJECT_NAME && typeof env.PROJECT_NAME === 'string' && env.PROJECT_NAME.length > 0) {
+			const settingsService = new SettingsService({ schema });
+			await settingsService.upsertSingleton({ project_name: env.PROJECT_NAME });
+		}
 	} else {
 		logger.info('Database already initialized, skipping install');
 	}

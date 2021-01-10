@@ -61,9 +61,8 @@ module.exports = function registerEndpoint(router, { services, exceptions }) {
 	const { ItemsService } = services;
 	const { ServiceUnavailableException } = exceptions;
 
-	const recipeService = new ItemsService('recipes');
-
 	router.get('/', (req, res) => {
+		const recipeService = new ItemsService('recipes', { schema: req.schema });
 		recipeService
 			.readByQuery({ sort: 'name', fields: '*' })
 			.then((results) => res.json(results))

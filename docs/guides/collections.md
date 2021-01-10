@@ -33,7 +33,7 @@ be modified after the collection is created.
 
 <!-- prettier-ignore-start -->
 ::: tip Database Tables
-Keep in mind that Directus Collections are just a database tables. Therefore you
+Keep in mind that a Directus Collection is just a database table. Therefore you
 can import or create a table directly in the database, and it will automatically appear within
 Directus. The first time you manage that table, a `directus_collections` record will be created with
 default values.

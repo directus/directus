@@ -7,7 +7,7 @@
 			</div>
 			<v-menu show-arrow :disabled="disabled">
 				<template #activator="{ toggle }">
-					<div class="operator" @click="toggle">
+					<div class="operator" @click="toggle" v-tooltip.top="$t('change_advanced_filter_operator')">
 						<span>{{ $t(`operators.${activeOperator}`) }}</span>
 						<v-icon name="expand_more" />
 					</div>
@@ -25,7 +25,7 @@
 				</v-list>
 			</v-menu>
 			<div class="spacer" />
-			<v-icon class="remove" name="close" @click="$emit('remove')" />
+			<v-icon class="remove" name="close" @click="$emit('remove')" v-tooltip.left="$t('delete_advanced_filter')" />
 		</div>
 		<div class="field">
 			<filter-input v-model="value" :type="parsedField.type" :operator="activeOperator" :disabled="disabled" />

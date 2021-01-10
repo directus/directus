@@ -8,16 +8,29 @@ import { PassThrough } from 'stream';
 import ms from 'ms';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
-	if (req.method.toLowerCase() === 'get' && env.CACHE_ENABLED === true && cache && !req.sanitizedQuery.export) {
+	if (
+		req.method.toLowerCase() === 'get' &&
+		env.CACHE_ENABLED === true &&
+		cache &&
+		!req.sanitizedQuery.export &&
+		res.locals.cache !== false
+	) {
 		const key = getCacheKey(req);
 		await cache.set(key, res.locals.payload, ms(env.CACHE_TTL as string));
 		await cache.set(`${key}__expires_at`, Date.now() + ms(env.CACHE_TTL as string));
 
+		const noCacheRequested =
+			req.headers['cache-control']?.includes('no-cache') || req.headers['Cache-Control']?.includes('no-cache');
+
 		// Set cache-control header
-		if (env.CACHE_AUTO_PURGE !== true) {
+		if (env.CACHE_AUTO_PURGE !== true && noCacheRequested === false) {
 			const maxAge = `max-age=${ms(env.CACHE_TTL as string)}`;
 			const access = !!req.accountability?.role === false ? 'public' : 'private';
 			res.setHeader('Cache-Control', `${access}, ${maxAge}`);
+		}
+
+		if (noCacheRequested) {
+			res.setHeader('Cache-Control', 'no-cache');
 		}
 	}
 

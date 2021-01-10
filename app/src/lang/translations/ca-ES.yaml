@@ -1,6 +1,57 @@
 ---
+duplicate_field: Camp duplicat
+half_width: Mitja amplada
+full_width: Amplada Completa
+fill_width: Amplada de l'emplenat
+field_name_translations: Traducció de noms de camps
+enter_password_to_enable_tfa: Introdueix la contrasenya per activar l'autenticació de dos factors
+add_field: Afegeix camp
+role_name: Nom del Rol
+db_only_click_to_configure: 'Base de dades només: Feu clic per configurar '
+show_archived_items: Mostra els elements arxivats
+required: Requerit
+requires_value: Requereix valor
+create_preset: Crear un Predefinit
 create_role: Crea un rol
+create_user: Crear usuari
+create_webhook: Crear Webhook
+invite_users: Convidar usuaris
+email_examples: 'admin@exemple.com, usuari@exemple.com...'
+invite: Convida
+emails: Correus electrònics
+connection_excellent: Connexió excel·lent
+connection_good: Connexió bona
+connection_fair: Connexió justa
+connection_poor: Connexió pobra
+rename_folder: Renombra carpeta
+delete_folder: Suprimeix carpeta
+reset_bookmark: Reinicia marcador
+rename_bookmark: Renombra marcador
+update_bookmark: Actualitza marcador
 delete_bookmark: Eliminar marcador
+delete_bookmark_copy: >-
+  Segur que voleu eliminar aquest marcador "{bookmark}"? Aquesta acció no es pot desfer.
+logoutReason:
+  SIGN_OUT: S'ha desconnectat
+  SESSION_EXPIRED: Sessió caducada
+public: Públic
+public_description: Controla quines dades API estan disponibles sense autenticar.
+not_allowed: No permès
+directus_version: Versió de Directus
+node_version: Versió de Node
+node_uptime: Temps d'activitat de Node
+os_type: Tipus de SO
+os_version: Versió d'OS
+os_uptime: Temps d'activitat del SO
+os_totalmem: Memòria del SO
+archive: Arxiu
+archive_confirm: Estàs segur de que vols arxivar aquest element?
+archive_confirm_count: >-
+  No hi ha elements seleccionats | Segur que voleu arxivar aquest element? | Segur que voleu arxivar aquests {count} elements?
+reset_system_permissions: Restableix els permisos del sistema
+reset_system_permissions_copy: Restableix tots els permisos del sistema als seus valors predeterminats
+unarchive: Desarxivar
+unarchive_confirm: Segur que voleu desarxivar aquest element?
 language: Idioma
 create_field: Crea un camp
 date: Data
@@ -99,8 +150,10 @@ fields:
     theme: Tema
     tfa_secret: Autenticació de doble factor
   directus_fields:
+    translation: Traducció de noms de camps
     display_template: Plantilla
   directus_roles:
+    name: Nom del Rol
     description: Descripció
 comment: Comentari
 continue: Continua
