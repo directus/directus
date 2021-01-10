@@ -137,7 +137,7 @@ export default defineComponent({
 .private-view {
 	--content-padding: 12px;
 	--content-padding-bottom: 60px;
-	--header-height: 65px;
+	--header-height: 64px;
 	--header-margin-vertical: 24px;
 
 	display: flex;
@@ -188,7 +188,7 @@ export default defineComponent({
 			background-color: var(--background-normal);
 
 			&-content {
-				height: calc(100% - 64px);
+				height: calc(100% - var(--header-height));
 				overflow-x: hidden;
 				overflow-y: auto;
 			}
