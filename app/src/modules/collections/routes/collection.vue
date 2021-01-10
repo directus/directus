@@ -33,7 +33,12 @@
 				<v-icon class="saved" name="bookmark" v-else-if="bookmarkSaved" />
 
 				<template v-else-if="bookmarkIsMine">
-					<v-icon class="save" @click="savePreset()" name="bookmark_save" v-tooltip.bottom="$t('update_bookmark')" />
+					<v-icon
+						class="save"
+						@click="savePreset()"
+						name="bookmark_save"
+						v-tooltip.bottom="$t('update_bookmark')"
+					/>
 				</template>
 
 				<bookmark-add
@@ -224,7 +229,11 @@
 			</sidebar-detail>
 			<layout-sidebar-detail @input="layout = $event" :layouts="layouts" :layout="layoutConfig" />
 			<portal-target name="sidebar" />
-			<export-sidebar-detail :layout-query="layoutQuery" :search-query="searchQuery" :collection="currentCollection" />
+			<export-sidebar-detail
+				:layout-query="layoutQuery"
+				:search-query="searchQuery"
+				:collection="currentCollection"
+			/>
 		</template>
 
 		<v-dialog v-if="deleteError" active>
@@ -257,7 +266,7 @@ import BookmarkAdd from '../../../views/private/components/bookmark-add';
 import BookmarkEdit from '../../../views/private/components/bookmark-edit';
 import router from '../../../router';
 import marked from 'marked';
-import { usePermissionsStore, useUserStore, useAppStore } from '../../../stores';
+import { usePermissionsStore, useUserStore } from '../../../stores';
 import DrawerBatch from '../../../views/private/components/drawer-batch';
 import { unexpectedError } from '../../../utils/unexpected-error';
 
@@ -289,7 +298,6 @@ export default defineComponent({
 	},
 	setup(props) {
 		const userStore = useUserStore();
-		const appStore = useAppStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref<LayoutComponent | null>(null);
 
@@ -329,7 +337,13 @@ export default defineComponent({
 			batchEditActive,
 		} = useBatch();
 
-		const { bookmarkDialogActive, creatingBookmark, createBookmark, editingBookmark, editBookmark } = useBookmarks();
+		const {
+			bookmarkDialogActive,
+			creatingBookmark,
+			createBookmark,
+			editingBookmark,
+			editBookmark
+		} = useBookmarks();
 
 		watch(
 			collection,
