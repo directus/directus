@@ -12,6 +12,7 @@ import maplibre, {
 	LngLatBoundsLike,
 	LngLatLike,
 	MapLayerMouseEvent,
+	CameraOptions,
 } from 'maplibre-gl';
 import {
 	defineComponent,
@@ -83,11 +84,18 @@ export default defineComponent({
 			type: Function,
 			required: true,
 		},
+		camera: {
+			type: Object as PropType<CameraOptions>,
+			default: () => ({}),
+		},
+		autoFit: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const appStore = useAppStore();
 		const { sidebarOpen } = toRefs(appStore.state);
-
 		const { data, source, layers, backgroundLayer, animateOptions, onClick } = toRefs(props);
 
 		maplibre.accessToken = 'yo';
@@ -100,7 +108,7 @@ export default defineComponent({
 
 		function fitDataBounds() {
 			const bbox = data.value.bbox as LngLatBoundsLike;
-			if (map && bbox && data.value.features.length) map.fitBounds(bbox, animateOptions.value);
+			if (map && bbox) map.fitBounds(bbox, animateOptions.value);
 		}
 
 		function updateBackground(id: string, previous?: string) {
@@ -147,20 +155,8 @@ export default defineComponent({
 				container: 'map-container',
 				style: props.rootStyle,
 				attributionControl: false,
+				...props.camera,
 			});
-
-			
-			let marker = new Image(32,32)
-			marker.crossOrigin = "Anonymous";
-			marker.onload = () => map.addImage('place', marker, { sdf: true });
-			marker.src = 'https://s.svgbox.net/materialui.svg?ic=place';
-
-			watch(
-				() => sidebarOpen.value,
-				(opened) => {
-					if (!opened) setTimeout(() => map.resize(), 300);
-				}
-			);
 
 			map.addControl(new maplibre.NavigationControl(), 'top-left');
 			map.addControl(new maplibre.GeolocateControl(), 'top-left');
@@ -172,14 +168,33 @@ export default defineComponent({
 				map.once('styledata', () => {
 					watch(() => source.value, updateSource, { immediate: true });
 					watch(() => layers.value, updateLayers);
-					fitDataBounds();
 				});
 			});
-			watch( () => data.value, (data) => {
-				const source = map.getSource('__directus') as GeoJSONSource;
-				source?.setData(data);
-				fitDataBounds();
+
+			map.on('moveend', () => {
+				emit('moveend', {
+					center: map.getCenter(),
+					zoom: map.getZoom(),
+					bearing: map.getBearing(),
+					pitch: map.getPitch(),
+				});
 			});
+
+			watch(
+				() => sidebarOpen.value,
+				(opened) => {
+					if (!opened) setTimeout(() => map.resize(), 300);
+				}
+			);
+
+			watch(
+				() => data.value,
+				(data) => {
+					const source = map.getSource('__directus') as GeoJSONSource;
+					source?.setData(data);
+					if (props.autoFit) fitDataBounds();
+				}
+			);
 		}
 
 		function setupLayers(map: Map) {
@@ -228,26 +243,37 @@ export default defineComponent({
 .mapboxgl-ctrl-group {
 	overflow: hidden;
 	background: none;
+
+	&:not(:empty) {
+		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+	}
+
+	button {
+		background: var(--background-subdued);
+		border: none !important;
+		& + button {
+			margin-top: 1px;
+		}
+		.mapboxgl-ctrl-icon {
+			background-color: var(--foreground-normal) !important;
+			background-image: none !important;
+		}
+		&:hover {
+			background: var(--background-normal) !important;
+		}
+		&.disabled {
+			background: var(--foreground-normal) !important;
+			.mapboxgl-ctrl-icon {
+				background-color: var(--background-normal) !important;
+				background-image: none !important;
+			}
+		}
+	}
 }
-.mapboxgl-ctrl-group:not(:empty) {
-	box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
-}
-.mapboxgl-ctrl-group button {
-	background: var(--background-subdued);
-	border: none !important;
-}
-.mapboxgl-ctrl-group button + button {
-	margin-top: 1px;
-}
-.mapboxgl-ctrl-group button:hover {
-	background: var(--background-normal) !important;
-}
-.mapboxgl-ctrl .mapboxgl-ctrl-icon,
+
 .mapboxgl-ctrl-attrib-button {
 	background-color: var(--foreground-normal) !important;
 	background-image: none !important;
-}
-.mapboxgl-ctrl-attrib-button {
 	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='24' height='24' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd'%3E%3Cpath d='M4 10a6 6 0 1012 0 6 6 0 10-12 0m5-3a1 1 0 102 0 1 1 0 10-2 0m0 3a1 1 0 112 0v3a1 1 0 11-2 0'/%3E%3C/svg%3E");
 }
 .mapboxgl-ctrl button.mapboxgl-ctrl-zoom-in .mapboxgl-ctrl-icon {
