@@ -125,7 +125,11 @@ export class AuthHandler {
 
 	async logout(): Promise<void> {
 		this.removeTimeout();
-		await this.axios.post('/auth/logout');
+		const data: Record<string, string> = {};
+		if (this.mode === 'json') {
+			data.refresh_token = await this.storage.getItem('directus_refresh_token');
+		}
+		await this.axios.post('/auth/logout', data);
 		this.token = null;
 	}
 
