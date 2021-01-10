@@ -6,4 +6,5 @@ export default defineLayout(({ i18n }) => ({
 	name: i18n.t('layouts.cards.cards'),
 	icon: 'grid_4',
 	component: CardsLayout,
+	fullPage: true,
 }));

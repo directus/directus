@@ -3,9 +3,9 @@
 		<div class="layout-options">
 			<div class="field">
 				<div class="type-label">{{ $t('layout') }}</div>
-				<v-select :items="layouts" item-text="name" item-value="id" item-icon="icon" v-model="layout">
-					<template v-if="currentLayout.icon" #prepend>
-						<v-icon :name="currentLayout.icon" />
+				<v-select :items="layouts" item-text="name" item-value="id" item-icon="icon" v-model="layoutId">
+					<template v-if="layout.icon" #prepend>
+						<v-icon :name="layout.icon" />
 					</template>
 				</v-select>
 			</div>
@@ -16,39 +16,31 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
-import { getLayouts } from '@/layouts';
+import { defineComponent, computed, toRefs, PropType } from '@vue/composition-api';
+import { LayoutConfig } from '../../../../layouts/types';
 
 export default defineComponent({
 	props: {
-		value: {
-			type: String,
-			default: 'tabular',
+		layouts: {
+			type: Array as PropType<LayoutConfig[]>,
+			required: true,
+		},
+		layout: {
+			type: Object as PropType<LayoutConfig>,
+			required: true,
 		},
 	},
 	setup(props, { emit }) {
-		const layouts = getLayouts();
-
-		const currentLayout = computed(() => {
-			const layout = layouts.value.find((layout) => layout.id === props.value);
-
-			if (layout === undefined) {
-				return layouts.value.find((layout) => layout.id === 'tabular');
-			}
-
-			return layout;
-		});
-
-		const layout = computed({
+		const layoutId = computed({
 			get() {
-				return props.value;
+				return props.layout.id || 'tabular';
 			},
 			set(newType: string) {
 				emit('input', newType);
 			},
 		});
 
-		return { currentLayout, layouts, layout };
+		return { layoutId };
 	},
 });
 </script>

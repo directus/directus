@@ -1,6 +1,10 @@
 <template>
 	<collections-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
-	<private-view v-else :title="bookmark ? bookmarkTitle : currentCollection.name">
+	<private-view
+		v-else
+		:title="bookmark ? bookmarkTitle : currentCollection.name"
+		:class="{ 'full-page': layoutConfig && layoutConfig.fullPage }"
+	>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary disabled>
 				<v-icon :name="currentCollection.icon" />
@@ -22,19 +26,14 @@
 					:saving="creatingBookmark"
 				>
 					<template #activator="{ on }">
-						<v-icon class="toggle" name="bookmark_outline" @click="on" />
+						<v-icon class="toggle" @click="on" name="bookmark_outline" v-tooltip.right="$t('create_bookmark')" />
 					</template>
 				</bookmark-add>
 
 				<v-icon class="saved" name="bookmark" v-else-if="bookmarkSaved" />
 
 				<template v-else-if="bookmarkIsMine">
-					<v-icon
-						class="save"
-						@click="savePreset()"
-						name="bookmark_save"
-						v-tooltip.bottom="$t('update_bookmark')"
-					/>
+					<v-icon class="save" @click="savePreset()" name="bookmark_save" v-tooltip.bottom="$t('update_bookmark')" />
 				</template>
 
 				<bookmark-add
@@ -223,13 +222,9 @@
 					"
 				/>
 			</sidebar-detail>
-			<layout-sidebar-detail @input="layout = $event" :value="layout" />
+			<layout-sidebar-detail @input="layout = $event" :layouts="layouts" :layout="layoutConfig" />
 			<portal-target name="sidebar" />
-			<export-sidebar-detail
-				:layout-query="layoutQuery"
-				:search-query="searchQuery"
-				:collection="currentCollection"
-			/>
+			<export-sidebar-detail :layout-query="layoutQuery" :search-query="searchQuery" :collection="currentCollection" />
 		</template>
 
 		<v-dialog v-if="deleteError" active>
@@ -250,6 +245,7 @@
 import { defineComponent, computed, ref, watch, toRefs } from '@vue/composition-api';
 import CollectionsNavigation from '../components/navigation.vue';
 import api from '../../../api';
+import { getLayouts } from '../../../layouts';
 import { LayoutComponent } from '../../../layouts/types';
 import CollectionsNotFound from './not-found.vue';
 import useCollection from '../../../composables/use-collection';
@@ -261,7 +257,7 @@ import BookmarkAdd from '../../../views/private/components/bookmark-add';
 import BookmarkEdit from '../../../views/private/components/bookmark-edit';
 import router from '../../../router';
 import marked from 'marked';
-import { usePermissionsStore, useUserStore } from '../../../stores';
+import { usePermissionsStore, useUserStore, useAppStore } from '../../../stores';
 import DrawerBatch from '../../../views/private/components/drawer-batch';
 import { unexpectedError } from '../../../utils/unexpected-error';
 
@@ -293,6 +289,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const userStore = useUserStore();
+		const appStore = useAppStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref<LayoutComponent | null>(null);
 
@@ -332,13 +329,7 @@ export default defineComponent({
 			batchEditActive,
 		} = useBatch();
 
-		const {
-			bookmarkDialogActive,
-			creatingBookmark,
-			createBookmark,
-			editingBookmark,
-			editBookmark,
-		} = useBookmarks();
+		const { bookmarkDialogActive, creatingBookmark, createBookmark, editingBookmark, editBookmark } = useBookmarks();
 
 		watch(
 			collection,
@@ -349,6 +340,14 @@ export default defineComponent({
 			},
 			{ immediate: true }
 		);
+
+		const layouts = getLayouts();
+		const layoutConfig = computed(() => {
+			return (
+				layouts.value.find((config) => config.id === layout.value) ||
+				layouts.value.find((config) => config.id === 'tabular')
+			);
+		});
 
 		const { batchEditAllowed, batchArchiveAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
 
@@ -366,6 +365,8 @@ export default defineComponent({
 			layoutOptions,
 			layoutQuery,
 			layout,
+			layouts,
+			layoutConfig,
 			searchQuery,
 			savePreset,
 			bookmarkExists,
