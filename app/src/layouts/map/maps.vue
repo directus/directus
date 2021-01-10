@@ -68,6 +68,9 @@
 			</template>
 
 			<div class="field">
+				<v-checkbox v-model="fitDataBounds" :label="$t('layouts.map.fit_auto')" />
+			</div>
+			<div class="field">
 				<v-checkbox v-model="clusterActive" :label="$t('layouts.map.cluster')" />
 			</div>
 			<template v-if="clusterActive">
@@ -134,6 +137,9 @@
 			:rootStyle="rootStyle"
 			:source="userSource"
 			:layers="userLayers"
+			:camera="cameraOptions"
+			:autoFit="fitDataBounds"
+			@moveend="cameraOptions = $event"
 			:backgroundLayer="backgroundLayer"
 			:animateOptions="{
 				animate: fitBoundsAnimate,
@@ -193,7 +199,12 @@
 				</div>
 				<div v-if="loading === false && items.length >= 25" class="per-page">
 					<span>{{ $t('per_page') }}</span>
-					<v-select @input="limit = +$event" :value="`${limit}`" :items="['100', '1000', '10000', '100000']" inline />
+					<v-select
+						@input="limit = +$event"
+						:value="`${limit}`"
+						:items="['1e2', '1e3', '1e4', '1e5', '1e6', '1e7']"
+						inline
+					/>
 				</div>
 			</div>
 		</template>
@@ -202,7 +213,7 @@
 
 <script lang="ts">
 import MapComponent from './components/map.vue';
-import type { Style, AnyLayer, MapLayerMouseEvent } from 'maplibre-gl';
+import type { CameraOptions, Style, AnyLayer, MapLayerMouseEvent } from 'maplibre-gl';
 import { basemapNames, rootStyle, dataStyle } from './styles';
 import type { GeoJSONSerializer } from './worker';
 
@@ -257,14 +268,16 @@ type layoutQuery = {
 };
 
 type layoutOptions = {
+	cameraOptions?: CameraOptions;
+	customLayers?: Array<Style>;
 	backgroundLayer?: Record<string, any>;
 	geometryFormat?: GeometryFormat;
 	geometryField?: string;
 	longitudeField?: string;
 	latitudeField?: string;
 	geometrySRID?: string;
-	customLayers?: Array<Style>;
 	simplification?: number;
+	fitDataBounds?: boolean;
 	fitBoundsAnimate?: boolean;
 	fitBoundsPadding?: number;
 	fitBoundsSpeed?: number;
@@ -334,14 +347,16 @@ export default defineComponent({
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 		const { sort, limit, page } = uselayoutQuery();
 		const {
+			cameraOptions,
+			customLayers,
 			backgroundLayer,
 			geometrySRID,
 			geometryFormat,
 			geometryField,
 			longitudeField,
 			latitudeField,
-			customLayers,
 			simplification,
+			fitDataBounds,
 			fitBoundsAnimate,
 			fitBoundsPadding,
 			fitBoundsSpeed,
@@ -367,7 +382,7 @@ export default defineComponent({
 			searchQuery: _searchQuery,
 		});
 
-		function onQueryChange() {
+		function onQueryChange(next: any, prev: any) {
 			resetWorker();
 			page.value = 1;
 		}
@@ -408,6 +423,7 @@ export default defineComponent({
 		function onProgress(progress: number) {
 			geojsonProgress.value = progress;
 		}
+		const first = true;
 		async function updateGeojson() {
 			const validate = validateGeometryOptions();
 			if (validate) {
@@ -418,6 +434,7 @@ export default defineComponent({
 					geojsonProgress.value = 0;
 					geojsonError.value = null;
 					geojson.value = await workerProxy(items.value, _layoutOptions.value, proxy(onProgress));
+					console.log(geojson.value.bbox);
 					geojsonLoading.value = false;
 				} catch (error) {
 					geojsonLoading.value = false;
@@ -510,6 +527,7 @@ export default defineComponent({
 		const mapStyleOptions = basemapNames;
 
 		return {
+			cameraOptions,
 			geojson,
 			rootStyle,
 			userSource,
@@ -530,6 +548,7 @@ export default defineComponent({
 			longitudeField,
 			latitudeField,
 			simplification,
+			fitDataBounds,
 			fitBoundsAnimate,
 			fitBoundsPadding,
 			fitBoundsSpeed,
@@ -577,6 +596,8 @@ export default defineComponent({
 		function uselayoutOptions() {
 			const createOption = refOptionGenerator(_layoutOptions);
 
+			const cameraOptions = createOption<CameraOptions>('cameraOptions', null);
+			const customLayers = createOption<Array<AnyLayer>>('layers', dataStyle.layers);
 			const backgroundLayer = createOption<string>('backgroundLayer', 'CartoDB_PositronNoLabels');
 			const geometrySRID = createOption<string>('geometrySRID', '2154');
 			const longitudeField = createOption<string>('longitudeField', null);
@@ -595,9 +616,8 @@ export default defineComponent({
 				},
 			});
 
-			const customLayers = createOption<Array<AnyLayer>>('layers', dataStyle.layers);
-
 			const simplification = createOption<number>('simplification', 0.375);
+			const fitDataBounds = createOption<boolean>('fitDataBounds', true);
 			const fitBoundsAnimate = createOption<boolean>('fitBoundsAnimate', true);
 			const fitBoundsPadding = createOption<number>('fitBoundsPadding', 100);
 			const fitBoundsSpeed = createOption<number>('fitBoundsSpeed', 1.4);
@@ -607,16 +627,18 @@ export default defineComponent({
 			const clusterMinPoints = createOption<number>('clusterMinPoints', 2);
 
 			return {
+				cameraOptions,
+				customLayers,
 				backgroundLayer,
+
 				geometrySRID,
 				geometryFormat,
 				geometryField,
 				longitudeField,
 				latitudeField,
 
-				customLayers,
-
 				simplification,
+				fitDataBounds,
 				fitBoundsAnimate,
 				fitBoundsPadding,
 				fitBoundsSpeed,

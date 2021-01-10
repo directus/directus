@@ -113,9 +113,6 @@ function toGeoJSON(
 	}
 	onProgress(1);
 	if (geojson.features.length > 0) {
-		if (bounds.some((b) => +b > 90)) {
-			throw new Error('Coordinates out of bounds');
-		}
 		geojson.bbox = bounds;
 	}
 	return geojson;
