@@ -1,7 +1,7 @@
 import type { Style } from 'maplibre-gl';
-export default <Style> {
-    version: 8,
-    sources: {
+export default <Style>{
+	version: 8,
+	sources: {
 		__directus: {
 			type: 'geojson',
 			data: { type: 'FeatureCollection', features: [] },
@@ -13,18 +13,15 @@ export default <Style> {
 	layers: [
 		{
 			id: '__directus_points',
-			type: 'symbol',
+			type: 'circle',
 			source: '__directus',
-            filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
-            layout: {
-                'icon-anchor': 'bottom',
-                'icon-image': 'place',
-                'icon-size': 1,
-                'icon-allow-overlap': true,
-            },
-            paint: {
-                'icon-color': '#07c',
-            }
+			filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
+			paint: {
+				'circle-color': '#11b4da',
+				'circle-radius': 4,
+				'circle-stroke-width': 1,
+				'circle-stroke-color': '#fff',
+			},
 		},
 		{
 			id: '__directus_polygons',

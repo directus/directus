@@ -1113,6 +1113,7 @@ layouts:
     cluster_radius: Cluster radius
     cluster_minpoints: Cluster minimum size
     cluster_maxzoom: Maximum zoom for clustering
+    fit_auto: Auto fitting to data bounds
     fit_options: Bounds fitting
     fit_padding: Bounds padding
     fit_animate: Animate transitions
