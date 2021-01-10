@@ -104,6 +104,8 @@ export class FilesService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
+		await super.delete(keys);
+
 		files = toArray(files);
 
 		for (const file of files) {
@@ -114,8 +116,6 @@ export class FilesService extends ItemsService {
 				await disk.delete(path);
 			}
 		}
-
-		await super.delete(keys);
 
 		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
