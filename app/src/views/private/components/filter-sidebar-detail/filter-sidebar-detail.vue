@@ -1,14 +1,10 @@
 <template>
-	<sidebar-detail
-		:badge="filters.length > 0 ? filters.length : null"
-		icon="filter_list"
-		:title="$t('advanced_filter')"
-	>
+	<sidebar-detail :badge="filters.length > 0 ? filters.length : null" icon="filter_list" :title="$t('advanced_filter')">
 		<field-filter
-			v-for="filter in filters"
+			v-for="filter in parsedFilters"
 			:key="filter.key"
 			:filter="filter"
-			:collection="collection"
+			:collections="filter.collections"
 			:disabled="loading"
 			@update="updateFilter(filter.key, $event)"
 			@remove="removeFilter(filter.key)"
@@ -25,12 +21,7 @@
 			</template>
 
 			<v-list>
-				<field-list-item
-					@add="addFilterForField"
-					v-for="field in fieldTree"
-					:key="field.field"
-					:field="field"
-				/>
+				<field-list-item @add="addFilterForField" v-for="field in fieldTree" :key="field.field" :field="field" />
 			</v-list>
 		</v-menu>
 
@@ -81,8 +72,7 @@ export default defineComponent({
 			return fieldsStore
 				.getFieldsForCollection(props.collection)
 				.filter(
-					(field: Field) =>
-						field.meta?.hidden !== true && (field.meta?.special || []).includes('alias') === false
+					(field: Field) => field.meta?.hidden !== true && (field.meta?.special || []).includes('alias') === false
 				)
 				.map((field: Field) => parseField(field, []));
 
@@ -102,9 +92,7 @@ export default defineComponent({
 					const relatedFields = relations
 						.map((relation: Relation) => {
 							const relatedCollection =
-								relation.many_collection === field.collection
-									? relation.one_collection
-									: relation.many_collection;
+								relation.many_collection === field.collection ? relation.one_collection : relation.many_collection;
 
 							if (relation.junction_field === field.field) return [];
 
@@ -112,8 +100,7 @@ export default defineComponent({
 								.getFieldsForCollection(relatedCollection)
 								.filter(
 									(field: Field) =>
-										field.meta?.hidden !== true &&
-										(field.meta?.special || []).includes('alias') === false
+										field.meta?.hidden !== true && (field.meta?.special || []).includes('alias') === false
 								);
 						})
 						.flat()
@@ -126,13 +113,23 @@ export default defineComponent({
 			}
 		});
 
+		function getNestedPropsFromField(key: string) {
+			if (key.includes('.')) {
+				const query = key.split('.');
+				return { collections: query.slice(0, -1), nestedField: query.slice(-1)[0] };
+			}
+			const res = { collections: [props.collection], nestedField: key };
+			return res;
+		}
+
 		const localFilters = ref<Filter[]>([]);
 
 		watch(
 			() => props.value,
 			() => {
 				localFilters.value = props.value?.filter((filter) => {
-					return !!fieldsStore.getField(props.collection, filter.field);
+					const { collections, nestedField } = getNestedPropsFromField(filter.field);
+					return !!fieldsStore.getField(collections.slice(-1)[0], nestedField);
 				});
 			},
 			{ immediate: true }
@@ -154,15 +151,24 @@ export default defineComponent({
 			},
 		});
 
+		const parsedFilters = computed(() => {
+			return filters.value.map((filter) => {
+				const { collections, nestedField } = getNestedPropsFromField(filter.field);
+				return {
+					...filter,
+					collections,
+					nestedField,
+				};
+			});
+		});
+
 		const showArchiveToggle = computed(
 			() => !!collectionInfo.value?.meta?.archive_field && !!collectionInfo.value?.meta?.archive_app_filter
 		);
 
 		const archived = computed({
 			get() {
-				return (
-					props.value.find((filter) => filter.locked === true && filter.key === 'hide-archived') === undefined
-				);
+				return props.value.find((filter) => filter.locked === true && filter.key === 'hide-archived') === undefined;
 			},
 			set(showArchived: boolean) {
 				if (!collectionInfo.value?.meta?.archive_field) return;
@@ -187,10 +193,20 @@ export default defineComponent({
 			},
 		});
 
-		return { fieldTree, addFilterForField, filters, removeFilter, updateFilter, showArchiveToggle, archived };
+		return {
+			fieldTree,
+			addFilterForField,
+			filters,
+			parsedFilters,
+			removeFilter,
+			updateFilter,
+			showArchiveToggle,
+			archived,
+		};
 
 		function addFilterForField(fieldKey: string) {
-			const field = fieldsStore.getField(props.collection, fieldKey);
+			const { collections, nestedField } = getNestedPropsFromField(fieldKey);
+			const field = fieldsStore.getField(collections.slice(-1)[0], nestedField);
 			const defaultOperator = getAvailableOperatorsForType(field.type).operators[0];
 
 			emit('input', [

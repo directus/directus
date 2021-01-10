@@ -1,8 +1,8 @@
 <template>
 	<div class="field-filter">
 		<div class="header">
-			<div class="name" v-tooltip="filter.field.split('.').join(' → ')">
-				<span v-if="filter.field.includes('.')" class="relational-indicator">•</span>
+			<div class="name" v-tooltip="filter.collections.join(' → ')">
+				<span v-if="filter.collections.length > 1" class="relational-indicator">•</span>
 				{{ name }}
 			</div>
 			<v-menu show-arrow :disabled="disabled">
@@ -44,11 +44,11 @@ export default defineComponent({
 	components: { FilterInput },
 	props: {
 		filter: {
-			type: Object as PropType<Filter>,
+			type: Object as PropType<Filter & { nestedField: string }>,
 			required: true,
 		},
-		collection: {
-			type: String,
+		collections: {
+			type: Array as PropType<Array<string>>,
 			required: true,
 		},
 		disabled: {
@@ -78,18 +78,18 @@ export default defineComponent({
 		});
 
 		const name = computed<string>(() => {
-			return getNameForFieldKey(props.filter.field);
+			return getNameForFieldKey(props.filter.nestedField);
 		});
 
 		const parsedField = computed(() => {
-			const field = getFieldForKey(props.filter.field);
+			const field = getFieldForKey(props.filter.nestedField);
 			return getAvailableOperatorsForType(field.type);
 		});
 
 		return { activeOperator, value, name, parsedField };
 
 		function getFieldForKey(fieldKey: string) {
-			return fieldsStore.getField(props.collection, fieldKey);
+			return fieldsStore.getField(props.collections.slice(-1)[0], fieldKey);
 		}
 
 		function getNameForFieldKey(fieldKey: string) {
