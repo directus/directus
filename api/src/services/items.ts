@@ -159,20 +159,20 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				await cache.clear();
 			}
 
-			emitter
-				.emitAsync(`${this.eventScope}.create`, {
-					event: `${this.eventScope}.create`,
-					accountability: this.accountability,
-					collection: this.collection,
-					item: primaryKeys,
-					action: 'create',
-					payload: payloads,
-					schema: this.schema,
-				})
-				.catch((err) => logger.warn(err));
-
 			return primaryKeys;
 		});
+
+		emitter
+			.emitAsync(`${this.eventScope}.create`, {
+				event: `${this.eventScope}.create`,
+				accountability: this.accountability,
+				collection: this.collection,
+				item: savedPrimaryKeys,
+				action: 'create',
+				payload: payloads,
+				schema: this.schema,
+			})
+			.catch((err) => logger.warn(err));
 
 		return Array.isArray(data) ? savedPrimaryKeys : savedPrimaryKeys[0];
 	}
@@ -381,7 +381,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			const payloads = toArray(data);
 
 			for (const single of payloads as Partial<Item>[]) {
-				let payload = clone(single);
+				const payload = clone(single);
 				const key = payload[primaryKeyField];
 
 				if (!key) {
