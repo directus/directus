@@ -19,7 +19,6 @@ validationError:
 all_access: 订购全部功能
 no_access: 无访问权限
 use_custom: 使用自定义颜色
-field_standard: 标准，
 language: 语言
 create_field: 创建字段
 hidden_on_detail: 隐藏于详情
