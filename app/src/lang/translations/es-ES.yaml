@@ -75,14 +75,10 @@ validationError:
 all_access: Todos los accesos
 no_access: Sin Acceso
 use_custom: Personalizar
-field_standard: Estándar,
-field_presentation: Presentación y Alias,
-field_file: Archivo único,
-field_files: Múltiples archivos,
-field_m2o: Relación M2O,
-field_o2m: Relación O2M,
-field_m2m: Relación M2M,
-field_translations: Traducciones,
+field_presentation: Presentación y Alias
+field_file: Un Archivo
+field_files: Múltiples Archivos
+field_translations: Traducciones
 item_permissions: Permisos de Elemento
 field_permissions: Permisos de Campo
 field_validation: Validación de Campo
@@ -753,7 +749,6 @@ template: Plantilla
 translation: Traducción
 value: Valor
 view_project: Ver Proyecto
-weeks: { }
 report_error: Reportar Error
 interfaces:
   checkboxes:
