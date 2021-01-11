@@ -4,6 +4,22 @@ required: 必填
 create_role: 创建角色
 delete_bookmark: 删除书签
 directus_version: Directus 版本
+archive_confirm: 您确定要存档此项目吗？
+archive_confirm_count: >-
+  没有选定项目 | 你确定要存档这个项目吗？| 你确定你想要存档这些 {count} 个项目吗？
+reset_system_permissions: 重置系统权限
+reset_system_permissions_copy: 将所有系统权限重置为默认值
+unarchive: 取消存档
+unarchive_confirm: 您确定要取消归档此项目吗？
+nested_files_folders_will_be_moved: 嵌套的文件和文件夹将被上移一级。
+unknown_validation_errors: '以下隐藏字段的验证错误：'
+validationError:
+  eq: 值必须是 {valid}
+  required: 值是必需的
+all_access: 订购全部功能
+no_access: 无访问权限
+use_custom: 使用自定义颜色
+field_standard: 标准，
 language: 语言
 create_field: 创建字段
 hidden_on_detail: 隐藏于详情

@@ -14,9 +14,9 @@ self-sufficiency.
 ### GitHub Sponsors
 
 Monthly donations via [GitHub Sponsors](https://github.com/sponsors/directus) are the most reliable
-form of financial support, and donations made directly to our core developers are currently
-**doubled** by GitHub's matching program!
+form of financial support. Donate to the organization, or directly to our core developers!
 
+-   [Directus](https://github.com/sponsors/directus) — Organization
 -   [rijkvanzanten](https://github.com/rijkvanzanten) — Technical Lead
 -   [WoLfulus](https://github.com/WoLfulus) — DevOps
 -   [Nitwel](https://github.com/Nitwel) — Developer

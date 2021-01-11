@@ -427,6 +427,8 @@ circle: Circle
 empty_item: Empty Item
 log_in_with: 'Log In with {provider}'
 advanced_filter: Advanced Filter
+delete_advanced_filter: Delete Filter
+change_advanced_filter_operator: Change Operator
 operators:
   eq: Equals
   neq: Doesn't equal
@@ -768,6 +770,8 @@ sign_out: Sign Out
 sign_out_confirm: Are you sure you want to sign out?
 something_went_wrong: Something went wrong.
 sort_direction: Sort Direction
+sort_asc: Sort Ascending
+sort_desc: Sort Descending
 template: Template
 translation: Translation
 value: Value
