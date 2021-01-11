@@ -863,6 +863,12 @@ interfaces:
   many-to-many:
     many-to-many: Many to Many
     description: Select multiple related junction items
+  many-to-many-references:
+    many-to-many-references: Many to Many Referencing
+    description: Select multiple related junction items like tags with autocomplete
+    reference-field: Referencing Field
+    close-on-select: Close on select
+    new-item-with: Add new item "{argument}"...
   many-to-one:
     many-to-one: Many to One
     description: Select a single related item
