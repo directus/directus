@@ -173,8 +173,10 @@ export default defineComponent({
 		display: flex;
 		height: 100%;
 		font-size: 0;
+		-webkit-transform: translate3d(0, 0, 0);
+		-moz-transform: translate3d(0, 0, 0);
 		transform: translateX(-100%);
-		transition: transform var(--slow) var(--transition);
+		transition: box-shadow var(--slow) var(--transition), margin var(--medium) var(--transition) 0.1s;
 
 		&.is-open {
 			transform: translateX(0);
