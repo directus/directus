@@ -1,5 +1,9 @@
 <template>
-	<sidebar-detail :badge="filters.length > 0 ? filters.length : null" icon="filter_list" :title="$t('advanced_filter')">
+	<sidebar-detail
+		:badge="filters.length > 0 ? filters.length : null"
+		icon="filter_list"
+		:title="$t('advanced_filter')"
+	>
 		<field-filter
 			v-for="filter in parsedFilters"
 			:key="filter.key"
@@ -21,7 +25,11 @@
 			</template>
 
 			<v-list>
-				<field-list-item @add="addFilterForField" v-for="field in fieldTree" :key="field.field" :field="field" />
+				<field-list-item
+					@add="addFilterForField"
+					v-for="field in fieldTree"
+					:key="field.field" :field="field"
+				/>
 			</v-list>
 		</v-menu>
 
@@ -72,7 +80,8 @@ export default defineComponent({
 			return fieldsStore
 				.getFieldsForCollection(props.collection)
 				.filter(
-					(field: Field) => field.meta?.hidden !== true && (field.meta?.special || []).includes('alias') === false
+					(field: Field) =>
+						field.meta?.hidden !== true && (field.meta?.special || []).includes('alias') === false
 				)
 				.map((field: Field) => parseField(field, []));
 
@@ -92,7 +101,9 @@ export default defineComponent({
 					const relatedFields = relations
 						.map((relation: Relation) => {
 							const relatedCollection =
-								relation.many_collection === field.collection ? relation.one_collection : relation.many_collection;
+								relation.many_collection === field.collection
+									? relation.one_collection
+									: relation.many_collection;
 
 							if (relation.junction_field === field.field) return [];
 
@@ -100,7 +111,8 @@ export default defineComponent({
 								.getFieldsForCollection(relatedCollection)
 								.filter(
 									(field: Field) =>
-										field.meta?.hidden !== true && (field.meta?.special || []).includes('alias') === false
+										field.meta?.hidden !== true &&
+										(field.meta?.special || []).includes('alias') === false
 								);
 						})
 						.flat()
@@ -168,7 +180,9 @@ export default defineComponent({
 
 		const archived = computed({
 			get() {
-				return props.value.find((filter) => filter.locked === true && filter.key === 'hide-archived') === undefined;
+				return (
+					props.value.find((filter) => filter.locked === true && filter.key === 'hide-archived') === undefined
+				);
 			},
 			set(showArchived: boolean) {
 				if (!collectionInfo.value?.meta?.archive_field) return;
@@ -193,16 +207,7 @@ export default defineComponent({
 			},
 		});
 
-		return {
-			fieldTree,
-			addFilterForField,
-			filters,
-			parsedFilters,
-			removeFilter,
-			updateFilter,
-			showArchiveToggle,
-			archived,
-		};
+		return { fieldTree, addFilterForField, filters, parsedFilters, removeFilter, updateFilter, showArchiveToggle, archived };
 
 		function addFilterForField(fieldKey: string) {
 			const { collections, nestedField } = getNestedPropsFromField(fieldKey);
