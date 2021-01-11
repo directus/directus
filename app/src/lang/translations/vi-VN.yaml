@@ -32,7 +32,7 @@ rename_bookmark: Đổi tên Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
 delete_bookmark_copy: >-
-  Bạn có chắc chắn muốn xóa đánh dấu "{bookmark}" này? Hành động này không thể hoàn tác.
+  Bạn có chắc chắn muốn xóa đánh dấu "{bookmark}" này? Dữ liệu đã xóa sẽ không thể khôi phục lại được.
 logoutReason:
   SIGN_OUT: Đăng xuất
   SESSION_EXPIRED: Phiên làm việc đã Hết hạn
@@ -160,7 +160,7 @@ edit_raw_value: Thay đổi dữ liệu thực tế
 enter_raw_value: Nhập vào giá trị thực tế...
 clear_value: Xoá giá trị
 reset_to_default: Khôi phục về mặc định
-undo_changes: Hoàn tác các thay đổi
+undo_changes: Phục hồi các thay đổi
 notifications: Thông báo
 show_all_activity: Hiển Thị Tất Cả Hoạt Động
 page_not_found: Không tìm thấy trang này
@@ -384,7 +384,7 @@ create_new: Tạo Mới
 all: Tất cả
 no_layout_collection_selected_yet: Không có bố cục/danh mục nào được chọn
 batch_delete_confirm: >-
-  Không có mục nào được chọn | Bạn có chắc chắc xoá mục này? Hành động sẽ không thể hoàn tác. | Bạn có chắc chắn xoá {count} mục đã chọn? Hành động sẽ không thể hoàn tác.
+  Không có mục nào được chọn | Bạn có chắc chắc xoá mục này? Dữ liệu đã xóa sẽ không thể phục hồi lại được. | Bạn có chắc chắn xoá {count} mục đã chọn? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 cancel: Huỷ
 collection: Danh mục
 collections: Danh mục
@@ -447,7 +447,7 @@ continue: Tiếp tục
 default: Mặc định
 delete: Xóa
 delete_field_are_you_sure: >-
-  Bạn có chắc chắn muốn xóa trường "{field}"? Hành động này không thể hoàn tác.
+  Bạn có chắc chắn muốn xóa trường "{field}"? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 description: Mô tả
 done: Hoàn thành
 duplicate: Nhân bản
@@ -473,7 +473,7 @@ permissions: Các quyền
 relationship: Quan hệ
 reset: Thiết lập lại
 reset_password: Đặt lại Mật khẩu
-revert: Hoàn tác
+revert: Phục hồi
 save: Lưu
 schema: Cấu trúc dữ liệu
 search: Tìm kiếm
