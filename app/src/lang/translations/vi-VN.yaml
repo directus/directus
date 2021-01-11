@@ -32,7 +32,7 @@ rename_bookmark: Đổi tên Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
 delete_bookmark_copy: >-
-  Bạn có chắc chắn muốn xóa đánh dấu "{bookmark}" này? Hành động này không thể hoàn tác.
+  Bạn có chắc chắn muốn xóa đánh dấu "{bookmark}" này? Dữ liệu đã xóa sẽ không thể khôi phục lại được.
 logoutReason:
   SIGN_OUT: Đăng xuất
   SESSION_EXPIRED: Phiên làm việc đã Hết hạn
@@ -86,6 +86,7 @@ field_translations: Các Bản Dịch
 item_permissions: Quyền truy cập Bảng ghi
 field_permissions: Quyền truy cập Trường
 delete_field: Xóa Trường
+fields_and_layout: Trường Dữ Liệu & Bố Cục
 field_create_success: 'Trường đã tạo: "{field}"'
 field_update_success: 'Trường đã cập nhật: "{field}"'
 duplicate_where_to: Bạn muốn nhân bản trường này đến đâu?
@@ -104,7 +105,7 @@ creating_new_field: 'Trường Mới ({collection})'
 updating_field_field: '{field} ({collection})'
 reset_page_preferences: Đặt Lại Tùy Chọn cho Trang
 hidden_field: Trường Ẩn
-hidden_on_detail: Ẩn tại chi tiết
+hidden_on_detail: Không hiển thị trong trang chi tiết
 disabled_editing_value: Cấm sửa đổi dữ liệu
 key: Khóa
 alias: Bí danh
@@ -129,7 +130,7 @@ click_here: Nhấn vào đây
 to_manually_setup_translations: để tạo các bản dịch một cách thủ công.
 choose_a_type: Chọn một Kiểu...
 determined_by_relationship: Xác định theo Quan hệ
-add_note: Tạo ghi chú hữu ích cho người dùng...
+add_note: Thêm ghi chú hữu ích cho người dùng...
 default_value: Giá trị mặc định
 add_a_default_value: Thêm một giá trị mặc định...
 interface_setup_title: Người dùng sẽ tương tác với trường này như thế naof?
@@ -144,7 +145,7 @@ m2a_relationship: Quan hệ Nhiều - Bất Kỳ
 next: Tiếp theo
 field_name: Tên Trường
 translations: Các Bản Dịch
-note: Lưu ý
+note: Ghi chú
 enter_a_value: Nhập vào một giá trị...
 enter_a_placeholder: Nhập vào dòng nhắc...
 length: Độ dài
@@ -159,7 +160,7 @@ edit_raw_value: Thay đổi dữ liệu thực tế
 enter_raw_value: Nhập vào giá trị thực tế...
 clear_value: Xoá giá trị
 reset_to_default: Khôi phục về mặc định
-undo_changes: Hoàn tác các thay đổi
+undo_changes: Phục hồi các thay đổi
 notifications: Thông báo
 show_all_activity: Hiển Thị Tất Cả Hoạt Động
 page_not_found: Không tìm thấy trang này
@@ -170,12 +171,17 @@ display: Hiển thị
 settings_update_success: Cài đặt đã được cập nhật
 title: Tiêu đề
 revision_delta_created: Đã tạo
+revision_delta_updated: 'Cập nhật 1 Trường | Cập nhật {count} Trường'
 revision_delta_deleted: Đã xóa
 leave_comment: Để lại bình luận...
+item_create_success: Bản Ghi Đã Được Tạo | Các Bản Ghi Đã Được Tạo
+item_update_success: Bản Ghi Đã Được Cập Nhật | Các Bản Ghi Đã Được Cập Nhật
 this_collection: Danh mục này
 related_collection: Danh mục liên quan
 related_collections: Những Danh mục liên quan
+export_data: Kết Xuất Dữ Liệu
 format: Định dạng
+export_collection: 'Kết xuất {collection}'
 submit: Gửi đi
 add_field_related: Thêm Trường vào Danh Mục Liên Quan
 interface: Giao diện
@@ -234,11 +240,11 @@ created_on: Tạo lúc
 creating_collection_info: Đặt tên cho danh mục và thiết lập trường "khóa" duy nhất của nó...
 creating_collection_system: Bật và đổi tên bất kỳ trường tùy chọn nào trong số này.
 auto_increment_integer: Số nguyên tự-động-tăng-dần
-generated_uuid: Chuỗi ngẫu nhiên đã tạo
+generated_uuid: Chuỗi ngẫu nhiên
 manual_string: Chuỗi nhập thủ công
 save_and_create_new: Lưu và Tạo Mới
-save_and_stay: Lưu và ở nguyên vị trí
-save_as_copy: Lưu dạng bản sao
+save_and_stay: Lưu và Tiếp Tục Sửa Đổi
+save_as_copy: Lưu thành bản sao
 add_existing: Thêm Dữ Liệu Sẵn Có
 comments: Bình luận
 no_comments: Chưa Có Bình Luận
@@ -261,7 +267,7 @@ file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'
 no_files_copy: Không có tập tin nào ở đây.
 user_count: 'Không Có Người Dùng | Có Một Người Dùng | {count} Người Dùng'
 create_collection: Tạo Danh mục mới
-relationship_not_setup: Quan hệ thiết đặt chưa đúng
+relationship_not_setup: Cấu trúc dữ liệu chưa được cài đặt chính xác
 users: Tài khoản
 activity: Hoạt động
 webhooks: Webhooks
@@ -317,7 +323,7 @@ all_users: Tất cả Người dùng
 delete_collection: Xoá Danh Mục
 update_collection_success: Đã Cập Nhật Danh Mục
 delete_collection_success: Đã Xoá Danh Mục
-start_end_of_count_items: 'Bản ghi {start}-{end} trong {count}'
+start_end_of_count_items: 'Bản ghi {start}-{end} trong tổng số {count}'
 delete_collection_are_you_sure: >-
   Bạn có chắc rằng bạn muốn xoá danh mục này? Thao tác này sẽ xóa danh mục và tất cả dữ liệu trong đó. Bạn không thể khôi phục danh mục này sau khi đã xóa.
 collections_shown: Những Danh Mục Đang Hiển Thị
@@ -327,6 +333,8 @@ icon_right: Biểu tượng bên phải
 monospace: Khoảng cách như nhau
 divider: Bộ chia
 color: Màu sắc
+advanced_filter: Bộ Lọc Nâng Cao
+delete_advanced_filter: Xoá Bộ Lọc
 operators:
   lt: Nhỏ hơn
   gt: Lớn hơn
@@ -336,7 +344,9 @@ operators:
   ncontains: Không chứa
   empty: Bị rỗng
 loading: Đang tải...
-display_template: Biểu mẫu hiển thị
+layout_options: Các Tuỳ Chọn Bố Cục
+create_item: Tạo Bản Ghi
+display_template: Mẫu hiển thị
 no_results: Không có kết quả
 role: Phân quyền
 user: Người dùng
@@ -345,6 +355,8 @@ on_update: Khi cập nhật
 read: Đọc
 update: Cập nhật
 select_fields: Chọn trường
+icon_on: Biểu tượng của trạng thái Bật
+icon_off: Biểu tượng của trạng thái Tắt
 wysiwyg_options:
   forecolor: Màu Tô
   backcolor: Màu Nền
@@ -354,18 +366,25 @@ wysiwyg_options:
 dropdown: Tuỳ chọn dạng thả xuống
 choices: Lựa chọn
 deselect: Bỏ chọn
+creating_in: 'Đang Tạo Bản Ghi {collection} Mới'
 editing_in_batch: 'Sửa cùng lúc {count} mục'
+settings_data_model: Mô Hình Dữ Liệu
 settings_permissions: Vai trò & Quyền hạn
-settings_project: Các thiết lập cho dự án
+settings_project: Cài Đặt Chung
 settings_webhooks: Webhooks
+layout: Bố cục
+layout_preview: Xem Trước Bố Cục
+layout_setup: Cài Đặt Bố Cục
 unsaved_changes: Những thay đổi chưa được lưu
 unsaved_changes_copy: Bạn có chắc chắn muốn rời khỏi trang này không?
 discard_changes: Hủy thay đổi
 keep_editing: Tiếp tục chỉnh sửa
 add_new: Thêm mới
+create_new: Tạo Mới
 all: Tất cả
+no_layout_collection_selected_yet: Không có bố cục/danh mục nào được chọn
 batch_delete_confirm: >-
-  Không có mục nào được chọn | Bạn có chắc chắc xoá mục này? Hành động sẽ không thể hoàn tác. | Bạn có chắc chắn xoá {count} mục đã chọn? Hành động sẽ không thể hoàn tác.
+  Không có mục nào được chọn | Bạn có chắc chắc xoá mục này? Dữ liệu đã xóa sẽ không thể phục hồi lại được. | Bạn có chắc chắn xoá {count} mục đã chọn? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 cancel: Huỷ
 collection: Danh mục
 collections: Danh mục
@@ -413,9 +432,10 @@ fields:
     theme: Theme
     tfa_secret: Xác thực hai yếu tố
   directus_settings:
-    project_name: Tên dự án
+    project_name: Tên Dự Án
   directus_fields:
-    note: Lưu ý
+    icon: Biểu tượng của Danh mục
+    note: Ghi chú
     hidden: Ẩn
     translation: Hiển thị Ngôn ngữ Khác
     display_template: Mẫu
@@ -427,12 +447,13 @@ continue: Tiếp tục
 default: Mặc định
 delete: Xóa
 delete_field_are_you_sure: >-
-  Bạn có chắc chắn muốn xóa trường "{field}"? Hành động này không thể hoàn tác.
+  Bạn có chắc chắn muốn xóa trường "{field}"? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 description: Mô tả
 done: Hoàn thành
 duplicate: Nhân bản
 email: Địa chỉ email
 embed: Nhúng
+fallback_icon: Biểu tượng Dự phòng
 field: Trường | Các trường
 file: Tệp
 file_library: Thư viện tệp
@@ -452,7 +473,7 @@ permissions: Các quyền
 relationship: Quan hệ
 reset: Thiết lập lại
 reset_password: Đặt lại Mật khẩu
-revert: Hoàn tác
+revert: Phục hồi
 save: Lưu
 schema: Cấu trúc dữ liệu
 search: Tìm kiếm
@@ -482,8 +503,9 @@ interfaces:
     color: Màu sắc
   datetime:
     datetime: Ngày giờ
+    use_24: Sử dụng Định dạng 24-giờ
   display-template:
-    display-template: Biểu mẫu hiển thị
+    display-template: Mẫu hiển thị
   divider:
     divider: Bộ chia
   dropdown:
@@ -495,6 +517,8 @@ interfaces:
     files: Tệp
   icon:
     icon: Biểu tượng
+    description: Chọn một biểu tượng từ danh sách
+    search_for_icon: Tìm kiếm biểu tượng...
   interface:
     interface: Giao diện
   interface-options:
@@ -503,7 +527,7 @@ interfaces:
     many-to-many: Quan hệ nhiều - nhiều
   many-to-one:
     many-to-one: Quan hệ nhiều - một
-    display_template: Biểu mẫu hiển thị
+    display_template: Mẫu hiển thị
   markdown:
     markdown: Gạch nhớ
     edit: Sửa
@@ -528,7 +552,7 @@ interfaces:
   toggle:
     label_default: Đã kích hoạt
   translations:
-    display_template: Biểu mẫu hiển thị
+    display_template: Mẫu hiển thị
   user:
     user: Người dùng
     modes:
@@ -538,8 +562,11 @@ interfaces:
 displays:
   boolean:
     boolean: Boolean
+    icon_on: Biểu tượng của trạng thái Bật
+    icon_off: Biểu tượng của trạng thái Tắt
   collection:
     collection: Danh mục
+    icon_label: Hiển thị biểu tượng của danh mục
   color:
     color: Màu sắc
   datetime:
@@ -551,6 +578,7 @@ displays:
     filesize: Kích thước tệp
   icon:
     icon: Biểu tượng
+    description: Hiển thị một biểu tượng
   labels:
     choices_value_placeholder: Nhập vào một giá trị...
   rating:
