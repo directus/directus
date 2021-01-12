@@ -17,43 +17,37 @@ type GeometryParser = (entry: any) => wkx.Geometry | undefined;
 function lnglatParser(options: geometryOptions): GeometryParser {
 	return function (entry) {
 		const [lng, lat] = [entry[options.longitudeField!], entry[options.latitudeField!]];
-		if (lng == undefined || lat == undefined) return undefined;
-		return new wkx.Point(lng, lat);
+		return lng && lat && new wkx.Point(lng, lat);
 	};
 }
 function geojsonParser(options: geometryOptions): GeometryParser {
 	return function (entry) {
 		const geom = entry[options.geometryField!];
-		if (geom == undefined) return undefined;
-		return wkx.Geometry.parseGeoJSON(geom);
+		return geom && wkx.Geometry.parseGeoJSON(geom);
 	};
 }
 function twkbParser(options: geometryOptions): GeometryParser {
 	return function (entry) {
 		const geom = entry[options.geometryField!];
-		if (geom == undefined) return undefined;
-		return wkx.Geometry.parseTwkb(Buffer.from(geom, 'hex'));
+		return geom && wkx.Geometry.parseTwkb(Buffer.from(geom, 'hex'));
 	};
 }
 function wktParser(options: geometryOptions): GeometryParser {
 	return function (entry) {
 		const geom = entry[options.geometryField!];
-		if (geom == undefined) return undefined;
-		return wkx.Geometry.parse(geom);
+		return geom && wkx.Geometry.parse(geom);
 	};
 }
 function wkbParser(options: geometryOptions): GeometryParser {
 	return function (entry) {
 		const geom = entry[options.geometryField!];
-		if (geom == undefined) return undefined;
-		return wkx.Geometry.parse(Buffer.from(geom, 'hex'));
+		return geom && wkx.Geometry.parse(Buffer.from(geom, 'hex'));
 	};
 }
 function csvParser(options: geometryOptions): GeometryParser {
 	return function (entry) {
 		const geom = entry[options.geometryField!];
-		if (geom == undefined) return undefined;
-		return new wkx.Point(...geom.split(','));
+		return geom && new wkx.Point(...geom.split(','));
 	};
 }
 
@@ -69,6 +63,8 @@ function getGeometryParser(options: geometryOptions): GeometryParser {
 			return wkbParser(options);
 		case 'wkt':
 			return wktParser(options);
+		case 'csv':
+			return csvParser(options);
 		default:
 			throw new Error('unimplemented format');
 	}
