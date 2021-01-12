@@ -1,4 +1,4 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { RequestHandler } from 'express';
 import asyncHandler from '../utils/async-handler';
 import { schemaInspector } from '../database';
 import logger from '../logger';

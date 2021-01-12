@@ -1,4 +1,4 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { RequestHandler } from 'express';
 import asyncHandler from '../utils/async-handler';
 import env from '../env';
 import { getCacheKey } from '../utils/get-cache-key';
