@@ -66,7 +66,6 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'code',
 				options: {
 					placeholder: i18n.t('interfaces.code.placeholder'),
-					language: 'text/plain',
 				},
 			},
 			schema: {

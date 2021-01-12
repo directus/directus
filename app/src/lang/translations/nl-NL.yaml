@@ -75,6 +75,10 @@ validationError:
 all_access: Alle toegang
 no_access: Geen toegang
 use_custom: Gebruik aangepaste
+field_presentation: Presentatie & Aliasen
+field_file: Enkel bestand
+field_files: Meerdere bestanden
+field_translations: Vertalingen
 item_permissions: Item Permissies
 field_permissions: Veld Permissies
 field_validation: Veld Validatie
@@ -731,6 +735,8 @@ sign_out: Log out
 sign_out_confirm: Weet je zeker dat je uit wilt loggen?
 something_went_wrong: Iets ging mis.
 sort_direction: Sorteerrichting
+sort_asc: Sorteer Oplopend
+sort_desc: Sorteer Aflopend
 template: Sjabloon
 translation: Vertaling
 value: Waarde

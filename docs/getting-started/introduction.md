@@ -75,7 +75,7 @@ premium managed solution.
 
 ### Documentation
 
-[Our online documentation](https://docs.directus.io) describes the most version of our platform.
+[Our online documentation](https://docs.directus.io) describes the most recent version of our platform.
 They are written in publicly managed markdown files so the community can help keep them clean and
 up-to-date!
 

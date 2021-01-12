@@ -1,6 +1,6 @@
 {
   "name": "@directus/sdk-js",
-  "version": "9.0.0-rc.26",
+  "version": "9.0.0-rc.28",
   "description": "The official Directus SDK for use in JavaScript!",
   "main": "dist/sdk-js.cjs.js",
   "module": "dist/sdk-js.bundler.js",
@@ -30,7 +30,7 @@
   "author": "Rijk van Zanten <rijkvanzanten@me.com>",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "openapi3-ts": "^2.0.0"
   },
   "nyc": {

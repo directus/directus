@@ -21,7 +21,7 @@
 
 <!-- prettier-ignore-start -->
 ::: tip Database Fields
-Keep in mind that Directus Fields are just a database columns. Therefore you
+Keep in mind that a Directus Field is just a database column. Therefore you
 can import or create a column directly in the database, and it will automatically appear within
 Directus. The first time you manage that column, a `directus_fields` record will be created with
 default values.

@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-rc.26",
+	"version": "9.0.0-rc.28",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -53,7 +53,7 @@
 	"scripts": {
 		"start": "npx directus start",
 		"build": "rimraf dist && tsc --build && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
-		"dev": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node-dev --files --transpile-only --respawn --watch \".env\" src/start.ts",
+		"dev": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node-dev --inspect --files --transpile-only --respawn --watch \".env\" src/start.ts",
 		"cli": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
 		"lint": "eslint \"src/**/*.ts\" cli.js index.js",
 		"prepublishOnly": "npm run build",

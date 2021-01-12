@@ -2,17 +2,17 @@
 edit_field: Editar Campo
 item_revision: Revisión de Elemento
 duplicate_field: Duplicar Campo
-half_width: Media Ancho
+half_width: Anchura 50%
 full_width: Ancho completo
 fill_width: Llenar Ancho
-field_name_translations: Traducciones del Nombre del Campo
-enter_password_to_enable_tfa: Ingrese su contraseña para habilitar la Autentificación en Dos Pasos
+field_name_translations: 'Nombre de Campo: Traducciones'
+enter_password_to_enable_tfa: Introduzca la contraseña para habilitar la Autenticación de doble factor
 add_field: Agregar Campo
 role_name: Nombre del Rol
 db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
 show_archived_items: Mostrar Elementos Archivados
 required: Necesario
-requires_value: Se requiere un valor
+requires_value: Valor obligatorio
 create_preset: Crear Predefinido
 create_role: Crear Rol
 create_user: Crear Usuario
@@ -23,6 +23,7 @@ invite: Invitar
 emails: Correos Electrónicos
 connection_excellent: Excelente Conexión
 connection_good: Buena Conexión
+connection_fair: Conexión Suficiente
 connection_poor: Conexión Pobre
 rename_folder: Renombrar Directorio
 delete_folder: Eliminar Directorio
@@ -74,6 +75,10 @@ validationError:
 all_access: Todos los accesos
 no_access: Sin Acceso
 use_custom: Personalizar
+field_presentation: Presentación y Alias
+field_file: Un Archivo
+field_files: Múltiples Archivos
+field_translations: Traducciones
 item_permissions: Permisos de Elemento
 field_permissions: Permisos de Campo
 field_validation: Validación de Campo
@@ -268,6 +273,9 @@ background_color: Color de Fondo
 upload_from_device: Subir Archivo desde Dispositivo
 choose_from_library: Seleccionar Archivo desde Biblioteca
 import_from_url: Importar Archivo desde URL
+replace_from_device: Reemplazar Archivo desde Dispositivo
+replace_from_library: Reemplazar Archivo desde Biblioteca
+replace_from_url: Reemplazar Archivo desde URL
 no_file_selected: Sin Archivos Seleccionados
 download_file: Descargar Archivo
 collection_key: Llave de Colección
@@ -291,6 +299,7 @@ no_comments: Aún Sin Comentarios
 click_to_expand: Haga Clic para Expandir
 select_item: Seleccionar Elemento
 no_items: Sin Elementos
+search_items: Buscar elementos...
 disabled: Desactivado
 information: Información
 report_bug: Reportar Problema
@@ -410,6 +419,8 @@ circle: Círculo
 empty_item: Elemento Vacío
 log_in_with: 'Iniciar Sesión con {provider}'
 advanced_filter: Filtro Avanzado
+delete_advanced_filter: Borrar filtro
+change_advanced_filter_operator: Cambiar operador
 operators:
   eq: Igual a
   neq: No es igual a
@@ -583,6 +594,8 @@ add_new: Añadir Nuevo
 from_collection: 'De la colección "{collection}"'
 create_new: Crear Nuevo
 all: Todo
+none: Nada
+no_layout_collection_selected_yet: Plantilla/Colección No seleccionada aún
 batch_delete_confirm: >-
   No se han seleccionado elementos | ¿Está seguro de que desea eliminar este elemento? Esta acción no puede deshacerse. | Está seguro de que desea eliminar estos {count} ítems? Esta acción no puede deshacerse.
 cancel: Cancelar
@@ -655,7 +668,7 @@ fields:
     note: Nota
     hidden: Oculto
     singleton: Singleton
-    translation: Traducciones del Nombre del Campo
+    translation: 'Nombre de Campo: Traducciones'
     display_template: Plantilla
   directus_roles:
     name: Nombre del Rol
@@ -730,6 +743,8 @@ sign_out: Desconectar
 sign_out_confirm: '¿Seguro que quieres cerrar sesión?'
 something_went_wrong: Algo salió mal.
 sort_direction: Dirección de Ordenamiento
+sort_asc: Ordenar ascendente
+sort_desc: Orden descendente
 template: Plantilla
 translation: Traducción
 value: Valor

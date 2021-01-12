@@ -76,14 +76,14 @@ validationError:
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
-field_standard: Standard,
-field_presentation: Presentation & Aliases,
-field_file: Single File,
-field_files: Multiple Files,
-field_m2o: M2O Relationship,
-field_o2m: O2M Relationship,
-field_m2m: M2M Relationship,
-field_translations: Translations,
+field_standard: Standard
+field_presentation: Presentation & Aliases
+field_file: Single File
+field_files: Multiple Files
+field_m2o: M2O Relationship
+field_o2m: O2M Relationship
+field_m2m: M2M Relationship
+field_translations: Translations
 item_permissions: Item Permissions
 field_permissions: Field Permissions
 field_validation: Field Validation
@@ -427,6 +427,8 @@ circle: Circle
 empty_item: Empty Item
 log_in_with: 'Log In with {provider}'
 advanced_filter: Advanced Filter
+delete_advanced_filter: Delete Filter
+change_advanced_filter_operator: Change Operator
 operators:
   eq: Equals
   neq: Doesn't equal
@@ -768,6 +770,8 @@ sign_out: Sign Out
 sign_out_confirm: Are you sure you want to sign out?
 something_went_wrong: Something went wrong.
 sort_direction: Sort Direction
+sort_asc: Sort Ascending
+sort_desc: Sort Descending
 template: Template
 translation: Translation
 value: Value
