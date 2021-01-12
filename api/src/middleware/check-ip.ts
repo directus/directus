@@ -3,7 +3,7 @@ import asyncHandler from '../utils/async-handler';
 import database from '../database';
 import { InvalidIPException } from '../exceptions';
 
-export const checkIP: RequestHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const checkIP: RequestHandler = asyncHandler(async (req, res, next) => {
 	const role = await database
 		.select('ip_access')
 		.from('directus_roles')

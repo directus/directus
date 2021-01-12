@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import asyncHandler from '../utils/async-handler';
 import { RelationsService, MetaService } from '../services';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
@@ -12,7 +12,7 @@ router.use(useCollection('directus_relations'));
 
 router.post(
 	'/',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -37,7 +37,7 @@ router.post(
 
 router.get(
 	'/',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -58,7 +58,7 @@ router.get(
 
 router.get(
 	'/:pk',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -73,7 +73,7 @@ router.get(
 
 router.patch(
 	'/:pk',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -99,7 +99,7 @@ router.patch(
 
 router.delete(
 	'/',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		if (!req.body || Array.isArray(req.body) === false) {
 			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
 		}
@@ -116,7 +116,7 @@ router.delete(
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new RelationsService({
 			accountability: req.accountability,
 			schema: req.schema,

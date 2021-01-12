@@ -12,7 +12,7 @@ router.use(express.static(extensionsPath));
 
 router.get(
 	'/:type',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const typeAllowList = ['interfaces', 'layouts', 'displays', 'modules'];
 
 		if (typeAllowList.includes(req.params.type) === false) {

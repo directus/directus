@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { Router } from 'express';
 import asyncHandler from '../utils/async-handler';
 import { nanoid } from 'nanoid';
 import { InvalidQueryException, InvalidPayloadException } from '../exceptions';
@@ -12,20 +12,19 @@ const router = Router();
 
 router.get(
 	'/random/string',
-	asyncHandler(async (req: Request, res: Response) => {
+	asyncHandler(async (req, res) => {
 		if (req.query && req.query.length && Number(req.query.length) > 500)
 			throw new InvalidQueryException(`"length" can't be more than 500 characters`);
 
 		const string = nanoid(req.query?.length ? Number(req.query.length) : 32);
 
 		return res.json({ data: string });
-	}),
-	respond
+	})
 );
 
 router.post(
 	'/hash/generate',
-	asyncHandler(async (req: Request, res: Response) => {
+	asyncHandler(async (req, res) => {
 		if (!req.body?.string) {
 			throw new InvalidPayloadException(`"string" is required`);
 		}
@@ -33,13 +32,12 @@ router.post(
 		const hash = await argon2.hash(req.body.string);
 
 		return res.json({ data: hash });
-	}),
-	respond
+	})
 );
 
 router.post(
 	'/hash/verify',
-	asyncHandler(async (req: Request, res: Response) => {
+	asyncHandler(async (req, res) => {
 		if (!req.body?.string) {
 			throw new InvalidPayloadException(`"string" is required`);
 		}
@@ -51,8 +49,7 @@ router.post(
 		const result = await argon2.verify(req.body.hash, req.body.string);
 
 		return res.json({ data: result });
-	}),
-	respond
+	})
 );
 
 const SortSchema = Joi.object({
@@ -63,7 +60,7 @@ const SortSchema = Joi.object({
 router.post(
 	'/sort/:collection',
 	collectionExists,
-	asyncHandler(async (req: Request, res: Response) => {
+	asyncHandler(async (req, res) => {
 		const { error } = SortSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 
@@ -74,13 +71,12 @@ router.post(
 		await service.sort(req.collection, req.body);
 
 		return res.status(200).end();
-	}),
-	respond
+	})
 );
 
 router.post(
 	'/revert/:revision',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new RevisionsService({
 			accountability: req.accountability,
 			schema: req.schema,

@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import asyncHandler from '../utils/async-handler';
 import { SettingsService } from '../services';
 import { ForbiddenException } from '../exceptions';
@@ -11,7 +11,7 @@ router.use(useCollection('directus_settings'));
 
 router.get(
 	'/',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new SettingsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -25,7 +25,7 @@ router.get(
 
 router.patch(
 	'/',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new SettingsService({
 			accountability: req.accountability,
 			schema: req.schema,

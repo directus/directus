@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import asyncHandler from '../utils/async-handler';
 import Joi from 'joi';
 import { InvalidPayloadException, InvalidCredentialsException, ForbiddenException } from '../exceptions';
@@ -13,7 +13,7 @@ router.use(useCollection('directus_users'));
 
 router.post(
 	'/',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -38,7 +38,7 @@ router.post(
 
 router.get(
 	'/',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -59,7 +59,7 @@ router.get(
 
 router.get(
 	'/me',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
@@ -88,7 +88,7 @@ router.get(
 
 router.get(
 	'/:pk',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		if (req.path.endsWith('me')) return next();
 		const service = new UsersService({
 			accountability: req.accountability,
@@ -104,7 +104,7 @@ router.get(
 
 router.patch(
 	'/me',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
@@ -124,7 +124,7 @@ router.patch(
 
 router.patch(
 	'/me/track/page',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
@@ -143,7 +143,7 @@ router.patch(
 
 router.patch(
 	'/:pk',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -169,7 +169,7 @@ router.patch(
 
 router.delete(
 	'/',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		if (!req.body || Array.isArray(req.body) === false) {
 			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
 		}
@@ -187,7 +187,7 @@ router.delete(
 
 router.delete(
 	'/:pk',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new UsersService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -207,7 +207,7 @@ const inviteSchema = Joi.object({
 
 router.post(
 	'/invite',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const { error } = inviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 
@@ -228,7 +228,7 @@ const acceptInviteSchema = Joi.object({
 
 router.post(
 	'/invite/accept',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const { error } = acceptInviteSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 		const service = new UsersService({
@@ -243,7 +243,7 @@ router.post(
 
 router.post(
 	'/me/tfa/enable/',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}
@@ -273,7 +273,7 @@ router.post(
 
 router.post(
 	'/me/tfa/disable',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		if (!req.accountability?.user) {
 			throw new InvalidCredentialsException();
 		}

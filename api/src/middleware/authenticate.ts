@@ -9,7 +9,7 @@ import env from '../env';
 /**
  * Verify the passed JWT and assign the user ID and role to `req`
  */
-const authenticate: RequestHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 	req.accountability = {
 		user: null,
 		role: null,

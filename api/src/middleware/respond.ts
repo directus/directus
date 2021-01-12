@@ -1,4 +1,4 @@
-import { Request, RequestHandler, Response } from 'express';
+import { RequestHandler } from 'express';
 import asyncHandler from '../utils/async-handler';
 import env from '../env';
 import { getCacheKey } from '../utils/get-cache-key';
@@ -7,7 +7,7 @@ import { Transform, transforms } from 'json2csv';
 import { PassThrough } from 'stream';
 import ms from 'ms';
 
-export const respond: RequestHandler = asyncHandler(async (req: Request, res: Response) => {
+export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	if (
 		req.method.toLowerCase() === 'get' &&
 		env.CACHE_ENABLED === true &&

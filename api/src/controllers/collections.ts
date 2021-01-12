@@ -8,7 +8,7 @@ const router = Router();
 
 router.post(
 	'/',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const collectionsService = new CollectionsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -25,7 +25,7 @@ router.post(
 
 router.get(
 	'/',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const collectionsService = new CollectionsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -46,7 +46,7 @@ router.get(
 
 router.get(
 	'/:collection',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const collectionsService = new CollectionsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -73,7 +73,7 @@ router.get(
 
 router.patch(
 	'/:collection',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const collectionsService = new CollectionsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -101,7 +101,7 @@ router.patch(
 
 router.delete(
 	'/',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		if (!req.body || Array.isArray(req.body) === false) {
 			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
 		}
@@ -119,7 +119,7 @@ router.delete(
 
 router.delete(
 	'/:collection',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const collectionsService = new CollectionsService({
 			accountability: req.accountability,
 			schema: req.schema,

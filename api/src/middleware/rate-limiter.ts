@@ -21,7 +21,7 @@ if (env.RATE_LIMITER_ENABLED === true) {
 
 	rateLimiter = getRateLimiter();
 
-	checkRateLimit = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	checkRateLimit = asyncHandler(async (req, res, next) => {
 		try {
 			await rateLimiter.consume(req.ip, 1);
 		} catch (rateLimiterRes) {

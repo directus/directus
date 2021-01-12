@@ -20,7 +20,7 @@ router.get(
 	'/:pk',
 
 	// Check if file exists
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const id = req.params.pk;
 
 		/**
@@ -44,7 +44,7 @@ router.get(
 	}),
 
 	// Validate query params
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const payloadService = new PayloadService('directus_settings', { schema: req.schema });
 		const defaults = { storage_asset_presets: [], storage_asset_transform: 'all' };
 
@@ -92,7 +92,7 @@ router.get(
 	}),
 
 	// Return file
-	asyncHandler(async (req: Request, res: Response) => {
+	asyncHandler(async (req, res) => {
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,

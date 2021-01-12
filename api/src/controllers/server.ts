@@ -8,7 +8,7 @@ const router = Router();
 
 router.get(
 	'/specs/oas',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new SpecificationService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -23,7 +23,7 @@ router.get('/ping', (req, res) => res.send('pong'));
 
 router.get(
 	'/info',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new ServerService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -37,7 +37,7 @@ router.get(
 
 router.get(
 	'/health',
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new ServerService({
 			accountability: req.accountability,
 			schema: req.schema,

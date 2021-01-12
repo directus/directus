@@ -6,7 +6,7 @@ import { NextFunction, Request, Response } from 'express';
 import asyncHandler from '../utils/async-handler';
 
 const useCollection = (collection: string) =>
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		req.collection = collection;
 		next();
 	});
