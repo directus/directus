@@ -18,6 +18,7 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	uuid: 'text-input',
 	unknown: 'text-input',
 	csv: 'tags',
+	hash: 'hash',
 };
 
 /**
