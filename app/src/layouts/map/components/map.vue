@@ -14,19 +14,7 @@ import maplibre, {
 	MapLayerMouseEvent,
 	CameraOptions,
 } from 'maplibre-gl';
-import {
-	defineComponent,
-	PropType,
-	ref,
-	computed,
-	inject,
-	toRefs,
-	Ref,
-	ComputedRef,
-	watch,
-	onMounted,
-	onUnmounted,
-} from '@vue/composition-api';
+import { defineComponent, PropType, watch, onMounted, onUnmounted } from '@vue/composition-api';
 import { useAppStore } from '@/stores';
 import { ResizeObserverEntry } from 'resize-observer/lib/ResizeObserverEntry';
 
@@ -88,15 +76,12 @@ export default defineComponent({
 			type: Object as PropType<CameraOptions>,
 			default: () => ({}),
 		},
-		autoFit: {
-			type: Boolean,
-			default: false,
+		bounds: {
+			type: (Array as unknown) as PropType<GeoJSON.BBox>,
 		},
 	},
 	setup(props, { emit }) {
 		const appStore = useAppStore();
-		const { sidebarOpen } = toRefs(appStore.state);
-		const { data, source, layers, backgroundLayer, animateOptions, onClick } = toRefs(props);
 
 		maplibre.accessToken = 'yo';
 		let map: Map;
@@ -107,8 +92,10 @@ export default defineComponent({
 		});
 
 		function fitDataBounds() {
-			const bbox = data.value.bbox as LngLatBoundsLike;
-			if (map && bbox) map.fitBounds(bbox, animateOptions.value);
+			const bbox = props.data.bbox as LngLatBoundsLike;
+			if (map && bbox) map.fitBounds(bbox, props.animateOptions);
+			// const camera = map.cameraForBounds(bounds as LngLatBoundsLike);
+			// map.flyTo(camera, Object.assign(props.camera, props.animateOptions));
 		}
 
 		function updateBackground(id: string, previous?: string) {
@@ -121,7 +108,7 @@ export default defineComponent({
 		function updateSource(current: Source | undefined, previous: Source | undefined) {
 			if (previous) {
 				const currentMapLayersId = map.getStyle().layers?.map(({ id }) => id);
-				for (const layer of layers.value || []) {
+				for (const layer of props.layers || []) {
 					if (currentMapLayersId?.includes(layer.id)) map.removeLayer(layer.id);
 				}
 				for (const source of Object.keys(previous || {})) {
@@ -131,13 +118,13 @@ export default defineComponent({
 			for (const [id, data] of Object.entries(current || {})) {
 				map.addSource(id, data);
 			}
-			for (const layer of layers.value || []) {
+			for (const layer of props.layers || []) {
 				// this is a hack, unsolvable error otherwise
 				// map.addLayer(layer)
 				setTimeout(() => map.addLayer(layer));
 			}
 			const source = map.getSource('__directus') as GeoJSONSource;
-			source?.setData(data.value);
+			source?.setData(props.data);
 		}
 		function updateLayers(current: maplibre.AnyLayer[], previous: maplibre.AnyLayer[]) {
 			for (const layer of previous || []) {
@@ -155,7 +142,7 @@ export default defineComponent({
 				container: 'map-container',
 				style: props.rootStyle,
 				attributionControl: false,
-				...props.camera,
+				...(props.camera || {}),
 			});
 
 			map.addControl(new maplibre.NavigationControl(), 'top-left');
@@ -164,10 +151,10 @@ export default defineComponent({
 			map.addControl(fitDataControl, 'top-left');
 			map.on('load', () => {
 				setupLayers(map);
-				watch(() => backgroundLayer.value, updateBackground, { immediate: true });
+				watch(() => props.backgroundLayer, updateBackground, { immediate: true });
 				map.once('styledata', () => {
-					watch(() => source.value, updateSource, { immediate: true });
-					watch(() => layers.value, updateLayers);
+					watch(() => props.source, updateSource, { immediate: true });
+					watch(() => props.layers, updateLayers);
 				});
 			});
 
@@ -181,27 +168,33 @@ export default defineComponent({
 			});
 
 			watch(
-				() => sidebarOpen.value,
+				() => appStore.state.sidebarOpen,
 				(opened) => {
 					if (!opened) setTimeout(() => map.resize(), 300);
 				}
 			);
 
 			watch(
-				() => data.value,
+				() => props.data,
 				(data) => {
 					const source = map.getSource('__directus') as GeoJSONSource;
 					source?.setData(data);
-					if (props.autoFit) fitDataBounds();
+				}
+			);
+
+			watch(
+				() => props.bounds,
+				(bounds) => {
+					fitDataBounds();
 				}
 			);
 		}
 
 		function setupLayers(map: Map) {
-			map.on('click', '__directus_points', onClick.value);
+			map.on('click', '__directus_points', props.onClick);
 			map.on('mouseenter', '__directus_points', () => (map.getCanvas().style.cursor = 'pointer'));
 			map.on('mouseleave', '__directus_points', () => (map.getCanvas().style.cursor = ''));
-			map.on('click', '__directus_polygons', onClick.value);
+			map.on('click', '__directus_polygons', props.onClick);
 			map.on('mouseenter', '__directus_polygons', () => (map.getCanvas().style.cursor = 'pointer'));
 			map.on('mouseleave', '__directus_polygons', () => (map.getCanvas().style.cursor = ''));
 
@@ -217,7 +210,7 @@ export default defineComponent({
 					map.easeTo({
 						center: (features[0].geometry as GeoJSON.Point).coordinates as LngLatLike,
 						zoom: zoom,
-						...animateOptions.value,
+						...props.animateOptions,
 					});
 				});
 			});
