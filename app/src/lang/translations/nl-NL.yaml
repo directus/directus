@@ -75,9 +75,13 @@ validationError:
 all_access: Alle toegang
 no_access: Geen toegang
 use_custom: Gebruik aangepaste
+field_standard: Standaard
 field_presentation: Presentatie & Aliasen
 field_file: Enkel bestand
 field_files: Meerdere bestanden
+field_m2o: M2O Relatie
+field_o2m: O2M Relatie
+field_m2m: M2M Relatie
 field_translations: Vertalingen
 item_permissions: Item Permissies
 field_permissions: Veld Permissies
@@ -273,6 +277,9 @@ background_color: Achtergrond kleur
 upload_from_device: Bestand uploaden van apparaat
 choose_from_library: Kies bestand uit de bibliotheek
 import_from_url: Importeer bestand van URL
+replace_from_device: Vervang bestand met nieuwe upload
+replace_from_library: Vervang bestand met bestaande
+replace_from_url: Vervang bestand via een URL import
 no_file_selected: Geen bestand geselecteerd
 download_file: Download bestand
 collection_key: Collectie Key
@@ -296,6 +303,7 @@ no_comments: Nog geen reacties
 click_to_expand: Klik om uit te breiden
 select_item: Selecteer Item
 no_items: Geen items
+search_items: Zoek items...
 disabled: Uitgeschakeld
 information: Informatie
 report_bug: Bug melden
@@ -415,6 +423,8 @@ circle: Cirkel
 empty_item: Leeg item
 log_in_with: 'Log in met {provider}'
 advanced_filter: Geavanceerd filter
+delete_advanced_filter: Verwijder filter
+change_advanced_filter_operator: Vervang operatie
 operators:
   eq: Gelijk aan
   neq: Niet gelijk aan
@@ -588,6 +598,8 @@ add_new: Nieuw Toevoegen
 from_collection: 'Van "{collection}" Collectie'
 create_new: Nieuwe aanmaken
 all: Alle
+none: Geen
+no_layout_collection_selected_yet: Geen layout/collectie geselecteerd
 batch_delete_confirm: >-
   Geen items geselecteerd | Weet je zeker dat je dit item wilt verwijderen? Dit kan niet ongedaan gemaakt worden. | Weet je zeker dat je {count} items wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
 cancel: Annuleer
@@ -741,6 +753,7 @@ template: Sjabloon
 translation: Vertaling
 value: Waarde
 view_project: Bekijk project
+weeks: { }
 report_error: Rapporteer fout
 interfaces:
   checkboxes:
