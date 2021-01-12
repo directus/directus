@@ -1,5 +1,5 @@
 import express from 'express';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import Busboy from 'busboy';
 import { MetaService, FilesService } from '../services';
 import { File, PrimaryKey } from '../types';

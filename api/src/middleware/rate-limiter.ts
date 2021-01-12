@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import {
 	RateLimiterMemory,
 	RateLimiterRedis,

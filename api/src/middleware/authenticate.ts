@@ -2,7 +2,7 @@ import { RequestHandler } from 'express';
 import jwt, { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import isJWT from '../utils/is-jwt';
 import database from '../database';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import { InvalidCredentialsException } from '../exceptions';
 import env from '../env';
 

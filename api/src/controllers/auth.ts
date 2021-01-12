@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import session from 'express-session';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import Joi from 'joi';
 import grant from 'grant';
 import getEmailFromProfile from '../utils/get-email-from-profile';
