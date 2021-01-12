@@ -31,8 +31,7 @@ rename_bookmark: Rename Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
 delete_bookmark_copy: >-
-  Are you sure you want to delete the "{bookmark}" bookmark? This action cannot
-  be undone.
+  Are you sure you want to delete the "{bookmark}" bookmark? This action cannot be undone.
 logoutReason:
   SIGN_OUT: Signed out
   SESSION_EXPIRED: Session expired
@@ -49,8 +48,8 @@ os_totalmem: OS Memory
 archive: Archive
 archive_confirm: Are you sure you want to archive this item?
 archive_confirm_count: >-
-  No Items Selected | Are you sure you want to archive this item? | Are you sure
-  you want to archive these {count} items?
+  No Items Selected | Are you sure you want to archive this item? | Are you sure you want to archive these {count}
+  items?
 reset_system_permissions: Reset System Permissions
 reset_system_permissions_copy: Reset all all system permissions to their defaults
 unarchive: Unarchive
@@ -135,6 +134,7 @@ text: Text
 time: Time
 timestamp: Timestamp
 uuid: UUID
+hash: Hash
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_generate: Auto-Generate
@@ -142,9 +142,8 @@ this_will_auto_setup_fields_relations: This will automatically setup all require
 click_here: Click here
 to_manually_setup_translations: to manually setup translations.
 click_to_manage_translated_fields: >-
-  There are no translated fields yet. Click here to create them. | There is one
-  translated field. Click here to manage it. | There are {count} translated
-  fields. Click here to manage them.
+  There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage
+  it. | There are {count} translated fields. Click here to manage them.
 fields_group: Fields Group
 configure_m2o: Configure your Many-to-One Relationship...
 configure_o2m: Configure your One-to-Many Relationship...
@@ -407,8 +406,8 @@ update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
 start_end_of_count_items: '{start}-{end} of {count} items'
 delete_collection_are_you_sure: >-
-  Are you sure you want to delete this collection? This will delete the
-  collection and all items in it. This action is permanent.
+  Are you sure you want to delete this collection? This will delete the collection and all items in it. This action is
+  permanent.
 collections_shown: Collections Shown
 visible_collections: Visible Collections
 hidden_collections: Hidden Collections
@@ -570,47 +569,38 @@ discard_changes: Discard Changes
 keep_editing: Keep Editing
 page_help_collections_overview: '**Collections Overview** — Lists of all collections you have access to.'
 page_help_collections_collection: >-
-  **Browse Items** — Lists all {collection} items you have access to. Customize
-  layout, filters, and sorting to tailor your view, and even save bookmarks of
-  these different configurations for quick access.
+  **Browse Items** — Lists all {collection} items you have access to. Customize layout, filters, and sorting to tailor
+  your view, and even save bookmarks of these different configurations for quick access.
 page_help_collections_item: >-
-  **Item Detail** — A form for viewing and managing this item. This sidebar also
-  contains a full history of revisions, and embedded comments.
+  **Item Detail** — A form for viewing and managing this item. This sidebar also contains a full history of revisions,
+  and embedded comments.
 page_help_activity_collection: >-
-  **Browse Activity** — A comprehensive listing of all your user's system and
-  content activity.
+  **Browse Activity** — A comprehensive listing of all your user's system and content activity.
 page_help_docs_global: >-
-  **Documentation Overview** — Docs tailored specifically to this project's
-  version and schema.
+  **Documentation Overview** — Docs tailored specifically to this project's version and schema.
 page_help_files_collection: >-
-  **File Library** — Lists all file assets uploaded to this project. Customize
-  layout, filters, and sorting to tailor your view, and even save bookmarks of
-  these different configurations for quick access.
+  **File Library** — Lists all file assets uploaded to this project. Customize layout, filters, and sorting to tailor
+  your view, and even save bookmarks of these different configurations for quick access.
 page_help_files_item: >-
-  **File Detail** — A form for managing file metadata, editing the original
-  asset, and updating access settings.
-page_help_settings_project: '**Project Settings** — Your project''s global configuration options.'
+  **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
+page_help_settings_project: "**Project Settings** — Your project's global configuration options."
 page_help_settings_datamodel_collections: >-
-  **Data Model: Collections** — Lists all collections available. This includes
-  visible, hidden, and system collections, as well as unmanaged database tables
-  that can be added.
+  **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
+  as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
-  **Data Model: Collection** — A form for managing this collection and its
-  fields.
+  **Data Model: Collection** — A form for managing this collection and its fields.
 page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
-page_help_settings_roles_item: '**Role Detail** — Manage a role''s permissions and other settings.'
+page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-
-  **Browse Presets** — Lists all presets in the project, including: user, role,
-  and global bookmarks, as well as default views.
+  **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default
+  views.
 page_help_settings_presets_item: >-
-  **Preset Detail** — A form for managing bookmarks and default collection
-  presets.
+  **Preset Detail** — A form for managing bookmarks and default collection presets.
 page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webhooks within the project.'
 page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
 page_help_users_collection: '**User Directory** — Lists all system users within this project.'
 page_help_users_item: >-
-  **User Detail** — Manage your account information, or view the details of
-  other users.
+  **User Detail** — Manage your account information, or view the details of other users.
 activity_feed: Activity Feed
 add_new: Add New
 create_new: Create New
@@ -618,9 +608,8 @@ all: All
 none: None
 no_layout_collection_selected_yet: No layout/collection selected yet
 batch_delete_confirm: >-
-  No items have been selected | Are you sure you want to delete this item? This
-  action can not be undone. | Are you sure you want to delete these {count}
-  items? This action can not be undone.
+  No items have been selected | Are you sure you want to delete this item? This action can not be undone. | Are you sure
+  you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 collection: Collection
 collections: Collections
@@ -713,18 +702,15 @@ save_current_datetime: Save Current Date/Time
 comment: Comment
 continue: Continue
 continue_as: >-
-  <b>{name}</b> is currently authenticated. If you recognize this account, press
-  continue.
+  <b>{name}</b> is currently authenticated. If you recognize this account, press continue.
 editing_role: '{role} Role'
 creating_webhook: Creating Webhook
 default: Default
 delete: Delete
 delete_are_you_sure: >-
-  This action is permanent and can not be undone. Are you sure you would like to
-  proceed?
+  This action is permanent and can not be undone. Are you sure you would like to proceed?
 delete_field_are_you_sure: >-
-  Are you sure you want to delete the field "{field}"? This action can not be
-  undone.
+  Are you sure you want to delete the field "{field}"? This action can not be undone.
 description: Description
 done: Done
 duplicate: Duplicate

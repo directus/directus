@@ -212,6 +212,10 @@ export const fieldTypes = [
 		text: i18n.t('uuid'),
 		value: 'uuid',
 	},
+	{
+		text: i18n.t('hash'),
+		value: 'hash',
+	},
 ];
 
 export default defineComponent({

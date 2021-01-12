@@ -880,6 +880,9 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					case 'uuid':
 						state.fieldData.meta.special = ['uuid'];
 						break;
+					case 'hash':
+						state.fieldData.meta.special = ['hash'];
+						break;
 					case 'json':
 						state.fieldData.meta.special = ['json'];
 						break;

@@ -7,7 +7,7 @@ export default defineInterface(({ i18n }) => ({
 	description: i18n.t('interfaces.hash.description'),
 	icon: 'fingerprint',
 	component: InterfaceHash,
-	types: ['string'],
+	types: ['hash'],
 	options: [
 		{
 			field: 'placeholder',

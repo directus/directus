@@ -526,5 +526,8 @@ class OASService implements SpecificationSubService {
 				type: 'string',
 			},
 		},
+		hash: {
+			type: 'string',
+		},
 	};
 }
