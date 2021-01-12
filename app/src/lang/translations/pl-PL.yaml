@@ -72,11 +72,10 @@ validationError:
 all_access: Pełny Dostęp
 no_access: Brak dostępu
 use_custom: Użyj niestandardowych
-field_standard: Standard,
-field_presentation: Prezentacja i aliasy,
-field_file: Pojedynczy plik,
-field_files: Wiele plików,
-field_translations: Tłumaczenia,
+field_presentation: Prezentacja i aliasy
+field_file: Pojedynczy plik
+field_files: Wiele plików
+field_translations: Tłumaczenia
 field_validation: Walidacja pola
 permissions_for_role: 'Przedmioty roli {role} mogą {action}.'
 presets_for_role: 'Wartość domyślna dla roli {role}.'

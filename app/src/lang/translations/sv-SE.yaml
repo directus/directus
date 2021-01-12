@@ -75,14 +75,10 @@ validationError:
 all_access: Alla behörigheter
 no_access: Ingen åtkomst
 use_custom: Använd anpassad
-field_standard: Standard,
-field_presentation: Presentation & alias,
+field_presentation: Presentation & alias
 field_file: Enskild fil
-field_files: Flera filer,
-field_m2o: M2O relation,
-field_o2m: M2O relation,
-field_m2m: M2M relation,
-field_translations: Översättningar,
+field_files: Flera filer
+field_translations: Översättningar
 item_permissions: Behörigheter för objekt
 field_permissions: Behörigheter för fält
 field_validation: Validering av fält

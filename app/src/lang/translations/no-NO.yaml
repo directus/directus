@@ -75,14 +75,8 @@ validationError:
 all_access: All tilgang
 no_access: Ingen tilgang
 use_custom: Bruk egendefinert
-field_standard: Standard,
-field_presentation: Presentation & Aliaser,
-field_file: Enkelt-fil
-field_files: Flere filer,
-field_m2o: M2O Relasjon,
-field_o2m: O2M Relasjon,
-field_m2m: M2M Relasjon,
-field_translations: Oversettelser,
+field_presentation: Presentation & Aliaser
+field_translations: Oversettelser
 item_permissions: Element Tillatelser
 field_permissions: Felt Tillatelser
 field_validation: Felt validering

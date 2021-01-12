@@ -71,7 +71,9 @@ validationError:
 all_access: Zugriff auf alles
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
-field_files: Mehrere Dateien,
+field_file: Eine Datei
+field_files: Mehrere Dateien
+field_translations: Übersetzungen
 item_permissions: Item Berechtigungen
 field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
