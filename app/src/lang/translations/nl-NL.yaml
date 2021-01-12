@@ -595,7 +595,6 @@ page_help_users_item: >-
   **Gebruikersdetail** — Beheer je accountgegevens, of bekijk de details van andere gebruikers.
 activity_feed: Activiteiten
 add_new: Nieuw Toevoegen
-from_collection: 'Van "{collection}" Collectie'
 create_new: Nieuwe aanmaken
 all: Alle
 none: Geen
