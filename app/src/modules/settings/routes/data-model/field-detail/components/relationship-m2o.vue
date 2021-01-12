@@ -165,16 +165,17 @@ export default defineComponent({
 				},
 				set(enabled: boolean) {
 					if (enabled === true) {
+						state.relations[0].one_field = state.relations[0].many_collection;
+
 						state.newFields.push({
 							$type: 'corresponding',
-							field: state.relations[0].many_collection,
-							collection: state.relations[0].many_collection,
+							field: state.relations[0].one_field,
+							collection: state.relations[0].one_collection,
 							meta: {
 								special: 'o2m',
 								interface: 'one-to-many',
 							},
 						});
-						state.relations[0].one_field = state.relations[0].many_collection;
 					} else {
 						state.newFields = state.newFields.filter((field: any) => field.$type !== 'corresponding');
 					}
