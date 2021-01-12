@@ -822,6 +822,8 @@ interfaces:
     title_placeholder: Enter a title...
     inline_title: Inline Title
     inline_title_label: Show title inside line
+    margin_top: Margin Top
+    margin_top_label: Increase Top Margin
   dropdown:
     description: Select a value from a dropdown
     choices_placeholder: Add a new choice
