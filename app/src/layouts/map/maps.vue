@@ -130,15 +130,16 @@
 		</portal>
 
 		<map-component
+			ref="map"
 			class="mapboxgl-map"
 			:class="{ loading, error: error || geojsonError || missingOptions || itemCount === 0 }"
 			:data="geojson"
+			:bounds="geojsonBounds"
 			:onClick="gotoEdit"
 			:rootStyle="rootStyle"
 			:source="userSource"
 			:layers="userLayers"
 			:camera="cameraOptions"
-			:autoFit="fitDataBounds"
 			@moveend="cameraOptions = $event"
 			:backgroundLayer="backgroundLayer"
 			:animateOptions="{
@@ -197,7 +198,7 @@
 						@input="toPage"
 					/>
 				</div>
-				<div v-if="loading === false && items.length >= 25" class="per-page">
+				<div class="per-page">
 					<span>{{ $t('per_page') }}</span>
 					<v-select
 						@input="limit = +$event"
@@ -213,7 +214,7 @@
 
 <script lang="ts">
 import MapComponent from './components/map.vue';
-import type { CameraOptions, Style, AnyLayer, MapLayerMouseEvent } from 'maplibre-gl';
+import { CameraOptions, Style, AnyLayer, MapLayerMouseEvent, LngLatBoundsLike } from 'maplibre-gl';
 import { basemapNames, rootStyle, dataStyle } from './styles';
 import type { GeoJSONSerializer } from './worker';
 
@@ -261,16 +262,17 @@ function assign(a: any, b: any): any {
 
 type Item = Record<string, any>;
 
-type layoutQuery = {
-	fields?: string[];
-	sort?: string;
-	limit?: number;
+type LayoutQuery = {
+	fields: string[];
+	sort: string;
+	limit: number;
+	page: number;
 };
 
-type layoutOptions = {
+type LayoutOptions = {
 	cameraOptions?: CameraOptions;
-	customLayers?: Array<Style>;
-	backgroundLayer?: Record<string, any>;
+	customLayers?: Array<AnyLayer>;
+	backgroundLayer?: string;
 	geometryFormat?: GeometryFormat;
 	geometryField?: string;
 	longitudeField?: string;
@@ -285,13 +287,13 @@ type layoutOptions = {
 	clusterRadius?: number;
 	clusterMaxZoom?: number;
 	clusterMinPoints?: number;
-	animateOptions: any;
+	animateOptions?: any;
 };
 
-type GeometryFormat = 'geojson' | 'csv' | 'wkt' | 'wkb' | 'twkb' | 'lnglat';
+type GeometryFormat = 'geojson' | 'csv' | 'wkt' | 'wkb' | 'twkb' | 'lnglat' | undefined;
 
 function valueOr<T>(a: T, b: T): T {
-	return a == null ? b : a;
+	return a == undefined ? b : a;
 }
 
 export default defineComponent({
@@ -306,11 +308,11 @@ export default defineComponent({
 			default: undefined,
 		},
 		layoutOptions: {
-			type: Object as PropType<layoutOptions>,
+			type: Object as PropType<LayoutOptions>,
 			default: () => ({}),
 		},
 		layoutQuery: {
-			type: Object as PropType<layoutQuery>,
+			type: Object as PropType<LayoutQuery>,
 			default: () => ({}),
 		},
 		filters: {
@@ -341,36 +343,49 @@ export default defineComponent({
 		const _filters = useSync(props, 'filters', emit);
 		const _selection = useSync(props, 'selection', emit);
 		const _searchQuery = useSync(props, 'searchQuery', emit);
-		const _layoutQuery: Ref<any> = useSync(props, 'layoutQuery', emit);
-		const _layoutOptions: Ref<any> = useSync(props, 'layoutOptions', emit);
+		const _layoutQuery: Ref<LayoutQuery> = useSync(props, 'layoutQuery', emit) as Ref<LayoutQuery>;
+		const _layoutOptions: Ref<LayoutOptions> = useSync(props, 'layoutOptions', emit);
 		const { collection, searchQuery } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
-		const { sort, limit, page } = uselayoutQuery();
-		const {
-			cameraOptions,
-			customLayers,
-			backgroundLayer,
-			geometrySRID,
-			geometryFormat,
-			geometryField,
-			longitudeField,
-			latitudeField,
-			simplification,
-			fitDataBounds,
-			fitBoundsAnimate,
-			fitBoundsPadding,
-			fitBoundsSpeed,
-			clusterActive,
-			clusterRadius,
-			clusterMaxZoom,
-			clusterMinPoints,
-		} = uselayoutOptions();
+
+		const page = syncOption(_layoutQuery, 'page', 1);
+		const sort = syncOption(_layoutQuery, 'sort', fieldsInCollection.value[0].field);
+		const limit = syncOption(_layoutQuery, 'limit', 1000);
+
+		const cameraOptions = syncOption(_layoutOptions, 'cameraOptions', undefined);
+		const customLayers = syncOption(_layoutOptions, 'customLayers', dataStyle.layers);
+		const backgroundLayer = syncOption(_layoutOptions, 'backgroundLayer', 'CartoDB_PositronNoLabels');
+		const simplification = syncOption(_layoutOptions, 'simplification', 0.375);
+		const fitDataBounds = syncOption(_layoutOptions, 'fitDataBounds', true);
+		const fitBoundsAnimate = syncOption(_layoutOptions, 'fitBoundsAnimate', true);
+		const fitBoundsPadding = syncOption(_layoutOptions, 'fitBoundsPadding', 100);
+		const fitBoundsSpeed = syncOption(_layoutOptions, 'fitBoundsSpeed', 1.4);
+		const clusterActive = syncOption(_layoutOptions, 'clusterActive', true);
+		const clusterRadius = syncOption(_layoutOptions, 'clusterRadius', 50);
+		const clusterMaxZoom = syncOption(_layoutOptions, 'clusterMaxZoom', 12);
+		const clusterMinPoints = syncOption(_layoutOptions, 'clusterMinPoints', 2);
+		const geometrySRID = syncOption(_layoutOptions, 'geometrySRID', '2154');
+		const longitudeField = syncOption(_layoutOptions, 'longitudeField', undefined);
+		const latitudeField = syncOption(_layoutOptions, 'latitudeField', undefined);
+		const geometryField = syncOption(_layoutOptions, 'geometryField', undefined);
+		const geometryFormat = computed<GeometryFormat>({
+			get: () => valueOr(_layoutOptions.value?.geometryFormat, undefined),
+			set(newValue: GeometryFormat) {
+				_layoutOptions.value = {
+					...(_layoutOptions.value || {}),
+					geometryFormat: newValue,
+					geometryField: undefined,
+					longitudeField: undefined,
+					latitudeField: undefined,
+				};
+			},
+		});
 
 		const queryFields = computed(() => {
 			return [geometryField, latitudeField, longitudeField]
 				.map((ref) => ref.value)
 				.concat(primaryKeyField.value?.field)
-				.filter((e) => !!e);
+				.filter((e) => !!e) as string[];
 		});
 
 		const { items, loading, error, totalPages, itemCount, getItems } = useItems(collection, {
@@ -382,16 +397,19 @@ export default defineComponent({
 			searchQuery: _searchQuery,
 		});
 
+		let queryChanged = false;
 		function onQueryChange(next: any, prev: any) {
 			resetWorker();
 			page.value = 1;
+			queryChanged = true;
 		}
 
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
-		const missingOptions = ref<boolean>(false);
+		const geojsonBounds = ref<GeoJSON.BBox>();
 		const geojsonError = ref<string | null>();
 		const geojsonLoading = ref<boolean>(false);
 		const geojsonProgress = ref<number>(0);
+		const missingOptions = ref<boolean>(false);
 		let geojsonWorker: Worker;
 		let workerProxy: Remote<GeoJSONSerializer>;
 
@@ -406,6 +424,7 @@ export default defineComponent({
 
 		function resetWorker() {
 			geojsonLoading.value && geojsonWorker && geojsonWorker.terminate();
+			geojsonLoading.value = false;
 			geojsonWorker = new Worker('./worker', { name: 'geojson-converter', type: 'module' });
 			workerProxy = wrap(geojsonWorker);
 		}
@@ -423,7 +442,7 @@ export default defineComponent({
 		function onProgress(progress: number) {
 			geojsonProgress.value = progress;
 		}
-		const first = true;
+
 		async function updateGeojson() {
 			const validate = validateGeometryOptions();
 			if (validate) {
@@ -434,8 +453,10 @@ export default defineComponent({
 					geojsonProgress.value = 0;
 					geojsonError.value = null;
 					geojson.value = await workerProxy(items.value, _layoutOptions.value, proxy(onProgress));
-					console.log(geojson.value.bbox);
 					geojsonLoading.value = false;
+					if (!cameraOptions.value || (queryChanged && fitDataBounds.value)) {
+						geojsonBounds.value = geojson.value.bbox;
+					}
 				} catch (error) {
 					geojsonLoading.value = false;
 					geojsonError.value = error;
@@ -527,7 +548,6 @@ export default defineComponent({
 		const mapStyleOptions = basemapNames;
 
 		return {
-			cameraOptions,
 			geojson,
 			rootStyle,
 			userSource,
@@ -537,16 +557,18 @@ export default defineComponent({
 			resetLayers,
 			mapStyleOptions,
 			backgroundLayer,
-			missingOptions,
+			geojsonBounds,
 			geojsonLoading,
 			geojsonProgress,
 			geojsonError,
+			missingOptions,
 			gotoEdit,
 			geometrySRID,
 			geometryFormat,
 			geometryField,
 			longitudeField,
 			latitudeField,
+			cameraOptions,
 			simplification,
 			fitDataBounds,
 			fitBoundsAnimate,
@@ -593,79 +615,13 @@ export default defineComponent({
 			page.value = newPage;
 		}
 
-		function uselayoutOptions() {
-			const createOption = refOptionGenerator(_layoutOptions);
-
-			const cameraOptions = createOption<CameraOptions>('cameraOptions', null);
-			const customLayers = createOption<Array<AnyLayer>>('layers', dataStyle.layers);
-			const backgroundLayer = createOption<string>('backgroundLayer', 'CartoDB_PositronNoLabels');
-			const geometrySRID = createOption<string>('geometrySRID', '2154');
-			const longitudeField = createOption<string>('longitudeField', null);
-			const latitudeField = createOption<string>('latitudeField', null);
-			const geometryField = createOption<string>('geometryField', null);
-			const geometryFormat = computed<GeometryFormat>({
-				get: () => valueOr(_layoutOptions.value?.geometryFormat, null),
-				set(newValue: GeometryFormat) {
-					_layoutOptions.value = {
-						...(_layoutOptions.value || {}),
-						geometryFormat: newValue,
-						geometryField: null,
-						longitudeField: null,
-						latitudeField: null,
-					};
+		function syncOption<R, T extends keyof R>(ref: Ref<R>, key: T, defaultValue: NonNullable<R>[T]) {
+			return computed<NonNullable<R>[T]>({
+				get: () => valueOr(ref.value?.[key], defaultValue) as NonNullable<R>[T],
+				set: (value: R[T]) => {
+					ref.value = { ...valueOr(ref.value, {}), [key]: value } as R;
 				},
 			});
-
-			const simplification = createOption<number>('simplification', 0.375);
-			const fitDataBounds = createOption<boolean>('fitDataBounds', true);
-			const fitBoundsAnimate = createOption<boolean>('fitBoundsAnimate', true);
-			const fitBoundsPadding = createOption<number>('fitBoundsPadding', 100);
-			const fitBoundsSpeed = createOption<number>('fitBoundsSpeed', 1.4);
-			const clusterActive = createOption<boolean>('clusterActive', true);
-			const clusterRadius = createOption<number>('clusterRadius', 50);
-			const clusterMaxZoom = createOption<number>('clusterMaxZoom', 12);
-			const clusterMinPoints = createOption<number>('clusterMinPoints', 2);
-
-			return {
-				cameraOptions,
-				customLayers,
-				backgroundLayer,
-
-				geometrySRID,
-				geometryFormat,
-				geometryField,
-				longitudeField,
-				latitudeField,
-
-				simplification,
-				fitDataBounds,
-				fitBoundsAnimate,
-				fitBoundsPadding,
-				fitBoundsSpeed,
-				clusterActive,
-				clusterRadius,
-				clusterMaxZoom,
-				clusterMinPoints,
-			};
-		}
-
-		function uselayoutQuery() {
-			const createOption = refOptionGenerator(_layoutQuery);
-			const page = ref(1);
-			const sort = createOption<string>('sort', fieldsInCollection.value[0].field);
-			const limit = createOption<number>('limit', 1000);
-			return { sort, limit, page };
-		}
-
-		function refOptionGenerator<R>(ref: Ref<R>) {
-			return function <T>(key: keyof R, defaultValue: any) {
-				return computed<T>({
-					get: () => valueOr(ref.value?.[key], defaultValue),
-					set: (value: T) => {
-						ref.value = { ...valueOr(ref.value, {}), [key]: value } as R;
-					},
-				});
-			};
 		}
 	},
 });
@@ -716,6 +672,19 @@ export default defineComponent({
 	--v-progress-circular-background-color: var(--primary-25);
 	--v-progress-circular-color: var(--primary-75);
 }
+
+.item-count {
+	position: relative;
+	display: none;
+	margin: 0 8px;
+	color: var(--foreground-subdued);
+	white-space: nowrap;
+
+	@include breakpoint(small) {
+		display: inline;
+	}
+}
+
 .fade-enter-active,
 .fade-leave-active {
 	transition: opacity var(--medium) var(--transition);
