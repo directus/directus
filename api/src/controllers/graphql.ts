@@ -1,12 +1,13 @@
-import { Request, Router, Response, NextFunction } from 'express';
+import { Router, Response } from 'express';
 import { graphqlHTTP } from 'express-graphql';
 import { GraphQLService } from '../services';
 import { respond } from '../middleware/respond';
+import asyncHandler from '../utils/async-handler';
 
 const router = Router();
 
 router.use(
-	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+	asyncHandler(async (req, res, next) => {
 		const service = new GraphQLService({
 			accountability: req.accountability,
 			schema: req.schema,
