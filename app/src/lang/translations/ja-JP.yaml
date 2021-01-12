@@ -23,8 +23,9 @@ public: 公開
 directus_version: Directus Version
 validationError:
   required: 必須項目です
+field_file: 1つのファイル
 field_files: 複数のファイル
-field_translations: 翻訳,
+field_translations: 翻訳
 fields_and_layout: 項目とレイアウト
 language: 言語
 schema_setup_title: この項目をどのように保存するか設定しましょう。

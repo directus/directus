@@ -74,6 +74,10 @@ validationError:
 all_access: Acesso Total
 no_access: Sem acesso
 use_custom: Usar Personalizado
+field_presentation: Apresentação e pseudônimos
+field_file: Arquivo único
+field_files: Múltiplos arquivos
+field_translations: Traduções
 item_permissions: Permissões do Item
 field_permissions: Permissões dos campos
 field_validation: Validação dos campos

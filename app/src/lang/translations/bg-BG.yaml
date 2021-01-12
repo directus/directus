@@ -75,14 +75,10 @@ validationError:
 all_access: Пълен достъп
 no_access: Без достъп
 use_custom: Персонализиран
-field_standard: Стандартно,
-field_presentation: Презентационни и псевдоними,
-field_file: Единичен файл,
-field_files: Множество файлове,
-field_m2o: M2O релация,
-field_o2m: O2M релация,
-field_m2m: M2M релация,
-field_translations: Преводи,
+field_presentation: Презентационни и псевдоними
+field_file: Единствен файл
+field_files: Множество файлове
+field_translations: Преводи
 item_permissions: Позволения на запис
 field_permissions: Позволения за поле
 field_validation: Валидация на поле
@@ -753,7 +749,6 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 interfaces:
   checkboxes:

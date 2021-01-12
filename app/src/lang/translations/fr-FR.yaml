@@ -72,14 +72,10 @@ validationError:
 all_access: Accès total
 no_access: Pas d'accès
 use_custom: Personnalisé
-field_standard: Standard,
-field_presentation: Présentation & Alias,
-field_file: Fichier simple,
-field_files: Fichiers multiples,
-field_m2o: Relation M2O,
-field_o2m: Relation O2M,
-field_m2m: Relation M2M,
-field_translations: Traductions,
+field_presentation: Présentation & Alias
+field_file: Fichier simple
+field_files: Fichiers multiples
+field_translations: Traductions
 item_permissions: Permissions de l'élément
 field_permissions: Permissions du champ
 field_validation: Validation du champ

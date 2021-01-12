@@ -75,14 +75,10 @@ validationError:
 all_access: Полный доступ
 no_access: Нет Доступа
 use_custom: Использовать Свой
-field_standard: Стандартный,
-field_presentation: Представление и Алиасы,
-field_file: Один Файл,
-field_files: Несколько Файлов,
-field_m2o: Связка M2O,
-field_o2m: Связка O2M,
-field_m2m: Связка M2M,
-field_translations: Переводы,
+field_presentation: Представление и Алиасы
+field_file: Один Файл
+field_files: Несколько Файлов
+field_translations: Переводы
 item_permissions: Разрешения Элемента
 field_permissions: Разрешения Поля
 field_validation: Валидация Поля
@@ -753,7 +749,6 @@ template: Шаблон
 translation: Перевод
 value: Значение
 view_project: Просмотр Проекта
-weeks: { }
 report_error: Сообщить об Ошибке
 interfaces:
   checkboxes:
