@@ -613,7 +613,6 @@ page_help_users_item: >-
   other users.
 activity_feed: Activity Feed
 add_new: Add New
-from_collection: 'From “{collection}” Collection'
 create_new: Create New
 all: All
 none: None
