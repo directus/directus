@@ -134,6 +134,7 @@ text: Tekst
 time: Tijd
 timestamp: Timestamp
 uuid: UUID
+hash: Hash
 not_available_for_type: Niet beschikbaar voor dit type
 create_translations: Vertalingen aanmaken
 auto_generate: Genereer automatisch
@@ -577,13 +578,13 @@ page_help_files_collection: >-
   **Bestandsbibliotheek** - Toont alle bestanden die naar dit project zijn geüpload. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
 page_help_files_item: >-
   **Bestandsdetail** - Een formulier voor het beheren van metagegevens van bestanden, het bewerken van het originele bestand en het bijwerken van toegangsinstellingen.
-page_help_settings_project: '**Projectinstellingen** - De algemene configuratieopties van je project.'
+page_help_settings_project: "**Projectinstellingen** - De algemene configuratieopties van je project."
 page_help_settings_datamodel_collections: >-
   **Gegevensmodel: Collecties** — Laat alle beschikbare collecties zien. Dit omvat zichtbare, verborgen en systeemcollecties, evenals niet beheerde databasetabellen die kunnen worden toegevoegd.
 page_help_settings_datamodel_fields: >-
   **Gegevensmodel: Verzameling** - Een formulier voor het beheren van deze collectie en haar velden.
 page_help_settings_roles_collection: '**Blader door rollen** — Laat de Admin, Publieke en aangepaste gebruikersrollen zien.'
-page_help_settings_roles_item: '**Rol Detail** - Beheer de rechten van de rol en andere instellingen.'
+page_help_settings_roles_item: "**Rol Detail** - Beheer de rechten van de rol en andere instellingen."
 page_help_settings_presets_collection: >-
   **Browse Voorkeuren** — Bewaart alle voorkeuren in dit project, inclusief: gebruikers, rol, en globale voorkeuren en standaard views.
 page_help_settings_presets_item: >-
