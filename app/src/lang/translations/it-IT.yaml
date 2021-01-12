@@ -77,18 +77,26 @@ use_custom: Usa Personalizzato
 field_standard: Standard
 field_file: File Singolo
 field_files: File Multipli
+field_translations: Traduzioni
 item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
 delete_field: Elimina campo
+field_create_success: 'Campo Creato: "{field}"'
+field_update_success: 'Campo Aggiornato: "{field}"'
+duplicate_where_to: Dove vuoi duplicare questo campo?
 language: Linguaggio
 global: Globale
+admins_have_all_permissions: Gli amministratori hanno tutte le autorizzazioni
 exposure: Esposizione
 shutter: Otturatore
 iso: ISO
 focal_length: Lunghezza Focale
 create_field: Crea campo
+creating_new_field: 'Nuovo Campo ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Reimposta Preferenze Di Pagina
 hidden_field: Campo Nascosto
 hidden_on_detail: Nascosto nei dettagli
 disabled_editing_value: Disabilita valore di modifica
@@ -107,6 +115,7 @@ text: Testo
 time: Ora
 timestamp: Timestamp
 uuid: UUID
+hash: Hash
 not_available_for_type: Non disponibile per questo typo
 create_translations: Crea traduzioni
 auto_generate: Generare automaticamente
@@ -117,17 +126,27 @@ click_to_manage_translated_fields: >-
   Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
 fields_group: Gruppo campi
 choose_a_type: Seleziona un Tipo...
+determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
 default_value: Valore predefinito
+add_a_default_value: Aggiungi un valore predefinito...
+interface_setup_title: Come interagiranno gli utenti con questo campo?
+display_setup_title: Come dovrebbe essere visualizzato il valore di questo campo?
 standard_field: Campo Standard
 single_file: File Singolo
 multiple_files: File Multipli
 next: Il prossimo
+field_name: Nome del Campo
+translations: Traduzioni
 note: Nota
+enter_a_value: Inserisci un valore...
 length: Lunghezza
 readonly: Sola lettura
 unique: Unico
 primary_key: Chiave primaria
+foreign_key: Chiave Esterna
+finish_setup: Termina Configurazione
+dismiss: Chiudi
 clear_value: Cancella valore
 reset_to_default: Reimposta a predefinito
 undo_changes: Annulla modifica
@@ -141,6 +160,7 @@ settings_update_success: Impostazioni aggiornate
 title: Titolo
 revision_delta_created: Creato
 revision_delta_created_externally: Creato Esternamente
+revision_delta_updated: 'Aggiornato 1 Campo | Aggiornati {count} Campi'
 revision_delta_deleted: Eliminato
 revision_delta_reverted: Ripristinato
 revision_delta_other: Revisione
@@ -148,13 +168,20 @@ revision_delta_by: '{date} da {user}'
 revision_preview: Anteprima Revisione
 leave_comment: Lascia un commento...
 post_comment_success: Commento pubblicato
+item_create_success: Elemento Creato | Elementi Creati
+item_update_success: Elemento Aggiornato | Elementi Aggiornati
+item_delete_success: Elemento Eliminato| Elementi Eliminati
 this_collection: Questa collezione
 related_collection: Collezione correlata
 related_collections: Collezioni Correlate
+export_data: Esporta Dati
 format: Formato
 export_collection: 'Esporta {collection}'
 last_page: Ultima Pagina
 last_access: Ultimo Acesso
+a_unique_table_name: Un nome di tabella unico...
+a_unique_column_name: Un nome di colonna unico...
+enable_custom_values: Abilita valori personalizzati
 submit: Invia
 move_to_folder: Sposta nella cartella
 move: Sposta
@@ -162,6 +189,12 @@ system: Sistema
 today: Oggi
 yesterday: Ieri
 delete_comment: Elimina Commento
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
 month: Mese
 year: Anno
 select_all: Seleziona tutto
@@ -196,12 +229,19 @@ zoom: Zoom
 download: Scarica
 open: Apri
 open_in_new_window: Apri in una Nuova Finestra
+upload_from_device: Carica File dal Dispositivo
+choose_from_library: Scegli File dalla Libreria
 import_from_url: Importa File da URL
+replace_from_device: Sostituisci File dal Dispositivo
+replace_from_library: Sostituisci File dalla Libreria
+replace_from_url: Sostituisci File da URL
+no_file_selected: Nessun File Selezionato
 download_file: Scarica File
 name: Nome
 type: Tipo
 created_by: Creato da
 created_on: Creato il
+creating_collection_system: Abilita e rinomina uno di questi campi opzionali.
 generated_uuid: UUID Generato
 manual_string: Stringa inserita manualmente
 save_and_create_new: Salva e Crea nuovo
@@ -219,7 +259,9 @@ information: Informazioni
 report_bug: Segnala un Bug
 request_feature: Richiesta caratteristica
 item_count: 'Nessun elemento | Un articolo | {count} Articoli'
-file_count: 'Nessun File | Un File | {count} Files'
+file_count: 'Nessun File | Un File | {count} File'
+no_files_copy: Non ci sono file qui.
+user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 all_items: Tutti gli Elementi
 csv: CSV
 create_collection: Crea raccolta
@@ -230,13 +272,20 @@ activity: Attività
 webhooks: Webhooks
 field_width: Larghezza del Campo
 add_filter: Aggiungi Filtro
+upper_limit: Limite superiore...
+lower_limit: Limite inferiore...
 user_directory: Elenco utenti
+documentation: Documentazione
 duration: Durata
+second: Secondi
+file_moved: File Spostato
 modified_on: Modificato il
 sort_field: Ordina per
+select_an_item: Seleziona un elemento...
 edit: Modifica
 enabled: Abilitato
 disable_tfa: Disabilita 2FA
+tfa_scan_code: Scansiona il codice nell'app di autenticazione per completare la configurazione 2FA
 enter_otp_to_disable_tfa: Inserisci OTP per disabilitare 2FA
 create_account: Crea Account
 account_created_successfully: Account Creato con Successo
@@ -247,15 +296,30 @@ errors:
   FORBIDDEN: Proibito
   INVALID_CREDENTIALS: Nome utente o password sbagliati
   INVALID_QUERY: Query non valida
+  ITEM_LIMIT_REACHED: Limite di elementi raggiunto
+  ITEM_NOT_FOUND: Elemento non trovato
   ROUTE_NOT_FOUND: Non trovato
+  UNKNOWN: Errore Imprevisto
 bookmarks: segnalibri
+unexpected_error: Errore Imprevisto
+unexpected_error_copy: Si è verificato un errore imprevisto. Riprova più tardi.
+copy_details: Copia Dettagli
 back: Indietro
+square: Quadrato
+free: Libero
+rotate: Ruota
+all_users: Tutti gli Utenti
+start_end_of_count_items: '{start}-{end} di {count} elementi'
 placeholder: Placeholder
 icon_left: Icona a sinistra
 icon_right: Icona a destra
+sans_serif: Sans Serif
+serif: Serif
 monospace: Monospace
 divider: Separatore
 color: Colore
+circle: Cerchio
+empty_item: Elemento Vuoto
 operators:
   lt: Meno di
   gt: Più grande di
@@ -265,7 +329,19 @@ operators:
   ncontains: Non contiene
   empty: È vuoto
 loading: Caricamento in corso...
+upload_file: Carica File
+upload_file_indeterminate: Caricamento File...
+upload_file_success: File Caricato
+upload_files_indeterminate: 'Caricamento file {done}/{total}'
+upload_files_success: '{count} File Caricati'
+upload_pending: Caricamento In Attesa
 display_template: Display Template
+per_page: Per Pagina
+all_files: Tutti i File
+my_files: I Miei File
+recent_files: File Recenti
+add_file: Aggiungi File
+replace_file: Sostituisci File
 no_results: Nessun risultato
 no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risultati.
 role: Ruolo
@@ -275,14 +351,32 @@ on_update: In aggiornamento
 read: Leggere
 update: Aggiornare
 select_fields: Seleziona campi
+bold: Grassetto
 wysiwyg_options:
+  bold: Grassetto
+  italic: Corsivo
+  underline: Sottolineato
+  strikethrough: Barrato
+  copy: Copia
+  cut: Taglia
+  paste: Incolla
+  undo: Annulla
+  redo: Ripristina
   remove: Rimuovere
+  removeformat: Rimuovi Formato
   selectall: Seleziona tutto
   table: Tabella
+  code: Visualizza Sorgente
+  fullscreen: Schermo Intero
 dropdown: Menu a tendina
 choices: Scelta multipla
 deselect: Deseleziona
+deselect_all: Deseleziona Tutto
+other: Altro...
+adding_user: Aggiunta Utente
+unknown_user: Utente Sconosciuto
 editing_in_batch: 'Modifica batch {count} Articoli'
+no_options_available: Nessuna opzione disponibile
 settings_permissions: Ruoli e permessi
 settings_project: Impostazioni del progetto
 settings_webhooks: Webhooks
@@ -342,6 +436,9 @@ fields:
     tfa_secret: Autenticazione a due fattori
   directus_settings:
     project_name: Nome del progetto
+    project_url: URL del Progetto
+    project_color: Colore del Progetto
+    project_logo: Logo del Progetto
   directus_fields:
     note: Nota
     hidden: Nascosto
@@ -349,9 +446,14 @@ fields:
     display_template: Template
   directus_roles:
     name: Nome ruolo
+    icon: Icona Ruolo
     description: Descrizione
+    ip_access: Accesso IP
+    app_access: Accesso App
+    enforce_tfa: Richiede 2FA
 comment: Commento
 continue: Continua
+editing_role: '{role} Ruolo'
 default: Predefinito
 delete: Elimina
 delete_field_are_you_sure: >-
@@ -368,11 +470,16 @@ forgot_password: Ha dimenticato la password
 hidden: Nascosto
 icon: Icon
 info: Informazioni
+normal: Normale
+success: Successo
+warning: Avviso
+danger: Pericolo
 junction_collection: Collezione Junction
 latency: Latenza
 login: Accesso
 my_activity: Le mie attività
 not_authenticated: Non autenticato
+authenticated: Autenticato
 options: Opzioni
 otp: Password monouso
 password: Parola d'ordine
@@ -380,11 +487,13 @@ permissions: permessi
 relationship: Relazione
 reset: Resetta
 reset_password: Resetta la password
+revisions: Revisioni
 revert: Ripristina
 save: Salvare
 schema: Schema
 search: Ricerca
 select_existing: Seleziona Esistente
+select_field_type: Seleziona un tipo di campo
 select_interface: Seleziona un'interfaccia
 settings: impostazioni
 sign_in: Accedi
@@ -392,16 +501,22 @@ sign_out: Disconnessione
 sign_out_confirm: Sei sicuro di voler uscire?
 something_went_wrong: Qualcosa è andato storto.
 sort_direction: Direzione ordine
+sort_asc: Ordinamento Crescente
+sort_desc: Ordinamento Decrescente
 template: Template
 translation: Traduzione
 value: Valore
+view_project: Visualizza Progetto
 interfaces:
   checkboxes:
     checkboxes: Checkbox
     allow_other: Permetti Altro
+    show_more: 'Mostra altri {count}'
   code:
     code: Codice
+    description: Scrivi o condividi frammenti di codice
     line_number: Numero di riga
+    placeholder: Inserisci il codice qui...
   collection:
     collection: Collezione
   collections:
@@ -410,19 +525,28 @@ interfaces:
     color: Colore
   datetime:
     datetime: Data e ora
+    include_seconds: Includi Secondi
+    use_24: Usa Formato 24 Ore
   display-template:
     display-template: Display Template
   divider:
     divider: Separatore
+    title_placeholder: Inserisci un titolo...
   dropdown:
     allow_other: Permetti Altro
+    choices_name_placeholder: Inserisci un nome...
+    choices_value_placeholder: Inserisci un valore...
   file:
     file: File
   files:
     files: File
+  hash:
+    hash: Hash
   icon:
     icon: Icon
     search_for_icon: Cerca un'icona...
+  image:
+    image: Immagine
   interface-options:
     interface-options: Opzioni interfaccia
   many-to-many:
@@ -436,18 +560,25 @@ interfaces:
     preview: Anteprima
   numeric:
     numeric: Numerico
+    description: Inserisci un numero
+    minimum_value: Valore Minimo
+    maximum_value: Valore Massimo
   one-to-many:
     one-to-many: Uno a Molti
+    description: Seleziona più elementi correlati
   radio-buttons:
     radio-buttons: Pulsanti di scelta
   repeater:
     repeater: Ripetitore
+    edit_fields: Modifica Campi
+    field_name_placeholder: Inserisci il nome del campo...
   slider:
     slider: Cursore
   slug:
     slug: Slug
   tags:
     tags: Tags
+    alphabetize_label: Forza Ordine Alfabetico
   text-input:
     text-input: Text Input
     trim: Trim
@@ -459,7 +590,9 @@ interfaces:
     user: Utente
     modes:
       dropdown: Menu a tendina
+      modal: Modale
   wysiwyg:
+    wysiwyg: WYSIWYG
     custom_formats: Formati personalizzati
 displays:
   boolean:
@@ -473,21 +606,40 @@ displays:
     format: Formato
   file:
     file: File
+    description: Visualizza file
   filesize:
     filesize: Dimensione File
+    description: Visualizza la dimensione di un file
   icon:
     icon: Icon
+    description: Visualizza un'icona
+  image:
+    image: Immagine
+    description: Visualizza una piccola anteprima dell'immagine
+    circle: Cerchio
+    circle_label: Visualizza come un cerchio
+  labels:
+    choices_value_placeholder: Inserisci un valore...
+    choices_text_placeholder: Inserisci un testo...
+  mime-type:
+    extension_only: Solo Estensione
+    extension_only_label: Mostra solo l'estensione del file
   rating:
     rating: Valutazione
+    simple: Semplice
+  related-values:
+    description: Visualizza i valori relativi
   user:
     user: Utente
     avatar: Avatar
     name: Nome
     both: Tutti e due
+    circle_label: Mostra utente in un cerchio
 layouts:
   cards:
     cards: Schede
     image_source: Origine immagine
+    crop: Ritaglia
     title: Titolo
     subtitle: Sottotitolo
   tabular:
