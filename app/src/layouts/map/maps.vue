@@ -132,14 +132,14 @@
 		<map-component
 			ref="map"
 			class="mapboxgl-map"
-			:class="{ loading, error: error || geojsonError || missingOptions || itemCount === 0 }"
+			:class="{ loading, error: error || geojsonError || !geojsonOptionsOk || itemCount === 0 }"
 			:data="geojson"
+			:camera="cameraOptions"
 			:bounds="geojsonBounds"
 			:onClick="gotoEdit"
 			:rootStyle="rootStyle"
 			:source="userSource"
 			:layers="userLayers"
-			:camera="cameraOptions"
 			@moveend="cameraOptions = $event"
 			:backgroundLayer="backgroundLayer"
 			:animateOptions="{
@@ -160,7 +160,7 @@
 				</template>
 			</v-info>
 			<v-info
-				v-else-if="missingOptions"
+				v-else-if="!geojsonOptionsOk"
 				icon="not_listed_location"
 				center
 				:title="$t('layouts.map.missing_option')"
@@ -218,7 +218,17 @@ import { CameraOptions, Style, AnyLayer, MapLayerMouseEvent, LngLatBoundsLike } 
 import { basemapNames, rootStyle, dataStyle } from './styles';
 import type { GeoJSONSerializer } from './worker';
 
-import { defineComponent, toRefs, inject, computed, ref, watch, watchEffect, onMounted } from '@vue/composition-api';
+import {
+	defineComponent,
+	toRefs,
+	inject,
+	computed,
+	ref,
+	watch,
+	watchEffect,
+	onMounted,
+	onUnmounted,
+} from '@vue/composition-api';
 import type { PropType, Ref, ComputedRef } from '@vue/composition-api';
 
 import adjustFieldsForDisplays from '../../utils/adjust-fields-for-displays';
@@ -380,6 +390,12 @@ export default defineComponent({
 				};
 			},
 		});
+		const geojsonOptionsOk = computed(() => {
+			return (
+				(geometryFormat.value === 'lnglat' && longitudeField.value && latitudeField.value) ||
+				(geometryFormat.value && geometryField.value)
+			);
+		});
 
 		const queryFields = computed(() => {
 			return [geometryField, latitudeField, longitudeField]
@@ -397,19 +413,18 @@ export default defineComponent({
 			searchQuery: _searchQuery,
 		});
 
-		let queryChanged = false;
 		function onQueryChange(next: any, prev: any) {
 			resetWorker();
 			page.value = 1;
-			queryChanged = true;
+			geojsonDataChanged.value = true;
 		}
 
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
 		const geojsonBounds = ref<GeoJSON.BBox>();
 		const geojsonError = ref<string | null>();
-		const geojsonLoading = ref<boolean>(false);
-		const geojsonProgress = ref<number>(0);
-		const missingOptions = ref<boolean>(false);
+		const geojsonLoading = ref(false);
+		const geojsonProgress = ref(0);
+		const geojsonDataChanged = ref(false);
 		let geojsonWorker: Worker;
 		let workerProxy: Remote<GeoJSONSerializer>;
 
@@ -422,6 +437,23 @@ export default defineComponent({
 		watch(() => geometrySRID.value, updateGeojson);
 		watch(() => items.value, updateGeojson);
 
+		watch(
+			() => geometrySRID.value,
+			() => (geojsonDataChanged.value = true)
+		);
+		watch(
+			() => longitudeField.value,
+			() => (geojsonDataChanged.value = true)
+		);
+		watch(
+			() => latitudeField.value,
+			() => (geojsonDataChanged.value = true)
+		);
+		watch(
+			() => geometryField.value,
+			() => (geojsonDataChanged.value = true)
+		);
+
 		function resetWorker() {
 			geojsonLoading.value && geojsonWorker && geojsonWorker.terminate();
 			geojsonLoading.value = false;
@@ -429,46 +461,30 @@ export default defineComponent({
 			workerProxy = wrap(geojsonWorker);
 		}
 
-		function validateGeometryOptions() {
-			if (geometryFormat.value === 'lnglat' && longitudeField.value && latitudeField.value) {
-				return true;
-			} else if (geometryFormat.value && geometryField.value) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
 		function onProgress(progress: number) {
 			geojsonProgress.value = progress;
 		}
 
-		function onProgress(progress: number) {
-			geojsonProgress.value = progress;
-		}
-		const first = true;
 		async function updateGeojson() {
-			const validate = validateGeometryOptions();
-			if (validate) {
-				missingOptions.value = false;
+			if (geojsonOptionsOk.value) {
 				try {
 					geojson.value = { type: 'FeatureCollection', features: [] };
 					geojsonLoading.value = true;
 					geojsonProgress.value = 0;
 					geojsonError.value = null;
 					geojson.value = await workerProxy(items.value, _layoutOptions.value, proxy(onProgress));
-					console.log(geojson.value.bbox);
 					geojsonLoading.value = false;
-					if (!cameraOptions.value || (queryChanged && fitDataBounds.value)) {
+					console.log(geojsonDataChanged, fitDataBounds.value);
+					if (!cameraOptions.value || (geojsonDataChanged && fitDataBounds.value)) {
 						geojsonBounds.value = geojson.value.bbox;
 					}
+					geojsonDataChanged.value = true;
 				} catch (error) {
 					geojsonLoading.value = false;
 					geojsonError.value = error;
 					geojson.value = { type: 'FeatureCollection', features: [] };
 				}
 			} else {
-				missingOptions.value = true;
 				geojson.value = { type: 'FeatureCollection', features: [] };
 			}
 		}
@@ -553,7 +569,6 @@ export default defineComponent({
 		const mapStyleOptions = basemapNames;
 
 		return {
-			cameraOptions,
 			geojson,
 			rootStyle,
 			userSource,
@@ -567,7 +582,7 @@ export default defineComponent({
 			geojsonLoading,
 			geojsonProgress,
 			geojsonError,
-			missingOptions,
+			geojsonOptionsOk,
 			gotoEdit,
 			geometrySRID,
 			geometryFormat,
@@ -644,7 +659,7 @@ export default defineComponent({
 
 .layout-map {
 	width: 100%;
-	height: calc(100% - (2 * 24px + 65px));
+	height: calc(100% - 65px);
 }
 .layout-map::v-deep .mapboxgl-map .mapboxgl-canvas-container {
 	transition: opacity 0.2s;
