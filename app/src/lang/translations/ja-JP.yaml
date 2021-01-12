@@ -37,6 +37,7 @@ boolean: 真偽値
 date: 日付
 text: テキスト
 uuid: UUID
+hash: ハッシュ値
 auto_generate: 自動生成
 add_note: ユーザーに有益な注釈を追加...
 default_value: 初期値
