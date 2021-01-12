@@ -192,6 +192,7 @@ export default defineComponent({
 	margin-top: 4px;
 	color: var(--foreground-subdued);
 	font-style: italic;
+	max-width: 520px;
 }
 
 .invalid {
