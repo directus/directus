@@ -304,7 +304,12 @@ bookmarks: segnalibri
 unexpected_error: Errore Imprevisto
 unexpected_error_copy: Si è verificato un errore imprevisto. Riprova più tardi.
 copy_details: Copia Dettagli
+no_app_access: Nessun Accesso all'App
+no_app_access_copy: Questo utente non è autorizzato ad utilizzare l'app amministratore.
+password_reset_sent: Ti abbiamo inviato un link sicuro per reimpostare la tua password
+password_reset_successful: Password reimpostata con successo
 back: Indietro
+editing_image: Modifica Immagine
 square: Quadrato
 free: Libero
 rotate: Ruota
@@ -335,15 +340,21 @@ upload_file_success: File Caricato
 upload_files_indeterminate: 'Caricamento file {done}/{total}'
 upload_files_success: '{count} File Caricati'
 upload_pending: Caricamento In Attesa
+value_unique: Il valore deve essere unico
+create_item: Crea Elemento
 display_template: Display Template
+n_items_selected: 'Nessun Elemento Selezionato | 1 Elemento Selezionato | {n} Elementi Selezionati'
 per_page: Per Pagina
 all_files: Tutti i File
 my_files: I Miei File
 recent_files: File Recenti
+create_folder: Crea Cartella
+folder_name: Nome Cartella...
 add_file: Aggiungi File
 replace_file: Sostituisci File
 no_results: Nessun risultato
 no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risultati.
+saves_automatically: Salva Automaticamente
 role: Ruolo
 user: Utente
 create: Creare
@@ -385,12 +396,14 @@ unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
 keep_editing: Continua a modificare
 add_new: Aggiungi nuovo
+create_new: Crea Nuovo
 all: Tutti
 batch_delete_confirm: >-
   Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo articolo? Questa azione non può essere annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
 cancel: Annulla
 collection: Collezione
 collections: collezioni
+system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
 fields:
   directus_activity:
     action: Azioni
@@ -451,11 +464,18 @@ fields:
     ip_access: Accesso IP
     app_access: Accesso App
     enforce_tfa: Richiede 2FA
+do_nothing: Non Fare Niente
+generate_and_save_uuid: Genera e Salva UUID
+save_current_user_id: Salva l'Id Utente Attuale
+save_current_user_role: Salva Ruolo Utente Attuale
+save_current_datetime: Salva Data/Ora Attuale
 comment: Commento
 continue: Continua
 editing_role: '{role} Ruolo'
 default: Predefinito
 delete: Elimina
+delete_are_you_sure: >-
+  Questa azione è permanente e non può essere annullata. Sei sicuro di voler procedere?
 delete_field_are_you_sure: >-
   Sei sicuro di voler cancellare il campo "{field}"? Questa azione non può essere annullata.
 description: Descrizione
@@ -512,6 +532,7 @@ interfaces:
     checkboxes: Checkbox
     allow_other: Permetti Altro
     show_more: 'Mostra altri {count}'
+    items_shown: Elementi Visualizzati
   code:
     code: Codice
     description: Scrivi o condividi frammenti di codice
@@ -523,8 +544,12 @@ interfaces:
     collections: collezioni
   color:
     color: Colore
+    placeholder: Scegli un colore...
+    preset_colors_add_label: Aggiungi nuovo colore...
+    name_placeholder: Inserisci il nome del colore...
   datetime:
     datetime: Data e ora
+    description: Inserisci date e orari
     include_seconds: Includi Secondi
     use_24: Usa Formato 24 Ore
   display-template:
@@ -538,8 +563,10 @@ interfaces:
     choices_value_placeholder: Inserisci un valore...
   file:
     file: File
+    description: Seleziona o carica un file
   files:
     files: File
+    description: Seleziona o carica più file
   hash:
     hash: Hash
   icon:
@@ -547,6 +574,7 @@ interfaces:
     search_for_icon: Cerca un'icona...
   image:
     image: Immagine
+    description: Seleziona o carica un'immagine
   interface-options:
     interface-options: Opzioni interfaccia
   many-to-many:
@@ -574,11 +602,14 @@ interfaces:
     field_name_placeholder: Inserisci il nome del campo...
   slider:
     slider: Cursore
+    always_show_value: Mostra sempre il valore
   slug:
     slug: Slug
   tags:
     tags: Tags
+    description: Seleziona o aggiungi tag
     alphabetize_label: Forza Ordine Alfabetico
+    add_tags: Aggiungi tag...
   text-input:
     text-input: Text Input
     trim: Trim
@@ -588,6 +619,7 @@ interfaces:
     display_template: Display Template
   user:
     user: Utente
+    description: Seleziona un utente di directus esistente
     modes:
       dropdown: Menu a tendina
       modal: Modale
