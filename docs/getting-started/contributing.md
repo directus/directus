@@ -102,7 +102,7 @@ Go to the [repository](https://github.com/directus/directus) and fork it to your
 ### 2. Clone from your repository
 
 ```bash
-git clone git@github.com:YOUR-USERNAME/next.git
+git clone git@github.com:YOUR-USERNAME/directus.git
 ```
 
 ### 3. Make a new branch
@@ -134,6 +134,8 @@ Run the following command from the root directory.
 ```bash
 npm run dev
 ```
+
+::: If you encounter errors during this installation process, make sure your node version meets the [minimum requirements](/guides/installation/cli) :::
 
 ### 7. Make your fixes/changes
 
