@@ -74,13 +74,24 @@ validationError:
   required: Il valore è obbligatorio
 no_access: Nessun Accesso
 use_custom: Usa Personalizzato
+field_standard: Standard
+field_file: File Singolo
+field_files: File Multipli
 item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
+delete_field: Elimina campo
 language: Linguaggio
+global: Globale
+exposure: Esposizione
+shutter: Otturatore
+iso: ISO
+focal_length: Lunghezza Focale
 create_field: Crea campo
+hidden_field: Campo Nascosto
 hidden_on_detail: Nascosto nei dettagli
+disabled_editing_value: Disabilita valore di modifica
 key: Chiave
 alias: Alias
 bigInteger: Big Integer
@@ -105,8 +116,12 @@ to_manually_setup_translations: per configurare manualmente le traduzioni.
 click_to_manage_translated_fields: >-
   Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
 fields_group: Gruppo campi
+choose_a_type: Seleziona un Tipo...
 add_note: Aggiungi una nota utile per gli utenti ...
 default_value: Valore predefinito
+standard_field: Campo Standard
+single_file: File Singolo
+multiple_files: File Multipli
 next: Il prossimo
 note: Nota
 length: Lunghezza
@@ -119,14 +134,37 @@ undo_changes: Annulla modifica
 notifications: Notifiche
 page_not_found: Pagina non trovata
 page_not_found_body: La pagina che stai cercando non sembra esistere.
+confirm_revert: Conferma Ripristino
+confirm_revert_body: Questo ripristinerà l'elemento allo stato selezionato.
 display: Mostra
+settings_update_success: Impostazioni aggiornate
 title: Titolo
+revision_delta_created: Creato
+revision_delta_created_externally: Creato Esternamente
 revision_delta_deleted: Eliminato
+revision_delta_reverted: Ripristinato
+revision_delta_other: Revisione
+revision_delta_by: '{date} da {user}'
+revision_preview: Anteprima Revisione
 leave_comment: Lascia un commento...
+post_comment_success: Commento pubblicato
 this_collection: Questa collezione
 related_collection: Collezione correlata
+related_collections: Collezioni Correlate
 format: Formato
+export_collection: 'Esporta {collection}'
+last_page: Ultima Pagina
+last_access: Ultimo Acesso
 submit: Invia
+move_to_folder: Sposta nella cartella
+move: Sposta
+system: Sistema
+today: Oggi
+yesterday: Ieri
+delete_comment: Elimina Commento
+month: Mese
+year: Anno
+select_all: Seleziona tutto
 months:
   january: Gennaio
   february: Febbraio
@@ -140,29 +178,76 @@ months:
   october: Ottobre
   november: Novembre
   december: Dicembre
+drag_mode: Modalità Di Trascinamento
+cancel_crop: Annulla Ritaglio
+original: Originale
+url: URL
+import: Importa
+file_details: Dettagli File
+dimensions: Dimensioni
 size: Dimensione
+created: Creato
+modified: Modificato
 checksum: Checksum
 owner: Proprietario
+edited_by: Modificato da
+folder: Cartella
+zoom: Zoom
 download: Scarica
+open: Apri
+open_in_new_window: Apri in una Nuova Finestra
+import_from_url: Importa File da URL
+download_file: Scarica File
 name: Nome
+type: Tipo
 created_by: Creato da
 created_on: Creato il
+generated_uuid: UUID Generato
+manual_string: Stringa inserita manualmente
+save_and_create_new: Salva e Crea nuovo
 save_and_stay: Salva e rimani
 save_as_copy: Salva come copia
+add_existing: Aggiungi esistente
 comments: Commenti
+no_comments: Non ci sono ancora commenti
+click_to_expand: Fare clic per espandere
+select_item: Seleziona Elemento
+no_items: Nessun elemento
+search_items: Ricerca elementi...
+disabled: Disabilitato
+information: Informazioni
+report_bug: Segnala un Bug
 request_feature: Richiesta caratteristica
 item_count: 'Nessun elemento | Un articolo | {count} Articoli'
+file_count: 'Nessun File | Un File | {count} Files'
+all_items: Tutti gli Elementi
+csv: CSV
 create_collection: Crea raccolta
 relationship_not_setup: La relazione non è stata configurata correttamente
+active: Attivo
 users: Utenti
 activity: Attività
 webhooks: Webhooks
 field_width: Larghezza del Campo
+add_filter: Aggiungi Filtro
 user_directory: Elenco utenti
 duration: Durata
 modified_on: Modificato il
 sort_field: Ordina per
 edit: Modifica
+enabled: Abilitato
+disable_tfa: Disabilita 2FA
+enter_otp_to_disable_tfa: Inserisci OTP per disabilitare 2FA
+create_account: Crea Account
+account_created_successfully: Account Creato con Successo
+auto_fill: Auto-completamento
+corresponding_field: Campo Corrispondente
+errors:
+  FIELD_NOT_FOUND: Campo non trovato
+  FORBIDDEN: Proibito
+  INVALID_CREDENTIALS: Nome utente o password sbagliati
+  INVALID_QUERY: Query non valida
+  ROUTE_NOT_FOUND: Non trovato
 bookmarks: segnalibri
 back: Indietro
 placeholder: Placeholder
@@ -182,6 +267,7 @@ operators:
 loading: Caricamento in corso...
 display_template: Display Template
 no_results: Nessun risultato
+no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risultati.
 role: Ruolo
 user: Utente
 create: Creare
@@ -191,6 +277,7 @@ update: Aggiornare
 select_fields: Seleziona campi
 wysiwyg_options:
   remove: Rimuovere
+  selectall: Seleziona tutto
   table: Tabella
 dropdown: Menu a tendina
 choices: Scelta multipla
@@ -293,7 +380,7 @@ permissions: permessi
 relationship: Relazione
 reset: Resetta
 reset_password: Resetta la password
-revert: ritornare
+revert: Ripristina
 save: Salvare
 schema: Schema
 search: Ricerca
@@ -335,6 +422,7 @@ interfaces:
     files: File
   icon:
     icon: Icon
+    search_for_icon: Cerca un'icona...
   interface-options:
     interface-options: Opzioni interfaccia
   many-to-many:
@@ -363,6 +451,8 @@ interfaces:
   text-input:
     text-input: Text Input
     trim: Trim
+  toggle:
+    label_default: Abilitato
   translations:
     display_template: Display Template
   user:
