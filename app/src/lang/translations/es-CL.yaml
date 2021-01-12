@@ -591,7 +591,6 @@ page_help_users_item: >-
   **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
 activity_feed: Actividad
 add_new: Añadir Nuevo
-from_collection: 'De la colección "{collection}"'
 create_new: Crear Nuevo
 all: Todo
 none: Nada
