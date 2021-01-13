@@ -113,12 +113,7 @@
 
 					<div v-if="loading === false && items.length >= 25" class="per-page">
 						<span>{{ $t('per_page') }}</span>
-						<v-select
-							@input="limit = +$event"
-							:value="`${limit}`"
-							:items="['25', '50', '100', '250']"
-							inline
-						/>
+						<v-select @input="limit = +$event" :value="`${limit}`" :items="['25', '50', '100', '250']" inline />
 					</div>
 				</div>
 			</template>
@@ -324,22 +319,26 @@ export default defineComponent({
 		}
 
 		function useItemOptions() {
-			const page = ref(1);
-
-			watch(
-				() => props.collection,
-				() => (page.value = 1),
-				{ immediate: true }
-			);
+			const page = computed({
+				get() {
+					return _layoutQuery.value?.page || 1;
+				},
+				set(newPage: number) {
+					_layoutQuery.value = {
+						...(_layoutQuery.value || {}),
+						page: newPage,
+					};
+				},
+			});
 
 			const sort = computed({
 				get() {
 					return _layoutQuery.value?.sort || primaryKeyField.value?.field;
 				},
 				set(newSort: string) {
-					page.value = 1;
 					_layoutQuery.value = {
 						...(_layoutQuery.value || {}),
+						page: 1,
 						sort: newSort,
 					};
 				},
@@ -347,12 +346,12 @@ export default defineComponent({
 
 			const limit = computed({
 				get() {
-					return _layoutOptions.value?.limit || 25;
+					return _layoutQuery.value?.limit || 25;
 				},
 				set(newLimit: number) {
-					page.value = 1;
-					_layoutOptions.value = {
-						...(_layoutOptions.value || {}),
+					_layoutQuery.value = {
+						...(_layoutQuery.value || {}),
+						page: 1,
 						limit: newLimit,
 					};
 				},
@@ -370,8 +369,7 @@ export default defineComponent({
 						if (Array.isArray(_layoutQuery.value.fields)) return _layoutQuery.value.fields;
 					}
 
-					const fields =
-						_layoutQuery.value?.fields || fieldsInCollection.value.slice(0, 4).map(({ field }) => field);
+					const fields = _layoutQuery.value?.fields || fieldsInCollection.value.slice(0, 4).map(({ field }) => field);
 
 					return fields;
 				},
@@ -438,9 +436,7 @@ export default defineComponent({
 							type: field.type,
 							field: field.field,
 						},
-						sortable:
-							['json', 'o2m', 'm2o', 'file', 'files', 'alias', 'presentation'].includes(field.type) ===
-							false,
+						sortable: ['json', 'o2m', 'm2o', 'file', 'files', 'alias', 'presentation'].includes(field.type) === false,
 					}));
 				},
 				set(val) {
