@@ -5,6 +5,7 @@ checksum: מחרוזת בדיקה
 users: משתמשים
 activity: פעילות
 duration: משך זמן
+status: סטטוס
 role: תפקיד
 collection: מאגר
 fields:
