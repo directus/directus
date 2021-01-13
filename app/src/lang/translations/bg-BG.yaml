@@ -348,6 +348,7 @@ collection_created: Колекцията е създадена
 modified_on: Променен на
 card_size: Големина на картите
 sort_field: Поле за сортиране
+status: Статус
 toggle_manual_sorting: Ръчна подредба
 bookmark_doesnt_exist: Отметката не съществива
 bookmark_doesnt_exist_copy: Отметката която се опитвате да отворите не може да бъде намерена.
