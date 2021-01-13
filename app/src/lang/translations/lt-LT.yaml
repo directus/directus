@@ -160,12 +160,40 @@ all_items: Visi elementai
 csv: CSV
 no_collections: Nėra kolekcijų
 create_collection: Kurti rinkinį
+active: Aktyvus
 users: Vartotojai
 activity: Veiksmas
 field_width: Laukelio plotis
+documentation: Dokumentacija
 duration: Trukmė
+edit: Redaguoti
+enabled: Įjungtas
+disable_tfa: Išjungti 2VA
+create_account: Sukurti paskyrą
+auto_fill: Automatinis užpildymas
+errors:
+  UNKNOWN: Nenumatyta klaida
+value_hashed: Reikšmė saugiai išsaugota
+bookmark_name: Žymės pavadinimas...
+create_bookmark: Kurti žymę
+edit_bookmark: Redaguoti žymę
 bookmarks: Žymės
+presets: Ruošiniai
+unexpected_error: Nenumatyta klaida
+unexpected_error_copy: Nutiko nenumatyta klaida. Prašome pabandyti vėliau.
+password_reset_successful: Slaptažodis sėkmingai atstatytas
 back: Atgal
+editing_image: Paveikslėlio redagavimas
+square: Kvadratas
+free: Laisvas
+flip_horizontal: Pasukti Horizontaliai
+flip_vertical: Pasukti Vertikaliai
+aspect_ratio: Kraštinių santykis
+rotate: Pasukti
+all_users: Visi vartotojai
+delete_collection: Trinti kolekciją
+update_collection_success: Atnaujinti kolekciją
+delete_collection_success: Kolekcija ištrinta
 operators:
   contains: Turi
 role: Vaidmuo
@@ -237,8 +265,12 @@ interfaces:
     files: Failai
   interface:
     interface: Sąsaja
+  markdown:
+    edit: Redaguoti
   tags:
     tags: Žymos
+  toggle:
+    label_default: Įjungtas
 displays:
   boolean:
     boolean: Loginis
