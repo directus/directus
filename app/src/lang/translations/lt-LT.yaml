@@ -37,6 +37,8 @@ public: Vieša
 public_description: Nustato kokie API duomenys yra prieinami neprisijungus.
 not_allowed: Neleidžiama
 directus_version: Directus versija
+node_version: Serverio versija
+node_uptime: Serverio veikimo laikas
 os_type: OS tipas
 os_version: OS versija
 os_uptime: OS veikimo laikas
@@ -57,8 +59,47 @@ validationError:
   in: Reikšmė turi būti viena iš {valid}
   nin: Reikšmė negali būti tarp {invalid}
   contains: Reikšmę turi sudaryti {substring}
+  ncontains: Reikšmės negali sudaryti {substring}
+  gt: Reikšmė turi būti didesnė už {valid}
+  gte: Reikšmė turi būti didesnę už arba lygi {valid}
+  lt: Reikšmė turi būti mažesnė už {valid}
+  lte: Reikšmė turi būti mažesnė už arba lygi {valid}
+  empty: Reikšmė privalo būti tuščia
+  nempty: Reikšmė negali būti tuščia
+  null: Reikšmė turi būti null
+  nnull: Reikšmė negali būti null
+  required: Reikšmė turi būti užpildyta
+all_access: Pilna prieiga
+no_access: Jokios prieigos
+use_custom: Pasirinktinai
+field_standard: Standartinis
+field_presentation: Atvaizdavimas ir sinonimai
 field_file: Vienas failas
 field_files: Keli failai
+field_m2o: M2O sąryšis
+field_o2m: O2M sąryšis
+field_m2m: M2M sąryšis
+item_permissions: Elemento leidimai
+field_permissions: Lauko leidimai
+field_validation: Lauko validacija
+field_presets: Lauko ruošiniai
+presentation_and_aliases: Atvaizdavimas ir sinonimai
+revision_post_update: Taip šis elementas atrodė po paskutinio atnaujinimo...
+changes_made: Tai yra konkretūs atlikti pakeitimai...
+no_relational_data: Atminkite, kad neįtraukiami sąryšių duomenys.
+hide_field_on_detail: Slėpti lauką detalėse
+show_field_on_detail: Rodyti lauką detalėse
+delete_field: Trinti lauką
+fields_and_layout: Laukai ir išdėstymas
+field_create_success: 'Sukurtas laukas: "{field}"'
+field_update_success: 'Atnaujintas laukas: "{field}"'
+duplicate_where_to: Kur norėtumėte perkelti šio laiko kopiją?
+language: Kalba
+global: Bendras
+admins_have_all_permissions: Administratoriai turi visus leidimus
+camera: Kamera
+exposure: Išlaikymas
+shutter: Užraktas
 iso: ISO
 focal_length: Židinio nuotolis
 schema_setup_title: Kaip šis laukas turėtų būti saugojamas duomenų bazėje?
@@ -110,6 +151,13 @@ m2o_relationship: Daug su vienu sąrašis
 o2m_relationship: Vienas su daug sąryšis
 clear_value: Išvalyti reikšmę
 title: Pavadinmas
+leave_comment: Palikite komentarą...
+post_comment_success: Komentaras paskelbtas
+item_create_success: Elementas sukurtas | Elementai sukurti
+item_update_success: Elementas atnaujintas | Elementai atnaujinti
+item_delete_success: Elementas pašalintas | Elementai pašalinti
+this_collection: Ši kolekcija
+related_collection: Susijusi kolekcija
 related_collections: Susijusios kolekcijos
 translations_collection: Vertimų kolekcija
 languages_collection: Kalbų kolekcija
@@ -119,8 +167,10 @@ use_current_filters_settings: Naudoti dabartinius filtrus ir nustatymus
 export_collection: 'Exportuoti {collection}'
 last_page: Paskutinis puslapis
 last_access: Paskutinė prieiga
+fill_template: Užpildyti reikšme iš ruošinio
 a_unique_table_name: Unikalus lentelės pavadinimas...
 a_unique_column_name: Unikalus stulpelio pavadinimas...
+enable_custom_values: Įjungti pasirinktines antraštes
 submit: Išsaugoti
 move_to_folder: Perkelti į aplanką
 move: Perkelti
@@ -153,11 +203,46 @@ url: URL
 import: Importuoti
 file_details: Failo duomenys
 dimensions: Matmenys
+size: Dydis
+modified: Modifikuota
 checksum: Kontrolinė suma
 owner: Savininkas
+edited_by: Redaguota
+folder: Aplankas
+zoom: Padidinti
+download: Parsisiųsti
+open: Atidaryti
+open_in_new_window: Atversti naujame lange
+foreground_color: Teksto spalva
+background_color: Fono spalva
+upload_from_device: Įkelti failą iš įrenginio
+choose_from_library: Pasirinkti failą iš bibliotekos
+import_from_url: Įkelti failą iš internetinio adreso
+replace_from_device: Pakeisti failą iš įrenginio
+replace_from_library: Pakeisti failą iš bibliotekos
+replace_from_url: Pakeisti failą iš internetinio adreso
+no_file_selected: Nepasirinktas failas
+download_file: Atsisiųsti failą
+collection_key: Kolekcijos raktas
+name: Pavadinimas
+primary_key_field: Pirminio rakto laukas
+type: Tipas
+creating_new_collection: Kuriama nauja kolekcija
 created_by: Sukūrė
 created_on: Sukurta
+creating_collection_info: Įveskite kolekcijos pavadinimą ir nustatykite jos unikalaus rakto lauką...
+creating_collection_system: Įjunkite ir pervadinkite bet kuriuos iš šių neprivalomų laukų.
+auto_increment_integer: Iš eilės generuojamas sveikasis skaičius
+generated_uuid: Generuojamas UUID
+manual_string: Rankiniu būdu įvedamas tekstas
+save_and_create_new: Išsaugoti ir sukurti naują
+save_and_stay: Išsaugoti ir pasilikti
+save_as_copy: Išsaugoti kaip kopiją
+add_existing: Pridėti esamą
 comments: Komentarai
+no_comments: Dar nėra komentarų
+click_to_expand: Išskleiskite
+select_item: Pasirinkti elementą
 no_files_copy: Nėra failų.
 all_items: Visi elementai
 csv: CSV
@@ -172,9 +257,22 @@ duration: Trukmė
 edit: Redaguoti
 enabled: Įjungtas
 disable_tfa: Išjungti 2VA
+enter_otp_to_disable_tfa: Įveskite OTP (vienkartinį slaptažodį) norėdami išjungti 2FA
 create_account: Sukurti paskyrą
+account_created_successfully: Paskyra sukurta sėkmingai
 auto_fill: Automatinis užpildymas
+corresponding_field: Atitinkamas laukas
 errors:
+  COLLECTION_NOT_FOUND: "Kolekcija neegzistuoja"
+  FIELD_NOT_FOUND: Laukas nerastas
+  FORBIDDEN: Draudžiama
+  INVALID_CREDENTIALS: Klaidingas prisijungimo vardas ir slaptažodis
+  INVALID_OTP: Klaidingas vienkartinis slaptažodis
+  INVALID_PAYLOAD: Neteisingi duomenys
+  INVALID_QUERY: Neteisinga užklausa
+  ITEM_LIMIT_REACHED: Pasiektas elementų limitas
+  ITEM_NOT_FOUND: Elementas nerastas
+  ROUTE_NOT_FOUND: Nerasta
   UNKNOWN: Nenumatyta klaida
 value_hashed: Reikšmė saugiai išsaugota
 bookmark_name: Žymės pavadinimas...
@@ -184,6 +282,10 @@ bookmarks: Žymės
 presets: Ruošiniai
 unexpected_error: Nenumatyta klaida
 unexpected_error_copy: Nutiko nenumatyta klaida. Prašome pabandyti vėliau.
+copy_details: Kopijuoti detales
+no_app_access: Nėra prieigos prie aplikacijos
+no_app_access_copy: Šis vartotojas negali naudotis administravimo aplikacija.
+password_reset_sent: Išsiuntėme saugiai sugeneruotą nuorodą slaptažodžio atstatymui
 password_reset_successful: Slaptažodis sėkmingai atstatytas
 back: Atgal
 editing_image: Paveikslėlio redagavimas
@@ -197,11 +299,81 @@ all_users: Visi vartotojai
 delete_collection: Trinti kolekciją
 update_collection_success: Atnaujinti kolekciją
 delete_collection_success: Kolekcija ištrinta
+start_end_of_count_items: '{start}-{end} iš {count} elementų'
+delete_collection_are_you_sure: >-
+  Ar tikrai norite ištrinti tią kolekciją? Bus ištrinta visa kolekcija su jai priklausančiais elementais. Šio veiksmo atstatyti negalima.
+collections_shown: Rodomos kolekcijos
+visible_collections: Matomos kolekcijos
+hidden_collections: Paslėptos kolekcijos
+unmanaged_collections: Nesukonfigūruotos kolekcijos
+system_collections: Sisteminės kolekcijos
+placeholder: Pagalbinis tekstas
+icon_left: Ikona kairėje
+icon_right: Ikona dešinėje
+font: Šriftas
+sans_serif: Sans Serif
+serif: Serif
+monospace: Vienodo pločio
+divider: Skyriklis
+color: Spalva
+circle: Apskritimas
+empty_item: Tuščias elementas
+log_in_with: 'Prisijungti su {provider}'
+advanced_filter: Sudėtingesnis filtravimas
+delete_advanced_filter: Trinti filtrą
+change_advanced_filter_operator: Pakeisti operatorių
 operators:
+  eq: Lygu
+  neq: Nelygu
+  lt: Mažiau už
+  gt: Daugiau už
+  lte: Mažiau už arba lygu
+  gte: Daugiau už arba lygu
+  in: Yra vienas iš
+  nin: Nėra vienas iš
+  null: Yra null
+  nnull: Nėra null
   contains: Turi
+  ncontains: Nesusideda iš
 role: Vaidmuo
 create: Kurti
+label: Žyma
 wysiwyg_options:
+  aligncenter: Vidurinė lygiuotė
+  alignjustify: Abipusė lygiuotė
+  alignleft: Kairinė lygiuotė
+  alignnone: Be lygiuotės
+  alignright: Dešininė lygiuotė
+  forecolor: Teksto spalva
+  backcolor: Fono spalva
+  italic: Pasviręs
+  underline: Pabrauktas
+  strikethrough: Perbrauktas
+  subscript: Apatinis indeksas
+  superscript: Viršutinis indeksas
+  blockquote: Įtrauka
+  bullist: Suženklintasis sąrašas
+  numlist: Numeruotasis sąrašas
+  hr: Horizontali linija
+  link: Pridėti nuorodą
+  unlink: Pašalinti nuorodą
+  media: Pridėti mediją
+  image: Pridėti nuotrauką
+  copy: Kopijuoti
+  cut: Iškirpti
+  paste: Įklijuoti
+  h1: Antraštė 1
+  h2: Antraštė 2
+  h3: Antraštė 3
+  h4: Antraštė 4
+  h5: Antraštė 5
+  h6: Antraštė 6
+  fontselect: Pasirinkite šriftą
+  fontsizeselect: Pasirinkite šrifto dydį
+  indent: Įtrauka
+  undo: Atšaukti
+  redo: Grąžinti
+  remove: Pašalinti
   selectall: Pažymėti visus
 add_new: Pridėti Naują
 all: Visi
@@ -246,6 +418,7 @@ fields:
     company: Įmonė
     title: Pavadinmas
     timezone: Laiko zona
+    language: Kalba
     avatar: Nuotrauka
     theme: Tema
     tfa_secret: Dviejų lygių autentifikavimas
@@ -264,6 +437,10 @@ password: Slaptažodis
 interfaces:
   collection:
     collection: Rinkinys
+  color:
+    color: Spalva
+  divider:
+    divider: Skyriklis
   files:
     files: Failai
   interface:
@@ -279,10 +456,15 @@ displays:
     boolean: Loginis
   collection:
     collection: Rinkinys
+  color:
+    color: Spalva
   datetime:
     format: Formatas
+  image:
+    circle: Apskritimas
   user:
     avatar: Nuotrauka
+    name: Pavadinimas
     both: Abu
 layouts:
   cards:
