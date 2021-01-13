@@ -1,20 +1,164 @@
 ---
 edit_field: Redaguoti lauką
 duplicate_field: Dubliuoti lauką
-half_width: 50% pločio
+half_width: Pusė pločio
 full_width: Pilno pločio
+fill_width: Užpildyti visą plotį
+field_name_translations: Laukų pavadinimų vertimai
+enter_password_to_enable_tfa: Norint įjungti dviejų veiksmų autentifikavimą, reikia įvesti savo slaptažodį
+add_field: Pridėti lauką
+role_name: Vaidmens pavadinimas
+show_archived_items: Rodyti archyvuotus elementus
+required: Privalomas
+requires_value: Reikalinga reikšmė
+create_preset: Sukurti išankstinę parinktį
 create_role: Kurti vaidmenį
+create_user: Sukurti vartotojo paskyrą
+invite_users: Pakviesti vartotojus
+email_examples: 'admin@example.com, user@example.com...'
+invite: Pakviesti
+emails: El. pašto adresai
+connection_excellent: Puiki ryšio kokybė
+connection_good: Gera ryšio kokybė
+connection_fair: Patenkinama ryšio kokybė
+connection_poor: Prasta ryšio kokybė
+rename_folder: Pervadinti aplanką
+delete_folder: Trinti aplanką
+reset_bookmark: Atstatyti skirtuką
+rename_bookmark: Pervadinti žymę
+update_bookmark: Atnaujinti žymę
+delete_bookmark: Ištrinti žymę
+delete_bookmark_copy: >-
+  Ar tikrai norite ištrinti "{bookmark}" skirtuką? Šio veiksmo atšaukti negalima.
+logoutReason:
+  SIGN_OUT: Atsijungti
+  SESSION_EXPIRED: Sesijos laikas baigėsi
+public: Vieša
+public_description: Nustato kokie API duomenys yra prieinami neprisijungus.
+not_allowed: Neleidžiama
 directus_version: Directus versija
+os_type: OS tipas
+os_version: OS versija
+os_uptime: OS veikimo laikas
+os_totalmem: OS atmintis
+archive: Archyvuoti
+archive_confirm: Ar tikrai norite archyvuoti šį elementą?
+archive_confirm_count: >-
+  Nėra pasirinktų elementų | Ar tikrai norite archyvuoti šį elementą? | Ar tikrai norite archyvuoti {count} elementus?
+reset_system_permissions: Atstatyti sisteminius leidimus
+reset_system_permissions_copy: Atstatyti visus sisteminius leidimus į pradines reikšmes
+unarchive: Išarchyvuoti
+unarchive_confirm: Ar tikrai norite išarchyvuoti šį elementą?
+nested_files_folders_will_be_moved: Kelių lygių failai ir aplankai bus perkelti vienu lygiu aukštyn.
+unknown_validation_errors: 'Šie paslėpti laukai turi validavimo klaidų:'
+validationError:
+  eq: Reikšmė turi būti {valid}
+  neq: Reikšmė negali būti {invalid}
+field_file: Vienas failas
+field_files: Keli failai
+iso: ISO
+focal_length: Židinio nuotolis
+schema_setup_title: Kaip šis laukas turėtų būti saugojamas duomenų bazėje?
+schema_field_title: Kaip šis laukas turėtų atrodyti aplikacijoje?
 create_field: Kurti lauką
+creating_new_field: 'Naujas laukas ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Atstatyti puslapio nustatymus
+hidden_field: Paslėptas laukas
+hidden_on_detail: Paslėptas detalių puslapyje
+disabled_editing_value: Išjungti reikšmės redagavimą
+key: Raktas
+alias: Sinonimas
+bigInteger: Didelis sveikasis skaičius
+boolean: Loginis
+date: Data
+datetime: Data ir laikas
+decimal: Dešimtainis skaičius
+float: Slankiojo kablelio skaičius
+integer: Sveikasis skaičius
+json: JSON
+string: Simbolių eilutė
+text: Tekstas
+time: Laikas
+timestamp: Laiko žyma
+uuid: UUID
+create_translations: Sukurti vertimus
 auto_generate: Generuoti Automatiškai
+this_will_auto_setup_fields_relations: Bus automatiškai sukurti visi reikalingi laukai ir sąryšiai.
+click_here: Spauskite čia
+fields_group: Laukų grupė
+configure_m2o: Konfigūruoti daug-su-vienu sąryšį...
+configure_o2m: Konfigūruoti vienas-su-daug sąryšį...
+configure_m2m: Konfigūruoti daug-su-daug sąryšį...
+configure_m2a: Konfigūruoti daug-su-bet-kiek sąryšį...
+add_m2o_to_collection: 'Pridėti daug-su-vienu į "{collection}"'
+add_o2m_to_collection: 'Pridėti vienas-su-daug į "{collection}"'
+add_m2m_to_collection: 'Pridėti daug-su-daug į "{collection}"'
+choose_a_type: Pasirinkite tipą...
 add_note: Pridėkite paaiškinimą vartotojui...
+default_value: Numatytoji reikšmė
+add_a_default_value: Pridėti numatytąją reikšmę...
+interface_setup_title: Kaip vartotojai valdys šį lauką?
+display_setup_title: Kaip turėtų būti atvaizduojama lauko reikšmė?
+standard_field: Standartinis laukas
+single_file: Vienas failas
+multiple_files: Keli failai
+m2o_relationship: Daug su vienu sąrašis
+o2m_relationship: Vienas su daug sąryšis
 clear_value: Išvalyti reikšmę
 title: Pavadinmas
+related_collections: Susijusios kolekcijos
+translations_collection: Vertimų kolekcija
+languages_collection: Kalbų kolekcija
+export_data: Eksportuoti duomenis
+format: Formatas
+use_current_filters_settings: Naudoti dabartinius filtrus ir nustatymus
+export_collection: 'Exportuoti {collection}'
+last_page: Paskutinis puslapis
+last_access: Paskutinė prieiga
+a_unique_table_name: Unikalus lentelės pavadinimas...
+a_unique_column_name: Unikalus stulpelio pavadinimas...
+submit: Išsaugoti
+move_to_folder: Perkelti į aplanką
+move: Perkelti
+system: Sistema
+add_field_related: Pridėti lauką į susijusią kolekciją
+interface: Sąsaja
+today: Šiandien
+yesterday: Vakar
+delete_comment: Ištrinti komentarą
+month: Mėnuo
+year: Metai
+select_all: Pažymėti visus
+months:
+  january: Sausis
+  february: Vasaris
+  march: Kovas
+  april: Balandis
+  may: Gegužė
+  june: Birželis
+  july: Liepa
+  august: Rugpjūtis
+  september: Rugsėjis
+  october: Spalis
+  november: Lakpritis
+  december: Gruodis
+drag_mode: Vilkimo režimas
+cancel_crop: Atšaukti apkarpymą
+original: Originalas
+url: URL
+import: Importuoti
+file_details: Failo duomenys
+dimensions: Matmenys
 checksum: Kontrolinė suma
 owner: Savininkas
 created_by: Sukūrė
 created_on: Sukurta
 comments: Komentarai
+no_files_copy: Nėra failų.
+all_items: Visi elementai
+csv: CSV
+no_collections: Nėra kolekcijų
 create_collection: Kurti rinkinį
 users: Vartotojai
 activity: Veiksmas
@@ -26,6 +170,8 @@ operators:
   contains: Turi
 role: Vaidmuo
 create: Kurti
+wysiwyg_options:
+  selectall: Pažymėti visus
 add_new: Pridėti Naują
 all: Visi
 batch_delete_confirm: >-
@@ -72,7 +218,10 @@ fields:
     avatar: Nuotrauka
     theme: Tema
     tfa_secret: Dviejų lygių autentifikavimas
+  directus_fields:
+    translation: Laukų pavadinimų vertimai
   directus_roles:
+    name: Vaidmens pavadinimas
     description: Aprašymas
 comment: Komentaras
 continue: Tęsti
@@ -86,11 +235,17 @@ interfaces:
     collection: Rinkinys
   files:
     files: Failai
+  interface:
+    interface: Sąsaja
   tags:
     tags: Žymos
 displays:
+  boolean:
+    boolean: Loginis
   collection:
     collection: Rinkinys
+  datetime:
+    format: Formatas
   user:
     avatar: Nuotrauka
     both: Abu
