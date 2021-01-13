@@ -67,7 +67,7 @@ export default defineComponent({
 		});
 
 		const _template = computed(() => {
-			return props.template || `{{ ${primaryKeyField.value.field} }}`;
+			return props.template || `{{ ${primaryKeyField.value!.field} }}`;
 		});
 
 		return { relatedCollection, primaryKeyField, getLinkForItem, _template };
