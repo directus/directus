@@ -43,12 +43,7 @@ import sanitizeQuery from './middleware/sanitize-query';
 import { checkIP } from './middleware/check-ip';
 import { InvalidPayloadException } from './exceptions';
 
-import {
-	initializeExtensions,
-	registerExtensionEndpoints,
-	registerExtensionHooks,
-	registerExtensions,
-} from './extensions';
+import { initializeExtensions, registerExtensionEndpoints, registerExtensionHooks } from './extensions';
 import { register as registerWebhooks } from './webhooks';
 import emitter, { emitAsyncSafe } from './emitter';
 
