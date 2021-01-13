@@ -1,5 +1,6 @@
 ---
 edit_field: Redaguoti lauką
+item_revision: Elemento pakeitimai
 duplicate_field: Dubliuoti lauką
 half_width: Pusė pločio
 full_width: Pilno pločio
@@ -79,6 +80,7 @@ field_files: Keli failai
 field_m2o: M2O sąryšis
 field_o2m: O2M sąryšis
 field_m2m: M2M sąryšis
+field_translations: Vertimai
 item_permissions: Elemento leidimai
 field_permissions: Lauko leidimai
 field_validation: Lauko validacija
@@ -126,10 +128,13 @@ text: Tekstas
 time: Laikas
 timestamp: Laiko žyma
 uuid: UUID
+not_available_for_type: Šiam tipui neprieinama
 create_translations: Sukurti vertimus
 auto_generate: Generuoti Automatiškai
 this_will_auto_setup_fields_relations: Bus automatiškai sukurti visi reikalingi laukai ir sąryšiai.
 click_here: Spauskite čia
+click_to_manage_translated_fields: >-
+  Dar nėra laukų su vertimais. Paspauskite čia, kad juos sukurtumėte | Yra vienas laukas su vertimais. Paspauskite čia norėdami redaguoti | Yra {count} laukų su vertimais. Paspauskite čia norėdami redaguoti.
 fields_group: Laukų grupė
 configure_m2o: Konfigūruoti daug-su-vienu sąryšį...
 configure_o2m: Konfigūruoti vienas-su-daug sąryšį...
@@ -139,6 +144,7 @@ add_m2o_to_collection: 'Pridėti daug-su-vienu į "{collection}"'
 add_o2m_to_collection: 'Pridėti vienas-su-daug į "{collection}"'
 add_m2m_to_collection: 'Pridėti daug-su-daug į "{collection}"'
 choose_a_type: Pasirinkite tipą...
+determined_by_relationship: Nustatoma pagal sąryšį
 add_note: Pridėkite paaiškinimą vartotojui...
 default_value: Numatytoji reikšmė
 add_a_default_value: Pridėti numatytąją reikšmę...
@@ -149,8 +155,46 @@ single_file: Vienas failas
 multiple_files: Keli failai
 m2o_relationship: Daug su vienu sąrašis
 o2m_relationship: Vienas su daug sąryšis
+m2m_relationship: Daug su daug sąryšis
+m2a_relationship: Daug su bet kiek sąryšis
+next: Tęsti
+field_name: Lauko pavadinimas
+translations: Vertimai
+note: Pastaba
+enter_a_value: Įveskite reikšmę...
+enter_a_placeholder: Įveskite pagalbinį tesktą...
+length: Ilgis
+precision_scale: Tikslumas ir dydis
+readonly: Tik skaitomas
+unique: Unikalus
+primary_key: Pirminis raktas
+foreign_key: Išorinis raktas
+finish_setup: Pabaigti konfigūravimą
+dismiss: Atmesti
+raw_value: Neapdorota reikšmė
+edit_raw_value: Redaguoti neapdorotą reikšmę
+enter_raw_value: Įvesti neapdorotą reikšmę...
 clear_value: Išvalyti reikšmę
+reset_to_default: Atstatyti numatytuosius
+undo_changes: Anuliuoti pakeitimus
+notifications: Pranešimai
+show_all_activity: Rodyti visą veiklos istoriją
+page_not_found: Puslapis nerastas
+page_not_found_body: Panašu, kad puslapis kurio ieškote neegzistuoja.
+confirm_revert: Patvirtinti atstatymą
+confirm_revert_body: Elementas bus atstatytas į pasirinktą būseną.
+display: Rodymas
+settings_update_success: Nustatymai atnaujinti
 title: Pavadinmas
+revision_delta_created: Sukurta
+revision_delta_created_externally: Sukurta išorėje
+revision_delta_updated: 'Atnaujintas 1 laujas | Atnaujinta {count} laukų'
+revision_delta_deleted: Ištrintas
+revision_delta_reverted: Atstatytas
+revision_delta_other: Pakeitimas
+revision_delta_by: '{date} {user}'
+private_user: Privatus vartotojas
+revision_preview: Pakeitimo peržiūra
 leave_comment: Palikite komentarą...
 post_comment_success: Komentaras paskelbtas
 item_create_success: Elementas sukurtas | Elementai sukurti
@@ -204,6 +248,7 @@ import: Importuoti
 file_details: Failo duomenys
 dimensions: Matmenys
 size: Dydis
+created: Sukurta
 modified: Modifikuota
 checksum: Kontrolinė suma
 owner: Savininkas
@@ -243,11 +288,33 @@ comments: Komentarai
 no_comments: Dar nėra komentarų
 click_to_expand: Išskleiskite
 select_item: Pasirinkti elementą
+no_items: Nėra elementų
+search_items: Ieškoti elementų...
+disabled: Išjungta
+information: Informacija
+report_bug: Pranešti apie klaidą
+request_feature: Funkcionalumo užklausa
+interface_not_found: 'Sąsaja "{interface}" nerasta.'
+reset_interface: Atstatyti sąsają
+display_not_found: 'Atvaizdavimo šablonas "{display}" nerastas.'
+reset_display: Atstatyti atvaizdavimo šabloną
+m2a_builder: Redaktorius (M2A)
+item_count: 'Nėra elementų | Vienas elementas | {count} elementų'
+no_items_copy: Kolekcijoje dar nėra elementų.
+file_count: 'Nėra failų | Vienas failas | {count} failų'
 no_files_copy: Nėra failų.
+user_count: 'Nėra vartotojų | Vienas vartotojas | {count} vartotojų'
+no_users_copy: Nėra vartotojų šioje grupėje.
 all_items: Visi elementai
 csv: CSV
 no_collections: Nėra kolekcijų
 create_collection: Kurti rinkinį
+no_collections_copy_admin: Kol kas nėra sukurtų kolekcijų. Paspauskite mygtuką, norėdami pradėti.
+no_collections_copy: Kol kas nėra sukurtų kolekcijų. Susisiekite su savo administratoriumi.
+relationship_not_setup: Sąryšis sukonfigūruotas neteisingai
+display_template_not_setup: Blogai sukonfigūruota atvaizdavimo šablono parinktis
+collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
+select_a_collection: Pasirinkite kolekciją
 active: Aktyvus
 users: Vartotojai
 activity: Veiksmas
@@ -374,7 +441,22 @@ wysiwyg_options:
   undo: Atšaukti
   redo: Grąžinti
   remove: Pašalinti
+  removeformat: Pašalinti formatavimą
   selectall: Pažymėti visus
+  table: Lentelė
+  visualaid: Peržiūrėti nematomos elementus
+  code: Peržiūrėti išeities tekstą
+  fullscreen: Per visą ekraną
+  directionality: Kryptingumas
+dropdown: Išskleidžiamasis meniu
+choices: Pasirinkimai
+choices_option_configured_incorrectly: Neteisingai sukonfigūruoti pasirinkimai
+deselect: Atžymėti
+deselect_all: Atžymėti viską
+other: Kita...
+adding_user: Pridedamas vartotojas
+unknown_user: Nežinomas vartotojas
+creating_in: 'Kuriamas elementas kolekcijoje: {collection}'
 add_new: Pridėti Naują
 all: Visi
 batch_delete_confirm: >-
@@ -422,7 +504,12 @@ fields:
     avatar: Nuotrauka
     theme: Tema
     tfa_secret: Dviejų lygių autentifikavimas
+  directus_settings:
+    project_color: Projekto spalva
+    project_logo: Projekto logotipas
+    public_foreground: Vieša matoma teksto spalva
   directus_fields:
+    note: Pastaba
     translation: Laukų pavadinimų vertimai
   directus_roles:
     name: Vaidmens pavadinimas
@@ -434,13 +521,19 @@ done: Atlikta
 email: El. paštas
 field: Laukelis | Laukeliai
 password: Slaptažodis
+revisions: Pakeitimai
 interfaces:
   collection:
     collection: Rinkinys
   color:
     color: Spalva
+  display-template:
+    collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
+    select_a_collection: Pasirinkite kolekciją
   divider:
     divider: Skyriklis
+  dropdown:
+    choices_value_placeholder: Įveskite reikšmę...
   files:
     files: Failai
   interface:
@@ -451,6 +544,9 @@ interfaces:
     tags: Žymos
   toggle:
     label_default: Įjungtas
+  user:
+    modes:
+      dropdown: Išskleidžiamasis meniu
 displays:
   boolean:
     boolean: Loginis
@@ -462,6 +558,8 @@ displays:
     format: Formatas
   image:
     circle: Apskritimas
+  labels:
+    choices_value_placeholder: Įveskite reikšmę...
   user:
     avatar: Nuotrauka
     name: Pavadinimas
@@ -470,6 +568,7 @@ layouts:
   cards:
     title: Pavadinmas
   tabular:
+    tabular: Lentelė
     comfortable: Patogus
     compact: Kompaktiškas
     cozy: Jaukus
