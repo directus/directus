@@ -146,7 +146,7 @@ export default defineComponent({
 			transition: opacity var(--fast) var(--transition);
 
 			@include breakpoint(small) {
-				top: 0;
+				top: -2px;
 			}
 		}
 
