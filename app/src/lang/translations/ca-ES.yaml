@@ -79,6 +79,7 @@ users: Usuaris
 activity: Activitat
 duration: Durada
 sort_field: Camp d'ordenació
+status: Estat
 edit: Edita
 bookmarks: Favorits
 back: Enrere
