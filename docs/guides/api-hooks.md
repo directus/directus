@@ -1,6 +1,7 @@
 # Custom API Hooks <small></small>
 
-> Custom API Hooks allow running custom logic when a specified event occurs within your project. They can be registered as either "blocking" or immediate.
+> Custom API Hooks allow running custom logic when a specified event occurs within your project. They can be registered
+> as either "blocking" or immediate.
 
 ## 1. Create a Hook File
 
@@ -71,26 +72,30 @@ module.exports = function registerHook({ exceptions }) {
 
 ### Event Format Options
 
-| Scope         | Actions                            | Before   |
-| ------------- | ---------------------------------- | -------- |
-| `items`       | `create`, `update` and `delete`    | Optional |
-| `activity`    | `create`, `update` and `delete`    | Optional |
-| `collections` | `create`, `update` and `delete`    | Optional |
-| `fields`      | `create`, `update` and `delete`    | Optional |
-| `files`       | `create`, `update` and `delete`    | Optional |
-| `folders`     | `create`, `update` and `delete`    | Optional |
-| `permissions` | `create`, `update` and `delete`    | Optional |
-| `presets`     | `create`, `update` and `delete`    | Optional |
-| `relations`   | `create`, `update` and `delete`    | Optional |
-| `revisions`   | `create`, `update` and `delete`    | Optional |
-| `roles`       | `create`, `update` and `delete`    | Optional |
-| `settings`    | `create`, `update` and `delete`    | Optional |
-| `users`       | `create`, `update` and `delete`    | Optional |
-| `webhooks`    | `create`, `update` and `delete`    | Optional |
-| `response`    |                                    | No†      |
-| `auth`        | `success`†, `fail`† and `refresh`† | No       |
-| `init`        |                                    | Optional |
-| `server`      | `start` and `stop`                 | Optional |
+| Scope                | Actions                            | Before   |
+| -------------------- | ---------------------------------- | -------- |
+| `server`             | `start` and `stop`                 | Optional |
+| `init`               |                                    | Optional |
+| `routes.init`        | `before` and `after`               | No       |
+| `routes.custom.init` | `before` and `after`               | No       |
+| `middlewares.init`   | `before` and `after`               | No       |
+| `request`            | `not_found`                        | No       |
+| `response`           |                                    | No†      |
+| `items`              | `create`, `update` and `delete`    | Optional |
+| `auth`               | `success`†, `fail`† and `refresh`† | No       |
+| `activity`           | `create`, `update` and `delete`    | Optional |
+| `collections`        | `create`, `update` and `delete`    | Optional |
+| `fields`             | `create`, `update` and `delete`    | Optional |
+| `files`              | `create`, `update` and `delete`    | Optional |
+| `folders`            | `create`, `update` and `delete`    | Optional |
+| `permissions`        | `create`, `update` and `delete`    | Optional |
+| `presets`            | `create`, `update` and `delete`    | Optional |
+| `relations`          | `create`, `update` and `delete`    | Optional |
+| `revisions`          | `create`, `update` and `delete`    | Optional |
+| `roles`              | `create`, `update` and `delete`    | Optional |
+| `settings`           | `create`, `update` and `delete`    | Optional |
+| `users`              | `create`, `update` and `delete`    | Optional |
+| `webhooks`           | `create`, `update` and `delete`    | Optional |
 
 † TBD
 

@@ -16,7 +16,7 @@ import emitter from '../emitter';
  */
 const notFound: RequestHandler = async (req, res, next) => {
 	try {
-		const ret = await emitter.emitAsync('app.not_found', req, res);
+		const ret = await emitter.emitAsync('request.not_found', req, res);
 		if (ret.reduce((prev, current) => current || prev, false)) {
 			return next();
 		}

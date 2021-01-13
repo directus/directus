@@ -72,7 +72,7 @@ export default async function createApp() {
 
 	await emitAsyncSafe('init.before', { app });
 
-	await emitAsyncSafe('app.middlewares.before', { app });
+	await emitAsyncSafe('middlewares.init.before', { app });
 
 	app.use(expressLogger({ logger }));
 
@@ -126,9 +126,9 @@ export default async function createApp() {
 
 	app.use(sanitizeQuery);
 
-	await emitAsyncSafe('app.middlewares.after', { app });
+	await emitAsyncSafe('middlewares.init.after', { app });
 
-	await emitAsyncSafe('app.routes.before', { app });
+	await emitAsyncSafe('routes.init.before', { app });
 
 	app.use(cache);
 
@@ -159,14 +159,14 @@ export default async function createApp() {
 	app.use('/custom', customRouter);
 
 	// Register custom hooks / endpoints
-	await emitAsyncSafe('app.custom.before', { app });
+	await emitAsyncSafe('routes.custom.init.before', { app });
 	await registerExtensionEndpoints(customRouter);
-	await emitAsyncSafe('app.custom.after', { app });
+	await emitAsyncSafe('routes.custom.init.after', { app });
 
 	app.use(notFoundHandler);
 	app.use(errorHandler);
 
-	await emitAsyncSafe('app.routes.after', { app });
+	await emitAsyncSafe('routes.init.after', { app });
 
 	// Register all webhooks
 	await registerWebhooks();
