@@ -296,6 +296,7 @@ collection_created: Collection créée
 modified_on: Modifié le
 card_size: Taille de la carte
 sort_field: Trier
+status: Etat
 toggle_manual_sorting: Activer/désactiver le tri manuel
 bookmark_doesnt_exist: Le favori n'existe pas
 bookmark_doesnt_exist_copy: Le favori que vous essayez d'ouvrir est introuvable.
