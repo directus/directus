@@ -84,6 +84,10 @@ export default defineComponent({
 			type: [String, Number],
 			default: null,
 		},
+		nullable: {
+			type: Boolean,
+			default: true,
+		},
 		slug: {
 			type: Boolean,
 			default: false,
@@ -196,6 +200,11 @@ export default defineComponent({
 
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
+
+			if (props.nullable === true && value === '') {
+				emit('input', null);
+				return;
+			}
 
 			if (props.type === 'number') {
 				emit('input', Number(value));
