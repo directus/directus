@@ -348,6 +348,7 @@ collection_created: Коллекция Создана
 modified_on: Дата изменения
 card_size: Размер Карточки
 sort_field: Поле сортировки
+status: Статус
 toggle_manual_sorting: Переключить Ручную Сортировку
 bookmark_doesnt_exist: Закладка Не Существует
 bookmark_doesnt_exist_copy: Закладка, которую вы пытаетесь открыть не найдена.
