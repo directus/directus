@@ -105,6 +105,7 @@ user_directory: 使用者目錄
 duration: 持續時間
 modified_on: 修改日期
 sort_field: 排序欄位
+status: 狀態
 edit: 編輯
 bookmarks: 書籤
 back: 返回
