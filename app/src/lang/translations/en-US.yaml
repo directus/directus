@@ -176,6 +176,8 @@ length: Length
 precision_scale: Precision & Scale
 readonly: Readonly
 unique: Unique
+updated_on: Updated On
+updated_by: Updated By
 primary_key: Primary Key
 foreign_key: Foreign Key
 finish_setup: Finish Setup
@@ -353,6 +355,8 @@ collection_created: Collection Created
 modified_on: Modified On
 card_size: Card Size
 sort_field: Sort Field
+sort: Sort
+status: Status
 toggle_manual_sorting: Toggle Manual Sorting
 bookmark_doesnt_exist: Bookmark Doesn't Exist
 bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found.
