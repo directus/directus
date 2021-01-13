@@ -224,6 +224,7 @@ sidebar: Seitenleiste
 duration: Dauer
 modified_on: Geändert am
 sort_field: Sortierfeld
+status: Status
 select_an_item: Element auswählen...
 edit: Bearbeiten
 enter_otp_to_disable_tfa: OTP zum deaktivieren der 2FA eingeben
