@@ -1,4 +1,7 @@
 ---
+edit_field: Redaguoti lauką
+duplicate_field: Dubliuoti lauką
+half_width: 50% pločio
 full_width: Pilno pločio
 create_role: Kurti vaidmenį
 directus_version: Directus versija
