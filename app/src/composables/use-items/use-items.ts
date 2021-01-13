@@ -95,7 +95,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 		if (!before || isEqual(after, before)) {
 			return;
 		}
-
+		page.value = 1;
 		await Vue.nextTick();
 		if (loading.value === false) {
 			getItems();
@@ -178,6 +178,10 @@ export function useItems(collection: Ref<string>, query: Query) {
 
 			items.value = fetchedItems;
 			itemCount.value = response.data.data.length;
+
+			if (fetchedItems.length === 0 && page.value !== 1) {
+				page.value = 1;
+			}
 
 			if (response.data.data.length === limit.value || page.value > 1) {
 				getItemCount();
