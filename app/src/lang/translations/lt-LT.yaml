@@ -128,6 +128,7 @@ text: Tekstas
 time: Laikas
 timestamp: Laiko žyma
 uuid: UUID
+hash: Maiša
 not_available_for_type: Šiam tipui neprieinama
 create_translations: Sukurti vertimus
 auto_generate: Generuoti Automatiškai
@@ -658,34 +659,110 @@ report_error: Pranešti apie klaidą
 interfaces:
   checkboxes:
     checkboxes: Žymimieji langeliai
+    show_more: 'Rodyti dar {count}'
+    items_shown: Rodomi elementai
+  code:
+    code: Kodas
+    description: Rašyti arba pasidalinti kodo elementais
+    line_number: Eilutės numeris
+    placeholder: Įveskite kodą čia...
   collection:
     collection: Rinkinys
+    description: Pasirinkite tarp egzistuojančių kolekcijų
+    include_system_collections: Įtraukti sistemines kolekcijas
   collections:
     collections: Kolekcijos
+    description: Pasirinkite tarp egzistuojančių kolekcijų
+    include_system_collections: Įtraukti sistemines kolekcijas
   color:
     color: Spalva
+    description: Įveskite arba pasirinkite spalvą
+    placeholder: Pasirinkte spalvą...
+    preset_colors: Ruošinių spalvos
+    preset_colors_add_label: Pridėti naują spalvą...
+    name_placeholder: Įvesti spalvos pavadinimą...
+  datetime:
+    datetime: Data ir laikas
+    description: Įvesti datas ir laikus
+    include_seconds: Įtraukti sekundes
+    set_to_now: Nustatyti į dabartinį laiką
+    use_24: Naudoti 24 val. laikrodį
   display-template:
+    description: Maišyti statinį tekstą ir dinamines laukų reikšmes
+    collection_field: Kolekcijos laukas
     collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
     select_a_collection: Pasirinkite kolekciją
   divider:
     divider: Skyriklis
+    description: Aprašyti ir padalinti laukus į skiltis
+    title_placeholder: Įvesti pavadinimą...
+    inline_title: Pavadinimas toje pačioje eilutėje
+    inline_title_label: Rodyti pavadinimą virš linijos
+    margin_top: Atitraukimas nuo viršaus
+    margin_top_label: Padidinti atitraukimą nuo viršaus
   dropdown:
+    description: Pasirinkite reikšmę iš sąrašo
+    choices_placeholder: Pridėti naują pasirinkimą
+    allow_other_label: Leisti kitas reikšmes
+    allow_none_label: Leisti nepasirinkti nieko
+    choices_name_placeholder: Įveskite pavadinimą...
     choices_value_placeholder: Įveskite reikšmę...
+  dropdown-multiselect:
+    dropdown-multiselect: Išskleidžiamasis sąrašas (kelios reikšmės)
+    description: Pasirinkite kelias reikšmes iš sąrašo
+  file:
+    description: Pasirinkite arba įkelkite failą
   files:
     files: Failai
+    description: Pasirinkite arba įkelkite kelis failus
+  hash:
+    hash: Maiša
+    description: Įveskite reikšmę išmaišymui
+    masked_label: Paslėpti tikrąsias reikšmes
+  icon:
+    description: Pasirinkite ikonėlę iš sąrašo
+    search_for_icon: Ieškoti ikonėlių...
+  image:
+    image: Paveikslėlis
+    description: Pasirinkite arba įkelkite paveikslėlį
   interface:
     interface: Sąsaja
+    description: Pasirinkti egzistuojančią sąsają
   markdown:
     edit: Redaguoti
   tags:
     tags: Žymos
+    alphabetize_label: Priversti rikiavimą abėcėlės tvarka
+    add_tags: Pridėti žymes...
+  text-input:
+    text-input: Tekstinė įvestis
+    description: Įveskite vieną teksto eilutę
+    trim: Apkarpyti
+    trim_label: Apkarpyti iš pradžios ir pabaigos
+    mask_label: Paslėpti tikrąją reikšmę
+  textarea:
+    textarea: Teksto sritis
+    description: Įveskite kelių eilučių neformatuotą tesktą
   toggle:
     toggle: Perjungti
+    description: Pasirinkti tarp įjungta/išjungta
+    label_placeholder: Įveskite žymą...
     label_default: Įjungtas
+  translations:
+    no_collection: Nėra kolekcijos
   user:
     user: Vartotojas
+    description: Pasirinkti egzistuojantį Directus vartotoją
+    select_mode: Pasirinkti režimą
     modes:
+      auto: Automatiškai
       dropdown: Išskleidžiamasis meniu
+      modal: Dialogas
+  wysiwyg:
+    wysiwyg: WYSIWYG
+    description: Formatuoto teksto redaktorius
+    toolbar: Įrankių juosta
+    custom_formats: Pasirinktinis formatos
 displays:
   boolean:
     boolean: Loginis
@@ -696,8 +773,10 @@ displays:
   color:
     color: Spalva
   datetime:
+    datetime: Data ir laikas
     format: Formatas
   image:
+    image: Paveikslėlis
     circle: Apskritimas
   labels:
     choices_value_placeholder: Įveskite reikšmę...
