@@ -352,6 +352,7 @@ collection_created: Collectie aangemaakt
 modified_on: Aangepast op
 card_size: Kaart grootte
 sort_field: Sorteerveld
+status: Status
 toggle_manual_sorting: Activeer handmatige volgorde
 bookmark_doesnt_exist: Bladwijzer bestaat niet
 bookmark_doesnt_exist_copy: De bladwijzer die je probeert te openen kon niet worden gevonden.
