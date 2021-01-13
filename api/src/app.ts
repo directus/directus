@@ -43,7 +43,12 @@ import sanitizeQuery from './middleware/sanitize-query';
 import { checkIP } from './middleware/check-ip';
 import { InvalidPayloadException } from './exceptions';
 
-import { registerExtensions } from './extensions';
+import {
+	initializeExtensions,
+	registerExtensionEndpoints,
+	registerExtensionHooks,
+	registerExtensions,
+} from './extensions';
 import { register as registerWebhooks } from './webhooks';
 import emitter from './emitter';
 
@@ -59,7 +64,13 @@ export default async function createApp() {
 		process.exit(1);
 	}
 
+	await initializeExtensions();
+
+	await registerExtensionHooks();
+
 	const app = express();
+
+	emitter.emit('init.before', { app }); // TODO why not async?
 
 	const customRouter = express.Router();
 
@@ -152,11 +163,10 @@ export default async function createApp() {
 	await registerWebhooks();
 
 	// Register custom hooks / endpoints
-	await registerExtensions(customRouter);
+	await registerExtensionEndpoints(customRouter);
 
 	track('serverStarted');
 
-	emitter.emit('init.before', { app });
 	emitter.emitAsync('init').catch((err) => logger.warn(err));
 
 	return app;
