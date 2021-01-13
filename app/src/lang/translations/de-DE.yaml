@@ -11,6 +11,7 @@ role_name: Rollenname
 db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
 required: Erforderlich
+requires_value: Erfordert Wert
 create_preset: Vorlage erstellen
 create_role: Rolle erstellen
 create_user: Benutzer erstellen
@@ -41,7 +42,7 @@ directus_version: Directus Version
 node_version: Version
 node_uptime: Betriebszeit
 os_type: Betriebssystem
-os_version: OS Version
+os_version: Betriebssystem-Version
 os_totalmem: Arbeitsspeicher
 archive: Archiv
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
@@ -126,6 +127,7 @@ readonly: Lesezugriff
 unique: Eindeutig
 primary_key: Primärschlüssel
 foreign_key: Fremdschlüssel
+dismiss: Verwerfen
 clear_value: Wert löschen
 reset_to_default: Auf Standard zurücksetzen
 undo_changes: Änderungen verwerfen
@@ -133,8 +135,10 @@ notifications: Benachrichtigungen
 page_not_found: Seite nicht gefunden
 page_not_found_body: Die Seite, nach der Du gesucht hast, wurde nicht gefunden.
 display: Anzeige
+settings_update_success: Einstellungen aktualisiert
 title: Titel
 revision_delta_created: Erstellt
+revision_delta_created_externally: Extern erstellt
 revision_delta_deleted: Gelöscht
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
