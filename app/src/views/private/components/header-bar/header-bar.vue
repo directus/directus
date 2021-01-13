@@ -120,7 +120,7 @@ export default defineComponent({
 		align-items: center;
 		max-width: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		height: 100%;
-		margin-left: 12px;
+		margin-left: 16px;
 
 		@include breakpoint(small) {
 			max-width: 70%;
