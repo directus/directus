@@ -256,7 +256,7 @@ export default defineComponent({
 		function useDisplayValue() {
 			const displayValue = ref<string | null>(null);
 
-			watch(_value, setDisplayValue);
+			watch(_value, setDisplayValue, { immediate: true });
 
 			return { displayValue };
 
