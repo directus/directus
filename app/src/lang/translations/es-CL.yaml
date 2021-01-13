@@ -348,6 +348,7 @@ collection_created: Colección Creada
 modified_on: Modificado en
 card_size: Tamaño de Tarjeta
 sort_field: Campo Ordenamiento
+status: Estado
 toggle_manual_sorting: Alternar Ordenamiento Manual
 bookmark_doesnt_exist: El Marcador no existe
 bookmark_doesnt_exist_copy: El Marcador que está intentando abrir no pudo ser encontrado.
