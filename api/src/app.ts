@@ -45,7 +45,7 @@ import { InvalidPayloadException } from './exceptions';
 
 import { initializeExtensions, registerExtensionEndpoints, registerExtensionHooks } from './extensions';
 import { register as registerWebhooks } from './webhooks';
-import emitter, { emitAsyncSafe } from './emitter';
+import { emitAsyncSafe } from './emitter';
 
 import fse from 'fs-extra';
 
@@ -65,14 +65,14 @@ export default async function createApp() {
 
 	const app = express();
 
-	await emitAsyncSafe('init.before', { app });
-
-	await emitAsyncSafe('app.middlewares.before', { app });
-
 	const customRouter = express.Router();
 
 	app.disable('x-powered-by');
 	app.set('trust proxy', true);
+
+	await emitAsyncSafe('init.before', { app });
+
+	await emitAsyncSafe('app.middlewares.before', { app });
 
 	app.use(expressLogger({ logger }));
 
@@ -126,7 +126,7 @@ export default async function createApp() {
 
 	app.use(sanitizeQuery);
 
-	emitAsyncSafe('app.middlewares', { app });
+	await emitAsyncSafe('app.middlewares.after', { app });
 
 	await emitAsyncSafe('app.routes.before', { app });
 
@@ -152,28 +152,28 @@ export default async function createApp() {
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
 	app.use('/server/', serverRouter);
-
-	emitAsyncSafe('app.routes', { app });
-
 	app.use('/settings', settingsRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
 	app.use('/custom', customRouter);
-	app.use(notFoundHandler);
-	app.use(errorHandler);
 
 	// Register custom hooks / endpoints
 	await emitAsyncSafe('app.custom.before', { app });
 	await registerExtensionEndpoints(customRouter);
-	emitAsyncSafe('app.custom', { app });
+	await emitAsyncSafe('app.custom.after', { app });
+
+	app.use(notFoundHandler);
+	app.use(errorHandler);
+
+	await emitAsyncSafe('app.routes.after', { app });
 
 	// Register all webhooks
 	await registerWebhooks();
 
 	track('serverStarted');
 
-	emitter.emitAsync('init').catch((err) => logger.warn(err));
+	emitAsyncSafe('init');
 
 	return app;
 }
