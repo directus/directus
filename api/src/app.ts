@@ -50,7 +50,7 @@ import {
 	registerExtensions,
 } from './extensions';
 import { register as registerWebhooks } from './webhooks';
-import emitter from './emitter';
+import emitter, { emitAsyncSafe } from './emitter';
 
 import fse from 'fs-extra';
 
@@ -70,7 +70,9 @@ export default async function createApp() {
 
 	const app = express();
 
-	emitter.emit('init.before', { app }); // TODO why not async?
+	await emitAsyncSafe('init.before', { app });
+
+	await emitAsyncSafe('app.middlewares.before', { app });
 
 	const customRouter = express.Router();
 
@@ -129,6 +131,10 @@ export default async function createApp() {
 
 	app.use(sanitizeQuery);
 
+	emitAsyncSafe('app.middlewares', { app });
+
+	await emitAsyncSafe('app.routes.before', { app });
+
 	app.use(cache);
 
 	app.use(schema);
@@ -151,6 +157,9 @@ export default async function createApp() {
 	app.use('/revisions', revisionsRouter);
 	app.use('/roles', rolesRouter);
 	app.use('/server/', serverRouter);
+
+	emitAsyncSafe('app.routes', { app });
+
 	app.use('/settings', settingsRouter);
 	app.use('/users', usersRouter);
 	app.use('/utils', utilsRouter);
@@ -159,11 +168,13 @@ export default async function createApp() {
 	app.use(notFoundHandler);
 	app.use(errorHandler);
 
+	// Register custom hooks / endpoints
+	await emitAsyncSafe('app.custom.before', { app });
+	await registerExtensionEndpoints(customRouter);
+	emitAsyncSafe('app.custom', { app });
+
 	// Register all webhooks
 	await registerWebhooks();
-
-	// Register custom hooks / endpoints
-	await registerExtensionEndpoints(customRouter);
 
 	track('serverStarted');
 
