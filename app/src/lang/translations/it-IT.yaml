@@ -281,6 +281,7 @@ second: Secondi
 file_moved: File Spostato
 modified_on: Modificato il
 sort_field: Ordina per
+status: Stato
 select_an_item: Seleziona un elemento...
 edit: Modifica
 enabled: Abilitato
