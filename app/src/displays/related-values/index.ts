@@ -20,13 +20,15 @@ export default defineDisplay(({ i18n }) => ({
 	options: options,
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
 	groups: ['m2m', 'm2o', 'o2m'],
-	fields: (options: Options, { field, collection }) => {
+	fields: (options: Options | null, { field, collection }) => {
 		const relatedCollection = getRelatedCollection(collection, field);
 		const { primaryKeyField } = useCollection(ref(relatedCollection as string));
 
 		if (!relatedCollection) return [];
 
-		const fields = adjustFieldsForDisplays(getFieldsFromTemplate(options.template), relatedCollection);
+		const fields = options?.template
+			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), relatedCollection)
+			: [];
 
 		if (fields.includes(primaryKeyField.value.field) === false) {
 			fields.push(primaryKeyField.value.field);
