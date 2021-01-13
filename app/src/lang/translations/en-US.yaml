@@ -911,6 +911,23 @@ interfaces:
     many-to-one: Many to One
     description: Select a single related item
     display_template: Display Template
+  map:
+    map: Map
+    description: Geolocation map interface, storing single point (x,y) format on string types or GeoJSON on json type.
+    lat: Latitude
+    lng: Longitude
+    zoom: Zoom
+    max-zoom: Max Zoom
+    height: Height
+    theme: Interface Theme
+    fit-points: Fit points within the view
+    add-point: Add Point
+    address-to-code: Search for an address
+    my-location: Find my location
+    address-input-note: Address Input Uses {service} to automatically get the geocodes from an address. Please check their usage policy.
+    user-location-error-blocked: You've disabled the location access. Kindly enable it from the browser addressbar to auto detect your location.
+    user-location-error: There was an error while trying to get your location. Please try again.
+    address-to-code-error: No geocode found for this address
   markdown:
     markdown: Markdown
     description: Enter and preview markdown

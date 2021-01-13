@@ -10,7 +10,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'map',
 	recommendedDisplays: ['formatted-json-value'],
 	component: InterfaceMap,
-	types: ['json'],
+	types: ['json', 'string'],
 	options: [
 		{
 			field: 'lat',
@@ -61,49 +61,6 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 		{
-			field: 'mode',
-			name: i18n.t('interfaces.map.mode'),
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'dropdown',
-				options: {
-					choices: [
-						{ text: i18n.t('Center'), value: 'center' },
-						{ text: i18n.t('Pin'), value: 'pin' },
-						{ text: i18n.t('Multiple Pins'), value: 'pins' },
-					],
-				},
-			},
-			schema: {
-				default_value: 'pin',
-			},
-		},
-		{
-			field: 'addressToCode',
-			name: i18n.t('interfaces.map.address-to-code'),
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'toggle',
-			},
-			schema: {
-				default_value: false,
-			},
-		},
-		{
-			field: 'height',
-			name: i18n.t('interfaces.map.height'),
-			type: 'integer',
-			meta: {
-				width: 'half',
-				interface: 'numeric',
-			},
-			schema: {
-				default_value: 400,
-			},
-		},
-		{
 			field: 'theme',
 			name: i18n.t('interfaces.map.theme'),
 			type: 'string',
@@ -111,6 +68,7 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'dropdown',
 				options: {
+					label: i18n.t('interfaces.map.custom_titles_hint'),
 					allowOther: true,
 					choices: [
 						{
@@ -130,6 +88,10 @@ export default defineInterface(({ i18n }) => ({
 							value: 'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png',
 						},
 						{
+							text: i18n.t('Topography'),
+							value: 'https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+						},
+						{
 							text: i18n.t('Terrain'),
 							value: 'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
 						},
@@ -141,16 +103,37 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 		{
+			field: 'height',
+			name: i18n.t('interfaces.map.height'),
+			type: 'integer',
+			meta: {
+				width: 'half',
+				interface: 'numeric',
+			},
+			schema: {
+				default_value: 400,
+			},
+		},
+		{
+			field: 'addressToCode',
+			name: i18n.t('interfaces.map.address-to-code'),
+			type: 'boolean',
+			meta: {
+				width: 'half-left',
+				interface: 'toggle',
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+		{
 			field: 'address-input-note',
 			type: 'alias',
 			meta: {
 				width: 'full',
 				interface: 'notice',
 				options: {
-					text: i18n
-						.t('interfaces.map.address-input-note')
-						.toString()
-						.replace('{service}', mapsAddressServiceLink),
+					text: i18n.t('interfaces.map.address-input-note').toString().replace('{service}', mapsAddressServiceLink),
 				},
 			},
 		},
