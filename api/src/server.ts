@@ -5,7 +5,7 @@ import { URL } from 'url';
 import { createTerminus, TerminusOptions } from '@godaddy/terminus';
 import { Request } from 'express';
 import logger from './logger';
-import emitter from './emitter';
+import { emitAsyncSafe } from './emitter';
 import database from './database';
 import createApp from './app';
 import { once } from 'lodash';
@@ -63,7 +63,7 @@ export default async function createServer() {
 				duration: elapsedMilliseconds.toFixed(),
 			};
 
-			emitter.emitAsync('response', info).catch((err) => logger.warn(err));
+			emitAsyncSafe('response', info);
 		});
 
 		res.once('finish', complete.bind(null, true));
@@ -83,7 +83,7 @@ export default async function createServer() {
 	return server;
 
 	async function beforeShutdown() {
-		await emitter.emitAsync('server.stop.before', { server });
+		emitAsyncSafe('server.stop.before', { server });
 
 		if ('DIRECTUS_DEV' in process.env) {
 			logger.info('Restarting...');
@@ -98,7 +98,7 @@ export default async function createServer() {
 	}
 
 	async function onShutdown() {
-		emitter.emitAsync('server.stop').catch((err) => logger.warn(err));
+		emitAsyncSafe('server.stop');
 
 		if (!('DIRECTUS_DEV' in process.env)) {
 			logger.info('Directus shut down OK. Bye bye!');
