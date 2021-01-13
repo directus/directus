@@ -48,7 +48,7 @@ export default defineComponent({
 	flex-shrink: 0;
 	width: 100%;
 	height: 64px;
-	color: var(--foreground-normal);
+	color: var(--foreground-normal-alt);
 	background-color: var(--background-normal-alt);
 
 	.icon {

@@ -61,8 +61,8 @@ export default defineComponent({
 
 <style>
 body {
-	--sidebar-detail-icon-color: var(--foreground-normal);
-	--sidebar-detail-color: var(--foreground-normal);
+	--sidebar-detail-icon-color: var(--foreground-normal-alt);
+	--sidebar-detail-color: var(--foreground-normal-alt);
 	--sidebar-detail-color-active: var(--primary);
 }
 </style>

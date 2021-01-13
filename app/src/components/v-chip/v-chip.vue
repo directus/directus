@@ -75,7 +75,7 @@ export default defineComponent({
 
 <style>
 body {
-	--v-chip-color: var(--black);
+	--v-chip-color: var(--foreground-normal);
 	--v-chip-background-color: var(--background-normal-alt);
 	--v-chip-color-hover: var(--white);
 	--v-chip-background-color-hover: var(--primary-125);
