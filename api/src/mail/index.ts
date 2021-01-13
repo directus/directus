@@ -68,19 +68,23 @@ async function getDefaultTemplateOptions() {
 	return {
 		projectName: projectInfo?.project_name || 'Directus',
 		projectColor: projectInfo?.project_color || '#546e7a',
-		projectLogo: projectInfo?.project_logo
-			? getProjectLogoURL(projectInfo.project_logo)
-			: 'https://directus.io/assets/directus-white.png',
+		projectLogo: getProjectLogoURL(projectInfo.project_logo),
 	};
 
-	function getProjectLogoURL(logoID: string) {
+	function getProjectLogoURL(logoID?: string) {
 		let projectLogoURL = env.PUBLIC_URL;
 
 		if (projectLogoURL.endsWith('/') === false) {
 			projectLogoURL += '/';
 		}
 
-		projectLogoURL += `assets/${logoID}`;
+		if (logoID) {
+			projectLogoURL += `assets/${logoID}`;
+		} else {
+			projectLogoURL += `admin/img/directus-white.png`;
+		}
+
+		return projectLogoURL;
 	}
 }
 
