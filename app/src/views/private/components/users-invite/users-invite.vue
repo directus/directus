@@ -78,6 +78,7 @@ export default defineComponent({
 					role: roleSelected.value,
 				});
 
+				emails.value = '';
 				emit('toggle', false);
 			} catch (err) {
 				unexpectedError(err);
