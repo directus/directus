@@ -347,6 +347,7 @@ collection_created: Kollektion skapad
 modified_on: Ändrad den
 card_size: Kortets storlek
 sort_field: Sortera fält
+status: Status
 toggle_manual_sorting: Växla manuell sortering
 bookmark_doesnt_exist: Bokmärket finns inte
 bookmark_doesnt_exist_copy: Bokmärket du försöker öppna kunde inte hittas.
