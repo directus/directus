@@ -1,20 +1,17 @@
 <template>
 	<div v-if="actions.length > 0">
-		<v-button-group :rounded="actions.length > 1">
-			<v-button
-				v-for="(action, index) in actions"
-				:key="index"
-				small
-				:class="{ [action.actionStyle]: true, action: true, link: actionsStyle === 'link' }"
-				:secondary="action.actionStyle !== 'primary'"
-				:disabled="disabled"
-				@click="() => dispatch(action.url, index)"
-				:is="actionsStyle === 'link' ? 'a' : 'v-button'"
-			>
-				<v-icon v-if="action.icon" :name="action.icon" />
-				<span v-if="action.label">{{ action.label }}</span>
-			</v-button>
-		</v-button-group>
+		<v-button
+			v-for="(action, index) in actions"
+			:key="index"
+			:class="{ [action.actionStyle]: true, action: true, link: actionsStyle === 'link' }"
+			:secondary="action.actionStyle !== 'primary'"
+			:disabled="disabled"
+			@click="() => dispatch(action.url, index)"
+			:is="actionsStyle === 'link' ? 'a' : 'v-button'"
+		>
+			<v-icon v-if="action.icon" :name="action.icon" />
+			<span v-if="action.label">{{ action.label }}</span>
+		</v-button>
 		<v-dialog v-if="showError" active>
 			<v-card>
 				<v-card-title>{{ $t('something_went_wrong') }}</v-card-title>
@@ -110,6 +107,10 @@ export default defineComponent({
 }
 
 .action {
+	&:not(:last-child) {
+		margin-inline-end: 1em;
+	}
+
 	&.info {
 		--v-button-icon-color: var(--primary);
 		--v-button-background-color: var(--primary-alt);
