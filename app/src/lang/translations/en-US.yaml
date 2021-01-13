@@ -801,6 +801,14 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 interfaces:
+  actions:
+    actions: Actions
+    description: Action buttons that might link to external URL and use values from current item
+    style: Style
+    primary: Primary
+    link: Links
+    button: Buttons
+    error: Cannot perform action, it could be from missing field values or wrong destination.
   checkboxes:
     checkboxes: Checkboxes
     description: Choose between multiple options via checkboxes
