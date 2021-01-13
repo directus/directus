@@ -54,6 +54,9 @@ unknown_validation_errors: 'Šie paslėpti laukai turi validavimo klaidų:'
 validationError:
   eq: Reikšmė turi būti {valid}
   neq: Reikšmė negali būti {invalid}
+  in: Reikšmė turi būti viena iš {valid}
+  nin: Reikšmė negali būti tarp {invalid}
+  contains: Reikšmę turi sudaryti {substring}
 field_file: Vienas failas
 field_files: Keli failai
 iso: ISO
