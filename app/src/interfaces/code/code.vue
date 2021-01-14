@@ -300,6 +300,7 @@ export default defineComponent({
 	cursor: pointer;
 	transition: color var(--fast) var(--transition-out);
 	user-select: none;
+
 	&:hover {
 		color: var(--primary-125);
 		transition: none;
