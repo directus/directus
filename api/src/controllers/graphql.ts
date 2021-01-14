@@ -3,6 +3,7 @@ import { graphqlHTTP } from 'express-graphql';
 import { GraphQLService } from '../services';
 import { respond } from '../middleware/respond';
 import asyncHandler from '../utils/async-handler';
+import { cloneDeep } from 'lodash';
 
 const router = Router();
 
@@ -21,15 +22,14 @@ router.use(
 		 * express' regular `json` function in order to trick express-graphql to
 		 * use the next middleware instead of respond with data directly
 		 */
-		const customResponse = {
-			...res,
-			json: function (payload: Record<string, any>) {
-				res.locals.payload = payload;
-				return next();
-			},
-		};
+		const customResponse = cloneDeep(res);
 
-		graphqlHTTP({ schema, graphiql: true })(req, customResponse as Response);
+		customResponse.json = customResponse.end = function (payload: Record<string, any>) {
+			res.locals.payload = payload;
+			return next();
+		} as any;
+
+		graphqlHTTP({ schema, graphiql: true })(req, customResponse);
 	}),
 	respond
 );

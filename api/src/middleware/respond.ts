@@ -63,7 +63,11 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		}
 	}
 
-	return res.json(res.locals.payload);
+	if (Buffer.isBuffer(res.locals.payload)) {
+		return res.end(res.locals.payload);
+	} else {
+		return res.json(res.locals.payload);
+	}
 });
 
 function getDateFormatted() {
