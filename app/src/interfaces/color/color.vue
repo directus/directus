@@ -59,7 +59,7 @@
 					class="color-data-input"
 					pattern="\d*"
 					:min="0"
-					:max="i === 1 ? 360 : 100"
+					:max="i === 0 ? 360 : 100"
 					:step="1"
 					maxlength="3"
 				/>
