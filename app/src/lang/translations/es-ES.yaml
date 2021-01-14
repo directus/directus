@@ -75,6 +75,7 @@ validationError:
 all_access: Todos los accesos
 no_access: Sin Acceso
 use_custom: Personalizar
+field_standard: Estándar
 field_presentation: Presentación y Alias
 field_file: Un Archivo
 field_files: Múltiples Archivos
