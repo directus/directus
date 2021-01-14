@@ -84,6 +84,7 @@ user_directory: 用户列表
 duration: 持续时间
 modified_on: 修改于
 sort_field: 排序字段
+status: 状态
 edit: 编辑
 bookmarks: 书签
 back: 后退

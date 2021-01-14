@@ -243,6 +243,7 @@ activity: Aktivitet
 field_width: Feltbredde
 user_directory: Brukeroversikt
 modified_on: Modifisert den
+status: Status
 bookmarks: Bokmerke
 back: Tilbake
 operators:

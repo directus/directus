@@ -58,6 +58,7 @@ activity: Tapahtuma
 user_directory: Käyttäjähakemisto
 duration: Kesto
 modified_on: Muokattu viimeksi
+status: Tila
 edit: Muokkaa
 bookmarks: Kirjainmerkit
 back: Takaisin
