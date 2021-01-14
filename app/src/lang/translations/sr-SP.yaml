@@ -51,6 +51,7 @@ create_collection: Креирајте колекцију
 users: Корисници
 activity: Активност
 duration: Трајање
+status: Стање
 bookmarks: Сачуване странице
 back: Назад
 operators:

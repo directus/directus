@@ -66,6 +66,7 @@ field_width: Ширина поля
 user_directory: Директорія користувачів
 duration: Тривалість
 modified_on: Час зміни
+status: Статус
 bookmarks: Закладки
 back: Назад
 placeholder: Заповнювач

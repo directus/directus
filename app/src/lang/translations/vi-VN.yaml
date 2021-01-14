@@ -271,6 +271,7 @@ user_directory: Danh mục tài khoản
 duration: Thời lượng
 modified_on: Sửa đổi vào
 sort_field: Sắp xếp theo trường
+status: Trạng thái
 select_an_item: Chọn một bản ghi...
 edit: Sửa
 enabled: Đã kích hoạt
