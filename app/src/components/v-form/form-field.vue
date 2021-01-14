@@ -189,10 +189,10 @@ export default defineComponent({
 
 .note {
 	display: block;
+	max-width: 520px;
 	margin-top: 4px;
 	color: var(--foreground-subdued);
 	font-style: italic;
-	max-width: 520px;
 }
 
 .invalid {
