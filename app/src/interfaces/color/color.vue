@@ -219,7 +219,7 @@ export default defineComponent({
 
 			const rgb = computed<number[]>({
 				get() {
-					return color.value !== null ? color.value.rgb().array() : [0, 0, 0];
+					return color.value !== null ? color.value.rgb().array().map(Math.round) : [0, 0, 0];
 				},
 				set(newRGB) {
 					color.value = Color.rgb(newRGB);
@@ -228,7 +228,7 @@ export default defineComponent({
 
 			const hsl = computed<number[]>({
 				get() {
-					return color.value !== null ? color.value.hsl().array() : [0, 0, 0];
+					return color.value !== null ? color.value.hsl().array().map(Math.round) : [0, 0, 0];
 				},
 				set(newHSL) {
 					color.value = Color.hsl(newHSL);
