@@ -1,10 +1,10 @@
 SHELL=bash
 
-version=v9.0.0-beta.1
+version=latest
 tag=$(version)
 cmd=
 user=directus
-registry=ghcr.io
+registry=docker.io
 repository=directus/directus
 
 .PHONY: build
