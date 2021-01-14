@@ -2,6 +2,7 @@
 node_modules
 .vscode
 .env
+.env.*
 .secrets
 npm-debug.log
 lerna-debug.log
