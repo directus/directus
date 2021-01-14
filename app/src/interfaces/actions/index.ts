@@ -13,7 +13,7 @@ export default defineInterface(({ i18n }) => ({
 	groups: ['presentation'],
 	options: [
 		{
-			field: 'actionsStyle',
+			field: 'actions_style',
 			name: i18n.t('interfaces.actions.style'),
 			type: 'string',
 			meta: {
@@ -64,7 +64,7 @@ export default defineInterface(({ i18n }) => ({
 							},
 						},
 						{
-							field: 'actionStyle',
+							field: 'action_style',
 							name: i18n.t('interfaces.actions.style'),
 							type: 'string',
 							meta: {
@@ -84,6 +84,18 @@ export default defineInterface(({ i18n }) => ({
 							},
 							schema: {
 								default_value: 'normal',
+							},
+						},
+						{
+							field: 'open_in_new_window',
+							name: i18n.t('open_in_new_window'),
+							type: 'boolean',
+							meta: {
+								width: 'half',
+								interface: 'toggle',
+							},
+							schema: {
+								default_value: true,
 							},
 						},
 						{

@@ -3,16 +3,17 @@
 		<v-button
 			v-for="(action, index) in actions"
 			:key="index"
-			:class="{ [action.actionStyle]: true, action: true, link: actionsStyle === 'link' }"
-			:secondary="action.actionStyle !== 'primary'"
+			:class="{ [action.action_style]: true, action: true, link: actions_style === 'link' }"
+			:secondary="action.action_style !== 'primary'"
 			:disabled="disabled"
-			@click="() => dispatch(action.url, index)"
-			:is="actionsStyle === 'link' ? 'a' : 'v-button'"
+			@click="() => dispatch(action, index)"
+			:icon="!action.label"
+			:is="actions_style === 'link' ? 'a' : 'v-button'"
 		>
 			<v-icon v-if="action.icon" :name="action.icon" />
 			<span v-if="action.label">{{ action.label }}</span>
 		</v-button>
-		<v-dialog v-if="showError" active>
+		<v-dialog v-if="showError" @esc="showError = false" active>
 			<v-card>
 				<v-card-title>{{ $t('something_went_wrong') }}</v-card-title>
 				<v-card-text>
@@ -27,25 +28,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from '@vue/composition-api';
+import { defineComponent, PropType, ref, inject } from '@vue/composition-api';
 import { render } from 'micromustache';
-import VButtonGroup from '@/components/v-button-group/v-button-group.vue';
 
 type Action = {
 	icon: string;
 	label: string;
-	actionStyle: string;
+	action_style: string;
 	url: string;
+	open_in_new_window: boolean;
 };
 
 export default defineComponent({
-	components: { VButtonGroup },
 	props: {
 		disabled: {
 			type: Boolean,
 			default: false,
 		},
-		actionsStyle: {
+		actions_style: {
 			type: String,
 			default: 'button',
 		},
@@ -54,18 +54,25 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	setup(props, { parent, attrs }) {
+	setup(props, { attrs }) {
 		const showError = ref<boolean>(false);
+		const values = inject('values', ref<Record<string, any>>({}));
+
 		return {
 			dispatch,
 			showError,
 		};
 
-		function dispatch(url: string, index: number) {
-			if (props.disabled || !parent || !parent.$parent.$parent?.values) return;
+		function dispatch(action: Action, index: number) {
+			if (props.disabled || !values.value) return;
 
 			try {
-				window.open(render(url, parent.$parent.$parent.values), `${attrs.collection}_${attrs.field}_${index}`);
+				const destination = render(action.url, values.value);
+				if (action.open_in_new_window) {
+					window.open(destination, `${attrs.collection}_${attrs.field}_${index}`);
+				} else {
+					window.location.href = destination;
+				}
 			} catch (err) {
 				showError.value = true;
 			}
@@ -107,8 +114,8 @@ export default defineComponent({
 }
 
 .action {
-	&:not(:last-child) {
-		margin-inline-end: 1em;
+	&:not(:first-child) {
+		margin-inline-start: 1em;
 	}
 
 	&.info {
