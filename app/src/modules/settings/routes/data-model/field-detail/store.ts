@@ -51,6 +51,10 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				note: undefined,
 			},
 		},
+		selectedInterface: undefined,
+		selectedDisplay: undefined,
+		interfaceValues: {},
+		displayValues: {},
 		relations: [],
 		newCollections: [],
 		newFields: [],
@@ -115,6 +119,30 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			}
 		);
 	}
+
+	watch([() => interfaces.value, () => state.fieldData.meta.interface], () => {
+		state.selectedInterface = interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
+		state.interfaceValues = {};
+	});
+
+	watch([() => displays.value, () => state.fieldData.meta.display], () => {
+		state.selectedDisplay = displays.value.find((display) => display.id === state.fieldData.meta.display);
+		state.displayValues = {};
+	});
+
+	watch(
+		() => state.interfaceValues,
+		() => {
+			state.fieldData.meta.options = { ...getDefaultValues(state.selectedInterface), ...state.interfaceValues };
+		}
+	);
+
+	watch(
+		() => state.displayValues,
+		() => {
+			state.fieldData.meta.display_options = { ...getDefaultValues(state.selectedDisplay), ...state.displayValues };
+		}
+	);
 
 	// Auto generate translations
 	if (isExisting === false && type === 'translations') {
@@ -897,6 +925,20 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				}
 			}
 		);
+	}
+
+	function getDefaultValues(interfaceOrDisplay: InterfaceConfig | DisplayConfig | undefined) {
+		const options: Record<string, any> = {};
+
+		if (interfaceOrDisplay && Array.isArray(interfaceOrDisplay.options)) {
+			interfaceOrDisplay.options.forEach((option) => {
+				if (option.field && option.schema?.default_value !== undefined) {
+					options[option.field] = option.schema.default_value;
+				}
+			});
+		}
+
+		return options;
 	}
 
 	function collectionExists(collection: string) {

@@ -19,7 +19,7 @@
 				v-else-if="Array.isArray(selectedInterface.options)"
 				:fields="selectedInterface.options"
 				primary-key="+"
-				v-model="fieldData.meta.options"
+				v-model="interfaceValues"
 			/>
 
 			<component
@@ -113,13 +113,9 @@ export default defineComponent({
 			return recommendedItems;
 		});
 
-		const selectedInterface = computed(() => {
-			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
-		});
+		const { fieldData, selectedInterface, interfaceValues, relations, newCollections, newFields } = toRefs(state);
 
-		const { fieldData, relations, newCollections, newFields } = toRefs(state);
-
-		return { fieldData, relations, selectItems, selectedInterface, newCollections, newFields };
+		return { fieldData, interfaceValues, relations, selectItems, selectedInterface, newCollections, newFields };
 	},
 });
 </script>

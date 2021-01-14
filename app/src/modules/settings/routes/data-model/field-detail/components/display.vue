@@ -19,7 +19,7 @@
 				v-else-if="Array.isArray(selectedDisplay.options)"
 				:fields="selectedDisplay.options"
 				primary-key="+"
-				v-model="fieldData.meta.display_options"
+				v-model="displayValues"
 			/>
 
 			<component
@@ -104,13 +104,9 @@ export default defineComponent({
 			return recommendedItems;
 		});
 
-		const selectedDisplay = computed(() => {
-			return displays.value.find((display) => display.id === state.fieldData.meta.display);
-		});
+		const { fieldData, selectedDisplay, displayValues, relations, newCollections, newFields } = toRefs(state);
 
-		const { fieldData, relations, newCollections, newFields } = toRefs(state);
-
-		return { fieldData, selectItems, selectedDisplay, relations, newCollections, newFields };
+		return { fieldData, displayValues, selectItems, selectedDisplay, relations, newCollections, newFields };
 	},
 });
 </script>
