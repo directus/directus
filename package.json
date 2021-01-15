@@ -45,13 +45,14 @@
 		"@types/bytes": "^3.1.0",
 		"@types/chai": "^4.2.14",
 		"@types/clear": "^0.1.0",
-		"@types/codemirror": "^0.0.98",
+		"@types/codemirror": "^0.0.106",
 		"@types/color": "^3.0.1",
 		"@types/color-string": "^1.5.0",
 		"@types/cookie-parser": "^1.4.2",
 		"@types/cors": "^2.8.7",
 		"@types/debug": "^4.1.5",
 		"@types/diff": "^4.0.2",
+		"@types/dompurify": "^2.2.1",
 		"@types/express": "^4.17.9",
 		"@types/express-pino-logger": "^4.0.2",
 		"@types/express-session": "^1.17.2",
@@ -190,7 +191,8 @@
 		"@directus/sdk-js": "file:packages/sdk-js",
 		"@directus/specs": "file:packages/specs",
 		"create-directus-project": "file:packages/create-directus-project",
-		"directus": "file:api"
+		"directus": "file:api",
+		"dompurify": "^2.2.6"
 	},
 	"husky": {
 		"hooks": {

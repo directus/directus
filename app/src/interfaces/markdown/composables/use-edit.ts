@@ -1,46 +1,234 @@
-import { Ref } from '@vue/composition-api';
+import { Ref, nextTick } from '@vue/composition-api';
+import { Position } from 'codemirror';
+import { cloneDeep } from 'lodash';
 
-type Alteration = 'bold' | 'italic' | 'strikethrough';
+type Alteration =
+	| 'bold'
+	| 'italic'
+	| 'strikethrough'
+	| 'listBulleted'
+	| 'listNumbered'
+	| 'heading'
+	| 'blockquote'
+	| 'code'
+	| 'link';
 
-type AlterationFunctions = Record<Alteration, (selections: string[]) => string[]>;
+type AlterationFunctions = Record<
+	Alteration,
+	(
+		selections: string,
+		cursors: { cursorHead: Position; cursorFrom: Position; cursorTo: Position }
+	) => { newSelection: string; newCursor: Position; highlight?: { from: Position; to: Position } }
+>;
 
 export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>) {
 	const alterations: AlterationFunctions = {
-		bold(selections) {
-			return selections.map((selection) => {
-				if (selection.startsWith('**') && selection.endsWith('**')) {
-					return selection.substring(2, selection.length - 2);
-				} else {
-					return `**${selection}**`;
-				}
-			});
+		heading(selection, { cursorTo }) {
+			let newSelection = selection;
+			let newCursor = cursorTo;
+
+			if (selection.startsWith('# ')) {
+				newSelection = selection.substring(2);
+			} else {
+				newSelection = `# ${selection}`;
+				newCursor.ch = newCursor.ch + 2;
+			}
+
+			return { newSelection, newCursor };
 		},
-		italic(selections) {
-			return selections.map((selection) => {
-				if (selection.startsWith('*') && selection.endsWith('*')) {
-					return selection.substring(1, selection.length - 1);
-				} else {
-					return `*${selection}*`;
-				}
-			});
+		bold(selection, { cursorTo }) {
+			let newSelection = selection;
+			let newCursor = cursorTo;
+
+			if (selection.startsWith('**') && selection.endsWith('**')) {
+				newSelection = selection.substring(2, selection.length - 2);
+			} else {
+				newSelection = `**${selection}**`;
+				newCursor.ch = newCursor.ch + 2;
+			}
+
+			return { newSelection, newCursor };
 		},
-		strikethrough(selections) {
-			return selections.map((selection) => {
-				if (selection.startsWith('~~') && selection.endsWith('~~')) {
-					return selection.substring(2, selection.length - 2);
+		italic(selection, { cursorTo }) {
+			let newSelection = selection;
+			let newCursor = cursorTo;
+
+			if (selection.startsWith('*') && selection.endsWith('*')) {
+				newSelection = selection.substring(1, selection.length - 1);
+			} else {
+				newSelection = `*${selection}*`;
+				newCursor.ch = newCursor.ch + 1;
+			}
+
+			return { newSelection, newCursor };
+		},
+		strikethrough(selection, { cursorTo }) {
+			let newSelection = selection;
+			let newCursor = cursorTo;
+
+			if (selection.startsWith('~~') && selection.endsWith('~~')) {
+				newSelection = selection.substring(2, selection.length - 2);
+			} else {
+				newSelection = `~~${selection}~~`;
+				newCursor.ch = newCursor.ch + 2;
+			}
+
+			return { newSelection, newCursor };
+		},
+		listBulleted(selection, { cursorTo }) {
+			let newSelection = selection;
+			let newCursor = cursorTo;
+
+			const lines = selection.split('\n');
+
+			const isList = lines.every((line) => line.startsWith('- '));
+
+			if (isList) {
+				newSelection = lines.map((line) => line.substring(2)).join('\n');
+			} else {
+				newSelection = lines.map((line) => `- ${line}`).join('\n');
+			}
+
+			if (!selection) {
+				newCursor.ch = newCursor.ch + 2;
+			}
+
+			return { newSelection, newCursor };
+		},
+		listNumbered(selection, { cursorTo }) {
+			let newSelection = selection;
+			let newCursor = cursorTo;
+
+			const lines = selection.split('\n');
+
+			const isList = lines.every((line, index) => line.startsWith(`${index + 1}.`));
+
+			if (isList) {
+				newSelection = lines.map((line) => line.substring(3)).join('\n');
+			} else {
+				newSelection = lines.map((line, index) => `${index + 1}. ${line}`).join('\n');
+			}
+
+			if (!selection) {
+				newCursor.ch = newCursor.ch + 2;
+			}
+
+			return { newSelection, newCursor };
+		},
+		blockquote(selection, { cursorTo }) {
+			let newSelection = selection;
+			let newCursor = cursorTo;
+
+			const lines = selection.split('\n');
+
+			const isList = lines.every((line) => line.startsWith('> '));
+
+			if (isList) {
+				newSelection = lines.map((line) => line.substring(2)).join('\n');
+			} else {
+				newSelection = lines.map((line) => `> ${line}`).join('\n');
+			}
+
+			if (!selection) {
+				newCursor.ch = newCursor.ch + 2;
+			}
+
+			return { newSelection, newCursor };
+		},
+		code(selection, { cursorTo }) {
+			if (selection.includes('\n')) {
+				// Multiline
+				let newSelection = selection;
+				let newCursor = cursorTo;
+
+				if (selection.startsWith('```') && selection.endsWith('```')) {
+					newSelection = selection.substring(3, selection.length - 3);
 				} else {
-					return `~~${selection}~~`;
+					newSelection = '```\n' + newSelection + '\n```';
+					newCursor.line = newCursor.line + 1;
 				}
-			});
-		}
-	}
+
+				return { newSelection, newCursor };
+			} else {
+				// Inline
+				let newSelection = selection;
+				let newCursor = cursorTo;
+
+				if (selection.startsWith('`') && selection.endsWith('`')) {
+					newSelection = selection.substring(1, selection.length - 1);
+				} else {
+					newSelection = `\`${selection}\``;
+					newCursor.ch = newCursor.ch + 1;
+				}
+
+				return { newSelection, newCursor };
+			}
+		},
+		link(selection, { cursorFrom, cursorTo }) {
+			let newSelection = selection;
+			let newCursor = cursorTo;
+			let highlight;
+
+			if (selection.endsWith('](url)')) {
+				newSelection = selection.substring(1, selection.length - 6);
+			} else if (selection.startsWith('http')) {
+				newSelection = `[](${selection})`;
+				newCursor.ch = cursorFrom.ch + 1;
+			} else {
+				newSelection = `[${selection}](url)`;
+
+				if (selection) {
+					highlight = {
+						from: {
+							...cloneDeep(newCursor),
+							ch: newCursor.ch + 3,
+						},
+						to: {
+							...cloneDeep(newCursor),
+							ch: newCursor.ch + 6,
+						},
+					};
+				} else {
+					newCursor.ch = cursorFrom.ch + 1;
+				}
+			}
+
+			return { newSelection, newCursor, highlight };
+		},
+	};
 
 	return { edit };
 
 	function edit(type: Alteration) {
 		if (codemirror.value) {
-			const selections = codemirror.value.getSelections();
-			codemirror.value.replaceSelection(alterations[type](selections));
+			const cursor = codemirror.value.getCursor('head');
+			const cursorFrom = codemirror.value.getCursor('from');
+			const cursorTo = codemirror.value.getCursor('to');
+
+			const wordRange = codemirror.value.findWordAt(cursor);
+			const word = codemirror.value.getRange(wordRange.anchor, wordRange.head).trim();
+
+			const selection = codemirror.value.getSelection();
+
+			const { newSelection, newCursor, highlight } = alterations[type](selection || word, {
+				cursorFrom: cloneDeep(selection ? cursorFrom : wordRange.anchor),
+				cursorTo: cloneDeep(selection ? cursorTo : wordRange.head),
+				cursorHead: cursor,
+			});
+
+			if (word && !selection) {
+				codemirror.value.replaceRange(newSelection, wordRange.anchor, wordRange.head);
+			} else {
+				codemirror.value.replaceSelection(newSelection);
+			}
+
+			codemirror.value.setCursor(newCursor);
+
+			if (highlight) {
+				codemirror.value.setSelection(highlight.from, highlight.to);
+			}
+
+			codemirror.value.focus();
 		}
 	}
 }
