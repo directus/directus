@@ -462,6 +462,8 @@ upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
 layout_options: Layout Options
+rows: Rows
+columns: Columns
 collection_setup: Collection Setup
 optional_system_fields: Optional System Fields
 value_unique: Value has to be unique
@@ -512,17 +514,19 @@ wysiwyg_options:
   strikethrough: Strikethrough
   subscript: Subscript
   superscript: Superscript
+  codeblock: Code
   blockquote: Blockquote
   bullist: Bullet List
   numlist: Numbered List
   hr: Horizontal Rule
-  link: Add Link
+  link: Link
   unlink: Remove Link
   media: Add Media
   image: Add Image
   copy: Copy
   cut: Cut
   paste: Paste
+  heading: Heading
   h1: Heading 1
   h2: Heading 2
   h3: Heading 3

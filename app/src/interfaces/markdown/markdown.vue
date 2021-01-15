@@ -1,15 +1,77 @@
 <template>
 	<div class="interface-markdown" :class="view[0]">
 		<div class="toolbar">
-			<v-button small icon @click="edit('heading')"><v-icon name="title" /></v-button>
-			<v-button small icon @click="edit('bold')"><v-icon name="format_bold" /></v-button>
-			<v-button small icon @click="edit('italic')"><v-icon name="format_italic" /></v-button>
-			<v-button small icon @click="edit('strikethrough')"><v-icon name="format_strikethrough" /></v-button>
-			<v-button small icon @click="edit('listBulleted')"><v-icon name="format_list_bulleted" /></v-button>
-			<v-button small icon @click="edit('listNumbered')"><v-icon name="format_list_numbered" /></v-button>
-			<v-button small icon @click="edit('blockquote')"><v-icon name="format_quote" /></v-button>
-			<v-button small icon @click="edit('code')"><v-icon name="code" /></v-button>
-			<v-button small icon @click="edit('link')"><v-icon name="insert_link" /></v-button>
+			<v-menu show-arrow placement="bottom-start">
+				<template #activator="{ toggle }">
+					<v-button small icon @click="toggle" v-tooltip="$t('wysiwyg_options.heading')">
+						<v-icon name="title" />
+					</v-button>
+				</template>
+				<v-list>
+					<v-list-item v-for="n in 5" :key="n" @click="edit('heading', { level: n })">
+						<v-list-item-text>{{ $t(`wysiwyg_options.h${n}`) }}</v-list-item-text>
+					</v-list-item>
+				</v-list>
+			</v-menu>
+
+			<v-button small icon @click="edit('bold')" v-tooltip="$t('wysiwyg_options.bold')">
+				<v-icon name="format_bold" />
+			</v-button>
+			<v-button small icon @click="edit('italic')" v-tooltip="$t('wysiwyg_options.italic')">
+				<v-icon name="format_italic" />
+			</v-button>
+			<v-button small icon @click="edit('strikethrough')" v-tooltip="$t('wysiwyg_options.strikethrough')">
+				<v-icon name="format_strikethrough" />
+			</v-button>
+			<v-button small icon @click="edit('listBulleted')" v-tooltip="$t('wysiwyg_options.bullist')">
+				<v-icon name="format_list_bulleted" />
+			</v-button>
+			<v-button small icon @click="edit('listNumbered')" v-tooltip="$t('wysiwyg_options.numlist')">
+				<v-icon name="format_list_numbered" />
+			</v-button>
+			<v-button small icon @click="edit('blockquote')" v-tooltip="$t('wysiwyg_options.blockquote')">
+				<v-icon name="format_quote" />
+			</v-button>
+			<v-button small icon @click="edit('code')" v-tooltip="$t('wysiwyg_options.codeblock')">
+				<v-icon name="code" />
+			</v-button>
+			<v-button small icon @click="edit('link')" v-tooltip="$t('wysiwyg_options.link')">
+				<v-icon name="insert_link" />
+			</v-button>
+
+			<v-menu show-arrow :close-on-content-click="false">
+				<template #activator="{ toggle }">
+					<v-button small icon @click="toggle" v-tooltip="$t('wysiwyg_options.table')">
+						<v-icon name="table_chart" />
+					</v-button>
+				</template>
+
+				<template #default="{ deactivate }">
+					<div class="table-options">
+						<div class="field half">
+							<p class="type-label">{{ $t('rows') }}</p>
+							<v-input :min="1" type="number" v-model="table.rows" />
+						</div>
+						<div class="field half">
+							<p class="type-label">{{ $t('columns') }}</p>
+							<v-input :min="1" type="number" v-model="table.columns" />
+						</div>
+						<div class="field full">
+							<v-button
+								full-width
+								@click="
+									() => {
+										edit('table', table);
+										deactivate();
+									}
+								"
+							>
+								Create
+							</v-button>
+						</div>
+					</div>
+				</template>
+			</v-menu>
 
 			<div class="spacer"></div>
 
@@ -26,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, onMounted, onUnmounted, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, onMounted, onUnmounted, watch, reactive } from '@vue/composition-api';
 import { sanitize } from 'dompurify';
 import marked from 'marked';
 
@@ -61,6 +123,7 @@ export default defineComponent({
 				codemirror.value = CodeMirror.fromTextArea(codemirrorEl.value, {
 					mode: 'markdown',
 					configureMouse: () => ({ addNew: false }),
+					lineWrapping: true,
 				});
 
 				codemirror.value.setValue(props.value || '');
@@ -95,12 +158,19 @@ export default defineComponent({
 			return htmlSanitized;
 		});
 
-		return { codemirrorEl, edit, view, html };
+		const table = reactive({
+			rows: 4,
+			columns: 4,
+		});
+
+		return { codemirrorEl, edit, view, html, table };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/mixins/form-grid';
+
 .interface-markdown {
 	--v-button-background-color: transparent;
 	--v-button-color: var(--foreground-normal);
@@ -167,6 +237,19 @@ textarea {
 		--v-button-color-hover: var(--foreground-normal);
 		--v-button-background-color-activated: var(--border-normal);
 		--v-button-color-activated: var(--foreground-normal);
+	}
+}
+
+.table-options {
+	@include form-grid;
+
+	--form-vertical-gap: 12px;
+	--form-horizontal-gap: 12px;
+
+	padding: 12px;
+
+	.v-input {
+		min-width: 100px;
 	}
 }
 

@@ -11,27 +11,33 @@ type Alteration =
 	| 'heading'
 	| 'blockquote'
 	| 'code'
-	| 'link';
+	| 'link'
+	| 'table';
 
 type AlterationFunctions = Record<
 	Alteration,
 	(
 		selections: string,
-		cursors: { cursorHead: Position; cursorFrom: Position; cursorTo: Position }
+		cursors: { cursorHead: Position; cursorFrom: Position; cursorTo: Position },
+		options?: Record<string, any>
 	) => { newSelection: string; newCursor: Position; highlight?: { from: Position; to: Position } }
 >;
 
 export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>) {
 	const alterations: AlterationFunctions = {
-		heading(selection, { cursorTo }) {
+		heading(selection, { cursorTo }, options) {
+			const level = options?.level || 3;
+
 			let newSelection = selection;
 			let newCursor = cursorTo;
 
-			if (selection.startsWith('# ')) {
-				newSelection = selection.substring(2);
+			const prefix = '#'.repeat(level) + ' ';
+
+			if (selection.startsWith(prefix)) {
+				newSelection = selection.substring(prefix.length);
 			} else {
-				newSelection = `# ${selection}`;
-				newCursor.ch = newCursor.ch + 2;
+				newSelection = `${prefix}${selection}`;
+				newCursor.ch = newCursor.ch + prefix.length;
 			}
 
 			return { newSelection, newCursor };
@@ -195,11 +201,28 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>) {
 
 			return { newSelection, newCursor, highlight };
 		},
+		table(selection, cursors, options) {
+			if (!options) return { newSelection: selection, newCursor: cursors.cursorFrom };
+
+			let table: string = '';
+
+			// Headers
+			const headers = [];
+			for (let i = 0; i < options.columns; i++) headers.push('Header');
+			table += `| ${headers.join(' | ')} |`;
+			table += `\n| ${headers.map(() => '------').join(' | ')} |`;
+
+			for (let i = 0; i < options.rows; i++) {
+				table += `\n| ${headers.map(() => 'Cell').join('   | ')}   |`;
+			}
+
+			return { newSelection: table, newCursor: cursors.cursorFrom };
+		},
 	};
 
 	return { edit };
 
-	function edit(type: Alteration) {
+	function edit(type: Alteration, options?: Record<string, any>) {
 		if (codemirror.value) {
 			const cursor = codemirror.value.getCursor('head');
 			const cursorFrom = codemirror.value.getCursor('from');
@@ -210,11 +233,15 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>) {
 
 			const selection = codemirror.value.getSelection();
 
-			const { newSelection, newCursor, highlight } = alterations[type](selection || word, {
-				cursorFrom: cloneDeep(selection ? cursorFrom : wordRange.anchor),
-				cursorTo: cloneDeep(selection ? cursorTo : wordRange.head),
-				cursorHead: cursor,
-			});
+			const { newSelection, newCursor, highlight } = alterations[type](
+				selection || word,
+				{
+					cursorFrom: cloneDeep(selection ? cursorFrom : wordRange.anchor),
+					cursorTo: cloneDeep(selection ? cursorTo : wordRange.head),
+					cursorHead: cursor,
+				},
+				options
+			);
 
 			if (word && !selection) {
 				codemirror.value.replaceRange(newSelection, wordRange.anchor, wordRange.head);
