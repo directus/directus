@@ -84,7 +84,7 @@ put our values into practice. We expect all of our staff, contractors and contri
 ## Development Workflow
 
 Before getting started, ensure you your local environment meets our [minimum requirements](/guides/installation/cli) and
-you are familiar with Git.
+you are familiar with Git. Please ensure you're on the "current" version of Node.js (see [Node's release schedule](https://nodejs.org/en/about/releases/)).
 
 ### 1. Fork the Directus repository
 
