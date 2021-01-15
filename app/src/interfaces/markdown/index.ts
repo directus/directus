@@ -21,20 +21,5 @@ export default defineInterface(({ i18n }) => ({
 				},
 			},
 		},
-		{
-			field: 'tabbed',
-			name: i18n.t('interfaces.markdown.tabbed'),
-			type: 'boolean',
-			meta: {
-				width: 'half',
-				interface: 'toggle',
-				options: {
-					label: i18n.t('interfaces.markdown.tabbed_label'),
-				},
-			},
-			schema: {
-				default_value: false,
-			},
-		},
 	],
 }));
