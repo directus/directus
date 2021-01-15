@@ -371,8 +371,6 @@ interfaces:
   many-to-one:
     many-to-one: Banyak ke Satu
     display_template: Tampilan Template
-  markdown:
-    edit: Edit
   numeric:
     numeric: Numerik
   translations:
