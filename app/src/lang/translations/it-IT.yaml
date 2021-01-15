@@ -586,8 +586,6 @@ interfaces:
     display_template: Display Template
   markdown:
     markdown: Markdown
-    edit: Modifica
-    preview: Anteprima
   numeric:
     numeric: Numerico
     description: Inserisci un numero
