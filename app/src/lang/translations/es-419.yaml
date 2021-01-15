@@ -75,9 +75,13 @@ validationError:
 all_access: Todos los accesos
 no_access: Sin Acceso
 use_custom: Personalizar
+field_standard: Estándar
 field_presentation: Presentación y Alias
 field_file: Un Archivo
 field_files: Múltiples Archivos
+field_m2o: Relación MAU
+field_o2m: Relación UAM
+field_m2m: Relación MAM
 field_translations: Traducciones
 item_permissions: Permisos de Elemento
 field_permissions: Permisos de Campo
@@ -171,6 +175,8 @@ length: Longitud
 precision_scale: Precisión y Escala
 readonly: Sólo lectura
 unique: Único
+updated_on: Actualizado el
+updated_by: Actualizado por
 primary_key: Llave primaria
 foreign_key: Llave Foránea
 finish_setup: Finalizar Configuración
@@ -348,6 +354,7 @@ collection_created: Colección Creada
 modified_on: Modificado en
 card_size: Tamaño de Tarjeta
 sort_field: Campo Ordenamiento
+sort: Ordenar
 status: Estatus
 toggle_manual_sorting: Alternar Ordenamiento Manual
 bookmark_doesnt_exist: El Marcador no existe
@@ -503,11 +510,11 @@ wysiwyg_options:
   strikethrough: Tachado
   subscript: Subíndice
   superscript: Superíndice
+  codeblock: Código
   blockquote: Bloque de Cita
   bullist: Lista con viñetas
   numlist: Lista Numerada
   hr: Regla Horizontal
-  link: Agregar Enlace
   unlink: Remover Enlace
   media: Agregar Multimedia
   image: Agregar Imagen
@@ -796,6 +803,8 @@ interfaces:
     title_placeholder: Ingresar un título...
     inline_title: Titulo en línea
     inline_title_label: Mostrar título en línea
+    margin_top: Margen Superior
+    margin_top_label: Aumentar Margen Superior
   dropdown:
     description: Seleccine un valor de la lista desplegable
     choices_placeholder: Agregar una nueva opción
@@ -899,6 +908,8 @@ interfaces:
     trim_label: Eliminar espacios al inicio y al final
     mask: Enmascarado
     mask_label: Ocultar el valor real
+    nullable: Nulo
+    nullable_label: Guardar valor vacío como NULL
   textarea:
     textarea: Área de Texto
     description: Ingresar texto plano multi-línea
