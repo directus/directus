@@ -503,11 +503,11 @@ wysiwyg_options:
   strikethrough: Зачеркнутый
   subscript: Подстрочный
   superscript: Надстрочный
+  codeblock: Код
   blockquote: Цитата
   bullist: Маркированный Список
   numlist: Нумерованный Список
   hr: Горизонтальный Разделитель
-  link: Добавить Ссылку
   unlink: Удалить Ссылку
   media: Добавить Медиа
   image: Добавить Изображение
