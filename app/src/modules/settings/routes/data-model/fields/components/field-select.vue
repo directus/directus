@@ -345,7 +345,7 @@ export default defineComponent({
 					await fieldsStore.createField(duplicateTo.value, newField);
 
 					notify({
-						title: i18n.t('field_create_success', { field: newField.name }),
+						title: i18n.t('field_create_success', { field: newField.field }),
 						type: 'success',
 					});
 
