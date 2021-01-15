@@ -510,11 +510,11 @@ wysiwyg_options:
   strikethrough: Tachado
   subscript: Subíndice
   superscript: Superíndice
+  codeblock: Código
   blockquote: Bloque de Cita
   bullist: Lista con viñetas
   numlist: Lista Numerada
   hr: Regla Horizontal
-  link: Agregar Enlace
   unlink: Remover Enlace
   media: Agregar Multimedia
   image: Agregar Imagen
@@ -757,7 +757,6 @@ template: Plantilla
 translation: Traducción
 value: Valor
 view_project: Ver Proyecto
-weeks: { }
 report_error: Reportar Error
 interfaces:
   checkboxes:
