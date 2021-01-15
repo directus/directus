@@ -440,11 +440,11 @@ wysiwyg_options:
   strikethrough: Przekreślenie
   subscript: Indeks dolny
   superscript: Indeks górny
+  codeblock: Kod
   blockquote: Blok cytowany
   bullist: Lista wypunktowana
   numlist: Lista numerowana
   hr: Pozioma linia
-  link: Dodaj link
   unlink: Usuń link
   media: Dodaj multimedia
   image: Dodaj obraz
