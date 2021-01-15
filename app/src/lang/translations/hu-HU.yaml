@@ -383,8 +383,6 @@ interfaces:
     interface: Kezelőfelület
   many-to-one:
     display_template: Megjelenítési sablon
-  markdown:
-    edit: Szerkesztés
   tags:
     tags: Cimkék
   toggle:
