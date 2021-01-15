@@ -1,3 +1,5 @@
+
+
 # Contributing
 
 > Our team truly appreciates every single pull-request, bug report, and feature request made by our community. If you
@@ -13,14 +15,15 @@ monorepo design similar to React or Babel — to learn more about our monorepo's
 To contribute to the project, please follow the instructions located within our GitHub repository's
 [contributing.md file](https://github.com/directus/directus/blob/main/contributing.md).
 
-<!--
-@TODO
-
+<!-- prettier-ignore-start -->
 ::: tip PHP API Port
 While the Node.js version of Directus defines the official specification and is
 our team's primary focus, we also support a community-lead PHP API port in Laravel. This secondary
-codebase is located in a separate git repository at [`directus/php`](#).
-::: -->
+codebase is located in a separate git repository at [`directus/php`](https://github.com/directus).
+Though the repository is currently hidden, to coordinate contributing, please reach out to our core team via
+[Discord](https://directus.chat). 
+::: 
+<!-- prettier-ignore-end -->
 
 ## Feature Requests
 
@@ -86,9 +89,16 @@ put our values into practice. We expect all of our staff, contractors and contri
 Before getting started, ensure you your local environment meets our [minimum requirements](/guides/installation/cli) and
 you are familiar with Git. Please ensure you're on the "current" version of Node.js (see [Node's release schedule](https://nodejs.org/en/about/releases/)).
 
+<!-- prettier-ignore-start -->
+::: tip
+You will need to have a minimum of Node 12+ to build Directus!
+:::
+<!-- prettier-ignore-end -->
+
 ### 1. Fork the Directus repository
 
-Go to the [repository](https://github.com/directus/directus) and fork it to your GitHub account.
+Go to the [repository](https://github.com/directus/directus) and fork it to your GitHub account. A fork is your copy of the Directus repository. 
+Forking the repository allows you to freely experiment with changes without affecting the original project.
 
 ### 2. Clone from your repository
 
@@ -152,11 +162,39 @@ git push -u origin YOUR-BRANCH-NAME
 
 ### Submit a pull-request
 
-Once you push the changes to your repo, the "Compare & pull request" button will appear in GitHub. Click it and you'll
-be taken to a screen where you can fill in the appropriate details. Finally, open the pull request by clicking the
-"Create pull request" button.
+Once you push the changes to your repo, the "Compare & pull request" button will appear in GitHub. 
+Click it and you'll be taken to a screen where you can fill in the appropriate details. 
+Finally, open the pull request by clicking the "Create pull request" button.
 
 Now our core staff will review your contribution and either merge it, or request that you to make changes.
+
+## Syncing Your Fork with Directus
+
+After you have submitted your pull requests, you would need to sync your fork with Directus to pull all the latest commits before you continue to contribute.
+
+### 1. Add Directus as a Remote
+
+While your fork is your main remote or origin, you will add Directus as the upstream, which generally refers to the original repo that you have forked.
+
+```bash
+git remote add upstream git@github.com:directus/directus.git
+```
+
+### 2. Fetch the Latest Changes
+
+Depending on your setup, you will need to get the latest commits from the `main` branch of Directus by doing a pull, reset, rebase or fetch.
+
+```bash
+git pull upstream main
+```
+
+At this point you are ready to continue working on Directus, with the latest commits included! 
+
+<!-- prettier-ignore-start -->
+::: tip
+Before you begin or resume development, be sure to always sync, if you are going to submit a pull request with your changes!
+:::
+<!-- prettier-ignore-end -->
 
 ## Codebase Overview
 

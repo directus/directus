@@ -44,7 +44,8 @@ configuration file and any related asset storage. This modular approach means yo
 (eg: Dev, Staging, Prod) by simply creating additional project instances.
 
 <!-- ::: tip Migrating Environments
-Directus includes [Export](#), [Import](#), [Backup](#), and [Restore](#) features to assist with custom migration workflows between environments. You can also roll your own process by copying the database and assets between environments, either manually or via an automated script.
+Directus includes [Export](#), [Import](#), [Backup](#), and [Restore](#) features to assist with custom migration workflows between environments. 
+You can also roll your own process by copying the database and assets between environments, either manually or via an automated script.
 
 @TODO Reference Schema Revisions
 ::: -->

@@ -124,7 +124,7 @@ to the Junction Table that sits in the middle. In that sense, there really is no
 <!-- prettier-ignore-start -->
 ::: tip
 Manual Reordering To enable manual reordering for a M2M, simply add a numeric field to the
-junction table and set it as the [Collection Sort](#).
+junction table and set it as the [Collection Sort](/guides/collections#sort).
 :::
 <!-- prettier-ignore-end -->
 
@@ -138,7 +138,7 @@ other articles.
 
 ## One-to-One (O2O)
 
-Directus does not include a one-to-one (O2O) relationship type or interface. However a O2O saves is
+Directus does not include a one-to-one (O2O) relationship type or interface. However, O2O is
 essentially the same as a M2O (storing a foreign key). The only difference is that a O2O enforces
 the cardinality. In other words, selecting a relational item in a O2O means that item can not be
 selected elsewhere (it can only be used once). This functionality can be added by checking and

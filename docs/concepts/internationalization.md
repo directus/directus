@@ -6,12 +6,12 @@
 ## App Translations
 
 Directus supports internationalization across its entire Admin App. Many languages are currently
-supported, with more are being added all the time. Help the communtiy by adding or refining your
+supported, with more are being added all the time. Help the community by adding or refining your
 language through our [CrowdIn](https://locales.directus.io/) integration.
 
 ## Schema Translations
 
-Directus uses [database mirroring](#) to dynamically pull in your schema's tables and columns,
+Directus uses [database mirroring](/concepts/platform-overview#database-mirroring) to dynamically pull in your schema's tables and columns,
 however this only covers one language. Therefore our platform supports schema translations for these
 names, allowing you to properly support different languages for your Collection and Field names.
 

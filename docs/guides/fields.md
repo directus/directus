@@ -1,3 +1,4 @@
+
 # Fields
 
 > You can manage your fields within the Data Model section of the App's Settings, via the
@@ -25,6 +26,26 @@ Keep in mind that a Directus Field is just a database column. Therefore you
 can import or create a column directly in the database, and it will automatically appear within
 Directus. The first time you manage that column, a `directus_fields` record will be created with
 default values.
+:::
+<!-- prettier-ignore-end -->
+
+## Updating a Field
+
+1. Navigate to **Settings > Data Model > [Collection Name]**
+2. Click the field you want to update
+3. Follow the specific setup guide for the field type...
+
+-   [Standard Field](/guides/field-types/standard-field)
+-   [Presentation Field](/guides/field-types/presentation-field)
+-   [Many-to-One Field](/guides/field-types/many-to-one-field)
+-   [One-to-Many Field](/guides/field-types/one-to-many-field)
+-   [Many-to-Many Field](/guides/field-types/many-to-many-field)
+-   [Many-to-Any Field](/guides/field-types/many-to-any-field)
+-   [Translated Fields](/guides/field-types/translated-fields)
+
+<!-- prettier-ignore-start -->
+::: tip 
+Learn more about the field options for [Adjusting the Field Layout](#adjusting-field-layout).
 :::
 <!-- prettier-ignore-end -->
 

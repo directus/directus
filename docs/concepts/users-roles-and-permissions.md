@@ -17,7 +17,7 @@ App
 ::: tip Extending Directus Users
 While the included fields within Directus Users are required/locked,
 you can still _extend_ this collection with additional custom fields as needed. You can do this via
-the normal [Create a new Field](#) process from within the system collection.
+the normal [Create a new Field](/guides/fields) process from within the system collection.
 :::
 <!-- prettier-ignore-end -->
 
