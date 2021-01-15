@@ -203,6 +203,7 @@ read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
 wysiwyg_options:
+  codeblock: Kod
   remove: Kaldır
   table: Tablo
 dropdown: Açılır Liste
