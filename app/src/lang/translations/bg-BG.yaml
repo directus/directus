@@ -843,10 +843,6 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Въвеждане и преглед за markdown
-    tabbed: Табулиран
-    tabbed_label: Показване на предварителния изглед в отделен подпрозорец
-    edit: Редактиране
-    preview: Преглед
   notice:
     notice: Бележка
     description: Показване на кратка бележка
