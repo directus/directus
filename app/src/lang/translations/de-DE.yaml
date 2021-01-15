@@ -317,6 +317,7 @@ wysiwyg_options:
   italic: Kursiv
   underline: Unterstrichen
   strikethrough: Durchgestrichen
+  codeblock: Code
   bullist: Aufzählung
   numlist: Nummerierte Liste
   copy: Kopieren
