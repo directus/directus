@@ -236,6 +236,7 @@ select_fields: Pilih Bidang
 wysiwyg_options:
   forecolor: Warna Latar Depan
   backcolor: Warna Latar Belakang
+  codeblock: Kode
   remove: Hapus
   selectall: Pilih Semua
   table: Tabel
