@@ -343,9 +343,13 @@ sort: Rūšiuoti
 status: Būklė
 toggle_manual_sorting: Perjungti rankinį rūšiavimą
 bookmark_doesnt_exist: Žymė neegzistuoja
+bookmark_doesnt_exist_copy: Žymė, kurią bandote atidaryti, neegzistuoja.
+bookmark_doesnt_exist_cta: Grįžti į kolekciją
+select_an_item: Pasirinkti elementą...
 edit: Redaguoti
 enabled: Įjungtas
 disable_tfa: Išjungti 2VA
+tfa_scan_code: Norėdami pabaigti konfigūruoti 2FA, nuskenuokite kodą autentifikatoriaus programėlėje
 enter_otp_to_disable_tfa: Įveskite OTP (vienkartinį slaptažodį) norėdami išjungti 2FA
 create_account: Sukurti paskyrą
 account_created_successfully: Paskyra sukurta sėkmingai
@@ -424,6 +428,20 @@ operators:
   nnull: Nėra null
   contains: Turi
   ncontains: Nesusideda iš
+  between: Yra tarp
+  nbetween: Nėra tarp
+  empty: Yra tuščias
+  nempty: Nėra tuščias
+  all: Sudarytas iš šių elementų
+  has: Sudarytas iš kai kurių iš šių elementų
+loading: Kraunasi...
+drop_to_upload: Vilkite norėdami įkelti
+upload_file: Įkelti failą
+upload_file_indeterminate: Failas įkeliamas...
+upload_file_success: Failas įkeltas
+upload_files_indeterminate: 'Įkeliami failai {done}/{total}'
+upload_files_success: '{count} failai įkelti'
+upload_pending: Laukiama įkėlimo
 create_folder: Sukurti aplanką
 folder_name: Aplanko pavadinimas...
 add_file: Pridėti failą
