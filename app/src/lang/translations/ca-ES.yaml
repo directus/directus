@@ -95,6 +95,7 @@ display_template: Mostra la plantilla
 role: Rol
 create: Crear
 wysiwyg_options:
+  codeblock: Codi
   table: Taula
 dropdown: Desplegable
 choices: Opcions
