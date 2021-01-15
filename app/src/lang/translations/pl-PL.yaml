@@ -708,9 +708,6 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Wprowadź i zobacz markdown
-    tabbed_label: Pokaż podgląd w osobnej karcie
-    edit: Edytuj
-    preview: Podgląd
   numeric:
     numeric: Numeryczne
     description: Wprowadź liczbę
