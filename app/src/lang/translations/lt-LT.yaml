@@ -752,8 +752,6 @@ interfaces:
   interface:
     interface: Sąsaja
     description: Pasirinkti egzistuojančią sąsają
-  markdown:
-    edit: Redaguoti
   tags:
     tags: Žymos
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
