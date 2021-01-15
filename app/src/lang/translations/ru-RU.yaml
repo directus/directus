@@ -843,10 +843,6 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Ввод и предпросмотр markdown
-    tabbed: Вкладками
-    tabbed_label: Показывать предпросмотр в отдельной вкладке
-    edit: Редактирование
-    preview: Предпросмотр
   notice:
     notice: Примечание
     description: Показать короткое примечание
