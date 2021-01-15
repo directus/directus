@@ -369,6 +369,7 @@ wysiwyg_options:
   italic: Corsivo
   underline: Sottolineato
   strikethrough: Barrato
+  codeblock: Codice
   copy: Copia
   cut: Taglia
   paste: Incolla
