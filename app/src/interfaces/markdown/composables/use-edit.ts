@@ -1,4 +1,4 @@
-import { Ref, nextTick } from '@vue/composition-api';
+import { Ref } from '@vue/composition-api';
 import { Position } from 'codemirror';
 import { cloneDeep } from 'lodash';
 
