@@ -197,8 +197,6 @@ interfaces:
     interface-options: Opcions d'Interfície
   many-to-one:
     display_template: Mostra la plantilla
-  markdown:
-    edit: Edita
   one-to-many:
     one-to-many: Un a Molts
   radio-buttons:
