@@ -100,6 +100,7 @@ read: قراءة
 update: تحديث
 select_fields: حدد حقول
 wysiwyg_options:
+  codeblock: نص برمجي
   remove: احذف
   table: الجدول
 dropdown: قائمة منسدلة
