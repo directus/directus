@@ -481,11 +481,11 @@ wysiwyg_options:
   strikethrough: Perbrauktas
   subscript: Apatinis indeksas
   superscript: Viršutinis indeksas
+  codeblock: Kodas
   blockquote: Įtrauka
   bullist: Suženklintasis sąrašas
   numlist: Numeruotasis sąrašas
   hr: Horizontali linija
-  link: Pridėti nuorodą
   unlink: Pašalinti nuorodą
   media: Pridėti mediją
   image: Pridėti nuotrauką
