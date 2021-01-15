@@ -45,7 +45,7 @@ function createConfig({
 	target,
 	mode,
 	browser = false,
-	external = Object.fromEntries(Object.keys(pkg.dependencies || {}).map((x) => [x, x])),
+	external = Object.keys(pkg.dependencies || {}).reduce((e, d) => ({ ...e, [d]: d }), {}),
 }) {
 	const isProduction = mode === 'production';
 
