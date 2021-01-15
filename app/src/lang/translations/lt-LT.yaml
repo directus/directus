@@ -15,6 +15,7 @@ requires_value: Reikalinga reikšmė
 create_preset: Sukurti išankstinę parinktį
 create_role: Kurti vaidmenį
 create_user: Sukurti vartotojo paskyrą
+create_webhook: Sukurti Webhook'ą
 invite_users: Pakviesti vartotojus
 email_examples: 'admin@example.com, user@example.com...'
 invite: Pakviesti
@@ -336,7 +337,12 @@ second: Sekundė(-s)
 file_moved: Failas perkeltas
 collection_created: Kolekcija sukurta
 modified_on: Pakeista
+card_size: Kortelės dydis
+sort_field: Rūšiavimo laukas
+sort: Rūšiuoti
 status: Būklė
+toggle_manual_sorting: Perjungti rankinį rūšiavimą
+bookmark_doesnt_exist: Žymė neegzistuoja
 edit: Redaguoti
 enabled: Įjungtas
 disable_tfa: Išjungti 2VA
