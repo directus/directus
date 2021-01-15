@@ -46,6 +46,14 @@ body {
 	background-color: var(--v-card-background-color);
 	border-radius: var(--border-radius);
 
+	// Page Content Spacing
+	font-size: 15px;
+	line-height: 24px;
+	--border-radius: 6px;
+	--input-height: 60px;
+	--input-padding: 16px; // (60 - 4 - 24) / 2
+	--form-vertical-gap: 52px;
+
 	& > :first-child {
 		border-top-left-radius: var(--border-radius);
 		border-top-right-radius: var(--border-radius);

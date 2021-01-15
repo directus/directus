@@ -126,8 +126,12 @@ export default defineComponent({
 
 	::v-deep .v-card {
 		--v-card-min-width: calc(100vw - 40px);
-		--v-card-padding: 20px;
+		--v-card-padding: 28px;
 		--v-card-background-color: var(--background-page);
+
+		.v-card-title {
+			padding-bottom: 8px;
+		}
 
 		.v-card-actions {
 			flex-wrap: wrap;
