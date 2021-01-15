@@ -507,11 +507,11 @@ wysiwyg_options:
   strikethrough: Doorhalen
   subscript: Subscript
   superscript: Superscript
+  codeblock: Code
   blockquote: Citaat
   bullist: Opsomming
   numlist: Genummerde lijst
   hr: Horizontale lijn
-  link: Voeg Link Toe
   unlink: Link verwijderen
   media: Media toevoegen
   image: Afbeelding toevoegen
