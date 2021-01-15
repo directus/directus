@@ -266,8 +266,6 @@ interfaces:
     display_template: 显示模板
   markdown:
     markdown: Markdown
-    edit: 编辑
-    preview: 预览
   numeric:
     numeric: 数字
   one-to-many:
