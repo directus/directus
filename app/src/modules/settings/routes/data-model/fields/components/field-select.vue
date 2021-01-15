@@ -524,7 +524,7 @@ export default defineComponent({
 }
 
 .form-grid {
-	--v-form-vertical-gap: 24px;
+	--form-vertical-gap: 24px;
 
 	@include form-grid;
 }

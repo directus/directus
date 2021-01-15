@@ -1,7 +1,9 @@
 # Form
+
 Renders a form using interfaces based on the passed collection name.
 
 ## Usage
+
 ```html
 <v-form
 	collection="articles"
@@ -13,8 +15,9 @@ Renders a form using interfaces based on the passed collection name.
 ```
 
 ## Props
+
 | Prop            | Description                                                                                                             | Default |
-|-----------------|-------------------------------------------------------------------------------------------------------------------------|---------|
+| --------------- | ----------------------------------------------------------------------------------------------------------------------- | ------- |
 | `collection`    | The collection of which you want to render the fields                                                                   | --      |
 | `fields`        | Array of fields to render. This can be used instead of the collection prop                                              | --      |
 | `initialValues` | Object of the starting values of the fields                                                                             | --      |
@@ -24,17 +27,11 @@ Renders a form using interfaces based on the passed collection name.
 **Note**: You have to pass either the collection or fields prop.
 
 ## Slots
+
 n/a
 
 ## Events
-| Event   | Description              |
-|---------|--------------------------|
-| `input` | Edits have been updated. |
 
-## CSS Variables
-| Variable                  | Default                                |
-|---------------------------|----------------------------------------|
-| `--v-form-column-width`   | `300px`                                |
-| `--v-form-row-max-height` | `calc(var(--v-form-column-width) * 2)` |
-| `--v-form-horizontal-gap` | `12px`                                 |
-| `--v-form-vertical-gap`   | `52px`                                 |
+| Event   | Description              |
+| ------- | ------------------------ |
+| `input` | Edits have been updated. |

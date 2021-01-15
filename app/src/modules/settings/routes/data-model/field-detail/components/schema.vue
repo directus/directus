@@ -404,8 +404,8 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .form {
-	--v-form-vertical-gap: 32px;
-	--v-form-horizontal-gap: 32px;
+	--form-vertical-gap: 32px;
+	--form-horizontal-gap: 32px;
 
 	@include form-grid;
 }

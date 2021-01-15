@@ -73,6 +73,17 @@
 				</template>
 			</v-menu>
 
+			<v-button
+				v-for="custom in customSyntax"
+				small
+				icon
+				:key="custom.name"
+				@click="edit('custom', custom)"
+				v-tooltip="custom.name"
+			>
+				<v-icon :name="custom.icon" />
+			</v-button>
+
 			<div class="spacer"></div>
 
 			<v-button-group class="view" mandatory v-model="view" rounded>
@@ -88,14 +99,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, onMounted, onUnmounted, watch, reactive } from '@vue/composition-api';
+import {
+	defineComponent,
+	computed,
+	ref,
+	onMounted,
+	onUnmounted,
+	watch,
+	reactive,
+	PropType,
+} from '@vue/composition-api';
 import { sanitize } from 'dompurify';
 import marked from 'marked';
 
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/markdown/markdown';
+import 'codemirror/addon/display/placeholder.js';
 
-import { useEdit } from './composables/use-edit';
+import { useEdit, CustomSyntax } from './composables/use-edit';
 
 export default defineComponent({
 	props: {
@@ -111,6 +132,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		customSyntax: {
+			type: Array as PropType<CustomSyntax[]>,
+			default: () => [],
+		},
 	},
 	setup(props, { emit }) {
 		const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
@@ -124,6 +149,7 @@ export default defineComponent({
 					mode: 'markdown',
 					configureMouse: () => ({ addNew: false }),
 					lineWrapping: true,
+					placeholder: props.placeholder,
 				});
 
 				codemirror.value.setValue(props.value || '');
@@ -150,7 +176,7 @@ export default defineComponent({
 			}
 		);
 
-		const { edit } = useEdit(codemirror);
+		const { edit } = useEdit(codemirror, props.customSyntax);
 
 		const html = computed(() => {
 			const html = marked(props.value || '');

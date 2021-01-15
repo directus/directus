@@ -26,6 +26,8 @@ connection_fair: Fair Connection
 connection_poor: Poor Connection
 rename_folder: Rename Folder
 delete_folder: Delete Folder
+prefix: Prefix
+suffix: Suffix
 reset_bookmark: Reset Bookmark
 rename_bookmark: Rename Bookmark
 update_bookmark: Update Bookmark
@@ -707,6 +709,8 @@ generate_and_save_uuid: Generate and Save UUID
 save_current_user_id: Save Current User ID
 save_current_user_role: Save Current User Role
 save_current_datetime: Save Current Date/Time
+block: Block
+inline: Inline
 comment: Comment
 continue: Continue
 continue_as: >-
@@ -865,10 +869,10 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Enter and preview markdown
-    tabbed: Tabbed
-    tabbed_label: Show preview in separate tab
-    edit: Edit
-    preview: Preview
+    customSyntax: Custom Blocks
+    customSyntax_label: Add custom syntax types
+    customSyntax_add: Add custom syntax
+    box: Block / Inline
   notice:
     notice: Notice
     description: Display a short notice

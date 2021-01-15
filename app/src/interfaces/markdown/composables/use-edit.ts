@@ -12,7 +12,8 @@ type Alteration =
 	| 'blockquote'
 	| 'code'
 	| 'link'
-	| 'table';
+	| 'table'
+	| 'custom';
 
 type AlterationFunctions = Record<
 	Alteration,
@@ -23,7 +24,15 @@ type AlterationFunctions = Record<
 	) => { newSelection: string; newCursor: Position; highlight?: { from: Position; to: Position } }
 >;
 
-export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>) {
+export type CustomSyntax = {
+	name: string;
+	icon: string;
+	prefix: string;
+	suffix: string;
+	box: 'inline' | 'block';
+};
+
+export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, customSyntaxBlocks: CustomSyntax[]) {
 	const alterations: AlterationFunctions = {
 		heading(selection, { cursorTo }, options) {
 			const level = options?.level || 3;
@@ -217,6 +226,37 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>) {
 			}
 
 			return { newSelection: table, newCursor: cursors.cursorFrom };
+		},
+		custom(selection, { cursorTo, cursorHead }, options) {
+			if (!options) return { newSelection: selection, newCursor: cursorHead };
+
+			if (options.box === 'block') {
+				// Multiline
+				let newSelection = selection;
+				let newCursor = cursorTo;
+
+				if (selection.startsWith(options.prefix) && selection.endsWith(options.suffix)) {
+					newSelection = selection.substring(options.prefix.length, selection.length - options.suffix.length);
+				} else {
+					newSelection = `${options.prefix}\n${newSelection}\n${options.suffix}`;
+					newCursor.line = newCursor.line + 1;
+				}
+
+				return { newSelection, newCursor };
+			} else {
+				// Inline
+				let newSelection = selection;
+				let newCursor = cursorTo;
+
+				if (selection.startsWith(options.prefix) && selection.endsWith(options.suffix)) {
+					newSelection = selection.substring(1, selection.length - 1);
+				} else {
+					newSelection = `${options.prefix}${selection}${options.suffix}`;
+					newCursor.ch = newCursor.ch + 1;
+				}
+
+				return { newSelection, newCursor };
+			}
 		},
 	};
 
