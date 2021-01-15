@@ -852,10 +852,6 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Ingresar y previsualizar Markdown
-    tabbed: Pestaña
-    tabbed_label: Mostrar previsualización en una pestaña separada
-    edit: Editar
-    preview: Vista preliminar
   notice:
     notice: Aviso
     description: Presentar un aviso corto
