@@ -618,8 +618,6 @@ interfaces:
     display_template: Modèle d'affichage
   markdown:
     markdown: Markdown
-    edit: Modifier
-    preview: Aperçu
   numeric:
     numeric: Numérique
     minimum_value: Valeur minimale
