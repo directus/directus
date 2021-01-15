@@ -847,10 +847,6 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Markdown invoeren en bekijken
-    tabbed: Tabbladen
-    tabbed_label: Voorbeeld weergeven in apart tabblad
-    edit: Wijzig
-    preview: Voorvertoning
   notice:
     notice: Melding
     description: Een korte melding weergeven
