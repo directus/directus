@@ -86,6 +86,7 @@ read: Læs
 update: Opdater
 select_fields: Vælg felter
 wysiwyg_options:
+  codeblock: Kode
   remove: Fjern
   table: Tabel
 choices: Valgmuligheder

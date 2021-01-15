@@ -503,11 +503,11 @@ wysiwyg_options:
   strikethrough: Зачеркнат
   subscript: Долен индекс
   superscript: Горен индекс
+  codeblock: Код
   blockquote: Цитат
   bullist: Списък
   numlist: Номериран списък
   hr: Хоризонтална линия
-  link: Добавяне на връзка
   unlink: Премахване на връзка
   media: Добавяне на медиа
   image: Добавяне на изображене

@@ -414,6 +414,7 @@ wysiwyg_options:
   backcolor: Couleur de fond
   bold: Gras
   italic: Italique
+  codeblock: Code
   copy: Copier
   cut: Couper
   paste: Coller

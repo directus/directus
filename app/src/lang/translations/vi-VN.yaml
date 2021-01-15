@@ -356,6 +356,7 @@ icon_off: Biểu tượng của trạng thái Tắt
 wysiwyg_options:
   forecolor: Màu Tô
   backcolor: Màu Nền
+  codeblock: Mã nguồn
   remove: Xoá
   selectall: Chọn Tất Cả
   table: Bảng

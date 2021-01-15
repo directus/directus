@@ -24,6 +24,7 @@ operators:
 role: Rol
 create: Skep
 wysiwyg_options:
+  codeblock: Kode
   table: Tafel
 choices: Keuses
 add_new: Voeg nuwe

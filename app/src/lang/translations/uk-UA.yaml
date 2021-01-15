@@ -93,6 +93,7 @@ read: Прочитайте
 update: Оновити
 select_fields: Обрати поля
 wysiwyg_options:
+  codeblock: Код
   remove: Видалити
   table: Таблиця
 dropdown: Випадаюче меню

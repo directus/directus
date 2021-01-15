@@ -59,6 +59,7 @@ operators:
 role: Рола
 create: Креирај
 wysiwyg_options:
+  codeblock: Код
   table: Табела
 choices: Избори
 deselect: Поништи избор

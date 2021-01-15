@@ -482,10 +482,10 @@ wysiwyg_options:
   italic: Itálico
   underline: Sublinhado
   strikethrough: Tachado
+  codeblock: Código
   blockquote: Bloco de citação
   bullist: Lista de itens
   numlist: Lista numerada
-  link: Adicionar Link
   unlink: Excluir Link
   media: Adicionar mídia
   image: Adicionar Imagem

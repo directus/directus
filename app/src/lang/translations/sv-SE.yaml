@@ -390,6 +390,7 @@ select_fields: Välj fält
 wysiwyg_options:
   forecolor: Förgrundsfärg
   backcolor: Bakgrundsfärg
+  codeblock: Kod
   remove: Ta bort
   selectall: Markera alla
   table: Tabell

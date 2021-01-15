@@ -282,6 +282,7 @@ update: Frissítés
 select_fields: Válassz mezőket
 format_text: Szövegformázás
 wysiwyg_options:
+  codeblock: Kód
   selectall: Összes kijelölése
   table: Táblázat
 choices: Lehetőségek
