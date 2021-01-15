@@ -87,5 +87,20 @@ export default defineInterface(({ i18n }) => ({
 				default_value: false,
 			},
 		},
+		{
+			field: 'nullable',
+			name: i18n.t('interfaces.text-input.nullable'),
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				options: {
+					label: i18n.t('interfaces.text-input.nullable_label'),
+				},
+			},
+			schema: {
+				default_value: true,
+			},
+		},
 	],
 }));

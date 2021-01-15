@@ -199,6 +199,7 @@ collection_created: Gyűjtemény létrehozva
 modified_on: Változtatás dátuma
 card_size: Kártya mérete
 sort_field: Rendezési mező
+status: Állapot
 toggle_manual_sorting: Manuális rendezés ki/bekapcsolása
 bookmark_doesnt_exist: Könyvjelző nem létezik
 bookmark_doesnt_exist_copy: Ez a könyvjelző nem található.
@@ -281,6 +282,7 @@ update: Frissítés
 select_fields: Válassz mezőket
 format_text: Szövegformázás
 wysiwyg_options:
+  codeblock: Kód
   selectall: Összes kijelölése
   table: Táblázat
 choices: Lehetőségek

@@ -75,14 +75,10 @@ validationError:
 all_access: Полный доступ
 no_access: Нет Доступа
 use_custom: Использовать Свой
-field_standard: Стандартный,
-field_presentation: Представление и Алиасы,
-field_file: Один Файл,
-field_files: Несколько Файлов,
-field_m2o: Связка M2O,
-field_o2m: Связка O2M,
-field_m2m: Связка M2M,
-field_translations: Переводы,
+field_presentation: Представление и Алиасы
+field_file: Один Файл
+field_files: Несколько Файлов
+field_translations: Переводы
 item_permissions: Разрешения Элемента
 field_permissions: Разрешения Поля
 field_validation: Валидация Поля
@@ -134,6 +130,7 @@ text: Текст
 time: Время
 timestamp: Отметка времени
 uuid: UUID
+hash: Хэш
 not_available_for_type: Недоступно для этого Типа
 create_translations: Создать Переводы
 auto_generate: Авто-Генерация
@@ -351,6 +348,7 @@ collection_created: Коллекция Создана
 modified_on: Дата изменения
 card_size: Размер Карточки
 sort_field: Поле сортировки
+status: Статус
 toggle_manual_sorting: Переключить Ручную Сортировку
 bookmark_doesnt_exist: Закладка Не Существует
 bookmark_doesnt_exist_copy: Закладка, которую вы пытаетесь открыть не найдена.
@@ -505,11 +503,11 @@ wysiwyg_options:
   strikethrough: Зачеркнутый
   subscript: Подстрочный
   superscript: Надстрочный
+  codeblock: Код
   blockquote: Цитата
   bullist: Маркированный Список
   numlist: Нумерованный Список
   hr: Горизонтальный Разделитель
-  link: Добавить Ссылку
   unlink: Удалить Ссылку
   media: Добавить Медиа
   image: Добавить Изображение
@@ -577,13 +575,13 @@ page_help_files_collection: >-
   **Библиотека Файлов** — Список всех файлов, загруженных в этот проект. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
 page_help_files_item: >-
   **Карточка Файла** — Форма для управления метаданными файла, редактирования исходного файла и обновления настроек доступа.
-page_help_settings_project: '**Настройки Проекта** — Глобальные параметры конфигурации проекта.'
+page_help_settings_project: "**Настройки Проекта** — Глобальные параметры конфигурации проекта."
 page_help_settings_datamodel_collections: >-
   **Модель Данных: Коллекции** — Список всех доступных коллекций. Включает видимые, скрытые и системные коллекции, а также неуправляемые таблицы базы данных, которые могут быть добавлены.
 page_help_settings_datamodel_fields: >-
   **Модель Данных: Коллекция** — Форма для управления этой коллекцией и ее полями.
 page_help_settings_roles_collection: '**Просмотр Ролей** — Список Администраторов, Публичных и собственных Ролей Пользователей.'
-page_help_settings_roles_item: '**Карточка Роли** — Управление разрешениями роли и другими настройками.'
+page_help_settings_roles_item: "**Карточка Роли** — Управление разрешениями роли и другими настройками."
 page_help_settings_presets_collection: >-
   **Просмотр Пресетов** — Список всех пресетов проекта, включая: пользователей, ролей и глобальные закладки, а также представления по умолчанию.
 page_help_settings_presets_item: >-
@@ -595,7 +593,6 @@ page_help_users_item: >-
   **Карточка Пользователя** — Управляйте данными вашего аккаунта или просматривайте данные других пользователей.
 activity_feed: Лента Активности
 add_new: Создать
-from_collection: 'Из Коллекции “{collection}”'
 create_new: Создать Новый
 all: Все
 none: Нет
@@ -753,7 +750,6 @@ template: Шаблон
 translation: Перевод
 value: Значение
 view_project: Просмотр Проекта
-weeks: { }
 report_error: Сообщить об Ошибке
 interfaces:
   checkboxes:

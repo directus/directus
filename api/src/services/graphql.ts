@@ -221,7 +221,7 @@ export class GraphQLService {
 		}
 
 		const queryBase: any = {
-			name: 'Directus',
+			name: 'Query',
 			fields: {
 				server: {
 					type: new GraphQLObjectType({

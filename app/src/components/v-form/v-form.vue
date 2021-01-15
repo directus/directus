@@ -216,16 +216,6 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
-	--v-form-column-width: var(--form-column-width);
-	--v-form-column-max-width: var(--form-column-max-width);
-	--v-form-row-max-height: calc(var(--v-form-column-width) * 2);
-	--v-form-horizontal-gap: var(--form-horizontal-gap);
-	--v-form-vertical-gap: var(--form-vertical-gap);
-}
-</style>
-
 <style lang="scss" scoped>
 @import '../../styles/mixins/form-grid';
 

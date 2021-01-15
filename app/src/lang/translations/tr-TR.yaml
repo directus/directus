@@ -65,6 +65,9 @@ validationError:
   ncontains: Değer, {substring} içeremez
   gt: Değer, {valid} değerinden büyük olmalıdır
   gte: Değer, {valid} değerinden büyük veya ona eşit olmalıdır
+field_file: Tek Dosya
+field_files: Birden Fazla Dosya
+field_translations: Çeviriler
 language: Dil
 create_field: Alan Ekle
 hidden_on_detail: Detayda Gizli
@@ -171,6 +174,7 @@ user_directory: Kullanıcı Listesi
 duration: Süre
 modified_on: Düzenleme Tarihi
 sort_field: Sıralama Alanı
+status: Durum
 edit: Düzenle
 bookmarks: Yer İmleri
 back: Geri
@@ -199,6 +203,7 @@ read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
 wysiwyg_options:
+  codeblock: Kod
   remove: Kaldır
   table: Tablo
 dropdown: Açılır Liste

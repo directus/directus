@@ -56,7 +56,7 @@
 					>
 						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
 						<v-list-item-text>
-							{{ $t('from_collection', { collection: collection.name }) }}
+							{{ collection.name }}
 						</v-list-item-text>
 					</v-list-item>
 				</v-list>
@@ -77,7 +77,7 @@
 					>
 						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
 						<v-list-item-text>
-							{{ $t('from_collection', { collection: collection.name }) }}
+							{{ collection.name }}
 						</v-list-item-text>
 					</v-list-item>
 				</v-list>

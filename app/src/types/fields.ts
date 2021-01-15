@@ -23,6 +23,7 @@ export const types = [
 	'timestamp',
 	'binary',
 	'uuid',
+	'hash',
 	'csv',
 	'unknown',
 ] as const;

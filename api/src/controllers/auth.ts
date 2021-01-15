@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import session from 'express-session';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import Joi from 'joi';
 import grant from 'grant';
 import getEmailFromProfile from '../utils/get-email-from-profile';
@@ -99,7 +99,7 @@ router.post(
 			throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
 		}
 
-		const mode: 'json' | 'cookie' = req.body.mode || req.body.refresh_token ? 'json' : 'cookie';
+		const mode: 'json' | 'cookie' = req.body.mode || (req.body.refresh_token ? 'json' : 'cookie');
 
 		const { accessToken, refreshToken, expires } = await authenticationService.refresh(currentRefreshToken);
 

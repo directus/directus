@@ -45,18 +45,18 @@
 		"@types/bytes": "^3.1.0",
 		"@types/chai": "^4.2.14",
 		"@types/clear": "^0.1.0",
-		"@types/codemirror": "^0.0.98",
+		"@types/codemirror": "^0.0.106",
 		"@types/color": "^3.0.1",
 		"@types/color-string": "^1.5.0",
 		"@types/cookie-parser": "^1.4.2",
 		"@types/cors": "^2.8.7",
 		"@types/debug": "^4.1.5",
 		"@types/diff": "^4.0.2",
+		"@types/dompurify": "^2.2.1",
 		"@types/express": "^4.17.9",
 		"@types/express-pino-logger": "^4.0.2",
 		"@types/express-session": "^1.17.2",
 		"@types/fs-extra": "^9.0.4",
-		"@types/geojson": "^7946.0.7",
 		"@types/highlight.js": "^9.12.4",
 		"@types/inquirer": "^6.5.0",
 		"@types/joi": "^14.3.4",
@@ -65,7 +65,6 @@
 		"@types/jsonwebtoken": "^8.5.0",
 		"@types/keyv": "^3.1.1",
 		"@types/lodash": "^4.14.159",
-		"@types/maplibre-gl": "^1.13.0",
 		"@types/marked": "^1.1.0",
 		"@types/mime-types": "^2.1.0",
 		"@types/mocha": "^8.0.4",
@@ -183,8 +182,7 @@
 		"vuepress": "^1.5.2",
 		"webpack": "^4.43.0",
 		"webpack-assets-manifest": "^3.1.1",
-		"webpack-merge": "^5.4.0",
-		"worker-plugin": "^5.0.0"
+		"webpack-merge": "^5.4.0"
 	},
 	"dependencies": {
 		"@directus/app": "file:app",
@@ -192,12 +190,9 @@
 		"@directus/format-title": "file:packages/format-title",
 		"@directus/sdk-js": "file:packages/sdk-js",
 		"@directus/specs": "file:packages/specs",
-		"@turf/meta": "^6.0.2",
-		"comlink": "^4.3.0",
 		"create-directus-project": "file:packages/create-directus-project",
 		"directus": "file:api",
-		"maplibre-gl": "^1.13.0-rc.4",
-		"wkx": "^0.5.0"
+		"dompurify": "^2.2.6"
 	},
 	"husky": {
 		"hooks": {

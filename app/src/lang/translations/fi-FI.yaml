@@ -58,6 +58,7 @@ activity: Tapahtuma
 user_directory: Käyttäjähakemisto
 duration: Kesto
 modified_on: Muokattu viimeksi
+status: Tila
 edit: Muokkaa
 bookmarks: Kirjainmerkit
 back: Takaisin
@@ -79,6 +80,7 @@ read: Lue
 update: Päivitä
 select_fields: Valitse kentät
 wysiwyg_options:
+  codeblock: Koodi
   remove: Poista
   table: Taulukko
 dropdown: Pudotusvalikko

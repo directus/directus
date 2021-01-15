@@ -26,13 +26,14 @@ connection_fair: Fair Connection
 connection_poor: Poor Connection
 rename_folder: Rename Folder
 delete_folder: Delete Folder
+prefix: Prefix
+suffix: Suffix
 reset_bookmark: Reset Bookmark
 rename_bookmark: Rename Bookmark
 update_bookmark: Update Bookmark
 delete_bookmark: Delete Bookmark
 delete_bookmark_copy: >-
-  Are you sure you want to delete the "{bookmark}" bookmark? This action cannot
-  be undone.
+  Are you sure you want to delete the "{bookmark}" bookmark? This action cannot be undone.
 logoutReason:
   SIGN_OUT: Signed out
   SESSION_EXPIRED: Session expired
@@ -49,8 +50,8 @@ os_totalmem: OS Memory
 archive: Archive
 archive_confirm: Are you sure you want to archive this item?
 archive_confirm_count: >-
-  No Items Selected | Are you sure you want to archive this item? | Are you sure
-  you want to archive these {count} items?
+  No Items Selected | Are you sure you want to archive this item? | Are you sure you want to archive these {count}
+  items?
 reset_system_permissions: Reset System Permissions
 reset_system_permissions_copy: Reset all all system permissions to their defaults
 unarchive: Unarchive
@@ -135,6 +136,7 @@ text: Text
 time: Time
 timestamp: Timestamp
 uuid: UUID
+hash: Hash
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_generate: Auto-Generate
@@ -142,9 +144,8 @@ this_will_auto_setup_fields_relations: This will automatically setup all require
 click_here: Click here
 to_manually_setup_translations: to manually setup translations.
 click_to_manage_translated_fields: >-
-  There are no translated fields yet. Click here to create them. | There is one
-  translated field. Click here to manage it. | There are {count} translated
-  fields. Click here to manage them.
+  There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage
+  it. | There are {count} translated fields. Click here to manage them.
 fields_group: Fields Group
 configure_m2o: Configure your Many-to-One Relationship...
 configure_o2m: Configure your One-to-Many Relationship...
@@ -177,6 +178,8 @@ length: Length
 precision_scale: Precision & Scale
 readonly: Readonly
 unique: Unique
+updated_on: Updated On
+updated_by: Updated By
 primary_key: Primary Key
 foreign_key: Foreign Key
 finish_setup: Finish Setup
@@ -354,6 +357,8 @@ collection_created: Collection Created
 modified_on: Modified On
 card_size: Card Size
 sort_field: Sort Field
+sort: Sort
+status: Status
 toggle_manual_sorting: Toggle Manual Sorting
 bookmark_doesnt_exist: Bookmark Doesn't Exist
 bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found.
@@ -407,8 +412,8 @@ update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
 start_end_of_count_items: '{start}-{end} of {count} items'
 delete_collection_are_you_sure: >-
-  Are you sure you want to delete this collection? This will delete the
-  collection and all items in it. This action is permanent.
+  Are you sure you want to delete this collection? This will delete the collection and all items in it. This action is
+  permanent.
 collections_shown: Collections Shown
 visible_collections: Visible Collections
 hidden_collections: Hidden Collections
@@ -459,6 +464,8 @@ upload_pending: Upload Pending
 drag_file_here: Drag & Drop a File Here
 click_to_browse: Click to Browse
 layout_options: Layout Options
+rows: Rows
+columns: Columns
 collection_setup: Collection Setup
 optional_system_fields: Optional System Fields
 value_unique: Value has to be unique
@@ -509,17 +516,19 @@ wysiwyg_options:
   strikethrough: Strikethrough
   subscript: Subscript
   superscript: Superscript
+  codeblock: Code
   blockquote: Blockquote
   bullist: Bullet List
   numlist: Numbered List
   hr: Horizontal Rule
-  link: Add Link
+  link: Link
   unlink: Remove Link
   media: Add Media
   image: Add Image
   copy: Copy
   cut: Cut
   paste: Paste
+  heading: Heading
   h1: Heading 1
   h2: Heading 2
   h3: Heading 3
@@ -570,58 +579,47 @@ discard_changes: Discard Changes
 keep_editing: Keep Editing
 page_help_collections_overview: '**Collections Overview** — Lists of all collections you have access to.'
 page_help_collections_collection: >-
-  **Browse Items** — Lists all {collection} items you have access to. Customize
-  layout, filters, and sorting to tailor your view, and even save bookmarks of
-  these different configurations for quick access.
+  **Browse Items** — Lists all {collection} items you have access to. Customize layout, filters, and sorting to tailor
+  your view, and even save bookmarks of these different configurations for quick access.
 page_help_collections_item: >-
-  **Item Detail** — A form for viewing and managing this item. This sidebar also
-  contains a full history of revisions, and embedded comments.
+  **Item Detail** — A form for viewing and managing this item. This sidebar also contains a full history of revisions,
+  and embedded comments.
 page_help_activity_collection: >-
-  **Browse Activity** — A comprehensive listing of all your user's system and
-  content activity.
+  **Browse Activity** — A comprehensive listing of all your user's system and content activity.
 page_help_docs_global: >-
-  **Documentation Overview** — Docs tailored specifically to this project's
-  version and schema.
+  **Documentation Overview** — Docs tailored specifically to this project's version and schema.
 page_help_files_collection: >-
-  **File Library** — Lists all file assets uploaded to this project. Customize
-  layout, filters, and sorting to tailor your view, and even save bookmarks of
-  these different configurations for quick access.
+  **File Library** — Lists all file assets uploaded to this project. Customize layout, filters, and sorting to tailor
+  your view, and even save bookmarks of these different configurations for quick access.
 page_help_files_item: >-
-  **File Detail** — A form for managing file metadata, editing the original
-  asset, and updating access settings.
-page_help_settings_project: '**Project Settings** — Your project''s global configuration options.'
+  **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
+page_help_settings_project: "**Project Settings** — Your project's global configuration options."
 page_help_settings_datamodel_collections: >-
-  **Data Model: Collections** — Lists all collections available. This includes
-  visible, hidden, and system collections, as well as unmanaged database tables
-  that can be added.
+  **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
+  as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
-  **Data Model: Collection** — A form for managing this collection and its
-  fields.
+  **Data Model: Collection** — A form for managing this collection and its fields.
 page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
-page_help_settings_roles_item: '**Role Detail** — Manage a role''s permissions and other settings.'
+page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-
-  **Browse Presets** — Lists all presets in the project, including: user, role,
-  and global bookmarks, as well as default views.
+  **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default
+  views.
 page_help_settings_presets_item: >-
-  **Preset Detail** — A form for managing bookmarks and default collection
-  presets.
+  **Preset Detail** — A form for managing bookmarks and default collection presets.
 page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webhooks within the project.'
 page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
 page_help_users_collection: '**User Directory** — Lists all system users within this project.'
 page_help_users_item: >-
-  **User Detail** — Manage your account information, or view the details of
-  other users.
+  **User Detail** — Manage your account information, or view the details of other users.
 activity_feed: Activity Feed
 add_new: Add New
-from_collection: 'From “{collection}” Collection'
 create_new: Create New
 all: All
 none: None
 no_layout_collection_selected_yet: No layout/collection selected yet
 batch_delete_confirm: >-
-  No items have been selected | Are you sure you want to delete this item? This
-  action can not be undone. | Are you sure you want to delete these {count}
-  items? This action can not be undone.
+  No items have been selected | Are you sure you want to delete this item? This action can not be undone. | Are you sure
+  you want to delete these {count} items? This action can not be undone.
 cancel: Cancel
 collection: Collection
 collections: Collections
@@ -711,21 +709,20 @@ generate_and_save_uuid: Generate and Save UUID
 save_current_user_id: Save Current User ID
 save_current_user_role: Save Current User Role
 save_current_datetime: Save Current Date/Time
+block: Block
+inline: Inline
 comment: Comment
 continue: Continue
 continue_as: >-
-  <b>{name}</b> is currently authenticated. If you recognize this account, press
-  continue.
+  <b>{name}</b> is currently authenticated. If you recognize this account, press continue.
 editing_role: '{role} Role'
 creating_webhook: Creating Webhook
 default: Default
 delete: Delete
 delete_are_you_sure: >-
-  This action is permanent and can not be undone. Are you sure you would like to
-  proceed?
+  This action is permanent and can not be undone. Are you sure you would like to proceed?
 delete_field_are_you_sure: >-
-  Are you sure you want to delete the field "{field}"? This action can not be
-  undone.
+  Are you sure you want to delete the field "{field}"? This action can not be undone.
 description: Description
 done: Done
 duplicate: Duplicate
@@ -823,6 +820,8 @@ interfaces:
     title_placeholder: Enter a title...
     inline_title: Inline Title
     inline_title_label: Show title inside line
+    margin_top: Margin Top
+    margin_top_label: Increase Top Margin
   dropdown:
     description: Select a value from a dropdown
     choices_placeholder: Add a new choice
@@ -870,10 +869,10 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Enter and preview markdown
-    tabbed: Tabbed
-    tabbed_label: Show preview in separate tab
-    edit: Edit
-    preview: Preview
+    customSyntax: Custom Blocks
+    customSyntax_label: Add custom syntax types
+    customSyntax_add: Add custom syntax
+    box: Block / Inline
   notice:
     notice: Notice
     description: Display a short notice
@@ -926,6 +925,8 @@ interfaces:
     trim_label: Trim the start and end
     mask: Masked
     mask_label: Hide the real value
+    nullable: Nullable
+    nullable_label: Save empty value as NULL
   textarea:
     textarea: Textarea
     description: Enter multiline plain-text

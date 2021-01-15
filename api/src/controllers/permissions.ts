@@ -1,5 +1,5 @@
 import express from 'express';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import { PermissionsService, MetaService } from '../services';
 import { clone } from 'lodash';
 import { InvalidCredentialsException, ForbiddenException, InvalidPayloadException } from '../exceptions';

@@ -212,6 +212,10 @@ export const fieldTypes = [
 		text: i18n.t('uuid'),
 		value: 'uuid',
 	},
+	{
+		text: i18n.t('hash'),
+		value: 'hash',
+	},
 ];
 
 export default defineComponent({
@@ -400,8 +404,8 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .form {
-	--v-form-vertical-gap: 32px;
-	--v-form-horizontal-gap: 32px;
+	--form-vertical-gap: 32px;
+	--form-horizontal-gap: 32px;
 
 	@include form-grid;
 }

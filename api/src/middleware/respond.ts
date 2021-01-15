@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import env from '../env';
 import { getCacheKey } from '../utils/get-cache-key';
 import cache from '../cache';
@@ -63,7 +63,11 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		}
 	}
 
-	return res.json(res.locals.payload);
+	if (Buffer.isBuffer(res.locals.payload)) {
+		return res.end(res.locals.payload);
+	} else {
+		return res.json(res.locals.payload);
+	}
 });
 
 function getDateFormatted() {

@@ -23,8 +23,9 @@ public: 公開
 directus_version: Directus Version
 validationError:
   required: 必須項目です
+field_file: 1つのファイル
 field_files: 複数のファイル
-field_translations: 翻訳,
+field_translations: 翻訳
 fields_and_layout: 項目とレイアウト
 language: 言語
 schema_setup_title: この項目をどのように保存するか設定しましょう。
@@ -36,6 +37,7 @@ boolean: 真偽値
 date: 日付
 text: テキスト
 uuid: UUID
+hash: ハッシュ値
 auto_generate: 自動生成
 add_note: ユーザーに有益な注釈を追加...
 default_value: 初期値
@@ -135,6 +137,7 @@ field_width: 入力欄幅
 add_a_new_item: 項目の追加
 user_directory: ユーザーディレクトリ
 modified_on: 修正日時
+status: ステータス
 bookmarks: ブックマーク
 back: 戻る
 all_users: すべてのユーザー

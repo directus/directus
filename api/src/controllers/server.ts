@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { ServerService } from '../services';
 import { SpecificationService } from '../services';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import { respond } from '../middleware/respond';
 
 const router = Router();

@@ -72,11 +72,10 @@ validationError:
 all_access: Pełny Dostęp
 no_access: Brak dostępu
 use_custom: Użyj niestandardowych
-field_standard: Standard,
-field_presentation: Prezentacja i aliasy,
-field_file: Pojedynczy plik,
-field_files: Wiele plików,
-field_translations: Tłumaczenia,
+field_presentation: Prezentacja i aliasy
+field_file: Pojedynczy plik
+field_files: Wiele plików
+field_translations: Tłumaczenia
 field_validation: Walidacja pola
 permissions_for_role: 'Przedmioty roli {role} mogą {action}.'
 presets_for_role: 'Wartość domyślna dla roli {role}.'
@@ -295,6 +294,7 @@ file_moved: Plik przeniesiony
 collection_created: Utworzono kolekcję
 modified_on: Modyfikowane Dnia
 sort_field: Pole sortowania
+status: Status
 toggle_manual_sorting: Przełącz ręczne sortowanie
 bookmark_doesnt_exist: Zakładka nie istnieje
 bookmark_doesnt_exist_copy: Nie znaleziono zakładki, którą próbujesz otworzyć.
@@ -440,11 +440,11 @@ wysiwyg_options:
   strikethrough: Przekreślenie
   subscript: Indeks dolny
   superscript: Indeks górny
+  codeblock: Kod
   blockquote: Blok cytowany
   bullist: Lista wypunktowana
   numlist: Lista numerowana
   hr: Pozioma linia
-  link: Dodaj link
   unlink: Usuń link
   media: Dodaj multimedia
   image: Dodaj obraz

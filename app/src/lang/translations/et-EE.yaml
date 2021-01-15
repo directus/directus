@@ -68,6 +68,7 @@ user_directory: Kasutaja kaust
 duration: Kestus
 modified_on: Muudetud
 sort_field: Sorteeti välja
+status: Staatus
 edit: Muuda
 bookmarks: Järjehoidjad
 back: Tagasi
@@ -96,6 +97,7 @@ read: Loe
 update: Uuenda
 select_fields: Vali väljad
 wysiwyg_options:
+  codeblock: Kood
   remove: Eemalda
   table: Tabel
 dropdown: Rippmenüü

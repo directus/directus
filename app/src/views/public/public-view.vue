@@ -10,7 +10,10 @@
 					<img :src="logoURL" :alt="branding.project_name || 'Logo'" />
 				</div>
 				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
-				<h1 class="title type-title">{{ branding && branding.project_name }}</h1>
+				<div class="title">
+					<h1 class="type-title">{{ branding && branding.project_name }}</h1>
+					<p class="subtitle">Admin App</p>
+				</div>
 			</div>
 
 			<div class="content">
@@ -29,7 +32,9 @@
 					:alt="branding && branding.project_name"
 				/>
 			</transition>
-			<div class="note" v-if="branding && branding.public_note" v-html="marked(branding.public_note)" />
+			<div class="note-container">
+				<div class="note" v-if="branding && branding.public_note" v-html="marked(branding.public_note)" />
+			</div>
 		</div>
 	</div>
 </template>
@@ -107,9 +112,9 @@ export default defineComponent({
 	&.branded {
 		::v-deep {
 			.v-button {
-				--v-button-background-color: var(--foreground-normal);
-				--v-button-background-color-hover: var(--foreground-normal);
-				--v-button-background-color-activated: var(--foreground-normal);
+				--v-button-background-color: var(--foreground-normal-alt);
+				--v-button-background-color-hover: var(--foreground-normal-alt);
+				--v-button-background-color-activated: var(--foreground-normal-alt);
 			}
 
 			.v-input {
@@ -131,6 +136,19 @@ export default defineComponent({
 		background-color: #fff;
 		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
 		transition: max-width var(--medium) var(--transition);
+
+		// Page Content Spacing
+		font-size: 15px;
+		line-height: 24px;
+		--border-radius: 6px;
+		--input-height: 60px;
+		--input-padding: 16px; // (60 - 4 - 24) / 2
+
+		.type-title {
+			font-size: 42px;
+			line-height: 52px;
+			font-weight: 800;
+		}
 
 		.content {
 			width: 340px;
@@ -165,18 +183,26 @@ export default defineComponent({
 			max-width: 400px;
 		}
 
-		.note {
+		.note-container {
+			display: flex;
+			justify-content: center;
+			align-items: flex-end;
 			position: absolute;
-			right: 0;
-			bottom: 40px;
 			left: 0;
-			max-width: 340px;
-			margin: 0 auto;
-			padding: 8px 12px;
-			color: var(--white);
-			background-color: #2632383f;
-			border-radius: var(--border-radius);
-			backdrop-filter: blur(10px);
+			right: 0;
+			bottom: 34px;
+			height: 10px;
+			.note {
+				max-width: 340px;
+				margin: 0 auto;
+				padding: 8px 12px;
+				color: var(--white);
+				background-color: rgba(38, 50, 56, 0.25);
+				border-radius: 6px;
+				backdrop-filter: blur(2px);
+				font-size: 15px;
+				line-height: 24px;
+			}
 		}
 
 		@include breakpoint(small) {
@@ -185,7 +211,8 @@ export default defineComponent({
 	}
 
 	.notice {
-		color: #b0bec5;
+		display: flex;
+		color: var(--foreground-subdued);
 	}
 
 	.title-box {
@@ -194,7 +221,24 @@ export default defineComponent({
 		width: max-content;
 		max-width: 100%;
 		height: 64px;
-		cursor: pointer;
+
+		.title {
+			margin-top: 2px;
+			margin-left: 16px;
+			h1 {
+				font-size: 24px;
+				line-height: 24px;
+				font-weight: 700;
+				color: var(--foreground-subdued);
+				color: var(--brand);
+			}
+			.subtitle {
+				width: 100%;
+				color: var(--foreground-subdued);
+				color: var(--brand);
+				opacity: 0.6;
+			}
+		}
 	}
 
 	.logo {
@@ -216,10 +260,6 @@ export default defineComponent({
 
 	.default-logo {
 		width: 64px;
-	}
-
-	.title {
-		margin-left: 12px;
 	}
 
 	.v-icon {

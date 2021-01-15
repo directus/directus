@@ -74,6 +74,10 @@ validationError:
 all_access: Acesso Total
 no_access: Sem acesso
 use_custom: Usar Personalizado
+field_presentation: Apresentação e pseudônimos
+field_file: Arquivo único
+field_files: Múltiplos arquivos
+field_translations: Traduções
 item_permissions: Permissões do Item
 field_permissions: Permissões dos campos
 field_validation: Validação dos campos
@@ -123,6 +127,7 @@ text: Texto
 time: Hora
 timestamp: Timestamp
 uuid: UUID
+hash: Hash
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
 auto_generate: Gerar automaticamente
@@ -326,6 +331,7 @@ collection_created: Coleção criada
 modified_on: Modificado em
 card_size: Tamanho do cartão
 sort_field: Campo de ordenação
+status: Status
 toggle_manual_sorting: Alternar ordenação manual
 bookmark_doesnt_exist: Marcador não existe
 bookmark_doesnt_exist_copy: O marcador que você está tentando abrir não pôde ser encontrado.
@@ -476,10 +482,10 @@ wysiwyg_options:
   italic: Itálico
   underline: Sublinhado
   strikethrough: Tachado
+  codeblock: Código
   blockquote: Bloco de citação
   bullist: Lista de itens
   numlist: Lista numerada
-  link: Adicionar Link
   unlink: Excluir Link
   media: Adicionar mídia
   image: Adicionar Imagem
@@ -547,13 +553,13 @@ page_help_files_collection: >-
   **Biblioteca de Arquivos** - Lista todos os arquivos enviados para este projeto. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
 page_help_files_item: >-
   **Detalhe do Arquivo** — Um formulário para gerenciar os metadados do arquivo, editar o asset original e atualizar as configurações de acesso.
-page_help_settings_project: '**Configurações do projeto** — Opções de configuração globais do seu projeto.'
+page_help_settings_project: "**Configurações do projeto** — Opções de configuração globais do seu projeto."
 page_help_settings_datamodel_collections: >-
   **Modelo de Dados: Coleções** — Lista todas as coleções disponíveis. Isso inclui coleções visíveis, escondidas e do sistema, bem como tabelas de banco de dados não gerenciadas que podem ser adicionadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Dados: Coleção** — Um formulário para gerenciar esta coleção e seus campos.
 page_help_settings_roles_collection: '**Navegando em cargos** - Lista os cargos de administrador, público e também personalizados.'
-page_help_settings_roles_item: '**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações.'
+page_help_settings_roles_item: "**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações."
 page_help_settings_presets_collection: >-
   **Navegando em predefinições** — Lista todas as predefinições no projeto, incluindo: usuário, cargo e marcadores globais, bem como visualizações padrão.
 page_help_settings_presets_item: >-
@@ -565,7 +571,6 @@ page_help_users_item: >-
   **Detalhe do Usuário** — Gerencie as informações da sua conta, ou veja os detalhes de outros usuários.
 activity_feed: Feed de atividade
 add_new: Adicionar Novo
-from_collection: 'Da coleção “{collection}”'
 create_new: Criar novo
 all: Tudo
 batch_delete_confirm: >-

@@ -67,22 +67,16 @@ export default class MySQL implements Schema {
 		for (const column of columns[0]) {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = {
-					primary: columns[0].find(
-						(nested: { column_key: string; table_name: string }) => {
-							return (
-								nested.table_name === column.table_name &&
-								nested.column_key === 'PRI'
-							);
-						}
-					)?.column_name,
+					primary: columns[0].find((nested: { column_key: string; table_name: string }) => {
+						return nested.table_name === column.table_name && nested.column_key === 'PRI';
+					})?.column_name,
 					columns: {},
 				};
 			}
 
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
-				default_value:
-					column.extra === 'auto_increment' ? 'AUTO_INCREMENT' : column.default_value,
+				default_value: column.extra === 'auto_increment' ? 'AUTO_INCREMENT' : column.default_value,
 				is_nullable: column.is_nullable === 'YES',
 			};
 		}
@@ -244,7 +238,7 @@ export default class MySQL implements Schema {
 				numeric_precision: rawColumn.NUMERIC_PRECISION,
 				numeric_scale: rawColumn.NUMERIC_SCALE,
 				is_nullable: rawColumn.IS_NULLABLE === 'YES',
-				is_primary_key: rawColumn.CONSTRAINT_NAME === 'PRIMARY',
+				is_primary_key: rawColumn.CONSTRAINT_NAME === 'PRIMARY' || rawColumn.COLUMN_KEY === 'PRI',
 				has_auto_increment: rawColumn.EXTRA === 'auto_increment',
 				foreign_key_column: rawColumn.REFERENCED_COLUMN_NAME,
 				foreign_key_table: rawColumn.REFERENCED_TABLE_NAME,
@@ -267,7 +261,7 @@ export default class MySQL implements Schema {
 					numeric_precision: rawColumn.NUMERIC_PRECISION,
 					numeric_scale: rawColumn.NUMERIC_SCALE,
 					is_nullable: rawColumn.IS_NULLABLE === 'YES',
-					is_primary_key: rawColumn.CONSTRAINT_NAME === 'PRIMARY',
+					is_primary_key: rawColumn.CONSTRAINT_NAME === 'PRIMARY' || rawColumn.COLUMN_KEY === 'PRI',
 					has_auto_increment: rawColumn.EXTRA === 'auto_increment',
 					foreign_key_column: rawColumn.REFERENCED_COLUMN_NAME,
 					foreign_key_table: rawColumn.REFERENCED_TABLE_NAME,

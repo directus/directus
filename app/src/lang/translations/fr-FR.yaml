@@ -72,14 +72,10 @@ validationError:
 all_access: Accès total
 no_access: Pas d'accès
 use_custom: Personnalisé
-field_standard: Standard,
-field_presentation: Présentation & Alias,
-field_file: Fichier simple,
-field_files: Fichiers multiples,
-field_m2o: Relation M2O,
-field_o2m: Relation O2M,
-field_m2m: Relation M2M,
-field_translations: Traductions,
+field_presentation: Présentation & Alias
+field_file: Fichier simple
+field_files: Fichiers multiples
+field_translations: Traductions
 item_permissions: Permissions de l'élément
 field_permissions: Permissions du champ
 field_validation: Validation du champ
@@ -300,6 +296,7 @@ collection_created: Collection créée
 modified_on: Modifié le
 card_size: Taille de la carte
 sort_field: Trier
+status: Etat
 toggle_manual_sorting: Activer/désactiver le tri manuel
 bookmark_doesnt_exist: Le favori n'existe pas
 bookmark_doesnt_exist_copy: Le favori que vous essayez d'ouvrir est introuvable.
@@ -417,6 +414,7 @@ wysiwyg_options:
   backcolor: Couleur de fond
   bold: Gras
   italic: Italique
+  codeblock: Code
   copy: Copier
   cut: Couper
   paste: Coller

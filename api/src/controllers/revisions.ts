@@ -1,5 +1,5 @@
 import express from 'express';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import { RevisionsService, MetaService } from '../services';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';

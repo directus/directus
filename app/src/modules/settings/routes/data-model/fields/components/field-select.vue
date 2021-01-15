@@ -305,8 +305,9 @@ export default defineComponent({
 
 			const duplicable = computed(() => {
 				return (
-					['o2m', 'm2m', 'm2o', 'files', 'file', 'm2a'].includes(props.field.type) === false &&
-					props.field.schema?.is_primary_key === false
+					['o2m', 'm2m', 'm2o', 'files', 'file', 'm2a'].includes(
+						getLocalTypeForField(props.field.collection, props.field.field)
+					) === false && props.field.schema?.is_primary_key === false
 				);
 			});
 
@@ -523,7 +524,7 @@ export default defineComponent({
 }
 
 .form-grid {
-	--v-form-vertical-gap: 24px;
+	--form-vertical-gap: 24px;
 
 	@include form-grid;
 }

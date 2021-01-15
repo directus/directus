@@ -19,7 +19,6 @@ validationError:
 all_access: 订购全部功能
 no_access: 无访问权限
 use_custom: 使用自定义颜色
-field_standard: 标准，
 language: 语言
 create_field: 创建字段
 hidden_on_detail: 隐藏于详情
@@ -85,6 +84,7 @@ user_directory: 用户列表
 duration: 持续时间
 modified_on: 修改于
 sort_field: 排序字段
+status: 状态
 edit: 编辑
 bookmarks: 书签
 back: 后退
@@ -113,6 +113,7 @@ read: 查看
 update: 更新
 select_fields: 选择字段
 wysiwyg_options:
+  codeblock: 代码
   remove: 移除
   table: 表
 dropdown: 下拉列表

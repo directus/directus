@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import { FieldsService } from '../services/fields';
 import validateCollection from '../middleware/collection-exists';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';

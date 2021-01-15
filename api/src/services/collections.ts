@@ -260,6 +260,12 @@ export class CollectionsService {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
+		const collectionItemsService = new ItemsService('directus_collections', {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
 		const fieldsService = new FieldsService({
 			knex: this.knex,
 			accountability: this.accountability,
@@ -275,6 +281,8 @@ export class CollectionsService {
 				throw new InvalidPayloadException(`Collection "${collectionKey}" doesn't exist.`);
 			}
 		}
+
+		await collectionItemsService.delete(collectionKeys);
 
 		await this.knex('directus_fields').delete().whereIn('collection', collectionKeys);
 		await this.knex('directus_presets').delete().whereIn('collection', collectionKeys);
@@ -304,14 +312,6 @@ export class CollectionsService {
 				await fieldsService.deleteField(relation.many_collection, relation.many_field);
 			}
 		}
-
-		const collectionItemsService = new ItemsService('directus_collections', {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
-
-		await collectionItemsService.delete(collectionKeys);
 
 		for (const collectionKey of collectionKeys) {
 			await this.knex.schema.dropTable(collectionKey);

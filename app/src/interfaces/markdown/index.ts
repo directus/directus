@@ -14,26 +14,87 @@ export default defineInterface(({ i18n }) => ({
 			name: i18n.t('placeholder'),
 			type: 'string',
 			meta: {
-				width: 'half',
-				interface: 'text-input',
+				width: 'full',
+				interface: 'textarea',
 				options: {
 					placeholder: i18n.t('enter_a_placeholder'),
 				},
 			},
 		},
 		{
-			field: 'tabbed',
-			name: i18n.t('interfaces.markdown.tabbed'),
-			type: 'boolean',
+			field: 'customSyntax',
+			name: i18n.t('interfaces.markdown.customSyntax'),
+			label: i18n.t('interfaces.markdown.customSyntax_label'),
+			type: 'json',
 			meta: {
-				width: 'half',
-				interface: 'toggle',
+				width: 'full',
+				interface: 'repeater',
 				options: {
-					label: i18n.t('interfaces.markdown.tabbed_label'),
+					addLabel: i18n.t('interfaces.markdown.customSyntax_add'),
+					template: '{{ name }}',
+					fields: [
+						{
+							field: 'name',
+							type: 'string',
+							name: i18n.t('name'),
+							meta: {
+								interface: 'text-input',
+								width: 'half',
+							},
+						},
+						{
+							field: 'icon',
+							type: 'string',
+							name: i18n.t('icon'),
+							meta: {
+								interface: 'icon',
+								width: 'half',
+							},
+						},
+						{
+							field: 'prefix',
+							type: 'string',
+							name: i18n.t('prefix'),
+							meta: {
+								interface: 'text-input',
+								width: 'half',
+							},
+						},
+						{
+							field: 'suffix',
+							type: 'string',
+							name: i18n.t('suffix'),
+							meta: {
+								interface: 'text-input',
+								width: 'half',
+							},
+						},
+						{
+							field: 'box',
+							type: 'string',
+							name: i18n.t('interfaces.markdown.box'),
+							meta: {
+								interface: 'radio-buttons',
+								width: 'half',
+								options: {
+									choices: [
+										{
+											text: i18n.t('inline'),
+											value: 'inline',
+										},
+										{
+											text: i18n.t('block'),
+											value: 'block',
+										},
+									],
+								},
+							},
+							schema: {
+								default_value: 'inline',
+							},
+						},
+					],
 				},
-			},
-			schema: {
-				default_value: false,
 			},
 		},
 	],

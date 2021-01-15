@@ -79,6 +79,7 @@ users: Usuaris
 activity: Activitat
 duration: Durada
 sort_field: Camp d'ordenació
+status: Estat
 edit: Edita
 bookmarks: Favorits
 back: Enrere
@@ -94,6 +95,7 @@ display_template: Mostra la plantilla
 role: Rol
 create: Crear
 wysiwyg_options:
+  codeblock: Codi
   table: Taula
 dropdown: Desplegable
 choices: Opcions

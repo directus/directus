@@ -62,6 +62,7 @@ field_width: Felt Bredde
 user_directory: Bruger Mappe
 duration: Varighed
 modified_on: Ændringsdato
+status: Status
 bookmarks: Foretrukne
 back: Tilbage
 placeholder: Placeholder
@@ -85,6 +86,7 @@ read: Læs
 update: Opdater
 select_fields: Vælg felter
 wysiwyg_options:
+  codeblock: Kode
   remove: Fjern
   table: Tabel
 choices: Valgmuligheder

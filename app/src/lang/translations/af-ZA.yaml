@@ -16,6 +16,7 @@ create_collection: Skep Versameling
 users: Gebruikers
 activity: Aktiwiteit
 duration: Tydsduur
+status: Status
 bookmarks: Boekmerke
 back: Terug
 operators:
@@ -23,6 +24,7 @@ operators:
 role: Rol
 create: Skep
 wysiwyg_options:
+  codeblock: Kode
   table: Tafel
 choices: Keuses
 add_new: Voeg nuwe

@@ -1,5 +1,5 @@
 import express from 'express';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import Joi from 'joi';
 import { InvalidPayloadException, InvalidCredentialsException, ForbiddenException } from '../exceptions';
 import { UsersService, MetaService, AuthenticationService } from '../services';

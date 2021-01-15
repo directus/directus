@@ -51,6 +51,7 @@ create_collection: Креирајте колекцију
 users: Корисници
 activity: Активност
 duration: Трајање
+status: Стање
 bookmarks: Сачуване странице
 back: Назад
 operators:
@@ -58,6 +59,7 @@ operators:
 role: Рола
 create: Креирај
 wysiwyg_options:
+  codeblock: Код
   table: Табела
 choices: Избори
 deselect: Поништи избор

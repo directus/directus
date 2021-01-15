@@ -12,6 +12,7 @@ import { toArray } from '../utils/to-array';
 import { extension } from 'mime-types';
 import path from 'path';
 import env from '../env';
+import logger from '../logger';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -57,18 +58,32 @@ export class FilesService extends ItemsService {
 				payload.metadata = {};
 
 				if (meta.icc) {
-					payload.metadata.icc = parseICC(meta.icc);
+					try {
+						payload.metadata.icc = parseICC(meta.icc);
+					} catch (err) {
+						logger.warn(`Couldn't extract ICC information from file`);
+						logger.warn(err);
+					}
 				}
 
 				if (meta.exif) {
-					payload.metadata.exif = parseEXIF(meta.exif);
+					try {
+						payload.metadata.exif = parseEXIF(meta.exif);
+					} catch (err) {
+						logger.warn(`Couldn't extract EXIF information from file`);
+						logger.warn(err);
+					}
 				}
 
 				if (meta.iptc) {
-					payload.metadata.iptc = parseIPTC(meta.iptc);
-
-					payload.title = payload.title || payload.metadata.iptc.headline;
-					payload.description = payload.description || payload.metadata.iptc.caption;
+					try {
+						payload.metadata.iptc = parseIPTC(meta.iptc);
+						payload.title = payload.title || payload.metadata.iptc.headline;
+						payload.description = payload.description || payload.metadata.iptc.caption;
+					} catch (err) {
+						logger.warn(`Couldn't extract IPTC information from file`);
+						logger.warn(err);
+					}
 				}
 			});
 

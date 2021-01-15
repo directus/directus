@@ -105,6 +105,7 @@ user_directory: 使用者目錄
 duration: 持續時間
 modified_on: 修改日期
 sort_field: 排序欄位
+status: 狀態
 edit: 編輯
 bookmarks: 書籤
 back: 返回
@@ -133,6 +134,7 @@ read: 讀取
 update: 更新
 select_fields: 選擇欄位
 wysiwyg_options:
+  codeblock: 程式碼
   remove: 移除
   table: 表格
 dropdown: 下拉選單

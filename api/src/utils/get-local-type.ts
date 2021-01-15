@@ -92,6 +92,7 @@ export default function getLocalType(
 	}
 
 	if (field?.special?.includes('json')) return 'json';
+	if (field?.special?.includes('hash')) return 'hash';
 	if (field?.special?.includes('csv')) return 'csv';
 	if (field?.special?.includes('uuid')) return 'uuid';
 

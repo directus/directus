@@ -45,7 +45,6 @@ fields:
     options:
       icon: public
       title: Public Pages
-      color: '#2F80ED'
     special: alias
     width: full
 

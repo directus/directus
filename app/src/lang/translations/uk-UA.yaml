@@ -66,6 +66,7 @@ field_width: Ширина поля
 user_directory: Директорія користувачів
 duration: Тривалість
 modified_on: Час зміни
+status: Статус
 bookmarks: Закладки
 back: Назад
 placeholder: Заповнювач
@@ -92,6 +93,7 @@ read: Прочитайте
 update: Оновити
 select_fields: Обрати поля
 wysiwyg_options:
+  codeblock: Код
   remove: Видалити
   table: Таблиця
 dropdown: Випадаюче меню

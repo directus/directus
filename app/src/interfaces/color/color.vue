@@ -59,7 +59,7 @@
 					class="color-data-input"
 					pattern="\d*"
 					:min="0"
-					:max="i === 1 ? 360 : 100"
+					:max="i === 0 ? 360 : 100"
 					:step="1"
 					maxlength="3"
 				/>
@@ -197,41 +197,29 @@ export default defineComponent({
 		function useColor() {
 			const color = ref<Color | null>(null);
 
-			watch(color, (newColor) => {
-				if (newColor === null) return emit('input', null);
-
-				const hex = newColor.hex();
-
-				if (hex.length === 0) emit('input', null);
-				else emit('input', hex);
-			});
-
 			watch(
 				() => props.value,
 				(newValue) => {
-					if (newValue === null) return;
-					const newColor = Color(newValue);
-					if (newColor === null || newColor === color.value) return;
-					color.value = newColor;
+					color.value = newValue !== null ? Color(newValue) : null;
 				},
 				{ immediate: true }
 			);
 
 			const rgb = computed<number[]>({
 				get() {
-					return color.value !== null ? color.value.rgb().array() : [0, 0, 0];
+					return color.value !== null ? color.value.rgb().array().map(Math.round) : [0, 0, 0];
 				},
 				set(newRGB) {
-					color.value = Color.rgb(newRGB);
+					setColor(Color.rgb(newRGB));
 				},
 			});
 
 			const hsl = computed<number[]>({
 				get() {
-					return color.value !== null ? color.value.hsl().array() : [0, 0, 0];
+					return color.value !== null ? color.value.hsl().array().map(Math.round) : [0, 0, 0];
 				},
 				set(newHSL) {
-					color.value = Color.hsl(newHSL);
+					setColor(Color.hsl(newHSL));
 				},
 			});
 
@@ -240,13 +228,26 @@ export default defineComponent({
 					return color.value !== null ? color.value.hex() : null;
 				},
 				set(newHex) {
-					if (newHex === '') color.value = null;
-					if (newHex === null || isHex(newHex) === false) return;
-					color.value = Color(newHex);
+					if (newHex === null || newHex === '') {
+						setColor(null);
+					} else {
+						if (isHex(newHex) === false) return;
+						setColor(Color(newHex));
+					}
 				},
 			});
 
 			return { rgb, hsl, hex, color };
+
+			function setColor(newColor: Color | null) {
+				color.value = newColor;
+
+				if (newColor === null) {
+					emit('input', null);
+				} else {
+					emit('input', newColor.hex());
+				}
+			}
 		}
 	},
 });

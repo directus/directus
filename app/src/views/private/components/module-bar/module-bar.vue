@@ -98,7 +98,7 @@ body {
     --module-background: #18222F;
     --module-background-alt: var(--background-normal);
     --module-icon: #8196B1;
-    --module-icon-alt: var(--foreground-normal);
+    --module-icon-alt: var(--foreground-normal-alt);
 }
 </style>
 
