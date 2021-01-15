@@ -506,8 +506,6 @@ interfaces:
     display_template: Anzeigevorlage
   markdown:
     markdown: Markdown
-    edit: Bearbeiten
-    preview: Vorschau
   numeric:
     numeric: Numerisch
   one-to-many:
