@@ -113,6 +113,7 @@ read: 查看
 update: 更新
 select_fields: 选择字段
 wysiwyg_options:
+  codeblock: 代码
   remove: 移除
   table: 表
 dropdown: 下拉列表
