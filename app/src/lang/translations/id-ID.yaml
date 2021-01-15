@@ -55,6 +55,9 @@ unarchive_confirm: Apakah Anda yakin ingin membatalkan arsip dari item ini?
 unknown_validation_errors: 'Ada kesalahan validasi untuk kolom tersembunyi berikut:'
 validationError:
   eq: Nilai harus {valid}
+field_file: Satu Berkas
+field_files: Beberapa Berkas
+field_translations: Terjemahan
 language: Bahasa
 schema_setup_title: Bagaimana seharusnya kolom ini disimpan di database?
 schema_field_title: Bagaimana seharusnya kolom ini berperilaku di dalam aplikasi?
@@ -94,9 +97,24 @@ choose_a_type: Pilih tipe...
 determined_by_relationship: Ditentukan oleh relasi
 add_note: Tambahkan catatan untuk pengguna...
 default_value: Nilai Bawaan
+add_a_default_value: Tambahkan nilai default...
+interface_setup_title: Bagaimana pengguna akan berinteraksi dengan kolom ini?
+display_setup_title: Bagaimana nilai dari kolom ini seharusnya ditampilkan?
+standard_field: Kolom Standar
+single_file: Satu Berkas
+multiple_files: Beberapa Berkas
+m2o_relationship: Relasi Banyak ke Satu
+o2m_relationship: Relasi Satu ke Banyak
+m2m_relationship: Relasi Banyak ke Banyak
+m2a_relationship: Relasi Banyak ke Semua
 next: Lanjut
+field_name: Nama Kolom
+translations: Terjemahan
 note: Catatan
+enter_a_value: Masukkan sebuah nilai...
+enter_a_placeholder: Masukkan sebuah placeholder...
 length: Panjang
+precision_scale: Presisi & Skala
 readonly: Hanya-baca
 unique: Unik
 primary_key: Primary Key
@@ -112,6 +130,17 @@ this_collection: Pengumpulan ini
 related_collection: Pengumpulan Terkait
 format: Format
 submit: Kirim
+yesterday: Kemarin
+delete_comment: Hapus Komentar
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+month: Bulan
+year: Tahun
+select_all: Pilih Semua
 months:
   january: Januari
   february: Februari
@@ -125,15 +154,50 @@ months:
   october: Oktober
   november: November
   december: Desember
+drag_mode: Mode Tarik
+cancel_crop: Batalkan Pemotongan
+original: Orisinal
+url: URL
+import: Impor
+file_details: Rincian Berkas
+dimensions: Dimensi
 size: Ukuran
+modified: Telah dimodifikasi
+checksum: Checksum
 owner: Pemilik
+edited_by: Diedit oleh
+folder: Direktori
+zoom: Perbesar
 download: Unduh
+open: Buka
+open_in_new_window: Buka di Jendela Baru
+foreground_color: Warna Latar Depan
+background_color: Warna Latar Belakang
+upload_from_device: Unggah Berkas dari Perangkat
+choose_from_library: Pilih Berkas dari Pustaka
+import_from_url: Impor Berkas dari URL
+replace_from_device: Menggantikan Berkas dari Perangkat
+replace_from_library: Menggantikan Berkas dari Pustaka
+replace_from_url: Menggantikan Berkas dari URL
+no_file_selected: Tidak Ada Berkas Yang Dipilih
+download_file: Unduh Berkas
+collection_key: Kunci Koleksi
 name: Nama
+primary_key_field: Kolom Primary Key
+type: Tipe
+creating_new_collection: Membuat Koleksi Baru
 created_by: Dibuat Oleh
 created_on: Dibuat Pada
+manual_string: String yang diinput manual
+save_and_create_new: Simpan dan Buat Baru
 save_and_stay: Simpan dan Tinggal
 save_as_copy: Simpan sebagai Salinan
+add_existing: Tambahkan Yang Ada
 comments: Komentar
+no_comments: Belum Ada Komentar
+click_to_expand: Tekan Untuk Memperluas
+select_item: Pilih Item
+no_items: Tidak Ada Item
 request_feature: Meminta Fitur
 item_count: 'Tidak Ada Item | Satu Item | {count} Item'
 create_collection: Buat Pengumpulan
@@ -170,7 +234,10 @@ read: Baca
 update: Perbarui
 select_fields: Pilih Bidang
 wysiwyg_options:
+  forecolor: Warna Latar Depan
+  backcolor: Warna Latar Belakang
   remove: Hapus
+  selectall: Pilih Semua
   table: Tabel
 dropdown: Dropwdown
 choices: Pilihan
@@ -199,6 +266,7 @@ fields:
     title: Judul
     location: Lokasi
     description: Deskripsi
+    checksum: Checksum
     width: Lebar
     height: Tinggi
     filesize: Ukuran berkas
@@ -288,6 +356,7 @@ interfaces:
     divider: Pembagi/Pemecah
   dropdown:
     allow_other: Izinkan lainnya
+    choices_value_placeholder: Masukkan sebuah nilai...
   file:
     file: Berkas
   files:
@@ -326,6 +395,8 @@ displays:
     filesize: Ukuran Berkas
   icon:
     icon: Ikon
+  labels:
+    choices_value_placeholder: Masukkan sebuah nilai...
   user:
     avatar: Avatar
     name: Nama
