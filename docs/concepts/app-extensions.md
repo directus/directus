@@ -57,7 +57,7 @@ includes the following features/options:
 
 <!-- ### Calendar
 
-This temporal layout is ideal for collections that prioritize a date and/or time. It is the default for the [Activity Page](#). It includes the following features/options:
+This temporal layout is ideal for collections that prioritize a date and/or time. It is the default for the [Activity Page](/concepts/activity-and-versions). It includes the following features/options:
 
 * @TODO
 
@@ -76,7 +76,7 @@ Input_ interface can manage most types of data, but might not be ideal for dates
 Directus includes many Interfaces out-of-the-box:
 
 - Text Input
-- @TODO List all core interfaces, or link to a exhaustive reference?
+- @TODO List all core interfaces, or link to an exhaustive reference?
 
 In addition to these core interfaces, custom interfaces allow for creating more tailored or proprietary ways to view or
 manage field data, such as bespoke layout builders, skeuomorphic knobs, or relational views for third-party data (eg:
@@ -84,7 +84,7 @@ Stripe Credit Card UI).
 
 ### Relevant Guides
 
-- [Creating a Custom Interface](#)
+- [Creating a Custom Interface](/guides/extensions/interfaces)
 
 ## Displays
 
@@ -95,7 +95,7 @@ field is referenced throughout the rest of the App. Directus includes many Displ
 
 - Raw
 - Formatted Value
-- @TODO List all core interfaces, or link to a exhaustive reference?
+- @TODO List all core interfaces, or link to an exhaustive reference?
 
 In addition to these core displays, custom displays allow for creating customized ways to view or represent field data,
 such as progress indicators, relational data tooltips, or specific formatting options.

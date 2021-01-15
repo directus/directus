@@ -190,7 +190,8 @@
 		"@directus/sdk-js": "file:packages/sdk-js",
 		"@directus/specs": "file:packages/specs",
 		"create-directus-project": "file:packages/create-directus-project",
-		"directus": "file:api"
+		"directus": "file:api",
+		"mysql": "^2.18.1"
 	},
 	"husky": {
 		"hooks": {

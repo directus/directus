@@ -9,9 +9,9 @@
 out for help. Our community and core developers often check this platform and answer posts. It has
 the added benefit of being an archival resource for others developers with similar questions.
 
-Our [Discord](https://directus.chat) community is another great way to get assisstance. Please keep
-all questions on the `#help` channel, be considerate, and remember that you are getting free help
-for a free product.
+Our [Discord](https://directus.chat) community is another great way to get assistance. Please keep
+all questions on the `#help` channel, be considerate, and remember that you are getting free help 
+from the community for a free product.
 
 ## Premium Support
 
@@ -66,7 +66,7 @@ prioritization.
 
 If you require more expeditious updates, you can contact us regarding
 [sponsoring expedited fixes](#expedited-fixes) or
-[commissioning new features](#commisioned-features). You can also
+[commissioning new features](#commissioned-features). You can also
 [submit a pull request](https://github.com/directus/directus/pulls) — after all, it is open-source!
 
 ### Can you give an ETA for this feature/fix?

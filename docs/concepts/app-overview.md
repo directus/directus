@@ -179,13 +179,10 @@ This module is an internal set of guides, concepts, and reference docs for your 
 version of Directus. It also includes a dynamic [API Reference](/reference/api/introduction) that is
 dynamically tailored to your custom schema. The docs are organized into four distinct sections:
 
--   [Getting Started](/getting-started/introduction)\*\* — Novice Oriented. For a platform intro and
-    installation.
--   [Concepts](/concepts/app-overview)\*\* — Learning Oriented. For understanding the platform.
--   [Guides](/concepts/roles-and-permissions)\*\* — Problem Oriented. Follow along with steps while
-    working.
--   [Reference](/reference/api/introduction)\*\* — Information Oriented. Look up info and specs
-    while working.
+-   [Getting Started](/getting-started/introduction) — Novice Oriented. For a platform intro and installation.
+-   [Concepts](/concepts/app-overview) — Learning Oriented. For understanding the platform.
+-   [Guides](/concepts/roles-and-permissions) — Problem Oriented. Follow along with steps while working.
+-   [Reference](/reference/api/introduction) — Information Oriented. Look up info and specs while working.
 
 <!-- prettier-ignore-start -->
 ::: tip Updating the Docs

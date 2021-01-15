@@ -95,4 +95,4 @@ customizing the documentation to your specific project.
 Most white-labeling takes place in the presentation layer of the platform's App, but in some cases
 even the API and/or database needs to be a bit more agnostic. For that reason, Directus allows
 changing the prefix used by system tables. By default this is set to use `directus_*` to avoid any
-potential conflicts, but you can override this within the [Environment Variables](#). -->
+potential conflicts, but you can override this within the [Environment Variables](/reference/environment-variables). -->

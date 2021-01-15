@@ -1,8 +1,10 @@
+
+
 # Collections
 
 > You can manage your collections within the Data Model section of the App's Settings, via the
-> [API Collections Endpoint](#), or directly within the database. If you're unfamiliar with Directus
-> Collections, please start by reading our [Understanding Collections](#) docs.
+> [API Collections Endpoint](/reference/api/collections), or directly within the database. If you're unfamiliar with Directus
+> Collections, please start by reading our [Understanding Collections](/concepts/platform-overview#collections) docs.
 
 ## Creating a Collection
 
@@ -10,7 +12,7 @@
 2. Click the **Create Collection** action button in the header
 3. Enter a unique **Collection Name**, keeping in mind that this is entered as a _key_ that
    determines the database table name, and is then presented in the App using the
-   [Title Formatter](#).
+   [Title Formatter](/reference/internal-helpers#title-formatter).
 4. Optional: Configure the collection's **Primary Key** name and type.
     - Auto-Incremented Integer
     - Generated UUID
@@ -44,11 +46,11 @@ default values.
 
 ### Fields & Layout
 
--   [Creating a Field](#)
--   [Updating a Field](#)
--   [Deleting a Field](#)
--   [Duplicating a Field](#)
--   [Changing Field Order & Layout](#)
+-   [Creating a Field](/guides/fields#creating-a-field)
+-   [Updating a Field](/guides/fields#updating-a-field)
+-   [Deleting a Field](/guides/fields#deleting-a-field)
+-   [Duplicating a Field](/guides/fields#duplicating-a-field)
+-   [Changing Field Order & Layout](/guides/fields#adjusting-field-layout)
 
 ### Collection Setup
 
@@ -61,10 +63,10 @@ default values.
 -   **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles
     can always see all collections.
 -   **Singleton** — Is this collection will only contain a single item (eg: an "About Us" form).
-    When enabled, the [Collection Detail](#) will be bypassed, and users are taken directly to the
-    [Item Detail](#) page.
+    When enabled, the [Collection Detail](/concepts/app-overview#collection-detail) will be bypassed, and users are taken directly to the
+    [Item Detail](/concepts/app-overview#item-detail) page.
 -   **Translation** — Allows translating the collection name into different languages. These
-    [Schema Translations](#) are important for multilingual projects. You can also "translate" a
+    [Schema Translations](/concepts/internationalization#schema-translations) are important for multilingual projects. You can also "translate" a
     collection name into the default language — helpful for renaming technical table names.
 
 ### Archive
@@ -96,7 +98,7 @@ automatically be configured for you.
 ### Sort
 
 The sort feature enables manual drag-and-drop item reordering within the Directus App. This is
-typically shown on the [Collection Detail](#) page/modal, and can also be used for sorting items
+typically shown on the [Collection Detail](/concepts/app-overview#collection-detail) page/modal, and can also be used for sorting items
 within a [Junction Table](#).
 
 <!-- prettier-ignore-start -->
