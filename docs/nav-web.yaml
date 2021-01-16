@@ -156,6 +156,27 @@
         - type: page
           path: /reference/api/query/fields
           title: Fields
+        - type: page
+          path: /reference/api/query/filter
+          title: Filter
+        - type: page
+          path: /reference/api/query/limit
+          title: Limit
+        - type: page
+          path: /reference/api/query/meta
+          title: Meta
+        - type: page
+          path: /reference/api/query/offset
+          title: Offset
+        - type: page
+          path: /reference/api/query/search
+          title: Search
+        - type: page
+          path: /reference/api/query/single
+          title: Single
+        - type: page
+          path: /reference/api/query/sort
+          title: Sort
     - type: page
       path: /reference/api/activity
       title: Activity

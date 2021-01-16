@@ -36,7 +36,7 @@ You can filter by relational values by appending the field names in nested secti
 
 #### Filtering using JSON
 
-The `filter` parameter supports the full [Filter Rules](/reference/filter-rules.html) syntax. As a matter of fact, the
+The `filter` parameter supports the full [Filter Rules](/reference/filter-rules) syntax. As a matter of fact, the
 standard array-like syntax is parsed to an object in execution. This means that you can also pass filter rules as a JSON
 object in the parameter directly:
 
@@ -46,4 +46,4 @@ object in the parameter directly:
 
 #### AND vs OR
 
-See [Filter Rules](/reference/filter-rules.html) for more information on how to nest logical operations in a filter.
+See [Filter Rules](/reference/filter-rules) for more information on how to nest logical operations in a filter.

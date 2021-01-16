@@ -4,7 +4,7 @@ Welcome to the Directus documentation.
 
 ## Getting Started
 
-Novice Oriented. For a platform introdusction and installation.
+Novice Oriented. For a platform introduction and installation.
 
 -   [Introduction](/getting-started/introduction)
 -   [Support](/getting-started/support)

@@ -4,6 +4,8 @@ import Knex from 'knex';
 import { clone, isPlainObject } from 'lodash';
 import { systemRelationRows } from '../database/system-data/relations';
 import { nanoid } from 'nanoid';
+import getLocalType from './get-local-type';
+import validate from 'uuid-validate';
 
 export default async function applyQuery(
 	knex: Knex,
@@ -41,12 +43,18 @@ export default async function applyQuery(
 
 		dbQuery.andWhere(function () {
 			columns
-				/** @todo Check if this scales between SQL vendors */
-				.filter(
-					(column) => column.data_type.toLowerCase().includes('text') || column.data_type.toLowerCase().includes('char')
-				)
+				.map((column) => ({
+					...column,
+					localType: getLocalType(column),
+				}))
 				.forEach((column) => {
-					this.orWhereRaw(`LOWER(??) LIKE ?`, [column.column_name, `%${query.search!}%`]);
+					if (['text', 'string'].includes(column.localType)) {
+						this.orWhereRaw(`LOWER(??) LIKE ?`, [column.column_name, `%${query.search!.toLowerCase()}%`]);
+					} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(column.localType)) {
+						this.orWhere({ [column.column_name]: Number(query.search!) });
+					} else if (column.localType === 'uuid' && validate(query.search!)) {
+						this.orWhere({ [column.column_name]: query.search! });
+					}
 				});
 		});
 	}

@@ -7,7 +7,7 @@
 ## Activity
 
 This is a log of all events that have occurred within the project. Activity can be accessed in two
-ways, via the main [Activity Module](/concepts/app-overview#actvity-history), or within the sidebar
+ways, via the main [Activity Module](/concepts/app-overview#activity-history), or within the sidebar
 of individual [Item Detail](/concepts/app-overview#item-detail) pages. The following information is
 stored for each event's activity item:
 

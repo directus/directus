@@ -4,8 +4,8 @@
 
 ## Syntax
 
--   **Field** — Any valid root field or [relational field](#)
--   **Value** — Any valid static value, or [dynamic variable](#)
+-   **Field** — Any valid root field or [relational field](/reference/filter-rules#relational)
+-   **Value** — Any valid static value, or [dynamic variable](/reference/filter-rules#dynamic-variables)
 
 ```
 {
@@ -24,7 +24,7 @@
 ## Relational
 
 You can set related values by nesting field names. For example, if you have a relational
-[Many-to-One](#) `author` field, you can set a rule for the `author.name` field using the following
+[Many-to-One](/concepts/relationships#many-to-one-m2o) `author` field, you can set a rule for the `author.name` field using the following
 syntax.
 
 ```json
