@@ -57,6 +57,7 @@
 		"@types/express-pino-logger": "^4.0.2",
 		"@types/express-session": "^1.17.2",
 		"@types/fs-extra": "^9.0.4",
+		"@types/geojson": "^7946.0.7",
 		"@types/highlight.js": "^9.12.4",
 		"@types/inquirer": "^6.5.0",
 		"@types/joi": "^14.3.4",
@@ -65,6 +66,7 @@
 		"@types/jsonwebtoken": "^8.5.0",
 		"@types/keyv": "^3.1.1",
 		"@types/lodash": "^4.14.159",
+		"@types/maplibre-gl": "^1.13.0",
 		"@types/marked": "^1.1.0",
 		"@types/mime-types": "^2.1.0",
 		"@types/mocha": "^8.0.4",
@@ -190,9 +192,14 @@
 		"@directus/format-title": "file:packages/format-title",
 		"@directus/sdk-js": "file:packages/sdk-js",
 		"@directus/specs": "file:packages/specs",
+		"@turf/meta": "^6.2.0",
+		"comlink": "^4.3.0",
 		"create-directus-project": "file:packages/create-directus-project",
 		"directus": "file:api",
-		"dompurify": "^2.2.6"
+		"dompurify": "^2.2.6",
+		"maplibre-gl": "^1.13.0-rc.4",
+		"wkx": "^0.5.0",
+		"worker-plugin": "^5.0.0"
 	},
 	"husky": {
 		"hooks": {
