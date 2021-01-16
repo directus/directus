@@ -1,8 +1,11 @@
 ---
 edit_field: Редагувати поле
+duplicate_field: Дублювати поле
 full_width: Повна ширина
+add_field: Додати поле
 required: Обов'язкове
 create_role: Створити роль
+invite: Запросити
 delete_bookmark: Видалити закладку
 directus_version: Версія Directus
 language: Мова
@@ -59,6 +62,7 @@ save_as_copy: Зберегти копію
 comments: Коментарі
 request_feature: Запит на нову функцію
 item_count: 'Немає елементів | Один елемент | {count} елементів'
+csv: CSV
 create_collection: Створити колекцію
 users: Користувачі
 activity: Активність
@@ -68,11 +72,15 @@ user_directory: Директорія користувачів
 duration: Тривалість
 modified_on: Час зміни
 status: Статус
+errors:
+  ROUTE_NOT_FOUND: Не знайдено
+create_bookmark: Створити закладку
 bookmarks: Закладки
 back: Назад
 placeholder: Заповнювач
 icon_left: Значок ліворуч
 icon_right: Значок праворуч
+font: Шрифт
 monospace: Моноширинний шрифт
 divider: Розділювач
 color: Колір
