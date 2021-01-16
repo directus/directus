@@ -5,12 +5,12 @@ duplicate_field: Дублиране на поле
 half_width: Половин ширина
 full_width: Пълна ширина
 fill_width: Изпълване по ширина
-field_name_translations: Превод на имената на полетата
+field_name_translations: Превод на името на полето
 enter_password_to_enable_tfa: Въвеждане на парола за активиране на двуфакторната автентикация
 add_field: Добавяне на поле
 role_name: Име на роля
 db_only_click_to_configure: 'Само в базата данни: Кликнете за конфигурация '
-show_archived_items: Показване на архивираните записи
+show_archived_items: Включително архивираните
 required: Задължително
 requires_value: Изисква стойност
 create_preset: Създаване на изгледи
@@ -27,6 +27,8 @@ connection_fair: Връзката е приемлива
 connection_poor: Връзката е лоша
 rename_folder: Преименуване на папка
 delete_folder: Изтриване на папка
+prefix: Представка
+suffix: Наставка
 reset_bookmark: Нулиране на отметки
 rename_bookmark: Преименуване на отметка
 update_bookmark: Обновяване на отметка
@@ -75,18 +77,22 @@ validationError:
 all_access: Пълен достъп
 no_access: Без достъп
 use_custom: Персонализиран
+field_standard: Стандартно
 field_presentation: Презентационни и псевдоними
 field_file: Единствен файл
 field_files: Множество файлове
+field_m2o: M2O релация
+field_o2m: O2M релация
+field_m2m: M2M релация
 field_translations: Преводи
 item_permissions: Позволения на запис
 field_permissions: Позволения за поле
 field_validation: Валидация на поле
 field_presets: Стойност на поле
-permissions_for_role: 'Записи, които "{role}" има възможност за {action}.'
-fields_for_role: 'Полета, които "{role}" ролята има възможност {action}.'
-validation_for_role: 'Правила, които "{role}" ролята трябва да спазва, при {action} на полетo.'
-presets_for_role: 'Стойност за полето по подразбиране, за "{role}" ролята.'
+permissions_for_role: 'Записи, които ролята "{role}" има достъп за {action}.'
+fields_for_role: 'Полета, които ролята "{role}" има достъп за {action}.'
+validation_for_role: 'Правила, които ролята "{role}" трябва да спазва, при {action} на полетo.'
+presets_for_role: 'Стойност на полето по подразбиране, за ролята "{role}".'
 presentation_and_aliases: Презентационни и псевдоними
 revision_post_update: Ето как ще изглежда записът след промяната...
 changes_made: Направените промени са следните...
@@ -171,6 +177,8 @@ length: Дължина
 precision_scale: Прецизност и мащаб
 readonly: Само за четене
 unique: Без повторения
+updated_on: Обновен на
+updated_by: Обновен от
 primary_key: Първичен ключ
 foreign_key: Външен ключ
 finish_setup: Завършване на настройката
@@ -348,6 +356,7 @@ collection_created: Колекцията е създадена
 modified_on: Променен на
 card_size: Големина на картите
 sort_field: Поле за сортиране
+sort: Сортиране
 status: Статус
 toggle_manual_sorting: Ръчна подредба
 bookmark_doesnt_exist: Отметката не съществива
@@ -453,6 +462,8 @@ upload_pending: Качване в изчакване
 drag_file_here: За да качите файловете, пуснете ги тук
 click_to_browse: Натиснете за избор
 layout_options: Опции за оформление
+rows: Редове
+columns: Колони
 collection_setup: Настройване на колекция
 optional_system_fields: Системни полета по желание
 value_unique: Стойността трябва да е уникална
@@ -508,12 +519,14 @@ wysiwyg_options:
   bullist: Списък
   numlist: Номериран списък
   hr: Хоризонтална линия
+  link: Връзка
   unlink: Премахване на връзка
   media: Добавяне на медиа
   image: Добавяне на изображене
   copy: Копиране
   cut: Изрязване
   paste: Поставяне
+  heading: Заглавие
   h1: Заглавие 1
   h2: Заглавие 2
   h3: Заглавие 3
@@ -669,7 +682,7 @@ fields:
     note: Бележка
     hidden: Скрито
     singleton: Сек
-    translation: Превод на имената на полетата
+    translation: Превод на името на полето
     display_template: Шаблон
   directus_roles:
     name: Име на роля
@@ -688,11 +701,13 @@ generate_and_save_uuid: Генериране и запазване на UUID
 save_current_user_id: Запазване на ID на текущия потребител
 save_current_user_role: Запазване на ролята на текущия потребител
 save_current_datetime: Запазване на текущия дата/час
+block: Блок
+inline: Вложен
 comment: Кометнар
 continue: Продължение
 continue_as: >-
   <b>{name}</b> в момента е оторизиран. Ако разпознавате този профил, изберете бутона за продължение.
-editing_role: '{role} Роля'
+editing_role: 'Роля - {role}'
 creating_webhook: Създаване на уеб-кука
 default: По подразбиране
 delete: Изтриване
@@ -750,6 +765,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   checkboxes:
@@ -796,6 +812,8 @@ interfaces:
     title_placeholder: Въвеждане на заглавие...
     inline_title: Заглавие в линия
     inline_title_label: Показване на заглавията в реда
+    margin_top: Горно отстояние
+    margin_top_label: Увеличено горно отстояние
   dropdown:
     description: Избор на стойност от падащо меню
     choices_placeholder: Добавяне на избор
@@ -843,6 +861,10 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Въвеждане и преглед за markdown
+    customSyntax: Персонализирани блокове
+    customSyntax_label: Добавяне на персонални типове за синтаксис
+    customSyntax_add: Добавяне на персонален синтаксис
+    box: Блоков / Вложен
   notice:
     notice: Бележка
     description: Показване на кратка бележка
@@ -895,6 +917,8 @@ interfaces:
     trim_label: Изчистване на краищата от интервали
     mask: Маскиране
     mask_label: Скриване на истинската стойност
+    nullable: Може да е null
+    nullable_label: Празните стойности са NULL
   textarea:
     textarea: Поле за текст
     description: Въвеждане на чист текст на няколко реда
