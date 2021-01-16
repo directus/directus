@@ -172,7 +172,7 @@ field_name: Име на поле
 translations: Преводи
 note: Бележка
 enter_a_value: Въвеждане на стойност...
-enter_a_placeholder: Въвеждане на текстов заместител...
+enter_a_placeholder: Въвеждане на подсказка...
 length: Дължина
 precision_scale: Прецизност и мащаб
 readonly: Само за четене
@@ -220,7 +220,7 @@ translations_collection: Колекция с преводи
 languages_collection: Колекция с езици
 export_data: Експорт на данните
 format: Формат
-use_current_filters_settings: С текущите филтри
+use_current_filters_settings: Прилагане на текущите филтри
 export_collection: 'Експорт на {collection}'
 last_page: Последна страница
 last_access: Последно посещение
