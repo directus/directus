@@ -295,6 +295,8 @@ creating_collection_system: Activer et renommer l'un de ces champs optionnels.
 save_and_stay: Enregistrer et rester
 save_as_copy: Enregistrer une copie
 comments: Commentaires
+no_comments: Pas encore de commentaires
+click_to_expand: Cliquer pour agrandir
 select_item: Sélectionner un élément
 no_items: Aucun élément
 search_items: Rechercher des éléments...
@@ -302,9 +304,13 @@ disabled: Désactivé
 information: Information
 report_bug: Signaler un bug
 request_feature: Demander une fonctionnalité
+interface_not_found: 'L''interface "{interface}" est introuvable.'
 reset_interface: Réinitialiser l'interface
 reset_display: Réinitialiser l'affichage
 item_count: 'Aucun élément | Un élément | {count} éléments'
+no_items_copy: Il n’y a pas encore d’élément dans cette collection.
+no_files_copy: Il n'y a aucun fichier ici.
+user_count: 'Aucun utilisateur | Un seul utilisateur | {count} utilisateurs'
 all_items: Tous les éléments
 csv: CSV
 create_collection: Créer une collection
