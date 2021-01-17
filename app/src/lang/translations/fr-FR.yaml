@@ -258,16 +258,22 @@ months:
   december: Décembre
 drag_mode: Mode Glisser
 cancel_crop: Annuler le recadrage
+url: URL
+import: Importer
 file_details: Détails du fichier
+dimensions: Dimensions
 size: Taille
 created: Créé
+modified: Modifié
 checksum: Code de vérification
 owner: Propriétaire
+edited_by: Édité par
 folder: Dossier
 zoom: Zoom
 download: Télécharger
 open: Ouvrir
 open_in_new_window: Ouvrir dans une nouvelle fenêtre
+foreground_color: Couleur du premier plan
 background_color: Couleur de fond
 upload_from_device: Télécharger un fichier depuis l'appareil
 choose_from_library: Choisir un fichier dans la bibliothèque
@@ -277,7 +283,10 @@ replace_from_library: Remplacer le fichier par un fichier de la bibliothèque
 replace_from_url: Remplacer le fichier à partir d'une URL
 no_file_selected: Aucun fichier sélectionné
 download_file: Télécharger le fichier
+collection_key: Clé de la collection
 name: Nom
+primary_key_field: Champ de clé primaire
+type: Type
 created_by: Créé par
 created_on: Créé le
 creating_collection_system: Activer et renommer l'un de ces champs optionnels.
@@ -427,6 +436,7 @@ wysiwyg_options:
   alignjustify: Justifier
   alignleft: Aligner à Gauche
   alignright: Aligner à Droite
+  forecolor: Couleur du premier plan
   backcolor: Couleur de fond
   bold: Gras
   italic: Italique
