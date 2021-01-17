@@ -311,10 +311,16 @@ item_count: 'Aucun élément | Un élément | {count} éléments'
 no_items_copy: Il n’y a pas encore d’élément dans cette collection.
 no_files_copy: Il n'y a aucun fichier ici.
 user_count: 'Aucun utilisateur | Un seul utilisateur | {count} utilisateurs'
+no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
+webhooks_count: 'Aucun Webhooks | 1 Webhook | {count} Webhooks'
+no_webhooks_copy: Il n'y a pas encore de webhooks.
 all_items: Tous les éléments
 csv: CSV
+no_collections: Aucune collection
 create_collection: Créer une collection
+no_collections_copy_admin: Vous n'avez pas encore de collection. Cliquez sur le bouton ci-dessous pour commencer.
 relationship_not_setup: La relation n'a pas été configurée correctement
+select_a_collection: Sélectionner une collection
 users: Utilisateurs
 activity: Activité
 webhooks: Webhooks
@@ -629,6 +635,7 @@ interfaces:
     use_24: Utiliser le format 24h
   display-template:
     display-template: Modèle d'affichage
+    select_a_collection: Sélectionner une collection
   divider:
     divider: Séparateur
   dropdown:
