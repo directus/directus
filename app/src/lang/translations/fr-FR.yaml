@@ -27,6 +27,8 @@ connection_fair: Connexion Modérée
 connection_poor: Mauvaise connexion
 rename_folder: Renommer le fichier
 delete_folder: Supprimer le fichier
+prefix: Préfixe
+suffix: Suffixe
 reset_bookmark: Réinitialiser le signet
 rename_bookmark: Renommer le signet
 update_bookmark: Modifier un favori
@@ -46,6 +48,7 @@ os_type: Type d'OS
 os_version: Version de l'OS
 os_uptime: Temps de disponibilité de l'OS
 os_totalmem: Mémoire de l'OS
+archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
 archive_confirm_count: >-
   Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
@@ -58,6 +61,8 @@ unknown_validation_errors: 'Il y a eu des erreurs de validation pour les champs 
 validationError:
   eq: La valeur doit être {valid}
   neq: La valeur ne peut pas être {invalid}
+  in: La valeur doit être l'une des {valid}
+  nin: La valeur ne peut pas être une des {invalid}
   contains: La valeur doit contenir {substring}
   ncontains: La valeur ne peut pas contenir {substring}
   gt: La valeur doit être supérieure à {valid}
@@ -72,9 +77,13 @@ validationError:
 all_access: Accès total
 no_access: Pas d'accès
 use_custom: Personnalisé
+field_standard: Standard
 field_presentation: Présentation & Alias
 field_file: Fichier simple
 field_files: Fichiers multiples
+field_m2o: Relation M2O
+field_o2m: Relation O2M
+field_m2m: Relation M2M
 field_translations: Traductions
 item_permissions: Permissions de l'élément
 field_permissions: Permissions du champ
@@ -164,8 +173,11 @@ note: Remarque
 enter_a_value: Saisissez une valeur...
 enter_a_placeholder: Entrez un placeholder...
 length: Taille
+precision_scale: Précision & Echelle
 readonly: Lecture seule
 unique: Unique
+updated_on: Mis à jour le
+updated_by: Modifié par
 primary_key: Clef primaire
 foreign_key: Clé étrangère
 finish_setup: Terminer la configuration
@@ -224,6 +236,10 @@ interface: Interface
 today: Aujourd'hui
 yesterday: Hier
 delete_comment: Supprimer le commentaire
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_date_short: 'MMM d, u'
 month: Mois
 year: Année
 select_all: Tout sélectionner
