@@ -347,7 +347,7 @@ file_moved: Fichier déplacé
 collection_created: Collection créée
 modified_on: Modifié le
 card_size: Taille de la carte
-sort_field: Trier
+sort_field: Trier les champs
 sort: Trier
 status: Etat
 toggle_manual_sorting: Activer/désactiver le tri manuel
@@ -502,6 +502,8 @@ wysiwyg_options:
   backcolor: Couleur de fond
   bold: Gras
   italic: Italique
+  underline: Souligner
+  strikethrough: Barrer
   codeblock: Code
   copy: Copier
   cut: Couper
