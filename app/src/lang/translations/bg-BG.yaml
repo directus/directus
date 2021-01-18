@@ -38,7 +38,7 @@ delete_bookmark_copy: >-
 logoutReason:
   SIGN_OUT: Отписан
   SESSION_EXPIRED: Сесията е изтекла
-public: Обществен
+public: Публичен
 public_description: Контрол върху това, каква част от данните в API-то ще бъде видима без нужда от оторизиране.
 not_allowed: Не е позволено
 directus_version: Версия на Directus
@@ -85,14 +85,14 @@ field_m2o: M2O релация
 field_o2m: O2M релация
 field_m2m: M2M релация
 field_translations: Преводи
-item_permissions: Позволения на запис
-field_permissions: Позволения за поле
-field_validation: Валидация на поле
-field_presets: Стойност на поле
-permissions_for_role: 'Записи, които ролята "{role}" има достъп за {action}.'
-fields_for_role: 'Полета, които ролята "{role}" има достъп за {action}.'
+item_permissions: Позволения по запис
+field_permissions: Позволения по поле
+field_validation: Валидация по поле
+field_presets: Стойност на полета
+permissions_for_role: 'Записи, които ролята "{role}" има позволение за {action}.'
+fields_for_role: 'Полета, които ролята "{role}" има позволение за {action}.'
 validation_for_role: 'Правила, които ролята "{role}" трябва да спазва, при {action} на полетo.'
-presets_for_role: 'Стойност на полето по подразбиране, за ролята "{role}".'
+presets_for_role: 'Стойности за полета по подразбиране, за ролята "{role}".'
 presentation_and_aliases: Презентационни и псевдоними
 revision_post_update: Ето как ще изглежда записът след промяната...
 changes_made: Направените промени са следните...
@@ -593,7 +593,7 @@ page_help_settings_datamodel_collections: >-
   **Модел на данни: Колекции** — Показва всички налични колекции. Това включва видими, невидими и системни, както и неконтролираните таблици от базата данни, които могат да бъдат добавяни като колекции.
 page_help_settings_datamodel_fields: >-
   **Модел на данни: Колекция** — Формуляр за управление на тази колекция и нейните полета.
-page_help_settings_roles_collection: '**Преглед на роли** — Показва администраторската, обществената и всички потребителски роли.'
+page_help_settings_roles_collection: '**Преглед на роли** — Показва администраторската, публичната и всички потребителски роли.'
 page_help_settings_roles_item: "**Детайли за роля** — Управление на позволенията на ролята, както и някои други настройки."
 page_help_settings_presets_collection: >-
   **Преглед на подготвени изгледи** — Показване на списък с предварително подготвени изгледи, включително за отделните: потребител, роля, и глобални отметки, както и изгледите по подразбиране.
@@ -686,7 +686,7 @@ fields:
     display_template: Шаблон
   directus_roles:
     name: Име на роля
-    icon: Икона за ролята
+    icon: Икона на роля
     description: Описание
     ip_access: IP адрес
     app_access: Достъп до приложението
