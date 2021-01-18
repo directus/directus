@@ -445,28 +445,58 @@ operators:
   has: Contient certaines de ces clés
 loading: Chargement…
 drop_to_upload: Déposer pour téléverser
+upload_file: Envoyer le fichier
+upload_file_indeterminate: Envoi du fichier...
+upload_file_success: Fichier envoyé
+upload_files_indeterminate: 'Envoi des fichiers {done}/{total}'
+upload_files_success: '{count} fichiers envoyés'
+upload_pending: Envoi en attente
+drag_file_here: Glisser-déposer un fichier ici
+click_to_browse: Cliquer pour rechercher
 layout_options: Options d'affichage
+rows: Lignes
+columns: Colonnes
+collection_setup: Configuration de la collection
+optional_system_fields: Champs système optionnels
+value_unique: La valeur doit être unique
+all_activity: Toutes les activités
 create_item: Créer un élément
 display_template: Modèle d'affichage
+n_items_selected: 'Aucun élément sélectionné | 1 élément sélectionné | {n} éléments sélectionnés'
 per_page: Par Page
 all_files: Tous les fichiers
 my_files: Mes fichiers
 recent_files: Fichiers Récents
 create_folder: Créer un Dossier
+folder_name: Nom du dossier...
+add_file: Ajouter un fichier
+replace_file: Remplacer le fichier
 no_results: Aucun résultat
+no_results_copy: Ajuster ou effacer les filtres de recherche pour voir les résultats.
+clear_filters: Réinitialiser les filtres
+saves_automatically: Sauvegardé automatiquement
 role: Rôle
 user: Utilisateur
+no_presets: Aucun préréglage
+no_presets_copy: Aucun préréglage ou favori n'a encore été enregistré.
+no_presets_cta: Ajouter un préréglage
 create: Créer
+on_create: À la Création
 on_update: À la mise à jour
 read: Lecture
 update: Mettre à jour
 select_fields: Sélectionner des champs
+format_text: Format du texte
 bold: Gras
+toggle: Activer/Désactiver
+icon_on: Icône Activée
+icon_off: Icône Désactivée
 label: Étiquette
 wysiwyg_options:
   aligncenter: Centrer
   alignjustify: Justifier
   alignleft: Aligner à Gauche
+  alignnone: Ne pas aligner
   alignright: Aligner à Droite
   forecolor: Couleur du premier plan
   backcolor: Couleur de fond
@@ -519,12 +549,17 @@ discard_changes: Annuler les modifications
 keep_editing: Continuer l’édition
 page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
 add_new: Nouveau
+create_new: Créer Un Nouveau
 all: Tout
+none: Aucun
 batch_delete_confirm: >-
   Aucun élément n’a été sélectionné | Êtes-vous sûr de bien vouloir supprimer cet élément ? Vous ne pourrez pas revenir en arrière ! | Êtes-vous sûr de bien vouloir supprimer ces {count} éléments ?  Vous ne pourrez pas revenir en arrière !
 cancel: Annuler
 collection: Collection
 collections: Collections
+singleton: Singleton
+singleton_label: Traiter comme un objet unique
+system_fields_locked: Les champs système sont verrouillés et ne peuvent pas être modifiés
 fields:
   directus_activity:
     action: Action
@@ -570,16 +605,32 @@ fields:
     tfa_secret: Authentification à deux facteurs
   directus_settings:
     project_name: Nom du projet
+    project_url: URL du projet
     project_color: Couleur du projet
     project_logo: Logo du projet
+    public_foreground: Avant-plan public
+    public_background: Arrière-plan public
+    public_note: Note publique
+    auth_password_policy: Politique des mots de passe
+    auth_idle_timeout: Délai d'inactivité de l'authentification
+    auth_login_attempts: Tentatives de connexion
+    storage_asset_presets: Préréglages des fichiers dans Stockage
+    storage_asset_transform: Transformation des fichiers du stockage
   directus_fields:
+    collection: Nom de la Collection
+    icon: Icône de Collection
     note: Remarque
     hidden: Caché
+    singleton: Singleton
     translation: Traductions des noms de champs
     display_template: Modèle
   directus_roles:
     name: Nom de rôle
+    icon: Icône de Rôle
     description: Description
+    ip_access: Accès IP
+    app_access: Accès à l'application
+    admin_access: Accès Administrateur
 comment: Commentaire
 continue: Continuer
 continue_as: >-
@@ -698,6 +749,7 @@ interfaces:
     text-input: Entrée de texte
     trim: Ajuster
   toggle:
+    toggle: Activer/Désactiver
     label_default: Activé
   translations:
     display_template: Modèle d'affichage
@@ -710,6 +762,8 @@ interfaces:
 displays:
   boolean:
     boolean: Booléen
+    icon_on: Icône Activée
+    icon_off: Icône Désactivée
   collection:
     collection: Collection
   color:
