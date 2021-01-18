@@ -292,8 +292,13 @@ type: Type
 created_by: Créé par
 created_on: Créé le
 creating_collection_system: Activer et renommer l'un de ces champs optionnels.
+auto_increment_integer: Entier auto-incrémenté
+generated_uuid: UUID généré
+manual_string: Chaîne de caractère saisie manuellement
+save_and_create_new: Enregistrer et en créer un nouveau
 save_and_stay: Enregistrer et rester
 save_as_copy: Enregistrer une copie
+add_existing: Ajouter un déjà existant
 comments: Commentaires
 no_comments: Pas encore de commentaires
 click_to_expand: Cliquer pour agrandir
@@ -306,9 +311,11 @@ report_bug: Signaler un bug
 request_feature: Demander une fonctionnalité
 interface_not_found: 'L''interface "{interface}" est introuvable.'
 reset_interface: Réinitialiser l'interface
+display_not_found: 'L''affichage "{display}" n''a pas été trouvé.'
 reset_display: Réinitialiser l'affichage
 item_count: 'Aucun élément | Un élément | {count} éléments'
 no_items_copy: Il n’y a pas encore d’élément dans cette collection.
+file_count: 'Aucun fichier | Un fichier | {count} fichiers'
 no_files_copy: Il n'y a aucun fichier ici.
 user_count: 'Aucun utilisateur | Un seul utilisateur | {count} utilisateurs'
 no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
@@ -319,22 +326,29 @@ csv: CSV
 no_collections: Aucune collection
 create_collection: Créer une collection
 no_collections_copy_admin: Vous n'avez pas encore de collection. Cliquez sur le bouton ci-dessous pour commencer.
+no_collections_copy: Vous n'avez pas encore de Collections. Veuillez contacter votre administrateur système.
 relationship_not_setup: La relation n'a pas été configurée correctement
 select_a_collection: Sélectionner une collection
 users: Utilisateurs
 activity: Activité
 webhooks: Webhooks
 field_width: Largeur du champ
+add_a_new_item: Ajouter un nouvel élément...
+add_filter: Ajouter un filtre
+upper_limit: Limite supérieure...
+lower_limit: Limite inférieure...
 user_directory: Utilisateurs
 documentation: Documentation
 sidebar: Barre latérale
 duration: Durée
 charset: Jeu de caractères
+second: Seconde
 file_moved: Fichier déplacé
 collection_created: Collection créée
 modified_on: Modifié le
 card_size: Taille de la carte
 sort_field: Trier
+sort: Trier
 status: Etat
 toggle_manual_sorting: Activer/désactiver le tri manuel
 bookmark_doesnt_exist: Le favori n'existe pas
@@ -408,6 +422,8 @@ circle: Cercle
 empty_item: Élément vide
 log_in_with: 'Se connecter avec {provider}'
 advanced_filter: Filtre avancé
+delete_advanced_filter: Supprimer le filtre
+change_advanced_filter_operator: Changer d'opérateur
 operators:
   eq: Égal à
   neq: Différent de
@@ -415,6 +431,8 @@ operators:
   gt: Plus grand que
   lte: Inférieur ou égal à
   gte: Plus grand ou égal à
+  in: Appartient à
+  nin: N'appartient pas à
   null: Est nul
   nnull: N'est pas null
   contains: Contient
