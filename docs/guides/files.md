@@ -37,17 +37,15 @@ that you can take advantage of file permissions and other built-in features.
 5. Enter the **Fit**, **Width**, **Height**, and **Quality** for the preset
 6. Click the **Save** action button in the header
 
-<!-- prettier-ignore-start -->
-::: tip Storage Asset Transform
-The **Storage Asset Transform** can be used in conjunction with the
-presets to force an allow-list or completely disable the thumbnailing system. The options for this
-are:
 
+### Storage Asset Transform
+The **Storage Asset Transform** can be used in conjunction with the
+presets to force an allow-list or completely disable the thumbnailing system.  
+The options for this are:
 -   **All** — Any valid thumbnail request will be returned
 -   **None** — No thumbnails will be returned, not even presets
 -   **Presets Only** — Only valid Storage Asset Presets will be returned
-:::
-<!-- prettier-ignore-end -->
+
 
 ## Requesting a Thumbnail
 
@@ -97,7 +95,7 @@ dimensions and adding "letterboxing" as needed.
 | ![Cover](../assets/200-200-cover-75.jpg)<br>_8KB • 200x200_ | ![Contain](../assets/200-200-contain-75.jpg)<br>_6KB • 200x133_ |
 
 <!-- prettier-ignore-start -->
-::: Aspect Ratio
+::: tip Aspect Ratio
 Images are never stretched or distorted even when changing the aspect ratio.
 :::
 <!-- prettier-ignore-end -->

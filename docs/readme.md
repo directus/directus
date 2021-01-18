@@ -4,7 +4,8 @@ Welcome to the Directus documentation.
 
 ## Getting Started
 
-Novice Oriented. For a platform introduction and installation.
+Novice Oriented.   
+For a platform introduction and installation.
 
 -   [Introduction](/getting-started/introduction)
 -   [Support](/getting-started/support)
@@ -13,7 +14,8 @@ Novice Oriented. For a platform introduction and installation.
 
 ## Concepts
 
-Learning Oriented. For understanding the platform.
+Learning Oriented.  
+For understanding the platform.
 
 -   [Platform Overview](/concepts/platform-overview)
 -   [App Overview](/concepts/app-overview)
@@ -26,7 +28,8 @@ Learning Oriented. For understanding the platform.
 
 ## Guides
 
-Problem Oriented. Follow along with steps while working.
+Problem Oriented.  
+Follow along with steps while working.
 
 -   [Collections](/guides/collections)
 -   [Fields](/guides/fields)
@@ -39,7 +42,8 @@ Problem Oriented. Follow along with steps while working.
 
 ## Reference
 
-Information Oriented. Look up info and specificationss while working.
+Information Oriented.  
+Look up info and specifications while working.
 
 -   [Command Line Interface](/reference/command-line-interface)
 -   [Environment Variables](/reference/environment-variables)

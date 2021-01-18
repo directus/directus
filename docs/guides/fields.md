@@ -1,4 +1,3 @@
-
 # Fields
 
 > You can manage your fields within the Data Model section of the App's Settings, via the

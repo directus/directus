@@ -11,18 +11,24 @@ async function build() {
 
 	const start = Date.now();
 
+	const assetsPath = path.resolve(__dirname, '../app/public/img/docs');
 	const distPath = path.resolve(__dirname, './dist');
 
 	await rimraf(distPath);
 
 	const tree = dirTree('.', { extensions: /\.md/, exclude: /(dist|node_modules)/ });
 
+	await fse.ensureDir(assetsPath);
 	await fse.ensureDir(distPath);
 
 	await fse.writeJSON('./dist/index.json', tree);
 
 	await copyfiles(['./**/*.md', distPath], { exclude: './node_modules/**/*.*' });
 	await copyfiles(['./assets/**/*.*', distPath], { exclude: './node_modules/**/*.*' });
+	
+	console.log('Copying docs assets to:', assetsPath);
+	
+	await copyfiles(['./assets/**/*.*', assetsPath], { exclude: './node_modules/**/*.*' });
 
 	const yamlFiles = [];
 	const filesInRoot = await fse.readdir(__dirname);
