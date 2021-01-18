@@ -134,12 +134,15 @@
 			class="mapboxgl-map"
 			:class="{ loading, error: error || geojsonError || !geojsonOptionsOk || itemCount === 0 }"
 			:data="geojson"
+			:featureId="featureId"
+			:selection="_selection"
 			:camera="cameraOptions"
 			:bounds="geojsonBounds"
-			:onClick="gotoEdit"
 			:rootStyle="rootStyle"
 			:source="userSource"
 			:layers="userLayers"
+			@click="gotoEdit"
+			@select="updateSelection"
 			@moveend="cameraOptions = $event"
 			:backgroundLayer="backgroundLayer"
 			:animateOptions="{
@@ -238,6 +241,7 @@ import useCollection from '../../composables/use-collection/';
 import useSync from '../../composables/use-sync/';
 import useItems from '../../composables/use-items';
 import { useRelationsStore } from '../../stores/';
+import disjoint from '@turf/boolean-disjoint';
 
 import i18n from '../../lang';
 import { AnyCnameRecord } from 'dns';
@@ -263,11 +267,24 @@ function clone<A>(a: A): A {
 		: // @ts-ignore
 		  Object.keys(a).reduce((r, k) => ({ ...r, [k]: clone(a[k]) }), {});
 }
+
 function assign(a: any, b: any): any {
 	if (![a, b].every(isObject)) return (a = b);
 	if ([a, b].every(isArray)) return a.concat(b);
 	for (const key in b) a[key] = assign(a[key], b[key]);
 	return a;
+}
+
+function arrayOr<A,B>(a: Iterable<A>, b: Iterable<B>): Array<A | B> {
+	let or = new Set<A | B>(a);
+	for (const e of b) {
+		if (or.has(e)) {
+			or.delete(e);
+		} else {
+			or.add(e);
+		}
+	}
+	return Array.from(or);
 }
 
 type Item = Record<string, any>;
@@ -474,8 +491,7 @@ export default defineComponent({
 					geojsonError.value = null;
 					geojson.value = await workerProxy(items.value, _layoutOptions.value, proxy(onProgress));
 					geojsonLoading.value = false;
-					console.log(geojsonDataChanged, fitDataBounds.value);
-					if (!cameraOptions.value || (geojsonDataChanged && fitDataBounds.value)) {
+					if (!cameraOptions.value || (geojsonDataChanged.value && fitDataBounds.value)) {
 						geojsonBounds.value = geojson.value.bbox;
 					}
 					geojsonDataChanged.value = true;
@@ -520,13 +536,21 @@ export default defineComponent({
 			userSource.value = { ...userSource.value };
 		}
 
-		function gotoEdit(e: MapLayerMouseEvent) {
-			const pkf: string = primaryKeyField.value?.field;
-			if (!pkf || props.readonly) return;
-			const key = e.features?.[0].properties?.[pkf];
-			if (!key) return;
-			const url = `/collections/${collection.value}/${key}`;
-			router.push(url);
+		function getGeometryCompare(feature: GeoJSON.Feature) {
+			if (feature.geometry.type == 'MultiPolygon') {
+			}
+		}
+
+		function updateSelection(selected: Array<String | number>) {
+			_selection.value = selected as Record<string, any>[];
+		}
+
+		const featureId = computed(() => {
+			return props.readonly ? null : primaryKeyField.value?.field;
+		})
+
+		function gotoEdit(key: number | string) {
+			router.push(`/collections/${collection.value}/${key}`);
 		}
 
 		const showingCount = computed(() => {
@@ -542,11 +566,14 @@ export default defineComponent({
 		});
 
 		const availableFields = computed(() => {
-			return fieldsInCollection.value.filter((field) => field.meta?.special?.includes('no-data') !== true);
+			return fieldsInCollection.value
+				.filter((field) => field.meta?.special?.includes('no-data') !== true);
 		});
+
 		const availableFieldsForFormat = computed(() => {
 			const types = availableTypesForFormat(geometryFormat.value);
-			return availableFields.value.filter(({ type }) => types.includes(type));
+			return availableFields.value
+				.filter(({ type }) => types.includes(type));
 		});
 
 		function availableTypesForFormat(format: GeometryFormat) {
@@ -569,6 +596,7 @@ export default defineComponent({
 		const mapStyleOptions = basemapNames;
 
 		return {
+			_selection,
 			geojson,
 			rootStyle,
 			userSource,
@@ -576,6 +604,7 @@ export default defineComponent({
 			customLayers,
 			updateLayers,
 			resetLayers,
+			featureId,
 			mapStyleOptions,
 			backgroundLayer,
 			geojsonBounds,
@@ -599,7 +628,7 @@ export default defineComponent({
 			clusterRadius,
 			clusterMaxZoom,
 			clusterMinPoints,
-			_selection,
+			updateSelection,
 			items,
 			loading,
 			error,
@@ -679,11 +708,6 @@ export default defineComponent({
 	transform: translate(-50%, -50%);
 }
 
-.layout-map::v-deep .CodeMirror.cm-s-default {
-	height: 300px !important;
-	max-height: 300px !important;
-}
-
 .form .v-button {
 	--v-button-background-color: var(--foreground-subdued);
 	--v-button-background-color-hover: var(--foreground-normal);
@@ -735,6 +759,7 @@ export default defineComponent({
 	box-sizing: border-box;
 	padding-top: 40px;
 	overflow: hidden;
+	background-color: transparent !important;
 
 	.pagination {
 		--v-button-height: 28px;

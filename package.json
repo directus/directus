@@ -192,6 +192,8 @@
 		"@directus/format-title": "file:packages/format-title",
 		"@directus/sdk-js": "file:packages/sdk-js",
 		"@directus/specs": "file:packages/specs",
+		"@mapbox/mapbox-gl-draw": "^1.2.0",
+		"@turf/boolean-disjoint": "^6.2.0",
 		"@turf/meta": "^6.2.0",
 		"comlink": "^4.3.0",
 		"create-directus-project": "file:packages/create-directus-project",
