@@ -1,4 +1,13 @@
 import type { Style } from 'maplibre-gl';
+
+let baseColor = '#09f'; // '#11b4da'
+let hoverColor = '#FFA500'; // '#11b4da'
+let selectColor = '#FFA500'; // '#11b4da'
+let color = ['case',
+	['boolean', ['feature-state', 'selected'], false],
+	selectColor, baseColor
+];
+
 export default <Style>{
 	version: 8,
 	sources: {
@@ -12,24 +21,12 @@ export default <Style>{
 	},
 	layers: [
 		{
-			id: '__directus_points',
-			type: 'circle',
-			source: '__directus',
-			filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
-			paint: {
-				'circle-color': '#11b4da',
-				'circle-radius': 4,
-				'circle-stroke-width': 1,
-				'circle-stroke-color': '#fff',
-			},
-		},
-		{
 			id: '__directus_polygons',
 			type: 'line',
 			source: '__directus',
 			filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Polygon']],
 			paint: {
-				'line-color': '#09f',
+				'line-color': color,
 				'line-width': 2,
 			},
 		},
@@ -39,8 +36,20 @@ export default <Style>{
 			source: '__directus',
 			filter: ['all', ['!has', 'point_count'], ['==', '$type', 'LineString']],
 			paint: {
-				'line-color': '#09f',
-				'line-width': 3,
+				'line-color': color,
+				'line-width': 2,
+			},
+		},
+		{
+			id: '__directus_points',
+			type: 'circle',
+			source: '__directus',
+			filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
+			paint: {
+				'circle-color': color,
+				'circle-radius': 4,
+				'circle-stroke-width': 1,
+				'circle-stroke-color': '#fff',
 			},
 		},
 		{
