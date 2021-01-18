@@ -241,7 +241,6 @@ import useCollection from '../../composables/use-collection/';
 import useSync from '../../composables/use-sync/';
 import useItems from '../../composables/use-items';
 import { useRelationsStore } from '../../stores/';
-import disjoint from '@turf/boolean-disjoint';
 
 import i18n from '../../lang';
 import { AnyCnameRecord } from 'dns';
@@ -275,8 +274,8 @@ function assign(a: any, b: any): any {
 	return a;
 }
 
-function arrayOr<A,B>(a: Iterable<A>, b: Iterable<B>): Array<A | B> {
-	let or = new Set<A | B>(a);
+function arrayOr<A, B>(a: Iterable<A>, b: Iterable<B>): Array<A | B> {
+	const or = new Set<A | B>(a);
 	for (const e of b) {
 		if (or.has(e)) {
 			or.delete(e);
@@ -541,13 +540,13 @@ export default defineComponent({
 			}
 		}
 
-		function updateSelection(selected: Array<String | number>) {
+		function updateSelection(selected: Array<string | number>) {
 			_selection.value = selected as Record<string, any>[];
 		}
 
 		const featureId = computed(() => {
 			return props.readonly ? null : primaryKeyField.value?.field;
-		})
+		});
 
 		function gotoEdit(key: number | string) {
 			router.push(`/collections/${collection.value}/${key}`);
@@ -566,14 +565,12 @@ export default defineComponent({
 		});
 
 		const availableFields = computed(() => {
-			return fieldsInCollection.value
-				.filter((field) => field.meta?.special?.includes('no-data') !== true);
+			return fieldsInCollection.value.filter((field) => field.meta?.special?.includes('no-data') !== true);
 		});
 
 		const availableFieldsForFormat = computed(() => {
 			const types = availableTypesForFormat(geometryFormat.value);
-			return availableFields.value
-				.filter(({ type }) => types.includes(type));
+			return availableFields.value.filter(({ type }) => types.includes(type));
 		});
 
 		function availableTypesForFormat(format: GeometryFormat) {
