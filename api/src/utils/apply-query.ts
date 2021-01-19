@@ -51,7 +51,8 @@ export default async function applyQuery(
 					if (['text', 'string'].includes(column.localType)) {
 						this.orWhereRaw(`LOWER(??) LIKE ?`, [column.column_name, `%${query.search!.toLowerCase()}%`]);
 					} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(column.localType)) {
-						this.orWhere({ [column.column_name]: Number(query.search!) });
+						const number = Number(query.search!);
+						if (!isNaN(number)) this.orWhere({ [column.column_name]: number });
 					} else if (column.localType === 'uuid' && validate(query.search!)) {
 						this.orWhere({ [column.column_name]: query.search! });
 					}
