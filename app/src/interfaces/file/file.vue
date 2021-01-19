@@ -115,7 +115,7 @@ import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
 

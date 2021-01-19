@@ -8,14 +8,7 @@
 			<template v-else>
 				<p v-if="type" class="type type-title">{{ type }}</p>
 				<template v-else>
-					<img
-						class="image"
-						loading="lazy"
-						v-if="imageSource"
-						:src="imageSource"
-						alt=""
-						role="presentation"
-					/>
+					<img class="image" loading="lazy" v-if="imageSource" :src="imageSource" alt="" role="presentation" />
 					<img class="svg" v-else-if="svgSource" :src="svgSource" alt="" role="presentation" />
 					<v-icon v-else large :name="icon" />
 				</template>
@@ -32,7 +25,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import router from '@/router';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 
 type File = {

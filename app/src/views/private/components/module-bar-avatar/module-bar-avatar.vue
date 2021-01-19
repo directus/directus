@@ -38,7 +38,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
 import { useUserStore } from '@/stores/';
-import getRootPath from '../../../../utils/get-root-path';
+import { getRootPath } from '../../../../utils/get-root-path';
 import { addTokenToURL } from '@/api';
 
 export default defineComponent({
@@ -51,9 +51,7 @@ export default defineComponent({
 			if (userStore.state.currentUser === null) return null;
 			if (userStore.state.currentUser.avatar === null) return null;
 
-			return addTokenToURL(
-				getRootPath() + `assets/${userStore.state.currentUser.avatar.id}?key=system-medium-cover`
-			);
+			return addTokenToURL(getRootPath() + `assets/${userStore.state.currentUser.avatar.id}?key=system-medium-cover`);
 		});
 
 		const userProfileLink = computed<string>(() => {

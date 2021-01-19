@@ -1,4 +1,4 @@
-import getRootPath from './utils/get-root-path';
+import { getRootPath } from './utils/get-root-path';
 
 __webpack_public_path__ = getRootPath() + 'admin/';
 

@@ -15,13 +15,7 @@
 				<v-button icon rounded @click="lightboxActive = true" v-tooltip="$t('zoom')">
 					<v-icon name="zoom_in" />
 				</v-button>
-				<v-button
-					icon
-					rounded
-					:href="downloadSrc"
-					:download="image.filename_download"
-					v-tooltip="$t('download')"
-				>
+				<v-button icon rounded :href="downloadSrc" :download="image.filename_download" v-tooltip="$t('download')">
 					<v-icon name="get_app" />
 				</v-button>
 				<v-button icon rounded @click="editorActive = true" v-tooltip="$t('edit')">
@@ -57,7 +51,7 @@ import i18n from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
 
@@ -98,8 +92,7 @@ export default defineComponent({
 			}
 
 			if (image.value.type.includes('image')) {
-				const url =
-					getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`;
+				const url = getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`;
 
 				return addTokenToURL(url);
 			}

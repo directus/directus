@@ -2,11 +2,7 @@
 	<div class="public-view" :class="{ branded: isBranded }">
 		<div class="container" :class="{ wide }">
 			<div class="title-box">
-				<div
-					v-if="branding && branding.project_logo"
-					class="logo"
-					:style="{ backgroundColor: branding.project_color }"
-				>
+				<div v-if="branding && branding.project_logo" class="logo" :style="{ backgroundColor: branding.project_color }">
 					<img :src="logoURL" :alt="branding.project_name || 'Logo'" />
 				</div>
 				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
@@ -25,12 +21,7 @@
 		</div>
 		<div class="art" :style="artStyles">
 			<transition name="scale">
-				<img
-					class="foreground"
-					v-if="foregroundURL"
-					:src="foregroundURL"
-					:alt="branding && branding.project_name"
-				/>
+				<img class="foreground" v-if="foregroundURL" :src="foregroundURL" :alt="branding && branding.project_name" />
 			</transition>
 			<div class="note-container">
 				<div class="note" v-if="branding && branding.public_note" v-html="marked(branding.public_note)" />
@@ -44,7 +35,7 @@ import { version } from '../../../package.json';
 import { defineComponent, computed } from '@vue/composition-api';
 import { useServerStore } from '@/stores';
 import marked from 'marked';
-import getRootPath from '../../utils/get-root-path';
+import { getRootPath } from '../../utils/get-root-path';
 
 export default defineComponent({
 	props: {
@@ -124,6 +115,10 @@ export default defineComponent({
 	}
 
 	.container {
+		--border-radius: 6px;
+		--input-height: 60px;
+		--input-padding: 16px; // (60 - 4 - 24) / 2
+
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
@@ -133,21 +128,18 @@ export default defineComponent({
 		padding: 20px;
 		overflow-x: hidden;
 		overflow-y: auto;
-		background-color: #fff;
-		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
-		transition: max-width var(--medium) var(--transition);
 
 		// Page Content Spacing
 		font-size: 15px;
 		line-height: 24px;
-		--border-radius: 6px;
-		--input-height: 60px;
-		--input-padding: 16px; // (60 - 4 - 24) / 2
+		background-color: #fff;
+		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
+		transition: max-width var(--medium) var(--transition);
 
 		.type-title {
+			font-weight: 800;
 			font-size: 42px;
 			line-height: 52px;
-			font-weight: 800;
 		}
 
 		.content {
@@ -184,24 +176,24 @@ export default defineComponent({
 		}
 
 		.note-container {
-			display: flex;
-			justify-content: center;
-			align-items: flex-end;
 			position: absolute;
-			left: 0;
 			right: 0;
 			bottom: 34px;
+			left: 0;
+			display: flex;
+			align-items: flex-end;
+			justify-content: center;
 			height: 10px;
 			.note {
 				max-width: 340px;
 				margin: 0 auto;
 				padding: 8px 12px;
 				color: var(--white);
+				font-size: 15px;
+				line-height: 24px;
 				background-color: rgba(38, 50, 56, 0.25);
 				border-radius: 6px;
 				backdrop-filter: blur(2px);
-				font-size: 15px;
-				line-height: 24px;
 			}
 		}
 
@@ -226,11 +218,11 @@ export default defineComponent({
 			margin-top: 2px;
 			margin-left: 16px;
 			h1 {
-				font-size: 24px;
-				line-height: 24px;
-				font-weight: 700;
 				color: var(--foreground-subdued);
 				color: var(--brand);
+				font-weight: 700;
+				font-size: 24px;
+				line-height: 24px;
 			}
 			.subtitle {
 				width: 100%;
