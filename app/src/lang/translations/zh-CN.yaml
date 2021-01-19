@@ -129,6 +129,7 @@ text: 文字
 time: 时间
 timestamp: 时间戳
 uuid: UUID
+hash: Hash
 not_available_for_type: 此类型不可用
 create_translations: 创建翻译
 auto_generate: 自动生成
@@ -493,7 +494,12 @@ fields:
     public_background: 公共背景
     public_note: 公共便笺
     auth_password_policy: 认证密码策略
+    auth_idle_timeout: 认证等待超时
+    auth_login_attempts: 尝试认证登录次数
+    storage_asset_presets: 存储资产预设
   directus_fields:
+    collection: 集合名称
+    icon: 集合 Icon
     note: 注解
     hidden: 隐藏
     singleton: 单一
@@ -501,7 +507,23 @@ fields:
     display_template: 模板
   directus_roles:
     name: 角色名称
+    icon: 角色 Icon
     description: 描述
+    ip_access: IP 访问
+    app_access: App 访问
+    admin_access: 管理员访问
+    enforce_tfa: 请求两步验证
+    users: 角色中的用户
+    module_list: 模块导航
+    collection_list: 集合导航
+no_fields_in_collection: '集合 {collection} 中没有任何字段'
+do_nothing: 什么都不做
+generate_and_save_uuid: 生成并保存 UUID
+save_current_user_id: 保存当前用户 ID
+save_current_user_role: 保存当前用户角色
+save_current_datetime: 保存当前日期/时间
+block: 阻止
+inline: 内联
 comment: 注释
 continue: 继续
 default: 默认
@@ -568,13 +590,31 @@ interfaces:
     select_a_collection: 选择一个集合
   divider:
     divider: 分隔线
+    inline_title: 内嵌标题
+    inline_title_label: 在行内显示标题
+    margin_top: 上边距
+    margin_top_label: 增加上边距
   dropdown:
+    description: 从下拉列表中选择一个值
+    choices_placeholder: 添加一个新的选项
     allow_other: 允许其他选项
+    allow_other_label: 允许其他值
+    allow_none: 允许 None
+    allow_none_label: 允许不选择
+    choices_name_placeholder: 输入一个名称...
     choices_value_placeholder: 输入值...
+  dropdown-multiselect:
+    dropdown-multiselect: 下拉(多次)
+    description: 从下拉列表中选择多个值
   file:
     file: 文件
+    description: 选择或上传文件
   files:
     files: 多个文件
+    description: 选择或上传多个文件
+  hash:
+    hash: Hash
+    description: 输入一个经过hash的值
   icon:
     icon: 图标
   interface-options:
