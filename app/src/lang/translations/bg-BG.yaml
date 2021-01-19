@@ -967,8 +967,6 @@ displays:
     datetime: Дата и час
     description: Показване на стойностите релативни към момента
     format: Формат
-    format_note: >-
-      Персонализирания формат приема стойности от следната __[Таблица със символи](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Дълго
     short: Късо
     relative: Относително
