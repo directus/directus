@@ -24,7 +24,7 @@ import i18n from '@/lang';
 
 type Option = {
 	text: string;
-	value: string | number | boolean;
+	value: string | number;
 };
 
 export default defineComponent({
@@ -34,7 +34,7 @@ export default defineComponent({
 			default: false,
 		},
 		value: {
-			type: String,
+			type: [String, Number, Date],
 			default: null,
 		},
 		choices: {
