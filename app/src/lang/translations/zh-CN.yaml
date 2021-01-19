@@ -62,6 +62,12 @@ validationError:
   ncontains: 值不能包含 {substring}
   gt: 值必须大于 {valid}
   gte: 值必须大于或等于 {valid}
+  lt: 值必须小于 {valid}
+  lte: 值必须小于或等于 {valid}
+  empty: 值必须为空
+  nempty: 值不能为空
+  null: 值必须为null
+  nnull: 值不能为null
   required: 值是必需的
 all_access: 订购全部功能
 no_access: 无访问权限
