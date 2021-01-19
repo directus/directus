@@ -41,9 +41,6 @@ export default defineInterface(({ i18n }) => ({
 								options: {
 									font: 'monospace',
 									placeholder: i18n.t('interfaces.dropdown.choices_value_placeholder'),
-									inputValidator: {
-										errorMessage: 'Invalid Type', // TODO DOM: Add dynamic error Message if used
-									},
 								},
 								width: 'half',
 							},
