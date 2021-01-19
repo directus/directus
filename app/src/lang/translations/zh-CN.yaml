@@ -20,8 +20,30 @@ create_webhook: 创建Web钩子
 invite_users: 邀请用户
 invite: 邀请
 emails: 邮箱
+connection_poor: 连接失败
+rename_folder: 重命名文件夹
+delete_folder: 删除文件夹
+prefix: 前缀
+suffix: 后缀
+reset_bookmark: 重置书签
+rename_bookmark: 重命名书签
+update_bookmark: 更新书签
 delete_bookmark: 删除书签
+delete_bookmark_copy: >-
+  你确定要删除"{bookmark}" 这个书签吗? 此操作无法撤销。
+logoutReason:
+  SIGN_OUT: 注销
+  SESSION_EXPIRED: 会话过期
+public: 公共
+not_allowed: 不允许
 directus_version: Directus 版本
+node_version: 节点版本
+node_uptime: 节点运行时间
+os_type: 系统类型
+os_version: 系统版本
+os_uptime: 系统运行时间
+os_totalmem: 系统内存
+archive: 存档
 archive_confirm: 您确定要存档此项目吗？
 archive_confirm_count: >-
   没有选定项目 | 你确定要存档这个项目吗？| 你确定你想要存档这些 {count} 个项目吗？
@@ -33,32 +55,93 @@ nested_files_folders_will_be_moved: 嵌套的文件和文件夹将被上移一�
 unknown_validation_errors: '以下隐藏字段的验证错误：'
 validationError:
   eq: 值必须是 {valid}
+  neq: 值不能为 {invalid}
+  in: 值必须是 {valid} 的一个
+  nin: 值不能是 {invalid} 的一个
+  contains: 值必须包含 {substring}
+  ncontains: 值不能包含 {substring}
+  gt: 值必须大于 {valid}
+  gte: 值必须大于或等于 {valid}
   required: 值是必需的
 all_access: 订购全部功能
 no_access: 无访问权限
 use_custom: 使用自定义颜色
+field_file: 单个文件
+field_files: 多个文件
+field_translations: 翻译
 language: 语言
 create_field: 创建字段
 hidden_on_detail: 隐藏于详情
+bigInteger: 大整数
+boolean: 布尔值
 date: 日期
+datetime: 日期时间
 decimal: 十进制
+float: 浮点数
+integer: 整数
+json: JSON
+string: 字符串
 text: 文字
 time: 时间
+timestamp: 时间戳
+uuid: UUID
+not_available_for_type: 此类型不可用
+create_translations: 创建翻译
 auto_generate: 自动生成
+this_will_auto_setup_fields_relations: 这将自动设置所有必填字段和关系。
+click_here: 点击此处
+to_manually_setup_translations: 手动设置翻译。
+click_to_manage_translated_fields: >-
+  还没有翻译的字段。点击这里创建它们。 点击这里来管理它。| 有 {count} 个翻译的字段。点击这里来管理。
+fields_group: 字段组
+configure_m2o: 配置您的多对一关系...
+configure_o2m: 配置您的一对多的关系...
+configure_m2m: 配置您的多对多的关系...
+configure_m2a: 配置您的多对任何关系...
+add_m2o_to_collection: '添加多对一到"{collection}"'
+add_o2m_to_collection: '添加一到多个到 "{collection}"'
+add_m2m_to_collection: '添加多对多到"{collection}"'
+choose_a_type: 选择类型...
+determined_by_relationship: 由关系确定
 add_note: 为用户添加有用的注释...
 default_value: 默认值
+add_a_default_value: 添加默认值...
+interface_setup_title: 用户将如何与这个字段交互？
+display_setup_title: 该字段的值应如何显示？
+standard_field: 标准字段
+single_file: 单个文件
+multiple_files: 多个文件
+m2o_relationship: 多对一关系
+o2m_relationship: 一对多关系
+m2m_relationship: 多对多关系
+m2a_relationship: 多对任何关系
 next: 下一条
+field_name: 字段名
+translations: 翻译
 note: 注解
+enter_a_value: 输入值...
+enter_a_placeholder: 输入占位符...
 length: 长度
+precision_scale: 精度和缩放
 readonly: 只读
 unique: 唯一
+updated_on: 更新于
+updated_by: 更新者
 primary_key: 主键
+foreign_key: 外键
+finish_setup: 完成安装
+dismiss: 关闭
+raw_value: 原始值
+edit_raw_value: 编辑原始值
+enter_raw_value: 输入原始值...
 clear_value: 清除值
 reset_to_default: 重置为默认值
 undo_changes: 撤销更改
 notifications: 通知
+show_all_activity: 显示所有活动
 page_not_found: 找不到页面
 page_not_found_body: 您正在寻找的页面似乎不存在。
+confirm_revert: 确认恢复
 display: 显示
 title: 标题
 revision_delta_deleted: 已删除
@@ -80,18 +163,67 @@ months:
   october: 10 月
   november: 11 月
   december: 12 月
+dimensions: 尺寸
 size: 大小
+modified: 已修改
 checksum: 校验和
 owner: 所有者
+edited_by: 编辑者
+folder: 文件夹
+zoom: 缩放
 download: 下载
+open: 打开
+open_in_new_window: 在新窗口中打开
+foreground_color: 前景色
+background_color: 背景色
+upload_from_device: 从设备中上传文件
+choose_from_library: 从库中选择文件
+import_from_url: 从 URL 导入文件
+replace_from_device: 从设备中替换文件
+replace_from_library: 从库中替换文件
+replace_from_url: 从 URL 中替换文件
+no_file_selected: 未选择文件
+download_file: 下载文件
+collection_key: 集合的键
 name: 名称
+primary_key_field: 主键字段
+type: 类型
+creating_new_collection: 创建集合
 created_by: 创建自
 created_on: 创建于
+creating_collection_info: 命名集合并设置唯一键字段...
+creating_collection_system: 启用并重命名这些可选字段。
+auto_increment_integer: 自动递增整数
+generated_uuid: 生成的 UUID
+manual_string: 手动输入字符串
+save_and_create_new: 保存并创建新的
 save_and_stay: 保存并继续
 save_as_copy: 另存为
+add_existing: 添加现有
 comments: 注释
+no_comments: 暂无评论
+click_to_expand: 单击展开
+select_item: 选择项目
+no_items: 无项目
+search_items: 搜索条目...
+disabled: 禁用
+information: 信息
+report_bug: 反馈Bug
 request_feature: 功能建议
+interface_not_found: '未找到接口 "{interface}"。'
+reset_interface: 重置接口
+display_not_found: '未找到显示 "{display}" 。'
+reset_display: 重置显示
+m2a_builder: 构建器 (M2A)
 item_count: '暂无数据 | 找到一条数据 | 找到 {count} 条数据'
+no_items_copy: 此集合中没有项目。
+file_count: '没有文件 | 一个文件 | {count} 个文件'
+no_files_copy: 没有任何文件。
+user_count: '没有用户 | 一个用户 | {count} 个用户'
+no_users_copy: 该角色下还没有用户。
+webhooks_count: '没有 Web钩子 | 一个钩子 | {count} 个Web钩子'
+all_items: 所有项目
+csv: CSV
 create_collection: 创建集合
 relationship_not_setup: 关系配置不正确
 users: 用户
@@ -131,6 +263,8 @@ read: 查看
 update: 更新
 select_fields: 选择字段
 wysiwyg_options:
+  forecolor: 前景色
+  backcolor: 背景色
   codeblock: 代码
   remove: 移除
   table: 表
@@ -271,6 +405,7 @@ interfaces:
     divider: 分隔线
   dropdown:
     allow_other: 允许其他选项
+    choices_value_placeholder: 输入值...
   file:
     file: 文件
   files:
@@ -312,6 +447,8 @@ interfaces:
   wysiwyg:
     custom_formats: 自定义格式
 displays:
+  boolean:
+    boolean: 布尔值
   collection:
     collection: 集合
   color:
@@ -325,6 +462,8 @@ displays:
     filesize: 文件大小
   icon:
     icon: 图标
+  labels:
+    choices_value_placeholder: 输入值...
   rating:
     rating: 评分
   user:
