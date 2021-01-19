@@ -1,7 +1,25 @@
 ---
+edit_field: 编辑字段
+item_revision: 项目修订
+duplicate_field: 复制字段
+half_width: 半宽
 full_width: 全宽
+fill_width: 全宽
+field_name_translations: 字段名称翻译
+enter_password_to_enable_tfa: 输入您的密码以启用两步验证
+add_field: 添加字段
+role_name: 角色名称
+db_only_click_to_configure: '仅限数据库：点击配置 '
+show_archived_items: 显示存档项目
 required: 必填
+requires_value: 必填值
+create_preset: 创建预设
 create_role: 创建角色
+create_user: 创建用户
+create_webhook: 创建Web钩子
+invite_users: 邀请用户
+invite: 邀请
+emails: 邮箱
 delete_bookmark: 删除书签
 directus_version: Directus 版本
 archive_confirm: 您确定要存档此项目吗？
@@ -182,8 +200,10 @@ fields:
   directus_fields:
     note: 注解
     hidden: 隐藏
+    translation: 字段名称翻译
     display_template: 模板
   directus_roles:
+    name: 角色名称
     description: 描述
 comment: 注释
 continue: 继续
