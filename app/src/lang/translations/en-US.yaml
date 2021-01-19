@@ -979,7 +979,7 @@ displays:
     description: Display values related to time
     format: Format
     format_note: >-
-      The custom format accetps the __[Date Field Symbol
+      The custom format accepts the __[Date Field Symbol
       Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Long
     short: Short
