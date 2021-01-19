@@ -955,8 +955,6 @@ displays:
     datetime: Fecha/hora
     description: Presentar valores relacionados a la hora
     format: Formato
-    format_note: >-
-      El formato personalizado acepta el __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Larga
     short: Corta
     relative: Relativa
