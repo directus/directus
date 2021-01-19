@@ -13,7 +13,7 @@ db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
 show_archived_items: Mostra le elementi archiviati
 required: Obbligatorio
 requires_value: Richiede un valore
-create_preset: Crea preimpostazione
+create_preset: Crea Preset
 create_role: Crea ruolo
 create_user: Crea utente
 create_webhook: Crea webhook
@@ -27,12 +27,14 @@ connection_fair: Connessione adeguata
 connection_poor: Scarca connessione
 rename_folder: Rinomina cartella
 delete_folder: Elimina cartella
-reset_bookmark: Reinizializza segnalibro
-rename_bookmark: Rinomina segnalibro
-update_bookmark: Aggiorna segnalibro
-delete_bookmark: Elimina segnalibro
+prefix: Prefisso
+suffix: Suffisso
+reset_bookmark: Reinizializza Segnalibro
+rename_bookmark: Rinomina Segnalibro
+update_bookmark: Aggiorna Segnalibro
+delete_bookmark: Elimina Segnalibro
 delete_bookmark_copy: >-
-  Sei sicuro di voler eliminare il segnalibro "{bookmark}"? Questa azione é irreversibile.
+  Sei sicuro di voler eliminare il segnalibro "{bookmark}"? Questa azione è irreversibile.
 logoutReason:
   SIGN_OUT: Disconnesso
   SESSION_EXPIRED: Sessione scaduta
@@ -72,16 +74,21 @@ validationError:
   null: Il valore deve essere nullo
   nnull: Il valore non può essere nullo
   required: Il valore è obbligatorio
+all_access: Accesso totale
 no_access: Nessun Accesso
 use_custom: Usa Personalizzato
 field_standard: Standard
 field_file: File Singolo
 field_files: File Multipli
+field_m2o: Relazione M2O
+field_o2m: Relazione O2M
+field_m2m: Relazione M2M
 field_translations: Traduzioni
 item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
+no_relational_data: Tieni presente che questo non include dati relazionali.
 delete_field: Elimina campo
 field_create_success: 'Campo Creato: "{field}"'
 field_update_success: 'Campo Aggiornato: "{field}"'
@@ -125,6 +132,10 @@ to_manually_setup_translations: per configurare manualmente le traduzioni.
 click_to_manage_translated_fields: >-
   Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
 fields_group: Gruppo campi
+configure_m2o: Configura la tua Relazione Many-to-One...
+configure_o2m: Configura la tua Relazione One-to-Many...
+configure_m2m: Configura la tua Relazione Many-to-Many...
+configure_m2a: Configura la tua Relazione Many-to-Any...
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
@@ -135,6 +146,10 @@ display_setup_title: Come dovrebbe essere visualizzato il valore di questo campo
 standard_field: Campo Standard
 single_file: File Singolo
 multiple_files: File Multipli
+m2o_relationship: Relazione Many to One
+o2m_relationship: Relazione One to Many
+m2m_relationship: Relazione Many to Many
+m2a_relationship: Relazione Many to Any
 next: Il prossimo
 field_name: Nome del Campo
 translations: Traduzioni
@@ -282,6 +297,8 @@ file_moved: File Spostato
 modified_on: Modificato il
 sort_field: Ordina per
 status: Stato
+bookmark_doesnt_exist: Segnalibro Non Esiste
+bookmark_doesnt_exist_copy: Il segnalibro che stai cercando di aprire non è stato trovato.
 select_an_item: Seleziona un elemento...
 edit: Modifica
 enabled: Abilitato
@@ -301,7 +318,10 @@ errors:
   ITEM_NOT_FOUND: Elemento non trovato
   ROUTE_NOT_FOUND: Non trovato
   UNKNOWN: Errore Imprevisto
-bookmarks: segnalibri
+bookmark_name: Nome segnalibro...
+create_bookmark: Crea Segnalibro
+edit_bookmark: Modifica Segnalibro
+bookmarks: Segnalibri
 unexpected_error: Errore Imprevisto
 unexpected_error_copy: Si è verificato un errore imprevisto. Riprova più tardi.
 copy_details: Copia Dettagli
@@ -393,10 +413,13 @@ no_options_available: Nessuna opzione disponibile
 settings_permissions: Ruoli e permessi
 settings_project: Impostazioni del progetto
 settings_webhooks: Webhooks
+preset_name_placeholder: Nome del segnalibro...
 unsaved_changes: Cambiamenti non salvati
 unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
 keep_editing: Continua a modificare
+page_help_files_collection: >-
+  **File Library** — Elenca tutti gli asset dei file caricati su questo progetto. Personalizza il layout, i filtri e l'ordinamento per creare la tua vista e anche salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
 add_new: Aggiungi nuovo
 create_new: Crea Nuovo
 all: Tutti
@@ -465,6 +488,7 @@ fields:
     description: Descrizione
     ip_access: Accesso IP
     app_access: Accesso App
+    admin_access: Accesso Amministratore
     enforce_tfa: Richiede 2FA
 do_nothing: Non Fare Niente
 generate_and_save_uuid: Genera e Salva UUID
