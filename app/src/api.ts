@@ -94,8 +94,8 @@ function getToken() {
 	return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
 }
 
-export function addTokenToURL(url: string) {
-	const token = getToken();
+export function addTokenToURL(url: string, token?: string) {
+	token = token || getToken();
 
 	if (url.includes('?')) {
 		return (url += '&access_token=' + token);

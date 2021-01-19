@@ -192,7 +192,8 @@
 		"@directus/specs": "file:packages/specs",
 		"create-directus-project": "file:packages/create-directus-project",
 		"directus": "file:api",
-		"dompurify": "^2.2.6"
+		"dompurify": "^2.2.6",
+		"escape-string-regexp": "^4.0.0"
 	},
 	"husky": {
 		"hooks": {

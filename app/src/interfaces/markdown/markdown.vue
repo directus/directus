@@ -135,6 +135,7 @@ import 'codemirror/addon/display/placeholder.js';
 import { useEdit, CustomSyntax } from './composables/use-edit';
 import { getPublicURL } from '../../utils/get-root-path';
 import { addTokenToURL } from '../../api';
+import escapeStringRegexp from 'escape-string-regexp';
 
 export default defineComponent({
 	props: {
@@ -153,6 +154,10 @@ export default defineComponent({
 		customSyntax: {
 			type: Array as PropType<CustomSyntax[]>,
 			default: () => [],
+		},
+		imageToken: {
+			type: String,
+			default: undefined,
 		},
 	},
 	setup(props, { emit }) {
@@ -201,13 +206,15 @@ export default defineComponent({
 		const html = computed(() => {
 			let md = props.value || '';
 
-			const baseUrl = getPublicURL() + 'assets/';
-			const regex = new RegExp(`\\]\\((${baseUrl.replace(/\//g, '\\/')}[^\\s\\)]*)`, 'gm');
+			if (!props.imageToken) {
+				const baseUrl = getPublicURL() + 'assets/';
+				const regex = new RegExp(`\\]\\((${escapeStringRegexp(baseUrl)}[^\\s\\)]*)`, 'gm');
 
-			const images = Array.from(md.matchAll(regex));
+				const images = Array.from(md.matchAll(regex));
 
-			for (const image of images) {
-				md = md.replace(image[1], addTokenToURL(image[1]));
+				for (const image of images) {
+					md = md.replace(image[1], addTokenToURL(image[1]));
+				}
 			}
 
 			const html = marked(md);
@@ -225,8 +232,16 @@ export default defineComponent({
 
 		function onImageUpload(image: any) {
 			if (!codemirror.value) return;
-			const url = getPublicURL() + `assets/` + image.id;
+
+			let url = getPublicURL() + `assets/` + image.id;
+
+			if (props.imageToken) {
+				url += '?access_token=' + props.imageToken;
+			}
+
 			codemirror.value.replaceSelection(`![](${url})`);
+
+			imageDialogOpen.value = false;
 		}
 	},
 });

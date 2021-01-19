@@ -24,9 +24,9 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'customSyntax',
 			name: i18n.t('interfaces.markdown.customSyntax'),
-			label: i18n.t('interfaces.markdown.customSyntax_label'),
 			type: 'json',
 			meta: {
+				note: i18n.t('interfaces.markdown.customSyntax_label'),
 				width: 'full',
 				interface: 'repeater',
 				options: {
@@ -95,6 +95,16 @@ export default defineInterface(({ i18n }) => ({
 						},
 					],
 				},
+			},
+		},
+		{
+			field: 'imageToken',
+			name: i18n.t('interfaces.markdown.imageToken'),
+			type: 'string',
+			meta: {
+				note: i18n.t('interfaces.markdown.imageToken_label'),
+				width: 'full',
+				interface: 'text-input',
 			},
 		},
 	],
