@@ -843,10 +843,6 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Ввод и предпросмотр markdown
-    tabbed: Вкладками
-    tabbed_label: Показывать предпросмотр в отдельной вкладке
-    edit: Редактирование
-    preview: Предпросмотр
   notice:
     notice: Примечание
     description: Показать короткое примечание
@@ -948,8 +944,6 @@ displays:
     datetime: Дата и время
     description: Показывать значения, относящиеся ко времени
     format: Формат
-    format_note: >-
-      Пользовательский формат принимает __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Длинный
     short: Короткий
     relative: Относительный

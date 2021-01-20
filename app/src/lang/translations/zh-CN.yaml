@@ -1,9 +1,49 @@
 ---
+edit_field: 编辑字段
+item_revision: 项目修订
+duplicate_field: 复制字段
+half_width: 半宽
 full_width: 全宽
+fill_width: 全宽
+field_name_translations: 字段名称翻译
+enter_password_to_enable_tfa: 输入您的密码以启用两步验证
+add_field: 添加字段
+role_name: 角色名称
+db_only_click_to_configure: '仅限数据库：点击配置 '
+show_archived_items: 显示存档项目
 required: 必填
+requires_value: 必填值
+create_preset: 创建预设
 create_role: 创建角色
+create_user: 创建用户
+create_webhook: 创建Web钩子
+invite_users: 邀请用户
+invite: 邀请
+emails: 邮箱
+connection_poor: 连接失败
+rename_folder: 重命名文件夹
+delete_folder: 删除文件夹
+prefix: 前缀
+suffix: 后缀
+reset_bookmark: 重置书签
+rename_bookmark: 重命名书签
+update_bookmark: 更新书签
 delete_bookmark: 删除书签
+delete_bookmark_copy: >-
+  你确定要删除"{bookmark}" 这个书签吗? 此操作无法撤销。
+logoutReason:
+  SIGN_OUT: 注销
+  SESSION_EXPIRED: 会话过期
+public: 公共
+not_allowed: 不允许
 directus_version: Directus 版本
+node_version: 节点版本
+node_uptime: 节点运行时间
+os_type: 系统类型
+os_version: 系统版本
+os_uptime: 系统运行时间
+os_totalmem: 系统内存
+archive: 存档
 archive_confirm: 您确定要存档此项目吗？
 archive_confirm_count: >-
   没有选定项目 | 你确定要存档这个项目吗？| 你确定你想要存档这些 {count} 个项目吗？
@@ -15,32 +55,138 @@ nested_files_folders_will_be_moved: 嵌套的文件和文件夹将被上移一�
 unknown_validation_errors: '以下隐藏字段的验证错误：'
 validationError:
   eq: 值必须是 {valid}
+  neq: 值不能为 {invalid}
+  in: 值必须是 {valid} 的一个
+  nin: 值不能是 {invalid} 的一个
+  contains: 值必须包含 {substring}
+  ncontains: 值不能包含 {substring}
+  gt: 值必须大于 {valid}
+  gte: 值必须大于或等于 {valid}
+  lt: 值必须小于 {valid}
+  lte: 值必须小于或等于 {valid}
+  empty: 值必须为空
+  nempty: 值不能为空
+  null: 值必须为null
+  nnull: 值不能为null
   required: 值是必需的
 all_access: 订购全部功能
 no_access: 无访问权限
 use_custom: 使用自定义颜色
+field_standard: 标准
+field_file: 单个文件
+field_files: 多个文件
+field_m2o: M2O 关系
+field_o2m: O2M 关系
+field_m2m: M2M 关系
+field_translations: 翻译
+item_permissions: 项目权限
+field_permissions: 字段权限
+field_validation: 字段验证
+field_presets: 字段预设
+permissions_for_role: '项目 {role} 角色能够 {action}。'
+fields_for_role: '字段 {role} 角色能够 {action}。'
+validation_for_role: '字段 {action} 规定了 {role} 角色必须遵守。'
+presets_for_role: '{role} 角色的字段值默认值。'
+revision_post_update: 这是更新这个项目后的样式...
+changes_made: 这些是所做的具体更改...
+no_relational_data: 请记住，这不包括关系数据。
+hide_field_on_detail: 在详情中隐藏该字段
+show_field_on_detail: 在详情中显示该字段
+delete_field: 删除字段
+fields_and_layout: 字段和布局
+field_create_success: '创建字段: "{field}"'
+field_update_success: '更新字段: "{field}"'
+duplicate_where_to: 您想要复制此字段到哪？
 language: 语言
+global: 全局
+admins_have_all_permissions: 管理员拥有所有权限
+camera: 摄像头
+exposure: 过期：
+shutter: 快门
+iso: ISO
+focal_length: 焦距
+schema_setup_title: 此字段如何保存到数据库？
+schema_field_title: 这个字段应该如何在应用程序中表现？
 create_field: 创建字段
+creating_new_field: '新字段 ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: 重置页面首选项
+hidden_field: 隐藏字段
 hidden_on_detail: 隐藏于详情
+disabled_editing_value: 禁用编辑值
+key: 关键字
+alias: 别名
+bigInteger: 大整数
+boolean: 布尔值
 date: 日期
+datetime: 日期时间
 decimal: 十进制
+float: 浮点数
+integer: 整数
+json: JSON
+string: 字符串
 text: 文字
 time: 时间
+timestamp: 时间戳
+uuid: UUID
+hash: Hash
+not_available_for_type: 此类型不可用
+create_translations: 创建翻译
 auto_generate: 自动生成
+this_will_auto_setup_fields_relations: 这将自动设置所有必填字段和关系。
+click_here: 点击此处
+to_manually_setup_translations: 手动设置翻译。
+click_to_manage_translated_fields: >-
+  还没有翻译的字段。点击这里创建它们。 点击这里来管理它。| 有 {count} 个翻译的字段。点击这里来管理。
+fields_group: 字段组
+configure_m2o: 配置您的多对一关系...
+configure_o2m: 配置您的一对多的关系...
+configure_m2m: 配置您的多对多的关系...
+configure_m2a: 配置您的多对任何关系...
+add_m2o_to_collection: '添加多对一到"{collection}"'
+add_o2m_to_collection: '添加一到多个到 "{collection}"'
+add_m2m_to_collection: '添加多对多到"{collection}"'
+choose_a_type: 选择类型...
+determined_by_relationship: 由关系确定
 add_note: 为用户添加有用的注释...
 default_value: 默认值
+add_a_default_value: 添加默认值...
+interface_setup_title: 用户将如何与这个字段交互？
+display_setup_title: 该字段的值应如何显示？
+standard_field: 标准字段
+single_file: 单个文件
+multiple_files: 多个文件
+m2o_relationship: 多对一关系
+o2m_relationship: 一对多关系
+m2m_relationship: 多对多关系
+m2a_relationship: 多对任何关系
 next: 下一条
+field_name: 字段名
+translations: 翻译
 note: 注解
+enter_a_value: 输入值...
+enter_a_placeholder: 输入占位符...
 length: 长度
+precision_scale: 精度和缩放
 readonly: 只读
 unique: 唯一
+updated_on: 更新于
+updated_by: 更新者
 primary_key: 主键
+foreign_key: 外键
+finish_setup: 完成安装
+dismiss: 关闭
+raw_value: 原始值
+edit_raw_value: 编辑原始值
+enter_raw_value: 输入原始值...
 clear_value: 清除值
 reset_to_default: 重置为默认值
 undo_changes: 撤销更改
 notifications: 通知
+show_all_activity: 显示所有活动
 page_not_found: 找不到页面
 page_not_found_body: 您正在寻找的页面似乎不存在。
+confirm_revert: 确认恢复
 display: 显示
 title: 标题
 revision_delta_deleted: 已删除
@@ -62,31 +208,131 @@ months:
   october: 10 月
   november: 11 月
   december: 12 月
+drag_mode: 拖动模式
+cancel_crop: 取消裁剪。
+original: 原始
+url: URl
+import: Import
+file_details: 文件信息
+dimensions: 尺寸
 size: 大小
+modified: 已修改
 checksum: 校验和
 owner: 所有者
+edited_by: 编辑者
+folder: 文件夹
+zoom: 缩放
 download: 下载
+open: 打开
+open_in_new_window: 在新窗口中打开
+foreground_color: 前景色
+background_color: 背景色
+upload_from_device: 从设备中上传文件
+choose_from_library: 从库中选择文件
+import_from_url: 从 URL 导入文件
+replace_from_device: 从设备中替换文件
+replace_from_library: 从库中替换文件
+replace_from_url: 从 URL 中替换文件
+no_file_selected: 未选择文件
+download_file: 下载文件
+collection_key: 集合的键
 name: 名称
+primary_key_field: 主键字段
+type: 类型
+creating_new_collection: 创建集合
 created_by: 创建自
 created_on: 创建于
+creating_collection_info: 命名集合并设置唯一键字段...
+creating_collection_system: 启用并重命名这些可选字段。
+auto_increment_integer: 自动递增整数
+generated_uuid: 生成的 UUID
+manual_string: 手动输入字符串
+save_and_create_new: 保存并创建新的
 save_and_stay: 保存并继续
 save_as_copy: 另存为
+add_existing: 添加现有
 comments: 注释
+no_comments: 暂无评论
+click_to_expand: 单击展开
+select_item: 选择项目
+no_items: 无项目
+search_items: 搜索条目...
+disabled: 禁用
+information: 信息
+report_bug: 反馈Bug
 request_feature: 功能建议
+interface_not_found: '未找到接口 "{interface}"。'
+reset_interface: 重置接口
+display_not_found: '未找到显示 "{display}" 。'
+reset_display: 重置显示
+m2a_builder: 构建器 (M2A)
 item_count: '暂无数据 | 找到一条数据 | 找到 {count} 条数据'
+no_items_copy: 此集合中没有项目。
+file_count: '没有文件 | 一个文件 | {count} 个文件'
+no_files_copy: 没有任何文件。
+user_count: '没有用户 | 一个用户 | {count} 个用户'
+no_users_copy: 该角色下还没有用户。
+webhooks_count: '没有 Web钩子 | 一个钩子 | {count} 个Web钩子'
+no_webhooks_copy: 还没有任何web钩子。
+all_items: 所有项目
+csv: CSV
+no_collections: 没有任何集合
 create_collection: 创建集合
+no_collections_copy_admin: 您还没有任何集合。点击下面的按钮开始操作。
+no_collections_copy: 您还没有任何集合。请联系您的系统管理员。
 relationship_not_setup: 关系配置不正确
+display_template_not_setup: 显示的模板选项配置错误
+collection_field_not_setup: 集合的字段选项配置错误
+select_a_collection: 选择一个集合
+active: 激活
 users: 用户
 activity: 活动
 webhooks: Webhook
 field_width: 字段宽度
+add_a_new_item: 添加新项目...
+add_filter: 添加过滤器
+upper_limit: 上限...
+lower_limit: 下限...
 user_directory: 用户列表
+documentation: 文档
+sidebar: 侧边栏
 duration: 持续时间
+charset: 字符集
+second: 秒
+file_moved: 文件已移动
+collection_created: 集合已创建
 modified_on: 修改于
+card_size: 卡片大小
 sort_field: 排序字段
+sort: 排序
 status: 状态
+toggle_manual_sorting: 切换手动排序
+bookmark_doesnt_exist: 书签不存在
+bookmark_doesnt_exist_copy: 找不到您试图打开的书签。
+bookmark_doesnt_exist_cta: 返回集合
+select_an_item: 选择一个项目...
 edit: 编辑
+enabled: 已启用
+disable_tfa: 停用双重认证
+tfa_scan_code: 扫描您的身份验证程序中的代码来完成设置 2FA
+enter_otp_to_disable_tfa: 输入OTP以禁用双重认证
+create_account: 创建账号
+account_created_successfully: 账号成功创建！
+auto_fill: 自动填充
+corresponding_field: 相应字段
+errors:
+  COLLECTION_NOT_FOUND: "集合不存在"
+  FIELD_NOT_FOUND: 空格未找到
+  FORBIDDEN: 禁止
+  INVALID_CREDENTIALS: 错误的用户名或密码
+  INVALID_OTP: 错误的一次性密码
+  INVALID_QUERY: 无效的查询
+  ITEM_LIMIT_REACHED: 项目已达到限制
+  ITEM_NOT_FOUND: 找不到项目
+  ROUTE_NOT_FOUND: 未找到
+  UNKNOWN: 未知错误
 bookmarks: 书签
+unexpected_error: 未知错误
 back: 后退
 placeholder: 占位文本
 icon_left: 左图标
@@ -103,17 +349,70 @@ operators:
   ncontains: 不包含
   empty: 空
 loading: 正在载入...
+drop_to_upload: 拖拽文件并上传
+upload_file: 上传文件
+upload_file_indeterminate: 正在上传文件...
+upload_file_success: 文件已上传
+upload_files_indeterminate: '正在上传文件 {done}/{total}'
+upload_files_success: '{count} 个文件已上传'
+upload_pending: 上传等待中
+drag_file_here: 拖放文件到这里
+click_to_browse: 点击浏览
+layout_options: 布局选项
+rows: 行
+columns: 列
+collection_setup: 集合设置
+optional_system_fields: 可选系统字段
+value_unique: 值必须唯一
+all_activity: 所有活动的
+create_item: 创建项目
 display_template: 显示模板
+n_items_selected: '没有选定项目 | 1 项选定项目 | {n} 项选定项目'
+per_page: 每页
+all_files: 所有文件
+my_files: 我的文件
+recent_files: 最近的文件
+create_folder: 创建文件夹
+folder_name: 文件夹名
+add_file: 添加文件
+replace_file: 替换文件
 no_results: 找不到查询结果
+no_results_copy: 调整或清除搜索过滤器以查看结果。
+clear_filters: 清除过滤器
+saves_automatically: 自动保存
 role: 角色
 user: 用户
+no_presets: 无预设
+no_presets_copy: 尚未保存预设或书签。
+no_presets_cta: 添加预设
 create: 创建
+on_create: 创建时
 on_update: 在更新操作上
 read: 查看
 update: 更新
 select_fields: 选择字段
+format_text: 格式化文本
+bold: 加粗
+toggle: 切换
+icon_on: 图标开启
+icon_off: 关闭图标
+label: 标签
 wysiwyg_options:
+  aligncenter: 居中对齐
+  alignjustify: 两端对齐
+  alignleft: 左对齐
+  alignnone: 不对齐
+  alignright: 右对齐
+  forecolor: 前景色
+  backcolor: 背景色
+  bold: 加粗
+  italic: 斜体
+  underline: 下划线
+  strikethrough: 删除线
+  subscript: 下标
+  superscript: 上标
   codeblock: 代码
+  blockquote: 块引用
   remove: 移除
   table: 表
 dropdown: 下拉列表
@@ -127,13 +426,20 @@ unsaved_changes: 修改还未保存
 unsaved_changes_copy: 您确定要离开此页面吗？
 discard_changes: 不保存修改并离开此页
 keep_editing: 继续编辑
+activity_feed: 活动摘要
 add_new: 新增
+create_new: 新建
 all: 全部
+none: 无
+no_layout_collection_selected_yet: 尚未选择布局/集合
 batch_delete_confirm: >-
   您还没有选择数据 | 您确定要删除此条数据吗? 此操作无法撤消。 | 您确定要删除这 {count} 条数据吗?  此操作无法撤消。
 cancel: 取消
 collection: 集合
 collections: 集合
+singleton: 单一
+singleton_label: 视为单个对象
+system_fields_locked: 系统字段已锁定，无法编辑
 fields:
   directus_activity:
     action: 操作
@@ -146,6 +452,8 @@ fields:
     ip: IP 地址
     user_agent: 用户代理（User Agent）
     comment: 注释
+  directus_collections:
+    translations: 集合名称翻译
   directus_files:
     title: 标题
     tags: 标签
@@ -179,12 +487,43 @@ fields:
     tfa_secret: 2FA（双因素身份验证）
   directus_settings:
     project_name: 项目名称
+    project_url: 项目URL
+    project_color: 项目颜色
+    project_logo: 项目 Logo
+    public_foreground: 公共前景
+    public_background: 公共背景
+    public_note: 公共便笺
+    auth_password_policy: 认证密码策略
+    auth_idle_timeout: 认证等待超时
+    auth_login_attempts: 尝试认证登录次数
+    storage_asset_presets: 存储资产预设
   directus_fields:
+    collection: 集合名称
+    icon: 集合 Icon
     note: 注解
     hidden: 隐藏
+    singleton: 单一
+    translation: 字段名称翻译
     display_template: 模板
   directus_roles:
+    name: 角色名称
+    icon: 角色 Icon
     description: 描述
+    ip_access: IP 访问
+    app_access: App 访问
+    admin_access: 管理员访问
+    enforce_tfa: 请求两步验证
+    users: 角色中的用户
+    module_list: 模块导航
+    collection_list: 集合导航
+no_fields_in_collection: '集合 {collection} 中没有任何字段'
+do_nothing: 什么都不做
+generate_and_save_uuid: 生成并保存 UUID
+save_current_user_id: 保存当前用户 ID
+save_current_user_role: 保存当前用户角色
+save_current_datetime: 保存当前日期/时间
+block: 阻止
+inline: 内联
 comment: 注释
 continue: 继续
 default: 默认
@@ -247,14 +586,35 @@ interfaces:
     datetime: 日期时间
   display-template:
     display-template: 显示模板
+    collection_field_not_setup: 集合的字段选项配置错误
+    select_a_collection: 选择一个集合
   divider:
     divider: 分隔线
+    inline_title: 内嵌标题
+    inline_title_label: 在行内显示标题
+    margin_top: 上边距
+    margin_top_label: 增加上边距
   dropdown:
+    description: 从下拉列表中选择一个值
+    choices_placeholder: 添加一个新的选项
     allow_other: 允许其他选项
+    allow_other_label: 允许其他值
+    allow_none: 允许 None
+    allow_none_label: 允许不选择
+    choices_name_placeholder: 输入一个名称...
+    choices_value_placeholder: 输入值...
+  dropdown-multiselect:
+    dropdown-multiselect: 下拉(多次)
+    description: 从下拉列表中选择多个值
   file:
     file: 文件
+    description: 选择或上传文件
   files:
     files: 多个文件
+    description: 选择或上传多个文件
+  hash:
+    hash: Hash
+    description: 输入一个经过hash的值
   icon:
     icon: 图标
   interface-options:
@@ -266,8 +626,6 @@ interfaces:
     display_template: 显示模板
   markdown:
     markdown: Markdown
-    edit: 编辑
-    preview: 预览
   numeric:
     numeric: 数字
   one-to-many:
@@ -285,6 +643,9 @@ interfaces:
   text-input:
     text-input: 文本输入
     trim: 修剪
+  toggle:
+    toggle: 切换
+    label_default: 已启用
   translations:
     display_template: 显示模板
   user:
@@ -294,6 +655,10 @@ interfaces:
   wysiwyg:
     custom_formats: 自定义格式
 displays:
+  boolean:
+    boolean: 布尔值
+    icon_on: 图标开启
+    icon_off: 关闭图标
   collection:
     collection: 集合
   color:
@@ -307,6 +672,8 @@ displays:
     filesize: 文件大小
   icon:
     icon: 图标
+  labels:
+    choices_value_placeholder: 输入值...
   rating:
     rating: 评分
   user:

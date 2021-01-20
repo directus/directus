@@ -535,8 +535,6 @@ interfaces:
   many-to-one:
     many-to-one: Många till en
     display_template: Visningsmall
-  markdown:
-    edit: Redigera
   numeric:
     numeric: Numerisk
   tags:
