@@ -359,8 +359,6 @@ interfaces:
     display_template: Görüntüleme Şablonu
   markdown:
     markdown: Markdown
-    edit: Düzenle
-    preview: Önizle
   numeric:
     numeric: Sayısal
   one-to-many:

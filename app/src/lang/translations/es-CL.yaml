@@ -852,10 +852,6 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Ingresar y previsualizar Markdown
-    tabbed: Pestaña
-    tabbed_label: Mostrar previsualización en una pestaña separada
-    edit: Editar
-    preview: Vista preliminar
   notice:
     notice: Aviso
     description: Presentar un aviso corto
@@ -959,8 +955,6 @@ displays:
     datetime: Fecha/hora
     description: Presentar valores relacionados a la hora
     format: Formato
-    format_note: >-
-      El formato personalizado acepta el __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Larga
     short: Corta
     relative: Relativa

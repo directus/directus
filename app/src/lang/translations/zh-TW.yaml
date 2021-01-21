@@ -289,8 +289,6 @@ interfaces:
     display_template: 顯示模板
   markdown:
     markdown: Markdown
-    edit: 編輯
-    preview: 預覽
   numeric:
     numeric: 數字
   one-to-many:

@@ -13,7 +13,7 @@ db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
 show_archived_items: Mostra le elementi archiviati
 required: Obbligatorio
 requires_value: Richiede un valore
-create_preset: Crea preimpostazione
+create_preset: Crea Preset
 create_role: Crea ruolo
 create_user: Crea utente
 create_webhook: Crea webhook
@@ -27,12 +27,14 @@ connection_fair: Connessione adeguata
 connection_poor: Scarca connessione
 rename_folder: Rinomina cartella
 delete_folder: Elimina cartella
-reset_bookmark: Reinizializza segnalibro
-rename_bookmark: Rinomina segnalibro
-update_bookmark: Aggiorna segnalibro
-delete_bookmark: Elimina segnalibro
+prefix: Prefisso
+suffix: Suffisso
+reset_bookmark: Reinizializza Segnalibro
+rename_bookmark: Rinomina Segnalibro
+update_bookmark: Aggiorna Segnalibro
+delete_bookmark: Elimina Segnalibro
 delete_bookmark_copy: >-
-  Sei sicuro di voler eliminare il segnalibro "{bookmark}"? Questa azione é irreversibile.
+  Sei sicuro di voler eliminare il segnalibro "{bookmark}"? Questa azione è irreversibile.
 logoutReason:
   SIGN_OUT: Disconnesso
   SESSION_EXPIRED: Sessione scaduta
@@ -72,17 +74,23 @@ validationError:
   null: Il valore deve essere nullo
   nnull: Il valore non può essere nullo
   required: Il valore è obbligatorio
+all_access: Accesso totale
 no_access: Nessun Accesso
 use_custom: Usa Personalizzato
 field_standard: Standard
 field_file: File Singolo
 field_files: File Multipli
+field_m2o: Relazione M2O
+field_o2m: Relazione O2M
+field_m2m: Relazione M2M
 field_translations: Traduzioni
 item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
+no_relational_data: Tieni presente che questo non include dati relazionali.
 delete_field: Elimina campo
+fields_and_layout: Campi & Layout
 field_create_success: 'Campo Creato: "{field}"'
 field_update_success: 'Campo Aggiornato: "{field}"'
 duplicate_where_to: Dove vuoi duplicare questo campo?
@@ -125,6 +133,10 @@ to_manually_setup_translations: per configurare manualmente le traduzioni.
 click_to_manage_translated_fields: >-
   Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
 fields_group: Gruppo campi
+configure_m2o: Configura la tua Relazione Many-to-One...
+configure_o2m: Configura la tua Relazione One-to-Many...
+configure_m2m: Configura la tua Relazione Many-to-Many...
+configure_m2a: Configura la tua Relazione Many-to-Any...
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
@@ -135,6 +147,10 @@ display_setup_title: Come dovrebbe essere visualizzato il valore di questo campo
 standard_field: Campo Standard
 single_file: File Singolo
 multiple_files: File Multipli
+m2o_relationship: Relazione Many to One
+o2m_relationship: Relazione One to Many
+m2m_relationship: Relazione Many to Many
+m2a_relationship: Relazione Many to Any
 next: Il prossimo
 field_name: Nome del Campo
 translations: Traduzioni
@@ -171,9 +187,11 @@ post_comment_success: Commento pubblicato
 item_create_success: Elemento Creato | Elementi Creati
 item_update_success: Elemento Aggiornato | Elementi Aggiornati
 item_delete_success: Elemento Eliminato| Elementi Eliminati
-this_collection: Questa collezione
-related_collection: Collezione correlata
-related_collections: Collezioni Correlate
+this_collection: Questa Raccolta
+related_collection: Raccolta Correlata
+related_collections: Raccolte Correlate
+translations_collection: Raccolta di Traduzioni
+languages_collection: Raccolta di Lingue
 export_data: Esporta Dati
 format: Formato
 export_collection: 'Esporta {collection}'
@@ -237,10 +255,13 @@ replace_from_library: Sostituisci File dalla Libreria
 replace_from_url: Sostituisci File da URL
 no_file_selected: Nessun File Selezionato
 download_file: Scarica File
+collection_key: Chiave Di Raccolta
 name: Nome
 type: Tipo
+creating_new_collection: Creazione Nuova Collezione
 created_by: Creato da
 created_on: Creato il
+creating_collection_info: Nominare la collezione e impostare il suo campo unico “chiave”...
 creating_collection_system: Abilita e rinomina uno di questi campi opzionali.
 generated_uuid: UUID Generato
 manual_string: Stringa inserita manualmente
@@ -259,29 +280,42 @@ information: Informazioni
 report_bug: Segnala un Bug
 request_feature: Richiesta caratteristica
 item_count: 'Nessun elemento | Un articolo | {count} Articoli'
+no_items_copy: Non ci sono ancora elementi in questa raccolta.
 file_count: 'Nessun File | Un File | {count} File'
 no_files_copy: Non ci sono file qui.
 user_count: 'Nessun Utente | Un Utente | {count} Utenti'
 all_items: Tutti gli Elementi
 csv: CSV
-create_collection: Crea raccolta
+no_collections: Nessuna Raccolta
+create_collection: Crea Raccolta
+no_collections_copy_admin: Non hai ancora nessuna Raccolta. Clicca sul pulsante qui sotto per iniziare.
+no_collections_copy: Non hai ancora nessuna Raccolta. Contatta il tuo l'amministratore di sistema.
 relationship_not_setup: La relazione non è stata configurata correttamente
+collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
+select_a_collection: Seleziona una Raccolta
 active: Attivo
 users: Utenti
 activity: Attività
 webhooks: Webhooks
 field_width: Larghezza del Campo
+add_a_new_item: Aggiungi nuovo elemento...
 add_filter: Aggiungi Filtro
 upper_limit: Limite superiore...
 lower_limit: Limite inferiore...
 user_directory: Elenco utenti
 documentation: Documentazione
+sidebar: Barra Laterale
 duration: Durata
+charset: Set di caratteri
 second: Secondi
 file_moved: File Spostato
+collection_created: Raccolta Creata
 modified_on: Modificato il
 sort_field: Ordina per
+sort: Ordina
 status: Stato
+bookmark_doesnt_exist: Segnalibro Non Esiste
+bookmark_doesnt_exist_copy: Il segnalibro che stai cercando di aprire non è stato trovato.
 select_an_item: Seleziona un elemento...
 edit: Modifica
 enabled: Abilitato
@@ -293,6 +327,7 @@ account_created_successfully: Account Creato con Successo
 auto_fill: Auto-completamento
 corresponding_field: Campo Corrispondente
 errors:
+  COLLECTION_NOT_FOUND: "La Raccolta non esiste"
   FIELD_NOT_FOUND: Campo non trovato
   FORBIDDEN: Proibito
   INVALID_CREDENTIALS: Nome utente o password sbagliati
@@ -301,7 +336,11 @@ errors:
   ITEM_NOT_FOUND: Elemento non trovato
   ROUTE_NOT_FOUND: Non trovato
   UNKNOWN: Errore Imprevisto
-bookmarks: segnalibri
+bookmark_name: Nome segnalibro...
+create_bookmark: Crea Segnalibro
+edit_bookmark: Modifica Segnalibro
+bookmarks: Segnalibri
+presets: Preset
 unexpected_error: Errore Imprevisto
 unexpected_error_copy: Si è verificato un errore imprevisto. Riprova più tardi.
 copy_details: Copia Dettagli
@@ -313,9 +352,21 @@ back: Indietro
 editing_image: Modifica Immagine
 square: Quadrato
 free: Libero
+flip_horizontal: Rifletti Orizzontalmente
+flip_vertical: Rifletti Verticalmente
 rotate: Ruota
 all_users: Tutti gli Utenti
+delete_collection: Elimina Raccolta
+update_collection_success: Raccolta Aggiornata
+delete_collection_success: Raccolta Eliminata
 start_end_of_count_items: '{start}-{end} di {count} elementi'
+delete_collection_are_you_sure: >-
+  Sei sicuro di voler eliminare questa raccolta? Questo eliminerà la raccolta e tutti gli elementi in essa. Questa azione è permanente.
+collections_shown: Raccolte Mostrate
+visible_collections: Raccolte Visibili
+hidden_collections: Raccolte Nascoste
+unmanaged_collections: Raccolte Non Configurate
+system_collections: Raccolte di Sistema
 placeholder: Placeholder
 icon_left: Icona a sinistra
 icon_right: Icona a destra
@@ -341,7 +392,12 @@ upload_file_success: File Caricato
 upload_files_indeterminate: 'Caricamento file {done}/{total}'
 upload_files_success: '{count} File Caricati'
 upload_pending: Caricamento In Attesa
+layout_options: Opzioni Layout
+rows: Righe
+columns: Colonne
+collection_setup: Configurazione Raccolta
 value_unique: Il valore deve essere unico
+all_activity: Tutte le Attività
 create_item: Crea Elemento
 display_template: Display Template
 n_items_selected: 'Nessun Elemento Selezionato | 1 Elemento Selezionato | {n} Elementi Selezionati'
@@ -358,6 +414,9 @@ no_results_copy: Regola o cancella i filtri di ricerca per visualizzare i risult
 saves_automatically: Salva Automaticamente
 role: Ruolo
 user: Utente
+no_presets: Nessuna Preset
+no_presets_copy: Nessun preset o segnalibro sono stati ancora salvati.
+no_presets_cta: Aggiungi Preset
 create: Creare
 on_update: In aggiornamento
 read: Leggere
@@ -370,6 +429,8 @@ wysiwyg_options:
   underline: Sottolineato
   strikethrough: Barrato
   codeblock: Codice
+  link: Link
+  unlink: Rimuovi link
   copy: Copia
   cut: Taglia
   paste: Incolla
@@ -393,23 +454,40 @@ no_options_available: Nessuna opzione disponibile
 settings_permissions: Ruoli e permessi
 settings_project: Impostazioni del progetto
 settings_webhooks: Webhooks
+settings_presets: Preset & Segnalibri
+layout: Layout
+preset_name_placeholder: Nome del segnalibro...
+editing_preset: Modifica Preset
+layout_preview: Anteprima Layout
+layout_setup: Configurazione Layout
 unsaved_changes: Cambiamenti non salvati
 unsaved_changes_copy: Sei sicuro di voler lasciare questa pagina?
 discard_changes: Non salvare le modifiche
 keep_editing: Continua a modificare
+page_help_collections_item: >-
+  **Dettaglio Elemento** — Un form per la visualizzazione e la gestione di questo elemento. Questa barra laterale contiene anche una cronologia completa di revisioni e commenti incorporati.
+page_help_files_collection: >-
+  **File Library** — Elenca tutti gli asset dei file caricati su questo progetto. Personalizza il layout, i filtri e l'ordinamento per creare la tua vista e anche salvare i segnalibri di queste diverse configurazioni per un accesso rapido.
+page_help_files_item: >-
+  **Dettagli del file** — Un form per la gestione dei metadati dei file, la modifica dell'asset originale e l'aggiornamento delle impostazioni di accesso.
+page_help_settings_presets_collection: >-
+  **Sfoglia Preset** — Elenca tutti i preset del progetto, tra cui: utente, ruolo, segnalibri globali e viste predefinite.
+page_help_settings_presets_item: >-
+  **Dettagli Preset** — Un modulo per la gestione dei segnalibri e dei preset predefiniti delle raccolte.
 add_new: Aggiungi nuovo
 create_new: Crea Nuovo
 all: Tutti
+no_layout_collection_selected_yet: Nessun layout/raccolta ancora selezionato
 batch_delete_confirm: >-
   Nessun elemento è stato selezionato | Sei sicuro di voler eliminare questo articolo? Questa azione non può essere annullata. | Sei sicuro di voler eliminare questi {count} elementi? Questa azione non può essere annullata.
 cancel: Annulla
-collection: Collezione
-collections: collezioni
+collection: Raccolta
+collections: Raccolte
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
 fields:
   directus_activity:
     action: Azioni
-    collection: Collezione
+    collection: Raccolta
     item: Chiave primaria elemento
     user: Azione di
     timestamp: Azione il
@@ -418,6 +496,8 @@ fields:
     ip: Indirizzo IP
     user_agent: User agent
     comment: Commento
+  directus_collections:
+    translations: Traduzioni del Nome della Raccolta
   directus_files:
     title: Titolo
     tags: Tags
@@ -455,6 +535,7 @@ fields:
     project_color: Colore del Progetto
     project_logo: Logo del Progetto
   directus_fields:
+    collection: Nome della Raccolta
     note: Nota
     hidden: Nascosto
     translation: Traduzioni nome del campo
@@ -465,7 +546,10 @@ fields:
     description: Descrizione
     ip_access: Accesso IP
     app_access: Accesso App
+    admin_access: Accesso Amministratore
     enforce_tfa: Richiede 2FA
+    collection_list: Navigazione Raccolta
+no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'
 do_nothing: Non Fare Niente
 generate_and_save_uuid: Genera e Salva UUID
 save_current_user_id: Salva l'Id Utente Attuale
@@ -496,7 +580,7 @@ normal: Normale
 success: Successo
 warning: Avviso
 danger: Pericolo
-junction_collection: Collezione Junction
+junction_collection: Raccolta di Giunzione
 latency: Latenza
 login: Accesso
 my_activity: Le mie attività
@@ -541,9 +625,13 @@ interfaces:
     line_number: Numero di riga
     placeholder: Inserisci il codice qui...
   collection:
-    collection: Collezione
+    collection: Raccolta
+    description: Seleziona tra raccolte esistenti
+    include_system_collections: Includi Raccolte di Sistema
   collections:
-    collections: collezioni
+    collections: Raccolte
+    description: Seleziona tra raccolte esistenti
+    include_system_collections: Includi Raccolte di Sistema
   color:
     color: Colore
     placeholder: Scegli un colore...
@@ -556,6 +644,9 @@ interfaces:
     use_24: Usa Formato 24 Ore
   display-template:
     display-template: Display Template
+    collection_field: Campo Raccolta
+    collection_field_not_setup: L'opzione del campo della raccolta non è configurato correttamente
+    select_a_collection: Seleziona una Raccolta
   divider:
     divider: Separatore
     title_placeholder: Inserisci un titolo...
@@ -581,13 +672,12 @@ interfaces:
     interface-options: Opzioni interfaccia
   many-to-many:
     many-to-many: Molti a Molti
+    description: Seleziona più elementi correlati di giunzione
   many-to-one:
     many-to-one: Molti a Uno
     display_template: Display Template
   markdown:
     markdown: Markdown
-    edit: Modifica
-    preview: Anteprima
   numeric:
     numeric: Numerico
     description: Inserisci un numero
@@ -596,6 +686,7 @@ interfaces:
   one-to-many:
     one-to-many: Uno a Molti
     description: Seleziona più elementi correlati
+    no_collection: Impossibile trovare la raccolta
   radio-buttons:
     radio-buttons: Pulsanti di scelta
   repeater:
@@ -619,6 +710,7 @@ interfaces:
     label_default: Abilitato
   translations:
     display_template: Display Template
+    no_collection: Nessuna Raccolta
   user:
     user: Utente
     description: Seleziona un utente di directus esistente
@@ -632,7 +724,9 @@ displays:
   boolean:
     boolean: Boolean
   collection:
-    collection: Collezione
+    collection: Raccolta
+    description: Mostra una raccolta
+    icon_label: Mostra l'icona della raccolta
   color:
     color: Colore
   datetime:

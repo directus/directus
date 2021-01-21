@@ -103,6 +103,7 @@ export default defineComponent({
 	position: relative;
 	max-width: 100%;
 	padding-right: 8px;
+	line-height: normal;
 
 	& > * {
 		vertical-align: middle;

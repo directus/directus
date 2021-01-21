@@ -253,8 +253,6 @@ interfaces:
     display_template: عرض القالب
   markdown:
     markdown: Markdown
-    edit: تعديل
-    preview: معاينة
   numeric:
     numeric: رقمي
   one-to-many:

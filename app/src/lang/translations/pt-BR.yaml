@@ -801,9 +801,6 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Inserir e pré-visualizar markdown
-    tabbed_label: Mostrar pré-visualização em guia separada
-    edit: Editar
-    preview: Pré-visualizar
   notice:
     notice: Aviso
     description: Mostrar um breve aviso

@@ -527,8 +527,6 @@ interfaces:
     display_template: Mẫu hiển thị
   markdown:
     markdown: Gạch nhớ
-    edit: Sửa
-    preview: Xem trước
   numeric:
     numeric: Kiểu số
   one-to-many:

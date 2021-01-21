@@ -48,11 +48,17 @@ for more info on what can go into this object.
 
 ```vue
 <template>
-	<div>My Custom Module</div>
+
+  <private-view title="My Custom Module">
+
+    Content goes here...
+
+  </private-view>
+
 </template>
 
 <script>
-export default {};
+	export default {};
 </script>
 ```
 
