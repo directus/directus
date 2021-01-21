@@ -333,6 +333,7 @@ body {
 		&.activated,
 		&.active {
 			--v-button-color: var(--v-button-color-activated) !important;
+			--v-button-color-hover: var(--v-button-color-activated) !important;
 			--v-button-background-color: var(--v-button-background-color-activated) !important;
 			--v-button-background-color-hover: var(--v-button-background-color-activated) !important;
 		}

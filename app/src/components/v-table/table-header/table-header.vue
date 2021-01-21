@@ -254,6 +254,7 @@ export default defineComponent({
 			align-items: center;
 			height: 100%;
 			font-weight: 600;
+			color: var(--foreground-normal-alt);
 
 			> span {
 				overflow: hidden;
