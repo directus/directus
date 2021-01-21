@@ -7,7 +7,7 @@ import formatTitle from '@directus/format-title';
 import env from '../env';
 import axios from 'axios';
 import Joi from 'joi';
-import { InvalidPayloadException, ForbiddenException } from '../exceptions';
+import { InvalidPayloadException, ForbiddenException, FailedValidationException } from '../exceptions';
 import url from 'url';
 import path from 'path';
 import useCollection from '../middleware/use-collection';
@@ -213,6 +213,60 @@ router.get(
 		});
 		const record = await service.readByKey(keys as any, req.sanitizedQuery);
 		res.locals.payload = { data: record || null };
+		return next();
+	}),
+	respond
+);
+
+router.patch(
+	'/',
+	asyncHandler(async (req, res, next) => {
+		const service = new FilesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		if (Array.isArray(req.body)) {
+			const primaryKeys = await service.update(req.body);
+
+			try {
+				const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
+				res.locals.payload = { data: result || null };
+			} catch (error) {
+				if (error instanceof ForbiddenException) {
+					return next();
+				}
+
+				throw error;
+			}
+
+			return next();
+		}
+
+		const updateSchema = Joi.object({
+			keys: Joi.array().items(Joi.alternatives(Joi.string(), Joi.number())).required(),
+			data: Joi.object().required().unknown(),
+		});
+
+		const { error } = updateSchema.validate(req.body);
+
+		if (error) {
+			throw new FailedValidationException(error.details[0]);
+		}
+
+		const primaryKeys = await service.update(req.body.data, req.body.keys);
+
+		try {
+			const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
+			res.locals.payload = { data: result || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	}),
 	respond
