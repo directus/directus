@@ -151,7 +151,7 @@ export class ServerService {
 				checks[`${client}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks[`${client}:responseTime`][0].observedValue! > 50 &&
+					checks[`${client}:responseTime`][0].observedValue! > 150 &&
 					checks[`${client}:responseTime`][0].status !== 'error'
 				) {
 					checks[`${client}:responseTime`][0].status = 'warn';
@@ -205,7 +205,7 @@ export class ServerService {
 				const endTime = performance.now();
 				checks['cache:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
 
-				if (checks['cache:responseTime'][0].observedValue > 50 && checks['cache:responseTime'][0].status !== 'error') {
+				if (checks['cache:responseTime'][0].observedValue > 150 && checks['cache:responseTime'][0].status !== 'error') {
 					checks['cache:responseTime'][0].status = 'warn';
 				}
 			}
@@ -242,7 +242,7 @@ export class ServerService {
 				checks['rateLimiter:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks['rateLimiter:responseTime'][0].observedValue > 50 &&
+					checks['rateLimiter:responseTime'][0].observedValue > 150 &&
 					checks['rateLimiter:responseTime'][0].status !== 'error'
 				) {
 					checks['rateLimiter:responseTime'][0].status = 'warn';
@@ -281,7 +281,7 @@ export class ServerService {
 					checks[`storage:${location}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
 
 					if (
-						checks[`storage:${location}:responseTime`][0].observedValue! > 500 &&
+						checks[`storage:${location}:responseTime`][0].observedValue! > 750 &&
 						checks[`storage:${location}:responseTime`][0].status !== 'error'
 					) {
 						checks[`storage:${location}:responseTime`][0].status = 'warn';
