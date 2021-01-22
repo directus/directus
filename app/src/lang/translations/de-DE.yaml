@@ -74,6 +74,9 @@ no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
 field_file: Eine Datei
 field_files: Mehrere Dateien
+field_m2o: M2O Beziehung
+field_o2m: O2M Beziehung
+field_m2m: M2M Beziehung
 field_translations: Übersetzungen
 item_permissions: Item Berechtigungen
 field_permissions: Feldberechtigungen
@@ -119,12 +122,14 @@ m2o_relationship: n:1-Beziehung
 o2m_relationship: 1:n-Beziehung
 m2m_relationship: n:m-Beziehung
 next: Weiter
+field_name: Feldname
 translations: Übersetzungen
 note: Notiz
 enter_a_value: Gib einen Wert ein...
 length: Länge
 readonly: Lesezugriff
 unique: Eindeutig
+updated_on: Geändert am
 primary_key: Primärschlüssel
 foreign_key: Fremdschlüssel
 dismiss: Verwerfen
