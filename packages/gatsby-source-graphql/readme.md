@@ -18,7 +18,7 @@ For pulling public data, you don't need to authenticate.
 // In your gatsby-config.js
 plugins: [
 	{
-		resolve: `gatsby-source-directus`,
+		resolve: '@directus/gatsby-source-directus',
 		options: {
 			url: `https://my-project.directus.app`,
 		},
@@ -38,7 +38,7 @@ You can authenticate via user token.
 // In your gatsby-config.js
 plugins: [
 	{
-		resolve: `gatsby-source-directus`,
+		resolve: '@directus/gatsby-source-directus',
 		options: {
 			url: `https://my-project.directus.app`,
 			auth: {
@@ -57,7 +57,7 @@ You can authenticate via email and password.
 // In your gatsby-config.js
 plugins: [
 	{
-		resolve: `gatsby-source-directus`,
+		resolve: '@directus/gatsby-source-directus',
 		options: {
 			url: `https://my-project.directus.app`,
 			auth: {
@@ -78,7 +78,7 @@ data organization.
 // In your gatsby-config.js
 plugins: [
 	{
-		resolve: `gatsby-source-directus`,
+		resolve: '@directus/gatsby-source-directus',
 		options: {
 			url: `https://my-portal.directus.app`,
 			type: {
@@ -88,12 +88,60 @@ plugins: [
 		},
 	},
 	{
-		resolve: `gatsby-source-directus`,
+		resolve: '@directus/gatsby-source-directus',
 		options: {
 			url: `https://my-blog.directus.app`,
 			type: {
 				name: 'Blog',
 				field: 'blog',
+			},
+		},
+	},
+];
+```
+
+### Development mode
+
+When in development, you can set `dev.refresh` to the amount of seconds it needs to refresh the Directus schema.
+
+The accepted options are:
+
+- a number (in seconds)
+- a `ms` string like "5s", "1m", etc.
+
+Defaults to "15s"
+
+```js
+// In your gatsby-config.js
+plugins: [
+	{
+		resolve: '@directus/gatsby-source-directus',
+		options: {
+			//...
+			dev: {
+				refresh: '5s',
+			},
+		},
+	},
+];
+```
+
+### Advanced GraphQL options
+
+You can pass more specific options to the `gatsby-source-graphql` plugin using `graphql` option.
+
+```js
+// In your gatsby-config.js
+plugins: [
+	{
+		resolve: '@directus/gatsby-source-directus',
+		options: {
+			//...
+			graphql: {
+				// options here are going to be forwarded to `gatsby-source-graphql`
+				// note that some are calculated values, so the follow are not going to
+				// be forwarded:
+				//   `url`, `typeName`, `fieldName` and `refreshInterval`
 			},
 		},
 	},

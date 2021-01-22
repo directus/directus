@@ -1,7 +1,29 @@
-const invariant = require(`invariant`);
+const invariant = require('invariant');
 const Directus = require('@directus/sdk-js');
 const { sourceNodes } = require('@lnfusion/gatsby-source-graphql');
+const ms = require('ms');
+const chalk = require('chalk');
 
+/**
+ * Stores authentication data in memory
+ */
+class MemoryStore {
+	constructor() {
+		this.values = {};
+	}
+
+	async getItem(key) {
+		return this.values[key];
+	}
+
+	async setItem(key, value) {
+		this.values[key] = value;
+	}
+}
+
+/**
+ * Normalizes Directus urls.
+ */
 function normalizeEndpoint(endpoint, query = {}) {
 	const url = new URL(endpoint);
 	if (!url.pathname.endsWith('/')) {
@@ -9,39 +31,135 @@ function normalizeEndpoint(endpoint, query = {}) {
 	}
 
 	Object.entries(query)
-		.filter(([_, value]) => value !== undefined)
+		.filter(([key, value]) => value !== undefined)
 		.forEach(([key, value]) => url.searchParams.set(key, value));
 
 	try {
 		const prefix = url.pathname == '/' ? '' : '.';
-		const temp = new URL(`${prefix}/graphql`, url.toString());
-		temp.hash = url.hash;
-		temp.search = url.search;
-		return temp.toString();
+
+		const graphql = new URL(`${prefix}/graphql`, url.toString());
+		graphql.hash = url.hash;
+		graphql.search = url.search;
+
+		const base = new URL(`${prefix}/`, url.toString());
+		base.hash = url.hash;
+		base.search = url.search;
+
+		return {
+			graphql: graphql.toString(),
+			base: base.toString(),
+		};
 	} catch (err) {
 		return null;
 	}
 }
 
+/**
+ * Gatsby source implementation.
+ */
 exports.sourceNodes = async (gatsby, options) => {
-	const { url, graphql, auth = {}, type = {}, ...opts } = options;
-
+	const { url, dev, graphql, auth, type = {}, ...opts } = options;
 	invariant(url && url.length > 0, `\`gatsby-source-directus\` requires option \`url\` to be specified`);
 
-	invariant(type && url.length > 0, `\`gatsby-source-directus\` requires option \`url\` to be specified`);
+	const hasAuth = !!auth;
+	const hasToken = auth?.token && auth?.token?.length > 0;
+	const hasEmail = auth?.email && auth?.email?.length > 0;
+	const hasPassword = auth?.password && auth?.password?.length > 0;
+	const hasCredentials = hasEmail && hasPassword;
 
-	let endpoint = normalizeEndpoint(url, {
-		access_token: auth.token,
+	if (hasAuth) {
+		invariant(
+			hasToken || (hasEmail && hasPassword),
+			`\`gatsby-source-directus\` requires either an \`auth.token\` or a combination of \`auth.email\` and \`auth.password\``
+		);
+
+		if (!hasToken) {
+			invariant(
+				hasCredentials,
+				`\`gatsby-source-directus\` requires both \`auth.email\` and \`auth.password\` when \`auth.token\` is not set`
+			);
+		}
+
+		if (hasToken && hasCredentials) {
+			console.log(
+				chalk.yellowBright(
+					'\nWARNING! `gatsby-source-directus` has both token and credentials set. Only token will be used.\n'
+				)
+			);
+		}
+	} else {
+		console.log(
+			chalk.yellowBright(
+				'\nWARNING! `gatsby-source-directus` no auth set. source will fetch only public accessible items.\n'
+			)
+		);
+	}
+
+	let endpointParams = {};
+	if (hasAuth && hasToken) {
+		endpointParams.access_token = auth?.token;
+	}
+
+	let endpoints = normalizeEndpoint(url, endpointParams);
+	invariant(endpoints !== null, `\`gatsby-source-directus\` requires a valid \`url\``);
+
+	let refreshInterval = typeof dev?.refresh === 'string' ? ms(dev.refresh) / 1000 : dev?.refresh || 15;
+	invariant(
+		!Number.isNaN(refreshInterval),
+		`\`gatsby-source-directus\` requires a valid \`dev.refresh\` to be specified.\n` +
+			`can be either a number (seconds) or a string (5s, 1m, ...)`
+	);
+
+	const directus = new Directus(endpoints.base, {
+		auth: {
+			mode: 'json',
+			// workaround for https://github.com/directus/directus/issues/3785
+			// autoRefresh: true,
+			storage: new MemoryStore(),
+		},
 	});
 
-	invariant(endpoint !== null, `\`gatsby-source-directus\` requires a valid \`url\` to be specified`);
+	// workaround for https://github.com/directus/directus/issues/3785
+	directus.auth;
+	directus.auth.autoRefresh = true;
+
+	if (hasAuth && !hasToken) {
+		try {
+			await directus.auth.login({
+				email: auth?.email,
+				password: auth?.password,
+			});
+		} catch (err) {
+			throw new Error(`Directus authentication failed with: ${err.message}\nIs the credentials valid?`);
+		}
+	}
+
+	const headers = async () => {
+		let obj = {};
+		if (typeof graphql?.headers === 'object') {
+			Object.assign(obj, graphql?.headers || {});
+		} else if (typeof graphql?.headers === 'function') {
+			Object.assign(obj, (await graphql?.headers()) || {});
+		}
+
+		if (hasToken) {
+			return obj;
+		}
+
+		return Object.assign(obj, {
+			Authorization: `Bearer ${directus.auth.token}`,
+		});
+	};
 
 	return await sourceNodes(gatsby, {
+		...graphql,
 		...opts,
-		url: `${endpoint}`,
+		url: `${endpoints.graphql}`,
 		typeName: type.name || 'DirectusData',
 		fieldName: type.field || 'directus',
 		moduleName: 'gatsby-source-directus',
 		moduleSource: 'DirectusSource',
+		refreshInterval,
+		headers,
 	});
 };
