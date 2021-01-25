@@ -65,7 +65,7 @@ export default async function runAST(
 			// all nested items for all parent items at once. Because of this, we can't limit that query
 			// to the "standard" item limit. Instead of _n_ nested items per parent item, it would mean
 			// that there's _n_ items, which are then divided on the parent items. (no good)
-			if (nestedNode.type === 'o2m') {
+			if (nestedNode.type === 'o2m' || nestedNode.type === 'm2o') {
 				tempLimit = nestedNode.query.limit || 100;
 				nestedNode.query.limit = -1;
 			}
@@ -74,7 +74,6 @@ export default async function runAST(
 
 			if (nestedItems) {
 				// Merge all fetched nested records with the parent items
-
 				items = mergeWithParentItems(nestedItems, items, nestedNode, tempLimit);
 			}
 		}
@@ -226,7 +225,7 @@ function mergeWithParentItems(
 	nestedItem: Item | Item[],
 	parentItem: Item | Item[],
 	nestedNode: NestedCollectionNode,
-	o2mLimit?: number | null
+	limit?: number | null
 ) {
 	const nestedItems = toArray(nestedItem);
 	const parentItems = clone(toArray(parentItem));
@@ -253,16 +252,26 @@ function mergeWithParentItems(
 			});
 
 			// We re-apply the requested limit here. This forces the _n_ nested items per parent concept
-			if (o2mLimit !== null) {
-				itemChildren = itemChildren.slice(0, o2mLimit);
-				nestedNode.query.limit = o2mLimit;
+			if (limit !== null) {
+				itemChildren = itemChildren.slice(0, limit);
+				nestedNode.query.limit = limit;
 			}
 
 			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : null;
 		}
 	} else if (nestedNode.type === 'm2a') {
 		for (const parentItem of parentItems) {
-			const relatedCollection = parentItem[nestedNode.relation.one_collection_field!];
+			if (!nestedNode.relation.one_collection_field) {
+				parentItem[nestedNode.fieldKey] = null;
+				continue;
+			}
+
+			const relatedCollection = parentItem[nestedNode.relation.one_collection_field];
+
+			if (!(nestedItem as Record<string, any[]>)[relatedCollection]) {
+				parentItem[nestedNode.fieldKey] = null;
+				continue;
+			}
 
 			const itemChild = (nestedItem as Record<string, any[]>)[relatedCollection].find((nestedItem) => {
 				return nestedItem[nestedNode.relatedKey[relatedCollection]] == parentItem[nestedNode.fieldKey];
