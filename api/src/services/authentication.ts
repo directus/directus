@@ -46,6 +46,10 @@ export class AuthenticationService {
 			throw new InvalidCredentialsException();
 		}
 
+		if (!password || !user.password) {
+			throw new InvalidCredentialsException();
+		}
+
 		if (password !== undefined && (await argon2.verify(user.password, password)) === false) {
 			throw new InvalidCredentialsException();
 		}
