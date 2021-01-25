@@ -5,7 +5,7 @@ import Vue from 'vue';
 import { isEqual } from 'lodash';
 import { Filter } from '@/types/';
 import filtersToQuery from '@/utils/filters-to-query';
-import { orderBy } from 'lodash';
+import { orderBy, throttle } from 'lodash';
 import moveInArray from '@/utils/move-in-array';
 
 type Query = {
@@ -91,7 +91,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 		}
 	});
 
-	watch([filters, limit, searchQuery], async (after, before) => {
+	watch([filters, limit], async (after, before) => {
 		if (!before || isEqual(after, before)) {
 			return;
 		}
@@ -101,6 +101,24 @@ export function useItems(collection: Ref<string>, query: Query) {
 			getItems();
 		}
 	});
+
+	watch(
+		searchQuery,
+		throttle(
+			async (after, before) => {
+				if (!before || isEqual(after, before)) {
+					return;
+				}
+				page.value = 1;
+				await Vue.nextTick();
+				if (loading.value === false) {
+					getItems();
+				}
+			},
+			500,
+			{ trailing: true }
+		)
+	);
 
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 

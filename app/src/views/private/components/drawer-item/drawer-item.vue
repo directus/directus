@@ -106,9 +106,8 @@ export default defineComponent({
 
 		const showDivider = computed(() => {
 			return (
-				fieldsStore
-					.getFieldsForCollection(props.collection)
-					.filter((field: Field) => field.meta?.hidden !== true).length > 0
+				fieldsStore.getFieldsForCollection(props.collection).filter((field: Field) => field.meta?.hidden !== true)
+					.length > 0
 			);
 		});
 
@@ -243,9 +242,7 @@ export default defineComponent({
 				const relations = relationsStore.getRelationsForField(props.collection, props.junctionField);
 
 				const relationForField = relations.find((relation: Relation) => {
-					return (
-						relation.many_collection === props.collection && relation.many_field === props.junctionField
-					);
+					return relation.many_collection === props.collection && relation.many_field === props.junctionField;
 				});
 
 				if (relationForField.one_collection) return relationForField.one_collection;

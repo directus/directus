@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api';
-import { debounce } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -34,7 +33,7 @@ export default defineComponent({
 			}
 		});
 
-		const emitValue = debounce((event: InputEvent) => emit('input', (event.target as HTMLInputElement).value), 850);
+		const emitValue = (event: InputEvent) => emit('input', (event.target as HTMLInputElement).value);
 
 		return { active, disable, input, emitValue, emptyAndClose };
 

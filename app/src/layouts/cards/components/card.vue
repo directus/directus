@@ -27,6 +27,7 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 import router from '@/router';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
+import { readableMimeType } from '../../../utils/readable-mime-type';
 
 type File = {
 	[key: string]: any;
@@ -82,7 +83,7 @@ export default defineComponent({
 		const type = computed(() => {
 			if (!props.file || !props.file.type) return null;
 			if (props.file.type.startsWith('image')) return null;
-			return props.file.type.split('/')[1];
+			return readableMimeType(props.file.type, true);
 		});
 
 		const imageSource = computed(() => {
