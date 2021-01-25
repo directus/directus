@@ -5,7 +5,9 @@
 				<div v-if="branding && branding.project_logo" class="logo" :style="{ backgroundColor: branding.project_color }">
 					<img :src="logoURL" :alt="branding.project_name || 'Logo'" />
 				</div>
-				<img v-else class="default-logo" src="./logo-dark.svg" alt="Directus" />
+				<div v-else class="logo" :style="{ backgroundColor: branding.project_color }">
+					<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
+				</div>
 				<div class="title">
 					<h1 class="type-title">{{ branding && branding.project_name }}</h1>
 					<p class="subtitle">Admin App</p>
@@ -248,10 +250,6 @@ export default defineComponent({
 			object-fit: contain;
 			object-position: center center;
 		}
-	}
-
-	.default-logo {
-		width: 64px;
 	}
 
 	.v-icon {

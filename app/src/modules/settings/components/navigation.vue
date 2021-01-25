@@ -103,16 +103,16 @@ Node: ${parsedInfo.value?.node.version}
 		color: var(--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 	}
-	::v-deep .type-text {
+	::v-deep .v-list-item-text {
 		color: var(--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 	}
 	&:hover {
 		.v-icon {
-			color: var(--foreground-normal);
+			color: var(--foreground-normal-alt);
 		}
-		::v-deep .type-text {
-			color: var(--foreground-normal);
+		::v-deep .v-list-item-text {
+			color: var(--foreground-normal-alt);
 		}
 	}
 }
