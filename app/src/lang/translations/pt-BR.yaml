@@ -26,6 +26,8 @@ connection_fair: Conexão razoável
 connection_poor: Conexão ruim
 rename_folder: Renomear Pasta
 delete_folder: Excluir Pasta
+prefix: Prefixo
+suffix: Sufixo
 reset_bookmark: Redefinir marcadores
 rename_bookmark: Renomear marcador
 update_bookmark: Atualizar Marcador
@@ -74,9 +76,13 @@ validationError:
 all_access: Acesso Total
 no_access: Sem acesso
 use_custom: Usar Personalizado
+field_standard: Padrão
 field_presentation: Apresentação e pseudônimos
 field_file: Arquivo único
 field_files: Múltiplos arquivos
+field_m2o: Relacionamento M2O
+field_o2m: Relacionamento O2M
+field_m2m: Relacionamento M2M
 field_translations: Traduções
 item_permissions: Permissões do Item
 field_permissions: Permissões dos campos
@@ -84,6 +90,7 @@ field_validation: Validação dos campos
 field_presets: Predefinições de campo
 permissions_for_role: 'Itens que o cargo {role} pode {action}.'
 fields_for_role: 'Campos que o cargo {role} pode {action}.'
+validation_for_role: 'As regras {action} do campo que o papel {role} deve obedecer.'
 presentation_and_aliases: Apresentação e pseudônimos
 revision_post_update: Aqui está como este item ficou após a atualização...
 changes_made: Estas são as mudanças específicas que foram feitas...
