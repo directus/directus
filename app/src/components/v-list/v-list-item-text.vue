@@ -1,5 +1,5 @@
 <template functional>
-	<div class="v-list-item-text type-text">
+	<div class="v-list-item-text">
 		<slot />
 	</div>
 </template>
