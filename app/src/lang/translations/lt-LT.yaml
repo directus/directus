@@ -26,6 +26,8 @@ connection_fair: Patenkinama ryšio kokybė
 connection_poor: Prasta ryšio kokybė
 rename_folder: Pervadinti aplanką
 delete_folder: Trinti aplanką
+prefix: Priešdėlis
+suffix: Priesaga
 reset_bookmark: Atstatyti skirtuką
 rename_bookmark: Pervadinti žymę
 update_bookmark: Atnaujinti žymę
@@ -169,6 +171,8 @@ length: Ilgis
 precision_scale: Tikslumas ir dydis
 readonly: Tik skaitomas
 unique: Unikalus
+updated_on: Atnaujinta
+updated_by: Atnaujino
 primary_key: Pirminis raktas
 foreign_key: Išorinis raktas
 finish_setup: Pabaigti konfigūravimą
@@ -197,6 +201,7 @@ revision_delta_other: Pakeitimas
 revision_delta_by: '{date} {user}'
 private_user: Privatus vartotojas
 revision_preview: Pakeitimo peržiūra
+updates_made: Atlikti atnaujinimai
 leave_comment: Palikite komentarą...
 post_comment_success: Komentaras paskelbtas
 item_create_success: Elementas sukurtas | Elementai sukurti
@@ -442,6 +447,22 @@ upload_file_success: Failas įkeltas
 upload_files_indeterminate: 'Įkeliami failai {done}/{total}'
 upload_files_success: '{count} failai įkelti'
 upload_pending: Laukiama įkėlimo
+drag_file_here: Tempkite ir paleiskite failą čia
+click_to_browse: Paspauskite norėdami naršyti
+layout_options: Išdėstymo nustatymai
+rows: Eilutės
+columns: Stulpeliai
+collection_setup: Kolekcijos konfigūracija
+optional_system_fields: Neprivalomi sisteminiai laukai
+value_unique: Reikšmė turi būti unikali
+all_activity: Visa Veikla
+create_item: Sukurti elementą
+display_template: Rodymo šablonas
+n_items_selected: 'Nepasirinkta elementų | 1 pasirinktas elementas | Pasirinkta {n} elementai/-ų'
+per_page: Puslapyje
+all_files: Visi failai
+my_files: Mano failai
+recent_files: Paskiausiai naudoti failai
 create_folder: Sukurti aplanką
 folder_name: Aplanko pavadinimas...
 add_file: Pridėti failą
@@ -486,6 +507,7 @@ wysiwyg_options:
   bullist: Suženklintasis sąrašas
   numlist: Numeruotasis sąrašas
   hr: Horizontali linija
+  link: Nuoroda
   unlink: Pašalinti nuorodą
   media: Pridėti mediją
   image: Pridėti nuotrauką
@@ -677,6 +699,7 @@ field: Laukelis | Laukeliai
 hidden: Paslėptas
 password: Slaptažodis
 revisions: Pakeitimai
+sort_direction: Rūšiavimo kryptis
 template: Šablonas
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
@@ -712,6 +735,7 @@ interfaces:
     set_to_now: Nustatyti į dabartinį laiką
     use_24: Naudoti 24 val. laikrodį
   display-template:
+    display-template: Rodymo šablonas
     description: Maišyti statinį tekstą ir dinamines laukų reikšmes
     collection_field: Kolekcijos laukas
     collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
@@ -752,6 +776,10 @@ interfaces:
   interface:
     interface: Sąsaja
     description: Pasirinkti egzistuojančią sąsają
+  many-to-one:
+    display_template: Rodymo šablonas
+  repeater:
+    field_note_placeholder: Įvesti lauko pastabą...
   tags:
     tags: Žymos
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
@@ -771,6 +799,7 @@ interfaces:
     label_placeholder: Įveskite žymą...
     label_default: Įjungtas
   translations:
+    display_template: Rodymo šablonas
     no_collection: Nėra kolekcijos
   user:
     user: Vartotojas
