@@ -345,7 +345,7 @@ modified_on: Pakeista
 card_size: Kortelės dydis
 sort_field: Rūšiavimo laukas
 sort: Rūšiuoti
-status: Būklė
+status: Būsena
 toggle_manual_sorting: Perjungti rankinį rūšiavimą
 bookmark_doesnt_exist: Žymė neegzistuoja
 bookmark_doesnt_exist_copy: Žymė, kurią bandote atidaryti, neegzistuoja.
@@ -514,6 +514,7 @@ wysiwyg_options:
   copy: Kopijuoti
   cut: Iškirpti
   paste: Įklijuoti
+  heading: Antraštė
   h1: Antraštė 1
   h2: Antraštė 2
   h3: Antraštė 3
@@ -635,7 +636,7 @@ fields:
     filesize: Failo dydis
     metadata: Meta duomenys
   directus_users:
-    status: Būklė
+    status: Būsena
     first_name: Vardas
     last_name: Pavardė
     email: El. paštas
@@ -687,16 +688,34 @@ generate_and_save_uuid: Generuoti ir išsaugoti UUID
 save_current_user_id: Išsaugoti dabartinio vartotojo ID
 save_current_user_role: Išsaugoti dabartinio vartotojo grupę
 save_current_datetime: Išsaugoti dabartinį datą/laiką
+block: Blokas
+inline: Toje pačioje eilutėje
 comment: Komentaras
 continue: Tęsti
 continue_as: >-
   <b>{name}</b> jau yra prisijungęs. Jeigu tai jūs, spauskite tęsti.
 editing_role: '{role} grupė'
+creating_webhook: Kuriamas Webhook'ą
+default: Numatytasis
+delete: Pašalinti
+delete_are_you_sure: >-
+  Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
+delete_field_are_you_sure: >-
+  Ar tikrai norite panaikinti lauką "{field}"? Šio veiksmo nebus galima atšaukti.
 description: Aprašymas
 done: Atlikta
+duplicate: Dublikatas
 email: El. paštas
+embed: Įterptas
 field: Laukelis | Laukeliai
+file: Failas
+file_library: Failų biblioteka
+forgot_password: Pamiršote slaptažodį
 hidden: Paslėptas
+icon: Ikona
+info: Informacija
+normal: Normalus
+success: Pavyko
 password: Slaptažodis
 revisions: Pakeitimai
 sort_direction: Rūšiavimo kryptis
@@ -759,6 +778,7 @@ interfaces:
     dropdown-multiselect: Išskleidžiamasis sąrašas (kelios reikšmės)
     description: Pasirinkite kelias reikšmes iš sąrašo
   file:
+    file: Failas
     description: Pasirinkite arba įkelkite failą
   files:
     files: Failai
@@ -768,6 +788,7 @@ interfaces:
     description: Įveskite reikšmę išmaišymui
     masked_label: Paslėpti tikrąsias reikšmes
   icon:
+    icon: Ikona
     description: Pasirinkite ikonėlę iš sąrašo
     search_for_icon: Ieškoti ikonėlių...
   image:
@@ -826,6 +847,10 @@ displays:
   datetime:
     datetime: Data ir laikas
     format: Formatas
+  file:
+    file: Failas
+  icon:
+    icon: Ikona
   image:
     image: Paveikslėlis
     circle: Apskritimas
