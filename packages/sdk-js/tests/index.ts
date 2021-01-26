@@ -46,7 +46,7 @@ describe('DirectusSDK', () => {
 	});
 
 	it('Defaults to the correct auth options', () => {
-		expect(directus['authOptions'].autoRefresh).to.be.true;
+		expect(directus['authOptions'].autoRefresh).to.be.false;
 		expect(directus['authOptions'].mode).to.equal('cookie');
 		expect(directus['authOptions'].storage).to.be.instanceOf(MemoryStore);
 	});

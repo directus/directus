@@ -282,6 +282,7 @@ export default defineComponent({
 						readonly: true,
 					},
 					schema: {
+						is_primary_key: true,
 						has_auto_increment: true,
 					},
 				};
@@ -389,6 +390,10 @@ export default defineComponent({
 						readonly: true,
 						hidden: true,
 						width: 'half',
+						display: 'datetime',
+						display_options: {
+							relative: true,
+						},
 					},
 					schema: {},
 				});
@@ -423,6 +428,10 @@ export default defineComponent({
 						readonly: true,
 						hidden: true,
 						width: 'half',
+						display: 'datetime',
+						display_options: {
+							relative: true,
+						},
 					},
 					schema: {},
 				});

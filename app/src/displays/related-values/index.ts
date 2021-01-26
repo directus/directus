@@ -19,16 +19,18 @@ export default defineDisplay(({ i18n }) => ({
 	handler: DisplayRelatedValues,
 	options: options,
 	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
-	localTypes: ['m2m', 'm2o', 'o2m'],
-	fields: (options: Options, { field, collection }) => {
+	groups: ['m2m', 'm2o', 'o2m'],
+	fields: (options: Options | null, { field, collection }) => {
 		const relatedCollection = getRelatedCollection(collection, field);
 		const { primaryKeyField } = useCollection(ref(relatedCollection as string));
 
 		if (!relatedCollection) return [];
 
-		const fields = adjustFieldsForDisplays(getFieldsFromTemplate(options.template), relatedCollection);
+		const fields = options?.template
+			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), relatedCollection)
+			: [];
 
-		if (fields.includes(primaryKeyField.value.field) === false) {
+		if (primaryKeyField.value && !fields.includes(primaryKeyField.value.field)) {
 			fields.push(primaryKeyField.value.field);
 		}
 

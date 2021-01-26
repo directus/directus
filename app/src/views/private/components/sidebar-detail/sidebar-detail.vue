@@ -61,8 +61,8 @@ export default defineComponent({
 
 <style>
 body {
-	--sidebar-detail-icon-color: var(--foreground-normal);
-	--sidebar-detail-color: var(--foreground-normal);
+	--sidebar-detail-icon-color: var(--foreground-normal-alt);
+	--sidebar-detail-color: var(--foreground-normal-alt);
 	--sidebar-detail-color-active: var(--primary);
 }
 </style>
@@ -72,7 +72,7 @@ body {
 	--v-badge-offset-x: 2px;
 	--v-badge-offset-y: 4px;
 	--v-badge-border-color: var(--background-normal-alt);
-	--v-badge-background-color: var(--foreground-normal);
+	--v-badge-background-color: var(--primary);
 	--v-badge-color: var(--background-normal);
 
 	display: contents;

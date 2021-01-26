@@ -18,7 +18,7 @@ export default defineComponent({
 		},
 		formatTitle: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		bold: {
 			type: Boolean,
@@ -56,7 +56,7 @@ export default defineComponent({
 .display-formatted-text {
 	display: inline-block;
 	overflow: hidden;
-	line-height: 22px;
+	line-height: 26px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 

@@ -221,9 +221,7 @@ export default defineComponent({
 
 		const userStore = useUserStore();
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(
-			ref('directus_files')
-		);
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(ref('directus_files'));
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
@@ -412,9 +410,13 @@ export default defineComponent({
 
 			async function moveToFolder() {
 				moving.value = true;
+
 				try {
-					await api.patch(`/files/${selection.value}`, {
-						folder: selectedFolder.value,
+					await api.patch(`/files`, {
+						keys: selection.value,
+						data: {
+							folder: selectedFolder.value,
+						},
 					});
 
 					selection.value = [];

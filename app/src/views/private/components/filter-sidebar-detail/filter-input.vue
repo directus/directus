@@ -46,12 +46,13 @@
 			</v-button>
 		</template>
 		<template v-else-if="['empty', 'nempty'].includes(operator) === false">
-			<v-checkbox v-if="type === 'checkbox'" :inputValue="_value" :disabled="disabled" />
+			<v-checkbox block :label="$t('active')" v-if="type === 'checkbox'" v-model="_value" :disabled="disabled" />
 			<v-input
 				:disabled="disabled"
 				v-else
 				autofocus
 				v-model="_value"
+				:nullable="false"
 				:type="type"
 				:placeholder="$t('enter_a_value')"
 			/>
@@ -66,7 +67,7 @@ import { FilterOperator } from '@/types';
 export default defineComponent({
 	props: {
 		value: {
-			type: String,
+			type: [String, Number, Boolean],
 			required: true,
 		},
 		type: {
@@ -83,7 +84,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const _value = computed<string | string[]>({
+		const _value = computed<string | string[] | boolean | number>({
 			get() {
 				return props.value;
 			},
@@ -94,7 +95,7 @@ export default defineComponent({
 
 		const csvValue = computed({
 			get() {
-				return (props.value || '').split(',');
+				return typeof props.value === 'string' ? props.value.split(',') : [];
 			},
 			set(newVal: string[]) {
 				_value.value = newVal.join(',');

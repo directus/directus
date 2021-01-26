@@ -3,7 +3,6 @@ import { replaceRoutes } from '@/router';
 import { getModules } from './index';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import api from '@/api';
-import { merge } from 'lodash';
 
 const modules = getModules();
 let loadedModules: any = [];
@@ -20,11 +19,7 @@ export async function loadModules() {
 	try {
 		const customResponse = await api.get('/extensions/modules');
 
-		if (
-			customResponse.data.data &&
-			Array.isArray(customResponse.data.data) &&
-			customResponse.data.data.length > 0
-		) {
+		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
 			for (const customKey of customResponse.data.data) {
 				try {
 					const module = await import(/* webpackIgnore: true */ `/extensions/modules/${customKey}/index.js`);

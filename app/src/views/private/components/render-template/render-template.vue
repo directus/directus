@@ -59,11 +59,11 @@ export default defineComponent({
 
 					// Instead of crashing when the field doesn't exist, we'll render a couple question
 					// marks to indicate it's absence
-					if (!field) return '???';
+					if (!field) return null;
 
 					// Try getting the value from the item, return some question marks if it doesn't exist
 					const value = get(props.item, fieldKey);
-					if (value === undefined) return '???';
+					if (value === undefined) return null;
 
 					// If no display is configured, we can render the raw value
 					if (field.meta?.display === null) return value;
@@ -103,6 +103,7 @@ export default defineComponent({
 	position: relative;
 	max-width: 100%;
 	padding-right: 8px;
+	line-height: normal;
 
 	& > * {
 		vertical-align: middle;

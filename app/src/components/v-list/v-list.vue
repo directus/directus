@@ -58,9 +58,9 @@ body {
 	--v-list-max-width: none;
 	--v-list-min-width: 220px;
 	--v-list-min-height: none;
-	--v-list-color: var(--foreground-normal);
-	--v-list-color-hover: var(--foreground-normal);
-	--v-list-color-active: var(--foreground-normal);
+	--v-list-color: var(--foreground-normal-alt);
+	--v-list-color-hover: var(--foreground-normal-alt);
+	--v-list-color-active: var(--foreground-normal-alt);
 	--v-list-background-color-hover: var(--background-normal-alt);
 	--v-list-background-color-active: var(--background-normal-alt);
 }

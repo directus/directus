@@ -192,7 +192,7 @@ import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
 import useFormFields from '../../../composables/use-form-fields';
 import FolderPicker from '../components/folder-picker.vue';
 import api, { addTokenToURL } from '../../../api';
-import getRootPath from '../../../utils/get-root-path';
+import { getRootPath } from '../../../utils/get-root-path';
 import FilesNotFound from './not-found.vue';
 import useShortcut from '../../../composables/use-shortcut';
 import ReplaceFile from '../components/replace-file.vue';
@@ -266,8 +266,7 @@ export default defineComponent({
 		const fileSrc = computed(() => {
 			if (item.value && item.value.modified_on) {
 				return addTokenToURL(
-					getRootPath() +
-						`assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`
+					getRootPath() + `assets/${props.primaryKey}?cache-buster=${item.value.modified_on}&key=system-large-contain`
 				);
 			}
 
@@ -303,11 +302,7 @@ export default defineComponent({
 
 		useShortcut('meta+s', saveAndStay, form);
 
-		const { deleteAllowed, saveAllowed, updateAllowed, fields } = usePermissions(
-			ref('directus_files'),
-			item,
-			isNew
-		);
+		const { deleteAllowed, saveAllowed, updateAllowed, fields } = usePermissions(ref('directus_files'), item, isNew);
 
 		const fieldsFiltered = computed(() => {
 			return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
@@ -417,7 +412,7 @@ export default defineComponent({
 		}
 
 		function downloadFile() {
-			const filePath = getRootPath() + `assets/${props.primaryKey}?download`;
+			const filePath = addTokenToURL(getRootPath() + `assets/${props.primaryKey}?download`);
 			window.open(filePath, '_blank');
 		}
 

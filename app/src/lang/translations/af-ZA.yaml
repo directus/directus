@@ -1,0 +1,122 @@
+---
+create_role: Skep Rol
+language: Taal
+create_field: Skep Veld
+auto_generate: Auto-Genereer
+add_note: Voeg 'n nuttige nota vir gebruikers...
+default_value: Standaard Waarde
+clear_value: Vee waarde uit
+title: Titel
+checksum: Kontrolesom
+owner: Eienaar
+created_by: Geskep Deur
+created_on: Geskep Op
+comments: Kommentaar
+create_collection: Skep Versameling
+users: Gebruikers
+activity: Aktiwiteit
+duration: Tydsduur
+status: Status
+bookmarks: Boekmerke
+back: Terug
+operators:
+  contains: Bevat
+role: Rol
+create: Skep
+wysiwyg_options:
+  codeblock: Kode
+  table: Tafel
+choices: Keuses
+add_new: Voeg nuwe
+all: Alle
+batch_delete_confirm: >-
+  Geen items is gekies nie | Is jy seker jy wil hierdie item uitwis? Hierdie aksie kan nie ontdoen word nie. | Is jy seker jy wil hierdie {count} items uitwis? Hierdie aksie kan nie ontdoen word nie.
+cancel: Kanselleer
+collection: Versameling
+fields:
+  directus_activity:
+    action: Aksie
+    collection: Versameling
+    item: Item Primêre Sleutel
+    user: Aksie Deur
+    timestamp: Aksie Op
+    edited_on: Gewysig Op
+    comment_deleted_on: Kommentaar Uitgewis Op
+    ip: IP Adres
+    user_agent: Gebruiker Agent
+    comment: Kommentaar
+  directus_files:
+    title: Titel
+    tags: Sleutelwoorde
+    location: Ligging
+    description: Beskrywing
+    filename_download: Lêernaam Aflaai
+    filename_disk: Lêernaam Skyf
+    private_hash: Private Sekuriteits Kode
+    checksum: Kontrolesom
+    uploaded_on: Opgelaai Op
+    uploaded_by: Opgelaai Deur
+    width: Breedte
+    height: Hoogte
+    duration: Tydsduur
+    filesize: Lêer Grootte
+    metadata: Metadata
+  directus_users:
+    status: Status
+    first_name: Eerste naam
+    last_name: Van
+    email: E-pos
+    email_notifications: E-pos Kennisgewings
+    password: Wagwoord
+    role: Rol
+    company: Maatskappy
+    title: Titel
+    timezone: Tydsone
+    language: Taal
+    avatar: Profiel prentjie
+    theme: Tema
+    tfa_secret: Twee-Faktor Verifikasie
+  directus_fields:
+    display_template: Modelvorm
+  directus_roles:
+    description: Beskrywing
+comment: Kommentaar
+continue: Gaan Voort
+default: Standaardwaarde
+delete: Verwyder
+description: Beskrywing
+email: E-pos
+password: Wagwoord
+template: Modelvorm
+interfaces:
+  checkboxes:
+    checkboxes: Keuse Boksies
+    allow_other: Laat Ander Toe
+  code:
+    code: Kode
+    line_number: Lyn Nommer
+  collection:
+    collection: Versameling
+  dropdown:
+    allow_other: Laat Ander Toe
+  files:
+    files: Lêers
+  tags:
+    tags: Sleutelwoorde
+displays:
+  collection:
+    collection: Versameling
+  user:
+    avatar: Profiel prentjie
+    both: Beide
+layouts:
+  cards:
+    cards: Kaarte
+    image_source: Foto Bron
+    title: Titel
+    subtitle: Subtitels
+  tabular:
+    tabular: Tafel
+    comfortable: Gemaklik
+    compact: Kompak
+    cozy: Snoesig

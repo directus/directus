@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import { RouteNotFoundException } from '../exceptions';
 import { listExtensions } from '../extensions';
 import env from '../env';

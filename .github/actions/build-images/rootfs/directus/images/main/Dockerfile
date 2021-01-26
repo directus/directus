@@ -9,14 +9,15 @@ ARG VERSION
 RUN \
   apk update && \
   apk upgrade && \
-  apk add jq
+  apk add bash
+
+SHELL ["/bin/bash", "-c"]
 
 WORKDIR /directus
 
 COPY package.json .
-RUN \
-  jq ".dependencies.directus = \"^${VERSION}\"" package.json > updated.json && \
-  mv updated.json package.json
+
+RUN for i in {1..60}; do npm install "directus@${VERSION}" && break || sleep 30; done
 
 RUN cat package.json
 
@@ -74,6 +75,9 @@ RUN npm install
 
 # Copy files
 COPY ./rootfs /
+# Keep the updated package.json
+COPY --from=builder /directus/package.json .
+
 RUN chmod +x /usr/bin/entrypoint && chmod +x /usr/bin/print
 
 # Create directories

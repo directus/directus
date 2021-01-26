@@ -30,7 +30,7 @@
 			</v-input>
 		</template>
 
-		<div class="color-data-inputs">
+		<div class="color-data-inputs" :class="{ stacked: width === 'half' }">
 			<div class="color-data-input color-type">
 				<v-select :items="colorTypes" v-model="colorType" />
 			</div>
@@ -59,7 +59,7 @@
 					class="color-data-input"
 					pattern="\d*"
 					:min="0"
-					:max="i === 1 ? 360 : 100"
+					:max="i === 0 ? 360 : 100"
 					:step="1"
 					maxlength="3"
 				/>
@@ -136,6 +136,10 @@ export default defineComponent({
 				},
 			],
 		},
+		width: {
+			type: String,
+			required: true,
+		},
 	},
 	setup(props, { emit }) {
 		const htmlColorInput = ref<Vue | null>(null);
@@ -151,13 +155,13 @@ export default defineComponent({
 		const isValidColor = computed<boolean>(() => rgb.value !== null && props.value !== null);
 
 		const lowContrast = computed(() => {
-			if (color.value === null) return true
+			if (color.value === null) return true;
 
 			const pageColorString = getComputedStyle(document.body).getPropertyValue('--background-page').trim();
 			const pageColor = Color(pageColorString);
 
-			return color.value.contrast(pageColor) < 2
-		})
+			return color.value.contrast(pageColor) < 2;
+		});
 
 		const { hsl, rgb, hex, color } = useColor();
 
@@ -175,7 +179,7 @@ export default defineComponent({
 			menuActive,
 			Color,
 			setValue,
-			lowContrast
+			lowContrast,
 		};
 
 		function setValue(type: 'rgb' | 'hsl', i: number, val: number) {
@@ -193,41 +197,29 @@ export default defineComponent({
 		function useColor() {
 			const color = ref<Color | null>(null);
 
-			watch(color, (newColor) => {
-				if (newColor === null) return emit('input', null);
-
-				const hex = newColor.hex();
-
-				if (hex.length === 0) emit('input', null);
-				else emit('input', hex);
-			});
-
 			watch(
 				() => props.value,
 				(newValue) => {
-					if (newValue === null) return;
-					const newColor = Color(newValue);
-					if (newColor === null || newColor === color.value) return;
-					color.value = newColor;
+					color.value = newValue !== null ? Color(newValue) : null;
 				},
 				{ immediate: true }
 			);
 
 			const rgb = computed<number[]>({
 				get() {
-					return color.value !== null ? color.value.rgb().array() : [0, 0, 0];
+					return color.value !== null ? color.value.rgb().array().map(Math.round) : [0, 0, 0];
 				},
 				set(newRGB) {
-					color.value = Color.rgb(newRGB);
+					setColor(Color.rgb(newRGB));
 				},
 			});
 
 			const hsl = computed<number[]>({
 				get() {
-					return color.value !== null ? color.value.hsl().array() : [0, 0, 0];
+					return color.value !== null ? color.value.hsl().array().map(Math.round) : [0, 0, 0];
 				},
 				set(newHSL) {
-					color.value = Color.hsl(newHSL);
+					setColor(Color.hsl(newHSL));
 				},
 			});
 
@@ -236,13 +228,26 @@ export default defineComponent({
 					return color.value !== null ? color.value.hex() : null;
 				},
 				set(newHex) {
-					if(newHex === '') color.value = null;
-					if (newHex === null || isHex(newHex) === false) return;
-					color.value = Color(newHex);
+					if (newHex === null || newHex === '') {
+						setColor(null);
+					} else {
+						if (isHex(newHex) === false) return;
+						setColor(Color(newHex));
+					}
 				},
 			});
 
 			return { rgb, hsl, hex, color };
+
+			function setColor(newColor: Color | null) {
+				color.value = newColor;
+
+				if (newColor === null) {
+					emit('input', null);
+				} else {
+					emit('input', newColor.hex());
+				}
+			}
 		}
 	},
 });
@@ -263,7 +268,7 @@ export default defineComponent({
 	width: calc(var(--input-height) - 12px);
 	max-height: calc(var(--input-height) - 12px);
 	overflow: hidden;
-	border-radius: var(--border-radius);
+	border-radius: calc(var(--border-radius) + 2px);
 	cursor: pointer;
 }
 
@@ -326,17 +331,43 @@ export default defineComponent({
 			margin-left: calc(-1 * var(--border-width));
 		}
 
-		/* stylelint-disable indentation */
-		&:not(:last-child)::v-deep .input:not(.active):not(:focus-within):not(:hover):not(:active):not(:focus) {
-			border-right-color: transparent;
-		}
-
 		&:first-child {
 			--border-radius: 4px 0px 0px 4px;
 		}
 
 		&:last-child {
 			--border-radius: 0px 4px 4px 0px;
+		}
+	}
+
+	&.stacked {
+		grid-template-columns: repeat(3, 1fr);
+
+		.color-type {
+			grid-column: 1 / span 3;
+		}
+
+		.color-data-input {
+			&:not(:first-child)::v-deep .input {
+				margin-top: calc(-2 * var(--border-width));
+				margin-left: initial;
+			}
+
+			&:not(:first-child):not(:nth-child(2))::v-deep .input {
+				margin-left: calc(-1 * var(--border-width));
+			}
+
+			&:first-child {
+				--border-radius: 4px 4px 0px 0px;
+			}
+
+			&:nth-child(2) {
+				--border-radius: 0px 0px 0px 4px;
+			}
+
+			&:last-child {
+				--border-radius: 0px 0px 4px 0px;
+			}
 		}
 	}
 }

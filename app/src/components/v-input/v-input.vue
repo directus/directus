@@ -29,18 +29,18 @@
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="type === 'number' && !hideArrows">
 				<v-icon
-					:class="{ disabled: max !== null && parseInt(value, 10) >= max }"
+					:class="{ disabled: !isStepUpAllowed }"
 					name="keyboard_arrow_up"
 					class="step-up"
 					@click="stepUp"
-					:disabled="disabled"
+					:disabled="!isStepUpAllowed"
 				/>
 				<v-icon
-					:class="{ disabled: min !== null && parseInt(value, 10) <= min }"
+					:class="{ disabled: !isStepDownAllowed }"
 					name="keyboard_arrow_down"
 					class="step-down"
 					@click="stepDown"
-					:disabled="disabled"
+					:disabled="!isStepDownAllowed"
 				/>
 			</span>
 			<div v-if="$slots.append" class="append">
@@ -83,6 +83,10 @@ export default defineComponent({
 		value: {
 			type: [String, Number],
 			default: null,
+		},
+		nullable: {
+			type: Boolean,
+			default: true,
 		},
 		slug: {
 			type: Boolean,
@@ -133,13 +137,22 @@ export default defineComponent({
 			...listeners,
 			input: emitValue,
 			keydown: processValue,
+			blur: trimIfEnabled,
 		}));
 
 		const hasClick = computed(() => {
 			return listeners.click !== undefined;
 		});
 
-		return { _listeners, hasClick, stepUp, stepDown, input };
+		const isStepUpAllowed = computed(() => {
+			return props.disabled === false && (props.max === null || parseInt(String(props.value), 10) < props.max);
+		});
+
+		const isStepDownAllowed = computed(() => {
+			return props.disabled === false && (props.min === null || parseInt(String(props.value), 10) > props.min);
+		});
+
+		return { _listeners, hasClick, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
 
 		function processValue(event: KeyboardEvent) {
 			if (!event.key) return;
@@ -164,7 +177,7 @@ export default defineComponent({
 			if (props.dbSafe === true) {
 				const dbSafeCharacters = 'abcdefghijklmnopqrstuvwxyz01234567890_ '.split('');
 
-				const isAllowed = dbSafeCharacters.includes(key) || systemKeys.includes(key);
+				const isAllowed = dbSafeCharacters.includes(key) || systemKeys.includes(key) || key.startsWith('arrow');
 
 				if (isAllowed === false) {
 					event.preventDefault();
@@ -179,16 +192,23 @@ export default defineComponent({
 			emit('keydown', event);
 		}
 
+		function trimIfEnabled() {
+			if (props.value && props.trim) {
+				emit('input', String(props.value).trim());
+			}
+		}
+
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
+
+			if (props.nullable === true && !value) {
+				emit('input', null);
+				return;
+			}
 
 			if (props.type === 'number') {
 				emit('input', Number(value));
 			} else {
-				if (props.trim === true) {
-					value = value.trim();
-				}
-
 				if (props.slug === true) {
 					const endsWithSpace = value.endsWith(' ');
 					value = slugify(value, { separator: props.slugSeparator });
@@ -208,8 +228,7 @@ export default defineComponent({
 
 		function stepUp() {
 			if (!input.value) return;
-			if (props.disabled === true) return;
-			if (props.max !== null && props.value >= props.max) return;
+			if (isStepUpAllowed.value === false) return;
 
 			input.value.stepUp();
 
@@ -220,8 +239,7 @@ export default defineComponent({
 
 		function stepDown() {
 			if (!input.value) return;
-			if (props.disabled === true) return;
-			if (props.min !== null && props.value <= props.min) return;
+			if (isStepDownAllowed.value === false) return;
 
 			input.value.stepDown();
 

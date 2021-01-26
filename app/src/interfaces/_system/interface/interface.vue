@@ -40,7 +40,7 @@ export default defineComponent({
 
 		const items = computed(() => {
 			return interfaces.value
-				.filter((inter) => inter.relationship === undefined && inter.system !== true)
+				.filter((inter) => inter.relational !== true && inter.system !== true)
 				.filter((inter) => selectedType.value === undefined || inter.types.includes(selectedType.value))
 				.map((inter) => {
 					return {

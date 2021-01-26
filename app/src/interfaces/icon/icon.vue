@@ -7,6 +7,7 @@
 				v-model="searchQuery"
 				@focus="activate"
 				:class="{ 'has-value': value }"
+				:nullable="false"
 			>
 				<template #prepend>
 					<v-icon v-if="value" @click="activate" :name="value" :class="{ active: value }" />
@@ -14,13 +15,7 @@
 
 				<template #append>
 					<v-icon v-if="value !== null" @click="setIcon(null)" name="close" />
-					<v-icon
-						v-else
-						@click="activate"
-						name="expand_more"
-						class="open-indicator"
-						:class="{ open: active }"
-					/>
+					<v-icon v-else @click="activate" name="expand_more" class="open-indicator" :class="{ open: active }" />
 				</template>
 			</v-input>
 		</template>
@@ -36,10 +31,7 @@
 						@click="setIcon(icon)"
 					/>
 				</div>
-				<v-divider
-					:key="'divider-' + group.name"
-					v-if="group.icons.length > 0 && index !== filteredIcons.length - 1"
-				/>
+				<v-divider :key="'divider-' + group.name" v-if="group.icons.length > 0 && index !== filteredIcons.length - 1" />
 			</template>
 		</div>
 	</v-menu>

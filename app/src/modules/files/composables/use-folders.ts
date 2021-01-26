@@ -62,9 +62,7 @@ export default function useFolders() {
 }
 
 export function nestFolders(rawFolders: FolderRaw[]) {
-	return rawFolders
-		.map((rawFolder) => nestChildren(rawFolder, rawFolders))
-		.filter((folder) => folder.parent === null);
+	return rawFolders.map((rawFolder) => nestChildren(rawFolder, rawFolders)).filter((folder) => folder.parent === null);
 }
 
 export function nestChildren(rawFolder: FolderRaw, rawFolders: FolderRaw[]) {

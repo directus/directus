@@ -23,11 +23,22 @@ export const types = [
 	'timestamp',
 	'binary',
 	'uuid',
+	'hash',
 	'csv',
 	'unknown',
 ] as const;
 
-export const localTypes = ['standard', 'file', 'files', 'm2o', 'o2m', 'm2m', 'presentation', 'translations'] as const;
+export const localTypes = [
+	'standard',
+	'file',
+	'files',
+	'm2o',
+	'o2m',
+	'm2m',
+	'm2a',
+	'presentation',
+	'translations',
+] as const;
 
 export type FieldSchema = {
 	/** @todo import this from @directus/schema when that's launched */

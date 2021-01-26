@@ -14,18 +14,14 @@
 					db-safe
 					key="related-collection"
 					v-model="relations[0].one_collection"
+					:nullable="false"
 					:disabled="isExisting"
 					:placeholder="$t('collection') + '...'"
 				>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon
-									name="list_alt"
-									@click="toggle"
-									v-tooltip="$t('select_existing')"
-									:disabled="isExisting"
-								/>
+								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
 							</template>
 
 							<v-list class="monospace">
@@ -65,6 +61,7 @@
 				db-safe
 				:disabled="relatedCollectionExists"
 				v-model="relations[0].one_primary"
+				:nullable="false"
 				:placeholder="$t('primary_key') + '...'"
 			/>
 			<v-icon class="arrow" name="arrow_back" />
@@ -170,16 +167,17 @@ export default defineComponent({
 				},
 				set(enabled: boolean) {
 					if (enabled === true) {
+						state.relations[0].one_field = state.relations[0].many_collection;
+
 						state.newFields.push({
 							$type: 'corresponding',
-							field: state.relations[0].one_collection,
+							field: state.relations[0].one_field,
 							collection: state.relations[0].one_collection,
 							meta: {
 								special: 'o2m',
 								interface: 'one-to-many',
 							},
 						});
-						state.relations[0].one_field = state.relations[0].one_collection;
 					} else {
 						state.newFields = state.newFields.filter((field: any) => field.$type !== 'corresponding');
 					}

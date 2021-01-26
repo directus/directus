@@ -51,6 +51,8 @@ export default async function runSeed(database: Knex) {
 					column = tableBuilder.increments();
 				} else if (columnInfo.type === 'csv') {
 					column = tableBuilder.string(columnName);
+				} else if (columnInfo.type === 'hash') {
+					column = tableBuilder.string(columnName, 255);
 				} else {
 					column = tableBuilder[columnInfo.type!](columnName);
 				}
@@ -86,9 +88,7 @@ export default async function runSeed(database: Knex) {
 				}
 
 				if (columnInfo.references) {
-					column
-						.references(columnInfo.references.column)
-						.inTable(columnInfo.references.table);
+					column.references(columnInfo.references.column).inTable(columnInfo.references.table);
 				}
 			}
 		});

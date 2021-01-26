@@ -9,13 +9,13 @@ let cache: Keyv | null = null;
 
 if (env.CACHE_ENABLED === true) {
 	validateEnv(['CACHE_NAMESPACE', 'CACHE_TTL', 'CACHE_STORE']);
-	cache = getKevyInstance();
+	cache = getKeyvInstance();
 	cache.on('error', (err) => logger.error(err));
 }
 
 export default cache;
 
-function getKevyInstance() {
+function getKeyvInstance() {
 	switch (env.CACHE_STORE) {
 		case 'redis':
 			return new Keyv(getConfig('redis'));

@@ -30,7 +30,7 @@ export type DisplayConfig = {
 	handler: DisplayHandlerFunction | Component;
 	options: null | DeepPartial<Field>[] | Component;
 	types: readonly typeof types[number][];
-	localTypes?: readonly typeof localTypes[number][];
+	groups?: readonly typeof localTypes[number][];
 	fields?: string[] | DisplayFieldsFunction;
 };
 

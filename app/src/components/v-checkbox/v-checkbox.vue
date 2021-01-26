@@ -10,7 +10,7 @@
 		:class="{ checked: isChecked, indeterminate, block }"
 	>
 		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
-		<v-icon class="checkbox" :name="icon" @click.stop="toggleInput" />
+		<v-icon class="checkbox" :name="icon" @click.stop="toggleInput" :disabled="disabled" />
 		<span class="label type-text">
 			<slot v-if="customValue === false">{{ label }}</slot>
 			<input @click.stop class="custom-input" v-else v-model="_value" />

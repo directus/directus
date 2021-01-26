@@ -1,11 +1,14 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { useRequestsStore } from '@/stores/';
 import { LogoutReason, logout, refresh } from '@/auth';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
 
 const api = axios.create({
 	baseURL: getRootPath(),
 	withCredentials: true,
+	headers: {
+		'Cache-Control': 'no-cache',
+	},
 });
 
 interface RequestConfig extends AxiosRequestConfig {
@@ -91,8 +94,8 @@ function getToken() {
 	return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
 }
 
-export function addTokenToURL(url: string) {
-	const token = getToken();
+export function addTokenToURL(url: string, token?: string) {
+	token = token || getToken();
 
 	if (url.includes('?')) {
 		return (url += '&access_token=' + token);

@@ -61,7 +61,7 @@ export default defineComponent({
 }
 
 .layout-options ::v-deep {
-	--v-form-vertical-gap: 24px;
+	--form-vertical-gap: 24px;
 
 	.type-label {
 		font-size: 1rem;

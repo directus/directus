@@ -80,12 +80,10 @@ function validateFilter(filter: Query['filter']) {
 
 function validateFilterPrimitive(value: any, key: string) {
 	if (
-		(typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') ===
+		(typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value instanceof Date) ===
 		false
 	) {
-		throw new InvalidQueryException(
-			`The filter value for "${key}" has to be a string or a number`
-		);
+		throw new InvalidQueryException(`The filter value for "${key}" has to be a string, number, or boolean`);
 	}
 
 	if (typeof value === 'number' && Number.isNaN(value)) {

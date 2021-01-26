@@ -45,7 +45,6 @@ fields:
     options:
       icon: public
       title: Public Pages
-      color: '#2F80ED'
     special: alias
     width: full
 
@@ -74,7 +73,6 @@ fields:
     options:
       icon: security
       title: Security
-      color: '#2F80ED'
     special: alias
     width: full
 
@@ -101,7 +99,6 @@ fields:
     options:
       icon: storage
       title: Files & Thumbnails
-      color: '#2F80ED'
     special: alias
     width: full
 
@@ -136,7 +133,6 @@ fields:
                   text: Fit inside
                 - value: outside
                   text: Fit outside
-            required: true
             width: half
         - field: width
           name: Width
@@ -166,7 +162,6 @@ fields:
               max: 100
               min: 0
               step: 1
-            required: true
             width: half
         - field: withoutEnlargement
           type: boolean
@@ -198,7 +193,6 @@ fields:
     options:
       icon: brush
       title: App Overrides
-      color: '#2F80ED'
     special: alias
     width: full
 

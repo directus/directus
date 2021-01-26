@@ -25,6 +25,13 @@ export default class SQLite implements Schema {
 	// Overview
 	// ===============================================================================================
 	async overview() {
+		const tablesWithAutoIncrementPrimaryKeys = (
+			await this.knex
+				.select('name')
+				.from('sqlite_master')
+				.whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
+		).map(({ name }) => name);
+
 		const tables = await this.tables();
 		const overview: SchemaOverview = {};
 
@@ -42,7 +49,10 @@ export default class SQLite implements Schema {
 				overview[table].columns[column.name] = {
 					table_name: table,
 					column_name: column.name,
-					default_value: column.dflt_value,
+					default_value:
+						column.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table)
+							? 'AUTO_INCREMENT'
+							: column.dflt_value,
 					is_nullable: column.notnull == 0,
 					data_type: column.type,
 					numeric_precision: null,

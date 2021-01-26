@@ -7,34 +7,22 @@ import env from '../env';
 import { performance } from 'perf_hooks';
 
 import SchemaInspector from '@directus/schema';
+import { getConfigFromEnv } from '../utils/get-config-from-env';
 
 dotenv.config({ path: path.resolve(__dirname, '../../', '.env') });
 
-const connectionConfig: Record<string, any> = {};
-
-for (let [key, value] of Object.entries(env)) {
-	key = key.toLowerCase();
-	if (key.startsWith('db') === false) continue;
-	if (key === 'db_client') continue;
-	if (key === 'db_search_path') continue;
-	if (key === 'db_connection_string') continue;
-
-	key = key.slice(3); // remove `DB_`
-
-	connectionConfig[camelCase(key)] = value;
-}
+const connectionConfig: Record<string, any> = getConfigFromEnv('DB_', [
+	'DB_CLIENT',
+	'DB_SEARCH_PATH',
+	'DB_CONNECTION_STRING',
+]);
 
 const knexConfig: Config = {
 	client: env.DB_CLIENT,
 	searchPath: env.DB_SEARCH_PATH,
 	connection: env.DB_CONNECTION_STRING || connectionConfig,
 	log: {
-		warn: (msg) => {
-			/** @note this is wild */
-			if (msg === '.returning() is not supported by mysql and will not have any effect.')
-				return;
-			logger.warn(msg);
-		},
+		warn: (msg) => logger.warn(msg),
 		error: (msg) => logger.error(msg),
 		deprecate: (msg) => logger.info(msg),
 		debug: (msg) => logger.debug(msg),
@@ -58,9 +46,18 @@ database
 		logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings.join(', ')}]`);
 	});
 
+export async function hasDatabaseConnection() {
+	try {
+		await database.raw('select 1 + 1 as result');
+		return true;
+	} catch {
+		return false;
+	}
+}
+
 export async function validateDBConnection() {
 	try {
-		await database.raw('select 1+1 as result');
+		await hasDatabaseConnection();
 	} catch (error) {
 		logger.fatal(`Can't connect to the database.`);
 		logger.fatal(error);

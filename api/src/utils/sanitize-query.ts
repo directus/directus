@@ -3,10 +3,7 @@ import logger from '../logger';
 import { parseFilter } from '../utils/parse-filter';
 import { flatten } from 'lodash';
 
-export function sanitizeQuery(
-	rawQuery: Record<string, any>,
-	accountability: Accountability | null
-) {
+export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Accountability | null) {
 	const query: Query = {};
 
 	if (rawQuery.limit !== undefined) {
@@ -74,6 +71,8 @@ function sanitizeFields(rawFields: any) {
 
 	// Case where array item includes CSV (fe fields[]=id,name):
 	fields = flatten(fields.map((field) => (field.includes(',') ? field.split(',') : field)));
+
+	fields = fields.map((field) => field.trim());
 
 	return fields;
 }

@@ -1,17 +1,16 @@
-# Installing with DigitalOcean's One-Click
+# DigitalOcean One-Click Install
 
-## 1. Create a DigitalOcean Account
+## 1. Navigate to Directus on the DigitalOcean Marketplace
 
-If you don't already have an account you'll need to create one, you can use [our referral link](https://m.do.co/c/389c62a20bb5) to get $100 of free credit!
+The [Directus page can be found here](https://marketplace.digitalocean.com/apps/directus), or you can browse for
+Directus within the [entire marketplace](https://marketplace.digitalocean.com/).
 
-## 2. Create a Project
+## 2. Click on "Create Directus Droplet"
 
-Navigate to the [Directus One-Click App](https://marketplace.digitalocean.com/apps/directus) within the DigitalOcean Marketplace and follow these steps:
+## 3. Follow the prompts
 
-* Click "Create Directus Droplet"
-* Configure your VPS (any plan/size)
-* Choose a hostname (anything you want)
-* Click "Create Droplet"
-
-## 3. TK
-
+<!-- prettier-ignore-start -->
+::: warning Paid Service
+This is a paid service, so while Directus is completely free and open-source, you will likely need to enter a payment method, and may incur charges.
+:::
+<!-- prettier-ignore-end -->

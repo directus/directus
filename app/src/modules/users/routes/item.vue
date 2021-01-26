@@ -112,7 +112,10 @@
 						<v-skeleton-loader type="text" />
 					</template>
 					<template v-else-if="isNew === false">
-						<div class="name type-title">{{ userName(item) }}<span v-if="item.title" class="title">, {{ item.title }}</span></div>
+						<div class="name type-title">
+							{{ userName(item) }}
+							<span v-if="item.title" class="title">, {{ item.title }}</span>
+						</div>
 						<div class="email">{{ item.email }}</div>
 						<div class="location" v-if="item.location">{{ item.location }}</div>
 						<v-chip :class="item.status" small v-if="roleName">{{ roleName }}</v-chip>
@@ -414,6 +417,8 @@ export default defineComponent({
 		}
 
 		async function setLang(user: Record<string, any>) {
+			if (userStore.state.currentUser!.id === item.value?.id) return;
+
 			const newLang = user?.language;
 
 			if (newLang && newLang !== i18n.locale) {
@@ -452,9 +457,7 @@ export default defineComponent({
 					});
 
 					avatarSrc.value = response.data.data.avatar?.id
-						? addTokenToURL(
-								getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover`
-						  )
+						? addTokenToURL(getRootPath() + `assets/${response.data.data.avatar.id}?key=system-medium-cover`)
 						: null;
 
 					roleName.value = response.data.data?.role?.name;

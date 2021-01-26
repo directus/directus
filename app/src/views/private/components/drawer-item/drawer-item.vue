@@ -33,13 +33,13 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
-import api from '@/api';
+import api from '../../../../api';
 
-import useCollection from '@/composables/use-collection';
-import { useFieldsStore, useRelationsStore } from '@/stores';
-import i18n from '@/lang';
-import { Relation, Field } from '@/types';
-import { unexpectedError } from '@/utils/unexpected-error';
+import useCollection from '../../../../composables/use-collection';
+import { useFieldsStore, useRelationsStore } from '../../../../stores';
+import i18n from '../../../../lang';
+import { Relation, Field } from '../../../../types';
+import { unexpectedError } from '../../../../utils/unexpected-error';
 
 export default defineComponent({
 	model: {
@@ -106,9 +106,8 @@ export default defineComponent({
 
 		const showDivider = computed(() => {
 			return (
-				fieldsStore
-					.getFieldsForCollection(props.collection)
-					.filter((field: Field) => field.meta?.hidden !== true).length > 0
+				fieldsStore.getFieldsForCollection(props.collection).filter((field: Field) => field.meta?.hidden !== true)
+					.length > 0
 			);
 		});
 
@@ -239,15 +238,16 @@ export default defineComponent({
 			const junctionRelatedCollection = computed(() => {
 				if (!props.junctionField) return null;
 
-				// If this is a m2m (likely), there will be 2 relations associated with this field
+				// If this is a m2m/m2a, there will be 2 relations associated with this field
 				const relations = relationsStore.getRelationsForField(props.collection, props.junctionField);
-				return (
-					relations.find((relation: Relation) => {
-						return (
-							relation.many_collection === props.collection && relation.many_field === props.junctionField
-						);
-					})?.one_collection || null
-				);
+
+				const relationForField = relations.find((relation: Relation) => {
+					return relation.many_collection === props.collection && relation.many_field === props.junctionField;
+				});
+
+				if (relationForField.one_collection) return relationForField.one_collection;
+				if (relationForField.one_collection_field) return props.edits[relationForField.one_collection_field];
+				return null;
 			});
 
 			const junctionRelatedCollectionInfo = computed(() => {

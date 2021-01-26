@@ -150,7 +150,7 @@ export default defineComponent({
 		},
 		type: {
 			type: String as PropType<
-				'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'presentation' | 'translations'
+				'standard' | 'file' | 'files' | 'm2o' | 'o2m' | 'm2m' | 'm2a' | 'presentation' | 'translations'
 			>,
 			default: null,
 		},
@@ -175,7 +175,7 @@ export default defineComponent({
 		const localType = computed(() => {
 			if (props.field === '+') return props.type;
 
-			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2o' | 'presentation' | 'translations' =
+			let type: 'standard' | 'file' | 'files' | 'o2m' | 'm2m' | 'm2a' | 'm2o' | 'presentation' | 'translations' =
 				'standard';
 			type = getLocalTypeForField(props.collection, props.field);
 
@@ -232,7 +232,7 @@ export default defineComponent({
 					});
 				}
 
-				if (['o2m', 'm2o', 'm2m', 'files'].includes(localType.value)) {
+				if (['o2m', 'm2o', 'm2m', 'm2a', 'files'].includes(localType.value)) {
 					tabs.splice(1, 0, {
 						text: i18n.t('relationship'),
 						value: 'relationship',
@@ -295,6 +295,19 @@ export default defineComponent({
 						isEmpty(state.relations[1].many_field) ||
 						isEmpty(state.relations[1].one_collection) ||
 						isEmpty(state.relations[1].one_primary)
+					);
+				}
+
+				if (localType.value === 'm2a') {
+					return (
+						state.relations.length !== 2 ||
+						isEmpty(state.relations[0].many_collection) ||
+						isEmpty(state.relations[0].many_field) ||
+						isEmpty(state.relations[0].one_field) ||
+						isEmpty(state.relations[1].many_collection) ||
+						isEmpty(state.relations[1].many_field) ||
+						isEmpty(state.relations[1].one_collection_field) ||
+						isEmpty(state.relations[1].one_allowed_collections)
 					);
 				}
 

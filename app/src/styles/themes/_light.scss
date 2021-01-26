@@ -6,7 +6,8 @@
 	--border-normal-alt: #A2B5CD;
 	--border-subdued: #F0F4F9;
 
-	--foreground-normal: #182B44;
+	--foreground-normal: #4F5464; // Less contrast for improved hierarchy
+	--foreground-normal-alt: #172940; // More contrast for titles and labels
 	--foreground-subdued: #A2B5CD;
 	--foreground-inverted:#FFF;
 

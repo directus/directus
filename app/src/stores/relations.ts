@@ -10,8 +10,7 @@ export const useRelationsStore = createStore({
 	}),
 	actions: {
 		async hydrate() {
-			const response = await api.get(`/relations`);
-
+			const response = await api.get(`/relations`, { params: { limit: -1 } });
 			this.state.relations = response.data.data;
 		},
 		async dehydrate() {
@@ -22,7 +21,7 @@ export const useRelationsStore = createStore({
 				return relation.many_collection === collection || relation.one_collection === collection;
 			});
 		},
-		getRelationsForField(collection: string, field: string) {
+		getRelationsForField(collection: string, field: string): Relation[] {
 			const fieldsStore = useFieldsStore();
 			const fieldInfo = fieldsStore.getField(collection, field);
 

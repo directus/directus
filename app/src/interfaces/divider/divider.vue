@@ -1,6 +1,6 @@
 <template>
 	<v-divider
-		:class="{ margin: icon || title }"
+		:class="{ margin: icon || title, 'extra-margin': marginTop }"
 		:style="{
 			'--v-divider-color': color,
 			'--v-divider-label-color': color,
@@ -30,6 +30,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		marginTop: {
+			type: Boolean,
+			default: false,
+		},
 		inlineTitle: {
 			type: Boolean,
 			default: false,
@@ -41,5 +45,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .margin {
 	margin-top: 12px;
+}
+.extra-margin {
+	margin-top: 40px;
 }
 </style>
