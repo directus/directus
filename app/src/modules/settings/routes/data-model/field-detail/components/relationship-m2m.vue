@@ -332,10 +332,7 @@ export default defineComponent({
 					return !!state.newFields.find((field: any) => field.$type === 'corresponding');
 				},
 				set(enabled: boolean) {
-					if (
-						enabled === true &&
-						!!state.newFields.find((field: any) => field.$type === 'corresponding') === false
-					) {
+					if (enabled === true && !!state.newFields.find((field: any) => field.$type === 'corresponding') === false) {
 						state.newFields = [
 							...state.newFields,
 							{

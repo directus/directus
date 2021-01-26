@@ -161,9 +161,7 @@ export default defineComponent({
 					if (props.multiple === true) {
 						const uploadedFiles = await uploadFiles(Array.from(files), {
 							onProgressChange: (percentage) => {
-								progress.value = Math.round(
-									percentage.reduce((acc, cur) => (acc += cur)) / files.length
-								);
+								progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
 								done.value = percentage.filter((p) => p === 100).length;
 							},
 							preset: props.preset,
