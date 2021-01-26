@@ -8,6 +8,10 @@ The JS SDK is a small wrapper around [Axios](https://npmjs.com/axios) that makes
 npm install @directus/sdk-js
 ```
 
+## TypeScript
+
+If you are using TypeScript, the JS SDK requires TypeScript 3.8 or newer.
+
 ## Usage
 
 ```js
@@ -56,7 +60,7 @@ const directus = new DirectusSDK('https://api.example.com/', {
 		storage: new MemoryStore(), // Storage adapter where refresh tokens are stored in JSON mode
 		mode: 'json', // What login mode to use. One of `json`, `cookie`
 		autoRefresh: true, // Whether or not to automatically refresh the access token on login
-	}
+	},
 });
 ```
 
@@ -85,18 +89,19 @@ You can tap into the Axios instance used directly through `directus.axios`.
 
 ```js
 directus.items('articles').create({
-	title: 'My New Article'
+	title: 'My New Article',
 });
 ```
 
 ##### Multiple Items
+
 ```js
 directus.items('articles').create([
 	{
-		title: 'My First Article'
+		title: 'My First Article',
 	},
 	{
-		title: 'My Second Article'
+		title: 'My Second Article',
 	},
 ]);
 ```
@@ -116,9 +121,9 @@ directus.items('articles').read({
 	search: 'Directus',
 	filter: {
 		date_published: {
-			_gte: '$NOW'
-		}
-	}
+			_gte: '$NOW',
+		},
+	},
 });
 ```
 
@@ -149,29 +154,21 @@ directus.items('articles').read([15, 42], { fields: ['title'] });
 ```js
 // One
 directus.items('articles').update(15, {
-	title: 'An Updated title'
+	title: 'An Updated title',
 });
 
 // Multiple
 directus.items('articles').update([15, 42], {
-	title: 'An Updated title'
+	title: 'An Updated title',
 });
 ```
 
 Supports optional query:
 
 ```js
-directus.items('articles').update(
-	15,
-	{ title: 'An Updated title' },
-	{ fields: ['title'] }
-);
+directus.items('articles').update(15, { title: 'An Updated title' }, { fields: ['title'] });
 
-directus.items('articles').update(
-	[15, 42],
-	{ title: 'An Updated title' },
-	{ fields: ['title'] }
-);
+directus.items('articles').update([15, 42], { title: 'An Updated title' }, { fields: ['title'] });
 ```
 
 ##### Multiple Items, Multiple Values
@@ -192,16 +189,19 @@ directus.items('articles').update([
 Supports optional query:
 
 ```js
-directus.items('articles').update([
-	{
-		id: 15,
-		title: 'Article 15',
-	},
-	{
-		id: 42,
-		title: 'Article 42',
-	},
-], { fields: ['title'] });
+directus.items('articles').update(
+	[
+		{
+			id: 15,
+			title: 'Article 15',
+		},
+		{
+			id: 42,
+			title: 'Article 42',
+		},
+	],
+	{ fields: ['title'] }
+);
 ```
 
 ##### Multiple Items by Query, Single Value
@@ -209,14 +209,14 @@ directus.items('articles').update([
 ```js
 directus.items('articles').update(
 	{
-		archived: true
+		archived: true,
 	},
 	{
 		filter: {
 			publish_date: {
-				_gte: '$NOW'
-			}
-		}
+				_gte: '$NOW',
+			},
+		},
 	}
 );
 ```
@@ -249,9 +249,9 @@ directus.activity.read();
 directus.activity.read({
 	filter: {
 		action: {
-			_eq: 'create'
-		}
-	}
+			_eq: 'create',
+		},
+	},
 });
 ```
 
@@ -281,7 +281,7 @@ directus.activity.read([15, 42], { fields: ['action'] });
 directus.activity.comments.create({
 	collection: 'articles',
 	item: 15,
-	comment: 'Hello, world!'
+	comment: 'Hello, world!',
 });
 ```
 
@@ -473,7 +473,7 @@ directus.server.specs.oas();
 #### Ping the Server
 
 ```js
-directus.server.ping()
+directus.server.ping();
 ```
 
 #### Get Server/Project Info
@@ -540,7 +540,7 @@ Supports optional query:
 
 ```js
 directus.users.me.read({
-	fields: ['last_access']
+	fields: ['last_access'],
 });
 ```
 
@@ -553,10 +553,7 @@ directus.users.me.update({ first_name: 'Admin' });
 Supports optional query:
 
 ```js
-directus.users.me.update(
-	{ first_name: 'Admin' },
-	{ fields: ['last_access'] }
-);
+directus.users.me.update({ first_name: 'Admin' }, { fields: ['last_access'] });
 ```
 
 ---
