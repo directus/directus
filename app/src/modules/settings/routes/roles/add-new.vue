@@ -23,7 +23,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-button to="/settings/roles" secondary>{{ $t('cancel') }}</v-button>
-				<v-button @click="save" :loading="saving">{{ $t('save') }}</v-button>
+				<v-button @click="save" :disabled="roleName === null" :loading="saving">{{ $t('save') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -38,7 +38,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
-		const roleName = ref<string>();
+		const roleName = ref<string | null>(null);
 		const appAccess = ref(true);
 		const adminAccess = ref(false);
 

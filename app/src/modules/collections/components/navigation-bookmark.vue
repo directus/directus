@@ -35,7 +35,9 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="renameActive = false">{{ $t('cancel') }}</v-button>
-					<v-button @click="renameSave" :loading="renameSaving">{{ $t('save') }}</v-button>
+					<v-button @click="renameSave" :disabled="renameValue === null" :loading="renameSaving">
+						{{ $t('save') }}
+					</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
