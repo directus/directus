@@ -107,7 +107,7 @@
 			<v-card>
 				<v-card-title>{{ $t('import_from_url') }}</v-card-title>
 				<v-card-text>
-					<v-input :placeholder="$t('url')" v-model="url" :disabled="urlLoading" />
+					<v-input :placeholder="$t('url')" v-model="url" :nullable="false" :disabled="urlLoading" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button :disabled="urlLoading" @click="activeDialog = null" secondary>

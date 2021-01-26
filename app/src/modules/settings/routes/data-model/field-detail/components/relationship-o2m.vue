@@ -13,6 +13,7 @@
 					db-safe
 					:placeholder="$t('collection') + '...'"
 					v-model="relations[0].many_collection"
+					:nullable="false"
 					:disabled="isExisting"
 					:class="{ matches: relatedCollectionExists }"
 				>
@@ -58,6 +59,7 @@
 			<v-input
 				db-safe
 				v-model="relations[0].many_field"
+				:nullable="false"
 				:disabled="isExisting"
 				:placeholder="$t('foreign_key') + '...'"
 				:class="{ matches: relatedFieldExists }"
