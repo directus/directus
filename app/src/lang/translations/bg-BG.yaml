@@ -765,6 +765,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   checkboxes:
@@ -864,6 +865,8 @@ interfaces:
     customSyntax_label: Добавяне на персонални типове за синтаксис
     customSyntax_add: Добавяне на персонален синтаксис
     box: Блоков / Вложен
+    imageToken: Токън за изображенията
+    imageToken_label: Какъв (статичен) токън да се добави към адресите на изображенията
   notice:
     notice: Бележка
     description: Показване на кратка бележка
@@ -967,6 +970,8 @@ displays:
     datetime: Дата и час
     description: Показване на стойностите релативни към момента
     format: Формат
+    format_note: >-
+      Персонализирания формат приема стойности от следната __[Таблица със символи за време](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Дълго
     short: Късо
     relative: Относително

@@ -26,6 +26,8 @@ connection_fair: Patenkinama ryšio kokybė
 connection_poor: Prasta ryšio kokybė
 rename_folder: Pervadinti aplanką
 delete_folder: Trinti aplanką
+prefix: Priešdėlis
+suffix: Priesaga
 reset_bookmark: Atstatyti skirtuką
 rename_bookmark: Pervadinti žymę
 update_bookmark: Atnaujinti žymę
@@ -169,6 +171,8 @@ length: Ilgis
 precision_scale: Tikslumas ir dydis
 readonly: Tik skaitomas
 unique: Unikalus
+updated_on: Atnaujinta
+updated_by: Atnaujino
 primary_key: Pirminis raktas
 foreign_key: Išorinis raktas
 finish_setup: Pabaigti konfigūravimą
@@ -197,6 +201,7 @@ revision_delta_other: Pakeitimas
 revision_delta_by: '{date} {user}'
 private_user: Privatus vartotojas
 revision_preview: Pakeitimo peržiūra
+updates_made: Atlikti atnaujinimai
 leave_comment: Palikite komentarą...
 post_comment_success: Komentaras paskelbtas
 item_create_success: Elementas sukurtas | Elementai sukurti
@@ -340,7 +345,7 @@ modified_on: Pakeista
 card_size: Kortelės dydis
 sort_field: Rūšiavimo laukas
 sort: Rūšiuoti
-status: Būklė
+status: Būsena
 toggle_manual_sorting: Perjungti rankinį rūšiavimą
 bookmark_doesnt_exist: Žymė neegzistuoja
 bookmark_doesnt_exist_copy: Žymė, kurią bandote atidaryti, neegzistuoja.
@@ -442,6 +447,22 @@ upload_file_success: Failas įkeltas
 upload_files_indeterminate: 'Įkeliami failai {done}/{total}'
 upload_files_success: '{count} failai įkelti'
 upload_pending: Laukiama įkėlimo
+drag_file_here: Tempkite ir paleiskite failą čia
+click_to_browse: Paspauskite norėdami naršyti
+layout_options: Išdėstymo nustatymai
+rows: Eilutės
+columns: Stulpeliai
+collection_setup: Kolekcijos konfigūracija
+optional_system_fields: Neprivalomi sisteminiai laukai
+value_unique: Reikšmė turi būti unikali
+all_activity: Visa Veikla
+create_item: Sukurti elementą
+display_template: Rodymo šablonas
+n_items_selected: 'Nepasirinkta elementų | 1 pasirinktas elementas | Pasirinkta {n} elementai/-ų'
+per_page: Puslapyje
+all_files: Visi failai
+my_files: Mano failai
+recent_files: Paskiausiai naudoti failai
 create_folder: Sukurti aplanką
 folder_name: Aplanko pavadinimas...
 add_file: Pridėti failą
@@ -486,12 +507,14 @@ wysiwyg_options:
   bullist: Suženklintasis sąrašas
   numlist: Numeruotasis sąrašas
   hr: Horizontali linija
+  link: Nuoroda
   unlink: Pašalinti nuorodą
   media: Pridėti mediją
   image: Pridėti nuotrauką
   copy: Kopijuoti
   cut: Iškirpti
   paste: Įklijuoti
+  heading: Antraštė
   h1: Antraštė 1
   h2: Antraštė 2
   h3: Antraštė 3
@@ -613,7 +636,7 @@ fields:
     filesize: Failo dydis
     metadata: Meta duomenys
   directus_users:
-    status: Būklė
+    status: Būsena
     first_name: Vardas
     last_name: Pavardė
     email: El. paštas
@@ -665,18 +688,37 @@ generate_and_save_uuid: Generuoti ir išsaugoti UUID
 save_current_user_id: Išsaugoti dabartinio vartotojo ID
 save_current_user_role: Išsaugoti dabartinio vartotojo grupę
 save_current_datetime: Išsaugoti dabartinį datą/laiką
+block: Blokas
+inline: Toje pačioje eilutėje
 comment: Komentaras
 continue: Tęsti
 continue_as: >-
   <b>{name}</b> jau yra prisijungęs. Jeigu tai jūs, spauskite tęsti.
 editing_role: '{role} grupė'
+creating_webhook: Kuriamas Webhook'ą
+default: Numatytasis
+delete: Pašalinti
+delete_are_you_sure: >-
+  Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
+delete_field_are_you_sure: >-
+  Ar tikrai norite panaikinti lauką "{field}"? Šio veiksmo nebus galima atšaukti.
 description: Aprašymas
 done: Atlikta
+duplicate: Dublikatas
 email: El. paštas
+embed: Įterptas
 field: Laukelis | Laukeliai
+file: Failas
+file_library: Failų biblioteka
+forgot_password: Pamiršote slaptažodį
 hidden: Paslėptas
+icon: Ikona
+info: Informacija
+normal: Normalus
+success: Pavyko
 password: Slaptažodis
 revisions: Pakeitimai
+sort_direction: Rūšiavimo kryptis
 template: Šablonas
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
@@ -712,6 +754,7 @@ interfaces:
     set_to_now: Nustatyti į dabartinį laiką
     use_24: Naudoti 24 val. laikrodį
   display-template:
+    display-template: Rodymo šablonas
     description: Maišyti statinį tekstą ir dinamines laukų reikšmes
     collection_field: Kolekcijos laukas
     collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
@@ -735,6 +778,7 @@ interfaces:
     dropdown-multiselect: Išskleidžiamasis sąrašas (kelios reikšmės)
     description: Pasirinkite kelias reikšmes iš sąrašo
   file:
+    file: Failas
     description: Pasirinkite arba įkelkite failą
   files:
     files: Failai
@@ -744,6 +788,7 @@ interfaces:
     description: Įveskite reikšmę išmaišymui
     masked_label: Paslėpti tikrąsias reikšmes
   icon:
+    icon: Ikona
     description: Pasirinkite ikonėlę iš sąrašo
     search_for_icon: Ieškoti ikonėlių...
   image:
@@ -752,6 +797,10 @@ interfaces:
   interface:
     interface: Sąsaja
     description: Pasirinkti egzistuojančią sąsają
+  many-to-one:
+    display_template: Rodymo šablonas
+  repeater:
+    field_note_placeholder: Įvesti lauko pastabą...
   tags:
     tags: Žymos
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
@@ -771,6 +820,7 @@ interfaces:
     label_placeholder: Įveskite žymą...
     label_default: Įjungtas
   translations:
+    display_template: Rodymo šablonas
     no_collection: Nėra kolekcijos
   user:
     user: Vartotojas
@@ -797,6 +847,10 @@ displays:
   datetime:
     datetime: Data ir laikas
     format: Formatas
+  file:
+    file: Failas
+  icon:
+    icon: Ikona
   image:
     image: Paveikslėlis
     circle: Apskritimas
