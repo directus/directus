@@ -13,18 +13,14 @@
 					db-safe
 					:placeholder="$t('collection') + '...'"
 					v-model="relations[0].many_collection"
+					:nullable="false"
 					:disabled="isExisting"
 					:class="{ matches: relatedCollectionExists }"
 				>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
-								<v-icon
-									name="list_alt"
-									@click="toggle"
-									v-tooltip="$t('select_existing')"
-									:disabled="isExisting"
-								/>
+								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
 							</template>
 
 							<v-list class="monospace">
@@ -63,6 +59,7 @@
 			<v-input
 				db-safe
 				v-model="relations[0].many_field"
+				:nullable="false"
 				:disabled="isExisting"
 				:placeholder="$t('foreign_key') + '...'"
 				:class="{ matches: relatedFieldExists }"
@@ -97,12 +94,7 @@
 		<div class="corresponding" v-if="!isExisting">
 			<div class="field">
 				<div class="type-label">{{ $t('create_field') }}</div>
-				<v-checkbox
-					block
-					:disabled="isExisting"
-					:label="correspondingLabel"
-					v-model="hasCorresponding"
-				/>
+				<v-checkbox block :disabled="isExisting" :label="correspondingLabel" v-model="hasCorresponding" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('field_name') }}</div>
@@ -152,9 +144,7 @@ export default defineComponent({
 		const { hasCorresponding, correspondingLabel } = useCorresponding();
 
 		const relatedCollectionExists = computed(() => {
-			return collectionsStore.state.collections.find(
-				(col) => col.collection === state.relations?.[0].many_collection
-			);
+			return collectionsStore.state.collections.find((col) => col.collection === state.relations?.[0].many_collection);
 		});
 
 		const relatedFieldExists = computed(() => {
@@ -180,8 +170,7 @@ export default defineComponent({
 				return orderBy(
 					collectionsStore.state.collections.filter((collection) => {
 						return (
-							collection.collection.startsWith('directus_') === false &&
-							collection.collection !== props.collection
+							collection.collection.startsWith('directus_') === false && collection.collection !== props.collection
 						);
 					}),
 					['collection'],
@@ -192,19 +181,14 @@ export default defineComponent({
 			const systemCollections = computed(() => {
 				return orderBy(
 					collectionsStore.state.collections.filter((collection) => {
-						return (
-							collection.collection.startsWith('directus_') === true &&
-							collection.collection !== props.collection
-						);
+						return collection.collection.startsWith('directus_') === true && collection.collection !== props.collection;
 					}),
 					['collection'],
 					['asc']
 				);
 			});
 
-			const currentCollectionPrimaryKey = computed(() =>
-				fieldsStore.getPrimaryKeyFieldForCollection(props.collection)
-			);
+			const currentCollectionPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection));
 
 			const fields = computed(() => {
 				if (!state.relations[0].many_collection) return [];
@@ -215,9 +199,7 @@ export default defineComponent({
 						text: field.field,
 						value: field.field,
 						disabled:
-							!field.schema ||
-							field.schema?.is_primary_key ||
-							field.type !== currentCollectionPrimaryKey.value.type,
+							!field.schema || field.schema?.is_primary_key || field.type !== currentCollectionPrimaryKey.value.type,
 					}));
 			});
 
@@ -241,16 +223,15 @@ export default defineComponent({
 
 					if (relatedFieldExists.value === true) {
 						return (
-							state.updateFields.find(
-								(updateField: any) => updateField.field === state.relations[0].many_field
-							)?.meta?.interface === 'many-to-one' ||
-							fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field)
-								?.meta?.interface === 'many-to-one'
+							state.updateFields.find((updateField: any) => updateField.field === state.relations[0].many_field)?.meta
+								?.interface === 'many-to-one' ||
+							fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field)?.meta
+								?.interface === 'many-to-one'
 						);
 					} else {
 						return (
-							state.newFields.find((newField: any) => newField.$type === 'manyRelated')?.meta
-								?.interface === 'many-to-one'
+							state.newFields.find((newField: any) => newField.$type === 'manyRelated')?.meta?.interface ===
+							'many-to-one'
 						);
 					}
 				},
@@ -282,9 +263,7 @@ export default defineComponent({
 							];
 						}
 					} else {
-						const newFieldCreated = !!state.newFields.find(
-							(newField: any) => newField.$type === 'manyRelated'
-						);
+						const newFieldCreated = !!state.newFields.find((newField: any) => newField.$type === 'manyRelated');
 
 						if (newFieldCreated === false) {
 							state.newFields = [

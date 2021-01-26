@@ -14,6 +14,7 @@
 					db-safe
 					key="related-collection"
 					v-model="relations[0].one_collection"
+					:nullable="false"
 					:disabled="isExisting"
 					:placeholder="$t('collection') + '...'"
 				>
@@ -60,6 +61,7 @@
 				db-safe
 				:disabled="relatedCollectionExists"
 				v-model="relations[0].one_primary"
+				:nullable="false"
 				:placeholder="$t('primary_key') + '...'"
 			/>
 			<v-icon class="arrow" name="arrow_back" />
