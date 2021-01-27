@@ -108,47 +108,50 @@ collection: Samling
 collections: Samlinger
 fields:
   directus_activity:
+    item: Element Primær Nøgle
     action: Handling
     collection: Samling
-    item: Element Primær Nøgle
-    user: Handling Af
     timestamp: Handling Til
-    edited_on: Redigeret den
-    comment_deleted_on: Kommentar Slettet d.
-    ip: IP adresse
-    user_agent: Brugeragent
+    user: Handling Af
     comment: Kommenter
+    user_agent: Brugeragent
+    ip: IP adresse
+  directus_collections:
+    collection: Samling
+    icon: Ikon
+    note: Kommentar
+    hidden: Skjult
   directus_files:
     title: Titel
+    description: Beskrivelse
     tags: Tags
     location: Placering
-    description: Beskrivelse
-    filename_download: Download Af Filnavn
-    filename_disk: Filnavn Disk
-    private_hash: Privat Hash
-    checksum: Kontrolsum
-    uploaded_on: Uploadet d.
+    metadata: Metadata
+    filesize: Filstørrelse
+    modified_on: Ændringsdato
+    created_on: Oprettet d.
+    created_by: Oprettet af
+    embed: Indlejr
     uploaded_by: Uploadet af
     width: Bredde
+    uploaded_on: Uploadet d.
     height: Højde
     duration: Varighed
-    filesize: Filstørrelse
-    metadata: Metadata
   directus_users:
-    status: Status
     first_name: Fornavn
     last_name: Efternavn
     email: E-mail
-    email_notifications: Email notifikationer
     password: Adgangskode
-    role: Rolle
-    company: Firma
-    title: Titel
-    timezone: Tidszone
-    language: Sprog
     avatar: Profilbillede
+    location: Placering
+    title: Titel
+    description: Beskrivelse
+    tags: Tags
+    language: Sprog
     theme: Tema
     tfa_secret: To-faktor godkendelse
+    status: Status
+    role: Rolle
   directus_settings:
     project_name: Projektnavn
   directus_fields:
