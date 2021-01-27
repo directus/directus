@@ -586,15 +586,38 @@ page_help_docs_global: >-
   **Översikt dokumentation** — Dokument som är skräddarsydda specifikt för projektets version och schema.
 page_help_files_collection: >-
   **Filbibliotek** — Visar alla filer uppladdade till detta projekt. Anpassa layout, filter och sortering för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
+page_help_files_item: >-
+  **Detaljvy fil** — Ett formulär för att hantera filens metadata, redigera den ursprungliga filen och uppdatera åtkomstinställningar.
+page_help_settings_project: "**Projektinställningar** — Projektets globala konfigurationsalternativ."
+page_help_settings_datamodel_collections: >-
+  **Datamodel: Kollektioner** — Listar alla tillgängliga kollektioner. Detta inkluderar synliga, dolda och systemsamlingar, samt ohanterade databas-tabeller som kan läggas till.
+page_help_settings_datamodel_fields: >-
+  **Datamodel: Kollektion** — Ett formulär för att hantera denna kollektion och dess fält.
+page_help_settings_roles_collection: '**Bläddra bland roller** — Listar administratörer, offentliga och anpassade användarroller.'
+page_help_settings_roles_item: "**Detaljvy roll** — Hantera en rolls rättigheter och andra inställningar."
 page_help_settings_presets_collection: >-
   **Bläddra i förinställningar** — Visar alla förinställningar i projektet, inklusive: användare, roll och globala bokmärken, samt standardvyer.
+page_help_settings_presets_item: >-
+  **Förinställda detaljer** — Ett formulär för att hantera bokmärken och förinställningar för standardinsamling.
+page_help_settings_webhooks_collection: '**Bläddra bland webhooks** — Listar alla webhooks i projektet.'
+page_help_settings_webhooks_item: '**Detaljvy webhook** — Ett formulär för att skapa och hantera projektets webhooks.'
+page_help_users_collection: '**Användarkatalog** — Listar alla systemanvändare i detta projekt.'
+page_help_users_item: >-
+  **Användarinformation** — Hantera din kontoinformation eller visa information om andra användare.
+activity_feed: Aktivitetsflöde
 add_new: Lägg till ny
+create_new: Skapa ny
 all: Alla
+none: Ingen
+no_layout_collection_selected_yet: Ingen layout/kollektion vald ännu
 batch_delete_confirm: >-
   Inga objekt har valts | Är du säker på att du vill radera det här objektet? Den här åtgärden kan inte ångras. | Är du säker på att du vill radera de här {count} objekten? Den här åtgärden kan inte ångras.
 cancel: Avbryt
 collection: Kollektion
 collections: Kollektioner
+singleton: Singleton
+singleton_label: Behandla som ett enskilt objekt
+system_fields_locked: Systemfälten är låsta och kan inte redigeras
 fields:
   directus_activity:
     action: Åtgärd
@@ -607,6 +630,8 @@ fields:
     ip: IP-adress
     user_agent: Användaragent
     comment: Kommentera
+  directus_collections:
+    translations: Översättningar för kollektionens namn
   directus_files:
     title: Rubrik
     tags: Etiketter
@@ -640,9 +665,21 @@ fields:
     tfa_secret: Tvåfaktorsautentisering
   directus_settings:
     project_name: Projektnamn
+    project_url: Projektets URL
+    project_color: Projektets färg
+    project_logo: Projektets logotyp
+    public_foreground: Publik förgrund
+    public_background: Publik bakgrund
+    public_note: Publik anteckning
+    auth_password_policy: Policy för lösenord vid inloggning
+    auth_idle_timeout: Auth Idle Timeout
+    auth_login_attempts: Inloggningsförsök
+    storage_asset_presets: Förval för lagringsobjekt
+    storage_asset_transform: Transformering av lagringsobjekt
   directus_fields:
     note: Anteckning
     hidden: Dold
+    singleton: Singleton
     translation: Översättningar fältnamn
     display_template: Mall
   directus_roles:
