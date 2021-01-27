@@ -670,7 +670,7 @@ normal: Normal
 success: Slutförd
 warning: Varning
 danger: Varning
-junction_collection: Junction Collection
+junction_collection: Kopplingskollektion
 latency: Latens
 login: Logga in
 my_activity: Mina aktiviteter
@@ -790,15 +790,73 @@ interfaces:
     description: En popup för att välja alternativ för ett gränssnitt
   many-to-many:
     many-to-many: Många till många
+    description: Välj flera relaterade kopplingsobjekt
   many-to-one:
     many-to-one: Många till en
+    description: Välj ett relaterat objekt
     display_template: Visningsmall
+  markdown:
+    markdown: Markdown
+    description: Ange och förhandsgranska markdown
+    customSyntax: Anpassade block
+    customSyntax_label: Lägg till anpassade syntaxtyper
+    customSyntax_add: Lägg till anpassad syntax
+    box: Block / Infogad
+    imageToken: Bildnyckel
+    imageToken_label: Vilken (statisk) nyckel att lägga till på bildkällor
+  notice:
+    notice: Notis
+    description: Visa en kort notis
+    text: Ange notisens innehåll här...
   numeric:
     numeric: Numerisk
+    description: Ange ett nummer
+    minimum_value: Minsta värde
+    maximum_value: Högsta värde
+    step_interval: Steg intervall
+  one-to-many:
+    one-to-many: One to Many
+    description: Välj flera relaterade objekt
+    no_collection: Kollektionen kunde inte hittas
+  radio-buttons:
+    radio-buttons: Radioknappar
+    description: Välj ett av flera val
+  repeater:
+    repeater: Repeterare
+    description: Skapa flera poster av samma struktur
+    edit_fields: Redigera fält
+    add_label: 'Etikett för "Lägg till ny rad"'
+    field_name_placeholder: Ange fältnamn...
+    field_note_placeholder: Ange fältanteckning...
+  slider:
+    slider: Reglage
+    description: Välj ett nummer med ett reglage
+    always_show_value: Visa alltid värde
+  slug:
+    slug: Permalänk
+    description: Ange ett ord som sitter ihop med bindestreck
   tags:
     tags: Etiketter
+    description: Välj eller lägg till taggar
+    whitespace: Blanksteg
+    hyphen: Ersätt med bindestreck
+    underscore: Ersätt med understreck
+    remove: Ta bort blanksteg
+    capitalization: Versalisering
+    uppercase: Konvertera versaler
+    lowercase: Konvertera gemener
+    auto_formatter: Använd titel Auto-Formatter
+    alphabetize: Alfabetisera
+    alphabetize_label: Tvinga alfabetisk ordning
+    add_tags: Lägg till taggar...
   text-input:
+    text-input: Textfält
+    description: Ange en rad text
+    trim: Beskär
+    trim_label: Trimma början och slut
     mask: Maskerad
+    mask_label: Dölj det riktiga värdet
+    nullable: Nullable
   toggle:
     toggle: Växla
     label_default: Aktiverad
