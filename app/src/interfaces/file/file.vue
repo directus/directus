@@ -163,7 +163,7 @@ export default defineComponent({
 
 		const assetURL = computed(() => {
 			const id = typeof props.value === 'string' ? props.value : (props.value as Record<string, any>)?.id;
-			return getRootPath() + `assets/${id}`;
+			return addTokenToURL(getRootPath() + `assets/${id}`);
 		});
 
 		const imageThumbnail = computed(() => {
