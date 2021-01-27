@@ -1,5 +1,6 @@
 ---
 edit_field: 編輯欄位
+item_revision: 項目修改
 duplicate_field: 複製欄位
 half_width: 半寬
 full_width: 滿寬
@@ -8,27 +9,41 @@ field_name_translations: 欄位名稱翻譯
 enter_password_to_enable_tfa: 輸入您的密碼以啟用雙因素認證
 add_field: 增加欄位
 role_name: 角色名稱
+db_only_click_to_configure: '僅數據庫：單擊進行配置 '
 show_archived_items: 顯示已封存的項目
 required: 必填
+requires_value: 需要值
+create_preset: 創建預置
 create_role: 新建角色
 create_user: 建立用户
 create_webhook: 建立 Webhook
 invite_users: 邀請用戶
 invite: 邀请
 emails: 信件
+connection_excellent: 優秀的連接
+connection_good: 好的連接
+connection_fair: 公平的連接
 connection_poor: 連線不穩
 rename_folder: 重新命名資料夾
 delete_folder: 刪除資料夾
+prefix: 前綴
+suffix: 後綴
 reset_bookmark: 重設書籤
 rename_bookmark: 重新命名書籤
 update_bookmark: 更新書籤
 delete_bookmark: 刪除書籤
+delete_bookmark_copy: >-
+  你確定要刪除“{bookmark}"書籤嗎？這個操作無法撤銷。
 logoutReason:
   SIGN_OUT: 已登出
   SESSION_EXPIRED: 工作階段已逾時
 public: 公開
+public_description: 在沒有身分驗證的情況下，控制這些可用的API數據。
 not_allowed: 不允许
 directus_version: Directus 版本
+node_version: 節點的版本
+node_uptime: 節點正常運行時間
+os_type: 操作系統類型
 os_version: 作業系統版本
 os_uptime: 作業系統已運行時間
 os_totalmem: 作業系統記憶體
