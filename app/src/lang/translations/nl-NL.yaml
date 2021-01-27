@@ -611,49 +611,59 @@ singleton_label: Behandel als één object
 system_fields_locked: Systeem velden zijn vergrendeld en kunnen niet worden bewerkt
 fields:
   directus_activity:
+    item: Item Primary Key
     action: Actie
     collection: Collectie
-    item: Item Primary Key
-    user: Actie door
     timestamp: Actie op
-    edited_on: Aangepast op
-    comment_deleted_on: Reactie verwijderd op
-    ip: IP Adres
-    user_agent: User Agent
+    user: Actie door
     comment: Reactie
+    user_agent: User Agent
+    ip: IP Adres
+    revisions: Revisies
   directus_collections:
+    collection: Collectie
+    icon: Icoon
+    note: Notitie
+    display_template: Weergavesjabloon
+    hidden: Verborgen
+    singleton: Singleton
     translations: Collectie-naam vertalingen
+    sort_field: Sorteerveld
   directus_files:
     title: Titel
+    description: Beschrijving
     tags: Tags
     location: Locatie
-    description: Beschrijving
-    filename_download: Bestandsnaam Download
-    filename_disk: Bestandsnaam op Schijf
-    private_hash: Privé naam
-    checksum: Checksum
-    uploaded_on: Geüpload op
-    uploaded_by: Geüpload door
-    width: Breedte
-    height: Hoogte
-    duration: Duur
-    filesize: Bestandsgrootte
     metadata: Metadata
+    filesize: Bestandsgrootte
+    modified_on: Aangepast op
+    created_on: Aangemaakt op
+    created_by: Aangemaakt door
+    embed: Insluiten
+    uploaded_by: Geüpload door
+    folder: Map
+    width: Breedte
+    uploaded_on: Geüpload op
+    height: Hoogte
+    charset: Karakterset
+    duration: Duur
   directus_users:
-    status: Status
     first_name: Voornaam
     last_name: Achternaam
     email: Email
-    email_notifications: Email Notificaties
     password: Wachtwoord
-    role: Rol
-    company: Bedrijf
-    title: Titel
-    timezone: Tijdszone
-    language: Taal
     avatar: Profielafbeelding
+    location: Locatie
+    title: Titel
+    description: Beschrijving
+    tags: Tags
+    language: Taal
     theme: Thema
     tfa_secret: 2FA (Twee-Factor Authenticatie)
+    status: Status
+    role: Rol
+    last_page: Laatste pagina
+    last_access: Laatste toegang
   directus_settings:
     project_name: Project Naam
     project_url: Project URL
@@ -663,7 +673,6 @@ fields:
     public_background: Openbare achtergrond
     public_note: Openbare notitie
     auth_password_policy: Wachtwoordbeleid
-    auth_idle_timeout: Idle Time-out
     auth_login_attempts: Login pogingen
     storage_asset_presets: Bestand Voorkeuren
     storage_asset_transform: Storage Asset Transform
@@ -679,9 +688,9 @@ fields:
     name: Rol Naam
     icon: Rol Icoon
     description: Beschrijving
-    ip_access: IP Toegang
     app_access: App toegang
     admin_access: Admin toegang
+    ip_access: IP Toegang
     enforce_tfa: 2FA vereist
     users: Gebruikers in rol
     module_list: Module Navigatie
