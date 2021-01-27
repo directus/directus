@@ -22,7 +22,7 @@ import env from '../env';
 import { PayloadService } from './payload';
 import { AuthorizationService } from './authorization';
 
-import { pick, clone, cloneDeep } from 'lodash';
+import { pick, clone, cloneDeep, merge } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
 import { InvalidPayloadException } from '../exceptions';
 import { ForbiddenException } from '../exceptions';
@@ -59,18 +59,20 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 			});
 
-			const customProcessed = await emitter.emitAsync(`${this.eventScope}.create.before`, payloads, {
-				event: `${this.eventScope}.create.before`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: null,
-				action: 'create',
-				payload: payloads,
-				schema: this.schema,
-			});
+			for (let i = 0; i < payloads.length; i++) {
+				const customProcessed = await emitter.emitAsync(`${this.eventScope}.create.before`, payloads[i], {
+					event: `${this.eventScope}.create.before`,
+					accountability: this.accountability,
+					collection: this.collection,
+					item: null,
+					action: 'create',
+					payload: payloads[i],
+					schema: this.schema,
+				});
 
-			if (customProcessed) {
-				payloads = customProcessed[customProcessed.length - 1];
+				if (customProcessed && customProcessed.length > 0) {
+					payloads[i] = customProcessed.reverse().reduce((val, acc) => merge(acc, val));
+				}
 			}
 
 			if (this.accountability) {
@@ -271,8 +273,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 			});
 
-			if (customProcessed) {
-				payload = customProcessed[customProcessed.length - 1];
+			if (customProcessed && customProcessed.length > 0) {
+				payload = customProcessed.reverse().reduce((val, acc) => merge(acc, val));
 			}
 
 			if (this.accountability) {
