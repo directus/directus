@@ -301,40 +301,50 @@ collection: Gyűjtemény
 collections: Kollekciók
 fields:
   directus_activity:
+    item: Elem elsődleges kulcsa
     action: Művelet
     collection: Gyűjtemény
-    item: Elem elsődleges kulcsa
-    ip: IP Cím
     comment: Hozzászólás
+    ip: IP Cím
+  directus_collections:
+    collection: Gyűjtemény
+    display_template: Megjelenítési sablon
+    hidden: Rejtett
+    sort_field: Rendezési mező
   directus_files:
     title: Cím
+    description: Leírás
     tags: Cimkék
     location: Pozíció
-    description: Leírás
-    private_hash: Privát hash
-    checksum: Ellenőrző
-    uploaded_on: Feltöltve
+    metadata: Metadata
+    filesize: File mérete
+    modified_on: Változtatás dátuma
+    created_on: Létrehozva
+    created_by: Készítette
+    embed: Beágyazás
     uploaded_by: Feltöltve
     width: Szélesség
+    uploaded_on: Feltöltve
     height: Magasság
+    charset: Karakterkészlet
     duration: Időtartam
-    filesize: File mérete
-    metadata: Metadata
   directus_users:
-    status: Állapot
     first_name: Családnév
     last_name: Vezetéknév
     email: E-mail
-    email_notifications: Email értesítések
     password: Jelszó
-    role: Szerepkör
-    company: Cég
-    title: Cím
-    timezone: Időzóna
-    language: Nyelv
     avatar: Profilkép
+    location: Pozíció
+    title: Cím
+    description: Leírás
+    tags: Cimkék
+    language: Nyelv
     theme: Téma
     tfa_secret: Kétlépcsős hitelesítés
+    status: Állapot
+    role: Szerepkör
+    last_page: Utolsó oldal
+    last_access: Utolsó hozzáférés
   directus_fields:
     hidden: Rejtett
     translation: Lefordított mezőnevek
