@@ -607,49 +607,59 @@ singleton_label: Laikyti vienu objektu
 system_fields_locked: Sisteminiai laukai yra užrakinti ir negali būti redaguojami
 fields:
   directus_activity:
+    item: Įrašo Pirminis Raktas
     action: Veiksmas
     collection: Rinkinys
-    item: Įrašo Pirminis Raktas
-    user: Veiksmas atliktas
     timestamp: Atlikta
-    edited_on: Redaguota
-    comment_deleted_on: Komentaras ištrintas
-    ip: IP adresas
-    user_agent: Naršyklė
+    user: Veiksmas atliktas
     comment: Komentaras
+    user_agent: Naršyklė
+    ip: IP adresas
+    revisions: Pakeitimai
   directus_collections:
+    collection: Rinkinys
+    icon: Ikona
+    note: Pastaba
+    display_template: Rodymo šablonas
+    hidden: Paslėptas
+    singleton: Singleton objektas
     translations: Kolekcijos pavadinimų vertimai
+    sort_field: Rūšiavimo laukas
   directus_files:
     title: Pavadinmas
+    description: Aprašymas
     tags: Žymos
     location: Vietovė
-    description: Aprašymas
-    filename_download: Failo parsisiuntimas
-    filename_disk: Failo vardas diske
-    private_hash: Privati maiša (hash)
-    checksum: Kontrolinė suma
-    uploaded_on: Įkelta
-    uploaded_by: Įkelta
-    width: Plotis
-    height: Aukštis
-    duration: Trukmė
-    filesize: Failo dydis
     metadata: Meta duomenys
+    filesize: Failo dydis
+    modified_on: Pakeista
+    created_on: Sukurta
+    created_by: Sukūrė
+    embed: Įterptas
+    uploaded_by: Įkelta
+    folder: Aplankas
+    width: Plotis
+    uploaded_on: Įkelta
+    height: Aukštis
+    charset: Simbolių rinkinys
+    duration: Trukmė
   directus_users:
-    status: Būsena
     first_name: Vardas
     last_name: Pavardė
     email: El. paštas
-    email_notifications: El. pašto pranešimai
     password: Slaptažodis
-    role: Vaidmuo
-    company: Įmonė
-    title: Pavadinmas
-    timezone: Laiko zona
-    language: Kalba
     avatar: Nuotrauka
+    location: Vietovė
+    title: Pavadinmas
+    description: Aprašymas
+    tags: Žymos
+    language: Kalba
     theme: Tema
     tfa_secret: Dviejų lygių autentifikavimas
+    status: Būsena
+    role: Vaidmuo
+    last_page: Paskutinis puslapis
+    last_access: Paskutinė prieiga
   directus_settings:
     project_name: Projekto pavadinimas
     project_url: Projekto adresas
@@ -659,7 +669,6 @@ fields:
     public_background: Projekto fonas
     public_note: Vieša pastaba
     auth_password_policy: Slaptažodžių politika
-    auth_idle_timeout: Max. neveiklumo laikas
     auth_login_attempts: Max. bandymų prisijungti kiekis
     storage_asset_presets: Saugyklos failų ruošiniai
     storage_asset_transform: Saugyklos failų transformacija
@@ -675,9 +684,9 @@ fields:
     name: Vaidmens pavadinimas
     icon: Grupės ikonėlė
     description: Aprašymas
-    ip_access: IP adresas
     app_access: Programos prieiga
     admin_access: Administratoriaus prieiga
+    ip_access: IP adresas
     enforce_tfa: Reikalinga 2FA
     users: Vartotojai grupėje
     module_list: Modulių navigacija
