@@ -590,47 +590,58 @@ singleton_label: Tratar como objeto único
 system_fields_locked: Os campos do sistema estão bloqueados e não podem ser editados
 fields:
   directus_activity:
+    item: Chave Primária do Item
     action: Ação
     collection: Coleção
-    item: Chave Primária do Item
-    user: Ação Por
     timestamp: Ação Em
-    edited_on: Editado Em
-    comment_deleted_on: Comentário Excluído Em
-    ip: Endereço de IP
-    user_agent: Agente de Usuário
+    user: Ação Por
     comment: Comentário
+    user_agent: Agente de Usuário
+    ip: Endereço de IP
+    revisions: Revisões
+  directus_collections:
+    collection: Coleção
+    icon: Ícone
+    note: Nota
+    display_template: Modelo de exibição
+    hidden: Oculto
+    singleton: Singleton
+    sort_field: Campo de ordenação
   directus_files:
     title: Título
+    description: Descrição
     tags: Tags
     location: Local
-    description: Descrição
-    filename_download: Download de Nome do Arquivo
-    filename_disk: Disco de Nome do Arquivo
-    private_hash: Hash Privado
-    checksum: Checksum
-    uploaded_on: Enviado Em
-    uploaded_by: Enviado Por
-    width: Largura
-    height: Altura
-    duration: Duração
-    filesize: Tamanho do Arquivo
     metadata: Metadados
+    filesize: Tamanho do Arquivo
+    modified_on: Modificado em
+    created_on: Criado em
+    created_by: Criado por
+    embed: Incorporar
+    uploaded_by: Enviado Por
+    folder: Pasta
+    width: Largura
+    uploaded_on: Enviado Em
+    height: Altura
+    charset: Codificação de caracteres
+    duration: Duração
   directus_users:
-    status: Status
     first_name: Primeiro Nome
     last_name: Sobrenome
     email: E-mail
-    email_notifications: Notificações por E-mail
     password: Senha
-    role: Função
-    company: Empresa
-    title: Título
-    timezone: Fuso Horário
-    language: Idioma
     avatar: Imagem de Perfil
+    location: Local
+    title: Título
+    description: Descrição
+    tags: Tags
+    language: Idioma
     theme: Tema
     tfa_secret: Autenticação em Duas Etapas
+    status: Status
+    role: Função
+    last_page: Última página
+    last_access: Último acesso
   directus_settings:
     project_name: Nome do projeto
     project_url: URL do projeto
@@ -652,9 +663,9 @@ fields:
     name: Nome do cargo
     icon: Ícone do cargo
     description: Descrição
-    ip_access: Acesso IP
     app_access: Acesso ao app
     admin_access: Acesso de administrador
+    ip_access: Acesso IP
     enforce_tfa: Exigir 2FA
     users: Usuários no cargo
 no_fields_in_collection: 'Ainda não há campos em "{collection}"'
