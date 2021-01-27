@@ -258,9 +258,12 @@ router.get(
 
 		req.session?.destroy(() => {});
 
-		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
-			email,
-		});
+		const { accessToken, refreshToken, expires } = await authenticationService.authenticate(
+			{
+				email,
+			},
+			true
+		);
 
 		if (redirect) {
 			res.cookie('directus_refresh_token', refreshToken, {
