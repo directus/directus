@@ -103,45 +103,50 @@ collection: Kategorie
 collections: Kategorie
 fields:
   directus_activity:
+    item: Primární klíč položky
     action: Akce
     collection: Kategorie
-    item: Primární klíč položky
-    user: Akce podle
     timestamp: Akce podle
-    edited_on: Upraveno
-    comment_deleted_on: Komentář byl smazán
-    ip: IP adresa
-    user_agent: Uživatelský agent
+    user: Akce podle
     comment: Komentář
+    user_agent: Uživatelský agent
+    ip: IP adresa
+  directus_collections:
+    collection: Kategorie
+    icon: Ikona
+    note: Poznámka
+    hidden: Skryté
   directus_files:
     title: Název
+    description: Popis
     tags: Štítky
     location: Poloha
-    description: Popis
-    private_hash: Soukromý hash
-    checksum: Kontrolní součet
-    uploaded_on: Nahráno
+    metadata: Metadata
+    filesize: Velikost souboru
+    modified_on: Upraveno
+    created_on: Vytvořeno
+    created_by: Vytvořil/-a
+    embed: Vložení
     uploaded_by: Nahráno od
     width: Šířka
+    uploaded_on: Nahráno
     height: Výška
     duration: Trvání
-    filesize: Velikost souboru
-    metadata: Metadata
   directus_users:
-    status: Stav
     first_name: Křestní jméno
     last_name: Příjmení
     email: E-mail
-    email_notifications: E-mailová upozornění
     password: Heslo
-    role: Role
-    company: Společnost
-    title: Název
-    timezone: Časové pásmo
-    language: Jazyk
     avatar: Avatar
+    location: Poloha
+    title: Název
+    description: Popis
+    tags: Štítky
+    language: Jazyk
     theme: Téma
     tfa_secret: Dvoufázové ověření
+    status: Stav
+    role: Role
   directus_settings:
     project_name: Název projektu
   directus_fields:
