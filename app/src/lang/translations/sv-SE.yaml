@@ -677,6 +677,8 @@ fields:
     storage_asset_presets: Förval för lagringsobjekt
     storage_asset_transform: Transformering av lagringsobjekt
   directus_fields:
+    collection: Namn kollektion
+    icon: Ikon kollektion
     note: Anteckning
     hidden: Dold
     singleton: Singleton
@@ -684,7 +686,19 @@ fields:
     display_template: Mall
   directus_roles:
     name: Rollens namn
+    icon: Ikon roll
     description: Beskrivning
+    ip_access: Åtkomst med IP
+    app_access: Åtkomst till appen
+    admin_access: Åtkomst admin
+    enforce_tfa: Kräv 2FA
+    users: Användare i rollen
+    module_list: Navigering för modul
+    collection_list: Navigering för kollektion
+no_fields_in_collection: 'Det finns inga fält i "{collection}" ännu'
+do_nothing: Gör ingenting
+generate_and_save_uuid: Generera och spara UUID
+save_current_user_id: Spara nuvarande användar-ID
 save_current_user_role: Spara aktuell användarroll
 save_current_datetime: Spara aktuellt datum/tid
 block: Blockera
@@ -751,6 +765,7 @@ template: Mall
 translation: Översättning
 value: Värde
 view_project: Visa projekt
+weeks: { }
 report_error: Rapportera fel
 interfaces:
   checkboxes:
@@ -905,48 +920,125 @@ interfaces:
     mask: Maskerad
     mask_label: Dölj det riktiga värdet
     nullable: Nullable
+    nullable_label: Spara tomt värde som NULL
+  textarea:
+    textarea: Textfält
+    description: Ange fritext på flera rader
   toggle:
     toggle: Växla
+    description: Växla mellan på och av
+    label_placeholder: Ange en etikett...
     label_default: Aktiverad
   translations:
     display_template: Visningsmall
+    no_collection: Ingen kollektion
   user:
     user: Användare
+    description: Välj en befintlig Directus användare
+    select_mode: Välj läge
     modes:
+      auto: Automatisk
       dropdown: Rullgardinsmeny
+      modal: Popup
+  wysiwyg:
+    wysiwyg: WYSIWYG
+    description: En textredigerare som skriver HTML-innehåll
+    toolbar: Verktygsfält
+    custom_formats: Anpassade format
+    options_override: Skriv över alternativ
 displays:
   boolean:
     boolean: Boolean
+    description: Visa på och av lägen
+    label_on: Etikett aktiv
+    label_on_placeholder: Ange en aktiv etikett...
+    label_off: Etikett avstängd
+    label_off_placeholder: Ange en avstängd etikett...
     icon_on: Ikon på
     icon_off: Ikon Av
+    color_on: Färg på
+    color_off: Färg av
   collection:
     collection: Kollektion
+    description: Visa en kollektion
+    icon_label: Visa kollektionens ikon
   color:
     color: Färg
+    description: Visa en färgad punkt
     default_color: Förvald färg
   datetime:
     datetime: Datum och tid
+    description: Visa värden relaterade till tid
     format: Format
+    format_note: >-
+      Det anpassade formatet accepterar __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Lång
+    short: Kort
+    relative: Relativ
+    relative_label: 'Visa relativ tid, t. ex.: 5 minuter sedan'
   file:
     file: Fil
+    description: Visa filer
+  filesize:
+    filesize: Filstorlek
+    description: Visa storleken på en fil
+  formatted-value:
+    formatted-value: Formaterat värde
+    description: Visa en formaterad version av texten
+    format_title: Formatera titel
+    format_title_label: Auto-formatera inkapsling
+    bold_label: Använd fet stil
+  formatted-json-value:
+    formatted-json-value: Formaterat JSON-värde
+    description: Visa en formaterad version av objektet
   icon:
     icon: Ikon
+    description: Visa en ikon
+    filled: Fylld
+    filled_label: Använd den ifyllda varianten
   image:
     image: Bild
+    description: Visa en liten förhandsgranskning av bilden
     circle: Cirkel
+    circle_label: Visa som en cirkel
   labels:
+    labels: Etiketter
+    description: Visa antingen en eller en lista med etiketter
     default_foreground: Förvald förgrund
     default_background: Förvald bakgrund
+    format_label: Formatera varje etikett
+    show_as_dot: Visa som punkt
     choices_value_placeholder: Ange ett värde...
+    choices_text_placeholder: Ange en text...
+  mime-type:
+    mime-type: MIME Type
+    description: Visa MIME Type av en fil
+    extension_only: Endast tillägg
+    extension_only_label: Visa endast filtillägget
+  rating:
+    rating: Betyg
+    description: Visualisera ett tal som stjärnor i förhållande till max-värdet
+    simple: Enkel
+    simple_label: Visa stjärnor i ett enkelt format
+  raw:
+    raw: Obearbetat värde
+  related-values:
+    related-values: Relaterade värden
+    description: Visa relativa värden
   user:
     user: Användare
+    description: Visa en Directus användare
     avatar: Profilbild
     name: Namn
     both: Båda
+    circle_label: Visa användare i en cirkel
 layouts:
   cards:
     cards: Kort
     image_source: Bildkälla
+    image_fit: Anpassa bildstorlek
+    crop: Beskär
+    contain: Behåll
     title: Rubrik
     subtitle: Underrubrik
   tabular:
