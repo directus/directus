@@ -620,49 +620,59 @@ singleton_label: Behandla som ett enskilt objekt
 system_fields_locked: Systemfälten är låsta och kan inte redigeras
 fields:
   directus_activity:
+    item: Primärnyckel för objekt
     action: Åtgärd
     collection: Kollektion
-    item: Primärnyckel för objekt
-    user: Åtgärd av
     timestamp: Åtgärd på
-    edited_on: Redigerad den
-    comment_deleted_on: Kommentar borttagen
-    ip: IP-adress
-    user_agent: Användaragent
+    user: Åtgärd av
     comment: Kommentera
+    user_agent: Användaragent
+    ip: IP-adress
+    revisions: Revidering
   directus_collections:
+    collection: Kollektion
+    icon: Ikon
+    note: Anteckning
+    display_template: Visningsmall
+    hidden: Dold
+    singleton: Singleton
     translations: Översättningar för kollektionens namn
+    sort_field: Sortera fält
   directus_files:
     title: Rubrik
+    description: Beskrivning
     tags: Etiketter
     location: Position
-    description: Beskrivning
-    filename_download: Filnamn Ladda ner
-    filename_disk: Filnamn Disk
-    private_hash: Privat hasch
-    checksum: Kontrollsumma
-    uploaded_on: Uppladdad den
-    uploaded_by: Uppladdad av
-    width: Bredd
-    height: Höjd
-    duration: Varaktighet
-    filesize: Filstorlek
     metadata: Metadata
+    filesize: Filstorlek
+    modified_on: Ändrad den
+    created_on: Skapad den
+    created_by: Skapad av
+    embed: Bädda in
+    uploaded_by: Uppladdad av
+    folder: Mapp
+    width: Bredd
+    uploaded_on: Uppladdad den
+    height: Höjd
+    charset: Teckenuppsättning
+    duration: Varaktighet
   directus_users:
-    status: Status
     first_name: Förnamn
     last_name: Efternamn
     email: E-post
-    email_notifications: E-postaviseringar
     password: Lösenord
-    role: Roll
-    company: Företag
-    title: Rubrik
-    timezone: Tidszon
-    language: Språk
     avatar: Profilbild
+    location: Position
+    title: Rubrik
+    description: Beskrivning
+    tags: Etiketter
+    language: Språk
     theme: Tema
     tfa_secret: Tvåfaktorsautentisering
+    status: Status
+    role: Roll
+    last_page: Sista sidan
+    last_access: Senaste åtkomsten
   directus_settings:
     project_name: Projektnamn
     project_url: Projektets URL
@@ -672,7 +682,6 @@ fields:
     public_background: Publik bakgrund
     public_note: Publik anteckning
     auth_password_policy: Policy för lösenord vid inloggning
-    auth_idle_timeout: Auth Idle Timeout
     auth_login_attempts: Inloggningsförsök
     storage_asset_presets: Förval för lagringsobjekt
     storage_asset_transform: Transformering av lagringsobjekt
@@ -688,9 +697,9 @@ fields:
     name: Rollens namn
     icon: Ikon roll
     description: Beskrivning
-    ip_access: Åtkomst med IP
     app_access: Åtkomst till appen
     admin_access: Åtkomst admin
+    ip_access: Åtkomst med IP
     enforce_tfa: Kräv 2FA
     users: Användare i rollen
     module_list: Navigering för modul
@@ -765,7 +774,6 @@ template: Mall
 translation: Översättning
 value: Värde
 view_project: Visa projekt
-weeks: { }
 report_error: Rapportera fel
 interfaces:
   checkboxes:
