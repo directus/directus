@@ -417,7 +417,7 @@ export default defineComponent({
 		}
 
 		async function setLang(user: Record<string, any>) {
-			if (userStore.state.currentUser!.id === item.value?.id) return;
+			if (userStore.state.currentUser!.id !== item.value?.id) return;
 
 			const newLang = user?.language;
 
