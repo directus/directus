@@ -32,37 +32,39 @@ export class AuthenticationService {
 	/**
 	 * Retrieve the tokens for a given user email.
 	 *
-	 * Password is optional to allow usage of this function within the SSO flow and extensions. Make sure
-	 * to handle password existence checks elsewhere
+	 * Pass skipAuthChecks param to allow usage of this function within the SSO flow and extensions.
+	 * Make sure to handle password existence checks elsewhere
 	 */
-	async authenticate({ email, password, ip, userAgent, otp }: AuthenticateOptions) {
+	async authenticate({ email, password, ip, userAgent, otp }: AuthenticateOptions, skipAuthChecks = false) {
 		const user = await database
 			.select('id', 'password', 'role', 'tfa_secret', 'status')
 			.from('directus_users')
 			.where({ email })
 			.first();
 
-		if (!user || user.status !== 'active') {
-			throw new InvalidCredentialsException();
-		}
+		if (!skipAuthChecks) {
+			if (!user || user.status !== 'active') {
+				throw new InvalidCredentialsException();
+			}
 
-		if (!password || !user.password) {
-			throw new InvalidCredentialsException();
-		}
+			if (!password || !user.password) {
+				throw new InvalidCredentialsException();
+			}
 
-		if (password !== undefined && (await argon2.verify(user.password, password)) === false) {
-			throw new InvalidCredentialsException();
-		}
+			if (password !== undefined && (await argon2.verify(user.password, password)) === false) {
+				throw new InvalidCredentialsException();
+			}
 
-		if (user.tfa_secret && !otp) {
-			throw new InvalidOTPException(`"otp" is required`);
-		}
+			if (user.tfa_secret && !otp) {
+				throw new InvalidOTPException(`"otp" is required`);
+			}
 
-		if (user.tfa_secret && otp) {
-			const otpValid = await this.verifyOTP(user.id, otp);
+			if (user.tfa_secret && otp) {
+				const otpValid = await this.verifyOTP(user.id, otp);
 
-			if (otpValid === false) {
-				throw new InvalidOTPException(`"otp" is invalid`);
+				if (otpValid === false) {
+					throw new InvalidOTPException(`"otp" is invalid`);
+				}
 			}
 		}
 
