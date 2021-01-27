@@ -508,47 +508,56 @@ collections: Kolekcje
 system_fields_locked: Pola systemowe są zablokowane i nie można ich edytować
 fields:
   directus_activity:
+    item: Klucz główny produktu
     action: Czynność
     collection: Kolekcja
-    item: Klucz główny produktu
-    user: Czynność przez
     timestamp: Czynność na
-    edited_on: Edytowano
-    comment_deleted_on: Komentarz usunięty
-    ip: Adres IP
-    user_agent: User agent
+    user: Czynność przez
     comment: Komentarz
+    user_agent: User agent
+    ip: Adres IP
+    revisions: Wersje
+  directus_collections:
+    collection: Kolekcja
+    icon: Ikona
+    note: Notatka
+    display_template: Wyświetl szablon
+    hidden: Ukryte
+    sort_field: Pole sortowania
   directus_files:
     title: Tytuł
+    description: Opis
     tags: Etykiety
     location: Lokalizacja
-    description: Opis
-    filename_download: Pobierz nazwę pliku
-    filename_disk: Filename Disk
-    private_hash: Prywatny hash
-    checksum: Suma kontrolna
-    uploaded_on: Przesłano
+    metadata: Metadane
+    filesize: Rozmiar pliku
+    modified_on: Modyfikowane Dnia
+    created_on: Stworzony dnia
+    created_by: Stworzone przez
+    embed: Osadzony
     uploaded_by: Przesłane przez
+    folder: Folder
     width: Szerokość
+    uploaded_on: Przesłano
     height: Wysokość
     duration: Czas trwania
-    filesize: Rozmiar pliku
-    metadata: Metadane
   directus_users:
-    status: Status
     first_name: Imię
     last_name: Nazwisko
     email: E-Mail
-    email_notifications: Powiadomienia e-mail
     password: Hasło
-    role: Rola
-    company: Firma
-    title: Tytuł
-    timezone: Strefa czasowa
-    language: Język
     avatar: Awatar
+    location: Lokalizacja
+    title: Tytuł
+    description: Opis
+    tags: Etykiety
+    language: Język
     theme: Motyw
     tfa_secret: Uwierzytelnianie dwuetapowe
+    status: Status
+    role: Rola
+    last_page: Ostatnia strona
+    last_access: Ostatni dostęp
   directus_settings:
     project_name: Nazwa projektu
     project_url: Adres URL projektu
@@ -567,9 +576,9 @@ fields:
     name: Nazwa roli
     icon: Ikona roli
     description: Opis
-    ip_access: Dostęp IP
     app_access: Dostęp aplikacji
     admin_access: Dostęp do panelu administratora
+    ip_access: Dostęp IP
     enforce_tfa: Wymagaj uwierzytelniania dwuskładnikowego
     users: Użytkownicy w roli
 no_fields_in_collection: 'Nie ma jeszcze żadnych pól w "{collection}"'
