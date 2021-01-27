@@ -306,7 +306,7 @@ reset_interface: Atstatyti sąsają
 display_not_found: 'Atvaizdavimo šablonas "{display}" nerastas.'
 reset_display: Atstatyti atvaizdavimo šabloną
 m2a_builder: Redaktorius (M2A)
-item_count: 'Nėra elementų | Vienas elementas | {count} elementų'
+item_count: 'Nėra elementų | Vienas elementas | {count} elementai/ų'
 no_items_copy: Kolekcijoje dar nėra elementų.
 file_count: 'Nėra failų | Vienas failas | {count} failų'
 no_files_copy: Nėra failų.
@@ -707,6 +707,7 @@ done: Atlikta
 duplicate: Dublikatas
 email: El. paštas
 embed: Įterptas
+fallback_icon: Atsarginė ikona
 field: Laukelis | Laukeliai
 file: Failas
 file_library: Failų biblioteka
@@ -716,15 +717,47 @@ icon: Ikona
 info: Informacija
 normal: Normalus
 success: Pavyko
+warning: Įspėjimas
+danger: Pavojus
+junction_collection: Jungiamoji kolekcija
+latency: Vėlavimas
+login: Prisijungti
+my_activity: Mano veikla
+not_authenticated: Neprisijungta
+authenticated: Prisijungta
+options: Parinktys
+otp: Vienkartinis slaptažodis
 password: Slaptažodis
+permissions: Leidimai
+relationship: Sąryšis
+reset: Atstatyti
+reset_password: Atstatyti slaptažodį
 revisions: Pakeitimai
+revert: Atstatyti
+save: Išsaugoti
+schema: Schema
+search: Paieška
+select_existing: Pasirinkti esamą
+select_field_type: Pasirinkti lauko tipą
+select_interface: Pasirinkti sąsają
+settings: Nustatymai
+sign_in: Prisijungti
+sign_out: Atsijungti
+sign_out_confirm: Ar tikrai norite atsijungti?
+something_went_wrong: Įvyko klaida.
 sort_direction: Rūšiavimo kryptis
+sort_asc: Rūšiuoti didėjimo tvarka
+sort_desc: Rūšiuoti mažėjimo tvarka
 template: Šablonas
+translation: Vertimas
+value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
 interfaces:
   checkboxes:
     checkboxes: Žymimieji langeliai
+    description: Pasirinkite tarp kelių variantų naudodami žymimuosius langelius
+    allow_other: Leisti kita
     show_more: 'Rodyti dar {count}'
     items_shown: Rodomi elementai
   code:
@@ -770,7 +803,9 @@ interfaces:
   dropdown:
     description: Pasirinkite reikšmę iš sąrašo
     choices_placeholder: Pridėti naują pasirinkimą
+    allow_other: Leisti kita
     allow_other_label: Leisti kitas reikšmes
+    allow_none: Leisti tuščią reikšmę
     allow_none_label: Leisti nepasirinkti nieko
     choices_name_placeholder: Įveskite pavadinimą...
     choices_value_placeholder: Įveskite reikšmę...
@@ -786,6 +821,7 @@ interfaces:
   hash:
     hash: Maiša
     description: Įveskite reikšmę išmaišymui
+    masked: Paslėptas
     masked_label: Paslėpti tikrąsias reikšmes
   icon:
     icon: Ikona
@@ -797,12 +833,24 @@ interfaces:
   interface:
     interface: Sąsaja
     description: Pasirinkti egzistuojančią sąsają
+    placeholder: Pasirinkti sąsają...
+  interface-options:
+    interface-options: Sąsajos nustatymai
   many-to-one:
     display_template: Rodymo šablonas
   repeater:
     field_note_placeholder: Įvesti lauko pastabą...
   tags:
     tags: Žymos
+    whitespace: Matomi tarpai
+    hyphen: Pakeisti į brūkšnelius
+    underscore: Pakeisti į pabraukimo brūkšnelius
+    remove: Pašalinti tuščius tarpus
+    capitalization: Didžiosios/mažosios raidės
+    uppercase: Pakeisti į didžiąsias raides
+    lowercase: Pakeisti į mažąsias raides
+    auto_formatter: Naudoti automatinį antraštės formatavimą
+    alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
     add_tags: Pridėti žymes...
   text-input:
@@ -810,7 +858,10 @@ interfaces:
     description: Įveskite vieną teksto eilutę
     trim: Apkarpyti
     trim_label: Apkarpyti iš pradžios ir pabaigos
+    mask: Paslėptas
     mask_label: Paslėpti tikrąją reikšmę
+    nullable: Gali būti Null
+    nullable_label: Išsaugoti tuščią reikšmė kaip NULL
   textarea:
     textarea: Teksto sritis
     description: Įveskite kelių eilučių neformatuotą tesktą
@@ -835,26 +886,68 @@ interfaces:
     description: Formatuoto teksto redaktorius
     toolbar: Įrankių juosta
     custom_formats: Pasirinktinis formatos
+    options_override: Parinkčių perrašymas
 displays:
   boolean:
     boolean: Loginis
+    description: Rodyti įjungimo/išjungimo būsenas
+    label_on: Tekstas, kai įjungta
+    label_on_placeholder: Įveskite tekstą, kai įjungta...
+    label_off: Tekstas, kai išjungta
+    label_off_placeholder: Įveskite tekstą, kai išjungta...
     icon_on: Įjungumo ikona
     icon_off: Išjungimo ikona
+    color_on: Spalva, kai įjungta
+    color_off: Spalva, kai išjungta
   collection:
     collection: Rinkinys
+    description: Rodyti kolekciją
+    icon_label: Rodyti kolekcijos ikoną
   color:
     color: Spalva
+    description: Rodyti spalvotą tašką
+    default_color: Numatytoji spalva
   datetime:
     datetime: Data ir laikas
+    description: Rodyti reikšmes susijusias su laiku
     format: Formatas
+    format_note: >-
+      Pasirinktinis formatas priima __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Ilgas
+    short: Trumpas
+    relative: Santykinis
+    relative_label: 'Rodyti santykinį laiką, pvz.: prieš 5 minutes'
   file:
     file: Failas
+    description: Rodyti failus
+  filesize:
+    filesize: Failo dydis
+    description: Rodyti failo dydį
+  formatted-value:
+    formatted-value: Suformatuota reikšmė
+    description: Rodyti suformatuotą teksto versiją
+    format_title: Formatuoti antraštę
+    bold_label: Naudoti paryškintą stilių
+  formatted-json-value:
+    formatted-json-value: Suformatuota JSON reikšmė
+    description: Rodyti suformatuotą objekto versiją
   icon:
     icon: Ikona
+    description: Rodyti ikoną
+    filled: Užpildyta
+    filled_label: Naudoti užpildytą variantą
   image:
     image: Paveikslėlis
+    description: Rodyti nedidelį paveikslėlį
     circle: Apskritimas
+    circle_label: Atvaizduoti kaip apskritimą
   labels:
+    labels: Žymos
+    description: Rodyti vieną ar kelias žymas
+    default_foreground: Numatytoji teksto spalva
+    default_background: Numatytoji fono spalva
+    format_label: Formatuoti kiekvieną žymą
+    show_as_dot: Rodyti kaip tašką
     choices_value_placeholder: Įveskite reikšmę...
   user:
     user: Vartotojas
