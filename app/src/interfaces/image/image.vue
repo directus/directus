@@ -128,7 +128,8 @@ export default defineComponent({
 				if (oldValue && newValue === null) {
 					deselect();
 				}
-			}
+			},
+			{ immediate: true }
 		);
 
 		const { edits, stageEdits } = useEdits();
