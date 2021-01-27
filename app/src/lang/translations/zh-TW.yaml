@@ -172,47 +172,52 @@ collection: 集合
 collections: 資料集
 fields:
   directus_activity:
+    item: 項目主鍵值
     action: 操作
     collection: 集合
-    item: 項目主鍵值
-    user: 操作人
     timestamp: 操作於
-    edited_on: 編輯於
-    comment_deleted_on: 評論刪除於
-    ip: IP位址
-    user_agent: 代理用戶
+    user: 操作人
     comment: 評論
+    user_agent: 代理用戶
+    ip: IP位址
+  directus_collections:
+    collection: 集合
+    icon: 圖示
+    note: 備註
+    display_template: 顯示模板
+    hidden: 隱藏
+    sort_field: 排序欄位
   directus_files:
     title: 標題
+    description: 描述說明
     tags: 標籤
     location: 位置
-    description: 描述說明
-    filename_download: 下載文件名稱
-    filename_disk: 磁碟文件名稱
-    private_hash: 私有 Hash
-    checksum: 校驗和
-    uploaded_on: 上傳於
+    metadata: 元數據
+    filesize: 檔案大小
+    modified_on: 修改日期
+    created_on: 建立於
+    created_by: 建立者
+    embed: 內嵌
     uploaded_by: 上傳者
     width: 寬度
+    uploaded_on: 上傳於
     height: 高度
     duration: 持續時間
-    filesize: 檔案大小
-    metadata: 元數據
   directus_users:
-    status: 狀態
     first_name: 名字
     last_name: 姓氏
     email: 電子郵件
-    email_notifications: 電子郵件通知
     password: 密碼
-    role: 角色
-    company: 公司
-    title: 標題
-    timezone: 時區
-    language: 語言
     avatar: 頭像
+    location: 位置
+    title: 標題
+    description: 描述說明
+    tags: 標籤
+    language: 語言
     theme: 主題
     tfa_secret: 雙重身份驗證
+    status: 狀態
+    role: 角色
   directus_settings:
     project_name: 專案名稱
   directus_fields:
