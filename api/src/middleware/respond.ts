@@ -55,11 +55,17 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			res.attachment(`${filename}.csv`);
 			res.set('Content-Type', 'text/csv');
 			const stream = new PassThrough();
-			stream.end(Buffer.from(JSON.stringify(res.locals.payload.data), 'utf-8'));
-			const json2csv = new Transform({
-				transforms: [transforms.flatten({ separator: '.' })],
-			});
-			return stream.pipe(json2csv).pipe(res);
+
+			if (!res.locals.payload?.data || res.locals.payload.data.length === 0) {
+				stream.end(Buffer.from(''));
+				return stream.pipe(res);
+			} else {
+				stream.end(Buffer.from(JSON.stringify(res.locals.payload.data), 'utf-8'));
+				const json2csv = new Transform({
+					transforms: [transforms.flatten({ separator: '.' })],
+				});
+				return stream.pipe(json2csv).pipe(res);
+			}
 		}
 	}
 
