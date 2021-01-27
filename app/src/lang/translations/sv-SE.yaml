@@ -27,6 +27,8 @@ connection_fair: God anslutning
 connection_poor: Dålig anslutning
 rename_folder: Döp om mapp
 delete_folder: Ta bort mapp
+prefix: Prefix
+suffix: Suffix
 reset_bookmark: Återställ bokmärke
 rename_bookmark: Döp om bokmärke
 update_bookmark: Uppdatera bokmärke
@@ -75,9 +77,13 @@ validationError:
 all_access: Alla behörigheter
 no_access: Ingen åtkomst
 use_custom: Använd anpassad
+field_standard: Standard
 field_presentation: Presentation & alias
 field_file: Enskild fil
 field_files: Flera filer
+field_m2o: M2O Relation
+field_o2m: O2M Relation
+field_m2m: M2M Relation
 field_translations: Översättningar
 item_permissions: Behörigheter för objekt
 field_permissions: Behörigheter för fält
@@ -170,6 +176,8 @@ length: Längd
 precision_scale: Precision & skala
 readonly: Skrivskyddad
 unique: Unik
+updated_on: Uppdaterad den
+updated_by: Uppdaterad av
 primary_key: Primärnyckel
 foreign_key: Främmande nyckel
 finish_setup: Slutför installation
@@ -347,6 +355,7 @@ collection_created: Kollektion skapad
 modified_on: Ändrad den
 card_size: Kortets storlek
 sort_field: Sortera fält
+sort: Sortera
 status: Status
 toggle_manual_sorting: Växla manuell sortering
 bookmark_doesnt_exist: Bokmärket finns inte
@@ -366,19 +375,80 @@ errors:
   COLLECTION_NOT_FOUND: "Kollektionen finns inte"
   FIELD_NOT_FOUND: Fältet hittades inte
   FORBIDDEN: Otillåten
+  INVALID_CREDENTIALS: Fel användarnamn eller lösenord
+  INVALID_OTP: Fel engångslösenord
+  INVALID_PAYLOAD: Ogiltig payload
+  INVALID_QUERY: Ogiltig query
+  ITEM_LIMIT_REACHED: Objektgränsen har uppnåtts
+  ITEM_NOT_FOUND: Objektet hittades inte
+  ROUTE_NOT_FOUND: Hittades inte
+  UNKNOWN: Oväntat fel
+value_hashed: Värde säkert hashat
+bookmark_name: Bokmärkesnamn...
+create_bookmark: Skapa bokmärke
+edit_bookmark: Redigera bokmärke
 bookmarks: Bokmärken
+presets: Förval
+unexpected_error: Oväntat fel
+unexpected_error_copy: Ett oväntat fel har inträffat. Försök igen senare.
+copy_details: Kopiera detaljer
+no_app_access: Ingen appåtkomst
+no_app_access_copy: Den här användaren får inte använda administratörs-appen.
+password_reset_sent: Vi har skickat en säker länk till dig för att återställa ditt lösenord
+password_reset_successful: Lösenordet har återställts
 back: Tillbaka
+editing_image: Redigerar bild
+square: Kvadrat
+free: Valfri
+flip_horizontal: Vänd horisontellt
+flip_vertical: Vänd vertikalt
+aspect_ratio: Bildförhållande
+rotate: Rotera
+all_users: Alla användare
+delete_collection: Ta bort kollektion
+update_collection_success: Uppdaterad kollektion
+delete_collection_success: Raderar kollektion
+start_end_of_count_items: '{start}-{end} av {count} objekt'
+delete_collection_are_you_sure: >-
+  Är du säker på att du vill ta bort denna kollektion? Detta kommer att ta bort kollektionen och alla objekt i den. Denna åtgärd är permanent.
+collections_shown: Visade kollektioner
+visible_collections: Synliga kollektioner
+hidden_collections: Dolda kollektioner
+unmanaged_collections: Okonfigurerade kollektioner
+system_collections: Systemets kollektioner
+placeholder: Platshållare
 icon_left: Ikon till vänster
 icon_right: Ikon höger
+font: Typsnitt
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
 divider: Avdelare
+color: Färg
+circle: Cirkel
+empty_item: Tomt objekt
+log_in_with: 'Logga in med {provider}'
+advanced_filter: Avancerat filter
+delete_advanced_filter: Ta bort filter
+change_advanced_filter_operator: Ändra operatör
 operators:
+  eq: Lika med
+  neq: Inte lika med
   lt: Mindre än
   gt: Större än
   lte: Mindre än eller lika med
+  gte: Större än eller lika med
+  in: Är en av
+  nin: Är inte en av
+  null: Är null
+  nnull: Är inte null
   contains: Innehåller
   ncontains: Innehåller ej
+  between: Är mellan
+  nbetween: Är inte mellan
   empty: Är tom
 loading: Laddar...
+create_item: Skapa objekt
 display_template: Visningsmall
 no_results: Inga resultat
 role: Roll
@@ -512,6 +582,8 @@ interfaces:
     collection: Kollektion
   collections:
     collections: Kollektioner
+  color:
+    color: Färg
   datetime:
     datetime: Datum och tid
   display-template:
@@ -552,6 +624,7 @@ displays:
   collection:
     collection: Kollektion
   color:
+    color: Färg
     default_color: Förvald färg
   datetime:
     datetime: Datum och tid
@@ -560,6 +633,8 @@ displays:
     file: Fil
   icon:
     icon: Ikon
+  image:
+    circle: Cirkel
   labels:
     default_foreground: Förvald förgrund
     default_background: Förvald bakgrund
