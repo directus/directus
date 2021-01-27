@@ -123,47 +123,52 @@ collection: المجموعة
 collections: مجموعات
 fields:
   directus_activity:
+    item: المفتاح الأساسي للعنصر
     action: الإجراء
     collection: المجموعة
-    item: المفتاح الأساسي للعنصر
-    user: تم بواسطة
     timestamp: تم بتاريخ
-    edited_on: تم التعديل بتاريخ
-    comment_deleted_on: تم حذف الرد بتاريخ
-    ip: عنوان IP
-    user_agent: وكيل المستخدم
+    user: تم بواسطة
     comment: تعليق
+    user_agent: وكيل المستخدم
+    ip: عنوان IP
+  directus_collections:
+    collection: المجموعة
+    icon: أيقونة
+    note: ملحوظة
+    display_template: عرض القالب
+    hidden: مخفي
+    sort_field: فرز الحقل
   directus_files:
     title: العنوان
+    description: التفاصيل
     tags: الوسوم
     location: الموقع
-    description: التفاصيل
-    filename_download: تحميل اسم الملف
-    filename_disk: قرص اسم الملف
-    private_hash: التشفير الخاص
-    checksum: بصمة الملف
-    uploaded_on: تم التحميل بتاريخ
+    metadata: البيانات التعريفية
+    filesize: حجم الملف
+    modified_on: التعديل في
+    created_on: تم الإنشاء بتاريخ
+    created_by: تم الإنشاء بواسطة
+    embed: تضمين
     uploaded_by: تم التحميل بواسطة
     width: العرض
+    uploaded_on: تم التحميل بتاريخ
     height: الارتفاع
     duration: المدة
-    filesize: حجم الملف
-    metadata: البيانات التعريفية
   directus_users:
-    status: حالة
     first_name: الاسم الأول
     last_name: الاسم الأخير
     email: البريد الإلكتروني
-    email_notifications: إشعارات البريد الإلكتروني
     password: كلمة المرور
-    role: الدور
-    company: الشركة
-    title: العنوان
-    timezone: المنطقة الزمنية
-    language: لغة
     avatar: الصورةالرمزية
+    location: الموقع
+    title: العنوان
+    description: التفاصيل
+    tags: الوسوم
+    language: لغة
     theme: السمة
     tfa_secret: التحقق بخطوتين
+    status: حالة
+    role: الدور
   directus_settings:
     project_name: اسم المشروع
   directus_fields:
