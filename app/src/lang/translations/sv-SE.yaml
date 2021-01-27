@@ -575,6 +575,17 @@ unsaved_changes: Osparade ändringar
 unsaved_changes_copy: Är du säker på att du vill lämna denna sida?
 discard_changes: Ignorera ändringar
 keep_editing: Fortsätt redigera
+page_help_collections_overview: '**Översikt kollektioner** — Lista över alla kollektioner du har tillgång till.'
+page_help_collections_collection: >-
+  **Bläddra bland objekt** — Listar alla {collection} objekt du har tillgång till. Anpassa layout, filter och sortering för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
+page_help_collections_item: >-
+  **Detaljvy för objekt** — Ett formulär för att visa och hantera detta objekt. Sidopanelen innehåller också en fullständig historik över revisioner och inbäddade kommentarer.
+page_help_activity_collection: >-
+  **Bläddra i aktivitetshistoriken** — En omfattande lista över alla dina användares system- och innehållsaktiviteter.
+page_help_docs_global: >-
+  **Översikt dokumentation** — Dokument som är skräddarsydda specifikt för projektets version och schema.
+page_help_files_collection: >-
+  **Filbibliotek** — Visar alla filer uppladdade till detta projekt. Anpassa layout, filter och sortering för att skräddarsy din vy och även spara bokmärken för dessa olika konfigurationer för snabb åtkomst.
 page_help_settings_presets_collection: >-
   **Bläddra i förinställningar** — Visar alla förinställningar i projektet, inklusive: användare, roll och globala bokmärken, samt standardvyer.
 add_new: Lägg till ny
