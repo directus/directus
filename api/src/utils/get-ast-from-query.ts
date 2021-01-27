@@ -203,9 +203,14 @@ export default async function getASTFromQuery(
 
 		const fieldsInCollection = await getFieldsInCollection(parentCollection);
 
-		let allowedFields = permissions
-			? permissions.find((permission) => parentCollection === permission.collection)?.fields?.split(',')!
-			: fieldsInCollection;
+		let allowedFields = fieldsInCollection;
+
+		if (permissions) {
+			const permittedFields = permissions
+				.find((permission) => parentCollection === permission.collection)
+				?.fields?.split(',');
+			if (permittedFields) allowedFields = permittedFields;
+		}
 
 		// In case of full read permissions
 		if (allowedFields[0] === '*') allowedFields = fieldsInCollection;
