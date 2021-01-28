@@ -312,7 +312,7 @@ create: Erstellen
 on_update: Beim Aktualisieren
 read: Lesen
 update: Aktualisieren
-select_fields: Fielder auswählen
+select_fields: Felder auswählen
 bold: Fett
 toggle: Umschalten
 icon_on: Symbol an
