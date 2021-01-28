@@ -57,12 +57,7 @@
 		</template>
 
 		<template #actions>
-			<v-dialog
-				v-if="!isNew"
-				v-model="confirmDelete"
-				:disabled="deleteAllowed === false"
-				@esc="confirmDelete = false"
-			>
+			<v-dialog v-if="!isNew" v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
 						rounded

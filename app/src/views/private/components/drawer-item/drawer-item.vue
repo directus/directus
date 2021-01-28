@@ -11,22 +11,16 @@
 				<v-form
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
-					:collection="junctionRelatedCollection"
 					:primary-key="relatedPrimaryKey"
 					:edits="_edits[junctionField]"
+					:fields="junctionRelatedCollectionFields"
 					@input="setJunctionEdits"
 				/>
 
 				<v-divider v-if="showDivider" />
 			</template>
 
-			<v-form
-				:loading="loading"
-				:initial-values="item"
-				:collection="collection"
-				:primary-key="primaryKey"
-				v-model="_edits"
-			/>
+			<v-form :loading="loading" :initial-values="item" :primary-key="primaryKey" :fields="fields" v-model="_edits" />
 		</div>
 	</v-drawer>
 </template>
@@ -40,6 +34,7 @@ import { useFieldsStore, useRelationsStore } from '../../../../stores';
 import i18n from '../../../../lang';
 import { Relation, Field } from '../../../../types';
 import { unexpectedError } from '../../../../utils/unexpected-error';
+import { usePermissions } from '../../../../composables/use-permissions';
 
 export default defineComponent({
 	model: {
@@ -111,6 +106,18 @@ export default defineComponent({
 			);
 		});
 
+		const { fields: junctionRelatedCollectionFields } = usePermissions(
+			junctionRelatedCollection,
+			computed(() => item.value && item.value[props.junctionField]),
+			computed(() => props.primaryKey === '+')
+		);
+
+		const { fields } = usePermissions(
+			collection,
+			item,
+			computed(() => props.primaryKey === '+')
+		);
+
 		return {
 			_active,
 			_edits,
@@ -123,6 +130,8 @@ export default defineComponent({
 			junctionRelatedCollection,
 			setJunctionEdits,
 			showDivider,
+			junctionRelatedCollectionFields,
+			fields,
 		};
 
 		function useActiveState() {
