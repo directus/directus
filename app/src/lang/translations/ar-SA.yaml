@@ -1,20 +1,33 @@
 ---
 edit_field: تعديل الحقل
+duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
 fill_width: العرض الكامل
 enter_password_to_enable_tfa: أدخل كلمة المرور الخاصة بك لتمكين المصادقة الثنائية
 add_field: إضافة حقل
+role_name: إسم الدور
 required: مطلوب
 create_role: إنشاء دور أو صلاحية
+create_user: إضافة مستخدم
 delete_bookmark: حذف إشارة مرجعية
 directus_version: إصدار Directus
+archive: أرشفة
+unarchive: إزالة من الأرشيف
+unarchive_confirm: هل أنت متأكد من أنك تريد إلغاء أرشفة هذا العنصر؟
+validationError:
+  empty: يجب أن تكون القيمة فارغة
+  nempty: لا يمكن أن تكون القيمة فارغة
+delete_field: حذف الحقل
 language: لغة
+camera: الكاميرا
 create_field: إنشاء حقل
+hidden_field: حقل مخفي
 hidden_on_detail: مخفي في التفاصيل
 date: التاريخ
 decimal: عشري
 text: نص
+create_translations: إنشاء ترجمات
 auto_generate: إنشاء تلقائي
 add_note: أضف ملاحظة مفيدة للمستخدمين...
 default_value: القيمة الافتراضية
@@ -50,11 +63,19 @@ months:
   october: أكتوير
   november: نوفمبر
   december: ديسمبر
+import: إستيراد
+file_details: تفاصيل الملف
+dimensions: الأبعاد
 size: حجم
 checksum: بصمة الملف
 owner: المالك
 download: تنزيل
+open: فتح
+open_in_new_window: فتح في نافذة جديدة
+no_file_selected: لم يتم تحديد ملف
+download_file: تحميل الملف
 name: الاسم
+type: النوع
 created_by: تم الإنشاء بواسطة
 created_on: تم الإنشاء بتاريخ
 save_and_stay: حفظ و إستمرار
@@ -69,19 +90,32 @@ activity: الأنشطة
 webhooks: روابط الويب (Webhooks)
 field_width: عرض الحقل
 user_directory: دليل المستخدمين
+documentation: التوثيق
 duration: المدة
 modified_on: التعديل في
 sort_field: فرز الحقل
 status: حالة
 edit: تعديل
+disable_tfa: تعطيل المصادقة الثنائية 2FA
+create_account: إنشاء حساب
+account_created_successfully: تم إنشاء الحساب بنجاح
+errors:
+  FIELD_NOT_FOUND: الحقل غير موجود
+  ROUTE_NOT_FOUND: غير موجود
 bookmarks: محفوظات
+unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
+copy_details: نسخ التفاصيل
 back: رجوع
+square: مربع
 placeholder: مكان محجوز
 icon_left: أيقونة اليسار
 icon_right: أيقونة اليمين
+serif: خط سيريف Serif
 monospace: Monospace
 divider: الفاصل
 color: لون
+circle: دائرة
+log_in_with: 'تسجيل الدخول باستخدام {provider}'
 operators:
   lt: أقل من
   gt: أكبر من
@@ -106,6 +140,8 @@ wysiwyg_options:
 dropdown: قائمة منسدلة
 choices: الخيارات
 deselect: إلغاء تحديد
+other: أخرى...
+unknown_user: مستخدم غير معروف
 editing_in_batch: 'تعديل دفعة من  {count} عناصر'
 settings_permissions: الأدوار والأذونات
 settings_project: إعدادات المشروع
@@ -123,54 +159,62 @@ collection: المجموعة
 collections: مجموعات
 fields:
   directus_activity:
+    item: المفتاح الأساسي للعنصر
     action: الإجراء
     collection: المجموعة
-    item: المفتاح الأساسي للعنصر
-    user: تم بواسطة
     timestamp: تم بتاريخ
-    edited_on: تم التعديل بتاريخ
-    comment_deleted_on: تم حذف الرد بتاريخ
-    ip: عنوان IP
-    user_agent: وكيل المستخدم
+    user: تم بواسطة
     comment: تعليق
+    user_agent: وكيل المستخدم
+    ip: عنوان IP
+  directus_collections:
+    collection: المجموعة
+    icon: أيقونة
+    note: ملحوظة
+    display_template: عرض القالب
+    hidden: مخفي
+    sort_field: فرز الحقل
   directus_files:
     title: العنوان
+    description: التفاصيل
     tags: الوسوم
     location: الموقع
-    description: التفاصيل
-    filename_download: تحميل اسم الملف
-    filename_disk: قرص اسم الملف
-    private_hash: التشفير الخاص
-    checksum: بصمة الملف
-    uploaded_on: تم التحميل بتاريخ
+    metadata: البيانات التعريفية
+    filesize: حجم الملف
+    modified_on: التعديل في
+    created_on: تم الإنشاء بتاريخ
+    created_by: تم الإنشاء بواسطة
+    embed: تضمين
     uploaded_by: تم التحميل بواسطة
     width: العرض
+    uploaded_on: تم التحميل بتاريخ
     height: الارتفاع
     duration: المدة
-    filesize: حجم الملف
-    metadata: البيانات التعريفية
   directus_users:
-    status: حالة
     first_name: الاسم الأول
     last_name: الاسم الأخير
     email: البريد الإلكتروني
-    email_notifications: إشعارات البريد الإلكتروني
     password: كلمة المرور
-    role: الدور
-    company: الشركة
-    title: العنوان
-    timezone: المنطقة الزمنية
-    language: لغة
     avatar: الصورةالرمزية
+    location: الموقع
+    title: العنوان
+    description: التفاصيل
+    tags: الوسوم
+    language: لغة
     theme: السمة
     tfa_secret: التحقق بخطوتين
+    status: حالة
+    role: الدور
   directus_settings:
     project_name: اسم المشروع
+    project_color: لون المشروع
+    project_logo: شعار المشروع
   directus_fields:
     note: ملحوظة
     hidden: مخفي
     display_template: قالب
   directus_roles:
+    name: إسم الدور
     description: التفاصيل
 comment: تعليق
 continue: واصل
@@ -289,6 +333,8 @@ displays:
     filesize: حجم الملف
   icon:
     icon: أيقونة
+  image:
+    circle: دائرة
   rating:
     rating: التقييم
   user:

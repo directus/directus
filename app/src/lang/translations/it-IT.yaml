@@ -486,49 +486,58 @@ collections: Raccolte
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
 fields:
   directus_activity:
+    item: Chiave primaria elemento
     action: Azioni
     collection: Raccolta
-    item: Chiave primaria elemento
-    user: Azione di
     timestamp: Azione il
-    edited_on: Modificato il
-    comment_deleted_on: Commento eliminato il
-    ip: Indirizzo IP
-    user_agent: User agent
+    user: Azione di
     comment: Commento
+    user_agent: User agent
+    ip: Indirizzo IP
+    revisions: Revisioni
   directus_collections:
+    collection: Raccolta
+    icon: Icon
+    note: Nota
+    display_template: Display Template
+    hidden: Nascosto
     translations: Traduzioni del Nome della Raccolta
+    sort_field: Ordina per
   directus_files:
     title: Titolo
+    description: Descrizione
     tags: Tags
     location: Percorso
-    description: Descrizione
-    filename_download: Nome Download
-    filename_disk: Nome sul disco
-    private_hash: Hash
-    checksum: Checksum
-    uploaded_on: Caricato il
-    uploaded_by: Caricato da
-    width: Larghezza
-    height: Altezza
-    duration: Durata
-    filesize: Dimensione file
     metadata: Metadati
+    filesize: Dimensione file
+    modified_on: Modificato il
+    created_on: Creato il
+    created_by: Creato da
+    embed: Embed
+    uploaded_by: Caricato da
+    folder: Cartella
+    width: Larghezza
+    uploaded_on: Caricato il
+    height: Altezza
+    charset: Set di caratteri
+    duration: Durata
   directus_users:
-    status: Stato
     first_name: Nome
     last_name: Cognome
     email: E-mail
-    email_notifications: Notifiche Email
     password: Parola d'ordine
-    role: Ruolo
-    company: Azienda
-    title: Titolo
-    timezone: Fuso orario
-    language: Linguaggio
     avatar: Avatar
+    location: Percorso
+    title: Titolo
+    description: Descrizione
+    tags: Tags
+    language: Linguaggio
     theme: Tema
     tfa_secret: Autenticazione a due fattori
+    status: Stato
+    role: Ruolo
+    last_page: Ultima Pagina
+    last_access: Ultimo Acesso
   directus_settings:
     project_name: Nome del progetto
     project_url: URL del Progetto
@@ -544,9 +553,9 @@ fields:
     name: Nome ruolo
     icon: Icona Ruolo
     description: Descrizione
-    ip_access: Accesso IP
     app_access: Accesso App
     admin_access: Accesso Amministratore
+    ip_access: Accesso IP
     enforce_tfa: Richiede 2FA
     collection_list: Navigazione Raccolta
 no_fields_in_collection: 'Non ci sono ancora campi in "{collection}"'

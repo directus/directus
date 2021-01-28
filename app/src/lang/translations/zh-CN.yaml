@@ -442,49 +442,56 @@ singleton_label: 视为单个对象
 system_fields_locked: 系统字段已锁定，无法编辑
 fields:
   directus_activity:
+    item: 项目主键
     action: 操作
     collection: 集合
-    item: 项目主键
-    user: 操作人
     timestamp: 操作于
-    edited_on: 编辑于
-    comment_deleted_on: 评论删除于
-    ip: IP 地址
-    user_agent: 用户代理（User Agent）
+    user: 操作人
     comment: 注释
+    user_agent: 用户代理（User Agent）
+    ip: IP 地址
   directus_collections:
+    collection: 集合
+    icon: 图标
+    note: 注解
+    display_template: 显示模板
+    hidden: 隐藏
+    singleton: 单一
     translations: 集合名称翻译
+    sort_field: 排序字段
   directus_files:
     title: 标题
+    description: 描述
     tags: 标签
     location: 地理位置
-    description: 描述
-    filename_download: 下载文件名
-    filename_disk: 磁盘文件名
-    private_hash: 私有哈希值
-    checksum: 校验和
-    uploaded_on: 上传于
-    uploaded_by: 上传人
-    width: 宽
-    height: 高度
-    duration: 持续时间
-    filesize: 文件大小
     metadata: 元数据（Metadata）
+    filesize: 文件大小
+    modified_on: 修改于
+    created_on: 创建于
+    created_by: 创建自
+    embed: 嵌入
+    uploaded_by: 上传人
+    folder: 文件夹
+    width: 宽
+    uploaded_on: 上传于
+    height: 高度
+    charset: 字符集
+    duration: 持续时间
   directus_users:
-    status: 状态
     first_name: 名
     last_name: 姓
     email: 邮箱
-    email_notifications: 邮件通知
     password: 密码
-    role: 角色
-    company: 公司
-    title: 标题
-    timezone: 时区
-    language: 语言
     avatar: 头像
+    location: 地理位置
+    title: 标题
+    description: 描述
+    tags: 标签
+    language: 语言
     theme: 主题
     tfa_secret: 2FA（双因素身份验证）
+    status: 状态
+    role: 角色
   directus_settings:
     project_name: 项目名称
     project_url: 项目URL
@@ -494,7 +501,6 @@ fields:
     public_background: 公共背景
     public_note: 公共便笺
     auth_password_policy: 认证密码策略
-    auth_idle_timeout: 认证等待超时
     auth_login_attempts: 尝试认证登录次数
     storage_asset_presets: 存储资产预设
   directus_fields:
@@ -509,9 +515,9 @@ fields:
     name: 角色名称
     icon: 角色 Icon
     description: 描述
-    ip_access: IP 访问
     app_access: App 访问
     admin_access: 管理员访问
+    ip_access: IP 访问
     enforce_tfa: 请求两步验证
     users: 角色中的用户
     module_list: 模块导航

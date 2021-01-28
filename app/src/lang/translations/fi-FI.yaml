@@ -102,39 +102,46 @@ collection: Kokoelma
 collections: Kokoelmat
 fields:
   directus_activity:
+    item: Kohteen ensisijainen avain
     action: Toiminto
     collection: Kokoelma
-    item: Kohteen ensisijainen avain
-    ip: IP-osoite
-    user_agent: Asiakasohjelma
     comment: Kommentti
+    user_agent: Asiakasohjelma
+    ip: IP-osoite
+  directus_collections:
+    collection: Kokoelma
+    icon: Kuvake
+    hidden: Piilotettu
   directus_files:
     title: Otsikko
+    description: Kuvaus
     tags: Tunnisteet
     location: Sijainti
-    description: Kuvaus
-    checksum: Tarkistussumma
+    metadata: Metatiedot
+    filesize: Tiedostokoko
+    modified_on: Muokattu viimeksi
+    created_on: Luotu
+    created_by: Luonnut
+    embed: Upota
     uploaded_by: Lataaja
     width: Leveys
     height: Korkeus
     duration: Kesto
-    filesize: Tiedostokoko
-    metadata: Metatiedot
   directus_users:
-    status: Tila
     first_name: Etunimi
     last_name: Sukunimi
     email: Sähköposti
-    email_notifications: Sähköposti-ilmoitukset
     password: Salasana
-    role: Rooli
-    company: Yritys
-    title: Otsikko
-    timezone: Aikavyöhyke
-    language: Kieli
     avatar: Avatari
+    location: Sijainti
+    title: Otsikko
+    description: Kuvaus
+    tags: Tunnisteet
+    language: Kieli
     theme: Teema
     tfa_secret: Kaksivaiheinen todennus
+    status: Tila
+    role: Rooli
   directus_settings:
     project_name: Projektin nimi
   directus_fields:

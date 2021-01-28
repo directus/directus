@@ -125,45 +125,50 @@ collection: Колекція
 collections: Колекції
 fields:
   directus_activity:
+    item: Первинний ключ елемента
     action: Дія
     collection: Колекція
-    item: Первинний ключ елемента
-    user: Дія від
     timestamp: Час події
-    edited_on: Змінено
-    comment_deleted_on: Коментар видалено
-    ip: IP адреса
-    user_agent: Ідентифікатор браузера
+    user: Дія від
     comment: Коментар
+    user_agent: Ідентифікатор браузера
+    ip: IP адреса
+  directus_collections:
+    collection: Колекція
+    icon: Іконка
+    note: Примітка
+    hidden: Приховано
   directus_files:
     title: Заголовок
+    description: Опис
     tags: Теги
     location: Розташування
-    description: Опис
-    private_hash: Приватний хеш
-    checksum: Контрольна сума
-    uploaded_on: Завантажено
+    metadata: Метадані
+    filesize: Розмір файлу
+    modified_on: Час зміни
+    created_on: Створено
+    created_by: Автор
+    embed: Вбудувати
     uploaded_by: Завантажено
     width: Ширина
+    uploaded_on: Завантажено
     height: Висота
     duration: Тривалість
-    filesize: Розмір файлу
-    metadata: Метадані
   directus_users:
-    status: Статус
     first_name: Ім'я
     last_name: Прізвище
     email: Email
-    email_notifications: Сповіщення по Email
     password: Пароль
-    role: Роль
-    company: Компанія
-    title: Заголовок
-    timezone: Часовий пояс
-    language: Мова
     avatar: Аватар
+    location: Розташування
+    title: Заголовок
+    description: Опис
+    tags: Теги
+    language: Мова
     theme: Тема
     tfa_secret: Двофакторна автентифікація
+    status: Статус
+    role: Роль
   directus_settings:
     project_name: Назва проекту
   directus_fields:

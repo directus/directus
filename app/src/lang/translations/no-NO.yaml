@@ -279,24 +279,36 @@ collection: Kolleksjon
 collections: Kolleksjoner
 fields:
   directus_activity:
-    collection: Kolleksjon
     item: Element Hovednøkkel
-    edited_on: Redigert den
-    comment_deleted_on: Kommentar slettet på
-    ip: IP-addresse
-    user_agent: Brukeragent
+    collection: Kolleksjon
     comment: Kommenter
+    user_agent: Brukeragent
+    ip: IP-addresse
+  directus_collections:
+    collection: Kolleksjon
+    icon: Ikon
+    note: Notat
+    hidden: Skjult
   directus_files:
     title: Tittel
+    description: Beskrivelse
     tags: Etiketter
     location: Lokasjon
-    description: Beskrivelse
+    modified_on: Modifisert den
+    created_on: Opprettet den
+    created_by: Opprettet av
+    embed: Embed
   directus_users:
-    status: Status
     email: E-post
     password: Passord
+    location: Lokasjon
     title: Tittel
+    description: Beskrivelse
+    tags: Etiketter
     language: Språk
+    status: Status
+    last_page: Siste side
+    last_access: Siste tilgang
   directus_settings:
     project_name: Prosjektnavn
   directus_fields:

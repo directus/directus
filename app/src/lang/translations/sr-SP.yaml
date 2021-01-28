@@ -73,40 +73,44 @@ cancel: Откажи
 collection: Колекција
 fields:
   directus_activity:
+    item: Примарни кључ ставке
     action: Акција
     collection: Колекција
-    item: Примарни кључ ставке
-    user: Акција од стране
     timestamp: Акција укључена
-    edited_on: Уређивање укључено
-    comment_deleted_on: Коментар обрисан укључено
-    ip: ИП адреса
-    user_agent: Кориснички агент
+    user: Акција од стране
     comment: Коментар
+    user_agent: Кориснички агент
+    ip: ИП адреса
+  directus_collections:
+    collection: Колекција
   directus_files:
     title: Наслов
+    description: Опис
     tags: Ознаке
     location: Локација
-    description: Опис
+    metadata: Мета подаци
+    filesize: Veličina
+    created_on: Креирано
+    created_by: Креирао
+    embed: Угради
     width: Ширина
     height: Висина
     duration: Трајање
-    filesize: Veličina
-    metadata: Мета подаци
   directus_users:
-    status: Стање
     first_name: Име
     last_name: Презиме
     email: Имејл
     password: Лозинка
-    role: Рола
-    company: Компанија
-    title: Наслов
-    timezone: Временска зона
-    language: Језик
     avatar: Аватар
+    location: Локација
+    title: Наслов
+    description: Опис
+    tags: Ознаке
+    language: Језик
     theme: Тема
     tfa_secret: Дво-факторска аутентификација
+    status: Стање
+    role: Рола
   directus_fields:
     display_template: Шаблон
   directus_roles:

@@ -564,47 +564,58 @@ singleton_label: Traiter comme un objet unique
 system_fields_locked: Les champs système sont verrouillés et ne peuvent pas être modifiés
 fields:
   directus_activity:
+    item: Clé principale de l'élément
     action: Action
     collection: Collection
-    item: Clé principale de l'élément
-    user: Action par
     timestamp: Action quand
-    edited_on: Modifié le
-    comment_deleted_on: Commentaire supprimé le
-    ip: Adresse IP
-    user_agent: Agent utilisateur
+    user: Action par
     comment: Commentaire
+    user_agent: Agent utilisateur
+    ip: Adresse IP
+    revisions: Historique
+  directus_collections:
+    collection: Collection
+    icon: Icone
+    note: Remarque
+    display_template: Modèle d'affichage
+    hidden: Caché
+    singleton: Singleton
+    sort_field: Trier les champs
   directus_files:
     title: Titre
+    description: Description
     tags: Étiquettes
     location: Localisation
-    description: Description
-    filename_download: Nom du fichier téléchargeable
-    filename_disk: Nom du fichier sur le disque
-    private_hash: Hachage privé
-    checksum: Code de vérification
-    uploaded_on: Transféré le
-    uploaded_by: Transféré par
-    width: Largeur
-    height: Hauteur
-    duration: Durée
-    filesize: Taille du fichier
     metadata: Métadonnée
+    filesize: Taille du fichier
+    modified_on: Modifié le
+    created_on: Créé le
+    created_by: Créé par
+    embed: Encapsulation
+    uploaded_by: Transféré par
+    folder: Dossier
+    width: Largeur
+    uploaded_on: Transféré le
+    height: Hauteur
+    charset: Jeu de caractères
+    duration: Durée
   directus_users:
-    status: Etat
     first_name: Prénom
     last_name: Nom
     email: E-mail
-    email_notifications: Notifications par e-mail
     password: Mot de passe
-    role: Rôle
-    company: Entreprise
-    title: Titre
-    timezone: Fuseau horaire
-    language: Langue
     avatar: Avatar
+    location: Localisation
+    title: Titre
+    description: Description
+    tags: Étiquettes
+    language: Langue
     theme: Thème
     tfa_secret: Authentification à deux facteurs
+    status: Etat
+    role: Rôle
+    last_page: Dernière page
+    last_access: Dernier accès
   directus_settings:
     project_name: Nom du projet
     project_url: URL du projet
@@ -614,7 +625,6 @@ fields:
     public_background: Arrière-plan public
     public_note: Note publique
     auth_password_policy: Politique des mots de passe
-    auth_idle_timeout: Délai d'inactivité de l'authentification
     auth_login_attempts: Tentatives de connexion
     storage_asset_presets: Préréglages des fichiers dans Stockage
     storage_asset_transform: Transformation des fichiers du stockage
@@ -630,9 +640,9 @@ fields:
     name: Nom de rôle
     icon: Icône de Rôle
     description: Description
-    ip_access: Accès IP
     app_access: Accès à l'application
     admin_access: Accès Administrateur
+    ip_access: Accès IP
 comment: Commentaire
 continue: Continuer
 continue_as: >-
