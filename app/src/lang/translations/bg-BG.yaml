@@ -620,49 +620,59 @@ singleton_label: Използване като единствен запис
 system_fields_locked: Системните полета са заключени и не могат да бъдат променяни
 fields:
   directus_activity:
+    item: Първичен ключ на запис
     action: Действие
     collection: Колекция
-    item: Първичен ключ на запис
-    user: Действие от
     timestamp: Действие на
-    edited_on: Редактирано на
-    comment_deleted_on: Коментарът е изтрит на
-    ip: IP адрес
-    user_agent: Потребителски агент
+    user: Действие от
     comment: Кометнар
+    user_agent: Потребителски агент
+    ip: IP адрес
+    revisions: Ревизии
   directus_collections:
+    collection: Колекция
+    icon: Икона
+    note: Бележка
+    display_template: Шаблон при показване
+    hidden: Скрито
+    singleton: Сек
     translations: Преводи на името на колекцията
+    sort_field: Поле за сортиране
   directus_files:
     title: Заглавие
+    description: Описание
     tags: Тагове
     location: Местоположение
-    description: Описание
-    filename_download: Име на файла при сваляне
-    filename_disk: Име на файла на диска
-    private_hash: Private Hash
-    checksum: Checksum
-    uploaded_on: Редактирано на
-    uploaded_by: Качено от
-    width: Ширина
-    height: Височина
-    duration: Продължителност
-    filesize: Размер на файла
     metadata: Метаданни
+    filesize: Размер на файла
+    modified_on: Променен на
+    created_on: Създаден на
+    created_by: Създадено от
+    embed: Вграждане
+    uploaded_by: Качено от
+    folder: Папка
+    width: Ширина
+    uploaded_on: Редактирано на
+    height: Височина
+    charset: Набор символи
+    duration: Продължителност
   directus_users:
-    status: Статус
     first_name: Име
     last_name: Фамилия
     email: Е-поща
-    email_notifications: Известия по е-поща
     password: Парола
-    role: Роля
-    company: Компания
-    title: Заглавие
-    timezone: Часова зона
-    language: Език
     avatar: Аватар
+    location: Местоположение
+    title: Заглавие
+    description: Описание
+    tags: Тагове
+    language: Език
     theme: Тема
     tfa_secret: Двуфакторна автентикация
+    status: Статус
+    role: Роля
+    last_page: Последна страница
+    last_access: Последно посещение
   directus_settings:
     project_name: Име на проекта
     project_url: URL на проекта
@@ -672,7 +682,6 @@ fields:
     public_background: Фоново изображение
     public_note: Публично съобщение
     auth_password_policy: Политика за пароли
-    auth_idle_timeout: Изчакване при бездействие
     auth_login_attempts: Брой за опити за вход
     storage_asset_presets: Съхранение и настройки за файл
     storage_asset_transform: Трансформации на съхранените файлове
@@ -688,9 +697,9 @@ fields:
     name: Име на роля
     icon: Икона на роля
     description: Описание
-    ip_access: IP адрес
     app_access: Достъп до приложението
     admin_access: Администраторски достъп
+    ip_access: IP адрес
     enforce_tfa: Изисква 2FA
     users: Потребители към роля
     module_list: Модули
@@ -765,7 +774,6 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 interfaces:
   checkboxes:

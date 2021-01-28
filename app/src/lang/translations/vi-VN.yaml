@@ -387,47 +387,53 @@ collection: Danh mục
 collections: Danh mục
 fields:
   directus_activity:
+    item: Trường khoá chính định danh
     action: Hành động
     collection: Danh mục
-    item: Trường khoá chính định danh
-    user: Thực hiện bởi
     timestamp: Hành động tại
-    edited_on: Chỉnh sửa cuối lúc
-    comment_deleted_on: Thời điểm bình luận được xoá
-    ip: Địa chỉ IP
-    user_agent: Tài khoản người dùng
+    user: Thực hiện bởi
     comment: Bình luận
+    user_agent: Tài khoản người dùng
+    ip: Địa chỉ IP
+  directus_collections:
+    collection: Danh mục
+    icon: Biểu tượng
+    note: Ghi chú
+    display_template: Mẫu hiển thị
+    hidden: Ẩn
+    sort_field: Sắp xếp theo trường
   directus_files:
     title: Tiêu đề
+    description: Mô tả
     tags: Tags
     location: Vị trí
-    description: Mô tả
-    filename_download: Tên tệp tải xuống
-    filename_disk: Tên tệp trên hệ thống
-    private_hash: Chuỗi kết quả mã hoá riêng tư
-    checksum: Giá trị checksum
-    uploaded_on: Thời điểm tải lên
+    metadata: Thông tin metadata
+    filesize: Kích thước tệp
+    modified_on: Sửa đổi vào
+    created_on: Tạo lúc
+    created_by: Tạo bởi
+    embed: Nhúng
     uploaded_by: Tài khoản tải lên
+    folder: Thư mục
     width: Độ rộng
+    uploaded_on: Thời điểm tải lên
     height: Độ dài
     duration: Thời lượng
-    filesize: Kích thước tệp
-    metadata: Thông tin metadata
   directus_users:
-    status: Trạng thái
     first_name: Tên
     last_name: Họ
     email: Địa chỉ email
-    email_notifications: Thông báo email
     password: Mật khẩu
-    role: Phân quyền
-    company: Công ty
-    title: Tiêu đề
-    timezone: Múi giờ
-    language: Ngôn ngữ
     avatar: Ảnh đại diện
+    location: Vị trí
+    title: Tiêu đề
+    description: Mô tả
+    tags: Tags
+    language: Ngôn ngữ
     theme: Theme
     tfa_secret: Xác thực hai yếu tố
+    status: Trạng thái
+    role: Phân quyền
   directus_settings:
     project_name: Tên Dự Án
   directus_fields:

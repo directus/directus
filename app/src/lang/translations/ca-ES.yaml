@@ -110,47 +110,48 @@ collection: Coŀlecció
 collections: Col·leccions
 fields:
   directus_activity:
+    item: Clau primaria de l'ítem
     action: Acció
     collection: Coŀlecció
-    item: Clau primaria de l'ítem
-    user: Acció de
     timestamp: Acció activada
-    edited_on: Edició activada
-    comment_deleted_on: Comentari esborrat
-    ip: Adressa IP
-    user_agent: Agent de l'usuari
+    user: Acció de
     comment: Comentari
+    user_agent: Agent de l'usuari
+    ip: Adressa IP
+  directus_collections:
+    collection: Coŀlecció
+    display_template: Mostra la plantilla
+    sort_field: Camp d'ordenació
   directus_files:
     title: Títol
+    description: Descripció
     tags: Etiquetes
     location: Localització
-    description: Descripció
-    filename_download: No d'arxiu descarregat
-    filename_disk: Nom d'arxiu al disc
-    private_hash: Hash privat
-    checksum: Checksum
-    uploaded_on: Pujat el
+    metadata: Metadades
+    filesize: Mida
+    created_on: Creat el
+    created_by: Creat per
+    embed: Inclou
     uploaded_by: Pujat per
     width: Amplada
+    uploaded_on: Pujat el
     height: Alçada
     duration: Durada
-    filesize: Mida
-    metadata: Metadades
   directus_users:
-    status: Estat
     first_name: Nom
     last_name: Cognoms
     email: Correu electrònic
-    email_notifications: Notificacions per correu
     password: Contrasenya
-    role: Rol
-    company: Empresa
-    title: Títol
-    timezone: Zona Horària
-    language: Idioma
     avatar: Foto
+    location: Localització
+    title: Títol
+    description: Descripció
+    tags: Etiquetes
+    language: Idioma
     theme: Tema
     tfa_secret: Autenticació de doble factor
+    status: Estat
+    role: Rol
   directus_fields:
     translation: Traducció de noms de camps
     display_template: Plantilla

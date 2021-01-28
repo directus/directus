@@ -193,26 +193,38 @@ singleton: シングルトン
 singleton_label: シングルオブジェクトに設定する
 fields:
   directus_activity:
-    ip: IPアドレス
     comment: コメント
+    ip: IPアドレス
+  directus_collections:
+    icon: アイコン
+    note: 備考
+    hidden: 非表示
+    singleton: シングルトン
   directus_files:
     title: タイトル
+    description: 説明
     tags: タグ
     location: 場所
-    description: 説明
+    filesize: ファイルサイズ
+    modified_on: 修正日時
+    created_on: 作成日時
+    created_by: 作成者
+    embed: 埋め込む
+    folder: フォルダ
     width: 幅
     height: 高さ
-    filesize: ファイルサイズ
   directus_users:
-    status: ステータス
     first_name: 名
     last_name: 姓
     email: メールアドレス
     password: パスワード
+    location: 場所
     title: タイトル
-    timezone: タイムゾーン
+    description: 説明
+    tags: タグ
     language: 言語
     theme: テーマ
+    status: ステータス
   directus_settings:
     project_name: プロジェクト名
   directus_fields:

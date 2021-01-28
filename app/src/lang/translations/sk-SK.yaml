@@ -14,20 +14,19 @@ fields:
   directus_activity:
     collection: Zbierka
     user: Akciu vykonal/a
-    ip: IP adresa
     user_agent: Užívateľský agent
+    ip: IP adresa
+  directus_collections:
+    collection: Zbierka
   directus_users:
     first_name: Meno
     last_name: Priezvisko
     email: E-mail
-    email_notifications: E-mailové notifikácie
     password: Heslo
-    role: Rola
-    company: Spoločnosť
-    timezone: Časové pásmo
     avatar: Avatar
     theme: Téma
     tfa_secret: Dvojfaktorová autentifikácia
+    role: Rola
 email: E-mail
 password: Heslo
 interfaces:

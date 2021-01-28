@@ -95,46 +95,47 @@ collection: Colecție
 collections: Colecții
 fields:
   directus_activity:
+    item: Cheia primară a elementului
     action: Acţiune
     collection: Colecție
-    item: Cheia primară a elementului
-    user: Acțiune de
     timestamp: Acțiune pe
-    edited_on: Modificat la data de
-    comment_deleted_on: Comentariu șters la data de
-    ip: Adresă IP
-    user_agent: User Agent
+    user: Acțiune de
     comment: Comentariu
+    user_agent: User Agent
+    ip: Adresă IP
+  directus_collections:
+    collection: Colecție
+    icon: Iconiță
+    hidden: Ascuns
   directus_files:
     title: Titlu
+    description: Descriere
     tags: Etichete
     location: Locație
-    description: Descriere
-    filename_download: Descărcare Nume Fișier
-    filename_disk: Nume Fișier Disc
-    private_hash: Hash privat
-    checksum: Sumă de control
-    uploaded_on: Încărcat pe
+    metadata: Metadate
+    filesize: Dimensiune fişier
+    created_on: Creat Pe
+    created_by: Creat De
+    embed: Încorporați
     uploaded_by: Încărcat de
     width: Lățime
+    uploaded_on: Încărcat pe
     height: Înălţime
     duration: Durată
-    filesize: Dimensiune fişier
-    metadata: Metadate
   directus_users:
-    status: Stare
     first_name: Prenume
     last_name: Nume
     email: Email
-    email_notifications: Notificări prin e-mail
     password: Parolă
-    role: Rol
-    company: Companie
-    title: Titlu
-    timezone: Fus orar
     avatar: Avatar
+    location: Locație
+    title: Titlu
+    description: Descriere
+    tags: Etichete
     theme: Temă
     tfa_secret: Autentificare în doi pași
+    status: Stare
+    role: Rol
   directus_fields:
     hidden: Ascuns
     translation: Traducerile numelui câmpului

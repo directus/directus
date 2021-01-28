@@ -226,47 +226,52 @@ collection: Koleksiyon
 collections: Koleksiyonlar
 fields:
   directus_activity:
+    item: Öğe Birincil Anahtarı
     action: İşlem
     collection: Koleksiyon
-    item: Öğe Birincil Anahtarı
-    user: Uygulayan
     timestamp: Tarihinde Uygulandı
-    edited_on: Tarihinde Düzenlendi
-    comment_deleted_on: Tarihinde Yorum Silindi
-    ip: IP Adresi
-    user_agent: Kullanıcı Aracısı
+    user: Uygulayan
     comment: Yorum
+    user_agent: Kullanıcı Aracısı
+    ip: IP Adresi
+  directus_collections:
+    collection: Koleksiyon
+    icon: İkon
+    note: Not
+    display_template: Görüntüleme Şablonu
+    hidden: Gizli
+    sort_field: Sıralama Alanı
   directus_files:
     title: Ünvan
+    description: Açıklama
     tags: Etiketler
     location: Konum
-    description: Açıklama
-    filename_download: Dosya Adı İndir
-    filename_disk: Dosya Adı Diski
-    private_hash: Gizli Hash
-    checksum: Checksum
-    uploaded_on: Tarihinde Yüklendi
+    metadata: Metaveri
+    filesize: Dosya boyutu
+    modified_on: Düzenleme Tarihi
+    created_on: Oluşturulma tarihi
+    created_by: Oluşturan
+    embed: Yerleştir
     uploaded_by: Tarafından Yüklendi
     width: Genişlik
+    uploaded_on: Tarihinde Yüklendi
     height: Yükseklik
     duration: Süre
-    filesize: Dosya boyutu
-    metadata: Metaveri
   directus_users:
-    status: Durum
     first_name: Ad
     last_name: Soyad
     email: E-posta
-    email_notifications: E-posta bildirimleri
     password: Şifre
-    role: Rol
-    company: Şirket
-    title: Ünvan
-    timezone: Zaman Dilimi
-    language: Dil
     avatar: Avatar
+    location: Konum
+    title: Ünvan
+    description: Açıklama
+    tags: Etiketler
+    language: Dil
     theme: Tema
     tfa_secret: İki Faktörlü Kimlik Doğrulama
+    status: Durum
+    role: Rol
   directus_settings:
     project_name: Proje Adı
   directus_fields:
