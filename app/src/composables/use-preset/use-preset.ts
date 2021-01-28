@@ -30,6 +30,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		localPreset.value = {
 			...localPreset.value,
 			id: updatedValues.id,
+			user: updatedValues.user,
 		};
 		busy.value = false;
 		return updatedValues;
