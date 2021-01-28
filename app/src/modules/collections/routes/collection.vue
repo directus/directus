@@ -111,7 +111,7 @@
 						icon
 						class="action-soft-delete"
 						@click="on"
-						v-tooltip.bottom="batchEditAllowed ? $t('archive') : $t('not_allowed')"
+						v-tooltip.bottom="batchArchiveAllowed ? $t('archive') : $t('not_allowed')"
 					>
 						<v-icon name="archive" outline />
 					</v-button>
