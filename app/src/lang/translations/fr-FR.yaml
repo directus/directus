@@ -290,8 +290,10 @@ collection_key: Clé de la collection
 name: Nom
 primary_key_field: Champ de clé primaire
 type: Type
+creating_new_collection: Création d'une nouvelle Collection
 created_by: Créé par
 created_on: Créé le
+creating_collection_info: Nommez la collection et configurez son champ unique « clé »...
 creating_collection_system: Activer et renommer l'un de ces champs optionnels.
 auto_increment_integer: Entier auto-incrémenté
 generated_uuid: UUID généré
@@ -314,6 +316,7 @@ interface_not_found: 'L''interface "{interface}" est introuvable.'
 reset_interface: Réinitialiser l'interface
 display_not_found: 'L''affichage "{display}" n''a pas été trouvé.'
 reset_display: Réinitialiser l'affichage
+m2a_builder: Builder (M2A)
 item_count: 'Aucun élément | Un élément | {count} éléments'
 no_items_copy: Il n’y a pas encore d’élément dans cette collection.
 file_count: 'Aucun fichier | Un fichier | {count} fichiers'
@@ -410,7 +413,7 @@ visible_collections: Collections visibles
 hidden_collections: Collections masquées
 unmanaged_collections: Collections non configurées
 system_collections: Collections système
-placeholder: Indication
+placeholder: Placeholder
 icon_left: Icône gauche
 icon_right: Icône droite
 font: Police de caractères
@@ -509,12 +512,15 @@ wysiwyg_options:
   blockquote: Bloc de citation
   bullist: Liste à puces
   numlist: Liste numérotée
+  hr: Barre horizontale
+  link: Lien
   unlink: Supprimer le lien
   media: Ajouter un média
   image: Ajouter une image
   copy: Copier
   cut: Couper
   paste: Coller
+  heading: En-tête
   h1: En-tête 1
   h2: En-tête 2
   h3: En-tête 3
@@ -571,6 +577,7 @@ add_new: Nouveau
 create_new: Créer Un Nouveau
 all: Tout
 none: Aucun
+no_layout_collection_selected_yet: Aucune mise en page/collection sélectionnée pour le moment
 batch_delete_confirm: >-
   Aucun élément n’a été sélectionné | Êtes-vous sûr de bien vouloir supprimer cet élément ? Vous ne pourrez pas revenir en arrière ! | Êtes-vous sûr de bien vouloir supprimer ces {count} éléments ?  Vous ne pourrez pas revenir en arrière !
 cancel: Annuler
@@ -598,14 +605,22 @@ fields:
     hidden: Caché
     singleton: Singleton
     translations: Traductions du nom de la collection
+    archive_app_filter: Archiver le filtre de l'application
+    archive_value: Archiver la valeur
+    unarchive_value: Désarchiver la valeur
     sort_field: Trier les champs
   directus_files:
     title: Titre
     description: Description
     tags: Étiquettes
     location: Localisation
+    storage: Stockage
+    filename_disk: Nom du fichier (disque)
+    filename_download: Nom du fichier (Télécharger)
     metadata: Métadonnée
+    type: Type MIME
     filesize: Taille du fichier
+    modified_by: Modifié par
     modified_on: Modifié le
     created_on: Créé le
     created_by: Créé par
@@ -632,6 +647,7 @@ fields:
     tfa_secret: Authentification à deux facteurs
     status: Etat
     role: Rôle
+    token: Token
     last_page: Dernière page
     last_access: Dernier accès
   directus_settings:
@@ -646,6 +662,7 @@ fields:
     auth_login_attempts: Tentatives de connexion
     storage_asset_presets: Préréglages des fichiers dans Stockage
     storage_asset_transform: Transformation des fichiers du stockage
+    custom_css: Personnalisation CSS
   directus_fields:
     collection: Nom de la Collection
     icon: Icône de Collection
@@ -663,16 +680,25 @@ fields:
     ip_access: Accès IP
     enforce_tfa: Nécessite 2FA
     users: Membres avec le rôle
+    collection_list: Navigation de la collection
 no_fields_in_collection: 'Il n''y a pas encore de champs dans "{collection}"'
 do_nothing: Ne rien faire
 generate_and_save_uuid: Générer et Enregistrer l'UUID
 save_current_user_id: Enregistrer l'ID de l'utilisateur actuel
+save_current_user_role: Enregistrer le rôle utilisateur actuel
+save_current_datetime: Enregistrer la date/heure actuelle
+block: Bloc
+inline: En ligne
 comment: Commentaire
 continue: Continuer
 continue_as: >-
   <b>{name}</b> est actuellement authentifié. Si vous reconnaissez ce compte, cliquez sur continuer.
+editing_role: 'Rôle {role}'
+creating_webhook: Création du Webhook
 default: Défaut
 delete: Supprimer
+delete_are_you_sure: >-
+  Cette action est permanente et ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?
 delete_field_are_you_sure: >-
   Êtes-vous sûr de vouloir supprimer le champ « {field} » ? Cette action ne peut pas être annulée !
 description: Description
@@ -680,6 +706,7 @@ done: Fait
 duplicate: Dupliquer
 email: E-mail
 embed: Encapsulation
+fallback_icon: Icône par défaut
 field: Champ | Champs
 file: Fichier
 file_library: Fichiers
@@ -687,6 +714,10 @@ forgot_password: Mot de passe oublié
 hidden: Caché
 icon: Icone
 info: Information
+normal: Normal
+success: Succès
+warning: Avertissement
+danger: Danger
 junction_collection: Collection de jonction
 latency: Latence
 login: S’identifier
@@ -706,6 +737,7 @@ save: Enregistrer
 schema: Schéma
 search: Recherche
 select_existing: Sélectionner un existant
+select_field_type: Sélectionnez un type de champ
 select_interface: Sélectionner une interface
 settings: Réglages
 sign_in: Se connecter
@@ -713,30 +745,45 @@ sign_out: Déconnexion
 sign_out_confirm: Êtes-vous certain de vouloir vous déconnecter ?
 something_went_wrong: Quelque chose s’est mal passé.
 sort_direction: Ordre de tri
+sort_asc: Tri Croissant
+sort_desc: Tri Décroissant
 template: Modèle
 translation: Traduction
 value: Valeur
+view_project: Voir le projet
+report_error: Signaler l'erreur
 interfaces:
   checkboxes:
     checkboxes: Cases à cocher
+    description: Choisissez entre plusieurs options via les cases à cocher
     allow_other: Autoriser les autres
+    show_more: 'Afficher {count} de plus'
     items_shown: Éléments affichés
   code:
     code: Code
+    description: Écrire ou partager des extraits de code
     line_number: Numéro de ligne
+    placeholder: Entrez le code ici...
   collection:
     collection: Collection
+    description: Sélectionner parmi les collections existantes
+    include_system_collections: Inclure les collections système
   collections:
     collections: Collections
+    description: Sélectionner parmi les collections existantes
+    include_system_collections: Inclure les collections système
   color:
     color: Couleur
+    description: Entrez ou sélectionnez une valeur de couleur
     placeholder: Choisir une couleur...
     preset_colors: Couleurs prédéfinies
     preset_colors_add_label: Ajouter une nouvelle couleur...
     name_placeholder: Entrer le nom de la couleur...
   datetime:
     datetime: Date / Heure
+    description: Entrez les dates et heures
     include_seconds: Inclure les secondes
+    set_to_now: Configurer à maintenant
     use_24: Utiliser le format 24h
   display-template:
     display-template: Modèle d'affichage
@@ -744,8 +791,17 @@ interfaces:
     select_a_collection: Sélectionner une collection
   divider:
     divider: Séparateur
+    description: Étiqueter et diviser les champs en sections
+    title_placeholder: Entrez un titre...
+    inline_title: Titre en ligne
+    inline_title_label: Afficher le titre à l'intérieur de la ligne
+    margin_top: Marge supérieure
+    margin_top_label: Augmenter la marge supérieure
   dropdown:
+    description: Sélectionner une valeur à partir d'une liste déroulante
+    choices_placeholder: Ajouter un nouveau choix
     allow_other: Autoriser les autres
+    allow_other_label: Autoriser d'autres valeurs
     allow_none: Ne rien autoriser
     allow_none_label: Autoriser aucune sélection
     choices_name_placeholder: Entrer un nom...
@@ -780,11 +836,20 @@ interfaces:
     description: Une popup pour sélectionner les options d'une interface
   many-to-many:
     many-to-many: Plusieurs à plusieurs
+    description: Sélectionner plusieurs éléments de jonction liés
   many-to-one:
     many-to-one: Plusieurs à un
+    description: Sélectionnez un seul élément lié
     display_template: Modèle d'affichage
   markdown:
     markdown: Markdown
+    description: Saisir et prévisualiser le markdown
+    customSyntax: Blocs personnalisés
+    customSyntax_label: Ajouter des types de syntaxe personnalisés
+    customSyntax_add: Ajouter une syntaxe personnalisée
+    box: Bloc / Inline
+    imageToken: Token d'image
+    imageToken_label: Quel token (statique) ajouter aux sources d'images
   notice:
     notice: Remarque
     description: Afficher une courte remarque
@@ -814,57 +879,147 @@ interfaces:
     always_show_value: Toujours afficher la valeur
   slug:
     slug: Slug
+    description: Entrez un mot connecté avec des traits d'union
   tags:
     tags: Étiquettes
+    description: Sélectionner ou ajouter des tags
+    whitespace: Espace
+    hyphen: Remplacer par un trait d'union
+    underscore: Remplacer par un trait de soulignement
+    remove: Supprimer les espaces
+    capitalization: Mise en majuscules
+    uppercase: Convertir en majuscule
+    lowercase: Convertir en minuscule
+    auto_formatter: Utiliser le auto-formatter de titre
+    alphabetize: Alphabétiser
+    alphabetize_label: Forcer l'ordre alphabétique
+    add_tags: Ajouter des tags...
   text-input:
     text-input: Entrée de texte
+    description: Entrez un texte d'une seule ligne
     trim: Ajuster
+    trim_label: Couper le début et la fin
     mask: Masqué
+    mask_label: Cacher la valeur réelle
+    nullable: Peut être nul
+    nullable_label: Enregistrer la valeur vide comme NULL
+  textarea:
+    textarea: Zone de texte
+    description: Entrez le texte brut en multiligne
   toggle:
     toggle: Activer/Désactiver
+    description: Basculer entre l'activé et la désactivé
+    label_placeholder: Entrer un libellé...
     label_default: Activé
   translations:
     display_template: Modèle d'affichage
+    no_collection: Aucune collection
   user:
     user: Utilisateur
+    description: Sélectionnez un utilisateur directus existant
+    select_mode: Sélectionner un mode
     modes:
+      auto: Auto
       dropdown: Liste déroulante
   wysiwyg:
+    wysiwyg: WYSIWYG
+    description: Un éditeur de texte riche écrivant du contenu HTML
+    toolbar: Barre d’outils
     custom_formats: Format personnalisé
+    options_override: Remplacement des options
 displays:
   boolean:
     boolean: Booléen
+    description: Afficher les états activés et désactivés
+    label_on: Libellé Actif
+    label_on_placeholder: Entrez un libellé ...
+    label_off: Étiquette désactivée
+    label_off_placeholder: Entrez un libellé pour la désactivation...
     icon_on: Icône Activée
     icon_off: Icône Désactivée
+    color_on: Couleur activée
+    color_off: Couleur Désactivée
   collection:
     collection: Collection
+    description: Afficher une collection
+    icon_label: Afficher l'icône de la collection
   color:
     color: Couleur
+    description: Afficher un point de couleur
+    default_color: Couleur par défaut
   datetime:
     datetime: Date / Heure
+    description: Afficher les valeurs liées à l'heure
     format: Format
+    format_note: >-
+      Le format personnalisé accepte le __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Long
+    short: Court
+    relative: Relatif
+    relative_label: 'Afficher l''heure relative, par exemple: il y a 5 minutes'
   file:
     file: Fichier
+    description: Afficher les fichiers
   filesize:
     filesize: Taille du fichier
+    description: Afficher la taille d'un fichier
+  formatted-value:
+    formatted-value: Valeur formatée
+    description: Afficher une version formatée du texte
+    format_title: Formater le titre
+    format_title_label: Formatage automatique de la casse
+    bold_label: Utiliser le style en gras
+  formatted-json-value:
+    formatted-json-value: Valeur JSON formatée
+    description: Afficher une version formatée de l'objet
   icon:
     icon: Icone
+    description: Afficher une icône
+    filled: Rempli
+    filled_label: Utiliser la variante remplie
   image:
     image: Image
+    description: Afficher un petit aperçu de l'image
     circle: Cercle
+    circle_label: Afficher en tant que cercle
   labels:
+    labels: Libellés
+    description: Afficher une seule ou la liste d'étiquettes
+    default_foreground: Premier plan par défaut
+    default_background: Arrière-plan par défaut
+    format_label: Formater chaque libellés
+    show_as_dot: Afficher en tant que point
     choices_value_placeholder: Saisissez une valeur...
+    choices_text_placeholder: Entrez du texte...
+  mime-type:
+    mime-type: Type MIME
+    description: Afficher le type MIME d'un fichier
+    extension_only: Extension uniquement
+    extension_only_label: Afficher uniquement l'extension de fichier
   rating:
     rating: Évaluation
+    description: Visualiser un nombre en tant qu'étoiles par rapport à la valeur max
+    simple: Simple
+    simple_label: Afficher les étoiles dans un format simple
+  raw:
+    raw: Valeur brute
+  related-values:
+    related-values: Valeurs liées
+    description: Afficher les valeurs relatives
   user:
     user: Utilisateur
+    description: Afficher un utilisateur directus
     avatar: Avatar
     name: Nom
     both: Tous
+    circle_label: Afficher l'utilisateur dans un cercle
 layouts:
   cards:
     cards: Cartes
     image_source: Source de l'image
+    image_fit: Ajustement de l'image
+    crop: Rogner
+    contain: Contient
     title: Titre
     subtitle: Sous-titre
   tabular:
