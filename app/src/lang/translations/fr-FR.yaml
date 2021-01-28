@@ -136,6 +136,7 @@ text: Texte
 time: Date et heure
 timestamp: Horodatage
 uuid: UUID (IDentifiant Unique Universel)
+hash: Hash
 not_available_for_type: Non disponible pour ce type
 create_translations: Créer des traductions
 auto_generate: Générer automatiquement
@@ -505,9 +506,22 @@ wysiwyg_options:
   underline: Souligner
   strikethrough: Barrer
   codeblock: Code
+  blockquote: Bloc de citation
+  bullist: Liste à puces
+  numlist: Liste numérotée
+  unlink: Supprimer le lien
+  media: Ajouter un média
+  image: Ajouter une image
   copy: Copier
   cut: Couper
   paste: Coller
+  h1: En-tête 1
+  h2: En-tête 2
+  h3: En-tête 3
+  h4: En-tête 4
+  h5: En-tête 5
+  h6: En-tête 6
+  fontselect: Sélectionner la police
   fontsizeselect: Sélectionner la taille de la police
   indent: Augmenter le retrait
   outdent: Diminuer le retrait
@@ -550,6 +564,9 @@ unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
 keep_editing: Continuer l’édition
 page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
+page_help_collections_collection: >-
+  **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer les signets de ces différentes configurations pour un accès rapide.
+activity_feed: Flux d'activité
 add_new: Nouveau
 create_new: Créer Un Nouveau
 all: Tout
@@ -580,6 +597,7 @@ fields:
     display_template: Modèle d'affichage
     hidden: Caché
     singleton: Singleton
+    translations: Traductions du nom de la collection
     sort_field: Trier les champs
   directus_files:
     title: Titre
@@ -643,6 +661,12 @@ fields:
     app_access: Accès à l'application
     admin_access: Accès Administrateur
     ip_access: Accès IP
+    enforce_tfa: Nécessite 2FA
+    users: Membres avec le rôle
+no_fields_in_collection: 'Il n''y a pas encore de champs dans "{collection}"'
+do_nothing: Ne rien faire
+generate_and_save_uuid: Générer et Enregistrer l'UUID
+save_current_user_id: Enregistrer l'ID de l'utilisateur actuel
 comment: Commentaire
 continue: Continuer
 continue_as: >-
@@ -716,23 +740,44 @@ interfaces:
     use_24: Utiliser le format 24h
   display-template:
     display-template: Modèle d'affichage
+    description: Mélanger le texte statique et les valeurs des champs dynamiques
     select_a_collection: Sélectionner une collection
   divider:
     divider: Séparateur
   dropdown:
     allow_other: Autoriser les autres
+    allow_none: Ne rien autoriser
+    allow_none_label: Autoriser aucune sélection
+    choices_name_placeholder: Entrer un nom...
     choices_value_placeholder: Saisissez une valeur...
+  dropdown-multiselect:
+    dropdown-multiselect: Liste déroulante (Multiple)
+    description: Sélectionner plusieurs valeurs à partir d'une liste déroulante
   file:
     file: Fichier
+    description: Sélectionner ou Transférer un fichier
   files:
     files: Fichiers
+    description: Sélectionner ou Transférer plusieurs fichiers
+  hash:
+    hash: Hash
+    description: Entrez une valeur à hacher
+    masked: Masqué
+    masked_label: Cacher les vraies valeurs
   icon:
     icon: Icone
+    description: Sélectionnez une icône dans la liste déroulante
     search_for_icon: Rechercher une icône...
+  image:
+    image: Image
+    description: Sélectionner ou Transférer une image
   interface:
     interface: Interface
+    description: Sélectionnez une interface existante
+    placeholder: Sélectionner une interface...
   interface-options:
     interface-options: Options d'interface
+    description: Une popup pour sélectionner les options d'une interface
   many-to-many:
     many-to-many: Plusieurs à plusieurs
   many-to-one:
@@ -740,19 +785,33 @@ interfaces:
     display_template: Modèle d'affichage
   markdown:
     markdown: Markdown
+  notice:
+    notice: Remarque
+    description: Afficher une courte remarque
+    text: Entrez le contenu de la notice ici...
   numeric:
     numeric: Numérique
+    description: Entrez un nombre
     minimum_value: Valeur minimale
     maximum_value: Valeur maximale
     step_interval: Intervalle
   one-to-many:
     one-to-many: Un à plusieurs
+    description: Sélectionner plusieurs éléments liés
+    no_collection: La collection est introuvable
   radio-buttons:
     radio-buttons: Boutons radio
+    description: Sélectionnez l'un des choix
   repeater:
     repeater: Répéteur
+    description: Créer plusieurs entrées de la même structure
+    edit_fields: Éditer les champs
+    add_label: 'Libellé "Ajouter une nouvelle ligne"'
+    field_name_placeholder: Entrez le nom du champ...
   slider:
     slider: Slider
+    description: Sélectionnez un numéro à l'aide d'un curseur
+    always_show_value: Toujours afficher la valeur
   slug:
     slug: Slug
   tags:
@@ -760,6 +819,7 @@ interfaces:
   text-input:
     text-input: Entrée de texte
     trim: Ajuster
+    mask: Masqué
   toggle:
     toggle: Activer/Désactiver
     label_default: Activé
@@ -790,6 +850,7 @@ displays:
   icon:
     icon: Icone
   image:
+    image: Image
     circle: Cercle
   labels:
     choices_value_placeholder: Saisissez une valeur...
