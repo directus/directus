@@ -9,6 +9,8 @@ required: مطلوب
 create_role: إنشاء دور أو صلاحية
 delete_bookmark: حذف إشارة مرجعية
 directus_version: إصدار Directus
+unarchive: إزالة من الأرشيف
+unarchive_confirm: هل أنت متأكد من أنك تريد إلغاء أرشفة هذا العنصر؟
 language: لغة
 create_field: إنشاء حقل
 hidden_on_detail: مخفي في التفاصيل
