@@ -1,7 +1,7 @@
 ---
 edit_field: Mező szerkesztése
 duplicate_field: Mező másolása
-half_width: Félszélességű
+half_width: Fél szélesség
 full_width: Teljes szélesség
 fill_width: Teret kitöltő
 field_name_translations: Lefordított mezőnevek
@@ -16,7 +16,7 @@ create_user: Felhasználó létrehozása
 invite_users: Felhasználók meghívása
 email_examples: 'admin@example.com, felhaszalo@pelda.hu...'
 invite: Meghívás
-emails: E-mailek
+emails: Emailek
 connection_excellent: Kiváló kapcsolat
 connection_good: Jó kapcsolat
 connection_fair: Megfelelő kapcsolat
@@ -39,9 +39,9 @@ directus_version: Directus verzió
 node_version: Node verzió
 node_uptime: Node futásidő
 os_type: Operációs rendszer típusa
-os_version: Operációs rendszer verzió
+os_version: Operációs rendszer verziója
 os_uptime: Operációs rendszer futásideje
-os_totalmem: Operációs rendszer memória
+os_totalmem: Operációs rendszer memóriája
 archive: Archívum
 archive_confirm: Biztosan törölni szeretnéd ezt az elemet?
 archive_confirm_count: >-
@@ -50,7 +50,7 @@ reset_system_permissions: Rendszer hozzáférések visszaállítása
 reset_system_permissions_copy: Minden rendszer hozzáférés visszaállítása alapállapotba
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
-nested_files_folders_will_be_moved: Egymás alatti fileok és könyvtárak egy szinttel feljebb kerülnek.
+nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
 language: Nyelv
 global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
@@ -91,7 +91,7 @@ click_here: Kattints ide
 to_manually_setup_translations: a fordítások kézi elkészítéséhez.
 click_to_manage_translated_fields: >-
   Ezek a mezők még nem lettek lefordítva. Kattints ide, hogy létrehozd őket. | Egy mező van lefordítva. Kattints ide a szerkesztéshez. | {count} mező van lefordítva. Kattints ide a szerkesztésükhöz.
-fields_group: Mező-csoport
+fields_group: Mező csoport
 configure_m2o: A Sok-az-Egyhez kapcsolatok beállítása...
 configure_o2m: Az Egy-a-Sokhoz kapcsolatok beállítása...
 configure_m2m: A Sok-a-Sokhoz kapcsolatok beállítása...
@@ -148,7 +148,7 @@ months:
   october: október
   november: november
   december: december
-drag_mode: Vonszolási mód
+drag_mode: Fogd és vidd mód
 cancel_crop: Körbevágás megszakítása
 original: Eredeti
 url: URL
@@ -163,8 +163,8 @@ created_on: Létrehozva
 comments: Hozzászólások
 item_count: 'Nincsenek elemek | Egy elem | {count} elem'
 no_items_copy: Nincsenek még elemek ebben a gyűjteményben.
-file_count: 'Nincsenek fileok | Egy file | {count} file'
-no_files_copy: Nincsenek fileok.
+file_count: 'Nincsenek fájlok | Egy fájl | {count} fájl'
+no_files_copy: Nincsenek fájlok.
 user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasználó'
 no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
 webhooks_count: 'Nincsenek webhook-ok | Egy webhook | {count} webhook'
@@ -188,7 +188,7 @@ add_a_new_item: Új elem hozzáadása...
 add_filter: Szűrő hozzáadása
 upper_limit: Felső határ...
 lower_limit: Alsó határ...
-user_directory: Felhasználók listája
+user_directory: Felhasználók
 documentation: Dokumentáció
 sidebar: Oldalsáv
 duration: Időtartam
@@ -243,8 +243,8 @@ loading: Betöltés...
 drop_to_upload: Húzd ide a feltöltéshez
 upload_file: Fájl feltöltése
 upload_file_indeterminate: Fájl feltöltése...
-upload_file_success: File feltöltve
-upload_files_indeterminate: 'Fileok feltöltése {done}/{total}'
+upload_file_success: Fájl feltöltve
+upload_files_indeterminate: 'Fájlok feltöltése {done}/{total}'
 upload_files_success: '{count} fájl feltöltve'
 upload_pending: Feltöltés folyamatban
 drag_file_here: Dobj ide egy fájlt
@@ -304,7 +304,7 @@ fields:
     action: Művelet
     collection: Gyűjtemény
     item: Elem elsődleges kulcsa
-    ip: IP Cím
+    ip: IP cím
     comment: Hozzászólás
   directus_files:
     title: Cím
@@ -318,7 +318,7 @@ fields:
     width: Szélesség
     height: Magasság
     duration: Időtartam
-    filesize: File mérete
+    filesize: Fájl mérete
     metadata: Metadata
   directus_users:
     status: Állapot
@@ -351,10 +351,10 @@ delete_field_are_you_sure: >-
 description: Leírás
 done: Kész
 duplicate: Duplikálás
-email: E-mail
+email: Email
 embed: Beágyazás
-file: File
-file_library: File könyvtár
+file: Fájl
+file_library: Könyvtár
 forgot_password: Elfelejtett jelszó
 hidden: Rejtett
 password: Jelszó
@@ -364,7 +364,7 @@ template: Sablon
 interfaces:
   code:
     code: Kód
-    line_number: Sor szám
+    line_number: Sorszám
   collection:
     collection: Gyűjtemény
   collections:
@@ -376,7 +376,7 @@ interfaces:
     collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
     select_a_collection: Gyűjtemény kiválasztása
   file:
-    file: File
+    file: Fájl
   files:
     files: Fájlok
   interface:
@@ -401,7 +401,7 @@ displays:
   datetime:
     format: Formátum
   file:
-    file: File
+    file: Fájl
   user:
     user: Felhasználó
     avatar: Profilkép
