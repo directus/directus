@@ -401,7 +401,7 @@ export default defineComponent({
 		async function saveAsCopyAndNavigate() {
 			try {
 				const newPrimaryKey = await saveAsCopy();
-				router.push(`/users/${newPrimaryKey}`);
+				if (newPrimaryKey) router.push(`/users/${newPrimaryKey}`);
 			} catch {
 				// `save` will show unexpected error dialog
 			}
