@@ -443,7 +443,7 @@ export default defineComponent({
 		async function saveAsCopyAndNavigate() {
 			try {
 				const newPrimaryKey = await saveAsCopy();
-				router.push(`/collections/${props.collection}/${newPrimaryKey}`);
+				if (newPrimaryKey) router.push(`/collections/${props.collection}/${newPrimaryKey}`);
 			} catch {
 				// Save shows unexpected error dialog
 			}

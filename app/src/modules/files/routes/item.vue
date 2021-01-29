@@ -393,7 +393,7 @@ export default defineComponent({
 
 		async function saveAsCopyAndNavigate() {
 			const newPrimaryKey = await saveAsCopy();
-			router.push(`/files/${newPrimaryKey}`);
+			if (newPrimaryKey) router.push(`/files/${newPrimaryKey}`);
 		}
 
 		async function deleteAndQuit() {
