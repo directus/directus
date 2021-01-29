@@ -195,6 +195,7 @@ this_collection: 此集合
 related_collection: 相关集合
 format: 格式
 submit: 提交
+select_all: 全选
 months:
   january: 1 月
   february: 2 月
@@ -414,6 +415,7 @@ wysiwyg_options:
   codeblock: 代码
   blockquote: 块引用
   remove: 移除
+  selectall: 全选
   table: 表
 dropdown: 下拉列表
 choices: 选择项
