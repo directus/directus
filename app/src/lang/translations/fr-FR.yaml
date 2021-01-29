@@ -508,6 +508,8 @@ wysiwyg_options:
   italic: Italique
   underline: Souligner
   strikethrough: Barrer
+  subscript: Indice inférieur
+  superscript: Exposant
   codeblock: Code
   blockquote: Bloc de citation
   bullist: Liste à puces
@@ -680,6 +682,7 @@ fields:
     ip_access: Accès IP
     enforce_tfa: Nécessite 2FA
     users: Membres avec le rôle
+    module_list: Module de Navigation
     collection_list: Navigation de la collection
 no_fields_in_collection: 'Il n''y a pas encore de champs dans "{collection}"'
 do_nothing: Ne rien faire
@@ -873,6 +876,7 @@ interfaces:
     edit_fields: Éditer les champs
     add_label: 'Libellé "Ajouter une nouvelle ligne"'
     field_name_placeholder: Entrez le nom du champ...
+    field_note_placeholder: Entrez la note du champ...
   slider:
     slider: Slider
     description: Sélectionnez un numéro à l'aide d'un curseur
@@ -921,6 +925,7 @@ interfaces:
     modes:
       auto: Auto
       dropdown: Liste déroulante
+      modal: Modal
   wysiwyg:
     wysiwyg: WYSIWYG
     description: Un éditeur de texte riche écrivant du contenu HTML
