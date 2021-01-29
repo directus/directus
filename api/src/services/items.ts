@@ -179,7 +179,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return Array.isArray(data) ? savedPrimaryKeys : savedPrimaryKeys[0];
 	}
 
-	async readByQuery(query: Query): Promise<null | Partial<Item> | Partial<Item>[]> {
+	async readByQuery(
+		query: Query,
+		opts?: { stripNonRequested?: boolean }
+	): Promise<null | Partial<Item> | Partial<Item>[]> {
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
 			knex: this.knex,
@@ -195,7 +198,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			ast = await authorizationService.processAST(ast);
 		}
 
-		const records = await runAST(ast, this.schema, { knex: this.knex });
+		const records = await runAST(ast, this.schema, {
+			knex: this.knex,
+			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
+		});
 		return records as Partial<Item> | Partial<Item>[] | null;
 	}
 
@@ -526,11 +532,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return await this.delete(keys);
 	}
 
-	async readSingleton(query: Query): Promise<Partial<Item>> {
+	async readSingleton(query: Query, opts?: { stripNonRequested?: boolean }): Promise<Partial<Item>> {
 		query = clone(query);
 		query.single = true;
 
-		const record = (await this.readByQuery(query)) as Partial<Item>;
+		const record = (await this.readByQuery(query, opts)) as Partial<Item>;
 
 		if (!record) {
 			let columns = Object.values(this.schema[this.collection].columns);

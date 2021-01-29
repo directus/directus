@@ -11,6 +11,7 @@ type RunASTOptions = {
 	query?: AST['query'];
 	knex?: Knex;
 	nested?: boolean;
+	stripNonRequested?: boolean;
 };
 
 export default async function runAST(
@@ -79,7 +80,7 @@ export default async function runAST(
 		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching
 		// and nesting is done, we parse through the output structure, and filter out all non-requested
 		// fields
-		if (options?.nested !== true) {
+		if (options?.nested !== true && options?.stripNonRequested !== false) {
 			items = removeTemporaryFields(items, originalAST, primaryKeyField);
 		}
 
