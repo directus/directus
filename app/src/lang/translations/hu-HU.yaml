@@ -51,6 +51,9 @@ reset_system_permissions_copy: Minden rendszer hozzáférés visszaállítása a
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fileok és könyvtárak egy szinttel feljebb kerülnek.
+field_files: Több fájl egyidejű hozzáadása
+field_translations: Fordítások
+delete_field: Mező törlése
 language: Nyelv
 global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
@@ -107,8 +110,26 @@ add_a_default_value: Alapértelmezett érték hozzáadása...
 interface_setup_title: Hogyan fogják a felhasználók ezt a mezőt használni?
 display_setup_title: Hogyan kell ennek a mezőnek az értékét megjeleníteni?
 standard_field: Általános mező
+multiple_files: Több fájl egyidejű hozzáadása
+next: Következő
+field_name: Mezőnév
+translations: Fordítások
+note: Jegyzet
+length: Hossz
+readonly: Csak olvasható
+unique: Egyedi
+updated_on: Frissítve
+updated_by: Frissítette
+primary_key: Elsődleges kulcs
+dismiss: Elutasít
 clear_value: Érték törlése
+notifications: Értesítések
+page_not_found: Az oldal nem található
+display: Megjelenés
+settings_update_success: Beállítások frissítve
 title: Cím
+revision_delta_created: Létrehozva
+leave_comment: Hozzászólás írása...
 related_collections: Kapcsolódó gyűjtemények
 translations_collection: Fordítások gyűjteménye
 languages_collection: Nyelvek gyűjteménye
@@ -155,9 +176,12 @@ url: URL
 import: Importálás
 file_details: Fájl adatok
 dimensions: Méretek
+created: Létrehozva
 checksum: Ellenőrző
 owner: Tulajdonos
 download: Letöltés
+name: Név
+type: Típus
 created_by: Készítette
 created_on: Létrehozva
 comments: Hozzászólások
@@ -308,6 +332,7 @@ fields:
     ip: IP Cím
   directus_collections:
     collection: Gyűjtemény
+    note: Jegyzet
     display_template: Megjelenítési sablon
     hidden: Rejtett
     sort_field: Rendezési mező
@@ -346,6 +371,7 @@ fields:
     last_page: Utolsó oldal
     last_access: Utolsó hozzáférés
   directus_fields:
+    note: Jegyzet
     hidden: Rejtett
     translation: Lefordított mezőnevek
     display_template: Sablon
@@ -415,6 +441,7 @@ displays:
   user:
     user: Felhasználó
     avatar: Profilkép
+    name: Név
     both: Mindkettő
 layouts:
   cards:
