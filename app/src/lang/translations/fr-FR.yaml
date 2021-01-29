@@ -574,6 +574,8 @@ keep_editing: Continuer l’édition
 page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
 page_help_collections_collection: >-
   **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer les signets de ces différentes configurations pour un accès rapide.
+page_help_collections_item: >-
+  **Détail de l'élément** — Un formulaire pour visualiser et gérer cet élément. Cette barre latérale contient également un historique complet des révisions et des commentaires intégrés.
 activity_feed: Flux d'activité
 add_new: Nouveau
 create_new: Créer Un Nouveau
