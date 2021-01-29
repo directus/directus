@@ -13,6 +13,7 @@ router.use(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const schema = await service.getSchema();
 
 		/**
@@ -29,7 +30,7 @@ router.use(
 			return next();
 		} as any;
 
-		graphqlHTTP({ schema, graphiql: true, rootValue: { example: 'rijk' } })(req, customResponse);
+		graphqlHTTP({ schema, graphiql: true })(req, customResponse);
 	}),
 	respond
 );

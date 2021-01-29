@@ -163,9 +163,25 @@ export class GraphQLService {
 										type: new GraphQLUnionType({
 											name: field.collection + '__' + field.field,
 											types,
-											resolveType(value, request, info, abstractType) {
-												console.log(abstractType);
-												return types[0];
+											resolveType(value, context, info) {
+												let path: (string | number)[] = [];
+												let currentPath = info.path;
+
+												while (currentPath.prev) {
+													path.push(currentPath.key);
+													currentPath = currentPath.prev;
+												}
+
+												path = path.reverse().slice(1, -1);
+
+												let parent = context.data;
+
+												for (const pathPart of path) {
+													parent = parent[pathPart];
+												}
+
+												const type = parent[relationForField.one_collection_field!];
+												return types.find((GraphQLType: any) => GraphQLType.name === type);
 											},
 										}),
 									};
@@ -184,7 +200,7 @@ export class GraphQLService {
 				}),
 				resolve: async (source: any, args: any, context: any, info: GraphQLResolveInfo) => {
 					const data = await this.resolve(info);
-					(info as any).rootValue = data;
+					context.data = data;
 					return data;
 				},
 				args: {
@@ -525,8 +541,9 @@ export class GraphQLService {
 			(await this.knex.select('singleton').from('directus_collections').where({ collection: collection }).first()) ||
 			systemCollectionRows.find((collectionMeta) => collectionMeta?.collection === collection);
 
-		const result = collectionInfo?.singleton ? await service.readSingleton(query) : await service.readByQuery(query);
-
+		const result = collectionInfo?.singleton
+			? await service.readSingleton(query, { stripNonRequested: false })
+			: await service.readByQuery(query, { stripNonRequested: false });
 		return result;
 	}
 
