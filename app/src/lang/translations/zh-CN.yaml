@@ -341,7 +341,11 @@ errors:
   UNKNOWN: 未知错误
 bookmarks: 书签
 unexpected_error: 未知错误
+no_app_access: 没有应用权限
+password_reset_sent: 我们已经给你发送了一封电子邮件, 您可以选择访问此安全链接来重置您的密码
+password_reset_successful: 密码重置成功。
 back: 后退
+editing_image: 编辑图像
 placeholder: 占位文本
 icon_left: 左图标
 icon_right: 右图标
@@ -421,6 +425,7 @@ wysiwyg_options:
   superscript: 上标
   codeblock: 代码
   blockquote: 块引用
+  image: 添加图片
   remove: 移除
   selectall: 全选
   table: 表
