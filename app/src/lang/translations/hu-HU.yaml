@@ -51,6 +51,9 @@ reset_system_permissions_copy: Minden rendszer hozzáférés visszaállítása a
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fileok és könyvtárak egy szinttel feljebb kerülnek.
+field_files: Több fájl egyidejű hozzáadása
+field_translations: Fordítások
+delete_field: Mező törlése
 language: Nyelv
 global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
@@ -107,8 +110,26 @@ add_a_default_value: Alapértelmezett érték hozzáadása...
 interface_setup_title: Hogyan fogják a felhasználók ezt a mezőt használni?
 display_setup_title: Hogyan kell ennek a mezőnek az értékét megjeleníteni?
 standard_field: Általános mező
+multiple_files: Több fájl egyidejű hozzáadása
+next: Következő
+field_name: Mezőnév
+translations: Fordítások
+note: Jegyzet
+length: Hossz
+readonly: Csak olvasható
+unique: Egyedi
+updated_on: Frissítve
+updated_by: Frissítette
+primary_key: Elsődleges kulcs
+dismiss: Elutasít
 clear_value: Érték törlése
+notifications: Értesítések
+page_not_found: Az oldal nem található
+display: Megjelenés
+settings_update_success: Beállítások frissítve
 title: Cím
+revision_delta_created: Létrehozva
+leave_comment: Hozzászólás írása...
 related_collections: Kapcsolódó gyűjtemények
 translations_collection: Fordítások gyűjteménye
 languages_collection: Nyelvek gyűjteménye
@@ -155,12 +176,21 @@ url: URL
 import: Importálás
 file_details: Fájl adatok
 dimensions: Méretek
+created: Létrehozva
 checksum: Ellenőrző
 owner: Tulajdonos
 download: Letöltés
+no_file_selected: Nincs kijelölt fájl
+download_file: Fájl letöltése
+name: Név
+type: Típus
 created_by: Készítette
 created_on: Létrehozva
 comments: Hozzászólások
+no_items: Nincs megjeleníthető elem
+search_items: Tételek keresése...
+disabled: Letiltva
+report_bug: Hibajelentés
 item_count: 'Nincsenek elemek | Egy elem | {count} elem'
 no_items_copy: Nincsenek még elemek ebben a gyűjteményben.
 file_count: 'Nincsenek fileok | Egy file | {count} file'
@@ -199,6 +229,7 @@ collection_created: Gyűjtemény létrehozva
 modified_on: Változtatás dátuma
 card_size: Kártya mérete
 sort_field: Rendezési mező
+sort: Rendezés
 status: Állapot
 toggle_manual_sorting: Manuális rendezés ki/bekapcsolása
 bookmark_doesnt_exist: Könyvjelző nem létezik
@@ -219,6 +250,10 @@ errors:
   FIELD_NOT_FOUND: Mező nem található
   FORBIDDEN: Tilos
   INVALID_CREDENTIALS: Hibás felhasználónév vagy jelszó
+  ROUTE_NOT_FOUND: Nem található
+bookmark_name: Könyvjelző neve...
+create_bookmark: Könyvjelző létrehozása
+edit_bookmark: Könyvjelző szerkesztése
 bookmarks: Könyvjelzők
 back: Vissza
 icon_left: Ikon Balra
@@ -250,6 +285,8 @@ upload_pending: Feltöltés folyamatban
 drag_file_here: Dobj ide egy fájlt
 click_to_browse: Kattints a böngészéshez
 layout_options: Elrendezési beállítások
+rows: Sorok
+columns: Oszlopok
 collection_setup: Gyűjtemény beállítások
 optional_system_fields: Opcionális rendszer mezők
 value_unique: Egyedi érték szükséges
@@ -281,12 +318,25 @@ read: Olvasás
 update: Frissítés
 select_fields: Válassz mezőket
 format_text: Szövegformázás
+bold: Félkövér
+label: Címke
 wysiwyg_options:
+  bold: Félkövér
   codeblock: Kód
+  copy: Másolás
+  cut: Kivágás
+  paste: Beillesztés
+  heading: Címsor
+  indent: Behúzás
+  undo: Visszavon
+  redo: Újra
   selectall: Összes kijelölése
   table: Táblázat
+  code: Forrás megtekintése
+  fullscreen: Teljes képernyő
 choices: Lehetőségek
 deselect: Kijelölés megszüntetése
+other: Egyéb...
 editing_in_batch: '{count} elem szerkesztése'
 settings_permissions: Szerepkörök és jogosultságok
 settings_project: Projekt beállításai
@@ -308,6 +358,8 @@ fields:
     ip: IP Cím
   directus_collections:
     collection: Gyűjtemény
+    icon: Ikon
+    note: Jegyzet
     display_template: Megjelenítési sablon
     hidden: Rejtett
     sort_field: Rendezési mező
@@ -345,13 +397,18 @@ fields:
     role: Szerepkör
     last_page: Utolsó oldal
     last_access: Utolsó hozzáférés
+  directus_settings:
+    custom_css: Egyéni CSS
   directus_fields:
+    note: Jegyzet
     hidden: Rejtett
     translation: Lefordított mezőnevek
     display_template: Sablon
   directus_roles:
     name: Szerepkör neve
     description: Leírás
+    ip_access: IP cím
+block: Blokk
 comment: Hozzászólás
 continue: Tovább
 default: Alapértelmezett
@@ -367,6 +424,7 @@ file: File
 file_library: File könyvtár
 forgot_password: Elfelejtett jelszó
 hidden: Rejtett
+icon: Ikon
 password: Jelszó
 select_existing: Létező kiválasztása
 settings: Beállítások
@@ -389,6 +447,8 @@ interfaces:
     file: File
   files:
     files: Fájlok
+  icon:
+    icon: Ikon
   interface:
     interface: Kezelőfelület
   many-to-one:
@@ -412,9 +472,12 @@ displays:
     format: Formátum
   file:
     file: File
+  icon:
+    icon: Ikon
   user:
     user: Felhasználó
     avatar: Profilkép
+    name: Név
     both: Mindkettő
 layouts:
   cards:

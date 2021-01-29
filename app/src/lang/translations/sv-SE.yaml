@@ -637,14 +637,22 @@ fields:
     hidden: Dold
     singleton: Singleton
     translations: Översättningar för kollektionens namn
+    archive_app_filter: Arkivera appfilter
+    archive_value: Arkivera värde
+    unarchive_value: Avarkivera värde
     sort_field: Sortera fält
   directus_files:
     title: Rubrik
     description: Beskrivning
     tags: Etiketter
     location: Position
+    storage: Lagring
+    filename_disk: Filnamn (Disk)
+    filename_download: Filnamn (nedladdning)
     metadata: Metadata
+    type: Mime Type
     filesize: Filstorlek
+    modified_by: Ändrad av
     modified_on: Ändrad den
     created_on: Skapad den
     created_by: Skapad av
@@ -671,6 +679,7 @@ fields:
     tfa_secret: Tvåfaktorsautentisering
     status: Status
     role: Roll
+    token: Token
     last_page: Sista sidan
     last_access: Senaste åtkomsten
   directus_settings:
@@ -685,6 +694,7 @@ fields:
     auth_login_attempts: Inloggningsförsök
     storage_asset_presets: Förval för lagringsobjekt
     storage_asset_transform: Transformering av lagringsobjekt
+    custom_css: Custom CSS
   directus_fields:
     collection: Namn kollektion
     icon: Ikon kollektion
@@ -774,6 +784,7 @@ template: Mall
 translation: Översättning
 value: Värde
 view_project: Visa projekt
+weeks: { }
 report_error: Rapportera fel
 interfaces:
   checkboxes:

@@ -188,13 +188,21 @@ page_not_found: 找不到页面
 page_not_found_body: 您正在寻找的页面似乎不存在。
 confirm_revert: 确认恢复
 display: 显示
+settings_update_success: 设置已更新
 title: 标题
+revision_delta_updated: '更新了 1 个字段 | 更新了 {count} 个字段'
 revision_delta_deleted: 已删除
 leave_comment: 留下注释...
 this_collection: 此集合
 related_collection: 相关集合
+export_data: 导出数据
 format: 格式
+export_collection: '导出 {collection}'
 submit: 提交
+move: 移动
+today: 今天
+yesterday: 昨天
+select_all: 全选
 months:
   january: 1 月
   february: 2 月
@@ -414,6 +422,7 @@ wysiwyg_options:
   codeblock: 代码
   blockquote: 块引用
   remove: 移除
+  selectall: 全选
   table: 表
 dropdown: 下拉列表
 choices: 选择项
