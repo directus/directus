@@ -29,7 +29,7 @@ router.use(
 			return next();
 		} as any;
 
-		graphqlHTTP({ schema, graphiql: true })(req, customResponse);
+		graphqlHTTP({ schema, graphiql: true, rootValue: { example: 'rijk' } })(req, customResponse);
 	}),
 	respond
 );
