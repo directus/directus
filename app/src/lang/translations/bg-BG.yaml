@@ -637,14 +637,21 @@ fields:
     hidden: Скрито
     singleton: Сек
     translations: Преводи на името на колекцията
+    archive_value: Стойност при архивиране
+    unarchive_value: Стойност при разархивиране
     sort_field: Поле за сортиране
   directus_files:
     title: Заглавие
     description: Описание
     tags: Тагове
     location: Местоположение
+    storage: Хранилище
+    filename_disk: Име на файл (на диска)
+    filename_download: Име на файл (при сваляне)
     metadata: Метаданни
+    type: MIME тип
     filesize: Размер на файла
+    modified_by: Променен от
     modified_on: Променен на
     created_on: Създаден на
     created_by: Създадено от
@@ -671,6 +678,7 @@ fields:
     tfa_secret: Двуфакторна автентикация
     status: Статус
     role: Роля
+    token: Токен
     last_page: Последна страница
     last_access: Последно посещение
   directus_settings:
@@ -685,6 +693,7 @@ fields:
     auth_login_attempts: Брой за опити за вход
     storage_asset_presets: Съхранение и настройки за файл
     storage_asset_transform: Трансформации на съхранените файлове
+    custom_css: Потребителски CSS
   directus_fields:
     collection: Име на колекцията
     icon: Икона на колекцията
