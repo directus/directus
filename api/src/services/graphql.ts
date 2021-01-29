@@ -159,7 +159,7 @@ export class GraphQLService {
 
 									fieldsObject[field.field] = {
 										type: new GraphQLUnionType({
-											name: field.field,
+											name: field.collection + '__' + field.field,
 											types,
 											resolveType(value, _, info) {
 												/**
