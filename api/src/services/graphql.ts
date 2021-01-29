@@ -90,7 +90,7 @@ export class GraphQLService {
 
 	getGraphQLSchema(collections: Collection[], fields: Field[], relations: Relation[]) {
 		const filterTypes = this.getFilterArgs(collections, fields, relations);
-		const schema: any = { items: {} };
+		const schema: any = { items: {}, directus: {} };
 
 		for (const collection of collections) {
 			const systemCollection = collection.collection.startsWith('directus_');
@@ -122,7 +122,7 @@ export class GraphQLService {
 									const relatedIsSystem = relationForField.one_collection!.startsWith('directus_');
 
 									const relatedType = relatedIsSystem
-										? schema[relationForField.one_collection!.substring(9)].type
+										? schema.directus[relationForField.one_collection!.substring(9)].type
 										: schema.items[relationForField.one_collection!].type;
 
 									fieldsObject[field.field] = {
@@ -132,7 +132,7 @@ export class GraphQLService {
 									const relatedIsSystem = relationForField.many_collection.startsWith('directus_');
 
 									const relatedType = relatedIsSystem
-										? schema[relationForField.many_collection.substring(9)].type
+										? schema.directus[relationForField.many_collection.substring(9)].type
 										: schema.items[relationForField.many_collection].type;
 
 									fieldsObject[field.field] = {
@@ -151,7 +151,7 @@ export class GraphQLService {
 
 									for (const relatedCollection of relatedCollections) {
 										const relatedType = relatedCollection.startsWith('directus_')
-											? schema[relatedCollection.substring(9)].type
+											? schema.directus[relatedCollection.substring(9)].type
 											: schema.items[relatedCollection].type;
 
 										types.push(relatedType);
@@ -196,7 +196,7 @@ export class GraphQLService {
 			};
 
 			if (systemCollection) {
-				schema[collection.collection.substring(9)] = schemaSection;
+				schema.directus[collection.collection.substring(9)] = schemaSection;
 			} else {
 				schema.items[collection.collection] = schemaSection;
 			}
@@ -209,8 +209,8 @@ export class GraphQLService {
 				const systemCollection = collection.collection.startsWith('directus_');
 
 				if (systemCollection) {
-					schemaWithLists[collection.collection.substring(9)].type = new GraphQLList(
-						schemaWithLists[collection.collection.substring(9)].type
+					schemaWithLists.directus[collection.collection.substring(9)].type = new GraphQLList(
+						schemaWithLists.directus[collection.collection.substring(9)].type
 					);
 				} else {
 					schemaWithLists.items[collection.collection].type = new GraphQLList(
@@ -243,6 +243,16 @@ export class GraphQLService {
 				type: new GraphQLObjectType({
 					name: 'items',
 					fields: schemaWithLists.items,
+				}),
+				resolve: () => ({}),
+			};
+		}
+
+		if (Object.keys(schemaWithLists.directus).length > 0) {
+			queryBase.fields.items = {
+				type: new GraphQLObjectType({
+					name: 'directus',
+					fields: schemaWithLists.directus,
 				}),
 				resolve: () => ({}),
 			};
