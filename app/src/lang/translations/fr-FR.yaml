@@ -261,6 +261,7 @@ months:
   december: Décembre
 drag_mode: Mode Glisser
 cancel_crop: Annuler le recadrage
+original: Initial
 url: URL
 import: Importer
 file_details: Détails du fichier
@@ -335,6 +336,7 @@ relationship_not_setup: La relation n'a pas été configurée correctement
 display_template_not_setup: L'option d'affichage du modèle est mal configurée
 collection_field_not_setup: L'option de champ de collection est mal configurée
 select_a_collection: Sélectionner une collection
+active: Actif
 users: Utilisateurs
 activity: Activité
 webhooks: Webhooks
@@ -782,6 +784,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   checkboxes:
