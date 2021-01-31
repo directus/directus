@@ -22,7 +22,7 @@ import env from '../env';
 import { PayloadService } from './payload';
 import { AuthorizationService } from './authorization';
 
-import { pick, clone, cloneDeep } from 'lodash';
+import { pick, clone, cloneDeep, merge } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
 import { InvalidPayloadException } from '../exceptions';
 import { ForbiddenException } from '../exceptions';
@@ -59,18 +59,20 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 			});
 
-			const customProcessed = await emitter.emitAsync(`${this.eventScope}.create.before`, payloads, {
-				event: `${this.eventScope}.create.before`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: null,
-				action: 'create',
-				payload: payloads,
-				schema: this.schema,
-			});
+			for (let i = 0; i < payloads.length; i++) {
+				const customProcessed = await emitter.emitAsync(`${this.eventScope}.create.before`, payloads[i], {
+					event: `${this.eventScope}.create.before`,
+					accountability: this.accountability,
+					collection: this.collection,
+					item: null,
+					action: 'create',
+					payload: payloads[i],
+					schema: this.schema,
+				});
 
-			if (customProcessed) {
-				payloads = customProcessed[customProcessed.length - 1];
+				if (customProcessed && customProcessed.length > 0) {
+					payloads[i] = customProcessed.reverse().reduce((val, acc) => merge(acc, val));
+				}
 			}
 
 			if (this.accountability) {
@@ -177,7 +179,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return Array.isArray(data) ? savedPrimaryKeys : savedPrimaryKeys[0];
 	}
 
-	async readByQuery(query: Query): Promise<null | Partial<Item> | Partial<Item>[]> {
+	async readByQuery(
+		query: Query,
+		opts?: { stripNonRequested?: boolean }
+	): Promise<null | Partial<Item> | Partial<Item>[]> {
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
 			knex: this.knex,
@@ -193,7 +198,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			ast = await authorizationService.processAST(ast);
 		}
 
-		const records = await runAST(ast, this.schema, { knex: this.knex });
+		const records = await runAST(ast, this.schema, {
+			knex: this.knex,
+			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
+		});
 		return records as Partial<Item> | Partial<Item>[] | null;
 	}
 
@@ -271,8 +279,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 			});
 
-			if (customProcessed) {
-				payload = customProcessed[customProcessed.length - 1];
+			if (customProcessed && customProcessed.length > 0) {
+				payload = customProcessed.reverse().reduce((val, acc) => merge(acc, val));
 			}
 
 			if (this.accountability) {
@@ -524,11 +532,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return await this.delete(keys);
 	}
 
-	async readSingleton(query: Query): Promise<Partial<Item>> {
+	async readSingleton(query: Query, opts?: { stripNonRequested?: boolean }): Promise<Partial<Item>> {
 		query = clone(query);
 		query.single = true;
 
-		const record = (await this.readByQuery(query)) as Partial<Item>;
+		const record = (await this.readByQuery(query, opts)) as Partial<Item>;
 
 		if (!record) {
 			let columns = Object.values(this.schema[this.collection].columns);

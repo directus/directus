@@ -28,23 +28,28 @@ cancel: Cancelar
 collection: Coleção
 fields:
   directus_activity:
+    item: Chave primária
     action: Ação
     collection: Coleção
-    item: Chave primária
-    user: Ação de
     timestamp: Ação de
-    edited_on: Editado em
-    comment_deleted_on: Comentário eliminado em
-    ip: Endereço IP
-    user_agent: User Agent
+    user: Ação de
     comment: Comentário
+    user_agent: User Agent
+    ip: Endereço IP
+  directus_collections:
+    collection: Coleção
   directus_files:
     title: Título
+    description: Descrição
     tags: Etiquetas
     location: Localização
-    description: Descrição
+    created_on: Criada em
+    created_by: Criado por
   directus_users:
+    location: Localização
     title: Título
+    description: Descrição
+    tags: Etiquetas
   directus_roles:
     description: Descrição
 comment: Comentário

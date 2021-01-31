@@ -13,6 +13,7 @@ router.use(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const schema = await service.getSchema();
 
 		/**

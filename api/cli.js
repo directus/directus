@@ -1,5 +1,2 @@
 #!/usr/bin/env node
-
-try {
-	return require('./dist/cli/index.js');
-} catch {}
+return require('./dist/cli/index.js');

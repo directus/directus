@@ -10,7 +10,8 @@ import { toArray } from '../utils/to-array';
 type RunASTOptions = {
 	query?: AST['query'];
 	knex?: Knex;
-	child?: boolean;
+	nested?: boolean;
+	stripNonRequested?: boolean;
 };
 
 export default async function runAST(
@@ -43,7 +44,15 @@ export default async function runAST(
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = await getDBQuery(knex, collection, columnsToSelect, query, primaryKeyField, schema);
+		const dbQuery = await getDBQuery(
+			knex,
+			collection,
+			columnsToSelect,
+			query,
+			primaryKeyField,
+			schema,
+			options?.nested
+		);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -59,22 +68,11 @@ export default async function runAST(
 		const nestedNodes = applyParentFilters(nestedCollectionNodes, items);
 
 		for (const nestedNode of nestedNodes) {
-			let tempLimit: number | null = null;
-
-			// Nested o2m-items are fetched from the db in a single query. This means that we're fetching
-			// all nested items for all parent items at once. Because of this, we can't limit that query
-			// to the "standard" item limit. Instead of _n_ nested items per parent item, it would mean
-			// that there's _n_ items, which are then divided on the parent items. (no good)
-			if (nestedNode.type === 'o2m' || nestedNode.type === 'm2o') {
-				tempLimit = nestedNode.query.limit || 100;
-				nestedNode.query.limit = -1;
-			}
-
-			let nestedItems = await runAST(nestedNode, schema, { knex, child: true });
+			let nestedItems = await runAST(nestedNode, schema, { knex, nested: true });
 
 			if (nestedItems) {
 				// Merge all fetched nested records with the parent items
-				items = mergeWithParentItems(nestedItems, items, nestedNode, tempLimit);
+				items = mergeWithParentItems(nestedItems, items, nestedNode, true);
 			}
 		}
 
@@ -82,7 +80,7 @@ export default async function runAST(
 		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching
 		// and nesting is done, we parse through the output structure, and filter out all non-requested
 		// fields
-		if (options?.child !== true) {
+		if (options?.nested !== true && options?.stripNonRequested !== false) {
 			items = removeTemporaryFields(items, originalAST, primaryKeyField);
 		}
 
@@ -138,7 +136,8 @@ async function getDBQuery(
 	columns: string[],
 	query: Query,
 	primaryKeyField: string,
-	schema: SchemaOverview
+	schema: SchemaOverview,
+	nested?: boolean
 ): Promise<QueryBuilder> {
 	let dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
 
@@ -146,13 +145,21 @@ async function getDBQuery(
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	if (queryCopy.limit === -1) {
+	// Nested collection sets are retrieved as a batch request (select w/ a filter)
+	// "in", so we shouldn't limit that query, as it's a single request for all
+	// nested items, instead of a query per row
+	if (queryCopy.limit === -1 || nested) {
 		delete queryCopy.limit;
 	}
 
 	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
 
 	await applyQuery(knex, table, dbQuery, queryCopy, schema);
+
+	// Nested filters use joins to filter on the parent level, to prevent duplicate
+	// parents, we group the query by the current tables primary key (which is unique)
+	// ref #3798
+	dbQuery.groupBy(`${table}.${primaryKeyField}`);
 
 	return dbQuery;
 }
@@ -225,7 +232,7 @@ function mergeWithParentItems(
 	nestedItem: Item | Item[],
 	parentItem: Item | Item[],
 	nestedNode: NestedCollectionNode,
-	limit?: number | null
+	nested?: boolean
 ) {
 	const nestedItems = toArray(nestedItem);
 	const parentItems = clone(toArray(parentItem));
@@ -252,9 +259,8 @@ function mergeWithParentItems(
 			});
 
 			// We re-apply the requested limit here. This forces the _n_ nested items per parent concept
-			if (limit !== null) {
-				itemChildren = itemChildren.slice(0, limit);
-				nestedNode.query.limit = limit;
+			if (nested) {
+				itemChildren = itemChildren.slice(0, nestedNode.query.limit);
 			}
 
 			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : null;

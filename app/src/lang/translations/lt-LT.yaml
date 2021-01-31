@@ -26,6 +26,8 @@ connection_fair: Patenkinama ryšio kokybė
 connection_poor: Prasta ryšio kokybė
 rename_folder: Pervadinti aplanką
 delete_folder: Trinti aplanką
+prefix: Priešdėlis
+suffix: Priesaga
 reset_bookmark: Atstatyti skirtuką
 rename_bookmark: Pervadinti žymę
 update_bookmark: Atnaujinti žymę
@@ -169,6 +171,8 @@ length: Ilgis
 precision_scale: Tikslumas ir dydis
 readonly: Tik skaitomas
 unique: Unikalus
+updated_on: Atnaujinta
+updated_by: Atnaujino
 primary_key: Pirminis raktas
 foreign_key: Išorinis raktas
 finish_setup: Pabaigti konfigūravimą
@@ -197,6 +201,7 @@ revision_delta_other: Pakeitimas
 revision_delta_by: '{date} {user}'
 private_user: Privatus vartotojas
 revision_preview: Pakeitimo peržiūra
+updates_made: Atlikti atnaujinimai
 leave_comment: Palikite komentarą...
 post_comment_success: Komentaras paskelbtas
 item_create_success: Elementas sukurtas | Elementai sukurti
@@ -301,7 +306,7 @@ reset_interface: Atstatyti sąsają
 display_not_found: 'Atvaizdavimo šablonas "{display}" nerastas.'
 reset_display: Atstatyti atvaizdavimo šabloną
 m2a_builder: Redaktorius (M2A)
-item_count: 'Nėra elementų | Vienas elementas | {count} elementų'
+item_count: 'Nėra elementų | Vienas elementas | {count} elementai/ų'
 no_items_copy: Kolekcijoje dar nėra elementų.
 file_count: 'Nėra failų | Vienas failas | {count} failų'
 no_files_copy: Nėra failų.
@@ -340,7 +345,7 @@ modified_on: Pakeista
 card_size: Kortelės dydis
 sort_field: Rūšiavimo laukas
 sort: Rūšiuoti
-status: Būklė
+status: Būsena
 toggle_manual_sorting: Perjungti rankinį rūšiavimą
 bookmark_doesnt_exist: Žymė neegzistuoja
 bookmark_doesnt_exist_copy: Žymė, kurią bandote atidaryti, neegzistuoja.
@@ -442,6 +447,22 @@ upload_file_success: Failas įkeltas
 upload_files_indeterminate: 'Įkeliami failai {done}/{total}'
 upload_files_success: '{count} failai įkelti'
 upload_pending: Laukiama įkėlimo
+drag_file_here: Tempkite ir paleiskite failą čia
+click_to_browse: Paspauskite norėdami naršyti
+layout_options: Išdėstymo nustatymai
+rows: Eilutės
+columns: Stulpeliai
+collection_setup: Kolekcijos konfigūracija
+optional_system_fields: Neprivalomi sisteminiai laukai
+value_unique: Reikšmė turi būti unikali
+all_activity: Visa Veikla
+create_item: Sukurti elementą
+display_template: Rodymo šablonas
+n_items_selected: 'Nepasirinkta elementų | 1 pasirinktas elementas | Pasirinkta {n} elementai/-ų'
+per_page: Puslapyje
+all_files: Visi failai
+my_files: Mano failai
+recent_files: Paskiausiai naudoti failai
 create_folder: Sukurti aplanką
 folder_name: Aplanko pavadinimas...
 add_file: Pridėti failą
@@ -486,12 +507,14 @@ wysiwyg_options:
   bullist: Suženklintasis sąrašas
   numlist: Numeruotasis sąrašas
   hr: Horizontali linija
+  link: Nuoroda
   unlink: Pašalinti nuorodą
   media: Pridėti mediją
   image: Pridėti nuotrauką
   copy: Kopijuoti
   cut: Iškirpti
   paste: Įklijuoti
+  heading: Antraštė
   h1: Antraštė 1
   h2: Antraštė 2
   h3: Antraštė 3
@@ -584,49 +607,59 @@ singleton_label: Laikyti vienu objektu
 system_fields_locked: Sisteminiai laukai yra užrakinti ir negali būti redaguojami
 fields:
   directus_activity:
+    item: Įrašo Pirminis Raktas
     action: Veiksmas
     collection: Rinkinys
-    item: Įrašo Pirminis Raktas
-    user: Veiksmas atliktas
     timestamp: Atlikta
-    edited_on: Redaguota
-    comment_deleted_on: Komentaras ištrintas
-    ip: IP adresas
-    user_agent: Naršyklė
+    user: Veiksmas atliktas
     comment: Komentaras
+    user_agent: Naršyklė
+    ip: IP adresas
+    revisions: Pakeitimai
   directus_collections:
+    collection: Rinkinys
+    icon: Ikona
+    note: Pastaba
+    display_template: Rodymo šablonas
+    hidden: Paslėptas
+    singleton: Singleton objektas
     translations: Kolekcijos pavadinimų vertimai
+    sort_field: Rūšiavimo laukas
   directus_files:
     title: Pavadinmas
+    description: Aprašymas
     tags: Žymos
     location: Vietovė
-    description: Aprašymas
-    filename_download: Failo parsisiuntimas
-    filename_disk: Failo vardas diske
-    private_hash: Privati maiša (hash)
-    checksum: Kontrolinė suma
-    uploaded_on: Įkelta
-    uploaded_by: Įkelta
-    width: Plotis
-    height: Aukštis
-    duration: Trukmė
-    filesize: Failo dydis
     metadata: Meta duomenys
+    filesize: Failo dydis
+    modified_on: Pakeista
+    created_on: Sukurta
+    created_by: Sukūrė
+    embed: Įterptas
+    uploaded_by: Įkelta
+    folder: Aplankas
+    width: Plotis
+    uploaded_on: Įkelta
+    height: Aukštis
+    charset: Simbolių rinkinys
+    duration: Trukmė
   directus_users:
-    status: Būklė
     first_name: Vardas
     last_name: Pavardė
     email: El. paštas
-    email_notifications: El. pašto pranešimai
     password: Slaptažodis
-    role: Vaidmuo
-    company: Įmonė
-    title: Pavadinmas
-    timezone: Laiko zona
-    language: Kalba
     avatar: Nuotrauka
+    location: Vietovė
+    title: Pavadinmas
+    description: Aprašymas
+    tags: Žymos
+    language: Kalba
     theme: Tema
     tfa_secret: Dviejų lygių autentifikavimas
+    status: Būsena
+    role: Vaidmuo
+    last_page: Paskutinis puslapis
+    last_access: Paskutinė prieiga
   directus_settings:
     project_name: Projekto pavadinimas
     project_url: Projekto adresas
@@ -636,7 +669,6 @@ fields:
     public_background: Projekto fonas
     public_note: Vieša pastaba
     auth_password_policy: Slaptažodžių politika
-    auth_idle_timeout: Max. neveiklumo laikas
     auth_login_attempts: Max. bandymų prisijungti kiekis
     storage_asset_presets: Saugyklos failų ruošiniai
     storage_asset_transform: Saugyklos failų transformacija
@@ -652,9 +684,9 @@ fields:
     name: Vaidmens pavadinimas
     icon: Grupės ikonėlė
     description: Aprašymas
-    ip_access: IP adresas
     app_access: Programos prieiga
     admin_access: Administratoriaus prieiga
+    ip_access: IP adresas
     enforce_tfa: Reikalinga 2FA
     users: Vartotojai grupėje
     module_list: Modulių navigacija
@@ -665,24 +697,76 @@ generate_and_save_uuid: Generuoti ir išsaugoti UUID
 save_current_user_id: Išsaugoti dabartinio vartotojo ID
 save_current_user_role: Išsaugoti dabartinio vartotojo grupę
 save_current_datetime: Išsaugoti dabartinį datą/laiką
+block: Blokas
+inline: Toje pačioje eilutėje
 comment: Komentaras
 continue: Tęsti
 continue_as: >-
   <b>{name}</b> jau yra prisijungęs. Jeigu tai jūs, spauskite tęsti.
 editing_role: '{role} grupė'
+creating_webhook: Kuriamas Webhook'ą
+default: Numatytasis
+delete: Pašalinti
+delete_are_you_sure: >-
+  Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
+delete_field_are_you_sure: >-
+  Ar tikrai norite panaikinti lauką "{field}"? Šio veiksmo nebus galima atšaukti.
 description: Aprašymas
 done: Atlikta
+duplicate: Dublikatas
 email: El. paštas
+embed: Įterptas
+fallback_icon: Atsarginė ikona
 field: Laukelis | Laukeliai
+file: Failas
+file_library: Failų biblioteka
+forgot_password: Pamiršote slaptažodį
 hidden: Paslėptas
+icon: Ikona
+info: Informacija
+normal: Normalus
+success: Pavyko
+warning: Įspėjimas
+danger: Pavojus
+junction_collection: Jungiamoji kolekcija
+latency: Vėlavimas
+login: Prisijungti
+my_activity: Mano veikla
+not_authenticated: Neprisijungta
+authenticated: Prisijungta
+options: Parinktys
+otp: Vienkartinis slaptažodis
 password: Slaptažodis
+permissions: Leidimai
+relationship: Sąryšis
+reset: Atstatyti
+reset_password: Atstatyti slaptažodį
 revisions: Pakeitimai
+revert: Atstatyti
+save: Išsaugoti
+schema: Schema
+search: Paieška
+select_existing: Pasirinkti esamą
+select_field_type: Pasirinkti lauko tipą
+select_interface: Pasirinkti sąsają
+settings: Nustatymai
+sign_in: Prisijungti
+sign_out: Atsijungti
+sign_out_confirm: Ar tikrai norite atsijungti?
+something_went_wrong: Įvyko klaida.
+sort_direction: Rūšiavimo kryptis
+sort_asc: Rūšiuoti didėjimo tvarka
+sort_desc: Rūšiuoti mažėjimo tvarka
 template: Šablonas
+translation: Vertimas
+value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
 interfaces:
   checkboxes:
     checkboxes: Žymimieji langeliai
+    description: Pasirinkite tarp kelių variantų naudodami žymimuosius langelius
+    allow_other: Leisti kita
     show_more: 'Rodyti dar {count}'
     items_shown: Rodomi elementai
   code:
@@ -712,6 +796,7 @@ interfaces:
     set_to_now: Nustatyti į dabartinį laiką
     use_24: Naudoti 24 val. laikrodį
   display-template:
+    display-template: Rodymo šablonas
     description: Maišyti statinį tekstą ir dinamines laukų reikšmes
     collection_field: Kolekcijos laukas
     collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
@@ -727,7 +812,9 @@ interfaces:
   dropdown:
     description: Pasirinkite reikšmę iš sąrašo
     choices_placeholder: Pridėti naują pasirinkimą
+    allow_other: Leisti kita
     allow_other_label: Leisti kitas reikšmes
+    allow_none: Leisti tuščią reikšmę
     allow_none_label: Leisti nepasirinkti nieko
     choices_name_placeholder: Įveskite pavadinimą...
     choices_value_placeholder: Įveskite reikšmę...
@@ -735,6 +822,7 @@ interfaces:
     dropdown-multiselect: Išskleidžiamasis sąrašas (kelios reikšmės)
     description: Pasirinkite kelias reikšmes iš sąrašo
   file:
+    file: Failas
     description: Pasirinkite arba įkelkite failą
   files:
     files: Failai
@@ -742,8 +830,10 @@ interfaces:
   hash:
     hash: Maiša
     description: Įveskite reikšmę išmaišymui
+    masked: Paslėptas
     masked_label: Paslėpti tikrąsias reikšmes
   icon:
+    icon: Ikona
     description: Pasirinkite ikonėlę iš sąrašo
     search_for_icon: Ieškoti ikonėlių...
   image:
@@ -752,8 +842,24 @@ interfaces:
   interface:
     interface: Sąsaja
     description: Pasirinkti egzistuojančią sąsają
+    placeholder: Pasirinkti sąsają...
+  interface-options:
+    interface-options: Sąsajos nustatymai
+  many-to-one:
+    display_template: Rodymo šablonas
+  repeater:
+    field_note_placeholder: Įvesti lauko pastabą...
   tags:
     tags: Žymos
+    whitespace: Matomi tarpai
+    hyphen: Pakeisti į brūkšnelius
+    underscore: Pakeisti į pabraukimo brūkšnelius
+    remove: Pašalinti tuščius tarpus
+    capitalization: Didžiosios/mažosios raidės
+    uppercase: Pakeisti į didžiąsias raides
+    lowercase: Pakeisti į mažąsias raides
+    auto_formatter: Naudoti automatinį antraštės formatavimą
+    alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
     add_tags: Pridėti žymes...
   text-input:
@@ -761,7 +867,10 @@ interfaces:
     description: Įveskite vieną teksto eilutę
     trim: Apkarpyti
     trim_label: Apkarpyti iš pradžios ir pabaigos
+    mask: Paslėptas
     mask_label: Paslėpti tikrąją reikšmę
+    nullable: Gali būti Null
+    nullable_label: Išsaugoti tuščią reikšmė kaip NULL
   textarea:
     textarea: Teksto sritis
     description: Įveskite kelių eilučių neformatuotą tesktą
@@ -771,6 +880,7 @@ interfaces:
     label_placeholder: Įveskite žymą...
     label_default: Įjungtas
   translations:
+    display_template: Rodymo šablonas
     no_collection: Nėra kolekcijos
   user:
     user: Vartotojas
@@ -785,22 +895,68 @@ interfaces:
     description: Formatuoto teksto redaktorius
     toolbar: Įrankių juosta
     custom_formats: Pasirinktinis formatos
+    options_override: Parinkčių perrašymas
 displays:
   boolean:
     boolean: Loginis
+    description: Rodyti įjungimo/išjungimo būsenas
+    label_on: Tekstas, kai įjungta
+    label_on_placeholder: Įveskite tekstą, kai įjungta...
+    label_off: Tekstas, kai išjungta
+    label_off_placeholder: Įveskite tekstą, kai išjungta...
     icon_on: Įjungumo ikona
     icon_off: Išjungimo ikona
+    color_on: Spalva, kai įjungta
+    color_off: Spalva, kai išjungta
   collection:
     collection: Rinkinys
+    description: Rodyti kolekciją
+    icon_label: Rodyti kolekcijos ikoną
   color:
     color: Spalva
+    description: Rodyti spalvotą tašką
+    default_color: Numatytoji spalva
   datetime:
     datetime: Data ir laikas
+    description: Rodyti reikšmes susijusias su laiku
     format: Formatas
+    format_note: >-
+      Pasirinktinis formatas priima __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Ilgas
+    short: Trumpas
+    relative: Santykinis
+    relative_label: 'Rodyti santykinį laiką, pvz.: prieš 5 minutes'
+  file:
+    file: Failas
+    description: Rodyti failus
+  filesize:
+    filesize: Failo dydis
+    description: Rodyti failo dydį
+  formatted-value:
+    formatted-value: Suformatuota reikšmė
+    description: Rodyti suformatuotą teksto versiją
+    format_title: Formatuoti antraštę
+    bold_label: Naudoti paryškintą stilių
+  formatted-json-value:
+    formatted-json-value: Suformatuota JSON reikšmė
+    description: Rodyti suformatuotą objekto versiją
+  icon:
+    icon: Ikona
+    description: Rodyti ikoną
+    filled: Užpildyta
+    filled_label: Naudoti užpildytą variantą
   image:
     image: Paveikslėlis
+    description: Rodyti nedidelį paveikslėlį
     circle: Apskritimas
+    circle_label: Atvaizduoti kaip apskritimą
   labels:
+    labels: Žymos
+    description: Rodyti vieną ar kelias žymas
+    default_foreground: Numatytoji teksto spalva
+    default_background: Numatytoji fono spalva
+    format_label: Formatuoti kiekvieną žymą
+    show_as_dot: Rodyti kaip tašką
     choices_value_placeholder: Įveskite reikšmę...
   user:
     user: Vartotojas

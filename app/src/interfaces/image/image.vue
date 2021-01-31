@@ -106,7 +106,7 @@ export default defineComponent({
 
 		const downloadSrc = computed(() => {
 			if (!image.value) return null;
-			return getRootPath() + `assets/${image.value.id}`;
+			return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
 		});
 
 		const meta = computed(() => {
@@ -128,7 +128,8 @@ export default defineComponent({
 				if (oldValue && newValue === null) {
 					deselect();
 				}
-			}
+			},
+			{ immediate: true }
 		);
 
 		const { edits, stageEdits } = useEdits();

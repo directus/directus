@@ -3,7 +3,7 @@ import { Preset } from '@/types';
 import { useUserStore } from '@/stores/';
 import api from '@/api';
 import { nanoid } from 'nanoid';
-import { merge } from 'lodash';
+import { merge, cloneDeep } from 'lodash';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
 	bookmark: null,
@@ -246,7 +246,7 @@ export const usePresetsStore = createStore({
 			const { id: userID } = userStore.state.currentUser;
 
 			// Clone the preset to make sure the future deletes don't affect the original object
-			preset = { ...preset };
+			preset = cloneDeep(preset);
 
 			if (preset.id === undefined || preset.id === null) {
 				return await this.create({
