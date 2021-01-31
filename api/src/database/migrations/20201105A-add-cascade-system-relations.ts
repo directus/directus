@@ -124,28 +124,130 @@ const updates = [
 ];
 
 export async function up(knex: Knex) {
+	if (knex.client.config.client === 'mssql') {
+		knex.schema.raw('ALTER DATABASE [directus] SET RECURSIVE_TRIGGERS ON').then(
+			(resolved) => {
+				console.log('Enabled Recursive Trigger');
+			},
+			(rejected) => {
+				console.error(rejected);
+			}
+		);
+	}
+
 	for (const update of updates) {
 		await knex.schema.alterTable(update.table, (table) => {
 			for (const constraint of update.constraints) {
 				table.dropForeign([constraint.column]);
 
 				if (knex.client.config.client === 'mssql') {
-					/* MSSQL do not like circular cascading actions */
-					/* TODO: find an alternative */
 					table
 						.foreign(constraint.column)
 						.references(constraint.references)
 						.onUpdate('NO ACTION')
 						.onDelete('NO ACTION');
+					// Cascading actions and set nulls are
+					// implemented via trigger
 				} else {
 					table
 						.foreign(constraint.column)
 						.references(constraint.references)
-						.onUpdate('NO ACTION')
+						.onUpdate('CASCADE')
 						.onDelete(constraint.onDelete);
 				}
 			}
 		});
+	}
+
+	for (const update of updates) {
+		for (const constraint of update.constraints) {
+			var referenced_table = constraint.references.split('.')[0];
+			var referenced_column = constraint.references.split('.')[1];
+
+			if (referenced_table == update.table) {
+				if (constraint.onDelete == 'CASCADE') {
+					console.log(`A Creating Trigger ${update.table}: ${constraint.references} ${constraint.onDelete}`);
+					knex.schema
+						.raw(
+							`
+						CREATE TRIGGER dbo.[${referenced_table}_${constraint.column}_trigger] ON dbo.[${referenced_table}]
+						INSTEAD OF DELETE
+						AS
+						BEGIN
+							SET NOCOUNT ON;
+							WITH cte AS 
+							(
+								SELECT id FROM dbo.[${referenced_table}] WHERE [id] IN (SELECT d.[id] FROM [deleted] d)
+								UNION ALL						
+								SELECT c.id FROM dbo.[${referenced_table}] c INNER JOIN cte p ON c.[${constraint.column}] = p.[${referenced_column}]
+							)
+							UPDATE t 
+							SET t.[${constraint.column}] = NULL
+							FROM dbo.[${referenced_table}] t
+							INNER JOIN cte c ON c.[${referenced_column}] = t.[${referenced_column}]	
+						END;	
+					`
+						)
+						.then(
+							(ok) => {
+								console.log('Trigger Created');
+							},
+							(error) => {
+								console.log(error);
+							}
+						);
+					// knex.schema.raw(`
+					// 	CREATE TRIGGER dbo.[${referenced_table}_${constraint.column}_trigger] ON dbo.[${referenced_table}]
+					// 	INSTEAD OF DELETE
+					// 	AS
+					// 	BEGIN
+					// 		SET NOCOUNT ON;
+					// 		WITH cte AS
+					// 		(
+					// 			SELECT id FROM dbo.[${referenced_table}]  [id] IN (SELECT d.[id] FROM [deleted] d)
+					// 			UNION ALL
+					// 			SELECT c.id FROM dbo.[${referenced_table}] c INNER JOIN cte p ON c.[${constraint.column}] = p.[${referenced_column}]
+					// 		)
+					// 		DELETE t
+					// 		FROM dbo.[${referenced_table}] t
+					// 		INNER JOIN cte c ON c.[${referenced_column}] = t.[${referenced_column}]
+					// 	END;
+					// `).then(ok => { console.log(ok); }, error => { console.log(error)});
+				}
+				if (constraint.onDelete == 'SET NULL') {
+					console.log(`B Creating Trigger ${update.table}: ${constraint.references} ${constraint.onDelete}`);
+					knex.schema
+						.raw(
+							`
+						CREATE TRIGGER dbo.[${referenced_table}_${constraint.column}_trigger] ON dbo.[${referenced_table}]
+						INSTEAD OF DELETE
+						AS
+						BEGIN
+							SET NOCOUNT ON;
+							WITH cte AS 
+							(
+								SELECT id FROM dbo.[${referenced_table}] WHERE [id] IN (SELECT d.[id] FROM [deleted] d)
+								UNION ALL						
+								SELECT c.id FROM dbo.[${referenced_table}] c INNER JOIN cte p ON c.[${constraint.column}] = p.[${referenced_column}]
+							)
+							UPDATE t 
+							SET t.[${constraint.column}] = NULL
+							FROM dbo.[${referenced_table}] t
+							INNER JOIN cte c ON c.[${referenced_column}] = t.[${referenced_column}]	
+						END;	
+					`
+						)
+						.then(
+							(ok) => {
+								console.log('Trigger Created');
+							},
+							(error) => {
+								console.log(error);
+							}
+						);
+				}
+			}
+		}
 	}
 }
 
