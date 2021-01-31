@@ -105,6 +105,11 @@ Value for the `Access-Control-Allow-Origin` header. Possible values:
 - `true` - reflect the Origin header
 - String - set the origin to a specific domain
 - CSV - multiple domains
+- RegExp - set the origin as a regexp value. Requires to `CORS_ORIGIN_REGEXP` to be `true`
+
+### `CORS_ORIGIN_REGEXP`
+
+Value for the `Access-Control-Allow-Origin` header as RegExp. <br>**Default: `false`**
 
 ### `CORS_METHODS`
 
