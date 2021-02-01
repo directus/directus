@@ -28,13 +28,13 @@ const configs = {
 	bundler: {
 		file: pkg.module,
 		format: 'es',
-		target: 'es2015',
+		target: 'es2018',
 		mode: 'development',
 	},
 	cjs: {
 		file: pkg.main,
 		format: 'cjs',
-		target: 'esnext',
+		target: 'es2018',
 		mode: 'development',
 	},
 };
