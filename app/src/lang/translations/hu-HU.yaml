@@ -1,7 +1,7 @@
 ---
 edit_field: Mező szerkesztése
 duplicate_field: Mező másolása
-half_width: Félszélességű
+half_width: Fél szélesség
 full_width: Teljes szélesség
 fill_width: Teret kitöltő
 field_name_translations: Lefordított mezőnevek
@@ -16,7 +16,7 @@ create_user: Felhasználó létrehozása
 invite_users: Felhasználók meghívása
 email_examples: 'admin@example.com, felhaszalo@pelda.hu...'
 invite: Meghívás
-emails: E-mailek
+emails: Emailek
 connection_excellent: Kiváló kapcsolat
 connection_good: Jó kapcsolat
 connection_fair: Megfelelő kapcsolat
@@ -39,9 +39,9 @@ directus_version: Directus verzió
 node_version: Node verzió
 node_uptime: Node futásidő
 os_type: Operációs rendszer típusa
-os_version: Operációs rendszer verzió
+os_version: Operációs rendszer verziója
 os_uptime: Operációs rendszer futásideje
-os_totalmem: Operációs rendszer memória
+os_totalmem: Operációs rendszer memóriája
 archive: Archívum
 archive_confirm: Biztosan törölni szeretnéd ezt az elemet?
 archive_confirm_count: >-
@@ -50,7 +50,7 @@ reset_system_permissions: Rendszer hozzáférések visszaállítása
 reset_system_permissions_copy: Minden rendszer hozzáférés visszaállítása alapállapotba
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
-nested_files_folders_will_be_moved: Egymás alatti fileok és könyvtárak egy szinttel feljebb kerülnek.
+nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
 field_files: Több fájl egyidejű hozzáadása
 field_translations: Fordítások
 delete_field: Mező törlése
