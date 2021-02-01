@@ -93,6 +93,7 @@ text: Szöveg
 time: Idő
 timestamp: Időbélyeg
 uuid: UUID
+hash: Hash
 not_available_for_type: Ehhez a típushoz nem elérhető
 create_translations: Fordítás létrehozása
 auto_generate: Automatikusan generált
@@ -140,6 +141,8 @@ settings_update_success: Beállítások frissítve
 title: Cím
 revision_delta_created: Létrehozva
 revision_delta_deleted: Törölt
+revision_delta_reverted: Visszaállítva
+revision_delta_other: Változat
 private_user: Privát felhasználó
 leave_comment: Hozzászólás írása...
 related_collections: Kapcsolódó gyűjtemények
@@ -207,11 +210,19 @@ name: Név
 type: Típus
 created_by: Készítette
 created_on: Létrehozva
+save_as_copy: Mentés másolatként
+add_existing: Létező tartalom hozzáadása
 comments: Hozzászólások
+no_comments: Még nincs hozzászólás
+click_to_expand: Kattintson a kibontáshoz
+select_item: Elem kiválasztása
 no_items: Nincs megjeleníthető elem
 search_items: Tételek keresése...
 disabled: Letiltva
+information: Információ
 report_bug: Hibajelentés
+request_feature: Funkció ajánlása
+reset_interface: Felhasználói felület visszaállítása
 item_count: 'Nincsenek elemek | Egy elem | {count} elem'
 no_items_copy: Nincsenek még elemek ebben a gyűjteményben.
 file_count: 'Nincsenek fájlok | Egy fájl | {count} file'
@@ -362,6 +373,7 @@ update: Frissítés
 select_fields: Válassz mezőket
 format_text: Szövegformázás
 bold: Félkövér
+toggle: Váltás
 icon_on: Ikon be
 icon_off: Ikon ki
 label: Címke
@@ -385,6 +397,7 @@ wysiwyg_options:
   hr: Vízszintes vonal
   link: Hivatkozás
   unlink: Hivatkozás törlése
+  media: Média hozzáadása
   image: Kép hozzáadása
   copy: Másolás
   cut: Kivágás
@@ -396,17 +409,27 @@ wysiwyg_options:
   h4: Címsor 4
   h5: Címsor 5
   h6: Címsor 6
+  fontselect: Betűtípus választása
+  fontsizeselect: Betűméret választása
   indent: Behúzás
   undo: Visszavon
   redo: Újra
+  remove: Eltávolítás
+  removeformat: Formázás eltávolítása
   selectall: Összes kijelölése
   table: Táblázat
+  visualaid: Láthatatlan elemek mutatása
   code: Forrás megtekintése
   fullscreen: Teljes képernyő
+dropdown: Legördülő lista
 choices: Lehetőségek
 deselect: Kijelölés megszüntetése
+deselect_all: Összes kijelölés törlése
 other: Egyéb...
+adding_user: Hozzáadott felhasználó
+unknown_user: Ismeretlen felhasználó
 editing_in_batch: '{count} elem szerkesztése'
+settings_data_model: Adat model
 settings_permissions: Szerepkörök és jogosultságok
 settings_project: Projekt beállításai
 settings_webhooks: Webhookok
@@ -429,6 +452,7 @@ fields:
     collection: Gyűjtemény
     comment: Hozzászólás
     ip: IP cím
+    revisions: Változatok
   directus_collections:
     collection: Gyűjtemény
     icon: Ikon
@@ -442,6 +466,7 @@ fields:
     tags: Cimkék
     location: Pozíció
     metadata: Metadata
+    type: MIME típus
     filesize: Fájl mérete
     modified_by: Módosította
     modified_on: Változtatás dátuma
@@ -476,8 +501,15 @@ fields:
   directus_settings:
     project_name: Projekt neve
     project_url: Projekt webcíme
+    project_color: Projekt szín
+    project_logo: Projekt logó
+    public_foreground: Nyilvános előtér
+    public_background: Nyilvános háttér
+    public_note: Nyilvános megjegyzés
     custom_css: Egyéni CSS
   directus_fields:
+    collection: Gyűjtemény neve
+    icon: Gyűjtemény ikonja
     note: Jegyzet
     hidden: Rejtett
     translation: Lefordított mezőnevek
@@ -498,16 +530,45 @@ done: Kész
 duplicate: Duplikálás
 email: Email
 embed: Beágyazás
+field: mező | mezők
 file: File
 file_library: Könyvtár
 forgot_password: Elfelejtett jelszó
 hidden: Rejtett
 icon: Ikon
+info: Információ
+normal: Normál
+success: Sikeres
+warning: Figyelmeztetés
+danger: Veszély
+login: Belépés
+my_activity: Saját tevékenységek
+not_authenticated: Nem hitelesített
+authenticated: Hitelesítve
+options: Lehetőségek
 password: Jelszó
+permissions: Jogosultságok
+relationship: Kapcsolat
+reset: Visszaállítás
+reset_password: Jelszó visszaállítása
+revisions: Változatok
+revert: Visszaállítás
+save: Mentés
+schema: Séma
+search: Keresés
 select_existing: Létező kiválasztása
 settings: Beállítások
+sign_in: Belépés
+sign_out: Kilépés
+something_went_wrong: Valami hiba történt.
 template: Sablon
+translation: Fordítás
+value: Érték
+view_project: Projekt megtekintése
+report_error: Hiba jelentése
 interfaces:
+  checkboxes:
+    checkboxes: Jelölőnégyzetek
   code:
     code: Kód
     line_number: Sorszám
@@ -527,20 +588,43 @@ interfaces:
     file: File
   files:
     files: Fájlok
+  hash:
+    hash: Hash
   icon:
     icon: Ikon
+  image:
+    image: Kép
   interface:
     interface: Kezelőfelület
   many-to-one:
     display_template: Megjelenítési sablon
+  notice:
+    notice: Megjegyzés
+  numeric:
+    numeric: Szám
+  repeater:
+    repeater: Ismétlés
+    edit_fields: Mezők szerkesztése
   tags:
     tags: Cimkék
+    whitespace: Szóköz
+  text-input:
+    text-input: Szövegmező
+  textarea:
+    textarea: Szövegdoboz
   toggle:
+    toggle: Váltás
     label_default: Engedélyezve
   translations:
     display_template: Megjelenítési sablon
   user:
     user: Felhasználó
+    modes:
+      auto: Automatikus
+      dropdown: Legördülő lista
+  wysiwyg:
+    wysiwyg: WYSIWYG
+    custom_formats: Egyéni formátum
 displays:
   boolean:
     boolean: Logikai
@@ -552,12 +636,29 @@ displays:
     color: Szín
   datetime:
     format: Formátum
+    long: Hosszú
+    short: Rövid
+    relative: Relatív
   file:
     file: File
+    description: Fájlok megjelenítése
+  filesize:
+    filesize: Fájlméret
   icon:
     icon: Ikon
+    filled: Kitöltve
   image:
+    image: Kép
     circle: Kör
+  labels:
+    labels: Feliratok
+    default_foreground: Alapértelmezett előtér
+    default_background: Alapértelmezett háttér
+  mime-type:
+    mime-type: MIME típus
+  rating:
+    rating: Értékelés
+    simple: Egyszerű
   user:
     user: Felhasználó
     avatar: Profilkép
@@ -567,9 +668,12 @@ layouts:
   cards:
     cards: Kártya
     image_source: Kép forrása
+    crop: Vágás
+    contain: Tartalmaz
     title: Cím
     subtitle: Alcím
   tabular:
     tabular: Táblázat
+    fields: Mezők
     comfortable: Kényelmes
     compact: Kompakt
