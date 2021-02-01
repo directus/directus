@@ -32,7 +32,7 @@ their account.
 3. Complete any of the [User Fields](/concepts/app-overview.md#user-detail)
 
 <!-- prettier-ignore-start -->
-::: User Preferences
+::: warning User Preferences
 This section of the User Detail is only visible/editable by the current user,
 and admins.
 :::

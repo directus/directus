@@ -1,6 +1,6 @@
 <template>
 	<private-view :title="title" ref="view">
-		<template #headline>Documentation</template>
+		<template #headline>{{ headline }}</template>
 
 		<template #title-outer:prepend>
 			<v-button rounded disabled icon>
@@ -49,6 +49,16 @@ async function getMarkdownForPath(path: string) {
 	return mdModule.default;
 }
 
+function getHeadlineFromPath(path: string) {
+	const paths = path.split('/').filter(Boolean);
+
+	if (paths.length === 1) return 'Documentation';
+
+	return paths[1].replace(/-/g, ' ').replace(/\b\w/g, (c) => {
+		return c.toUpperCase();
+	});
+}
+
 export default defineComponent({
 	name: 'StaticDocs',
 	components: { DocsNavigation, Markdown },
@@ -58,14 +68,18 @@ export default defineComponent({
 		next((vm: any) => {
 			vm.markdown = md;
 			vm.path = to.path;
+			vm.headline = getHeadlineFromPath(to.path);
 		});
 	},
 	async beforeRouteUpdate(to, from, next) {
 		this.markdown = await getMarkdownForPath(to.path);
 		this.path = to.path;
+		this.headline = getHeadlineFromPath(to.path);
+
 		next();
 	},
 	setup() {
+		const headline = ref<string | null>(null);
 		const path = ref<string | null>(null);
 		const markdown = ref('');
 		const view = ref<Vue>();
@@ -85,7 +99,7 @@ export default defineComponent({
 			view.value?.$data.contentEl?.scrollTo({ top: 0 });
 		});
 
-		return { markdown, title, markdownWithoutTitle, view, marked, path };
+		return { markdown, headline, title, markdownWithoutTitle, view, marked, path };
 	},
 });
 </script>
