@@ -1,9 +1,9 @@
 get:
   tags:
     - Authentication
-  operationId: sso
-  summary: List SSO Providers
-  description: List the SSO providers.
+  operationId: oauth
+  summary: List OAuth Providers
+  description: List configured OAuth providers.
   responses:
     "200":
       description: Successful request
