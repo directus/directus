@@ -474,6 +474,8 @@ fields:
     last_page: Utolsó oldal
     last_access: Utolsó hozzáférés
   directus_settings:
+    project_name: Projekt neve
+    project_url: Projekt webcíme
     custom_css: Egyéni CSS
   directus_fields:
     note: Jegyzet
