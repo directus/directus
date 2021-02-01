@@ -23,6 +23,8 @@ connection_fair: Megfelelő kapcsolat
 connection_poor: Gyenge kapcsolat
 rename_folder: Mappa átnevezése
 delete_folder: Mappa törlése
+prefix: Előtag
+suffix: Utótag
 reset_bookmark: Könyvjelző visszaállítása
 rename_bookmark: Könyvjelző átnevezése
 update_bookmark: Könyvjelző frissítése
@@ -51,9 +53,14 @@ reset_system_permissions_copy: Minden rendszer hozzáférés visszaállítása a
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
+use_custom: Egyéni használata
+field_file: Egyetlen fájl
 field_files: Több fájl egyidejű hozzáadása
 field_translations: Fordítások
 delete_field: Mező törlése
+fields_and_layout: Mezők és elrendezések
+field_create_success: 'Létrehozott mező: "{field}"'
+field_update_success: 'Módosított mező: "{field}"'
 language: Nyelv
 global: Globális
 admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
@@ -94,7 +101,7 @@ click_here: Kattints ide
 to_manually_setup_translations: a fordítások kézi elkészítéséhez.
 click_to_manage_translated_fields: >-
   Ezek a mezők még nem lettek lefordítva. Kattints ide, hogy létrehozd őket. | Egy mező van lefordítva. Kattints ide a szerkesztéshez. | {count} mező van lefordítva. Kattints ide a szerkesztésükhöz.
-fields_group: Mező-csoport
+fields_group: Mező csoport
 configure_m2o: A Sok-az-Egyhez kapcsolatok beállítása...
 configure_o2m: Az Egy-a-Sokhoz kapcsolatok beállítása...
 configure_m2m: A Sok-a-Sokhoz kapcsolatok beállítása...
@@ -110,6 +117,7 @@ add_a_default_value: Alapértelmezett érték hozzáadása...
 interface_setup_title: Hogyan fogják a felhasználók ezt a mezőt használni?
 display_setup_title: Hogyan kell ennek a mezőnek az értékét megjeleníteni?
 standard_field: Általános mező
+single_file: Egyetlen fájl
 multiple_files: Több fájl egyidejű hozzáadása
 next: Következő
 field_name: Mezőnév
@@ -123,12 +131,16 @@ updated_by: Frissítette
 primary_key: Elsődleges kulcs
 dismiss: Elutasít
 clear_value: Érték törlése
+undo_changes: Változások visszavonása
 notifications: Értesítések
+show_all_activity: Összes tevékenység mutatása
 page_not_found: Az oldal nem található
 display: Megjelenés
 settings_update_success: Beállítások frissítve
 title: Cím
 revision_delta_created: Létrehozva
+revision_delta_deleted: Törölt
+private_user: Privát felhasználó
 leave_comment: Hozzászólás írása...
 related_collections: Kapcsolódó gyűjtemények
 translations_collection: Fordítások gyűjteménye
@@ -169,17 +181,26 @@ months:
   october: október
   november: november
   december: december
-drag_mode: Vonszolási mód
+drag_mode: Fogd és vidd mód
 cancel_crop: Körbevágás megszakítása
 original: Eredeti
 url: URL
 import: Importálás
 file_details: Fájl adatok
 dimensions: Méretek
+size: Méret
 created: Létrehozva
+modified: Módosítva
 checksum: Ellenőrző
 owner: Tulajdonos
+edited_by: Módosította
+folder: Könyvtár
+zoom: Nagyítás
 download: Letöltés
+open: Megnyitás
+open_in_new_window: Megnyitás új ablakban
+foreground_color: Előtérszín
+background_color: Háttérszín
 no_file_selected: Nincs kijelölt fájl
 download_file: Fájl letöltése
 name: Név
@@ -193,7 +214,7 @@ disabled: Letiltva
 report_bug: Hibajelentés
 item_count: 'Nincsenek elemek | Egy elem | {count} elem'
 no_items_copy: Nincsenek még elemek ebben a gyűjteményben.
-file_count: 'Nincsenek fileok | Egy file | {count} file'
+file_count: 'Nincsenek fájlok | Egy fájl | {count} file'
 no_files_copy: Nincsenek fileok.
 user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasználó'
 no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
@@ -218,7 +239,7 @@ add_a_new_item: Új elem hozzáadása...
 add_filter: Szűrő hozzáadása
 upper_limit: Felső határ...
 lower_limit: Alsó határ...
-user_directory: Felhasználók listája
+user_directory: Felhasználók
 documentation: Dokumentáció
 sidebar: Oldalsáv
 duration: Időtartam
@@ -256,10 +277,32 @@ create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
 bookmarks: Könyvjelzők
 back: Vissza
-icon_left: Ikon Balra
-icon_right: Ikon Jobbra
+editing_image: Kép szerkesztése
+square: Négyzet
+free: Ingyenes
+flip_horizontal: Vízszintes tükrözés
+flip_vertical: Függőleges tükrözés
+aspect_ratio: Méretarány
+rotate: Forgatás
+all_users: Összes felhasználó
+delete_collection: Gyűjtemény törlése
+delete_collection_success: Törölt gyűjtemények
+icon_left: Ikon balra
+icon_right: Ikon jobbra
+font: Betűtípus
+sans_serif: Sans Serif
+serif: Talpas
+monospace: Egyterű
+divider: Elválasztó
 color: Szín
+circle: Kör
+empty_item: Üres elem
+advanced_filter: Bővített szűrés
+delete_advanced_filter: Szűrő törlése
 operators:
+  eq: Egyenlő
+  neq: Nem egyenlő
+  lt: Kevesebb mint
   gt: Nagyobb mint
   gte: Nagyobb vagy egyenlő
   in: egy ebből
@@ -278,8 +321,8 @@ loading: Betöltés...
 drop_to_upload: Húzd ide a feltöltéshez
 upload_file: Fájl feltöltése
 upload_file_indeterminate: Fájl feltöltése...
-upload_file_success: File feltöltve
-upload_files_indeterminate: 'Fileok feltöltése {done}/{total}'
+upload_file_success: Fájl feltöltve
+upload_files_indeterminate: 'Fájlok feltöltése {done}/{total}'
 upload_files_success: '{count} fájl feltöltve'
 upload_pending: Feltöltés folyamatban
 drag_file_here: Dobj ide egy fájlt
@@ -319,14 +362,40 @@ update: Frissítés
 select_fields: Válassz mezőket
 format_text: Szövegformázás
 bold: Félkövér
+icon_on: Ikon be
+icon_off: Ikon ki
 label: Címke
 wysiwyg_options:
+  aligncenter: Középre igazítás
+  alignjustify: Sorkizárt
+  alignleft: Balra igazítás
+  alignright: Jobbra igazítás
+  forecolor: Előtérszín
+  backcolor: Háttérszín
   bold: Félkövér
+  italic: Dőlt
+  underline: Aláhúzott
+  strikethrough: Áthúzás
+  subscript: Alsó index
+  superscript: Felső index
   codeblock: Kód
+  blockquote: Idézet
+  bullist: Felsorolás lista
+  numlist: Számozott lista
+  hr: Vízszintes vonal
+  link: Hivatkozás
+  unlink: Hivatkozás törlése
+  image: Kép hozzáadása
   copy: Másolás
   cut: Kivágás
   paste: Beillesztés
   heading: Címsor
+  h1: Címsor 1
+  h2: Címsor 2
+  h3: Címsor 3
+  h4: Címsor 4
+  h5: Címsor 5
+  h6: Címsor 6
   indent: Behúzás
   undo: Visszavon
   redo: Újra
@@ -341,9 +410,13 @@ editing_in_batch: '{count} elem szerkesztése'
 settings_permissions: Szerepkörök és jogosultságok
 settings_project: Projekt beállításai
 settings_webhooks: Webhookok
+layout: Elrendezés
 discard_changes: Változtatások elvetése
+keep_editing: Szerkesztés folytatása
 add_new: Új hozzáadása
+create_new: Új létrehozása
 all: Összes
+none: Egyik sem
 batch_delete_confirm: >-
   Nincs elem kiválasztva | Biztosan törölni szeretnéd az elemet? A művelet nem visszavonható. | Biztosan törölni szeretnéd az összes elemet ({count} db)? A művelet nem visszavonható.
 cancel: Mégse
@@ -355,7 +428,7 @@ fields:
     action: Művelet
     collection: Gyűjtemény
     comment: Hozzászólás
-    ip: IP Cím
+    ip: IP cím
   directus_collections:
     collection: Gyűjtemény
     icon: Ikon
@@ -369,12 +442,14 @@ fields:
     tags: Cimkék
     location: Pozíció
     metadata: Metadata
-    filesize: File mérete
+    filesize: Fájl mérete
+    modified_by: Módosította
     modified_on: Változtatás dátuma
     created_on: Létrehozva
     created_by: Készítette
     embed: Beágyazás
     uploaded_by: Feltöltve
+    folder: Könyvtár
     width: Szélesség
     uploaded_on: Feltöltve
     height: Magasság
@@ -383,7 +458,7 @@ fields:
   directus_users:
     first_name: Családnév
     last_name: Vezetéknév
-    email: E-mail
+    email: Email
     password: Jelszó
     avatar: Profilkép
     location: Pozíció
@@ -395,6 +470,7 @@ fields:
     tfa_secret: Kétlépcsős hitelesítés
     status: Állapot
     role: Szerepkör
+    token: Token
     last_page: Utolsó oldal
     last_access: Utolsó hozzáférés
   directus_settings:
@@ -418,10 +494,10 @@ delete_field_are_you_sure: >-
 description: Leírás
 done: Kész
 duplicate: Duplikálás
-email: E-mail
+email: Email
 embed: Beágyazás
 file: File
-file_library: File könyvtár
+file_library: Könyvtár
 forgot_password: Elfelejtett jelszó
 hidden: Rejtett
 icon: Ikon
@@ -432,7 +508,7 @@ template: Sablon
 interfaces:
   code:
     code: Kód
-    line_number: Sor szám
+    line_number: Sorszám
   collection:
     collection: Gyűjtemény
   collections:
@@ -443,6 +519,8 @@ interfaces:
     display-template: Megjelenítési sablon
     collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
     select_a_collection: Gyűjtemény kiválasztása
+  divider:
+    divider: Elválasztó
   file:
     file: File
   files:
@@ -464,6 +542,8 @@ interfaces:
 displays:
   boolean:
     boolean: Logikai
+    icon_on: Ikon be
+    icon_off: Ikon ki
   collection:
     collection: Gyűjtemény
   color:
@@ -474,6 +554,8 @@ displays:
     file: File
   icon:
     icon: Ikon
+  image:
+    circle: Kör
   user:
     user: Felhasználó
     avatar: Profilkép
