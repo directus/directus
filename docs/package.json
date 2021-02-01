@@ -3,11 +3,12 @@
 	"private": false,
 	"version": "9.0.0-rc.34",
 	"description": "",
-	"main": "index.js",
+	"main": "index.json",
 	"scripts": {
 		"build": "node build.js",
+		"dev": "npm-watch build",
 		"prepublish": "npm run build",
-		"dev": "vuepress dev src",
+		"dev:site": "vuepress dev src",
 		"build:site": "vuepress build src"
 	},
 	"watch": {
@@ -29,12 +30,10 @@
 	"license": "ISC",
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
 	"devDependencies": {
-		"copyfiles": "^2.4.1",
 		"fs-extra": "^9.0.1",
 		"lodash.get": "^4.4.2",
 		"micromark": "^2.10.1",
-		"npm-check-updates": "^10.2.5",
-		"rimraf": "^3.0.2",
+		"npm-watch": "^0.7.0",
 		"slugify": "^1.4.6",
 		"vuepress": "^1.7.1"
 	},

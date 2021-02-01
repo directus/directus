@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, inject, onUpdated } from '@vue/composition-api';
+import { defineComponent, ref, computed, onUpdated } from '@vue/composition-api';
 import DocsNavigation from '../components/navigation.vue';
 import Markdown from '../components/markdown.vue';
 import marked from 'marked';
