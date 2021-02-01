@@ -272,5 +272,15 @@ export default defineInterface(({ i18n }) => ({
 				},
 			},
 		},
+		{
+			field: 'imageToken',
+			name: i18n.t('interfaces.markdown.imageToken'),
+			type: 'string',
+			meta: {
+				note: i18n.t('interfaces.markdown.imageToken_label'),
+				width: 'full',
+				interface: 'text-input',
+			},
+		},
 	],
 }));
