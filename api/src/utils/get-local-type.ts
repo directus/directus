@@ -87,15 +87,12 @@ export default function getLocalType(
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
 	/** Handle Postgres numeric decimals */
-	if (
-		column.data_type === 'numeric' &&
-		column.numeric_precision !== null &&
-		column.numeric_scale !== null
-	) {
+	if (column.data_type === 'numeric' && column.numeric_precision !== null && column.numeric_scale !== null) {
 		return 'decimal';
 	}
 
 	if (field?.special?.includes('json')) return 'json';
+	if (field?.special?.includes('hash')) return 'hash';
 	if (field?.special?.includes('csv')) return 'csv';
 	if (field?.special?.includes('uuid')) return 'uuid';
 

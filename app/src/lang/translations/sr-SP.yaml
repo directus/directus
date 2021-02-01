@@ -1,0 +1,158 @@
+---
+edit_field: Уреди поља
+item_revision: Ревизија итема
+duplicate_field: Дуплирај поље
+half_width: Пола ширине
+full_width: Пуна ширина
+fill_width: Попуни ширину
+required: Захтјева се
+create_role: Креирајте улогу
+emails: Е-мејлови
+public: Јавно
+not_allowed: Није дозвољено
+directus_version: Верзија Директуса
+node_version: Верзија нода
+node_uptime: Вријеме рада нода
+os_type: Тип OS-а
+os_version: Верзија OS-а
+os_uptime: Вријеме рада OS-а
+os_totalmem: Меморија OS-а
+archive: Архивирај
+unarchive: Деархивирај
+unarchive_confirm: Да ли сте сигурни да желите да деархивирате овај итем?
+language: Језик
+create_field: Креирајте поље
+text: Текст
+auto_generate: Аутоматски генериши
+add_note: Додај помоћну напомену за кориснике...
+default_value: Подразумевана вредност
+clear_value: Обриши вредност
+title: Наслов
+leave_comment: Оставите коментар...
+months:
+  january: Јануар
+  february: Фебруар
+  march: Март
+  april: Април
+  may: Мај
+  june: Јун
+  july: Јул
+  august: Август
+  september: Септембар
+  october: Октобар
+  november: Новембар
+  december: Децембар
+owner: Власник
+name: Име
+created_by: Креирао
+created_on: Креирано
+comments: Коментари
+create_collection: Креирајте колекцију
+users: Корисници
+activity: Активност
+duration: Трајање
+status: Стање
+bookmarks: Сачуване странице
+back: Назад
+operators:
+  contains: Садржи
+role: Рола
+create: Креирај
+wysiwyg_options:
+  codeblock: Код
+  table: Табела
+choices: Избори
+deselect: Поништи избор
+discard_changes: Одбаци промене
+keep_editing: Наставите уређивање
+add_new: Додај нови
+all: Sve
+batch_delete_confirm: >-
+  Ниједна ставка није одабрана | Да ли си сигуран да желиш да обришеш ову ставку? Ова акција је неповратна. | Да ли си сигуран да желиш да обришеш ових {count} ставки? Ова акција је неповратна.
+cancel: Откажи
+collection: Колекција
+fields:
+  directus_activity:
+    item: Примарни кључ ставке
+    action: Акција
+    collection: Колекција
+    timestamp: Акција укључена
+    user: Акција од стране
+    comment: Коментар
+    user_agent: Кориснички агент
+    ip: ИП адреса
+  directus_collections:
+    collection: Колекција
+  directus_files:
+    title: Наслов
+    description: Опис
+    tags: Ознаке
+    location: Локација
+    metadata: Мета подаци
+    filesize: Veličina
+    created_on: Креирано
+    created_by: Креирао
+    embed: Угради
+    width: Ширина
+    height: Висина
+    duration: Трајање
+  directus_users:
+    first_name: Име
+    last_name: Презиме
+    email: Имејл
+    password: Лозинка
+    avatar: Аватар
+    location: Локација
+    title: Наслов
+    description: Опис
+    tags: Ознаке
+    language: Језик
+    theme: Тема
+    tfa_secret: Дво-факторска аутентификација
+    status: Стање
+    role: Рола
+  directus_fields:
+    display_template: Шаблон
+  directus_roles:
+    description: Опис
+comment: Коментар
+continue: Настави
+default: Подразумевано
+delete: Обриши
+description: Опис
+done: Завршено
+email: Имејл
+embed: Угради
+my_activity: Моја активност
+password: Лозинка
+template: Шаблон
+interfaces:
+  checkboxes:
+    checkboxes: Поља за потврду
+  code:
+    code: Код
+    line_number: Број линија
+  collection:
+    collection: Колекција
+  files:
+    files: Фајлови
+  tags:
+    tags: Ознаке
+displays:
+  collection:
+    collection: Колекција
+  user:
+    avatar: Аватар
+    name: Име
+    both: Оба
+layouts:
+  cards:
+    cards: Картице
+    image_source: Извор слике
+    title: Наслов
+    subtitle: Поднаслов
+  tabular:
+    tabular: Табела
+    comfortable: Комфорно
+    compact: Компактни
+    cozy: Удобно

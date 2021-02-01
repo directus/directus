@@ -15,6 +15,7 @@
 					autofocus
 					class="monospace"
 					v-model="fieldData.field"
+					:nullable="false"
 					db-safe
 					:placeholder="$t('a_unique_column_name')"
 				/>
@@ -52,14 +53,13 @@
 				<div class="field half" v-if="fieldData.schema">
 					<div class="label type-label">{{ $t('precision_scale') }}</div>
 					<div class="precision-scale">
-						<v-input type="number" :placeholder="10" v-model="fieldData.schema.precision" />
-
-						<v-input type="number" :placeholder="5" v-model="fieldData.schema.scale" />
+						<v-input type="number" :placeholder="10" v-model="fieldData.schema.numeric_precision" />
+						<v-input type="number" :placeholder="5" v-model="fieldData.schema.numeric_scale" />
 					</div>
 				</div>
 			</template>
 
-			<template v-if="['uuid', 'date', 'time', 'datetime', 'timestamp'].includes(fieldData.type)">
+			<template v-if="['uuid', 'date', 'time', 'datetime', 'timestamp'].includes(fieldData.type) && type !== 'file'">
 				<div class="field half-left">
 					<div class="label type-label">{{ $t('on_create') }}</div>
 					<v-select :items="onCreateOptions" v-model="onCreateValue" />
@@ -129,13 +129,7 @@
 						},
 					]"
 				/>
-				<v-input
-					v-else
-					class="monospace"
-					v-model="defaultValue"
-					disabled
-					:placeholder="$t('add_a_default_value')"
-				/>
+				<v-input v-else class="monospace" v-model="defaultValue" disabled :placeholder="$t('add_a_default_value')" />
 			</div>
 
 			<div class="field half-left" v-if="fieldData.schema">
@@ -218,6 +212,10 @@ export const fieldTypes = [
 	{
 		text: i18n.t('uuid'),
 		value: 'uuid',
+	},
+	{
+		text: i18n.t('hash'),
+		value: 'hash',
 	},
 ];
 
@@ -407,8 +405,8 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .form {
-	--v-form-vertical-gap: 32px;
-	--v-form-horizontal-gap: 32px;
+	--form-vertical-gap: 32px;
+	--form-horizontal-gap: 32px;
 
 	@include form-grid;
 }

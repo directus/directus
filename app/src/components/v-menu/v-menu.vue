@@ -36,7 +36,15 @@
 			>
 				<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
 				<div class="v-menu-content" @click.stop="onContentClick">
-					<slot :active="isActive" />
+					<slot
+						:active="isActive"
+						v-bind="{
+							toggle: toggle,
+							active: isActive,
+							activate: activate,
+							deactivate: deactivate,
+						}"
+					/>
 				</div>
 			</div>
 		</portal>
@@ -124,8 +132,7 @@ export default defineComponent({
 
 		watch(isActive, (newActive) => {
 			if (newActive === true) {
-				reference.value =
-					((activator.value as HTMLElement)?.childNodes[0] as HTMLElement) || virtualReference.value;
+				reference.value = ((activator.value as HTMLElement)?.childNodes[0] as HTMLElement) || virtualReference.value;
 
 				Vue.nextTick(() => {
 					popper.value = document.getElementById(id.value);

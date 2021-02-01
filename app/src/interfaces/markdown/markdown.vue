@@ -1,33 +1,141 @@
 <template>
-	<div class="interface-markdown" :class="{ tabbed }">
-		<div v-if="tabbed" class="toolbar">
-			<v-tabs v-model="currentTab">
-				<v-tab>
-					<v-icon name="code" left />
-					{{ $t('interfaces.markdown.edit') }}
-				</v-tab>
-				<v-tab>
-					<v-icon name="visibility" outline left />
-					{{ $t('interfaces.markdown.preview') }}
-				</v-tab>
-			</v-tabs>
+	<div class="interface-markdown" :class="view[0]">
+		<div class="toolbar">
+			<v-menu show-arrow placement="bottom-start">
+				<template #activator="{ toggle }">
+					<v-button small icon @click="toggle" v-tooltip="$t('wysiwyg_options.heading')">
+						<v-icon name="title" />
+					</v-button>
+				</template>
+				<v-list>
+					<v-list-item v-for="n in 5" :key="n" @click="edit('heading', { level: n })">
+						<v-list-item-text>{{ $t(`wysiwyg_options.h${n}`) }}</v-list-item-text>
+					</v-list-item>
+				</v-list>
+			</v-menu>
+
+			<v-button small icon @click="edit('bold')" v-tooltip="$t('wysiwyg_options.bold')">
+				<v-icon name="format_bold" />
+			</v-button>
+			<v-button small icon @click="edit('italic')" v-tooltip="$t('wysiwyg_options.italic')">
+				<v-icon name="format_italic" />
+			</v-button>
+			<v-button small icon @click="edit('strikethrough')" v-tooltip="$t('wysiwyg_options.strikethrough')">
+				<v-icon name="format_strikethrough" />
+			</v-button>
+			<v-button small icon @click="edit('listBulleted')" v-tooltip="$t('wysiwyg_options.bullist')">
+				<v-icon name="format_list_bulleted" />
+			</v-button>
+			<v-button small icon @click="edit('listNumbered')" v-tooltip="$t('wysiwyg_options.numlist')">
+				<v-icon name="format_list_numbered" />
+			</v-button>
+			<v-button small icon @click="edit('blockquote')" v-tooltip="$t('wysiwyg_options.blockquote')">
+				<v-icon name="format_quote" />
+			</v-button>
+			<v-button small icon @click="edit('code')" v-tooltip="$t('wysiwyg_options.codeblock')">
+				<v-icon name="code" />
+			</v-button>
+			<v-button small icon @click="edit('link')" v-tooltip="$t('wysiwyg_options.link')">
+				<v-icon name="insert_link" />
+			</v-button>
+
+			<v-menu show-arrow :close-on-content-click="false">
+				<template #activator="{ toggle }">
+					<v-button small icon @click="toggle" v-tooltip="$t('wysiwyg_options.table')">
+						<v-icon name="table_chart" />
+					</v-button>
+				</template>
+
+				<template #default="{ deactivate }">
+					<div class="table-options">
+						<div class="field half">
+							<p class="type-label">{{ $t('rows') }}</p>
+							<v-input :min="1" type="number" v-model="table.rows" />
+						</div>
+						<div class="field half">
+							<p class="type-label">{{ $t('columns') }}</p>
+							<v-input :min="1" type="number" v-model="table.columns" />
+						</div>
+						<div class="field full">
+							<v-button
+								full-width
+								@click="
+									() => {
+										edit('table', table);
+										deactivate();
+									}
+								"
+							>
+								Create
+							</v-button>
+						</div>
+					</div>
+				</template>
+			</v-menu>
+
+			<v-button @click="imageDialogOpen = true" small icon v-tooltip="$t('wysiwyg_options.image')">
+				<v-icon name="insert_photo" />
+			</v-button>
+
+			<v-button
+				v-for="custom in customSyntax"
+				small
+				icon
+				:key="custom.name"
+				@click="edit('custom', custom)"
+				v-tooltip="custom.name"
+			>
+				<v-icon :name="custom.icon" />
+			</v-button>
+
+			<div class="spacer"></div>
+
+			<v-button-group class="view" mandatory v-model="view" rounded>
+				<v-button x-small value="editor">Editor</v-button>
+				<v-button x-small value="preview">Preview</v-button>
+			</v-button-group>
 		</div>
-		<v-textarea
-			v-show="showEdit"
-			:placeholder="placeholder"
-			:value="value"
-			:disabled="disabled"
-			@input="$listeners.input"
-		/>
-		<div v-show="showPreview" class="preview-container">
-			<div class="preview" v-html="html"></div>
-		</div>
+
+		<textarea ref="codemirrorEl" :value="value || ''" />
+
+		<div v-if="view[0] === 'preview'" class="preview-box" v-html="html"></div>
+
+		<v-dialog :active="imageDialogOpen" @esc="imageDialogOpen = null" @toggle="imageDialogOpen = null">
+			<v-card>
+				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
+				<v-card-text>
+					<v-upload @input="onImageUpload" from-url from-library />
+				</v-card-text>
+				<v-card-actions>
+					<v-button @click="imageDialogOpen = null" secondary>{{ $t('cancel') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
 <script lang="ts">
+import {
+	defineComponent,
+	computed,
+	ref,
+	onMounted,
+	onUnmounted,
+	watch,
+	reactive,
+	PropType,
+} from '@vue/composition-api';
+import { sanitize } from 'dompurify';
 import marked from 'marked';
-import { defineComponent, computed, ref } from '@vue/composition-api';
+
+import CodeMirror from 'codemirror';
+import 'codemirror/mode/markdown/markdown';
+import 'codemirror/addon/display/placeholder.js';
+
+import { useEdit, CustomSyntax } from './composables/use-edit';
+import { getPublicURL } from '../../utils/get-root-path';
+import { addTokenToURL } from '../../api';
+import escapeStringRegexp from 'escape-string-regexp';
 
 export default defineComponent({
 	props: {
@@ -43,309 +151,347 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		tabbed: {
-			type: Boolean,
-			default: true,
+		customSyntax: {
+			type: Array as PropType<CustomSyntax[]>,
+			default: () => [],
+		},
+		imageToken: {
+			type: String,
+			default: undefined,
 		},
 	},
-	setup(props) {
-		const currentTab = ref([0]);
+	setup(props, { emit }) {
+		const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
+		const codemirror = ref<CodeMirror.EditorFromTextArea | null>(null);
 
-		const html = computed(() => (props.value ? marked(props.value) : ''));
-		const showEdit = computed(() => !props.tabbed || currentTab.value[0] === 0);
-		const showPreview = computed(() => !props.tabbed || currentTab.value[0] !== 0);
+		const view = ref(['editor']);
 
-		return { html, currentTab, showEdit, showPreview };
+		const imageDialogOpen = ref(false);
+
+		onMounted(async () => {
+			if (codemirrorEl.value) {
+				codemirror.value = CodeMirror.fromTextArea(codemirrorEl.value, {
+					mode: 'markdown',
+					configureMouse: () => ({ addNew: false }),
+					lineWrapping: true,
+					placeholder: props.placeholder,
+				});
+
+				codemirror.value.setValue(props.value || '');
+
+				codemirror.value.on('change', (cm, { origin }) => {
+					if (origin === 'setValue') return;
+
+					const content = cm.getValue();
+					emit('input', content);
+				});
+			}
+		});
+
+		onUnmounted(() => {
+			codemirror.value?.toTextArea();
+		});
+
+		watch(
+			() => props.value,
+			(newValue) => {
+				if (codemirror.value?.getValue() !== newValue) {
+					codemirror.value?.setValue(props.value || '');
+				}
+			}
+		);
+
+		const { edit } = useEdit(codemirror, props.customSyntax);
+
+		const html = computed(() => {
+			let md = props.value || '';
+
+			if (!props.imageToken) {
+				const baseUrl = getPublicURL() + 'assets/';
+				const regex = new RegExp(`\\]\\((${escapeStringRegexp(baseUrl)}[^\\s\\)]*)`, 'gm');
+
+				const images = Array.from(md.matchAll(regex));
+
+				for (const image of images) {
+					md = md.replace(image[1], addTokenToURL(image[1]));
+				}
+			}
+
+			const html = marked(md);
+			const htmlSanitized = sanitize(html);
+
+			return htmlSanitized;
+		});
+
+		const table = reactive({
+			rows: 4,
+			columns: 4,
+		});
+
+		return { codemirrorEl, edit, view, html, table, onImageUpload, imageDialogOpen };
+
+		function onImageUpload(image: any) {
+			if (!codemirror.value) return;
+
+			let url = getPublicURL() + `assets/` + image.id;
+
+			if (props.imageToken) {
+				url += '?access_token=' + props.imageToken;
+			}
+
+			codemirror.value.replaceSelection(`![](${url})`);
+
+			imageDialogOpen.value = false;
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
+@import '../../styles/mixins/form-grid';
+
 .interface-markdown {
-	--v-textarea-min-height: var(--input-height-tall);
-	--v-textarea-max-height: 400px;
-	--v-tab-background-color: var(--background-subdued);
-	--v-tab-background-color-active: var(--background-subdued);
+	--v-button-background-color: transparent;
+	--v-button-color: var(--foreground-normal);
+	--v-button-background-color-hover: var(--border-normal);
+	--v-button-color-hover: var(--foreground-normal);
 
+	min-height: 300px;
+	overflow: hidden;
+	border: 2px solid var(--border-normal);
+	border-radius: var(--border-radius);
+}
+
+textarea {
+	display: none;
+}
+
+.interface-markdown ::v-deep .CodeMirror {
+	border: none;
+	border-radius: 0;
+
+	.CodeMirror-lines {
+		padding: 0 20px;
+
+		&:first-of-type {
+			margin-top: 20px;
+		}
+
+		&:last-of-type {
+			margin-bottom: 20px;
+		}
+	}
+
+	.CodeMirror-scroll {
+		min-height: 300px - 40px;
+	}
+}
+
+.interface-markdown.preview {
+	::v-deep .CodeMirror {
+		display: none;
+	}
+}
+
+.toolbar {
 	display: flex;
-	flex-wrap: wrap;
+	align-items: center;
+	height: 40px;
+	padding: 0 4px;
+	background-color: var(--background-subdued);
+	border-bottom: 2px solid var(--border-normal);
 
-	.toolbar {
-		width: 100%;
-		height: 42px;
-		background-color: var(--background-subdued);
-		border: var(--border-width) solid var(--border-normal);
-		border-radius: var(--border-radius) var(--border-radius) 0 0;
+	.v-button + .v-button {
+		margin-left: 2px;
 	}
 
-	.v-textarea {
-		height: unset;
-		min-height: var(--input-height-tall);
-		border-radius: var(--border-radius) 0 0 var(--border-radius);
-	}
-
-	.preview-container {
-		min-height: var(--v-textarea-min-height);
-		max-height: var(--v-textarea-max-height);
-		padding: var(--input-padding);
-		overflow-y: auto;
-		border: var(--border-width) solid var(--border-normal);
-		border-radius: 0 var(--border-radius) var(--border-radius) 0;
-	}
-
-	.v-textarea,
-	.preview-container {
-		flex-basis: 100px;
+	.spacer {
 		flex-grow: 1;
 	}
 
-	&:not(.tabbed) .preview-container {
-		border-left: none;
+	.view {
+		--v-button-background-color: var(--border-subdued);
+		--v-button-color: var(--foreground-subdued);
+		--v-button-background-color-hover: var(--border-normal);
+		--v-button-color-hover: var(--foreground-normal);
+		--v-button-background-color-activated: var(--border-normal);
+		--v-button-color-activated: var(--foreground-normal);
 	}
+}
 
-	&.tabbed .v-textarea {
-		border-radius: 0 0 var(--border-radius) var(--border-radius);
-	}
+.table-options {
+	@include form-grid;
 
-	&.tabbed .preview-container {
-		border-radius: 0 0 var(--border-radius) var(--border-radius);
-	}
+	--form-vertical-gap: 12px;
+	--form-horizontal-gap: 12px;
 
-	&.tabbed .toolbar {
-		border-bottom: none;
+	padding: 12px;
+
+	.v-input {
+		min-width: 100px;
 	}
-	&.tabbed .expand {
-		right: 0;
-	}
-	&.tabbed.hasScrollbar .expand {
-		right: 14px;
-	}
+}
+
+.preview-box {
+	padding: 20px;
 
 	::v-deep {
-		.preview {
-			font-weight: 500;
-			font-size: 14px;
-			& > *:first-child {
-				margin-top: 0;
-			}
-			& > *:last-child {
-				margin-bottom: 0;
-			}
-			a {
-				text-decoration: underline;
-			}
-			h1,
-			h2,
-			h3,
-			h4,
-			h5,
-			h6 {
-				position: relative;
-				margin: 20px 0 10px;
-				padding: 0;
-				font-weight: 600;
-				cursor: text;
-			}
-			pre {
-				padding: 6px 10px;
-				overflow: auto;
-				font-size: 13px;
-				line-height: 19px;
-				background-color: var(--background-page);
-				border: 1px solid var(--background-normal);
-				border-radius: var(--border-radius);
-			}
-			code,
-			tt {
-				margin: 0 2px;
-				padding: 0 5px;
-				white-space: nowrap;
-				background-color: var(--background-page);
-				border: 1px solid var(--background-normal);
-				border-radius: var(--border-radius);
-			}
-			pre code {
-				margin: 0;
-				padding: 0;
-				white-space: pre;
-				background: transparent;
-				border: none;
-			}
-			pre code,
-			pre tt {
-				background-color: transparent;
-				border: none;
-			}
-			h1 tt,
-			h1 code {
-				font-size: inherit;
-			}
-			h2 tt,
-			h2 code {
-				font-size: inherit;
-			}
-			h3 tt,
-			h3 code {
-				font-size: inherit;
-			}
-			h4 tt,
-			h4 code {
-				font-size: inherit;
-			}
-			h5 tt,
-			h5 code {
-				font-size: inherit;
-			}
-			h6 tt,
-			h6 code {
-				font-size: inherit;
-			}
-			h1 {
-				font-size: 28px;
-			}
-			h2 {
-				font-size: 24px;
-			}
-			h3 {
-				font-size: 18px;
-			}
-			h4 {
-				font-size: 16px;
-			}
-			h5 {
-				font-size: 14px;
-			}
-			h6 {
-				color: var(--foreground-normal);
-				font-size: 14px;
-			}
-			p,
-			blockquote,
-			ul,
-			ol,
-			dl,
-			li,
-			table,
-			pre {
-				margin: 15px 0;
-			}
-			& > h2:first-child {
-				margin-top: 0;
-				padding-top: 0;
-			}
-			& > h1:first-child {
-				margin-top: 0;
-				padding-top: 0;
-			}
-			& > h3:first-child,
-			& > h4:first-child,
-			& > h5:first-child,
-			& > h6:first-child {
-				margin-top: 0;
-				padding-top: 0;
-			}
-			a:first-child h1,
-			a:first-child h2,
-			a:first-child h3,
-			a:first-child h4,
-			a:first-child h5,
-			a:first-child h6 {
-				margin-top: 0;
-				padding-top: 0;
-			}
-			h1 p,
-			h2 p,
-			h3 p,
-			h4 p,
-			h5 p,
-			h6 p {
-				margin-top: 0;
-			}
-			li p.first {
-				display: inline-block;
-			}
-			ul,
-			ol {
-				padding-left: 30px;
-				li {
-					margin: 0;
-				}
-			}
-			ul :first-child,
-			ol :first-child {
-				margin-top: 0;
-			}
-			ul :last-child,
-			ol :last-child {
-				margin-bottom: 0;
-			}
+		h1 {
+			margin-bottom: 0;
+			font-weight: 300;
+			font-size: 44px;
+			font-family: var(--font-serif), serif;
+			line-height: 52px;
+		}
+
+		h2 {
+			margin-top: 60px;
+			margin-bottom: 0;
+			font-weight: 600;
+			font-size: 34px;
+			line-height: 38px;
+		}
+
+		h3 {
+			margin-top: 40px;
+			margin-bottom: 0;
+			font-weight: 600;
+			font-size: 26px;
+			line-height: 31px;
+		}
+
+		h4 {
+			margin-top: 40px;
+			margin-bottom: 0;
+			font-weight: 600;
+			font-size: 22px;
+			line-height: 28px;
+		}
+
+		h5 {
+			margin-top: 40px;
+			margin-bottom: 0;
+			font-weight: 600;
+			font-size: 18px;
+			line-height: 26px;
+		}
+
+		h6 {
+			margin-top: 40px;
+			margin-bottom: 0;
+			font-weight: 600;
+			font-size: 16px;
+			line-height: 24px;
+		}
+
+		p {
+			margin-top: 20px;
+			margin-bottom: 20px;
+			font-size: 16px;
+			font-family: var(--font-serif), serif;
+			line-height: 32px;
+		}
+
+		a {
+			color: #546e7a;
+		}
+
+		ul,
+		ol {
+			margin: 24px 0;
+			font-size: 18px;
+			font-family: var(--font-serif), serif;
+			line-height: 34px;
+		}
+
+		ul ul,
+		ol ol,
+		ul ol,
+		ol ul {
+			margin: 0;
+		}
+
+		b,
+		strong {
+			font-weight: 600;
+		}
+
+		code {
+			padding: 2px 4px;
+			font-size: 18px;
+			font-family: var(--family-monospace), monospace;
+			line-height: 34px;
+			overflow-wrap: break-word;
+			background-color: #eceff1;
+			border-radius: 4px;
+		}
+
+		pre {
+			padding: 20px;
+			overflow: auto;
+			font-size: 18px;
+			font-family: var(--family-monospace), monospace;
+			line-height: 24px;
+			background-color: #eceff1;
+			border-radius: 4px;
+		}
+
+		blockquote {
+			margin-left: -10px;
+			padding-left: 10px;
+			font-size: 18px;
+			font-family: var(--font-serif), serif;
+			font-style: italic;
+			line-height: 34px;
+			border-left: 2px solid #546e7a;
+
 			blockquote {
-				padding: 0 15px;
-				color: var(--foreground-normal);
-				border-left: 4px solid var(--background-normal);
+				margin-left: 10px;
 			}
-			blockquote > :first-child {
-				margin-top: 0;
-			}
-			blockquote > :last-child {
-				margin-bottom: 0;
-			}
-			table {
-				padding: 0;
-				border-collapse: collapse;
-				border-spacing: 0;
-			}
-			table tr {
-				margin: 0;
-				padding: 0;
-				background-color: white;
-				border-top: 1px solid var(--background-normal);
-			}
-			table tr:nth-child(2n) {
-				background-color: var(--background-page);
-			}
-			table tr th {
-				margin: 0;
-				padding: 6px 13px;
-				font-weight: bold;
-				text-align: left;
-				border: 1px solid var(--background-normal);
-			}
-			table tr td {
-				margin: 0;
-				padding: 6px 13px;
-				text-align: left;
-				border: 1px solid var(--background-normal);
-			}
-			table tr th :first-child,
-			table tr td :first-child {
-				margin-top: 0;
-			}
-			table tr th :last-child,
-			table tr td :last-child {
-				margin-bottom: 0;
-			}
-			img {
-				max-width: 100%;
-			}
-			.highlight pre {
-				padding: 6px 10px;
-				overflow: auto;
-				font-size: 13px;
-				line-height: 19px;
-				background-color: var(--background-page);
-				border: 1px solid var(--background-normal);
-				border-radius: var(--border-radius);
-			}
-			hr {
-				margin: 20px auto;
-				border: none;
-				border-top: 1px solid var(--background-normal);
-			}
-			b,
-			strong {
-				font-weight: 600;
-			}
+		}
+
+		video,
+		iframe,
+		img {
+			max-width: 100%;
+			height: auto;
+			border-radius: 4px;
+		}
+
+		hr {
+			margin-top: 52px;
+			margin-bottom: 56px;
+			text-align: center;
+			border: 0;
+		}
+
+		hr::after {
+			font-size: 28px;
+			line-height: 0;
+			letter-spacing: 16px;
+			content: '...';
+		}
+
+		table {
+			border-collapse: collapse;
+		}
+
+		table th,
+		table td {
+			padding: 0.4rem;
+			border: 1px solid #cfd8dc;
+		}
+
+		figure {
+			display: table;
+			margin: 1rem auto;
+		}
+
+		figure figcaption {
+			display: block;
+			margin-top: 0.25rem;
+			color: #999;
+			text-align: center;
 		}
 	}
 }

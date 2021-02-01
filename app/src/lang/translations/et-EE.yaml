@@ -1,0 +1,311 @@
+---
+full_width: Täislaius
+required: Nõutud
+create_role: Loo roll
+delete_bookmark: Kustuta järjehoidja
+directus_version: Directuse versioon
+language: Keel
+create_field: Loo väli
+hidden_on_detail: Üksikasjavaates peidetud
+date: Kuupäev
+text: Tekst
+time: Kellaaeg
+auto_generate: Automaatselt loodud
+add_note: Lisa kasutajaid abistav märkus...
+default_value: Vaikeväärtus
+next: Järgmine
+note: Märkus
+length: Pikkus
+readonly: Ainult loetav
+unique: Unikaalne
+primary_key: Primaarvõti
+clear_value: Tühjenda väärtus
+reset_to_default: Taasta vaikeväärtused
+undo_changes: Tühista muudatused
+notifications: Teavitused
+page_not_found: Lehekülge ei leitud
+page_not_found_body: Tundub, et lehekülge, mida sa otsid, pole olemas.
+display: Vaade
+title: Pealkiri
+revision_delta_deleted: Kustutatud
+leave_comment: Jäta kommentaar...
+this_collection: See kogu
+related_collection: Seotud kogu
+format: Vorming
+submit: Saada
+months:
+  january: Jaanuar
+  february: Veebruar
+  march: Märts
+  april: Aprill
+  may: Mai
+  june: Juuni
+  july: Juuli
+  august: August
+  september: September
+  october: Oktoober
+  november: November
+  december: Detsember
+size: Suurus
+checksum: Kontrollsumma
+owner: Omanik
+download: Laadi alla
+name: Nimi
+created_by: Autor
+created_on: Loodud
+save_and_stay: Salvesta ja jää
+save_as_copy: Salvesta koopiana
+comments: Kommentaarid
+request_feature: Taotle funktsiooni
+item_count: 'Kirjeid pole | Üks kirje | {count} kirjed'
+create_collection: Loo kogu
+relationship_not_setup: Seos pole korrektselt seadistatud
+users: Kasutajad
+activity: Tegevus
+webhooks: Webhooks
+field_width: Välja laius
+user_directory: Kasutaja kaust
+duration: Kestus
+modified_on: Muudetud
+sort_field: Sorteeti välja
+status: Staatus
+edit: Muuda
+bookmarks: Järjehoidjad
+back: Tagasi
+placeholder: Kohatäitja
+icon_left: Ikoon vasakul
+icon_right: Ikoon paremal
+monospace: Monospace
+divider: Eraldaja
+color: Värv
+operators:
+  lt: Vähem kui
+  gt: Suurem kui
+  lte: Väiksem või võrdne
+  gte: Suurem või võrdne
+  contains: Sisaldab
+  ncontains: Ei sisalda
+  empty: On tühi
+loading: Laadimine...
+display_template: Vaate mall
+no_results: Tulemusi pole
+role: Roll
+user: Kasutaja
+create: Loo
+on_update: Uuendamisel
+read: Loe
+update: Uuenda
+select_fields: Vali väljad
+wysiwyg_options:
+  codeblock: Kood
+  remove: Eemalda
+  table: Tabel
+dropdown: Rippmenüü
+choices: Valikud
+deselect: Tühista valik
+editing_in_batch: '{count} kirje hulgi muutmine'
+settings_permissions: Rollid ja õigused
+settings_project: Projekti seaded
+settings_webhooks: Webhooks
+unsaved_changes: Salvestamata muudatused
+unsaved_changes_copy: Oled sa kindel, et soovid sellelt lehelt lahkuda?
+discard_changes: Loobu muudatustest
+keep_editing: Jätka muutmist
+add_new: Lisa uus
+all: Kõik
+batch_delete_confirm: >-
+  Ühtegi kirjet pole valitud | Oled sa kindel, et soovid selle kirje kustutada? Seda toimingut ei saa tagasi võtta. | Oled sa kindel, et soovid need {count} ühikut kustutada? Seda toimingut ei saa tagasi võtta.
+cancel: Loobu
+collection: Kogud
+collections: Kogud
+fields:
+  directus_activity:
+    item: Kirje peamine võti
+    action: Tegevus
+    collection: Kogud
+    timestamp: Tegevuse aeg
+    user: Tegevuse sooritas
+    comment: Kommentaar
+    user_agent: Kasutaja agent
+    ip: IP aadress
+  directus_collections:
+    collection: Kogud
+    icon: Ikoon
+    note: Märkus
+    display_template: Vaate mall
+    hidden: Peidetud
+    sort_field: Sorteeti välja
+  directus_files:
+    title: Pealkiri
+    description: Kirjeldus
+    tags: Sildid
+    location: Asukoht
+    metadata: Metaandmed
+    filesize: Failisuurus
+    modified_on: Muudetud
+    created_on: Loodud
+    created_by: Autor
+    embed: Põimitud
+    uploaded_by: Üles laadis
+    width: Laius
+    uploaded_on: Üleslaaditud
+    height: Kõrgus
+    duration: Kestus
+  directus_users:
+    first_name: Eesnimi
+    last_name: Perekonnanimi
+    email: E-post
+    password: Parool
+    avatar: Avatar
+    location: Asukoht
+    title: Pealkiri
+    description: Kirjeldus
+    tags: Sildid
+    language: Keel
+    theme: Teema
+    tfa_secret: Kaheastmeline autentimine
+    status: Staatus
+    role: Roll
+  directus_settings:
+    project_name: Projekti nimi
+  directus_fields:
+    note: Märkus
+    hidden: Peidetud
+    display_template: Mall
+  directus_roles:
+    description: Kirjeldus
+comment: Kommentaar
+continue: Continue
+default: Vaikimisi
+delete: Kustuta
+delete_field_are_you_sure: >-
+  Kas soovid kindlasti välja "{field}" kustutada? Seda toimingut ei saa tagasi võtta.
+description: Kirjeldus
+done: Valmis
+duplicate: Loo koopia
+email: E-post
+embed: Põimitud
+field: Väli | Väljad
+file: Fail
+file_library: Failikogu
+forgot_password: Unustasin parooli
+hidden: Peidetud
+icon: Ikoon
+info: Info
+latency: Latsentsus
+login: Logi sisse
+my_activity: Minu tegevus
+not_authenticated: Pole autenditud
+options: Valikud
+otp: Ühekordne parool
+password: Parool
+permissions: Õigused
+relationship: Seos
+reset: Lähtesta
+reset_password: Lähtesta parool
+revert: Taasta
+save: Salvesta
+schema: Skeem
+search: Otsi
+select_existing: Vali olemasolev
+select_interface: Vali kasutajaliides
+settings: Seaded
+sign_in: Logi sisse
+sign_out: Logi välja
+sign_out_confirm: Kas oled kindel, et soovid välja logida?
+something_went_wrong: Midagi läks valesti.
+sort_direction: Sorteerimise suund
+template: Mall
+translation: Tõlkija
+value: Väärtus
+interfaces:
+  checkboxes:
+    checkboxes: Märkeruudud
+    allow_other: Luba muud
+  code:
+    code: Kood
+    line_number: Reanumbrid
+  collection:
+    collection: Kogud
+  collections:
+    collections: Kogud
+  color:
+    color: Värv
+  datetime:
+    datetime: Kuupäev-kellaaeg
+  display-template:
+    display-template: Vaate mall
+  divider:
+    divider: Eraldaja
+  dropdown:
+    allow_other: Luba muud
+  file:
+    file: Fail
+  files:
+    files: Failid
+  icon:
+    icon: Ikoon
+  interface-options:
+    interface-options: Kasutajaliidese valikud
+  many-to-many:
+    many-to-many: Mitu mitmele
+  many-to-one:
+    many-to-one: Mitu ühele
+    display_template: Vaate mall
+  markdown:
+    markdown: Markdown
+  numeric:
+    numeric: Numbriline
+  radio-buttons:
+    radio-buttons: Raadionupud
+  repeater:
+    repeater: Kordaja
+  slider:
+    slider: Liugur
+  tags:
+    tags: Sildid
+  text-input:
+    text-input: Tekstisisestus
+    trim: Kärbi
+  translations:
+    display_template: Vaate mall
+  user:
+    user: Kasutaja
+    modes:
+      dropdown: Rippmenüü
+  wysiwyg:
+    custom_formats: Kohandatud vormingud
+displays:
+  collection:
+    collection: Kogud
+  color:
+    color: Värv
+  datetime:
+    datetime: Kuupäev-kellaaeg
+    format: Vorming
+  file:
+    file: Fail
+  filesize:
+    filesize: Failisuurus
+  icon:
+    icon: Ikoon
+  rating:
+    rating: Hinnang
+  user:
+    user: Kasutaja
+    avatar: Avatar
+    name: Nimi
+    both: Mõlemad
+layouts:
+  cards:
+    cards: Kaardid
+    image_source: Pildi allikas
+    title: Pealkiri
+    subtitle: Alampealkiri
+  tabular:
+    tabular: Tabel
+    fields: Väljad
+    spacing: Vahed
+    comfortable: Mugav
+    compact: Kompaktne
+    cozy: Kodune

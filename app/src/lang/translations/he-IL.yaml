@@ -1,0 +1,66 @@
+---
+directus_version: גרסת דירקטוס
+title: כותרת
+checksum: מחרוזת בדיקה
+users: משתמשים
+activity: פעילות
+duration: משך זמן
+status: סטטוס
+role: תפקיד
+collection: מאגר
+fields:
+  directus_activity:
+    item: מפתח ראשי
+    action: פעולה
+    collection: מאגר
+    timestamp: מועד פעולה
+    user: מבצע פעולה
+    comment: הערה
+    ip: '‏כתובת IP'
+  directus_collections:
+    collection: מאגר
+  directus_files:
+    title: כותרת
+    description: תיאור
+    tags: תגיות
+    location: מיקום
+    metadata: מטא-נתונים
+    filesize: גודל קובץ
+    width: רוחב
+    height: גובה
+    duration: משך זמן
+  directus_users:
+    first_name: שם פרטי
+    last_name: שם משפחה
+    email: דוא"ל
+    password: סיסמה
+    avatar: צלמית
+    location: מיקום
+    title: כותרת
+    description: תיאור
+    tags: תגיות
+    theme: ערכת נושא
+    tfa_secret: אימות דו-שלבי
+    status: סטטוס
+    role: תפקיד
+  directus_roles:
+    description: תיאור
+comment: הערה
+description: תיאור
+email: דוא"ל
+password: סיסמה
+interfaces:
+  collection:
+    collection: מאגר
+  files:
+    files: קבצים
+  tags:
+    tags: תגיות
+displays:
+  collection:
+    collection: מאגר
+  user:
+    avatar: צלמית
+layouts:
+  cards:
+    title: כותרת

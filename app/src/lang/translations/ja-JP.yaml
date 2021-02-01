@@ -1,0 +1,353 @@
+---
+edit_field: フィールドの編集
+item_revision: 履歴
+full_width: 最大幅
+field_name_translations: 項目名の翻訳を追加する
+add_field: フィールドの追加
+role_name: 権限名
+required: 必須
+requires_value: この項目は必須です
+create_preset: プリセットの作成
+create_role: 権限作成
+create_user: ユーザーの作成
+create_webhook: Webhookの作成
+invite_users: ユーザーを招待
+invite: 招待する
+emails: メールアドレス
+rename_folder: フォルダ名の変更
+delete_folder: フォルダーの削除
+delete_bookmark: ブックマーク削除
+logoutReason:
+  SIGN_OUT: ログアウト
+public: 公開
+directus_version: Directus Version
+validationError:
+  required: 必須項目です
+field_file: 1つのファイル
+field_files: 複数のファイル
+field_translations: 翻訳
+fields_and_layout: 項目とレイアウト
+language: 言語
+schema_setup_title: この項目をどのように保存するか設定しましょう。
+schema_field_title: この項目のエディタでの表示を設定できます。
+create_field: 入力欄作成
+hidden_on_detail: 詳細に表示しない
+disabled_editing_value: 項目の編集を無効にする
+boolean: 真偽値
+date: 日付
+text: テキスト
+uuid: UUID
+hash: ハッシュ値
+auto_generate: 自動生成
+add_note: ユーザーに有益な注釈を追加...
+default_value: 初期値
+interface_setup_title: 項目の入力に使用する方法を選択してください。
+single_file: 1つのファイル
+multiple_files: 複数のファイル
+next: 次
+field_name: 項目名
+translations: 翻訳
+note: 備考
+enter_a_value: 値を入力...
+length: 長さ
+readonly: 読取り専用
+unique: 単一
+primary_key: プライマリーキー
+raw_value: 値を加工しない
+clear_value: 値の削除
+reset_to_default: 初期化
+undo_changes: 変更を元に戻す
+notifications: 通知
+page_not_found: ページが見つかりませんでした
+page_not_found_body: お探しのページは存在しません。
+title: タイトル
+revision_delta_other: 履歴
+private_user: 非公開ユーザー
+revision_preview: 履歴のプレビュー
+leave_comment: コメントを残す...
+item_create_success: 作成されたアイテム|作成されたアイテム
+item_update_success: 更新されたアイテム | 更新されたアイテム
+item_delete_success: 削除されたアイテム|削除されたアイテム
+this_collection: このコレクション
+related_collection: 関連するコレクション
+related_collections: 関連するコレクション
+format: 書式
+submit: 送信
+move_to_folder: フォルダに移動
+move: 移動
+today: 今日
+yesterday: 昨日
+delete_comment: コメントの削除
+month: 月
+year: 年
+select_all: すべて
+months:
+  january: 1月
+  february: 2月
+  march: 3月
+  april: 4月
+  may: 5月
+  june: 6月
+  july: 7月
+  august: 8月
+  september: 9月
+  october: 10月
+  november: 11月
+  december: 12月
+file_details: ファイルの詳細
+size: サイズ
+modified: 修正されました
+owner: 所有者
+edited_by: '編集者:'
+folder: フォルダ
+download: ダウンロード
+open: 開く
+open_in_new_window: 新しいウィンドウで開く
+background_color: 背景色
+import_from_url: URLからファイルをインポート
+no_file_selected: ファイルが選択されていません
+download_file: ファイルをダウンロード
+name: 名前
+primary_key_field: プライマリーキー
+type: タイプ
+creating_new_collection: 新しいコレクションの作成
+created_by: 作成者
+created_on: 作成日時
+creating_collection_info: コレクション名（半角英数字を推奨）と投稿を識別するプライマリーキーを設定しましょう。
+creating_collection_system: オプションフィールドの有効化および名称の変更ができます。
+auto_increment_integer: 整数を自動生成
+generated_uuid: UUIDを生成
+save_and_stay: 保存してページに留まる
+save_as_copy: 複製として保存
+comments: コメント
+no_items: アイテムがありません
+disabled: 無効
+information: インフォメーション
+report_bug: 不具合の報告
+request_feature: 機能リクエスト
+item_count: 'アイテムなし | 1つのアイテム | {count} 個のアイテム'
+file_count: 'ファイルがありません | 1個のファイル | {count} 個のファイル'
+no_files_copy: まだファイルがありません。
+no_collections: コレクションがありません
+create_collection: コレクションを作成する
+no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
+activity: 操作履歴
+webhooks: Webhook
+field_width: 入力欄幅
+add_a_new_item: 項目の追加
+user_directory: ユーザーディレクトリ
+modified_on: 修正日時
+status: ステータス
+bookmarks: ブックマーク
+back: 戻る
+all_users: すべてのユーザー
+icon_left: 左側に表示するアイコン
+icon_right: 右側に表示するアイコン
+color: 色
+operators:
+  lt: より少ない
+  gt: より大きい
+  lte: より少ないまたは等しい
+  gte: より大きいまたは等しい
+  contains: 含む
+  ncontains: 含まない
+  empty: 空
+loading: 読み込み中...
+upload_files_indeterminate: '{done}/{total} ファイルをアップロードしています'
+upload_files_success: '{count} 個のファイルがアップロードされました'
+collection_setup: コレクションの作成
+optional_system_fields: システムフィールドのオプション
+all_files: すべてのファイル
+my_files: マイファイル
+recent_files: 最近使用したファイル
+add_file: ファイルを追加する
+no_results: 結果なし
+saves_automatically: 変更は自動的に保存されます
+user: ユーザー
+create: 作成
+on_update: 更新時
+read: 読取り
+update: 更新
+select_fields: 入力欄の選択
+wysiwyg_options:
+  backcolor: 背景色
+  remove: 削除
+  selectall: すべて
+  table: テーブル
+deselect: 選択解除
+editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
+settings_data_model: データモデル
+settings_permissions: 役割・権限
+settings_project: プロジェクト設定
+settings_webhooks: Webhook
+unsaved_changes_copy: このページを離れてもよろしいですか？
+discard_changes: 変更の破棄
+keep_editing: 編集を続ける
+add_new: 新規追加
+all: すべて
+batch_delete_confirm: >-
+  項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count} 個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
+cancel: キャンセル
+collections: コレクション
+singleton: シングルトン
+singleton_label: シングルオブジェクトに設定する
+fields:
+  directus_activity:
+    comment: コメント
+    ip: IPアドレス
+  directus_collections:
+    icon: アイコン
+    note: 備考
+    hidden: 非表示
+    singleton: シングルトン
+  directus_files:
+    title: タイトル
+    description: 説明
+    tags: タグ
+    location: 場所
+    filesize: ファイルサイズ
+    modified_on: 修正日時
+    created_on: 作成日時
+    created_by: 作成者
+    embed: 埋め込む
+    folder: フォルダ
+    width: 幅
+    height: 高さ
+  directus_users:
+    first_name: 名
+    last_name: 姓
+    email: メールアドレス
+    password: パスワード
+    location: 場所
+    title: タイトル
+    description: 説明
+    tags: タグ
+    language: 言語
+    theme: テーマ
+    status: ステータス
+  directus_settings:
+    project_name: プロジェクト名
+  directus_fields:
+    note: 備考
+    hidden: 非表示
+    singleton: シングルトン
+    translation: 項目名の翻訳を追加する
+  directus_roles:
+    name: 権限名
+    description: 説明
+do_nothing: 何もしない
+save_current_datetime: 現在の日付/時刻を保存
+comment: コメント
+continue: 続ける
+default: デフォルト
+delete: 削除
+delete_field_are_you_sure: >-
+  このフィールド：\"{field}\"を削除してよろしいですか？この操作を取り消すことはできません。
+description: 説明
+done: 完了
+duplicate: 複製
+email: メールアドレス
+embed: 埋め込む
+file: ファイル
+file_library: ファイルライブラリー
+forgot_password: パスワード忘れ
+hidden: 非表示
+icon: アイコン
+info: 情報
+junction_collection: 中継コレクション
+latency: 待ち時間
+login: ログイン
+my_activity: 操作
+not_authenticated: ' 認証されていません'
+options: オプション
+otp: ワンタイムパスワード
+password: パスワード
+permissions: 許可
+relationship: 関連
+reset: リセット
+reset_password: パスワードリセット
+revert: 元に戻す
+save: 保存
+schema: スキーマ
+search: 検索
+select_existing: 既存から選択
+select_interface: インターフェースを選択してください
+settings: 設定
+sign_in: サインイン
+sign_out: サインアウト
+sign_out_confirm: サインアウトしてもよろしいですか？
+something_went_wrong: 問題が発生しました
+sort_direction: ソート順
+translation: 翻訳
+value: 値
+interfaces:
+  checkboxes:
+    checkboxes: チェックボックス
+  code:
+    description: コードスニペットでコードを共有
+  collections:
+    collections: コレクション
+  color:
+    color: 色
+    description: 色の入力または選択
+  dropdown:
+    description: ドロップダウンから値を選択
+    choices_value_placeholder: 値を入力...
+  file:
+    file: ファイル
+  files:
+    files: ファイル
+  hash:
+    hash: ハッシュ値
+    description: 入力した値をハッシュ値に変換します
+    masked: 入力値を非表示にします（暗号化する値など）
+    masked_label: 入力値を非表示にする
+  icon:
+    icon: アイコン
+    description: ドロップダウンからアイコンを選択
+  numeric:
+    numeric: 数値
+  radio-buttons:
+    description: 1つあるいは複数の値を選択できます
+  slug:
+    description: 半角英数字およびハイフンで構成される文字列を入力します（URLなどに使用するのに向いています）
+  tags:
+    tags: タグ
+  text-input:
+    text-input: テキスト入力
+    description: 単一行での文字列入力
+    mask: 入力値を非表示にします（暗号化する値など）
+  user:
+    user: ユーザー
+displays:
+  boolean:
+    boolean: 真偽値
+  color:
+    color: 色
+  datetime:
+    format: 書式
+  file:
+    file: ファイル
+  filesize:
+    filesize: ファイルサイズ
+  icon:
+    icon: アイコン
+  labels:
+    choices_value_placeholder: 値を入力...
+  user:
+    user: ユーザー
+    name: 名前
+    both: 両方
+layouts:
+  cards:
+    cards: カード
+    image_source: 画像ソース
+    title: タイトル
+    subtitle: サブタイトル
+  tabular:
+    tabular: テーブル
+    fields: 入力欄
+    spacing: 間隔
+    comfortable: 広め
+    compact: コンパクト
+    cozy: 普通

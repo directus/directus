@@ -1,0 +1,241 @@
+---
+full_width: Plná šířka
+required: Povinné
+create_role: Vytvořit roli
+delete_bookmark: Smazat záložku
+directus_version: Verze Directusu
+language: Jazyk
+create_field: Vytvořit pole
+hidden_on_detail: Skryté v detailu
+date: Datum
+text: Text
+auto_generate: Auto-generování
+add_note: Přidat užitečnou poznámku pro uživatele...
+default_value: Výchozí hodnota
+next: Další
+note: Poznámka
+length: Délka
+readonly: Pouze pro čtení
+unique: Unikátní
+primary_key: Primární klíč
+clear_value: Vymazat hodnotu
+reset_to_default: Obnovit výchozí nastavení
+undo_changes: Vrátit změny
+notifications: Notifikace
+page_not_found: Stránka nenalezena
+page_not_found_body: Hledaná stránka nebyla nalezena.
+title: Název
+leave_comment: Napsat komentář...
+this_collection: Tato kategorie
+related_collection: Související kategorie
+submit: Potvrdit
+months:
+  january: Leden
+  february: Únor
+  march: Březen
+  april: Duben
+  may: Květen
+  june: Červen
+  july: Červenec
+  august: Srpen
+  september: Září
+  october: Říjen
+  november: Listopad
+  december: Prosinec
+checksum: Kontrolní součet
+owner: Vlastník
+download: Stáhnout
+name: Jméno
+created_by: Vytvořil/-a
+created_on: Vytvořeno
+save_and_stay: Uložit a zůstat
+save_as_copy: Uložit jako kopii
+comments: Komentáře
+request_feature: Požadavek na funkci
+item_count: 'Bez výsledků | Jeden výsledek | Výsledků: {count}'
+create_collection: Vytvořit kategorii
+users: Uživatelé
+activity: Aktivita
+webhooks: Webhooky
+field_width: Šířka pole
+user_directory: Uživatelé
+duration: Trvání
+modified_on: Upraveno
+status: Stav
+bookmarks: Záložky
+back: Zpět
+icon_left: Ikona vlevo
+color: Barva
+operators:
+  lt: Méně než
+  gt: Větší než
+  lte: Méně nebo rovno než
+  gte: Větší nebo rovno než
+  contains: Obsahuje
+  ncontains: Neobsahuje
+  empty: Je prázné
+loading: Nahrávám...
+no_results: Bez výsledků
+role: Role
+create: Vytořit
+on_update: Při úpravě
+read: Číst
+update: Úpravy
+select_fields: Vybrat pole
+wysiwyg_options:
+  remove: Odebrat
+choices: Volby
+deselect: Zrušit výběr
+editing_in_batch: 'Hromadná úprava {count} položek'
+settings_permissions: Role a oprávnění
+settings_project: Nastavení projektu
+settings_webhooks: Webhooky
+unsaved_changes: Neuložené změny
+unsaved_changes_copy: Jste si jisti, že chcete opustit tuto stránku?
+discard_changes: Ano, odejít bez uložení
+keep_editing: Ne, vrátit se k úpravám
+add_new: Přidat nový
+all: Vše
+batch_delete_confirm: >-
+  Nebyly vybrány žádné položky | Opravdu chcete smazat tuto položku? Operace je nevratná. | Jste si jist(a) smazáním těchto {count} položek? Operace je nevratná.
+cancel: Zrušit
+collection: Kategorie
+collections: Kategorie
+fields:
+  directus_activity:
+    item: Primární klíč položky
+    action: Akce
+    collection: Kategorie
+    timestamp: Akce podle
+    user: Akce podle
+    comment: Komentář
+    user_agent: Uživatelský agent
+    ip: IP adresa
+  directus_collections:
+    collection: Kategorie
+    icon: Ikona
+    note: Poznámka
+    hidden: Skryté
+  directus_files:
+    title: Název
+    description: Popis
+    tags: Štítky
+    location: Poloha
+    metadata: Metadata
+    filesize: Velikost souboru
+    modified_on: Upraveno
+    created_on: Vytvořeno
+    created_by: Vytvořil/-a
+    embed: Vložení
+    uploaded_by: Nahráno od
+    width: Šířka
+    uploaded_on: Nahráno
+    height: Výška
+    duration: Trvání
+  directus_users:
+    first_name: Křestní jméno
+    last_name: Příjmení
+    email: E-mail
+    password: Heslo
+    avatar: Avatar
+    location: Poloha
+    title: Název
+    description: Popis
+    tags: Štítky
+    language: Jazyk
+    theme: Téma
+    tfa_secret: Dvoufázové ověření
+    status: Stav
+    role: Role
+  directus_settings:
+    project_name: Název projektu
+  directus_fields:
+    note: Poznámka
+    hidden: Skryté
+  directus_roles:
+    description: Popis
+comment: Komentář
+continue: Pokračovat
+default: Výchozí
+delete: Smazat
+delete_field_are_you_sure: >-
+  Opravdu chcete smazat pole "{field}"? Tuto akci nelze vrátit zpět.
+description: Popis
+done: Hotovo
+duplicate: Duplikovat
+email: E-mail
+embed: Vložení
+field: Pole | Pole
+file: Soubor
+file_library: Složka souborů
+forgot_password: Zapomenuté heslo
+hidden: Skryté
+icon: Ikona
+info: Informace
+junction_collection: Spojovací kategorie
+latency: Latence
+login: Přihlásit
+my_activity: Moje aktivita
+not_authenticated: Neověřená/-ý
+options: Možnosti
+otp: Jednorázové heslo
+password: Heslo
+permissions: Oprávnění
+relationship: Vztah
+reset: Resetovat
+reset_password: Obnovit heslo
+revert: Vrátit
+save: Uložit
+schema: Schéma
+search: Vyhledat
+select_existing: Vybrat z uložených
+select_interface: Vyberte rozhraní
+settings: Nastavení
+sign_in: Přihlásit se
+sign_out: Odhlásit se
+sign_out_confirm: Chcete se odhlásit?
+something_went_wrong: Něco se pokazilo.
+sort_direction: Směr řazení
+translation: Překlad
+value: Hodnota
+interfaces:
+  code:
+    line_number: Číslo řádku
+  collection:
+    collection: Kategorie
+  collections:
+    collections: Kategorie
+  color:
+    color: Barva
+  file:
+    file: Soubor
+  files:
+    files: Soubory
+  icon:
+    icon: Ikona
+  numeric:
+    numeric: Číselné
+  tags:
+    tags: Štítky
+displays:
+  collection:
+    collection: Kategorie
+  color:
+    color: Barva
+  file:
+    file: Soubor
+  icon:
+    icon: Ikona
+  user:
+    avatar: Avatar
+    name: Jméno
+    both: Vše
+layouts:
+  cards:
+    title: Název
+  tabular:
+    fields: Sloupce
+    spacing: Odsazení
+    comfortable: Komfortní
+    compact: Kompaktní
+    cozy: Pohodlný

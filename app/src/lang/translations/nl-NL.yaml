@@ -1,0 +1,1035 @@
+---
+edit_field: Veld Bewerken
+item_revision: Item revisie
+duplicate_field: Dupliceer Veld
+half_width: Halve Breedte
+full_width: Volledige breedte
+fill_width: Vul Breedte
+field_name_translations: Veld-naam Vertalingen
+enter_password_to_enable_tfa: Voer je wachtwoord in om Two-Factor Authentication te activeren
+add_field: Voeg Veld Toe
+role_name: Rol Naam
+db_only_click_to_configure: 'Alleen in de Database: Klik om te configureren '
+show_archived_items: Toon Gearchiveerde Items
+required: Vereist
+requires_value: Vereist waarde
+create_preset: Voorkeur Aanmaken
+create_role: Maak rol
+create_user: Gebruiker Aanmaken
+create_webhook: Webhook Aanmaken
+invite_users: Gebruikers Uitnodigen
+email_examples: 'admin@example.nl, gebruiker@example.nl...'
+invite: Nodig uit
+emails: E-mails
+connection_excellent: Uitstekende Verbinding
+connection_good: Goede Verbinding
+connection_fair: Matige Verbinding
+connection_poor: Slechte Verbinding
+rename_folder: Mapnaam wijzigen
+delete_folder: Verwijder Map
+reset_bookmark: Reset Bladwijzer
+rename_bookmark: Hernoem Bladwijzer
+update_bookmark: Update Bladwijzer
+delete_bookmark: Verwijder Bladwijzer
+delete_bookmark_copy: >-
+  Weet je zeker dat je de bladwijzer "{bookmark}" wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+logoutReason:
+  SIGN_OUT: Uitgelogd
+  SESSION_EXPIRED: Sessie verlopen
+public: Openbaar
+public_description: Bepaalt welke data beschikbaar is in the API zonder in te loggen.
+not_allowed: Niet toegestaan
+directus_version: Directus Versie
+node_version: Node Versie
+node_uptime: Node Uptime
+os_type: OS Type
+os_version: OS Versie
+os_uptime: OS Uptime
+os_totalmem: OS Geheugen
+archive: Archiveren
+archive_confirm: Weet je zeker dat je dit item wilt archiveren?
+archive_confirm_count: >-
+  Geen Items Geselecteerd | Weet je zeker dat je dit item wilt archiveren? | Weet je zeker dat je deze {count} items wilt archiveren?
+reset_system_permissions: Reset Systeem Permissies
+reset_system_permissions_copy: Reset alle systeem permissies
+unarchive: Terugzetten
+unarchive_confirm: Weet je zeker dat je dit item wilt terugzetten?
+nested_files_folders_will_be_moved: Bestanden en mappen in deze map zullen een map omhoog worden geplaatst.
+unknown_validation_errors: 'Er waren validatie-fouten voor de volgende verborgen velden:'
+validationError:
+  eq: Waarde moet {valid} zijn
+  neq: Waarde kan niet {invalid} zijn
+  in: 'Waar moet een van de volgende zijn: {valid}'
+  nin: 'Waarde kan niet een van de volgende zijn: {invalid}'
+  contains: Waarde moet "{substring}" bevatten
+  ncontains: Waarde kan niet "{substring}" bevatten
+  gt: Waarde moet meer zijn dan {valid}
+  gte: Waarde moet meer zijn dan of gelijk zijn aan {valid}
+  lt: Waarde moet minder zijn dan {valid}
+  lte: Waarde moet minder zijn dan of gelijk zijn aan {valid}
+  empty: Waarde moet leeg zijn
+  nempty: Waarde kan niet leeg zijn
+  null: Waarde moet "null" zijn
+  nnull: Waarde kan niet "null" zijn
+  required: Waarde is vereist
+all_access: Alle toegang
+no_access: Geen toegang
+use_custom: Gebruik aangepaste
+field_standard: Standaard
+field_presentation: Presentatie & Aliasen
+field_file: Enkel bestand
+field_files: Meerdere bestanden
+field_m2o: M2O Relatie
+field_o2m: O2M Relatie
+field_m2m: M2M Relatie
+field_translations: Vertalingen
+item_permissions: Item Permissies
+field_permissions: Veld Permissies
+field_validation: Veld Validatie
+field_presets: Veld Voorkeuren
+permissions_for_role: 'Items die de rol "{role}" kan {action}.'
+fields_for_role: 'Velden die de rol "{role}" kan {action}.'
+validation_for_role: 'Veld {action} regels die de rol "{role}" moet gehoorzamen.'
+presets_for_role: 'Standaardwaarden voor de velden voor rol {role}.'
+presentation_and_aliases: Presentatie & Aliasen
+revision_post_update: Hier is hoe dit item eruit zag na de update...
+changes_made: Dit zijn de specifieke wijzigingen die zijn aangebracht...
+no_relational_data: Houd er rekening mee dat dit geen relationele gegevens omvat.
+hide_field_on_detail: Veld Verbergen
+show_field_on_detail: Veld Tonen
+delete_field: Veld Verwijderen
+fields_and_layout: Velden & Layout
+field_create_success: 'Veld aangemaakt: "{field}"'
+field_update_success: 'Veld bijgewerkt: "{field}"'
+duplicate_where_to: Waar wil je dit veld naar dupliceren?
+language: Taal
+global: Wereldwijd
+admins_have_all_permissions: Admins hebben alle permissies
+camera: Camera
+exposure: Exposure
+shutter: Sluitertijd
+iso: ISO
+focal_length: Brandpuntsafstand
+schema_setup_title: Hoe moet dit veld worden opgeslagen in de database?
+schema_field_title: Hoe moet dit veld zich gedragen in de app?
+create_field: Maak veld
+creating_new_field: 'Nieuw veld ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Pagina-voorkeuren resetten
+hidden_field: Verborgen veld
+hidden_on_detail: Verborgen op het detail scherm
+disabled_editing_value: Bewerken van waarde uitschakelen
+key: Key
+alias: Alias
+bigInteger: Big Integer
+boolean: Boolean
+date: Datum
+datetime: DateTime
+decimal: Decimaal
+float: Float
+integer: Integer
+json: JSON
+string: String
+text: Tekst
+time: Tijd
+timestamp: Timestamp
+uuid: UUID
+hash: Hash
+not_available_for_type: Niet beschikbaar voor dit type
+create_translations: Vertalingen aanmaken
+auto_generate: Genereer automatisch
+this_will_auto_setup_fields_relations: Dit zal automatisch alle vereiste velden en relaties instellen.
+click_here: Klik hier
+to_manually_setup_translations: om de vertalingen handmatig in te stellen.
+click_to_manage_translated_fields: >-
+  Er zijn nog geen vertaalde velden. Klik hier om ze aan te maken. | Er is één vertaald veld. Klik hier om het te beheren. | Er zijn {count} vertaalde velden. Klik hier om ze te beheren.
+fields_group: Veld-Groep
+configure_m2o: Configureer je Many-to-One Relatie...
+configure_o2m: Configureer je One-to-many Relatie...
+configure_m2m: Configureer je Many-to-many Relatie...
+configure_m2a: Configureer je Many-to-any Relatie...
+add_m2o_to_collection: 'Many-to-one toevoegen aan "{collection}"'
+add_o2m_to_collection: 'One-to-many toevoegen aan "{collection}"'
+add_m2m_to_collection: 'Many-to-many toevoegen aan "{collection}"'
+choose_a_type: Kies een type...
+determined_by_relationship: Bepaald door relatie
+add_note: Voeg een hint toe voor de eindgebruiker...
+default_value: Standaardwaarde
+add_a_default_value: Voeg een standaardwaarde toe...
+interface_setup_title: Hoe zullen gebruikers omgaan met dit veld?
+display_setup_title: Hoe moet de waarde van dit veld worden weergegeven?
+standard_field: Standaard veld
+single_file: Enkel bestand
+multiple_files: Meerdere bestanden
+m2o_relationship: Many-to-One Relatie
+o2m_relationship: One-to-Many Relatie
+m2m_relationship: Many-to-Many Relatie
+m2a_relationship: Many-to-Any Relatie
+next: Volgende
+field_name: Veldnaam
+translations: Vertalingen
+note: Notitie
+enter_a_value: Voer een waarde in...
+enter_a_placeholder: Voer een placeholder in...
+length: Lengte
+precision_scale: Precisie & schaal
+readonly: Alleen lezen
+unique: Uniek
+primary_key: Primary Key
+foreign_key: Foreign Key
+finish_setup: Setup voltooien
+dismiss: Negeren
+raw_value: Ruwe waarde
+edit_raw_value: Bewerk Ruwe Waarde
+enter_raw_value: Ruwe waarde invoeren...
+clear_value: Verwijder waarde
+reset_to_default: Terug naar standaardwaarde
+undo_changes: Ongedaan maken
+notifications: Notificaties
+show_all_activity: Alle activiteiten tonen
+page_not_found: Pagina niet gevonden
+page_not_found_body: Deze pagina of item bestaat niet of is recentelijk verwijderd.
+confirm_revert: Terugzetten bevestigen
+confirm_revert_body: Dit zal het item terugzetten naar de geselecteerde revisie.
+display: Toon
+settings_update_success: Instellingen bijgewerkt
+title: Titel
+revision_delta_created: Aangemaakt
+revision_delta_created_externally: Extern aangemaakt
+revision_delta_updated: '1 veld bijgewerkt | {count} velden bijgewerkt'
+revision_delta_deleted: Verwijderd
+revision_delta_reverted: Teruggedraaid
+revision_delta_other: Revisie
+revision_delta_by: '{date} door {user}'
+private_user: Privé gebruiker
+revision_preview: Revisie voorbeeld
+updates_made: Gemaakte updates
+leave_comment: Plaats een reactie...
+post_comment_success: Reactie geplaatst
+item_create_success: Item Aangemaakt | Items Aangemaakt
+item_update_success: Item Bijgewerkt | Items Bijgewerkt
+item_delete_success: Item Verwijderd | Items Verwijderd
+this_collection: Deze collectie
+related_collection: Gerelateerde collecties
+related_collections: Gerelateerde collecties
+translations_collection: Vertalingen Collectie
+languages_collection: Talen Collectie
+export_data: Gegevens exporteren
+format: Format
+use_current_filters_settings: Gebruik huidige filters & instellingen
+export_collection: 'Exporteer {collection}'
+last_page: Laatste pagina
+last_access: Laatste toegang
+fill_template: Vul met sjabloonwaarde
+a_unique_table_name: Een unieke tabelnaam...
+a_unique_column_name: Een unieke kolomnaam...
+enable_custom_values: Aangepaste waarden inschakelen
+submit: Verstuur
+move_to_folder: Verplaats naar map
+move: Verplaatsen
+system: Systeem
+add_field_related: Veld toevoegen aan gerelateerde collectie
+interface: Interface
+today: Vandaag
+yesterday: Gisteren
+delete_comment: Reactie verwijderen
+date-fns_date: PPP
+date-fns_time: 'H:mm:ss'
+date-fns_time_no_seconds: 'H:mm'
+date-fns_date_short: 'd MMM u'
+date-fns_time_short: 'H:mm'
+date-fns_date_short_no_year: d MMM
+month: Maand
+year: Jaar
+select_all: Alles selecteren
+months:
+  january: Januari
+  february: Februari
+  march: Maart
+  april: April
+  may: Mei
+  june: Juni
+  july: Juli
+  august: Augustus
+  september: September
+  october: Oktober
+  november: November
+  december: December
+drag_mode: Sleep modus
+cancel_crop: Annuleer bijsnijden
+original: Origineel
+url: URL
+import: Importeren
+file_details: Bestand Details
+dimensions: Afmetingen
+size: Grootte
+created: Aangemaakt
+modified: Aangepast
+checksum: Checksum
+owner: Eigenaar
+edited_by: Aangepast door
+folder: Map
+zoom: Zoom
+download: Downloaden
+open: Openen
+open_in_new_window: Openen in nieuw venster
+foreground_color: Voorgrondkleur
+background_color: Achtergrond kleur
+upload_from_device: Bestand uploaden van apparaat
+choose_from_library: Kies bestand uit de bibliotheek
+import_from_url: Importeer bestand van URL
+replace_from_device: Vervang bestand met nieuwe upload
+replace_from_library: Vervang bestand met bestaande
+replace_from_url: Vervang bestand via een URL import
+no_file_selected: Geen bestand geselecteerd
+download_file: Download bestand
+collection_key: Collectie Key
+name: Naam
+primary_key_field: Primary Key veld
+type: Type
+creating_new_collection: Nieuwe collectie aanmaken
+created_by: Aangemaakt door
+created_on: Aangemaakt op
+creating_collection_info: Geef de collectie een naam en stel het unieke "key" veld in...
+creating_collection_system: Schakel een van deze optionele velden in.
+auto_increment_integer: Auto-incremented integer
+generated_uuid: Gegenereerde UUID
+manual_string: Handmatig ingevoerde tekst
+save_and_create_new: Opslaan en nieuwe aanmaken
+save_and_stay: Sla op en blijf bewerken
+save_as_copy: Sla op als een kopie
+add_existing: Bestaande toevoegen
+comments: Reacties
+no_comments: Nog geen reacties
+click_to_expand: Klik om uit te breiden
+select_item: Selecteer Item
+no_items: Geen items
+search_items: Zoek items...
+disabled: Uitgeschakeld
+information: Informatie
+report_bug: Bug melden
+request_feature: Vraag nieuwe feature aan
+interface_not_found: 'Interface "{interface}" niet gevonden.'
+reset_interface: Interface resetten
+display_not_found: 'Display "{display}" niet gevonden.'
+reset_display: Reset Display
+m2a_builder: Bouwer (M2A)
+item_count: 'Geen items | Één item | {count} items'
+no_items_copy: Er zijn nog geen items in deze collectie.
+file_count: 'Geen bestanden | Één Bestand | {count} bestanden'
+no_files_copy: Er zijn geen bestanden hier.
+user_count: 'Geen gebruikers | Één gebruiker | {count} gebruikers'
+no_users_copy: Er zijn nog geen gebruikers in deze rol.
+webhooks_count: 'Geen webhooks | 1 Webhook | {count} Webhooks'
+no_webhooks_copy: Er zijn nog geen webhooks.
+all_items: Alle items
+csv: CSV
+no_collections: Geen collecties
+create_collection: Maak collectie
+no_collections_copy_admin: Je hebt nog geen Collecties. Klik op de knop hieronder om te beginnen.
+no_collections_copy: Je hebt nog geen collecties. Neem contact op met je systeembeheerder.
+relationship_not_setup: De relatie is niet correct geconfigureerd
+display_template_not_setup: De weergavesjabloon optie is onjuist geconfigureerd
+collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
+select_a_collection: Selecteer een collectie
+active: Actief
+users: Gebruikers
+activity: Activiteit
+webhooks: Webhooks
+field_width: Veld breedte
+add_a_new_item: Nieuw item toevoegen...
+add_filter: Filter toevoegen
+upper_limit: Bovengrens...
+lower_limit: Lagere limiet...
+user_directory: Gebruikers
+documentation: Documentatie
+sidebar: Sidebar
+duration: Duur
+charset: Karakterset
+second: Seconde
+file_moved: Bestand verplaatst
+collection_created: Collectie aangemaakt
+modified_on: Aangepast op
+card_size: Kaart grootte
+sort_field: Sorteerveld
+status: Status
+toggle_manual_sorting: Activeer handmatige volgorde
+bookmark_doesnt_exist: Bladwijzer bestaat niet
+bookmark_doesnt_exist_copy: De bladwijzer die je probeert te openen kon niet worden gevonden.
+bookmark_doesnt_exist_cta: Terug naar de collectie
+select_an_item: Selecteer een item...
+edit: Wijzig
+enabled: Ingeschakeld
+disable_tfa: 2FA uitzetten
+tfa_scan_code: Scan de code in uw authenticatie-app om de instelling van 2FA te voltooien
+enter_otp_to_disable_tfa: Voer de OTP in om 2FA uit te schakelen
+create_account: Account aanmaken
+account_created_successfully: Account succesvol aangemaakt
+auto_fill: Automatisch vullen
+corresponding_field: Corresponderende veld
+errors:
+  COLLECTION_NOT_FOUND: "Collectie bestaat niet"
+  FIELD_NOT_FOUND: Veld niet gevonden
+  FORBIDDEN: Verboden
+  INVALID_CREDENTIALS: Verkeerde gebruikersnaam of wachtwoord
+  INVALID_OTP: Verkeerd eenmalig wachtwoord
+  INVALID_PAYLOAD: Invalid payload
+  INVALID_QUERY: Ongeldige zoekopdracht
+  ITEM_LIMIT_REACHED: Item limiet bereikt
+  ITEM_NOT_FOUND: Item niet gevonden
+  ROUTE_NOT_FOUND: Niet gevonden
+  UNKNOWN: Onverwachte fout
+value_hashed: Waarde veilig opgeslagen
+bookmark_name: Bladwijzer naam...
+create_bookmark: Bladwijzer aanmaken
+edit_bookmark: Bladwijzer bewerken
+bookmarks: Bladwijzers
+presets: Voorkeuren
+unexpected_error: Onverwachte fout
+unexpected_error_copy: Een onverwachte fout is opgetreden. Probeer het later opnieuw.
+copy_details: Kopieer details
+no_app_access: Geen App Toegang
+no_app_access_copy: Deze gebruiker heeft geen toestemming om de admin app te gebruiken.
+password_reset_sent: We hebben je een beveiligde link gestuurd om je wachtwoord te resetten
+password_reset_successful: Wachtwoord succesvol opnieuw ingesteld
+back: Terug
+editing_image: Afbeelding bewerken
+square: Vierkant
+free: Vrij
+flip_horizontal: Horizontaal spiegelen
+flip_vertical: Verticaal Spiegelen
+aspect_ratio: Verhouding
+rotate: Roteren
+all_users: Alle gebruikers
+delete_collection: Collectie verwijderen
+update_collection_success: Collectie bijgewerkt
+delete_collection_success: Collectie verwijderd
+start_end_of_count_items: '{start}-{end} van {count} items'
+delete_collection_are_you_sure: >-
+  Weet je zeker dat je deze collectie wilt verwijderen? Dit zal de collectie en alle items die erin zijn opgeslagen verwijderen. Deze actie is permanent.
+collections_shown: Collecties getoond
+visible_collections: Zichtbare collecties
+hidden_collections: Verborgen collecties
+unmanaged_collections: Niet geconfigureerde Collecties
+system_collections: Systeem Collecties
+placeholder: Tijdelijke plaatshouder
+icon_left: Icoon links
+icon_right: Icoon rechts
+font: Letterype
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Scheidingslijn
+color: Kleur
+circle: Cirkel
+empty_item: Leeg item
+log_in_with: 'Log in met {provider}'
+advanced_filter: Geavanceerd filter
+delete_advanced_filter: Verwijder filter
+change_advanced_filter_operator: Vervang operatie
+operators:
+  eq: Gelijk aan
+  neq: Niet gelijk aan
+  lt: Minder dan
+  gt: Groter dan
+  lte: Minder dan of gelijk aan
+  gte: Groter dan of gelijk aan
+  in: Is een van
+  nin: Is niet een van
+  null: Is null
+  nnull: Is niet null
+  contains: Bevat
+  ncontains: Bevat niet
+  between: Is tussen
+  nbetween: Ligt niet tussen
+  empty: Is leeg
+  nempty: Is niet leeg
+  all: Bevat deze keys
+  has: Bevat enkele van deze keys
+loading: Aan het laden...
+drop_to_upload: Sleep hier om te uploaden
+upload_file: Upload Bestand
+upload_file_indeterminate: Bestand uploaden...
+upload_file_success: Bestand geüpload
+upload_files_indeterminate: 'Bestanden can het uploaden {done}/{total}'
+upload_files_success: '{count} bestanden geüpload'
+upload_pending: Uploaden in afwachting
+drag_file_here: Sleep een bestand hierheen
+click_to_browse: Klik om te bladeren
+layout_options: Lay-out opties
+collection_setup: Collectie setup
+optional_system_fields: Optionele systeemvelden
+value_unique: Waarde moet uniek zijn
+all_activity: Alle activiteiten
+create_item: Item aanmaken
+display_template: Weergavesjabloon
+n_items_selected: 'Geen Items Geselecteerd | 1 Item Geselecteerd | {n} Items Geselecteerd'
+per_page: Per pagina
+all_files: Alle bestanden
+my_files: Mijn bestanden
+recent_files: Recente bestanden
+create_folder: Map aanmaken
+folder_name: Map Naam...
+add_file: Bestand toevoegen
+replace_file: Vervang Bestand
+no_results: Geen resultaten
+no_results_copy: Pas de zoekfilters aan om resultaten te zien.
+clear_filters: Filters wissen
+saves_automatically: Slaat automatisch op
+role: Rol
+user: Gebruiker
+no_presets: Geen Voorkeuren
+no_presets_copy: Geen voorkeuren of bladwijzers.
+no_presets_cta: Voorkeur Aanmaken
+create: Maak
+on_create: Tijdens Aanmaken
+on_update: Tijdens updaten
+read: Zichtbaar
+update: Updaten
+select_fields: Selecteer velden
+format_text: Formateer tekst
+bold: Vetgedrukt
+toggle: Schakel
+icon_on: Icoon aan
+icon_off: Icoon Uit
+label: Label
+wysiwyg_options:
+  aligncenter: Align Center
+  alignjustify: Align Justify
+  alignleft: Align Left
+  alignnone: Align None
+  alignright: Align Right
+  forecolor: Voorgrondkleur
+  backcolor: Achtergrond kleur
+  bold: Vetgedrukt
+  italic: Cursief
+  underline: Onderstreept
+  strikethrough: Doorhalen
+  subscript: Subscript
+  superscript: Superscript
+  codeblock: Code
+  blockquote: Citaat
+  bullist: Opsomming
+  numlist: Genummerde lijst
+  hr: Horizontale lijn
+  unlink: Link verwijderen
+  media: Media toevoegen
+  image: Afbeelding toevoegen
+  copy: Kopieer
+  cut: Knippen
+  paste: Plakken
+  h1: Titel 1
+  h2: Titel 2
+  h3: Titel 3
+  h4: Titel 4
+  h5: Titel 5
+  h6: Titel 6
+  fontselect: Selecteer lettertype
+  fontsizeselect: Selecteer lettergrootte
+  indent: Inspringen
+  outdent: Uitspringen
+  undo: Ongedaan maken
+  redo: Opnieuw uitvoeren
+  remove: Verwijder
+  removeformat: Opmaak verwijderen
+  selectall: Alles selecteren
+  table: Tabel
+  visualaid: Onzichtbare elementen weergeven
+  code: Bekijk broncode
+  fullscreen: Volledig scherm
+  directionality: Richting
+dropdown: Keuzemenu
+choices: Keuzes
+choices_option_configured_incorrectly: Keuzes onjuist geconfigureerd
+deselect: Deselecteer
+deselect_all: Alles deselecteren
+other: Anders...
+adding_user: Gebruiker toevoegen
+unknown_user: Onbekende gebruiker
+creating_in: 'Item maken in {collection}'
+editing_in: 'Item bewerken in {collection}'
+editing_in_batch: '{count} items aan het wijzigen'
+no_options_available: Geen opties beschikbaar
+settings_data_model: Data model
+settings_permissions: Rollen & Permissies
+settings_project: Project Instellingen
+settings_webhooks: Webhooks
+settings_presets: Voorkeuren & Bladwijzers
+scope: Bereik
+layout: Lay-out
+changes_are_permanent: Wijzigingen zijn permanent
+preset_name_placeholder: Naam van de bladwijzer...
+editing_preset: Voorkeur aan het Wijzigen
+layout_preview: Lay-out voorbeeld
+layout_setup: Lay-out instellingen
+unsaved_changes: Niet-opgeslagen wijzigingen
+unsaved_changes_copy: Weet je zeker dat je pagina wilt verlaten?
+discard_changes: Wijzigingen ongedaan maken
+keep_editing: Blijf wijzigen
+page_help_collections_overview: '**Collecties overzicht** - Overzicht van alle collecties waartoe je toegang hebt.'
+page_help_collections_collection: >-
+  **Browse Items** — Toont alle items in {collection}. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
+page_help_collections_item: >-
+  **Item detail** - Een formulier voor het bekijken en beheren van dit item. Deze zijbalk bevat ook een volledige geschiedenis van herzieningen en ingesloten reacties.
+page_help_activity_collection: >-
+  **Blader door activiteit** - Een uitgebreide lijst van alles wat er zich afgespeeld heeft.
+page_help_docs_global: >-
+  **Documentatie overzicht** — Docs die specifiek zijn afgestemd op de versie en schema van dit project.
+page_help_files_collection: >-
+  **Bestandsbibliotheek** - Toont alle bestanden die naar dit project zijn geüpload. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
+page_help_files_item: >-
+  **Bestandsdetail** - Een formulier voor het beheren van metagegevens van bestanden, het bewerken van het originele bestand en het bijwerken van toegangsinstellingen.
+page_help_settings_project: "**Projectinstellingen** - De algemene configuratieopties van je project."
+page_help_settings_datamodel_collections: >-
+  **Gegevensmodel: Collecties** — Laat alle beschikbare collecties zien. Dit omvat zichtbare, verborgen en systeemcollecties, evenals niet beheerde databasetabellen die kunnen worden toegevoegd.
+page_help_settings_datamodel_fields: >-
+  **Gegevensmodel: Verzameling** - Een formulier voor het beheren van deze collectie en haar velden.
+page_help_settings_roles_collection: '**Blader door rollen** — Laat de Admin, Publieke en aangepaste gebruikersrollen zien.'
+page_help_settings_roles_item: "**Rol Detail** - Beheer de rechten van de rol en andere instellingen."
+page_help_settings_presets_collection: >-
+  **Browse Voorkeuren** — Bewaart alle voorkeuren in dit project, inclusief: gebruikers, rol, en globale voorkeuren en standaard views.
+page_help_settings_presets_item: >-
+  **Voorkeur Detail** — Formulier om voorkeuren en bladwijzers mee te beheren.
+page_help_settings_webhooks_collection: '**Browse Webhooks** — Toont alle webhooks in het project.'
+page_help_settings_webhooks_item: '**Webhook Detail** - Een formulier voor het maken en beheren van project webhooks.'
+page_help_users_collection: '**User Directory** — Laat alle gebruikers in dit project zien.'
+page_help_users_item: >-
+  **Gebruikersdetail** — Beheer je accountgegevens, of bekijk de details van andere gebruikers.
+activity_feed: Activiteiten
+add_new: Nieuw Toevoegen
+create_new: Nieuwe aanmaken
+all: Alle
+none: Geen
+no_layout_collection_selected_yet: Geen layout/collectie geselecteerd
+batch_delete_confirm: >-
+  Geen items geselecteerd | Weet je zeker dat je dit item wilt verwijderen? Dit kan niet ongedaan gemaakt worden. | Weet je zeker dat je {count} items wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+cancel: Annuleer
+collection: Collectie
+collections: Collecties
+singleton: Singleton
+singleton_label: Behandel als één object
+system_fields_locked: Systeem velden zijn vergrendeld en kunnen niet worden bewerkt
+fields:
+  directus_activity:
+    item: Item Primary Key
+    action: Actie
+    collection: Collectie
+    timestamp: Actie op
+    user: Actie door
+    comment: Reactie
+    user_agent: User Agent
+    ip: IP Adres
+    revisions: Revisies
+  directus_collections:
+    collection: Collectie
+    icon: Icoon
+    note: Notitie
+    display_template: Weergavesjabloon
+    hidden: Verborgen
+    singleton: Singleton
+    translations: Collectie-naam vertalingen
+    sort_field: Sorteerveld
+  directus_files:
+    title: Titel
+    description: Beschrijving
+    tags: Tags
+    location: Locatie
+    metadata: Metadata
+    filesize: Bestandsgrootte
+    modified_on: Aangepast op
+    created_on: Aangemaakt op
+    created_by: Aangemaakt door
+    embed: Insluiten
+    uploaded_by: Geüpload door
+    folder: Map
+    width: Breedte
+    uploaded_on: Geüpload op
+    height: Hoogte
+    charset: Karakterset
+    duration: Duur
+  directus_users:
+    first_name: Voornaam
+    last_name: Achternaam
+    email: Email
+    password: Wachtwoord
+    avatar: Profielafbeelding
+    location: Locatie
+    title: Titel
+    description: Beschrijving
+    tags: Tags
+    language: Taal
+    theme: Thema
+    tfa_secret: 2FA (Twee-Factor Authenticatie)
+    status: Status
+    role: Rol
+    last_page: Laatste pagina
+    last_access: Laatste toegang
+  directus_settings:
+    project_name: Project Naam
+    project_url: Project URL
+    project_color: Project kleur
+    project_logo: Project logo
+    public_foreground: Openbare voorgrond
+    public_background: Openbare achtergrond
+    public_note: Openbare notitie
+    auth_password_policy: Wachtwoordbeleid
+    auth_login_attempts: Login pogingen
+    storage_asset_presets: Bestand Voorkeuren
+    storage_asset_transform: Storage Asset Transform
+  directus_fields:
+    collection: Collectie naam
+    icon: Collectie Icoon
+    note: Notitie
+    hidden: Verborgen
+    singleton: Singleton
+    translation: Veld-naam Vertalingen
+    display_template: Sjabloon
+  directus_roles:
+    name: Rol Naam
+    icon: Rol Icoon
+    description: Beschrijving
+    app_access: App toegang
+    admin_access: Admin toegang
+    ip_access: IP Toegang
+    enforce_tfa: 2FA vereist
+    users: Gebruikers in rol
+    module_list: Module Navigatie
+    collection_list: Collectie navigatie
+no_fields_in_collection: 'Er zijn nog geen velden in "{collection}"'
+do_nothing: Niets doen
+generate_and_save_uuid: Genereer een UUID
+save_current_user_id: Huidige gebruikers-ID opslaan
+save_current_user_role: Huidige gebruikersrol opslaan
+save_current_datetime: Huidige datum/tijd opslaan
+comment: Reactie
+continue: Doorgaan
+continue_as: >-
+  <b>{name}</b> is momenteel ingelogd. Als je dit account herkent, druk dan op 'Doorgaan'.
+editing_role: '{role} Rol'
+creating_webhook: Webhook Aanmaken
+default: Standaard
+delete: Verwijder
+delete_are_you_sure: >-
+  Deze actie is permanent en kan niet ongedaan worden gemaakt. Weet u zeker dat u wilt doorgaan?
+delete_field_are_you_sure: >-
+  Weet je zeker dat je het {field} veld wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
+description: Beschrijving
+done: Klaar
+duplicate: Dupliceer
+email: Email
+embed: Insluiten
+fallback_icon: Standaard Icoon
+field: Veld | Velden
+file: Bestand
+file_library: Bestandsbibliotheek
+forgot_password: Wachtwoord vergeten
+hidden: Verborgen
+icon: Icoon
+info: Info
+normal: Normaal
+success: Geslaagd
+warning: Waarschuwing
+danger: Gevaar
+junction_collection: Verbindingscollectie
+latency: Vertraging
+login: Log in
+my_activity: Mijn Activiteit
+not_authenticated: Niet Ingelogd
+authenticated: Ingelogd
+options: Opties
+otp: Eenmalig wachtwoord
+password: Wachtwoord
+permissions: Permissies
+relationship: Relatie
+reset: Reset
+reset_password: Reset wachtwoord
+revisions: Revisies
+revert: Terugzetten
+save: Sla op
+schema: Schema
+search: Zoek
+select_existing: Selecteer bestaande
+select_field_type: Selecteer een veldtype
+select_interface: Kies een interface
+settings: Instellingen
+sign_in: Log in
+sign_out: Log out
+sign_out_confirm: Weet je zeker dat je uit wilt loggen?
+something_went_wrong: Iets ging mis.
+sort_direction: Sorteerrichting
+sort_asc: Sorteer Oplopend
+sort_desc: Sorteer Aflopend
+template: Sjabloon
+translation: Vertaling
+value: Waarde
+view_project: Bekijk project
+report_error: Rapporteer fout
+interfaces:
+  checkboxes:
+    checkboxes: Vinkjes
+    description: Kies tussen meerdere opties via selectievakjes
+    allow_other: Andere toestaan
+    show_more: 'Toon {count} meer'
+    items_shown: Items weergegeven
+  code:
+    code: Code
+    description: Schrijf of deel code snippets
+    line_number: Regelnummer
+    placeholder: Voer code in...
+  collection:
+    collection: Collectie
+    description: Selecteer tussen bestaande collecties
+    include_system_collections: Toon systeem collecties
+  collections:
+    collections: Collecties
+    description: Selecteer tussen bestaande collecties
+    include_system_collections: Toon systeem collecties
+  color:
+    color: Kleur
+    description: Voer in of selecteer een kleurwaarde
+    placeholder: Kies een kleur...
+    preset_colors: Voorafbepaalde kleuren
+    preset_colors_add_label: Nieuwe kleur toevoegen...
+    name_placeholder: Voer kleurnaam in...
+  datetime:
+    datetime: Datum/tijd
+    description: Voer datums en tijden in
+    include_seconds: Seconden opnemen
+    set_to_now: Op Nu instellen
+    use_24: 24-uurs formaat gebruiken
+  display-template:
+    display-template: Weergavesjabloon
+    description: Mix statische tekst en dynamische veld waarden
+    collection_field: Collectie veld
+    collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
+    select_a_collection: Selecteer een collectie
+  divider:
+    divider: Scheidingslijn
+    description: Label en verdeel velden in secties
+    title_placeholder: Voer een titel in...
+    inline_title: Inline titel
+    inline_title_label: Toon titel binnen regel
+  dropdown:
+    description: Selecteer een waarde uit een dropdown
+    choices_placeholder: Voeg een nieuwe keuze toe
+    allow_other: Andere toestaan
+    allow_other_label: Andere waarden toestaan
+    allow_none: Niets toestaan
+    allow_none_label: Geen selectie toestaan
+    choices_name_placeholder: Naam invoeren...
+    choices_value_placeholder: Voer een waarde in...
+  dropdown-multiselect:
+    dropdown-multiselect: Dropdown (meerdere)
+    description: Selecteer meerdere waarden uit een dropdown
+  file:
+    file: Bestand
+    description: Selecteer of upload een bestand
+  files:
+    files: Bestanden
+    description: Selecteer of upload meerdere bestanden
+  hash:
+    hash: Hash
+    description: Voer een waarde in om te hashen
+    masked: Gemaskeerd
+    masked_label: Verberg de waarde
+  icon:
+    icon: Icoon
+    description: Selecteer een icoon uit een dropdown
+    search_for_icon: Zoek naar een icoon...
+  image:
+    image: Afbeelding
+    description: Selecteer of upload een afbeelding
+  interface:
+    interface: Interface
+    description: Selecteer een bestaande interface
+    placeholder: Selecteer een interface...
+  interface-options:
+    interface-options: Interface opties
+    description: Een modal voor het selecteren van opties van een interface
+  many-to-many:
+    many-to-many: Veel op Veel
+    description: Selecteer meerdere gerelateerde items
+  many-to-one:
+    many-to-one: Veel op één
+    description: Selecteer één gerelateerd item
+    display_template: Weergavesjabloon
+  markdown:
+    markdown: Markdown
+    description: Markdown invoeren en bekijken
+  notice:
+    notice: Melding
+    description: Een korte melding weergeven
+    text: Voer melding bericht hier in...
+  numeric:
+    numeric: Nummer
+    description: Voer een nummer in
+    minimum_value: Minimale Waarde
+    maximum_value: Maximale waarde
+    step_interval: Stap Interval
+  one-to-many:
+    one-to-many: Één op veel
+    description: Selecteer meerdere gerelateerde items
+    no_collection: De collectie kon niet worden gevonden
+  radio-buttons:
+    radio-buttons: Keuzerondjes
+    description: Selecteer een van de meerdere keuzes
+  repeater:
+    repeater: Herhaler
+    description: Meerdere invoergegevens van dezelfde structuur aanmaken
+    edit_fields: Velden bewerken
+    add_label: '"Nieuwe regel toevoegen" label'
+    field_name_placeholder: Voer een veldnaam in...
+    field_note_placeholder: Veldnotitie invoeren...
+  slider:
+    slider: Schuifregelaar
+    description: Selecteer een nummer met een slider
+    always_show_value: Waarde altijd weergeven
+  slug:
+    slug: Url
+    description: Voer een woord in dat is verbonden met streepjes
+  tags:
+    tags: Tags
+    description: Selecteer of voeg tags toe
+    whitespace: Witruimte
+    hyphen: Vervang met -
+    underscore: Vervang met _
+    remove: Verwijder witruimte
+    capitalization: Kapitalisatie
+    uppercase: Converteer hoofdletters
+    lowercase: Forceer kleine letters
+    auto_formatter: Automatische titel formatter gebruiken
+    alphabetize: Alfabetische volgorde
+    alphabetize_label: Alfabetische volgorde forceren
+    add_tags: Tags toevoegen...
+  text-input:
+    text-input: Tekstinvoer
+    description: Voer een tekst van een enkele regel in
+    trim: Bijsnijden
+    trim_label: Begin en einde bijsnijden
+    mask: Gemaskeerd
+    mask_label: De echte waarde verbergen
+  textarea:
+    textarea: Tekstvlak
+    description: Voer multiline tekst in
+  toggle:
+    toggle: Schakel
+    description: Schakel tussen aan en uit
+    label_placeholder: Voer een label in...
+    label_default: Ingeschakeld
+  translations:
+    display_template: Weergavesjabloon
+    no_collection: Geen collectie
+  user:
+    user: Gebruiker
+    description: Selecteer een bestaande Directus gebruiker
+    select_mode: Selecteer modus
+    modes:
+      auto: Automatisch
+      dropdown: Keuzemenu
+      modal: Modal
+  wysiwyg:
+    wysiwyg: WYSIWYG
+    description: Een tekstverwerker die HTML-inhoud schrijft
+    toolbar: Werkbalk
+    custom_formats: Aangepaste formaten
+    options_override: Opties overschrijven
+displays:
+  boolean:
+    boolean: Boolean
+    description: Toon aan/uit status
+    label_on: Label aan
+    label_on_placeholder: Voer een "aan" label in...
+    label_off: Label uit
+    label_off_placeholder: Voer een uit-label in...
+    icon_on: Icoon aan
+    icon_off: Icoon Uit
+    color_on: Kleur Aan
+    color_off: Kleur uit
+  collection:
+    collection: Collectie
+    description: Een collectie weergeven
+    icon_label: Toon de icoon van de collectie
+  color:
+    color: Kleur
+    description: Een gekleurde stip weergeven
+    default_color: Standaard Kleur
+  datetime:
+    datetime: Datum/tijd
+    description: Toon waarden gerelateerd aan tijd
+    format: Format
+    long: Lang
+    short: Kort
+    relative: Relatief
+    relative_label: 'Relatieve tijd tonen, bijvoorbeeld 5 minuten geleden'
+  file:
+    file: Bestand
+    description: Bestanden weergeven
+  filesize:
+    filesize: Bestandsgrootte
+    description: De grootte van een bestand weergeven
+  formatted-value:
+    formatted-value: Opgemaakte waarde
+    description: Een geformatteerde versie van de tekst weergeven
+    format_title: Formatteer titel
+    format_title_label: Fix hoofdletters automatisch
+    bold_label: Gebruik bold
+  formatted-json-value:
+    formatted-json-value: Geformatteerde JSON waarde
+    description: Een geformatteerde versie van het object weergeven
+  icon:
+    icon: Icoon
+    description: Toon een icoon
+    filled: Gevuld
+    filled_label: De gevulde variant gebruiken
+  image:
+    image: Afbeelding
+    description: Een kleine voorvertoning weergeven
+    circle: Cirkel
+    circle_label: Weergeven als cirkel
+  labels:
+    labels: Labels
+    description: Een enkele of een lijst van labels weergeven
+    default_foreground: Standaard voorgrond
+    default_background: Standaard achtergrond
+    format_label: Formatteer elk label
+    show_as_dot: Toon als stip
+    choices_value_placeholder: Voer een waarde in...
+    choices_text_placeholder: Voer tekst in...
+  mime-type:
+    mime-type: MIME-type
+    description: Toon MIME-type van een bestand
+    extension_only: Alleen extensie
+    extension_only_label: Toon alleen de bestandsextensie
+  rating:
+    rating: Beoordeling
+    description: Geef een getal weer als sterren ten opzichte van de max-waarde
+    simple: Eenvoudig
+    simple_label: Toon sterren in een eenvoudige indeling
+  raw:
+    raw: Ruwe waarde
+  related-values:
+    related-values: Gerelateerde waarden
+    description: Relatieve waarden weergeven
+  user:
+    user: Gebruiker
+    description: Toon een directus gebruiker
+    avatar: Profielafbeelding
+    name: Naam
+    both: Beiden
+    circle_label: Gebruiker in een cirkel weergeven
+layouts:
+  cards:
+    cards: Kaarten
+    image_source: Afbeeldingsbron
+    image_fit: Afbeelding passend maken
+    crop: Bijsnijden
+    contain: Bevat
+    title: Titel
+    subtitle: Ondertitel
+  tabular:
+    tabular: Tabel
+    fields: Velden
+    spacing: Ruimte
+    comfortable: Comfortabel
+    compact: Compact
+    cozy: Knus

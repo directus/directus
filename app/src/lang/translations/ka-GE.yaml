@@ -1,0 +1,78 @@
+---
+create_role: შექმენით როლი
+create_field: შექმენით ველი
+auto_generate: ავტო-გენერირება
+clear_value: მნიშვნელობის გასუფთავება
+title: სათაური
+owner: მფლობელი
+comments: კომენტარები
+create_collection: შექმენით კოლექცია
+users: მომხმარებლები
+duration: ხანგრძლივობა
+status: სტატუსი
+back: უკან დაბრუნება
+role: როლი
+create: შექმნა
+all: ყველა
+cancel: გაუქმება
+collection: კოლექცია
+fields:
+  directus_activity:
+    action: მოქმედება
+    collection: კოლექცია
+    comment: კომენტარი
+    user_agent: მომხმარებლის აგენტი
+    ip: IP მისამართი
+  directus_collections:
+    collection: კოლექცია
+  directus_files:
+    title: სათაური
+    description: აღწერა
+    tags: იარლიყები
+    location: მდებარეობა
+    metadata: მეტა ინფორმაცია
+    filesize: ფაილის ზომა
+    width: სიგანე
+    uploaded_on: ატვირთვის თარიღი
+    height: სიმაღლე
+    duration: ხანგრძლივობა
+  directus_users:
+    first_name: სახელი
+    last_name: გვარი
+    email: ელ-ფოსტა
+    password: პაროლი
+    avatar: პროფილის ფოტო
+    location: მდებარეობა
+    title: სათაური
+    description: აღწერა
+    tags: იარლიყები
+    theme: ვიზუალური თემა
+    tfa_secret: ორფაქტორიანი იდენტიფიკაცია
+    status: სტატუსი
+    role: როლი
+  directus_roles:
+    description: აღწერა
+comment: კომენტარი
+continue: გაგრძელება
+description: აღწერა
+email: ელ-ფოსტა
+password: პაროლი
+interfaces:
+  collection:
+    collection: კოლექცია
+  files:
+    files: ფაილები
+  tags:
+    tags: იარლიყები
+displays:
+  collection:
+    collection: კოლექცია
+  user:
+    avatar: პროფილის ფოტო
+    both: ორივე
+layouts:
+  cards:
+    title: სათაური
+  tabular:
+    comfortable: კომფორტული
+    compact: კომპაქტური

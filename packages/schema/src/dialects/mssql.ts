@@ -51,11 +51,11 @@ export default class MSSQL implements Schema {
 			c.DATA_TYPE as data_type,
 			pk.PK_SET as column_key
 		FROM
-			${this.knex.client.database()}.INFORMATION_SCHEMA.COLUMNS as c
+			[${this.knex.client.database()}].INFORMATION_SCHEMA.COLUMNS as c
 		LEFT JOIN (
 			SELECT
 				PK_SET = CASE WHEN CONSTRAINT_NAME LIKE '%pk%' THEN 'PRIMARY' ELSE NULL END
-			FROM ${this.knex.client.database()}.INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+			FROM [${this.knex.client.database()}].INFORMATION_SCHEMA.KEY_COLUMN_USAGE
 		) as pk
 		ON [c].[TABLE_NAME] = [pk].[CONSTRAINT_TABLE_NAME]
 		AND [c].[TABLE_CATALOG] = [pk].[CONSTRAINT_CATALOG]
@@ -68,14 +68,9 @@ export default class MSSQL implements Schema {
 		for (const column of columns[0]) {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = {
-					primary: columns[0].find(
-						(nested: { column_key: string; table_name: string }) => {
-							return (
-								nested.table_name === column.table_name &&
-								nested.column_key === 'PRIMARY'
-							);
-						}
-					)?.column_name,
+					primary: columns[0].find((nested: { column_key: string; table_name: string }) => {
+						return nested.table_name === column.table_name && nested.column_key === 'PRIMARY';
+					})?.column_name,
 					columns: {},
 				};
 			}
@@ -213,7 +208,7 @@ export default class MSSQL implements Schema {
           select CONSTRAINT_NAME AS CONSTRAINT_NAME, TABLE_NAME as CONSTRAINT_TABLE_NAME, COLUMN_NAME AS CONSTRAINT_COLUMN_NAME, CONSTRAINT_CATALOG, CONSTRAINT_SCHEMA, PK_SET =   CASE
           WHEN CONSTRAINT_NAME  like '%pk%' THEN 'PRIMARY'
         ELSE NULL
-       END  from ${dbName}.INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+       END  from [${dbName}].INFORMATION_SCHEMA.KEY_COLUMN_USAGE
           ) as pk
           ON [c].[TABLE_NAME] = [pk].[CONSTRAINT_TABLE_NAME]
                           AND [c].[TABLE_CATALOG] = [pk].[CONSTRAINT_CATALOG]
@@ -222,7 +217,7 @@ export default class MSSQL implements Schema {
 			)
 			.joinRaw(
 				`left join (
-      select CONSTRAINT_NAME,CONSTRAINT_CATALOG, CONSTRAINT_SCHEMA, MATCH_OPTION, DELETE_RULE, UPDATE_RULE from ${dbName}.INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS
+      select CONSTRAINT_NAME,CONSTRAINT_CATALOG, CONSTRAINT_SCHEMA, MATCH_OPTION, DELETE_RULE, UPDATE_RULE from [${dbName}].INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS
 
       ) as rc
       ON [pk].[CONSTRAINT_NAME] = [rc].[CONSTRAINT_NAME]

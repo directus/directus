@@ -1,0 +1,997 @@
+---
+edit_field: Editar campo
+item_revision: Revisão do item
+duplicate_field: Campo duplicado
+half_width: Meia largura
+full_width: Largura total
+fill_width: Preencher
+enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
+add_field: Adicionar Campo
+role_name: Nome do cargo
+db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar'
+show_archived_items: Mostrar itens arquivados
+required: Obrigatório
+requires_value: Requer valor
+create_preset: Criar predefinição
+create_role: Criar Função
+create_user: Criar usuário
+create_webhook: Criar Webhook
+invite_users: Convidar Usuários
+email_examples: 'admin@example.com, usuário@example.com...'
+invite: Convidar
+emails: Emails
+connection_excellent: Conexão excelente
+connection_good: Conexão boa
+connection_fair: Conexão razoável
+connection_poor: Conexão ruim
+rename_folder: Renomear Pasta
+delete_folder: Excluir Pasta
+prefix: Prefixo
+suffix: Sufixo
+reset_bookmark: Redefinir marcadores
+rename_bookmark: Renomear marcador
+update_bookmark: Atualizar Marcador
+delete_bookmark: Deletar Marcador
+delete_bookmark_copy: >-
+  Tem certeza que deseja deletar o marcador "{bookmark}"? Esta ação não pode ser desfeita.
+logoutReason:
+  SIGN_OUT: Deslogado
+  SESSION_EXPIRED: Sessão expirada
+public: Público
+public_description: Controla quais dados da API estão disponíveis sem autenticação.
+not_allowed: Não permitido
+directus_version: Versão do Directus
+node_version: Versão Node
+node_uptime: Node Uptime
+os_type: Tipo de SO
+os_version: Versão do SO
+os_uptime: Uptime do SO
+os_totalmem: Memória do SO
+archive: Arquivar
+archive_confirm: Tem certeza de que deseja arquivar este item?
+archive_confirm_count: >-
+  Nenhum Item Selecionado | Tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
+reset_system_permissions: Redefinir permissões do sistema
+reset_system_permissions_copy: Redefinir todas as permissões do sistema para os padrões
+unarchive: Desarquivar
+unarchive_confirm: Tem certeza de que deseja desarquivar este item?
+nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos a um nível acima.
+unknown_validation_errors: 'Houve erros de validação para os seguintes campos ocultos:'
+validationError:
+  eq: O valor tem de ser {valid}
+  neq: O valor não pode ser {invalid}
+  in: O valor tem de ser um de {valid}
+  nin: O valor não pode ser um de {invalid}
+  contains: O valor tem de conter {substring}
+  ncontains: O valor não pode conter {substring}
+  gt: O valor tem de ser maior que {valid}
+  gte: O valor tem de ser maior ou igual a {valid}
+  lt: O valor tem de ser menor que {valid}
+  lte: O valor tem de ser menor ou igual a {valid}
+  empty: O valor tem de ser vazio
+  nempty: Valor não pode estar vazio
+  null: Valor precisa ser nulo
+  nnull: Valor não pode ser nulo
+  required: Valor obrigatório
+all_access: Acesso Total
+no_access: Sem acesso
+use_custom: Usar Personalizado
+field_standard: Padrão
+field_presentation: Apresentação e pseudônimos
+field_file: Arquivo único
+field_files: Múltiplos arquivos
+field_m2o: Relacionamento M2O
+field_o2m: Relacionamento O2M
+field_m2m: Relacionamento M2M
+field_translations: Traduções
+item_permissions: Permissões do Item
+field_permissions: Permissões dos campos
+field_validation: Validação dos campos
+field_presets: Predefinições de campo
+permissions_for_role: 'Itens que o cargo {role} pode {action}.'
+fields_for_role: 'Campos que o cargo {role} pode {action}.'
+validation_for_role: 'As regras {action} do campo que o papel {role} deve obedecer.'
+presentation_and_aliases: Apresentação e pseudônimos
+revision_post_update: Aqui está como este item ficou após a atualização...
+changes_made: Estas são as mudanças específicas que foram feitas...
+no_relational_data: Tenha em mente que isso não inclui dados relacionais.
+hide_field_on_detail: Ocultar Campo em Detalhes
+show_field_on_detail: Exibir Campo em Detalhes
+delete_field: Excluir campo
+fields_and_layout: Campos e Layout
+field_create_success: 'Campo criado: "{field}"'
+field_update_success: 'Campo atualizado: "{field}"'
+duplicate_where_to: Para onde você gostaria de duplicar este campo?
+language: Idioma
+global: Global
+admins_have_all_permissions: Administradores têm todas as permissões
+camera: Câmera
+exposure: Exposição
+shutter: Obturador
+iso: ISO
+focal_length: Distância focal
+schema_setup_title: Como este campo deve ser salvo no banco de dados?
+schema_field_title: Como este campo deve se comportar no aplicativo?
+create_field: Criar Campo
+creating_new_field: 'Novo campo ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Redefinir preferências da página
+hidden_field: Campo oculto
+hidden_on_detail: Oculto em Detalhe
+disabled_editing_value: Desativar edição do valor
+key: Chave
+alias: Alias
+bigInteger: Big Integer
+boolean: Boolean
+date: Data
+datetime: DateTime
+decimal: Decimal
+float: Float
+integer: Integer
+json: JSON
+string: String
+text: Texto
+time: Hora
+timestamp: Timestamp
+uuid: UUID
+hash: Hash
+not_available_for_type: Não disponível para este tipo
+create_translations: Criar Traduções
+auto_generate: Gerar automaticamente
+this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
+click_here: Clique aqui
+click_to_manage_translated_fields: >-
+  Ainda não há campos traduzidos. Clique aqui para criá-los. | Há um campo traduzido. Clique aqui para gerenciá-lo. | Há {count} campos traduzidos. Clique aqui para gerenciá-los.
+fields_group: Grupo de Campos
+configure_m2o: Configure seu relacionamento Muitos-para-Um...
+configure_o2m: Configure seu relacionamento Um-para-Muitos...
+configure_m2m: Configure seu relacionamento Muitos-para-Muitos...
+configure_m2a: Configure seu relacionamento Muitos-para-Qualquer...
+add_m2o_to_collection: 'Adicionar Muitos-para-Um a "{collection}"'
+add_o2m_to_collection: 'Adicionar Um-para-Muitos a "{collection}"'
+add_m2m_to_collection: 'Adicionar Muitos-para-Muitos a "{collection}"'
+choose_a_type: Escolha um tipo...
+determined_by_relationship: Determinado por Relacionamento
+add_note: Crie uma nota de ajuda para os usuários...
+default_value: Valor padrão
+add_a_default_value: Adicionar um valor padrão...
+interface_setup_title: Como os usuários interagirão com este campo?
+display_setup_title: Como o valor deste campo deve ser exibido?
+standard_field: Campo Padrão
+single_file: Arquivo único
+multiple_files: Múltiplos arquivos
+m2o_relationship: Relacionamento Muitos-pra-Um
+o2m_relationship: Relacionamento Um-pra-Muitos
+m2m_relationship: Relacionamento Muitos-pra-Muitos
+m2a_relationship: Relacionamento Muitos-pra-Qualquer
+next: Próximo
+field_name: Nome do campo
+translations: Traduções
+note: Nota
+enter_a_value: Insira um valor...
+enter_a_placeholder: Adicionar um placeholder...
+length: Comprimento
+precision_scale: Precisão e Escala
+readonly: Leitura apenas
+unique: Único
+primary_key: Chave primária
+finish_setup: Concluir a instalação
+dismiss: Dispensar
+raw_value: Valor bruto
+edit_raw_value: Editar valor bruto
+enter_raw_value: Insira valor bruto...
+clear_value: Limpar valor
+reset_to_default: Redefinir para o padrão
+undo_changes: Desfazer alterações
+notifications: Notificações
+show_all_activity: Mostrar todas as atividades
+page_not_found: Página não encontrada
+page_not_found_body: A página que você está procurando não existe.
+confirm_revert: Confirmar Reverter
+confirm_revert_body: Isto irá reverter o item para o estado selecionado.
+display: Exibir
+settings_update_success: Configurações atualizadas
+title: Título
+revision_delta_created: Criado
+revision_delta_created_externally: Criado externamente
+revision_delta_updated: '1 campo atualizado | {count} campos atualizados'
+revision_delta_deleted: Excluído
+revision_delta_reverted: Revertido
+revision_delta_other: Revisão
+revision_delta_by: '{date} por {user}'
+private_user: Usuário privado
+revision_preview: Pré-visualização de revisão
+updates_made: Atualizações feitas
+leave_comment: Deixe um comentário...
+post_comment_success: Comentário postado
+item_create_success: Item criado | Itens criados
+item_update_success: Item atualizado | Itens atualizados
+item_delete_success: Item deletado | Itens deletados
+this_collection: Esta coleção
+related_collection: Coleções relacionadas
+related_collections: Coleções relacionadas
+translations_collection: Coleção de traduções
+languages_collection: Coleção de idiomas
+export_data: Exportar dados
+format: Formato
+use_current_filters_settings: Usar filtros e configurações atuais
+export_collection: 'Exportar {collection}'
+last_page: Última página
+last_access: Último acesso
+fill_template: Preencher com valor de template
+a_unique_table_name: Um nome de tabela único...
+a_unique_column_name: Um nome de coluna único...
+enable_custom_values: Habilitar valores customizados
+submit: Enviar
+move_to_folder: Mover para pasta
+move: Mover
+system: Sistema
+add_field_related: Adicionar Campo à Coleção Relacionada
+interface: Interface
+today: Hoje
+yesterday: Ontem
+delete_comment: Excluir comentário
+date-fns_date: PPP
+month: Mês
+year: Ano
+select_all: Selecionar todos
+months:
+  january: Janeiro
+  february: Fevereiro
+  march: Março
+  april: Abril
+  may: Maio
+  june: Junho
+  july: Julho
+  august: Agosto
+  september: September
+  october: Outubro
+  november: Novembro
+  december: Dezembro
+drag_mode: Modo de arrastar
+cancel_crop: Cancelar Recorte
+original: Original
+url: URL
+import: Importar
+file_details: Detalhes do Arquivo
+dimensions: Dimensões
+size: Tamanho
+created: Criado
+modified: Modificado
+checksum: Checksum
+owner: Proprietário
+edited_by: Editado por
+folder: Pasta
+zoom: Zoom
+download: Download
+open: Abrir
+open_in_new_window: Abrir em nova janela
+foreground_color: Cor da fonte
+background_color: Cor de fundo
+upload_from_device: Carregar do dispositivo
+choose_from_library: Selecionar a partir da biblioteca
+import_from_url: Importar arquivo de URL
+no_file_selected: Nenhum arquivo selecionado
+download_file: Baixar arquivo
+collection_key: Chave da coleção
+name: Nome
+primary_key_field: Campo de chave primária
+type: Tipo
+creating_new_collection: Criando nova coleção
+created_by: Criado por
+created_on: Criado em
+creating_collection_info: Nomeie a coleção e configure seu campo de "chave" única...
+auto_increment_integer: Integer auto-incremental
+generated_uuid: UUID gerado
+manual_string: String inserida manualmente
+save_and_create_new: Salvar e criar novo
+save_and_stay: Salvar e manter aqui
+save_as_copy: Salvar e Copiar
+add_existing: Adicionar existente
+comments: Comentários
+no_comments: Nenhum comentário ainda
+click_to_expand: Clique para expandir
+select_item: Selecionar item
+no_items: Nenhum item
+disabled: Desabilitado
+information: Informação
+report_bug: Relatar erro
+request_feature: Pedir funcionalidade
+interface_not_found: 'Interface "{interface}" não encontrada.'
+reset_interface: Redefinir interface
+display_not_found: 'Exibição "{display}" não foi encontrada.'
+reset_display: Redefinir Exibição
+m2a_builder: Construtor (M2A)
+item_count: 'Sem Itens | Um Item | {count} Itens'
+no_items_copy: Ainda não há itens nesta coleção.
+file_count: 'Nenhum arquivo | Um arquivo | {count} arquivos'
+no_files_copy: Ainda não há arquivos aqui.
+user_count: 'Nenhum usuário | Um usuário | {count} usuários'
+no_users_copy: Não há usuários neste cargo ainda.
+webhooks_count: 'Nenhum Webhook | Um Webhook | {count} Webhooks'
+no_webhooks_copy: Ainda não possui Webhooks.
+all_items: Todos os itens
+csv: CSV
+no_collections: Sem coleções
+create_collection: Criar Coleção
+no_collections_copy_admin: Você ainda não tem nenhuma coleção. Clique no botão abaixo para começar.
+no_collections_copy: Você ainda não tem nenhuma coleção. Entre em contato com o administrador do sistema.
+relationship_not_setup: O relacionamento não foi configurado corretamente
+select_a_collection: Selecione uma coleção
+active: Ativo
+users: Usuários
+activity: Atividade
+webhooks: Webhooks
+field_width: Largura do campo
+add_a_new_item: Novo item...
+add_filter: Adicionar filtro
+upper_limit: Limite superior...
+lower_limit: Limite inferior...
+user_directory: Usuários
+documentation: Documentação
+sidebar: Barra lateral
+duration: Duração
+charset: Codificação de caracteres
+second: Segundo
+file_moved: Arquivo movido
+collection_created: Coleção criada
+modified_on: Modificado em
+card_size: Tamanho do cartão
+sort_field: Campo de ordenação
+status: Status
+toggle_manual_sorting: Alternar ordenação manual
+bookmark_doesnt_exist: Marcador não existe
+bookmark_doesnt_exist_copy: O marcador que você está tentando abrir não pôde ser encontrado.
+bookmark_doesnt_exist_cta: Voltar à coleção
+select_an_item: Selecione um item...
+edit: Editar
+enabled: Habilitado
+disable_tfa: Desativar verificação em duas etapas
+tfa_scan_code: Escaneie o código no seu aplicativo de autenticação para terminar de configurar a 2FA
+enter_otp_to_disable_tfa: Digite o OTP para desativar a 2FA
+create_account: Criar conta
+account_created_successfully: Conta criada com sucesso
+auto_fill: Preench. automático
+corresponding_field: Campo correspondente
+errors:
+  COLLECTION_NOT_FOUND: "A coleção não existe"
+  FIELD_NOT_FOUND: Campo não encontrado
+  FORBIDDEN: Não permitido
+  INVALID_CREDENTIALS: Nome de usuário ou senha incorreta
+  INVALID_OTP: Senha de uso único incorreta
+  INVALID_PAYLOAD: Payload inválido
+  INVALID_QUERY: Consulta inválida
+  ITEM_LIMIT_REACHED: Limite de elementos alcançado
+  ITEM_NOT_FOUND: Item não encontrado
+  ROUTE_NOT_FOUND: Não encontrado
+  UNKNOWN: Erro inesperado
+value_hashed: Valor secretamente salvo em hash
+bookmark_name: Nome do marcador...
+create_bookmark: Criar marcador
+edit_bookmark: Editar marcador
+bookmarks: Favoritos
+presets: Predefinições
+unexpected_error: Erro inesperado
+unexpected_error_copy: Um erro inesperado ocorreu. Tente novamente mais tarde.
+copy_details: Copiar detalhes
+no_app_access: Sem acesso ao app
+no_app_access_copy: Este usuário não tem permissão para usar o admin app.
+password_reset_sent: Enviamos um link seguro para redefinir sua senha
+password_reset_successful: Senha redefinida com sucesso
+back: Voltar
+editing_image: Editando Imagem
+square: Quadrado
+free: Livre
+flip_horizontal: Inverter horizontalmente
+flip_vertical: Inverter verticalmente
+aspect_ratio: Proporção da imagem
+rotate: Girar
+all_users: Todos os usuários
+delete_collection: Excluir coleção
+update_collection_success: Coleção atualizada
+delete_collection_success: Coleção excluída
+start_end_of_count_items: '{start}-{end} de {count} itens'
+delete_collection_are_you_sure: >-
+  Tem certeza que deseja excluir esta coleção? Isto irá apagar a coleção e todos os itens nela. Esta ação é permanente.
+collections_shown: Coleções mostradas
+visible_collections: Coleções visíveis
+hidden_collections: Coleções ocultas
+unmanaged_collections: Coleções não configuradas
+system_collections: Coleções do sistema
+placeholder: Placeholder
+icon_left: Ícone à Esquerda
+icon_right: Ícone à Direita
+font: Fonte
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monoespaçada
+divider: Divisor
+color: Cor
+circle: Círculo
+empty_item: Item vazio
+log_in_with: 'Entrar com {provider}'
+advanced_filter: Filtro avançado
+operators:
+  eq: É igual
+  neq: Não é igual
+  lt: Menor que
+  gt: Maior
+  lte: Menor ou igual à
+  gte: Maior ou igual a
+  in: É um de
+  nin: Não é um de
+  null: É nulo
+  nnull: Não é nulo
+  contains: Contém
+  ncontains: Não contém
+  between: Está entre
+  nbetween: Não está entre
+  empty: Está vazio
+  nempty: Não está vazio
+  all: Contém essas chaves
+  has: Contém algumas dessas chaves
+loading: Carregando...
+drop_to_upload: Solte para enviar
+upload_file: Enviar arquivo
+upload_file_indeterminate: Enviando arquivo...
+upload_file_success: Arquivo enviado
+upload_files_indeterminate: 'Enviando arquivos {done}/{total}'
+upload_files_success: '{count} arquivos enviados'
+upload_pending: Envio pendente
+drag_file_here: Arraste e solte arquivos aqui para enviar
+click_to_browse: Clique para pesquisar
+layout_options: Opções de Layout
+collection_setup: Configurando coleção
+optional_system_fields: Campos de sistema opcionais
+value_unique: O valor deve ser único
+all_activity: Todas as atividades
+create_item: Criar item
+display_template: Modelo de exibição
+n_items_selected: 'Não há itens selecionados | 1 item selecionado | {n} itens selecionados'
+per_page: Por página
+all_files: Todos os arquivos
+my_files: Meus arquivos
+recent_files: Arquivos recentes
+create_folder: Criar pasta
+folder_name: Nome da pasta...
+add_file: Adicionar arquivo
+replace_file: Substituir arquivo
+no_results: Sem resultados
+no_results_copy: Ajuste ou limpe os filtros de busca para ver resultados.
+clear_filters: Limpar filtros
+saves_automatically: Salva automaticamente
+role: Função
+user: Usuário
+no_presets: Sem predefinições
+no_presets_copy: Nenhuma predefinição ou marcador foi salvo ainda.
+no_presets_cta: Adicionar predefinição
+create: Criar
+on_create: Ao Criar
+on_update: Pós-alteração
+read: Leitura
+update: Alteração
+select_fields: Selecionar campos
+format_text: Formatar texto
+bold: Negrito
+toggle: Alternar
+icon_on: Ícone ligado
+icon_off: Ícone desligado
+label: Rótulo
+wysiwyg_options:
+  aligncenter: Alinhar ao centro
+  alignjustify: Justificar
+  alignleft: Alinhar à esquerda
+  alignnone: Não alinhar
+  alignright: Alinhar à direita
+  forecolor: Cor da fonte
+  backcolor: Cor de fundo
+  bold: Negrito
+  italic: Itálico
+  underline: Sublinhado
+  strikethrough: Tachado
+  codeblock: Código
+  blockquote: Bloco de citação
+  bullist: Lista de itens
+  numlist: Lista numerada
+  unlink: Excluir Link
+  media: Adicionar mídia
+  image: Adicionar Imagem
+  copy: Copiar
+  cut: Recortar
+  paste: Colar
+  h1: Cabeçalho 1
+  h2: Cabeçalho 2
+  h3: Cabeçalho 3
+  h4: Cabeçalho 4
+  h5: Cabeçalho 5
+  h6: Cabeçalho 6
+  fontselect: Selecionar fonte
+  fontsizeselect: Selecionar tamanho da fonte
+  indent: Indentar
+  outdent: Desindentar
+  undo: Desfazer
+  redo: Refazer
+  remove: Remover
+  removeformat: Remover formatação
+  selectall: Selecionar todos
+  table: Tabela
+  visualaid: Ver elementos invisíveis
+  code: Ver Fonte
+  fullscreen: Tela cheia
+  directionality: Direcionalidade
+dropdown: Seleção
+choices: Escolhas
+choices_option_configured_incorrectly: Opções configuradas incorretamente
+deselect: Desmarcar
+deselect_all: Desmarcar tudo
+other: Outros...
+adding_user: Adicionando usuário
+unknown_user: Usuário desconhecido
+creating_in: 'Criando Item em {collection}'
+editing_in: 'Editando Item em {collection}'
+editing_in_batch: 'Editando Lote {count} Itens'
+no_options_available: Nenhuma opção disponível
+settings_data_model: Modelo de dados
+settings_permissions: Funções & Permissões
+settings_project: Configurações do projeto
+settings_webhooks: Webhooks
+settings_presets: Predefinições & Marcadores
+scope: Escopo
+layout: Layout
+changes_are_permanent: As alterações são permanentes
+preset_name_placeholder: Nome do marcador...
+editing_preset: Editando predefinição
+layout_preview: Pré-visualização do Layout
+layout_setup: Configuração de Layout
+unsaved_changes: Alterações Não Salvas
+unsaved_changes_copy: Tem certeza que deseja sair desta página?
+discard_changes: Descartar Mudanças
+keep_editing: Continuar editando
+page_help_collections_overview: '**Visão geral das coleções** — Lista de todas as coleções que você tem acesso.'
+page_help_collections_collection: >-
+  **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
+page_help_collections_item: >-
+  **Detalhes do Item** — Um formulário para visualizar e gerenciar este item. Esta barra lateral também contém um histórico completo de revisões e comentários incorporados.
+page_help_activity_collection: >-
+  **Navegando em atividades** — Uma listagem abrangente do sistema de todos os seus usuários e atividade de conteúdo.
+page_help_docs_global: >-
+  **Visão geral de documentação** — Documentação feita especificamente para esta versão e esquema deste projeto.
+page_help_files_collection: >-
+  **Biblioteca de Arquivos** - Lista todos os arquivos enviados para este projeto. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
+page_help_files_item: >-
+  **Detalhe do Arquivo** — Um formulário para gerenciar os metadados do arquivo, editar o asset original e atualizar as configurações de acesso.
+page_help_settings_project: "**Configurações do projeto** — Opções de configuração globais do seu projeto."
+page_help_settings_datamodel_collections: >-
+  **Modelo de Dados: Coleções** — Lista todas as coleções disponíveis. Isso inclui coleções visíveis, escondidas e do sistema, bem como tabelas de banco de dados não gerenciadas que podem ser adicionadas.
+page_help_settings_datamodel_fields: >-
+  **Modelo de Dados: Coleção** — Um formulário para gerenciar esta coleção e seus campos.
+page_help_settings_roles_collection: '**Navegando em cargos** - Lista os cargos de administrador, público e também personalizados.'
+page_help_settings_roles_item: "**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações."
+page_help_settings_presets_collection: >-
+  **Navegando em predefinições** — Lista todas as predefinições no projeto, incluindo: usuário, cargo e marcadores globais, bem como visualizações padrão.
+page_help_settings_presets_item: >-
+  **Detalhe da predefinição** — Um formulário para gerenciar marcadores e predefinições de coleção padrão.
+page_help_settings_webhooks_collection: '**Navegando em Webhooks** — Lista todos os webhooks dentro do projeto.'
+page_help_settings_webhooks_item: '**Detalhe de Webhook** — Um formulário para criar e gerenciar os webhooks do projeto.'
+page_help_users_collection: '**Diretório do Usuário** — Lista todos os usuários do sistema neste projeto.'
+page_help_users_item: >-
+  **Detalhe do Usuário** — Gerencie as informações da sua conta, ou veja os detalhes de outros usuários.
+activity_feed: Feed de atividade
+add_new: Adicionar Novo
+create_new: Criar novo
+all: Tudo
+batch_delete_confirm: >-
+  Nenhum item foi selecionado | Você tem certeza que deseja deletar esse item? Essa ação não pode ser desfeita. | Você tem certeza que deseja deletar esses {count} itens? Essa ação não pode ser desfeita.
+cancel: Cancelar
+collection: Coleção
+collections: Coleções
+singleton: Singleton
+singleton_label: Tratar como objeto único
+system_fields_locked: Os campos do sistema estão bloqueados e não podem ser editados
+fields:
+  directus_activity:
+    item: Chave Primária do Item
+    action: Ação
+    collection: Coleção
+    timestamp: Ação Em
+    user: Ação Por
+    comment: Comentário
+    user_agent: Agente de Usuário
+    ip: Endereço de IP
+    revisions: Revisões
+  directus_collections:
+    collection: Coleção
+    icon: Ícone
+    note: Nota
+    display_template: Modelo de exibição
+    hidden: Oculto
+    singleton: Singleton
+    sort_field: Campo de ordenação
+  directus_files:
+    title: Título
+    description: Descrição
+    tags: Tags
+    location: Local
+    metadata: Metadados
+    filesize: Tamanho do Arquivo
+    modified_on: Modificado em
+    created_on: Criado em
+    created_by: Criado por
+    embed: Incorporar
+    uploaded_by: Enviado Por
+    folder: Pasta
+    width: Largura
+    uploaded_on: Enviado Em
+    height: Altura
+    charset: Codificação de caracteres
+    duration: Duração
+  directus_users:
+    first_name: Primeiro Nome
+    last_name: Sobrenome
+    email: E-mail
+    password: Senha
+    avatar: Imagem de Perfil
+    location: Local
+    title: Título
+    description: Descrição
+    tags: Tags
+    language: Idioma
+    theme: Tema
+    tfa_secret: Autenticação em Duas Etapas
+    status: Status
+    role: Função
+    last_page: Última página
+    last_access: Último acesso
+  directus_settings:
+    project_name: Nome do projeto
+    project_url: URL do projeto
+    project_color: Cor do projeto
+    project_logo: Logotipo do projeto
+    public_foreground: Primeiro plano público
+    public_background: Fundo público
+    public_note: Nota pública
+    auth_password_policy: Política de senha para autenticação
+    auth_login_attempts: Tentativas de autenticação
+  directus_fields:
+    collection: Nome da coleção
+    icon: Ícone da coleção
+    note: Nota
+    hidden: Oculto
+    singleton: Singleton
+    display_template: Template
+  directus_roles:
+    name: Nome do cargo
+    icon: Ícone do cargo
+    description: Descrição
+    app_access: Acesso ao app
+    admin_access: Acesso de administrador
+    ip_access: Acesso IP
+    enforce_tfa: Exigir 2FA
+    users: Usuários no cargo
+no_fields_in_collection: 'Ainda não há campos em "{collection}"'
+do_nothing: Não fazer nada
+generate_and_save_uuid: Gerar e salvar UUID
+save_current_user_id: Salvar ID de usuário atual
+save_current_datetime: Salvar data/hora atual
+comment: Comentário
+continue: Continuar
+continue_as: >-
+  <b>{name}</b> está atualmente autenticado. Se você reconhecer esta conta, clique em continuar.
+editing_role: 'Cargo {role}'
+creating_webhook: Criando Webhook
+default: Padrão
+delete: Deletar
+delete_are_you_sure: >-
+  Esta ação é permanente e não pode ser desfeita. Tem certeza de que deseja prosseguir?
+delete_field_are_you_sure: >-
+  Tem certeza que deseja deletar o campo "{field}"? Esta ação não pode ser desfeita.
+description: Descrição
+done: Finalizar
+duplicate: Duplicado
+email: E-mail
+embed: Incorporar
+fallback_icon: Ícone de reserva
+field: Campo | Campos
+file: Arquivo
+file_library: Galeria de Arquivos
+forgot_password: Esqueci minha Senha
+hidden: Oculto
+icon: Ícone
+info: Informação
+normal: Normal
+success: Sucesso
+warning: Atenção
+danger: Perigo
+junction_collection: Jução da coleção
+latency: Latência
+login: Entrar
+my_activity: Minha Atividade
+not_authenticated: Não autenticado
+authenticated: Autenticado
+options: Opções
+otp: Senha de uso único
+password: Senha
+permissions: Permissões
+relationship: Relacionamento
+reset: Redefinir
+reset_password: Recuperar senha
+revisions: Revisões
+revert: Reverter
+save: Salvar
+schema: Esquema
+search: Buscar
+select_existing: Selecionar existente
+select_field_type: Selecionar tipo de campo
+select_interface: Selecione uma interface
+settings: Configurações
+sign_in: Entrar
+sign_out: Sair
+sign_out_confirm: Tem certeza que deseja sair?
+something_went_wrong: Algo está errado.
+sort_direction: Direção da ordenação
+template: Template
+translation: Tradução
+value: Valor
+view_project: Visualizar projeto
+report_error: Relatar erro
+interfaces:
+  checkboxes:
+    checkboxes: Caixas de Seleção
+    description: Escolha entre várias opções através de caixas de seleção
+    allow_other: Permitir Outros
+    show_more: 'Exibir mais {count}'
+    items_shown: Itens mostrados
+  code:
+    code: Código
+    description: Escreva ou compartilhe trechos de código
+    line_number: Número da Linha
+    placeholder: Inserir código aqui...
+  collection:
+    collection: Coleção
+    description: Selecione entre coleções existentes
+    include_system_collections: Incluir coleções do sistema
+  collections:
+    collections: Coleções
+    description: Selecione entre coleções existentes
+    include_system_collections: Incluir coleções do sistema
+  color:
+    color: Cor
+    description: Digite ou selecione um valor de cor
+    placeholder: Escolha uma cor...
+    preset_colors: Cores predefinidas
+    preset_colors_add_label: Adicionar nova cor...
+    name_placeholder: Inserir nome da cor...
+  datetime:
+    datetime: Data e Hora
+    description: Insira datas e horas
+    include_seconds: Incluir segundos
+    set_to_now: Definir como Agora
+    use_24: Usar formato de 24 horas
+  display-template:
+    display-template: Modelo de exibição
+    select_a_collection: Selecione uma coleção
+  divider:
+    divider: Divisor
+    title_placeholder: Insira um título...
+    inline_title_label: Mostrar título dentro da linha
+  dropdown:
+    description: Selecione um valor a partir de uma seleção
+    choices_placeholder: Adicionar uma nova escolha
+    allow_other: Permitir Outros
+    allow_other_label: Permitir outros valores
+    allow_none: Permitir nenhum
+    allow_none_label: Permitir nenhuma seleção
+    choices_name_placeholder: Insira um nome...
+    choices_value_placeholder: Insira um valor...
+  dropdown-multiselect:
+    dropdown-multiselect: Seleção (Múltipla)
+    description: Selecione vários valores a partir de uma seleção
+  file:
+    file: Arquivo
+    description: Selecione ou envie um arquivo
+  files:
+    files: Arquivos
+    description: Selecione ou envie vários arquivos
+  hash:
+    hash: Hash
+    description: Insira um valor para ser hasheado
+    masked: Mascarado
+    masked_label: Ocultar os valores verdadeiros
+  icon:
+    icon: Ícone
+    description: Selecione um ícone a partir de uma seleção
+    search_for_icon: Procurar por um ícone...
+  image:
+    image: Imagem
+    description: Selecione ou envie uma imagem
+  interface:
+    interface: Interface
+    description: Selecione uma interface existente
+    placeholder: Selecione uma interface...
+  interface-options:
+    interface-options: Opções de Interface
+  many-to-many:
+    many-to-many: Muitos-para-muitos (N para N)
+  many-to-one:
+    many-to-one: Muitos-para-um (N para 1)
+    description: Selecione um único item relacionado
+    display_template: Modelo de exibição
+  markdown:
+    markdown: Markdown
+    description: Inserir e pré-visualizar markdown
+  notice:
+    notice: Aviso
+    description: Mostrar um breve aviso
+    text: Digite o conteúdo do aviso aqui...
+  numeric:
+    numeric: Numérico
+    description: Digite um número
+    minimum_value: Valor mínimo
+    maximum_value: Valor máximo
+    step_interval: Intervalo dos passos
+  one-to-many:
+    one-to-many: Um-para-muitos (1 para N)
+    description: Selecione vários itens relacionados
+    no_collection: A coleção não pôde ser encontrada
+  radio-buttons:
+    radio-buttons: Botões de radio
+    description: Selecione uma das múltiplas escolhas
+  repeater:
+    repeater: Repetidor
+    description: Criar múltiplas entradas da mesma estrutura
+    edit_fields: Editar campos
+    add_label: 'Rótulo "Adicionar nova linha"'
+    field_name_placeholder: Inserir nome do campo...
+    field_note_placeholder: Insira uma nota pro campo...
+  slider:
+    slider: Slider
+    description: Selecione um número usando um controle deslizante
+    always_show_value: Sempre mostrar valor
+  slug:
+    slug: Slug
+    description: Digite uma palavra conectada com hífens
+  tags:
+    tags: Tags
+    description: Selecione ou adicione tags
+    whitespace: Espaço em branco
+    hyphen: Substituir com hífen
+    underscore: Substituir com sublinhado
+    remove: Remover espaço em branco
+    capitalization: Capitalização
+    uppercase: Converter em maiúsculas
+    lowercase: Converter em minúsculas
+    alphabetize: Alfabetizar
+    alphabetize_label: Forçar ordem alfabética
+    add_tags: Adicionar tags...
+  text-input:
+    text-input: Entrada de texto
+    description: Digite um texto de linha única
+    trim: Aparar
+    trim_label: Aparar o início e fim
+    mask: Mascarado
+    mask_label: Ocultar o valor real
+  textarea:
+    textarea: Área de texto
+    description: Insira texto puro de múltiplas linhas
+  toggle:
+    toggle: Alternar
+    description: Alternar entre ligado e desligado
+    label_placeholder: Insira uma etiqueta...
+    label_default: Habilitado
+  translations:
+    display_template: Modelo de exibição
+    no_collection: Nenhuma coleção
+  user:
+    user: Usuário
+    description: Selecione um usuário Directus existente
+    select_mode: Selecionar modo
+    modes:
+      auto: Automático
+      dropdown: Seleção
+      modal: Modal
+  wysiwyg:
+    wysiwyg: WYSIWYG
+    description: Um editor de rich-text que gera HTML
+    toolbar: Barra de ferramentas
+    custom_formats: Formatos Personalizados
+    options_override: Sobrescrever opções
+displays:
+  boolean:
+    boolean: Boolean
+    description: Exibir estados ativados e desativados
+    label_on: Rótulo ligado
+    label_on_placeholder: Digite o rótulo para ligado...
+    label_off: Rótulo desligado
+    label_off_placeholder: Digite o rótulo para desligado...
+    icon_on: Ícone ligado
+    icon_off: Ícone desligado
+    color_on: Cor ligada
+    color_off: Cor desligada
+  collection:
+    collection: Coleção
+    description: Exibir uma coleção
+    icon_label: Exibir o ícone da coleção
+  color:
+    color: Cor
+    description: Exibir um ponto colorido
+    default_color: Cor padrão
+  datetime:
+    datetime: Data e Hora
+    description: Exibir valores relacionados ao tempo
+    format: Formato
+    long: Longo
+    short: Curto
+    relative: Relativo
+    relative_label: 'Mostrar tempo relativo, por exemplo: 5 minutos atrás'
+  file:
+    file: Arquivo
+    description: Exibir arquivos
+  filesize:
+    filesize: Tamanho de Arquivo
+    description: Exibe o tamanho de um arquivo
+  formatted-value:
+    formatted-value: Valor formatado
+    description: Exibe uma versão formatada do texto
+    format_title: Formatar título
+    format_title_label: Auto-formatar capitalização
+    bold_label: Usar estilo negrito
+  formatted-json-value:
+    formatted-json-value: Valor JSON formatado
+    description: Exibe uma versão formatada do objeto
+  icon:
+    icon: Ícone
+    description: Exibir um ícone
+    filled: Preenchido
+    filled_label: Usar a variante preenchida
+  image:
+    image: Imagem
+    description: Exibe uma visualização de imagem minúscula
+    circle: Círculo
+    circle_label: Exibir como um círculo
+  labels:
+    labels: Rótulos
+    description: Exibir uma única ou uma lista de rótulos
+    default_foreground: Primeiro plano padrão
+    default_background: Plano de fundo padrão
+    format_label: Formatar cada rótulo
+    show_as_dot: Mostrar como ponto
+    choices_value_placeholder: Insira um valor...
+    choices_text_placeholder: Insira um texto...
+  mime-type:
+    mime-type: Tipo MIME
+    description: Mostrar o tipo MIME de um arquivo
+    extension_only: Extensão apenas
+    extension_only_label: Exibir apenas a extensão do arquivo
+  rating:
+    rating: Avaliação
+    description: Visualizar um número como estrelas relativo ao valor máximo
+    simple: Simples
+    simple_label: Mostrar estrelas em um formato simples
+  raw:
+    raw: Valor bruto
+  related-values:
+    related-values: Valores Relacionados
+    description: Exibir valores relativos
+  user:
+    user: Usuário
+    description: Exibe um usuário do Directus
+    avatar: Imagem de Perfil
+    name: Nome
+    both: Ambos
+    circle_label: Exibir usuário em um círculo
+layouts:
+  cards:
+    cards: Cartões
+    image_source: Fonte da Imagem
+    image_fit: Ajustar Imagem
+    crop: Recortar
+    contain: Conter
+    title: Título
+    subtitle: Subtítulo
+  tabular:
+    tabular: Tabela
+    fields: Campos
+    spacing: Espaçamento
+    comfortable: Confortável
+    compact: Compacto
+    cozy: Aconchegante

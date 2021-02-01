@@ -1,0 +1,1069 @@
+---
+edit_field: Редактиране на поле
+item_revision: Ревизии на запис
+duplicate_field: Дублиране на поле
+half_width: Половин ширина
+full_width: Пълна ширина
+fill_width: Изпълване по ширина
+field_name_translations: Превод на името на полето
+enter_password_to_enable_tfa: Въвеждане на парола за активиране на двуфакторната автентикация
+add_field: Добавяне на поле
+role_name: Име на роля
+db_only_click_to_configure: 'Само в базата данни: Кликнете за конфигурация '
+show_archived_items: Включително архивираните
+required: Задължително
+requires_value: Изисква се стойност
+create_preset: Създаване на изгледи
+create_role: Създаване на роля
+create_user: Създаване на потребител
+create_webhook: Създаване на уеб-кука
+invite_users: Покана към потребители
+email_examples: 'admin@example.com, potrebitel@example.com...'
+invite: Покана
+emails: E-пощи
+connection_excellent: Отлична свързаност
+connection_good: Добра свързаност
+connection_fair: Връзката е приемлива
+connection_poor: Връзката е лоша
+rename_folder: Преименуване на папка
+delete_folder: Изтриване на папка
+prefix: Представка
+suffix: Наставка
+reset_bookmark: Нулиране на отметки
+rename_bookmark: Преименуване на отметка
+update_bookmark: Обновяване на отметка
+delete_bookmark: Изтриване на отметка
+delete_bookmark_copy: >-
+  Сигурни ли сте, че искате да изтриете "{bookmark}" отметката? Това действие не може да бъде отменено.
+logoutReason:
+  SIGN_OUT: Отписан
+  SESSION_EXPIRED: Сесията е изтекла
+public: Публичен
+public_description: Контрол върху това, каква част от данните в API-то ще бъде видима без нужда от оторизиране.
+not_allowed: Не е позволено
+directus_version: Версия на Directus
+node_version: Версия на Node
+node_uptime: Време от старт на Node
+os_type: Тип на ОС
+os_version: Версия на ОС
+os_uptime: Време от старт на ОС
+os_totalmem: Памет на ОС
+archive: Архивиране
+archive_confirm: Сигурни ли сте, че искате да изтриете този запис?
+archive_confirm_count: >-
+  Няма избрани записи | Сигурни ли сте, че искате да архивирате този запис? | Сигурни ли сте, че искате да архивирате тези {count} записа?
+reset_system_permissions: Нулиране на системните позволения
+reset_system_permissions_copy: Нулиране на всички системни позволения към техните първоначални стойности
+unarchive: Разархивиране
+unarchive_confirm: Сигурни ли сте, че искате да разархивирате този запис?
+nested_files_folders_will_be_moved: Вложените файлове и папки ще бъдат преместени една папка по-нагоре.
+unknown_validation_errors: 'Има грешки при валидацията на следните скрити полета:'
+validationError:
+  eq: Стойността трябва да е {valid}
+  neq: Стойността не трябва да е {invalid}
+  in: Стойността трябва да е някоя от {valid}
+  nin: Стойността не трябва да е някоя от {invalid}
+  contains: Стойността трябва да съдържа {substring}
+  ncontains: Стойността не може да съдържа {substring}
+  gt: Стойността трябва да е по-голяма от {valid}
+  gte: Стойността трябва да е по-голяма или равна на {valid}
+  lt: Стойността трябва да е по-малка от {valid}
+  lte: Стойността трябва да е по-малка или равна на {valid}
+  empty: Стойността трябва да е празна
+  nempty: Стойността не може да е празна
+  null: Стойността трябва да е null
+  nnull: Стойността не трябва да е null
+  required: Изисква се стойност
+all_access: Пълен достъп
+no_access: Без достъп
+use_custom: Персонализиран
+field_standard: Стандартно
+field_presentation: Презентационни и псевдоними
+field_file: Единствен файл
+field_files: Множество файлове
+field_m2o: M2O релация
+field_o2m: O2M релация
+field_m2m: M2M релация
+field_translations: Преводи
+item_permissions: Позволения по запис
+field_permissions: Позволения по поле
+field_validation: Валидация по поле
+field_presets: Стойност на полета
+permissions_for_role: 'Записи, които ролята "{role}" има позволение за {action}.'
+fields_for_role: 'Полета, които ролята "{role}" има позволение за {action}.'
+validation_for_role: 'Правила, които ролята "{role}" трябва да спазва, при {action} на полетo.'
+presets_for_role: 'Стойности за полета по подразбиране, за ролята "{role}".'
+presentation_and_aliases: Презентационни и псевдоними
+revision_post_update: Ето как ще изглежда записът след промяната...
+changes_made: Направените промени са следните...
+no_relational_data: Имайте в предвид, че това не включва данните от релационните записи.
+hide_field_on_detail: Скриване в детайлен изглед
+show_field_on_detail: Показване в детайлния изглед
+delete_field: Изтриване на поле
+fields_and_layout: Полета и оформление
+field_create_success: 'Създадено поле: "{field}"'
+field_update_success: 'Обновено поле: "{field}"'
+duplicate_where_to: Къде искате да дублирате полето?
+language: Език
+global: Глобални
+admins_have_all_permissions: Администраторите имат всички позволения
+camera: Камера
+exposure: Експозиция
+shutter: Затвор
+iso: ISO
+focal_length: Фокусно разстояние
+schema_setup_title: Как ще бъде запазено полето в базата данни?
+schema_field_title: Как това поле ще се държи в приложението?
+create_field: Създаване на поле
+creating_new_field: 'Ново поле ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Нулиране на предпочитанията за страницата
+hidden_field: Скрито поле
+hidden_on_detail: Скриване в детайлния изглед
+disabled_editing_value: Без промени по стойността
+key: Ключ
+alias: Псевдоним
+bigInteger: Голямо цяло число
+boolean: Булев
+date: Дата
+datetime: Дата и час
+decimal: Десетичен
+float: Реално число
+integer: Цяло число
+json: JSON
+string: Низ
+text: Текст
+time: Час
+timestamp: Времеви печат
+uuid: UUID
+hash: Хеш
+not_available_for_type: Не е налично за този тип
+create_translations: Създаване на преводи
+auto_generate: Автоматично генериране
+this_will_auto_setup_fields_relations: Автоматично настройване на задължителните полета и релации.
+click_here: Натиснете тук
+to_manually_setup_translations: за ръчна настройка на преводи.
+click_to_manage_translated_fields: >-
+  Все още няма преведени полета. Натиснете тук за да ги създадете. | Има едно преведено поле. Натиснете тук за да го управлявате. | Има {count} преведени полета. Натиснете тук за да ги управлявате.
+fields_group: Групи от полета
+configure_m2o: Конфигуриране на релация от тип "много към един"...
+configure_o2m: Конфигуриране на релация от тип "един към много"...
+configure_m2m: Конфигуриране на релация от тип "много към много"...
+configure_m2a: Конфигуриране на релация от тип "много към нещо"...
+add_m2o_to_collection: 'Добавяне на "много към един" в "{collection}"'
+add_o2m_to_collection: 'Добавяне на "един към много" в "{collection}"'
+add_m2m_to_collection: 'Добавяне на "много към много" в "{collection}"'
+choose_a_type: Избиране на тип...
+determined_by_relationship: Определяне по тип на релация
+add_note: Въвеждане на полезна бележка към потребителите...
+default_value: Стойност по подразбиране
+add_a_default_value: Въвеждане на стойност по подразбиране...
+interface_setup_title: Как потребителите ще взаимодействат с това поле?
+display_setup_title: Как ще бъде показвана стойността на това поле?
+standard_field: Стандартно поле
+single_file: Единствен файл
+multiple_files: Множество файлове
+m2o_relationship: Много към един
+o2m_relationship: Един към много
+m2m_relationship: Много към много
+m2a_relationship: Много към нещо
+next: Напред
+field_name: Име на поле
+translations: Преводи
+note: Бележка
+enter_a_value: Въвеждане на стойност...
+enter_a_placeholder: Въвеждане на подсказка...
+length: Дължина
+precision_scale: Прецизност и мащаб
+readonly: Само за четене
+unique: Без повторения
+updated_on: Обновен на
+updated_by: Обновен от
+primary_key: Първичен ключ
+foreign_key: Външен ключ
+finish_setup: Завършване на настройката
+dismiss: Отхвърляне
+raw_value: Стойност в суров вид
+edit_raw_value: Редактиране в суров вид
+enter_raw_value: Въвеждане на стойността в суров вид...
+clear_value: Изчистване на стойност
+reset_to_default: Възстановяване към начално състояние
+undo_changes: Отмяна на промените
+notifications: Известия
+show_all_activity: Показване на цялата активност
+page_not_found: Страницата не е намерена
+page_not_found_body: Страницата, която търсите, не съществува.
+confirm_revert: Потвърждание за възстановяване
+confirm_revert_body: Възстановяване на записа към избраното състояние.
+display: Показване
+settings_update_success: Настройките са обновени
+title: Заглавие
+revision_delta_created: Създаден
+revision_delta_created_externally: Външно създаден
+revision_delta_updated: '1 поле е обновено | {count} полета са обновени'
+revision_delta_deleted: Изтрито
+revision_delta_reverted: Възстановен
+revision_delta_other: Ревизия
+revision_delta_by: '{date} от {user}'
+private_user: Частни потребители
+revision_preview: Преглед на ревизия
+updates_made: Направени промени
+leave_comment: Коментар...
+post_comment_success: Коментарът е публикуван
+item_create_success: Създаден запис | Създадени записи
+item_update_success: Обновен запис | Обновени записи
+item_delete_success: Изтрит запис | Изтрити записи
+this_collection: Тази колекция
+related_collection: Релационна колекция
+related_collections: Релационни колекции
+translations_collection: Колекция с преводи
+languages_collection: Колекция с езици
+export_data: Експорт на данните
+format: Формат
+use_current_filters_settings: Прилагане на текущите филтри
+export_collection: 'Експорт на {collection}'
+last_page: Последна страница
+last_access: Последно посещение
+fill_template: Попълване със стойност от шаблон
+a_unique_table_name: Уникално име на таблица...
+a_unique_column_name: Уникално име на колона...
+enable_custom_values: Персонализирани стойности
+submit: Изпращане
+move_to_folder: Преместване в папка
+move: Преместване
+system: Система
+add_field_related: Добавяне на поле към релационната колекция
+interface: Интерфейс
+today: Днес
+yesterday: Вчера
+delete_comment: Изтриване на коментар
+date-fns_date: PPP
+date-fns_time: 'HH:mm:ss'
+date-fns_time_no_seconds: 'HH:mm'
+date-fns_date_short: 'd MMM, u'
+date-fns_time_short: 'HH:mm'
+date-fns_date_short_no_year: d MMM
+month: Месец
+year: Година
+select_all: Избиране на всичко
+months:
+  january: Януари
+  february: Февруари
+  march: Март
+  april: Април
+  may: Май
+  june: Юни
+  july: Юли
+  august: Август
+  september: Септември
+  october: Октомври
+  november: Ноември
+  december: Декември
+drag_mode: Режим при дърпане
+cancel_crop: Отказване на изрязването
+original: Оригинал
+url: URL
+import: Импорт
+file_details: Детайли за файл
+dimensions: Размери
+size: Големина
+created: Създаден
+modified: Променен
+checksum: Checksum
+owner: Собственик
+edited_by: Променен от
+folder: Папка
+zoom: Увеличение
+download: Изтегляне
+open: Отваряне
+open_in_new_window: Отваряне в нов прозорец
+foreground_color: Основен цвят
+background_color: Цвят на фона
+upload_from_device: Добавяне на файл от устройство
+choose_from_library: Избиране на файл от библиотеката
+import_from_url: Импортиране на файл от URL
+replace_from_device: Замяна на файл от устройство
+replace_from_library: Зямяна на файл от библиотеката
+replace_from_url: Замяна на файл от URL
+no_file_selected: Не е избран файл
+download_file: Изтегляне на файл
+collection_key: Ключ на колекция
+name: Име
+primary_key_field: Първичен ключ
+type: Тип
+creating_new_collection: Създаване на колекция
+created_by: Създадено от
+created_on: Създаден на
+creating_collection_info: Именуване на колекцията и настройка на уникално ключово поле...
+creating_collection_system: Включване и применуване на някои от следните незадължителни полета.
+auto_increment_integer: Автоматично следващо число
+generated_uuid: Генериран UUID
+manual_string: Ръчно въвеждане на стойност
+save_and_create_new: Запазване и преминаване към нов
+save_and_stay: Запазване и оставане
+save_as_copy: Запазване като копие
+add_existing: Добавяне на съществуващ
+comments: Коментари
+no_comments: Все още няма коментари
+click_to_expand: Натиснете за разширяване
+select_item: Избор на запис
+no_items: Няма записи
+search_items: Търсене в записите...
+disabled: Изключване
+information: Информация
+report_bug: Доклад за проблем
+request_feature: Заявка за функция
+interface_not_found: 'Интерфейсът "{interface}" не е намерен.'
+reset_interface: Нулиране на интерфейс
+display_not_found: 'Изгледът "{display}" не е намерен.'
+reset_display: Нулиране на изглед
+m2a_builder: Строител (M2A)
+item_count: 'Няма записи | Един запис | {count} записа'
+no_items_copy: Все още няма записи в тази колекция.
+file_count: 'Няма файлове | Един файл | {count} файла'
+no_files_copy: Тук не са открити файлове.
+user_count: 'Няма потребители | Един потребител | {count} потребителя'
+no_users_copy: Все още няма потребители в тази роля.
+webhooks_count: "Няма уеб-куки | 1 уеб-кука | {count} уеб-куки\n"
+no_webhooks_copy: Все още няма уеб-куки.
+all_items: Всички записи
+csv: CSV
+no_collections: Няма колекции
+create_collection: Създаване на колекция
+no_collections_copy_admin: Все още няма колекции. Натиснете бутона по-долу за да започнете.
+no_collections_copy: Все още нямате никакви колекции. Свържете се със системния администратор.
+relationship_not_setup: Релацията не е конфигурирана правилно
+display_template_not_setup: Опциите за показване на шаблона не са правилно конфигурирани
+collection_field_not_setup: Опциите на полето от колекцията са неправилно конфигурирани
+select_a_collection: Избор на колекция
+active: Активен
+users: Потребители
+activity: Активности
+webhooks: Уеб-куки
+field_width: Ширина на полето
+add_a_new_item: Добавяне на нов запис...
+add_filter: Добавяне на филтър
+upper_limit: Горна граница...
+lower_limit: Долна граница...
+user_directory: Потребители
+documentation: Документация
+sidebar: Страничен панел
+duration: Продължителност
+charset: Набор символи
+second: Секунди
+file_moved: Файлът е преместен
+collection_created: Колекцията е създадена
+modified_on: Променен на
+card_size: Големина на картите
+sort_field: Поле за сортиране
+sort: Сортиране
+status: Статус
+toggle_manual_sorting: Ръчна подредба
+bookmark_doesnt_exist: Отметката не съществива
+bookmark_doesnt_exist_copy: Отметката която се опитвате да отворите не може да бъде намерена.
+bookmark_doesnt_exist_cta: Връщане в колекция
+select_an_item: Избор на запис...
+edit: Редактиране
+enabled: Включване
+disable_tfa: Изключване на 2FA
+tfa_scan_code: За да завършите настройването на 2FA, сканиране на кода във вашето приложение за оторизация
+enter_otp_to_disable_tfa: Въвеждане на OTP за изключване на 2FA
+create_account: Създаване на профил
+account_created_successfully: Профилът е създаден
+auto_fill: Автоматично попълване
+corresponding_field: Кореспондиращо поле
+errors:
+  COLLECTION_NOT_FOUND: "Колекцията не съществува"
+  FIELD_NOT_FOUND: Полето не е намерено
+  FORBIDDEN: Забранен
+  INVALID_CREDENTIALS: Грешно потребителско име или парола
+  INVALID_OTP: Грешна еднократна парола
+  INVALID_PAYLOAD: Невалидни данни
+  INVALID_QUERY: Невалидна заявка
+  ITEM_LIMIT_REACHED: Достигнат лимит на записи
+  ITEM_NOT_FOUND: Записът не е намерен
+  ROUTE_NOT_FOUND: Не е намерен
+  UNKNOWN: Неочаквана грешка
+value_hashed: Хеширана стойност
+bookmark_name: Име на отметка...
+create_bookmark: Създаване на отметка
+edit_bookmark: Редактиране на отметката
+bookmarks: Отметки
+presets: Готови изгледи
+unexpected_error: Неочаквана грешка
+unexpected_error_copy: Възникна неочаквана грешка, опитайте отново по-късно.
+copy_details: Копиране на детайли
+no_app_access: Без достъп до приложението
+no_app_access_copy: Не е позволено използването на администраторското приложение от този потребител.
+password_reset_sent: Изпратена ви е сигурна връзка за възстановяване на вашата парола
+password_reset_successful: Успешно нулирана парола
+back: Назад
+editing_image: Редактиране на изображение
+square: Квадрат
+free: Свободно
+flip_horizontal: Хоризонтално обръщане
+flip_vertical: Вертикално обръщане
+aspect_ratio: Съотношение
+rotate: Завъртане
+all_users: Всички потребители
+delete_collection: Изтриване на колекция
+update_collection_success: Обновена колекция
+delete_collection_success: Изтрита колекция
+start_end_of_count_items: '{start}-{end} от {count} записа'
+delete_collection_are_you_sure: >-
+  Сигурни ли сте, че искате да изтриете тази колекция? Това действие ще изтрие колекцията и всички нейни записи. Действието е постоянно.
+collections_shown: Показани колекции
+visible_collections: Видими колекции
+hidden_collections: Скрити колекции
+unmanaged_collections: Неконфигурирани колекции
+system_collections: Системни колекции
+placeholder: Заместител (placeholder)
+icon_left: Икона вляво
+icon_right: Икона вдясно
+font: Шрифт
+sans_serif: Несерифен
+serif: Серифен
+monospace: Monospace
+divider: Разделител
+color: Цвят
+circle: Кръг
+empty_item: Празен запис
+log_in_with: 'Вход чрез {provider}'
+advanced_filter: Разширен филтър
+delete_advanced_filter: Изтриване на филтър
+change_advanced_filter_operator: Промяна на оператор
+operators:
+  eq: Равно
+  neq: Различно
+  lt: По-малко
+  gt: По-голямо от
+  lte: По-малко или равно
+  gte: По-голямо или равно на
+  in: Е сред
+  nin: Не е сред
+  null: Е null
+  nnull: Не е null
+  contains: Съдържа
+  ncontains: Не съдържа
+  between: Е между
+  nbetween: Не е между
+  empty: Е празно
+  nempty: Не е празно
+  all: Съдържа следните ключове
+  has: Съдържа някои от
+loading: Зареждане...
+drop_to_upload: Пускане за качване
+upload_file: Качване на файл
+upload_file_indeterminate: Качване на файл...
+upload_file_success: Файлът е качен
+upload_files_indeterminate: 'Качване на файлове {done}/{total}'
+upload_files_success: '{count} файла са качени'
+upload_pending: Качване в изчакване
+drag_file_here: За да качите файловете, пуснете ги тук
+click_to_browse: Натиснете за избор
+layout_options: Опции за оформление
+rows: Редове
+columns: Колони
+collection_setup: Настройки на колекция
+optional_system_fields: Незадължителни системни полета
+value_unique: Стойността трябва да е уникална
+all_activity: Цялата активност
+create_item: Създаване на запис
+display_template: Шаблон при показване
+n_items_selected: 'Не са избрани записи | 1 избран запис | {n} избрани записа'
+per_page: На страница
+all_files: Всички файлове
+my_files: Мои файлове
+recent_files: Последни файлове
+create_folder: Създаване на папка
+folder_name: Име на папка...
+add_file: Добавяне на файл
+replace_file: Заместване на файл
+no_results: Няма резултати
+no_results_copy: Променете или изчистете филтрите за да видите резултат.
+clear_filters: Изчистване на филтрите
+saves_automatically: Автоматично запазване
+role: Роля
+user: Потребител
+no_presets: Няма подготвени изгледи
+no_presets_copy: Все още няма запазени подготвени изгледи или отметки.
+no_presets_cta: Добавяне на подготвен изглед
+create: Създаване
+on_create: При създаване
+on_update: При промяна
+read: Четене
+update: Обновяване
+select_fields: Избор на полета
+format_text: Форматиране на текст
+bold: Удебелен
+toggle: Превключване
+icon_on: Активна икона
+icon_off: Неактивна икона
+label: Етикет
+wysiwyg_options:
+  aligncenter: Центриране
+  alignjustify: Двустранно подравняване
+  alignleft: Подравняване отляво
+  alignnone: Без подравняване
+  alignright: Подравняване отдясно
+  forecolor: Основен цвят
+  backcolor: Цвят на фона
+  bold: Удебелен
+  italic: Курсив
+  underline: Подчертан
+  strikethrough: Зачеркнат
+  subscript: Долен индекс
+  superscript: Горен индекс
+  codeblock: Код
+  blockquote: Цитат
+  bullist: Списък
+  numlist: Номериран списък
+  hr: Хоризонтална линия
+  link: Връзка
+  unlink: Премахване на връзка
+  media: Добавяне на медиа
+  image: Добавяне на изображене
+  copy: Копиране
+  cut: Изрязване
+  paste: Поставяне
+  heading: Заглавие
+  h1: Заглавие 1
+  h2: Заглавие 2
+  h3: Заглавие 3
+  h4: Заглавие 4
+  h5: Заглавие 5
+  h6: Заглавие 6
+  fontselect: Избор на шрифт
+  fontsizeselect: Избор на големина
+  indent: Отстъп
+  outdent: Отместване навън
+  undo: Връщане
+  redo: Повторение
+  remove: Премахване
+  removeformat: Премахване на форматиране
+  selectall: Избиране на всичко
+  table: Таблица
+  visualaid: Преглед на невидимите елементи
+  code: Преглед на кода
+  fullscreen: Пълен Екран
+  directionality: Подравняване
+dropdown: Падащо меню
+choices: Избори
+choices_option_configured_incorrectly: Изборите не са конфигурирани правилно
+deselect: Отмяна на избора
+deselect_all: Премахване на избора
+other: Друго...
+adding_user: Добавяне на потребител
+unknown_user: Неизвестен потребител
+creating_in: 'Създаване на запис в {collection}'
+editing_in: 'Редактиране на запис от {collection}'
+editing_in_batch: 'Масово редактиране {count} на записа'
+no_options_available: Не са налични опции
+settings_data_model: Модел на данни
+settings_permissions: Роли и позволения
+settings_project: Настройки на проект
+settings_webhooks: Уеб-куки
+settings_presets: Изгледи и отметки
+scope: Обхват
+layout: Оформление
+changes_are_permanent: Промените са постоянни
+preset_name_placeholder: Име на отметка...
+editing_preset: Редактиране на подготвени изгледи
+layout_preview: Предварителен преглед
+layout_setup: Настройка на оформление
+unsaved_changes: Незапазени промени
+unsaved_changes_copy: Сигурни ли сте, че искате да напуснете тази страница?
+discard_changes: Отмяна на промените
+keep_editing: Продължаване с промените
+page_help_collections_overview: '**Обзор от колекции** — Показва всички колекции до които имате достъп.'
+page_help_collections_collection: >-
+  **Преглед на записи** — Показва всички записи от {collection}, до които имате достъп. Възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите отметки с тези конфигурации за по-бърз достъп.
+page_help_collections_item: >-
+  **Детайли за запис** — Формуляр за преглед и управление на този запис. Страничният панел също съдържа и пълна история на ревизиите и коментарите към него.
+page_help_activity_collection: >-
+  **Емисия на активността** — Подробен списък на активността за съдържанието, потребителите и системата.
+page_help_docs_global: >-
+  **Обзор на документацията** — Показва документи, специфични за този проект, версия и схема.
+page_help_files_collection: >-
+  **Файлова библиотека** — Показва всички файлове, добавени към този проект. Възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите отметки с тези конфигурации за по-бърз достъп.
+page_help_files_item: >-
+  **Детайли за файл** — Формуляр за управление на мета-данните, редактиране на оригиналния файл и обновяване на настройките при достъп.
+page_help_settings_project: "**Настройки за проекта** — Глобални настройки и конфигурация на вашият проект."
+page_help_settings_datamodel_collections: >-
+  **Модел на данни: Колекции** — Показва всички налични колекции. Това включва видими, невидими и системни, както и все още неконтролираните таблици от базата данни, които могат да бъдат добавяни като колекции.
+page_help_settings_datamodel_fields: >-
+  **Модел на данни: Колекция** — Формуляр за управление на тази колекция и нейните полета.
+page_help_settings_roles_collection: '**Преглед на роли** — Показва администраторската, публичната и всички потребителски роли.'
+page_help_settings_roles_item: "**Детайли за роля** — Управление на позволенията на ролята, както и някои други настройки."
+page_help_settings_presets_collection: >-
+  **Преглед на подготвени изгледи** — Показване на списък с предварително подготвени изгледи, включително за отделните: потребител, роля, и глобални отметки, както и изгледите по подразбиране.
+page_help_settings_presets_item: >-
+  **Детайли за подготвените изгледи** — Формуляр за управление на отметките и подготвените изгледи по подразбиране към колекциите.
+page_help_settings_webhooks_collection: '**Преглед на уеб-куки** — Показва всички уеб-куки в проекта.'
+page_help_settings_webhooks_item: '**Детайли за уеб-кука** — Формуляр за създаване и управление на уеб-куките в проекта.'
+page_help_users_collection: '**Потребители** — Показване на всички потребители в системата на проекта.'
+page_help_users_item: >-
+  **Детайли за потребител** — Управление на информацията на вашия потребителския профил, или преглед на детайли за други потребители.
+activity_feed: Емисия на активността
+add_new: Добави нов запис
+create_new: Създаване
+all: Всичко
+none: Нищо
+no_layout_collection_selected_yet: Все още не е избран изглед/колекция
+batch_delete_confirm: >-
+  Няма избрани записи | Наистина ли искате да изтриете този запис? Това действие не може да бъде отменено. | Наистина ли искате да изтриете тези {count} записа? Това действие не може да бъде отменено.
+cancel: Отмяна
+collection: Колекция
+collections: Колекции
+singleton: Сек
+singleton_label: Използване като единствен запис
+system_fields_locked: Системните полета са заключени и не могат да бъдат променяни
+fields:
+  directus_activity:
+    item: Първичен ключ на запис
+    action: Действие
+    collection: Колекция
+    timestamp: Действие на
+    user: Действие от
+    comment: Кометнар
+    user_agent: Потребителски агент
+    ip: IP адрес
+    revisions: Ревизии
+  directus_collections:
+    collection: Колекция
+    icon: Икона
+    note: Бележка
+    display_template: Шаблон при показване
+    hidden: Скрито
+    singleton: Сек
+    translations: Преводи на името на колекцията
+    archive_app_filter: Филтър за архиви
+    archive_value: Стойност при архивиране
+    unarchive_value: Стойност при разархивиране
+    sort_field: Поле за сортиране
+  directus_files:
+    title: Заглавие
+    description: Описание
+    tags: Тагове
+    location: Местоположение
+    storage: Хранилище
+    filename_disk: Име на файл (на диска)
+    filename_download: Име на файл (при сваляне)
+    metadata: Метаданни
+    type: MIME тип
+    filesize: Размер на файла
+    modified_by: Променен от
+    modified_on: Променен на
+    created_on: Създаден на
+    created_by: Създадено от
+    embed: Вграждане
+    uploaded_by: Качено от
+    folder: Папка
+    width: Ширина
+    uploaded_on: Редактирано на
+    height: Височина
+    charset: Набор символи
+    duration: Продължителност
+  directus_users:
+    first_name: Име
+    last_name: Фамилия
+    email: Е-поща
+    password: Парола
+    avatar: Аватар
+    location: Местоположение
+    title: Заглавие
+    description: Описание
+    tags: Тагове
+    language: Език
+    theme: Тема
+    tfa_secret: Двуфакторна автентикация
+    status: Статус
+    role: Роля
+    token: Токен
+    last_page: Последна страница
+    last_access: Последно посещение
+  directus_settings:
+    project_name: Име на проекта
+    project_url: URL на проекта
+    project_color: Цвят на проекта
+    project_logo: Лого на проекта
+    public_foreground: Публично изображение
+    public_background: Фоново изображение
+    public_note: Публично съобщение
+    auth_password_policy: Политика за пароли
+    auth_login_attempts: Брой за опити за вход
+    storage_asset_presets: Съхранение и настройки за файл
+    storage_asset_transform: Трансформации на съхранените файлове
+    custom_css: Потребителски CSS
+  directus_fields:
+    collection: Име на колекцията
+    icon: Икона на колекцията
+    note: Бележка
+    hidden: Скрито
+    singleton: Сек
+    translation: Превод на името на полето
+    display_template: Шаблон
+  directus_roles:
+    name: Име на роля
+    icon: Икона на роля
+    description: Описание
+    app_access: Достъп до приложението
+    admin_access: Администраторски достъп
+    ip_access: IP адрес
+    enforce_tfa: Изисква 2FA
+    users: Потребители към роля
+    module_list: Модули
+    collection_list: Навигация в колекции
+no_fields_in_collection: 'Все още няма полета в {collection}'
+do_nothing: Без действие
+generate_and_save_uuid: Генериране и запазване на UUID
+save_current_user_id: Запазване на ID на текущия потребител
+save_current_user_role: Запазване на ролята на текущия потребител
+save_current_datetime: Запазване на текущия дата/час
+block: Блок
+inline: Вложен
+comment: Кометнар
+continue: Продължение
+continue_as: >-
+  <b>{name}</b> в момента е оторизиран. Ако разпознавате този профил, изберете бутона за продължение.
+editing_role: 'Роля - {role}'
+creating_webhook: Създаване на уеб-кука
+default: По подразбиране
+delete: Изтриване
+delete_are_you_sure: >-
+  Това действие е постоянно и не може да бъде отменено. Сигурни ли сте, че искате да продължите?
+delete_field_are_you_sure: >-
+  Сигурни ли сте, че искате да изтриете "{field}" полето? Това действие не може да бъде отменено.
+description: Описание
+done: Готово
+duplicate: Дублиране
+email: Е-поща
+embed: Вграждане
+fallback_icon: Резервна икона
+field: Поле | Полета
+file: Файл
+file_library: Файлова библиотека
+forgot_password: Забравена парола
+hidden: Скрито
+icon: Икона
+info: Информация
+normal: Нормално
+success: Успех
+warning: Внимание
+danger: Опасност
+junction_collection: Свързваща колекция
+latency: забавяне
+login: Влизане
+my_activity: Моята активност
+not_authenticated: Неоторизиран
+authenticated: Оторизиран
+options: Опции
+otp: Еднократна парола
+password: Парола
+permissions: Позволения
+relationship: Релация
+reset: Нулиране
+reset_password: Нулиране на парола
+revisions: Ревизии
+revert: Възстановяване
+save: Запазване
+schema: Схема
+search: Търсене
+select_existing: Избор на съществуващ
+select_field_type: Избор на тип за поле
+select_interface: Избор на интерфейс
+settings: Настройки
+sign_in: Вход
+sign_out: Изход
+sign_out_confirm: Сигурни ли сте, че искате да излезете?
+something_went_wrong: Нещо се обърка.
+sort_direction: Ред на подредба
+sort_asc: Възходящо сортиране
+sort_desc: Низходящо сортиране
+template: Шаблон
+translation: Превод
+value: Стойност
+view_project: Преглед на проект
+weeks: { }
+report_error: Докладване на грешка
+interfaces:
+  checkboxes:
+    checkboxes: Отметки
+    description: Избор измежду множество опции чрез отметки
+    allow_other: Позволи други
+    show_more: 'Показване на още {count}'
+    items_shown: Показани записи
+  code:
+    code: Код
+    description: Писане или споделяне на кодови откъси
+    line_number: Номер на ред
+    placeholder: Въвеждане на кода...
+  collection:
+    collection: Колекция
+    description: Избор от съществуващи колекции
+    include_system_collections: Включване на системните колекции
+  collections:
+    collections: Колекции
+    description: Избор от съществуващи колекции
+    include_system_collections: Включване на системните колекции
+  color:
+    color: Цвят
+    description: Въвеждане или избор на стойност за цвят
+    placeholder: Избор на цвят...
+    preset_colors: Предварително зададени цветове
+    preset_colors_add_label: Добавяне на нов цвят...
+    name_placeholder: Въвеждане на име на цвета...
+  datetime:
+    datetime: Дата и час
+    description: Въвеждане на дати и часове
+    include_seconds: Вклчване на секундите
+    set_to_now: Задаване като сега
+    use_24: Използване на 24 часов формат
+  display-template:
+    display-template: Шаблон при показване
+    description: Комбиниране на статичен текст и динамични стойности от полета
+    collection_field: Поле на колекцията
+    collection_field_not_setup: Опциите на полето от колекцията са неправилно конфигурирани
+    select_a_collection: Избор на колекция
+  divider:
+    divider: Разделител
+    description: Именуване и разделяне на полетата по секции
+    title_placeholder: Въвеждане на заглавие...
+    inline_title: Заглавие в линия
+    inline_title_label: Показване на заглавията в реда
+    margin_top: Горно отстояние
+    margin_top_label: Увеличено горно отстояние
+  dropdown:
+    description: Избор на стойност от падащо меню
+    choices_placeholder: Добавяне на избор
+    allow_other: Позволи други
+    allow_other_label: Позволяване на други стойности
+    allow_none: Позволяване на нищо
+    allow_none_label: Празен избор
+    choices_name_placeholder: Въвеждане на името...
+    choices_value_placeholder: Въвеждане на стойност...
+  dropdown-multiselect:
+    dropdown-multiselect: Падащо меню (множествен избор)
+    description: Избор на множество стойности от падащо меню
+  file:
+    file: Файл
+    description: Избор или качване на файл
+  files:
+    files: Файлове
+    description: Избор или качване на множество файлове
+  hash:
+    hash: Хеш
+    description: Въвеждане на стойност за хеширане
+    masked: Маскиране
+    masked_label: Скриване на истинските стойности
+  icon:
+    icon: Икона
+    description: Избор на икона от падащото меню
+    search_for_icon: Търсене на икона...
+  image:
+    image: Изображение
+    description: Избор или качване на изображение
+  interface:
+    interface: Интерфейс
+    description: Избор на съществуващ интерфейс
+    placeholder: Избор на интерфейс...
+  interface-options:
+    interface-options: Опции за интерфейса
+    description: Модал за избор на интефейс
+  many-to-many:
+    many-to-many: Много към много
+    description: Избор на множество свързани записи
+  many-to-one:
+    many-to-one: Много към един
+    description: Избор на един свързан запис
+    display_template: Шаблон при показване
+  markdown:
+    markdown: Markdown
+    description: Въвеждане и преглед за markdown
+    customSyntax: Персонализирани блокове
+    customSyntax_label: Добавяне на персонални типове за синтаксис
+    customSyntax_add: Добавяне на персонален синтаксис
+    box: Блоков / Вложен
+    imageToken: Токън за изображенията
+    imageToken_label: Какъв (статичен) токън да се добави към адресите на изображенията
+  notice:
+    notice: Бележка
+    description: Показване на кратка бележка
+    text: Въвеждане на бележката...
+  numeric:
+    numeric: Числен
+    description: Въвеждане на число
+    minimum_value: Минимална стойност
+    maximum_value: Максимална стойност
+    step_interval: Интервал на стъпка
+  one-to-many:
+    one-to-many: Един към много
+    description: Избор на множество свързани записи
+    no_collection: Колекцията не може да бъде намерена
+  radio-buttons:
+    radio-buttons: Радио бутон
+    description: Един или няколко избора
+  repeater:
+    repeater: Повторение
+    description: Създаване на множество записи със същата структура
+    edit_fields: Редактиране на полета
+    add_label: 'Етикет за "Добавяне на ред"'
+    field_name_placeholder: Въвеждане име на полето...
+    field_note_placeholder: Въвеждане бележка към полето...
+  slider:
+    slider: Плъзгач
+    description: Избор на число чрез плъзгач
+    always_show_value: Показване на стойностите винаги
+  slug:
+    slug: Кратко име
+    description: Въвеждане на думи свързани чрез тире
+  tags:
+    tags: Тагове
+    description: Избор или добавяне на етикети
+    whitespace: Интервали
+    hyphen: Замяна с тире
+    underscore: Замяна с долна черта
+    remove: Премахване на интервали
+    capitalization: Първа-главна буква
+    uppercase: Обръщане към големи букви
+    lowercase: Обръщане към малки букви
+    auto_formatter: Автоматично форматиране като заглавие
+    alphabetize: По азбучен ред
+    alphabetize_label: Винаги в азбучен ред
+    add_tags: Добавяне на етикет...
+  text-input:
+    text-input: Поле за текст
+    description: Въвеждане на един ред
+    trim: Почистване
+    trim_label: Почистване на краищата от интервали
+    mask: Маскиране
+    mask_label: Скриване на истинската стойност
+    nullable: Може да е null
+    nullable_label: Празните стойности са NULL
+  textarea:
+    textarea: Поле за текст
+    description: Въвеждане на чист текст на няколко реда
+  toggle:
+    toggle: Превключване
+    description: Превключване между вкл. и изкл.
+    label_placeholder: Въвеждане на етикет...
+    label_default: Включване
+  translations:
+    display_template: Шаблон при показване
+    no_collection: Няма колекция
+  user:
+    user: Потребител
+    description: Избор на съществуващ потребител
+    select_mode: Избор на режим
+    modes:
+      auto: Автоматичен
+      dropdown: Падащо меню
+      modal: Модал
+  wysiwyg:
+    wysiwyg: WYSIWYG
+    description: Редактор на текст с допълнения в HTML формат
+    toolbar: Лента с инструменти
+    custom_formats: Специфични формати
+    options_override: Наслагване на опции
+displays:
+  boolean:
+    boolean: Булев
+    description: Показване на активно и неактивно състояние
+    label_on: Активен текст
+    label_on_placeholder: Въвеждане на активен текст...
+    label_off: Неактивен текст
+    label_off_placeholder: Въвеждане на неактивен текст...
+    icon_on: Активна икона
+    icon_off: Неактивна икона
+    color_on: Активен цвят
+    color_off: Неактивен цвят
+  collection:
+    collection: Колекция
+    description: Показване на колекция
+    icon_label: Показване на иконката на колекцията
+  color:
+    color: Цвят
+    description: Показване на цветна точка
+    default_color: Свят по подразбиране
+  datetime:
+    datetime: Дата и час
+    description: Показване на стойностите релативни към момента
+    format: Формат
+    format_note: >-
+      Персонализирания формат приема стойности от следната __[Таблица със символи за време](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Дълго
+    short: Късо
+    relative: Относително
+    relative_label: 'Показване на относително време, пр. преди 5 минути'
+  file:
+    file: Файл
+    description: Показване на файлове
+  filesize:
+    filesize: Големина на файла
+    description: Показване на големината на файл
+  formatted-value:
+    formatted-value: Формат на стойността
+    description: Показване на форматирана стойност на текст
+    format_title: Формат на заглавие
+    format_title_label: Автоматично форматиране на регистъра
+    bold_label: Използване на удебелен стил
+  formatted-json-value:
+    formatted-json-value: Форматирана JSON стойност
+    description: Показване на форматирана стойност на JSON обект
+  icon:
+    icon: Икона
+    description: Показване като икона
+    filled: Изпълнен
+    filled_label: Използване на вариант с изпълване
+  image:
+    image: Изображение
+    description: Показване на малко изображение
+    circle: Кръг
+    circle_label: Показване като кръг
+  labels:
+    labels: Етикети
+    description: Въвеждане както на единичен, така и на множество етикети
+    default_foreground: Преден план по подразбиране
+    default_background: Фон по подразбиране
+    format_label: Форматиране на всеки етикет
+    show_as_dot: Показване като точка
+    choices_value_placeholder: Въвеждане на стойност...
+    choices_text_placeholder: Въвеждане на текст...
+  mime-type:
+    mime-type: MIME тип
+    description: Показване на MIME типа на файла
+    extension_only: Само разширение
+    extension_only_label: Показване само на разширението
+  rating:
+    rating: Оценка
+    description: Показване на числото като звезди до максималната стойност
+    simple: Опростен
+    simple_label: Показване на звездите в опростен вид
+  raw:
+    raw: Стойност в суров вид
+  related-values:
+    related-values: Релативни стойности
+    description: Показване на релативни стойности
+  user:
+    user: Потребител
+    description: Показване на потребител от Directus
+    avatar: Аватар
+    name: Име
+    both: И двете
+    circle_label: Показване на потребител в кръг
+layouts:
+  cards:
+    cards: Карти
+    image_source: Източник на изображението
+    image_fit: Напасване на изображението
+    crop: Изрязване
+    contain: Напасване
+    title: Заглавие
+    subtitle: Подзаглавие
+  tabular:
+    tabular: Таблица
+    fields: Полета
+    spacing: Отстояние
+    comfortable: Удобно
+    compact: Компактно
+    cozy: Уютно

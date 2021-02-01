@@ -1,0 +1,1078 @@
+edit_field: Edit Field
+item_revision: Item Revision
+duplicate_field: Duplicate Field
+half_width: Half Width
+full_width: Full Width
+fill_width: Fill Width
+field_name_translations: Field Name Translations
+enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
+add_field: Add Field
+role_name: Role Name
+db_only_click_to_configure: 'Database Only: Click to Configure '
+show_archived_items: Show Archived Items
+required: Required
+requires_value: Requires value
+create_preset: Create Preset
+create_role: Create Role
+create_user: Create User
+create_webhook: Create Webhook
+invite_users: Invite Users
+email_examples: 'admin@example.com, user@example.com...'
+invite: Invite
+emails: Emails
+connection_excellent: Excellent Connection
+connection_good: Good Connection
+connection_fair: Fair Connection
+connection_poor: Poor Connection
+rename_folder: Rename Folder
+delete_folder: Delete Folder
+prefix: Prefix
+suffix: Suffix
+reset_bookmark: Reset Bookmark
+rename_bookmark: Rename Bookmark
+update_bookmark: Update Bookmark
+delete_bookmark: Delete Bookmark
+delete_bookmark_copy: >-
+  Are you sure you want to delete the "{bookmark}" bookmark? This action cannot be undone.
+logoutReason:
+  SIGN_OUT: Signed out
+  SESSION_EXPIRED: Session expired
+public: Public
+public_description: Controls what API data is available without authenticating.
+not_allowed: Not Allowed
+directus_version: Directus Version
+node_version: Node Version
+node_uptime: Node Uptime
+os_type: OS Type
+os_version: OS Version
+os_uptime: OS Uptime
+os_totalmem: OS Memory
+archive: Archive
+archive_confirm: Are you sure you want to archive this item?
+archive_confirm_count: >-
+  No Items Selected | Are you sure you want to archive this item? | Are you sure you want to archive these {count}
+  items?
+reset_system_permissions: Reset System Permissions
+reset_system_permissions_copy: Reset all all system permissions to their defaults
+unarchive: Unarchive
+unarchive_confirm: Are you sure you want to unarchive this item?
+nested_files_folders_will_be_moved: Nested files and folders will be moved one level up.
+unknown_validation_errors: 'There were validation errors for the following hidden fields:'
+validationError:
+  eq: Value has to be {valid}
+  neq: Value can't be {invalid}
+  in: Value has to be one of {valid}
+  nin: Value can't be one of {invalid}
+  contains: Value has to contain {substring}
+  ncontains: Value can't contain {substring}
+  gt: Value has to be greater than {valid}
+  gte: Value has to be greater than or equal to {valid}
+  lt: Value has to be less than {valid}
+  lte: Value has to be less than or equal to {valid}
+  empty: Value has to be empty
+  nempty: Value can't be empty
+  null: Value has to be null
+  nnull: Value can't be null
+  required: Value is required
+all_access: All Access
+no_access: No Access
+use_custom: Use Custom
+field_standard: Standard
+field_presentation: Presentation & Aliases
+field_file: Single File
+field_files: Multiple Files
+field_m2o: M2O Relationship
+field_o2m: O2M Relationship
+field_m2m: M2M Relationship
+field_translations: Translations
+item_permissions: Item Permissions
+field_permissions: Field Permissions
+field_validation: Field Validation
+field_presets: Field Presets
+permissions_for_role: 'Items the {role} Role can {action}.'
+fields_for_role: 'Fields the {role} Role can {action}.'
+validation_for_role: 'Field {action} rules the {role} Role must obey.'
+presets_for_role: 'Field value defaults for the {role} Role.'
+presentation_and_aliases: Presentation & Aliases
+revision_post_update: Here is what this item looked like after the update...
+changes_made: These are the specific changes that were made...
+no_relational_data: Keep in mind that this does not include relational data.
+hide_field_on_detail: Hide Field on Detail
+show_field_on_detail: Show Field on Detail
+delete_field: Delete Field
+fields_and_layout: Fields & Layout
+field_create_success: 'Created Field: "{field}"'
+field_update_success: 'Updated Field: "{field}"'
+duplicate_where_to: Where would you like to duplicate this field to?
+language: Language
+global: Global
+admins_have_all_permissions: Admins have all permissions
+camera: Camera
+exposure: Exposure
+shutter: Shutter
+iso: ISO
+focal_length: Focal Length
+schema_setup_title: How should this field save to the database?
+schema_field_title: How should this field behave in the app?
+create_field: Create Field
+creating_new_field: 'New Field ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Reset Page Preferences
+hidden_field: Hidden Field
+hidden_on_detail: Hidden on Detail
+disabled_editing_value: Disable editing value
+key: Key
+alias: Alias
+bigInteger: Big Integer
+boolean: Boolean
+date: Date
+datetime: DateTime
+decimal: Decimal
+float: Float
+integer: Integer
+json: JSON
+string: String
+text: Text
+time: Time
+timestamp: Timestamp
+uuid: UUID
+hash: Hash
+not_available_for_type: Not Available for this Type
+create_translations: Create Translations
+auto_generate: Auto-Generate
+this_will_auto_setup_fields_relations: This will automatically setup all required fields and relations.
+click_here: Click here
+to_manually_setup_translations: to manually setup translations.
+click_to_manage_translated_fields: >-
+  There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage
+  it. | There are {count} translated fields. Click here to manage them.
+fields_group: Fields Group
+configure_m2o: Configure your Many-to-One Relationship...
+configure_o2m: Configure your One-to-Many Relationship...
+configure_m2m: Configure your Many-to-Many Relationship...
+configure_m2a: Configure your Many-to-Any Relationship...
+add_m2o_to_collection: 'Add Many-to-One to "{collection}"'
+add_o2m_to_collection: 'Add One-to-Many to "{collection}"'
+add_m2m_to_collection: 'Add Many-to-Many to "{collection}"'
+choose_a_type: Choose a Type...
+determined_by_relationship: Determined by Relationship
+add_note: Add a helpful note for users...
+default_value: Default Value
+add_a_default_value: Add a default value...
+interface_setup_title: How will users interact with this field?
+display_setup_title: How should this field’s value be displayed?
+standard_field: Standard Field
+single_file: Single File
+multiple_files: Multiple Files
+m2o_relationship: Many to One Relationship
+o2m_relationship: One to Many Relationship
+m2m_relationship: Many to Many Relationship
+m2a_relationship: Many to Any Relationship
+next: Next
+field_name: Field Name
+translations: Translations
+note: Note
+enter_a_value: Enter a value...
+enter_a_placeholder: Enter a placeholder...
+length: Length
+precision_scale: Precision & Scale
+readonly: Readonly
+unique: Unique
+updated_on: Updated On
+updated_by: Updated By
+primary_key: Primary Key
+foreign_key: Foreign Key
+finish_setup: Finish Setup
+dismiss: Dismiss
+raw_value: Raw value
+edit_raw_value: Edit Raw Value
+enter_raw_value: Enter raw value...
+clear_value: Clear value
+reset_to_default: Reset to default
+undo_changes: Undo changes
+notifications: Notifications
+show_all_activity: Show All Activity
+page_not_found: Page Not Found
+page_not_found_body: The page you are looking for doesn't seem to exist.
+confirm_revert: Confirm Revert
+confirm_revert_body: This will revert the item to the selected state.
+display: Display
+settings_update_success: Settings updated
+title: Title
+revision_delta_created: Created
+revision_delta_created_externally: Created Externally
+revision_delta_updated: 'Updated 1 Field | Updated {count} Fields'
+revision_delta_deleted: Deleted
+revision_delta_reverted: Reverted
+revision_delta_other: Revision
+revision_delta_by: '{date} by {user}'
+private_user: Private User
+revision_preview: Revision Preview
+updates_made: Updates Made
+leave_comment: Leave a comment...
+post_comment_success: Comment posted
+item_create_success: Item Created | Items Created
+item_update_success: Item Updated | Items Updated
+item_delete_success: Item Deleted | Items Deleted
+this_collection: This Collection
+related_collection: Related Collection
+related_collections: Related Collections
+translations_collection: Translations Collection
+languages_collection: Languages Collection
+export_data: Export Data
+format: Format
+use_current_filters_settings: Use Current Filters & Settings
+export_collection: 'Export {collection}'
+last_page: Last Page
+last_access: Last Access
+fill_template: Fill with Template Value
+a_unique_table_name: A unique table name...
+a_unique_column_name: A unique column name...
+enable_custom_values: Enable custom values
+submit: Submit
+move_to_folder: Move to Folder
+move: Move
+system: System
+add_field_related: Add Field to Related Collection
+interface: Interface
+today: Today
+yesterday: Yesterday
+delete_comment: Delete Comment
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+month: Month
+year: Year
+select_all: Select All
+months:
+  january: January
+  february: February
+  march: March
+  april: April
+  may: May
+  june: June
+  july: July
+  august: August
+  september: September
+  october: October
+  november: November
+  december: December
+drag_mode: Drag Mode
+cancel_crop: Cancel Crop
+original: Original
+url: URL
+import: Import
+file_details: File Details
+dimensions: Dimensions
+size: Size
+created: Created
+modified: Modified
+checksum: Checksum
+owner: Owner
+edited_by: Edited by
+folder: Folder
+zoom: Zoom
+download: Download
+open: Open
+open_in_new_window: Open in New Window
+foreground_color: Foreground Color
+background_color: Background Color
+upload_from_device: Upload File from Device
+choose_from_library: Choose File from Library
+import_from_url: Import File from URL
+replace_from_device: Replace File from Device
+replace_from_library: Replace File from Library
+replace_from_url: Replace File from URL
+no_file_selected: No File Selected
+download_file: Download File
+collection_key: Collection Key
+name: Name
+primary_key_field: Primary Key Field
+type: Type
+creating_new_collection: Creating New Collection
+created_by: Created By
+created_on: Created On
+creating_collection_info: Name the collection and setup its unique “key” field...
+creating_collection_system: Enable and rename any of these optional fields.
+auto_increment_integer: Auto-incremented integer
+generated_uuid: Generated UUID
+manual_string: Manually entered string
+save_and_create_new: Save and Create New
+save_and_stay: Save and Stay
+save_as_copy: Save as Copy
+add_existing: Add Existing
+comments: Comments
+no_comments: No Comments Yet
+click_to_expand: Click to Expand
+select_item: Select Item
+no_items: No items
+search_items: Search items...
+disabled: Disabled
+information: Information
+report_bug: Report Bug
+request_feature: Request Feature
+interface_not_found: 'Interface "{interface}" not found.'
+reset_interface: Reset Interface
+display_not_found: 'Display "{display}" not found.'
+reset_display: Reset Display
+m2a_builder: Builder (M2A)
+item_count: 'No Items | One Item | {count} Items'
+no_items_copy: There are no items in this collection yet.
+file_count: 'No Files | One File | {count} Files'
+no_files_copy: There are no files here.
+user_count: 'No Users | One User | {count} Users'
+no_users_copy: There are no users in this role yet.
+webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
+no_webhooks_copy: There are no webhooks yet.
+all_items: All Items
+csv: CSV
+no_collections: No Collections
+create_collection: Create Collection
+no_collections_copy_admin: You don’t have any Collections yet. Click the button below to get started.
+no_collections_copy: You don’t have any Collections yet. Please contact your system administrator.
+relationship_not_setup: The relationship hasn't been configured correctly
+display_template_not_setup: The display template option is misconfigured
+collection_field_not_setup: The collection field option is misconfigured
+select_a_collection: Select a Collection
+active: Active
+users: Users
+activity: Activity
+webhooks: Webhooks
+field_width: Field Width
+add_a_new_item: Add a new item...
+add_filter: Add Filter
+upper_limit: Upper limit...
+lower_limit: Lower limit...
+user_directory: User Directory
+documentation: Documentation
+sidebar: Sidebar
+duration: Duration
+charset: Charset
+second: Second
+file_moved: File Moved
+collection_created: Collection Created
+modified_on: Modified On
+card_size: Card Size
+sort_field: Sort Field
+sort: Sort
+status: Status
+toggle_manual_sorting: Toggle Manual Sorting
+bookmark_doesnt_exist: Bookmark Doesn't Exist
+bookmark_doesnt_exist_copy: The bookmark you're trying to open couldn't be found.
+bookmark_doesnt_exist_cta: Return to collection
+select_an_item: Select an item...
+edit: Edit
+enabled: Enabled
+disable_tfa: Disable 2FA
+tfa_scan_code: Scan the code in your authenticator app to finish setting up 2FA
+enter_otp_to_disable_tfa: Enter the OTP to disable 2FA
+create_account: Create Account
+account_created_successfully: Account Created Successfully
+auto_fill: Auto Fill
+corresponding_field: Corresponding Field
+errors:
+  COLLECTION_NOT_FOUND: "Collection doesn't exist"
+  FIELD_NOT_FOUND: Field not found
+  FORBIDDEN: Forbidden
+  INVALID_CREDENTIALS: Wrong username or password
+  INVALID_OTP: Wrong one-time password
+  INVALID_PAYLOAD: Invalid payload
+  INVALID_QUERY: Invalid query
+  ITEM_LIMIT_REACHED: Item limit reached
+  ITEM_NOT_FOUND: Item not found
+  ROUTE_NOT_FOUND: Not found
+  UNKNOWN: Unexpected Error
+value_hashed: Value Securely Hashed
+bookmark_name: Bookmark name...
+create_bookmark: Create Bookmark
+edit_bookmark: Edit Bookmark
+bookmarks: Bookmarks
+presets: Presets
+unexpected_error: Unexpected Error
+unexpected_error_copy: An unexpected error has occurred. Please try again later.
+copy_details: Copy Details
+no_app_access: No App Access
+no_app_access_copy: This user isn't allowed to use the admin app.
+password_reset_sent: We've sent you a secure link to reset your password
+password_reset_successful: Password successfully reset
+back: Back
+editing_image: Editing Image
+square: Square
+free: Free
+flip_horizontal: Flip Horizontal
+flip_vertical: Flip Vertical
+aspect_ratio: Aspect Ratio
+rotate: Rotate
+all_users: All Users
+delete_collection: Delete Collection
+update_collection_success: Updated Collection
+delete_collection_success: Deleted Collection
+start_end_of_count_items: '{start}-{end} of {count} items'
+delete_collection_are_you_sure: >-
+  Are you sure you want to delete this collection? This will delete the collection and all items in it. This action is
+  permanent.
+collections_shown: Collections Shown
+visible_collections: Visible Collections
+hidden_collections: Hidden Collections
+unmanaged_collections: Unconfigured Collections
+system_collections: System Collections
+placeholder: Placeholder
+icon_left: Icon Left
+icon_right: Icon Right
+font: Font
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Divider
+color: Color
+circle: Circle
+empty_item: Empty Item
+log_in_with: 'Log In with {provider}'
+advanced_filter: Advanced Filter
+delete_advanced_filter: Delete Filter
+change_advanced_filter_operator: Change Operator
+operators:
+  eq: Equals
+  neq: Doesn't equal
+  lt: Less than
+  gt: Greater than
+  lte: Less than or equal to
+  gte: Greater than or equal to
+  in: Is one of
+  nin: Is not one of
+  null: Is null
+  nnull: Isn't null
+  contains: Contains
+  ncontains: Doesn't contain
+  between: Is between
+  nbetween: Isn't between
+  empty: Is empty
+  nempty: Isn't empty
+  all: Contains these keys
+  has: Contains some of these keys
+loading: Loading...
+drop_to_upload: Drop to Upload
+upload_file: Upload File
+upload_file_indeterminate: Uploading File...
+upload_file_success: File Uploaded
+upload_files_indeterminate: 'Uploading files {done}/{total}'
+upload_files_success: '{count} Files Uploaded'
+upload_pending: Upload Pending
+drag_file_here: Drag & Drop a File Here
+click_to_browse: Click to Browse
+layout_options: Layout Options
+rows: Rows
+columns: Columns
+collection_setup: Collection Setup
+optional_system_fields: Optional System Fields
+value_unique: Value has to be unique
+all_activity: All Activity
+create_item: Create Item
+display_template: Display Template
+n_items_selected: 'No Items Selected | 1 Item Selected | {n} Items Selected'
+per_page: Per Page
+all_files: All Files
+my_files: My Files
+recent_files: Recent Files
+create_folder: Create Folder
+folder_name: Folder Name...
+add_file: Add File
+replace_file: Replace File
+no_results: No Results
+no_results_copy: Adjust or clear search filters to see results.
+clear_filters: Clear Filters
+saves_automatically: Saves Automatically
+role: Role
+user: User
+no_presets: No Presets
+no_presets_copy: No presets or bookmarks have been saved yet.
+no_presets_cta: Add Preset
+create: Create
+on_create: On Create
+on_update: On Update
+read: Read
+update: Update
+select_fields: Select Fields
+format_text: Format Text
+bold: Bold
+toggle: Toggle
+icon_on: Icon On
+icon_off: Icon Off
+label: Label
+wysiwyg_options:
+  aligncenter: Align Center
+  alignjustify: Align Justify
+  alignleft: Align Left
+  alignnone: Align None
+  alignright: Align Right
+  forecolor: Foreground Color
+  backcolor: Background Color
+  bold: Bold
+  italic: Italic
+  underline: Underline
+  strikethrough: Strikethrough
+  subscript: Subscript
+  superscript: Superscript
+  codeblock: Code
+  blockquote: Blockquote
+  bullist: Bullet List
+  numlist: Numbered List
+  hr: Horizontal Rule
+  link: Link
+  unlink: Remove Link
+  media: Add Media
+  image: Add Image
+  copy: Copy
+  cut: Cut
+  paste: Paste
+  heading: Heading
+  h1: Heading 1
+  h2: Heading 2
+  h3: Heading 3
+  h4: Heading 4
+  h5: Heading 5
+  h6: Heading 6
+  fontselect: Select Font
+  fontsizeselect: Select Font Size
+  indent: Indent
+  outdent: Outdent
+  undo: Undo
+  redo: Redo
+  remove: Remove
+  removeformat: Remove Format
+  selectall: Select All
+  table: Table
+  visualaid: View invisible elements
+  code: View Source
+  fullscreen: Full Screen
+  directionality: Directionality
+dropdown: Dropdown
+choices: Choices
+choices_option_configured_incorrectly: Choices configured incorrectly
+deselect: Deselect
+deselect_all: Deselect All
+other: Other...
+adding_user: Adding User
+unknown_user: Unknown User
+creating_in: 'Creating Item in {collection}'
+editing_in: 'Editing Item in {collection}'
+editing_in_batch: 'Batch Editing {count} Items'
+no_options_available: No options available
+settings_data_model: Data Model
+settings_permissions: Roles & Permissions
+settings_project: Project Settings
+settings_webhooks: Webhooks
+settings_presets: Presets & Bookmarks
+scope: Scope
+layout: Layout
+changes_are_permanent: Changes are permanent
+preset_name_placeholder: Name of bookmark...
+editing_preset: Editing Preset
+layout_preview: Layout Preview
+layout_setup: Layout Setup
+unsaved_changes: Unsaved Changes
+unsaved_changes_copy: Are you sure you want to leave this page?
+discard_changes: Discard Changes
+keep_editing: Keep Editing
+page_help_collections_overview: '**Collections Overview** — Lists of all collections you have access to.'
+page_help_collections_collection: >-
+  **Browse Items** — Lists all {collection} items you have access to. Customize layout, filters, and sorting to tailor
+  your view, and even save bookmarks of these different configurations for quick access.
+page_help_collections_item: >-
+  **Item Detail** — A form for viewing and managing this item. This sidebar also contains a full history of revisions,
+  and embedded comments.
+page_help_activity_collection: >-
+  **Browse Activity** — A comprehensive listing of all your user's system and content activity.
+page_help_docs_global: >-
+  **Documentation Overview** — Docs tailored specifically to this project's version and schema.
+page_help_files_collection: >-
+  **File Library** — Lists all file assets uploaded to this project. Customize layout, filters, and sorting to tailor
+  your view, and even save bookmarks of these different configurations for quick access.
+page_help_files_item: >-
+  **File Detail** — A form for managing file metadata, editing the original asset, and updating access settings.
+page_help_settings_project: "**Project Settings** — Your project's global configuration options."
+page_help_settings_datamodel_collections: >-
+  **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections,
+  as well as unmanaged database tables that can be added.
+page_help_settings_datamodel_fields: >-
+  **Data Model: Collection** — A form for managing this collection and its fields.
+page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
+page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
+page_help_settings_presets_collection: >-
+  **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default
+  views.
+page_help_settings_presets_item: >-
+  **Preset Detail** — A form for managing bookmarks and default collection presets.
+page_help_settings_webhooks_collection: '**Browse Webhooks** — Lists all webhooks within the project.'
+page_help_settings_webhooks_item: '**Webhook Detail** — A form for creating and managing project webhooks.'
+page_help_users_collection: '**User Directory** — Lists all system users within this project.'
+page_help_users_item: >-
+  **User Detail** — Manage your account information, or view the details of other users.
+activity_feed: Activity Feed
+add_new: Add New
+create_new: Create New
+all: All
+none: None
+no_layout_collection_selected_yet: No layout/collection selected yet
+batch_delete_confirm: >-
+  No items have been selected | Are you sure you want to delete this item? This action can not be undone. | Are you sure
+  you want to delete these {count} items? This action can not be undone.
+cancel: Cancel
+collection: Collection
+collections: Collections
+singleton: Singleton
+singleton_label: Treat as single object
+system_fields_locked: System fields are locked and can't be edited
+fields:
+  directus_activity:
+    item: Item Primary Key
+    action: Action
+    collection: Collection
+    timestamp: Action On
+    user: Action By
+    comment: Comment
+    user_agent: User Agent
+    ip: IP Address
+    revisions: Revisions
+  directus_collections:
+    collection: Collection
+    icon: Icon
+    note: Note
+    display_template: Display Template
+    hidden: Hidden
+    singleton: Singleton
+    translations: Collection Name Translations
+    archive_app_filter: Archive App Filter
+    archive_value: Archive Value
+    unarchive_value: Unarchive Value
+    sort_field: Sort Field
+  directus_files:
+    title: Title
+    description: Description
+    tags: Tags
+    location: Location
+    storage: Storage
+    filename_disk: Filename (Disk)
+    filename_download: Filename (Download)
+    metadata: Metadata
+    type: Mime Type
+    filesize: Filesize
+    modified_by: Modified By
+    modified_on: Modified On
+    created_on: Created On
+    created_by: Created By
+    embed: Embed
+    uploaded_by: Uploaded By
+    folder: Folder
+    width: Width
+    uploaded_on: Uploaded On
+    height: Height
+    charset: Charset
+    duration: Duration
+  directus_users:
+    first_name: First Name
+    last_name: Last Name
+    email: Email
+    password: Password
+    avatar: Avatar
+    location: Location
+    title: Title
+    description: Description
+    tags: Tags
+    language: Language
+    theme: Theme
+    tfa_secret: Two-Factor Authentication
+    status: Status
+    role: Role
+    token: Token
+    last_page: Last Page
+    last_access: Last Access
+  directus_settings:
+    project_name: Project Name
+    project_url: Project URL
+    project_color: Project Color
+    project_logo: Project Logo
+    public_foreground: Public Foreground
+    public_background: Public Background
+    public_note: Public Note
+    auth_password_policy: Auth Password Policy
+    auth_login_attempts: Auth Login Attempts
+    storage_asset_presets: Storage Asset Presets
+    storage_asset_transform: Storage Asset Transform
+    custom_css: Custom CSS
+  directus_fields:
+    collection: Collection Name
+    icon: Collection Icon
+    note: Note
+    hidden: Hidden
+    singleton: Singleton
+    translation: Field Name Translations
+    display_template: Template
+  directus_roles:
+    name: Role Name
+    icon: Role Icon
+    description: Description
+    app_access: App Access
+    admin_access: Admin Access
+    ip_access: IP Access
+    enforce_tfa: Require 2FA
+    users: Users in Role
+    module_list: Module Navigation
+    collection_list: Collection Navigation
+no_fields_in_collection: 'There are no fields in "{collection}" yet'
+do_nothing: Do Nothing
+generate_and_save_uuid: Generate and Save UUID
+save_current_user_id: Save Current User ID
+save_current_user_role: Save Current User Role
+save_current_datetime: Save Current Date/Time
+block: Block
+inline: Inline
+comment: Comment
+continue: Continue
+continue_as: >-
+  <b>{name}</b> is currently authenticated. If you recognize this account, press continue.
+editing_role: '{role} Role'
+creating_webhook: Creating Webhook
+default: Default
+delete: Delete
+delete_are_you_sure: >-
+  This action is permanent and can not be undone. Are you sure you would like to proceed?
+delete_field_are_you_sure: >-
+  Are you sure you want to delete the field "{field}"? This action can not be undone.
+description: Description
+done: Done
+duplicate: Duplicate
+email: Email
+embed: Embed
+fallback_icon: Fallback Icon
+field: Field | Fields
+file: File
+file_library: File Library
+forgot_password: Forgot Password
+hidden: Hidden
+icon: Icon
+info: Info
+normal: Normal
+success: Success
+warning: Warning
+danger: Danger
+junction_collection: Junction Collection
+latency: Latency
+login: Log in
+my_activity: My Activity
+not_authenticated: Not Authenticated
+authenticated: Authenticated
+options: Options
+otp: One-Time Password
+password: Password
+permissions: Permissions
+relationship: Relationship
+reset: Reset
+reset_password: Reset Password
+revisions: Revisions
+revert: Revert
+save: Save
+schema: Schema
+search: Search
+select_existing: Select Existing
+select_field_type: Select a field type
+select_interface: Select an interface
+settings: Settings
+sign_in: Sign In
+sign_out: Sign Out
+sign_out_confirm: Are you sure you want to sign out?
+something_went_wrong: Something went wrong.
+sort_direction: Sort Direction
+sort_asc: Sort Ascending
+sort_desc: Sort Descending
+template: Template
+translation: Translation
+value: Value
+view_project: View Project
+weeks: {}
+report_error: Report Error
+interfaces:
+  checkboxes:
+    checkboxes: Checkboxes
+    description: Choose between multiple options via checkboxes
+    allow_other: Allow Other
+    show_more: 'Show {count} more'
+    items_shown: Items Shown
+  code:
+    code: Code
+    description: Write or share code snippets
+    line_number: Line Number
+    placeholder: Enter code here...
+  collection:
+    collection: Collection
+    description: Select between existing collections
+    include_system_collections: Include System Collections
+  collections:
+    collections: Collections
+    description: Select between existing collections
+    include_system_collections: Include System Collections
+  color:
+    color: Color
+    description: Enter or select a color value
+    placeholder: Choose a color...
+    preset_colors: Preset Colors
+    preset_colors_add_label: Add new color...
+    name_placeholder: Enter color name...
+  datetime:
+    datetime: Datetime
+    description: Enter dates and times
+    include_seconds: Include Seconds
+    set_to_now: Set to Now
+    use_24: Use 24-Hour Format
+  display-template:
+    display-template: Display Template
+    description: Mix static text and dynamic field values
+    collection_field: Collection field
+    collection_field_not_setup: The collection field option is misconfigured
+    select_a_collection: Select a Collection
+  divider:
+    divider: Divider
+    description: Label and divide fields into sections
+    title_placeholder: Enter a title...
+    inline_title: Inline Title
+    inline_title_label: Show title inside line
+    margin_top: Margin Top
+    margin_top_label: Increase Top Margin
+  dropdown:
+    description: Select a value from a dropdown
+    choices_placeholder: Add a new choice
+    allow_other: Allow Other
+    allow_other_label: Allow Other Values
+    allow_none: Allow None
+    allow_none_label: Allow No Selection
+    choices_name_placeholder: Enter a name...
+    choices_value_placeholder: Enter a value...
+  dropdown-multiselect:
+    dropdown-multiselect: Dropdown (Multiple)
+    description: Select multiple values from a dropdown
+  file:
+    file: File
+    description: Select or upload a file
+  files:
+    files: Files
+    description: Select or upload multiple files
+  hash:
+    hash: Hash
+    description: Enter a value to be hashed
+    masked: Masked
+    masked_label: Hide the true values
+  icon:
+    icon: Icon
+    description: Select an icon from a dropdown
+    search_for_icon: Search for icon...
+  image:
+    image: Image
+    description: Select or upload an image
+  interface:
+    interface: Interface
+    description: Select an existing interface
+    placeholder: Select an interface...
+  interface-options:
+    interface-options: Interface Options
+    description: A modal for selecting options of an interface
+  many-to-many:
+    many-to-many: Many to Many
+    description: Select multiple related junction items
+  many-to-one:
+    many-to-one: Many to One
+    description: Select a single related item
+    display_template: Display Template
+  markdown:
+    markdown: Markdown
+    description: Enter and preview markdown
+    customSyntax: Custom Blocks
+    customSyntax_label: Add custom syntax types
+    customSyntax_add: Add custom syntax
+    box: Block / Inline
+    imageToken: Image Token
+    imageToken_label: What (static) token to append to image sources
+  notice:
+    notice: Notice
+    description: Display a short notice
+    text: Enter notice content here...
+  numeric:
+    numeric: Numeric
+    description: Enter a number
+    minimum_value: Minimum Value
+    maximum_value: Maximum Value
+    step_interval: Step Interval
+  one-to-many:
+    one-to-many: One to Many
+    description: Select multiple related items
+    no_collection: The collection could not be found
+  radio-buttons:
+    radio-buttons: Radio Buttons
+    description: Select one of multiple choices
+  repeater:
+    repeater: Repeater
+    description: Create multiple entries of the same structure
+    edit_fields: Edit Fields
+    add_label: '"Add New Row" Label'
+    field_name_placeholder: Enter field name...
+    field_note_placeholder: Enter field note...
+  slider:
+    slider: Slider
+    description: Select a number using a slider
+    always_show_value: Always show value
+  slug:
+    slug: Slug
+    description: Enter a word connected with hyphens
+  tags:
+    tags: Tags
+    description: Select or add tags
+    whitespace: Whitespace
+    hyphen: Replace with hyphen
+    underscore: Replace with underscore
+    remove: Remove whitespace
+    capitalization: Capitalization
+    uppercase: Convert Uppercase
+    lowercase: Convert Lowercase
+    auto_formatter: Use Title Auto-Formatter
+    alphabetize: Alphabetize
+    alphabetize_label: Force Alphabetical Order
+    add_tags: Add tags...
+  text-input:
+    text-input: Text Input
+    description: Enter a single line text
+    trim: Trim
+    trim_label: Trim the start and end
+    mask: Masked
+    mask_label: Hide the real value
+    nullable: Nullable
+    nullable_label: Save empty value as NULL
+  textarea:
+    textarea: Textarea
+    description: Enter multiline plain-text
+  toggle:
+    toggle: Toggle
+    description: Switch between on and off
+    label_placeholder: Enter a label...
+    label_default: Enabled
+  translations:
+    display_template: Display Template
+    no_collection: No Collection
+  user:
+    user: User
+    description: Select an existing directus user
+    select_mode: Select Mode
+    modes:
+      auto: Auto
+      dropdown: Dropdown
+      modal: Modal
+  wysiwyg:
+    wysiwyg: WYSIWYG
+    description: A rich-text editor writing HTML content
+    toolbar: Toolbar
+    custom_formats: Custom Formats
+    options_override: Options Override
+displays:
+  boolean:
+    boolean: Boolean
+    description: Display on and off states
+    label_on: Label On
+    label_on_placeholder: Enter an on label...
+    label_off: Label Off
+    label_off_placeholder: Enter an off label...
+    icon_on: Icon On
+    icon_off: Icon Off
+    color_on: Color On
+    color_off: Color Off
+  collection:
+    collection: Collection
+    description: Display a collection
+    icon_label: Show the collection's icon
+  color:
+    color: Color
+    description: Display a colored dot
+    default_color: Default Color
+  datetime:
+    datetime: Datetime
+    description: Display values related to time
+    format: Format
+    format_note: >-
+      The custom format accepts the __[Date Field Symbol
+      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Long
+    short: Short
+    relative: Relative
+    relative_label: 'Show relative time, eg: 5 minutes ago'
+  file:
+    file: File
+    description: Display files
+  filesize:
+    filesize: File Size
+    description: Display the size of a file
+  formatted-value:
+    formatted-value: Formatted Value
+    description: Display a formatted version of the text
+    format_title: Format Title
+    format_title_label: Auto-format casing
+    bold_label: Use bold style
+  formatted-json-value:
+    formatted-json-value: Formatted JSON value
+    description: Display a formatted version of the object
+  icon:
+    icon: Icon
+    description: Display an icon
+    filled: Filled
+    filled_label: Use the filled variant
+  image:
+    image: Image
+    description: Display a tiny image preview
+    circle: Circle
+    circle_label: Display as a circle
+  labels:
+    labels: Labels
+    description: Display either a single or a list of labels
+    default_foreground: Default Foreground
+    default_background: Default Background
+    format_label: Format each label
+    show_as_dot: Show As Dot
+    choices_value_placeholder: Enter a value...
+    choices_text_placeholder: Enter a text...
+  mime-type:
+    mime-type: MIME Type
+    description: Show the MIME-Type of a file
+    extension_only: Extension Only
+    extension_only_label: Only show the file extension
+  rating:
+    rating: Rating
+    description: Visualize a number as stars relative to the max-value
+    simple: Simple
+    simple_label: Show stars in a simple format
+  raw:
+    raw: Raw Value
+  related-values:
+    related-values: Related Values
+    description: Display relative values
+  user:
+    user: User
+    description: Display a directus user
+    avatar: Avatar
+    name: Name
+    both: Both
+    circle_label: Show user in a circle
+layouts:
+  cards:
+    cards: Cards
+    image_source: Image Source
+    image_fit: Image Fit
+    crop: Crop
+    contain: Contain
+    title: Title
+    subtitle: Subtitle
+  tabular:
+    tabular: Table
+    fields: Fields
+    spacing: Spacing
+    comfortable: Comfortable
+    compact: Compact
+    cozy: Cozy

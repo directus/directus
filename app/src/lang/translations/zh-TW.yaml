@@ -1,0 +1,370 @@
+---
+edit_field: 編輯欄位
+item_revision: 項目修改
+duplicate_field: 複製欄位
+half_width: 半寬
+full_width: 滿寬
+fill_width: 填滿寬度
+field_name_translations: 欄位名稱翻譯
+enter_password_to_enable_tfa: 輸入您的密碼以啟用雙因素認證
+add_field: 增加欄位
+role_name: 角色名稱
+db_only_click_to_configure: '僅數據庫：單擊進行配置 '
+show_archived_items: 顯示已封存的項目
+required: 必填
+requires_value: 需要值
+create_preset: 創建預置
+create_role: 新建角色
+create_user: 建立用户
+create_webhook: 建立 Webhook
+invite_users: 邀請用戶
+invite: 邀请
+emails: 信件
+connection_excellent: 優秀的連接
+connection_good: 好的連接
+connection_fair: 公平的連接
+connection_poor: 連線不穩
+rename_folder: 重新命名資料夾
+delete_folder: 刪除資料夾
+prefix: 前綴
+suffix: 後綴
+reset_bookmark: 重設書籤
+rename_bookmark: 重新命名書籤
+update_bookmark: 更新書籤
+delete_bookmark: 刪除書籤
+delete_bookmark_copy: >-
+  你確定要刪除“{bookmark}"書籤嗎？這個操作無法撤銷。
+logoutReason:
+  SIGN_OUT: 已登出
+  SESSION_EXPIRED: 工作階段已逾時
+public: 公開
+public_description: 在沒有身分驗證的情況下，控制這些可用的API數據。
+not_allowed: 不允许
+directus_version: Directus 版本
+node_version: 節點的版本
+node_uptime: 節點正常運行時間
+os_type: 操作系統類型
+os_version: 作業系統版本
+os_uptime: 作業系統已運行時間
+os_totalmem: 作業系統記憶體
+archive: 封存
+archive_confirm: 您確定要封存這個項目嗎？
+reset_system_permissions: 重設系統權限
+reset_system_permissions_copy: 重設所有系統權限回到預設值
+unarchive: 取消封存
+unarchive_confirm: 您確定要解除封存這個項目嗎？
+nested_files_folders_will_be_moved: 巢狀的檔案與資料夾將會被上移一層
+unknown_validation_errors: '下列的隱藏欄位驗證錯誤：'
+language: 語言
+create_field: 新建欄位
+hidden_on_detail: 從詳細內容隱藏
+date: 日期
+decimal: 小數
+text: 文字
+time: 時間
+auto_generate: 自動產生
+add_note: 新增提示
+default_value: 預設值
+next: 下一個
+note: 備註
+length: 長度
+readonly: 唯讀
+unique: 唯一
+primary_key: 主鍵
+clear_value: 清除內容
+reset_to_default: 重設為預設值
+undo_changes: 還原變更
+notifications: 通知
+page_not_found: 無法找到網頁
+page_not_found_body: 您在找的頁面不存在
+display: 顯示
+title: 標題
+revision_delta_deleted: 已刪除
+leave_comment: 發表評論
+this_collection: 此集合
+related_collection: 相關收藏
+format: 格式
+submit: 送出
+months:
+  january: 一月
+  february: 二月
+  march: 三月
+  april: 四月
+  may: 五月
+  june: 六月
+  july: 七月
+  august: 八月
+  september: 九月
+  october: 十月
+  november: 十一月
+  december: 十二月
+size: 尺寸
+checksum: 校驗和
+owner: 擁有者
+download: 下載
+name: 名稱
+created_by: 建立者
+created_on: 建立於
+save_and_stay: 儲存並停留
+save_as_copy: 儲存為副本
+comments: 評論
+request_feature: 功能請求
+item_count: '無項目 | 一個項目 | {count} 個項目'
+create_collection: 新建集合
+relationship_not_setup: 關聯配置不正確
+users: 用戶
+activity: 活動
+webhooks: Webhooks
+field_width: 欄位寬度
+user_directory: 使用者目錄
+duration: 持續時間
+modified_on: 修改日期
+sort_field: 排序欄位
+status: 狀態
+edit: 編輯
+bookmarks: 書籤
+back: 返回
+placeholder: 佔位符
+icon_left: 左圖示
+icon_right: 右圖示
+monospace: 等寬字體
+divider: 分隔線
+color: 顏色
+operators:
+  lt: 小於
+  gt: 大於
+  lte: 小於等於
+  gte: 大於等於
+  contains: 包含
+  ncontains: 不包含
+  empty: 是空的
+loading: 載入中...
+display_template: 顯示模板
+no_results: 無任何結果
+role: 角色
+user: 用戶
+create: 新建
+on_update: 更新時
+read: 讀取
+update: 更新
+select_fields: 選擇欄位
+wysiwyg_options:
+  codeblock: 程式碼
+  remove: 移除
+  table: 表格
+dropdown: 下拉選單
+choices: 選擇
+deselect: 取消選擇
+editing_in_batch: '批次編輯 {count} 個項目'
+settings_permissions: 角色和權限
+settings_project: 專案設定
+settings_webhooks: Webhooks
+unsaved_changes: 未保存的更改
+unsaved_changes_copy: 您確定要離開此頁面嗎？
+discard_changes: 放棄修改
+keep_editing: 繼續編輯
+add_new: 新增
+all: 全部
+batch_delete_confirm: >-
+  沒有選取任何項目 | 是否確定要刪除此項目? 此動作無法還原。 | 是否確定要刪除這{count} 個項目? 此動作無法還原。
+cancel: 取消
+collection: 集合
+collections: 資料集
+fields:
+  directus_activity:
+    item: 項目主鍵值
+    action: 操作
+    collection: 集合
+    timestamp: 操作於
+    user: 操作人
+    comment: 評論
+    user_agent: 代理用戶
+    ip: IP位址
+  directus_collections:
+    collection: 集合
+    icon: 圖示
+    note: 備註
+    display_template: 顯示模板
+    hidden: 隱藏
+    sort_field: 排序欄位
+  directus_files:
+    title: 標題
+    description: 描述說明
+    tags: 標籤
+    location: 位置
+    metadata: 元數據
+    filesize: 檔案大小
+    modified_on: 修改日期
+    created_on: 建立於
+    created_by: 建立者
+    embed: 內嵌
+    uploaded_by: 上傳者
+    width: 寬度
+    uploaded_on: 上傳於
+    height: 高度
+    duration: 持續時間
+  directus_users:
+    first_name: 名字
+    last_name: 姓氏
+    email: 電子郵件
+    password: 密碼
+    avatar: 頭像
+    location: 位置
+    title: 標題
+    description: 描述說明
+    tags: 標籤
+    language: 語言
+    theme: 主題
+    tfa_secret: 雙重身份驗證
+    status: 狀態
+    role: 角色
+  directus_settings:
+    project_name: 專案名稱
+  directus_fields:
+    note: 備註
+    hidden: 隱藏
+    translation: 欄位名稱翻譯
+    display_template: 模板
+  directus_roles:
+    name: 角色名稱
+    description: 描述說明
+comment: 評論
+continue: 繼續
+default: 預設
+delete: 刪除
+delete_field_are_you_sure: >-
+  是否確定要刪除此欄位 "{field}"? 此動作無法還原。
+description: 描述說明
+done: 完成
+duplicate: 複製
+email: 電子郵件
+embed: 內嵌
+field: 欄位｜欄位
+file: 檔案
+file_library: 檔案庫
+forgot_password: 忘記密碼
+hidden: 隱藏
+icon: 圖示
+info: 資訊
+junction_collection: 連接點集合
+latency: 延遲
+login: 登入
+my_activity: 我的活動
+not_authenticated: 未認證
+options: 選項
+otp: 一次性密碼
+password: 密碼
+permissions: 權限
+relationship: 關聯
+reset: 重設
+reset_password: 重設密碼
+revert: 復原
+save: 儲存
+schema: 架構
+search: 搜尋
+select_existing: 選擇現有的
+select_interface: 選擇一個介面接口
+settings: 設定
+sign_in: 登入
+sign_out: 登出
+sign_out_confirm: 是否確定要登出?
+something_went_wrong: 出了點問題
+sort_direction: 排序方向
+template: 模板
+translation: 翻譯
+value: 值
+interfaces:
+  checkboxes:
+    checkboxes: 複選框
+    allow_other: 允許其他選項
+  code:
+    code: 程式碼
+    line_number: 行號
+  collection:
+    collection: 集合
+  collections:
+    collections: 資料集
+  color:
+    color: 顏色
+  datetime:
+    datetime: 日期時間
+  display-template:
+    display-template: 顯示模板
+  divider:
+    divider: 分隔線
+  dropdown:
+    allow_other: 允許其他選項
+  file:
+    file: 檔案
+  files:
+    files: 檔案
+  icon:
+    icon: 圖示
+  interface-options:
+    interface-options: 介面選項
+  many-to-many:
+    many-to-many: 多對多
+  many-to-one:
+    many-to-one: 多對一
+    display_template: 顯示模板
+  markdown:
+    markdown: Markdown
+  numeric:
+    numeric: 數字
+  one-to-many:
+    one-to-many: 一對多
+  radio-buttons:
+    radio-buttons: 單選按鈕
+  repeater:
+    repeater: 重複者
+  slider:
+    slider: 滑塊
+  slug:
+    slug: 網址片段
+  tags:
+    tags: 標籤
+  text-input:
+    text-input: 文字輸入
+    trim: 去除內容前後空格
+  translations:
+    display_template: 顯示模板
+  user:
+    user: 用戶
+    modes:
+      dropdown: 下拉選單
+  wysiwyg:
+    custom_formats: 自訂格式
+displays:
+  collection:
+    collection: 集合
+  color:
+    color: 顏色
+  datetime:
+    datetime: 日期時間
+    format: 格式
+  file:
+    file: 檔案
+  filesize:
+    filesize: 檔案大小
+  icon:
+    icon: 圖示
+  rating:
+    rating: 評分
+  user:
+    user: 用戶
+    avatar: 頭像
+    name: 名稱
+    both: 都要
+layouts:
+  cards:
+    cards: 卡片
+    image_source: 圖片來源
+    title: 標題
+    subtitle: 副標題
+  tabular:
+    tabular: 表格
+    fields: 欄位
+    spacing: 間距
+    comfortable: 舒適
+    compact: 精簡
+    cozy: 自在

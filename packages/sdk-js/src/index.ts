@@ -18,7 +18,7 @@ import {
 	AuthOptions,
 	RevisionsHandler,
 } from './handlers';
-import { MemoryStore } from './utils';
+import { MemoryStore, BrowserStore } from './utils';
 
 class DirectusSDK {
 	axios: AxiosInstance;
@@ -27,21 +27,22 @@ class DirectusSDK {
 	constructor(url: string, options?: { auth: Partial<AuthOptions> }) {
 		this.axios = axios.create({
 			baseURL: url,
+			withCredentials: true,
 		});
 
 		this.authOptions = {
-			storage:
-				options?.auth?.storage !== undefined ? options.auth.storage : new MemoryStore(),
-			mode: options?.auth?.mode !== undefined ? options.auth.mode : 'cookie',
-			autoRefresh:
-				options?.auth?.autoRefresh !== undefined ? options.auth.autoRefresh : false,
+			storage: options?.auth?.storage ?? (typeof window === 'undefined' ? new MemoryStore() : new BrowserStore()),
+			mode: options?.auth?.mode ?? 'cookie',
+			autoRefresh: options?.auth?.autoRefresh ?? false,
 		};
+
+		this.auth = new AuthHandler(this.axios, this.authOptions);
 	}
 
 	// Global helpers
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
-	get url() {
+	get url(): string {
 		return this.axios.defaults.baseURL!;
 	}
 
@@ -51,8 +52,9 @@ class DirectusSDK {
 
 	// Handlers
 	////////////////////////////////////////////////////////////////////////////////////////////////
+	auth: AuthHandler;
 
-	items(collection: string) {
+	items(collection: string): ItemsHandler {
 		if (collection.startsWith('directus_')) {
 			throw new Error(`You can't read the "${collection}" collection directly.`);
 		}
@@ -60,65 +62,61 @@ class DirectusSDK {
 		return new ItemsHandler(collection, this.axios);
 	}
 
-	get activity() {
+	get activity(): ActivityHandler {
 		return new ActivityHandler(this.axios);
 	}
 
-	get auth() {
-		return new AuthHandler(this.axios, this.authOptions);
-	}
-
-	get collections() {
+	get collections(): CollectionsHandler {
 		return new CollectionsHandler(this.axios);
 	}
 
-	get fields() {
+	get fields(): FieldsHandler {
 		return new FieldsHandler(this.axios);
 	}
 
-	get files() {
+	get files(): FilesHandler {
 		return new FilesHandler(this.axios);
 	}
 
-	get folders() {
+	get folders(): FoldersHandler {
 		return new FoldersHandler(this.axios);
 	}
 
-	get permissions() {
+	get permissions(): PermissionsHandler {
 		return new PermissionsHandler(this.axios);
 	}
 
-	get presets() {
+	get presets(): PresetsHandler {
 		return new PresetsHandler(this.axios);
 	}
 
-	get relations() {
+	get relations(): RelationsHandler {
 		return new RelationsHandler(this.axios);
 	}
 
-	get revisions() {
+	get revisions(): RevisionsHandler {
 		return new RevisionsHandler(this.axios);
 	}
 
-	get roles() {
+	get roles(): RolesHandler {
 		return new RolesHandler(this.axios);
 	}
 
-	get server() {
+	get server(): ServerHandler {
 		return new ServerHandler(this.axios);
 	}
 
-	get settings() {
+	get settings(): SettingsHandler {
 		return new SettingsHandler(this.axios);
 	}
 
-	get users() {
+	get users(): UsersHandler {
 		return new UsersHandler(this.axios);
 	}
 
-	get utils() {
+	get utils(): UtilsHandler {
 		return new UtilsHandler(this.axios);
 	}
 }
 
-export = DirectusSDK;
+export default DirectusSDK;

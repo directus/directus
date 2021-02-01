@@ -1,0 +1,295 @@
+---
+edit_field: Редагувати поле
+duplicate_field: Дублювати поле
+full_width: Повна ширина
+add_field: Додати поле
+required: Обов'язкове
+create_role: Створити роль
+invite: Запросити
+delete_bookmark: Видалити закладку
+directus_version: Версія Directus
+language: Мова
+create_field: Створення поля
+hidden_on_detail: Приховано на деталі
+date: Дата
+decimal: Десятки
+text: Текст
+time: Час
+auto_generate: Автоматично згенерувати
+add_note: Додайте інформативну нотатку для користувачів...
+default_value: Значення за замовчуванням
+next: Уперед
+note: Примітка
+length: Довжина
+readonly: Тільки читання
+unique: Унікальне
+primary_key: Первинний ключ
+clear_value: Очистити значення
+reset_to_default: Відновити налаштування за умовчанням
+undo_changes: Відмінити зміни
+notifications: Сповіщення
+page_not_found: Сторінку не знайдено
+page_not_found_body: Здається, сторінка яку ви шукаєте, не існує.
+title: Заголовок
+revision_delta_deleted: Видалено
+leave_comment: Залишити коментар...
+this_collection: Ця колекція
+related_collection: Пов'язана колекція
+format: Формат
+submit: Підтвердити
+months:
+  january: Січень
+  february: Лютий
+  march: Березень
+  april: Квітень
+  may: Травень
+  june: Червень
+  july: Липень
+  august: Серпень
+  september: Вересень
+  october: Жовтень
+  november: Листопад
+  december: Грудень
+size: Розмір
+checksum: Контрольна сума
+owner: Власник
+download: Завантажити
+name: Назва
+created_by: Автор
+created_on: Створено
+save_and_stay: Зберегти і Залишитись
+save_as_copy: Зберегти копію
+comments: Коментарі
+request_feature: Запит на нову функцію
+item_count: 'Немає елементів | Один елемент | {count} елементів'
+csv: CSV
+create_collection: Створити колекцію
+users: Користувачі
+activity: Активність
+webhooks: Вебхуки
+field_width: Ширина поля
+user_directory: Директорія користувачів
+duration: Тривалість
+modified_on: Час зміни
+status: Статус
+errors:
+  ROUTE_NOT_FOUND: Не знайдено
+create_bookmark: Створити закладку
+bookmarks: Закладки
+back: Назад
+placeholder: Заповнювач
+icon_left: Значок ліворуч
+icon_right: Значок праворуч
+font: Шрифт
+monospace: Моноширинний шрифт
+divider: Розділювач
+color: Колір
+operators:
+  lt: Менше ніж
+  gt: Більше ніж
+  lte: Менше ніж або дорівнює
+  gte: Більше ніж або дорівнює
+  contains: Містить
+  ncontains: Не містить
+  empty: Порожньо
+loading: Завантаження...
+no_results: Нічого не знайдено
+role: Роль
+user: Користувач
+create: Створити
+on_update: При оновленні
+read: Прочитайте
+update: Оновити
+select_fields: Обрати поля
+wysiwyg_options:
+  codeblock: Код
+  remove: Видалити
+  table: Таблиця
+dropdown: Випадаюче меню
+choices: Варіанти
+deselect: Зняти виділення
+editing_in_batch: 'Пакетне редагування {count} елементів'
+settings_permissions: Ролі і Дозволи
+settings_project: Налаштування проекту
+settings_webhooks: Вебхуки
+unsaved_changes: Незбережені зміни
+unsaved_changes_copy: Ви впевнені, що хочете залишити цю сторінку?
+discard_changes: Скасувати зміни
+keep_editing: Продовжити редагування
+add_new: Створити
+all: Все
+batch_delete_confirm: >-
+  Жодних елементів не вибрано | Ви впевнені, що хочете видалити цей елемент? Цю дію не можна скасувати. | Ви впевнені, що ви хочете видалити ці {count} елементи? Цю дію неможливо скасувати.
+cancel: Скасувати
+collection: Колекція
+collections: Колекції
+fields:
+  directus_activity:
+    item: Первинний ключ елемента
+    action: Дія
+    collection: Колекція
+    timestamp: Час події
+    user: Дія від
+    comment: Коментар
+    user_agent: Ідентифікатор браузера
+    ip: IP адреса
+  directus_collections:
+    collection: Колекція
+    icon: Іконка
+    note: Примітка
+    hidden: Приховано
+  directus_files:
+    title: Заголовок
+    description: Опис
+    tags: Теги
+    location: Розташування
+    metadata: Метадані
+    filesize: Розмір файлу
+    modified_on: Час зміни
+    created_on: Створено
+    created_by: Автор
+    embed: Вбудувати
+    uploaded_by: Завантажено
+    width: Ширина
+    uploaded_on: Завантажено
+    height: Висота
+    duration: Тривалість
+  directus_users:
+    first_name: Ім'я
+    last_name: Прізвище
+    email: Email
+    password: Пароль
+    avatar: Аватар
+    location: Розташування
+    title: Заголовок
+    description: Опис
+    tags: Теги
+    language: Мова
+    theme: Тема
+    tfa_secret: Двофакторна автентифікація
+    status: Статус
+    role: Роль
+  directus_settings:
+    project_name: Назва проекту
+  directus_fields:
+    note: Примітка
+    hidden: Приховано
+    display_template: Шаблон
+  directus_roles:
+    description: Опис
+comment: Коментар
+continue: Далі
+default: За замовчуванням
+delete: Видалити
+delete_field_are_you_sure: >-
+  Ви впевнені, що хочете видалити поле "{field}"? Цю дію не можливо скасувати.
+description: Опис
+done: Готово
+duplicate: Дублювати
+email: Email
+embed: Вбудувати
+field: Поле | Поля
+file: Файл
+file_library: Бібліотека файлів
+forgot_password: Забули пароль
+hidden: Приховано
+icon: Іконка
+info: Інформація
+junction_collection: Збірна колекція
+latency: Затримка
+login: Вхід
+my_activity: Активність
+not_authenticated: Не автентифіковано
+options: Параметри
+otp: Одноразовий пароль
+password: Пароль
+permissions: Права
+relationship: Відносини
+reset: Скинути
+reset_password: Скинути пароль
+revert: Повернути
+save: Зберегти
+schema: Схема
+search: Пошук
+select_existing: Вибрати існуючі
+select_interface: Виберіть інтерфейс
+settings: Налаштування
+sign_in: Вхід
+sign_out: Вихід
+sign_out_confirm: Ви справді бажаєте вийти?
+something_went_wrong: Щось пішло не так.
+sort_direction: Напрямок сортування
+template: Шаблон
+translation: Переклад
+value: Значення
+interfaces:
+  checkboxes:
+    checkboxes: Прапорці
+  code:
+    code: Код
+    line_number: Номери рядків
+  collection:
+    collection: Колекція
+  collections:
+    collections: Колекції
+  color:
+    color: Колір
+  datetime:
+    datetime: Дата й час
+  divider:
+    divider: Розділювач
+  file:
+    file: Файл
+  files:
+    files: Файли
+  icon:
+    icon: Іконка
+  many-to-one:
+    many-to-one: Багато до одного
+  numeric:
+    numeric: Цифровий
+  one-to-many:
+    one-to-many: Один до багатьох
+  tags:
+    tags: Теги
+  text-input:
+    text-input: Текстове поле
+    trim: Обрізувати пробіли
+  user:
+    user: Користувач
+    modes:
+      dropdown: Випадаюче меню
+  wysiwyg:
+    custom_formats: Власне форматування
+displays:
+  collection:
+    collection: Колекція
+  color:
+    color: Колір
+  datetime:
+    datetime: Дата й час
+    format: Формат
+  file:
+    file: Файл
+  filesize:
+    filesize: Розмір файлу
+  icon:
+    icon: Іконка
+  user:
+    user: Користувач
+    avatar: Аватар
+    name: Назва
+    both: Обидва
+layouts:
+  cards:
+    cards: Картки
+    image_source: Джерело зображення
+    title: Заголовок
+    subtitle: Підзаголовок
+  tabular:
+    tabular: Таблиця
+    fields: Поля
+    spacing: Відступ
+    comfortable: Комфортна
+    compact: Компактна
+    cozy: Зручна

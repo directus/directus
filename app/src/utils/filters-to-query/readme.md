@@ -1,11 +1,11 @@
 # Filters to Query
 
-Converts an array of filter objects to an Axios compatible object of query params.
+Converts an array of filter objects to an object of query params.
 
 ## Usage
 
 ```ts
-const filters: Filter[] = [
+const multipleFilters: Filter[] = [
 	{
 		field: 'title',
 		operator: 'contains',
@@ -18,10 +18,37 @@ const filters: Filter[] = [
 	},
 ];
 
-filtersToQuery(filters);
+filtersToQuery(multipleFilters);
 
 // {
-//   'filter[title][contains]': 'directus',
-//   'filter[author][eq]: 1
+//   _and: [
+//     {
+//       title: {
+//         _contains: 'directus'
+//       }
+//     },
+//     {
+//       author: {
+//         _eq: 1
+//       }
+//     }
+//   ]
+// }
+
+
+const singleFilter: Filter[] = [
+	{
+		field: 'title',
+		operator: 'contains',
+		value: 'directus',
+	}
+];
+
+filtersToQuery(singleFilter);
+
+// {
+//   title: {
+//     _contains: 'directus'
+//   }
 // }
 ```

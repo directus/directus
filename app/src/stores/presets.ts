@@ -3,7 +3,7 @@ import { Preset } from '@/types';
 import { useUserStore } from '@/stores/';
 import api from '@/api';
 import { nanoid } from 'nanoid';
-import { merge } from 'lodash';
+import { merge, cloneDeep } from 'lodash';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
 	bookmark: null,
@@ -38,6 +38,11 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 	directus_users: {
 		collection: 'directus_users',
 		layout: 'cards',
+		layout_query: {
+			cards: {
+				sort: 'email',
+			},
+		},
 		layout_options: {
 			cards: {
 				icon: 'account_circle',
@@ -104,6 +109,7 @@ export const usePresetsStore = createStore({
 				api.get(`/presets`, {
 					params: {
 						'filter[user][_eq]': id,
+						limit: -1,
 					},
 				}),
 				// All role saved bookmarks and presets
@@ -111,6 +117,7 @@ export const usePresetsStore = createStore({
 					params: {
 						'filter[role][_eq]': role.id,
 						'filter[user][_null]': true,
+						limit: -1,
 					},
 				}),
 				// All global saved bookmarks and presets
@@ -118,6 +125,7 @@ export const usePresetsStore = createStore({
 					params: {
 						'filter[role][_null]': true,
 						'filter[user][_null]': true,
+						limit: -1,
 					},
 				}),
 			]);
@@ -238,7 +246,7 @@ export const usePresetsStore = createStore({
 			const { id: userID } = userStore.state.currentUser;
 
 			// Clone the preset to make sure the future deletes don't affect the original object
-			preset = { ...preset };
+			preset = cloneDeep(preset);
 
 			if (preset.id === undefined || preset.id === null) {
 				return await this.create({

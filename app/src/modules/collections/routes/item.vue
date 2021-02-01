@@ -57,12 +57,7 @@
 		</template>
 
 		<template #actions>
-			<v-dialog
-				v-if="!isNew"
-				v-model="confirmDelete"
-				:disabled="deleteAllowed === false"
-				@esc="confirmDelete = false"
-			>
+			<v-dialog v-if="!isNew" v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
 						rounded
@@ -448,7 +443,7 @@ export default defineComponent({
 		async function saveAsCopyAndNavigate() {
 			try {
 				const newPrimaryKey = await saveAsCopy();
-				router.push(`/collections/${props.collection}/${newPrimaryKey}`);
+				if (newPrimaryKey) router.push(`/collections/${props.collection}/${newPrimaryKey}`);
 			} catch {
 				// Save shows unexpected error dialog
 			}

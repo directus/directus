@@ -1,0 +1,190 @@
+---
+edit_field: Editează câmp
+item_revision: Revizuire element
+duplicate_field: Duplicare câmp
+half_width: Jumătate de lăţime
+full_width: Lăţime totală
+fill_width: Umple lăţime
+field_name_translations: Traducerile numelui câmpului
+enter_password_to_enable_tfa: Introduceți parola pentru a activa autentificarea în doi paşi
+add_field: Adaugă câmp
+role_name: Nume de rol
+db_only_click_to_configure: 'Doar baza de date: Apăsaţi pentru a configura '
+show_archived_items: Arată elementele arhivate
+required: Necesar
+requires_value: Necesită valoare
+create_preset: Creează presetare
+create_role: Creează Rol
+create_user: Creează utilizator
+create_webhook: Creează Webhook
+invite_users: Invită utilizatori
+email_examples: 'admin@exemplu.com, utilizator@exemplu.com...'
+invite: Invită
+emails: E-mailuri
+connection_excellent: Conexiune excelentă
+connection_good: Conexiune bună
+connection_fair: Conexiune rezonabilă
+connection_poor: Conexiune slabă
+rename_folder: Redenumeşte folderul
+delete_folder: Şterge folderul
+reset_bookmark: Resetează semnul de carte
+rename_bookmark: Redenumeşte semnul de carte
+update_bookmark: Actualizează semnul de carte
+delete_bookmark: Șterge semn de carte
+delete_bookmark_copy: >-
+  Sunteţi sigur că doriţi să ştergeţi semnul de carte "{bookmark}"? Această acţiune nu poate fi modificată ulterior.
+logoutReason:
+  SIGN_OUT: Deconectat
+  SESSION_EXPIRED: Sesiunea a expirat
+public: Public
+public_description: Controlează ce date API sunt disponibile fără autentificare.
+not_allowed: Nu este permis
+directus_version: Versiune Directus
+node_version: Versiune Node
+node_uptime: Timp de activitate Node
+os_type: Tipul SO
+os_version: Versiunea SO
+os_uptime: Timpul de activitate al SO
+os_totalmem: Memoria SO
+archive: Arhivează
+archive_confirm: Sunteţi sigur că doriţi să arhivaţi acest element?
+archive_confirm_count: >-
+  Niciun element selectat | Sunteţi sigur că doriţi să arhivaţi acest element? | Sunteţi sigur că doriţi să arhivaţi aceste {count} elemente?
+reset_system_permissions: Resetare permisiuni de sistem
+reset_system_permissions_copy: Resetează toate permisiunile de sistem la valorile implicite
+unarchive: Dezarhivare
+unarchive_confirm: Sunteţi sigur că doriţi să dezarhivaţi acest element?
+nested_files_folders_will_be_moved: Fişierele şi folderele suprapuse vor fi mutate cu un nivel mai sus.
+create_field: Creează Câmp
+auto_generate: Generare automată
+add_note: Adaugă o notă ajutătoare pentru utilizatori...
+default_value: Valoare implicită
+clear_value: Șterge valoarea
+title: Titlu
+checksum: Sumă de control
+owner: Proprietar
+download: Descărcați
+created_by: Creat De
+created_on: Creat Pe
+comments: Comentarii
+create_collection: Creează Colecție
+users: Utilizatori
+activity: Activitate
+duration: Durată
+status: Stare
+bookmarks: Semne de carte
+back: Înapoi
+operators:
+  gt: Mai mare ca
+  gte: Mai mare sau egal cu
+  contains: Conține
+role: Rol
+create: Creează
+wysiwyg_options:
+  table: Tabel
+choices: Opțiuni
+deselect: Deselectaţi
+editing_in_batch: 'Editare lot de {count} elemente'
+discard_changes: Renunță la modificări
+add_new: Adaugare intrare nouă
+all: Tot
+batch_delete_confirm: >-
+  Nu au fost selectate articole | Sigur doriți să ștergeți acest articol? Această acțiune nu poate fi anulată. | Sigur doriți să ștergeți aceste {count} elemente? Această acțiune nu poate fi anulată.
+cancel: Anulează
+collection: Colecție
+collections: Colecții
+fields:
+  directus_activity:
+    item: Cheia primară a elementului
+    action: Acţiune
+    collection: Colecție
+    timestamp: Acțiune pe
+    user: Acțiune de
+    comment: Comentariu
+    user_agent: User Agent
+    ip: Adresă IP
+  directus_collections:
+    collection: Colecție
+    icon: Iconiță
+    hidden: Ascuns
+  directus_files:
+    title: Titlu
+    description: Descriere
+    tags: Etichete
+    location: Locație
+    metadata: Metadate
+    filesize: Dimensiune fişier
+    created_on: Creat Pe
+    created_by: Creat De
+    embed: Încorporați
+    uploaded_by: Încărcat de
+    width: Lățime
+    uploaded_on: Încărcat pe
+    height: Înălţime
+    duration: Durată
+  directus_users:
+    first_name: Prenume
+    last_name: Nume
+    email: Email
+    password: Parolă
+    avatar: Avatar
+    location: Locație
+    title: Titlu
+    description: Descriere
+    tags: Etichete
+    theme: Temă
+    tfa_secret: Autentificare în doi pași
+    status: Stare
+    role: Rol
+  directus_fields:
+    hidden: Ascuns
+    translation: Traducerile numelui câmpului
+  directus_roles:
+    name: Nume de rol
+    description: Descriere
+comment: Comentariu
+continue: Continuă
+default: Implicit
+delete: Ştergeţi
+delete_field_are_you_sure: >-
+  Sunteţi sigur că doriţi să ştergeţi câmpul "{field}"? Această acţiune nu poate fi modificată ulterior.
+description: Descriere
+done: Efectuat
+duplicate: Duplicare
+email: Email
+embed: Încorporați
+field: Câmp | Câmpuri
+hidden: Ascuns
+icon: Iconiță
+info: Info
+password: Parolă
+interfaces:
+  collection:
+    collection: Colecție
+  collections:
+    collections: Colecții
+  files:
+    files: Fişiere
+  icon:
+    icon: Iconiță
+  tags:
+    tags: Etichete
+displays:
+  collection:
+    collection: Colecție
+  icon:
+    icon: Iconiță
+  user:
+    avatar: Avatar
+    both: Ambele
+layouts:
+  cards:
+    cards: Carduri
+    image_source: Sursa Imaginii
+    title: Titlu
+    subtitle: Subtitlu
+  tabular:
+    tabular: Tabel
+    comfortable: Confortabil
+    compact: Compact
+    cozy: Comod

@@ -9,11 +9,16 @@ const choicesMap = CodeMirror.modeInfo.reduce((acc: Record<string, string>, choi
 		return acc;
 	}
 
+	if (choice.mode == null || choice.mode == 'null') {
+		choice.mode = 'plaintext';
+	}
+
 	if (choice.mode in acc) {
 		acc[choice.mode] += ' / ' + choice.name;
 	} else {
 		acc[choice.mode] = choice.name;
 	}
+
 	return acc;
 }, {});
 
@@ -61,7 +66,6 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'code',
 				options: {
 					placeholder: i18n.t('interfaces.code.placeholder'),
-					language: 'text/plain',
 				},
 			},
 			schema: {

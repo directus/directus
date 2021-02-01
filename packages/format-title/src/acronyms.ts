@@ -66,6 +66,7 @@ export default [
 	'UI',
 	'URL',
 	'USB',
+	'UWP',
 	'VIP',
 	'W3C',
 	'WYSIWYG',

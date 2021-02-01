@@ -1,0 +1,491 @@
+---
+edit_field: Mező szerkesztése
+duplicate_field: Mező másolása
+half_width: Félszélességű
+full_width: Teljes szélesség
+fill_width: Teret kitöltő
+field_name_translations: Lefordított mezőnevek
+enter_password_to_enable_tfa: Írd be a jelszót a kétfaktoros ellenőrzés bekapcsolásához
+add_field: Új mező
+role_name: Szerepkör neve
+show_archived_items: Archivált elemek megjelenítése
+required: Kötelező
+requires_value: Kötelező adat
+create_role: Szerepkör létrehozása
+create_user: Felhasználó létrehozása
+invite_users: Felhasználók meghívása
+email_examples: 'admin@example.com, felhaszalo@pelda.hu...'
+invite: Meghívás
+emails: E-mailek
+connection_excellent: Kiváló kapcsolat
+connection_good: Jó kapcsolat
+connection_fair: Megfelelő kapcsolat
+connection_poor: Gyenge kapcsolat
+rename_folder: Mappa átnevezése
+delete_folder: Mappa törlése
+reset_bookmark: Könyvjelző visszaállítása
+rename_bookmark: Könyvjelző átnevezése
+update_bookmark: Könyvjelző frissítése
+delete_bookmark: Könyvjelző törlése
+delete_bookmark_copy: >-
+  Biztosan törölni szeretnéd a "{bookmark}" könyvjelzőt? Ez a művelet nem visszavonható.
+logoutReason:
+  SIGN_OUT: Kijelentkezve
+  SESSION_EXPIRED: A munkamenet lejárt
+public: Nyilvános
+public_description: API adatok hozzáférése bejelentkezés nélkül.
+not_allowed: Nem engedélyezett
+directus_version: Directus verzió
+node_version: Node verzió
+node_uptime: Node futásidő
+os_type: Operációs rendszer típusa
+os_version: Operációs rendszer verzió
+os_uptime: Operációs rendszer futásideje
+os_totalmem: Operációs rendszer memória
+archive: Archívum
+archive_confirm: Biztosan törölni szeretnéd ezt az elemet?
+archive_confirm_count: >-
+  Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count} elemet?
+reset_system_permissions: Rendszer hozzáférések visszaállítása
+reset_system_permissions_copy: Minden rendszer hozzáférés visszaállítása alapállapotba
+unarchive: Archiválás visszavonása
+unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
+nested_files_folders_will_be_moved: Egymás alatti fileok és könyvtárak egy szinttel feljebb kerülnek.
+field_files: Több fájl egyidejű hozzáadása
+field_translations: Fordítások
+delete_field: Mező törlése
+language: Nyelv
+global: Globális
+admins_have_all_permissions: Az adminisztrátorok minden hozzáféréssel rendelkeznek
+camera: Fényképezőgép
+exposure: Megvilágítás
+shutter: Exponálógomb
+iso: ISO
+focal_length: Fókusztávolság
+schema_setup_title: Hogyan kerüljön ez a mező az adatbázisba?
+schema_field_title: Hogyan viselkedjen ez a mező az alkalmazásban?
+create_field: Mező létrehozása
+creating_new_field: 'Új mező ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Oldalbeállítások visszaállítása
+hidden_field: Rejtett mező
+hidden_on_detail: Elrejtés a részleteknél
+disabled_editing_value: Szerkesztés tiltása
+key: Kulcs
+alias: Álnév
+bigInteger: Nagy egész számok
+boolean: Logikai
+date: Dátum
+datetime: Dátum és idő
+decimal: Tizedes szám
+float: Törtszám
+integer: Egész szám
+json: JSON
+string: Karaktersor
+text: Szöveg
+time: Idő
+timestamp: Időbélyeg
+uuid: UUID
+not_available_for_type: Ehhez a típushoz nem elérhető
+create_translations: Fordítás létrehozása
+auto_generate: Automatikusan generált
+this_will_auto_setup_fields_relations: Ez automatikusan létrehozza az összes szükséges mezőt és kapcsolatokat.
+click_here: Kattints ide
+to_manually_setup_translations: a fordítások kézi elkészítéséhez.
+click_to_manage_translated_fields: >-
+  Ezek a mezők még nem lettek lefordítva. Kattints ide, hogy létrehozd őket. | Egy mező van lefordítva. Kattints ide a szerkesztéshez. | {count} mező van lefordítva. Kattints ide a szerkesztésükhöz.
+fields_group: Mező-csoport
+configure_m2o: A Sok-az-Egyhez kapcsolatok beállítása...
+configure_o2m: Az Egy-a-Sokhoz kapcsolatok beállítása...
+configure_m2m: A Sok-a-Sokhoz kapcsolatok beállítása...
+configure_m2a: A Sok-az-Akárhányhoz kapcsolatok beállítása...
+add_m2o_to_collection: 'Egy Sok-az-Egyhez kapcsolat hozzáadása a {collection} kollekcióhoz'
+add_o2m_to_collection: 'Egy Egy-a-Sokhoz kapcsolat hozzáadása a {collection} kollekcióhoz'
+add_m2m_to_collection: 'Egy Sok-a-Sokhoz kapcsolat hozzáadása a {collection} kollekcióhoz'
+choose_a_type: Válassz típust...
+determined_by_relationship: A kapcsolat által meghatározott
+add_note: Segítő jelzés a kitöltő felhasználónak...
+default_value: Alapértelmezett érték
+add_a_default_value: Alapértelmezett érték hozzáadása...
+interface_setup_title: Hogyan fogják a felhasználók ezt a mezőt használni?
+display_setup_title: Hogyan kell ennek a mezőnek az értékét megjeleníteni?
+standard_field: Általános mező
+multiple_files: Több fájl egyidejű hozzáadása
+next: Következő
+field_name: Mezőnév
+translations: Fordítások
+note: Jegyzet
+length: Hossz
+readonly: Csak olvasható
+unique: Egyedi
+updated_on: Frissítve
+updated_by: Frissítette
+primary_key: Elsődleges kulcs
+dismiss: Elutasít
+clear_value: Érték törlése
+notifications: Értesítések
+page_not_found: Az oldal nem található
+display: Megjelenés
+settings_update_success: Beállítások frissítve
+title: Cím
+revision_delta_created: Létrehozva
+leave_comment: Hozzászólás írása...
+related_collections: Kapcsolódó gyűjtemények
+translations_collection: Fordítások gyűjteménye
+languages_collection: Nyelvek gyűjteménye
+export_data: Adatok exportálása
+format: Formátum
+use_current_filters_settings: Aktuális szűrők és beállítások használata
+export_collection: '{collection} exportálása'
+last_page: Utolsó oldal
+last_access: Utolsó hozzáférés
+fill_template: Kitöltés sablon értékkel
+a_unique_table_name: Egyedi tábla név...
+a_unique_column_name: Egyedi oszlop név...
+enable_custom_values: Egyéni értékek engedélyezése
+submit: Beküldés
+move_to_folder: Áthelyezés mappába
+move: Áthelyezés
+system: Rendszer
+add_field_related: Mező hozzáadása kapcsolódó gyűjteményhez
+interface: Kezelőfelület
+today: Ma
+yesterday: Tegnap
+delete_comment: Hozzászólás törlése
+date-fns_date: PPP
+month: hónap
+year: év
+select_all: Összes kijelölése
+months:
+  january: január
+  february: február
+  march: március
+  april: április
+  may: május
+  june: június
+  july: július
+  august: augusztus
+  september: szeptember
+  october: október
+  november: november
+  december: december
+drag_mode: Vonszolási mód
+cancel_crop: Körbevágás megszakítása
+original: Eredeti
+url: URL
+import: Importálás
+file_details: Fájl adatok
+dimensions: Méretek
+created: Létrehozva
+checksum: Ellenőrző
+owner: Tulajdonos
+download: Letöltés
+no_file_selected: Nincs kijelölt fájl
+download_file: Fájl letöltése
+name: Név
+type: Típus
+created_by: Készítette
+created_on: Létrehozva
+comments: Hozzászólások
+no_items: Nincs megjeleníthető elem
+search_items: Tételek keresése...
+disabled: Letiltva
+report_bug: Hibajelentés
+item_count: 'Nincsenek elemek | Egy elem | {count} elem'
+no_items_copy: Nincsenek még elemek ebben a gyűjteményben.
+file_count: 'Nincsenek fileok | Egy file | {count} file'
+no_files_copy: Nincsenek fileok.
+user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasználó'
+no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
+webhooks_count: 'Nincsenek webhook-ok | Egy webhook | {count} webhook'
+no_webhooks_copy: Még nincsenek webhook-ok.
+all_items: Minden elem
+csv: CSV
+no_collections: Nincsenek gyűjtemények
+create_collection: Kollekció létrehozása
+no_collections_copy_admin: Még nem hoztál létre gyűjteményt. Kattints az alábbi gombra a kezdéshez.
+no_collections_copy: Még nem hoztál létre gyűjteményt. Lépj kapcsolatba a rendszeradminisztrátorral.
+relationship_not_setup: Ez a kapcsolat nincs megfelelően beállítva
+display_template_not_setup: A megjelenítő sablon nem megfelelően van beállítva
+collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
+select_a_collection: Gyűjtemény kiválasztása
+active: aktív
+users: Felhasználók
+activity: Tevékenységek
+webhooks: Webhookok
+field_width: Mező szélessége
+add_a_new_item: Új elem hozzáadása...
+add_filter: Szűrő hozzáadása
+upper_limit: Felső határ...
+lower_limit: Alsó határ...
+user_directory: Felhasználók listája
+documentation: Dokumentáció
+sidebar: Oldalsáv
+duration: Időtartam
+charset: Karakterkészlet
+second: Másodperc
+file_moved: A fájl átmozgatva
+collection_created: Gyűjtemény létrehozva
+modified_on: Változtatás dátuma
+card_size: Kártya mérete
+sort_field: Rendezési mező
+sort: Rendezés
+status: Állapot
+toggle_manual_sorting: Manuális rendezés ki/bekapcsolása
+bookmark_doesnt_exist: Könyvjelző nem létezik
+bookmark_doesnt_exist_copy: Ez a könyvjelző nem található.
+bookmark_doesnt_exist_cta: Vissza a gyűjteményhez
+select_an_item: Válassz egy elemet...
+edit: Szerkesztés
+enabled: Engedélyezve
+disable_tfa: Kétlépcsős hitelesítés kikapcsolása
+tfa_scan_code: Olvasd be a kódot a hitelesítő alkalmazással a kétszintű beléptetés beállításának befejezéséhez
+enter_otp_to_disable_tfa: Írd be az egyszeri jelszót a kétszintű hitelesítés kikapcsolásához
+create_account: Fiók létrehozása
+account_created_successfully: Fiók sikeresen létrehozva
+auto_fill: Automatikus kitöltés
+corresponding_field: Megfelelő mező
+errors:
+  COLLECTION_NOT_FOUND: "Gyűjtemény nem létezik"
+  FIELD_NOT_FOUND: Mező nem található
+  FORBIDDEN: Tilos
+  INVALID_CREDENTIALS: Hibás felhasználónév vagy jelszó
+  ROUTE_NOT_FOUND: Nem található
+bookmark_name: Könyvjelző neve...
+create_bookmark: Könyvjelző létrehozása
+edit_bookmark: Könyvjelző szerkesztése
+bookmarks: Könyvjelzők
+back: Vissza
+icon_left: Ikon Balra
+icon_right: Ikon Jobbra
+color: Szín
+operators:
+  gt: Nagyobb mint
+  gte: Nagyobb vagy egyenlő
+  in: egy ebből
+  nin: nem egy ebből
+  null: "null"
+  nnull: nem null
+  contains: Tartalmaz
+  ncontains: nem tartalmaz
+  between: között
+  nbetween: nincs ezek között
+  empty: üres
+  nempty: nem üres
+  all: Tartalmazza ezeket a kulcsokat
+  has: Néhányat ezek közül a kulcsok közül tartalmaz
+loading: Betöltés...
+drop_to_upload: Húzd ide a feltöltéshez
+upload_file: Fájl feltöltése
+upload_file_indeterminate: Fájl feltöltése...
+upload_file_success: File feltöltve
+upload_files_indeterminate: 'Fileok feltöltése {done}/{total}'
+upload_files_success: '{count} fájl feltöltve'
+upload_pending: Feltöltés folyamatban
+drag_file_here: Dobj ide egy fájlt
+click_to_browse: Kattints a böngészéshez
+layout_options: Elrendezési beállítások
+rows: Sorok
+columns: Oszlopok
+collection_setup: Gyűjtemény beállítások
+optional_system_fields: Opcionális rendszer mezők
+value_unique: Egyedi érték szükséges
+all_activity: Minden Tevékenység
+create_item: Elem létrehozása
+display_template: Megjelenítési sablon
+n_items_selected: 'Nincs elem kiválasztva | 1 elem van kiválasztva | {n} elem van kiválasztva'
+per_page: oldalanként
+all_files: Minden fájl
+my_files: A saját fájljaim
+recent_files: Legutóbbi fájlok
+create_folder: Mappa létrehozása
+folder_name: Mappa neve...
+add_file: Fájl hozzáadása
+replace_file: Fájl cseréje
+no_results: Nincs találat
+no_results_copy: Módosítsd vagy töröld a keresési szűrőket a találatokért.
+clear_filters: Szűrök törlése
+saves_automatically: Automatikus mentés
+role: Szerepkör
+user: Felhasználó
+no_presets: Presetek
+no_presets_copy: Még egy preset vagy könyvjelző sem lett elmentve.
+no_presets_cta: Preset hozzáadása
+create: Létrehozás
+on_create: Létrehozáskor
+on_update: Módosításkor
+read: Olvasás
+update: Frissítés
+select_fields: Válassz mezőket
+format_text: Szövegformázás
+bold: Félkövér
+label: Címke
+wysiwyg_options:
+  bold: Félkövér
+  codeblock: Kód
+  copy: Másolás
+  cut: Kivágás
+  paste: Beillesztés
+  heading: Címsor
+  indent: Behúzás
+  undo: Visszavon
+  redo: Újra
+  selectall: Összes kijelölése
+  table: Táblázat
+  code: Forrás megtekintése
+  fullscreen: Teljes képernyő
+choices: Lehetőségek
+deselect: Kijelölés megszüntetése
+other: Egyéb...
+editing_in_batch: '{count} elem szerkesztése'
+settings_permissions: Szerepkörök és jogosultságok
+settings_project: Projekt beállításai
+settings_webhooks: Webhookok
+discard_changes: Változtatások elvetése
+add_new: Új hozzáadása
+all: Összes
+batch_delete_confirm: >-
+  Nincs elem kiválasztva | Biztosan törölni szeretnéd az elemet? A művelet nem visszavonható. | Biztosan törölni szeretnéd az összes elemet ({count} db)? A művelet nem visszavonható.
+cancel: Mégse
+collection: Gyűjtemény
+collections: Kollekciók
+fields:
+  directus_activity:
+    item: Elem elsődleges kulcsa
+    action: Művelet
+    collection: Gyűjtemény
+    comment: Hozzászólás
+    ip: IP Cím
+  directus_collections:
+    collection: Gyűjtemény
+    icon: Ikon
+    note: Jegyzet
+    display_template: Megjelenítési sablon
+    hidden: Rejtett
+    sort_field: Rendezési mező
+  directus_files:
+    title: Cím
+    description: Leírás
+    tags: Cimkék
+    location: Pozíció
+    metadata: Metadata
+    filesize: File mérete
+    modified_on: Változtatás dátuma
+    created_on: Létrehozva
+    created_by: Készítette
+    embed: Beágyazás
+    uploaded_by: Feltöltve
+    width: Szélesség
+    uploaded_on: Feltöltve
+    height: Magasság
+    charset: Karakterkészlet
+    duration: Időtartam
+  directus_users:
+    first_name: Családnév
+    last_name: Vezetéknév
+    email: E-mail
+    password: Jelszó
+    avatar: Profilkép
+    location: Pozíció
+    title: Cím
+    description: Leírás
+    tags: Cimkék
+    language: Nyelv
+    theme: Téma
+    tfa_secret: Kétlépcsős hitelesítés
+    status: Állapot
+    role: Szerepkör
+    last_page: Utolsó oldal
+    last_access: Utolsó hozzáférés
+  directus_settings:
+    custom_css: Egyéni CSS
+  directus_fields:
+    note: Jegyzet
+    hidden: Rejtett
+    translation: Lefordított mezőnevek
+    display_template: Sablon
+  directus_roles:
+    name: Szerepkör neve
+    description: Leírás
+    ip_access: IP cím
+block: Blokk
+comment: Hozzászólás
+continue: Tovább
+default: Alapértelmezett
+delete: Törlés
+delete_field_are_you_sure: >-
+  Biztosan törölni szeretnéd ezt a mezőt ({field})? Ha törlöd, nem lehet visszaállítani.
+description: Leírás
+done: Kész
+duplicate: Duplikálás
+email: E-mail
+embed: Beágyazás
+file: File
+file_library: File könyvtár
+forgot_password: Elfelejtett jelszó
+hidden: Rejtett
+icon: Ikon
+password: Jelszó
+select_existing: Létező kiválasztása
+settings: Beállítások
+template: Sablon
+interfaces:
+  code:
+    code: Kód
+    line_number: Sor szám
+  collection:
+    collection: Gyűjtemény
+  collections:
+    collections: Kollekciók
+  color:
+    color: Szín
+  display-template:
+    display-template: Megjelenítési sablon
+    collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
+    select_a_collection: Gyűjtemény kiválasztása
+  file:
+    file: File
+  files:
+    files: Fájlok
+  icon:
+    icon: Ikon
+  interface:
+    interface: Kezelőfelület
+  many-to-one:
+    display_template: Megjelenítési sablon
+  tags:
+    tags: Cimkék
+  toggle:
+    label_default: Engedélyezve
+  translations:
+    display_template: Megjelenítési sablon
+  user:
+    user: Felhasználó
+displays:
+  boolean:
+    boolean: Logikai
+  collection:
+    collection: Gyűjtemény
+  color:
+    color: Szín
+  datetime:
+    format: Formátum
+  file:
+    file: File
+  icon:
+    icon: Ikon
+  user:
+    user: Felhasználó
+    avatar: Profilkép
+    name: Név
+    both: Mindkettő
+layouts:
+  cards:
+    cards: Kártya
+    image_source: Kép forrása
+    title: Cím
+    subtitle: Alcím
+  tabular:
+    tabular: Táblázat
+    comfortable: Kényelmes
+    compact: Kompakt

@@ -1,0 +1,191 @@
+---
+full_width: Πλήρες Πλάτος
+required: Υποχρεωτικό
+create_role: Δημιουργία ρόλου
+delete_bookmark: Διαγραφή σελιδοδείκτη
+directus_version: Έκδοση Directus
+create_field: Δημιουργία πεδίου
+hidden_on_detail: Κρυφό στις λεπτομέρειες
+text: Κείμενο
+auto_generate: Αυτόματη δημιουργία
+add_note: Προσθέστε μια χρήσιμη σημείωση για τους χρήστες...
+default_value: Προεπιλεγμένη τιμή
+next: Επόμενο
+note: Σημείωση
+length: Μήκος
+unique: Μοναδικό
+clear_value: Εκκαθάριση αξίας
+title: Τίτλος
+leave_comment: Άφηστε ένα σχόλιο...
+submit: Υποβολή
+months:
+  january: Ιανουάριος
+  february: Φεβρουάριος
+  march: Μάρτιος
+  april: Απρίλιος
+  may: Μάιος
+  june: Ιούνιος
+  july: Ιούλιος
+  august: Αύγουστος
+  september: Σεπτέμβριος
+  october: Οκτώβριος
+  november: Νοέμβριος
+  december: Δεκέμβριος
+checksum: Έλεγχος αθροίσματος
+owner: Ιδιοκτήτης
+download: Λήψη
+name: Όνομα
+created_by: Δημιουργήθηκε από
+created_on: Δημιουργήθηκε στις
+save_and_stay: Αποθήκευση και Παραμονή
+comments: Σχόλια
+create_collection: Δημιουργία Συλλογής
+users: Χρήστες
+activity: Δραστηριότητα
+field_width: Πλάτος πεδίου
+duration: Διάρκεια
+status: Κατάσταση
+bookmarks: Σελιδοδείκτες
+back: Πίσω
+operators:
+  lt: Λιγότερο από
+  gt: Μεγαλύτερο από
+  gte: Μεγαλύτερο από ή ίσο με
+  contains: Περιέχει
+  empty: Είναι κενό
+role: Ρόλος
+create: Δημιουργία
+read: Ανάγνωση
+update: Ενημέρωση
+wysiwyg_options:
+  remove: Διαγραφή
+  table: Πίνακας
+choices: Επιλογές
+deselect: Αποεπιλέξτε
+editing_in_batch: 'Μαζική Επεξεργασία {count} Στοιχείων'
+settings_project: Ρυθμίσεις Έργου
+discard_changes: Ακύρωση αλλαγών
+add_new: Προσθήκη νέου
+all: Όλα
+batch_delete_confirm: >-
+  Δεν έχουν επιλεγεί στοιχεία. | Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το στοιχείο; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί. | Είστε βέβαιοι ότι θέλετε να διαγράψετε αυτά τα {count} στοιχεία; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.
+cancel: Ακύρωση
+collection: Συλλογή
+collections: Συλλογές
+fields:
+  directus_activity:
+    item: Στοιχείο Πρωτεύον Κλειδί
+    action: Ενέργεια
+    collection: Συλλογή
+    timestamp: Ενέργεια στις
+    user: Ενέργεια από
+    comment: Σχόλιο
+    user_agent: Πράκτορας χρήστη
+    ip: Διεύθυνση IP
+  directus_collections:
+    collection: Συλλογή
+    icon: Εικονίδιο
+    note: Σημείωση
+    hidden: Κρυφό
+  directus_files:
+    title: Τίτλος
+    description: Περιγραφή
+    tags: Ετικέτες
+    location: Τοποθεσία
+    metadata: Μεταδεδομένα
+    filesize: Μέγεθος αρχείου
+    created_on: Δημιουργήθηκε στις
+    created_by: Δημιουργήθηκε από
+    embed: Ενσωμάτωση
+    uploaded_by: Μεταφορτώθηκε από
+    width: Πλάτος
+    uploaded_on: Μεταφορτώθηκε στις
+    height: Ύψος
+    duration: Διάρκεια
+  directus_users:
+    first_name: Όνομα
+    last_name: Επώνυμο
+    email: Ηλεκτρονικό ταχυδρομείο
+    password: Κωδικός
+    avatar: Άβαταρ
+    location: Τοποθεσία
+    title: Τίτλος
+    description: Περιγραφή
+    tags: Ετικέτες
+    theme: Θέμα
+    tfa_secret: Έλεγχος ταυτότητας δυο παραγόντων
+    status: Κατάσταση
+    role: Ρόλος
+  directus_settings:
+    project_name: Όνομα Έργου
+  directus_fields:
+    note: Σημείωση
+    hidden: Κρυφό
+  directus_roles:
+    description: Περιγραφή
+comment: Σχόλιο
+continue: Συνέχεια
+default: Προεπιλογή
+delete: Διαγραφή
+delete_field_are_you_sure: >-
+  Είσαι σίγουρος ότι θέλεις να διαγράψεις το πεδίο "{field}"; Η ενέργεια αυτή δεν μπορεί να αναιρεθεί.
+description: Περιγραφή
+done: Ολοκληρώθηκε
+duplicate: Αντίγραφο
+email: Ηλεκτρονικό ταχυδρομείο
+embed: Ενσωμάτωση
+field: Πεδίο | Πεδία
+file: Αρχείο
+file_library: Βιβλιοθήκη αρχείων
+forgot_password: Ξέχασα τον κωδικό πρόσβασης
+hidden: Κρυφό
+icon: Εικονίδιο
+info: Πληροφορίες
+latency: Καθυστέρηση
+options: Επιλογές
+otp: Κωδικός μιάς χρήσης
+password: Κωδικός
+permissions: Δικαιώματα
+relationship: Σχέση
+reset: Επαναφορά
+reset_password: Επαναφορά Κωδικού
+save: Αποθήκευση
+search: Αναζήτηση
+settings: Ρυθμίσεις
+translation: Μετάφραση
+value: Τιμή
+interfaces:
+  collection:
+    collection: Συλλογή
+  collections:
+    collections: Συλλογές
+  file:
+    file: Αρχείο
+  files:
+    files: Αρχεία
+  icon:
+    icon: Εικονίδιο
+  tags:
+    tags: Ετικέτες
+displays:
+  collection:
+    collection: Συλλογή
+  file:
+    file: Αρχείο
+  icon:
+    icon: Εικονίδιο
+  user:
+    avatar: Άβαταρ
+    name: Όνομα
+    both: Και τα δύο
+layouts:
+  cards:
+    cards: Κάρτες
+    image_source: Πηγή εικόνας
+    title: Τίτλος
+    subtitle: Υπότιτλος
+  tabular:
+    tabular: Πίνακας
+    comfortable: Άνετος
+    compact: Συμπαγής
+    cozy: Κανονικό

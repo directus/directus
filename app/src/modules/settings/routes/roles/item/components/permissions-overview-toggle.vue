@@ -11,7 +11,7 @@
 			</template>
 
 			<v-list>
-				<v-list-item @click="setFullAccess">
+				<v-list-item @click="setFullAccess(action)">
 					<v-list-item-icon>
 						<v-icon name="check" />
 					</v-list-item-icon>
@@ -20,7 +20,7 @@
 					</v-list-item-content>
 				</v-list-item>
 
-				<v-list-item @click="setNoAccess">
+				<v-list-item @click="setNoAccess(action)">
 					<v-list-item-icon>
 						<v-icon name="block" />
 					</v-list-item-icon>
@@ -48,10 +48,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, inject, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, inject, ref, toRefs } from '@vue/composition-api';
 import { Collection, Permission } from '@/types';
 import api from '@/api';
 import router from '@/router';
+import useUpdatePermissions from '../composables/use-update-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -68,8 +69,8 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		permission: {
-			type: Object as PropType<Permission>,
+		permissions: {
+			type: Array as PropType<Permission[]>,
 			default: null,
 		},
 		loading: {
@@ -78,17 +79,22 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { collection, role, permissions } = toRefs(props);
+		const { setFullAccess, setNoAccess, getPermission } = useUpdatePermissions(collection, permissions, role);
+
+		const permission = computed(() => getPermission(props.action));
+
 		const permissionLevel = computed<'all' | 'none' | 'custom'>(() => {
-			if (props.permission === null) return 'none';
+			if (permission.value === undefined) return 'none';
 			if (hasAll() === true) return 'all';
 
 			return 'custom';
 
 			function hasAll() {
-				if (!props.permission) return false;
-				if (props.permission.fields?.includes('*') !== true) return false;
-				if (Object.keys(props.permission.permissions || {}).length > 0) return false;
-				if (Object.keys(props.permission.validation || {}).length > 0) return false;
+				if (!permission.value) return false;
+				if (permission.value.fields?.includes('*') === false) return false;
+				if (Object.keys(permission.value.permissions || {}).length > 0) return false;
+				if (Object.keys(permission.value.validation || {}).length > 0) return false;
 
 				return true;
 			}
@@ -100,62 +106,6 @@ export default defineComponent({
 
 		return { permissionLevel, saving, setFullAccess, setNoAccess, openPermissions };
 
-		async function setFullAccess() {
-			saving.value = true;
-
-			// If this collection isn't "managed" yet, make sure to add it to directus_collections first
-			// before trying to associate any permissions with it
-			if (props.collection.meta === null) {
-				await api.patch(`/collections/${props.collection.collection}`, {
-					meta: {},
-				});
-			}
-
-			if (props.permission) {
-				try {
-					await api.patch(`/permissions/${props.permission.id}`, {
-						fields: '*',
-						permissions: null,
-						validation: null,
-					});
-				} catch (err) {
-					unexpectedError(err);
-				} finally {
-					await refresh?.();
-					saving.value = false;
-				}
-			} else {
-				try {
-					await api.post('/permissions/', {
-						role: props.role,
-						collection: props.collection.collection,
-						action: props.action,
-						fields: '*',
-					});
-				} catch (err) {
-					unexpectedError(err);
-				} finally {
-					await refresh?.();
-					saving.value = false;
-				}
-			}
-		}
-
-		async function setNoAccess() {
-			if (!props.permission) return;
-
-			saving.value = true;
-
-			try {
-				await api.delete(`/permissions/${props.permission.id}`);
-			} catch (err) {
-				unexpectedError(err);
-			} finally {
-				await refresh?.();
-				saving.value = false;
-			}
-		}
-
 		async function openPermissions() {
 			// If this collection isn't "managed" yet, make sure to add it to directus_collections first
 			// before trying to associate any permissions with it
@@ -165,8 +115,8 @@ export default defineComponent({
 				});
 			}
 
-			if (props.permission) {
-				router.push(`/settings/roles/${props.role || 'public'}/${props.permission.id}`);
+			if (permission.value) {
+				router.push(`/settings/roles/${props.role || 'public'}/${permission.value.id}`);
 			} else {
 				saving.value = true;
 

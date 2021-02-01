@@ -1,0 +1,356 @@
+---
+edit_field: تعديل الحقل
+duplicate_field: حقل مكرر
+half_width: نصف العرض
+full_width: العرض الكامل
+fill_width: العرض الكامل
+enter_password_to_enable_tfa: أدخل كلمة المرور الخاصة بك لتمكين المصادقة الثنائية
+add_field: إضافة حقل
+role_name: إسم الدور
+required: مطلوب
+create_role: إنشاء دور أو صلاحية
+create_user: إضافة مستخدم
+delete_bookmark: حذف إشارة مرجعية
+directus_version: إصدار Directus
+archive: أرشفة
+unarchive: إزالة من الأرشيف
+unarchive_confirm: هل أنت متأكد من أنك تريد إلغاء أرشفة هذا العنصر؟
+validationError:
+  empty: يجب أن تكون القيمة فارغة
+  nempty: لا يمكن أن تكون القيمة فارغة
+delete_field: حذف الحقل
+language: لغة
+camera: الكاميرا
+create_field: إنشاء حقل
+hidden_field: حقل مخفي
+hidden_on_detail: مخفي في التفاصيل
+date: التاريخ
+decimal: عشري
+text: نص
+create_translations: إنشاء ترجمات
+auto_generate: إنشاء تلقائي
+add_note: أضف ملاحظة مفيدة للمستخدمين...
+default_value: القيمة الافتراضية
+next: التالي
+note: ملحوظة
+length: الطول
+readonly: يقرأ فقط
+unique: فريد
+primary_key: المفتاح الرئيسي
+clear_value: إزالة القيمة
+reset_to_default: إعادة تعيين إلى الافتراضي
+undo_changes: التراجع عن التغييرات
+notifications: إشعارات
+page_not_found: الصفحة غير موجودة
+page_not_found_body: الصفحة التي تبحث عنها غير موجودة.
+display: عرض
+title: العنوان
+leave_comment: اترك تعليقا...
+this_collection: هذه المجموعة
+related_collection: المجموعات ذات الصلة
+format: التنسيق
+submit: إرسال
+months:
+  january: يناير
+  february: فبراير
+  march: مارس
+  april: أبريل
+  may: مايو
+  june: يونيو
+  july: يوليو
+  august: أغسطس
+  september: سبتمبر
+  october: أكتوير
+  november: نوفمبر
+  december: ديسمبر
+import: إستيراد
+file_details: تفاصيل الملف
+dimensions: الأبعاد
+size: حجم
+checksum: بصمة الملف
+owner: المالك
+download: تنزيل
+open: فتح
+open_in_new_window: فتح في نافذة جديدة
+no_file_selected: لم يتم تحديد ملف
+download_file: تحميل الملف
+name: الاسم
+type: النوع
+created_by: تم الإنشاء بواسطة
+created_on: تم الإنشاء بتاريخ
+save_and_stay: حفظ و إستمرار
+save_as_copy: حفظ كنسخة إضافية
+comments: تعليقات
+request_feature: طلب ميزة
+item_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
+create_collection: إنشاء مجموعة
+relationship_not_setup: لم يتم إعداد العلاقة بشكل صحيح
+users: المستخدمين
+activity: الأنشطة
+webhooks: روابط الويب (Webhooks)
+field_width: عرض الحقل
+user_directory: دليل المستخدمين
+documentation: التوثيق
+duration: المدة
+modified_on: التعديل في
+sort_field: فرز الحقل
+status: حالة
+edit: تعديل
+disable_tfa: تعطيل المصادقة الثنائية 2FA
+create_account: إنشاء حساب
+account_created_successfully: تم إنشاء الحساب بنجاح
+errors:
+  FIELD_NOT_FOUND: الحقل غير موجود
+  ROUTE_NOT_FOUND: غير موجود
+bookmarks: محفوظات
+unexpected_error_copy: حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى لاحقاً.
+copy_details: نسخ التفاصيل
+back: رجوع
+square: مربع
+placeholder: مكان محجوز
+icon_left: أيقونة اليسار
+icon_right: أيقونة اليمين
+serif: خط سيريف Serif
+monospace: Monospace
+divider: الفاصل
+color: لون
+circle: دائرة
+log_in_with: 'تسجيل الدخول باستخدام {provider}'
+operators:
+  lt: أقل من
+  gt: أكبر من
+  lte: اقل او يساوي
+  gte: أكبر من أو يساوي
+  contains: يحتوي على
+  ncontains: لا يحتوي
+  empty: فارغ
+loading: جار التحميل...
+display_template: عرض القالب
+no_results: لا توجد نتائج
+role: الدور
+create: انشاء
+on_update: عند التحديث
+read: قراءة
+update: تحديث
+select_fields: حدد حقول
+wysiwyg_options:
+  codeblock: نص برمجي
+  remove: احذف
+  table: الجدول
+dropdown: قائمة منسدلة
+choices: الخيارات
+deselect: إلغاء تحديد
+other: أخرى...
+unknown_user: مستخدم غير معروف
+editing_in_batch: 'تعديل دفعة من  {count} عناصر'
+settings_permissions: الأدوار والأذونات
+settings_project: إعدادات المشروع
+settings_webhooks: روابط الويب (Webhooks)
+unsaved_changes: لم يتم حفظ التعديلات
+unsaved_changes_copy: هل ترغب حقّا بمغادرة هذه الصفحة؟
+discard_changes: تجاهل التغييرات
+keep_editing: استمر في التحرير
+add_new: إضافة جديدة
+all: الجميع
+batch_delete_confirm: >-
+  لم يتم اختيار عناصر | هل أنت متأكد أنك تريد حذف هذا البند؟ لا يمكن التراجع عن هذا الإجراء. | هل تريد بالتأكيد حذف هذه {count} عنصر ؟ لا يمكن التراجع عن هذا الإجراء.
+cancel: إلغاء
+collection: المجموعة
+collections: مجموعات
+fields:
+  directus_activity:
+    item: المفتاح الأساسي للعنصر
+    action: الإجراء
+    collection: المجموعة
+    timestamp: تم بتاريخ
+    user: تم بواسطة
+    comment: تعليق
+    user_agent: وكيل المستخدم
+    ip: عنوان IP
+  directus_collections:
+    collection: المجموعة
+    icon: أيقونة
+    note: ملحوظة
+    display_template: عرض القالب
+    hidden: مخفي
+    sort_field: فرز الحقل
+  directus_files:
+    title: العنوان
+    description: التفاصيل
+    tags: الوسوم
+    location: الموقع
+    metadata: البيانات التعريفية
+    filesize: حجم الملف
+    modified_on: التعديل في
+    created_on: تم الإنشاء بتاريخ
+    created_by: تم الإنشاء بواسطة
+    embed: تضمين
+    uploaded_by: تم التحميل بواسطة
+    width: العرض
+    uploaded_on: تم التحميل بتاريخ
+    height: الارتفاع
+    duration: المدة
+  directus_users:
+    first_name: الاسم الأول
+    last_name: الاسم الأخير
+    email: البريد الإلكتروني
+    password: كلمة المرور
+    avatar: الصورةالرمزية
+    location: الموقع
+    title: العنوان
+    description: التفاصيل
+    tags: الوسوم
+    language: لغة
+    theme: السمة
+    tfa_secret: التحقق بخطوتين
+    status: حالة
+    role: الدور
+  directus_settings:
+    project_name: اسم المشروع
+    project_color: لون المشروع
+    project_logo: شعار المشروع
+  directus_fields:
+    note: ملحوظة
+    hidden: مخفي
+    display_template: قالب
+  directus_roles:
+    name: إسم الدور
+    description: التفاصيل
+comment: تعليق
+continue: واصل
+default: الإفتراضي
+delete: حذف
+delete_field_are_you_sure: >-
+  هل تريد بالتأكيد حذف الحقل "{field} "؟ لا يمكن التراجع عن هذا الإجراء.
+description: التفاصيل
+done: تم
+duplicate: مكرر
+email: البريد الإلكتروني
+embed: تضمين
+field: حقل | حقول
+file: ملف
+file_library: مكتبة الملفات
+forgot_password: نسيت كلمة المرور
+hidden: مخفي
+icon: أيقونة
+info: معلومات
+junction_collection: مجموعة تلاقي
+latency: وقت الإستجابة
+login: تسجيل الدخول
+my_activity: نشاطي
+not_authenticated: لم تتم المصادقة
+options: خيارات
+otp: كلمة السر لمرة واحدة OTP
+password: كلمة المرور
+permissions: أذونات
+relationship: العلاقة
+reset: إعادة تعيين
+reset_password: إعادة تعيين كلمة المرور
+revert: عودة
+save: حفظ
+schema: مخطط
+search: بحث
+select_existing: حدد خيار متوفر
+select_interface: اختر واجهة
+settings: إعدادات
+sign_in: تسجيل الدخول
+sign_out: تسجيل الخروج
+sign_out_confirm: هل أنت متأكد من رغبتك في تسجيل الخروج?
+something_went_wrong: حدث خطأ.
+sort_direction: الترتيب وفق الإتجاه
+template: قالب
+translation: الترجمة
+value: قيمة
+interfaces:
+  checkboxes:
+    checkboxes: مربع الاختيار
+    allow_other: السماح لآخرين
+  code:
+    code: نص برمجي
+    line_number: أرقام الأسطر
+  collection:
+    collection: المجموعة
+  collections:
+    collections: مجموعات
+  color:
+    color: لون
+  datetime:
+    datetime: التاريخ والوقت
+  display-template:
+    display-template: عرض القالب
+  divider:
+    divider: الفاصل
+  dropdown:
+    allow_other: السماح لآخرين
+  file:
+    file: ملف
+  files:
+    files: الملفات
+  icon:
+    icon: أيقونة
+  interface-options:
+    interface-options: خيارات الواجهة
+  many-to-many:
+    many-to-many: العديد للكثيرين
+  many-to-one:
+    many-to-one: العديد إلى واحد
+    display_template: عرض القالب
+  markdown:
+    markdown: Markdown
+  numeric:
+    numeric: رقمي
+  one-to-many:
+    one-to-many: واحد للكثيرين
+  radio-buttons:
+    radio-buttons: أزرار الراديو
+  repeater:
+    repeater: كرر
+  slider:
+    slider: شريط
+  slug:
+    slug: مقال
+  tags:
+    tags: الوسوم
+  text-input:
+    text-input: Text Input
+    trim: تقليم
+  translations:
+    display_template: عرض القالب
+  user:
+    modes:
+      dropdown: قائمة منسدلة
+displays:
+  collection:
+    collection: المجموعة
+  color:
+    color: لون
+  datetime:
+    datetime: التاريخ والوقت
+    format: التنسيق
+  file:
+    file: ملف
+  filesize:
+    filesize: حجم الملف
+  icon:
+    icon: أيقونة
+  image:
+    circle: دائرة
+  rating:
+    rating: التقييم
+  user:
+    avatar: الصورةالرمزية
+    name: الاسم
+    both: كل منهما
+layouts:
+  cards:
+    cards: البطاقات
+    image_source: مصدر الصورة
+    title: العنوان
+    subtitle: الترجمة
+  tabular:
+    tabular: الجدول
+    fields: حقول
+    spacing: المسافة
+    comfortable: مريحة
+    compact: مضغوط
+    cozy: مريح

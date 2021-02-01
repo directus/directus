@@ -15,7 +15,7 @@
 						{{ $t('enter_password_to_enable_tfa') }}
 					</v-card-title>
 					<v-card-text>
-						<v-input v-model="password" type="password" :placeholder="$t('password')" />
+						<v-input v-model="password" :nullable="false" type="password" :placeholder="$t('password')" />
 
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
@@ -48,7 +48,7 @@
 					{{ $t('enter_otp_to_disable_tfa') }}
 				</v-card-title>
 				<v-card-text>
-					<v-input type="text" :placeholder="$t('otp')" v-model="otp" />
+					<v-input type="text" :placeholder="$t('otp')" v-model="otp" :nullable="false" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button class="disable" :loading="loading" @click="disableTFA" :disabled="otp.length !== 6">

@@ -1,0 +1,429 @@
+---
+edit_field: Alanı Düzenle
+item_revision: Revizyonları Göster
+duplicate_field: Yinelenen Alan
+half_width: Yarı Genişlik
+full_width: Tam Genişlik
+fill_width: Tam Genişlik
+field_name_translations: Alan İsim Çevirileri
+enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için şifrenizi girin
+add_field: Alan Ekle
+role_name: Rol Adı
+db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın '
+show_archived_items: Arşivlenmiş Öğeleri Göster
+required: Gerekli
+requires_value: Gerekli değer
+create_preset: Ön Ayar Oluştur
+create_role: Rol Oluştur
+create_user: Kullanıcı Oluştur
+create_webhook: Webhook Oluşturun
+invite_users: Kullanıcıları Davet Et
+email_examples: 'admin@example.com, user@example.com...'
+invite: Davet et
+emails: E-postalar
+connection_excellent: Mükemmel Bağlantı
+connection_good: İyi Bağlantı
+connection_fair: Makul Bağlantı
+connection_poor: Kötü Bağlantı
+rename_folder: Klasörü Yeniden Adlandır
+delete_folder: Klasörü Sil
+reset_bookmark: Yer İşaretini Sıfırla
+rename_bookmark: Yer İşaretini Yeniden Adlandır
+update_bookmark: Yer İşaretini Güncelle
+delete_bookmark: Yer imini kaldır
+delete_bookmark_copy: >-
+  {bookmark} yer işareti kaldırmak istediğinize emin misiniz? Bu işlem geri alınamaz.
+logoutReason:
+  SIGN_OUT: Oturum kapatıldı
+  SESSION_EXPIRED: Oturumun süresi doldu
+public: Herkese Açık
+public_description: Kimlik doğrulaması olmadan hangi API verilerinin kullanılabileceğini kontrol eder.
+not_allowed: İzin Verilmedi
+directus_version: Directus Versiyon
+node_version: Node Versiyon
+node_uptime: Node Uptime
+os_type: OS Tip
+os_version: OS Versiyon
+os_uptime: OS Uptime
+os_totalmem: OS Hafıza
+archive: Arşiv
+archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
+archive_confirm_count: >-
+  Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin misiniz?
+reset_system_permissions: Sistem Yetkilerini Sıfırla
+reset_system_permissions_copy: Tüm sistem izinlerini varsayılan değerlerine sıfırlayın
+unarchive: Arşivden çıkar
+unarchive_confirm: Bu öğeyi arşivden çıkarmak istediğinizden emin misiniz?
+nested_files_folders_will_be_moved: İç içe geçmiş dosyalar ve klasörler bir seviye yukarı taşınacaktır.
+unknown_validation_errors: 'Aşağıdaki gizli alanlar için doğrulama hataları vardı:'
+validationError:
+  eq: Değer {valid} olmalıdır
+  neq: Değer {invalid} olamaz
+  in: Değer, {valid} değerlerinden biri olmalıdır
+  nin: Değer, {invalid} değerlerinden biri olamaz
+  contains: Değer, {substring} içermelidir
+  ncontains: Değer, {substring} içeremez
+  gt: Değer, {valid} değerinden büyük olmalıdır
+  gte: Değer, {valid} değerinden büyük veya ona eşit olmalıdır
+field_file: Tek Dosya
+field_files: Birden Fazla Dosya
+field_translations: Çeviriler
+language: Dil
+create_field: Alan Ekle
+hidden_on_detail: Detayda Gizli
+disabled_editing_value: Düzenleme değerini devre dışı bırakın
+key: Key
+alias: Takma Ad
+bigInteger: Büyük Tamsayı
+boolean: Evet/Hayır
+date: Tarih
+datetime: Tarih Saat
+decimal: Ondalık
+float: Ondalıklı sayı
+integer: Tamsayı
+json: JSON
+string: Yazı
+text: Metin
+time: Zaman
+timestamp: Zaman damgası
+uuid: UUID
+not_available_for_type: Bu Tip için Mevcut Değil
+create_translations: Çeviriler Oluşturun
+auto_generate: Otomatik Oluştur
+this_will_auto_setup_fields_relations: Bu, gerekli tüm alanları ve ilişkileri otomatik olarak kuracaktır.
+click_here: Buraya tıklayın
+to_manually_setup_translations: çevirileri manuel olarak ayarlamak için.
+click_to_manage_translated_fields: >-
+  Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
+fields_group: Alanlar Grubu
+configure_m2o: Çoktan Bire İlişkinizi Yapılandırın...
+configure_o2m: Bire Çoğa İlişkinizi Yapılandırın...
+configure_m2m: Çoktan Çoğa İlişkinizi Yapılandırın...
+configure_m2a: Çoktan Herhangi Bir İlişkinizi Yapılandırın...
+add_m2o_to_collection: '"{collection}" koleksiyonuna Çoktan Bire''yi ekleyin'
+add_o2m_to_collection: '"{collection}" koleksiyonuna Bire Çok ekleyin'
+add_m2m_to_collection: '"{collection}" koleksiyonuna Çoktan Çoğa ekle'
+choose_a_type: Bir Tür Seçin...
+add_note: Kullanıcılar için yardımcı bir not ekleyin...
+default_value: Öntanımlı Değer
+add_a_default_value: Varsayılan bir değer ekleyin...
+interface_setup_title: Kullanıcılar bu alanla nasıl etkileşim kuracak?
+display_setup_title: Bu alanın değeri nasıl görüntülenmelidir?
+standard_field: Standart Alan
+single_file: Tek Dosya
+multiple_files: Birden Fazla Dosya
+m2o_relationship: Çoktan Bire İlişki
+o2m_relationship: Bire Çok İlişki
+m2m_relationship: Çoktan Çoka İlişki
+m2a_relationship: Çoktan Herhangi Bir İlişki
+next: Sonraki
+field_name: Alan adı
+translations: Çeviriler
+note: Not
+enter_a_value: Bir değer girin...
+length: Uzunluk
+readonly: Salt-Okunur
+unique: Benzersiz
+primary_key: Birincil Anahtar (Primary Key)
+clear_value: Değeri Temizle
+reset_to_default: Öntanımlı girdilere sıfırla
+undo_changes: Değişiklikleri geri al
+notifications: Bildirimler
+page_not_found: Sayfa Bulunamadı
+page_not_found_body: Aradığınız sayfanın var olduğuna emin misiniz? Biz bulamadık da...
+display: Göster
+title: Ünvan
+revision_delta_deleted: Silindi
+leave_comment: Yorum bırakın...
+this_collection: Bu Koleksiyon
+related_collection: İlişkili Koleksiyon
+format: Biçim
+submit: Gönder
+months:
+  january: Ocak
+  february: Şubat
+  march: Mart
+  april: Nisan
+  may: Mayıs
+  june: Haziran
+  july: Temmuz
+  august: Ağustos
+  september: Eylül
+  october: Ekim
+  november: Kasım
+  december: Aralık
+size: Boyut
+checksum: Checksum
+owner: Sahip
+download: İndir
+name: İsim
+created_by: Oluşturan
+created_on: Oluşturulma tarihi
+save_and_stay: Kaydet ve Sayfada Kal
+save_as_copy: Kopya Olarak Kaydet
+comments: Yorumlar
+request_feature: Ek Özellik Talep Et
+item_count: 'Öge yok | 1 Öge | {count}  Öge'
+create_collection: Koleksiyon Oluştur
+relationship_not_setup: İlişki doğru bir şekilde konfigüre edilmedi
+users: Kullanıcılar
+activity: Aktivite
+webhooks: Ağ Kancaları
+field_width: Alan Genişliği
+user_directory: Kullanıcı Listesi
+duration: Süre
+modified_on: Düzenleme Tarihi
+sort_field: Sıralama Alanı
+status: Durum
+edit: Düzenle
+bookmarks: Yer İmleri
+back: Geri
+placeholder: Yertutucu
+icon_left: İkon Sol
+icon_right: İkon Sağ
+monospace: Monospace
+divider: Ayırıcı
+color: Renk
+operators:
+  lt: Küçüktür
+  gt: Büyüktür
+  lte: Küçüktür veya eşittir
+  gte: Büyük veya eşittir
+  contains: Şunu içerir
+  ncontains: Şunu içermez
+  empty: Boş olabilir
+loading: Yükleniyor...
+display_template: Görüntüleme Şablonu
+no_results: Sonuç Yok
+role: Rol
+user: Kullanıcı
+create: Oluştur
+on_update: Güncellemede (On Update)
+read: Görüntüleme
+update: Güncelle
+select_fields: Alan Seçiniz
+wysiwyg_options:
+  codeblock: Kod
+  remove: Kaldır
+  table: Tablo
+dropdown: Açılır Liste
+choices: Seçenekler
+deselect: Seçimi Kaldır
+editing_in_batch: '{count} Ögeyi Toplu Düzenle'
+settings_permissions: Roller & İzinler
+settings_project: Proje Ayarları
+settings_webhooks: Ağ Kancaları
+unsaved_changes: Kaydedilmemiş Değişiklikler
+unsaved_changes_copy: Bu sayfayı terketmek istediğine emin misin?
+discard_changes: Değişiklikleri İptal Et
+keep_editing: Düzenlemeye Devam Et
+add_new: Yeni ekle
+all: Tümü
+batch_delete_confirm: >-
+  Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count} ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+cancel: İptal
+collection: Koleksiyon
+collections: Koleksiyonlar
+fields:
+  directus_activity:
+    item: Öğe Birincil Anahtarı
+    action: İşlem
+    collection: Koleksiyon
+    timestamp: Tarihinde Uygulandı
+    user: Uygulayan
+    comment: Yorum
+    user_agent: Kullanıcı Aracısı
+    ip: IP Adresi
+  directus_collections:
+    collection: Koleksiyon
+    icon: İkon
+    note: Not
+    display_template: Görüntüleme Şablonu
+    hidden: Gizli
+    sort_field: Sıralama Alanı
+  directus_files:
+    title: Ünvan
+    description: Açıklama
+    tags: Etiketler
+    location: Konum
+    metadata: Metaveri
+    filesize: Dosya boyutu
+    modified_on: Düzenleme Tarihi
+    created_on: Oluşturulma tarihi
+    created_by: Oluşturan
+    embed: Yerleştir
+    uploaded_by: Tarafından Yüklendi
+    width: Genişlik
+    uploaded_on: Tarihinde Yüklendi
+    height: Yükseklik
+    duration: Süre
+  directus_users:
+    first_name: Ad
+    last_name: Soyad
+    email: E-posta
+    password: Şifre
+    avatar: Avatar
+    location: Konum
+    title: Ünvan
+    description: Açıklama
+    tags: Etiketler
+    language: Dil
+    theme: Tema
+    tfa_secret: İki Faktörlü Kimlik Doğrulama
+    status: Durum
+    role: Rol
+  directus_settings:
+    project_name: Proje Adı
+  directus_fields:
+    note: Not
+    hidden: Gizli
+    translation: Alan İsim Çevirileri
+    display_template: Şablon
+  directus_roles:
+    name: Rol Adı
+    description: Açıklama
+comment: Yorum
+continue: Devam
+default: Öntanımlı
+delete: Sil
+delete_field_are_you_sure: >-
+  "{field}" alanını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+description: Açıklama
+done: Tamam
+duplicate: Çoğalt
+email: E-posta
+embed: Yerleştir
+field: Alan | Alanlar
+file: Dosya
+file_library: Dosya Kütüphanesi
+forgot_password: Şifremi Unuttum
+hidden: Gizli
+icon: İkon
+info: Bilgi
+junction_collection: Kesişim Koleksiyonu
+latency: Gecikme
+login: Oturum Aç
+my_activity: Aktivitelerim
+not_authenticated: Kimlik Doğrulanamadı
+options: Seçenekler
+otp: Tek Kullanımlık Şifre
+password: Şifre
+permissions: İzinler
+relationship: İlişki
+reset: Sıfırla
+reset_password: Şifremi Sıfırla
+revert: Eski Haline Döndür
+save: Kaydet
+schema: Şema
+search: Ara
+select_existing: Varolanlar İçinden Seç
+select_interface: Arayüz seçiniz...
+settings: Ayarlar
+sign_in: Oturum Aç
+sign_out: Oturum Kapat
+sign_out_confirm: Oturumunuzu kapatmak istediğinize emin misiniz?
+something_went_wrong: Birşeyler ters gitti.
+sort_direction: Sıralama Yönü
+template: Şablon
+translation: Çeviri
+value: Değer
+interfaces:
+  checkboxes:
+    checkboxes: Onay Kutuları
+    allow_other: Diğerlerine İzin Ver
+  code:
+    code: Kod
+    line_number: Satır Numarası
+  collection:
+    collection: Koleksiyon
+  collections:
+    collections: Koleksiyonlar
+  color:
+    color: Renk
+  datetime:
+    datetime: Tarih/Saat
+  display-template:
+    display-template: Görüntüleme Şablonu
+  divider:
+    divider: Ayırıcı
+  dropdown:
+    allow_other: Diğerlerine İzin Ver
+    choices_value_placeholder: Bir değer girin...
+  file:
+    file: Dosya
+  files:
+    files: Dosyalar
+  icon:
+    icon: İkon
+  interface-options:
+    interface-options: Arayüz Ayarları
+  many-to-many:
+    many-to-many: Çoktan Çoka
+  many-to-one:
+    many-to-one: Çoktan Bire
+    display_template: Görüntüleme Şablonu
+  markdown:
+    markdown: Markdown
+  numeric:
+    numeric: Sayısal
+  one-to-many:
+    one-to-many: Bire Çok
+  radio-buttons:
+    radio-buttons: Radyo Düğmeleri
+  repeater:
+    repeater: Tekrarlayıcı
+  slider:
+    slider: Kaydırıcı
+  slug:
+    slug: Slug
+  tags:
+    tags: Etiketler
+  text-input:
+    text-input: Metin Girişi
+    trim: Kırp
+  translations:
+    display_template: Görüntüleme Şablonu
+  user:
+    user: Kullanıcı
+    modes:
+      dropdown: Açılır Liste
+  wysiwyg:
+    custom_formats: Özel Biçimler
+displays:
+  boolean:
+    boolean: Evet/Hayır
+  collection:
+    collection: Koleksiyon
+  color:
+    color: Renk
+  datetime:
+    datetime: Tarih/Saat
+    format: Biçim
+  file:
+    file: Dosya
+  filesize:
+    filesize: Dosya Boyutu
+  icon:
+    icon: İkon
+  labels:
+    choices_value_placeholder: Bir değer girin...
+  rating:
+    rating: Puanlama
+  user:
+    user: Kullanıcı
+    avatar: Avatar
+    name: İsim
+    both: İkisi de
+layouts:
+  cards:
+    cards: Kartlar
+    image_source: Görsel Kaynağı
+    title: Ünvan
+    subtitle: Altyazı
+  tabular:
+    tabular: Tablo
+    fields: Alanlar
+    spacing: Aralık
+    comfortable: Geniş
+    compact: Sıkışık
+    cozy: Normal

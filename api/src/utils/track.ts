@@ -16,7 +16,7 @@ export async function track(event: string) {
 		try {
 			await axios.post('https://telemetry.directus.io/', info);
 		} catch (err) {
-			if (process.env.NODE_ENV === 'development') {
+			if ('DIRECTUS_DEV' in process.env) {
 				logger.error(err);
 			}
 		}

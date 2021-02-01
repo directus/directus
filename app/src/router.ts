@@ -8,7 +8,7 @@ import { hydrate } from '@/hydrate';
 import { useAppStore, useUserStore, useServerStore } from '@/stores/';
 import PrivateNotFoundRoute from '@/routes/private-not-found';
 
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
 
 export const defaultRoutes: RouteConfig[] = [
 	{

@@ -1,0 +1,169 @@
+---
+required: Diperlukan
+create_role: Buat Peranan
+delete_bookmark: Padam Penanda Buku
+create_field: Cipta Medan
+hidden_on_detail: Tersembunyi di Butiran
+text: Teks
+auto_generate: Menjana Secara Automatik
+add_note: Tambah nota berguna untuk pengguna...
+next: Kemudian
+note: Nota
+length: Panjang
+readonly: Baca Sahaja
+unique: Unik
+primary_key: Kunci Utama
+clear_value: Kosongkan nilai
+page_not_found: Halaman Tidak Dijumpai
+page_not_found_body: Halaman yang anda cari tidak wujud
+title: Tajuk
+leave_comment: Tinggalkan komen...
+this_collection: Koleksi Ini
+related_collection: Koleksi Berkaitan
+checksum: Checksum
+name: Nama
+save_and_stay: Simpan dan Tetap Disini
+save_as_copy: Simpan sebagai Salinan
+comments: Komen-komen
+request_feature: Minta Ciri
+item_count: 'Tiada Benda | Satu Benda | {count} Benda'
+create_collection: Cipta Koleksi
+users: Pengguna-pengguna
+activity: Aktiviti
+user_directory: Direktori pengguna
+duration: Durasi
+status: Status
+bookmarks: Penandabuku
+back: Kembali
+operators:
+  lt: Kurang daripada
+  gt: Lebih daripada
+  lte: Kurang daripada atau sama dengan
+  gte: Lebih daripada atau sama dengan
+  contains: Mengandungi
+  ncontains: Tidak mengandungi
+  empty: Kosong
+loading: Memuatkan...
+no_results: Tiada keputusan
+role: Peranan
+create: Cipta
+on_update: Apabila Dikemaskini
+read: Baca
+update: Kemaskini
+select_fields: Pilih medan-medan
+wysiwyg_options:
+  remove: Buang
+editing_in_batch: 'Menyunting Secara Kumpulan Sebanyak {count} Benda'
+settings_permissions: Peranan-peranan & Kebenaran
+settings_project: Tetapan Projek
+discard_changes: Buang Perubahan
+keep_editing: Terus Menyunting
+add_new: Tambah Baru
+all: Semua
+batch_delete_confirm: >-
+  Tiada benda dipilih | Adakah anda pasti ingin memadam benda ini? Tindakan ini tidak dapat dibatalkan. | Adakah anda pasti ingin memadam {count} benda ini? Tindakan ini tidak dapat dibatalkan.
+cancel: Batal
+collection: Koleksi
+collections: Koleksi-koleksi
+fields:
+  directus_activity:
+    item: Kunci Utama Item
+    action: Tindakan
+    collection: Koleksi
+    timestamp: Tindakan Pada
+    user: Tindakan Oleh
+    comment: Komen
+    ip: Alamat IP
+  directus_collections:
+    collection: Koleksi
+    note: Nota
+  directus_files:
+    title: Tajuk
+    description: Penerangan
+    tags: Tag
+    location: Lokasi
+    metadata: Metadata
+    embed: Benamkan
+    uploaded_by: Dimuat naik oleh
+    width: Lebar
+    uploaded_on: Dimuat naik pada
+    height: Tinggi
+    duration: Durasi
+  directus_users:
+    first_name: Nama pertama
+    email: Emel
+    password: Katalaluan
+    avatar: Avatar
+    location: Lokasi
+    title: Tajuk
+    description: Penerangan
+    tags: Tag
+    theme: Tema
+    status: Status
+    role: Peranan
+  directus_settings:
+    project_name: Nama Projek
+  directus_fields:
+    note: Nota
+  directus_roles:
+    description: Penerangan
+comment: Komen
+default: Lalai
+delete: Padam
+delete_field_are_you_sure: >-
+  Adakah anda pasti ingin memadam medan "{field}"? Tindakan ini tidak dapat dibatalkan.
+description: Penerangan
+duplicate: Pendua
+email: Emel
+embed: Benamkan
+file: Fail
+file_library: Perpustakaan Fail
+forgot_password: Lupa Katalaluan
+junction_collection: Koleksi Persimpangan
+latency: Kependaman
+login: Log masuk
+my_activity: Aktiviti Saya
+options: Pilihan-pilihan
+password: Katalaluan
+permissions: Kebenaran
+relationship: Perhubungan
+reset_password: Tetapkan Semula Katalaluan
+revert: Kembalikan
+save: Simpan
+schema: Skema
+search: Cari
+select_existing: Pilih yang sedia ada
+settings: Tetapan
+sign_in: Masuk
+sign_out: Keluar
+sign_out_confirm: Adakah anda pasti ingin keluar?
+something_went_wrong: Ada yang salah.
+value: Nilai
+interfaces:
+  collection:
+    collection: Koleksi
+  collections:
+    collections: Koleksi-koleksi
+  file:
+    file: Fail
+  files:
+    files: Fail-fail
+  numeric:
+    numeric: Angka
+  tags:
+    tags: Tag
+displays:
+  collection:
+    collection: Koleksi
+  file:
+    file: Fail
+  user:
+    avatar: Avatar
+    name: Nama
+    both: Kedua-duanya
+layouts:
+  cards:
+    title: Tajuk
+  tabular:
+    fields: Medan-medan
+    compact: Padat

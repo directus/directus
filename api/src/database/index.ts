@@ -46,9 +46,18 @@ database
 		logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings.join(', ')}]`);
 	});
 
+export async function hasDatabaseConnection() {
+	try {
+		await database.raw('select 1 + 1 as result');
+		return true;
+	} catch {
+		return false;
+	}
+}
+
 export async function validateDBConnection() {
 	try {
-		await database.raw('select 1+1 as result');
+		await hasDatabaseConnection();
 	} catch (error) {
 		logger.fatal(`Can't connect to the database.`);
 		logger.fatal(error);

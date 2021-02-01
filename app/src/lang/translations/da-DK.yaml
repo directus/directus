@@ -1,0 +1,264 @@
+---
+full_width: Fuld Bredde
+required: Påkrævet
+create_role: Opret Rolle
+delete_bookmark: Slet Bogmærke
+directus_version: Directus Version
+language: Sprog
+create_field: Opret felt
+hidden_on_detail: Skjult på detalje
+date: Dato
+text: Tekst
+auto_generate: Auto- Generér
+add_note: Tilføj en nyttig note til brugere...
+default_value: Standardværdi
+next: Næste
+note: Kommentar
+length: Længde
+readonly: Skrivebeskyttet
+unique: Unik
+primary_key: Primærnøgle
+clear_value: Nulstil værdi
+reset_to_default: Nulstil til standard
+undo_changes: Fortryd ændringer
+notifications: Notifikationer
+page_not_found: Siden blev ikke fundet
+page_not_found_body: Den side, du leder efter, synes ikke at eksistere.
+title: Titel
+leave_comment: Skriv en kommentar...
+this_collection: Denne Samling
+related_collection: Relateret Samling
+format: Format
+submit: Send
+months:
+  january: Januar
+  february: Februar
+  march: Marts
+  april: April
+  may: Maj
+  june: Juni
+  july: Juli
+  august: August
+  september: September
+  october: Oktober
+  november: November
+  december: December
+checksum: Kontrolsum
+owner: Ejer
+download: Download
+name: Navn
+created_by: Oprettet af
+created_on: Oprettet d.
+save_and_stay: Gem og bliv
+save_as_copy: Gem som kopi
+comments: Kommentarer
+request_feature: Anmod om funktion
+item_count: 'Ingen Elementer | Et Element | {count} Elementer'
+create_collection: Opret samling
+users: Brugere
+activity: Aktivitet
+webhooks: Webhooks
+field_width: Felt Bredde
+user_directory: Bruger Mappe
+duration: Varighed
+modified_on: Ændringsdato
+status: Status
+bookmarks: Foretrukne
+back: Tilbage
+placeholder: Placeholder
+icon_left: Ikon til venstre
+icon_right: Ikon til højre
+color: Farve
+operators:
+  lt: Mindre end
+  gt: Større end
+  lte: Mindre end eller lig med
+  gte: Større end eller lig med
+  contains: Indeholder
+  ncontains: Indeholder ikke
+  empty: Er tom
+loading: Indlæser...
+no_results: Ingen resultater
+role: Rolle
+create: Opret
+on_update: Ved Opdatering
+read: Læs
+update: Opdater
+select_fields: Vælg felter
+wysiwyg_options:
+  codeblock: Kode
+  remove: Fjern
+  table: Tabel
+choices: Valgmuligheder
+deselect: Afmarkér
+editing_in_batch: 'Masseredigerer {count} elementer'
+settings_permissions: Roller og Tilladelser
+settings_project: Projektindstillinger
+settings_webhooks: Webhooks
+unsaved_changes: Ikke gemte ændringer
+unsaved_changes_copy: Er du sikker på du vil forlade denne side?
+discard_changes: Kassér Ændringer
+keep_editing: Fortsæt Redigering
+add_new: Tilføj Ny
+all: Alle
+batch_delete_confirm: >-
+  Der er ingen valgte elementer | Er du sikker på at du vil slette dette element? Denne handling kan ikke fortrydes. | Er du sikker på at du vil slette {count} elementer? Denne handling kan ikke fortrydes.
+cancel: Annuller
+collection: Samling
+collections: Samlinger
+fields:
+  directus_activity:
+    item: Element Primær Nøgle
+    action: Handling
+    collection: Samling
+    timestamp: Handling Til
+    user: Handling Af
+    comment: Kommenter
+    user_agent: Brugeragent
+    ip: IP adresse
+  directus_collections:
+    collection: Samling
+    icon: Ikon
+    note: Kommentar
+    hidden: Skjult
+  directus_files:
+    title: Titel
+    description: Beskrivelse
+    tags: Tags
+    location: Placering
+    metadata: Metadata
+    filesize: Filstørrelse
+    modified_on: Ændringsdato
+    created_on: Oprettet d.
+    created_by: Oprettet af
+    embed: Indlejr
+    uploaded_by: Uploadet af
+    width: Bredde
+    uploaded_on: Uploadet d.
+    height: Højde
+    duration: Varighed
+  directus_users:
+    first_name: Fornavn
+    last_name: Efternavn
+    email: E-mail
+    password: Adgangskode
+    avatar: Profilbillede
+    location: Placering
+    title: Titel
+    description: Beskrivelse
+    tags: Tags
+    language: Sprog
+    theme: Tema
+    tfa_secret: To-faktor godkendelse
+    status: Status
+    role: Rolle
+  directus_settings:
+    project_name: Projektnavn
+  directus_fields:
+    note: Kommentar
+    hidden: Skjult
+    display_template: Skabelon
+  directus_roles:
+    description: Beskrivelse
+comment: Kommenter
+continue: Forsæt
+default: Standard
+delete: Slet
+delete_field_are_you_sure: >-
+  Er du sikker på du vil slette feltet "{field}"? Denne handling kan ikke fortrydes.
+description: Beskrivelse
+done: Udført
+duplicate: Dupliker
+email: E-mail
+embed: Indlejr
+field: Felt | Felter
+file: Fil
+file_library: Fil Bibliotek
+forgot_password: Glemt adgangskode
+hidden: Skjult
+icon: Ikon
+info: Info
+junction_collection: Junction Samling
+latency: Latency
+login: Log ind
+my_activity: Min Aktivitet
+not_authenticated: Ikke godkendt
+options: Valgmuligheder
+otp: Engangs Adgangskode
+password: Adgangskode
+permissions: Rettigheder
+relationship: Forhold
+reset: Nulstil
+reset_password: Nulstil adgangskode
+revert: Gendan
+save: Gem
+schema: Schema
+search: Søg
+select_existing: Vælg Eksisterende
+select_interface: Vælg et Interface
+settings: Indstillinger
+sign_in: Log ind
+sign_out: Log ud
+sign_out_confirm: Er du sikker på, at du vil logge ud?
+something_went_wrong: Noget gik galt.
+sort_direction: Sorteringsretning
+template: Skabelon
+translation: Oversættelse
+value: Værdi
+interfaces:
+  checkboxes:
+    checkboxes: Afkrydsningsfelter
+    allow_other: Tillad Andre
+  code:
+    code: Kode
+    line_number: Linjenummer
+  collection:
+    collection: Samling
+  collections:
+    collections: Samlinger
+  color:
+    color: Farve
+  datetime:
+    datetime: Datotid
+  dropdown:
+    allow_other: Tillad Andre
+  file:
+    file: Fil
+  files:
+    files: Filer
+  icon:
+    icon: Ikon
+  interface-options:
+    interface-options: Interface indstillinger
+  numeric:
+    numeric: Numerisk
+  tags:
+    tags: Tags
+displays:
+  collection:
+    collection: Samling
+  color:
+    color: Farve
+  datetime:
+    datetime: Datotid
+    format: Format
+  file:
+    file: Fil
+  icon:
+    icon: Ikon
+  user:
+    avatar: Profilbillede
+    name: Navn
+    both: Begge
+layouts:
+  cards:
+    cards: Kort
+    image_source: Billedkilde
+    title: Titel
+    subtitle: Undertitel
+  tabular:
+    tabular: Tabel
+    spacing: Afstand
+    comfortable: Behageligt
+    compact: Kompakt
+    cozy: Hyggelig

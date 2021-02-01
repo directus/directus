@@ -27,15 +27,17 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 	const savePreset = async (preset?: Partial<Preset>) => {
 		busy.value = true;
 		const updatedValues = await presetsStore.savePreset(preset ? preset : localPreset.value);
-		initLocalPreset();
-		localPreset.value.id = updatedValues.id;
+		localPreset.value = {
+			...localPreset.value,
+			id: updatedValues.id,
+			user: updatedValues.user,
+		};
 		busy.value = false;
 		return updatedValues;
 	};
 
 	const saveLocal = () => {
 		presetsStore.saveLocal(localPreset.value);
-		initLocalPreset();
 	};
 
 	const clearLocalSave = async () => {

@@ -91,7 +91,7 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .fields {
-	--v-form-vertical-gap: 24px;
+	--form-vertical-gap: 24px;
 
 	@include form-grid;
 

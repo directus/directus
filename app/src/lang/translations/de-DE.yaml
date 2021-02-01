@@ -1,0 +1,592 @@
+---
+edit_field: Feld bearbeiten
+duplicate_field: Feld duplizieren
+half_width: Halbe Breite
+full_width: Volle Breite
+fill_width: Breite füllen
+field_name_translations: Feldnamen-Übersetzungen
+enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
+add_field: Feld hinzufügen
+role_name: Rollenname
+db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken '
+show_archived_items: Zeige archivierte Elemente
+required: Erforderlich
+requires_value: Erfordert Wert
+create_preset: Vorlage erstellen
+create_role: Rolle erstellen
+create_user: Benutzer erstellen
+create_webhook: Webhook erstellen
+invite_users: Benutzer einladen
+email_examples: 'admin@example.com, user@example.com...'
+invite: Einladen
+emails: E-Mails
+connection_excellent: Ausgezeichnete Verbindung
+connection_good: Gute Verbindung
+connection_fair: Brauchbare Verbindung
+connection_poor: Schlechte Verbindung
+rename_folder: Ordner umbenennen
+delete_folder: Ordner löschen
+reset_bookmark: Lesezeichen zurücksetzen
+rename_bookmark: Lesezeichen umbenennen
+update_bookmark: Lesezeichen bearbeiten
+delete_bookmark: Lesezeichen löschen
+delete_bookmark_copy: >-
+  Möchten Sie das Lesezeichen "{bookmark}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
+logoutReason:
+  SIGN_OUT: Abgemeldet
+  SESSION_EXPIRED: Sitzung abgelaufen
+public: Öffentlich
+public_description: Bestimmt welche API-Daten ohne authentifizierung zugänglich sind.
+not_allowed: Nicht erlaubt
+directus_version: Directus Version
+node_version: Version
+node_uptime: Betriebszeit
+os_type: Betriebssystem
+os_version: Betriebssystem-Version
+os_totalmem: Arbeitsspeicher
+archive: Archiv
+archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
+archive_confirm_count: >-
+  Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente wirklich archivieren?
+reset_system_permissions: Systemberechtigungen zurücksetzen
+reset_system_permissions_copy: Setzen Sie alle Systemberechtigungen auf die Standardeinstellungen zurück
+unarchive: Archivierung zurücksetzen
+unarchive_confirm: Sind Sie sicher, dass das Item aus dem Archiv zurückgeholt werden soll?
+nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene höher gesetzt.
+unknown_validation_errors: 'Es gab Validierungsfehler für folgende verstecke Felder:'
+validationError:
+  eq: Der Wert muss {valid} sein
+  neq: Der Wert kann nicht {invalid} sein
+  in: 'Gültige Werte sind: {valid}'
+  contains: Der Wert muss {substring} enthalten
+  ncontains: Der Wert darf {substring} nicht enthalten
+  gt: Der Wert muss größer sein als {valid}
+  gte: Der Wert muss größer oder gleich {valid} sein
+  lt: Der Wert muss kleiner als {valid} sein
+  lte: Der Wert muss kleiner oder gleich {valid} sein
+  empty: Der Wert muss leer sein
+  nempty: Der Wert darf nicht leer sein
+  null: Der Wert muss leer sein
+  nnull: Der Wert darf nicht leer sein
+  required: Wert erforderlich
+all_access: Zugriff auf alles
+no_access: Kein Zugriff
+use_custom: Benutzerdefiniert
+field_file: Eine Datei
+field_files: Mehrere Dateien
+field_m2o: M2O Beziehung
+field_o2m: O2M Beziehung
+field_m2m: M2M Beziehung
+field_translations: Übersetzungen
+item_permissions: Item Berechtigungen
+field_permissions: Feldberechtigungen
+field_validation: Feldüberprüfung
+field_presets: Feldvorgaben
+permissions_for_role: 'Items die {role} Rolle kann {action}.'
+fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
+validation_for_role: 'Feld {action} Regeln welche durch die {role} Rolle befolgt werden muss.'
+presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
+hide_field_on_detail: In Detailansicht ausblenden
+show_field_on_detail: In Detailansicht einblenden
+delete_field: Feld löschen
+duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
+language: Sprache
+admins_have_all_permissions: Administratoren haben alle Berechtigungen
+camera: Kamera
+exposure: Belichtung
+iso: ISO
+create_field: Feld erstellen
+updating_field_field: '{field} ({collection})'
+hidden_on_detail: In Detailansicht ausblenden
+key: Schlüssel
+alias: Alias
+date: Datum
+datetime: Datum mit Uhrzeit
+decimal: Dezimal
+json: JSON
+string: Zeichenkette
+text: Text
+time: Zeit
+timestamp: Zeitstempel
+uuid: UUID
+auto_generate: Automatisch generieren
+click_here: Hier klicken
+choose_a_type: Wähle einen Typ...
+add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
+default_value: Standardwert
+add_a_default_value: Standardwert hinzufügen...
+standard_field: Standardfeld
+single_file: Eine Datei
+multiple_files: Mehrere Dateien
+m2o_relationship: n:1-Beziehung
+o2m_relationship: 1:n-Beziehung
+m2m_relationship: n:m-Beziehung
+next: Weiter
+field_name: Feldname
+translations: Übersetzungen
+note: Notiz
+enter_a_value: Gib einen Wert ein...
+length: Länge
+readonly: Lesezugriff
+unique: Eindeutig
+updated_on: Geändert am
+primary_key: Primärschlüssel
+foreign_key: Fremdschlüssel
+dismiss: Verwerfen
+clear_value: Wert löschen
+reset_to_default: Auf Standard zurücksetzen
+undo_changes: Änderungen verwerfen
+notifications: Benachrichtigungen
+page_not_found: Seite nicht gefunden
+page_not_found_body: Die Seite, nach der Du gesucht hast, wurde nicht gefunden.
+display: Anzeige
+settings_update_success: Einstellungen aktualisiert
+title: Titel
+revision_delta_created: Erstellt
+revision_delta_created_externally: Extern erstellt
+revision_delta_deleted: Gelöscht
+revision_delta_other: Revision
+revision_delta_by: '{date} von {user}'
+leave_comment: Kommentieren...
+post_comment_success: Kommentar veröffentlicht
+item_create_success: Eintrag erstellt | Einträge erstellt
+this_collection: Diese Sammlung
+related_collection: Verknüpfte Sammlung
+export_data: Daten exportieren
+format: Format
+export_collection: '{collection} exportieren'
+last_page: Letzte Seite
+last_access: Letzter Zugriff
+submit: Absenden
+move_to_folder: In Ordner verschieben
+move: Verschieben
+system: System
+today: Heute
+yesterday: Gestern
+delete_comment: Kommentar löschen
+month: Monat
+year: Jahr
+select_all: Alles auswählen
+months:
+  january: Januar
+  february: Februar
+  march: März
+  april: April
+  may: Mai
+  june: Juni
+  july: Juli
+  august: August
+  september: September
+  october: Oktober
+  november: November
+  december: Dezember
+url: URL
+import: Importieren
+size: Größe
+created: Erstellt
+checksum: Prüfsumme
+owner: Besitzer
+edited_by: Editiert von
+folder: Ordner
+zoom: Zoom
+download: Herunterladen
+open: Öffnen
+open_in_new_window: In neuem Fenster öffnen
+download_file: Datei herunterladen
+name: Name
+type: Typ
+created_by: Erstellt von
+created_on: Erstellt am
+save_and_stay: Speichern und Bleiben
+save_as_copy: Als Kopie speichern
+add_existing: Vorhandene hinzufügen
+comments: Kommentare
+click_to_expand: Zum Erweitern klicken
+select_item: Element auswählen
+no_items: Keine Elemente
+search_items: Elemente suchen...
+information: Information
+report_bug: Bug melden
+request_feature: Feature anfragen
+item_count: 'Keine Elemente | Ein Element | {count} Elemente'
+no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
+user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
+no_webhooks_copy: Es gibt noch keine Webhooks.
+all_items: Alle Elemente
+csv: CSV
+no_collections: Keine Sammlungen
+create_collection: Sammlung erstellen
+relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
+select_a_collection: Sammlung auswählen
+active: Aktiv
+users: Benutzer
+activity: Aktivität
+webhooks: Webhooks
+field_width: Feldbreite
+user_directory: Benutzerverzeichnis
+documentation: Dokumentation
+sidebar: Seitenleiste
+duration: Dauer
+modified_on: Geändert am
+sort_field: Sortierfeld
+status: Status
+select_an_item: Element auswählen...
+edit: Bearbeiten
+enter_otp_to_disable_tfa: OTP zum deaktivieren der 2FA eingeben
+create_account: Konto erstellen
+account_created_successfully: Konto wurde erfolgreich erstellt
+auto_fill: Autom. ausfüllen
+corresponding_field: Korrespondierendes Feld
+errors:
+  COLLECTION_NOT_FOUND: "Sammlung existiert nicht"
+  FIELD_NOT_FOUND: Feld nicht gefunden
+  FORBIDDEN: Verweigert
+  INVALID_CREDENTIALS: Benutzername oder Passwort falsch
+  INVALID_OTP: Falsches Einmalpasswort
+  INVALID_QUERY: Ungültige anfrage
+  ROUTE_NOT_FOUND: Nicht gefunden
+  UNKNOWN: Unerwarteter Fehler
+create_bookmark: Lesezeichen erstellen
+edit_bookmark: Lesezeichen bearbeiten
+bookmarks: Lesezeichen
+unexpected_error: Unerwarteter Fehler
+password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
+back: Zurück
+editing_image: Bild bearbeiten
+square: Quadratisch
+free: Frei
+flip_horizontal: Horizontal spiegeln
+flip_vertical: Vertikal spiegeln
+aspect_ratio: Seitenverhältnis
+rotate: Drehen
+all_users: Alle Benutzer
+delete_collection: Sammlung löschen
+start_end_of_count_items: '{start}-{end} von {count} Elementen'
+visible_collections: Sichtbare Sammlungen
+hidden_collections: Versteckte Sammlungen
+unmanaged_collections: Nicht konfigurierte Sammlungen
+placeholder: Platzhalter
+icon_left: Icon links
+icon_right: Icon rechts
+font: Schriftart
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Divider
+color: Farbe
+circle: Kreis
+empty_item: Leeres Element
+log_in_with: 'Einloggen mit {provider}'
+operators:
+  eq: Gleich
+  neq: Ungleich
+  lt: Weniger als
+  gt: Größer als
+  lte: Weniger oder gleich
+  gte: Größer oder gleich
+  contains: Enthält
+  ncontains: Enthält nicht
+  nbetween: Ist nicht zwischen
+  empty: Ist leer
+  nempty: Ist nicht leer
+loading: Wird geladen...
+upload_file: Datei hochladen
+upload_file_indeterminate: Datei wird hochgeladen...
+upload_file_success: Datei wurde hochgeladen
+upload_files_indeterminate: 'Hochladen von Dateien {done}/{total}'
+upload_files_success: '{count} Dateien hochgeladen'
+upload_pending: Upload ausstehend
+click_to_browse: Zum Durchsuchen klicken
+create_item: Eintrag erstellen
+display_template: Anzeigevorlage
+all_files: Alle Dateien
+my_files: Meine Dateien
+recent_files: Zuletzt verwendete Dateien
+create_folder: Ordner erstellen
+add_file: Datei hinzufügen
+replace_file: Datei ersetzen
+no_results: Keine Ergebnisse
+role: Rolle
+user: Benutzer
+create: Erstellen
+on_update: Beim Aktualisieren
+read: Lesen
+update: Aktualisieren
+select_fields: Fielder auswählen
+bold: Fett
+toggle: Umschalten
+icon_on: Symbol an
+icon_off: Symbol aus
+wysiwyg_options:
+  bold: Fett
+  italic: Kursiv
+  underline: Unterstrichen
+  strikethrough: Durchgestrichen
+  codeblock: Code
+  bullist: Aufzählung
+  numlist: Nummerierte Liste
+  copy: Kopieren
+  cut: Ausschneiden
+  paste: Einfügen
+  h1: Überschrift 1
+  h2: Überschrift 2
+  h3: Überschrift 3
+  h4: Überschrift 4
+  h5: Überschrift 5
+  h6: Überschrift 6
+  indent: Einrücken
+  undo: Rückgängig
+  redo: Wiederherstellen
+  remove: Löschen
+  selectall: Alles auswählen
+  table: Tabelle
+  code: Quelltext anzeigen
+  fullscreen: Vollbild
+dropdown: Dropdown
+choices: Optionen
+deselect: Abwählen
+creating_in: 'Erstelle Element in {collection}'
+editing_in_batch: '{count} Elemente werden bearbeitet'
+settings_permissions: Rollen & Berechtigungen
+settings_project: Projekt-Einstellungen
+settings_webhooks: Webhooks
+unsaved_changes: Nicht gespeicherte Änderungen
+unsaved_changes_copy: Bist Du sicher, dass Du diese Seite verlassen willst?
+discard_changes: Änderungen verwerfen
+keep_editing: Weiter bearbeiten
+add_new: Neu erstellen
+create_new: Neu anlegen
+all: Alles
+batch_delete_confirm: >-
+  Keine Elemente ausgewählt | Bist Du sicher, dass Du dieses Element löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden. | Bist Du sicher, dass Du diese {count} Elemente löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.
+cancel: Abbrechen
+collection: Sammlung
+collections: Sammlungen
+fields:
+  directus_activity:
+    item: Item-Primärschlüssel
+    action: Aktion
+    collection: Sammlung
+    timestamp: Aktion am
+    user: Aktion von
+    comment: Kommentar
+    user_agent: User Agent
+    ip: IP Adresse
+  directus_collections:
+    collection: Sammlung
+    icon: Symbol
+    note: Notiz
+    display_template: Anzeigevorlage
+    hidden: Ausgeblendet
+    sort_field: Sortierfeld
+  directus_files:
+    title: Titel
+    description: Beschreibung
+    tags: Stichwörter
+    location: Ort
+    metadata: Metadaten
+    filesize: Dateigröße
+    modified_on: Geändert am
+    created_on: Erstellt am
+    created_by: Erstellt von
+    embed: Einbetten
+    uploaded_by: Hochgeladen von
+    folder: Ordner
+    width: Breite
+    uploaded_on: Hochgeladen am
+    height: Höhe
+    duration: Dauer
+  directus_users:
+    first_name: Vorname
+    last_name: Nachname
+    email: E-Mail
+    password: Passwort
+    avatar: Avatar
+    location: Ort
+    title: Titel
+    description: Beschreibung
+    tags: Stichwörter
+    language: Sprache
+    theme: Design
+    tfa_secret: Zwei-Faktor-Authentifizierung
+    status: Status
+    role: Rolle
+    last_page: Letzte Seite
+    last_access: Letzter Zugriff
+  directus_settings:
+    project_name: Projektname
+    project_url: Projekt URL
+    project_color: Projekt Farbe
+    project_logo: Projekt Logo
+    public_background: Öffentlicher Hintergrund
+  directus_fields:
+    note: Notiz
+    hidden: Ausgeblendet
+    translation: Feldnamen-Übersetzungen
+    display_template: Vorlage
+  directus_roles:
+    name: Rollenname
+    description: Beschreibung
+comment: Kommentar
+continue: Weiter
+editing_role: '{role} Rolle'
+creating_webhook: Webhook erstellen
+default: Standard
+delete: Löschen
+delete_field_are_you_sure: >-
+  Soll das Feld "{field}" wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.
+description: Beschreibung
+done: Erledigt
+duplicate: Duplikat
+email: E-Mail
+embed: Einbetten
+field: Feld | Felder
+file: Datei
+file_library: Datei-Browser
+forgot_password: Passwort vergessen
+hidden: Ausgeblendet
+icon: Symbol
+info: Information
+normal: Normal
+success: Erfolgreich
+warning: Warnung
+danger: Achtung
+junction_collection: Verbindungssammlung
+latency: Latenz
+login: Login
+my_activity: Meine Aktivität
+not_authenticated: Nicht authentifiziert
+options: Optionen
+otp: Einmaliges Passwort
+password: Passwort
+permissions: Berechtigungen
+relationship: Beziehung
+reset: Zurücksetzen
+reset_password: Passwort zurücksetzen
+revert: Zurücksetzen
+save: Speichern
+schema: Schema
+search: Suche
+select_existing: Bitte auswählen
+select_interface: Wähle eine Schnittstelle
+settings: Einstellungen
+sign_in: Login
+sign_out: Ausloggen
+sign_out_confirm: Bist Du sicher, dass Du Dich ausloggen möchtest?
+something_went_wrong: Irgendwas ist schief gelaufen...
+sort_direction: Sortierreihenfolge
+template: Vorlage
+translation: Übersetzung
+value: Wert
+interfaces:
+  checkboxes:
+    checkboxes: Kontrollkästchen
+    allow_other: Andere erlauben
+  code:
+    code: Code
+    line_number: Zeilennummer
+  collection:
+    collection: Sammlung
+  collections:
+    collections: Sammlungen
+  color:
+    color: Farbe
+  datetime:
+    datetime: Datum & Uhrzeit
+    use_24: 24-Stunden-Format verwenden
+  display-template:
+    display-template: Anzeigevorlage
+    select_a_collection: Sammlung auswählen
+  divider:
+    divider: Divider
+  dropdown:
+    allow_other: Andere erlauben
+    choices_value_placeholder: Gib einen Wert ein...
+  file:
+    file: Datei
+  files:
+    files: Dateien
+  icon:
+    icon: Symbol
+  image:
+    image: Bild
+  interface-options:
+    interface-options: Schnittstellenoptionen
+  many-to-many:
+    many-to-many: n:n-Beziehung
+  many-to-one:
+    many-to-one: n:1-Beziehung
+    display_template: Anzeigevorlage
+  markdown:
+    markdown: Markdown
+  numeric:
+    numeric: Numerisch
+  one-to-many:
+    one-to-many: 1 zu n
+  radio-buttons:
+    radio-buttons: Radio Buttons
+  repeater:
+    repeater: Repeater
+  slider:
+    slider: Slider
+  slug:
+    slug: Slug
+  tags:
+    tags: Stichwörter
+  text-input:
+    text-input: Texteingabe
+    trim: Beschneiden
+  toggle:
+    toggle: Umschalten
+  translations:
+    display_template: Anzeigevorlage
+  user:
+    user: Benutzer
+    modes:
+      dropdown: Dropdown
+  wysiwyg:
+    wysiwyg: WYSIWYG
+    custom_formats: Benutzerdefiniertes Format
+displays:
+  boolean:
+    icon_on: Symbol an
+    icon_off: Symbol aus
+  collection:
+    collection: Sammlung
+  color:
+    color: Farbe
+  datetime:
+    datetime: Datum & Uhrzeit
+    format: Format
+  file:
+    file: Datei
+  filesize:
+    filesize: Dateigröße
+  icon:
+    icon: Symbol
+  image:
+    image: Bild
+    circle: Kreis
+  labels:
+    choices_value_placeholder: Gib einen Wert ein...
+  rating:
+    rating: Bewertung
+  user:
+    user: Benutzer
+    avatar: Avatar
+    name: Name
+    both: Beide
+layouts:
+  cards:
+    cards: Karten
+    image_source: Bildquelle
+    crop: Zuschneiden
+    title: Titel
+    subtitle: Untertitel
+  tabular:
+    tabular: Tabelle
+    fields: Felder
+    spacing: Abstand
+    comfortable: Groß
+    compact: Klein
+    cozy: Mittel

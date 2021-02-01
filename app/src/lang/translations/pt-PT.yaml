@@ -1,0 +1,79 @@
+---
+create_field: Criar campo
+auto_generate: Geração Automatica
+add_note: Adicionar uma nota para os utilizadores...
+unique: Único
+clear_value: Limpar valor
+undo_changes: Anular alterações
+title: Título
+this_collection: Esta Coleção
+created_by: Criado por
+created_on: Criada em
+comments: Comentários
+users: Utilizadores
+activity: Atividade
+user_directory: Diretório de Utilizadores
+bookmarks: Favoritos
+back: Voltar
+wysiwyg_options:
+  table: Tabela
+choices: Opções
+unsaved_changes: Alterações por guardar
+unsaved_changes_copy: Tem certeza que deseja sair desta página?
+add_new: Adicionar novo
+all: Todos
+batch_delete_confirm: >-
+  Nenhum item foi selecionado. Tem certeza de que deseja remover este item? Esta ação não pode ser desfeita. Tem certeza que deseja remover estes {count} itens? Esta ação não pode ser desfeita.
+cancel: Cancelar
+collection: Coleção
+fields:
+  directus_activity:
+    item: Chave primária
+    action: Ação
+    collection: Coleção
+    timestamp: Ação de
+    user: Ação de
+    comment: Comentário
+    user_agent: User Agent
+    ip: Endereço IP
+  directus_collections:
+    collection: Coleção
+  directus_files:
+    title: Título
+    description: Descrição
+    tags: Etiquetas
+    location: Localização
+    created_on: Criada em
+    created_by: Criado por
+  directus_users:
+    location: Localização
+    title: Título
+    description: Descrição
+    tags: Etiquetas
+  directus_roles:
+    description: Descrição
+comment: Comentário
+continue: Continuar
+description: Descrição
+interfaces:
+  checkboxes:
+    checkboxes: Caixas de seleção
+  collection:
+    collection: Coleção
+  files:
+    files: Ficheiros
+  tags:
+    tags: Etiquetas
+displays:
+  collection:
+    collection: Coleção
+  user:
+    both: Ambos
+layouts:
+  cards:
+    cards: Cartões
+    image_source: Origem da imagem
+    title: Título
+    subtitle: Subtítulo
+  tabular:
+    tabular: Tabela

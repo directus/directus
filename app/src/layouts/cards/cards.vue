@@ -160,6 +160,7 @@ type layoutQuery = {
 	fields?: string[];
 	sort?: string;
 	limit?: number;
+	page?: number;
 };
 
 export default defineComponent({
@@ -349,10 +350,43 @@ export default defineComponent({
 		}
 
 		function uselayoutQuery() {
-			const page = ref(1);
+			const page = computed({
+				get() {
+					return _layoutQuery.value?.page || 1;
+				},
+				set(newPage: number) {
+					_layoutQuery.value = {
+						...(_layoutQuery.value || {}),
+						page: newPage,
+					};
+				},
+			});
 
-			const sort = createlayoutQueryOption<string>('sort', fieldsInCollection.value[0].field);
-			const limit = createlayoutQueryOption<number>('limit', 25);
+			const sort = computed({
+				get() {
+					return _layoutQuery.value?.sort || fieldsInCollection.value[0].field;
+				},
+				set(newSort: string) {
+					_layoutQuery.value = {
+						...(_layoutQuery.value || {}),
+						page: 1,
+						sort: newSort,
+					};
+				},
+			});
+
+			const limit = computed({
+				get() {
+					return _layoutQuery.value?.limit || 25;
+				},
+				set(newLimit: number) {
+					_layoutQuery.value = {
+						...(_layoutQuery.value || {}),
+						page: 1,
+						limit: newLimit,
+					};
+				},
+			});
 
 			const fields = computed<string[]>(() => {
 				if (!primaryKeyField.value) return [];
@@ -393,21 +427,6 @@ export default defineComponent({
 			});
 
 			return { sort, limit, page, fields };
-
-			function createlayoutQueryOption<T>(key: keyof layoutQuery, defaultValue: any) {
-				return computed<T>({
-					get() {
-						return _layoutQuery.value?.[key] || defaultValue;
-					},
-					set(newValue: T) {
-						page.value = 1;
-						_layoutQuery.value = {
-							..._layoutQuery.value,
-							[key]: newValue,
-						};
-					},
-				});
-			}
 		}
 
 		function getLinkForItem(item: Record<string, any>) {

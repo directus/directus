@@ -17,18 +17,13 @@ export class UtilsService {
 
 	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }) {
 		const sortFieldResponse =
-			(await this.knex
-				.select('sort_field')
-				.from('directus_collections')
-				.where({ collection })
-				.first()) || systemCollectionRows;
+			(await this.knex.select('sort_field').from('directus_collections').where({ collection }).first()) ||
+			systemCollectionRows;
 
 		const sortField = sortFieldResponse?.sort_field;
 
 		if (!sortField) {
-			throw new InvalidPayloadException(
-				`Collection "${collection}" doesn't have a sort field.`
-			);
+			throw new InvalidPayloadException(`Collection "${collection}" doesn't have a sort field.`);
 		}
 
 		if (this.accountability?.admin !== true) {
@@ -56,11 +51,7 @@ export class UtilsService {
 		const primaryKeyField = this.schema[collection].primary;
 
 		// Make sure all rows have a sort value
-		const countResponse = await this.knex
-			.count('* as count')
-			.from(collection)
-			.whereNull(sortField)
-			.first();
+		const countResponse = await this.knex.count('* as count').from(collection).whereNull(sortField).first();
 
 		if (countResponse?.count && +countResponse.count !== 0) {
 			const lastSortValueResponse = await this.knex.max(sortField).from(collection).first();

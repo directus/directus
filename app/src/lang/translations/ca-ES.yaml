@@ -1,0 +1,237 @@
+---
+duplicate_field: Camp duplicat
+half_width: Mitja amplada
+full_width: Amplada Completa
+fill_width: Amplada de l'emplenat
+field_name_translations: Traducció de noms de camps
+enter_password_to_enable_tfa: Introdueix la contrasenya per activar l'autenticació de dos factors
+add_field: Afegeix camp
+role_name: Nom del Rol
+db_only_click_to_configure: 'Base de dades només: Feu clic per configurar '
+show_archived_items: Mostra els elements arxivats
+required: Requerit
+requires_value: Requereix valor
+create_preset: Crear un Predefinit
+create_role: Crea un rol
+create_user: Crear usuari
+create_webhook: Crear Webhook
+invite_users: Convidar usuaris
+email_examples: 'admin@exemple.com, usuari@exemple.com...'
+invite: Convida
+emails: Correus electrònics
+connection_excellent: Connexió excel·lent
+connection_good: Connexió bona
+connection_fair: Connexió justa
+connection_poor: Connexió pobra
+rename_folder: Renombra carpeta
+delete_folder: Suprimeix carpeta
+reset_bookmark: Reinicia marcador
+rename_bookmark: Renombra marcador
+update_bookmark: Actualitza marcador
+delete_bookmark: Eliminar marcador
+delete_bookmark_copy: >-
+  Segur que voleu eliminar aquest marcador "{bookmark}"? Aquesta acció no es pot desfer.
+logoutReason:
+  SIGN_OUT: S'ha desconnectat
+  SESSION_EXPIRED: Sessió caducada
+public: Públic
+public_description: Controla quines dades API estan disponibles sense autenticar.
+not_allowed: No permès
+directus_version: Versió de Directus
+node_version: Versió de Node
+node_uptime: Temps d'activitat de Node
+os_type: Tipus de SO
+os_version: Versió d'OS
+os_uptime: Temps d'activitat del SO
+os_totalmem: Memòria del SO
+archive: Arxiu
+archive_confirm: Estàs segur de que vols arxivar aquest element?
+archive_confirm_count: >-
+  No hi ha elements seleccionats | Segur que voleu arxivar aquest element? | Segur que voleu arxivar aquests {count} elements?
+reset_system_permissions: Restableix els permisos del sistema
+reset_system_permissions_copy: Restableix tots els permisos del sistema als seus valors predeterminats
+unarchive: Desarxivar
+unarchive_confirm: Segur que voleu desarxivar aquest element?
+language: Idioma
+create_field: Crea un camp
+date: Data
+decimal: Decimal
+text: Text
+auto_generate: Generar automàticament
+add_note: Afegiu una nota útil per als usuaris...
+default_value: Valor per defecte
+unique: Únic
+clear_value: Esborra el valor
+undo_changes: Desfer els canvis
+display: Mostra
+title: Títol
+this_collection: Aquesta col·lecció
+format: Format
+size: Mida
+checksum: Checksum
+owner: Propietari
+created_by: Creat per
+created_on: Creat el
+comments: Comentaris
+create_collection: Crea una col·lecció
+relationship_not_setup: La relació no s'ha configurat correctament
+users: Usuaris
+activity: Activitat
+duration: Durada
+sort_field: Camp d'ordenació
+status: Estat
+edit: Edita
+bookmarks: Favorits
+back: Enrere
+placeholder: Referència
+icon_left: Icona a l'esquerra
+icon_right: Icona a la dreta
+monospace: Espai únic
+divider: Separador
+color: Color
+operators:
+  contains: Conté
+display_template: Mostra la plantilla
+role: Rol
+create: Crear
+wysiwyg_options:
+  codeblock: Codi
+  table: Taula
+dropdown: Desplegable
+choices: Opcions
+deselect: Deselecciona
+editing_in_batch: 'Editant {count} elements'
+add_new: Afegir nou
+all: Tots
+batch_delete_confirm: >-
+  No s'ha seleccionat cap element | Esteu segur que voleu suprimir aquest element? No es pot desfer aquesta acció. | Esteu segur que voleu suprimir aquests {count} elements? No es pot desfer aquesta acció.
+cancel: Cancel · la
+collection: Coŀlecció
+collections: Col·leccions
+fields:
+  directus_activity:
+    item: Clau primaria de l'ítem
+    action: Acció
+    collection: Coŀlecció
+    timestamp: Acció activada
+    user: Acció de
+    comment: Comentari
+    user_agent: Agent de l'usuari
+    ip: Adressa IP
+  directus_collections:
+    collection: Coŀlecció
+    display_template: Mostra la plantilla
+    sort_field: Camp d'ordenació
+  directus_files:
+    title: Títol
+    description: Descripció
+    tags: Etiquetes
+    location: Localització
+    metadata: Metadades
+    filesize: Mida
+    created_on: Creat el
+    created_by: Creat per
+    embed: Inclou
+    uploaded_by: Pujat per
+    width: Amplada
+    uploaded_on: Pujat el
+    height: Alçada
+    duration: Durada
+  directus_users:
+    first_name: Nom
+    last_name: Cognoms
+    email: Correu electrònic
+    password: Contrasenya
+    avatar: Foto
+    location: Localització
+    title: Títol
+    description: Descripció
+    tags: Etiquetes
+    language: Idioma
+    theme: Tema
+    tfa_secret: Autenticació de doble factor
+    status: Estat
+    role: Rol
+  directus_fields:
+    translation: Traducció de noms de camps
+    display_template: Plantilla
+  directus_roles:
+    name: Nom del Rol
+    description: Descripció
+comment: Comentari
+continue: Continua
+default: Predeterminat
+delete: Elimina
+description: Descripció
+done: Fet
+duplicate: Duplicat
+email: Correu electrònic
+embed: Inclou
+field: Camp | Camps
+otp: Contrasenya d'un sol ús
+password: Contrasenya
+template: Plantilla
+interfaces:
+  checkboxes:
+    checkboxes: Caselles
+    allow_other: Permet altres
+  code:
+    code: Codi
+    line_number: Número de línia
+  collection:
+    collection: Coŀlecció
+  collections:
+    collections: Col·leccions
+  color:
+    color: Color
+  datetime:
+    datetime: Data i hora
+  display-template:
+    display-template: Mostra la plantilla
+  divider:
+    divider: Separador
+  dropdown:
+    allow_other: Permet altres
+  files:
+    files: Arxius
+  interface-options:
+    interface-options: Opcions d'Interfície
+  many-to-one:
+    display_template: Mostra la plantilla
+  one-to-many:
+    one-to-many: Un a Molts
+  radio-buttons:
+    radio-buttons: Botons de selecció
+  tags:
+    tags: Etiquetes
+  translations:
+    display_template: Mostra la plantilla
+  user:
+    modes:
+      dropdown: Desplegable
+displays:
+  collection:
+    collection: Coŀlecció
+  color:
+    color: Color
+  datetime:
+    datetime: Data i hora
+    format: Format
+  filesize:
+    filesize: Mida del fitxer
+  rating:
+    rating: Puntuació
+  user:
+    avatar: Foto
+    both: Ambdós
+layouts:
+  cards:
+    cards: Targetes
+    image_source: Recurs d'imatge
+    title: Títol
+    subtitle: Subtítol
+  tabular:
+    tabular: Taula
+    comfortable: Còmoda
+    compact: Compacta
+    cozy: Acollidora

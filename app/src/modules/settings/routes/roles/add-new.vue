@@ -7,12 +7,7 @@
 			<v-card-text>
 				<div class="form-grid">
 					<div class="field full">
-						<v-input
-							v-model="roleName"
-							autofocus
-							@keyup.enter="save"
-							:placeholder="$t('role_name') + '...'"
-						/>
+						<v-input v-model="roleName" autofocus @keyup.enter="save" :placeholder="$t('role_name') + '...'" />
 					</div>
 
 					<div class="field half">
@@ -28,7 +23,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-button to="/settings/roles" secondary>{{ $t('cancel') }}</v-button>
-				<v-button @click="save" :loading="saving">{{ $t('save') }}</v-button>
+				<v-button @click="save" :disabled="roleName === null" :loading="saving">{{ $t('save') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -43,7 +38,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
-		const roleName = ref<string>();
+		const roleName = ref<string | null>(null);
 		const appAccess = ref(true);
 		const adminAccess = ref(false);
 
@@ -92,8 +87,8 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .form-grid {
-	--v-form-horizontal-gap: 12px;
-	--v-form-vertical-gap: 24px;
+	--form-horizontal-gap: 12px;
+	--form-vertical-gap: 24px;
 
 	@include form-grid;
 

@@ -31,8 +31,8 @@ export default defineComponent({
 @import '@/styles/mixins/type-styles.scss';
 
 .form {
-	--v-form-vertical-gap: 24px;
-	--v-form-horizontal-gap: 24px;
+	--form-vertical-gap: 24px;
+	--form-horizontal-gap: 24px;
 
 	padding: 12px;
 	padding-top: 0;

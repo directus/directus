@@ -14,7 +14,7 @@ const liquidEngine = new Liquid({
 	extname: '.liquid',
 });
 
-let transporter: Transporter;
+export let transporter: Transporter | null = null;
 
 if (env.EMAIL_TRANSPORT === 'sendmail') {
 	transporter = nodemailer.createTransport({
@@ -24,15 +24,28 @@ if (env.EMAIL_TRANSPORT === 'sendmail') {
 	});
 } else if (env.EMAIL_TRANSPORT.toLowerCase() === 'smtp') {
 	transporter = nodemailer.createTransport({
-		pool: env.EMAIL_SMTP_POOL === 'true',
+		pool: env.EMAIL_SMTP_POOL,
 		host: env.EMAIL_SMTP_HOST,
-		port: Number(env.EMAIL_SMTP_PORT),
-		secure: env.EMAIL_SMTP_SECURE === 'true',
+		port: env.EMAIL_SMTP_PORT,
+		secure: env.EMAIL_SMTP_SECURE,
 		auth: {
 			user: env.EMAIL_SMTP_USER,
 			pass: env.EMAIL_SMTP_PASSWORD,
 		},
 	} as any);
+} else {
+	logger.warn('Illegal transport given for email. Check the EMAIL_TRANSPORT env var.');
+}
+
+if (transporter) {
+	transporter.verify((error) => {
+		if (error) {
+			logger.warn(`Couldn't connect to email server.`);
+			logger.warn(`Email verification error: ${error}`);
+		} else {
+			logger.info(`Email connection established`);
+		}
+	});
 }
 
 export type EmailOptions = {
@@ -55,23 +68,29 @@ async function getDefaultTemplateOptions() {
 	return {
 		projectName: projectInfo?.project_name || 'Directus',
 		projectColor: projectInfo?.project_color || '#546e7a',
-		projectLogo: projectInfo?.project_logo
-			? getProjectLogoURL(projectInfo.project_logo)
-			: 'https://directus.io/assets/directus-white.png',
+		projectLogo: getProjectLogoURL(projectInfo?.project_logo),
 	};
 
-	function getProjectLogoURL(logoID: string) {
+	function getProjectLogoURL(logoID?: string) {
 		let projectLogoURL = env.PUBLIC_URL;
 
 		if (projectLogoURL.endsWith('/') === false) {
 			projectLogoURL += '/';
 		}
 
-		projectLogoURL += `assets/${logoID}`;
+		if (logoID) {
+			projectLogoURL += `assets/${logoID}`;
+		} else {
+			projectLogoURL += `admin/img/directus-white.png`;
+		}
+
+		return projectLogoURL;
 	}
 }
 
 export default async function sendMail(options: EmailOptions) {
+	if (!transporter) return;
+
 	const templateString = await readFile(path.join(__dirname, 'templates/base.liquid'), 'utf8');
 	const html = await liquidEngine.parseAndRender(templateString, { html: options.html });
 
@@ -86,6 +105,8 @@ export default async function sendMail(options: EmailOptions) {
 }
 
 export async function sendInviteMail(email: string, url: string) {
+	if (!transporter) return;
+
 	const defaultOptions = await getDefaultTemplateOptions();
 
 	const html = await liquidEngine.renderFile('user-invitation', {
@@ -103,6 +124,8 @@ export async function sendInviteMail(email: string, url: string) {
 }
 
 export async function sendPasswordResetMail(email: string, url: string) {
+	if (!transporter) return;
+
 	const defaultOptions = await getDefaultTemplateOptions();
 
 	const html = await liquidEngine.renderFile('password-reset', {

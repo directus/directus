@@ -37,10 +37,7 @@ export default async function createServer() {
 			// Compatibility when supporting serving with certificates
 			const protocol = server instanceof https.Server ? 'https' : 'http';
 
-			const url = new URL(
-				(req.originalUrl || req.url) as string,
-				`${protocol}://${req.headers.host}`
-			);
+			const url = new URL((req.originalUrl || req.url) as string, `${protocol}://${req.headers.host}`);
 			const query = url.search.startsWith('?') ? url.search.substr(1) : url.search;
 
 			const info = {
@@ -62,10 +59,7 @@ export default async function createServer() {
 					size: metrics.out,
 					headers: res.getHeaders(),
 				},
-				ip:
-					req.headers['x-forwarded-for'] ||
-					req.connection?.remoteAddress ||
-					req.socket?.remoteAddress,
+				ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || req.socket?.remoteAddress,
 				duration: elapsedMilliseconds.toFixed(),
 			};
 
@@ -91,7 +85,7 @@ export default async function createServer() {
 	async function beforeShutdown() {
 		await emitter.emitAsync('server.stop.before', { server });
 
-		if (process.env.NODE_ENV === 'development') {
+		if ('DIRECTUS_DEV' in process.env) {
 			logger.info('Restarting...');
 		} else {
 			logger.info('Shutting down...');
@@ -106,7 +100,7 @@ export default async function createServer() {
 	async function onShutdown() {
 		emitter.emitAsync('server.stop').catch((err) => logger.warn(err));
 
-		if (process.env.NODE_ENV !== 'development') {
+		if (!('DIRECTUS_DEV' in process.env)) {
 			logger.info('Directus shut down OK. Bye bye!');
 		}
 	}

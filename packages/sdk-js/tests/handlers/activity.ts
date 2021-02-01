@@ -30,9 +30,7 @@ describe('ActivityHandler', () => {
 
 	describe('read', () => {
 		it('Calls ItemsHandler#read with the provided params', async () => {
-			const stub = sandbox
-				.stub(handler['itemsHandler'], 'read')
-				.returns(Promise.resolve({ data: {} }));
+			const stub = sandbox.stub(handler['itemsHandler'], 'read').returns(Promise.resolve({ data: {} }));
 
 			await handler.read();
 			expect(stub).to.have.been.calledWith();
@@ -50,9 +48,7 @@ describe('ActivityHandler', () => {
 
 	describe('comments.create', () => {
 		it('Calls the /activity/comments endpoint', async () => {
-			const stub = sandbox
-				.stub(handler['axios'], 'post')
-				.returns(Promise.resolve({ data: {} }));
+			const stub = sandbox.stub(handler['axios'], 'post').returns(Promise.resolve({ data: {} }));
 
 			await handler.comments.create({
 				collection: 'articles',
@@ -70,9 +66,7 @@ describe('ActivityHandler', () => {
 
 	describe('comments.update', () => {
 		it('Calls the /activity/comments/:id endpoint', async () => {
-			const stub = sandbox
-				.stub(handler['axios'], 'patch')
-				.returns(Promise.resolve({ data: {} }));
+			const stub = sandbox.stub(handler['axios'], 'patch').returns(Promise.resolve({ data: {} }));
 
 			await handler.comments.update(15, { comment: 'Hello Update' });
 

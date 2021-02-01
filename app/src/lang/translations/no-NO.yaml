@@ -1,0 +1,407 @@
+---
+edit_field: Rediger felt
+item_revision: Element revisjoner
+duplicate_field: Dupliser felt
+half_width: Halv vidde
+full_width: Fullbredde
+fill_width: Fyll vidde
+field_name_translations: Feltnavn oversettelser
+enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
+add_field: Legg til felt
+role_name: Rollenavn
+db_only_click_to_configure: 'Kun database: Klikk for å konfigurere '
+show_archived_items: Vis arkiverte elementer
+required: Påkrevd
+requires_value: Krever verdi
+create_preset: Opprett forhåndsinnstilling
+create_role: Opprett rolle
+create_user: Opprett bruker
+create_webhook: Lag Webhook
+invite_users: Invitere brukere
+email_examples: 'admin@example.com, user@example.com...'
+invite: Inviter
+emails: E-post
+connection_excellent: Utmerket tilkobling
+connection_good: God tilkobling
+connection_fair: Ok tilkobling
+connection_poor: Dårlig tilkobling
+rename_folder: Endre mappenavn
+delete_folder: Slett mappe
+reset_bookmark: Tilbakestill bokmerke
+rename_bookmark: Endre navn på bokmerke
+update_bookmark: Oppdater bokmerke
+delete_bookmark: Slett bokmerke
+delete_bookmark_copy: >-
+  Er du sikker på at du vil slette "{bookmark}"? Handlingen kan ikke angres.
+logoutReason:
+  SIGN_OUT: Utlogget
+  SESSION_EXPIRED: Økt utløpt
+public: Offentlig
+public_description: Kontrollerer hvilke API-data som er tilgjengelige uten å autentisere.
+not_allowed: Ikke tillatt
+directus_version: Directus versjon
+node_version: Node versjon
+node_uptime: Node oppetid
+os_type: OS Type
+os_version: OS versjon
+os_uptime: OS oppetid
+os_totalmem: OS minne
+archive: Arkiv
+archive_confirm: Er du sikker på at du vil arkivere dette elementet?
+archive_confirm_count: >-
+  Ingen elementer valgt | Er du sikker på at du vil arkivere dette elementet? | Er du sikker på at du vil arkivere disse {count} elementene?
+reset_system_permissions: Tilbakestill systemrettigheter
+reset_system_permissions_copy: Tilbakestill alle systemrettigheter til standardinnstillingene
+unarchive: Uarkivér
+unarchive_confirm: Er du sikker på at du vil uarkivere dette elementet?
+nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett nivå opp.
+unknown_validation_errors: 'Det oppstod valideringsfeil for følgende skjulte felter:'
+validationError:
+  eq: Verdien må være {valid}
+  neq: Verdien kan ikke være {invalid}
+  in: Verdien må være en av {valid}
+  nin: Verdien kan ikke være en av {invalid}
+  contains: Verdien må inneholde {substring}
+  ncontains: Verdien kan ikke inneholde {substring}
+  gt: Verdien må være større enn {valid}
+  gte: Verdien må være større enn eller lik {valid}
+  lt: Verdien må være mindre enn {valid}
+  lte: Verdien må være mindre enn eller lik {valid}
+  empty: Verdien må være tom
+  nempty: Verdien kan ikke være tom
+  null: Verdien må være null
+  nnull: Verdien kan ikke være null
+  required: Verdi er påkrevd
+all_access: All tilgang
+no_access: Ingen tilgang
+use_custom: Bruk egendefinert
+field_presentation: Presentation & Aliaser
+field_translations: Oversettelser
+item_permissions: Element Tillatelser
+field_permissions: Felt Tillatelser
+field_validation: Felt validering
+field_presets: Forhåndsinnstilling av felter
+permissions_for_role: 'Elementer {role} rollen kan {action}.'
+fields_for_role: 'Felter {role} rollen kan {action}.'
+validation_for_role: 'Felt {action} regler {role} rollen må følge.'
+presets_for_role: 'Felt standardverdi for rollen {role}.'
+presentation_and_aliases: Presentation & Aliaser
+revision_post_update: Her er hvordan dette produktet så ut etter oppdateringen...
+changes_made: Dette er de spesifikke endringene som ble gjort...
+no_relational_data: Husk at dette ikke inkluderer relasjonsdata.
+hide_field_on_detail: Skjul felt ved detaljert visning
+show_field_on_detail: Vis felt ved detaljert visning
+delete_field: Slett felt
+fields_and_layout: Felter og oppsett
+field_create_success: 'Opprettet felt: "{field}"'
+field_update_success: 'Oppdatert Felt: "{field}"'
+duplicate_where_to: Hvor vil du duplisere dette feltet til?
+language: Språk
+global: Globalt
+admins_have_all_permissions: Administratorer har alle rettigheter
+camera: Kamera
+exposure: Eksponering
+shutter: Utløser
+iso: ISO
+focal_length: Brennvidde
+schema_setup_title: Hvordan skal dette feltet lagre i databasen?
+schema_field_title: Hvordan skal dette feltet oppføre seg i applikasjonen?
+create_field: Opprett felt
+creating_new_field: 'Nytt felt ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: Tilbakestill sideinnstillinger
+hidden_field: Skjult felt
+hidden_on_detail: Skjult ved detaljer
+disabled_editing_value: Deaktiver redigering av felt
+key: Nøkkel
+alias: Alias
+bigInteger: Stort heltall
+boolean: Sann/usann
+date: Dato
+datetime: Dato og tid
+decimal: Desimaltall
+float: Flyttall
+integer: Heltall
+json: JSON
+string: Tekststreng
+text: Tekst
+time: Tid
+timestamp: Tidsstempel
+uuid: UUID
+not_available_for_type: Ikke tilgjengelig for denne typen
+create_translations: Lag oversettelser
+auto_generate: Autogenerer
+this_will_auto_setup_fields_relations: Dette vil automatisk sette opp alle obligatoriske felt og relasjoner.
+click_here: Klikk her
+to_manually_setup_translations: for manuelt å sette opp oversettelser.
+fields_group: Feltgruppe
+configure_m2o: Konfigurer din mange-til-En relasjon...
+configure_o2m: Konfigurer din en-til-mange relasjon...
+configure_m2m: Konfigurer din mange-til-mange relasjon...
+configure_m2a: Konfigurer din mange-til-alt relasjon...
+add_m2o_to_collection: 'Legg til mange-til-en til "{collection}"'
+add_o2m_to_collection: 'Legg til en-til-mange til "{collection}"'
+add_m2m_to_collection: 'Legg til mange-til mange til "{collection}'
+choose_a_type: Velg en Type...
+determined_by_relationship: Fastsatt av relasjon
+add_note: Legg til en god beskrivelse til brukerne...
+default_value: Standardverdi
+add_a_default_value: Legg til en standardverdi...
+next: Neste
+translations: Oversettelser
+note: Notat
+enter_a_value: Legg inn verdi...
+enter_a_placeholder: Legg inn en plassholder...
+length: Lengde
+precision_scale: Presisjon og skala
+readonly: Skrivebeskyttet
+unique: Unik
+primary_key: Primærnøkkel
+foreign_key: Fremmednøkkel
+finish_setup: Fullfør oppsett
+dismiss: Lukk
+raw_value: Rå verdi
+edit_raw_value: Rediger råverdi
+enter_raw_value: Legg inn råverdi...
+clear_value: Tøm innhold
+reset_to_default: Tilbakestill til standard
+undo_changes: Angre endringer
+notifications: Varsler
+show_all_activity: Vis all aktivitet
+page_not_found: Side ikke funnet
+page_not_found_body: Siden du leter etter finnes ikke.
+confirm_revert: Bekreft tilbakestilling
+confirm_revert_body: Dette vil reversere elementet til valgte tilstand.
+display: Visning
+settings_update_success: Innstillingene er oppdatert
+title: Tittel
+revision_delta_created: Opprettet
+revision_delta_created_externally: Opprettet eksternt
+revision_delta_updated: 'Oppdatert 1 felt | Oppdatert {count} felter'
+revision_delta_deleted: Slettet
+revision_delta_reverted: Tilbakestilt
+revision_delta_other: Revisjon
+revision_delta_by: '{date} av {user}'
+private_user: Privat bruker
+revision_preview: Revisjon forhåndsvisning
+updates_made: Oppdateringer Laget
+leave_comment: Legg igjen en kommentar...
+post_comment_success: Kommentaren ble lagt til
+item_create_success: Elementet ble opprettet | Elementene ble opprettet
+item_update_success: Elementet ble oppdatert | Elementene ble oppdaterte
+item_delete_success: Elementet ble slettet | Elementene ble slettet
+this_collection: Denne kolleksjonen
+related_collection: Relatert kolleksjon
+related_collections: Relaterte kolleksjoner
+translations_collection: Oversettelseskolleksjon
+languages_collection: Språkkolleksjon
+export_data: Eksporter data
+format: Format
+use_current_filters_settings: Bruk gjeldende filtre og innstillinger
+export_collection: 'Eksporter {collection}'
+last_page: Siste side
+last_access: Siste tilgang
+fill_template: Fyll med malverdi
+a_unique_table_name: Et unikt tabellnavn...
+a_unique_column_name: Et unikt kolonnenavn...
+enable_custom_values: Aktiver egendefinerte verdier
+submit: Send inn
+move_to_folder: Flytt til mappe
+move: Flytt
+system: System
+add_field_related: Legg til felt til relatert kolleksjon
+interface: Grensesnitt
+today: Idag
+yesterday: Igår
+delete_comment: Slett kommentar
+months:
+  january: januar
+  february: februar
+  march: mars
+  april: april
+  may: mai
+  june: juni
+  july: juli
+  august: august
+  september: september
+  october: oktober
+  november: november
+  december: desember
+created: Opprettet
+owner: Eier
+name: Navn
+created_by: Opprettet av
+created_on: Opprettet den
+save_and_stay: Lagre og fortsett
+save_as_copy: Lagre som kopi
+comments: Kommentarer
+request_feature: Foreslå ny funksjon
+item_count: 'Ingen elementer | Ett element | {count} elementer'
+create_collection: Opprett kolleksjon
+users: Brukere
+activity: Aktivitet
+field_width: Feltbredde
+user_directory: Brukeroversikt
+modified_on: Modifisert den
+status: Status
+bookmarks: Bokmerke
+back: Tilbake
+operators:
+  lt: Mindre enn
+  gt: Større enn
+  lte: Mindre enn eller lik
+  gte: Større enn eller lik
+  contains: Inneholder
+  ncontains: Inneholder ikke
+  empty: Er tom
+loading: Laster...
+no_results: Ingen treff
+create: Opprett
+on_update: Ved oppdatering
+read: Les
+update: Oppdater
+select_fields: Velg felter
+wysiwyg_options:
+  remove: Fjern
+  table: Tabell
+deselect: Velg bort
+editing_in_batch: 'Batch Editing {count} elementer'
+settings_permissions: Roller og tilganger
+settings_project: Prosjektinnstillinger
+discard_changes: Forkast endringer
+keep_editing: Fortsett å rediger
+add_new: Legg til ny
+all: Alle
+batch_delete_confirm: >-
+  Ingen elementer har blitt valgt | Er du sikker på at du vil slette dette elementet? Handlingen kan ikke angres. | Er du sikker på at du vil slette disse {count} elementene? Handlingen kan ikke angres.
+cancel: Avbryt
+collection: Kolleksjon
+collections: Kolleksjoner
+fields:
+  directus_activity:
+    item: Element Hovednøkkel
+    collection: Kolleksjon
+    comment: Kommenter
+    user_agent: Brukeragent
+    ip: IP-addresse
+  directus_collections:
+    collection: Kolleksjon
+    icon: Ikon
+    note: Notat
+    hidden: Skjult
+  directus_files:
+    title: Tittel
+    description: Beskrivelse
+    tags: Etiketter
+    location: Lokasjon
+    modified_on: Modifisert den
+    created_on: Opprettet den
+    created_by: Opprettet av
+    embed: Embed
+  directus_users:
+    email: E-post
+    password: Passord
+    location: Lokasjon
+    title: Tittel
+    description: Beskrivelse
+    tags: Etiketter
+    language: Språk
+    status: Status
+    last_page: Siste side
+    last_access: Siste tilgang
+  directus_settings:
+    project_name: Prosjektnavn
+  directus_fields:
+    note: Notat
+    hidden: Skjult
+    translation: Feltnavn oversettelser
+  directus_roles:
+    name: Rollenavn
+    description: Beskrivelse
+comment: Kommenter
+continue: Fortsett
+default: Standard
+delete: Slett
+delete_field_are_you_sure: >-
+  Er du sikker på at du vil slette feltet "{field}"? Handlingen kan ikke angres..
+description: Beskrivelse
+done: Ferdig
+duplicate: Dupliser
+email: E-post
+embed: Embed
+file: Fil
+file_library: Filbibliotek
+forgot_password: Glemt passord
+hidden: Skjult
+icon: Ikon
+info: Info
+junction_collection: Junction Collection
+latency: Ventetid
+login: Logg inn
+my_activity: Min aktivitet
+options: Alternativer
+otp: Engangspassord
+password: Passord
+permissions: Tilganger
+relationship: Relasjon
+reset_password: Tilbakestill passord
+revert: Reverter
+save: Lagre
+schema: Skjema
+search: Søk
+select_existing: Velg eksisterende
+select_interface: Velg ett grensesnitt
+settings: Innstillinger
+sign_in: Logg inn
+sign_out: Logg ut
+sign_out_confirm: Er du sikker på at du vil logge ut?
+something_went_wrong: Noe gikk galt.
+value: Verdi
+interfaces:
+  collection:
+    collection: Kolleksjon
+  collections:
+    collections: Kolleksjoner
+  dropdown:
+    choices_value_placeholder: Legg inn verdi...
+  file:
+    file: Fil
+  files:
+    files: Filer
+  icon:
+    icon: Ikon
+  interface:
+    interface: Grensesnitt
+  numeric:
+    numeric: Nummerisk
+  tags:
+    tags: Etiketter
+displays:
+  boolean:
+    boolean: Sann/usann
+  collection:
+    collection: Kolleksjon
+  datetime:
+    format: Format
+  file:
+    file: Fil
+  icon:
+    icon: Ikon
+  labels:
+    choices_value_placeholder: Legg inn verdi...
+  user:
+    name: Navn
+    both: Begge
+layouts:
+  cards:
+    cards: Kort
+    image_source: Bilde Kilde
+    title: Tittel
+    subtitle: Undertittel
+  tabular:
+    tabular: Tabell
+    fields: Felter
+    spacing: Mellomrom
+    comfortable: Komfortabel
+    compact: Kompakt
+    cozy: Cozy
