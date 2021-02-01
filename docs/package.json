@@ -8,8 +8,8 @@
 		"build": "node build.js",
 		"dev": "npm-watch build",
 		"prepublish": "npm run build",
-		"dev:site": "vuepress dev src",
-		"build:site": "vuepress build src"
+		"dev:site": "vuepress dev",
+		"build:site": "vuepress build"
 	},
 	"watch": {
 		"build": {

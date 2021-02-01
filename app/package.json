@@ -18,6 +18,9 @@
 		"access": "public"
 	},
 	"scripts": {
+		"copy-docs-images": "rimraf public/img/docs && copyfiles -u 3 ../docs/assets/* public/img/docs --verbose",
+		"predev": "npm run copy-docs-images",
+		"prebuild": "npm run copy-docs-images",
 		"dev": "vue-cli-service serve",
 		"build": "vue-cli-service build",
 		"lint": "vue-cli-service lint",

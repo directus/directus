@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, PropType, onMounted, onUpdated } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUpdated } from '@vue/composition-api';
 
 import marked, { Renderer } from 'marked';
 import highlight from 'highlight.js';
@@ -41,12 +41,10 @@ export default defineComponent({
 			}
 
 			let htmlString = slots.default()[0].text!;
-			const hintRegex = /<p>:::(.*?) (.*?)\r?\n((\s|.)*?):::<\/p>/gm;
 
 			const renderer: Partial<Renderer> = {
 				heading(text, level) {
 					const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-
 					return `
 					<h${level} id="${escapedText}">
 						<a class="heading-link copy" href="#${escapedText}">#</a>
@@ -55,37 +53,38 @@ export default defineComponent({
 				},
 				link(href, title, text) {
 					let classname = 'body-link link';
-
 					if (href && href.indexOf('/') === 0 && href.indexOf('/admin/docs/') === -1) href = `/admin/docs${href}`;
 					if (href && href.indexOf('#') === 0) classname = `${classname} copy`;
-
 					return `<a href="${href}" class="${classname}">${text}</a>`;
 				},
 				image(href, title, text) {
+					if (!href) return '';
+					let paths = href.split('/');
+
+					while ((paths[0] === 'assets') === false) {
+						paths = paths.slice(1);
+					}
+
+					const path = `/img/docs${paths.slice(1).join('/')}`;
+
 					const classname = 'body-image';
 
-					if (href && href.indexOf('../assets/') === 0) href = href.replace('../assets/', '/admin/img/docs/assets/');
-
-					return `<img src="${href}" class="${classname}" alt="${text}">`;
+					return `<img src="${path}" class="${classname}" alt="${text}">`;
 				},
 			};
 
 			// Marked merges it's default rendered with our extension. It's typed as a full rendered however
 			marked.use({ renderer } as any);
 
+			htmlString = htmlString.replace(/::: ([^\s]+) ([^\n]+)([\s\S]*?)\n:::/gm, (match, type, title, body) => {
+				body = marked(body);
+				return `<div class="hint ${type}"><p class="hint-title">${title}</p><p class="hint-body">${body}</p></div>`;
+			});
+
 			htmlString = marked(htmlString, {
 				highlight: (code, lang) => {
 					return highlight.highlightAuto(code, [lang]).value;
 				},
-			});
-
-			htmlString = htmlString.replace(hintRegex, (match, type, title, body) => {
-				if (typeof type === 'string' && type.length === 0) {
-					type = title.split(' ').shift();
-					title = title.split(' ').length > 1 ? title.split(' ').slice(1).join(' ') : title;
-				}
-
-				return `<div class="hint ${type}"><p class="hint-title">${title}</p><p class="hint-body">${body}</p></div>`;
 			});
 
 			html.value = htmlString;
