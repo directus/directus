@@ -13,3 +13,4 @@ dist
 *.db
 .nyc_output
 /.idea/
+app/public/img/docs/*

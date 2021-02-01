@@ -35,10 +35,7 @@ async function build() {
 
 	for (const yamlFile of yamlFiles) {
 		const yamlString = await fse.readFile(yamlFile, 'utf8');
-		await fse.writeJSON(
-			'./dist/' + yamlFile.replace('.yaml', '.json'),
-			yaml.safeLoad(yamlString)
-		);
+		await fse.writeJSON('./dist/' + yamlFile.replace('.yaml', '.json'), yaml.safeLoad(yamlString));
 	}
 
 	console.log(`Built docs in ${Date.now() - start} ms`);

@@ -22,7 +22,7 @@ our team's primary focus, we also support a community-lead PHP API port in Larav
 codebase is located in a separate git repository at [`directus/php`](https://github.com/directus).
 Though the repository is currently hidden, to coordinate contributing, please reach out to our core team via
 [Discord](https://directus.chat). 
-::: 
+:::
 <!-- prettier-ignore-end -->
 
 ## Feature Requests
@@ -136,7 +136,9 @@ npm run dev
 ```
 
 <!-- prettier-ignore-start -->
-::: If you encounter errors during this installation process, make sure your node version meets the [minimum requirements](/guides/installation/cli) :::
+::: tip
+If you encounter errors during this installation process, make sure your node version meets the [minimum requirements](/guides/installation/cli)
+:::
 <!-- prettier-ignore-end -->
 
 ### 7. Make your fixes/changes
