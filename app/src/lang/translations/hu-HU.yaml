@@ -578,6 +578,8 @@ interfaces:
     collections: Kollekciók
   color:
     color: Szín
+  datetime:
+    datetime: Dátum és idő
   display-template:
     display-template: Megjelenítési sablon
     collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
@@ -602,6 +604,8 @@ interfaces:
     notice: Megjegyzés
   numeric:
     numeric: Szám
+    minimum_value: Minimum érték
+    maximum_value: Maximum érték
   repeater:
     repeater: Ismétlés
     edit_fields: Mezők szerkesztése
@@ -619,6 +623,7 @@ interfaces:
     display_template: Megjelenítési sablon
   user:
     user: Felhasználó
+    select_mode: Kiválasztott mód
     modes:
       auto: Automatikus
       dropdown: Legördülő lista
@@ -635,6 +640,7 @@ displays:
   color:
     color: Szín
   datetime:
+    datetime: Dátum és idő
     format: Formátum
     long: Hosszú
     short: Rövid
