@@ -97,7 +97,9 @@ function getToken() {
 export function addTokenToURL(url: string, token?: string) {
 	token = token || getToken();
 
-	if (url.includes('?')) {
+	if (url.includes('access_token=')) {
+		return url.replace(/(:??|&)access_token=([^?#&]*)(:?&|#|$)/, 'access_token=' + token);
+	} else if (url.includes('?')) {
 		return (url += '&access_token=' + token);
 	} else {
 		return (url += '?access_token=' + token);

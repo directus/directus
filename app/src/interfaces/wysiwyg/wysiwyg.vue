@@ -8,14 +8,14 @@
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
 		/>
-		<v-dialog :active="_uploadDialogActive" @toggle="hideUploadDialog" @esc="hideUploadDialog">
+		<v-dialog :active="_imageDialogOpen" @toggle="unsetImageUploadHandler" @esc="unsetImageUploadHandler">
 			<v-card>
-				<v-card-title>{{ $t('interfaces.file.description') }}</v-card-title>
+				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
 				<v-card-text>
-					<v-upload @input="handleUpload" :multiple="false" from-library from-url />
+					<v-upload @input="onImageUpload" :multiple="false" from-library from-url />
 				</v-card-text>
 				<v-card-actions>
-					<v-button secondary @click="hideUploadDialog">{{ $t('cancel') }}</v-button>
+					<v-button @click="unsetImageUploadHandler" secondary>{{ $t('cancel') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -48,7 +48,8 @@ import Editor from '@tinymce/tinymce-vue';
 
 import getEditorStyles from './get-editor-styles';
 
-import getRootPath from '@/utils/get-root-path';
+import { getPublicURL } from '@/utils/get-root-path';
+import { addTokenToURL } from '@/api';
 
 type CustomFormat = {
 	title: string;
@@ -102,12 +103,16 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		imageToken: {
+			type: String,
+			default: undefined,
+		},
 	},
 	setup(props, { emit }) {
 		const editorElement = ref<Vue | null>(null);
-		const uploadHandler = ref<CallableFunction | null>(null);
+		const imageUploadHandler = ref<CallableFunction | null>(null);
 
-		const _uploadDialogActive = computed(() => !!uploadHandler.value);
+		const _imageDialogOpen = computed(() => !!imageUploadHandler.value);
 
 		const _value = computed({
 			get() {
@@ -147,8 +152,9 @@ export default defineComponent({
 				extended_valid_elements: 'audio[loop],source',
 				toolbar: toolbarString,
 				style_formats: styleFormats,
-				file_picker_types: 'file image media',
-				file_picker_callback: setupUploadHandler,
+				file_picker_types: 'image media',
+				file_picker_callback: setImageUploadHandler,
+				urlconverter_callback: urlConverter,
 				...(props.tinymceOverrides || {}),
 			};
 		});
@@ -158,23 +164,23 @@ export default defineComponent({
 			editorOptions,
 			_value,
 			setFocus,
-			uploadHandler,
-			hideUploadDialog,
-			handleUpload,
-			_uploadDialogActive,
+			onImageUpload,
+			unsetImageUploadHandler,
+			_imageDialogOpen,
 		};
 
-		function handleUpload(file: Record<string, any>) {
-			if (uploadHandler.value) uploadHandler.value(file);
-			hideUploadDialog();
+		function onImageUpload(file: Record<string, any>) {
+			if (imageUploadHandler.value) imageUploadHandler.value(file);
+			unsetImageUploadHandler();
 		}
 
-		function setupUploadHandler(cb: CallableFunction, value: any, meta: Record<string, any>) {
-			uploadHandler.value = (result: Record<string, any>) => {
+		function setImageUploadHandler(cb: CallableFunction, value: any, meta: Record<string, any>) {
+			imageUploadHandler.value = (result: Record<string, any>) => {
 				if (meta.filetype === 'image' && !/^image\//.test(result.type)) return;
 
-				const fileUri = window.location.origin + getRootPath() + 'assets/' + result.id;
-				cb(fileUri, {
+				const imageUrl = getPublicURL() + 'assets/' + result.id;
+
+				cb(imageUrl, {
 					alt: result.title,
 					title: result.title,
 					width: (result.width || '').toString(),
@@ -183,8 +189,18 @@ export default defineComponent({
 			};
 		}
 
-		function hideUploadDialog() {
-			uploadHandler.value = null;
+		function urlConverter(url: string, node: string) {
+			if (url && props.imageToken && ['img', 'source', 'poster', 'audio'].includes(node)) {
+				const baseUrl = getPublicURL() + 'assets/';
+				if (url.includes(baseUrl)) {
+					url = addTokenToURL(url, props.imageToken);
+				}
+			}
+			return url;
+		}
+
+		function unsetImageUploadHandler() {
+			imageUploadHandler.value = null;
 		}
 
 		function setFocus(val: boolean) {
