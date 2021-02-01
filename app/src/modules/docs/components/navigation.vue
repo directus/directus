@@ -7,7 +7,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, watch, ref } from '@vue/composition-api';
 import NavigationItem from './navigation-item.vue';
-import { nav } from '@directus/docs';
+// import { nav } from '@directus/docs';
 
 function spreadPath(path: string) {
 	const sections = path.substr(1).split('/');
@@ -59,7 +59,7 @@ export default defineComponent({
 			},
 		});
 
-		return { navSections: nav.app, selection };
+		return { navSections: [], selection };
 	},
 });
 </script>
