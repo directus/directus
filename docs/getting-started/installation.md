@@ -7,28 +7,26 @@ free to use whichever option best suits your needs.
 - [Docker](/guides/installation/docker)
 - [Manually](/guides/installation/manual)
 
-::: tip Development Environment
-
-To work on the project's source code, please follow our [Contributing Guide](/getting-started/contributing).
-
-:::
-
 ## Deployment Guides
 
+- [Generic Ubuntu](/guides/installation/ubuntu)
 - [Amazon AWS](/guides/installation/aws)
 - [DigitalOcean App Platform](/guides/installation/digitalocean-app-platform)
 
-## One-Click Install Guides
+## One-Click Installs
 
-- [Platform.sh](/guides/installation/platformsh-one-click)
+- [DigitalOcean](https://marketplace.digitalocean.com/apps/directus)
+- [Platform.sh](https://console.platform.sh/projects/create-project?template=https%3A%2F%2Fraw.githubusercontent.com%2Fplatformsh%2Ftemplate-builder%2Fmaster%2Ftemplates%2Fdirectus%2F.platform.template.yaml)
 
-<!--
-@TODO
--   [Google App Engine](/guides/installation/google-app-engine)
--   [One-Clicks](/guides/installation/one-clicks) (heroku / do / platform sh / etc)
--   [Microsoft Azure](/guides/installation/microsoft-azure) -->
+::: warning Paid Services
 
-## Optional Setup Guides
+While Directus is completely free and open-source, most hosting services are paid services. You will likely need to
+enter a payment method, and may incur charges.
 
-- [Caddy](/guides/setup/caddy)
-- [Nginx](/guides/setup/nginx)
+:::
+
+::: tip Development Environment
+
+To work on Directus' source code, please follow our [Contributing Guide](/contributing/introduction).
+
+:::

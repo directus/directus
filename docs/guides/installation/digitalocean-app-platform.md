@@ -30,11 +30,3 @@ DB_SSL__CA=${my-database-component-name.CA_CERT}
 Make sure to replace `my-database-component-name` with your actual database component name in the above env vars
 
 :::
-
-::: tip
-
-For ease of configuration, you can rely on any of the other DigitalOcean provided aliases. See
-[How to Use Environment Variables in App Platform](https://www.digitalocean.com/docs/app-platform/how-to/use-environment-variables/)
-for more information.
-
-:::

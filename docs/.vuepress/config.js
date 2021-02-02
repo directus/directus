@@ -147,11 +147,6 @@ module.exports = {
 				children: [
 					{
 						type: 'page',
-						path: '/guides/installation/',
-						title: 'Installation',
-					},
-					{
-						type: 'page',
 						path: '/guides/projects',
 						title: 'Projects',
 					},
