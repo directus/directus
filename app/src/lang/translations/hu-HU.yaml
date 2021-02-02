@@ -130,8 +130,12 @@ unique: Egyedi
 updated_on: Frissítve
 updated_by: Frissítette
 primary_key: Elsődleges kulcs
+finish_setup: Beállítás befejezése
 dismiss: Elutasít
+edit_raw_value: Érték szerkesztése
+enter_raw_value: Érték megadása...
 clear_value: Érték törlése
+reset_to_default: Visszaállítás alaphelyzetbe
 undo_changes: Változások visszavonása
 notifications: Értesítések
 show_all_activity: Összes tevékenység mutatása
@@ -223,6 +227,7 @@ information: Információ
 report_bug: Hibajelentés
 request_feature: Funkció ajánlása
 reset_interface: Felhasználói felület visszaállítása
+reset_display: Megjelenés alaphelyzetbe
 item_count: 'Nincsenek elemek | Egy elem | {count} elem'
 no_items_copy: Nincsenek még elemek ebben a gyűjteményben.
 file_count: 'Nincsenek fájlok | Egy fájl | {count} file'
@@ -282,11 +287,14 @@ errors:
   FIELD_NOT_FOUND: Mező nem található
   FORBIDDEN: Tilos
   INVALID_CREDENTIALS: Hibás felhasználónév vagy jelszó
+  ITEM_NOT_FOUND: Elem nem található
   ROUTE_NOT_FOUND: Nem található
+  UNKNOWN: Váratlan hiba történt
 bookmark_name: Könyvjelző neve...
 create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
 bookmarks: Könyvjelzők
+unexpected_error: Váratlan hiba történt
 back: Vissza
 editing_image: Kép szerkesztése
 square: Négyzet
