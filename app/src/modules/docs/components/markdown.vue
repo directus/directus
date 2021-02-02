@@ -65,7 +65,7 @@ export default defineComponent({
 						paths = paths.slice(1);
 					}
 
-					const path = `/img/docs${paths.slice(1).join('/')}`;
+					const path = `/img/docs/${paths.slice(1).join('/')}`;
 
 					const classname = 'body-image';
 
