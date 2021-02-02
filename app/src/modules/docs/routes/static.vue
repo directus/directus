@@ -1,7 +1,5 @@
 <template>
 	<private-view :title="title" ref="view">
-		<template #headline>{{ headline }}</template>
-
 		<template #title-outer:prepend>
 			<v-button rounded disabled icon>
 				<v-icon name="info" />
@@ -25,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, inject, onUpdated } from '@vue/composition-api';
+import { defineComponent, ref, computed, onUpdated } from '@vue/composition-api';
 import DocsNavigation from '../components/navigation.vue';
 import Markdown from '../components/markdown.vue';
 import marked from 'marked';
@@ -37,24 +35,11 @@ async function getMarkdownForPath(path: string) {
 		pathParts.shift();
 	}
 
-	let docsPath = pathParts.join('/');
-
-	// Home
-	if (!docsPath) {
-		docsPath = 'readme';
-	}
+	const docsPath = pathParts.join('/');
 
 	const mdModule = await import('raw-loader!@directus/docs/' + docsPath + '.md');
 
 	return mdModule.default;
-}
-
-function getHeadlineFromPath(path: string) {
-	const paths = path.split('/').filter(Boolean);
-	
-	if (paths.length === 1) return 'Documentation';
-	
-	return paths[1].replace(/-/g, ' ').replace(/\b\w/g, (c) => {return c.toUpperCase()});
 }
 
 export default defineComponent({
@@ -62,25 +47,22 @@ export default defineComponent({
 	components: { DocsNavigation, Markdown },
 	async beforeRouteEnter(to, from, next) {
 		const md = await getMarkdownForPath(to.path);
-		
+
 		next((vm: any) => {
 			vm.markdown = md;
 			vm.path = to.path;
-			vm.headline = getHeadlineFromPath(to.path);
 		});
 	},
 	async beforeRouteUpdate(to, from, next) {
 		this.markdown = await getMarkdownForPath(to.path);
 		this.path = to.path;
-		this.headline = getHeadlineFromPath(to.path);
-		
+
 		next();
 	},
 	setup() {
-		const headline = ref<string | null>(null);
 		const path = ref<string | null>(null);
 		const markdown = ref('');
-		const view = ref<Vue>();		
+		const view = ref<Vue>();
 
 		const title = computed(() => {
 			const firstLine = markdown.value.split('\n').shift();
@@ -92,12 +74,12 @@ export default defineComponent({
 			lines.shift();
 			return lines.join('\n');
 		});
-		
+
 		onUpdated(() => {
 			view.value?.$data.contentEl?.scrollTo({ top: 0 });
 		});
 
-		return { markdown, headline, title, markdownWithoutTitle, view, marked, path };
+		return { markdown, title, markdownWithoutTitle, view, marked, path };
 	},
 });
 </script>

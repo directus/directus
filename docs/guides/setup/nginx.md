@@ -1,7 +1,7 @@
 # Nginx Setup Guide
 
-You can configure `/etc/nginx/sites-available/default` with the following config to use it as a
-reverse proxy to Directus:
+You can configure `/etc/nginx/sites-available/default` with the following config to use it as a reverse proxy to
+Directus:
 
 ```
 . . .

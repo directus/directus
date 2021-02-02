@@ -13,8 +13,8 @@ bypassing the default limits. The default limit is set to 100.
 ?limit=-1
 ```
 
-<!-- prettier-ignore-start -->
 ::: warning
+
 Fetching unlimited data may result in degraded performance or timeouts, use with caution.
+
 :::
-<!-- prettier-ignore-end -->

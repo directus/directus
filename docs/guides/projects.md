@@ -1,22 +1,22 @@
 # Projects
 
-> Every installation of Directus creates a single project. If you're unfamiliar with Directus
-> Projects, please start by reading our [Platform Overview](/concepts/platform-overview).
+> Every installation of Directus creates a single project. If you're unfamiliar with Directus Projects, please start by
+> reading our [Platform Overview](/concepts/platform-overview).
 
 ## Creating a Project
 
 To install Directus, choose one of the following methods.
 
--   [Command Line Interface (CLI)](/guides/installation/cli.md)
--   [Docker](/guides/installation/docker.md)
--   [Manually](/guides/installation/manual.md)
+- [Command Line Interface (CLI)](/guides/installation/cli.md)
+- [Docker](/guides/installation/docker.md)
+- [Manually](/guides/installation/manual.md)
 
 ## Configuring a Project
 
-All project configuration is handled by the `.env` file within the `/api` directory. This file
-accepts a number of environment variables, each is explained in the following reference:
+All project configuration is handled by the `.env` file within the `/api` directory. This file accepts a number of
+environment variables, each is explained in the following reference:
 
--   [Environment Variables](/reference/environment-variables)
+- [Environment Variables](/reference/environment-variables)
 
 ## Upgrading a Project
 
@@ -38,10 +38,10 @@ accepts a number of environment variables, each is explained in the following re
 4. **Delete the project's root directory** from the server
 5. **Delete all Directus system tables** (`directus_*`) from the database
 
-<!-- prettier-ignore-start -->
 ::: tip Pure SQL
-After completing this process, you will be left with a pure SQL database, with no trace
-that Directus was ever installed. Any external services connecting to your database's project tables
-directly (eg: SQL queries) should continue working normally.
+
+After completing this process, you will be left with a pure SQL database, with no trace that Directus was ever
+installed. Any external services connecting to your database's project tables directly (eg: SQL queries) should continue
+working normally.
+
 :::
-<!-- prettier-ignore-end -->

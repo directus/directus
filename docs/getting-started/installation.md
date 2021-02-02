@@ -7,12 +7,11 @@ free to use whichever option best suits your needs.
 - [Docker](/guides/installation/docker)
 - [Manually](/guides/installation/manual)
 
-<!-- prettier-ignore-start -->
 ::: tip Development Environment
-To work on the project's source code, please
-follow our [Contributing Guide](/getting-started/contributing).
+
+To work on the project's source code, please follow our [Contributing Guide](/getting-started/contributing).
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Deployment Guides
 

@@ -14,9 +14,8 @@
 | `ROUTE_NOT_FOUND`     | Endpoint does not exist                        |
 | `SERVICE_UNAVAILABLE` | Could not use external service                 |
 
-<!-- prettier-ignore-start -->
 ::: warning Security
-To prevent leaking which items exist, all actions for non-existing items will
-return a `FORBIDDEN` error.
+
+To prevent leaking which items exist, all actions for non-existing items will return a `FORBIDDEN` error.
+
 :::
-<!-- prettier-ignore-end -->
