@@ -33,7 +33,7 @@ The scope determines the API endpoint that is triggered. The `*` wildcard can al
 <!-- prettier-ignore-start -->
 ::: tip
 System Scope Currently all system tables are available as event scopes except for `directus_migrations` and
-`directus_sessions`, which don't have relevant endpoints or services. 
+`directus_sessions`, which don't have relevant endpoints or services.
 :::
 <!-- prettier-ignore-end -->
 

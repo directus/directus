@@ -19,7 +19,7 @@ While the Node.js version of Directus defines the official specification and is
 our team's primary focus, we also support a community-lead PHP API port in Laravel. This secondary
 codebase is located in a separate git repository at [`directus/php`](https://github.com/directus).
 Though the repository is currently hidden, to coordinate contributing, please reach out to our core team via
-[Discord](https://directus.chat). 
+[Discord](https://directus.chat).
 :::
 <!-- prettier-ignore-end -->
 

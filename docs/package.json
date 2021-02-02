@@ -30,14 +30,11 @@
 	"license": "ISC",
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
 	"devDependencies": {
-		"fs-extra": "^9.0.1",
 		"lodash.get": "^4.4.2",
 		"micromark": "^2.10.1",
 		"npm-watch": "^0.7.0",
 		"slugify": "^1.4.6",
 		"vuepress": "^1.7.1"
 	},
-	"dependencies": {
-		"js-yaml": "^4.0.0"
-	}
+	"dependencies": {}
 }

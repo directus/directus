@@ -220,6 +220,11 @@ function resolveItem(item, pages, base, groupDepth = 1) {
 		});
 	} else {
 		const children = item.children || [];
+
+		if (item.type === 'divider') {
+			return { type: 'divider', path: '' };
+		}
+
 		if (children.length === 0 && item.path) {
 			return Object.assign(resolvePage(pages, item.path, base), {
 				title: item.title,
