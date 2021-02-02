@@ -1,15 +1,15 @@
 # Platform Overview
 
-> The Directus platform is primarily comprised of an API and App, working in concert to "mirror" the schema and content
+> The Directus platform is primarily comprised of an API and App, working in concert to “mirror” the schema and content
 > of your SQL database.
 
 ## Database Mirroring
 
-Instead of using a predefined "one-size-fits-all" data model to store your content, Directus "mirrors" your actual SQL
-database in real-time. The principle is akin to a database client (eg: _phpMyAdmin_), but includes far more advanced
+Instead of using a predefined “one-size-fits-all” data model to store your content, Directus “mirrors” your actual SQL
+database in real-time. The principle is akin to a database client (like _phpMyAdmin_), but includes far more advanced
 tools, and is safe and intuitive enough for non-technical users. This approach has many unique advantages:
 
-- A custom SQL database schema, tailored to your exact requirements
+- A custom (pure) SQL database schema, tailored to your exact requirements
 - Significant performance improvements through optimizations and indexing
 - Complete transparency, portability, and security for your data
 - Direct database access and the full power of raw/complex SQL queries
@@ -19,7 +19,7 @@ tools, and is safe and intuitive enough for non-technical users. This approach h
 
 The Directus API uses _Database Mirroring_ to dynamically generate REST endpoints and a GraphQL schema based on the
 connected database's architecture. It is written in [Node.js](https://nodejs.dev) and uses database abstraction to
-support most [SQL database vendors](/guides/installation#databases).
+support most [SQL database vendors](/guides/installation/cli.html#_1-confirm-the-minimum-requirements-are-met).
 
 ### Relevant Docs
 
@@ -29,8 +29,8 @@ support most [SQL database vendors](/guides/installation#databases).
 ## Directus App
 
 The Directus App is decoupled from, and powered by, the Directus API. It provides a way for both technical admins and
-non-technical users to view and manage content of the connected database. It is written in [Vue.js](https://vuejs.org)
-v3, is completely modular, and is highly customizable.
+non-technical users to view and manage content of the connected database. It is written in [Vue.js](https://vuejs.org),
+is completely modular, and is highly customizable.
 
 ### Relevant Docs
 
@@ -42,13 +42,6 @@ v3, is completely modular, and is highly customizable.
 A Project is a complete instance of Directus. Each project primarily represents a database, but also includes a
 configuration file and any related asset storage. This modular approach means you can also create different environments
 (eg: Dev, Staging, Prod) by simply creating additional project instances.
-
-<!-- ::: tip Migrating Environments
-Directus includes [Export](#), [Import](#), [Backup](#), and [Restore](#) features to assist with custom migration workflows between environments.
-You can also roll your own process by copying the database and assets between environments, either manually or via an automated script.
-
-@TODO Reference Schema Revisions
-::: -->
 
 ## Collections
 
