@@ -16,9 +16,10 @@ Monthly donations via [GitHub Sponsors](https://github.com/sponsors/directus) ar
 support. Donate to the organization, or directly to our core developers!
 
 - [Directus](https://github.com/sponsors/directus) — Organization
-- [rijkvanzanten](https://github.com/rijkvanzanten) — Technical Lead
-- [WoLfulus](https://github.com/WoLfulus) — DevOps
-- [Nitwel](https://github.com/Nitwel) — Developer
+  - [benhaynes](https://github.com/benhaynes) — Project Lead
+  - [rijkvanzanten](https://github.com/rijkvanzanten) — Technical Lead
+  - [WoLfulus](https://github.com/WoLfulus) — DevOps
+  - [Nitwel](https://github.com/Nitwel) — Developer
 
 ### Sponsored Work
 
@@ -30,8 +31,8 @@ Directus, and improve the codebase for the community.
 
 Our merchandise is a great way to support Directus — you get some swag, and we get some financial support and
 advertising. Simply make an appropriate financial donation through
-[GitHub Sponsors](https://github.com/sponsors/directus), message us with sizing/shipping details, and we'll get it
-shipped!
+[GitHub Sponsors](https://github.com/sponsors/directus), [message us](https://directus.chat) with sizing/shipping
+details, and we'll get it shipped!
 
 ## Other Contributions
 
@@ -41,7 +42,7 @@ Below are several ways anyone can help improve our ecosystem.
 
 Squashing bugs, optimizing the codebase, increasing test coverage, and adding new features, are all extremely valuable.
 Not technical? We have plenty of documentation that can always use some extra attention. Learn more in our
-[Contributors Guide](/getting-started/contributing).
+[Contributors Guide](/contributing/introduction).
 
 ### Translations
 

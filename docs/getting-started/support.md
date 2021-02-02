@@ -1,4 +1,4 @@
-# Technical Support
+# Support
 
 > Directus is offered completely free and open-source for anyone wishing to self-host the platform. There are many
 > resources, both free and paid, to help you get up-and-running smoothly.
@@ -24,7 +24,7 @@ in learning more about our monthly retainer agreements should contact us at
 
 If you need a specific feature added to Directus faster than the normal development timeline,
 [reach out to us](https://directus.io/contact/) for a quote. Our parent agency will often help subsidize the cost of
-developing new features if they pass our [80/20 Rule](/getting-started/contributing) and can be merged into the core
+developing new features if they pass our [80/20 Rule](/contributing/introduction) and can be merged into the core
 codebase. Other custom/proprietary development will be built bespoke within our robust extension system.
 
 ### Expedited Fixes
@@ -34,29 +34,19 @@ resolved sooner, [reach out to us](https://directus.io/contact/) for a quote.
 
 ## Frequently Asked Questions
 
-<!--
-@TODO
-### Does Directus handle deploying or migrating projects?
-
-Directus includes [export](#) and [backup](#) tools to assist in deploying data changes between
-environments (eg: from _development_ to _production_), however there is no formal migration
-workflow.
-
-Additionally, since Directus stores all of your data in pure SQL, you can use almost any preexisting
-workflow or toolkit for this process. -->
-
 ### Does Directus support Mongo/NoSQL?
 
 Not currently. Directus has been built specifically for wrapping _relational_ databases. While we could force Mongo to
-use tables, columns, and rows via Mongoose object modeling, that approach to non-structured doesn't make a lot of sense.
-We realize many users are interested in this feature, and will continue to explore its possibility.
+use tables, columns, and rows via Mongoose object modeling, that approach to faking a relational structure in a
+by-design non-structured environment like Mongo doesn't make a lot of sense. We realize many users are interested in
+this feature, and will continue to explore its possibility.
 
 ### Why haven't you added this feature, or fixed that issue yet?
 
 Directus is primarily a free and open-source project, maintained by a small core team and community contributors who
 donate their time and resources.
 
-Our platform is feature-rich, however we strictly adhere to our [80/20 Rule](/getting-started/contributing) to avoid a
+Our platform is feature-rich, however we strictly adhere to our [80/20 Rule](/contributing/introduction) to avoid a
 messy/bloated codebase. Directus is also quite stable, however new issues still arise, some of which may be triaged with
 a lower prioritization.
 
