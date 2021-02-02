@@ -18,7 +18,7 @@ tools, and is safe and intuitive enough for non-technical users. This approach h
 ## Directus API
 
 The Directus API uses _Database Mirroring_ to dynamically generate REST endpoints and a GraphQL schema based on the
-connected database's architecture. It is written in [Node.js](https://nodejs.org) and uses database abstraction to
+connected database's architecture. It is written in [Node.js](https://nodejs.dev) and uses database abstraction to
 support most [SQL database vendors](/guides/installation#databases).
 
 ### Relevant Docs

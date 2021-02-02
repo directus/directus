@@ -1,26 +1,26 @@
 html
   scroll-padding-top 4rem
 
-.tabs-component 
+.tabs-component
   margin 4em 0
-.tabs-component-tabs 
+.tabs-component-tabs
   border solid 1px #ddd
   border-radius 6px
-.tabs-component-tab 
-  &:hover 
+.tabs-component-tab
+  &:hover
     color #666
-  &.is-active 
+  &.is-active
     color #000
     border-bottom solid 1px #fff
     z-index 2
-  &.is-disabled 
-    * 
+  &.is-disabled
+    *
       color #cdcdcd
       cursor not-allowed !important
-.tabs-component-panels 
+.tabs-component-panels
   padding 1em
-@media (min-width: 700px) 
-  .tabs-component-tabs 
+@media (min-width: 700px)
+  .tabs-component-tabs
     border 0
     align-items stretch
     display flex
@@ -33,14 +33,14 @@ html
     border-radius 6px 6px 0 0
     margin-right 0.1em
     transition transform 0.3s ease
-  .tabs-component-panels 
+  .tabs-component-panels
     border-top-left-radius 0
     background-color #fff
     border solid 1px #ddd
     border-radius 0 6px 6px 6px
     box-shadow 0 0 10px rgba(0, 0, 0, 0.05)
     padding 1em
-  .tabs-component-tab 
+  .tabs-component-tab
     color #999
     font-size 14px
     font-weight 600
@@ -48,13 +48,13 @@ html
     list-style none
     &:not(:first-child)
       border-left 0
-  .tabs-component-tab-a 
+  .tabs-component-tab-a
     align-items center
     color inherit
     display flex
     padding 0.25em 1em
     text-decoration none
-.page-reference 
+.page-reference
   .theme-default-content.content__default,
   .page-edit,
   .page-nav
@@ -68,5 +68,8 @@ html
 
   h2
     border-bottom 0
-  h3 
+  h3
     font-size 1.2rem
+
+pre
+	tab-size: 2 !important;

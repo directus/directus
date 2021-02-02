@@ -14,9 +14,9 @@ Node.js. If you are looking for the previous **[Directus 8](https://github.com/d
 ## What is Directus?
 
 **Directus is an open-source platform that provides a real-time API and intuitive Admin App for your custom database.**
-Built on node.js and vue.js 3, it allows both administrators and non-technical users to view and manage the content/data
-stored within pure SQL databases. It can be used as a headless CMS for managing project content, a database client for
-modeling and viewing raw data, or as a standalone customizable WebApp.
+Built on [Node.js](https://nodejs.dev) and [Vue](https://vuejs.org), it allows both administrators and non-technical
+users to view and manage the content/data stored within pure SQL databases. It can be used as a headless CMS for
+managing project content, a database client for modeling and viewing raw data, or as a standalone customizable Web App.
 
 ::: tip What's in a name?
 
@@ -58,12 +58,13 @@ core principles:
 
 Completely free and open-source on the GPLv3 license, Directus is publicly available within our
 [npm package](https://www.npmjs.com/package/directus) and main
-[GitHub repository](https://github.com/directus/directus). It includes our dynamic API engine (node.js), the intuitive
-Admin App (vue.js 3), this documentation (markdown), and all dependencies.
+[GitHub repository](https://github.com/directus/directus). It includes our dynamic API engine (Node.js), the intuitive
+Admin App (Vue), this documentation (Markdown), and all dependencies.
 
 ### On-Demand Cloud
 
-Our self-service platform for quick and affordable instances of Directus on a multitenant infrastructure.
+[Our self-service platform](https://directus.cloud) for quick and affordable instances of Directus on a multitenant
+infrastructure.
 
 ### Enterprise Cloud
 
@@ -72,8 +73,8 @@ solution.
 
 ### Documentation
 
-[Our online documentation](https://docs.directus.io) describes the most recent version of our platform. They are written
-in publicly managed markdown files so the community can help keep them clean and up-to-date!
+[Our documentation](https://docs.directus.io) describes the most recent version of our platform. They are written in
+publicly managed markdown files so the community can help keep them clean and up-to-date!
 
 - Getting Started: Novice Oriented. For a platform intro and installation.
 - Concepts: Learning Oriented. For understanding the platform.
@@ -109,13 +110,3 @@ For the latest product info and sneak-peeks into upcoming releases, be sure to f
 
 Join our growing community of 2,600+ developers on [Discord](https://directus.chat). From community support to seeing
 where the platform is heading next, it's a great way to get more involved.
-
-### Languages
-
-In addition to managing multilingual content, the Directus Admin App itself can also be translated into different
-languages. Our languages are managed through the [Directus CrowdIn](https://locales.directus.io/), which provides a
-friendly interface and automatically submits pull-requests to the git repository.
-
-### Marketplace
-
-Coming soon. A library of free and paid Directus extensions created by our core team and community members.

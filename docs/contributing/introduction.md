@@ -75,7 +75,7 @@ put our values into practice. We expect all of our staff, contractors and contri
 
 Before getting started, ensure you your local environment meets our [minimum requirements](/guides/installation/cli) and
 you are familiar with Git. Please ensure you're on the "current" version of Node.js (see
-[Node's release schedule](https://nodejs.org/en/about/releases/)).
+[Node's release schedule](https://nodejs.dev/en/about/releases/)).
 
 ::: tip
 

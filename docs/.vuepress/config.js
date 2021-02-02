@@ -68,7 +68,7 @@ module.exports = {
 					{
 						type: 'page',
 						path: '/getting-started/quickstart',
-						title: 'Quick Start',
+						title: 'Quickstart Guide',
 					},
 					{
 						type: 'page',
@@ -229,11 +229,6 @@ module.exports = {
 						type: 'page',
 						path: '/reference/item-objects',
 						title: 'Item Objects',
-					},
-					{
-						type: 'page',
-						path: '/reference/internal-helpers',
-						title: 'Internal Helpers',
 					},
 					{
 						type: 'page',

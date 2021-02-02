@@ -8,7 +8,7 @@
 ## 1. Confirm the Minimum Requirements are met
 
 **The only language or script requirement for Directus is an actively maintained version of
-[Node.js](https://nodejs.org/en/about/releases/).** Currently that is v10+, however in April 2021, node v10 will leave
+[Node.js](https://nodejs.dev/en/about/releases/).** Currently that is v10+, however in April 2021, node v10 will leave
 _Maintenance Long-Term Support (LTS)_ status, and node v12+ will become the new minimum requirement.
 
 ### Databases
