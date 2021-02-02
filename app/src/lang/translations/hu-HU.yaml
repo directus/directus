@@ -689,7 +689,9 @@ displays:
   boolean:
     boolean: Logikai
     label_on: Címke be
+    label_on_placeholder: Címke megadása...
     label_off: Címke ki
+    label_off_placeholder: Címke megadása...
     icon_on: Ikon be
     icon_off: Ikon ki
     color_on: Szín be
@@ -701,6 +703,7 @@ displays:
   color:
     color: Szín
     description: Színes kör megjelenítése
+    default_color: Alapértelmezett szín
   datetime:
     datetime: Dátum és idő
     format: Formátum
@@ -712,6 +715,11 @@ displays:
     description: Fájlok megjelenítése
   filesize:
     filesize: Fájlméret
+  formatted-value:
+    formatted-value: Formázott érték
+    bold_label: Vastag stílus használata
+  formatted-json-value:
+    formatted-json-value: Formázott JSON érték
   icon:
     icon: Ikon
     filled: Kitöltve
@@ -722,11 +730,18 @@ displays:
     labels: Feliratok
     default_foreground: Alapértelmezett előtér
     default_background: Alapértelmezett háttér
+    format_label: Mindegyik címke formázása
+    choices_text_placeholder: Szöveg megadása...
   mime-type:
     mime-type: MIME típus
   rating:
     rating: Értékelés
     simple: Egyszerű
+  raw:
+    raw: Nyers érték
+  related-values:
+    related-values: Hasonló értékek
+    description: Hasonló értékek megjelenítése
   user:
     user: Felhasználó
     avatar: Profilkép
@@ -743,5 +758,6 @@ layouts:
   tabular:
     tabular: Táblázat
     fields: Mezők
+    spacing: Sorköz
     comfortable: Kényelmes
     compact: Kompakt
