@@ -255,6 +255,55 @@ module.exports = {
 								title: 'Items',
 							},
 							{
+								type: 'group',
+								title: 'Query Parameters',
+								children: [
+									{
+										type: 'page',
+										path: '/reference/api/rest/query/fields',
+										title: 'Fields',
+									},
+									{
+										type: 'page',
+										path: '/reference/api/rest/query/filter',
+										title: 'Filter',
+									},
+									{
+										type: 'page',
+										path: '/reference/api/rest/query/limit',
+										title: 'Limit',
+									},
+									{
+										type: 'page',
+										path: '/reference/api/rest/query/meta',
+										title: 'Meta',
+									},
+									{
+										type: 'page',
+										path: '/reference/api/rest/query/offset',
+										title: 'Offset',
+									},
+									{
+										type: 'page',
+										path: '/reference/api/rest/query/search',
+										title: 'Search',
+									},
+									{
+										type: 'page',
+										path: '/reference/api/rest/query/single',
+										title: 'Single',
+									},
+									{
+										type: 'page',
+										path: '/reference/api/rest/query/sort',
+										title: 'Sort',
+									},
+								],
+							},
+							{
+								type: 'divider',
+							},
+							{
 								type: 'page',
 								path: '/reference/api/rest/activity',
 								title: 'Activity',
@@ -333,52 +382,6 @@ module.exports = {
 								type: 'page',
 								path: '/reference/api/rest/webhooks',
 								title: 'Webhooks',
-							},
-							{
-								type: 'group',
-								title: 'Query Parameters',
-								children: [
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/fields',
-										title: 'Fields',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/filter',
-										title: 'Filter',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/limit',
-										title: 'Limit',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/meta',
-										title: 'Meta',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/offset',
-										title: 'Offset',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/search',
-										title: 'Search',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/single',
-										title: 'Single',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/sort',
-										title: 'Sort',
-									},
-								],
 							},
 						],
 					},

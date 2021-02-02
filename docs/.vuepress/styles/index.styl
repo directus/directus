@@ -55,21 +55,55 @@ html
     padding 0.25em 1em
     text-decoration none
 .page-reference
-  .theme-default-content.content__default,
-  .page-edit,
+  .theme-default-content.content__default
+  .page-edit
   .page-nav
     max-width 1200px
-  hr
-    width calc(100% + 5rem)
-    left -2.5rem
-    position relative
-    margin 4rem 0
-  h1
-
-  h2
-    border-bottom 0
-  h3
-    font-size 1.2rem
+	hr
+		width calc(100% + 5rem)
+		left -2.5rem
+		position relative
+		margin 4rem 0
+	h2
+		border-bottom 0
+		margin-top 4rem
+	h3
+		margin-top 4rem
+		font-size 1.2rem
+	h4
+		margin-top 2rem
+		margin-bottom 0
+	.definitions
+		> p
+			border-bottom 2px solid $borderColor
+			padding .8rem 0
+			margin 0
+			> code
+				background transparent
+				padding 0
+				margin-right 0.2rem
+				font-weight 700
+				font-size 0.8rem
+			> strong
+				font-size .75rem
+				color#aaa
+			&:first-child
+				border-top 2px solid $borderColor
 
 pre
 	tab-size: 2 !important;
+
+.two-up .right
+	margin-top 50px
+
+@media (min-width: 1000px)
+	.two-up
+		display grid
+		grid-template-columns minmax(0, 4fr) minmax(0, 3fr)
+		grid-gap 40px
+		align-items start
+
+	.two-up .right
+		margin-top 0
+		position sticky
+		top $navbarHeight
