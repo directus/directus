@@ -147,6 +147,11 @@ module.exports = {
 				children: [
 					{
 						type: 'page',
+						path: '/guides/installation/',
+						title: 'Installation',
+					},
+					{
+						type: 'page',
 						path: '/guides/projects',
 						title: 'Projects',
 					},
@@ -162,49 +167,38 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/guides/items',
+						title: 'Items',
+					},
+					{
+						type: 'page',
+						path: '/guides/files',
+						title: 'Files & Thumbnails',
+					},
+					{
+						type: 'page',
 						path: '/guides/roles-and-permissions',
 						title: 'Roles & Permissions',
 					},
 					{
 						type: 'page',
-						path: '/guides/presets',
-						title: 'Presets',
+						path: '/guides/users',
+						title: 'Users',
 					},
 					{
-						type: 'group',
-						title: 'Installation',
-						children: [
-							{
-								type: 'page',
-								path: '/guides/installation/cli',
-								title: 'CLI (Recommended)',
-							},
-							{
-								type: 'page',
-								path: '/guides/installation/manual',
-								title: 'Manually',
-							},
-							{
-								type: 'page',
-								path: '/guides/installation/docker',
-								title: 'Docker',
-							},
-							{
-								type: 'page',
-								path: '/guides/installation/digitalocean-app-platform',
-								title: 'DigitalOcean App Platform',
-							},
-							{
-								type: 'page',
-								path: '/guides/installation/aws',
-								title: 'AWS',
-							},
-							{
-								type: 'page',
-								path: '/guides/installation/platformsh-one-click',
-								title: 'Platform.sh One-Click',
-							},
-						],
+						type: 'page',
+						path: '/guides/presets',
+						title: 'Presets & Bookmarks',
+					},
+					{
+						type: 'page',
+						path: '/guides/webhooks',
+						title: 'Webhooks',
+					},
+					{
+						type: 'page',
+						path: '/guides/white-labeling',
+						title: 'White-Labeling',
 					},
 				],
 			},

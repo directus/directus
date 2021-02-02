@@ -1,10 +1,11 @@
 # Installing Manually
 
-<!-- prettier-ignore-start -->
 ::: tip Automation
-We've created a little CLI tool you can run that does this process automatically. For more info, check the doc on [installing through the CLI](/guides/installation/cli).
+
+We've created a little CLI tool you can run that does this process automatically. For more info, check the doc on
+[installing through the CLI](/guides/installation/cli).
+
 :::
-<!-- prettier-ignore-end -->
 
 ## 1. Setup a Project Folder
 

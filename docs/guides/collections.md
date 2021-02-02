@@ -25,21 +25,19 @@
    - Updated By
 6. Click the **Finish Setup** button
 
-<!-- prettier-ignore-start -->
 ::: danger Immutable Keys
-The collection name, primary key name/type, and system field names can not
-be modified after the collection is created.
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
-::: tip Database Tables
-Keep in mind that a Directus Collection is just a database table. Therefore you
-can import or create a table directly in the database, and it will automatically appear within
-Directus. The first time you manage that table, a `directus_collections` record will be created with
-default values.
+The collection name, primary key name/type, and system field names can not be modified after the collection is created.
+
 :::
-<!-- prettier-ignore-end -->
+
+::: tip Database Tables
+
+Keep in mind that a Directus Collection is just a database table. Therefore you can import or create a table directly in
+the database, and it will automatically appear within Directus. The first time you manage that table, a
+`directus_collections` record will be created with default values.
+
+:::
 
 ## Configuring a Collection
 
@@ -77,20 +75,18 @@ remove items from the App, but maintains the actual database record for easy rec
 - **Archive Value** — The value saved in the Archive Field when archived
 - **Unarchive Value** — The value saved in the Archive Field when unarchived
 
-<!-- prettier-ignore-start -->
 ::: warning API Responses
-Items that have been archived are still returned normally via the API. It
-is up to you to filter them out as needed.
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
-::: tip Status Field
-When creating a new Collection, you have the option of creating an optional
-"Status" field. If you choose to include this field, the collection's archive settings will
-automatically be configured for you.
+Items that have been archived are still returned normally via the API. It is up to you to filter them out as needed.
+
 :::
-<!-- prettier-ignore-end -->
+
+::: tip Status Field
+
+When creating a new Collection, you have the option of creating an optional "Status" field. If you choose to include
+this field, the collection's archive settings will automatically be configured for you.
+
+:::
 
 ### Sort
 
@@ -98,13 +94,12 @@ The sort feature enables manual drag-and-drop item reordering within the Directu
 [Collection Detail](/concepts/app-overview#collection-detail) page/modal, and can also be used for sorting items within
 a [Junction Table](#).
 
-<!-- prettier-ignore-start -->
 ::: tip Sort Field
-When creating a new Collection, you have the option of creating an optional "Sort"
-field. If you choose to include this field, the collection's sort settings will automatically be
-configured for you.
+
+When creating a new Collection, you have the option of creating an optional "Sort" field. If you choose to include this
+field, the collection's sort settings will automatically be configured for you.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Deleting a Collection
 
@@ -112,9 +107,8 @@ configured for you.
 2. Click the red **Delete Collection** action button in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
-<!-- prettier-ignore-start -->
 ::: danger Irreversible Change
-This action is permanent and can not be undone. Please proceed with
-caution.
+
+This action is permanent and can not be undone. Please proceed with caution.
+
 :::
-<!-- prettier-ignore-end -->

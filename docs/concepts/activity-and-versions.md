@@ -20,20 +20,19 @@ item:
 - Item
 - Comment (when applicable)
 
-<!-- prettier-ignore-start -->
 ::: tip Readonly
-For proper accountability, activity records are readonly. Administrators should
-avoid changing, deleting, or truncating this data.
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
-::: warning External Events
-Directus can only track events that pass through the platform's
-middleware. Changes made directly to the database, or by other external means, are not included in
-the activity log.
+For proper accountability, activity records are readonly. Administrators should avoid changing, deleting, or truncating
+this data.
+
 :::
-<!-- prettier-ignore-end -->
+
+::: warning External Events
+
+Directus can only track events that pass through the platform's middleware. Changes made directly to the database, or by
+other external means, are not included in the activity log.
+
+:::
 
 ## Versions
 
@@ -51,13 +50,12 @@ potentially decreasing performance. To remedy this, Directus allows
 saved.
 ::: -->
 
-<!-- prettier-ignore-start -->
 ::: tip Creating Detached Versions
-You can also create a new version for an item without saving the
-data to the parent item itself. This allows you to "stage" changes to an item that may already be
-live/published.
+
+You can also create a new version for an item without saving the data to the parent item itself. This allows you to
+"stage" changes to an item that may already be live/published.
+
 :::
-<!-- prettier-ignore-end -->
 
 ### Relevant Guides
 

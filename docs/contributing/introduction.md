@@ -13,30 +13,19 @@ monorepo design similar to React or Babel — to learn more about our monorepo's
 To contribute to the project, please follow the instructions located within our GitHub repository's
 [contributing.md file](https://github.com/directus/directus/blob/main/contributing.md).
 
-<!-- prettier-ignore-start -->
-::: tip PHP API Port
-While the Node.js version of Directus defines the official specification and is
-our team's primary focus, we also support a community-lead PHP API port in Laravel. This secondary
-codebase is located in a separate git repository at [`directus/php`](https://github.com/directus).
-Though the repository is currently hidden, to coordinate contributing, please reach out to our core team via
-[Discord](https://directus.chat).
-:::
-<!-- prettier-ignore-end -->
-
 ## Feature Requests
 
 Feature requests are a great way to let our team know what should be prioritized next. You can
 [submit a feature request](https://github.com/directus/directus/discussions/category_choices) or upvote
 [existing submissions](https://github.com/directus/directus/discussions) all via our GitHub Discussions board.
 
-<!-- prettier-ignore-start -->
 ::: warning The 80/20 Rule
-To keep the Directus codebase as clean and simple as possible, we will
-only consider approving features that we feel at least 80% of our user-base will find valuable. If
-your feature request falls within the 20% range, it is considered an edge-case and should be
-implemented as an extension.
+
+To keep the Directus codebase as clean and simple as possible, we will only consider approving features that we feel at
+least 80% of our user-base will find valuable. If your feature request falls within the 20% range, it is considered an
+edge-case and should be implemented as an extension.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## RFCs
 
@@ -88,11 +77,11 @@ Before getting started, ensure you your local environment meets our [minimum req
 you are familiar with Git. Please ensure you're on the "current" version of Node.js (see
 [Node's release schedule](https://nodejs.org/en/about/releases/)).
 
-<!-- prettier-ignore-start -->
 ::: tip
+
 You will need to have a minimum of Node 12+ to build Directus!
+
 :::
-<!-- prettier-ignore-end -->
 
 ### 1. Fork the Directus repository
 
@@ -135,11 +124,12 @@ Run the following command from the root directory.
 npm run dev
 ```
 
-<!-- prettier-ignore-start -->
 ::: tip
-If you encounter errors during this installation process, make sure your node version meets the [minimum requirements](/guides/installation/cli)
+
+If you encounter errors during this installation process, make sure your node version meets the
+[minimum requirements](/guides/installation/cli)
+
 :::
-<!-- prettier-ignore-end -->
 
 ### 7. Make your fixes/changes
 
@@ -195,11 +185,12 @@ git pull upstream main
 
 At this point you are ready to continue working on Directus, with the latest commits included!
 
-<!-- prettier-ignore-start -->
 ::: tip
-Before you begin or resume development, be sure to always sync, if you are going to submit a pull request with your changes!
+
+Before you begin or resume development, be sure to always sync, if you are going to submit a pull request with your
+changes!
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Codebase Overview
 

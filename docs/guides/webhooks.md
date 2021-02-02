@@ -29,8 +29,8 @@
 2. Click the red **Delete Webhook** action button in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
-<!-- prettier-ignore-start -->
 ::: danger Irreversible Change
+
 This action is permanent and can not be undone. Please proceed with caution.
+
 :::
-<!-- prettier-ignore-end -->

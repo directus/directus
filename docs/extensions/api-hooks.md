@@ -30,12 +30,12 @@ System events are referenced with the format:
 
 The scope determines the API endpoint that is triggered. The `*` wildcard can also be used to include all scopes.
 
-<!-- prettier-ignore-start -->
-::: tip
-System Scope Currently all system tables are available as event scopes except for `directus_migrations` and
-`directus_sessions`, which don't have relevant endpoints or services.
+::: tip System Scope
+
+Currently all system tables are available as event scopes except for `directus_migrations` and `directus_sessions`,
+which don't have relevant endpoints or services.
+
 :::
-<!-- prettier-ignore-end -->
 
 ### Action
 

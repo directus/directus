@@ -21,28 +21,28 @@ desired by updating the preview or the filter component in the page sidebar.
 Each preset saves all of the information needed to recreate a view of the collection/layou, including: the full-text
 search query, any advanced filters added, sort field, sort direction, and all other specific layout options.
 
-<!-- prettier-ignore-start -->
 ::: tip Defaults vs Bookmarks
-It's important to be aware of the difference between a collection's
-_defaults_ and its _bookmarks_, both of which are configured by presets. A _default_ is how a user
-will initially view the collection detail without any further customization, while a _bookmark_ is a
-named dataset that can be recalled at any point via the [collection navigation](/concepts/users-roles-and-permissions).
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
+It's important to be aware of the difference between a collection's _defaults_ and its _bookmarks_, both of which are
+configured by presets. A _default_ is how a user will initially view the collection detail without any further
+customization, while a _bookmark_ is a named dataset that can be recalled at any point via the
+[collection navigation](/concepts/users-roles-and-permissions).
+
+:::
+
 ::: tip System Defaults
-You can also adjust the defaults and bookmarks for the Directus Activity,
-Directus Files, and Directus Users collections.
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
-::: tip Order of Defaults
-Multiple defaults can be configured for a user, either for different layouts
-of even the same layout. In this case, the preset priority is: User, then Role, then Global.
+You can also adjust the defaults and bookmarks for the Directus Activity, Directus Files, and Directus Users
+collections.
+
 :::
-<!-- prettier-ignore-end -->
+
+::: tip Order of Defaults
+
+Multiple defaults can be configured for a user, either for different layouts of even the same layout. In this case, the
+preset priority is: User, then Role, then Global.
+
+:::
 
 ## Deleting a Preset
 
@@ -50,9 +50,8 @@ of even the same layout. In this case, the preset priority is: User, then Role, 
 2. Click the red **Delete Preset** action button in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
-<!-- prettier-ignore-start -->
-::: danger Irreversible Change 
-This action is permanent and can not be undone. Please proceed with
-caution.
+::: danger Irreversible Change
+
+This action is permanent and can not be undone. Please proceed with caution.
+
 :::
-<!-- prettier-ignore-end -->

@@ -13,13 +13,13 @@ Directus ships with a number of profile fields that help create a full-featured
 All Directus users are aggregated and shown on the [User Directory](/concepts/app-overview#user-directory) page of the
 App
 
-<!-- prettier-ignore-start -->
 ::: tip Extending Directus Users
-While the included fields within Directus Users are required/locked,
-you can still _extend_ this collection with additional custom fields as needed. You can do this via
-the normal [Create a new Field](/guides/fields) process from within the system collection.
+
+While the included fields within Directus Users are required/locked, you can still _extend_ this collection with
+additional custom fields as needed. You can do this via the normal [Create a new Field](/guides/fields) process from
+within the system collection.
+
 :::
-<!-- prettier-ignore-end -->
 
 ### Relevant Guides
 

@@ -3,12 +3,13 @@
 > These Docs will help get you up-and-running quickly, guide you through advanced features, and explain the concepts
 > that make Directus so unique.
 
-<!-- prettier-ignore-start -->
-::: warning
-This is the documentation for the new **[Directus 9](https://github.com/directus/directus)** platform written in Node.js.
-If you are looking for the previous **[Directus 8](https://github.com/directus/v8-archive/releases/latest)** (PHP) docs, you can find them [here](https://v8.docs.directus.io).
+::: warning Version 9
+
+This is the documentation for the new **[Directus 9](https://github.com/directus/directus)** platform written in
+Node.js. If you are looking for the previous **[Directus 8](https://github.com/directus/v8-archive/releases/latest)**
+(PHP) docs, you can find them [here](https://v8.docs.directus.io).
+
 :::
-<!-- prettier-ignore-end -->
 
 ## What is Directus?
 
@@ -17,13 +18,12 @@ Built on node.js and vue.js 3, it allows both administrators and non-technical u
 stored within pure SQL databases. It can be used as a headless CMS for managing project content, a database client for
 modeling and viewing raw data, or as a standalone customizable WebApp.
 
-<!-- prettier-ignore-start -->
 ::: tip What's in a name?
-"Directus" ([duh REKT iss](http://audio.pronouncekiwi.com/Salli/Directus)) is latin for: _laid straight,
-arranged in lines_. The broadest goal of our platform is to present data in a simple, orderly, and
-intuitive way.
+
+"Directus" ([duh REKT iss](http://audio.pronouncekiwi.com/Salli/Directus)) is latin for: _laid straight, arranged in
+lines_. The broadest goal of our platform is to present data in a simple, orderly, and intuitive way.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## What makes it unique?
 
@@ -80,12 +80,11 @@ in publicly managed markdown files so the community can help keep them clean and
 - Guides: Problem Oriented. Follow along with steps while working.
 - Reference: Information Oriented. Look up info and specs while working.
 
-<!-- prettier-ignore-start -->
 ::: tip Versioned Docs
-Docs for specific versions of Directus 9+ are available within the individual
-Project's App Documentation module.
+
+Docs for specific versions of Directus 9+ are available within the individual Project's App Documentation module.
+
 :::
-<!-- prettier-ignore-end -->
 
 <!-- ### Online Demo
 

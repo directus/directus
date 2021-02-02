@@ -16,20 +16,20 @@
 - **Project Logo** — A 40x40 pixel logo at the top of the [Module Bar](/concepts/app-overview) and on the login/public
   pages
 
-<!-- prettier-ignore-start -->
 ::: tip Recommended Logo Styling
-The 40x40 pixel Project Logo is inset within the 64x64 pixel Project
-Color square. To avoid a "boxy" look, we recommend using a SVG or PNG logo with transparency.
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
-::: tip Browser FavIcon & Title
-The project color and logo are also used to set the dynamic favicon, and
-the project title is used in the browser's title. This furthers the bespoke appearance of your
-platform and makes it easier to differentiate between different Directus projects.
+The 40x40 pixel Project Logo is inset within the 64x64 pixel Project Color square. To avoid a "boxy" look, we recommend
+using a SVG or PNG logo with transparency.
+
 :::
-<!-- prettier-ignore-end -->
+
+::: tip Browser FavIcon & Title
+
+The project color and logo are also used to set the dynamic favicon, and the project title is used in the browser's
+title. This furthers the bespoke appearance of your platform and makes it easier to differentiate between different
+Directus projects.
+
+:::
 
 ### Public Page Styling
 
@@ -42,11 +42,11 @@ In addition to the above options, you can also apply the following additional st
 - **Public Note** — A helpful note displayed at the bottom of the right-side pane of public pages; supports markdown for
   rich-text formatting
 
-<!-- prettier-ignore-start -->
 ::: tip Default Background Color
+
 When a Public Background image is not set, the right-side pane of public pages uses the Project Color instead.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Themes & Custom CSS
 
@@ -67,16 +67,16 @@ You can override any core CSS, including the above variables, directly within th
 3. Enter any **valid CSS**
 4. Click the **Save** action button in the header
 
-<!-- prettier-ignore-start -->
+::: tip Action Styling
 
-::: tip Action Styling The `--primary` variable (and its shades) control call-to-actions and all other "Directus blue"
-elements within the App. While it may be tempting to override this variable with your brand's color, please first review
-the following warnings:
+The `--primary` variable (and its shades) control call-to-actions and all other "Directus blue" elements within the App.
+While it may be tempting to override this variable with your brand's color, please first review the following warnings:
 
 - Avoid using yellow, orange, or red hues that give a sense of "danger"
 - Avoid low-contrast colors like yellows, grays, etc, that might not be easily visible
-- Avoid low-saturation colors like black, which might not properly highlight CTAs :::
-<!-- prettier-ignore-end -->
+- Avoid low-saturation colors like black, which might not properly highlight CTAs
+
+:::
 
 ## API Reference
 

@@ -4,20 +4,20 @@
 > within the database. If you're unfamiliar with Directus Items, please start by reading our
 > [Understanding Items](/concepts/platform-overview#items) docs.
 
-# Managing Items
+## Managing Items
 
 Managing items includes the basics of Create, Read, Update, and Delete — as well as more specific features such as
 Archiving, Reverting, Commenting, and Reordering. Each of the guides below also includes a link to any relevant
 concepts.
 
-<!-- prettier-ignore-start -->
-:::warning Permissions
-All of the action on this page assume that the current user has permission to perform the action. 
-If they do not, then certain buttons or features may be disabled or altogether hidden.
-:::
-<!-- prettier-ignore-end -->
+::: warning Permissions
 
-## Creating Items
+All of the action on this page assume that the current user has permission to perform the action. If they do not, then
+certain buttons or features may be disabled or altogether hidden.
+
+:::
+
+### Creating Items
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection where you want to add an item
@@ -25,13 +25,14 @@ If they do not, then certain buttons or features may be disabled or altogether h
 4. Complete the Item Detail form
 5. Click the "Save Item" (✓ icon) button located in the header
 
-<!-- prettier-ignore-start -->
-:::tip Singletons
-If the Collection is configured as a "Singleton" in the data model settings, then the App will automatically skip step #3 above.
-:::
-<!-- prettier-ignore-end -->
+::: tip Singletons
 
-## Updating Items
+If the Collection is configured as a "Singleton" in the data model settings, then the App will automatically skip step
+#3 above.
+
+:::
+
+### Updating Items
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection of the item you want to update
@@ -39,13 +40,14 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 4. Update the Item Detail form
 5. Click the "Save Item" (✓ icon) button located in the header
 
-<!-- prettier-ignore-start -->
-:::tip Singletons
-If the Collection is configured as a "Singleton" in the data model settings, then the App will automatically skip step #3 above.
-:::
-<!-- prettier-ignore-end -->
+::: tip Singletons
 
-## Deleting Items
+If the Collection is configured as a "Singleton" in the data model settings, then the App will automatically skip step
+#3 above.
+
+:::
+
+### Deleting Items
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection of the item you want to delete
@@ -53,13 +55,14 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 4. Click the "Delete Item" (trash icon) button located in the header
 5. Confirm the action within the dialog by clicking "Delete"
 
-<!-- prettier-ignore-start -->
-:::tip Deleting from the Item Detail page
-You can also click on an item to navigate to its Detail page. From there, you can click on the "Delete Item" (trash icon) button located in the header.
-:::
-<!-- prettier-ignore-end -->
+::: tip Deleting from the Item Detail page
 
-## Archiving an Item
+You can also click on an item to navigate to its Detail page. From there, you can click on the "Delete Item" (trash
+icon) button located in the header.
+
+:::
+
+### Archiving an Item
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection of the item you want to archive
@@ -67,19 +70,20 @@ You can also click on an item to navigate to its Detail page. From there, you ca
 4. Click the "Archive Item" (trash icon) button located in the header
 5. Confirm the action within the dialog by clicking "Archive"
 
-<!-- prettier-ignore-start -->
-:::warning Requires Configuration
+::: warning Requires Configuration
+
 This feature is only available if an Archive column has been configured in the Collection's data model settings.
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
-:::tip Archiving from the Item Detail page
-You can also click on an item to navigate to its Detail page. From there, you can click on the "Archive Item" (archive icon) button located in the header.
 :::
-<!-- prettier-ignore-end -->
 
-## Reverting Items
+::: tip Archiving from the Item Detail page
+
+You can also click on an item to navigate to its Detail page. From there, you can click on the "Archive Item" (archive
+icon) button located in the header.
+
+:::
+
+### Reverting Items
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection of the item you want to archive
@@ -89,7 +93,7 @@ You can also click on an item to navigate to its Detail page. From there, you ca
 6. Click on the "Revert" button located in the drawer's header
 7. Confirm the action within the dialog by clicking "Revert"
 
-## Commenting on Items
+### Commenting on Items
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection of the item you want to comment on
@@ -98,7 +102,7 @@ You can also click on an item to navigate to its Detail page. From there, you ca
 5. Type your message within the input
 6. Click the "Submit" button
 
-## Reordering Items
+### Reordering Items
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection of the items you want to reorder
@@ -109,18 +113,18 @@ You can also click on an item to navigate to its Detail page. From there, you ca
 The new order is saved automatically, so make sure you wait until the App's loading indicator finishes before navigating
 away from the page.
 
-<!-- prettier-ignore-start -->
-:::warning Requires Configuration
-This feature is only available if a Sort column has been configured in the Collection's data model settings.
-:::
-<!-- prettier-ignore-end -->
+::: warning Requires Configuration
 
-# Browsing Items
+This feature is only available if a Sort column has been configured in the Collection's data model settings.
+
+:::
+
+## Browsing Items
 
 In order to view, update or delete a specific item, you first need to be able to find it. Directus includes a number of
 features to make browsing items as fast and efficient as possible, each of which are described below.
 
-## Adjusting Item Layouts
+### Adjusting Item Layouts
 
 **[Learn more about the concept of layouts.](#)**
 
@@ -130,7 +134,7 @@ features to make browsing items as fast and efficient as possible, each of which
 4. Choose the desired "Layout" you want to use
 5. Configure any other layout options that come after the layout dropdown
 
-## Searching Items
+### Searching Items
 
 **[Learn more about the concept of search.](#)**
 
@@ -138,7 +142,7 @@ features to make browsing items as fast and efficient as possible, each of which
 2. Navigate to the collection of the items you want to search
 3. Type your search query into the input located in the header
 
-## Filtering Items
+### Filtering Items
 
 **[Learn more about the concept of filtering.](#)**
 
@@ -150,7 +154,7 @@ features to make browsing items as fast and efficient as possible, each of which
 6. Enter a value in the field filter's input(s)
 7. Remove unwanted filters by hovering over the field and clicking "X"
 
-## Bookmarking Item Presets
+### Bookmarking Item Presets
 
 **[Learn more about the concept of bookmarks.](#)**
 
@@ -161,7 +165,7 @@ features to make browsing items as fast and efficient as possible, each of which
 5. Rename bookmarks by right-clicking them in the navigation sidebar and selecting "Rename Bookmark"
 6. Delete bookmarks by right-clicking them in the navigation sidebar and selecting "Delete Bookmark"
 
-## Exporting Items
+### Exporting Items
 
 **[Learn more about the concept of exporting.](#)**
 

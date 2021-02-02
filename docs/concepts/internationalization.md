@@ -15,13 +15,12 @@ Directus uses [database mirroring](/concepts/platform-overview#database-mirrorin
 tables and columns, however this only covers one language. Therefore our platform supports schema translations for these
 names, allowing you to properly support different languages for your Collection and Field names.
 
-<!-- prettier-ignore-start -->
 ::: tip Overriding Technical
-Names If your project requires more _technical_ table/column names (eg:
-`cust` or `f_name`), you can also use schema translations to override those defaults (eg:
-`Customers` or `First Name`) in the primary language.
+
+Names If your project requires more _technical_ table/column names (eg: `cust` or `f_name`), you can also use schema
+translations to override those defaults (eg: `Customers` or `First Name`) in the primary language.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Content Translations
 
@@ -30,10 +29,9 @@ accomplish this by creating _standard_ fields in the parent collection for each 
 our relational translation fields to dynamically manage content in as many languages as is required. Mixing standard and
 translated fields also allows language-agnostic data (such as dates or toggles) to remain within the parent collection.
 
-<!-- prettier-ignore-start -->
 ::: tip Custom Interfaces
-For more advanced use-cases, such as connecting to a third-party
-translation service, you can read our extension guide on
-[creating a custom interface](/guides/extensions/interfaces).
+
+For more advanced use-cases, such as connecting to a third-party translation service, you can read our extension guide
+on [creating a custom interface](/guides/extensions/interfaces).
+
 :::
-<!-- prettier-ignore-end -->

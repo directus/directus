@@ -18,14 +18,13 @@
 - [Many-to-Any Field](/guides/field-types/many-to-any-field)
 - [Translated Fields](/guides/field-types/translated-fields)
 
-<!-- prettier-ignore-start -->
 ::: tip Database Fields
-Keep in mind that a Directus Field is just a database column. Therefore you
-can import or create a column directly in the database, and it will automatically appear within
-Directus. The first time you manage that column, a `directus_fields` record will be created with
-default values.
+
+Keep in mind that a Directus Field is just a database column. Therefore you can import or create a column directly in
+the database, and it will automatically appear within Directus. The first time you manage that column, a
+`directus_fields` record will be created with default values.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Updating a Field
 
@@ -41,11 +40,11 @@ default values.
 - [Many-to-Any Field](/guides/field-types/many-to-any-field)
 - [Translated Fields](/guides/field-types/translated-fields)
 
-<!-- prettier-ignore-start -->
-::: tip 
+::: tip
+
 Learn more about the field options for [Adjusting the Field Layout](#adjusting-field-layout).
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Duplicating a Field
 
@@ -53,12 +52,11 @@ Learn more about the field options for [Adjusting the Field Layout](#adjusting-f
 2. Click the **More Options** icon for the field you want to delete
 3. Click the **Duplicate Field** option
 
-<!-- prettier-ignore-start -->
 ::: warning Relational and Primary Key Fields
-It is not currently possible to duplicate relational
-fields or a collection's primary key.
+
+It is not currently possible to duplicate relational fields or a collection's primary key.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Adjusting Field Layout
 
@@ -85,9 +83,8 @@ The layout of the collection's form is determined by the following field options
 3. Click the **Delete Field** option
 4. Confirm this decision by clicking **Delete** in the dialog
 
-<!-- prettier-ignore-start -->
 ::: danger Irreversible Change
-This action is permanent and can not be undone. Please proceed with
-caution.
+
+This action is permanent and can not be undone. Please proceed with caution.
+
 :::
-<!-- prettier-ignore-end -->

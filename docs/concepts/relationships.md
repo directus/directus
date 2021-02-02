@@ -21,12 +21,11 @@ they store. After it's created, the value of an item's PK should _never_ change.
 To link items together relationally, you simply save a reference of an item's PK in a different field. That _reference_
 is called a Foreign Key (FK).
 
-<!-- prettier-ignore-start -->
 ::: tip Compound Keys
-We've ignored compound keys in this explanation to help keep things as simple as
-possible.
+
+We've ignored compound keys in this explanation to help keep things as simple as possible.
+
 :::
-<!-- prettier-ignore-end -->
 
 ### Perspective Matters
 
@@ -68,20 +67,20 @@ cities ("Many" Collection)
 - country (stores the FK to a country)
 ```
 
-<!-- prettier-ignore-start -->
 ::: tip
-Manual Reordering To enable manual reordering for a O2M, simply add a field with the `sort` type
-to the "many" side (`cities` in the above example).
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
-::: tip Translations
-The Translations interface allows [creating multilingual content](/concepts/internationalization#content-translations) relationally.
-It is a standard O2M relationship, but also includes an additional field on the "many" collection to
-hold the language key
+Manual Reordering To enable manual reordering for a O2M, simply add a field with the `sort` type to the "many" side
+(`cities` in the above example).
+
 :::
-<!-- prettier-ignore-end -->
+
+::: tip Translations
+
+The Translations interface allows [creating multilingual content](/concepts/internationalization#content-translations)
+relationally. It is a standard O2M relationship, but also includes an additional field on the "many" collection to hold
+the language key
+
+:::
 
 ## Many-to-Many (M2M)
 
@@ -110,27 +109,26 @@ recipe_ingredients (Junction Collection)
 Notice that the example above also has a `quantity` field on the junction table. You can add any contextual fields to
 the junction, and they will also be included in the App's relational edit form.
 
-<!-- prettier-ignore-start -->
 ::: warning M2M == O2Mx2
-An M2M is technically two relationships viewed as one. Each side has a O2M
-to the Junction Table that sits in the middle. In that sense, there really is no "M2M".
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
-::: tip
-Manual Reordering To enable manual reordering for a M2M, simply add a numeric field to the
-junction table and set it as the [Collection Sort](/guides/collections#sort).
-:::
-<!-- prettier-ignore-end -->
+An M2M is technically two relationships viewed as one. Each side has a O2M to the Junction Table that sits in the
+middle. In that sense, there really is no "M2M".
 
-<!-- prettier-ignore-start -->
-::: tip
-Self-Referencing You can also have a M2M relationship that connects items within the _same_
-collection. A common example of this is "Related Articles", where each article might relate to many
-other articles.
 :::
-<!-- prettier-ignore-end -->
+
+::: tip
+
+Manual Reordering To enable manual reordering for a M2M, simply add a numeric field to the junction table and set it as
+the [Collection Sort](/guides/collections#sort).
+
+:::
+
+::: tip
+
+Self-Referencing You can also have a M2M relationship that connects items within the _same_ collection. A common example
+of this is "Related Articles", where each article might relate to many other articles.
+
+:::
 
 ## One-to-One (O2O)
 

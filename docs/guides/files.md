@@ -19,14 +19,13 @@ example.com/assets/1ac73658-8b62-4dea-b6da-529fbc9d01a4
 
 ![Original File](../assets/original.jpg) _Original File Used Below — 602KB and 1800x1200_
 
-<!-- prettier-ignore-start -->
 ::: warning Direct File Access
-While you may _technically_ be able to access your original files
-within their actual filesystem directory (eg: `/uploads/<filename_disk>` for the default local
-storage configuration), it is recommended that you always use the Directus API. This is the only way
-that you can take advantage of file permissions and other built-in features.
+
+While you may _technically_ be able to access your original files within their actual filesystem directory (eg:
+`/uploads/<filename_disk>` for the default local storage configuration), it is recommended that you always use the
+Directus API. This is the only way that you can take advantage of file permissions and other built-in features.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Creating Thumbnail Presets
 
@@ -40,8 +39,7 @@ that you can take advantage of file permissions and other built-in features.
 ### Storage Asset Transform
 
 The **Storage Asset Transform** can be used in conjunction with the presets to force an allow-list or completely disable
-the thumbnailing system.  
-The options for this are:
+the thumbnailing system. The options for this are:
 
 - **All** — Any valid thumbnail request will be returned
 - **None** — No thumbnails will be returned, not even presets
@@ -92,11 +90,11 @@ its aspect ratio, shrinking the image to fit _within_ the dimensions and adding 
 | ----------------------------------------------------------- | --------------------------------------------------------------- |
 | ![Cover](../assets/200-200-cover-75.jpg)<br>_8KB • 200x200_ | ![Contain](../assets/200-200-contain-75.jpg)<br>_6KB • 200x133_ |
 
-<!-- prettier-ignore-start -->
 ::: tip Aspect Ratio
+
 Images are never stretched or distorted even when changing the aspect ratio.
+
 :::
-<!-- prettier-ignore-end -->
 
 ### Quality vs Filesize
 

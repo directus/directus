@@ -39,8 +39,9 @@ module.exports = {
 };
 ```
 
-<!-- prettier-ignore-start -->
-::: danger
-Seeing that these migrations are a bit of a free-for-all, you can really harm your database. Please make sure you know what you're doing and backup your database before adding these migrations.
+::: danger Danger
+
+Seeing that these migrations are a bit of a free-for-all, you can really harm your database. Please make sure you know
+what you're doing and backup your database before adding these migrations.
+
 :::
-<!-- prettier-ignore-end -->

@@ -38,10 +38,10 @@ environment variables, each is explained in the following reference:
 4. **Delete the project's root directory** from the server
 5. **Delete all Directus system tables** (`directus_*`) from the database
 
-<!-- prettier-ignore-start -->
 ::: tip Pure SQL
-After completing this process, you will be left with a pure SQL database, with no trace
-that Directus was ever installed. Any external services connecting to your database's project tables
-directly (eg: SQL queries) should continue working normally.
+
+After completing this process, you will be left with a pure SQL database, with no trace that Directus was ever
+installed. Any external services connecting to your database's project tables directly (eg: SQL queries) should continue
+working normally.
+
 :::
-<!-- prettier-ignore-end -->

@@ -25,11 +25,12 @@ support/LTS.
 | OracleDB      | TBD     |
 | MariaDB       | 10.2+   |
 
-<!-- prettier-ignore-start -->
 ::: tip
-Variants In addition to the databases above, other variants are also supported, including **AWS Aurora** (MySQL), and **AWS Redshift** (PostgreSQL).
+
+Variants In addition to the databases above, other variants are also supported, including **AWS Aurora** (MySQL), and
+**AWS Redshift** (PostgreSQL).
+
 :::
-<!-- prettier-ignore-end -->
 
 ## 2. Create a Project
 
@@ -42,12 +43,11 @@ npx create-directus-project my-project
 
 _my-project_ will also be the name of the new Directus project directory.
 
-<!-- prettier-ignore-start -->
 ::: warning
-Except for SQLite, the database must already be running before creating your Directus
-project.
+
+Except for SQLite, the database must already be running before creating your Directus project.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## 3. Start your Project
 
@@ -67,9 +67,8 @@ npx directus start
 
 The default port used by Directus is 8055. To view your project locally, enter `http://localhost:8055` in your browser.
 
-<!-- prettier-ignore-start -->
 ::: tip
-You can confirm the port by looking for the message in your _terminal_ or _cli client_: 
-**Server started at port 8055**
+
+You can confirm the port by looking for the message in your _terminal_ or _cli client_: **Server started at port 8055**
+
 :::
-<!-- prettier-ignore-end -->

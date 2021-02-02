@@ -120,13 +120,12 @@ The sidebar's info component also includes the following readonly details:
 - **Last Access** — The timestamp of the user's last App or API action
 - **Last Page** — The last App page accessed by the user
 
-<!-- prettier-ignore-start -->
 ::: tip Extending Users
-While the fields included out-of-the-box are locked from schema changes, you
-can extend Directus Users to include additional proprietary fields within
-[Settings > Data Model](/concepts/data-model).
+
+While the fields included out-of-the-box are locked from schema changes, you can extend Directus Users to include
+additional proprietary fields within [Settings > Data Model](/concepts/data-model).
+
 :::
-<!-- prettier-ignore-end -->
 
 ## File Library
 
@@ -156,13 +155,12 @@ The sidebar's info component also includes the following readonly details:
 - **Folder** — The current parent folder that contains the file
 - **Metadata** — Metadata JSON dump of the file's EXIF, IPTC, and ICC information
 
-<!-- prettier-ignore-start -->
 ::: tip Extending Files
-While the fields included out-of-the-box are locked from schema changes, you
-can extend Directus Files to include additional proprietary fields within
-[Settings > Data Model](/concepts/data-model).
+
+While the fields included out-of-the-box are locked from schema changes, you can extend Directus Files to include
+additional proprietary fields within [Settings > Data Model](/concepts/data-model).
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Documentation
 
@@ -175,13 +173,12 @@ schema. The docs are organized into four distinct sections:
 - [Guides](/concepts/roles-and-permissions) — Problem Oriented. Follow along with steps while working.
 - [Reference](/reference/api/introduction) — Information Oriented. Look up info and specs while working.
 
-<!-- prettier-ignore-start -->
 ::: tip Updating the Docs
-Our docs are written in markdown (with some additional VuePress styling
-like this hint box), and available for editing/fixing via
-[GitHub](https://github.com/directus/directus).
+
+Our docs are written in markdown (with some additional VuePress styling like this hint box), and available for
+editing/fixing via [GitHub](https://github.com/directus/directus).
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Activity History
 

@@ -31,12 +31,11 @@ their account.
 2. Click on the user you wish to manage
 3. Complete any of the [User Fields](/concepts/app-overview.md#user-detail)
 
-<!-- prettier-ignore-start -->
 ::: warning User Preferences
-This section of the User Detail is only visible/editable by the current user,
-and admins.
+
+This section of the User Detail is only visible/editable by the current user, and admins.
+
 :::
-<!-- prettier-ignore-end -->
 
 ### Status
 
@@ -46,22 +45,22 @@ and admins.
 - **Suspended** — A user that has been temporarily disabled; no App/API access
 - **Archived** — A soft-deleted user; no App/API access
 
-<!-- prettier-ignore-start -->
 ::: warning Admin Only
+
 Only admins can adjust this field's value.
+
 :::
-<!-- prettier-ignore-end -->
 
 ### Role
 
 Setting the user's role determines their access, permissions, and App presentation. You can adjust a user's role from
 the User Detail page, or from the _Users in Role_ field within **Settings > Roles & Permissions > [Role Name]**.
 
-<!-- prettier-ignore-start -->
 ::: warning Admin Only
+
 Only admins can adjust this field's value.
+
 :::
-<!-- prettier-ignore-end -->
 
 ### Token
 
@@ -75,12 +74,11 @@ When NULL, the token is disabled. When enabled, ensure that a secure string is u
 3. Click the orange **Archive User** action button in the header
 4. Confirm this decision by clicking **Archive** in the dialog
 
-<!-- prettier-ignore-start -->
 ::: warning Disables Access
-Archiving uses _soft-delete_, therefore archived users are unable to
-access the App or API.
+
+Archiving uses _soft-delete_, therefore archived users are unable to access the App or API.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Deleting a User
 
@@ -89,9 +87,9 @@ access the App or API.
 3. Click the red **Delete User** action button in the header
 4. Confirm this decision by clicking **Delete** in the dialog
 
-<!-- prettier-ignore-start -->
 ::: danger Irreversible Change
-Unlike the soft-delete of archiving, this process is a hard-delete.
-Therefore, this action is permanent and can not be undone. Please proceed with caution.
+
+Unlike the soft-delete of archiving, this process is a hard-delete. Therefore, this action is permanent and can not be
+undone. Please proceed with caution.
+
 :::
-<!-- prettier-ignore-end -->

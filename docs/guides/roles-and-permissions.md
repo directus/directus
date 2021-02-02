@@ -66,19 +66,19 @@ using the Raw Value field label option.
 ]
 ```
 
-<!-- prettier-ignore-start -->
 ::: warning Settings Module
-The settings module is not controlled by this configuration. It is always
-added to the end of the list for any user's with Admin Access.
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
-::: tip Customizing Existing Modules
-You can enter the link to an existing module to customize its name
-or icon. For example, you can use `/collections` to override the Collections module.
+The settings module is not controlled by this configuration. It is always added to the end of the list for any user's
+with Admin Access.
+
 :::
-<!-- prettier-ignore-end -->
+
+::: tip Customizing Existing Modules
+
+You can enter the link to an existing module to customize its name or icon. For example, you can use `/collections` to
+override the Collections module.
+
+:::
 
 ### Customizing the Collection Navigation
 
@@ -105,19 +105,18 @@ permissions are disabled for all project collections by default — allowing you
 required. Individual permissions are applied to the role, and each is scoped to a specific collection and CRUD action
 (create, read, update, delete).
 
-<!-- prettier-ignore-start -->
 ::: warning Saves Automatically
-Every change made to the permissions of a role is saved automatically
-and instantly.
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
-::: warning Admin Roles
-If a role is set to **Admin Access** then it is granted complete access to
-the platform, and therefore the permission configuration field is disabled.
+Every change made to the permissions of a role is saved automatically and instantly.
+
 :::
-<!-- prettier-ignore-end -->
+
+::: warning Admin Roles
+
+If a role is set to **Admin Access** then it is granted complete access to the platform, and therefore the permission
+configuration field is disabled.
+
+:::
 
 1. Navigate to **Settings > Roles & Permissions > [Role Name]**
 2. Scroll to the **Permissions** section
@@ -162,13 +161,12 @@ role, Directus will automatically add permission for the necessary system collec
 simply click the "System Collections" toggle, and then edit permissions using the same steps as with project
 collections.
 
-<!-- prettier-ignore-start -->
 ::: tip Resetting System Permissions
-To reset the role's system permissions for proper App access,
-expand the system collections and then click "Reset System Permissions" at the bottom of the
-listing.
+
+To reset the role's system permissions for proper App access, expand the system collections and then click "Reset System
+Permissions" at the bottom of the listing.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Deleting a Role
 
@@ -176,24 +174,23 @@ listing.
 2. Click the red **Delete Role** action button in the header
 3. Confirm this decision by clicking **Delete** in the dialog
 
-<!-- prettier-ignore-start -->
 ::: warning Users in a Deleted Role
-If you delete a role that still has users in it, those users will
-be given a `NULL` role, which denies their App access and limits them to the [Public](/concepts/users-roles-and-permissions)
-permissions. They can then be reassigned to a new role by an admin.
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
+If you delete a role that still has users in it, those users will be given a `NULL` role, which denies their App access
+and limits them to the [Public](/concepts/users-roles-and-permissions) permissions. They can then be reassigned to a new
+role by an admin.
+
+:::
+
 ::: warning Last Admin
-You must maintain at least one role/user with Admin Access so that you can
-still properly manage the project.
-:::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
-::: warning Public Role
-You can not delete the Public role, as it is part of the core platform. To
-disable it completely, simply turn off all Public access permissions.
+You must maintain at least one role/user with Admin Access so that you can still properly manage the project.
+
 :::
-<!-- prettier-ignore-end -->
+
+::: warning Public Role
+
+You can not delete the Public role, as it is part of the core platform. To disable it completely, simply turn off all
+Public access permissions.
+
+:::
