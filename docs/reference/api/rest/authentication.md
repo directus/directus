@@ -30,26 +30,26 @@ include an access token with every request, or
 
 ## Login
 
+Retrieve a temporary access token and refresh token.
+
 <div class="two-up">
 <div class="left">
-
-Retrieve a temporary access token and refresh token.
 
 ### Request Attributes
 
 <div class="definitions">
 
 `email` **Required**\
-<small>Email address of the user you're retrieving the access token for.</small>
+Email address of the user you're retrieving the access token for.
 
 `password` **Required**\
-<small>Password of the user.</small>
+Password of the user.
 
 `otp`\
-<small>The user's one-time-password (if MFA is enabled).</small>
+The user's one-time-password (if MFA is enabled).
 
 `mode`\
-<small>Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie`.</small>
+Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie`.
 
 </div>
 
@@ -58,14 +58,14 @@ Retrieve a temporary access token and refresh token.
 <div class="definitions">
 
 `access_token` **String**\
-<small>Temporary access token to be used in follow-up requests.</small>
+Temporary access token to be used in follow-up requests.
 
 `expires` **Number**\
-<small>How long before the access token will expire. Value is in milliseconds.</small>
+How long before the access token will expire. Value is in milliseconds.
 
 `refresh_token` **String**\
-<small>The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
-as the mode in the request, the refresh token won't be returned in the JSON.</small>
+The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
+as the mode in the request, the refresh token won't be returned in the JSON.
 
 </div>
 
@@ -109,18 +109,18 @@ The token's expiration time can be configured through
 
 ## Refresh
 
+Retrieve a new access token using a refresh token.
+
 <div class="two-up">
 <div class="left">
-
-Retrieve a new access token using a refresh token.
 
 ### Request Attributes
 
 <div class="definitions">
 
 `refresh_token`\
-<small>The refresh token to use. If you have the refresh token in a cookie through [`/auth/login`](#login), you don't have
-to submit it here.</small>
+The refresh token to use. If you have the refresh token in a cookie through [`/auth/login`](#login), you don't have to submit
+it here.
 
 </div>
 
@@ -129,14 +129,14 @@ to submit it here.</small>
 <div class="definitions">
 
 `access_token` **String**\
-<small>Temporary access token to be used in follow-up requests.</small>
+Temporary access token to be used in follow-up requests.
 
 `expires` **Number**\
-<small>How long before the access token will expire. Value is in milliseconds.</small>
+How long before the access token will expire. Value is in milliseconds.
 
 `refresh_token` **String**\
-<small>The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
-as the mode in the request, the refresh token won't be returned in the JSON.</small>
+The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
+as the mode in the request, the refresh token won't be returned in the JSON.
 
 </div>
 
@@ -172,18 +172,18 @@ as the mode in the request, the refresh token won't be returned in the JSON.</sm
 
 ## Logout
 
+Invalidate the refresh token thus destroying the user's session.
+
 <div class="two-up">
 <div class="left">
-
-Invalidate the refresh token thus destroying the user's session.
 
 ### Request Attributes
 
 <div class="definitions">
 
 `refresh_token`\
-<small>The refresh token to invalidate. If you have the refresh token in a cookie through [`/auth/login`](#login), you don't
-have to submit it here.</small>
+The refresh token to invalidate. If you have the refresh token in a cookie through [`/auth/login`](#login), you don't have
+to submit it here.
 
 </div>
 
@@ -211,20 +211,20 @@ have to submit it here.</small>
 
 ## Request Password Reset
 
+Request a password reset email to be sent to the given user.
+
 <div class="two-up">
 <div class="left">
-
-Request a password reset email to be sent to the given user.
 
 ### Request Attributes
 
 <div class="definitions">
 
 `email` **Required**\
-<small>Email address of the user you're requesting a password reset for.</small>
+Email address of the user you're requesting a password reset for.
 
 `reset_url`\
-<small>Provide a custom reset url which the link in the email will lead to. The reset token will be passed as a parameter.</small>
+Provide a custom reset url which the link in the email will lead to. The reset token will be passed as a parameter.
 
 </div>
 
@@ -252,21 +252,21 @@ Request a password reset email to be sent to the given user.
 
 ## Reset a Password
 
-<div class="two-up">
-<div class="left">
-
 The request a password reset endpoint sends an email with a link to the admin app (or a custom route) which in turn uses
 this endpoint to allow the user to reset their password.
+
+<div class="two-up">
+<div class="left">
 
 ### Request Attributes
 
 <div class="definitions">
 
 `token` **Required**\
-<small>Password reset token, as provided in the email sent by the request endpoint.</small>
+Password reset token, as provided in the email sent by the request endpoint.
 
 `password` **Required**\
-<small>New password for the user.</small>
+New password for the user.
 
 </div>
 
@@ -295,10 +295,10 @@ this endpoint to allow the user to reset their password.
 
 ## List oAuth providers
 
+List all the configured oAuth providers.
+
 <div class="two-up">
 <div class="left">
-
-List all the configured oAuth providers.
 
 ::: tip Configuring oAuth
 
@@ -311,7 +311,7 @@ To learn more about setting up oAuth providers, see [Configuring SSO through oAu
 <div class="definitions">
 
 `data` **Array**\
-<small>Array of configured oAuth providers.</small>
+Array of configured oAuth providers.
 
 </div>
 
@@ -335,12 +335,9 @@ To learn more about setting up oAuth providers, see [Configuring SSO through oAu
 
 ## Login using oAuth provider
 
-<div class="two-up">
-<div class="left">
-
 Will redirect to the configured oAuth provider for the user to login.
 
-</div>
+<div class="two-up">
 <div class="right">
 
 ### `GET /auth/oauth/:provider`

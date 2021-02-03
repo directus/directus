@@ -247,6 +247,11 @@ module.exports = {
 						title: 'Authentication',
 					},
 					{
+						type: 'page',
+						title: 'Global Query Parameters',
+						path: '/reference/api/query',
+					},
+					{
 						type: 'group',
 						title: 'REST API',
 						children: [
@@ -254,52 +259,6 @@ module.exports = {
 								type: 'page',
 								path: '/reference/api/rest/items',
 								title: 'Items',
-							},
-							{
-								type: 'group',
-								title: 'Query Parameters',
-								children: [
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/fields',
-										title: 'Fields',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/filter',
-										title: 'Filter',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/limit',
-										title: 'Limit',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/meta',
-										title: 'Meta',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/offset',
-										title: 'Offset',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/search',
-										title: 'Search',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/single',
-										title: 'Single',
-									},
-									{
-										type: 'page',
-										path: '/reference/api/rest/query/sort',
-										title: 'Sort',
-									},
-								],
 							},
 							{
 								type: 'divider',
