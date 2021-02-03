@@ -51,6 +51,7 @@ module.exports = {
 		serviceWorker: true,
 		patterns: ['docs/**/*.md'],
 		activeHeaderLinks: false,
+		smoothScroll: false,
 		nav: [
 			{ text: 'Website', link: 'https://directus.io' },
 			{ text: 'Cloud', link: 'https://directus.cloud' },
@@ -310,6 +311,11 @@ module.exports = {
 							},
 							{
 								type: 'page',
+								path: '/reference/api/rest/authentication',
+								title: 'Authentication',
+							},
+							{
+								type: 'page',
 								path: '/reference/api/rest/collections',
 								title: 'Collections',
 							},
@@ -482,5 +488,14 @@ module.exports = {
 			},
 		],
 	},
-	plugins: ['@vuepress/medium-zoom'],
+	plugins: [
+		[
+			'vuepress-plugin-clean-urls',
+			{
+				normalSuffix: '/',
+				indexSuffix: '/',
+				notFoundPath: '/404.html',
+			},
+		],
+	],
 };
