@@ -317,13 +317,19 @@ interfaces:
   translations:
     display_template: عرض القالب
   user:
+    select_mode: تحديد الوضع
     modes:
+      auto: تلقائي
       dropdown: قائمة منسدلة
+  wysiwyg:
+    wysiwyg: ما تراه هو ما تحصل عليه
+    toolbar: شريط الأدوات
 displays:
   collection:
     collection: المجموعة
   color:
     color: لون
+    default_color: اللون الافتراضي
   datetime:
     datetime: التاريخ والوقت
     format: التنسيق
@@ -333,8 +339,12 @@ displays:
     filesize: حجم الملف
   icon:
     icon: أيقونة
+    description: عرض أيقونة
   image:
     circle: دائرة
+    circle_label: عرض كدائرة
+  labels:
+    choices_text_placeholder: أدخل نص...
   rating:
     rating: التقييم
   user:
