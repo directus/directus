@@ -120,7 +120,7 @@
 		"fs-extra": "^9.0.1",
 		"highlight.js": "^10.3.2",
 		"html-loader": "^1.1.0",
-		"husky": "^4.2.5",
+		"husky": "^4.3.8",
 		"joi": "^17.3.0",
 		"jsonlint": "^1.6.3",
 		"jsonlint-mod": "^1.7.6",
