@@ -2,9 +2,10 @@ import express from 'express';
 import asyncHandler from '../utils/async-handler';
 import { ActivityService, MetaService } from '../services';
 import { Action } from '../types';
-import { ForbiddenException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
+import Joi from 'joi';
 
 const router = express.Router();
 
@@ -53,6 +54,12 @@ router.get(
 	respond
 );
 
+const createCommentSchema = Joi.object({
+	comment: Joi.string().required(),
+	collection: Joi.string().required(),
+	item: [Joi.number().required(), Joi.string().required()],
+});
+
 router.post(
 	'/comment',
 	asyncHandler(async (req, res, next) => {
@@ -60,6 +67,12 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
+		const { error } = createCommentSchema.validate(req.body);
+
+		if (error) {
+			throw new InvalidPayloadException(error.message);
+		}
 
 		const primaryKey = await service.create({
 			...req.body,
@@ -88,6 +101,10 @@ router.post(
 	respond
 );
 
+const updateCommentSchema = Joi.object({
+	comment: Joi.string().required(),
+});
+
 router.patch(
 	'/comment/:pk',
 	asyncHandler(async (req, res, next) => {
@@ -95,6 +112,13 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
+		const { error } = updateCommentSchema.validate(req.body);
+
+		if (error) {
+			throw new InvalidPayloadException(error.message);
+		}
+
 		const primaryKey = await service.update(req.body, req.params.pk);
 
 		try {
