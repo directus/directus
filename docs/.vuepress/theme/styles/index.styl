@@ -68,10 +68,11 @@ body
   p.demo
     padding 1rem 1.5rem
     border 1px solid #ddd
-    border-radius 4px
+    border-radius 6px
 
   img
     max-width 100%
+    border-radius 6px
 
 {$contentClass}.custom
   padding 0
@@ -118,7 +119,7 @@ h1, h2, h3, h4, h5, h6
 
   {$contentClass}:not(.custom) > &
     margin-top (0.5rem - $navbarHeight)
-    padding-top ($navbarHeight + 1rem)
+    padding-top ($navbarHeight + 2rem)
     margin-bottom 0
 
     &:first-child
@@ -147,6 +148,9 @@ h2
 h3
   font-size 1.25rem
   line-height 1.875rem
+
+h2 + h3
+	padding-top ($navbarHeight + 1rem) !important
 
 a.header-anchor
   font-size 0.85em

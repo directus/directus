@@ -1,14 +1,11 @@
 # Backing Directus
 
-> Directus is both _premium_ and _free_ — two things that don't often go together. It takes significant resources to
-> maintain and advance the platform. If you'd like to help keep Directus active and open-source please consider
-> supporting it through one of the methods below.
+> Directus is both _premium_ and _free_ — two things that don't often go together. It takes significant resources to maintain the platform. If you'd like to help keep development active, please consider supporting Directus through one of the methods below.
 
 ## Financial Support
 
-Talented full-time and part-time staff, infrastructure, and third-party services are just some of our organization's
-expenses, and revenue from our Cloud services and donations from sponsors doesn't fully cover those costs. Below are a
-few ways to help us keep the lights on and move towards self-sufficiency.
+Talented full-time and part-time staff, infrastructure, and third-party services are just some of our organization's many
+expenses. Below are a few ways to help us keep the lights on and move towards a self-sufficient open-source core product.
 
 ### GitHub Sponsors
 
@@ -23,20 +20,17 @@ support. Donate to the organization, or directly to our core developers!
 
 ### Sponsored Work
 
-[Commissioned Features](/getting-started/support#commissioned-features) and
-[Expedited Fixes](/getting-started/support-expedited-features) are great ways to financially support the development of
+[Commissioned Features](/getting-started/support/#commissioned-features) and
+[Expedited Fixes](/getting-started/support/#expedited-fixes) are great ways to financially support the development of
 Directus, and improve the codebase for the community.
 
 ### Merch
 
-Our merchandise is a great way to support Directus — you get some swag, and we get some financial support and
-advertising. Simply make an appropriate financial donation through
-[GitHub Sponsors](https://github.com/sponsors/directus), [message us](https://directus.chat) with sizing/shipping
-details, and we'll get it shipped!
+Our merchandise is a great way to support Directus — you get some swag, and we get some financial support and advertising. Simply make an appropriate financial donation through [GitHub Sponsors](https://github.com/sponsors/directus) (or contact us for bulk pricing), and once we coordinate sizing and shipping details, we'll get it shipped!
 
 ## Other Contributions
 
-Below are several ways anyone can help improve our ecosystem.
+Below are several ways that _anyone_ can help improve the Directus ecosystem. These are free alternatives for when financial support is not a possibility.
 
 ### Code Pull Requests
 

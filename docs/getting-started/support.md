@@ -1,7 +1,6 @@
 # Support
 
-> Directus is offered completely free and open-source for anyone wishing to self-host the platform. There are many
-> resources, both free and paid, to help you get up-and-running smoothly.
+> Directus is offered completely free and open-source for anyone wishing to self-host the platform. If you have questions along the way, there are many resources, both free and paid, to help you get up-and-running smoothly.
 
 ## Community Support
 
@@ -9,12 +8,12 @@
 community and core developers often check this platform and answer posts. It has the added benefit of being an archival
 resource for others developers with similar questions.
 
-Our [Discord](https://directus.chat) community is another great way to get assistance. Please keep all questions on the
+Our [Discord Community](https://directus.chat) is another great way to get assistance. Please keep all questions on the
 `#help` channel, be considerate, and remember that you are getting free help from the community for a free product.
 
 ## Premium Support
 
-Premium support is included with our Enterprise Cloud service. On-Demand Cloud customers and On-Premise users interested
+Premium support is included with our Enterprise Cloud service. On-Demand Cloud customers and Self-Hosted users interested
 in learning more about our monthly retainer agreements should contact us at
 [support@directus.io](mailto:support@directus.io).
 
@@ -37,9 +36,7 @@ resolved sooner, [reach out to us](https://directus.io/contact/) for a quote.
 ### Does Directus support Mongo/NoSQL?
 
 Not currently. Directus has been built specifically for wrapping _relational_ databases. While we could force Mongo to
-use tables, columns, and rows via Mongoose object modeling, that approach to faking a relational structure in a
-by-design non-structured environment like Mongo doesn't make a lot of sense. We realize many users are interested in
-this feature, and will continue to explore its possibility.
+use tables, columns, and rows via Mongoose object modeling, that approach of "faking" a relational structure in a non-structured environment like Mongo doesn't make a lot of sense. We do realize many users are interested in this feature, and will continue to explore its possibility.
 
 ### Why haven't you added this feature, or fixed that issue yet?
 
