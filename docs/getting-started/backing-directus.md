@@ -46,17 +46,17 @@ Every translation enables users in new languages to use our international platfo
 ### Bug Reporting
 
 If you encounter an issue within Directus, no matter how small, we would love to hear about it. Proper bug reporting
-helps our team assess the platform's stability. [Report a bug](https://github.com/directus/directus/issues/new)
+helps our team improve platform stability. [Report a bug on GitHub](https://github.com/directus/directus/issues/new)
 
 ### Brand Advocacy
 
 You can create _perfect_ software, but if no one knows about it, it's all for naught. Marketing and advertising are
 expensive, but you can help us avoid these costs with the following quick options:
 
-- **GitHub Stars** — The primary metric by which we measure our success. It only takes five seconds to head to
-  [directus/directus](https://github.com/directus/directus) and click the star — enough in a short period of time and
-  Directus gets featured on GitHub's trending page!
-- **Social Posts** — A quick post mentioning [@directus](https://twitter.com/directus) goes a long way, and we re-tweet
+- **GitHub Stars** — The primary metric by which we measure our success. It only takes a few seconds to head to the
+  [Directus GitHub](https://github.com/directus/directus) and click the star. Enough activity in a short period of time and
+  we get even more exposure from being featured on GitHub's trending page!
+- **Social Posts** — A quick post mentioning [@directus](https://twitter.com/directus) goes a long way — and we re-tweet
   the team's favorite shout-outs to our 35K+ followers.
 - **Testimonials** — _One sentence._ Even that was a sentence, and it was only two words! If you're a fan of Directus,
   we'd love to hear why with a short endorsement. Shoot us an [email](mailto:info@directus.io),
