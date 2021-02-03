@@ -89,13 +89,144 @@ Returns a list of activity actions.
 
 ### Query Parameters
 
-Supports all global query parameters.
+Supports all [global query parameters](/reference/api/query).
+
+### Returns
+
+An array of up to [limit](/reference/api/query/#limit) [activity objects](#the-activity-object). If no items are
+available, data will be an empty array.
 
 </div>
 <div class="right">
 
+### `GET /activity`
+
 ```json
-{}
+{
+	"data": [
+		{
+			"id": 1,
+			"action": "create",
+			"user": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
+			"timestamp": "2021-01-27T10:14:33-05:00",
+			"ip": "127.0.0.1",
+			"user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.60",
+			"collection": "directus_fields",
+			"item": "1",
+			"comment": null,
+			"revisions": [2]
+		},
+		{...},
+		{...}
+	]
+}
+```
+
+</div>
+</div>
+
+---
+
+## Retrieve Activity Action
+
+Returns a single activity action by primary key.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Returns
+
+Returns an [activity object](#the-activity-object) if a valid identifier was provided.
+
+</div>
+<div class="right">
+
+### `GET /activity/:primary-key`
+
+```json
+{
+	"data": {
+		"id": 1,
+		"action": "create",
+		"user": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
+		"timestamp": "2021-01-27T10:14:33-05:00",
+		"ip": "127.0.0.1",
+		"user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.60",
+		"collection": "directus_fields",
+		"item": "1",
+		"comment": null,
+		"revisions": [2]
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Create a Comment
+
+Creates a new comment on a given item.
+
+<div class="two-up">
+<div class="left">
+
+### Request Attributes
+
+<div class="definitions">
+
+`collection` **Required**\
+Collection in which the item resides.
+
+`item` **Required**\
+Primary Key of the item to comment on.
+
+`comment`\
+The comment content. Supports Markdown.
+
+</div>
+
+### Returns
+
+Returns the [activity object](#the-activity-object) of the created comment.
+
+</div>
+<div class="right">
+
+### `POST /activity/comment`
+
+```json
+// Request
+
+{
+	"collection": "pages",
+	"item": 3,
+	"comment": "Hello World"
+}
+```
+
+```json
+// Response
+
+{
+	"data": {
+		"id": 390,
+		"action": "comment",
+		"user": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
+		"timestamp": "2021-02-03T18:04:32-05:00",
+		"ip": "127.0.0.1",
+		"user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.60",
+		"collection": "pages",
+		"item": "3",
+		"comment": "Hello World",
+		"revisions": null
+	}
+}
 ```
 
 </div>

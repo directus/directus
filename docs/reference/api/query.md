@@ -11,9 +11,9 @@ Most operations within Directus can be manipulated with the following parameters
 - [Search](#search)
 - [Sort](#sort)
 - [Limit](#limit)
-- [Offset](#offset)
+- [Offset](#offset) / [Page](#page)
 - [Deep](#deep)
-- [Meta](#meta)
+- [Metadata](#metadata)
   - [Total Count](#total-count)
   - [Filter Count](#filter-count)
 
@@ -40,6 +40,13 @@ Get all top-level fields\
 
 Get all top-level fields and all second-level relational fields\
 `*.*`
+
+::: warning Nested Wildcard
+
+While you can theoretically keep nesting wildcards to your heart's content, it's not recommend for production use.
+Nested wildcards can result in degraded performance, and circular parent-child-parent structures.
+
+:::
 
 Get all top-level fields and second-level relational fields within images\
 `*,images.*`
@@ -80,7 +87,8 @@ n/a
 <div class="left">
 
 Used to search items in a collection that matches the filter's conditions. The filter param follows
-[the Filter Rules spec](/reference/filter-rules/).
+[the Filter Rules spec](/reference/filter-rules/), which includes additional information on logical operators (AND/OR),
+nested relational filtering, and dynamic variables.
 
 </div>
 </div>
@@ -255,3 +263,256 @@ query {
 
 </div>
 </div>
+
+---
+
+## Limit
+
+<div class="two-up">
+<div class="left">
+
+Set the maximum number of items that will be returned. The default limit is set to `100`.
+
+</div>
+</div>
+
+<div class="two-up">
+<div class="left">
+
+### Examples
+
+Get the first 200 items\
+`200`
+
+Get all items\
+`-1`
+
+::: warning All Items
+
+Depending on the size of your collection, fetching unlimited data may result in degraded performance or timeouts, use
+with caution.
+
+:::
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?limit=200
+```
+
+### GraphQL
+
+```graphql
+query {
+	items {
+		articles(limit: 200) {
+			id
+		}
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Offset
+
+<div class="two-up">
+<div class="left">
+
+Skip the first `n` items in the response. Can be used for pagination.
+
+</div>
+</div>
+
+<div class="two-up">
+<div class="left">
+
+### Examples
+
+Get items 100—200\
+`100`
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?offset=100
+```
+
+### GraphQL
+
+```graphql
+query {
+	items {
+		articles(offset: 100) {
+			id
+		}
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Page
+
+<div class="two-up">
+<div class="left">
+
+An alternative to `offset`. Page is a way to set `offset` under the hood by calculating `limit * page`. Page is
+1-indexed.
+
+</div>
+</div>
+
+<div class="two-up">
+<div class="left">
+
+### Examples
+
+Get items 1-100\
+`1`
+
+Get items 101-200\
+`2`
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?page=2
+```
+
+### GraphQL
+
+```graphql
+query {
+	items {
+		articles(page: 2) {
+			id
+		}
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Deep
+
+<div class="two-up">
+<div class="left">
+
+Deep allows you to set any of the other query parameters on a nested relational dataset.
+
+</div>
+</div>
+
+<div class="two-up">
+<div class="left">
+
+### Examples
+
+Limit the nested related articles to 3
+
+```json
+{
+	"related_articles": {
+		"limit": 3
+	}
+}
+```
+
+Fetch only the `en-US` translations
+
+```json
+{
+	"translations": {
+		"filter": {
+			"languages_code": {
+				"_eq": "en-US"
+			}
+		}
+	}
+}
+```
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?deep[translations][filter][languages_code][_eq]=en-US
+
+// or
+
+?deep={ "translations": { "filter": { "languages_code": { "_eq": "en-US" }}}}
+```
+
+### GraphQL
+
+n/a
+
+</div>
+</div>
+
+---
+
+## Metadata
+
+<div class="two-up">
+<div class="left">
+
+Metadata allows you to retrieve some additional information about the items in the collection you're fetching. `*` can
+be used as a wildcard to retrieve all metadata.
+
+</div>
+</div>
+
+<div class="two-up">
+<div class="left">
+
+### Total Count
+
+Returns the total item count of the collection you're querying.
+
+### Filter Count
+
+Returns the item count of the collection you're querying, taking the current filter/search parameters into account.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+?meta=total_count
+
+?meta=filter_count
+
+?meta=*
+```
+
+### GraphQL
+
+n/a
+
+</div>
+</div>
+
+---
