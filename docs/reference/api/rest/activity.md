@@ -14,6 +14,10 @@ accountability over everything that happens.
 <div class="right">
 
 - [GET /activity](#list-activity-actions)
+- [GET /activity/:primary-key](#retrieve-activity-action)
+- [POST /comment](#create-a-comment)
+- [PATCH /comment/:primary-key](#update-a-comment)
+- [DELETE /comment/:primary-key](#delete-a-comment)
 
 </div>
 </div>
@@ -296,6 +300,7 @@ Returns the [activity object](#the-activity-object) of the created comment.
 Deletes a comment.
 
 <div class="two-up">
+<div class="left"></div>
 <div class="right">
 
 ### `DELETE /activity/comment/:primary-key`
