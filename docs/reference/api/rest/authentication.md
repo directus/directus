@@ -15,13 +15,13 @@ include an access token with every request, or
 
 <div class="right">
 
-- [`POST /auth/login`](#login)
-- [`POST /auth/refresh`](#refresh)
-- [`POST /auth/logout`](#logout)
-- [`POST /auth/password/request`](#request)
-- [`POST /auth/password/reset`](#reset)
-- [`GET /auth/oauth`](#oauth)
-- [`GET /auth/oauth/{provider}`](#oauth-provider)
+- [POST /auth/login](#login)
+- [POST /auth/refresh](#refresh)
+- [POST /auth/logout](#logout)
+- [POST /auth/password/request](#request-password-reset)
+- [POST /auth/password/reset](#reset-a-password)
+- [GET /auth/oauth](#list-oauth-providers)
+- [GET /auth/oauth/:provider](#login-using-oauth-provider)
 
 </div>
 </div>
@@ -170,6 +170,45 @@ as the mode in the request, the refresh token won't be returned in the JSON.</sm
 
 ---
 
+## Logout
+
+<div class="two-up">
+<div class="left">
+
+Invalidate the refresh token thus destroying the user's session.
+
+### Request Attributes
+
+<div class="definitions">
+
+`refresh_token`\
+<small>The refresh token to invalidate. If you have the refresh token in a cookie through [`/auth/login`](#login), you don't
+have to submit it here.</small>
+
+</div>
+
+</div>
+<div class="right">
+
+### `POST /auth/logout`
+
+```json
+// Request
+
+{
+	"refresh_token": "gmPd...8wuB"
+}
+```
+
+```json
+// Empty Response
+```
+
+</div>
+</div>
+
+---
+
 ## Request Password Reset
 
 <div class="two-up">
@@ -234,7 +273,7 @@ this endpoint to allow the user to reset their password.
 </div>
 <div class="right">
 
-### `POST /auth/password/reset`
+### `GET /auth/oauth`
 
 ```json
 // Request
@@ -247,6 +286,67 @@ this endpoint to allow the user to reset their password.
 
 ```json
 // Empty Response
+```
+
+</div>
+</div>
+
+---
+
+## List oAuth providers
+
+<div class="two-up">
+<div class="left">
+
+List all the configured oAuth providers.
+
+::: tip Configuring oAuth
+
+To learn more about setting up oAuth providers, see [Configuring SSO through oAuth](/guides/oauth).
+
+:::
+
+### Response Attributes
+
+<div class="definitions">
+
+`data` **Array**\
+<small>Array of configured oAuth providers.</small>
+
+</div>
+
+</div>
+<div class="right">
+
+### `GET /auth/oauth`
+
+```json
+// Response
+
+{
+	"data": ["GitHub", "Google", "Okta"]
+}
+```
+
+</div>
+</div>
+
+---
+
+## Login using oAuth provider
+
+<div class="two-up">
+<div class="left">
+
+Will redirect to the configured oAuth provider for the user to login.
+
+</div>
+<div class="right">
+
+### `GET /auth/oauth/:provider`
+
+```json
+// Redirect to oAuth provider
 ```
 
 </div>
