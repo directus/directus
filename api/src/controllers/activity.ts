@@ -147,6 +147,17 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
+		const adminService = new ActivityService({
+			schema: req.schema,
+		});
+
+		const item = await adminService.readByKey(req.params.pk, { fields: ['action'] });
+
+		if (!item || item.action !== 'comment') {
+			throw new ForbiddenException();
+		}
+
 		await service.delete(req.params.pk);
 
 		return next();
