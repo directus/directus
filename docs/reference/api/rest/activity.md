@@ -186,7 +186,7 @@ Collection in which the item resides.
 `item` **Required**\
 Primary Key of the item to comment on.
 
-`comment`\
+`comment` **Required**\
 The comment content. Supports Markdown.
 
 </div>
@@ -227,6 +227,81 @@ Returns the [activity object](#the-activity-object) of the created comment.
 		"revisions": null
 	}
 }
+```
+
+</div>
+</div>
+
+---
+
+## Update a Comment
+
+Updates an existing comment by activity action primary key.
+
+<div class="two-up">
+<div class="left">
+
+### Request Attributes
+
+<div class="definitions">
+
+`comment` **Required**\
+The updated comment content. Supports Markdown.
+
+</div>
+
+### Returns
+
+Returns the [activity object](#the-activity-object) of the created comment.
+
+</div>
+<div class="right">
+
+### `PATCH /activity/comment/:primary-key`
+
+```json
+// Request
+
+{
+	"comment": "Hello World!!"
+}
+```
+
+```json
+// Response
+
+{
+	"data": {
+		"id": 390,
+		"action": "comment",
+		"user": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
+		"timestamp": "2021-02-03T18:04:32-05:00",
+		"ip": "127.0.0.1",
+		"user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.60",
+		"collection": "pages",
+		"item": "3",
+		"comment": "Hello World!!",
+		"revisions": null
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Delete a Comment
+
+Deletes a comment.
+
+<div class="two-up">
+<div class="right">
+
+### `DELETE /activity/comment/:primary-key`
+
+```json
+// Empty Response
 ```
 
 </div>

@@ -5,4 +5,4 @@ in the database. The API has predictable resource-oriented URLs, relies on stand
 input and output.
 
 The input/output of the API differs greatly for individual installs, as most of the endpoints will return data that's
-based on your specific schema.
+based on your specific schema and configured permissions.
