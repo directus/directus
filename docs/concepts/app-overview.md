@@ -5,40 +5,35 @@
 
 ## Global Elements
 
-<img class="full shadow" src="https://svgshare.com/i/Q8H.svg" />
-<img class="full no-margin" src="https://svgshare.com/i/Q8J.svg" />
+<img class="full shadow" src="../assets/app-overview.svg" />
 
 ### 1. Module Bar
 
 - **Project Logo** — Displays your configured project logo and project color (defaults to the Directus logo and color).
   If configured, clicking this component will navigate to the Project URL. During platform activity, an indeterminate
   progress indicator will also be shown here.
-- **Modules** — Any available modules are listed below the project logo. These may be turned off or reordered based on
-  your [role's configuration](/concepts/users-roles-and-permissions), but by default this includes:
-  - [Collections](/concepts/app-overview)
-  - [User Directory](/concepts/app-overview)
-  - [File Library](/concepts/app-overview)
-  - [Documentation](/concepts/app-overview)
-  - [Settings](/concepts/app-overview) — Admin only
-  - [Custom Modules](/guides/extensions/modules) — If configured
-- **Current User Menu** — This component displays the authenticated user's name and avatar. Hovering over this menu
-  exposes the Log Out button.
+- **Module Navigation** — Allows navigating between the different modules your user has access to. [Customizing the Module Navigation](/guides/roles-and-permissions/#customizing-the-module-navigation) is done within the Role's configuration, but the default module list includes:
+  - [Collections](/concepts/app-overview/#collections-module)
+  - [User Directory](/concepts/app-overview/#user-directory)
+  - [File Library](/concepts/app-overview/#file-library)
+  - [Documentation](/concepts/app-overview/#documentation)
+  - [Settings](/concepts/app-overview/#settings) — Admin Roles Only
+  - [Any Custom Modules](/concepts/app-extensions/#modules) — Only if Configured
+- **Current User Menu** — This component displays the authenticated user's name and avatar.
+    - [Sign Out](#) — Hovering over the User Menu exposes the button to log out of the platform.
 
 ### 2. Navigation Bar
 
-- **Project Name** — Shows the name of your current project (see [Project Settings](/guides/white-labeling)), as well as
-  the quality of your project's API connection.
-- **Navigation** — This is a dynamic navigation based on your current module. Some modules also support
-  [Presets and/or Bookmarks](/guides/roles-and-permissions), which are ways to link to more specific data-sets.
+- **Project Name** — Shows an icon and tooltip indicating the API's connection strength, and the name of your current project, which can be configured under [Project Settings](/guides/white-labeling/#project-settings).
+- **Navigation** — This is a dynamic navigation based on your current module. Some modules also support [Presets and Bookmarks](/concepts/platform-overview/#presets-bookmarks), which are a customizable links to specific data-sets.
 
 ### 3. Page
 
 - **Header** — A fixed section at the top of each page, the header includes:
-  - Page Icon — Clicking this navigates back to the previous page
-  - Module Title — Clicking this navigates to the parent module/section
-  - Page Title — Displays the current page's title
-  - Action Buttons — On the right-side of the header are contextual buttons for specific page actions. Please note that
-    some primary action buttons have a "..." icon beside them that provides additional options when clicked.
+  - Page Icon — Clicking this navigates back to the previous page.
+  - Module Name — Clicking this navigates to the parent module/section.
+  - Page Title — Displays dynamic title of the current page.
+  - Action Buttons — Right-aligned contextual buttons for specific page actions.
 - **Page Content** — This displays the content of the page you navigated to.
 
 ### 4. Page Sidebar
@@ -48,9 +43,9 @@
   the App window is large enough, the sidebar will automatically open, and can be closed by clicking the "X" in the
   top-right.
 - **Notifications Tray** — Fixed to the bottom of the page sidebar, this button opens a tray of recent user
-  notifications, and provides a link to the [Activity History](/concepts/app-overview) page.
+  notifications, and provides a link to the [Activity History](/concepts/app-overview/#activity-history) page.
 
-## Collections
+## Collections Module
 
 This module is the primary way for interacting with your database content. Here you can access your collections, browse
 their items, and navigate to individual item forms.
@@ -62,40 +57,43 @@ the same as its navigation listing.
 
 ### Collection Detail
 
-Provides a configurable layout to browse or visualize items within a given collection. Like other browse pages, there
-are many available features, including:
+This is the main gateway to your content items, providing a highly configurable Layout for browsing and visualizing the items within a collection. The header of this page includes key action buttons for creating, deleting, and batch editing items.
 
-- [Creating Items](/guides/items#creating-items)
-- [Browsing Items](/guides/items#browsing-items)
-  - [Searching](/guides/items#searching)
-  - [Layouts](/guides/items#layouts)
-  - [Advanced Filter](/guides/items#advanced-filter)
-  - [Bookmarking](/guides/items#bookmark)
-- [Updating Items](/guides/items#updating-items)
-- [Deleting Items](/guides/items#deleting-items)
-- [Export Data](/guides/items#export-data)
+- [Adjusting a Collection Layout](/guides/collections/#adjusting-a-collection-layout)
+- [Creating an Item](/guides/items/#creating-an-item)
+- [Updating an Item](/guides/items/#updating-an-item)
+- [Deleting an Item](/guides/items/#deleting-an-item)
+- [Archiving an Item](/guides/items/#archiving-an-item)
+- [Reordering Items](/guides/items/#reordering-items)
+- [Exporting Items](/guides/items/#exporting-items)
+- [Browsing Items](/guides/items/#browsing-items)
+  - [Searching](/guides/items/#searching-items)
+  - [Filtering](/guides/items/#filtering-items)
+  - [Bookmarking](/guides/items/#bookmarking-item-presets)
 
 ### Item Detail
 
-Most layouts on the browse page support navigating to individual item detail pages, where you a presented with a
+Most Collection Detail Layouts support navigating to individual item detail pages where you a presented with a
 [customizable form](/guides/fields#adjusting-fields-layout) for viewing/editing the item's content. Like other detail
 pages, there are many available features, including:
 
-- [Updating an Item](/guides/items#updating-item)
-- [Reverting an Item](/guides/items#reverting-item)
-- [Revisions](/guides/items#revisions)
-- [Comments](/guides/items#comments)
+- [Adjusting Field Arrangement](/guides/fields/#adjusting-field-arrangement)
+- [Updating an Item](/guides/items/#updating-an-item)
+- [Archiving an Item](/guides/items/#archiving-an-item)
+- [Reverting an Item](/guides/items/#reverting-an-item)
+- [Deleting an Item](/guides/items/#deleting-an-item)
+- [Commenting on an Item](/guides/items/#commenting-on-an-item)
 
 ## User Directory
 
-A module includes a comprehensive listing of all system users within your project. This page has the same features and
+This module includes a comprehensive listing of all system users within your project. This page has the same features and
 configuration as [Collection Detail](/concepts/app-overview).
 
 ### User Detail
 
-Similar to other [Item Detail](/concepts/app-overview) pages, this page provides a custom form for viewing system users.
+Similar to other [Item Detail](/concepts/app-overview/#item-detail) pages, this page provides a custom form for viewing system users.
 This is also used for editing the "Profile Page" of the current user, which is accessible from the
-[User Menu](/concepts/app-overview). Directus ships with a full-featured user system, with the following fields:
+[User Menu](/concepts/app-overview/#_1-module-bar). Directus ships with a full-featured user system, with the following fields:
 
 - **First Name** — The user's given name
 - **Last Name** — The user's family name
@@ -106,7 +104,6 @@ This is also used for editing the "Profile Page" of the current user, which is a
 - **Title** — The name of the position the user holds at their company or organization
 - **Description** — A description or bio of the user
 - **Tags** — A set of keywords useful when searching within the User Directory
-- **Timezone** — (User Preference) The timezone of the user
 - **Language** — (User Preference) The language to use for this user's App language
 - **Theme** — (User Preference) Light, Dark, or Auto (based on the user's OS preferences)
 - **Two-Factor Auth** — (User Preference) Enables authenticating with 2FA
@@ -117,13 +114,13 @@ This is also used for editing the "Profile Page" of the current user, which is a
 The sidebar's info component also includes the following readonly details:
 
 - **User Key** — The primary key of the user
-- **Last Access** — The timestamp of the user's last App or API action
 - **Last Page** — The last App page accessed by the user
+- **Last Access** — The timestamp of the user's last App or API action
 
 ::: tip Extending Users
 
 While the fields included out-of-the-box are locked from schema changes, you can extend Directus Users to include
-additional proprietary fields within [Settings > Data Model](/concepts/data-model).
+additional proprietary fields by following the normal [Creating a Field](/guides/fields/#creating-a-field) guide.
 
 :::
 
@@ -166,12 +163,15 @@ additional proprietary fields within [Settings > Data Model](/concepts/data-mode
 
 This module is an internal set of guides, concepts, and reference docs for your project's specific version of Directus.
 It also includes a dynamic [API Reference](/reference/api/introduction) that is dynamically tailored to your custom
-schema. The docs are organized into four distinct sections:
+schema. The docs are organized into these distinct sections:
 
-- [Getting Started](/getting-started/introduction) — Novice Oriented. For a platform intro and installation.
-- [Concepts](/concepts/app-overview) — Learning Oriented. For understanding the platform.
-- [Guides](/concepts/roles-and-permissions) — Problem Oriented. Follow along with steps while working.
-- [Reference](/reference/api/introduction) — Information Oriented. Look up info and specs while working.
+- [Getting Started](/getting-started/introduction/) — Novice oriented, for a platform intro and installation.
+- [Concepts](/concepts/platform-overview/) — Learning oriented, for understanding the platform.
+- [Guides](/guides/projects/) — Problem oriented, follow along with steps while working.
+- [Reference](/reference/command-line-interface/) — Information oriented, look up info and specs while working.
+- [API Reference](/reference/api/introduction/) — Information oriented, look up API resources while working.
+- [Extensions](/extensions/displays/) — Problem oriented — follow along with steps while working.
+- [Contributing](/contributing/introduction/) — Contributor oriented — resources for working on Open-Source Core.
 
 ::: tip Updating the Docs
 
@@ -180,17 +180,22 @@ editing/fixing via [GitHub](https://github.com/directus/directus).
 
 :::
 
+::: tip Public Docs
+
+The latest version of the Directus Docs are also available publicly. This online version includes additional sections, such as how to install the platform. [https://docs.directus.io](https://docs.directus.io)
+
+:::
+
 ## Activity History
 
 This module provides a collective timeline of all actions taken within the project. This is a great way to audit user
 activity or enforce accountability. This is the only system module that is not in the module bar by default — instead
 being located within the notifications tray of the page sidebar. This page has the same features and configuration as
-[Collection Detail](/concepts/app-overview).
+[Collection Detail](/concepts/app-overview/#collection-detail).
 
 ### Activity Detail
 
-Unlike other item detail pages, activity items are **readonly** (for proper accountability) and open in a modal window
-with the following fields:
+Unlike other item detail pages, activity items are **readonly** (for proper accountability) and open in a side drawer with the following fields:
 
 - **User** — The Directus user that performed the action
 - **Action** — The specific action taken, eg: Create, Update, Delete, Authenticate, etc
@@ -202,11 +207,11 @@ with the following fields:
 
 ## Settings
 
-This module is only available to users within [admin roles](/concepts/users-roles-and-permissions#administrators-role).
+This module is only available to users within [Admin roles](/concepts/users-roles-and-permissions/#administrators-role).
 This is where your project is configured, and the first place to go after installation. It includes the following
 sections:
 
-- [Project Settings](/concepts/platform-overview)
+- [Project Settings](/guides/projects/#adjusting-project-settings)
 - [Data Model](/concepts/data-model)
 - [Roles & Permissions](/concepts/users-roles-and-permissions)
 - [Presets & Bookmarks](/concepts/presets-and-bookmarks)

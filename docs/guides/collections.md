@@ -112,3 +112,7 @@ field, the collection's sort settings will automatically be configured for you.
 This action is permanent and can not be undone. Please proceed with caution.
 
 :::
+
+## Adjusting a Collection Layout
+
+TK

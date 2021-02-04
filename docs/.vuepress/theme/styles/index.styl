@@ -110,6 +110,10 @@ blockquote
 ul, ol
   padding-left 1.2em
 
+li > ul,
+li > ol
+  padding-left 1.8em
+
 strong
   font-weight 600
 
@@ -150,7 +154,12 @@ h3
   line-height 1.875rem
 
 h2 + h3
-	padding-top ($navbarHeight + 1rem) !important
+  padding-top ($navbarHeight + 0.5rem) !important
+
+h4
+  font-size 1.1rem
+  line-height 1.125rem
+  padding-top ($navbarHeight + 0.25rem) !important
 
 a.header-anchor
   font-size 0.85em

@@ -79,7 +79,7 @@ module.exports = {
 					{
 						type: 'page',
 						path: '/getting-started/support',
-						title: 'Support',
+						title: 'Help & Support',
 					},
 					{
 						type: 'page',

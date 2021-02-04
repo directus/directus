@@ -18,6 +18,10 @@ environment variables, each is explained in the following reference:
 
 - [Environment Variables](/reference/environment-variables)
 
+## Adjusting Project Settings
+
+TK
+
 ## Upgrading a Project
 
 1. Backup your project
@@ -29,6 +33,10 @@ environment variables, each is explained in the following reference:
 1. Make a copy of the **files within each storage adapter**, and store them in a safe place
 2. Make a copy of the **Env file** (`/api/.env`), and store it in a safe place
 3. Run the **Backup API Endpoint** (`/backup`) to create a SQL dump of your database
+
+## Migrating a Project
+
+TK
 
 ## Deleting a Project
 

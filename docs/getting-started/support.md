@@ -1,4 +1,4 @@
-# Support
+# Help &amp; Support
 
 > Directus is offered completely free and open-source for anyone wishing to self-host the platform. If you have questions along the way, there are many resources, both free and paid, to help you get up-and-running smoothly.
 

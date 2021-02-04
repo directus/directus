@@ -1,23 +1,14 @@
 # Items
 
-> You can browse and manage items from within the App, via the [API Items Endpoint](/reference/api/items), or directly
-> within the database. If you're unfamiliar with Directus Items, please start by reading our
-> [Understanding Items](/concepts/platform-overview#items) docs.
-
-## Managing Items
+> You can browse and manage items from within the [Directus App](/concepts/app-overview/), via the [API Items Endpoint](/reference/api/items), or [directly within the database](/concepts/platform-overview/#database-mirroring). If you're unfamiliar with Directus Items, please start by reading our [Items Concept](/concepts/platform-overview/#items) overview.
 
 Managing items includes the basics of Create, Read, Update, and Delete — as well as more specific features such as
 Archiving, Reverting, Commenting, and Reordering. Each of the guides below also includes a link to any relevant
 concepts.
 
-::: warning Permissions
+The actions on this page assume the current user has permission to perform that action. However, certain features may be disabled or hidden based on permissions.
 
-All of the action on this page assume that the current user has permission to perform the action. If they do not, then
-certain buttons or features may be disabled or altogether hidden.
-
-:::
-
-### Creating Items
+## Creating an Item
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection where you want to add an item
@@ -32,13 +23,23 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 
 :::
 
-### Updating Items
+## Updating an Item
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection of the item you want to update
-3. Click on the item within the desired layout (eg: on the row of the table)
+3. Click on the item within the current layout (eg: on the row of the table)
 4. Update the Item Detail form
 5. Click the "Save Item" (✓ icon) button located in the header
+
+::: tip Other Save Options
+
+To the right of the primary Save button there is a "..." icon which contains the following alternate save options:
+
+* Save and Stay (⌘S)
+* Save and Create New (⌘⇧S)
+* Save as Copy
+
+:::
 
 ::: tip Singletons
 
@@ -47,7 +48,7 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 
 :::
 
-### Deleting Items
+## Deleting an Item
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection of the item you want to delete
@@ -62,7 +63,7 @@ icon) button located in the header.
 
 :::
 
-### Archiving an Item
+## Archiving an Item
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection of the item you want to archive
@@ -83,7 +84,7 @@ icon) button located in the header.
 
 :::
 
-### Reverting Items
+## Reverting an Item
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection of the item you want to archive
@@ -93,7 +94,7 @@ icon) button located in the header.
 6. Click on the "Revert" button located in the drawer's header
 7. Confirm the action within the dialog by clicking "Revert"
 
-### Commenting on Items
+## Commenting on an Item
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
 2. Navigate to the collection of the item you want to comment on
@@ -102,15 +103,15 @@ icon) button located in the header.
 5. Type your message within the input
 6. Click the "Submit" button
 
-### Reordering Items
+## Manually Sorting Items
 
 1. Navigate to the [Collections Module](/concepts/app-overview#collections)
-2. Navigate to the collection of the items you want to reorder
-3. Choose a layout that supports reordering (eg: the default "table" mode)
+2. Navigate to the collection of the items you want to sort
+3. Choose a layout that supports manual sorting (eg: the default "table" mode)
 4. Enable manual sorting. (eg: for the table layout, click on the Sort column's header)
 5. Drag items by their handle into a new position
 
-The new order is saved automatically, so make sure you wait until the App's loading indicator finishes before navigating
+The new sort order is saved automatically, so make sure you wait until the App's loading indicator finishes before navigating
 away from the page.
 
 ::: warning Requires Configuration
@@ -124,7 +125,7 @@ This feature is only available if a Sort column has been configured in the Colle
 In order to view, update or delete a specific item, you first need to be able to find it. Directus includes a number of
 features to make browsing items as fast and efficient as possible, each of which are described below.
 
-### Adjusting Item Layouts
+## Adjusting Item Layouts
 
 **[Learn more about the concept of layouts.](#)**
 
@@ -134,7 +135,7 @@ features to make browsing items as fast and efficient as possible, each of which
 4. Choose the desired "Layout" you want to use
 5. Configure any other layout options that come after the layout dropdown
 
-### Searching Items
+## Searching Items
 
 **[Learn more about the concept of search.](#)**
 
@@ -142,7 +143,7 @@ features to make browsing items as fast and efficient as possible, each of which
 2. Navigate to the collection of the items you want to search
 3. Type your search query into the input located in the header
 
-### Filtering Items
+## Filtering Items
 
 **[Learn more about the concept of filtering.](#)**
 
@@ -154,7 +155,11 @@ features to make browsing items as fast and efficient as possible, each of which
 6. Enter a value in the field filter's input(s)
 7. Remove unwanted filters by hovering over the field and clicking "X"
 
-### Bookmarking Item Presets
+## Ordering Items
+
+TK (Different from sort, you can order on a sort column)
+
+## Bookmarking Item Presets
 
 **[Learn more about the concept of bookmarks.](#)**
 
@@ -165,7 +170,7 @@ features to make browsing items as fast and efficient as possible, each of which
 5. Rename bookmarks by right-clicking them in the navigation sidebar and selecting "Rename Bookmark"
 6. Delete bookmarks by right-clicking them in the navigation sidebar and selecting "Delete Bookmark"
 
-### Exporting Items
+## Exporting Items
 
 **[Learn more about the concept of exporting.](#)**
 

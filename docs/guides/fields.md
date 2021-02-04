@@ -18,6 +18,12 @@
 - [Many-to-Any Field](/guides/field-types/many-to-any-field)
 - [Translated Fields](/guides/field-types/translated-fields)
 
+::: tip System Fields
+
+While all out-of-the-box system fields are locked from editing or deleting, you are able to create new fields within the system collections. You can enable editing System Collections within the Collection sidebar component of [Settings > Data Model](/concepts/data-model/).
+
+:::
+
 ::: tip Database Fields
 
 Keep in mind that a Directus Field is just a database column. Therefore you can import or create a column directly in
@@ -58,9 +64,9 @@ It is not currently possible to duplicate relational fields or a collection's pr
 
 :::
 
-## Adjusting Field Layout
+## Adjusting Field Arrangement
 
-The layout of the collection's form is determined by the following field options.
+The form design of the collection's fields is determined by the following options.
 
 - **Field Visibility** — If the field is "Visible" or "Hidden"
 - **Field Width** — How wide the field is shown relative to the form/page

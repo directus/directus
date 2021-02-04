@@ -1,6 +1,6 @@
 # Installing from CLI
 
-## 1. Confirm the Minimum Requirements are met
+## 1. Confirm Minimum Requirements
 
 Directus requires two things to run: [Node.js](https://nodejs.dev) and a Database. For both these system requirements,
 we aim to support the current LTS release (and newer). At the time of writing (early 2021), this means Node.js v10+ and

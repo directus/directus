@@ -59,13 +59,13 @@ Our completely free and open-source (GPLv3) Open Data Platform. Directus include
 [Our documentation](https://docs.directus.io) describes the most recent version of our platform. They are written in
 publicly managed markdown files so the community can help keep them clean and up-to-date. The docs are divided into the following sections:
 
-- **Getting Started**: Novice oriented, for a platform intro and installation.
-- **Concepts**: Learning oriented, for understanding the platform.
-- **Guides**: Problem oriented, follow along with steps while working.
-- **Reference**: Information oriented, look up info and specs while working.
-- **API Reference**: Information oriented, look up API resources while working.
-- **Extensions**: Problem oriented — follow along with steps while working.
-- **Contributing**: Contributor oriented — resources for working on Open-Source Core.
+- [Getting Started](/getting-started/introduction/) — Novice oriented, for a platform intro and installation.
+- [Concepts](/concepts/platform-overview/) — Learning oriented, for understanding the platform.
+- [Guides](/guides/projects/) — Problem oriented, follow along with steps while working.
+- [Reference](/reference/command-line-interface/) — Information oriented, look up info and specs while working.
+- [API Reference](/reference/api/introduction/) — Information oriented, look up API resources while working.
+- [Extensions](/extensions/displays/) — Problem oriented — follow along with steps while working.
+- [Contributing](/contributing/introduction/) — Contributor oriented — resources for working on Open-Source Core.
 
 ::: tip Versioned Docs
 
