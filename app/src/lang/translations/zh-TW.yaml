@@ -75,27 +75,57 @@ use_custom: 使用自訂
 field_m2o: 多對一關聯
 field_o2m: 一對多關聯
 field_m2m: 多對多關聯
+field_translations: 翻譯
+item_permissions: 項目權限
+field_permissions: 欄位權限
+field_validation: 欄位驗證
+permissions_for_role: '角色 {role} 可以 {action} 項目'
+fields_for_role: '角色 {role} 可以 {action} 欄位'
+validation_for_role: '角色 {role} 必須遵守欄位 {action} 規則'
+revision_post_update: 項目更新後看起來像...
+changes_made: 這些是具體的變更部分
 hide_field_on_detail: 在詳細內容中隱藏
 show_field_on_detail: 在詳細內容中顯示
 delete_field: 刪除欄位
+fields_and_layout: 欄位 & 佈局
+field_create_success: '建立欄位: "{field}"'
+field_update_success: '更新欄位: "{field}"'
+duplicate_where_to: 你想將欄位複製到哪裡?
 language: 語言
+global: 全域
+admins_have_all_permissions: 管理員擁有所有權限
+schema_setup_title: 此欄位應該如何儲存到資料庫中?
 create_field: 新建欄位
+creating_new_field: '新欄位 ({collection})'
+updating_field_field: '{field} ({collection})'
+reset_page_preferences: 重設頁面偏好設定
+hidden_field: 隱藏欄位
 hidden_on_detail: 從詳細內容隱藏
 alias: 別名
 date: 日期
 decimal: 小數
 text: 文字
 time: 時間
+uuid: UUID
+create_translations: 創建翻譯
 auto_generate: 自動產生
+click_here: 點擊此處
 add_note: 新增提示
 default_value: 預設值
 next: 下一個
+translations: 翻譯
 note: 備註
+enter_a_value: 請輸入...
+enter_a_placeholder: 輸入一個佔位符...
 length: 長度
 readonly: 唯讀
 unique: 唯一
 updated_on: 更新於
+updated_by: 已更新由
 primary_key: 主鍵
+foreign_key: 外鍵
+finish_setup: 完成安装
+dismiss: 忽略
 clear_value: 清除內容
 reset_to_default: 重設為預設值
 undo_changes: 還原變更
@@ -370,6 +400,7 @@ interfaces:
     divider: 分隔線
   dropdown:
     allow_other: 允許其他選項
+    choices_value_placeholder: 請輸入...
   dropdown-multiselect:
     description: 從下拉選單選擇多個值
   file:
@@ -427,6 +458,8 @@ displays:
     filesize: 檔案大小
   icon:
     icon: 圖示
+  labels:
+    choices_value_placeholder: 請輸入...
   rating:
     rating: 評分
   user:
