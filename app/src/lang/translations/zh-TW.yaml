@@ -328,24 +328,58 @@ password_reset_sent: 我們已經把重設密碼連結寄到您的電子信箱
 password_reset_successful: 密碼重設成功
 back: 返回
 editing_image: 編輯圖像
+square: 矩形
+flip_horizontal: 水平翻轉
+flip_vertical: 垂直翻轉
+aspect_ratio: 長寬比
+rotate: 旋轉
+all_users: 所有使用者
+delete_collection: 刪除集合
+update_collection_success: 已更新集合
+delete_collection_success: 已刪除集合
+start_end_of_count_items: '{count} 個項目中的 {start}-{end}'
+delete_collection_are_you_sure: >-
+  是否確認要刪除此集合？這將刪除集合及其中的所有項目。此操作是永久性的。
+visible_collections: 可見集合
+hidden_collections: 隱藏集合
+unmanaged_collections: 未配置集合
+system_collections: 系統集合
 placeholder: 佔位符
 icon_left: 左圖示
 icon_right: 右圖示
+font: 字體
 monospace: 等寬字體
 divider: 分隔線
 color: 顏色
+circle: 圓形
+empty_item: 空項目
+log_in_with: '以 {provider} 登入'
+advanced_filter: 進階篩選器
+delete_advanced_filter: 刪除篩選器
 operators:
+  eq: 等於
+  neq: 不等於
   lt: 小於
   gt: 大於
   lte: 小於等於
   gte: 大於等於
+  null: 是 null
+  nnull: 不是 null
   contains: 包含
   ncontains: 不包含
+  between: 介於
   empty: 是空的
 loading: 載入中...
 display_template: 顯示模板
 n_items_selected: '未選擇項目 | 已選一個項目 | 已選 {n} 個項目'
+create_folder: 建立資料夾
+folder_name: 資料夾名稱...
+add_file: 新增檔案
+replace_file: 取代檔案
 no_results: 無任何結果
+no_results_copy: 調整或清除搜尋篩選器以查看結果。
+clear_filters: 清除篩選器
+saves_automatically: 自動儲存
 role: 角色
 user: 用戶
 create: 新建
@@ -353,13 +387,49 @@ on_update: 更新時
 read: 讀取
 update: 更新
 select_fields: 選擇欄位
+format_text: 格式化文本
+bold: 粗體
+toggle: 切換
 wysiwyg_options:
+  aligncenter: 置中
+  alignleft: 置左對齊
+  alignnone: 不對齊
+  alignright: 置右對齊
   forecolor: 前景顏色
   backcolor: 背景顏色
+  bold: 粗體
+  italic: 斜體
+  underline: 底線
+  strikethrough: 刪除線
+  subscript: 下標
+  superscript: 上標
   codeblock: 程式碼
+  blockquote: 引用區塊
+  bullist: 項目列表
+  numlist: 編號列表
+  hr: 分隔線
+  link: 連結
+  unlink: 移除連結
+  media: 新增媒體
+  image: 新增圖像
+  copy: 複製
+  cut: 剪下
+  paste: 貼上
+  heading: 標頭
+  h1: 標題1
+  h2: 標題2
+  h3: 標題3
+  h4: 標題4
+  h5: 標題5
+  h6: 標題6
   fontselect: 選擇字型
   fontsizeselect: 選擇字型大小
+  indent: 縮進
+  outdent: 突出
+  undo: 撤消
+  redo: 重做
   remove: 移除
+  removeformat: 移除格式
   selectall: 全選
   table: 表格
 dropdown: 下拉選單
@@ -382,6 +452,7 @@ batch_delete_confirm: >-
 cancel: 取消
 collection: 集合
 collections: 資料集
+system_fields_locked: 系統欄位已鎖定無法編輯
 fields:
   directus_activity:
     item: 項目主鍵值
@@ -398,14 +469,18 @@ fields:
     note: 備註
     display_template: 顯示模板
     hidden: 隱藏
+    translations: 集合名稱翻譯
     sort_field: 排序欄位
   directus_files:
     title: 標題
     description: 描述說明
     tags: 標籤
     location: 位置
+    storage: 儲存空間
     metadata: 元數據
+    type: Mime 類型
     filesize: 檔案大小
+    modified_by: 修改者
     modified_on: 修改日期
     created_on: 建立於
     created_by: 建立者
@@ -435,13 +510,24 @@ fields:
     last_page: 最後一頁
   directus_settings:
     project_name: 專案名稱
+    project_url: 專案 URL
+    project_color: 專案顏色
+    project_logo: 專案 Logo
+    public_foreground: 公開前臺
+    public_background: 公開後臺
+    auth_password_policy: 身份驗證密碼政策
+    auth_login_attempts: 身份驗證登錄嘗試
+    custom_css: 自定義 CSS
   directus_fields:
+    collection: 集合名稱
+    icon: 集合圖示
     note: 備註
     hidden: 隱藏
     translation: 欄位名稱翻譯
     display_template: 模板
   directus_roles:
     name: 角色名稱
+    icon: 角色圖示
     description: 描述說明
 comment: 評論
 continue: 繼續
@@ -587,6 +673,7 @@ interfaces:
     textarea: 文本區
     description: 輸入多行純文本
   toggle:
+    toggle: 切換
     label_default: 已啟用
   translations:
     display_template: 顯示模板
@@ -633,6 +720,7 @@ displays:
   image:
     image: 圖像
     description: 顯示圖像預覽
+    circle: 圓形
   labels:
     labels: 標籤
     choices_value_placeholder: 請輸入...
