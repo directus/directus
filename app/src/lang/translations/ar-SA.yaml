@@ -167,6 +167,7 @@ fields:
     comment: تعليق
     user_agent: وكيل المستخدم
     ip: عنوان IP
+    revisions: المراجعات
   directus_collections:
     collection: المجموعة
     icon: أيقونة
@@ -216,10 +217,13 @@ fields:
   directus_roles:
     name: إسم الدور
     description: التفاصيل
+do_nothing: لا تفعل شيئا
 comment: تعليق
 continue: واصل
 default: الإفتراضي
 delete: حذف
+delete_are_you_sure: >-
+  هذا الإجراء دائم ولا يمكن التراجع عنه. هل أنت متأكد من رغبتك في المتابعة؟
 delete_field_are_you_sure: >-
   هل تريد بالتأكيد حذف الحقل "{field} "؟ لا يمكن التراجع عن هذا الإجراء.
 description: التفاصيل
@@ -246,11 +250,13 @@ permissions: أذونات
 relationship: العلاقة
 reset: إعادة تعيين
 reset_password: إعادة تعيين كلمة المرور
+revisions: المراجعات
 revert: عودة
 save: حفظ
 schema: مخطط
 search: بحث
 select_existing: حدد خيار متوفر
+select_field_type: حدد نوع الحقل
 select_interface: اختر واجهة
 settings: إعدادات
 sign_in: تسجيل الدخول
@@ -258,9 +264,12 @@ sign_out: تسجيل الخروج
 sign_out_confirm: هل أنت متأكد من رغبتك في تسجيل الخروج?
 something_went_wrong: حدث خطأ.
 sort_direction: الترتيب وفق الإتجاه
+sort_asc: ترتيب تصاعدي
+sort_desc: ترتيب تنازلي
 template: قالب
 translation: الترجمة
 value: قيمة
+view_project: عرض المشروع
 interfaces:
   checkboxes:
     checkboxes: مربع الاختيار
@@ -274,6 +283,9 @@ interfaces:
     collections: مجموعات
   color:
     color: لون
+    placeholder: اختر لون...
+    preset_colors_add_label: إضافة لون جديد...
+    name_placeholder: أدخل اسم اللون...
   datetime:
     datetime: التاريخ والوقت
   display-template:
@@ -282,6 +294,7 @@ interfaces:
     divider: الفاصل
   dropdown:
     allow_other: السماح لآخرين
+    choices_name_placeholder: أدخل اسم...
   file:
     file: ملف
   files:
@@ -297,16 +310,26 @@ interfaces:
     display_template: عرض القالب
   markdown:
     markdown: Markdown
+  notice:
+    notice: ملاحظة
+    description: عرض ملاحظة قصيرة
+    text: أدخل محتوى الملاحظة هنا...
   numeric:
     numeric: رقمي
+    description: أدخل رقماً
+    minimum_value: الحد الأدنى للقيمة
+    maximum_value: الحد الأقصى للقيمة
   one-to-many:
     one-to-many: واحد للكثيرين
   radio-buttons:
     radio-buttons: أزرار الراديو
   repeater:
     repeater: كرر
+    field_name_placeholder: أدخل اسم الحقل...
+    field_note_placeholder: أدخل ملاحظة للحقل...
   slider:
     slider: شريط
+    always_show_value: إظهار القيمة دائمًا
   slug:
     slug: مقال
   tags:
