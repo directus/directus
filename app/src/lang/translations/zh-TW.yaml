@@ -130,22 +130,45 @@ clear_value: 清除內容
 reset_to_default: 重設為預設值
 undo_changes: 還原變更
 notifications: 通知
+show_all_activity: 顯示所有活動
 page_not_found: 無法找到網頁
 page_not_found_body: 您在找的頁面不存在
+confirm_revert_body: 這將復原項目到所選狀態
 display: 顯示
+settings_update_success: 設定已更新
 title: 標題
+revision_delta_created: 已建立
+revision_delta_updated: '更新 1 個欄位 | 更新 {count} 個欄位'
 revision_delta_deleted: 已刪除
+revision_delta_reverted: 已復原
+revision_delta_by: '{date} 由 {user}'
 leave_comment: 發表評論
+post_comment_success: 評論已發佈。
+item_create_success: 項目已建立 | 多個項目已建立
+item_update_success: 項目已更新 | 多個項目已更新
+item_delete_success: 項目已刪除 | 多個項目已刪除
 this_collection: 此集合
 related_collection: 相關收藏
+translations_collection: 譯文集合
+languages_collection: 語系集合
+export_data: 匯出資料
 format: 格式
+use_current_filters_settings: 使用當前篩選器及設置
+export_collection: '匯出 {collection}'
+last_page: 最後一頁
+fill_template: 使用範本填充
+a_unique_table_name: 一個唯一的資料表名稱...
+a_unique_column_name: 一個唯一的欄位名稱...
 enable_custom_values: 啟用自訂值
 submit: 送出
 move_to_folder: 移動到資料夾
 move: 移動
 system: 系統
+add_field_related: 新增欄位到關聯集合
+interface: 介面
 today: 今天
 yesterday: 昨天
+delete_comment: 刪除註解
 month: 月
 select_all: 全選
 months:
@@ -163,6 +186,7 @@ months:
   december: 十二月
 file_details: 檔案詳細資訊
 size: 尺寸
+created: 已建立
 modified: 已修改
 checksum: 校驗和
 owner: 擁有者
@@ -208,17 +232,53 @@ users: 用戶
 activity: 活動
 webhooks: Webhooks
 field_width: 欄位寬度
+add_a_new_item: 添加新項目
+add_filter: 新增篩選器
+upper_limit: 上限...
+lower_limit: 下限...
 user_directory: 使用者目錄
+documentation: 文檔
+sidebar: 側邊欄
 duration: 持續時間
+charset: 字元集
+file_moved: 檔案已移動
+collection_created: 集合已建立
 modified_on: 修改日期
+card_size: 卡片大小
 sort_field: 排序欄位
+sort: 排序
 status: 狀態
+toggle_manual_sorting: 啟用手動排序
+bookmark_doesnt_exist: 書籤不存在
 select_an_item: 選取一個項目...
 edit: 編輯
+enabled: 已啟用
+disable_tfa: 停用兩步驟驗證
+tfa_scan_code: 掃描條碼於你的驗證器應用程式已完成設置兩步驟驗證
+enter_otp_to_disable_tfa: 輸入OTP以停用兩階段驗證
+create_account: 建立帳號
+account_created_successfully: 帳號建立成功
+auto_fill: 自動填入
 errors:
+  COLLECTION_NOT_FOUND: "集合不存在"
+  FIELD_NOT_FOUND: 找不到欄位
   FORBIDDEN: 被禁止
+  INVALID_CREDENTIALS: 錯誤的帳號或密碼
+  INVALID_QUERY: 無效的查詢
+  ITEM_NOT_FOUND: 找不到項目
+  ROUTE_NOT_FOUND: 找不到
+  UNKNOWN: 未預期的錯誤
+bookmark_name: 書籤名稱...
+create_bookmark: 建立書籤
+edit_bookmark: 編輯書籤
 bookmarks: 書籤
+unexpected_error: 未預期的錯誤
+unexpected_error_copy: 發生意外的錯誤，請稍後再試。
+copy_details: 複製詳細資訊
+password_reset_sent: 我們已經把重設密碼連結寄到您的電子信箱
+password_reset_successful: 密碼重設成功
 back: 返回
+editing_image: 編輯圖像
 placeholder: 佔位符
 icon_left: 左圖示
 icon_right: 右圖示
@@ -306,6 +366,7 @@ fields:
     width: 寬度
     uploaded_on: 上傳於
     height: 高度
+    charset: 字元集
     duration: 持續時間
   directus_users:
     first_name: 名字
@@ -322,6 +383,7 @@ fields:
     tfa_secret: 雙重身份驗證
     status: 狀態
     role: 角色
+    last_page: 最後一頁
   directus_settings:
     project_name: 專案名稱
   directus_fields:
@@ -409,6 +471,8 @@ interfaces:
     files: 檔案
   icon:
     icon: 圖示
+  interface:
+    interface: 介面
   interface-options:
     interface-options: 介面選項
   many-to-many:
@@ -435,6 +499,8 @@ interfaces:
   text-input:
     text-input: 文字輸入
     trim: 去除內容前後空格
+  toggle:
+    label_default: 已啟用
   translations:
     display_template: 顯示模板
   user:
