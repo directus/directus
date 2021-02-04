@@ -107,6 +107,7 @@ decimal: 小數
 text: 文字
 time: 時間
 uuid: UUID
+hash: 哈希
 create_translations: 創建翻譯
 auto_generate: 自動產生
 click_here: 點擊此處
@@ -469,10 +470,18 @@ interfaces:
     file: 檔案
   files:
     files: 檔案
+  hash:
+    hash: 哈希
   icon:
     icon: 圖示
+    search_for_icon: 搜尋圖示...
+  image:
+    image: 圖像
+    description: 選擇或上傳圖像
   interface:
     interface: 介面
+    description: 選擇現有介面
+    placeholder: 選擇一個介面...
   interface-options:
     interface-options: 介面選項
   many-to-many:
@@ -482,6 +491,9 @@ interfaces:
     display_template: 顯示模板
   markdown:
     markdown: Markdown
+    customSyntax_label: 新增自訂語法類型
+    customSyntax_add: 新增自訂語法
+    imageToken: 圖像權杖
   numeric:
     numeric: 數字
   one-to-many:
@@ -496,9 +508,18 @@ interfaces:
     slug: 網址片段
   tags:
     tags: 標籤
+    alphabetize: 按字母順序
+    alphabetize_label: 強制按字母排序
+    add_tags: 新增標籤...
   text-input:
     text-input: 文字輸入
+    description: 輸入單行文本
     trim: 去除內容前後空格
+    trim_label: 修剪開頭與結尾
+    nullable_label: 儲存空值為null
+  textarea:
+    textarea: 文本區
+    description: 輸入多行純文本
   toggle:
     label_default: 已啟用
   translations:
@@ -507,25 +528,51 @@ interfaces:
     user: 用戶
     select_mode: 選取模式
     modes:
+      auto: 自動
       dropdown: 下拉選單
   wysiwyg:
+    toolbar: 工具列
     custom_formats: 自訂格式
 displays:
+  boolean:
+    description: 顯示開關狀態
   collection:
     collection: 集合
   color:
     color: 顏色
+    default_color: 預設顏色
   datetime:
     datetime: 日期時間
     format: 格式
+    long: 長
+    short: 短
   file:
     file: 檔案
+    description: 顯示檔案
   filesize:
     filesize: 檔案大小
+    description: 顯示檔案大小
+  formatted-value:
+    formatted-value: 格式化值
+    description: 顯示文本的格式化版本
+    format_title: 格式化標題
+    format_title_label: 自動格式化大小寫
+    bold_label: 使用粗體樣式
+  formatted-json-value:
+    formatted-json-value: 格式化JSON值
+    description: 顯示物件的格式化版本
   icon:
     icon: 圖示
+    description: 顯示圖示
+  image:
+    image: 圖像
+    description: 顯示圖像預覽
   labels:
     choices_value_placeholder: 請輸入...
+    choices_text_placeholder: 輸入文字...
+  mime-type:
+    mime-type: MIME 類型
+    description: 顯示檔案的 MIME 類型
   rating:
     rating: 評分
   user:
@@ -533,10 +580,13 @@ displays:
     avatar: 頭像
     name: 名稱
     both: 都要
+    circle_label: 在圓圈中顯示使用者
 layouts:
   cards:
     cards: 卡片
     image_source: 圖片來源
+    crop: 裁剪
+    contain: 包含
     title: 標題
     subtitle: 副標題
   tabular:
