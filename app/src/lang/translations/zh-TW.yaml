@@ -55,6 +55,16 @@ unarchive: 取消封存
 unarchive_confirm: 您確定要解除封存這個項目嗎？
 nested_files_folders_will_be_moved: 巢狀的檔案與資料夾將會被上移一層
 unknown_validation_errors: '下列的隱藏欄位驗證錯誤：'
+validationError:
+  eq: 值必須為{valid}
+  neq: 值不能為{invalid}
+  in: 值必須為 {valid} 之一
+  nin: 值不能為 {invalid} 之一
+  contains: 值必須包含 {substring}
+  ncontains: 值不能包含 {substring}
+  gt: 值必須大於 {valid}
+  gte: 值必須大於等於 {valid}
+  lt: 值必須小於 {valid}
 language: 語言
 create_field: 新建欄位
 hidden_on_detail: 從詳細內容隱藏
@@ -70,6 +80,7 @@ note: 備註
 length: 長度
 readonly: 唯讀
 unique: 唯一
+updated_on: 更新於
 primary_key: 主鍵
 clear_value: 清除內容
 reset_to_default: 重設為預設值
@@ -84,7 +95,14 @@ leave_comment: 發表評論
 this_collection: 此集合
 related_collection: 相關收藏
 format: 格式
+enable_custom_values: 啟用自訂值
 submit: 送出
+move_to_folder: 移動到資料夾
+move: 移動
+system: 系統
+today: 今天
+yesterday: 昨天
+month: 月
 months:
   january: 一月
   february: 二月
@@ -98,18 +116,46 @@ months:
   october: 十月
   november: 十一月
   december: 十二月
+file_details: 檔案詳細資訊
 size: 尺寸
+modified: 已修改
 checksum: 校驗和
 owner: 擁有者
+edited_by: 編輯者
+folder: 資料夾
+zoom: 縮放
 download: 下載
+open: 開啟
+open_in_new_window: 在新視窗開啟
+foreground_color: 前景顏色
+background_color: 背景顏色
+upload_from_device: 從裝置上傳
+no_file_selected: 沒有選擇檔案
 name: 名稱
+type: 類型
+creating_new_collection: 建立新的集合
 created_by: 建立者
 created_on: 建立於
+auto_increment_integer: 自動遞增整數
+generated_uuid: 產生UUID
+manual_string: 自訂輸入的字串
 save_and_stay: 儲存並停留
 save_as_copy: 儲存為副本
+add_existing: 新增現有的
 comments: 評論
+no_comments: 還沒有評論
+click_to_expand: 點擊以展開
+select_item: 選擇項目
+no_items: 沒有任何項目
+search_items: 搜尋項目...
+disabled: 已停用
+information: 詳細資訊
+report_bug: 回報程式錯誤
 request_feature: 功能請求
+interface_not_found: '找不到介面"{interface}"'
+reset_interface: 重置介面
 item_count: '無項目 | 一個項目 | {count} 個項目'
+all_items: 所有項目
 create_collection: 新建集合
 relationship_not_setup: 關聯配置不正確
 users: 用戶
@@ -122,6 +168,8 @@ modified_on: 修改日期
 sort_field: 排序欄位
 status: 狀態
 edit: 編輯
+errors:
+  FORBIDDEN: 被禁止
 bookmarks: 書籤
 back: 返回
 placeholder: 佔位符
@@ -149,6 +197,8 @@ read: 讀取
 update: 更新
 select_fields: 選擇欄位
 wysiwyg_options:
+  forecolor: 前景顏色
+  backcolor: 背景顏色
   codeblock: 程式碼
   remove: 移除
   table: 表格
@@ -199,6 +249,7 @@ fields:
     created_by: 建立者
     embed: 內嵌
     uploaded_by: 上傳者
+    folder: 資料夾
     width: 寬度
     uploaded_on: 上傳於
     height: 高度
