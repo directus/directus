@@ -72,6 +72,8 @@ validationError:
   nnull: 值不能為null
   required: 必須輸入值
 use_custom: 使用自訂
+field_file: 單一檔案
+field_files: 多個檔案
 field_m2o: 多對一關聯
 field_o2m: 一對多關聯
 field_m2m: 多對多關聯
@@ -104,6 +106,7 @@ hidden_on_detail: 從詳細內容隱藏
 alias: 別名
 date: 日期
 decimal: 小數
+json: JSON
 text: 文字
 time: 時間
 uuid: UUID
@@ -111,9 +114,27 @@ hash: 哈希
 create_translations: 創建翻譯
 auto_generate: 自動產生
 click_here: 點擊此處
+fields_group: 欄位群組
+configure_m2o: 配置你的多對一關聯...
+configure_o2m: 配置你的一對多關聯...
+configure_m2m: 配置你的多對多關聯...
+configure_m2a: 配置你的多對Any關聯
+add_m2o_to_collection: '新增 多對一 到 "{collection}"'
+add_o2m_to_collection: '新增 一對多 到 "{collection}"'
+add_m2m_to_collection: '新增 多對多 到 "{collection}"'
+choose_a_type: 選擇類型...
+determined_by_relationship: 由關聯決定
 add_note: 新增提示
 default_value: 預設值
+add_a_default_value: 新增一個預設值...
+single_file: 單一檔案
+multiple_files: 多個檔案
+m2o_relationship: 多對一關聯
+o2m_relationship: 一對多關聯
+m2m_relationship: 多對多關聯
+m2a_relationship: 多對Any關係
 next: 下一個
+field_name: 欄位名稱
 translations: 翻譯
 note: 備註
 enter_a_value: 請輸入...
@@ -150,6 +171,7 @@ item_update_success: 項目已更新 | 多個項目已更新
 item_delete_success: 項目已刪除 | 多個項目已刪除
 this_collection: 此集合
 related_collection: 相關收藏
+related_collections: 關聯的集合
 translations_collection: 譯文集合
 languages_collection: 語系集合
 export_data: 匯出資料
@@ -185,7 +207,12 @@ months:
   october: 十月
   november: 十一月
   december: 十二月
+cancel_crop: 取消裁切
+original: 原始
+url: URL
+import: 匯入
 file_details: 檔案詳細資訊
+dimensions: 尺寸
 size: 尺寸
 created: 已建立
 modified: 已修改
@@ -200,8 +227,15 @@ open_in_new_window: 在新視窗開啟
 foreground_color: 前景顏色
 background_color: 背景顏色
 upload_from_device: 從裝置上傳
+choose_from_library: 從庫中選擇檔案
+import_from_url: 從 URL 匯入檔案
+replace_from_device: 從裝置替換檔案
+replace_from_library: 從庫中替換檔案
+replace_from_url: 從 URL 中替換檔案
 no_file_selected: 沒有選擇檔案
+download_file: 下載檔案
 name: 名稱
+primary_key_field: 主鍵欄位
 type: 類型
 creating_new_collection: 建立新的集合
 created_by: 建立者
@@ -209,6 +243,7 @@ created_on: 建立於
 auto_increment_integer: 自動遞增整數
 generated_uuid: 產生UUID
 manual_string: 自訂輸入的字串
+save_and_create_new: 儲存並新建
 save_and_stay: 儲存並停留
 save_as_copy: 儲存為副本
 add_existing: 新增現有的
@@ -224,9 +259,22 @@ report_bug: 回報程式錯誤
 request_feature: 功能請求
 interface_not_found: '找不到介面"{interface}"'
 reset_interface: 重置介面
+display_not_found: '顯示 "{display}" 找不到'
+reset_display: 重設顯示
 item_count: '無項目 | 一個項目 | {count} 個項目'
+no_items_copy: 此集合中還沒有任何項目。
+file_count: '沒有檔案 | 1 個檔案 | {count} 個檔案'
+no_files_copy: 這裡還沒有任何檔案。
+user_count: '沒有使用者 | 1 個使用者 | {count} 個使用者'
+no_users_copy: 這個角色中還沒有任何使用者。
+webhooks_count: '沒有 Webhooks｜1 個 Webhook｜{count} 個 Webhooks'
+no_webhooks_copy: 這裡還沒有任何 Webhooks。
 all_items: 所有項目
+csv: CSV
+no_collections: 沒有集合
 create_collection: 新建集合
+no_collections_copy_admin: 你還沒有任何集合，點擊下方按鈕開始。
+no_collections_copy: 你還沒有任何集合，請與你的系統管理員聯絡。
 relationship_not_setup: 關聯配置不正確
 select_a_collection: 選擇一個集合
 users: 用戶
@@ -494,20 +542,38 @@ interfaces:
     customSyntax_label: 新增自訂語法類型
     customSyntax_add: 新增自訂語法
     imageToken: 圖像權杖
+  notice:
+    notice: 通知
+    description: 顯示簡短通知
+    text: 在此輸入通知內容...
   numeric:
     numeric: 數字
+    description: 輸入一個數字
+    minimum_value: 最小值
+    maximum_value: 最大值
   one-to-many:
     one-to-many: 一對多
+    description: 選擇多個關聯項目
+    no_collection: 找不到該集合
   radio-buttons:
     radio-buttons: 單選按鈕
   repeater:
     repeater: 重複者
+    edit_fields: 編輯欄位
+    field_name_placeholder: 輸入欄位名稱...
+    field_note_placeholder: 輸入欄位備忘...
   slider:
     slider: 滑塊
+    description: 使用滑塊選擇一個數字
+    always_show_value: 永遠顯示值
   slug:
     slug: 網址片段
   tags:
     tags: 標籤
+    description: 選擇或新增標籤
+    whitespace: 空格
+    remove: 移除空白
+    auto_formatter: 使用標題自動格式化
     alphabetize: 按字母順序
     alphabetize_label: 強制按字母排序
     add_tags: 新增標籤...
@@ -568,6 +634,7 @@ displays:
     image: 圖像
     description: 顯示圖像預覽
   labels:
+    labels: 標籤
     choices_value_placeholder: 請輸入...
     choices_text_placeholder: 輸入文字...
   mime-type:
