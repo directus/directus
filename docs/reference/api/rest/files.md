@@ -215,7 +215,7 @@ Returns a [file object](#the-file-object) if a valid primary key was provided.
 </div>
 <div class="right">
 
-### `GET /files/:primary-key`
+### `GET /files/:id`
 
 ```json
 {
@@ -509,7 +509,7 @@ Returns the [file object](#the-file-object) for the updated file.
 </div>
 <div class="right">
 
-### `PATCH /files/:primary-key`
+### `PATCH /files/:id`
 
 ```json
 // Request
@@ -710,7 +710,7 @@ Empty response.
 </div>
 <div class="right">
 
-### `DELETE /files/:primary-key`
+### `DELETE /files/:id`
 
 ```json
 // Empty Response
