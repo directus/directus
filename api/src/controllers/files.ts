@@ -107,7 +107,6 @@ router.post(
 		if (req.is('multipart/form-data')) {
 			keys = res.locals.savedFiles;
 		} else {
-			// @TODO is this ever used in real life? Wouldn't you always upload a file on create?
 			keys = await service.create(req.body);
 		}
 

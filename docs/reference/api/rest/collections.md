@@ -13,11 +13,7 @@ the schema of the database
 </div>
 <div class="right">
 
-- [GET /collections](#list-collections)
-- [GET /collections/:collection](#retrieve-a-collection)
-- [POST /collections](#create-a-collection)
-- [PATCH /collections/:collection](#update-a-collection)
-- [DELETE /collections/:collection](#delete-a-collection)
+[[toc]]
 
 </div>
 </div>

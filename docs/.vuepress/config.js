@@ -48,8 +48,9 @@ module.exports = {
 		editLinks: true,
 		docsDir: 'docs',
 		lastUpdated: true,
-		serviceWorker: true,
+		serviceWorker: false,
 		patterns: ['docs/**/*.md'],
+		sidebarDepth: 0,
 		activeHeaderLinks: false,
 		smoothScroll: false,
 		nav: [
@@ -446,6 +447,11 @@ module.exports = {
 				],
 			},
 		],
+	},
+	markdown: {
+		toc: {
+			includeLevel: [2],
+		},
 	},
 	plugins: [
 		[

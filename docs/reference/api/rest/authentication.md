@@ -15,13 +15,7 @@ include an access token with every request, or
 
 <div class="right">
 
-- [POST /auth/login](#login)
-- [POST /auth/refresh](#refresh)
-- [POST /auth/logout](#logout)
-- [POST /auth/password/request](#request-password-reset)
-- [POST /auth/password/reset](#reset-a-password)
-- [GET /auth/oauth](#list-oauth-providers)
-- [GET /auth/oauth/:provider](#login-using-oauth-provider)
+[[toc]]
 
 </div>
 </div>

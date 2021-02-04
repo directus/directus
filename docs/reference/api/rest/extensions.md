@@ -12,10 +12,7 @@ The extensions endpoints are used by the Admin App to retrieve what extensions t
 </div>
 <div class="right">
 
-- [GET /extensions/interfaces](#list-interfaces)
-- [GET /extensions/displays](#list-displays)
-- [GET /extensions/layouts](#list-layouts)
-- [GET /extensions/modules](#list-modules)
+[[toc]]
 
 </div>
 </div>

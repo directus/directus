@@ -12,12 +12,7 @@ Fields are individual pieces of content within an item. They are mapped to colum
 </div>
 <div class="right">
 
-- [GET /fields](#list-all-fields)
-- [GET /fields/:collection](#retrieve-fields-in-a-collection)
-- [GET /fields/:collection/:field](#retrieve-a-field)
-- [POST /fields/:collection](#create-a-field)
-- [PATCH /fields/:collection/:field](#update-a-field)
-- [DELETE /fields/:collection](#delete-a-field)
+[[toc]]
 
 </div>
 </div>
