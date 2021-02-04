@@ -19,6 +19,7 @@ Can you please provide:
     Click this, tap that, see error _ _
 
 3) Your environment:
+    What version of Directus you are using.
     Which DBMS are you using (MySQL 8, Postgres 12, ...).
     Which deployment are you using (npx, Docker, ...).
     What browser are you using (Chrome 87, Safari 14, ...).
