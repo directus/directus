@@ -18,7 +18,6 @@ the schema of the database
 - [POST /collections](#create-a-collection)
 - [PATCH /collections/:collection](#update-a-collection)
 - [DELETE /collections/:collection](#delete-a-collection)
-- [DELETE /collections](#delete-multiple-collections)
 
 </div>
 </div>
@@ -61,7 +60,7 @@ Whether or not this collection is hidden in the Admin App.
 Whether or not this collection is treated as a singleton.
 
 `translations` **array**\
-How this collection is displayed in the different languages in the Admin App.
+How this collection's name is displayed in the different languages in the Admin App.
 
 `archive_field` **string**\
 What field in the collection holds the archived state.
@@ -137,7 +136,7 @@ The table comment.
 
 ## List Collections
 
-List the available collections in the project.
+List the available collections.
 
 <div class="two-up">
 <div class="left">
@@ -417,43 +416,6 @@ Be aware, this will delete the table from the database, including all items in i
 <div class="right">
 
 ### `DELETE /collections/:collection`
-
-```json
-// Empty Response
-```
-
-</div>
-</div>
-
----
-
-## Delete Multiple Collections
-
-Delete multiple collections at a time.
-
-<div class="two-up">
-<div class="left">
-
-::: danger Destructive
-
-Be aware, this will delete the tables from the database, including all items in them. This action can't be undone.
-
-:::
-
-### Request Body
-
-Provide an array of collection names to delete.
-
-</div>
-<div class="right">
-
-### `DELETE /collections/`
-
-```json
-// Request
-
-["testimonials", "articles", "articles_translations"]
-```
 
 ```json
 // Empty Response

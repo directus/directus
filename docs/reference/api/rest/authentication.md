@@ -57,13 +57,13 @@ Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `
 
 <div class="definitions">
 
-`access_token` **String**\
+`access_token` **string**\
 Temporary access token to be used in follow-up requests.
 
-`expires` **Number**\
+`expires` **integer**\
 How long before the access token will expire. Value is in milliseconds.
 
-`refresh_token` **String**\
+`refresh_token` **string**\
 The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
 as the mode in the request, the refresh token won't be returned in the JSON.
 
@@ -128,13 +128,13 @@ it here.
 
 <div class="definitions">
 
-`access_token` **String**\
+`access_token` **string**\
 Temporary access token to be used in follow-up requests.
 
-`expires` **Number**\
+`expires` **integer**\
 How long before the access token will expire. Value is in milliseconds.
 
-`refresh_token` **String**\
+`refresh_token` **string**\
 The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
 as the mode in the request, the refresh token won't be returned in the JSON.
 
