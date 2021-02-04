@@ -529,10 +529,22 @@ fields:
     name: 角色名稱
     icon: 角色圖示
     description: 描述說明
+    enforce_tfa: 必須兩步驟登入
+    users: 角色中的使用者
+no_fields_in_collection: '"{collection}" 中還沒有任何欄位'
+do_nothing: 無動作
+generate_and_save_uuid: 產生並儲存 UUID
+save_current_user_id: 儲存當前使用者 ID
+save_current_user_role: 儲存當前使用者角色
+save_current_datetime: 儲存當前日期/時間
 comment: 評論
 continue: 繼續
+editing_role: '{role} 角色'
+creating_webhook: 建立 Webhook
 default: 預設
 delete: 刪除
+delete_are_you_sure: >-
+  此操作是永久性的，無法撤銷。是否確實要繼續？
 delete_field_are_you_sure: >-
   是否確定要刪除此欄位 "{field}"? 此動作無法還原。
 description: 描述說明
@@ -540,6 +552,7 @@ done: 完成
 duplicate: 複製
 email: 電子郵件
 embed: 內嵌
+fallback_icon: 後備圖示
 field: 欄位｜欄位
 file: 檔案
 file_library: 檔案庫
@@ -547,6 +560,10 @@ forgot_password: 忘記密碼
 hidden: 隱藏
 icon: 圖示
 info: 資訊
+normal: 一般
+success: 成功
+warning: 警告
+danger: 危險
 junction_collection: 連接點集合
 latency: 延遲
 login: 登入
@@ -597,17 +614,24 @@ interfaces:
     divider: 分隔線
   dropdown:
     allow_other: 允許其他選項
+    allow_other_label: 允許其他值
+    choices_name_placeholder: 輸入名稱...
     choices_value_placeholder: 請輸入...
   dropdown-multiselect:
+    dropdown-multiselect: 下拉 (多個)
     description: 從下拉選單選擇多個值
   file:
     file: 檔案
+    description: 選擇或上傳檔案
   files:
     files: 檔案
+    description: 選擇或上傳多個檔案
   hash:
     hash: 哈希
+    masked_label: 隱藏真實值
   icon:
     icon: 圖示
+    description: 從下拉清單中選擇圖示
     search_for_icon: 搜尋圖示...
   image:
     image: 圖像
@@ -625,6 +649,7 @@ interfaces:
     display_template: 顯示模板
   markdown:
     markdown: Markdown
+    description: 輸入和預覽 Markdown
     customSyntax_label: 新增自訂語法類型
     customSyntax_add: 新增自訂語法
     imageToken: 圖像權杖
