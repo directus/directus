@@ -180,7 +180,7 @@ Creates a new comment on a given item.
 <div class="two-up">
 <div class="left">
 
-### Request Attributes
+### Request Body
 
 <div class="definitions">
 
@@ -245,7 +245,7 @@ Updates an existing comment by activity action primary key.
 <div class="two-up">
 <div class="left">
 
-### Request Attributes
+### Request Body
 
 <div class="definitions">
 

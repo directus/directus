@@ -35,7 +35,7 @@ Retrieve a temporary access token and refresh token.
 <div class="two-up">
 <div class="left">
 
-### Request Attributes
+### Request Body
 
 <div class="definitions">
 
@@ -114,7 +114,7 @@ Retrieve a new access token using a refresh token.
 <div class="two-up">
 <div class="left">
 
-### Request Attributes
+### Request Body
 
 <div class="definitions">
 
@@ -177,7 +177,7 @@ Invalidate the refresh token thus destroying the user's session.
 <div class="two-up">
 <div class="left">
 
-### Request Attributes
+### Request Body
 
 <div class="definitions">
 
@@ -216,7 +216,7 @@ Request a password reset email to be sent to the given user.
 <div class="two-up">
 <div class="left">
 
-### Request Attributes
+### Request Body
 
 <div class="definitions">
 
@@ -258,7 +258,7 @@ this endpoint to allow the user to reset their password.
 <div class="two-up">
 <div class="left">
 
-### Request Attributes
+### Request Body
 
 <div class="definitions">
 

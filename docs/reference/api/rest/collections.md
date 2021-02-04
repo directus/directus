@@ -270,7 +270,7 @@ Create a new Collection. This will create a new table in the database as well.
 
 This endpoint doesn't currently support any query parameters.
 
-### Request Attributes
+### Request Body
 
 The `collection` property is required, all other properties of the [collection object](#the-collection-object) are
 optional.
@@ -343,7 +343,7 @@ Update the metadata for an existing collection.
 
 This endpoint doesn't currently support any query parameters.
 
-### Request Attributes
+### Request Body
 
 You can only update the `meta` values of the the [collection object](#the-collection-object). Updating the collection
 name is not supported at this time.
