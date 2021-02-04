@@ -56,8 +56,8 @@ unarchive_confirm: 您確定要解除封存這個項目嗎？
 nested_files_folders_will_be_moved: 巢狀的檔案與資料夾將會被上移一層
 unknown_validation_errors: '下列的隱藏欄位驗證錯誤：'
 validationError:
-  eq: 值必須為{valid}
-  neq: 值不能為{invalid}
+  eq: 值必須為 {valid}
+  neq: 值不能為 {invalid}
   in: 值必須為 {valid} 之一
   nin: 值不能為 {invalid} 之一
   contains: 值必須包含 {substring}
@@ -65,9 +65,23 @@ validationError:
   gt: 值必須大於 {valid}
   gte: 值必須大於等於 {valid}
   lt: 值必須小於 {valid}
+  lte: 值必須小於等於 {valid}
+  empty: 值必須為空
+  nempty: 值不能為空
+  null: 值必須為null
+  nnull: 值不能為null
+  required: 必須輸入值
+use_custom: 使用自訂
+field_m2o: 多對一關聯
+field_o2m: 一對多關聯
+field_m2m: 多對多關聯
+hide_field_on_detail: 在詳細內容中隱藏
+show_field_on_detail: 在詳細內容中顯示
+delete_field: 刪除欄位
 language: 語言
 create_field: 新建欄位
 hidden_on_detail: 從詳細內容隱藏
+alias: 別名
 date: 日期
 decimal: 小數
 text: 文字
@@ -103,6 +117,7 @@ system: 系統
 today: 今天
 yesterday: 昨天
 month: 月
+select_all: 全選
 months:
   january: 一月
   february: 二月
@@ -158,6 +173,7 @@ item_count: '無項目 | 一個項目 | {count} 個項目'
 all_items: 所有項目
 create_collection: 新建集合
 relationship_not_setup: 關聯配置不正確
+select_a_collection: 選擇一個集合
 users: 用戶
 activity: 活動
 webhooks: Webhooks
@@ -167,6 +183,7 @@ duration: 持續時間
 modified_on: 修改日期
 sort_field: 排序欄位
 status: 狀態
+select_an_item: 選取一個項目...
 edit: 編輯
 errors:
   FORBIDDEN: 被禁止
@@ -188,6 +205,7 @@ operators:
   empty: 是空的
 loading: 載入中...
 display_template: 顯示模板
+n_items_selected: '未選擇項目 | 已選一個項目 | 已選 {n} 個項目'
 no_results: 無任何結果
 role: 角色
 user: 用戶
@@ -200,11 +218,15 @@ wysiwyg_options:
   forecolor: 前景顏色
   backcolor: 背景顏色
   codeblock: 程式碼
+  fontselect: 選擇字型
+  fontsizeselect: 選擇字型大小
   remove: 移除
+  selectall: 全選
   table: 表格
 dropdown: 下拉選單
 choices: 選擇
 deselect: 取消選擇
+deselect_all: 取消全選
 editing_in_batch: '批次編輯 {count} 個項目'
 settings_permissions: 角色和權限
 settings_project: 專案設定
@@ -215,6 +237,7 @@ discard_changes: 放棄修改
 keep_editing: 繼續編輯
 add_new: 新增
 all: 全部
+no_layout_collection_selected_yet: 還沒有選擇佈局/集合
 batch_delete_confirm: >-
   沒有選取任何項目 | 是否確定要刪除此項目? 此動作無法還原。 | 是否確定要刪除這{count} 個項目? 此動作無法還原。
 cancel: 取消
@@ -314,6 +337,7 @@ save: 儲存
 schema: 架構
 search: 搜尋
 select_existing: 選擇現有的
+select_field_type: 選擇欄位類型
 select_interface: 選擇一個介面接口
 settings: 設定
 sign_in: 登入
@@ -341,10 +365,13 @@ interfaces:
     datetime: 日期時間
   display-template:
     display-template: 顯示模板
+    select_a_collection: 選擇一個集合
   divider:
     divider: 分隔線
   dropdown:
     allow_other: 允許其他選項
+  dropdown-multiselect:
+    description: 從下拉選單選擇多個值
   file:
     file: 檔案
   files:
@@ -381,6 +408,7 @@ interfaces:
     display_template: 顯示模板
   user:
     user: 用戶
+    select_mode: 選取模式
     modes:
       dropdown: 下拉選單
   wysiwyg:
