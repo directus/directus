@@ -57,6 +57,26 @@ Get only the first_name and last_name fields\
 Get all top-level and second-level relational fields, and third-level fields within images.thumbnails\
 `*.*,images.thumbnails.*`
 
+### Many-To-Any (Union Types)
+
+Seeing that Many-to-Any (m2a) fields have nested data from multiple collections, it's not always safe / wanted to fetch
+the same field from every related collection. In m2a fields, you can use the following syntax to specify what fields to
+fetch from which related nested collection type:\
+`?fields=<m2a-field>:<collection-scope>.<field>`.
+
+Lets say we have a collection `pages` with a many-to-any field called `sections` that points to `headings`,
+`paragraphs`, and `videos`. We only want to fetch `title` and `level` from `headings`, `body` from `paragraphs` and
+`source` from `videos`. We can achieve that by using:
+
+```
+sections.item:headings.title
+sections.item:headings.level
+sections.item:paragraphs.body
+sections.item:videos.body
+```
+
+In GraphQL, this can be achieved using [Union Types](/reference/api/graphql/#many-to-any-union-types).
+
 </div>
 <div class="right">
 
