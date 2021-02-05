@@ -68,10 +68,11 @@ body
   p.demo
     padding 1rem 1.5rem
     border 1px solid #ddd
-    border-radius 4px
+    border-radius 6px
 
   img
     max-width 100%
+    border-radius 6px
 
 {$contentClass}.custom
   padding 0
@@ -109,6 +110,10 @@ blockquote
 ul, ol
   padding-left 1.2em
 
+li > ul,
+li > ol
+  padding-left 1.8em
+
 strong
   font-weight 600
 
@@ -118,7 +123,7 @@ h1, h2, h3, h4, h5, h6
 
   {$contentClass}:not(.custom) > &
     margin-top (0.5rem - $navbarHeight)
-    padding-top ($navbarHeight + 1rem)
+    padding-top ($navbarHeight + 2.5rem)
     margin-bottom 0
 
     &:first-child
@@ -132,10 +137,10 @@ h1, h2, h3, h4, h5, h6
     opacity: 1
 
 h1
+  position relative
   font-weight 900
   font-size 3.25rem
   line-height 4.25rem
-  padding-top 3rem !important
 
 h2
   font-size 1.5rem
@@ -149,6 +154,14 @@ h3
   font-size 1.25rem
   line-height 1.875rem
 
+h2 + h3
+  padding-top ($navbarHeight + 0.5rem) !important
+
+h4
+  font-size 1.1rem
+  line-height 1.125rem
+  padding-top ($navbarHeight + 0.25rem) !important
+
 a.header-anchor
   font-size 0.85em
   float left
@@ -159,6 +172,30 @@ a.header-anchor
 
   &:hover
     text-decoration none
+
+small
+  position: absolute
+  margin-top: 7px
+  display inline-flex
+  align-items center
+  margin-left 8px
+  &::before
+    content 'Modular Extension'
+    display inline-block
+    background-color $accentColor
+    color white
+    border-radius 3px
+    font-size 15px
+    line-height 18px
+    padding 4px 8px
+    font-weight 600
+
+h1 small
+  position absolute
+  top 5.25rem
+  left 0
+  margin-left 0
+  margin-top: 0
 
 code, kbd, .line-number
   font-family source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace
@@ -177,19 +214,24 @@ p, ul, ol
 
 hr
   border 0
-  border-top 1px solid $borderColor
+  border-top 2px solid $borderColor
+  margin 3rem 0
 
 table
   border-collapse collapse
   margin 1rem 0
-  display: block
   overflow-x: auto
+  width 100%
 
 tr
   border-top 1px solid #dfe2e5
 
   &:nth-child(2n)
     background-color #f6f8fa
+
+th
+  white-space nowrap
+  text-align left
 
 th, td
   border 1px solid #dfe2e5

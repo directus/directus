@@ -3,7 +3,7 @@
 > Permissions, validation, and the API's `filter` parameter all rely on a specific JSON structure to define their rules.
 > This page describes the syntax for creating flat, relational, or complex filter rules.
 
-@TODO check+extend
+[[toc]]
 
 ## Syntax
 
@@ -46,30 +46,26 @@
 }
 ```
 
-## Supported Operators
+## Filter Operators
 
-| Operator             | Description                               |
-| -------------------- | ----------------------------------------- |
-| `eq`                 | Equal to                                  |
-| `neq`                | Not equal to                              |
-| `lt`                 | Less than                                 |
-| `lte`                | Less than or equal to                     |
-| `gt`                 | Greater than                              |
-| `gte`                | Greater than or equal to                  |
-| `in`                 | Exists in one of the values               |
-| `nin`                | Not in one of the values                  |
-| `null`               | It is null                                |
-| `nnull`              | It is not null                            |
-| `contains`, `like`   | Contains the substring                    |
-| `ncontains`, `nlike` | Doesn't contain the substring             |
-| `rlike`              | Contains a substring using a wildcard     |
-| `nrlike`             | Not contains a substring using a wildcard |
-| `between`            | The value is between two values           |
-| `nbetween`           | The value is not between two values       |
-| `empty`              | The value is empty (null or falsy)        |
-| `nempty`             | The value is not empty (null or falsy)    |
-| `all`                | Contains all given related item's IDs     |
-| `has`                | Has one or more related items's IDs       |
+| Operator     | Description                            |
+| ------------ | -------------------------------------- |
+| `_eq`        | Equal to                               |
+| `_neq`       | Not equal to                           |
+| `_lt`        | Less than                              |
+| `_lte`       | Less than or equal to                  |
+| `_gt`        | Greater than                           |
+| `_gte`       | Greater than or equal to               |
+| `_in`        | Exists in one of the values            |
+| `_nin`       | Not in one of the values               |
+| `_null`      | It is null                             |
+| `_nnull`     | It is not null                         |
+| `_contains`  | Contains the substring                 |
+| `_ncontains` | Doesn't contain the substring          |
+| `_between`   | The value is between two values        |
+| `_nbetween`  | The value is not between two values    |
+| `_empty`     | The value is empty (null or falsy)     |
+| `_nempty`    | The value is not empty (null or falsy) |
 
 ## Relational
 

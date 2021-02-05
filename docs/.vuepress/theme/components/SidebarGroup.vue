@@ -80,8 +80,6 @@ export default {
       line-height 1.4
       font-weight normal
       padding-left 2rem
-      &:not(.clickable)
-        opacity 0.5
     & > .sidebar-group-items
       padding-left 1rem
       & > li > .sidebar-link

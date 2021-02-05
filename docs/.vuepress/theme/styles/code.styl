@@ -20,10 +20,14 @@
     border-radius 6px
     overflow auto
     code
-      color #fff
+      color #172940
       padding 0
       background-color transparent
       border-radius 0
+	pre[class*="language-"]
+		border 2px solid $borderColor
+		max-width 100%
+		overflow-x auto
 
 div[class*="language-"]
   position relative
@@ -143,7 +147,7 @@ div[class~="language-php"]:before
 
 code[class*="language-"],
 pre[class*="language-"] {
-	color: #ccc;
+	color: #A2B5CD;
 	background: none;
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 	font-size: 1em;
@@ -173,7 +177,7 @@ pre[class*="language-"] {
 
 :not(pre) > code[class*="language-"],
 pre[class*="language-"] {
-	background: #2d2d2d;
+	background: #172940;
 }
 
 /* Inline code */
@@ -188,11 +192,11 @@ pre[class*="language-"] {
 .token.prolog,
 .token.doctype,
 .token.cdata {
-	color: #999;
+	color: #A2B5CD;
 }
 
 .token.punctuation {
-	color: #ccc;
+	color: #A2B5CD;
 }
 
 .token.tag,
@@ -203,20 +207,20 @@ pre[class*="language-"] {
 }
 
 .token.function-name {
-	color: #68b0f4;
+	color: #fab00e;
 }
 
 .token.boolean,
 .token.number,
 .token.function {
-	color: #f1c2cb;
+	color: #e35169;
 }
 
 .token.property,
 .token.class-name,
 .token.constant,
 .token.symbol {
-	color: #fbc54f;
+	color: #68b0f4;
 }
 
 .token.selector,
@@ -238,7 +242,7 @@ pre[class*="language-"] {
 .token.operator,
 .token.entity,
 .token.url {
-	color: #67cdcc;
+	color: #68b0f4;
 }
 
 .token.important,

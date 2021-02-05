@@ -59,21 +59,26 @@ router.get(
 router.get(
 	'/me',
 	asyncHandler(async (req, res, next) => {
-		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
-		}
-
 		const service = new PermissionsService({ schema: req.schema });
 		const query = clone(req.sanitizedQuery || {});
 
-		query.filter = {
-			...(query.filter || {}),
-			role: {
-				_eq: req.accountability.role,
-			},
-		};
+		if (req.accountability?.role) {
+			query.filter = {
+				...(query.filter || {}),
+				role: {
+					_eq: req.accountability.role,
+				},
+			};
+		} else {
+			query.filter = {
+				...(query.filter || {}),
+				role: {
+					_null: true,
+				},
+			};
+		}
 
-		const items = await service.readByQuery(req.sanitizedQuery);
+		const items = await service.readByQuery(query);
 
 		res.locals.payload = { data: items || null };
 		return next();

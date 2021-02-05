@@ -64,7 +64,7 @@ export class GraphQLService {
 
 	args = {
 		sort: {
-			type: GraphQLString,
+			type: new GraphQLList(GraphQLString),
 		},
 		limit: {
 			type: GraphQLInt,

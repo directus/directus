@@ -34,7 +34,8 @@
 		"micromark": "^2.10.1",
 		"npm-watch": "^0.7.0",
 		"slugify": "^1.4.6",
-		"vuepress": "^1.7.1"
+		"vuepress": "^1.7.1",
+		"vuepress-plugin-clean-urls": "^1.1.2"
 	},
 	"dependencies": {}
 }

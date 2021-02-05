@@ -82,7 +82,7 @@ services:
       CACHE_REDIS: 'redis://cache:6379'
 
       ADMIN_EMAIL: 'admin@example.com'
-      ADMIN_PASSWORD: 'password'
+      ADMIN_PASSWORD: 'd1r3ctu5'
 
 networks:
   directus:

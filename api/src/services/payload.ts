@@ -72,19 +72,6 @@ export class PayloadService {
 
 			return value;
 		},
-		async 'file-links'({ action, value, payload }) {
-			if (action === 'read' && payload && payload.storage && payload.filename_disk) {
-				const publicKey = `STORAGE_${payload.storage.toUpperCase()}_PUBLIC_URL`;
-
-				return {
-					asset_url: new URL(`/assets/${payload.id}`, env.PUBLIC_URL),
-					public_url: new URL(payload.filename_disk, env[publicKey]),
-				};
-			}
-
-			// This is an non-existing column, so there isn't any data to save
-			return undefined;
-		},
 		async boolean({ action, value }) {
 			if (action === 'read') {
 				return value === true || value === 1 || value === '1';

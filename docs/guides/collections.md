@@ -1,17 +1,13 @@
 # Collections
 
-> You can manage your collections within the Data Model section of the App's Settings, via the
-> [API Collections Endpoint](/reference/api/collections), or directly within the database. If you're unfamiliar with
-> Directus Collections, please start by reading our [Understanding Collections](/concepts/platform-overview#collections)
-> docs.
+> Collections are containers for specific groupings of Items. Each collection represents a **table** in your database. [Learn more about Collections](/concepts/collections/).
 
 ## Creating a Collection
 
 1. Navigate to **Settings > Data Model**
 2. Click the **Create Collection** action button in the header
 3. Enter a unique **Collection Name**, keeping in mind that this is entered as a _key_ that determines the database
-   table name, and is then presented in the App using the
-   [Title Formatter](/reference/internal-helpers#title-formatter).
+   table name, and is then presented in the App using the internal Title Formatter.
 4. Optional: Configure the collection's **Primary Key** name and type.
    - Auto-Incremented Integer
    - Generated UUID
@@ -41,29 +37,26 @@ the database, and it will automatically appear within Directus. The first time y
 
 ## Configuring a Collection
 
-### Fields & Layout
-
-- [Creating a Field](/guides/fields#creating-a-field)
-- [Updating a Field](/guides/fields#updating-a-field)
-- [Deleting a Field](/guides/fields#deleting-a-field)
-- [Duplicating a Field](/guides/fields#duplicating-a-field)
-- [Changing Field Order & Layout](/guides/fields#adjusting-field-layout)
-
-### Collection Setup
-
-- **Collection Name** — This is the key for the collection. It can not be modified, but you can override it with
-  Translations (see below)
-- **Icon** — The icon used throughout the App when referencing this collection
-- **Note** — A helpful note that explains the collection's purpose
-- **Display Template** — A [Field Template](#) used to create dynamic titles for the collection's items
-- **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
-  collections.
-- **Singleton** — Is this collection will only contain a single item (eg: an "About Us" form). When enabled, the
-  [Collection Detail](/concepts/app-overview#collection-detail) will be bypassed, and users are taken directly to the
-  [Item Detail](/concepts/app-overview#item-detail) page.
-- **Translation** — Allows translating the collection name into different languages. These
-  [Schema Translations](/concepts/internationalization#schema-translations) are important for multilingual projects. You
-  can also "translate" a collection name into the default language — helpful for renaming technical table names.
+1. Navigate to **Settings > Data Model > [Collection Name]**
+2. Configure the following settings:
+	- **Collection Name** — This is the key for the collection. It can not be modified, but you can override it with Translations (see field below).
+	- **Icon** — The icon used throughout the App when referencing this collection
+	- **Note** — A helpful note that explains the collection's purpose
+	- **Display Template** — A [Field Template](#) that creates dynamic titles for the collection's items
+	- **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
+	  collections.
+	- **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the
+	  [Collection Detail](/concepts/application/#collection-detail) will be bypassed, and users are taken directly to the [Item Detail](/concepts/application/#item-detail) page.
+	- **Translation** — Allows translating the collection name into different languages. These
+	  [Schema Translations](/concepts/translations/#schema-translations) are important for multilingual projects. You
+	  can also "translate" a collection name into the default language — helpful for renaming technical table names.
+3. **Create and configure any fields** within this Collection.
+	- [Creating a Field](/guides/fields/#creating-a-field)
+	- [Updating a Field](/guides/fields/#updating-a-field)
+	- [Deleting a Field](/guides/fields/#deleting-a-field)
+	- [Duplicating a Field](/guides/fields/#duplicating-a-field)
+	- [Changing Field Order & Layout](/guides/fields/#adjusting-field-layout)
+4. Optional: Configure the [Archive](#archive) and [Sort](#sort) options below.
 
 ### Archive
 
@@ -81,7 +74,7 @@ Items that have been archived are still returned normally via the API. It is up 
 
 :::
 
-::: tip Status Field
+::: tip Automatic Setup
 
 When creating a new Collection, you have the option of creating an optional "Status" field. If you choose to include
 this field, the collection's archive settings will automatically be configured for you.
@@ -91,10 +84,10 @@ this field, the collection's archive settings will automatically be configured f
 ### Sort
 
 The sort feature enables manual drag-and-drop item reordering within the Directus App. This is typically shown on the
-[Collection Detail](/concepts/app-overview#collection-detail) page/modal, and can also be used for sorting items within
-a [Junction Table](#).
+[Collection Detail](/concepts/application/#collection-detail) page/modal, and can also be used for sorting items within
+a [Junction Table](/concepts/relationships/#many-to-many-m2m).
 
-::: tip Sort Field
+::: tip Automatic Setup
 
 When creating a new Collection, you have the option of creating an optional "Sort" field. If you choose to include this
 field, the collection's sort settings will automatically be configured for you.
@@ -110,5 +103,17 @@ field, the collection's sort settings will automatically be configured for you.
 ::: danger Irreversible Change
 
 This action is permanent and can not be undone. Please proceed with caution.
+
+:::
+
+## Adjusting a Collection Layout
+
+1. Navigate to **Collections > [Collection Name]**
+2. Click **"Layout Options"** in the Page Sidebar
+3. **Configure the Layout Options** as desired
+
+::: tip User Preferences
+
+Any changes made to the Collection Layout Options, page filters, search queries, and advanced filters, are instantly saved to your user preferences. This means that your experience will be the same when logging later, even if using a different device.
 
 :::

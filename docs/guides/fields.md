@@ -1,8 +1,6 @@
 # Fields
 
-> You can manage your fields within the Data Model section of the App's Settings, via the
-> [API Fields Endpoint](/reference/api/fields), or directly within the database. If you're unfamiliar with Directus
-> Fields, please start by reading our [Understanding Fields](/concepts/data-model) docs.
+> Fields are a specific type of value within a Collection, storing the data of your item's content. Each field represents a **column** in your database. [Learn more about Fields](/concepts/fields/).
 
 ## Creating a Field
 
@@ -17,6 +15,12 @@
 - [Many-to-Many Field](/guides/field-types/many-to-many-field)
 - [Many-to-Any Field](/guides/field-types/many-to-any-field)
 - [Translated Fields](/guides/field-types/translated-fields)
+
+::: tip System Fields
+
+While all out-of-the-box system fields are locked from editing or deleting, you are able to create new fields within the system collections. You can enable editing System Collections within the Collection sidebar component of [Settings > Data Model](/concepts/databases/).
+
+:::
 
 ::: tip Database Fields
 
@@ -42,7 +46,7 @@ the database, and it will automatically appear within Directus. The first time y
 
 ::: tip
 
-Learn more about the field options for [Adjusting the Field Layout](#adjusting-field-layout).
+Learn more about the field options for [Adjusting the Field Layout](#adjusting-field-arrangement).
 
 :::
 
@@ -58,9 +62,9 @@ It is not currently possible to duplicate relational fields or a collection's pr
 
 :::
 
-## Adjusting Field Layout
+## Adjusting Field Arrangement
 
-The layout of the collection's form is determined by the following field options.
+The form design of the collection's fields is determined by the following options.
 
 - **Field Visibility** — If the field is "Visible" or "Hidden"
 - **Field Width** — How wide the field is shown relative to the form/page

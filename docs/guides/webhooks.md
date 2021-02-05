@@ -1,8 +1,6 @@
 # Webhooks
 
-> In addition to writing custom code for more complex [event hooks](/concepts/api-extensions), Directus provides a way
-> to quickly configure webhooks through the App. These send HTTP requests when a specific event is triggered within the
-> project.
+> Webhooks are configured within the App (no code required) and send HTTP requests when a specific event is triggered. [Learn more about Webhooks](#).
 
 ## Creating Webhooks
 

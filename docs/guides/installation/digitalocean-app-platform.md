@@ -2,17 +2,21 @@
 
 ## 1. Setup a repo on GitHub
 
-See the doc on [installing Directus manually](/guides/installation/manual) to learn how to configure this repo
+See the doc on [installing Directus manually](/guides/installation/manual) to learn how to configure this repo.
 
-## 2. Create a Managed Database instance
+## 2. Sign up for a DigitalOcean account
+
+Create your DigitalOcean account — [get $100 of free credit](https://m.do.co/c/4c0b6062c16e) by using our referral link.
+
+## 3. Create a Managed Database instance
 
 We recommend using Postgres 12. The exact size and need for a replica depends on your usage and project requirements.
 
-## 3. Create a new App using your previously created repo
+## 4. Create a new App using your previously created repo
 
 Make sure to select the database you created in step 2 during the configuration wizard.
 
-## 4. Configure the environment variables
+## 5. Configure the environment variables
 
 See [Environment Variables](/reference/environment-variables) for all available environment variables.
 
@@ -28,13 +32,5 @@ DB_SSL__CA=${my-database-component-name.CA_CERT}
 ::: warning
 
 Make sure to replace `my-database-component-name` with your actual database component name in the above env vars
-
-:::
-
-::: tip
-
-For ease of configuration, you can rely on any of the other DigitalOcean provided aliases. See
-[How to Use Environment Variables in App Platform](https://www.digitalocean.com/docs/app-platform/how-to/use-environment-variables/)
-for more information.
 
 :::

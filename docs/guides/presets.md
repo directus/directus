@@ -1,7 +1,6 @@
 # Collection Presets
 
-> Presets store the exact state of a [collection detail](/concepts/app-overview) page. These can be used to set layout
-> defaults for a user, or to define bookmarks that can be used to recall windows into specific datasets.
+> Presets store the state of a Collection Detail page. They can be used to set layout defaults or define bookmarks to specific datasets. [Learn more about Presets](/concepts/presets/).
 
 ## Creating a Preset
 
@@ -26,7 +25,7 @@ search query, any advanced filters added, sort field, sort direction, and all ot
 It's important to be aware of the difference between a collection's _defaults_ and its _bookmarks_, both of which are
 configured by presets. A _default_ is how a user will initially view the collection detail without any further
 customization, while a _bookmark_ is a named dataset that can be recalled at any point via the
-[collection navigation](/concepts/users-roles-and-permissions).
+[collection navigation](/guides/roles/#customizing-the-collection-navigation).
 
 :::
 

@@ -125,7 +125,7 @@ export default {
 
 .page-edit
   @extend $wrapper
-  padding-top 1rem
+  padding-top 3rem
   padding-bottom 1rem
   overflow auto
 
@@ -144,7 +144,7 @@ export default {
       color #A2B5CD
     .time
       font-weight 400
-      color #767676
+      color #a2b5cd
 
 @media (max-width: $MQMobile)
   .page-edit
