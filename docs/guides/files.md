@@ -27,7 +27,7 @@ Directus API. This is the only way that you can take advantage of file permissio
 
 :::
 
-## Creating Thumbnail Presets
+## Creating a Thumbnail Preset
 
 1. Navigate to **Settings > Project Settings**
 2. Scroll to the **Storage Asset Presets** field
