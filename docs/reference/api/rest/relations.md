@@ -124,6 +124,8 @@ available, data will be an empty array.
 </div>
 </div>
 
+---
+
 ## Retrieve a relation
 
 List an existing relation by primary key.

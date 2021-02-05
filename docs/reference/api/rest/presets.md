@@ -164,6 +164,8 @@ data will be an empty array.
 </div>
 </div>
 
+---
+
 ## Retrieve a preset
 
 List an existing preset by primary key.

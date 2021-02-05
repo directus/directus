@@ -127,6 +127,8 @@ available, data will be an empty array.
 </div>
 </div>
 
+---
+
 ## Retrieve a revision
 
 List an existing revision by primary key.
