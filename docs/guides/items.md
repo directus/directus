@@ -1,6 +1,6 @@
 # Items
 
-> Item are objects within a Collection which contain values for one or more fields. Each collection represents a **record** in your database. [Learn more about Items](#).
+> Item are objects within a Collection which contain values for one or more fields. Each collection represents a **record** in your database. [Learn more about Items](/concepts/items/).
 
 ::: warning Permissions
 
@@ -10,7 +10,7 @@ The actions on this page assume the current user has permission to perform that 
 
 ## Creating an Item
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection where you want to add an item
 3. Click on the "Create Item" (+ icon) button located in the header
 4. Complete the Item Detail form
@@ -25,7 +25,7 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 
 ## Updating an Item
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the item you want to update
 3. Click on the item within the current layout (eg: on the row of the table)
 4. Update the Item Detail form
@@ -50,7 +50,7 @@ If the Collection is configured as a "Singleton" in the data model settings, the
 
 ## Deleting an Item
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the item you want to delete
 3. Select the item(s) within the desired layout (eg: the checkbox on the table row)
 4. Click the "Delete Item" (trash icon) button located in the header
@@ -65,7 +65,7 @@ icon) button located in the header.
 
 ## Archiving an Item
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the item you want to archive
 3. Select the item(s) within the desired layout (eg: the checkbox on the table row)
 4. Click the "Archive Item" (trash icon) button located in the header
@@ -86,7 +86,7 @@ icon) button located in the header.
 
 ## Reverting an Item
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the item you want to archive
 3. Click on an item to navigate to its Detail page
 4. Click "Revisions" in the page sidebar
@@ -96,7 +96,7 @@ icon) button located in the header.
 
 ## Commenting on an Item
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the item you want to comment on
 3. Click on an item to navigate to its Detail page
 4. Click "Comments" in the page sidebar
@@ -105,7 +105,7 @@ icon) button located in the header.
 
 ## Manually Sorting Items
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to sort
 3. Choose a layout that supports manual sorting (eg: the default "table" mode)
 4. Enable manual sorting. (eg: for the table layout, click on the Sort column's header)
@@ -122,7 +122,7 @@ This feature is only available if a Sort column has been configured in the Colle
 
 ## Ordering Items
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to a collection of items
 3. Choose a layout that supports manual ordering (eg: the default "table" mode)
 4. Set the Order Field and Order Direction
@@ -131,15 +131,15 @@ This feature is only available if a Sort column has been configured in the Colle
 
 ::: tip Sort vs Order
 
-**Ordering** is a non-destructive action (does _not_ change your data) used to browse items alphabetically or numerically. **Sorting** (when enabled) saves a value in a [Sort](#) field, which can then be used to return data in a custom order.
+**Ordering** is a non-destructive action (does _not_ change your data) used to browse items alphabetically or numerically. **Sorting** (when enabled) saves a value in a [Sort](/guides/collections/#sort) field, which can then be used to return data in a custom order.
 
 :::
 
 ## Adjusting Item Layouts
 
-**[Learn more about the concept of layouts.](#)**
+**[Learn more about Layouts](/concepts/layouts/)**
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to browse
 3. Click "Layout Options" in the page sidebar
 4. Choose the desired "Layout" you want to use
@@ -147,17 +147,17 @@ This feature is only available if a Sort column has been configured in the Colle
 
 ## Searching Items
 
-**[Learn more about the concept of search.](#)**
+**[Learn more about Search](/guides/items/#searching-items)**
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to search
 3. Type your search query into the input located in the header
 
 ## Filtering Items
 
-**[Learn more about the concept of filtering.](#)**
+**[Learn more about Filtering](/guides/items/#filtering-items).**
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to filter
 3. Click "Advanced Filter" in the page sidebar
 4. Click the "Add Filter" dropdown and select the field to filter on
@@ -167,9 +167,9 @@ This feature is only available if a Sort column has been configured in the Colle
 
 ## Bookmarking Item Presets
 
-**[Learn more about the concept of bookmarks.](#)**
+**[Learn more about Bookmarks](/guides/items/#bookmarking-item-presets)**
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to bookmark
 3. Configure the page as desired (eg: layout, options, search, filters, order, etc)
 4. Click the "Create Bookmark" (bookmark icon) button in the header beside the page title
@@ -178,9 +178,9 @@ This feature is only available if a Sort column has been configured in the Colle
 
 ## Exporting Items
 
-**[Learn more about the concept of exporting.](#)**
+**[Learn more about Exporting](guides/items/#exporting-items)**
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to bookmark
 3. Optional: Configure the dataset as desired (eg: layout, options, search, filters, order, etc)
 4. Click "Export Data" in the page sidebar

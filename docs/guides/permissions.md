@@ -1,6 +1,6 @@
 # Permissions
 
-> Permissions are attached directly to a Role, defining what Users can create, read, update, and delete within the platform. [Learn more about Permissions](#).
+> Permissions are attached directly to a Role, defining what Users can create, read, update, and delete within the platform. [Learn more about Permissions](/concepts/permissions/).
 
 ## Configuring Role Permissions
 
@@ -52,17 +52,27 @@ configuration field is disabled.
 
 ### Delete (Custom Access)
 
-5. **Item Permissions** control which items can be deleted, as defined by the [Filter Rules](/reference/filter-rules))
+5. **Item Permissions** control which items can be deleted, as defined by the [Filter Rules](/reference/filter-rules/))
 	 entered.
 
 ## Configuring Workflows
 
-TK
+Workflows are a way to add structured stages to the flow of content authoring. They are primarily defined through the permissions for a Collection, but can be further enhanced via email notifications, custom interfaces, and automation. Directus supports endlessly configurable workflows, so we will only cover one example below.
+
+Let's assume you would like to create a structured workflow for an **Articles** collection. The first step is to [Create a Field](/guides/fields/#creating-a-field) that can track the article "status" — we'll call it **Status**, but it can be named anything.
+
+Now you can configure your permissions based on the possible values of that Status field. In this case, those values will be various content stages, such as `draft`, `review`, `approved`, and `published`.
+
+Next, you will want to create different Roles to scope each stage of the workflow. Let's keep this simple and assume there are only two roles called `author` and `manager`.
+
+Finally, we would configure the permissions for these roles such that they are properly restricted to create content and update the status.
+
+<!-- @TODO -->
 
 ## Configuring System Permissions
 
 In addition to setting permissions for your project's collections, you can also tailor the permissions for system
-collections. It is important to note that when [App Access](/concepts/users-roles-and-permissions) is enabled for a
+collections. It is important to note that when [App Access](/guides/roles/#configuring-a-role) is enabled for a
 role, Directus will automatically add permission for the necessary system collections. To edit system permissions,
 simply click the "System Collections" toggle, and then edit permissions using the same steps as with project
 collections.

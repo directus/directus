@@ -1,6 +1,6 @@
 # Custom Displays <small></small>
 
-> Displays are small inline components that allow you to create new ways of viewing field values throughout the App. [Learn more about Displays](#).
+> Displays are small inline components that allow you to create new ways of viewing field values throughout the App. [Learn more about Displays](/concepts/displays/).
 
 ## 1. Setup the Boilerplate
 
@@ -33,7 +33,7 @@ export default {
 - `description` — A short description (<80 characters) of this display shown in the App.
 - `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
 - `handler` — A function, or reference to your Vue component.
-- `types` — A CSV of supported [types](/concepts/platform-overview#types).
+- `types` — A CSV of supported [types](/concepts/types/).
 
 ::: tip
 

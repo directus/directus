@@ -1,7 +1,6 @@
 # Projects
 
-> A Project is a complete instance of Directus, including its **Database**, config file, asset storage, and any custom
-> extensions. [Learn more about Projects](#).
+> A Project is a complete instance of Directus, including its **Database**, config file, asset storage, and any custom extensions. [Learn more about Projects](/concepts/projects/).
 
 ## Creating a Project
 
@@ -23,7 +22,7 @@ environment variables, each is explained in the following reference:
 1. Navigate to **Settings > Project Settings**
 2. Configure any of the following **branding fields**
 
-- **Project Name** — The name used at the top of the [Navigation Bar](/concepts/app-overview) and on the login/public
+- **Project Name** — The name used at the top of the [Navigation Bar](/concepts/applications) and on the login/public
   pages
 - **Project URL** — The URL when clicking the logo at the top of the [Module Bar](/concepts/app-overview)
 - **Project Color** — The color used behind the logo at the top of the [Module Bar](/concepts/app-overview), on the

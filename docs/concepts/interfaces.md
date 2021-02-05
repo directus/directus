@@ -6,29 +6,29 @@ Interfaces provide different ways to view or interact with field data on the [It
 
 Directus includes many Interfaces out-of-the-box, below are the some key examples:
 
-- **Checkboxes** —
-- **Code** —
-- **Color** —
-- **DateTime** —
-- **Divider** —
-- **Dropdown** —
-- **File** —
-- **Image** —
-- **Many-to-Many** —
-- **Many-to-One** —
-- **Markdown** —
-- **Notice** —
-- **Numeric** —
-- **One-to-Many** —
-- **Radio Buttons** —
-- **Repeater** —
-- **Slider** —
-- **Tags** —
-- **Text Input** —
-- **Textarea** —
-- **Toggle** —
-- **Translations** —
-- **WYSIWYG** —
+- **Checkboxes**
+- **Code**
+- **Color**
+- **DateTime**
+- **Divider**
+- **Dropdown**
+- **File**
+- **Image**
+- **Many-to-Many**
+- **Many-to-One**
+- **Markdown**
+- **Notice**
+- **Numeric**
+- **One-to-Many**
+- **Radio Buttons**
+- **Repeater**
+- **Slider**
+- **Tags**
+- **Text Input**
+- **Textarea**
+- **Toggle**
+- **Translations**
+- **WYSIWYG**
 
 ## Custom Interface Extensions
 

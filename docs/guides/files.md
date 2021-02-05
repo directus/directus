@@ -1,7 +1,7 @@
 # Files
 
 > Directus includes a full-featured Digital Asset Management (DAM) system, complete with different Storage Adapters.
-> [Learn more about Files](#).
+> [Learn more about Files](/concepts/files/).
 
 ## Uploading a File
 

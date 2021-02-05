@@ -1,14 +1,13 @@
 # Collections
 
-> Collections are containers for specific groupings of Items. Each collection represents a **table** in your database. [Learn more about Collections](#).
+> Collections are containers for specific groupings of Items. Each collection represents a **table** in your database. [Learn more about Collections](/concepts/collections/).
 
 ## Creating a Collection
 
 1. Navigate to **Settings > Data Model**
 2. Click the **Create Collection** action button in the header
 3. Enter a unique **Collection Name**, keeping in mind that this is entered as a _key_ that determines the database
-   table name, and is then presented in the App using the
-   [Title Formatter](/reference/internal-helpers#title-formatter).
+   table name, and is then presented in the App using the internal Title Formatter.
 4. Optional: Configure the collection's **Primary Key** name and type.
    - Auto-Incremented Integer
    - Generated UUID
@@ -47,16 +46,16 @@ the database, and it will automatically appear within Directus. The first time y
 	- **Hidden** — Toggles if the collection should be globally hidden. Keep in mind that Admin roles can always see all
 	  collections.
 	- **Singleton** — For collections that will only contain a single item (eg: an "About Us" form), the
-	  [Collection Detail](/concepts/app-overview#collection-detail) will be bypassed, and users are taken directly to the [Item Detail](/concepts/app-overview#item-detail) page.
+	  [Collection Detail](/concepts/application/#collection-detail) will be bypassed, and users are taken directly to the [Item Detail](/concepts/application/#item-detail) page.
 	- **Translation** — Allows translating the collection name into different languages. These
-	  [Schema Translations](/concepts/internationalization#schema-translations) are important for multilingual projects. You
+	  [Schema Translations](/concepts/translations/#schema-translations) are important for multilingual projects. You
 	  can also "translate" a collection name into the default language — helpful for renaming technical table names.
 3. **Create and configure any fields** within this Collection.
-	- [Creating a Field](/guides/fields#creating-a-field)
-	- [Updating a Field](/guides/fields#updating-a-field)
-	- [Deleting a Field](/guides/fields#deleting-a-field)
-	- [Duplicating a Field](/guides/fields#duplicating-a-field)
-	- [Changing Field Order & Layout](/guides/fields#adjusting-field-layout)
+	- [Creating a Field](/guides/fields/#creating-a-field)
+	- [Updating a Field](/guides/fields/#updating-a-field)
+	- [Deleting a Field](/guides/fields/#deleting-a-field)
+	- [Duplicating a Field](/guides/fields/#duplicating-a-field)
+	- [Changing Field Order & Layout](/guides/fields/#adjusting-field-layout)
 4. Optional: Configure the [Archive](#archive) and [Sort](#sort) options below.
 
 ### Archive
@@ -85,8 +84,8 @@ this field, the collection's archive settings will automatically be configured f
 ### Sort
 
 The sort feature enables manual drag-and-drop item reordering within the Directus App. This is typically shown on the
-[Collection Detail](/concepts/app-overview#collection-detail) page/modal, and can also be used for sorting items within
-a [Junction Table](#).
+[Collection Detail](/concepts/application/#collection-detail) page/modal, and can also be used for sorting items within
+a [Junction Table](/concepts/relationships/#many-to-many-m2m).
 
 ::: tip Automatic Setup
 

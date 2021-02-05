@@ -1,6 +1,6 @@
 # Fields
 
-> Fields are a specific type of value within a Collection, storing the data of your item's content. Each field represents a **column** in your database. [Learn more about Fields](#).
+> Fields are a specific type of value within a Collection, storing the data of your item's content. Each field represents a **column** in your database. [Learn more about Fields](/concepts/fields/).
 
 ## Creating a Field
 
@@ -18,7 +18,7 @@
 
 ::: tip System Fields
 
-While all out-of-the-box system fields are locked from editing or deleting, you are able to create new fields within the system collections. You can enable editing System Collections within the Collection sidebar component of [Settings > Data Model](/concepts/data-model/).
+While all out-of-the-box system fields are locked from editing or deleting, you are able to create new fields within the system collections. You can enable editing System Collections within the Collection sidebar component of [Settings > Data Model](/concepts/databases/).
 
 :::
 
@@ -46,7 +46,7 @@ the database, and it will automatically appear within Directus. The first time y
 
 ::: tip
 
-Learn more about the field options for [Adjusting the Field Layout](#adjusting-field-layout).
+Learn more about the field options for [Adjusting the Field Layout](#adjusting-field-arrangement).
 
 :::
 
