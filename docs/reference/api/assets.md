@@ -63,9 +63,9 @@ For easier comparison, both of the examples below were requested at `200` width,
 `cover` thumbnail forces the dimensions, trimming the outside edges as needed. The `contain` thumbnail always maintains
 its aspect ratio, shrinking the image to fit _within_ the dimensions and adding "letterboxing" as needed.
 
-| Cover                                                       | Contain                                                         |
-| ----------------------------------------------------------- | --------------------------------------------------------------- |
-| ![Cover](../assets/200-200-cover-75.jpg)<br>_8KB • 200x200_ | ![Contain](../assets/200-200-contain-75.jpg)<br>_6KB • 200x133_ |
+| Cover                                                          | Contain                                                            |
+| -------------------------------------------------------------- | ------------------------------------------------------------------ |
+| ![Cover](../../assets/200-200-cover-75.jpg)<br>_8KB • 200x200_ | ![Contain](../../assets/200-200-contain-75.jpg)<br>_6KB • 200x133_ |
 
 ::: tip Aspect Ratio
 
@@ -79,6 +79,6 @@ The quality parameter can be any integer from `0-100`. Qualities closer to `0` h
 quality due to compression artifacts. Values closer to `100` have larger filesizes, but better image quality. Below are
 four possible qualities (200x200 cover) to visually compare the balance between compression and filesize.
 
-| 25%                                             | 50%                                             | 75%                                             | 100%                                               |
-| ----------------------------------------------- | ----------------------------------------------- | ----------------------------------------------- | -------------------------------------------------- |
-| ![25%](../assets/200-200-cover-25.jpg)<br>_4KB_ | ![50%](../assets/200-200-cover-50.jpg)<br>_6KB_ | ![75%](../assets/200-200-cover-75.jpg)<br>_8KB_ | ![100%](../assets/200-200-cover-100.jpg)<br>_38KB_ |
+| 25%                                                | 50%                                                | 75%                                                | 100%                                                  |
+| -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------- |
+| ![25%](../../assets/200-200-cover-25.jpg)<br>_4KB_ | ![50%](../../assets/200-200-cover-50.jpg)<br>_6KB_ | ![75%](../../assets/200-200-cover-75.jpg)<br>_8KB_ | ![100%](../../assets/200-200-cover-100.jpg)<br>_38KB_ |
