@@ -1,8 +1,6 @@
 # Fields
 
-> You can manage your fields within the Data Model section of the App's Settings, via the
-> [API Fields Endpoint](/reference/api/fields), or directly within the database. If you're unfamiliar with Directus
-> Fields, please start by reading our [Understanding Fields](/concepts/data-model) docs.
+> Fields are a specific type of value within a Collection, storing the data of your item's content. Each field represents a **column** in your database. [Learn more about Fields](#).
 
 ## Creating a Field
 

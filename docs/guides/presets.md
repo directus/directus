@@ -1,7 +1,6 @@
 # Collection Presets
 
-> Presets store the exact state of a [collection detail](/concepts/app-overview) page. These can be used to set layout
-> defaults for a user, or to define bookmarks that can be used to recall windows into specific datasets.
+> Presets store the state of a Collection Detail page. They can be used to set layout defaults or define bookmarks to specific datasets. [Learn more about Presets](#).
 
 ## Creating a Preset
 

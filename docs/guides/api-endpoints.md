@@ -1,6 +1,6 @@
-# Creating a Custom API Endpoint
+# Custom API Endpoints <small></small>
 
-> Custom API Endpoints allow you to extend the core functionality of the platform's API.
+> Custom API Endpoints register new API routes which can be used to infinitely extend the core functionality of the platform.
 
 ## 1. Setup the Boilerplate
 
@@ -46,8 +46,6 @@ To deploy your endpoint, simply restart the API by running:
 ```bash
 npx directus start
 ```
-
----
 
 ## Full Example:
 

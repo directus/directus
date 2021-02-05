@@ -1,12 +1,12 @@
 # Items
 
-> You can browse and manage items from within the [Directus App](/concepts/app-overview/), via the [API Items Endpoint](/reference/api/items), or [directly within the database](/concepts/platform-overview/#database-mirroring). If you're unfamiliar with Directus Items, please start by reading our [Items Concept](/concepts/platform-overview/#items) overview.
+> Item are objects within a Collection which contain values for one or more fields. Each collection represents a **record** in your database. [Learn more about Items](#).
 
-Managing items includes the basics of Create, Read, Update, and Delete — as well as more specific features such as
-Archiving, Reverting, Commenting, and Reordering. Each of the guides below also includes a link to any relevant
-concepts.
+::: warning Permissions
 
 The actions on this page assume the current user has permission to perform that action. However, certain features may be disabled or hidden based on permissions.
+
+:::
 
 ## Creating an Item
 
@@ -120,10 +120,20 @@ This feature is only available if a Sort column has been configured in the Colle
 
 :::
 
-## Browsing Items
+## Ordering Items
 
-In order to view, update or delete a specific item, you first need to be able to find it. Directus includes a number of
-features to make browsing items as fast and efficient as possible, each of which are described below.
+1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+2. Navigate to a collection of items
+3. Choose a layout that supports manual ordering (eg: the default "table" mode)
+4. Set the Order Field and Order Direction
+    * Table Layout: Click on the field's column header, clicking again changes order direction
+    * Card Layout: Adjust the two dropdowns in the layout's subheader
+
+::: tip Sort vs Order
+
+**Ordering** is a non-destructive action (does _not_ change your data) used to browse items alphabetically or numerically. **Sorting** (when enabled) saves a value in a [Sort](#) field, which can then be used to return data in a custom order.
+
+:::
 
 ## Adjusting Item Layouts
 
@@ -154,10 +164,6 @@ features to make browsing items as fast and efficient as possible, each of which
 5. Adjust the operator (eg: "Contains") as needed by clicking on it
 6. Enter a value in the field filter's input(s)
 7. Remove unwanted filters by hovering over the field and clicking "X"
-
-## Ordering Items
-
-TK (Different from sort, you can order on a sort column)
 
 ## Bookmarking Item Presets
 

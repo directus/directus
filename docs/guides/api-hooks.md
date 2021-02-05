@@ -1,6 +1,6 @@
-# Creating a Custom API Hook
+# Custom API Hooks <small></small>
 
-> Hooks allow running custom logic when specificed events occur within your project.
+> Custom API Hooks allow running custom logic when a specified event occurs within your project. They can be registered as either "blocking" or immediate.
 
 ## 1. Create a Hook File
 
@@ -141,8 +141,6 @@ To deploy your hook, simply restart the API by running:
 ```bash
 npx directus start
 ```
-
----
 
 ## Full Example:
 

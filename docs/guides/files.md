@@ -1,11 +1,17 @@
-# Files & Thumbnails
+# Files
 
-> Directus offers a full-featured Digital Asset Management (DAM) system, multiple storage adapters, private file
-> permissions, and on-demand image thumbnail generation.
+> Directus includes a full-featured Digital Asset Management (DAM) system, complete with different Storage Adapters. [Learn more about Files](#).
 
 ## Uploading a File
 
-@TODO
+There are many ways that a file can be uploaded into Directus via the App. We'll cover the primary method below, but keep in mind that files can also be added directly through different interfaces.
+
+1. Navigate to the **File Library**
+2. Click on the **"Create Item"** (+ icon) button located in the header
+3. **Upload** the file by:
+    - Dragging a file from your desktop to the modal
+    - Click the modal area to manually select a file from your device
+    - Clicking the "..." icon and choosing "Import from URL"
 
 ## Accessing an Original File
 

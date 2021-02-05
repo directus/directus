@@ -1,6 +1,6 @@
-# Create a Custom Module
+# Custom Modules <small></small>
 
-> Custom modules allow you to create completely new experiences within the platform.
+> Custom Modules are completely open-ended components that allow you to create new experiences within the Directus platform. [Learn more about Modules](#).
 
 ## 1. Setup the Boilerplate
 

@@ -1,6 +1,6 @@
-# Create a Custom Interface
+# Custom Interfaces <small></small>
 
-> Custom interfaces allow you to create new ways of viewing or interacting with data on the Item Detail page.
+> Custom Interfaces allow you to create new ways of viewing or interacting with field data on the Item Detail page. [Learn more about Interfaces](#).
 
 ## 1. Setup the Boilerplate
 

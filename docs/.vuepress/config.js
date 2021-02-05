@@ -94,8 +94,8 @@ module.exports = {
 				children: [
 					{
 						type: 'page',
-						path: '/concepts/accountability',
-						title: 'Accountability',
+						path: '/concepts/activity',
+						title: 'Activity',
 					},
 					{
 						type: 'page',
@@ -164,6 +164,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/concepts/revisions',
+						title: 'Revisions',
+					},
+					{
+						type: 'page',
 						path: '/concepts/roles',
 						title: 'Roles',
 					},
@@ -189,8 +194,18 @@ module.exports = {
 				children: [
 					{
 						type: 'page',
-						path: '/guides/projects',
-						title: 'Projects',
+						path: '/guides/api-config',
+						title: 'API Config',
+					},
+					{
+						type: 'page',
+						path: '/guides/api-endpoints',
+						title: 'API Endpoints',
+					},
+					{
+						type: 'page',
+						path: '/guides/api-hooks',
+						title: 'API Hooks',
 					},
 					{
 						type: 'page',
@@ -199,8 +214,23 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/guides/displays',
+						title: 'Displays',
+					},
+					{
+						type: 'page',
 						path: '/guides/fields',
 						title: 'Fields',
+					},
+					{
+						type: 'page',
+						path: '/guides/files',
+						title: 'Files',
+					},
+					{
+						type: 'page',
+						path: '/guides/interfaces',
+						title: 'Interfaces',
 					},
 					{
 						type: 'page',
@@ -209,13 +239,38 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/guides/files',
-						title: 'Files & Thumbnails',
+						path: '/guides/layouts',
+						title: 'Layouts',
 					},
 					{
 						type: 'page',
-						path: '/guides/roles-and-permissions',
-						title: 'Roles & Permissions',
+						path: '/guides/modules',
+						title: 'Modules',
+					},
+					{
+						type: 'page',
+						path: '/guides/permissions',
+						title: 'Permissions',
+					},
+					{
+						type: 'page',
+						path: '/guides/presets',
+						title: 'Presets',
+					},
+					{
+						type: 'page',
+						path: '/guides/projects',
+						title: 'Projects',
+					},
+					{
+						type: 'page',
+						path: '/guides/roles',
+						title: 'Roles',
+					},
+					{
+						type: 'page',
+						path: '/guides/styles',
+						title: 'Styles',
 					},
 					{
 						type: 'page',
@@ -224,18 +279,8 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/guides/presets',
-						title: 'Presets & Bookmarks',
-					},
-					{
-						type: 'page',
 						path: '/guides/webhooks',
 						title: 'Webhooks',
-					},
-					{
-						type: 'page',
-						path: '/guides/white-labeling',
-						title: 'White-Labeling',
 					},
 				],
 			},
@@ -405,49 +450,6 @@ module.exports = {
 						type: 'page',
 						path: '/reference/api/health',
 						title: 'Health Check',
-					},
-				],
-			},
-			{
-				title: 'Extensions',
-				children: [
-					{
-						type: 'page',
-						path: '/extensions/displays',
-						title: 'Displays',
-					},
-					{
-						type: 'page',
-						path: '/extensions/interfaces',
-						title: 'Interfaces',
-					},
-					{
-						type: 'page',
-						path: '/extensions/layouts',
-						title: 'Layouts',
-					},
-					{
-						type: 'page',
-						path: '/extensions/modules',
-						title: 'Modules',
-					},
-					{
-						type: 'page',
-						path: '/extensions/api-endpoints',
-						title: 'API Endpoints',
-					},
-					{
-						type: 'page',
-						path: '/extensions/api-hooks',
-						title: 'API Hooks',
-					},
-					{
-						type: 'divider',
-					},
-					{
-						type: 'page',
-						path: '/extensions/accessing-data',
-						title: 'Accessing Data',
 					},
 				],
 			},
