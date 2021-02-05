@@ -10,6 +10,14 @@ The primary Directus repository is located at [`directus/directus`](https://gith
 
 Contains the Directus API (REST+GraphQL), written in node.js.
 
+#### `/api/dist` — Does this look OK as a heading? Or should it be a description.
+
+#### `/api/extensions`
+
+#### `/api/src`
+#### `/api/uploads`
+
+
 ## `/app`
 
 Contains the Directus Admin App, written in Vue.js 3.
@@ -21,3 +29,10 @@ Contains all the platform's documentation, written in markdown with additional V
 ## `/packages`
 
 TK
+
+## `/`
+
+The root of the project contains the following noteworthy files.
+
+- **`.editorconfig`** — TK
+- **`code_of_conduct.md`** — TK

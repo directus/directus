@@ -21,7 +21,7 @@ support most [SQL database vendors](/guides/installation/cli/#_1-confirm-minimum
 #### Relevant Docs
 
 - [API Reference](/reference/api/introduction/)
-- [API Extensions](/concepts/api-extensions/)
+- [API Extensions](/concepts/extensions/#api-extensions)
 
 ## Database Abstraction
 

@@ -16,4 +16,4 @@ In addition to these core modules, custom modules offer a _blank canvas_ for cre
 
 #### Relevant Guides
 
-- [Creating a Custom Module](/guides/extensions/modules)
+- [Creating a Custom Module](/guides/modules)

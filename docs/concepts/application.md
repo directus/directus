@@ -25,8 +25,8 @@ The Directus App is decoupled from, and powered by, the Directus API. It provide
 
 ### 2. Navigation Bar
 
-- **Project Name** — Shows an icon and tooltip indicating the API's connection strength, and the name of your current project, which can be configured under [Project Settings](/guides/white-labeling/#project-settings).
-- **Navigation** — This is a dynamic navigation based on your current module. Some modules also support [Presets and Bookmarks](/concepts/platform-overview/#presets-bookmarks), which are a customizable links to specific data-sets.
+- **Project Name** — Shows an icon and tooltip indicating the API's connection strength, and the name of your current project, which can be configured under [Project Settings](/guides/projects/#adjusting-project-settings).
+- **Navigation** — This is a dynamic navigation based on your current module. Some modules also support [Bookmark Presets](/guides/presets/#creating-a-preset), which are a customizable links to specific data-sets.
 
 ### 3. Page
 
@@ -44,7 +44,7 @@ The Directus App is decoupled from, and powered by, the Directus API. It provide
   the App window is large enough, the sidebar will automatically open, and can be closed by clicking the "X" in the
   top-right.
 - **Notifications Tray** — Fixed to the bottom of the page sidebar, this button opens a tray of recent user
-  notifications, and provides a link to the [Activity History](/concepts/app-overview/#activity-history) page.
+  notifications, and provides a link to the [Activity Log](#activity-log) page.
 
 ## Collections
 
@@ -88,11 +88,11 @@ pages, there are many available features, including:
 ## User Directory
 
 This module includes a comprehensive listing of all system users within your project. This page has the same features and
-configuration as [Collection Detail](/concepts/app-overview).
+configuration as [Collection Detail](#collection-detail).
 
 ### User Detail
 
-Similar to other [Item Detail](/concepts/app-overview/#item-detail) pages, this page provides a custom form for viewing system users. This is also used for editing the "Profile Page" of the current user, which is accessible from the [User Menu](/concepts/app-overview/#_1-module-bar). There are a number of [User Fields](/concepts/users/#user-fields) included out-of-the-box that can then be extended by following the normal [Creating a Field](/guides/fields/#creating-a-field) guide.
+Similar to other [Item Detail](#item-detail) pages, this page provides a custom form for viewing system users. This is also used for editing the "Profile Page" of the current user, which is accessible from the [User Menu](#_1-module-bar). There are a number of [User Fields](/concepts/users/#user-fields) included out-of-the-box that can then be extended by following the normal [Creating a Field](/guides/fields/#creating-a-field) guide.
 
 - [Setting up your User Profile](/guides/users/#setting-up-your-user-profile)
 - [Creating a User](/guides/users/#creating-a-user)
@@ -104,11 +104,11 @@ Similar to other [Item Detail](/concepts/app-overview/#item-detail) pages, this 
 ## File Library
 
 This module aggregates all files within the project into one consolidated library. This page has the same features and
-configuration as [Collection Detail](/concepts/app-overview).
+configuration as [Collection Detail](#collection-detail).
 
 ### File Detail
 
-Similar to other [Item Detail](/concepts/app-overview) pages, this page provides a custom form for viewing assets and embeds. There are a number of [File Fields](/concepts/files/#file-fields) included out-of-the-box that can then be extended by following the normal [Creating a Field](/guides/fields/#creating-a-field) guide.
+Similar to other [Item Detail](#item-detail) pages, this page provides a custom form for viewing assets and embeds. There are a number of [File Fields](/concepts/files/#file-fields) included out-of-the-box that can then be extended by following the normal [Creating a Field](/guides/fields/#creating-a-field) guide.
 
 - [Uploading a File](/guides/files/#uploading-a-file)
 - [Accessing an Original File](/guides/files/#accessing-an-original-file)
@@ -122,9 +122,9 @@ It also includes a dynamic [API Reference](/reference/api/introduction) that is 
 schema. The docs are organized into these distinct sections:
 
 - [Getting Started](/getting-started/introduction/) — Novice oriented, for a platform intro and installation.
-- [Concepts](/concepts/platform-overview/) — Learning oriented, for understanding the platform.
-- [Guides](/guides/projects/) — Problem oriented, follow along with steps while working.
-- [Reference](/reference/command-line-interface/) — Information oriented, look up info and specs while working.
+- [Concepts](/concepts/activity) — Learning oriented, for understanding the platform.
+- [Guides](/guides/api-config) — Problem oriented, follow along with steps while working.
+- [Reference](/reference/command-line-interface) — Information oriented, look up info and specs while working.
 - [API Reference](/reference/api/introduction/) — Information oriented, look up API resources while working.
 - [Contributing](/contributing/introduction/) — Contributor oriented — resources for working on Open-Source Core.
 
@@ -146,29 +146,20 @@ The latest version of the Directus Docs are also available publicly. This online
 This module provides a collective timeline of all actions taken within the project. This is a great way to audit user
 activity or enforce accountability. This is the only system module that is not in the module bar by default — instead
 being located within the notifications tray of the page sidebar. This page has the same features and configuration as
-[Collection Detail](/concepts/app-overview/#collection-detail).
+[Collection Detail](#collection-detail).
 
 ### Activity Detail
 
-Unlike other item detail pages, activity items are **readonly** (for proper accountability) and open in a side drawer to display the [Activity Fields](/concepts/accountability/#activity-fields).
+Unlike other item detail pages, activity items are **readonly** (for proper accountability) and open in a side drawer to display the [Activity Fields](/concepts/activity/#activity-fields).
 
 ## Settings
 
-This module is only available to users within [Admin roles](/concepts/users-roles-and-permissions/#administrators-role).
+This module is only available to users within [Admin roles](/concepts/roles/#administrators-role).
 This is where your project is configured, and the first place to go after installation. It includes the following
 sections:
 
 - [Project Settings](/guides/projects/#adjusting-project-settings)
-- [Data Model](/concepts/data-model)
-- [Roles & Permissions](/concepts/users-roles-and-permissions)
-- [Presets & Bookmarks](/concepts/presets-and-bookmarks)
+- [Data Model](/concepts/databases/#database-mirroring)
+- [Roles & Permissions](/concepts/roles)
+- [Presets & Bookmarks](/concepts/collections/#collection-presets-bookmarks)
 - [Webhooks](/guides/webhooks)
-
-## App Extensions
-
-Directus has been architected as completely modular and extensible, with four keystone App component types. Out-of-the-box components are configurable, or altogether new components can be created as extensions.
-
-- [Modules](/concepts/modules/)
-- [Layouts](/concepts/layouts/)
-- [Interfaces](/concepts/interfaces/)
-- [Displays](/concepts/displays/)

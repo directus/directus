@@ -26,8 +26,8 @@ Mixing standard and translated fields also allows language-agnostic data (such a
 
 There are two common ways to integrate with a third-party translation service.
 
-For human-powered translation services, you can create a dedicated Role with limited permissions to properly scope their access to only the content they will be translating. You can also create [Status Workflows](#) that requires a certain internal Role to then approve the changes.
+For human-powered translation services, you can create a dedicated Role with limited permissions to properly scope their access to only the content they will be translating. You can also create [Workflows](/guides/permissions/#configuring-workflows) that require a certain internal Role to then approve the changes.
 
 For machine-powered translation services, you could use the Directus API and Event Hooks to integrate the two platforms together. In this way, when your users create or update new content, an event hook can fire that fetches translations from the third-party service, saving that data into the translations.
 
-Yet another option would be to create a [Custom Interface](#) that integrates with the third-party service to fetch translation in real-time.
+Yet another option would be to create a [Custom Interface](/guides/interfaces/) that integrates with the third-party service to fetch translation in real-time.

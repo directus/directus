@@ -3,7 +3,7 @@
 > Directus offers a full Digital Asset Management (DAM) system. This includes multiple storage adapters, nested folder organization, private file access, image editing, and on-demand thumbnail generation.
 
 Directus allows you to manage all your files in one place, including documents, images, videos, and more. Files can be
-uploaded to the [File Library](/concepts/app-overview#file-library) in general, or directly to an item via a
+uploaded to the [File Library](/concepts/application/#file-library) in general, or directly to an item via a
 [Single File](/guides/field-types/single-file) or [Multiple Files](/guides/field-types/multiple-files) field.
 
 #### Relevant Guides
@@ -35,7 +35,7 @@ The sidebar's info component also includes the following readonly details:
 - **Folder** — The current parent folder that contains the file
 - **Metadata** — Metadata JSON dump of the file's EXIF, IPTC, and ICC information
 
-## Storage Adapters <small></small>
+## Storage Adapters
 
 Storage adapters allow project files to be stored in different locations or services. By default, Directus includes the
 following adapters:
@@ -57,8 +57,8 @@ an image, include any desired transformation parameters, and you'll be served th
 useful for automatically generating many different thumbnails/versions of an original file.
 
 To impede malicious users from consuming your storage by requesting a multitude of random sizes, Directus includes a
-[Asset Allow-List](/guides/files#creating-thumbnail-presets) to limit what transformations are possible.
+[Asset Allow-List](/guides/files/#creating-thumbnail-presets) to limit what transformations are possible.
 
 #### Relevant Guides
 
-- [Requesting a Thumbnail](/guides/files#requesting-a-thumbnail)
+- [Requesting a Thumbnail](/guides/files/#requesting-a-thumbnail)

@@ -38,4 +38,4 @@ Stripe Credit Card UI).
 
 #### Relevant Guides
 
-- [Creating a Custom Interface](/guides/extensions/interfaces)
+- [Creating a Custom Interface](/guides/interfaces)

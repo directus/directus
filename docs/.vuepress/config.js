@@ -119,6 +119,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/concepts/extensions',
+						title: 'Extensions',
+					},
+					{
+						type: 'page',
 						path: '/concepts/fields',
 						title: 'Fields',
 					},

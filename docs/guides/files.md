@@ -28,6 +28,10 @@ keep in mind that files can also be added directly through different interfaces.
 
 TK (download button)
 
+## Requesting a Thumbnail
+
+TK
+
 ## Editing Images
 
 TK (image editor on file detail page?)

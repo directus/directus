@@ -27,5 +27,5 @@ And this is actually just a _simple_ example. Permissions and Validation support
 
 #### Relevant Guides
 
-- [Configuring Role Permissions](/guides/roles-and-permissions/#configuring-role-permissions)
-- [Configuring System Permissions](/guides/roles-and-permissions/#configuring-system-permissions)
+- [Configuring Role Permissions](/guides/permissions/#configuring-role-permissions)
+- [Configuring System Permissions](/guides/permissions/#configuring-system-permissions)

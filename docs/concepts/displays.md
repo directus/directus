@@ -19,4 +19,4 @@ In addition to the included core displays, custom displays allow for creating ne
 
 ### Relevant Guides
 
-- [Creating a Custom Display](/guides/extensions/displays)
+- [Creating a Custom Display](/guides/displays)

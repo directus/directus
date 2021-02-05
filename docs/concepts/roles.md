@@ -8,11 +8,11 @@ Two default roles, _Public_ and _Administrators_, are available after installing
 
 #### Relevant Guides
 
-- [Creating a Role](/guides/roles-and-permissions/#creating-a-role)
-- [Configuring a Role](/guides/roles-and-permissions/#configuring-a-role)
-- [Configuring Role Permissions](/guides/roles-and-permissions/#configuring-role-permissions)
-- [Configuring System Permissions](/guides/roles-and-permissions/#configuring-system-permissions)
-- [Deleting a Role](/guides/roles-and-permissions/#deleting-a-role)
+- [Creating a Role](/guides/roles/#creating-a-role)
+- [Configuring a Role](/guides/roles/#configuring-a-role)
+- [Configuring Role Permissions](/guides/permissions/#configuring-role-permissions)
+- [Configuring System Permissions](/guides/permissions/#configuring-system-permissions)
+- [Deleting a Role](/guides/roles/#deleting-a-role)
 
 ### Public Role
 

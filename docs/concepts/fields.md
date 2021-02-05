@@ -2,7 +2,7 @@
 
 > Fields are a specific type of value within a Collection, storing the data of your item's content. Each field represents a **column** in your database.
 
-For example, an `articles` collection might have `title`, `body`, `author`, and `date_published` fields. Directus automatically uses a built-in title formatter to display your database column names prettified, and you can use [schema translations](/concepts/internationalization/#schema-translations) to completely rename them if needed.
+For example, an `articles` collection might have `title`, `body`, `author`, and `date_published` fields. Directus automatically uses a built-in title formatter to display your database column names prettified, and you can use [schema translations](/concepts/translations/#schema-translations) to completely rename them if needed.
 
 Fields also mirror other characteristics from their associated column, including its `type`, `default`, `length`, `allow_null`, etc.
 

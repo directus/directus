@@ -19,7 +19,7 @@ the following features/options:
 ## Cards Layout
 
 This tiled layout is ideal for collections that prioritize an image. It is the default for both the
-[User Directory](/guides/users) (shows the avatar) and [File Library](/guides/files) (shows asset thumbnail). It
+[User Directory](/guides/users/) (shows the avatar) and [File Library](/guides/files/) (shows asset thumbnail). It
 includes the following features/options:
 
 - Image Source (Option)
@@ -45,4 +45,4 @@ In addition to these core layouts, custom layouts allow for creating more tailor
 
 #### Relevant Guides
 
-- [Creating a Custom Layout](/guides/extensions/layouts)
+- [Creating a Custom Layout](/guides/layouts)

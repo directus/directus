@@ -9,9 +9,9 @@ that will help you better visualize each in your mind's eye.
 
 ### Primary and Foreign Keys
 
-Every [Item](/concepts/platform-overview#items) in a relational database has a unique "key" that identifies it within
-its [Collection](/concepts/platform-overview#collections). Because it's required, the key is the first
-[field](/concepts/platform-overview#fields) created within a collection, typically storing an "auto-increment" number,
+Every [Item](/concepts/items/) in a relational database has a unique "key" that identifies it within
+its [Collection](/concepts/collections/). Because it's required, the key is the first
+[field](/concepts/fields/) created within a collection, typically storing an "auto-increment" number,
 an automatically generated unique hash, or a manually entered value. They are often abbreviated to "PK" (Primary Key),
 "ID" (Identifier), "UID" (Unique Identifier), or "UUID" (Universally Unique Identifier), depending on the type of value
 they store. After it's created, the value of an item's PK should _never_ change.
@@ -74,7 +74,7 @@ To enable manual reordering for a O2M, simply add a field with the `sort` type t
 
 ::: tip Translations
 
-The Translations interface allows [creating multilingual content](/concepts/internationalization#content-translations)
+The Translations interface allows [creating multilingual content](/concepts/translations/#content-translations)
 relationally. It is a standard O2M relationship with an additional field on the "many" collection to hold
 the language key.
 
@@ -117,7 +117,7 @@ middle. In that sense, there really is no "M2M".
 ::: tip Manual Reordering
 
 To enable manual reordering for a M2M, simply add a numeric field to the junction table and set it as
-the [Collection Sort](/guides/collections#sort).
+the [Collection Sort](/guides/collections/#sort).
 
 :::
 
@@ -133,8 +133,8 @@ of this is "Related Articles", where an article might relate to many other artic
 Directus does not include a dedicated one-to-one (O2O) relationship type or interface. However, O2O is essentially the same as a
 M2O (storing a foreign key). The only difference is that a O2O enforces the cardinality. In other words, selecting a
 relational item in a O2O means that item can not be selected elsewhere (it can only be used once). This functionality
-can be added by checking and constraining uniqueness via a [custom event hook](/concepts/api-extensions) or
-[custom interface](/concepts/app-extensions).
+can be added by checking and constraining uniqueness via a [custom event hook](/guides/api-hooks) or
+[custom interface](/guides/interfaces).
 
 An example of a O2O is: a _person_ only has one unique set of _fingerprints_, and those _fingerprints_ only belong to
 one _person_.

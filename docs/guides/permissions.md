@@ -55,6 +55,10 @@ configuration field is disabled.
 5. **Item Permissions** control which items can be deleted, as defined by the [Filter Rules](/reference/filter-rules))
 	 entered.
 
+## Configuring Workflows
+
+TK
+
 ## Configuring System Permissions
 
 In addition to setting permissions for your project's collections, you can also tailor the permissions for system
