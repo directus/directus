@@ -113,15 +113,10 @@ exports.sourceNodes = async (gatsby, options) => {
 	const directus = new Directus(endpoints.base, {
 		auth: {
 			mode: 'json',
-			// workaround for https://github.com/directus/directus/issues/3785
-			// autoRefresh: true,
+			autoRefresh: true,
 			storage: new MemoryStore(),
 		},
 	});
-
-	// workaround for https://github.com/directus/directus/issues/3785
-	directus.auth;
-	directus.auth.autoRefresh = true;
 
 	if (hasAuth && !hasToken) {
 		try {
