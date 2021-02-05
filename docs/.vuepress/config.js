@@ -304,13 +304,13 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/reference/filter-rules',
-						title: 'Filter Rules',
+						path: '/reference/field-transforms',
+						title: 'Field Transforms',
 					},
 					{
 						type: 'page',
-						path: '/reference/item-objects',
-						title: 'Item Objects',
+						path: '/reference/filter-rules',
+						title: 'Filter Rules',
 					},
 					{
 						type: 'page',

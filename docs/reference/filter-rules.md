@@ -3,7 +3,7 @@
 > Permissions, validation, and the API's `filter` parameter all rely on a specific JSON structure to define their rules.
 > This page describes the syntax for creating flat, relational, or complex filter rules.
 
-@TODO check+extend
+[[toc]]
 
 ## Syntax
 
@@ -46,7 +46,7 @@
 }
 ```
 
-#### Filter Operators
+## Filter Operators
 
 | Operator     | Description                            |
 | ------------ | -------------------------------------- |
@@ -66,22 +66,6 @@
 | `_nbetween`  | The value is not between two values    |
 | `_empty`     | The value is empty (null or falsy)     |
 | `_nempty`    | The value is not empty (null or falsy) |
-
-#### Filter: Relational
-
-You can filter by relational values by appending the field names in nested sections in the parameter, as follows:
-
-`?filter[author][name][_eq]=Rijk`
-
-#### Filtering using JSON
-
-The `filter` parameter supports the full [Filter Rules](/reference/filter-rules) syntax. As a matter of fact, the
-standard array-like syntax is parsed to an object in execution. This means that you can also pass filter rules as a JSON
-object in the parameter directly:
-
-```
-?filter={ "status": { "_eq": "active" }}
-```
 
 ## Relational
 
