@@ -14,12 +14,12 @@ The Directus App is decoupled from, and powered by, the Directus API. It provide
   If configured, clicking this component will navigate to the Project URL. During platform activity, an indeterminate
   progress indicator will also be shown here.
 - **Module Navigation** — Allows navigating between the different modules your user has access to. [Customizing the Module Navigation](/guides/roles-and-permissions/#customizing-the-module-navigation) is done within the Role's configuration, but the default module list includes:
-  - [Collections](/concepts/app-overview/#collections-module)
-  - [User Directory](/concepts/app-overview/#user-directory)
-  - [File Library](/concepts/app-overview/#file-library)
-  - [Documentation](/concepts/app-overview/#documentation)
-  - [Settings](/concepts/app-overview/#settings) (Admin Roles Only)
-  - [Any Custom Modules](/concepts/app-extensions/#modules) (Only if Configured)
+  - [Collections](#collections)
+  - [User Directory](#user-directory)
+  - [File Library](#file-library)
+  - [Documentation](#documentation)
+  - [Settings](#settings) (Admin Roles Only)
+  - [Any Custom Modules](/concepts/modules/) (Only if Configured)
 - **Current User Menu** — This component displays the authenticated user's name and avatar.
     - [Sign Out](#) — Hovering over the User Menu exposes the button to log out of the platform.
 
@@ -46,7 +46,7 @@ The Directus App is decoupled from, and powered by, the Directus API. It provide
 - **Notifications Tray** — Fixed to the bottom of the page sidebar, this button opens a tray of recent user
   notifications, and provides a link to the [Activity History](/concepts/app-overview/#activity-history) page.
 
-## Collections Module
+## Collections
 
 This module is the primary way for interacting with your database content. Here you can access your collections, browse
 their items, and navigate to individual item forms.
@@ -126,7 +126,6 @@ schema. The docs are organized into these distinct sections:
 - [Guides](/guides/projects/) — Problem oriented, follow along with steps while working.
 - [Reference](/reference/command-line-interface/) — Information oriented, look up info and specs while working.
 - [API Reference](/reference/api/introduction/) — Information oriented, look up API resources while working.
-- [Extensions](/extensions/displays/) — Problem oriented — follow along with steps while working.
 - [Contributing](/contributing/introduction/) — Contributor oriented — resources for working on Open-Source Core.
 
 ::: tip Updating the Docs
@@ -142,7 +141,7 @@ The latest version of the Directus Docs are also available publicly. This online
 
 :::
 
-## Activity History
+## Activity Log
 
 This module provides a collective timeline of all actions taken within the project. This is a great way to audit user
 activity or enforce accountability. This is the only system module that is not in the module bar by default — instead

@@ -123,7 +123,7 @@ h1, h2, h3, h4, h5, h6
 
   {$contentClass}:not(.custom) > &
     margin-top (0.5rem - $navbarHeight)
-    padding-top ($navbarHeight + 2rem)
+    padding-top ($navbarHeight + 2.5rem)
     margin-bottom 0
 
     &:first-child
@@ -180,19 +180,19 @@ small
   align-items center
   margin-left 8px
   &::before
-    content 'Extensible'
+    content 'Modular Extension'
     display inline-block
     background-color $accentColor
     color white
     border-radius 3px
     font-size 15px
     line-height 18px
-    padding 2px 4px
+    padding 4px 8px
     font-weight 600
 
 h1 small
   position absolute
-  top 5rem
+  top 5.25rem
   left 0
   margin-left 0
   margin-top: 0
@@ -214,7 +214,8 @@ p, ul, ol
 
 hr
   border 0
-  border-top 1px solid $borderColor
+  border-top 2px solid $borderColor
+  margin 3rem 0
 
 table
   border-collapse collapse

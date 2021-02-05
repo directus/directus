@@ -1,6 +1,6 @@
-# Create a Custom Layout
+# Custom Layouts <small></small>
 
-> Custom layouts allow you to create new ways of browsing or viewing data on the Collection Detail page.
+> Custom Layouts allow for building new ways to view or interact with Items via the Collection Detail pages. [Learn more about Layouts](#).
 
 ## 1. Setup the Boilerplate
 

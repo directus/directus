@@ -1,11 +1,6 @@
 # Users
 
-> You are prompted to enter the details of your first admin user during the installation process. After that, you are
-> free to create as many users as you'd like. There is no limit to the number of users in a project.
-
-## Setting up your User Profile
-
-@TODO
+> Users are the individual accounts for authenticating into the API and App. Each user belongs to a Role which defines its Permissions. [Learn more about Users](#).
 
 ## Creating a User
 
@@ -28,8 +23,8 @@ their account.
 ## Configuring a User
 
 1. Navigate to the **User Library**
-2. Click on the user you wish to manage
-3. Complete any of the [User Fields](/concepts/app-overview.md#user-detail)
+2. **Click on the user** you wish to manage
+3. **Complete the form** of [User Fields](/concepts/app-overview.md#user-detail)
 
 ::: warning User Preferences
 
@@ -37,7 +32,9 @@ This section of the User Detail is only visible/editable by the current user, an
 
 :::
 
-### Status
+#### Status
+
+The User's Status determines if an account is able to access the platform or not. Only the `active` state is able to authenticate, all others are simply descriptive inactive states.
 
 - **Draft** — An incomplete user; no App/API access
 - **Invited** — Has a pending invite to the project; no App/API access until accepted
@@ -51,7 +48,7 @@ Only admins can adjust this field's value.
 
 :::
 
-### Role
+#### Role
 
 Setting the user's role determines their access, permissions, and App presentation. You can adjust a user's role from
 the User Detail page, or from the _Users in Role_ field within **Settings > Roles & Permissions > [Role Name]**.
@@ -62,7 +59,7 @@ Only admins can adjust this field's value.
 
 :::
 
-### Token
+#### Token
 
 A user's token is an alternate way to [authenticate into the API](/reference/api/authentication) using a static string.
 When NULL, the token is disabled. When enabled, ensure that a secure string is used.
