@@ -1,23 +1,46 @@
 # Contributing
 
-> Our team truly appreciates every single pull-request, bug report, and feature request made by our community. If you
-> have _any_ questions along the way, please reach out to our Core team on [Discord](https://directus.chat).
+> Our team truly appreciates every single contributor, community member, GitHub star, pull-request, bug report, and feature request. Keeping Directus completely free and open-source is our way of saying: **Thank you!**
 
-## Node Monorepo
+::: tip We're here to help!
 
-Our Node.js repository is located at `directus/directus` and houses the Admin App (Vue.js 3), Node.js API, project
-documentation (Markdown), API Specification (OpenAPI), and other smaller packages used internally. Directus follows a
-monorepo design similar to React or Babel — to learn more about our monorepo's design and structure, see our
-[Codebase Overview](#codebase-overview) below.
+If you have _any_ questions along your contributor journey, please feel free to come chat with us on our [Discord Community](https://directus.chat).
 
-To contribute to the project, please follow the instructions located within our GitHub repository's
-[contributing.md file](https://github.com/directus/directus/blob/main/contributing.md).
+:::
+
+## Code of Conduct
+
+**The Directus [Code of Conduct](https://github.com/directus/directus/blob/main/code_of_conduct.md) is one of the ways we put our values into practice. We expect all of our staff, contractors and contributors to know and follow this code.**
+
+**Our contributors and maintainers work extremely hard to build Directus as premium open-source software. Please be respectful of those efforts throughout our ecosystem. Trolling, harassing, insulting, or other unacceptable behavior by participants will not be tolerated.**
+
+In the interest of fostering an open and welcoming environment, we as pledge to make participation in our project and community a harassment-free experience for everyone, regardless of age, body
+size, disability, ethnicity, sex characteristics, gender identity and expression,
+level of experience, education, socio-economic status, nationality, personal
+appearance, race, religion, or sexual identity and orientation.
+
+Examples of behavior that contributes to creating a positive environment
+include:
+
+* Using welcoming and inclusive language
+* Being respectful of differing viewpoints and experiences
+* Gracefully accepting constructive criticism
+* Focusing on what is best for the community
+* Showing empathy towards other community members
+
+**Before continuing, please take a moment to read our full [Code of Conduct](https://github.com/directus/directus/blob/main/contributing.md).**
+
+## Wait — Before you Begin
+
+When contributing to this repository, it is important to first discuss the change you wish to make with the owners of this repository. This can be done via [GitHub Issue](https://github.com/directus/directus/issues), [GitHub Discussions](https://github.com/directus/directus/discussions), [Discord](https://directus.chat), [email](mailto:info@directus.io), or any other method.
+
+Following this rule will help avoid wasted time caused by multiple people working on the same issue or writing code that will not be merged.
 
 ## Feature Requests
 
 Feature requests are a great way to let our team know what should be prioritized next. You can
-[submit a feature request](https://github.com/directus/directus/discussions/category_choices) or upvote
-[existing submissions](https://github.com/directus/directus/discussions) all via our GitHub Discussions board.
+[submit a new feature request](https://github.com/directus/directus/discussions/category_choices) or
+[vote on existing submissions](https://github.com/directus/directus/discussions) via GitHub Discussions.
 
 ::: warning The 80/20 Rule
 
@@ -51,8 +74,6 @@ Issues. Please ensure the following for all submissions:
   - You have confirmed the issue is not related to your own custom code
   - Dev Only: You have cleared and reinstalled all dependencies
 
-Please make sure to include all information required to reproduce your exact setup and issue in the issue report.
-
 ## Reporting Security Vulnerabilities
 
 If you believe you have discovered a security issue within a Directus product or service, please reach out to us
@@ -64,77 +85,7 @@ team so that proper fixes can be issued to users. Our policy is to credit all re
 order to receive credit, security researchers must follow responsible disclosure practices, including:
 
 - They do not publish the vulnerability prior to the Directus team releasing a fix for it
-- They do not divulge exact details of the issue, for example, through exploits or proof-of-concepts
-
-## Code of Conduct
-
-The Directus [Code of Conduct](https://github.com/directus/directus/blob/main/code_of_conduct.md) is one of the ways we
-put our values into practice. We expect all of our staff, contractors and contributors to know and follow this code.
-
-## Development Workflow
-
-Before getting started, ensure you your local environment meets our [minimum requirements](/guides/installation/cli) and
-you are familiar with Git. Please ensure you're on the "current" version of Node.js (see
-[Node's release schedule](https://nodejs.dev/en/about/releases/)).
-
-::: tip
-
-You will need to have a minimum of Node 12+ to build Directus!
-
-:::
-
-### 1. Fork the Directus repository
-
-Go to the [repository](https://github.com/directus/directus) and fork it to your GitHub account. A fork is your copy of
-the Directus repository. Forking the repository allows you to freely experiment with changes without affecting the
-original project.
-
-### 2. Clone from your repository
-
-```bash
-git clone git@github.com:YOUR-USERNAME/directus.git
-```
-
-### 3. Make a new branch
-
-```bash
-git checkout -b YOUR-BRANCH-NAME
-```
-
-### 4. Install the dependencies
-
-```bash
-npm install
-```
-
-### 5. Setup the Database & Env File
-
-For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver,
-which will create the database for you. Run the following command from within root of the project:
-
-```bash
-npm run cli -- init
-```
-
-### 6. Start the development server
-
-Run the following command from the root directory.
-
-```bash
-npm run dev
-```
-
-::: tip
-
-If you encounter errors during this installation process, make sure your node version meets the
-[minimum requirements](/guides/installation/cli)
-
-:::
-
-### 7. Make your fixes/changes
-
-At this point you are ready to start working on Directus! Before diving in however, it's worth reading through our docs
-on [submitting a pull-request](#Submitting-a-Pull-Request).
+- They do not divulge exact details of the issue, eg: through exploits or proof-of-concepts
 
 ## Submitting a Pull-Request
 
@@ -191,17 +142,3 @@ Before you begin or resume development, be sure to always sync, if you are going
 changes!
 
 :::
-
-## Codebase Overview
-
-### `/api`
-
-Contains the Directus API (REST+GraphQL), written in node.js.
-
-### `/app`
-
-Contains the Directus Admin App, written in Vue.js 3.
-
-### `/docs`
-
-Contains all the platform's documentation, written in markdown with additional VuePress formatting.

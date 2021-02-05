@@ -463,8 +463,8 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/contributing/development-workflow',
-						title: 'Development Workflow',
+						path: '/contributing/codebase-overview',
+						title: 'Codebase Overview',
 					},
 					{
 						type: 'page',
@@ -473,18 +473,8 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/contributing/repo-overview',
-						title: 'Repo Overview',
-					},
-					{
-						type: 'page',
-						path: '/contributing/code-of-conduct',
-						title: 'Code of Conduct',
-					},
-					{
-						type: 'page',
 						path: '/contributing/translations',
-						title: 'App Translations',
+						title: 'Translating the App',
 					},
 				],
 			},
