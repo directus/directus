@@ -1,9 +1,10 @@
-# App Overview
+# The Directus Application
 
-> The Directus App is the presentation layer for your data, content, and assets. It uses a left-to-right visual
-> hierarchy for organization and navigation. Below we cover the App's global elements and individual pages.
+> The Directus App is the presentation layer for your data, content, and assets. It uses a left-to-right visual hierarchy for organization and navigation. Below we cover the App's global elements and individual pages.
 
-## Global Elements
+The Directus App is decoupled from, and powered by, the Directus API. It provides a way for both technical admins and non-technical users to view and manage content of the connected database. It is written in [Vue.js](https://vuejs.org), is completely modular, and is highly customizable.
+
+## App Section Hierarchy
 
 <img class="full shadow" src="../assets/app-overview.svg" />
 
@@ -17,8 +18,8 @@
   - [User Directory](/concepts/app-overview/#user-directory)
   - [File Library](/concepts/app-overview/#file-library)
   - [Documentation](/concepts/app-overview/#documentation)
-  - [Settings](/concepts/app-overview/#settings) — Admin Roles Only
-  - [Any Custom Modules](/concepts/app-extensions/#modules) — Only if Configured
+  - [Settings](/concepts/app-overview/#settings) (Admin Roles Only)
+  - [Any Custom Modules](/concepts/app-extensions/#modules) (Only if Configured)
 - **Current User Menu** — This component displays the authenticated user's name and avatar.
     - [Sign Out](#) — Hovering over the User Menu exposes the button to log out of the platform.
 
@@ -91,38 +92,14 @@ configuration as [Collection Detail](/concepts/app-overview).
 
 ### User Detail
 
-Similar to other [Item Detail](/concepts/app-overview/#item-detail) pages, this page provides a custom form for viewing system users.
-This is also used for editing the "Profile Page" of the current user, which is accessible from the
-[User Menu](/concepts/app-overview/#_1-module-bar). Directus ships with a full-featured user system, with the following fields:
+Similar to other [Item Detail](/concepts/app-overview/#item-detail) pages, this page provides a custom form for viewing system users. This is also used for editing the "Profile Page" of the current user, which is accessible from the [User Menu](/concepts/app-overview/#_1-module-bar). There are a number of [User Fields](/concepts/users/#user-fields) included out-of-the-box that can then be extended by following the normal [Creating a Field](/guides/fields/#creating-a-field) guide.
 
-- **First Name** — The user's given name
-- **Last Name** — The user's family name
-- **Email** — The user's email address used for login/authenticating and email updates
-- **Password** — The private string used for login/authenticating (stored as a secure hash)
-- **Avatar** — An image displayed throughout the App that represents the user
-- **Location** — Can be used for the user's city, country, office name, etc
-- **Title** — The name of the position the user holds at their company or organization
-- **Description** — A description or bio of the user
-- **Tags** — A set of keywords useful when searching within the User Directory
-- **Language** — (User Preference) The language to use for this user's App language
-- **Theme** — (User Preference) Light, Dark, or Auto (based on the user's OS preferences)
-- **Two-Factor Auth** — (User Preference) Enables authenticating with 2FA
-- **Status** — (Admin Only) Determines if the user is active within the App/API
-- **Role** — (Admin Only) The user's role determines their permissions and access
-- **Token** — (Admin Only) A static string used for authenticating within the API
-
-The sidebar's info component also includes the following readonly details:
-
-- **User Key** — The primary key of the user
-- **Last Page** — The last App page accessed by the user
-- **Last Access** — The timestamp of the user's last App or API action
-
-::: tip Extending Users
-
-While the fields included out-of-the-box are locked from schema changes, you can extend Directus Users to include
-additional proprietary fields by following the normal [Creating a Field](/guides/fields/#creating-a-field) guide.
-
-:::
+- [Setting up your User Profile](/guides/users/#setting-up-your-user-profile)
+- [Creating a User](/guides/users/#creating-a-user)
+- [Inviting a User](/guides/users/#inviting-a-user)
+- [Configuring a User](/guides/users/#configuring-a-user)
+- [Archiving a User](/guides/users/#archiving-a-user)
+- [Deleting a User](/guides/users/#deleting-a-user)
 
 ## File Library
 
@@ -131,33 +108,12 @@ configuration as [Collection Detail](/concepts/app-overview).
 
 ### File Detail
 
-Similar to other [Item Detail](/concepts/app-overview) pages, this page provides a custom form for viewing assets and
-embeds. Directus ships with a full-featured system for digital asset management, with the following fields:
+Similar to other [Item Detail](/concepts/app-overview) pages, this page provides a custom form for viewing assets and embeds. There are a number of [File Fields](/concepts/files/#file-fields) included out-of-the-box that can then be extended by following the normal [Creating a Field](/guides/fields/#creating-a-field) guide.
 
-- **Title** — Pulled from the file metadata if available, falls back to a formatted version of the filename
-- **Description** — Pulled from the file metadata if available
-- **Tags** — Pulled from the file metadata if available
-- **Location** — Pulled from the file metadata if available
-- **Storage** — The storage adapter where the asset is saved (readonly)
-- **Filename Disk** — The actual name of the file within the storage adapter
-- **Filename Download** — The name used when downloading the file via _Content-Disposition_
-
-The sidebar's info component also includes the following readonly details:
-
-- **Type** — The MIME type of the file, displayed in the App as a formatted media type
-- **Dimensions** — (Images Only) The width and height of the image in pixels
-- **Size** — The file-size the asset takes up within the storage adapter
-- **Created** — The timestamp of when the file was uploaded to the project
-- **Owner** — The Directus user that uploaded the file to the project
-- **Folder** — The current parent folder that contains the file
-- **Metadata** — Metadata JSON dump of the file's EXIF, IPTC, and ICC information
-
-::: tip Extending Files
-
-While the fields included out-of-the-box are locked from schema changes, you can extend Directus Files to include
-additional proprietary fields within [Settings > Data Model](/concepts/data-model).
-
-:::
+- [Uploading a File](/guides/files/#uploading-a-file)
+- [Accessing an Original File](/guides/files/#accessing-an-original-file)
+- [Creating a Thumbnail Preset](/guides/files/#creating-a-thumbnail-preset)
+- [Requesting a Thumbnail](/guides/files/#requesting-a-thumbnail)
 
 ## Documentation
 
@@ -195,15 +151,7 @@ being located within the notifications tray of the page sidebar. This page has t
 
 ### Activity Detail
 
-Unlike other item detail pages, activity items are **readonly** (for proper accountability) and open in a side drawer with the following fields:
-
-- **User** — The Directus user that performed the action
-- **Action** — The specific action taken, eg: Create, Update, Delete, Authenticate, etc
-- **Date** — The timestamp of when the action was performed
-- **IP Address** — The IP address of the device from which the action was performed
-- **User Agent** — The description of the browser that was used to perform the action
-- **Collection** — The collection affected by the action
-- **Item** — The item (within the above Collection) affected by the action
+Unlike other item detail pages, activity items are **readonly** (for proper accountability) and open in a side drawer to display the [Activity Fields](/concepts/accountability/#activity-fields).
 
 ## Settings
 
@@ -216,3 +164,12 @@ sections:
 - [Roles & Permissions](/concepts/users-roles-and-permissions)
 - [Presets & Bookmarks](/concepts/presets-and-bookmarks)
 - [Webhooks](/guides/webhooks)
+
+## App Extensions
+
+Directus has been architected as completely modular and extensible, with four keystone App component types. Out-of-the-box components are configurable, or altogether new components can be created as extensions.
+
+- [Modules](/concepts/modules/)
+- [Layouts](/concepts/layouts/)
+- [Interfaces](/concepts/interfaces/)
+- [Displays](/concepts/displays/)

@@ -3,16 +3,14 @@
 > As you might have guessed, relationships are a crucial part of any relational database. Directus supports all standard
 > relationship types, as well as a few more _compound_ types that offer greater flexibility.
 
-## Understanding Relationships
-
 While it may seem complex at first, relational data is actually quite straightforward once you understand what's
 happening behind the confusing terminology. Before diving into the details of each type, let's first cover a few basics
 that will help you better visualize each in your mind's eye.
 
-### PKs vs FKs
+### Primary and Foreign Keys
 
-Every [item](/concepts/platform-overview#items) in a relational database has a unique "key" that identifies it within
-its [collection](/concepts/platform-overview#collections). Because it's required, the key is the first
+Every [Item](/concepts/platform-overview#items) in a relational database has a unique "key" that identifies it within
+its [Collection](/concepts/platform-overview#collections). Because it's required, the key is the first
 [field](/concepts/platform-overview#fields) created within a collection, typically storing an "auto-increment" number,
 an automatically generated unique hash, or a manually entered value. They are often abbreviated to "PK" (Primary Key),
 "ID" (Identifier), "UID" (Unique Identifier), or "UUID" (Universally Unique Identifier), depending on the type of value
@@ -23,7 +21,7 @@ is called a Foreign Key (FK).
 
 ::: tip Compound Keys
 
-We've ignored compound keys in this explanation to help keep things as simple as possible.
+To keep things simple, we've ignored compound keys in the above explanation.
 
 :::
 
@@ -67,9 +65,9 @@ cities ("Many" Collection)
 - country (stores the FK to a country)
 ```
 
-::: tip
+::: tip Manual Reordering
 
-Manual Reordering To enable manual reordering for a O2M, simply add a field with the `sort` type to the "many" side
+To enable manual reordering for a O2M, simply add a field with the `sort` type to the "many" side
 (`cities` in the above example).
 
 :::
@@ -77,8 +75,8 @@ Manual Reordering To enable manual reordering for a O2M, simply add a field with
 ::: tip Translations
 
 The Translations interface allows [creating multilingual content](/concepts/internationalization#content-translations)
-relationally. It is a standard O2M relationship, but also includes an additional field on the "many" collection to hold
-the language key
+relationally. It is a standard O2M relationship with an additional field on the "many" collection to hold
+the language key.
 
 :::
 
@@ -109,30 +107,30 @@ recipe_ingredients (Junction Collection)
 Notice that the example above also has a `quantity` field on the junction table. You can add any contextual fields to
 the junction, and they will also be included in the App's relational edit form.
 
-::: warning M2M == O2Mx2
+::: tip Actually just two O2Ms
 
 An M2M is technically two relationships viewed as one. Each side has a O2M to the Junction Table that sits in the
 middle. In that sense, there really is no "M2M".
 
 :::
 
-::: tip
+::: tip Manual Reordering
 
-Manual Reordering To enable manual reordering for a M2M, simply add a numeric field to the junction table and set it as
+To enable manual reordering for a M2M, simply add a numeric field to the junction table and set it as
 the [Collection Sort](/guides/collections#sort).
 
 :::
 
-::: tip
+::: tip Self-Referencing
 
-Self-Referencing You can also have a M2M relationship that connects items within the _same_ collection. A common example
-of this is "Related Articles", where each article might relate to many other articles.
+You can also have a M2M relationship that connects items within the _same_ collection. As example
+of this is "Related Articles", where an article might relate to many other articles.
 
 :::
 
 ## One-to-One (O2O)
 
-Directus does not include a one-to-one (O2O) relationship type or interface. However, O2O is essentially the same as a
+Directus does not include a dedicated one-to-one (O2O) relationship type or interface. However, O2O is essentially the same as a
 M2O (storing a foreign key). The only difference is that a O2O enforces the cardinality. In other words, selecting a
 relational item in a O2O means that item can not be selected elsewhere (it can only be used once). This functionality
 can be added by checking and constraining uniqueness via a [custom event hook](/concepts/api-extensions) or
@@ -148,12 +146,9 @@ but with one crucial difference: the junction table also stores the _parent coll
 key" combines the collection name and FK to provide a unique reference to _any_ other item within the project. You can
 then artificially limit which collections are valid through an "allow list".
 
-An example of a M2A is a "page layout builder". These typically will have modular components across several different
-collections (eg: "Heading", "Text Block", "Media Asset", etc), and a _Pages_ collections where you can piece them
-together. Therefore, the junction table will link a specific page with specific components, allowing the creation of
-relational page layouts.
+An example of a M2A is a "Page Builder", which typically have different component Collections such as "Heading", "Text Block", or "Media Asset", and a _Pages_ collection on which you can add and arrange them. In this example the junction table will link a specific page with components from a number of different collections, allowing for the creation of relational page layouts.
 
----
+<!--
 
 @TODO
 
@@ -171,3 +166,4 @@ relational page layouts.
 [ ] a2m [o2a-m2o]
 [ ] a2a [o2a-a2o] (dynamic builder)
 ```
+-->
