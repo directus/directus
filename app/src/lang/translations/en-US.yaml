@@ -430,7 +430,7 @@ divider: Divider
 color: Color
 circle: Circle
 empty_item: Empty Item
-log_in_with: 'Log In with {provider}'
+continue_with: 'Continue with {provider}'
 advanced_filter: Advanced Filter
 delete_advanced_filter: Delete Filter
 change_advanced_filter_operator: Change Operator

@@ -175,4 +175,9 @@ export class UsersService extends ItemsService {
 	async disableTFA(pk: string) {
 		await this.knex('directus_users').update({ tfa_secret: null }).where({ id: pk });
 	}
+
+	async emailHasAccount(email: string) {
+		const user = await this.knex('directus_users').where({ email }).first();
+		return !!user;
+	}
 }

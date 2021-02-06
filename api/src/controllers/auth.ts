@@ -253,10 +253,19 @@ router.get(
 			accountability: accountability,
 			schema: req.schema,
 		});
+		const userService = new UsersService({ schema: req.schema });
 
 		const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
 
 		req.session?.destroy(() => {});
+
+		const whitelistedDomains = process.env.OAUTH_USER_CREATION_DOMAIN_WHITELIST?.split(",").map(d => d.trim());
+		const emailDomainIsWhitelisted = whitelistedDomains?.some(d => email.endsWith(d)) ?? false;
+		const accountExists = await userService.emailHasAccount(email);
+
+		if (!accountExists && emailDomainIsWhitelisted) {
+			await userService.create({ email, status: 'active' });
+		}
 
 		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
 			email,

@@ -4,7 +4,7 @@
 			<v-divider />
 
 			<a class="sso-link" v-for="provider in providers" :key="provider.name" :href="provider.link">
-				{{ $t('log_in_with', { provider: provider.name }) }}
+				{{ $t('continue_with', { provider: provider.name }) }}
 			</a>
 		</template>
 	</div>
