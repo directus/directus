@@ -1,6 +1,6 @@
 # Roles
 
-> Roles define a specific set of access permissions, and are the primary organizational structure for Users within the platform. [Learn more about Roles](#).
+> Roles define a specific set of access permissions, and are the primary organizational structure for Users within the platform. [Learn more about Roles](/concepts/roles/).
 
 ## Creating a Role
 
@@ -26,7 +26,7 @@
 
 ### Customizing the Module Navigation
 
-The options in the [Module Bar](/concepts/app-overview) can be overridden with custom options per role. When this
+The options in the [Module Bar](/concepts/application/#_1-module-bar) can be overridden with custom options per role. When this
 setting is empty, the default modules are used.
 
 1. Navigate to **Settings > Roles & Permissions > [Role Name]**
@@ -81,7 +81,7 @@ override the Collections module.
 
 ### Customizing the Collection Navigation
 
-The collections in the [Navigation Bar](/concepts/app-overview) can be overridden with custom options per role. When
+The collections in the [Navigation Bar](/concepts/application/#_2-navigation-bar) can be overridden with custom options per role. When
 this setting is empty, all collections that the user has permission to see are shown alphabetically in a single,
 unlabeled group.
 
@@ -106,7 +106,7 @@ unlabeled group.
 ::: warning Users in a Deleted Role
 
 If you delete a role that still has users in it, those users will be given a `NULL` role, which denies their App access
-and limits them to the [Public](/concepts/users-roles-and-permissions) permissions. They can then be reassigned to a new
+and limits them to the [Public Role](/concepts/roles/#public-role) permissions. They can then be reassigned to a new
 role by an admin.
 
 :::

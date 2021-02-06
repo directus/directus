@@ -1,6 +1,6 @@
 # Styles
 
-> **Form Follows Function** is the guiding design principle of Directus. The minimal UI allows the platform to be easily tailored to your brand. [Learn more about the App](#).
+> **Form Follows Function** is the guiding design principle of Directus. The minimal UI allows the platform to be easily tailored to your brand. [Learn more about the App](/concepts/application/).
 
 ## App Themes
 
