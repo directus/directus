@@ -30,6 +30,8 @@
 	"license": "ISC",
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
 	"devDependencies": {
+		"directory-tree": "^2.2.6",
+		"fs-extra": "^9.1.0",
 		"lodash.get": "^4.4.2",
 		"micromark": "^2.10.1",
 		"npm-watch": "^0.7.0",

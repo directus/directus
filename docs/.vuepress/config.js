@@ -40,7 +40,6 @@ module.exports = {
 		['meta', { name: 'msapplication-TileColor', content: '#2CCDA6' }],
 		['meta', { name: 'msapplication-config', content: '/browserconfig.xml' }],
 	],
-	dest: 'dist',
 	themeConfig: {
 		repo: 'directus/directus',
 		docsBranch: 'main',

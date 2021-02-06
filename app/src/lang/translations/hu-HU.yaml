@@ -130,8 +130,12 @@ unique: Egyedi
 updated_on: Frissítve
 updated_by: Frissítette
 primary_key: Elsődleges kulcs
+finish_setup: Beállítás befejezése
 dismiss: Elutasít
+edit_raw_value: Érték szerkesztése
+enter_raw_value: Érték megadása...
 clear_value: Érték törlése
+reset_to_default: Visszaállítás alaphelyzetbe
 undo_changes: Változások visszavonása
 notifications: Értesítések
 show_all_activity: Összes tevékenység mutatása
@@ -223,6 +227,7 @@ information: Információ
 report_bug: Hibajelentés
 request_feature: Funkció ajánlása
 reset_interface: Felhasználói felület visszaállítása
+reset_display: Megjelenés alaphelyzetbe
 item_count: 'Nincsenek elemek | Egy elem | {count} elem'
 no_items_copy: Nincsenek még elemek ebben a gyűjteményben.
 file_count: 'Nincsenek fájlok | Egy fájl | {count} file'
@@ -282,11 +287,14 @@ errors:
   FIELD_NOT_FOUND: Mező nem található
   FORBIDDEN: Tilos
   INVALID_CREDENTIALS: Hibás felhasználónév vagy jelszó
+  ITEM_NOT_FOUND: Elem nem található
   ROUTE_NOT_FOUND: Nem található
+  UNKNOWN: Váratlan hiba történt
 bookmark_name: Könyvjelző neve...
 create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
 bookmarks: Könyvjelzők
+unexpected_error: Váratlan hiba történt
 back: Vissza
 editing_image: Kép szerkesztése
 square: Négyzet
@@ -298,6 +306,9 @@ rotate: Forgatás
 all_users: Összes felhasználó
 delete_collection: Gyűjtemény törlése
 delete_collection_success: Törölt gyűjtemények
+visible_collections: Látható gyűjtemények
+hidden_collections: Elrejtett gyűjtemények
+system_collections: Rendszer gyűjtemények
 icon_left: Ikon balra
 icon_right: Ikon jobbra
 font: Betűtípus
@@ -315,6 +326,7 @@ operators:
   neq: Nem egyenlő
   lt: Kevesebb mint
   gt: Nagyobb mint
+  lte: Kevesebb vagy egyenlő mint
   gte: Nagyobb vagy egyenlő
   in: egy ebből
   nin: nem egy ebből
@@ -412,6 +424,7 @@ wysiwyg_options:
   fontselect: Betűtípus választása
   fontsizeselect: Betűméret választása
   indent: Behúzás
+  outdent: Behúzás csökkentése
   undo: Visszavon
   redo: Újra
   remove: Eltávolítás
@@ -429,11 +442,16 @@ other: Egyéb...
 adding_user: Hozzáadott felhasználó
 unknown_user: Ismeretlen felhasználó
 editing_in_batch: '{count} elem szerkesztése'
+no_options_available: Nincs választási lehetőség
 settings_data_model: Adat model
 settings_permissions: Szerepkörök és jogosultságok
 settings_project: Projekt beállításai
 settings_webhooks: Webhookok
+scope: Hatókör
 layout: Elrendezés
+layout_setup: Elrendezés beállítás
+unsaved_changes: Nem mentett módosítások
+unsaved_changes_copy: Biztos, hogy elhagyja az oldalt?
 discard_changes: Változtatások elvetése
 keep_editing: Szerkesztés folytatása
 add_new: Új hozzáadása
@@ -465,6 +483,7 @@ fields:
     description: Leírás
     tags: Cimkék
     location: Pozíció
+    filename_download: Fájlnév (letöltött)
     metadata: Metadata
     type: MIME típus
     filesize: Fájl mérete
@@ -517,7 +536,10 @@ fields:
   directus_roles:
     name: Szerepkör neve
     description: Leírás
+    app_access: Alkalmazás hozzáférés
+    admin_access: Admin hozzáférés
     ip_access: IP cím
+do_nothing: Ne tegyen semmit
 block: Blokk
 comment: Hozzászólás
 continue: Tovább
@@ -546,6 +568,7 @@ my_activity: Saját tevékenységek
 not_authenticated: Nem hitelesített
 authenticated: Hitelesítve
 options: Lehetőségek
+otp: Egyszer használható jelszó
 password: Jelszó
 permissions: Jogosultságok
 relationship: Kapcsolat
@@ -557,10 +580,16 @@ save: Mentés
 schema: Séma
 search: Keresés
 select_existing: Létező kiválasztása
+select_field_type: Mezőtípus kiválasztása
+select_interface: Kezelőfelület kiválasztása
 settings: Beállítások
 sign_in: Belépés
 sign_out: Kilépés
+sign_out_confirm: Biztos, hogy ki szeretne jelentkezni?
 something_went_wrong: Valami hiba történt.
+sort_direction: Rendezés iránya
+sort_asc: Növekvő sorrend
+sort_desc: Csökkenő sorrend
 template: Sablon
 translation: Fordítás
 value: Érték
@@ -569,6 +598,8 @@ report_error: Hiba jelentése
 interfaces:
   checkboxes:
     checkboxes: Jelölőnégyzetek
+    show_more: '{count} további mutatása'
+    items_shown: Megjelenített elemek
   code:
     code: Kód
     line_number: Sorszám
@@ -578,8 +609,14 @@ interfaces:
     collections: Kollekciók
   color:
     color: Szín
+    placeholder: Szín választása...
+    preset_colors_add_label: Új szín hozzáadása...
+    name_placeholder: Szín elnevezése...
   datetime:
     datetime: Dátum és idő
+    description: Dátum és idő beállítása
+    set_to_now: Mai nap
+    use_24: 24 órás formátum használata
   display-template:
     display-template: Megjelenítési sablon
     collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
@@ -600,18 +637,35 @@ interfaces:
     interface: Kezelőfelület
   many-to-one:
     display_template: Megjelenítési sablon
+  markdown:
+    customSyntax: Egyéni blokkok
   notice:
     notice: Megjegyzés
   numeric:
     numeric: Szám
+    description: Szám megadása
     minimum_value: Minimum érték
     maximum_value: Maximum érték
+    step_interval: Lépésköz
+  radio-buttons:
+    radio-buttons: Választó gombok
+    description: Válasszon ki egy vagy több elemet
   repeater:
     repeater: Ismétlés
     edit_fields: Mezők szerkesztése
+    field_name_placeholder: Név megadása...
+    field_note_placeholder: Megjegyzés megadása...
+  slider:
+    slider: Csúszka
   tags:
     tags: Cimkék
+    description: Címke megadása vagy kiválasztása
     whitespace: Szóköz
+    uppercase: Nagybetűsre konvertálás
+    lowercase: Kisbetűsre konvertálás
+    alphabetize: ABC sorrend
+    alphabetize_label: ABC sorrend kényszerítése
+    add_tags: Címke hozzáadása...
   text-input:
     text-input: Szövegmező
   textarea:
@@ -630,15 +684,26 @@ interfaces:
   wysiwyg:
     wysiwyg: WYSIWYG
     custom_formats: Egyéni formátum
+    options_override: Beállítás felülírása
 displays:
   boolean:
     boolean: Logikai
+    label_on: Címke be
+    label_on_placeholder: Címke megadása...
+    label_off: Címke ki
+    label_off_placeholder: Címke megadása...
     icon_on: Ikon be
     icon_off: Ikon ki
+    color_on: Szín be
+    color_off: Szín ki
   collection:
     collection: Gyűjtemény
+    description: Gyűjtemény megjelenítése
+    icon_label: Gyűjtemény ikon megjelenítése
   color:
     color: Szín
+    description: Színes kör megjelenítése
+    default_color: Alapértelmezett szín
   datetime:
     datetime: Dátum és idő
     format: Formátum
@@ -650,6 +715,11 @@ displays:
     description: Fájlok megjelenítése
   filesize:
     filesize: Fájlméret
+  formatted-value:
+    formatted-value: Formázott érték
+    bold_label: Vastag stílus használata
+  formatted-json-value:
+    formatted-json-value: Formázott JSON érték
   icon:
     icon: Ikon
     filled: Kitöltve
@@ -660,11 +730,18 @@ displays:
     labels: Feliratok
     default_foreground: Alapértelmezett előtér
     default_background: Alapértelmezett háttér
+    format_label: Mindegyik címke formázása
+    choices_text_placeholder: Szöveg megadása...
   mime-type:
     mime-type: MIME típus
   rating:
     rating: Értékelés
     simple: Egyszerű
+  raw:
+    raw: Nyers érték
+  related-values:
+    related-values: Hasonló értékek
+    description: Hasonló értékek megjelenítése
   user:
     user: Felhasználó
     avatar: Profilkép
@@ -681,5 +758,6 @@ layouts:
   tabular:
     tabular: Táblázat
     fields: Mezők
+    spacing: Sorköz
     comfortable: Kényelmes
     compact: Kompakt
