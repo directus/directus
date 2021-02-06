@@ -22,12 +22,12 @@ environment variables, each is explained in the following reference:
 1. Navigate to **Settings > Project Settings**
 2. Configure any of the following **branding fields**
 
-- **Project Name** — The name used at the top of the [Navigation Bar](/concepts/applications) and on the login/public
+- **Project Name** — The name used at the top of the [Navigation Bar](/concepts/application/#_2-navigation-bar) and on the login/public
   pages
-- **Project URL** — The URL when clicking the logo at the top of the [Module Bar](/concepts/app-overview)
-- **Project Color** — The color used behind the logo at the top of the [Module Bar](/concepts/app-overview), on the
+- **Project URL** — The URL when clicking the logo at the top of the [Module Bar](/concepts/application/#_1-module-bar)
+- **Project Color** — The color used behind the logo at the top of the [Module Bar](/concepts/application/#_1-module-bar), on the
   login/public pages, and for the browser's FavIcon
-- **Project Logo** — A 40x40 pixel logo at the top of the [Module Bar](/concepts/app-overview) and on the login/public
+- **Project Logo** — A 40x40 pixel logo at the top of the [Module Bar](/concepts/application/#_1-module-bar) and on the login/public
   pages. The image is _inset_ within the 64x64 pixel square filled with the Project Color, so we recommend using a SVG
   or PNG logo with transparency to avoid a "boxy" look.
 
@@ -41,7 +41,7 @@ title. This makes it easier to identify different Directus projects in the brows
 ### Public Pages
 
 In addition to the above global Project Settings, you can also apply the following styling to tailor your project's
-[public pages](/concepts/app-overview).
+[public pages](/guides/projects/#public-pages).
 
 - **Public Foreground** — An image centered in the public page's right-pane. Limited to a maximum width of 400px.
 - **Public Background** — An image displayed behind the above foreground image, shown full-bleed within the public

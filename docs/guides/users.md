@@ -1,6 +1,6 @@
 # Users
 
-> Users are the individual accounts for authenticating into the API and App. Each user belongs to a Role which defines its Permissions. [Learn more about Users](#).
+> Users are the individual accounts for authenticating into the API and App. Each user belongs to a Role which defines its Permissions. [Learn more about Users](/concepts/users/).
 
 ## Creating a User
 
@@ -24,7 +24,7 @@ their account.
 
 1. Navigate to the **User Library**
 2. **Click on the user** you wish to manage
-3. **Complete the form** of [User Fields](/concepts/app-overview.md#user-detail)
+3. **Complete the form** of [User Fields](/concepts/application/#user-detail)
 
 ::: warning User Preferences
 
