@@ -1,3 +1,5 @@
 [[redirects]]
 from = "/"
 to = "/getting-started/introduction.html"
+force = true
+status = 200
