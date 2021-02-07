@@ -88,7 +88,7 @@ items in your collection.
 ::: tip More Info on Permissions
 
 Permissions are extremely powerful and can get pretty in-depth. To learn all about the nuances in setting up permissions, see
-[Roles & Permissions](/guides/roles-and-permissions).
+[Roles & Permissions](/guides/roles).
 
 :::
 
