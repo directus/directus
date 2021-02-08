@@ -37,40 +37,28 @@ describe('ItemsHandler', () => {
 		it('Calls the /items/:collection endpoint when creating a single item', async () => {
 			const stub = sandbox.stub(handler['axios'], 'post').resolves({ data: '' });
 			await handler.create({ title: 'test' });
-			expect(stub).to.have.been.calledWith(
-				'/items/test/',
-				{ title: 'test' },
-				{ params: undefined }
-			);
+			expect(stub).to.have.been.calledWith('/items/test/', { title: 'test' }, { params: undefined });
 		});
 
 		it('Calls the /items/:collection endpoint when creating multiple items', async () => {
 			const stub = sandbox.stub(handler['axios'], 'post').resolves({ data: '' });
 			await handler.create([{ title: 'test' }, { title: 'another test' }]);
-			expect(stub).to.have.been.calledWith(
-				'/items/test/',
-				[{ title: 'test' }, { title: 'another test' }],
-				{ params: undefined }
-			);
+			expect(stub).to.have.been.calledWith('/items/test/', [{ title: 'test' }, { title: 'another test' }], {
+				params: undefined,
+			});
 		});
 
 		it('Passes the query params', async () => {
 			const stub = sandbox.stub(handler['axios'], 'post').resolves({ data: '' });
 			await handler.create({ title: 'test' }, { fields: ['test'] });
-			expect(stub).to.have.been.calledWith(
-				'/items/test/',
-				{ title: 'test' },
-				{ params: { fields: ['test'] } }
-			);
+			expect(stub).to.have.been.calledWith('/items/test/', { title: 'test' }, { params: { fields: ['test'] } });
 
 			await handler.create([{ title: 'test' }, { title: 'another test' }], {
 				fields: ['test'],
 			});
-			expect(stub).to.have.been.calledWith(
-				'/items/test/',
-				[{ title: 'test' }, { title: 'another test' }],
-				{ params: { fields: ['test'] } }
-			);
+			expect(stub).to.have.been.calledWith('/items/test/', [{ title: 'test' }, { title: 'another test' }], {
+				params: { fields: ['test'] },
+			});
 		});
 	});
 
@@ -104,8 +92,13 @@ describe('ItemsHandler', () => {
 		it('Returns {errors} with 400 bad request', async () => {
 			const mockErrors = { errors: [{ message: 'MOCK_ERROR' }] };
 			nock('http://localhost').get('/items/test/1').reply(400, mockErrors);
-			const res = await handler.read(1);
-			expect(res).to.eql(mockErrors);
+			let err = null;
+			try {
+				await handler.read(1);
+			} catch (error) {
+				err = error;
+			}
+			expect(err).to.eql(mockErrors.errors);
 		});
 	});
 
@@ -113,28 +106,16 @@ describe('ItemsHandler', () => {
 		it('Updates a single item to a new value', async () => {
 			const stub = sandbox.stub(handler['axios'], 'patch').resolves({ data: '' });
 			await handler.update(15, { test: 'new value' });
-			expect(stub).to.have.been.calledWith(
-				'/items/test/15',
-				{ test: 'new value' },
-				{ params: undefined }
-			);
+			expect(stub).to.have.been.calledWith('/items/test/15', { test: 'new value' }, { params: undefined });
 
 			await handler.update(15, { test: 'new value' }, { fields: ['test'] });
-			expect(stub).to.have.been.calledWith(
-				'/items/test/15',
-				{ test: 'new value' },
-				{ params: { fields: ['test'] } }
-			);
+			expect(stub).to.have.been.calledWith('/items/test/15', { test: 'new value' }, { params: { fields: ['test'] } });
 		});
 
 		it('Updates multiple items to a new value', async () => {
 			const stub = sandbox.stub(handler['axios'], 'patch').resolves({ data: '' });
 			await handler.update([15, 42], { test: 'new value' });
-			expect(stub).to.have.been.calledWith(
-				'/items/test/15,42',
-				{ test: 'new value' },
-				{ params: undefined }
-			);
+			expect(stub).to.have.been.calledWith('/items/test/15,42', { test: 'new value' }, { params: undefined });
 
 			await handler.update([15, 42], { test: 'new value' }, { fields: ['test'] });
 			expect(stub).to.have.been.calledWith(
@@ -149,11 +130,7 @@ describe('ItemsHandler', () => {
 
 			await handler.update({ archived: true }, { filter: {} });
 
-			expect(stub).to.have.been.calledWith(
-				'/items/test/',
-				{ archived: true },
-				{ params: { filter: {} } }
-			);
+			expect(stub).to.have.been.calledWith('/items/test/', { archived: true }, { params: { filter: {} } });
 		});
 	});
 
