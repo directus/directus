@@ -255,6 +255,14 @@ export class GraphQLService {
 			},
 		};
 
+		if (Object.keys(schemaWithLists).length > 0) {
+			for (const key of Object.keys(schemaWithLists)) {
+				if (key !== 'items') {
+					queryBase.fields[key] = schemaWithLists[key];
+				}
+			}
+		}
+
 		if (Object.keys(schemaWithLists.items).length > 0) {
 			queryBase.fields.items = {
 				type: new GraphQLObjectType({
