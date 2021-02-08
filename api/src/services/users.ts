@@ -78,7 +78,7 @@ export class UsersService extends ItemsService {
 		return key;
 	}
 
-	async inviteUser(email: string | string[], role: string, invite_url: string | null) {
+	async inviteUser(email: string | string[], role: string, url: string | null) {
 		const emails = toArray(email);
 
 		for (const email of emails) {
