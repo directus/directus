@@ -3,7 +3,7 @@
 > These Docs will help you get up-and-running quickly, guide you through advanced features, and explain the core concepts
 > that make Directus so unique.
 
-::: warning Version 9
+::: tip Version 9
 
 This is the documentation for the new **[Directus 9](https://github.com/directus/directus)** platform written in
 Node.js. If you are looking for the previous **[Directus 8](https://github.com/directus/v8-archive/releases/latest)**
