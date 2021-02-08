@@ -12,7 +12,11 @@ db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida '
 show_archived_items: Näita arhiveeritud üksuseid
 required: Nõutud
 requires_value: Väärtus nõutud
+create_preset: Loo seadistus
 create_role: Loo roll
+create_user: Loo kasutaja
+create_webhook: Loo veebikonks
+invite_users: Kutsu kasutajaid
 delete_bookmark: Kustuta järjehoidja
 directus_version: Directuse versioon
 language: Keel
