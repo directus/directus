@@ -7,7 +7,7 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-By default, all data in the system is off limits for unauthenticated users. To gain access to protected data, you must
+> By default, all data in the system is off limits for unauthenticated users. To gain access to protected data, you must
 include an access token with every request, or
 [configure permissions for the public role](/guides/roles-and-permissions).
 
@@ -73,7 +73,9 @@ The token's expiration time can be configured through
 </div>
 <div class="right">
 
-### `POST /auth/login`
+```
+POST /auth/login
+```
 
 ```json
 // Request
@@ -137,7 +139,9 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 </div>
 <div class="right">
 
-### `POST /auth/refresh`
+```
+POST /auth/refresh
+```
 
 ```json
 // Request
@@ -184,7 +188,9 @@ to submit it here.
 </div>
 <div class="right">
 
-### `POST /auth/logout`
+```
+POST /auth/logout
+```
 
 ```json
 // Request
@@ -225,7 +231,9 @@ Provide a custom reset url which the link in the email will lead to. The reset t
 </div>
 <div class="right">
 
-### `POST /auth/password/request`
+```
+POST /auth/password/request
+```
 
 ```json
 // Request
@@ -267,7 +275,9 @@ New password for the user.
 </div>
 <div class="right">
 
-### `GET /auth/oauth`
+```
+GET /auth/oauth
+```
 
 ```json
 // Request
@@ -312,7 +322,9 @@ Array of configured oAuth providers.
 </div>
 <div class="right">
 
-### `GET /auth/oauth`
+```
+GET /auth/oauth
+```
 
 ```json
 // Response
@@ -334,7 +346,9 @@ Will redirect to the configured oAuth provider for the user to login.
 <div class="two-up">
 <div class="right">
 
-### `GET /auth/oauth/:provider`
+```
+GET /auth/oauth/:provider
+```
 
 ```json
 // Redirect to oAuth provider

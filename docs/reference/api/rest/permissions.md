@@ -7,7 +7,7 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Permissions control who has access to what, when.
+> Permissions are assigned to Roles, and control data access throughout the platform. [Learn more about Permissions](/concepts/permissions/).
 
 </div>
 <div class="right">
@@ -107,7 +107,9 @@ available, data will be an empty array.
 </div>
 <div class="right">
 
-### `GET /permissions`
+```
+GET /permissions
+```
 
 ```json
 // Response
@@ -160,7 +162,9 @@ Returns the requested [permission object](#the-permission-object).
 </div>
 <div class="right">
 
-### `GET /permissions/:id`
+```
+GET /permissions/:id
+```
 
 ```json
 // Response
@@ -214,7 +218,9 @@ Returns the [permission object](#the-permission-object) for the created permissi
 </div>
 <div class="right">
 
-### `POST /permissions`
+```
+POST /permissions
+```
 
 ```json
 // Request
@@ -272,7 +278,9 @@ Returns the [permission object](#the-permission-object) for the created permissi
 </div>
 <div class="right">
 
-### `PATCH /permissions/:id`
+```
+PATCH /permissions/:id
+```
 
 ```json
 // Request
@@ -319,7 +327,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /permissions/:id`
+```
+DELETE /permissions/:id
+```
 
 ```json
 // Empty Response
@@ -348,7 +358,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /permissions`
+```
+DELETE /permissions
+```
 
 ```json
 // Request

@@ -7,7 +7,7 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Ping external service endpoints on events happening in Directus.
+> Webhooks are configured within the App (no code required) and send HTTP requests to an external service when a specific event is triggered.
 
 </div>
 <div class="right">
@@ -92,7 +92,9 @@ available, data will be an empty array.
 </div>
 <div class="right">
 
-### `GET /webhooks`
+```
+GET /webhooks
+```
 
 ```json
 // Response
@@ -138,7 +140,9 @@ Returns the requested [webhook object](#the-webhook-object).
 </div>
 <div class="right">
 
-### `GET /webhooks/:id`
+```
+GET /webhooks/:id
+```
 
 ```json
 // Response
@@ -186,7 +190,9 @@ Returns the [webhook object(s)](#the-webhook-object) for the created webhook(s).
 </div>
 <div class="right">
 
-### `POST /webhooks`
+```
+POST /webhooks
+```
 
 ```json
 // Request
@@ -243,7 +249,9 @@ Returns the [webhook object](#the-webhook-object) for the created webhook.
 </div>
 <div class="right">
 
-### `PATCH /webhooks/:id`
+```
+PATCH /webhooks/:id
+```
 
 ```json
 // Request
@@ -289,7 +297,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /webhooks/:id`
+```
+DELETE /webhooks/:id
+```
 
 ```json
 // Empty Response
@@ -318,7 +328,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /webhooks`
+```
+DELETE /webhooks
+```
 
 ```json
 // Request

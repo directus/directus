@@ -7,8 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Revisions are individual changes to items made. Directus keeps track of changes made, so you're able to revert to a
-previous state at will.
+> Revisions are individual changes to items made. Directus keeps track of changes made, so you're able to revert to a
+previous state at will. [Learn more about Revisions](/concepts/revisions/).
 
 </div>
 <div class="right">
@@ -98,7 +98,9 @@ available, data will be an empty array.
 </div>
 <div class="right">
 
-### `GET /revisions`
+```
+GET /revisions
+```
 
 ```json
 // Response
@@ -147,7 +149,9 @@ Returns the requested [revision object](#the-revision-object).
 </div>
 <div class="right">
 
-### `GET /revisions/:id`
+```
+GET /revisions/:id
+```
 
 ```json
 // Response

@@ -7,7 +7,7 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks.
+> Items are individual pieces of data in your database. They can be anything, from articles, to IoT status checks. [Learn more about Items](/concepts/items/).
 
 </div>
 <div class="right">
@@ -76,7 +76,9 @@ If your collection is a singleton, this endpoint will return the item.
 </div>
 <div class="right">
 
-### `GET /items`
+```
+GET /items
+```
 
 ```json
 // Response
@@ -104,7 +106,7 @@ If your collection is a singleton, this endpoint will return the item.
 
 ## Retrieve an Item
 
-List all items that exist in Directus.
+Get an item that exists in Directus.
 
 <div class="two-up">
 <div class="left">
@@ -120,7 +122,9 @@ Returns a [item object](#the-item-object) if a valid primary key was provided.
 </div>
 <div class="right">
 
-### `GET /items/:id`
+```
+GET /items/:id
+```
 
 ```json
 // Response
@@ -164,7 +168,9 @@ Returns the [item object](#the-item-object) of the item that was created.
 </div>
 <div class="right">
 
-### `POST /items`
+```
+POST /items
+```
 
 ```json
 // Request
@@ -217,7 +223,9 @@ Returns the [item object](#the-item-object) of the item that was updated.
 </div>
 <div class="right">
 
-### `PATCH /items/:id`
+```
+PATCH /items/:id
+```
 
 ```json
 // Request
@@ -293,7 +301,9 @@ If your collection is a singleton, this endpoint will act the same as the [Updat
 </div>
 <div class="right">
 
-### `PATCH /items`
+```
+PATCH /items
+```
 
 ```json
 // Request
@@ -356,7 +366,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /items/:id`
+```
+DELETE /items/:id
+```
 
 ```json
 // Empty Response
@@ -385,7 +397,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /items`
+```
+DELETE /items
+```
 
 ```json
 // Request

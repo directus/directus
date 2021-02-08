@@ -7,7 +7,7 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Folders can be used to organize files. Folders are virtual, and aren't mirrored on the storage adapter.
+> Folders can be used to organize files within the platform. Folders are virtual, and aren't mirrored within the storage adapter.
 
 </div>
 <div class="right">
@@ -72,7 +72,9 @@ data will be an empty array.
 </div>
 <div class="right">
 
-### `GET /folders`
+```
+GET /folders
+```
 
 ```json
 // Response
@@ -113,7 +115,9 @@ Returns a [folder object](#the-folder-object) if a valid primary key was provide
 </div>
 <div class="right">
 
-### `GET /folders/:id`
+```
+GET /folders/:id
+```
 
 ```json
 // Response
@@ -155,7 +159,9 @@ Returns the [folder object](#the-folder-object) of the folder that was created.
 </div>
 <div class="right">
 
-### `POST /folders`
+```
+POST /folders
+```
 
 ```json
 // Request
@@ -204,7 +210,9 @@ Returns the [folder object](#the-folder-object) of the folder that was updated.
 </div>
 <div class="right">
 
-### `PATCH /folders/:id`
+```
+PATCH /folders/:id
+```
 
 ```json
 // Request
@@ -251,7 +259,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /folders/:id`
+```
+DELETE /folders/:id
+```
 
 ```json
 // Empty Response
@@ -286,7 +296,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /folders`
+```
+DELETE /folders
+```
 
 ```json
 // Request

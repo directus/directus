@@ -95,7 +95,7 @@ function css (el, property) {
 <style lang="stylus">
 /* stylelint-disable */
 $navbar-vertical-padding = 0.7rem
-$navbar-horizontal-padding = 3.75rem
+$navbar-horizontal-padding = 30px
 
 .navbar
   padding $navbar-vertical-padding $navbar-horizontal-padding
@@ -130,13 +130,20 @@ $navbar-horizontal-padding = 3.75rem
     display flex
     color white
     .search-box
-      flex: 0 0 auto
+      flex 0 0 auto
       vertical-align top
       input
         border none
         color $textColor
+        padding 0 0.5rem 0 2rem
+        background-position 0.5rem 0.5rem
+        @media (max-width: 959px)
+          padding 0 1rem 0 1rem
+        &:focus
+          padding 0 0.5rem 0 2rem
       .suggestions
-        border 2px solid $borderColor
+        border none
+        box-shadow 0 2px 40px 0 rgba(23, 41, 64, 0.05), 0 5px 10px 0 rgba(23, 41, 64, 0.1)
       .suggestion
         &.focused
           a

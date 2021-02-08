@@ -49,6 +49,12 @@ Run the following command from the root directory.
 npm run dev
 ```
 
+If you are only looking to work on the Documentation (public website version), you can navigate to the `docs` directory and run the following command:
+
+```bash
+npm run dev:site
+```
+
 ::: tip
 
 If you encounter errors during this installation process, make sure your node version meets the

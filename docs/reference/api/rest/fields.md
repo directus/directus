@@ -7,7 +7,7 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Fields are individual pieces of content within an item. They are mapped to columns in the database.
+> Fields are individual pieces of content within an item. They are mapped to columns in the database. [Learn more about Fields](/concepts/fields/).
 
 </div>
 <div class="right">
@@ -197,7 +197,9 @@ An array of [field objects](#the-field-object).
 </div>
 <div class="right">
 
-### `GET /fields`
+```
+GET /fields
+```
 
 ```json
 {
@@ -267,7 +269,9 @@ An array of [field objects](#the-field-object).
 </div>
 <div class="right">
 
-### `GET /fields/:collection`
+```
+GET /fields/:collection
+```
 
 ```json
 {
@@ -337,7 +341,9 @@ A [field object](#the-field-object).
 </div>
 <div class="right">
 
-### `GET /fields/:collection/:field`
+```
+GET /fields/:collection/:field
+```
 
 ```json
 {
@@ -422,7 +428,9 @@ The [field object](#the-field-object) for the created field.
 </div>
 <div class="right">
 
-### `POST /fields/:collection`
+```
+POST /fields/:collection
+```
 
 ```json
 // Request
@@ -532,7 +540,9 @@ The [field object](#the-field-object) for the updated field.
 </div>
 <div class="right">
 
-### `PATCH /fields/:collection/:field`
+```
+PATCH /fields/:collection/:field
+```
 
 ```json
 // Request
@@ -613,7 +623,9 @@ Be aware, this will delete the column from the database, including all data in i
 </div>
 <div class="right">
 
-### `DELETE /fields/:collection/:field`
+```
+DELETE /fields/:collection/:field
+```
 
 ```json
 // Empty Response

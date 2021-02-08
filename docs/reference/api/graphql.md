@@ -1,10 +1,10 @@
-# GraphQL
+# GraphQL API
 
-Directus offers a GraphQL endpoint out of the box. GraphQL can be access through `/graphql`.
+> Directus offers a GraphQL endpoint out-of-the-box. It has the same functionality as the REST API, and can be accessed through `/graphql`.
 
 ::: warning Mutations
 
-Directus' GraphQL endpoint does not yet support mutations at this point.
+The Directus GraphQL endpoint does not yet support mutations.
 
 :::
 

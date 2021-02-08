@@ -7,8 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever other
-structures you can think of.
+> What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever other
+structures you can think of. [Learn more about Relationships](/concepts/relationships/).
 
 </div>
 <div class="right">
@@ -98,7 +98,9 @@ available, data will be an empty array.
 </div>
 <div class="right">
 
-### `GET /relations`
+```
+GET /relations
+```
 
 ```json
 // Response
@@ -144,7 +146,9 @@ Returns the requested [relation object](#the-relation-object).
 </div>
 <div class="right">
 
-### `GET /relations/:id`
+```
+GET /relations/:id
+```
 
 ```json
 // Response
@@ -190,7 +194,9 @@ Returns the [relation object](#the-relation-object) for the created relation.
 </div>
 <div class="right">
 
-### `POST /relations`
+```
+POST /relations
+```
 
 ```json
 // Request
@@ -246,7 +252,9 @@ Returns the [relation object](#the-relation-object) for the created relation.
 </div>
 <div class="right">
 
-### `PATCH /relations/:id`
+```
+PATCH /relations/:id
+```
 
 ```json
 // Request
@@ -292,7 +300,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /relations/:id`
+```
+DELETE /relations/:id
+```
 
 ```json
 // Empty Response
@@ -321,7 +331,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /relations`
+```
+DELETE /relations
+```
 
 ```json
 // Request

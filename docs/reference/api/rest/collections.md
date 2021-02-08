@@ -7,8 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Collections are the individual collections of items, similar to tables in a database. Changes to collections will alter
-the schema of the database
+> Collections are the individual collections of items, similar to tables in a database. Changes to collections will alter
+the schema of the database. [Learn more about Collections](/concepts/collections/).
 
 </div>
 <div class="right">
@@ -148,7 +148,9 @@ An array of [collection objects](#the-collection-object).
 </div>
 <div class="right">
 
-### `GET /collections`
+```
+GET /collections
+```
 
 ```json
 {
@@ -212,7 +214,9 @@ A [collection object](#the-collection-object).
 </div>
 <div class="right">
 
-### `GET /collections/:collection`
+```
+GET /collections/:collection
+```
 
 ```json
 {
@@ -281,7 +285,9 @@ The [collection object](#the-collection-object) for the collection created in th
 </div>
 <div class="right">
 
-### `POST /collections`
+```
+POST /collections
+```
 
 ```json
 // Request
@@ -350,7 +356,9 @@ The [collection object](#the-collection-object) for the updated collection in th
 </div>
 <div class="right">
 
-### `PATCH /collections/:collection`
+```
+PATCH /collections/:collection
+```
 
 ```json
 // Request
@@ -411,7 +419,9 @@ Be aware, this will delete the table from the database, including all items in i
 </div>
 <div class="right">
 
-### `DELETE /collections/:collection`
+```
+DELETE /collections/:collection
+```
 
 ```json
 // Empty Response

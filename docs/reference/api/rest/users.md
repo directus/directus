@@ -7,7 +7,7 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Groups of users that share permissions.
+> Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role which defines its granular Permissions. [Learn more about Users](/concepts/users/).
 
 </div>
 <div class="right">
@@ -116,7 +116,9 @@ will be an empty array.
 </div>
 <div class="right">
 
-### `GET /users`
+```
+GET /users
+```
 
 ```json
 // Response
@@ -172,7 +174,9 @@ Returns the requested [user object](#the-user-object).
 </div>
 <div class="right">
 
-### `GET /users/:id`
+```
+GET /users/:id
+```
 
 ```json
 // Response
@@ -224,7 +228,9 @@ Returns the [user object](#the-user-object) for the currently authenticated user
 </div>
 <div class="right">
 
-### `GET /users/me`
+```
+GET /users/me
+```
 
 ```json
 // Response
@@ -282,7 +288,9 @@ Returns the [user object(s)](#the-user-object) for the created user(s).
 </div>
 <div class="right">
 
-### `POST /users`
+```
+POST /users
+```
 
 ```json
 // Request
@@ -348,7 +356,9 @@ Returns the [user object](#the-user-object) for the created user.
 </div>
 <div class="right">
 
-### `PATCH /users/:id`
+```
+PATCH /users/:id
+```
 
 ```json
 // Request
@@ -404,7 +414,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /users/:id`
+```
+DELETE /users/:id
+```
 
 ```json
 // Empty Response
@@ -433,7 +445,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /users`
+```
+DELETE /users
+```
 
 ```json
 // Request
@@ -478,7 +492,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `POST /users/invite`
+```
+POST /users/invite
+```
 
 ```json
 // Request
@@ -526,7 +542,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `POST /users/invite/accept`
+```
+POST /users/invite/accept
+```
 
 ```json
 // Request
@@ -577,7 +595,9 @@ OTP secret to be saved in the authenticator app.
 </div>
 <div class="right">
 
-### `POST /users/me/tfa/enable`
+```
+POST /users/me/tfa/enable
+```
 
 ```json
 // Request
@@ -625,7 +645,9 @@ Empty response.
 </div>
 <div class="right">
 
-### `POST /users/me/tfa/disable`
+```
+POST /users/me/tfa/disable
+```
 
 ```json
 // Request

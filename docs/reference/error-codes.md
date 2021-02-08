@@ -1,5 +1,7 @@
 # Error Codes
 
+> Below is a listing of global error codes used within Directus, and what they mean.
+
 | Error Code             | HTTP Status | Description                                                  |
 | ---------------------- | ----------- | ------------------------------------------------------------ |
 | `FAILED_VALIDATION`    | 400         | Validation for this particular item failed                   |

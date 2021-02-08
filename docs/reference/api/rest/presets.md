@@ -7,8 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom item
-listings and bookmarks for users of the app.
+> Presets hold the preferences of individual users of the platform. This allows Directus to show and maintain custom item
+listings and bookmarks for users of the app.  [Learn more about Presets](/concepts/collections/#collection-presets-bookmarks).
 
 </div>
 <div class="right">
@@ -121,7 +121,9 @@ data will be an empty array.
 </div>
 <div class="right">
 
-### `GET /presets`
+```
+GET /presets
+```
 
 ```json
 // Response
@@ -184,7 +186,9 @@ Returns the requested [preset object](#the-preset-object).
 </div>
 <div class="right">
 
-### `GET /presets/:id`
+```
+GET /presets/:id
+```
 
 ```json
 // Response
@@ -247,7 +251,9 @@ Returns the [preset object](#the-preset-object) for the created preset.
 </div>
 <div class="right">
 
-### `POST /presets`
+```
+POST /presets
+```
 
 ```json
 // Request
@@ -305,7 +311,9 @@ Returns the [preset object](#the-preset-object) for the created preset.
 </div>
 <div class="right">
 
-### `PATCH /presets/:id`
+```
+PATCH /presets/:id
+```
 
 ```json
 // Request
@@ -353,7 +361,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /presets/:id`
+```
+DELETE /presets/:id
+```
 
 ```json
 // Empty Response
@@ -382,7 +392,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /presets`
+```
+DELETE /presets
+```
 
 ```json
 // Request

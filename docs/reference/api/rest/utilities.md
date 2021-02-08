@@ -7,7 +7,7 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Various utilities.
+> Utilities are the various helper endpoints located within the API.
 
 </div>
 <div class="right">
@@ -42,7 +42,9 @@ Hashed string.
 </div>
 <div class="right">
 
-### `POST /utils/hash/generate`
+```
+POST /utils/hash/generate
+```
 
 ```json
 // Request
@@ -91,7 +93,9 @@ Boolean.
 </div>
 <div class="right">
 
-### `POST /utils/hash/verify`
+```
+POST /utils/hash/verify
+```
 
 ```json
 // Request
@@ -141,7 +145,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `POST /utils/sort/:collection`
+```
+POST /utils/sort/:collection
+```
 
 ```json
 // Request

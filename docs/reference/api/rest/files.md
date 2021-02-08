@@ -7,8 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Files are the objects that contain information about the file managed through Directus. Looking for the actual file
-data, including thumbnails? See the [/assets](/reference/api/assets/) endpoint.
+> Files are the objects that contain information about the file managed through Directus. If you're looking for the actual file
+data, including thumbnails, see the [/assets](/reference/api/assets/) endpoint. [Learn more about Files](/concepts/files/).
 
 </div>
 <div class="right">
@@ -145,7 +145,9 @@ will be an empty array.
 </div>
 <div class="right">
 
-### `GET /files`
+```
+GET /files
+```
 
 ```json
 {
@@ -215,7 +217,9 @@ Returns a [file object](#the-file-object) if a valid primary key was provided.
 </div>
 <div class="right">
 
-### `GET /files/:id`
+```
+GET /files/:id
+```
 
 ```json
 {
@@ -330,7 +334,9 @@ multiple files were uploaded at once.
 </div>
 <div class="right">
 
-### `POST /files`
+```
+POST /files
+```
 
 ```
 // Request
@@ -424,7 +430,9 @@ Returns the [file object](#the-file-object) for the imported file.
 </div>
 <div class="right">
 
-### `POST /files/import`
+```
+POST /files/import
+```
 
 ```json
 // Request
@@ -509,7 +517,9 @@ Returns the [file object](#the-file-object) for the updated file.
 </div>
 <div class="right">
 
-### `PATCH /files/:id`
+```
+PATCH /files/:id
+```
 
 ```json
 // Request
@@ -609,7 +619,9 @@ Returns the [file objects](#the-file-object) for the updated files.
 </div>
 <div class="right">
 
-### `PATCH /files`
+```
+PATCH /files
+```
 
 ```json
 // Request
@@ -710,7 +722,9 @@ Empty response.
 </div>
 <div class="right">
 
-### `DELETE /files/:id`
+```
+DELETE /files/:id
+```
 
 ```json
 // Empty Response
@@ -745,7 +759,9 @@ Empty response.
 </div>
 <div class="right">
 
-### `DELETE /files`
+```
+DELETE /files
+```
 
 ```json
 // Request

@@ -67,10 +67,12 @@ html
     h2
       border-bottom 0
       margin-top 3rem
+      font-size: 2rem;
     hr + h2
       margin-top -1 * ($navbarHeight + 2rem)
     h3
       margin-top 3rem
+      margin-bottom 0.5rem
       font-size 1.2rem
     h4
       margin-top 2rem
@@ -100,6 +102,11 @@ pre
 
 .two-up .right
   margin-top 50px
+  .table-of-contents
+    margin-top -20px
+  pre,
+  pre[class*="language-"]
+    margin-top 0
 
 @media (min-width: 1000px)
   .two-up
@@ -121,13 +128,14 @@ pre
 
 .navbar .home-link
   width 4.3rem
+  height 40px
   overflow hidden
 
-@media (min-width: 592px)
+@media (min-width: 560px)
   .navbar .home-link
     width 12.2rem
 
-@media (min-width: 700px)
+@media (min-width: 660px)
   .navbar .home-link
     width auto
     overflow auto

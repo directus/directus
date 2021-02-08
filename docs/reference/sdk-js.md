@@ -1,7 +1,9 @@
-# SDK JS
+# JavaScript SDK
 
-The JS SDK is a small wrapper around [Axios](https://npmjs.com/axios) that makes it a little easier to use the Directus
+> The JS SDK is a small wrapper around [Axios](https://npmjs.com/axios) that makes it a little easier to use the Directus
 API from a JavaScript powered project.
+
+[[toc]]
 
 ## Installation
 
@@ -35,11 +37,9 @@ async function getData() {
 getData();
 ```
 
-## Reference
+## Global
 
-### Global
-
-#### Initialize
+### Initialize
 
 ```js
 import DirectusSDK from '@directus/sdk-js';
@@ -61,7 +61,7 @@ const directus = new DirectusSDK('https://api.example.com/', {
 });
 ```
 
-#### Get / set API URL
+### Get / Set API URL
 
 ```js
 // Get the used API base URL
@@ -72,17 +72,14 @@ console.log(directus.url);
 directus.url = 'https://api2.example.com';
 ```
 
-#### Access to Axios
+### Access to Axios
 
 You can tap into the Axios instance used directly through `directus.axios`.
 
----
 
-### Items
+## Items
 
-#### Create
-
-##### Single Item
+### Create Single Item
 
 ```js
 directus.items('articles').create({
@@ -90,7 +87,7 @@ directus.items('articles').create({
 });
 ```
 
-##### Multiple Items
+### Create Multiple Items
 
 ```js
 directus.items('articles').create([
@@ -103,15 +100,13 @@ directus.items('articles').create([
 ]);
 ```
 
-#### Read
-
-##### All
+### Read All
 
 ```js
 directus.items('articles').read();
 ```
 
-##### By Query
+### Read By Query
 
 ```js
 directus.items('articles').read({
@@ -124,7 +119,7 @@ directus.items('articles').read({
 });
 ```
 
-##### By Primary Key(s)
+### Read By Primary Key(s)
 
 ```js
 // One
@@ -144,9 +139,7 @@ directus.items('articles').read(15, { fields: ['title'] });
 directus.items('articles').read([15, 42], { fields: ['title'] });
 ```
 
-#### Update
-
-##### One or More Item(s), Single Value
+### Update One or More Item(s), Single Value
 
 ```js
 // One
@@ -168,7 +161,7 @@ directus.items('articles').update(15, { title: 'An Updated title' }, { fields: [
 directus.items('articles').update([15, 42], { title: 'An Updated title' }, { fields: ['title'] });
 ```
 
-##### Multiple Items, Multiple Values
+### Update Multiple Items, Multiple Values
 
 ```js
 directus.items('articles').update([
@@ -201,7 +194,7 @@ directus.items('articles').update(
 );
 ```
 
-##### Multiple Items by Query, Single Value
+### Update Multiple Items by Query, Single Value
 
 ```js
 directus.items('articles').update(
@@ -218,7 +211,7 @@ directus.items('articles').update(
 );
 ```
 
-#### Delete
+### Delete
 
 ```js
 // One
@@ -228,19 +221,16 @@ directus.items('articles').delete(15);
 directus.items('articles').delete([15, 42]);
 ```
 
----
 
-### Activity
+## Activity
 
-#### Read Activity
-
-##### All
+### Read All Activity
 
 ```js
 directus.activity.read();
 ```
 
-##### By Query
+### Read Activity By Query
 
 ```js
 directus.activity.read({
@@ -252,7 +242,7 @@ directus.activity.read({
 });
 ```
 
-##### By Primary Key(s)
+### Read Activity By Primary Key(s)
 
 ```js
 // One
@@ -272,7 +262,7 @@ directus.activity.read(15, { fields: ['action'] });
 directus.activity.read([15, 42], { fields: ['action'] });
 ```
 
-#### Create a Comment
+### Create a Comment
 
 ```js
 directus.activity.comments.create({
@@ -282,7 +272,7 @@ directus.activity.comments.create({
 });
 ```
 
-#### Update a comment
+### Update a comment
 
 ```js
 directus.activity.comments.update(31, { comment: 'Howdy, world!' });
@@ -290,7 +280,7 @@ directus.activity.comments.update(31, { comment: 'Howdy, world!' });
 
 Note: The passed key is the primary key of the comment
 
-#### Delete a comment
+### Delete a comment
 
 ```js
 directus.activity.comments.delete(31);
@@ -298,15 +288,14 @@ directus.activity.comments.delete(31);
 
 Note: The passed key is the primary key of the comment
 
----
 
-### Auth
+## Auth
 
-#### Configuration
+### Configuration
 
 Note: these configuration options are passed in the top level SDK constructor.
 
-##### mode
+#### mode
 
 `cookie` or `json`. When in cookie mode, the API will set the refresh token in a `httpOnly` secure cookie that can't be
 accessed from client side JS. This is the most secure way to connect to the API from a public front-end website.
@@ -315,7 +304,7 @@ When you can't rely on cookies, or need more control over handling the storage o
 return the refresh token like "regular" in the payload. You can use the `storage` option (see below) to control where
 the refresh token is stored / read from
 
-##### storage
+#### storage
 
 When using `json` for mode, the refresh token needs to be stored somewhere. The `storage` option allows you to plug in
 any object that has an async `setItem()` and `getItem()` method. This allows you to plugin things like
@@ -328,23 +317,23 @@ import DirectusSDK from '@directus/sdk-js';
 const directus = new DirectusSDK('https://api.example.com', { auth: { storage: localforage, mode: 'json' } });
 ```
 
-##### autoRefresh
+#### autoRefresh
 
 Whether or not to automatically call `refresh()` when the access token is about to expire. Defaults to `true`
 
-#### Get / Set Token
+### Get / Set Token
 
 ```
 directus.auth.token = 'abc.def.ghi';
 ```
 
-#### Login
+### Login
 
 ```js
 directus.auth.login({ email: 'admin@example.com', password: 'd1r3ctu5' });
 ```
 
-#### Refresh
+### Refresh
 
 Note: if you have autoRefresh enabled, you most likely won't need to use this manually.
 
@@ -352,19 +341,19 @@ Note: if you have autoRefresh enabled, you most likely won't need to use this ma
 directus.auth.refresh();
 ```
 
-#### Logout
+### Logout
 
 ```js
 directus.auth.logout();
 ```
 
-#### Request a Password Reset
+### Request a Password Reset
 
 ```js
 directus.auth.password.request('admin@example.com');
 ```
 
-#### Reset a Password
+### Reset a Password
 
 ```js
 directus.auth.password.reset('abc.def.ghi', 'n3w-p455w0rd');
@@ -372,9 +361,8 @@ directus.auth.password.reset('abc.def.ghi', 'n3w-p455w0rd');
 
 Note: the token passed in the first parameter is sent in an email to the user when using `request()`
 
----
 
-### Collections
+## Collections
 
 ```js
 directus.collections;
@@ -382,9 +370,8 @@ directus.collections;
 
 Same methods as `directus.items(collection)`.
 
----
 
-### Fields
+## Fields
 
 ```js
 directus.fields;
@@ -392,9 +379,8 @@ directus.fields;
 
 Same methods as `directus.items(collection)`.
 
----
 
-### Files
+## Files
 
 ```js
 directus.files;
@@ -402,9 +388,8 @@ directus.files;
 
 Same methods as `directus.items(collection)`.
 
----
 
-### Folders
+## Folders
 
 ```js
 directus.folders;
@@ -412,9 +397,8 @@ directus.folders;
 
 Same methods as `directus.items(collection)`.
 
----
 
-### Permissions
+## Permissions
 
 ```js
 directus.permissions;
@@ -422,9 +406,8 @@ directus.permissions;
 
 Same methods as `directus.items(collection)`.
 
----
 
-### Presets
+## Presets
 
 ```js
 directus.presets;
@@ -432,9 +415,8 @@ directus.presets;
 
 Same methods as `directus.items(collection)`.
 
----
 
-### Relations
+## Relations
 
 ```js
 directus.relations;
@@ -442,9 +424,8 @@ directus.relations;
 
 Same methods as `directus.items(collection)`.
 
----
 
-### Revisions
+## Revisions
 
 ```js
 directus.revisions;
@@ -452,9 +433,8 @@ directus.revisions;
 
 Same methods as `directus.items(collection)`.
 
----
 
-### Roles
+## Roles
 
 ```js
 directus.roles;
@@ -462,31 +442,29 @@ directus.roles;
 
 Same methods as `directus.items(collection)`.
 
----
 
-### Server
+## Server
 
-#### Get the API Spec in OAS Format
+### Get the API Spec in OAS Format
 
 ```js
 directus.server.specs.oas();
 ```
 
-#### Ping the Server
+### Ping the Server
 
 ```js
 directus.server.ping();
 ```
 
-#### Get Server/Project Info
+### Get Server/Project Info
 
 ```js
 directus.server.info();
 ```
 
----
 
-### Settings
+## Settings
 
 ```js
 directus.settings;
@@ -494,9 +472,8 @@ directus.settings;
 
 Same methods as `directus.items(collection)`.
 
----
 
-### Users
+## Users
 
 ```js
 directus.users;
@@ -504,7 +481,7 @@ directus.users;
 
 Same methods as `directus.items(collection)`, and:
 
-#### Invite a New User
+### Invite a New User
 
 ```js
 directus.users.invite('admin@example.com', 'fe38136e-52f7-4622-8498-112b8a32a1e2');
@@ -512,7 +489,7 @@ directus.users.invite('admin@example.com', 'fe38136e-52f7-4622-8498-112b8a32a1e2
 
 The second parameter is the role of the user
 
-#### Accept a User Invite
+### Accept a User Invite
 
 ```js
 directus.users.acceptInvite('abc.def.ghi', 'n3w-p455w0rd');
@@ -520,19 +497,19 @@ directus.users.acceptInvite('abc.def.ghi', 'n3w-p455w0rd');
 
 The provided token is sent to the user's email
 
-#### Enable Two-Factor Authentication
+### Enable Two-Factor Authentication
 
 ```js
 directus.users.tfa.enable('my-password');
 ```
 
-#### Disable Two-Factor Authentication
+### Disable Two-Factor Authentication
 
 ```js
 directus.users.tfa.disable('691402');
 ```
 
-#### Get the Current User
+### Get the Current User
 
 ```js
 directus.users.me.read();
@@ -546,7 +523,7 @@ directus.users.me.read({
 });
 ```
 
-#### Update the Current Users
+### Update the Current Users
 
 ```js
 directus.users.me.update({ first_name: 'Admin' });
@@ -558,11 +535,9 @@ Supports optional query:
 directus.users.me.update({ first_name: 'Admin' }, { fields: ['last_access'] });
 ```
 
----
+## Utils
 
-### Utils
-
-#### Get a Random String
+### Get a Random String
 
 ```js
 directus.utils.random.string();
@@ -574,19 +549,19 @@ Supports an optional `length`:
 directus.utils.random.string(32);
 ```
 
-#### Generate a Hash for a Given Value
+### Generate a Hash for a Given Value
 
 ```js
 directus.utils.hash.generate('My String');
 ```
 
-#### Verify if a Hash is Valid
+### Verify if a Hash is Valid
 
 ```js
 directus.utils.hash.verify('My String', '$argon2i$v=19$m=4096,t=3,p=1$A5uogJh');
 ```
 
-#### Sort Items in a Collection
+### Sort Items in a Collection
 
 ```js
 directus.utils.sort('articles', 15, 42);
@@ -594,7 +569,7 @@ directus.utils.sort('articles', 15, 42);
 
 This will move item 15 to the position of item 42, and move everything in between one "slot" up
 
-#### Revert to a Previous Revision
+### Revert to a Previous Revision
 
 ```js
 directus.utils.revert(451);

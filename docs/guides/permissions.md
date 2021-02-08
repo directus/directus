@@ -55,19 +55,9 @@ configuration field is disabled.
 5. **Item Permissions** control which items can be deleted, as defined by the [Filter Rules](/reference/filter-rules/))
 	 entered.
 
-## Configuring Workflows
+## Configuring Public Permissions
 
-Workflows are a way to add structured stages to the flow of content authoring. They are primarily defined through the permissions for a Collection, but can be further enhanced via email notifications, custom interfaces, and automation. Directus supports endlessly configurable workflows, so we will only cover one example below.
-
-Let's assume you would like to create a structured workflow for an **Articles** collection. The first step is to [Create a Field](/guides/fields/#creating-a-field) that can track the article "status" — we'll call it **Status**, but it can be named anything.
-
-Now you can configure your permissions based on the possible values of that Status field. In this case, those values will be various content stages, such as `draft`, `review`, `approved`, and `published`.
-
-Next, you will want to create different Roles to scope each stage of the workflow. Let's keep this simple and assume there are only two roles called `author` and `manager`.
-
-Finally, we would configure the permissions for these roles such that they are properly restricted to create content and update the status.
-
-<!-- @TODO -->
+Public permissions are managed the same as [normal role permissions](#configuring-role-permissions), however they are done through the Public Role.
 
 ## Configuring System Permissions
 
@@ -83,3 +73,17 @@ To reset the role's system permissions for proper App access, expand the system 
 Permissions" at the bottom of the listing.
 
 :::
+
+## Configuring Workflows
+
+Workflows are a way to add structured stages to the flow of content authoring. They are primarily defined through the permissions for a Collection, but can be further enhanced via email notifications, custom interfaces, and automation. Directus supports endlessly configurable workflows, so we will only cover one example below.
+
+Let's assume you would like to create a structured workflow for an **Articles** collection. The first step is to [Create a Field](/guides/fields/#creating-a-field) that can track the article "status" — we'll call it **Status**, but it can be named anything.
+
+Now you can configure your permissions based on the possible values of that Status field. In this case, those values will be various content stages, such as `draft`, `review`, `approved`, and `published`.
+
+Next, you will want to create different Roles to scope each stage of the workflow. Let's keep this simple and assume there are only two roles called `author` and `manager`.
+
+Finally, we would configure the permissions for these roles such that they are properly restricted to create content and update the status.
+
+<!-- @TODO -->

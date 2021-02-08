@@ -1,7 +1,6 @@
 # Command Line Interface
 
-Directus ships with a (small) command line interface (CLI) that you can use for various actions. All functionality can
-be accessed by running `npx directus <command>` in your project folder.
+> Directus ships with a command line interface (CLI) that you can use for various actions. All functionality can be accessed by running `npx directus <command>` in your project folder.
 
 [[toc]]
 
@@ -11,7 +10,7 @@ be accessed by running `npx directus <command>` in your project folder.
 npx directus init
 ```
 
-Will install the required database driver, and create a new `.env` file based on your inputted values.
+Will install the required database driver, and create a `.env` file based on the inputted values.
 
 ## Bootstrap a Project
 

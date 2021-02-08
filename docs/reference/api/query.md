@@ -4,7 +4,7 @@ pageClass: page-reference
 
 # Global Query Parameters
 
-Most operations within Directus can be manipulated with the following parameters:
+> Most Directus API Endpoint operations can be manipulated with the following parameters. It is important to understand them to get the most out of the platform.
 
 - [Fields](#fields)
 - [Filter](#filter)
@@ -43,8 +43,7 @@ Get all top-level fields and all second-level relational fields\
 
 ::: warning Nested Wildcard
 
-While you can theoretically keep nesting wildcards to your heart's content, it's not recommend for production use.
-Nested wildcards can result in degraded performance, and circular parent-child-parent structures.
+While you can theoretically nest wildcards infinitely, it's not recommended for production use. Nested wildcards can result in degraded performance, and circular parent-child-parent structures.
 
 :::
 

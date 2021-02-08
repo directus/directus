@@ -7,7 +7,7 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Groups of users that share permissions.
+> Settings are key-value pairs that are stored in the database, and control different aspects of the project. Only administrators have access to manage Settings.
 
 </div>
 <div class="right">
@@ -108,7 +108,9 @@ Returns the [settings object](#the-settings-object).
 </div>
 <div class="right">
 
-### `GET /settings`
+```
+GET /settings
+```
 
 ```json
 // Response
@@ -159,7 +161,9 @@ Returns the [settings object](#the-setting-object).
 </div>
 <div class="right">
 
-### `PATCH /settings`
+```
+PATCH /settings
+```
 
 ```json
 // Request

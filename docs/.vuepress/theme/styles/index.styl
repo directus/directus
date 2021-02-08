@@ -103,6 +103,7 @@ blockquote
   border-left 2px solid #F0F4F9
   margin 2rem 0
   padding .25rem 0 .25rem 1rem
+  max-width 740px
 
   & > p
     margin 0
@@ -149,6 +150,8 @@ h2
   padding-bottom .3rem
   border-bottom 2px solid $borderColor
   margin-bottom 1.5rem !important
+  {$contentClass}:not(.custom) > &
+    padding-top ($navbarHeight + 4.5rem)
 
 h3
   font-size 1.25rem

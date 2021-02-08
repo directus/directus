@@ -1,8 +1,6 @@
 # Field Transforms
 
-Directus contains a couple special field flags that can be used to alter the IO of a fields value when it's being used
-through the API. This is used—among other things—for casting boolean values to JSON `true` / `false`, or converting
-DB-date formats to ISO8601.
+> Directus contains special flags that can be used to alter the I/O of a field's value when it's being used through the API. This can be used to cast boolean values to JSON `true` / `false`, convert DB-date formats to ISO8601, and more.
 
 These flags are stored in the `special` field of `directus_fields`.
 

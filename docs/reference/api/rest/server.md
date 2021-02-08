@@ -7,7 +7,7 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Server information.
+> Provides detailed information about the project server, its schema, and its health. [Learn more about Projects](/concepts/projects/).
 
 </div>
 <div class="right">
@@ -39,7 +39,9 @@ Object conforming to [the OpenAPI Specification](https://swagger.io/specificatio
 </div>
 <div class="right">
 
-### `GET /server/specs/oas`
+```
+GET /server/specs/oas
+```
 
 ```json
 // Response
@@ -67,7 +69,7 @@ Object conforming to [the OpenAPI Specification](https://swagger.io/specificatio
 
 ## Ping
 
-Ping, pong. Ping.. Pong! 🏓
+Ping... pong! 🏓
 
 <div class="two-up">
 <div class="left">
@@ -79,9 +81,12 @@ Pong.
 </div>
 <div class="right">
 
-### `GET /server/ping`
-
 ```
+GET /server/ping
+```
+
+```json
+// Returns
 pong
 ```
 
@@ -145,7 +150,9 @@ How much memory is available on the operating system.
 </div>
 <div class="right">
 
-### `GET /server/info`
+```
+GET /server/info
+```
 
 ```json
 // Response
@@ -242,7 +249,9 @@ Array with the status of all individually connected services.
 </div>
 <div class="right">
 
-### `GET /server/health`
+```
+GET /server/health
+```
 
 ```json
 // Response

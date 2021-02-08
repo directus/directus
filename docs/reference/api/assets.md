@@ -1,6 +1,6 @@
 # Assets
 
-The `/assets` endpoint can be used to stream/retrieve the actual file contents from files managed in Directus.
+> The `/assets` endpoint can be used to stream or retrieve the actual file contents from assets managed within Directus.
 
 ## Accessing an Original File
 

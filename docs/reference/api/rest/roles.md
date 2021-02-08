@@ -7,7 +7,7 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-Groups of users that share permissions.
+> Roles define a specific set of access permissions, and are the primary organizational structure for Users within the platform. [Learn more about Roles](/concepts/roles/).
 
 </div>
 <div class="right">
@@ -102,7 +102,9 @@ will be an empty array.
 </div>
 <div class="right">
 
-### `GET /roles`
+```
+GET /roles
+```
 
 ```json
 // Response
@@ -151,7 +153,9 @@ Returns the requested [role object](#the-role-object).
 </div>
 <div class="right">
 
-### `GET /roles/:id`
+```
+GET /roles/:id
+```
 
 ```json
 // Response
@@ -200,7 +204,9 @@ Returns the [role object(s)](#the-role-object) for the created role(s).
 </div>
 <div class="right">
 
-### `POST /roles`
+```
+POST /roles
+```
 
 ```json
 // Request
@@ -261,7 +267,9 @@ Returns the [role object](#the-role-object) for the created role.
 </div>
 <div class="right">
 
-### `PATCH /roles/:id`
+```
+PATCH /roles/:id
+```
 
 ```json
 // Request
@@ -310,7 +318,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /roles/:id`
+```
+DELETE /roles/:id
+```
 
 ```json
 // Empty Response
@@ -339,7 +349,9 @@ Empty body.
 </div>
 <div class="right">
 
-### `DELETE /roles`
+```
+DELETE /roles
+```
 
 ```json
 // Request

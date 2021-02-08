@@ -7,8 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-All events that happen within Directus are tracked and stored in the activities collection. This gives you full
-accountability over everything that happens.
+> All events that within Directus are tracked and stored in the activities collection. This gives you full
+accountability over everything that happens. [Learn more about Activity](/concepts/activity/).
 
 </div>
 <div class="right">
@@ -99,7 +99,9 @@ available, data will be an empty array.
 </div>
 <div class="right">
 
-### `GET /activity`
+```
+GET /activity
+```
 
 ```json
 {
@@ -145,7 +147,9 @@ Returns an [activity object](#the-activity-object) if a valid identifier was pro
 </div>
 <div class="right">
 
-### `GET /activity/:id`
+```
+GET /activity/:id
+```
 
 ```json
 {
@@ -198,7 +202,9 @@ Returns the [activity object](#the-activity-object) of the created comment.
 </div>
 <div class="right">
 
-### `POST /activity/comment`
+```
+POST /activity/comment
+```
 
 ```json
 // Request
@@ -257,7 +263,9 @@ Returns the [activity object](#the-activity-object) of the created comment.
 </div>
 <div class="right">
 
-### `PATCH /activity/comment/:id`
+```
+PATCH /activity/comment/:id
+```
 
 ```json
 // Request
@@ -299,7 +307,9 @@ Deletes a comment.
 <div class="left"></div>
 <div class="right">
 
-### `DELETE /activity/comment/:id`
+```
+DELETE /activity/comment/:id
+```
 
 ```json
 // Empty Response

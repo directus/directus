@@ -347,11 +347,8 @@ module.exports = {
 						children: [
 							{
 								type: 'page',
-								path: '/reference/api/rest/items',
-								title: 'Items',
-							},
-							{
-								type: 'divider',
+								path: '/reference/api/rest/introduction',
+								title: 'Introduction',
 							},
 							{
 								type: 'page',
@@ -387,6 +384,11 @@ module.exports = {
 								type: 'page',
 								path: '/reference/api/rest/folders',
 								title: 'Folders',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/rest/items',
+								title: 'Items',
 							},
 							{
 								type: 'page',
@@ -443,7 +445,7 @@ module.exports = {
 					{
 						type: 'page',
 						path: '/reference/api/graphql',
-						title: 'GraphQL',
+						title: 'GraphQL API',
 					},
 					{
 						type: 'page',

@@ -7,7 +7,7 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-The extensions endpoints are used by the Admin App to retrieve what extensions to install.
+> The extensions endpoints are used by the Admin App to retrieve what extensions to install. [Learn more about Extensions](/concepts/extensions/).
 
 </div>
 <div class="right">
@@ -37,7 +37,9 @@ An array of interface extension keys.
 </div>
 <div class="right">
 
-### `GET /extensions/interfaces`
+```
+GET /extensions/interfaces
+```
 
 ```json
 // Response
@@ -70,7 +72,9 @@ An array of display extension keys.
 </div>
 <div class="right">
 
-### `GET /extensions/displays`
+```
+GET /extensions/displays
+```
 
 ```json
 // Response
@@ -103,7 +107,9 @@ An array of layout extension keys.
 </div>
 <div class="right">
 
-### `GET /extensions/layouts`
+```
+GET /extensions/layouts
+```
 
 ```json
 // Response
@@ -136,7 +142,9 @@ An array of module extension keys.
 </div>
 <div class="right">
 
-### `GET /extensions/modules`
+```
+GET /extensions/modules
+```
 
 ```json
 // Response

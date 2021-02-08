@@ -1,6 +1,6 @@
 # Environment Variables
 
-> Directus uses Environment Variables for all configuration of the project.
+> Environment Variables are used for all configuration within Directus projects. They are managed in the root `.env` file, which is created during the installation process.
 
 [[toc]]
 
@@ -182,13 +182,13 @@ STORAGE_LOCATIONS="local"
 STORAGE_LOCAL_ROOT="./uploads"
 ```
 
-## oAuth
+## OAuth
 
 | Variable          | Description                             | Default Value |
 | ----------------- | --------------------------------------- | ------------- |
 | `OAUTH_PROVIDERS` | CSV of oAuth providers you want to use. | --            |
 
-For each of the oAuth providers you list, you must also provide a number of extra variables. These differ per external
+For each of the OAuth providers you list, you must also provide a number of extra variables. These differ per external
 service. The following is a list of common required configuration options:
 
 | Variable                         | Description                                                                                            | Default Value |
