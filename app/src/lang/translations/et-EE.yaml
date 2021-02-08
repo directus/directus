@@ -57,6 +57,25 @@ reset_system_permissions_copy: Lähtesta kõik süsteemi load algupärasteks
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
 nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
+unknown_validation_errors: 'Olid valideerimise vead nende peidetud väljadele:'
+validationError:
+  eq: Väärtus peab olema {valid}
+  neq: Väärtus ei saa olla {invalid}
+  in: Väärtus peab olema {valid}
+  nin: Väärtus ei saa olla {invalid}
+  contains: Väärtus peab sisaldama {substring}
+  ncontains: Väärtus ei tohi sisaldada {substring}
+  gt: Väärtus peab olema suurem kui {valid}
+  gte: Väärtus peab olema suurem või võrdne {valid}
+  lt: Väärtus peab olema vähem kui {valid}
+  lte: Väärtus peab olema vähem kui või võrdne {valid}
+  empty: Väärtus peab olema tühi
+  nempty: Väärtus ei saa olla tühi
+  null: Väärtus peab olema null
+  nnull: Väärtus ei saa olla null
+  required: Väärtus on nõutud
+all_access: Ligipääs kõigele
+no_access: Ei ole ligipääsu
 language: Keel
 create_field: Loo väli
 hidden_on_detail: Üksikasjavaates peidetud
