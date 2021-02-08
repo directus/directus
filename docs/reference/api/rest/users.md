@@ -466,6 +466,9 @@ User email to invite.
 `role` **Required**\
 Role of the new user.
 
+`invite_url`\
+Provide a custom invite url which the link in the email will lead to. The invite token will be passed as a parameter.
+
 </div>
 
 ### Returns
