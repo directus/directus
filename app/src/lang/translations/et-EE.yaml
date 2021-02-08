@@ -1,6 +1,17 @@
 ---
+edit_field: Redigeeri
+duplicate_field: Korduv väli
+half_width: Pool laiust
 full_width: Täislaius
+fill_width: Täislaius
+field_name_translations: Väljade tõlked
+enter_password_to_enable_tfa: Sisesta oma parool 2F audentimiseks
+add_field: Lisa väli
+role_name: Rolli nimi
+db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida '
+show_archived_items: Näita arhiveeritud üksuseid
 required: Nõutud
+requires_value: Väärtus nõutud
 create_role: Loo roll
 delete_bookmark: Kustuta järjehoidja
 directus_version: Directuse versioon
@@ -171,8 +182,10 @@ fields:
   directus_fields:
     note: Märkus
     hidden: Peidetud
+    translation: Väljade tõlked
     display_template: Mall
   directus_roles:
+    name: Rolli nimi
     description: Kirjeldus
 comment: Kommentaar
 continue: Continue
