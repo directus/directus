@@ -1,9 +1,92 @@
 ---
+edit_field: Redigeeri
+item_revision: Üksuse läbivaatlus
+duplicate_field: Korduv väli
+half_width: Pool laiust
 full_width: Täislaius
+fill_width: Täislaius
+field_name_translations: Väljade tõlked
+enter_password_to_enable_tfa: Sisesta oma parool 2F audentimiseks
+add_field: Lisa väli
+role_name: Rolli nimi
+db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida '
+show_archived_items: Näita arhiveeritud üksuseid
 required: Nõutud
+requires_value: Väärtus nõutud
+create_preset: Loo seadistus
 create_role: Loo roll
+create_user: Loo kasutaja
+create_webhook: Loo veebikonks
+invite_users: Kutsu kasutajaid
+email_examples: 'admin@example.com, user@example.com...'
+invite: Kutsu
+emails: E-mail
+connection_excellent: Suurepärane ühendus
+connection_good: Hea ühendus
+connection_fair: Keskmine ühendus
+connection_poor: Kehv ühendus
+rename_folder: Nimeta kaust ümber
+delete_folder: Kustuta kaust
+prefix: Eesliide
+suffix: Järelliide
+reset_bookmark: Kustuta järjehoidja
+rename_bookmark: Järjehoidja ümbernimetamine
+update_bookmark: Järjehoidja uuendamine
 delete_bookmark: Kustuta järjehoidja
+delete_bookmark_copy: >-
+  Kas soovid kindlasti järjehoidjat "{bookmark}" kustutada? Seda toimingut ei saa tagasi võtta.
+logoutReason:
+  SIGN_OUT: Välja logitud
+  SESSION_EXPIRED: Sessioon aegunud
+public: Avalik
+public_description: Kontrollib, mis API andmed on saadaval audentimata.
+not_allowed: Ei ole lubatud
 directus_version: Directuse versioon
+node_version: Node versioon
+node_uptime: Node ülevaloleku aeg
+os_type: OS Tüüp
+os_version: OS Versioon
+os_uptime: OS Ülevaloleku aeg
+os_totalmem: OS Mälu
+archive: Arhiveeri
+archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
+archive_confirm_count: >-
+  Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
+reset_system_permissions: Lähtesta süsteemi load
+reset_system_permissions_copy: Lähtesta kõik süsteemi load algupärasteks
+unarchive: Eemalda arhiivist
+unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
+nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
+unknown_validation_errors: 'Olid valideerimise vead nende peidetud väljadele:'
+validationError:
+  eq: Väärtus peab olema {valid}
+  neq: Väärtus ei saa olla {invalid}
+  in: Väärtus peab olema {valid}
+  nin: Väärtus ei saa olla {invalid}
+  contains: Väärtus peab sisaldama {substring}
+  ncontains: Väärtus ei tohi sisaldada {substring}
+  gt: Väärtus peab olema suurem kui {valid}
+  gte: Väärtus peab olema suurem või võrdne {valid}
+  lt: Väärtus peab olema vähem kui {valid}
+  lte: Väärtus peab olema vähem kui või võrdne {valid}
+  empty: Väärtus peab olema tühi
+  nempty: Väärtus ei saa olla tühi
+  null: Väärtus peab olema null
+  nnull: Väärtus ei saa olla null
+  required: Väärtus on nõutud
+all_access: Ligipääs kõigele
+no_access: Ei ole ligipääsu
+use_custom: Kasuta kohandatud
+field_standard: Standard
+field_m2o: M2O Seos
+field_o2m: O2M Seos
+field_m2m: M2M Seos
+item_permissions: Üksuse õigused
+field_permissions: Väljade õigused
+field_validation: Välja valideerimine
+field_presets: Välja eelseadistused
+permissions_for_role: '{role} rollil lubatud üksuste {action}.'
+fields_for_role: '{role} rollil lubatud väljade {action}.'
 language: Keel
 create_field: Loo väli
 hidden_on_detail: Üksikasjavaates peidetud
@@ -171,8 +254,10 @@ fields:
   directus_fields:
     note: Märkus
     hidden: Peidetud
+    translation: Väljade tõlked
     display_template: Mall
   directus_roles:
+    name: Rolli nimi
     description: Kirjeldus
 comment: Kommentaar
 continue: Continue
