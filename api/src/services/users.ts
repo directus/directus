@@ -78,7 +78,7 @@ export class UsersService extends ItemsService {
 		return key;
 	}
 
-	async inviteUser(email: string | string[], role: string) {
+	async inviteUser(email: string | string[], role: string, url: string | null) {
 		const emails = toArray(email);
 
 		for (const email of emails) {
@@ -86,7 +86,8 @@ export class UsersService extends ItemsService {
 
 			const payload = { email, scope: 'invite' };
 			const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
-			const acceptURL = env.PUBLIC_URL + '/admin/accept-invite?token=' + token;
+			const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
+			const acceptURL = inviteURL + '?token=' + token;
 
 			await sendInviteMail(email, acceptURL);
 		}
