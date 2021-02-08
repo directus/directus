@@ -215,7 +215,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.inviteUser(req.body.email, req.body.role);
+		await service.inviteUser(req.body.email, req.body.role, req.body.invite_url || null);
 		return next();
 	}),
 	respond
