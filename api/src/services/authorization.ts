@@ -308,13 +308,14 @@ export class AuthorizationService {
 
 		if (Object.keys(validation)[0] === '_and') {
 			const subValidation = Object.values(validation)[0];
+
 			const nestedErrors = flatten<FailedValidationException>(
-				subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads))
+				subValidation.map((subObj: Record<string, any>) => {
+					return this.validateJoi(subObj, payloads);
+				})
 			).filter((err?: FailedValidationException) => err);
 			errors.push(...nestedErrors);
-		}
-
-		if (Object.keys(validation)[0] === '_or') {
+		} else if (Object.keys(validation)[0] === '_or') {
 			const subValidation = Object.values(validation)[0];
 			const nestedErrors = flatten<FailedValidationException>(
 				subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads))
@@ -324,15 +325,15 @@ export class AuthorizationService {
 			if (allErrored) {
 				errors.push(...nestedErrors);
 			}
-		}
+		} else {
+			const schema = generateJoi(validation);
 
-		const schema = generateJoi(validation);
+			for (const payload of payloads) {
+				const { error } = schema.validate(payload, { abortEarly: false });
 
-		for (const payload of payloads) {
-			const { error } = schema.validate(payload, { abortEarly: false });
-
-			if (error) {
-				errors.push(...error.details.map((details) => new FailedValidationException(details)));
+				if (error) {
+					errors.push(...error.details.map((details) => new FailedValidationException(details)));
+				}
 			}
 		}
 
