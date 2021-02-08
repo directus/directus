@@ -376,7 +376,7 @@ export default defineComponent({
 		async function saveAndQuit() {
 			try {
 				await save();
-				router.push(`/files`);
+				router.push(to.value);
 			} catch {
 				// `save` will show unexpected error dialog
 			}
@@ -399,7 +399,7 @@ export default defineComponent({
 		async function deleteAndQuit() {
 			try {
 				await remove();
-				router.push(`/files`);
+				router.push(to.value);
 			} catch {
 				// `remove` will show the unexpected error dialog
 			}
