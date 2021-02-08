@@ -121,6 +121,7 @@ export default defineComponent({
 		max-width: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		height: 100%;
 		margin-left: 16px;
+		overflow: hidden;
 
 		@include breakpoint(small) {
 			max-width: 70%;
@@ -161,6 +162,7 @@ export default defineComponent({
 				width: 100%;
 				overflow: hidden;
 				white-space: nowrap;
+				text-overflow: ellipsis;
 			}
 		}
 	}
