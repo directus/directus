@@ -44,12 +44,6 @@ following adapters:
 - **S3 or Equivalent** — Including AWS S3, DigitalOcean Spaces, Alibaba OSS, and others
 - **Google Cloud Storage** — A RESTful web service on the Google Cloud Platform
 
-## Embedded Assets
-
-Directus also supports ingesting third-party embedded assets, such as YouTube or Vimeo videos. These are managed the
-same as normal files, however the resource itself is stored on the external service, and referenced via its proprietary
-UID.
-
 ## Thumbnail Transformations
 
 Our file middleware also allows for cropping and transforming image assets on the fly. This means you can simply request
