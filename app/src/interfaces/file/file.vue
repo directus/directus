@@ -131,6 +131,7 @@ import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
 import DrawerItem from '../../views/private/components/drawer-item';
+import { addQueryToPath } from '../../utils/add-query-to-path';
 
 type FileInfo = {
 	id: string;
@@ -168,10 +169,9 @@ export default defineComponent({
 
 		const imageThumbnail = computed(() => {
 			if (file.value === null || props.value === null) return null;
-			if (file.value.type.includes('svg')) return addTokenToURL(assetURL.value);
+			if (file.value.type.includes('svg')) return assetURL.value;
 			if (file.value.type.includes('image') === false) return null;
-			const url = assetURL.value + `?key=system-small-cover`;
-			return addTokenToURL(url);
+			return addQueryToPath(assetURL.value, { key: 'system-small-cover' });
 		});
 
 		const { edits, stageEdits } = useEdits();
