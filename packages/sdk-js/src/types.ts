@@ -1,3 +1,6 @@
+import { AxiosRequestConfig } from 'axios';
+import { AuthOptions } from './handlers';
+
 export type Item = Record<string, any>;
 export type Payload = Record<string, any>;
 export type PrimaryKey = string | number;
@@ -57,4 +60,9 @@ export type FilterOperator =
 export type AuthStorage = {
 	getItem: (key: string) => Promise<any>;
 	setItem: (key: string, value: any) => Promise<any>;
+};
+
+export type DirectusOptions = {
+	auth?: Partial<AuthOptions>;
+	axiosConfig?: AxiosRequestConfig;
 };

@@ -18,6 +18,7 @@ import {
 	AuthOptions,
 	RevisionsHandler,
 } from './handlers';
+import { DirectusOptions } from './types';
 import { MemoryStore, BrowserStore } from './utils';
 import { createAxiosInstance } from './utils/create-axios';
 
@@ -25,10 +26,11 @@ class DirectusSDK {
 	axios: AxiosInstance;
 	private authOptions: AuthOptions;
 
-	constructor(url: string, options?: { auth: Partial<AuthOptions> }) {
+	constructor(url: string, options?: DirectusOptions) {
 		this.axios = createAxiosInstance({
 			baseURL: url,
 			withCredentials: true,
+			...(options?.axiosConfig ?? {}),
 		});
 
 		this.authOptions = {
