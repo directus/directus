@@ -1,5 +1,6 @@
 ---
 edit_field: Redigeeri
+item_revision: Üksuse läbivaatlus
 duplicate_field: Korduv väli
 half_width: Pool laiust
 full_width: Täislaius
@@ -17,8 +18,45 @@ create_role: Loo roll
 create_user: Loo kasutaja
 create_webhook: Loo veebikonks
 invite_users: Kutsu kasutajaid
+email_examples: 'admin@example.com, user@example.com...'
+invite: Kutsu
+emails: E-mail
+connection_excellent: Suurepärane ühendus
+connection_good: Hea ühendus
+connection_fair: Keskmine ühendus
+connection_poor: Kehv ühendus
+rename_folder: Nimeta kaust ümber
+delete_folder: Kustuta kaust
+prefix: Eesliide
+suffix: Järelliide
+reset_bookmark: Kustuta järjehoidja
+rename_bookmark: Järjehoidja ümbernimetamine
+update_bookmark: Järjehoidja uuendamine
 delete_bookmark: Kustuta järjehoidja
+delete_bookmark_copy: >-
+  Kas soovid kindlasti järjehoidjat "{bookmark}" kustutada? Seda toimingut ei saa tagasi võtta.
+logoutReason:
+  SIGN_OUT: Välja logitud
+  SESSION_EXPIRED: Sessioon aegunud
+public: Avalik
+public_description: Kontrollib, mis API andmed on saadaval audentimata.
+not_allowed: Ei ole lubatud
 directus_version: Directuse versioon
+node_version: Node versioon
+node_uptime: Node ülevaloleku aeg
+os_type: OS Tüüp
+os_version: OS Versioon
+os_uptime: OS Ülevaloleku aeg
+os_totalmem: OS Mälu
+archive: Arhiveeri
+archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
+archive_confirm_count: >-
+  Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
+reset_system_permissions: Lähtesta süsteemi load
+reset_system_permissions_copy: Lähtesta kõik süsteemi load algupärasteks
+unarchive: Eemalda arhiivist
+unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
+nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
 language: Keel
 create_field: Loo väli
 hidden_on_detail: Üksikasjavaates peidetud
