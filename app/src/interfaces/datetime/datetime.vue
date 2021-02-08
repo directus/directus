@@ -136,7 +136,7 @@ export default defineComponent({
 					if (newValue === null) return emit('input', null);
 
 					if (props.type === 'timestamp') {
-						emit('input', formatISO(newValue));
+						emit('input', format(newValue, 'yyyy-MM-dd HH:mm:ss'));
 					} else if (props.type === 'dateTime') {
 						emit('input', format(newValue, "yyyy-MM-dd'T'HH:mm:ss"));
 					} else if (props.type === 'date') {
