@@ -188,6 +188,7 @@
 		"@directus/app": "file:app",
 		"@directus/docs": "file:docs",
 		"@directus/format-title": "file:packages/format-title",
+		"@directus/gatsby-source-directus": "file:packages/gatsby-source-directus",
 		"@directus/sdk-js": "file:packages/sdk-js",
 		"@directus/specs": "file:packages/specs",
 		"create-directus-project": "file:packages/create-directus-project",
