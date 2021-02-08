@@ -76,6 +76,17 @@ validationError:
   required: Väärtus on nõutud
 all_access: Ligipääs kõigele
 no_access: Ei ole ligipääsu
+use_custom: Kasuta kohandatud
+field_standard: Standard
+field_m2o: M2O Seos
+field_o2m: O2M Seos
+field_m2m: M2M Seos
+item_permissions: Üksuse õigused
+field_permissions: Väljade õigused
+field_validation: Välja valideerimine
+field_presets: Välja eelseadistused
+permissions_for_role: '{role} rollil lubatud üksuste {action}.'
+fields_for_role: '{role} rollil lubatud väljade {action}.'
 language: Keel
 create_field: Loo väli
 hidden_on_detail: Üksikasjavaates peidetud
