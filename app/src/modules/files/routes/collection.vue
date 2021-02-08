@@ -108,7 +108,7 @@
 			:selection.sync="selection"
 			:layout-options.sync="layoutOptions"
 			:layout-query.sync="layoutQuery"
-			:filters="filtersWithFolderAndType"
+			:filters="[...filters, ...filtersWithFolderAndType]"
 			:search-query="searchQuery"
 			:reset-preset="resetPreset"
 			@update:filters="filters = $event"
@@ -217,8 +217,6 @@ export default defineComponent({
 		const layoutRef = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
 
-		const { info: currentCollection } = useCollection(ref('directus_files'));
-
 		const userStore = useUserStore();
 
 		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(ref('directus_files'));
@@ -229,7 +227,6 @@ export default defineComponent({
 
 		const filtersWithFolderAndType = computed(() => {
 			const filtersParsed: any[] = [
-				...filters.value,
 				{
 					locked: true,
 					field: 'type',
