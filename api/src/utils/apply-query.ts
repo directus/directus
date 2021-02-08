@@ -49,12 +49,15 @@ export default async function applyQuery(
 				}))
 				.forEach((column) => {
 					if (['text', 'string'].includes(column.localType)) {
-						this.orWhereRaw(`LOWER(??) LIKE ?`, [column.column_name, `%${query.search!.toLowerCase()}%`]);
+						this.orWhereRaw(`LOWER(??) LIKE ?`, [
+							`${column.table_name}.${column.column_name}`,
+							`%${query.search!.toLowerCase()}%`,
+						]);
 					} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(column.localType)) {
 						const number = Number(query.search!);
-						if (!isNaN(number)) this.orWhere({ [column.column_name]: number });
+						if (!isNaN(number)) this.orWhere({ [`${column.table_name}.${column.column_name}`]: number });
 					} else if (column.localType === 'uuid' && validate(query.search!)) {
-						this.orWhere({ [column.column_name]: query.search! });
+						this.orWhere({ [`${column.table_name}.${column.column_name}`]: query.search! });
 					}
 				});
 		});
