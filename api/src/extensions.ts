@@ -25,6 +25,10 @@ export async function ensureFoldersExist() {
 	}
 }
 
+export async function initializeExtensions() {
+	await ensureFoldersExist();
+}
+
 export async function listExtensions(type: string) {
 	const extensionsPath = env.EXTENSIONS_PATH as string;
 	const location = path.join(extensionsPath, type);
@@ -42,20 +46,25 @@ export async function listExtensions(type: string) {
 }
 
 export async function registerExtensions(router: Router) {
-	await ensureFoldersExist();
-	let hooks: string[] = [];
+	await registerExtensionHooks();
+	await registerExtensionEndpoints(router);
+}
+
+export async function registerExtensionEndpoints(router: Router) {
 	let endpoints: string[] = [];
-
-	try {
-		hooks = await listExtensions('hooks');
-		registerHooks(hooks);
-	} catch (err) {
-		logger.warn(err);
-	}
-
 	try {
 		endpoints = await listExtensions('endpoints');
 		registerEndpoints(endpoints, router);
+	} catch (err) {
+		logger.warn(err);
+	}
+}
+
+export async function registerExtensionHooks() {
+	let hooks: string[] = [];
+	try {
+		hooks = await listExtensions('hooks');
+		registerHooks(hooks);
 	} catch (err) {
 		logger.warn(err);
 	}

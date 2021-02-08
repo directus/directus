@@ -14,8 +14,7 @@ import {
 } from '../types';
 import Knex from 'knex';
 import cache from '../cache';
-import emitter from '../emitter';
-import logger from '../logger';
+import emitter, { emitAsyncSafe } from '../emitter';
 import { toArray } from '../utils/to-array';
 import env from '../env';
 
@@ -164,17 +163,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			return primaryKeys;
 		});
 
-		emitter
-			.emitAsync(`${this.eventScope}.create`, {
-				event: `${this.eventScope}.create`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: savedPrimaryKeys,
-				action: 'create',
-				payload: payloads,
-				schema: this.schema,
-			})
-			.catch((err) => logger.warn(err));
+		emitAsyncSafe(`${this.eventScope}.create`, {
+			event: `${this.eventScope}.create`,
+			accountability: this.accountability,
+			collection: this.collection,
+			item: savedPrimaryKeys,
+			action: 'create',
+			payload: payloads,
+			schema: this.schema,
+		});
 
 		return Array.isArray(data) ? savedPrimaryKeys : savedPrimaryKeys[0];
 	}
@@ -362,17 +359,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				await cache.clear();
 			}
 
-			emitter
-				.emitAsync(`${this.eventScope}.update`, {
-					event: `${this.eventScope}.update`,
-					accountability: this.accountability,
-					collection: this.collection,
-					item: key,
-					action: 'update',
-					payload,
-					schema: this.schema,
-				})
-				.catch((err) => logger.warn(err));
+			emitAsyncSafe(`${this.eventScope}.update`, {
+				event: `${this.eventScope}.update`,
+				accountability: this.accountability,
+				collection: this.collection,
+				item: key,
+				action: 'update',
+				payload,
+				schema: this.schema,
+			});
 
 			return key;
 		}
@@ -499,17 +494,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			await cache.clear();
 		}
 
-		emitter
-			.emitAsync(`${this.eventScope}.delete`, {
-				event: `${this.eventScope}.delete`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: keys,
-				action: 'delete',
-				payload: null,
-				schema: this.schema,
-			})
-			.catch((err) => logger.warn(err));
+		emitAsyncSafe(`${this.eventScope}.delete`, {
+			event: `${this.eventScope}.delete`,
+			accountability: this.accountability,
+			collection: this.collection,
+			item: keys,
+			action: 'delete',
+			payload: null,
+			schema: this.schema,
+		});
 
 		return key;
 	}

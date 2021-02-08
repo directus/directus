@@ -43,9 +43,9 @@ import sanitizeQuery from './middleware/sanitize-query';
 import { checkIP } from './middleware/check-ip';
 import { InvalidPayloadException } from './exceptions';
 
-import { registerExtensions } from './extensions';
+import { initializeExtensions, registerExtensionEndpoints, registerExtensionHooks } from './extensions';
 import { register as registerWebhooks } from './webhooks';
-import emitter from './emitter';
+import { emitAsyncSafe } from './emitter';
 
 import fse from 'fs-extra';
 
@@ -59,12 +59,20 @@ export default async function createApp() {
 		process.exit(1);
 	}
 
+	await initializeExtensions();
+
+	await registerExtensionHooks();
+
 	const app = express();
 
 	const customRouter = express.Router();
 
 	app.disable('x-powered-by');
 	app.set('trust proxy', true);
+
+	await emitAsyncSafe('init.before', { app });
+
+	await emitAsyncSafe('middlewares.init.before', { app });
 
 	app.use(expressLogger({ logger }));
 
@@ -118,6 +126,10 @@ export default async function createApp() {
 
 	app.use(sanitizeQuery);
 
+	await emitAsyncSafe('middlewares.init.after', { app });
+
+	await emitAsyncSafe('routes.init.before', { app });
+
 	app.use(cache);
 
 	app.use(schema);
@@ -145,19 +157,23 @@ export default async function createApp() {
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
 	app.use('/custom', customRouter);
+
+	// Register custom hooks / endpoints
+	await emitAsyncSafe('routes.custom.init.before', { app });
+	await registerExtensionEndpoints(customRouter);
+	await emitAsyncSafe('routes.custom.init.after', { app });
+
 	app.use(notFoundHandler);
 	app.use(errorHandler);
+
+	await emitAsyncSafe('routes.init.after', { app });
 
 	// Register all webhooks
 	await registerWebhooks();
 
-	// Register custom hooks / endpoints
-	await registerExtensions(customRouter);
-
 	track('serverStarted');
 
-	emitter.emit('init.before', { app });
-	emitter.emitAsync('init').catch((err) => logger.warn(err));
+	emitAsyncSafe('init');
 
 	return app;
 }
