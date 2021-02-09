@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType } from '@vue/composition-api';
 import { Link, Group } from '@directus/docs';
 
 export default defineComponent({

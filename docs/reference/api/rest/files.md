@@ -7,8 +7,9 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> Files are the objects that contain information about the file managed through Directus. If you're looking for the actual file
-data, including thumbnails, see the [/assets](/reference/api/assets/) endpoint. [Learn more about Files](/concepts/files/).
+> Files are the objects that contain information about the file managed through Directus. If you're looking for the
+> actual file data, including thumbnails, see the [/assets](/reference/api/assets/) endpoint.
+> [Learn more about Files](/concepts/files/).
 
 </div>
 <div class="right">
@@ -45,16 +46,16 @@ Title for the file.
 Mimetype of the file.
 
 `folder` **many-to-one**\
-What (virtual) folder the file is in. Many-to-one to [folders](/reference/api/folders/).
+What (virtual) folder the file is in. Many-to-one to [folders](/reference/api/rest/folders/).
 
 `uploaded_by` **many-to-one**\
-Who uploaded the file. Many-to-one to [users](/reference/api/users/).
+Who uploaded the file. Many-to-one to [users](/reference/api/rest/users/).
 
 `uploaded_on` **datetime**\
 When the file was uploaded.
 
 `modified_by` **many-to-one**\
-Who updated the file last. Many-to-one to [users](/reference/api/users/).
+Who updated the file last. Many-to-one to [users](/reference/api/rest/users/).
 
 `filesize` **number**\
 Size of the file in bytes.

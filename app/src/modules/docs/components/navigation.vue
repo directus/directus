@@ -18,6 +18,11 @@ function spreadPath(path: string) {
 	for (let i = 1; i < sections.length; i++) {
 		paths.push(paths[i - 1] + '/' + sections[i]);
 	}
+
+	if (paths[0] === '/reference' && paths[1] === '/reference/api') {
+		paths.shift();
+	}
+
 	return paths;
 }
 
@@ -30,34 +35,15 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const _selection = ref<string[] | null>(null);
+		const selection = ref<string[] | null>(null);
 
 		watch(
 			() => props.path,
 			(newPath) => {
 				if (newPath === null) return;
-				_selection.value = spreadPath(newPath.replace('/docs', ''));
+				selection.value = spreadPath(newPath.replace('/docs', ''));
 			}
 		);
-
-		const selection = computed({
-			get() {
-				if (_selection.value === null && props.path !== null)
-					_selection.value = spreadPath(props.path.replace('/docs', ''));
-				return _selection.value || [];
-			},
-			set(newSelection: string[]) {
-				if (newSelection.length === 0) {
-					_selection.value = [];
-				} else {
-					if (_selection.value && _selection.value.includes(newSelection[0])) {
-						_selection.value = _selection.value.filter((s) => s !== newSelection[0]);
-					} else {
-						_selection.value = spreadPath(newSelection[0]);
-					}
-				}
-			},
-		});
 
 		return { navSections: navLinks, selection };
 	},
