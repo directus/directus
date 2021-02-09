@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, provide, toRefs, computed } from '@vue/composition-api';
+import { defineComponent, ref, provide, toRefs, computed, onUpdated, nextTick } from '@vue/composition-api';
 import ModuleBar from './components/module-bar/';
 import SidebarDetailGroup from './components/sidebar-detail-group/';
 import HeaderBar from './components/header-bar';
@@ -71,8 +71,7 @@ import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
 import NotificationDialogs from './components/notification-dialogs/';
 import { useUserStore, useAppStore } from '../../stores';
-import i18n from '../../lang';
-import emitter, { Events } from '../../events';
+import router from '../../router';
 
 export default defineComponent({
 	components: {
@@ -111,6 +110,22 @@ export default defineComponent({
 		});
 
 		provide('main-element', contentEl);
+
+		router.afterEach(async (to, from) => {
+			contentEl.value?.scrollTo({ top: 0 });
+
+			// await nextTick();
+
+			// const hash = to.hash;
+
+			// if (hash) {
+			// 	const linkedEl = document.querySelector(hash) as HTMLElement;
+
+			// 	if (linkedEl) {
+			// 		contentEl.value?.scrollTo({ top: linkedEl.offsetTop - 100, behavior: 'smooth' });
+			// 	}
+			// }
+		});
 
 		return {
 			navOpen,
@@ -195,21 +210,21 @@ export default defineComponent({
 	}
 
 	.content {
+		--border-radius: 6px;
+		--input-height: 60px;
+		--input-padding: 16px; // (60 - 4 - 24) / 2
+		--form-vertical-gap: 52px;
+
 		position: relative;
 		flex-grow: 1;
 		width: 100%;
 		height: 100%;
 		overflow: auto;
 		scroll-padding-top: 100px;
-		scroll-behavior: smooth;
 
 		// Page Content Spacing (Could be converted to Project Setting toggle)
 		font-size: 15px;
 		line-height: 24px;
-		--border-radius: 6px;
-		--input-height: 60px;
-		--input-padding: 16px; // (60 - 4 - 24) / 2
-		--form-vertical-gap: 52px;
 
 		main {
 			display: contents;
