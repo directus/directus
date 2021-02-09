@@ -111,6 +111,18 @@ router.post(
 	respond
 );
 
+const updateSchema = Joi.object({
+	type: Joi.string()
+		.valid(...types, null)
+		.required(),
+	schema: Joi.object({
+		default_value: Joi.any(),
+		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
+		is_nullable: Joi.bool(),
+	}).unknown(),
+	meta: Joi.any(),
+});
+
 router.patch(
 	'/:collection/:field',
 	validateCollection,
@@ -119,6 +131,12 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
+		const { error } = updateSchema.validate(req.body);
+
+		if (error) {
+			throw new InvalidPayloadException(error.message);
+		}
 
 		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
