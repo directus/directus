@@ -6,6 +6,10 @@
 			</v-button>
 		</template>
 
+		<template #title>
+			<h1 v-html="title" class="type-title"></h1>
+		</template>
+
 		<template #navigation>
 			<docs-navigation :path="path" />
 		</template>
