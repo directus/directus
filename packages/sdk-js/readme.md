@@ -18,4 +18,4 @@ directus.items('articles').read(15);
 
 ## Docs
 
-See [the docs](../../docs/reference/sdk-js.md)
+See [the docs](https://docs.directus.io/reference/sdk-js/)
