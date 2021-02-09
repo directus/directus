@@ -1,14 +1,15 @@
 # Projects
 
-> A Project is a complete instance of Directus, including its **Database**, config file, asset storage, and any custom extensions. [Learn more about Projects](/concepts/projects/).
+> A Project is a complete instance of Directus, including its **Database**, config file, asset storage, and any custom
+> extensions. [Learn more about Projects](/concepts/projects/).
 
 ## Creating a Project
 
 To install Directus, choose one of the following methods.
 
-- [Command Line Interface (CLI)](/guides/installation/cli.md)
-- [Docker](/guides/installation/docker.md)
-- [Manually](/guides/installation/manual.md)
+- [Command Line Interface (CLI)](/guides/installation/cli)
+- [Docker](/guides/installation/docker)
+- [Manually](/guides/installation/manual)
 
 ## Configuring a Project
 
@@ -22,14 +23,14 @@ environment variables, each is explained in the following reference:
 1. Navigate to **Settings > Project Settings**
 2. Configure any of the following **branding fields**
 
-- **Project Name** — The name used at the top of the [Navigation Bar](/concepts/application/#_2-navigation-bar) and on the login/public
-  pages
+- **Project Name** — The name used at the top of the [Navigation Bar](/concepts/application/#_2-navigation-bar) and on
+  the login/public pages
 - **Project URL** — The URL when clicking the logo at the top of the [Module Bar](/concepts/application/#_1-module-bar)
-- **Project Color** — The color used behind the logo at the top of the [Module Bar](/concepts/application/#_1-module-bar), on the
-  login/public pages, and for the browser's FavIcon
-- **Project Logo** — A 40x40 pixel logo at the top of the [Module Bar](/concepts/application/#_1-module-bar) and on the login/public
-  pages. The image is _inset_ within the 64x64 pixel square filled with the Project Color, so we recommend using a SVG
-  or PNG logo with transparency to avoid a "boxy" look.
+- **Project Color** — The color used behind the logo at the top of the
+  [Module Bar](/concepts/application/#_1-module-bar), on the login/public pages, and for the browser's FavIcon
+- **Project Logo** — A 40x40 pixel logo at the top of the [Module Bar](/concepts/application/#_1-module-bar) and on the
+  login/public pages. The image is _inset_ within the 64x64 pixel square filled with the Project Color, so we recommend
+  using a SVG or PNG logo with transparency to avoid a "boxy" look.
 
 ::: tip Browser FavIcon & Title
 
