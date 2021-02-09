@@ -1,38 +1,68 @@
 <template>
-	<div class="md" v-html="html" @click="onClick" />
+	<div class="md" :class="pageClass" v-html="html" @click="onClick" />
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUpdated } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUpdated, inject } from '@vue/composition-api';
 
-import marked, { Renderer } from 'marked';
-import highlight from 'highlight.js';
+import MarkdownIt from 'markdown-it';
+import fm from 'front-matter';
+
+import hljs from 'highlight.js';
+import hljsGraphQL from '../../../utils/hljs-graphql';
+
+import { getRootPath } from '../../../utils/get-root-path';
 
 import router from '@/router';
+
+hljs.registerLanguage('graphql', hljsGraphQL);
+
+const md = new MarkdownIt({
+	html: true,
+	highlight(str, lang) {
+		if (lang && hljs.getLanguage(lang)) {
+			try {
+				return hljs.highlight(lang, str).value;
+			} catch {
+				console.warn('There was an error highlighting in Markdown');
+			}
+		}
+
+		return '';
+	},
+});
+
+md.use(require('markdown-it-table-of-contents'), { includeLevel: [2] });
+md.use(require('markdown-it-anchor').default, { permalink: true, permalinkSymbol: '#' });
+
+function hintRenderer(type: string) {
+	return (tokens: any[], idx: number) => {
+		const token = tokens[idx];
+		let title = token.info.trim().slice(type.length).trim() || '';
+
+		if (title) title = `<div class="hint-title">${title}</div>`;
+
+		if (token.nesting === 1) {
+			return `<div class="${type} hint">${title}\n`;
+		} else {
+			return '</div>\n';
+		}
+	};
+}
+
+md.use(require('markdown-it-container'), 'tip', { render: hintRenderer('tip') });
+md.use(require('markdown-it-container'), 'warning', { render: hintRenderer('warning') });
+md.use(require('markdown-it-container'), 'danger', { render: hintRenderer('danger') });
 
 export default defineComponent({
 	setup(props, { slots }) {
 		const html = ref('');
+		const pageClass = ref<string>();
 
 		onMounted(generateHTML);
 		onUpdated(generateHTML);
 
-		return { html, onClick };
-
-		async function onClick($event: Event) {
-			if ($event.target instanceof HTMLElement) {
-				const href = $event.target.getAttribute('href');
-
-				if (href && $event.target.classList.contains('copy')) {
-					await navigator.clipboard.writeText(window.location.href.split('#')[0] + href);
-				}
-
-				if (href && href.indexOf('/admin/docs/') === 0) {
-					$event.preventDefault();
-					await router.push(href.replace('/admin/docs/', '/docs/'));
-				}
-			}
-		}
+		return { html, onClick, pageClass };
 
 		function generateHTML() {
 			if (slots.default === null || !slots.default()?.[0]?.text) {
@@ -40,65 +70,78 @@ export default defineComponent({
 				return;
 			}
 
-			let htmlString = slots.default()[0].text!;
+			const source = slots.default()[0].text!;
+			const { attributes, body } = fm<{ pageClass?: string }>(source);
 
-			const renderer: Partial<Renderer> = {
-				heading(text, level) {
-					const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-					return `
-					<h${level} id="${escapedText}">
-						<a class="heading-link copy" href="#${escapedText}">#</a>
-						${text}
-					</h${level}>`;
-				},
-				link(href, title, text) {
-					let classname = 'body-link link';
-					if (href && href.indexOf('/') === 0 && href.indexOf('/admin/docs/') === -1) href = `/admin/docs${href}`;
-					if (href && href.indexOf('#') === 0) classname = `${classname} copy`;
-					return `<a href="${href}" class="${classname}">${text}</a>`;
-				},
-				image(href, title, text) {
-					if (!href) return '';
-					let paths = href.split('/');
+			let markdown = body;
 
-					while ((paths[0] === 'assets') === false) {
-						paths = paths.slice(1);
-					}
+			const rawImages = body.matchAll(/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/g) ?? [];
+			const rootPath = getRootPath();
 
-					const path = `/img/docs/${paths.slice(1).join('/')}`;
+			for (const rawImage of rawImages) {
+				const filenameParts = rawImage.groups!.filename.split('/');
 
-					const classname = 'body-image';
+				while (filenameParts.includes('assets')) {
+					filenameParts.shift();
+				}
 
-					return `<img src="${path}" class="${classname}" alt="${text}">`;
-				},
-			};
+				const newFilename = `${rootPath}img/docs/${filenameParts.join('/')}`;
+				const newImage = rawImage[0].replace(rawImage.groups!.filename, newFilename);
+				markdown = markdown.replace(rawImage[0], newImage);
+			}
 
-			// Marked merges it's default rendered with our extension. It's typed as a full rendered however
-			marked.use({ renderer } as any);
+			pageClass.value = attributes?.pageClass;
 
-			htmlString = htmlString.replace(/::: ([^\s]+) ([^\n]+)([\s\S]*?)\n:::/gm, (match, type, title, body) => {
-				body = marked(body);
-				return `<div class="hint ${type}"><p class="hint-title">${title}</p><p class="hint-body">${body}</p></div>`;
-			});
-
-			htmlString = marked(htmlString, {
-				highlight: (code, lang) => {
-					return highlight.highlightAuto(code, [lang]).value;
-				},
-			});
+			const htmlString = md.render(markdown);
 
 			html.value = htmlString;
+
+			// The Markdown is fetched async on page transition, which means the # link already exists before the markdown does
+			// This will force the main el to scroll down to the targetted element on updates of the content
+			const mainElement = inject('main-element', ref<Element | null>(null));
+
+			if (router.currentRoute.hash) {
+				const linkedEl = document.querySelector(router.currentRoute.hash) as HTMLElement;
+
+				if (linkedEl) {
+					mainElement.value?.scrollTo({ top: linkedEl.offsetTop - 100 });
+				}
+			}
+		}
+
+		function onClick(event: MouseEvent) {
+			if (
+				event.target &&
+				(event.target as HTMLElement).tagName.toLowerCase() === 'a' &&
+				(event.target as HTMLAnchorElement).href
+			) {
+				const link = (event.target as HTMLAnchorElement).getAttribute('href')!;
+
+				if (link.startsWith('http') || link.startsWith('#')) return;
+
+				event.preventDefault();
+				const parts = link.split('#');
+				parts[0] = parts[0].endsWith('/') ? parts[0].slice(0, -1) : parts[0];
+				router.push({
+					path: `/docs${parts[0]}`,
+					hash: parts[1],
+				});
+			}
 		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
+// stylelint-disable
+
 .error {
 	padding: 20vh 0;
 }
 
 .md {
+	max-width: 740px;
+
 	::v-deep {
 		font-weight: 400;
 		font-size: 16px;
@@ -448,12 +491,11 @@ export default defineComponent({
 			border-left: 2px solid var(--primary);
 
 			&-title {
-				margin-bottom: 0.5em;
+				margin-block-start: 1em;
+				margin-block-end: 1em;
+				margin-inline-start: 0px;
+				margin-inline-end: 0px;
 				font-weight: bold;
-			}
-
-			&-body {
-				margin-top: 0.5em;
 			}
 
 			&.tip {
@@ -468,6 +510,102 @@ export default defineComponent({
 			&.danger {
 				background-color: var(--danger-10);
 				border-left: 2px solid var(--danger);
+			}
+		}
+
+		.two-up {
+			margin-top: 3rem;
+		}
+
+		.two-up .right {
+			margin-top: 50px;
+		}
+
+		.table-of-contents {
+			margin-top: -20px;
+		}
+
+		pre,
+		pre[class*='language-'] {
+			margin-top: 0;
+		}
+
+		@media (min-width: 1000px) {
+			.two-up {
+				display: grid;
+				grid-template-columns: minmax(0, 4fr) minmax(0, 3fr);
+				grid-gap: 40px;
+				align-items: start;
+			}
+
+			.two-up .left,
+			.two-up .right {
+				> *:first-child {
+					margin-top: 0 !important;
+				}
+			}
+
+			.two-up .right {
+				margin-top: 0;
+				position: sticky;
+				top: 100px;
+			}
+		}
+	}
+
+	&.page-reference {
+		max-width: 1200px;
+
+		::v-deep {
+			hr {
+				width: calc(100% + 5rem);
+				left: -2.5rem;
+				position: relative;
+				margin: 3rem 0;
+			}
+
+			h2 {
+				border-bottom: 0;
+				margin-top: 3rem;
+				font-size: 2rem;
+			}
+
+			h3 {
+				margin-top: 3rem;
+				margin-bottom: 0.5rem;
+				font-size: 1.2rem;
+			}
+
+			h4 {
+				margin-top: 2rem;
+				margin-bottom: 0;
+			}
+
+			.definitions {
+				font-size: 0.9rem;
+
+				> p {
+					border-bottom: 2px solid var(--border-subdued);
+					padding: 0.8rem 0;
+					margin: 0;
+
+					&:first-child {
+						border-top: 2px solid var(--border-subdued);
+					}
+
+					> code:first-child {
+						background: transparent;
+						padding: 0;
+						margin-right: 0.2rem;
+						font-weight: 700;
+						font-size: 0.9rem;
+						border: 0;
+					}
+
+					> strong {
+						color: #aaa;
+					}
+				}
 			}
 		}
 	}
