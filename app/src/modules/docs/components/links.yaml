@@ -125,6 +125,7 @@
     - name: Global Query Parameters
       to: '/reference/api/query'
     - name: REST API
+      to: '/reference/api/rest'
       children:
         - to: '/reference/api/rest/introduction'
           name: Introduction
