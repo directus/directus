@@ -65,6 +65,7 @@
 		"@types/jsonwebtoken": "^8.5.0",
 		"@types/keyv": "^3.1.1",
 		"@types/lodash": "^4.14.159",
+		"@types/markdown-it": "^12.0.1",
 		"@types/marked": "^1.1.0",
 		"@types/mime-types": "^2.1.0",
 		"@types/mocha": "^8.0.4",
@@ -194,7 +195,12 @@
 		"create-directus-project": "file:packages/create-directus-project",
 		"directus": "file:api",
 		"dompurify": "^2.2.6",
-		"escape-string-regexp": "^4.0.0"
+		"escape-string-regexp": "^4.0.0",
+		"front-matter": "^4.0.2",
+		"markdown-it": "^12.0.4",
+		"markdown-it-anchor": "^7.0.2",
+		"markdown-it-container": "^3.0.0",
+		"markdown-it-table-of-contents": "^0.5.2"
 	},
 	"husky": {
 		"hooks": {

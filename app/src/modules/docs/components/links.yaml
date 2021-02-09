@@ -2,93 +2,183 @@
   icon: play_circle_outline
   to: '/getting-started'
   children:
-    - name: Introduction
-      to: '/getting-started/introduction'
-    - name: Support & FAQ
-      to: '/getting-started/support'
-    - name: Contributing
-      to: '/getting-started/contributing'
-    - name: Backing Directus
-      to: '/getting-started/backing-directus'
+    - to: '/getting-started/introduction'
+      name: Introduction
+    - to: '/getting-started/support'
+      name: Help & Support
+    - to: '/getting-started/backing-directus'
+      name: Backing Directus
 
 - name: Concepts
   icon: school
   to: '/concepts'
   children:
-    - name: Platform Overview
-      to: '/concepts/platform-overview'
-    - name: App Overview
-      to: '/concepts/app-overview'
-    - name: App Extensions
-      to: '/concepts/app-extensions'
-    - name: Activity & Versions
-      to: '/concepts/activity-and-versions'
-    - name: Files & Thumbnails
-      to: '/concepts/files-and-thumbnails'
-    - name: Internationalization
-      to: '/concepts/internationalization'
-    - name: Relationships
-      to: '/concepts/relationships'
-    - name: Users, Roles & Permissions
-      to: '/concepts/users-roles-and-permissions'
+    - to: '/concepts/activity'
+      name: Activity
+    - to: '/concepts/application'
+      name: Application
+    - to: '/concepts/collections'
+      name: Collections
+    - to: '/concepts/databases'
+      name: Databases
+    - to: '/concepts/displays'
+      name: Displays
+    - to: '/concepts/extensions'
+      name: Extensions
+    - to: '/concepts/fields'
+      name: Fields
+    - to: '/concepts/files'
+      name: Files
+    - to: '/concepts/interfaces'
+      name: Interfaces
+    - to: '/concepts/items'
+      name: Items
+    - to: '/concepts/layouts'
+      name: Layouts
+    - to: '/concepts/modules'
+      name: Modules
+    - to: '/concepts/permissions'
+      name: Permissions
+    - to: '/concepts/projects'
+      name: Projects
+    - to: '/concepts/relationships'
+      name: Relationships
+    - to: '/concepts/revisions'
+      name: Revisions
+    - to: '/concepts/roles'
+      name: Roles
+    - to: '/concepts/translations'
+      name: Translations
+    - to: '/concepts/types'
+      name: Types
+    - to: '/concepts/users'
+      name: Users
 
 - name: Guides
-  icon: article
   to: '/guides'
+  icon: article
   children:
-    - name: Collections
-      to: '/guides/collections'
-    - name: Items
-      to: '/guides/items'
-    - name: Fields
-      to: '/guides/fields'
-    - name: Files
-      to: '/guides/files'
-    - name: Presets
-      to: '/guides/presets'
-    - name: Projects
-      to: '/guides/projects'
-    - name: Roles & Permissions
-      to: '/guides/roles-and-permissions'
-    - name: Users
-      to: '/guides/users'
-    - name: Webhooks
-      to: '/guides/webhooks'
-    - name: White-Labeling
-      to: '/guides/white-labeling'
-    - name: Extensions
-      to: '/guides/extensions'
-      children:
-        - name: Accessing Data
-          to: '/guides/extensions/accessing-data'
-        - name: API Endpoints
-          to: '/guides/extensions/api-endpoints'
-        - name: API Hooks
-          to: '/guides/extensions/api-hooks'
-        - name: Displays
-          to: '/guides/extensions/displays'
-        - name: Email Templates
-          to: '/guides/extensions/email-templates'
-        - name: Interfaces
-          to: '/guides/extensions/interfaces'
-        - name: Layouts
-          to: '/guides/extensions/layouts'
-        - name: Modules
-          to: '/guides/extensions/modules'
-        - name: Storage Adapters
-          to: '/guides/extensions/storage-adapters'
+    - to: '/guides/api-config'
+      name: API Config
+    - to: '/guides/api-endpoints'
+      name: API Endpoints
+    - to: '/guides/api-hooks'
+      name: API Hooks
+    - to: '/guides/collections'
+      name: Collections
+    - to: '/guides/displays'
+      name: Displays
+    - to: '/guides/fields'
+      name: Fields
+    - to: '/guides/files'
+      name: Files
+    - to: '/guides/interfaces'
+      name: Interfaces
+    - to: '/guides/items'
+      name: Items
+    - to: '/guides/layouts'
+      name: Layouts
+    - to: '/guides/migrations'
+      name: Migrations
+    - to: '/guides/modules'
+      name: Modules
+    - to: '/guides/permissions'
+      name: Permissions
+    - to: '/guides/presets'
+      name: Presets
+    - to: '/guides/projects'
+      name: Projects
+    - to: '/guides/roles'
+      name: Roles
+    - to: '/guides/styles'
+      name: Styles
+    - to: '/guides/users'
+      name: Users
+    - to: '/guides/webhooks'
+      name: Webhooks
 
 - name: Reference
   icon: code
   to: '/reference'
   children:
-    - name: Command Line Interface
-      to: '/reference/command-line-interface'
-    - name: Environment Variables
-      to: '/reference/environment-variables'
-    - name: Error Codes
-      to: '/reference/error-codes'
-    - name: Filter Rules
-      to: '/reference/filter-rules'
-    - name: Item Objects
-      to: '/reference/item-objects'
+    - to: '/reference/command-line-interface'
+      name: Command Line Interface
+    - to: '/reference/environment-variables'
+      name: Environment Variables
+    - to: '/reference/error-codes'
+      name: Error Codes
+    - to: '/reference/field-transforms'
+      name: Field Transforms
+    - to: '/reference/filter-rules'
+      name: Filter Rules
+    - to: '/reference/sdk-js'
+      name: JavaScript SDK
+
+- name: API Reference
+  icon: api
+  to: '/reference/api'
+  children:
+    - to: '/reference/api/introduction'
+      name: Introduction
+    - to: '/reference/api/authentication'
+      name: Authentication
+    - name: Global Query Parameters
+      to: '/reference/api/query'
+    - name: REST API
+      to: '/reference/api/rest'
+      children:
+        - to: '/reference/api/rest/introduction'
+          name: Introduction
+        - to: '/reference/api/rest/activity'
+          name: Activity
+        - to: '/reference/api/rest/authentication'
+          name: Authentication
+        - to: '/reference/api/rest/collections'
+          name: Collections
+        - to: '/reference/api/rest/extensions'
+          name: Extensions
+        - to: '/reference/api/rest/fields'
+          name: Fields
+        - to: '/reference/api/rest/files'
+          name: Files
+        - to: '/reference/api/rest/folders'
+          name: Folders
+        - to: '/reference/api/rest/items'
+          name: Items
+        - to: '/reference/api/rest/permissions'
+          name: Permissions
+        - to: '/reference/api/rest/presets'
+          name: Presets
+        - to: '/reference/api/rest/relations'
+          name: Relations
+        - to: '/reference/api/rest/revisions'
+          name: Revisions
+        - to: '/reference/api/rest/roles'
+          name: Roles
+        - to: '/reference/api/rest/server'
+          name: Server
+        - to: '/reference/api/rest/settings'
+          name: Settings
+        - to: '/reference/api/rest/users'
+          name: Users
+        - to: '/reference/api/rest/utilities'
+          name: Utilities
+        - to: '/reference/api/rest/webhooks'
+          name: Webhooks
+    - to: '/reference/api/graphql'
+      name: GraphQL API
+    - to: '/reference/api/assets'
+      name: Assets
+    - to: '/reference/api/health'
+      name: Health Check
+# - name: Contributing
+#   to: '/contributing'
+#   children:
+#     - to: '/contributing/introduction'
+#       name: Introduction
+#     - to: '/contributing/codebase-overview'
+#       name: Codebase Overview
+#     - to: '/contributing/running-locally'
+#       name: Running Locally
+#     - to: '/contributing/translations'
+#       name: Translating the App

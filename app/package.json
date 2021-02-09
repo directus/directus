@@ -18,7 +18,7 @@
 		"access": "public"
 	},
 	"scripts": {
-		"copy-docs-images": "rimraf public/img/docs && copyfiles -u 3 ../docs/assets/* public/img/docs --verbose",
+		"copy-docs-images": "rimraf public/img/docs && copyfiles -u 3 \"../docs/assets/**/*\" \"public/img/docs\" --verbose",
 		"predev": "npm run copy-docs-images",
 		"prebuild": "npm run copy-docs-images",
 		"dev": "vue-cli-service serve",
@@ -34,8 +34,8 @@
 	},
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
 	"dependencies": {
-		"@directus/format-title": "file:../packages/format-title",
-		"@directus/docs": "file:../docs"
+		"@directus/docs": "file:../docs",
+		"@directus/format-title": "file:../packages/format-title"
 	},
 	"devDependencies": {
 		"@vue/cli-plugin-babel": "^4.5.8",

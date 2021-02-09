@@ -8,7 +8,7 @@ export default defineModule(({ i18n }) => {
 	const routes: RouteConfig[] = [
 		{
 			path: '/',
-			component: StaticDocs,
+			redirect: '/getting-started/introduction/',
 		},
 		...parseRoutes(files),
 		{
