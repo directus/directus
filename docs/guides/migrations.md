@@ -1,9 +1,6 @@
 # Custom Migrations
 
-Directus allows you to plug in your own custom migration files that will run whenever the `directus database migrate:*`
-commands are used.
-
-All migrations have to reside in the extensions/migrations folder
+> Directus allows adding custom migration files that run whenever the `directus database migrate:*` commands are executed. All migrations must reside in the `extensions/migrations` folder.
 
 ## File Name
 

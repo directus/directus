@@ -248,6 +248,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/guides/migrations',
+						title: 'Migrations',
+					},
+					{
+						type: 'page',
 						path: '/guides/modules',
 						title: 'Modules',
 					},
