@@ -65,13 +65,14 @@ router.get(
 const newFieldSchema = Joi.object({
 	collection: Joi.string().optional(),
 	field: Joi.string().required(),
-	type: Joi.string().valid(...types, null),
+	type: Joi.string()
+		.valid(...types, null)
+		.required(),
 	schema: Joi.object({
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
 		is_nullable: Joi.bool(),
 	}).unknown(),
-	/** @todo base this on default validation */
 	meta: Joi.any(),
 });
 
@@ -79,8 +80,6 @@ router.post(
 	'/:collection',
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
-		if (!req.body.schema && !req.body.meta) throw new InvalidPayloadException(`"schema" or "meta" is required`);
-
 		const service = new FieldsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -115,12 +114,12 @@ router.post(
 router.patch(
 	'/:collection/:field',
 	validateCollection,
-	// @todo: validate field
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
 		if (!fieldData.field) fieldData.field = req.params.field;

@@ -1,3 +1,4 @@
+import { ALIAS_TYPES } from '../constants';
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
 import { Accountability, AbstractServiceOptions, FieldMeta, Relation, SchemaOverview } from '../types';
@@ -93,12 +94,10 @@ export class FieldsService {
 			aliasFields.push(...systemFieldRows);
 		}
 
-		const aliasTypes = ['alias', 'o2m', 'm2m', 'm2a', 'files', 'files', 'translations'];
-
 		aliasFields = aliasFields.filter((field) => {
 			const specials = toArray(field.special);
 
-			for (const type of aliasTypes) {
+			for (const type of ALIAS_TYPES) {
 				if (specials.includes(type)) return true;
 			}
 
@@ -210,7 +209,7 @@ export class FieldsService {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
-		if (field.schema) {
+		if (ALIAS_TYPES.includes(field.type) === false) {
 			if (table) {
 				this.addColumnToTable(table, field as Field);
 			} else {
@@ -318,14 +317,12 @@ export class FieldsService {
 	}
 
 	public addColumnToTable(table: CreateTableBuilder, field: RawField | Field, alter: boolean = false) {
-		if (!field.schema) return;
-
 		let column: ColumnBuilder;
 
 		if (field.schema?.has_auto_increment) {
 			column = table.increments(field.field);
 		} else if (field.type === 'string') {
-			column = table.string(field.field, field.schema.max_length !== null ? field.schema.max_length : undefined);
+			column = table.string(field.field, field.schema?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
 			column = table[type](field.field, field.schema?.numeric_precision || 10, field.schema?.numeric_scale || 5);
@@ -337,7 +334,7 @@ export class FieldsService {
 			column = table[field.type](field.field);
 		}
 
-		if (field.schema.default_value !== undefined) {
+		if (field.schema?.default_value !== undefined) {
 			if (typeof field.schema.default_value === 'string' && field.schema.default_value.toLowerCase() === 'now()') {
 				column.defaultTo(this.knex.fn.now());
 			} else {
@@ -345,7 +342,7 @@ export class FieldsService {
 			}
 		}
 
-		if (field.schema.is_nullable !== undefined && field.schema.is_nullable === false) {
+		if (field.schema?.is_nullable !== undefined && field.schema.is_nullable === false) {
 			column.notNullable();
 		} else {
 			column.nullable();
