@@ -27,6 +27,8 @@ connection_fair: Koneksi Standar
 connection_poor: Koneksi Buruk
 rename_folder: Ubah nama folder
 delete_folder: Hapus Folder
+prefix: Awalan
+suffix: Akhiran
 reset_bookmark: Hapus Markah
 rename_bookmark: Ubah Markah
 update_bookmark: Hapus Markah
@@ -55,10 +57,14 @@ unarchive_confirm: Apakah Anda yakin ingin membatalkan arsip dari item ini?
 unknown_validation_errors: 'Ada kesalahan validasi untuk kolom tersembunyi berikut:'
 validationError:
   eq: Nilai harus {valid}
+  null: Nilai harus kosong
+  nnull: Nilai tidak boleh kosong
+field_standard: Standar
 field_file: Satu Berkas
 field_files: Beberapa Berkas
 field_translations: Terjemahan
 language: Bahasa
+global: Global
 schema_setup_title: Bagaimana seharusnya kolom ini disimpan di database?
 schema_field_title: Bagaimana seharusnya kolom ini berperilaku di dalam aplikasi?
 create_field: Buat Bidang
