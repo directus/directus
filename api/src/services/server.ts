@@ -2,6 +2,7 @@ import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types
 import Knex from 'knex';
 import database from '../database';
 import os from 'os';
+import logger from '../logger';
 // @ts-ignore
 import { version } from '../../package.json';
 import macosRelease from 'macos-release';
@@ -88,6 +89,7 @@ export class ServerService {
 			observedUnit?: string;
 			status: 'ok' | 'warn' | 'error';
 			output?: any;
+			threshold?: number;
 		};
 
 		const data: HealthData = {
@@ -102,11 +104,15 @@ export class ServerService {
 		for (const [service, healthData] of Object.entries(data.checks)) {
 			for (const healthCheck of healthData) {
 				if (healthCheck.status === 'warn' && data.status === 'ok') {
+					logger.warn(
+						`${service} in WARN state, the observed value ${healthCheck.observedValue} is above the threshold of ${healthCheck.threshold}${healthCheck.observedUnit}`
+					);
 					data.status = 'warn';
 					continue;
 				}
 
 				if (healthCheck.status === 'error' && (data.status === 'ok' || data.status === 'warn')) {
+					logger.error(healthCheck.output, '%s in ERROR state', service);
 					data.status = 'error';
 					break;
 				}
@@ -135,6 +141,7 @@ export class ServerService {
 					componentType: 'datastore',
 					observedUnit: 'ms',
 					observedValue: 0,
+					threshold: 150,
 				},
 			];
 
@@ -151,7 +158,7 @@ export class ServerService {
 				checks[`${client}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks[`${client}:responseTime`][0].observedValue! > 150 &&
+					checks[`${client}:responseTime`][0].observedValue! > checks[`${client}:responseTime`][0].threshold! &&
 					checks[`${client}:responseTime`][0].status !== 'error'
 				) {
 					checks[`${client}:responseTime`][0].status = 'warn';
@@ -189,6 +196,7 @@ export class ServerService {
 						componentType: 'cache',
 						observedValue: 0,
 						observedUnit: 'ms',
+						threshold: 150,
 					},
 				],
 			};
@@ -205,7 +213,10 @@ export class ServerService {
 				const endTime = performance.now();
 				checks['cache:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
 
-				if (checks['cache:responseTime'][0].observedValue > 150 && checks['cache:responseTime'][0].status !== 'error') {
+				if (
+					checks['cache:responseTime'][0].observedValue > checks['cache:responseTime'][0].threshold! &&
+					checks['cache:responseTime'][0].status !== 'error'
+				) {
 					checks['cache:responseTime'][0].status = 'warn';
 				}
 			}
@@ -225,6 +236,7 @@ export class ServerService {
 						componentType: 'ratelimiter',
 						observedValue: 0,
 						observedUnit: 'ms',
+						threshold: 150,
 					},
 				],
 			};
@@ -242,7 +254,7 @@ export class ServerService {
 				checks['rateLimiter:responseTime'][0].observedValue = +(endTime - startTime).toFixed(3);
 
 				if (
-					checks['rateLimiter:responseTime'][0].observedValue > 150 &&
+					checks['rateLimiter:responseTime'][0].observedValue > checks['rateLimiter:responseTime'][0].threshold! &&
 					checks['rateLimiter:responseTime'][0].status !== 'error'
 				) {
 					checks['rateLimiter:responseTime'][0].status = 'warn';
@@ -264,6 +276,7 @@ export class ServerService {
 						componentType: 'objectstore',
 						observedValue: 0,
 						observedUnit: 'ms',
+						threshold: 750,
 					},
 				];
 
@@ -281,7 +294,8 @@ export class ServerService {
 					checks[`storage:${location}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
 
 					if (
-						checks[`storage:${location}:responseTime`][0].observedValue! > 750 &&
+						checks[`storage:${location}:responseTime`][0].observedValue! >
+							checks[`storage:${location}:responseTime`][0].threshold! &&
 						checks[`storage:${location}:responseTime`][0].status !== 'error'
 					) {
 						checks[`storage:${location}:responseTime`][0].status = 'warn';
