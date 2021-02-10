@@ -3,10 +3,17 @@ edit_field: Редагувати поле
 duplicate_field: Дублювати поле
 full_width: Повна ширина
 add_field: Додати поле
+role_name: Назва ролі
 required: Обов'язкове
 create_role: Створити роль
 invite: Запросити
+rename_bookmark: Перейменувати закладку
+update_bookmark: Оновити закладку
 delete_bookmark: Видалити закладку
+logoutReason:
+  SIGN_OUT: Виконано вихід
+  SESSION_EXPIRED: Час сеансу минув
+public: Публічний
 directus_version: Версія Directus
 node_version: Версія Node
 node_uptime: Час роботи Node
@@ -183,6 +190,7 @@ fields:
     hidden: Приховано
     display_template: Шаблон
   directus_roles:
+    name: Назва ролі
     description: Опис
 comment: Коментар
 continue: Далі
