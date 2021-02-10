@@ -111,6 +111,43 @@ router.post(
 	respond
 );
 
+router.patch(
+	'/:collection',
+	validateCollection,
+	asyncHandler(async (req, res, next) => {
+		const service = new FieldsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		if (Array.isArray(req.body) === false) {
+			throw new InvalidPayloadException('Submitted body has to be an array.');
+		}
+
+		for (const field of req.body) {
+			await service.updateField(req.params.collection, field);
+		}
+
+		try {
+			let results: any = [];
+			for (const field of req.body) {
+				const updatedField = await service.readOne(req.params.collection, field.field);
+				results.push(updatedField);
+				res.locals.payload = { data: results || null };
+			}
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
+		return next();
+	}),
+	respond
+);
+
 const updateSchema = Joi.object({
 	type: Joi.string()
 		.valid(...types, null)
