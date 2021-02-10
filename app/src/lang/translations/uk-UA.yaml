@@ -8,6 +8,13 @@ create_role: Створити роль
 invite: Запросити
 delete_bookmark: Видалити закладку
 directus_version: Версія Directus
+node_version: Версія Node
+node_uptime: Час роботи Node
+os_type: Тип ОС
+os_version: Версія ОС
+os_uptime: Час роботи ОС
+validationError:
+  neq: Значення не може бути {invalid}
 language: Мова
 create_field: Створення поля
 hidden_on_detail: Приховано на деталі
