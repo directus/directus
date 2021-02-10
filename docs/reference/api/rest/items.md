@@ -77,7 +77,7 @@ If your collection is a singleton, this endpoint will return the item.
 <div class="right">
 
 ```
-GET /items
+GET /items/:collection
 ```
 
 ```json
@@ -123,7 +123,7 @@ Returns a [item object](#the-item-object) if a valid primary key was provided.
 <div class="right">
 
 ```
-GET /items/:id
+GET /items/:collection/:id
 ```
 
 ```json
@@ -169,7 +169,7 @@ Returns the [item object](#the-item-object) of the item that was created.
 <div class="right">
 
 ```
-POST /items
+POST /items/:collection
 ```
 
 ```json
@@ -224,7 +224,7 @@ Returns the [item object](#the-item-object) of the item that was updated.
 <div class="right">
 
 ```
-PATCH /items/:id
+PATCH /items/:collection/:id
 ```
 
 ```json
@@ -302,7 +302,7 @@ If your collection is a singleton, this endpoint will act the same as the [Updat
 <div class="right">
 
 ```
-PATCH /items
+PATCH /items/:collection
 ```
 
 ```json
@@ -367,7 +367,7 @@ Empty body.
 <div class="right">
 
 ```
-DELETE /items/:id
+DELETE /items/:collection/:id
 ```
 
 ```json
@@ -398,7 +398,7 @@ Empty body.
 <div class="right">
 
 ```
-DELETE /items
+DELETE /items/:collection
 ```
 
 ```json
