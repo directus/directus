@@ -93,8 +93,8 @@ async function parseCurrentLevel(
 	children: (NestedCollectionNode | FieldNode)[],
 	schema: SchemaOverview
 ) {
-	const primaryKeyField = schema[collection].primary;
-	const columnsInCollection = Object.keys(schema[collection].columns);
+	const primaryKeyField = schema.tables[collection].primary;
+	const columnsInCollection = Object.keys(schema.tables[collection].columns);
 
 	const columnsToSelect: string[] = [];
 	const nestedCollectionNodes: NestedCollectionNode[] = [];
@@ -154,7 +154,7 @@ async function getDBQuery(
 
 	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
 
-	await applyQuery(knex, table, dbQuery, queryCopy, schema);
+	await applyQuery(table, dbQuery, queryCopy, schema);
 
 	// Nested filters use joins to filter on the parent level, to prevent duplicate
 	// parents, we group the query by the current tables primary key (which is unique)

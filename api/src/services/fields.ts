@@ -201,7 +201,7 @@ export class FieldsService {
 		}
 
 		// Check if field already exists, either as a column, or as a row in directus_fields
-		if (field.field in this.schema[collection].columns) {
+		if (field.field in this.schema.tables[collection].columns) {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		} else if (
 			!!(await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first())
@@ -284,17 +284,18 @@ export class FieldsService {
 
 		await this.knex('directus_fields').delete().where({ collection, field });
 
-		if (field in this.schema[collection].columns) {
+		if (field in this.schema.tables[collection].columns) {
 			await this.knex.schema.table(collection, (table) => {
 				table.dropColumn(field);
 			});
 		}
 
-		const relations = await this.knex
-			.select<Relation[]>('*')
-			.from('directus_relations')
-			.where({ many_collection: collection, many_field: field })
-			.orWhere({ one_collection: collection, one_field: field });
+		const relations = this.schema.relations.filter((relation) => {
+			return (
+				(relation.many_collection === collection && relation.many_field === field) ||
+				(relation.one_collection === collection && relation.one_field === field)
+			);
+		});
 
 		for (const relation of relations) {
 			const isM2O = relation.many_collection === collection && relation.many_field === field;

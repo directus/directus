@@ -71,7 +71,7 @@ export class CollectionsService {
 					throw new InvalidPayloadException(`Collections can't start with "directus_"`);
 				}
 
-				if (payload.collection in this.schema) {
+				if (payload.collection in this.schema.tables) {
 					throw new InvalidPayloadException(`Collection "${payload.collection}" already exists.`);
 				}
 
@@ -272,7 +272,7 @@ export class CollectionsService {
 			schema: this.schema,
 		});
 
-		const tablesInDatabase = Object.keys(this.schema);
+		const tablesInDatabase = Object.keys(this.schema.tables);
 
 		const collectionKeys = toArray(collection);
 
@@ -290,11 +290,9 @@ export class CollectionsService {
 		await this.knex('directus_activity').delete().whereIn('collection', collectionKeys);
 		await this.knex('directus_permissions').delete().whereIn('collection', collectionKeys);
 
-		const relations = await this.knex
-			.select<Relation[]>('*')
-			.from('directus_relations')
-			.where({ many_collection: collection })
-			.orWhere({ one_collection: collection });
+		const relations = this.schema.relations.filter((relation) => {
+			return relation.many_collection === collection || relation.one_collection === collection;
+		});
 
 		for (const relation of relations) {
 			const isM2O = relation.many_collection === collection;

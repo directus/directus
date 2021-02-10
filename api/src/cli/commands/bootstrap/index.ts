@@ -2,6 +2,7 @@ import env from '../../../env';
 import logger from '../../../logger';
 import installDatabase from '../../../database/seeds/run';
 import runMigrations from '../../../database/migrations/run';
+import { getSchema } from '../../../utils/get-schema';
 import { nanoid } from 'nanoid';
 
 export default async function bootstrap() {
@@ -22,7 +23,7 @@ export default async function bootstrap() {
 
 		await installDatabase(database);
 
-		const schema = await schemaInspector.overview();
+		const schema = await getSchema();
 
 		logger.info('Setting up first admin role...');
 		const rolesService = new RolesService({ schema });

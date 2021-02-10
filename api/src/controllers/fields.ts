@@ -52,7 +52,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		if (req.params.field in req.schema[req.params.collection].columns === false) throw new ForbiddenException();
+		if (req.params.field in req.schema.tables[req.params.collection].columns === false) throw new ForbiddenException();
 
 		const field = await service.readOne(req.params.collection, req.params.field);
 

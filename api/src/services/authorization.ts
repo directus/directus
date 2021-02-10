@@ -235,7 +235,7 @@ export class AuthorizationService {
 
 		payloads = payloads.map((payload) => merge({}, preset, payload));
 
-		const columns = Object.values(this.schema[collection].columns);
+		const columns = Object.values(this.schema.tables[collection].columns);
 
 		let requiredColumns: string[] = [];
 

@@ -1,3 +1,7 @@
 import { SchemaOverview as SO } from '@directus/schema/dist/types/overview';
+import { Relation } from './relation';
 
-export type SchemaOverview = SO;
+export type SchemaOverview = {
+	tables: SO;
+	relations: Relation[];
+};

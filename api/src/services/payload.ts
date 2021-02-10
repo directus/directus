@@ -212,7 +212,7 @@ export class PayloadService {
 	 * shouldn't return with time / timezone info respectively
 	 */
 	async processDates(payloads: Partial<Record<string, any>>[]) {
-		const columnsInCollection = Object.values(this.schema[this.collection].columns);
+		const columnsInCollection = Object.values(this.schema.tables[this.collection].columns);
 
 		const columnsWithType = columnsInCollection.map((column) => ({
 			name: column.column_name,
@@ -265,10 +265,9 @@ export class PayloadService {
 	processA2O(payloads: Partial<Item>): Promise<Partial<Item>>;
 	async processA2O(payload: Partial<Item> | Partial<Item>[]): Promise<Partial<Item> | Partial<Item>[]> {
 		const relations = [
-			...(await this.knex
-				.select<Relation[]>('*')
-				.from('directus_relations')
-				.where({ many_collection: this.collection })),
+			...this.schema.relations.filter((relation) => {
+				return relation.many_collection === this.collection;
+			}),
 			...systemRelationRows.filter((systemRelation) => systemRelation.many_collection === this.collection),
 		];
 
@@ -309,7 +308,7 @@ export class PayloadService {
 					schema: this.schema,
 				});
 
-				const relatedPrimary = this.schema[relatedCollection].primary;
+				const relatedPrimary = this.schema.tables[relatedCollection].primary;
 				const relatedRecord: Partial<Item> = payload[relation.many_field];
 				const hasPrimaryKey = relatedRecord.hasOwnProperty(relatedPrimary);
 
@@ -337,10 +336,9 @@ export class PayloadService {
 	processM2O(payloads: Partial<Item>): Promise<Partial<Item>>;
 	async processM2O(payload: Partial<Item> | Partial<Item>[]): Promise<Partial<Item> | Partial<Item>[]> {
 		const relations = [
-			...(await this.knex
-				.select<Relation[]>('*')
-				.from('directus_relations')
-				.where({ many_collection: this.collection })),
+			...this.schema.relations.filter((relation) => {
+				return relation.many_collection === this.collection;
+			}),
 			...systemRelationRows.filter((systemRelation) => systemRelation.many_collection === this.collection),
 		];
 
@@ -391,10 +389,9 @@ export class PayloadService {
 	 */
 	async processO2M(payload: Partial<Item> | Partial<Item>[], parent?: PrimaryKey) {
 		const relations = [
-			...(await this.knex
-				.select<Relation[]>('*')
-				.from('directus_relations')
-				.where({ one_collection: this.collection })),
+			...this.schema.relations.filter((relation) => {
+				return relation.one_collection === this.collection;
+			}),
 			...systemRelationRows.filter((systemRelation) => systemRelation.one_collection === this.collection),
 		];
 

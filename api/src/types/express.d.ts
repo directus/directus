@@ -3,9 +3,11 @@
  */
 
 import { Permission } from './permissions';
+import { Relation } from './relation';
+
 import { Query } from './query';
 import { Accountability } from './accountability';
-import { SchemaOverview } from '@directus/schema/dist/types/overview';
+import { SchemaOverview } from './schema';
 
 export {};
 
@@ -19,7 +21,6 @@ declare global {
 
 			accountability?: Accountability;
 			singleton?: boolean;
-			permissions?: Permission;
 		}
 	}
 }
