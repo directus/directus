@@ -41,19 +41,12 @@ export class AuthorizationService {
 	async processAST(ast: AST, action: PermissionsAction = 'read'): Promise<AST> {
 		const collectionsRequested = getCollectionsFromAST(ast);
 
-		let permissionsForCollections = await this.knex
-			.select<Permission[]>('*')
-			.from('directus_permissions')
-			.where({ action, role: this.accountability?.role })
-			.whereIn(
-				'collection',
-				collectionsRequested.map(({ collection }) => collection)
+		let permissionsForCollections = this.schema.permissions.filter((permission) => {
+			return (
+				permission.action === action &&
+				collectionsRequested.map(({ collection }) => collection).includes(permission.collection)
 			);
-
-		permissionsForCollections = (await this.payloadService.processValues(
-			'read',
-			permissionsForCollections
-		)) as Permission[];
+		});
 
 		// If the permissions don't match the collections, you don't have permission to read all of them
 		const uniqueCollectionsRequestedCount = uniq(collectionsRequested.map(({ collection }) => collection)).length;
@@ -203,17 +196,13 @@ export class AuthorizationService {
 				presets: {},
 			};
 		} else {
-			permission = await this.knex
-				.select('*')
-				.from('directus_permissions')
-				.where({ action, collection, role: this.accountability?.role || null })
-				.first();
+			permission = this.schema.permissions.find((permission) => {
+				return permission.action === action;
+			});
 
 			if (!permission) throw new ForbiddenException();
 
-			permission = (await this.payloadService.processValues('read', permission as Item)) as Permission;
-
-			// Check if you have permission to access the fields you're trying to acces
+			// Check if you have permission to access the fields you're trying to access
 
 			const allowedFields = permission.fields || [];
 

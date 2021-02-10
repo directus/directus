@@ -78,6 +78,11 @@ export async function applyFilter(
 	function addJoins(dbQuery: QueryBuilder, filter: Filter, collection: string) {
 		for (const [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
+				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
+				// permission checks, as {} already matches full permissions.
+				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0))
+					continue;
+
 				value.forEach((subFilter: Record<string, any>) => {
 					addJoins(dbQuery, subFilter, collection);
 				});
@@ -140,6 +145,11 @@ export async function applyFilter(
 	function addWhereClauses(dbQuery: QueryBuilder, filter: Filter, collection: string, logical: 'and' | 'or' = 'and') {
 		for (const [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
+				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
+				// permission checks, as {} already matches full permissions.
+				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0))
+					continue;
+
 				/** @NOTE this callback function isn't called until Knex runs the query */
 				dbQuery.where((subQuery) => {
 					value.forEach((subFilter: Record<string, any>) => {

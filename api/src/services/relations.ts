@@ -61,12 +61,13 @@ export class RelationsService extends ItemsService {
 		if (relations === null) return null;
 		if (this.accountability === null || this.accountability?.admin === true) return relations;
 
-		const allowedCollections = await this.permissionsService.getAllowedCollections(
-			this.accountability?.role || null,
-			'read'
-		);
+		const allowedCollections = this.schema.permissions
+			.filter((permission) => {
+				return permission.action === 'read';
+			})
+			.map(({ collection }) => collection);
 
-		const allowedFields = await this.permissionsService.getAllowedFields(this.accountability?.role || null, 'read');
+		const allowedFields = this.permissionsService.getAllowedFields('read');
 
 		relations = toArray(relations);
 

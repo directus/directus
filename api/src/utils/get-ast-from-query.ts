@@ -38,20 +38,14 @@ export default async function getASTFromQuery(
 
 	const accountability = options?.accountability;
 	const action = options?.action || 'read';
-	const knex = options?.knex || database;
 
-	/**
-	 * we might not need al this info at all times, but it's easier to fetch it all once, than trying to fetch it for every
-	 * requested field. @todo look into utilizing graphql/dataloader for this purpose
-	 */
 	const relations = [...schema.relations, ...systemRelationRows];
 
 	const permissions =
 		accountability && accountability.admin !== true
-			? await knex
-					.select<{ collection: string; fields: string }[]>('collection', 'fields')
-					.from('directus_permissions')
-					.where({ role: accountability.role, action: action })
+			? schema.permissions.filter((permission) => {
+					return permission.action === action;
+			  })
 			: null;
 
 	const ast: AST = {
@@ -205,9 +199,7 @@ export default async function getASTFromQuery(
 		let allowedFields = fieldsInCollection;
 
 		if (permissions) {
-			const permittedFields = permissions
-				.find((permission) => parentCollection === permission.collection)
-				?.fields?.split(',');
+			const permittedFields = permissions.find((permission) => parentCollection === permission.collection)?.fields;
 			if (permittedFields) allowedFields = permittedFields;
 		}
 

@@ -62,6 +62,7 @@ interface SpecificationSubService {
 class OASService implements SpecificationSubService {
 	accountability: Accountability | null;
 	knex: Knex;
+	schema: SchemaOverview;
 
 	fieldsService: FieldsService;
 	collectionsService: CollectionsService;
@@ -81,6 +82,7 @@ class OASService implements SpecificationSubService {
 	) {
 		this.accountability = options.accountability || null;
 		this.knex = options.knex || database;
+		this.schema = options.schema;
 
 		this.fieldsService = fieldsService;
 		this.collectionsService = collectionsService;
@@ -91,10 +93,7 @@ class OASService implements SpecificationSubService {
 		const collections = await this.collectionsService.readByQuery();
 		const fields = await this.fieldsService.readAll();
 		const relations = (await this.relationsService.readByQuery({})) as Relation[];
-		const permissions: Permission[] = await this.knex
-			.select('*')
-			.from('directus_permissions')
-			.where({ role: this.accountability?.role || null });
+		const permissions = this.schema.permissions;
 
 		const tags = await this.generateTags(collections);
 		const paths = await this.generatePaths(permissions, tags);
@@ -104,7 +103,8 @@ class OASService implements SpecificationSubService {
 			openapi: '3.0.1',
 			info: {
 				title: 'Dynamic API Specification',
-				description: 'This is a dynamicly generated API specification for all endpoints existing on the current .',
+				description:
+					'This is a dynamically generated API specification for all endpoints existing on the current project.',
 				version: version,
 			},
 			servers: [

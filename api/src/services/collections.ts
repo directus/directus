@@ -113,12 +113,9 @@ export class CollectionsService {
 		const collectionKeys = toArray(collection);
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = await this.knex
-				.select('collection')
-				.from('directus_permissions')
-				.where({ action: 'read' })
-				.where({ role: this.accountability.role })
-				.whereIn('collection', collectionKeys);
+			const permissions = this.schema.permissions.filter((permission) => {
+				return permission.action === 'read' && collectionKeys.includes(permission.collection);
+			});
 
 			if (collectionKeys.length !== permissions.length) {
 				const collectionsYouHavePermissionToRead = permissions.map(({ collection }) => collection);
@@ -163,12 +160,11 @@ export class CollectionsService {
 		let tablesInDatabase = await schemaInspector.tableInfo();
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const collectionsYouHavePermissionToRead: string[] = (
-				await this.knex.select('collection').from('directus_permissions').where({
-					role: this.accountability.role,
-					action: 'read',
+			const collectionsYouHavePermissionToRead: string[] = this.schema.permissions
+				.filter((permission) => {
+					return permission.action === 'read';
 				})
-			).map(({ collection }) => collection);
+				.map(({ collection }) => collection);
 
 			tablesInDatabase = tablesInDatabase.filter((table) => {
 				return collectionsYouHavePermissionToRead.includes(table.name);

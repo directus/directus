@@ -1,5 +1,6 @@
 import { SchemaOverview as SO } from '@directus/schema/dist/types/overview';
 import { Relation } from './relation';
+import { Permission } from './permissions';
 
 export type SchemaOverview = {
 	tables: SO;
@@ -10,4 +11,5 @@ export type SchemaOverview = {
 		field: string;
 		special: string[];
 	}[];
+	permissions: Permission[];
 };

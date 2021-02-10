@@ -6,27 +6,23 @@ export class PermissionsService extends ItemsService {
 		super('directus_permissions', options);
 	}
 
-	async getAllowedCollections(role: string | null, action: PermissionsAction) {
-		const query = this.knex.select('collection').from('directus_permissions').where({ role, action });
-		const results = await query;
-		return results.map((result) => result.collection);
-	}
+	getAllowedFields(action: PermissionsAction, collection?: string) {
+		const results = this.schema.permissions.filter((permission) => {
+			let matchesCollection = true;
 
-	async getAllowedFields(role: string | null, action: PermissionsAction, collection?: string) {
-		const query = this.knex.select('collection', 'fields').from('directus_permissions').where({ role, action });
+			if (collection) {
+				matchesCollection = permission.collection === collection;
+			}
 
-		if (collection) {
-			query.andWhere({ collection });
-		}
-
-		const results = await query;
+			return permission.action === action;
+		});
 
 		const fieldsPerCollection: Record<string, string[]> = {};
 
 		for (const result of results) {
 			const { collection, fields } = result;
 			if (!fieldsPerCollection[collection]) fieldsPerCollection[collection] = [];
-			fieldsPerCollection[collection].push(...(fields || '').split(','));
+			fieldsPerCollection[collection].push(...(fields ?? []));
 		}
 
 		return fieldsPerCollection;
