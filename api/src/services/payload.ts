@@ -139,7 +139,7 @@ export class PayloadService {
 		const fieldsInPayload = Object.keys(processedPayload[0]);
 
 		let specialFieldsInCollection = this.schema.fields.filter(
-			(field) => field.collection === this.collection && field.special.length > 0
+			(field) => field.collection === this.collection && field.special && field.special.length > 0
 		);
 
 		specialFieldsInCollection.push(
