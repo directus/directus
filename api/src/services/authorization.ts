@@ -241,16 +241,12 @@ export class AuthorizationService {
 
 		for (const column of columns) {
 			const field =
-				(await this.knex
-					.select<{ special: string }>('special')
-					.from('directus_fields')
-					.where({ collection, field: column.column_name })
-					.first()) ||
+				this.schema.fields.find((field) => field.collection === collection && field.field === column.column_name) ||
 				systemFieldRows.find(
 					(fieldMeta) => fieldMeta.field === column.column_name && fieldMeta.collection === collection
 				);
 
-			const specials = field?.special ? toArray(field.special) : [];
+			const specials = field?.special ?? [];
 
 			const hasGenerateSpecial = ['uuid', 'date-created', 'role-created', 'user-created'].some((name) =>
 				specials.includes(name)

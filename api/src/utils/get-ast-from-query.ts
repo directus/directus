@@ -295,7 +295,7 @@ export default async function getASTFromQuery(
 	async function getFieldsInCollection(collection: string) {
 		const columns = Object.keys(schema.tables[collection].columns);
 		const fields = [
-			...(await knex.select('field').from('directus_fields').where({ collection })).map((field) => field.field),
+			...schema.fields.filter((field) => field.collection === collection).map((field) => field.field),
 			...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection).map((fieldMeta) => fieldMeta.field),
 		];
 

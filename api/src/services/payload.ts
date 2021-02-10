@@ -7,16 +7,13 @@ import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { clone, isObject, cloneDeep } from 'lodash';
-import { Relation, Item, AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
+import { Item, AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
 import { ItemsService } from './items';
-import { URL } from 'url';
 import Knex from 'knex';
-import env from '../env';
 import getLocalType from '../utils/get-local-type';
 import { format, formatISO } from 'date-fns';
 import { ForbiddenException } from '../exceptions';
 import { toArray } from '../utils/to-array';
-import { FieldMeta } from '../types';
 import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';
 import { InvalidPayloadException } from '../exceptions';
@@ -141,13 +138,20 @@ export class PayloadService {
 
 		const fieldsInPayload = Object.keys(processedPayload[0]);
 
-		let specialFieldsInCollection: FieldMeta[] = await this.knex
-			.select('field', 'special')
-			.from('directus_fields')
-			.where({ collection: this.collection })
-			.whereNotNull('special');
+		let specialFieldsInCollection = this.schema.fields.filter(
+			(field) => field.collection === this.collection && field.special.length > 0
+		);
 
-		specialFieldsInCollection.push(...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === this.collection));
+		specialFieldsInCollection.push(
+			...systemFieldRows
+				.filter((fieldMeta) => fieldMeta.collection === this.collection)
+				.map((fieldMeta) => ({
+					id: fieldMeta.id,
+					collection: fieldMeta.collection,
+					field: fieldMeta.field,
+					special: fieldMeta.special ?? [],
+				}))
+		);
 
 		if (action === 'read') {
 			specialFieldsInCollection = specialFieldsInCollection.filter((fieldMeta) => {
@@ -187,7 +191,12 @@ export class PayloadService {
 		return processedPayload[0];
 	}
 
-	async processField(field: FieldMeta, payload: Partial<Item>, action: Action, accountability: Accountability | null) {
+	async processField(
+		field: SchemaOverview['fields'][number],
+		payload: Partial<Item>,
+		action: Action,
+		accountability: Accountability | null
+	) {
 		if (!field.special) return payload[field.field];
 		const fieldSpecials = field.special ? toArray(field.special) : [];
 

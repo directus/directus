@@ -14,8 +14,21 @@ export async function getSchema(): Promise<SchemaOverview> {
 
 	const relations = await database.select('*').from('directus_relations');
 
+	const fields = await database
+		.select<{ id: number; collection: string; field: string; special: string }[]>(
+			'id',
+			'collection',
+			'field',
+			'special'
+		)
+		.from('directus_fields');
+
 	return {
 		tables: schemaOverview,
 		relations: relations,
+		fields: fields.map((transform) => ({
+			...transform,
+			special: transform.special?.split(','),
+		})),
 	};
 }

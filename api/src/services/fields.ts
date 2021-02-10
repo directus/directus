@@ -204,7 +204,7 @@ export class FieldsService {
 		if (field.field in this.schema.tables[collection].columns) {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		} else if (
-			!!(await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first())
+			!!this.schema.fields.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field.field)
 		) {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
@@ -245,11 +245,9 @@ export class FieldsService {
 		}
 
 		if (field.meta) {
-			const record = await database
-				.select<{ id: number }>('id')
-				.from('directus_fields')
-				.where({ collection, field: field.field })
-				.first();
+			const record = this.schema.fields.find(
+				(fieldMeta) => fieldMeta.field === field.field && fieldMeta.collection === collection
+			);
 
 			if (record) {
 				await this.itemsService.update(
