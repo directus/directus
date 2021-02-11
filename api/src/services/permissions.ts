@@ -38,7 +38,15 @@ export class PermissionsService extends ItemsService {
 		const result = await super.readByQuery(query, opts);
 
 		if (Array.isArray(result) && this.accountability && this.accountability.app === true) {
-			result.push(...filterItems(appAccessMinimalPermissions, query.filter));
+			result.push(
+				...filterItems(
+					appAccessMinimalPermissions.map((permission) => ({
+						...permission,
+						role: this.accountability!.role,
+					})),
+					query.filter
+				)
+			);
 		}
 
 		return result;
@@ -54,7 +62,15 @@ export class PermissionsService extends ItemsService {
 		const result = await super.readByKey(key as any, query, action);
 
 		if (Array.isArray(result) && this.accountability && this.accountability.app === true) {
-			result.push(...filterItems(appAccessMinimalPermissions, query.filter));
+			result.push(
+				...filterItems(
+					appAccessMinimalPermissions.map((permission) => ({
+						...permission,
+						role: this.accountability!.role,
+					})),
+					query.filter
+				)
+			);
 		}
 
 		return result;
