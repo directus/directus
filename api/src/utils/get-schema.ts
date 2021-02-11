@@ -1,10 +1,18 @@
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 import { Accountability, SchemaOverview, Permission } from '../types';
-import database, { schemaInspector } from '../database';
 import logger from '../logger';
 import { mergePermissions } from './merge-permissions';
+import Knex from 'knex';
+import SchemaInspector from '@directus/schema';
 
-export async function getSchema(accountability?: Accountability): Promise<SchemaOverview> {
+export async function getSchema(options: {
+	accountability?: Accountability;
+	database?: Knex;
+}): Promise<SchemaOverview> {
+	// Allows for use in the CLI
+	const database = options.database || (require('../database').default as Knex);
+	const schemaInspector = SchemaInspector(database);
+
 	const schemaOverview = await schemaInspector.overview();
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
@@ -27,11 +35,11 @@ export async function getSchema(accountability?: Accountability): Promise<Schema
 
 	let permissions: Permission[] = [];
 
-	if (accountability && accountability.admin !== true) {
+	if (options.accountability && options.accountability.admin !== true) {
 		const permissionsForRole = await database
 			.select('*')
 			.from('directus_permissions')
-			.where({ role: accountability.role });
+			.where({ role: options.accountability.role });
 
 		permissions = permissionsForRole.map((permissionRaw) => {
 			if (permissionRaw.permissions && typeof permissionRaw.permissions === 'string') {
@@ -49,10 +57,10 @@ export async function getSchema(accountability?: Accountability): Promise<Schema
 			return permissionRaw;
 		});
 
-		if (accountability.app === true) {
+		if (options.accountability.app === true) {
 			permissions = mergePermissions(
 				permissions,
-				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: accountability.role }))
+				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: options.accountability.role }))
 			);
 		}
 	}
