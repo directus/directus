@@ -33,7 +33,7 @@
 import { defineComponent, ref } from '@vue/composition-api';
 import api from '@/api';
 import router from '@/router';
-import { appRecommendedPermissions } from './app-recommended-permissions';
+import { appRecommendedPermissions } from './app-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({

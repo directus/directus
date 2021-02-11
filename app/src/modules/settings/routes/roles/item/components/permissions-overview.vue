@@ -69,10 +69,8 @@ import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 import { Permission } from '@/types';
 import api from '@/api';
-import { appRecommendedPermissions } from '../../app-recommended-permissions';
+import { appRecommendedPermissions, appMinimalPermissions } from '../../app-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
-
-import appMinimalPermissions from 'directus/dist/database/system-data/app-access-permissions/app-access-permissions.yaml';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },

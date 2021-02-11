@@ -58,8 +58,7 @@ import Fields from './components/fields.vue';
 import Validation from './components/validation.vue';
 import Presets from './components/presets.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
-
-import appMinimalPermissions from 'directus/dist/database/system-data/app-access-permissions/app-access-permissions.yaml';
+import { appMinimalPermissions } from '../app-permissions';
 
 export default defineComponent({
 	components: { Actions, Tabs, Permissions, Fields, Validation, Presets },
