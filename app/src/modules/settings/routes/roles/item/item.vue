@@ -7,11 +7,7 @@
 			</v-button>
 		</template>
 		<template #actions>
-			<v-dialog
-				v-model="confirmDelete"
-				v-if="[1, 2].includes(+primaryKey) === false"
-				@esc="confirmDelete = false"
-			>
+			<v-dialog v-model="confirmDelete" v-if="[1, 2].includes(+primaryKey) === false" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
 						rounded
@@ -71,6 +67,7 @@
 			<v-notice v-if="adminEnabled" type="info">
 				{{ $t('admins_have_all_permissions') }}
 			</v-notice>
+
 			<permissions-overview v-else :role="primaryKey" :permission="permissionKey" :app-access="appAccess" />
 
 			<v-form
@@ -101,10 +98,6 @@ import { useUserStore, usePermissionsStore } from '@/stores/';
 import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
 import UsersInvite from '@/views/private/components/users-invite';
-
-type Values = {
-	[field: string]: any;
-};
 
 export default defineComponent({
 	name: 'roles-item',

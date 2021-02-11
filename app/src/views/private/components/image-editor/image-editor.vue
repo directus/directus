@@ -31,11 +31,7 @@
 
 				<v-icon name="rotate_90_degrees_ccw" @click="rotate" v-tooltip.top.inverted="$t('rotate')" />
 
-				<v-icon
-					name="flip_horizontal"
-					@click="flip('horizontal')"
-					v-tooltip.top.inverted="$t('flip_horizontal')"
-				/>
+				<v-icon name="flip_horizontal" @click="flip('horizontal')" v-tooltip.top.inverted="$t('flip_horizontal')" />
 
 				<v-icon name="flip_vertical" @click="flip('vertical')" v-tooltip.top.inverted="$t('flip_vertical')" />
 
@@ -84,9 +80,7 @@
 
 				<div class="dimensions" v-if="imageData">
 					{{ $n(imageData.width) }}x{{ $n(imageData.height) }}
-					<template
-						v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height"
-					>
+					<template v-if="imageData.width !== newDimensions.width || imageData.height !== newDimensions.height">
 						->
 						{{ $n(newDimensions.width) }}x{{ $n(newDimensions.height) }}
 					</template>
@@ -474,7 +468,6 @@ export default defineComponent({
 .dimensions {
 	margin-right: 12px;
 	color: var(--foreground-subdued);
-	letter-spacing: 0;
 	font-feature-settings: 'tnum';
 }
 

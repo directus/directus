@@ -92,6 +92,7 @@
     - title
     - description
     - tags
+    - preferences_divider
     - avatar
     - language
     - theme

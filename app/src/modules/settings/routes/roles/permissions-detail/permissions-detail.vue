@@ -24,10 +24,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import api from '@/api';
 import { Permission, Role } from '@/types';
-import { useFieldsStore, useCollectionsStore } from '@/stores/';
+import { useCollectionsStore } from '@/stores/';
 import router from '@/router';
 import i18n from '@/lang';
 import Actions from './components/actions.vue';
@@ -88,8 +88,7 @@ export default defineComponent({
 				tabs.push({
 					text: i18n.t('item_permissions'),
 					value: 'permissions',
-					hasValue:
-						permission.value.permissions !== null && Object.keys(permission.value.permissions).length > 0,
+					hasValue: permission.value.permissions !== null && Object.keys(permission.value.permissions).length > 0,
 				});
 			}
 
@@ -105,8 +104,7 @@ export default defineComponent({
 				tabs.push({
 					text: i18n.t('field_validation'),
 					value: 'validation',
-					hasValue:
-						permission.value.validation !== null && Object.keys(permission.value.validation).length > 0,
+					hasValue: permission.value.validation !== null && Object.keys(permission.value.validation).length > 0,
 				});
 			}
 

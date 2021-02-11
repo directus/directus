@@ -33,7 +33,7 @@
 import { defineComponent, ref } from '@vue/composition-api';
 import api from '@/api';
 import router from '@/router';
-import { permissions } from './app-required-permissions';
+import { appRecommendedPermissions } from './app-recommended-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -64,7 +64,7 @@ export default defineComponent({
 					if (appAccess.value === true && adminAccess.value === false) {
 						await api.post(
 							'/permissions',
-							permissions.map((permission) => ({
+							appRecommendedPermissions.map((permission) => ({
 								...permission,
 								role: roleResponse.data.data.id,
 							}))

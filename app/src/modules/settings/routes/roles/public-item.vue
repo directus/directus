@@ -18,10 +18,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 
 import SettingsNavigation from '../../components/navigation.vue';
-import router from '@/router';
 import PermissionsOverview from './item/components/permissions-overview.vue';
 
 export default defineComponent({

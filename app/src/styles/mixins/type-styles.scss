@@ -7,7 +7,6 @@
 	font-family: var(--family-sans-serif);
 	font-style: normal;
 	line-height: 34px;
-	letter-spacing: -0.32px;
 
 	@include breakpoint(small) {
 		font-size: 24px;
@@ -21,7 +20,6 @@
 	font-family: var(--family-sans-serif);
 	font-style: normal;
 	line-height: 19px;
-	letter-spacing: -0.32px;
 }
 
 @mixin type-text {
@@ -31,5 +29,4 @@
 	font-family: var(--family-sans-serif);
 	font-style: normal;
 	line-height: 22px;
-	letter-spacing: -0.15px;
 }

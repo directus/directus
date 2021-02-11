@@ -120,7 +120,7 @@ hr {
 	margin-bottom: 56px;
 	text-align: center;
 }
-hr: after {
+hr:after {
 	content: "...";
 	font-size: 28px;
 	letter-spacing: 16px;
