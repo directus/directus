@@ -27,6 +27,8 @@ connection_fair: Нормальное Подключение
 connection_poor: Плохое Подключение
 rename_folder: Переименовать папку
 delete_folder: Удалить папку
+prefix: Префикс
+suffix: Суффикс
 reset_bookmark: Сбросить закладку
 rename_bookmark: Переименовать закладку
 update_bookmark: Обновить закладку
@@ -75,9 +77,13 @@ validationError:
 all_access: Полный доступ
 no_access: Нет Доступа
 use_custom: Использовать Свой
+field_standard: Стандарт
 field_presentation: Представление и Алиасы
 field_file: Один Файл
 field_files: Несколько Файлов
+field_m2o: Связка M2O
+field_o2m: Связка O2M
+field_m2m: Связка M2M
 field_translations: Переводы
 item_permissions: Разрешения Элемента
 field_permissions: Разрешения Поля
@@ -171,6 +177,8 @@ length: Длина
 precision_scale: Точность и Масштаб
 readonly: Только для чтения
 unique: Уникальный
+updated_on: Дата обновления
+updated_by: Обновлено
 primary_key: Первичный ключ
 foreign_key: Внешний Ключ
 finish_setup: Завершить Настройку
@@ -348,6 +356,7 @@ collection_created: Коллекция Создана
 modified_on: Дата изменения
 card_size: Размер Карточки
 sort_field: Поле сортировки
+sort: Сортировать
 status: Статус
 toggle_manual_sorting: Переключить Ручную Сортировку
 bookmark_doesnt_exist: Закладка Не Существует
@@ -453,6 +462,8 @@ upload_pending: Ожидание Загрузки
 drag_file_here: Перетащите Файлы Сюда
 click_to_browse: Нажмите для Просмотра
 layout_options: Параметры Макета
+rows: Записи
+columns: Колонки
 collection_setup: Настройки Коллекции
 optional_system_fields: Необязательные Системные Поля
 value_unique: Значение должно быть уникальным
@@ -508,12 +519,14 @@ wysiwyg_options:
   bullist: Маркированный Список
   numlist: Нумерованный Список
   hr: Горизонтальный Разделитель
+  link: Ссылка
   unlink: Удалить Ссылку
   media: Добавить Медиа
   image: Добавить Изображение
   copy: Копировать
   cut: Вырезать
   paste: Вставить
+  heading: Заголовок
   h1: Заголовок 1
   h2: Заголовок 2
   h3: Заголовок 3
