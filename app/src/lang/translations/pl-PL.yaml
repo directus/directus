@@ -48,8 +48,6 @@ archive: Archiwum
 archive_confirm: Jesteś pewien, że chcesz zarchiwizować ten element?
 archive_confirm_count: >-
   Brak zaznaczonych elementów | Czy na pewno chcesz zarchiwizować ten element? | Czy na pewno chcesz zarchiwizować te {count} elementy?
-reset_system_permissions: Resetuj uprawnienia systemowe
-reset_system_permissions_copy: Resetuj wszystkie uprawnienia systemowe do ich domyślnych ustawień
 unarchive: Przywróć z archiwum
 nested_files_folders_will_be_moved: Zagnieżdżone pliki i foldery zostaną przeniesione o jeden poziom.
 unknown_validation_errors: 'Wystąpiły błędy walidacji dla następujących ukrytych pól:'
