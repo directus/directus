@@ -13,4 +13,5 @@ const defaults: Partial<Permission> = {
 };
 
 const permissions = requireYAML(require.resolve('./app-access-permissions.yaml')) as Permission[];
+
 export const appAccessMinimalPermissions: Permission[] = permissions.map((row) => merge({}, defaults, row));

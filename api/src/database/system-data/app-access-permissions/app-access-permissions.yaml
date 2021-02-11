@@ -30,28 +30,23 @@
   permissions:
     _or:
       - user:
-        _eq: $CURRENT_USER
-      - role:
-        _eq: $CURRENT_ROLE
+          _eq: $CURRENT_USER
       - _and:
           - user:
-            _null: true
+              _null: true
           - role:
-            _null: true
+              _eq: $CURRENT_ROLE
+      - _and:
+          - user:
+              _null: true
+          - role:
+              _null: true
 
 - collection: directus_presets
   action: create
-  permissions:
-    _or:
-      - user:
-        _eq: $CURRENT_USER
-      - role:
-        _eq: $CURRENT_ROLE
-      - _and:
-          - user:
-            _null: true
-          - role:
-            _null: true
+  validation:
+    - user:
+      _eq: $CURRENT_USER
 
 - collection: directus_presets
   action: update
