@@ -5,12 +5,12 @@ import { mergePermissions } from './merge-permissions';
 import Knex from 'knex';
 import SchemaInspector from '@directus/schema';
 
-export async function getSchema(options: {
+export async function getSchema(options?: {
 	accountability?: Accountability;
 	database?: Knex;
 }): Promise<SchemaOverview> {
 	// Allows for use in the CLI
-	const database = options.database || (require('../database').default as Knex);
+	const database = options?.database || (require('../database').default as Knex);
 	const schemaInspector = SchemaInspector(database);
 
 	const schemaOverview = await schemaInspector.overview();
@@ -35,7 +35,7 @@ export async function getSchema(options: {
 
 	let permissions: Permission[] = [];
 
-	if (options.accountability && options.accountability.admin !== true) {
+	if (options?.accountability && options.accountability.admin !== true) {
 		const permissionsForRole = await database
 			.select('*')
 			.from('directus_permissions')
@@ -60,7 +60,7 @@ export async function getSchema(options: {
 		if (options.accountability.app === true) {
 			permissions = mergePermissions(
 				permissions,
-				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: options.accountability.role }))
+				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: options.accountability!.role }))
 			);
 		}
 	}
