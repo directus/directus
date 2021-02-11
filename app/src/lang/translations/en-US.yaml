@@ -56,6 +56,9 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Reset System Permissions to:'
 reset_system_permissions_copy:
   This action will overwrite any custom permissions you may have applied to the system collections. Are you sure?
+the_following_are_minimum_permissions:
+  The following are minimum permissions required when "App Access" is enabled. You can extend permissions beyond this,
+  but not below.
 app_access_minimum: App Access Minimum
 recommended_defaults: Recommended Defaults
 unarchive: Unarchive

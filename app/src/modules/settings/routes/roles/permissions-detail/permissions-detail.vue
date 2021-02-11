@@ -11,10 +11,30 @@
 		</template>
 
 		<div class="content" v-if="!loading">
-			<permissions v-if="currentTab[0] === 'permissions'" :permission.sync="permission" :role="role" />
-			<fields v-if="currentTab[0] === 'fields'" :permission.sync="permission" :role="role" />
-			<validation v-if="currentTab[0] === 'validation'" :permission.sync="permission" :role="role" />
-			<presets v-if="currentTab[0] === 'presets'" :permission.sync="permission" :role="role" />
+			<permissions
+				v-if="currentTab[0] === 'permissions'"
+				:permission.sync="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.permissions"
+			/>
+			<fields
+				v-if="currentTab[0] === 'fields'"
+				:permission.sync="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.fields"
+			/>
+			<validation
+				v-if="currentTab[0] === 'validation'"
+				:permission.sync="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.validation"
+			/>
+			<presets
+				v-if="currentTab[0] === 'presets'"
+				:permission.sync="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.presets"
+			/>
 		</div>
 
 		<template #actions v-if="!loading">
@@ -38,6 +58,8 @@ import Fields from './components/fields.vue';
 import Validation from './components/validation.vue';
 import Presets from './components/presets.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
+
+import appMinimalPermissions from 'directus/dist/database/system-data/app-access-permissions/app-access-permissions.yaml';
 
 export default defineComponent({
 	components: { Actions, Tabs, Permissions, Fields, Validation, Presets },
@@ -136,7 +158,15 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo };
+		const appMinimal = computed(() => {
+			if (!permission.value) return null;
+			return appMinimalPermissions.find(
+				(p: Partial<Permission>) =>
+					p.collection === permission.value!.collection && p.action === permission.value!.action
+			);
+		});
+
+		return { permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo, appMinimal };
 
 		async function load() {
 			loading.value = true;
