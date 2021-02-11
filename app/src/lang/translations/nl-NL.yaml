@@ -50,8 +50,6 @@ archive: Archiveren
 archive_confirm: Weet je zeker dat je dit item wilt archiveren?
 archive_confirm_count: >-
   Geen Items Geselecteerd | Weet je zeker dat je dit item wilt archiveren? | Weet je zeker dat je deze {count} items wilt archiveren?
-reset_system_permissions: Reset Systeem Permissies
-reset_system_permissions_copy: Reset alle systeem permissies
 unarchive: Terugzetten
 unarchive_confirm: Weet je zeker dat je dit item wilt terugzetten?
 nested_files_folders_will_be_moved: Bestanden en mappen in deze map zullen een map omhoog worden geplaatst.
