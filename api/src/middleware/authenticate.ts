@@ -26,6 +26,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 
 		try {
 			payload = jwt.verify(req.token, env.SECRET as string) as { id: string };
+			console.log(payload);
 		} catch (err) {
 			if (err instanceof TokenExpiredError) {
 				throw new InvalidCredentialsException('Token expired.');
@@ -37,7 +38,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		}
 
 		const user = await database
-			.select('role', 'directus_roles.admin_access')
+			.select('role', 'directus_roles.admin_access', 'directus_roles.app_access')
 			.from('directus_users')
 			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
 			.where({
@@ -53,6 +54,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.user = payload.id;
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
+		req.accountability.app = user.app_access === true || user.app_access == 1;
 	} else {
 		// Try finding the user with the provided token
 		const user = await database
