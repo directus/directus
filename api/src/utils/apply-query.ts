@@ -13,7 +13,6 @@ export default async function applyQuery(
 	schema: SchemaOverview
 ) {
 	if (query.filter) {
-		console.dir(query.filter, { depth: null });
 		await applyFilter(schema, dbQuery, query.filter, collection);
 	}
 
