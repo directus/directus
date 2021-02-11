@@ -1,7 +1,7 @@
 {
 	"name": "@directus/docs",
 	"private": false,
-	"version": "9.0.0-rc.34",
+	"version": "9.0.0-rc.35",
 	"description": "",
 	"main": "index.json",
 	"scripts": {
@@ -38,6 +38,5 @@
 		"slugify": "^1.4.6",
 		"vuepress": "^1.7.1",
 		"vuepress-plugin-clean-urls": "^1.1.2"
-	},
-	"dependencies": {}
+	}
 }
