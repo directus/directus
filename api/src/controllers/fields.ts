@@ -158,7 +158,7 @@ const updateSchema = Joi.object({
 		is_nullable: Joi.bool(),
 	}).unknown(),
 	meta: Joi.any(),
-});
+}).unknown();
 
 router.patch(
 	'/:collection/:field',
