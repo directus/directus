@@ -50,8 +50,6 @@ archive: Arsip
 archive_confirm: Apakah Anda yakin ingin mengarsipkan item ini?
 archive_confirm_count: >-
   Tidak ada item terpilih | Apakah Anda yakin ingin mengarsipkan item ini? | Apakah Anda yakin ingin mengarsipkan {count} item ini?
-reset_system_permissions: Reset Izin Untuk Sistem
-reset_system_permissions_copy: Reset semua izin untuk semua sistem kembali ke asalnya
 unarchive: Batalkan pengarsipan
 unarchive_confirm: Apakah Anda yakin ingin membatalkan arsip dari item ini?
 unknown_validation_errors: 'Ada kesalahan validasi untuk kolom tersembunyi berikut:'

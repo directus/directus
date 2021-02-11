@@ -47,8 +47,6 @@ archive: 存档
 archive_confirm: 您确定要存档此项目吗？
 archive_confirm_count: >-
   没有选定项目 | 你确定要存档这个项目吗？| 你确定你想要存档这些 {count} 个项目吗？
-reset_system_permissions: 重置系统权限
-reset_system_permissions_copy: 将所有系统权限重置为默认值
 unarchive: 取消存档
 unarchive_confirm: 您确定要取消归档此项目吗？
 nested_files_folders_will_be_moved: 嵌套的文件和文件夹将被上移一级。

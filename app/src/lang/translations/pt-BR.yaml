@@ -51,8 +51,6 @@ archive: Arquivar
 archive_confirm: Tem certeza de que deseja arquivar este item?
 archive_confirm_count: >-
   Nenhum Item Selecionado | Tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
-reset_system_permissions: Redefinir permissões do sistema
-reset_system_permissions_copy: Redefinir todas as permissões do sistema para os padrões
 unarchive: Desarquivar
 unarchive_confirm: Tem certeza de que deseja desarquivar este item?
 nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos a um nível acima.

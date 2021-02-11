@@ -52,8 +52,6 @@ archive: Arkivera
 archive_confirm: Är du säker på att du vill arkivera detta objekt?
 archive_confirm_count: >-
   Inga objekt valda | Är du säker på att du vill arkivera detta objekt? | Är du säker på att du vill arkivera dessa {count} objekt?
-reset_system_permissions: Återställ systemets behörigheter
-reset_system_permissions_copy: Återställ systemets behörigheter till sina standardvärden
 unarchive: Ångra arkivering
 unarchive_confirm: Är du säker på att du vill ångra arkivering av detta objekt?
 nested_files_folders_will_be_moved: Nästlade filer och mappar kommer flyttas upp en nivå.
@@ -784,7 +782,6 @@ template: Mall
 translation: Översättning
 value: Värde
 view_project: Visa projekt
-weeks: { }
 report_error: Rapportera fel
 interfaces:
   checkboxes:

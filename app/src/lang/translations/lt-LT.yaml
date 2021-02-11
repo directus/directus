@@ -51,8 +51,6 @@ archive: Archyvuoti
 archive_confirm: Ar tikrai norite archyvuoti šį elementą?
 archive_confirm_count: >-
   Nėra pasirinktų elementų | Ar tikrai norite archyvuoti šį elementą? | Ar tikrai norite archyvuoti {count} elementus?
-reset_system_permissions: Atstatyti sisteminius leidimus
-reset_system_permissions_copy: Atstatyti visus sisteminius leidimus į pradines reikšmes
 unarchive: Išarchyvuoti
 unarchive_confirm: Ar tikrai norite išarchyvuoti šį elementą?
 nested_files_folders_will_be_moved: Kelių lygių failai ir aplankai bus perkelti vienu lygiu aukštyn.
