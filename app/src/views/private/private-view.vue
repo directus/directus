@@ -70,8 +70,8 @@ import SidebarButton from './components/sidebar-button/';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
 import NotificationDialogs from './components/notification-dialogs/';
-import { useUserStore, useAppStore } from '../../stores';
-import router from '../../router';
+import { useUserStore, useAppStore } from '@/stores';
+import router from '@/router';
 
 export default defineComponent({
 	components: {
@@ -147,7 +147,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/mixins/breakpoint';
+@import '@/styles/mixins/breakpoint';
 
 .private-view {
 	--content-padding: 12px;

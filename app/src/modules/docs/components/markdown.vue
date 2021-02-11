@@ -9,9 +9,9 @@ import MarkdownIt from 'markdown-it';
 import fm from 'front-matter';
 
 import hljs from 'highlight.js';
-import hljsGraphQL from '../../../utils/hljs-graphql';
+import hljsGraphQL from '@/utils/hljs-graphql';
 
-import { getRootPath } from '../../../utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
 
 import router from '@/router';
 

@@ -86,12 +86,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from '@vue/composition-api';
 import { useUserStore } from '@/stores/user';
-import { isEqual } from 'lodash';
-import usePreset from '../../../composables/use-preset';
 import { nanoid } from 'nanoid';
-import { Filter } from '../../../types';
+import { Filter } from '@/types';
 
 export default defineComponent({
 	props: {

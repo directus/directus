@@ -37,7 +37,6 @@ import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import { Field } from '@/types';
 import { getInterfaces } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
-import { useElementSize } from '../../composables/use-element-size';
 
 export default defineComponent({
 	props: {

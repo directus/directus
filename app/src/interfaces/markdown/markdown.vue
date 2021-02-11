@@ -133,8 +133,8 @@ import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/display/placeholder.js';
 
 import { useEdit, CustomSyntax } from './composables/use-edit';
-import { getPublicURL } from '../../utils/get-root-path';
-import { addTokenToURL } from '../../api';
+import { getPublicURL } from '@/utils/get-root-path';
+import { addTokenToURL } from '@/api';
 import escapeStringRegexp from 'escape-string-regexp';
 
 export default defineComponent({
@@ -248,7 +248,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/mixins/form-grid';
+@import '@/styles/mixins/form-grid';
 
 .interface-markdown {
 	--v-button-background-color: transparent;

@@ -31,9 +31,9 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import useFolders from '../composables/use-folders';
-import api from '../../../api';
-import router from '../../../router';
-import { unexpectedError } from '../../../utils/unexpected-error';
+import api from '@/api';
+import router from '@/router';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {

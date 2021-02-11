@@ -8,9 +8,7 @@
 			<v-field-select
 				:collection="junctionCollection"
 				v-model="fields"
-				:inject="
-					junctionCollectionExists ? null : { fields: newFields, collections: newCollections, relations }
-				"
+				:inject="junctionCollectionExists ? null : { fields: newFields, collections: newCollections, relations }"
 			/>
 		</div>
 		<div class="field half">
@@ -30,7 +28,7 @@ import { Field } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/';
 import { Relation, Collection } from '@/types';
-import { useCollectionsStore } from '../../stores';
+import { useCollectionsStore } from '@/stores';
 export default defineComponent({
 	props: {
 		collection: {
