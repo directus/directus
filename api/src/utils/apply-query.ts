@@ -13,6 +13,7 @@ export default async function applyQuery(
 	schema: SchemaOverview
 ) {
 	if (query.filter) {
+		console.dir(query.filter, { depth: null });
 		await applyFilter(schema, dbQuery, query.filter, collection);
 	}
 
@@ -151,7 +152,7 @@ export async function applyFilter(
 					continue;
 
 				/** @NOTE this callback function isn't called until Knex runs the query */
-				dbQuery.where((subQuery) => {
+				dbQuery[logical].where((subQuery) => {
 					value.forEach((subFilter: Record<string, any>) => {
 						addWhereClauses(subQuery, subFilter, collection, key === '_and' ? 'and' : 'or');
 					});
