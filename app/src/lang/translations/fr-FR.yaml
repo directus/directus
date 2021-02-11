@@ -52,8 +52,6 @@ archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
 archive_confirm_count: >-
   Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
-reset_system_permissions: Réinitialiser les autorisations système
-reset_system_permissions_copy: Réinitialiser toutes les autorisations système à leur valeur par défaut
 unarchive: Restaurer
 unarchive_confirm: Êtes-vous sûr de vouloir restaurer cet élément ?
 nested_files_folders_will_be_moved: Le contenu du dossier sera déplacé vers le dossier parent.
@@ -784,7 +782,6 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   checkboxes:
