@@ -11,15 +11,15 @@
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" :disabled="deleteAllowed === false">
 				<template #activator="{ on }">
 					<v-button
 						rounded
 						icon
 						class="action-delete"
-						:disabled="item === null"
+						v-tooltip.bottom="deleteAllowed ? $t('delete') : $t('not_allowed')"
+						:disabled="item === null || deleteAllowed !== true"
 						@click="on"
-						v-tooltip.bottom="$t('delete')"
 					>
 						<v-icon name="delete" outline />
 					</v-button>
@@ -77,9 +77,9 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="hasEdits === false"
+				:disabled="hasEdits === false || saveAllowed === false"
+				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 				@click="saveAndQuit"
-				v-tooltip.bottom="$t('save')"
 			>
 				<v-icon name="check" />
 
@@ -125,6 +125,7 @@
 
 			<v-form
 				ref="form"
+				:disabled="isNew ? createAllowed === false : updateAllowed === false"
 				:fields="formFields"
 				:loading="loading"
 				:initial-values="item"
@@ -150,7 +151,7 @@
 		<template #sidebar>
 			<user-info-sidebar-detail :is-new="isNew" :user="item" />
 			<revisions-drawer-detail
-				v-if="isBatch === false && isNew === false"
+				v-if="isBatch === false && isNew === false && hasRevisionsPermissions"
 				collection="directus_users"
 				:primary-key="primaryKey"
 				ref="revisionsDrawerDetail"
@@ -168,28 +169,25 @@
 import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 
 import UsersNavigation from '../components/navigation.vue';
-import { i18n, setLanguage } from '../../../lang';
-import router from '../../../router';
-import RevisionsDrawerDetail from '../../../views/private/components/revisions-drawer-detail';
-import CommentsSidebarDetail from '../../../views/private/components/comments-sidebar-detail';
-import useItem from '../../../composables/use-item';
-import SaveOptions from '../../../views/private/components/save-options';
-import api from '../../../api';
-import { useFieldsStore, useCollectionsStore, useUserStore } from '../../../stores/';
-import useFormFields from '../../../composables/use-form-fields';
-import { Field } from '../../../types';
+import { i18n, setLanguage } from '@/lang';
+import router from '@/router';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
+import useItem from '@/composables/use-item';
+import SaveOptions from '@/views/private/components/save-options';
+import api from '@/api';
+import { useFieldsStore, useCollectionsStore, useUserStore } from '@/stores/';
+import useFormFields from '@/composables/use-form-fields';
+import { Field } from '@/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
-import { getRootPath } from '../../../utils/get-root-path';
-import useShortcut from '../../../composables/use-shortcut';
-import useCollection from '../../../composables/use-collection';
-import { userName } from '../../../utils/user-name';
-import { usePermissions } from '../../../composables/use-permissions';
-import { unexpectedError } from '../../../utils/unexpected-error';
-import { addTokenToURL } from '../../../api';
-
-type Values = {
-	[field: string]: any;
-};
+import { getRootPath } from '@/utils/get-root-path';
+import useShortcut from '@/composables/use-shortcut';
+import useCollection from '@/composables/use-collection';
+import { userName } from '@/utils/user-name';
+import { usePermissions } from '@/composables/use-permissions';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { addTokenToURL } from '@/api';
+import { usePermissionsStore } from '@/stores';
 
 export default defineComponent({
 	name: 'users-item',
@@ -221,6 +219,13 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 		const userStore = useUserStore();
+		const permissionsStore = usePermissionsStore();
+
+		const hasRevisionsPermissions = computed(() => {
+			return !!permissionsStore.state.permissions.find(
+				(permission) => permission.collection === 'directus_revisions' && permission.action === 'read'
+			);
+		});
 
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
@@ -346,6 +351,7 @@ export default defineComponent({
 			archiveTooltip,
 			form,
 			userName,
+			hasRevisionsPermissions,
 		};
 
 		function useBreadcrumb() {
