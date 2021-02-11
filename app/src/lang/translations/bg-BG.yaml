@@ -52,8 +52,6 @@ archive: Архивиране
 archive_confirm: Сигурни ли сте, че искате да изтриете този запис?
 archive_confirm_count: >-
   Няма избрани записи | Сигурни ли сте, че искате да архивирате този запис? | Сигурни ли сте, че искате да архивирате тези {count} записа?
-reset_system_permissions: Нулиране на системните позволения
-reset_system_permissions_copy: Нулиране на всички системни позволения към техните първоначални стойности
 unarchive: Разархивиране
 unarchive_confirm: Сигурни ли сте, че искате да разархивирате този запис?
 nested_files_folders_will_be_moved: Вложените файлове и папки ще бъдат преместени една папка по-нагоре.
@@ -784,7 +782,6 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 interfaces:
   checkboxes:
