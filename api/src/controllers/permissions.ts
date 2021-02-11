@@ -42,6 +42,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const metaService = new MetaService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -51,36 +52,6 @@ router.get(
 		const meta = await metaService.getMetaForQuery('directus_permissions', req.sanitizedQuery);
 
 		res.locals.payload = { data: item || null, meta };
-		return next();
-	}),
-	respond
-);
-
-router.get(
-	'/me',
-	asyncHandler(async (req, res, next) => {
-		const service = new PermissionsService({ schema: req.schema });
-		const query = clone(req.sanitizedQuery || {});
-
-		if (req.accountability?.role) {
-			query.filter = {
-				...(query.filter || {}),
-				role: {
-					_eq: req.accountability.role,
-				},
-			};
-		} else {
-			query.filter = {
-				...(query.filter || {}),
-				role: {
-					_null: true,
-				},
-			};
-		}
-
-		const items = await service.readByQuery(query);
-
-		res.locals.payload = { data: items || null };
 		return next();
 	}),
 	respond
