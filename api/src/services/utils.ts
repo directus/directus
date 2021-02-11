@@ -27,28 +27,22 @@ export class UtilsService {
 		}
 
 		if (this.accountability?.admin !== true) {
-			const permissions = await this.knex
-				.select('fields')
-				.from('directus_permissions')
-				.where({
-					collection,
-					action: 'update',
-					role: this.accountability?.role || null,
-				})
-				.first();
+			const permissions = this.schema.permissions.find((permission) => {
+				return permission.collection === collection && permission.action === 'update';
+			});
 
 			if (!permissions) {
 				throw new ForbiddenException();
 			}
 
-			const allowedFields = permissions.fields.split(',');
+			const allowedFields = permissions.fields ?? [];
 
 			if (allowedFields[0] !== '*' && allowedFields.includes(sortField) === false) {
 				throw new ForbiddenException();
 			}
 		}
 
-		const primaryKeyField = this.schema[collection].primary;
+		const primaryKeyField = this.schema.tables[collection].primary;
 
 		// Make sure all rows have a sort value
 		const countResponse = await this.knex.count('* as count').from(collection).whereNull(sortField).first();

@@ -11,10 +11,30 @@
 		</template>
 
 		<div class="content" v-if="!loading">
-			<permissions v-if="currentTab[0] === 'permissions'" :permission.sync="permission" :role="role" />
-			<fields v-if="currentTab[0] === 'fields'" :permission.sync="permission" :role="role" />
-			<validation v-if="currentTab[0] === 'validation'" :permission.sync="permission" :role="role" />
-			<presets v-if="currentTab[0] === 'presets'" :permission.sync="permission" :role="role" />
+			<permissions
+				v-if="currentTab[0] === 'permissions'"
+				:permission.sync="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.permissions"
+			/>
+			<fields
+				v-if="currentTab[0] === 'fields'"
+				:permission.sync="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.fields"
+			/>
+			<validation
+				v-if="currentTab[0] === 'validation'"
+				:permission.sync="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.validation"
+			/>
+			<presets
+				v-if="currentTab[0] === 'presets'"
+				:permission.sync="permission"
+				:role="role"
+				:app-minimal="appMinimal && appMinimal.presets"
+			/>
 		</div>
 
 		<template #actions v-if="!loading">
@@ -24,10 +44,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch } from '@vue/composition-api';
 import api from '@/api';
 import { Permission, Role } from '@/types';
-import { useFieldsStore, useCollectionsStore } from '@/stores/';
+import { useCollectionsStore } from '@/stores/';
 import router from '@/router';
 import i18n from '@/lang';
 import Actions from './components/actions.vue';
@@ -38,6 +58,8 @@ import Fields from './components/fields.vue';
 import Validation from './components/validation.vue';
 import Presets from './components/presets.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
+
+import appMinimalPermissions from 'directus/dist/database/system-data/app-access-permissions/app-access-permissions.yaml';
 
 export default defineComponent({
 	components: { Actions, Tabs, Permissions, Fields, Validation, Presets },
@@ -88,8 +110,7 @@ export default defineComponent({
 				tabs.push({
 					text: i18n.t('item_permissions'),
 					value: 'permissions',
-					hasValue:
-						permission.value.permissions !== null && Object.keys(permission.value.permissions).length > 0,
+					hasValue: permission.value.permissions !== null && Object.keys(permission.value.permissions).length > 0,
 				});
 			}
 
@@ -105,8 +126,7 @@ export default defineComponent({
 				tabs.push({
 					text: i18n.t('field_validation'),
 					value: 'validation',
-					hasValue:
-						permission.value.validation !== null && Object.keys(permission.value.validation).length > 0,
+					hasValue: permission.value.validation !== null && Object.keys(permission.value.validation).length > 0,
 				});
 			}
 
@@ -138,7 +158,15 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo };
+		const appMinimal = computed(() => {
+			if (!permission.value) return null;
+			return appMinimalPermissions.find(
+				(p: Partial<Permission>) =>
+					p.collection === permission.value!.collection && p.action === permission.value!.action
+			);
+		});
+
+		return { permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo, appMinimal };
 
 		async function load() {
 			loading.value = true;

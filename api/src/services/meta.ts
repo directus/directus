@@ -1,16 +1,18 @@
 import { Query } from '../types/query';
 import database from '../database';
-import { AbstractServiceOptions, Accountability } from '../types';
+import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import Knex from 'knex';
 import { applyFilter } from '../utils/apply-query';
 
 export class MetaService {
 	knex: Knex;
 	accountability: Accountability | null;
+	schema: SchemaOverview;
 
-	constructor(options?: AbstractServiceOptions) {
-		this.knex = options?.knex || database;
-		this.accountability = options?.accountability || null;
+	constructor(options: AbstractServiceOptions) {
+		this.knex = options.knex || database;
+		this.accountability = options.accountability || null;
+		this.schema = options.schema;
 	}
 
 	async getMetaForQuery(collection: string, query: Query) {
@@ -40,7 +42,7 @@ export class MetaService {
 		const dbQuery = this.knex(collection).count('*', { as: 'count' });
 
 		if (query.filter) {
-			await applyFilter(this.knex, dbQuery, query.filter, collection);
+			await applyFilter(this.schema, dbQuery, query.filter, collection);
 		}
 
 		const records = await dbQuery;

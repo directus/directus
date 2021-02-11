@@ -34,6 +34,7 @@ export default defineModule(({ i18n }) => ({
 		const permission = permissions.find(
 			(permission) => permission.collection === 'directus_users' && permission.action === 'read'
 		);
+
 		return !!permission;
 	},
 }));

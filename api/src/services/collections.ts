@@ -71,7 +71,7 @@ export class CollectionsService {
 					throw new InvalidPayloadException(`Collections can't start with "directus_"`);
 				}
 
-				if (payload.collection in this.schema) {
+				if (payload.collection in this.schema.tables) {
 					throw new InvalidPayloadException(`Collection "${payload.collection}" already exists.`);
 				}
 
@@ -113,12 +113,9 @@ export class CollectionsService {
 		const collectionKeys = toArray(collection);
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = await this.knex
-				.select('collection')
-				.from('directus_permissions')
-				.where({ action: 'read' })
-				.where({ role: this.accountability.role })
-				.whereIn('collection', collectionKeys);
+			const permissions = this.schema.permissions.filter((permission) => {
+				return permission.action === 'read' && collectionKeys.includes(permission.collection);
+			});
 
 			if (collectionKeys.length !== permissions.length) {
 				const collectionsYouHavePermissionToRead = permissions.map(({ collection }) => collection);
@@ -163,12 +160,11 @@ export class CollectionsService {
 		let tablesInDatabase = await schemaInspector.tableInfo();
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const collectionsYouHavePermissionToRead: string[] = (
-				await this.knex.select('collection').from('directus_permissions').where({
-					role: this.accountability.role,
-					action: 'read',
+			const collectionsYouHavePermissionToRead: string[] = this.schema.permissions
+				.filter((permission) => {
+					return permission.action === 'read';
 				})
-			).map(({ collection }) => collection);
+				.map(({ collection }) => collection);
 
 			tablesInDatabase = tablesInDatabase.filter((table) => {
 				return collectionsYouHavePermissionToRead.includes(table.name);
@@ -272,7 +268,7 @@ export class CollectionsService {
 			schema: this.schema,
 		});
 
-		const tablesInDatabase = Object.keys(this.schema);
+		const tablesInDatabase = Object.keys(this.schema.tables);
 
 		const collectionKeys = toArray(collection);
 
@@ -290,11 +286,9 @@ export class CollectionsService {
 		await this.knex('directus_activity').delete().whereIn('collection', collectionKeys);
 		await this.knex('directus_permissions').delete().whereIn('collection', collectionKeys);
 
-		const relations = await this.knex
-			.select<Relation[]>('*')
-			.from('directus_relations')
-			.where({ many_collection: collection })
-			.orWhere({ one_collection: collection });
+		const relations = this.schema.relations.filter((relation) => {
+			return relation.many_collection === collection || relation.one_collection === collection;
+		});
 
 		for (const relation of relations) {
 			const isM2O = relation.many_collection === collection;

@@ -7,7 +7,6 @@ import {
 	NestedCollectionNode,
 	FieldNode,
 	Query,
-	Relation,
 	PermissionsAction,
 	Accountability,
 	SchemaOverview,
@@ -39,20 +38,14 @@ export default async function getASTFromQuery(
 
 	const accountability = options?.accountability;
 	const action = options?.action || 'read';
-	const knex = options?.knex || database;
 
-	/**
-	 * we might not need al this info at all times, but it's easier to fetch it all once, than trying to fetch it for every
-	 * requested field. @todo look into utilizing graphql/dataloader for this purpose
-	 */
-	const relations = [...(await knex.select<Relation[]>('*').from('directus_relations')), ...systemRelationRows];
+	const relations = [...schema.relations, ...systemRelationRows];
 
 	const permissions =
 		accountability && accountability.admin !== true
-			? await knex
-					.select<{ collection: string; fields: string }[]>('collection', 'fields')
-					.from('directus_permissions')
-					.where({ role: accountability.role, action: action })
+			? schema.permissions.filter((permission) => {
+					return permission.action === action;
+			  })
 			: null;
 
 	const ast: AST = {
@@ -159,7 +152,7 @@ export default async function getASTFromQuery(
 					children: {},
 					query: {},
 					relatedKey: {},
-					parentKey: schema[parentCollection].primary,
+					parentKey: schema.tables[parentCollection].primary,
 					fieldKey: relationalField,
 					relation: relation,
 				};
@@ -171,7 +164,7 @@ export default async function getASTFromQuery(
 					);
 
 					child.query[relatedCollection] = {};
-					child.relatedKey[relatedCollection] = schema[relatedCollection].primary;
+					child.relatedKey[relatedCollection] = schema.tables[relatedCollection].primary;
 				}
 			} else if (relatedCollection) {
 				if (permissions && permissions.some((permission) => permission.collection === relatedCollection) === false) {
@@ -182,8 +175,8 @@ export default async function getASTFromQuery(
 					type: relationType,
 					name: relatedCollection,
 					fieldKey: relationalField,
-					parentKey: schema[parentCollection].primary,
-					relatedKey: schema[relatedCollection].primary,
+					parentKey: schema.tables[parentCollection].primary,
+					relatedKey: schema.tables[relatedCollection].primary,
 					relation: relation,
 					query: deep?.[relationalField] || {},
 					children: await parseFields(relatedCollection, nestedFields as string[]),
@@ -206,9 +199,7 @@ export default async function getASTFromQuery(
 		let allowedFields = fieldsInCollection;
 
 		if (permissions) {
-			const permittedFields = permissions
-				.find((permission) => parentCollection === permission.collection)
-				?.fields?.split(',');
+			const permittedFields = permissions.find((permission) => parentCollection === permission.collection)?.fields;
 			if (permittedFields) allowedFields = permittedFields;
 		}
 
@@ -294,9 +285,9 @@ export default async function getASTFromQuery(
 	}
 
 	async function getFieldsInCollection(collection: string) {
-		const columns = Object.keys(schema[collection].columns);
+		const columns = Object.keys(schema.tables[collection].columns);
 		const fields = [
-			...(await knex.select('field').from('directus_fields').where({ collection })).map((field) => field.field),
+			...schema.fields.filter((field) => field.collection === collection).map((field) => field.field),
 			...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection).map((fieldMeta) => fieldMeta.field),
 		];
 

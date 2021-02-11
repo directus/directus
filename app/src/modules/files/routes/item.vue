@@ -157,7 +157,7 @@
 		<template #sidebar>
 			<file-info-sidebar-detail :file="item" />
 			<revisions-drawer-detail
-				v-if="isBatch === false && isNew === false"
+				v-if="isBatch === false && isNew === false && hasRevisionsPermissions"
 				collection="directus_files"
 				:primary-key="primaryKey"
 				ref="revisionsDrawerDetail"
@@ -176,33 +176,26 @@
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 import FilesNavigation from '../components/navigation.vue';
-import { i18n } from '../../../lang';
-import router from '../../../router';
-import RevisionsDrawerDetail from '../../../views/private/components/revisions-drawer-detail';
-import CommentsSidebarDetail from '../../../views/private/components/comments-sidebar-detail';
-import useItem from '../../../composables/use-item';
-import SaveOptions from '../../../views/private/components/save-options';
-import FilePreview from '../../../views/private/components/file-preview';
-import ImageEditor from '../../../views/private/components/image-editor';
-import { nanoid } from 'nanoid';
-import FileLightbox from '../../../views/private/components/file-lightbox';
-import { useFieldsStore } from '../../../stores/';
-import { Field } from '../../../types';
+import { i18n } from '@/lang';
+import router from '@/router';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
+import useItem from '@/composables/use-item';
+import SaveOptions from '@/views/private/components/save-options';
+import FilePreview from '@/views/private/components/file-preview';
+import ImageEditor from '@/views/private/components/image-editor';
+import { Field } from '@/types';
 import FileInfoSidebarDetail from '../components/file-info-sidebar-detail.vue';
-import useFormFields from '../../../composables/use-form-fields';
 import FolderPicker from '../components/folder-picker.vue';
-import api, { addTokenToURL } from '../../../api';
-import { getRootPath } from '../../../utils/get-root-path';
+import api, { addTokenToURL } from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
 import FilesNotFound from './not-found.vue';
-import useShortcut from '../../../composables/use-shortcut';
+import useShortcut from '@/composables/use-shortcut';
 import ReplaceFile from '../components/replace-file.vue';
-import { usePermissions } from '../../../composables/use-permissions';
-import { notify } from '../../../utils/notify';
-import { unexpectedError } from '../../../utils/unexpected-error';
-
-type Values = {
-	[field: string]: any;
-};
+import { usePermissions } from '@/composables/use-permissions';
+import { notify } from '@/utils/notify';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { usePermissionsStore } from '@/stores';
 
 export default defineComponent({
 	name: 'files-item',
@@ -240,8 +233,15 @@ export default defineComponent({
 		const form = ref<HTMLElement>();
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
-		const fieldsStore = useFieldsStore();
 		const replaceFileDialogActive = ref(false);
+
+		const permissionsStore = usePermissionsStore();
+
+		const hasRevisionsPermissions = computed(() => {
+			return !!permissionsStore.state.permissions.find(
+				(permission) => permission.collection === 'directus_revisions' && permission.action === 'read'
+			);
+		});
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
@@ -344,6 +344,7 @@ export default defineComponent({
 			updateAllowed,
 			fields,
 			fieldsFiltered,
+			hasRevisionsPermissions,
 		};
 
 		function useBreadcrumb() {

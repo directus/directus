@@ -1,6 +1,5 @@
 import knex, { Config } from 'knex';
 import dotenv from 'dotenv';
-import camelCase from 'camelcase';
 import path from 'path';
 import logger from '../logger';
 import env from '../env';

@@ -1,17 +1,28 @@
 <template>
-	<div class="permissions-overview-toggle">
-		<v-menu show-arrow>
+	<div
+		class="permissions-overview-toggle"
+		:class="{ 'has-app-minimal': !!appMinimal }"
+		v-tooltip="appMinimal && $t('required_for_app_access')"
+	>
+		<v-icon v-if="appMinimalLevel === 'full'" name="check" class="all app-minimal" />
+
+		<v-menu show-arrow v-else>
 			<template #activator="{ toggle }">
 				<div>
 					<v-progress-circular indeterminate v-if="loading || saving" small />
 					<v-icon v-else-if="permissionLevel === 'all'" @click="toggle" name="check" class="all" />
-					<v-icon v-else-if="permissionLevel === 'custom'" @click="toggle" name="rule" class="custom" />
+					<v-icon
+						v-else-if="appMinimalLevel === 'partial' || permissionLevel === 'custom'"
+						@click="toggle"
+						name="rule"
+						class="custom"
+					/>
 					<v-icon v-else-if="permissionLevel === 'none'" @click="toggle" name="block" class="none" />
 				</div>
 			</template>
 
 			<v-list>
-				<v-list-item @click="setFullAccess(action)">
+				<v-list-item :disabled="permissionLevel === 'all'" @click="setFullAccess(action)">
 					<v-list-item-icon>
 						<v-icon name="check" />
 					</v-list-item-icon>
@@ -20,7 +31,11 @@
 					</v-list-item-content>
 				</v-list-item>
 
-				<v-list-item @click="setNoAccess(action)">
+				<v-list-item
+					v-if="!!appMinimalLevel === false"
+					:disabled="permissionLevel === 'none'"
+					@click="setNoAccess(action)"
+				>
 					<v-list-item-icon>
 						<v-icon name="block" />
 					</v-list-item-icon>
@@ -53,7 +68,6 @@ import { Collection, Permission } from '@/types';
 import api from '@/api';
 import router from '@/router';
 import useUpdatePermissions from '../composables/use-update-permissions';
-import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
@@ -75,6 +89,10 @@ export default defineComponent({
 		},
 		loading: {
 			type: Boolean,
+			default: false,
+		},
+		appMinimal: {
+			type: [Boolean, Object] as PropType<false | Partial<Permission>>,
 			default: false,
 		},
 	},
@@ -104,7 +122,13 @@ export default defineComponent({
 
 		const refresh = inject<() => Promise<void>>('refresh-permissions');
 
-		return { permissionLevel, saving, setFullAccess, setNoAccess, openPermissions };
+		const appMinimalLevel = computed(() => {
+			if (props.appMinimal === false) return null;
+			if (Object.keys(props.appMinimal).length === 2) return 'full';
+			return 'partial';
+		});
+
+		return { permissionLevel, saving, setFullAccess, setNoAccess, openPermissions, appMinimalLevel };
 
 		async function openPermissions() {
 			// If this collection isn't "managed" yet, make sure to add it to directus_collections first
@@ -139,6 +163,17 @@ export default defineComponent({
 <style lang="scss" scoped>
 .permissions-overview-toggle {
 	position: relative;
+
+	&.has-app-minimal::before {
+		position: absolute;
+		top: -4px;
+		left: -4px;
+		width: calc(100% + 8px);
+		height: calc(100% + 8px);
+		background-color: var(--background-highlight);
+		border-radius: 50%;
+		content: '';
+	}
 }
 
 .all {
@@ -151,5 +186,9 @@ export default defineComponent({
 
 .none {
 	--v-icon-color: var(--danger);
+}
+
+.app-minimal {
+	cursor: not-allowed;
 }
 </style>

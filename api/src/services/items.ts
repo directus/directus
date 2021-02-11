@@ -46,8 +46,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
 	async create(data: Partial<Item>): Promise<PrimaryKey>;
 	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const primaryKeyField = this.schema[this.collection].primary;
-		const columns = Object.keys(this.schema[this.collection].columns);
+		const primaryKeyField = this.schema.tables[this.collection].primary;
+		const columns = Object.keys(this.schema.tables[this.collection].columns);
 
 		let payloads: AnyItem[] = clone(toArray(data));
 
@@ -210,7 +210,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		action: PermissionsAction = 'read'
 	): Promise<null | Partial<Item> | Partial<Item>[]> {
 		query = clone(query);
-		const primaryKeyField = this.schema[this.collection].primary;
+		const primaryKeyField = this.schema.tables[this.collection].primary;
 		const keys = toArray(key);
 
 		if (keys.length === 1) {
@@ -257,8 +257,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		data: Partial<Item> | Partial<Item>[],
 		key?: PrimaryKey | PrimaryKey[]
 	): Promise<PrimaryKey | PrimaryKey[]> {
-		const primaryKeyField = this.schema[this.collection].primary;
-		const columns = Object.keys(this.schema[this.collection].columns);
+		const primaryKeyField = this.schema.tables[this.collection].primary;
+		const columns = Object.keys(this.schema.tables[this.collection].columns);
 
 		// Updating one or more items to the same payload
 		if (data && key) {
@@ -401,7 +401,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	async updateByQuery(data: Partial<Item>, query: Query): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema[this.collection].primary;
+		const primaryKeyField = this.schema.tables[this.collection].primary;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
 
@@ -422,7 +422,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	upsert(data: Partial<Item>[]): Promise<PrimaryKey[]>;
 	upsert(data: Partial<Item>): Promise<PrimaryKey>;
 	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const primaryKeyField = this.schema[this.collection].primary;
+		const primaryKeyField = this.schema.tables[this.collection].primary;
 		const payloads = toArray(data);
 		const primaryKeys: PrimaryKey[] = [];
 
@@ -452,7 +452,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const keys = toArray(key);
-		const primaryKeyField = this.schema[this.collection].primary;
+		const primaryKeyField = this.schema.tables[this.collection].primary;
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const authorizationService = new AuthorizationService({
@@ -508,7 +508,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	async deleteByQuery(query: Query): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema[this.collection].primary;
+		const primaryKeyField = this.schema.tables[this.collection].primary;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
 
@@ -532,7 +532,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const record = (await this.readByQuery(query, opts)) as Partial<Item>;
 
 		if (!record) {
-			let columns = Object.values(this.schema[this.collection].columns);
+			let columns = Object.values(this.schema.tables[this.collection].columns);
 			const defaults: Record<string, any> = {};
 
 			if (query.fields && query.fields.includes('*') === false) {
@@ -552,7 +552,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	async upsertSingleton(data: Partial<Item>) {
-		const primaryKeyField = this.schema[this.collection].primary;
+		const primaryKeyField = this.schema.tables[this.collection].primary;
 
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
 

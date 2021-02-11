@@ -81,7 +81,7 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 };
 
 export default function getLocalType(
-	column: SchemaOverview[string]['columns'][string] | Column,
+	column: SchemaOverview['tables'][string]['columns'][string] | Column,
 	field?: FieldMeta
 ): typeof types[number] | 'unknown' {
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];

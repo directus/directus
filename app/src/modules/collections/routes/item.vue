@@ -124,7 +124,7 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="isSavable === false"
+				:disabled="isSavable === false || saveAllowed === false"
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 				@click="saveAndQuit"
 			>
@@ -175,7 +175,7 @@
 				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="isNew === false && _primaryKey"
+				v-if="isNew === false && _primaryKey && hasRevisionsPermissions"
 				:collection="collection"
 				:primary-key="_primaryKey"
 				ref="revisionsDrawerDetail"
@@ -195,26 +195,19 @@ import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 import Vue from 'vue';
 
 import CollectionsNavigation from '../components/navigation.vue';
-import router from '../../../router';
+import router from '@/router';
 import CollectionsNotFound from './not-found.vue';
-import useCollection from '../../../composables/use-collection';
-import RevisionsDrawerDetail from '../../../views/private/components/revisions-drawer-detail';
-import CommentsSidebarDetail from '../../../views/private/components/comments-sidebar-detail';
-import useItem from '../../../composables/use-item';
-import SaveOptions from '../../../views/private/components/save-options';
-import i18n from '../../../lang';
+import useCollection from '@/composables/use-collection';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
+import useItem from '@/composables/use-item';
+import SaveOptions from '@/views/private/components/save-options';
+import i18n from '@/lang';
 import marked from 'marked';
-import useShortcut from '../../../composables/use-shortcut';
+import useShortcut from '@/composables/use-shortcut';
 import { NavigationGuard } from 'vue-router';
-import { useUserStore, usePermissionsStore } from '../../../stores';
-import generateJoi from '../../../utils/generate-joi';
-import { cloneDeep } from 'lodash';
-import { Field } from '../../../types';
-import { usePermissions } from '../../../composables/use-permissions';
-
-type Values = {
-	[field: string]: any;
-};
+import { usePermissionsStore } from '@/stores';
+import { usePermissions } from '@/composables/use-permissions';
 
 export default defineComponent({
 	name: 'collections-item',
@@ -241,8 +234,13 @@ export default defineComponent({
 	},
 	setup(props) {
 		const form = ref<HTMLElement>();
-		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
+
+		const hasRevisionsPermissions = computed(() => {
+			return !!permissionsStore.state.permissions.find(
+				(permission) => permission.collection === 'directus_revisions' && permission.action === 'read'
+			);
+		});
 
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
@@ -382,6 +380,7 @@ export default defineComponent({
 			fields,
 			isSingleton,
 			_primaryKey,
+			hasRevisionsPermissions,
 		};
 
 		function useBreadcrumb() {
@@ -488,7 +487,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/mixins/breakpoint';
+@import '@/styles/mixins/breakpoint';
 
 .action-delete {
 	--v-button-background-color: var(--danger-25);

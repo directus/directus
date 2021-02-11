@@ -34,6 +34,7 @@
 	},
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
 	"dependencies": {
+		"directus": "file:../api",
 		"@directus/docs": "file:../docs",
 		"@directus/format-title": "file:../packages/format-title"
 	},

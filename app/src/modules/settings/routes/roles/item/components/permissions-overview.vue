@@ -31,29 +31,31 @@
 						:role="role"
 						:permissions="permissions.filter((p) => p.collection === collection.collection)"
 						:refreshing="refreshing"
+						:app-minimal="appAccess && appMinimalPermissions.filter((p) => p.collection === collection.collection)"
 					/>
 				</div>
 			</transition-expand>
 
-			<button v-if="systemVisible" class="reset-toggle" @click="resetActive = true">
-				{{ $t('reset_system_permissions') }}
-			</button>
+			<span class="reset-toggle" v-if="systemVisible && appAccess">
+				{{ $t('reset_system_permissions_to') }}
+				<button @click="resetActive = 'minimum'">{{ $t('app_access_minimum') }}</button>
+				/
+				<button @click="resetActive = 'recommended'">{{ $t('recommended_defaults') }}</button>
+			</span>
 		</div>
 
-		<router-view
-			name="permissionsDetail"
-			:role-key="role"
-			:permission-key="permission"
-			@refresh="refreshPermission"
-		/>
+		<router-view name="permissionsDetail" :role-key="role" :permission-key="permission" @refresh="refreshPermission" />
 
-		<v-dialog v-model="resetActive" @esc="resetActive = false">
+		<v-dialog @toggle="resetActive = false" :active="!!resetActive" @esc="resetActive = false">
 			<v-card>
-				<v-card-title>{{ $t('reset_system_permissions') }}</v-card-title>
-				<v-card-text>{{ $t('reset_system_permissions_copy') }}</v-card-text>
+				<v-card-title>
+					{{ $t('reset_system_permissions_copy') }}
+				</v-card-title>
 				<v-card-actions>
 					<v-button @click="resetActive = false" secondary>{{ $t('cancel') }}</v-button>
-					<v-button @click="resetSystemPermissions" :loading="resetting">{{ $t('reset') }}</v-button>
+					<v-button @click="resetSystemPermissions(resetActive === 'recommended')" :loading="resetting">
+						{{ $t('reset') }}
+					</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -67,8 +69,10 @@ import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
 import { Permission } from '@/types';
 import api from '@/api';
-import { permissions as appRequiredPermissions } from '../../app-required-permissions';
+import { appRecommendedPermissions } from '../../app-recommended-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
+
+import appMinimalPermissions from 'directus/dist/database/system-data/app-access-permissions/app-access-permissions.yaml';
 
 export default defineComponent({
 	components: { PermissionsOverviewHeader, PermissionsOverviewRow },
@@ -91,15 +95,11 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const regularCollections = computed(() =>
-			collectionsStore.state.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === false
-			)
+			collectionsStore.state.collections.filter((collection) => collection.collection.startsWith('directus_') === false)
 		);
 
 		const systemCollections = computed(() =>
-			collectionsStore.state.collections.filter(
-				(collection) => collection.collection.startsWith('directus_') === true
-			)
+			collectionsStore.state.collections.filter((collection) => collection.collection.startsWith('directus_') === true)
 		);
 
 		const systemVisible = ref(false);
@@ -125,6 +125,7 @@ export default defineComponent({
 			resetSystemPermissions,
 			resetting,
 			resetError,
+			appMinimalPermissions,
 		};
 
 		function usePermissions() {
@@ -177,13 +178,13 @@ export default defineComponent({
 		}
 
 		function useReset() {
-			const resetActive = ref(false);
+			const resetActive = ref<string | boolean>(false);
 			const resetting = ref(false);
 			const resetError = ref<any>(null);
 
 			return { resetActive, resetSystemPermissions, resetting, resetError };
 
-			async function resetSystemPermissions() {
+			async function resetSystemPermissions(useRecommended: boolean) {
 				resetting.value = true;
 
 				const toBeDeleted = permissions.value
@@ -195,10 +196,10 @@ export default defineComponent({
 						await api.delete(`/permissions/${toBeDeleted.join(',')}`);
 					}
 
-					if (props.role !== null && props.appAccess === true) {
+					if (props.role !== null && props.appAccess === true && useRecommended === true) {
 						await api.post(
 							'/permissions',
-							appRequiredPermissions.map((permission) => ({
+							appRecommendedPermissions.map((permission) => ({
 								...permission,
 								role: props.role,
 							}))
@@ -255,10 +256,15 @@ export default defineComponent({
 	display: block;
 	margin: 8px auto;
 	color: var(--foreground-subdued);
-	transition: color var(--fast) var(--transition);
+	text-align: center;
 
-	&:hover {
-		color: var(--foreground);
+	button {
+		color: var(--primary) !important;
+		transition: color var(--fast) var(--transition);
+	}
+
+	button:hover {
+		color: var(--foreground-normal) !important;
 	}
 }
 </style>

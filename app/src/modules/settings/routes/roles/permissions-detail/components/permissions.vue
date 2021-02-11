@@ -10,6 +10,12 @@
 		</v-notice>
 
 		<interface-code v-model="permissions" language="json" type="json" />
+
+		<div v-if="appMinimal" class="app-minimal">
+			<v-divider />
+			<v-notice type="warning">{{ $t('the_following_are_minimum_permissions') }}</v-notice>
+			<pre class="app-minimal-preview">{{ appMinimal }}</pre>
+		</div>
 	</div>
 </template>
 
@@ -27,6 +33,10 @@ export default defineComponent({
 		role: {
 			type: Object as PropType<Role>,
 			default: null,
+		},
+		appMinimal: {
+			type: Object as PropType<Partial<Permission>>,
+			default: undefined,
 		},
 	},
 	setup(props, { emit }) {
@@ -52,5 +62,22 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-notice {
 	margin-bottom: 36px;
+}
+
+.app-minimal {
+	.v-divider {
+		margin: 24px 0;
+	}
+
+	.v-notice {
+		margin-bottom: 24px;
+	}
+
+	.app-minimal-preview {
+		padding: 16px;
+		font-family: var(--family-monospace);
+		background-color: var(--background-subdued);
+		border-radius: var(--border-radius);
+	}
 }
 </style>

@@ -15,6 +15,7 @@
 			:role="role"
 			:permissions="permissions"
 			:loading="isLoading('create')"
+			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'create')"
 		/>
 		<permissions-overview-toggle
 			action="read"
@@ -22,6 +23,7 @@
 			:role="role"
 			:permissions="permissions"
 			:loading="isLoading('read')"
+			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'read')"
 		/>
 		<permissions-overview-toggle
 			action="update"
@@ -29,6 +31,7 @@
 			:role="role"
 			:permissions="permissions"
 			:loading="isLoading('update')"
+			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'update')"
 		/>
 		<permissions-overview-toggle
 			action="delete"
@@ -36,13 +39,13 @@
 			:role="role"
 			:permissions="permissions"
 			:loading="isLoading('delete')"
+			:app-minimal="appMinimal && appMinimal.find((p) => p.action === 'delete')"
 		/>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, inject, toRefs } from '@vue/composition-api';
-import api from '@/api';
+import { defineComponent, PropType, toRefs } from '@vue/composition-api';
 import { Collection, Permission } from '@/types';
 import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
 import useUpdatePermissions from '../composables/use-update-permissions';
@@ -65,6 +68,10 @@ export default defineComponent({
 		refreshing: {
 			type: Array as PropType<number[]>,
 			required: true,
+		},
+		appMinimal: {
+			type: [Boolean, Array] as PropType<false | Partial<Permission>[]>,
+			default: false,
 		},
 	},
 	setup(props) {

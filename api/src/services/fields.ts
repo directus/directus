@@ -120,14 +120,14 @@ export class FieldsService {
 
 		// Filter the result so we only return the fields you have read access to
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = await this.knex
-				.select('collection', 'fields')
-				.from('directus_permissions')
-				.where({ role: this.accountability.role, action: 'read' });
+			const permissions = this.schema.permissions.filter((permission) => {
+				return permission.action === 'read';
+			});
+
 			const allowedFieldsInCollection: Record<string, string[]> = {};
 
 			permissions.forEach((permission) => {
-				allowedFieldsInCollection[permission.collection] = (permission.fields || '').split(',');
+				allowedFieldsInCollection[permission.collection] = permission.fields ?? [];
 			});
 
 			if (collection && allowedFieldsInCollection.hasOwnProperty(collection) === false) {
@@ -147,19 +147,13 @@ export class FieldsService {
 
 	async readOne(collection: string, field: string) {
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = await this.knex
-				.select('fields')
-				.from('directus_permissions')
-				.where({
-					role: this.accountability.role,
-					collection,
-					action: 'read',
-				})
-				.first();
+			const permissions = this.schema.permissions.find((permission) => {
+				return permission.action === 'read' && permission.collection === collection;
+			});
 
-			if (!permissions) throw new ForbiddenException();
-			if (permissions.fields !== '*') {
-				const allowedFields = (permissions.fields || '').split(',');
+			if (!permissions || !permissions.fields) throw new ForbiddenException();
+			if (permissions.fields.includes('*') === false) {
+				const allowedFields = permissions.fields;
 				if (allowedFields.includes(field) === false) throw new ForbiddenException();
 			}
 		}
@@ -201,10 +195,10 @@ export class FieldsService {
 		}
 
 		// Check if field already exists, either as a column, or as a row in directus_fields
-		if (field.field in this.schema[collection].columns) {
+		if (field.field in this.schema.tables[collection].columns) {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		} else if (
-			!!(await this.knex.select('id').from('directus_fields').where({ collection, field: field.field }).first())
+			!!this.schema.fields.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field.field)
 		) {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
@@ -245,11 +239,9 @@ export class FieldsService {
 		}
 
 		if (field.meta) {
-			const record = await database
-				.select<{ id: number }>('id')
-				.from('directus_fields')
-				.where({ collection, field: field.field })
-				.first();
+			const record = this.schema.fields.find(
+				(fieldMeta) => fieldMeta.field === field.field && fieldMeta.collection === collection
+			);
 
 			if (record) {
 				await this.itemsService.update(
@@ -284,17 +276,18 @@ export class FieldsService {
 
 		await this.knex('directus_fields').delete().where({ collection, field });
 
-		if (field in this.schema[collection].columns) {
+		if (field in this.schema.tables[collection].columns) {
 			await this.knex.schema.table(collection, (table) => {
 				table.dropColumn(field);
 			});
 		}
 
-		const relations = await this.knex
-			.select<Relation[]>('*')
-			.from('directus_relations')
-			.where({ many_collection: collection, many_field: field })
-			.orWhere({ one_collection: collection, one_field: field });
+		const relations = this.schema.relations.filter((relation) => {
+			return (
+				(relation.many_collection === collection && relation.many_field === field) ||
+				(relation.one_collection === collection && relation.one_field === field)
+			);
+		});
 
 		for (const relation of relations) {
 			const isM2O = relation.many_collection === collection && relation.many_field === field;
