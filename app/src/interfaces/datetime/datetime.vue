@@ -55,19 +55,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, reactive, PropType } from '@vue/composition-api';
-import formatLocalized from '../../utils/localized-format';
-import { i18n } from '../../lang';
+import { defineComponent, ref, watch, computed, PropType } from '@vue/composition-api';
+import formatLocalized from '@/utils/localized-format';
+import { i18n } from '@/lang';
 import { formatISO, parseISO, format, parse } from 'date-fns';
-
-type LocalValue = {
-	month: null | number;
-	date: null | number;
-	year: null | number;
-	hours: null | number;
-	minutes: null | number;
-	seconds: null | number;
-};
 
 export default defineComponent({
 	props: {

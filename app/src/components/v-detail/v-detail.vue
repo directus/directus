@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
-import { i18n } from '../../lang';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	model: {

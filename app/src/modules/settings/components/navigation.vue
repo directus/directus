@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { i18n } from '@/lang';
 import { version } from '../../../../package.json';
 import { useProjectInfo } from '../composables/use-project-info';

@@ -152,8 +152,7 @@ export default defineComponent({
 			const visible = computed(() => {
 				return sortBy(
 					collectionsStore.state.collections.filter(
-						(collection) =>
-							collection.collection.startsWith('directus_') === false && collection.meta?.hidden === false
+						(collection) => collection.collection.startsWith('directus_') === false && collection.meta?.hidden === false
 					),
 					'collection'
 				);
@@ -164,8 +163,7 @@ export default defineComponent({
 					collectionsStore.state.collections
 						.filter(
 							(collection) =>
-								collection.collection.startsWith('directus_') === false &&
-								collection.meta?.hidden === true
+								collection.collection.startsWith('directus_') === false && collection.meta?.hidden === true
 						)
 						.map((collection) => ({ ...collection, icon: 'visibility_off' })),
 					'collection'

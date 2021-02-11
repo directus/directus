@@ -33,13 +33,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, provide } from '@vue/composition-api';
-import { useFieldsStore } from '../../stores/';
-import { Field, FilterOperator } from '../../types';
-import { useElementSize } from '../../composables/use-element-size';
+import { useFieldsStore } from '@/stores/';
+import { Field } from '@/types';
+import { useElementSize } from '@/composables/use-element-size';
 import { clone, cloneDeep } from 'lodash';
 import marked from 'marked';
 import FormField from './form-field.vue';
-import useFormFields from '../../composables/use-form-fields';
+import useFormFields from '@/composables/use-form-fields';
 import { ValidationError } from './types';
 
 type FieldValues = {
@@ -217,7 +217,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/mixins/form-grid';
+@import '@/styles/mixins/form-grid';
 
 .v-form {
 	@include form-grid;

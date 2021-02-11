@@ -139,18 +139,18 @@
 <script lang="ts">
 import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
 import UsersNavigation from '../components/navigation.vue';
-import UsersInvite from '../../../views/private/components/users-invite';
+import UsersInvite from '@/views/private/components/users-invite';
 
-import { i18n } from '../../../lang';
-import api from '../../../api';
-import { LayoutComponent } from '../../../layouts/types';
-import usePreset from '../../../composables/use-preset';
-import LayoutSidebarDetail from '../../../views/private/components/layout-sidebar-detail';
-import SearchInput from '../../../views/private/components/search-input';
-import { useUserStore, usePermissionsStore } from '../../../stores';
+import { i18n } from '@/lang';
+import api from '@/api';
+import { LayoutComponent } from '@/layouts/types';
+import usePreset from '@/composables/use-preset';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
+import SearchInput from '@/views/private/components/search-input';
+import { useUserStore, usePermissionsStore } from '@/stores';
 import marked from 'marked';
 import useNavigation from '../composables/use-navigation';
-import DrawerBatch from '../../../views/private/components/drawer-batch';
+import DrawerBatch from '@/views/private/components/drawer-batch';
 
 type Item = {
 	[field: string]: any;
@@ -174,9 +174,7 @@ export default defineComponent({
 
 		const selection = ref<Item[]>([]);
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(
-			ref('directus_users')
-		);
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(ref('directus_users'));
 		const { addNewLink } = useLinks();
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();

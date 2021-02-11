@@ -131,18 +131,18 @@
 
 <script lang="ts">
 import { defineComponent, PropType, toRefs, inject, computed, ref } from '@vue/composition-api';
-import { Filter } from '../../types';
-import useSync from '../../composables/use-sync/';
-import useCollection from '../../composables/use-collection/';
-import useItems from '../../composables/use-items';
+import { Filter } from '@/types';
+import useSync from '@/composables/use-sync/';
+import useCollection from '@/composables/use-collection/';
+import useItems from '@/composables/use-items';
 import Card from './components/card.vue';
-import getFieldsFromTemplate from '../../utils/get-fields-from-template';
-import { useRelationsStore } from '../../stores/';
+import getFieldsFromTemplate from '@/utils/get-fields-from-template';
+import { useRelationsStore } from '@/stores/';
 
 import CardsHeader from './components/header.vue';
-import i18n from '../../lang';
-import adjustFieldsForDisplays from '../../utils/adjust-fields-for-displays';
-import useElementSize from '../../composables/use-element-size';
+import i18n from '@/lang';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import useElementSize from '@/composables/use-element-size';
 import { clone } from 'lodash';
 
 type Item = Record<string, any>;
@@ -446,8 +446,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/mixins/breakpoint';
-@import '../../styles/mixins/form-grid';
+@import '@/styles/mixins/breakpoint';
+@import '@/styles/mixins/form-grid';
 
 .layout-cards {
 	padding: var(--content-padding);

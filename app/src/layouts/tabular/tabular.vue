@@ -140,18 +140,18 @@
 import Vue from 'vue';
 import { defineComponent, PropType, ref, computed, inject, toRefs, Ref, watch } from '@vue/composition-api';
 
-import { HeaderRaw, Item } from '../../components/v-table/types';
-import { Field, Filter } from '../../types';
-import router from '../../router';
-import useSync from '../../composables/use-sync';
+import { HeaderRaw, Item } from '@/components/v-table/types';
+import { Field, Filter } from '@/types';
+import router from '@/router';
+import useSync from '@/composables/use-sync';
 import { debounce, clone } from 'lodash';
 import Draggable from 'vuedraggable';
-import useCollection from '../../composables/use-collection';
-import useItems from '../../composables/use-items';
-import i18n from '../../lang';
-import adjustFieldsForDisplays from '../../utils/adjust-fields-for-displays';
-import hideDragImage from '../../utils/hide-drag-image';
-import useShortcut from '../../composables/use-shortcut';
+import useCollection from '@/composables/use-collection';
+import useItems from '@/composables/use-items';
+import i18n from '@/lang';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import hideDragImage from '@/utils/hide-drag-image';
+import useShortcut from '@/composables/use-shortcut';
 
 type layoutOptions = {
 	widths?: {
@@ -530,7 +530,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/mixins/breakpoint';
+@import '@/styles/mixins/breakpoint';
 
 .layout-tabular {
 	display: contents;

@@ -20,7 +20,7 @@ import { Field } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/';
 import { Relation, Collection } from '@/types';
-import { useCollectionsStore } from '../../stores';
+import { useCollectionsStore } from '@/stores';
 export default defineComponent({
 	props: {
 		collection: {

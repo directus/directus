@@ -495,7 +495,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/mixins/breakpoint';
+@import '@/styles/mixins/breakpoint';
 
 .action-delete {
 	--v-button-background-color: var(--danger-25);

@@ -11,12 +11,7 @@
 			</button>
 		</div>
 		<div class="end">
-			<v-icon
-				class="size-selector"
-				:name="`grid_${7 - size}`"
-				v-tooltip.top="$t('card_size')"
-				@click="toggleSize"
-			/>
+			<v-icon class="size-selector" :name="`grid_${7 - size}`" v-tooltip.top="$t('card_size')" @click="toggleSize" />
 
 			<v-menu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
@@ -50,8 +45,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Field } from '../../../types';
-import useSync from '../../../composables/use-sync';
+import { Field } from '@/types';
+import useSync from '@/composables/use-sync';
 
 export default defineComponent({
 	props: {

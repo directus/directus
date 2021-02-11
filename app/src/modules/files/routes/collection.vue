@@ -163,27 +163,26 @@
 <script lang="ts">
 import { defineComponent, computed, ref, PropType, onMounted, onUnmounted } from '@vue/composition-api';
 import FilesNavigation from '../components/navigation.vue';
-import { i18n } from '../../../lang';
-import api from '../../../api';
-import { LayoutComponent } from '../../../layouts/types';
-import usePreset from '../../../composables/use-preset';
-import FilterSidebarDetail from '../../../views/private/components/filter-sidebar-detail';
-import LayoutSidebarDetail from '../../../views/private/components/layout-sidebar-detail';
+import { i18n } from '@/lang';
+import api from '@/api';
+import { LayoutComponent } from '@/layouts/types';
+import usePreset from '@/composables/use-preset';
+import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import AddFolder from '../components/add-folder.vue';
-import SearchInput from '../../../views/private/components/search-input';
+import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
 import FolderPicker from '../components/folder-picker.vue';
-import emitter, { Events } from '../../../events';
-import router from '../../../router';
+import emitter, { Events } from '@/events';
+import router from '@/router';
 import Vue from 'vue';
-import { useNotificationsStore, useUserStore, usePermissionsStore } from '../../../stores';
+import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stores';
 import { subDays } from 'date-fns';
 import useFolders from '../composables/use-folders';
-import useEventListener from '../../../composables/use-event-listener';
-import uploadFiles from '../../../utils/upload-files';
-import { unexpectedError } from '../../../utils/unexpected-error';
-import DrawerBatch from '../../../views/private/components/drawer-batch';
-import { useCollection } from '../../../composables/use-collection';
+import useEventListener from '@/composables/use-event-listener';
+import uploadFiles from '@/utils/upload-files';
+import { unexpectedError } from '@/utils/unexpected-error';
+import DrawerBatch from '@/views/private/components/drawer-batch';
 
 type Item = {
 	[field: string]: any;

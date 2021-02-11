@@ -27,14 +27,14 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
-import api from '../../../../api';
+import api from '@/api';
 
-import useCollection from '../../../../composables/use-collection';
-import { useFieldsStore, useRelationsStore } from '../../../../stores';
-import i18n from '../../../../lang';
-import { Relation, Field } from '../../../../types';
-import { unexpectedError } from '../../../../utils/unexpected-error';
-import { usePermissions } from '../../../../composables/use-permissions';
+import useCollection from '@/composables/use-collection';
+import { useFieldsStore, useRelationsStore } from '@/stores';
+import i18n from '@/lang';
+import { Relation, Field } from '@/types';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { usePermissions } from '@/composables/use-permissions';
 
 export default defineComponent({
 	model: {

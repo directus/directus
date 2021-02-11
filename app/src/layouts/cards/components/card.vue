@@ -27,7 +27,7 @@ import { defineComponent, PropType, computed } from '@vue/composition-api';
 import router from '@/router';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
-import { readableMimeType } from '../../../utils/readable-mime-type';
+import { readableMimeType } from '@/utils/readable-mime-type';
 
 type File = {
 	[key: string]: any;

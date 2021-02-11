@@ -130,8 +130,8 @@ import readableMimeType from '@/utils/readable-mime-type';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
-import DrawerItem from '../../views/private/components/drawer-item';
-import { addQueryToPath } from '../../utils/add-query-to-path';
+import DrawerItem from '@/views/private/components/drawer-item';
+import { addQueryToPath } from '@/utils/add-query-to-path';
 
 type FileInfo = {
 	id: string;
