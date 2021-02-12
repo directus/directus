@@ -203,6 +203,7 @@ router.delete(
 const inviteSchema = Joi.object({
 	email: Joi.alternatives(Joi.string().email(), Joi.array().items(Joi.string().email())).required(),
 	role: Joi.string().uuid({ version: 'uuidv4' }).required(),
+	invite_url: Joi.string().uri(),
 });
 
 router.post(
