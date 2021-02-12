@@ -11,7 +11,8 @@ role_name: Rollenname
 db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
 required: Erforderlich
-requires_value: Erfordert Wert
+required_for_app_access: Benötigt für App-Zugriff
+requires_value: Benötigt Wert
 create_preset: Vorlage erstellen
 create_role: Rolle erstellen
 create_user: Benutzer erstellen
@@ -38,18 +39,21 @@ logoutReason:
   SIGN_OUT: Abgemeldet
   SESSION_EXPIRED: Sitzung abgelaufen
 public: Öffentlich
-public_description: Bestimmt welche API-Daten ohne authentifizierung zugänglich sind.
+public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
 not_allowed: Nicht erlaubt
 directus_version: Directus Version
-node_version: Version
-node_uptime: Betriebszeit
+node_version: Node Version
+node_uptime: Node Betriebszeit
 os_type: Betriebssystem
 os_version: Betriebssystem-Version
+os_uptime: '» Betriebszeit'
 os_totalmem: Arbeitsspeicher
-archive: Archiv
+archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
 archive_confirm_count: >-
   Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente wirklich archivieren?
+reset_system_permissions_to: 'Systemberechtigungen zurücksetzen auf:'
+reset_system_permissions_copy: Diese Aktion wird alle benutzerdefinierten Berechtigungen überschreiben, die Sie möglicherweise auf die System-Sammlungen angewendet haben. Sind Sie sicher?
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Sind Sie sicher, dass das Item aus dem Archiv zurückgeholt werden soll?
 nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene höher gesetzt.
