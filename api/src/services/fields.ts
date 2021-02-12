@@ -203,7 +203,7 @@ export class FieldsService {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
-		if (ALIAS_TYPES.includes(field.type) === false) {
+		if (field.type && ALIAS_TYPES.includes(field.type) === false) {
 			if (table) {
 				this.addColumnToTable(table, field as Field);
 			} else {
