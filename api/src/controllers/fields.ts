@@ -66,7 +66,8 @@ const newFieldSchema = Joi.object({
 	collection: Joi.string().optional(),
 	field: Joi.string().required(),
 	type: Joi.string()
-		.valid(...types, null)
+		.valid(...types)
+		.allow(null)
 		.required(),
 	schema: Joi.object({
 		default_value: Joi.any(),
@@ -150,7 +151,7 @@ router.patch(
 
 const updateSchema = Joi.object({
 	type: Joi.string()
-		.valid(...types, null)
+		.valid(...types)
 		.required(),
 	schema: Joi.object({
 		default_value: Joi.any(),

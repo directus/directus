@@ -6,7 +6,7 @@
 
 		<draggable
 			v-else
-			:value="value"
+			:value="previewValues"
 			handle=".drag-handle"
 			@input="onSort"
 			:set-data="hideDragImage"
@@ -14,9 +14,9 @@
 		>
 			<div
 				class="m2a-row"
-				v-for="(item, index) of previewValues"
-				:key="index"
-				@click="editExisting((value || [])[index])"
+				v-for="item of previewValues"
+				:key="item.$index"
+				@click="editExisting((value || [])[item.$index])"
 			>
 				<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="sortField" />
 				<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
@@ -256,7 +256,7 @@ export default defineComponent({
 				// Convert all string/number junction rows into junction row records from the map so we can inject the
 				// related values
 				const values = cloneDeep(props.value || [])
-					.map((val) => {
+					.map((val, index) => {
 						const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
 
 						const savedValues = junctionRowMap.value.find(
@@ -267,6 +267,7 @@ export default defineComponent({
 							return {
 								...savedValues,
 								...val,
+								$index: index,
 							};
 						} else {
 							return savedValues;
@@ -302,8 +303,18 @@ export default defineComponent({
 						return val;
 					})
 					.sort((a, b) => {
-						if (!props.sortField) return 1;
-						return a[props.sortField] > b[props.sortField] ? 1 : -1;
+						const aSort = a[props.sortField];
+						const bSort = b[props.sortField];
+
+						if (aSort === bSort) {
+							return 0;
+						} else if (aSort === null) {
+							return 1;
+						} else if (bSort === null) {
+							return -1;
+						} else {
+							return aSort < bSort ? -1 : 1;
+						}
 					});
 			});
 
@@ -554,16 +565,20 @@ export default defineComponent({
 			function onSort(sortedItems: any[]) {
 				emit(
 					'input',
-					sortedItems.map((sortedItem, index) => {
-						if (isPlainObject(sortedItem)) {
+					props.value.map((rawValue, index) => {
+						const sortedItemIndex = sortedItems.findIndex((sortedItem) => {
+							return sortedItem.$index === index;
+						});
+
+						if (isPlainObject(rawValue)) {
 							return {
-								...sortedItem,
-								[props.sortField]: index + 1,
+								...rawValue,
+								[props.sortField]: sortedItemIndex + 1,
 							};
 						} else {
 							return {
-								[o2mRelation.value.many_primary]: sortedItem,
-								[props.sortField]: index + 1,
+								[o2mRelation.value.many_primary]: rawValue,
+								[props.sortField]: sortedItemIndex + 1,
 							};
 						}
 					})

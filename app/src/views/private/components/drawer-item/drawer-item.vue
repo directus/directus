@@ -255,7 +255,10 @@ export default defineComponent({
 				});
 
 				if (relationForField.one_collection) return relationForField.one_collection;
-				if (relationForField.one_collection_field) return props.edits[relationForField.one_collection_field];
+				if (relationForField.one_collection_field)
+					return (
+						props.edits[relationForField.one_collection_field] || item.value?.[relationForField.one_collection_field]
+					);
 				return null;
 			});
 
