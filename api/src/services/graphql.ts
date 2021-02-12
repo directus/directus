@@ -23,6 +23,7 @@ import {
 	ObjectValueNode,
 	GraphQLUnionType,
 } from 'graphql';
+import logger from '../logger';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
 import { ItemsService } from './items';
@@ -106,6 +107,13 @@ export class GraphQLService {
 						const fieldsInCollection = fields.filter((field) => field.collection === collection.collection);
 
 						for (const field of fieldsInCollection) {
+							if (field.field.startsWith('__')) {
+								logger.warn(
+									`GraphQL doesn't allow fields starting with "__". Field "${field.field}" in collection "${field.collection}" is unavailable in the GraphQL endpoint.`
+								);
+								continue;
+							}
+
 							const relationForField = relations.find((relation) => {
 								return (
 									(relation.many_collection === collection.collection && relation.many_field === field.field) ||
@@ -297,6 +305,8 @@ export class GraphQLService {
 					const fieldsInCollection = fields.filter((field) => field.collection === collection.collection);
 
 					for (const field of fieldsInCollection) {
+						if (field.field.startsWith('__')) continue;
+
 						const relationForField = relations.find((relation) => {
 							return (
 								(relation.many_collection === collection.collection && relation.many_field === field.field) ||
