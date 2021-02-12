@@ -281,7 +281,7 @@ body {
 		flex-grow: 1;
 		align-items: center;
 		height: 100%;
-		padding: var(--input-padding);
+		padding: 0 var(--input-padding);
 		color: var(--v-input-color);
 		font-family: var(--v-input-font-family);
 		background-color: var(--background-page);
@@ -361,6 +361,7 @@ body {
 		flex-grow: 1;
 		width: 20px; // allows flex to grow/shrink to allow for slots
 		height: 100%;
+		padding: var(--input-padding) 0;
 		font-family: var(--v-input-font-family);
 		background-color: transparent;
 		border: none;
