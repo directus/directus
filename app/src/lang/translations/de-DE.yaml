@@ -12,7 +12,7 @@ db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
 required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
-requires_value: Erfordert Wert
+requires_value: Benötigt Wert
 create_preset: Vorlage erstellen
 create_role: Rolle erstellen
 create_user: Benutzer erstellen
@@ -39,10 +39,10 @@ logoutReason:
   SIGN_OUT: Abgemeldet
   SESSION_EXPIRED: Sitzung abgelaufen
 public: Öffentlich
-public_description: Bestimmt welche API-Daten ohne authentifizierung zugänglich sind.
+public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
 not_allowed: Nicht erlaubt
 directus_version: Directus Version
-node_version: Version
+node_version: Node Version
 node_uptime: Betriebszeit
 os_type: Betriebssystem
 os_version: Betriebssystem-Version
