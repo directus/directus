@@ -210,7 +210,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
 
-		const layoutElement = ref<HTMLElement | null>(null);
+		const layoutElement = ref<HTMLElement>();
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const _selection = useSync(props, 'selection', emit);
@@ -219,7 +219,7 @@ export default defineComponent({
 		const _filters = useSync(props, 'filters', emit);
 		const _searchQuery = useSync(props, 'searchQuery', emit);
 
-		const { collection, searchQuery } = toRefs(props);
+		const { collection } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const fileFields = computed(() => {
