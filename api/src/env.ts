@@ -3,9 +3,14 @@
  * See example.env for all possible keys
  */
 
+import * as fs from 'fs';
+import * as path from 'path';
+import yaml from 'js-yaml';
+
 import dotenv from 'dotenv';
 import { clone, toString, toNumber } from 'lodash';
 import { toArray } from './utils/to-array';
+import logger from './logger';
 
 dotenv.config();
 
@@ -70,8 +75,55 @@ env = processValues(env);
 
 export default env;
 
+function isJsFile(file: string): boolean {
+	return path.extname(file).toLowerCase() === '.js';
+}
+
+function isJsonFile(file: string): boolean {
+	return path.extname(file).toLowerCase() === '.json';
+}
+
+function isYamlFile(file: string): boolean {
+	const ext = path.extname(file).toLowerCase();
+	return ext === '.yml' || ext === '.yaml';
+}
+
+function loadCustomConfig(current: Record<string, string>): Record<string, string> {
+	if (!current.CONFIG_PATH) {
+		return {};
+	}
+
+	if (isJsFile(current.CONFIG_PATH)) {
+		const module = require(current.CONFIG_PATH);
+		const exported = module.default || module;
+		if (typeof exported === 'function') {
+			return exported(current);
+		} else if (typeof exported === 'object') {
+			return exported;
+		}
+		logger.warn('config js module detected but exports an incompatible type');
+	} else if (isJsonFile(current.CONFIG_PATH)) {
+		return require(current.CONFIG_PATH);
+	} else if (isYamlFile(current.CONFIG_PATH)) {
+		const data = yaml.safeLoad(fs.readFileSync(current.CONFIG_PATH).toString());
+		if (typeof data === 'object') {
+			return data as Record<string, string>;
+		}
+		logger.warn('config yaml detected but root is not an object');
+	} else {
+		// Fallback to .env
+		return dotenv.parse(fs.readFileSync(current.CONFIG_PATH).toString());
+	}
+
+	return {};
+}
+
 function processValues(env: Record<string, any>) {
 	env = clone(env);
+	env = {
+		...env,
+		...loadCustomConfig(env),
+	};
 
 	for (const [key, value] of Object.entries(env)) {
 		if (typeMap[key]) {
