@@ -205,24 +205,24 @@ async function createForeignKeyTriggersOnMssql(knex: Knex, updates: any[]) {
 				if (constraintToOther.onDelete === 'CASCADE') {
 					actionsOnOtherTables += `
 						DELETE [${constraintToOther.table}]
-						WHERE [${constraintToOther.column}] IN (SELECT CAST([${referenceColumn}] AS nvarchar) FROM @deletions)
+						WHERE CAST([${constraintToOther.column}] AS nvarchar) IN (SELECT [${referenceColumn}] FROM @deletions)
 					`;
 				} else {
 					actionsOnOtherTables += `
 						UPDATE [${constraintToOther.table}]
 						SET [${constraintToOther.column}] = NULL
-						WHERE [${constraintToOther.column}] IN (SELECT CAST([${referenceColumn}] AS nvarchar) FROM @deletions)
+						WHERE CAST([${constraintToOther.column}] AS nvarchar) IN (SELECT [${referenceColumn}] FROM @deletions)
 					`;
 				}
 			}
 
 			const actionOnSelf =
 				constraintToSelf.onDelete === 'CASCADE'
-					? `DELETE [${referencedTable}] WHERE [${referenceColumn}] in (select [${referenceColumn}] from @deletions);`
+					? `DELETE [${referencedTable}] WHERE CAST([${referenceColumn}] AS nvarchar) in (SELECT [${referenceColumn}] from @deletions);`
 					: `	UPDATE r
 					SET r.[${constraintToSelf.column}] = NULL
 					FROM [${referencedTable}] r
-						INNER JOIN @deletions c ON (c.[${referenceColumn}] = r.[${referenceColumn}]
+						INNER JOIN @deletions d ON (d.[${referenceColumn}] = CAST(r.[${referenceColumn}] AS nvarchar)
 							AND r.[${referenceColumn}] <> (SELECT [${referenceColumn}] FROM deleted))
 					DELETE [${referencedTable}]
 					WHERE [${referenceColumn}] = (SELECT [${referenceColumn}] FROM deleted)
@@ -269,7 +269,7 @@ async function createForeignKeyTriggersOnMssql(knex: Knex, updates: any[]) {
 			`;
 		}
 
-		const triggerName = `tr_${referencedTable}_${referenceColumn}`;
+		const triggerName = `tr_iod_${referencedTable}_${referenceColumn}`;
 		const triggerString = `
 			CREATE TRIGGER [${triggerName}] ON [${referencedTable}]
 			INSTEAD OF DELETE
