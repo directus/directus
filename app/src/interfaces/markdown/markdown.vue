@@ -9,7 +9,7 @@
 				</template>
 				<v-list>
 					<v-list-item v-for="n in 5" :key="n" @click="edit('heading', { level: n })">
-						<v-list-item-text>{{ $t(`wysiwyg_options.h${n}`) }}</v-list-item-text>
+						<v-text-overflow :text="$t(`wysiwyg_options.h${n}`)" />
 					</v-list-item>
 				</v-list>
 			</v-menu>

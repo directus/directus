@@ -49,17 +49,15 @@
 				</template>
 
 				<template #item.name="{ item }">
-					<span
+					<v-text-overflow
 						class="collection"
 						:class="{
 							hidden: (item.meta && item.meta.hidden) || false,
 							system: item.collection.startsWith('directus_'),
 							unmanaged: item.meta === null && item.collection.startsWith('directus_') === false,
 						}"
-						v-tooltip="item.name"
-					>
-						{{ item.collection }}
-					</span>
+						:text="item.collection"
+					/>
 				</template>
 
 				<template #item.note="{ item }">

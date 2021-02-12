@@ -82,7 +82,7 @@ export const inList = () =>
 					<v-list-item v-for="n in 3" @click="() => {}">
 						<v-list-item-icon><v-icon name="box" /></v-list-item-icon />
 						<v-list-item-content>
-							<v-list-item-text>Item {{ n }}</v-list-item-text>
+							<v-text-overflow :text="Item {{ n }}</v-lis" />
 						</v-list-item-content>
 					</v-list-item>
 
@@ -91,7 +91,7 @@ export const inList = () =>
 					<v-list-item v-for="n in 1" @click="() => {}">
 						<v-list-item-icon><v-icon name="box" /></v-list-item-icon />
 						<v-list-item-content>
-							<v-list-item-text>Item {{ n + 3 }}</v-list-item-text>
+							<v-text-overflow :text="Item {{ n + 3 }}" />
 						</v-list-item-content>
 					</v-list-item>
 
@@ -100,7 +100,7 @@ export const inList = () =>
 					<v-list-item v-for="n in 3" @click="() => {}">
 						<v-list-item-icon><v-icon name="box" /></v-list-item-icon />
 						<v-list-item-content>
-							<v-list-item-text>Item {{ n + 4 }}</v-list-item-text>
+							<v-text-overflow :text="Item {{ n + 4 }}" />
 						</v-list-item-content>
 					</v-list-item>
 				</v-list>
