@@ -24,7 +24,6 @@ export default defineComponent({
 		watch(
 			width,
 			() => {
-				console.log(width.value);
 				if (!el.value) return;
 				hasEllipsis.value = el.value.offsetWidth < el.value.scrollWidth;
 			},
@@ -39,7 +38,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .v-text-overflow {
 	overflow: hidden;
-	line-height: 1.1;
+	line-height: normal;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
