@@ -52,9 +52,7 @@
 						:key="collection.collection"
 					>
 						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
-						<v-list-item-text>
-							{{ collection.name }}
-						</v-list-item-text>
+						<v-text-overflow :text="collection.name" />
 					</v-list-item>
 				</v-list>
 			</v-menu>
@@ -73,9 +71,7 @@
 						:key="collection.collection"
 					>
 						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
-						<v-list-item-text>
-							{{ collection.name }}
-						</v-list-item-text>
+						<v-text-overflow :text="collection.name" />
 					</v-list-item>
 				</v-list>
 			</v-menu>

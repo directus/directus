@@ -15,7 +15,10 @@
 			<v-checkbox :inputValue="isSelected" @change="toggleSelect" />
 		</td>
 		<td class="cell" :class="getClassesForCell(header)" v-for="header in headers" :key="header.value">
-			<slot :name="`item.${header.value}`" :item="item">{{ get(item, header.value) }}</slot>
+			<slot :name="`item.${header.value}`" :item="item">
+				<v-text-overflow v-if="get(item, header.value)" :text="get(item, header.value)" />
+				<value-null v-else />
+			</slot>
 		</td>
 
 		<td class="spacer cell" />

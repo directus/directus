@@ -175,13 +175,13 @@ body {
 	}
 
 	&.dense {
-		::v-deep .v-list-item-text {
+		::v-deep .v-text-overflow {
 			color: var(--foreground-subdued);
 		}
 
 		&:hover,
 		&.active {
-			::v-deep .v-list-item-text {
+			::v-deep .v-text-overflow {
 				color: var(--primary);
 			}
 		}

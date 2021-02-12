@@ -7,7 +7,9 @@
 				>
 					<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
 						<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
-						<v-list-item-content>{{ navItem.name }}</v-list-item-content>
+						<v-list-item-content>
+							<v-text-overflow :text="navItem.name" />
+						</v-list-item-content>
 					</v-list-item>
 				</template>
 				<template v-else>
@@ -21,7 +23,9 @@
 					>
 						<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
 							<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
-							<v-list-item-content>{{ navItem.name }}</v-list-item-content>
+							<v-list-item-content>
+								<v-text-overflow :text="navItem.name" />
+							</v-list-item-content>
 						</v-list-item>
 					</v-detail>
 				</template>
@@ -30,7 +34,9 @@
 
 		<v-list-item v-else :exact="exact" v-for="navItem in navItems" :key="navItem.to" :to="navItem.to">
 			<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
-			<v-list-item-content>{{ navItem.name }}</v-list-item-content>
+			<v-list-item-content>
+				<v-text-overflow :text="navItem.name" />
+			</v-list-item-content>
 		</v-list-item>
 
 		<template v-if="bookmarks.length > 0">

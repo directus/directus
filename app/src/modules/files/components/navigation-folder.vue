@@ -8,7 +8,9 @@
 			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
 		>
 			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
-			<v-list-item-content>{{ folder.name }}</v-list-item-content>
+			<v-list-item-content>
+				<v-text-overflow :text="folder.name" />
+			</v-list-item-content>
 		</v-list-item>
 
 		<v-list-group
@@ -25,7 +27,9 @@
 				<v-list-item-icon>
 					<v-icon name="folder" />
 				</v-list-item-icon>
-				<v-list-item-content>{{ folder.name }}</v-list-item-content>
+				<v-list-item-content>
+					<v-text-overflow :text="folder.name" />
+				</v-list-item-content>
 			</template>
 
 			<navigation-folder
@@ -44,7 +48,7 @@
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('rename_folder') }}
+						<v-text-overflow :text="$t('rename_folder')" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item @click="moveActive = true">
@@ -52,7 +56,7 @@
 						<v-icon name="folder_move" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('move_to_folder') }}
+						<v-text-overflow :text="$t('move_to_folder')" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item @click="deleteActive = true">
@@ -60,7 +64,7 @@
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('delete_folder') }}
+						<v-text-overflow :text="$t('delete_folder')" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>

@@ -150,9 +150,7 @@ router.patch(
 );
 
 const updateSchema = Joi.object({
-	type: Joi.string()
-		.valid(...types)
-		.required(),
+	type: Joi.string().valid(...types),
 	schema: Joi.object({
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
@@ -174,6 +172,10 @@ router.patch(
 
 		if (error) {
 			throw new InvalidPayloadException(error.message);
+		}
+
+		if (req.body.schema && !req.body.type) {
+			throw new InvalidPayloadException(`You need to provide "type" when providing "schema".`);
 		}
 
 		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;

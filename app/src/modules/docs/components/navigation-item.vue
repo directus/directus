@@ -4,7 +4,7 @@
 		<template #activator>
 			<v-list-item-icon v-if="section.icon !== undefined"><v-icon :name="section.icon" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-list-item-text>{{ section.name }}</v-list-item-text>
+				<v-text-overflow :text="section.name" />
 			</v-list-item-content>
 		</template>
 
@@ -22,7 +22,7 @@
 	<v-list-item v-else :to="`/docs${section.to}`" :dense="dense" :value="section.to">
 		<v-list-item-icon v-if="section.icon !== undefined"><v-icon :name="section.icon" /></v-list-item-icon>
 		<v-list-item-content>
-			<v-list-item-text>{{ section.name }}</v-list-item-text>
+			<v-text-overflow :text="section.name" />
 		</v-list-item-content>
 	</v-list-item>
 </template>
