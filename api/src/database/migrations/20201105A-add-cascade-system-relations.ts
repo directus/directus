@@ -205,31 +205,31 @@ async function createForeignKeyTriggersOnMssql(knex: Knex, updates: any[]) {
 				if (constraintToOther.onDelete === 'CASCADE') {
 					actionsOnOtherTables += `
 						DELETE [${constraintToOther.table}]
-						WHERE CAST([${constraintToOther.column}] AS nvarchar) IN (SELECT [${referenceColumn}] FROM @deletions)
+						WHERE CAST([${constraintToOther.column}] AS nvarchar(36)) IN (SELECT [${referenceColumn}] FROM @deletions)
 					`;
 				} else {
 					actionsOnOtherTables += `
 						UPDATE [${constraintToOther.table}]
 						SET [${constraintToOther.column}] = NULL
-						WHERE CAST([${constraintToOther.column}] AS nvarchar) IN (SELECT [${referenceColumn}] FROM @deletions)
+						WHERE CAST([${constraintToOther.column}] AS nvarchar(36)) IN (SELECT [${referenceColumn}] FROM @deletions)
 					`;
 				}
 			}
 
 			const actionOnSelf =
 				constraintToSelf.onDelete === 'CASCADE'
-					? `DELETE [${referencedTable}] WHERE CAST([${referenceColumn}] AS nvarchar) in (SELECT [${referenceColumn}] from @deletions);`
+					? `DELETE [${referencedTable}] WHERE CAST([${referenceColumn}] AS nvarchar(36)) in (SELECT [${referenceColumn}] from @deletions);`
 					: `	UPDATE r
 					SET r.[${constraintToSelf.column}] = NULL
 					FROM [${referencedTable}] r
-						INNER JOIN @deletions d ON (d.[${referenceColumn}] = CAST(r.[${referenceColumn}] AS nvarchar)
+						INNER JOIN @deletions d ON (d.[${referenceColumn}] = CAST(r.[${referenceColumn}] AS nvarchar(36))
 							AND r.[${referenceColumn}] <> (SELECT [${referenceColumn}] FROM deleted))
 					DELETE [${referencedTable}]
 					WHERE [${referenceColumn}] = (SELECT [${referenceColumn}] FROM deleted)
 				`;
 
 			triggerActions = `
-				declare @deletions table ([${referenceColumn}] nvarchar not null);
+				declare @deletions table ([${referenceColumn}] nvarchar(36) not null);
 				WITH cte as (
 					SELECT [${referenceColumn}] from deleted
 					UNION ALL
@@ -238,7 +238,7 @@ async function createForeignKeyTriggersOnMssql(knex: Knex, updates: any[]) {
 						INNER JOIN cte c ON r.[${constraintToSelf.column}] = c.[${referenceColumn}]
 				)
 				INSERT INTO @deletions([${referenceColumn}])
-				SELECT CAST([${referenceColumn}] AS nvarchar) from cte
+				SELECT CAST([${referenceColumn}] AS nvarchar(36)) from cte
 
 				${actionsOnOtherTables}
 
