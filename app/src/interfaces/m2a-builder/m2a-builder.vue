@@ -567,7 +567,6 @@ export default defineComponent({
 					'input',
 					props.value.map((rawValue, index) => {
 						const sortedItemIndex = sortedItems.findIndex((sortedItem) => {
-							console.log(sortedItem);
 							return sortedItem.$index === index;
 						});
 
