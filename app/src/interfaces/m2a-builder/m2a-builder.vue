@@ -302,8 +302,18 @@ export default defineComponent({
 						return val;
 					})
 					.sort((a, b) => {
-						if (!props.sortField) return 1;
-						return a[props.sortField] > b[props.sortField] ? 1 : -1;
+						const aSort = a[props.sortField];
+						const bSort = b[props.sortField];
+
+						if (aSort === bSort) {
+							return 0;
+						} else if (aSort === null) {
+							return 1;
+						} else if (bSort === null) {
+							return -1;
+						} else {
+							return aSort < bSort ? -1 : 1;
+						}
 					});
 			});
 
