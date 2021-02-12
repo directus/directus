@@ -1,4 +1,5 @@
 import Knex from 'knex';
+import logger from '../../logger';
 
 const updates = [
 	{
@@ -124,18 +125,39 @@ const updates = [
 ];
 
 export async function up(knex: Knex) {
+	if (knex.client.config.client === 'mssql') {
+		await enableRecursiveTriggersOnMssql(knex);
+	}
+
 	for (const update of updates) {
 		await knex.schema.alterTable(update.table, (table) => {
 			for (const constraint of update.constraints) {
 				table.dropForeign([constraint.column]);
 
-				table
-					.foreign(constraint.column)
-					.references(constraint.references)
-					.onUpdate('CASCADE')
-					.onDelete(constraint.onDelete);
+				if (knex.client.config.client === 'mssql') {
+					// No actions on foreign keys with mssql because of issues with multiple cascading paths.
+					// Resorting to triggers (see further)
+					table
+						.foreign(constraint.column)
+						.references(constraint.references)
+						.onUpdate('NO ACTION')
+						.onDelete('NO ACTION');
+					// Cascading actions and set nulls are
+					// implemented via trigger
+				} else {
+					table
+						.foreign(constraint.column)
+						.references(constraint.references)
+						.onUpdate('CASCADE')
+						.onDelete(constraint.onDelete);
+				}
 			}
 		});
+	}
+
+	if (knex.client.config.client === 'mssql') {
+		// Create triggers on mssql for foreign key actions
+		await createForeignKeyTriggersOnMssql(knex, updates);
 	}
 }
 
@@ -149,4 +171,150 @@ export async function down(knex: Knex) {
 			}
 		});
 	}
+}
+
+async function enableRecursiveTriggersOnMssql(knex: Knex) {
+	return knex.schema.raw(`ALTER DATABASE [${knex.client.config.connection.database}] SET RECURSIVE_TRIGGERS ON`).then(
+		() => {
+			logger.info('Enabled Recursive Triggers on mssql');
+		},
+		(rejected) => {
+			logger.error(rejected);
+		}
+	);
+}
+
+async function createForeignKeyTriggersOnMssql(knex: Knex, updates: any[]) {
+	// First group the constraints by referenced table and field.
+	// We can only create one INSTEAD OF trigger per table.
+	var constraintsByReferencedTables = groupUpdatesByReferencedTable(updates);
+
+	for (const constraintsByReferencedTable of constraintsByReferencedTables) {
+		const { referencedTable, referenceColumn, constraints } = constraintsByReferencedTable;
+
+		const constraintsToSelf = constraints.filter((c: any) => c.table === referencedTable);
+		const constraintsToOthers = constraints.filter((c: any) => c.table !== referencedTable);
+
+		let triggerActions = '';
+		if (constraintsToSelf.length > 0) {
+			// Assuming only one foreign key to self, otherwise things get even more complicated.
+			const constraintToSelf = constraintsToSelf[0];
+
+			let actionsOnOtherTables = '';
+			for (const constraintToOther of constraintsToOthers) {
+				if (constraintToOther.onDelete === 'CASCADE') {
+					actionsOnOtherTables += `
+						DELETE [${constraintToOther.table}]
+						WHERE [${constraintToOther.column}] IN (SELECT CAST([${referenceColumn}] AS nvarchar) FROM @deletions)
+					`;
+				} else {
+					actionsOnOtherTables += `
+						UPDATE [${constraintToOther.table}]
+						SET [${constraintToOther.column}] = NULL
+						WHERE [${constraintToOther.column}] IN (SELECT CAST([${referenceColumn}] AS nvarchar) FROM @deletions)
+					`;
+				}
+			}
+
+			const actionOnSelf =
+				constraintToSelf.onDelete === 'CASCADE'
+					? `DELETE [${referencedTable}] WHERE [${referenceColumn}] in (select [${referenceColumn}] from @deletions);`
+					: `	UPDATE r
+					SET r.[${constraintToSelf.column}] = NULL
+					FROM [${referencedTable}] r
+						INNER JOIN @deletions c ON (c.[${referenceColumn}] = r.[${referenceColumn}]
+							AND r.[${referenceColumn}] <> (SELECT [${referenceColumn}] FROM deleted))
+					DELETE [${referencedTable}]
+					WHERE [${referenceColumn}] = (SELECT [${referenceColumn}] FROM deleted)
+				`;
+
+			triggerActions = `
+				declare @deletions table ([${referenceColumn}] nvarchar not null);
+				WITH cte as (
+					SELECT [${referenceColumn}] from deleted
+					UNION ALL
+					SELECT r.[${referenceColumn}]
+					FROM [${referencedTable}] r
+						INNER JOIN cte c ON r.[${constraintToSelf.column}] = c.[${referenceColumn}]
+				)
+				INSERT INTO @deletions([${referenceColumn}])
+				SELECT CAST([${referenceColumn}] AS nvarchar) from cte
+
+				${actionsOnOtherTables}
+
+				${actionOnSelf}
+			`;
+		} else {
+			let actionsOnOtherTables = '';
+			for (const constraintToOther of constraintsToOthers) {
+				if (constraintToOther.onDelete === 'CASCADE') {
+					actionsOnOtherTables += `
+						DELETE [${constraintToOther.table}]
+						WHERE [${constraintToOther.column}] = (SELECT [${referenceColumn}] FROM deleted)
+					`;
+				} else {
+					actionsOnOtherTables += `
+						UPDATE [${constraintToOther.table}]
+						SET [${constraintToOther.column}] = NULL
+						WHERE [${constraintToOther.column}] = (SELECT [${referenceColumn}] FROM deleted)
+					`;
+				}
+			}
+
+			triggerActions = `
+				${actionsOnOtherTables}
+
+				DELETE [${referencedTable}]
+				WHERE [${referenceColumn}] = (SELECT [${referenceColumn}] FROM deleted)
+			`;
+		}
+
+		const triggerName = `tr_${referencedTable}_${referenceColumn}`;
+		const triggerString = `
+			CREATE TRIGGER [${triggerName}] ON [${referencedTable}]
+			INSTEAD OF DELETE
+			AS
+			BEGIN
+				SET NOCOUNT ON
+				${triggerActions}
+			END;
+		`;
+
+		logger.info(`Creating trigger ${triggerName}`);
+
+		await knex.schema.raw(triggerString).then(
+			(ok) => {
+				logger.info('Trigger Created');
+			},
+			(error) => {
+				logger.error(error);
+			}
+		);
+	}
+}
+
+function groupUpdatesByReferencedTable(updates: any[]) {
+	const referencedTablesIndexed: any = {};
+	const referencedTables: any[] = [];
+
+	for (const update of updates) {
+		for (const constraint of update.constraints) {
+			if (!referencedTablesIndexed[constraint.references]) {
+				const [referencedTable, referenceColumn] = constraint.references.split('.');
+				referencedTablesIndexed[constraint.references] = {
+					referencedTable: referencedTable,
+					referenceColumn: referenceColumn,
+					constraints: [],
+				};
+				referencedTables.push(referencedTablesIndexed[constraint.references]);
+			}
+
+			referencedTablesIndexed[constraint.references].constraints.push({
+				table: update.table,
+				column: constraint.column,
+				onDelete: constraint.onDelete,
+			});
+		}
+	}
+	return referencedTables;
 }
