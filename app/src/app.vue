@@ -26,7 +26,7 @@
 <script lang="ts">
 import { defineComponent, toRefs, watch, computed, provide } from '@vue/composition-api';
 import * as stores from '@/stores';
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
 import axios from 'axios';
 
 import useWindowSize from '@/composables/use-window-size';
@@ -112,6 +112,7 @@ export default defineComponent({
 			...stores,
 			api,
 			axios,
+			addTokenToURL,
 		});
 
 		return { hydrating, brandStyle, error, customCSS };
