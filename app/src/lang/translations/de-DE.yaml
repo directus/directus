@@ -43,12 +43,12 @@ public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglic
 not_allowed: Nicht erlaubt
 directus_version: Directus Version
 node_version: Node Version
-node_uptime: Betriebszeit
+node_uptime: Node Betriebszeit
 os_type: Betriebssystem
 os_version: Betriebssystem-Version
 os_uptime: '» Betriebszeit'
 os_totalmem: Arbeitsspeicher
-archive: Archiv
+archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
 archive_confirm_count: >-
   Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente wirklich archivieren?
