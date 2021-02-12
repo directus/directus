@@ -276,7 +276,7 @@ New password for the user.
 <div class="right">
 
 ```
-GET /auth/oauth
+POST /auth/password/reset
 ```
 
 ```json
