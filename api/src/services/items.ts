@@ -23,8 +23,7 @@ import { AuthorizationService } from './authorization';
 
 import { pick, clone, cloneDeep, merge } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
-import { InvalidPayloadException } from '../exceptions';
-import { ForbiddenException } from '../exceptions';
+import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 
 export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
 	collection: string;
