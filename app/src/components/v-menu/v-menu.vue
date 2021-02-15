@@ -1,5 +1,5 @@
 <template>
-	<div class="v-menu" @click="onClick" v-if="!disabled">
+	<div class="v-menu" @click="onClick">
 		<div
 			ref="activator"
 			class="v-menu-activator"
