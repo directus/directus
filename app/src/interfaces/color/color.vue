@@ -25,7 +25,7 @@
 					</v-button>
 				</template>
 				<template #append>
-					<v-icon name="palette" />
+					<v-icon :name="isValidColor ? 'close' : 'palette'" @click="unsetColor" />
 				</template>
 			</v-input>
 		</template>
@@ -148,6 +148,10 @@ export default defineComponent({
 		const colorTypes = ['RGB', 'HSL'] as ColorType[];
 		const colorType = ref<ColorType>('RGB');
 
+		function unsetColor() {
+			emit('input', null);
+		}
+
 		function activateColorPicker() {
 			(htmlColorInput.value?.$el as HTMLElement).getElementsByTagName('input')[0].click();
 		}
@@ -180,6 +184,7 @@ export default defineComponent({
 			Color,
 			setValue,
 			lowContrast,
+			unsetColor,
 		};
 
 		function setValue(type: 'rgb' | 'hsl', i: number, val: number) {
@@ -229,7 +234,7 @@ export default defineComponent({
 				},
 				set(newHex) {
 					if (newHex === null || newHex === '') {
-						setColor(null);
+						unsetColor();
 					} else {
 						if (isHex(newHex) === false) return;
 						setColor(Color(newHex));
@@ -243,7 +248,7 @@ export default defineComponent({
 				color.value = newColor;
 
 				if (newColor === null) {
-					emit('input', null);
+					unsetColor();
 				} else {
 					emit('input', newColor.hex());
 				}
