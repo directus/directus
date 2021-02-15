@@ -55,16 +55,8 @@ router.get(
 			? req.params.collection.split(',')
 			: req.params.collection;
 
-		try {
-			const collection = await collectionsService.readByKey(collectionKey as any);
-			res.locals.payload = { data: collection || null };
-		} catch (error) {
-			if (error instanceof ForbiddenException) {
-				return next();
-			}
-
-			throw error;
-		}
+		const collection = await collectionsService.readByKey(collectionKey as any);
+		res.locals.payload = { data: collection || null };
 
 		return next();
 	}),
@@ -106,9 +98,11 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const collectionKey = req.params.collection.includes(',')
 			? req.params.collection.split(',')
 			: req.params.collection;
+
 		await collectionsService.delete(collectionKey as any);
 
 		return next();

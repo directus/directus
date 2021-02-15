@@ -130,6 +130,7 @@ export class CollectionsService {
 
 		const tablesInDatabase = await schemaInspector.tableInfo();
 		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
+
 		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: collectionKeys } },
 		})) as CollectionMeta[];
@@ -157,6 +158,7 @@ export class CollectionsService {
 			knex: this.knex,
 			schema: this.schema,
 		});
+
 		let tablesInDatabase = await schemaInspector.tableInfo();
 
 		if (this.accountability && this.accountability.admin !== true) {
@@ -169,9 +171,14 @@ export class CollectionsService {
 			tablesInDatabase = tablesInDatabase.filter((table) => {
 				return collectionsYouHavePermissionToRead.includes(table.name);
 			});
+
+			if (tablesInDatabase.length === 0) {
+				throw new ForbiddenException();
+			}
 		}
 
 		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
+
 		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: tablesToFetchInfoFor } },
 		})) as CollectionMeta[];
