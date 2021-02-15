@@ -323,7 +323,7 @@ export default defineComponent({
 
 				const hoursInADay = props.use24 ? 24 : 12;
 
-				for (let i = 1; i <= hoursInADay; i++) {
+				for (let i = 0; i < hoursInADay; i++) {
 					let hour = String(i);
 					if (hour.length === 1) hour = '0' + hour;
 
