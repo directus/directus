@@ -1,6 +1,7 @@
 # Custom API Endpoints <small></small>
 
-> Custom API Endpoints register new API routes which can be used to infinitely extend the core functionality of the platform.
+> Custom API Endpoints register new API routes which can be used to infinitely extend the core functionality of the
+> platform.
 
 ## 1. Setup the Boilerplate
 
@@ -23,9 +24,9 @@ You can also create several scoped endpoints within a single function:
 // /custom/my-endpoint/intro
 // /custom/my-endpoint/goodbye
 module.exports = function registerEndpoint(router) {
-	router.get('/', (req, res) => res.send('Hello, World!')),
-		router.get('/intro', (req, res) => res.send('Nice to meet you.')),
-		router.get('/goodbye', (req, res) => res.send('Goodbye!'));
+	router.get('/', (req, res) => res.send('Hello, World!'));
+	router.get('/intro', (req, res) => res.send('Nice to meet you.'));
+	router.get('/goodbye', (req, res) => res.send('Goodbye!'));
 };
 ```
 
@@ -34,7 +35,7 @@ module.exports = function registerEndpoint(router) {
 The `registerEndpoint` function receives two parameters: `router` and `context`. Router is an express Router instance
 that is scoped to `/custom/<extension-name>`, while `context` holds the following properties:
 
-- `services` — All API interal services.
+- `services` — All API internal services.
 - `exceptions` — API exception objects that can be used to throw "proper" errors.
 - `database` — Knex instance that is connected to the current database.
 - `env` — Parsed environment variables.
@@ -57,7 +58,8 @@ module.exports = function registerEndpoint(router, { services, exceptions }) {
 	const { ServiceUnavailableException } = exceptions;
 
 	router.get('/', (req, res) => {
-		const recipeService = new ItemsService('recipes', { schema: req.schema });
+		const recipeService = new ItemsService('recipes', { schema: req.schema, accountability: req.accountability });
+
 		recipeService
 			.readByQuery({ sort: 'name', fields: ['*'] })
 			.then((results) => res.json(results))
