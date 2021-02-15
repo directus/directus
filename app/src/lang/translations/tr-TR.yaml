@@ -54,6 +54,7 @@ archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
 archive_confirm_count: >-
   Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin misiniz?
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
+reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
 unarchive: Arşivden çıkar
 unarchive_confirm: Bu öğeyi arşivden çıkarmak istediğinizden emin misiniz?
 nested_files_folders_will_be_moved: İç içe geçmiş dosyalar ve klasörler bir seviye yukarı taşınacaktır.
@@ -70,7 +71,20 @@ validationError:
 field_file: Tek Dosya
 field_files: Birden Fazla Dosya
 field_translations: Çeviriler
+hide_field_on_detail: Alanı Detayda Gizle
+delete_field: Alanı Sil
+fields_and_layout: Alanlar ve Düzen
+field_create_success: 'Oluşturulan alan: "{field}"'
+field_update_success: 'Güncellenen alan: "{field}"'
+duplicate_where_to: Bu alanı nereye çoğaltmak istersiniz?
 language: Dil
+global: Genel
+admins_have_all_permissions: Yöneticiler tüm izinlere sahiptir
+camera: Kamera
+exposure: Pozlama
+shutter: Deklanşör
+iso: ISO
+focal_length: Odak Uzaklığı
 create_field: Alan Ekle
 hidden_on_detail: Detayda Gizli
 disabled_editing_value: Düzenleme değerini devre dışı bırakın
