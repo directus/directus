@@ -330,6 +330,11 @@ export class FieldsService {
 		if (field.schema?.default_value !== undefined) {
 			if (typeof field.schema.default_value === 'string' && field.schema.default_value.toLowerCase() === 'now()') {
 				column.defaultTo(this.knex.fn.now());
+			} else if (
+				typeof field.schema.default_value === 'string' &&
+				['"null"', 'null'].includes(field.schema.default_value.toLowerCase())
+			) {
+				column.defaultTo(null);
 			} else {
 				column.defaultTo(field.schema.default_value);
 			}
