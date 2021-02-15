@@ -85,6 +85,7 @@
 
 				<template #append-outer>
 					<save-options
+						v-if="hasEdits === true"
 						:disabled="hasEdits === false"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
