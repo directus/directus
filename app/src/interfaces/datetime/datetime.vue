@@ -10,7 +10,7 @@
 				:placeholder="$t('enter_a_value')"
 			>
 				<template #append>
-					<v-icon name="today" :class="{ active }" />
+					<v-icon :name="value ? 'close' : 'today'" :class="{ active }" @click.stop="unsetValue" />
 				</template>
 			</v-input>
 		</template>
@@ -104,7 +104,12 @@ export default defineComponent({
 			hourItems,
 			minutesSecondItems,
 			displayValue,
+			unsetValue,
 		};
+
+		function unsetValue() {
+			emit('input', null);
+		}
 
 		function useLocalValue() {
 			const _value = computed({
