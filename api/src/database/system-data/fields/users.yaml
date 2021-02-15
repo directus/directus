@@ -30,6 +30,7 @@ fields:
   - field: avatar
     interface: file
     width: full
+    display: image
 
   - field: location
     interface: text-input
@@ -115,6 +116,9 @@ fields:
       template: '{{ name }}'
     special: m2o
     width: half
+    display: related-values
+    display_options: 
+      template: '{{ name }}'
 
   - field: token
     interface: token
