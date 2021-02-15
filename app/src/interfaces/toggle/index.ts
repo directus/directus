@@ -18,6 +18,9 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'icon',
 			},
+			schema: {
+				default_value: 'check_box_outline_blank',
+			},
 		},
 		{
 			field: 'iconOn',
@@ -26,6 +29,9 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'icon',
+			},
+			schema: {
+				default_value: 'check_box',
 			},
 		},
 		{
@@ -50,6 +56,9 @@ export default defineInterface(({ i18n }) => ({
 			meta: {
 				width: 'half',
 				interface: 'color',
+			},
+			schema: {
+				default_value: '#2f80ed',
 			},
 		},
 	],
