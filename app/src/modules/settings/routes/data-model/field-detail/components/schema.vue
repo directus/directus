@@ -89,26 +89,26 @@
 					v-if="['string', 'uuid'].includes(fieldData.type)"
 					class="monospace"
 					v-model="defaultValue"
-					:placeholder="$t('add_a_default_value')"
+					placeholder="NULL"
 				/>
 				<v-textarea
 					v-else-if="['text', 'json'].includes(fieldData.type)"
 					class="monospace"
 					v-model="defaultValue"
-					:placeholder="$t('add_a_default_value')"
+					placeholder="NULL"
 				/>
 				<v-input
 					v-else-if="['integer', 'bigInteger', 'float', 'decimal'].includes(fieldData.type)"
 					type="number"
 					class="monospace"
 					v-model="defaultValue"
-					:placeholder="$t('add_a_default_value')"
+					placeholder="NULL"
 				/>
 				<v-input
 					v-else-if="['timestamp', 'datetime', 'date', 'time'].includes(fieldData.type)"
 					class="monospace"
 					v-model="defaultValue"
-					:placeholder="$t('add_a_default_value')"
+					placeholder="NULL"
 				/>
 				<v-select
 					v-else-if="fieldData.type === 'boolean'"
@@ -129,7 +129,7 @@
 						},
 					]"
 				/>
-				<v-input v-else class="monospace" v-model="defaultValue" disabled :placeholder="$t('add_a_default_value')" />
+				<v-input v-else class="monospace" v-model="defaultValue" disabled placeholder="NULL" />
 			</div>
 
 			<div class="field half-left" v-if="fieldData.schema">
