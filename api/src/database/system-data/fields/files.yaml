@@ -104,8 +104,9 @@ fields:
     hidden: true
 
   - field: uploaded_by
+    display: user
     width: half
-    readonly: true
+    hidden: true
 
   - field: folder
     width: half
@@ -116,8 +117,9 @@ fields:
     readonly: true
 
   - field: uploaded_on
+    display: datetime
     width: half
-    readonly: true
+    hidden: true
 
   - field: height
     width: half
