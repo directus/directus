@@ -12,9 +12,8 @@ import { clone, toString, toNumber } from 'lodash';
 import { toArray } from './utils/to-array';
 import logger from './logger';
 
-dotenv.config();
-
 const defaults: Record<string, any> = {
+	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
 	PORT: 8055,
 	PUBLIC_URL: 'http://localhost:8055',
 
@@ -74,14 +73,12 @@ const env: Record<string, any> = processValues({
 export default env;
 
 function getEnv() {
-	if (!process.env.CONFIG_PATH) {
-		return process.env;
-	}
+	const configPath = process.env.CONFIG_PATH || defaults.CONFIG_PATH;
 
-	const fileExt = path.extname(process.env.CONFIG_PATH).toLowerCase();
+	const fileExt = path.extname(configPath).toLowerCase();
 
 	if (fileExt === '.js') {
-		const module = require(process.env.CONFIG_PATH);
+		const module = require(configPath);
 		const exported = module.default || module;
 
 		if (typeof exported === 'function') {
@@ -96,11 +93,11 @@ function getEnv() {
 	}
 
 	if (fileExt === '.json') {
-		return require(process.env.CONFIG_PATH);
+		return require(configPath);
 	}
 
 	if (fileExt === '.yaml' || fileExt === '.yml') {
-		const data = requireYAML(process.env.CONFIG_PATH);
+		const data = requireYAML(configPath);
 
 		if (typeof data === 'object') {
 			return data as Record<string, string>;
@@ -110,7 +107,7 @@ function getEnv() {
 	}
 
 	// Default to env vars plain text files
-	return dotenv.parse(fs.readFileSync(process.env.CONFIG_PATH).toString());
+	return dotenv.parse(fs.readFileSync(configPath).toString());
 }
 
 function processValues(env: Record<string, any>) {
