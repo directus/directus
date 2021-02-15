@@ -163,6 +163,7 @@ export default defineComponent({
 		function useCorresponding() {
 			const hasCorresponding = computed({
 				get() {
+					console.log(state);
 					return state.newFields.length > 0;
 				},
 				set(enabled: boolean) {
@@ -171,6 +172,7 @@ export default defineComponent({
 
 						state.newFields.push({
 							$type: 'corresponding',
+							type: null,
 							field: state.relations[0].one_field,
 							collection: state.relations[0].one_collection,
 							meta: {
