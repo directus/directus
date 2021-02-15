@@ -19,7 +19,7 @@ export default defineModule(({ i18n }) => {
 
 	return {
 		id: 'docs',
-		name: i18n.t('documentation'),
+		name: 'documentation',
 		icon: 'info',
 		routes,
 		order: 20,

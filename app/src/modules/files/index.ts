@@ -5,7 +5,7 @@ import AddNew from './routes/add-new.vue';
 
 export default defineModule(({ i18n }) => ({
 	id: 'files',
-	name: i18n.t('file_library'),
+	name: 'file_library',
 	icon: 'folder',
 	routes: [
 		{
