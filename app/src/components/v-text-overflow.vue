@@ -11,7 +11,7 @@ import { useElementSize } from '@/composables/use-element-size';
 export default defineComponent({
 	props: {
 		text: {
-			type: String,
+			type: [String, Number],
 			required: true,
 		},
 	},
