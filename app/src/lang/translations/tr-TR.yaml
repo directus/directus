@@ -12,6 +12,7 @@ role_name: Rol Adı
 db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın '
 show_archived_items: Arşivlenmiş Öğeleri Göster
 required: Gerekli
+required_for_app_access: Uygulama Erişimi için Gereklidir
 requires_value: Gerekli değer
 create_preset: Ön Ayar Oluştur
 create_role: Rol Oluştur
@@ -27,6 +28,8 @@ connection_fair: Makul Bağlantı
 connection_poor: Kötü Bağlantı
 rename_folder: Klasörü Yeniden Adlandır
 delete_folder: Klasörü Sil
+prefix: Önek
+suffix: Sonek
 reset_bookmark: Yer İşaretini Sıfırla
 rename_bookmark: Yer İşaretini Yeniden Adlandır
 update_bookmark: Yer İşaretini Güncelle
@@ -50,6 +53,7 @@ archive: Arşiv
 archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
 archive_confirm_count: >-
   Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin misiniz?
+reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
 unarchive: Arşivden çıkar
 unarchive_confirm: Bu öğeyi arşivden çıkarmak istediğinizden emin misiniz?
 nested_files_folders_will_be_moved: İç içe geçmiş dosyalar ve klasörler bir seviye yukarı taşınacaktır.
