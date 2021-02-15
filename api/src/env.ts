@@ -3,9 +3,9 @@
  * See example.env for all possible keys
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import yaml from 'js-yaml';
+import fs from 'fs';
+import path from 'path';
+import { requireYAML } from './utils/require-yaml';
 
 import dotenv from 'dotenv';
 import { clone, toString, toNumber } from 'lodash';
@@ -66,64 +66,55 @@ const typeMap: Record<string, string> = {
 	DB_PORT: 'number',
 };
 
-let env: Record<string, any> = {
+const env: Record<string, any> = processValues({
 	...defaults,
-	...process.env,
-};
-
-env = processValues(env);
+	...getEnv(),
+});
 
 export default env;
 
-function isJsFile(file: string): boolean {
-	return path.extname(file).toLowerCase() === '.js';
-}
-
-function isJsonFile(file: string): boolean {
-	return path.extname(file).toLowerCase() === '.json';
-}
-
-function isYamlFile(file: string): boolean {
-	const ext = path.extname(file).toLowerCase();
-	return ext === '.yml' || ext === '.yaml';
-}
-
-function loadCustomConfig(current: Record<string, string>): Record<string, string> {
-	if (!current.CONFIG_PATH) {
-		return {};
+function getEnv() {
+	if (!process.env.CONFIG_PATH) {
+		return process.env;
 	}
 
-	if (isJsFile(current.CONFIG_PATH)) {
-		const module = require(current.CONFIG_PATH);
+	const fileExt = path.extname(process.env.CONFIG_PATH).toLowerCase();
+
+	if (fileExt === '.js') {
+		const module = require(process.env.CONFIG_PATH);
 		const exported = module.default || module;
+
 		if (typeof exported === 'function') {
-			return exported(current);
+			return exported(process.env);
 		} else if (typeof exported === 'object') {
 			return exported;
 		}
-		logger.warn('config js module detected but exports an incompatible type');
-	} else if (isJsonFile(current.CONFIG_PATH)) {
-		return require(current.CONFIG_PATH);
-	} else if (isYamlFile(current.CONFIG_PATH)) {
-		const data = yaml.safeLoad(fs.readFileSync(current.CONFIG_PATH).toString());
+
+		logger.warn(
+			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof exported}"`
+		);
+	}
+
+	if (fileExt === '.json') {
+		return require(process.env.CONFIG_PATH);
+	}
+
+	if (fileExt === '.yaml' || fileExt === '.yml') {
+		const data = requireYAML(process.env.CONFIG_PATH);
+
 		if (typeof data === 'object') {
 			return data as Record<string, string>;
 		}
-		logger.warn('config yaml detected but root is not an object');
-	} else {
-		// Fallback to .env
-		return dotenv.parse(fs.readFileSync(current.CONFIG_PATH).toString());
+
+		logger.warn('Invalid YAML configuration. Root has to ben an object.');
 	}
 
-	return {};
+	// Default to env vars plain text files
+	return dotenv.parse(fs.readFileSync(process.env.CONFIG_PATH).toString());
 }
 
 function processValues(env: Record<string, any>) {
 	env = clone(env);
-	env = {
-		...env,
-		...loadCustomConfig(env),
-	};
 
 	for (const [key, value] of Object.entries(env)) {
 		if (typeMap[key]) {
