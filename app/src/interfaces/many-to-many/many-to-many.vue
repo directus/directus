@@ -3,7 +3,11 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="many-to-many" v-else>
-		<v-table
+		<interface-repeater
+			:value="sortedItems || items"
+			:fields="[{ name: 'name', type: 'string', interface: 'text-input' }]"
+		></interface-repeater>
+		<!-- <v-table
 			:loading="loading"
 			:items="sortedItems || items"
 			:headers.sync="tableHeaders"
@@ -33,7 +37,7 @@
 			<template #item-append="{ item }" v-show="!disabled">
 				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
 			</template>
-		</v-table>
+		</v-table> -->
 
 		<div class="actions" v-if="!disabled">
 			<v-button class="new" @click="editModalActive = true">{{ $t('create_new') }}</v-button>
