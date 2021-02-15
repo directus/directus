@@ -171,6 +171,7 @@ export default defineComponent({
 
 						state.newFields.push({
 							$type: 'corresponding',
+							type: null,
 							field: state.relations[0].one_field,
 							collection: state.relations[0].one_collection,
 							meta: {
