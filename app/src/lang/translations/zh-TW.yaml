@@ -124,7 +124,6 @@ choose_a_type: 選擇類型...
 determined_by_relationship: 由關聯決定
 add_note: 新增提示
 default_value: 預設值
-add_a_default_value: 新增一個預設值...
 single_file: 單一檔案
 multiple_files: 多個檔案
 m2o_relationship: 多對一關聯
