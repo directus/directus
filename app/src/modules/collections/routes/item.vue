@@ -133,7 +133,6 @@
 				<template #append-outer>
 					<save-options
 						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
-						:disabled="isSavable === false"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"

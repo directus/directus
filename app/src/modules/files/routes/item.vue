@@ -100,7 +100,6 @@
 				<template #append-outer>
 					<save-options
 						v-if="hasEdits === true || saveAllowed === true"
-						:disabled="hasEdits === false || saveAllowed === false"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
 					/>
