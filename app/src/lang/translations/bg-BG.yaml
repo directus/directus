@@ -12,6 +12,7 @@ role_name: Име на роля
 db_only_click_to_configure: 'Само в базата данни: Кликнете за конфигурация '
 show_archived_items: Включително архивираните
 required: Задължително
+required_for_app_access: Изисква се за достъп до приложението
 requires_value: Изисква се стойност
 create_preset: Създаване на изгледи
 create_role: Създаване на роля
@@ -52,6 +53,11 @@ archive: Архивиране
 archive_confirm: Сигурни ли сте, че искате да изтриете този запис?
 archive_confirm_count: >-
   Няма избрани записи | Сигурни ли сте, че искате да архивирате този запис? | Сигурни ли сте, че искате да архивирате тези {count} записа?
+reset_system_permissions_to: 'Нулиране на системните позволения към:'
+reset_system_permissions_copy: Това действие може да презапише потребителските позволения които са приложени към системните колекции. Сигурни ли сте?
+the_following_are_minimum_permissions: Следните са минималните изисквани позволения за достъп до "Приложението". Може да бъдат добавяни повече, но не и по-малко.
+app_access_minimum: Минимум за достъп до приложението
+recommended_defaults: Препоръчителни
 unarchive: Разархивиране
 unarchive_confirm: Сигурни ли сте, че искате да разархивирате този запис?
 nested_files_folders_will_be_moved: Вложените файлове и папки ще бъдат преместени една папка по-нагоре.
@@ -782,6 +788,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   checkboxes:
