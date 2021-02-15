@@ -71,48 +71,62 @@ fields:
 
   - field: type
     display: mime-type
+    readonly: true
 
   - field: filesize
     display: filesize
+    readonly: true
 
   - field: modified_by
     interface: user
     special: user-updated
     width: half
     display: user
+    readonly: true
 
   - field: modified_on
     interface: datetime
     special: date-updated
     width: half
     display: datetime
+    readonly: true
 
   - field: created_on
     display: datetime
+    readonly: true
 
   - field: created_by
     display: user
+    readonly: true
 
   - field: embed
     width: half
+    hidden: true
 
   - field: uploaded_by
     width: half
+    readonly: true
 
   - field: folder
     width: half
+    readonly: true
 
   - field: width
     width: half
+    readonly: true
 
   - field: uploaded_on
     width: half
+    readonly: true
 
   - field: height
     width: half
+    readonly: true
 
   - field: charset
     width: half
+    readonly: true
 
   - field: duration
     width: half
+    readonly: true
