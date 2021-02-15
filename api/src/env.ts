@@ -67,8 +67,11 @@ const typeMap: Record<string, string> = {
 
 const env: Record<string, any> = processValues({
 	...defaults,
+	...process.env,
 	...getEnv(),
 });
+
+process.env = env;
 
 export default env;
 
