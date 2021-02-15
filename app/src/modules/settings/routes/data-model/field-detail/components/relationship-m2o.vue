@@ -163,7 +163,6 @@ export default defineComponent({
 		function useCorresponding() {
 			const hasCorresponding = computed({
 				get() {
-					console.log(state);
 					return state.newFields.length > 0;
 				},
 				set(enabled: boolean) {
