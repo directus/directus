@@ -266,7 +266,10 @@ export default defineComponent({
 								$index: index,
 							};
 						} else {
-							return savedValues;
+							return {
+								...savedValues,
+								$index: index,
+							};
 						}
 					})
 					.filter((val) => val);
