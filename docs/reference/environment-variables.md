@@ -155,10 +155,10 @@ Alternatively, you can provide the individual connection parameters:
 
 For each of the storage locations listed, you must provide the following configuration:
 
-| Variable                        | Description                                              | Default Value |
-| ------------------------------- | -------------------------------------------------------- | ------------- |
-| `STORAGE_<LOCATION>_PUBLIC_URL` | Location on the internet where the files are accessible  |               |
-| `STORAGE_<LOCATION>_DRIVER`     | Which driver to use, either `local`, `s3`, `gcs`, `azure |               |
+| Variable                        | Description                                               | Default Value |
+| ------------------------------- | --------------------------------------------------------- | ------------- |
+| `STORAGE_<LOCATION>_PUBLIC_URL` | Location on the internet where the files are accessible   |               |
+| `STORAGE_<LOCATION>_DRIVER`     | Which driver to use, either `local`, `s3`, `gcs`, `azure` |               |
 
 Based on your configured driver, you must also provide the following configurations:
 
