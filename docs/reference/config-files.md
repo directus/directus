@@ -69,8 +69,8 @@ DB_PORT: 5432
 
 ## config.js
 
-A JavaScript based configuration file allows for two different structures of configuration: an object and a transform
-function:
+A JavaScript based configuration file allows for two different structures of configuration: an object or a function.
+Using a JS file for your config allows you to dynamically generate the configuration of the project during startup.
 
 ### Object
 
@@ -91,7 +91,7 @@ module.exports = {
 ### Function
 
 Alternatively, you can provide a function that returns the above object. The function gets process.env as it's
-parameter. This can be used to do transformations on the fly:
+parameter.
 
 ```js
 module.exports = function (env) {
