@@ -68,6 +68,9 @@ validationError:
   ncontains: Değer, {substring} içeremez
   gt: Değer, {valid} değerinden büyük olmalıdır
   gte: Değer, {valid} değerinden büyük veya ona eşit olmalıdır
+  empty: Değer boş olmalı
+  nempty: Değer boş olamaz
+  null: Değer null olmalı
 field_file: Tek Dosya
 field_files: Birden Fazla Dosya
 field_translations: Çeviriler
