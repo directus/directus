@@ -24,7 +24,12 @@ export async function login(credentials: LoginCredentials) {
 
 	// Refresh the token 10 seconds before the access token expires. This means the user will stay
 	// logged in without any noticable hickups or delays
-	setTimeout(() => refresh(), response.data.data.expires - 10000);
+
+	// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
+	// for tokens that last > 24 days. Ref #4054
+	if (response.data.data.expires <= 2100000000) {
+		setTimeout(() => refresh(), response.data.data.expires - 10000);
+	}
 
 	appStore.state.authenticated = true;
 
@@ -47,7 +52,12 @@ export async function refresh({ navigate }: LogoutOptions = { navigate: true }) 
 		// Refresh the token 10 seconds before the access token expires. This means the user will stay
 		// logged in without any noticable hickups or delays
 		if (refreshTimeout) clearTimeout(refreshTimeout);
-		refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
+
+		// setTimeout breaks with numbers bigger than 32bits. This ensures that we don't try refreshing
+		// for tokens that last > 24 days. Ref #4054
+		if (response.data.data.expires <= 2100000000) {
+			refreshTimeout = setTimeout(() => refresh(), response.data.data.expires - 10000);
+		}
 		appStore.state.authenticated = true;
 
 		return accessToken;
