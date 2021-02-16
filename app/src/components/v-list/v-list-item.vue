@@ -157,12 +157,12 @@ body {
 		transition-property: background-color, color;
 		user-select: none;
 
-		&:not(.disabled):not(.dense):hover {
+		&:not(.disabled):not(.dense):not(.block):hover {
 			color: var(--v-list-item-color-hover);
 			background-color: var(--v-list-item-background-color-hover);
 		}
 
-		&:not(.disabled):not(.dense):active {
+		&:not(.disabled):not(.dense):not(.block):active {
 			color: var(--v-list-item-color-active);
 			background-color: var(--v-list-item-background-color-active);
 		}
@@ -193,11 +193,24 @@ body {
 	}
 
 	&.block {
+		display: flex;
 		margin-top: 8px;
 		padding: 12px;
 		background-color: var(--background-subdued);
 		border: 2px solid var(--border-subdued);
 		border-radius: var(--border-radius);
+
+		.v-icon {
+			color: var(--foreground-subdued);
+
+			&:hover {
+				color: var(--foreground-normal);
+			}
+		}
+
+		.spacer {
+			flex-grow: 1;
+		}
 
 		&:first-child {
 			margin-top: 0;
@@ -205,6 +218,7 @@ body {
 
 		&:hover {
 			background-color: var(--background-subdued);
+			border: 2px solid var(--border-normal);
 		}
 	}
 

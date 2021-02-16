@@ -31,10 +31,6 @@ export default defineComponent({
 		collection: {
 			type: String,
 		},
-		fields: {
-			type: Array as PropType<Field[]>,
-			default: null,
-		},
 		item: {
 			type: Object as PropType<Record<string, any>>,
 			required: true,
@@ -58,21 +54,14 @@ export default defineComponent({
 					if (part.startsWith('{{') === false) return part;
 
 					const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-					const field: Field | null =
-						props.fields !== null
-							? props.fields.find((f) => f.field === fieldKey)
-							: fieldsStore.getField(props.collection, fieldKey);
-
-					// Instead of crashing when the field doesn't exist, we'll render a couple question
-					// marks to indicate it's absence
-					if (!field) return null;
+					const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
 
 					// Try getting the value from the item, return some question marks if it doesn't exist
 					const value = get(props.item, fieldKey);
 					if (value === undefined) return null;
 
 					// If no display is configured, we can render the raw value
-					if (field.meta?.display === null) return value;
+					if (!field || field.meta?.display === null) return value;
 
 					const displayInfo = displays.value.find((display) => display.id === field.meta?.display);
 
