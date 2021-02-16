@@ -1,5 +1,5 @@
 <template>
-	<div class="interface-code codemirror-custom-styles">
+	<div class="interface-code codemirror-custom-styles" :class="{ disabled }">
 		<textarea ref="codemirrorEl" :value="stringValue" />
 
 		<v-button small icon secondary v-if="template" v-tooltip.left="$t('fill_template')" @click="fillTemplate">
