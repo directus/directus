@@ -171,3 +171,9 @@ RATE_LIMITER_STORE="redis"
 
 RATE_LIMITER_REDIS="redis://@127.0.0.1"
 ```
+
+## File-Based Configuration
+
+In case you prefer using a configuration file instead of environment variables, you can use the `CONFIG_PATH`
+environment variable to instruct Directus to use a local configuration file instead of environment variables. See
+[Config Files](/reference/config-files.md) for more information.

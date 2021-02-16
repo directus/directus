@@ -308,6 +308,11 @@ module.exports = {
 					},
 					{
 						type: 'page',
+						path: '/reference/config-files',
+						title: 'Config Files',
+					},
+					{
+						type: 'page',
 						path: '/reference/error-codes',
 						title: 'Error Codes',
 					},
