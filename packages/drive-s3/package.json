@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-s3",
-	"version": "1.0.0",
+	"version": "9.0.0-rc.39",
 	"description": "AWS S3 driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
