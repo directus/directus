@@ -12,6 +12,7 @@
 			link: isClickable,
 			disabled,
 			dashed,
+			block,
 		}"
 		:href="href"
 		:download="download"
@@ -30,6 +31,10 @@ import { useGroupable } from '@/composables/groupable';
 export default defineComponent({
 	props: {
 		large: {
+			type: Boolean,
+			default: false,
+		},
+		block: {
 			type: Boolean,
 			default: false,
 		},
@@ -184,6 +189,22 @@ body {
 			::v-deep .v-text-overflow {
 				color: var(--primary);
 			}
+		}
+	}
+
+	&.block {
+		margin-top: 8px;
+		padding: 12px;
+		background-color: var(--background-subdued);
+		border: 2px solid var(--border-subdued);
+		border-radius: var(--border-radius);
+
+		&:first-child {
+			margin-top: 0;
+		}
+
+		&:hover {
+			background-color: var(--background-subdued);
 		}
 	}
 
