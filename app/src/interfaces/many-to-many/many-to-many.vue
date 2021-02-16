@@ -3,10 +3,12 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="many-to-many" v-else>
-		<interface-repeater
+		<repeater-list
 			:value="sortedItems || items"
-			:fields="[{ name: 'name', type: 'string', interface: 'text-input' }]"
-		></interface-repeater>
+			:template="template"
+			@active="editItem(getItemFromIndex($event))"
+			@delete="deleteItem(getItemFromIndex($event))"
+		></repeater-list>
 		<!-- <v-table
 			:loading="loading"
 			:items="sortedItems || items"
@@ -82,9 +84,11 @@ import usePreview from './use-preview';
 import useEdit from './use-edit';
 import useSelection from './use-selection';
 import useSort from './use-sort';
+import RepeaterList from '@/interfaces/repeater/repeater-list.vue';
+import { getFieldsFromTemplate } from '@/utils/render-template';
 
 export default defineComponent({
-	components: { DrawerItem, DrawerCollection },
+	components: { DrawerItem, DrawerCollection, RepeaterList },
 	props: {
 		value: {
 			type: Array as PropType<(number | string | Record<string, any>)[] | null>,
@@ -106,9 +110,9 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		fields: {
-			type: Array as PropType<string[]>,
-			default: () => [],
+		template: {
+			type: String,
+			default: null,
 		},
 		disabled: {
 			type: Boolean,
@@ -116,7 +120,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { value, collection, field, fields, sortField } = toRefs(props);
+		const { value, collection, field, template, sortField } = toRefs(props);
+		const fields = computed(() => getFieldsFromTemplate(template.value));
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
@@ -159,6 +164,10 @@ export default defineComponent({
 
 		const { sort, sortItems, sortedItems } = useSort(sortField, fields, items, emitter);
 
+		function getItemFromIndex(index: number) {
+			return (sortedItems.value || items.value)[index];
+		}
+
 		return {
 			junction,
 			relation,
@@ -183,6 +192,7 @@ export default defineComponent({
 			sort,
 			sortItems,
 			sortedItems,
+			getItemFromIndex,
 		};
 	},
 });

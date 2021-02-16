@@ -3,7 +3,14 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="one-to-many" v-else>
-		<v-table
+		<repeater-list
+			:value="sortedItems || items"
+			:template="template"
+			@active="editItem(getItemFromIndex($event))"
+			@delete="deleteItem(getItemFromIndex($event))"
+		></repeater-list>
+
+		<!-- <v-table
 			:loading="loading"
 			:items="sortedItems || items"
 			:headers.sync="tableHeaders"
@@ -33,7 +40,7 @@
 			<template #item-append="{ item }" v-if="!disabled">
 				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
 			</template>
-		</v-table>
+		</v-table> -->
 
 		<div class="actions" v-if="!disabled">
 			<v-button class="new" @click="currentlyEditing = '+'">{{ $t('create_new') }}</v-button>
@@ -65,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, PropType } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
 import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';
@@ -76,9 +83,11 @@ import { Header, Sort } from '@/components/v-table/types';
 import { isEqual, sortBy } from 'lodash';
 import { get } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
+import RepeaterList from '@/interfaces/repeater/repeater-list.vue';
+import { getFieldsFromTemplate } from '@/utils/render-template';
 
 export default defineComponent({
-	components: { DrawerItem, DrawerCollection },
+	components: { DrawerItem, DrawerCollection, RepeaterList },
 	props: {
 		value: {
 			type: Array as PropType<(number | string | Record<string, any>)[] | null>,
@@ -96,9 +105,9 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		fields: {
-			type: Array as PropType<string[]>,
-			default: () => [],
+		template: {
+			type: String,
+			default: null,
 		},
 		sortField: {
 			type: String,
@@ -110,6 +119,9 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const { template } = toRefs(props);
+		const fields = computed(() => getFieldsFromTemplate(template.value));
+
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
@@ -139,7 +151,12 @@ export default defineComponent({
 			sort,
 			sortedItems,
 			get,
+			getItemFromIndex,
 		};
+
+		function getItemFromIndex(index: number) {
+			return (sortedItems.value || items.value)[index];
+		}
 
 		function getItem(id: string | number) {
 			const pkField = relatedPrimaryKeyField.value.field;
@@ -216,7 +233,7 @@ export default defineComponent({
 		}
 
 		function useSort() {
-			const sort = ref<Sort>({ by: props.sortField || props.fields[0], desc: false });
+			const sort = ref<Sort>({ by: props.sortField || fields.value[0], desc: false });
 
 			function sortItems(newItems: Record<string, any>[]) {
 				if (props.sortField === null) return;
@@ -271,13 +288,14 @@ export default defineComponent({
 					loading.value = true;
 					const pkField = relatedPrimaryKeyField.value.field;
 
-					const fields = [...(props.fields.length > 0 ? props.fields : getDefaultFields())];
+					const fieldsList = [...(fields.value.length > 0 ? fields.value : getDefaultFields())];
 
-					if (fields.includes(pkField) === false) {
-						fields.push(pkField);
+					if (fieldsList.includes(pkField) === false) {
+						fieldsList.push(pkField);
 					}
 
-					if (props.sortField !== null && fields.includes(props.sortField) === false) fields.push(props.sortField);
+					if (props.sortField !== null && fieldsList.includes(props.sortField) === false)
+						fieldsList.push(props.sortField);
 
 					try {
 						const endpoint = relatedCollection.value.collection.startsWith('directus_')
@@ -291,7 +309,7 @@ export default defineComponent({
 						if (primaryKeys && primaryKeys.length > 0) {
 							const response = await api.get(endpoint, {
 								params: {
-									fields: fields,
+									fields: fieldsList,
 									[`filter[${pkField}][_in]`]: primaryKeys.join(','),
 								},
 							});
@@ -328,9 +346,9 @@ export default defineComponent({
 			// Seeing we don't care about saving those tableHeaders, we can reset it whenever the
 			// fields prop changes (most likely when we're navigating to a different o2m context)
 			watch(
-				() => props.fields,
+				() => fields.value,
 				() => {
-					tableHeaders.value = (props.fields.length > 0 ? props.fields : getDefaultFields())
+					tableHeaders.value = (fields.value.length > 0 ? fields.value : getDefaultFields())
 						.map((fieldKey) => {
 							const field = fieldsStore.getField(relatedCollection.value.collection, fieldKey);
 

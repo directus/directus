@@ -5,9 +5,9 @@
 	<div v-else class="form-grid">
 		<div class="field full">
 			<p class="type-label">{{ $t('select_fields') }}</p>
-			<v-field-select
+			<v-field-template
 				:collection="relatedCollection"
-				v-model="fields"
+				v-model="template"
 				:inject="relatedCollectionExists ? null : { fields: newFields, collections: newCollections, relations }"
 			/>
 		</div>
@@ -59,14 +59,14 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 		const relationsStore = useRelationsStore();
 
-		const fields = computed({
+		const template = computed({
 			get() {
-				return props.value?.fields;
+				return props.value?.template;
 			},
-			set(newFields: string) {
+			set(newTemplate: string) {
 				emit('input', {
 					...(props.value || {}),
-					fields: newFields,
+					template: newTemplate,
 				});
 			},
 		});
@@ -98,7 +98,7 @@ export default defineComponent({
 			);
 		});
 
-		return { fields, sortField, relatedCollection, relatedCollectionExists };
+		return { template, sortField, relatedCollection, relatedCollectionExists };
 	},
 });
 </script>
