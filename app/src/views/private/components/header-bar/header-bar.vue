@@ -9,7 +9,7 @@
 		</div>
 
 		<div class="title-container" :class="{ full: !$scopedSlots['title-outer:append'] }">
-			<div class="headline">
+			<div class="headline" v-if="$scopedSlots['headline']">
 				<slot name="headline" />
 			</div>
 
@@ -116,8 +116,7 @@ export default defineComponent({
 
 	.title-container {
 		position: relative;
-		display: flex;
-		align-items: center;
+		display: grid;
 		max-width: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		height: 100%;
 		margin-left: 16px;
@@ -138,9 +137,12 @@ export default defineComponent({
 		}
 
 		.headline {
-			position: absolute;
+			position: relative;
 			top: 2px;
-			left: 0;
+			display: flex;
+			align-items: center;
+			margin-bottom: -20px;
+			overflow: hidden;
 			color: var(--foreground-subdued);
 			white-space: nowrap;
 			opacity: 1;
