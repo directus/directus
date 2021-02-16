@@ -55,6 +55,7 @@ archive_confirm_count: >-
   Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin misiniz?
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
 reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
+recommended_defaults: Önerilen Ön Tanımlı Veriler
 unarchive: Arşivden çıkar
 unarchive_confirm: Bu öğeyi arşivden çıkarmak istediğinizden emin misiniz?
 nested_files_folders_will_be_moved: İç içe geçmiş dosyalar ve klasörler bir seviye yukarı taşınacaktır.
@@ -68,12 +69,25 @@ validationError:
   ncontains: Değer, {substring} içeremez
   gt: Değer, {valid} değerinden büyük olmalıdır
   gte: Değer, {valid} değerinden büyük veya ona eşit olmalıdır
+  lt: Değer, {valid} değerinden küçük olmalıdır
+  lte: Değer, {valid} değerinden küçük veya eşit olmalıdır
   empty: Değer boş olmalı
   nempty: Değer boş olamaz
   null: Değer null olmalı
+  nnull: Değer null olamaz
+  required: Değer gereklidir
+all_access: Tam Erişim
+no_access: Erişim Yok
+use_custom: Özelleştirilmiş kullan
+field_standard: Standart
 field_file: Tek Dosya
 field_files: Birden Fazla Dosya
+field_m2o: M2O İlişkisi
+field_o2m: O2M İlişkisi
+field_m2m: M2M İlişkisi
 field_translations: Çeviriler
+field_permissions: Alan İzinleri
+field_validation: Alan Doğrulama
 hide_field_on_detail: Alanı Detayda Gizle
 delete_field: Alanı Sil
 fields_and_layout: Alanlar ve Düzen
@@ -89,6 +103,8 @@ shutter: Deklanşör
 iso: ISO
 focal_length: Odak Uzaklığı
 create_field: Alan Ekle
+reset_page_preferences: Sayfa tercihlerini sıfırla
+hidden_field: Gizli Alan
 hidden_on_detail: Detayda Gizli
 disabled_editing_value: Düzenleme değerini devre dışı bırakın
 key: Key
@@ -139,24 +155,42 @@ field_name: Alan adı
 translations: Çeviriler
 note: Not
 enter_a_value: Bir değer girin...
+enter_a_placeholder: Placeholder ekle...
 length: Uzunluk
 readonly: Salt-Okunur
 unique: Benzersiz
+updated_on: Güncelleme tarihi
+updated_by: Güncelleyen
 primary_key: Birincil Anahtar (Primary Key)
+foreign_key: Yabancı Anahtar
+finish_setup: Kurulumu Bitir
+dismiss: Yoksay
+raw_value: Ham veri
+edit_raw_value: Ham Değeri Düzenle
+enter_raw_value: Bir değer girin...
 clear_value: Değeri Temizle
 reset_to_default: Öntanımlı girdilere sıfırla
 undo_changes: Değişiklikleri geri al
 notifications: Bildirimler
+show_all_activity: Tüm etkinliği göster
 page_not_found: Sayfa Bulunamadı
 page_not_found_body: Aradığınız sayfanın var olduğuna emin misiniz? Biz bulamadık da...
+confirm_revert: Geri Alma İşlemini Onayla
 display: Göster
 title: Ünvan
 revision_delta_deleted: Silindi
 leave_comment: Yorum bırakın...
 this_collection: Bu Koleksiyon
 related_collection: İlişkili Koleksiyon
+related_collections: İlişkili Koleksiyonlar
+export_data: Verileri Dışa Aktar
 format: Biçim
+last_page: Son Sayfa
+last_access: Son Erişim
+fill_template: Şablonla Doldur
 submit: Gönder
+system: Sistem
+delete_comment: Yorumu sil
 months:
   january: Ocak
   february: Şubat
@@ -174,25 +208,57 @@ size: Boyut
 checksum: Checksum
 owner: Sahip
 download: İndir
+open: Aç
+open_in_new_window: Yeni Pencerede Aç
+foreground_color: Ön Plan Rengi
+background_color: Arkaplan Rengi
+upload_from_device: Cihazdan Yükle
+choose_from_library: Kütüphaneden seç
+import_from_url: URL’den Dosya Yükle
 name: İsim
 created_by: Oluşturan
 created_on: Oluşturulma tarihi
 save_and_stay: Kaydet ve Sayfada Kal
 save_as_copy: Kopya Olarak Kaydet
+add_existing: Var olanı ekle
 comments: Yorumlar
+no_comments: Henüz Yorum Yok
+click_to_expand: Genişletmek için Tıklayın
+select_item: Seçim Yapın
+no_items: Öğe yok
+search_items: Öğeleri Ara...
+disabled: Pasif
+information: Bilgi
+report_bug: Hata Bildir
 request_feature: Ek Özellik Talep Et
+reset_interface: Arayüzü Sıfırla
 item_count: 'Öge yok | 1 Öge | {count}  Öge'
 create_collection: Koleksiyon Oluştur
 relationship_not_setup: İlişki doğru bir şekilde konfigüre edilmedi
+select_a_collection: Koleksiyon Seç
+active: Aktif
 users: Kullanıcılar
 activity: Aktivite
 webhooks: Ağ Kancaları
 field_width: Alan Genişliği
+add_a_new_item: Yeni Öğe ekle...
+add_filter: Filtre Ekle
+upper_limit: Üst sınır...
+lower_limit: Alt sınır...
 user_directory: Kullanıcı Listesi
+documentation: Dökümantasyon
+sidebar: Kenar çubuğu
 duration: Süre
+charset: Karakter seti
+second: İkinci
+file_moved: Dosya taşındı
+collection_created: Koleksiyon oluşturuldu
 modified_on: Düzenleme Tarihi
+card_size: Kart Boyutu
 sort_field: Sıralama Alanı
+sort: Sırala
 status: Durum
+toggle_manual_sorting: Elle sıralamayı aç/kapa
 edit: Düzenle
 bookmarks: Yer İmleri
 back: Geri
@@ -221,6 +287,8 @@ read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
 wysiwyg_options:
+  forecolor: Ön Plan Rengi
+  backcolor: Arkaplan Rengi
   codeblock: Kod
   remove: Kaldır
   table: Tablo
@@ -274,6 +342,7 @@ fields:
     width: Genişlik
     uploaded_on: Tarihinde Yüklendi
     height: Yükseklik
+    charset: Karakter seti
     duration: Süre
   directus_users:
     first_name: Ad
@@ -290,6 +359,8 @@ fields:
     tfa_secret: İki Faktörlü Kimlik Doğrulama
     status: Durum
     role: Rol
+    last_page: Son Sayfa
+    last_access: Son Erişim
   directus_settings:
     project_name: Proje Adı
   directus_fields:
@@ -362,6 +433,7 @@ interfaces:
     datetime: Tarih/Saat
   display-template:
     display-template: Görüntüleme Şablonu
+    select_a_collection: Koleksiyon Seç
   divider:
     divider: Ayırıcı
   dropdown:
