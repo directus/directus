@@ -29,6 +29,10 @@
 	border-color: var(--border-normal-alt);
 }
 
+.disabled .CodeMirror:hover {
+	border-color: var(--border-normal);
+}
+
 .CodeMirror.CodeMirror-focused {
 	border-color: var(--primary);
 }
