@@ -1,4 +1,4 @@
-import { Ref, ref, watch } from '@vue/composition-api';
+import { ComputedRef, Ref, ref, watch } from '@vue/composition-api';
 import { Header } from '@/components/v-table/types';
 import { RelationInfo } from './use-relation';
 import { useFieldsStore } from '@/stores/';
@@ -8,7 +8,7 @@ import { cloneDeep, get } from 'lodash';
 
 export default function usePreview(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
-	fields: Ref<string[]>,
+	fields: ComputedRef<string[]>,
 	sortField: Ref<string | null>,
 	relation: Ref<RelationInfo>,
 	getNewSelectedItems: () => Record<string, any>[],
