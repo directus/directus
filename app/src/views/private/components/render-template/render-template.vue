@@ -30,7 +30,10 @@ export default defineComponent({
 	props: {
 		collection: {
 			type: String,
-			required: true,
+		},
+		fields: {
+			type: Array as PropType<Field[]>,
+			default: null,
 		},
 		item: {
 			type: Object as PropType<Record<string, any>>,
@@ -55,7 +58,10 @@ export default defineComponent({
 					if (part.startsWith('{{') === false) return part;
 
 					const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-					const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
+					const field: Field | null =
+						props.fields !== null
+							? props.fields.find((f) => f.field === fieldKey)
+							: fieldsStore.getField(props.collection, fieldKey);
 
 					// Instead of crashing when the field doesn't exist, we'll render a couple question
 					// marks to indicate it's absence
