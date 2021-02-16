@@ -32,7 +32,7 @@
 					:item="item[anyRelation.many_field]"
 				/>
 				<div class="spacer" />
-				<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[index])" />
+				<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
 				<v-icon class="launch-icon" name="launch" />
 			</div>
 		</draggable>
