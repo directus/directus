@@ -226,13 +226,21 @@ export default defineComponent({
 				defaultOptions,
 				{
 					lineNumbers: props.lineNumber,
-					readOnly: props.disabled ? 'nocursor' : false,
+					readOnly: false,
 					mode: props.language,
 					placeholder: props.placeholder,
 				},
 				props.altOptions ? props.altOptions : {}
 			);
 		});
+
+		watch(
+			() => props.disabled,
+			(disabled) => {
+				codemirror.value?.setOption('readOnly', disabled ? 'nocursor' : false);
+			},
+			{ immediate: true }
+		);
 
 		watch(
 			() => props.altOptions,
