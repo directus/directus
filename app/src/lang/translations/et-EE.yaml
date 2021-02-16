@@ -79,6 +79,7 @@ field_standard: Standard
 field_m2o: M2O Seos
 field_o2m: O2M Seos
 field_m2m: M2M Seos
+field_translations: Tõlked
 item_permissions: Üksuse õigused
 field_permissions: Väljade õigused
 field_validation: Välja valideerimine
@@ -92,14 +93,22 @@ date: Kuupäev
 text: Tekst
 time: Kellaaeg
 auto_generate: Automaatselt loodud
+choose_a_type: Vali Tüüp...
 add_note: Lisa kasutajaid abistav märkus...
 default_value: Vaikeväärtus
 next: Järgmine
+field_name: Välja Nimi
+translations: Tõlked
 note: Märkus
+enter_a_value: Sisesta väärtus...
 length: Pikkus
+precision_scale: Täpsus & Skaala
 readonly: Ainult loetav
 unique: Unikaalne
+updated_on: Uuendatud
+updated_by: Uuendas
 primary_key: Primaarvõti
+foreign_key: Väline Võti
 clear_value: Tühjenda väärtus
 reset_to_default: Taasta vaikeväärtused
 undo_changes: Tühista muudatused
@@ -108,12 +117,26 @@ page_not_found: Lehekülge ei leitud
 page_not_found_body: Tundub, et lehekülge, mida sa otsid, pole olemas.
 display: Vaade
 title: Pealkiri
+revision_delta_created: Loodud
+revision_delta_created_externally: Loodud Väliselt
 revision_delta_deleted: Kustutatud
+revision_delta_reverted: Taastatud
+updates_made: Uuendused Tehtud
 leave_comment: Jäta kommentaar...
+post_comment_success: Kommentaar postitatud
 this_collection: See kogu
 related_collection: Seotud kogu
 format: Vorming
 submit: Saada
+move: Liiguta
+system: Süsteem
+interface: Kasutajaliides
+today: Täna
+yesterday: Eile
+delete_comment: Kustuta Kommentaar
+month: Kuu
+year: Aasta
+select_all: Vali Kõik
 months:
   january: Jaanuar
   february: Veebruar
@@ -127,13 +150,31 @@ months:
   october: Oktoober
   november: November
   december: Detsember
+original: Originaal
+url: URL
+import: Impordi
+file_details: Faili Üksikasjad
+dimensions: Mõõtmed
 size: Suurus
+created: Loodud
+modified: Muudetud
 checksum: Kontrollsumma
 owner: Omanik
+edited_by: Muutis
+folder: Kaust
+zoom: Suurenda
 download: Laadi alla
+open: Ava
+open_in_new_window: Ava Uues Aknas
+background_color: Taustavärv
 name: Nimi
+primary_key_field: Primaarse Võtme Väli
+type: Tüüp
 created_by: Autor
 created_on: Loodud
+generated_uuid: Genereeritud UUID
+manual_string: Sisesta sõne käsitsi
+save_and_create_new: Salvesta ja Lisa Uus
 save_and_stay: Salvesta ja jää
 save_as_copy: Salvesta koopiana
 comments: Kommentaarid
@@ -153,6 +194,8 @@ status: Staatus
 edit: Muuda
 bookmarks: Järjehoidjad
 back: Tagasi
+square: Ruut
+rotate: Pööra
 placeholder: Kohatäitja
 icon_left: Ikoon vasakul
 icon_right: Ikoon paremal
@@ -178,8 +221,10 @@ read: Loe
 update: Uuenda
 select_fields: Vali väljad
 wysiwyg_options:
+  backcolor: Taustavärv
   codeblock: Kood
   remove: Eemalda
+  selectall: Vali Kõik
   table: Tabel
 dropdown: Rippmenüü
 choices: Valikud
@@ -228,6 +273,7 @@ fields:
     created_by: Autor
     embed: Põimitud
     uploaded_by: Üles laadis
+    folder: Kaust
     width: Laius
     uploaded_on: Üleslaaditud
     height: Kõrgus
@@ -322,12 +368,15 @@ interfaces:
     divider: Eraldaja
   dropdown:
     allow_other: Luba muud
+    choices_value_placeholder: Sisesta väärtus...
   file:
     file: Fail
   files:
     files: Failid
   icon:
     icon: Ikoon
+  interface:
+    interface: Kasutajaliides
   interface-options:
     interface-options: Kasutajaliidese valikud
   many-to-many:
@@ -372,6 +421,8 @@ displays:
     filesize: Failisuurus
   icon:
     icon: Ikoon
+  labels:
+    choices_value_placeholder: Sisesta väärtus...
   rating:
     rating: Hinnang
   user:
