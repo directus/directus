@@ -1,9 +1,7 @@
 import {
 	Storage,
 	UnknownException,
-	NoSuchBucket,
 	FileNotFound,
-	PermissionMissing,
 	SignedUrlOptions,
 	Response,
 	ExistsResponse,
@@ -17,13 +15,13 @@ import {
 
 import {
 	BlobServiceClient,
-	BlobSASSignatureValues,
 	ContainerClient,
 	StorageSharedKeyCredential,
 	generateBlobSASQueryParameters,
 	ContainerSASPermissions,
 } from '@azure/storage-blob';
-import { Readable } from 'stream';
+
+import { PassThrough, Readable } from 'stream';
 
 function handleError(err: Error, path: string): Error {
 	return new UnknownException(err, err.name, path);
@@ -138,14 +136,29 @@ export class AzureBlobWebServicesStorage extends Storage {
 		}
 	}
 
-	public async getStream(location: string): Promise<NodeJS.ReadableStream> {
-		const stream = await this.$containerClient.getBlobClient(location).download();
+	public getStream(location: string): NodeJS.ReadableStream {
+		const intermediateStream = new PassThrough({ highWaterMark: 1 });
 
-		if (!stream.readableStreamBody) {
-			throw handleError(new Error('Blobclient stream was not available'), location);
+		const stream = this.$containerClient.getBlobClient(location).download();
+
+		try {
+			stream
+				.then((result) => result.readableStreamBody)
+				.then((stream) => {
+					if (!stream) {
+						throw handleError(new Error('Blobclient stream was not available'), location);
+					}
+
+					stream.pipe(intermediateStream);
+				})
+				.catch((error) => {
+					intermediateStream.emit('error', error);
+				});
+		} catch (error) {
+			intermediateStream.emit('error', error);
 		}
 
-		return stream.readableStreamBody;
+		return intermediateStream;
 	}
 
 	public getUrl(location: string): string {
