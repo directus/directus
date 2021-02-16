@@ -99,7 +99,7 @@
 
 				<template #append-outer>
 					<save-options
-						:disabled="hasEdits === false || saveAllowed === false"
+						v-if="hasEdits === true || saveAllowed === true"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
 					/>
