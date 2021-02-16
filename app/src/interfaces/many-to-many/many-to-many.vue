@@ -3,12 +3,12 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="many-to-many" v-else>
-		<repeater-list
+		<!-- <repeater-list
 			:value="sortedItems || items"
 			:template="template"
 			@active="editItem(getItemFromIndex($event))"
 			@delete="deleteItem(getItemFromIndex($event))"
-		></repeater-list>
+		></repeater-list> -->
 		<!-- <v-table
 			:loading="loading"
 			:items="sortedItems || items"
@@ -84,11 +84,10 @@ import usePreview from './use-preview';
 import useEdit from './use-edit';
 import useSelection from './use-selection';
 import useSort from './use-sort';
-import RepeaterList from '@/interfaces/repeater/repeater-list.vue';
 import { getFieldsFromTemplate } from '@/utils/render-template';
 
 export default defineComponent({
-	components: { DrawerItem, DrawerCollection, RepeaterList },
+	components: { DrawerItem, DrawerCollection },
 	props: {
 		value: {
 			type: Array as PropType<(number | string | Record<string, any>)[] | null>,

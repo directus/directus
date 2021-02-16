@@ -1,16 +1,15 @@
 <template>
 	<div class="repeater">
-		<repeater-list
-			:value="value"
-			:active="active"
-			@input="onSort"
-			@active="active = $event"
-			@delete="removeItem"
-			:limit="limit"
-			:disabled="disabled"
-			:placeholder="headerPlaceholder"
-			:template="template"
-		></repeater-list>
+		<v-list>
+			<draggable :value="value" @input="$emit('input', $event)" handler=".drag-handle">
+				<v-list-item v-for="(item, index) in value" :key="item.id" block @click="active = index">
+					<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<render-template :fields="fields" :item="item" :template="template"></render-template>
+					<div class="spacer" />
+					<v-icon name="close" @click.stop="removeItem(item)" />
+				</v-list-item>
+			</draggable>
+		</v-list>
 		<v-button @click="addNew" class="add-new" v-if="showAddNew">
 			<v-icon name="add" />
 			{{ addLabel }}
@@ -49,10 +48,9 @@ import Draggable from 'vuedraggable';
 import i18n from '@/lang';
 import renderTemplate from '@/utils/render-template';
 import hideDragImage from '@/utils/hide-drag-image';
-import RepeaterList from './repeater-list.vue';
 
 export default defineComponent({
-	components: { Draggable, RepeaterList },
+	components: { Draggable },
 	props: {
 		value: {
 			type: Array as PropType<Record<string, any>[]>,
@@ -81,6 +79,10 @@ export default defineComponent({
 		headerPlaceholder: {
 			type: String,
 			default: i18n.t('empty_item'),
+		},
+		collection: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {
@@ -126,11 +128,9 @@ export default defineComponent({
 			);
 		}
 
-		function removeItem(row: number) {
+		function removeItem(item: Record<string, any>) {
 			if (value.value) {
-				const newValue = [...props.value];
-				newValue.splice(row, 1);
-				emitValue(newValue);
+				emitValue(props.value.filter((i) => i !== item));
 			} else {
 				emitValue(null);
 			}
@@ -177,6 +177,20 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.v-list-item {
+	display: flex;
+	color: var(--foreground-normal);
+	cursor: pointer;
+
+	.v-icon {
+		color: var(--foreground-subdued);
+	}
+
+	.spacer {
+		flex-grow: 1;
+	}
+}
+
 .row {
 	background-color: var(--background-subdued);
 	border: 2px solid var(--border-subdued);
