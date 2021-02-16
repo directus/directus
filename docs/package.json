@@ -1,7 +1,7 @@
 {
 	"name": "@directus/docs",
 	"private": false,
-	"version": "9.0.0-rc.37",
+	"version": "9.0.0-rc.38",
 	"description": "",
 	"main": "index.json",
 	"scripts": {
