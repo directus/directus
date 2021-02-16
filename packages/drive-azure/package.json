@@ -1,51 +1,51 @@
 {
-  "name": "drive-azure",
-  "version": "1.0.0",
-  "description": "Azure Blob driver for @directus/drive",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "keywords": [
-    "storage",
-    "filesystem",
-    "file",
-    "azure",
-    "azure-blob",
-    "promise",
-    "async",
-    "spaces",
-    "drive",
-    "directus"
-  ],
-  "scripts": {
-    "build": "tsc -b tsconfig.json"
-  },
-  "author": "Robin Grundvåg <robgru52@gmail.com>",
-  "contributors": [
-    "Rijk van Zanten <rijkvanzanten@me.com>"
-  ],
-  "files": [
-    "dist"
-  ],
-  "dependencies": {
-    "@azure/storage-blob": "^12.2.1"
-  },
-  "peerDependencies": {
-    "@directus/drive": "^1.0.0"
-  },
-  "devDependencies": {
-    "@directus/drive": "^1.0.3",
-    "@types/fs-extra": "^9.0.1",
-    "fs-extra": "^9.0.0"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/directus/directus.git"
-  },
-  "bugs": {
-    "url": "https://github.com/directus/directus/issues"
-  }
+	"name": "drive-azure",
+	"version": "1.0.0",
+	"description": "Azure Blob driver for @directus/drive",
+	"license": "MIT",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"keywords": [
+		"storage",
+		"filesystem",
+		"file",
+		"azure",
+		"azure-blob",
+		"promise",
+		"async",
+		"spaces",
+		"drive",
+		"directus"
+	],
+	"scripts": {
+		"build": "tsc -b tsconfig.json"
+	},
+	"author": "Robin Grundvåg <robgru52@gmail.com>",
+	"contributors": [
+		"Rijk van Zanten <rijkvanzanten@me.com>"
+	],
+	"files": [
+		"dist"
+	],
+	"dependencies": {
+		"@azure/storage-blob": "^12.2.1"
+	},
+	"peerDependencies": {
+		"@directus/drive": "^1.0.0"
+	},
+	"devDependencies": {
+		"@directus/drive": "file:../drive",
+		"@types/fs-extra": "^9.0.1",
+		"fs-extra": "^9.0.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/directus/directus.git"
+	},
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	}
 }
