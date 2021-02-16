@@ -12,6 +12,7 @@ role_name: Nom de rôle
 db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
 show_archived_items: Afficher les éléments archivés
 required: Requis
+required_for_app_access: Requis pour l'accès à l'application
 requires_value: Valeurs obligatoire
 create_preset: Créer un préréglage
 create_role: Créer un rôle
@@ -52,6 +53,8 @@ archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
 archive_confirm_count: >-
   Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
+reset_system_permissions_to: 'Réinitialiser les autorisations système:'
+reset_system_permissions_copy: Cette action écrasera toutes les autorisations personnalisées que vous avez peut-être appliquées aux collections du système. Êtes-vous sûr ?
 unarchive: Restaurer
 unarchive_confirm: Êtes-vous sûr de vouloir restaurer cet élément ?
 nested_files_folders_will_be_moved: Le contenu du dossier sera déplacé vers le dossier parent.
@@ -299,7 +302,7 @@ manual_string: Chaîne de caractère saisie manuellement
 save_and_create_new: Enregistrer et en créer un nouveau
 save_and_stay: Enregistrer et rester
 save_as_copy: Enregistrer une copie
-add_existing: Ajouter un déjà existant
+add_existing: Sélectionner
 comments: Commentaires
 no_comments: Pas encore de commentaires
 click_to_expand: Cliquer pour agrandir
@@ -603,7 +606,7 @@ page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
 activity_feed: Flux d'activité
 add_new: Nouveau
-create_new: Créer Un Nouveau
+create_new: Nouveau
 all: Tout
 none: Aucun
 no_layout_collection_selected_yet: Aucune mise en page/collection sélectionnée pour le moment
