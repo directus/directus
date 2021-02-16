@@ -3,12 +3,16 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="one-to-many" v-else>
-		<!-- <repeater-list
-			:value="sortedItems || items"
-			:template="template"
-			@active="editItem(getItemFromIndex($event))"
-			@delete="deleteItem(getItemFromIndex($event))"
-		></repeater-list> -->
+		<v-list>
+			<draggable :value="sortedItems || items" @input="$emit('input', $event)" handler=".drag-handle">
+				<v-list-item v-for="item in sortedItems || items" :key="item.id" block @click="editItem(item)">
+					<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<render-template :item="item" :template="template" />
+					<div class="spacer" />
+					<v-icon name="close" @click.stop="deleteItem(item)" />
+				</v-list-item>
+			</draggable>
+		</v-list>
 
 		<!-- <v-table
 			:loading="loading"
@@ -84,9 +88,10 @@ import { isEqual, sortBy } from 'lodash';
 import { get } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@/utils/render-template';
+import Draggable from 'vuedraggable';
 
 export default defineComponent({
-	components: { DrawerItem, DrawerCollection },
+	components: { DrawerItem, DrawerCollection, Draggable },
 	props: {
 		value: {
 			type: Array as PropType<(number | string | Record<string, any>)[] | null>,

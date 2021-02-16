@@ -4,7 +4,7 @@
 			<draggable :value="value" @input="$emit('input', $event)" handler=".drag-handle">
 				<v-list-item v-for="(item, index) in value" :key="item.id" block @click="active = index">
 					<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-					<render-template :fields="fields" :item="item" :template="template"></render-template>
+					<render-template :item="item" :template="template" />
 					<div class="spacer" />
 					<v-icon name="close" @click.stop="removeItem(item)" />
 				</v-list-item>
@@ -181,14 +181,6 @@ export default defineComponent({
 	display: flex;
 	color: var(--foreground-normal);
 	cursor: pointer;
-
-	.v-icon {
-		color: var(--foreground-subdued);
-	}
-
-	.spacer {
-		flex-grow: 1;
-	}
 }
 
 .row {

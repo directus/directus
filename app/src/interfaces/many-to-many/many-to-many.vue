@@ -3,12 +3,17 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="many-to-many" v-else>
-		<!-- <repeater-list
-			:value="sortedItems || items"
-			:template="template"
-			@active="editItem(getItemFromIndex($event))"
-			@delete="deleteItem(getItemFromIndex($event))"
-		></repeater-list> -->
+		<v-list>
+			<draggable :value="sortedItems || items" @input="$emit('input', $event)" handler=".drag-handle">
+				<v-list-item v-for="item in sortedItems || items" :key="item.id" block @click="editItem(item)">
+					<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<render-template :item="item" :template="template" />
+					<div class="spacer" />
+					<v-icon name="close" @click.stop="deleteItem(item)" />
+				</v-list-item>
+			</draggable>
+		</v-list>
+
 		<!-- <v-table
 			:loading="loading"
 			:items="sortedItems || items"
@@ -77,6 +82,7 @@ import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/co
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { get } from 'lodash';
+import Draggable from 'vuedraggable';
 
 import useActions from './use-actions';
 import useRelation from './use-relation';
@@ -87,7 +93,7 @@ import useSort from './use-sort';
 import { getFieldsFromTemplate } from '@/utils/render-template';
 
 export default defineComponent({
-	components: { DrawerItem, DrawerCollection },
+	components: { DrawerItem, DrawerCollection, Draggable },
 	props: {
 		value: {
 			type: Array as PropType<(number | string | Record<string, any>)[] | null>,
@@ -163,10 +169,6 @@ export default defineComponent({
 
 		const { sort, sortItems, sortedItems } = useSort(sortField, fields, items, emitter);
 
-		function getItemFromIndex(index: number) {
-			return (sortedItems.value || items.value)[index];
-		}
-
 		return {
 			junction,
 			relation,
@@ -191,7 +193,6 @@ export default defineComponent({
 			sort,
 			sortItems,
 			sortedItems,
-			getItemFromIndex,
 		};
 	},
 });
