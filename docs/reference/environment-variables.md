@@ -155,10 +155,10 @@ Alternatively, you can provide the individual connection parameters:
 
 For each of the storage locations listed, you must provide the following configuration:
 
-| Variable                        | Description                                             | Default Value |
-| ------------------------------- | ------------------------------------------------------- | ------------- |
-| `STORAGE_<LOCATION>_PUBLIC_URL` | Location on the internet where the files are accessible |               |
-| `STORAGE_<LOCATION>_DRIVER`     | Which driver to use, either `local`, `s3`, or `gcs`     |               |
+| Variable                        | Description                                              | Default Value |
+| ------------------------------- | -------------------------------------------------------- | ------------- |
+| `STORAGE_<LOCATION>_PUBLIC_URL` | Location on the internet where the files are accessible  |               |
+| `STORAGE_<LOCATION>_DRIVER`     | Which driver to use, either `local`, `s3`, `gcs`, `azure |               |
 
 Based on your configured driver, you must also provide the following configurations:
 
@@ -177,6 +177,14 @@ Based on your configured driver, you must also provide the following configurati
 | `STORAGE_<LOCATION>_ENDPOINT` | S3 Endpoint | --            |
 | `STORAGE_<LOCATION>_BUCKET`   | S3 Bucket   | --            |
 | `STORAGE_<LOCATION>_REGION`   | S3 Region   | --            |
+
+### Azure (`azure`)
+
+| Variable                            | Description                | Default Value |
+| ----------------------------------- | -------------------------- | ------------- |
+| `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --            |
+| `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure storage account name | --            |
+| `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure storage key          | --            |
 
 ### Google Cloud Storage (`gcs`)
 
