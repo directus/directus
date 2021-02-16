@@ -199,20 +199,35 @@ rotate: Pööra
 placeholder: Kohatäitja
 icon_left: Ikoon vasakul
 icon_right: Ikoon paremal
+font: Kirjatüüp
+sans_serif: Sans Serif
+serif: Serif
 monospace: Monospace
 divider: Eraldaja
 color: Värv
+circle: Ring
+delete_advanced_filter: Kustuta Filter
 operators:
+  eq: Võrdub
   lt: Vähem kui
   gt: Suurem kui
   lte: Väiksem või võrdne
   gte: Suurem või võrdne
+  null: On null
+  nnull: Ei ole null
   contains: Sisaldab
   ncontains: Ei sisalda
+  between: On vahemikus
+  nbetween: Ei ole vahemikus
   empty: On tühi
+  nempty: Ei ole tühi
+  all: Sisaldab neid võtmeid
 loading: Laadimine...
+rows: Read
+columns: Veerud
 display_template: Vaate mall
 no_results: Tulemusi pole
+saves_automatically: Salvestab Automaatselt
 role: Roll
 user: Kasutaja
 create: Loo
@@ -221,11 +236,29 @@ read: Loe
 update: Uuenda
 select_fields: Vali väljad
 wysiwyg_options:
+  aligncenter: Joonda Keskele
+  alignjustify: Joonda kahepoolselt
+  alignleft: Joonda Vasakule
+  alignnone: Eemalda Joondus
+  alignright: Joonda Paremale
   backcolor: Taustavärv
   codeblock: Kood
+  copy: Kopeeri
+  cut: Lõika
+  paste: Kleebi
+  heading: Pealkiri
+  h1: Pealkiri 1
+  h2: Pealkiri 2
+  h3: Pealkiri 3
+  h4: Pealkiri 4
+  h5: Pealkiri 5
+  h6: Pealkiri 6
+  undo: Võta tagasi
+  redo: Tee uuesti
   remove: Eemalda
   selectall: Vali Kõik
   table: Tabel
+  fullscreen: Täisekraan
 dropdown: Rippmenüü
 choices: Valikud
 deselect: Tühista valik
@@ -238,6 +271,7 @@ unsaved_changes_copy: Oled sa kindel, et soovid sellelt lehelt lahkuda?
 discard_changes: Loobu muudatustest
 keep_editing: Jätka muutmist
 add_new: Lisa uus
+create_new: Loo Uus
 all: Kõik
 batch_delete_confirm: >-
   Ühtegi kirjet pole valitud | Oled sa kindel, et soovid selle kirje kustutada? Seda toimingut ei saa tagasi võtta. | Oled sa kindel, et soovid need {count} ühikut kustutada? Seda toimingut ei saa tagasi võtta.
@@ -421,6 +455,8 @@ displays:
     filesize: Failisuurus
   icon:
     icon: Ikoon
+  image:
+    circle: Ring
   labels:
     choices_value_placeholder: Sisesta väärtus...
   rating:
