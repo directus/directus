@@ -3,13 +3,17 @@
  * See example.env for all possible keys
  */
 
+import fs from 'fs';
+import path from 'path';
+import { requireYAML } from './utils/require-yaml';
+
 import dotenv from 'dotenv';
 import { clone, toString, toNumber } from 'lodash';
 import { toArray } from './utils/to-array';
-
-dotenv.config();
+import logger from './logger';
 
 const defaults: Record<string, any> = {
+	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
 	PORT: 8055,
 	PUBLIC_URL: 'http://localhost:8055',
 
@@ -61,14 +65,53 @@ const typeMap: Record<string, string> = {
 	DB_PORT: 'number',
 };
 
-let env: Record<string, any> = {
+const env: Record<string, any> = processValues({
 	...defaults,
 	...process.env,
-};
+	...getEnv(),
+});
 
-env = processValues(env);
+process.env = env;
 
 export default env;
+
+function getEnv() {
+	const configPath = process.env.CONFIG_PATH || defaults.CONFIG_PATH;
+
+	const fileExt = path.extname(configPath).toLowerCase();
+
+	if (fileExt === '.js') {
+		const module = require(configPath);
+		const exported = module.default || module;
+
+		if (typeof exported === 'function') {
+			return exported(process.env);
+		} else if (typeof exported === 'object') {
+			return exported;
+		}
+
+		logger.warn(
+			`Invalid JS configuration file export type. Requires one of "function", "object", received: "${typeof exported}"`
+		);
+	}
+
+	if (fileExt === '.json') {
+		return require(configPath);
+	}
+
+	if (fileExt === '.yaml' || fileExt === '.yml') {
+		const data = requireYAML(configPath);
+
+		if (typeof data === 'object') {
+			return data as Record<string, string>;
+		}
+
+		logger.warn('Invalid YAML configuration. Root has to ben an object.');
+	}
+
+	// Default to env vars plain text files
+	return dotenv.parse(fs.readFileSync(configPath).toString());
+}
 
 function processValues(env: Record<string, any>) {
 	env = clone(env);
