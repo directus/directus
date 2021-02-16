@@ -47,6 +47,14 @@ database instance.
 | `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                      | `false`       |
 | `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                            | `lax`         |
 
+::: tip Cookie Strictness
+
+Browser are pretty strict when it comes to third-party cookies. If you're running into unexpected problems when running
+your project and API on different domains, make sure to verify your configuration for `REFRESH_TOKEN_COOKIE_SECURE` and
+`REFRESH_TOKEN_COOKIE_SAME_SITE`.
+
+:::
+
 ## CORS
 
 | Variable               | Description                                                                                                                                            | Default Value                |
