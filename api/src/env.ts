@@ -33,6 +33,12 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
 
 	CORS_ENABLED: true,
+	CORS_ORIGIN: true,
+	CORS_METHODS: 'GET,POST,PATCH,DELETE',
+	CORS_ALLOWED_HEADERS: 'Content-Type,Authorization',
+	CORS_EXPOSED_HEADERS: 'Content-Range',
+	CORS_CREDENTIALS: true,
+	CORS_MAX_AGE: 18000,
 
 	CACHE_ENABLED: false,
 	CACHE_STORE: 'memory',
