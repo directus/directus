@@ -10,9 +10,9 @@ The Directus GraphQL endpoint does not yet support mutations.
 
 [[toc]]
 
-## GraphiQL
+## GraphQL
 
-By default, Directus will render GraphiQL when opening the `/graphql` endpoint in the browser. This'll allow you to
+By default, Directus will render GraphQL when opening the `/graphql` endpoint in the browser. This'll allow you to
 experiment with GraphQL, and explore the data within.
 
 Like, where to post, where to enter the token, some basic queries, disclaimer that there are no mutations yet, how to do
