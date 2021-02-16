@@ -14,7 +14,7 @@ fields:
     interface: dropdown
     display: labels
     display_options:
-      defaultBackground: "#ECEFF1"
+      defaultBackground: '#ECEFF1'
       choices: null
       format: false
     options:
@@ -33,18 +33,18 @@ fields:
     interface: dropdown
     display: labels
     display_options:
-      defaultColor: "#B0BEC5"
-      defaultBackground: "#ECEFF1"
+      defaultColor: '#B0BEC5'
+      defaultBackground: '#ECEFF1'
       showAsDot: true
       choices:
-      - text: Active
-        value: active
-        foreground: "#607D8B"
-        background: "#2F80ED"
-      - text: Inactive
-        value: inactive
-        foreground: "#607D8B"
-        background: "#ECEFF1"
+        - text: Active
+          value: active
+          foreground: '#607D8B'
+          background: '#2F80ED'
+        - text: Inactive
+          value: inactive
+          foreground: '#607D8B'
+          background: '#ECEFF1'
     options:
       choices:
         - text: Active
@@ -59,6 +59,7 @@ fields:
       label: Send Event Data
     special: boolean
     width: half
+    display: boolean
 
   - field: triggers_divider
     interface: divider
@@ -81,8 +82,34 @@ fields:
           value: delete
     special: csv
     width: full
+    display: labels
+    display_options:
+      defaultForeground: '#263238'
+      defaultBackground: '#eceff1'
+      choices:
+        - text: Create
+          value: create
+          foreground: '#27ae60'
+          background: '#c9ebd7'
+        - text: Update
+          value: update
+          foreground: '#2f80ed'
+          background: '#cbdffb'
+        - text: Delete
+          value: delete
+          foreground: '#eb5757'
+          background: '#fad5d5'
+        - text: Login
+          value: authenticate
+          foreground: '#9b51e0'
+          background: '#e6d3f7'
 
   - field: collections
     interface: collections
     special: csv
     width: full
+    display: labels
+    display_options:
+      defaultBackground: '#ECEFF1'
+      choices: null
+      format: false

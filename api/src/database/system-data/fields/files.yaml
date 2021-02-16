@@ -25,7 +25,11 @@ fields:
       iconRight: local_offer
     special: json
     width: full
-    display: tags
+    display: labels
+    display_options:
+      defaultBackground: '#ECEFF1'
+      choices: null
+      format: false
 
   - field: location
     interface: text-input
@@ -111,6 +115,10 @@ fields:
   - field: folder
     width: half
     readonly: true
+    special: m2o
+    display: related-values
+    display_options:
+      template: '{{ name }}'
 
   - field: width
     width: half
