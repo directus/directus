@@ -4,43 +4,45 @@
 			<v-skeleton-loader v-for="n in (value || []).length" :key="n" />
 		</div>
 
-		<draggable
-			v-else
-			:value="previewValues"
-			handle=".drag-handle"
-			@input="onSort"
-			:set-data="hideDragImage"
-			:disabled="!sortField"
-		>
-			<div
-				class="m2a-row"
-				v-for="item of previewValues"
-				:key="item.$index"
-				@click="editExisting((value || [])[item.$index])"
+		<v-list v-else>
+			<draggable
+				:value="previewValues"
+				handle=".drag-handle"
+				@input="onSort"
+				:set-data="hideDragImage"
+				:disabled="!sortField"
 			>
-				<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="sortField" />
-				<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
-				<span
-					v-if="typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'"
+				<v-list-item
+					class="m2a-row"
+					v-for="item of previewValues"
+					:key="item.$index"
+					block
+					@click="editExisting((value || [])[item.$index])"
 				>
-					{{ item[anyRelation.many_field] }}
-				</span>
-				<render-template
-					v-else
-					:collection="item[anyRelation.one_collection_field]"
-					:template="templates[item[anyRelation.one_collection_field]]"
-					:item="item[anyRelation.many_field]"
-				/>
-				<div class="spacer" />
-				<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
-				<v-icon class="launch-icon" name="launch" />
-			</div>
-		</draggable>
+					<v-icon class="drag-handle" left name="drag_handle" @click.stop v-if="sortField" />
+					<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
+					<span
+						v-if="typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'"
+					>
+						{{ item[anyRelation.many_field] }}
+					</span>
+					<render-template
+						v-else
+						:collection="item[anyRelation.one_collection_field]"
+						:template="templates[item[anyRelation.one_collection_field]]"
+						:item="item[anyRelation.many_field]"
+					/>
+					<div class="spacer" />
+					<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+					<v-icon class="launch-icon" name="launch" />
+				</v-list-item>
+			</draggable>
+		</v-list>
 
 		<div class="buttons">
 			<v-menu attached>
 				<template #activator="{ toggle }">
-					<v-button dashed outlined full-width @click="toggle">
+					<v-button outlined full-width @click="toggle">
 						{{ $t('create_new') }}
 					</v-button>
 				</template>
@@ -59,7 +61,7 @@
 
 			<v-menu attached>
 				<template #activator="{ toggle }">
-					<v-button dashed outlined full-width @click="toggle">
+					<v-button outlined full-width @click="toggle">
 						{{ $t('add_existing') }}
 					</v-button>
 				</template>
@@ -589,19 +591,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.m2a-row {
-	display: flex;
-	align-items: center;
-	padding: 12px;
-	background-color: var(--background-subdued);
-	border: 2px solid var(--border-subdued);
-	border-radius: var(--border-radius);
-	cursor: pointer;
-
-	& + .m2a-row {
-		margin-top: 12px;
-	}
-
+.v-list-item {
 	.collection {
 		margin-right: 1ch;
 		color: var(--primary);
@@ -625,13 +615,8 @@ export default defineComponent({
 	margin-top: 12px;
 }
 
-.spacer {
-	flex-grow: 1;
-}
-
 .drag-handle {
-	margin-right: 8px;
-	cursor: grab !important;
+	cursor: grab;
 }
 
 .clear-icon {
