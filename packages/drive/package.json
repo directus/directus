@@ -1,0 +1,45 @@
+{
+	"name": "@directus/drive",
+	"version": "1.0.0",
+	"description": "Flexible and Fluent way to manage storage in Node.js.",
+	"license": "MIT",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"keywords": [
+		"storage",
+		"filesystem",
+		"file",
+		"aws",
+		"s3",
+		"azure",
+		"promise",
+		"async",
+		"spaces",
+		"google",
+		"cloud",
+		"directus"
+	],
+	"contributors": [
+		"Rijk van Zanten <rijkvanzanten@me.com>"
+	],
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsc -b tsconfig.json"
+	},
+	"dependencies": {
+		"fs-extra": "^9.0.0",
+		"node-exceptions": "^4.0.1"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/directus/directus.git"
+	},
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	}
+}

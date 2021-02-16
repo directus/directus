@@ -183,7 +183,14 @@
 		"vuepress": "^1.5.2",
 		"webpack": "^4.43.0",
 		"webpack-assets-manifest": "^3.1.1",
-		"webpack-merge": "^5.4.0"
+		"webpack-merge": "^5.4.0",
+		"dompurify": "^2.2.6",
+		"escape-string-regexp": "^4.0.0",
+		"front-matter": "^4.0.2",
+		"markdown-it": "^12.0.4",
+		"markdown-it-anchor": "^7.0.2",
+		"markdown-it-container": "^3.0.0",
+		"markdown-it-table-of-contents": "^0.5.2"
 	},
 	"dependencies": {
 		"@directus/app": "file:app",
@@ -192,15 +199,12 @@
 		"@directus/gatsby-source-directus": "file:packages/gatsby-source-directus",
 		"@directus/sdk-js": "file:packages/sdk-js",
 		"@directus/specs": "file:packages/specs",
+		"@directus/drive": "file:packages/drive",
+		"@directus/drive-gcs": "file:packages/drive-gcs",
+		"@directus/drive-s3": "file:packages/drive-s3",
+		"@directus/drive-azure": "file:packages/drive-azure",
 		"create-directus-project": "file:packages/create-directus-project",
-		"directus": "file:api",
-		"dompurify": "^2.2.6",
-		"escape-string-regexp": "^4.0.0",
-		"front-matter": "^4.0.2",
-		"markdown-it": "^12.0.4",
-		"markdown-it-anchor": "^7.0.2",
-		"markdown-it-container": "^3.0.0",
-		"markdown-it-table-of-contents": "^0.5.2"
+		"directus": "file:api"
 	},
 	"husky": {
 		"hooks": {
