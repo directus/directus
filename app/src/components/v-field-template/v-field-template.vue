@@ -3,14 +3,7 @@
 		<template #activator="{ toggle }">
 			<v-input :disabled="disabled">
 				<template #input>
-					<span
-						ref="contentEl"
-						class="content"
-						contenteditable
-						@keydown="onKeyDown"
-						@input="onInput"
-						@click="onClick"
-					>
+					<span ref="contentEl" class="content" contenteditable @keydown="onKeyDown" @input="onInput" @click="onClick">
 						<span class="text" />
 					</span>
 				</template>
@@ -283,6 +276,7 @@ export default defineComponent({
 	display: block;
 	flex-grow: 1;
 	height: 100%;
+	padding: var(--input-padding) 0;
 	overflow: hidden;
 	font-family: var(--family-monospace);
 	white-space: nowrap;
