@@ -209,6 +209,7 @@ export default defineComponent({
 					unsetValue(field);
 				} else {
 					batchActiveFields.value = [...batchActiveFields.value, field.field];
+					setValue(field, field.schema?.default_value);
 				}
 			}
 		}

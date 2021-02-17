@@ -137,8 +137,9 @@ export default defineComponent({
 
 		function emitValue(value: any) {
 			if (
-				isEqual(value, props.initialValue) ||
-				(props.initialValue === undefined && isEqual(value, defaultValue.value))
+				(isEqual(value, props.initialValue) ||
+					(props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
+				props.batchMode === false
 			) {
 				emit('unset', props.field);
 			} else {
