@@ -187,6 +187,7 @@ import { userName } from '@/utils/user-name';
 import { usePermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
+import { useUserStore } from '@/stores';
 
 export default defineComponent({
 	name: 'users-item',
@@ -217,6 +218,7 @@ export default defineComponent({
 		const form = ref<HTMLElement>();
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
+		const userStore = useUserStore();
 
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
@@ -231,7 +233,6 @@ export default defineComponent({
 			item,
 			saving,
 			loading,
-			error,
 			save,
 			remove,
 			deleting,

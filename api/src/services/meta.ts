@@ -2,7 +2,7 @@ import { Query } from '../types/query';
 import database from '../database';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import Knex from 'knex';
-import { applyFilter } from '../utils/apply-query';
+import { applyFilter, applySearch } from '../utils/apply-query';
 
 export class MetaService {
 	knex: Knex;
@@ -42,7 +42,11 @@ export class MetaService {
 		const dbQuery = this.knex(collection).count('*', { as: 'count' });
 
 		if (query.filter) {
-			await applyFilter(this.schema, dbQuery, query.filter, collection);
+			applyFilter(this.schema, dbQuery, query.filter, collection);
+		}
+
+		if (query.search) {
+			applySearch(this.schema, dbQuery, query.search, collection);
 		}
 
 		const records = await dbQuery;
