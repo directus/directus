@@ -108,7 +108,6 @@ schema_setup_title: Bu alan veritabanına nasıl kaydedilsin?
 schema_field_title: Bu alan uygulamada nasıl gözüksün?
 create_field: Alan Ekle
 creating_new_field: 'Yeni alan ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: Sayfa tercihlerini sıfırla
 hidden_field: Gizli Alan
 hidden_on_detail: Detayda Gizli
