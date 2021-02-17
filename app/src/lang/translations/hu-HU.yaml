@@ -71,7 +71,6 @@ schema_setup_title: Hogyan kerüljön ez a mező az adatbázisba?
 schema_field_title: Hogyan viselkedjen ez a mező az alkalmazásban?
 create_field: Mező létrehozása
 creating_new_field: 'Új mező ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: Oldalbeállítások visszaállítása
 hidden_field: Rejtett mező
 hidden_on_detail: Elrejtés a részleteknél

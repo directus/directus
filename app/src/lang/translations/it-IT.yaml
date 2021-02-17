@@ -101,7 +101,6 @@ iso: ISO
 focal_length: Lunghezza Focale
 create_field: Crea campo
 creating_new_field: 'Nuovo Campo ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: Reimposta Preferenze Di Pagina
 hidden_field: Campo Nascosto
 hidden_on_detail: Nascosto nei dettagli
