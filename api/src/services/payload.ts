@@ -362,7 +362,7 @@ export class PayloadService {
 			});
 
 			for (const relation of relationsToProcess) {
-				if (!relation.one_collection || !relation.one_primary) continue;
+				if (!relation.one_collection) continue;
 
 				const itemsService = new ItemsService(relation.one_collection, {
 					accountability: this.accountability,
@@ -371,13 +371,17 @@ export class PayloadService {
 				});
 
 				const relatedRecord: Partial<Item> = payload[relation.many_field];
-				const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.one_primary);
+				const hasPrimaryKey = relatedRecord.hasOwnProperty(this.schema.tables[relation.one_collection].primary);
 
 				if (['string', 'number'].includes(typeof relatedRecord)) continue;
 
-				let relatedPrimaryKey: PrimaryKey = relatedRecord[relation.one_primary];
+				let relatedPrimaryKey: PrimaryKey = relatedRecord[this.schema.tables[relation.one_collection].primary];
 				const exists =
-					hasPrimaryKey && !!(await this.knex.select(relation.one_primary).from(relation.one_collection).first());
+					hasPrimaryKey &&
+					!!(await this.knex
+						.select(this.schema.tables[relation.one_collection].primary)
+						.from(relation.one_collection)
+						.first());
 
 				if (exists) {
 					await itemsService.update(relatedRecord, relatedPrimaryKey);
@@ -432,9 +436,9 @@ export class PayloadService {
 
 						if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
 							const exists = !!(await this.knex
-								.select(relation.many_primary)
+								.select(this.schema.tables[relation.many_collection].primary)
 								.from(relation.many_collection)
-								.where({ [relation.many_primary]: record })
+								.where({ [this.schema.tables[relation.many_collection].primary]: record })
 								.first());
 
 							if (exists === false) {
@@ -445,13 +449,13 @@ export class PayloadService {
 							}
 
 							record = {
-								[relation.many_primary]: relatedRecord,
+								[this.schema.tables[relation.many_collection].primary]: relatedRecord,
 							};
 						}
 
 						relatedRecords.push({
 							...record,
-							[relation.many_field]: parent || payload[relation.one_primary!],
+							[relation.many_field]: parent || payload[this.schema.tables[relation.one_collection!].primary],
 						});
 					}
 
@@ -469,7 +473,7 @@ export class PayloadService {
 									},
 								},
 								{
-									[relation.many_primary]: {
+									[this.schema.tables[relation.many_collection].primary]: {
 										_nin: savedPrimaryKeys,
 									},
 								},
