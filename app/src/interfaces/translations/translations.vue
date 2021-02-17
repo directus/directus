@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
-import { useRelationsStore } from '@/stores/';
+import { useFieldsStore, useRelationsStore } from '@/stores/';
 import api from '@/api';
 import { Relation } from '@/types';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
@@ -64,6 +64,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
+		const fieldsStore = useFieldsStore();
 
 		const {
 			relationsForField,
@@ -76,7 +77,7 @@ export default defineComponent({
 			translationsLanguageField,
 		} = useRelations();
 
-		const { languages, loading: languagesLoading, error: languagesError, template: languagesTemplate } = useLanguages();
+		const { languages, loading: languagesLoading, template: languagesTemplate } = useLanguages();
 
 		const { startEditing, editing, edits, stageEdits, cancelEdit } = useEdits();
 
@@ -119,7 +120,7 @@ export default defineComponent({
 
 			const translationsPrimaryKeyField = computed(() => {
 				if (!translationsRelation.value) return null;
-				return translationsRelation.value.many_primary;
+				return fieldsStore.getPrimaryKeyForCollection(translationsRelation.value.many_collection);
 			});
 
 			const languagesRelation = computed(() => {
@@ -134,7 +135,7 @@ export default defineComponent({
 
 			const languagesPrimaryKeyField = computed(() => {
 				if (!languagesRelation.value) return null;
-				return languagesRelation.value.one_primary;
+				return fieldsStore.getPrimaryKeyForCollection(translationsRelation.value.one_collection);
 			});
 
 			const translationsLanguageField = computed(() => {

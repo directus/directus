@@ -286,8 +286,7 @@ export default defineComponent({
 						state.relations.length === 0 ||
 						isEmpty(state.relations[0].many_collection) ||
 						isEmpty(state.relations[0].many_field) ||
-						isEmpty(state.relations[0].one_collection) ||
-						isEmpty(state.relations[0].one_primary)
+						isEmpty(state.relations[0].one_collection)
 					);
 				}
 
@@ -299,8 +298,7 @@ export default defineComponent({
 						isEmpty(state.relations[0].one_field) ||
 						isEmpty(state.relations[1].many_collection) ||
 						isEmpty(state.relations[1].many_field) ||
-						isEmpty(state.relations[1].one_collection) ||
-						isEmpty(state.relations[1].one_primary)
+						isEmpty(state.relations[1].one_collection)
 					);
 				}
 

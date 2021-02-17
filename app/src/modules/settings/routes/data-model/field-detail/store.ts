@@ -137,9 +137,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				{
 					many_collection: collection,
 					many_field: '',
-					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 					one_collection: 'directus_files',
-					one_primary: fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field,
 				},
 			];
 		}
@@ -164,7 +162,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						collection: collectionName,
 						fields: [
 							{
-								field: state.relations[0].one_primary,
+								field: 'id',
 								type: 'integer',
 								schema: {
 									has_auto_increment: true,
@@ -185,9 +183,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				{
 					many_collection: collection,
 					many_field: '',
-					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 					one_collection: '',
-					one_primary: '',
 				},
 			];
 		}
@@ -207,7 +203,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				if (collectionExists(state.relations[0].one_collection)) {
 					const field = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].one_collection);
 					state.fieldData.type = field.type;
-					state.relations[0].one_primary = field.field;
 				} else {
 					state.fieldData.type = 'integer';
 				}
@@ -224,7 +219,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			}
 		);
 
-		watch([() => state.relations[0].one_collection, () => state.relations[0].one_primary], syncNewCollectionsM2O);
+		watch([() => state.relations[0].one_collection], syncNewCollectionsM2O);
 	}
 
 	function useO2M() {
@@ -256,8 +251,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						],
 					},
 				];
-
-				state.relations[0].many_primary = 'id';
 			}
 
 			if (collectionExists(collectionName)) {
@@ -294,11 +287,9 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				{
 					many_collection: '',
 					many_field: '',
-					many_primary: '',
 
 					one_collection: collection,
 					one_field: state.fieldData.field,
-					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 				},
 			];
 		}
@@ -307,17 +298,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			() => state.fieldData.field,
 			() => {
 				state.relations[0].one_field = state.fieldData.field;
-			}
-		);
-
-		watch(
-			() => state.relations[0].many_collection,
-			() => {
-				if (collectionExists(state.relations[0].many_collection)) {
-					state.relations[0].many_primary = fieldsStore.getPrimaryKeyFieldForCollection(
-						state.relations[0].many_collection
-					).field;
-				}
 			}
 		);
 
@@ -357,9 +337,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						},
 					],
 				});
-
-				state.relations[0].many_primary = 'id';
-				state.relations[1].many_primary = 'id';
 			}
 
 			if (fieldExists(junctionCollection, manyCurrent) === false) {
@@ -415,7 +392,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						},
 						fields: [
 							{
-								field: state.relations[1].one_primary,
+								field: 'id',
 								type: 'string',
 								schema: {
 									is_primary_key: true,
@@ -448,7 +425,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						collection: relatedCollection,
 						fields: [
 							{
-								field: state.relations[1].one_primary,
+								field: 'id',
 								type: 'integer',
 								schema: {
 									has_auto_increment: true,
@@ -509,32 +486,17 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				{
 					many_collection: '',
 					many_field: '',
-					many_primary: '',
 					one_collection: collection,
 					one_field: state.fieldData.field,
-					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 				},
 				{
 					many_collection: '',
 					many_field: '',
-					many_primary: '',
 					one_collection: '',
 					one_field: null,
-					one_primary: '',
 				},
 			];
 		}
-
-		watch(
-			() => state.relations[0].many_collection,
-			() => {
-				if (collectionExists(state.relations[0].many_collection)) {
-					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)?.field;
-					state.relations[0].many_primary = pkField;
-					state.relations[1].many_primary = pkField;
-				}
-			}
-		);
 
 		watch(
 			() => state.relations[0].many_field,
@@ -547,17 +509,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			() => state.relations[1].many_field,
 			() => {
 				state.relations[0].junction_field = state.relations[1].many_field;
-			}
-		);
-
-		watch(
-			() => state.relations[1].one_collection,
-			() => {
-				if (collectionExists(state.relations[1].one_collection)) {
-					state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(
-						state.relations[1].one_collection
-					)?.field;
-				}
 			}
 		);
 
@@ -584,7 +535,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					state.relations[0].many_field = `${state.relations[0].one_collection}_${state.relations[0].one_primary}`;
 					state.relations[1].one_collection = state.fieldData.field;
 
-					state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field;
 					state.relations[1].many_collection = `${state.relations[0].one_collection}_${state.relations[1].one_collection}`;
 					state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
 
@@ -598,7 +548,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		if (type === 'files') {
 			Vue.nextTick(() => {
 				state.relations[1].one_collection = 'directus_files';
-				state.relations[1].one_primary = 'id';
 			});
 		}
 
@@ -610,7 +559,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				(startWatching) => {
 					if (startWatching) {
 						stop = watch(
-							[() => state.relations[1].one_collection, () => state.relations[1].one_primary],
+							[() => state.relations[1].one_collection],
 							([newRelatedCollection, newRelatedPrimary]: string[]) => {
 								if (newRelatedCollection) {
 									state.relations[0].many_collection = getAutomaticJunctionCollectionName(
@@ -651,19 +600,9 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			);
 
 			state.relations[0].many_collection = `${collection}_translations`;
-
 			state.relations[0].many_field = `${collection}_${fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field}`;
-
 			state.relations[1].one_collection = 'languages';
-
-			if (collectionExists('languages')) {
-				state.relations[1].one_primary = fieldsStore.getPrimaryKeyFieldForCollection('languages')?.field;
-			} else {
-				state.relations[1].one_primary = 'code';
-			}
-
 			state.relations[1].many_field = `${state.relations[1].one_collection}_${state.relations[1].one_primary}`;
-
 			state.fieldData.field = 'translations';
 			state.relations[0].one_field = 'translations';
 		}
@@ -722,9 +661,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 						},
 					],
 				});
-
-				state.relations[0].many_primary = 'id';
-				state.relations[1].many_primary = 'id';
 			}
 
 			if (fieldExists(junctionCollection, manyCurrent) === false) {
@@ -776,34 +712,19 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				{
 					many_collection: '',
 					many_field: '',
-					many_primary: '',
 					one_collection: collection,
 					one_field: state.fieldData.field,
-					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 				},
 				{
 					many_collection: '',
 					many_field: '',
-					many_primary: '',
 					one_collection: null,
 					one_field: null,
-					one_primary: null,
 					one_allowed_collections: [],
 					one_collection_field: '',
 				},
 			];
 		}
-
-		watch(
-			() => state.relations[0].many_collection,
-			() => {
-				if (collectionExists(state.relations[0].many_collection)) {
-					const pkField = fieldsStore.getPrimaryKeyFieldForCollection(state.relations[0].many_collection)?.field;
-					state.relations[0].many_primary = pkField;
-					state.relations[1].many_primary = pkField;
-				}
-			}
-		);
 
 		watch(
 			() => state.relations[0].many_field,

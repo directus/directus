@@ -447,9 +447,7 @@ export default defineComponent({
 				relations.push({
 					many_collection: collectionName.value!,
 					many_field: systemFields.userCreated.name,
-					many_primary: primaryKeyFieldName.value,
 					one_collection: 'directus_users',
-					one_primary: 'id',
 				});
 			}
 
@@ -457,9 +455,7 @@ export default defineComponent({
 				relations.push({
 					many_collection: collectionName.value!,
 					many_field: systemFields.userUpdated.name,
-					many_primary: primaryKeyFieldName.value,
 					one_collection: 'directus_users',
-					one_primary: 'id',
 				});
 			}
 

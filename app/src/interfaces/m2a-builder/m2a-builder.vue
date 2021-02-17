@@ -253,10 +253,14 @@ export default defineComponent({
 				// related values
 				const values = cloneDeep(props.value || [])
 					.map((val, index) => {
-						const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
+						const junctionKey = isPlainObject(val)
+							? val[fieldsStore.getPrimaryKeyFieldForCollection(o2mRelation.value.many_collection)]
+							: val;
 
 						const savedValues = junctionRowMap.value.find(
-							(junctionRow) => junctionRow[o2mRelation.value.many_primary] === junctionKey
+							(junctionRow) =>
+								junctionRow[fieldsStore.getPrimaryKeyFieldForCollection(o2mRelation.value.many_collection)] ===
+								junctionKey
 						);
 
 						if (isPlainObject(val)) {
@@ -348,7 +352,9 @@ export default defineComponent({
 						// There's a case where you sort with no other changes where the one_collection_field doesn't exist
 						// and there's no further changes nested in the many field
 						else if (anyRelation.value.one_collection_field! in stagedValue === false) {
-							junctionRowsToInspect.push(stagedValue[o2mRelation.value.many_primary]);
+							junctionRowsToInspect.push(
+								stagedValue[fieldsStore.getPrimaryKeyFieldForCollection(o2mRelation.value.many_collection)]
+							);
 						}
 
 						// Otherwise, it's an object with the edits on an existing item, or a newly added item
@@ -377,12 +383,12 @@ export default defineComponent({
 						const junctionInfoResponse = await api.get(`/items/${o2mRelation.value.many_collection}`, {
 							params: {
 								filter: {
-									[o2mRelation.value.many_primary]: {
+									[fieldsStore.getPrimaryKeyFieldForCollection(o2mRelation.value.many_collection)]: {
 										_in: junctionRowsToInspect,
 									},
 								},
 								fields: [
-									o2mRelation.value.many_primary,
+									fieldsStore.getPrimaryKeyFieldForCollection(o2mRelation.value.many_collection),
 									anyRelation.value.many_field,
 									anyRelation.value.one_collection_field!,
 									props.sortField,
@@ -512,7 +518,7 @@ export default defineComponent({
 			function editExisting(item: Record<string, any>) {
 				if (typeof item === 'string' || typeof item === 'number') {
 					const junctionRow = junctionRowMap.value.find((row) => {
-						return row[o2mRelation.value.many_primary] == item;
+						return row[fieldsStore.getPrimaryKeyFieldForCollection(o2mRelation.value.many_collection)] == item;
 					});
 
 					const collection = junctionRow[anyRelation.value.one_collection_field!];
@@ -521,7 +527,7 @@ export default defineComponent({
 						: junctionRow[anyRelation.value.many_field];
 
 					editsAtStart.value = {
-						[o2mRelation.value.many_primary]: item,
+						[fieldsStore.getPrimaryKeyFieldForCollection(o2mRelation.value.many_collection)]: item,
 						[anyRelation.value.one_collection_field!]: collection,
 						[anyRelation.value.many_field]: {
 							[primaryKeys.value[collection]]: relatedKey,
@@ -533,7 +539,7 @@ export default defineComponent({
 					return;
 				}
 
-				const junctionPrimaryKey = item[o2mRelation.value.many_primary];
+				const junctionPrimaryKey = item[fieldsStore.getPrimaryKeyFieldForCollection(o2mRelation.value.many_collection)];
 				const relatedCollectiom = item[anyRelation.value.one_collection_field!];
 				let relatedKey = item[anyRelation.value.many_field];
 
@@ -576,7 +582,7 @@ export default defineComponent({
 							};
 						} else {
 							return {
-								[o2mRelation.value.many_primary]: rawValue,
+								[fieldsStore.getPrimaryKeyFieldForCollection(o2mRelation.value.many_collection)]: rawValue,
 								[props.sortField]: sortedItemIndex + 1,
 							};
 						}
