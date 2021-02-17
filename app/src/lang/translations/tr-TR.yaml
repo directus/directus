@@ -86,9 +86,11 @@ field_m2o: M2O İlişkisi
 field_o2m: O2M İlişkisi
 field_m2m: M2M İlişkisi
 field_translations: Çeviriler
+item_permissions: Alan İzinleri
 field_permissions: Alan İzinleri
 field_validation: Alan Doğrulama
 hide_field_on_detail: Alanı Detayda Gizle
+show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
 fields_and_layout: Alanlar ve Düzen
 field_create_success: 'Oluşturulan alan: "{field}"'
@@ -102,7 +104,11 @@ exposure: Pozlama
 shutter: Deklanşör
 iso: ISO
 focal_length: Odak Uzaklığı
+schema_setup_title: Bu alan veritabanına nasıl kaydedilsin?
+schema_field_title: Bu alan uygulamada nasıl gözüksün?
 create_field: Alan Ekle
+creating_new_field: 'Yeni alan ({collection})'
+updating_field_field: '{field} ({collection})'
 reset_page_preferences: Sayfa tercihlerini sıfırla
 hidden_field: Gizli Alan
 hidden_on_detail: Detayda Gizli
@@ -177,9 +183,19 @@ page_not_found: Sayfa Bulunamadı
 page_not_found_body: Aradığınız sayfanın var olduğuna emin misiniz? Biz bulamadık da...
 confirm_revert: Geri Alma İşlemini Onayla
 display: Göster
+settings_update_success: Ayarlar güncellendi
 title: Ünvan
+revision_delta_created: Oluşturulma tarihi
 revision_delta_deleted: Silindi
+revision_delta_reverted: Geri Alındı
+revision_delta_other: Revizyon
+revision_preview: Revizyon Önizlemesi
+updates_made: Güncellemeler Uygulandı
 leave_comment: Yorum bırakın...
+post_comment_success: Yorum gönderildi
+item_create_success: Alan(lar) Oluşturuldu
+item_update_success: Alan(lar) Güncellendi
+item_delete_success: Alan(lar) Silindi
 this_collection: Bu Koleksiyon
 related_collection: İlişkili Koleksiyon
 related_collections: İlişkili Koleksiyonlar
@@ -189,7 +205,12 @@ last_page: Son Sayfa
 last_access: Son Erişim
 fill_template: Şablonla Doldur
 submit: Gönder
+move_to_folder: Klasöre Taşı
+move: Taşı
 system: Sistem
+interface: Arayüz
+today: Bugün
+yesterday: Dün
 delete_comment: Yorumu sil
 months:
   january: Ocak
@@ -205,6 +226,7 @@ months:
   november: Kasım
   december: Aralık
 size: Boyut
+created: Oluşturulma tarihi
 checksum: Checksum
 owner: Sahip
 download: İndir
@@ -218,6 +240,7 @@ import_from_url: URL’den Dosya Yükle
 name: İsim
 created_by: Oluşturan
 created_on: Oluşturulma tarihi
+save_and_create_new: Kaydet ve Yeni Oluştur
 save_and_stay: Kaydet ve Sayfada Kal
 save_as_copy: Kopya Olarak Kaydet
 add_existing: Var olanı ekle
@@ -233,6 +256,10 @@ report_bug: Hata Bildir
 request_feature: Ek Özellik Talep Et
 reset_interface: Arayüzü Sıfırla
 item_count: 'Öge yok | 1 Öge | {count}  Öge'
+no_webhooks_copy: Henüz hiç bir webhook yok.
+all_items: Tüm öğeler
+csv: CSV
+no_collections: Koleksiyon Yok
 create_collection: Koleksiyon Oluştur
 relationship_not_setup: İlişki doğru bir şekilde konfigüre edilmedi
 select_a_collection: Koleksiyon Seç
@@ -260,14 +287,41 @@ sort: Sırala
 status: Durum
 toggle_manual_sorting: Elle sıralamayı aç/kapa
 edit: Düzenle
+auto_fill: Otomatik Doldur
+errors:
+  FIELD_NOT_FOUND: Alan Bulunmadı
+  FORBIDDEN: Yetkisiz erişim
+  INVALID_CREDENTIALS: Hatalı kullanıcı adı ya da parola
+  INVALID_OTP: Tek kullanımlık şifre hatalı
+  INVALID_QUERY: Geçersiz sorgu
+  ITEM_NOT_FOUND: Öğe bulunamadı
 bookmarks: Yer İmleri
+password_reset_successful: Şifre başarıyla sıfırlandı
 back: Geri
+editing_image: Görseli düzenle
+square: Kare
+free: Boş
+flip_horizontal: Yatay Döndür
+flip_vertical: Dikey Döndür
+aspect_ratio: En/Boy Oranı
+rotate: Döndür
+all_users: Tüm Kullanıcılar
+delete_collection: Koleksiyonu sil
+delete_collection_success: Silinmiş Koleksiyon
+hidden_collections: Gizli Koleksiyonlar
 placeholder: Yertutucu
 icon_left: İkon Sol
 icon_right: İkon Sağ
+font: Font
+sans_serif: Sans Serif
+serif: Serif
 monospace: Monospace
 divider: Ayırıcı
 color: Renk
+circle: Daire
+empty_item: Boş öğe
+advanced_filter: Gelişmiş Filtre
+delete_advanced_filter: Filtreyi Sil
 operators:
   lt: Küçüktür
   gt: Büyüktür
@@ -275,8 +329,23 @@ operators:
   gte: Büyük veya eşittir
   contains: Şunu içerir
   ncontains: Şunu içermez
+  between: Arasında
+  nbetween: Arasında değil
   empty: Boş olabilir
+  nempty: Boş değil
+  all: Bu anahtarları içeren
+  has: Bu anahtarlardan bazılarını içerir
 loading: Yükleniyor...
+drop_to_upload: Yüklemek için dosyayı buraya bırak
+upload_file: Dosya Yükle
+upload_file_indeterminate: Dosya Yükleniyor...
+upload_file_success: Dosya Yüklendi
+upload_files_indeterminate: 'Dosyalar yükleniyor {done}/{total}'
+upload_files_success: '{count} Dosya Yüklendi'
+upload_pending: Yükleme Bekliyor
+drag_file_here: Dosyayı buraya Sürükle & Bırak
+layout_options: Sayfa Düzeni Seçenekleri
+rows: Satırlar
 display_template: Görüntüleme Şablonu
 no_results: Sonuç Yok
 role: Rol
@@ -289,7 +358,18 @@ select_fields: Alan Seçiniz
 wysiwyg_options:
   forecolor: Ön Plan Rengi
   backcolor: Arkaplan Rengi
+  underline: Alt çizgi
+  strikethrough: Üstü Çizili
+  subscript: Alt yazı
+  superscript: Üst simge
   codeblock: Kod
+  blockquote: Alıntı
+  bullist: Liste
+  numlist: Sıralı Liste
+  hr: Yatay çizgi
+  link: Link
+  unlink: Linki sil
+  media: Medya Ekle
   remove: Kaldır
   table: Tablo
 dropdown: Açılır Liste
@@ -445,6 +525,8 @@ interfaces:
     files: Dosyalar
   icon:
     icon: İkon
+  interface:
+    interface: Arayüz
   interface-options:
     interface-options: Arayüz Ayarları
   many-to-many:
@@ -495,10 +577,23 @@ displays:
     filesize: Dosya Boyutu
   icon:
     icon: İkon
+    filled: Dolu
+  image:
+    circle: Daire
   labels:
+    labels: Etiketler
+    default_foreground: Varsayılan Ön plan
+    default_background: Varsayılan Arkaplan
     choices_value_placeholder: Bir değer girin...
+    choices_text_placeholder: Metin girin...
+  mime-type:
+    mime-type: MIME Type
+    extension_only: Sadece Eklentilerr
   rating:
     rating: Puanlama
+    simple: Basit
+  raw:
+    raw: Ham Veri
   user:
     user: Kullanıcı
     avatar: Avatar
@@ -508,6 +603,9 @@ layouts:
   cards:
     cards: Kartlar
     image_source: Görsel Kaynağı
+    image_fit: Resmi sığdır
+    crop: Kırp
+    contain: Şunu içerir
     title: Ünvan
     subtitle: Altyazı
   tabular:
