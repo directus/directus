@@ -5,7 +5,7 @@ DigitalOcean provides a great tutorial on how to run a Node.js based app in prod
 
 Instead of starting the app using `pm2 start hello.js`, add the line `"start": "directus start"` in the "scripts" part of the *package.json* and start Directus using the command `pm2 start npm -- start`
 
-*Exemple:*
+*Example:*
 ```json
 {
   "name": "directus",
