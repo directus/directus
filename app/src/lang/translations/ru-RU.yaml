@@ -114,7 +114,6 @@ schema_setup_title: Как это поле должно сохранить в б
 schema_field_title: Как это поле должно вести в приложении?
 create_field: Создать Поле
 creating_new_field: 'Новое Поле ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: Сбросить Настройки Страницы
 hidden_field: Скрытое Поле
 hidden_on_detail: Скрывать в карточке
