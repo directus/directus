@@ -197,7 +197,7 @@ export class AuthorizationService {
 			};
 		} else {
 			permission = this.schema.permissions.find((permission) => {
-				return permission.action === action;
+				return permission.collection === collection && permission.action === action;
 			});
 
 			if (!permission) throw new ForbiddenException();
