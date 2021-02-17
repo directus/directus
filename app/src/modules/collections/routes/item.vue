@@ -174,7 +174,7 @@
 				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="isNew === false && _primaryKey && hasRevisionsPermissions"
+				v-if="isNew === false && _primaryKey && revisionsAllowed"
 				:collection="collection"
 				:primary-key="_primaryKey"
 				ref="revisionsDrawerDetail"
@@ -205,7 +205,6 @@ import i18n from '@/lang';
 import marked from 'marked';
 import useShortcut from '@/composables/use-shortcut';
 import { NavigationGuard } from 'vue-router';
-import { usePermissionsStore } from '@/stores';
 import { usePermissions } from '@/composables/use-permissions';
 
 export default defineComponent({
@@ -233,13 +232,6 @@ export default defineComponent({
 	},
 	setup(props) {
 		const form = ref<HTMLElement>();
-		const permissionsStore = usePermissionsStore();
-
-		const hasRevisionsPermissions = computed(() => {
-			return !!permissionsStore.state.permissions.find(
-				(permission) => permission.collection === 'directus_revisions' && permission.action === 'read'
-			);
-		});
 
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
@@ -324,7 +316,7 @@ export default defineComponent({
 			return next();
 		};
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields } = usePermissions(
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
 			collection,
 			item,
 			isNew
@@ -379,7 +371,7 @@ export default defineComponent({
 			fields,
 			isSingleton,
 			_primaryKey,
-			hasRevisionsPermissions,
+			revisionsAllowed,
 		};
 
 		function useBreadcrumb() {
