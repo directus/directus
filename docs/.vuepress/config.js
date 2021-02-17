@@ -52,6 +52,10 @@ module.exports = {
 		sidebarDepth: 0,
 		activeHeaderLinks: false,
 		smoothScroll: false,
+		algolia: {
+			apiKey: '84890d566c1f9ad79ca62a1358e05c60',
+			indexName: 'directus',
+		},
 		nav: [
 			{ text: 'Website', link: 'https://directus.io' },
 			{ text: 'Cloud', link: 'https://directus.cloud' },
