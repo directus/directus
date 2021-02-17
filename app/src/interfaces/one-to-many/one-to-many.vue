@@ -4,47 +4,15 @@
 	</v-notice>
 	<div class="one-to-many" v-else>
 		<v-list>
-			<draggable :value="sortedItems || items" @input="$emit('input', $event)" handler=".drag-handle">
+			<draggable :value="sortedItems || items" @input="sortItems($event)" handler=".drag-handle" :disabled="!sortField">
 				<v-list-item v-for="item in sortedItems || items" :key="item.id" block @click="editItem(item)">
-					<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<v-icon v-if="sortField" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template :item="item" :template="template" />
 					<div class="spacer" />
 					<v-icon name="close" @click.stop="deleteItem(item)" />
 				</v-list-item>
 			</draggable>
 		</v-list>
-
-		<!-- <v-table
-			:loading="loading"
-			:items="sortedItems || items"
-			:headers.sync="tableHeaders"
-			show-resize
-			inline
-			:sort.sync="sort"
-			@update:items="sortItems($event)"
-			@click:row="editItem"
-			:disabled="disabled"
-			:show-manual-sort="sortField !== null"
-			:manual-sort-key="sortField"
-		>
-			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
-				<render-display
-					:key="header.value"
-					:value="get(item, header.value)"
-					:display="header.field.display"
-					:options="header.field.displayOptions"
-					:interface="header.field.interface"
-					:interface-options="header.field.interfaceOptions"
-					:type="header.field.type"
-					:collection="relatedCollection.collection"
-					:field="header.field.field"
-				/>
-			</template>
-
-			<template #item-append="{ item }" v-if="!disabled">
-				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
-			</template>
-		</v-table> -->
 
 		<div class="actions" v-if="!disabled">
 			<v-button class="new" @click="currentlyEditing = '+'">{{ $t('create_new') }}</v-button>

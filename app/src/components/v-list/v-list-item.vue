@@ -208,6 +208,14 @@ body {
 			}
 		}
 
+		.drag-handle {
+			cursor: grab;
+		}
+
+		.drag-handle:active {
+			cursor: grabbing;
+		}
+
 		.spacer {
 			flex-grow: 1;
 		}
