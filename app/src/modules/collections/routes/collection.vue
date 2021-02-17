@@ -310,6 +310,7 @@ export default defineComponent({
 			bookmarkIsMine,
 			busy: bookmarkSaving,
 			clearLocalSave,
+			localPreset,
 		} = usePreset(collection, bookmarkID);
 
 		const {
@@ -378,6 +379,7 @@ export default defineComponent({
 			bookmarkSaving,
 			clearLocalSave,
 			refresh,
+			localPreset,
 		};
 
 		function refresh() {

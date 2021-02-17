@@ -3,7 +3,7 @@ import { Preset } from '@/types';
 import { useUserStore } from '@/stores/';
 import api from '@/api';
 import { nanoid } from 'nanoid';
-import { merge, cloneDeep } from 'lodash';
+import { merge, cloneDeep, isEqual } from 'lodash';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
 	bookmark: null,

@@ -1,6 +1,6 @@
 import { usePresetsStore, useUserStore } from '@/stores';
 import { ref, Ref, computed, watch } from '@vue/composition-api';
-import { debounce } from 'lodash';
+import { debounce, isEqual } from 'lodash';
 import { useCollection } from '@/composables/use-collection';
 
 import { Filter, Preset } from '@/types/';
@@ -15,7 +15,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 
 	const bookmarkExists = computed(() => {
 		if (!bookmark.value) return false;
-		return !!presetsStore.state.collectionPresets.find((preset) => preset.id === bookmark.value);
+		return !!presetsStore.getBookmark(bookmark.value);
 	});
 
 	const localPreset = ref<Partial<Preset>>({});
@@ -31,6 +31,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 			...localPreset.value,
 			id: updatedValues.id,
 			user: updatedValues.user,
+			$saved: undefined,
 		};
 		busy.value = false;
 		return updatedValues;
@@ -75,7 +76,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 				},
 			};
 
-			autoSave();
+			handleChanges();
 		},
 	});
 
@@ -94,7 +95,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 				},
 			};
 
-			autoSave();
+			handleChanges();
 		},
 	});
 
@@ -108,7 +109,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 				layout: val,
 			};
 
-			autoSave();
+			handleChanges();
 		},
 	});
 
@@ -122,7 +123,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 				filters: val,
 			};
 
-			autoSave();
+			handleChanges();
 		},
 	});
 
@@ -135,8 +136,6 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 				...localPreset.value,
 				search: val,
 			};
-
-			autoSave();
 		},
 	});
 
@@ -170,7 +169,17 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		bookmarkIsMine,
 		busy,
 		clearLocalSave,
+		localPreset,
 	};
+
+	function handleChanges() {
+		if (bookmarkExists.value) {
+			const bookmarkInStore = presetsStore.getBookmark(Number(bookmark.value));
+			localPreset.value.$saved = isEqual(localPreset.value, bookmarkInStore) ? undefined : false;
+		} else {
+			autoSave();
+		}
+	}
 
 	async function resetPreset() {
 		localPreset.value = {
@@ -194,7 +203,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 			if (bookmarkExists.value === false) return;
 
 			localPreset.value = {
-				...presetsStore.getBookmark(+bookmark.value),
+				...presetsStore.getBookmark(Number(bookmark.value)),
 			};
 		}
 
