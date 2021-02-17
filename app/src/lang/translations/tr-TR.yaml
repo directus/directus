@@ -128,6 +128,7 @@ text: Metin
 time: Zaman
 timestamp: Zaman damgası
 uuid: UUID
+hash: Hash
 not_available_for_type: Bu Tip için Mevcut Değil
 create_translations: Çeviriler Oluşturun
 auto_generate: Otomatik Oluştur
@@ -523,10 +524,15 @@ interfaces:
     file: Dosya
   files:
     files: Dosyalar
+  hash:
+    hash: Hash
+    masked: Maskeli
   icon:
     icon: İkon
+    search_for_icon: Simge ara...
   interface:
     interface: Arayüz
+    placeholder: Arayüz seçin...
   interface-options:
     interface-options: Arayüz Ayarları
   many-to-many:
@@ -538,6 +544,7 @@ interfaces:
     markdown: Markdown
   numeric:
     numeric: Sayısal
+    description: Bir sayı girin
   one-to-many:
     one-to-many: Bire Çok
   radio-buttons:
@@ -550,16 +557,28 @@ interfaces:
     slug: Slug
   tags:
     tags: Etiketler
+    alphabetize: Alfabetik
+    alphabetize_label: Alfabetik olarak sırala
+    add_tags: Etiket ekle...
   text-input:
     text-input: Metin Girişi
     trim: Kırp
+    mask: Maskeli
+    nullable: Boş (null) olabilir
+  textarea:
+    textarea: Metin Alanı
   translations:
     display_template: Görüntüleme Şablonu
+    no_collection: Koleksiyon Yok
   user:
     user: Kullanıcı
+    select_mode: Mod Seç
     modes:
+      auto: Otomatik
       dropdown: Açılır Liste
   wysiwyg:
+    wysiwyg: WYSIWYG
+    toolbar: Araç Çubuğu
     custom_formats: Özel Biçimler
 displays:
   boolean:
@@ -568,6 +587,7 @@ displays:
     collection: Koleksiyon
   color:
     color: Renk
+    default_color: Varsayılan Renk
   datetime:
     datetime: Tarih/Saat
     format: Biçim
@@ -575,8 +595,12 @@ displays:
     file: Dosya
   filesize:
     filesize: Dosya Boyutu
+  formatted-value:
+    format_title: Başlığı Biçimlendir
+    bold_label: Kalınlaştır
   icon:
     icon: İkon
+    description: Simge olarak görüntüle
     filled: Dolu
   image:
     circle: Daire
