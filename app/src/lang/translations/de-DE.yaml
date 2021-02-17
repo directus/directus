@@ -100,7 +100,6 @@ camera: Kamera
 exposure: Belichtung
 iso: ISO
 create_field: Feld erstellen
-updating_field_field: '{field} ({collection})'
 hidden_on_detail: In Detailansicht ausblenden
 key: Schlüssel
 alias: Alias
