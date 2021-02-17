@@ -1,5 +1,5 @@
 {
-	"name": "drive-azure",
+	"name": "@directus/drive-azure",
 	"version": "9.0.0-rc.39",
 	"description": "Azure Blob driver for @directus/drive",
 	"license": "MIT",
