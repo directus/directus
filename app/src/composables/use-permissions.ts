@@ -74,5 +74,12 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 		return fields;
 	});
 
-	return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed, fields };
+	const revisionsAllowed = computed(() => {
+		if (userStore.state.currentUser?.role?.admin_access === true) return true;
+		return !!permissionsStore.state.permissions.find(
+			(permission) => permission.collection === 'directus_revisions' && permission.action === 'read'
+		);
+	});
+
+	return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed, fields, revisionsAllowed };
 }
