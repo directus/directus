@@ -112,7 +112,6 @@ schema_setup_title: Hoe moet dit veld worden opgeslagen in de database?
 schema_field_title: Hoe moet dit veld zich gedragen in de app?
 create_field: Maak veld
 creating_new_field: 'Nieuw veld ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: Pagina-voorkeuren resetten
 hidden_field: Verborgen veld
 hidden_on_detail: Verborgen op het detail scherm
