@@ -67,7 +67,6 @@ schema_setup_title: Bagaimana seharusnya kolom ini disimpan di database?
 schema_field_title: Bagaimana seharusnya kolom ini berperilaku di dalam aplikasi?
 create_field: Buat Bidang
 creating_new_field: 'Kolom Baru ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: Reset Preferensi Halaman
 hidden_field: Kolom Tersembunyi
 hidden_on_detail: Disembunyikan dalam Rincian
