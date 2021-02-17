@@ -190,7 +190,7 @@ export default defineComponent({
 
 			if (props.field === '+' && fieldName === '')
 				return i18n.t('creating_new_field', { collection: collectionInfo.value?.name });
-			else return i18n.t('updating_field_field', { field: fieldName, collection: collectionInfo.value?.name });
+			else return i18n.t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.name });
 		});
 
 		return {
