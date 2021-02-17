@@ -123,7 +123,7 @@ schema_setup_title: How should this field save to the database?
 schema_field_title: How should this field behave in the app?
 create_field: Create Field
 creating_new_field: 'New Field ({collection})'
-updating_field_field: '{field} ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Page Preferences
 hidden_field: Hidden Field
 hidden_on_detail: Hidden on Detail
