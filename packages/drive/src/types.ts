@@ -61,3 +61,8 @@ export interface FileListResponse extends Response {
 export interface DeleteResponse extends Response {
 	wasDeleted: boolean | null;
 }
+
+export interface Range {
+	start: number;
+	end: number | undefined;
+}

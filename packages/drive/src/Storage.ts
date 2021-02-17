@@ -8,6 +8,7 @@ import {
 	StatResponse,
 	FileListResponse,
 	DeleteResponse,
+	Range,
 } from './types';
 
 export default abstract class Storage {
@@ -98,9 +99,9 @@ export default abstract class Storage {
 	/**
 	 * Returns the stream for the given file.
 	 *
-	 * Supported drivers: "local", "s3", "gcs"
+	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	getStream(location: string): NodeJS.ReadableStream {
+	getStream(location: string, range?: Range): NodeJS.ReadableStream {
 		throw new MethodNotSupported('getStream', this.constructor.name);
 	}
 
