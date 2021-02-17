@@ -65,14 +65,14 @@ export default async function runAST(
 		if (!items || items.length === 0) return items;
 
 		// Apply the `_in` filters to the nested collection batches
-		const nestedNodes = applyParentFilters(nestedCollectionNodes, items);
+		const nestedNodes = applyParentFilters(nestedCollectionNodes, items, schema);
 
 		for (const nestedNode of nestedNodes) {
 			let nestedItems = await runAST(nestedNode, schema, { knex, nested: true });
 
 			if (nestedItems) {
 				// Merge all fetched nested records with the parent items
-				items = mergeWithParentItems(nestedItems, items, nestedNode, true);
+				items = mergeWithParentItems(nestedItems, items, nestedNode, schema);
 			}
 		}
 
@@ -81,7 +81,7 @@ export default async function runAST(
 		// and nesting is done, we parse through the output structure, and filter out all non-requested
 		// fields
 		if (options?.nested !== true && options?.stripNonRequested !== false) {
-			items = removeTemporaryFields(items, originalAST, primaryKeyField);
+			items = removeTemporaryFields(items, originalAST, primaryKeyField, schema);
 		}
 
 		return items;
@@ -164,7 +164,11 @@ function getDBQuery(
 	return dbQuery;
 }
 
-function applyParentFilters(nestedCollectionNodes: NestedCollectionNode[], parentItem: Item | Item[]) {
+function applyParentFilters(
+	nestedCollectionNodes: NestedCollectionNode[],
+	parentItem: Item | Item[],
+	schema: SchemaOverview
+) {
 	const parentItems = toArray(parentItem);
 
 	for (const nestedNode of nestedCollectionNodes) {
@@ -175,7 +179,7 @@ function applyParentFilters(nestedCollectionNodes: NestedCollectionNode[], paren
 				...nestedNode.query,
 				filter: {
 					...(nestedNode.query.filter || {}),
-					[nestedNode.relation.one_primary!]: {
+					[schema.tables[nestedNode.relation.one_collection!].primary]: {
 						_in: uniq(parentItems.map((res) => res[nestedNode.relation.many_field])).filter((id) => id),
 					},
 				},
@@ -232,7 +236,7 @@ function mergeWithParentItems(
 	nestedItem: Item | Item[],
 	parentItem: Item | Item[],
 	nestedNode: NestedCollectionNode,
-	nested?: boolean
+	schema: SchemaOverview
 ) {
 	const nestedItems = toArray(nestedItem);
 	const parentItems = clone(toArray(parentItem));
@@ -240,7 +244,7 @@ function mergeWithParentItems(
 	if (nestedNode.type === 'm2o') {
 		for (const parentItem of parentItems) {
 			const itemChild = nestedItems.find((nestedItem) => {
-				return nestedItem[nestedNode.relation.one_primary!] == parentItem[nestedNode.fieldKey];
+				return schema.tables[nestedNode.relation.one_collection!].primary == parentItem[nestedNode.fieldKey];
 			});
 
 			parentItem[nestedNode.fieldKey] = itemChild || null;
@@ -252,16 +256,14 @@ function mergeWithParentItems(
 				if (Array.isArray(nestedItem[nestedNode.relation.many_field])) return true;
 
 				return (
-					nestedItem[nestedNode.relation.many_field] == parentItem[nestedNode.relation.one_primary!] ||
-					nestedItem[nestedNode.relation.many_field]?.[nestedNode.relation.one_primary!] ==
-						parentItem[nestedNode.relation.one_primary!]
+					nestedItem[nestedNode.relation.many_field] == schema.tables[nestedNode.relation.one_collection!].primary ||
+					nestedItem[nestedNode.relation.many_field]?.[schema.tables[nestedNode.relation.one_collection!].primary] ==
+						parentItem[schema.tables[nestedNode.relation.one_collection!].primary]
 				);
 			});
 
 			// We re-apply the requested limit here. This forces the _n_ nested items per parent concept
-			if (nested) {
-				itemChildren = itemChildren.slice(0, nestedNode.query.limit);
-			}
+			itemChildren = itemChildren.slice(0, nestedNode.query.limit);
 
 			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : null;
 		}
@@ -294,6 +296,7 @@ function removeTemporaryFields(
 	rawItem: Item | Item[],
 	ast: AST | NestedCollectionNode,
 	primaryKeyField: string,
+	schema: SchemaOverview,
 	parentItem?: Item
 ): null | Item | Item[] {
 	const rawItems = cloneDeep(toArray(rawItem));
@@ -328,7 +331,8 @@ function removeTemporaryFields(
 				item[nestedNode.fieldKey] = removeTemporaryFields(
 					item[nestedNode.fieldKey],
 					nestedNode,
-					nestedNode.relation.many_primary,
+					schema.tables[nestedNode.relation.many_collection].primary,
+					schema,
 					item
 				);
 			}
@@ -359,7 +363,10 @@ function removeTemporaryFields(
 				item[nestedNode.fieldKey] = removeTemporaryFields(
 					item[nestedNode.fieldKey],
 					nestedNode,
-					nestedNode.type === 'm2o' ? nestedNode.relation.one_primary! : nestedNode.relation.many_primary,
+					nestedNode.type === 'm2o'
+						? schema.tables[nestedNode.relation.one_collection!].primary
+						: schema.tables[nestedNode.relation.many_collection].primary,
+					schema,
 					item
 				);
 			}
