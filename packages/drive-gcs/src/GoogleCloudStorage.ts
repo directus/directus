@@ -23,6 +23,7 @@ import {
 	UnknownException,
 	AuthorizationRequired,
 	WrongKeyPath,
+	Range,
 } from '@directus/drive';
 
 function handleError(err: Error & { code?: number | string }, path: string): Error {
@@ -169,8 +170,8 @@ export class GoogleCloudStorage extends Storage {
 	/**
 	 * Returns the stream for the given file.
 	 */
-	public getStream(location: string): NodeJS.ReadableStream {
-		return this._file(location).createReadStream();
+	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
+		return this._file(location).createReadStream({ start: range?.start, end: range?.end });
 	}
 
 	/**

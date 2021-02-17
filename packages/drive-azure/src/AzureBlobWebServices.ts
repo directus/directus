@@ -11,6 +11,7 @@ import {
 	FileListResponse,
 	DeleteResponse,
 	isReadableStream,
+	Range,
 } from '@directus/drive';
 
 import {
@@ -136,10 +137,12 @@ export class AzureBlobWebServicesStorage extends Storage {
 		}
 	}
 
-	public getStream(location: string): NodeJS.ReadableStream {
+	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
 		const intermediateStream = new PassThrough({ highWaterMark: 1 });
 
-		const stream = this.$containerClient.getBlobClient(location).download();
+		const stream = this.$containerClient
+			.getBlobClient(location)
+			.download(range?.start, range?.end ? range.end - range.start : undefined);
 
 		try {
 			stream
