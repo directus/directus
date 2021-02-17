@@ -90,12 +90,12 @@ export function applyFilter(schema: SchemaOverview, rootQuery: QueryBuilder, roo
 					dbQuery.leftJoin(
 						{ [alias]: relation.one_collection! },
 						`${parentAlias || parentCollection}.${relation.many_field}`,
-						`${alias}.${relation.one_primary}`
+						`${alias}.${schema.tables[relation.one_collection!].primary}`
 					);
 				} else {
 					dbQuery.leftJoin(
 						{ [alias]: relation.many_collection },
-						`${parentAlias || parentCollection}.${relation.one_primary}`,
+						`${parentAlias || parentCollection}.${schema.tables[relation.one_collection!].primary}`,
 						`${alias}.${relation.many_field}`
 					);
 				}
