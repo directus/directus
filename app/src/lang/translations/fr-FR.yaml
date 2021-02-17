@@ -120,7 +120,6 @@ schema_setup_title: Comment ce champ doit-il être sauvegardé dans la base de d
 schema_field_title: Comment ce champ doit-il se comporter dans l'application ?
 create_field: Créer un champ
 creating_new_field: 'Nouveau champ ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: Réinitialiser les préférences de la page
 hidden_field: Champ caché
 hidden_on_detail: Caché dans les détails
@@ -787,7 +786,6 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   checkboxes:
