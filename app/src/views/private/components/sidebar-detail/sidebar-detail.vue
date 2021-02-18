@@ -10,7 +10,7 @@
 				{{ title }}
 			</div>
 			<div class="icon">
-				<v-icon :name="active ? 'expand_less' : 'expand_more'" outline />
+				<v-icon class="expand-icon" :name="active ? 'expand_less' : 'expand_more'" outline />
 			</div>
 		</button>
 		<div v-if="close" v-show="sidebarOpen" class="close" @click="sidebarOpen = false">

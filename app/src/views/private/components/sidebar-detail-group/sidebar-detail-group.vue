@@ -37,5 +37,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .sidebar-detail-group {
 	display: contents;
+
+	::v-deep > .sidebar-detail:first-child .expand-icon {
+		display: none;
+	}
 }
 </style>

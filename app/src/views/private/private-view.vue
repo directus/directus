@@ -43,7 +43,6 @@
 		>
 			<div class="flex-container">
 				<sidebar-detail-group :sidebar-open="sidebarOpen">
-					<div class="header-spacer"></div>
 					<slot name="sidebar" />
 				</sidebar-detail-group>
 
@@ -242,8 +241,6 @@ export default defineComponent({
 	}
 
 	.sidebar {
-		--sidebar-top-offset: 48px;
-
 		position: fixed;
 		top: 0;
 		right: 0;
@@ -259,23 +256,8 @@ export default defineComponent({
 			flex-grow: 1;
 		}
 
-		.header-spacer {
-			width: 100%;
-			height: var(--sidebar-top-offset);
-			background-color: var(--background-normal-alt);
-			transition: height var(--slow) var(--transition);
-
-			@include breakpoint(medium) {
-				height: 0px;
-			}
-		}
-
 		&.is-open {
 			transform: translateX(0);
-
-			.header-spacer {
-				height: var(--sidebar-top-offset);
-			}
 		}
 
 		.flex-container {
