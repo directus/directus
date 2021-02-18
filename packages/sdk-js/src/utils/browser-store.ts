@@ -8,4 +8,8 @@ export class BrowserStore implements AuthStorage {
 	async setItem(key: string, value: any): Promise<void> {
 		window.localStorage.setItem(key, value);
 	}
+
+	async removeItem(key: string): Promise<void> {
+		window.localStorage.removeItem(key);
+	}
 }
