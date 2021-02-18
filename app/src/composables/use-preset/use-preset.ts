@@ -183,6 +183,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 	function clearLocalSave() {
 		const defaultPreset = presetsStore.getBookmark(Number(bookmark.value));
 		if (defaultPreset) localPreset.value = { ...defaultPreset };
+		bookmarkSaved.value = true;
 	}
 
 	async function resetPreset() {
