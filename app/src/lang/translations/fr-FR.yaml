@@ -789,6 +789,9 @@ value: Valeur
 view_project: Voir le projet
 report_error: Signaler l'erreur
 interfaces:
+  button-links:
+    button: Boutons
+    error: Impossible d’effectuer cette action
   checkboxes:
     checkboxes: Cases à cocher
     description: Choisissez entre plusieurs options via les cases à cocher
