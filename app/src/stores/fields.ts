@@ -222,7 +222,13 @@ export const useFieldsStore = createStore({
 			return primaryKeyField;
 		},
 		getFieldsForCollection(collection: string) {
-			return this.state.fields.filter((field) => field.collection === collection);
+			return this.state.fields
+				.filter((field) => field.collection === collection)
+				.sort((a, b) => {
+					if (a.field < b.field) return -1;
+					else if (a.field > b.field) return 1;
+					else return 1;
+				});
 		},
 		getField(collection: string, fieldKey: string) {
 			if (fieldKey.includes('.')) {

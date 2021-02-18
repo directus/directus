@@ -176,7 +176,7 @@ body {
 
 	&.dense {
 		::v-deep .v-text-overflow {
-			color: var(--foreground-subdued);
+			color: var(--foreground-normal);
 		}
 
 		&:hover,

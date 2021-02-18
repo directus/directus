@@ -1,12 +1,11 @@
 <template>
-	<v-item-group class="sidebar-detail-group" v-model="openDetail" scope="sidebar-detail">
+	<v-item-group class="sidebar-detail-group" v-model="openDetail" scope="sidebar-detail" :mandatory="mandatory">
 		<slot />
 	</v-item-group>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
-
+import { defineComponent, nextTick, ref, watch } from '@vue/composition-api';
 export default defineComponent({
 	props: {
 		sidebarOpen: {
@@ -18,17 +17,27 @@ export default defineComponent({
 		// By syncing the opened item here, we can force close the module once the sidebar closes
 		const openDetail = ref<string[]>([]);
 
+		const mandatory = ref(false);
+
 		watch(
 			() => props.sidebarOpen,
-			(newOpenState) => {
+			async (newOpenState) => {
 				if (newOpenState === false) {
 					openDetail.value = [];
+				} else {
+					// Ensures the first item in the sidebar is automatically opened whenever the sidebar opens.
+					mandatory.value = true;
+					await nextTick();
+
+					// Still allow the user to manually close it afterwards
+					mandatory.value = false;
 				}
 			}
 		);
 
 		return {
 			openDetail,
+			mandatory,
 		};
 	},
 });

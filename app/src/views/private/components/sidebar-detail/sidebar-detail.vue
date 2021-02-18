@@ -9,6 +9,9 @@
 			<div class="title" v-show="sidebarOpen">
 				{{ title }}
 			</div>
+			<div class="icon" v-if="!close">
+				<v-icon class="expand-icon" :name="active ? 'expand_less' : 'expand_more'" outline />
+			</div>
 		</button>
 		<div v-if="close" v-show="sidebarOpen" class="close" @click="sidebarOpen = false">
 			<v-icon name="close" />
@@ -79,7 +82,9 @@ body {
 
 	.toggle {
 		position: relative;
+		display: flex;
 		flex-shrink: 0;
+		justify-content: space-between;
 		width: 100%;
 		height: 64px;
 		color: var(--sidebar-detail-color);
@@ -162,6 +167,10 @@ body {
 				}
 			}
 		}
+	}
+
+	.expand-icon {
+		color: var(--foreground-subdued);
 	}
 }
 </style>

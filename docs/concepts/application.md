@@ -9,7 +9,7 @@ is completely modular, and is highly customizable.
 
 ## App Section Hierarchy
 
-<img class="full shadow" src="../assets/app-overview.svg" />
+![Application Overview](../assets/app-overview.svg)
 
 ### 1. Module Bar
 

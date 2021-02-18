@@ -119,11 +119,11 @@ body {
 
 @keyframes indeterminate {
 	0% {
-		transform: scaleX(0);
+		transform: scaleX(0) translateX(-30%);
 	}
 
 	10% {
-		transform: scaleX(0);
+		transform: scaleX(0) translateX(-30%);
 		animation-timing-function: cubic-bezier(0.1, 0.6, 0.9, 0.5);
 	}
 
