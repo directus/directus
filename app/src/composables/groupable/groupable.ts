@@ -142,7 +142,7 @@ export function useGroupableParent(
 
 	watch(
 		() => options?.mandatory?.value,
-		(newValue: boolean, oldValue: boolean) => {
+		(newValue, oldValue) => {
 			if (isEqual(newValue, oldValue)) return;
 
 			// If you're required to select a value, make sure a value is selected on first render
