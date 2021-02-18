@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { computed, onBeforeUnmount, inject, ref, provide, Ref, watch } from '@vue/composition-api';
 import { notEmpty, isEmpty } from '@/utils/is-empty/';
+import { isEqual } from 'lodash';
 
 type GroupableInstance = {
 	active: Ref<boolean>;
@@ -70,16 +71,13 @@ export function useGroupable(options?: GroupableOptions) {
 	return {
 		active,
 		toggle: () => {
-			active.value = !active.value;
 			toggle(item);
 		},
 		activate: () => {
 			if (active.value === false) toggle(item);
-			active.value = true;
 		},
 		deactivate: () => {
 			if (active.value === true) toggle(item);
-			active.value = false;
 		},
 	};
 }
@@ -142,6 +140,18 @@ export function useGroupableParent(
 	// children matches the start selection
 	Vue.nextTick().then(updateChildren);
 
+	watch(
+		() => options?.mandatory?.value,
+		(newValue: boolean, oldValue: boolean) => {
+			if (isEqual(newValue, oldValue)) return;
+
+			// If you're required to select a value, make sure a value is selected on first render
+			if (selection.value.length === 0 && options?.mandatory?.value === true) {
+				selection.value = [getValueForItem(items.value[0])];
+			}
+		}
+	);
+
 	// These aren't exported with any particular use in mind. It's mostly for testing purposes.
 	// Treat them as readonly.
 	return { items, selection, _selection, getValueForItem, updateChildren };
@@ -163,7 +173,7 @@ export function useGroupableParent(
 
 	// Remove a child within the context of this group. Needed to avoid memory leaks.
 	function unregister(item: GroupableInstance) {
-		items.value = items.value.filter((existingItem) => {
+		items.value = items.value.filter((existingItem: any) => {
 			return existingItem !== item;
 		});
 	}
@@ -185,7 +195,9 @@ export function useGroupableParent(
 			return;
 		}
 
-		selection.value = [itemValue];
+		if (selection.value[0] !== itemValue) {
+			selection.value = [itemValue];
+		}
 	}
 
 	function toggleMultiple(item: GroupableInstance) {
