@@ -35,7 +35,4 @@ export type Preset = {
 	layout: string | null;
 	layout_query: { [layout: string]: any } | null;
 	layout_options: { [layout: string]: any } | null;
-
-	// App flag to indicate that the local copy hasn't been saved to the API yet
-	$saved?: false;
 };

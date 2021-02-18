@@ -106,7 +106,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 		searchQuery,
 		throttle(
 			async (after, before) => {
-				if (!before || isEqual(after, before)) {
+				if (isEqual(after, before)) {
 					return;
 				}
 				page.value = 1;

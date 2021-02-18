@@ -7,13 +7,7 @@
 		v-tooltip.bottom="active ? null : $t('search')"
 	>
 		<v-icon name="search" />
-		<input
-			ref="input"
-			:value="value"
-			@input="$emit('input', $event.target.value)"
-			@paste="$emit('input', $event.clipboardData.getData('text/plain'))"
-			:placeholder="$t('search_items')"
-		/>
+		<input ref="input" :value="value" @input="emitValue" @paste="emitValue" :placeholder="$t('search_items')" />
 		<v-icon v-if="value" class="empty" name="close" @click.stop="emptyAndClose" />
 	</div>
 </template>
@@ -39,7 +33,7 @@ export default defineComponent({
 			}
 		});
 
-		return { active, disable, input, emptyAndClose };
+		return { active, disable, input, emptyAndClose, emitValue };
 
 		function disable() {
 			active.value = false;
@@ -48,6 +42,12 @@ export default defineComponent({
 		function emptyAndClose() {
 			emit('input', null);
 			active.value = false;
+		}
+
+		function emitValue() {
+			if (!input.value) return;
+			const value = input.value?.value;
+			emit('input', value);
 		}
 	},
 });
