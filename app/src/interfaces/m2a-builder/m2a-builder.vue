@@ -249,30 +249,33 @@ export default defineComponent({
 			const junctionRowMap = ref<any[]>([]);
 
 			const previewValues = computed(() => {
+				// Need to wait until junctionRowMap got properly populated
+				if (junctionRowMap.value.length < 1) {
+					return [];
+				}
+
 				// Convert all string/number junction rows into junction row records from the map so we can inject the
 				// related values
-				const values = cloneDeep(props.value || [])
-					.map((val, index) => {
-						const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
+				const values = cloneDeep(props.value || []).map((val, index) => {
+					const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
 
-						const savedValues = junctionRowMap.value.find(
-							(junctionRow) => junctionRow[o2mRelation.value.many_primary] === junctionKey
-						);
+					const savedValues = junctionRowMap.value.find(
+						(junctionRow) => junctionRow[o2mRelation.value.many_primary] === junctionKey
+					);
 
-						if (isPlainObject(val)) {
-							return {
-								...savedValues,
-								...val,
-								$index: index,
-							};
-						} else {
-							return {
-								...savedValues,
-								$index: index,
-							};
-						}
-					})
-					.filter((val) => val);
+					if (isPlainObject(val)) {
+						return {
+							...savedValues,
+							...val,
+							$index: index,
+						};
+					} else {
+						return {
+							...savedValues,
+							$index: index,
+						};
+					}
+				});
 
 				return values
 					.map((val) => {
