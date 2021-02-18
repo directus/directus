@@ -89,6 +89,18 @@
 			<v-icon class="arrow" name="arrow_forward" />
 		</div>
 
+		<v-notice
+			v-if="relatedFieldExists === false && relations[0].many_field && relations[0].many_collection"
+			type="warning"
+		>
+			{{
+				$t('new_relational_field', {
+					field: formatTitle(relations[0].many_field),
+					collection: formatTitle(relations[0].many_collection),
+				})
+			}}
+		</v-notice>
+
 		<v-divider large :inline-title="false" v-if="!isExisting">{{ $t('corresponding_field') }}</v-divider>
 
 		<div class="corresponding" v-if="!isExisting">
@@ -112,7 +124,7 @@ import useSync from '@/composables/use-sync';
 import { useFieldsStore, useCollectionsStore } from '@/stores';
 import { orderBy } from 'lodash';
 import i18n from '@/lang';
-
+import formatTitle from '@directus/format-title';
 import { state } from '../store';
 
 export default defineComponent({
@@ -163,6 +175,7 @@ export default defineComponent({
 			correspondingLabel,
 			relatedCollectionExists,
 			relatedFieldExists,
+			formatTitle,
 		};
 
 		function useRelation() {
@@ -322,6 +335,7 @@ export default defineComponent({
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 12px 32px;
 	margin-top: 48px;
+	margin-bottom: 12px;
 
 	.v-input.matches {
 		--v-input-color: var(--primary);
