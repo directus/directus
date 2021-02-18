@@ -241,7 +241,7 @@ export default defineComponent({
 		const { size, icon, imageSource, title, subtitle, imageFit } = uselayoutOptions();
 		const { sort, limit, page, fields } = uselayoutQuery();
 
-		const { items, loading, error, totalPages, itemCount, getItems } = useItems(collection, {
+		const { items, loading, error, totalPages, itemCount, totalCount, getItems } = useItems(collection, {
 			sort,
 			limit,
 			page,
@@ -255,6 +255,23 @@ export default defineComponent({
 		});
 
 		const showingCount = computed(() => {
+			if ((itemCount.value || 0) < (totalCount.value || 0)) {
+				if (itemCount.value === 1) {
+					return i18n.t('start_filtered_item_singular', {
+						start: i18n.n((+page.value - 1) * limit.value + 1),
+					});
+				}
+				return i18n.t('start_end_of_count_filtered_items', {
+					start: i18n.n((+page.value - 1) * limit.value + 1),
+					end: i18n.n(Math.min(page.value * limit.value, itemCount.value || 0)),
+					count: i18n.n(itemCount.value || 0),
+				});
+			}
+			if (itemCount.value === 1) {
+				return i18n.t('start_item_singular', {
+					start: i18n.n((+page.value - 1) * limit.value + 1),
+				});
+			}
 			return i18n.t('start_end_of_count_items', {
 				start: i18n.n((+page.value - 1) * limit.value + 1),
 				end: i18n.n(Math.min(page.value * limit.value, itemCount.value || 0)),
@@ -282,6 +299,7 @@ export default defineComponent({
 			page,
 			toPage,
 			itemCount,
+			totalCount,
 			fieldsInCollection,
 			limit,
 			size,
