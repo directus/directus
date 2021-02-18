@@ -2,19 +2,23 @@ function cssVar(name: string) {
 	return getComputedStyle(document.body).getPropertyValue(name);
 }
 
-export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace', disabled: boolean) {
+export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace') {
 	return `
 body {
-	color: ${disabled ? cssVar('--foreground-subdued') : cssVar('--foreground-normal')};
-	background-color: ${disabled ? cssVar('--background-subdued') : cssVar('--background-page')};
+	color: ${cssVar('--foreground-normal')};
+	background-color: ${cssVar('--background-page')};
 	margin: 20px;
 	font-family: 'Roboto', sans-serif;
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
 }
+body.mce-content-readonly {
+	color: ${cssVar('--foreground-subdued')};
+	background-color: ${cssVar('--background-subdued')};
+}
 h1 {
-	font-family: ${cssVar(`--font-${font}`)}, serif;
+	font-family: ${cssVar(`--family-${font}`)}, serif;
 	font-size: 44px;
 	line-height: 52px;
 	font-weight: 300;
@@ -56,7 +60,7 @@ h6 {
 	margin-bottom: 0;
 }
 p {
-	font-family: ${cssVar(`--font-${font}`)}, serif;
+	font-family: ${cssVar(`--family-${font}`)}, serif;
 	font-size: 16px;
 	line-height: 32px;
 	margin-top: 20px;
@@ -66,7 +70,7 @@ a {
 	color: #546e7a;
 }
 ul, ol {
-	font-family: ${cssVar(`--font-${font}`)}, serif;
+	font-family: ${cssVar(`--family-${font}`)}, serif;
 	font-size: 18px;
 	line-height: 34px;
 	margin: 24px 0;
@@ -99,7 +103,7 @@ pre {
 	overflow: auto;
 }
 blockquote {
-	font-family: ${cssVar(`--font-${font}`)}, serif;
+	font-family: ${cssVar(`--family-${font}`)}, serif;
 	font-size: 18px;
 	line-height: 34px;
 	border-left: 2px solid #546e7a;

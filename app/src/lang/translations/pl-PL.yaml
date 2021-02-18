@@ -95,7 +95,6 @@ schema_setup_title: Jak to pole powinno być zapisywane w bazie danych?
 schema_field_title: Jak to pole powinno zachowywać się w aplikacji?
 create_field: Stwórz pole
 creating_new_field: 'Nowe pole ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: Resetuj ustawienia strony
 hidden_field: Ukryte pole
 hidden_on_detail: Ukryte w detalu

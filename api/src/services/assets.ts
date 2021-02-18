@@ -5,6 +5,8 @@ import path from 'path';
 import Knex from 'knex';
 import { Accountability, AbstractServiceOptions, Transformation } from '../types';
 import { AuthorizationService } from './authorization';
+import { Range } from '@directus/drive';
+import { RangeNotSatisfiableException } from '../exceptions';
 
 export class AssetsService {
 	knex: Knex;
@@ -17,7 +19,7 @@ export class AssetsService {
 		this.authorizationService = new AuthorizationService(options);
 	}
 
-	async getAsset(id: string, transformation: Transformation) {
+	async getAsset(id: string, transformation: Transformation, range?: Range) {
 		const publicSettings = await this.knex
 			.select('project_logo', 'public_background', 'public_foreground')
 			.from('directus_settings')
@@ -30,6 +32,12 @@ export class AssetsService {
 		}
 
 		const file = await database.select('*').from('directus_files').where({ id }).first();
+
+		if (range) {
+			if (range.start >= file.filesize || (range.end && range.end >= file.filesize)) {
+				throw new RangeNotSatisfiableException(range);
+			}
+		}
 
 		const type = file.type;
 
@@ -44,18 +52,27 @@ export class AssetsService {
 			const { exists } = await storage.disk(file.storage).exists(assetFilename);
 
 			if (exists) {
-				return { stream: storage.disk(file.storage).getStream(assetFilename), file };
+				return {
+					stream: storage.disk(file.storage).getStream(assetFilename, range),
+					file,
+					stat: await storage.disk(file.storage).getStat(assetFilename),
+				};
 			}
 
-			const readStream = storage.disk(file.storage).getStream(file.filename_disk);
+			const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
 			const transformer = sharp().resize(resizeOptions);
 
 			await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer));
 
-			return { stream: storage.disk(file.storage).getStream(assetFilename), file };
+			return {
+				stream: storage.disk(file.storage).getStream(assetFilename, range),
+				stat: await storage.disk(file.storage).getStat(assetFilename),
+				file,
+			};
 		} else {
-			const readStream = storage.disk(file.storage).getStream(file.filename_disk);
-			return { stream: readStream, file };
+			const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
+			const stat = await storage.disk(file.storage).getStat(file.filename_disk);
+			return { stream: readStream, file, stat };
 		}
 	}
 

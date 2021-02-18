@@ -109,7 +109,6 @@ schema_setup_title: Kaip šis laukas turėtų būti saugojamas duomenų bazėje?
 schema_field_title: Kaip šis laukas turėtų atrodyti aplikacijoje?
 create_field: Kurti lauką
 creating_new_field: 'Naujas laukas ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: Atstatyti puslapio nustatymus
 hidden_field: Paslėptas laukas
 hidden_on_detail: Paslėptas detalių puslapyje

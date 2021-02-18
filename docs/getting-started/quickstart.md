@@ -56,7 +56,8 @@ With the Collection created, it's time to start adding some Fields. Click the **
 
 ![Directus Add a Field](../assets/getting-started/quickstart/add-field.png)
 
-We'll be calling our Field `title`. While Directus offers a range of powerful field customization options, we'll be sticking to the defaults for now. These defaults use the "String" datatype and "Text Input" interface
+We'll be calling our Field `title`. While Directus offers a range of powerful field customization options, we'll be
+sticking to the defaults for now. These defaults use the "String" datatype and "Text Input" interface
 
 ::: tip More Info on Fields
 
@@ -73,22 +74,28 @@ Collections Module (top left), open your created Collection, and click the "+" b
 
 Once you're happy with your creation, click the checkmark in the top-right to save your item to the database.
 
+::: tip More Info on Items
+
+To learn more about the different types of Items, and all available options, see [Items](/guides/items).
+
+:::
+
 ## 6. Set Role/Public Permissions
 
 By default, all content entered into Directus is considered private. This means that no data will be returned by the
 API, unless requested by an authenticated user that has the correct permissions. In order to have the API return our
 items, we'll have to setup some permissions. Navigate to **Settings Module > Roles & Permissions**.
 
-Directus ships with a special **"Public"** role that controls what data is returned to non-authenticated users. Select the
-public role, find your collection, and click the icon under the "eye" icon (read/view permission) to allow the public role to read the
-items in your collection.
+Directus ships with a special **"Public"** role that controls what data is returned to non-authenticated users. Select
+the public role, find your collection, and click the icon under the "eye" icon (read/view permission) to allow the
+public role to read the items in your collection.
 
 ![Directus Permissions](../assets/getting-started/quickstart/permissions.png)
 
-::: tip More Info on Permissions
+::: tip More Info on Roles & Permissions
 
-Permissions are extremely powerful and can get pretty in-depth. To learn all about the nuances in setting up permissions, see
-[Roles & Permissions](/guides/roles).
+Roles & Permissions are extremely powerful and can get pretty in-depth. To learn all about the nuances in setting up
+roles & permissions, see [Roles](/guides/roles) & [Permissions](/guides/permissions).
 
 :::
 
@@ -96,12 +103,13 @@ Permissions are extremely powerful and can get pretty in-depth. To learn all abo
 
 Now that your project has some content in it, it's time to start using this content externally. Data can be accessed in
 a number of ways, including the REST API, GraphQL, the CLI, or even straight from the database. In this case, we'll use
-[the `/items/` REST API endpoint](/reference/api/items) to retrieve the item we just created.
+[the `/items/` REST API endpoint](/reference/api/rest/items) to retrieve the item we just created.
 
 Using your browser, or an API tool like [Postman](http://postman.com) or [Paw](https://paw.cloud), open
 [http://localhost:8055/items/articles](http://localhost:8055/items/articles).
 
-And there it is! The Article Item you just created is being served in beautiful JSON, ready to be used anywhere and everywhere!
+And there it is! The Article Item you just created is being served in beautiful JSON, ready to be used anywhere and
+everywhere!
 
 ```json
 {

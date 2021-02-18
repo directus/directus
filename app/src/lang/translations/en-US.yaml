@@ -25,6 +25,7 @@ connection_excellent: Excellent Connection
 connection_good: Good Connection
 connection_fair: Fair Connection
 connection_poor: Poor Connection
+primary: Primary
 rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
@@ -123,7 +124,7 @@ schema_setup_title: How should this field save to the database?
 schema_field_title: How should this field behave in the app?
 create_field: Create Field
 creating_new_field: 'New Field ({collection})'
-updating_field_field: '{field} ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Page Preferences
 hidden_field: Hidden Field
 hidden_on_detail: Hidden on Detail
@@ -801,6 +802,15 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 interfaces:
+  button-links:
+    button-links: Button Links
+    links: Links
+    description: Configurable link buttons for launching dynamic URLs
+    style: Style
+    primary: Primary
+    link: Links
+    button: Buttons
+    error: Cannot perform action
   checkboxes:
     checkboxes: Checkboxes
     description: Choose between multiple options via checkboxes

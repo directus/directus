@@ -89,7 +89,7 @@ export default defineComponent({
 		},
 		font: {
 			type: String as PropType<'sans-serif' | 'serif' | 'monospace'>,
-			default: 'serif',
+			default: 'sans-serif',
 		},
 		customFormats: {
 			type: Array as PropType<CustomFormat[]>,
@@ -140,7 +140,7 @@ export default defineComponent({
 				skin: false,
 				skin_url: false,
 				content_css: false,
-				content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace', props.disabled),
+				content_style: getEditorStyles(props.font as 'sans-serif' | 'serif' | 'monospace'),
 				plugins:
 					'media table hr lists image link pagebreak code insertdatetime autoresize paste preview fullscreen directionality',
 				branding: false,

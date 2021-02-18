@@ -24,5 +24,10 @@ export default [
 	'YouTube',
 	'UUID',
 	'SEO',
-	'CTA'
+	'CTA',
+	'4K',
+	'HD',
+	'UHD',
+	'5K',
+	'8K',
 ];

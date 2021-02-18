@@ -369,7 +369,12 @@ export default defineComponent({
 						if (Array.isArray(_layoutQuery.value.fields)) return _layoutQuery.value.fields;
 					}
 
-					const fields = _layoutQuery.value?.fields || fieldsInCollection.value.slice(0, 4).map(({ field }) => field);
+					const fields =
+						_layoutQuery.value?.fields ||
+						fieldsInCollection.value
+							.filter((field) => !!field.meta?.hidden === false)
+							.slice(0, 4)
+							.map(({ field }) => field);
 
 					return fields;
 				},

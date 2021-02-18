@@ -62,6 +62,16 @@ An empty [Directus project](https://github.com/platformsh-templates/directus) re
 </a>
 </p>
 
+## :rocket: Deploy on Heroku
+
+You can quickly deploy a project on Heroku using our community maintained template.
+
+<p align="center">
+    <a href="https://heroku.com/deploy?template=https://github.com/directus-community/heroku-template">
+        <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
+    </a>
+</p>
+
 ## 📌 Requirements
 
 Directus only requires Node.js and supports most operating systems and SQL database vendors.

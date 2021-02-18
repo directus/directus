@@ -114,7 +114,6 @@ schema_setup_title: Hur ska detta fält spara till databasen?
 schema_field_title: Hur ska detta fält bete sig i appen?
 create_field: Skapa fält
 creating_new_field: 'Nytt fält ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: Återställ sidans inställningar
 hidden_field: Dolt fält
 hidden_on_detail: Dolt på detaljnivå

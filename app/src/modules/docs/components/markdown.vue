@@ -140,6 +140,7 @@ export default defineComponent({
 }
 
 .md {
+	color: var(--foreground-normal-alt);
 	max-width: 740px;
 
 	::v-deep {
@@ -158,6 +159,7 @@ export default defineComponent({
 		a {
 			color: var(--primary);
 			text-decoration: none;
+			font-weight: 500;
 		}
 
 		h1,
@@ -166,11 +168,13 @@ export default defineComponent({
 		h4,
 		h5,
 		h6 {
+
 			position: relative;
 			margin: 40px 0 8px;
 			padding: 0;
-			font-weight: 600;
+			font-weight: 700;
 			cursor: text;
+			color: var(--foreground-normal-alt);
 
 			a {
 				position: absolute;
@@ -197,9 +201,9 @@ export default defineComponent({
 		h2 {
 			margin-top: 60px;
 			margin-bottom: 20px;
-			padding-bottom: 12px;
-			font-size: 26px;
-			line-height: 33px;
+			padding-bottom: 4px;
+			font-size: 24px;
+			line-height: 34px;
 			border-bottom: 2px solid var(--border-subdued);
 		}
 
@@ -236,9 +240,8 @@ export default defineComponent({
 			padding: 16px 20px;
 			overflow: auto;
 			font-size: 13px;
-			line-height: 19px;
-			background-color: var(--background-page);
-			border: 1px solid var(--background-normal);
+			line-height: 24px;
+			background-color: var(--background-normal);
 			border-radius: var(--border-radius);
 		}
 
@@ -382,7 +385,8 @@ export default defineComponent({
 		}
 
 		blockquote {
-			padding: 0 20px;
+			margin-bottom: 4rem;
+			padding: .25rem 0 .25rem 1rem;
 			color: var(--foreground-subdued);
 			font-size: 18px;
 			border-left: 2px solid var(--background-normal);
@@ -402,17 +406,15 @@ export default defineComponent({
 			padding: 0;
 			border-collapse: collapse;
 			border-spacing: 0;
+			img {
+				margin: 0;
+			}
 		}
 
 		table tr {
 			margin: 0;
 			padding: 0;
-			background-color: var(--background-normal);
-			border-top: 1px solid var(--background-normal);
-		}
-
-		table thead tr {
-			background-color: var(--background-normal-alt);
+			border-top: 1px solid var(--border-normal);
 		}
 
 		table tr:nth-child(2n) {
@@ -424,14 +426,14 @@ export default defineComponent({
 			padding: 8px 20px;
 			font-weight: bold;
 			text-align: left;
-			border: 1px solid var(--background-normal);
+			border: 1px solid var(--border-normal);
 		}
 
 		table tr td {
 			margin: 0;
 			padding: 8px 20px;
 			text-align: left;
-			border: 1px solid var(--background-normal);
+			border: 1px solid var(--border-normal);
 		}
 
 		table tr th :first-child,
@@ -447,6 +449,7 @@ export default defineComponent({
 		img {
 			max-width: 100%;
 			margin: 20px 0;
+			border-radius: 6px;
 
 			&.no-margin {
 				margin: 0;
@@ -499,7 +502,7 @@ export default defineComponent({
 			}
 
 			&.tip {
-				border-left: 2px solid var(--success);
+				border-left: 2px solid var(--primary);
 			}
 
 			&.warning {
@@ -525,10 +528,10 @@ export default defineComponent({
 			margin-top: -20px;
 		}
 
-		pre,
-		pre[class*='language-'] {
-			margin-top: 0;
-		}
+		// pre,
+		// pre[class*='language-'] {
+		// 	margin-top: 0;
+		// }
 
 		@media (min-width: 1000px) {
 			.two-up {

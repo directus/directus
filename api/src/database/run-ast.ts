@@ -96,13 +96,13 @@ async function parseCurrentLevel(
 	const primaryKeyField = schema.tables[collection].primary;
 	const columnsInCollection = Object.keys(schema.tables[collection].columns);
 
-	const columnsToSelect: string[] = [];
+	const columnsToSelectInternal: string[] = [];
 	const nestedCollectionNodes: NestedCollectionNode[] = [];
 
 	for (const child of children) {
 		if (child.type === 'field') {
 			if (columnsInCollection.includes(child.name) || child.name === '*') {
-				columnsToSelect.push(child.name);
+				columnsToSelectInternal.push(child.name);
 			}
 
 			continue;
@@ -111,26 +111,29 @@ async function parseCurrentLevel(
 		if (!child.relation) continue;
 
 		if (child.type === 'm2o') {
-			columnsToSelect.push(child.relation.many_field);
+			columnsToSelectInternal.push(child.relation.many_field);
 		}
 
 		if (child.type === 'm2a') {
-			columnsToSelect.push(child.relation.many_field);
-			columnsToSelect.push(child.relation.one_collection_field!);
+			columnsToSelectInternal.push(child.relation.many_field);
+			columnsToSelectInternal.push(child.relation.one_collection_field!);
 		}
 
 		nestedCollectionNodes.push(child);
 	}
 
 	/** Always fetch primary key in case there's a nested relation that needs it */
-	if (columnsToSelect.includes(primaryKeyField) === false) {
-		columnsToSelect.push(primaryKeyField);
+	if (columnsToSelectInternal.includes(primaryKeyField) === false) {
+		columnsToSelectInternal.push(primaryKeyField);
 	}
+
+	/** Make sure select list has unique values */
+	const columnsToSelect = [...new Set(columnsToSelectInternal)];
 
 	return { columnsToSelect, nestedCollectionNodes, primaryKeyField };
 }
 
-async function getDBQuery(
+function getDBQuery(
 	knex: Knex,
 	table: string,
 	columns: string[],
@@ -138,7 +141,7 @@ async function getDBQuery(
 	primaryKeyField: string,
 	schema: SchemaOverview,
 	nested?: boolean
-): Promise<QueryBuilder> {
+): QueryBuilder {
 	let dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
 
 	const queryCopy = clone(query);
@@ -154,7 +157,7 @@ async function getDBQuery(
 
 	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
 
-	await applyQuery(table, dbQuery, queryCopy, schema);
+	applyQuery(table, dbQuery, queryCopy, schema);
 
 	// Nested filters use joins to filter on the parent level, to prevent duplicate
 	// parents, we group the query by the current tables primary key (which is unique)

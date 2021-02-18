@@ -17,12 +17,20 @@
 	transition: all var(--fast) var(--transition);
 }
 
+.disabled .CodeMirror {
+	background-color: var(--background-subdued);
+}
+
 .CodeMirror .CodeMirror-placeholder{
 	color: var(--foreground-subdued);
 }
 
 .CodeMirror:hover {
 	border-color: var(--border-normal-alt);
+}
+
+.disabled .CodeMirror:hover {
+	border-color: var(--border-normal);
 }
 
 .CodeMirror.CodeMirror-focused {

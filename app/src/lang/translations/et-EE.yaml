@@ -12,6 +12,7 @@ role_name: Rolli nimi
 db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida '
 show_archived_items: Näita arhiveeritud üksuseid
 required: Nõutud
+required_for_app_access: Vajalik äpi ligipääsuks
 requires_value: Väärtus nõutud
 create_preset: Loo seadistus
 create_role: Loo roll
@@ -52,6 +53,7 @@ archive: Arhiveeri
 archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
 archive_confirm_count: >-
   Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
+reset_system_permissions_to: 'Lähtesta süsteemi load:'
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
 nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
@@ -79,6 +81,7 @@ field_standard: Standard
 field_m2o: M2O Seos
 field_o2m: O2M Seos
 field_m2m: M2M Seos
+field_translations: Tõlked
 item_permissions: Üksuse õigused
 field_permissions: Väljade õigused
 field_validation: Välja valideerimine
@@ -88,18 +91,28 @@ fields_for_role: '{role} rollil lubatud väljade {action}.'
 language: Keel
 create_field: Loo väli
 hidden_on_detail: Üksikasjavaates peidetud
+key: Võti
 date: Kuupäev
 text: Tekst
 time: Kellaaeg
 auto_generate: Automaatselt loodud
+click_here: Kliki siia
+choose_a_type: Vali Tüüp...
 add_note: Lisa kasutajaid abistav märkus...
 default_value: Vaikeväärtus
 next: Järgmine
+field_name: Välja Nimi
+translations: Tõlked
 note: Märkus
+enter_a_value: Sisesta väärtus...
 length: Pikkus
+precision_scale: Täpsus & Skaala
 readonly: Ainult loetav
 unique: Unikaalne
+updated_on: Uuendatud
+updated_by: Uuendas
 primary_key: Primaarvõti
+foreign_key: Väline Võti
 clear_value: Tühjenda väärtus
 reset_to_default: Taasta vaikeväärtused
 undo_changes: Tühista muudatused
@@ -108,12 +121,26 @@ page_not_found: Lehekülge ei leitud
 page_not_found_body: Tundub, et lehekülge, mida sa otsid, pole olemas.
 display: Vaade
 title: Pealkiri
+revision_delta_created: Loodud
+revision_delta_created_externally: Loodud Väliselt
 revision_delta_deleted: Kustutatud
+revision_delta_reverted: Taastatud
+updates_made: Uuendused Tehtud
 leave_comment: Jäta kommentaar...
+post_comment_success: Kommentaar postitatud
 this_collection: See kogu
 related_collection: Seotud kogu
 format: Vorming
 submit: Saada
+move: Liiguta
+system: Süsteem
+interface: Kasutajaliides
+today: Täna
+yesterday: Eile
+delete_comment: Kustuta Kommentaar
+month: Kuu
+year: Aasta
+select_all: Vali Kõik
 months:
   january: Jaanuar
   february: Veebruar
@@ -127,13 +154,31 @@ months:
   october: Oktoober
   november: November
   december: Detsember
+original: Originaal
+url: URL
+import: Impordi
+file_details: Faili Üksikasjad
+dimensions: Mõõtmed
 size: Suurus
+created: Loodud
+modified: Muudetud
 checksum: Kontrollsumma
 owner: Omanik
+edited_by: Muutis
+folder: Kaust
+zoom: Suurenda
 download: Laadi alla
+open: Ava
+open_in_new_window: Ava Uues Aknas
+background_color: Taustavärv
 name: Nimi
+primary_key_field: Primaarse Võtme Väli
+type: Tüüp
 created_by: Autor
 created_on: Loodud
+generated_uuid: Genereeritud UUID
+manual_string: Sisesta sõne käsitsi
+save_and_create_new: Salvesta ja Lisa Uus
 save_and_stay: Salvesta ja jää
 save_as_copy: Salvesta koopiana
 comments: Kommentaarid
@@ -153,23 +198,40 @@ status: Staatus
 edit: Muuda
 bookmarks: Järjehoidjad
 back: Tagasi
+square: Ruut
+rotate: Pööra
 placeholder: Kohatäitja
 icon_left: Ikoon vasakul
 icon_right: Ikoon paremal
+font: Kirjatüüp
+sans_serif: Sans Serif
+serif: Serif
 monospace: Monospace
 divider: Eraldaja
 color: Värv
+circle: Ring
+delete_advanced_filter: Kustuta Filter
 operators:
+  eq: Võrdub
   lt: Vähem kui
   gt: Suurem kui
   lte: Väiksem või võrdne
   gte: Suurem või võrdne
+  null: On null
+  nnull: Ei ole null
   contains: Sisaldab
   ncontains: Ei sisalda
+  between: On vahemikus
+  nbetween: Ei ole vahemikus
   empty: On tühi
+  nempty: Ei ole tühi
+  all: Sisaldab neid võtmeid
 loading: Laadimine...
+rows: Read
+columns: Veerud
 display_template: Vaate mall
 no_results: Tulemusi pole
+saves_automatically: Salvestab Automaatselt
 role: Roll
 user: Kasutaja
 create: Loo
@@ -178,9 +240,29 @@ read: Loe
 update: Uuenda
 select_fields: Vali väljad
 wysiwyg_options:
+  aligncenter: Joonda Keskele
+  alignjustify: Joonda kahepoolselt
+  alignleft: Joonda Vasakule
+  alignnone: Eemalda Joondus
+  alignright: Joonda Paremale
+  backcolor: Taustavärv
   codeblock: Kood
+  copy: Kopeeri
+  cut: Lõika
+  paste: Kleebi
+  heading: Pealkiri
+  h1: Pealkiri 1
+  h2: Pealkiri 2
+  h3: Pealkiri 3
+  h4: Pealkiri 4
+  h5: Pealkiri 5
+  h6: Pealkiri 6
+  undo: Võta tagasi
+  redo: Tee uuesti
   remove: Eemalda
+  selectall: Vali Kõik
   table: Tabel
+  fullscreen: Täisekraan
 dropdown: Rippmenüü
 choices: Valikud
 deselect: Tühista valik
@@ -193,6 +275,7 @@ unsaved_changes_copy: Oled sa kindel, et soovid sellelt lehelt lahkuda?
 discard_changes: Loobu muudatustest
 keep_editing: Jätka muutmist
 add_new: Lisa uus
+create_new: Loo Uus
 all: Kõik
 batch_delete_confirm: >-
   Ühtegi kirjet pole valitud | Oled sa kindel, et soovid selle kirje kustutada? Seda toimingut ei saa tagasi võtta. | Oled sa kindel, et soovid need {count} ühikut kustutada? Seda toimingut ei saa tagasi võtta.
@@ -228,6 +311,7 @@ fields:
     created_by: Autor
     embed: Põimitud
     uploaded_by: Üles laadis
+    folder: Kaust
     width: Laius
     uploaded_on: Üleslaaditud
     height: Kõrgus
@@ -322,12 +406,15 @@ interfaces:
     divider: Eraldaja
   dropdown:
     allow_other: Luba muud
+    choices_value_placeholder: Sisesta väärtus...
   file:
     file: Fail
   files:
     files: Failid
   icon:
     icon: Ikoon
+  interface:
+    interface: Kasutajaliides
   interface-options:
     interface-options: Kasutajaliidese valikud
   many-to-many:
@@ -372,6 +459,10 @@ displays:
     filesize: Failisuurus
   icon:
     icon: Ikoon
+  image:
+    circle: Ring
+  labels:
+    choices_value_placeholder: Sisesta väärtus...
   rating:
     rating: Hinnang
   user:

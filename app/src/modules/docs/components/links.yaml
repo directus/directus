@@ -105,6 +105,8 @@
       name: Command Line Interface
     - to: '/reference/environment-variables'
       name: Environment Variables
+    - to: '/reference/config-files'
+      name: Config Files
     - to: '/reference/error-codes'
       name: Error Codes
     - to: '/reference/field-transforms'

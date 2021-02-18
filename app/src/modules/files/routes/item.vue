@@ -99,7 +99,7 @@
 
 				<template #append-outer>
 					<save-options
-						:disabled="hasEdits === false || saveAllowed === false"
+						v-if="hasEdits === true || saveAllowed === true"
 						@save-and-stay="saveAndStay"
 						@save-as-copy="saveAsCopyAndNavigate"
 					/>
@@ -157,7 +157,7 @@
 		<template #sidebar>
 			<file-info-sidebar-detail :file="item" />
 			<revisions-drawer-detail
-				v-if="isBatch === false && isNew === false && hasRevisionsPermissions"
+				v-if="isBatch === false && isNew === false && revisionsAllowed"
 				collection="directus_files"
 				:primary-key="primaryKey"
 				ref="revisionsDrawerDetail"
@@ -195,7 +195,6 @@ import ReplaceFile from '../components/replace-file.vue';
 import { usePermissions } from '@/composables/use-permissions';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { usePermissionsStore } from '@/stores';
 
 export default defineComponent({
 	name: 'files-item',
@@ -234,14 +233,6 @@ export default defineComponent({
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 		const replaceFileDialogActive = ref(false);
-
-		const permissionsStore = usePermissionsStore();
-
-		const hasRevisionsPermissions = computed(() => {
-			return !!permissionsStore.state.permissions.find(
-				(permission) => permission.collection === 'directus_revisions' && permission.action === 'read'
-			);
-		});
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
@@ -302,7 +293,11 @@ export default defineComponent({
 
 		useShortcut('meta+s', saveAndStay, form);
 
-		const { deleteAllowed, saveAllowed, updateAllowed, fields } = usePermissions(ref('directus_files'), item, isNew);
+		const { deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
+			ref('directus_files'),
+			item,
+			isNew
+		);
 
 		const fieldsFiltered = computed(() => {
 			return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
@@ -344,7 +339,7 @@ export default defineComponent({
 			updateAllowed,
 			fields,
 			fieldsFiltered,
-			hasRevisionsPermissions,
+			revisionsAllowed,
 		};
 
 		function useBreadcrumb() {

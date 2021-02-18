@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, inject, ref } from '@vue/composition-api';
+import { defineComponent, computed, PropType, inject, ref, watch } from '@vue/composition-api';
 import i18n from '@/lang';
 import { getInterfaces } from '@/interfaces';
 import { types } from '@/types';
@@ -28,7 +28,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const interfaces = getInterfaces();
 
 		const values = inject('values', ref<Record<string, any>>({}));
@@ -37,6 +37,13 @@ export default defineComponent({
 			if (props.typeField === null || !values.value[props.typeField]) return;
 			return values.value[props.typeField];
 		});
+
+		watch(
+			() => values.value[props.typeField],
+			() => {
+				emit('input', null);
+			}
+		);
 
 		const items = computed(() => {
 			return interfaces.value
@@ -50,7 +57,7 @@ export default defineComponent({
 				});
 		});
 
-		return { items, selectedType };
+		return { items, selectedType, values };
 	},
 });
 </script>

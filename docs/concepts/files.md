@@ -1,6 +1,7 @@
 # Files
 
-> Directus offers a full Digital Asset Management (DAM) system. This includes multiple storage adapters, nested folder organization, private file access, image editing, and on-demand thumbnail generation.
+> Directus offers a full Digital Asset Management (DAM) system. This includes multiple storage adapters, nested folder
+> organization, private file access, image editing, and on-demand thumbnail generation.
 
 Directus allows you to manage all your files in one place, including documents, images, videos, and more. Files can be
 uploaded to the [File Library](/concepts/application/#file-library) in general, or directly to an item via a
@@ -43,6 +44,7 @@ following adapters:
 - **Local Filesystem** — The default, any filesystem location or network-attached storage
 - **S3 or Equivalent** — Including AWS S3, DigitalOcean Spaces, Alibaba OSS, and others
 - **Google Cloud Storage** — A RESTful web service on the Google Cloud Platform
+- **Azure Blob Storage** — Azure storage account containers
 
 ## Thumbnail Transformations
 

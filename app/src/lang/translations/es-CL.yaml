@@ -114,7 +114,6 @@ schema_setup_title: '¿Cómo debería guardarse este campo en la base de datos?'
 schema_field_title: '¿Cómo debería comportarse este campo en la aplicación?'
 create_field: Crear Campo
 creating_new_field: 'Nuevo Campo ({collection})'
-updating_field_field: '{field}({collection})'
 reset_page_preferences: Restablecer Preferencias de Página
 hidden_field: Campo Oculto
 hidden_on_detail: Oculto en detalle

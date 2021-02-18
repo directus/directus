@@ -97,7 +97,6 @@ admins_have_all_permissions: 管理員擁有所有權限
 schema_setup_title: 此欄位應該如何儲存到資料庫中?
 create_field: 新建欄位
 creating_new_field: '新欄位 ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: 重設頁面偏好設定
 hidden_field: 隱藏欄位
 hidden_on_detail: 從詳細內容隱藏

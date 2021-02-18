@@ -63,6 +63,7 @@ import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 import { Preset } from '@/types';
 import { useUserStore, usePresetsStore } from '@/stores';
 import { unexpectedError } from '@/utils/unexpected-error';
+import router from '@/router';
 
 export default defineComponent({
 	props: {
@@ -130,8 +131,18 @@ export default defineComponent({
 				deleteSaving.value = true;
 
 				try {
+					let navigateTo: string | null = null;
+
+					if (+router.currentRoute.query?.bookmark === props.bookmark.id) {
+						navigateTo = `/collections/${props.bookmark.collection}`;
+					}
+
 					await presetsStore.delete(props.bookmark.id);
 					deleteActive.value = false;
+
+					if (navigateTo) {
+						router.push(navigateTo);
+					}
 				} catch (err) {
 					unexpectedError(err);
 				} finally {
