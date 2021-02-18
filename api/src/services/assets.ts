@@ -52,7 +52,11 @@ export class AssetsService {
 			const { exists } = await storage.disk(file.storage).exists(assetFilename);
 
 			if (exists) {
-				return { stream: storage.disk(file.storage).getStream(assetFilename, range), file };
+				return {
+					stream: storage.disk(file.storage).getStream(assetFilename, range),
+					file,
+					stat: await storage.disk(file.storage).getStat(assetFilename),
+				};
 			}
 
 			const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
@@ -60,10 +64,15 @@ export class AssetsService {
 
 			await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer));
 
-			return { stream: storage.disk(file.storage).getStream(assetFilename, range), file };
+			return {
+				stream: storage.disk(file.storage).getStream(assetFilename, range),
+				stat: await storage.disk(file.storage).getStat(assetFilename),
+				file,
+			};
 		} else {
 			const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
-			return { stream: readStream, file };
+			const stat = await storage.disk(file.storage).getStat(file.filename_disk);
+			return { stream: readStream, file, stat };
 		}
 	}
 

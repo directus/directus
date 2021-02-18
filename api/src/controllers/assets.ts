@@ -119,12 +119,13 @@ router.get(
 			}
 		}
 
-		const { stream, file } = await service.getAsset(req.params.pk, transformation, range);
+		const { stream, file, stat } = await service.getAsset(req.params.pk, transformation, range);
 
 		if (req.method.toLowerCase() === 'head') {
 			res.status(200);
 			res.setHeader('Accept-Ranges', 'bytes');
-			res.setHeader('Content-Length', file.filesize);
+			res.setHeader('Content-Length', stat.size);
+
 			return res.end();
 		}
 
@@ -136,12 +137,11 @@ router.get(
 		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string)}`);
 
 		if (range) {
-			res.setHeader('Content-Range', `bytes ${range.start}-${range.end || file.filesize - 1}/${file.filesize}`);
+			res.setHeader('Content-Range', `bytes ${range.start}-${range.end || stat.size - 1}/${stat.size}`);
 			res.status(206);
-
-			res.setHeader('Content-Length', (range.end ? range.end + 1 : file.filesize) - range.start);
+			res.setHeader('Content-Length', (range.end ? range.end + 1 : stat.size) - range.start);
 		} else {
-			res.setHeader('Content-Length', file.filesize);
+			res.setHeader('Content-Length', stat.size);
 		}
 
 		if (req.query.hasOwnProperty('download') === false) {

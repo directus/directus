@@ -118,9 +118,7 @@ export default defineComponent({
 						choices: fieldTypes,
 					},
 				},
-				schema: {
-					default_value: 'string',
-				},
+				schema: null,
 			},
 			{
 				name: i18n.t('interface'),

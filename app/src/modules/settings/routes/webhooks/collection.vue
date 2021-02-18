@@ -102,7 +102,6 @@ import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detai
 import marked from 'marked';
 import { LayoutComponent } from '@/layouts/types';
 import { usePreset } from '@/composables/use-preset';
-import { i18n } from '@/lang';
 import api from '@/api';
 import SearchInput from '@/views/private/components/search-input';
 
