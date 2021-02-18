@@ -12,6 +12,7 @@ role_name: Rolli nimi
 db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida '
 show_archived_items: Näita arhiveeritud üksuseid
 required: Nõutud
+required_for_app_access: Vajalik äpi ligipääsuks
 requires_value: Väärtus nõutud
 create_preset: Loo seadistus
 create_role: Loo roll
@@ -52,6 +53,7 @@ archive: Arhiveeri
 archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
 archive_confirm_count: >-
   Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
+reset_system_permissions_to: 'Lähtesta süsteemi load:'
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
 nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
@@ -89,10 +91,12 @@ fields_for_role: '{role} rollil lubatud väljade {action}.'
 language: Keel
 create_field: Loo väli
 hidden_on_detail: Üksikasjavaates peidetud
+key: Võti
 date: Kuupäev
 text: Tekst
 time: Kellaaeg
 auto_generate: Automaatselt loodud
+click_here: Kliki siia
 choose_a_type: Vali Tüüp...
 add_note: Lisa kasutajaid abistav märkus...
 default_value: Vaikeväärtus

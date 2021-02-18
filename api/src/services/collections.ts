@@ -133,6 +133,7 @@ export class CollectionsService {
 
 		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: collectionKeys } },
+			limit: -1,
 		})) as CollectionMeta[];
 
 		meta.push(...systemCollectionRows);
@@ -181,6 +182,7 @@ export class CollectionsService {
 
 		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: tablesToFetchInfoFor } },
+			limit: -1,
 		})) as CollectionMeta[];
 
 		meta.push(...systemCollectionRows);

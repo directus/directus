@@ -107,7 +107,6 @@ schema_setup_title: 此字段如何保存到数据库？
 schema_field_title: 这个字段应该如何在应用程序中表现？
 create_field: 创建字段
 creating_new_field: '新字段 ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: 重置页面首选项
 hidden_field: 隐藏字段
 hidden_on_detail: 隐藏于详情

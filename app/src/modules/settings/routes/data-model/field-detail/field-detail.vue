@@ -33,11 +33,7 @@
 		:active="true"
 		@toggle="cancelField"
 		@cancel="cancelField"
-		:title="
-			field === '+'
-				? $t('creating_new_field', { collection: collectionInfo.name })
-				: $t('updating_field_field', { field: existingField.name, collection: collectionInfo.name })
-		"
+		:title="title"
 		:subtitle="localType ? $t(`field_${localType}`) : null"
 		persistent
 		:sidebar-label="currentTabInfo.text"
@@ -124,6 +120,7 @@ import router from '@/router';
 import useCollection from '@/composables/use-collection';
 import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
+import formatTitle from '@directus/format-title';
 
 import { initLocalStore, state, clearLocalStore } from './store';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -188,6 +185,14 @@ export default defineComponent({
 
 		const saving = ref(false);
 
+		const title = computed(() => {
+			const fieldName = existingField.value?.name || formatTitle(state.fieldData.field || '');
+
+			if (props.field === '+' && fieldName === '')
+				return i18n.t('creating_new_field', { collection: collectionInfo.value?.name });
+			else return i18n.t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.name });
+		});
+
 		return {
 			tabs,
 			currentTab,
@@ -202,6 +207,7 @@ export default defineComponent({
 			collectionInfo,
 			translationsManual,
 			currentTabInfo,
+			title,
 		};
 
 		function useTabs() {

@@ -95,7 +95,6 @@ schema_setup_title: Trường này nên lưu xuống cơ sở dữ liệu như t
 schema_field_title: Trường này nên hoạt động như thế nào trong chương trình?
 create_field: Tạo thêm trường
 creating_new_field: 'Trường Mới ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: Đặt Lại Tùy Chọn cho Trang
 hidden_field: Trường Ẩn
 hidden_on_detail: Không hiển thị trong trang chi tiết

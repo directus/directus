@@ -13,6 +13,7 @@ import {
 	StatResponse,
 	FileListResponse,
 	DeleteResponse,
+	Range,
 } from '@directus/drive';
 
 function handleError(err: Error, path: string, bucket: string): Error {
@@ -174,8 +175,12 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Returns the stream for the given file.
 	 */
-	public getStream(location: string): NodeJS.ReadableStream {
-		const params = { Key: location, Bucket: this.$bucket };
+	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
+		const params: S3.GetObjectRequest = {
+			Key: location,
+			Bucket: this.$bucket,
+			Range: range ? `${range.start}-${range.end || ''}` : undefined,
+		};
 		return this.$driver.getObject(params).createReadStream();
 	}
 
