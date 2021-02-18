@@ -1,12 +1,11 @@
 <template>
-	<v-item-group class="sidebar-detail-group" v-model="openDetail" scope="sidebar-detail">
+	<v-item-group class="sidebar-detail-group" v-model="openDetail" scope="sidebar-detail" :mandatory="sidebarOpen">
 		<slot />
 	</v-item-group>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api';
-
 export default defineComponent({
 	props: {
 		sidebarOpen: {
@@ -37,9 +36,5 @@ export default defineComponent({
 <style lang="scss" scoped>
 .sidebar-detail-group {
 	display: contents;
-
-	::v-deep > .sidebar-detail:first-child .expand-icon {
-		display: none;
-	}
 }
 </style>
