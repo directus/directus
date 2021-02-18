@@ -168,5 +168,9 @@ body {
 			}
 		}
 	}
+
+	.expand-icon {
+		color: var(--foreground-subdued);
+	}
 }
 </style>

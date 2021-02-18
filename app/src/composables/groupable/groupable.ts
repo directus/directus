@@ -142,7 +142,7 @@ export function useGroupableParent(
 
 	watch(
 		() => options?.mandatory?.value,
-		(newValue, oldValue) => {
+		(newValue: boolean, oldValue: boolean) => {
 			if (isEqual(newValue, oldValue)) return;
 
 			// If you're required to select a value, make sure a value is selected on first render
@@ -173,7 +173,7 @@ export function useGroupableParent(
 
 	// Remove a child within the context of this group. Needed to avoid memory leaks.
 	function unregister(item: GroupableInstance) {
-		items.value = items.value.filter((existingItem) => {
+		items.value = items.value.filter((existingItem: any) => {
 			return existingItem !== item;
 		});
 	}
