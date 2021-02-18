@@ -410,10 +410,6 @@ body {
 				grid-template-columns: var(--grid-columns);
 			}
 
-			.loading-indicator {
-				position: relative;
-			}
-
 			td,
 			th {
 				color: var(--v-table-color);
@@ -428,6 +424,15 @@ body {
 
 				&.align-right {
 					text-align: right;
+				}
+			}
+
+			.loading-indicator {
+				position: relative;
+				z-index: 3;
+
+				> th {
+					margin-right: var(--content-padding);
 				}
 			}
 
