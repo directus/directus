@@ -196,11 +196,11 @@ export default async function getASTFromQuery(
 
 		const fieldsInCollection = await getFieldsInCollection(parentCollection);
 
-		let allowedFields = fieldsInCollection;
+		let allowedFields: string[] | null = fieldsInCollection;
 
 		if (permissions) {
 			const permittedFields = permissions.find((permission) => parentCollection === permission.collection)?.fields;
-			if (permittedFields) allowedFields = permittedFields;
+			if (permittedFields !== undefined) allowedFields = permittedFields;
 		}
 
 		if (!allowedFields || allowedFields.length === 0) return [];
