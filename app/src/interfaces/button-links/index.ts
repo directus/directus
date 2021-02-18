@@ -1,40 +1,21 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceActions from './actions.vue';
+import InterfaceButtonLinks from './button-links.vue';
 
 export default defineInterface(({ i18n }) => ({
-	id: 'actions',
-	name: i18n.t('interfaces.actions.actions'),
-	description: i18n.t('interfaces.actions.description'),
+	id: 'button-links',
+	name: i18n.t('interfaces.button-links.button-links'),
+	description: i18n.t('interfaces.button-links.description'),
 	icon: 'smart_button',
-	component: InterfaceActions,
+	component: InterfaceButtonLinks,
 	hideLabel: true,
 	hideLoader: true,
 	types: ['alias'],
 	groups: ['presentation'],
 	options: [
 		{
-			field: 'actions_style',
-			name: i18n.t('interfaces.actions.style'),
-			type: 'string',
-			meta: {
-				width: 'half-left',
-				interface: 'dropdown',
-				default_value: 'normal',
-				options: {
-					choices: [
-						{ text: i18n.t('interfaces.actions.button'), value: 'button' },
-						{ text: i18n.t('interfaces.actions.link'), value: 'link' },
-					],
-				},
-			},
-			schema: {
-				default_value: 'button',
-			},
-		},
-		{
-			field: 'actions',
+			field: 'links',
 			type: 'json',
-			name: i18n.t('Actions'),
+			name: i18n.t('interfaces.button-links.links'),
 			meta: {
 				width: 'full',
 				interface: 'repeater',
@@ -42,6 +23,18 @@ export default defineInterface(({ i18n }) => ({
 					placeholder: i18n.t('title'),
 					template: '{{ label }}',
 					fields: [
+						{
+							field: 'label',
+							type: 'string',
+							name: i18n.t('label'),
+							meta: {
+								width: 'full',
+								interface: 'text-input',
+								options: {
+									placeholder: i18n.t('label'),
+								},
+							},
+						},
 						{
 							field: 'icon',
 							name: i18n.t('icon'),
@@ -52,20 +45,8 @@ export default defineInterface(({ i18n }) => ({
 							},
 						},
 						{
-							field: 'label',
-							type: 'string',
-							name: i18n.t('label'),
-							meta: {
-								width: 'half',
-								interface: 'text-input',
-								options: {
-									placeholder: i18n.t('label'),
-								},
-							},
-						},
-						{
-							field: 'action_style',
-							name: i18n.t('interfaces.actions.style'),
+							field: 'type',
+							name: i18n.t('type'),
 							type: 'string',
 							meta: {
 								width: 'half',
@@ -73,7 +54,7 @@ export default defineInterface(({ i18n }) => ({
 								default_value: 'normal',
 								options: {
 									choices: [
-										{ text: i18n.t('interfaces.actions.primary'), value: 'primary' },
+										{ text: i18n.t('primary'), value: 'primary' },
 										{ text: i18n.t('normal'), value: 'normal' },
 										{ text: i18n.t('info'), value: 'info' },
 										{ text: i18n.t('success'), value: 'success' },
@@ -87,21 +68,9 @@ export default defineInterface(({ i18n }) => ({
 							},
 						},
 						{
-							field: 'open_in_new_window',
-							name: i18n.t('open_in_new_window'),
-							type: 'boolean',
-							meta: {
-								width: 'half',
-								interface: 'toggle',
-							},
-							schema: {
-								default_value: true,
-							},
-						},
-						{
 							field: 'url',
 							type: 'string',
-							name: i18n.t('URL'),
+							name: i18n.t('url'),
 							meta: {
 								width: 'full',
 								interface: 'text-input',
