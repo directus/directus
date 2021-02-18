@@ -118,7 +118,6 @@ export default defineComponent({
 		position: relative;
 		display: flex;
 		align-items: center;
-		min-width: 10%;
 		max-width: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		height: 100%;
 		margin-left: 16px;
