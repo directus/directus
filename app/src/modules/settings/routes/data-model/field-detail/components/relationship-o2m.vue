@@ -193,14 +193,12 @@ export default defineComponent({
 			const fields = computed(() => {
 				if (!state.relations[0].many_collection) return [];
 
-				return fieldsStore.state.fields
-					.filter((field) => field.collection === state.relations[0].many_collection)
-					.map((field) => ({
-						text: field.field,
-						value: field.field,
-						disabled:
-							!field.schema || field.schema?.is_primary_key || field.type !== currentCollectionPrimaryKey.value.type,
-					}));
+				return fieldsStore.getFieldsForCollection(state.relations[0].many_collection).map((field: Field) => ({
+					text: field.field,
+					value: field.field,
+					disabled:
+						!field.schema || field.schema?.is_primary_key || field.type !== currentCollectionPrimaryKey.value.type,
+				}));
 			});
 
 			const collectionMany = computed({
