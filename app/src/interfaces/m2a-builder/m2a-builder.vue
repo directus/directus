@@ -531,6 +531,10 @@ export default defineComponent({
 						},
 					};
 
+					if (props.sortField) {
+						editsAtStart.value[props.sortField] = junctionRow[props.sortField];
+					}
+
 					relatedPrimaryKey.value = relatedKey || '+';
 					currentlyEditing.value = item;
 					return;
