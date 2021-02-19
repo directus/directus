@@ -317,6 +317,8 @@ interfaces:
     text-input: テキスト入力
     description: 単一行での文字列入力
     mask: 入力値を非表示にします（暗号化する値など）
+  translations:
+    no_collection: コレクションがありません
   user:
     user: ユーザー
 displays:
