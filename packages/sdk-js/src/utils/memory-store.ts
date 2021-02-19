@@ -10,4 +10,8 @@ export class MemoryStore implements AuthStorage {
 	async setItem(key: string, value: any): Promise<void> {
 		this.values[key] = value;
 	}
+
+	async removeItem(key: string): Promise<void> {
+		delete this.values[key];
+	}
 }
