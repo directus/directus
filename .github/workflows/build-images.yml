@@ -6,12 +6,13 @@ on:
 
 jobs:
   build:
+    if: "${{ github.actor }} != directus"
     runs-on: ubuntu-latest
     steps:
       - name: Sleep for 30 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '30s'
+          time: "30s"
 
       - name: Checkout
         uses: actions/checkout@v2

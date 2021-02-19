@@ -2,11 +2,12 @@ name: Deploy Website / Docs
 
 on:
   schedule:
-    - cron: '59 23 * * *'
+    - cron: "59 23 * * *"
   workflow_dispatch:
-  
+
 jobs:
   build:
+    if: "${{ github.actor }} != directus"
     runs-on: ubuntu-latest
 
     steps:
@@ -14,7 +15,7 @@ jobs:
         with:
           url: ${{ secrets.BUILD_HOOK_WEBSITE }}
           method: POST
-          
+
       - uses: satak/webrequest-action@master
         with:
           url: ${{ secrets.BUILD_HOOK_DOCS }}

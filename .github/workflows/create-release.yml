@@ -2,9 +2,10 @@ name: create-release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 jobs:
   build:
+    if: "${{ github.actor }} != directus"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
