@@ -91,6 +91,10 @@
 				<div class="page-description" v-html="marked($t('page_help_settings_presets_item'))" />
 			</sidebar-detail>
 
+			<sidebar-detail icon="search" :title="$t('search')" class="layout-sidebar">
+				<v-input v-model="searchQuery" :placeholder="$t('preset_search_placeholder')"></v-input>
+			</sidebar-detail>
+
 			<portal-target class="layout-sidebar" name="sidebar" />
 
 			<sidebar-detail class="layout-sidebar" icon="layers" :title="$t('layout_options')">
@@ -535,18 +539,6 @@ export default defineComponent({
 						width: 'half',
 						options: {
 							placeholder: i18n.t('preset_name_placeholder'),
-						},
-					},
-				},
-				{
-					field: 'search',
-					name: i18n.t('search'),
-					type: 'string',
-					meta: {
-						interface: 'text-input',
-						width: 'half',
-						options: {
-							placeholder: i18n.t('preset_search_placeholder'),
 						},
 					},
 				},
