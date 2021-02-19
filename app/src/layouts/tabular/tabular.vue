@@ -246,9 +246,7 @@ export default defineComponent({
 		const showingCount = computed(() => {
 			if ((itemCount.value || 0) < (totalCount.value || 0)) {
 				if (itemCount.value === 1) {
-					return i18n.t('start_filtered_item_singular', {
-						start: i18n.n((+page.value - 1) * limit.value + 1),
-					});
+					return i18n.t('one_filtered_item');
 				}
 				return i18n.t('start_end_of_count_filtered_items', {
 					start: i18n.n((+page.value - 1) * limit.value + 1),
@@ -257,9 +255,7 @@ export default defineComponent({
 				});
 			}
 			if (itemCount.value === 1) {
-				return i18n.t('start_item_singular', {
-					start: i18n.n((+page.value - 1) * limit.value + 1),
-				});
+				return i18n.t('one_item');
 			}
 			return i18n.t('start_end_of_count_items', {
 				start: i18n.n((+page.value - 1) * limit.value + 1),
