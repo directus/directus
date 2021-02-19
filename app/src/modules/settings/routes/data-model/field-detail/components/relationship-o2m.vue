@@ -407,6 +407,11 @@ export default defineComponent({
 .generated-data {
 	margin-top: 36px;
 
+	ul {
+		padding-top: 4px;
+		padding-left: 24px;
+	}
+
 	.field-name {
 		font-family: var(--family-monospace);
 	}
