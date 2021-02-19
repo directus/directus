@@ -488,6 +488,10 @@ value_unique: Value has to be unique
 all_activity: All Activity
 create_item: Create Item
 display_template: Display Template
+singular_unit: Singular Unit
+singular_unit_placeholder: Enter a singular unit...
+plural_units: Plural Units
+plural_units_placeholder: Enter plural units...
 n_items_selected: 'No Items Selected | 1 Item Selected | {n} Items Selected'
 per_page: Per Page
 all_files: All Files

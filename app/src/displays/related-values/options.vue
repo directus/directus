@@ -7,6 +7,14 @@
 			<p class="type-label">{{ $t('display_template') }}</p>
 			<v-field-template :collection="relatedCollection" v-model="template" :depth="2" />
 		</div>
+		<div class="field half">
+			<p class="type-label">{{ $t('singular_unit') }}</p>
+			<v-input v-model="singularUnit" :placeholder="$t('singular_unit_placeholder')"></v-input>
+		</div>
+		<div class="field half">
+			<p class="type-label">{{ $t('plural_units') }}</p>
+			<v-input v-model="pluralUnit" :placeholder="$t('plural_units_placeholder')"></v-input>
+		</div>
 	</div>
 </template>
 
@@ -37,6 +45,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
+
 		const template = computed({
 			get() {
 				return props.value?.template;
@@ -45,6 +54,30 @@ export default defineComponent({
 				emit('input', {
 					...(props.value || {}),
 					template: newTemplate,
+				});
+			},
+		});
+
+		const singularUnit = computed({
+			get() {
+				return props.value?.singularUnit;
+			},
+			set(newUnit: string) {
+				emit('input', {
+					...(props.value || {}),
+					singularUnit: newUnit,
+				});
+			},
+		});
+
+		const pluralUnit = computed({
+			get() {
+				return props.value?.pluralUnit;
+			},
+			set(newUnit: string) {
+				emit('input', {
+					...(props.value || {}),
+					pluralUnit: newUnit,
 				});
 			},
 		});
@@ -68,7 +101,7 @@ export default defineComponent({
 			}
 		});
 
-		return { template, relatedCollection };
+		return { template, relatedCollection, singularUnit, pluralUnit };
 	},
 });
 </script>

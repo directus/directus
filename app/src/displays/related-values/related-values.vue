@@ -7,7 +7,10 @@
 	>
 		<template #activator="{ toggle }">
 			<span @click.stop="toggle" class="toggle" :class="{ subdued: value.length === 0 }">
-				<span class="label">{{ $tc('item_count', value.length) }}</span>
+				<span class="label" v-if="singularUnit === null || pluralUnit === null">
+					{{ $tc('item_count', value.length) }}
+				</span>
+				<span v-else class="label">{{ value.length }} {{ value.length !== 1 ? pluralUnit : singularUnit }}</span>
 			</span>
 		</template>
 
@@ -47,6 +50,14 @@ export default defineComponent({
 			default: null,
 		},
 		template: {
+			type: String,
+			default: null,
+		},
+		singularUnit: {
+			type: String,
+			default: null,
+		},
+		pluralUnit: {
 			type: String,
 			default: null,
 		},
