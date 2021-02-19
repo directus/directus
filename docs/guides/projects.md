@@ -34,7 +34,7 @@ environment variables, each is explained in the following reference:
 
 ::: tip Browser FavIcon & Title
 
-The Project Color and Logo are also used to set a dynamic favicon, and the Project Name is used in the browser's page
+The Project Color is also used to set a dynamic favicon, and the Project Name is used in the browser's page
 title. This makes it easier to identify different Directus projects in the browser.
 
 :::
@@ -71,7 +71,7 @@ See [Styles > Custom CSS](/guides/styles/#custom-css)
 
 1. Backup your project
 2. Run `npm update`
-3. Run `directus database migrate:latest` to update the DB
+3. Run `npx directus database migrate:latest` to update the DB
 
 ## Backing-up a Project
 

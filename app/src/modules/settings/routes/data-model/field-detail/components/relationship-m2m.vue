@@ -218,6 +218,19 @@
 			</div>
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
+
+		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
+			<span>
+				{{ $t('new_data_alert') }}
+
+				<ul>
+					<li v-for="(data, index) in generationInfo" :key="index">
+						<span class="field-name">{{ data.name }}</span>
+						({{ $t(data.isField ? 'new_field' : 'new_collection') }})
+					</li>
+				</ul>
+			</span>
+		</v-notice>
 	</div>
 </template>
 
@@ -311,6 +324,44 @@ export default defineComponent({
 
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
+		const generationInfo = computed(() => {
+			const message: { name: string; isField: boolean }[] = [];
+
+			if (state.relations[1].one_collection !== '') {
+				if (relatedCollectionExists.value === false) {
+					message.push({ name: state.relations[1].one_collection, isField: false });
+
+					if (state.relations[1].one_primary !== '')
+						message.push({
+							name: state.relations[1].one_collection + '.' + state.relations[1].one_primary,
+							isField: true,
+						});
+				}
+
+				if (hasCorresponding.value === true && correspondingField.value !== null)
+					message.push({ name: state.relations[1].one_collection + '.' + correspondingField.value, isField: true });
+			}
+
+			if (state.relations[0].many_collection) {
+				if (junctionCollectionExists.value === false)
+					message.push({ name: state.relations[0].many_collection, isField: false });
+
+				if (junctionFieldExists(state.relations[0].many_field) === false && state.relations[0].many_field !== '')
+					message.push({
+						name: state.relations[0].many_collection + '.' + state.relations[0].many_field,
+						isField: true,
+					});
+
+				if (junctionFieldExists(state.relations[1].many_field) === false && state.relations[1].many_field !== '')
+					message.push({
+						name: state.relations[0].many_collection + '.' + state.relations[1].many_field,
+						isField: true,
+					});
+			}
+
+			return message;
+		});
+
 		return {
 			relations: state.relations,
 			autoFill,
@@ -324,6 +375,7 @@ export default defineComponent({
 			hasCorresponding,
 			correspondingField,
 			correspondingLabel,
+			generationInfo,
 		};
 
 		function junctionFieldExists(fieldKey: string) {
@@ -458,5 +510,18 @@ export default defineComponent({
 
 .v-notice {
 	margin-bottom: 36px;
+}
+
+.generated-data {
+	margin-top: 36px;
+
+	ul {
+		padding-top: 4px;
+		padding-left: 24px;
+	}
+
+	.field-name {
+		font-family: var(--family-monospace);
+	}
 }
 </style>
