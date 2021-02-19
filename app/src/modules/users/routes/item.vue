@@ -188,6 +188,7 @@ import { usePermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
 import { useUserStore } from '@/stores';
+import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
 	name: 'users-item',
@@ -251,6 +252,8 @@ export default defineComponent({
 		}
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+
+		unsavedChanges(hasEdits);
 
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
