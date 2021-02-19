@@ -49,4 +49,5 @@ export type FilterOperator =
 export type AuthStorage = {
 	getItem: (key: string) => Promise<any>;
 	setItem: (key: string, value: any) => Promise<any>;
+	removeItem: (key: string) => Promise<any>;
 };

@@ -41,7 +41,7 @@ export class AuthHandler {
 		this.accessTokenInitId = this.axios.interceptors.request.use((config) => this.initializeAccessToken(config));
 
 		if (this.autoRefresh) {
-			this.refresh(true);
+			this.refresh();
 		}
 	}
 
@@ -75,7 +75,7 @@ export class AuthHandler {
 			await this.storage.setItem('directus_refresh_token', data.refresh_token);
 		}
 		if (this.autoRefresh) {
-			this.refresh(true);
+			this.refresh();
 		}
 
 		return response.data;
@@ -84,17 +84,15 @@ export class AuthHandler {
 	/**
 	 * Refresh access token 10 seconds before expiration
 	 */
-	async refresh(isInitialInvoke: Boolean): Promise<{ data: AuthResponse } | undefined> {
+	async refresh(): Promise<{ data: AuthResponse } | undefined> {
 		this.removeTimeout();
 
 		this.expiresAt = await this.storage.getItem('directus_access_token_expires');
 		if (!this.expiresAt) return;
 
 		if (Date.now() + 10000 < this.expiresAt && this.autoRefresh) {
-			this.autoRefreshTimeout = setTimeout(() => this.refresh(false), this.expiresAt - Date.now() - 10000);
-			if (!isInitialInvoke) {
-				return;
-			}
+			this.autoRefreshTimeout = setTimeout(() => this.refresh(), this.expiresAt - Date.now() - 10000);
+			return;
 		}
 
 		const payload: Record<string, any> = { mode: this.mode };
@@ -120,7 +118,7 @@ export class AuthHandler {
 		}
 
 		if (this.autoRefresh) {
-			this.autoRefreshTimeout = setTimeout(() => this.refresh(false), data.expires - 10000);
+			this.autoRefreshTimeout = setTimeout(() => this.refresh(), data.expires - 10000);
 		}
 		return response.data;
 	}
@@ -132,6 +130,12 @@ export class AuthHandler {
 			data.refresh_token = await this.storage.getItem('directus_refresh_token');
 		}
 		await this.axios.post('/auth/logout', data);
+
+		await this.storage.removeItem('directus_access_token');
+		await this.storage.removeItem('directus_access_token_expires');
+		if (this.mode === 'json') {
+			await this.storage.removeItem('directus_refresh_token');
+		}
 		this.token = null;
 	}
 
