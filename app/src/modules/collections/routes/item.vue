@@ -190,7 +190,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref, onBeforeUnmount, onBeforeMount } from '@vue/composition-api';
 import Vue from 'vue';
 
 import CollectionsNavigation from '../components/navigation.vue';
@@ -330,6 +330,14 @@ export default defineComponent({
 			return props.primaryKey;
 		});
 
+		onBeforeMount(() => {
+			window.addEventListener('beforeunload', beforeUnload);
+		});
+
+		onBeforeUnmount(() => {
+			window.removeEventListener('beforeunload', beforeUnload);
+		});
+
 		return {
 			item,
 			loading,
@@ -373,6 +381,14 @@ export default defineComponent({
 			_primaryKey,
 			revisionsAllowed,
 		};
+
+		function beforeUnload(event: BeforeUnloadEvent) {
+			if (isSavable.value) {
+				event.preventDefault();
+				event.returnValue = '';
+				return '';
+			}
+		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
