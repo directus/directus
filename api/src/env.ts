@@ -71,13 +71,15 @@ const typeMap: Record<string, string> = {
 	DB_PORT: 'number',
 };
 
-const env: Record<string, any> = processValues({
+let env: Record<string, any> = {
 	...defaults,
 	...process.env,
 	...getEnv(),
-});
+};
 
 process.env = env;
+
+env = processValues(env);
 
 export default env;
 
