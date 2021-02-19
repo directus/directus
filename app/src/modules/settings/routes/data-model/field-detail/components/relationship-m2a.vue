@@ -192,8 +192,16 @@
 			<v-icon class="arrow" name="arrow_backward" />
 		</div>
 
-		<v-notice v-if="generationInfo !== null" type="warning">
-			<span v-html="generationInfo"></span>
+		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
+			<span>
+				{{ $t('new_data_alert') }}
+				<ul>
+					<li v-for="(data, index) in generationInfo" :key="index">
+						<span class="field-name">{{ data.name }}</span>
+						({{ $t(data.isField ? 'new_field' : 'new_collection') }})
+					</li>
+				</ul>
+			</span>
 		</v-notice>
 	</div>
 </template>
@@ -283,39 +291,35 @@ export default defineComponent({
 		});
 
 		const generationInfo = computed(() => {
-			const message = [];
+			const message: { name: string; isField: boolean }[] = [];
 
 			if (state.relations[0].many_collection) {
 				if (junctionCollectionExists.value === false)
-					message.push(i18n.t('new_collection', { name: state.relations[0].many_collection }));
+					message.push({ name: state.relations[0].many_collection, isField: false });
 
 				if (junctionFieldExists(state.relations[0].many_field) === false && state.relations[0].many_field !== '')
-					message.push(
-						i18n.t('new_field', { name: state.relations[0].many_collection + '.' + state.relations[0].many_field })
-					);
+					message.push({
+						name: state.relations[0].many_collection + '.' + state.relations[0].many_field,
+						isField: true,
+					});
 
 				if (
 					junctionFieldExists(state.relations[1].one_collection_field) === false &&
-					state.relations[1].many_field !== ''
+					state.relations[1].one_collection_field !== ''
 				)
-					message.push(
-						i18n.t('new_field', {
-							name: state.relations[0].many_collection + '.' + state.relations[1].one_collection_field,
-						})
-					);
+					message.push({
+						name: state.relations[0].many_collection + '.' + state.relations[1].one_collection_field,
+						isField: true,
+					});
 
 				if (junctionFieldExists(state.relations[1].many_field) === false && state.relations[1].many_field !== '')
-					message.push(
-						i18n.t('new_field', { name: state.relations[0].many_collection + '.' + state.relations[1].many_field })
-					);
+					message.push({
+						name: state.relations[0].many_collection + '.' + state.relations[1].many_field,
+						isField: true,
+					});
 			}
 
-			if (message.length > 0) {
-				message.unshift(i18n.t('new_data_alert'));
-				return message.join('</br>');
-			}
-
-			return null;
+			return message;
 		});
 
 		return {
@@ -387,9 +391,13 @@ export default defineComponent({
 
 .v-notice {
 	margin-bottom: 36px;
+}
 
-	&.warning {
-		margin-top: 36px;
+.generated-data {
+	margin-top: 36px;
+
+	.field-name {
+		font-family: var(--family-monospace);
 	}
 }
 
