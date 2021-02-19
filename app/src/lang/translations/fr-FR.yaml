@@ -26,6 +26,7 @@ connection_excellent: Excellente connexion
 connection_good: Bonne connexion
 connection_fair: Connexion moyenne
 connection_poor: Mauvaise connexion
+primary: Primaire
 rename_folder: Renommer le fichier
 delete_folder: Supprimer le fichier
 prefix: Préfixe
@@ -787,8 +788,18 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
+  button-links:
+    button-links: Bouton de liens
+    links: Liens
+    description: Boutons de lien configurables pour le lancement d'URL dynamiques
+    style: Style
+    primary: Primaire
+    link: Liens
+    button: Boutons
+    error: Impossible d’effectuer cette action
   checkboxes:
     checkboxes: Cases à cocher
     description: Choisissez entre plusieurs options via les cases à cocher
