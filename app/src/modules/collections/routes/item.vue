@@ -206,6 +206,7 @@ import marked from 'marked';
 import useShortcut from '@/composables/use-shortcut';
 import { NavigationGuard } from 'vue-router';
 import { usePermissions } from '@/composables/use-permissions';
+import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
 	name: 'collections-item',
@@ -278,6 +279,8 @@ export default defineComponent({
 			return hasEdits.value;
 		});
 
+		unsavedChanges(isSavable);
+
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
 
@@ -330,14 +333,6 @@ export default defineComponent({
 			return props.primaryKey;
 		});
 
-		onBeforeMount(() => {
-			window.addEventListener('beforeunload', beforeUnload);
-		});
-
-		onBeforeUnmount(() => {
-			window.removeEventListener('beforeunload', beforeUnload);
-		});
-
 		return {
 			item,
 			loading,
@@ -381,14 +376,6 @@ export default defineComponent({
 			_primaryKey,
 			revisionsAllowed,
 		};
-
-		function beforeUnload(event: BeforeUnloadEvent) {
-			if (isSavable.value) {
-				event.preventDefault();
-				event.returnValue = '';
-				return '';
-			}
-		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
