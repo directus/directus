@@ -218,6 +218,10 @@
 			</div>
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
+
+		<v-notice v-if="generationInfo !== null" type="warning">
+			<span v-html="generationInfo"></span>
+		</v-notice>
 	</div>
 </template>
 
@@ -311,6 +315,48 @@ export default defineComponent({
 
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
+		const generationInfo = computed(() => {
+			const message = [];
+
+			if (state.relations[1].one_collection !== '') {
+				if (relatedCollectionExists.value === false) {
+					message.push(i18n.t('new_collection', { name: state.relations[1].one_collection }));
+
+					if (state.relations[1].one_primary !== '')
+						message.push(
+							i18n.t('new_field', { name: state.relations[1].one_collection + '.' + state.relations[1].one_primary })
+						);
+				}
+
+				if (hasCorresponding.value === true && correspondingField.value !== null)
+					message.push(
+						i18n.t('new_field', { name: state.relations[1].one_collection + '.' + correspondingField.value })
+					);
+			}
+
+			if (state.relations[0].many_collection) {
+				if (junctionCollectionExists.value === false)
+					message.push(i18n.t('new_collection', { name: state.relations[0].many_collection }));
+
+				if (junctionFieldExists(state.relations[0].many_field) === false && state.relations[0].many_field !== '')
+					message.push(
+						i18n.t('new_field', { name: state.relations[0].many_collection + '.' + state.relations[0].many_field })
+					);
+
+				if (junctionFieldExists(state.relations[1].many_field) === false && state.relations[1].many_field !== '')
+					message.push(
+						i18n.t('new_field', { name: state.relations[0].many_collection + '.' + state.relations[1].many_field })
+					);
+			}
+
+			if (message.length > 0) {
+				message.unshift(i18n.t('new_data_alert'));
+				return message.join('</br>');
+			}
+
+			return null;
+		});
+
 		return {
 			relations: state.relations,
 			autoFill,
@@ -324,6 +370,7 @@ export default defineComponent({
 			hasCorresponding,
 			correspondingField,
 			correspondingLabel,
+			generationInfo,
 		};
 
 		function junctionFieldExists(fieldKey: string) {
@@ -458,5 +505,9 @@ export default defineComponent({
 
 .v-notice {
 	margin-bottom: 36px;
+
+	&.warning {
+		margin-top: 36px;
+	}
 }
 </style>
