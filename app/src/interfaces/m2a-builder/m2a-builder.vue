@@ -256,28 +256,27 @@ export default defineComponent({
 
 				// Convert all string/number junction rows into junction row records from the map so we can inject the
 				// related values
-				const values = cloneDeep(props.value || []).map((val, index) => {
-					const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
+				const values = cloneDeep(props.value || [])
+					.map((val, index) => {
+						const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
 
-					const savedValues = junctionRowMap.value.find(
-						(junctionRow) => junctionRow[o2mRelation.value.many_primary] === junctionKey
-					);
+						const savedValues = junctionRowMap.value.find(
+							(junctionRow) => junctionRow[o2mRelation.value.many_primary] === junctionKey
+						);
 
-					if (isPlainObject(val)) {
-						return {
-							...savedValues,
-							...val,
-							$index: index,
-						};
-					} else {
-						return {
-							...savedValues,
-							$index: index,
-						};
-					}
-				});
-
-				return values
+						if (isPlainObject(val)) {
+							return {
+								...savedValues,
+								...val,
+								$index: index,
+							};
+						} else {
+							return {
+								...savedValues,
+								$index: index,
+							};
+						}
+					})
 					.map((val) => {
 						// Find and nest the related item values for use in the preview
 						const collection = val[anyRelation.value.one_collection_field!];
@@ -303,21 +302,12 @@ export default defineComponent({
 						}
 
 						return val;
-					})
-					.sort((a, b) => {
-						const aSort = a[props.sortField];
-						const bSort = b[props.sortField];
-
-						if (aSort === bSort) {
-							return 0;
-						} else if (aSort === null) {
-							return 1;
-						} else if (bSort === null) {
-							return -1;
-						} else {
-							return aSort < bSort ? -1 : 1;
-						}
 					});
+
+				return [
+					...values.filter((val) => val[props.sortField]).sort((a, b) => a[props.sortField] - b[props.sortField]), // sort by sortField if it exists
+					...values.filter((val) => !val[props.sortField]).sort((a, b) => a.$index - b.$index), // sort the rest with $index
+				];
 			});
 
 			return { fetchValues, previewValues, loading, junctionRowMap, relatedItemValues };
@@ -489,8 +479,7 @@ export default defineComponent({
 
 			function stageEdits(edits: Record<string, any>) {
 				const currentValue = props.value || [];
-
-				if (currentlyEditing.value === '+' && relatedPrimaryKey.value === '+') {
+				if (!editsAtStart.value.unsaved && currentlyEditing.value === '+' && relatedPrimaryKey.value === '+') {
 					emit('input', [...currentValue, edits]);
 				} else {
 					emit(
@@ -499,7 +488,6 @@ export default defineComponent({
 							if (val === editsAtStart.value || val == currentlyEditing.value) {
 								return edits;
 							}
-
 							return val;
 						})
 					);
@@ -513,6 +501,7 @@ export default defineComponent({
 			}
 
 			function editExisting(item: Record<string, any>) {
+				// Edit a saved item
 				if (typeof item === 'string' || typeof item === 'number') {
 					const junctionRow = junctionRowMap.value.find((row) => {
 						return row[o2mRelation.value.many_primary] == item;
@@ -540,6 +529,7 @@ export default defineComponent({
 					return;
 				}
 
+				// Edit an unsaved item
 				const junctionPrimaryKey = item[o2mRelation.value.many_primary];
 				const relatedCollectiom = item[anyRelation.value.one_collection_field!];
 				let relatedKey = item[anyRelation.value.many_field];
@@ -549,6 +539,7 @@ export default defineComponent({
 				}
 
 				editsAtStart.value = item;
+				editsAtStart.value.unsaved = true;
 				relatedPrimaryKey.value = relatedKey || '+';
 				currentlyEditing.value = junctionPrimaryKey || '+';
 			}
