@@ -303,3 +303,15 @@ DB_SSL__REJECT_UNAUTHORIZED="false"
 	}
 }
 ```
+
+## Environment Syntax Prefix
+
+Environment variables are by default treated as string, however if a syntax prefix is specified the string value will be
+converted to a certain type
+
+| Syntax Prefix | Example                                          | Output                                           |
+| ------------- | ------------------------------------------------ | ------------------------------------------------ |
+| `string`      | `string:value`                                   | `value`                                          |
+| `number`      | `number:3306`                                    | `3306`                                           |
+| `regex`       | `regex:/\.example\.com$/`                        | `/\.example\.com$/`                              |
+| `array`       | `array:https://example.com,https://example2.com` | `["https://example.com","https://example2.com"]` |
