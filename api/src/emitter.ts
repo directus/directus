@@ -1,7 +1,14 @@
 import { EventEmitter2 } from 'eventemitter2';
 import logger from './logger';
 
-const emitter = new EventEmitter2({ wildcard: true, verboseMemoryLeak: true, delimiter: '.' });
+const emitter = new EventEmitter2({
+	wildcard: true,
+	verboseMemoryLeak: true,
+	delimiter: '.',
+
+	// This will ignore the "unspecified event" error
+	ignoreErrors: true,
+});
 
 /**
  * Emit async events without throwing errors. Just log them out as warnings.
