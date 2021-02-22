@@ -30,7 +30,11 @@ console.info(
 	`Hey! Interested in helping build this open-source data management platform?\nIf so, join our growing team of contributors at: https://directus.chat`
 );
 
-console.info(`%c🐰 Starting Directus v${version}`, 'color:Green');
+if (process.env.NODE_ENV === 'development') {
+	console.info(`%c🐰 Starting Directus v${version}...`, 'color:Green');
+} else {
+	console.info(`%c🐰 Starting Directus...`, 'color:Green');
+}
 
 console.time('🕓 Application Loaded');
 
