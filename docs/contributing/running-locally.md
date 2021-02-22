@@ -4,7 +4,7 @@
 
 ::: tip Minimum Requirements
 
-You will need to have [the latest version of Node](https://nodejs.dev/en/about/releases/) to _build_ a Development version of Directus.
+You will need to have a minimum of [Node 15+](https://nodejs.dev/en/about/releases/) to _build_ a Development version of Directus.
 
 :::
 
