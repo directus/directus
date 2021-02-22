@@ -155,7 +155,7 @@ function processValues(env: Record<string, any>) {
 	for (const [key, value] of Object.entries(env)) {
 		if (acceptableEnvTypes.some((envType) => value.includes(`${envType}:`))) {
 			env[key] = getEnvironmentValueByType(value);
-			break;
+			continue;
 		}
 
 		if (typeMap[key]) {
