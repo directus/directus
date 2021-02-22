@@ -6,88 +6,10 @@
 
 ## Props
 
-| Prop    | Description                                              | Default          | Type                                                      |
-| ------- | -------------------------------------------------------- | ---------------- | --------------------------------------------------------- | ------- | --- | --- | --- |
-| `items` | An array of objects which information about each section | `() => []`       | `Breadcrumb[]`                                            |
-| <!--    | <!--                                                     | `items.name`     | The name which will be displayed                          | `''`    |     | --> | --> |
-| <!--    | <!--                                                     | `items.to`       | The reroute link                                          | `''`    |     | --> | --> |
-| <!--    | <!--                                                     | `items.disabled` | If the router link should be clickable                    | `false` |     | --> | --> |
-| <!--    | <!--                                                     | `items.icon`     | Displays an icon with the given name in front of the name | `''`    |     | --> | --> |
-
-## Events
-
-n/a
-
-## Slots
-
-n/a
-
-## CSS Variables
-
-| Prop                            | Default                     | Variable                    |
-| ------------------------------- | --------------------------- | --------------------------- | ------------------------------- | ------------------------------- | --- | --- |
-| `--v-breadcrumb-color`          | `var(--foreground-subdued)` |                             |
-| `--v-breadcrumb-color-hover`    | `var(--foreground-normal)`  |                             |
-| `--v-breadcrumb-color-disabled` | `var(--foreground-subdued)` |                             |
-| `--v-breadcrumb-divider-color`  | `var(--foreground-subdued)` |                             |
-| <!--                            |                             | `var(--foreground-subdued)` | `--v-breadcrumb-color`          | -->                             |
-| <!--                            |                             | `var(--foreground-normal)`  | `--v-breadcrumb-color-hover`    | -->                             |
-| <!--                            |                             | `var(--foreground-subdued)` | `--v-breadcrumb-color-disabled` | -->                             |
-| <!--                            |                             | `var(--foreground-subdued)` | `--v-breadcrumb-divider-color`  | -->                             |
-| <!--                            |                             | `var(--foreground-subdued)` | `--v-breadcrumb-color`          | -->                             |
-| <!--                            |                             | `var(--foreground-normal)`  | `--v-breadcrumb-color-hover`    | -->                             |
-| <!--                            |                             | `var(--foreground-subdued)` | `--v-breadcrumb-color-disabled` | -->                             |
-| <!--                            |                             | `var(--foreground-subdued)` | `--v-breadcrumb-divider-color`  | -->                             |
-| <!--                            | <!--                        |                             | `var(--foreground-subdued)`     | `--v-breadcrumb-color`          | --> | --> |
-| <!--                            | <!--                        |                             | `var(--foreground-normal)`      | `--v-breadcrumb-color-hover`    | --> | --> |
-| <!--                            | <!--                        |                             | `var(--foreground-subdued)`     | `--v-breadcrumb-color-disabled` | --> | --> |
-| <!--                            | <!--                        |                             | `var(--foreground-subdued)`     | `--v-breadcrumb-divider-color`  | --> | --> |
-| <!--                            |                             | `var(--foreground-subdued)` | `--v-breadcrumb-color`          | -->                             |
-| <!--                            |                             | `var(--foreground-normal)`  | `--v-breadcrumb-color-hover`    | -->                             |
-| <!--                            |                             | `var(--foreground-subdued)` | `--v-breadcrumb-color-disabled` | -->                             |
-| <!--                            |                             | `var(--foreground-subdued)` | `--v-breadcrumb-divider-color`  | -->                             |
-
-## CSS Variables
-
-| Variable                        | Default                     |
-| ------------------------------- | --------------------------- |
-| `--v-breadcrumb-color`          | `var(--foreground-subdued)` |
-| `--v-breadcrumb-color-hover`    | `var(--foreground-normal)`  |
-| `--v-breadcrumb-color-disabled` | `var(--foreground-subdued)` |
-| `--v-breadcrumb-divider-color`  | `var(--foreground-subdued)` |
-
-## Props
-
-| Prop    | Description | Default    | Type           |
-| ------- | ----------- | ---------- | -------------- |
-| `items` |             | `() => []` | `Breadcrumb[]` |
-
-## CSS Variables
-
-| Variable                        | Default                     |
-| ------------------------------- | --------------------------- |
-| `--v-breadcrumb-color`          | `var(--foreground-subdued)` |
-| `--v-breadcrumb-color-hover`    | `var(--foreground-normal)`  |
-| `--v-breadcrumb-color-disabled` | `var(--foreground-subdued)` |
-| `--v-breadcrumb-divider-color`  | `var(--foreground-subdued)` |
-
-## Props
-
-| Prop    | Description | Default    | Type           |
-| ------- | ----------- | ---------- | -------------- |
-| `items` |             | `() => []` | `Breadcrumb[]` |
-
-## CSS Variables
-
-| Variable                        | Default                     |
-| ------------------------------- | --------------------------- |
-| `--v-breadcrumb-color`          | `var(--foreground-subdued)` |
-| `--v-breadcrumb-color-hover`    | `var(--foreground-normal)`  |
-| `--v-breadcrumb-color-disabled` | `var(--foreground-subdued)` |
-| `--v-breadcrumb-divider-color`  | `var(--foreground-subdued)` |
-
-## Props
-
-| Prop    | Description | Default    | Type           |
-| ------- | ----------- | ---------- | -------------- |
-| `items` |             | `() => []` | `Breadcrumb[]` |
+| Prop             | Description                                               | Default    | Type           |
+| ---------------- | --------------------------------------------------------- | ---------- | -------------- |
+| `items`          | An array of objects which information about each section  | `() => []` | `Breadcrumb[]` |
+| `items.to`       | The reroute link                                          | `''`       |                |
+| `items.name`     | The name which will be displayed                          | `''`       |                |
+| `items.icon`     | Displays an icon with the given name in front of the name | `''`       |                |
+| `items.disabled` | If the router link should be clickable                    | `false`    |                |
