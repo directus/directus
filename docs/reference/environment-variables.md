@@ -7,13 +7,14 @@
 
 ## General
 
-| Variable      | Description                                                                                         | Default Value |
-| ------------- | --------------------------------------------------------------------------------------------------- | ------------- |
-| `CONFIG_PATH` | Where your config file is located. See [Config Files](/reference/config-files/)                     | `.env`        |
-| `PORT`        | What port to run the API under.                                                                     | `8055`        |
-| `PUBLIC_URL`  | URL where your API can be reached on the web.                                                       | `/`           |
-| `LOG_LEVEL`   | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. | `info`        |
-| `LOG_STYLE`   | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                         | `pretty`      |
+| Variable           | Description                                                                                         | Default Value |
+| ------------------ | --------------------------------------------------------------------------------------------------- | ------------- |
+| `CONFIG_PATH`      | Where your config file is located. See [Config Files](/reference/config-files/)                     | `.env`        |
+| `PORT`             | What port to run the API under.                                                                     | `8055`        |
+| `PUBLIC_URL`       | URL where your API can be reached on the web.                                                       | `/`           |
+| `LOG_LEVEL`        | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. | `info`        |
+| `LOG_STYLE`        | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                         | `pretty`      |
+| `MAX_PAYLOAD_SIZE` | Controls the maximum request body size. Accepts number of bytes, or human readable string.          | `100kb`       |
 
 ## Database
 
@@ -306,11 +307,13 @@ DB_SSL__REJECT_UNAUTHORIZED="false"
 
 ## Environment Syntax Prefix
 
-Directus will attempt to automatically type cast environment variables based on context clues ([see above](#type-casting-and-nesting)). If you have a specific need for a given type, you can tell Directus what type to use for the given value by prefixing the value with `{type}:`. The following types are available:
+Directus will attempt to automatically type cast environment variables based on context clues
+([see above](#type-casting-and-nesting)). If you have a specific need for a given type, you can tell Directus what type
+to use for the given value by prefixing the value with `{type}:`. The following types are available:
 
 | Syntax Prefix | Example                                          | Output                                           |
 | ------------- | ------------------------------------------------ | ------------------------------------------------ |
-| `string`      | `string:value`                                   | `"value"`                                          |
+| `string`      | `string:value`                                   | `"value"`                                        |
 | `number`      | `number:3306`                                    | `3306`                                           |
 | `regex`       | `regex:/\.example\.com$/`                        | `/\.example\.com$/`                              |
 | `array`       | `array:https://example.com,https://example2.com` | `["https://example.com","https://example2.com"]` |
