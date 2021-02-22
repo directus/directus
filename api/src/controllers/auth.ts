@@ -67,7 +67,7 @@ router.post(
 			res.cookie('directus_refresh_token', refreshToken, {
 				httpOnly: true,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
+				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
@@ -115,7 +115,7 @@ router.post(
 			res.cookie('directus_refresh_token', refreshToken, {
 				httpOnly: true,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
+				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 		}
@@ -266,7 +266,7 @@ router.get(
 			res.cookie('directus_refresh_token', refreshToken, {
 				httpOnly: true,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
-				secure: env.REFRESH_TOKEN_COOKIE_SECURE === 'true' ? true : false,
+				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
 			});
 
