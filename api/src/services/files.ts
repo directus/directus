@@ -52,6 +52,7 @@ export class FilesService extends ItemsService {
 			const pipeline = sharp();
 
 			pipeline
+				.rotate()
 				.metadata()
 				.then((meta) => {
 					payload.width = meta.width;
