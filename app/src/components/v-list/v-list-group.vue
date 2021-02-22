@@ -23,15 +23,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, toRefs, watch, PropType, ref } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
 	props: {
-		multiple: {
-			type: Boolean,
-			default: true,
-		},
 		to: {
 			type: String,
 			default: null,
@@ -62,9 +58,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { listeners, emit }) {
-		const { multiple } = toRefs(props);
-
-		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
+		const { active: groupActive, toggle } = useGroupable({
 			group: props.scope,
 			value: props.value,
 		});

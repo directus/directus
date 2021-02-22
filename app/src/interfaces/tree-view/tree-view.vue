@@ -1,7 +1,7 @@
 <template>
 	<div class="interface-tree-view">
 		<v-list>
-			<tree-view-item
+			<tree-view-group
 				v-for="item in previewValues[relation.one_field]"
 				:key="item[primaryKeyField]"
 				:primary-key-field="primaryKeyField.field"
@@ -20,10 +20,10 @@ import { useCollection } from '@/composables/use-collection';
 import { useRelationsStore } from '@/stores';
 import api from '@/api';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
-import TreeViewItem from './tree-view-item.vue';
+import TreeViewGroup from './tree-view-group.vue';
 
 export default defineComponent({
-	components: { TreeViewItem },
+	components: { TreeViewGroup },
 	props: {
 		value: {
 			type: Array,
@@ -42,7 +42,7 @@ export default defineComponent({
 			required: true,
 		},
 		primaryKey: {
-			type: String,
+			type: [String, Number],
 			default: undefined,
 		},
 	},
