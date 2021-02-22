@@ -504,6 +504,191 @@ module.exports = {
 									},
 								],
 							},
+							{
+								path: 'reference/app/components/v-avatar',
+								title: 'Avatar',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-badge',
+								title: 'Badge',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-breadcrumb',
+								title: 'Breadcrumb',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-button-group',
+								title: 'ButtonGroup',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-button',
+								title: 'Button',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-card',
+								title: 'Card',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-checkbox',
+								title: 'Checkbox',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-chip',
+								title: 'Chip',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-detail',
+								title: 'Detail',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-dialog',
+								title: 'Dialog',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-divider',
+								title: 'Divider',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-drawer',
+								title: 'Drawer',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-error',
+								title: 'Error',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-fancy-select',
+								title: 'FancySelect',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-field-select',
+								title: 'FieldSelect',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-field-template',
+								title: 'FieldTemplate',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-form',
+								title: 'Form',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-hover',
+								title: 'Hover',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-icon',
+								title: 'Icon',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-info',
+								title: 'Info',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-input',
+								title: 'Input',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-item-group',
+								title: 'ItemGroup',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-list',
+								title: 'List',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-menu',
+								title: 'Menu',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-notice',
+								title: 'Notice',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-overlay',
+								title: 'Overlay',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-pagination',
+								title: 'Pagination',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-radio',
+								title: 'Radio',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-select',
+								title: 'Select',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-sheet',
+								title: 'Sheet',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-skeleton-loader',
+								title: 'SkeletonLoader',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-slider',
+								title: 'Slider',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-switch',
+								title: 'Switch',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-table/v-table',
+								title: 'Table',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-tabs/v-tabs',
+								title: 'Tabs',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-textarea',
+								title: 'Textarea',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-upload',
+								title: 'Upload',
+								type: 'page',
+							},
 						],
 					},
 				],
