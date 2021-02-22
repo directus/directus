@@ -190,7 +190,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref, onBeforeUnmount, onBeforeMount } from '@vue/composition-api';
 import Vue from 'vue';
 
 import CollectionsNavigation from '../components/navigation.vue';
@@ -206,6 +206,7 @@ import marked from 'marked';
 import useShortcut from '@/composables/use-shortcut';
 import { NavigationGuard } from 'vue-router';
 import { usePermissions } from '@/composables/use-permissions';
+import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
 	name: 'collections-item',
@@ -277,6 +278,8 @@ export default defineComponent({
 
 			return hasEdits.value;
 		});
+
+		unsavedChanges(isSavable);
 
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);

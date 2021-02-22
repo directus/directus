@@ -263,7 +263,7 @@ function mergeWithParentItems(
 
 			// We re-apply the requested limit here. This forces the _n_ nested items per parent concept
 			if (nested) {
-				itemChildren = itemChildren.slice(0, nestedNode.query.limit);
+				itemChildren = itemChildren.slice(0, nestedNode.query.limit ?? 100);
 			}
 
 			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : null;

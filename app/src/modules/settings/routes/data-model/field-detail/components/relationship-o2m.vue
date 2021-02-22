@@ -102,6 +102,19 @@
 			</div>
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
+
+		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
+			<span>
+				{{ $t('new_data_alert') }}
+
+				<ul>
+					<li v-for="(data, index) in generationInfo" :key="index">
+						<span class="field-name">{{ data.name }}</span>
+						({{ $t(data.isField ? 'new_field' : 'new_collection') }})
+					</li>
+				</ul>
+			</span>
+		</v-notice>
 	</div>
 </template>
 
@@ -112,7 +125,6 @@ import useSync from '@/composables/use-sync';
 import { useFieldsStore, useCollectionsStore } from '@/stores';
 import { orderBy } from 'lodash';
 import i18n from '@/lang';
-
 import { state } from '../store';
 
 export default defineComponent({
@@ -144,12 +156,33 @@ export default defineComponent({
 		const { hasCorresponding, correspondingLabel } = useCorresponding();
 
 		const relatedCollectionExists = computed(() => {
-			return collectionsStore.state.collections.find((col) => col.collection === state.relations?.[0].many_collection);
+			return (
+				collectionsStore.state.collections.find((col) => col.collection === state.relations?.[0].many_collection) !==
+				undefined
+			);
 		});
 
 		const relatedFieldExists = computed(() => {
 			if (!state?.relations?.[0].many_collection || !state?.relations?.[0].many_field) return false;
 			return !!fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field);
+		});
+
+		const generationInfo = computed(() => {
+			const message: { name: string; isField: boolean }[] = [];
+
+			if (state.relations[0].many_collection !== '') {
+				if (relatedCollectionExists.value === false)
+					message.push({ name: state.relations[0].many_collection, isField: false });
+
+				if (relatedFieldExists.value === false && state.relations[0].many_field !== '') {
+					message.push({
+						name: state.relations[0].many_collection + '.' + state.relations[0].many_field,
+						isField: true,
+					});
+				}
+			}
+
+			return message;
 		});
 
 		return {
@@ -163,6 +196,7 @@ export default defineComponent({
 			correspondingLabel,
 			relatedCollectionExists,
 			relatedFieldExists,
+			generationInfo,
 		};
 
 		function useRelation() {
@@ -366,5 +400,18 @@ export default defineComponent({
 
 .v-notice {
 	margin-bottom: 36px;
+}
+
+.generated-data {
+	margin-top: 36px;
+
+	ul {
+		padding-top: 4px;
+		padding-left: 24px;
+	}
+
+	.field-name {
+		font-family: var(--family-monospace);
+	}
 }
 </style>

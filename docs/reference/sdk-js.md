@@ -11,6 +11,10 @@ API from a JavaScript powered project.
 npm install @directus/sdk-js
 ```
 
+## TypeScript
+
+If you are using TypeScript, the JS SDK requires TypeScript 3.8 or newer.
+
 ## Usage
 
 ```js
