@@ -71,13 +71,16 @@ export function useGroupable(options?: GroupableOptions) {
 	return {
 		active,
 		toggle: () => {
+			active.value = !active.value;
 			toggle(item);
 		},
 		activate: () => {
 			if (active.value === false) toggle(item);
+			active.value = true;
 		},
 		deactivate: () => {
 			if (active.value === true) toggle(item);
+			active.value = false;
 		},
 	};
 }
