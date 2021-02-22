@@ -44,3 +44,39 @@ n/a
 ## CSS Variables
 
 n/a
+
+## Props
+
+| Prop    | Description | Default | Type     |
+| ------- | ----------- | ------- | -------- |
+| `value` |             | `null`  | `String` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## Props
+
+| Prop    | Description | Default | Type     |
+| ------- | ----------- | ------- | -------- |
+| `value` |             | `null`  | `String` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## Props
+
+| Prop    | Description | Default | Type     |
+| ------- | ----------- | ------- | -------- |
+| `value` |             | `null`  | `String` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |

@@ -29,3 +29,69 @@ n/a
 | `--v-notice-color`            | `var(--foreground-subdued)` |
 | `--v-notice-background-color` | `var(--background-subdued)` |
 | `--v-notice-icon-color`       | `var(--foreground-subdued)` |
+
+## CSS Variables
+
+| Variable                      | Default                     |
+| ----------------------------- | --------------------------- |
+| `--v-notice-color`            | `var(--foreground-subdued)` |
+| `--v-notice-background-color` | `var(--background-subdued)` |
+| `--v-notice-icon-color`       | `var(--foreground-subdued)` |
+
+## Props
+
+| Prop     | Description | Default    | Type                                                                           |
+| -------- | ----------- | ---------- | ------------------------------------------------------------------------------ |
+| `type`   |             | `'normal'` | `String as PropType<'normal' or 'info' or 'success' or 'warning' or 'danger'>` |
+| `icon`   |             | `null`     | `[String, Boolean]`                                                            |
+| `center` |             | `false`    | `Boolean`                                                                      |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## CSS Variables
+
+| Variable                      | Default                     |
+| ----------------------------- | --------------------------- |
+| `--v-notice-color`            | `var(--foreground-subdued)` |
+| `--v-notice-background-color` | `var(--background-subdued)` |
+| `--v-notice-icon-color`       | `var(--foreground-subdued)` |
+
+## Props
+
+| Prop     | Description | Default    | Type                                                                           |
+| -------- | ----------- | ---------- | ------------------------------------------------------------------------------ |
+| `type`   |             | `'normal'` | `String as PropType<'normal' or 'info' or 'success' or 'warning' or 'danger'>` |
+| `icon`   |             | `null`     | `[String, Boolean]`                                                            |
+| `center` |             | `false`    | `Boolean`                                                                      |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## CSS Variables
+
+| Variable                      | Default                     |
+| ----------------------------- | --------------------------- |
+| `--v-notice-color`            | `var(--foreground-subdued)` |
+| `--v-notice-background-color` | `var(--background-subdued)` |
+| `--v-notice-icon-color`       | `var(--foreground-subdued)` |
+
+## Props
+
+| Prop     | Description | Default    | Type                                                                           |
+| -------- | ----------- | ---------- | ------------------------------------------------------------------------------ |
+| `type`   |             | `'normal'` | `String as PropType<'normal' or 'info' or 'success' or 'warning' or 'danger'>` |
+| `icon`   |             | `null`     | `[String, Boolean]`                                                            |
+| `center` |             | `false`    | `Boolean`                                                                      |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |

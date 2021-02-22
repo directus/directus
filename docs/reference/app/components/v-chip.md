@@ -47,19 +47,23 @@ called `close`.
 
 ## Props
 
-| Prop         | Description                                          | Default                                            | Type      |
-| ------------ | ---------------------------------------------------- | -------------------------------------------------- | --------- | --- | --- |
-| `active`     | Change visibility. Can be reacted to via `sync`      | `null`                                             | `Boolean` |
-| `close`      | Displays a close icon which triggers the close event | `false`                                            | `Boolean` |
-| <!--         | `closeIcon`                                          | Which icon should be displayed instead of `close ` | `close`   |     | --> |
-| `outlined`   | No background                                        | `false`                                            | `Boolean` |
-| `label`      | Label style                                          | `true`                                             | `Boolean` |
-| `disabled`   | Disabled state                                       | `false`                                            | `Boolean` |
-| <!--         | `x-small`                                            | Render extra small                                 | `false`   |     | --> |
-| <!--         | `small`                                              | Render small                                       | `false`   |     | --> |
-| <!--         | `large`                                              | Render large                                       | `false`   |     | --> |
-| <!--         | `x-large`                                            | Render extra large                                 | `false`   |     | --> |
-| `close-icon` |                                                      | `'close'`                                          | `String`  |
+| Prop         | Description                                          | Default     | Type                                               |
+| ------------ | ---------------------------------------------------- | ----------- | -------------------------------------------------- | ------- | --- | --- | --- |
+| `active`     | Change visibility. Can be reacted to via `sync`      | `null`      | `Boolean`                                          |
+| `close`      | Displays a close icon which triggers the close event | `false`     | `Boolean`                                          |
+| `close-icon` |                                                      | `'close'`   | `String`                                           |
+| `outlined`   |                                                      | `false`     | `Boolean`                                          |
+| `label`      |                                                      | `true`      | `Boolean`                                          |
+| `disabled`   |                                                      | `false`     | `Boolean`                                          |
+| <!--         | <!--                                                 | `closeIcon` | Which icon should be displayed instead of `close ` | `close` |     | --> | --> |
+| `outlined`   | No background                                        | `false`     | `Boolean`                                          |
+| `label`      | Label style                                          | `true`      | `Boolean`                                          |
+| `disabled`   | Disabled state                                       | `false`     | `Boolean`                                          |
+| <!--         | <!--                                                 | `x-small`   | Render extra small                                 | `false` |     | --> | --> |
+| <!--         | <!--                                                 | `small`     | Render small                                       | `false` |     | --> | --> |
+| <!--         | <!--                                                 | `large`     | Render large                                       | `false` |     | --> | --> |
+| <!--         | <!--                                                 | `x-large`   | Render extra large                                 | `false` |     | --> | --> |
+| `close-icon` |                                                      | `'close'`   | `String`                                           |
 
 ## Slots
 
@@ -86,3 +90,114 @@ called `close`.
 | `--v-chip-close-color`            | `var(--danger)`                |
 | `--v-chip-close-color-disabled`   | `var(--primary)`               |
 | `--v-chip-close-color-hover`      | `var(--primary-125)`           |
+
+## CSS Variables
+
+| Variable                          | Default                        |
+| --------------------------------- | ------------------------------ |
+| `--v-chip-color`                  | `var(--foreground-normal)`     |
+| `--v-chip-background-color`       | `var(--background-normal-alt)` |
+| `--v-chip-color-hover`            | `var(--white)`                 |
+| `--v-chip-background-color-hover` | `var(--primary-125)`           |
+| `--v-chip-close-color`            | `var(--danger)`                |
+| `--v-chip-close-color-disabled`   | `var(--primary)`               |
+| `--v-chip-close-color-hover`      | `var(--primary-125)`           |
+
+## Events
+
+| Event           | Description | Value |
+| --------------- | ----------- | ----- |
+| `update:active` |             |       |
+| `click`         |             |       |
+| `close`         |             |       |
+
+## Props
+
+| Prop         | Description | Default   | Type      |
+| ------------ | ----------- | --------- | --------- |
+| `active`     |             | `null`    | `Boolean` |
+| `close`      |             | `false`   | `Boolean` |
+| `close-icon` |             | `'close'` | `String`  |
+| `outlined`   |             | `false`   | `Boolean` |
+| `label`      |             | `true`    | `Boolean` |
+| `disabled`   |             | `false`   | `Boolean` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## CSS Variables
+
+| Variable                          | Default                        |
+| --------------------------------- | ------------------------------ |
+| `--v-chip-color`                  | `var(--foreground-normal)`     |
+| `--v-chip-background-color`       | `var(--background-normal-alt)` |
+| `--v-chip-color-hover`            | `var(--white)`                 |
+| `--v-chip-background-color-hover` | `var(--primary-125)`           |
+| `--v-chip-close-color`            | `var(--danger)`                |
+| `--v-chip-close-color-disabled`   | `var(--primary)`               |
+| `--v-chip-close-color-hover`      | `var(--primary-125)`           |
+
+## Events
+
+| Event           | Description | Value |
+| --------------- | ----------- | ----- |
+| `update:active` |             |       |
+| `click`         |             |       |
+| `close`         |             |       |
+
+## Props
+
+| Prop         | Description | Default   | Type      |
+| ------------ | ----------- | --------- | --------- |
+| `active`     |             | `null`    | `Boolean` |
+| `close`      |             | `false`   | `Boolean` |
+| `close-icon` |             | `'close'` | `String`  |
+| `outlined`   |             | `false`   | `Boolean` |
+| `label`      |             | `true`    | `Boolean` |
+| `disabled`   |             | `false`   | `Boolean` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## CSS Variables
+
+| Variable                          | Default                        |
+| --------------------------------- | ------------------------------ |
+| `--v-chip-color`                  | `var(--foreground-normal)`     |
+| `--v-chip-background-color`       | `var(--background-normal-alt)` |
+| `--v-chip-color-hover`            | `var(--white)`                 |
+| `--v-chip-background-color-hover` | `var(--primary-125)`           |
+| `--v-chip-close-color`            | `var(--danger)`                |
+| `--v-chip-close-color-disabled`   | `var(--primary)`               |
+| `--v-chip-close-color-hover`      | `var(--primary-125)`           |
+
+## Events
+
+| Event           | Description | Value |
+| --------------- | ----------- | ----- |
+| `update:active` |             |       |
+| `click`         |             |       |
+| `close`         |             |       |
+
+## Props
+
+| Prop         | Description | Default   | Type      |
+| ------------ | ----------- | --------- | --------- |
+| `active`     |             | `null`    | `Boolean` |
+| `close`      |             | `false`   | `Boolean` |
+| `close-icon` |             | `'close'` | `String`  |
+| `outlined`   |             | `false`   | `Boolean` |
+| `label`      |             | `true`    | `Boolean` |
+| `disabled`   |             | `false`   | `Boolean` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |

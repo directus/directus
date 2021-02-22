@@ -12,16 +12,17 @@ Classic radio buttons. Nothing special.
 
 ## Props
 
-| Prop          | Description                                 | Default                                      | Type      |
-| ------------- | ------------------------------------------- | -------------------------------------------- | --------- | -------- | --- |
-| <!--          | `value`\*                                   | What value to save in `v-model` when checked |           | `String` | --> |
-| `input-value` | Selected value. Used as value for `v-model` | `null`                                       | `String`  |
-| `label`       | Label to render next to the radio           | `null`                                       | `String`  |
-| `disabled`    | Disable the radio button                    | `false`                                      | `Boolean` |
-| `icon-on`     |                                             | `'radio_button_checked'`                     | `String`  |
-| `icon-off`    |                                             | `'radio_button_unchecked'`                   | `String`  |
-| `block`       |                                             | `false`                                      | `Boolean` |
-| `value`\*     |                                             |                                              | `String`  |
+| Prop          | Description                                 | Default                    | Type                                         |
+| ------------- | ------------------------------------------- | -------------------------- | -------------------------------------------- | -------- | -------- | --- | --- |
+| <!--          | <!--                                        | `value`\*                  | What value to save in `v-model` when checked |          | `String` | --> | --> |
+| `input-value` | Selected value. Used as value for `v-model` | `null`                     | `String`                                     |
+| `label`       | Label to render next to the radio           | `null`                     | `String`                                     |
+| `disabled`    | Disable the radio button                    | `false`                    | `Boolean`                                    |
+| `icon-on`     |                                             | `'radio_button_checked'`   | `String`                                     |
+| `icon-off`    |                                             | `'radio_button_unchecked'` | `String`                                     |
+| `block`       |                                             | `false`                    | `Boolean`                                    |
+| <!--          | `value`\*                                   |                            |                                              | `String` | -->      |
+| `value`\*     |                                             |                            | `String`                                     |
 
 ## Events
 
@@ -40,3 +41,57 @@ Classic radio buttons. Nothing special.
 | Variable          | Default          |
 | ----------------- | ---------------- |
 | `--v-radio-color` | `var(--primary)` |
+
+## CSS Variables
+
+| Variable          | Default          |
+| ----------------- | ---------------- |
+| `--v-radio-color` | `var(--primary)` |
+
+## Events
+
+| Event    | Description | Value |
+| -------- | ----------- | ----- |
+| `change` |             |       |
+
+## Slots
+
+| Slot    | Description | Data |
+| ------- | ----------- | ---- |
+| `label` |             |      |
+
+## CSS Variables
+
+| Variable          | Default          |
+| ----------------- | ---------------- |
+| `--v-radio-color` | `var(--primary)` |
+
+## Events
+
+| Event    | Description | Value |
+| -------- | ----------- | ----- |
+| `change` |             |       |
+
+## Slots
+
+| Slot    | Description | Data |
+| ------- | ----------- | ---- |
+| `label` |             |      |
+
+## CSS Variables
+
+| Variable          | Default          |
+| ----------------- | ---------------- |
+| `--v-radio-color` | `var(--primary)` |
+
+## Events
+
+| Event    | Description | Value |
+| -------- | ----------- | ----- |
+| `change` |             |       |
+
+## Slots
+
+| Slot    | Description | Data |
+| ------- | ----------- | ---- |
+| `label` |             |      |

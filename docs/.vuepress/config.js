@@ -474,6 +474,41 @@ module.exports = {
 				],
 			},
 			{
+				title: 'APP Reference',
+				children: [
+					{
+						type: 'page',
+						path: '/reference/app/app',
+						title: 'Introduction',
+					},
+					{
+						title: 'Components',
+						children: [
+							{
+								title: 'Transitions',
+								children: [
+									{
+										type: 'page',
+										path: '/reference/app/components/transitions/bounce',
+										title: 'Bounce',
+									},
+									{
+										type: 'page',
+										path: '/reference/app/components/transitions/dialog',
+										title: 'Dialog',
+									},
+									{
+										type: 'page',
+										path: '/reference/app/components/transitions/expand',
+										title: 'Expand',
+									},
+								],
+							},
+						],
+					},
+				],
+			},
+			{
 				title: 'Contributing',
 				children: [
 					{

@@ -51,16 +51,25 @@ of the standard HTML attributes like `min`, `length`, or `pattern`.
 
 ## Events
 
-| Events  | Description           | Value                                        | Event |
-| ------- | --------------------- | -------------------------------------------- | ----- | --------- | --- |
-| `input` | Updates `v-model`     | `any`                                        |       |
-| <!--    | `click:append`        | User clicks on content of inner append slot  | --    |           | --> |
-| <!--    | `click:prepend`       | User clicks on content of inner prepend slot | --    |           | --> |
-| <!--    | `click:append-outer`  | User clicks on content of outer append slot  | --    |           | --> |
-| <!--    | `click:prepend-outer` | User clicks on content of outer prepend slot | --    |           | --> |
-| <!--    |                       |                                              |       | `click`   | --> |
-| <!--    |                       |                                              |       | `keydown` | --> |
-| <!--    |                       |                                              |       | `input`   | --> |
+| Events  | Description       | Value                 | Event                                        |
+| ------- | ----------------- | --------------------- | -------------------------------------------- | --------- | --------- | --- | --- |
+| `input` | Updates `v-model` | `any`                 |                                              |
+| <!--    |                   |                       |                                              | `click`   | -->       |
+| <!--    |                   |                       |                                              | `keydown` | -->       |
+| <!--    |                   |                       |                                              | `input`   | -->       |
+| <!--    |                   |                       |                                              | `click`   | -->       |
+| <!--    |                   |                       |                                              | `keydown` | -->       |
+| <!--    |                   |                       |                                              | `input`   | -->       |
+| <!--    | <!--              | `click:append`        | User clicks on content of inner append slot  | --        |           | --> | --> |
+| <!--    | <!--              | `click:prepend`       | User clicks on content of inner prepend slot | --        |           | --> | --> |
+| <!--    | <!--              | `click:append-outer`  | User clicks on content of outer append slot  | --        |           | --> | --> |
+| <!--    | <!--              | `click:prepend-outer` | User clicks on content of outer prepend slot | --        |           | --> | --> |
+| <!--    | <!--              |                       |                                              |           | `click`   | --> | --> |
+| <!--    | <!--              |                       |                                              |           | `keydown` | --> | --> |
+| <!--    | <!--              |                       |                                              |           | `input`   | --> | --> |
+| <!--    |                   |                       |                                              | `click`   | -->       |
+| <!--    |                   |                       |                                              | `keydown` | -->       |
+| <!--    |                   |                       |                                              | `input`   | -->       |
 
 Note: all other listeners are bound to the input HTMLElement, allowing you to handle everything from `keydown` to
 `emptied`.
@@ -71,3 +80,144 @@ Note: all other listeners are bound to the input HTMLElement, allowing you to ha
 | ----------------------------- | --------------------------- |
 | `--v-input-font-family`       | `var(--family-sans-serif)`  |
 | `--v-input-placeholder-color` | `var(--foreground-subdued)` |
+
+## CSS Variables
+
+| Variable                      | Default                     |
+| ----------------------------- | --------------------------- |
+| `--v-input-font-family`       | `var(--family-sans-serif)`  |
+| `--v-input-placeholder-color` | `var(--foreground-subdued)` |
+
+## Events
+
+| Event     | Description | Value |
+| --------- | ----------- | ----- |
+| `click`   |             |       |
+| `keydown` |             |       |
+| `input`   |             |       |
+
+## Props
+
+| Prop                                | Description | Default  | Type               |
+| ----------------------------------- | ----------- | -------- | ------------------ |
+| `autofocus`                         |             | `false`  | `Boolean`          |
+| `disabled`                          |             | `false`  | `Boolean`          |
+| `prefix`                            |             | `null`   | `String`           |
+| `suffix`                            |             | `null`   | `String`           |
+| `full-width`                        |             | `true`   | `Boolean`          |
+| `value`                             |             | `null`   | `[String, Number]` |
+| `nullable`                          |             | `true`   | `Boolean`          |
+| `slug`                              |             | `false`  | `Boolean`          |
+| `slug-separator`                    |             | `'-'`    | `String`           |
+| `type`                              |             | `'text'` | `String`           |
+| `//-fornumberinputsonlyhide-arrows` |             | `false`  | `Boolean`          |
+| `max`                               |             | `null`   | `Number`           |
+| `min`                               |             | `null`   | `Number`           |
+| `step`                              |             | `1`      | `Number`           |
+| `active`                            |             | `false`  | `Boolean`          |
+| `db-safe`                           |             | `false`  | `Boolean`          |
+| `trim`                              |             | `false`  | `Boolean`          |
+
+## Slots
+
+| Slot            | Description | Data |
+| --------------- | ----------- | ---- |
+| `prepend-outer` |             |      |
+| `prepend`       |             |      |
+| `input`         |             |      |
+| `append`        |             |      |
+| `append-outer`  |             |      |
+
+## CSS Variables
+
+| Variable                      | Default                     |
+| ----------------------------- | --------------------------- |
+| `--v-input-font-family`       | `var(--family-sans-serif)`  |
+| `--v-input-placeholder-color` | `var(--foreground-subdued)` |
+
+## Events
+
+| Event     | Description | Value |
+| --------- | ----------- | ----- |
+| `click`   |             |       |
+| `keydown` |             |       |
+| `input`   |             |       |
+
+## Props
+
+| Prop                                | Description | Default  | Type               |
+| ----------------------------------- | ----------- | -------- | ------------------ |
+| `autofocus`                         |             | `false`  | `Boolean`          |
+| `disabled`                          |             | `false`  | `Boolean`          |
+| `prefix`                            |             | `null`   | `String`           |
+| `suffix`                            |             | `null`   | `String`           |
+| `full-width`                        |             | `true`   | `Boolean`          |
+| `value`                             |             | `null`   | `[String, Number]` |
+| `nullable`                          |             | `true`   | `Boolean`          |
+| `slug`                              |             | `false`  | `Boolean`          |
+| `slug-separator`                    |             | `'-'`    | `String`           |
+| `type`                              |             | `'text'` | `String`           |
+| `//-fornumberinputsonlyhide-arrows` |             | `false`  | `Boolean`          |
+| `max`                               |             | `null`   | `Number`           |
+| `min`                               |             | `null`   | `Number`           |
+| `step`                              |             | `1`      | `Number`           |
+| `active`                            |             | `false`  | `Boolean`          |
+| `db-safe`                           |             | `false`  | `Boolean`          |
+| `trim`                              |             | `false`  | `Boolean`          |
+
+## Slots
+
+| Slot            | Description | Data |
+| --------------- | ----------- | ---- |
+| `prepend-outer` |             |      |
+| `prepend`       |             |      |
+| `input`         |             |      |
+| `append`        |             |      |
+| `append-outer`  |             |      |
+
+## CSS Variables
+
+| Variable                      | Default                     |
+| ----------------------------- | --------------------------- |
+| `--v-input-font-family`       | `var(--family-sans-serif)`  |
+| `--v-input-placeholder-color` | `var(--foreground-subdued)` |
+
+## Events
+
+| Event     | Description | Value |
+| --------- | ----------- | ----- |
+| `click`   |             |       |
+| `keydown` |             |       |
+| `input`   |             |       |
+
+## Props
+
+| Prop                                | Description | Default  | Type               |
+| ----------------------------------- | ----------- | -------- | ------------------ |
+| `autofocus`                         |             | `false`  | `Boolean`          |
+| `disabled`                          |             | `false`  | `Boolean`          |
+| `prefix`                            |             | `null`   | `String`           |
+| `suffix`                            |             | `null`   | `String`           |
+| `full-width`                        |             | `true`   | `Boolean`          |
+| `value`                             |             | `null`   | `[String, Number]` |
+| `nullable`                          |             | `true`   | `Boolean`          |
+| `slug`                              |             | `false`  | `Boolean`          |
+| `slug-separator`                    |             | `'-'`    | `String`           |
+| `type`                              |             | `'text'` | `String`           |
+| `//-fornumberinputsonlyhide-arrows` |             | `false`  | `Boolean`          |
+| `max`                               |             | `null`   | `Number`           |
+| `min`                               |             | `null`   | `Number`           |
+| `step`                              |             | `1`      | `Number`           |
+| `active`                            |             | `false`  | `Boolean`          |
+| `db-safe`                           |             | `false`  | `Boolean`          |
+| `trim`                              |             | `false`  | `Boolean`          |
+
+## Slots
+
+| Slot            | Description | Data |
+| --------------- | ----------- | ---- |
+| `prepend-outer` |             |      |
+| `prepend`       |             |      |
+| `input`         |             |      |
+| `append`        |             |      |
+| `append-outer`  |             |      |

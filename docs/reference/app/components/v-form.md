@@ -16,18 +16,25 @@ Renders a form using interfaces based on the passed collection name.
 
 ## Props
 
-| Prop                                                      | Description                                                                                                             | Default                                     | Type                              |
-| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | --------------------------------- | --- | --- |
-| `collection`                                              | The collection of which you want to render the fields                                                                   | `undefined`                                 | `String`                          |
-| `fields`                                                  | Array of fields to render. This can be used instead of the collection prop                                              | `undefined`                                 | `Field[]`                         |
-| <!--                                                      | `initialValues`                                                                                                         | Object of the starting values of the fields | --                                |     | --> |
-| `edits`                                                   | The edits that were made after the form was rendered. Being used in `v-model`                                           | `null`                                      | `Object as PropType<FieldValues>` |
-| `loading`                                                 | Display the form in a loading state. Prevents the ctx menus from being used and renders skeleton loaders for the fields | `false`                                     | `Boolean`                         |
-| `initial-values`                                          |                                                                                                                         | `null`                                      | `Object as PropType<FieldValues>` |
-| `batch-mode`                                              |                                                                                                                         | `false`                                     | `Boolean`                         |
-| `//-notecanbenullwhentheformisusedinbatchmodeprimary-key` |                                                                                                                         | `null`                                      | `[String, Number]`                |
-| `disabled`                                                |                                                                                                                         | `false`                                     | `Boolean`                         |
-| `validation-errors`                                       |                                                                                                                         | `() => []`                                  | `ValidationError[]`               |
+| Prop                                                      | Description                                                                                                             | Default         | Type                                        |
+| --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------- | ------------------------------------------- | --- | --- | --- | --- |
+| `collection`                                              | The collection of which you want to render the fields                                                                   | `undefined`     | `String`                                    |
+| `fields`                                                  | Array of fields to render. This can be used instead of the collection prop                                              | `undefined`     | `Field[]`                                   |
+| `initial-values`                                          |                                                                                                                         | `null`          | `Object as PropType<FieldValues>`           |
+| `edits`                                                   |                                                                                                                         | `null`          | `Object as PropType<FieldValues>`           |
+| `loading`                                                 |                                                                                                                         | `false`         | `Boolean`                                   |
+| `batch-mode`                                              |                                                                                                                         | `false`         | `Boolean`                                   |
+| `//-notecanbenullwhentheformisusedinbatchmodeprimary-key` |                                                                                                                         | `null`          | `[String, Number]`                          |
+| `disabled`                                                |                                                                                                                         | `false`         | `Boolean`                                   |
+| `validation-errors`                                       |                                                                                                                         | `() => []`      | `ValidationError[]`                         |
+| <!--                                                      | <!--                                                                                                                    | `initialValues` | Object of the starting values of the fields | --  |     | --> | --> |
+| `edits`                                                   | The edits that were made after the form was rendered. Being used in `v-model`                                           | `null`          | `Object as PropType<FieldValues>`           |
+| `loading`                                                 | Display the form in a loading state. Prevents the ctx menus from being used and renders skeleton loaders for the fields | `false`         | `Boolean`                                   |
+| `initial-values`                                          |                                                                                                                         | `null`          | `Object as PropType<FieldValues>`           |
+| `batch-mode`                                              |                                                                                                                         | `false`         | `Boolean`                                   |
+| `//-notecanbenullwhentheformisusedinbatchmodeprimary-key` |                                                                                                                         | `null`          | `[String, Number]`                          |
+| `disabled`                                                |                                                                                                                         | `false`         | `Boolean`                                   |
+| `validation-errors`                                       |                                                                                                                         | `() => []`      | `ValidationError[]`                         |
 
 **Note**: You have to pass either the collection or fields prop.
 
@@ -40,3 +47,63 @@ n/a
 | Event   | Description              | Value |
 | ------- | ------------------------ | ----- |
 | `input` | Edits have been updated. |       |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop                                                      | Description | Default     | Type                              |
+| --------------------------------------------------------- | ----------- | ----------- | --------------------------------- |
+| `collection`                                              |             | `undefined` | `String`                          |
+| `fields`                                                  |             | `undefined` | `Field[]`                         |
+| `initial-values`                                          |             | `null`      | `Object as PropType<FieldValues>` |
+| `edits`                                                   |             | `null`      | `Object as PropType<FieldValues>` |
+| `loading`                                                 |             | `false`     | `Boolean`                         |
+| `batch-mode`                                              |             | `false`     | `Boolean`                         |
+| `//-notecanbenullwhentheformisusedinbatchmodeprimary-key` |             | `null`      | `[String, Number]`                |
+| `disabled`                                                |             | `false`     | `Boolean`                         |
+| `validation-errors`                                       |             | `() => []`  | `ValidationError[]`               |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop                                                      | Description | Default     | Type                              |
+| --------------------------------------------------------- | ----------- | ----------- | --------------------------------- |
+| `collection`                                              |             | `undefined` | `String`                          |
+| `fields`                                                  |             | `undefined` | `Field[]`                         |
+| `initial-values`                                          |             | `null`      | `Object as PropType<FieldValues>` |
+| `edits`                                                   |             | `null`      | `Object as PropType<FieldValues>` |
+| `loading`                                                 |             | `false`     | `Boolean`                         |
+| `batch-mode`                                              |             | `false`     | `Boolean`                         |
+| `//-notecanbenullwhentheformisusedinbatchmodeprimary-key` |             | `null`      | `[String, Number]`                |
+| `disabled`                                                |             | `false`     | `Boolean`                         |
+| `validation-errors`                                       |             | `() => []`  | `ValidationError[]`               |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop                                                      | Description | Default     | Type                              |
+| --------------------------------------------------------- | ----------- | ----------- | --------------------------------- |
+| `collection`                                              |             | `undefined` | `String`                          |
+| `fields`                                                  |             | `undefined` | `Field[]`                         |
+| `initial-values`                                          |             | `null`      | `Object as PropType<FieldValues>` |
+| `edits`                                                   |             | `null`      | `Object as PropType<FieldValues>` |
+| `loading`                                                 |             | `false`     | `Boolean`                         |
+| `batch-mode`                                              |             | `false`     | `Boolean`                         |
+| `//-notecanbenullwhentheformisusedinbatchmodeprimary-key` |             | `null`      | `[String, Number]`                |
+| `disabled`                                                |             | `false`     | `Boolean`                         |
+| `validation-errors`                                       |             | `() => []`  | `ValidationError[]`               |

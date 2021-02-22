@@ -10,12 +10,14 @@ Divides content. Made to be used in `v-list` or `v-tabs` components.
 
 ## Props
 
-| Prop           | Description                   | Default                                               | Type      |
-| -------------- | ----------------------------- | ----------------------------------------------------- | --------- | --- | --- |
-| `vertical`     | Render the divider vertically | `false`                                               | `Boolean` |
-| <!--           | `inlineTitle`                 | Render the title inline with the divider, or under it | `true`    |     | --> |
-| `inline-title` |                               | `true`                                                | `Boolean` |
-| `large`        |                               | `false`                                               | `Boolean` |
+| Prop           | Description                   | Default       | Type                                                  |
+| -------------- | ----------------------------- | ------------- | ----------------------------------------------------- | ------ | --- | --- | --- |
+| `vertical`     | Render the divider vertically | `false`       | `Boolean`                                             |
+| `inline-title` |                               | `true`        | `Boolean`                                             |
+| `large`        |                               | `false`       | `Boolean`                                             |
+| <!--           | <!--                          | `inlineTitle` | Render the title inline with the divider, or under it | `true` |     | --> | --> |
+| `inline-title` |                               | `true`        | `Boolean`                                             |
+| `large`        |                               | `false`       | `Boolean`                                             |
 
 ## Events
 
@@ -34,3 +36,69 @@ n/a
 | ------------------------- | ------------------------------ |
 | `--v-divider-color`       | `var(--border-normal)`         |
 | `--v-divider-label-color` | `var(--foreground-normal-alt)` |
+
+## CSS Variables
+
+| Variable                  | Default                        |
+| ------------------------- | ------------------------------ |
+| `--v-divider-color`       | `var(--border-normal)`         |
+| `--v-divider-label-color` | `var(--foreground-normal-alt)` |
+
+## Props
+
+| Prop           | Description | Default | Type      |
+| -------------- | ----------- | ------- | --------- |
+| `vertical`     |             | `false` | `Boolean` |
+| `inline-title` |             | `true`  | `Boolean` |
+| `large`        |             | `false` | `Boolean` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| `icon`    |             |      |
+| _default_ |             |      |
+
+## CSS Variables
+
+| Variable                  | Default                        |
+| ------------------------- | ------------------------------ |
+| `--v-divider-color`       | `var(--border-normal)`         |
+| `--v-divider-label-color` | `var(--foreground-normal-alt)` |
+
+## Props
+
+| Prop           | Description | Default | Type      |
+| -------------- | ----------- | ------- | --------- |
+| `vertical`     |             | `false` | `Boolean` |
+| `inline-title` |             | `true`  | `Boolean` |
+| `large`        |             | `false` | `Boolean` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| `icon`    |             |      |
+| _default_ |             |      |
+
+## CSS Variables
+
+| Variable                  | Default                        |
+| ------------------------- | ------------------------------ |
+| `--v-divider-color`       | `var(--border-normal)`         |
+| `--v-divider-label-color` | `var(--foreground-normal-alt)` |
+
+## Props
+
+| Prop           | Description | Default | Type      |
+| -------------- | ----------- | ------- | --------- |
+| `vertical`     |             | `false` | `Boolean` |
+| `inline-title` |             | `true`  | `Boolean` |
+| `large`        |             | `false` | `Boolean` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| `icon`    |             |      |
+| _default_ |             |      |

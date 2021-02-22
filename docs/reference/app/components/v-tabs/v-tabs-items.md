@@ -34,3 +34,57 @@ hidden.
 ## CSS Variables
 
 n/a
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop    | Description | Default     | Type                   |
+| ------- | ----------- | ----------- | ---------------------- |
+| `value` |             | `undefined` | `(string or number)[]` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop    | Description | Default     | Type                   |
+| ------- | ----------- | ----------- | ---------------------- |
+| `value` |             | `undefined` | `(string or number)[]` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop    | Description | Default     | Type                   |
+| ------- | ----------- | ----------- | ---------------------- |
+| `value` |             | `undefined` | `(string or number)[]` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |

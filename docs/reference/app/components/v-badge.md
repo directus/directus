@@ -51,3 +51,90 @@ N/A
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |
 | _default_ |             |      |
+
+## CSS Variables
+
+| Variable                     | Default                  |
+| ---------------------------- | ------------------------ |
+| `--v-badge-color`            | `var(--white)`           |
+| `--v-badge-background-color` | `var(--danger)`          |
+| `--v-badge-border-color`     | `var(--background-page)` |
+| `--v-badge-offset-x`         | `0px`                    |
+| `--v-badge-offset-y`         | `0px`                    |
+| `--v-badge-size`             | `16px`                   |
+
+## Props
+
+| Prop       | Description | Default | Type               |
+| ---------- | ----------- | ------- | ------------------ |
+| `value`    |             | `null`  | `[String, Number]` |
+| `dot`      |             | `false` | `Boolean`          |
+| `left`     |             | `false` | `Boolean`          |
+| `bottom`   |             | `false` | `Boolean`          |
+| `icon`     |             | `null`  | `String`           |
+| `bordered` |             | `false` | `Boolean`          |
+| `disabled` |             | `false` | `Boolean`          |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## CSS Variables
+
+| Variable                     | Default                  |
+| ---------------------------- | ------------------------ |
+| `--v-badge-color`            | `var(--white)`           |
+| `--v-badge-background-color` | `var(--danger)`          |
+| `--v-badge-border-color`     | `var(--background-page)` |
+| `--v-badge-offset-x`         | `0px`                    |
+| `--v-badge-offset-y`         | `0px`                    |
+| `--v-badge-size`             | `16px`                   |
+
+## Props
+
+| Prop       | Description | Default | Type               |
+| ---------- | ----------- | ------- | ------------------ |
+| `value`    |             | `null`  | `[String, Number]` |
+| `dot`      |             | `false` | `Boolean`          |
+| `left`     |             | `false` | `Boolean`          |
+| `bottom`   |             | `false` | `Boolean`          |
+| `icon`     |             | `null`  | `String`           |
+| `bordered` |             | `false` | `Boolean`          |
+| `disabled` |             | `false` | `Boolean`          |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## CSS Variables
+
+| Variable                     | Default                  |
+| ---------------------------- | ------------------------ |
+| `--v-badge-color`            | `var(--white)`           |
+| `--v-badge-background-color` | `var(--danger)`          |
+| `--v-badge-border-color`     | `var(--background-page)` |
+| `--v-badge-offset-x`         | `0px`                    |
+| `--v-badge-offset-y`         | `0px`                    |
+| `--v-badge-size`             | `16px`                   |
+
+## Props
+
+| Prop       | Description | Default | Type               |
+| ---------- | ----------- | ------- | ------------------ |
+| `value`    |             | `null`  | `[String, Number]` |
+| `dot`      |             | `false` | `Boolean`          |
+| `left`     |             | `false` | `Boolean`          |
+| `bottom`   |             | `false` | `Boolean`          |
+| `icon`     |             | `null`  | `String`           |
+| `bordered` |             | `false` | `Boolean`          |
+| `disabled` |             | `false` | `Boolean`          |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |

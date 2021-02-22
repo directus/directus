@@ -32,13 +32,103 @@ Renders an overlay with a flex slot rendering whatever content you pass
 ## Events
 
 | Events   | Description             | Value     | Event |
-| -------- | ----------------------- | --------- | ----- | -------- | --- |
+| -------- | ----------------------- | --------- | ----- | -------- | -------- | --- | --- |
 | `toggle` | Change the active state | `boolean` |       |
-| <!--     |                         |           |       | `esc`    | --> |
-| <!--     |                         |           |       | `toggle` | --> |
+| <!--     |                         |           |       | `esc`    | -->      |
+| <!--     |                         |           |       | `toggle` | -->      |
+| <!--     |                         |           |       | `esc`    | -->      |
+| <!--     |                         |           |       | `toggle` | -->      |
+| <!--     | <!--                    |           |       |          | `esc`    | --> | --> |
+| <!--     | <!--                    |           |       |          | `toggle` | --> | --> |
+| <!--     |                         |           |       | `esc`    | -->      |
+| <!--     |                         |           |       | `toggle` | -->      |
 
 ## CSS Variables
 
 | Variable             | Default |
 | -------------------- | ------- |
 | `--v-dialog-z-index` | `100`   |
+
+## CSS Variables
+
+| Variable             | Default |
+| -------------------- | ------- |
+| `--v-dialog-z-index` | `100`   |
+
+## Events
+
+| Event    | Description | Value |
+| -------- | ----------- | ----- |
+| `esc`    |             |       |
+| `toggle` |             |       |
+
+## Props
+
+| Prop         | Description | Default     | Type      |
+| ------------ | ----------- | ----------- | --------- |
+| `active`     |             | `undefined` | `Boolean` |
+| `persistent` |             | `false`     | `Boolean` |
+| `placement`  |             | `'center'`  | `String`  |
+
+## Slots
+
+| Slot        | Description | Data |
+| ----------- | ----------- | ---- |
+| `activator` |             |      |
+| _default_   |             |      |
+
+## CSS Variables
+
+| Variable             | Default |
+| -------------------- | ------- |
+| `--v-dialog-z-index` | `100`   |
+
+## Events
+
+| Event    | Description | Value |
+| -------- | ----------- | ----- |
+| `esc`    |             |       |
+| `toggle` |             |       |
+
+## Props
+
+| Prop         | Description | Default     | Type      |
+| ------------ | ----------- | ----------- | --------- |
+| `active`     |             | `undefined` | `Boolean` |
+| `persistent` |             | `false`     | `Boolean` |
+| `placement`  |             | `'center'`  | `String`  |
+
+## Slots
+
+| Slot        | Description | Data |
+| ----------- | ----------- | ---- |
+| `activator` |             |      |
+| _default_   |             |      |
+
+## CSS Variables
+
+| Variable             | Default |
+| -------------------- | ------- |
+| `--v-dialog-z-index` | `100`   |
+
+## Events
+
+| Event    | Description | Value |
+| -------- | ----------- | ----- |
+| `esc`    |             |       |
+| `toggle` |             |       |
+
+## Props
+
+| Prop         | Description | Default     | Type      |
+| ------------ | ----------- | ----------- | --------- |
+| `active`     |             | `undefined` | `Boolean` |
+| `persistent` |             | `false`     | `Boolean` |
+| `placement`  |             | `'center'`  | `String`  |
+
+## Slots
+
+| Slot        | Description | Data |
+| ----------- | ----------- | ---- |
+| `activator` |             |      |
+| _default_   |             |      |

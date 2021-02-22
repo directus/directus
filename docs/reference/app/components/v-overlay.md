@@ -49,3 +49,81 @@ The colors can be changed via the css variable `--v-overlay-color`.
 | --------------------- | ---------------------- |
 | `--v-overlay-color`   | `var(--overlay-color)` |
 | `--v-overlay-z-index` | `600`                  |
+
+## CSS Variables
+
+| Variable              | Default                |
+| --------------------- | ---------------------- |
+| `--v-overlay-color`   | `var(--overlay-color)` |
+| `--v-overlay-z-index` | `600`                  |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `click` |             |       |
+
+## Props
+
+| Prop       | Description | Default | Type      |
+| ---------- | ----------- | ------- | --------- |
+| `active`   |             | `false` | `Boolean` |
+| `absolute` |             | `false` | `Boolean` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## CSS Variables
+
+| Variable              | Default                |
+| --------------------- | ---------------------- |
+| `--v-overlay-color`   | `var(--overlay-color)` |
+| `--v-overlay-z-index` | `600`                  |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `click` |             |       |
+
+## Props
+
+| Prop       | Description | Default | Type      |
+| ---------- | ----------- | ------- | --------- |
+| `active`   |             | `false` | `Boolean` |
+| `absolute` |             | `false` | `Boolean` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## CSS Variables
+
+| Variable              | Default                |
+| --------------------- | ---------------------- |
+| `--v-overlay-color`   | `var(--overlay-color)` |
+| `--v-overlay-z-index` | `600`                  |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `click` |             |       |
+
+## Props
+
+| Prop       | Description | Default | Type      |
+| ---------- | ----------- | ------- | --------- |
+| `active`   |             | `false` | `Boolean` |
+| `absolute` |             | `false` | `Boolean` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |

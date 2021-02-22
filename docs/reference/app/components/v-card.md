@@ -186,3 +186,60 @@ n/a
 n/a
 
 ---
+
+## CSS Variables
+
+| Variable                    | Default                     |
+| --------------------------- | --------------------------- |
+| `--v-card-min-width`        | `none`                      |
+| `--v-card-max-width`        | `400px`                     |
+| `--v-card-height`           | `auto`                      |
+| `--v-card-min-height`       | `none`                      |
+| `--v-card-max-height`       | `min-content`               |
+| `--v-card-padding`          | `16px`                      |
+| `--v-card-background-color` | `var(--background-subdued)` |
+
+## Props
+
+| Prop       | Description | Default | Type      |
+| ---------- | ----------- | ------- | --------- |
+| `disabled` |             | `false` | `Boolean` |
+| `tile`     |             | `false` | `Boolean` |
+
+## CSS Variables
+
+| Variable                    | Default                     |
+| --------------------------- | --------------------------- |
+| `--v-card-min-width`        | `none`                      |
+| `--v-card-max-width`        | `400px`                     |
+| `--v-card-height`           | `auto`                      |
+| `--v-card-min-height`       | `none`                      |
+| `--v-card-max-height`       | `min-content`               |
+| `--v-card-padding`          | `16px`                      |
+| `--v-card-background-color` | `var(--background-subdued)` |
+
+## Props
+
+| Prop       | Description | Default | Type      |
+| ---------- | ----------- | ------- | --------- |
+| `disabled` |             | `false` | `Boolean` |
+| `tile`     |             | `false` | `Boolean` |
+
+## CSS Variables
+
+| Variable                    | Default                     |
+| --------------------------- | --------------------------- |
+| `--v-card-min-width`        | `none`                      |
+| `--v-card-max-width`        | `400px`                     |
+| `--v-card-height`           | `auto`                      |
+| `--v-card-min-height`       | `none`                      |
+| `--v-card-max-height`       | `min-content`               |
+| `--v-card-padding`          | `16px`                      |
+| `--v-card-background-color` | `var(--background-subdued)` |
+
+## Props
+
+| Prop       | Description | Default | Type      |
+| ---------- | ----------- | ------- | --------- |
+| `disabled` |             | `false` | `Boolean` |
+| `tile`     |             | `false` | `Boolean` |

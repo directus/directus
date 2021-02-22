@@ -23,11 +23,12 @@ you ever find yourself doing this:
 
 ## Slots
 
-| Slot        | Description  | Data                                                                                |
-| ----------- | ------------ | ----------------------------------------------------------------------------------- | --- | --- |
-| _default_   | Menu content |                                                                                     |
-| <!--        | activator    | Activator element. Attaches click and mouse enter/leave handlers on wrapper element |     | --> |
-| `activator` |              |                                                                                     |
+| Slot        | Description  | Data      |
+| ----------- | ------------ | --------- | ----------------------------------------------------------------------------------- | --- | --- | --- |
+| _default_   | Menu content |           |
+| `activator` |              |           |
+| <!--        | <!--         | activator | Activator element. Attaches click and mouse enter/leave handlers on wrapper element |     | --> | --> |
+| `activator` |              |           |
 
 ## CSS Variables
 
@@ -40,3 +41,102 @@ you ever find yourself doing this:
 | Event   | Description | Value |
 | ------- | ----------- | ----- |
 | `input` |             |       |
+
+## CSS Variables
+
+| Variable             | Default |
+| -------------------- | ------- |
+| `--v-menu-min-width` | `100px` |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop                     | Description | Default     | Type                            |
+| ------------------------ | ----------- | ----------- | ------------------------------- |
+| `placement`              |             | `'bottom'`  | `String as PropType<Placement>` |
+| `value`                  |             | `undefined` | `Boolean`                       |
+| `close-on-click`         |             | `true`      | `Boolean`                       |
+| `close-on-content-click` |             | `true`      | `Boolean`                       |
+| `attached`               |             | `false`     | `Boolean`                       |
+| `show-arrow`             |             | `false`     | `Boolean`                       |
+| `disabled`               |             | `false`     | `Boolean`                       |
+| `trigger`                |             | `null`      | `String`                        |
+| `delay`                  |             | `0`         | `Number`                        |
+
+## Slots
+
+| Slot        | Description | Data |
+| ----------- | ----------- | ---- |
+| `activator` |             |      |
+| _default_   |             |      |
+
+## CSS Variables
+
+| Variable             | Default |
+| -------------------- | ------- |
+| `--v-menu-min-width` | `100px` |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop                     | Description | Default     | Type                            |
+| ------------------------ | ----------- | ----------- | ------------------------------- |
+| `placement`              |             | `'bottom'`  | `String as PropType<Placement>` |
+| `value`                  |             | `undefined` | `Boolean`                       |
+| `close-on-click`         |             | `true`      | `Boolean`                       |
+| `close-on-content-click` |             | `true`      | `Boolean`                       |
+| `attached`               |             | `false`     | `Boolean`                       |
+| `show-arrow`             |             | `false`     | `Boolean`                       |
+| `disabled`               |             | `false`     | `Boolean`                       |
+| `trigger`                |             | `null`      | `String`                        |
+| `delay`                  |             | `0`         | `Number`                        |
+
+## Slots
+
+| Slot        | Description | Data |
+| ----------- | ----------- | ---- |
+| `activator` |             |      |
+| _default_   |             |      |
+
+## CSS Variables
+
+| Variable             | Default |
+| -------------------- | ------- |
+| `--v-menu-min-width` | `100px` |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop                     | Description | Default     | Type                            |
+| ------------------------ | ----------- | ----------- | ------------------------------- |
+| `placement`              |             | `'bottom'`  | `String as PropType<Placement>` |
+| `value`                  |             | `undefined` | `Boolean`                       |
+| `close-on-click`         |             | `true`      | `Boolean`                       |
+| `close-on-content-click` |             | `true`      | `Boolean`                       |
+| `attached`               |             | `false`     | `Boolean`                       |
+| `show-arrow`             |             | `false`     | `Boolean`                       |
+| `disabled`               |             | `false`     | `Boolean`                       |
+| `trigger`                |             | `null`      | `String`                        |
+| `delay`                  |             | `0`         | `Number`                        |
+
+## Slots
+
+| Slot        | Description | Data |
+| ----------- | ----------- | ---- |
+| `activator` |             |      |
+| _default_   |             |      |

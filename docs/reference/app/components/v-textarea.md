@@ -35,10 +35,13 @@ of the standard HTML attributes like `min`, `length`, or `pattern`.
 ## Events
 
 | Events  | Description       | Value | Event |
-| ------- | ----------------- | ----- | ----- | ------- | ------- | --- | --- |
+| ------- | ----------------- | ----- | ----- | ------- | ------- | ------- | --- | --- | --- |
 | `input` | Updates `v-model` | `any` |       |
-| <!--    | <!--              |       |       |         | `input` | --> | --> |
-| <!--    | <!--              |       |       |         | `input` | --> | --> |
+| <!--    |                   |       |       | `input` | -->     |
+| <!--    |                   |       |       | `input` | -->     |
+| <!--    | <!--              | <!--  |       |         |         | `input` | --> | --> | --> |
+| <!--    | <!--              | <!--  |       |         |         | `input` | --> | --> | --> |
+| <!--    | <!--              |       |       |         | `input` | -->     | --> |
 | <!--    |                   |       |       | `input` | -->     |
 
 Note: all other listeners are bound to the input HTMLElement, allowing you to handle everything from `keydown` to
@@ -52,3 +55,105 @@ Note: all other listeners are bound to the input HTMLElement, allowing you to ha
 | `--v-textarea-max-height`  | `var(--input-height-tall)` |
 | `--v-textarea-height`      | `var(--input-height-tall)` |
 | `--v-textarea-font-family` | `var(--family-sans-serif)` |
+
+## CSS Variables
+
+| Variable                   | Default                    |
+| -------------------------- | -------------------------- |
+| `--v-textarea-min-height`  | `none`                     |
+| `--v-textarea-max-height`  | `var(--input-height-tall)` |
+| `--v-textarea-height`      | `var(--input-height-tall)` |
+| `--v-textarea-font-family` | `var(--family-sans-serif)` |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop              | Description | Default | Type      |
+| ----------------- | ----------- | ------- | --------- |
+| `disabled`        |             | `false` | `Boolean` |
+| `autofocus`       |             | `false` | `Boolean` |
+| `full-width`      |             | `true`  | `Boolean` |
+| `value`           |             | `null`  | `String`  |
+| `expand-on-focus` |             | `false` | `Boolean` |
+| `placeholder`     |             | `null`  | `String`  |
+| `trim`            |             | `false` | `Boolean` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| `prepend` |             |      |
+| `append`  |             |      |
+
+## CSS Variables
+
+| Variable                   | Default                    |
+| -------------------------- | -------------------------- |
+| `--v-textarea-min-height`  | `none`                     |
+| `--v-textarea-max-height`  | `var(--input-height-tall)` |
+| `--v-textarea-height`      | `var(--input-height-tall)` |
+| `--v-textarea-font-family` | `var(--family-sans-serif)` |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop              | Description | Default | Type      |
+| ----------------- | ----------- | ------- | --------- |
+| `disabled`        |             | `false` | `Boolean` |
+| `autofocus`       |             | `false` | `Boolean` |
+| `full-width`      |             | `true`  | `Boolean` |
+| `value`           |             | `null`  | `String`  |
+| `expand-on-focus` |             | `false` | `Boolean` |
+| `placeholder`     |             | `null`  | `String`  |
+| `trim`            |             | `false` | `Boolean` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| `prepend` |             |      |
+| `append`  |             |      |
+
+## CSS Variables
+
+| Variable                   | Default                    |
+| -------------------------- | -------------------------- |
+| `--v-textarea-min-height`  | `none`                     |
+| `--v-textarea-max-height`  | `var(--input-height-tall)` |
+| `--v-textarea-height`      | `var(--input-height-tall)` |
+| `--v-textarea-font-family` | `var(--family-sans-serif)` |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop              | Description | Default | Type      |
+| ----------------- | ----------- | ------- | --------- |
+| `disabled`        |             | `false` | `Boolean` |
+| `autofocus`       |             | `false` | `Boolean` |
+| `full-width`      |             | `true`  | `Boolean` |
+| `value`           |             | `null`  | `String`  |
+| `expand-on-focus` |             | `false` | `Boolean` |
+| `placeholder`     |             | `null`  | `String`  |
+| `trim`            |             | `false` | `Boolean` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| `prepend` |             |      |
+| `append`  |             |      |

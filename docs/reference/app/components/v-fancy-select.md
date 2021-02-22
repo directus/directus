@@ -33,12 +33,13 @@ representation.
 
 ## Props
 
-| Prop       | Description                             | Default                        | Type                |
-| ---------- | --------------------------------------- | ------------------------------ | ------------------- | --- | --- |
-| <!--       | `items`\*                               | Items the user can select from |                     |     | --> |
-| `value`    | Value used for v-model                  | `null`                         | `[String, Number]`  |
-| `disabled` | Disable selecting / deselecting a value | `false`                        | `Boolean`           |
-| `items`\*  |                                         |                                | `FancySelectItem[]` |
+| Prop       | Description                             | Default   | Type                           |
+| ---------- | --------------------------------------- | --------- | ------------------------------ | ------------------- | --- | --- | --- |
+| <!--       | <!--                                    | `items`\* | Items the user can select from |                     |     | --> | --> |
+| `value`    | Value used for v-model                  | `null`    | `[String, Number]`             |
+| `disabled` | Disable selecting / deselecting a value | `false`   | `Boolean`                      |
+| <!--       | `items`\*                               |           |                                | `FancySelectItem[]` | --> |
+| `items`\*  |                                         |           | `FancySelectItem[]`            |
 
 ## Events
 
@@ -53,3 +54,21 @@ n/a
 ## CSS Variables
 
 n/a
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |

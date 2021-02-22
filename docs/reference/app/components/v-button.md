@@ -50,29 +50,29 @@ the loading state.
 
 ## Props
 
-| Prop         | Description                                                               | Default                           | Type                                               |
-| ------------ | ------------------------------------------------------------------------- | --------------------------------- | -------------------------------------------------- | ---------- | --- |
-| <!--         | `block`                                                                   | Enable full width (display block) | `false`                                            |            | --> |
-| `icon`       | Remove padding / min-width. Meant to be used with just an icon as content | `false`                           | `Boolean`                                          |
-| `outlined`   | No background                                                             | `false`                           | `Boolean`                                          |
-| `rounded`    | Enable rounded corners                                                    | `false`                           | `Boolean`                                          |
-| `type`       | HTML `type` attribute                                                     | `'button'`                        | `String`                                           |
-| `disabled`   | Disabled state                                                            | `false`                           | `Boolean`                                          |
-| `loading`    | Loading state                                                             | `false`                           | `Boolean`                                          |
-| <!--         | `x-small`                                                                 | Render extra small                | `false`                                            |            | --> |
-| <!--         | `small`                                                                   | Render small                      | `false`                                            |            | --> |
-| <!--         | `large`                                                                   | Render large                      | `false`                                            |            | --> |
-| <!--         | `x-large`                                                                 | Render extra large                | `false`                                            |            | --> |
-| `to`         | Render as vue router-link                                                 | `null`                            | `[String, Object] as PropType<string or Location>` |
-| `href`       | Render as anchor                                                          | `null`                            | `String`                                           |
-| `align`      | Align content in button. One of `left                                     | `'center'`                        | `String`                                           | `'center'` |     |
-| `dashed`     | Render the border dashed. Meant to be used with `outlined`.               | `false`                           | `Boolean`                                          |
-| `tile`       | Render without border radius                                              | `false`                           | `Boolean`                                          |
-| `download`   | Add the `download` attribute (used in combo with `href`)                  | `null`                            | `String`                                           |
-| `full-width` |                                                                           | `false`                           | `Boolean`                                          |
-| `exact`      |                                                                           | `false`                           | `Boolean`                                          |
-| `secondary`  |                                                                           | `false`                           | `Boolean`                                          |
-| `value`      |                                                                           | `null`                            | `[Number, String]`                                 |
+| Prop         | Description                                                               | Default    | Type                                               |
+| ------------ | ------------------------------------------------------------------------- | ---------- | -------------------------------------------------- | ---------- | --- | --- | --- |
+| <!--         | <!--                                                                      | `block`    | Enable full width (display block)                  | `false`    |     | --> | --> |
+| `icon`       | Remove padding / min-width. Meant to be used with just an icon as content | `false`    | `Boolean`                                          |
+| `outlined`   | No background                                                             | `false`    | `Boolean`                                          |
+| `rounded`    | Enable rounded corners                                                    | `false`    | `Boolean`                                          |
+| `type`       | HTML `type` attribute                                                     | `'button'` | `String`                                           |
+| `disabled`   | Disabled state                                                            | `false`    | `Boolean`                                          |
+| `loading`    | Loading state                                                             | `false`    | `Boolean`                                          |
+| <!--         | <!--                                                                      | `x-small`  | Render extra small                                 | `false`    |     | --> | --> |
+| <!--         | <!--                                                                      | `small`    | Render small                                       | `false`    |     | --> | --> |
+| <!--         | <!--                                                                      | `large`    | Render large                                       | `false`    |     | --> | --> |
+| <!--         | <!--                                                                      | `x-large`  | Render extra large                                 | `false`    |     | --> | --> |
+| `to`         | Render as vue router-link                                                 | `null`     | `[String, Object] as PropType<string or Location>` |
+| `href`       | Render as anchor                                                          | `null`     | `String`                                           |
+| `align`      | Align content in button. One of `left                                     | `'center'` | `String`                                           | `'center'` |     |
+| `dashed`     | Render the border dashed. Meant to be used with `outlined`.               | `false`    | `Boolean`                                          |
+| `tile`       | Render without border radius                                              | `false`    | `Boolean`                                          |
+| `download`   | Add the `download` attribute (used in combo with `href`)                  | `null`     | `String`                                           |
+| `full-width` |                                                                           | `false`    | `Boolean`                                          |
+| `exact`      |                                                                           | `false`    | `Boolean`                                          |
+| `secondary`  |                                                                           | `false`    | `Boolean`                                          |
+| `value`      |                                                                           | `null`     | `[Number, String]`                                 |
 
 ## Slots
 
@@ -107,3 +107,105 @@ the loading state.
 | `--v-button-font-weight`                | `600`                        |
 | `--v-button-line-height`                | `22px`                       |
 | `--v-button-min-width`                  | `140px`                      |
+
+## CSS Variables
+
+| Variable                                | Default                      |
+| --------------------------------------- | ---------------------------- |
+| `--v-button-width`                      | `auto`                       |
+| `--v-button-height`                     | `44px`                       |
+| `--v-button-color`                      | `var(--foreground-inverted)` |
+| `--v-button-color-hover`                | `var(--foreground-inverted)` |
+| `--v-button-color-activated`            | `var(--foreground-inverted)` |
+| `--v-button-color-disabled`             | `var(--foreground-subdued)`  |
+| `--v-button-background-color`           | `var(--primary)`             |
+| `--v-button-background-color-hover`     | `var(--primary-125)`         |
+| `--v-button-background-color-activated` | `var(--primary)`             |
+| `--v-button-background-color-disabled`  | `var(--background-normal)`   |
+| `--v-button-font-size`                  | `16px`                       |
+| `--v-button-font-weight`                | `600`                        |
+| `--v-button-line-height`                | `22px`                       |
+| `--v-button-min-width`                  | `140px`                      |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `click` |             |       |
+
+## Slots
+
+| Slot            | Description | Data |
+| --------------- | ----------- | ---- |
+| `prepend-outer` |             |      |
+| _default_       |             |      |
+| `loading`       |             |      |
+| `append-outer`  |             |      |
+
+## CSS Variables
+
+| Variable                                | Default                      |
+| --------------------------------------- | ---------------------------- |
+| `--v-button-width`                      | `auto`                       |
+| `--v-button-height`                     | `44px`                       |
+| `--v-button-color`                      | `var(--foreground-inverted)` |
+| `--v-button-color-hover`                | `var(--foreground-inverted)` |
+| `--v-button-color-activated`            | `var(--foreground-inverted)` |
+| `--v-button-color-disabled`             | `var(--foreground-subdued)`  |
+| `--v-button-background-color`           | `var(--primary)`             |
+| `--v-button-background-color-hover`     | `var(--primary-125)`         |
+| `--v-button-background-color-activated` | `var(--primary)`             |
+| `--v-button-background-color-disabled`  | `var(--background-normal)`   |
+| `--v-button-font-size`                  | `16px`                       |
+| `--v-button-font-weight`                | `600`                        |
+| `--v-button-line-height`                | `22px`                       |
+| `--v-button-min-width`                  | `140px`                      |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `click` |             |       |
+
+## Slots
+
+| Slot            | Description | Data |
+| --------------- | ----------- | ---- |
+| `prepend-outer` |             |      |
+| _default_       |             |      |
+| `loading`       |             |      |
+| `append-outer`  |             |      |
+
+## CSS Variables
+
+| Variable                                | Default                      |
+| --------------------------------------- | ---------------------------- |
+| `--v-button-width`                      | `auto`                       |
+| `--v-button-height`                     | `44px`                       |
+| `--v-button-color`                      | `var(--foreground-inverted)` |
+| `--v-button-color-hover`                | `var(--foreground-inverted)` |
+| `--v-button-color-activated`            | `var(--foreground-inverted)` |
+| `--v-button-color-disabled`             | `var(--foreground-subdued)`  |
+| `--v-button-background-color`           | `var(--primary)`             |
+| `--v-button-background-color-hover`     | `var(--primary-125)`         |
+| `--v-button-background-color-activated` | `var(--primary)`             |
+| `--v-button-background-color-disabled`  | `var(--background-normal)`   |
+| `--v-button-font-size`                  | `16px`                       |
+| `--v-button-font-weight`                | `600`                        |
+| `--v-button-line-height`                | `22px`                       |
+| `--v-button-min-width`                  | `140px`                      |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `click` |             |       |
+
+## Slots
+
+| Slot            | Description | Data |
+| --------------- | ----------- | ---- |
+| `prepend-outer` |             |      |
+| _default_       |             |      |
+| `loading`       |             |      |
+| `append-outer`  |             |      |

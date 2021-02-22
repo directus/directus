@@ -206,3 +206,69 @@ n/a
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |
 | _default_ |             |      |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop        | Description | Default        | Type                   |
+| ----------- | ----------- | -------------- | ---------------------- |
+| `mandatory` |             | `false`        | `Boolean`              |
+| `max`       |             | `-1`           | `Number`               |
+| `multiple`  |             | `false`        | `Boolean`              |
+| `value`     |             | `undefined`    | `(string or number)[]` |
+| `scope`     |             | `'item-group'` | `String`               |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop        | Description | Default        | Type                   |
+| ----------- | ----------- | -------------- | ---------------------- |
+| `mandatory` |             | `false`        | `Boolean`              |
+| `max`       |             | `-1`           | `Number`               |
+| `multiple`  |             | `false`        | `Boolean`              |
+| `value`     |             | `undefined`    | `(string or number)[]` |
+| `scope`     |             | `'item-group'` | `String`               |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop        | Description | Default        | Type                   |
+| ----------- | ----------- | -------------- | ---------------------- |
+| `mandatory` |             | `false`        | `Boolean`              |
+| `max`       |             | `-1`           | `Number`               |
+| `multiple`  |             | `false`        | `Boolean`              |
+| `value`     |             | `undefined`    | `(string or number)[]` |
+| `scope`     |             | `'item-group'` | `String`               |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |
