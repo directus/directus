@@ -306,8 +306,7 @@ DB_SSL__REJECT_UNAUTHORIZED="false"
 
 ## Environment Syntax Prefix
 
-Environment variables are by default treated as string, however if a syntax prefix is specified the string value will be
-converted to a certain type
+Directus will attempt to automatically type cast environment variables based on context clues ([see above](#type-casting-and-nesting)). If you have a specific need for a given type, you can tell Directus what type to use for the given value by prefixing the value with `{type}:`. The following types are available:
 
 | Syntax Prefix | Example                                          | Output                                           |
 | ------------- | ------------------------------------------------ | ------------------------------------------------ |
