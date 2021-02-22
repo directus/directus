@@ -48,7 +48,7 @@ export class FilesService extends ItemsService {
 			payload.type = 'application/octet-stream';
 		}
 
-		if (['image/jpeg', 'image/png', 'image/webp'].includes(payload.type)) {
+		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
 			const pipeline = sharp();
 
 			pipeline
