@@ -26,6 +26,7 @@ connection_excellent: Mükemmel Bağlantı
 connection_good: İyi Bağlantı
 connection_fair: Makul Bağlantı
 connection_poor: Kötü Bağlantı
+primary: Birincil
 rename_folder: Klasörü Yeniden Adlandır
 delete_folder: Klasörü Sil
 prefix: Önek
@@ -109,6 +110,7 @@ schema_setup_title: Bu alan veritabanına nasıl kaydedilsin?
 schema_field_title: Bu alan uygulamada nasıl gözüksün?
 create_field: Alan Ekle
 creating_new_field: 'Yeni alan ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Sayfa tercihlerini sıfırla
 hidden_field: Gizli Alan
 hidden_on_detail: Detayda Gizli
@@ -138,6 +140,8 @@ to_manually_setup_translations: çevirileri manuel olarak ayarlamak için.
 click_to_manage_translated_fields: >-
   Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
 fields_group: Alanlar Grubu
+new_field: "Yeni Alan"
+new_collection: "Yeni Koleksiyon"
 configure_m2o: Çoktan Bire İlişkinizi Yapılandırın...
 configure_o2m: Bire Çoğa İlişkinizi Yapılandırın...
 configure_m2m: Çoktan Çoğa İlişkinizi Yapılandırın...
@@ -190,6 +194,8 @@ revision_delta_created: Oluşturulma tarihi
 revision_delta_deleted: Silindi
 revision_delta_reverted: Geri Alındı
 revision_delta_other: Revizyon
+revision_delta_by: '{user} tarafından {date}'
+private_user: Gizli Kullanıcı
 revision_preview: Revizyon Önizlemesi
 updates_made: Güncellemeler Uygulandı
 leave_comment: Yorum bırakın...
@@ -200,11 +206,14 @@ item_delete_success: Alan(lar) Silindi
 this_collection: Bu Koleksiyon
 related_collection: İlişkili Koleksiyon
 related_collections: İlişkili Koleksiyonlar
+languages_collection: Dil Koleksiyonu
 export_data: Verileri Dışa Aktar
 format: Biçim
+export_collection: 'Koleksiyonu ({collection}) dışarı aktar'
 last_page: Son Sayfa
 last_access: Son Erişim
 fill_template: Şablonla Doldur
+enable_custom_values: Kişisel başlıklara izin ver
 submit: Gönder
 move_to_folder: Klasöre Taşı
 move: Taşı
@@ -213,6 +222,9 @@ interface: Arayüz
 today: Bugün
 yesterday: Dün
 delete_comment: Yorumu sil
+month: Ay
+year: Yıl
+select_all: Tümünü Seç
 months:
   january: Ocak
   february: Şubat
@@ -226,10 +238,21 @@ months:
   october: Ekim
   november: Kasım
   december: Aralık
+drag_mode: Sürükleme Modu
+cancel_crop: Kırpmayı İptal Et
+original: Orijinal
+url: URL
+import: İçe aktar
+file_details: Dosya Ayrıntıları
+dimensions: Boyutlar
 size: Boyut
 created: Oluşturulma tarihi
+modified: Değiştirildi
 checksum: Checksum
 owner: Sahip
+edited_by: Düzenleyen
+folder: Klasör
+zoom: Yakınlaş
 download: İndir
 open: Aç
 open_in_new_window: Yeni Pencerede Aç
@@ -372,6 +395,7 @@ wysiwyg_options:
   unlink: Linki sil
   media: Medya Ekle
   remove: Kaldır
+  selectall: Tümünü Seç
   table: Tablo
 dropdown: Açılır Liste
 choices: Seçenekler
@@ -420,6 +444,7 @@ fields:
     created_by: Oluşturan
     embed: Yerleştir
     uploaded_by: Tarafından Yüklendi
+    folder: Klasör
     width: Genişlik
     uploaded_on: Tarihinde Yüklendi
     height: Yükseklik
@@ -498,6 +523,8 @@ template: Şablon
 translation: Çeviri
 value: Değer
 interfaces:
+  button-links:
+    primary: Birincil
   checkboxes:
     checkboxes: Onay Kutuları
     allow_other: Diğerlerine İzin Ver
