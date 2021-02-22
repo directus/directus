@@ -11,7 +11,7 @@ export default function getRelatedCollection(collection: string, field: string) 
 	const type = fieldInfo.type.toLowerCase();
 
 	// o2m | m2m
-	if (['o2m', 'm2m', 'alias'].includes(type)) {
+	if (['o2m', 'm2m', 'm2a', 'alias'].includes(type)) {
 		return relations[0].many_collection;
 	}
 
