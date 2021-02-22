@@ -583,6 +583,7 @@ scope: Scope
 layout: Layout
 changes_are_permanent: Changes are permanent
 preset_name_placeholder: Name of bookmark...
+preset_search_placeholder: Search query...
 editing_preset: Editing Preset
 layout_preview: Layout Preview
 layout_setup: Layout Setup
