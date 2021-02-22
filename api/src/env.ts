@@ -153,7 +153,7 @@ function processValues(env: Record<string, any>) {
 	env = clone(env);
 
 	for (const [key, value] of Object.entries(env)) {
-		if (acceptableEnvTypes.some((envType) => value.includes(`${envType}:`))) {
+		if (typeof value === 'string' && acceptableEnvTypes.some((envType) => value.includes(`${envType}:`))) {
 			env[key] = getEnvironmentValueByType(value);
 			continue;
 		}
