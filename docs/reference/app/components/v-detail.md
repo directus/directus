@@ -10,10 +10,12 @@ Allows for collapsable content
 
 ## Props
 
-| Prop     | Description         | Default        |
-| -------- | ------------------- | -------------- |
-| `active` | Used with `v-model` | `false`        |
-| `label`  | Label of detail     | `$t('toggle')` |
+| Prop         | Description         | Default            | Type      |
+| ------------ | ------------------- | ------------------ | --------- |
+| `active`     | Used with `v-model` | `undefined`        | `Boolean` |
+| `label`      | Label of detail     | `i18n.t('toggle')` | `String`  |
+| `start-open` |                     | `false`            | `Boolean` |
+| `disabled`   |                     | `false`            | `Boolean` |
 
 ## Events
 

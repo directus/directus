@@ -26,14 +26,14 @@ more information about how to use groups, look into v-item-group.
 
 ## Props
 
-| Prop        | Description                                             | Default |
-| ----------- | ------------------------------------------------------- | ------- |
-| `mandatory` | Require an item to be selected                          | `false` |
-| `max`       | Only allow a maximum of n items                         | `-1`    |
-| `multiple`  | Allow multiple items to be selected                     | `false` |
-| `value`     | The v-model value. Selection of indexes / custom values | --      |
-| `rounded`   | Adds rounded corners to the sides                       | `false` |
-| `tile`      | Adds sharp corners to the sides                         | `false` |
+| Prop        | Description                                             | Default     | Type                   |
+| ----------- | ------------------------------------------------------- | ----------- | ---------------------- |
+| `mandatory` | Require an item to be selected                          | `false`     | `Boolean`              |
+| `max`       | Only allow a maximum of n items                         | `-1`        | `Number`               |
+| `multiple`  | Allow multiple items to be selected                     | `false`     | `Boolean`              |
+| `value`     | The v-model value. Selection of indexes / custom values | `undefined` | `(string or number)[]` |
+| `rounded`   | Adds rounded corners to the sides                       | `false`     | `Boolean`              |
+| `tile`      | Adds sharp corners to the sides                         | `false`     | `Boolean`              |
 
 ## Slots
 
@@ -43,9 +43,9 @@ more information about how to use groups, look into v-item-group.
 
 ## Events
 
-| Event   | Description                      | Data     |
-| ------- | -------------------------------- | -------- | ---------- |
-| `input` | Used to update the v-model value | `(string | number)[]` |
+| Event   | Description                      | Data     | Value      |
+| ------- | -------------------------------- | -------- | ---------- | --- |
+| `input` | Used to update the v-model value | `(string | number)[]` |     |
 
 ## CSS Variables
 

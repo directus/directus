@@ -26,10 +26,10 @@ The colors can be changed via the css variable `--v-overlay-color`.
 
 ## Props
 
-| Prop       | Description               | Default |
-| ---------- | ------------------------- | ------- |
-| `active`   | Show / hide the overlay   | `false` |
-| `absolute` | Add `position: absolute;` | `false` |
+| Prop       | Description               | Default | Type      |
+| ---------- | ------------------------- | ------- | --------- |
+| `active`   | Show / hide the overlay   | `false` | `Boolean` |
+| `absolute` | Add `position: absolute;` | `false` | `Boolean` |
 
 ## Slots
 
@@ -48,4 +48,4 @@ The colors can be changed via the css variable `--v-overlay-color`.
 | Variable              | Default                |
 | --------------------- | ---------------------- |
 | `--v-overlay-color`   | `var(--overlay-color)` |
-| `--v-overlay-z-index` | `500`                  |
+| `--v-overlay-z-index` | `600`                  |

@@ -35,10 +35,10 @@ Cards can be used to consistently style dialogs:
 
 ## Props
 
-| Prop       | Description                                       | Default |
-| ---------- | ------------------------------------------------- | ------- |
-| `disabled` | Disable the card, prevents all cursor interaction | `false` |
-| `tile`     | Render without rounded corners                    | `false` |
+| Prop       | Description                                       | Default | Type      |
+| ---------- | ------------------------------------------------- | ------- | --------- |
+| `disabled` | Disable the card, prevents all cursor interaction | `false` | `Boolean` |
+| `tile`     | Render without rounded corners                    | `false` | `Boolean` |
 
 ## Events
 
@@ -57,9 +57,10 @@ n/a
 | `--v-card-min-width`        | `none`                      |
 | `--v-card-max-width`        | `400px`                     |
 | `--v-card-min-height`       | `none`                      |
-| `--v-card-max-height`       | `none`                      |
+| `--v-card-max-height`       | `min-content`               |
 | `--v-card-padding`          | `16px`                      |
 | `--v-card-background-color` | `var(--background-subdued)` |
+| `--v-card-height`           | `auto`                      |
 
 ---
 

@@ -10,11 +10,13 @@ Renders a stylized informational placard. It's similar in `v-notice` in it's use
 
 ## Props
 
-| Prop      | Description                                   | Default |
-| --------- | --------------------------------------------- | ------- |
-| `title`\* | Title for the info section                    |         |
-| `icon`    | What icon to render above the title           | `box`   |
-| `type`    | One of `info`, `success`, `warning`, `danger` | `info`  |
+| Prop      | Description                                   | Default                    | Type                                                               |
+| --------- | --------------------------------------------- | -------------------------- | ------------------------------------------------------------------ | --- | --- |
+| <!--      | `title`\*                                     | Title for the info section |                                                                    |     | --> |
+| `icon`    | What icon to render above the title           | `'box'`                    | `String`                                                           |
+| `type`    | One of `info`, `success`, `warning`, `danger` | `'info'`                   | `String as PropType<'info' or 'success' or 'warning' or 'danger'>` |
+| `title`\* |                                               |                            | `String`                                                           |
+| `center`  |                                               | `false`                    | `Boolean`                                                          |
 
 ## Events
 

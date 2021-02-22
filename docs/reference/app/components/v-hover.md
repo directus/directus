@@ -27,12 +27,12 @@ Likewise, you can set how long it will take before the hover state is set with t
 
 ## Props
 
-| Prop          | Description                                  | Default |
-| ------------- | -------------------------------------------- | ------- |
-| `close-delay` | Delay (ms) before the hover state is removed | `0`     |
-| `open-delay`  | Delay (ms) before the hover state is applied | `0`     |
-| `disabled`    | Disables the hover state from happening      | `false` |
-| `tag`         | What HTML tag to use for the wrapper         | `div`   |
+| Prop          | Description                                  | Default | Type      |
+| ------------- | -------------------------------------------- | ------- | --------- |
+| `close-delay` | Delay (ms) before the hover state is removed | `0`     | `Number`  |
+| `open-delay`  | Delay (ms) before the hover state is applied | `0`     | `Number`  |
+| `disabled`    | Disables the hover state from happening      | `false` | `Boolean` |
+| `tag`         | What HTML tag to use for the wrapper         | `'div'` | `String`  |
 
 ## Events
 
@@ -41,3 +41,9 @@ n/a
 ## Slots
 
 Only the default slot is available. The hover state is passed as scoped slot data
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |

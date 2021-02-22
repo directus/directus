@@ -16,17 +16,25 @@ You can add any custom (text) prefix/suffix to the value in the input using the 
 
 ## Props
 
-| Prop             | Description                                 | Default |
-| ---------------- | ------------------------------------------- | ------- |
-| `autofocus`      | Autofocusses the input on render            | `false` |
-| `disabled`       | Set the disabled state for the input        | `false` |
-| `full-width`     | Render the input with 100% width            | `false` |
-| `prefix`         | Prefix the users value with a value         | --      |
-| `suffix`         | Show a value at the end of the input        | --      |
-| `slug`           | Force the value to be URL safe              | `false` |
-| `slug-separator` | What character to use as separator in slugs | `-`     |
-| `active`         | Force the focus state                       | `false` |
-| `trim`           | Trim the start and end whitespace           | `false` |
+| Prop                                | Description                                 | Default  | Type               |
+| ----------------------------------- | ------------------------------------------- | -------- | ------------------ |
+| `autofocus`                         | Autofocusses the input on render            | `false`  | `Boolean`          |
+| `disabled`                          | Set the disabled state for the input        | `false`  | `Boolean`          |
+| `full-width`                        | Render the input with 100% width            | `true`   | `Boolean`          |
+| `prefix`                            | Prefix the users value with a value         | `null`   | `String`           |
+| `suffix`                            | Show a value at the end of the input        | `null`   | `String`           |
+| `slug`                              | Force the value to be URL safe              | `false`  | `Boolean`          |
+| `slug-separator`                    | What character to use as separator in slugs | `'-'`    | `String`           |
+| `active`                            | Force the focus state                       | `false`  | `Boolean`          |
+| `trim`                              | Trim the start and end whitespace           | `false`  | `Boolean`          |
+| `value`                             |                                             | `null`   | `[String, Number]` |
+| `nullable`                          |                                             | `true`   | `Boolean`          |
+| `type`                              |                                             | `'text'` | `String`           |
+| `//-fornumberinputsonlyhide-arrows` |                                             | `false`  | `Boolean`          |
+| `max`                               |                                             | `null`   | `Number`           |
+| `min`                               |                                             | `null`   | `Number`           |
+| `step`                              |                                             | `1`      | `Number`           |
+| `db-safe`                           |                                             | `false`  | `Boolean`          |
 
 Note: all other attached attributes are bound to the input HTMLELement in the component. This allows you to attach any
 of the standard HTML attributes like `min`, `length`, or `pattern`.
@@ -39,16 +47,20 @@ of the standard HTML attributes like `min`, `length`, or `pattern`.
 | `prepend`       | In the input, before the value, before the prefix | `{ disabled: boolean, value: string | number; }` |
 | `append`        | In the input, after the value, after the suffix   | `{ disabled: boolean, value: string | number; }` |
 | `append-outer`  | After the input                                   | `{ disabled: boolean, value: string | number; }` |
+| `input`         |                                                   |                                     |
 
 ## Events
 
-| Events                | Description                                  | Value |
-| --------------------- | -------------------------------------------- | ----- |
-| `input`               | Updates `v-model`                            | `any` |
-| `click:append`        | User clicks on content of inner append slot  | --    |
-| `click:prepend`       | User clicks on content of inner prepend slot | --    |
-| `click:append-outer`  | User clicks on content of outer append slot  | --    |
-| `click:prepend-outer` | User clicks on content of outer prepend slot | --    |
+| Events  | Description           | Value                                        | Event |
+| ------- | --------------------- | -------------------------------------------- | ----- | --------- | --- |
+| `input` | Updates `v-model`     | `any`                                        |       |
+| <!--    | `click:append`        | User clicks on content of inner append slot  | --    |           | --> |
+| <!--    | `click:prepend`       | User clicks on content of inner prepend slot | --    |           | --> |
+| <!--    | `click:append-outer`  | User clicks on content of outer append slot  | --    |           | --> |
+| <!--    | `click:prepend-outer` | User clicks on content of outer prepend slot | --    |           | --> |
+| <!--    |                       |                                              |       | `click`   | --> |
+| <!--    |                       |                                              |       | `keydown` | --> |
+| <!--    |                       |                                              |       | `input`   | --> |
 
 Note: all other listeners are bound to the input HTMLElement, allowing you to handle everything from `keydown` to
 `emptied`.

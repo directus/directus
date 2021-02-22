@@ -35,10 +35,11 @@ of the standard HTML attributes like `min`, `length`, or `pattern`.
 ## Events
 
 | Events  | Description       | Value | Event |
-| ------- | ----------------- | ----- | ----- | ------- | --- |
+| ------- | ----------------- | ----- | ----- | ------- | ------- | --- | --- |
 | `input` | Updates `v-model` | `any` |       |
-| <!--    |                   |       |       | `input` | --> |
-| <!--    |                   |       |       | `input` | --> |
+| <!--    | <!--              |       |       |         | `input` | --> | --> |
+| <!--    | <!--              |       |       |         | `input` | --> | --> |
+| <!--    |                   |       |       | `input` | -->     |
 
 Note: all other listeners are bound to the input HTMLElement, allowing you to handle everything from `keydown` to
 `emptied`.

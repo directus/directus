@@ -47,18 +47,19 @@ called `close`.
 
 ## Props
 
-| Prop        | Description                                          | Default |
-| ----------- | ---------------------------------------------------- | ------- |
-| `active`    | Change visibility. Can be reacted to via `sync`      | `true`  |
-| `close`     | Displays a close icon which triggers the close event | `false` |
-| `closeIcon` | Which icon should be displayed instead of `close `   | `close` |
-| `outlined`  | No background                                        | `false` |
-| `label`     | Label style                                          | `false` |
-| `disabled`  | Disabled state                                       | `false` |
-| `x-small`   | Render extra small                                   | `false` |
-| `small`     | Render small                                         | `false` |
-| `large`     | Render large                                         | `false` |
-| `x-large`   | Render extra large                                   | `false` |
+| Prop         | Description                                          | Default                                            | Type      |
+| ------------ | ---------------------------------------------------- | -------------------------------------------------- | --------- | --- | --- |
+| `active`     | Change visibility. Can be reacted to via `sync`      | `null`                                             | `Boolean` |
+| `close`      | Displays a close icon which triggers the close event | `false`                                            | `Boolean` |
+| <!--         | `closeIcon`                                          | Which icon should be displayed instead of `close ` | `close`   |     | --> |
+| `outlined`   | No background                                        | `false`                                            | `Boolean` |
+| `label`      | Label style                                          | `true`                                             | `Boolean` |
+| `disabled`   | Disabled state                                       | `false`                                            | `Boolean` |
+| <!--         | `x-small`                                            | Render extra small                                 | `false`   |     | --> |
+| <!--         | `small`                                              | Render small                                       | `false`   |     | --> |
+| <!--         | `large`                                              | Render large                                       | `false`   |     | --> |
+| <!--         | `x-large`                                            | Render extra large                                 | `false`   |     | --> |
+| `close-icon` |                                                      | `'close'`                                          | `String`  |
 
 ## Slots
 
@@ -68,16 +69,20 @@ called `close`.
 
 ## Events
 
-| Event   | Description                                                                                    |
-| ------- | ---------------------------------------------------------------------------------------------- |
-| `click` | Triggers when clicked somewhere on the chip                                                    |
-| `close` | Triggers when the `close` prop is enabled and gets clicked (Doesn't trigger the `click` event) |
+| Event           | Description                                                                                    | Value |
+| --------------- | ---------------------------------------------------------------------------------------------- | ----- |
+| `click`         | Triggers when clicked somewhere on the chip                                                    |       |
+| `close`         | Triggers when the `close` prop is enabled and gets clicked (Doesn't trigger the `click` event) |       |
+| `update:active` |                                                                                                |       |
 
 ## CSS Variables
 
-| Variable                          | Default                    |
-| --------------------------------- | -------------------------- |
-| `--v-chip-color`                  | `var(--foreground-normal)` |
-| `--v-chip-background-color`       | `var(--border-normal)`     |
-| `--v-chip-color-hover`            | `var(--foreground-normal)` |
-| `--v-chip-background-color-hover` | `var(--border-normal)`     |
+| Variable                          | Default                        |
+| --------------------------------- | ------------------------------ |
+| `--v-chip-color`                  | `var(--foreground-normal)`     |
+| `--v-chip-background-color`       | `var(--background-normal-alt)` |
+| `--v-chip-color-hover`            | `var(--white)`                 |
+| `--v-chip-background-color-hover` | `var(--primary-125)`           |
+| `--v-chip-close-color`            | `var(--danger)`                |
+| `--v-chip-close-color-disabled`   | `var(--primary)`               |
+| `--v-chip-close-color-hover`      | `var(--primary-125)`           |

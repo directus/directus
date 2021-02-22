@@ -10,10 +10,12 @@ Divides content. Made to be used in `v-list` or `v-tabs` components.
 
 ## Props
 
-| Prop          | Description                                           | Default |
-| ------------- | ----------------------------------------------------- | ------- |
-| `vertical`    | Render the divider vertically                         | `false` |
-| `inlineTitle` | Render the title inline with the divider, or under it | `true`  |
+| Prop           | Description                   | Default                                               | Type      |
+| -------------- | ----------------------------- | ----------------------------------------------------- | --------- | --- | --- |
+| `vertical`     | Render the divider vertically | `false`                                               | `Boolean` |
+| <!--           | `inlineTitle`                 | Render the title inline with the divider, or under it | `true`    |     | --> |
+| `inline-title` |                               | `true`                                                | `Boolean` |
+| `large`        |                               | `false`                                               | `Boolean` |
 
 ## Events
 
@@ -28,7 +30,7 @@ n/a
 
 ## CSS Variables
 
-| Variable                  | Default                     |
-| ------------------------- | --------------------------- |
-| `--v-divider-color`       | `var(--border-normal)`      |
-| `--v-divider-label-color` | `var(--foreground-subdued)` |
+| Variable                  | Default                        |
+| ------------------------- | ------------------------------ |
+| `--v-divider-color`       | `var(--border-normal)`         |
+| `--v-divider-label-color` | `var(--foreground-normal-alt)` |

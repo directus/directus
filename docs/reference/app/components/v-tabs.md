@@ -42,10 +42,10 @@ Tabs can be used for hiding content behind a selectable item. It can be used as 
 
 ## Props
 
-| Prop       | Description                        | Default |
-| ---------- | ---------------------------------- | ------- |
-| `vertical` | Render the tabs vertically         | `false` |
-| `value`    | v-model value for active selection | --      |
+| Prop       | Description                        | Default     | Type                   |
+| ---------- | ---------------------------------- | ----------- | ---------------------- |
+| `vertical` | Render the tabs vertically         | `false`     | `Boolean`              |
+| `value`    | v-model value for active selection | `undefined` | `(string or number)[]` |
 
 ## Events
 

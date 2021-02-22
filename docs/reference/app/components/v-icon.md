@@ -54,24 +54,30 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 
 ## Props
 
-| Name        | Description                                                       | Default |
-| ----------- | ----------------------------------------------------------------- | ------- |
-| `name`\*    | Name of the icon                                                  | --      |
-| `outline`   | Use outline Material Icons. Note: only works for non-custom icons | `false` |
-| `size`      | Custom pixel size                                                 | `false` |
-| `x-small`   | Render the icon extra small                                       | `false` |
-| `small`     | Render the icon small                                             | `false` |
-| `large`     | Render the icon large                                             | `false` |
-| `x-large`   | Render the icon extra large                                       | `false` |
-| `left`      | Use when icon is left of text                                     | `false` |
-| `right`     | Use when icon is right of text                                    | `false` |
-| `disabledd` | Prevent the click handler from firing                             | `false` |
+| Name    | Description                    | Default                                                           | Prop    | Type       |
+| ------- | ------------------------------ | ----------------------------------------------------------------- | ------- | ---------- | --------- | --- |
+| <!--    | `name`\*                       | Name of the icon                                                  | --      |            |           | --> |
+| <!--    | `outline`                      | Use outline Material Icons. Note: only works for non-custom icons | `false` |            |           | --> |
+| <!--    | `size`                         | Custom pixel size                                                 | `false` |            |           | --> |
+| <!--    | `x-small`                      | Render the icon extra small                                       | `false` |            |           | --> |
+| <!--    | `small`                        | Render the icon small                                             | `false` |            |           | --> |
+| <!--    | `large`                        | Render the icon large                                             | `false` |            |           | --> |
+| <!--    | `x-large`                      | Render the icon extra large                                       | `false` |            |           | --> |
+| `left`  | Use when icon is left of text  | `false`                                                           |         |            |
+| `right` | Use when icon is right of text | `false`                                                           |         |            |
+| <!--    | `disabledd`                    | Prevent the click handler from firing                             | `false` |            |           | --> |
+| <!--    |                                |                                                                   |         | `name`\*   | `String`  | --> |
+| <!--    |                                |                                                                   | `false` | `filled`   | `Boolean` | --> |
+| <!--    |                                |                                                                   | `false` | `sup`      | `Boolean` | --> |
+| <!--    |                                |                                                                   | `false` | `left`     | `Boolean` | --> |
+| <!--    |                                |                                                                   | `false` | `right`    | `Boolean` | --> |
+| <!--    |                                |                                                                   | `false` | `disabled` | `Boolean` | --> |
 
 ## Events
 
-| Event   | Description          | Data         |
-| ------- | -------------------- | ------------ |
-| `click` | Standard click event | `MouseEvent` |
+| Event   | Description          | Data         | Value |
+| ------- | -------------------- | ------------ | ----- |
+| `click` | Standard click event | `MouseEvent` |       |
 
 ## Slots
 
@@ -79,7 +85,8 @@ n/a
 
 ## CSS Variables
 
-| Variable         | Default        |
-| ---------------- | -------------- |
-| `--v-icon-color` | `currentColor` |
-| `--v-icon-size`  | `24px`         |
+| Variable               | Default        |
+| ---------------------- | -------------- |
+| `--v-icon-color`       | `currentColor` |
+| `--v-icon-size`        | `24px`         |
+| `--v-icon-color-hover` | `currentColor` |

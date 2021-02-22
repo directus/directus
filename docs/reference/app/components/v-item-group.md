@@ -184,3 +184,25 @@ n/a
 ### Item (`v-item`)
 
 n/a
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop        | Description | Default        | Type                   |
+| ----------- | ----------- | -------------- | ---------------------- |
+| `mandatory` |             | `false`        | `Boolean`              |
+| `max`       |             | `-1`           | `Number`               |
+| `multiple`  |             | `false`        | `Boolean`              |
+| `value`     |             | `undefined`    | `(string or number)[]` |
+| `scope`     |             | `'item-group'` | `String`               |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |

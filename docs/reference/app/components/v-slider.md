@@ -73,13 +73,13 @@ decrease / increase the value, or a label that shows a preview of what the value
 
 ## Slots
 
-| Slot                    | Description                      | Props                              | Data                |
-| ----------------------- | -------------------------------- | ---------------------------------- | ------------------- | --- | --- |
-| `append`                | Inserted after the slider track  | --                                 |                     |
-| `prepend`               | Inserted before the slider track | --                                 |                     |
-| `thumb-label type-text` |                                  |                                    |                     |
-| <!--                    | `thumb-label`                    | Custom content for the thumb label | `{ value: number }` |     | --> |
-| `thumb-label type-text` |                                  |                                    |                     |
+| Slot                    | Description                      | Props         | Data                               |
+| ----------------------- | -------------------------------- | ------------- | ---------------------------------- | ------------------- | --- | --- | --- |
+| `append`                | Inserted after the slider track  | --            |                                    |
+| `prepend`               | Inserted before the slider track | --            |                                    |
+| `thumb-label type-text` |                                  |               |                                    |
+| <!--                    | <!--                             | `thumb-label` | Custom content for the thumb label | `{ value: number }` |     | --> | --> |
+| `thumb-label type-text` |                                  |               |                                    |
 
 ## CSS Variables
 

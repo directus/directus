@@ -48,16 +48,16 @@ Keep in mind to pass the `value` prop with a unique value when using arrays in `
 
 ## Props
 
-| Prop          | Description                                                            | Default                                                             | Type               |
-| ------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------ | --- | --- |
-| `value`       | Value for switch. Similar to value attr on checkbox type input in HTML | `null`                                                              | `String`           |
-| `input-value` |                                                                        | `false`                                                             | `[Boolean, Array]` |
-| `label`       |                                                                        | `null`                                                              | `String`           |
-| `disabled`    |                                                                        | `false`                                                             | `Boolean`          |
-| <!--          | `inputValue`                                                           | Value that's used with `v-model`. Either boolean or array of values | `false`            |     | --> |
-| `label`       | Label for the checkbox                                                 | `null`                                                              | `String`           |
-| `input-value` |                                                                        | `false`                                                             | `[Boolean, Array]` |
-| `disabled`    |                                                                        | `false`                                                             | `Boolean`          |
+| Prop          | Description                                                            | Default      | Type                                                                |
+| ------------- | ---------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------- | ------- | --- | --- | --- |
+| `value`       | Value for switch. Similar to value attr on checkbox type input in HTML | `null`       | `String`                                                            |
+| `input-value` |                                                                        | `false`      | `[Boolean, Array]`                                                  |
+| `label`       |                                                                        | `null`       | `String`                                                            |
+| `disabled`    |                                                                        | `false`      | `Boolean`                                                           |
+| <!--          | <!--                                                                   | `inputValue` | Value that's used with `v-model`. Either boolean or array of values | `false` |     | --> | --> |
+| `label`       | Label for the checkbox                                                 | `null`       | `String`                                                            |
+| `input-value` |                                                                        | `false`      | `[Boolean, Array]`                                                  |
+| `disabled`    |                                                                        | `false`      | `Boolean`                                                           |
 
 ## Events
 

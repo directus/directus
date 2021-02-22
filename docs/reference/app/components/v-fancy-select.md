@@ -33,11 +33,12 @@ representation.
 
 ## Props
 
-| Prop       | Description                             | Default |
-| ---------- | --------------------------------------- | ------- |
-| `items`\*  | Items the user can select from          |         |
-| `value`    | Value used for v-model                  | `null`  |
-| `disabled` | Disable selecting / deselecting a value |         |
+| Prop       | Description                             | Default                        | Type                |
+| ---------- | --------------------------------------- | ------------------------------ | ------------------- | --- | --- |
+| <!--       | `items`\*                               | Items the user can select from |                     |     | --> |
+| `value`    | Value used for v-model                  | `null`                         | `[String, Number]`  |
+| `disabled` | Disable selecting / deselecting a value | `false`                        | `Boolean`           |
+| `items`\*  |                                         |                                | `FancySelectItem[]` |
 
 ## Events
 

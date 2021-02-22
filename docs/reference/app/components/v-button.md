@@ -50,34 +50,38 @@ the loading state.
 
 ## Props
 
-| Prop       | Description                                                               | Default    |
-| ---------- | ------------------------------------------------------------------------- | ---------- | ------ | ---------- |
-| `block`    | Enable full width (display block)                                         | `false`    |
-| `icon`     | Remove padding / min-width. Meant to be used with just an icon as content | `false`    |
-| `outlined` | No background                                                             | `false`    |
-| `rounded`  | Enable rounded corners                                                    | `false`    |
-| `type`     | HTML `type` attribute                                                     | `'button'` |
-| `disabled` | Disabled state                                                            | `false`    |
-| `loading`  | Loading state                                                             | `false`    |
-| `x-small`  | Render extra small                                                        | `false`    |
-| `small`    | Render small                                                              | `false`    |
-| `large`    | Render large                                                              | `false`    |
-| `x-large`  | Render extra large                                                        | `false`    |
-| `to`       | Render as vue router-link                                                 | `null`     |
-| `href`     | Render as anchor                                                          | `null`     |
-| `align`    | Align content in button. One of `left                                     | center     | right` | `'center'` |
-| `dashed`   | Render the border dashed. Meant to be used with `outlined`.               | `false`    |
-| `tile`     | Render without border radius                                              | `false`    |
-| `download` | Add the `download` attribute (used in combo with `href`)                  | `null`     |
+| Prop         | Description                                                               | Default                           | Type                                               |
+| ------------ | ------------------------------------------------------------------------- | --------------------------------- | -------------------------------------------------- | ---------- | --- |
+| <!--         | `block`                                                                   | Enable full width (display block) | `false`                                            |            | --> |
+| `icon`       | Remove padding / min-width. Meant to be used with just an icon as content | `false`                           | `Boolean`                                          |
+| `outlined`   | No background                                                             | `false`                           | `Boolean`                                          |
+| `rounded`    | Enable rounded corners                                                    | `false`                           | `Boolean`                                          |
+| `type`       | HTML `type` attribute                                                     | `'button'`                        | `String`                                           |
+| `disabled`   | Disabled state                                                            | `false`                           | `Boolean`                                          |
+| `loading`    | Loading state                                                             | `false`                           | `Boolean`                                          |
+| <!--         | `x-small`                                                                 | Render extra small                | `false`                                            |            | --> |
+| <!--         | `small`                                                                   | Render small                      | `false`                                            |            | --> |
+| <!--         | `large`                                                                   | Render large                      | `false`                                            |            | --> |
+| <!--         | `x-large`                                                                 | Render extra large                | `false`                                            |            | --> |
+| `to`         | Render as vue router-link                                                 | `null`                            | `[String, Object] as PropType<string or Location>` |
+| `href`       | Render as anchor                                                          | `null`                            | `String`                                           |
+| `align`      | Align content in button. One of `left                                     | `'center'`                        | `String`                                           | `'center'` |     |
+| `dashed`     | Render the border dashed. Meant to be used with `outlined`.               | `false`                           | `Boolean`                                          |
+| `tile`       | Render without border radius                                              | `false`                           | `Boolean`                                          |
+| `download`   | Add the `download` attribute (used in combo with `href`)                  | `null`                            | `String`                                           |
+| `full-width` |                                                                           | `false`                           | `Boolean`                                          |
+| `exact`      |                                                                           | `false`                           | `Boolean`                                          |
+| `secondary`  |                                                                           | `false`                           | `Boolean`                                          |
+| `value`      |                                                                           | `null`                            | `[Number, String]`                                 |
 
 ## Slots
 
-| Slot            | Description                                  |
-| --------------- | -------------------------------------------- |
-| _default_       | Button content                               |
-| `loading`       | Content that's rendered during loading state |
-| `prepend-outer` | Content that's rendered before the button    |
-| `append-outer`  | Content that's rendered after the button     |
+| Slot            | Description                                  | Data |
+| --------------- | -------------------------------------------- | ---- |
+| _default_       | Button content                               |      |
+| `loading`       | Content that's rendered during loading state |      |
+| `prepend-outer` | Content that's rendered before the button    |      |
+| `append-outer`  | Content that's rendered after the button     |      |
 
 ## Events
 
@@ -94,9 +98,12 @@ the loading state.
 | `--v-button-color`                      | `var(--foreground-inverted)` |
 | `--v-button-color-hover`                | `var(--foreground-inverted)` |
 | `--v-button-color-activated`            | `var(--foreground-inverted)` |
-| `--v-button-color-disabled`             | `var(--primary)`             |
+| `--v-button-color-disabled`             | `var(--foreground-subdued)`  |
 | `--v-button-background-color`           | `var(--primary)`             |
-| `--v-button-background-color-hover`     | `var(--primary)`             |
+| `--v-button-background-color-hover`     | `var(--primary-125)`         |
 | `--v-button-background-color-activated` | `var(--primary)`             |
-| `--v-button-background-color-disabled`  | `var(--primary-alt)`         |
+| `--v-button-background-color-disabled`  | `var(--background-normal)`   |
 | `--v-button-font-size`                  | `16px`                       |
+| `--v-button-font-weight`                | `600`                        |
+| `--v-button-line-height`                | `22px`                       |
+| `--v-button-min-width`                  | `140px`                      |
