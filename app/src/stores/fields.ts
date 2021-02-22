@@ -239,15 +239,16 @@ export const useFieldsStore = createStore({
 		},
 		/**
 		 * Retrieve field info for a (deeply) nested field
-		 * Recursively searches through the relationhips to find the field info that matches the
+		 * Recursively searches through the relationships to find the field info that matches the
 		 * dot notation.
 		 */
 		getRelationalField(collection: string, fields: string) {
 			const relationshipStore = useRelationsStore();
 			const parts = fields.split('.');
+
 			const relationshipForField = relationshipStore
 				.getRelationsForField(collection, parts[0])
-				?.find((relation: Relation) => relation.many_field === parts[0]);
+				?.find((relation: Relation) => relation.many_field === parts[0] || relation.one_field === parts[0]);
 
 			if (relationshipForField === undefined) return false;
 
