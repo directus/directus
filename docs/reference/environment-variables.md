@@ -310,7 +310,7 @@ Directus will attempt to automatically type cast environment variables based on 
 
 | Syntax Prefix | Example                                          | Output                                           |
 | ------------- | ------------------------------------------------ | ------------------------------------------------ |
-| `string`      | `string:value`                                   | `value`                                          |
+| `string`      | `string:value`                                   | `"value"`                                          |
 | `number`      | `number:3306`                                    | `3306`                                           |
 | `regex`       | `regex:/\.example\.com$/`                        | `/\.example\.com$/`                              |
 | `array`       | `array:https://example.com,https://example2.com` | `["https://example.com","https://example2.com"]` |
