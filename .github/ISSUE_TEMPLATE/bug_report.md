@@ -10,6 +10,8 @@ assignees: ''
 
 Hi, thank you for taking the time to create an issue.
 
+Please make sure you're on the latest version of Directus. There's a chance your issue might've been resolved already 🙂
+
 Can you please provide:
 
 1) The issue and what you expected to happen
