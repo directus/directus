@@ -310,7 +310,13 @@ sort_field: Sıralama Alanı
 sort: Sırala
 status: Durum
 toggle_manual_sorting: Elle sıralamayı aç/kapa
+bookmark_doesnt_exist_cta: Koleksiyona dön
+select_an_item: Seçim Yapın...
 edit: Düzenle
+enabled: Etkin
+disable_tfa: 2FA'yı devre dışı bırak
+create_account: Hesap Oluştur
+account_created_successfully: Hesap başarıyla oluşturuldu
 auto_fill: Otomatik Doldur
 errors:
   FIELD_NOT_FOUND: Alan Bulunmadı
@@ -319,7 +325,17 @@ errors:
   INVALID_OTP: Tek kullanımlık şifre hatalı
   INVALID_QUERY: Geçersiz sorgu
   ITEM_NOT_FOUND: Öğe bulunamadı
+  ROUTE_NOT_FOUND: Bulunamadı
+  UNKNOWN: Beklenmeyen hata
+bookmark_name: Yer imi adı...
+create_bookmark: Yer imi oluştur
+edit_bookmark: Yer imini düzenle
 bookmarks: Yer İmleri
+presets: Ön ayarlar
+unexpected_error: Beklenmeyen hata
+unexpected_error_copy: Beklenmedik bir hata oluştu. Lütfen daha sonra tekrar deneyin.
+no_app_access: Uygulama erişimi yok
+password_reset_sent: Sana içinde şifreni yenilemeni sağlayacak bağlantı olan bir eposta gönderdik
 password_reset_successful: Şifre başarıyla sıfırlandı
 back: Geri
 editing_image: Görseli düzenle
@@ -331,8 +347,13 @@ aspect_ratio: En/Boy Oranı
 rotate: Döndür
 all_users: Tüm Kullanıcılar
 delete_collection: Koleksiyonu sil
+update_collection_success: Güncellenmiş Koleksiyon
 delete_collection_success: Silinmiş Koleksiyon
+one_item: '1 öğe'
+collections_shown: Görüntülenen Koleksiyonlar
+visible_collections: Görünen Koleksiyonlar
 hidden_collections: Gizli Koleksiyonlar
+system_collections: Sistem Koleksiyonları
 placeholder: Yertutucu
 icon_left: İkon Sol
 icon_right: İkon Sağ
@@ -344,13 +365,20 @@ divider: Ayırıcı
 color: Renk
 circle: Daire
 empty_item: Boş öğe
+log_in_with: '{provider} ile giriş yap'
 advanced_filter: Gelişmiş Filtre
 delete_advanced_filter: Filtreyi Sil
 operators:
+  eq: Eşittir
+  neq: Eşit değildir
   lt: Küçüktür
   gt: Büyüktür
   lte: Küçüktür veya eşittir
   gte: Büyük veya eşittir
+  in: Bunlardan biri
+  nin: Bunlardan biri değil
+  null: "Null"
+  nnull: Null değil
   contains: Şunu içerir
   ncontains: Şunu içermez
   between: Arasında
@@ -379,9 +407,16 @@ on_update: Güncellemede (On Update)
 read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
+label: Etiket
 wysiwyg_options:
+  aligncenter: Ortala
+  alignjustify: İki Yana Yasla
+  alignleft: Sola Hizala
+  alignnone: Hizalama
+  alignright: Sağa Hizala
   forecolor: Ön Plan Rengi
   backcolor: Arkaplan Rengi
+  italic: İtalik
   underline: Alt çizgi
   strikethrough: Üstü Çizili
   subscript: Alt yazı
@@ -394,16 +429,47 @@ wysiwyg_options:
   link: Link
   unlink: Linki sil
   media: Medya Ekle
+  image: Görsel ekle
+  copy: Kopyala
+  cut: Kes
+  paste: Yapıştır
+  heading: Başlık
+  h1: Başlık 1
+  h2: Başlık 2
+  h3: Başlık 3
+  h4: Başlık 4
+  h5: Başlık 5
+  h6: Başlık 6
+  fontselect: Yazı Tipi Seç
+  fontsizeselect: Yazı tipi boyutunu seç
+  indent: Girintile
+  outdent: Girintiyi azalt
+  undo: Geri Al
+  redo: Yinele
   remove: Kaldır
+  removeformat: Biçimi Kaldır
   selectall: Tümünü Seç
   table: Tablo
+  code: Kaynağı Göster
+  fullscreen: Tam Ekran
 dropdown: Açılır Liste
 choices: Seçenekler
 deselect: Seçimi Kaldır
+deselect_all: Tüm Seçimi Kaldır
+other: Diğer...
+adding_user: Kullanıcı Ekleniyor
+unknown_user: Bilinmeyen Kullanıcı
+creating_in: 'Öge Oluşturuluyor: {collection}'
+editing_in: 'Öge Düzenleniyor: {collection}'
 editing_in_batch: '{count} Ögeyi Toplu Düzenle'
+no_options_available: Kullanılabilir seçenek yok
 settings_permissions: Roller & İzinler
 settings_project: Proje Ayarları
 settings_webhooks: Ağ Kancaları
+scope: Kapsam
+layout: Yerleşim
+preset_name_placeholder: Yer imi adı...
+editing_preset: Önayarı Düzenle
 unsaved_changes: Kaydedilmemiş Değişiklikler
 unsaved_changes_copy: Bu sayfayı terketmek istediğine emin misin?
 discard_changes: Değişiklikleri İptal Et
@@ -425,6 +491,7 @@ fields:
     comment: Yorum
     user_agent: Kullanıcı Aracısı
     ip: IP Adresi
+    revisions: Revizyonlar
   directus_collections:
     collection: Koleksiyon
     icon: İkon
@@ -469,16 +536,31 @@ fields:
     last_access: Son Erişim
   directus_settings:
     project_name: Proje Adı
+    custom_css: Özel CSS
   directus_fields:
+    collection: Koleksiyon Adı
+    icon: Koleksiyon İkonu
     note: Not
     hidden: Gizli
     translation: Alan İsim Çevirileri
     display_template: Şablon
   directus_roles:
     name: Rol Adı
+    icon: Rol İkonu
     description: Açıklama
+    app_access: Uygulama erişimi
+    admin_access: Yönetici erişimi
+    ip_access: IP Erişimi
+    enforce_tfa: 2FA Gerekli
+    users: Rol'deki Kullanıcılar
+do_nothing: Hiçbir Şey Yapma
+block: Blok
 comment: Yorum
 continue: Devam
+continue_as: >-
+  <b>{name}</b> bu projede oturum açmış durumda. Bu hesabı tanıyorsanız lütfen Devam butonuna basınız.
+editing_role: '{role} Rolü'
+creating_webhook: Webhook Oluştur
 default: Öntanımlı
 delete: Sil
 delete_field_are_you_sure: >-
@@ -488,6 +570,7 @@ done: Tamam
 duplicate: Çoğalt
 email: E-posta
 embed: Yerleştir
+fallback_icon: Temel İkon
 field: Alan | Alanlar
 file: Dosya
 file_library: Dosya Kütüphanesi
@@ -495,11 +578,16 @@ forgot_password: Şifremi Unuttum
 hidden: Gizli
 icon: İkon
 info: Bilgi
+normal: Normal
+success: Başarılı
+warning: Uyarı
+danger: Tehlike
 junction_collection: Kesişim Koleksiyonu
 latency: Gecikme
 login: Oturum Aç
 my_activity: Aktivitelerim
 not_authenticated: Kimlik Doğrulanamadı
+authenticated: Kimlik doğrulandı
 options: Seçenekler
 otp: Tek Kullanımlık Şifre
 password: Şifre
@@ -507,11 +595,13 @@ permissions: İzinler
 relationship: İlişki
 reset: Sıfırla
 reset_password: Şifremi Sıfırla
+revisions: Revizyonlar
 revert: Eski Haline Döndür
 save: Kaydet
 schema: Şema
 search: Ara
 select_existing: Varolanlar İçinden Seç
+select_field_type: Alan türünü seçin
 select_interface: Arayüz seçiniz...
 settings: Ayarlar
 sign_in: Oturum Aç
@@ -519,12 +609,22 @@ sign_out: Oturum Kapat
 sign_out_confirm: Oturumunuzu kapatmak istediğinize emin misiniz?
 something_went_wrong: Birşeyler ters gitti.
 sort_direction: Sıralama Yönü
+sort_asc: Artan şekilde sırala
+sort_desc: Azalan şekilde sırala
 template: Şablon
 translation: Çeviri
 value: Değer
+view_project: Projeyi görüntüle
+report_error: Hata bildir
 interfaces:
   button-links:
+    button-links: Buton Linki
+    links: Linkler
+    style: Stil
     primary: Birincil
+    link: Linkler
+    button: Butonlar
+    error: İşlem gerçekleştirilemiyor
   checkboxes:
     checkboxes: Onay Kutuları
     allow_other: Diğerlerine İzin Ver
@@ -594,6 +694,8 @@ interfaces:
     nullable: Boş (null) olabilir
   textarea:
     textarea: Metin Alanı
+  toggle:
+    label_default: Etkin
   translations:
     display_template: Görüntüleme Şablonu
     no_collection: Koleksiyon Yok
