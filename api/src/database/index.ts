@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import logger from '../logger';
 import env from '../env';
+import { validateEnv } from '../utils/validate-env';
 import { performance } from 'perf_hooks';
 
 import SchemaInspector from '@directus/schema';
@@ -18,6 +19,8 @@ const connectionConfig: Record<string, any> = getConfigFromEnv('DB_', [
 ]);
 
 const poolConfig = getConfigFromEnv('DB_POOL');
+
+validateEnv(['DB_CLIENT']);
 
 const knexConfig: Config = {
 	client: env.DB_CLIENT,
