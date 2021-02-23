@@ -125,7 +125,7 @@
 
 			<v-form
 				ref="form"
-				:disabled="isNew ? createAllowed === false : updateAllowed === false"
+				:disabled="isNew ? false : updateAllowed === false"
 				:fields="formFields"
 				:loading="loading"
 				:initial-values="item"

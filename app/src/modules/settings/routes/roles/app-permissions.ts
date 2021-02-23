@@ -52,6 +52,13 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 		collection: 'directus_users',
 		action: 'read',
 		permissions: {},
+		fields: ['*'],
+	},
+	{
+		collection: 'directus_roles',
+		action: 'read',
+		permissions: {},
+		fields: ['*'],
 	},
 ];
 
