@@ -55,7 +55,7 @@ export default async function createApp() {
 	await validateDBConnection();
 
 	if ((await isInstalled()) === false) {
-		logger.fatal(`Database doesn't have Directus tables installed.`);
+		logger.error(`Database doesn't have Directus tables installed.`);
 		process.exit(1);
 	}
 
@@ -77,7 +77,9 @@ export default async function createApp() {
 	app.use(expressLogger({ logger }));
 
 	app.use((req, res, next) => {
-		bodyParser.json()(req, res, (err) => {
+		bodyParser.json({
+			limit: env.MAX_PAYLOAD_SIZE,
+		})(req, res, (err) => {
 			if (err) {
 				return next(new InvalidPayloadException(err.message));
 			}
@@ -86,7 +88,6 @@ export default async function createApp() {
 		});
 	});
 
-	app.use(bodyParser.json());
 	app.use(extractToken);
 
 	app.use((req, res, next) => {

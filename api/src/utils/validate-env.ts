@@ -16,7 +16,7 @@ export function validateEnv(requiredKeys: string[]) {
 
 	for (const requiredKey of requiredKeys) {
 		if (env.hasOwnProperty(requiredKey) === false) {
-			logger.fatal(`Environment is missing the ${requiredKey} key.`);
+			logger.error(`"${requiredKey}" Environment Variable is missing.`);
 			process.exit(1);
 		}
 	}

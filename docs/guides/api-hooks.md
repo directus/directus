@@ -81,8 +81,9 @@ module.exports = function registerHook({ exceptions }) {
 | `middlewares.init`   | `before` and `after`               | No       |
 | `request`            | `not_found`                        | No       |
 | `response`           |                                    | No†      |
-| `items`              | `create`, `update` and `delete`    | Optional |
+| `error`              |                                    | No       |
 | `auth`               | `success`†, `fail`† and `refresh`† | No       |
+| `items`              | `create`, `update` and `delete`    | Optional |
 | `activity`           | `create`, `update` and `delete`    | Optional |
 | `collections`        | `create`, `update` and `delete`    | Optional |
 | `fields`             | `create`, `update` and `delete`    | Optional |
@@ -97,7 +98,7 @@ module.exports = function registerHook({ exceptions }) {
 | `users`              | `create`, `update` and `delete`    | Optional |
 | `webhooks`           | `create`, `update` and `delete`    | Optional |
 
-† TBD
+† Feature Coming Soon
 
 ## 3. Register your Hook
 

@@ -5,7 +5,11 @@ import { Field, Relation } from '@/types';
 import { cloneDeep } from 'lodash';
 import { getRelationType } from '@/utils/get-relation-type';
 
-export default function useFieldTree(collection: Ref<string>, inject?: { fields: Field[]; relations: Relation[] }) {
+export default function useFieldTree(
+	collection: Ref<string>,
+	inject?: { fields: Field[]; relations: Relation[] },
+	filter: (field: Field) => boolean = () => true
+) {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 
@@ -20,6 +24,7 @@ export default function useFieldTree(collection: Ref<string>, inject?: { fields:
 					field.meta?.special?.includes('alias') !== true && field.meta?.special?.includes('no-data') !== true;
 				return shown;
 			})
+			.filter(filter)
 			.map((field: Field) => ({
 				name: field.name,
 				field: field.field,
@@ -41,6 +46,12 @@ export default function useFieldTree(collection: Ref<string>, inject?: { fields:
 			if (relationType === 'm2o') {
 				field.children = parseLevel(
 					relation.one_collection,
+					parentPath ? `${parentPath}.${field.field}` : field.field,
+					level + 1
+				);
+			} else {
+				field.children = parseLevel(
+					relation.many_collection,
 					parentPath ? `${parentPath}.${field.field}` : field.field,
 					level + 1
 				);

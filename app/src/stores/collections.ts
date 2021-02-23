@@ -19,6 +19,11 @@ export const useCollectionsStore = createStore({
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
 				.filter((collection) => collection.meta?.hidden !== true);
 		},
+		hiddenCollections: (state) => {
+			return state.collections
+				.filter(({ collection }) => collection.startsWith('directus_') === false)
+				.filter((collection) => collection.meta?.hidden !== false);
+		},
 	},
 	actions: {
 		async hydrate() {

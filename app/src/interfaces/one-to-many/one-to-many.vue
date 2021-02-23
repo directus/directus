@@ -403,7 +403,7 @@ export default defineComponent({
 					return item;
 				});
 
-				if (hasPrimaryKey === false && newValue.includes(edits) === false) {
+				if (newValue.includes(edits) === false) {
 					newValue.push(edits);
 				}
 
