@@ -74,7 +74,9 @@ const newFieldSchema = Joi.object({
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
 		is_nullable: Joi.bool(),
-	}).unknown(),
+	})
+		.unknown()
+		.allow(null),
 	meta: Joi.any(),
 });
 
@@ -158,7 +160,9 @@ const updateSchema = Joi.object({
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
 		is_nullable: Joi.bool(),
-	}).unknown(),
+	})
+		.unknown()
+		.allow(null),
 	meta: Joi.any(),
 }).unknown();
 
