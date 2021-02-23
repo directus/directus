@@ -396,6 +396,7 @@ export default defineComponent({
 								$type: 'corresponding',
 								field: state.relations[0].one_collection,
 								collection: state.relations[1].one_collection,
+								type: 'alias',
 								meta: {
 									special: 'm2m',
 									interface: 'many-to-many',
