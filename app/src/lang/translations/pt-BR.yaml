@@ -5,12 +5,14 @@ duplicate_field: Campo duplicado
 half_width: Meia largura
 full_width: Largura total
 fill_width: Preencher
+field_name_translations: Traduções Dos Nomes Dos Campos
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
 add_field: Adicionar Campo
 role_name: Nome do cargo
 db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar'
 show_archived_items: Mostrar itens arquivados
 required: Obrigatório
+required_for_app_access: Obrigatório para o Acesso ao Aplicativo
 requires_value: Requer valor
 create_preset: Criar predefinição
 create_role: Criar Função
@@ -24,6 +26,7 @@ connection_excellent: Conexão excelente
 connection_good: Conexão boa
 connection_fair: Conexão razoável
 connection_poor: Conexão ruim
+primary: Primário
 rename_folder: Renomear Pasta
 delete_folder: Excluir Pasta
 prefix: Prefixo
@@ -51,6 +54,10 @@ archive: Arquivar
 archive_confirm: Tem certeza de que deseja arquivar este item?
 archive_confirm_count: >-
   Nenhum Item Selecionado | Tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
+reset_system_permissions_to: 'Redefinir permissões do sistema para:'
+reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você pode ter aplicado às coleções do sistema. Tem certeza?
+the_following_are_minimum_permissions: As seguintes são as permissões mínimas necessárias quando o "Acesso ao Aplicativo" estiver ativado. Você pode estender as permissões além disto, mas não abaixo.
+app_access_minimum: Acesso ao App Mínimo
 unarchive: Desarquivar
 unarchive_confirm: Tem certeza de que deseja desarquivar este item?
 nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos a um nível acima.
@@ -654,6 +661,7 @@ fields:
     note: Nota
     hidden: Oculto
     singleton: Singleton
+    translation: Traduções Dos Nomes Dos Campos
     display_template: Template
   directus_roles:
     name: Nome do cargo
@@ -731,6 +739,8 @@ value: Valor
 view_project: Visualizar projeto
 report_error: Relatar erro
 interfaces:
+  button-links:
+    primary: Primário
   checkboxes:
     checkboxes: Caixas de Seleção
     description: Escolha entre várias opções através de caixas de seleção
