@@ -1,5 +1,5 @@
 <template>
-	<v-list large>
+	<v-list large class="collections-navigation" @contextmenu.native.prevent.stop="$refs.contextMenu.activate">
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<template v-for="(group, index) in customNavItems">
 				<template
@@ -53,11 +53,41 @@
 				{{ $t('no_collections_copy') }}
 			</template>
 		</div>
+
+		<template v-if="hiddenShown">
+			<v-divider />
+
+			<v-list-item
+				class="hidden-collection"
+				:exact="exact"
+				v-for="navItem in hiddenNavItems"
+				:key="navItem.to"
+				:to="navItem.to"
+			>
+				<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
+				<v-list-item-content>
+					<v-text-overflow :text="navItem.name" />
+				</v-list-item-content>
+			</v-list-item>
+		</template>
+
+		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
+			<v-list>
+				<v-list-item @click="hiddenShown = !hiddenShown">
+					<v-list-item-icon>
+						<v-icon :name="hiddenShown ? 'visibility_off' : 'visibility'" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-text-overflow :text="hiddenShown ? $t('hide_hidden_collections') : $t('show_hidden_collections')" />
+					</v-list-item-content>
+				</v-list-item>
+			</v-list>
+		</v-menu>
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref } from '@vue/composition-api';
 import useNavigation from '../composables/use-navigation';
 import { usePresetsStore, useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
@@ -72,10 +102,12 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const contextMenu = ref();
+
 		const presetsStore = usePresetsStore();
-		const { customNavItems, navItems, activeGroups } = useNavigation();
 		const userStore = useUserStore();
 		const isAdmin = computed(() => userStore.state.currentUser?.role.admin_access === true);
+		const { hiddenShown, customNavItems, navItems, activeGroups, hiddenNavItems } = useNavigation();
 
 		const bookmarks = computed(() => {
 			return orderBy(
@@ -99,7 +131,18 @@ export default defineComponent({
 			);
 		});
 
-		return { navItems, bookmarks, customNavItems, isAdmin, activeGroups, isActive, toggleActive };
+		return {
+			navItems,
+			bookmarks,
+			customNavItems,
+			isAdmin,
+			activeGroups,
+			isActive,
+			toggleActive,
+			contextMenu,
+			hiddenShown,
+			hiddenNavItems,
+		};
 
 		function isActive(name: string) {
 			return activeGroups.value.includes(name);
@@ -124,9 +167,18 @@ export default defineComponent({
 
 .empty {
 	color: var(--foreground-subdued);
+
 	.v-button {
 		--v-button-background-color: var(--foreground-subdued);
 		--v-button-background-color-hover: var(--primary);
 	}
+}
+
+.collections-navigation {
+	--v-list-min-height: 100%;
+}
+
+.hidden-collection {
+	--v-list-item-color: var(--foreground-subdued);
 }
 </style>

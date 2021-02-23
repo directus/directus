@@ -155,9 +155,9 @@ click_to_manage_translated_fields: >-
   There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage
   it. | There are {count} translated fields. Click here to manage them.
 fields_group: Fields Group
-new_data_alert: "The following will be created within your Data Model:"
-new_field: "New Field"
-new_collection: "New Collection"
+new_data_alert: 'The following will be created within your Data Model:'
+new_field: 'New Field'
+new_collection: 'New Collection'
 configure_m2o: Configure your Many-to-One Relationship...
 configure_o2m: Configure your One-to-Many Relationship...
 configure_m2m: Configure your Many-to-Many Relationship...
@@ -430,6 +430,8 @@ delete_collection_are_you_sure: >-
 collections_shown: Collections Shown
 visible_collections: Visible Collections
 hidden_collections: Hidden Collections
+show_hidden_collections: Show Hidden Collections
+hide_hidden_collections: Hide Hidden Collections
 unmanaged_collections: Unconfigured Collections
 system_collections: System Collections
 placeholder: Placeholder
