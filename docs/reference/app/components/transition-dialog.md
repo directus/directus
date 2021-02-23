@@ -1,5 +1,3 @@
-# Transition Dialog
-
 ## Slots
 
 | Slot      | Description | Data |

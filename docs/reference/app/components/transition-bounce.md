@@ -1,5 +1,3 @@
-# Transition Bounce
-
 ## Slots
 
 | Slot      | Description | Data |
