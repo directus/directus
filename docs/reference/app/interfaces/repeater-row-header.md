@@ -8,3 +8,9 @@
 | `toggle`\*    |             |         | `Function` |
 | `active`      |             | `false` | `Boolean`  |
 | `disabled`    |             | `false` | `Boolean`  |
+
+## Events
+
+| Event    | Description | Value |
+| -------- | ----------- | ----- |
+| `delete` |             |       |

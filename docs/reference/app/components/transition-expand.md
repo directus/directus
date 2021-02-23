@@ -34,10 +34,10 @@ Use around a `v-if` or `v-show` component to have it expand in and out of view.
 
 ## Props
 
-| Prop                    | Description                                        | Default |
-| ----------------------- | -------------------------------------------------- | ------- |
-| `x-axis`                | Expand on the horizontal instead vertical axis     | `false` |
-| `expanded-parent-class` | Add a custom class to the element that is expanded | `''`    |
+| Prop                    | Description                                        | Default | Type      |
+| ----------------------- | -------------------------------------------------- | ------- | --------- |
+| `x-axis`                | Expand on the horizontal instead vertical axis     | `false` | `Boolean` |
+| `expanded-parent-class` | Add a custom class to the element that is expanded | `''`    | `String`  |
 
 ## Slots
 

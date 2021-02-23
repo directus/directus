@@ -50,3 +50,9 @@ Renders a dropdown input.
 | Slot      | Description                       | Data |
 | --------- | --------------------------------- | ---- |
 | `prepend` | Prepend anything to the selection |      |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |

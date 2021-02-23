@@ -3,6 +3,7 @@
 | Event    | Description | Value |
 | -------- | ----------- | ----- |
 | `delete` |             |       |
+| `input`  |             |       |
 
 ## Props
 

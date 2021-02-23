@@ -134,7 +134,7 @@ In this case, the selection state for all items selected would be `[15, 414, 'jo
 
 | Prop        | Description                                           | Default        | Type                   |
 | ----------- | ----------------------------------------------------- | -------------- | ---------------------- |
-| `value`     | Used with `v-model` to model the selected items       | `undefined`    | `(String or Number)[]` |
+| `value`     | Used with `v-model` to model the selected items       | `undefined`    | `(string or number)[]` |
 | `mandatory` | If enabled, at least one item has to be selected      | `false`        | `Boolean`              |
 | `max`       | The maximum amount of items that can be selected      | `-1`           | `Number`               |
 | `multiple`  | If enabled, multiple elements can be selected         | `false`        | `Boolean`              |

@@ -119,7 +119,7 @@ If you can't, you should listen to the `update:indeterminate` event and respond 
 
 ## Events
 
-| Event                  | Description                | Data                       |
+| Event                  | Description                | Value                      |
 | ---------------------- | -------------------------- | -------------------------- |
 | `change`               | New state for the checkbox | Boolean or array of values |
 | `update:indeterminate` | New state for the checkbox | Boolean or array of values |

@@ -1,9 +1,10 @@
 ## Events
 
-| Event   | Description | Value |
-| ------- | ----------- | ----- |
-| `input` |             |       |
-| `unset` |             |       |
+| Event      | Description | Value |
+| ---------- | ----------- | ----- |
+| `input`    |             |       |
+| `unset`    |             |       |
+| `edit-raw` |             |       |
 
 ## Props
 
