@@ -77,8 +77,8 @@ const typeMap: Record<string, string> = {
 
 let env: Record<string, any> = {
 	...defaults,
-	...process.env,
 	...getEnv(),
+	...process.env,
 };
 
 process.env = env;
