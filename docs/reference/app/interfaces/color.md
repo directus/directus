@@ -7,9 +7,10 @@
 ## Props
 
 | Prop       | Description | Default        | Type       |
-| ---------- | ----------- | -------------- | ---------- | -------- | --- |
+| ---------- | ----------- | -------------- | ---------- | -------- | -------- | --- | --- |
 | `disabled` |             | `false`        | `Boolean`  |
 | `value`    |             | `null`         | `String`   |
 | `presets`  |             | `() => [{name` | `string[]` |
-| <!--       | `width`\*   |                |            | `String` | --> |
+| <!--       | <!--        | `width`\*      |            |          | `String` | --> | --> |
+| <!--       | `width`\*   |                |            | `String` | -->      |
 | `width`\*  |             |                | `String`   |

@@ -20,3 +20,22 @@ you ever find yourself doing this:
 | `disabled`               | Menu does not appear                                              | `false`     | `Boolean`                       |
 | `trigger`                | Activate the menu on a trigger. One of `manual`, `click`, `hover` | `null`      | `String`                        |
 | `delay`                  | Time in ms before menu activates after trigger                    | `0`         | `Number`                        |
+
+## CSS Variables
+
+| Variable             | Default |
+| -------------------- | ------- |
+| `--v-menu-min-width` | `100px` |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Slots
+
+| Slot        | Description | Data |
+| ----------- | ----------- | ---- |
+| `activator` |             |      |
+| _default_   |             |      |

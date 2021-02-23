@@ -24,3 +24,9 @@ hidden.
 | Event   | Description     | Value             |
 | ------- | --------------- | ----------------- | ---------- |
 | `input` | Updates v-model | `readonly (string | number)[]` |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |

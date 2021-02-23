@@ -30,3 +30,22 @@ The colors can be changed via the css variable `--v-overlay-color`.
 | ---------- | ------------------------- | ------- | --------- |
 | `active`   | Show / hide the overlay   | `false` | `Boolean` |
 | `absolute` | Add `position: absolute;` | `false` | `Boolean` |
+
+## CSS Variables
+
+| Variable              | Default                |
+| --------------------- | ---------------------- |
+| `--v-overlay-color`   | `var(--overlay-color)` |
+| `--v-overlay-z-index` | `600`                  |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `click` |             |       |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |

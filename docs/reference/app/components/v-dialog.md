@@ -32,5 +32,13 @@ Renders an overlay with a flex slot rendering whatever content you pass
 ## Events
 
 | Events   | Description             | Value     | Event |
-| -------- | ----------------------- | --------- | ----- |
+| -------- | ----------------------- | --------- | ----- | -------- | --- |
 | `toggle` | Change the active state | `boolean` |       |
+| <!--     |                         |           |       | `esc`    | --> |
+| <!--     |                         |           |       | `toggle` | --> |
+
+## CSS Variables
+
+| Variable             | Default |
+| -------------------- | ------- |
+| `--v-dialog-z-index` | `100`   |

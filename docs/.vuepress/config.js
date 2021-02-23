@@ -489,17 +489,17 @@ module.exports = {
 								children: [
 									{
 										type: 'page',
-										path: '/reference/app/components/transitions/bounce',
+										path: '/reference/app/components/transition/bounce',
 										title: 'Bounce',
 									},
 									{
 										type: 'page',
-										path: '/reference/app/components/transitions/dialog',
+										path: '/reference/app/components/transition/dialog',
 										title: 'Dialog',
 									},
 									{
 										type: 'page',
-										path: '/reference/app/components/transitions/expand',
+										path: '/reference/app/components/transition/expand',
 										title: 'Expand',
 									},
 								],

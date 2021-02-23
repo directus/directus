@@ -129,3 +129,25 @@ useful when you're working with a predefined list of items:
 ```
 
 In this case, the selection state for all items selected would be `[15, 414, 'jolly']`
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |
+
+## Props
+
+| Prop        | Description | Default        | Type                   |
+| ----------- | ----------- | -------------- | ---------------------- |
+| `mandatory` |             | `false`        | `Boolean`              |
+| `max`       |             | `-1`           | `Number`               |
+| `multiple`  |             | `false`        | `Boolean`              |
+| `value`     |             | `undefined`    | `(string or number)[]` |
+| `scope`     |             | `'item-group'` | `String`               |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |

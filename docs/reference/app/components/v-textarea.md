@@ -31,3 +31,18 @@ of the standard HTML attributes like `min`, `length`, or `pattern`.
 | --------- | -------------------------------------------------------- | ---- |
 | `prepend` | Prepend elements before the text content in the textarea |      |
 | `append`  | Append elements after the text content                   |      |
+
+## CSS Variables
+
+| Variable                   | Default                    |
+| -------------------------- | -------------------------- |
+| `--v-textarea-min-height`  | `none`                     |
+| `--v-textarea-max-height`  | `var(--input-height-tall)` |
+| `--v-textarea-height`      | `var(--input-height-tall)` |
+| `--v-textarea-font-family` | `var(--family-sans-serif)` |
+
+## Events
+
+| Event   | Description | Value |
+| ------- | ----------- | ----- |
+| `input` |             |       |

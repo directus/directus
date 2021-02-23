@@ -70,3 +70,19 @@ decrease / increase the value, or a label that shows a preview of what the value
 | -------- | ------------------------------------------- | -------- |
 | `change` | Fires only when the user releases the thumb | `number` |
 | `input`  | Fires continuously                          | `number` |
+
+## CSS Variables
+
+| Variable                 | Default                |
+| ------------------------ | ---------------------- |
+| `--v-slider-color`       | `var(--border-normal)` |
+| `--v-slider-thumb-color` | `var(--primary)`       |
+| `--v-slider-fill-color`  | `var(--primary)`       |
+
+## Slots
+
+| Slot                    | Description | Data |
+| ----------------------- | ----------- | ---- |
+| `prepend`               |             |      |
+| `thumb-label type-text` |             |      |
+| `append`                |             |      |

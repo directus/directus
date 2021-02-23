@@ -45,3 +45,30 @@ Just as with regular checkboxes, you can use `v-model` with both an array and a 
 ```
 
 Keep in mind to pass the `value` prop with a unique value when using arrays in `v-model`.
+
+## CSS Variables
+
+| Variable           | Default                    |
+| ------------------ | -------------------------- |
+| `--v-switch-color` | `var(--foreground-normal)` |
+
+## Events
+
+| Event    | Description | Value |
+| -------- | ----------- | ----- |
+| `change` |             |       |
+
+## Props
+
+| Prop          | Description | Default | Type               |
+| ------------- | ----------- | ------- | ------------------ |
+| `value`       |             | `null`  | `String`           |
+| `input-value` |             | `false` | `[Boolean, Array]` |
+| `label`       |             | `null`  | `String`           |
+| `disabled`    |             | `false` | `Boolean`          |
+
+## Slots
+
+| Slot    | Description | Data |
+| ------- | ----------- | ---- |
+| `label` |             |      |

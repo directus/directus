@@ -37,3 +37,9 @@ You can set the color, background color and boder color with the `--v-badge-colo
 | `--v-badge-offset-x`         | `0px`                    |
 | `--v-badge-offset-y`         | `0px`                    |
 | `--v-badge-size`             | `16px`                   |
+
+## Slots
+
+| Slot      | Description | Data |
+| --------- | ----------- | ---- |
+| _default_ |             |      |

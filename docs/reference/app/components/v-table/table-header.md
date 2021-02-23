@@ -9,7 +9,7 @@
 ## Props
 
 | Prop                   | Description | Default | Type                       |
-| ---------------------- | ----------- | ------- | -------------------------- |
+| ---------------------- | ----------- | ------- | -------------------------- | -------------------------- | --- |
 | `show-select`          |             | `false` | `Boolean`                  |
 | `show-resize`          |             | `false` | `Boolean`                  |
 | `show-manual-sort`     |             | `false` | `Boolean`                  |
@@ -19,11 +19,14 @@
 | `must-sort`            |             | `false` | `Boolean`                  |
 | `has-item-append-slot` |             | `false` | `Boolean`                  |
 | `manual-sort-key`      |             | `null`  | `String`                   |
+| <!--                   | `headers`\* |         |                            | `Header[]`                 | --> |
+| <!--                   | `sort`\*    |         |                            | `Object as PropType<Sort>` | --> |
 | `headers`\*            |             |         | `Header[]`                 |
 | `sort`\*               |             |         | `Object as PropType<Sort>` |
 
 ## Slots
 
-| Slot                     | Description | Data |
-| ------------------------ | ----------- | ---- |
-| `header.${header.value}` |             |      |
+| Slot                     | Description              | Data |
+| ------------------------ | ------------------------ | ---- | --- | --- |
+| <!--                     | `header.${header.value}` |      |     | --> |
+| `header.${header.value}` |                          |      |
