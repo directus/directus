@@ -13,6 +13,7 @@ required: Kötelező
 requires_value: Kötelező adat
 create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
+create_webhook: Webhook létrehozása
 invite_users: Felhasználók meghívása
 email_examples: 'admin@example.com, felhaszalo@pelda.hu...'
 invite: Meghívás
@@ -21,6 +22,7 @@ connection_excellent: Kiváló kapcsolat
 connection_good: Jó kapcsolat
 connection_fair: Megfelelő kapcsolat
 connection_poor: Gyenge kapcsolat
+primary: Elsődleges
 rename_folder: Mappa átnevezése
 delete_folder: Mappa törlése
 prefix: Előtag
@@ -51,10 +53,18 @@ archive_confirm_count: >-
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
+all_access: Összes hozzáférés
+no_access: Nincs hozzáférés
 use_custom: Egyéni használata
+field_standard: Normál
 field_file: Egyetlen fájl
 field_files: Több fájl egyidejű hozzáadása
+field_m2o: M2O kapcsolat
+field_o2m: O2M kapcsolat
+field_m2m: M2M kapcsolat
 field_translations: Fordítások
+item_permissions: Elem engedélyek
+field_permissions: Mező engedélyek
 delete_field: Mező törlése
 fields_and_layout: Mezők és elrendezések
 field_create_success: 'Létrehozott mező: "{field}"'
@@ -100,13 +110,15 @@ to_manually_setup_translations: a fordítások kézi elkészítéséhez.
 click_to_manage_translated_fields: >-
   Ezek a mezők még nem lettek lefordítva. Kattints ide, hogy létrehozd őket. | Egy mező van lefordítva. Kattints ide a szerkesztéshez. | {count} mező van lefordítva. Kattints ide a szerkesztésükhöz.
 fields_group: Mező csoport
+new_field: 'Új mező'
+new_collection: 'Új gyűjtemény'
 configure_m2o: A Sok-az-Egyhez kapcsolatok beállítása...
 configure_o2m: Az Egy-a-Sokhoz kapcsolatok beállítása...
 configure_m2m: A Sok-a-Sokhoz kapcsolatok beállítása...
 configure_m2a: A Sok-az-Akárhányhoz kapcsolatok beállítása...
-add_m2o_to_collection: 'Egy Sok-az-Egyhez kapcsolat hozzáadása a {collection} kollekcióhoz'
-add_o2m_to_collection: 'Egy Egy-a-Sokhoz kapcsolat hozzáadása a {collection} kollekcióhoz'
-add_m2m_to_collection: 'Egy Sok-a-Sokhoz kapcsolat hozzáadása a {collection} kollekcióhoz'
+add_m2o_to_collection: 'Egy Sok-az-Egyhez kapcsolat hozzáadása a {collection} gyűjteményhez'
+add_o2m_to_collection: 'Egy Egy-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
+add_m2m_to_collection: 'Egy Sok-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
 choose_a_type: Válassz típust...
 determined_by_relationship: A kapcsolat által meghatározott
 add_note: Segítő jelzés a kitöltő felhasználónak...
@@ -136,6 +148,7 @@ undo_changes: Változások visszavonása
 notifications: Értesítések
 show_all_activity: Összes tevékenység mutatása
 page_not_found: Az oldal nem található
+confirm_revert: Visszavonás elfogadása
 display: Megjelenés
 settings_update_success: Beállítások frissítve
 title: Cím
@@ -145,6 +158,8 @@ revision_delta_reverted: Visszaállítva
 revision_delta_other: Változat
 private_user: Privát felhasználó
 leave_comment: Hozzászólás írása...
+this_collection: Ez a gyűjtemény
+related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
 translations_collection: Fordítások gyűjteménye
 languages_collection: Nyelvek gyűjteménye
@@ -206,10 +221,17 @@ foreground_color: Előtérszín
 background_color: Háttérszín
 no_file_selected: Nincs kijelölt fájl
 download_file: Fájl letöltése
+collection_key: Gyűjtemény kulcsa
 name: Név
+primary_key_field: Elsődleges kulcs mező
 type: Típus
+creating_new_collection: Új gyűjtemény létrehozása
 created_by: Készítette
 created_on: Létrehozva
+generated_uuid: Generált UUID
+manual_string: Kézzel beírt szöveg
+save_and_create_new: Mentés és létrehozás
+save_and_stay: Mentés és marad
 save_as_copy: Mentés másolatként
 add_existing: Létező tartalom hozzáadása
 comments: Hozzászólások
@@ -230,12 +252,12 @@ file_count: 'Nincsenek fájlok | Egy fájl | {count} file'
 no_files_copy: Nincsenek fileok.
 user_count: 'Nincsenek felhasználók | Egy felhasználó | {count} felhasználó'
 no_users_copy: Ez a szerepkör még egy felhasználóhoz sem lett hozzárendelve.
-webhooks_count: 'Nincsenek webhook-ok | Egy webhook | {count} webhook'
-no_webhooks_copy: Még nincsenek webhook-ok.
+webhooks_count: 'Nincsenek webhookok | Egy webhook | {count} webhook'
+no_webhooks_copy: Még nincsenek webhookok.
 all_items: Minden elem
 csv: CSV
 no_collections: Nincsenek gyűjtemények
-create_collection: Kollekció létrehozása
+create_collection: Gyűjtemény létrehozása
 no_collections_copy_admin: Még nem hoztál létre gyűjteményt. Kattints az alábbi gombra a kezdéshez.
 no_collections_copy: Még nem hoztál létre gyűjteményt. Lépj kapcsolatba a rendszeradminisztrátorral.
 relationship_not_setup: Ez a kapcsolat nincs megfelelően beállítva
@@ -283,6 +305,8 @@ errors:
   FIELD_NOT_FOUND: Mező nem található
   FORBIDDEN: Tilos
   INVALID_CREDENTIALS: Hibás felhasználónév vagy jelszó
+  INVALID_OTP: Helytelen az egyszer használatos jelszó
+  INVALID_QUERY: Érvénytelen lekérdezés
   ITEM_NOT_FOUND: Elem nem található
   ROUTE_NOT_FOUND: Nem található
   UNKNOWN: Váratlan hiba történt
@@ -291,6 +315,8 @@ create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
 bookmarks: Könyvjelzők
 unexpected_error: Váratlan hiba történt
+copy_details: Részletek másolása
+no_app_access: Nincs alkalmazás hozzáférés
 back: Vissza
 editing_image: Kép szerkesztése
 square: Négyzet
@@ -301,9 +327,16 @@ aspect_ratio: Méretarány
 rotate: Forgatás
 all_users: Összes felhasználó
 delete_collection: Gyűjtemény törlése
+update_collection_success: Módosított gyűjtemények
 delete_collection_success: Törölt gyűjtemények
+one_item: '1 elem'
+one_filtered_item: '1 szűrt elem'
+collections_shown: Megjelenített gyűjtemények
 visible_collections: Látható gyűjtemények
 hidden_collections: Elrejtett gyűjtemények
+show_hidden_collections: Rejtett gyűjtemények mutatása
+hide_hidden_collections: Rejtett gyűjtemények rejtése
+unmanaged_collections: Nem beállított gyűjtemények
 system_collections: Rendszer gyűjtemények
 icon_left: Ikon balra
 icon_right: Ikon jobbra
@@ -437,6 +470,8 @@ deselect_all: Összes kijelölés törlése
 other: Egyéb...
 adding_user: Hozzáadott felhasználó
 unknown_user: Ismeretlen felhasználó
+creating_in: 'Elem hozzáadása ide: {collection}'
+editing_in: 'Elem szerkesztése itt: {collection}'
 editing_in_batch: '{count} elem szerkesztése'
 no_options_available: Nincs választási lehetőség
 settings_data_model: Adat model
@@ -458,7 +493,8 @@ batch_delete_confirm: >-
   Nincs elem kiválasztva | Biztosan törölni szeretnéd az elemet? A művelet nem visszavonható. | Biztosan törölni szeretnéd az összes elemet ({count} db)? A művelet nem visszavonható.
 cancel: Mégse
 collection: Gyűjtemény
-collections: Kollekciók
+collections: Gyűjtemények
+singleton: Egyedüli
 fields:
   directus_activity:
     item: Elem elsődleges kulcsa
@@ -473,12 +509,16 @@ fields:
     note: Jegyzet
     display_template: Megjelenítési sablon
     hidden: Rejtett
+    singleton: Egyedüli
+    archive_app_filter: Szűrő archíválása
+    archive_value: Archív érték
     sort_field: Rendezési mező
   directus_files:
     title: Cím
     description: Leírás
     tags: Cimkék
     location: Pozíció
+    filename_disk: Fájlnév (tárhely)
     filename_download: Fájlnév (letöltött)
     metadata: Metadata
     type: MIME típus
@@ -516,8 +556,8 @@ fields:
   directus_settings:
     project_name: Projekt neve
     project_url: Projekt webcíme
-    project_color: Projekt szín
-    project_logo: Projekt logó
+    project_color: Projekt színe
+    project_logo: Projekt logója
     public_foreground: Nyilvános előtér
     public_background: Nyilvános háttér
     public_note: Nyilvános megjegyzés
@@ -527,6 +567,7 @@ fields:
     icon: Gyűjtemény ikonja
     note: Jegyzet
     hidden: Rejtett
+    singleton: Egyedüli
     translation: Lefordított mezőnevek
     display_template: Sablon
   directus_roles:
@@ -535,10 +576,13 @@ fields:
     app_access: Alkalmazás hozzáférés
     admin_access: Admin hozzáférés
     ip_access: IP cím
+    collection_list: Gyűjtemény navigáció
+no_fields_in_collection: 'A(z) {collection} még nem tartalmaz mezőt'
 do_nothing: Ne tegyen semmit
 block: Blokk
 comment: Hozzászólás
 continue: Tovább
+creating_webhook: Webhook létrehozása
 default: Alapértelmezett
 delete: Törlés
 delete_field_are_you_sure: >-
@@ -592,6 +636,10 @@ value: Érték
 view_project: Projekt megtekintése
 report_error: Hiba jelentése
 interfaces:
+  button-links:
+    button-links: Gomb hivatkozás
+    primary: Elsődleges
+    button: Gombok
   checkboxes:
     checkboxes: Jelölőnégyzetek
     show_more: '{count} további mutatása'
@@ -602,7 +650,7 @@ interfaces:
   collection:
     collection: Gyűjtemény
   collections:
-    collections: Kollekciók
+    collections: Gyűjtemények
   color:
     color: Szín
     placeholder: Szín választása...
@@ -615,14 +663,27 @@ interfaces:
     use_24: 24 órás formátum használata
   display-template:
     display-template: Megjelenítési sablon
+    collection_field: Gyűjtemény mező
     collection_field_not_setup: A gyűjtemény mező opció nem megfelelően van beállítva
     select_a_collection: Gyűjtemény kiválasztása
   divider:
     divider: Elválasztó
+    title_placeholder: Írja be a címet...
+    margin_top: Felső margó
+    margin_top_label: Felső margó növelése
+  dropdown:
+    description: Válasszon elemet a listából
+    choices_placeholder: Új lehetőség hozzáadása
+    choices_name_placeholder: Adjon meg egy nevet...
+  dropdown-multiselect:
+    dropdown-multiselect: Lenyíló lista (többválasztós)
+    description: Válasszon elemeket a listából
   file:
     file: File
+    description: Válasszon vagy töltsön fel fájlt
   files:
     files: Fájlok
+    description: Válasszon vagy töltsön fel fájlokat
   hash:
     hash: Hash
   icon:
@@ -631,6 +692,8 @@ interfaces:
     image: Kép
   interface:
     interface: Kezelőfelület
+  interface-options:
+    interface-options: Kinézet beállításai
   many-to-one:
     display_template: Megjelenítési sablon
   markdown:
@@ -643,6 +706,8 @@ interfaces:
     minimum_value: Minimum érték
     maximum_value: Maximum érték
     step_interval: Lépésköz
+  one-to-many:
+    no_collection: A gyűjtemény nem található
   radio-buttons:
     radio-buttons: Választó gombok
     description: Válasszon ki egy vagy több elemet
@@ -664,21 +729,26 @@ interfaces:
     add_tags: Címke hozzáadása...
   text-input:
     text-input: Szövegmező
+    trim: Vágás
   textarea:
     textarea: Szövegdoboz
   toggle:
     toggle: Váltás
+    label_placeholder: Írja be a címkét...
     label_default: Engedélyezve
   translations:
     display_template: Megjelenítési sablon
+    no_collection: Nincsenek gyűjtemények
   user:
     user: Felhasználó
     select_mode: Kiválasztott mód
     modes:
       auto: Automatikus
       dropdown: Legördülő lista
+      modal: Ablak
   wysiwyg:
     wysiwyg: WYSIWYG
+    toolbar: Eszköztár
     custom_formats: Egyéni formátum
     options_override: Beállítás felülírása
 displays:
@@ -747,6 +817,7 @@ layouts:
   cards:
     cards: Kártya
     image_source: Kép forrása
+    image_fit: Kép poziciója
     crop: Vágás
     contain: Tartalmaz
     title: Cím
