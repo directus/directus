@@ -21,9 +21,9 @@ hidden.
 
 ## Events
 
-| Event   | Description     | Value             |
-| ------- | --------------- | ----------------- | ---------- |
-| `input` | Updates v-model | `readonly (string | number)[]` |
+| Event   | Description     | Value                           |
+| ------- | --------------- | ------------------------------- |
+| `input` | Updates v-model | `readonly (string or number)[]` |
 
 ## Slots
 

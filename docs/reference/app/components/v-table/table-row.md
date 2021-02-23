@@ -8,7 +8,7 @@
 ## Props
 
 | Prop                 | Description | Default | Type       |
-| -------------------- | ----------- | ------- | ---------- | ---------- | --- |
+| -------------------- | ----------- | ------- | ---------- |
 | `show-select`        |             | `false` | `Boolean`  |
 | `show-manual-sort`   |             | `false` | `Boolean`  |
 | `is-selected`        |             | `false` | `Boolean`  |
@@ -16,15 +16,12 @@
 | `sorted-manually`    |             | `false` | `Boolean`  |
 | `has-click-listener` |             | `false` | `Boolean`  |
 | `height`             |             | `48`    | `Number`   |
-| <!--                 | `headers`\* |         |            | `Header[]` | --> |
-| <!--                 | `item`\*    |         |            | `Object`   | --> |
 | `headers`\*          |             |         | `Header[]` |
 | `item`\*             |             |         | `Object`   |
 
 ## Slots
 
-| Slot                   | Description            | Data |
-| ---------------------- | ---------------------- | ---- | --- | --- |
-| `item-append`          |                        |      |
-| <!--                   | `item.${header.value}` |      |     | --> |
-| `item.${header.value}` |                        |      |
+| Slot                   | Description | Data |
+| ---------------------- | ----------- | ---- |
+| `item-append`          |             |      |
+| `item.${header.value}` |             |      |
