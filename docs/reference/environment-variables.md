@@ -28,12 +28,20 @@
 | `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --            |
 | `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --            |
 | `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --            |
+| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --            |
 
 ::: tip Additional Database Variables
 
 All `DB_*` environment variables are passed to the `connection` configuration of a [`Knex` instance](http://knexjs.org).
 Based on your project's needs, you can extend the `DB_*` environment variables with any config you need to pass to the
 database instance.
+
+:::
+
+::: tip Pooling
+
+All the `DB_POOL_` prefixed options are passed [to `tarn.js`](https://github.com/vincit/tarn.js#usage) through
+[Knex](http://knexjs.org/#Installation-pooling)
 
 :::
 

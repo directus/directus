@@ -14,7 +14,10 @@ const connectionConfig: Record<string, any> = getConfigFromEnv('DB_', [
 	'DB_CLIENT',
 	'DB_SEARCH_PATH',
 	'DB_CONNECTION_STRING',
+	'DB_POOL',
 ]);
+
+const poolConfig = getConfigFromEnv('DB_POOL');
 
 const knexConfig: Config = {
 	client: env.DB_CLIENT,
@@ -26,6 +29,7 @@ const knexConfig: Config = {
 		deprecate: (msg) => logger.info(msg),
 		debug: (msg) => logger.debug(msg),
 	},
+	pool: poolConfig,
 };
 
 if (env.DB_CLIENT === 'sqlite3') {
