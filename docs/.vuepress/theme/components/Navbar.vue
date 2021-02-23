@@ -102,7 +102,6 @@ $navbar-horizontal-padding = 30px
 		align-items center
 		height 100%
   .logo
-    height 2.5rem
     margin-right 0.8rem
   .site-name
     font-size 1.3rem
