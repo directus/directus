@@ -140,8 +140,8 @@ to_manually_setup_translations: çevirileri manuel olarak ayarlamak için.
 click_to_manage_translated_fields: >-
   Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
 fields_group: Alanlar Grubu
-new_field: "Yeni Alan"
-new_collection: "Yeni Koleksiyon"
+new_field: 'Yeni Alan'
+new_collection: 'Yeni Koleksiyon'
 configure_m2o: Çoktan Bire İlişkinizi Yapılandırın...
 configure_o2m: Bire Çoğa İlişkinizi Yapılandırın...
 configure_m2m: Çoktan Çoğa İlişkinizi Yapılandırın...
