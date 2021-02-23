@@ -1,5 +1,7 @@
 # Button
 
+A simple button component to make your life interactive!
+
 ```html
 <v-button>Click me!</v-button>
 ```

@@ -1,17 +1,23 @@
 # Field Select
 
-## Events
+Allows for easy selection of field inside a collection. Also works with relations inside a collection.
 
-| Event   | Description | Value |
-| ------- | ----------- | ----- |
-| `input` |             |       |
+```html
+<v-field-select collection="articles" v-model="selection" />
+```
 
 ## Props
 
-| Prop           | Description | Default           | Type                          |
-| -------------- | ----------- | ----------------- | ----------------------------- |
-| `disabled`     |             | `false`           | `Boolean`                     |
-| `value`        |             | `null`            | `string[]`                    |
-| `depth`        |             | `1`               | `Number`                      |
-| `inject`       |             | `() => ({ fields` | `Object as PropType<{ fields` |
-| `collection`\* |             |                   | `String`                      |
+| Prop           | Description                                                | Default                                          | Type                                                                   |
+| -------------- | ---------------------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------- | ----- |
+| `collection`\* | From where the fields should be selected                   |                                                  | `String`                                                               |
+| `disabled`     | Disables this component                                    | `false`                                          | `Boolean`                                                              |
+| `value`        | Can be used to model the selected field                    | `null`                                           | `string[]`                                                             |
+| `depth`        | If greater than `0`, it also considers relations of fields | `1`                                              | `Number`                                                               |
+| `inject`       | Inject you own fields, collections or relations            | `{ fields: [], collections: [], relations: [] }` | `{ fields: Field[]; collections: Collection[]; relations: Relation[] } | null` |
+
+## Events
+
+| Event   | Description           | Value      |
+| ------- | --------------------- | ---------- |
+| `input` | The changed selection | `string[]` |

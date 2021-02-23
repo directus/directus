@@ -1,6 +1,6 @@
 # Card
 
-Renders a card. A card is nothing but a v-sheet with predefined building blocks to enforce consistency.
+A card is nothing but a v-sheet with predefined building blocks to enforce consistency.
 
 ## Usage
 

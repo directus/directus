@@ -1,5 +1,7 @@
 # Chip
 
+Chips are small round components that can be used to display tags or similar data.
+
 ```html
 <v-chip>I'm a chip!</v-chip>
 ```

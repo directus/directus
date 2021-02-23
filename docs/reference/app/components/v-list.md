@@ -1,3 +1,34 @@
+# List
+
+Display usual lists. Also works with nested data.
+
+```html
+<v-list>
+	<v-list-item>Item 1</v-list-item>
+	<v-list-item>Item 2</v-list-item>
+	<v-list-item>Item 3</v-list-item>
+
+	<v-list-group>
+		<template #activator="{active}">
+			<v-list-item>Group 1</v-list-item>
+		</template>
+
+		<v-list-item>Item 1-1</v-list-item>
+		<v-list-item>Item 1-2</v-list-item>
+		<v-list-item>Item 1-2</v-list-item>
+	</v-list-group>
+</v-list>
+```
+
+## Props
+
+| Prop           | Description                                                 | Default    | Type                   |
+| -------------- | ----------------------------------------------------------- | ---------- | ---------------------- |
+| `active-items` | Used with `v-model` to model all selected items in the list | `() => []` | `(number or string)[]` |
+| `large`        | Displays each list item a bit larger                        | `false`    | `Boolean`              |
+| `multiple`     | Allows to select multiple items in the list                 | `true`     | `Boolean`              |
+| `mandatory`    | At least one item has to be selected                        | `true`     | `Boolean`              |
+
 ## CSS Variables
 
 | Variable                           | Default                        |
@@ -15,21 +46,12 @@
 
 ## Events
 
-| Event   | Description | Value |
-| ------- | ----------- | ----- |
-| `input` |             |       |
-
-## Props
-
-| Prop           | Description | Default    | Type                   |
-| -------------- | ----------- | ---------- | ---------------------- |
-| `active-items` |             | `() => []` | `(number or string)[]` |
-| `large`        |             | `false`    | `Boolean`              |
-| `multiple`     |             | `true`     | `Boolean`              |
-| `mandatory`    |             | `true`     | `Boolean`              |
+| Event   | Description                          | Value |
+| ------- | ------------------------------------ | ----- |
+| `input` | Used to update the current selection |       |
 
 ## Slots
 
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             |      |
+| Slot      | Description                | Data |
+| --------- | -------------------------- | ---- |
+| _default_ | Render all list items here |      |

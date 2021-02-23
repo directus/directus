@@ -14,7 +14,7 @@ Divides content. Made to be used in `v-list` or `v-tabs` components.
 | -------------- | ----------------------------------------------------- | ------- | --------- |
 | `vertical`     | Render the divider vertically                         | `false` | `Boolean` |
 | `inline-title` | Render the title inline with the divider, or under it | `true`  | `Boolean` |
-| `large`        |                                                       | `false` | `Boolean` |
+| `large`        | Renders a larger divider                              | `false` | `Boolean` |
 
 ## Events
 

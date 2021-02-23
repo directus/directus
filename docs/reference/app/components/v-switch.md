@@ -1,6 +1,6 @@
 # Switch
 
-## Basic usage
+Render a switch that either can model a single boolean value or model an array in combination with the `value` prop.
 
 ```html
 <v-switch v-model="checked" label="Receive newsletter" />
@@ -11,7 +11,7 @@
 Color changes are done using the css variable `--v-switch-color`.
 
 ```html
-<v-switch />
+<v-switch v-model="checked" />
 <style>
 	.v-switch {
 		--v-switch-color: var(--red);
@@ -46,6 +46,15 @@ Just as with regular checkboxes, you can use `v-model` with both an array and a 
 
 Keep in mind to pass the `value` prop with a unique value when using arrays in `v-model`.
 
+## Props
+
+| Prop          | Description                                            | Default | Type               |
+| ------------- | ------------------------------------------------------ | ------- | ------------------ |
+| `value`       | If modeling an array, what value the switch represents | `null`  | `String`           |
+| `input-value` | Model the selected state using `v-model`               | `false` | `[Boolean, Array]` |
+| `disabled`    | Disables the switch                                    | `false` | `Boolean`          |
+| `label`       | Displays a label next to the switch                    | `null`  | `String`           |
+
 ## CSS Variables
 
 | Variable           | Default                    |
@@ -54,21 +63,12 @@ Keep in mind to pass the `value` prop with a unique value when using arrays in `
 
 ## Events
 
-| Event    | Description | Value |
-| -------- | ----------- | ----- |
-| `change` |             |       |
-
-## Props
-
-| Prop          | Description | Default | Type               |
-| ------------- | ----------- | ------- | ------------------ |
-| `value`       |             | `null`  | `String`           |
-| `input-value` |             | `false` | `[Boolean, Array]` |
-| `label`       |             | `null`  | `String`           |
-| `disabled`    |             | `false` | `Boolean`          |
+| Event    | Description                          | Value |
+| -------- | ------------------------------------ | ----- |
+| `change` | When the state of the switch changes |       |
 
 ## Slots
 
-| Slot    | Description | Data |
-| ------- | ----------- | ---- |
-| `label` |             |      |
+| Slot    | Description                                     | Data |
+| ------- | ----------------------------------------------- | ---- |
+| `label` | Alternative way of adding a label to the switch |      |

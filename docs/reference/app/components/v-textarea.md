@@ -1,4 +1,6 @@
-# Input
+# Textarea
+
+Renders a textarea in which multiline text can be entered.
 
 ```html
 <v-textarea v-model="value" />

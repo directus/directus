@@ -1,6 +1,6 @@
 # Dialog
 
-Renders an overlay with a flex slot rendering whatever content you pass
+Renders an overlay with a flex slot rendering whatever content you pass.
 
 ## Usage
 
@@ -16,25 +16,25 @@ Renders an overlay with a flex slot rendering whatever content you pass
 
 ## Props
 
-| Prop         | Description                     | Default     | Type      |
-| ------------ | ------------------------------- | ----------- | --------- |
-| `persistent` | Disable clicking on the overlay | `false`     | `Boolean` |
-| `active`     |                                 | `undefined` | `Boolean` |
-| `placement`  |                                 | `'center'`  | `String`  |
+| Prop         | Description                                         | Default     | Type      |
+| ------------ | --------------------------------------------------- | ----------- | --------- |
+| `persistent` | Disable closing by clicking on the side             | `false`     | `Boolean` |
+| `active`     | Can be used in combination with `v-model`           | `undefined` | `Boolean` |
+| `placement`  | Display it either in the `center` or to the `right` | `'center'`  | `String`  |
 
 ## Slots
 
-| Slot        | Description | Data |
-| ----------- | ----------- | ---- |
-| _default_   |             |      |
-| `activator` |             |      |
+| Slot        | Description                                   | Data |
+| ----------- | --------------------------------------------- | ---- |
+| _default_   | Whatever should be rendered inside the dialog |      |
+| `activator` | Insert an activator for the dialog            |      |
 
 ## Events
 
 | Event    | Description             | Value     |
 | -------- | ----------------------- | --------- |
 | `toggle` | Change the active state | `boolean` |
-| `esc`    |                         | `boolean` |
+| `esc`    | Escape has been pressed | `boolean` |
 
 ## CSS Variables
 

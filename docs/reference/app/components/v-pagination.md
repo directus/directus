@@ -1,5 +1,7 @@
 # Pagination
 
+Add a pagination to a list or similar to allow for access to multiple pages.
+
 ## Usage
 
 ```html
@@ -10,14 +12,11 @@
 
 | Prop              | Description                                      | Default     | Type      |
 | ----------------- | ------------------------------------------------ | ----------- | --------- |
-| `disabled`        | Disables the pagination                          | `false`     | `Boolean` |
-| `total-visible`   |                                                  | `undefined` | `Number`  |
-| `value`           |                                                  | `null`      | `Number`  |
-| `show-first-last` |                                                  | `false`     | `Boolean` |
-| `total-visible`   | Specify the max total visible pagination numbers | `undefined` | `Number`  |
+| `length`\*        | The amount of pages to render                    | `null`      | `Number`  |
 | `value`           | Currently selected page                          | `null`      | `Number`  |
+| `disabled`        | Disables the pagination                          | `false`     | `Boolean` |
+| `total-visible`   | Specify the max total visible pagination numbers | `undefined` | `Number`  |
 | `show-first-last` | Show first/last buttons                          | `false`     | `Boolean` |
-| `length`\*        |                                                  | `null`      | `Number`  |
 
 ## Events
 

@@ -20,33 +20,33 @@ Renders a dropdown input.
 />
 ```
 
+## Props
+
+| Prop                         | Description                                                    | Default   | Type         |
+| ---------------------------- | -------------------------------------------------------------- | --------- | ------------ |
+| `items`\*                    | The items that should be selectable                            |           | `ItemsRaw`   |
+| `item-text`                  | Which prop should be taken to render the text                  | `'text'`  | `String`     |
+| `item-value`                 | Which prop should be taken to mirror the selected value        | `'value'` | `String`     |
+| `item-icon`                  | Which prop should be taken to render the icon                  | `null`    | `String`     |
+| `value`                      | Mirror with `v-model` the currently selected values            | `null`    | `InputValue` |
+| `multiple`                   | Allow to select multiple values                                | `false`   | `Boolean`    |
+| `placeholder`                | A placeholder if no item is selected yet                       | `null`    | `String`     |
+| `full-width`                 | Display the select in full width                               | `true`    | `Boolean`    |
+| `disabled`                   | Disable any interaction with the select                        | `false`   | `Boolean`    |
+| `show-deselect`              | Allow to deselect all currently selected items                 | `false`   | `Boolean`    |
+| `allow-other`                | Allow to enter custom values                                   | `false`   | `Boolean`    |
+| `close-on-content-click`     | Close the dropdown when an selection has been made             | `true`    | `Boolean`    |
+| `inline`                     | display the selection inline with other text                   | `false`   | `Boolean`    |
+| `multiple-preview-threshold` | The maximum amount of selected items to display in the preview | `3`       | `Number`     |
+
 ## CSS Variables
 
 | Variable                 | Default                    |
 | ------------------------ | -------------------------- |
 | `--v-select-font-family` | `var(--family-sans-serif)` |
 
-## Props
-
-| Prop                         | Description | Default   | Type         |
-| ---------------------------- | ----------- | --------- | ------------ |
-| `item-text`                  |             | `'text'`  | `String`     |
-| `item-value`                 |             | `'value'` | `String`     |
-| `item-icon`                  |             | `null`    | `String`     |
-| `value`                      |             | `null`    | `InputValue` |
-| `multiple`                   |             | `false`   | `Boolean`    |
-| `placeholder`                |             | `null`    | `String`     |
-| `full-width`                 |             | `true`    | `Boolean`    |
-| `disabled`                   |             | `false`   | `Boolean`    |
-| `show-deselect`              |             | `false`   | `Boolean`    |
-| `allow-other`                |             | `false`   | `Boolean`    |
-| `close-on-content-click`     |             | `true`    | `Boolean`    |
-| `inline`                     |             | `false`   | `Boolean`    |
-| `multiple-preview-threshold` |             | `3`       | `Number`     |
-| `items`\*                    |             |           | `ItemsRaw`   |
-
 ## Slots
 
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| `prepend` |             |      |
+| Slot      | Description                       | Data |
+| --------- | --------------------------------- | ---- |
+| `prepend` | Prepend anything to the selection |      |

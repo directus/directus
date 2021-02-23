@@ -1,5 +1,7 @@
 # Slider
 
+A standard slider as everybody knows them.
+
 ```html
 <v-slider v-model="value" :min="0" :max="100" />
 ```
@@ -62,7 +64,7 @@ decrease / increase the value, or a label that shows a preview of what the value
 | `show-ticks`        | Show tick for each step                             | `false` | `Boolean` |
 | `step`              | In what step the value can be entered               | `1`     | `Number`  |
 | `value`             | Current value of slider. Can be used with `v-model` | `0`     | `Number`  |
-| `always-show-value` |                                                     | `false` | `Boolean` |
+| `always-show-value` | Always the current selected value                   | `false` | `Boolean` |
 
 ## Events
 
@@ -81,8 +83,9 @@ decrease / increase the value, or a label that shows a preview of what the value
 
 ## Slots
 
-| Slot                    | Description | Data |
-| ----------------------- | ----------- | ---- |
-| `prepend`               |             |      |
-| `thumb-label type-text` |             |      |
-| `append`                |             |      |
+| Slot          | Description                    | Data |
+| ------------- | ------------------------------ | ---- |
+| `prepend`     | Prepend anything to the slider |      |
+| `thumb-label` |                                |      |
+| `type-text`   |                                |      |
+| `append`      | Append anything to the slider  |      |

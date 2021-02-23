@@ -31,13 +31,24 @@ representation.
 />
 ```
 
+## FancySelectItem
+
+| Prop          | Description                                | Type                                     |
+| ------------- | ------------------------------------------ | ---------------------------------------- |
+| `icon`        | Which icon to display                      | `string`                                 |
+| `value`       | Which value the item represents            | `string or number`                       |
+| `text`        | The displayed text                         | `undefined or string or TranslateResult` |
+| `description` | Optional description to display            | `undefined or string or TranslateResult` |
+| `divider`     | If set to true, display an divider instead | `undefined or boolean`                   |
+| `iconRight`   | Display an optional icon to the right      | `undefined or string`                    |
+
 ## Props
 
 | Prop       | Description                             | Default | Type                |
 | ---------- | --------------------------------------- | ------- | ------------------- |
-| `value`    | Value used for v-model                  | `null`  | `[String, Number]`  |
+| `items`\*  | The list of possible items to display   |         | `FancySelectItem[]` |
+| `value`    | used to model the selected items        | `null`  | `[String, Number]`  |
 | `disabled` | Disable selecting / deselecting a value | `false` | `Boolean`           |
-| `items`\*  |                                         |         | `FancySelectItem[]` |
 
 ## Events
 

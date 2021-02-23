@@ -4,8 +4,7 @@ Renders a dropdown menu. Can be attached to an activator element or free floatin
 
 **NOTE**
 
-Due to the fact that a menu is rendered through a portal, dialogs don't work great when rendered from within a menu. If
-you ever find yourself doing this:
+Due to the fact that a menu is rendered through a portal, dialogs don't work great when rendered from within a menu.
 
 ## Props
 
@@ -29,13 +28,13 @@ you ever find yourself doing this:
 
 ## Events
 
-| Event   | Description | Value |
-| ------- | ----------- | ----- |
-| `input` |             |       |
+| Event   | Description                  | Value     |
+| ------- | ---------------------------- | --------- |
+| `input` | Used to model the value prop | `Boolean` |
 
 ## Slots
 
-| Slot        | Description | Data |
-| ----------- | ----------- | ---- |
-| `activator` |             |      |
-| _default_   |             |      |
+| Slot        | Description                                       | Data |
+| ----------- | ------------------------------------------------- | ---- |
+| `activator` | The activator for the menu                        |      |
+| _default_   | Elements that should be displayed inside the menu |      |

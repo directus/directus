@@ -1,21 +1,23 @@
 # Detail
 
-Allows for collapsable content
+Use the detail component to hide not so important information or elements.
 
 ## Usage
 
 ```html
-<v-detail />
+<v-detail label="There is content hidden in me">
+	<div>I'm hidden until you open the component</div>
+</v-detail>
 ```
 
 ## Props
 
-| Prop         | Description         | Default            | Type      |
-| ------------ | ------------------- | ------------------ | --------- |
-| `active`     | Used with `v-model` | `undefined`        | `Boolean` |
-| `label`      | Label of detail     | `i18n.t('toggle')` | `String`  |
-| `start-open` |                     | `false`            | `Boolean` |
-| `disabled`   |                     | `false`            | `Boolean` |
+| Prop         | Description             | Default            | Type      |
+| ------------ | ----------------------- | ------------------ | --------- |
+| `active`     | Used with `v-model`     | `undefined`        | `Boolean` |
+| `label`      | Label of detail         | `i18n.t('toggle')` | `String`  |
+| `start-open` | Have it open by default | `false`            | `Boolean` |
+| `disabled`   | Disable any interaction | `false`            | `Boolean` |
 
 ## Events
 

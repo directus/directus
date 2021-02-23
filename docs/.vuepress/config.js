@@ -670,12 +670,12 @@ module.exports = {
 								type: 'page',
 							},
 							{
-								path: 'reference/app/components/v-table/v-table',
+								path: 'reference/app/components/v-table',
 								title: 'Table',
 								type: 'page',
 							},
 							{
-								path: 'reference/app/components/v-tabs/v-tabs',
+								path: 'reference/app/components/v-tabs',
 								title: 'Tabs',
 								type: 'page',
 							},

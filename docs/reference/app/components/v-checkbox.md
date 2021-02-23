@@ -1,6 +1,6 @@
 # Checkbox
 
-## Basic usage
+Display a single checkbox on which you can model a boolean.
 
 ```html
 <v-checkbox v-model="checked" label="Receive newsletter" />
@@ -119,10 +119,10 @@ If you can't, you should listen to the `update:indeterminate` event and respond 
 
 ## Events
 
-| Event                  | Description                | Data                       | Value |
-| ---------------------- | -------------------------- | -------------------------- | ----- |
-| `change`               | New state for the checkbox | Boolean or array of values |       |
-| `update:indeterminate` | New state for the checkbox | Boolean or array of values |       |
+| Event                  | Description                | Data                       |
+| ---------------------- | -------------------------- | -------------------------- |
+| `change`               | New state for the checkbox | Boolean or array of values |
+| `update:indeterminate` | New state for the checkbox | Boolean or array of values |
 
 ## CSS Variables
 

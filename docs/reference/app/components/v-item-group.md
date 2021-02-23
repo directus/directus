@@ -130,24 +130,24 @@ useful when you're working with a predefined list of items:
 
 In this case, the selection state for all items selected would be `[15, 414, 'jolly']`
 
-## Events
-
-| Event   | Description | Value |
-| ------- | ----------- | ----- |
-| `input` |             |       |
-
 ## Props
 
-| Prop        | Description | Default        | Type                   |
-| ----------- | ----------- | -------------- | ---------------------- |
-| `mandatory` |             | `false`        | `Boolean`              |
-| `max`       |             | `-1`           | `Number`               |
-| `multiple`  |             | `false`        | `Boolean`              |
-| `value`     |             | `undefined`    | `(string or number)[]` |
-| `scope`     |             | `'item-group'` | `String`               |
+| Prop        | Description                                           | Default        | Type                   |
+| ----------- | ----------------------------------------------------- | -------------- | ---------------------- |
+| `value`     | Used with `v-model` to model the selected items       | `undefined`    | `(String or Number)[]` |
+| `mandatory` | If enabled, at least one item has to be selected      | `false`        | `Boolean`              |
+| `max`       | The maximum amount of items that can be selected      | `-1`           | `Number`               |
+| `multiple`  | If enabled, multiple elements can be selected         | `false`        | `Boolean`              |
+| `scope`     | Items that do not have the same scope will be ignored | `'item-group'` | `String`               |
+
+## Events
+
+| Event   | Description                      | Value                |
+| ------- | -------------------------------- | -------------------- |
+| `input` | Used to update the modeled value | (String or Number)[] |
 
 ## Slots
 
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             |      |
+| Slot      | Description                                                 | Data |
+| --------- | ----------------------------------------------------------- | ---- |
+| _default_ | All items placed inside here will be part of the item group |      |

@@ -1,4 +1,7 @@
-# Hover (util)
+# Hover
+
+Adds hover functionality to any component you place inside. Can be used to display different states of a component
+depending if you are hovering over it.
 
 ```html
 <v-hover v-slot="{ hover }">
@@ -40,6 +43,6 @@ n/a
 
 ## Slots
 
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             |      |
+| Slot      | Description                                                 | Data |
+| --------- | ----------------------------------------------------------- | ---- |
+| _default_ | Place your components that should use the hover effect here |      |

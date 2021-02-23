@@ -1,5 +1,7 @@
 # Notice
 
+Render a small notice to warn of something or to give tips on how to use things.
+
 ```html
 <v-notice>I'm a notice!</v-notice>
 ```
@@ -22,6 +24,6 @@
 
 ## Slots
 
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             |      |
+| Slot      | Description                          | Data |
+| --------- | ------------------------------------ | ---- |
+| _default_ | Whatever should be inside the notice |      |

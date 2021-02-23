@@ -1,5 +1,7 @@
 # Badge
 
+Display a small dot in the corner of the component.
+
 ```html
 <v-badge value="2"><v-icon>ABC</v-icon></v-badge>
 ```

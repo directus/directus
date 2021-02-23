@@ -41,6 +41,17 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 </v-button>
 ```
 
+## Props
+
+| Prop       | Description                          | Default | Type      |
+| ---------- | ------------------------------------ | ------- | --------- |
+| `name`\*   | Which icon to display                |         | `String`  |
+| `filled`   | Removes the outline stlye if enabled | `false` | `Boolean` |
+| `sup`      |                                      | `false` | `Boolean` |
+| `left`     | Displays the icon more to the left   | `false` | `Boolean` |
+| `right`    | Displays the icon more to the right  | `false` | `Boolean` |
+| `disabled` | Disables the icon                    | `false` | `Boolean` |
+
 ## CSS Variables
 
 | Variable               | Default        |
@@ -51,17 +62,6 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 
 ## Events
 
-| Event   | Description | Value |
-| ------- | ----------- | ----- |
-| `click` |             |       |
-
-## Props
-
-| Prop       | Description | Default | Type      |
-| ---------- | ----------- | ------- | --------- |
-| `filled`   |             | `false` | `Boolean` |
-| `sup`      |             | `false` | `Boolean` |
-| `left`     |             | `false` | `Boolean` |
-| `right`    |             | `false` | `Boolean` |
-| `disabled` |             | `false` | `Boolean` |
-| `name`\*   |             |         | `String`  |
+| Event   | Description                     | Value |
+| ------- | ------------------------------- | ----- |
+| `click` | Fires when clicking on the icon |       |

@@ -1,5 +1,7 @@
 # Avatar
 
+The avatar component can be used to represent a person or any avatar like data.
+
 ```html
 <v-avatar>RVZ</v-avatar>
 
@@ -21,9 +23,9 @@
 
 ## Slots
 
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             | --   |
+| Slot      | Description                                             | Data |
+| --------- | ------------------------------------------------------- | ---- |
+| _default_ | Default slot to display your elements inside the avatar | --   |
 
 ## Events
 

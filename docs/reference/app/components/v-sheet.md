@@ -1,11 +1,11 @@
 # Sheet
 
+A sheet is a component that holds other components. It provides a visual difference (layer) on the page. It's often used
+when grouping fields.
+
 ```html
 <v-sheet></v-sheet>
 ```
-
-A sheet is a component that holds other components. It provides a visual difference (layer) on the page. It's often used
-when grouping fields.
 
 ## Sizing
 

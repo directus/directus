@@ -110,25 +110,25 @@ export default defineComponent({
 
 | Prop                 | Description                                                                                    | Default              | Type          |
 | -------------------- | ---------------------------------------------------------------------------------------------- | -------------------- | ------------- |
-| `item-key`           | Primary key of the item. Used for keys / selections                                            | `'id'`               | `String`      |
-| `sort`               | What column / order to sort by. Supports the `.sync` modifier. `{ by: string, desc: boolean }` | `null`               | `Sort`        |
-| `show-select`        | Show checkboxes                                                                                | `false`              | `Boolean`     |
-| `show-resize`        | Show resize handlers                                                                           | `false`              | `Boolean`     |
-| `show-manual-sort`   | Show manual sort drag handles                                                                  | `false`              | `Boolean`     |
-| `selection`          | What items are selected. Can be used with `v-model` as well                                    | `() => []`           | `any`         |
-| `fixed-header`       | Make the header fixed                                                                          | `false`              | `Boolean`     |
-| `loading`            | Show progress indicator                                                                        | `false`              | `Boolean`     |
-| `loading-text`       | What text to show when table is loading with no items                                          | `i18n.t('loading')`  | `String`      |
-| `no-items-text`      | What text to show when table doesn't contain any rows                                          | `i18n.t('no_items')` | `String`      |
-| `server-sort`        | Handle sorting on the parent level.                                                            | `false`              | `Boolean`     |
-| `row-height`         | Height of the individual rows in px                                                            | `48`                 | `Number`      |
-| `must-sort`          | Requires the sort to be on a particular column                                                 | `false`              | `Boolean`     |
-| `disabled`           | Disable edits to items in the form (drag/select)                                               | `false`              | `Boolean`     |
-| `manual-sort-key`    |                                                                                                | `null`               | `String`      |
-| `selection-use-keys` |                                                                                                | `false`              | `Boolean`     |
-| `inline`             |                                                                                                | `false`              | `Boolean`     |
 | `headers`\*          | What columns to show in the table. Supports the `.sync` modifier                               |                      | `HeaderRaw[]` |
 | `items`\*            | The individual items to render as rows                                                         |                      | `Item[]`      |
+| `disabled`           | Disable edits to items in the form (drag/select)                                               | `false`              | `Boolean`     |
+| `fixed-header`       | Make the header fixed                                                                          | `false`              | `Boolean`     |
+| `inline`             | Display the table inline with other text                                                       | `false`              | `Boolean`     |
+| `item-key`           | Primary key of the item. Used for keys / selections                                            | `'id'`               | `String`      |
+| `loading-text`       | What text to show when table is loading with no items                                          | `i18n.t('loading')`  | `String`      |
+| `loading`            | Show progress indicator                                                                        | `false`              | `Boolean`     |
+| `manual-sort-key`    | What field to use for manual sorting                                                           | `null`               | `String`      |
+| `must-sort`          | Requires the sort to be on a particular column                                                 | `false`              | `Boolean`     |
+| `no-items-text`      | What text to show when table doesn't contain any rows                                          | `i18n.t('no_items')` | `String`      |
+| `row-height`         | Height of the individual rows in px                                                            | `48`                 | `Number`      |
+| `selection-use-keys` | What field to use for selection                                                                | `false`              | `Boolean`     |
+| `selection`          | What items are selected. Can be used with `v-model` as well                                    | `() => []`           | `any`         |
+| `server-sort`        | Handle sorting on the parent level.                                                            | `false`              | `Boolean`     |
+| `show-manual-sort`   | Show manual sort drag handles                                                                  | `false`              | `Boolean`     |
+| `show-resize`        | Show resize handlers                                                                           | `false`              | `Boolean`     |
+| `show-select`        | Show checkboxes                                                                                | `false`              | `Boolean`     |
+| `sort`               | What column / order to sort by. Supports the `.sync` modifier. `{ by: string, desc: boolean }` | `null`               | `Sort`        |
 
 ## Events
 
@@ -143,9 +143,9 @@ export default defineComponent({
 
 ## Slots
 
-| Slot                     | Description | Data |
-| ------------------------ | ----------- | ---- |
-| `header.${header.value}` |             |      |
+| Slot                     | Description            | Data |
+| ------------------------ | ---------------------- | ---- |
+| `header.${header.value}` | A slot for each header |      |
 
 ## CSS Variables
 

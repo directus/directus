@@ -1,5 +1,7 @@
 # Breadcrumb
 
+A breadcrumb can help you display on what site you are currently on by displaying a structure like `my / custom / page`.
+
 ```html
 <v-breadcrumb :items="[{name: 'Collections', to: '/collections'}]" />
 ```
