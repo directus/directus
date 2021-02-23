@@ -20,6 +20,7 @@ import { Revision } from './types';
 import { useFieldsStore } from '@/stores';
 import { diffWordsWithSpace, diffJson, diffArrays } from 'diff';
 import RevisionsDrawerUpdatesChange from './revisions-drawer-updates-change.vue';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	components: { RevisionsDrawerUpdatesChange },
@@ -48,35 +49,39 @@ export default defineComponent({
 
 			const changedFields = Object.keys(props.revision.delta);
 
-			return changedFields.map((fieldKey) => {
-				const name = fieldsStore.getField(props.revision.collection, fieldKey).name;
-				const currentValue = props.revision.delta[fieldKey];
-				const previousValue = previousRevision.value.data[fieldKey];
+			return changedFields
+				.map((fieldKey) => {
+					const name = fieldsStore.getField(props.revision.collection, fieldKey).name;
+					const currentValue = props.revision.delta[fieldKey];
+					const previousValue = previousRevision.value.data[fieldKey];
 
-				let changes;
+					if (isEqual(currentValue, previousValue)) return null;
 
-				if (typeof currentValue === 'string' && currentValue.length > 25) {
-					changes = diffWordsWithSpace(previousValue, currentValue);
-				} else if (Array.isArray(currentValue)) {
-					changes = diffArrays(previousValue, currentValue);
-				} else if (typeof currentValue === 'object') {
-					changes = diffJson(previousValue, currentValue);
-				} else {
-					// This is considering the whole thing a change
-					changes = [
-						{
-							removed: true,
-							value: previousValue,
-						},
-						{
-							added: true,
-							value: currentValue,
-						},
-					];
-				}
+					let changes;
 
-				return { name, changes };
-			});
+					if (typeof currentValue === 'string' && currentValue.length > 25) {
+						changes = diffWordsWithSpace(previousValue, currentValue);
+					} else if (Array.isArray(currentValue)) {
+						changes = diffArrays(previousValue, currentValue);
+					} else if (typeof currentValue === 'object') {
+						changes = diffJson(previousValue, currentValue);
+					} else {
+						// This is considering the whole thing a change
+						changes = [
+							{
+								removed: true,
+								value: previousValue,
+							},
+							{
+								added: true,
+								value: currentValue,
+							},
+						];
+					}
+
+					return { name, changes };
+				})
+				.filter((change) => change);
 		});
 
 		return { changes, previousRevision };
