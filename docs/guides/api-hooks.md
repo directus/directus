@@ -98,7 +98,7 @@ module.exports = function registerHook({ exceptions }) {
 | `users`              | `create`, `update` and `delete`    | Optional |
 | `webhooks`           | `create`, `update` and `delete`    | Optional |
 
-† TBD
+† Feature Coming Soon
 
 ## 3. Register your Hook
 
