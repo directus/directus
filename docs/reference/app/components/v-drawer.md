@@ -35,6 +35,7 @@ relational or nested data.
 | `actions:prepend` | Prepend actions to the drawer                          |      |
 | `actions`         | Add actions to the top right corner                    |      |
 | `header:append`   | Append your elements to the header                     |      |
+| _default_         |                                                        |      |
 
 ## CSS Variables
 

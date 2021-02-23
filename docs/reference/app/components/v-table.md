@@ -132,20 +132,30 @@ export default defineComponent({
 
 ## Events
 
-| Event            | Description                                    | Value                           |
-| ---------------- | ---------------------------------------------- | ------------------------------- |
-| `update:sort`    | `.sync` event for `sort` prop                  | `{ by: string, desc: boolean }` |
-| `update:headers` | `.sync` event for `headers` prop               | `HeaderRaw[]`                   |
-| `item-selected`  | Emitted when an item is selected or deselected | `{ item: any, value: boolean }` |
-| `select`         | Emitted when selected items change             | `any[]`                         |
-| `update:items`   |                                                |                                 |
-| `manual-sort`    |                                                |                                 |
+| Event            | Description                                    | Value                            |
+| ---------------- | ---------------------------------------------- | -------------------------------- | ------------- | --- |
+| `update:sort`    | `.sync` event for `sort` prop                  | `{ by: string, desc: boolean }`  |
+| `click:row`      |                                                |                                  |
+| `update:headers` |                                                |                                  |
+| `update:items`   |                                                |                                  |
+| `item-selected`  |                                                |                                  |
+| `select`         |                                                |                                  |
+| `manual-sort`    |                                                |                                  |
+| <!--             | `update:headers`                               | `.sync` event for `headers` prop | `HeaderRaw[]` | --> |
+| `item-selected`  | Emitted when an item is selected or deselected | `{ item: any, value: boolean }`  |
+| `select`         | Emitted when selected items change             | `any[]`                          |
+| `update:items`   |                                                |                                  |
+| `manual-sort`    |                                                |                                  |
+| `click:row`      |                                                |                                  |
 
 ## Slots
 
 | Slot                     | Description            | Data |
 | ------------------------ | ---------------------- | ---- |
 | `header.${header.value}` | A slot for each header |      |
+| `item.${header.value}`   |                        |      |
+| `item-append`            |                        |      |
+| `footer`                 |                        |      |
 
 ## CSS Variables
 
