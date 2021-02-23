@@ -13,6 +13,7 @@ required: Kötelező
 requires_value: Kötelező adat
 create_role: Szerepkör létrehozása
 create_user: Felhasználó létrehozása
+create_webhook: Webhook létrehozása
 invite_users: Felhasználók meghívása
 email_examples: 'admin@example.com, felhaszalo@pelda.hu...'
 invite: Meghívás
@@ -21,6 +22,7 @@ connection_excellent: Kiváló kapcsolat
 connection_good: Jó kapcsolat
 connection_fair: Megfelelő kapcsolat
 connection_poor: Gyenge kapcsolat
+primary: Elsődleges
 rename_folder: Mappa átnevezése
 delete_folder: Mappa törlése
 prefix: Előtag
@@ -145,7 +147,7 @@ revision_delta_reverted: Visszaállítva
 revision_delta_other: Változat
 private_user: Privát felhasználó
 leave_comment: Hozzászólás írása...
-related_collections: Kapcsolódó gyűjtemények
+related_collections: Kapcsolódó kollekciók
 translations_collection: Fordítások gyűjteménye
 languages_collection: Nyelvek gyűjteménye
 export_data: Adatok exportálása
@@ -592,6 +594,8 @@ value: Érték
 view_project: Projekt megtekintése
 report_error: Hiba jelentése
 interfaces:
+  button-links:
+    primary: Elsődleges
   checkboxes:
     checkboxes: Jelölőnégyzetek
     show_more: '{count} további mutatása'
