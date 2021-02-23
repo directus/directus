@@ -31,9 +31,10 @@ Renders an overlay with a flex slot rendering whatever content you pass
 
 ## Events
 
-| Events   | Description             | Value     | Event |
-| -------- | ----------------------- | --------- | ----- |
-| `toggle` | Change the active state | `boolean` |       |
+| Event    | Description             | Value     |
+| -------- | ----------------------- | --------- |
+| `toggle` | Change the active state | `boolean` |
+| `esc`    |                         | `boolean` |
 
 ## CSS Variables
 

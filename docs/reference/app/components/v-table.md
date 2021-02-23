@@ -44,7 +44,6 @@
 
 ## Slots
 
-| Slot                     | Description              | Data |
-| ------------------------ | ------------------------ | ---- | --- | --- |
-| <!--                     | `header.${header.value}` |      |     | --> |
-| `header.${header.value}` |                          |      |
+| Slot                     | Description | Data |
+| ------------------------ | ----------- | ---- |
+| `header.${header.value}` |             |      |

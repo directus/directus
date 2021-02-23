@@ -17,7 +17,7 @@
 | `total-visible`   | Specify the max total visible pagination numbers | `undefined` | `Number`  |
 | `value`           | Currently selected page                          | `null`      | `Number`  |
 | `show-first-last` | Show first/last buttons                          | `false`     | `Boolean` |
-| `length`\*        | Length of the pagination component               | `null`      | `Number`  |
+| `length`\*        |                                                  | `null`      | `Number`  |
 
 ## Events
 
