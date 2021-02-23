@@ -315,6 +315,8 @@ create_bookmark: Könyvjelző létrehozása
 edit_bookmark: Könyvjelző szerkesztése
 bookmarks: Könyvjelzők
 unexpected_error: Váratlan hiba történt
+copy_details: Részletek másolása
+no_app_access: Nincs alkalmazás hozzáférés
 back: Vissza
 editing_image: Kép szerkesztése
 square: Négyzet
@@ -327,6 +329,8 @@ all_users: Összes felhasználó
 delete_collection: Gyűjtemény törlése
 update_collection_success: Módosított gyűjtemények
 delete_collection_success: Törölt gyűjtemények
+one_item: '1 elem'
+one_filtered_item: '1 szűrt elem'
 collections_shown: Megjelenített gyűjtemények
 visible_collections: Látható gyűjtemények
 hidden_collections: Elrejtett gyűjtemények
@@ -490,6 +494,7 @@ batch_delete_confirm: >-
 cancel: Mégse
 collection: Gyűjtemény
 collections: Gyűjtemények
+singleton: Egyedüli
 fields:
   directus_activity:
     item: Elem elsődleges kulcsa
@@ -504,6 +509,7 @@ fields:
     note: Jegyzet
     display_template: Megjelenítési sablon
     hidden: Rejtett
+    singleton: Egyedüli
     archive_app_filter: Szűrő archíválása
     archive_value: Archív érték
     sort_field: Rendezési mező
@@ -512,6 +518,7 @@ fields:
     description: Leírás
     tags: Cimkék
     location: Pozíció
+    filename_disk: Fájlnév (tárhely)
     filename_download: Fájlnév (letöltött)
     metadata: Metadata
     type: MIME típus
@@ -560,6 +567,7 @@ fields:
     icon: Gyűjtemény ikonja
     note: Jegyzet
     hidden: Rejtett
+    singleton: Egyedüli
     translation: Lefordított mezőnevek
     display_template: Sablon
   directus_roles:
@@ -629,7 +637,9 @@ view_project: Projekt megtekintése
 report_error: Hiba jelentése
 interfaces:
   button-links:
+    button-links: Gomb hivatkozás
     primary: Elsődleges
+    button: Gombok
   checkboxes:
     checkboxes: Jelölőnégyzetek
     show_more: '{count} további mutatása'
@@ -658,10 +668,22 @@ interfaces:
     select_a_collection: Gyűjtemény kiválasztása
   divider:
     divider: Elválasztó
+    title_placeholder: Írja be a címet...
+    margin_top: Felső margó
+    margin_top_label: Felső margó növelése
+  dropdown:
+    description: Válasszon elemet a listából
+    choices_placeholder: Új lehetőség hozzáadása
+    choices_name_placeholder: Adjon meg egy nevet...
+  dropdown-multiselect:
+    dropdown-multiselect: Lenyíló lista (többválasztós)
+    description: Válasszon elemeket a listából
   file:
     file: File
+    description: Válasszon vagy töltsön fel fájlt
   files:
     files: Fájlok
+    description: Válasszon vagy töltsön fel fájlokat
   hash:
     hash: Hash
   icon:
@@ -670,6 +692,8 @@ interfaces:
     image: Kép
   interface:
     interface: Kezelőfelület
+  interface-options:
+    interface-options: Kinézet beállításai
   many-to-one:
     display_template: Megjelenítési sablon
   markdown:
@@ -705,10 +729,12 @@ interfaces:
     add_tags: Címke hozzáadása...
   text-input:
     text-input: Szövegmező
+    trim: Vágás
   textarea:
     textarea: Szövegdoboz
   toggle:
     toggle: Váltás
+    label_placeholder: Írja be a címkét...
     label_default: Engedélyezve
   translations:
     display_template: Megjelenítési sablon
@@ -719,8 +745,10 @@ interfaces:
     modes:
       auto: Automatikus
       dropdown: Legördülő lista
+      modal: Ablak
   wysiwyg:
     wysiwyg: WYSIWYG
+    toolbar: Eszköztár
     custom_formats: Egyéni formátum
     options_override: Beállítás felülírása
 displays:
@@ -789,6 +817,7 @@ layouts:
   cards:
     cards: Kártya
     image_source: Kép forrása
+    image_fit: Kép poziciója
     crop: Vágás
     contain: Tartalmaz
     title: Cím
