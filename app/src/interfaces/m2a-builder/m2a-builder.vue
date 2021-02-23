@@ -246,11 +246,11 @@ export default defineComponent({
 
 			// Holds "expanded" junction rows so we can lookup what "raw" junction row ID in props.value goes with
 			// what related item for pre-saved-unchanged-items
-			const junctionRowMap = ref<any[]>([]);
+			const junctionRowMap = ref<any[]>();
 
 			const previewValues = computed(() => {
 				// Need to wait until junctionRowMap got properly populated
-				if (junctionRowMap.value.length < 1) {
+				if (junctionRowMap.value === undefined) {
 					return [];
 				}
 
@@ -260,7 +260,7 @@ export default defineComponent({
 					.map((val, index) => {
 						const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
 
-						const savedValues = junctionRowMap.value.find(
+						const savedValues = (junctionRowMap.value || []).find(
 							(junctionRow) => junctionRow[o2mRelation.value.many_primary] === junctionKey
 						);
 
@@ -390,6 +390,8 @@ export default defineComponent({
 						}
 
 						junctionRowMap.value = junctionInfoResponse.data.data;
+					} else {
+						junctionRowMap.value = [];
 					}
 
 					// Fetch all related items from their individual endpoints using the fields from their templates
@@ -479,7 +481,15 @@ export default defineComponent({
 
 			function stageEdits(edits: Record<string, any>) {
 				const currentValue = props.value || [];
-				if (!editsAtStart.value.unsaved && currentlyEditing.value === '+' && relatedPrimaryKey.value === '+') {
+
+				// Whether or not the currently-being-edited item exists in the staged values
+				const hasBeenStaged =
+					currentValue.includes(editsAtStart.value) || currentValue.includes(currentlyEditing.value);
+
+				// Whether or not the currently-being-edited item has been saved to the database
+				const isNew = currentlyEditing.value === '+' && relatedPrimaryKey.value === '+';
+
+				if (isNew && hasBeenStaged === false) {
 					emit('input', [...currentValue, edits]);
 				} else {
 					emit(
@@ -503,7 +513,7 @@ export default defineComponent({
 			function editExisting(item: Record<string, any>) {
 				// Edit a saved item
 				if (typeof item === 'string' || typeof item === 'number') {
-					const junctionRow = junctionRowMap.value.find((row) => {
+					const junctionRow = (junctionRowMap.value || []).find((row) => {
 						return row[o2mRelation.value.many_primary] == item;
 					});
 
@@ -529,7 +539,6 @@ export default defineComponent({
 					return;
 				}
 
-				// Edit an unsaved item
 				const junctionPrimaryKey = item[o2mRelation.value.many_primary];
 				const relatedCollectiom = item[anyRelation.value.one_collection_field!];
 				let relatedKey = item[anyRelation.value.many_field];
@@ -539,7 +548,6 @@ export default defineComponent({
 				}
 
 				editsAtStart.value = item;
-				editsAtStart.value.unsaved = true;
 				relatedPrimaryKey.value = relatedKey || '+';
 				currentlyEditing.value = junctionPrimaryKey || '+';
 			}
