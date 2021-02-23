@@ -81,8 +81,9 @@ module.exports = function registerHook({ exceptions }) {
 | `middlewares.init`   | `before` and `after`               | No       |
 | `request`            | `not_found`                        | No       |
 | `response`           |                                    | No†      |
-| `items`              | `create`, `update` and `delete`    | Optional |
+| `error`              |                                    | No       |
 | `auth`               | `success`†, `fail`† and `refresh`† | No       |
+| `items`              | `create`, `update` and `delete`    | Optional |
 | `activity`           | `create`, `update` and `delete`    | Optional |
 | `collections`        | `create`, `update` and `delete`    | Optional |
 | `fields`             | `create`, `update` and `delete`    | Optional |
