@@ -1,4 +1,4 @@
-import TransitionBounce from './transition-bounce.vue';
+import TransitionBounce from './bounce.vue';
 
 export { TransitionBounce };
 export default TransitionBounce;
