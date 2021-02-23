@@ -12,6 +12,6 @@
 | -------------- | ----------- | ----------------- | ----------------------------- |
 | `disabled`     |             | `false`           | `Boolean`                     |
 | `value`        |             | `null`            | `string[]`                    |
-| `collection`\* |             |                   | `String`                      |
 | `depth`        |             | `1`               | `Number`                      |
 | `inject`       |             | `() => ({ fields` | `Object as PropType<{ fields` |
+| `collection`\* |             |                   | `String`                      |

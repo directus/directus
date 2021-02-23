@@ -43,9 +43,9 @@ more information about how to use groups, look into v-item-group.
 
 ## Events
 
-| Event   | Description                      | Data     | Value      |
-| ------- | -------------------------------- | -------- | ---------- | --- |
-| `input` | Used to update the v-model value | `(string | number)[]` |     |
+| Event   | Description                      | Value                  |
+| ------- | -------------------------------- | ---------------------- |
+| `input` | Used to update the v-model value | `(string or number)[]` |
 
 ## CSS Variables
 

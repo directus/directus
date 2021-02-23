@@ -12,5 +12,5 @@
 | -------------- | ----------- | ------- | --------- |
 | `disabled`     |             | `false` | `Boolean` |
 | `value`        |             | `null`  | `String`  |
-| `collection`\* |             |         | `String`  |
 | `depth`        |             | `2`     | `Number`  |
+| `collection`\* |             |         | `String`  |

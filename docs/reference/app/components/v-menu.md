@@ -9,17 +9,17 @@ you ever find yourself doing this:
 
 ## Props
 
-| Prop                     | Description                                                       | Default     | Type                            |
-| ------------------------ | ----------------------------------------------------------------- | ----------- | ------------------------------- |
-| `placement`              | Where to position the popper.                                     | `'bottom'`  | `String as PropType<Placement>` |
-| `value`                  | Value to control menu active state                                | `undefined` | `Boolean`                       |
-| `close-on-click`         | Close the menu when clicking outside of the menu                  | `true`      | `Boolean`                       |
-| `close-on-content-click` | Close the menu when clicking the content of the menu              | `true`      | `Boolean`                       |
-| `attached`               | Attach the menu to an input                                       | `false`     | `Boolean`                       |
-| `show-arrow`             | Show an arrow pointer                                             | `false`     | `Boolean`                       |
-| `disabled`               | Menu does not appear                                              | `false`     | `Boolean`                       |
-| `trigger`                | Activate the menu on a trigger. One of `manual`, `click`, `hover` | `null`      | `String`                        |
-| `delay`                  | Time in ms before menu activates after trigger                    | `0`         | `Number`                        |
+| Prop                     | Description                                                       | Default     | Type        |
+| ------------------------ | ----------------------------------------------------------------- | ----------- | ----------- |
+| `placement`              | Where to position the popper.                                     | `'bottom'`  | `Placement` |
+| `value`                  | Value to control menu active state                                | `undefined` | `Boolean`   |
+| `close-on-click`         | Close the menu when clicking outside of the menu                  | `true`      | `Boolean`   |
+| `close-on-content-click` | Close the menu when clicking the content of the menu              | `true`      | `Boolean`   |
+| `attached`               | Attach the menu to an input                                       | `false`     | `Boolean`   |
+| `show-arrow`             | Show an arrow pointer                                             | `false`     | `Boolean`   |
+| `disabled`               | Menu does not appear                                              | `false`     | `Boolean`   |
+| `trigger`                | Activate the menu on a trigger. One of `manual`, `click`, `hover` | `null`      | `String`    |
+| `delay`                  | Time in ms before menu activates after trigger                    | `0`         | `Number`    |
 
 ## CSS Variables
 

@@ -6,18 +6,12 @@
 
 ## Props
 
-| Prop            | Description     | Default         | Type                                                  |
-| --------------- | --------------- | --------------- | ----------------------------------------------------- | ------------------ | ------------------ | --- | --- |
-| `value`         |                 | `null`          | `(number or string or Record<string, any)[] or null>` |
-| <!--            | <!--            | `primary-key`\* |                                                       |                    | `[Number, String]` | --> | --> |
-| <!--            | <!--            | `collection`\*  |                                                       |                    | `String`           | --> | --> |
-| <!--            | <!--            | `field`\*       |                                                       |                    | `String`           | --> | --> |
-| `fields`        |                 | `() => []`      | `string[]`                                            |
-| `sort-field`    |                 | `null`          | `String`                                              |
-| `disabled`      |                 | `false`         | `Boolean`                                             |
-| <!--            | `primary-key`\* |                 |                                                       | `[Number, String]` | -->                |
-| <!--            | `collection`\*  |                 |                                                       | `String`           | -->                |
-| <!--            | `field`\*       |                 |                                                       | `String`           | -->                |
-| `primary-key`\* |                 |                 | `[Number, String]`                                    |
-| `collection`\*  |                 |                 | `String`                                              |
-| `field`\*       |                 |                 | `String`                                              |
+| Prop            | Description | Default    | Type                                                  |
+| --------------- | ----------- | ---------- | ----------------------------------------------------- |
+| `value`         |             | `null`     | `(number or string or Record<string, any)[] or null>` |
+| `fields`        |             | `() => []` | `string[]`                                            |
+| `sort-field`    |             | `null`     | `String`                                              |
+| `disabled`      |             | `false`    | `Boolean`                                             |
+| `primary-key`\* |             |            | `[Number, String]`                                    |
+| `collection`\*  |             |            | `String`                                              |
+| `field`\*       |             |            | `String`                                              |

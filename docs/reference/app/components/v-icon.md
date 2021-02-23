@@ -59,9 +59,9 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 
 | Prop       | Description | Default | Type      |
 | ---------- | ----------- | ------- | --------- |
-| `name`\*   |             |         | `String`  |
 | `filled`   |             | `false` | `Boolean` |
 | `sup`      |             | `false` | `Boolean` |
 | `left`     |             | `false` | `Boolean` |
 | `right`    |             | `false` | `Boolean` |
 | `disabled` |             | `false` | `Boolean` |
+| `name`\*   |             |         | `String`  |

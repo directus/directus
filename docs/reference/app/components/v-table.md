@@ -20,30 +20,31 @@
 
 ## Props
 
-| Prop                 | Description | Default              | Type                       |
-| -------------------- | ----------- | -------------------- | -------------------------- |
-| `headers`\*          |             |                      | `HeaderRaw[]`              |
-| `items`\*            |             |                      | `Item[]`                   |
-| `item-key`           |             | `'id'`               | `String`                   |
-| `sort`               |             | `null`               | `Object as PropType<Sort>` |
-| `must-sort`          |             | `false`              | `Boolean`                  |
-| `show-select`        |             | `false`              | `Boolean`                  |
-| `show-resize`        |             | `false`              | `Boolean`                  |
-| `show-manual-sort`   |             | `false`              | `Boolean`                  |
-| `manual-sort-key`    |             | `null`               | `String`                   |
-| `selection`          |             | `() => []`           | `any`                      |
-| `fixed-header`       |             | `false`              | `Boolean`                  |
-| `loading`            |             | `false`              | `Boolean`                  |
-| `loading-text`       |             | `i18n.t('loading')`  | `String`                   |
-| `no-items-text`      |             | `i18n.t('no_items')` | `String`                   |
-| `server-sort`        |             | `false`              | `Boolean`                  |
-| `row-height`         |             | `48`                 | `Number`                   |
-| `selection-use-keys` |             | `false`              | `Boolean`                  |
-| `inline`             |             | `false`              | `Boolean`                  |
-| `disabled`           |             | `false`              | `Boolean`                  |
+| Prop                 | Description | Default              | Type          |
+| -------------------- | ----------- | -------------------- | ------------- |
+| `item-key`           |             | `'id'`               | `String`      |
+| `sort`               |             | `null`               | `Sort`        |
+| `must-sort`          |             | `false`              | `Boolean`     |
+| `show-select`        |             | `false`              | `Boolean`     |
+| `show-resize`        |             | `false`              | `Boolean`     |
+| `show-manual-sort`   |             | `false`              | `Boolean`     |
+| `manual-sort-key`    |             | `null`               | `String`      |
+| `selection`          |             | `() => []`           | `any`         |
+| `fixed-header`       |             | `false`              | `Boolean`     |
+| `loading`            |             | `false`              | `Boolean`     |
+| `loading-text`       |             | `i18n.t('loading')`  | `String`      |
+| `no-items-text`      |             | `i18n.t('no_items')` | `String`      |
+| `server-sort`        |             | `false`              | `Boolean`     |
+| `row-height`         |             | `48`                 | `Number`      |
+| `selection-use-keys` |             | `false`              | `Boolean`     |
+| `inline`             |             | `false`              | `Boolean`     |
+| `disabled`           |             | `false`              | `Boolean`     |
+| `headers`\*          |             |                      | `HeaderRaw[]` |
+| `items`\*            |             |                      | `Item[]`      |
 
 ## Slots
 
-| Slot                     | Description | Data |
-| ------------------------ | ----------- | ---- |
-| `header.${header.value}` |             |      |
+| Slot                     | Description              | Data |
+| ------------------------ | ------------------------ | ---- | --- | --- |
+| <!--                     | `header.${header.value}` |      |     | --> |
+| `header.${header.value}` |                          |      |

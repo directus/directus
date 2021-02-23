@@ -6,15 +6,11 @@
 
 ## Props
 
-| Prop           | Description    | Default        | Type                                                  |
-| -------------- | -------------- | -------------- | ----------------------------------------------------- | -------- | -------- | --- | --- |
-| `value`        |                | `null`         | `[Number, String, Object]`                            |
-| <!--           | <!--           | `collection`\* |                                                       |          | `String` | --> | --> |
-| <!--           | <!--           | `field`\*      |                                                       |          | `String` | --> | --> |
-| `template`     |                | `null`         | `String`                                              |
-| `select-mode`  |                | `'auto'`       | `String as PropType<'auto' or 'dropdown' or 'modal'>` |
-| `disabled`     |                | `false`        | `Boolean`                                             |
-| <!--           | `collection`\* |                |                                                       | `String` | -->      |
-| <!--           | `field`\*      |                |                                                       | `String` | -->      |
-| `collection`\* |                |                | `String`                                              |
-| `field`\*      |                |                | `String`                                              |
+| Prop           | Description | Default  | Type                              |
+| -------------- | ----------- | -------- | --------------------------------- |
+| `value`        |             | `null`   | `[Number, String, Object]`        |
+| `template`     |             | `null`   | `String`                          |
+| `select-mode`  |             | `'auto'` | `'auto' or 'dropdown' or 'modal'` |
+| `disabled`     |             | `false`  | `Boolean`                         |
+| `collection`\* |             |          | `String`                          |
+| `field`\*      |             |          | `String`                          |

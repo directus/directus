@@ -50,25 +50,24 @@ the loading state.
 
 ## Props
 
-| Prop         | Description                                                               | Default                           | Type                                               |
-| ------------ | ------------------------------------------------------------------------- | --------------------------------- | -------------------------------------------------- | --- | --- |
-| <!--         | `block`                                                                   | Enable full width (display block) | `false`                                            |     | --> |
-| `icon`       | Remove padding / min-width. Meant to be used with just an icon as content | `false`                           | `Boolean`                                          |
-| `outlined`   | No background                                                             | `false`                           | `Boolean`                                          |
-| `rounded`    | Enable rounded corners                                                    | `false`                           | `Boolean`                                          |
-| `type`       | HTML `type` attribute                                                     | `'button'`                        | `String`                                           |
-| `disabled`   | Disabled state                                                            | `false`                           | `Boolean`                                          |
-| `loading`    | Loading state                                                             | `false`                           | `Boolean`                                          |
-| `to`         | Render as vue router-link                                                 | `null`                            | `[String, Object] as PropType<string or Location>` |
-| `href`       | Render as anchor                                                          | `null`                            | `String`                                           |
-| `align`      | Align content in button. One of `left                                     | `'center'`                        | `String`                                           |
-| `dashed`     | Render the border dashed. Meant to be used with `outlined`.               | `false`                           | `Boolean`                                          |
-| `tile`       | Render without border radius                                              | `false`                           | `Boolean`                                          |
-| `download`   | Add the `download` attribute (used in combo with `href`)                  | `null`                            | `String`                                           |
-| `full-width` |                                                                           | `false`                           | `Boolean`                                          |
-| `exact`      |                                                                           | `false`                           | `Boolean`                                          |
-| `secondary`  |                                                                           | `false`                           | `Boolean`                                          |
-| `value`      |                                                                           | `null`                            | `[Number, String]`                                 |
+| Prop         | Description                                                               | Default    | Type                 |
+| ------------ | ------------------------------------------------------------------------- | ---------- | -------------------- |
+| `icon`       | Remove padding / min-width. Meant to be used with just an icon as content | `false`    | `Boolean`            |
+| `outlined`   | No background                                                             | `false`    | `Boolean`            |
+| `rounded`    | Enable rounded corners                                                    | `false`    | `Boolean`            |
+| `type`       | HTML `type` attribute                                                     | `'button'` | `String`             |
+| `disabled`   | Disabled state                                                            | `false`    | `Boolean`            |
+| `loading`    | Loading state                                                             | `false`    | `Boolean`            |
+| `to`         | Render as vue router-link                                                 | `null`     | `string or Location` |
+| `href`       | Render as anchor                                                          | `null`     | `String`             |
+| `align`      | Align content in button. One of `left                                     | `'center'` | `String`             |
+| `dashed`     | Render the border dashed. Meant to be used with `outlined`.               | `false`    | `Boolean`            |
+| `tile`       | Render without border radius                                              | `false`    | `Boolean`            |
+| `download`   | Add the `download` attribute (used in combo with `href`)                  | `null`     | `String`             |
+| `full-width` |                                                                           | `false`    | `Boolean`            |
+| `exact`      |                                                                           | `false`    | `Boolean`            |
+| `secondary`  |                                                                           | `false`    | `Boolean`            |
+| `value`      |                                                                           | `null`     | `[Number, String]`   |
 
 ## Slots
 

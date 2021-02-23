@@ -8,17 +8,16 @@
 
 ## Props
 
-| Prop              | Description                                      | Default                            | Type      |
-| ----------------- | ------------------------------------------------ | ---------------------------------- | --------- | -------- | --- |
-| `disabled`        | Disables the pagination                          | `false`                            | `Boolean` |
-| `total-visible`   |                                                  | `undefined`                        | `Number`  |
-| `value`           |                                                  | `null`                             | `Number`  |
-| `show-first-last` |                                                  | `false`                            | `Boolean` |
-| <!--              | `length`\*                                       | Length of the pagination component | `null`    | `Number` | --> |
-| `total-visible`   | Specify the max total visible pagination numbers | `undefined`                        | `Number`  |
-| `value`           | Currently selected page                          | `null`                             | `Number`  |
-| `show-first-last` | Show first/last buttons                          | `false`                            | `Boolean` |
-| `length`\*        |                                                  | `null`                             | `Number`  |
+| Prop              | Description                                      | Default     | Type      |
+| ----------------- | ------------------------------------------------ | ----------- | --------- |
+| `disabled`        | Disables the pagination                          | `false`     | `Boolean` |
+| `total-visible`   |                                                  | `undefined` | `Number`  |
+| `value`           |                                                  | `null`      | `Number`  |
+| `show-first-last` |                                                  | `false`     | `Boolean` |
+| `total-visible`   | Specify the max total visible pagination numbers | `undefined` | `Number`  |
+| `value`           | Currently selected page                          | `null`      | `Number`  |
+| `show-first-last` | Show first/last buttons                          | `false`     | `Boolean` |
+| `length`\*        | Length of the pagination component               | `null`      | `Number`  |
 
 ## Events
 

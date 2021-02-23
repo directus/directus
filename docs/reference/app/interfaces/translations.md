@@ -6,16 +6,10 @@
 
 ## Props
 
-| Prop            | Description     | Default         | Type                                          |
-| --------------- | --------------- | --------------- | --------------------------------------------- | -------- | -------- | --- | --- |
-| <!--            | <!--            | `collection`\*  |                                               |          | `String` | --> | --> |
-| <!--            | <!--            | `field`\*       |                                               |          | `String` | --> | --> |
-| <!--            | <!--            | `primary-key`\* |                                               |          | `String` | --> | --> |
-| `template`      |                 | `null`          | `String`                                      |
-| `value`         |                 | `() => []`      | `(string or number or Record<string, any)[]>` |
-| <!--            | `collection`\*  |                 |                                               | `String` | -->      |
-| <!--            | `field`\*       |                 |                                               | `String` | -->      |
-| <!--            | `primary-key`\* |                 |                                               | `String` | -->      |
-| `collection`\*  |                 |                 | `String`                                      |
-| `field`\*       |                 |                 | `String`                                      |
-| `primary-key`\* |                 |                 | `String`                                      |
+| Prop            | Description | Default    | Type                                          |
+| --------------- | ----------- | ---------- | --------------------------------------------- |
+| `template`      |             | `null`     | `String`                                      |
+| `value`         |             | `() => []` | `(string or number or Record<string, any)[]>` |
+| `collection`\*  |             |            | `String`                                      |
+| `field`\*       |             |            | `String`                                      |
+| `primary-key`\* |             |            | `String`                                      |

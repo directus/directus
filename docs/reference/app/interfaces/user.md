@@ -6,8 +6,8 @@
 
 ## Props
 
-| Prop          | Description | Default  | Type                                                  |
-| ------------- | ----------- | -------- | ----------------------------------------------------- |
-| `value`       |             | `null`   | `String`                                              |
-| `select-mode` |             | `'auto'` | `String as PropType<'auto' or 'dropdown' or 'modal'>` |
-| `disabled`    |             | `false`  | `Boolean`                                             |
+| Prop          | Description | Default  | Type                              |
+| ------------- | ----------- | -------- | --------------------------------- |
+| `value`       |             | `null`   | `String`                          |
+| `select-mode` |             | `'auto'` | `'auto' or 'dropdown' or 'modal'` |
+| `disabled`    |             | `false`  | `Boolean`                         |
