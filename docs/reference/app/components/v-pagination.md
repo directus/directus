@@ -8,98 +8,19 @@
 
 ## Props
 
-| Prop              | Description                                      | Default     | Type                               |
-| ----------------- | ------------------------------------------------ | ----------- | ---------------------------------- | -------- | -------- | --- | --- |
-| `disabled`        | Disables the pagination                          | `false`     | `Boolean`                          |
-| `length`\*        |                                                  | `null`      | `Number`                           |
-| `total-visible`   |                                                  | `undefined` | `Number`                           |
-| `value`           |                                                  | `null`      | `Number`                           |
-| `show-first-last` |                                                  | `false`     | `Boolean`                          |
-| <!--              | <!--                                             | `length`\*  | Length of the pagination component | `null`   | `Number` | --> | --> |
-| `total-visible`   | Specify the max total visible pagination numbers | `undefined` | `Number`                           |
-| `value`           | Currently selected page                          | `null`      | `Number`                           |
-| `show-first-last` | Show first/last buttons                          | `false`     | `Boolean`                          |
-| <!--              | `length`\*                                       |             | `null`                             | `Number` | -->      |
-| `length`\*        |                                                  | `null`      | `Number`                           |
+| Prop              | Description                                      | Default     | Type      |
+| ----------------- | ------------------------------------------------ | ----------- | --------- |
+| `disabled`        | Disables the pagination                          | `false`     | `Boolean` |
+| `total-visible`   |                                                  | `undefined` | `Number`  |
+| `value`           |                                                  | `null`      | `Number`  |
+| `show-first-last` |                                                  | `false`     | `Boolean` |
+| `length`\*        | Length of the pagination component               | `null`      | `Number`  |
+| `total-visible`   | Specify the max total visible pagination numbers | `undefined` | `Number`  |
+| `value`           | Currently selected page                          | `null`      | `Number`  |
+| `show-first-last` | Show first/last buttons                          | `false`     | `Boolean` |
 
 ## Events
 
 | Event   | Description           | Value    |
 | ------- | --------------------- | -------- |
 | `input` | When the page changes | `number` |
-
-## Slots
-
-n/a
-
-## CSS Variables
-
-| Variable                      | Default          |
-| ----------------------------- | ---------------- |
-| `--v-pagination-active-color` | `var(--primary)` |
-
-## CSS Variables
-
-| Variable                      | Default          |
-| ----------------------------- | ---------------- |
-| `--v-pagination-active-color` | `var(--primary)` |
-
-## Events
-
-| Event   | Description | Value |
-| ------- | ----------- | ----- |
-| `input` |             |       |
-
-## Props
-
-| Prop              | Description | Default     | Type      |
-| ----------------- | ----------- | ----------- | --------- |
-| `disabled`        |             | `false`     | `Boolean` |
-| `length`\*        |             | `null`      | `Number`  |
-| `total-visible`   |             | `undefined` | `Number`  |
-| `value`           |             | `null`      | `Number`  |
-| `show-first-last` |             | `false`     | `Boolean` |
-
-## CSS Variables
-
-| Variable                      | Default          |
-| ----------------------------- | ---------------- |
-| `--v-pagination-active-color` | `var(--primary)` |
-
-## Events
-
-| Event   | Description | Value |
-| ------- | ----------- | ----- |
-| `input` |             |       |
-
-## Props
-
-| Prop              | Description | Default     | Type      |
-| ----------------- | ----------- | ----------- | --------- |
-| `disabled`        |             | `false`     | `Boolean` |
-| `length`\*        |             | `null`      | `Number`  |
-| `total-visible`   |             | `undefined` | `Number`  |
-| `value`           |             | `null`      | `Number`  |
-| `show-first-last` |             | `false`     | `Boolean` |
-
-## CSS Variables
-
-| Variable                      | Default          |
-| ----------------------------- | ---------------- |
-| `--v-pagination-active-color` | `var(--primary)` |
-
-## Events
-
-| Event   | Description | Value |
-| ------- | ----------- | ----- |
-| `input` |             |       |
-
-## Props
-
-| Prop              | Description | Default     | Type      |
-| ----------------- | ----------- | ----------- | --------- |
-| `disabled`        |             | `false`     | `Boolean` |
-| `length`\*        |             | `null`      | `Number`  |
-| `total-visible`   |             | `undefined` | `Number`  |
-| `value`           |             | `null`      | `Number`  |
-| `show-first-last` |             | `false`     | `Boolean` |

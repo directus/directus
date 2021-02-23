@@ -17,17 +17,6 @@ done via the css variable `--v-icon-color` like in the example below.
 </style>
 ```
 
-| Prop Name      | Size in PX |
-| -------------- | ---------- |
-| `sup`          | 8          |
-| `x-small`      | 12         |
-| `small`        | 18         |
-| None (default) | 24         |
-| `large`        | 36         |
-| `x-large`      | 48         |
-
-The `sup` size is meant to be used as superscript. For example the required state flag.
-
 ## Custom Size
 
 If the default sizes don't give you the exact size you require, you can add the `size` prop with any custom pixel value.
@@ -51,90 +40,3 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 	<v-icon name="add" left> Add new
 </v-button>
 ```
-
-## Props
-
-| Name    | Description                    | Default     | Prop                                                              | Type       |
-| ------- | ------------------------------ | ----------- | ----------------------------------------------------------------- | ---------- | ---------- | --------- | --- | --- |
-| <!--    | <!--                           | `name`\*    | Name of the icon                                                  | --         |            |           | --> | --> |
-| <!--    | <!--                           | `outline`   | Use outline Material Icons. Note: only works for non-custom icons | `false`    |            |           | --> | --> |
-| <!--    | <!--                           | `size`      | Custom pixel size                                                 | `false`    |            |           | --> | --> |
-| <!--    | <!--                           | `x-small`   | Render the icon extra small                                       | `false`    |            |           | --> | --> |
-| <!--    | <!--                           | `small`     | Render the icon small                                             | `false`    |            |           | --> | --> |
-| <!--    | <!--                           | `large`     | Render the icon large                                             | `false`    |            |           | --> | --> |
-| <!--    | <!--                           | `x-large`   | Render the icon extra large                                       | `false`    |            |           | --> | --> |
-| `left`  | Use when icon is left of text  | `false`     |                                                                   |            |
-| `right` | Use when icon is right of text | `false`     |                                                                   |            |
-| <!--    | <!--                           | `disabledd` | Prevent the click handler from firing                             | `false`    |            |           | --> | --> |
-| <!--    | <!--                           |             |                                                                   |            | `name`\*   | `String`  | --> | --> |
-| <!--    | <!--                           |             |                                                                   | `false`    | `filled`   | `Boolean` | --> | --> |
-| <!--    | <!--                           |             |                                                                   | `false`    | `sup`      | `Boolean` | --> | --> |
-| <!--    | <!--                           |             |                                                                   | `false`    | `left`     | `Boolean` | --> | --> |
-| <!--    | <!--                           |             |                                                                   | `false`    | `right`    | `Boolean` | --> | --> |
-| <!--    | <!--                           |             |                                                                   | `false`    | `disabled` | `Boolean` | --> | --> |
-| <!--    |                                |             |                                                                   | `name`\*   | `String`   | -->       |
-| <!--    |                                |             | `false`                                                           | `filled`   | `Boolean`  | -->       |
-| <!--    |                                |             | `false`                                                           | `sup`      | `Boolean`  | -->       |
-| <!--    |                                |             | `false`                                                           | `left`     | `Boolean`  | -->       |
-| <!--    |                                |             | `false`                                                           | `right`    | `Boolean`  | -->       |
-| <!--    |                                |             | `false`                                                           | `disabled` | `Boolean`  | -->       |
-
-## Events
-
-| Event   | Description          | Data         | Value |
-| ------- | -------------------- | ------------ | ----- |
-| `click` | Standard click event | `MouseEvent` |       |
-
-## Slots
-
-n/a
-
-## CSS Variables
-
-| Variable               | Default        |
-| ---------------------- | -------------- |
-| `--v-icon-color`       | `currentColor` |
-| `--v-icon-size`        | `24px`         |
-| `--v-icon-color-hover` | `currentColor` |
-
-## CSS Variables
-
-| Variable               | Default        |
-| ---------------------- | -------------- |
-| `--v-icon-color`       | `currentColor` |
-| `--v-icon-color-hover` | `currentColor` |
-| `--v-icon-size`        | `24px`         |
-
-## Events
-
-| Event   | Description | Value |
-| ------- | ----------- | ----- |
-| `click` |             |       |
-
-## CSS Variables
-
-| Variable               | Default        |
-| ---------------------- | -------------- |
-| `--v-icon-color`       | `currentColor` |
-| `--v-icon-color-hover` | `currentColor` |
-| `--v-icon-size`        | `24px`         |
-
-## Events
-
-| Event   | Description | Value |
-| ------- | ----------- | ----- |
-| `click` |             |       |
-
-## CSS Variables
-
-| Variable               | Default        |
-| ---------------------- | -------------- |
-| `--v-icon-color`       | `currentColor` |
-| `--v-icon-color-hover` | `currentColor` |
-| `--v-icon-size`        | `24px`         |
-
-## Events
-
-| Event   | Description | Value |
-| ------- | ----------- | ----- |
-| `click` |             |       |

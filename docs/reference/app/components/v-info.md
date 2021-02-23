@@ -10,14 +10,12 @@ Renders a stylized informational placard. It's similar in `v-notice` in it's use
 
 ## Props
 
-| Prop      | Description                                   | Default   | Type                                                               |
-| --------- | --------------------------------------------- | --------- | ------------------------------------------------------------------ | -------- | --- | --- | --- |
-| <!--      | <!--                                          | `title`\* | Title for the info section                                         |          |     | --> | --> |
-| `icon`    | What icon to render above the title           | `'box'`   | `String`                                                           |
-| `type`    | One of `info`, `success`, `warning`, `danger` | `'info'`  | `String as PropType<'info' or 'success' or 'warning' or 'danger'>` |
-| <!--      | `title`\*                                     |           |                                                                    | `String` | --> |
-| `center`  |                                               | `false`   | `Boolean`                                                          |
-| `title`\* |                                               |           | `String`                                                           |
+| Prop      | Description                                   | Default  | Type                                                               |
+| --------- | --------------------------------------------- | -------- | ------------------------------------------------------------------ |
+| `title`\* | Title for the info section                    |          |                                                                    |
+| `icon`    | What icon to render above the title           | `'box'`  | `String`                                                           |
+| `type`    | One of `info`, `success`, `warning`, `danger` | `'info'` | `String as PropType<'info' or 'success' or 'warning' or 'danger'>` |
+| `center`  |                                               | `false`  | `Boolean`                                                          |
 
 ## Events
 
@@ -33,20 +31,6 @@ n/a
 ## CSS Variables
 
 n/a
-
-## Slots
-
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             |      |
-| `append`  |             |      |
-
-## Slots
-
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             |      |
-| `append`  |             |      |
 
 ## Slots
 

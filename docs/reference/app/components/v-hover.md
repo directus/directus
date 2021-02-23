@@ -40,55 +40,6 @@ n/a
 
 ## Slots
 
-Only the default slot is available. The hover state is passed as scoped slot data
-
-## Slots
-
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             |      |
-
-## Props
-
-| Prop          | Description | Default | Type      |
-| ------------- | ----------- | ------- | --------- |
-| `close-delay` |             | `0`     | `Number`  |
-| `open-delay`  |             | `0`     | `Number`  |
-| `disabled`    |             | `false` | `Boolean` |
-| `tag`         |             | `'div'` | `String`  |
-
-## Slots
-
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             |      |
-
-## Props
-
-| Prop          | Description | Default | Type      |
-| ------------- | ----------- | ------- | --------- |
-| `close-delay` |             | `0`     | `Number`  |
-| `open-delay`  |             | `0`     | `Number`  |
-| `disabled`    |             | `false` | `Boolean` |
-| `tag`         |             | `'div'` | `String`  |
-
-## Slots
-
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             |      |
-
-## Props
-
-| Prop          | Description | Default | Type      |
-| ------------- | ----------- | ------- | --------- |
-| `close-delay` |             | `0`     | `Number`  |
-| `open-delay`  |             | `0`     | `Number`  |
-| `disabled`    |             | `false` | `Boolean` |
-| `tag`         |             | `'div'` | `String`  |
-
-## Slots
-
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |
 | _default_ |             |      |
