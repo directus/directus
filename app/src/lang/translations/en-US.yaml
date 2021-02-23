@@ -437,6 +437,7 @@ system_collections: System Collections
 placeholder: Placeholder
 icon_left: Icon Left
 icon_right: Icon Right
+count_other_revisions: '{count} Other Revisions'
 font: Font
 sans_serif: Sans Serif
 serif: Serif
