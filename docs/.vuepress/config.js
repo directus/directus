@@ -525,6 +525,11 @@ module.exports = {
 						title: 'Card',
 						children: [
 							{
+								path: 'reference/app/components/v-card',
+								title: 'VCard',
+								type: 'page',
+							},
+							{
 								path: 'reference/app/components/v-card-actions',
 								title: 'VCardActions',
 								type: 'page',
@@ -542,11 +547,6 @@ module.exports = {
 							{
 								path: 'reference/app/components/v-card-title',
 								title: 'VCardTitle',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-card',
-								title: 'VCard',
 								type: 'page',
 							},
 						],
@@ -597,49 +597,14 @@ module.exports = {
 						type: 'page',
 					},
 					{
-						title: 'FieldTemplate',
-						children: [
-							{
-								path: 'reference/app/components/field-list-item',
-								title: 'FieldListItem',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-field-template',
-								title: 'VFieldTemplate',
-								type: 'page',
-							},
-						],
+						path: 'reference/app/components/v-field-template',
+						title: 'VFieldTemplate',
+						type: 'page',
 					},
 					{
-						title: 'Form',
-						children: [
-							{
-								path: 'reference/app/components/v-form',
-								title: 'VForm',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/form-field-interface',
-								title: 'FormFieldInterface',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/form-field-label',
-								title: 'FormFieldLabel',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/form-field-menu',
-								title: 'FormFieldMenu',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/form-field',
-								title: 'FormField',
-								type: 'page',
-							},
-						],
+						path: 'reference/app/components/v-form',
+						title: 'VForm',
+						type: 'page',
 					},
 					{
 						path: 'reference/app/components/v-hover',
@@ -777,24 +742,9 @@ module.exports = {
 						type: 'page',
 					},
 					{
-						title: 'Table',
-						children: [
-							{
-								path: 'reference/app/components/v-table',
-								title: 'VTable',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/table-header',
-								title: 'TableHeader',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/table-row',
-								title: 'TableRow',
-								type: 'page',
-							},
-						],
+						path: 'reference/app/components/v-table',
+						title: 'VTable',
+						type: 'page',
 					},
 					{
 						title: 'Tabs',

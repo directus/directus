@@ -1,6 +1,7 @@
 # Avatar
 
-The avatar component can be used to represent a person or any avatar like data.
+The avatar component can be used to display a person or something similar. It will generate a grey box in which either a
+profile picture or an icon or text can be inserted.
 
 ```html
 <v-avatar>RVZ</v-avatar>

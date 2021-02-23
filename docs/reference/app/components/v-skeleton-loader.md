@@ -8,9 +8,9 @@ Render a placeholder while the proper content is still loading.
 
 ## Props
 
-| Prop   | Description                | Default   | Type     |
-| ------ | -------------------------- | --------- | -------- |
-| `type` | Whatever Rijk will tell me | `'input'` | `String` |
+| Prop   | Description                         | Default   | Type     |
+| ------ | ----------------------------------- | --------- | -------- |
+| `type` | Name of another component to mirror | `'input'` | `String` |
 
 ## CSS Variables
 

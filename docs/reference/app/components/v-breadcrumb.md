@@ -6,11 +6,12 @@ A breadcrumb can help you display on what site you are currently on by displayin
 <v-breadcrumb :items="[{name: 'Collections', to: '/collections'}]" />
 ```
 
-# Items
+## Breadcrumb Item
 
-An item for the items prop has these 4 options: | Prop | Description | | `items.to` | The reroute link | | `items.name`
-| The name which will be displayed | | `items.icon` | Displays an icon with the given name in front of the name | |
-`items.disabled` | If the router link should be clickable |
+An item for the items prop has these 4 options: | Prop | Description |
+|------------|-----------------------------------------------------------| | `to` | The reroute link | | `name` | The
+name which will be displayed | | `icon` | Displays an icon with the given name in front of the name | | `disabled` | If
+the router link should be clickable |
 
 ## Props
 
