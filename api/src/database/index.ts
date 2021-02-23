@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import logger from '../logger';
 import env from '../env';
+import { validateEnv } from '../utils/validate-env';
 import { performance } from 'perf_hooks';
 
 import SchemaInspector from '@directus/schema';
@@ -14,7 +15,12 @@ const connectionConfig: Record<string, any> = getConfigFromEnv('DB_', [
 	'DB_CLIENT',
 	'DB_SEARCH_PATH',
 	'DB_CONNECTION_STRING',
+	'DB_POOL',
 ]);
+
+const poolConfig = getConfigFromEnv('DB_POOL');
+
+validateEnv(['DB_CLIENT']);
 
 const knexConfig: Config = {
 	client: env.DB_CLIENT,
@@ -26,6 +32,7 @@ const knexConfig: Config = {
 		deprecate: (msg) => logger.info(msg),
 		debug: (msg) => logger.debug(msg),
 	},
+	pool: poolConfig,
 };
 
 if (env.DB_CLIENT === 'sqlite3') {
@@ -58,8 +65,8 @@ export async function validateDBConnection() {
 	try {
 		await hasDatabaseConnection();
 	} catch (error) {
-		logger.fatal(`Can't connect to the database.`);
-		logger.fatal(error);
+		logger.error(`Can't connect to the database.`);
+		logger.error(error);
 		process.exit(1);
 	}
 }

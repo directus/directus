@@ -8,7 +8,12 @@ import validate from 'uuid-validate';
 
 export default function applyQuery(collection: string, dbQuery: QueryBuilder, query: Query, schema: SchemaOverview) {
 	if (query.sort) {
-		dbQuery.orderBy(query.sort);
+		dbQuery.orderBy(
+			query.sort.map((sort) => ({
+				...sort,
+				column: `${collection}.${sort.column}`,
+			}))
+		);
 	}
 
 	if (typeof query.limit === 'number') {

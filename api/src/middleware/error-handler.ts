@@ -3,6 +3,7 @@ import { BaseException } from '../exceptions';
 import logger from '../logger';
 import env from '../env';
 import { toArray } from '../utils/to-array';
+import { emitAsyncSafe } from '../emitter';
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 	let payload: any = {
@@ -66,7 +67,9 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 		}
 	}
 
-	return res.json(payload);
+	emitAsyncSafe('error', payload.errors).then(() => {
+		return res.json(payload);
+	});
 };
 
 export default errorHandler;

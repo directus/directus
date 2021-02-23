@@ -7,13 +7,14 @@
 
 ## General
 
-| Variable      | Description                                                                                         | Default Value |
-| ------------- | --------------------------------------------------------------------------------------------------- | ------------- |
-| `CONFIG_PATH` | Where your config file is located. See [Config Files](/reference/config-files/)                     | `.env`        |
-| `PORT`        | What port to run the API under.                                                                     | `8055`        |
-| `PUBLIC_URL`  | URL where your API can be reached on the web.                                                       | `/`           |
-| `LOG_LEVEL`   | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. | `info`        |
-| `LOG_STYLE`   | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                         | `pretty`      |
+| Variable           | Description                                                                                         | Default Value |
+| ------------------ | --------------------------------------------------------------------------------------------------- | ------------- |
+| `CONFIG_PATH`      | Where your config file is located. See [Config Files](/reference/config-files/)                     | `.env`        |
+| `PORT`             | What port to run the API under.                                                                     | `8055`        |
+| `PUBLIC_URL`       | URL where your API can be reached on the web.                                                       | `/`           |
+| `LOG_LEVEL`        | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. | `info`        |
+| `LOG_STYLE`        | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                         | `pretty`      |
+| `MAX_PAYLOAD_SIZE` | Controls the maximum request body size. Accepts number of bytes, or human readable string.          | `100kb`       |
 
 ## Database
 
@@ -27,12 +28,20 @@
 | `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --            |
 | `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --            |
 | `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --            |
+| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --            |
 
 ::: tip Additional Database Variables
 
 All `DB_*` environment variables are passed to the `connection` configuration of a [`Knex` instance](http://knexjs.org).
 Based on your project's needs, you can extend the `DB_*` environment variables with any config you need to pass to the
 database instance.
+
+:::
+
+::: tip Pooling
+
+All the `DB_POOL_` prefixed options are passed [to `tarn.js`](https://github.com/vincit/tarn.js#usage) through
+[Knex](http://knexjs.org/#Installation-pooling)
 
 :::
 
@@ -306,11 +315,13 @@ DB_SSL__REJECT_UNAUTHORIZED="false"
 
 ## Environment Syntax Prefix
 
-Directus will attempt to automatically type cast environment variables based on context clues ([see above](#type-casting-and-nesting)). If you have a specific need for a given type, you can tell Directus what type to use for the given value by prefixing the value with `{type}:`. The following types are available:
+Directus will attempt to automatically type cast environment variables based on context clues
+([see above](#type-casting-and-nesting)). If you have a specific need for a given type, you can tell Directus what type
+to use for the given value by prefixing the value with `{type}:`. The following types are available:
 
 | Syntax Prefix | Example                                          | Output                                           |
 | ------------- | ------------------------------------------------ | ------------------------------------------------ |
-| `string`      | `string:value`                                   | `"value"`                                          |
+| `string`      | `string:value`                                   | `"value"`                                        |
 | `number`      | `number:3306`                                    | `3306`                                           |
 | `regex`       | `regex:/\.example\.com$/`                        | `/\.example\.com$/`                              |
 | `array`       | `array:https://example.com,https://example2.com` | `["https://example.com","https://example2.com"]` |

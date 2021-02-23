@@ -23,7 +23,7 @@ export default async function start() {
 		})
 		.once('error', (err: any) => {
 			if (err?.code === 'EADDRINUSE') {
-				logger.fatal(`Port ${port} is already in use`);
+				logger.error(`Port ${port} is already in use`);
 				process.exit(1);
 			} else {
 				throw err;
