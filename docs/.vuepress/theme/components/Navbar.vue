@@ -106,7 +106,7 @@ $navbar-horizontal-padding = 30px
   a, span, img
     display inline-block
   .home-link
-    vertical-align -15px
+    vertical-align -33px
   .logo
     height 2.5rem
     margin-right 0.8rem
