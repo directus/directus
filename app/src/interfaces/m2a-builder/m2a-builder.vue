@@ -246,38 +246,37 @@ export default defineComponent({
 
 			// Holds "expanded" junction rows so we can lookup what "raw" junction row ID in props.value goes with
 			// what related item for pre-saved-unchanged-items
-			const junctionRowMap = ref<any[]>([]);
+			const junctionRowMap = ref<any[]>();
 
 			const previewValues = computed(() => {
 				// Need to wait until junctionRowMap got properly populated
-				if (junctionRowMap.value.length < 1) {
+				if (junctionRowMap.value === undefined) {
 					return [];
 				}
 
 				// Convert all string/number junction rows into junction row records from the map so we can inject the
 				// related values
-				const values = cloneDeep(props.value || []).map((val, index) => {
-					const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
+				const values = cloneDeep(props.value || [])
+					.map((val, index) => {
+						const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
 
-					const savedValues = junctionRowMap.value.find(
-						(junctionRow) => junctionRow[o2mRelation.value.many_primary] === junctionKey
-					);
+						const savedValues = (junctionRowMap.value || []).find(
+							(junctionRow) => junctionRow[o2mRelation.value.many_primary] === junctionKey
+						);
 
-					if (isPlainObject(val)) {
-						return {
-							...savedValues,
-							...val,
-							$index: index,
-						};
-					} else {
-						return {
-							...savedValues,
-							$index: index,
-						};
-					}
-				});
-
-				return values
+						if (isPlainObject(val)) {
+							return {
+								...savedValues,
+								...val,
+								$index: index,
+							};
+						} else {
+							return {
+								...savedValues,
+								$index: index,
+							};
+						}
+					})
 					.map((val) => {
 						// Find and nest the related item values for use in the preview
 						const collection = val[anyRelation.value.one_collection_field!];
@@ -303,21 +302,12 @@ export default defineComponent({
 						}
 
 						return val;
-					})
-					.sort((a, b) => {
-						const aSort = a[props.sortField];
-						const bSort = b[props.sortField];
-
-						if (aSort === bSort) {
-							return 0;
-						} else if (aSort === null) {
-							return 1;
-						} else if (bSort === null) {
-							return -1;
-						} else {
-							return aSort < bSort ? -1 : 1;
-						}
 					});
+
+				return [
+					...values.filter((val) => val[props.sortField]).sort((a, b) => a[props.sortField] - b[props.sortField]), // sort by sortField if it exists
+					...values.filter((val) => !val[props.sortField]).sort((a, b) => a.$index - b.$index), // sort the rest with $index
+				];
 			});
 
 			return { fetchValues, previewValues, loading, junctionRowMap, relatedItemValues };
@@ -400,6 +390,8 @@ export default defineComponent({
 						}
 
 						junctionRowMap.value = junctionInfoResponse.data.data;
+					} else {
+						junctionRowMap.value = [];
 					}
 
 					// Fetch all related items from their individual endpoints using the fields from their templates
@@ -490,7 +482,14 @@ export default defineComponent({
 			function stageEdits(edits: Record<string, any>) {
 				const currentValue = props.value || [];
 
-				if (currentlyEditing.value === '+' && relatedPrimaryKey.value === '+') {
+				// Whether or not the currently-being-edited item exists in the staged values
+				const hasBeenStaged =
+					currentValue.includes(editsAtStart.value) || currentValue.includes(currentlyEditing.value);
+
+				// Whether or not the currently-being-edited item has been saved to the database
+				const isNew = currentlyEditing.value === '+' && relatedPrimaryKey.value === '+';
+
+				if (isNew && hasBeenStaged === false) {
 					emit('input', [...currentValue, edits]);
 				} else {
 					emit(
@@ -499,7 +498,6 @@ export default defineComponent({
 							if (val === editsAtStart.value || val == currentlyEditing.value) {
 								return edits;
 							}
-
 							return val;
 						})
 					);
@@ -513,8 +511,9 @@ export default defineComponent({
 			}
 
 			function editExisting(item: Record<string, any>) {
+				// Edit a saved item
 				if (typeof item === 'string' || typeof item === 'number') {
-					const junctionRow = junctionRowMap.value.find((row) => {
+					const junctionRow = (junctionRowMap.value || []).find((row) => {
 						return row[o2mRelation.value.many_primary] == item;
 					});
 
