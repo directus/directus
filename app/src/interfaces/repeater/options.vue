@@ -77,6 +77,7 @@ export default defineComponent({
 					width: 'half',
 					sort: 2,
 					options: {
+						dbSafe: true,
 						font: 'monospace',
 						placeholder: i18n.t('interfaces.repeater.field_name_placeholder'),
 					},

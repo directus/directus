@@ -7,6 +7,7 @@
 		:trim="trim"
 		:type="masked ? 'password' : 'text'"
 		:class="font"
+		:db-safe="dbSafe"
 		@input="$listeners.input"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
@@ -74,6 +75,10 @@ export default defineComponent({
 		length: {
 			type: Number,
 			default: null,
+		},
+		dbSafe: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {
