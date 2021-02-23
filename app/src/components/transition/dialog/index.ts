@@ -1,4 +1,4 @@
-import TransitionDialog from './dialog.vue';
+import TransitionDialog from './transition-dialog.vue';
 
 export { TransitionDialog };
 export default TransitionDialog;
