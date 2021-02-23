@@ -55,7 +55,7 @@ export default async function createApp() {
 	await validateDBConnection();
 
 	if ((await isInstalled()) === false) {
-		logger.fatal(`Database doesn't have Directus tables installed.`);
+		logger.error(`Database doesn't have Directus tables installed.`);
 		process.exit(1);
 	}
 

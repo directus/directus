@@ -65,8 +65,8 @@ export async function validateDBConnection() {
 	try {
 		await hasDatabaseConnection();
 	} catch (error) {
-		logger.fatal(`Can't connect to the database.`);
-		logger.fatal(error);
+		logger.error(`Can't connect to the database.`);
+		logger.error(error);
 		process.exit(1);
 	}
 }
