@@ -12,6 +12,7 @@ role_name: Rol Naam
 db_only_click_to_configure: 'Alleen in de Database: Klik om te configureren '
 show_archived_items: Toon Gearchiveerde Items
 required: Vereist
+required_for_app_access: Vereist voor toegang tot de app
 requires_value: Vereist waarde
 create_preset: Voorkeur Aanmaken
 create_role: Maak rol
@@ -25,8 +26,11 @@ connection_excellent: Uitstekende Verbinding
 connection_good: Goede Verbinding
 connection_fair: Matige Verbinding
 connection_poor: Slechte Verbinding
+primary: Primair
 rename_folder: Mapnaam wijzigen
 delete_folder: Verwijder Map
+prefix: Voorvoegsel
+suffix: Achtervoegsel
 reset_bookmark: Reset Bladwijzer
 rename_bookmark: Hernoem Bladwijzer
 update_bookmark: Update Bladwijzer
@@ -50,6 +54,8 @@ archive: Archiveren
 archive_confirm: Weet je zeker dat je dit item wilt archiveren?
 archive_confirm_count: >-
   Geen Items Geselecteerd | Weet je zeker dat je dit item wilt archiveren? | Weet je zeker dat je deze {count} items wilt archiveren?
+reset_system_permissions_to: 'Systeemrechten resetten naar:'
+reset_system_permissions_copy: Deze actie overschrijft alle rechten die u heeft toegepast op de systeemcollecties. Weet u het zeker?
 unarchive: Terugzetten
 unarchive_confirm: Weet je zeker dat je dit item wilt terugzetten?
 nested_files_folders_will_be_moved: Bestanden en mappen in deze map zullen een map omhoog worden geplaatst.
@@ -761,6 +767,8 @@ value: Waarde
 view_project: Bekijk project
 report_error: Rapporteer fout
 interfaces:
+  button-links:
+    primary: Primair
   checkboxes:
     checkboxes: Vinkjes
     description: Kies tussen meerdere opties via selectievakjes
