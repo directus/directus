@@ -2,8 +2,6 @@
 
 Use around a `v-if` or `v-show` component to have it expand in and out of view.
 
-## Usage
-
 ```html
 <template>
 	<div>
@@ -41,9 +39,9 @@ Use around a `v-if` or `v-show` component to have it expand in and out of view.
 
 ## Slots
 
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             |      |
+| Slot      | Description                              | Data |
+| --------- | ---------------------------------------- | ---- |
+| _default_ | Elements that should be animated go here |      |
 
 ## Events
 

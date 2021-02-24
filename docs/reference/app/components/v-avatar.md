@@ -15,24 +15,26 @@ profile picture or an icon or text can be inserted.
 </v-avatar>
 ```
 
-## Props
+## Reference
+
+#### Props
 
 | Prop   | Description               | Default | Type      |
 | ------ | ------------------------- | ------- | --------- |
 | `size` | Size in px                | `null`  | `Number`  |
 | `tile` | Render as a tile (square) | `false` | `Boolean` |
 
-## Slots
+#### Slots
 
 | Slot      | Description                                             | Data |
 | --------- | ------------------------------------------------------- | ---- |
 | _default_ | Default slot to display your elements inside the avatar | --   |
 
-## Events
+#### Events
 
 n/a
 
-## CSS Variables
+#### CSS Variables
 
 | Variable           | Default                    |
 | ------------------ | -------------------------- |
