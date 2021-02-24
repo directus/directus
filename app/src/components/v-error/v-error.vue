@@ -1,6 +1,6 @@
 <template>
 	<div class="v-error">
-		<output>Code: {{ code }}</output>
+		<output>[{{ code }}] {{ message }}</output>
 		<v-icon
 			v-tooltip="$t('copy_details')"
 			v-if="showCopy"
@@ -28,11 +28,15 @@ export default defineComponent({
 			return props.error?.response?.data?.errors?.[0]?.extensions?.code || 'UNKNOWN';
 		});
 
+		const message = computed(() => {
+			return props.error?.response?.data?.errors?.[0]?.message || props.error.message;
+		});
+
 		const copied = ref(false);
 
 		const showCopy = computed(() => !!navigator.clipboard?.writeText);
 
-		return { code, copyError, showCopy, copied };
+		return { code, copyError, showCopy, copied, message };
 
 		async function copyError() {
 			const error = props.error?.response?.data || props.error;
