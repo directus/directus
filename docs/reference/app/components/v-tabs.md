@@ -34,26 +34,26 @@ To be able to display a page depending on the tab use tab items.
 </v-tabs-items>
 ```
 
-## Props
+#### Props
 
 | Prop       | Description                           | Default     | Type                   |
 | ---------- | ------------------------------------- | ----------- | ---------------------- |
 | `value`    | The currently selected tab            | `undefined` | `(string or number)[]` |
 | `vertical` | Display the tabs in a vertical format | `false`     | `Boolean`              |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                   | Default                    |
 | -------------------------- | -------------------------- |
 | `--v-tabs-underline-color` | `var(--foreground-normal)` |
 
-## Events
+#### Events
 
 | Event   | Description                     | Value |
 | ------- | ------------------------------- | ----- |
 | `input` | Used to update the selected tab |       |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |

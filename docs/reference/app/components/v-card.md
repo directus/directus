@@ -33,24 +33,24 @@ Cards can be used to consistently style dialogs:
 </v-dialog>
 ```
 
-## Props
+#### Props
 
 | Prop       | Description                                       | Default | Type      |
 | ---------- | ------------------------------------------------- | ------- | --------- |
 | `disabled` | Disable the card, prevents all cursor interaction | `false` | `Boolean` |
 | `tile`     | Render without rounded corners                    | `false` | `Boolean` |
 
-## Events
+#### Events
 
 n/a
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |
 | _default_ |             |      |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                    | Default                     |
 | --------------------------- | --------------------------- |

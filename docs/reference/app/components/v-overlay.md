@@ -24,27 +24,27 @@ The colors can be changed via the css variable `--v-overlay-color`.
 </style>
 ```
 
-## Props
+#### Props
 
 | Prop       | Description               | Default | Type      |
 | ---------- | ------------------------- | ------- | --------- |
 | `active`   | Show / hide the overlay   | `false` | `Boolean` |
 | `absolute` | Add `position: absolute;` | `false` | `Boolean` |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable              | Default                |
 | --------------------- | ---------------------- |
 | `--v-overlay-color`   | `var(--overlay-color)` |
 | `--v-overlay-z-index` | `600`                  |
 
-## Events
+#### Events
 
 | Event   | Description | Value |
 | ------- | ----------- | ----- |
 | `click` |             |       |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |

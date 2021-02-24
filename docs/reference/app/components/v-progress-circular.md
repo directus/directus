@@ -1,4 +1,4 @@
-## CSS Variables
+#### CSS Variables
 
 | Variable                                 | Default                    |
 | ---------------------------------------- | -------------------------- |
@@ -9,20 +9,20 @@
 | `--v-progress-circular-size`             | `28px`                     |
 | `--v-progress-circular-line-size`        | `3px`                      |
 
-## Events
+#### Events
 
 | Event                | Description | Value |
 | -------------------- | ----------- | ----- |
 | `animationiteration` |             |       |
 
-## Props
+#### Props
 
 | Prop            | Description | Default | Type      |
 | --------------- | ----------- | ------- | --------- |
 | `indeterminate` |             | `false` | `Boolean` |
 | `value`         |             | `0`     | `Number`  |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |

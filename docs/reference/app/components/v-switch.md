@@ -46,7 +46,7 @@ Just as with regular checkboxes, you can use `v-model` with both an array and a 
 
 Keep in mind to pass the `value` prop with a unique value when using arrays in `v-model`.
 
-## Props
+#### Props
 
 | Prop          | Description                                            | Default | Type               |
 | ------------- | ------------------------------------------------------ | ------- | ------------------ |
@@ -55,19 +55,19 @@ Keep in mind to pass the `value` prop with a unique value when using arrays in `
 | `disabled`    | Disables the switch                                    | `false` | `Boolean`          |
 | `label`       | Displays a label next to the switch                    | `null`  | `String`           |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable           | Default                    |
 | ------------------ | -------------------------- |
 | `--v-switch-color` | `var(--foreground-normal)` |
 
-## Events
+#### Events
 
 | Event    | Description                          | Value |
 | -------- | ------------------------------------ | ----- |
 | `change` | When the state of the switch changes |       |
 
-## Slots
+#### Slots
 
 | Slot    | Description                                     | Data |
 | ------- | ----------------------------------------------- | ---- |

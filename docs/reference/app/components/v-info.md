@@ -8,7 +8,7 @@ Renders a stylized informational placard. It's similar in `v-notice` in it's use
 <v-info icon="person" title="User Not Found" type="warning">We couldn't find the user you're looking for.</v-info>
 ```
 
-## Props
+#### Props
 
 | Prop      | Description                                   | Default  | Type                                           |
 | --------- | --------------------------------------------- | -------- | ---------------------------------------------- |
@@ -17,17 +17,17 @@ Renders a stylized informational placard. It's similar in `v-notice` in it's use
 | `type`    | One of `info`, `success`, `warning`, `danger` | `'info'` | `'info' or 'success' or 'warning' or 'danger'` |
 | `center`  | Display the info centered                     | `false`  | `Boolean`                                      |
 
-## Events
+#### Events
 
 n/a
 
-## Slots
+#### Slots
 
 | Slot      | Description                                                  | Data |
 | --------- | ------------------------------------------------------------ | ---- |
 | _default_ | Default content area. Is rendered within a styled `<p>` tag. |      |
 | `append`  | After the main body copy. Can be used to inject buttons etc. |      |
 
-## CSS Variables
+#### CSS Variables
 
 n/a

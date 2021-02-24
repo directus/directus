@@ -20,7 +20,7 @@ Renders a dropdown input.
 />
 ```
 
-## Props
+#### Props
 
 | Prop                         | Description                                                    | Default   | Type         |
 | ---------------------------- | -------------------------------------------------------------- | --------- | ------------ |
@@ -39,19 +39,19 @@ Renders a dropdown input.
 | `inline`                     | display the selection inline with other text                   | `false`   | `Boolean`    |
 | `multiple-preview-threshold` | The maximum amount of selected items to display in the preview | `3`       | `Number`     |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                 | Default                    |
 | ------------------------ | -------------------------- |
 | `--v-select-font-family` | `var(--family-sans-serif)` |
 
-## Slots
+#### Slots
 
 | Slot      | Description                       | Data |
 | --------- | --------------------------------- | ---- |
 | `prepend` | Prepend anything to the selection |      |
 
-## Events
+#### Events
 
 | Event   | Description | Value |
 | ------- | ----------- | ----- |

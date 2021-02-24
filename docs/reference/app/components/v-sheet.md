@@ -25,7 +25,7 @@ The color can be changed via the css variable called `--v-sheet-color`.
 </style>
 ```
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                     | Default                     |
 | ---------------------------- | --------------------------- |
@@ -38,7 +38,7 @@ The color can be changed via the css variable called `--v-sheet-color`.
 | `--v-sheet-max-width`        | `none`                      |
 | `--v-sheet-padding`          | `8px`                       |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |

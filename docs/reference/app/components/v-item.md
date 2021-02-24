@@ -1,4 +1,4 @@
-## Props
+#### Props
 
 | Prop     | Description | Default        | Type      |
 | -------- | ----------- | -------------- | --------- |
@@ -7,7 +7,7 @@
 | `active` |             | `undefined`    | `Boolean` |
 | `watch`  |             | `true`         | `Boolean` |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |

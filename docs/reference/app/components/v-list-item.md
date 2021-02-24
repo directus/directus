@@ -1,4 +1,4 @@
-## CSS Variables
+#### CSS Variables
 
 | Variable                                | Default                                                               |
 | --------------------------------------- | --------------------------------------------------------------------- |
@@ -19,7 +19,7 @@
 | `--v-list-item-background-color-hover`  | `var(--v-list-background-color-hover, var(--background-normal-alt))`  |
 | `--v-list-item-background-color-active` | `var(--v-list-background-color-active, var(--background-normal-alt))` |
 
-## Props
+#### Props
 
 | Prop       | Description | Default     | Type                 |
 | ---------- | ----------- | ----------- | -------------------- |
@@ -34,7 +34,7 @@
 | `download` |             | `null`      | `String`             |
 | `value`    |             | `undefined` | `[String, Number]`   |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |

@@ -17,7 +17,7 @@ You can set the color, background color and boder color with the `--v-badge-colo
 </v-badge>
 ```
 
-## Props
+#### Props
 
 | Prop       | Description                                                                  | Default | Type               |
 | ---------- | ---------------------------------------------------------------------------- | ------- | ------------------ |
@@ -29,7 +29,7 @@ You can set the color, background color and boder color with the `--v-badge-colo
 | `icon`     | Shows an icon instead of text                                                | `null`  | `String`           |
 | `disabled` | Don't render the badge                                                       | `false` | `Boolean`          |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                     | Default                  |
 | ---------------------------- | ------------------------ |
@@ -40,7 +40,7 @@ You can set the color, background color and boder color with the `--v-badge-colo
 | `--v-badge-offset-y`         | `0px`                    |
 | `--v-badge-size`             | `16px`                   |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |

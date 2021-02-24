@@ -47,7 +47,7 @@ called `close`.
 <v-chip close @close="close">I'm closeable!</v-chip>
 ```
 
-## Props
+#### Props
 
 | Prop         | Description                                          | Default   | Type      |
 | ------------ | ---------------------------------------------------- | --------- | --------- |
@@ -62,13 +62,13 @@ called `close`.
 | `disabled`   | Disabled state                                       | `false`   | `Boolean` |
 | `close-icon` |                                                      | `'close'` | `String`  |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |
 | _default_ |             | --   |
 
-## Events
+#### Events
 
 | Event           | Description                                                                                    | Value |
 | --------------- | ---------------------------------------------------------------------------------------------- | ----- |
@@ -76,7 +76,7 @@ called `close`.
 | `close`         | Triggers when the `close` prop is enabled and gets clicked (Doesn't trigger the `click` event) |       |
 | `update:active` |                                                                                                |       |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                          | Default                        |
 | --------------------------------- | ------------------------------ |

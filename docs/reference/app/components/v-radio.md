@@ -10,7 +10,7 @@ Classic radio buttons. Nothing special.
 <v-radio v-model="selected" value="green" />
 ```
 
-## Props
+#### Props
 
 | Prop          | Description                                 | Default                    | Type      |
 | ------------- | ------------------------------------------- | -------------------------- | --------- |
@@ -22,19 +22,19 @@ Classic radio buttons. Nothing special.
 | `icon-off`    | Change the icon to display when disabled    | `'radio_button_unchecked'` | `String`  |
 | `block`       | Render the radio in a block like style      | `false`                    | `Boolean` |
 
-## Events
+#### Events
 
 | Event    | Description                                                   | Value    |
 | -------- | ------------------------------------------------------------- | -------- |
 | `change` | When the state of the radio button changes. Used in `v-model` | `string` |
 
-## Slots
+#### Slots
 
 | Slot    | Description                                                                       | Data |
 | ------- | --------------------------------------------------------------------------------- | ---- |
 | `label` | Custom override for label slot. Allows you to render custom markup in label slot. |      |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable          | Default          |
 | ----------------- | ---------------- |

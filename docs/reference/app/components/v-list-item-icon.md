@@ -1,16 +1,16 @@
-## CSS Variables
+#### CSS Variables
 
 | Variable                   | Default                     |
 | -------------------------- | --------------------------- |
 | `--v-list-item-icon-color` | `var(--foreground-subdued)` |
 
-## Props
+#### Props
 
 | Prop     | Description | Default | Type      |
 | -------- | ----------- | ------- | --------- |
 | `center` |             | `false` | `Boolean` |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |

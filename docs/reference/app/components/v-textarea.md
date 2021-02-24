@@ -12,7 +12,7 @@ The HTML `<textarea>` element supports a huge amount of attributes and events. I
 props that aren't specially handled (see list below) will be passed on to the `<textarea>` element directly. This allows
 you to change anything you want on the input.
 
-## Props
+#### Props
 
 | Prop              | Description                                                                    | Default | Type      |
 | ----------------- | ------------------------------------------------------------------------------ | ------- | --------- |
@@ -27,14 +27,14 @@ you to change anything you want on the input.
 Note: all other attached attributes are bound to the input HTMLELement in the component. This allows you to attach any
 of the standard HTML attributes like `min`, `length`, or `pattern`.
 
-## Slots
+#### Slots
 
 | Slot      | Description                                              | Data |
 | --------- | -------------------------------------------------------- | ---- |
 | `prepend` | Prepend elements before the text content in the textarea |      |
 | `append`  | Append elements after the text content                   |      |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                   | Default                    |
 | -------------------------- | -------------------------- |
@@ -43,7 +43,7 @@ of the standard HTML attributes like `min`, `length`, or `pattern`.
 | `--v-textarea-height`      | `var(--input-height-tall)` |
 | `--v-textarea-font-family` | `var(--family-sans-serif)` |
 
-## Events
+#### Events
 
 | Event   | Description | Value |
 | ------- | ----------- | ----- |

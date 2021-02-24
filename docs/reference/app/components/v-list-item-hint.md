@@ -1,10 +1,10 @@
-## Props
+#### Props
 
 | Prop     | Description | Default | Type      |
 | -------- | ----------- | ------- | --------- |
 | `center` |             | `false` | `Boolean` |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |

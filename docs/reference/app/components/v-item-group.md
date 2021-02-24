@@ -130,7 +130,7 @@ useful when you're working with a predefined list of items:
 
 In this case, the selection state for all items selected would be `[15, 414, 'jolly']`
 
-## Props
+#### Props
 
 | Prop        | Description                                           | Default        | Type                   |
 | ----------- | ----------------------------------------------------- | -------------- | ---------------------- |
@@ -140,13 +140,13 @@ In this case, the selection state for all items selected would be `[15, 414, 'jo
 | `multiple`  | If enabled, multiple elements can be selected         | `false`        | `Boolean`              |
 | `scope`     | Items that do not have the same scope will be ignored | `'item-group'` | `String`               |
 
-## Events
+#### Events
 
 | Event   | Description                      | Value                |
 | ------- | -------------------------------- | -------------------- |
 | `input` | Used to update the modeled value | (String or Number)[] |
 
-## Slots
+#### Slots
 
 | Slot      | Description                                                 | Data |
 | --------- | ----------------------------------------------------------- | ---- |

@@ -13,19 +13,19 @@ hidden.
 </v-tabs-items>
 ```
 
-## Props
+#### Props
 
 | Prop    | Description   | Default     | Type                   |
 | ------- | ------------- | ----------- | ---------------------- |
 | `value` | v-model value | `undefined` | `(string or number)[]` |
 
-## Events
+#### Events
 
 | Event   | Description     | Value                           |
 | ------- | --------------- | ------------------------------- |
 | `input` | Updates v-model | `readonly (string or number)[]` |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |

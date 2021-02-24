@@ -6,7 +6,7 @@ Renders a dropdown menu. Can be attached to an activator element or free floatin
 
 Due to the fact that a menu is rendered through a portal, dialogs don't work great when rendered from within a menu.
 
-## Props
+#### Props
 
 | Prop                     | Description                                                       | Default     | Type        |
 | ------------------------ | ----------------------------------------------------------------- | ----------- | ----------- |
@@ -20,19 +20,19 @@ Due to the fact that a menu is rendered through a portal, dialogs don't work gre
 | `trigger`                | Activate the menu on a trigger. One of `manual`, `click`, `hover` | `null`      | `String`    |
 | `delay`                  | Time in ms before menu activates after trigger                    | `0`         | `Number`    |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable             | Default |
 | -------------------- | ------- |
 | `--v-menu-min-width` | `100px` |
 
-## Events
+#### Events
 
 | Event   | Description                  | Value     |
 | ------- | ---------------------------- | --------- |
 | `input` | Used to model the value prop | `Boolean` |
 
-## Slots
+#### Slots
 
 | Slot        | Description                                       | Data |
 | ----------- | ------------------------------------------------- | ---- |

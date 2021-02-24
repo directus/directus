@@ -10,7 +10,7 @@ Use the detail component to hide not so important information or elements.
 </v-detail>
 ```
 
-## Props
+#### Props
 
 | Prop         | Description             | Default            | Type      |
 | ------------ | ----------------------- | ------------------ | --------- |
@@ -19,19 +19,19 @@ Use the detail component to hide not so important information or elements.
 | `start-open` | Have it open by default | `false`            | `Boolean` |
 | `disabled`   | Disable any interaction | `false`            | `Boolean` |
 
-## Events
+#### Events
 
 | Event    | Description                 | Value     |
 | -------- | --------------------------- | --------- |
 | `toggle` | New active value of divider | `boolean` |
 
-## Slots
+#### Slots
 
 | Slot      | Description                   | Data                  |
 | --------- | ----------------------------- | --------------------- |
 | _default_ | Content of the detail section |                       |
 | `title`   | Content to render in divider  | `{ active: boolean }` |
 
-## CSS Variables
+#### CSS Variables
 
 n/a

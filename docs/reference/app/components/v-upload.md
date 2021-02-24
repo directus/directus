@@ -6,7 +6,7 @@ Allows you to easily make files uploadable using this component.
 <v-upload @input="onUpload"></v-upload>
 ```
 
-## Props
+#### Props
 
 | Prop           | Description                                 | Default     | Type      |
 | -------------- | ------------------------------------------- | ----------- | --------- |
@@ -16,7 +16,7 @@ Allows you to easily make files uploadable using this component.
 | `from-url`     | Allow uploading files from an url           | `false`     | `Boolean` |
 | `from-library` | Allow selecting files from the file library | `false`     | `Boolean` |
 
-## Events
+#### Events
 
 | Event   | Description                   | Value |
 | ------- | ----------------------------- | ----- |

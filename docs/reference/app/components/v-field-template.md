@@ -9,7 +9,7 @@ Models a template string like `My name is {name} and I'm {age} years old`.
 <v-field-template collection="articles" />
 ```
 
-## Props
+#### Props
 
 | Prop           | Description                                                | Default | Type      |
 | -------------- | ---------------------------------------------------------- | ------- | --------- |
@@ -18,7 +18,7 @@ Models a template string like `My name is {name} and I'm {age} years old`.
 | `value`        | Can be used to model the template string                   | `null`  | `String`  |
 | `depth`        | If greater than `0`, it also considers relations of fields | `2`     | `Number`  |
 
-## Events
+#### Events
 
 | Event   | Description                 | Value    |
 | ------- | --------------------------- | -------- |

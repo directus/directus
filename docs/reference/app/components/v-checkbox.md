@@ -85,7 +85,7 @@ If you can't, you should listen to the `update:indeterminate` event and respond 
 <v-checkbox indeterminate @update:indeterminate="setIndeterminate"></v-checkbox>
 ```
 
-## Props
+#### Props
 
 | Prop                 | Description                                                              | Default                     | Type               |
 | -------------------- | ------------------------------------------------------------------------ | --------------------------- | ------------------ |
@@ -109,7 +109,7 @@ If you can't, you should listen to the `update:indeterminate` event and respond 
 | `input-value`        |                                                                          | `false`                     | `[Boolean, Array]` |
 | `custom-value`       |                                                                          | `false`                     | `Boolean`          |
 
-## Slots
+#### Slots
 
 | Slot      | Description                        | Data |
 | --------- | ---------------------------------- | ---- |
@@ -117,14 +117,14 @@ If you can't, you should listen to the `update:indeterminate` event and respond 
 | `append`  | Rendered right after the label     |      |
 | _default_ |                                    |      |
 
-## Events
+#### Events
 
 | Event                  | Description                | Value                      |
 | ---------------------- | -------------------------- | -------------------------- |
 | `change`               | New state for the checkbox | Boolean or array of values |
 | `update:indeterminate` | New state for the checkbox | Boolean or array of values |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable             | Default          |
 | -------------------- | ---------------- |

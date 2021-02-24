@@ -7,7 +7,7 @@ relational or nested data.
 <v-drawer><></v-drawer>
 ```
 
-## Props
+#### Props
 
 | Prop            | Description | Default             | Type      |
 | --------------- | ----------- | ------------------- | --------- |
@@ -18,14 +18,14 @@ relational or nested data.
 | `sidebar-label` |             | `i18n.t('sidebar')` | `String`  |
 | `title`\*       |             |                     | `String`  |
 
-## Events
+#### Events
 
 | Event    | Description                                                      | Value     |
 | -------- | ---------------------------------------------------------------- | --------- |
 | `cancel` | When escape is pressed or the drawer gets canceled in other ways |           |
 | `toggle` | When the drawer gets opened or closed                            | `boolean` |
 
-## Slots
+#### Slots
 
 | Slot              | Description                                            | Data |
 | ----------------- | ------------------------------------------------------ | ---- |
@@ -37,7 +37,7 @@ relational or nested data.
 | `header:append`   | Append your elements to the header                     |      |
 | _default_         |                                                        |      |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable               | Default |
 | ---------------------- | ------- |

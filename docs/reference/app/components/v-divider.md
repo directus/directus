@@ -8,7 +8,7 @@ Divides content. Made to be used in `v-list` or `v-tabs` components.
 <v-divider />
 ```
 
-## Props
+#### Props
 
 | Prop           | Description                                           | Default | Type      |
 | -------------- | ----------------------------------------------------- | ------- | --------- |
@@ -16,18 +16,18 @@ Divides content. Made to be used in `v-list` or `v-tabs` components.
 | `inline-title` | Render the title inline with the divider, or under it | `true`  | `Boolean` |
 | `large`        | Renders a larger divider                              | `false` | `Boolean` |
 
-## Events
+#### Events
 
 n/a
 
-## Slots
+#### Slots
 
 | Slot      | Description                                                              | Data |
 | --------- | ------------------------------------------------------------------------ | ---- |
 | _default_ | Label on the divider. This isn't rendered in vertical mode.              |      |
 | `icon`    | Icon on the divider. Rendered in all modes, inline with title if present |      |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                  | Default                        |
 | ------------------------- | ------------------------------ |

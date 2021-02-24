@@ -1,10 +1,10 @@
-## Events
+#### Events
 
 | Event   | Description | Value |
 | ------- | ----------- | ----- |
 | `click` |             |       |
 
-## Props
+#### Props
 
 | Prop       | Description | Default     | Type               |
 | ---------- | ----------- | ----------- | ------------------ |
@@ -17,7 +17,7 @@
 | `value`    |             | `undefined` | `[String, Number]` |
 | `dense`    |             | `false`     | `Boolean`          |
 
-## Slots
+#### Slots
 
 | Slot        | Description | Data |
 | ----------- | ----------- | ---- |

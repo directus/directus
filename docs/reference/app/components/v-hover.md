@@ -28,7 +28,7 @@ Likewise, you can set how long it will take before the hover state is set with t
 </style>
 ```
 
-## Props
+#### Props
 
 | Prop          | Description                                  | Default | Type      |
 | ------------- | -------------------------------------------- | ------- | --------- |
@@ -37,11 +37,11 @@ Likewise, you can set how long it will take before the hover state is set with t
 | `disabled`    | Disables the hover state from happening      | `false` | `Boolean` |
 | `tag`         | What HTML tag to use for the wrapper         | `'div'` | `String`  |
 
-## Events
+#### Events
 
 n/a
 
-## Slots
+#### Slots
 
 | Slot      | Description                                                 | Data |
 | --------- | ----------------------------------------------------------- | ---- |

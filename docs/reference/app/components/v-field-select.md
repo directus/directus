@@ -6,7 +6,7 @@ Allows for easy selection of field inside a collection. Also works with relation
 <v-field-select collection="articles" v-model="selection" />
 ```
 
-## Props
+#### Props
 
 | Prop           | Description                                                | Default           | Type                          |
 | -------------- | ---------------------------------------------------------- | ----------------- | ----------------------------- | ----- |
@@ -16,7 +16,7 @@ Allows for easy selection of field inside a collection. Also works with relation
 | `depth`        | If greater than `0`, it also considers relations of fields | `1`               | `Number`                      |
 | `inject`       | Inject you own fields, collections or relations            | `() => ({ fields` | `Object as PropType<{ fields` | null` |
 
-## Events
+#### Events
 
 | Event   | Description           | Value      |
 | ------- | --------------------- | ---------- |

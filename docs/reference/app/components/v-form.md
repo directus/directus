@@ -12,7 +12,7 @@ Renders a form using interfaces based on the passed collection name.
 />
 ```
 
-## Props
+#### Props
 
 | Prop                | Description                                                                                                             | Default     | Type                |
 | ------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------- |
@@ -28,11 +28,11 @@ Renders a form using interfaces based on the passed collection name.
 
 **Note**: You have to pass either the collection or fields prop.
 
-## Slots
+#### Slots
 
 n/a
 
-## Events
+#### Events
 
 | Event   | Description              | Value |
 | ------- | ------------------------ | ----- |

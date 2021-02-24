@@ -42,7 +42,7 @@ representation.
 | `divider`     | If set to true, display an divider instead | `undefined or boolean`                   |
 | `iconRight`   | Display an optional icon to the right      | `undefined or string`                    |
 
-## Props
+#### Props
 
 | Prop       | Description                             | Default | Type                |
 | ---------- | --------------------------------------- | ------- | ------------------- |
@@ -50,16 +50,16 @@ representation.
 | `value`    | used to model the selected items        | `null`  | `[String, Number]`  |
 | `disabled` | Disable selecting / deselecting a value | `false` | `Boolean`           |
 
-## Events
+#### Events
 
 | Event   | Description                | Value     |
 | ------- | -------------------------- | --------- |
 | `input` | Syncs value with `v-model` | `boolean` |
 
-## Slots
+#### Slots
 
 n/a
 
-## CSS Variables
+#### CSS Variables
 
 n/a

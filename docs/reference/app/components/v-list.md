@@ -20,7 +20,7 @@ Display usual lists. Also works with nested data.
 </v-list>
 ```
 
-## Props
+#### Props
 
 | Prop           | Description                                                 | Default    | Type                   |
 | -------------- | ----------------------------------------------------------- | ---------- | ---------------------- |
@@ -29,7 +29,7 @@ Display usual lists. Also works with nested data.
 | `multiple`     | Allows to select multiple items in the list                 | `true`     | `Boolean`              |
 | `mandatory`    | At least one item has to be selected                        | `true`     | `Boolean`              |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                           | Default                        |
 | ---------------------------------- | ------------------------------ |
@@ -44,13 +44,13 @@ Display usual lists. Also works with nested data.
 | `--v-list-background-color-hover`  | `var(--background-normal-alt)` |
 | `--v-list-background-color-active` | `var(--background-normal-alt)` |
 
-## Events
+#### Events
 
 | Event   | Description                          | Value |
 | ------- | ------------------------------------ | ----- |
 | `input` | Used to update the current selection |       |
 
-## Slots
+#### Slots
 
 | Slot      | Description                | Data |
 | --------- | -------------------------- | ---- |

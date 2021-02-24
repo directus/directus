@@ -13,13 +13,13 @@ An item for the items prop has these 4 options: | Prop | Description |
 name which will be displayed | | `icon` | Displays an icon with the given name in front of the name | | `disabled` | If
 the router link should be clickable |
 
-## Props
+#### Props
 
 | Prop    | Description                                              | Default    | Type           |
 | ------- | -------------------------------------------------------- | ---------- | -------------- |
 | `items` | An array of objects which information about each section | `() => []` | `Breadcrumb[]` |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                        | Default                     |
 | ------------------------------- | --------------------------- |

@@ -11,24 +11,24 @@ Individual tab. To be used inside a `v-tabs` context.
 </v-tabs>
 ```
 
-## Props
+#### Props
 
 | Prop       | Description                                            | Default | Type      |
 | ---------- | ------------------------------------------------------ | ------- | --------- |
 | `disabled` | Disable the tab                                        | `false` | `Boolean` |
 | `value`    | A custom value to be used in the selection of `v-tabs` | `null`  | `String`  |
 
-## Events
+#### Events
 
 n/a
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data                                       |
 | --------- | ----------- | ------------------------------------------ |
 | _default_ |             | `{ active: boolean, toggle: () => void; }` |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                          | Default                     |
 | --------------------------------- | --------------------------- |

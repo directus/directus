@@ -14,7 +14,7 @@ Renders an overlay with a flex slot rendering whatever content you pass.
 </v-dialog>
 ```
 
-## Props
+#### Props
 
 | Prop         | Description                                         | Default     | Type      |
 | ------------ | --------------------------------------------------- | ----------- | --------- |
@@ -22,21 +22,21 @@ Renders an overlay with a flex slot rendering whatever content you pass.
 | `active`     | Can be used in combination with `v-model`           | `undefined` | `Boolean` |
 | `placement`  | Display it either in the `center` or to the `right` | `'center'`  | `String`  |
 
-## Slots
+#### Slots
 
 | Slot        | Description                                   | Data |
 | ----------- | --------------------------------------------- | ---- |
 | _default_   | Whatever should be rendered inside the dialog |      |
 | `activator` | Insert an activator for the dialog            |      |
 
-## Events
+#### Events
 
 | Event    | Description             | Value     |
 | -------- | ----------------------- | --------- |
 | `toggle` | Change the active state | `boolean` |
 | `esc`    | Escape has been pressed | `boolean` |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable             | Default |
 | -------------------- | ------- |

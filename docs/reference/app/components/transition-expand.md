@@ -30,23 +30,23 @@ Use around a `v-if` or `v-show` component to have it expand in and out of view.
 </script>
 ```
 
-## Props
+#### Props
 
 | Prop                    | Description                                        | Default | Type      |
 | ----------------------- | -------------------------------------------------- | ------- | --------- |
 | `x-axis`                | Expand on the horizontal instead vertical axis     | `false` | `Boolean` |
 | `expanded-parent-class` | Add a custom class to the element that is expanded | `''`    | `String`  |
 
-## Slots
+#### Slots
 
 | Slot      | Description                              | Data |
 | --------- | ---------------------------------------- | ---- |
 | _default_ | Elements that should be animated go here |      |
 
-## Events
+#### Events
 
 n/a
 
-## CSS Variables
+#### CSS Variables
 
 n/a

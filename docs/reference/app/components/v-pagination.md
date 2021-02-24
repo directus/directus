@@ -8,7 +8,7 @@ Add a pagination to a list or similar to allow for access to multiple pages.
 <v-pagination v-model="currentPage" :lenght="6" />
 ```
 
-## Props
+#### Props
 
 | Prop              | Description                                      | Default     | Type      |
 | ----------------- | ------------------------------------------------ | ----------- | --------- |
@@ -18,13 +18,13 @@ Add a pagination to a list or similar to allow for access to multiple pages.
 | `total-visible`   | Specify the max total visible pagination numbers | `undefined` | `Number`  |
 | `show-first-last` | Show first/last buttons                          | `false`     | `Boolean` |
 
-## Events
+#### Events
 
 | Event   | Description           | Value    |
 | ------- | --------------------- | -------- |
 | `input` | When the page changes | `number` |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                      | Default          |
 | ----------------------------- | ---------------- |

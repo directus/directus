@@ -50,7 +50,7 @@ The loading slot is rendered _on top_ of the content that was there before. Make
 exceed the size of the default state content. This restriction is put in place to prevent jumps when going from and to
 the loading state.
 
-## Props
+#### Props
 
 | Prop         | Description                                                               | Default    | Type                 |
 | ------------ | ------------------------------------------------------------------------- | ---------- | -------------------- |
@@ -71,7 +71,7 @@ the loading state.
 | `secondary`  |                                                                           | `false`    | `Boolean`            |
 | `value`      |                                                                           | `null`     | `[Number, String]`   |
 
-## Slots
+#### Slots
 
 | Slot            | Description                                  | Data |
 | --------------- | -------------------------------------------- | ---- |
@@ -80,13 +80,13 @@ the loading state.
 | `prepend-outer` | Content that's rendered before the button    |      |
 | `append-outer`  | Content that's rendered after the button     |      |
 
-## Events
+#### Events
 
 | Event   | Description           | Value        |
 | ------- | --------------------- | ------------ |
 | `click` | User clicks on button | `MouseEvent` |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                                | Default                      |
 | --------------------------------------- | ---------------------------- |

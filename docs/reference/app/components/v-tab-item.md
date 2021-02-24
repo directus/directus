@@ -25,17 +25,17 @@ If you're using a custom value in the `value` prop, make sure the corresponding 
 </v-tabs-items>
 ```
 
-## Props
+#### Props
 
 | Prop    | Description                             | Default | Type     |
 | ------- | --------------------------------------- | ------- | -------- |
 | `value` | Custom value to use for selection state | `null`  | `String` |
 
-## Events
+#### Events
 
 n/a
 
-## Slots
+#### Slots
 
 | Slot      | Description      | Data                                      |
 | --------- | ---------------- | ----------------------------------------- |

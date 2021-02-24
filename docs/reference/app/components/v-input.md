@@ -16,7 +16,7 @@ change anything you want on the input.
 
 You can add any custom (text) prefix/suffix to the value in the input using the `prefix` and `suffix` slots.
 
-## Props
+#### Props
 
 | Prop             | Description                                                    | Default  | Type               |
 | ---------------- | -------------------------------------------------------------- | -------- | ------------------ |
@@ -41,7 +41,7 @@ You can add any custom (text) prefix/suffix to the value in the input using the 
 Note: all other attached attributes are bound to the input HTMLELement in the component. This allows you to attach any
 of the standard HTML attributes like `min`, `length`, or `pattern`.
 
-## Slots
+#### Slots
 
 | Slot            | Description                                       | Data                                              |
 | --------------- | ------------------------------------------------- | ------------------------------------------------- |
@@ -51,14 +51,14 @@ of the standard HTML attributes like `min`, `length`, or `pattern`.
 | `append-outer`  | After the input                                   | `{ disabled: boolean, value: string or number; }` |
 | `input`         |                                                   |                                                   |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                      | Default                     |
 | ----------------------------- | --------------------------- |
 | `--v-input-font-family`       | `var(--family-sans-serif)`  |
 | `--v-input-placeholder-color` | `var(--foreground-subdued)` |
 
-## Events
+#### Events
 
 | Event     | Description                       | Value              |
 | --------- | --------------------------------- | ------------------ |

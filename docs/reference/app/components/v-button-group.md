@@ -24,7 +24,7 @@ more information about how to use groups, look into v-item-group.
 </script>
 ```
 
-## Props
+#### Props
 
 | Prop        | Description                                             | Default     | Type                   |
 | ----------- | ------------------------------------------------------- | ----------- | ---------------------- |
@@ -35,19 +35,19 @@ more information about how to use groups, look into v-item-group.
 | `rounded`   | Adds rounded corners to the sides                       | `false`     | `Boolean`              |
 | `tile`      | Adds sharp corners to the sides                         | `false`     | `Boolean`              |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |
 | _default_ |             | --   |
 
-## Events
+#### Events
 
 | Event   | Description                      | Value                  |
 | ------- | -------------------------------- | ---------------------- |
 | `input` | Used to update the v-model value | `(string or number)[]` |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                                   | Default              |
 | ------------------------------------------ | -------------------- |

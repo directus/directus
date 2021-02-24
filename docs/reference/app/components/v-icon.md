@@ -41,7 +41,7 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 </v-button>
 ```
 
-## Props
+#### Props
 
 | Prop       | Description                          | Default | Type      |
 | ---------- | ------------------------------------ | ------- | --------- |
@@ -52,7 +52,7 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 | `right`    | Displays the icon more to the right  | `false` | `Boolean` |
 | `disabled` | Disables the icon                    | `false` | `Boolean` |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable               | Default        |
 | ---------------------- | -------------- |
@@ -60,7 +60,7 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 | `--v-icon-color-hover` | `currentColor` |
 | `--v-icon-size`        | `24px`         |
 
-## Events
+#### Events
 
 | Event   | Description                     | Value |
 | ------- | ------------------------------- | ----- |

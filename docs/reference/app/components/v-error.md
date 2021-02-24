@@ -6,7 +6,7 @@ Display an api request error.
 <v-error :error="error" />
 ```
 
-## Props
+#### Props
 
 | Prop      | Description                             | Default | Type  |
 | --------- | --------------------------------------- | ------- | ----- |

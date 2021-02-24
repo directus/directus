@@ -106,7 +106,7 @@ export default defineComponent({
 </script>
 ```
 
-## Props
+#### Props
 
 | Prop                 | Description                                                                                    | Default              | Type          |
 | -------------------- | ---------------------------------------------------------------------------------------------- | -------------------- | ------------- |
@@ -130,7 +130,7 @@ export default defineComponent({
 | `show-select`        | Show checkboxes                                                                                | `false`              | `Boolean`     |
 | `sort`               | What column / order to sort by. Supports the `.sync` modifier. `{ by: string, desc: boolean }` | `null`               | `Sort`        |
 
-## Events
+#### Events
 
 | Event            | Description                                    | Value                            |
 | ---------------- | ---------------------------------------------- | -------------------------------- | ------------- | --- |
@@ -148,7 +148,7 @@ export default defineComponent({
 | `manual-sort`    |                                                |                                  |
 | `click:row`      |                                                |                                  |
 
-## Slots
+#### Slots
 
 | Slot                     | Description            | Data |
 | ------------------------ | ---------------------- | ---- |
@@ -157,7 +157,7 @@ export default defineComponent({
 | `item-append`            |                        |      |
 | `footer`                 |                        |      |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                      | Default                    |
 | ----------------------------- | -------------------------- |

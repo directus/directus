@@ -6,7 +6,7 @@ Render a small notice to warn of something or to give tips on how to use things.
 <v-notice>I'm a notice!</v-notice>
 ```
 
-## Props
+#### Props
 
 | Prop     | Description                                                        | Default    | Type                                                       |
 | -------- | ------------------------------------------------------------------ | ---------- | ---------------------------------------------------------- |
@@ -14,7 +14,7 @@ Render a small notice to warn of something or to give tips on how to use things.
 | `icon`   | Custom icon name, or false if you want to hide the icon completely | `null`     | `[String, Boolean]`                                        |
 | `center` | Render notice content centered                                     | `false`    | `Boolean`                                                  |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                      | Default                     |
 | ----------------------------- | --------------------------- |
@@ -22,7 +22,7 @@ Render a small notice to warn of something or to give tips on how to use things.
 | `--v-notice-background-color` | `var(--background-subdued)` |
 | `--v-notice-icon-color`       | `var(--foreground-subdued)` |
 
-## Slots
+#### Slots
 
 | Slot      | Description                          | Data |
 | --------- | ------------------------------------ | ---- |

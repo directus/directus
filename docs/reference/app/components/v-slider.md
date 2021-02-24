@@ -54,7 +54,7 @@ decrease / increase the value, or a label that shows a preview of what the value
 </v-slider>
 ```
 
-## Props
+#### Props
 
 | Prop                | Description                                         | Default | Type      |
 | ------------------- | --------------------------------------------------- | ------- | --------- |
@@ -66,14 +66,14 @@ decrease / increase the value, or a label that shows a preview of what the value
 | `value`             | Current value of slider. Can be used with `v-model` | `0`     | `Number`  |
 | `always-show-value` | Always the current selected value                   | `false` | `Boolean` |
 
-## Events
+#### Events
 
 | Event    | Description                                 | Value    |
 | -------- | ------------------------------------------- | -------- |
 | `change` | Fires only when the user releases the thumb | `number` |
 | `input`  | Fires continuously                          | `number` |
 
-## CSS Variables
+#### CSS Variables
 
 | Variable                 | Default                |
 | ------------------------ | ---------------------- |
@@ -81,7 +81,7 @@ decrease / increase the value, or a label that shows a preview of what the value
 | `--v-slider-thumb-color` | `var(--primary)`       |
 | `--v-slider-fill-color`  | `var(--primary)`       |
 
-## Slots
+#### Slots
 
 | Slot          | Description                    | Data |
 | ------------- | ------------------------------ | ---- |

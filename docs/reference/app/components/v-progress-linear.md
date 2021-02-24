@@ -1,4 +1,4 @@
-## CSS Variables
+#### CSS Variables
 
 | Variable                               | Default                    |
 | -------------------------------------- | -------------------------- |
@@ -7,13 +7,13 @@
 | `--v-progress-linear-background-color` | `var(--border-normal)`     |
 | `--v-progress-linear-transition`       | `400ms`                    |
 
-## Events
+#### Events
 
 | Event                | Description | Value |
 | -------------------- | ----------- | ----- |
 | `animationiteration` |             |       |
 
-## Props
+#### Props
 
 | Prop            | Description | Default | Type      |
 | --------------- | ----------- | ------- | --------- |
@@ -25,7 +25,7 @@
 | `top`           |             | `false` | `Boolean` |
 | `value`         |             | `0`     | `Number`  |
 
-## Slots
+#### Slots
 
 | Slot      | Description | Data |
 | --------- | ----------- | ---- |
