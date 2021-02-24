@@ -72,31 +72,31 @@ module.exports = function registerHook({ exceptions }) {
 
 ### Event Format Options
 
-| Scope                | Actions                            | Before   |
-| -------------------- | ---------------------------------- | -------- |
-| `server`             | `start` and `stop`                 | Optional |
-| `init`               |                                    | Optional |
-| `routes.init`        | `before` and `after`               | No       |
-| `routes.custom.init` | `before` and `after`               | No       |
-| `middlewares.init`   | `before` and `after`               | No       |
-| `request`            | `not_found`                        | No       |
-| `response`           |                                    | No†      |
-| `error`              |                                    | No       |
-| `auth`               | `success`†, `fail`† and `refresh`† | No       |
-| `items`              | `create`, `update` and `delete`    | Optional |
-| `activity`           | `create`, `update` and `delete`    | Optional |
-| `collections`        | `create`, `update` and `delete`    | Optional |
-| `fields`             | `create`, `update` and `delete`    | Optional |
-| `files`              | `create`, `update` and `delete`    | Optional |
-| `folders`            | `create`, `update` and `delete`    | Optional |
-| `permissions`        | `create`, `update` and `delete`    | Optional |
-| `presets`            | `create`, `update` and `delete`    | Optional |
-| `relations`          | `create`, `update` and `delete`    | Optional |
-| `revisions`          | `create`, `update` and `delete`    | Optional |
-| `roles`              | `create`, `update` and `delete`    | Optional |
-| `settings`           | `create`, `update` and `delete`    | Optional |
-| `users`              | `create`, `update` and `delete`    | Optional |
-| `webhooks`           | `create`, `update` and `delete`    | Optional |
+| Scope                | Actions                          | Before   |
+| -------------------- | -------------------------------- | -------- |
+| `server`             | `start` and `stop`               | Optional |
+| `init`               |                                  | Optional |
+| `routes.init`        | `before` and `after`             | No       |
+| `routes.custom.init` | `before` and `after`             | No       |
+| `middlewares.init`   | `before` and `after`             | No       |
+| `request`            | `not_found`                      | No       |
+| `response`           |                                  | No†      |
+| `error`              |                                  | No       |
+| `auth`               | `login`,`logout`† and `refresh`† | Optional |
+| `items`              | `create`, `update` and `delete`  | Optional |
+| `activity`           | `create`, `update` and `delete`  | Optional |
+| `collections`        | `create`, `update` and `delete`  | Optional |
+| `fields`             | `create`, `update` and `delete`  | Optional |
+| `files`              | `create`, `update` and `delete`  | Optional |
+| `folders`            | `create`, `update` and `delete`  | Optional |
+| `permissions`        | `create`, `update` and `delete`  | Optional |
+| `presets`            | `create`, `update` and `delete`  | Optional |
+| `relations`          | `create`, `update` and `delete`  | Optional |
+| `revisions`          | `create`, `update` and `delete`  | Optional |
+| `roles`              | `create`, `update` and `delete`  | Optional |
+| `settings`           | `create`, `update` and `delete`  | Optional |
+| `users`              | `create`, `update` and `delete`  | Optional |
+| `webhooks`           | `create`, `update` and `delete`  | Optional |
 
 † Feature Coming Soon
 
@@ -139,6 +139,7 @@ properties:
 - `item` — Primary key(s) of the item(s) being modified
 - `action` — Action that is performed
 - `payload` — Payload of the request
+- `status` - `success` or `fail` is only available for `auth.login` event
 
 ## 5. Restart the API
 
