@@ -19,7 +19,7 @@ export function getLocalTypeForField(
 	if (relations.length === 1) {
 		const relation = relations[0];
 		if (relation.one_collection === 'directus_files') return 'file';
-		if (relation.many_collection === collection) return 'm2o';
+		if (relation.many_collection === collection && relation.many_field === field) return 'm2o';
 		return 'o2m';
 	}
 

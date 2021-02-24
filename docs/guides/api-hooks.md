@@ -48,8 +48,8 @@ include all actions available to the scope.
 Many scopes (see chart below) support an optional `.before` suffix for running a _blocking_ hook prior to the event
 being fired. This allows you to check and/or modify the event's payload before it is processed.
 
-- `items.create` (Non Blocking)
 - `items.create.before` (Blocking)
+- `items.create` (Non Blocking, also called 'after' implicitly)
 
 This also allows you to cancel an event based on the logic within the hook. Below is an example of how you can cancel a
 create event by throwing a standard Directus exception.

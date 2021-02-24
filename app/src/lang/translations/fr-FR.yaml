@@ -151,9 +151,9 @@ to_manually_setup_translations: pour configurer manuellement les traductions.
 click_to_manage_translated_fields: >-
   Il n'y a pas encore de champ traduit. Cliquez-ici pour en créer un. | Il y a un champ traduit. Cliquez ici pour le gérer. | Il y a {count} champs traduits. Cliquez ici pour les gérer.
 fields_group: Groupe de champs
-new_data_alert: "Les éléments suivants seront créés dans votre Modèle de données :"
-new_field: "Nouveau Champ"
-new_collection: "Nouvelle Collection"
+new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
+new_field: 'Nouveau Champ'
+new_collection: 'Nouvelle Collection'
 configure_m2o: Configurez votre relation Many-to-One...
 configure_o2m: Configurez votre relation One-to-Many...
 configure_m2m: Configurez votre relation Many-to-Many...
