@@ -734,6 +734,7 @@ generate_and_save_uuid: Genereer een UUID
 save_current_user_id: Huidige gebruikers-ID opslaan
 save_current_user_role: Huidige gebruikersrol opslaan
 save_current_datetime: Huidige datum/tijd opslaan
+block: Blok
 inline: Doorlopend
 comment: Reactie
 continue: Doorgaan
@@ -797,14 +798,18 @@ template: Sjabloon
 translation: Vertaling
 value: Waarde
 view_project: Bekijk project
+weeks: { }
 report_error: Rapporteer fout
 interfaces:
   button-links:
+    button-links: Knopkoppelingen
     links: Koppelingen
     description: Configureerbare linkknoppen voor het openen van dynamische URL's
     style: Stijl
     primary: Primair
     link: Koppelingen
+    button: Knoppen
+    error: Kan actie niet uitvoeren
   checkboxes:
     checkboxes: Vinkjes
     description: Kies tussen meerdere opties via selectievakjes
@@ -849,6 +854,8 @@ interfaces:
     title_placeholder: Voer een titel in...
     inline_title: Inline titel
     inline_title_label: Toon titel binnen regel
+    margin_top: Marge boven
+    margin_top_label: Verhoog Top Marge
   dropdown:
     description: Selecteer een waarde uit een dropdown
     choices_placeholder: Voeg een nieuwe keuze toe
@@ -896,6 +903,12 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Markdown invoeren en bekijken
+    customSyntax: Aangepaste blokken
+    customSyntax_label: Voeg aangepaste syntaxistypes toe
+    customSyntax_add: Aangepaste syntax toevoegen
+    box: Blok / Inline
+    imageToken: Afbeeldingstoken
+    imageToken_label: Welke (statische) token toe te voegen aan afbeeldingsbronnen
   notice:
     notice: Melding
     description: Een korte melding weergeven
@@ -948,6 +961,8 @@ interfaces:
     trim_label: Begin en einde bijsnijden
     mask: Gemaskeerd
     mask_label: De echte waarde verbergen
+    nullable: Mag leeg zijn
+    nullable_label: Sla lege waarde op als NULL
   textarea:
     textarea: Tekstvlak
     description: Voer multiline tekst in
@@ -997,6 +1012,8 @@ displays:
     datetime: Datum/tijd
     description: Toon waarden gerelateerd aan tijd
     format: Format
+    format_note: >-
+      Het aangepaste formaat accepteert de __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Lang
     short: Kort
     relative: Relatief
