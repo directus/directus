@@ -1,6 +1,7 @@
 # Custom Interfaces <small></small>
 
-> Custom Interfaces allow you to create new ways of viewing or interacting with field data on the Item Detail page. [Learn more about Interfaces](/concepts/interfaces/).
+> Custom Interfaces allow you to create new ways of viewing or interacting with field data on the Item Detail page.
+> [Learn more about Interfaces](/concepts/interfaces/).
 
 ## 1. Setup the Boilerplate
 
@@ -33,7 +34,9 @@ export default {
 - `description` — A short description (<80 characters) of this interface shown in the App.
 - `icon` — An icon name from the material icon set, or the extended list of Directus custom icons.
 - `component` — A reference to your Vue component.
-- `types` — A CSV of supported [types](/concepts/types/).
+- `types` — An array of supported [types](/concepts/types/).
+- `groups` — An array of field-groups. Accepts `standard`, `file`, `files`, `m2o`, `o2m`, `m2a`, `translations`.
+  Defaults to `standard`.
 
 ::: tip TypeScript
 
