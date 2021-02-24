@@ -335,6 +335,327 @@ module.exports = {
 						path: '/reference/sdk-js',
 						title: 'JavaScript SDK',
 					},
+					{
+						title: 'Vue Components',
+						type: 'group',
+						children: [
+							{
+								path: 'reference/app/components/',
+								title: 'Introduction',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-avatar',
+								title: 'Avatar',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-badge',
+								title: 'Badge',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-breadcrumb',
+								title: 'Breadcrumb',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-button-group',
+								title: 'Button Group',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-button',
+								title: 'Button',
+								type: 'page',
+							},
+							{
+								title: 'Card',
+								children: [
+									{
+										path: 'reference/app/components/v-card',
+										title: 'Card',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-card-actions',
+										title: 'Card Actions',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-card-subtitle',
+										title: 'Card Subtitle',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-card-text',
+										title: 'Card Text',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-card-title',
+										title: 'Card Title',
+										type: 'page',
+									},
+								],
+							},
+							{
+								path: 'reference/app/components/v-checkbox',
+								title: 'Checkbox',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-chip',
+								title: 'Chip',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-detail',
+								title: 'Detail',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-dialog',
+								title: 'Dialog',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-divider',
+								title: 'Divider',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-drawer',
+								title: 'Drawer',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-error',
+								title: 'Error',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-fancy-select',
+								title: 'Fancy Select',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-field-select',
+								title: 'Field Select',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-field-template',
+								title: 'Field Template',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-form',
+								title: 'Form',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-hover',
+								title: 'Hover',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-icon',
+								title: 'Icon',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-info',
+								title: 'Info',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-input',
+								title: 'Input',
+								type: 'page',
+							},
+							{
+								title: 'ItemGroup',
+								children: [
+									{
+										path: 'reference/app/components/v-item-group',
+										title: 'Item Group',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-item',
+										title: 'Item',
+										type: 'page',
+									},
+								],
+							},
+							{
+								title: 'List',
+								children: [
+									{
+										path: 'reference/app/components/v-list-group',
+										title: 'List Group',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-list-item-content',
+										title: 'List Item Content',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-list-item-hint',
+										title: 'List Item Hint',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-list-item-icon',
+										title: 'List Item Icon',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-list-item',
+										title: 'List Item',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-list',
+										title: 'List',
+										type: 'page',
+									},
+								],
+							},
+							{
+								path: 'reference/app/components/v-menu',
+								title: 'Menu',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-notice',
+								title: 'Notice',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-overlay',
+								title: 'Overlay',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-pagination',
+								title: 'Pagination',
+								type: 'page',
+							},
+							{
+								title: 'Progress',
+								children: [
+									{
+										path: 'reference/app/components/v-progress-circular',
+										title: 'Progress Circular',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-progress-linear',
+										title: 'Progress Linear',
+										type: 'page',
+									},
+								],
+							},
+							{
+								path: 'reference/app/components/v-radio',
+								title: 'Radio',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-select',
+								title: 'Select',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-sheet',
+								title: 'Sheet',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-skeleton-loader',
+								title: 'Skeleton Loader',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-slider',
+								title: 'Slider',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-switch',
+								title: 'Switch',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-table',
+								title: 'Table',
+								type: 'page',
+							},
+							{
+								title: 'Tabs',
+								children: [
+									{
+										path: 'reference/app/components/v-tabs',
+										title: 'Tabs',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-tab',
+										title: 'Tab',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-tabs-items',
+										title: 'Tabs Items',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-tab-item',
+										title: 'Tab Item',
+										type: 'page',
+									},
+								],
+							},
+							{
+								path: 'reference/app/components/v-text-overflow',
+								title: 'Text Overflow',
+								type: 'page',
+							},
+							{
+								path: 'reference/app/components/v-textarea',
+								title: 'Textarea',
+								type: 'page',
+							},
+							{
+								title: 'Transitions',
+								children: [
+									{
+										path: 'reference/app/components/transition-bounce',
+										title: 'Transition Bounce',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/transition-dialog',
+										title: 'Transition Dialog',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/transition-expand',
+										title: 'Transition Expand',
+										type: 'page',
+									},
+								],
+							},
+							{
+								path: 'reference/app/components/v-upload',
+								title: 'Upload',
+								type: 'page',
+							},
+						],
+					},
 				],
 			},
 			{
@@ -470,331 +791,6 @@ module.exports = {
 						type: 'page',
 						path: '/reference/api/health',
 						title: 'Health Check',
-					},
-				],
-			},
-			{
-				title: 'APP Reference',
-				children: [
-					{
-						path: 'reference/app/app',
-						title: 'Introduction',
-						type: 'page',
-					},
-					{
-						title: 'Components',
-						children: [
-							{
-								title: 'Transitions',
-								children: [
-									{
-										path: 'reference/app/components/transition-bounce',
-										title: 'TransitionBounce',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/transition-dialog',
-										title: 'TransitionDialog',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/transition-expand',
-										title: 'TransitionExpand',
-										type: 'page',
-									},
-								],
-							},
-							{
-								path: 'reference/app/components/v-avatar',
-								title: 'VAvatar',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-badge',
-								title: 'VBadge',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-breadcrumb',
-								title: 'VBreadcrumb',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-button-group',
-								title: 'VButtonGroup',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-button',
-								title: 'VButton',
-								type: 'page',
-							},
-							{
-								title: 'Card',
-								children: [
-									{
-										path: 'reference/app/components/v-card',
-										title: 'VCard',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-card-actions',
-										title: 'VCardActions',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-card-subtitle',
-										title: 'VCardSubtitle',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-card-text',
-										title: 'VCardText',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-card-title',
-										title: 'VCardTitle',
-										type: 'page',
-									},
-								],
-							},
-							{
-								path: 'reference/app/components/v-checkbox',
-								title: 'VCheckbox',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-chip',
-								title: 'VChip',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-detail',
-								title: 'VDetail',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-dialog',
-								title: 'VDialog',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-divider',
-								title: 'VDivider',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-drawer',
-								title: 'VDrawer',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-error',
-								title: 'VError',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-fancy-select',
-								title: 'VFancySelect',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-field-select',
-								title: 'VFieldSelect',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-field-template',
-								title: 'VFieldTemplate',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-form',
-								title: 'VForm',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-hover',
-								title: 'VHover',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-icon',
-								title: 'VIcon',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-info',
-								title: 'VInfo',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-input',
-								title: 'VInput',
-								type: 'page',
-							},
-							{
-								title: 'ItemGroup',
-								children: [
-									{
-										path: 'reference/app/components/v-item-group',
-										title: 'VItemGroup',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-item',
-										title: 'VItem',
-										type: 'page',
-									},
-								],
-							},
-							{
-								title: 'List',
-								children: [
-									{
-										path: 'reference/app/components/v-list-group',
-										title: 'VListGroup',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-list-item-content',
-										title: 'VListItemContent',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-list-item-hint',
-										title: 'VListItemHint',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-list-item-icon',
-										title: 'VListItemIcon',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-list-item',
-										title: 'VListItem',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-list',
-										title: 'VList',
-										type: 'page',
-									},
-								],
-							},
-							{
-								path: 'reference/app/components/v-menu',
-								title: 'VMenu',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-notice',
-								title: 'VNotice',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-overlay',
-								title: 'VOverlay',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-pagination',
-								title: 'VPagination',
-								type: 'page',
-							},
-							{
-								title: 'Progress',
-								children: [
-									{
-										path: 'reference/app/components/v-progress-circular',
-										title: 'VProgressCircular',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-progress-linear',
-										title: 'VProgressLinear',
-										type: 'page',
-									},
-								],
-							},
-							{
-								path: 'reference/app/components/v-radio',
-								title: 'VRadio',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-select',
-								title: 'VSelect',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-sheet',
-								title: 'VSheet',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-skeleton-loader',
-								title: 'VSkeletonLoader',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-slider',
-								title: 'VSlider',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-switch',
-								title: 'VSwitch',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-table',
-								title: 'VTable',
-								type: 'page',
-							},
-							{
-								title: 'Tabs',
-								children: [
-									{
-										path: 'reference/app/components/v-tabs',
-										title: 'VTabs',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-tab',
-										title: 'VTab',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-tabs-items',
-										title: 'VTabsItems',
-										type: 'page',
-									},
-									{
-										path: 'reference/app/components/v-tab-item',
-										title: 'VTabItem',
-										type: 'page',
-									},
-								],
-							},
-							{
-								path: 'reference/app/components/v-text-overflow',
-								title: 'VTextOverflow',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-textarea',
-								title: 'VTextarea',
-								type: 'page',
-							},
-							{
-								path: 'reference/app/components/v-upload',
-								title: 'VUpload',
-								type: 'page',
-							},
-						],
 					},
 				],
 			},
