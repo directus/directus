@@ -139,6 +139,7 @@ properties:
 - `item` — Primary key(s) of the item(s) being modified
 - `action` — Action that is performed
 - `payload` — Payload of the request
+- `schema` - The current API schema in use
 
 #### Auth
 
@@ -148,6 +149,7 @@ The `auth` hooks have the following context properties:
 - `accountability` — Information about the current user
 - `action` — Action that is performed
 - `payload` — Payload of the request
+- `schema` - The current API schema in use
 - `status` - One of `pending`, `success`, `fail`
 - `user` - ID of the user that tried logging in/has logged in
 
