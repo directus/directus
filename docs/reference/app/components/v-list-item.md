@@ -1,6 +1,27 @@
+# List Item
+
+Used inside a `v-list` to display an item inside the given list.
+
 ## Reference
 
-#### CSS Variables
+#### Props
+
+| Prop       | Description                                        | Default     | Type                 |
+| ---------- | -------------------------------------------------- | ----------- | -------------------- |
+| `value`    | What value to represent when active                | `undefined` | `[String, Number]`   |
+| `large`    | If the item should be displayed larger             | `false`     | `Boolean`            |
+| `dense`    | Makes the item smaller                             | `false`     | `Boolean`            |
+| `to`       | Where the item should link to                      | `null`      | `string or Location` |
+| `href`     | Same as `to` except that it takes an external link | `null`      | `String`             |
+| `disabled` | Disables the item                                  | `false`     | `Boolean`            |
+| `active`   | If the item should be active or not                | `false`     | `Boolean`            |
+| `dashed`   | Adds a dashed style                                | `false`     | `Boolean`            |
+| `exact`    |                                                    | `false`     | `Boolean`            |
+| `download` |                                                    | `null`      | `String`             |
+
+#
+
+### CSS Variables
 
 | Variable                                | Default                                                               |
 | --------------------------------------- | --------------------------------------------------------------------- |
@@ -21,23 +42,8 @@
 | `--v-list-item-background-color-hover`  | `var(--v-list-background-color-hover, var(--background-normal-alt))`  |
 | `--v-list-item-background-color-active` | `var(--v-list-background-color-active, var(--background-normal-alt))` |
 
-#### Props
-
-| Prop       | Description | Default     | Type                 |
-| ---------- | ----------- | ----------- | -------------------- |
-| `large`    |             | `false`     | `Boolean`            |
-| `dense`    |             | `false`     | `Boolean`            |
-| `to`       |             | `null`      | `string or Location` |
-| `href`     |             | `null`      | `String`             |
-| `disabled` |             | `false`     | `Boolean`            |
-| `active`   |             | `false`     | `Boolean`            |
-| `dashed`   |             | `false`     | `Boolean`            |
-| `exact`    |             | `false`     | `Boolean`            |
-| `download` |             | `null`      | `String`             |
-| `value`    |             | `undefined` | `[String, Number]`   |
-
 #### Slots
 
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             |      |
+| Slot      | Description                 | Data |
+| --------- | --------------------------- | ---- |
+| _default_ | Where the item content goes |      |

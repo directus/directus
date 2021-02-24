@@ -4,21 +4,23 @@ A more robust dialog that is rendered at the side and provides more space than a
 relational or nested data.
 
 ```html
-<v-drawer><></v-drawer>
+<v-drawer v-model="isOpen">
+	<div>This text will show up in the drawer</div>
+</v-drawer>
 ```
 
 ## Reference
 
 #### Props
 
-| Prop            | Description | Default             | Type      |
-| --------------- | ----------- | ------------------- | --------- |
-| `subtitle`      |             | `null`              | `String`  |
-| `active`        |             | `undefined`         | `Boolean` |
-| `persistent`    |             | `false`             | `Boolean` |
-| `icon`          |             | `'box'`             | `String`  |
-| `sidebar-label` |             | `i18n.t('sidebar')` | `String`  |
-| `title`\*       |             |                     | `String`  |
+| Prop            | Description                                            | Default             | Type      |
+| --------------- | ------------------------------------------------------ | ------------------- | --------- |
+| `title`\*       | The title of the drawer                                |                     | `String`  |
+| `subtitle`      | The subtitle of the drawer                             | `null`              | `String`  |
+| `active`        | Can be used with `v-model` to open or close the drawer | `undefined`         | `Boolean` |
+| `persistent`    | Disallow closing the drawer by clicking out of it      | `false`             | `Boolean` |
+| `icon`          | An icon for the drawer                                 | `'box'`             | `String`  |
+| `sidebar-label` | A label for the sidebar                                | `i18n.t('sidebar')` | `String`  |
 
 #### Events
 
@@ -37,7 +39,7 @@ relational or nested data.
 | `actions:prepend` | Prepend actions to the drawer                          |      |
 | `actions`         | Add actions to the top right corner                    |      |
 | `header:append`   | Append your elements to the header                     |      |
-| _default_         |                                                        |      |
+| _default_         | Where the content of the drawer goes                   |      |
 
 #### CSS Variables
 

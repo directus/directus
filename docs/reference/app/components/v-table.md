@@ -1,5 +1,7 @@
 # Table
 
+Used to display data like a list of objects in a table like view.
+
 ```html
 <v-table
 	:headers="[
@@ -134,30 +136,24 @@ export default defineComponent({
 
 #### Events
 
-| Event            | Description                                    | Value                            |
-| ---------------- | ---------------------------------------------- | -------------------------------- | ------------- | --- |
-| `update:sort`    | `.sync` event for `sort` prop                  | `{ by: string, desc: boolean }`  |
-| `click:row`      |                                                |                                  |
-| `update:headers` |                                                |                                  |
-| `update:items`   |                                                |                                  |
-| `item-selected`  |                                                |                                  |
-| `select`         |                                                |                                  |
-| `manual-sort`    |                                                |                                  |
-| <!--             | `update:headers`                               | `.sync` event for `headers` prop | `HeaderRaw[]` | --> |
-| `item-selected`  | Emitted when an item is selected or deselected | `{ item: any, value: boolean }`  |
-| `select`         | Emitted when selected items change             | `any[]`                          |
-| `update:items`   |                                                |                                  |
-| `manual-sort`    |                                                |                                  |
-| `click:row`      |                                                |                                  |
+| Event            | Description                                       | Value                           |
+| ---------------- | ------------------------------------------------- | ------------------------------- |
+| `update:sort`    | `.sync` event for `sort` prop                     | `{ by: string, desc: boolean }` |
+| `click:row`      | When a row has been clicked                       |                                 |
+| `update:items`   | When changes to the items where made              |                                 |
+| `manual-sort`    | When a user manually sorts the items              |                                 |
+| `update:headers` | `.sync` event for `headers` prop or `HeaderRaw[]` |                                 |
+| `item-selected`  | Emitted when an item is selected or deselected    | `{ item: any, value: boolean }` |
+| `select`         | Emitted when selected items change                | `any[]`                         |
 
 #### Slots
 
-| Slot                     | Description            | Data |
-| ------------------------ | ---------------------- | ---- |
-| `header.${header.value}` | A slot for each header |      |
-| `item.${header.value}`   |                        |      |
-| `item-append`            |                        |      |
-| `footer`                 |                        |      |
+| Slot                     | Description                  | Data |
+| ------------------------ | ---------------------------- | ---- |
+| `header.${header.value}` | A slot for each header       |      |
+| `item.${header.value}`   | A slot for each item         |      |
+| `item-append`            | Adds to the end of each item |      |
+| `footer`                 | Could be used for pagination |      |
 
 #### CSS Variables
 

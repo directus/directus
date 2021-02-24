@@ -1,4 +1,20 @@
+# Progress Circular
+
+Displays a circular progress bar as the name suggests. Can be used to show that something is loading or how much
+something is done.
+
+```html
+<v-progress-circular indeterminate />
+```
+
 ## Reference
+
+#### Props
+
+| Prop            | Description                                             | Default | Type      |
+| --------------- | ------------------------------------------------------- | ------- | --------- |
+| `indeterminate` | If set to true displays no value but spins indefinitely | `false` | `Boolean` |
+| `value`         | Which value to represent going from 0 to 100            | `0`     | `Number`  |
 
 #### CSS Variables
 
@@ -16,13 +32,6 @@
 | Event                | Description | Value |
 | -------------------- | ----------- | ----- |
 | `animationiteration` |             |       |
-
-#### Props
-
-| Prop            | Description | Default | Type      |
-| --------------- | ----------- | ------- | --------- |
-| `indeterminate` |             | `false` | `Boolean` |
-| `value`         |             | `0`     | `Number`  |
 
 #### Slots
 

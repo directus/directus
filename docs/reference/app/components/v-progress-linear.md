@@ -1,4 +1,24 @@
+# Progress Linear
+
+Displays a linear progress bar. Can be used to show that something is loading or how much something is done.
+
+```html
+<v-progress-linear indeterminate />
+```
+
 ## Reference
+
+#### Props
+
+| Prop            | Description                            | Default | Type      |
+| --------------- | -------------------------------------- | ------- | --------- |
+| `value`         | Which value to represent from 0 to 100 | `0`     | `Number`  |
+| `absolute`      | Sets position to absolute              | `false` | `Boolean` |
+| `fixed`         | Sets position to fixed                 | `false` | `Boolean` |
+| `indeterminate` | Play a general loading animation       | `false` | `Boolean` |
+| `rounded`       | Rounds up the corners of the progress  | `false` | `Boolean` |
+| `top`           | Positions the bar at the top           | `false` | `Boolean` |
+| `bottom`        | Positions the bar at the bottom        | `false` | `Boolean` |
 
 #### CSS Variables
 
@@ -14,18 +34,6 @@
 | Event                | Description | Value |
 | -------------------- | ----------- | ----- |
 | `animationiteration` |             |       |
-
-#### Props
-
-| Prop            | Description | Default | Type      |
-| --------------- | ----------- | ------- | --------- |
-| `absolute`      |             | `false` | `Boolean` |
-| `bottom`        |             | `false` | `Boolean` |
-| `fixed`         |             | `false` | `Boolean` |
-| `indeterminate` |             | `false` | `Boolean` |
-| `rounded`       |             | `false` | `Boolean` |
-| `top`           |             | `false` | `Boolean` |
-| `value`         |             | `0`     | `Number`  |
 
 #### Slots
 

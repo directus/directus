@@ -1,3 +1,7 @@
+# List Item Content
+
+Add properly formatted content to the `v-list-item`.
+
 ## Reference
 
 #### CSS Variables
@@ -9,6 +13,6 @@
 
 #### Slots
 
-| Slot      | Description | Data |
-| --------- | ----------- | ---- |
-| _default_ |             |      |
+| Slot      | Description            | Data |
+| --------- | ---------------------- | ---- |
+| _default_ | Where the content goes |      |

@@ -3,7 +3,7 @@
 Divides content. Made to be used in `v-list` or `v-tabs` components.
 
 ```html
-<v-divider />
+<v-divider>New Section</v-divider>
 ```
 
 ## Reference

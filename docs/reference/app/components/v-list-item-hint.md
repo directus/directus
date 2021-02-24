@@ -1,3 +1,7 @@
+# List Item Hint
+
+Adds a hint to the `v-list-item` component.
+
 ## Reference
 
 #### Props
