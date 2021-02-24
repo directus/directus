@@ -2,14 +2,14 @@
 
 Individual tab. To be used inside a `v-tabs` context.
 
-## Usage
-
 ```html
 <v-tabs>
 	<v-tab>Schema</v-tab>
 	<v-tab>Options</v-tab>
 </v-tabs>
 ```
+
+## Reference
 
 #### Props
 

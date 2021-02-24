@@ -47,6 +47,8 @@ called `close`.
 <v-chip close @close="close">I'm closeable!</v-chip>
 ```
 
+## Reference
+
 #### Props
 
 | Prop         | Description                                          | Default   | Type      |

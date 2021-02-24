@@ -30,6 +30,8 @@ Use around a `v-if` or `v-show` component to have it expand in and out of view.
 </script>
 ```
 
+## Reference
+
 #### Props
 
 | Prop                    | Description                                        | Default | Type      |

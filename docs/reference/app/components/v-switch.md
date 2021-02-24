@@ -46,6 +46,8 @@ Just as with regular checkboxes, you can use `v-model` with both an array and a 
 
 Keep in mind to pass the `value` prop with a unique value when using arrays in `v-model`.
 
+## Reference
+
 #### Props
 
 | Prop          | Description                                            | Default | Type               |

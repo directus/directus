@@ -34,6 +34,8 @@ To be able to display a page depending on the tab use tab items.
 </v-tabs-items>
 ```
 
+## Reference
+
 #### Props
 
 | Prop       | Description                           | Default     | Type                   |

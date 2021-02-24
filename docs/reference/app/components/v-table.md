@@ -106,6 +106,8 @@ export default defineComponent({
 </script>
 ```
 
+## Reference
+
 #### Props
 
 | Prop                 | Description                                                                                    | Default              | Type          |

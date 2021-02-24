@@ -8,6 +8,8 @@ Renders a stylized informational placard. It's similar in `v-notice` in it's use
 <v-info icon="person" title="User Not Found" type="warning">We couldn't find the user you're looking for.</v-info>
 ```
 
+## Reference
+
 #### Props
 
 | Prop      | Description                                   | Default  | Type                                           |

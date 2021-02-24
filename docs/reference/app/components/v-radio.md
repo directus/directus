@@ -2,13 +2,13 @@
 
 Classic radio buttons. Nothing special.
 
-## Usage
-
 ```html
 <v-radio v-model="selected" value="red" />
 <v-radio v-model="selected" value="blue" />
 <v-radio v-model="selected" value="green" />
 ```
+
+## Reference
 
 #### Props
 

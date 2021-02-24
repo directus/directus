@@ -2,11 +2,11 @@
 
 Divides content. Made to be used in `v-list` or `v-tabs` components.
 
-## Usage
-
 ```html
 <v-divider />
 ```
+
+## Reference
 
 #### Props
 

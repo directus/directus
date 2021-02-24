@@ -42,6 +42,8 @@ representation.
 | `divider`     | If set to true, display an divider instead | `undefined or boolean`                   |
 | `iconRight`   | Display an optional icon to the right      | `undefined or string`                    |
 
+## Reference
+
 #### Props
 
 | Prop       | Description                             | Default | Type                |

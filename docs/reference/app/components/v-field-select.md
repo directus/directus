@@ -6,6 +6,8 @@ Allows for easy selection of field inside a collection. Also works with relation
 <v-field-select collection="articles" v-model="selection" />
 ```
 
+## Reference
+
 #### Props
 
 | Prop           | Description                                                | Default           | Type                          |

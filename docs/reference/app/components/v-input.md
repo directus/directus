@@ -16,6 +16,8 @@ change anything you want on the input.
 
 You can add any custom (text) prefix/suffix to the value in the input using the `prefix` and `suffix` slots.
 
+## Reference
+
 #### Props
 
 | Prop             | Description                                                    | Default  | Type               |

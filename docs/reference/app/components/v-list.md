@@ -20,6 +20,8 @@ Display usual lists. Also works with nested data.
 </v-list>
 ```
 
+## Reference
+
 #### Props
 
 | Prop           | Description                                                 | Default    | Type                   |

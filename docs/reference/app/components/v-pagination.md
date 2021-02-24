@@ -8,6 +8,8 @@ Add a pagination to a list or similar to allow for access to multiple pages.
 <v-pagination v-model="currentPage" :lenght="6" />
 ```
 
+## Reference
+
 #### Props
 
 | Prop              | Description                                      | Default     | Type      |

@@ -17,6 +17,8 @@ You can set the color, background color and boder color with the `--v-badge-colo
 </v-badge>
 ```
 
+## Reference
+
 #### Props
 
 | Prop       | Description                                                                  | Default | Type               |

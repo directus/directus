@@ -85,6 +85,8 @@ If you can't, you should listen to the `update:indeterminate` event and respond 
 <v-checkbox indeterminate @update:indeterminate="setIndeterminate"></v-checkbox>
 ```
 
+## Reference
+
 #### Props
 
 | Prop                 | Description                                                              | Default                     | Type               |

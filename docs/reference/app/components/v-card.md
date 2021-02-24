@@ -33,6 +33,8 @@ Cards can be used to consistently style dialogs:
 </v-dialog>
 ```
 
+## Reference
+
 #### Props
 
 | Prop       | Description                                       | Default | Type      |

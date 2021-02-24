@@ -13,6 +13,8 @@ An item for the items prop has these 4 options: | Prop | Description |
 name which will be displayed | | `icon` | Displays an icon with the given name in front of the name | | `disabled` | If
 the router link should be clickable |
 
+## Reference
+
 #### Props
 
 | Prop    | Description                                              | Default    | Type           |

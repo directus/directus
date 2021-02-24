@@ -54,6 +54,8 @@ decrease / increase the value, or a label that shows a preview of what the value
 </v-slider>
 ```
 
+## Reference
+
 #### Props
 
 | Prop                | Description                                         | Default | Type      |

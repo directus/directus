@@ -25,6 +25,8 @@ The color can be changed via the css variable called `--v-sheet-color`.
 </style>
 ```
 
+## Reference
+
 #### CSS Variables
 
 | Variable                     | Default                     |

@@ -6,6 +6,8 @@ Render a small notice to warn of something or to give tips on how to use things.
 <v-notice>I'm a notice!</v-notice>
 ```
 
+## Reference
+
 #### Props
 
 | Prop     | Description                                                        | Default    | Type                                                       |

@@ -24,6 +24,8 @@ more information about how to use groups, look into v-item-group.
 </script>
 ```
 
+## Reference
+
 #### Props
 
 | Prop        | Description                                             | Default     | Type                   |

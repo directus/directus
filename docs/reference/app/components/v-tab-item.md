@@ -2,8 +2,6 @@
 
 Individual tab content. To be used in a `v-tabs-items` context.
 
-## Usage
-
 ```html
 <v-tabs-items>
 	<v-tab-item>This is the content for the first tab.</v-tab-item>
@@ -24,6 +22,8 @@ If you're using a custom value in the `value` prop, make sure the corresponding 
 	<v-tab-item>Settings content</v-tab-item>
 </v-tabs-items>
 ```
+
+## Reference
 
 #### Props
 

@@ -50,6 +50,8 @@ The loading slot is rendered _on top_ of the content that was there before. Make
 exceed the size of the default state content. This restriction is put in place to prevent jumps when going from and to
 the loading state.
 
+## Reference
+
 #### Props
 
 | Prop         | Description                                                               | Default    | Type                 |

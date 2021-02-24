@@ -28,6 +28,8 @@ Likewise, you can set how long it will take before the hover state is set with t
 </style>
 ```
 
+## Reference
+
 #### Props
 
 | Prop          | Description                                  | Default | Type      |

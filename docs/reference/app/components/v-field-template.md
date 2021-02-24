@@ -9,6 +9,8 @@ Models a template string like `My name is {name} and I'm {age} years old`.
 <v-field-template collection="articles" />
 ```
 
+## Reference
+
 #### Props
 
 | Prop           | Description                                                | Default | Type      |

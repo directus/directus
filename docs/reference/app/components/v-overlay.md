@@ -24,6 +24,8 @@ The colors can be changed via the css variable `--v-overlay-color`.
 </style>
 ```
 
+## Reference
+
 #### Props
 
 | Prop       | Description               | Default | Type      |

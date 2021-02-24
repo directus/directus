@@ -30,6 +30,8 @@ Bounces items in or out depending if the get added or removed from the view.
 </script>
 ```
 
+## Reference
+
 #### Slots
 
 | Slot      | Description                                  | Data |

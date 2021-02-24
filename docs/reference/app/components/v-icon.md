@@ -41,6 +41,8 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 </v-button>
 ```
 
+## Reference
+
 #### Props
 
 | Prop       | Description                          | Default | Type      |

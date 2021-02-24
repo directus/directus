@@ -12,6 +12,8 @@ Renders a form using interfaces based on the passed collection name.
 />
 ```
 
+## Reference
+
 #### Props
 
 | Prop                | Description                                                                                                             | Default     | Type                |

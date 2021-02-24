@@ -12,6 +12,8 @@ The HTML `<textarea>` element supports a huge amount of attributes and events. I
 props that aren't specially handled (see list below) will be passed on to the `<textarea>` element directly. This allows
 you to change anything you want on the input.
 
+## Reference
+
 #### Props
 
 | Prop              | Description                                                                    | Default | Type      |

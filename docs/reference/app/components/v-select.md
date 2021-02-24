@@ -2,8 +2,6 @@
 
 Renders a dropdown input.
 
-## Usage
-
 ```html
 <v-select
 	v-model="value"
@@ -19,6 +17,8 @@ Renders a dropdown input.
 	]"
 />
 ```
+
+## Reference
 
 #### Props
 

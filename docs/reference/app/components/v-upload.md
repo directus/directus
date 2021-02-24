@@ -6,6 +6,8 @@ Allows you to easily make files uploadable using this component.
 <v-upload @input="onUpload"></v-upload>
 ```
 
+## Reference
+
 #### Props
 
 | Prop           | Description                                 | Default     | Type      |

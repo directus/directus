@@ -6,6 +6,8 @@ Render a placeholder while the proper content is still loading.
 <v-skeleton-loader v-if="loading" />
 ```
 
+## Reference
+
 #### Props
 
 | Prop   | Description                         | Default   | Type     |

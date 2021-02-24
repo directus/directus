@@ -2,13 +2,13 @@
 
 Use the detail component to hide not so important information or elements.
 
-## Usage
-
 ```html
 <v-detail label="There is content hidden in me">
 	<div>I'm hidden until you open the component</div>
 </v-detail>
 ```
+
+## Reference
 
 #### Props
 

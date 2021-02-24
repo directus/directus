@@ -2,8 +2,6 @@
 
 Renders an overlay with a flex slot rendering whatever content you pass.
 
-## Usage
-
 ```html
 <v-dialog>
 	<v-sheet>
@@ -13,6 +11,8 @@ Renders an overlay with a flex slot rendering whatever content you pass.
 	</v-sheet>
 </v-dialog>
 ```
+
+## Reference
 
 #### Props
 
