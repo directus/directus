@@ -1,25 +1,25 @@
 # App Reference
 
-This documents every component in the app!
+The purpose of the app reference is to allow more and easier access to our internal components when developing custom
+interfaces, displays or modules.
 
-# Components
+## App Structure
 
-Components are custom elements that can reused in various other places.
+The Vue frontend app is structured into many departments to combine similar purpose components.
 
-## Storybook / Tests
-
-Every component should have an entry in Storybook, and should have unit tests where appropriate.
-
-## Naming
-
-Components must always have a `-` in the name. This makes sure we don't run into any conflicts with HTML element names.
-
-## Base Components
-
-The core-most base-components are prefixed with `v-` (for example `v-icon` and `v-button`). These components can not
-rely on any global store.
-
-## Private Components
-
-Every now and again, it makes sense to split up a bigger component in smaller sub-parts for code maintainability and
-organization reasons. These "internal private components" are prefixed with a `_` and should never be used standalone.
+| Folder        | Content                                                                                               | Example                                                                                     |
+| ------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `components`  | In here are our base components that are designed to be as general and everywhere fitting as possible | It contains `v-button`                                                                      |
+| `composables` | Composables are reusable pieces of logic that can be used inside Vue component                        | `use-shortcut` to easily react to button combinations pressed                               |
+| `directives`  | Directives are functions that are available on Vue components in templates                            | contains `v-focus` or `v-tooltip`                                                           |
+| `displays`    | Displays are functions / components that are used in the system to display data                       | `display-image` is used to display image data inside the app                                |
+| `interfaces`  | Interfaces are the individual blocks that allow editing and viewing individual pieces of data         | `interface-color` is a color picker allowing for easy selection of any color                |
+| `lang`        | Containing all translations used across the directus app                                              | Contains translations like `en-US`                                                          |
+| `layouts`     | Layouts change the way items are represented inside the collection view                               | The card and tabular layout are inside here                                                 |
+| `modules`     | Modules organize in which major parts the app is structured                                           | Here are the files or settings module which are always visible from the sidebar             |
+| `routes`      | Basic routes the app needs that shouldn't be customized                                               | Routes for authentication or password reset                                                 |
+| `stores`      | Here lay all stores used in the app containing all relevant data that gets fetched from the api       | The `fields` store containing all accessible fields for the user                            |
+| `styles`      | All general styles, css-vars, mixins and themes are stored inside here                                | The `form-grid` mixin allowing to style form like grids                                     |
+| `types`       | Contains types used to generalize data for typescript                                                 | `field-schema` which is used to model the schema of fields                                  |
+| `utils`       | Utility functions that helps minimize repetition                                                      | `notify` which is used to easily generate notifications inside the app                      |
+| `views`       | Views are the top-level parent component that are used in all modules                                 | `private-view` which renders the basic structure like sidebar, headers and content sections |
