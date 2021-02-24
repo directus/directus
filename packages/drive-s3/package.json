@@ -34,9 +34,7 @@
 		"@directus/drive": "file:../drive"
 	},
 	"devDependencies": {
-		"@directus/drive": "file:../drive",
-		"@types/fs-extra": "^9.0.1",
-		"fs-extra": "^9.0.0"
+		"@directus/drive": "file:../drive"
 	},
 	"publishConfig": {
 		"access": "public"

@@ -49,6 +49,7 @@
 				</v-card-title>
 				<v-card-text>
 					<v-input type="text" :placeholder="$t('otp')" v-model="otp" :nullable="false" />
+					<v-error v-if="error" :error="error" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button class="disable" :loading="loading" @click="disableTFA" :disabled="otp.length !== 6">

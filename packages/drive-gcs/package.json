@@ -33,8 +33,7 @@
 		"@directus/drive": "file:../drive"
 	},
 	"devDependencies": {
-		"@directus/drive": "file:../drive",
-		"@lukeed/uuid": "^1.0.1"
+		"@directus/drive": "file:../drive"
 	},
 	"publishConfig": {
 		"access": "public"
