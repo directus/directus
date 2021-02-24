@@ -7,10 +7,10 @@
 	>
 		<template #activator="{ toggle }">
 			<span @click.stop="toggle" class="toggle" :class="{ subdued: value.length === 0 }">
-				<span class="label" v-if="singularUnit === null || pluralUnit === null">
+				<span class="label" v-if="units === null">
 					{{ $tc('item_count', value.length) }}
 				</span>
-				<span v-else class="label">{{ value.length }} {{ value.length !== 1 ? pluralUnit : singularUnit }}</span>
+				<span v-else class="label">{{ value.length }} {{ value.length !== 1 ? units[1] : units[0] }}</span>
 			</span>
 		</template>
 
@@ -33,6 +33,8 @@ import { defineComponent, computed, PropType, Ref } from '@vue/composition-api';
 import getRelatedCollection from '@/utils/get-related-collection';
 import useCollection from '@/composables/use-collection';
 import ValueNull from '@/views/private/components/value-null';
+import { useCollectionsStore, useRelationsStore, useUserStore } from '@/stores/';
+import { Relation } from '@/types';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -53,22 +55,43 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		singularUnit: {
-			type: String,
-			default: null,
-		},
-		pluralUnit: {
-			type: String,
-			default: null,
-		},
 		type: {
 			type: String,
 			required: true,
 		},
 	},
 	setup(props) {
+		const relationsStore = useRelationsStore();
+		const collectionsStore = useCollectionsStore();
+		const userStore = useUserStore();
+
 		const relatedCollection = computed(() => {
 			return getRelatedCollection(props.collection, props.field);
+		});
+
+		const translations = computed(() => {
+			let translationsCollection;
+
+			const relations = relationsStore.getRelationsForField(props.collection, props.field) as Relation[];
+			if (props.type === 'm2o') {
+				translationsCollection = relations[0].one_collection;
+			} else if (props.type === 'o2m') {
+				translationsCollection = relations[0].many_collection;
+			} else if (props.type === 'm2m') {
+				const junctionRelations = relationsStore.getRelationsForField(
+					relations[0].many_collection,
+					relations[0].junction_field
+				) as Relation[];
+				translationsCollection = junctionRelations[0].one_collection;
+			}
+
+			if (translationsCollection === undefined) return undefined;
+
+			return collectionsStore.getCollection(translationsCollection)?.meta?.translations;
+		});
+
+		const currentLanguage = computed(() => {
+			return userStore.state.currentUser?.language;
 		});
 
 		const primaryKeyField = computed(() => {
@@ -81,7 +104,15 @@ export default defineComponent({
 			return props.template || `{{ ${primaryKeyField.value!.field} }}`;
 		});
 
-		return { relatedCollection, primaryKeyField, getLinkForItem, _template };
+		const units = computed(() => {
+			if (!translations.value || !currentLanguage.value) return null;
+			const translation = translations.value.find((translation) => translation.language === currentLanguage.value);
+			if (translation === undefined) return null;
+
+			return [translation.singular, translation.plural];
+		});
+
+		return { relatedCollection, primaryKeyField, getLinkForItem, _template, units };
 
 		function getLinkForItem(item: any) {
 			if (!relatedCollection.value || !primaryKeyField.value) return null;
