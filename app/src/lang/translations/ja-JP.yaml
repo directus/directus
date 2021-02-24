@@ -30,7 +30,7 @@ fields_and_layout: 項目とレイアウト
 language: 言語
 schema_setup_title: この項目をどのように保存するか設定しましょう。
 schema_field_title: この項目のエディタでの表示を設定できます。
-create_field: 入力欄作成
+create_field: 新規項目の追加
 hidden_on_detail: 詳細に表示しない
 disabled_editing_value: 項目の編集を無効にする
 boolean: 真偽値
@@ -39,6 +39,7 @@ text: テキスト
 uuid: UUID
 hash: ハッシュ値
 auto_generate: 自動生成
+to_manually_setup_translations: 独自の翻訳を設定することができます
 add_note: ユーザーに有益な注釈を追加...
 default_value: 初期値
 interface_setup_title: 項目の入力に使用する方法を選択してください。
@@ -52,6 +53,8 @@ enter_a_value: 値を入力...
 length: 長さ
 readonly: 読取り専用
 unique: 単一
+updated_on: 更新日時
+updated_by: 最後に更新したユーザー
 primary_key: プライマリーキー
 raw_value: 値を加工しない
 clear_value: 値の削除
@@ -72,6 +75,9 @@ this_collection: このコレクション
 related_collection: 関連するコレクション
 related_collections: 関連するコレクション
 format: 書式
+last_access: 最後にアクセスした日時
+a_unique_table_name: 重複しない名前をつけてください
+a_unique_column_name: 重複しない名前をつけてください
 submit: 送信
 move_to_folder: フォルダに移動
 move: 移動
@@ -111,12 +117,13 @@ name: 名前
 primary_key_field: プライマリーキー
 type: タイプ
 creating_new_collection: 新しいコレクションの作成
-created_by: 作成者
+created_by: 作成したユーザー
 created_on: 作成日時
 creating_collection_info: コレクション名（半角英数字を推奨）と投稿を識別するプライマリーキーを設定しましょう。
 creating_collection_system: オプションフィールドの有効化および名称の変更ができます。
 auto_increment_integer: 整数を自動生成
 generated_uuid: UUIDを生成
+manual_string: 値を手動で入力する
 save_and_stay: 保存してページに留まる
 save_as_copy: 複製として保存
 comments: コメント
@@ -137,7 +144,10 @@ field_width: 入力欄幅
 add_a_new_item: 項目の追加
 user_directory: ユーザーディレクトリ
 modified_on: 修正日時
+sort_field: フィールドの並べ替え
+sort: 並べ替え
 status: ステータス
+toggle_manual_sorting: 手動ソートを有効にする
 bookmarks: ブックマーク
 back: 戻る
 all_users: すべてのユーザー
@@ -145,7 +155,7 @@ one_item: '1 つのアイテム'
 icon_left: 左側に表示するアイコン
 icon_right: 右側に表示するアイコン
 color: 色
-advanced_filter: 高度なフィルター
+advanced_filter: 高度なフィルタ
 operators:
   lt: より少ない
   gt: より大きい
@@ -160,6 +170,7 @@ upload_files_success: '{count} 個のファイルがアップロードされま�
 layout_options: レイアウト設定
 collection_setup: コレクションの作成
 optional_system_fields: システムフィールドのオプション
+value_unique: 他と重複しない値である必要があります
 all_files: すべてのファイル
 my_files: マイファイル
 recent_files: 最近使用したファイル
@@ -204,6 +215,7 @@ fields:
     note: 備考
     hidden: 非表示
     singleton: シングルトン
+    sort_field: フィールドの並べ替え
   directus_files:
     title: タイトル
     description: 説明
@@ -212,7 +224,7 @@ fields:
     filesize: ファイルサイズ
     modified_on: 修正日時
     created_on: 作成日時
-    created_by: 作成者
+    created_by: 作成したユーザー
     embed: 埋め込む
     folder: フォルダ
     width: 幅
@@ -222,6 +234,7 @@ fields:
     last_name: 姓
     email: メールアドレス
     password: パスワード
+    avatar: プロフィール画像
     location: 場所
     title: タイトル
     description: 説明
@@ -229,6 +242,7 @@ fields:
     language: 言語
     theme: テーマ
     status: ステータス
+    last_access: 最後にアクセスした日時
   directus_settings:
     project_name: プロジェクト名
   directus_fields:
@@ -342,6 +356,7 @@ displays:
     choices_value_placeholder: 値を入力...
   user:
     user: ユーザー
+    avatar: プロフィール画像
     name: 名前
     both: 両方
 layouts:
