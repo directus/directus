@@ -758,23 +758,23 @@ module.exports = {
 								title: 'Tabs',
 								children: [
 									{
-										path: 'reference/app/components/v-tabs-items',
-										title: 'VTabsItems',
-										type: 'page',
-									},
-									{
 										path: 'reference/app/components/v-tabs',
 										title: 'VTabs',
 										type: 'page',
 									},
 									{
-										path: 'reference/app/components/v-tab-item',
-										title: 'VTabItem',
+										path: 'reference/app/components/v-tab',
+										title: 'VTab',
 										type: 'page',
 									},
 									{
-										path: 'reference/app/components/v-tab',
-										title: 'VTab',
+										path: 'reference/app/components/v-tabs-items',
+										title: 'VTabsItems',
+										type: 'page',
+									},
+									{
+										path: 'reference/app/components/v-tab-item',
+										title: 'VTabItem',
 										type: 'page',
 									},
 								],
