@@ -82,7 +82,17 @@ export class GraphQLService {
 	};
 
 	async getSchema() {
-		const collectionsInSystem = await this.collectionsService.readByQuery();
+		let collectionsInSystem: Collection[] = [];
+
+		// Collections service will throw an error if you don't have access to any collection.
+		// We still want GraphQL / GraphiQL to function though, even if you don't have access to `items`
+		// (you could still have access to auth/server/etc)
+		try {
+			collectionsInSystem = await this.collectionsService.readByQuery();
+		} catch {
+			collectionsInSystem = [];
+		}
+
 		const fieldsInSystem = await this.fieldsService.readAll();
 		const relationsInSystem = (await this.relationsService.readByQuery({})) as Relation[];
 

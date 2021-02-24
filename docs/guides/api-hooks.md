@@ -72,31 +72,31 @@ module.exports = function registerHook({ exceptions }) {
 
 ### Event Format Options
 
-| Scope                | Actions                            | Before   |
-| -------------------- | ---------------------------------- | -------- |
-| `server`             | `start` and `stop`                 | Optional |
-| `init`               |                                    | Optional |
-| `routes.init`        | `before` and `after`               | No       |
-| `routes.custom.init` | `before` and `after`               | No       |
-| `middlewares.init`   | `before` and `after`               | No       |
-| `request`            | `not_found`                        | No       |
-| `response`           |                                    | No†      |
-| `error`              |                                    | No       |
-| `auth`               | `success`†, `fail`† and `refresh`† | No       |
-| `items`              | `create`, `update` and `delete`    | Optional |
-| `activity`           | `create`, `update` and `delete`    | Optional |
-| `collections`        | `create`, `update` and `delete`    | Optional |
-| `fields`             | `create`, `update` and `delete`    | Optional |
-| `files`              | `create`, `update` and `delete`    | Optional |
-| `folders`            | `create`, `update` and `delete`    | Optional |
-| `permissions`        | `create`, `update` and `delete`    | Optional |
-| `presets`            | `create`, `update` and `delete`    | Optional |
-| `relations`          | `create`, `update` and `delete`    | Optional |
-| `revisions`          | `create`, `update` and `delete`    | Optional |
-| `roles`              | `create`, `update` and `delete`    | Optional |
-| `settings`           | `create`, `update` and `delete`    | Optional |
-| `users`              | `create`, `update` and `delete`    | Optional |
-| `webhooks`           | `create`, `update` and `delete`    | Optional |
+| Scope                | Actions                           | Before   |
+| -------------------- | --------------------------------- | -------- |
+| `server`             | `start` and `stop`                | Optional |
+| `init`               |                                   | Optional |
+| `routes.init`        | `before` and `after`              | No       |
+| `routes.custom.init` | `before` and `after`              | No       |
+| `middlewares.init`   | `before` and `after`              | No       |
+| `request`            | `not_found`                       | No       |
+| `response`           |                                   | No†      |
+| `error`              |                                   | No       |
+| `auth`               | `login`, `logout`† and `refresh`† | Optional |
+| `items`              | `create`, `update` and `delete`   | Optional |
+| `activity`           | `create`, `update` and `delete`   | Optional |
+| `collections`        | `create`, `update` and `delete`   | Optional |
+| `fields`             | `create`, `update` and `delete`   | Optional |
+| `files`              | `create`, `update` and `delete`   | Optional |
+| `folders`            | `create`, `update` and `delete`   | Optional |
+| `permissions`        | `create`, `update` and `delete`   | Optional |
+| `presets`            | `create`, `update` and `delete`   | Optional |
+| `relations`          | `create`, `update` and `delete`   | Optional |
+| `revisions`          | `create`, `update` and `delete`   | Optional |
+| `roles`              | `create`, `update` and `delete`   | Optional |
+| `settings`           | `create`, `update` and `delete`   | Optional |
+| `users`              | `create`, `update` and `delete`   | Optional |
+| `webhooks`           | `create`, `update` and `delete`   | Optional |
 
 † Feature Coming Soon
 
@@ -123,14 +123,14 @@ and the value is the handler function itself.
 
 The `registerHook` function receives a context parameter with the following properties:
 
-- `services` — All API interal services
+- `services` — All API internal services
 - `exceptions` — API exception objects that can be used for throwing "proper" errors
 - `database` — Knex instance that is connected to the current database
 - `env` — Parsed environment variables
 
 ### Event Handler Function
 
-The event handler function (eg: `'items.create': function()`) recieves a context parameter with the following
+The event handler function (eg: `'items.create': function()`) receives a context parameter with the following
 properties:
 
 - `event` — Full event string
@@ -139,6 +139,19 @@ properties:
 - `item` — Primary key(s) of the item(s) being modified
 - `action` — Action that is performed
 - `payload` — Payload of the request
+- `schema` - The current API schema in use
+
+#### Auth
+
+The `auth` hooks have the following context properties:
+
+- `event` — Full event string
+- `accountability` — Information about the current user
+- `action` — Action that is performed
+- `payload` — Payload of the request
+- `schema` - The current API schema in use
+- `status` - One of `pending`, `success`, `fail`
+- `user` - ID of the user that tried logging in/has logged in
 
 ## 5. Restart the API
 

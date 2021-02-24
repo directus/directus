@@ -1,4 +1,4 @@
-import { Router, Response } from 'express';
+import { Router } from 'express';
 import { graphqlHTTP } from 'express-graphql';
 import { GraphQLService } from '../services';
 import { respond } from '../middleware/respond';
@@ -27,6 +27,15 @@ router.use(
 
 		customResponse.json = customResponse.end = function (payload: Record<string, any>) {
 			res.locals.payload = payload;
+
+			if (customResponse.getHeader('content-type')) {
+				res.setHeader('Content-Type', customResponse.getHeader('content-type')!);
+			}
+
+			if (customResponse.getHeader('content-length')) {
+				res.setHeader('content-length', customResponse.getHeader('content-length')!);
+			}
+
 			return next();
 		} as any;
 

@@ -153,7 +153,7 @@ export class CollectionsService {
 		return Array.isArray(collection) ? collections : collections[0];
 	}
 
-	/** @todo, read by query without query support is a bit ironic, isnt it */
+	/** @todo, read by query without query support is a bit ironic, isn't it */
 	async readByQuery(): Promise<Collection[]> {
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
