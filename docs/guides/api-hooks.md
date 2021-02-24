@@ -130,7 +130,7 @@ The `registerHook` function receives a context parameter with the following prop
 
 ### Event Handler Function
 
-The event handler function (eg: `'items.create': function()`) recieves a context parameter with the following
+The event handler function (eg: `'items.create': function()`) receives a context parameter with the following
 properties:
 
 - `event` — Full event string
@@ -139,7 +139,17 @@ properties:
 - `item` — Primary key(s) of the item(s) being modified
 - `action` — Action that is performed
 - `payload` — Payload of the request
-- `status` - `success` or `fail` is only available for `auth.login` event
+
+#### Auth
+
+The `auth` hooks have the following context properties:
+
+- `event` — Full event string
+- `accountability` — Information about the current user
+- `action` — Action that is performed
+- `payload` — Payload of the request
+- `status` - One of `pending`, `success`, `fail`
+- `user` - ID of the user that tried logging in/has logged in
 
 ## 5. Restart the API
 
