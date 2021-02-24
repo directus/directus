@@ -37,9 +37,5 @@
 		"README.md",
 		"index.js"
 	],
-	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
-	"devDependencies": {
-		"npm-watch": "^0.7.0",
-		"swagger-cli": "^4.0.4"
-	}
+	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec"
 }
