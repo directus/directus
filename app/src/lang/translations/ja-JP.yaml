@@ -141,9 +141,11 @@ status: ステータス
 bookmarks: ブックマーク
 back: 戻る
 all_users: すべてのユーザー
+one_item: '1 つのアイテム'
 icon_left: 左側に表示するアイコン
 icon_right: 右側に表示するアイコン
 color: 色
+advanced_filter: 高度なフィルター
 operators:
   lt: より少ない
   gt: より大きい
@@ -155,6 +157,7 @@ operators:
 loading: 読み込み中...
 upload_files_indeterminate: '{done}/{total} ファイルをアップロードしています'
 upload_files_success: '{count} 個のファイルがアップロードされました'
+layout_options: レイアウト設定
 collection_setup: コレクションの作成
 optional_system_fields: システムフィールドのオプション
 all_files: すべてのファイル
@@ -180,6 +183,7 @@ settings_data_model: データモデル
 settings_permissions: 役割・権限
 settings_project: プロジェクト設定
 settings_webhooks: Webhook
+layout: レイアウト
 unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
 keep_editing: 編集を続ける
