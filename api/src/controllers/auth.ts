@@ -40,20 +40,14 @@ router.post(
 		const { error } = loginSchema.validate(req.body);
 		if (error) throw new InvalidPayloadException(error.message);
 
-		const { email, password, otp } = req.body;
+		const reqPayload = req.body;
 
 		const mode = req.body.mode || 'json';
 
-		const ip = req.ip;
-		const userAgent = req.get('user-agent');
+		reqPayload.ip = req.ip;
+		reqPayload.userAgent = req.get('user-agent');
 
-		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
-			ip,
-			userAgent,
-			email,
-			password,
-			otp,
-		});
+		const { accessToken, refreshToken, expires } = await authenticationService.authenticate(reqPayload);
 
 		const payload = {
 			data: { access_token: accessToken, expires },
