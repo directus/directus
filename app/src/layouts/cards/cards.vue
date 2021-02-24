@@ -378,7 +378,7 @@ export default defineComponent({
 
 			const sort = computed({
 				get() {
-					return _layoutQuery.value?.sort || fieldsInCollection.value[0].field;
+					return _layoutQuery.value?.sort || primaryKeyField.value.field;
 				},
 				set(newSort: string) {
 					_layoutQuery.value = {
