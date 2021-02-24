@@ -10,6 +10,7 @@ import { ActivityService } from '../services/activity';
 import env from '../env';
 import { authenticator } from 'otplib';
 import emitter, { emitAsyncSafe } from '../emitter';
+import { omit } from 'lodash';
 
 type AuthenticateOptions = {
 	email: string;
@@ -17,6 +18,7 @@ type AuthenticateOptions = {
 	ip?: string | null;
 	userAgent?: string | null;
 	otp?: string;
+	[key: string]: any;
 };
 
 export class AuthenticationService {
@@ -38,12 +40,10 @@ export class AuthenticationService {
 	 * Password is optional to allow usage of this function within the SSO flow and extensions. Make sure
 	 * to handle password existence checks elsewhere
 	 */
-	async authenticate({ email, password, ip, userAgent, otp }: AuthenticateOptions) {
-		const hookPayload = {
-			email,
-			ip,
-			userAgent,
-		};
+	async authenticate(options: AuthenticateOptions) {
+		const { email, password, ip, userAgent, otp } = options;
+
+		const hookPayload = omit(options, 'password', 'otp');
 
 		const user = await database
 			.select('id', 'password', 'role', 'tfa_secret', 'status')
