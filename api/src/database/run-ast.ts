@@ -157,12 +157,7 @@ function getDBQuery(
 
 	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
 
-	applyQuery(table, dbQuery, queryCopy, schema);
-
-	// Nested filters use joins to filter on the parent level, to prevent duplicate
-	// parents, we group the query by the current tables primary key (which is unique)
-	// ref #3798
-	dbQuery.groupBy(`${table}.${primaryKeyField}`);
+	applyQuery(knex, table, dbQuery, queryCopy, schema);
 
 	return dbQuery;
 }

@@ -7,6 +7,7 @@ import getLocalType from './get-local-type';
 import validate from 'uuid-validate';
 
 export default function applyQuery(
+	knex: Knex,
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
@@ -38,7 +39,7 @@ export default function applyQuery(
 	}
 
 	if (query.filter) {
-		applyFilter(schema, dbQuery, query.filter, collection);
+		applyFilter(knex, schema, dbQuery, query.filter, collection);
 	}
 
 	if (query.search) {
@@ -47,6 +48,7 @@ export default function applyQuery(
 }
 
 export function applyFilter(
+	knex: Knex,
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
@@ -87,37 +89,25 @@ export function applyFilter(
 			followRelation(path);
 
 			function followRelation(pathParts: string[], parentCollection: string = collection, parentAlias?: string) {
-				const relation = relations.find((relation) => {
-					return (
-						(relation.many_collection === parentCollection && relation.many_field === pathParts[0]) ||
-						(relation.one_collection === parentCollection && relation.one_field === pathParts[0])
-					);
+				// Only follow M2O relations when adding joins. O2M relations are resolved with a subquery.
+				const m2oRelation = relations.find((relation) => {
+					return relation.many_collection === parentCollection && relation.many_field === pathParts[0];
 				});
 
-				if (!relation) return;
-
-				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
+				if (!m2oRelation) return;
 
 				const alias = nanoid(8);
 				aliasMap[pathParts.join('+')] = alias;
 
-				if (isM2O) {
-					dbQuery.leftJoin(
-						{ [alias]: relation.one_collection! },
-						`${parentAlias || parentCollection}.${relation.many_field}`,
-						`${alias}.${relation.one_primary}`
-					);
-				} else {
-					dbQuery.leftJoin(
-						{ [alias]: relation.many_collection },
-						`${parentAlias || parentCollection}.${relation.one_primary}`,
-						`${alias}.${relation.many_field}`
-					);
-				}
+				dbQuery.leftJoin(
+					{ [alias]: m2oRelation.one_collection! },
+					`${parentAlias || parentCollection}.${m2oRelation.many_field}`,
+					`${alias}.${m2oRelation.one_primary}`
+				);
 
 				pathParts.shift();
 
-				const parent = isM2O ? relation.one_collection! : relation.many_collection;
+				const parent = m2oRelation.one_collection!;
 
 				if (pathParts.length) {
 					followRelation(pathParts, parent, alias);
@@ -153,8 +143,24 @@ export function applyFilter(
 			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
 			if (filterPath.length > 1) {
-				const columnName = getWhereColumn(filterPath, collection);
-				applyFilterToQuery(columnName, filterOperator, filterValue, logical);
+				// Determine if we're filtering on a o2m relation. In that case, a subquery
+				// needs to be constructed instead of just applying the filter to the query
+				const o2mRelation = relations.find((relation) => {
+					return relation.one_collection === collection && relation.one_field === filterPath[0];
+				});
+				if (o2mRelation) {
+					// Generate subquery
+					const subQuery = knex.select([o2mRelation.many_field]).from(o2mRelation.many_collection);
+					const query: Query = {
+						filter: value,
+					};
+					applyQuery(knex, o2mRelation.many_collection, subQuery, query, schema);
+					const pkField = `${collection}.${o2mRelation.one_primary || 'id'}`;
+					dbQuery[logical].whereIn(pkField, subQuery);
+				} else {
+					const columnName = getWhereColumn(filterPath, collection);
+					applyFilterToQuery(columnName, filterOperator, filterValue, logical);
+				}
 			} else {
 				applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
 			}
