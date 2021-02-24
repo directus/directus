@@ -7,14 +7,6 @@
 			<p class="type-label">{{ $t('display_template') }}</p>
 			<v-field-template :collection="relatedCollection" v-model="template" :depth="2" />
 		</div>
-		<div class="field half">
-			<p class="type-label">{{ $t('singular_unit') }}</p>
-			<v-input v-model="singularUnit" :placeholder="$t('singular_unit_placeholder')"></v-input>
-		</div>
-		<div class="field half">
-			<p class="type-label">{{ $t('plural_units') }}</p>
-			<v-input v-model="pluralUnit" :placeholder="$t('plural_units_placeholder')"></v-input>
-		</div>
 	</div>
 </template>
 
@@ -58,30 +50,6 @@ export default defineComponent({
 			},
 		});
 
-		const singularUnit = computed({
-			get() {
-				return props.value?.singularUnit;
-			},
-			set(newUnit: string) {
-				emit('input', {
-					...(props.value || {}),
-					singularUnit: newUnit,
-				});
-			},
-		});
-
-		const pluralUnit = computed({
-			get() {
-				return props.value?.pluralUnit;
-			},
-			set(newUnit: string) {
-				emit('input', {
-					...(props.value || {}),
-					pluralUnit: newUnit,
-				});
-			},
-		});
-
 		const relatedCollection = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
@@ -101,7 +69,7 @@ export default defineComponent({
 			}
 		});
 
-		return { template, relatedCollection, singularUnit, pluralUnit };
+		return { template, relatedCollection };
 	},
 });
 </script>

@@ -70,6 +70,22 @@ fields:
             width: half
             options:
               placeholder: Enter a translation...
+        - field: singular
+          name: Singular
+          type: string
+          meta:
+            interface: text-input
+            width: half
+            options:
+              placeholder: Enter a singular unit...
+        - field: plural
+          name: Plural
+          type: string
+          meta:
+            interface: text-input
+            width: half
+            options:
+              placeholder: Enter a plural unit...
     width: full
 
   - field: archive_divider
