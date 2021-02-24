@@ -179,6 +179,7 @@ m2o_relationship: Many to One Relationship
 o2m_relationship: One to Many Relationship
 m2m_relationship: Many to Many Relationship
 m2a_relationship: Many to Any Relationship
+m2a_collection_not_existing: The collection of this item is not part of the relation anymore!
 next: Next
 field_name: Field Name
 translations: Translations
