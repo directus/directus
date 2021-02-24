@@ -4,12 +4,11 @@ import argon2 from 'argon2';
 import { nanoid } from 'nanoid';
 import ms from 'ms';
 import { InvalidCredentialsException, InvalidPayloadException, InvalidOTPException } from '../exceptions';
-import { Session, Accountability, AbstractServiceOptions, Action, Item as AnyItem } from '../types';
+import { Session, Accountability, AbstractServiceOptions, Action, SchemaOverview } from '../types';
 import Knex from 'knex';
 import { ActivityService } from '../services/activity';
 import env from '../env';
 import { authenticator } from 'otplib';
-import { clone } from 'lodash';
 import emitter, { emitAsyncSafe } from '../emitter';
 
 type AuthenticateOptions = {
@@ -24,11 +23,13 @@ export class AuthenticationService {
 	knex: Knex;
 	accountability: Accountability | null;
 	activityService: ActivityService;
+	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || database;
 		this.accountability = options.accountability || null;
 		this.activityService = new ActivityService({ knex: this.knex, schema: options.schema });
+		this.schema = options.schema;
 	}
 
 	/**
@@ -37,20 +38,12 @@ export class AuthenticationService {
 	 * Password is optional to allow usage of this function within the SSO flow and extensions. Make sure
 	 * to handle password existence checks elsewhere
 	 */
-	async authenticate(data: Partial<AnyItem>) {
-		let requestPayload: Partial<AnyItem> | Partial<AnyItem>[] = clone(data);
-
-		const { email, password, otp, userAgent, ip } = requestPayload;
-
-		await emitter.emitAsync('auth.login.before', requestPayload, {
-			event: 'auth.login.before',
-			accountability: this.accountability,
-			collection: 'directus_users',
-			item: null,
-			action: 'login',
-			payload: requestPayload,
-			schema: null,
-		});
+	async authenticate({ email, password, ip, userAgent, otp }: AuthenticateOptions) {
+		const hookPayload = {
+			email,
+			ip,
+			userAgent,
+		};
 
 		const user = await database
 			.select('id', 'password', 'role', 'tfa_secret', 'status')
@@ -58,25 +51,47 @@ export class AuthenticationService {
 			.where({ email })
 			.first();
 
+		await emitter.emitAsync('auth.login.before', hookPayload, {
+			event: 'auth.login.before',
+			action: 'login',
+			schema: this.schema,
+			payload: hookPayload,
+			accountability: this.accountability,
+			status: 'pending',
+			user: user?.id,
+		});
+
+		const emitStatus = (status: 'fail' | 'success') => {
+			emitAsyncSafe('auth.login', hookPayload, {
+				event: 'auth.login',
+				action: 'login',
+				schema: this.schema,
+				payload: hookPayload,
+				accountability: this.accountability,
+				status,
+				user: user?.id,
+			});
+		};
+
 		if (!user || user.status !== 'active') {
-			this.emitAsync(requestPayload, 'fail');
+			emitStatus('fail');
 			throw new InvalidCredentialsException();
 		}
 
 		if (password !== undefined) {
 			if (!user.password) {
-				this.emitAsync(requestPayload, 'fail');
+				emitStatus('fail');
 				throw new InvalidCredentialsException();
 			}
 
 			if ((await argon2.verify(user.password, password)) === false) {
-				this.emitAsync(requestPayload, 'fail');
+				emitStatus('fail');
 				throw new InvalidCredentialsException();
 			}
 		}
 
 		if (user.tfa_secret && !otp) {
-			this.emitAsync(requestPayload, 'fail');
+			emitStatus('fail');
 			throw new InvalidOTPException(`"otp" is required`);
 		}
 
@@ -84,7 +99,7 @@ export class AuthenticationService {
 			const otpValid = await this.verifyOTP(user.id, otp);
 
 			if (otpValid === false) {
-				this.emitAsync(requestPayload, 'fail');
+				emitStatus('fail');
 				throw new InvalidOTPException(`"otp" is invalid`);
 			}
 		}
@@ -123,7 +138,9 @@ export class AuthenticationService {
 				item: user.id,
 			});
 		}
-		this.emitAsync(requestPayload, 'success');
+
+		emitStatus('success');
+
 		return {
 			accessToken,
 			refreshToken,
@@ -209,17 +226,5 @@ export class AuthenticationService {
 		}
 
 		return true;
-	}
-	private emitAsync(payload: Partial<AnyItem>, status: string) {
-		emitAsyncSafe('auth.login', payload, {
-			event: 'auth.login',
-			accountability: this.accountability,
-			collection: 'directus_users',
-			item: null,
-			action: 'login',
-			payload,
-			schema: null,
-			status,
-		});
 	}
 }
