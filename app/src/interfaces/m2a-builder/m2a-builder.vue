@@ -559,7 +559,7 @@ export default defineComponent({
 				};
 
 				if (previewValues && props.sortField) {
-					let maxSort = 0;
+					let maxSort = -1;
 					previewValues.forEach(
 						(pVal) => (maxSort = pVal[props.sortField] > maxSort ? pVal[props.sortField] : maxSort)
 					);
