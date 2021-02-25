@@ -200,6 +200,10 @@ body.dark .tox .tox-toolbar__overflow {
 	background-color: var(--background-page);
 }
 
+.tox .tox-dialog__body {
+	color: var(--foreground-normal);
+}
+
 .tox .tox-dialog__body-content {
 	padding: 24px 24px;
 }
