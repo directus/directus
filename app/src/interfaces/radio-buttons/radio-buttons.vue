@@ -32,12 +32,7 @@
 			}"
 		>
 			<v-icon :disabled="disabled" :name="customIcon" @click="$emit('input', otherValue)" />
-			<input
-				v-model="otherValue"
-				:placeholder="$t('other')"
-				:disabled="disabled"
-				@focus="$emit('input', otherValue)"
-			/>
+			<input v-model="otherValue" :placeholder="$t('other')" :disabled="disabled" @focus="$emit('input', otherValue)" />
 		</div>
 	</div>
 </template>
@@ -122,25 +117,32 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .radio-buttons {
+	--columns: 1;
+
 	display: grid;
 	grid-gap: 12px 32px;
-}
-
-.grid-1 {
-	grid-template-columns: repeat(1, 1fr);
+	grid-template-columns: repeat(var(--columns), 1fr);
 }
 
 .grid-2 {
-	grid-template-columns: repeat(2, 1fr);
+	@include breakpoint(small) {
+		--columns: 2;
+	}
 }
 
 .grid-3 {
-	grid-template-columns: repeat(3, 1fr);
+	@include breakpoint(small) {
+		--columns: 3;
+	}
 }
 
 .grid-4 {
-	grid-template-columns: repeat(4, 1fr);
+	@include breakpoint(small) {
+		--columns: 4;
+	}
 }
 
 .custom {

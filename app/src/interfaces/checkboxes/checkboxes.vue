@@ -22,13 +22,12 @@
 			:input-value="value || []"
 			@change="$emit('input', $event)"
 		/>
-		<v-detail 
+		<v-detail
 			v-if="hideChoices && showAll === false"
 			:class="gridClass"
-			:label="$t(`interfaces.checkboxes.show_more`, {count: hiddenCount})"
+			:label="$t(`interfaces.checkboxes.show_more`, { count: hiddenCount })"
 			@toggle="showAll = true"
-		>
-		</v-detail>
+		></v-detail>
 
 		<template v-if="allowOther">
 			<v-checkbox
@@ -107,23 +106,23 @@ export default defineComponent({
 		},
 		itemsShown: {
 			type: Number,
-			default: 8
-		}		
+			default: 8,
+		},
 	},
 	setup(props, { emit }) {
 		const { choices, value } = toRefs(props);
 		const showAll = ref(false);
 
-		const hideChoices = computed(() => props.choices.length > props.itemsShown)
+		const hideChoices = computed(() => props.choices.length > props.itemsShown);
 
 		const choicesDisplayed = computed(() => {
-			if(showAll.value || hideChoices.value === false) {
-				return props.choices
+			if (showAll.value || hideChoices.value === false) {
+				return props.choices;
 			}
-			return props.choices.slice(0, props.itemsShown)
-		})
+			return props.choices.slice(0, props.itemsShown);
+		});
 
-		const hiddenCount = computed(() => props.choices.length - props.itemsShown)
+		const hiddenCount = computed(() => props.choices.length - props.itemsShown);
 
 		const gridClass = computed(() => {
 			if (choices.value === null) return null;
@@ -146,34 +145,46 @@ export default defineComponent({
 
 		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, emit);
 
-		return { gridClass, otherValues, addOtherValue, setOtherValue, choicesDisplayed, hideChoices, showAll, hiddenCount };
+		return {
+			gridClass,
+			otherValues,
+			addOtherValue,
+			setOtherValue,
+			choicesDisplayed,
+			hideChoices,
+			showAll,
+			hiddenCount,
+		};
 	},
 });
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .checkboxes {
+	--columns: 1;
+
 	display: grid;
 	grid-gap: 12px 32px;
+	grid-template-columns: repeat(var(--columns), 1fr);
+}
 
-	&.grid-1 {
-		grid-template-columns: repeat(1, 1fr);
+.grid-2 {
+	@include breakpoint(small) {
+		--columns: 2;
 	}
+}
 
-	&.grid-2 {
-		grid-template-columns: repeat(2, 1fr);
+.grid-3 {
+	@include breakpoint(small) {
+		--columns: 3;
 	}
+}
 
-	&.grid-3 {
-		grid-template-columns: repeat(3, 1fr);
-	}
-
-	&.grid-4 {
-		grid-template-columns: repeat(4, 1fr);
-	}
-
-	.v-button {
-		--v-button-width: 100%;
+.grid-4 {
+	@include breakpoint(small) {
+		--columns: 4;
 	}
 }
 
@@ -196,7 +207,6 @@ export default defineComponent({
 	&.grid-4 {
 		grid-column: span 4;
 	}
-	
 }
 
 .add-new {

@@ -1,9 +1,19 @@
 {
-	"extends": ["stylelint-config-standard", "stylelint-config-prettier"],
+	"extends": [
+		"stylelint-config-standard",
+		"stylelint-config-rational-order",
+		"stylelint-config-prettier"
+	],
 	"plugins": ["stylelint-order", "stylelint-scss"],
 	"rules": {
 		"indentation": "tab",
-		"order/order": ["dollar-variables", "custom-properties", "declarations", "at-variables", "rules"],
+		"order/order": [
+			"dollar-variables",
+			"custom-properties",
+			"declarations",
+			"at-variables",
+			"rules"
+		],
 		"at-rule-no-unknown": null,
 		"scss/at-rule-no-unknown": true,
 		"selector-pseudo-element-no-unknown": [
