@@ -12,8 +12,8 @@
 			:disabled="disabled"
 			@update:items="sortItems($event)"
 			@click:row="editItem"
-			:show-manual-sort="sortField !== null"
-			:manual-sort-key="sortField"
+			:show-manual-sort="relationInfo.sortField !== null"
+			:manual-sort-key="relationInfo.sortField"
 		>
 			<template #item.$thumbnail="{ item }">
 				<render-display
@@ -104,10 +104,6 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		sortField: {
-			type: String,
-			default: null,
-		},
 		value: {
 			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
 			default: null,
@@ -118,23 +114,19 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { collection, field, value, primaryKey, sortField } = toRefs(props);
+		const { collection, field, value } = toRefs(props);
 
-		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
+		const { junction, junctionCollection, relation, relationInfo } = useRelation(collection, field);
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
 		}
 
-		const {
-			deleteItem,
-			getUpdatedItems,
-			getNewItems,
-			getPrimaryKeys,
-			getNewSelectedItems,
-			getJunctionItem,
-			getJunctionFromRelatedId,
-		} = useActions(value, relationInfo, emitter);
+		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
+			value,
+			relationInfo,
+			emitter
+		);
 
 		const fields = computed(() => {
 			const { junctionField } = relationInfo.value;
@@ -162,7 +154,6 @@ export default defineComponent({
 		const { loading, error, items } = usePreview(
 			value,
 			fields,
-			sortField,
 			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,
@@ -184,7 +175,7 @@ export default defineComponent({
 
 		const { showUpload, onUpload } = useUpload();
 
-		const { sort, sortItems, sortedItems } = useSort(sortField, fields, items, emitter);
+		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
 		return {
 			junction,
@@ -212,7 +203,7 @@ export default defineComponent({
 			sort,
 			sortItems,
 			sortedItems,
-			downloadItem
+			downloadItem,
 		};
 
 		function downloadItem(item: any) {
@@ -255,6 +246,7 @@ export default defineComponent({
 }
 .download {
 	--v-icon-color: var(--foreground-subdued);
+
 	margin-right: 8px;
 }
 

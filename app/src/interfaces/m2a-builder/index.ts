@@ -1,6 +1,5 @@
 import { defineInterface } from '../define';
 import InterfaceManyToAny from './m2a-builder.vue';
-import Options from './options.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'm2a-builder',
@@ -10,5 +9,5 @@ export default defineInterface(({ i18n }) => ({
 	relational: true,
 	types: ['alias'],
 	groups: ['m2a'],
-	options: Options,
+	options: [],
 }));
