@@ -1,6 +1,6 @@
 # Tabs Items
 
-Tabs Items mirror a tab and display information for a selected tab. If a tab item is not selected, it automaticly gets
+Tabs Items mirror a tab and display information for a selected tab. If a tab item is not selected, it automatically gets
 hidden.
 
 ```html
