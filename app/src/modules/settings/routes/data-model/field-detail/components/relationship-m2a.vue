@@ -196,8 +196,8 @@
 			<v-divider large :inline-title="false">{{ $t('sort_field') }}</v-divider>
 
 			<v-input
-				:class="{ matches: junctionFieldExists(relations[1].sort_field) }"
-				v-model="relations[1].sort_field"
+				:class="{ matches: junctionFieldExists(relations[0].sort_field) }"
+				v-model="relations[0].sort_field"
 				:nullable="false"
 				:placeholder="$t('add_sort_field') + '...'"
 				db-safe
@@ -212,9 +212,9 @@
 							<v-list-item
 								v-for="item in junctionFields"
 								:key="item.value"
-								:active="relations[1].sort_field === item.value"
+								:active="relations[0].sort_field === item.value"
 								:disabled="item.disabled"
-								@click="relations[1].sort_field = item.value"
+								@click="relations[0].sort_field = item.value"
 							>
 								<v-list-item-content>
 									{{ item.text }}

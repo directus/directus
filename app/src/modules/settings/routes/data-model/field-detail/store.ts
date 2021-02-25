@@ -893,7 +893,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				() => state.relations[0].many_field,
 				() => state.relations[1].many_field,
 				() => state.relations[1].one_collection_field,
-				() => state.relations[1].sort_field,
+				() => state.relations[0].sort_field,
 			],
 			syncNewCollectionsM2A
 		);
