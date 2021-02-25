@@ -155,6 +155,7 @@ export default defineComponent({
 				file_picker_types: 'image media',
 				file_picker_callback: setImageUploadHandler,
 				urlconverter_callback: urlConverter,
+				link_default_protocol: 'https',
 				...(props.tinymceOverrides || {}),
 			};
 		});
