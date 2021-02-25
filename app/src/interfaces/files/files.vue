@@ -26,6 +26,7 @@
 			</template>
 
 			<template #item-append="{ item }" v-show="!disabled">
+				<v-icon name="save_alt" v-tooltip="$t('download')" class="download" @click.stop="downloadItem(item)" />
 				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
 			</template>
 		</v-table>
@@ -78,6 +79,8 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { get } from 'lodash';
 import i18n from '@/lang';
+import { getRootPath } from '@/utils/get-root-path';
+import { addTokenToURL } from '@/api';
 
 import useActions from '@/interfaces/many-to-many/use-actions';
 import useRelation from '@/interfaces/many-to-many/use-relation';
@@ -209,7 +212,13 @@ export default defineComponent({
 			sort,
 			sortItems,
 			sortedItems,
+			downloadItem
 		};
+
+		function downloadItem(item: any) {
+			const filePath = addTokenToURL(getRootPath() + `assets/${item.directus_files_id.id}?download`);
+			window.open(filePath, '_blank');
+		}
 
 		function useUpload() {
 			const showUpload = ref(false);
@@ -244,12 +253,12 @@ export default defineComponent({
 .existing {
 	margin-left: 12px;
 }
+.download {
+	--v-icon-color: var(--foreground-subdued)
+}
 
 .deselect {
 	--v-icon-color: var(--foreground-subdued);
-
-	&:hover {
-		--v-icon-color: var(--danger);
-	}
+	--v-icon-color-hover: var(--danger);
 }
 </style>
