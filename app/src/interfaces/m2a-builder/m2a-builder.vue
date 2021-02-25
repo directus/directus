@@ -17,28 +17,30 @@
 				class="m2a-row"
 				v-for="item of previewValues"
 				:key="item.$index"
-				:class="{ 'non-existing': nonExistingCollections.includes(item.collection) }"
-				@click="
-					nonExistingCollections.includes(item.collection) === false
-						? editExisting((value || [])[item.$index])
-						: undefined
-				"
+				:class="{ 'non-existing': doesItemExist(item) === false }"
+				@click="doesItemExist(item) ? editExisting((value || [])[item.$index]) : undefined"
 			>
 				<v-icon class="non-existing-icon" name="warning" left v-tooltip="$t('m2a_collection_not_existing')" />
 				<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
-				<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
-				<span
-					v-if="typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'"
-				>
-					{{ item[anyRelation.many_field] }}
-				</span>
-				<render-template
-					v-else
-					:collection="item[anyRelation.one_collection_field]"
-					:template="templates[item[anyRelation.one_collection_field]]"
-					:item="item[anyRelation.many_field]"
-				/>
-				<div class="spacer" />
+				<template v-if="nonExistingItems.includes(item.id) === false">
+					<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
+					<span
+						v-if="typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'"
+					>
+						{{ item[anyRelation.many_field] }}
+					</span>
+					<render-template
+						v-else
+						:collection="item[anyRelation.one_collection_field]"
+						:template="templates[item[anyRelation.one_collection_field]]"
+						:item="item[anyRelation.many_field]"
+					/>
+					<div class="spacer" />
+				</template>
+				<template v-else>
+					<span>{{ $t('m2a_item_not_existing') }}</span>
+					<div class="spacer" />
+				</template>
 				<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
 				<v-icon class="launch-icon" name="launch" />
 			</div>
@@ -160,6 +162,8 @@ export default defineComponent({
 			junctionRowMap,
 			relatedItemValues,
 			nonExistingCollections,
+			nonExistingItems,
+			doesItemExist,
 		} = useValues();
 		const { collections, existingCollections, templates, primaryKeys } = useCollections();
 		const { selectingFrom, stageSelection, deselect } = useSelection();
@@ -198,6 +202,8 @@ export default defineComponent({
 			hideDragImage,
 			onSort,
 			nonExistingCollections,
+			nonExistingItems,
+			doesItemExist,
 		};
 
 		function useRelations() {
@@ -280,6 +286,7 @@ export default defineComponent({
 			const loading = ref(false);
 			const relatedItemValues = ref<Record<string, any[]>>({});
 			const nonExistingCollections = ref<string[]>([]);
+			const nonExistingItems = ref<number[]>([]);
 
 			// Holds "expanded" junction rows so we can lookup what "raw" junction row ID in props.value goes with
 			// what related item for pre-saved-unchanged-items
@@ -308,12 +315,17 @@ export default defineComponent({
 								$index: index,
 							};
 						} else {
+							if (savedValues === undefined) {
+								return null;
+							}
+
 							return {
 								...savedValues,
 								$index: index,
 							};
 						}
 					})
+					.filter((val) => val)
 					.map((val) => {
 						// Find and nest the related item values for use in the preview
 						const collection = val[anyRelation.value.one_collection_field!];
@@ -336,6 +348,7 @@ export default defineComponent({
 							} else {
 								val[anyRelation.value.many_field] = cloneDeep(item);
 							}
+						} else {
 						}
 
 						return val;
@@ -355,7 +368,23 @@ export default defineComponent({
 				}
 			});
 
-			return { fetchValues, previewValues, loading, junctionRowMap, relatedItemValues, nonExistingCollections };
+			return {
+				fetchValues,
+				previewValues,
+				loading,
+				junctionRowMap,
+				relatedItemValues,
+				nonExistingCollections,
+				nonExistingItems,
+				doesItemExist,
+			};
+
+			function doesItemExist(item: any) {
+				return (
+					nonExistingCollections.value.includes(item.collection) === false &&
+					nonExistingItems.value.includes(item.id) === false
+				);
+			}
 
 			async function fetchValues() {
 				if (props.value === null) return;
@@ -431,12 +460,21 @@ export default defineComponent({
 						for (const junctionRow of junctionInfoResponse.data.data) {
 							const relatedCollection = junctionRow[anyRelation.value.one_collection_field!];
 
-							if (relatedCollection in itemsToFetchPerCollection === false) {
-								itemsToFetchPerCollection[relatedCollection] = [];
-								nonExistingCollections.value.push(relatedCollection);
+							// When the collection exists in the setup
+							if (relatedCollection in itemsToFetchPerCollection) {
+								itemsToFetchPerCollection[relatedCollection].push(junctionRow[anyRelation.value.many_field]);
+								continue;
 							}
 
-							itemsToFetchPerCollection[relatedCollection].push(junctionRow[anyRelation.value.many_field]);
+							// When the collection exists but is not in setup
+							if (collectionsStore.getCollection(relatedCollection)) {
+								itemsToFetchPerCollection[relatedCollection] = [];
+								nonExistingCollections.value.push(relatedCollection);
+								continue;
+							}
+
+							// When the collection doesn't exist at all anymore
+							nonExistingItems.value.push(junctionRow.id);
 						}
 
 						junctionRowMap.value = junctionInfoResponse.data.data;
