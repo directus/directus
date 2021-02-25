@@ -20,9 +20,8 @@
 				:class="{ 'non-existing': doesItemExist(item) === false }"
 				@click="doesItemExist(item) ? editExisting((value || [])[item.$index]) : undefined"
 			>
-				<v-icon class="non-existing-icon" name="warning" left v-tooltip="$t('m2a_collection_not_existing')" />
 				<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
-				<template v-if="nonExistingItems.includes(item.id) === false">
+				<template v-if="doesItemExist(item)">
 					<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
 					<span
 						v-if="typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'"
@@ -38,7 +37,8 @@
 					<div class="spacer" />
 				</template>
 				<template v-else>
-					<span>{{ $t('m2a_item_not_existing') }}</span>
+					<v-icon class="non-existing-icon" name="warning" left v-tooltip="$t('m2a_builder.collection_invalid')" />
+					<span>{{ $t('m2a_builder.item_invalid') }}</span>
 					<div class="spacer" />
 				</template>
 				<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
@@ -57,7 +57,7 @@
 				<v-list>
 					<v-list-item
 						@click="createNew(collection.collection)"
-						v-for="collection of existingCollections"
+						v-for="collection of collections"
 						:key="collection.collection"
 					>
 						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
@@ -76,7 +76,7 @@
 				<v-list>
 					<v-list-item
 						@click="selectingFrom = collection.collection"
-						v-for="collection of existingCollections"
+						v-for="collection of collections"
 						:key="collection.collection"
 					>
 						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
@@ -161,11 +161,10 @@ export default defineComponent({
 			loading: previewLoading,
 			junctionRowMap,
 			relatedItemValues,
-			nonExistingCollections,
 			nonExistingItems,
 			doesItemExist,
 		} = useValues();
-		const { collections, existingCollections, templates, primaryKeys } = useCollections();
+		const { collections, templates, primaryKeys } = useCollections();
 		const { selectingFrom, stageSelection, deselect } = useSelection();
 		const {
 			currentlyEditing,
@@ -186,7 +185,6 @@ export default defineComponent({
 			selectingFrom,
 			stageSelection,
 			templates,
-			existingCollections,
 			o2mRelation,
 			anyRelation,
 			currentlyEditing,
@@ -201,7 +199,6 @@ export default defineComponent({
 			relatedItemValues,
 			hideDragImage,
 			onSort,
-			nonExistingCollections,
 			nonExistingItems,
 			doesItemExist,
 		};
@@ -220,24 +217,10 @@ export default defineComponent({
 		function useCollections() {
 			const allowedCollections = computed(() => anyRelation.value.one_allowed_collections!);
 
-			const existingCollections = computed<Record<string, Collection>>(() => {
+			const collections = computed<Record<string, Collection>>(() => {
 				const collections: Record<string, Collection> = {};
 
 				const collectionInfo = allowedCollections.value
-					.map((collection: string) => collectionsStore.getCollection(collection))
-					.filter((c) => c) as Collection[];
-
-				for (const collection of collectionInfo) {
-					collections[collection.collection] = collection;
-				}
-
-				return collections;
-			});
-
-			const collections = computed<Record<string, Collection>>(() => {
-				const collections: Record<string, Collection> = { ...existingCollections.value };
-
-				const collectionInfo = nonExistingCollections.value
 					.map((collection: string) => collectionsStore.getCollection(collection))
 					.filter((c) => c) as Collection[];
 
@@ -255,10 +238,6 @@ export default defineComponent({
 					keys[collection.collection] = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection).field!;
 				}
 
-				for (const nonExistingCollection of nonExistingCollections.value) {
-					keys[nonExistingCollection] = fieldsStore.getPrimaryKeyFieldForCollection(nonExistingCollection).field!;
-				}
-
 				return keys;
 			});
 
@@ -270,22 +249,15 @@ export default defineComponent({
 					templates[collection.collection] = collection.meta?.display_template || `{{${primaryKeyField.field}}}`;
 				}
 
-				for (const nonExistingCollection of nonExistingCollections.value) {
-					const collection = collectionsStore.getCollection(nonExistingCollection);
-					const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(nonExistingCollection);
-					templates[nonExistingCollection] = collection?.meta?.display_template || `{{${primaryKeyField.field}}}`;
-				}
-
 				return templates;
 			});
 
-			return { collections, primaryKeys, templates, existingCollections };
+			return { collections, primaryKeys, templates };
 		}
 
 		function useValues() {
 			const loading = ref(false);
 			const relatedItemValues = ref<Record<string, any[]>>({});
-			const nonExistingCollections = ref<string[]>([]);
 			const nonExistingItems = ref<number[]>([]);
 
 			// Holds "expanded" junction rows so we can lookup what "raw" junction row ID in props.value goes with
@@ -374,16 +346,12 @@ export default defineComponent({
 				loading,
 				junctionRowMap,
 				relatedItemValues,
-				nonExistingCollections,
 				nonExistingItems,
 				doesItemExist,
 			};
 
 			function doesItemExist(item: any) {
-				return (
-					nonExistingCollections.value.includes(item.collection) === false &&
-					nonExistingItems.value.includes(item.id) === false
-				);
+				return nonExistingItems.value.includes(item.id) === false;
 			}
 
 			async function fetchValues() {
@@ -466,14 +434,7 @@ export default defineComponent({
 								continue;
 							}
 
-							// When the collection exists but is not in setup
-							if (collectionsStore.getCollection(relatedCollection)) {
-								itemsToFetchPerCollection[relatedCollection] = [];
-								nonExistingCollections.value.push(relatedCollection);
-								continue;
-							}
-
-							// When the collection doesn't exist at all anymore
+							// When the collection doesn't exist
 							nonExistingItems.value.push(junctionRow.id);
 						}
 
@@ -735,17 +696,11 @@ export default defineComponent({
 	cursor: grab !important;
 }
 
-.non-existing-icon {
-	display: none;
-}
-
 .non-existing {
 	cursor: default;
 
 	.non-existing-icon {
 		--v-icon-color: var(--danger);
-
-		display: block;
 	}
 }
 
