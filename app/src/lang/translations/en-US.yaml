@@ -90,6 +90,7 @@ field_presentation: Presentation & Aliases
 field_file: Single File
 field_files: Multiple Files
 field_m2o: M2O Relationship
+field_m2a: M2A Relationship
 field_o2m: O2M Relationship
 field_m2m: M2M Relationship
 field_translations: Translations
@@ -367,6 +368,7 @@ collection_created: Collection Created
 modified_on: Modified On
 card_size: Card Size
 sort_field: Sort Field
+add_sort_field: Add Sort Field
 sort: Sort
 status: Status
 toggle_manual_sorting: Toggle Manual Sorting
