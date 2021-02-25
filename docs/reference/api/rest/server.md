@@ -7,7 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> Provides detailed information about the project server, its schema, and its health. [Learn more about Projects](/concepts/projects/).
+> Provides detailed information about the project server, its schema, and its health.
+> [Learn more about Projects](/concepts/projects/).
 
 </div>
 <div class="right">
@@ -49,7 +50,7 @@ GET /server/specs/oas
 	"openapi": "3.0.1",
 	"info": {
 		"title": "Dynamic API Specification",
-		"description": "This is a dynamicly generated API specification for all endpoints existing on the current .",
+		"description": "This is a dynamically generated API specification for all endpoints existing on the current .",
 		"version": "9.0.0-rc.34"
 	},
 	"servers": [
