@@ -305,8 +305,10 @@ export default defineComponent({
 					});
 
 				return [
-					...values.filter((val) => val[props.sortField]).sort((a, b) => a[props.sortField] - b[props.sortField]), // sort by sortField if it exists
-					...values.filter((val) => !val[props.sortField]).sort((a, b) => a.$index - b.$index), // sort the rest with $index
+					...values
+						.filter((val) => val.hasOwnProperty(props.sortField))
+						.sort((a, b) => a[props.sortField] - b[props.sortField]), // sort by sortField if it exists
+					...values.filter((val) => !val.hasOwnProperty(props.sortField)).sort((a, b) => a.$index - b.$index), // sort the rest with $index
 				];
 			});
 
