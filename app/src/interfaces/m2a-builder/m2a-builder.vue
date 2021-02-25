@@ -47,7 +47,7 @@
 
 				<v-list>
 					<v-list-item
-						@click="createNew(collection.collection)"
+						@click="createNew(collection.collection, previewValues)"
 						v-for="collection of collections"
 						:key="collection.collection"
 					>
@@ -552,11 +552,19 @@ export default defineComponent({
 				currentlyEditing.value = junctionPrimaryKey || '+';
 			}
 
-			function createNew(collection: string) {
+			function createNew(collection: string, previewValues: any[]) {
 				const newItem = {
 					[anyRelation.value.one_collection_field!]: collection,
 					[anyRelation.value.many_field]: {},
 				};
+
+				if (previewValues && props.sortField) {
+					let maxSort = 0;
+					previewValues.forEach(
+						(pVal) => (maxSort = pVal[props.sortField] > maxSort ? pVal[props.sortField] : maxSort)
+					);
+					newItem[props.sortField] = ++maxSort;
+				}
 
 				editsAtStart.value = newItem;
 				relatedPrimaryKey.value = '+';
