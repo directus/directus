@@ -8,7 +8,7 @@
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
 		/>
-		<v-dialog :active="_imageDialogOpen" @toggle="unsetImageUploadHandler" @esc="unsetImageUploadHandler">
+		<v-dialog :active="_imageDialogOpen" @toggle="unsetImageUploadHandler" @esc="unsetImageUploadHandler" :z-index="520">
 			<v-card>
 				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
 				<v-card-text>

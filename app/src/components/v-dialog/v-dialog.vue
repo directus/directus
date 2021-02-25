@@ -3,7 +3,7 @@
 		<slot name="activator" v-bind="{ on: () => (_active = true) }" />
 
 		<portal to="dialog-outlet">
-			<div v-if="_active" class="container" :class="[className, placement]" :key="id">
+			<div v-if="_active" class="container" :class="[className, placement]" :style="{'z-index': zIndex}" :key="id">
 				<v-overlay active absolute @click="emitToggle" />
 				<slot />
 			</div>
@@ -35,6 +35,10 @@ export default defineComponent({
 			default: 'center',
 			validator: (val: string) => ['center', 'right'].includes(val),
 		},
+		zIndex: {
+			type: Number,
+			default: 500
+		}
 	},
 	setup(props, { emit }) {
 		const dialog = ref<HTMLElement | null>(null);
@@ -86,8 +90,6 @@ export default defineComponent({
 @import '@/styles/mixins/breakpoint';
 
 .v-dialog {
-	--v-dialog-z-index: 100;
-
 	display: contents;
 }
 
@@ -136,15 +138,17 @@ export default defineComponent({
 		.v-card-actions {
 			flex-wrap: wrap;
 			flex-direction: column-reverse;
-			& > .v-button + .v-button {
-				margin-left: 0;
-				margin-bottom: 20px;
-			}
+			
 			.v-button {
 				width: 100%;
 				.button {
 					width: 100%;
 				}
+			}
+
+			& > .v-button + .v-button {
+				margin-left: 0;
+				margin-bottom: 20px;
 			}
 		}
 
