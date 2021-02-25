@@ -1,4 +1,4 @@
-import { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
 import { AuthStorage } from '../types';
 
 export type LoginCredentials = {
@@ -107,7 +107,20 @@ export class AuthHandler {
 		if (this.expiresAt < Date.now() + 1000) {
 			this.token = null;
 		}
-		const response = await this.axios.post<{ data: AuthResponse }>('/auth/refresh', payload);
+		const response = await this.axios
+			.post<{ data: AuthResponse }>('/auth/refresh', payload)
+			.catch(async (error: AxiosError) => {
+				const status = error.response?.status;
+				if (status === 401) {
+					await this.storage.removeItem('directus_access_token');
+					await this.storage.removeItem('directus_access_token_expires');
+					if (this.mode === 'json') {
+						await this.storage.removeItem('directus_refresh_token');
+					}
+					this.token = null;
+				}
+				throw Promise.reject(error);
+			});
 
 		const data = response.data.data;
 		this.token = data.access_token;
