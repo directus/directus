@@ -319,9 +319,9 @@ Directus will attempt to automatically type cast environment variables based on 
 ([see above](#type-casting-and-nesting)). If you have a specific need for a given type, you can tell Directus what type
 to use for the given value by prefixing the value with `{type}:`. The following types are available:
 
-| Syntax Prefix | Example                                          | Output                                           |
-| ------------- | ------------------------------------------------ | ------------------------------------------------ |
-| `string`      | `string:value`                                   | `"value"`                                        |
-| `number`      | `number:3306`                                    | `3306`                                           |
-| `regex`       | `regex:/\.example\.com$/`                        | `/\.example\.com$/`                              |
-| `array`       | `array:https://example.com,https://example2.com` | `["https://example.com","https://example2.com"]` |
+| Syntax Prefix | Example                                                                          | Output                                                              |
+| ------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `string`      | `string:value`                                                                   | `"value"`                                                           |
+| `number`      | `number:3306`                                                                    | `3306`                                                              |
+| `regex`       | `regex:/\.example\.com$/`                                                        | `/\.example\.com$/`                                                 |
+| `array`       | `array:https://example.com,string:https://example2.com,regex:/\.example3\.com$/` | `["https://example.com","https://example2.com",/\.example3\.com$/]` |
