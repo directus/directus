@@ -83,16 +83,13 @@ four possible qualities (200x200 cover) to visually compare the balance between 
 | -------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------- |
 | ![25%](../../assets/200-200-cover-25.jpg)<br>_4KB_ | ![50%](../../assets/200-200-cover-50.jpg)<br>_6KB_ | ![75%](../../assets/200-200-cover-75.jpg)<br>_8KB_ | ![100%](../../assets/200-200-cover-100.jpg)<br>_38KB_ |
 
-## Downloading a file
+## Downloading a File
 
-In order to download a file including the correct filename you need to add the `?download` query parameter and add the
-download attribute to your anchor tag. This way directus will add the appropriate response headers
-[Content-Disposition](https://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html). Without this you will see the download
-working with the correct filename on the same domain. Though it will only be downloaded using the id as the filename on
-cross-origin requests.
+To download an asset with the correct filename, you need to add the `?download` query parameter to the request and the
+`download` attribute to your anchor tag. This will ensure the appropriate [Content-Disposition](https://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html) headers are added. Without this, the download will work on the _same_ domain, however it will have the file's "id" as the filename for cross-origin requests.
 
 Example:
 
 ```html
-<a href="https://your-directus.com/assets/FILE_ID?download" target="_blank" download="Your File.pdf">Download</a>
+<a href="https://your-directus.com/assets/<file-id>?download" target="_blank" download="Your File.pdf">Download</a>
 ```
