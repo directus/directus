@@ -254,7 +254,8 @@ export default defineComponent({
 	margin-left: 12px;
 }
 .download {
-	--v-icon-color: var(--foreground-subdued)
+	--v-icon-color: var(--foreground-subdued);
+	margin-right: 8px;
 }
 
 .deselect {
