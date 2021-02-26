@@ -50,7 +50,6 @@ fields:
     options:
       icon: insert_drive_file
       title: File Naming
-      color: '#2F80ED'
     special: alias
     width: full
 
