@@ -93,7 +93,7 @@
 				<ul>
 					<li v-for="(data, index) in generationInfo" :key="index">
 						<span class="field-name">{{ data.name }}</span>
-						({{ $t(data.isField ? 'new_field' : 'new_collection') }})
+						({{ $t(data.type === 'field' ? 'new_field' : 'new_collection') }})
 					</li>
 				</ul>
 			</span>
@@ -102,15 +102,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch } from '@vue/composition-api';
-import { Relation } from '@/types';
-import { Field } from '@/types';
+import { defineComponent, computed } from '@vue/composition-api';
 import { orderBy } from 'lodash';
-import useSync from '@/composables/use-sync';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores';
 import i18n from '@/lang';
 
-import { state } from '../store';
+import { state, generationInfo } from '../store';
 
 export default defineComponent({
 	props: {
@@ -127,39 +124,14 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { emit }) {
+	setup() {
 		const collectionsStore = useCollectionsStore();
-		const fieldsStore = useFieldsStore();
 
 		const { availableCollections, systemCollections } = useRelation();
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
 		const relatedCollectionExists = computed(() => {
 			return !!collectionsStore.getCollection(state.relations[0].one_collection);
-		});
-
-		const generationInfo = computed(() => {
-			const message: { name: string; isField: boolean }[] = [];
-
-			if (relatedCollectionExists.value === false && state.relations[0].one_collection !== '') {
-				message.push({ name: state.relations[0].one_collection, isField: false });
-
-				if (state.relations[0].one_primary !== '')
-					message.push({
-						name: state.relations[0].one_collection + '.' + state.relations[0].one_primary,
-						isField: true,
-					});
-			}
-
-			if (
-				hasCorresponding.value === true &&
-				state.relations[0].one_collection !== '' &&
-				correspondingField.value !== null
-			) {
-				message.push({ name: state.relations[0].one_collection + '.' + correspondingField.value, isField: true });
-			}
-
-			return message;
 		});
 
 		return {

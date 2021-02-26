@@ -53,17 +53,30 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
 			res.status(500);
 
-			payload = {
-				errors: [
-					{
-						message: err.message,
-						extensions: {
-							...err.extensions,
-							code: 'INTERNAL_SERVER_ERROR',
+			if (req.accountability?.admin === true) {
+				payload = {
+					errors: [
+						{
+							message: err.message,
+							extensions: {
+								...err.extensions,
+								code: 'INTERNAL_SERVER_ERROR',
+							},
 						},
-					},
-				],
-			};
+					],
+				};
+			} else {
+				payload = {
+					errors: [
+						{
+							message: 'An unexpected error occurred.',
+							extensions: {
+								code: 'INTERNAL_SERVER_ERROR',
+							},
+						},
+					],
+				};
+			}
 		}
 	}
 

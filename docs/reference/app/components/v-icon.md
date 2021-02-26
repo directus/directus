@@ -48,7 +48,7 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 | Prop       | Description                          | Default | Type      |
 | ---------- | ------------------------------------ | ------- | --------- |
 | `name`\*   | Which icon to display                |         | `String`  |
-| `filled`   | Removes the outline stlye if enabled | `false` | `Boolean` |
+| `filled`   | Removes the outline style if enabled | `false` | `Boolean` |
 | `sup`      |                                      | `false` | `Boolean` |
 | `left`     | Displays the icon more to the left   | `false` | `Boolean` |
 | `right`    | Displays the icon more to the right  | `false` | `Boolean` |

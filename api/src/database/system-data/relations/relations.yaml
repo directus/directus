@@ -8,6 +8,7 @@ defaults:
   one_field: null
   one_primary: null
   junction_field: null
+  sort_field: null
 
 data:
   - many_collection: directus_users
