@@ -1,5 +1,5 @@
 <template>
-	<div class="interface-markdown" :class="view[0]">
+	<div class="interface-markdown" :class="view[0]" ref="markdownInterface">
 		<div class="toolbar">
 			<v-menu show-arrow placement="bottom-start">
 				<template #activator="{ toggle }">
@@ -194,7 +194,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
+		const markdownInterface = ref<HTMLElement>();
+		const codemirrorEl = ref<HTMLTextAreaElement>();
 		const codemirror = ref<CodeMirror.EditorFromTextArea | null>(null);
 
 		const view = ref(['editor']);
@@ -261,20 +262,31 @@ export default defineComponent({
 			columns: 4,
 		});
 
-		useShortcut('meta+b', () => edit('bold'));
-		useShortcut('meta+i', () => edit('italic'));
-		useShortcut('meta+k', () => edit('link'));
-		useShortcut('meta+alt+d', () => edit('strikethrough'));
-		useShortcut('meta+alt+q', () => edit('blockquote'));
-		useShortcut('meta+alt+c', () => edit('code'));
-		useShortcut('meta+alt+1', () => edit('heading', { level: 1 }));
-		useShortcut('meta+alt+2', () => edit('heading', { level: 2 }));
-		useShortcut('meta+alt+3', () => edit('heading', { level: 3 }));
-		useShortcut('meta+alt+4', () => edit('heading', { level: 4 }));
-		useShortcut('meta+alt+5', () => edit('heading', { level: 5 }));
-		useShortcut('meta+alt+6', () => edit('heading', { level: 6 }));
+		useShortcut('meta+b', () => edit('bold'), markdownInterface);
+		useShortcut('meta+i', () => edit('italic'), markdownInterface);
+		useShortcut('meta+k', () => edit('link'), markdownInterface);
+		useShortcut('meta+alt+d', () => edit('strikethrough'), markdownInterface);
+		useShortcut('meta+alt+q', () => edit('blockquote'), markdownInterface);
+		useShortcut('meta+alt+c', () => edit('code'), markdownInterface);
+		useShortcut('meta+alt+1', () => edit('heading', { level: 1 }), markdownInterface);
+		useShortcut('meta+alt+2', () => edit('heading', { level: 2 }), markdownInterface);
+		useShortcut('meta+alt+3', () => edit('heading', { level: 3 }), markdownInterface);
+		useShortcut('meta+alt+4', () => edit('heading', { level: 4 }), markdownInterface);
+		useShortcut('meta+alt+5', () => edit('heading', { level: 5 }), markdownInterface);
+		useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface);
 
-		return { codemirrorEl, edit, view, html, table, onImageUpload, imageDialogOpen, useShortcut, translateShortcut };
+		return {
+			codemirrorEl,
+			edit,
+			view,
+			html,
+			table,
+			onImageUpload,
+			imageDialogOpen,
+			useShortcut,
+			translateShortcut,
+			markdownInterface,
+		};
 
 		function onImageUpload(image: any) {
 			if (!codemirror.value) return;
