@@ -396,7 +396,6 @@ export default defineComponent({
 			});
 
 			watch(mediaSelection, (vid) => {
-				console.log('Hi');
 				if (embed.value === '') {
 					if (vid === null) return;
 					embed.value = `<video width="${vid.width}" height="${vid.height}" controls="controls"><source src="${vid.source}" /></video>`;
@@ -461,10 +460,8 @@ export default defineComponent({
 			function saveMedia() {
 				if (embed.value === '') return;
 
-				console.log('startEmbed', startEmbed.value);
 				if (startEmbed.value !== '') {
 					const updatedContent = editorRef.value.getContent().replace(startEmbed.value, embed.value);
-					console.log(updatedContent, embed.value);
 					editorRef.value.setContent(updatedContent);
 				} else {
 					editorRef.value.selection.setContent(embed.value);
