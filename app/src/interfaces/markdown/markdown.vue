@@ -136,6 +136,7 @@ import { useEdit, CustomSyntax } from './composables/use-edit';
 import { getPublicURL } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 import escapeStringRegexp from 'escape-string-regexp';
+import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
 	props: {
@@ -227,6 +228,21 @@ export default defineComponent({
 			rows: 4,
 			columns: 4,
 		});
+
+		useShortcut('meta+b', () => edit('bold'));
+		useShortcut('meta+i', () => edit('italic'));
+		useShortcut('meta+k', () => edit('link'));
+		useShortcut('meta+alt+d', () => edit('strikethrough'));
+		useShortcut('meta+alt+q', () => edit('blockquote'));
+		useShortcut('meta+alt+c', () => edit('code'));
+		useShortcut('meta+alt+t', () => edit('table'));
+		useShortcut('meta+alt+1', () => edit('heading', { level: 1 }));
+		useShortcut('meta+alt+2', () => edit('heading', { level: 2 }));
+		useShortcut('meta+alt+3', () => edit('heading', { level: 3 }));
+		useShortcut('meta+alt+4', () => edit('heading', { level: 4 }));
+		useShortcut('meta+alt+5', () => edit('heading', { level: 5 }));
+		useShortcut('meta+alt+6', () => edit('heading', { level: 6 }));
+		//  TODO Heading, paragraph and div to follow
 
 		return { codemirrorEl, edit, view, html, table, onImageUpload, imageDialogOpen };
 
