@@ -520,6 +520,12 @@ toggle: Toggle
 icon_on: Icon On
 icon_off: Icon Off
 label: Label
+image_url: Image Url
+alt_text: Alternative Text
+media: Media
+width: Width
+height: Height
+source: Source
 wysiwyg_options:
   aligncenter: Align Center
   alignjustify: Align Justify
@@ -541,8 +547,8 @@ wysiwyg_options:
   hr: Horizontal Rule
   link: Link
   unlink: Remove Link
-  media: Add Media
-  image: Add Image
+  media: Add/Edit Media
+  image: Add/Edit Image
   copy: Copy
   cut: Cut
   paste: Paste
