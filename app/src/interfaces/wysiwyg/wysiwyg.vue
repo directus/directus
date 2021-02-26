@@ -8,22 +8,103 @@
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
 		/>
-		<v-dialog :active="_imageDialogOpen" @toggle="unsetImageUploadHandler" @esc="unsetImageUploadHandler">
-			<v-card>
-				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
-				<v-card-text>
-					<v-upload @input="onImageUpload" :multiple="false" from-library from-url />
-				</v-card-text>
-				<v-card-actions>
-					<v-button @click="unsetImageUploadHandler" secondary>{{ $t('cancel') }}</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+		<v-drawer v-model="imageDrawerOpen" :title="$t('upload_edit_image')" @cancel="closeImageDrawer" icon="image">
+			<div class="content">
+				<template v-if="imageSelection">
+					<img class="image-preview" :src="imageSelection.imageUrl" />
+					<div class="grid">
+						<div class="field half">
+							<div class="type-label">{{$t('image_url')}}</div>
+							<v-input v-model="imageSelection.imageUrl" />
+						</div>
+						<div class="field half-right">
+							<div class="type-label">{{$t('alt')}}</div>
+							<v-input v-model="imageSelection.alt" />
+						</div>
+						<div class="field half">
+							<div class="type-label">{{$t('width')}}</div>
+							<v-input v-model="imageSelection.width" />
+						</div>
+						<div class="field half-right">
+							<div class="type-label">{{$t('height')}}</div>
+							<v-input v-model="imageSelection.height" />
+						</div>
+					</div>
+				</template>
+				<v-upload v-else @input="onImageSelect" :multiple="false" from-library from-url />
+			</div>
+
+			<template #actions>
+				<v-button
+					@click="saveImage"
+					v-tooltip.bottom="$t('save_image')"
+					icon
+					rounded
+				>
+					<v-icon name="check" />
+				</v-button>
+			</template>
+		</v-drawer>
+
+		<v-drawer v-model="mediaDrawerOpen" :title="$t('upload_edit_media')" @cancel="closeMediaDrawer" icon="video">
+			<template #sidebar>
+				<v-tabs v-model="openMediaTab" vertical>
+					<v-tab value="video">{{$t('video')}}</v-tab>
+					<v-tab value="embed">{{$t('embed')}}</v-tab>
+				</v-tabs>
+			</template>
+
+			<div class="content">
+				<v-tabs-items v-model="openMediaTab">
+					<v-tab-item value="video">
+						<template v-if="mediaSelection">
+							<video class="media-preview" controls="controls">
+								<source :src="mediaSelection.source"/>
+							</video>
+							<div class="grid">
+								<div class="field">
+									<div class="type-label">{{$t('source')}}</div>
+									<v-input v-model="mediaSelection.source" />
+								</div>
+								<div class="field half">
+									<div class="type-label">{{$t('width')}}</div>
+									<v-input v-model="mediaSelection.width" />
+								</div>
+								<div class="field half-right">
+									<div class="type-label">{{$t('height')}}</div>
+									<v-input v-model="mediaSelection.height" />
+								</div>
+							</div>
+						</template>
+						<v-upload v-else @input="onMediaSelect" :multiple="false" from-library from-url />
+					</v-tab-item>
+					<v-tab-item value="embed">
+						<div class="grid">
+							<div class="field">
+								<div class="type-label">{{$t('embed')}}</div>
+								<v-textarea v-model="embed" />
+							</div>
+						</div>
+					</v-tab-item>
+				</v-tabs-items>
+			</div>
+
+			<template #actions>
+				<v-button
+					@click="saveMedia"
+					v-tooltip.bottom="$t('save_media')"
+					icon
+					rounded
+				>
+					<v-icon name="check" />
+				</v-button>
+			</template>
+		</v-drawer>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, watch } from '@vue/composition-api';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';
@@ -50,6 +131,7 @@ import getEditorStyles from './get-editor-styles';
 
 import { getPublicURL } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
+import i18n from '@/lang';
 
 type CustomFormat = {
 	title: string;
@@ -58,6 +140,19 @@ type CustomFormat = {
 	styles: Record<string, string>;
 	attributes: Record<string, string>;
 };
+
+type ImageSelection = {
+	imageUrl: string;
+	alt: string;
+	width?: number;
+	height?: number;
+}
+
+type MediaSelection = {
+	source: string;
+	width?: number;
+	height?: number;
+}
 
 export default defineComponent({
 	components: { Editor },
@@ -85,6 +180,8 @@ export default defineComponent({
 				'hr',
 				'code',
 				'fullscreen',
+				'customImage',
+				'customMedia'
 			],
 		},
 		font: {
@@ -109,10 +206,11 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const editorRef = ref<any | null>(null)
 		const editorElement = ref<Vue | null>(null);
-		const imageUploadHandler = ref<CallableFunction | null>(null);
 
-		const _imageDialogOpen = computed(() => !!imageUploadHandler.value);
+		const {imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage} = useImage()
+		const {mediaDrawerOpen, mediaSelection, closeMediaDrawer, openMediaTab, onMediaSelect, embed, saveMedia} = useMedia()
 
 		const _value = computed({
 			get() {
@@ -152,11 +250,11 @@ export default defineComponent({
 				extended_valid_elements: 'audio[loop],source',
 				toolbar: toolbarString,
 				style_formats: styleFormats,
-				file_picker_types: 'image media',
-				file_picker_callback: setImageUploadHandler,
-				urlconverter_callback: urlConverter,
+				file_picker_types: 'customImage image media',
 				link_default_protocol: 'https',
 				...(props.tinymceOverrides || {}),
+				setup
+				
 			};
 		});
 
@@ -165,43 +263,179 @@ export default defineComponent({
 			editorOptions,
 			_value,
 			setFocus,
-			onImageUpload,
-			unsetImageUploadHandler,
-			_imageDialogOpen,
+			onImageSelect,
+			saveImage,
+			imageDrawerOpen,
+			closeImageDrawer,
+			imageSelection,
+			mediaDrawerOpen,
+			mediaSelection,
+			closeMediaDrawer,
+			openMediaTab,
+			embed,
+			onMediaSelect,
+			saveMedia
 		};
 
-		function onImageUpload(file: Record<string, any>) {
-			if (imageUploadHandler.value) imageUploadHandler.value(file);
-			unsetImageUploadHandler();
+		function setup(editor: any) {
+			editorRef.value = editor
+
+			editor.ui.registry.addToggleButton('customImage', {
+				icon: 'image',
+				tooltip: i18n.t('upload_edit_image'),
+				onAction: (buttonApi: any) => {
+					imageDrawerOpen.value = true
+					
+					if(buttonApi.isActive()) {
+						const node = editor.selection.getNode() as HTMLImageElement
+						const imageUrl = node.getAttribute('src')
+						const alt = node.getAttribute('alt')
+
+						if(imageUrl === null || alt === null) {
+							return
+						}
+
+						imageSelection.value = {
+							imageUrl, alt, width: Number(node.getAttribute('width')) || undefined, height: Number(node.getAttribute('height')) || undefined
+						}
+					} else {
+						imageSelection.value = null
+					}
+				},
+				onSetup: (buttonApi: any) => {
+					const onImageNodeSelect = (eventApi: any) => {
+						buttonApi.setActive(eventApi.element.tagName === "IMG")
+					}
+
+					editor.on('NodeChange', onImageNodeSelect)
+
+					return function (buttonApi: any) {
+						editor.off('NodeChange', onImageNodeSelect)
+					}
+				}
+			})
+
+			editor.ui.registry.addToggleButton('customMedia', {
+				icon: 'embed',
+				tooltip: i18n.t('upload_edit_media'),
+				onAction: (buttonApi: any) => {
+					mediaDrawerOpen.value = true
+					
+					if(buttonApi.isActive()) {
+						const node = editor.selection.getNode().firstElementChild as HTMLElement | null
+
+						if(node === null) return
+
+						embed.value = node.outerHTML
+
+						console.log("ImageSelected", node.innerHTML)
+					} else {
+						mediaSelection.value = null
+					}
+				},
+				onSetup: (buttonApi: any) => {
+					const onVideoNodeSelect = (eventApi: any) => {
+						console.log(eventApi.element.tagName)
+						buttonApi.setActive(eventApi.element.tagName === 'SPAN' && eventApi.element.classList.contains('mce-preview-object'))
+					}
+
+					editor.on('NodeChange', onVideoNodeSelect)
+
+					return function (buttonApi: any) {
+						editor.off('NodeChange', onVideoNodeSelect)
+					}
+				}
+			})
 		}
 
-		function setImageUploadHandler(cb: CallableFunction, value: any, meta: Record<string, any>) {
-			imageUploadHandler.value = (result: Record<string, any>) => {
-				if (meta.filetype === 'image' && !/^image\//.test(result.type)) return;
+		function useMedia() {
+			const mediaDrawerOpen = ref(false)
+			const mediaSelection = ref<MediaSelection | null>(null)
+			const openMediaTab = ref(['video'])
+			const embed = ref('')
 
-				const imageUrl = getPublicURL() + 'assets/' + result.id;
+			watch(mediaSelection, (vid) => {
+				if (embed.value === '') {
+					if(vid === null) return
+					embed.value = `<video width="${vid.width}" height="${vid.height}" controls="controls"><source src="${vid.source}" /></video>`
+				} else {
+					embed.value = embed.value.replace(/src=".*?"/g, `src="${vid?.source}"`)
+						.replace(/width=".*?"/g, `width="${vid?.width}"`)
+						.replace(/height=".*?"/g, `height="${vid?.height}"`)
 
-				cb(imageUrl, {
-					alt: result.title,
-					title: result.title,
-					width: (result.width || '').toString(),
-					height: (result.height || '').toString(),
-				});
-			};
-		}
+				}
+			})
 
-		function urlConverter(url: string, node: string) {
-			if (url && props.imageToken && ['img', 'source', 'poster', 'audio'].includes(node)) {
-				const baseUrl = getPublicURL() + 'assets/';
-				if (url.includes(baseUrl)) {
-					url = addTokenToURL(url, props.imageToken);
+			watch(embed, (newEmbed) => {
+				if( newEmbed === '') {
+					mediaSelection.value = null
+				} else {
+					const source = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined
+					const width = Number(/width="(.*?)"/g.exec(newEmbed)?.[1]) || undefined
+					const height = Number(/height="(.*?)"/g.exec(newEmbed)?.[1]) || undefined
+
+					if(source === undefined) return
+
+					mediaSelection.value = {
+						source, width, height
+					}
+				}
+			})
+
+			return {mediaDrawerOpen, mediaSelection, closeMediaDrawer, openMediaTab, onMediaSelect, embed, saveMedia}
+
+			function closeMediaDrawer() {
+				embed.value = ''
+				mediaSelection.value = null
+				mediaDrawerOpen.value = false
+				openMediaTab.value = ['video']
+			}
+
+			function onMediaSelect(media: Record<string, any>) {
+
+				const source = addTokenToURL(getPublicURL() + 'assets/' + media.id, props.imageToken);
+
+				mediaSelection.value = {
+					source, width: media.width || 300, height: media.height || 150
 				}
 			}
-			return url;
+
+			function saveMedia() {
+				const vid = embed.value
+
+				if(vid === '') return
+				console.log("Saving", vid)
+				editorRef.value.insertContent(vid)
+				closeMediaDrawer()
+			}
 		}
 
-		function unsetImageUploadHandler() {
-			imageUploadHandler.value = null;
+		function useImage() {
+			const imageDrawerOpen = ref(false)
+			const imageSelection = ref<ImageSelection | null>(null)
+
+			return {imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage}
+
+			function closeImageDrawer() {
+				imageSelection.value = null
+				imageDrawerOpen.value = false
+			}
+
+			function onImageSelect(image: Record<string, any>) {
+				const imageUrl = addTokenToURL(getPublicURL() + 'assets/' + image.id, props.imageToken);
+
+				imageSelection.value = {
+					imageUrl, alt: image.title, width: image.width, height: image.height
+				}
+			}
+
+			function saveImage() {
+				const img = imageSelection.value
+				if(img === null) return
+				const imageHtml = `<img src="${img.imageUrl}" alt="${img.alt}" width="${img.width}" height="${img.height}" />`
+				editorRef.value.insertContent(imageHtml)
+				closeImageDrawer()
+			}
 		}
 
 		function setFocus(val: boolean) {
@@ -226,4 +460,23 @@ export default defineComponent({
 
 @import '~tinymce/skins/ui/oxide/skin.css';
 @import './tinymce-overrides.css';
+@import '@/styles/mixins/form-grid';
+
+.grid {
+	@include form-grid;
+}
+
+.image-preview, .media-preview {
+	width: 100%;
+	height: var(--input-height-tall);
+	object-fit: cover;
+	border-radius: var(--border-radius);
+	margin-bottom: 24px;
+}
+
+.content {
+	padding: var(--content-padding);
+	padding-top: 0;
+	padding-bottom: var(--content-padding);
+}
 </style>
