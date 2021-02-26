@@ -7,7 +7,6 @@ fields:
     options:
       icon: box
       title: Collection Setup
-      color: '#2F80ED'
     width: full
 
   - field: collection
@@ -78,7 +77,6 @@ fields:
     options:
       icon: archive
       title: Archive
-      color: '#2F80ED'
     width: full
 
   - field: archive_field
@@ -118,7 +116,6 @@ fields:
     options:
       icon: sort
       title: Sort
-      color: '#2F80ED'
     width: full
 
   - field: sort_field

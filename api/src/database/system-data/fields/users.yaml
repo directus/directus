@@ -65,7 +65,6 @@ fields:
     options:
       icon: face
       title: User Preferences
-      color: '#2F80ED'
     special: alias
     width: full
 
