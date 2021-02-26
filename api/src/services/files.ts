@@ -27,6 +27,8 @@ export class FilesService extends ItemsService {
 		const payload = clone(data);
 
 		if (primaryKey !== undefined) {
+			await this.update(payload, primaryKey);
+
 			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
 			// delete the previously saved file and thumbnails to ensure they're generated fresh
 			const disk = storage.disk(payload.storage);
@@ -34,8 +36,6 @@ export class FilesService extends ItemsService {
 			for await (const file of disk.flatList(String(primaryKey))) {
 				await disk.delete(file.path);
 			}
-
-			await this.update(payload, primaryKey);
 		} else {
 			primaryKey = await this.create(payload);
 		}
@@ -48,67 +48,53 @@ export class FilesService extends ItemsService {
 			payload.type = 'application/octet-stream';
 		}
 
+		try {
+			await storage.disk(data.storage).put(payload.filename_disk, stream);
+		} catch (err) {
+			logger.warn(`Couldn't save file ${payload.filename_disk}`);
+			logger.warn(err);
+		}
+
+		const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);
+		payload.filesize = size;
+
 		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
-			const pipeline = sharp();
+			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
+			const meta = await sharp(buffer.content, {}).metadata();
 
-			pipeline
-				.rotate()
-				.metadata()
-				.then((meta) => {
-					payload.width = meta.width;
-					payload.height = meta.height;
-					payload.filesize = meta.size;
-					payload.metadata = {};
+			payload.width = meta.width;
+			payload.height = meta.height;
+			payload.filesize = meta.size;
+			payload.metadata = {};
 
-					if (meta.icc) {
-						try {
-							payload.metadata.icc = parseICC(meta.icc);
-						} catch (err) {
-							logger.warn(`Couldn't extract ICC information from file`);
-							logger.warn(err);
-						}
-					}
-
-					if (meta.exif) {
-						try {
-							payload.metadata.exif = parseEXIF(meta.exif);
-						} catch (err) {
-							logger.warn(`Couldn't extract EXIF information from file`);
-							logger.warn(err);
-						}
-					}
-
-					if (meta.iptc) {
-						try {
-							payload.metadata.iptc = parseIPTC(meta.iptc);
-							payload.title = payload.title || payload.metadata.iptc.headline;
-							payload.description = payload.description || payload.metadata.iptc.caption;
-						} catch (err) {
-							logger.warn(`Couldn't extract IPTC information from file`);
-							logger.warn(err);
-						}
-					}
-				})
-				.catch((err) => {
-					logger.warn(`Couldn't extract file metadata from ${payload.filename_disk}`);
+			if (meta.icc) {
+				try {
+					payload.metadata.icc = parseICC(meta.icc);
+				} catch (err) {
+					logger.warn(`Couldn't extract ICC information from file`);
 					logger.warn(err);
-				});
-			try {
-				await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
-			} catch (err) {
-				logger.warn(`Couldn't save file ${payload.filename_disk}`);
-				logger.warn(err);
-			}
-		} else {
-			try {
-				await storage.disk(data.storage).put(payload.filename_disk, stream);
-			} catch (err) {
-				logger.warn(`Couldn't save file ${payload.filename_disk}`);
-				logger.warn(err);
+				}
 			}
 
-			const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);
-			payload.filesize = size;
+			if (meta.exif) {
+				try {
+					payload.metadata.exif = parseEXIF(meta.exif);
+				} catch (err) {
+					logger.warn(`Couldn't extract EXIF information from file`);
+					logger.warn(err);
+				}
+			}
+
+			if (meta.iptc) {
+				try {
+					payload.metadata.iptc = parseIPTC(meta.iptc);
+					payload.title = payload.title || payload.metadata.iptc.headline;
+					payload.description = payload.description || payload.metadata.iptc.caption;
+				} catch (err) {
+					logger.warn(`Couldn't extract IPTC information from file`);
+					logger.warn(err);
+				}
+			}
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
@@ -117,6 +103,7 @@ export class FilesService extends ItemsService {
 			knex: this.knex,
 			schema: this.schema,
 		});
+
 		await sudoService.update(payload, primaryKey);
 
 		if (cache && env.CACHE_AUTO_PURGE) {
