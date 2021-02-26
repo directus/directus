@@ -103,6 +103,40 @@
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
 
+		<div class="sort-field">
+			<v-divider large :inline-title="false">{{ $t('sort_field') }}</v-divider>
+
+			<v-input
+				:class="{ matches: sortFieldExists }"
+				v-model="relations[0].sort_field"
+				:nullable="false"
+				:placeholder="$t('add_sort_field') + '...'"
+				db-safe
+			>
+				<template #append v-if="fields && fields.length > 0">
+					<v-menu show-arrow placement="bottom-end">
+						<template #activator="{ toggle }">
+							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
+						</template>
+
+						<v-list class="monospace">
+							<v-list-item
+								v-for="item in fields"
+								:key="item.value"
+								:active="relations[0].sort_field === item.value"
+								:disabled="item.disabled"
+								@click="relations[0].sort_field = item.value"
+							>
+								<v-list-item-content>
+									{{ item.text }}
+								</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+				</template>
+			</v-input>
+		</div>
+
 		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
 			<span>
 				{{ $t('new_data_alert') }}
@@ -110,7 +144,7 @@
 				<ul>
 					<li v-for="(data, index) in generationInfo" :key="index">
 						<span class="field-name">{{ data.name }}</span>
-						({{ $t(data.isField ? 'new_field' : 'new_collection') }})
+						({{ $t(data.type === 'field' ? 'new_field' : 'new_collection') }})
 					</li>
 				</ul>
 			</span>
@@ -119,13 +153,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Relation, Field } from '@/types';
-import useSync from '@/composables/use-sync';
+import { defineComponent, computed } from '@vue/composition-api';
+import { Field } from '@/types';
 import { useFieldsStore, useCollectionsStore } from '@/stores';
 import { orderBy } from 'lodash';
 import i18n from '@/lang';
-import { state } from '../store';
+import { state, generationInfo } from '../store';
 
 export default defineComponent({
 	props: {
@@ -142,7 +175,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { emit }) {
+	setup(props) {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 
@@ -167,22 +200,9 @@ export default defineComponent({
 			return !!fieldsStore.getField(state.relations[0].many_collection, state.relations[0].many_field);
 		});
 
-		const generationInfo = computed(() => {
-			const message: { name: string; isField: boolean }[] = [];
-
-			if (state.relations[0].many_collection !== '') {
-				if (relatedCollectionExists.value === false)
-					message.push({ name: state.relations[0].many_collection, isField: false });
-
-				if (relatedFieldExists.value === false && state.relations[0].many_field !== '') {
-					message.push({
-						name: state.relations[0].many_collection + '.' + state.relations[0].many_field,
-						isField: true,
-					});
-				}
-			}
-
-			return message;
+		const sortFieldExists = computed(() => {
+			if (!state?.relations?.[0].many_collection || !state?.relations?.[0].sort_field) return false;
+			return !!fieldsStore.getField(state.relations[0].many_collection, state.relations[0].sort_field);
 		});
 
 		return {
@@ -197,6 +217,7 @@ export default defineComponent({
 			relatedCollectionExists,
 			relatedFieldExists,
 			generationInfo,
+			sortFieldExists,
 		};
 
 		function useRelation() {
@@ -355,10 +376,6 @@ export default defineComponent({
 	gap: 12px 32px;
 	margin-top: 48px;
 
-	.v-input.matches {
-		--v-input-color: var(--primary);
-	}
-
 	.v-icon.arrow {
 		--v-icon-color: var(--primary);
 
@@ -367,6 +384,10 @@ export default defineComponent({
 		left: 50%;
 		transform: translateX(-50%);
 	}
+}
+
+.v-input.matches {
+	--v-input-color: var(--primary);
 }
 
 .v-list {
@@ -412,6 +433,15 @@ export default defineComponent({
 
 	.field-name {
 		font-family: var(--family-monospace);
+	}
+}
+
+.sort-field {
+	--v-input-font-family: var(--family-monospace);
+
+	.v-divider {
+		margin-top: 48px;
+		margin-bottom: 24px;
 	}
 }
 </style>

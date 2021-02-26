@@ -13,8 +13,8 @@
 			@update:items="sortItems($event)"
 			@click:row="editItem"
 			:disabled="disabled"
-			:show-manual-sort="sortField !== null"
-			:manual-sort-key="sortField"
+			:show-manual-sort="relationInfo.sortField !== null"
+			:manual-sort-key="relationInfo.sortField"
 		>
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
@@ -98,10 +98,6 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		sortField: {
-			type: String,
-			default: null,
-		},
 		fields: {
 			type: Array as PropType<string[]>,
 			default: () => [],
@@ -112,7 +108,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { value, collection, field, fields, sortField } = toRefs(props);
+		const { value, collection, field, fields } = toRefs(props);
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
@@ -120,20 +116,15 @@ export default defineComponent({
 
 		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
 
-		const {
-			deleteItem,
-			getUpdatedItems,
-			getNewItems,
-			getPrimaryKeys,
-			getNewSelectedItems,
-			getJunctionItem,
-			getJunctionFromRelatedId,
-		} = useActions(value, relationInfo, emitter);
+		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
+			value,
+			relationInfo,
+			emitter
+		);
 
 		const { tableHeaders, items, loading, error } = usePreview(
 			value,
 			fields,
-			sortField,
 			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,
@@ -153,7 +144,7 @@ export default defineComponent({
 
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection(value, items, relationInfo, emitter);
 
-		const { sort, sortItems, sortedItems } = useSort(sortField, fields, items, emitter);
+		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
 		return {
 			junction,

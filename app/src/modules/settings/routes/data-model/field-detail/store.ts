@@ -19,11 +19,17 @@ const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 const collectionsStore = useCollectionsStore();
 
+type GenerationInfo = {
+	name: string;
+	type: 'collection' | 'field';
+};
+
 let state: any;
 let availableInterfaces: ComputedRef<InterfaceConfig[]>;
 let availableDisplays: ComputedRef<DisplayConfig[]>;
+let generationInfo: ComputedRef<GenerationInfo[]>;
 
-export { state, availableInterfaces, availableDisplays, initLocalStore, clearLocalStore };
+export { state, availableInterfaces, availableDisplays, generationInfo, initLocalStore, clearLocalStore };
 
 function initLocalStore(collection: string, field: string, type: typeof localTypes[number]) {
 	const interfaces = getInterfaces();
@@ -83,6 +89,28 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				return matchesType && matchesLocalType;
 			})
 			.sort((a, b) => (a.name > b.name ? 1 : -1));
+	});
+
+	generationInfo = computed(() => {
+		return [
+			...state.newCollections.map((newCollection: any) => ({
+				name: newCollection.collection,
+				type: 'collection',
+			})),
+			...state.newCollections
+				.map((newCollection: any) =>
+					newCollection.fields.map((field: any) => ({ ...field, collection: newCollection.collection }))
+				)
+				.flat()
+				.map((newField: any) => ({
+					name: `${newField.collection}.${newField.field}`,
+					type: 'field',
+				})),
+			...state.newFields.map((newField: any) => ({
+				name: `${newField.collection}.${newField.field}`,
+				type: 'field',
+			})),
+		];
 	});
 
 	const isExisting = field !== '+';
@@ -231,59 +259,58 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		delete state.fieldData.schema;
 		state.fieldData.type = null;
 
-		const syncNewCollectionsO2M = throttle(() => {
-			const collectionName = state.relations[0].many_collection;
-			const fieldName = state.relations[0].many_field;
+		const syncNewCollectionsO2M = throttle(([collectionName, fieldName, sortField]) => {
+			state.newCollections = state.newCollections.filter((col: any) => ['related'].includes(col.$type) === false);
 
-			if (collectionExists(collectionName)) {
-				state.newCollections = [];
-			} else {
-				state.newCollections = [
-					{
-						collection: collectionName,
-						fields: [
-							{
-								field: 'id',
-								type: 'integer',
-								schema: {
-									has_auto_increment: true,
-									is_primary_key: true,
-								},
-								meta: {
-									hidden: true,
-								},
+			state.newFields = state.newFields.filter(
+				(field: Partial<Field> & { $type: string }) => ['manyRelated', 'sort'].includes(field.$type) === false
+			);
+
+			if (collectionExists(collectionName) === false) {
+				state.newCollections.push({
+					$type: 'related',
+					collection: collectionName,
+					fields: [
+						{
+							field: 'id',
+							type: 'integer',
+							schema: {
+								has_auto_increment: true,
+								is_primary_key: true,
 							},
-						],
-					},
-				];
+							meta: {
+								hidden: true,
+							},
+						},
+					],
+				});
 
 				state.relations[0].many_primary = 'id';
 			}
 
-			if (collectionExists(collectionName)) {
-				if (fieldExists(collectionName, fieldName)) {
-					state.newFields = [];
-				} else {
-					state.newFields = [
-						{
-							$type: 'manyRelated',
-							collection: collectionName,
-							field: fieldName,
-							type: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.type,
-							schema: {},
-						},
-					];
-				}
-			} else {
-				state.newFields = [
-					{
-						$type: 'manyRelated',
-						collection: collectionName,
-						field: fieldName,
-						type: 'integer',
-						schema: {},
+			if (fieldExists(collectionName, fieldName) === false) {
+				state.newFields.push({
+					$type: 'manyRelated',
+					collection: collectionName,
+					field: fieldName,
+					type: collectionExists(collectionName)
+						? fieldsStore.getPrimaryKeyFieldForCollection(collectionName)?.type
+						: 'integer',
+					schema: {},
+				});
+			}
+
+			if (sortField && fieldExists(collectionName, sortField) === false) {
+				state.newFields.push({
+					$type: 'sort',
+					collection: collectionName,
+					field: sortField,
+					type: 'integer',
+					schema: {},
+					meta: {
+						hidden: true,
 					},
-				];
+				});
 			}
 		}, 50);
 
@@ -321,134 +348,41 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			}
 		);
 
-		watch([() => state.relations[0].many_collection, () => state.relations[0].many_field], syncNewCollectionsO2M);
+		watch(
+			[
+				() => state.relations[0].many_collection,
+				() => state.relations[0].many_field,
+				() => state.relations[0].sort_field,
+			],
+			syncNewCollectionsO2M
+		);
 	}
 
 	function useM2M() {
 		delete state.fieldData.schema;
 		state.fieldData.type = null;
 
-		const syncNewCollectionsM2M = throttle(([junctionCollection, manyCurrent, manyRelated, relatedCollection]) => {
-			state.newCollections = state.newCollections.filter(
-				(col: any) => ['junction', 'related'].includes(col.$type) === false
-			);
-			state.newFields = state.newFields.filter(
-				(field: Partial<Field> & { $type: string }) => ['manyCurrent', 'manyRelated'].includes(field.$type) === false
-			);
+		const syncNewCollectionsM2M = throttle(
+			([junctionCollection, manyCurrent, manyRelated, relatedCollection, sortField]) => {
+				state.newCollections = state.newCollections.filter(
+					(col: any) => ['junction', 'related'].includes(col.$type) === false
+				);
+				state.newFields = state.newFields.filter(
+					(field: Partial<Field> & { $type: string }) =>
+						['manyCurrent', 'manyRelated', 'sort'].includes(field.$type) === false
+				);
 
-			if (collectionExists(junctionCollection) === false) {
-				state.newCollections.push({
-					$type: 'junction',
-					collection: junctionCollection,
-					meta: {
-						hidden: true,
-						icon: 'import_export',
-					},
-					fields: [
-						{
-							field: 'id',
-							type: 'integer',
-							schema: {
-								has_auto_increment: true,
-							},
-							meta: {
-								hidden: true,
-							},
-						},
-					],
-				});
-
-				state.relations[0].many_primary = 'id';
-				state.relations[1].many_primary = 'id';
-			}
-
-			if (fieldExists(junctionCollection, manyCurrent) === false) {
-				state.newFields.push({
-					$type: 'manyCurrent',
-					collection: junctionCollection,
-					field: manyCurrent,
-					type: fieldsStore.getPrimaryKeyFieldForCollection(collection)!.type,
-					schema: {},
-					meta: {
-						hidden: true,
-					},
-				});
-			}
-
-			if (fieldExists(junctionCollection, manyRelated) === false) {
-				if (type === 'translations') {
-					state.newFields.push({
-						$type: 'manyRelated',
-						collection: junctionCollection,
-						field: manyRelated,
-						type: collectionExists(relatedCollection)
-							? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
-							: 'string',
-						schema: {},
-						meta: {
-							hidden: true,
-						},
-					});
-				} else {
-					state.newFields.push({
-						$type: 'manyRelated',
-						collection: junctionCollection,
-						field: manyRelated,
-						type: collectionExists(relatedCollection)
-							? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
-							: 'integer',
-						schema: {},
-						meta: {
-							hidden: true,
-						},
-					});
-				}
-			}
-
-			if (collectionExists(relatedCollection) === false) {
-				if (type === 'translations') {
+				if (collectionExists(junctionCollection) === false) {
 					state.newCollections.push({
-						$type: 'related',
-						collection: relatedCollection,
+						$type: 'junction',
+						collection: junctionCollection,
 						meta: {
-							icon: 'translate',
+							hidden: true,
+							icon: 'import_export',
 						},
 						fields: [
 							{
-								field: state.relations[1].one_primary,
-								type: 'string',
-								schema: {
-									is_primary_key: true,
-								},
-								meta: {
-									interface: 'text-input',
-									options: {
-										iconLeft: 'vpn_key',
-									},
-									width: 'half',
-								},
-							},
-							{
-								field: 'name',
-								type: 'string',
-								schema: {},
-								meta: {
-									interface: 'text-input',
-									options: {
-										iconLeft: 'translate',
-									},
-									width: 'half',
-								},
-							},
-						],
-					});
-				} else {
-					state.newCollections.push({
-						$type: 'related',
-						collection: relatedCollection,
-						fields: [
-							{
-								field: state.relations[1].one_primary,
+								field: 'id',
 								type: 'integer',
 								schema: {
 									has_auto_increment: true,
@@ -459,48 +393,165 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 							},
 						],
 					});
-				}
-			}
 
-			if (type === 'translations') {
-				if (collectionExists(relatedCollection) === false) {
-					state.newRows = {
-						[relatedCollection]: [
-							{
-								code: 'en-US',
-								name: 'English',
-							},
-							{
-								code: 'de-DE',
-								name: 'German',
-							},
-							{
-								code: 'fr-FR',
-								name: 'French',
-							},
-							{
-								code: 'ru-RU',
-								name: 'Russian',
-							},
-							{
-								code: 'es-ES',
-								name: 'Spanish',
-							},
-							{
-								code: 'it-IT',
-								name: 'Italian',
-							},
-							{
-								code: 'pt-BR',
-								name: 'Portuguese',
-							},
-						],
-					};
-				} else {
-					state.newRows = {};
+					state.relations[0].many_primary = 'id';
+					state.relations[1].many_primary = 'id';
 				}
-			}
-		}, 50);
+
+				if (fieldExists(junctionCollection, manyCurrent) === false) {
+					state.newFields.push({
+						$type: 'manyCurrent',
+						collection: junctionCollection,
+						field: manyCurrent,
+						type: fieldsStore.getPrimaryKeyFieldForCollection(collection)!.type,
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
+
+				if (fieldExists(junctionCollection, manyRelated) === false) {
+					if (type === 'translations') {
+						state.newFields.push({
+							$type: 'manyRelated',
+							collection: junctionCollection,
+							field: manyRelated,
+							type: collectionExists(relatedCollection)
+								? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
+								: 'string',
+							schema: {},
+							meta: {
+								hidden: true,
+							},
+						});
+					} else {
+						state.newFields.push({
+							$type: 'manyRelated',
+							collection: junctionCollection,
+							field: manyRelated,
+							type: collectionExists(relatedCollection)
+								? fieldsStore.getPrimaryKeyFieldForCollection(relatedCollection)?.type
+								: 'integer',
+							schema: {},
+							meta: {
+								hidden: true,
+							},
+						});
+					}
+				}
+
+				if (collectionExists(relatedCollection) === false) {
+					if (type === 'translations') {
+						state.newCollections.push({
+							$type: 'related',
+							collection: relatedCollection,
+							meta: {
+								icon: 'translate',
+							},
+							fields: [
+								{
+									field: state.relations[1].one_primary,
+									type: 'string',
+									schema: {
+										is_primary_key: true,
+									},
+									meta: {
+										interface: 'text-input',
+										options: {
+											iconLeft: 'vpn_key',
+										},
+										width: 'half',
+									},
+								},
+								{
+									field: 'name',
+									type: 'string',
+									schema: {},
+									meta: {
+										interface: 'text-input',
+										options: {
+											iconLeft: 'translate',
+										},
+										width: 'half',
+									},
+								},
+							],
+						});
+					} else {
+						state.newCollections.push({
+							$type: 'related',
+							collection: relatedCollection,
+							fields: [
+								{
+									field: state.relations[1].one_primary,
+									type: 'integer',
+									schema: {
+										has_auto_increment: true,
+									},
+									meta: {
+										hidden: true,
+									},
+								},
+							],
+						});
+					}
+				}
+
+				if (type === 'translations') {
+					if (collectionExists(relatedCollection) === false) {
+						state.newRows = {
+							[relatedCollection]: [
+								{
+									code: 'en-US',
+									name: 'English',
+								},
+								{
+									code: 'de-DE',
+									name: 'German',
+								},
+								{
+									code: 'fr-FR',
+									name: 'French',
+								},
+								{
+									code: 'ru-RU',
+									name: 'Russian',
+								},
+								{
+									code: 'es-ES',
+									name: 'Spanish',
+								},
+								{
+									code: 'it-IT',
+									name: 'Italian',
+								},
+								{
+									code: 'pt-BR',
+									name: 'Portuguese',
+								},
+							],
+						};
+					} else {
+						state.newRows = {};
+					}
+				}
+
+				if (sortField && fieldExists(junctionCollection, sortField) === false) {
+					state.newFields.push({
+						$type: 'sort',
+						collection: junctionCollection,
+						field: sortField,
+						type: 'integer',
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
+			},
+			50
+		);
 
 		if (!isExisting) {
 			state.fieldData.meta.special = [type];
@@ -567,6 +618,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				() => state.relations[0].many_field,
 				() => state.relations[1].many_field,
 				() => state.relations[1].one_collection,
+				() => state.relations[0].sort_field,
 			],
 			syncNewCollectionsM2M
 		);
@@ -691,83 +743,99 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		delete state.fieldData.schema;
 		state.fieldData.type = null;
 
-		const syncNewCollectionsM2A = throttle(([junctionCollection, manyCurrent, manyRelated, oneCollectionField]) => {
-			state.newCollections = state.newCollections.filter(
-				(col: any) => ['junction', 'related'].includes(col.$type) === false
-			);
+		const syncNewCollectionsM2A = throttle(
+			([junctionCollection, manyCurrent, manyRelated, oneCollectionField, sortField]) => {
+				state.newCollections = state.newCollections.filter(
+					(col: any) => ['junction', 'related'].includes(col.$type) === false
+				);
 
-			state.newFields = state.newFields.filter(
-				(field: Partial<Field> & { $type: string }) =>
-					['manyCurrent', 'manyRelated', 'collectionField'].includes(field.$type) === false
-			);
+				state.newFields = state.newFields.filter(
+					(field: Partial<Field> & { $type: string }) =>
+						['manyCurrent', 'manyRelated', 'collectionField', 'sort'].includes(field.$type) === false
+				);
 
-			if (collectionExists(junctionCollection) === false) {
-				state.newCollections.push({
-					$type: 'junction',
-					collection: junctionCollection,
-					meta: {
-						hidden: true,
-						icon: 'import_export',
-					},
-					fields: [
-						{
-							field: 'id',
-							type: 'integer',
-							schema: {
-								has_auto_increment: true,
-							},
-							meta: {
-								hidden: true,
-							},
+				if (collectionExists(junctionCollection) === false) {
+					state.newCollections.push({
+						$type: 'junction',
+						collection: junctionCollection,
+						meta: {
+							hidden: true,
+							icon: 'import_export',
 						},
-					],
-				});
+						fields: [
+							{
+								field: 'id',
+								type: 'integer',
+								schema: {
+									has_auto_increment: true,
+								},
+								meta: {
+									hidden: true,
+								},
+							},
+						],
+					});
 
-				state.relations[0].many_primary = 'id';
-				state.relations[1].many_primary = 'id';
-			}
+					state.relations[0].many_primary = 'id';
+					state.relations[1].many_primary = 'id';
+				}
 
-			if (fieldExists(junctionCollection, manyCurrent) === false) {
-				state.newFields.push({
-					$type: 'manyCurrent',
-					collection: junctionCollection,
-					field: manyCurrent,
-					type: fieldsStore.getPrimaryKeyFieldForCollection(collection)!.type,
-					schema: {},
-					meta: {
-						hidden: true,
-					},
-				});
-			}
+				if (fieldExists(junctionCollection, manyCurrent) === false) {
+					state.newFields.push({
+						$type: 'manyCurrent',
+						collection: junctionCollection,
+						field: manyCurrent,
+						type: fieldsStore.getPrimaryKeyFieldForCollection(collection)!.type,
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
 
-			if (fieldExists(junctionCollection, manyRelated) === false) {
-				state.newFields.push({
-					$type: 'manyRelated',
-					collection: junctionCollection,
-					field: manyRelated,
-					// We'll have to save the foreign key as a string, as that's the only way to safely
-					// be able to store the PK of multiple typed collections
-					type: 'string',
-					schema: {},
-					meta: {
-						hidden: true,
-					},
-				});
-			}
+				if (fieldExists(junctionCollection, manyRelated) === false) {
+					state.newFields.push({
+						$type: 'manyRelated',
+						collection: junctionCollection,
+						field: manyRelated,
+						// We'll have to save the foreign key as a string, as that's the only way to safely
+						// be able to store the PK of multiple typed collections
+						type: 'string',
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
 
-			if (fieldExists(junctionCollection, oneCollectionField) === false) {
-				state.newFields.push({
-					$type: 'collectionField',
-					collection: junctionCollection,
-					field: oneCollectionField,
-					type: 'string', // directus_collections.collection is a string
-					schema: {},
-					meta: {
-						hidden: true,
-					},
-				});
-			}
-		}, 50);
+				if (fieldExists(junctionCollection, oneCollectionField) === false) {
+					state.newFields.push({
+						$type: 'collectionField',
+						collection: junctionCollection,
+						field: oneCollectionField,
+						type: 'string', // directus_collections.collection is a string
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
+
+				if (sortField && fieldExists(junctionCollection, sortField) === false) {
+					state.newFields.push({
+						$type: 'sort',
+						collection: junctionCollection,
+						field: sortField,
+						type: 'integer',
+						schema: {},
+						meta: {
+							hidden: true,
+						},
+					});
+				}
+			},
+			50
+		);
 
 		if (!isExisting) {
 			state.fieldData.meta.special = [type];
@@ -825,6 +893,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				() => state.relations[0].many_field,
 				() => state.relations[1].many_field,
 				() => state.relations[1].one_collection_field,
+				() => state.relations[0].sort_field,
 			],
 			syncNewCollectionsM2A
 		);
