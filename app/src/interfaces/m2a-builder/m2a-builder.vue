@@ -1,6 +1,6 @@
 <template>
 	<div class="m2a-builder">
-		<div v-if="previewLoading" class="loader">
+		<div v-if="previewLoading && !previewValues" class="loader">
 			<v-skeleton-loader v-for="n in (value || []).length" :key="n" />
 		</div>
 
