@@ -10,7 +10,7 @@
 				<v-list>
 					<v-list-item v-for="n in 6" :key="n" @click="edit('heading', { level: n })">
 						<v-text-overflow :text="$t(`wysiwyg_options.h${n}`)" />
-						<v-list-item-hint>{{ translateShortcut(['control', 'alt']) }} {{ n }}</v-list-item-hint>
+						<v-list-item-hint>{{ translateShortcut(['meta', 'alt']) }} {{ n }}</v-list-item-hint>
 					</v-list-item>
 				</v-list>
 			</v-menu>
@@ -35,7 +35,7 @@
 				small
 				icon
 				@click="edit('strikethrough')"
-				v-tooltip="$t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['control', 'alt', 'd'])"
+				v-tooltip="$t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['meta', 'alt', 'd'])"
 			>
 				<v-icon name="format_strikethrough" />
 			</v-button>
@@ -49,7 +49,7 @@
 				small
 				icon
 				@click="edit('blockquote')"
-				v-tooltip="$t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['control', 'alt', 'q'])"
+				v-tooltip="$t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['meta', 'alt', 'q'])"
 			>
 				<v-icon name="format_quote" />
 			</v-button>
@@ -57,7 +57,7 @@
 				small
 				icon
 				@click="edit('code')"
-				v-tooltip="$t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['control', 'alt', 'c'])"
+				v-tooltip="$t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['meta', 'alt', 'c'])"
 			>
 				<v-icon name="code" />
 			</v-button>
