@@ -303,9 +303,11 @@ export default defineComponent({
 				if (o2mRelation.value?.sort_field) {
 					return [
 						...values
-							.filter((val) => val[o2mRelation.value.sort_field!])
+							.filter((val) => val.hasOwnProperty(o2mRelation.value.sort_field!))
 							.sort((a, b) => a[o2mRelation.value.sort_field!] - b[o2mRelation.value.sort_field!]), // sort by sort field if it exists
-						...values.filter((val) => !val[o2mRelation.value.sort_field!]).sort((a, b) => a.$index - b.$index), // sort the rest with $index
+						...values
+							.filter((val) => !val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.sort((a, b) => a.$index - b.$index), // sort the rest with $index
 					];
 				} else {
 					return [...values.sort((a, b) => a.$index - b.$index)];
@@ -559,6 +561,11 @@ export default defineComponent({
 					[anyRelation.value.one_collection_field!]: collection,
 					[anyRelation.value.many_field]: {},
 				};
+
+				if (previewValues.value && o2mRelation.value?.sort_field) {
+					const maxSort = Math.max(-1, ...previewValues.value.map((val) => val[o2mRelation.value.sort_field!]));
+					newItem[o2mRelation.value.sort_field!] = maxSort + 1;
+				}
 
 				editsAtStart.value = newItem;
 				relatedPrimaryKey.value = '+';
