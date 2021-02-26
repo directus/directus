@@ -119,6 +119,10 @@ Our [marketing site](https://directus.io) provides general information, resource
 
 For the latest product info and sneak-peeks, be sure to follow us on [Twitter](https://twitter.com/directus).
 
+### Videos
+
+Our [YouTube Channel](https://www.youtube.com/c/DirectusVideos), where we share video tutorials, release updates, feature overviews, and more!
+
 ### Community
 
 Join our growing community of 4,000+ developers on [Discord](https://directus.chat) and Slack (legacy). From community
