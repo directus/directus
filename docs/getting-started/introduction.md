@@ -121,7 +121,7 @@ For the latest product info and sneak-peeks, be sure to follow us on [Twitter](h
 
 ### Videos
 
-Our [YouTube Channel](https://www.youtube.com/c/DirectusVideos), where we share video tutorials, release updates, feature overviews, and more!
+Our [YouTube Channel](https://www.youtube.com/c/DirectusVideos) has video tutorials, release updates, feature overviews, and more.
 
 ### Community
 
