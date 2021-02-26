@@ -273,7 +273,6 @@ export default defineComponent({
 		useShortcut('meta+alt+4', () => edit('heading', { level: 4 }));
 		useShortcut('meta+alt+5', () => edit('heading', { level: 5 }));
 		useShortcut('meta+alt+6', () => edit('heading', { level: 6 }));
-		//  TODO Heading, paragraph and div to follow
 
 		return { codemirrorEl, edit, view, html, table, onImageUpload, imageDialogOpen, useShortcut, translateShortcut };
 
