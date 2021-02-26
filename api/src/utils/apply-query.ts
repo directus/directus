@@ -300,7 +300,7 @@ export async function applySearch(
 function getFilterPath(key: string, value: Record<string, any>) {
 	const path = [key];
 
-	if (Object.keys(value)[0].startsWith('_') === true) {
+	if (typeof Object.keys(value)[0] === 'string' && Object.keys(value)[0].startsWith('_') === true) {
 		return path;
 	}
 
