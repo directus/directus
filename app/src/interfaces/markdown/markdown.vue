@@ -8,19 +8,35 @@
 					</v-button>
 				</template>
 				<v-list>
-					<v-list-item v-for="n in 5" :key="n" @click="edit('heading', { level: n })">
+					<v-list-item v-for="n in 6" :key="n" @click="edit('heading', { level: n })">
 						<v-text-overflow :text="$t(`wysiwyg_options.h${n}`)" />
+						<v-list-item-hint>{{ translateShortcut(['control', 'alt']) }} {{ n }}</v-list-item-hint>
 					</v-list-item>
 				</v-list>
 			</v-menu>
 
-			<v-button small icon @click="edit('bold')" v-tooltip="$t('wysiwyg_options.bold')">
+			<v-button
+				small
+				icon
+				@click="edit('bold')"
+				v-tooltip="$t('wysiwyg_options.bold') + ' - ' + translateShortcut(['meta', 'b'])"
+			>
 				<v-icon name="format_bold" />
 			</v-button>
-			<v-button small icon @click="edit('italic')" v-tooltip="$t('wysiwyg_options.italic')">
+			<v-button
+				small
+				icon
+				@click="edit('italic')"
+				v-tooltip="$t('wysiwyg_options.italic') + ' - ' + translateShortcut(['meta', 'i'])"
+			>
 				<v-icon name="format_italic" />
 			</v-button>
-			<v-button small icon @click="edit('strikethrough')" v-tooltip="$t('wysiwyg_options.strikethrough')">
+			<v-button
+				small
+				icon
+				@click="edit('strikethrough')"
+				v-tooltip="$t('wysiwyg_options.strikethrough') + ' - ' + translateShortcut(['control', 'alt', 'd'])"
+			>
 				<v-icon name="format_strikethrough" />
 			</v-button>
 			<v-button small icon @click="edit('listBulleted')" v-tooltip="$t('wysiwyg_options.bullist')">
@@ -29,13 +45,28 @@
 			<v-button small icon @click="edit('listNumbered')" v-tooltip="$t('wysiwyg_options.numlist')">
 				<v-icon name="format_list_numbered" />
 			</v-button>
-			<v-button small icon @click="edit('blockquote')" v-tooltip="$t('wysiwyg_options.blockquote')">
+			<v-button
+				small
+				icon
+				@click="edit('blockquote')"
+				v-tooltip="$t('wysiwyg_options.blockquote') + ' - ' + translateShortcut(['control', 'alt', 'q'])"
+			>
 				<v-icon name="format_quote" />
 			</v-button>
-			<v-button small icon @click="edit('code')" v-tooltip="$t('wysiwyg_options.codeblock')">
+			<v-button
+				small
+				icon
+				@click="edit('code')"
+				v-tooltip="$t('wysiwyg_options.codeblock') + ' - ' + translateShortcut(['control', 'alt', 'c'])"
+			>
 				<v-icon name="code" />
 			</v-button>
-			<v-button small icon @click="edit('link')" v-tooltip="$t('wysiwyg_options.link')">
+			<v-button
+				small
+				icon
+				@click="edit('link')"
+				v-tooltip="$t('wysiwyg_options.link') + ' - ' + translateShortcut(['meta', 'k'])"
+			>
 				<v-icon name="insert_link" />
 			</v-button>
 
@@ -137,6 +168,7 @@ import { getPublicURL } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 import escapeStringRegexp from 'escape-string-regexp';
 import useShortcut from '@/composables/use-shortcut';
+import translateShortcut from '@/utils/translate-shortcut';
 
 export default defineComponent({
 	props: {
@@ -235,7 +267,6 @@ export default defineComponent({
 		useShortcut('meta+alt+d', () => edit('strikethrough'));
 		useShortcut('meta+alt+q', () => edit('blockquote'));
 		useShortcut('meta+alt+c', () => edit('code'));
-		useShortcut('meta+alt+t', () => edit('table'));
 		useShortcut('meta+alt+1', () => edit('heading', { level: 1 }));
 		useShortcut('meta+alt+2', () => edit('heading', { level: 2 }));
 		useShortcut('meta+alt+3', () => edit('heading', { level: 3 }));
@@ -244,7 +275,7 @@ export default defineComponent({
 		useShortcut('meta+alt+6', () => edit('heading', { level: 6 }));
 		//  TODO Heading, paragraph and div to follow
 
-		return { codemirrorEl, edit, view, html, table, onImageUpload, imageDialogOpen };
+		return { codemirrorEl, edit, view, html, table, onImageUpload, imageDialogOpen, useShortcut, translateShortcut };
 
 		function onImageUpload(image: any) {
 			if (!codemirror.value) return;
