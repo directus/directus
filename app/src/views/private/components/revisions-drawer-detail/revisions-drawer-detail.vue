@@ -186,11 +186,14 @@ export default defineComponent({
 
 					created.value = createdResponse.data.data?.[0];
 
-					const revisionsGroupedByDate = groupBy(response.data.data, (revision: Revision) => {
-						// revision's timestamp date is in iso-8601
-						const date = new Date(new Date(revision.activity.timestamp).toDateString());
-						return date;
-					});
+					const revisionsGroupedByDate = groupBy(
+						response.data.data.filter((revision: any) => !!revision.activity),
+						(revision: Revision) => {
+							// revision's timestamp date is in iso-8601
+							const date = new Date(new Date(revision.activity.timestamp).toDateString());
+							return date;
+						}
+					);
 
 					const revisionsGrouped: RevisionsByDate[] = [];
 
