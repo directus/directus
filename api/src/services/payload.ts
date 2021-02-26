@@ -18,6 +18,7 @@ import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';
 import { InvalidPayloadException } from '../exceptions';
 import { isPlainObject } from 'lodash';
+import Joi from 'joi';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -28,6 +29,16 @@ type Transformers = {
 		payload: Partial<Item>;
 		accountability: Accountability | null;
 	}) => Promise<any>;
+};
+
+type Alterations = {
+	create: {
+		[key: string]: any;
+	}[];
+	update: {
+		[key: string]: any;
+	}[];
+	delete: (Number | String)[];
 };
 
 export class PayloadService {
@@ -397,6 +408,12 @@ export class PayloadService {
 	 * Recursively save/update all nested related o2m items
 	 */
 	async processO2M(payload: Partial<Item> | Partial<Item>[], parent?: PrimaryKey) {
+		const nestedUpdateSchema = Joi.object({
+			create: Joi.array().items(Joi.object().unknown()),
+			update: Joi.array().items(Joi.object().unknown()),
+			delete: Joi.array().items(Joi.string(), Joi.number()),
+		});
+
 		const relations = [
 			...this.schema.relations.filter((relation) => {
 				return relation.one_collection === this.collection;
@@ -417,6 +434,8 @@ export class PayloadService {
 			});
 
 			for (const relation of relationsToProcess) {
+				if (!payload[relation.one_field!]) continue;
+
 				const itemsService = new ItemsService(relation.many_collection, {
 					accountability: this.accountability,
 					knex: this.knex,
@@ -424,9 +443,8 @@ export class PayloadService {
 				});
 
 				const relatedRecords: Partial<Item>[] = [];
-				let savedPrimaryKeys: PrimaryKey[] = [];
 
-				if (payload[relation.one_field!] && Array.isArray(payload[relation.one_field!])) {
+				if (Array.isArray(payload[relation.one_field!])) {
 					for (const relatedRecord of payload[relation.one_field!] || []) {
 						let record = cloneDeep(relatedRecord);
 
@@ -455,28 +473,72 @@ export class PayloadService {
 						});
 					}
 
-					savedPrimaryKeys = await itemsService.upsert(relatedRecords);
-				}
+					const savedPrimaryKeys = await itemsService.upsert(relatedRecords);
 
-				await itemsService.updateByQuery(
-					{ [relation.many_field]: null },
-					{
-						filter: {
-							_and: [
-								{
-									[relation.many_field]: {
-										_eq: parent,
+					await itemsService.updateByQuery(
+						{ [relation.many_field]: null },
+						{
+							filter: {
+								_and: [
+									{
+										[relation.many_field]: {
+											_eq: parent,
+										},
 									},
-								},
-								{
-									[relation.many_primary]: {
-										_nin: savedPrimaryKeys,
+									{
+										[relation.many_primary]: {
+											_nin: savedPrimaryKeys,
+										},
 									},
-								},
-							],
-						},
+								],
+							},
+						}
+					);
+				} else {
+					const alterations = payload[relation.one_field!] as Alterations;
+					const { error } = nestedUpdateSchema.validate(alterations);
+					if (error) throw new InvalidPayloadException(`Invalid one-to-many update structure: ${error.message}`);
+
+					if (alterations.create) {
+						await itemsService.create(
+							alterations.create.map((item) => ({
+								...item,
+								[relation.many_field]: parent || payload[relation.one_primary!],
+							}))
+						);
 					}
-				);
+
+					if (alterations.update) {
+						await itemsService.update(
+							alterations.update.map((item) => ({
+								...item,
+								[relation.many_field]: parent || payload[relation.one_primary!],
+							}))
+						);
+					}
+
+					if (alterations.delete) {
+						await itemsService.updateByQuery(
+							{ [relation.many_field]: null },
+							{
+								filter: {
+									_and: [
+										{
+											[relation.many_field]: {
+												_eq: parent,
+											},
+										},
+										{
+											[relation.many_primary]: {
+												_in: alterations.delete,
+											},
+										},
+									],
+								},
+							}
+						);
+					}
+				}
 			}
 		}
 	}

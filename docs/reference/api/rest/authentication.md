@@ -8,8 +8,8 @@ pageClass: page-reference
 <div class="left">
 
 > By default, all data in the system is off limits for unauthenticated users. To gain access to protected data, you must
-include an access token with every request, or
-[configure permissions for the public role](/guides/roles-and-permissions).
+> include an access token with every request, or
+> [configure permissions for the public role](/guides/roles-and-permissions).
 
 </div>
 
@@ -306,7 +306,8 @@ List all the configured oAuth providers.
 
 ::: tip Configuring oAuth
 
-To learn more about setting up oAuth providers, see [Configuring SSO through oAuth](/guides/oauth).
+To learn more about setting up oAuth providers, see
+[Configuring SSO through oAuth](/guides/api-config/#oauth-single-sign-on-openid).
 
 :::
 

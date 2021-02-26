@@ -11,4 +11,7 @@ export type Relation = {
 
 	one_collection_field: string | null;
 	one_allowed_collections: string | null;
+
+	junction_field: string | null;
+	sort_field: string | null;
 };

@@ -219,6 +219,40 @@
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
 
+		<div class="sort-field">
+			<v-divider large :inline-title="false">{{ $t('sort_field') }}</v-divider>
+
+			<v-input
+				:class="{ matches: junctionFieldExists(relations[0].sort_field) }"
+				v-model="relations[0].sort_field"
+				:nullable="false"
+				:placeholder="$t('add_sort_field') + '...'"
+				db-safe
+			>
+				<template #append v-if="junctionCollectionExists">
+					<v-menu show-arrow placement="bottom-end">
+						<template #activator="{ toggle }">
+							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
+						</template>
+
+						<v-list class="monospace">
+							<v-list-item
+								v-for="item in junctionFields"
+								:key="item.value"
+								:active="relations[0].sort_field === item.value"
+								:disabled="item.disabled"
+								@click="relations[0].sort_field = item.value"
+							>
+								<v-list-item-content>
+									{{ item.text }}
+								</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+				</template>
+			</v-input>
+		</div>
+
 		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
 			<span>
 				{{ $t('new_data_alert') }}
@@ -226,7 +260,7 @@
 				<ul>
 					<li v-for="(data, index) in generationInfo" :key="index">
 						<span class="field-name">{{ data.name }}</span>
-						({{ $t(data.isField ? 'new_field' : 'new_collection') }})
+						({{ $t(data.type === 'field' ? 'new_field' : 'new_collection') }})
 					</li>
 				</ul>
 			</span>
@@ -235,13 +269,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import i18n from '@/lang';
 
-import { state } from '../store';
+import { state, generationInfo } from '../store';
 
 export default defineComponent({
 	props: {
@@ -324,44 +358,6 @@ export default defineComponent({
 
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
 
-		const generationInfo = computed(() => {
-			const message: { name: string; isField: boolean }[] = [];
-
-			if (state.relations[1].one_collection !== '') {
-				if (relatedCollectionExists.value === false) {
-					message.push({ name: state.relations[1].one_collection, isField: false });
-
-					if (state.relations[1].one_primary !== '')
-						message.push({
-							name: state.relations[1].one_collection + '.' + state.relations[1].one_primary,
-							isField: true,
-						});
-				}
-
-				if (hasCorresponding.value === true && correspondingField.value !== null)
-					message.push({ name: state.relations[1].one_collection + '.' + correspondingField.value, isField: true });
-			}
-
-			if (state.relations[0].many_collection) {
-				if (junctionCollectionExists.value === false)
-					message.push({ name: state.relations[0].many_collection, isField: false });
-
-				if (junctionFieldExists(state.relations[0].many_field) === false && state.relations[0].many_field !== '')
-					message.push({
-						name: state.relations[0].many_collection + '.' + state.relations[0].many_field,
-						isField: true,
-					});
-
-				if (junctionFieldExists(state.relations[1].many_field) === false && state.relations[1].many_field !== '')
-					message.push({
-						name: state.relations[0].many_collection + '.' + state.relations[1].many_field,
-						isField: true,
-					});
-			}
-
-			return message;
-		});
-
 		return {
 			relations: state.relations,
 			autoFill,
@@ -379,7 +375,7 @@ export default defineComponent({
 		};
 
 		function junctionFieldExists(fieldKey: string) {
-			if (!junctionCollection.value) return false;
+			if (!junctionCollection.value || !fieldKey) return false;
 			return !!fieldsStore.getField(junctionCollection.value, fieldKey);
 		}
 
@@ -457,10 +453,6 @@ export default defineComponent({
 	gap: 12px 28px;
 	margin-top: 48px;
 
-	.v-input.matches {
-		--v-input-color: var(--primary);
-	}
-
 	.v-icon.arrow {
 		--v-icon-color: var(--primary);
 
@@ -480,12 +472,16 @@ export default defineComponent({
 	}
 }
 
+.v-input.matches {
+	--v-input-color: var(--primary);
+}
+
 .type-label {
 	margin-bottom: 8px;
 }
 
 .v-divider {
-	margin: 48px 0;
+	margin: 48px 0 24px;
 }
 
 .v-list {
@@ -497,7 +493,6 @@ export default defineComponent({
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 12px 32px;
-	margin-top: 48px;
 
 	.arrow {
 		--v-icon-color: var(--primary);
@@ -523,6 +518,15 @@ export default defineComponent({
 
 	.field-name {
 		font-family: var(--family-monospace);
+	}
+}
+
+.sort-field {
+	--v-input-font-family: var(--family-monospace);
+
+	.v-divider {
+		margin-top: 48px;
+		margin-bottom: 24px;
 	}
 }
 </style>

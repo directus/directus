@@ -1,6 +1,6 @@
 # Tabs
 
-Tabs work like tabs in the browser and are there to split data into quickly accessable pages.
+Tabs work like tabs in the browser and are there to split data into quickly accessible pages.
 
 ```html
 <v-tabs v-model="activePage">
