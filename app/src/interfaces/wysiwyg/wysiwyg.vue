@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, toRefs } from '@vue/composition-api';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';
@@ -121,13 +121,10 @@ import 'tinymce/plugins/directionality/plugin';
 import 'tinymce/icons/default';
 
 import Editor from '@tinymce/tinymce-vue';
-
 import getEditorStyles from './get-editor-styles';
 
-import { getPublicURL } from '@/utils/get-root-path';
-import { addTokenToURL } from '@/api';
-import i18n from '@/lang';
-import { start } from '@popperjs/core';
+import useImage from './useImage';
+import useMedia from './useMedia';
 
 type CustomFormat = {
 	title: string;
@@ -135,19 +132,6 @@ type CustomFormat = {
 	classes: string;
 	styles: Record<string, string>;
 	attributes: Record<string, string>;
-};
-
-type ImageSelection = {
-	imageUrl: string;
-	alt: string;
-	width?: number;
-	height?: number;
-};
-
-type MediaSelection = {
-	source: string;
-	width?: number;
-	height?: number;
 };
 
 export default defineComponent({
@@ -202,8 +186,12 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const editorRef = ref<any | null>(null);
 		const editorElement = ref<Vue | null>(null);
+		const { imageToken } = toRefs(props);
 
-		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage } = useImage();
+		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
+			editorRef,
+			imageToken
+		);
 		const {
 			mediaDrawerOpen,
 			mediaSelection,
@@ -212,11 +200,11 @@ export default defineComponent({
 			onMediaSelect,
 			embed,
 			saveMedia,
-			startEmbed,
 			mediaHeight,
 			mediaWidth,
 			mediaSource,
-		} = useMedia();
+			mediaButton,
+		} = useMedia(editorRef, imageToken);
 
 		const _value = computed({
 			get() {
@@ -288,215 +276,9 @@ export default defineComponent({
 		function setup(editor: any) {
 			editorRef.value = editor;
 
-			editor.ui.registry.addToggleButton('customImage', {
-				icon: 'image',
-				tooltip: i18n.t('wysiwyg_options.image'),
-				onAction: (buttonApi: any) => {
-					imageDrawerOpen.value = true;
+			editor.ui.registry.addToggleButton('customImage', imageButton);
 
-					if (buttonApi.isActive()) {
-						const node = editor.selection.getNode() as HTMLImageElement;
-						const imageUrl = node.getAttribute('src');
-						const alt = node.getAttribute('alt');
-
-						if (imageUrl === null || alt === null) {
-							return;
-						}
-
-						imageSelection.value = {
-							imageUrl,
-							alt,
-							width: Number(node.getAttribute('width')) || undefined,
-							height: Number(node.getAttribute('height')) || undefined,
-						};
-					} else {
-						imageSelection.value = null;
-					}
-				},
-				onSetup: (buttonApi: any) => {
-					const onImageNodeSelect = (eventApi: any) => {
-						buttonApi.setActive(eventApi.element.tagName === 'IMG');
-					};
-
-					editor.on('NodeChange', onImageNodeSelect);
-
-					return function (buttonApi: any) {
-						editor.off('NodeChange', onImageNodeSelect);
-					};
-				},
-			});
-
-			editor.ui.registry.addToggleButton('customMedia', {
-				icon: 'embed',
-				tooltip: i18n.t('wysiwyg_options.media'),
-				onAction: (buttonApi: any) => {
-					mediaDrawerOpen.value = true;
-
-					if (buttonApi.isActive()) {
-						if (editor.selection.getContent() === null) return;
-
-						embed.value = editor.selection.getContent();
-						startEmbed.value = embed.value;
-					} else {
-						mediaSelection.value = null;
-					}
-				},
-				onSetup: (buttonApi: any) => {
-					const onVideoNodeSelect = (eventApi: any) => {
-						buttonApi.setActive(
-							eventApi.element.tagName === 'SPAN' && eventApi.element.classList.contains('mce-preview-object')
-						);
-					};
-
-					editor.on('NodeChange', onVideoNodeSelect);
-
-					return function (buttonApi: any) {
-						editor.off('NodeChange', onVideoNodeSelect);
-					};
-				},
-			});
-		}
-
-		function useMedia() {
-			const mediaDrawerOpen = ref(false);
-			const mediaSelection = ref<MediaSelection | null>(null);
-			const openMediaTab = ref(['video']);
-			const embed = ref('');
-			const startEmbed = ref('');
-
-			const mediaSource = computed({
-				get() {
-					return mediaSelection.value?.source;
-				},
-				set(newSource: any) {
-					mediaSelection.value = { ...mediaSelection.value, source: newSource };
-				},
-			});
-
-			const mediaWidth = computed({
-				get() {
-					return mediaSelection.value?.width;
-				},
-				set(newSource: number | undefined) {
-					if (mediaSelection.value === null) return;
-					mediaSelection.value = { ...mediaSelection.value, width: newSource };
-				},
-			});
-
-			const mediaHeight = computed({
-				get() {
-					return mediaSelection.value?.height;
-				},
-				set(newSource: number | undefined) {
-					if (mediaSelection.value === null) return;
-					mediaSelection.value = { ...mediaSelection.value, height: newSource };
-				},
-			});
-
-			watch(mediaSelection, (vid) => {
-				if (embed.value === '') {
-					if (vid === null) return;
-					embed.value = `<video width="${vid.width}" height="${vid.height}" controls="controls"><source src="${vid.source}" /></video>`;
-				} else {
-					embed.value = embed.value
-						.replace(/src=".*?"/g, `src="${vid?.source}"`)
-						.replace(/width=".*?"/g, `width="${vid?.width}"`)
-						.replace(/height=".*?"/g, `height="${vid?.height}"`);
-				}
-			});
-
-			watch(embed, (newEmbed) => {
-				if (newEmbed === '') {
-					mediaSelection.value = null;
-				} else {
-					const source = /src="(.*?)"/g.exec(newEmbed)?.[1] || undefined;
-					const width = Number(/width="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
-					const height = Number(/height="(.*?)"/g.exec(newEmbed)?.[1]) || undefined;
-
-					if (source === undefined) return;
-
-					mediaSelection.value = {
-						source,
-						width,
-						height,
-					};
-				}
-			});
-
-			return {
-				mediaDrawerOpen,
-				mediaSelection,
-				closeMediaDrawer,
-				openMediaTab,
-				onMediaSelect,
-				embed,
-				saveMedia,
-				startEmbed,
-				mediaHeight,
-				mediaWidth,
-				mediaSource,
-			};
-
-			function closeMediaDrawer() {
-				embed.value = '';
-				startEmbed.value = '';
-				mediaSelection.value = null;
-				mediaDrawerOpen.value = false;
-				openMediaTab.value = ['video'];
-			}
-
-			function onMediaSelect(media: Record<string, any>) {
-				const source = addTokenToURL(getPublicURL() + 'assets/' + media.id, props.imageToken);
-
-				mediaSelection.value = {
-					source,
-					width: media.width || 300,
-					height: media.height || 150,
-				};
-			}
-
-			function saveMedia() {
-				if (embed.value === '') return;
-
-				if (startEmbed.value !== '') {
-					const updatedContent = editorRef.value.getContent().replace(startEmbed.value, embed.value);
-					editorRef.value.setContent(updatedContent);
-				} else {
-					editorRef.value.selection.setContent(embed.value);
-				}
-				closeMediaDrawer();
-			}
-		}
-
-		function useImage() {
-			const imageDrawerOpen = ref(false);
-			const imageSelection = ref<ImageSelection | null>(null);
-
-			return { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage };
-
-			function closeImageDrawer() {
-				imageSelection.value = null;
-				imageDrawerOpen.value = false;
-			}
-
-			function onImageSelect(image: Record<string, any>) {
-				const imageUrl = addTokenToURL(getPublicURL() + 'assets/' + image.id, props.imageToken);
-
-				imageSelection.value = {
-					imageUrl,
-					alt: image.title,
-					width: image.width,
-					height: image.height,
-				};
-			}
-
-			function saveImage() {
-				const img = imageSelection.value;
-				if (img === null) return;
-				const imageHtml = `<img src="${img.imageUrl}" alt="${img.alt}" width="${img.width}" height="${img.height}" />`;
-				editorRef.value.selection.setContent(imageHtml);
-				closeImageDrawer();
-			}
+			editor.ui.registry.addToggleButton('customMedia', mediaButton);
 		}
 
 		function setFocus(val: boolean) {
