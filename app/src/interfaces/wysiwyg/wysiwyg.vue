@@ -8,6 +8,53 @@
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
 		/>
+
+		<v-dialog v-model="linkDrawerOpen">
+			<v-card>
+				<v-card-title class="card-title">{{ $t('wysiwyg_options.link') }}</v-card-title>
+				<v-card-text>
+					<div class="grid">
+						<div class="field">
+							<div class="type-label">{{ $t('url') }}</div>
+							<v-input v-model="linkSelection.url" :placeholder="$t('url_placeholder')"></v-input>
+						</div>
+						<div class="field">
+							<div class="type-label">{{ $t('display_text') }}</div>
+							<v-input v-model="linkSelection.displayText" :placeholder="$t('display_text_placeholder')"></v-input>
+						</div>
+						<div class="field half">
+							<div class="type-label">{{ $t('tooltip') }}</div>
+							<v-input v-model="linkSelection.title" :placeholder="$t('tooltip_placeholder')"></v-input>
+						</div>
+						<div class="field half-right">
+							<div class="type-label">{{ $t('open_link_in') }}</div>
+							<v-checkbox
+								block
+								v-model="linkSelection.newTab"
+								:label="$t(linkSelection.newTab ? 'new_tab' : 'current_tab')"
+							></v-checkbox>
+						</div>
+					</div>
+				</v-card-text>
+				<v-card-actions>
+					<v-button @click="closeLinkDrawer" secondary>{{ $t('cancel') }}</v-button>
+					<v-button :disabled="linkSelection.url === null" @click="saveLink">{{ $t('save') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
+		<v-drawer v-model="codeDrawerOpen" :title="$t('wysiwyg_options.source_code')" @cancel="closeCodeDrawer" icon="code">
+			<div class="content">
+				<interface-code v-model="code" language="htmlmixed"></interface-code>
+			</div>
+
+			<template #actions>
+				<v-button @click="saveCode" icon rounded>
+					<v-icon name="check" />
+				</v-button>
+			</template>
+		</v-drawer>
+
 		<v-drawer v-model="imageDrawerOpen" :title="$t('wysiwyg_options.image')" @cancel="closeImageDrawer" icon="image">
 			<div class="content">
 				<template v-if="imageSelection">
@@ -125,6 +172,8 @@ import getEditorStyles from './get-editor-styles';
 
 import useImage from './useImage';
 import useMedia from './useMedia';
+import useLink from './useLink';
+import useSourceCode from './useSourceCode';
 
 type CustomFormat = {
 	title: string;
@@ -148,7 +197,7 @@ export default defineComponent({
 				'italic',
 				'underline',
 				'removeformat',
-				'link',
+				'customLink',
 				'bullist',
 				'numlist',
 				'blockquote',
@@ -158,7 +207,7 @@ export default defineComponent({
 				'customImage',
 				'customMedia',
 				'hr',
-				'code',
+				'customCode',
 				'fullscreen',
 			],
 		},
@@ -206,6 +255,10 @@ export default defineComponent({
 			mediaButton,
 		} = useMedia(editorRef, imageToken);
 
+		const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection } = useLink(editorRef);
+
+		const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
+
 		const _value = computed({
 			get() {
 				return props.value;
@@ -244,7 +297,7 @@ export default defineComponent({
 				extended_valid_elements: 'audio[loop],source',
 				toolbar: toolbarString,
 				style_formats: styleFormats,
-				file_picker_types: 'customImage image media',
+				file_picker_types: 'customImage customMedia image media',
 				link_default_protocol: 'https',
 				...(props.tinymceOverrides || {}),
 				setup,
@@ -271,14 +324,25 @@ export default defineComponent({
 			mediaHeight,
 			mediaWidth,
 			mediaSource,
+			linkButton,
+			linkDrawerOpen,
+			closeLinkDrawer,
+			saveLink,
+			linkSelection,
+			codeDrawerOpen,
+			code,
+			closeCodeDrawer,
+			saveCode,
+			sourceCodeButton,
 		};
 
 		function setup(editor: any) {
 			editorRef.value = editor;
 
 			editor.ui.registry.addToggleButton('customImage', imageButton);
-
 			editor.ui.registry.addToggleButton('customMedia', mediaButton);
+			editor.ui.registry.addToggleButton('customLink', linkButton);
+			editor.ui.registry.addButton('customCode', sourceCodeButton);
 		}
 
 		function setFocus(val: boolean) {
@@ -322,5 +386,10 @@ export default defineComponent({
 	padding: var(--content-padding);
 	padding-top: 0;
 	padding-bottom: var(--content-padding);
+}
+
+::v-deep .v-card-title {
+	margin-bottom: 24px;
+	font-size: 24px;
 }
 </style>

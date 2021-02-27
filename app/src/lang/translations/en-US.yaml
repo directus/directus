@@ -526,6 +526,14 @@ media: Media
 width: Width
 height: Height
 source: Source
+url_placeholder: Enter an url...
+display_text: Display Text
+display_text_placeholder: Enter a display text...
+tooltip: Tooltip
+tooltip_placeholder: Enter a tooltip...
+open_link_in: Open link in
+new_tab: New tab
+current_tab: Current tab
 wysiwyg_options:
   aligncenter: Align Center
   alignjustify: Align Justify
@@ -545,7 +553,7 @@ wysiwyg_options:
   bullist: Bullet List
   numlist: Numbered List
   hr: Horizontal Rule
-  link: Link
+  link: Add/Edit Link
   unlink: Remove Link
   media: Add/Edit Media
   image: Add/Edit Image
@@ -570,7 +578,7 @@ wysiwyg_options:
   selectall: Select All
   table: Table
   visualaid: View invisible elements
-  code: View Source
+  source_code: Edit Source Code
   fullscreen: Full Screen
   directionality: Directionality
 dropdown: Dropdown
