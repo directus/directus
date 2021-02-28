@@ -11,15 +11,6 @@
 				:inject="junctionCollectionExists ? null : { fields: newFields, collections: newCollections, relations }"
 			/>
 		</div>
-		<div class="field half">
-			<p class="type-label">{{ $t('sort_field') }}</p>
-			<interface-field
-				v-model="sortField"
-				:collection="junctionCollection"
-				:type-allow-list="['bigInteger', 'integer']"
-				allowNone
-			></interface-field>
-		</div>
 	</div>
 </template>
 
@@ -58,19 +49,6 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
-		const relationsStore = useRelationsStore();
-
-		const sortField = computed({
-			get() {
-				return props.value?.sortField;
-			},
-			set(newFields: string) {
-				emit('input', {
-					...(props.value || {}),
-					sortField: newFields,
-				});
-			},
-		});
 
 		const fields = computed({
 			get() {
@@ -99,7 +77,7 @@ export default defineComponent({
 			);
 		});
 
-		return { fields, sortField, junctionCollection, junctionCollectionExists };
+		return { fields, junctionCollection, junctionCollectionExists };
 	},
 });
 </script>

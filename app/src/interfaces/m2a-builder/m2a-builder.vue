@@ -1,6 +1,6 @@
 <template>
 	<div class="m2a-builder">
-		<div v-if="previewLoading" class="loader">
+		<div v-if="previewLoading && !previewValues" class="loader">
 			<v-skeleton-loader v-for="n in (value || []).length" :key="n" />
 		</div>
 
@@ -10,7 +10,7 @@
 			handle=".drag-handle"
 			@input="onSort"
 			:set-data="hideDragImage"
-			:disabled="!sortField"
+			:disabled="!o2mRelation.sort_field"
 		>
 			<div
 				class="m2a-row"
@@ -18,7 +18,7 @@
 				:key="item.$index"
 				@click="editExisting((value || [])[item.$index])"
 			>
-				<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="sortField" />
+				<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
 				<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
 				<span
 					v-if="typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'"
@@ -138,10 +138,6 @@ export default defineComponent({
 		primaryKey: {
 			type: [String, Number] as PropType<string | number>,
 			required: true,
-		},
-		sortField: {
-			type: String,
-			default: null,
 		},
 	},
 	setup(props, { emit }) {
@@ -304,10 +300,18 @@ export default defineComponent({
 						return val;
 					});
 
-				return [
-					...values.filter((val) => val[props.sortField]).sort((a, b) => a[props.sortField] - b[props.sortField]), // sort by sortField if it exists
-					...values.filter((val) => !val[props.sortField]).sort((a, b) => a.$index - b.$index), // sort the rest with $index
-				];
+				if (o2mRelation.value?.sort_field) {
+					return [
+						...values
+							.filter((val) => val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.sort((a, b) => a[o2mRelation.value.sort_field!] - b[o2mRelation.value.sort_field!]), // sort by sort field if it exists
+						...values
+							.filter((val) => !val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.sort((a, b) => a.$index - b.$index), // sort the rest with $index
+					];
+				} else {
+					return [...values.sort((a, b) => a.$index - b.$index)];
+				}
 			});
 
 			return { fetchValues, previewValues, loading, junctionRowMap, relatedItemValues };
@@ -378,7 +382,7 @@ export default defineComponent({
 									o2mRelation.value.many_primary,
 									anyRelation.value.many_field,
 									anyRelation.value.one_collection_field!,
-									props.sortField,
+									o2mRelation.value.sort_field,
 								],
 							},
 						});
@@ -530,8 +534,8 @@ export default defineComponent({
 						},
 					};
 
-					if (props.sortField) {
-						editsAtStart.value[props.sortField] = junctionRow[props.sortField];
+					if (o2mRelation.value.sort_field) {
+						editsAtStart.value[o2mRelation.value.sort_field] = junctionRow[o2mRelation.value.sort_field];
 					}
 
 					relatedPrimaryKey.value = relatedKey || '+';
@@ -558,6 +562,11 @@ export default defineComponent({
 					[anyRelation.value.many_field]: {},
 				};
 
+				if (previewValues.value && o2mRelation.value?.sort_field) {
+					const maxSort = Math.max(-1, ...previewValues.value.map((val) => val[o2mRelation.value.sort_field!]));
+					newItem[o2mRelation.value.sort_field!] = maxSort + 1;
+				}
+
 				editsAtStart.value = newItem;
 				relatedPrimaryKey.value = '+';
 				currentlyEditing.value = '+';
@@ -571,6 +580,8 @@ export default defineComponent({
 				emit(
 					'input',
 					props.value.map((rawValue, index) => {
+						if (!o2mRelation.value.sort_field) return rawValue;
+
 						const sortedItemIndex = sortedItems.findIndex((sortedItem) => {
 							return sortedItem.$index === index;
 						});
@@ -578,12 +589,12 @@ export default defineComponent({
 						if (isPlainObject(rawValue)) {
 							return {
 								...rawValue,
-								[props.sortField]: sortedItemIndex + 1,
+								[o2mRelation.value.sort_field]: sortedItemIndex + 1,
 							};
 						} else {
 							return {
 								[o2mRelation.value.many_primary]: rawValue,
-								[props.sortField]: sortedItemIndex + 1,
+								[o2mRelation.value.sort_field]: sortedItemIndex + 1,
 							};
 						}
 					})

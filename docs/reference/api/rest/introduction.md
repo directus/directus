@@ -61,12 +61,12 @@ jump ahead to the [Items Endpoint](/reference/api/rest/items/) section of the AP
 By default, Directus only retrieves the "root level" of an item. Relational data can be nested by using
 [the `fields` parameter](/reference/api/query/#fields).
 
-You can use a wildcard (`*`) to fetch all items in a given level, and use `*.*` to fetch everything on the next related
-level as well.
+You can use a wildcard (_) to fetch all items in a given level, use _.\* to fetch everything on the next relational
+level, and so on, to any depth required.
 
 ::: tip Performance & Size
 
-While the fields wildcard is very useful for debugging purposes, we recommend using specifically selected fields for
+While the fields wildcard is very useful for debugging purposes, we recommend only requesting _specific_ fields for
 production use. By only requesting the fields you really need, you can drastically speed up the request, and reduce the
 overall output size.
 
@@ -90,7 +90,7 @@ PATCH /items/pages/about
 }
 ```
 
-This will create a new record in the related collection, and save it's primary key in the `featured_article` field for
+This will create a new record in the related collection, and save its primary key in the `featured_article` field for
 this item. To update an existing item, simply provide the primary key with the updates, and Directus will treat it as an
 update instead of a creation:
 
@@ -118,7 +118,7 @@ PATCH /items/pages/about
 
 ##### One-to-Many (/ Many-to-Many / Many-to-Any)
 
-One-to-Many—and therefore Many-to-Many and Many-to-Any—relationships can be updated in one of two ways:
+One-to-Many, and therefore Many-to-Many and Many-to-Any, relationships can be updated in one of two ways:
 
 **Basic**
 

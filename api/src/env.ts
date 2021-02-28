@@ -22,7 +22,6 @@ const defaults: Record<string, any> = {
 	MAX_PAYLOAD_SIZE: '100kb',
 
 	STORAGE_LOCATIONS: 'local',
-	STORAGE_LOCAL_PUBLIC_URL: 'http://localhost:8055/uploads',
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
 

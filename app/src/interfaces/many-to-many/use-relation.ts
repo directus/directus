@@ -7,6 +7,7 @@ export type RelationInfo = {
 	junctionPkField: string;
 	relationPkField: string;
 	junctionField: string;
+	sortField: string;
 	junctionCollection: string;
 	relationCollection: string;
 };
@@ -50,6 +51,7 @@ export default function useRelation(collection: Ref<string>, field: Ref<string>)
 			junctionPkField: junctionPrimaryKeyField.value.field,
 			relationPkField: relationPrimaryKeyField.value.field,
 			junctionField: junction.value.junction_field as string,
+			sortField: junction.value.sort_field as string,
 			junctionCollection: junctionCollection.value.collection,
 			relationCollection: relationCollection.value.collection,
 		} as RelationInfo;

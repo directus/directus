@@ -42,8 +42,9 @@ export class AssetsService {
 		const type = file.type;
 
 		// We can only transform JPEG, PNG, and WebP
-		if (['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
+		if (Object.keys(transformation).length > 0 && ['image/jpeg', 'image/png', 'image/webp'].includes(type)) {
 			const resizeOptions = this.parseTransformation(transformation);
+
 			const assetFilename =
 				path.basename(file.filename_disk, path.extname(file.filename_disk)) +
 				this.getAssetSuffix(resizeOptions) +
@@ -60,7 +61,7 @@ export class AssetsService {
 			}
 
 			const readStream = storage.disk(file.storage).getStream(file.filename_disk, range);
-			const transformer = sharp().resize(resizeOptions);
+			const transformer = sharp().rotate().resize(resizeOptions);
 
 			await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer));
 

@@ -14,6 +14,8 @@ router.post(
 	'/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
+		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
@@ -22,6 +24,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const primaryKey = await service.create(req.body);
 
 		try {
@@ -44,6 +47,8 @@ router.get(
 	'/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
+		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,
@@ -74,6 +79,8 @@ router.get(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
+		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
@@ -97,6 +104,8 @@ router.patch(
 	'/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
+		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,
@@ -160,6 +169,8 @@ router.patch(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
+		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+
 		if (req.singleton) {
 			throw new RouteNotFoundException(req.path);
 		}
@@ -192,6 +203,8 @@ router.delete(
 	'/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
+		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+
 		if (!req.body || Array.isArray(req.body) === false) {
 			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
 		}
@@ -210,6 +223,8 @@ router.delete(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
+		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,

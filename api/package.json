@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-rc.43",
+	"version": "9.0.0-rc.44",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -123,7 +123,7 @@
 		"qs": "^6.9.4",
 		"rate-limiter-flexible": "^2.1.13",
 		"resolve-cwd": "^3.0.0",
-		"sharp": "^0.26.2",
+		"sharp": "^0.27.1",
 		"uuid": "^8.3.1",
 		"uuid-validate": "0.0.3"
 	},

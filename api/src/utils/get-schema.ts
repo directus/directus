@@ -50,6 +50,10 @@ export async function getSchema(options?: {
 				permissionRaw.validation = JSON.parse(permissionRaw.validation);
 			}
 
+			if (permissionRaw.presets && typeof permissionRaw.presets === 'string') {
+				permissionRaw.presets = JSON.parse(permissionRaw.presets);
+			}
+
 			if (permissionRaw.fields && typeof permissionRaw.fields === 'string') {
 				permissionRaw.fields = permissionRaw.fields.split(',');
 			}

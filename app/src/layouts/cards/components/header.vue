@@ -85,7 +85,7 @@ export default defineComponent({
 				.map((field) => ({
 					field: field.field,
 					name: field.name,
-					disabled: ['json', 'o2m', 'm2o', 'file', 'files', 'alias', 'presentation'].includes(field.type),
+					disabled: ['json', 'o2m', 'm2o', 'm2a', 'file', 'files', 'alias', 'presentation'].includes(field.type),
 				}));
 		});
 
@@ -126,8 +126,8 @@ export default defineComponent({
 	top: var(--layout-offset-top);
 	z-index: 4;
 	display: flex;
-	align-items: center;
 	justify-content: space-between;
+	align-items: center;
 	width: 100%;
 	height: 52px;
 	margin-bottom: 36px;
