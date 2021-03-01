@@ -87,6 +87,7 @@ field_presentation: Présentation & Alias
 field_file: Fichier simple
 field_files: Fichiers multiples
 field_m2o: Relation M2O
+field_m2a: Relation M2A
 field_o2m: Relation O2M
 field_m2m: Relation M2M
 field_translations: Traductions
@@ -363,6 +364,7 @@ collection_created: Collection créée
 modified_on: Modifié le
 card_size: Taille de la carte
 sort_field: Trier les champs
+add_sort_field: Ajouter un champ de tri
 sort: Trier
 status: Etat
 toggle_manual_sorting: Activer/désactiver le tri manuel
@@ -425,11 +427,14 @@ delete_collection_are_you_sure: >-
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées
+show_hidden_collections: Afficher les collections cachées
+hide_hidden_collections: Masquer les collections cachées
 unmanaged_collections: Collections non configurées
 system_collections: Collections système
 placeholder: Placeholder
 icon_left: Icône gauche
 icon_right: Icône droite
+count_other_revisions: '{count} autres Révisions'
 font: Police de caractères
 sans_serif: Sans Sérif
 serif: Sérif
@@ -578,6 +583,7 @@ scope: Périmètre d'application
 layout: Mise en page
 changes_are_permanent: Les modifications sont irréversibles
 preset_name_placeholder: Nom du favori...
+preset_search_placeholder: Recherche...
 editing_preset: Édition du préréglage
 layout_preview: Aperçu de la mise en page
 layout_setup: Configuration de la mise en page
@@ -794,6 +800,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:
