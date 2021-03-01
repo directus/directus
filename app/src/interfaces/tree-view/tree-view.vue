@@ -1,32 +1,43 @@
 <template>
 	<div class="interface-tree-view">
-		<v-list>
-			<tree-view-group
-				v-for="item in previewValues[relation.one_field]"
-				:key="item[primaryKeyField]"
-				:primary-key-field="primaryKeyField.field"
-				:children-field="relation.one_field"
-				:template="template"
-				:item="item"
-				:collection="collection"
-			/>
+		<v-list v-model="openItems" :mandatory="false">
+			<draggable
+				@change="onSortChange"
+				handle=".drag-handle"
+				:list="previewValues[relation.one_field]"
+				:group="{ name: `${collection}.${field}` }"
+			>
+				<tree-view-group
+					v-for="item in previewValues[relation.one_field]"
+					:key="item[primaryKeyField]"
+					:primary-key-field="primaryKeyField.field"
+					:children-field="relation.one_field"
+					:template="template"
+					:item="item"
+					:collection="collection"
+					:draggable-group="`${collection}.${field}`"
+				/>
+			</draggable>
 		</v-list>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, computed, onMounted, PropType, watch } from '@vue/composition-api';
 import { useCollection } from '@/composables/use-collection';
 import { useRelationsStore } from '@/stores';
 import api from '@/api';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import TreeViewGroup from './tree-view-group.vue';
+import draggable from 'vuedraggable';
+
+import { ChangesObject } from './types';
 
 export default defineComponent({
-	components: { TreeViewGroup },
+	components: { TreeViewGroup, draggable },
 	props: {
 		value: {
-			type: Array,
+			type: [Array, Object] as PropType<(number | string)[] | ChangesObject>,
 			default: null,
 		},
 		displayTemplate: {
@@ -46,7 +57,7 @@ export default defineComponent({
 			default: undefined,
 		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
 		const openItems = ref([]);
 
@@ -57,12 +68,41 @@ export default defineComponent({
 		const { loading, error, previewValues, fetchValues } = useValues();
 
 		const template = computed(() => {
-			return props.displayTemplate || info.value?.meta?.display_template || `{{${primaryKeyField.value.field}}}`;
+			return (
+				'{{ name }}' ||
+				props.displayTemplate ||
+				info.value?.meta?.display_template ||
+				`{{${primaryKeyField.value.field}}}`
+			);
+		});
+
+		const changesObject = computed<ChangesObject>(() => {
+			if (typeof props.value === 'object' && Array.isArray(props.value) === false) {
+				return props.value as ChangesObject;
+			}
+
+			return {
+				create: [],
+				update: [],
+				delete: [],
+			};
 		});
 
 		onMounted(fetchValues);
+		watch(() => props.primaryKey, fetchValues, { immediate: true });
 
-		return { relation, openItems, template, loading, error, previewValues, fetchValues, primaryKeyField };
+		return {
+			changesObject,
+			relation,
+			openItems,
+			template,
+			loading,
+			error,
+			previewValues,
+			fetchValues,
+			primaryKeyField,
+			onSortChange,
+		};
 
 		function useValues() {
 			const loading = ref(false);
@@ -73,7 +113,7 @@ export default defineComponent({
 			return { loading, error, previewValues, fetchValues };
 
 			async function fetchValues() {
-				if (!props.primaryKey || !relation.value) return;
+				if (!props.primaryKey || !relation.value || props.primaryKey === '+') return;
 
 				loading.value = true;
 
@@ -117,6 +157,33 @@ export default defineComponent({
 			});
 
 			return { relation };
+		}
+
+		function onSortChange(changes: any) {
+			console.log(changes);
+			if (changes.added) {
+				const { element } = changes.added;
+
+				emit('input', {
+					create: [...changesObject.value.create, element],
+					update: [],
+					delete: changesObject.value.delete.filter((item) => item !== element),
+				});
+			}
+
+			if (changes.moved) {
+				const { element } = changes.moved;
+			}
+
+			if (changes.removed) {
+				const { element } = changes.removed;
+
+				emit('input', {
+					create: changesObject.value.create.filter((item) => item !== element),
+					update: [],
+					delete: [...changesObject.value.delete, element],
+				});
+			}
 		}
 	},
 });

@@ -30,6 +30,10 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		scope: {
+			type: String,
+			default: 'v-list',
+		},
 	},
 	setup(props, { emit }) {
 		const { activeItems, multiple, mandatory } = toRefs(props);
@@ -43,7 +47,8 @@ export default defineComponent({
 			{
 				mandatory,
 				multiple,
-			}
+			},
+			props.scope
 		);
 
 		return {};

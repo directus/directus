@@ -1,33 +1,32 @@
 <template>
 	<div class="tree-view-item">
-		<v-list-item v-if="!item[childrenField] || item[childrenField].length === 0" @click="editActive = true">
-			<v-list-item-icon>
-				<v-icon name="drag_handle" small />
-			</v-list-item-icon>
-			<v-list-item-content>
-				<render-template :collection="collection" :template="template" :item="item" />
-			</v-list-item-content>
-		</v-list-item>
-
-		<v-list-group v-else @click="editActive = true">
+		<v-list-group @click="editActive = true" :value="item">
 			<template #activator>
 				<v-list-item-icon>
-					<v-icon name="drag_handle" small />
+					<v-icon class="drag-handle" name="drag_handle" small />
 				</v-list-item-icon>
 				<v-list-item-content>
 					<render-template :collection="collection" :template="template" :item="item" />
 				</v-list-item-content>
 			</template>
 
-			<tree-view-item
-				v-for="item in item[childrenField]"
-				:key="item[primaryKeyField]"
-				:primary-key-field="primaryKeyField"
-				:children-field="childrenField"
-				:template="template"
-				:item="item"
-				:collection="collection"
-			/>
+			<draggable
+				:list="item[childrenField] || []"
+				handle=".drag-handle"
+				:group="{ name: draggableGroup }"
+				@change="onSortChange"
+			>
+				<tree-view-item
+					v-for="item in item[childrenField]"
+					:key="item[primaryKeyField]"
+					:primary-key-field="primaryKeyField"
+					:children-field="childrenField"
+					:template="template"
+					:item="item"
+					:collection="collection"
+					:draggable-group="draggableGroup"
+				/>
+			</draggable>
 		</v-list-group>
 
 		<drawer-item :active.sync="editActive" :collection="collection" :primary-key="item[primaryKeyField]" />
@@ -35,11 +34,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref, PropType } from '@vue/composition-api';
 import DrawerItem from '@/views/private/components/drawer-item';
+import draggable from 'vuedraggable';
+
+import { ChangesObject } from './types';
 
 export default defineComponent({
-	components: { DrawerItem },
+	components: { DrawerItem, draggable },
 	name: 'tree-view-item',
 	props: {
 		collection: {
@@ -62,10 +64,47 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		draggableGroup: {
+			type: String,
+			required: true,
+		},
+		value: {
+			type: Object as PropType<ChangesObject>,
+			default: null,
+		},
 	},
-	setup() {
+	setup(props, { emit }) {
 		const editActive = ref(false);
-		return { editActive };
+
+		return { editActive, onSortChange };
+
+		function onSortChange(changes: any) {
+			console.log(changes);
+
+			// if (changes.added) {
+			// 	const { element } = changes.added;
+
+			// 	emit('input', {
+			// 		create: [...changesObject.value.create, element],
+			// 		update: [],
+			// 		delete: changesObject.value.delete.filter((item) => item !== element),
+			// 	});
+			// }
+
+			// if (changes.moved) {
+			// 	const { element } = changes.moved;
+			// }
+
+			// if (changes.removed) {
+			// 	const { element } = changes.removed;
+
+			// 	emit('input', {
+			// 		create: changesObject.value.create.filter((item) => item !== element),
+			// 		update: [],
+			// 		delete: [...changesObject.value.delete, element],
+			// 	});
+			// }
+		}
 	},
 });
 </script>

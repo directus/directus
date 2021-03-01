@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, toRefs } from '@vue/composition-api';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
@@ -46,10 +46,10 @@ export default defineComponent({
 		},
 		scope: {
 			type: String,
-			default: undefined,
+			default: 'v-list',
 		},
 		value: {
-			type: [String, Number],
+			type: [String, Number, Object],
 			default: undefined,
 		},
 		dense: {
