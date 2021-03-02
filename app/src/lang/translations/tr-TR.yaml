@@ -57,6 +57,7 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
 reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
 the_following_are_minimum_permissions: Homm
+app_access_minimum: Minimum Uygulama Erişimi
 recommended_defaults: Önerilen Ön Tanımlı Veriler
 unarchive: Arşivden çıkar
 unarchive_confirm: Bu öğeyi arşivden çıkarmak istediğinizden emin misiniz?
