@@ -86,12 +86,16 @@ field_standard: Standart
 field_file: Tek Dosya
 field_files: Birden Fazla Dosya
 field_m2o: M2O İlişkisi
+field_m2a: M2A İlişkisi
 field_o2m: O2M İlişkisi
 field_m2m: M2M İlişkisi
 field_translations: Çeviriler
 item_permissions: Alan İzinleri
 field_permissions: Alan İzinleri
 field_validation: Alan Doğrulama
+field_presets: Alan Hazır Ayarları
+permissions_for_role: '{role} rolünün {action} yapabileceği öğeler.'
+fields_for_role: '{role} rolünün {action} yapabileceği alanlar.'
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
