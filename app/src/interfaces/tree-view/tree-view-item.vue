@@ -7,7 +7,13 @@
 			<render-template :collection="collection" :template="template" :item="item" />
 		</v-list-item-content>
 
-		<drawer-item :active.sync="editActive" :collection="collection" :primary-key="item[primaryKeyField]" />
+		<drawer-item
+			:active.sync="editActive"
+			:collection="collection"
+			:primary-key="item[primaryKeyField]"
+			:edits="item"
+			@input="$emit('input', $event)"
+		/>
 	</div>
 </template>
 

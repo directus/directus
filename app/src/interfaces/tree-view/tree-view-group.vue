@@ -17,7 +17,7 @@
 				@change="$emit('change', $event)"
 			>
 				<tree-view-item
-					v-for="item in item[childrenField]"
+					v-for="(item, index) in item[childrenField]"
 					:key="item[primaryKeyField]"
 					:primary-key-field="primaryKeyField"
 					:children-field="childrenField"
@@ -25,11 +25,18 @@
 					:item="item"
 					:collection="collection"
 					:draggable-group="draggableGroup"
+					@input="replaceItem(index, $event)"
 				/>
 			</draggable>
 		</v-list-group>
 
-		<drawer-item :active.sync="editActive" :collection="collection" :primary-key="item[primaryKeyField]" />
+		<drawer-item
+			:active.sync="editActive"
+			:collection="collection"
+			:primary-key="item[primaryKeyField]"
+			:edits="item"
+			@input="$emit('input', $event)"
+		/>
 	</div>
 </template>
 
@@ -73,9 +80,23 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	setup() {
+	setup(props, { emit }) {
 		const editActive = ref(false);
-		return { editActive };
+
+		return { editActive, replaceItem };
+
+		function replaceItem(index: number, item: Record<string, any>) {
+			emit('input', {
+				...props.item,
+				[props.childrenField]: (props.item[props.childrenField] as any[]).map((child, childIndex) => {
+					if (childIndex === index) {
+						return item;
+					}
+
+					return child;
+				}),
+			});
+		}
 	},
 });
 </script>

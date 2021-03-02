@@ -8,7 +8,7 @@
 				@change="onDraggableChange"
 			>
 				<tree-view-group
-					v-for="item in stagedValues[relation.one_field]"
+					v-for="(item, index) in stagedValues[relation.one_field]"
 					:key="item[primaryKeyField]"
 					:primary-key-field="primaryKeyField.field"
 					:children-field="relation.one_field"
@@ -16,6 +16,7 @@
 					:item="item"
 					:collection="collection"
 					:draggable-group="`${collection}.${field}`"
+					@input="replaceItem(index, $event)"
 					@change="onDraggableChange"
 				/>
 			</draggable>
@@ -64,15 +65,10 @@ export default defineComponent({
 
 		const { relation } = useRelation();
 		const { info, primaryKeyField } = useCollection(relation.value.one_collection);
-		const { loading, error, stagedValues, fetchValues } = useValues();
+		const { loading, error, stagedValues, fetchValues, replaceItem } = useValues();
 
 		const template = computed(() => {
-			return (
-				'{{ name }}' || // @TODO << TEMP
-				props.displayTemplate ||
-				info.value?.meta?.display_template ||
-				`{{${primaryKeyField.value.field}}}`
-			);
+			return props.displayTemplate || info.value?.meta?.display_template || `{{${primaryKeyField.value.field}}}`;
 		});
 
 		onMounted(fetchValues);
@@ -88,6 +84,7 @@ export default defineComponent({
 			fetchValues,
 			primaryKeyField,
 			onDraggableChange,
+			replaceItem,
 		};
 
 		function useValues() {
@@ -96,7 +93,7 @@ export default defineComponent({
 
 			const stagedValues = ref<Record<string, any>>({});
 
-			return { loading, error, stagedValues, fetchValues };
+			return { loading, error, stagedValues, fetchValues, replaceItem };
 
 			async function fetchValues() {
 				if (!props.primaryKey || !relation.value || props.primaryKey === '+') return;
@@ -134,6 +131,23 @@ export default defineComponent({
 				}
 
 				return result;
+			}
+
+			function replaceItem(index: number, item: Record<string, any>) {
+				stagedValues.value = {
+					...stagedValues.value,
+					[relation.value.one_field]: (stagedValues.value[relation.value.one_field] as any[]).map(
+						(value: any, childIndex) => {
+							if (childIndex === index) {
+								return item;
+							}
+
+							return value;
+						}
+					),
+				};
+
+				emit('input', stagedValues.value[relation.value.one_field]);
 			}
 		}
 
