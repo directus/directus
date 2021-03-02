@@ -24,6 +24,10 @@ export async function getSchema(options?: {
 
 	const relations = await database.select('*').from('directus_relations');
 
+	const collections = await database
+		.select<{ collection: string; sort_field: string | null }[]>('collection', 'sort_field')
+		.from('directus_collections');
+
 	const fields = await database
 		.select<{ id: number; collection: string; field: string; special: string }[]>(
 			'id',
@@ -72,6 +76,7 @@ export async function getSchema(options?: {
 	return {
 		tables: schemaOverview,
 		relations: relations,
+		collections,
 		fields: fields.map((transform) => ({
 			...transform,
 			special: transform.special?.split(','),
