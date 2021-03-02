@@ -137,7 +137,7 @@ export function useGroupableParent(
 
 	// Whenever the value of the selection changes, we have to update all the children's internal
 	// states. If not, you can have an activated item that's not actually active.
-	watch(selection, updateChildren);
+	watch(selection, updateChildren, { immediate: true });
 
 	// It takes a tick before all children are rendered, this will make sure the start state of the
 	// children matches the start selection

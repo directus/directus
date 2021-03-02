@@ -5,25 +5,33 @@
 			class="activator"
 			:to="to"
 			:exact="exact"
-			@click="onClick"
 			:disabled="disabled"
 			:dense="dense"
+			@click="onClick"
 		>
-			<slot name="activator" :active="groupActive" />
+			<slot name="activator" v-bind="{ toggle, active: groupActive }" />
 
-			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }" v-if="$slots.default">
+			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }" v-if="expandIcon && $slots.default">
 				<v-icon name="chevron_right" @click.stop.prevent="toggle" :disabled="disabled" />
 			</v-list-item-icon>
 		</v-list-item>
 
-		<div class="items" v-if="groupActive">
-			<slot />
-		</div>
+		<template v-if="hideMethod === 'show'">
+			<div class="items" v-show="groupActive">
+				<slot />
+			</div>
+		</template>
+
+		<template v-else>
+			<div class="items" v-if="groupActive">
+				<slot />
+			</div>
+		</template>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
+import { defineComponent } from '@vue/composition-api';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
@@ -55,6 +63,15 @@ export default defineComponent({
 		dense: {
 			type: Boolean,
 			default: false,
+		},
+		expandIcon: {
+			type: Boolean,
+			default: true,
+		},
+		hideMethod: {
+			type: String,
+			default: 'if',
+			validator: (val: string) => ['if', 'show'].includes(val),
 		},
 	},
 	setup(props, { listeners, emit }) {

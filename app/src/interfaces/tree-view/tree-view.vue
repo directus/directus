@@ -2,23 +2,26 @@
 	<div class="interface-tree-view">
 		<v-list v-model="openItems" :mandatory="false">
 			<draggable
-				handle=".drag-handle"
-				:list="stagedValues[relation.one_field]"
-				:group="{ name: `${collection}.${field}` }"
+				:list="stagedValues"
+				:set-data="hideDragImage"
+				:group="`${collection}.${field}`"
 				@change="onDraggableChange"
+				@start="dragging = true"
+				@end="dragging = false"
 			>
-				<tree-view-group
-					v-for="(item, index) in stagedValues[relation.one_field]"
-					:key="item[primaryKeyField]"
-					:primary-key-field="primaryKeyField.field"
-					:children-field="relation.one_field"
-					:template="template"
-					:item="item"
-					:collection="collection"
-					:draggable-group="`${collection}.${field}`"
-					@input="replaceItem(index, $event)"
-					@change="onDraggableChange"
-				/>
+				<div v-for="(item, index) in stagedValues" :key="item[primaryKeyField]">
+					<tree-view-group
+						:primary-key-field="primaryKeyField.field"
+						:children-field="relation.one_field"
+						:template="template"
+						:item="item"
+						:collection="collection"
+						:draggable-group="`${collection}.${field}`"
+						@input="replaceItem(index, $event)"
+						@deselect="removeItem(index)"
+						@change="onDraggableChange"
+					/>
+				</div>
 			</draggable>
 		</v-list>
 	</div>
@@ -32,6 +35,7 @@ import api from '@/api';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
 import TreeViewGroup from './tree-view-group.vue';
 import draggable from 'vuedraggable';
+import hideDragImage from '@/utils/hide-drag-image';
 
 import { ChangesObject } from './types';
 
@@ -65,7 +69,7 @@ export default defineComponent({
 
 		const { relation } = useRelation();
 		const { info, primaryKeyField } = useCollection(relation.value.one_collection);
-		const { loading, error, stagedValues, fetchValues, replaceItem } = useValues();
+		const { loading, error, stagedValues, fetchValues, replaceItem, removeItem } = useValues();
 
 		const template = computed(() => {
 			return props.displayTemplate || info.value?.meta?.display_template || `{{${primaryKeyField.value.field}}}`;
@@ -73,6 +77,8 @@ export default defineComponent({
 
 		onMounted(fetchValues);
 		watch(() => props.primaryKey, fetchValues, { immediate: true });
+
+		const dragging = ref(false);
 
 		return {
 			relation,
@@ -85,15 +91,18 @@ export default defineComponent({
 			primaryKeyField,
 			onDraggableChange,
 			replaceItem,
+			hideDragImage,
+			dragging,
+			removeItem,
 		};
 
 		function useValues() {
 			const loading = ref(false);
 			const error = ref<any>(null);
 
-			const stagedValues = ref<Record<string, any>>({});
+			const stagedValues = ref<Record<string, any>[]>([]);
 
-			return { loading, error, stagedValues, fetchValues, replaceItem };
+			return { loading, error, stagedValues, fetchValues, replaceItem, removeItem };
 
 			async function fetchValues() {
 				if (!props.primaryKey || !relation.value || props.primaryKey === '+') return;
@@ -107,7 +116,7 @@ export default defineComponent({
 						},
 					});
 
-					stagedValues.value = response.data.data;
+					stagedValues.value = response.data.data?.[relation.value.one_field] ?? [];
 				} catch (err) {
 					error.value = err;
 				} finally {
@@ -134,20 +143,22 @@ export default defineComponent({
 			}
 
 			function replaceItem(index: number, item: Record<string, any>) {
-				stagedValues.value = {
-					...stagedValues.value,
-					[relation.value.one_field]: (stagedValues.value[relation.value.one_field] as any[]).map(
-						(value: any, childIndex) => {
-							if (childIndex === index) {
-								return item;
-							}
+				console.log(stagedValues.value[relation.value.one_field]);
 
-							return value;
-						}
-					),
-				};
+				stagedValues.value = (stagedValues.value as any[]).map((value: any, childIndex) => {
+					if (childIndex === index) {
+						return item;
+					}
 
-				emit('input', stagedValues.value[relation.value.one_field]);
+					return value;
+				});
+
+				emit('input', stagedValues.value);
+			}
+
+			function removeItem(index: number) {
+				stagedValues.value = stagedValues.value.filter((item, childIndex) => childIndex !== index);
+				emit('input', stagedValues.value);
 			}
 		}
 
@@ -160,7 +171,7 @@ export default defineComponent({
 		}
 
 		function onDraggableChange() {
-			emit('input', stagedValues.value[relation.value.one_field]);
+			emit('input', stagedValues.value);
 		}
 	},
 });
@@ -168,8 +179,24 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .interface-tree-view {
-	--v-list-item-background-color: var(--background-normal);
-
+	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
+
+	--v-list-item-background-color: transparent;
+	--v-list-item-background-color-hover: var(--background-highlight);
+	--v-list-item-background-color-active: transparent;
+
+	::v-deep {
+		.v-list-item {
+			cursor: grab;
+		}
+
+		.sortable-chosen {
+			--v-list-item-color: var(--primary);
+			--v-list-item-color-hover: var(--primary);
+			--v-list-item-background-color: var(--background-highlight);
+			--v-list-item-background-color-hover: var(--background-highlight);
+		}
+	}
 }
 </style>
