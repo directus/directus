@@ -18,7 +18,19 @@
 		"directus"
 	],
 	"scripts": {
-		"build": "tsc -b tsconfig.json"
+		"build": "tsc -b tsconfig.json",
+		"dev": "npm-watch build"
+	},
+	"watch": {
+		"build": {
+			"patterns": [
+				"src/*"
+			],
+			"ignore": "dist",
+			"extensions": "ts",
+			"silent": true,
+			"quiet": true
+		}
 	},
 	"author": "Robin Grundvåg <robgru52@gmail.com>",
 	"contributors": [
