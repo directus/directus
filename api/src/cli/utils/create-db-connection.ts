@@ -11,7 +11,7 @@ export type Credentials = {
 	ssl?: boolean;
 };
 export default function createDBConnection(
-	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql',
+	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'tedious',
 	credentials: Credentials
 ) {
 	let connection: Config['connection'] = {};
