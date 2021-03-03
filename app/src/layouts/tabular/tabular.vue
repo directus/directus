@@ -437,7 +437,12 @@ export default defineComponent({
 				get() {
 					return fields.value
 						.map((key) => fieldsInCollection.value.find((field) => field.field === key))
-						.filter((f) => f) as Field[];
+						.filter((f) => f)
+						.sort((a?: Field, b?: Field) => {
+							if (a!.field < b!.field) return -1;
+							else if (a!.field > b!.field) return 1;
+							else return 1;
+						}) as Field[];
 				},
 				set(val) {
 					fields.value = val.map((field) => field.field);
@@ -579,8 +584,8 @@ export default defineComponent({
 	position: sticky;
 	left: 0;
 	display: flex;
-	align-items: center;
 	justify-content: space-between;
+	align-items: center;
 	width: 100%;
 	padding: 32px var(--content-padding);
 
@@ -590,8 +595,8 @@ export default defineComponent({
 
 	.per-page {
 		display: flex;
-		align-items: center;
 		justify-content: flex-end;
+		align-items: center;
 		width: 240px;
 		color: var(--foreground-subdued);
 
