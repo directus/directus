@@ -26,6 +26,8 @@ import {
 	Range,
 } from '@directus/drive';
 
+import path from 'path';
+
 function handleError(err: Error & { code?: number | string }, path: string): Error {
 	switch (err.code) {
 		case 401:
@@ -45,6 +47,7 @@ export class GoogleCloudStorage extends Storage {
 	protected $config: GoogleCloudStorageConfig;
 	protected $driver: GCSDriver;
 	protected $bucket: Bucket;
+	protected $root: string;
 
 	public constructor(config: GoogleCloudStorageConfig) {
 		super();
@@ -52,10 +55,18 @@ export class GoogleCloudStorage extends Storage {
 		const GCSStorage = require('@google-cloud/storage').Storage;
 		this.$driver = new GCSStorage(config);
 		this.$bucket = this.$driver.bucket(config.bucket);
+		this.$root = config.root ?? '';
 	}
 
-	private _file(path: string): File {
-		return this.$bucket.file(path);
+	/**
+	 * Prefixes the given filePath with the storage root location
+	 */
+	protected _fullPath(filePath: string) {
+		return path.join(this.$root, filePath);
+	}
+
+	private _file(filePath: string): File {
+		return this.$bucket.file(this._fullPath(filePath));
 	}
 
 	/**
@@ -180,7 +191,7 @@ export class GoogleCloudStorage extends Storage {
 	 * status.
 	 */
 	public getUrl(location: string): string {
-		return `https://storage.googleapis.com/${this.$bucket.name}/${location}`;
+		return `https://storage.googleapis.com/${this.$bucket.name}/${this._fullPath(location)}`;
 	}
 
 	/**
@@ -249,4 +260,5 @@ export class GoogleCloudStorage extends Storage {
 
 export interface GoogleCloudStorageConfig extends StorageOptions {
 	bucket: string;
+	root: string;
 }
