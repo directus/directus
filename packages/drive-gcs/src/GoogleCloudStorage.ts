@@ -66,7 +66,6 @@ export class GoogleCloudStorage extends Storage {
 	}
 
 	private _file(filePath: string): File {
-		console.log(this._fullPath(filePath));
 		return this.$bucket.file(this._fullPath(filePath));
 	}
 

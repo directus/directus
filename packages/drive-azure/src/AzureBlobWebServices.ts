@@ -22,6 +22,8 @@ import {
 	ContainerSASPermissions,
 } from '@azure/storage-blob';
 
+import path from 'path';
+
 import { PassThrough, Readable } from 'stream';
 
 function handleError(err: Error, path: string): Error {
@@ -32,6 +34,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 	protected $client: BlobServiceClient;
 	protected $containerClient: ContainerClient;
 	protected $signedCredentials: StorageSharedKeyCredential;
+	protected $root: string;
 
 	constructor(config: AzureBlobWebServicesStorageConfig) {
 		super();
@@ -42,9 +45,20 @@ export class AzureBlobWebServicesStorage extends Storage {
 			this.$signedCredentials
 		);
 		this.$containerClient = this.$client.getContainerClient(config.containerName);
+		this.$root = config.root ?? '';
+	}
+
+	/**
+	 * Prefixes the given filePath with the storage root location
+	 */
+	protected _fullPath(filePath: string) {
+		return path.join(this.$root, filePath);
 	}
 
 	public async copy(src: string, dest: string): Promise<Response> {
+		src = this._fullPath(src);
+		dest = this._fullPath(dest);
+
 		try {
 			const source = this.$containerClient.getBlockBlobClient(src);
 			const target = this.$containerClient.getBlockBlobClient(dest);
@@ -59,6 +73,8 @@ export class AzureBlobWebServicesStorage extends Storage {
 	}
 
 	public async delete(location: string): Promise<DeleteResponse> {
+		location = this._fullPath(location);
+
 		try {
 			const result = await this.$containerClient.getBlockBlobClient(location).deleteIfExists();
 			return { raw: result, wasDeleted: result.succeeded };
@@ -72,6 +88,8 @@ export class AzureBlobWebServicesStorage extends Storage {
 	}
 
 	public async exists(location: string): Promise<ExistsResponse> {
+		location = this._fullPath(location);
+
 		try {
 			const result = await this.$containerClient.getBlockBlobClient(location).exists();
 			return { exists: result, raw: result };
@@ -81,6 +99,8 @@ export class AzureBlobWebServicesStorage extends Storage {
 	}
 
 	public async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
+		location = this._fullPath(location);
+
 		try {
 			const bufferResult = await this.getBuffer(location);
 			return {
@@ -93,6 +113,8 @@ export class AzureBlobWebServicesStorage extends Storage {
 	}
 
 	public async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
+		location = this._fullPath(location);
+
 		try {
 			const client = this.$containerClient.getBlobClient(location);
 			return { content: await client.downloadToBuffer(), raw: client };
@@ -102,6 +124,8 @@ export class AzureBlobWebServicesStorage extends Storage {
 	}
 
 	public async getSignedUrl(location: string, options: SignedUrlOptions = {}): Promise<SignedUrlResponse> {
+		location = this._fullPath(location);
+
 		const { expiry = 900 } = options;
 
 		try {
@@ -125,6 +149,8 @@ export class AzureBlobWebServicesStorage extends Storage {
 	}
 
 	public async getStat(location: string): Promise<StatResponse> {
+		location = this._fullPath(location);
+
 		try {
 			const props = await this.$containerClient.getBlobClient(location).getProperties();
 			return {
@@ -138,6 +164,8 @@ export class AzureBlobWebServicesStorage extends Storage {
 	}
 
 	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
+		location = this._fullPath(location);
+
 		const intermediateStream = new PassThrough({ highWaterMark: 1 });
 
 		const stream = this.$containerClient
@@ -165,10 +193,15 @@ export class AzureBlobWebServicesStorage extends Storage {
 	}
 
 	public getUrl(location: string): string {
+		location = this._fullPath(location);
+
 		return this.$containerClient.getBlobClient(location).url;
 	}
 
 	public async move(src: string, dest: string): Promise<Response> {
+		src = this._fullPath(src);
+		dest = this._fullPath(dest);
+
 		const source = this.$containerClient.getBlockBlobClient(src);
 		const target = this.$containerClient.getBlockBlobClient(dest);
 
@@ -181,7 +214,10 @@ export class AzureBlobWebServicesStorage extends Storage {
 	}
 
 	public async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
+		location = this._fullPath(location);
+
 		const blockBlobClient = this.$containerClient.getBlockBlobClient(location);
+
 		try {
 			if (isReadableStream(content)) {
 				const result = await blockBlobClient.uploadStream(content as Readable);
@@ -215,4 +251,5 @@ export interface AzureBlobWebServicesStorageConfig {
 	containerName: string;
 	accountName: string;
 	accountKey: string;
+	root?: string;
 }
