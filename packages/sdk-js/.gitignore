@@ -1,0 +1,12 @@
+node_modules
+
+/_*
+/coverage
+
+/dist
+/types
+/browser
+/node
+
+/src/**/*.js
+

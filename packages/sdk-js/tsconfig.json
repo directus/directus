@@ -1,19 +1,27 @@
 {
 	"compilerOptions": {
 		"target": "es5",
-		"lib": ["es5", "DOM"],
-		"module": "es2015",
-		"moduleResolution": "node",
-		"sourceMap": true,
+		"lib": ["es5"],
 		"declaration": true,
-		"declarationDir": "dist/types",
-		"noEmit": true,
-		"noEmitOnError": true,
+		"declarationMap": true,
 		"strict": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUncheckedIndexedAccess": true,
+		"noUnusedParameters": true,
+		"alwaysStrict": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": true,
+		"resolveJsonModule": true,
 		"skipLibCheck": true,
-		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": true
+		"forceConsistentCasingInFileNames": false,
+		"rootDir": "./src",
+		"outDir": "./dist"
 	},
-	"include": ["src/**/*.ts"],
-	"exclude": ["node_modules"]
+	"include": ["./src/**/*.ts"]
 }
