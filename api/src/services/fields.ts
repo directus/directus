@@ -1,7 +1,7 @@
 import { ALIAS_TYPES } from '../constants';
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
-import { Accountability, AbstractServiceOptions, FieldMeta, Relation, SchemaOverview } from '../types';
+import { Accountability, AbstractServiceOptions, FieldMeta, SchemaOverview } from '../types';
 import { ItemsService } from '../services/items';
 import { ColumnBuilder } from 'knex';
 import getLocalType from '../utils/get-local-type';
@@ -36,8 +36,19 @@ export class FieldsService {
 		this.schema = options.schema;
 	}
 
+	private get hasReadAccess() {
+		return !!this.schema.permissions.find((permission) => {
+			return permission.collection === 'directus_fields' && permission.action === 'read';
+		});
+	}
+
 	async readAll(collection?: string): Promise<Field[]> {
 		let fields: FieldMeta[];
+
+		if (this.accountability && this.accountability.admin !== true && this.hasReadAccess === false) {
+			throw new ForbiddenException();
+		}
+
 		const nonAuthorizedItemsService = new ItemsService('directus_fields', {
 			knex: this.knex,
 			schema: this.schema,
@@ -147,6 +158,10 @@ export class FieldsService {
 
 	async readOne(collection: string, field: string) {
 		if (this.accountability && this.accountability.admin !== true) {
+			if (this.hasReadAccess === false) {
+				throw new ForbiddenException();
+			}
+
 			const permissions = this.schema.permissions.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
