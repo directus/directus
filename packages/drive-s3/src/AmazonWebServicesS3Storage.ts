@@ -47,7 +47,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		});
 
 		this.$bucket = config.bucket;
-		this.$root = config.root ?? './';
+		this.$root = config.root ?? '';
 	}
 
 	/**
