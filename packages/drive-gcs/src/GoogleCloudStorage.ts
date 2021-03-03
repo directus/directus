@@ -260,5 +260,5 @@ export class GoogleCloudStorage extends Storage {
 
 export interface GoogleCloudStorageConfig extends StorageOptions {
 	bucket: string;
-	root: string;
+	root?: string;
 }

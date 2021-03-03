@@ -167,6 +167,7 @@ For each of the storage locations listed, you must provide the following configu
 | Variable                    | Description                                               | Default Value |
 | --------------------------- | --------------------------------------------------------- | ------------- |
 | `STORAGE_<LOCATION>_DRIVER` | Which driver to use, either `local`, `s3`, `gcs`, `azure` |               |
+| `STORAGE_<LOCATION>_ROOT`   | Where to store the files on disk                          | `''`          |
 
 Based on your configured driver, you must also provide the following configurations:
 
