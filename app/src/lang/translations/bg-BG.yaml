@@ -87,6 +87,7 @@ field_presentation: Презентационни и псевдоними
 field_file: Единствен файл
 field_files: Множество файлове
 field_m2o: M2O релация
+field_m2a: M2A релация
 field_o2m: O2M релация
 field_m2m: M2M релация
 field_translations: Преводи
@@ -363,6 +364,7 @@ collection_created: Колекцията е създадена
 modified_on: Променен на
 card_size: Големина на картите
 sort_field: Поле за сортиране
+add_sort_field: Добавяне на поле за сортиране
 sort: Сортиране
 status: Статус
 toggle_manual_sorting: Ръчна подредба
@@ -432,6 +434,7 @@ system_collections: Системни колекции
 placeholder: Заместител (placeholder)
 icon_left: Икона вляво
 icon_right: Икона вдясно
+count_other_revisions: '{count} други ревизии'
 font: Шрифт
 sans_serif: Несерифен
 serif: Серифен
@@ -797,6 +800,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   button-links:
