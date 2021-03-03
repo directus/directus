@@ -12,6 +12,7 @@ role_name: Nome ruolo
 db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
 show_archived_items: Mostra le elementi archiviati
 required: Obbligatorio
+required_for_app_access: Richiesto per l'accesso alle app
 requires_value: Richiede un valore
 create_preset: Crea Preset
 create_role: Crea ruolo
@@ -25,6 +26,7 @@ connection_excellent: Connessione Eccellente
 connection_good: Buona connessione
 connection_fair: Connessione adeguata
 connection_poor: Scarca connessione
+primary: Principale
 rename_folder: Rinomina cartella
 delete_folder: Elimina cartella
 prefix: Prefisso
@@ -52,6 +54,8 @@ archive: Archivio
 archive_confirm: Sei sicuro*a di voler archiviare questo elemento?
 archive_confirm_count: >-
   Nessun elemento selezionato | Sei sicuro*a di voler archiviare questo elemento? | Sei sicuro*a di voler archiviare {count} elementi?
+reset_system_permissions_to: 'Reimposta i permessi di sistema a:'
+reset_system_permissions_copy: Questa azione sovrascriverà qualsiasi permesso personalizzato che potresti aver applicato alle collezioni di sistema. Sei sicuro?
 unarchive: Ripristina
 unarchive_confirm: Sei sicuro*a di voler ripristinare questo elemento?
 nested_files_folders_will_be_moved: I file e le cartelle annidate verranno spostate di un livello in su.
@@ -619,6 +623,8 @@ translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
 interfaces:
+  button-links:
+    primary: Principale
   checkboxes:
     checkboxes: Checkbox
     allow_other: Permetti Altro
