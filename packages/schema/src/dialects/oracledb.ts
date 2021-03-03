@@ -62,13 +62,9 @@ export default class oracleDB implements Schema {
 		for (const column of columns[0]) {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = {
-					primary: columns[0].find(
-						(nested: { column_key: string; table_name: string }) => {
-							return (
-								nested.table_name === column.table_name && nested.column_key === 'P'
-							);
-						}
-					)?.column_name,
+					primary: columns[0].find((nested: { column_key: string; table_name: string }) => {
+						return nested.table_name === column.table_name && nested.column_key === 'P';
+					})?.column_name,
 					columns: {},
 				};
 			}
@@ -89,9 +85,7 @@ export default class oracleDB implements Schema {
 	 * List all existing tables in the current schema/database
 	 */
 	async tables() {
-		const records = await this.knex
-			.select<{ TABLE_NAME: string }[]>('TABLE_NAME')
-			.from('DBA_TABLES');
+		const records = await this.knex.select<{ TABLE_NAME: string }[]>('TABLE_NAME').from('DBA_TABLES');
 		return records.map(({ TABLE_NAME }) => TABLE_NAME);
 	}
 
