@@ -200,6 +200,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			knex: this.knex,
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
 		});
+
 		return records as Partial<Item> | Partial<Item>[] | null;
 	}
 

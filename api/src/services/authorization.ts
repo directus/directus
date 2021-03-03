@@ -52,17 +52,7 @@ export class AuthorizationService {
 		const uniqueCollectionsRequestedCount = uniq(collectionsRequested.map(({ collection }) => collection)).length;
 
 		if (uniqueCollectionsRequestedCount !== permissionsForCollections.length) {
-			// Find the first collection that doesn't have permissions configured
-			const { collection, field } = collectionsRequested.find(
-				({ collection }) =>
-					permissionsForCollections.find((permission) => permission.collection === collection) === undefined
-			)!;
-
-			if (field) {
-				throw new ForbiddenException(`You don't have permission to access the "${field}" field.`);
-			} else {
-				throw new ForbiddenException(`You don't have permission to access the "${collection}" collection.`);
-			}
+			throw new ForbiddenException();
 		}
 
 		validateFields(ast);
