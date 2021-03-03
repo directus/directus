@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import database from '../database';
 import { AbstractServiceOptions, Accountability, Collection, Field, Relation, Query, SchemaOverview } from '../types';
 import {

@@ -3,11 +3,10 @@ import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
 import { Accountability, AbstractServiceOptions, FieldMeta, SchemaOverview } from '../types';
 import { ItemsService } from '../services/items';
-import { ColumnBuilder } from 'knex';
+import { Knex } from 'knex';
 import getLocalType from '../utils/get-local-type';
 import { types } from '../types';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import Knex, { CreateTableBuilder } from 'knex';
 import { PayloadService } from '../services/payload';
 import getDefaultValue from '../utils/get-default-value';
 import cache from '../cache';
@@ -203,7 +202,7 @@ export class FieldsService {
 	async createField(
 		collection: string,
 		field: Partial<Field> & { field: string; type: typeof types[number] },
-		table?: CreateTableBuilder // allows collection creation to
+		table?: Knex.CreateTableBuilder // allows collection creation to
 	) {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException('Only admins can perform this action.');
@@ -324,8 +323,8 @@ export class FieldsService {
 		}
 	}
 
-	public addColumnToTable(table: CreateTableBuilder, field: RawField | Field, alter: boolean = false) {
-		let column: ColumnBuilder;
+	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: boolean = false) {
+		let column: Knex.ColumnBuilder;
 
 		if (field.schema?.has_auto_increment) {
 			column = table.increments(field.field);

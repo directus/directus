@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 import ms from 'ms';
 import { InvalidCredentialsException, InvalidPayloadException, InvalidOTPException } from '../exceptions';
 import { Session, Accountability, AbstractServiceOptions, Action, SchemaOverview } from '../types';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { ActivityService } from '../services/activity';
 import env from '../env';
 import { authenticator } from 'otplib';

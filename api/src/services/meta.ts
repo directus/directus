@@ -1,7 +1,7 @@
 import { Query } from '../types/query';
 import database from '../database';
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { applyFilter, applySearch } from '../utils/apply-query';
 
 export class MetaService {

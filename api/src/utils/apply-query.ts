@@ -1,4 +1,4 @@
-import { QueryBuilder } from 'knex';
+import { Knex } from 'knex';
 import { Query, Filter, Relation, SchemaOverview } from '../types';
 import { clone, isPlainObject } from 'lodash';
 import { systemRelationRows } from '../database/system-data/relations';
@@ -6,7 +6,12 @@ import { nanoid } from 'nanoid';
 import getLocalType from './get-local-type';
 import validate from 'uuid-validate';
 
-export default function applyQuery(collection: string, dbQuery: QueryBuilder, query: Query, schema: SchemaOverview) {
+export default function applyQuery(
+	collection: string,
+	dbQuery: Knex.QueryBuilder,
+	query: Query,
+	schema: SchemaOverview
+) {
 	if (query.sort) {
 		dbQuery.orderBy(
 			query.sort.map((sort) => ({
@@ -41,7 +46,12 @@ export default function applyQuery(collection: string, dbQuery: QueryBuilder, qu
 	}
 }
 
-export function applyFilter(schema: SchemaOverview, rootQuery: QueryBuilder, rootFilter: Filter, collection: string) {
+export function applyFilter(
+	schema: SchemaOverview,
+	rootQuery: Knex.QueryBuilder,
+	rootFilter: Filter,
+	collection: string
+) {
 	const relations: Relation[] = [...schema.relations, ...systemRelationRows];
 
 	const aliasMap: Record<string, string> = {};
@@ -49,7 +59,7 @@ export function applyFilter(schema: SchemaOverview, rootQuery: QueryBuilder, roo
 	addJoins(rootQuery, rootFilter, collection);
 	addWhereClauses(rootQuery, rootFilter, collection);
 
-	function addJoins(dbQuery: QueryBuilder, filter: Filter, collection: string) {
+	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
 		for (const [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
 				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
@@ -116,7 +126,12 @@ export function applyFilter(schema: SchemaOverview, rootQuery: QueryBuilder, roo
 		}
 	}
 
-	function addWhereClauses(dbQuery: QueryBuilder, filter: Filter, collection: string, logical: 'and' | 'or' = 'and') {
+	function addWhereClauses(
+		dbQuery: Knex.QueryBuilder,
+		filter: Filter,
+		collection: string,
+		logical: 'and' | 'or' = 'and'
+	) {
 		for (const [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
 				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
@@ -269,7 +284,7 @@ export function applyFilter(schema: SchemaOverview, rootQuery: QueryBuilder, roo
 
 export async function applySearch(
 	schema: SchemaOverview,
-	dbQuery: QueryBuilder,
+	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string
 ) {

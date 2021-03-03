@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { flatten } from 'lodash';
 import { Schema } from '../types/schema';
 import { Table } from '../types/table';

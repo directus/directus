@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { merge } from 'lodash';
 
 export async function up(knex: Knex) {

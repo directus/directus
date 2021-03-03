@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { Schema } from '../types/schema';
 import { Table } from '../types/table';
 import { Column } from '../types/column';
