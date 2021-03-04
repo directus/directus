@@ -166,6 +166,10 @@ export default defineComponent({
 		background-color: transparent;
 		border: none;
 		border-radius: 0;
+
+		&::placeholder {
+			color: var(--foreground-subdued);
+		}
 	}
 
 	&.has-value {

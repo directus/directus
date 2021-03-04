@@ -239,7 +239,7 @@ img {
 
 .is-svg {
 	padding: 32px;
-	background-color: var(--background-normal);
+	background-color: var(--background-normal-alt);
 
 	img {
 		object-fit: contain;

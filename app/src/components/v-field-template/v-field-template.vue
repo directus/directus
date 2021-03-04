@@ -279,6 +279,7 @@ export default defineComponent({
 	padding: var(--input-padding) 0;
 	overflow: hidden;
 	font-family: var(--family-monospace);
+	font-size: 14px;
 	white-space: nowrap;
 
 	::v-deep {
@@ -297,8 +298,8 @@ export default defineComponent({
 		}
 
 		button {
-			margin: 0 4px;
-			padding: 0 4px;
+			margin: -1px 4px 0; // top offset for monospace
+			padding: 2px 4px 0; // top offset for monospace
 			color: var(--primary);
 			background-color: var(--primary-alt);
 			border-radius: var(--border-radius);

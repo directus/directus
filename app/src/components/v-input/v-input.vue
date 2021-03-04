@@ -386,6 +386,10 @@ body {
 			-webkit-appearance: none;
 		}
 
+		&:focus {
+			border-color: var(--v-input-border-color-focus);
+		}
+
 		/* Firefox */
 		&[type='number'] {
 			-moz-appearance: textfield;

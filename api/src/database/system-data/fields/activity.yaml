@@ -10,25 +10,25 @@ fields:
   - field: action
     display: labels
     display_options:
-      defaultForeground: '#263238'
-      defaultBackground: '#eceff1'
+      defaultForeground: '#172940'
+      defaultBackground: '#E4EAF1'
       choices:
         - text: Create
           value: create
-          foreground: '#27ae60'
-          background: '#c9ebd7'
+          foreground: '#00C897'
+          background: '#BFF1E5'
         - text: Update
           value: update
-          foreground: '#2f80ed'
-          background: '#cbdffb'
+          foreground: '#68B0F4'
+          background: '#D9EBFC'
         - text: Delete
           value: delete
-          foreground: '#eb5757'
-          background: '#fad5d5'
+          foreground: '#E35169'
+          background: '#F8D3D9'
         - text: Login
           value: authenticate
-          foreground: '#9b51e0'
-          background: '#e6d3f7'
+          foreground: '#9E8DE4'
+          background: '#E7E2F8'
     width: half
 
   - field: collection

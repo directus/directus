@@ -551,7 +551,8 @@ export default defineComponent({
 						width: 'fill',
 						options: {
 							title: i18n.t('layout_preview'),
-							color: '#2F80ED',
+							color: '#00C897',
+							icon: 'visibility',
 						},
 					},
 				},
@@ -567,16 +568,16 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .header-icon {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
@@ -596,9 +597,9 @@ export default defineComponent({
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--warning);
-	--sidebar-detail-color: var(--warning);
-	--sidebar-detail-color-active: var(--warning);
+	--sidebar-detail-icon-color: var(--primary);
+	--sidebar-detail-color: var(--primary);
+	--sidebar-detail-color-active: var(--primary);
 	--form-vertical-gap: 24px;
 }
 

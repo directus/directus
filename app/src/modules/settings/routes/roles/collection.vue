@@ -162,7 +162,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .header-icon {
 	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-25);
+	--v-button-background-color-disabled: var(--warning-10);
 }
 
 .roles {

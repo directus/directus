@@ -101,12 +101,11 @@ body {
 	--v-list-item-min-height: var(--v-list-item-min-height);
 	--v-list-item-max-height: auto;
 	--v-list-item-border-radius: var(--border-radius);
-	--v-list-item-margin-bottom: 0;
 	--v-list-item-color: var(--v-list-color, var(--foreground-normal));
 	--v-list-item-color-hover: var(--v-list-color-hover, var(--foreground-normal));
 	--v-list-item-color-active: var(--v-list-color-active, var(--foreground-normal));
-	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--background-normal-alt));
-	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--background-normal-alt));
+	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--background-normal));
+	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--background-normal));
 }
 </style>
 
@@ -125,7 +124,6 @@ body {
 	min-height: var(--v-list-item-min-height);
 	max-height: var(--v-list-item-max-height);
 	margin: var(--v-list-item-margin);
-	margin-bottom: var(--v-list-item-margin-bottom);
 	padding: var(--v-list-item-padding);
 	overflow: hidden;
 	color: var(--v-list-item-color);

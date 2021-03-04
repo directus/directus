@@ -122,6 +122,7 @@ shutter: Shutter
 iso: ISO
 focal_length: Focal Length
 schema_setup_title: How should this field save to the database?
+schema_setup_key: This field's database column name and API key
 schema_field_title: How should this field behave in the app?
 create_field: Create Field
 creating_new_field: 'New Field ({collection})'

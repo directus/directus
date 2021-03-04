@@ -65,12 +65,18 @@ export default defineComponent({
 .v-divider {
 	margin-bottom: 12px;
 	cursor: pointer;
+
+	.title {
+		color: red;
+	}
 }
 
-.v-detail:not(.disabled) .v-divider:hover {
-	--v-divider-label-color: var(--foreground-normal);
-
-	cursor: pointer;
+.v-detail:not(.disabled) .v-divider {
+	--v-divider-label-color: var(--foreground-subdued);
+	&:hover {
+		--v-divider-label-color: var(--foreground-normal-alt);
+		cursor: pointer;
+	}
 }
 
 .v-icon {

@@ -157,7 +157,7 @@ export default defineComponent({
 		}
 
 		a {
-			color: var(--primary);
+			color: var(--primary-110);
 			text-decoration: none;
 			font-weight: 500;
 		}
@@ -231,7 +231,7 @@ export default defineComponent({
 			font-size: 16px;
 
 			&:hover {
-				color: var(--primary);
+				color: var(--primary-110);
 				text-decoration: none;
 			}
 		}

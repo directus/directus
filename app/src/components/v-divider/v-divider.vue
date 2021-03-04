@@ -61,12 +61,14 @@ body {
 		color: var(--v-divider-label-color);
 
 		.v-icon {
-			margin-right: 8px;
+			margin-right: 4px;
 			transform: translateY(-1px);
 		}
 	}
 
 	.type-text {
+		transition: color var(--fast) var(--transition);
+		font-weight: 600;
 		color: var(--v-divider-label-color);
 	}
 

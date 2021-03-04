@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('configure_m2m') }}</v-notice>
 
 		<div class="grid">
 			<div class="field">

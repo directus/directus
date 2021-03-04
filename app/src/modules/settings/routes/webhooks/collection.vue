@@ -75,7 +75,7 @@
 			</template>
 
 			<template #no-items>
-				<v-info :title="$tc('webhooks_count', 0)" icon="anchor" center type="warning">
+				<v-info :title="$tc('webhooks_count', 0)" icon="anchor" center type="info">
 					{{ $t('no_webhooks_copy') }}
 
 					<template #append>
@@ -185,20 +185,20 @@ export default defineComponent({
 <style lang="scss" scoped>
 .header-icon {
 	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-25);
+	--v-button-background-color-disabled: var(--warning-10);
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
 .action-batch {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 
