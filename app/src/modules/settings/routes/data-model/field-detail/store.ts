@@ -720,8 +720,8 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			state.relations[0].one_field = 'translations';
 		}
 
-		function getAutomaticJunctionCollectionName(left: string, right: string) {
-			let index = 2;
+		function getAutomaticJunctionCollectionName() {
+			let index: number = 0;
 			let name = getName(index);
 
 			while (collectionExists(name)) {
