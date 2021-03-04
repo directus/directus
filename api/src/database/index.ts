@@ -1,4 +1,4 @@
-import knex, { Config } from 'knex';
+import { knex, Knex } from 'knex';
 import dotenv from 'dotenv';
 import path from 'path';
 import logger from '../logger';
@@ -22,7 +22,7 @@ const poolConfig = getConfigFromEnv('DB_POOL');
 
 validateEnv(['DB_CLIENT']);
 
-const knexConfig: Config = {
+const knexConfig: Knex.Config = {
 	client: env.DB_CLIENT,
 	searchPath: env.DB_SEARCH_PATH,
 	connection: env.DB_CONNECTION_STRING || connectionConfig,

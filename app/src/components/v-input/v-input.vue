@@ -17,6 +17,7 @@
 					v-bind="$attrs"
 					v-focus="autofocus"
 					v-on="_listeners"
+					:autocomplete="autocomplete"
 					:type="type"
 					:min="min"
 					:max="max"
@@ -128,6 +129,10 @@ export default defineComponent({
 		trim: {
 			type: Boolean,
 			default: false,
+		},
+		autocomplete: {
+			type: String,
+			default: 'off',
 		},
 	},
 	setup(props, { emit, listeners }) {

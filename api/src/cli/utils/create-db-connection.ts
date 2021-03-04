@@ -1,4 +1,4 @@
-import knex, { Config } from 'knex';
+import { knex, Knex } from 'knex';
 import path from 'path';
 
 export type Credentials = {
@@ -11,10 +11,10 @@ export type Credentials = {
 	ssl?: boolean;
 };
 export default function createDBConnection(
-	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql',
+	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'tedious',
 	credentials: Credentials
 ) {
-	let connection: Config['connection'] = {};
+	let connection: Knex.Config['connection'] = {};
 
 	if (client === 'sqlite3') {
 		const { filename } = credentials;
@@ -47,7 +47,7 @@ export default function createDBConnection(
 		}
 	}
 
-	const knexConfig: Config = {
+	const knexConfig: Knex.Config = {
 		client: client,
 		connection: connection,
 		seeds: {

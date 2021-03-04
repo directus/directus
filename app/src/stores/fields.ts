@@ -221,14 +221,15 @@ export const useFieldsStore = createStore({
 
 			return primaryKeyField;
 		},
-		getFieldsForCollection(collection: string) {
-			return this.state.fields
-				.filter((field) => field.collection === collection)
-				.sort((a, b) => {
-					if (a.field < b.field) return -1;
-					else if (a.field > b.field) return 1;
-					else return 1;
-				});
+		getFieldsForCollection(collection: string): Field[] {
+			return this.state.fields.filter((field) => field.collection === collection);
+		},
+		getFieldsForCollectionAlphabetical(collection: string): Field[] {
+			return this.getFieldsForCollection(collection).sort((a: Field, b: Field) => {
+				if (a.field < b.field) return -1;
+				else if (a.field > b.field) return 1;
+				else return 1;
+			});
 		},
 		getField(collection: string, fieldKey: string) {
 			if (fieldKey.includes('.')) {

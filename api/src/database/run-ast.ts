@@ -4,7 +4,7 @@ import database from './index';
 import { Query, Item, SchemaOverview } from '../types';
 import { PayloadService } from '../services/payload';
 import applyQuery from '../utils/apply-query';
-import Knex, { QueryBuilder } from 'knex';
+import { Knex } from 'knex';
 import { toArray } from '../utils/to-array';
 
 type RunASTOptions = {
@@ -141,7 +141,7 @@ function getDBQuery(
 	primaryKeyField: string,
 	schema: SchemaOverview,
 	nested?: boolean
-): QueryBuilder {
+): Knex.QueryBuilder {
 	let dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
 
 	const queryCopy = clone(query);

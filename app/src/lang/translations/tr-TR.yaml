@@ -266,7 +266,11 @@ background_color: Arkaplan Rengi
 upload_from_device: Cihazdan Yükle
 choose_from_library: Kütüphaneden seç
 import_from_url: URL’den Dosya Yükle
+no_file_selected: Dosya seçilmedi
+download_file: Dosyayı İndir
 name: İsim
+type: Tür
+creating_new_collection: Yeni Koleksiyon Oluştur
 created_by: Oluşturan
 created_on: Oluşturulma tarihi
 save_and_create_new: Kaydet ve Yeni Oluştur

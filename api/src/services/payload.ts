@@ -9,7 +9,7 @@ import database from '../database';
 import { clone, isObject, cloneDeep } from 'lodash';
 import { Item, AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
 import { ItemsService } from './items';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import getLocalType from '../utils/get-local-type';
 import { format, formatISO } from 'date-fns';
 import { ForbiddenException } from '../exceptions';

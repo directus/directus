@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 
 export async function up(knex: Knex) {
 	await knex.schema.alterTable('directus_relations', (table) => {

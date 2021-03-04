@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { uniq, merge } from 'lodash';
 
 const defaults = {

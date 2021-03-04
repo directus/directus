@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { Schema } from '../types/schema';
 import { Table } from '../types/table';
 import { Column } from '../types/column';
@@ -78,8 +78,7 @@ export default class Postgres implements Schema {
 		}
 
 		if (parts[1] && parts[1].includes('json')) return JSON.parse(value);
-		if (parts[1] && (parts[1].includes('char') || parts[1].includes('text')))
-			return String(value);
+		if (parts[1] && (parts[1].includes('char') || parts[1].includes('text'))) return String(value);
 
 		if (Number.isNaN(Number(value))) return value;
 
@@ -142,8 +141,7 @@ export default class Postgres implements Schema {
 			if (column.table_name in overview === false)
 				overview[column.table_name] = {
 					primary: primaryKeys.find(
-						(key: { table_name: string; column_name: string }) =>
-							key.table_name === column.table_name
+						(key: { table_name: string; column_name: string }) => key.table_name === column.table_name
 					)?.column_name,
 					columns: {},
 				};
@@ -228,9 +226,7 @@ export default class Postgres implements Schema {
 			.from('information_schema.tables')
 			.whereIn('table_schema', this.explodedSchema)
 			.andWhere({ table_name: table });
-		const record = await this.knex
-			.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery]))
-			.first();
+		const record = await this.knex.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery])).first();
 		return record?.exists || false;
 	}
 
@@ -293,21 +289,13 @@ export default class Postgres implements Schema {
 					.as('is_primary'),
 
 				knex
-					.select(
-						knex.raw(
-							'pg_catalog.col_description(pg_catalog.pg_class.oid, c.ordinal_position:: int)'
-						)
-					)
+					.select(knex.raw('pg_catalog.col_description(pg_catalog.pg_class.oid, c.ordinal_position:: int)'))
 					.from('pg_catalog.pg_class')
-					.whereRaw(
-						`pg_catalog.pg_class.oid = (select('"' || c.table_name || '"'):: regclass:: oid)`
-					)
+					.whereRaw(`pg_catalog.pg_class.oid = (select('"' || c.table_name || '"'):: regclass:: oid)`)
 					.andWhere({ 'pg_catalog.pg_class.relname': 'c.table_name' })
 					.as('column_comment'),
 
-				knex.raw(
-					'pg_get_serial_sequence(quote_ident(c.table_name), c.column_name) as serial'
-				),
+				knex.raw('pg_get_serial_sequence(quote_ident(c.table_name), c.column_name) as serial'),
 
 				'ffk.referenced_table_schema',
 				'ffk.referenced_table_name',
@@ -336,7 +324,8 @@ export default class Postgres implements Schema {
         AND ffk.column_name = c.column_name
       `
 			)
-			.whereIn('c.table_schema', this.explodedSchema);
+			.whereIn('c.table_schema', this.explodedSchema)
+			.orderBy(['c.table_name', 'c.ordinal_position']);
 
 		if (table) {
 			query.andWhere({ 'c.table_name': table });
@@ -349,9 +338,7 @@ export default class Postgres implements Schema {
 				name: rawColumn.column_name,
 				table: rawColumn.table_name,
 				data_type: rawColumn.data_type,
-				default_value: rawColumn.column_default
-					? this.parseDefaultValue(rawColumn.column_default)
-					: null,
+				default_value: rawColumn.column_default ? this.parseDefaultValue(rawColumn.column_default) : null,
 				max_length: rawColumn.character_maximum_length,
 				numeric_precision: rawColumn.numeric_precision,
 				numeric_scale: rawColumn.numeric_scale,
@@ -374,9 +361,7 @@ export default class Postgres implements Schema {
 					name: rawColumn.column_name,
 					table: rawColumn.table_name,
 					data_type: rawColumn.data_type,
-					default_value: rawColumn.column_default
-						? this.parseDefaultValue(rawColumn.column_default)
-						: null,
+					default_value: rawColumn.column_default ? this.parseDefaultValue(rawColumn.column_default) : null,
 					max_length: rawColumn.character_maximum_length,
 					numeric_precision: rawColumn.numeric_precision,
 					numeric_scale: rawColumn.numeric_scale,
@@ -406,9 +391,7 @@ export default class Postgres implements Schema {
 				table_name: table,
 				column_name: column,
 			});
-		const record = await this.knex
-			.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery]))
-			.first();
+		const record = await this.knex.select<{ exists: boolean }>(this.knex.raw('exists (?)', [subquery])).first();
 		return record?.exists || false;
 	}
 

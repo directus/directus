@@ -11,12 +11,7 @@
 		/>
 		<transition-expand>
 			<div v-if="active">
-				<repeater-row-form
-					:disabled="disabled"
-					:fields="fields"
-					:value="value"
-					@input="$emit('input', $event)"
-				/>
+				<repeater-row-form :disabled="disabled" :fields="fields" :value="value" @input="$emit('input', $event)" />
 			</div>
 		</transition-expand>
 	</v-item>
@@ -61,6 +56,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .row {
+	--background-page: var(--background-subdued);
+
 	background-color: var(--background-subdued);
 	border: 2px solid var(--border-subdued);
 	border-radius: var(--border-radius);

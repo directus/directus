@@ -12,7 +12,7 @@ import {
 	AbstractServiceOptions,
 	SchemaOverview,
 } from '../types';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import cache from '../cache';
 import emitter, { emitAsyncSafe } from '../emitter';
 import { toArray } from '../utils/to-array';
@@ -200,6 +200,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			knex: this.knex,
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
 		});
+
 		return records as Partial<Item> | Partial<Item>[] | null;
 	}
 
