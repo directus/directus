@@ -26,7 +26,6 @@ export type FieldMeta = {
 	special: string[] | null;
 	interface: string | null;
 	options: Record<string, any> | null;
-	locked: boolean;
 	readonly: boolean;
 	hidden: boolean;
 	sort: number | null;
