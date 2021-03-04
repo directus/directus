@@ -81,6 +81,8 @@ function validateFilter(filter: Query['filter']) {
 }
 
 function validateFilterPrimitive(value: any, key: string) {
+	if (value === null) return true;
+
 	if (
 		(typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value instanceof Date) ===
 		false
