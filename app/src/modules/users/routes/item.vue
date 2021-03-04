@@ -111,7 +111,7 @@
 						<v-skeleton-loader type="text" />
 						<v-skeleton-loader type="text" />
 					</template>
-					<template v-else-if="isNew === false">
+					<template v-else-if="isNew === false && item">
 						<div class="name type-title">
 							{{ userName(item) }}
 							<span v-if="item.title" class="title">, {{ item.title }}</span>
@@ -261,7 +261,7 @@ export default defineComponent({
 		const title = computed(() => {
 			if (loading.value === true) return i18n.t('loading');
 
-			if (isNew.value === false && item.value !== null) {
+			if (isNew.value === false && item.value) {
 				const user = item.value as any;
 				return userName(user);
 			}
@@ -381,7 +381,7 @@ export default defineComponent({
 				if (props.primaryKey === '+') {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const newPrimaryKey = savedItem.id;
-					router.replace(`/collections/users/${newPrimaryKey}`);
+					router.replace(`/users/${newPrimaryKey}`);
 				}
 			} catch {
 				// `save` will show unexpected error dialog
@@ -533,8 +533,8 @@ export default defineComponent({
 
 		display: flex;
 		flex-shrink: 0;
-		align-items: center;
 		justify-content: center;
+		align-items: center;
 		width: 84px;
 		height: 84px;
 		margin-right: 16px;
