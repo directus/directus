@@ -179,13 +179,13 @@ Based on your configured driver, you must also provide the following configurati
 
 ### S3 (`s3`)
 
-| Variable                      | Description | Default Value |
-| ----------------------------- | ----------- | ------------- |
-| `STORAGE_<LOCATION>_KEY`      | User key    | --            |
-| `STORAGE_<LOCATION>_SECRET`   | User secret | --            |
-| `STORAGE_<LOCATION>_ENDPOINT` | S3 Endpoint | --            |
-| `STORAGE_<LOCATION>_BUCKET`   | S3 Bucket   | --            |
-| `STORAGE_<LOCATION>_REGION`   | S3 Region   | --            |
+| Variable                      	| Description                                 	| Default Value 	|
+|-------------------------------	|---------------------------------------------	|---------------	|
+| `STORAGE_<LOCATION>_KEY`      	| User key                                    	| --            	|
+| `STORAGE_<LOCATION>_SECRET`   	| User secret                                 	| --            	|
+| `STORAGE_<LOCATION>_BUCKET`   	| S3 Bucket                                   	| --            	|
+| `STORAGE_<LOCATION>_REGION`   	| S3 Region                                   	| --            	|
+| `STORAGE_<LOCATION>_ENDPOINT` 	| S3 Endpoint (only when using Digital Ocean) 	| --            	|
 
 ### Azure (`azure`)
 
