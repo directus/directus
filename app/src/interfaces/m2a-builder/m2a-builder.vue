@@ -13,15 +13,14 @@
 			:set-data="hideDragImage"
 			:disabled="!o2mRelation.sort_field"
 		>
-			<div
-				class="m2a-row"
-				v-for="item of previewValues"
-				:key="item.$index"
-				:class="{ 'non-existing': doesItemExist(item) === false }"
-				@click="doesItemExist(item) ? editExisting((value || [])[item.$index]) : undefined"
-			>
-				<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
-				<template v-if="doesItemExist(item)">
+			<template v-for="item of previewValues">
+				<div
+					:key="item.$index"
+					v-if="allowedCollections.includes(item[anyRelation.one_collection_field])"
+					class="m2a-row"
+					@click="editExisting((value || [])[item.$index])"
+				>
+					<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
 					<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
 					<span
 						v-if="typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'"
@@ -35,15 +34,17 @@
 						:item="item[anyRelation.many_field]"
 					/>
 					<div class="spacer" />
-				</template>
-				<template v-else>
-					<v-icon class="non-existing-icon" name="warning" left v-tooltip="$t('m2a_builder.collection_invalid')" />
-					<span>{{ $t('m2a_builder.item_invalid') }}</span>
+					<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+					<v-icon class="launch-icon" name="launch" />
+				</div>
+
+				<div v-else class="m2a-row invalid" :key="item.$index">
+					<v-icon class="invalid-icon" name="warning" left />
+					<span>{{ $t('invalid_item') }}</span>
 					<div class="spacer" />
-				</template>
-				<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
-				<v-icon class="launch-icon" name="launch" />
-			</div>
+					<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+				</div>
+			</template>
 		</draggable>
 
 		<div class="buttons">
@@ -154,16 +155,8 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 
-		const { o2mRelation, anyRelation } = useRelations();
-		const {
-			fetchValues,
-			previewValues,
-			loading: previewLoading,
-			junctionRowMap,
-			relatedItemValues,
-			nonExistingItems,
-			doesItemExist,
-		} = useValues();
+		const { o2mRelation, anyRelation, allowedCollections } = useRelations();
+		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
 		const { collections, templates, primaryKeys } = useCollections();
 		const { selectingFrom, stageSelection, deselect } = useSelection();
 		const {
@@ -199,8 +192,7 @@ export default defineComponent({
 			relatedItemValues,
 			hideDragImage,
 			onSort,
-			nonExistingItems,
-			doesItemExist,
+			allowedCollections,
 		};
 
 		function useRelations() {
@@ -211,12 +203,12 @@ export default defineComponent({
 			const o2mRelation = computed(() => relationsForField.value.find((relation) => relation.one_collection !== null)!);
 			const anyRelation = computed(() => relationsForField.value.find((relation) => relation.one_collection === null)!);
 
-			return { relationsForField, o2mRelation, anyRelation };
+			const allowedCollections = computed(() => anyRelation.value.one_allowed_collections!);
+
+			return { relationsForField, o2mRelation, anyRelation, allowedCollections };
 		}
 
 		function useCollections() {
-			const allowedCollections = computed(() => anyRelation.value.one_allowed_collections!);
-
 			const collections = computed<Record<string, Collection>>(() => {
 				const collections: Record<string, Collection> = {};
 
@@ -258,7 +250,6 @@ export default defineComponent({
 		function useValues() {
 			const loading = ref(false);
 			const relatedItemValues = ref<Record<string, any[]>>({});
-			const nonExistingItems = ref<number[]>([]);
 
 			// Holds "expanded" junction rows so we can lookup what "raw" junction row ID in props.value goes with
 			// what related item for pre-saved-unchanged-items
@@ -346,13 +337,7 @@ export default defineComponent({
 				loading,
 				junctionRowMap,
 				relatedItemValues,
-				nonExistingItems,
-				doesItemExist,
 			};
-
-			function doesItemExist(item: any) {
-				return nonExistingItems.value.includes(item.id) === false;
-			}
 
 			async function fetchValues() {
 				if (props.value === null) return;
@@ -433,9 +418,6 @@ export default defineComponent({
 								itemsToFetchPerCollection[relatedCollection].push(junctionRow[anyRelation.value.many_field]);
 								continue;
 							}
-
-							// When the collection doesn't exist
-							nonExistingItems.value.push(junctionRow.id);
 						}
 
 						junctionRowMap.value = junctionInfoResponse.data.data;
@@ -696,10 +678,10 @@ export default defineComponent({
 	cursor: grab !important;
 }
 
-.non-existing {
+.invalid {
 	cursor: default;
 
-	.non-existing-icon {
+	.invalid-icon {
 		--v-icon-color: var(--danger);
 	}
 }
