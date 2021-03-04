@@ -261,7 +261,7 @@ function mergeWithParentItems(
 				itemChildren = itemChildren.slice(0, nestedNode.query.limit ?? 100);
 			}
 
-			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : null;
+			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : [];
 		}
 	} else if (nestedNode.type === 'm2a') {
 		for (const parentItem of parentItems) {
