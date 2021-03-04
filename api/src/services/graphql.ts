@@ -27,7 +27,7 @@ import logger from '../logger';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
 import { ItemsService } from './items';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, set, merge, get, mapKeys } from 'lodash';
 import { sanitizeQuery } from '../utils/sanitize-query';
 
 import { ActivityService } from './activity';
@@ -468,7 +468,15 @@ export class GraphQLService {
 						if (!query.deep) query.deep = {};
 
 						const args: Record<string, any> = this.parseArgs(selection.arguments, variableValues);
-						query.deep[current] = sanitizeQuery(args, this.accountability);
+
+						set(
+							query.deep,
+							current,
+							merge(
+								get(query.deep, current),
+								mapKeys(sanitizeQuery(args, this.accountability), (value, key) => `_${key}`)
+							)
+						);
 					}
 				}
 			}
