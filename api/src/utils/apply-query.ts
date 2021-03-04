@@ -11,7 +11,7 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	nested: boolean = false
+	subQuery: boolean = false
 ) {
 	if (query.sort) {
 		dbQuery.orderBy(
@@ -39,7 +39,7 @@ export default function applyQuery(
 	}
 
 	if (query.filter) {
-		applyFilter(schema, dbQuery, query.filter, collection, nested);
+		applyFilter(schema, dbQuery, query.filter, collection, subQuery);
 	}
 
 	if (query.search) {
@@ -52,7 +52,7 @@ export function applyFilter(
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
 	collection: string,
-	nested: boolean = false
+	subQuery: boolean = false
 ) {
 	const relations: Relation[] = [...schema.relations, ...systemRelationRows];
 
@@ -111,7 +111,7 @@ export function applyFilter(
 					);
 				}
 
-				if (nested === true && isM2O === false) {
+				if (subQuery === true && isM2O === false) {
 					dbQuery.leftJoin(
 						{ [alias]: relation.many_collection },
 						`${parentAlias || parentCollection}.${relation.one_primary}`,
@@ -119,7 +119,7 @@ export function applyFilter(
 					);
 				}
 
-				if (isM2O || nested === true) {
+				if (isM2O || subQuery === true) {
 					pathParts.shift();
 
 					const parent = isM2O ? relation.one_collection! : relation.many_collection;
@@ -162,15 +162,15 @@ export function applyFilter(
 				return relation.one_collection === collection && relation.one_field === filterPath[0];
 			});
 
-			if (!!o2mRelation && nested === false) {
+			if (!!o2mRelation && subQuery === false) {
 				const pkField = `${collection}.${o2mRelation.one_primary}`;
 
-				dbQuery[logical].whereIn(pkField, (subQuery) => {
-					subQuery.select([o2mRelation.many_field]).from(o2mRelation.many_collection);
+				dbQuery[logical].whereIn(pkField, (subQueryKnex) => {
+					subQueryKnex.select([o2mRelation.many_field]).from(o2mRelation.many_collection);
 
 					applyQuery(
 						o2mRelation.many_collection,
-						subQuery,
+						subQueryKnex,
 						{
 							filter: value,
 						},

@@ -157,7 +157,7 @@ function getDBQuery(
 
 	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
 
-	applyQuery(table, dbQuery, queryCopy, schema, nested);
+	applyQuery(table, dbQuery, queryCopy, schema);
 
 	return dbQuery;
 }
