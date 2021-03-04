@@ -20,7 +20,7 @@ import { OpenAPIObject, PathItemObject, OperationObject, TagObject, SchemaObject
 import { version } from '../../package.json';
 import openapi from '@directus/specs';
 
-import Knex from 'knex';
+import { Knex } from 'knex';
 import database from '../database';
 import { getRelationType } from '../utils/get-relation-type';
 

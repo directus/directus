@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { flatten } from 'lodash';
 import { Schema } from '../types/schema';
 import { Table } from '../types/table';
@@ -26,10 +26,7 @@ export default class SQLite implements Schema {
 	// ===============================================================================================
 	async overview() {
 		const tablesWithAutoIncrementPrimaryKeys = (
-			await this.knex
-				.select('name')
-				.from('sqlite_master')
-				.whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
+			await this.knex.select('name').from('sqlite_master').whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
 		).map(({ name }) => name);
 
 		const tables = await this.tables();
@@ -113,10 +110,7 @@ export default class SQLite implements Schema {
 	 * Check if a table exists in the current schema/database
 	 */
 	async hasTable(table: string): Promise<boolean> {
-		const results = await this.knex
-			.select(1)
-			.from('sqlite_master')
-			.where({ type: 'table', name: table });
+		const results = await this.knex.select(1).from('sqlite_master').where({ type: 'table', name: table });
 		return results.length > 0;
 	}
 
@@ -133,9 +127,7 @@ export default class SQLite implements Schema {
 		}
 
 		const tables = await this.tables();
-		const columnsPerTable = await Promise.all(
-			tables.map(async (table) => await this.columns(table))
-		);
+		const columnsPerTable = await Promise.all(tables.map(async (table) => await this.columns(table)));
 		return flatten(columnsPerTable);
 	}
 
@@ -148,10 +140,7 @@ export default class SQLite implements Schema {
 	async columnInfo(table?: string, column?: string) {
 		const getColumnsForTable = async (table: string): Promise<Column[]> => {
 			const tablesWithAutoIncrementPrimaryKeys = (
-				await this.knex
-					.select('name')
-					.from('sqlite_master')
-					.whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
+				await this.knex.select('name').from('sqlite_master').whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
 			).map(({ name }) => name);
 
 			const columns: RawColumn[] = await this.knex.raw(`PRAGMA table_info(??)`, table);
@@ -176,8 +165,7 @@ export default class SQLite implements Schema {
 						numeric_scale: null,
 						is_nullable: raw.notnull === 0,
 						is_primary_key: raw.pk === 1,
-						has_auto_increment:
-							raw.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table),
+						has_auto_increment: raw.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table),
 						foreign_key_column: foreignKey?.to || null,
 						foreign_key_table: foreignKey?.table || null,
 					};
@@ -187,9 +175,7 @@ export default class SQLite implements Schema {
 
 		if (!table) {
 			const tables = await this.tables();
-			const columnsPerTable = await Promise.all(
-				tables.map(async (table) => await getColumnsForTable(table))
-			);
+			const columnsPerTable = await Promise.all(tables.map(async (table) => await getColumnsForTable(table)));
 			return flatten(columnsPerTable);
 		}
 

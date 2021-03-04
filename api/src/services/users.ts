@@ -6,7 +6,7 @@ import database from '../database';
 import argon2 from 'argon2';
 import { InvalidPayloadException, ForbiddenException, UnprocessableEntityException } from '../exceptions';
 import { Accountability, PrimaryKey, Item, AbstractServiceOptions, SchemaOverview } from '../types';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import env from '../env';
 import cache from '../cache';
 import { toArray } from '../utils/to-array';

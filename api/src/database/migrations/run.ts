@@ -1,5 +1,5 @@
 import fse from 'fs-extra';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import path from 'path';
 import formatTitle from '@directus/format-title';
 import env from '../../env';

@@ -12,7 +12,7 @@ import {
 	PrimaryKey,
 	SchemaOverview,
 } from '../types';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
 import { uniq, merge, flatten } from 'lodash';
 import generateJoi from '../utils/generate-joi';

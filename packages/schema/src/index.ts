@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { SchemaConstructor } from './types/schema';
 
 export default function Schema(knex: Knex) {

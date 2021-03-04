@@ -2,7 +2,7 @@ import { ListenerFn } from 'eventemitter2';
 import * as services from '../services';
 import * as exceptions from '../exceptions';
 import env from '../env';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { Router } from 'express';
 
 export type ExtensionContext = {

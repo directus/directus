@@ -12,7 +12,7 @@ import {
 	AbstractServiceOptions,
 	SchemaOverview,
 } from '../types';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import cache from '../cache';
 import emitter, { emitAsyncSafe } from '../emitter';
 import { toArray } from '../utils/to-array';
