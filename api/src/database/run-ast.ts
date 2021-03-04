@@ -159,11 +159,6 @@ function getDBQuery(
 
 	applyQuery(table, dbQuery, queryCopy, schema);
 
-	// Nested filters use joins to filter on the parent level, to prevent duplicate
-	// parents, we group the query by the current tables primary key (which is unique)
-	// ref #3798
-	dbQuery.groupBy(`${table}.${primaryKeyField}`);
-
 	return dbQuery;
 }
 
@@ -266,7 +261,7 @@ function mergeWithParentItems(
 				itemChildren = itemChildren.slice(0, nestedNode.query.limit ?? 100);
 			}
 
-			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : null;
+			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : [];
 		}
 	} else if (nestedNode.type === 'm2a') {
 		for (const parentItem of parentItems) {
