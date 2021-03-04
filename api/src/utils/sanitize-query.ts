@@ -1,7 +1,7 @@
 import { Accountability, Query, Sort, Filter, Meta } from '../types';
 import logger from '../logger';
 import { parseFilter } from '../utils/parse-filter';
-import { flatten, set } from 'lodash';
+import { flatten, set, merge, get } from 'lodash';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Accountability | null) {
 	const query: Query = {};
@@ -166,7 +166,7 @@ function sanitizeDeep(deep: Record<string, any>, accountability: Accountability 
 		}
 
 		if (Object.keys(parsedLevel).length > 0) {
-			set(result, path, parsedLevel);
+			set(result, path, merge({}, get(result, path, {}), parsedLevel));
 		}
 	}
 }
