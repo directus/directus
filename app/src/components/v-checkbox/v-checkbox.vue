@@ -211,20 +211,17 @@ body {
 		}
 
 		&.block {
-			// border-color: var(--v-checkbox-color);
-
 			.label {
 				color: var(--v-checkbox-color);
 			}
 
 			&::before {
-				// background-color: var(--v-checkbox-color);
 				opacity: 0.1;
 			}
 		}
 
 		input {
-			// border-color: var(--v-checkbox-color);
+			//
 		}
 	}
 
