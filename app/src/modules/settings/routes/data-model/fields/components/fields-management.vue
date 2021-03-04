@@ -7,6 +7,7 @@
 		<draggable
 			class="field-grid"
 			:value="usableFields"
+			:force-fallback="true"
 			handle=".drag-handle"
 			group="fields"
 			:set-data="hideDragImage"

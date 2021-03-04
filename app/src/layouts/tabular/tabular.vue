@@ -24,7 +24,7 @@
 
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.tabular.fields') }}</div>
-				<draggable v-model="activeFields" handle=".drag-handle" :set-data="hideDragImage">
+				<draggable v-model="activeFields" handle=".drag-handle" :set-data="hideDragImage" :force-fallback="true">
 					<v-checkbox
 						v-for="field in activeFields"
 						v-model="fields"
@@ -391,6 +391,11 @@ export default defineComponent({
 						fieldsInCollection.value
 							.filter((field) => !!field.meta?.hidden === false)
 							.slice(0, 4)
+							.sort((a?: Field, b?: Field) => {
+								if (a!.field < b!.field) return -1;
+								else if (a!.field > b!.field) return 1;
+								else return 1;
+							})
 							.map(({ field }) => field);
 
 					return fields;
@@ -437,12 +442,7 @@ export default defineComponent({
 				get() {
 					return fields.value
 						.map((key) => fieldsInCollection.value.find((field) => field.field === key))
-						.filter((f) => f)
-						.sort((a?: Field, b?: Field) => {
-							if (a!.field < b!.field) return -1;
-							else if (a!.field > b!.field) return 1;
-							else return 1;
-						}) as Field[];
+						.filter((f) => f) as Field[];
 				},
 				set(val) {
 					fields.value = val.map((field) => field.field);

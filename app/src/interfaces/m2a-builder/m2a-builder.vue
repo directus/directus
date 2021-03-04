@@ -6,6 +6,7 @@
 
 		<draggable
 			v-else
+			:force-fallback="true"
 			:value="previewValues"
 			handle=".drag-handle"
 			@input="onSort"

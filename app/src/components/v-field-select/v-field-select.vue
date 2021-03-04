@@ -3,7 +3,14 @@
 		{{ $t('no_fields_in_collection', { collection: (collectionInfo && collectionInfo.name) || collection }) }}
 	</v-notice>
 
-	<draggable v-else v-model="selectedFields" draggable=".draggable" :set-data="hideDragImage" class="v-field-select">
+	<draggable
+		v-else
+		:force-fallback="true"
+		v-model="selectedFields"
+		draggable=".draggable"
+		:set-data="hideDragImage"
+		class="v-field-select"
+	>
 		<v-chip
 			v-for="(field, index) in selectedFields"
 			:key="index"
