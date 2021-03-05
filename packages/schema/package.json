@@ -40,11 +40,11 @@
 		"url": "https://github.com/directus/directus/issues"
 	},
 	"homepage": "https://github.com/directus/directus#readme",
-  "devDependencies": {
-    "npm-watch": "^0.7.0",
-    "typescript": "^4.0.5"
-  },
-  "peerDependencies": {
-    "knex": "^0.95.0"
-  }
+	"devDependencies": {
+		"npm-watch": "^0.7.0",
+		"typescript": "^4.0.5"
+	},
+	"dependencies": {
+		"knex-schema-inspector": "^1.1.0"
+	}
 }
