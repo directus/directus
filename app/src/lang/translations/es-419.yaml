@@ -110,8 +110,6 @@ exposure: Exposición
 shutter: Obturación
 iso: ISO
 focal_length: Distancia Focal
-schema_setup_title: '¿Cómo debería guardarse este campo en la base de datos?'
-schema_field_title: '¿Cómo debería comportarse este campo en la aplicación?'
 create_field: Crear Campo
 creating_new_field: 'Nuevo Campo ({collection})'
 reset_page_preferences: Restablecer Preferencias de Página
@@ -143,10 +141,6 @@ to_manually_setup_translations: configurar manualmente las traducciones.
 click_to_manage_translated_fields: >-
   Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
 fields_group: Grupo de Campos
-configure_m2o: Configurar tu Relación Muchos-a-Uno...
-configure_o2m: Configurar tu Relación Uno-A-Muchos...
-configure_m2m: Configurar tu Relación Muchos-A-Muchos...
-configure_m2a: Configurar tu Relación Muchos-A-Cualquiera...
 add_m2o_to_collection: 'Agregar Muchos-A-Uno a "{collection}"'
 add_o2m_to_collection: 'Agregar Uno-A-Muchos a "{collection}"'
 add_m2m_to_collection: 'Agregar Muchos-A-Muchos a "{collection}"'
@@ -154,8 +148,6 @@ choose_a_type: Elegir un Tipo...
 determined_by_relationship: Determinado por la Relación
 add_note: Agrega una nota de ayuda para los usuarios...
 default_value: Valor Predeterminado
-interface_setup_title: '¿Cómo los usuarios interactuarán con este campo?'
-display_setup_title: '¿Cómo el valor de este campo debería ser presentado?'
 standard_field: Campo Estándar
 single_file: Un Archivo
 multiple_files: Múltiples Archivos
