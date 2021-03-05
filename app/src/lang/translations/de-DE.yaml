@@ -244,6 +244,7 @@ report_bug: Bug melden
 request_feature: Feature anfragen
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
 no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
+file_count: 'Keine Dateien | Eine Datei | {count} Dateien'
 user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
 no_webhooks_copy: Es gibt noch keine Webhooks.
 all_items: Alle Elemente
@@ -257,17 +258,25 @@ users: Benutzer
 activity: Aktivität
 webhooks: Webhooks
 field_width: Feldbreite
+add_a_new_item: Neues Element hinzufügen...
+add_filter: Filter hinzufügen
+upper_limit: Obere Grenze...
+lower_limit: Untere Grenze...
 user_directory: Benutzerverzeichnis
 documentation: Dokumentation
 sidebar: Seitenleiste
 duration: Dauer
+second: Sekunde
 modified_on: Geändert am
 sort_field: Sortierfeld
+sort: Sortieren
 status: Status
+bookmark_doesnt_exist_cta: Zurück zur Sammlung
 select_an_item: Element auswählen...
 edit: Bearbeiten
 enabled: Aktiviert
 disable_tfa: 2FA deaktivieren
+tfa_scan_code: Scannen Sie den Code in Ihrer Authentifikator-App, um die Einrichtung von 2FA abzuschließen
 enter_otp_to_disable_tfa: OTP zum deaktivieren der 2FA eingeben
 create_account: Konto erstellen
 account_created_successfully: Konto wurde erfolgreich erstellt
@@ -297,7 +306,11 @@ aspect_ratio: Seitenverhältnis
 rotate: Drehen
 all_users: Alle Benutzer
 delete_collection: Sammlung löschen
+update_collection_success: Sammlung aktualisiert
+delete_collection_success: Sammlung gelöscht
 start_end_of_count_items: '{start}-{end} von {count} Elementen'
+one_item: '1 Element'
+one_filtered_item: '1 gefiltertes Element'
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
 unmanaged_collections: Nicht konfigurierte Sammlungen
