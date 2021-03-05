@@ -228,8 +228,9 @@ background_color: Hintergrundfarbe
 upload_from_device: Datei vom Gerät hochladen
 choose_from_library: Datei aus Bibliothek auswählen
 import_from_url: Datei von URL importieren
-replace_from_device: Datei vom Gerät ersetzen
-replace_from_library: Datei aus der Bibliothek ersetzen
+replace_from_device: Mit Datei vom Gerät ersetzen
+replace_from_library: Mit Datei aus der Bibliothek ersetzen
+replace_from_url: Mit Datei von URL ersetzen
 no_file_selected: Keine Datei ausgewählt
 download_file: Datei herunterladen
 collection_key: Sammlungsschlüssel
@@ -257,7 +258,10 @@ request_feature: Feature anfragen
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
 no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
 file_count: 'Keine Dateien | Eine Datei | {count} Dateien'
+no_files_copy: Keine Dateien vorhanden.
 user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
+no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
+webhooks_count: 'Keine Webhooks | Ein Webhook | {count} Webhooks'
 no_webhooks_copy: Es gibt noch keine Webhooks.
 all_items: Alle Elemente
 csv: CSV
@@ -279,8 +283,11 @@ documentation: Dokumentation
 sidebar: Seitenleiste
 duration: Dauer
 second: Sekunde
+file_moved: Datei verschoben
+collection_created: Sammlung erstellt
 modified_on: Geändert am
 sort_field: Sortierfeld
+add_sort_field: Sortierfeld hinzufügen
 sort: Sortieren
 status: Status
 bookmark_doesnt_exist_cta: Zurück zur Sammlung
@@ -300,13 +307,21 @@ errors:
   FORBIDDEN: Verweigert
   INVALID_CREDENTIALS: Benutzername oder Passwort falsch
   INVALID_OTP: Falsches Einmalpasswort
+  INVALID_PAYLOAD: Ungültige Payload
   INVALID_QUERY: Ungültige anfrage
+  ITEM_LIMIT_REACHED: Elementlimit erreicht
+  ITEM_NOT_FOUND: Element nicht gefunden
   ROUTE_NOT_FOUND: Nicht gefunden
   UNKNOWN: Unerwarteter Fehler
 create_bookmark: Lesezeichen erstellen
 edit_bookmark: Lesezeichen bearbeiten
 bookmarks: Lesezeichen
+presets: Voreinstellungen
 unexpected_error: Unerwarteter Fehler
+unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.
+copy_details: Details kopieren
+no_app_access: Kein App-Zugriff
+password_reset_sent: Wir haben dir einen sicheren Link zum Zurücksetzen deines Passworts gesendet
 password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
 back: Zurück
 editing_image: Bild bearbeiten
@@ -358,17 +373,27 @@ upload_files_indeterminate: 'Hochladen von Dateien {done}/{total}'
 upload_files_success: '{count} Dateien hochgeladen'
 upload_pending: Upload ausstehend
 click_to_browse: Zum Durchsuchen klicken
+all_activity: Alle Aktivitäten
 create_item: Eintrag erstellen
 display_template: Anzeigevorlage
+n_items_selected: 'Keine Objekte ausgewählt | 1 Element ausgewählt | {n} Elemente ausgewählt'
+per_page: Pro Seite
 all_files: Alle Dateien
 my_files: Meine Dateien
 recent_files: Zuletzt verwendete Dateien
 create_folder: Ordner erstellen
+folder_name: Ordnername...
 add_file: Datei hinzufügen
 replace_file: Datei ersetzen
 no_results: Keine Ergebnisse
+no_results_copy: Suchfilter anpassen oder löschen um Ergebnisse zu sehen.
+clear_filters: Filter löschen
+saves_automatically: Automatisch speichern
 role: Rolle
 user: Benutzer
+no_presets: Keine Voreinstellungen
+no_presets_copy: Es wurden noch keine Voreinstellungen oder Lesezeichen gespeichert.
+no_presets_cta: Voreinstellung hinzufügen
 create: Erstellen
 on_update: Beim Aktualisieren
 read: Lesen
@@ -613,6 +638,7 @@ interfaces:
       dropdown: Dropdown
   wysiwyg:
     wysiwyg: WYSIWYG
+    toolbar: Symbolleiste
     custom_formats: Benutzerdefiniertes Format
 displays:
   boolean:
