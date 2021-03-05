@@ -13,29 +13,38 @@
 			:set-data="hideDragImage"
 			:disabled="!o2mRelation.sort_field"
 		>
-			<div
-				class="m2a-row"
-				v-for="item of previewValues"
-				:key="item.$index"
-				@click="editExisting((value || [])[item.$index])"
-			>
-				<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
-				<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
-				<span
-					v-if="typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'"
+			<template v-for="item of previewValues">
+				<div
+					:key="item.$index"
+					v-if="allowedCollections.includes(item[anyRelation.one_collection_field])"
+					class="m2a-row"
+					@click="editExisting((value || [])[item.$index])"
 				>
-					{{ item[anyRelation.many_field] }}
-				</span>
-				<render-template
-					v-else
-					:collection="item[anyRelation.one_collection_field]"
-					:template="templates[item[anyRelation.one_collection_field]]"
-					:item="item[anyRelation.many_field]"
-				/>
-				<div class="spacer" />
-				<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
-				<v-icon class="launch-icon" name="launch" />
-			</div>
+					<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
+					<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
+					<span
+						v-if="typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'"
+					>
+						{{ item[anyRelation.many_field] }}
+					</span>
+					<render-template
+						v-else
+						:collection="item[anyRelation.one_collection_field]"
+						:template="templates[item[anyRelation.one_collection_field]]"
+						:item="item[anyRelation.many_field]"
+					/>
+					<div class="spacer" />
+					<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+					<v-icon class="launch-icon" name="launch" />
+				</div>
+
+				<div v-else class="m2a-row invalid" :key="item.$index">
+					<v-icon class="invalid-icon" name="warning" left />
+					<span>{{ $t('invalid_item') }}</span>
+					<div class="spacer" />
+					<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+				</div>
+			</template>
 		</draggable>
 
 		<div class="buttons">
@@ -146,9 +155,9 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 
-		const { o2mRelation, anyRelation } = useRelations();
-		const { collections, templates, primaryKeys } = useCollections();
+		const { o2mRelation, anyRelation, allowedCollections } = useRelations();
 		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
+		const { collections, templates, primaryKeys } = useCollections();
 		const { selectingFrom, stageSelection, deselect } = useSelection();
 		const {
 			currentlyEditing,
@@ -183,6 +192,7 @@ export default defineComponent({
 			relatedItemValues,
 			hideDragImage,
 			onSort,
+			allowedCollections,
 		};
 
 		function useRelations() {
@@ -193,12 +203,12 @@ export default defineComponent({
 			const o2mRelation = computed(() => relationsForField.value.find((relation) => relation.one_collection !== null)!);
 			const anyRelation = computed(() => relationsForField.value.find((relation) => relation.one_collection === null)!);
 
-			return { relationsForField, o2mRelation, anyRelation };
+			const allowedCollections = computed(() => anyRelation.value.one_allowed_collections!);
+
+			return { relationsForField, o2mRelation, anyRelation, allowedCollections };
 		}
 
 		function useCollections() {
-			const allowedCollections = computed(() => anyRelation.value.one_allowed_collections!);
-
 			const collections = computed<Record<string, Collection>>(() => {
 				const collections: Record<string, Collection> = {};
 
@@ -268,12 +278,17 @@ export default defineComponent({
 								$index: index,
 							};
 						} else {
+							if (savedValues === undefined) {
+								return null;
+							}
+
 							return {
 								...savedValues,
 								$index: index,
 							};
 						}
 					})
+					.filter((val) => val)
 					.map((val) => {
 						// Find and nest the related item values for use in the preview
 						const collection = val[anyRelation.value.one_collection_field!];
@@ -296,6 +311,7 @@ export default defineComponent({
 							} else {
 								val[anyRelation.value.many_field] = cloneDeep(item);
 							}
+						} else {
 						}
 
 						return val;
@@ -315,7 +331,13 @@ export default defineComponent({
 				}
 			});
 
-			return { fetchValues, previewValues, loading, junctionRowMap, relatedItemValues };
+			return {
+				fetchValues,
+				previewValues,
+				loading,
+				junctionRowMap,
+				relatedItemValues,
+			};
 
 			async function fetchValues() {
 				if (props.value === null) return;
@@ -389,9 +411,12 @@ export default defineComponent({
 						});
 
 						for (const junctionRow of junctionInfoResponse.data.data) {
-							itemsToFetchPerCollection[junctionRow[anyRelation.value.one_collection_field!]].push(
-								junctionRow[anyRelation.value.many_field]
-							);
+							const relatedCollection = junctionRow[anyRelation.value.one_collection_field!];
+
+							// When the collection exists in the setup
+							if (relatedCollection in itemsToFetchPerCollection) {
+								itemsToFetchPerCollection[relatedCollection].push(junctionRow[anyRelation.value.many_field]);
+							}
 						}
 
 						junctionRowMap.value = junctionInfoResponse.data.data;
@@ -650,6 +675,14 @@ export default defineComponent({
 .drag-handle {
 	margin-right: 8px;
 	cursor: grab !important;
+}
+
+.invalid {
+	cursor: default;
+
+	.invalid-icon {
+		--v-icon-color: var(--danger);
+	}
 }
 
 .clear-icon {

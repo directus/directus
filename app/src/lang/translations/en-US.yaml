@@ -180,6 +180,7 @@ m2o_relationship: Many to One Relationship
 o2m_relationship: One to Many Relationship
 m2m_relationship: Many to Many Relationship
 m2a_relationship: Many to Any Relationship
+invalid_item: Invalid Item
 next: Next
 field_name: Field Name
 translations: Translations
