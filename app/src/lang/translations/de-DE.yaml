@@ -164,6 +164,7 @@ undo_changes: Änderungen verwerfen
 notifications: Benachrichtigungen
 page_not_found: Seite nicht gefunden
 page_not_found_body: Die Seite, nach der Du gesucht hast, wurde nicht gefunden.
+confirm_revert_body: Dadurch wird das Element auf den ausgewählten Zustand zurückgesetzt.
 display: Anzeige
 settings_update_success: Einstellungen aktualisiert
 title: Titel
@@ -182,6 +183,7 @@ format: Format
 export_collection: '{collection} exportieren'
 last_page: Letzte Seite
 last_access: Letzter Zugriff
+fill_template: Mit Vorlagenwert füllen
 submit: Absenden
 move_to_folder: In Ordner verschieben
 move: Verschieben
@@ -205,6 +207,8 @@ months:
   october: Oktober
   november: November
   december: Dezember
+cancel_crop: Zuschneiden abbrechen
+original: Original
 url: URL
 import: Importieren
 file_details: Dateiinformationen
@@ -221,7 +225,14 @@ open: Öffnen
 open_in_new_window: In neuem Fenster öffnen
 foreground_color: Vordergrundfarbe
 background_color: Hintergrundfarbe
+upload_from_device: Datei vom Gerät hochladen
+choose_from_library: Datei aus Bibliothek auswählen
+import_from_url: Datei von URL importieren
+replace_from_device: Datei vom Gerät ersetzen
+replace_from_library: Datei aus der Bibliothek ersetzen
+no_file_selected: Keine Datei ausgewählt
 download_file: Datei herunterladen
+collection_key: Sammlungsschlüssel
 name: Name
 primary_key_field: Primärschlüsselfeld
 type: Typ
@@ -229,6 +240,7 @@ creating_new_collection: Neue Sammlung wird erstellt
 created_by: Erstellt von
 created_on: Erstellt am
 generated_uuid: Generierte UUID
+manual_string: Manuell eingegebene Zeichenkette
 save_and_stay: Speichern und Bleiben
 save_as_copy: Als Kopie speichern
 add_existing: Vorhandene hinzufügen
