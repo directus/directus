@@ -118,8 +118,6 @@ exposure: Експозиция
 shutter: Затвор
 iso: ISO
 focal_length: Фокусно разстояние
-schema_setup_title: Как ще бъде запазено полето в базата данни?
-schema_field_title: Как това поле ще се държи в приложението?
 create_field: Създаване на поле
 creating_new_field: 'Ново поле ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -155,10 +153,6 @@ fields_group: Групи от полета
 new_data_alert: 'Следващото ще бъде създадено във вашият модел:'
 new_field: 'Ново поле'
 new_collection: 'Нова колекция'
-configure_m2o: Конфигуриране на релация от тип "много към един"...
-configure_o2m: Конфигуриране на релация от тип "един към много"...
-configure_m2m: Конфигуриране на релация от тип "много към много"...
-configure_m2a: Конфигуриране на релация от тип "много към нещо"...
 add_m2o_to_collection: 'Добавяне на "много към един" в "{collection}"'
 add_o2m_to_collection: 'Добавяне на "един към много" в "{collection}"'
 add_m2m_to_collection: 'Добавяне на "много към много" в "{collection}"'
@@ -166,8 +160,6 @@ choose_a_type: Избиране на тип...
 determined_by_relationship: Определяне по тип на релация
 add_note: Въвеждане на полезна бележка към потребителите...
 default_value: Стойност по подразбиране
-interface_setup_title: Как потребителите ще взаимодействат с това поле?
-display_setup_title: Как ще бъде показвана стойността на това поле?
 standard_field: Стандартно поле
 single_file: Единствен файл
 multiple_files: Множество файлове
