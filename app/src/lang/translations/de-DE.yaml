@@ -54,6 +54,7 @@ archive_confirm_count: >-
   Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente wirklich archivieren?
 reset_system_permissions_to: 'Systemberechtigungen zurücksetzen auf:'
 reset_system_permissions_copy: Diese Aktion wird alle benutzerdefinierten Berechtigungen überschreiben, die Sie möglicherweise auf die System-Sammlungen angewendet haben. Sind Sie sicher?
+recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Sind Sie sicher, dass das Item aus dem Archiv zurückgeholt werden soll?
 nested_files_folders_will_be_moved: Verschachtelte Dateien und Ordner werden eine Ebene höher gesetzt.
@@ -62,6 +63,7 @@ validationError:
   eq: Der Wert muss {valid} sein
   neq: Der Wert kann nicht {invalid} sein
   in: 'Gültige Werte sind: {valid}'
+  nin: Wert darf nicht einer von {invalid} sein
   contains: Der Wert muss {substring} enthalten
   ncontains: Der Wert darf {substring} nicht enthalten
   gt: Der Wert muss größer sein als {valid}
@@ -76,6 +78,7 @@ validationError:
 all_access: Zugriff auf alles
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
+field_standard: Standard
 field_file: Eine Datei
 field_files: Mehrere Dateien
 field_m2o: M2O Beziehung
@@ -90,9 +93,13 @@ permissions_for_role: 'Items die {role} Rolle kann {action}.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln welche durch die {role} Rolle befolgt werden muss.'
 presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
+changes_made: Dies sind die spezifischen Änderungen, die vorgenommen wurden...
+no_relational_data: Beachten Sie, dass dies keine relationalen Daten enthält.
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
+field_create_success: 'Erstelltes Feld: "{field}"'
+field_update_success: 'Geändertes Feld: "{field}"'
 duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
 language: Sprache
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
@@ -100,7 +107,9 @@ camera: Kamera
 exposure: Belichtung
 iso: ISO
 create_field: Feld erstellen
+creating_new_field: 'Neues Feld ({collection})'
 field_in_collection: '{field} ({collection})'
+hidden_field: Verstecktes Feld
 hidden_on_detail: In Detailansicht ausblenden
 key: Schlüssel
 alias: Alias
@@ -113,9 +122,19 @@ text: Text
 time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
+not_available_for_type: Nicht verfügbar für diesen Typ
+create_translations: Übersetzungen erstellen
 auto_generate: Automatisch generieren
+this_will_auto_setup_fields_relations: Dies wird automatisch alle benötigten Felder und Beziehungen einrichten.
 click_here: Hier klicken
+click_to_manage_translated_fields: >-
+  Es gibt noch keine übersetzten Felder. Klicke hier, um sie zu erstellen| Es gibt ein übersetztes Feld. Klicke hier, um es zu verwalten. | Es gibt {count} übersetzte Felder. Klicke hier, um sie zu verwalten.
+fields_group: Feldergruppe
+new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
+new_field: 'Neues Feld'
+new_collection: 'Neue Sammlung'
 choose_a_type: Wähle einen Typ...
+determined_by_relationship: Bestimmt durch Beziehung
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
 default_value: Standardwert
 standard_field: Standardfeld
@@ -129,12 +148,15 @@ field_name: Feldname
 translations: Übersetzungen
 note: Notiz
 enter_a_value: Gib einen Wert ein...
+enter_a_placeholder: Platzhalter eingeben...
 length: Länge
 readonly: Lesezugriff
 unique: Eindeutig
 updated_on: Geändert am
+updated_by: Geändert von
 primary_key: Primärschlüssel
 foreign_key: Fremdschlüssel
+finish_setup: Einrichtung abschließen
 dismiss: Verwerfen
 clear_value: Wert löschen
 reset_to_default: Auf Standard zurücksetzen
@@ -185,8 +207,10 @@ months:
   december: Dezember
 url: URL
 import: Importieren
+file_details: Dateiinformationen
 size: Größe
 created: Erstellt
+modified: Geändert
 checksum: Prüfsumme
 owner: Besitzer
 edited_by: Editiert von
@@ -195,19 +219,26 @@ zoom: Zoom
 download: Herunterladen
 open: Öffnen
 open_in_new_window: In neuem Fenster öffnen
+foreground_color: Vordergrundfarbe
+background_color: Hintergrundfarbe
 download_file: Datei herunterladen
 name: Name
+primary_key_field: Primärschlüsselfeld
 type: Typ
+creating_new_collection: Neue Sammlung wird erstellt
 created_by: Erstellt von
 created_on: Erstellt am
+generated_uuid: Generierte UUID
 save_and_stay: Speichern und Bleiben
 save_as_copy: Als Kopie speichern
 add_existing: Vorhandene hinzufügen
 comments: Kommentare
+no_comments: Noch keine Kommentare
 click_to_expand: Zum Erweitern klicken
 select_item: Element auswählen
 no_items: Keine Elemente
 search_items: Elemente suchen...
+disabled: Deaktiviert
 information: Information
 report_bug: Bug melden
 request_feature: Feature anfragen
@@ -235,6 +266,8 @@ sort_field: Sortierfeld
 status: Status
 select_an_item: Element auswählen...
 edit: Bearbeiten
+enabled: Aktiviert
+disable_tfa: 2FA deaktivieren
 enter_otp_to_disable_tfa: OTP zum deaktivieren der 2FA eingeben
 create_account: Konto erstellen
 account_created_successfully: Konto wurde erfolgreich erstellt
@@ -321,6 +354,8 @@ toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
 wysiwyg_options:
+  forecolor: Vordergrundfarbe
+  backcolor: Hintergrundfarbe
   bold: Fett
   italic: Kursiv
   underline: Unterstrichen
@@ -539,10 +574,14 @@ interfaces:
   text-input:
     text-input: Texteingabe
     trim: Beschneiden
+  textarea:
+    textarea: Textfeld
   toggle:
     toggle: Umschalten
+    label_default: Aktiviert
   translations:
     display_template: Anzeigevorlage
+    no_collection: Keine Sammlung
   user:
     user: Benutzer
     modes:
