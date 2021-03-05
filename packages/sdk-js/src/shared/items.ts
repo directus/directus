@@ -52,13 +52,19 @@ export type FilterOperator =
 	| '_nempty';
 
 export interface IItems<T extends Item> {
+	// TODO: add fields
 	readOne(id: ID): Promise<T>;
 	readMany(ids: ID[]): Promise<T[]>;
 	readQuery(query: Query<T>): Promise<T[]>;
+
+	// TODO: add fields
 	createOne(item: PartialItem<T>): Promise<T>;
 	createMany(items: PartialItem<T>[]): Promise<T[]>;
+
+	// TODO: add fields
 	updateOne(id: ID, item: PartialItem<T>): Promise<T>;
 	//updateMany(id: PrimaryKey[], item: PartialItem<T>): Promise<T>;
+
 	deleteOne(id: ID): Promise<void>;
 	deleteMany(id: ID[]): Promise<void>;
 }

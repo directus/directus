@@ -1,7 +1,0 @@
-{
-	"GET /generic/get/200": {
-		"data": {
-			"value": 1234
-		}
-	}
-}

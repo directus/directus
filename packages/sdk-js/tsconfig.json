@@ -6,6 +6,7 @@
 		"declarationMap": true,
 		"strict": true,
 		"noFallthroughCasesInSwitch": true,
+		"esModuleInterop": true,
 		"noImplicitAny": true,
 		"noImplicitThis": true,
 		"noImplicitReturns": true,

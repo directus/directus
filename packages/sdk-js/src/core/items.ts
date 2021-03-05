@@ -13,7 +13,7 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 
 	async readOne(id: ID): Promise<T> {
 		const response = await this.transport.get(`${this.endpoint}/${id}`);
-		return response;
+		return response.data;
 	}
 
 	async readMany(_ids: ID[]): Promise<T[]> {

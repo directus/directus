@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ITransport, TransportResponse } from '../../shared/transport';
+import { ITransport, Methods, Response, TransportError } from '../../shared/transport';
 
 /**
  * Axios transport implementation
@@ -7,13 +7,13 @@ import { ITransport, TransportResponse } from '../../shared/transport';
 export class AxiosTransport implements ITransport {
 	// change to callbacks
 
-	private _token: string | null;
+	private _token?: string | null;
 
-	get token(): string | null {
+	get token(): string | null | undefined {
 		return this._token;
 	}
 
-	set token(value: string | null) {
+	set token(value: string | null | undefined) {
 		this._token = value;
 	}
 
@@ -29,29 +29,67 @@ export class AxiosTransport implements ITransport {
 		this.axios.interceptors.request.use(this.createRequestConfig.bind(this));
 	}
 
-	async get<T = any>(path: string, options?: any): Promise<TransportResponse<T>> {
-		const response = await this.axios.get(path, options);
-		return response;
+	private async request<T = any>(method: 'get', path: string): Promise<Response<T>>;
+	private async request<T = any>(method: 'delete', path: string): Promise<Response<T>>;
+	private async request<T = any>(method: 'head', path: string): Promise<Response<T>>;
+	private async request<T = any>(method: 'options', path: string): Promise<Response<T>>;
+	private async request<T = any, D = any>(method: 'post', path: string, data?: D): Promise<Response<T>>;
+	private async request<T = any, D = any>(method: 'put', path: string, data?: D): Promise<Response<T>>;
+	private async request<T = any, D = any>(method: 'patch', path: string, data?: D): Promise<Response<T>>;
+	private async request<M extends Methods, T = any>(method: M, path: string, ...args: any): Promise<Response<T>> {
+		try {
+			const make = this.axios[method] as AxiosInstance[M];
+			const response = await make<Response<T>>(path, ...args);
+			const { data, meta, errors } = response.data;
+			return {
+				status: response.status,
+				statusText: response.statusText,
+				headers: response.headers,
+				data,
+				meta,
+				errors,
+			};
+		} catch (err) {
+			if (axios.isAxiosError(err)) {
+				const data = err.response?.data;
+				throw new TransportError<T>(err, {
+					status: err.response?.status,
+					headers: err.response?.headers,
+					data: data?.data,
+					meta: data?.meta,
+					errors: data?.errors,
+				});
+			}
+			throw new TransportError<T>(err);
+		}
 	}
 
-	async post<T = any>(path: string, options?: any): Promise<TransportResponse<T>> {
-		const response = await this.axios.post(path, options);
-		return response.data;
+	async get<T = any>(path: string): Promise<Response<T>> {
+		return await this.request('get', path);
 	}
 
-	async patch<T = any>(path: string, options?: any): Promise<TransportResponse<T>> {
-		const response = await this.axios.patch(path, options);
-		return response.data;
+	async delete<T = any>(path: string): Promise<Response<T>> {
+		return await this.request('delete', path);
 	}
 
-	async delete<T = any>(path: string, options?: any): Promise<TransportResponse<T>> {
-		const response = await this.axios.delete(path, options);
-		return response.data;
+	async head<T = any>(path: string): Promise<Response<T>> {
+		return await this.request('head', path);
 	}
 
-	async head<T = any>(path: string, options?: any): Promise<TransportResponse<T>> {
-		const response = await this.axios.head(path, options);
-		return response.data;
+	async options<T = any>(path: string): Promise<Response<T>> {
+		return await this.request('options', path);
+	}
+
+	async put<T = any, D = any>(path: string, data?: D): Promise<Response<T>> {
+		return await this.request('put', path, data);
+	}
+
+	async post<T = any, D = any>(path: string, data?: D): Promise<Response<T>> {
+		return await this.request('post', path, data);
+	}
+
+	async patch<T = any, D = any>(path: string, data?: D): Promise<Response<T>> {
+		return await this.request('patch', path, data);
 	}
 
 	private createRequestConfig(config: AxiosRequestConfig): AxiosRequestConfig {
