@@ -131,6 +131,7 @@
 				:initial-values="item"
 				:batch-mode="isBatch"
 				:primary-key="primaryKey"
+				:validation-errors="validationErrors"
 				v-model="edits"
 			/>
 		</div>
@@ -242,6 +243,7 @@ export default defineComponent({
 			archive,
 			archiving,
 			isArchived,
+			validationErrors,
 		} = useItem(ref('directus_users'), primaryKey);
 
 		if (props.preset) {
@@ -347,6 +349,7 @@ export default defineComponent({
 			form,
 			userName,
 			revisionsAllowed,
+			validationErrors,
 		};
 
 		function useBreadcrumb() {
