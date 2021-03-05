@@ -9,7 +9,7 @@
 	align-items: center;
 	padding: var(--v-card-padding);
 	margin-top: 12px;
-	font-weight: 500;
+	font-weight: 600;
 	line-height: 1.6em;
 }
 </style>
