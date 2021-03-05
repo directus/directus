@@ -299,8 +299,8 @@ body {
 .arrow::after {
 	position: absolute;
 	z-index: 1;
-	width: 8px;
-	height: 8px;
+	width: 10px;
+	height: 10px;
 	border-radius: 2px;
 }
 
@@ -429,17 +429,13 @@ body {
 .attached {
 	&[data-placement^='top'] {
 		> .v-menu-content {
-			border-bottom: none;
-			border-bottom-right-radius: 0;
-			border-bottom-left-radius: 0;
+			transform: translateY(-2px);
 		}
 	}
 
 	&[data-placement^='bottom'] {
 		> .v-menu-content {
-			border-top: none;
-			border-top-left-radius: 0;
-			border-top-right-radius: 0;
+			transform: translateY(2px);
 		}
 	}
 }
