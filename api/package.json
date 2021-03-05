@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-rc.44",
+	"version": "9.0.0-rc.45",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -132,11 +132,11 @@
 		"ioredis": "^4.19.2",
 		"keyv-memcache": "^1.0.1",
 		"memcached": "^2.2.2",
-		"tedious": "^11.0.5",
 		"mysql": "^2.18.1",
 		"oracledb": "^5.0.0",
 		"pg": "^8.4.2",
-		"sqlite3": "^5.0.2"
+		"sqlite3": "^5.0.2",
+		"tedious": "^11.0.5"
 	},
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
 	"devDependencies": {
