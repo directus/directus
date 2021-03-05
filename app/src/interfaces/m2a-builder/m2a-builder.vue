@@ -416,7 +416,6 @@ export default defineComponent({
 							// When the collection exists in the setup
 							if (relatedCollection in itemsToFetchPerCollection) {
 								itemsToFetchPerCollection[relatedCollection].push(junctionRow[anyRelation.value.many_field]);
-								continue;
 							}
 						}
 
