@@ -63,8 +63,6 @@ field_files: Beberapa Berkas
 field_translations: Terjemahan
 language: Bahasa
 global: Global
-schema_setup_title: Bagaimana seharusnya kolom ini disimpan di database?
-schema_field_title: Bagaimana seharusnya kolom ini berperilaku di dalam aplikasi?
 create_field: Buat Bidang
 creating_new_field: 'Kolom Baru ({collection})'
 reset_page_preferences: Reset Preferensi Halaman
@@ -100,8 +98,6 @@ choose_a_type: Pilih tipe...
 determined_by_relationship: Ditentukan oleh relasi
 add_note: Tambahkan catatan untuk pengguna...
 default_value: Nilai Bawaan
-interface_setup_title: Bagaimana pengguna akan berinteraksi dengan kolom ini?
-display_setup_title: Bagaimana nilai dari kolom ini seharusnya ditampilkan?
 standard_field: Kolom Standar
 single_file: Satu Berkas
 multiple_files: Beberapa Berkas
