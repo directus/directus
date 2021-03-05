@@ -65,10 +65,6 @@ export default defineComponent({
 .v-divider {
 	margin-bottom: 12px;
 	cursor: pointer;
-
-	.title {
-		color: red;
-	}
 }
 
 .v-detail:not(.disabled) .v-divider {
