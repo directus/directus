@@ -117,8 +117,6 @@ exposure: Exposure
 shutter: Sluitertijd
 iso: ISO
 focal_length: Brandpuntsafstand
-schema_setup_title: Hoe moet dit veld worden opgeslagen in de database?
-schema_field_title: Hoe moet dit veld zich gedragen in de app?
 create_field: Maak veld
 creating_new_field: 'Nieuw veld ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -154,10 +152,6 @@ fields_group: Veld-Groep
 new_data_alert: 'Het volgende wordt aangemaakt in uw datamodel:'
 new_field: 'Nieuw veld'
 new_collection: 'Nieuwe collectie'
-configure_m2o: Configureer je Many-to-One Relatie...
-configure_o2m: Configureer je One-to-many Relatie...
-configure_m2m: Configureer je Many-to-many Relatie...
-configure_m2a: Configureer je Many-to-any Relatie...
 add_m2o_to_collection: 'Many-to-one toevoegen aan "{collection}"'
 add_o2m_to_collection: 'One-to-many toevoegen aan "{collection}"'
 add_m2m_to_collection: 'Many-to-many toevoegen aan "{collection}"'
@@ -165,8 +159,6 @@ choose_a_type: Kies een type...
 determined_by_relationship: Bepaald door relatie
 add_note: Voeg een hint toe voor de eindgebruiker...
 default_value: Standaardwaarde
-interface_setup_title: Hoe zullen gebruikers omgaan met dit veld?
-display_setup_title: Hoe moet de waarde van dit veld worden weergegeven?
 standard_field: Standaard veld
 single_file: Enkel bestand
 multiple_files: Meerdere bestanden
