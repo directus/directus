@@ -28,8 +28,6 @@ field_files: 複数のファイル
 field_translations: 翻訳
 fields_and_layout: 項目とレイアウト
 language: 言語
-schema_setup_title: この項目をどのように保存するか設定しましょう。
-schema_field_title: この項目のエディタでの表示を設定できます。
 create_field: 新規項目の追加
 hidden_on_detail: 詳細に表示しない
 disabled_editing_value: 項目の編集を無効にする
@@ -42,7 +40,6 @@ auto_generate: 自動生成
 to_manually_setup_translations: 独自の翻訳を設定することができます
 add_note: ユーザーに有益な注釈を追加...
 default_value: 初期値
-interface_setup_title: 項目の入力に使用する方法を選択してください。
 single_file: 1つのファイル
 multiple_files: 複数のファイル
 next: 次
