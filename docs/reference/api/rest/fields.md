@@ -7,7 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> Fields are individual pieces of content within an item. They are mapped to columns in the database. [Learn more about Fields](/concepts/fields/).
+> Fields are individual pieces of content within an item. They are mapped to columns in the database.
+> [Learn more about Fields](/concepts/fields/).
 
 </div>
 <div class="right">
@@ -462,7 +463,6 @@ POST /fields/:collection
 			"options": null,
 			"display": null,
 			"display_options": null,
-			"locked": false,
 			"readonly": false,
 			"hidden": false,
 			"sort": null,
@@ -572,7 +572,6 @@ PATCH /fields/:collection/:field
 			"options": null,
 			"display": null,
 			"display_options": null,
-			"locked": false,
 			"readonly": false,
 			"hidden": false,
 			"sort": null,

@@ -122,6 +122,7 @@ shutter: Shutter
 iso: ISO
 focal_length: Focal Length
 schema_setup_title: How should this field save to the database?
+schema_setup_key: This field's database column name and API key
 schema_field_title: How should this field behave in the app?
 create_field: Create Field
 creating_new_field: 'New Field ({collection})'
@@ -179,6 +180,7 @@ m2o_relationship: Many to One Relationship
 o2m_relationship: One to Many Relationship
 m2m_relationship: Many to Many Relationship
 m2a_relationship: Many to Any Relationship
+invalid_item: Invalid Item
 next: Next
 field_name: Field Name
 translations: Translations

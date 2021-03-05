@@ -73,8 +73,8 @@ body {
 
 	&.info {
 		--v-notice-icon-color: var(--primary);
-		--v-notice-background-color: var(--primary-alt);
-		--v-notice-color: var(--primary);
+		--v-notice-background-color: var(--background-normal);
+		--v-notice-color: var(--foreground-normal);
 	}
 
 	&.success {

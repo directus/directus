@@ -158,7 +158,7 @@ router.post(
 			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
 		);
 
-		if (!fileCreatePermissions) {
+		if (req.accountability?.admin !== true && !fileCreatePermissions) {
 			throw new ForbiddenException();
 		}
 

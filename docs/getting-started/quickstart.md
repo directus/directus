@@ -5,8 +5,8 @@
 
 ## 1. Installation
 
-Make sure you have the latest LTS version of [Node.js](https://nodejs.dev) installed, and have a running database ready
-to connect to.
+Make sure you have the latest LTS version or newer of [Node.js](https://nodejs.dev) installed, and have a running
+database ready to connect to.
 
 Run the following command in your terminal and follow the prompts.
 

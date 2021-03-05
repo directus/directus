@@ -27,10 +27,6 @@ columns:
     length: 64
   display_options:
     type: json
-  locked:
-    type: boolean
-    default: false
-    nullable: false
   readonly:
     type: boolean
     default: false

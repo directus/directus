@@ -217,23 +217,31 @@ export class FieldsService {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
-		if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-			if (table) {
-				this.addColumnToTable(table, field as Field);
-			} else {
-				await database.schema.alterTable(collection, (table) => {
+		await this.knex.transaction(async (trx) => {
+			const itemsService = new ItemsService('directus_fields', {
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+
+			if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+				if (table) {
 					this.addColumnToTable(table, field as Field);
+				} else {
+					await trx.schema.alterTable(collection, (table) => {
+						this.addColumnToTable(table, field as Field);
+					});
+				}
+			}
+
+			if (field.meta) {
+				await itemsService.create({
+					...field.meta,
+					collection: collection,
+					field: field.field,
 				});
 			}
-		}
-
-		if (field.meta) {
-			await this.itemsService.create({
-				...field.meta,
-				collection: collection,
-				field: field.field,
-			});
-		}
+		});
 
 		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();

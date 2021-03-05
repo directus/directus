@@ -321,15 +321,15 @@ export default defineComponent({
 							showAsDot: true,
 							choices: [
 								{
-									background: '#2F80ED',
+									background: '#00C897',
 									value: 'published',
 								},
 								{
-									background: '#ECEFF1',
+									background: '#D3DAE4',
 									value: 'draft',
 								},
 								{
-									background: '#F2994A',
+									background: '#F7971C',
 									value: 'archived',
 								},
 							],

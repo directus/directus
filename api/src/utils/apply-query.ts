@@ -10,7 +10,8 @@ export default function applyQuery(
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
-	schema: SchemaOverview
+	schema: SchemaOverview,
+	subQuery: boolean = false
 ) {
 	if (query.sort) {
 		dbQuery.orderBy(
@@ -38,7 +39,7 @@ export default function applyQuery(
 	}
 
 	if (query.filter) {
-		applyFilter(schema, dbQuery, query.filter, collection);
+		applyFilter(schema, dbQuery, query.filter, collection, subQuery);
 	}
 
 	if (query.search) {
@@ -50,7 +51,8 @@ export function applyFilter(
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
-	collection: string
+	collection: string,
+	subQuery: boolean = false
 ) {
 	const relations: Relation[] = [...schema.relations, ...systemRelationRows];
 
@@ -107,7 +109,9 @@ export function applyFilter(
 						`${parentAlias || parentCollection}.${relation.many_field}`,
 						`${alias}.${relation.one_primary}`
 					);
-				} else {
+				}
+
+				if (subQuery === true && isM2O === false) {
 					dbQuery.leftJoin(
 						{ [alias]: relation.many_collection },
 						`${parentAlias || parentCollection}.${relation.one_primary}`,
@@ -115,12 +119,14 @@ export function applyFilter(
 					);
 				}
 
-				pathParts.shift();
+				if (isM2O || subQuery === true) {
+					pathParts.shift();
 
-				const parent = isM2O ? relation.one_collection! : relation.many_collection;
+					const parent = isM2O ? relation.one_collection! : relation.many_collection;
 
-				if (pathParts.length) {
-					followRelation(pathParts, parent, alias);
+					if (pathParts.length) {
+						followRelation(pathParts, parent, alias);
+					}
 				}
 			}
 		}
@@ -152,11 +158,33 @@ export function applyFilter(
 			const filterPath = getFilterPath(key, value);
 			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
 
-			if (filterPath.length > 1) {
-				const columnName = getWhereColumn(filterPath, collection);
-				applyFilterToQuery(columnName, filterOperator, filterValue, logical);
+			const o2mRelation = relations.find((relation) => {
+				return relation.one_collection === collection && relation.one_field === filterPath[0];
+			});
+
+			if (!!o2mRelation && subQuery === false) {
+				const pkField = `${collection}.${o2mRelation.one_primary}`;
+
+				dbQuery[logical].whereIn(pkField, (subQueryKnex) => {
+					subQueryKnex.select([o2mRelation.many_field]).from(o2mRelation.many_collection);
+
+					applyQuery(
+						o2mRelation.many_collection,
+						subQueryKnex,
+						{
+							filter: value,
+						},
+						schema,
+						true
+					);
+				});
 			} else {
-				applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+				if (filterPath.length > 1) {
+					const columnName = getWhereColumn(filterPath, collection);
+					applyFilterToQuery(columnName, filterOperator, filterValue, logical);
+				} else {
+					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+				}
 			}
 		}
 

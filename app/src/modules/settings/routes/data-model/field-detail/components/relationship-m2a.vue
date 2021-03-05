@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('configure_m2a') }}</v-notice>
 
 		<div class="grid">
 			<div class="field">
@@ -64,7 +63,6 @@
 				<div class="type-label">{{ $t('related_collections') }}</div>
 
 				<v-select
-					:disabled="isExisting"
 					:placeholder="$t('collection') + '...'"
 					:items="availableCollections"
 					item-value="collection"

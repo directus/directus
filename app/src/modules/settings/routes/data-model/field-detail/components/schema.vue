@@ -1,8 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">
-			{{ $t('schema_setup_title') }}
-		</v-notice>
 
 		<div class="form">
 			<div class="field">
@@ -19,6 +16,7 @@
 					db-safe
 					:placeholder="$t('a_unique_column_name')"
 				/>
+				<small class="note" v-html="$t('schema_setup_key')" />
 			</div>
 
 			<div class="field half">
@@ -407,6 +405,14 @@ export default defineComponent({
 	--form-horizontal-gap: 32px;
 
 	@include form-grid;
+}
+
+.note {
+	display: block;
+	max-width: 520px;
+	margin-top: 4px;
+	color: var(--foreground-subdued);
+	font-style: italic;
 }
 
 .monospace {

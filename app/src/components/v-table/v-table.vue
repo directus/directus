@@ -40,6 +40,7 @@
 				</tr>
 			</tbody>
 			<draggable
+				:force-fallback="true"
 				v-else
 				v-model="_items"
 				tag="tbody"

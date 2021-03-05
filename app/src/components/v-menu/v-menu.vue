@@ -299,15 +299,15 @@ body {
 .arrow::after {
 	position: absolute;
 	z-index: 1;
-	width: 8px;
-	height: 8px;
+	width: 10px;
+	height: 10px;
 	border-radius: 2px;
 }
 
 .arrow {
 	&::before,
 	&::after {
-		background: var(--border-normal);
+		background: var(--card-face-color);
 		transform: rotate(45deg) scale(0);
 		transition: transform var(--fast) var(--transition-out);
 		transition-delay: 0;
@@ -321,39 +321,44 @@ body {
 	}
 
 	&::after {
-		background: var(--background-subdued);
+		background: var(--card-face-color);
+		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
 	}
 }
 
 [data-placement^='top'] .arrow {
-	bottom: -4px;
+	bottom: -6px;
 
 	&::after {
-		bottom: 3px;
+		bottom: 2px;
+		box-shadow: 2.5px 2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
 	}
 }
 
 [data-placement^='bottom'] .arrow {
-	top: -4px;
+	top: -6px;
 
 	&::after {
-		top: 3px;
+		top: 2px;
+		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
 	}
 }
 
 [data-placement^='right'] .arrow {
-	left: -4px;
+	left: -6px;
 
 	&::after {
-		left: 3px;
+		left: 2px;
+		box-shadow: -2.5px 2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
 	}
 }
 
 [data-placement^='left'] .arrow {
-	right: -4px;
+	right: -6px;
 
 	&::after {
-		right: 3px;
+		right: 2px;
+		box-shadow: 2.5px -2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
 	}
 }
 
@@ -362,10 +367,11 @@ body {
 	padding: 0 4px;
 	overflow-x: hidden;
 	overflow-y: auto;
-	background-color: var(--background-subdued);
-	border: 2px solid var(--border-normal);
 	border-radius: var(--border-radius);
-	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
+	border: none;
+	background-color: var(--card-face-color);
+	box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color),0.2),
+							0px 0px 12px 2px rgba(var(--card-shadow-color),0.05);
 	transition-timing-function: var(--transition-out);
 	transition-duration: var(--fast);
 	transition-property: opacity, transform;
@@ -427,17 +433,13 @@ body {
 .attached {
 	&[data-placement^='top'] {
 		> .v-menu-content {
-			border-bottom: none;
-			border-bottom-right-radius: 0;
-			border-bottom-left-radius: 0;
+			transform: translateY(-2px);
 		}
 	}
 
 	&[data-placement^='bottom'] {
 		> .v-menu-content {
-			border-top: none;
-			border-top-left-radius: 0;
-			border-top-right-radius: 0;
+			transform: translateY(2px);
 		}
 	}
 }

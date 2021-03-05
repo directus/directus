@@ -339,7 +339,7 @@ export default defineComponent({
 
 	&.is-svg {
 		padding: 4px;
-		background-color: var(--background-normal);
+		background-color: var(--background-normal-alt);
 
 		img {
 			object-fit: contain;

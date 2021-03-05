@@ -94,7 +94,7 @@ fields:
     options:
       icon: verified_user
       title: Admin Options
-      color: '#F2994A'
+      color: '#E35169'
     special: alias
     width: full
 
