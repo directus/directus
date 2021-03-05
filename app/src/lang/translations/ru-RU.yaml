@@ -110,8 +110,6 @@ exposure: Экспозиция
 shutter: Затвор
 iso: ISO
 focal_length: Фокусное Расстояние
-schema_setup_title: Как это поле должно сохранить в базе данных?
-schema_field_title: Как это поле должно вести в приложении?
 create_field: Создать Поле
 creating_new_field: 'Новое Поле ({collection})'
 reset_page_preferences: Сбросить Настройки Страницы
@@ -144,10 +142,6 @@ click_to_manage_translated_fields: >-
   Полей перевода пока нет. Нажмите здесь, чтобы создать их. | Есть одно поле перевода. Нажмите здесь, чтобы управлять им. | Есть {count} полей перевода. Нажмите здесь, чтобы управлять ими.
 fields_group: Группа Полей
 new_collection: 'Новая коллекция'
-configure_m2o: Настройте вашу связку Many-to-One...
-configure_o2m: Настройте вашу связку One-to-Many...
-configure_m2m: Настройте вашу связку Many-to-Many...
-configure_m2a: Настройте вашу связку Many-to-Any...
 add_m2o_to_collection: 'Добавить Many-to-One в "{collection}"'
 add_o2m_to_collection: 'Добавить One-to-Many в "{collection}"'
 add_m2m_to_collection: 'Добавить Many-to-Many в "{collection}"'
@@ -155,8 +149,6 @@ choose_a_type: Выберите Тип...
 determined_by_relationship: Определяется Связкой
 add_note: Добавить заметку для пользователей...
 default_value: Значение По умолчанию
-interface_setup_title: Как пользователи будут взаимодействовать с этим полем?
-display_setup_title: Как будет отображаться значение этого поля?
 standard_field: Стандартное Поле
 single_file: Один Файл
 multiple_files: Несколько Файлов
