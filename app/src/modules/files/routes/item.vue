@@ -137,6 +137,7 @@
 				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				:disabled="updateAllowed === false"
+				:validation-errors="validationErrors"
 				v-model="edits"
 			/>
 		</div>
@@ -250,6 +251,7 @@ export default defineComponent({
 			saveAsCopy,
 			isBatch,
 			refresh,
+			validationErrors,
 		} = useItem(ref('directus_files'), primaryKey);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
@@ -344,6 +346,7 @@ export default defineComponent({
 			fields,
 			fieldsFiltered,
 			revisionsAllowed,
+			validationErrors,
 		};
 
 		function useBreadcrumb() {

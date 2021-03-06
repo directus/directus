@@ -1,6 +1,7 @@
 # Custom Displays <small></small>
 
-> Displays are small inline components that allow you to create new ways of viewing field values throughout the App. [Learn more about Displays](/concepts/displays/).
+> Displays are small inline components that allow you to create new ways of viewing field values throughout the App.
+> [Learn more about Displays](/concepts/displays/).
 
 ## 1. Setup the Boilerplate
 
@@ -93,7 +94,7 @@ To be read by the Admin App, your custom display's Vue component must first be b
 recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
 ```bash
-npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler
+npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc rollup-plugin-vue@next
 ```
 
 You can then use the following Rollup configuration within `rollup.config.js`:

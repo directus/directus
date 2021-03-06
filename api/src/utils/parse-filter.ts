@@ -8,7 +8,7 @@ export function parseFilter(filter: Filter, accountability: Accountability | nul
 		if (val === 'false') return false;
 		if (val === 'null' || val === 'NULL') return null;
 
-		if (key === '_in' || key === '_nin') {
+		if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
 			if (typeof val === 'string' && val.includes(',')) return val.split(',');
 			else return toArray(val);
 		}
