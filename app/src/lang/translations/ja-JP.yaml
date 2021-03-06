@@ -19,10 +19,13 @@ delete_folder: フォルダーの削除
 delete_bookmark: ブックマーク削除
 logoutReason:
   SIGN_OUT: ログアウト
+  SESSION_EXPIRED: セッションが期限切れです
 public: 公開
+not_allowed: 許可されていない
 directus_version: Directus Version
 os_version: OSバージョン
 archive: アーカイブ
+recommended_defaults: 推奨されるデフォルト値
 validationError:
   required: 必須項目です
 field_file: 1つのファイル
