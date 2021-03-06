@@ -109,6 +109,7 @@ format: Muoto
 use_current_filters_settings: Käytä nykyisiä suodattimia ja asetuksia
 a_unique_table_name: Ainutlaatuinen taulun nimi...
 submit: Lähetä
+move_to_folder: Siirrä kansioon
 move: Siirrä
 system: Järjestelmä
 interface: Käyttöliittymä
@@ -243,6 +244,8 @@ n_items_selected: 'Ei valittuja kohteita | 1 valittu kohde | {n} valittua kohdet
 all_files: Kaikki Tiedostot
 my_files: Omat tiedostot
 recent_files: Viimeisimmät tiedostot
+create_folder: Luo kansio
+folder_name: Kansion nimi...
 add_file: Lisää tiedosto
 replace_file: Korvaa tiedosto
 no_results: Ei tuloksia
