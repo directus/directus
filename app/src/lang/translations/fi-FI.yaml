@@ -8,6 +8,7 @@ add_field: Lisää kenttä
 role_name: Roolin nimi
 show_archived_items: Näytä arkistoidut kohteet
 required: Vaadittu
+required_for_app_access: Vaaditaan sovelluspääsyyn
 create_role: Luo rooli
 create_user: Luo käyttäjä
 invite_users: Kutsu käyttäjiä
@@ -20,34 +21,56 @@ delete_folder: Poista kansio
 prefix: Etuliite
 suffix: Jälkiliite
 delete_bookmark: Poista kirjanmerkki
+delete_bookmark_copy: >-
+  Oletko varma, että haluat poistaa "{bookmark}" kirjanmerkin? Tätä toimintoa ei voi perua.
 logoutReason:
   SESSION_EXPIRED: Istunto vanheutunut
 public: Julkinen
+public_description: Määrittää mitä API-tietoja on saatavilla ilman autentikointia.
+not_allowed: Ei sallittu
 directus_version: Directus-versio
 archive: Arkistoi
 archive_confirm: Oletko varma, että haluat arkistoida tämän kohteen?
 archive_confirm_count: >-
   Kohteita ei ole valittu | Oletko varma, että haluat arkistoida tämän kohteen? | Oletko varma, että haluat arkistoida nämä {count} kohdetta?
+reset_system_permissions_copy: Tämä toiminto korvaa kaikki mukautetut käyttöoikeudet, joita olet saattanut soveltaa järjestelmäkokoelmiin. Oletko varma?
+the_following_are_minimum_permissions: Seuraavat ovat vähimmäiskäyttöoikeudet vaaditaan kun "Sovelluspääsy" on käytössä. Voit laajentaa käyttöoikeuksia tästä korkeammaksi, mutta et matalammaksi.
+app_access_minimum: Sovelluspääsy vähintään
 unarchive: Palauta arkistosta
 unarchive_confirm: Oletko varma, että haluat palauttaa tämän kohteen?
 validationError:
   gt: Arvon on oltava suurempi kuin {valid}
+  gte: Arvon on oltava yhtä suuri tai suurempi kuin {valid}
 field_file: Yksittäinen tiedosto
 field_files: Useita tiedostoja
 item_permissions: Kohteen oikeudet
+field_permissions: Kentän Oikeudet
 permissions_for_role: 'Kohteet joita {role} rooli voi {action}.'
 revision_post_update: Tässä on miltä tämä kohde näytti päivityksen jälkeen...
+no_relational_data: Muista, että tämä ei sisällä relaatiotietoja.
+duplicate_where_to: Mihin haluat monistaa tämän kentän?
 language: Kieli
 admins_have_all_permissions: Ylläpitäjillä on kaikki oikeudet
 create_field: Luo kenttä
 hidden_on_detail: Piilotettu yksityiskohdista
+boolean: Totuusarvo
 date: Päivämäärä
 decimal: Desimaali
+json: JSON
+string: Merkkijono
 text: Teksti
 time: Aika
+uuid: UUID
+this_will_auto_setup_fields_relations: Tämä määrittää automaattisesti kaikki tarvittavat kentät ja suhteet.
+click_to_manage_translated_fields: >-
+  Käännettyjä kenttiä ei vielä ole. Klikkaa tästä luodaksesi ne. | On olemassa yksi käännetty kenttä. Klikkaa tästä hallitaksesi sitä. | On {count} käännettyä kenttää. Hallinnoi niitä kikkaamalla tästä.
+new_data_alert: 'Seuraava tullaa luomaan tietomallisi sisällä:'
+new_field: 'Uusi kenttä'
 new_collection: 'Uusi kokoelma'
+choose_a_type: Valitse tyyppi...
 add_note: Lisää käyttäjälle hyödyllinen huomautus...
 default_value: Oletusarvo
+standard_field: Vakio Kenttä
 single_file: Yksittäinen tiedosto
 multiple_files: Useita tiedostoja
 invalid_item: Virheellinen kohde
@@ -55,7 +78,9 @@ next: Seuraava
 note: Muistiinpano
 length: Pituus
 unique: Yksilöllinen
+updated_by: Päivittänyt
 primary_key: Ensisijainen avain
+raw_value: Raaka-arvo
 clear_value: Tyhjennä
 reset_to_default: Palauta oletukseksi
 undo_changes: Peru muutokset
@@ -71,6 +96,7 @@ revision_delta_deleted: Poistettu
 revision_delta_reverted: Palautettu
 revision_delta_other: Versio
 revision_delta_by: '{date} käyttäjältä {user}'
+private_user: Yksityinen Käyttäjä
 revision_preview: Version esikatselu
 leave_comment: Jätä kommentti...
 post_comment_success: Kommentti lähetetty
@@ -83,10 +109,17 @@ format: Muoto
 use_current_filters_settings: Käytä nykyisiä suodattimia ja asetuksia
 a_unique_table_name: Ainutlaatuinen taulun nimi...
 submit: Lähetä
+move: Siirrä
+system: Järjestelmä
+interface: Käyttöliittymä
+today: Tänään
+yesterday: Eilen
 delete_comment: Poista kommentti
+year: Vuosi
 select_all: Valitse kaikki
 months:
   january: Tammikuu
+  february: Helmikuu
   march: Maaliskuu
   april: Huhtikuu
   may: Toukokuu
@@ -97,12 +130,18 @@ months:
   october: Lokakuu
   november: Marraskuu
   december: Joulukuu
+import: Tuo
 file_details: Tiedoston tiedot
+dimensions: Mitat
 size: Koko
 created: Luotu
+modified: Muokattu
 checksum: Tarkistussumma
 owner: Omistaja
+edited_by: Muokannut
+folder: Kansio
 download: Lataa
+open: Avaa
 upload_from_device: Lataa tiedosto laitteesta
 choose_from_library: Valitse tiedosto kirjastosta
 import_from_url: Tuo tiedosto osoitteesta
@@ -115,6 +154,7 @@ collection_key: Kokoeilman avain
 name: Nimi
 created_by: Luonnut
 created_on: Luotu
+creating_collection_info: Nimeä kokoelma ja määritä sen ainutlaatuinen “avain”-kenttää...
 save_and_stay: Tallenna ja pysy
 save_as_copy: Tallenna kopiona
 comments: Kommentit
@@ -131,6 +171,9 @@ no_files_copy: Täällä ei ole tiedostoja.
 all_items: Kaikki kohteet
 no_collections: Ei kokoelmia
 create_collection: Luo kokoelma
+no_collections_copy_admin: Sinulla ei ole vielä kokoelmia. Aloita painamalla alla olevaa painiketta.
+no_collections_copy: Sinulla ei ole vielä kokoelmia. Ota yhteyttä järjestelmänvalvojaan.
+relationship_not_setup: Suhdetta ei ole määritetty oikein
 active: Aktiivinen
 users: Käyttäjät
 activity: Tapahtuma
@@ -144,13 +187,22 @@ collection_created: Kokoelma luotu
 modified_on: Muokattu viimeksi
 status: Tila
 bookmark_doesnt_exist: Kirjamerkkiä ei ole olemassa
+bookmark_doesnt_exist_copy: Kirjanmerkkiä, jota yrität avata, ei löytynyt.
 select_an_item: Valitse kohde...
 edit: Muokkaa
+tfa_scan_code: Skannaa koodi autentikointisovelluksessasi viimeistelläksesi 2FA:n asetukset
 errors:
+  INVALID_CREDENTIALS: Väärä käyttäjätunnus tai salasana
+  INVALID_OTP: Väärä kertakäyttösalasana
   ITEM_LIMIT_REACHED: Kohteiden rajoitus saavutettu
   ITEM_NOT_FOUND: Kohdetta ei löydy
 bookmarks: Kirjainmerkit
+unexpected_error_copy: Tapahtui odottamaton virhe. Yritä myöhemmin uudelleen.
 copy_details: Kopioi tiedot
+no_app_access: Ei sovelluspääsyä
+no_app_access_copy: Tällä käyttäjällä ei ole oikeutta käyttää järjestelmänvalvojasovellusta.
+password_reset_sent: Olemme lähettäneet sinulle turvallisen linkin nollataksesi salasanasi
+password_reset_successful: Salasanan palauttaminen onnistui
 back: Takaisin
 all_users: Kaikki käyttäjät
 delete_collection: Poista kokoelma
@@ -210,6 +262,7 @@ wysiwyg_options:
   table: Taulukko
 dropdown: Pudotusvalikko
 choices: Valinnat
+choices_option_configured_incorrectly: Valinnat määritetty väärin
 deselect: Poista valinta
 deselect_all: Poista kaikki valinnat
 creating_in: 'Luodaan kohdetta kokoelmassa {collection}'
@@ -227,13 +280,28 @@ page_help_collections_collection: >-
   **Selaa kohteita** — Listaa kaikki {collection} kohdetta, joihin sinulla on pääsy. Mukauta asettelua, suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
 page_help_collections_item: >-
   **Kohteen yksityiskohdat** — Lomake tämän kohteen katselua ja hallintaa varten. Tämä sivupalkki sisältää myös täyden historian uudistuksia ja upotettuja kommentteja.
+page_help_activity_collection: >-
+  **Selaa aktiviteettejä** — Kattava luettelo kaikesta käyttäjän järjestelmästä ja sisällöstä.
+page_help_docs_global: >-
+  **Dokumentaation yleiskatsaus** — Dokumentit on räätälöity erityisesti tämän projektin versioon ja kaavioon.
+page_help_files_collection: >-
+  **Tiedostokirjasto** — Listaa kaikki tiedostoassetit, jotka on ladattu tähän projektiin. Mukauta asettelua, suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
 page_help_files_item: >-
   **Tiedoston yksityiskohdat** — Lomake tiedostojen metatietojen hallintaan, alkuperäisen assettin muokkaamiseen ja käyttöoikeuksien päivittämiseen.
+page_help_settings_project: "**Projektin asetukset** — Projektisi yleiset konfiguraatioasetukset."
+page_help_settings_datamodel_collections: >-
+  **Tietomalli: kokoelmat** — Luettelee kaikki saatavilla olevat kokoelmat. Tämä sisältää näkyvät, piilotetut ja järjestelmäkokoelmat sekä hallitsemattomat tietokantataulut, jotka voidaan lisätä.
+page_help_settings_datamodel_fields: >-
+  **Tietomalli: kokoelma** — Lomake tämän kokoelman ja sen kenttien hallintaa varten.
 page_help_settings_roles_collection: '**Selaa rooleja** — Listaa Admin, Julkiset ja mukautetut käyttäjäroolit.'
 page_help_settings_roles_item: "**Roolin yksityiskohdat** — Hallitse roolin käyttöoikeuksia ja muita asetuksia."
+page_help_settings_presets_collection: >-
+  **Selaa esiasetuksia** — Listaa kaikki projektin esiasetukset, mukaan lukien käyttäjät, roolit ja maailmanlaajuiset kirjanmerkit sekä oletusnäkymät.
 page_help_settings_presets_item: >-
   **Esiasetuksen yksityiskohdat** — Lomake kirjanmerkkien ja oletuskokoelmien esiasetusten hallintaan.
+page_help_settings_webhooks_collection: '**Selaa webhookkeja** — Listaa kaikki projektin webhookit.'
 page_help_settings_webhooks_item: '**Webhookkien yksityiskohdat** — Lomake projektin webhookkien luomiseen ja hallintaan.'
+page_help_users_collection: '**Käyttäjähakemisto** — Listaa kaikki järjestelmän käyttäjät tässä projektissa.'
 page_help_users_item: >-
   **Käyttäjätieto** — Hallitse tilitietojasi tai tarkastele muiden käyttäjien tietoja.
 add_new: Lisää uusi
@@ -243,6 +311,7 @@ batch_delete_confirm: >-
 cancel: Peruuta
 collection: Kokoelma
 collections: Kokoelmat
+system_fields_locked: Järjestelmäkentät ovat lukittuja, eikä niitä voi muokata
 fields:
   directus_activity:
     item: Kohteen ensisijainen avain
@@ -277,6 +346,7 @@ fields:
     created_by: Luonnut
     embed: Upota
     uploaded_by: Lataaja
+    folder: Kansio
     width: Leveys
     uploaded_on: Ladattu
     height: Korkeus
@@ -302,6 +372,8 @@ fields:
     project_color: Projektin väri
     project_logo: Projektin logo
     public_note: Julkinen muistiinpano
+    auth_password_policy: Salasanakäytäntö
+    auth_login_attempts: Kirjautumisyritykset
   directus_fields:
     collection: Kokoelman nimi
     icon: Kokoelman kuvake
@@ -312,12 +384,17 @@ fields:
   directus_roles:
     name: Roolin nimi
     description: Kuvaus
+    app_access: Sovelluspääsy
     admin_access: Ylläpitäjän pääsy
     collection_list: Kokoelman navigointi
 comment: Kommentti
 continue: Jatka
+continue_as: >-
+  <b>{name}</b> on tällä hetkellä autentikoitu. Jos tunnistat tämän tilin, paina jatka.
 default: Oletus
 delete: Poista
+delete_are_you_sure: >-
+  Tämä toiminto on pysyvä eikä sitä voi peruuttaa. Oletko varma, että haluat jatkaa?
 delete_field_are_you_sure: >-
   Oletko varma, että haluat poistaa kohteen "{field}"? Tätä toimintoa ei voi kumota.
 description: Kuvaus
@@ -360,7 +437,10 @@ translation: Käännös
 value: Arvo
 view_project: Näytä projekti
 interfaces:
+  button-links:
+    description: Muokattavissa olevat linkkipainikkeet dynaamisten URL:ien käynnistämiseen
   checkboxes:
+    description: Valitse useista vaihtoehdoista valintaruutujen kautta
     items_shown: Näytettävät kohteet
   code:
     code: Koodi
@@ -389,6 +469,8 @@ interfaces:
     icon: Kuvake
   image:
     description: Valitse tai lataa kuva
+  interface:
+    interface: Käyttöliittymä
   interface-options:
     interface-options: Liittymän asetukset
   many-to-many:
@@ -421,6 +503,8 @@ interfaces:
       auto: Automaattinen
       dropdown: Pudotusvalikko
 displays:
+  boolean:
+    boolean: Totuusarvo
   collection:
     collection: Kokoelma
   color:
@@ -429,12 +513,16 @@ displays:
     datetime: Päivämäärä ja aika
     description: Näytä kellonaikaan liittyvät arvot
     format: Muoto
+    format_note: >-
+      Mukautettu muoto hyväksyy __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
   file:
     file: Tiedosto
     description: Näytä tiedostot
   filesize:
     filesize: Tiedostokoko
     description: Näytä tiedoston koko
+  formatted-json-value:
+    description: Näytä objektin muotoiltu versio
   icon:
     icon: Kuvake
   mime-type:
@@ -442,6 +530,7 @@ displays:
     extension_only_label: Näytä vain tiedostopääte
   rating:
     rating: Arvio
+    description: Visualisoi numero tähtinä suhteessa maksimiarvoon
   user:
     user: Käyttäjänimi
     avatar: Avatari
