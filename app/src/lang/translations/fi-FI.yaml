@@ -22,6 +22,8 @@ logoutReason:
 public: Julkinen
 directus_version: Directus-versio
 archive: Arkistoi
+validationError:
+  gt: Arvon on oltava suurempi kuin {valid}
 language: Kieli
 create_field: Luo kenttä
 hidden_on_detail: Piilotettu yksityiskohdista
@@ -111,6 +113,8 @@ unsaved_changes: Tallentamattomia muutoksia
 unsaved_changes_copy: Oletko varma, että haluat poistua tältä sivulta?
 discard_changes: Hylkää muutokset
 keep_editing: Jatka muokkausta
+page_help_collections_collection: >-
+  **Selaa kohteita** — Listaa kaikki {collection} kohdetta, joihin sinulla on pääsy. Mukauta asettelua, suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
 add_new: Lisää uusi
 all: Kaikki
 batch_delete_confirm: >-
@@ -218,8 +222,10 @@ interfaces:
     line_number: Rivinumero
   collection:
     collection: Kokoelma
+    description: Valitse olemassaolevien kokoelmien väliltä
   collections:
     collections: Kokoelmat
+    description: Valitse olemassaolevien kokoelmien väliltä
   color:
     color: Väri
   datetime:
@@ -230,6 +236,7 @@ interfaces:
     file: Tiedosto
   files:
     files: Tiedostot
+    description: Valitse tai lataa useita tiedostoja
   icon:
     icon: Kuvake
   interface-options:
@@ -240,6 +247,8 @@ interfaces:
     numeric: Numeerinen
   slider:
     slider: Liukusäädin
+  slug:
+    description: Kirjoita sana joka on yhdistetty väliviivoin
   tags:
     tags: Tunnisteet
   text-input:
@@ -255,6 +264,7 @@ displays:
     color: Väri
   datetime:
     datetime: Päivämäärä ja aika
+    description: Näytä kellonaikaan liittyvät arvot
     format: Muoto
   file:
     file: Tiedosto
