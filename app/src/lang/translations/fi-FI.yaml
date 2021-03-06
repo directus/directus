@@ -1,14 +1,17 @@
 ---
 edit_field: Muokkaa kenttää
+item_revision: Kohteen versio
 full_width: Täysleveä
 field_name_translations: Kentän Nimi Käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
 add_field: Lisää kenttä
 role_name: Roolin nimi
+show_archived_items: Näytä arkistoidut kohteet
 required: Vaadittu
 create_role: Luo rooli
 create_user: Luo käyttäjä
 invite_users: Kutsu käyttäjiä
+invite: Kutsu
 emails: Sähköpostit
 connection_good: Hyvä Yhteys
 connection_poor: Huono Yhteys
@@ -22,18 +25,34 @@ logoutReason:
 public: Julkinen
 directus_version: Directus-versio
 archive: Arkistoi
+archive_confirm: Oletko varma, että haluat arkistoida tämän kohteen?
+archive_confirm_count: >-
+  Kohteita ei ole valittu | Oletko varma, että haluat arkistoida tämän kohteen? | Oletko varma, että haluat arkistoida nämä {count} kohdetta?
+unarchive: Palauta arkistosta
+unarchive_confirm: Oletko varma, että haluat palauttaa tämän kohteen?
 validationError:
   gt: Arvon on oltava suurempi kuin {valid}
+field_file: Yksittäinen tiedosto
+field_files: Useita tiedostoja
+item_permissions: Kohteen oikeudet
+permissions_for_role: 'Kohteet joita {role} rooli voi {action}.'
+revision_post_update: Tässä on miltä tämä kohde näytti päivityksen jälkeen...
 language: Kieli
+admins_have_all_permissions: Ylläpitäjillä on kaikki oikeudet
 create_field: Luo kenttä
 hidden_on_detail: Piilotettu yksityiskohdista
 date: Päivämäärä
 decimal: Desimaali
 text: Teksti
 time: Aika
+new_collection: 'Uusi kokoelma'
 add_note: Lisää käyttäjälle hyödyllinen huomautus...
 default_value: Oletusarvo
+single_file: Yksittäinen tiedosto
+multiple_files: Useita tiedostoja
+invalid_item: Virheellinen kohde
 next: Seuraava
+note: Muistiinpano
 length: Pituus
 unique: Yksilöllinen
 primary_key: Ensisijainen avain
@@ -43,12 +62,29 @@ undo_changes: Peru muutokset
 notifications: Ilmoitukset
 page_not_found: Sivua ei löydy
 page_not_found_body: Sivua, jota etsit ei näytä olevan olemassa.
+confirm_revert_body: Tämä palauttaa kohteen valittuun tilaan.
 display: Näyttö
 title: Otsikko
+revision_delta_created: Luotu
+revision_delta_created_externally: Luotu ulkoisesti
+revision_delta_deleted: Poistettu
+revision_delta_reverted: Palautettu
+revision_delta_other: Versio
+revision_delta_by: '{date} käyttäjältä {user}'
+revision_preview: Version esikatselu
 leave_comment: Jätä kommentti...
+post_comment_success: Kommentti lähetetty
+item_create_success: Kohde luotu | Kohteet luotu
+item_update_success: Kohde päivitetty | Kohteet päivitetty
+item_delete_success: Kohde poistettu | Kohteet poistettu
 this_collection: Tämä kokoelma
+related_collection: Liittyvät kokoelmat
 format: Muoto
+use_current_filters_settings: Käytä nykyisiä suodattimia ja asetuksia
+a_unique_table_name: Ainutlaatuinen taulun nimi...
 submit: Lähetä
+delete_comment: Poista kommentti
+select_all: Valitse kaikki
 months:
   january: Tammikuu
   march: Maaliskuu
@@ -61,29 +97,78 @@ months:
   october: Lokakuu
   november: Marraskuu
   december: Joulukuu
+file_details: Tiedoston tiedot
 size: Koko
+created: Luotu
 checksum: Tarkistussumma
 owner: Omistaja
 download: Lataa
+upload_from_device: Lataa tiedosto laitteesta
+choose_from_library: Valitse tiedosto kirjastosta
+import_from_url: Tuo tiedosto osoitteesta
+replace_from_device: Korvaa tiedosto laitteesta
+replace_from_library: Korvaa tiedosto kirjastosta
+replace_from_url: Korvaa tiedosto osoitteesta
+no_file_selected: Ei valittua tiedostoa
+download_file: Lataa tiedosto
+collection_key: Kokoeilman avain
 name: Nimi
 created_by: Luonnut
 created_on: Luotu
 save_and_stay: Tallenna ja pysy
 save_as_copy: Tallenna kopiona
 comments: Kommentit
+no_comments: Ei vielä kommentteja
+select_item: Valitse kohde
+no_items: Ei kohteita
+search_items: Hae kohteita...
+information: Tietoja
 request_feature: Pyydä ominaisuutta
+item_count: 'Ei kohteita | Yksi kohde | {count} kohdetta'
+no_items_copy: Tässä kokoelmassa ei vielä ole kohteita.
+file_count: 'Ei tiedostoja | Yksi tiedosto | {count} tiedostoa'
+no_files_copy: Täällä ei ole tiedostoja.
+all_items: Kaikki kohteet
+no_collections: Ei kokoelmia
 create_collection: Luo kokoelma
+active: Aktiivinen
 users: Käyttäjät
 activity: Tapahtuma
+add_a_new_item: Lisää uusi kohde...
+add_filter: Lisää suodatin
 user_directory: Käyttäjähakemisto
+documentation: Dokumentaatio
 duration: Kesto
+file_moved: Tiedosto siirretty
+collection_created: Kokoelma luotu
 modified_on: Muokattu viimeksi
 status: Tila
+bookmark_doesnt_exist: Kirjamerkkiä ei ole olemassa
+select_an_item: Valitse kohde...
 edit: Muokkaa
+errors:
+  ITEM_LIMIT_REACHED: Kohteiden rajoitus saavutettu
+  ITEM_NOT_FOUND: Kohdetta ei löydy
 bookmarks: Kirjainmerkit
+copy_details: Kopioi tiedot
 back: Takaisin
+all_users: Kaikki käyttäjät
+delete_collection: Poista kokoelma
+delete_collection_success: Poistetut kokoelmat
+start_end_of_count_items: '{start}-{end} / {count} kohdetta'
+start_end_of_count_filtered_items: '{start}-{end} / {count} suodatettua kohdetta'
+one_item: '1 kohde'
+one_filtered_item: '1 suodatettu kohde'
+delete_collection_are_you_sure: >-
+  Oletko varma, että haluat poistaa tämän kokoelman? Tämä poistaa kokoelman ja kaikki sen kohteet. Tämä toiminto on lopullinen.
+collections_shown: Näytettävät kokoelmat
+count_other_revisions: '{count} muuta versiota'
 divider: Jakaja
 color: Väri
+empty_item: Tyhjä kohde
+log_in_with: 'Kirjaudu käyttäen {provider}'
+advanced_filter: Edistynyt suodatin
+delete_advanced_filter: Poista suodatin
 operators:
   lt: Vähemmän kuin
   gt: Suurempi kuin
@@ -92,7 +177,26 @@ operators:
   contains: Sisältää
   empty: On tyhjä
 loading: Ladataan...
+drop_to_upload: Pudota ladataksesi
+upload_file: Lähetä tiedosto
+upload_file_indeterminate: Ladataan Tiedostoa...
+upload_file_success: Tiedosto ladattu
+upload_files_indeterminate: 'Ladataan tiedostoja {done}/{total}'
+upload_files_success: '{count} tiedostoa ladattu'
+upload_pending: Lähetys odottaa
+drag_file_here: Vedä ja pudota tiedosto tähän
+collection_setup: Kokoelman asetukset
+create_item: Luo kohde
+n_items_selected: 'Ei valittuja kohteita | 1 valittu kohde | {n} valittua kohdetta'
+all_files: Kaikki Tiedostot
+my_files: Omat tiedostot
+recent_files: Viimeisimmät tiedostot
+add_file: Lisää tiedosto
+replace_file: Korvaa tiedosto
 no_results: Ei tuloksia
+no_results_copy: Säädä tai tyhjennä hakusuodattimet nähdäksesi tulokset.
+clear_filters: Tyhjennä suodattimet
+saves_automatically: Tallentaa automaattisesti
 role: Rooli
 user: Käyttäjänimi
 create: Luo
@@ -102,19 +206,36 @@ select_fields: Valitse kentät
 wysiwyg_options:
   codeblock: Koodi
   remove: Poista
+  selectall: Valitse kaikki
   table: Taulukko
 dropdown: Pudotusvalikko
 choices: Valinnat
 deselect: Poista valinta
+deselect_all: Poista kaikki valinnat
+creating_in: 'Luodaan kohdetta kokoelmassa {collection}'
+editing_in: 'Muokataan kohdetta: {collection}'
 editing_in_batch: 'Muokataan {count} kohdetta erässä'
+settings_data_model: Tietorakenne
 settings_permissions: Roolit ja oikeudet
 settings_project: Projektin asetukset
 unsaved_changes: Tallentamattomia muutoksia
 unsaved_changes_copy: Oletko varma, että haluat poistua tältä sivulta?
 discard_changes: Hylkää muutokset
 keep_editing: Jatka muokkausta
+page_help_collections_overview: '**Kokoelmien Yleiskatsaus** — Luettelo kaikista kokoelmista, joihin sinulla on pääsy.'
 page_help_collections_collection: >-
   **Selaa kohteita** — Listaa kaikki {collection} kohdetta, joihin sinulla on pääsy. Mukauta asettelua, suodattimia ja lajittelua muokkaamaan näkymääsi ja jopa tallenna näiden eri kokoonpanojen kirjanmerkkejä nopeaa käyttöä varten.
+page_help_collections_item: >-
+  **Kohteen yksityiskohdat** — Lomake tämän kohteen katselua ja hallintaa varten. Tämä sivupalkki sisältää myös täyden historian uudistuksia ja upotettuja kommentteja.
+page_help_files_item: >-
+  **Tiedoston yksityiskohdat** — Lomake tiedostojen metatietojen hallintaan, alkuperäisen assettin muokkaamiseen ja käyttöoikeuksien päivittämiseen.
+page_help_settings_roles_collection: '**Selaa rooleja** — Listaa Admin, Julkiset ja mukautetut käyttäjäroolit.'
+page_help_settings_roles_item: "**Roolin yksityiskohdat** — Hallitse roolin käyttöoikeuksia ja muita asetuksia."
+page_help_settings_presets_item: >-
+  **Esiasetuksen yksityiskohdat** — Lomake kirjanmerkkien ja oletuskokoelmien esiasetusten hallintaan.
+page_help_settings_webhooks_item: '**Webhookkien yksityiskohdat** — Lomake projektin webhookkien luomiseen ja hallintaan.'
+page_help_users_item: >-
+  **Käyttäjätieto** — Hallitse tilitietojasi tai tarkastele muiden käyttäjien tietoja.
 add_new: Lisää uusi
 all: Kaikki
 batch_delete_confirm: >-
@@ -130,23 +251,34 @@ fields:
     comment: Kommentti
     user_agent: Asiakasohjelma
     ip: IP-osoite
+    revisions: Versiot
   directus_collections:
     collection: Kokoelma
     icon: Kuvake
+    note: Muistiinpano
     hidden: Piilotettu
+    archive_app_filter: Arkistoi sovelluksen suodatin
+    archive_value: Arkistoi arvo
+    unarchive_value: Palauta arkistoitu arvo
   directus_files:
     title: Otsikko
     description: Kuvaus
     tags: Tunnisteet
     location: Sijainti
+    storage: Tallennustila
+    filename_disk: Tiedostonimi (levyllä)
+    filename_download: Tiedostonimi (lataus)
     metadata: Metatiedot
+    type: Mime-tyyppi
     filesize: Tiedostokoko
+    modified_by: Muokkaaja
     modified_on: Muokattu viimeksi
     created_on: Luotu
     created_by: Luonnut
     embed: Upota
     uploaded_by: Lataaja
     width: Leveys
+    uploaded_on: Ladattu
     height: Korkeus
     duration: Kesto
   directus_users:
@@ -166,13 +298,22 @@ fields:
     role: Rooli
   directus_settings:
     project_name: Projektin nimi
+    project_url: Projektin osoite
+    project_color: Projektin väri
+    project_logo: Projektin logo
+    public_note: Julkinen muistiinpano
   directus_fields:
+    collection: Kokoelman nimi
+    icon: Kokoelman kuvake
+    note: Muistiinpano
     hidden: Piilotettu
     translation: Kentän Nimi Käännökset
     display_template: Pohja
   directus_roles:
     name: Roolin nimi
     description: Kuvaus
+    admin_access: Ylläpitäjän pääsy
+    collection_list: Kokoelman navigointi
 comment: Kommentti
 continue: Jatka
 default: Oletus
@@ -202,6 +343,7 @@ permissions: Oikeudet
 relationship: Relaatio
 reset: Nollaa
 reset_password: Nollaa salasana
+revisions: Versiot
 revert: Palauta
 save: Tallenna
 schema: Rakenne
@@ -216,7 +358,10 @@ sort_direction: Järjestyssuunta
 template: Pohja
 translation: Käännös
 value: Arvo
+view_project: Näytä projekti
 interfaces:
+  checkboxes:
+    items_shown: Näytettävät kohteet
   code:
     code: Koodi
     line_number: Rivinumero
@@ -230,32 +375,50 @@ interfaces:
     color: Väri
   datetime:
     datetime: Päivämäärä ja aika
+  display-template:
+    collection_field: Kokoeilmakenttä
   divider:
     divider: Jakaja
   file:
     file: Tiedosto
+    description: Valitse tai lataa tiedosto
   files:
     files: Tiedostot
     description: Valitse tai lataa useita tiedostoja
   icon:
     icon: Kuvake
+  image:
+    description: Valitse tai lataa kuva
   interface-options:
     interface-options: Liittymän asetukset
+  many-to-many:
+    description: Valitse useita liittyviä risteyskohteita
+  many-to-one:
+    description: Valitse yksi liittyvä kohde
   markdown:
     markdown: Markdown
   numeric:
     numeric: Numeerinen
+  one-to-many:
+    description: Valitse useita liittyviä kohteita
+  repeater:
+    field_note_placeholder: Syötä kentän muistiinpano...
   slider:
     slider: Liukusäädin
   slug:
     description: Kirjoita sana joka on yhdistetty väliviivoin
   tags:
     tags: Tunnisteet
+    description: Valitse tai lisää tunnisteita
+    add_tags: Lisää tunnisteita...
   text-input:
     text-input: Tekstinsyöttö
+  translations:
+    no_collection: Ei kokoelmaa
   user:
     user: Käyttäjänimi
     modes:
+      auto: Automaattinen
       dropdown: Pudotusvalikko
 displays:
   collection:
@@ -268,10 +431,15 @@ displays:
     format: Muoto
   file:
     file: Tiedosto
+    description: Näytä tiedostot
   filesize:
     filesize: Tiedostokoko
+    description: Näytä tiedoston koko
   icon:
     icon: Kuvake
+  mime-type:
+    description: Näytä tiedoston MIME-tyyppi
+    extension_only_label: Näytä vain tiedostopääte
   rating:
     rating: Arvio
   user:
