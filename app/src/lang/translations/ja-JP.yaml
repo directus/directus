@@ -21,6 +21,8 @@ logoutReason:
   SIGN_OUT: ログアウト
 public: 公開
 directus_version: Directus Version
+os_version: OSバージョン
+archive: アーカイブ
 validationError:
   required: 必須項目です
 field_file: 1つのファイル
@@ -107,6 +109,8 @@ download: ダウンロード
 open: 開く
 open_in_new_window: 新しいウィンドウで開く
 background_color: 背景色
+upload_from_device: デバイスからファイルをアップロード
+choose_from_library: ライブラリから選択
 import_from_url: URLからファイルをインポート
 replace_from_device: デバイスからファイルを置き換え
 replace_from_library: ライブラリからファイルを置き換え
