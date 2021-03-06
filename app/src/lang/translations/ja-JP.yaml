@@ -108,6 +108,9 @@ open: 開く
 open_in_new_window: 新しいウィンドウで開く
 background_color: 背景色
 import_from_url: URLからファイルをインポート
+replace_from_device: デバイスからファイルを置き換え
+replace_from_library: ライブラリからファイルを置き換え
+replace_from_url: URLからファイルを置き換え
 no_file_selected: ファイルが選択されていません
 download_file: ファイルをダウンロード
 name: 名前
@@ -121,8 +124,10 @@ creating_collection_system: オプションフィールドの有効化および�
 auto_increment_integer: 整数を自動生成
 generated_uuid: UUIDを生成
 manual_string: 値を手動で入力する
+save_and_create_new: 保存して新規作成
 save_and_stay: 保存してページに留まる
 save_as_copy: 複製として保存
+add_existing: 既存を追加
 comments: コメント
 no_items: アイテムがありません
 disabled: 無効
@@ -182,9 +187,20 @@ update: 更新
 select_fields: 入力欄の選択
 wysiwyg_options:
   backcolor: 背景色
+  copy: コピー
+  paste: ペースト
+  heading: 見出し
+  h1: 見出し 1
+  h2: 見出し 2
+  h3: 見出し 3
+  h4: 見出し 4
+  h5: 見出し 5
+  fontselect: フォントを選択
   remove: 削除
   selectall: すべて
   table: テーブル
+  directionality: 方向
+choices: 選択項目
 deselect: 選択解除
 editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
 settings_data_model: データモデル
@@ -206,18 +222,21 @@ singleton_label: シングルオブジェクトに設定する
 fields:
   directus_activity:
     comment: コメント
+    user_agent: ユーザーエージェント
     ip: IPアドレス
   directus_collections:
     icon: アイコン
     note: 備考
     hidden: 非表示
     singleton: シングルトン
+    translations: コレクション名の翻訳
     sort_field: フィールドの並べ替え
   directus_files:
     title: タイトル
     description: 説明
     tags: タグ
     location: 場所
+    type: MIMEタイプ
     filesize: ファイルサイズ
     modified_on: 修正日時
     created_on: 作成日時
@@ -239,9 +258,13 @@ fields:
     language: 言語
     theme: テーマ
     status: ステータス
+    token: トークン
     last_access: 最後にアクセスした日時
   directus_settings:
     project_name: プロジェクト名
+    project_url: プロジェクトの URL
+    project_color: プロジェクトの色
+    project_logo: プロジェクトのロゴ
   directus_fields:
     note: 備考
     hidden: 非表示
@@ -250,8 +273,13 @@ fields:
   directus_roles:
     name: 権限名
     description: 説明
+    ip_access: IP アクセス
+    enforce_tfa: 二段階認証が必要
+no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
 do_nothing: 何もしない
+save_current_user_role: 現在のユーザーロールを保存
 save_current_datetime: 現在の日付/時刻を保存
+inline: インライン
 comment: コメント
 continue: 続ける
 default: デフォルト
@@ -269,11 +297,14 @@ forgot_password: パスワード忘れ
 hidden: 非表示
 icon: アイコン
 info: 情報
+success: 成功
+warning: 注意
 junction_collection: 中継コレクション
 latency: 待ち時間
 login: ログイン
 my_activity: 操作
 not_authenticated: ' 認証されていません'
+authenticated: 認証済み
 options: オプション
 otp: ワンタイムパスワード
 password: パスワード
