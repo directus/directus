@@ -1,9 +1,27 @@
 ---
+edit_field: Muokkaa kenttää
 full_width: Täysleveä
+field_name_translations: Kentän Nimi Käännökset
+enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
+add_field: Lisää kenttä
+role_name: Roolin nimi
 required: Vaadittu
 create_role: Luo rooli
+create_user: Luo käyttäjä
+invite_users: Kutsu käyttäjiä
+emails: Sähköpostit
+connection_good: Hyvä Yhteys
+connection_poor: Huono Yhteys
+rename_folder: Nimeä kansio uudelleen
+delete_folder: Poista kansio
+prefix: Etuliite
+suffix: Jälkiliite
 delete_bookmark: Poista kirjanmerkki
+logoutReason:
+  SESSION_EXPIRED: Istunto vanheutunut
+public: Julkinen
 directus_version: Directus-versio
+archive: Arkistoi
 language: Kieli
 create_field: Luo kenttä
 hidden_on_detail: Piilotettu yksityiskohdista
@@ -146,8 +164,10 @@ fields:
     project_name: Projektin nimi
   directus_fields:
     hidden: Piilotettu
+    translation: Kentän Nimi Käännökset
     display_template: Pohja
   directus_roles:
+    name: Roolin nimi
     description: Kuvaus
 comment: Kommentti
 continue: Jatka
