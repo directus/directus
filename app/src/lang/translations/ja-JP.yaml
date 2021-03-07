@@ -37,9 +37,11 @@ fields_and_layout: 項目とレイアウト
 language: 言語
 camera: カメラ
 iso: ISO
+schema_setup_key: この項目はデータベースの列名及びAPIキーとして使用されます
 create_field: 新規項目の追加
 hidden_on_detail: 詳細に表示しない
 disabled_editing_value: 項目の編集を無効にする
+key: キー
 boolean: 真偽値
 date: 日付
 datetime: DateTime
