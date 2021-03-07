@@ -2,7 +2,9 @@
 edit_field: Muokkaa kenttää
 item_revision: Kohteen versio
 duplicate_field: Monista kenttä
+half_width: Puolileveä
 full_width: Täysleveä
+fill_width: Täysleveä
 field_name_translations: Kentän Nimi Käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
 add_field: Lisää kenttä
@@ -10,27 +12,36 @@ role_name: Roolin nimi
 show_archived_items: Näytä arkistoidut kohteet
 required: Vaadittu
 required_for_app_access: Vaaditaan sovelluspääsyyn
+requires_value: Vaatii arvon
 create_role: Luo rooli
 create_user: Luo käyttäjä
+create_webhook: Luo webhook
 invite_users: Kutsu käyttäjiä
 email_examples: 'yllapitaja@example.com, kayttaja@example.com...'
 invite: Kutsu
 emails: Sähköpostit
+connection_excellent: Erinomainen yhteys
 connection_good: Hyvä Yhteys
 connection_poor: Huono Yhteys
 rename_folder: Nimeä kansio uudelleen
 delete_folder: Poista kansio
 prefix: Etuliite
 suffix: Jälkiliite
+reset_bookmark: Nollaa kirjanmerkki
 delete_bookmark: Poista kirjanmerkki
 delete_bookmark_copy: >-
   Oletko varma, että haluat poistaa "{bookmark}" kirjanmerkin? Tätä toimintoa ei voi perua.
 logoutReason:
+  SIGN_OUT: Kirjauduttu ulos
   SESSION_EXPIRED: Istunto vanheutunut
 public: Julkinen
 public_description: Määrittää mitä API-tietoja on saatavilla ilman autentikointia.
 not_allowed: Ei sallittu
 directus_version: Directus-versio
+node_version: Node-versio
+os_version: Käyttöjärjestelmäversio
+os_uptime: Käyttöjärjestelmän käynnissäoloaika
+os_totalmem: Käyttöjärjestelmämuisti
 archive: Arkistoi
 archive_confirm: Oletko varma, että haluat arkistoida tämän kohteen?
 archive_confirm_count: >-
@@ -38,6 +49,7 @@ archive_confirm_count: >-
 reset_system_permissions_copy: Tämä toiminto korvaa kaikki mukautetut käyttöoikeudet, joita olet saattanut soveltaa järjestelmäkokoelmiin. Oletko varma?
 the_following_are_minimum_permissions: Seuraavat ovat vähimmäiskäyttöoikeudet vaaditaan kun "Sovelluspääsy" on käytössä. Voit laajentaa käyttöoikeuksia tästä korkeammaksi, mutta et matalammaksi.
 app_access_minimum: Sovelluspääsy vähintään
+recommended_defaults: Suositellut oletukset
 unarchive: Palauta arkistosta
 unarchive_confirm: Oletko varma, että haluat palauttaa tämän kohteen?
 nested_files_folders_will_be_moved: Sisäkkäisiä tiedostoja ja kansioita siirretään yksi taso ylöspäin.
@@ -48,10 +60,19 @@ validationError:
   gt: Arvon on oltava suurempi kuin {valid}
   gte: Arvon on oltava yhtä suuri tai suurempi kuin {valid}
   lt: Arvon on oltava pienempi kuin {valid}
+  empty: Arvon on oltava tyhjä
+  nempty: Arvo ei voi olla tyhjä
+  null: Arvon on oltava null
+  nnull: Arvo ei voi olla null
+no_access: Ei pääsyä
+use_custom: Käytä mukautettua
+field_standard: Vakio
 field_file: Yksittäinen tiedosto
 field_files: Useita tiedostoja
+field_translations: Käännökset
 item_permissions: Kohteen oikeudet
 field_permissions: Kentän Oikeudet
+field_validation: Kentän vahvistus
 permissions_for_role: 'Kohteet joita {role} rooli voi {action}.'
 fields_for_role: 'Kentät joita {role} rooli voi {action}.'
 validation_for_role: 'Kentän sääntöjä {action} roolille {role} on noudatettava.'
@@ -59,14 +80,24 @@ presets_for_role: 'Kentän oletusarvot roolille {role}.'
 revision_post_update: Tässä on miltä tämä kohde näytti päivityksen jälkeen...
 changes_made: Nämä ovat mutokset jotka tarkalleenottaen tehtiin...
 no_relational_data: Muista, että tämä ei sisällä relaatiotietoja.
+hide_field_on_detail: Piilota kenttä yksityiskohdissa
+show_field_on_detail: Näytä kenttä yksityiskohdissa
+delete_field: Poista kenttä
+fields_and_layout: Kentät & asettelu
 duplicate_where_to: Mihin haluat monistaa tämän kentän?
 language: Kieli
 admins_have_all_permissions: Ylläpitäjillä on kaikki oikeudet
+iso: ISO
+focal_length: Polttoväli
 schema_setup_key: Kentän tietokantasarakkeen nimi ja API-avain
 create_field: Luo kenttä
 field_in_collection: '{field} ({collection})'
 reset_page_preferences: Nollaa sivun asetukset
+hidden_field: Piilotettu kenttä
 hidden_on_detail: Piilotettu yksityiskohdista
+disabled_editing_value: Poista arvon muokkaus käytöstä
+key: Avain
+alias: Alias
 boolean: Totuusarvo
 date: Päivämäärä
 decimal: Desimaali
@@ -74,11 +105,16 @@ json: JSON
 string: Merkkijono
 text: Teksti
 time: Aika
+timestamp: Aikaleima
 uuid: UUID
 hash: Tiiviste
+create_translations: Luo käännökset
+auto_generate: Luo automaattisesti
 this_will_auto_setup_fields_relations: Tämä määrittää automaattisesti kaikki tarvittavat kentät ja suhteet.
+click_here: Klikkaa tästä
 click_to_manage_translated_fields: >-
   Käännettyjä kenttiä ei vielä ole. Klikkaa tästä luodaksesi ne. | On olemassa yksi käännetty kenttä. Klikkaa tästä hallitaksesi sitä. | On {count} käännettyä kenttää. Hallinnoi niitä kikkaamalla tästä.
+fields_group: Kenttien ryhmä
 new_data_alert: 'Seuraava tullaa luomaan tietomallisi sisällä:'
 new_field: 'Uusi kenttä'
 new_collection: 'Uusi kokoelma'
@@ -92,21 +128,29 @@ single_file: Yksittäinen tiedosto
 multiple_files: Useita tiedostoja
 invalid_item: Virheellinen kohde
 next: Seuraava
+field_name: Kentän nimi
+translations: Käännökset
 note: Muistiinpano
+enter_a_value: Syötä arvo...
 enter_a_placeholder: Syötä paikkamerkki...
 length: Pituus
 unique: Yksilöllinen
 updated_by: Päivittänyt
 primary_key: Ensisijainen avain
 raw_value: Raaka-arvo
+edit_raw_value: Muokkaa raaka-arvoa
+enter_raw_value: Syötä raakaarvo...
 clear_value: Tyhjennä
 reset_to_default: Palauta oletukseksi
 undo_changes: Peru muutokset
 notifications: Ilmoitukset
+show_all_activity: Näytä kaikki toiminta
 page_not_found: Sivua ei löydy
 page_not_found_body: Sivua, jota etsit ei näytä olevan olemassa.
+confirm_revert: Vahvista peruminen
 confirm_revert_body: Tämä palauttaa kohteen valittuun tilaan.
 display: Näyttö
+settings_update_success: Asetukset päivitetty
 title: Otsikko
 revision_delta_created: Luotu
 revision_delta_created_externally: Luotu ulkoisesti
@@ -123,9 +167,16 @@ item_update_success: Kohde päivitetty | Kohteet päivitetty
 item_delete_success: Kohde poistettu | Kohteet poistettu
 this_collection: Tämä kokoelma
 related_collection: Liittyvät kokoelmat
+related_collections: Liittyvät kokoelmat
+translations_collection: Käännösten kokoelma
+languages_collection: Kielten kokoelma
+export_data: Vie tiedot
 format: Muoto
 use_current_filters_settings: Käytä nykyisiä suodattimia ja asetuksia
+export_collection: 'Vie {collection}'
+last_page: Viimeinen sivu
 a_unique_table_name: Ainutlaatuinen taulun nimi...
+enable_custom_values: Ota mukautetut arvot käyttöön
 submit: Lähetä
 move_to_folder: Siirrä kansioon
 move: Siirrä
@@ -134,6 +185,7 @@ interface: Käyttöliittymä
 today: Tänään
 yesterday: Eilen
 delete_comment: Poista kommentti
+month: Kuukausi
 year: Vuosi
 select_all: Valitse kaikki
 months:
@@ -149,6 +201,10 @@ months:
   october: Lokakuu
   november: Marraskuu
   december: Joulukuu
+drag_mode: Raahaustila
+cancel_crop: Peruuta rajaus
+original: Alkuperäinen
+url: URL
 import: Tuo
 file_details: Tiedoston tiedot
 dimensions: Mitat
@@ -159,8 +215,12 @@ checksum: Tarkistussumma
 owner: Omistaja
 edited_by: Muokannut
 folder: Kansio
+zoom: Lähennä
 download: Lataa
 open: Avaa
+open_in_new_window: Avaa uudessa ikkunassa
+foreground_color: Etualan väri
+background_color: Taustaväri
 upload_from_device: Lataa tiedosto laitteesta
 choose_from_library: Valitse tiedosto kirjastosta
 import_from_url: Tuo tiedosto osoitteesta
@@ -171,21 +231,31 @@ no_file_selected: Ei valittua tiedostoa
 download_file: Lataa tiedosto
 collection_key: Kokoeilman avain
 name: Nimi
+primary_key_field: Ensisijainen avaimen kenttä
+type: Tyyppi
 created_by: Luonnut
 created_on: Luotu
 creating_collection_info: Nimeä kokoelma ja määritä sen ainutlaatuinen “avain”-kenttää...
 creating_collection_system: Ota käyttöön ja nimeä uudelleen mitkä tahansa näistä valinnaisista kentistä.
+generated_uuid: Luotu UUID
+save_and_create_new: Tallenna ja luo uusi
 save_and_stay: Tallenna ja pysy
 save_as_copy: Tallenna kopiona
+add_existing: Lisää olemassaoleva
 comments: Kommentit
 no_comments: Ei vielä kommentteja
+click_to_expand: Klikkaa laajentaaksesi
 select_item: Valitse kohde
 no_items: Ei kohteita
 search_items: Hae kohteita...
+disabled: Pois käytöstä
 information: Tietoja
+report_bug: Raportoi bugi
 request_feature: Pyydä ominaisuutta
 interface_not_found: 'Liittymää "{interface}" ei löytynyt.'
 reset_interface: Nollaa liittymä
+reset_display: Nollaa näyttö
+m2a_builder: Rakentaja (M2A, useampi kaikkiin)
 item_count: 'Ei kohteita | Yksi kohde | {count} kohdetta'
 no_items_copy: Tässä kokoelmassa ei vielä ole kohteita.
 file_count: 'Ei tiedostoja | Yksi tiedosto | {count} tiedostoa'
@@ -194,14 +264,18 @@ user_count: 'Ei käyttäjiä | Yksi käyttäjä | {count} käyttäjää'
 no_users_copy: Tässä roolissa ei ole vielä käyttäjiä.
 webhooks_count: 'Ei webhookkeja | Yksi webhookki | {count} webhookkia'
 all_items: Kaikki kohteet
+csv: CSV
 no_collections: Ei kokoelmia
 create_collection: Luo kokoelma
 no_collections_copy_admin: Sinulla ei ole vielä kokoelmia. Aloita painamalla alla olevaa painiketta.
 no_collections_copy: Sinulla ei ole vielä kokoelmia. Ota yhteyttä järjestelmänvalvojaan.
 relationship_not_setup: Suhdetta ei ole määritetty oikein
+select_a_collection: Valitse kokoelma
 active: Aktiivinen
 users: Käyttäjät
 activity: Tapahtuma
+webhooks: Webhookit
+field_width: Kentän leveys
 add_a_new_item: Lisää uusi kohde...
 add_filter: Lisää suodatin
 user_directory: Käyttäjähakemisto
@@ -210,18 +284,36 @@ duration: Kesto
 file_moved: Tiedosto siirretty
 collection_created: Kokoelma luotu
 modified_on: Muokattu viimeksi
+card_size: Kortin koko
+sort_field: Lajittelukenttä
+sort: Järjestä
 status: Tila
+toggle_manual_sorting: Vaihda manuaalinen lajittelu
 bookmark_doesnt_exist: Kirjamerkkiä ei ole olemassa
 bookmark_doesnt_exist_copy: Kirjanmerkkiä, jota yrität avata, ei löytynyt.
+bookmark_doesnt_exist_cta: Palaa kokoelmaan
 select_an_item: Valitse kohde...
 edit: Muokkaa
+disable_tfa: Poista 2FA käytöstä
 tfa_scan_code: Skannaa koodi autentikointisovelluksessasi viimeistelläksesi 2FA:n asetukset
+auto_fill: Automaattinen täyttö
+corresponding_field: Vastaava kenttä
 errors:
+  FIELD_NOT_FOUND: Kenttää ei löydy
+  FORBIDDEN: Kielletty
   INVALID_CREDENTIALS: Väärä käyttäjätunnus tai salasana
   INVALID_OTP: Väärä kertakäyttösalasana
+  INVALID_QUERY: Virheellinen kysely
   ITEM_LIMIT_REACHED: Kohteiden rajoitus saavutettu
   ITEM_NOT_FOUND: Kohdetta ei löydy
+  ROUTE_NOT_FOUND: Ei löytynyt
+  UNKNOWN: Odottamaton virhe
+value_hashed: Arvo tiivistetty turvallisesti
+bookmark_name: Kirjanmerkin nimi...
+create_bookmark: Luo kirjanmerkki
+edit_bookmark: Muokkaa kirjanmerkkiä
 bookmarks: Kirjainmerkit
+unexpected_error: Odottamaton virhe
 unexpected_error_copy: Tapahtui odottamaton virhe. Yritä myöhemmin uudelleen.
 copy_details: Kopioi tiedot
 no_app_access: Ei sovelluspääsyä
@@ -229,8 +321,14 @@ no_app_access_copy: Tällä käyttäjällä ei ole oikeutta käyttää järjeste
 password_reset_sent: Olemme lähettäneet sinulle turvallisen linkin nollataksesi salasanasi
 password_reset_successful: Salasanan palauttaminen onnistui
 back: Takaisin
+editing_image: Muokataan kuvaa
+free: Vapaa
+flip_horizontal: Peilaa vaakatasossa
+flip_vertical: Käännä pystysuunnassa
+aspect_ratio: Kuvasuhde
 all_users: Kaikki käyttäjät
 delete_collection: Poista kokoelma
+update_collection_success: Päivitetty kokoelma
 delete_collection_success: Poistetut kokoelmat
 start_end_of_count_items: '{start}-{end} / {count} kohdetta'
 start_end_of_count_filtered_items: '{start}-{end} / {count} suodatettua kohdetta'
@@ -239,7 +337,16 @@ one_filtered_item: '1 suodatettu kohde'
 delete_collection_are_you_sure: >-
   Oletko varma, että haluat poistaa tämän kokoelman? Tämä poistaa kokoelman ja kaikki sen kohteet. Tämä toiminto on lopullinen.
 collections_shown: Näytettävät kokoelmat
+visible_collections: Näkyvät kokoelmat
+hidden_collections: Piilotetut kokoelmat
+system_collections: Järjestelmän kokoelmat
+placeholder: Paikkamerkki
+icon_left: Kuvake vasemmalla
+icon_right: Kuvake oikealla
 count_other_revisions: '{count} muuta versiota'
+font: Kirjasin
+serif: Serif
+monospace: Tasavälinen
 divider: Jakaja
 color: Väri
 empty_item: Tyhjä kohde
@@ -252,7 +359,10 @@ operators:
   lte: Vähemmän tai yhtä suuri kuin
   gte: Suurempi tai yhtä suuri kuin
   contains: Sisältää
+  ncontains: Ei sisällä
   empty: On tyhjä
+  nempty: Ei ole tyhjä
+  all: Sisältää nämä avaimet
 loading: Ladataan...
 drop_to_upload: Pudota ladataksesi
 upload_file: Lähetä tiedosto
@@ -262,11 +372,16 @@ upload_files_indeterminate: 'Ladataan tiedostoja {done}/{total}'
 upload_files_success: '{count} tiedostoa ladattu'
 upload_pending: Lähetys odottaa
 drag_file_here: Vedä ja pudota tiedosto tähän
+click_to_browse: Klikkaa selataksesi
+rows: Rivit
 collection_setup: Kokoelman asetukset
 optional_system_fields: Valinnainen järjestelmäkenttä
 value_unique: Arvon on oltava yksilöllinen
+all_activity: Kaikki toiminta
 create_item: Luo kohde
+display_template: Esitysmalli
 n_items_selected: 'Ei valittuja kohteita | 1 valittu kohde | {n} valittua kohdetta'
+per_page: Per sivu
 all_files: Kaikki Tiedostot
 my_files: Omat tiedostot
 recent_files: Viimeisimmät tiedostot
@@ -280,27 +395,66 @@ clear_filters: Tyhjennä suodattimet
 saves_automatically: Tallentaa automaattisesti
 role: Rooli
 user: Käyttäjänimi
+no_presets_cta: Lisää esiasetus
 create: Luo
+on_create: Luonnissa
+on_update: Päivityksessä
 read: Lue
 update: Päivitä
 select_fields: Valitse kentät
+format_text: Muotoile teksti
+bold: Lihavoitu
+icon_off: Pois-kuvake
 wysiwyg_options:
+  alignright: Tasaa oikealle
+  forecolor: Etualan väri
+  backcolor: Taustaväri
+  bold: Lihavoitu
+  underline: Alleviivaus
+  strikethrough: Yliviivaus
+  subscript: Alaindeksi
+  superscript: Yläindeksi
   codeblock: Koodi
+  blockquote: Sitaattilohko
+  link: Linkki
+  media: Lisää media
+  image: Lisää kuva
+  copy: Kopioi
+  cut: Leikkaa
+  h1: Otsake 1
+  h2: Otsake 2
+  h3: Otsake 3
+  h4: Otsake 4
+  h5: Otsake 5
+  h6: Otsake 6
+  fontselect: Valitse fontti
+  fontsizeselect: Valitse fonttikoko
+  undo: Kumoa
+  redo: Tee uudelleen
   remove: Poista
   selectall: Valitse kaikki
   table: Taulukko
+  code: Näytä lähde
+  fullscreen: Koko näyttö
 dropdown: Pudotusvalikko
 choices: Valinnat
 choices_option_configured_incorrectly: Valinnat määritetty väärin
 deselect: Poista valinta
 deselect_all: Poista kaikki valinnat
+other: Muu...
+adding_user: Lisätään käyttäjää
 creating_in: 'Luodaan kohdetta kokoelmassa {collection}'
 editing_in: 'Muokataan kohdetta: {collection}'
 editing_in_batch: 'Muokataan {count} kohdetta erässä'
+no_options_available: Ei valintoja saatavilla
 settings_data_model: Tietorakenne
 settings_permissions: Roolit ja oikeudet
 settings_project: Projektin asetukset
+settings_webhooks: Webhookit
+settings_presets: Esiasetukset ja kirjanmerkit
 changes_are_permanent: Muutokset ovat pysyviä
+preset_name_placeholder: Kirjanmerkin nimi...
+preset_search_placeholder: Hakulauseke...
 unsaved_changes: Tallentamattomia muutoksia
 unsaved_changes_copy: Oletko varma, että haluat poistua tältä sivulta?
 discard_changes: Hylkää muutokset
@@ -334,13 +488,16 @@ page_help_settings_webhooks_item: '**Webhookkien yksityiskohdat** — Lomake pro
 page_help_users_collection: '**Käyttäjähakemisto** — Listaa kaikki järjestelmän käyttäjät tässä projektissa.'
 page_help_users_item: >-
   **Käyttäjätieto** — Hallitse tilitietojasi tai tarkastele muiden käyttäjien tietoja.
+activity_feed: Aktiviteettisyöte
 add_new: Lisää uusi
 all: Kaikki
+none: Ei mikään
 batch_delete_confirm: >-
   Kohteita ei ole valittu | Oletko varma, että haluat poistaa tämän kohteen? Tätä toimintoa ei voi perua. | Oletko varma, että haluat poistaa nämä {count} kohteet? Tätä toimintoa ei voi perua.
 cancel: Peruuta
 collection: Kokoelma
 collections: Kokoelmat
+singleton: Singleton
 singleton_label: Käsittele yhtenä objektina
 system_fields_locked: Järjestelmäkentät ovat lukittuja, eikä niitä voi muokata
 fields:
@@ -356,10 +513,13 @@ fields:
     collection: Kokoelma
     icon: Kuvake
     note: Muistiinpano
+    display_template: Esitysmalli
     hidden: Piilotettu
+    singleton: Singleton
     archive_app_filter: Arkistoi sovelluksen suodatin
     archive_value: Arkistoi arvo
     unarchive_value: Palauta arkistoitu arvo
+    sort_field: Lajittelukenttä
   directus_files:
     title: Otsikko
     description: Kuvaus
@@ -397,11 +557,14 @@ fields:
     tfa_secret: Kaksivaiheinen todennus
     status: Tila
     role: Rooli
+    last_page: Viimeinen sivu
   directus_settings:
     project_name: Projektin nimi
     project_url: Projektin osoite
     project_color: Projektin väri
     project_logo: Projektin logo
+    public_foreground: Julkinen etuala
+    public_background: Julkinen tausta
     public_note: Julkinen muistiinpano
     auth_password_policy: Salasanakäytäntö
     auth_login_attempts: Kirjautumisyritykset
@@ -410,21 +573,29 @@ fields:
     icon: Kokoelman kuvake
     note: Muistiinpano
     hidden: Piilotettu
+    singleton: Singleton
     translation: Kentän Nimi Käännökset
     display_template: Pohja
   directus_roles:
     name: Roolin nimi
+    icon: Roolin kuvake
     description: Kuvaus
     app_access: Sovelluspääsy
     admin_access: Ylläpitäjän pääsy
+    ip_access: IP-pääsy
+    enforce_tfa: Vaadi 2FA
+    users: Käyttäjät roolissa
     collection_list: Kokoelman navigointi
 no_fields_in_collection: 'Kokoelmassa "{collection}" ei ole vielä kenttiä'
 generate_and_save_uuid: Luo ja tallenna UUID
+save_current_user_id: Tallenna nykyisen käyttäjän tunnus
 save_current_user_role: Tallenna nykyinen käyttäjärooli
+save_current_datetime: Tallenna nykyinen päivämäärä/aika
 comment: Kommentti
 continue: Jatka
 continue_as: >-
   <b>{name}</b> on tällä hetkellä autentikoitu. Jos tunnistat tämän tilin, paina jatka.
+editing_role: '{role} rooli'
 default: Oletus
 delete: Poista
 delete_are_you_sure: >-
@@ -447,6 +618,8 @@ junction_collection: Liitoskokoelma
 latency: Latenssi
 login: Kirjaudu sisään
 my_activity: Oma toiminta
+not_authenticated: Ei autentikoitu
+authenticated: Autentikoitu
 options: Valinnat
 otp: Kertakäyttösalasana
 password: Salasana
@@ -459,6 +632,8 @@ revert: Palauta
 save: Tallenna
 schema: Rakenne
 search: Haku
+select_existing: Valitse olemassaoleva
+select_field_type: Valitse kentän tyyppi
 select_interface: Valitse liittymä
 settings: Asetukset
 sign_in: Kirjaudu sisään
@@ -466,10 +641,12 @@ sign_out: Kirjaudu ulos
 sign_out_confirm: Haluatko varmasti kirjautua ulos?
 something_went_wrong: Jokin meni pieleen.
 sort_direction: Järjestyssuunta
+sort_desc: Lajittele laskeva
 template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
+report_error: Raportoi virhe
 interfaces:
   button-links:
     button-links: Painikkeen linkit
@@ -512,8 +689,10 @@ interfaces:
     set_to_now: Aseta olemaan nyt
     use_24: Käytä 24-tuntista muotoa
   display-template:
+    display-template: Esitysmalli
     description: Sekoita staattinen teksti ja dynaamiset kenttäarvot
     collection_field: Kokoeilmakenttä
+    select_a_collection: Valitse kokoelma
   divider:
     divider: Jakaja
     description: Merkitse ja jaa kentät osiin
@@ -530,6 +709,7 @@ interfaces:
     allow_none: Salli ei mitään
     allow_none_label: Salli ei valintaa
     choices_name_placeholder: Syötä nimi...
+    choices_value_placeholder: Syötä arvo...
   dropdown-multiselect:
     dropdown-multiselect: Pudotusvalikko (useampi)
     description: Valitse useita arvoja pudotusvalikosta
@@ -564,6 +744,7 @@ interfaces:
   many-to-one:
     many-to-one: Monet yhdelle
     description: Valitse yksi liittyvä kohde
+    display_template: Esitysmalli
   markdown:
     markdown: Markdown
     description: Syötä ja esikatsele markdown
@@ -634,6 +815,7 @@ interfaces:
     description: Vaihda päälle ja pois päältä
     label_placeholder: Syötä otsikko...
   translations:
+    display_template: Esitysmalli
     no_collection: Ei kokoelmaa
   user:
     user: Käyttäjänimi
@@ -652,18 +834,28 @@ interfaces:
 displays:
   boolean:
     boolean: Totuusarvo
+    label_on: Päällä-tunniste
+    label_on_placeholder: Syötä pois päältä -otsikko...
+    label_off: Poist päältä -tunniste
     label_off_placeholder: Syötä pois päältä -otsikko...
+    icon_off: Pois-kuvake
+    color_on: Päällä-väri
+    color_off: Pois päältä -väri
   collection:
     collection: Kokoelma
+    description: Näytä kokoelma
   color:
     color: Väri
     description: Näytä värillinen piste
+    default_color: Oletusväri
   datetime:
     datetime: Päivämäärä ja aika
     description: Näytä kellonaikaan liittyvät arvot
     format: Muoto
     format_note: >-
       Mukautettu muoto hyväksyy __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Pitkä
+    relative: Suhteellinen
     relative_label: 'Näytä suhteellinen aika, esim: 5 minuuttia sitten'
   file:
     file: Tiedosto
@@ -671,18 +863,35 @@ displays:
   filesize:
     filesize: Tiedostokoko
     description: Näytä tiedoston koko
+  formatted-value:
+    formatted-value: Muotoiltu arvo
+    format_title: Muoto otsikko
+    format_title_label: Automaattisesti muotoiltu kirjainkoko
   formatted-json-value:
+    formatted-json-value: Muotoiltu JSON-arvo
     description: Näytä objektin muotoiltu versio
   icon:
     icon: Kuvake
+    description: Näytä kuvake
   image:
     image: Kuva
+    circle_label: Näytä ympyränä
+  labels:
+    default_foreground: Oletusetuala
+    default_background: Oletustausta
+    format_label: Muotoile jokainen otsikko
+    show_as_dot: Näytä pisteenä
+    choices_value_placeholder: Syötä arvo...
+    choices_text_placeholder: Syötä teksti...
   mime-type:
+    mime-type: MIME-tyyppi
     description: Näytä tiedoston MIME-tyyppi
     extension_only_label: Näytä vain tiedostopääte
   rating:
     rating: Arvio
     description: Visualisoi numero tähtinä suhteessa maksimiarvoon
+  raw:
+    raw: Raaka-arvo
   user:
     user: Käyttäjänimi
     avatar: Avatari
@@ -693,6 +902,8 @@ layouts:
   cards:
     cards: Kortit
     image_source: Kuvan lähde
+    image_fit: Kuvan sovitus
+    crop: Rajaa
     title: Otsikko
     subtitle: Alaotsikko
   tabular:
