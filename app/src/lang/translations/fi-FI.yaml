@@ -1,6 +1,7 @@
 ---
 edit_field: Muokkaa kenttää
 item_revision: Kohteen versio
+duplicate_field: Monista kenttä
 full_width: Täysleveä
 field_name_translations: Kentän Nimi Käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
@@ -12,6 +13,7 @@ required_for_app_access: Vaaditaan sovelluspääsyyn
 create_role: Luo rooli
 create_user: Luo käyttäjä
 invite_users: Kutsu käyttäjiä
+email_examples: 'yllapitaja@example.com, kayttaja@example.com...'
 invite: Kutsu
 emails: Sähköpostit
 connection_good: Hyvä Yhteys
@@ -38,20 +40,32 @@ the_following_are_minimum_permissions: Seuraavat ovat vähimmäiskäyttöoikeude
 app_access_minimum: Sovelluspääsy vähintään
 unarchive: Palauta arkistosta
 unarchive_confirm: Oletko varma, että haluat palauttaa tämän kohteen?
+nested_files_folders_will_be_moved: Sisäkkäisiä tiedostoja ja kansioita siirretään yksi taso ylöspäin.
+unknown_validation_errors: 'Validointivirheitä seuraavissa piilotetuissa kentissä:'
 validationError:
+  eq: Arvon on oltava {valid}
+  contains: Arvon on sisällettävä {substring}
   gt: Arvon on oltava suurempi kuin {valid}
   gte: Arvon on oltava yhtä suuri tai suurempi kuin {valid}
+  lt: Arvon on oltava pienempi kuin {valid}
 field_file: Yksittäinen tiedosto
 field_files: Useita tiedostoja
 item_permissions: Kohteen oikeudet
 field_permissions: Kentän Oikeudet
 permissions_for_role: 'Kohteet joita {role} rooli voi {action}.'
+fields_for_role: 'Kentät joita {role} rooli voi {action}.'
+validation_for_role: 'Kentän sääntöjä {action} roolille {role} on noudatettava.'
+presets_for_role: 'Kentän oletusarvot roolille {role}.'
 revision_post_update: Tässä on miltä tämä kohde näytti päivityksen jälkeen...
+changes_made: Nämä ovat mutokset jotka tarkalleenottaen tehtiin...
 no_relational_data: Muista, että tämä ei sisällä relaatiotietoja.
 duplicate_where_to: Mihin haluat monistaa tämän kentän?
 language: Kieli
 admins_have_all_permissions: Ylläpitäjillä on kaikki oikeudet
+schema_setup_key: Kentän tietokantasarakkeen nimi ja API-avain
 create_field: Luo kenttä
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Nollaa sivun asetukset
 hidden_on_detail: Piilotettu yksityiskohdista
 boolean: Totuusarvo
 date: Päivämäärä
@@ -61,12 +75,15 @@ string: Merkkijono
 text: Teksti
 time: Aika
 uuid: UUID
+hash: Tiiviste
 this_will_auto_setup_fields_relations: Tämä määrittää automaattisesti kaikki tarvittavat kentät ja suhteet.
 click_to_manage_translated_fields: >-
   Käännettyjä kenttiä ei vielä ole. Klikkaa tästä luodaksesi ne. | On olemassa yksi käännetty kenttä. Klikkaa tästä hallitaksesi sitä. | On {count} käännettyä kenttää. Hallinnoi niitä kikkaamalla tästä.
 new_data_alert: 'Seuraava tullaa luomaan tietomallisi sisällä:'
 new_field: 'Uusi kenttä'
 new_collection: 'Uusi kokoelma'
+add_m2o_to_collection: 'Lisää moni yhteen kokoelmaan "{collection}"'
+add_o2m_to_collection: 'Lisää yksi-moniin kokoelmaan "{collection}"'
 choose_a_type: Valitse tyyppi...
 add_note: Lisää käyttäjälle hyödyllinen huomautus...
 default_value: Oletusarvo
@@ -76,6 +93,7 @@ multiple_files: Useita tiedostoja
 invalid_item: Virheellinen kohde
 next: Seuraava
 note: Muistiinpano
+enter_a_placeholder: Syötä paikkamerkki...
 length: Pituus
 unique: Yksilöllinen
 updated_by: Päivittänyt
@@ -156,6 +174,7 @@ name: Nimi
 created_by: Luonnut
 created_on: Luotu
 creating_collection_info: Nimeä kokoelma ja määritä sen ainutlaatuinen “avain”-kenttää...
+creating_collection_system: Ota käyttöön ja nimeä uudelleen mitkä tahansa näistä valinnaisista kentistä.
 save_and_stay: Tallenna ja pysy
 save_as_copy: Tallenna kopiona
 comments: Kommentit
@@ -165,10 +184,15 @@ no_items: Ei kohteita
 search_items: Hae kohteita...
 information: Tietoja
 request_feature: Pyydä ominaisuutta
+interface_not_found: 'Liittymää "{interface}" ei löytynyt.'
+reset_interface: Nollaa liittymä
 item_count: 'Ei kohteita | Yksi kohde | {count} kohdetta'
 no_items_copy: Tässä kokoelmassa ei vielä ole kohteita.
 file_count: 'Ei tiedostoja | Yksi tiedosto | {count} tiedostoa'
 no_files_copy: Täällä ei ole tiedostoja.
+user_count: 'Ei käyttäjiä | Yksi käyttäjä | {count} käyttäjää'
+no_users_copy: Tässä roolissa ei ole vielä käyttäjiä.
+webhooks_count: 'Ei webhookkeja | Yksi webhookki | {count} webhookkia'
 all_items: Kaikki kohteet
 no_collections: Ei kokoelmia
 create_collection: Luo kokoelma
@@ -239,6 +263,8 @@ upload_files_success: '{count} tiedostoa ladattu'
 upload_pending: Lähetys odottaa
 drag_file_here: Vedä ja pudota tiedosto tähän
 collection_setup: Kokoelman asetukset
+optional_system_fields: Valinnainen järjestelmäkenttä
+value_unique: Arvon on oltava yksilöllinen
 create_item: Luo kohde
 n_items_selected: 'Ei valittuja kohteita | 1 valittu kohde | {n} valittua kohdetta'
 all_files: Kaikki Tiedostot
@@ -274,6 +300,7 @@ editing_in_batch: 'Muokataan {count} kohdetta erässä'
 settings_data_model: Tietorakenne
 settings_permissions: Roolit ja oikeudet
 settings_project: Projektin asetukset
+changes_are_permanent: Muutokset ovat pysyviä
 unsaved_changes: Tallentamattomia muutoksia
 unsaved_changes_copy: Oletko varma, että haluat poistua tältä sivulta?
 discard_changes: Hylkää muutokset
@@ -314,6 +341,7 @@ batch_delete_confirm: >-
 cancel: Peruuta
 collection: Kokoelma
 collections: Kokoelmat
+singleton_label: Käsittele yhtenä objektina
 system_fields_locked: Järjestelmäkentät ovat lukittuja, eikä niitä voi muokata
 fields:
   directus_activity:
@@ -390,6 +418,9 @@ fields:
     app_access: Sovelluspääsy
     admin_access: Ylläpitäjän pääsy
     collection_list: Kokoelman navigointi
+no_fields_in_collection: 'Kokoelmassa "{collection}" ei ole vielä kenttiä'
+generate_and_save_uuid: Luo ja tallenna UUID
+save_current_user_role: Tallenna nykyinen käyttäjärooli
 comment: Kommentti
 continue: Jatka
 continue_as: >-
@@ -441,83 +472,199 @@ value: Arvo
 view_project: Näytä projekti
 interfaces:
   button-links:
+    button-links: Painikkeen linkit
+    links: Linkit
     description: Muokattavissa olevat linkkipainikkeet dynaamisten URL:ien käynnistämiseen
+    style: Tyyli
+    link: Linkit
+    button: Painikkeet
+    error: Toimintoa ei voi suorittaa
   checkboxes:
+    checkboxes: Valintaruudut
     description: Valitse useista vaihtoehdoista valintaruutujen kautta
+    allow_other: Salli muut
+    show_more: 'Näytä {count} lisää'
     items_shown: Näytettävät kohteet
   code:
     code: Koodi
+    description: Kirjoita tai jaa koodipätkä
     line_number: Rivinumero
+    placeholder: Syötä koodi tähän...
   collection:
     collection: Kokoelma
     description: Valitse olemassaolevien kokoelmien väliltä
+    include_system_collections: Sisällytä järjestelmäkokoelmat
   collections:
     collections: Kokoelmat
     description: Valitse olemassaolevien kokoelmien väliltä
+    include_system_collections: Sisällytä järjestelmäkokoelmat
   color:
     color: Väri
+    description: Syötä tai valitse väriarvo
+    placeholder: Valitse väri...
+    preset_colors: Esiasetuksen värit
+    preset_colors_add_label: Lisää uusi väri...
+    name_placeholder: Syötä värin nimi...
   datetime:
     datetime: Päivämäärä ja aika
+    description: Syötä päivämäärät ja ajat
+    include_seconds: Sisällytä sekunnit
+    set_to_now: Aseta olemaan nyt
+    use_24: Käytä 24-tuntista muotoa
   display-template:
+    description: Sekoita staattinen teksti ja dynaamiset kenttäarvot
     collection_field: Kokoeilmakenttä
   divider:
     divider: Jakaja
+    description: Merkitse ja jaa kentät osiin
+    title_placeholder: Syötä otsikko...
+    inline_title: Rivitetty otsikko
+    inline_title_label: Näytä otsikko rivin sisällä
+    margin_top: Ylämarginaali
+    margin_top_label: Suurenna ylämarginaalia
+  dropdown:
+    description: Valitse arvo pudotusvalikosta
+    choices_placeholder: Lisää uusi valinta
+    allow_other: Salli muut
+    allow_other_label: Salli muut arvot
+    allow_none: Salli ei mitään
+    allow_none_label: Salli ei valintaa
+    choices_name_placeholder: Syötä nimi...
+  dropdown-multiselect:
+    dropdown-multiselect: Pudotusvalikko (useampi)
+    description: Valitse useita arvoja pudotusvalikosta
   file:
     file: Tiedosto
     description: Valitse tai lataa tiedosto
   files:
     files: Tiedostot
     description: Valitse tai lataa useita tiedostoja
+  hash:
+    hash: Tiiviste
+    description: Syötä arvo, josta luodaan tiiviste
+    masked: Maskeerattu
+    masked_label: Piilota todelliset arvot
   icon:
     icon: Kuvake
+    description: Valitse kuvake pudotusvalikosta
+    search_for_icon: Etsi kuvakkeita...
   image:
+    image: Kuva
     description: Valitse tai lataa kuva
   interface:
     interface: Käyttöliittymä
+    description: Valitse olemassa oleva liittymä
+    placeholder: Valitse liittymä...
   interface-options:
     interface-options: Liittymän asetukset
+    description: Modaali-ikkuna liittymän asetusten valintaan
   many-to-many:
+    many-to-many: Monet monelle
     description: Valitse useita liittyviä risteyskohteita
   many-to-one:
+    many-to-one: Monet yhdelle
     description: Valitse yksi liittyvä kohde
   markdown:
     markdown: Markdown
+    description: Syötä ja esikatsele markdown
+    customSyntax: Mukautetut lohkot
+    customSyntax_label: Lisää mukautettuja syntaksityyppejä
+    customSyntax_add: Lisää mukautettu syntaksi
+    box: Lohko / rivillä
+    imageToken: Kuvatunnus
+    imageToken_label: Mikä (staattinen) tunnus lisätään kuvien lähteisiin
+  notice:
+    notice: Ilmoitus
+    description: Näytä lyhyt ilmoitus
+    text: Syötä ilmoituksen sisältö tähän...
   numeric:
     numeric: Numeerinen
+    description: Syötä numero
+    minimum_value: Vähimmäisarvo
+    maximum_value: Enimmäisarvo
+    step_interval: Askelväli
   one-to-many:
+    one-to-many: Yksi monille
     description: Valitse useita liittyviä kohteita
+    no_collection: Kokoelmaa ei löytynyt
+  radio-buttons:
+    radio-buttons: Valintanapit
+    description: Valitse yksi useista valinnoista
   repeater:
+    repeater: Toistaja
+    description: Luo useita saman rakenteen merkintöjä
+    edit_fields: Muokkaa kenttiä
+    add_label: '"Lisää Uusi Rivi" -tunniste'
+    field_name_placeholder: Syötä kentän nimi...
     field_note_placeholder: Syötä kentän muistiinpano...
   slider:
     slider: Liukusäädin
+    description: Valitse numero käyttäen liukusäädintä
+    always_show_value: Näytä aina arvo
   slug:
+    slug: Slug
     description: Kirjoita sana joka on yhdistetty väliviivoin
   tags:
     tags: Tunnisteet
     description: Valitse tai lisää tunnisteita
+    whitespace: Tyhjä tila
+    hyphen: Korvaa väliviivalla
+    underscore: Korvaa alaviiva
+    remove: Poista tyhjä tila
+    capitalization: Isot alkukirjaimet
+    uppercase: Muunna isoksi kirjaimiksi
+    lowercase: Muunna pienaakkosiksi
+    auto_formatter: Käytä otsikon automaattimuotoilua
+    alphabetize: Aakkosjärjestyksessä
+    alphabetize_label: Pakota aakkosjärjestys
     add_tags: Lisää tunnisteita...
   text-input:
     text-input: Tekstinsyöttö
+    description: Syötä yhden rivin teksti
+    trim: Leikkaa
+    trim_label: Leikkaa tyhjät merkit alusta ja lopusta
+    mask: Maskeerattu
+    mask_label: Piilota todellinen arvo
+    nullable: Nullable
+    nullable_label: Tallenna tyhjä arvo NULL:nä
+  textarea:
+    textarea: Tekstialue
+    description: Syötä monirivinen tavallinen teksti
+  toggle:
+    description: Vaihda päälle ja pois päältä
+    label_placeholder: Syötä otsikko...
   translations:
     no_collection: Ei kokoelmaa
   user:
     user: Käyttäjänimi
+    description: Valitse olemassaoleva directus-käyttäjä
+    select_mode: Valitse tila
     modes:
       auto: Automaattinen
       dropdown: Pudotusvalikko
+      modal: Modaali
+  wysiwyg:
+    wysiwyg: WYSIWYG
+    description: Rikastekstieditori HTML-sisällön kirjoitukseen
+    toolbar: Työkalupalkki
+    custom_formats: Mukautetut muodot
+    options_override: Ohita valinnat
 displays:
   boolean:
     boolean: Totuusarvo
+    label_off_placeholder: Syötä pois päältä -otsikko...
   collection:
     collection: Kokoelma
   color:
     color: Väri
+    description: Näytä värillinen piste
   datetime:
     datetime: Päivämäärä ja aika
     description: Näytä kellonaikaan liittyvät arvot
     format: Muoto
     format_note: >-
       Mukautettu muoto hyväksyy __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    relative_label: 'Näytä suhteellinen aika, esim: 5 minuuttia sitten'
   file:
     file: Tiedosto
     description: Näytä tiedostot
@@ -528,6 +675,8 @@ displays:
     description: Näytä objektin muotoiltu versio
   icon:
     icon: Kuvake
+  image:
+    image: Kuva
   mime-type:
     description: Näytä tiedoston MIME-tyyppi
     extension_only_label: Näytä vain tiedostopääte
@@ -539,6 +688,7 @@ displays:
     avatar: Avatari
     name: Nimi
     both: Molemmat
+    circle_label: Näytä käyttäjä ympyrässä
 layouts:
   cards:
     cards: Kortit
