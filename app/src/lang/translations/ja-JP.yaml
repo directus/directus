@@ -102,6 +102,7 @@ months:
   october: 10月
   november: 11月
   december: 12月
+url: URL
 file_details: ファイルの詳細
 size: サイズ
 modified: 修正されました
@@ -144,6 +145,7 @@ request_feature: 機能リクエスト
 item_count: 'アイテムなし | 1つのアイテム | {count} 個のアイテム'
 file_count: 'ファイルがありません | 1個のファイル | {count} 個のファイル'
 no_files_copy: まだファイルがありません。
+csv: CSVファイル
 no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
@@ -157,12 +159,16 @@ sort_field: フィールドの並べ替え
 sort: 並べ替え
 status: ステータス
 toggle_manual_sorting: 手動ソートを有効にする
+errors:
+  ROUTE_NOT_FOUND: 見つかりません
+create_bookmark: ブックマークを作成
 bookmarks: ブックマーク
 back: 戻る
 all_users: すべてのユーザー
 one_item: '1 つのアイテム'
 icon_left: 左側に表示するアイコン
 icon_right: 右側に表示するアイコン
+font: フォント
 color: 色
 advanced_filter: 高度なフィルタ
 operators:
@@ -193,7 +199,14 @@ read: 読取り
 update: 更新
 select_fields: 入力欄の選択
 wysiwyg_options:
+  aligncenter: 中央揃え
+  alignjustify: 両端揃え
+  alignleft: 左揃え
   backcolor: 背景色
+  hr: 水平線
+  link: リンク
+  media: メディアを追加
+  image: 画像を追加
   copy: コピー
   paste: ペースト
   heading: 見出し
@@ -202,10 +215,12 @@ wysiwyg_options:
   h3: 見出し 3
   h4: 見出し 4
   h5: 見出し 5
+  h6: 見出し6
   fontselect: フォントを選択
   remove: 削除
   selectall: すべて
   table: テーブル
+  fullscreen: 全画面表示
   directionality: 方向
 choices: 選択項目
 deselect: 選択解除
