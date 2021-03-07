@@ -1,4 +1,8 @@
 ---
+edit_field: Editar campo
+add_field: Adicionar Campo
+role_name: Nome do cargo
+db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar '
 create_field: Criar campo
 auto_generate: Geração Automatica
 add_note: Adicionar uma nota para os utilizadores...
@@ -20,6 +24,8 @@ wysiwyg_options:
 choices: Opções
 unsaved_changes: Alterações por guardar
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
+page_help_collections_collection: >-
+  **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
 add_new: Adicionar novo
 all: Todos
 batch_delete_confirm: >-
@@ -51,6 +57,7 @@ fields:
     description: Descrição
     tags: Etiquetas
   directus_roles:
+    name: Nome do cargo
     description: Descrição
 comment: Comentário
 continue: Continuar
