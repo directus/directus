@@ -28,6 +28,8 @@ archive: アーカイブ
 recommended_defaults: 推奨されるデフォルト値
 validationError:
   required: 必須項目です
+no_access: アクセスなし
+use_custom: カスタムを使う
 field_standard: 標準
 field_file: 1つのファイル
 field_files: 複数のファイル
@@ -56,6 +58,7 @@ timestamp: Timestamp
 uuid: UUID
 hash: ハッシュ値
 auto_generate: 自動生成
+click_here: ここをクリック
 to_manually_setup_translations: 独自の翻訳を設定することができます
 new_field: '新規フィールド'
 new_collection: '新しいコレクション'
