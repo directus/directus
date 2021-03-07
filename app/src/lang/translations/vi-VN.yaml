@@ -280,16 +280,34 @@ csv: CSV
 no_collections: Chưa có Bảng nào
 create_collection: Tạo Danh mục mới
 relationship_not_setup: Cấu trúc dữ liệu chưa được cài đặt chính xác
+select_a_collection: Chọn Bảng
 active: Kích hoạt
 users: Tài khoản
 activity: Hoạt động
 webhooks: Webhooks
 field_width: Độ rộng trường
+add_a_new_item: Thêm mục mới...
+add_filter: Thêm bộ lọc
+upper_limit: Giới hạn trên...
+lower_limit: Hạn chế dưới...
 user_directory: Danh mục tài khoản
+documentation: Tài liệu
+sidebar: Thanh bên
 duration: Thời lượng
+charset: Bảng mã
+second: Giây
+file_moved: Đã di chuyển Tập tin
+collection_created: Bảng đã được Tạo
 modified_on: Sửa đổi vào
+card_size: Kích thước Card
 sort_field: Sắp xếp theo trường
+add_sort_field: Sắp xếp theo trường
+sort: Sắp xếp
 status: Trạng thái
+toggle_manual_sorting: Kích hoạt sắp xếp thủ công
+bookmark_doesnt_exist: Bookmark Không Tồn Tại
+bookmark_doesnt_exist_copy: Không thể tìm thấy Bookmark bạn đang muốn mở.
+bookmark_doesnt_exist_cta: Trở lại bảng
 select_an_item: Chọn một bản ghi...
 edit: Sửa
 enabled: Đã kích hoạt
@@ -338,24 +356,45 @@ delete_collection: Xoá Danh Mục
 update_collection_success: Đã Cập Nhật Danh Mục
 delete_collection_success: Đã Xoá Danh Mục
 start_end_of_count_items: 'Bản ghi {start}-{end} trong tổng số {count}'
+start_end_of_count_filtered_items: 'Bản ghi {start}-{end} trong tổng số {count}'
+one_item: '1 sản phẩm'
+one_filtered_item: 'Đã lọc được 1 mục'
 delete_collection_are_you_sure: >-
   Bạn có chắc rằng bạn muốn xoá danh mục này? Thao tác này sẽ xóa danh mục và tất cả dữ liệu trong đó. Bạn không thể khôi phục danh mục này sau khi đã xóa.
 collections_shown: Những Danh Mục Đang Hiển Thị
+visible_collections: Ứng dụng có thể nhìn thấy
+hidden_collections: Bảng Ẩn
+show_hidden_collections: Hiện các Bảng Ẩn
+hide_hidden_collections: Ẩn các Bảng Ẩn
+system_collections: Các Bảng Hệ Thống
 placeholder: Chỗ điền
 icon_left: Biểu tượng bên trái
 icon_right: Biểu tượng bên phải
+font: Phông chữ
+sans_serif: Sans Serif
+serif: Serif
 monospace: Khoảng cách như nhau
 divider: Bộ chia
 color: Màu sắc
+circle: Vòng tròn
+empty_item: Mục trống
+log_in_with: 'Đăng nhập với {provider}'
 advanced_filter: Bộ Lọc Nâng Cao
 delete_advanced_filter: Xoá Bộ Lọc
 operators:
+  eq: Bằng
+  neq: Không bằng
   lt: Nhỏ hơn
   gt: Lớn hơn
   lte: Nhỏ hơn hoặc bằng
   gte: Lớn hơn hoặc bằng
+  in: Là một trong
+  nin: Không phải là một trong
+  null: Là null
+  nnull: Không bị null
   contains: Bao gồm
   ncontains: Không chứa
+  between: Giữa
   empty: Bị rỗng
 loading: Đang tải...
 layout_options: Các Tuỳ Chọn Bố Cục
@@ -372,9 +411,35 @@ select_fields: Chọn trường
 icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
 wysiwyg_options:
+  alignright: Canh phải
   forecolor: Màu Tô
   backcolor: Màu Nền
+  italic: Nghiêng
+  underline: Gạch chân
+  strikethrough: Gạch ngang
+  subscript: Đăng ký
+  superscript: Chỉ số trên
   codeblock: Mã nguồn
+  blockquote: Trích dẫn
+  bullist: Danh sách dấu đầu dòng
+  numlist: Danh Sách Đánh Số
+  hr: Thước ngang
+  link: Liên kết
+  unlink: Loại bỏ liên kết
+  media: Thêm đa phương tiện
+  image: Thêm hình ảnh
+  copy: Sao chép
+  cut: Cắt
+  paste: Dán
+  heading: Đầu mục
+  h1: Đầu mục 1
+  h2: Đầu mục 2
+  h3: Đầu mục 3
+  h4: Đầu mục 4
+  h5: Đầu mục 5
+  h6: Đầu mục 6
+  fontselect: Chọn kiểu chữ
+  fontsizeselect: Chọn kích thước phông chữ
   remove: Xoá
   selectall: Chọn Tất Cả
   table: Bảng
@@ -436,6 +501,7 @@ fields:
     width: Độ rộng
     uploaded_on: Thời điểm tải lên
     height: Độ dài
+    charset: Bảng mã
     duration: Thời lượng
   directus_users:
     first_name: Tên
@@ -529,6 +595,7 @@ interfaces:
     use_24: Sử dụng Định dạng 24-giờ
   display-template:
     display-template: Mẫu hiển thị
+    select_a_collection: Chọn Bảng
   divider:
     divider: Bộ chia
   dropdown:
@@ -600,6 +667,8 @@ displays:
   icon:
     icon: Biểu tượng
     description: Hiển thị một biểu tượng
+  image:
+    circle: Vòng tròn
   labels:
     choices_value_placeholder: Nhập vào một giá trị...
   rating:
