@@ -9,6 +9,7 @@ field_name_translations: Kentän Nimi Käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
 add_field: Lisää kenttä
 role_name: Roolin nimi
+db_only_click_to_configure: 'Vain tietokanta: Klikkaa määrittääksesi '
 show_archived_items: Näytä arkistoidut kohteet
 required: Vaadittu
 required_for_app_access: Vaaditaan sovelluspääsyyn
@@ -46,6 +47,7 @@ archive: Arkistoi
 archive_confirm: Oletko varma, että haluat arkistoida tämän kohteen?
 archive_confirm_count: >-
   Kohteita ei ole valittu | Oletko varma, että haluat arkistoida tämän kohteen? | Oletko varma, että haluat arkistoida nämä {count} kohdetta?
+reset_system_permissions_to: 'Palauta järjestelmän käyttöoikeudet:'
 reset_system_permissions_copy: Tämä toiminto korvaa kaikki mukautetut käyttöoikeudet, joita olet saattanut soveltaa järjestelmäkokoelmiin. Oletko varma?
 the_following_are_minimum_permissions: Seuraavat ovat vähimmäiskäyttöoikeudet vaaditaan kun "Sovelluspääsy" on käytössä. Voit laajentaa käyttöoikeuksia tästä korkeammaksi, mutta et matalammaksi.
 app_access_minimum: Sovelluspääsy vähintään
@@ -56,10 +58,14 @@ nested_files_folders_will_be_moved: Sisäkkäisiä tiedostoja ja kansioita siirr
 unknown_validation_errors: 'Validointivirheitä seuraavissa piilotetuissa kentissä:'
 validationError:
   eq: Arvon on oltava {valid}
+  in: Arvon on oltava yksi näistä {valid}
+  nin: Arvo ei voi olla {invalid}
   contains: Arvon on sisällettävä {substring}
+  ncontains: Arvo ei voi sisältää {substring}
   gt: Arvon on oltava suurempi kuin {valid}
   gte: Arvon on oltava yhtä suuri tai suurempi kuin {valid}
   lt: Arvon on oltava pienempi kuin {valid}
+  lte: Arvon on oltava yhtä suuri tai suurempi kuin {valid}
   empty: Arvon on oltava tyhjä
   nempty: Arvo ei voi olla tyhjä
   null: Arvon on oltava null
@@ -112,6 +118,7 @@ create_translations: Luo käännökset
 auto_generate: Luo automaattisesti
 this_will_auto_setup_fields_relations: Tämä määrittää automaattisesti kaikki tarvittavat kentät ja suhteet.
 click_here: Klikkaa tästä
+to_manually_setup_translations: käännösten manuaaliseen määrittämiseen.
 click_to_manage_translated_fields: >-
   Käännettyjä kenttiä ei vielä ole. Klikkaa tästä luodaksesi ne. | On olemassa yksi käännetty kenttä. Klikkaa tästä hallitaksesi sitä. | On {count} käännettyä kenttää. Hallinnoi niitä kikkaamalla tästä.
 fields_group: Kenttien ryhmä
@@ -154,6 +161,7 @@ settings_update_success: Asetukset päivitetty
 title: Otsikko
 revision_delta_created: Luotu
 revision_delta_created_externally: Luotu ulkoisesti
+revision_delta_updated: 'Päivitetty 1 kenttä | Päivitetty {count} kenttää'
 revision_delta_deleted: Poistettu
 revision_delta_reverted: Palautettu
 revision_delta_other: Versio
@@ -181,6 +189,7 @@ submit: Lähetä
 move_to_folder: Siirrä kansioon
 move: Siirrä
 system: Järjestelmä
+add_field_related: Lisää kenttä liittyvään kokoelmaan
 interface: Käyttöliittymä
 today: Tänään
 yesterday: Eilen
@@ -254,6 +263,7 @@ report_bug: Raportoi bugi
 request_feature: Pyydä ominaisuutta
 interface_not_found: 'Liittymää "{interface}" ei löytynyt.'
 reset_interface: Nollaa liittymä
+display_not_found: 'Näyttöä "{display}" ei löytynyt.'
 reset_display: Nollaa näyttö
 m2a_builder: Rakentaja (M2A, useampi kaikkiin)
 item_count: 'Ei kohteita | Yksi kohde | {count} kohdetta'
@@ -270,6 +280,7 @@ create_collection: Luo kokoelma
 no_collections_copy_admin: Sinulla ei ole vielä kokoelmia. Aloita painamalla alla olevaa painiketta.
 no_collections_copy: Sinulla ei ole vielä kokoelmia. Ota yhteyttä järjestelmänvalvojaan.
 relationship_not_setup: Suhdetta ei ole määritetty oikein
+collection_field_not_setup: Kokoelmakentän asetus on konfiguroitu virheellisesti
 select_a_collection: Valitse kokoelma
 active: Aktiivinen
 users: Käyttäjät
@@ -296,6 +307,8 @@ select_an_item: Valitse kohde...
 edit: Muokkaa
 disable_tfa: Poista 2FA käytöstä
 tfa_scan_code: Skannaa koodi autentikointisovelluksessasi viimeistelläksesi 2FA:n asetukset
+enter_otp_to_disable_tfa: Syötä OTP poistaaksesi 2FA:n käytöstä
+account_created_successfully: Tilin luonti onnistui
 auto_fill: Automaattinen täyttö
 corresponding_field: Vastaava kenttä
 errors:
@@ -395,6 +408,7 @@ clear_filters: Tyhjennä suodattimet
 saves_automatically: Tallentaa automaattisesti
 role: Rooli
 user: Käyttäjänimi
+no_presets_copy: Esiasetuksia tai kirjanmerkkejä ei ole vielä tallennettu.
 no_presets_cta: Lisää esiasetus
 create: Luo
 on_create: Luonnissa
@@ -492,6 +506,7 @@ activity_feed: Aktiviteettisyöte
 add_new: Lisää uusi
 all: Kaikki
 none: Ei mikään
+no_layout_collection_selected_yet: Asettelua/kokoelmaa ei ole vielä valittu
 batch_delete_confirm: >-
   Kohteita ei ole valittu | Oletko varma, että haluat poistaa tämän kohteen? Tätä toimintoa ei voi perua. | Oletko varma, että haluat poistaa nämä {count} kohteet? Tätä toimintoa ei voi perua.
 cancel: Peruuta
@@ -516,6 +531,7 @@ fields:
     display_template: Esitysmalli
     hidden: Piilotettu
     singleton: Singleton
+    translations: Kokoelmien nimien käännökset
     archive_app_filter: Arkistoi sovelluksen suodatin
     archive_value: Arkistoi arvo
     unarchive_value: Palauta arkistoitu arvo
@@ -692,6 +708,7 @@ interfaces:
     display-template: Esitysmalli
     description: Sekoita staattinen teksti ja dynaamiset kenttäarvot
     collection_field: Kokoeilmakenttä
+    collection_field_not_setup: Kokoelmakentän asetus on konfiguroitu virheellisesti
     select_a_collection: Valitse kokoelma
   divider:
     divider: Jakaja
@@ -865,6 +882,7 @@ displays:
     description: Näytä tiedoston koko
   formatted-value:
     formatted-value: Muotoiltu arvo
+    description: Näytä tekstin muotoiltu versio
     format_title: Muoto otsikko
     format_title_label: Automaattisesti muotoiltu kirjainkoko
   formatted-json-value:
@@ -875,8 +893,10 @@ displays:
     description: Näytä kuvake
   image:
     image: Kuva
+    description: Näytä pieni kuvan esikatselu
     circle_label: Näytä ympyränä
   labels:
+    description: Näytä joko yksittäinen tai luettelo nimikkeistä
     default_foreground: Oletusetuala
     default_background: Oletustausta
     format_label: Muotoile jokainen otsikko
@@ -890,6 +910,7 @@ displays:
   rating:
     rating: Arvio
     description: Visualisoi numero tähtinä suhteessa maksimiarvoon
+    simple_label: Näytä tähdet yksinkertaisessa muodossa
   raw:
     raw: Raaka-arvo
   user:
