@@ -26,6 +26,7 @@ connection_excellent: Suurepärane ühendus
 connection_good: Hea ühendus
 connection_fair: Keskmine ühendus
 connection_poor: Kehv ühendus
+primary: Peamine
 rename_folder: Nimeta kaust ümber
 delete_folder: Kustuta kaust
 prefix: Eesliide
@@ -386,6 +387,8 @@ template: Mall
 translation: Tõlkija
 value: Väärtus
 interfaces:
+  button-links:
+    primary: Peamine
   checkboxes:
     checkboxes: Märkeruudud
     allow_other: Luba muud
