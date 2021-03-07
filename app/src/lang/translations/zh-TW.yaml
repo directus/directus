@@ -94,7 +94,6 @@ duplicate_where_to: 你想將欄位複製到哪裡?
 language: 語言
 global: 全域
 admins_have_all_permissions: 管理員擁有所有權限
-schema_setup_title: 此欄位應該如何儲存到資料庫中?
 create_field: 新建欄位
 creating_new_field: '新欄位 ({collection})'
 reset_page_preferences: 重設頁面偏好設定
@@ -112,10 +111,6 @@ create_translations: 創建翻譯
 auto_generate: 自動產生
 click_here: 點擊此處
 fields_group: 欄位群組
-configure_m2o: 配置你的多對一關聯...
-configure_o2m: 配置你的一對多關聯...
-configure_m2m: 配置你的多對多關聯...
-configure_m2a: 配置你的多對Any關聯
 add_m2o_to_collection: '新增 多對一 到 "{collection}"'
 add_o2m_to_collection: '新增 一對多 到 "{collection}"'
 add_m2m_to_collection: '新增 多對多 到 "{collection}"'

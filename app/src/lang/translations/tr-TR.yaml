@@ -111,8 +111,6 @@ exposure: Pozlama
 shutter: Deklanşör
 iso: ISO
 focal_length: Odak Uzaklığı
-schema_setup_title: Bu alan veritabanına nasıl kaydedilsin?
-schema_field_title: Bu alan uygulamada nasıl gözüksün?
 create_field: Alan Ekle
 creating_new_field: 'Yeni alan ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -147,18 +145,12 @@ click_to_manage_translated_fields: >-
 fields_group: Alanlar Grubu
 new_field: 'Yeni Alan'
 new_collection: 'Yeni Koleksiyon'
-configure_m2o: Çoktan Bire İlişkinizi Yapılandırın...
-configure_o2m: Bire Çoğa İlişkinizi Yapılandırın...
-configure_m2m: Çoktan Çoğa İlişkinizi Yapılandırın...
-configure_m2a: Çoktan Herhangi Bir İlişkinizi Yapılandırın...
 add_m2o_to_collection: '"{collection}" koleksiyonuna Çoktan Bire''yi ekleyin'
 add_o2m_to_collection: '"{collection}" koleksiyonuna Bire Çok ekleyin'
 add_m2m_to_collection: '"{collection}" koleksiyonuna Çoktan Çoğa ekle'
 choose_a_type: Bir Tür Seçin...
 add_note: Kullanıcılar için yardımcı bir not ekleyin...
 default_value: Öntanımlı Değer
-interface_setup_title: Kullanıcılar bu alanla nasıl etkileşim kuracak?
-display_setup_title: Bu alanın değeri nasıl görüntülenmelidir?
 standard_field: Standart Alan
 single_file: Tek Dosya
 multiple_files: Birden Fazla Dosya
