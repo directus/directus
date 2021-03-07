@@ -14,6 +14,7 @@ show_archived_items: Näytä arkistoidut kohteet
 required: Vaadittu
 required_for_app_access: Vaaditaan sovelluspääsyyn
 requires_value: Vaatii arvon
+create_preset: Luo esiasetus
 create_role: Luo rooli
 create_user: Luo käyttäjä
 create_webhook: Luo webhook
@@ -23,6 +24,7 @@ invite: Kutsu
 emails: Sähköpostit
 connection_excellent: Erinomainen yhteys
 connection_good: Hyvä Yhteys
+connection_fair: Hyvä yhteys
 connection_poor: Huono Yhteys
 primary: Ensisijainen
 rename_folder: Nimeä kansio uudelleen
@@ -30,6 +32,8 @@ delete_folder: Poista kansio
 prefix: Etuliite
 suffix: Jälkiliite
 reset_bookmark: Nollaa kirjanmerkki
+rename_bookmark: Uudelleennimeä kirjanmerkki
+update_bookmark: Päivitä kirjanmerkki
 delete_bookmark: Poista kirjanmerkki
 delete_bookmark_copy: >-
   Oletko varma, että haluat poistaa "{bookmark}" kirjanmerkin? Tätä toimintoa ei voi perua.
@@ -74,20 +78,28 @@ validationError:
   nempty: Arvo ei voi olla tyhjä
   null: Arvon on oltava null
   nnull: Arvo ei voi olla null
+  required: Arvo vaaditaan
 all_access: Täysi pääsy
 no_access: Ei pääsyä
 use_custom: Käytä mukautettua
 field_standard: Vakio
+field_presentation: Esitystapa & aliakset
 field_file: Yksittäinen tiedosto
 field_files: Useita tiedostoja
+field_m2o: M2O-suhde
+field_m2a: M2A-suhde
+field_o2m: O2M-suhde
+field_m2m: M2M-suhde
 field_translations: Käännökset
 item_permissions: Kohteen oikeudet
 field_permissions: Kentän Oikeudet
 field_validation: Kentän vahvistus
+field_presets: Kentän esiasetukset
 permissions_for_role: 'Kohteet joita {role} rooli voi {action}.'
 fields_for_role: 'Kentät joita {role} rooli voi {action}.'
 validation_for_role: 'Kentän sääntöjä {action} roolille {role} on noudatettava.'
 presets_for_role: 'Kentän oletusarvot roolille {role}.'
+presentation_and_aliases: Esitystapa & aliakset
 revision_post_update: Tässä on miltä tämä kohde näytti päivityksen jälkeen...
 changes_made: Nämä ovat mutokset jotka tarkalleenottaen tehtiin...
 no_relational_data: Muista, että tämä ei sisällä relaatiotietoja.
