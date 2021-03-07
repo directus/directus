@@ -91,6 +91,7 @@ permissions_for_role: '{role} rollil lubatud üksuste {action}.'
 fields_for_role: '{role} rollil lubatud väljade {action}.'
 delete_field: Kustuta väli
 language: Keel
+camera: Kaamera
 create_field: Loo väli
 hidden_on_detail: Üksikasjavaates peidetud
 key: Võti
