@@ -89,6 +89,7 @@ field_validation: Välja valideerimine
 field_presets: Välja eelseadistused
 permissions_for_role: '{role} rollil lubatud üksuste {action}.'
 fields_for_role: '{role} rollil lubatud väljade {action}.'
+delete_field: Kustuta väli
 language: Keel
 create_field: Loo väli
 hidden_on_detail: Üksikasjavaates peidetud
@@ -98,6 +99,7 @@ text: Tekst
 time: Kellaaeg
 auto_generate: Automaatselt loodud
 click_here: Kliki siia
+new_collection: 'Uus kogumik'
 choose_a_type: Vali Tüüp...
 add_note: Lisa kasutajaid abistav märkus...
 default_value: Vaikeväärtus
@@ -131,8 +133,10 @@ leave_comment: Jäta kommentaar...
 post_comment_success: Kommentaar postitatud
 this_collection: See kogu
 related_collection: Seotud kogu
+export_data: Ekspordi andmed
 format: Vorming
 submit: Saada
+move_to_folder: Teisalda kausta
 move: Liiguta
 system: Süsteem
 interface: Kasutajaliides
@@ -172,11 +176,22 @@ download: Laadi alla
 open: Ava
 open_in_new_window: Ava Uues Aknas
 background_color: Taustavärv
+upload_from_device: Lae Fail seadmest
+choose_from_library: Vali teegist
+import_from_url: Lae aadressilt
+replace_from_device: Asenda Fail seadmest
+replace_from_library: Asenda Fail teegist
+replace_from_url: Asenda Fail aadressilt
+no_file_selected: Faili pole valitud
+download_file: Lae fail alla
+collection_key: Kogumi võti
 name: Nimi
 primary_key_field: Primaarse Võtme Väli
 type: Tüüp
+creating_new_collection: Uue kogumi loomine
 created_by: Autor
 created_on: Loodud
+creating_collection_info: Nimeta kogum ja säti unikaalne võtme väli...
 generated_uuid: Genereeritud UUID
 manual_string: Sisesta sõne käsitsi
 save_and_create_new: Salvesta ja Lisa Uus
