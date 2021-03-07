@@ -55,6 +55,10 @@ archive_confirm: Bạn có chắc chắn muốn lưu trữ mục này không?
 archive_confirm_count: >-
   Chưa chọn mục nào | Bạn có chắc chắn muốn lưu trữ mục này không? | Bạn có chắc chắn muốn lưu trữ {count} mục này không?
 reset_system_permissions_to: 'Đặt lại Quyền Hệ Thống:'
+reset_system_permissions_copy: Thao tác này sẽ ghi đè lên bất cứ quyền hạn đã được tùy biến bởi bạn trước đây tới các bảng hệ thống. Bạn có chắc chắn không?
+the_following_are_minimum_permissions: Đây là những quyền hạn tối thiểu cần có khi "App Access" được kích hoạt. Bạn có thể mở rộng các quyền bổ sung, nhưng không được phép thấp hơn những quyền này.
+app_access_minimum: Quyền truy cập Ứng dụng Tối thiểu
+recommended_defaults: Các giá trị mặc định Khuyên dùng
 unarchive: Ngừng lưu trữ
 unarchive_confirm: Bạn có chắc chắn muốn mở lưu trữ mục này không?
 nested_files_folders_will_be_moved: Các files và thư mục sẽ được di chuyển lên thư mục trên.
@@ -82,6 +86,7 @@ field_standard: Tiêu chuẩn
 field_file: Tập tin đơn
 field_files: Nhiều Tập Tin
 field_m2o: Quan hệ Nhiều -> Một
+field_m2a: Quan hệ M2A
 field_o2m: Quan hệ Một -> Nhiều
 field_m2m: Quan hệ Nhiều -> Nhiều
 field_translations: Các Bản Dịch
@@ -140,6 +145,7 @@ m2o_relationship: Quan hệ Nhiều - Một
 o2m_relationship: Quan hệ Một - Nhiều
 m2m_relationship: Quan hệ Nhiều - Nhiều
 m2a_relationship: Quan hệ Nhiều - Bất Kỳ
+invalid_item: Mục Không hợp lệ
 next: Tiếp theo
 field_name: Tên Trường
 translations: Các Bản Dịch
@@ -147,8 +153,11 @@ note: Ghi chú
 enter_a_value: Nhập vào một giá trị...
 enter_a_placeholder: Nhập vào dòng nhắc...
 length: Độ dài
+precision_scale: Độ chính xác & Mở rộng
 readonly: Chỉ đọc
 unique: Duy nhất
+updated_on: Cập nhật Vào lúc
+updated_by: Cập Nhật bởi
 primary_key: Khoá chính
 foreign_key: Khóa Ngoại
 finish_setup: Hoàn Tất Cài Đặt
@@ -181,6 +190,8 @@ export_data: Kết Xuất Dữ Liệu
 format: Định dạng
 export_collection: 'Kết xuất {collection}'
 submit: Gửi đi
+move: Di Chuyển
+system: Hệ thống
 add_field_related: Thêm Trường vào Danh Mục Liên Quan
 interface: Giao diện
 today: Hôm nay
@@ -264,8 +275,12 @@ no_items_copy: Chưa có bản ghi nào trong danh mục này.
 file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'
 no_files_copy: Không có tập tin nào ở đây.
 user_count: 'Không Có Người Dùng | Có Một Người Dùng | {count} Người Dùng'
+all_items: Tất cả các mục
+csv: CSV
+no_collections: Chưa có Bảng nào
 create_collection: Tạo Danh mục mới
 relationship_not_setup: Cấu trúc dữ liệu chưa được cài đặt chính xác
+active: Kích hoạt
 users: Tài khoản
 activity: Hoạt động
 webhooks: Webhooks
