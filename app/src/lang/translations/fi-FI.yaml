@@ -131,6 +131,7 @@ alias: Alias
 bigInteger: Suuri kokonaisluku
 boolean: Totuusarvo
 date: Päivämäärä
+datetime: DateTime
 decimal: Desimaali
 float: Liukuluku
 integer: Kokonaisluku
@@ -153,8 +154,9 @@ fields_group: Kenttien ryhmä
 new_data_alert: 'Seuraava tullaa luomaan tietomallisi sisällä:'
 new_field: 'Uusi kenttä'
 new_collection: 'Uusi kokoelma'
-add_m2o_to_collection: 'Lisää moni yhteen kokoelmaan "{collection}"'
-add_o2m_to_collection: 'Lisää yksi-moniin kokoelmaan "{collection}"'
+add_m2o_to_collection: 'Lisää moni-yhteen (M2O) kokoelmaan "{collection}"'
+add_o2m_to_collection: 'Lisää yksi-moniin (O2M) kokoelmaan "{collection}"'
+add_m2m_to_collection: 'Lisää moni-moneen (M2M) kokoelmaan "{collection}"'
 choose_a_type: Valitse tyyppi...
 determined_by_relationship: Suhteen määrittämä
 add_note: Lisää käyttäjälle hyödyllinen huomautus...
@@ -162,6 +164,10 @@ default_value: Oletusarvo
 standard_field: Vakio Kenttä
 single_file: Yksittäinen tiedosto
 multiple_files: Useita tiedostoja
+m2o_relationship: Moni yhteen (M2O) -suhde
+o2m_relationship: Yksi moneen (O2M) -suhde
+m2m_relationship: Moni moneen (M2M) -suhde
+m2a_relationship: Mony mihin tahansa (M2A) -suhde
 invalid_item: Virheellinen kohde
 next: Seuraava
 field_name: Kentän nimi
@@ -170,12 +176,14 @@ note: Muistiinpano
 enter_a_value: Syötä arvo...
 enter_a_placeholder: Syötä paikkamerkki...
 length: Pituus
+precision_scale: Tarkkuus ja skaala
 readonly: Vain luku
 unique: Yksilöllinen
 updated_on: Päivitetty vimeksi
 updated_by: Päivittänyt
 primary_key: Ensisijainen avain
 foreign_key: Viiteavain
+finish_setup: Viimeistele asennus
 dismiss: Hylkää
 raw_value: Raaka-arvo
 edit_raw_value: Muokkaa raaka-arvoa
@@ -201,6 +209,7 @@ revision_delta_other: Versio
 revision_delta_by: '{date} käyttäjältä {user}'
 private_user: Yksityinen Käyttäjä
 revision_preview: Version esikatselu
+updates_made: Päivitykset tehty
 leave_comment: Jätä kommentti...
 post_comment_success: Kommentti lähetetty
 item_create_success: Kohde luotu | Kohteet luotu
@@ -230,9 +239,12 @@ interface: Käyttöliittymä
 today: Tänään
 yesterday: Eilen
 delete_comment: Poista kommentti
+date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'HH:mm'
+date-fns_date_short_no_year: MMM d
 month: Kuukausi
 year: Vuosi
 select_all: Valitse kaikki
@@ -323,6 +335,7 @@ create_collection: Luo kokoelma
 no_collections_copy_admin: Sinulla ei ole vielä kokoelmia. Aloita painamalla alla olevaa painiketta.
 no_collections_copy: Sinulla ei ole vielä kokoelmia. Ota yhteyttä järjestelmänvalvojaan.
 relationship_not_setup: Suhdetta ei ole määritetty oikein
+display_template_not_setup: Näyttöpohjan asetus on konfiguroitu väärin
 collection_field_not_setup: Kokoelmakentän asetus on konfiguroitu virheellisesti
 select_a_collection: Valitse kokoelma
 active: Aktiivinen
@@ -332,6 +345,8 @@ webhooks: Webhookit
 field_width: Kentän leveys
 add_a_new_item: Lisää uusi kohde...
 add_filter: Lisää suodatin
+upper_limit: Yläraja...
+lower_limit: Alaraja...
 user_directory: Käyttäjähakemisto
 documentation: Dokumentaatio
 sidebar: Sivupalkki
@@ -343,6 +358,7 @@ collection_created: Kokoelma luotu
 modified_on: Muokattu viimeksi
 card_size: Kortin koko
 sort_field: Lajittelukenttä
+add_sort_field: Lisää lajittelukenttä
 sort: Järjestä
 status: Tila
 toggle_manual_sorting: Vaihda manuaalinen lajittelu
@@ -355,6 +371,7 @@ enabled: Käytössä
 disable_tfa: Poista 2FA käytöstä
 tfa_scan_code: Skannaa koodi autentikointisovelluksessasi viimeistelläksesi 2FA:n asetukset
 enter_otp_to_disable_tfa: Syötä OTP poistaaksesi 2FA:n käytöstä
+create_account: Luo tili
 account_created_successfully: Tilin luonti onnistui
 auto_fill: Automaattinen täyttö
 corresponding_field: Vastaava kenttä
@@ -364,6 +381,7 @@ errors:
   FORBIDDEN: Kielletty
   INVALID_CREDENTIALS: Väärä käyttäjätunnus tai salasana
   INVALID_OTP: Väärä kertakäyttösalasana
+  INVALID_PAYLOAD: Virheellinen kuorma
   INVALID_QUERY: Virheellinen kysely
   ITEM_LIMIT_REACHED: Kohteiden rajoitus saavutettu
   ITEM_NOT_FOUND: Kohdetta ei löydy
@@ -422,18 +440,22 @@ empty_item: Tyhjä kohde
 log_in_with: 'Kirjaudu käyttäen {provider}'
 advanced_filter: Edistynyt suodatin
 delete_advanced_filter: Poista suodatin
+change_advanced_filter_operator: Vaihda operaattoria
 operators:
   eq: Yhtä suuri kuin
+  neq: Ei ole yhtä kuin
   lt: Vähemmän kuin
   gt: Suurempi kuin
   lte: Vähemmän tai yhtä suuri kuin
   gte: Suurempi tai yhtä suuri kuin
   in: On yksi näistä
+  nin: Ei ole yksi näistä
   null: On null
   nnull: Ei ole null
   contains: Sisältää
   ncontains: Ei sisällä
   between: On välillä
+  nbetween: Ei ole välillä
   empty: On tyhjä
   nempty: Ei ole tyhjä
   all: Sisältää nämä avaimet
@@ -448,6 +470,7 @@ upload_files_success: '{count} tiedostoa ladattu'
 upload_pending: Lähetys odottaa
 drag_file_here: Vedä ja pudota tiedosto tähän
 click_to_browse: Klikkaa selataksesi
+layout_options: Asetteluasetukset
 rows: Rivit
 columns: Sarakkeita
 collection_setup: Kokoelman asetukset
@@ -487,6 +510,8 @@ icon_on: Päällä-kuvake
 icon_off: Pois-kuvake
 label: Tunniste
 wysiwyg_options:
+  aligncenter: Tasaa keskelle
+  alignjustify: Tasaa tasapalstaksi
   alignleft: Tasaa vasemmalle
   alignnone: Ei mitään tasausta
   alignright: Tasaa oikealle
@@ -501,7 +526,10 @@ wysiwyg_options:
   codeblock: Koodi
   blockquote: Sitaattilohko
   bullist: Merkitty lista
+  numlist: Numeroitu luettelo
+  hr: Vaakaviivain
   link: Linkki
+  unlink: Poista linkki
   media: Lisää media
   image: Lisää kuva
   copy: Kopioi
@@ -521,11 +549,13 @@ wysiwyg_options:
   undo: Kumoa
   redo: Tee uudelleen
   remove: Poista
+  removeformat: Poista muotoilu
   selectall: Valitse kaikki
   table: Taulukko
   visualaid: Näytä näkymättömät elementit
   code: Näytä lähde
   fullscreen: Koko näyttö
+  directionality: Suuntaus
 dropdown: Pudotusvalikko
 choices: Valinnat
 choices_option_configured_incorrectly: Valinnat määritetty väärin
@@ -533,6 +563,7 @@ deselect: Poista valinta
 deselect_all: Poista kaikki valinnat
 other: Muu...
 adding_user: Lisätään käyttäjää
+unknown_user: Tuntematon käyttäjä
 creating_in: 'Luodaan kohdetta kokoelmassa {collection}'
 editing_in: 'Muokataan kohdetta: {collection}'
 editing_in_batch: 'Muokataan {count} kohdetta erässä'
@@ -547,6 +578,9 @@ layout: Asettelu
 changes_are_permanent: Muutokset ovat pysyviä
 preset_name_placeholder: Kirjanmerkin nimi...
 preset_search_placeholder: Hakulauseke...
+editing_preset: Muokataan esiasetusta
+layout_preview: Asettelun esikatselu
+layout_setup: Asettelun asetukset
 unsaved_changes: Tallentamattomia muutoksia
 unsaved_changes_copy: Oletko varma, että haluat poistua tältä sivulta?
 discard_changes: Hylkää muutokset
@@ -668,6 +702,8 @@ fields:
     public_note: Julkinen muistiinpano
     auth_password_policy: Salasanakäytäntö
     auth_login_attempts: Kirjautumisyritykset
+    storage_asset_presets: Tallennustilan sisältöjen esiasetukset
+    storage_asset_transform: Tallennustilan sisältöjen muunnos
     custom_css: Mukautettu CSS
   directus_fields:
     collection: Kokoelman nimi
@@ -686,6 +722,7 @@ fields:
     ip_access: IP-pääsy
     enforce_tfa: Vaadi 2FA
     users: Käyttäjät roolissa
+    module_list: Moduulien navigointi
     collection_list: Kokoelman navigointi
 no_fields_in_collection: 'Kokoelmassa "{collection}" ei ole vielä kenttiä'
 do_nothing: Älä tee mitään
@@ -700,6 +737,7 @@ continue: Jatka
 continue_as: >-
   <b>{name}</b> on tällä hetkellä autentikoitu. Jos tunnistat tämän tilin, paina jatka.
 editing_role: '{role} rooli'
+creating_webhook: Luodaan webhook
 default: Oletus
 delete: Poista
 delete_are_you_sure: >-
@@ -711,6 +749,7 @@ done: Valmis
 duplicate: Duplikoitu
 email: Sähköposti
 embed: Upota
+fallback_icon: Kuvakkeen vara-asetus
 field: Kenttä | Kentät
 file: Tiedosto
 file_library: Tiedostokirjasto
@@ -749,11 +788,13 @@ sign_out: Kirjaudu ulos
 sign_out_confirm: Haluatko varmasti kirjautua ulos?
 something_went_wrong: Jokin meni pieleen.
 sort_direction: Järjestyssuunta
+sort_asc: Järjestä nousevasti
 sort_desc: Lajittele laskeva
 template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
+weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:
@@ -984,6 +1025,7 @@ displays:
     description: Näytä tekstin muotoiltu versio
     format_title: Muoto otsikko
     format_title_label: Automaattisesti muotoiltu kirjainkoko
+    bold_label: Käytä lihavoitua tyyliä
   formatted-json-value:
     formatted-json-value: Muotoiltu JSON-arvo
     description: Näytä objektin muotoiltu versio
@@ -1009,6 +1051,7 @@ displays:
   mime-type:
     mime-type: MIME-tyyppi
     description: Näytä tiedoston MIME-tyyppi
+    extension_only: Vain laajennus
     extension_only_label: Näytä vain tiedostopääte
   rating:
     rating: Arvio
@@ -1018,6 +1061,7 @@ displays:
   raw:
     raw: Raaka-arvo
   related-values:
+    related-values: Liittyvät arvot
     description: Näytä suhteelliset arvot
   user:
     user: Käyttäjänimi
