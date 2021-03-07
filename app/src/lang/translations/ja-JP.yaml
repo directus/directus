@@ -28,21 +28,35 @@ archive: アーカイブ
 recommended_defaults: 推奨されるデフォルト値
 validationError:
   required: 必須項目です
+field_standard: 標準
 field_file: 1つのファイル
 field_files: 複数のファイル
 field_translations: 翻訳
+delete_field: フィールドを削除
 fields_and_layout: 項目とレイアウト
 language: 言語
+camera: カメラ
+iso: ISO
 create_field: 新規項目の追加
 hidden_on_detail: 詳細に表示しない
 disabled_editing_value: 項目の編集を無効にする
 boolean: 真偽値
 date: 日付
+datetime: DateTime
+decimal: Decimal
+float: Float
+integer: 整数
+json: JSON
+string: 文字列
 text: テキスト
+time: 時刻
+timestamp: Timestamp
 uuid: UUID
 hash: ハッシュ値
 auto_generate: 自動生成
 to_manually_setup_translations: 独自の翻訳を設定することができます
+new_field: '新規フィールド'
+new_collection: '新しいコレクション'
 add_note: ユーザーに有益な注釈を追加...
 default_value: 初期値
 single_file: 1つのファイル
@@ -76,6 +90,8 @@ item_delete_success: 削除されたアイテム|削除されたアイテム
 this_collection: このコレクション
 related_collection: 関連するコレクション
 related_collections: 関連するコレクション
+translations_collection: 翻訳コレクション
+languages_collection: 言語コレクション
 format: 書式
 last_access: 最後にアクセスした日時
 a_unique_table_name: 重複しない名前をつけてください
@@ -142,6 +158,7 @@ disabled: 無効
 information: インフォメーション
 report_bug: 不具合の報告
 request_feature: 機能リクエスト
+reset_display: 表示をリセット
 item_count: 'アイテムなし | 1つのアイテム | {count} 個のアイテム'
 file_count: 'ファイルがありません | 1個のファイル | {count} 個のファイル'
 no_files_copy: まだファイルがありません。
@@ -149,11 +166,14 @@ csv: CSVファイル
 no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
+users: ユーザー
 activity: 操作履歴
 webhooks: Webhook
 field_width: 入力欄幅
 add_a_new_item: 項目の追加
 user_directory: ユーザーディレクトリ
+documentation: ドキュメンテーション
+collection_created: コレクションが作成されました
 modified_on: 修正日時
 sort_field: フィールドの並べ替え
 sort: 並べ替え
@@ -164,6 +184,7 @@ errors:
 create_bookmark: ブックマークを作成
 bookmarks: ブックマーク
 back: 戻る
+rotate: 回転
 all_users: すべてのユーザー
 one_item: '1 つのアイテム'
 icon_left: 左側に表示するアイコン
