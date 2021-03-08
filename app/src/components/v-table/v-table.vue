@@ -381,7 +381,7 @@ body {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
 	--v-table-color: var(--foreground-normal);
-	--v-table-background-color: var(--background-page);
+	--v-table-background-color: var(--background-input);
 }
 </style>
 
