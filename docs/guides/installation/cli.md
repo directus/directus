@@ -23,6 +23,13 @@ Redshift** (PostgreSQL), and **MariaDB**.
 
 :::
 
+::: tip Apple Silicon
+
+When installing Directus on an Apple-made ARM CPU, make sure you have `libvps` installed. See
+[Apple M1](https://sharp.pixelplumbing.com/install#apple-m1).
+
+:::
+
 ## 2. Create a Project
 
 Navigate to the directory where you wish to create a new Directus project. The new project and directory will be created
@@ -60,5 +67,12 @@ The default port used by Directus is 8055. To view your project locally, go to
 ::: tip Changing Port
 
 If you want to use a different port, use [the `PORT` environment variable](/reference/environment-variables/#general).
+
+:::
+
+::: tip .env Permissions
+
+By default, the `create-directus-project` tool will set the file permissions of the generated `.env` to `-rw-r-----`
+(0640). If you run Directus from a separate user on your machine, make sure these permissions are correct.
 
 :::

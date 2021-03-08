@@ -58,8 +58,8 @@ export default defineComponent({
 .row {
 	--background-page: var(--background-subdued);
 
-	background-color: var(--background-subdued);
-	border: 2px solid var(--border-subdued);
+	background-color: var(--card-face-color);
+	box-shadow: var(--card-shadow);
 	border-radius: var(--border-radius);
 
 	& + .row {

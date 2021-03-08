@@ -23,7 +23,7 @@ const port = ({ client }: { client: string }) => ({
 			pg: 5432,
 			mysql: 3306,
 			oracledb: 1521,
-			tedious: 1433,
+			mssql: 1433,
 		};
 
 		return ports[client];
@@ -62,5 +62,5 @@ export const databaseQuestions = {
 	mysql: [host, port, database, user, password],
 	pg: [host, port, database, user, password, ssl],
 	oracledb: [host, port, database, user, password],
-	tedious: [host, port, database, user, password],
+	mssql: [host, port, database, user, password],
 };

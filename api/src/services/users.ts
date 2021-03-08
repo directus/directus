@@ -123,6 +123,12 @@ export class UsersService extends ItemsService {
 		const payload = { email, scope: 'password-reset' };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
 
+		const urlWhitelist = toArray(env.PASSWORD_RESET_URL_ALLOW_LIST);
+
+		if (url && urlWhitelist.includes(url) === false) {
+			throw new InvalidPayloadException(`Url "${url}" can't be used to reset passwords.`);
+		}
+
 		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
 
 		await sendPasswordResetMail(email, acceptURL);

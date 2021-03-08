@@ -488,11 +488,11 @@ Only get 3 related articles, with only the top rated comment nested
 ### REST API
 
 ```
-?deep[translations][filter][languages_code][_eq]=en-US
+?deep[translations][_filter][languages_code][_eq]=en-US
 
 // or
 
-?deep={ "translations": { "filter": { "languages_code": { "_eq": "en-US" }}}}
+?deep={ "translations": { "_filter": { "languages_code": { "_eq": "en-US" }}}}
 ```
 
 ### GraphQL

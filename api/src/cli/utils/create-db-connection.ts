@@ -11,7 +11,7 @@ export type Credentials = {
 	ssl?: boolean;
 };
 export default function createDBConnection(
-	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'tedious',
+	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql',
 	credentials: Credentials
 ) {
 	let connection: Knex.Config['connection'] = {};

@@ -19,30 +19,51 @@ delete_folder: フォルダーの削除
 delete_bookmark: ブックマーク削除
 logoutReason:
   SIGN_OUT: ログアウト
+  SESSION_EXPIRED: セッションが期限切れです
 public: 公開
+not_allowed: 許可されていない
 directus_version: Directus Version
+os_version: OSバージョン
+archive: アーカイブ
+recommended_defaults: 推奨されるデフォルト値
 validationError:
   required: 必須項目です
+no_access: アクセスなし
+use_custom: カスタムを使う
+field_standard: 標準
 field_file: 1つのファイル
 field_files: 複数のファイル
 field_translations: 翻訳
+delete_field: フィールドを削除
 fields_and_layout: 項目とレイアウト
 language: 言語
-schema_setup_title: この項目をどのように保存するか設定しましょう。
-schema_field_title: この項目のエディタでの表示を設定できます。
+camera: カメラ
+iso: ISO
+schema_setup_key: この項目はデータベースの列名及びAPIキーとして使用されます
 create_field: 新規項目の追加
 hidden_on_detail: 詳細に表示しない
 disabled_editing_value: 項目の編集を無効にする
+key: キー
 boolean: 真偽値
 date: 日付
+datetime: DateTime
+decimal: Decimal
+float: Float
+integer: 整数
+json: JSON
+string: 文字列
 text: テキスト
+time: 時刻
+timestamp: Timestamp
 uuid: UUID
 hash: ハッシュ値
 auto_generate: 自動生成
+click_here: ここをクリック
 to_manually_setup_translations: 独自の翻訳を設定することができます
+new_field: '新規フィールド'
+new_collection: '新しいコレクション'
 add_note: ユーザーに有益な注釈を追加...
 default_value: 初期値
-interface_setup_title: 項目の入力に使用する方法を選択してください。
 single_file: 1つのファイル
 multiple_files: 複数のファイル
 next: 次
@@ -74,6 +95,8 @@ item_delete_success: 削除されたアイテム|削除されたアイテム
 this_collection: このコレクション
 related_collection: 関連するコレクション
 related_collections: 関連するコレクション
+translations_collection: 翻訳コレクション
+languages_collection: 言語コレクション
 format: 書式
 last_access: 最後にアクセスした日時
 a_unique_table_name: 重複しない名前をつけてください
@@ -100,6 +123,7 @@ months:
   october: 10月
   november: 11月
   december: 12月
+url: URL
 file_details: ファイルの詳細
 size: サイズ
 modified: 修正されました
@@ -110,7 +134,12 @@ download: ダウンロード
 open: 開く
 open_in_new_window: 新しいウィンドウで開く
 background_color: 背景色
+upload_from_device: デバイスからファイルをアップロード
+choose_from_library: ライブラリから選択
 import_from_url: URLからファイルをインポート
+replace_from_device: デバイスからファイルを置き換え
+replace_from_library: ライブラリからファイルを置き換え
+replace_from_url: URLからファイルを置き換え
 no_file_selected: ファイルが選択されていません
 download_file: ファイルをダウンロード
 name: 名前
@@ -124,36 +153,48 @@ creating_collection_system: オプションフィールドの有効化および�
 auto_increment_integer: 整数を自動生成
 generated_uuid: UUIDを生成
 manual_string: 値を手動で入力する
+save_and_create_new: 保存して新規作成
 save_and_stay: 保存してページに留まる
 save_as_copy: 複製として保存
+add_existing: 既存を追加
 comments: コメント
 no_items: アイテムがありません
 disabled: 無効
 information: インフォメーション
 report_bug: 不具合の報告
 request_feature: 機能リクエスト
+reset_display: 表示をリセット
 item_count: 'アイテムなし | 1つのアイテム | {count} 個のアイテム'
 file_count: 'ファイルがありません | 1個のファイル | {count} 個のファイル'
 no_files_copy: まだファイルがありません。
+csv: CSVファイル
 no_collections: コレクションがありません
 create_collection: コレクションを作成する
 no_collections_copy_admin: まだコレクションを作成していません。下のボタンをクリックして新しいコレクションを作成しましょう。
+users: ユーザー
 activity: 操作履歴
 webhooks: Webhook
 field_width: 入力欄幅
 add_a_new_item: 項目の追加
 user_directory: ユーザーディレクトリ
+documentation: ドキュメンテーション
+collection_created: コレクションが作成されました
 modified_on: 修正日時
 sort_field: フィールドの並べ替え
 sort: 並べ替え
 status: ステータス
 toggle_manual_sorting: 手動ソートを有効にする
+errors:
+  ROUTE_NOT_FOUND: 見つかりません
+create_bookmark: ブックマークを作成
 bookmarks: ブックマーク
 back: 戻る
+rotate: 回転
 all_users: すべてのユーザー
 one_item: '1 つのアイテム'
 icon_left: 左側に表示するアイコン
 icon_right: 右側に表示するアイコン
+font: フォント
 color: 色
 advanced_filter: 高度なフィルタ
 operators:
@@ -184,10 +225,30 @@ read: 読取り
 update: 更新
 select_fields: 入力欄の選択
 wysiwyg_options:
+  aligncenter: 中央揃え
+  alignjustify: 両端揃え
+  alignleft: 左揃え
   backcolor: 背景色
+  hr: 水平線
+  link: リンク
+  media: メディアを追加
+  image: 画像を追加
+  copy: コピー
+  paste: ペースト
+  heading: 見出し
+  h1: 見出し 1
+  h2: 見出し 2
+  h3: 見出し 3
+  h4: 見出し 4
+  h5: 見出し 5
+  h6: 見出し6
+  fontselect: フォントを選択
   remove: 削除
   selectall: すべて
   table: テーブル
+  fullscreen: 全画面表示
+  directionality: 方向
+choices: 選択項目
 deselect: 選択解除
 editing_in_batch: 'バッチが {count} 個のアイテムを編集中'
 settings_data_model: データモデル
@@ -209,18 +270,21 @@ singleton_label: シングルオブジェクトに設定する
 fields:
   directus_activity:
     comment: コメント
+    user_agent: ユーザーエージェント
     ip: IPアドレス
   directus_collections:
     icon: アイコン
     note: 備考
     hidden: 非表示
     singleton: シングルトン
+    translations: コレクション名の翻訳
     sort_field: フィールドの並べ替え
   directus_files:
     title: タイトル
     description: 説明
     tags: タグ
     location: 場所
+    type: MIMEタイプ
     filesize: ファイルサイズ
     modified_on: 修正日時
     created_on: 作成日時
@@ -242,9 +306,13 @@ fields:
     language: 言語
     theme: テーマ
     status: ステータス
+    token: トークン
     last_access: 最後にアクセスした日時
   directus_settings:
     project_name: プロジェクト名
+    project_url: プロジェクトの URL
+    project_color: プロジェクトの色
+    project_logo: プロジェクトのロゴ
   directus_fields:
     note: 備考
     hidden: 非表示
@@ -253,8 +321,13 @@ fields:
   directus_roles:
     name: 権限名
     description: 説明
+    ip_access: IP アクセス
+    enforce_tfa: 二段階認証が必要
+no_fields_in_collection: 'まだ「{collection}」にフィールドがありません'
 do_nothing: 何もしない
+save_current_user_role: 現在のユーザーロールを保存
 save_current_datetime: 現在の日付/時刻を保存
+inline: インライン
 comment: コメント
 continue: 続ける
 default: デフォルト
@@ -272,11 +345,14 @@ forgot_password: パスワード忘れ
 hidden: 非表示
 icon: アイコン
 info: 情報
+success: 成功
+warning: 注意
 junction_collection: 中継コレクション
 latency: 待ち時間
 login: ログイン
 my_activity: 操作
 not_authenticated: ' 認証されていません'
+authenticated: 認証済み
 options: オプション
 otp: ワンタイムパスワード
 password: パスワード
@@ -323,6 +399,10 @@ interfaces:
   icon:
     icon: アイコン
     description: ドロップダウンからアイコンを選択
+  notice:
+    notice: 補足
+    description: 入力に関する簡単な補足を表示できます
+    text: 補足の内容を入力してください
   numeric:
     numeric: 数値
   radio-buttons:

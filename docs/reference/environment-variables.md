@@ -20,12 +20,12 @@
 
 | Variable               | Description                                                                                                                                        | Default Value |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `tedious`, or `sqlite3`.                                | --            |
-| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `tedious`.                                                                    | --            |
-| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `tedious`.                                                                    | --            |
-| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `tedious`.                                                                    | --            |
-| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `tedious`.                                                                    | --            |
-| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `tedious`.                                                         | --            |
+| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --            |
+| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
+| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
+| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
+| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
+| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --            |
 | `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --            |
 | `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --            |
 | `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --            |
@@ -47,14 +47,15 @@ All the `DB_POOL_` prefixed options are passed [to `tarn.js`](https://github.com
 
 ## Security
 
-| Variable                         | Description                                                                                      | Default Value |
-| -------------------------------- | ------------------------------------------------------------------------------------------------ | ------------- |
-| `KEY`                            | Unique identifier for the project.                                                               | --            |
-| `SECRET`                         | Secret string for the project.                                                                   | --            |
-| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                     | 15m           |
-| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App. | 7d            |
-| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                      | `false`       |
-| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                            | `lax`         |
+| Variable                         | Description                                                                                                                     | Default Value |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `KEY`                            | Unique identifier for the project.                                                                                              | --            |
+| `SECRET`                         | Secret string for the project.                                                                                                  | --            |
+| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                    | 15m           |
+| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                | 7d            |
+| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                     | `false`       |
+| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                           | `lax`         |
+| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/api/rest/authentication/#request-password-reset) | --            |
 
 ::: tip Cookie Strictness
 
@@ -179,13 +180,13 @@ Based on your configured driver, you must also provide the following configurati
 
 ### S3 (`s3`)
 
-| Variable                      | Description | Default Value |
-| ----------------------------- | ----------- | ------------- |
-| `STORAGE_<LOCATION>_KEY`      | User key    | --            |
-| `STORAGE_<LOCATION>_SECRET`   | User secret | --            |
-| `STORAGE_<LOCATION>_ENDPOINT` | S3 Endpoint | --            |
-| `STORAGE_<LOCATION>_BUCKET`   | S3 Bucket   | --            |
-| `STORAGE_<LOCATION>_REGION`   | S3 Region   | --            |
+| Variable                      	| Description                                 	| Default Value 	|
+|-------------------------------	|---------------------------------------------	|---------------	|
+| `STORAGE_<LOCATION>_KEY`      	| User key                                    	| --            	|
+| `STORAGE_<LOCATION>_SECRET`   	| User secret                                 	| --            	|
+| `STORAGE_<LOCATION>_BUCKET`   	| S3 Bucket                                   	| --            	|
+| `STORAGE_<LOCATION>_REGION`   	| S3 Region                                   	| --            	|
+| `STORAGE_<LOCATION>_ENDPOINT` 	| S3 Endpoint 	| "s3.amazonaws.com"            	|
 
 ### Azure (`azure`)
 
