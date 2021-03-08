@@ -5,7 +5,7 @@ duplicate_field: Monista kenttä
 half_width: Puolileveä
 full_width: Täysleveä
 fill_width: Täysleveä
-field_name_translations: Kentän Nimi Käännökset
+field_name_translations: Kentän nimen käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
 add_field: Lisää kenttä
 role_name: Roolin nimi
@@ -23,9 +23,9 @@ email_examples: 'yllapitaja@example.com, kayttaja@example.com...'
 invite: Kutsu
 emails: Sähköpostit
 connection_excellent: Erinomainen yhteys
-connection_good: Hyvä Yhteys
+connection_good: Hyvä yhteys
 connection_fair: Hyvä yhteys
-connection_poor: Huono Yhteys
+connection_poor: Huono yhteys
 primary: Ensisijainen
 rename_folder: Nimeä kansio uudelleen
 delete_folder: Poista kansio
@@ -92,7 +92,7 @@ field_o2m: O2M-suhde
 field_m2m: M2M-suhde
 field_translations: Käännökset
 item_permissions: Kohteen oikeudet
-field_permissions: Kentän Oikeudet
+field_permissions: Kentän oikeudet
 field_validation: Kentän vahvistus
 field_presets: Kentän esiasetukset
 permissions_for_role: 'Kohteet joita {role} rooli voi {action}.'
@@ -207,7 +207,7 @@ revision_delta_deleted: Poistettu
 revision_delta_reverted: Palautettu
 revision_delta_other: Versio
 revision_delta_by: '{date} käyttäjältä {user}'
-private_user: Yksityinen Käyttäjä
+private_user: Yksityinen käyttäjä
 revision_preview: Version esikatselu
 updates_made: Päivitykset tehty
 leave_comment: Jätä kommentti...
@@ -711,7 +711,7 @@ fields:
     note: Muistiinpano
     hidden: Piilotettu
     singleton: Singleton
-    translation: Kentän Nimi Käännökset
+    translation: Kentän nimen käännökset
     display_template: Pohja
   directus_roles:
     name: Roolin nimi
