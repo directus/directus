@@ -185,7 +185,7 @@ Based on your configured driver, you must also provide the following configurati
 | `STORAGE_<LOCATION>_SECRET`   	| User secret                                 	| --            	|
 | `STORAGE_<LOCATION>_BUCKET`   	| S3 Bucket                                   	| --            	|
 | `STORAGE_<LOCATION>_REGION`   	| S3 Region                                   	| --            	|
-| `STORAGE_<LOCATION>_ENDPOINT` 	| S3 Endpoint (only when using Digital Ocean) 	| --            	|
+| `STORAGE_<LOCATION>_ENDPOINT` 	| S3 Endpoint 	| "s3.amazonaws.com"            	|
 
 ### Azure (`azure`)
 
