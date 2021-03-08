@@ -166,11 +166,13 @@ router.post(
 
 		try {
 			await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
-		} catch {
-			// We don't want to give away what email addresses exist, so we'll always return a 200
-			// from this endpoint
-		} finally {
 			return next();
+		} catch (err) {
+			if (err instanceof InvalidPayloadException) {
+				throw err;
+			} else {
+				return next();
+			}
 		}
 	}),
 	respond
