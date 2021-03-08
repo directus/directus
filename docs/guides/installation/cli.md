@@ -23,6 +23,12 @@ Redshift** (PostgreSQL), and **MariaDB**.
 
 :::
 
+::: tip Apple Silicon
+
+When installing Directus on an Apple-made ARM CPU, make sure you have `libvps` installed. See [Apple M1](https://sharp.pixelplumbing.com/install#apple-m1).
+
+::
+
 ## 2. Create a Project
 
 Navigate to the directory where you wish to create a new Directus project. The new project and directory will be created
