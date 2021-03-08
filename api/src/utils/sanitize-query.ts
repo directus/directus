@@ -144,6 +144,14 @@ function sanitizeMeta(rawMeta: any) {
 function sanitizeDeep(deep: Record<string, any>, accountability: Accountability | null) {
 	const result: Record<string, any> = {};
 
+	if (typeof deep === 'string') {
+		try {
+			deep = JSON.parse(deep);
+		} catch {
+			logger.warn('Invalid value passed for deep query parameter.');
+		}
+	}
+
 	parse(deep);
 
 	return result;
