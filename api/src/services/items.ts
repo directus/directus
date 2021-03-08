@@ -23,6 +23,7 @@ import { AuthorizationService } from './authorization';
 
 import { pick, clone, cloneDeep, merge } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
+import { translateKnexError } from '../exceptions/database/translate';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 
 export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
@@ -96,7 +97,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				// string / uuid primary
 				let primaryKey = payloadWithoutAlias[primaryKeyField];
 
-				await trx.insert(payloadWithoutAlias).into(this.collection);
+				try {
+					await trx.insert(payloadWithoutAlias).into(this.collection);
+				} catch (err) {
+					throw translateKnexError(err);
+				}
 
 				// Auto-incremented id
 				if (!primaryKey) {

@@ -44,8 +44,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 			payload.errors.push({
 				message: err.message,
 				extensions: {
-					...err.extensions,
 					code: err.code,
+					...err.extensions,
 				},
 			});
 		} else {
