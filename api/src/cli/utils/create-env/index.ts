@@ -9,6 +9,8 @@ import path from 'path';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
+const fchmod = promisify(fs.fchmod);
+const open = promisify(fs.open);
 
 const liquidEngine = new Liquid({
 	extname: '.liquid',
@@ -46,4 +48,5 @@ export default async function createEnv(client: keyof typeof drivers, credential
 	const templateString = await readFile(path.join(__dirname, 'env-stub.liquid'), 'utf8');
 	const text = await liquidEngine.parseAndRender(templateString, configAsStrings);
 	await writeFile(path.join(directory, '.env'), text);
+	await fchmod(await open(path.join(directory, '.env'), 'r+'), 0o640);
 }
