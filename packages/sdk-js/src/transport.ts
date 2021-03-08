@@ -18,15 +18,18 @@ export type TransportResponse<T extends Item> = {
 
 export type TransportMethods = 'get' | 'delete' | 'head' | 'options' | 'post' | 'put' | 'patch';
 
+export type TransportOptions = {
+	params?: any;
+};
+
 export interface ITransport {
-	token: string | null | undefined;
-	get<T = any>(path: string): Promise<TransportResponse<T>>;
-	delete<T = any>(path: string): Promise<TransportResponse<T>>;
-	head<T = any>(path: string): Promise<TransportResponse<T>>;
-	options<T = any>(path: string): Promise<TransportResponse<T>>;
-	post<T = any, P = any>(path: string, data?: P): Promise<TransportResponse<T>>;
-	put<T = any, P = any>(path: string, data?: P): Promise<TransportResponse<T>>;
-	patch<T = any, P = any>(path: string, data?: P): Promise<TransportResponse<T>>;
+	get<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
+	delete<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
+	head<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
+	options<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
+	post<T = any, P = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T>>;
+	put<T = any, P = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T>>;
+	patch<T = any, P = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T>>;
 }
 
 export class TransportError<T = any> extends Error {

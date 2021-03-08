@@ -1,28 +1,18 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { MemoryStorage } from '../../base/storage/memory';
+import { IStorage } from '../../storage';
 import { ITransport, TransportMethods, TransportResponse, TransportError } from '../../transport';
 
 /**
  * Axios transport implementation
  */
 export class AxiosTransport implements ITransport {
-	// change to callbacks
-
-	private _token?: string | null;
-
-	get token(): string | null | undefined {
-		return this._token;
-	}
-
-	set token(value: string | null | undefined) {
-		this._token = value;
-	}
-
-	// end change to callbacks
+	private storage: IStorage;
 
 	public axios: AxiosInstance;
 
-	constructor(url: string, token: string | null = null) {
-		this._token = token;
+	constructor(url: string, storage?: IStorage) {
+		this.storage = storage || new MemoryStorage();
 		this.axios = axios.create({
 			baseURL: url,
 		});
@@ -97,7 +87,7 @@ export class AxiosTransport implements ITransport {
 	}
 
 	private createRequestConfig(config: AxiosRequestConfig): AxiosRequestConfig {
-		let token = this._token;
+		let token = this.storage.auth_token;
 		if (!token) {
 			return config;
 		}

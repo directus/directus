@@ -1,30 +1,31 @@
-import { IStorage, StoredValue } from '../../storage';
+import { BaseStorage } from './base';
 
-export class MemoryStorage implements IStorage {
+export class MemoryStorage extends BaseStorage {
 	private prefix: string;
-	private values: Record<string, any>;
+	private values: Record<string, string>;
 
 	constructor(prefix: string = '') {
+		super();
 		this.values = {};
 		this.prefix = prefix;
 	}
 
-	async get<T extends StoredValue>(key: string): Promise<T | undefined> {
-		const value = this.values[this.key(key)];
-		if (value) {
-			return JSON.parse(value);
-		}
-		return value;
-	}
-
-	async set<T extends StoredValue>(key: string, value: T): Promise<T> {
-		this.values[this.key(key)] = JSON.stringify(value);
-		return value;
-	}
-
-	async delete<T extends StoredValue>(key: string): Promise<T | undefined> {
+	get(key: string): string | null {
 		const k = this.key(key);
-		const value: T | undefined = await this.get(key);
+		if (k in this.values) {
+			return this.values[k]!;
+		}
+		return null;
+	}
+
+	set(key: string, value: string): string {
+		this.values[this.key(key)] = value;
+		return value;
+	}
+
+	delete(key: string): string | null {
+		const k = this.key(key);
+		const value = this.get(key);
 		if (k in this.values) {
 			delete this.values[k];
 		}

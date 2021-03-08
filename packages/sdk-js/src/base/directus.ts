@@ -15,7 +15,7 @@ import {
 	SettingsHandler,
 	UsersHandler,
 	UtilsHandler,
-} from '../handlers';
+} from './handlers';
 import { Item } from '../items';
 import { ITransport } from '../transport';
 import { ItemsHandler } from './items';
@@ -41,7 +41,7 @@ export class Directus<T extends DirectusFields = DirectusFields> implements IDir
 	private _server?: ServerHandler<Pick<T, 'server'>>;
 	private _settings?: SettingsHandler<Pick<T, 'settings'>>;
 	private _users?: UsersHandler<Pick<T, 'users'>>;
-	private _utils?: UtilsHandler<Pick<T, 'utils'>>;
+	private _utils?: UtilsHandler;
 	private _items: {
 		[collection: string]: ItemsHandler<any>;
 	};
@@ -112,8 +112,8 @@ export class Directus<T extends DirectusFields = DirectusFields> implements IDir
 		return this._users || (this._users = new UsersHandler<Pick<T, 'users'>>(this.transport));
 	}
 
-	get utils(): UtilsHandler<Pick<T, 'utils'>> {
-		return this._utils || (this._utils = new UtilsHandler<Pick<T, 'utils'>>(this.transport));
+	get utils(): UtilsHandler {
+		return this._utils || (this._utils = new UtilsHandler(this.transport));
 	}
 
 	items<T extends Item>(collection: string): ItemsHandler<T> {

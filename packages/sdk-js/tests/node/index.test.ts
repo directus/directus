@@ -21,7 +21,7 @@ import {
 	SettingsHandler,
 	UsersHandler,
 	UtilsHandler,
-} from '../../src/handlers';
+} from '../../src/base/handlers';
 
 describe('node sdk', function () {
 	const sdk = new Directus('http://example.com');

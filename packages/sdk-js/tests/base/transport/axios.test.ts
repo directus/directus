@@ -3,6 +3,7 @@
  */
 
 import nock from 'nock';
+import { MemoryStorage } from '../../../src';
 
 import { AxiosTransport } from '../../../src/base/transport/axios-transport';
 import { TransportResponse, TransportError } from '../../../src/transport';
@@ -119,14 +120,6 @@ describe('axios transport', function () {
 		}
 	});
 
-	it('can set and get token', async function () {
-		const transport = new AxiosTransport(URL);
-		expect(transport.token).toBeNull();
-
-		transport.token = '1234';
-		expect(transport.token).toBe('1234');
-	});
-
 	it("undefined or unset token doesn't set auth header", async function () {
 		nock(URL)
 			.get('/auth')
@@ -139,19 +132,17 @@ describe('axios transport', function () {
 				};
 			});
 
-		const transport = new AxiosTransport(URL);
+		const storage = new MemoryStorage();
+		const transport = new AxiosTransport(URL, storage);
 
-		transport.token = 'token_value';
+		storage.auth_token = 'token_value';
+
 		const response1 = await transport.get('/auth');
 		expect(response1.data?.auth).toBe('Bearer token_value');
 
-		transport.token = null;
+		storage.auth_token = null;
 		const response2 = await transport.get('/auth');
 		expect(response2.data?.auth).toBe(false);
-
-		transport.token = undefined;
-		const response3 = await transport.get('/auth');
-		expect(response3.data?.auth).toBe(false);
 	});
 
 	it('handles token even if it has Bearer already', async function () {
@@ -166,17 +157,18 @@ describe('axios transport', function () {
 				};
 			});
 
-		const transport = new AxiosTransport(URL);
+		const storage = new MemoryStorage();
+		const transport = new AxiosTransport(URL, storage);
 
-		transport.token = 'Bearer token_value';
+		storage.auth_token = 'Bearer token_value';
 		const response1 = await transport.get('/auth');
 		expect(response1.data?.auth).toBe('Bearer token_value');
 
-		transport.token = 'xyz';
+		storage.auth_token = 'xyz';
 		const response2 = await transport.get('/auth');
 		expect(response2.data?.auth).toBe('Bearer xyz');
 
-		transport.token = null;
+		storage.auth_token = null;
 		const response3 = await transport.get('/auth');
 		expect(response3.data?.auth).toBe(false);
 	});

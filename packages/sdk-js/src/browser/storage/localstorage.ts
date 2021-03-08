@@ -1,32 +1,31 @@
-import { IStorage, StoredValue } from '../../storage';
+import { BaseStorage } from '../../base/storage/base';
 
-export class LocalStorage implements IStorage {
+export class LocalStorage extends BaseStorage {
 	private prefix: string;
-	private values: Record<string, any>;
 
 	constructor(prefix: string = '') {
-		this.values = {};
+		super();
 		this.prefix = prefix;
 	}
 
-	async get<T extends StoredValue>(key: string): Promise<T | undefined> {
-		const value = this.values[this.key(key)];
-		if (value) {
-			return JSON.parse(value);
+	get(key: string): string | null {
+		const value = localStorage.getItem(this.key(key));
+		if (value !== null) {
+			return value;
 		}
+		return null;
+	}
+
+	set(key: string, value: string): string {
+		localStorage.setItem(this.key(key), value);
 		return value;
 	}
 
-	async set<T extends StoredValue>(key: string, value: T): Promise<T> {
-		this.values[this.key(key)] = JSON.stringify(value);
-		return value;
-	}
-
-	async delete<T extends StoredValue>(key: string): Promise<T | undefined> {
+	delete(key: string): string | null {
 		const k = this.key(key);
-		const value: T | undefined = await this.get(key);
-		if (k in this.values) {
-			delete this.values[k];
+		const value = this.get(k);
+		if (!!value) {
+			localStorage.removeItem(k);
 		}
 		return value;
 	}

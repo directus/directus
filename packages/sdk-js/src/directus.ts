@@ -15,10 +15,11 @@ import {
 	ServerHandler,
 	SettingsHandler,
 	UsersHandler,
-	UtilsHandler,
-} from './handlers';
+} from './base/handlers';
+
 import { Item } from './items';
 import { ITransport } from './transport';
+import { UtilsHandler } from './base/handlers/utils';
 
 export type DirectusTypes = {
 	activity: DefaultFields;
@@ -34,7 +35,6 @@ export type DirectusTypes = {
 	server: DefaultFields;
 	settings: DefaultFields;
 	users: DefaultFields;
-	utils: DefaultFields;
 };
 
 export interface IDirectus<T extends DirectusTypes = DirectusTypes> {
@@ -54,7 +54,7 @@ export interface IDirectus<T extends DirectusTypes = DirectusTypes> {
 	readonly server: ServerHandler<Pick<T, 'server'>>;
 	readonly settings: SettingsHandler<Pick<T, 'settings'>>;
 	readonly users: UsersHandler<Pick<T, 'users'>>;
-	readonly utils: UtilsHandler<Pick<T, 'utils'>>;
+	readonly utils: UtilsHandler;
 
 	items<T extends Item>(collection: string): ItemsHandler<T>;
 }
