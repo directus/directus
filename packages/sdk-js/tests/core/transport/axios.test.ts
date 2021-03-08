@@ -4,14 +4,14 @@
 
 import nock from 'nock';
 
-import { AxiosTransport } from '../../../src/core/transport/axios';
-import { Response, TransportError } from '../../../src/shared/transport';
+import { AxiosTransport } from '../../../src/base/transport/axios-transport';
+import { TransportResponse, TransportError } from '../../../src/transport';
 
 describe('axios transport', function () {
 	const URL = 'http://localhost';
 	nock.disableNetConnect();
 
-	function expectResponse<T>(response: Response<T>, expected: Partial<Response<T>>) {
+	function expectResponse<T>(response: TransportResponse<T>, expected: Partial<TransportResponse<T>>) {
 		if (expected.status) {
 			expect(response.status).toBe(expected.status);
 		}
@@ -19,7 +19,7 @@ describe('axios transport', function () {
 			expect(response.statusText).toBe(expected.statusText);
 		}
 		if (expected.data) {
-			expect(response.data).toMatchObject<T>(expected.data);
+			expect(response.data).toMatchObject<T | T[]>(expected.data);
 		}
 		if (expected.headers) {
 			expect(response.headers).toMatchObject(expected.headers);

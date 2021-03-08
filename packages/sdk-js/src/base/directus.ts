@@ -1,5 +1,5 @@
-import { IAuth } from '../shared/auth';
-import { DirectusTypes as DirectusFields, IDirectus } from '../shared/directus';
+import { IAuth } from '../auth';
+import { DirectusTypes as DirectusFields, IDirectus } from '../directus';
 import {
 	ActivityHandler,
 	CollectionsHandler,
@@ -15,9 +15,9 @@ import {
 	SettingsHandler,
 	UsersHandler,
 	UtilsHandler,
-} from '../shared/handlers';
-import { Item } from '../shared/items';
-import { ITransport } from '../shared/transport';
+} from '../handlers';
+import { Item } from '../items';
+import { ITransport } from '../transport';
 import { ItemsHandler } from './items';
 
 export type DirectusOptions = {
@@ -120,5 +120,3 @@ export class Directus<T extends DirectusFields = DirectusFields> implements IDir
 		return this._items[collection] || (this._items[collection] = new ItemsHandler<T>(collection, this.transport));
 	}
 }
-
-export default Directus;

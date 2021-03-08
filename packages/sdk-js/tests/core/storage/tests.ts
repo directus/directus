@@ -1,4 +1,4 @@
-import { IStorage } from '../../../src/shared/storage';
+import { IStorage } from '../../../src/storage';
 
 export function createStorageTests(createStorage: () => IStorage) {
 	return function () {

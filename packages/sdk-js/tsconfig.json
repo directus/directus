@@ -1,9 +1,10 @@
 {
 	"compilerOptions": {
-		"target": "es5",
-		"lib": ["es5"],
-		"declaration": true,
-		"declarationMap": true,
+		"target": "ES2015",
+		"module": "ES2015",
+		"moduleResolution": "node",
+		"declaration": false,
+		"declarationMap": false,
 		"strict": true,
 		"noFallthroughCasesInSwitch": true,
 		"esModuleInterop": true,
@@ -18,11 +19,12 @@
 		"strictFunctionTypes": true,
 		"strictBindCallApply": true,
 		"strictPropertyInitialization": true,
-		"resolveJsonModule": true,
+		"resolveJsonModule": false,
 		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": false,
+		"forceConsistentCasingInFileNames": true,
+		"allowSyntheticDefaultImports": true,
+		"isolatedModules": true,
 		"rootDir": "./src",
 		"outDir": "./dist"
-	},
-	"include": ["./src/**/*.ts"]
+	}
 }

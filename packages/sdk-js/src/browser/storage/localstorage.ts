@@ -1,6 +1,6 @@
-import { IStorage, StoredValue } from '../../shared/storage';
+import { IStorage, StoredValue } from '../../storage';
 
-export class MemoryStorage implements IStorage {
+export class LocalStorage implements IStorage {
 	private prefix: string;
 	private values: Record<string, any>;
 

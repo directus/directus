@@ -1,4 +1,4 @@
-import { ItemsHandler } from '../core/items';
+import { ItemsHandler } from './base/items';
 import { IAuth } from './auth';
 import {
 	ActivityHandler,

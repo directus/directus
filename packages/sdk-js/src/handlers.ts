@@ -1,4 +1,4 @@
-import { ItemsHandler } from '../core/items';
+import { ItemsHandler } from './base/items';
 import { ITransport } from './transport';
 
 /**

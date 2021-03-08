@@ -2,10 +2,10 @@
  * @jest-environment node
  */
 
-import { Auth } from '../../src/core/auth';
-import { ItemsHandler } from '../../src/core/items';
-import { AxiosTransport } from '../../src/core/transport/axios';
-import Directus from '../../src/node';
+import { Auth } from '../../src/base/auth';
+import { ItemsHandler } from '../../src/base/items';
+import { AxiosTransport } from '../../src/base/transport/axios-transport';
+import { Node as Directus } from '../../src/node';
 import {
 	ActivityHandler,
 	CollectionsHandler,
@@ -21,7 +21,7 @@ import {
 	SettingsHandler,
 	UsersHandler,
 	UtilsHandler,
-} from '../../src/shared/handlers';
+} from '../../src/handlers';
 
 describe('node sdk', function () {
 	const sdk = new Directus('http://example.com');

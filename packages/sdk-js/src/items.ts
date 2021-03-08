@@ -1,6 +1,17 @@
 export type Field = string;
 export type ID = string | number;
+
 export type Item = Record<string, any>;
+export type Items<T extends Item> = {
+	data: T[];
+	metadata?: ItemMetadata;
+};
+
+export type ItemMetadata = {
+	total_count?: number;
+	filter_count?: number;
+};
+
 export type Payload = Record<string, any>;
 
 export type PartialItem<T> = {
@@ -12,23 +23,26 @@ export enum Meta {
 	FILTER_COUNT = 'filter_count',
 }
 
-export type Response<T> = {
+export type ItemResponse<T> = {
 	data: T | null;
 	meta?: Record<Meta, number>;
 };
 
-export type Query<T> = {
+export type QueryOne<T> = {
 	fields?: string | string[];
-	sort?: string;
+	search?: string;
+	deep?: Record<string, QueryMany<T>>;
+	export?: 'json' | 'csv';
 	filter?: Filter<T>;
+};
+
+export type QueryMany<T> = QueryOne<T> & {
+	sort?: string;
 	limit?: number;
 	offset?: number;
 	page?: number;
 	single?: boolean;
-	meta?: Meta[];
-	search?: string;
-	export?: 'json' | 'csv';
-	deep?: Record<string, Query<T>>;
+	meta?: keyof ItemMetadata;
 };
 
 export type Filter<T> = {
@@ -53,9 +67,9 @@ export type FilterOperator =
 
 export interface IItems<T extends Item> {
 	// TODO: add fields
-	readOne(id: ID): Promise<T>;
-	readMany(ids: ID[]): Promise<T[]>;
-	readQuery(query: Query<T>): Promise<T[]>;
+	read(query: QueryMany<T>): Promise<T[]>;
+	readOne(id: ID, query: QueryOne<T>): Promise<T>;
+	readMany(ids: ID[], query: QueryOne<T>): Promise<T[]>;
 
 	// TODO: add fields
 	createOne(item: PartialItem<T>): Promise<T>;

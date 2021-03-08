@@ -3,10 +3,12 @@ node_modules
 /_*
 /coverage
 
-/dist
+/dist*
 /types
 /browser
 /node
+/web
 
 /src/**/*.js
 
+*.tgz

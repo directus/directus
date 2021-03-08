@@ -1,6 +1,6 @@
 //import { Query, Payload, Response } from '../types';
-import { ITransport } from '../shared/transport';
-import { IItems, Item, ID, Query } from '../shared/items';
+import { ITransport } from '../transport';
+import { IItems, Item, ID, QueryOne, QueryMany } from '../items';
 
 export class ItemsHandler<T extends Item> implements IItems<T> {
 	private transport: ITransport;
@@ -11,16 +11,16 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 		this.endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
 	}
 
-	async readOne(id: ID): Promise<T> {
+	async read(_query: QueryMany<T>): Promise<T[]> {
+		throw new Error('Not implemented.');
+	}
+
+	async readOne(id: ID, _query?: QueryOne<T>): Promise<T> {
 		const response = await this.transport.get(`${this.endpoint}/${id}`);
 		return response.data;
 	}
 
-	async readMany(_ids: ID[]): Promise<T[]> {
-		throw new Error('Not implemented.');
-	}
-
-	async readQuery(_query: Query<T>): Promise<T[]> {
+	async readMany(_ids: ID[], _query?: QueryOne<T>): Promise<T[]> {
 		throw new Error('Not implemented.');
 	}
 
@@ -35,8 +35,6 @@ export class ItemsHandler<T extends Item> implements IItems<T> {
 	async updateOne(_id: ID, _item: Partial<T>): Promise<T> {
 		throw new Error('Not implemented.');
 	}
-
-	//updateMany(id: PrimaryKey[], item: Partial<T>): Promise<T>;
 
 	async deleteOne(_id: ID): Promise<void> {
 		throw new Error('Not implemented.');

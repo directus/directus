@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { MemoryStorage } from '../../../src/core/storage';
+import { MemoryStorage } from '../../../src/base/storage';
 import { createStorageTests } from './tests';
 
 describe(

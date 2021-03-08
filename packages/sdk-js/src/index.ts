@@ -1,3 +1,10 @@
-export * from './shared/auth';
-export * from './shared/directus';
-export * from './shared/transport';
+// Interfaces
+export * from './auth';
+export * from './directus';
+export * from './handlers';
+export * from './items';
+export * from './storage';
+export * from './transport';
+
+// Implementations
+export * from './base';

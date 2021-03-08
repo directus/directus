@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ITransport, Methods, Response, TransportError } from '../../shared/transport';
+import { ITransport, TransportMethods, TransportResponse, TransportError } from '../../transport';
 
 /**
  * Axios transport implementation
@@ -21,25 +21,29 @@ export class AxiosTransport implements ITransport {
 
 	public axios: AxiosInstance;
 
-	constructor(url: string) {
-		this._token = null;
+	constructor(url: string, token: string | null = null) {
+		this._token = token;
 		this.axios = axios.create({
 			baseURL: url,
 		});
 		this.axios.interceptors.request.use(this.createRequestConfig.bind(this));
 	}
 
-	private async request<T = any>(method: 'get', path: string): Promise<Response<T>>;
-	private async request<T = any>(method: 'delete', path: string): Promise<Response<T>>;
-	private async request<T = any>(method: 'head', path: string): Promise<Response<T>>;
-	private async request<T = any>(method: 'options', path: string): Promise<Response<T>>;
-	private async request<T = any, D = any>(method: 'post', path: string, data?: D): Promise<Response<T>>;
-	private async request<T = any, D = any>(method: 'put', path: string, data?: D): Promise<Response<T>>;
-	private async request<T = any, D = any>(method: 'patch', path: string, data?: D): Promise<Response<T>>;
-	private async request<M extends Methods, T = any>(method: M, path: string, ...args: any): Promise<Response<T>> {
+	private async request<T = any>(method: 'get', path: string): Promise<TransportResponse<T>>;
+	private async request<T = any>(method: 'delete', path: string): Promise<TransportResponse<T>>;
+	private async request<T = any>(method: 'head', path: string): Promise<TransportResponse<T>>;
+	private async request<T = any>(method: 'options', path: string): Promise<TransportResponse<T>>;
+	private async request<T = any, D = any>(method: 'post', path: string, data?: D): Promise<TransportResponse<T>>;
+	private async request<T = any, D = any>(method: 'put', path: string, data?: D): Promise<TransportResponse<T>>;
+	private async request<T = any, D = any>(method: 'patch', path: string, data?: D): Promise<TransportResponse<T>>;
+	private async request<M extends TransportMethods, T = any>(
+		method: M,
+		path: string,
+		...args: any
+	): Promise<TransportResponse<T>> {
 		try {
 			const make = this.axios[method] as AxiosInstance[M];
-			const response = await make<Response<T>>(path, ...args);
+			const response = await make<TransportResponse<T>>(path, ...args);
 			const { data, meta, errors } = response.data;
 			return {
 				status: response.status,
@@ -64,31 +68,31 @@ export class AxiosTransport implements ITransport {
 		}
 	}
 
-	async get<T = any>(path: string): Promise<Response<T>> {
+	async get<T = any>(path: string): Promise<TransportResponse<T>> {
 		return await this.request('get', path);
 	}
 
-	async delete<T = any>(path: string): Promise<Response<T>> {
+	async delete<T = any>(path: string): Promise<TransportResponse<T>> {
 		return await this.request('delete', path);
 	}
 
-	async head<T = any>(path: string): Promise<Response<T>> {
+	async head<T = any>(path: string): Promise<TransportResponse<T>> {
 		return await this.request('head', path);
 	}
 
-	async options<T = any>(path: string): Promise<Response<T>> {
+	async options<T = any>(path: string): Promise<TransportResponse<T>> {
 		return await this.request('options', path);
 	}
 
-	async put<T = any, D = any>(path: string, data?: D): Promise<Response<T>> {
+	async put<T = any, D = any>(path: string, data?: D): Promise<TransportResponse<T>> {
 		return await this.request('put', path, data);
 	}
 
-	async post<T = any, D = any>(path: string, data?: D): Promise<Response<T>> {
+	async post<T = any, D = any>(path: string, data?: D): Promise<TransportResponse<T>> {
 		return await this.request('post', path, data);
 	}
 
-	async patch<T = any, D = any>(path: string, data?: D): Promise<Response<T>> {
+	async patch<T = any, D = any>(path: string, data?: D): Promise<TransportResponse<T>> {
 		return await this.request('patch', path, data);
 	}
 

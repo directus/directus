@@ -1,5 +1,5 @@
-import { AuthData, AuthResult, IAuth } from '../shared/auth';
-import { ITransport } from '../shared/transport';
+import { AuthData, AuthResult, IAuth } from '../auth';
+import { ITransport } from '../transport';
 
 export class Auth implements IAuth {
 	private transport: ITransport;
