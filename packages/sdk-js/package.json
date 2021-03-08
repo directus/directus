@@ -1,7 +1,7 @@
 {
-	"name": "directus-js-test",
+	"name": "@directus/sdk-js",
 	"version": "9.0.0-rc.43",
-	"description": "The unofficial Directus SDK for use in JavaScript!",
+	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/directus/directus.git"
