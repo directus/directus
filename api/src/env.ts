@@ -87,7 +87,7 @@ env = processValues(env);
 export default env;
 
 function getEnv() {
-	const configPath = process.env.CONFIG_PATH || defaults.CONFIG_PATH;
+	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
 
 	if (fs.existsSync(configPath) === false) return {};
 
