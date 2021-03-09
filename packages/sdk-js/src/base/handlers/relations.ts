@@ -2,15 +2,13 @@
  * Relations handler
  */
 
-import { DefaultFields } from './default';
-import { ItemsHandler } from '..';
+import { ItemsHandler } from '../items';
 import { ITransport } from '../../transport';
+import { RelationType } from '../../types';
 
-export type Relations<T extends object = DefaultFields> = {
-	// Relations Fields
-} & T;
+export type RelationItem<T extends object = {}> = RelationType & T;
 
-export class RelationsHandler<T extends object> extends ItemsHandler<Relations<T>> {
+export class RelationsHandler<T extends object> extends ItemsHandler<RelationItem<T>> {
 	constructor(transport: ITransport) {
 		super('directus_relations', transport);
 	}

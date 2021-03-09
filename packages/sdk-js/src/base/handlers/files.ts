@@ -2,15 +2,13 @@
  * Files handler
  */
 
-import { DefaultFields } from './default';
-import { ItemsHandler } from '..';
+import { ItemsHandler } from '../items';
 import { ITransport } from '../../transport';
+import { FileType } from '../../types';
 
-export type Files<T extends object = DefaultFields> = {
-	// Files Fields
-} & T;
+export type FileItem<T extends object = {}> = FileType & T;
 
-export class FilesHandler<T extends object> extends ItemsHandler<Files<T>> {
+export class FilesHandler<T extends object> extends ItemsHandler<FileItem<T>> {
 	constructor(transport: ITransport) {
 		super('directus_files', transport);
 	}

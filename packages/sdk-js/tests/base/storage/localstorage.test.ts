@@ -2,8 +2,8 @@
  * @jest-environment jest-environment-jsdom-global
  */
 
-import { LocalStorage } from '../../../src/browser/storage';
-import { createStorageTests } from '../../base/storage/tests';
+import { LocalStorage } from '../../../src/base/storage';
+import { createStorageTests } from './tests';
 
 describe(
 	'localstorage storage',

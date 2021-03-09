@@ -2,15 +2,13 @@
  * Users handler
  */
 
-import { DefaultFields } from './default';
-import { ItemsHandler } from '..';
+import { ItemsHandler } from '../items';
 import { ITransport } from '../../transport';
+import { UserType } from '../../types';
 
-export type Users<T extends object = DefaultFields> = {
-	// Users Fields
-} & T;
+export type UserItem<T extends object = {}> = UserType & T;
 
-export class UsersHandler<T extends object> extends ItemsHandler<Users<T>> {
+export class UsersHandler<T extends object> extends ItemsHandler<UserItem<T>> {
 	constructor(transport: ITransport) {
 		super('directus_users', transport);
 	}

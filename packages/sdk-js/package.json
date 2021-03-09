@@ -6,12 +6,12 @@
 		"type": "git",
 		"url": "https://github.com/directus/directus.git"
 	},
-	"main": "./node/index.js",
-	"module": "./browser/esm.js",
-	"unpkg": "./browser/esm.js",
-	"types": "./browser/index.d.ts",
+	"main": "./dist/index.js",
+	"module": "./dist/sdk.esm.js",
+	"unpkg": "./dist/sdk.esm.js",
+	"types": "./dist/index.d.ts",
 	"exports": {
-		"./": "./node"
+		"./": "./dist"
 	},
 	"files": [
 		"node",
@@ -21,8 +21,8 @@
 		"prebuild": "yon run cleanup",
 		"build": "run-p build:*",
 		"build:targets": "rollup -c",
-		"build:types-node": "tsc --project ./tsconfig.node.types.json",
-		"build:types-browser": "tsc --project ./tsconfig.browser.types.json",
+		"build:node": "tsc --project ./tsconfig.json",
+		"build:types": "tsc --project ./tsconfig.types.json",
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
 		"cleanup:types": "rimraf ./types",

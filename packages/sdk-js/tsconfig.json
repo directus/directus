@@ -1,10 +1,11 @@
 {
 	"compilerOptions": {
 		"target": "ES2015",
-		"module": "ES2015",
+		"lib": ["ES2015", "DOM"],
+		"module": "CommonJS",
 		"moduleResolution": "node",
-		"declaration": false,
-		"declarationMap": false,
+		"declaration": true,
+		"declarationMap": true,
 		"strict": true,
 		"noFallthroughCasesInSwitch": true,
 		"esModuleInterop": true,
@@ -26,5 +27,6 @@
 		"isolatedModules": true,
 		"rootDir": "./src",
 		"outDir": "./dist"
-	}
+	},
+	"include": ["./src/**/*.ts"]
 }

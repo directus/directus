@@ -3,7 +3,6 @@ import { IAuth } from './auth';
 import {
 	ActivityHandler,
 	CollectionsHandler,
-	DefaultFields,
 	FieldsHandler,
 	FilesHandler,
 	FoldersHandler,
@@ -22,19 +21,18 @@ import { ITransport } from './transport';
 import { UtilsHandler } from './base/handlers/utils';
 
 export type DirectusTypes = {
-	activity: DefaultFields;
-	collections: DefaultFields;
-	fields: DefaultFields;
-	files: DefaultFields;
-	folders: DefaultFields;
-	permissions: DefaultFields;
-	presets: DefaultFields;
-	relations: DefaultFields;
-	revisions: DefaultFields;
-	roles: DefaultFields;
-	server: DefaultFields;
-	settings: DefaultFields;
-	users: DefaultFields;
+	activity: {};
+	collections: {};
+	fields: {};
+	files: {};
+	folders: {};
+	permissions: {};
+	presets: {};
+	relations: {};
+	revisions: {};
+	roles: {};
+	settings: {};
+	users: {};
 };
 
 export interface IDirectus<T extends DirectusTypes = DirectusTypes> {
@@ -51,9 +49,9 @@ export interface IDirectus<T extends DirectusTypes = DirectusTypes> {
 	readonly relations: RelationsHandler<Pick<T, 'relations'>>;
 	readonly revisions: RevisionsHandler<Pick<T, 'revisions'>>;
 	readonly roles: RolesHandler<Pick<T, 'roles'>>;
-	readonly server: ServerHandler<Pick<T, 'server'>>;
 	readonly settings: SettingsHandler<Pick<T, 'settings'>>;
 	readonly users: UsersHandler<Pick<T, 'users'>>;
+	readonly server: ServerHandler;
 	readonly utils: UtilsHandler;
 
 	items<T extends Item>(collection: string): ItemsHandler<T>;

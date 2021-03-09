@@ -1,8 +1,0 @@
-{
-	"extends": "./tsconfig.json",
-	"compilerOptions": {
-		"lib": ["ES2015", "DOM"],
-		"outDir": "./dist/browser"
-	},
-	"include": ["./src/*.ts", "./src/base/**/*.ts", "./src/browser/**/*.ts"]
-}

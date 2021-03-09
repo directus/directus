@@ -5,7 +5,7 @@
 import { Auth } from '../../src/base/auth';
 import { ItemsHandler } from '../../src/base/items';
 import { AxiosTransport } from '../../src/base/transport/axios-transport';
-import { Node as Directus } from '../../src/node';
+import { Directus } from '../../src/base';
 import {
 	ActivityHandler,
 	CollectionsHandler,

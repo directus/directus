@@ -2,8 +2,8 @@
  * Utils handler
  */
 
-import { ID } from '../../items';
 import { ITransport } from '../../transport';
+import { ID } from '../../types';
 
 export class UtilsHandler {
 	private transport: ITransport;

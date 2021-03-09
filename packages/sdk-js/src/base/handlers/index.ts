@@ -1,5 +1,3 @@
-export * from './default';
-
 export * from './activity';
 export * from './collections';
 export * from './fields';

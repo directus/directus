@@ -1,6 +1,6 @@
-//import { Query, Payload, Response } from '../types';
 import { ITransport } from '../transport';
-import { IItems, Item, ID, QueryOne, QueryMany } from '../items';
+import { IItems, Item, QueryOne, QueryMany } from '../items';
+import { ID } from '../types';
 
 export class ItemsHandler<T extends Item> implements IItems<T> {
 	private transport: ITransport;

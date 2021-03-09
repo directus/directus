@@ -2,15 +2,13 @@
  * Roles handler
  */
 
-import { DefaultFields } from './default';
-import { ItemsHandler } from '..';
+import { ItemsHandler } from '../items';
 import { ITransport } from '../../transport';
+import { RoleType } from '../../types';
 
-export type Roles<T extends object = DefaultFields> = {
-	// Roles Fields
-} & T;
+export type RoleItem<T extends object = {}> = RoleType & T;
 
-export class RolesHandler<T extends object> extends ItemsHandler<Roles<T>> {
+export class RolesHandler<T extends object> extends ItemsHandler<RoleItem<T>> {
 	constructor(transport: ITransport) {
 		super('directus_roles', transport);
 	}

@@ -1,5 +1,6 @@
+import { ID } from './types';
+
 export type Field = string;
-export type ID = string | number;
 
 export type Item = Record<string, any>;
 export type Items<T extends Item> = {

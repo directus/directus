@@ -2,15 +2,13 @@
  * Revisions handler
  */
 
-import { DefaultFields } from './default';
-import { ItemsHandler } from '..';
+import { ItemsHandler } from '../items';
 import { ITransport } from '../../transport';
+import { RevisionType } from '../../types';
 
-export type Revisions<T extends object = DefaultFields> = {
-	// Revisions Fields
-} & T;
+export type RevisionItem<T extends object = {}> = RevisionType & T;
 
-export class RevisionsHandler<T extends object> extends ItemsHandler<Revisions<T>> {
+export class RevisionsHandler<T extends object> extends ItemsHandler<RevisionItem<T>> {
 	constructor(transport: ITransport) {
 		super('directus_revisions', transport);
 	}

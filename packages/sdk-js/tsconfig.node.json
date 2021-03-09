@@ -1,8 +1,0 @@
-{
-	"extends": "./tsconfig.json",
-	"compilerOptions": {
-		"lib": ["ES2015"],
-		"outDir": "./dist/node"
-	},
-	"include": ["./src/*.ts", "./src/base/**/*.ts", "./src/node/**/*.ts"]
-}

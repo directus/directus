@@ -2,15 +2,13 @@
  * Collections handler
  */
 
-import { DefaultFields } from './default';
-import { ItemsHandler } from '..';
+import { ItemsHandler } from '../items';
 import { ITransport } from '../../transport';
+import { CollectionType } from '../../types';
 
-export type Collections<T extends object = DefaultFields> = {
-	// Collections Fields
-} & T;
+export type CollectionItem<T extends object = {}> = CollectionType & T;
 
-export class CollectionsHandler<T extends object> extends ItemsHandler<Collections<T>> {
+export class CollectionsHandler<T extends object> extends ItemsHandler<CollectionItem<T>> {
 	constructor(transport: ITransport) {
 		super('directus_collections', transport);
 	}

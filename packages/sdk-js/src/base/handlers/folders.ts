@@ -2,15 +2,13 @@
  * Folders handler
  */
 
-import { DefaultFields } from './default';
-import { ItemsHandler } from '..';
+import { ItemsHandler } from '../items';
 import { ITransport } from '../../transport';
+import { FolderType } from '../../types';
 
-export type Folders<T extends object = DefaultFields> = {
-	// Folders Fields
-} & T;
+export type FolderItem<T extends object = {}> = FolderType & T;
 
-export class FoldersHandler<T extends object> extends ItemsHandler<Folders<T>> {
+export class FoldersHandler<T extends object> extends ItemsHandler<FolderItem<T>> {
 	constructor(transport: ITransport) {
 		super('directus_folders', transport);
 	}

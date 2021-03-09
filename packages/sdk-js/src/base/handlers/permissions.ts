@@ -2,15 +2,13 @@
  * Permissions handler
  */
 
-import { DefaultFields } from './default';
-import { ItemsHandler } from '..';
+import { ItemsHandler } from '../items';
 import { ITransport } from '../../transport';
+import { PermissionType } from '../../types';
 
-export type Permissions<T extends object = DefaultFields> = {
-	// Permissions Fields
-} & T;
+export type PermissionItem<T extends object = {}> = PermissionType & T;
 
-export class PermissionsHandler<T extends object> extends ItemsHandler<Permissions<T>> {
+export class PermissionsHandler<T extends object> extends ItemsHandler<PermissionItem<T>> {
 	constructor(transport: ITransport) {
 		super('directus_permissions', transport);
 	}

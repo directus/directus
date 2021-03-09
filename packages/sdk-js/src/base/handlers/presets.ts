@@ -2,15 +2,13 @@
  * Presets handler
  */
 
-import { DefaultFields } from './default';
-import { ItemsHandler } from '..';
+import { ItemsHandler } from '../items';
 import { ITransport } from '../../transport';
+import { PresetType } from '../../types';
 
-export type Presets<T extends object = DefaultFields> = {
-	// Presets Fields
-} & T;
+export type PresetItem<T extends object = {}> = PresetType & T;
 
-export class PresetsHandler<T extends object> extends ItemsHandler<Presets<T>> {
+export class PresetsHandler<T extends object> extends ItemsHandler<PresetItem<T>> {
 	constructor(transport: ITransport) {
 		super('directus_presets', transport);
 	}

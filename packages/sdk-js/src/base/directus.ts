@@ -19,10 +19,12 @@ import {
 import { Item } from '../items';
 import { ITransport } from '../transport';
 import { ItemsHandler } from './items';
+import { AxiosTransport } from './transport';
+import { Auth } from './auth';
 
 export type DirectusOptions = {
-	auth: IAuth;
-	transport: ITransport;
+	auth?: IAuth;
+	transport?: ITransport;
 };
 
 export class Directus<T extends DirectusFields = DirectusFields> implements IDirectus<T> {
@@ -38,17 +40,17 @@ export class Directus<T extends DirectusFields = DirectusFields> implements IDir
 	private _relations?: RelationsHandler<Pick<T, 'relations'>>;
 	private _revisions?: RevisionsHandler<Pick<T, 'revisions'>>;
 	private _roles?: RolesHandler<Pick<T, 'roles'>>;
-	private _server?: ServerHandler<Pick<T, 'server'>>;
 	private _settings?: SettingsHandler<Pick<T, 'settings'>>;
 	private _users?: UsersHandler<Pick<T, 'users'>>;
+	private _server?: ServerHandler;
 	private _utils?: UtilsHandler;
 	private _items: {
 		[collection: string]: ItemsHandler<any>;
 	};
 
-	constructor(options: DirectusOptions) {
-		this._auth = options.auth;
-		this._transport = options.transport;
+	constructor(url: string, options?: DirectusOptions) {
+		this._transport = options?.transport || new AxiosTransport(url);
+		this._auth = options?.auth || new Auth(this._transport);
 		this._items = {};
 	}
 
@@ -100,16 +102,16 @@ export class Directus<T extends DirectusFields = DirectusFields> implements IDir
 		return this._roles || (this._roles = new RolesHandler<Pick<T, 'roles'>>(this.transport));
 	}
 
-	get server(): ServerHandler<Pick<T, 'server'>> {
-		return this._server || (this._server = new ServerHandler<Pick<T, 'server'>>(this.transport));
-	}
-
 	get settings(): SettingsHandler<Pick<T, 'settings'>> {
 		return this._settings || (this._settings = new SettingsHandler<Pick<T, 'settings'>>(this.transport));
 	}
 
 	get users(): UsersHandler<Pick<T, 'users'>> {
 		return this._users || (this._users = new UsersHandler<Pick<T, 'users'>>(this.transport));
+	}
+
+	get server(): ServerHandler {
+		return this._server || (this._server = new ServerHandler(this.transport));
 	}
 
 	get utils(): UtilsHandler {
