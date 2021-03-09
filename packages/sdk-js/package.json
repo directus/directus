@@ -1,5 +1,5 @@
 {
-	"name": "@directus/sdk-js",
+	"name": "@directus/sdk",
 	"version": "9.0.0-rc.43",
 	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
@@ -14,8 +14,7 @@
 		"./": "./dist"
 	},
 	"files": [
-		"node",
-		"browser"
+		"dist"
 	],
 	"scripts": {
 		"prebuild": "yon run cleanup",
