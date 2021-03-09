@@ -16,7 +16,7 @@ type PostgresError = {
 	constraint?: string;
 };
 
-enum Errors {
+enum PostgresErrorCodes {
 	FOREIGN_KEY_VIOLATION = '23503',
 	NOT_NULL_VIOLATION = '23502',
 	NUMERIC_VALUE_OUT_OF_RANGE = '22003',
@@ -26,15 +26,15 @@ enum Errors {
 
 export function extractError(error: PostgresError) {
 	switch (error.code) {
-		case Errors.UNIQUE_VIOLATION:
+		case PostgresErrorCodes.UNIQUE_VIOLATION:
 			return uniqueViolation(error);
-		case Errors.NUMERIC_VALUE_OUT_OF_RANGE:
+		case PostgresErrorCodes.NUMERIC_VALUE_OUT_OF_RANGE:
 			return numericValueOutOfRange(error);
-		case Errors.VALUE_LIMIT_VIOLATION:
+		case PostgresErrorCodes.VALUE_LIMIT_VIOLATION:
 			return valueLimitViolation(error);
-		case Errors.NOT_NULL_VIOLATION:
+		case PostgresErrorCodes.NOT_NULL_VIOLATION:
 			return notNullViolation(error);
-		case Errors.FOREIGN_KEY_VIOLATION:
+		case PostgresErrorCodes.FOREIGN_KEY_VIOLATION:
 			return foreignKeyViolation(error);
 		default:
 			return error;
