@@ -1,8 +1,9 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import logger from './logger';
 import expressLogger from 'express-pino-logger';
+import bodyParser from 'body-parser';
+import express from 'express';
+import logger from './logger';
 import path from 'path';
+import qs from 'qs';
 
 import { validateDBConnection, isInstalled } from './database';
 
@@ -69,6 +70,7 @@ export default async function createApp() {
 
 	app.disable('x-powered-by');
 	app.set('trust proxy', true);
+	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
 
 	await emitAsyncSafe('init.before', { app });
 

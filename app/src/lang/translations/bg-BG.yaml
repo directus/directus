@@ -87,6 +87,7 @@ field_presentation: Презентационни и псевдоними
 field_file: Единствен файл
 field_files: Множество файлове
 field_m2o: M2O релация
+field_m2a: M2A релация
 field_o2m: O2M релация
 field_m2m: M2M релация
 field_translations: Преводи
@@ -117,8 +118,7 @@ exposure: Експозиция
 shutter: Затвор
 iso: ISO
 focal_length: Фокусно разстояние
-schema_setup_title: Как ще бъде запазено полето в базата данни?
-schema_field_title: Как това поле ще се държи в приложението?
+schema_setup_key: Име на колоната в базата данни, както и име на полето в API
 create_field: Създаване на поле
 creating_new_field: 'Ново поле ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -154,10 +154,6 @@ fields_group: Групи от полета
 new_data_alert: 'Следващото ще бъде създадено във вашият модел:'
 new_field: 'Ново поле'
 new_collection: 'Нова колекция'
-configure_m2o: Конфигуриране на релация от тип "много към един"...
-configure_o2m: Конфигуриране на релация от тип "един към много"...
-configure_m2m: Конфигуриране на релация от тип "много към много"...
-configure_m2a: Конфигуриране на релация от тип "много към нещо"...
 add_m2o_to_collection: 'Добавяне на "много към един" в "{collection}"'
 add_o2m_to_collection: 'Добавяне на "един към много" в "{collection}"'
 add_m2m_to_collection: 'Добавяне на "много към много" в "{collection}"'
@@ -165,8 +161,6 @@ choose_a_type: Избиране на тип...
 determined_by_relationship: Определяне по тип на релация
 add_note: Въвеждане на полезна бележка към потребителите...
 default_value: Стойност по подразбиране
-interface_setup_title: Как потребителите ще взаимодействат с това поле?
-display_setup_title: Как ще бъде показвана стойността на това поле?
 standard_field: Стандартно поле
 single_file: Единствен файл
 multiple_files: Множество файлове
@@ -174,6 +168,7 @@ m2o_relationship: Много към един
 o2m_relationship: Един към много
 m2m_relationship: Много към много
 m2a_relationship: Много към нещо
+invalid_item: Невалиден запис
 next: Напред
 field_name: Име на поле
 translations: Преводи
@@ -363,6 +358,7 @@ collection_created: Колекцията е създадена
 modified_on: Променен на
 card_size: Големина на картите
 sort_field: Поле за сортиране
+add_sort_field: Добавяне на поле за сортиране
 sort: Сортиране
 status: Статус
 toggle_manual_sorting: Ръчна подредба
@@ -432,6 +428,7 @@ system_collections: Системни колекции
 placeholder: Заместител (placeholder)
 icon_left: Икона вляво
 icon_right: Икона вдясно
+count_other_revisions: '{count} други ревизии'
 font: Шрифт
 sans_serif: Несерифен
 serif: Серифен
@@ -797,6 +794,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   button-links:

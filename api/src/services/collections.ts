@@ -1,6 +1,6 @@
 import database, { schemaInspector } from '../database';
 import { AbstractServiceOptions, Accountability, Collection, CollectionMeta, Relation, SchemaOverview } from '../types';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
@@ -158,6 +158,7 @@ export class CollectionsService {
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
 			schema: this.schema,
+			accountability: this.accountability,
 		});
 
 		let tablesInDatabase = await schemaInspector.tableInfo();
@@ -172,10 +173,6 @@ export class CollectionsService {
 			tablesInDatabase = tablesInDatabase.filter((table) => {
 				return collectionsYouHavePermissionToRead.includes(table.name);
 			});
-
-			if (tablesInDatabase.length === 0) {
-				throw new ForbiddenException();
-			}
 		}
 
 		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
@@ -204,7 +201,7 @@ export class CollectionsService {
 
 	/**
 	 * @NOTE
-	 * We only suppport updating the content in directus_collections
+	 * We only support updating the content in directus_collections
 	 */
 	update(data: Partial<Collection>, keys: string[]): Promise<string[]>;
 	update(data: Partial<Collection>, key: string): Promise<string>;

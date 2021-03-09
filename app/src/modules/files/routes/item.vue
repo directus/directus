@@ -137,6 +137,7 @@
 				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				:disabled="updateAllowed === false"
+				:validation-errors="validationErrors"
 				v-model="edits"
 			/>
 		</div>
@@ -250,6 +251,7 @@ export default defineComponent({
 			saveAsCopy,
 			isBatch,
 			refresh,
+			validationErrors,
 		} = useItem(ref('directus_files'), primaryKey);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
@@ -344,6 +346,7 @@ export default defineComponent({
 			fields,
 			fieldsFiltered,
 			revisionsAllowed,
+			validationErrors,
 		};
 
 		function useBreadcrumb() {
@@ -465,9 +468,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
@@ -478,9 +481,9 @@ export default defineComponent({
 .edit,
 .folder,
 .download {
-	--v-button-background-color: var(--primary-25);
+	--v-button-background-color: var(--primary-10);
 	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-50);
+	--v-button-background-color-hover: var(--primary-25);
 	--v-button-color-hover: var(--primary);
 }
 

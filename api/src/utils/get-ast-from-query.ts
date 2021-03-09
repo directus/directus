@@ -11,9 +11,8 @@ import {
 	Accountability,
 	SchemaOverview,
 } from '../types';
-import database from '../database';
-import { cloneDeep } from 'lodash';
-import Knex from 'knex';
+import { cloneDeep, omitBy, mapKeys } from 'lodash';
+import { Knex } from 'knex';
 import { getRelationType } from '../utils/get-relation-type';
 import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';
@@ -66,7 +65,7 @@ export default async function getASTFromQuery(
 
 	return ast;
 
-	async function parseFields(parentCollection: string, fields: string[] | null, deep?: Record<string, Query>) {
+	async function parseFields(parentCollection: string, fields: string[] | null, deep?: Record<string, any>) {
 		if (!fields) return [];
 
 		fields = await convertWildcards(parentCollection, fields);
@@ -178,8 +177,8 @@ export default async function getASTFromQuery(
 					parentKey: schema.tables[parentCollection].primary,
 					relatedKey: schema.tables[relatedCollection].primary,
 					relation: relation,
-					query: deep?.[relationalField] || {},
-					children: await parseFields(relatedCollection, nestedFields as string[]),
+					query: getDeepQuery(deep?.[relationalField] || {}),
+					children: await parseFields(relatedCollection, nestedFields as string[], deep?.[relationalField] || {}),
 				};
 			}
 
@@ -300,4 +299,11 @@ export default async function getASTFromQuery(
 
 		return fieldsInCollection;
 	}
+}
+
+function getDeepQuery(query: Record<string, any>) {
+	return mapKeys(
+		omitBy(query, (value, key) => key.startsWith('_') === false),
+		(value, key) => key.substring(1)
+	);
 }

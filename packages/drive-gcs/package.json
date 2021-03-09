@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-gcs",
-	"version": "9.0.0-rc.44",
+	"version": "9.0.0-rc.45",
 	"description": "Google Cloud Storage driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -24,7 +24,19 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc -b tsconfig.json"
+		"build": "tsc -b tsconfig.json",
+		"dev": "npm-watch build"
+	},
+	"watch": {
+		"build": {
+			"patterns": [
+				"src/*"
+			],
+			"ignore": "dist",
+			"extensions": "ts",
+			"silent": true,
+			"quiet": true
+		}
 	},
 	"dependencies": {
 		"@google-cloud/storage": "^5.0.0"

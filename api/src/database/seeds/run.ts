@@ -1,4 +1,4 @@
-import Knex, { ColumnBuilder } from 'knex';
+import { Knex } from 'knex';
 import fse from 'fs-extra';
 import path from 'path';
 import yaml from 'js-yaml';
@@ -43,7 +43,7 @@ export default async function runSeed(database: Knex) {
 
 		await database.schema.createTable(seedData.table, (tableBuilder) => {
 			for (const [columnName, columnInfo] of Object.entries(seedData.columns)) {
-				let column: ColumnBuilder;
+				let column: Knex.ColumnBuilder;
 
 				if (columnInfo.type === 'string') {
 					column = tableBuilder.string(columnName, columnInfo.length);

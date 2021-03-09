@@ -12,6 +12,7 @@ role_name: Tên Quyền
 db_only_click_to_configure: 'Chỉ Cở Sở Dữ Liệu: Bấm để Cấu Hình '
 show_archived_items: Hiển thị các mục đã Lưu Trữ
 required: Bắt buộc
+required_for_app_access: Yêu Cầu cho Kết Nối
 requires_value: Giá trị bắt buộc
 create_preset: Tạo Định dạng
 create_role: Tạo vai trò (phân quyền)
@@ -25,8 +26,11 @@ connection_excellent: Kết nối Tuyệt vời
 connection_good: Kết nối Tốt
 connection_fair: Kết nối Kém
 connection_poor: Kết nối Yếu
+primary: Khóa chính
 rename_folder: Đổi Tên Thư Mục
 delete_folder: Xóa thư mục
+prefix: Tiền tố
+suffix: Hậu tố
 reset_bookmark: Đặt lại Dấu trang
 rename_bookmark: Đổi tên Dấu trang
 update_bookmark: Cập nhật Dấu trang
@@ -50,6 +54,11 @@ archive: Lưu trữ
 archive_confirm: Bạn có chắc chắn muốn lưu trữ mục này không?
 archive_confirm_count: >-
   Chưa chọn mục nào | Bạn có chắc chắn muốn lưu trữ mục này không? | Bạn có chắc chắn muốn lưu trữ {count} mục này không?
+reset_system_permissions_to: 'Đặt lại Quyền Hệ Thống:'
+reset_system_permissions_copy: Thao tác này sẽ ghi đè lên bất cứ quyền hạn đã được tùy biến bởi bạn trước đây tới các bảng hệ thống. Bạn có chắc chắn không?
+the_following_are_minimum_permissions: Đây là những quyền hạn tối thiểu cần có khi "App Access" được kích hoạt. Bạn có thể mở rộng các quyền bổ sung, nhưng không được phép thấp hơn những quyền này.
+app_access_minimum: Quyền truy cập Ứng dụng Tối thiểu
+recommended_defaults: Các giá trị mặc định Khuyên dùng
 unarchive: Ngừng lưu trữ
 unarchive_confirm: Bạn có chắc chắn muốn mở lưu trữ mục này không?
 nested_files_folders_will_be_moved: Các files và thư mục sẽ được di chuyển lên thư mục trên.
@@ -73,11 +82,18 @@ validationError:
 all_access: Toàn Quyền
 no_access: Cấm Truy Cập
 use_custom: Chọn Lọc
+field_standard: Tiêu chuẩn
 field_file: Tập tin đơn
 field_files: Nhiều Tập Tin
+field_m2o: Quan hệ Nhiều -> Một
+field_m2a: Quan hệ M2A
+field_o2m: Quan hệ Một -> Nhiều
+field_m2m: Quan hệ Nhiều -> Nhiều
 field_translations: Các Bản Dịch
 item_permissions: Quyền truy cập Bảng ghi
 field_permissions: Quyền truy cập Trường
+field_validation: Xác Thực Trường
+field_presets: Các Mẫu Trường Tạo Sẵn
 delete_field: Xóa Trường
 fields_and_layout: Trường Dữ Liệu & Bố Cục
 field_create_success: 'Trường đã tạo: "{field}"'
@@ -91,8 +107,6 @@ exposure: Độ phơi sáng
 shutter: Màn trập
 iso: ISO
 focal_length: Tiêu cự
-schema_setup_title: Trường này nên lưu xuống cơ sở dữ liệu như thế nào?
-schema_field_title: Trường này nên hoạt động như thế nào trong chương trình?
 create_field: Tạo thêm trường
 creating_new_field: 'Trường Mới ({collection})'
 reset_page_preferences: Đặt Lại Tùy Chọn cho Trang
@@ -124,8 +138,6 @@ choose_a_type: Chọn một Kiểu...
 determined_by_relationship: Xác định theo Quan hệ
 add_note: Thêm ghi chú hữu ích cho người dùng...
 default_value: Giá trị mặc định
-interface_setup_title: Người dùng sẽ tương tác với trường này như thế naof?
-display_setup_title: Giá trị của trường này sẽ được hiển thị như thế nào?
 standard_field: Trường tiêu chuẩn
 single_file: Tập tin đơn
 multiple_files: Nhiều Tập Tin
@@ -133,6 +145,7 @@ m2o_relationship: Quan hệ Nhiều - Một
 o2m_relationship: Quan hệ Một - Nhiều
 m2m_relationship: Quan hệ Nhiều - Nhiều
 m2a_relationship: Quan hệ Nhiều - Bất Kỳ
+invalid_item: Mục Không hợp lệ
 next: Tiếp theo
 field_name: Tên Trường
 translations: Các Bản Dịch
@@ -140,8 +153,11 @@ note: Ghi chú
 enter_a_value: Nhập vào một giá trị...
 enter_a_placeholder: Nhập vào dòng nhắc...
 length: Độ dài
+precision_scale: Độ chính xác & Mở rộng
 readonly: Chỉ đọc
 unique: Duy nhất
+updated_on: Cập nhật Vào lúc
+updated_by: Cập Nhật bởi
 primary_key: Khoá chính
 foreign_key: Khóa Ngoại
 finish_setup: Hoàn Tất Cài Đặt
@@ -174,6 +190,8 @@ export_data: Kết Xuất Dữ Liệu
 format: Định dạng
 export_collection: 'Kết xuất {collection}'
 submit: Gửi đi
+move: Di Chuyển
+system: Hệ thống
 add_field_related: Thêm Trường vào Danh Mục Liên Quan
 interface: Giao diện
 today: Hôm nay
@@ -257,17 +275,39 @@ no_items_copy: Chưa có bản ghi nào trong danh mục này.
 file_count: 'Không Có Tập Tin | Có Một Tập Tin | {count} Tập Tin'
 no_files_copy: Không có tập tin nào ở đây.
 user_count: 'Không Có Người Dùng | Có Một Người Dùng | {count} Người Dùng'
+all_items: Tất cả các mục
+csv: CSV
+no_collections: Chưa có Bảng nào
 create_collection: Tạo Danh mục mới
 relationship_not_setup: Cấu trúc dữ liệu chưa được cài đặt chính xác
+select_a_collection: Chọn Bảng
+active: Kích hoạt
 users: Tài khoản
 activity: Hoạt động
 webhooks: Webhooks
 field_width: Độ rộng trường
+add_a_new_item: Thêm mục mới...
+add_filter: Thêm bộ lọc
+upper_limit: Giới hạn trên...
+lower_limit: Hạn chế dưới...
 user_directory: Danh mục tài khoản
+documentation: Tài liệu
+sidebar: Thanh bên
 duration: Thời lượng
+charset: Bảng mã
+second: Giây
+file_moved: Đã di chuyển Tập tin
+collection_created: Bảng đã được Tạo
 modified_on: Sửa đổi vào
+card_size: Kích thước Card
 sort_field: Sắp xếp theo trường
+add_sort_field: Sắp xếp theo trường
+sort: Sắp xếp
 status: Trạng thái
+toggle_manual_sorting: Kích hoạt sắp xếp thủ công
+bookmark_doesnt_exist: Bookmark Không Tồn Tại
+bookmark_doesnt_exist_copy: Không thể tìm thấy Bookmark bạn đang muốn mở.
+bookmark_doesnt_exist_cta: Trở lại bảng
 select_an_item: Chọn một bản ghi...
 edit: Sửa
 enabled: Đã kích hoạt
@@ -316,24 +356,45 @@ delete_collection: Xoá Danh Mục
 update_collection_success: Đã Cập Nhật Danh Mục
 delete_collection_success: Đã Xoá Danh Mục
 start_end_of_count_items: 'Bản ghi {start}-{end} trong tổng số {count}'
+start_end_of_count_filtered_items: 'Bản ghi {start}-{end} trong tổng số {count}'
+one_item: '1 sản phẩm'
+one_filtered_item: 'Đã lọc được 1 mục'
 delete_collection_are_you_sure: >-
   Bạn có chắc rằng bạn muốn xoá danh mục này? Thao tác này sẽ xóa danh mục và tất cả dữ liệu trong đó. Bạn không thể khôi phục danh mục này sau khi đã xóa.
 collections_shown: Những Danh Mục Đang Hiển Thị
+visible_collections: Ứng dụng có thể nhìn thấy
+hidden_collections: Bảng Ẩn
+show_hidden_collections: Hiện các Bảng Ẩn
+hide_hidden_collections: Ẩn các Bảng Ẩn
+system_collections: Các Bảng Hệ Thống
 placeholder: Chỗ điền
 icon_left: Biểu tượng bên trái
 icon_right: Biểu tượng bên phải
+font: Phông chữ
+sans_serif: Sans Serif
+serif: Serif
 monospace: Khoảng cách như nhau
 divider: Bộ chia
 color: Màu sắc
+circle: Vòng tròn
+empty_item: Mục trống
+log_in_with: 'Đăng nhập với {provider}'
 advanced_filter: Bộ Lọc Nâng Cao
 delete_advanced_filter: Xoá Bộ Lọc
 operators:
+  eq: Bằng
+  neq: Không bằng
   lt: Nhỏ hơn
   gt: Lớn hơn
   lte: Nhỏ hơn hoặc bằng
   gte: Lớn hơn hoặc bằng
+  in: Là một trong
+  nin: Không phải là một trong
+  null: Là null
+  nnull: Không bị null
   contains: Bao gồm
   ncontains: Không chứa
+  between: Giữa
   empty: Bị rỗng
 loading: Đang tải...
 layout_options: Các Tuỳ Chọn Bố Cục
@@ -350,9 +411,35 @@ select_fields: Chọn trường
 icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
 wysiwyg_options:
+  alignright: Canh phải
   forecolor: Màu Tô
   backcolor: Màu Nền
+  italic: Nghiêng
+  underline: Gạch chân
+  strikethrough: Gạch ngang
+  subscript: Đăng ký
+  superscript: Chỉ số trên
   codeblock: Mã nguồn
+  blockquote: Trích dẫn
+  bullist: Danh sách dấu đầu dòng
+  numlist: Danh Sách Đánh Số
+  hr: Thước ngang
+  link: Liên kết
+  unlink: Loại bỏ liên kết
+  media: Thêm đa phương tiện
+  image: Thêm hình ảnh
+  copy: Sao chép
+  cut: Cắt
+  paste: Dán
+  heading: Đầu mục
+  h1: Đầu mục 1
+  h2: Đầu mục 2
+  h3: Đầu mục 3
+  h4: Đầu mục 4
+  h5: Đầu mục 5
+  h6: Đầu mục 6
+  fontselect: Chọn kiểu chữ
+  fontsizeselect: Chọn kích thước phông chữ
   remove: Xoá
   selectall: Chọn Tất Cả
   table: Bảng
@@ -414,6 +501,7 @@ fields:
     width: Độ rộng
     uploaded_on: Thời điểm tải lên
     height: Độ dài
+    charset: Bảng mã
     duration: Thời lượng
   directus_users:
     first_name: Tên
@@ -488,6 +576,8 @@ template: Mẫu
 translation: Bản dịch
 value: Giá trị
 interfaces:
+  button-links:
+    primary: Khóa chính
   checkboxes:
     checkboxes: Ô tích
     allow_other: Cho phép những đối tượng khác
@@ -505,6 +595,7 @@ interfaces:
     use_24: Sử dụng Định dạng 24-giờ
   display-template:
     display-template: Mẫu hiển thị
+    select_a_collection: Chọn Bảng
   divider:
     divider: Bộ chia
   dropdown:
@@ -576,6 +667,8 @@ displays:
   icon:
     icon: Biểu tượng
     description: Hiển thị một biểu tượng
+  image:
+    circle: Vòng tròn
   labels:
     choices_value_placeholder: Nhập vào một giá trị...
   rating:

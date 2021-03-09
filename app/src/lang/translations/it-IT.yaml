@@ -12,6 +12,7 @@ role_name: Nome ruolo
 db_only_click_to_configure: 'Solo Database: Fare clic per configurare '
 show_archived_items: Mostra le elementi archiviati
 required: Obbligatorio
+required_for_app_access: Richiesto per l'accesso alle app
 requires_value: Richiede un valore
 create_preset: Crea Preset
 create_role: Crea ruolo
@@ -25,6 +26,7 @@ connection_excellent: Connessione Eccellente
 connection_good: Buona connessione
 connection_fair: Connessione adeguata
 connection_poor: Scarca connessione
+primary: Principale
 rename_folder: Rinomina cartella
 delete_folder: Elimina cartella
 prefix: Prefisso
@@ -52,6 +54,8 @@ archive: Archivio
 archive_confirm: Sei sicuro*a di voler archiviare questo elemento?
 archive_confirm_count: >-
   Nessun elemento selezionato | Sei sicuro*a di voler archiviare questo elemento? | Sei sicuro*a di voler archiviare {count} elementi?
+reset_system_permissions_to: 'Reimposta i permessi di sistema a:'
+reset_system_permissions_copy: Questa azione sovrascriverà qualsiasi permesso personalizzato che potresti aver applicato alle collezioni di sistema. Sei sicuro?
 unarchive: Ripristina
 unarchive_confirm: Sei sicuro*a di voler ripristinare questo elemento?
 nested_files_folders_will_be_moved: I file e le cartelle annidate verranno spostate di un livello in su.
@@ -95,12 +99,14 @@ duplicate_where_to: Dove vuoi duplicare questo campo?
 language: Linguaggio
 global: Globale
 admins_have_all_permissions: Gli amministratori hanno tutte le autorizzazioni
+camera: Camera
 exposure: Esposizione
 shutter: Otturatore
 iso: ISO
 focal_length: Lunghezza Focale
 create_field: Crea campo
 creating_new_field: 'Nuovo Campo ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reimposta Preferenze Di Pagina
 hidden_field: Campo Nascosto
 hidden_on_detail: Nascosto nei dettagli
@@ -130,16 +136,11 @@ to_manually_setup_translations: per configurare manualmente le traduzioni.
 click_to_manage_translated_fields: >-
   Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
 fields_group: Gruppo campi
-configure_m2o: Configura la tua Relazione Many-to-One...
-configure_o2m: Configura la tua Relazione One-to-Many...
-configure_m2m: Configura la tua Relazione Many-to-Many...
-configure_m2a: Configura la tua Relazione Many-to-Any...
+new_field: 'Nuovo campo'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
 default_value: Valore predefinito
-interface_setup_title: Come interagiranno gli utenti con questo campo?
-display_setup_title: Come dovrebbe essere visualizzato il valore di questo campo?
 standard_field: Campo Standard
 single_file: File Singolo
 multiple_files: File Multipli
@@ -147,11 +148,13 @@ m2o_relationship: Relazione Many to One
 o2m_relationship: Relazione One to Many
 m2m_relationship: Relazione Many to Many
 m2a_relationship: Relazione Many to Any
+invalid_item: Oggetto non valido
 next: Il prossimo
 field_name: Nome del Campo
 translations: Traduzioni
 note: Nota
 enter_a_value: Inserisci un valore...
+enter_a_placeholder: Inserisci un segnaposto...
 length: Lunghezza
 readonly: Sola lettura
 unique: Unico
@@ -159,6 +162,7 @@ primary_key: Chiave primaria
 foreign_key: Chiave Esterna
 finish_setup: Termina Configurazione
 dismiss: Chiudi
+raw_value: Valore grezzo
 clear_value: Cancella valore
 reset_to_default: Reimposta a predefinito
 undo_changes: Annulla modifica
@@ -177,6 +181,7 @@ revision_delta_deleted: Eliminato
 revision_delta_reverted: Ripristinato
 revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
+private_user: Utenti privati
 revision_preview: Anteprima Revisione
 leave_comment: Lascia un commento...
 post_comment_success: Commento pubblicato
@@ -373,13 +378,22 @@ divider: Separatore
 color: Colore
 circle: Cerchio
 empty_item: Elemento Vuoto
+delete_advanced_filter: Elimina filtro
 operators:
+  eq: Uguale
+  neq: Non è uguale
   lt: Meno di
   gt: Più grande di
   lte: Minore o uguale a
   gte: Maggiore o uguale a
+  in: È uno di
+  nin: Non è uno di
+  null: È null
+  nnull: Non è null
   contains: contiene
   ncontains: Non contiene
+  between: È compresa tra
+  nbetween: Non è compresa tra
   empty: È vuoto
 loading: Caricamento in corso...
 upload_file: Carica File
@@ -418,7 +432,9 @@ on_update: In aggiornamento
 read: Leggere
 update: Aggiornare
 select_fields: Seleziona campi
+format_text: Formato testo
 bold: Grassetto
+label: Etichetta
 wysiwyg_options:
   bold: Grassetto
   italic: Corsivo
@@ -619,6 +635,8 @@ translation: Traduzione
 value: Valore
 view_project: Visualizza Progetto
 interfaces:
+  button-links:
+    primary: Principale
   checkboxes:
     checkboxes: Checkbox
     allow_other: Permetti Altro

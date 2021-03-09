@@ -4,7 +4,7 @@ import database from './index';
 import { Query, Item, SchemaOverview } from '../types';
 import { PayloadService } from '../services/payload';
 import applyQuery from '../utils/apply-query';
-import Knex, { QueryBuilder } from 'knex';
+import { Knex } from 'knex';
 import { toArray } from '../utils/to-array';
 
 type RunASTOptions = {
@@ -141,7 +141,7 @@ function getDBQuery(
 	primaryKeyField: string,
 	schema: SchemaOverview,
 	nested?: boolean
-): QueryBuilder {
+): Knex.QueryBuilder {
 	let dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
 
 	const queryCopy = clone(query);
@@ -158,11 +158,6 @@ function getDBQuery(
 	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
 
 	applyQuery(table, dbQuery, queryCopy, schema);
-
-	// Nested filters use joins to filter on the parent level, to prevent duplicate
-	// parents, we group the query by the current tables primary key (which is unique)
-	// ref #3798
-	dbQuery.groupBy(`${table}.${primaryKeyField}`);
 
 	return dbQuery;
 }
@@ -266,7 +261,7 @@ function mergeWithParentItems(
 				itemChildren = itemChildren.slice(0, nestedNode.query.limit ?? 100);
 			}
 
-			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : null;
+			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : [];
 		}
 	} else if (nestedNode.type === 'm2a') {
 		for (const parentItem of parentItems) {

@@ -58,7 +58,7 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'color',
 			},
 			schema: {
-				default_value: '#2f80ed',
+				default_value: '#00C897',
 			},
 		},
 	],

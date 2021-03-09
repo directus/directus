@@ -463,20 +463,20 @@ Limit the nested related articles to 3
 ```json
 {
 	"related_articles": {
-		"limit": 3
+		"_limit": 3
 	}
 }
 ```
 
-Fetch only the `en-US` translations
+Only get 3 related articles, with only the top rated comment nested
 
 ```json
 {
-	"translations": {
-		"filter": {
-			"languages_code": {
-				"_eq": "en-US"
-			}
+	"related_articles": {
+		"_limit": 3,
+		"comments": {
+			"_sort": "rating",
+			"_limit": 1
 		}
 	}
 }
@@ -488,11 +488,11 @@ Fetch only the `en-US` translations
 ### REST API
 
 ```
-?deep[translations][filter][languages_code][_eq]=en-US
+?deep[translations][_filter][languages_code][_eq]=en-US
 
 // or
 
-?deep={ "translations": { "filter": { "languages_code": { "_eq": "en-US" }}}}
+?deep={ "translations": { "_filter": { "languages_code": { "_eq": "en-US" }}}}
 ```
 
 ### GraphQL

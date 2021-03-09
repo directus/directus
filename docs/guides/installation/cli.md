@@ -3,8 +3,9 @@
 ## 1. Confirm Minimum Requirements
 
 Directus requires two things to run: [Node.js](https://nodejs.dev) and a Database. For both these system requirements,
-we aim to support the current LTS release (and newer). At the time of writing (early 2021), this means Node.js v10+ and
-one of the following:
+we aim to support the current LTS release (and newer).
+
+To run Directus, you currently need Node 12.12 or newer, and one of the following databases:
 
 | Database      | Version |
 | ------------- | ------- |
@@ -19,6 +20,13 @@ one of the following:
 
 In addition to the databases above, other variants are also supported, including **AWS Aurora** (MySQL), **AWS
 Redshift** (PostgreSQL), and **MariaDB**.
+
+:::
+
+::: tip Apple Silicon
+
+When installing Directus on an Apple-made ARM CPU, make sure you have `libvps` installed. See
+[Apple M1](https://sharp.pixelplumbing.com/install#apple-m1).
 
 :::
 
@@ -59,5 +67,12 @@ The default port used by Directus is 8055. To view your project locally, go to
 ::: tip Changing Port
 
 If you want to use a different port, use [the `PORT` environment variable](/reference/environment-variables/#general).
+
+:::
+
+::: tip .env Permissions
+
+By default, the `create-directus-project` tool will set the file permissions of the generated `.env` to `-rw-r-----`
+(0640). If you run Directus from a separate user on your machine, make sure these permissions are correct.
 
 :::

@@ -87,6 +87,7 @@ field_presentation: Présentation & Alias
 field_file: Fichier simple
 field_files: Fichiers multiples
 field_m2o: Relation M2O
+field_m2a: Relation M2A
 field_o2m: Relation O2M
 field_m2m: Relation M2M
 field_translations: Traductions
@@ -117,8 +118,7 @@ exposure: Exposition
 shutter: Obturateur
 iso: ISO
 focal_length: Distance focale
-schema_setup_title: Comment ce champ doit-il être sauvegardé dans la base de données?
-schema_field_title: Comment ce champ doit-il se comporter dans l'application ?
+schema_setup_key: Le nom de la colonne de la base de données et la clé API de ce champ
 create_field: Créer un champ
 creating_new_field: 'Nouveau champ ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -154,10 +154,6 @@ fields_group: Groupe de champs
 new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
 new_field: 'Nouveau Champ'
 new_collection: 'Nouvelle Collection'
-configure_m2o: Configurez votre relation Many-to-One...
-configure_o2m: Configurez votre relation One-to-Many...
-configure_m2m: Configurez votre relation Many-to-Many...
-configure_m2a: Configurez votre relation Many-to-Any...
 add_m2o_to_collection: 'Ajouter une relation Many-to-One à "{collection}"'
 add_o2m_to_collection: 'Ajouter une relation One-to-Many à "{collection}"'
 add_m2m_to_collection: 'Ajouter une relation Many-to-Many à "{collection}"'
@@ -165,8 +161,6 @@ choose_a_type: Choisir un type...
 determined_by_relationship: Déterminé par la relation
 add_note: Ajouter une note utile aux utilisateurs…
 default_value: Valeur par défaut
-interface_setup_title: Comment les utilisateurs interagiront-ils avec ce champ ?
-display_setup_title: Comment la valeur de ce champ doit-elle être affichée ?
 standard_field: Champ standard
 single_file: Fichier simple
 multiple_files: Fichiers multiples
@@ -174,6 +168,7 @@ m2o_relationship: Relation Many-to-One
 o2m_relationship: Relation One-to-Many
 m2m_relationship: Relation Many-to-Many
 m2a_relationship: Relation Many-to-Any
+invalid_item: Élément invalide
 next: Suivant
 field_name: Nom du champ
 translations: Traductions
@@ -363,6 +358,7 @@ collection_created: Collection créée
 modified_on: Modifié le
 card_size: Taille de la carte
 sort_field: Trier les champs
+add_sort_field: Ajouter un champ de tri
 sort: Trier
 status: Etat
 toggle_manual_sorting: Activer/désactiver le tri manuel
@@ -425,11 +421,14 @@ delete_collection_are_you_sure: >-
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées
+show_hidden_collections: Afficher les collections cachées
+hide_hidden_collections: Masquer les collections cachées
 unmanaged_collections: Collections non configurées
 system_collections: Collections système
 placeholder: Placeholder
 icon_left: Icône gauche
 icon_right: Icône droite
+count_other_revisions: '{count} autres Révisions'
 font: Police de caractères
 sans_serif: Sans Sérif
 serif: Sérif
@@ -578,6 +577,7 @@ scope: Périmètre d'application
 layout: Mise en page
 changes_are_permanent: Les modifications sont irréversibles
 preset_name_placeholder: Nom du favori...
+preset_search_placeholder: Recherche...
 editing_preset: Édition du préréglage
 layout_preview: Aperçu de la mise en page
 layout_setup: Configuration de la mise en page
@@ -794,6 +794,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:

@@ -12,6 +12,7 @@ role_name: Nombre del Rol
 db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
 show_archived_items: Mostrar Elementos Archivados
 required: Requerido
+required_for_app_access: Necesario para el acceso a App
 requires_value: Valor obligatorio
 create_preset: Crear Predefinido
 create_role: Crear Rol
@@ -25,6 +26,7 @@ connection_excellent: Excelente Conexión
 connection_good: Buena Conexión
 connection_fair: Conexión Suficiente
 connection_poor: Conexión Pobre
+primary: Principal
 rename_folder: Renombrar Directorio
 delete_folder: Eliminar Directorio
 prefix: Prefijo
@@ -52,6 +54,9 @@ archive: Archivar
 archive_confirm: '¿Está seguro que desea archivar este elemento?'
 archive_confirm_count: >-
   Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
+reset_system_permissions_to: 'Restablecer Permisos del Sistema:'
+the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
+app_access_minimum: Mínimo acceso a App
 unarchive: Desarchivar
 unarchive_confirm: '¿Realmente desea desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
@@ -110,10 +115,9 @@ exposure: Exposición
 shutter: Obturación
 iso: ISO
 focal_length: Distancia Focal
-schema_setup_title: '¿Cómo debería guardarse este campo en la base de datos?'
-schema_field_title: '¿Cómo debería comportarse este campo en la aplicación?'
 create_field: Crear Campo
 creating_new_field: 'Nuevo Campo ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Restablecer Preferencias de Página
 hidden_field: Campo Oculto
 hidden_on_detail: Oculto en el Detalle
@@ -143,10 +147,8 @@ to_manually_setup_translations: configurar manualmente las traducciones.
 click_to_manage_translated_fields: >-
   Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
 fields_group: Grupo de Campos
-configure_m2o: Configurar tu Relación Muchos-a-Uno...
-configure_o2m: Configurar tu Relación Uno-A-Muchos...
-configure_m2m: Configurar tu Relación Muchos-A-Muchos...
-configure_m2a: Configurar tu Relación Muchos-A-Cualquiera...
+new_field: 'Nuevo Campo'
+new_collection: 'Colección Nueva'
 add_m2o_to_collection: 'Agregar Muchos-A-Uno a "{collection}"'
 add_o2m_to_collection: 'Agregar Uno-A-Muchos a "{collection}"'
 add_m2m_to_collection: 'Agregar Muchos-A-Muchos a "{collection}"'
@@ -154,8 +156,6 @@ choose_a_type: Elegir un Tipo...
 determined_by_relationship: Determinado por la Relación
 add_note: Agrega una nota de ayuda para los usuarios...
 default_value: Valor Predeterminado
-interface_setup_title: '¿Cómo los usuarios interactuarán con este campo?'
-display_setup_title: '¿Cómo el valor de este campo debería ser presentado?'
 standard_field: Campo Estándar
 single_file: Un Archivo
 multiple_files: Múltiples Archivos
@@ -163,6 +163,7 @@ m2o_relationship: Relación Muchos-a-Uno
 o2m_relationship: Relación Uno-A-Muchos
 m2m_relationship: Relación Muchos-A-Muchos
 m2a_relationship: Relación Muchos-A-Cualquiera
+invalid_item: Artículo inválido
 next: Siguiente
 field_name: Nombre del Campo
 translations: Traducciones
@@ -352,6 +353,7 @@ collection_created: Colección Creada
 modified_on: Modificado en
 card_size: Tamaño de Tarjeta
 sort_field: Campo Ordenamiento
+add_sort_field: Añadir campo de ordenación
 sort: Ordenar
 status: Estatus
 toggle_manual_sorting: Alternar Ordenamiento Manual
@@ -406,6 +408,8 @@ delete_collection: Eliminar Colección
 update_collection_success: Colección Actualizada
 delete_collection_success: Colección Eliminada
 start_end_of_count_items: '{start}-{end} de {count} elementos'
+one_item: '1 elemento'
+one_filtered_item: '1 elemento filtrado'
 delete_collection_are_you_sure: >-
   ¿Realmente desea eliminar esta colección? Esto eliminará la colección y todos los elementos en ella. Esta acción es permanente y no reversible.
 collections_shown: Colecciones Mostradas
@@ -633,14 +637,20 @@ fields:
     hidden: Oculto
     singleton: Singleton
     translations: Traducciones para Nombre de Colección
+    archive_value: Archivar valor
+    unarchive_value: Desarchivar valor
     sort_field: Campo Ordenamiento
   directus_files:
     title: Título
     description: Descripción
     tags: Etiquetas
     location: Ubicación
+    storage: Almacenamiento
+    filename_disk: Nombre de archivo (Disco)
     metadata: Metadatos
+    type: Tipo Mime
     filesize: Tamaño del archivo
+    modified_by: Modificado por
     modified_on: Modificado en
     created_on: Creado El
     created_by: Creado Por
@@ -667,6 +677,7 @@ fields:
     tfa_secret: Doble Factor de Autenticación
     status: Estatus
     role: Rol
+    token: Token
     last_page: Última Página
     last_access: Último Acceso
   directus_settings:
@@ -681,6 +692,7 @@ fields:
     auth_login_attempts: Intentos de Inicio de Sesión al Autentificarse
     storage_asset_presets: Predefinidos de Activos en Almacenamiento
     storage_asset_transform: Transformación de Activos en Almacenamiento
+    custom_css: CSS Personalizado
   directus_fields:
     collection: Nombre de Colección
     icon: Ícono de Colección
@@ -772,6 +784,14 @@ value: Valor
 view_project: Ver Proyecto
 report_error: Reportar Error
 interfaces:
+  button-links:
+    button-links: Enlaces de botón
+    links: Enlaces
+    style: Estilo
+    primary: Principal
+    link: Enlaces
+    button: Botones
+    error: No se puede realizar la acción
   checkboxes:
     checkboxes: Casillas De Selección
     description: Elegir entre múltiples opciones a través de casillas de selección

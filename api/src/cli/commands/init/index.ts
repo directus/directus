@@ -13,7 +13,7 @@ import runSeed from '../../../database/seeds/run';
 import runMigrations from '../../../database/migrations/run';
 
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';
-import Knex from 'knex';
+import { Knex } from 'knex';
 
 export default async function init(options: Record<string, any>) {
 	const rootPath = process.cwd();

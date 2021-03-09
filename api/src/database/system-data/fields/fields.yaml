@@ -41,12 +41,6 @@ fields:
     width: half
 
   - collection: directus_fields
-    field: locked
-    hidden: true
-    special: boolean
-    width: half
-
-  - collection: directus_fields
     field: readonly
     hidden: true
     special: boolean

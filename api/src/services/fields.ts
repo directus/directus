@@ -1,13 +1,12 @@
 import { ALIAS_TYPES } from '../constants';
 import database, { schemaInspector } from '../database';
 import { Field } from '../types/field';
-import { Accountability, AbstractServiceOptions, FieldMeta, Relation, SchemaOverview } from '../types';
+import { Accountability, AbstractServiceOptions, FieldMeta, SchemaOverview } from '../types';
 import { ItemsService } from '../services/items';
-import { ColumnBuilder } from 'knex';
+import { Knex } from 'knex';
 import getLocalType from '../utils/get-local-type';
 import { types } from '../types';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import Knex, { CreateTableBuilder } from 'knex';
 import { PayloadService } from '../services/payload';
 import getDefaultValue from '../utils/get-default-value';
 import cache from '../cache';
@@ -36,8 +35,19 @@ export class FieldsService {
 		this.schema = options.schema;
 	}
 
+	private get hasReadAccess() {
+		return !!this.schema.permissions.find((permission) => {
+			return permission.collection === 'directus_fields' && permission.action === 'read';
+		});
+	}
+
 	async readAll(collection?: string): Promise<Field[]> {
 		let fields: FieldMeta[];
+
+		if (this.accountability && this.accountability.admin !== true && this.hasReadAccess === false) {
+			throw new ForbiddenException();
+		}
+
 		const nonAuthorizedItemsService = new ItemsService('directus_fields', {
 			knex: this.knex,
 			schema: this.schema,
@@ -147,6 +157,10 @@ export class FieldsService {
 
 	async readOne(collection: string, field: string) {
 		if (this.accountability && this.accountability.admin !== true) {
+			if (this.hasReadAccess === false) {
+				throw new ForbiddenException();
+			}
+
 			const permissions = this.schema.permissions.find((permission) => {
 				return permission.action === 'read' && permission.collection === collection;
 			});
@@ -188,7 +202,7 @@ export class FieldsService {
 	async createField(
 		collection: string,
 		field: Partial<Field> & { field: string; type: typeof types[number] },
-		table?: CreateTableBuilder // allows collection creation to
+		table?: Knex.CreateTableBuilder // allows collection creation to
 	) {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException('Only admins can perform this action.');
@@ -203,23 +217,31 @@ export class FieldsService {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
-		if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-			if (table) {
-				this.addColumnToTable(table, field as Field);
-			} else {
-				await database.schema.alterTable(collection, (table) => {
+		await this.knex.transaction(async (trx) => {
+			const itemsService = new ItemsService('directus_fields', {
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+
+			if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+				if (table) {
 					this.addColumnToTable(table, field as Field);
+				} else {
+					await trx.schema.alterTable(collection, (table) => {
+						this.addColumnToTable(table, field as Field);
+					});
+				}
+			}
+
+			if (field.meta) {
+				await itemsService.create({
+					...field.meta,
+					collection: collection,
+					field: field.field,
 				});
 			}
-		}
-
-		if (field.meta) {
-			await this.itemsService.create({
-				...field.meta,
-				collection: collection,
-				field: field.field,
-			});
-		}
+		});
 
 		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
@@ -309,8 +331,8 @@ export class FieldsService {
 		}
 	}
 
-	public addColumnToTable(table: CreateTableBuilder, field: RawField | Field, alter: boolean = false) {
-		let column: ColumnBuilder;
+	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: boolean = false) {
+		let column: Knex.ColumnBuilder;
 
 		if (field.schema?.has_auto_increment) {
 			column = table.increments(field.field);

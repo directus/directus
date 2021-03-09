@@ -14,7 +14,8 @@ fields:
     interface: dropdown
     display: labels
     display_options:
-      defaultBackground: '#ECEFF1'
+      defaultForeground: 'var(--foreground-normal)'
+      defaultBackground: 'var(--background-normal-alt)'
       choices: null
       format: false
     options:
@@ -33,18 +34,18 @@ fields:
     interface: dropdown
     display: labels
     display_options:
-      defaultColor: '#B0BEC5'
-      defaultBackground: '#ECEFF1'
+      defaultForeground: 'var(--foreground-normal)'
+      defaultBackground: 'var(--background-normal-alt)'
       showAsDot: true
       choices:
         - text: Active
           value: active
-          foreground: '#607D8B'
-          background: '#2F80ED'
+          foreground: 'var(--primary-10)'
+          background: 'var(--primary)'
         - text: Inactive
           value: inactive
-          foreground: '#607D8B'
-          background: '#ECEFF1'
+          foreground: 'var(--foreground-normal)'
+          background: 'var(--background-normal-alt)'
     options:
       choices:
         - text: Active
@@ -83,25 +84,25 @@ fields:
     width: full
     display: labels
     display_options:
-      defaultForeground: '#263238'
-      defaultBackground: '#eceff1'
+      defaultForeground: 'var(--foreground-normal)'
+      defaultBackground: 'var(--background-normal-alt)'
       choices:
         - text: Create
           value: create
-          foreground: '#27ae60'
-          background: '#c9ebd7'
+          foreground: 'var(--primary)'
+          background: 'var(--primary-25)'
         - text: Update
           value: update
-          foreground: '#2f80ed'
-          background: '#cbdffb'
+          foreground: 'var(--blue)'
+          background: 'var(--blue-25)'
         - text: Delete
           value: delete
-          foreground: '#eb5757'
-          background: '#fad5d5'
+          foreground: 'var(--danger)'
+          background: 'var(--danger-25)'
         - text: Login
           value: authenticate
-          foreground: '#9b51e0'
-          background: '#e6d3f7'
+          foreground: 'var(--purple)'
+          background: 'var(--purple-25)'
 
   - field: collections
     interface: collections
@@ -109,6 +110,7 @@ fields:
     width: full
     display: labels
     display_options:
-      defaultBackground: '#ECEFF1'
+      defaultForeground: 'var(--foreground-normal)'
+      defaultBackground: 'var(--background-normal-alt)'
       choices: null
       format: false

@@ -2,7 +2,7 @@ import storage from '../storage';
 import sharp, { ResizeOptions } from 'sharp';
 import database from '../database';
 import path from 'path';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { Accountability, AbstractServiceOptions, Transformation } from '../types';
 import { AuthorizationService } from './authorization';
 import { Range } from '@directus/drive';

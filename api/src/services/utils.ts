@@ -1,6 +1,6 @@
 import { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
 import database from '../database';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import { systemCollectionRows } from '../database/system-data/collections';
 

@@ -121,8 +121,7 @@ exposure: Exposure
 shutter: Shutter
 iso: ISO
 focal_length: Focal Length
-schema_setup_title: How should this field save to the database?
-schema_field_title: How should this field behave in the app?
+schema_setup_key: This field's database column name and API key
 create_field: Create Field
 creating_new_field: 'New Field ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -159,10 +158,6 @@ fields_group: Fields Group
 new_data_alert: 'The following will be created within your Data Model:'
 new_field: 'New Field'
 new_collection: 'New Collection'
-configure_m2o: Configure your Many-to-One Relationship...
-configure_o2m: Configure your One-to-Many Relationship...
-configure_m2m: Configure your Many-to-Many Relationship...
-configure_m2a: Configure your Many-to-Any Relationship...
 add_m2o_to_collection: 'Add Many-to-One to "{collection}"'
 add_o2m_to_collection: 'Add One-to-Many to "{collection}"'
 add_m2m_to_collection: 'Add Many-to-Many to "{collection}"'
@@ -170,8 +165,6 @@ choose_a_type: Choose a Type...
 determined_by_relationship: Determined by Relationship
 add_note: Add a helpful note for users...
 default_value: Default Value
-interface_setup_title: How will users interact with this field?
-display_setup_title: How should this field’s value be displayed?
 standard_field: Standard Field
 single_file: Single File
 multiple_files: Multiple Files
@@ -179,6 +172,7 @@ m2o_relationship: Many to One Relationship
 o2m_relationship: One to Many Relationship
 m2m_relationship: Many to Many Relationship
 m2a_relationship: Many to Any Relationship
+invalid_item: Invalid Item
 next: Next
 field_name: Field Name
 translations: Translations

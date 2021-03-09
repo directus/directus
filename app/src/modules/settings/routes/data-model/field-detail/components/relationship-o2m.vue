@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('configure_o2m') }}</v-notice>
 
 		<div class="grid">
 			<div class="field">
@@ -248,12 +247,14 @@ export default defineComponent({
 			const fields = computed(() => {
 				if (!state.relations[0].many_collection) return [];
 
-				return fieldsStore.getFieldsForCollection(state.relations[0].many_collection).map((field: Field) => ({
-					text: field.field,
-					value: field.field,
-					disabled:
-						!field.schema || field.schema?.is_primary_key || field.type !== currentCollectionPrimaryKey.value.type,
-				}));
+				return fieldsStore
+					.getFieldsForCollectionAlphabetical(state.relations[0].many_collection)
+					.map((field: Field) => ({
+						text: field.field,
+						value: field.field,
+						disabled:
+							!field.schema || field.schema?.is_primary_key || field.type !== currentCollectionPrimaryKey.value.type,
+					}));
 			});
 
 			const collectionMany = computed({
@@ -380,7 +381,7 @@ export default defineComponent({
 		--v-icon-color: var(--primary);
 
 		position: absolute;
-		bottom: 14px;
+		bottom: 17px;
 		left: 50%;
 		transform: translateX(-50%);
 	}
@@ -413,7 +414,7 @@ export default defineComponent({
 		--v-icon-color: var(--primary);
 
 		position: absolute;
-		bottom: 14px;
+		bottom: 17px;
 		left: 50%;
 		transform: translateX(-50%);
 	}

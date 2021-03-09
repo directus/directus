@@ -7,6 +7,7 @@
 		<draggable
 			class="field-grid"
 			:value="usableFields"
+			:force-fallback="true"
 			handle=".drag-handle"
 			group="fields"
 			:set-data="hideDragImage"
@@ -59,18 +60,6 @@ import FieldSelect from './field-select.vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import { i18n } from '@/lang';
 import { orderBy } from 'lodash';
-
-type DraggableEvent = {
-	moved?: {
-		element: Field;
-		newIndex: number;
-		oldIndex: number;
-	};
-	added?: {
-		element: Field;
-		newIndex: number;
-	};
-};
 
 export default defineComponent({
 	components: { Draggable, FieldSelect },

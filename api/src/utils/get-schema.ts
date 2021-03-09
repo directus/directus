@@ -2,7 +2,7 @@ import { appAccessMinimalPermissions } from '../database/system-data/app-access-
 import { Accountability, SchemaOverview, Permission } from '../types';
 import logger from '../logger';
 import { mergePermissions } from './merge-permissions';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import SchemaInspector from '@directus/schema';
 
 export async function getSchema(options?: {

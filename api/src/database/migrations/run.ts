@@ -1,5 +1,5 @@
 import fse from 'fs-extra';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import path from 'path';
 import formatTitle from '@directus/format-title';
 import env from '../../env';
@@ -14,12 +14,13 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 	let migrationFiles = await fse.readdir(__dirname);
 
 	const customMigrationsPath = path.resolve(env.EXTENSIONS_PATH, 'migrations');
-	const customMigrationFiles =
+	let customMigrationFiles =
 		((await fse.pathExists(customMigrationsPath)) && (await fse.readdir(customMigrationsPath))) || [];
 
 	migrationFiles = migrationFiles.filter(
 		(file: string) => file.startsWith('run') === false && file.endsWith('.d.ts') === false
 	);
+	customMigrationFiles = customMigrationFiles.filter((file: string) => file.endsWith('.js'));
 
 	const completedMigrations = await database.select<Migration[]>('*').from('directus_migrations').orderBy('version');
 

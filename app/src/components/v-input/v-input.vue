@@ -17,6 +17,7 @@
 					v-bind="$attrs"
 					v-focus="autofocus"
 					v-on="_listeners"
+					:autocomplete="autocomplete"
 					:type="type"
 					:min="min"
 					:max="max"
@@ -128,6 +129,10 @@ export default defineComponent({
 		trim: {
 			type: Boolean,
 			default: false,
+		},
+		autocomplete: {
+			type: String,
+			default: 'off',
 		},
 	},
 	setup(props, { emit, listeners }) {
@@ -265,6 +270,7 @@ body {
 	--arrow-color: var(--border-normal);
 	--v-icon-color: var(--foreground-subdued);
 	--v-input-color: var(--foreground-normal);
+	--v-input-background-color: var(--background-input);
 	--v-input-border-color-focus: var(--primary);
 
 	display: flex;
@@ -286,7 +292,7 @@ body {
 		padding-bottom: 0px;
 		color: var(--v-input-color);
 		font-family: var(--v-input-font-family);
-		background-color: var(--background-page);
+		background-color: var(--v-input-background-color);
 		border: var(--border-width) solid var(--border-normal);
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
@@ -328,7 +334,7 @@ body {
 			--arrow-color: var(--border-normal-alt);
 
 			color: var(--v-input-color);
-			background-color: var(--background-page);
+			background-color: var(--background-input);
 			border-color: var(--border-normal-alt);
 		}
 
@@ -337,7 +343,7 @@ body {
 			--arrow-color: var(--border-normal-alt);
 
 			color: var(--v-input-color);
-			background-color: var(--background-page);
+			background-color: var(--background-input);
 			border-color: var(--v-input-border-color-focus);
 		}
 
@@ -379,6 +385,10 @@ body {
 		&::-webkit-inner-spin-button {
 			margin: 0;
 			-webkit-appearance: none;
+		}
+
+		&:focus {
+			border-color: var(--v-input-border-color-focus);
 		}
 
 		/* Firefox */

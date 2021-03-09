@@ -110,10 +110,9 @@ exposure: Exponering
 shutter: Slutare
 iso: ISO
 focal_length: Skärpedjup
-schema_setup_title: Hur ska detta fält spara till databasen?
-schema_field_title: Hur ska detta fält bete sig i appen?
 create_field: Skapa fält
 creating_new_field: 'Nytt fält ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Återställ sidans inställningar
 hidden_field: Dolt fält
 hidden_on_detail: Dolt på detaljnivå
@@ -143,10 +142,6 @@ to_manually_setup_translations: för att manuellt konfigurera översättningar.
 click_to_manage_translated_fields: >-
   Det finns inga översatta fält ännu. Klicka här för att skapa dem. | Det finns ett översatt fält. Klicka här för att administrera det. | Det finns {count} översatta fält. Klicka här för att administrera dem.
 fields_group: Fältens grupp
-configure_m2o: Konfigurera din Many-to-One relation...
-configure_o2m: Konfigurera din One-to-Many relation...
-configure_m2m: Konfigurera din Many-to-Many relation...
-configure_m2a: Konfigurera din Many-to-Any relation...
 add_m2o_to_collection: 'Lägg till Many-to-One i "{collection}"'
 add_o2m_to_collection: 'Lägg till One-to-Many i "{collection}"'
 add_m2m_to_collection: 'Lägg till Many-to-Many i "{collection}"'
@@ -154,8 +149,6 @@ choose_a_type: Välj en typ...
 determined_by_relationship: Bestämd av relation
 add_note: Lägg till kommentar för användare...
 default_value: Standardvärde
-interface_setup_title: Hur kommer användarna att interagera med detta fält?
-display_setup_title: Hur ska det här fältets värde visas?
 standard_field: Standardfält
 single_file: Enskild fil
 multiple_files: Flera filer
@@ -782,6 +775,11 @@ value: Värde
 view_project: Visa projekt
 report_error: Rapportera fel
 interfaces:
+  button-links:
+    links: Länkar
+    style: Stil
+    link: Länkar
+    button: Knappar
   checkboxes:
     checkboxes: Kryssrutor
     description: Välj mellan flera alternativ av kryssrutor
