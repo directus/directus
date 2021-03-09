@@ -2,13 +2,9 @@ node_modules
 
 /_*
 /coverage
-
 /dist*
-/types
-/browser
-/node
-/web
-
 /src/**/*.js
+/*.d.ts
+/*.d.ts.map
 
 *.tgz
