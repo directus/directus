@@ -30,7 +30,7 @@ export function extractError(error: SQLiteError) {
 	const invalid = parenMatches[1].slice(1, -1);
 
 	if (error.message.includes('SQLITE_CONSTRAINT: UNIQUE')) {
-		return new RecordNotUniqueException(`Field "${field}" has to be unique.`, {
+		return new RecordNotUniqueException(field, {
 			collection,
 			field,
 			invalid,
@@ -38,7 +38,7 @@ export function extractError(error: SQLiteError) {
 	}
 
 	if (error.message.includes('SQLITE_CONSTRAINT: FOREIGN KEY')) {
-		return new InvalidForeignKeyException(`Invalid foreign key in field "${field}".`, {
+		return new InvalidForeignKeyException(field, {
 			collection,
 			field,
 			invalid,
@@ -53,7 +53,7 @@ function notNullConstraint(error: SQLiteError) {
 	const [table, column] = errorParts[errorParts.length - 1].split('.');
 
 	if (table && column) {
-		return new NotNullViolationException(`Value for field "${column}" can't be null.`, {
+		return new NotNullViolationException(column, {
 			collection: table,
 			field: column,
 		});

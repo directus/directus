@@ -7,7 +7,7 @@ type Exceptions = {
 };
 
 export class ValueOutOfRangeException extends BaseException {
-	constructor(message: string, exceptions?: Exceptions) {
-		super(message, 400, 'VALUE_OUT_OF_RANGE', exceptions);
+	constructor(field: string, exceptions?: Exceptions) {
+		super(`Numeric value in field "${field}" is out of range.`, 400, 'VALUE_OUT_OF_RANGE', exceptions);
 	}
 }

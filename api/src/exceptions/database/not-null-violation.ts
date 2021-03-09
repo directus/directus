@@ -6,7 +6,7 @@ type Exceptions = {
 };
 
 export class NotNullViolationException extends BaseException {
-	constructor(message: string, exceptions?: Exceptions) {
-		super(message, 400, 'NOT_NULL_VIOLATION', exceptions);
+	constructor(field: string, exceptions?: Exceptions) {
+		super(`Value for field "${field}" can't be null.`, 400, 'NOT_NULL_VIOLATION', exceptions);
 	}
 }

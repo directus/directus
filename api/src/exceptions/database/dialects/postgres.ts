@@ -53,7 +53,7 @@ function uniqueViolation(error: PostgresError) {
 	const field = matches[0].slice(1, -1);
 	const invalid = matches[1].slice(1, -1);
 
-	return new RecordNotUniqueException(`Field "${field}" has to be unique.`, {
+	return new RecordNotUniqueException(field, {
 		collection,
 		field,
 		invalid,
@@ -70,7 +70,7 @@ function numericValueOutOfRange(error: PostgresError) {
 	const field = matches[1].slice(1, -1);
 	const invalid = matches[2].slice(1, -1);
 
-	return new ValueOutOfRangeException(`Numeric value in field "${field}" is out of range.`, {
+	return new ValueOutOfRangeException(field, {
 		collection,
 		field,
 		invalid,
@@ -86,7 +86,7 @@ function valueLimitViolation(error: PostgresError) {
 	const collection = matches[0].slice(1, -1);
 	const field = matches[1].slice(1, -1);
 
-	return new ValueTooLongException(`Value for field "${field}" is too long.`, {
+	return new ValueTooLongException(field, {
 		collection,
 		field,
 	});
@@ -95,9 +95,11 @@ function valueLimitViolation(error: PostgresError) {
 function notNullViolation(error: PostgresError) {
 	const { table, column } = error;
 
-	return new NotNullViolationException(`Value for field "${column}" can't be null.`, {
+	if (!column) return error;
+
+	return new NotNullViolationException(column, {
 		collection: table,
-		field: column!,
+		field: column,
 	});
 }
 
@@ -113,7 +115,7 @@ function foreignKeyViolation(error: PostgresError) {
 	const field = matches[0].slice(1, -1);
 	const invalid = matches[1].slice(1, -1);
 
-	return new InvalidForeignKeyException(`Invalid foreign key in field "${field}".`, {
+	return new InvalidForeignKeyException(field, {
 		collection,
 		field,
 		invalid,

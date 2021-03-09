@@ -7,7 +7,7 @@ type Extensions = {
 };
 
 export class RecordNotUniqueException extends BaseException {
-	constructor(message: string, extensions?: Extensions) {
-		super(message, 400, 'RECORD_NOT_UNIQUE', extensions);
+	constructor(field: string, extensions?: Extensions) {
+		super(`Field "${field}" has to be unique.`, 400, 'RECORD_NOT_UNIQUE', extensions);
 	}
 }

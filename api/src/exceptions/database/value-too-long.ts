@@ -6,7 +6,7 @@ type Exceptions = {
 };
 
 export class ValueTooLongException extends BaseException {
-	constructor(message: string, exceptions?: Exceptions) {
-		super(message, 400, 'VALUE_TOO_LONG', exceptions);
+	constructor(field: string, exceptions?: Exceptions) {
+		super(`Value for field "${field}" is too long.`, 400, 'VALUE_TOO_LONG', exceptions);
 	}
 }
