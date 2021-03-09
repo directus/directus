@@ -37,6 +37,9 @@ const knexConfig: Knex.Config = {
 
 if (env.DB_CLIENT === 'sqlite3') {
 	knexConfig.useNullAsDefault = true;
+	poolConfig.afterCreate = (conn: any, cb: any) => {
+		conn.run('PRAGMA foreign_keys = ON', cb);
+	};
 }
 
 const database = knex(knexConfig);
