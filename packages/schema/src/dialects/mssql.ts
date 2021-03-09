@@ -19,29 +19,37 @@ export default class MSSQL extends KnexMSSQL implements SchemaInspector {
 				[${this.knex.client.database()}].INFORMATION_SCHEMA.COLUMNS as c
 			LEFT JOIN (
 				SELECT
-					PK_SET = CASE WHEN CONSTRAINT_NAME LIKE '%pk%' THEN 'PRIMARY' ELSE NULL END
+					PK_SET = CASE WHEN CONSTRAINT_NAME LIKE '%pk%' THEN 'PRIMARY' ELSE NULL END,
+					TABLE_NAME,
+					CONSTRAINT_CATALOG,
+					COLUMN_NAME
 				FROM [${this.knex.client.database()}].INFORMATION_SCHEMA.KEY_COLUMN_USAGE
 			) as pk
-			ON [c].[TABLE_NAME] = [pk].[CONSTRAINT_TABLE_NAME]
+			ON [c].[TABLE_NAME] = [pk].[TABLE_NAME]
 			AND [c].[TABLE_CATALOG] = [pk].[CONSTRAINT_CATALOG]
-			AND [c].[COLUMN_NAME] = [pk].[CONSTRAINT_COLUMN_NAME]
+			AND [c].[COLUMN_NAME] = [pk].[COLUMN_NAME]
 			`
 		);
+
 		const overview: SchemaOverview = {};
-		for (const column of columns[0]) {
+
+		for (const column of columns) {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = {
-					primary: columns[0].find((nested: { column_key: string; table_name: string }) => {
+					primary: columns.find((nested: { column_key: string; table_name: string }) => {
 						return nested.table_name === column.table_name && nested.column_key === 'PRIMARY';
 					})?.column_name,
 					columns: {},
 				};
 			}
+
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
+				default_value: this.parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
 			};
 		}
+
 		return overview;
 	}
 }
