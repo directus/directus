@@ -5,19 +5,19 @@ import { extractError as mssql } from './dialects/mssql';
 import { extractError as sqlite } from './dialects/sqlite';
 import { extractError as oracle } from './dialects/oracle';
 
-export function translateKnexError(error: any) {
+export async function translateDatabaseError(error: any) {
 	switch (database.client.constructor.name) {
 		case 'Client_MySQL':
-			return mysql(error);
+			return await mysql(error);
 		case 'Client_PG':
-			return postgres(error);
+			return await postgres(error);
 		case 'Client_SQLite3':
-			return sqlite(error);
+			return await sqlite(error);
 		case 'Client_Oracledb':
 		case 'Client_Oracle':
-			return oracle(error);
+			return await oracle(error);
 		case 'Client_MSSQL':
-			return mssql(error);
+			return await mssql(error);
 
 		default:
 			return error;

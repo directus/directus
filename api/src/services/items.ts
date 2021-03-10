@@ -23,7 +23,7 @@ import { AuthorizationService } from './authorization';
 
 import { pick, clone, cloneDeep, merge } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
-import { translateKnexError } from '../exceptions/database/translate';
+import { translateDatabaseError } from '../exceptions/database/translate';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 
 export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
@@ -100,7 +100,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				try {
 					await trx.insert(payloadWithoutAlias).into(this.collection);
 				} catch (err) {
-					throw translateKnexError(err);
+					throw await translateDatabaseError(err);
 				}
 
 				// Auto-incremented id
