@@ -331,15 +331,16 @@ export default defineComponent({
 			const features = map.queryRenderedFeatures([startPos, currentPos], {
 				layers: ['__directus_polygons','__directus_points','__directus_lines']
 			});
-			let diff = new Set(props.selection);
-			for (const feature of features) {
-				if (diff.has(feature.id!)) {
-					diff.delete(feature.id!);
-				} else {
-					diff.add(feature.id!);
-				}
-			}
-			emit('select', Array.from(diff));
+			emit('select', features.map(feature => feature.id));
+			// let diff = new Set(props.selection);
+			// for (const feature of features) {
+			// 	if (diff.has(feature.id!)) {
+			// 		diff.delete(feature.id!);
+			// 	} else {
+			// 		diff.add(feature.id!);
+			// 	}
+			// }
+			// emit('select', Array.from(diff));
 		}
 
 		function onFeatureClick(event: MapLayerMouseEvent) {
