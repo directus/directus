@@ -110,7 +110,8 @@
 .tox .tox-toolbar,
 .tox .tox-toolbar__primary,
 .tox .tox-toolbar__overflow {
-	height: 40px;
+	min-height: 40px;
+	padding: 2px 0;
 	background: var(--background-subdued);
 	border-bottom: 2px solid var(--border-normal);
 }
@@ -197,7 +198,6 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-dialog__body-content {
 	padding: 24px 24px;
-
 }
 
 .tox .tox-dialog__footer {
@@ -362,7 +362,6 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-collection--list .tox-collection__group {
 	border-color: var(--border-normal);
 }
-
 
 .tox .tox-insert-table-picker__label {
 	color: var(--foreground-normal);

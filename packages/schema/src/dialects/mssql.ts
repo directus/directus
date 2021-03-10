@@ -51,11 +51,11 @@ export default class MSSQL implements Schema {
 			c.DATA_TYPE as data_type,
 			pk.PK_SET as column_key
 		FROM
-			${this.knex.client.database()}.INFORMATION_SCHEMA.COLUMNS as c
+			[${this.knex.client.database()}].INFORMATION_SCHEMA.COLUMNS as c
 		LEFT JOIN (
 			SELECT
 				PK_SET = CASE WHEN CONSTRAINT_NAME LIKE '%pk%' THEN 'PRIMARY' ELSE NULL END
-			FROM ${this.knex.client.database()}.INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+			FROM [${this.knex.client.database()}].INFORMATION_SCHEMA.KEY_COLUMN_USAGE
 		) as pk
 		ON [c].[TABLE_NAME] = [pk].[CONSTRAINT_TABLE_NAME]
 		AND [c].[TABLE_CATALOG] = [pk].[CONSTRAINT_CATALOG]

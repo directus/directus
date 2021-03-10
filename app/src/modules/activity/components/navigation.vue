@@ -1,6 +1,6 @@
 <template>
 	<v-list large>
-		<v-list-item :active="isEqual(navFilter, null)" @click="setNavFilter(null)">
+		<v-list-item @click="clearNavFilter" :active="!activeFilter">
 			<v-list-item-icon>
 				<v-icon name="access_time" />
 			</v-list-item-icon>
@@ -10,8 +10,8 @@
 		</v-list-item>
 
 		<v-list-item
-			:active="isEqual(navFilter, { user: currentUserID })"
-			@click="setNavFilter({ user: currentUserID })"
+			@click="setNavFilter('user', currentUserID)"
+			:active="activeFilter && activeFilter.field === 'user' && activeFilter.value === currentUserID"
 		>
 			<v-list-item-icon>
 				<v-icon name="face" />
@@ -23,7 +23,10 @@
 
 		<v-divider />
 
-		<v-list-item :active="isEqual(navFilter, { action: 'create' })" @click="setNavFilter({ action: 'create' })">
+		<v-list-item
+			@click="setNavFilter('action', 'create')"
+			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'create'"
+		>
 			<v-list-item-icon>
 				<v-icon name="add" />
 			</v-list-item-icon>
@@ -32,7 +35,10 @@
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item :active="isEqual(navFilter, { action: 'update' })" @click="setNavFilter({ action: 'update' })">
+		<v-list-item
+			@click="setNavFilter('action', 'update')"
+			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'update'"
+		>
 			<v-list-item-icon>
 				<v-icon name="check" />
 			</v-list-item-icon>
@@ -41,7 +47,10 @@
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item :active="isEqual(navFilter, { action: 'delete' })" @click="setNavFilter({ action: 'delete' })">
+		<v-list-item
+			@click="setNavFilter('action', 'delete')"
+			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'delete'"
+		>
 			<v-list-item-icon>
 				<v-icon name="clear" />
 			</v-list-item-icon>
@@ -50,7 +59,10 @@
 			</v-list-item-content>
 		</v-list-item>
 
-		<v-list-item :active="isEqual(navFilter, { action: 'comment' })" @click="setNavFilter({ action: 'comment' })">
+		<v-list-item
+			@click="setNavFilter('action', 'comment')"
+			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'comment'"
+		>
 			<v-list-item-icon>
 				<v-icon name="chat_bubble_outline" />
 			</v-list-item-icon>
@@ -60,8 +72,8 @@
 		</v-list-item>
 
 		<v-list-item
-			:active="isEqual(navFilter, { action: 'authenticate' })"
-			@click="setNavFilter({ action: 'authenticate' })"
+			@click="setNavFilter('action', 'authenticate')"
+			:active="activeFilter && activeFilter.field === 'action' && activeFilter.value === 'authenticate'"
 		>
 			<v-list-item-icon>
 				<v-icon name="login" />
@@ -74,22 +86,52 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
 import { useUserStore } from '@/stores/user';
-import { useNavigation } from '../composables/use-navigation';
 import { isEqual } from 'lodash';
+import usePreset from '../../../composables/use-preset';
+import { nanoid } from 'nanoid';
+import { Filter } from '../../../types';
 
 export default defineComponent({
-	setup() {
+	props: {
+		filters: {
+			type: Array as PropType<Filter[]>,
+			required: true,
+		},
+	},
+	setup(props, { emit }) {
 		const userStore = useUserStore();
 		const currentUserID = computed(() => userStore.state.currentUser?.id);
 
-		const { navFilter } = useNavigation();
+		const activeFilter = computed(() => {
+			return props.filters.find((filter) => filter.locked === true);
+		});
 
-		return { currentUserID, setNavFilter, isEqual, navFilter };
+		return { currentUserID, setNavFilter, clearNavFilter, activeFilter };
 
-		function setNavFilter(filter: Record<string, any> | null) {
-			navFilter.value = filter;
+		function setNavFilter(key: string, value: any) {
+			emit('update:filters', [
+				...props.filters.filter((filter) => {
+					return filter.locked === false;
+				}),
+				{
+					key: nanoid(),
+					locked: true,
+					field: key,
+					operator: 'eq',
+					value: value,
+				},
+			]);
+		}
+
+		function clearNavFilter() {
+			emit(
+				'update:filters',
+				props.filters.filter((filter) => {
+					return filter.locked === false;
+				})
+			);
 		}
 	},
 });

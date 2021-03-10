@@ -5,7 +5,7 @@ import Vue from 'vue';
 import { isEqual } from 'lodash';
 import { Filter } from '@/types/';
 import filtersToQuery from '@/utils/filters-to-query';
-import { orderBy } from 'lodash';
+import { orderBy, throttle } from 'lodash';
 import moveInArray from '@/utils/move-in-array';
 
 type Query = {
@@ -91,16 +91,34 @@ export function useItems(collection: Ref<string>, query: Query) {
 		}
 	});
 
-	watch([filters, limit, searchQuery], async (after, before) => {
+	watch([filters, limit], async (after, before) => {
 		if (!before || isEqual(after, before)) {
 			return;
 		}
-
+		page.value = 1;
 		await Vue.nextTick();
 		if (loading.value === false) {
 			getItems();
 		}
 	});
+
+	watch(
+		searchQuery,
+		throttle(
+			async (after, before) => {
+				if (!before || isEqual(after, before)) {
+					return;
+				}
+				page.value = 1;
+				await Vue.nextTick();
+				if (loading.value === false) {
+					getItems();
+				}
+			},
+			500,
+			{ trailing: true }
+		)
+	);
 
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
@@ -178,6 +196,10 @@ export function useItems(collection: Ref<string>, query: Query) {
 
 			items.value = fetchedItems;
 			itemCount.value = response.data.data.length;
+
+			if (fetchedItems.length === 0 && page.value !== 1) {
+				page.value = 1;
+			}
 
 			if (response.data.data.length === limit.value || page.value > 1) {
 				getItemCount();

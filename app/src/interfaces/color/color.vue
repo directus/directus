@@ -268,7 +268,7 @@ export default defineComponent({
 	width: calc(var(--input-height) - 12px);
 	max-height: calc(var(--input-height) - 12px);
 	overflow: hidden;
-	border-radius: var(--border-radius);
+	border-radius: calc(var(--border-radius) + 2px);
 	cursor: pointer;
 }
 

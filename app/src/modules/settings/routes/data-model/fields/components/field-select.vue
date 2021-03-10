@@ -172,7 +172,7 @@
 					<v-button secondary @click="duplicateActive = false">
 						{{ $t('cancel') }}
 					</v-button>
-					<v-button @click="saveDuplicate" :loading="duplicating">
+					<v-button @click="saveDuplicate" :disabled="duplicateName === null" :loading="duplicating">
 						{{ $t('duplicate') }}
 					</v-button>
 				</v-card-actions>

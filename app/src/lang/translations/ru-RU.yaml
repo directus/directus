@@ -607,49 +607,59 @@ singleton_label: Считать одним объектом
 system_fields_locked: Системные поля заблокированы и не могут быть изменены
 fields:
   directus_activity:
+    item: Ключ Элемента
     action: Действие
     collection: Коллекция
-    item: Ключ Элемента
-    user: Пользователь
     timestamp: Время Действия
-    edited_on: Изменено
-    comment_deleted_on: Комментарий удалён
-    ip: IP-адрес
-    user_agent: Пользовательский агент
+    user: Пользователь
     comment: Комментарий
+    user_agent: Пользовательский агент
+    ip: IP-адрес
+    revisions: Ревизии
   directus_collections:
+    collection: Коллекция
+    icon: Иконка
+    note: Заметка
+    display_template: Шаблон отображения
+    hidden: Скрыто
+    singleton: Синглтон
     translations: Переводы Названия Коллекции
+    sort_field: Поле сортировки
   directus_files:
     title: Заголовок
+    description: Описание
     tags: Теги
     location: Местоположение
-    description: Описание
-    filename_download: Имя для Загрузки
-    filename_disk: Имя на Диске
-    private_hash: Приватный хэш
-    checksum: Контрольная сумма
-    uploaded_on: Загружено
-    uploaded_by: Загружено
-    width: Ширина
-    height: Высота
-    duration: Продолжительность
-    filesize: Размер файла
     metadata: Метаданные
+    filesize: Размер файла
+    modified_on: Дата изменения
+    created_on: Дата создания
+    created_by: Кем создано
+    embed: Встроить
+    uploaded_by: Загружено
+    folder: Папка
+    width: Ширина
+    uploaded_on: Загружено
+    height: Высота
+    charset: Кодировка
+    duration: Продолжительность
   directus_users:
-    status: Статус
     first_name: Имя
     last_name: Фамилия
     email: Email
-    email_notifications: Уведомления по Email
     password: Пароль
-    role: Роль
-    company: Компания
-    title: Заголовок
-    timezone: Часовой пояс
-    language: Язык
     avatar: Аватар
+    location: Местоположение
+    title: Заголовок
+    description: Описание
+    tags: Теги
+    language: Язык
     theme: Тема
     tfa_secret: Двухфакторная аутентификация
+    status: Статус
+    role: Роль
+    last_page: Последняя Страница
+    last_access: Последний Доступ
   directus_settings:
     project_name: Имя Проекта
     project_url: URL Проекта
@@ -659,7 +669,6 @@ fields:
     public_background: Публичный Фон
     public_note: Публичное Примечание
     auth_password_policy: Политика Паролей Входа
-    auth_idle_timeout: Тайм-аут при Бездействии
     auth_login_attempts: Попыток Входа
     storage_asset_presets: Пресеты Элементов Хранилища
     storage_asset_transform: Преобразование Элементов Хранилища
@@ -675,9 +684,9 @@ fields:
     name: Название роли
     icon: Иконка Роли
     description: Описание
-    ip_access: Доступ IP
     app_access: Доступ к Приложению
     admin_access: Доступ Администратора
+    ip_access: Доступ IP
     enforce_tfa: Требуется 2FA
     users: Пользователи в Роли
     module_list: Навигация по Модулям
@@ -843,10 +852,6 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Ввод и предпросмотр markdown
-    tabbed: Вкладками
-    tabbed_label: Показывать предпросмотр в отдельной вкладке
-    edit: Редактирование
-    preview: Предпросмотр
   notice:
     notice: Примечание
     description: Показать короткое примечание
@@ -948,8 +953,6 @@ displays:
     datetime: Дата и время
     description: Показывать значения, относящиеся ко времени
     format: Формат
-    format_note: >-
-      Пользовательский формат принимает __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Длинный
     short: Короткий
     relative: Относительный

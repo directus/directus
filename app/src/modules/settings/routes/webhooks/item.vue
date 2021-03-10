@@ -155,7 +155,7 @@ export default defineComponent({
 
 		async function saveAsCopyAndNavigate() {
 			const newPrimaryKey = await saveAsCopy();
-			router.push(`/settings/webhooks/${newPrimaryKey}`);
+			if (newPrimaryKey) router.push(`/settings/webhooks/${newPrimaryKey}`);
 		}
 
 		async function deleteAndQuit() {

@@ -5,7 +5,7 @@ export default defineDisplay(({ i18n }) => ({
 	id: 'formatted-value',
 	name: i18n.t('displays.formatted-value.formatted-value'),
 	description: i18n.t('displays.formatted-value.description'),
-	types: ['string', 'text'],
+	types: ['string', 'text', 'integer', 'float', 'decimal', 'bigInteger'],
 	icon: 'text_format',
 	handler: DisplayFormattedValue,
 	options: [

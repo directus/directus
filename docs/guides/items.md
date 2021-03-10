@@ -1,85 +1,94 @@
 # Items
 
-> You can browse and manage items from within the App, via the [API Items Endpoint](/reference/api/items), or directly within the database. 
-> If you're unfamiliar with Directus Items, please start by reading our [Understanding Items](/concepts/platform-overview#items) docs.
+> Item are objects within a Collection which contain values for one or more fields. Each collection represents a
+> **record** in your database. [Learn more about Items](/concepts/items/).
 
-# Managing Items
+::: warning Permissions
 
-Managing items includes the basics of Create, Read, Update, and Delete — as well as more specific features such as Archiving, Reverting, Commenting, and Reordering. 
-Each of the guides below also includes a link to any relevant concepts.
+The actions on this page assume the current user has permission to perform that action. However, certain features may be
+disabled or hidden based on permissions.
 
-<!-- prettier-ignore-start -->
-:::warning Permissions
-All of the action on this page assume that the current user has permission to perform the action. 
-If they do not, then certain buttons or features may be disabled or altogether hidden.
 :::
-<!-- prettier-ignore-end -->
 
-## Creating Items
+## Creating an Item
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection where you want to add an item
 3. Click on the "Create Item" (+ icon) button located in the header
 4. Complete the Item Detail form
 5. Click the "Save Item" (✓ icon) button located in the header
 
-<!-- prettier-ignore-start -->
-:::tip Singletons
-If the Collection is configured as a "Singleton" in the data model settings, then the App will automatically skip step #3 above.
+::: tip Singletons
+
+If the Collection is configured as a "Singleton" in the data model settings, then the App will automatically skip step
+#3 above.
+
 :::
-<!-- prettier-ignore-end -->
 
-## Updating Items
+## Updating an Item
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the item you want to update
-3. Click on the item within the desired layout (eg: on the row of the table)
+3. Click on the item within the current layout (eg: on the row of the table)
 4. Update the Item Detail form
 5. Click the "Save Item" (✓ icon) button located in the header
 
-<!-- prettier-ignore-start -->
-:::tip Singletons
-If the Collection is configured as a "Singleton" in the data model settings, then the App will automatically skip step #3 above.
+::: tip Other Save Options
+
+To the right of the primary Save button there is a "..." icon which contains the following alternate save options:
+
+- Save and Stay (⌘S)
+- Save and Create New (⌘⇧S)
+- Save as Copy
+
 :::
-<!-- prettier-ignore-end -->
 
-## Deleting Items
+::: tip Singletons
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+If the Collection is configured as a "Singleton" in the data model settings, then the App will automatically skip step
+#3 above.
+
+:::
+
+## Deleting an Item
+
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the item you want to delete
 3. Select the item(s) within the desired layout (eg: the checkbox on the table row)
 4. Click the "Delete Item" (trash icon) button located in the header
 5. Confirm the action within the dialog by clicking "Delete"
 
-<!-- prettier-ignore-start -->
-:::tip Deleting from the Item Detail page
-You can also click on an item to navigate to its Detail page. From there, you can click on the "Delete Item" (trash icon) button located in the header.
+::: tip Deleting from the Item Detail page
+
+You can also click on an item to navigate to its Detail page. From there, you can click on the "Delete Item" (trash
+icon) button located in the header.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Archiving an Item
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the item you want to archive
 3. Select the item(s) within the desired layout (eg: the checkbox on the table row)
 4. Click the "Archive Item" (trash icon) button located in the header
 5. Confirm the action within the dialog by clicking "Archive"
 
-<!-- prettier-ignore-start -->
-:::warning Requires Configuration
+::: warning Requires Configuration
+
 This feature is only available if an Archive column has been configured in the Collection's data model settings.
+
 :::
-<!-- prettier-ignore-end -->
 
-<!-- prettier-ignore-start -->
-:::tip Archiving from the Item Detail page
-You can also click on an item to navigate to its Detail page. From there, you can click on the "Archive Item" (archive icon) button located in the header.
+::: tip Archiving from the Item Detail page
+
+You can also click on an item to navigate to its Detail page. From there, you can click on the "Archive Item" (archive
+icon) button located in the header.
+
 :::
-<!-- prettier-ignore-end -->
 
-## Reverting Items
+## Reverting an Item
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the item you want to archive
 3. Click on an item to navigate to its Detail page
 4. Click "Revisions" in the page sidebar
@@ -87,41 +96,54 @@ You can also click on an item to navigate to its Detail page. From there, you ca
 6. Click on the "Revert" button located in the drawer's header
 7. Confirm the action within the dialog by clicking "Revert"
 
-## Commenting on Items
+## Commenting on an Item
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the item you want to comment on
 3. Click on an item to navigate to its Detail page
 4. Click "Comments" in the page sidebar
 5. Type your message within the input
 6. Click the "Submit" button
 
-## Reordering Items
+## Manually Sorting Items
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
-2. Navigate to the collection of the items you want to reorder
-3. Choose a layout that supports reordering (eg: the default "table" mode)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
+2. Navigate to the collection of the items you want to sort
+3. Choose a layout that supports manual sorting (eg: the default "table" mode)
 4. Enable manual sorting. (eg: for the table layout, click on the Sort column's header)
 5. Drag items by their handle into a new position
 
-The new order is saved automatically, so make sure you wait until the App's loading indicator finishes before navigating away from the page.
+The new sort order is saved automatically, so make sure you wait until the App's loading indicator finishes before
+navigating away from the page.
 
-<!-- prettier-ignore-start -->
-:::warning Requires Configuration
+::: warning Requires Configuration
+
 This feature is only available if a Sort column has been configured in the Collection's data model settings.
+
 :::
-<!-- prettier-ignore-end -->
 
-# Browsing Items
+## Ordering Items
 
-In order to view, update or delete a specific item, you first need to be able to find it. 
-Directus includes a number of features to make browsing items as fast and efficient as possible, each of which are described below.
+1. Navigate to the [Collections Module](/concepts/application/#collections)
+2. Navigate to a collection of items
+3. Choose a layout that supports manual ordering (eg: the default "table" mode)
+4. Set the Order Field and Order Direction
+   - Table Layout: Click on the field's column header, clicking again changes order direction
+   - Card Layout: Adjust the two dropdowns in the layout's subheader
+
+::: tip Sort vs Order
+
+**Ordering** is a non-destructive action (does _not_ change your data) used to browse items alphabetically or
+numerically. **Sorting** (when enabled) saves a value in a [Sort](/guides/collections/#sort) field, which can then be
+used to return data in a custom order.
+
+:::
 
 ## Adjusting Item Layouts
 
-**[Learn more about the concept of layouts.](#)**
+**[Learn more about Layouts](/concepts/layouts/)**
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to browse
 3. Click "Layout Options" in the page sidebar
 4. Choose the desired "Layout" you want to use
@@ -129,17 +151,17 @@ Directus includes a number of features to make browsing items as fast and effici
 
 ## Searching Items
 
-**[Learn more about the concept of search.](#)**
+**[Learn more about Search](/guides/items/#searching-items)**
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to search
 3. Type your search query into the input located in the header
 
 ## Filtering Items
 
-**[Learn more about the concept of filtering.](#)**
+**[Learn more about Filtering](/guides/items/#filtering-items).**
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to filter
 3. Click "Advanced Filter" in the page sidebar
 4. Click the "Add Filter" dropdown and select the field to filter on
@@ -149,9 +171,9 @@ Directus includes a number of features to make browsing items as fast and effici
 
 ## Bookmarking Item Presets
 
-**[Learn more about the concept of bookmarks.](#)**
+**[Learn more about Bookmarks](/guides/items/#bookmarking-item-presets)**
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to bookmark
 3. Configure the page as desired (eg: layout, options, search, filters, order, etc)
 4. Click the "Create Bookmark" (bookmark icon) button in the header beside the page title
@@ -160,9 +182,9 @@ Directus includes a number of features to make browsing items as fast and effici
 
 ## Exporting Items
 
-**[Learn more about the concept of exporting.](#)**
+**[Learn more about Exporting](guides/items/#exporting-items)**
 
-1. Navigate to the [Collections Module](/concepts/app-overview#collections)
+1. Navigate to the [Collections Module](/concepts/application/#collections)
 2. Navigate to the collection of the items you want to bookmark
 3. Optional: Configure the dataset as desired (eg: layout, options, search, filters, order, etc)
 4. Click "Export Data" in the page sidebar

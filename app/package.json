@@ -1,50 +1,54 @@
 {
-  "name": "@directus/app",
-  "version": "9.0.0-rc.30",
-  "private": false,
-  "description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
-  "author": "Rijk van Zanten <rijk@rngr.org>",
-  "main": "dist/index.html",
-  "files": [
-    "dist",
-    "LICENSE",
-    "README.md"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/directus/directus.git"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "lint:styles": "stylelint \"**/*.{vue,scss}\"",
-    "fix": "prettier --write \"src/**/*.{js,vue,ts}\"",
-    "fix:styles": "stylelint --fix \"**/*.{vue,scss}\"",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "prepublishOnly": "npm run build",
-    "prettier": "prettier --write \"src/**/*.ts\""
-  },
-  "gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
-  "dependencies": {
-    "@directus/format-title": "file:../packages/format-title"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.8",
-    "@vue/cli-plugin-eslint": "^4.5.8",
-    "@vue/cli-plugin-router": "^4.5.8",
-    "@vue/cli-plugin-typescript": "^4.5.8",
-    "@vue/cli-plugin-vuex": "^4.5.8",
-    "@vue/cli-service": "^4.5.8",
-    "@vue/eslint-config-prettier": "^6.0.0",
-    "@vue/eslint-config-typescript": "^7.0.0",
-    "@vue/test-utils": "^1.1.1",
-    "prettier": "^2.2.1",
-    "vue-cli-plugin-yaml": "^1.0.2",
-    "worker-plugin": "^5.0.0"
-  }
+	"name": "@directus/app",
+	"version": "9.0.0-rc.34",
+	"private": false,
+	"description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
+	"author": "Rijk van Zanten <rijk@rngr.org>",
+	"main": "dist/index.html",
+	"files": [
+		"dist",
+		"LICENSE",
+		"README.md"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/directus/directus.git"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"copy-docs-images": "rimraf public/img/docs && copyfiles -u 3 ../docs/assets/* public/img/docs --verbose",
+		"predev": "npm run copy-docs-images",
+		"prebuild": "npm run copy-docs-images",
+		"dev": "vue-cli-service serve",
+		"build": "vue-cli-service build",
+		"lint": "vue-cli-service lint",
+		"lint:styles": "stylelint \"**/*.{vue,scss}\"",
+		"fix": "prettier --write \"src/**/*.{js,vue,ts}\"",
+		"fix:styles": "stylelint --fix \"**/*.{vue,scss}\"",
+		"storybook": "start-storybook -p 6006",
+		"build-storybook": "build-storybook",
+		"prepublishOnly": "npm run build",
+		"prettier": "prettier --write \"src/**/*.ts\""
+	},
+	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
+	"dependencies": {
+		"@directus/format-title": "file:../packages/format-title",
+		"@directus/docs": "file:../docs"
+	},
+	"devDependencies": {
+		"@vue/cli-plugin-babel": "^4.5.8",
+		"@vue/cli-plugin-eslint": "^4.5.8",
+		"@vue/cli-plugin-router": "^4.5.8",
+		"@vue/cli-plugin-typescript": "^4.5.8",
+		"@vue/cli-plugin-vuex": "^4.5.8",
+		"@vue/cli-service": "^4.5.8",
+		"@vue/eslint-config-prettier": "^6.0.0",
+		"@vue/eslint-config-typescript": "^7.0.0",
+		"@vue/test-utils": "^1.1.1",
+		"prettier": "^2.2.1",
+		"vue-cli-plugin-yaml": "^1.0.2",
+    	"worker-plugin": "^5.0.0"
+	}
 }

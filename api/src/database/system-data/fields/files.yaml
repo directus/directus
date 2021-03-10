@@ -55,6 +55,7 @@ fields:
     options:
       iconRight: publish
       placeholder: Name on disk storage...
+    readonly: true
     width: half
 
   - field: filename_download

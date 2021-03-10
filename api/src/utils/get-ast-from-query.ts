@@ -169,6 +169,7 @@ export default async function getASTFromQuery(
 						relatedCollection,
 						Array.isArray(nestedFields) ? nestedFields : (nestedFields as anyNested)[relatedCollection] || ['*']
 					);
+
 					child.query[relatedCollection] = {};
 					child.relatedKey[relatedCollection] = schema[relatedCollection].primary;
 				}
@@ -202,11 +203,19 @@ export default async function getASTFromQuery(
 
 		const fieldsInCollection = await getFieldsInCollection(parentCollection);
 
-		const allowedFields = permissions
-			? permissions.find((permission) => parentCollection === permission.collection)?.fields?.split(',')
-			: fieldsInCollection;
+		let allowedFields = fieldsInCollection;
+
+		if (permissions) {
+			const permittedFields = permissions
+				.find((permission) => parentCollection === permission.collection)
+				?.fields?.split(',');
+			if (permittedFields) allowedFields = permittedFields;
+		}
 
 		if (!allowedFields || allowedFields.length === 0) return [];
+
+		// In case of full read permissions
+		if (allowedFields[0] === '*') allowedFields = fieldsInCollection;
 
 		for (let index = 0; index < fields.length; index++) {
 			const fieldKey = fields[index];

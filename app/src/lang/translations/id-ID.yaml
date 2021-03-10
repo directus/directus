@@ -259,33 +259,41 @@ fields:
   directus_activity:
     action: Aksi
     collection: Koleksi
-    comment_deleted_on: Komentar dihapus pada
-    ip: Alamat IP
-    user_agent: Agen pengguna
     comment: Komentar
+    user_agent: Agen pengguna
+    ip: Alamat IP
+  directus_collections:
+    collection: Koleksi
+    icon: Ikon
+    note: Catatan
+    display_template: Tampilan Template
+    hidden: Tersembunyi
   directus_files:
     title: Judul
-    location: Lokasi
     description: Deskripsi
-    checksum: Checksum
+    location: Lokasi
+    metadata: Metadata
+    filesize: Ukuran berkas
+    modified_on: Dimodifikasi Pada
+    created_on: Dibuat Pada
+    created_by: Dibuat Oleh
+    embed: Lampirkan
+    folder: Direktori
     width: Lebar
     height: Tinggi
-    filesize: Ukuran berkas
-    metadata: Metadata
   directus_users:
-    status: Status
     first_name: Nama Depan
     last_name: Nama belakang
     email: Email
-    email_notifications: Email pemberitahuan
     password: Kata Sandi
-    role: Peran
-    company: Perusahaan
-    title: Judul
-    timezone: Zona waktu
-    language: Bahasa
     avatar: Avatar
+    location: Lokasi
+    title: Judul
+    description: Deskripsi
+    language: Bahasa
     theme: Tema
+    status: Status
+    role: Peran
   directus_settings:
     project_name: Nama Proyek
   directus_fields:
@@ -371,8 +379,6 @@ interfaces:
   many-to-one:
     many-to-one: Banyak ke Satu
     display_template: Tampilan Template
-  markdown:
-    edit: Edit
   numeric:
     numeric: Numerik
   translations:

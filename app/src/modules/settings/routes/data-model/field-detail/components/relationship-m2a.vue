@@ -12,6 +12,7 @@
 				<v-input
 					:class="{ matches: junctionCollectionExists }"
 					v-model="junctionCollection"
+					:nullable="false"
 					:placeholder="$t('collection') + '...'"
 					:disabled="autoFill || isExisting"
 					db-safe
@@ -77,6 +78,7 @@
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[0].many_field) }"
 				v-model="relations[0].many_field"
+				:nullable="false"
 				:placeholder="$t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
 				db-safe
@@ -114,6 +116,7 @@
 				class="one-collection-field"
 				:class="{ matches: junctionFieldExists(relations[0].one_collection_field) }"
 				v-model="relations[1].one_collection_field"
+				:nullable="false"
 				:placeholder="$t('collection_key') + '...'"
 				:disabled="autoFill || isExisting"
 				db-safe
@@ -149,6 +152,7 @@
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[1].many_field) }"
 				v-model="relations[1].many_field"
+				:nullable="false"
 				:placeholder="$t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
 				db-safe

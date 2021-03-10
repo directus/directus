@@ -1,7 +1,5 @@
 <template>
 	<private-view :title="title" ref="view">
-		<template #headline>Documentation</template>
-
 		<template #title-outer:prepend>
 			<v-button rounded disabled icon>
 				<v-icon name="info" />
@@ -25,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, inject, onUpdated } from '@vue/composition-api';
+import { defineComponent, ref, computed, onUpdated } from '@vue/composition-api';
 import DocsNavigation from '../components/navigation.vue';
 import Markdown from '../components/markdown.vue';
 import marked from 'marked';
@@ -37,12 +35,7 @@ async function getMarkdownForPath(path: string) {
 		pathParts.shift();
 	}
 
-	let docsPath = pathParts.join('/');
-
-	// Home
-	if (!docsPath) {
-		docsPath = 'readme';
-	}
+	const docsPath = pathParts.join('/');
 
 	const mdModule = await import('raw-loader!@directus/docs/' + docsPath + '.md');
 
@@ -63,6 +56,7 @@ export default defineComponent({
 	async beforeRouteUpdate(to, from, next) {
 		this.markdown = await getMarkdownForPath(to.path);
 		this.path = to.path;
+
 		next();
 	},
 	setup() {

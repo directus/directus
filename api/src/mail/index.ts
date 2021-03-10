@@ -68,7 +68,7 @@ async function getDefaultTemplateOptions() {
 	return {
 		projectName: projectInfo?.project_name || 'Directus',
 		projectColor: projectInfo?.project_color || '#546e7a',
-		projectLogo: getProjectLogoURL(projectInfo.project_logo),
+		projectLogo: getProjectLogoURL(projectInfo?.project_logo),
 	};
 
 	function getProjectLogoURL(logoID?: string) {

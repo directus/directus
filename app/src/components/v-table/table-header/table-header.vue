@@ -253,6 +253,7 @@ export default defineComponent({
 			display: flex;
 			align-items: center;
 			height: 100%;
+			color: var(--foreground-normal-alt);
 			font-weight: 600;
 
 			> span {

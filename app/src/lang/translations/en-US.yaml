@@ -628,49 +628,68 @@ singleton_label: Treat as single object
 system_fields_locked: System fields are locked and can't be edited
 fields:
   directus_activity:
+    item: Item Primary Key
     action: Action
     collection: Collection
-    item: Item Primary Key
-    user: Action By
     timestamp: Action On
-    edited_on: Edited On
-    comment_deleted_on: Comment Deleted On
-    ip: IP Address
-    user_agent: User Agent
+    user: Action By
     comment: Comment
+    user_agent: User Agent
+    ip: IP Address
+    revisions: Revisions
   directus_collections:
+    collection: Collection
+    icon: Icon
+    note: Note
+    display_template: Display Template
+    hidden: Hidden
+    singleton: Singleton
     translations: Collection Name Translations
+    archive_app_filter: Archive App Filter
+    archive_value: Archive Value
+    unarchive_value: Unarchive Value
+    sort_field: Sort Field
   directus_files:
     title: Title
+    description: Description
     tags: Tags
     location: Location
-    description: Description
-    filename_download: Filename Download
-    filename_disk: Filename Disk
-    private_hash: Private Hash
-    checksum: Checksum
-    uploaded_on: Uploaded On
-    uploaded_by: Uploaded By
-    width: Width
-    height: Height
-    duration: Duration
-    filesize: Filesize
+    storage: Storage
+    filename_disk: Filename (Disk)
+    filename_download: Filename (Download)
     metadata: Metadata
+    type: Mime Type
+    filesize: Filesize
+    modified_by: Modified By
+    modified_on: Modified On
+    created_on: Created On
+    created_by: Created By
+    embed: Embed
+    uploaded_by: Uploaded By
+    folder: Folder
+    width: Width
+    uploaded_on: Uploaded On
+    height: Height
+    charset: Charset
+    duration: Duration
   directus_users:
-    status: Status
     first_name: First Name
     last_name: Last Name
     email: Email
-    email_notifications: Email Notifications
     password: Password
-    role: Role
-    company: Company
-    title: Title
-    timezone: Timezone
-    language: Language
     avatar: Avatar
+    location: Location
+    title: Title
+    description: Description
+    tags: Tags
+    language: Language
     theme: Theme
     tfa_secret: Two-Factor Authentication
+    status: Status
+    role: Role
+    token: Token
+    last_page: Last Page
+    last_access: Last Access
   directus_settings:
     project_name: Project Name
     project_url: Project URL
@@ -680,10 +699,10 @@ fields:
     public_background: Public Background
     public_note: Public Note
     auth_password_policy: Auth Password Policy
-    auth_idle_timeout: Auth Idle Timeout
     auth_login_attempts: Auth Login Attempts
     storage_asset_presets: Storage Asset Presets
     storage_asset_transform: Storage Asset Transform
+    custom_css: Custom CSS
   directus_fields:
     collection: Collection Name
     icon: Collection Icon
@@ -696,9 +715,9 @@ fields:
     name: Role Name
     icon: Role Icon
     description: Description
-    ip_access: IP Access
     app_access: App Access
     admin_access: Admin Access
+    ip_access: IP Access
     enforce_tfa: Require 2FA
     users: Users in Role
     module_list: Module Navigation
@@ -873,6 +892,8 @@ interfaces:
     customSyntax_label: Add custom syntax types
     customSyntax_add: Add custom syntax
     box: Block / Inline
+    imageToken: Image Token
+    imageToken_label: What (static) token to append to image sources
   notice:
     notice: Notice
     description: Display a short notice
@@ -977,7 +998,7 @@ displays:
     description: Display values related to time
     format: Format
     format_note: >-
-      The custom format accetps the __[Date Field Symbol
+      The custom format accepts the __[Date Field Symbol
       Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Long
     short: Short

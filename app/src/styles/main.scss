@@ -7,6 +7,7 @@
 @import 'type-styles';
 @import 'lib/codemirror';
 @import 'lib/cropperjs';
+@import 'lib/highlight';
 
 body.light {
 	@include light;

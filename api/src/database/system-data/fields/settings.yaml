@@ -30,7 +30,7 @@ fields:
     translations:
       language: en-US
       translations: Brand Color
-    width: full
+    width: half
 
   - field: project_logo
     interface: file
@@ -73,7 +73,6 @@ fields:
     options:
       icon: security
       title: Security
-      color: '#2F80ED'
     special: alias
     width: full
 
@@ -100,7 +99,6 @@ fields:
     options:
       icon: storage
       title: Files & Thumbnails
-      color: '#2F80ED'
     special: alias
     width: full
 
@@ -195,7 +193,6 @@ fields:
     options:
       icon: brush
       title: App Overrides
-      color: '#2F80ED'
     special: alias
     width: full
 

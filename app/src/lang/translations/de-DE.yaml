@@ -26,6 +26,8 @@ connection_fair: Brauchbare Verbindung
 connection_poor: Schlechte Verbindung
 rename_folder: Ordner umbenennen
 delete_folder: Ordner löschen
+prefix: Präfix
+suffix: Suffix
 reset_bookmark: Lesezeichen zurücksetzen
 rename_bookmark: Lesezeichen umbenennen
 update_bookmark: Lesezeichen bearbeiten
@@ -74,6 +76,9 @@ no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
 field_file: Eine Datei
 field_files: Mehrere Dateien
+field_m2o: M2O Beziehung
+field_o2m: O2M Beziehung
+field_m2m: M2M Beziehung
 field_translations: Übersetzungen
 item_permissions: Item Berechtigungen
 field_permissions: Feldberechtigungen
@@ -119,12 +124,14 @@ m2o_relationship: n:1-Beziehung
 o2m_relationship: 1:n-Beziehung
 m2m_relationship: n:m-Beziehung
 next: Weiter
+field_name: Feldname
 translations: Übersetzungen
 note: Notiz
 enter_a_value: Gib einen Wert ein...
 length: Länge
 readonly: Lesezugriff
 unique: Eindeutig
+updated_on: Geändert am
 primary_key: Primärschlüssel
 foreign_key: Fremdschlüssel
 dismiss: Verwerfen
@@ -359,47 +366,55 @@ collection: Sammlung
 collections: Sammlungen
 fields:
   directus_activity:
+    item: Item-Primärschlüssel
     action: Aktion
     collection: Sammlung
-    item: Item-Primärschlüssel
-    user: Aktion von
     timestamp: Aktion am
-    edited_on: Bearbeitet am
-    comment_deleted_on: Kommentar gelöscht am
-    ip: IP Adresse
-    user_agent: User Agent
+    user: Aktion von
     comment: Kommentar
+    user_agent: User Agent
+    ip: IP Adresse
+  directus_collections:
+    collection: Sammlung
+    icon: Symbol
+    note: Notiz
+    display_template: Anzeigevorlage
+    hidden: Ausgeblendet
+    sort_field: Sortierfeld
   directus_files:
     title: Titel
+    description: Beschreibung
     tags: Stichwörter
     location: Ort
-    description: Beschreibung
-    filename_download: Dateiname Download
-    filename_disk: Dateiname Festplatte
-    private_hash: Privater Hash
-    checksum: Prüfsumme
-    uploaded_on: Hochgeladen am
+    metadata: Metadaten
+    filesize: Dateigröße
+    modified_on: Geändert am
+    created_on: Erstellt am
+    created_by: Erstellt von
+    embed: Einbetten
     uploaded_by: Hochgeladen von
+    folder: Ordner
     width: Breite
+    uploaded_on: Hochgeladen am
     height: Höhe
     duration: Dauer
-    filesize: Dateigröße
-    metadata: Metadaten
   directus_users:
-    status: Status
     first_name: Vorname
     last_name: Nachname
     email: E-Mail
-    email_notifications: E-Mail-Benachrichtigungen
     password: Passwort
-    role: Rolle
-    company: Firma
-    title: Titel
-    timezone: Zeitzone
-    language: Sprache
     avatar: Avatar
+    location: Ort
+    title: Titel
+    description: Beschreibung
+    tags: Stichwörter
+    language: Sprache
     theme: Design
     tfa_secret: Zwei-Faktor-Authentifizierung
+    status: Status
+    role: Rolle
+    last_page: Letzte Seite
+    last_access: Letzter Zugriff
   directus_settings:
     project_name: Projektname
     project_url: Projekt URL
@@ -506,8 +521,6 @@ interfaces:
     display_template: Anzeigevorlage
   markdown:
     markdown: Markdown
-    edit: Bearbeiten
-    preview: Vorschau
   numeric:
     numeric: Numerisch
   one-to-many:

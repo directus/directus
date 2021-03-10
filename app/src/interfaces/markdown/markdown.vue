@@ -73,6 +73,10 @@
 				</template>
 			</v-menu>
 
+			<v-button @click="imageDialogOpen = true" small icon v-tooltip="$t('wysiwyg_options.image')">
+				<v-icon name="insert_photo" />
+			</v-button>
+
 			<v-button
 				v-for="custom in customSyntax"
 				small
@@ -94,7 +98,19 @@
 
 		<textarea ref="codemirrorEl" :value="value || ''" />
 
-		<div v-show="view[0] === 'preview'" class="preview-box" v-html="html"></div>
+		<div v-if="view[0] === 'preview'" class="preview-box" v-html="html"></div>
+
+		<v-dialog :active="imageDialogOpen" @esc="imageDialogOpen = null" @toggle="imageDialogOpen = null">
+			<v-card>
+				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
+				<v-card-text>
+					<v-upload @input="onImageUpload" from-url from-library />
+				</v-card-text>
+				<v-card-actions>
+					<v-button @click="imageDialogOpen = null" secondary>{{ $t('cancel') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
@@ -117,6 +133,9 @@ import 'codemirror/mode/markdown/markdown';
 import 'codemirror/addon/display/placeholder.js';
 
 import { useEdit, CustomSyntax } from './composables/use-edit';
+import { getPublicURL } from '../../utils/get-root-path';
+import { addTokenToURL } from '../../api';
+import escapeStringRegexp from 'escape-string-regexp';
 
 export default defineComponent({
 	props: {
@@ -136,12 +155,18 @@ export default defineComponent({
 			type: Array as PropType<CustomSyntax[]>,
 			default: () => [],
 		},
+		imageToken: {
+			type: String,
+			default: undefined,
+		},
 	},
 	setup(props, { emit }) {
 		const codemirrorEl = ref<HTMLTextAreaElement | null>(null);
 		const codemirror = ref<CodeMirror.EditorFromTextArea | null>(null);
 
 		const view = ref(['editor']);
+
+		const imageDialogOpen = ref(false);
 
 		onMounted(async () => {
 			if (codemirrorEl.value) {
@@ -179,8 +204,22 @@ export default defineComponent({
 		const { edit } = useEdit(codemirror, props.customSyntax);
 
 		const html = computed(() => {
-			const html = marked(props.value || '');
+			let md = props.value || '';
+
+			if (!props.imageToken) {
+				const baseUrl = getPublicURL() + 'assets/';
+				const regex = new RegExp(`\\]\\((${escapeStringRegexp(baseUrl)}[^\\s\\)]*)`, 'gm');
+
+				const images = Array.from(md.matchAll(regex));
+
+				for (const image of images) {
+					md = md.replace(image[1], addTokenToURL(image[1]));
+				}
+			}
+
+			const html = marked(md);
 			const htmlSanitized = sanitize(html);
+
 			return htmlSanitized;
 		});
 
@@ -189,7 +228,21 @@ export default defineComponent({
 			columns: 4,
 		});
 
-		return { codemirrorEl, edit, view, html, table };
+		return { codemirrorEl, edit, view, html, table, onImageUpload, imageDialogOpen };
+
+		function onImageUpload(image: any) {
+			if (!codemirror.value) return;
+
+			let url = getPublicURL() + `assets/` + image.id;
+
+			if (props.imageToken) {
+				url += '?access_token=' + props.imageToken;
+			}
+
+			codemirror.value.replaceSelection(`![](${url})`);
+
+			imageDialogOpen.value = false;
+		}
 	},
 });
 </script>

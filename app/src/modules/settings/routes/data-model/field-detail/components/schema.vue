@@ -15,6 +15,7 @@
 					autofocus
 					class="monospace"
 					v-model="fieldData.field"
+					:nullable="false"
 					db-safe
 					:placeholder="$t('a_unique_column_name')"
 				/>

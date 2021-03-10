@@ -3,9 +3,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, PropType, onMounted, onUpdated } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUpdated } from '@vue/composition-api';
+
 import marked, { Renderer } from 'marked';
 import highlight from 'highlight.js';
+
+import router from '@/router';
 
 export default defineComponent({
 	setup(props, { slots }) {
@@ -17,10 +20,17 @@ export default defineComponent({
 		return { html, onClick };
 
 		async function onClick($event: Event) {
-			if ($event.target instanceof HTMLElement && $event.target.classList.contains('copy')) {
-				await navigator.clipboard.writeText(
-					window.location.href.split('#')[0] + $event.target.getAttribute('href')
-				);
+			if ($event.target instanceof HTMLElement) {
+				const href = $event.target.getAttribute('href');
+
+				if (href && $event.target.classList.contains('copy')) {
+					await navigator.clipboard.writeText(window.location.href.split('#')[0] + href);
+				}
+
+				if (href && href.indexOf('/admin/docs/') === 0) {
+					$event.preventDefault();
+					await router.push(href.replace('/admin/docs/', '/docs/'));
+				}
 			}
 		}
 
@@ -31,31 +41,50 @@ export default defineComponent({
 			}
 
 			let htmlString = slots.default()[0].text!;
-			const hintRegex = /<p>:::(.*?) (.*?)\r?\n((\s|.)*?):::<\/p>/gm;
 
 			const renderer: Partial<Renderer> = {
 				heading(text, level) {
 					const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-
 					return `
 					<h${level} id="${escapedText}">
 						<a class="heading-link copy" href="#${escapedText}">#</a>
 						${text}
 					</h${level}>`;
 				},
+				link(href, title, text) {
+					let classname = 'body-link link';
+					if (href && href.indexOf('/') === 0 && href.indexOf('/admin/docs/') === -1) href = `/admin/docs${href}`;
+					if (href && href.indexOf('#') === 0) classname = `${classname} copy`;
+					return `<a href="${href}" class="${classname}">${text}</a>`;
+				},
+				image(href, title, text) {
+					if (!href) return '';
+					let paths = href.split('/');
+
+					while ((paths[0] === 'assets') === false) {
+						paths = paths.slice(1);
+					}
+
+					const path = `/img/docs/${paths.slice(1).join('/')}`;
+
+					const classname = 'body-image';
+
+					return `<img src="${path}" class="${classname}" alt="${text}">`;
+				},
 			};
 
 			// Marked merges it's default rendered with our extension. It's typed as a full rendered however
 			marked.use({ renderer } as any);
 
+			htmlString = htmlString.replace(/::: ([^\s]+) ([^\n]+)([\s\S]*?)\n:::/gm, (match, type, title, body) => {
+				body = marked(body);
+				return `<div class="hint ${type}"><p class="hint-title">${title}</p><p class="hint-body">${body}</p></div>`;
+			});
+
 			htmlString = marked(htmlString, {
 				highlight: (code, lang) => {
 					return highlight.highlightAuto(code, [lang]).value;
 				},
-			});
-
-			htmlString = htmlString.replace(hintRegex, (match: string, type: string, title: string, body: string) => {
-				return `<div class="hint ${type}"><p class="hint-title">${title}</p><p class="hint-body">${body}</p></div>`;
 			});
 
 			html.value = htmlString;

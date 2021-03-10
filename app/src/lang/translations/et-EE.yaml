@@ -120,47 +120,52 @@ collection: Kogud
 collections: Kogud
 fields:
   directus_activity:
+    item: Kirje peamine võti
     action: Tegevus
     collection: Kogud
-    item: Kirje peamine võti
-    user: Tegevuse sooritas
     timestamp: Tegevuse aeg
-    edited_on: Muudeti
-    comment_deleted_on: Kommentaar kustutati
-    ip: IP aadress
-    user_agent: Kasutaja agent
+    user: Tegevuse sooritas
     comment: Kommentaar
+    user_agent: Kasutaja agent
+    ip: IP aadress
+  directus_collections:
+    collection: Kogud
+    icon: Ikoon
+    note: Märkus
+    display_template: Vaate mall
+    hidden: Peidetud
+    sort_field: Sorteeti välja
   directus_files:
     title: Pealkiri
+    description: Kirjeldus
     tags: Sildid
     location: Asukoht
-    description: Kirjeldus
-    filename_download: Faili allalaadimine
-    filename_disk: Failinimi kettal
-    private_hash: Privaatne räsi
-    checksum: Kontrollsumma
-    uploaded_on: Üleslaaditud
+    metadata: Metaandmed
+    filesize: Failisuurus
+    modified_on: Muudetud
+    created_on: Loodud
+    created_by: Autor
+    embed: Põimitud
     uploaded_by: Üles laadis
     width: Laius
+    uploaded_on: Üleslaaditud
     height: Kõrgus
     duration: Kestus
-    filesize: Failisuurus
-    metadata: Metaandmed
   directus_users:
-    status: Staatus
     first_name: Eesnimi
     last_name: Perekonnanimi
     email: E-post
-    email_notifications: E-posti teavitused
     password: Parool
-    role: Roll
-    company: Ettevõte
-    title: Pealkiri
-    timezone: Ajavöönd
-    language: Keel
     avatar: Avatar
+    location: Asukoht
+    title: Pealkiri
+    description: Kirjeldus
+    tags: Sildid
+    language: Keel
     theme: Teema
     tfa_secret: Kaheastmeline autentimine
+    status: Staatus
+    role: Roll
   directus_settings:
     project_name: Projekti nimi
   directus_fields:
@@ -249,8 +254,6 @@ interfaces:
     display_template: Vaate mall
   markdown:
     markdown: Markdown
-    edit: Muuda
-    preview: Eelvaade
   numeric:
     numeric: Numbriline
   radio-buttons:
