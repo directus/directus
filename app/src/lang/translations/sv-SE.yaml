@@ -72,6 +72,7 @@ validationError:
   null: Värdet måste vara null
   nnull: Värdet kan inte vara null
   required: Ett värde är obligatoriskt
+  unique: Värdet måste vara unikt
 all_access: Alla behörigheter
 no_access: Ingen åtkomst
 use_custom: Använd anpassad
