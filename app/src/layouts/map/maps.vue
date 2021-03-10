@@ -256,15 +256,15 @@ function isArray(obj: any): boolean {
 	return Array.isArray(obj);
 }
 
+function objectMap<T extends Object>(object: T, fun: (v: T[keyof T]) => T[keyof T]) {
+  return Object.keys(object).reduce((result: T, key: unknown) => {
+    result[key as keyof T] = fun(object[key as keyof T])
+    return result
+  }, {} as T)
+}
 function clone<A>(a: A): A {
 	// @ts-ignore
-	return !isObject(a)
-		? a
-		: isArray(a)
-		? // @ts-ignore
-		  [...a].map(clone)
-		: // @ts-ignore
-		  Object.keys(a).reduce((r, k) => ({ ...r, [k]: clone(a[k]) }), {});
+	return !isObject(a) ? a : isArray(a) ? a.map(clone) : objectMap(a, clone);
 }
 
 function assign(a: any, b: any): any {
@@ -272,18 +272,6 @@ function assign(a: any, b: any): any {
 	if ([a, b].every(isArray)) return a.concat(b);
 	for (const key in b) a[key] = assign(a[key], b[key]);
 	return a;
-}
-
-function arrayOr<A, B>(a: Iterable<A>, b: Iterable<B>): Array<A | B> {
-	const or = new Set<A | B>(a);
-	for (const e of b) {
-		if (or.has(e)) {
-			or.delete(e);
-		} else {
-			or.add(e);
-		}
-	}
-	return Array.from(or);
 }
 
 type Item = Record<string, any>;
@@ -317,10 +305,6 @@ type LayoutOptions = {
 };
 
 type GeometryFormat = 'geojson' | 'csv' | 'wkt' | 'wkb' | 'twkb' | 'lnglat' | undefined;
-
-function valueOr<T>(a: T, b: T): T {
-	return a == undefined ? b : a;
-}
 
 export default defineComponent({
 	components: { MapComponent },
@@ -369,14 +353,14 @@ export default defineComponent({
 		const _filters = useSync(props, 'filters', emit);
 		const _selection = useSync(props, 'selection', emit);
 		const _searchQuery = useSync(props, 'searchQuery', emit);
-		const _layoutQuery: Ref<LayoutQuery> = useSync(props, 'layoutQuery', emit) as Ref<LayoutQuery>;
-		const _layoutOptions: Ref<LayoutOptions> = useSync(props, 'layoutOptions', emit);
+		const _layoutQuery = useSync(props, 'layoutQuery', emit) as Ref<LayoutQuery>;
+		const _layoutOptions = useSync(props, 'layoutOptions', emit) as Ref<LayoutOptions>;
 		const { collection, searchQuery } = toRefs(props);
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const page = syncOption(_layoutQuery, 'page', 1);
-		const sort = syncOption(_layoutQuery, 'sort', fieldsInCollection.value[0].field);
 		const limit = syncOption(_layoutQuery, 'limit', 1000);
+		const sort = syncOption(_layoutQuery, 'sort', fieldsInCollection.value[0].field);
 
 		const cameraOptions = syncOption(_layoutOptions, 'cameraOptions', undefined);
 		const customLayers = syncOption(_layoutOptions, 'customLayers', dataStyle.layers);
@@ -395,7 +379,7 @@ export default defineComponent({
 		const latitudeField = syncOption(_layoutOptions, 'latitudeField', undefined);
 		const geometryField = syncOption(_layoutOptions, 'geometryField', undefined);
 		const geometryFormat = computed<GeometryFormat>({
-			get: () => valueOr(_layoutOptions.value?.geometryFormat, undefined),
+			get: () => _layoutOptions.value?.geometryFormat ?? undefined,
 			set(newValue: GeometryFormat) {
 				_layoutOptions.value = {
 					...(_layoutOptions.value || {}),
@@ -471,7 +455,7 @@ export default defineComponent({
 		);
 
 		function resetWorker() {
-			geojsonLoading.value && geojsonWorker && geojsonWorker.terminate();
+			if(geojsonWorker) geojsonWorker.terminate();
 			geojsonLoading.value = false;
 			geojsonWorker = new Worker('./worker', { name: 'geojson-converter', type: 'module' });
 			workerProxy = wrap(geojsonWorker);
@@ -535,13 +519,8 @@ export default defineComponent({
 			userSource.value = { ...userSource.value };
 		}
 
-		function getGeometryCompare(feature: GeoJSON.Feature) {
-			if (feature.geometry.type == 'MultiPolygon') {
-			}
-		}
-
 		function updateSelection(selected: Array<string | number>) {
-			_selection.value = selected as Record<string, any>[];
+			_selection.value = selected as unknown as Record<string, any>[];
 		}
 
 		const featureId = computed(() => {
@@ -662,11 +641,11 @@ export default defineComponent({
 			page.value = newPage;
 		}
 
-		function syncOption<R, T extends keyof R>(ref: Ref<R>, key: T, defaultValue: NonNullable<R>[T]) {
-			return computed<NonNullable<R>[T]>({
-				get: () => valueOr(ref.value?.[key], defaultValue) as NonNullable<R>[T],
+		function syncOption<R, T extends keyof R>(ref: Ref<R>, key: T, defaultValue: R[T]) {
+			return computed<R[T]>({
+				get: () => ref.value?.[key] ?? defaultValue,
 				set: (value: R[T]) => {
-					ref.value = { ...valueOr(ref.value, {}), [key]: value } as R;
+					ref.value = { ...(ref.value ?? {}), [key]: value } as R;
 				},
 			});
 		}

@@ -34,8 +34,9 @@
 	},
 	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
 	"dependencies": {
+		"@directus/docs": "file:../docs",
 		"@directus/format-title": "file:../packages/format-title",
-		"@directus/docs": "file:../docs"
+		"copyfiles": "^2.4.1"
 	},
 	"devDependencies": {
 		"@vue/cli-plugin-babel": "^4.5.8",
@@ -49,6 +50,6 @@
 		"@vue/test-utils": "^1.1.1",
 		"prettier": "^2.2.1",
 		"vue-cli-plugin-yaml": "^1.0.2",
-    	"worker-plugin": "^5.0.0"
+		"worker-plugin": "^5.0.0"
 	}
 }
