@@ -17,32 +17,25 @@ export function extractError(error: SQLiteError) {
 		return notNullConstraint(error);
 	}
 
-	const betweenTicks = /\`([^\`]+)\`/g;
-	const betweenParens = /\(([^\)]+)\)/g;
-
-	const tickMatches = error.message.match(betweenTicks);
-	const parenMatches = error.message.match(betweenParens);
-
-	if (!tickMatches || !parenMatches) return error;
-
-	const collection = tickMatches[0].slice(1, -1);
-	const field = tickMatches[1].slice(1, -1);
-	const invalid = parenMatches[1].slice(1, -1);
-
 	if (error.message.includes('SQLITE_CONSTRAINT: UNIQUE')) {
-		return new RecordNotUniqueException(field, {
-			collection,
-			field,
-			invalid,
+		const errorParts = error.message.split(' ');
+		const [table, column] = errorParts[errorParts.length - 1].split('.');
+
+		if (!table || !column) return error;
+
+		return new RecordNotUniqueException(column, {
+			collection: table,
+			field: column,
 		});
 	}
 
 	if (error.message.includes('SQLITE_CONSTRAINT: FOREIGN KEY')) {
-		return new InvalidForeignKeyException(field, {
-			collection,
-			field,
-			invalid,
-		});
+		/**
+		 * NOTE:
+		 * SQLite doesn't return any useful information in it's foreign key constraint failed error, so
+		 * we can't extract the table/column/value accurately
+		 */
+		return new InvalidForeignKeyException(null);
 	}
 
 	return error;
