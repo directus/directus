@@ -368,6 +368,10 @@ export class FieldsService {
 			column.nullable();
 		}
 
+		if (field.schema?.is_unique === true) {
+			column.unique();
+		}
+
 		if (field.schema?.is_primary_key) {
 			column.primary();
 		}
