@@ -3,7 +3,7 @@ import { BaseException } from '../base';
 type Exceptions = {
 	collection: string;
 	field: string | null;
-	invalid: string;
+	invalid?: string;
 };
 
 export class ValueOutOfRangeException extends BaseException {

@@ -57,33 +57,33 @@ function uniqueViolation(error: MySQLError) {
 
 function numericValueOutOfRange(error: MySQLError) {
 	const betweenTicks = /\`([^\`]+)\`/g;
-	const betweenParens = /\(([^\)]+)\)/g;
+	const betweenQuotes = /\'([^\']+)\'/g;
 
 	const tickMatches = error.sql.match(betweenTicks);
-	const parenMatches = error.sql.match(betweenParens);
+	const quoteMatches = error.sqlMessage.match(betweenQuotes);
 
-	if (!tickMatches || !parenMatches) return error;
+	if (!tickMatches || !quoteMatches) return error;
 
 	const collection = tickMatches[0].slice(1, -1);
-	const field = tickMatches[1].slice(1, -1);
-	const invalid = parenMatches[1].slice(1, -1);
+	const field = quoteMatches[0].slice(1, -1);
 
 	return new ValueOutOfRangeException(field, {
 		collection,
 		field,
-		invalid,
 	});
 }
 
 function valueLimitViolation(error: MySQLError) {
 	const betweenTicks = /\`([^\`]+)\`/g;
+	const betweenQuotes = /\'([^\']+)\'/g;
 
 	const tickMatches = error.sql.match(betweenTicks);
+	const quoteMatches = error.sqlMessage.match(betweenQuotes);
 
-	if (!tickMatches) return error;
+	if (!tickMatches || !quoteMatches) return error;
 
 	const collection = tickMatches[0].slice(1, -1);
-	const field = tickMatches[1].slice(1, -1);
+	const field = quoteMatches[0].slice(1, -1);
 
 	return new ValueTooLongException(field, {
 		collection,
@@ -93,13 +93,15 @@ function valueLimitViolation(error: MySQLError) {
 
 function notNullViolation(error: MySQLError) {
 	const betweenTicks = /\`([^\`]+)\`/g;
+	const betweenQuotes = /\'([^\']+)\'/g;
 
 	const tickMatches = error.sql.match(betweenTicks);
+	const quoteMatches = error.sqlMessage.match(betweenQuotes);
 
-	if (!tickMatches) return error;
+	if (!tickMatches || !quoteMatches) return error;
 
 	const collection = tickMatches[0].slice(1, -1);
-	const field = tickMatches[1].slice(1, -1);
+	const field = quoteMatches[0].slice(1, -1);
 
 	return new NotNullViolationException(field, {
 		collection,
@@ -111,13 +113,13 @@ function foreignKeyViolation(error: MySQLError) {
 	const betweenTicks = /\`([^\`]+)\`/g;
 	const betweenParens = /\(([^\)]+)\)/g;
 
-	const tickMatches = error.sql.match(betweenTicks);
+	const tickMatches = error.sqlMessage.match(betweenTicks);
 	const parenMatches = error.sql.match(betweenParens);
 
 	if (!tickMatches || !parenMatches) return error;
 
-	const collection = tickMatches[0].slice(1, -1);
-	const field = tickMatches[1].slice(1, -1);
+	const collection = tickMatches[1].slice(1, -1);
+	const field = tickMatches[3].slice(1, -1);
 	const invalid = parenMatches[1].slice(1, -1);
 
 	return new InvalidForeignKeyException(field, {
