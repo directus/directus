@@ -54,7 +54,11 @@ database
 
 export async function hasDatabaseConnection() {
 	try {
-		await database.raw('select 1 + 1 as result');
+		if (env.DB_CLIENT === 'oracledb') {
+			await database.raw('select 1 from DUAL');
+		} else {
+			await database.raw('SELECT 1');
+		}
 		return true;
 	} catch {
 		return false;
