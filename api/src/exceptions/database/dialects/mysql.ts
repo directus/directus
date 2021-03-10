@@ -15,24 +15,24 @@ type MySQLError = {
 };
 
 enum MySQLErrorCodes {
-	ER_DUP_ENTRY = 'ER_DUP_ENTRY',
-	ER_WARN_DATA_OUT_OF_RANGE = 'ER_WARN_DATA_OUT_OF_RANGE',
+	UNIQUE_VIOLATION = 'ER_DUP_ENTRY',
+	NUMERIC_VALUE_OUT_OF_RANGE = 'ER_WARN_DATA_OUT_OF_RANGE',
 	ER_DATA_TOO_LONG = 'ER_DATA_TOO_LONG',
-	ER_BAD_NULL_ERROR = 'ER_BAD_NULL_ERROR',
-	ER_NO_REFERENCED_ROW_2 = 'ER_NO_REFERENCED_ROW_2',
+	NOT_NULL_VIOLATION = 'ER_BAD_NULL_ERROR',
+	FOREIGN_KEY_VIOLATION = 'ER_NO_REFERENCED_ROW_2',
 }
 
 export function extractError(error: MySQLError) {
 	switch (error.code) {
-		case MySQLErrorCodes.ER_DUP_ENTRY:
+		case MySQLErrorCodes.UNIQUE_VIOLATION:
 			return uniqueViolation(error);
-		case MySQLErrorCodes.ER_WARN_DATA_OUT_OF_RANGE:
+		case MySQLErrorCodes.NUMERIC_VALUE_OUT_OF_RANGE:
 			return numericValueOutOfRange(error);
 		case MySQLErrorCodes.ER_DATA_TOO_LONG:
 			return valueLimitViolation(error);
-		case MySQLErrorCodes.ER_BAD_NULL_ERROR:
+		case MySQLErrorCodes.NOT_NULL_VIOLATION:
 			return notNullViolation(error);
-		case MySQLErrorCodes.ER_NO_REFERENCED_ROW_2:
+		case MySQLErrorCodes.FOREIGN_KEY_VIOLATION:
 			return foreignKeyViolation(error);
 	}
 	return error;

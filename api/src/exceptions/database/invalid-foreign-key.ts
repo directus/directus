@@ -3,7 +3,7 @@ import { BaseException } from '../base';
 type Extensions = {
 	collection: string;
 	field: string;
-	invalid: string;
+	invalid?: string;
 };
 
 export class InvalidForeignKeyException extends BaseException {
