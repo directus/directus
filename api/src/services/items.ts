@@ -314,7 +314,11 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				payloadWithoutAliases = await payloadService.processValues('update', payloadWithoutAliases);
 
 				if (Object.keys(payloadWithoutAliases).length > 0) {
-					await trx(this.collection).update(payloadWithoutAliases).whereIn(primaryKeyField, keys);
+					try {
+						await trx(this.collection).update(payloadWithoutAliases).whereIn(primaryKeyField, keys);
+					} catch (err) {
+						throw await translateDatabaseError(err);
+					}
 				}
 
 				for (const key of keys) {
@@ -347,6 +351,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						knex: trx,
 						schema: this.schema,
 					});
+
 					const snapshots = await itemsService.readByKey(keys);
 
 					const revisionRecords = activityPrimaryKeys.map((key, index) => ({
