@@ -79,6 +79,7 @@ validationError:
   null: Arvon on oltava null
   nnull: Arvo ei voi olla null
   required: Arvo vaaditaan
+  unique: Arvon on oltava yksilöllinen
 all_access: Täysi pääsy
 no_access: Ei pääsyä
 use_custom: Käytä mukautettua
@@ -794,7 +795,6 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
-weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:
