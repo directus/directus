@@ -87,6 +87,7 @@ field_presentation: Presentatie & Aliasen
 field_file: Enkel bestand
 field_files: Meerdere bestanden
 field_m2o: M2O Relatie
+field_m2a: M2A Relatie
 field_o2m: O2M Relatie
 field_m2m: M2M Relatie
 field_translations: Vertalingen
