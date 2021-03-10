@@ -67,7 +67,7 @@ function numericValueOutOfRange(error: PostgresError) {
 	if (!matches) return error;
 
 	const collection = matches[0].slice(1, -1);
-	const field = matches[1].slice(1, -1);
+	const field = null;
 	const invalid = matches[2].slice(1, -1);
 
 	return new ValueOutOfRangeException(field, {
@@ -78,13 +78,18 @@ function numericValueOutOfRange(error: PostgresError) {
 }
 
 function valueLimitViolation(error: PostgresError) {
+	/**
+	 * NOTE:
+	 * Postgres doesn't return the offending column
+	 */
+
 	const regex = /"(.*?)"/g;
 	const matches = error.message.match(regex);
 
 	if (!matches) return error;
 
 	const collection = matches[0].slice(1, -1);
-	const field = matches[1].slice(1, -1);
+	const field = null;
 
 	return new ValueTooLongException(field, {
 		collection,
