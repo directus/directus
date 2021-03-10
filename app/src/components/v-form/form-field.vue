@@ -54,7 +54,7 @@
 		<small class="note" v-if="field.meta && field.meta.note" v-html="marked(field.meta.note)" />
 
 		<small class="validation-error" v-if="validationError">
-			{{ $t(`validationError.${validationError.type}`, validationError) }}
+			{{ validationMessage }}
 		</small>
 	</div>
 </template>
@@ -69,6 +69,7 @@ import FormFieldInterface from './form-field-interface.vue';
 import { ValidationError } from './types';
 import { getJSType } from '@/utils/get-js-type';
 import { isEqual } from 'lodash';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	components: { FormFieldLabel, FormFieldMenu, FormFieldInterface },
@@ -133,7 +134,15 @@ export default defineComponent({
 
 		const { showRaw, rawValue } = useRaw();
 
-		return { isDisabled, marked, _value, emitValue, showRaw, rawValue };
+		const validationMessage = computed(() => {
+			if (props.validationError.code === 'RECORD_NOT_UNIQUE') {
+				return i18n.t('validationError.unique');
+			} else {
+				return i18n.t(`validationError.${props.validationError.type}`, props.validationError);
+			}
+		});
+
+		return { isDisabled, marked, _value, emitValue, showRaw, rawValue, validationMessage };
 
 		function emitValue(value: any) {
 			if (

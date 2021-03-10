@@ -1,6 +1,5 @@
 <template>
 	<div>
-
 		<div class="form">
 			<div class="field">
 				<div class="label type-label">
@@ -136,6 +135,16 @@
 					:input-value="fieldData.schema.is_nullable === false"
 					@change="fieldData.schema.is_nullable = !$event"
 					:label="$t('requires_value')"
+					block
+				/>
+			</div>
+
+			<div class="field half-right" v-if="fieldData.schema">
+				<div class="label type-label">{{ $t('unique') }}</div>
+				<v-checkbox
+					:input-value="fieldData.schema.is_unique"
+					@change="fieldData.schema.is_unique = $event"
+					:label="$t('value_unique')"
 					block
 				/>
 			</div>
