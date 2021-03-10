@@ -79,6 +79,7 @@ validationError:
   null: El valor tiene que ser nulo
   nnull: El valor no puede ser nulo
   required: El valor es requerido
+  unique: El Valor tiene que ser único
 all_access: Todos los accesos
 no_access: Sin Acceso
 use_custom: Personalizar
@@ -794,7 +795,6 @@ template: Plantilla
 translation: Traducción
 value: Valor
 view_project: Ver Proyecto
-weeks: { }
 report_error: Reportar Error
 interfaces:
   button-links:
