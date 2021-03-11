@@ -184,6 +184,7 @@ export function applyFilter(
 			} else {
 				if (filterPath.length > 1) {
 					const columnName = getWhereColumn(filterPath, collection);
+					if (!columnName) continue;
 					applyFilterToQuery(columnName, filterOperator, filterValue, logical);
 				} else {
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
