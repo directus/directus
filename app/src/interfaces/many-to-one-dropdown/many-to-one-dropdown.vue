@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<p v-if="loading || !items.length">{{ loadingText }}</p>
+		<p v-if="loading || !items || !items.length">{{ loadingText }}</p>
 		<v-select v-else :value="value" @input="$listeners.input" :items="items">
 			<template #prepend v-if="icon">
 				<v-icon :name="icon" />
