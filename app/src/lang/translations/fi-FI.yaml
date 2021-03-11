@@ -162,7 +162,7 @@ choose_a_type: Valitse tyyppi...
 determined_by_relationship: Suhteen määrittämä
 add_note: Lisää käyttäjälle hyödyllinen huomautus...
 default_value: Oletusarvo
-standard_field: Vakio Kenttä
+standard_field: Vakiokenttä
 single_file: Yksittäinen tiedosto
 multiple_files: Useita tiedostoja
 m2o_relationship: Moni yhteen (M2O) -suhde
