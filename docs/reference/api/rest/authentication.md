@@ -8,8 +8,8 @@ pageClass: page-reference
 <div class="left">
 
 > By default, all data in the system is off limits for unauthenticated users. To gain access to protected data, you must
-include an access token with every request, or
-[configure permissions for the public role](/guides/roles-and-permissions).
+> include an access token with every request, or
+> [configure permissions for the public role](/guides/roles-and-permissions).
 
 </div>
 
@@ -224,7 +224,10 @@ Request a password reset email to be sent to the given user.
 Email address of the user you're requesting a password reset for.
 
 `reset_url`\
-Provide a custom reset url which the link in the email will lead to. The reset token will be passed as a parameter.
+Provide a custom reset url which the link in the email will lead to. The reset token will be passed as a parameter.\
+**Note**: You need to configure the
+[`PASSWORD_RESET_URL_ALLOW_LIST` environment variable](/reference/environment-variables/#security) to enable this
+feature.
 
 </div>
 
@@ -306,7 +309,8 @@ List all the configured oAuth providers.
 
 ::: tip Configuring oAuth
 
-To learn more about setting up oAuth providers, see [Configuring SSO through oAuth](/guides/api-config/#oauth-single-sign-on-openid).
+To learn more about setting up oAuth providers, see
+[Configuring SSO through oAuth](/guides/api-config/#oauth-single-sign-on-openid).
 
 :::
 
