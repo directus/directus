@@ -168,7 +168,7 @@ multiple_files: Useita tiedostoja
 m2o_relationship: Moni yhteen (M2O) -suhde
 o2m_relationship: Yksi moneen (O2M) -suhde
 m2m_relationship: Moni moneen (M2M) -suhde
-m2a_relationship: Mony mihin tahansa (M2A) -suhde
+m2a_relationship: Moni mihin tahansa (M2A) -suhde
 invalid_item: Virheellinen kohde
 next: Seuraava
 field_name: Kentän nimi
@@ -387,6 +387,7 @@ errors:
   ITEM_LIMIT_REACHED: Kohteiden rajoitus saavutettu
   ITEM_NOT_FOUND: Kohdetta ei löydy
   ROUTE_NOT_FOUND: Ei löytynyt
+  RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
   UNKNOWN: Odottamaton virhe
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
@@ -795,6 +796,7 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
+weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:
