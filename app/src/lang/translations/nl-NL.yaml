@@ -41,7 +41,7 @@ logoutReason:
   SIGN_OUT: Uitgelogd
   SESSION_EXPIRED: Sessie verlopen
 public: Openbaar
-public_description: Bepaalt welke data beschikbaar is in the API zonder in te loggen.
+public_description: Bepaalt welke data beschikbaar is in de API zonder in te loggen.
 not_allowed: Niet toegestaan
 directus_version: Directus Versie
 node_version: Node Versie
@@ -79,6 +79,7 @@ validationError:
   null: Waarde moet "null" zijn
   nnull: Waarde kan niet "null" zijn
   required: Waarde is vereist
+  unique: Waarde moet uniek zijn
 all_access: Alle toegang
 no_access: Geen toegang
 use_custom: Gebruik aangepaste
@@ -87,6 +88,7 @@ field_presentation: Presentatie & Aliasen
 field_file: Enkel bestand
 field_files: Meerdere bestanden
 field_m2o: M2O Relatie
+field_m2a: M2A Relatie
 field_o2m: O2M Relatie
 field_m2m: M2M Relatie
 field_translations: Vertalingen
@@ -117,6 +119,7 @@ exposure: Exposure
 shutter: Sluitertijd
 iso: ISO
 focal_length: Brandpuntsafstand
+schema_setup_key: Kolomnaam van dit databaseveld en API-sleutel
 create_field: Maak veld
 creating_new_field: 'Nieuw veld ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -166,6 +169,7 @@ m2o_relationship: Many-to-One Relatie
 o2m_relationship: One-to-Many Relatie
 m2m_relationship: Many-to-Many Relatie
 m2a_relationship: Many-to-Any Relatie
+invalid_item: Ongeldig item
 next: Volgende
 field_name: Veldnaam
 translations: Vertalingen
@@ -355,6 +359,7 @@ collection_created: Collectie aangemaakt
 modified_on: Aangepast op
 card_size: Kaart grootte
 sort_field: Sorteerveld
+add_sort_field: Voeg Sorteerveld Toe
 sort: Sorteren
 status: Status
 toggle_manual_sorting: Activeer handmatige volgorde

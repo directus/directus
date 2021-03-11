@@ -28,6 +28,7 @@ archive: アーカイブ
 recommended_defaults: 推奨されるデフォルト値
 validationError:
   required: 必須項目です
+  unique: 他と重複しない値である必要があります
 no_access: アクセスなし
 use_custom: カスタムを使う
 field_standard: 標準
