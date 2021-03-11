@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<p v-if="loading || !items || !items.length">{{ loadingText }}</p>
+		<p v-if="loading || !items.length">{{ loadingText }}</p>
 		<v-select v-else :value="value" @input="$listeners.input" :items="items">
 			<template #prepend v-if="icon">
 				<v-icon :name="icon" />
@@ -52,7 +52,7 @@ export default defineComponent({
 		const field_rel: Relation = useRelationsStore().getRelationsForField(props.collection, props.field)[0];
 		const one_table = field_rel.one_collection;
 
-		const items = ref<Record<string, any>[] | null>(null);
+		const items = ref<Record<string, any>[] | null>([]);
 		const loading = ref(false);
 		const loadingText = i18n.t('no_items');
 

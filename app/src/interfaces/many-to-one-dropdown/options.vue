@@ -51,6 +51,16 @@ export default defineComponent({
 });
 
 function getOptionsFor(relation: Relation) {
+	let choices = [{ text: '<none>', value: '' }];
+	choices = choices.concat(
+		useFieldsStore()
+			.getFieldsForCollectionAlphabetical(relation.one_collection)
+			.map((field: Field) => ({
+				text: field.field,
+				value: field.field,
+				disabled: !field.schema,
+			}))
+	);
 	return [
 		{
 			field: 'column',
@@ -60,13 +70,7 @@ function getOptionsFor(relation: Relation) {
 				width: 'half',
 				interface: 'dropdown',
 				options: {
-					choices: useFieldsStore()
-						.getFieldsForCollectionAlphabetical(relation.one_collection)
-						.map((field: Field) => ({
-							text: field.field,
-							value: field.field,
-							disabled: !field.schema,
-						})),
+					choices,
 				},
 			},
 		},
