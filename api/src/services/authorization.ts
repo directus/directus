@@ -11,6 +11,7 @@ import {
 	Item,
 	PrimaryKey,
 	SchemaOverview,
+	Filter,
 } from '../types';
 import { Knex } from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
@@ -268,7 +269,7 @@ export class AuthorizationService {
 			}
 		}
 
-		validationErrors.push(...this.validateJoi(permission.validation, payloads));
+		validationErrors.push(...this.validateJoi(parseFilter(permission.validation || {}, this.accountability), payloads));
 
 		if (validationErrors.length > 0) throw validationErrors;
 
@@ -279,10 +280,7 @@ export class AuthorizationService {
 		}
 	}
 
-	validateJoi(
-		validation: null | Record<string, any>,
-		payloads: Partial<Record<string, any>>[]
-	): FailedValidationException[] {
+	validateJoi(validation: Filter, payloads: Partial<Record<string, any>>[]): FailedValidationException[] {
 		if (!validation) return [];
 
 		const errors: FailedValidationException[] = [];

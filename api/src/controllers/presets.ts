@@ -17,6 +17,7 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const primaryKey = await service.create(req.body);
 
 		try {
