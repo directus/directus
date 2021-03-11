@@ -53,7 +53,7 @@ All the `DB_POOL_` prefixed options are passed [to `tarn.js`](https://github.com
 | `SECRET`                         | Secret string for the project.                                                                                                  | --            |
 | `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                    | 15m           |
 | `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                | 7d            |
-| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Usefull for development mode.                                                       | --            |
+| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                        | --            |
 | `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                     | `false`       |
 | `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                           | `lax`         |
 | `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/api/rest/authentication/#request-password-reset) | --            |
