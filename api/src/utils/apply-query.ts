@@ -2,9 +2,11 @@ import { Knex } from 'knex';
 import { Query, Filter, Relation, SchemaOverview } from '../types';
 import { clone, isPlainObject } from 'lodash';
 import { systemRelationRows } from '../database/system-data/relations';
-import { nanoid } from 'nanoid';
+import { nanoid, customAlphabet } from 'nanoid';
 import getLocalType from './get-local-type';
 import validate from 'uuid-validate';
+
+const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
 export default function applyQuery(
 	collection: string,
@@ -100,7 +102,7 @@ export function applyFilter(
 
 				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
 
-				const alias = nanoid(8);
+				const alias = generateAlias();
 				aliasMap[pathParts.join('+')] = alias;
 
 				if (isM2O) {
@@ -293,6 +295,8 @@ export function applyFilter(
 
 				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
 				const alias = aliasMap[pathParts.join('+')];
+
+				console.log(alias);
 
 				pathParts.shift();
 
