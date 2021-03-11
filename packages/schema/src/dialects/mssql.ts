@@ -14,7 +14,8 @@ export default class MSSQL extends KnexMSSQL implements SchemaInspector {
 				c.COLUMN_DEFAULT as default_value,
 				c.IS_NULLABLE as is_nullable,
 				c.DATA_TYPE as data_type,
-				pk.PK_SET as column_key
+				pk.PK_SET as column_key,
+				COLUMNPROPERTY(OBJECT_ID(c.TABLE_SCHEMA + '.' + c.TABLE_NAME), c.COLUMN_NAME, 'IsIdentity') as is_identity
 			FROM
 				[${this.knex.client.database()}].INFORMATION_SCHEMA.COLUMNS as c
 			LEFT JOIN (
@@ -45,7 +46,7 @@ export default class MSSQL extends KnexMSSQL implements SchemaInspector {
 
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
-				default_value: this.parseDefaultValue(column.default_value),
+				default_value: column.is_identity ? 'AUTO_INCREMENT' : this.parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
 			};
 		}
