@@ -3,24 +3,6 @@ import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
 
 export default class MSSQL extends KnexMSSQL implements SchemaInspector {
-	parseDefaultValueWithIdentity(value: string, isIdentity: boolean) {
-		if (!value && !isIdentity) return null;
-
-		if (isIdentity) return 'AUTO_INCREMENT';
-
-		if (value.startsWith('(') && value.endsWith(')')) {
-			value = value.slice(1, -1);
-		}
-
-		if (value.startsWith("'") && value.endsWith("'")) {
-			value = value.slice(1, -1);
-		}
-
-		if (Number.isNaN(Number(value))) return String(value);
-
-		return Number(value);
-	}
-
 	// Overview
 	// ===============================================================================================
 	async overview(): Promise<SchemaOverview> {
