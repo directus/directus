@@ -110,14 +110,16 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			return response.data.data;
 		} catch (err) {
 			if (err?.response?.data?.errors) {
+				const validationTypes = ['FAILED_VALIDATION', 'RECORD_NOT_UNIQUE'];
+
 				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
+					.filter((err: APIError) => validationTypes.includes(err?.extensions?.code))
 					.map((err: APIError) => {
 						return err.extensions;
 					});
 
 				const otherErrors = err.response.data.errors.filter(
-					(err: APIError) => err?.extensions?.code !== 'FAILED_VALIDATION'
+					(err: APIError) => validationTypes.includes(err?.extensions?.code) === false
 				);
 
 				if (otherErrors.length > 0) {

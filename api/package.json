@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-rc.45",
+	"version": "9.0.0-rc.48",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -66,14 +66,14 @@
 		"example.env"
 	],
 	"dependencies": {
-		"@directus/app": "file:../app",
-		"@directus/drive": "file:../packages/drive",
-		"@directus/drive-azure": "file:../packages/drive-azure",
-		"@directus/drive-gcs": "file:../packages/drive-gcs",
-		"@directus/drive-s3": "file:../packages/drive-s3",
-		"@directus/format-title": "file:../packages/format-title",
-		"@directus/schema": "file:../packages/schema",
-		"@directus/specs": "file:../packages/specs",
+		"@directus/app": "^9.0.0-rc.48",
+		"@directus/drive": "^9.0.0-rc.48",
+		"@directus/drive-azure": "^9.0.0-rc.48",
+		"@directus/drive-gcs": "^9.0.0-rc.48",
+		"@directus/drive-s3": "^9.0.0-rc.48",
+		"@directus/format-title": "^9.0.0-rc.48",
+		"@directus/schema": "^9.0.0-rc.48",
+		"@directus/specs": "^9.0.0-rc.48",
 		"@godaddy/terminus": "^4.4.1",
 		"argon2": "^0.27.0",
 		"atob": "^2.1.2",
@@ -138,7 +138,7 @@
 		"sqlite3": "^5.0.2",
 		"tedious": "^11.0.5"
 	},
-	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
+	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4",
 	"devDependencies": {
 		"@types/node": "^14.14.7",
 		"@typescript-eslint/eslint-plugin": "^4.9.1",

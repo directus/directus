@@ -1,6 +1,6 @@
 {
 	"name": "@directus/gatsby-source-directus",
-	"version": "9.0.0-rc.45",
+	"version": "9.0.0-rc.48",
 	"description": "Source plugin for pulling data into Gatsby from a Directus API.",
 	"author": "João Biondo <wolfulus@gmail.com>",
 	"license": "MIT",
@@ -10,7 +10,7 @@
 		"directus"
 	],
 	"dependencies": {
-		"@directus/sdk-js": "file:../sdk-js",
+		"@directus/sdk-js": "^9.0.0-rc.48",
 		"@lnfusion/gatsby-source-graphql": "0.0.3",
 		"chalk": "^4.1.0",
 		"invariant": "^2.2.4",
@@ -23,5 +23,6 @@
 	},
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
-	}
+	},
+	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"
 }

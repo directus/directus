@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-gcs",
-	"version": "9.0.0-rc.45",
+	"version": "9.0.0-rc.48",
 	"description": "Google Cloud Storage driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -45,7 +45,7 @@
 		"@directus/drive": "file:../drive"
 	},
 	"devDependencies": {
-		"@directus/drive": "file:../drive",
+		"@directus/drive": "^9.0.0-rc.48",
 		"@lukeed/uuid": "^1.0.1"
 	},
 	"publishConfig": {
@@ -57,5 +57,6 @@
 	},
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
-	}
+	},
+	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"
 }

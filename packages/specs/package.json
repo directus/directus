@@ -1,6 +1,6 @@
 {
 	"name": "@directus/specs",
-	"version": "9.0.0-rc.45",
+	"version": "9.0.0-rc.48",
 	"description": "OpenAPI Specification of the Directus API",
 	"main": "index.js",
 	"scripts": {
@@ -37,7 +37,7 @@
 		"README.md",
 		"index.js"
 	],
-	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
+	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4",
 	"devDependencies": {
 		"npm-watch": "^0.7.0",
 		"swagger-cli": "^4.0.4"

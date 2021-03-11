@@ -1,6 +1,6 @@
 {
   "name": "@directus/sdk-js",
-  "version": "9.0.0-rc.45",
+  "version": "9.0.0-rc.48",
   "description": "The official Directus SDK for use in JavaScript!",
   "main": "dist/sdk-js.cjs.js",
   "module": "dist/sdk-js.bundler.js",
@@ -44,5 +44,6 @@
       "**/*.d.ts"
     ],
     "all": true
-  }
+  },
+  "gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"
 }

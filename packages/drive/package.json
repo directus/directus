@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive",
-	"version": "9.0.0-rc.45",
+	"version": "9.0.0-rc.48",
 	"description": "Flexible and Fluent way to manage storage in Node.js.",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -41,5 +41,6 @@
 	},
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
-	}
+	},
+	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"
 }

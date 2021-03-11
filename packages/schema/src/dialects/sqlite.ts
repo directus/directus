@@ -16,16 +16,20 @@ export default class SQLite extends KnexSQLite implements SchemaInspector {
 		const tablesWithAutoIncrementPrimaryKeys = (
 			await this.knex.select('name').from('sqlite_master').whereRaw(`sql LIKE "%AUTOINCREMENT%"`)
 		).map(({ name }) => name);
+
 		const tables = await this.tables();
 		const overview: SchemaOverview = {};
+
 		for (const table of tables) {
 			const columns = await this.knex.raw<RawColumn[]>(`PRAGMA table_info(??)`, table);
+
 			if (table in overview === false) {
 				overview[table] = {
 					primary: columns.find((column) => column.pk == 1)?.name!,
 					columns: {},
 				};
 			}
+
 			for (const column of columns) {
 				overview[table].columns[column.name] = {
 					table_name: table,

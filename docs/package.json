@@ -1,7 +1,7 @@
 {
 	"name": "@directus/docs",
 	"private": false,
-	"version": "9.0.0-rc.45",
+	"version": "9.0.0-rc.48",
 	"description": "",
 	"main": "index.json",
 	"scripts": {
@@ -28,7 +28,7 @@
 	"keywords": [],
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"license": "ISC",
-	"gitHead": "4476da28dbbc2824e680137aa28b2b91b5afabec",
+	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4",
 	"devDependencies": {
 		"directory-tree": "^2.2.6",
 		"fs-extra": "^9.1.0",
