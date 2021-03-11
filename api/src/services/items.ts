@@ -217,6 +217,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		action: PermissionsAction = 'read'
 	): Promise<null | Partial<Item> | Partial<Item>[]> {
 		query = clone(query);
+
 		const primaryKeyField = this.schema.tables[this.collection].primary;
 		const keys = toArray(key);
 
@@ -474,7 +475,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 			});
 
-			await authorizationService.checkAccess('delete', this.collection, key);
+			await authorizationService.checkAccess('delete', this.collection, keys);
 		}
 
 		await emitter.emitAsync(`${this.eventScope}.delete.before`, {
