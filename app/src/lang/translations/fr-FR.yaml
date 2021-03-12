@@ -387,6 +387,7 @@ errors:
   ITEM_LIMIT_REACHED: Nombre d'éléments max atteint
   ITEM_NOT_FOUND: Élément introuvable
   ROUTE_NOT_FOUND: Non trouvé
+  RECORD_NOT_UNIQUE: Valeur dupliquée détecté
   UNKNOWN: Erreur inconnue
 value_hashed: Valeur hashée de manière sûre
 bookmark_name: Nom du signet...
@@ -795,6 +796,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:
