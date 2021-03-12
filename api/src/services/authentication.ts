@@ -128,6 +128,9 @@ export class AuthenticationService {
 			user_agent: userAgent,
 		});
 
+		const now = Date.now();
+		await database('directus_sessions').delete().where('expires', '>', now);
+
 		if (this.accountability) {
 			await this.activityService.create({
 				action: Action.AUTHENTICATE,
