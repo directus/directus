@@ -47,7 +47,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		});
 
 		this.$bucket = config.bucket;
-		this.$root = config.root ?? '';
+		this.$root = config.root ? path.normalize(config.root) : '';
 	}
 
 	/**
@@ -263,6 +263,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Iterate over all files in the bucket.
 	 */
 	public async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
+		prefix = this._fullPath(prefix);
+
 		let continuationToken: string | undefined;
 
 		do {
@@ -279,9 +281,11 @@ export class AmazonWebServicesS3Storage extends Storage {
 				continuationToken = response.NextContinuationToken;
 
 				for (const file of response.Contents as ObjectList) {
+					const path = file.Key as string;
+
 					yield {
 						raw: file,
-						path: file.Key as string,
+						path: path.substring(this.$root.length),
 					};
 				}
 			} catch (e) {
