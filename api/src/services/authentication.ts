@@ -129,7 +129,7 @@ export class AuthenticationService {
 		});
 
 		const now = Date.now();
-		await database('directus_sessions').delete().where('expires', '>', now);
+		await database('directus_sessions').delete().where('expires', '<', now);
 
 		if (this.accountability) {
 			await this.activityService.create({
