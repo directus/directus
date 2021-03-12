@@ -1,7 +1,7 @@
 # JavaScript SDK
 
-> The JS SDK is a small wrapper around [Axios](https://npmjs.com/axios) that makes it a little easier to use the Directus
-API from a JavaScript powered project.
+> The JS SDK is a small wrapper around [Axios](https://npmjs.com/axios) that makes it a little easier to use the
+> Directus API from a JavaScript powered project.
 
 [[toc]]
 
@@ -59,8 +59,8 @@ import DirectusSDK from '@directus/sdk-js';
 const directus = new DirectusSDK('https://api.example.com/', {
 	auth: {
 		storage: new MemoryStore(), // Storage adapter where refresh tokens are stored in JSON mode
-		mode: 'json', // What login mode to use. One of `json`, `cookie`
-		autoRefresh: true, // Whether or not to automatically refresh the access token on login
+		mode: 'json', // What login mode to use. One of `json`, `cookie`. Defaults to `cookie`
+		autoRefresh: true, // Whether or not to automatically refresh the access token on login. Defaults to `false`
 	},
 });
 ```
@@ -79,7 +79,6 @@ directus.url = 'https://api2.example.com';
 ### Access to Axios
 
 You can tap into the Axios instance used directly through `directus.axios`.
-
 
 ## Items
 
@@ -225,7 +224,6 @@ directus.items('articles').delete(15);
 directus.items('articles').delete([15, 42]);
 ```
 
-
 ## Activity
 
 ### Read All Activity
@@ -292,7 +290,6 @@ directus.activity.comments.delete(31);
 
 Note: The passed key is the primary key of the comment
 
-
 ## Auth
 
 ### Configuration
@@ -306,7 +303,7 @@ accessed from client side JS. This is the most secure way to connect to the API 
 
 When you can't rely on cookies, or need more control over handling the storage of the cookie, use `json` mode. This will
 return the refresh token like "regular" in the payload. You can use the `storage` option (see below) to control where
-the refresh token is stored / read from
+the refresh token is stored / read from. Defaults to `cookie`
 
 #### storage
 
@@ -323,7 +320,7 @@ const directus = new DirectusSDK('https://api.example.com', { auth: { storage: l
 
 #### autoRefresh
 
-Whether or not to automatically call `refresh()` when the access token is about to expire. Defaults to `true`
+Whether or not to automatically call `refresh()` when the access token is about to expire. Defaults to `false`
 
 ### Get / Set Token
 
@@ -365,7 +362,6 @@ directus.auth.password.reset('abc.def.ghi', 'n3w-p455w0rd');
 
 Note: the token passed in the first parameter is sent in an email to the user when using `request()`
 
-
 ## Collections
 
 ```js
@@ -373,7 +369,6 @@ directus.collections;
 ```
 
 Same methods as `directus.items(collection)`.
-
 
 ## Fields
 
@@ -383,7 +378,6 @@ directus.fields;
 
 Same methods as `directus.items(collection)`.
 
-
 ## Files
 
 ```js
@@ -391,7 +385,6 @@ directus.files;
 ```
 
 Same methods as `directus.items(collection)`.
-
 
 ## Folders
 
@@ -401,7 +394,6 @@ directus.folders;
 
 Same methods as `directus.items(collection)`.
 
-
 ## Permissions
 
 ```js
@@ -409,7 +401,6 @@ directus.permissions;
 ```
 
 Same methods as `directus.items(collection)`.
-
 
 ## Presets
 
@@ -419,7 +410,6 @@ directus.presets;
 
 Same methods as `directus.items(collection)`.
 
-
 ## Relations
 
 ```js
@@ -427,7 +417,6 @@ directus.relations;
 ```
 
 Same methods as `directus.items(collection)`.
-
 
 ## Revisions
 
@@ -437,7 +426,6 @@ directus.revisions;
 
 Same methods as `directus.items(collection)`.
 
-
 ## Roles
 
 ```js
@@ -445,7 +433,6 @@ directus.roles;
 ```
 
 Same methods as `directus.items(collection)`.
-
 
 ## Server
 
@@ -467,7 +454,6 @@ directus.server.ping();
 directus.server.info();
 ```
 
-
 ## Settings
 
 ```js
@@ -475,7 +461,6 @@ directus.settings;
 ```
 
 Same methods as `directus.items(collection)`.
-
 
 ## Users
 
