@@ -192,11 +192,12 @@ Based on your configured driver, you must also provide the following configurati
 
 ### Azure (`azure`)
 
-| Variable                            | Description                | Default Value |
-| ----------------------------------- | -------------------------- | ------------- |
-| `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --            |
-| `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --            |
-| `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --            |
+| Variable                            | Description                | Default Value                         |
+| ----------------------------------- | -------------------------- | ------------------------------------- |
+| `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --                                    |
+| `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --                                    |
+| `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --                                    |
+| `STORAGE_<LOCATION>_ENDPOINT`       | Azure URL                  | "{ACCOUNT_KEY}.blob.core.windows.net" |
 
 ### Google Cloud Storage (`gcs`)
 

@@ -41,7 +41,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 
 		this.$signedCredentials = new StorageSharedKeyCredential(config.accountName, config.accountKey);
 		this.$client = new BlobServiceClient(
-			`https://${config.accountName}.blob.core.windows.net`,
+			config.endpoint ?? `https://${config.accountName}.blob.core.windows.net`,
 			this.$signedCredentials
 		);
 		this.$containerClient = this.$client.getContainerClient(config.containerName);
@@ -235,7 +235,9 @@ export class AzureBlobWebServicesStorage extends Storage {
 		prefix = this._fullPath(prefix);
 
 		try {
-			const blobs = this.$containerClient.listBlobsFlat();
+			const blobs = this.$containerClient.listBlobsFlat({
+				prefix,
+			});
 
 			for await (const blob of blobs) {
 				yield {
@@ -253,5 +255,6 @@ export interface AzureBlobWebServicesStorageConfig {
 	containerName: string;
 	accountName: string;
 	accountKey: string;
+	endpoint?: string;
 	root?: string;
 }
