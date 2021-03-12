@@ -36,8 +36,9 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const record = await service.readByKey(pk as any, req.sanitizedQuery);
+
+		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
+
 		res.locals.payload = { data: record || null };
 		return next();
 	}),

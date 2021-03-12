@@ -63,8 +63,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const record = await service.readByKey(primaryKey as any, req.sanitizedQuery);
+		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
 
 		res.locals.payload = { data: record || null };
 		return next();
@@ -79,8 +78,8 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const primaryKey = await service.update(req.body, pk as any);
+
+		const primaryKey = await service.update(req.body, req.params.pk);
 
 		try {
 			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
@@ -122,8 +121,9 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		await service.delete(primaryKey as any);
+
+		await service.delete(req.params.pk);
+
 		return next();
 	}),
 	respond
