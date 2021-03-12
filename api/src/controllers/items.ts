@@ -213,7 +213,9 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.delete(req.body as PrimaryKey[]);
+
 		return next();
 	}),
 	respond
@@ -229,7 +231,9 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
+
 		await service.delete(pk as any);
 		return next();
 	}),

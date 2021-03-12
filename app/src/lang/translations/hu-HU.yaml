@@ -53,6 +53,8 @@ archive_confirm_count: >-
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
+validationError:
+  unique: Egyedi érték szükséges
 all_access: Összes hozzáférés
 no_access: Nincs hozzáférés
 use_custom: Egyéni használata

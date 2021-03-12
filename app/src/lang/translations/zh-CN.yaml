@@ -74,6 +74,7 @@ validationError:
   null: 值必须为null
   nnull: 值不能为null
   required: 值是必需的
+  unique: 值必须唯一
 all_access: 订购全部功能
 no_access: 无访问权限
 use_custom: 使用自定义颜色

@@ -76,6 +76,7 @@ validationError:
   null: Il valore deve essere nullo
   nnull: Il valore non può essere nullo
   required: Il valore è obbligatorio
+  unique: Il valore deve essere unico
 all_access: Accesso totale
 no_access: Nessun Accesso
 use_custom: Usa Personalizzato

@@ -82,6 +82,7 @@ validationError:
   null: Value has to be null
   nnull: Value can't be null
   required: Value is required
+  unique: Value has to be unique
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -390,6 +391,7 @@ errors:
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
   ROUTE_NOT_FOUND: Not found
+  RECORD_NOT_UNIQUE: Duplicate value detected
   UNKNOWN: Unexpected Error
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...

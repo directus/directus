@@ -6,7 +6,7 @@ import { i18n } from '@/lang';
 import formatTitle from '@directus/format-title';
 import { useRelationsStore } from '@/stores/';
 import { Relation, FieldRaw, Field } from '@/types';
-import { merge } from 'lodash';
+import { merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -221,7 +221,10 @@ export const useFieldsStore = createStore({
 			return primaryKeyField;
 		},
 		getFieldsForCollection(collection: string): Field[] {
-			return this.state.fields.filter((field) => field.collection === collection);
+			return orderBy(
+				this.state.fields.filter((field) => field.collection === collection),
+				(collection) => (collection.meta?.sort ? Number(collection.meta?.sort) : null)
+			);
 		},
 		getFieldsForCollectionAlphabetical(collection: string): Field[] {
 			return this.getFieldsForCollection(collection).sort((a: Field, b: Field) => {

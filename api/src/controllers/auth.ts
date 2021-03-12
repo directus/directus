@@ -62,6 +62,7 @@ router.post(
 		if (mode === 'cookie') {
 			res.cookie('directus_refresh_token', refreshToken, {
 				httpOnly: true,
+				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
 				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
@@ -110,6 +111,7 @@ router.post(
 		if (mode === 'cookie') {
 			res.cookie('directus_refresh_token', refreshToken, {
 				httpOnly: true,
+				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
 				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
@@ -263,6 +265,7 @@ router.get(
 		if (redirect) {
 			res.cookie('directus_refresh_token', refreshToken, {
 				httpOnly: true,
+				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
 				maxAge: ms(env.REFRESH_TOKEN_TTL as string),
 				secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
 				sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',

@@ -123,7 +123,16 @@ const updates = [
 	},
 ];
 
+/**
+ * NOTE:
+ * MS SQL doesn't support recursive foreign key constraints, nor having multiple foreign key constraints to the same
+ * related table. This means that about half of the above constraint triggers won't be available in MS SQL. To avoid
+ * confusion in what's there and what isn't, we'll skip the on-delete / on-update triggers altogether in MS SQL.
+ */
+
 export async function up(knex: Knex) {
+	if (knex.client.config.client === 'mssql') return;
+
 	for (const update of updates) {
 		await knex.schema.alterTable(update.table, (table) => {
 			for (const constraint of update.constraints) {
@@ -140,6 +149,8 @@ export async function up(knex: Knex) {
 }
 
 export async function down(knex: Knex) {
+	if (knex.client.config.client === 'mssql') return;
+
 	for (const update of updates) {
 		await knex.schema.alterTable(update.table, (table) => {
 			for (const constraint of update.constraints) {

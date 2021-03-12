@@ -71,6 +71,7 @@ validationError:
   null: Reikšmė turi būti null
   nnull: Reikšmė negali būti null
   required: Reikšmė turi būti užpildyta
+  unique: Reikšmė turi būti unikali
 all_access: Pilna prieiga
 no_access: Jokios prieigos
 use_custom: Pasirinktinai

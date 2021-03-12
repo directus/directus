@@ -37,6 +37,9 @@ const knexConfig: Knex.Config = {
 
 if (env.DB_CLIENT === 'sqlite3') {
 	knexConfig.useNullAsDefault = true;
+	poolConfig.afterCreate = (conn: any, cb: any) => {
+		conn.run('PRAGMA foreign_keys = ON', cb);
+	};
 }
 
 const database = knex(knexConfig);
@@ -54,7 +57,11 @@ database
 
 export async function hasDatabaseConnection() {
 	try {
-		await database.raw('select 1 + 1 as result');
+		if (env.DB_CLIENT === 'oracledb') {
+			await database.raw('select 1 from DUAL');
+		} else {
+			await database.raw('SELECT 1');
+		}
 		return true;
 	} catch {
 		return false;
