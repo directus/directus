@@ -110,7 +110,9 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await service.delete(req.body as PrimaryKey[]);
+
 		return next();
 	}),
 	respond

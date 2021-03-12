@@ -191,7 +191,7 @@ export default defineComponent({
 
 				try {
 					if (toBeDeleted.length > 0) {
-						await api.delete(`/permissions/${toBeDeleted.join(',')}`);
+						await api.delete(`/permissions`, { data: toBeDeleted });
 					}
 
 					if (props.role !== null && props.appAccess === true && useRecommended === true) {
