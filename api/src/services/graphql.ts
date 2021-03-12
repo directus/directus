@@ -94,7 +94,7 @@ export class GraphQLService {
 		}
 
 		const fieldsInSystem = await this.fieldsService.readAll();
-		const relationsInSystem = (await this.relationsService.readByQuery({})) as Relation[];
+		const relationsInSystem = (await this.relationsService.readByQuery({ limit: -1 })) as Relation[];
 
 		const schema = this.getGraphQLSchema(collectionsInSystem, fieldsInSystem, relationsInSystem);
 
