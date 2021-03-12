@@ -2,9 +2,9 @@
  * Roles handler
  */
 
-import { ItemsHandler } from '../items';
-import { ITransport } from '../../transport';
-import { RoleType } from '../../types';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { RoleType } from '../types';
 
 export type RoleItem<T extends object = {}> = RoleType & T;
 

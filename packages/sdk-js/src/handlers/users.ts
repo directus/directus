@@ -2,9 +2,9 @@
  * Users handler
  */
 
-import { ItemsHandler } from '../items';
-import { ITransport } from '../../transport';
-import { UserType } from '../../types';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { UserType } from '../types';
 
 export type UserItem<T extends object = {}> = UserType & T;
 

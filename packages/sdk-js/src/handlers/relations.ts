@@ -2,9 +2,9 @@
  * Relations handler
  */
 
-import { ItemsHandler } from '../items';
-import { ITransport } from '../../transport';
-import { RelationType } from '../../types';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { RelationType } from '../types';
 
 export type RelationItem<T extends object = {}> = RelationType & T;
 

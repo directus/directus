@@ -2,9 +2,9 @@
  * Fields handler
  */
 
-import { ItemsHandler } from '../items';
-import { ITransport } from '../../transport';
-import { FieldType } from '../../types';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { FieldType } from '../types';
 
 export type FieldItem<T extends object = {}> = FieldType & T;
 

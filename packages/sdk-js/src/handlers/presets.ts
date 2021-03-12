@@ -2,9 +2,9 @@
  * Presets handler
  */
 
-import { ItemsHandler } from '../items';
-import { ITransport } from '../../transport';
-import { PresetType } from '../../types';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { PresetType } from '../types';
 
 export type PresetItem<T extends object = {}> = PresetType & T;
 

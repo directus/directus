@@ -29,6 +29,18 @@ export abstract class BaseStorage implements IStorage {
 		}
 	}
 
+	get auth_refresh_token(): string | null {
+		return this.get('auth_refresh_token');
+	}
+
+	set auth_refresh_token(value: string | null) {
+		if (value === null) {
+			this.delete('auth_refresh_token');
+		} else {
+			this.set('auth_refresh_token', value);
+		}
+	}
+
 	abstract get(key: string): string | null;
 	abstract set(key: string, value: string): string;
 	abstract delete(key: string): string | null;

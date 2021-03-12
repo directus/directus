@@ -3,9 +3,16 @@ import { ID } from './types';
 export type Field = string;
 
 export type Item = Record<string, any>;
-export type Items<T extends Item> = {
-	data: T[];
-	metadata?: ItemMetadata;
+
+export type PartialItem<T> = {
+	[P in keyof T]?: T[P];
+};
+
+export type OneItem<T extends Item> = PartialItem<T> | null | undefined;
+
+export type ManyItems<T extends Item> = {
+	data?: PartialItem<T>[] | null;
+	meta?: ItemMetadata;
 };
 
 export type ItemMetadata = {
@@ -15,22 +22,13 @@ export type ItemMetadata = {
 
 export type Payload = Record<string, any>;
 
-export type PartialItem<T> = {
-	[P in keyof T]?: T[P];
-};
-
 export enum Meta {
 	TOTAL_COUNT = 'total_count',
 	FILTER_COUNT = 'filter_count',
 }
 
-export type ItemResponse<T> = {
-	data: T | null;
-	meta?: Record<Meta, number>;
-};
-
 export type QueryOne<T> = {
-	fields?: string | string[];
+	fields?: keyof T | (keyof T)[] | '*' | '*.*' | '*.*.*' | string | string[];
 	search?: string;
 	deep?: Record<string, QueryMany<T>>;
 	export?: 'json' | 'csv';
@@ -38,19 +36,17 @@ export type QueryOne<T> = {
 };
 
 export type QueryMany<T> = QueryOne<T> & {
-	sort?: string;
+	sort?: Sort<T>;
 	limit?: number;
 	offset?: number;
 	page?: number;
 	single?: boolean;
-	meta?: keyof ItemMetadata;
+	meta?: keyof ItemMetadata | '*';
 };
 
-export type Filter<T> = {
-	[keyOrOperator: string]: Filter<T> | string | boolean | number | string[];
-};
+export type Sort<T> = (`${Extract<keyof T, string>}` | `-${Extract<keyof T, string>}`)[];
 
-export type FilterOperator =
+export type FilterOperators =
 	| '_eq'
 	| '_neq'
 	| '_contains'
@@ -66,20 +62,28 @@ export type FilterOperator =
 	| '_empty'
 	| '_nempty';
 
+export type FilterOperator<T, K extends keyof T> = {
+	[O in FilterOperators]?: Filter<T> | T[K];
+};
+
+export type Filter<T> = {
+	[K in keyof T]?: FilterOperator<T, K> | string | boolean | number | string[] | object;
+	//[key: string]: FilterOperator<T> | string | boolean | number | string[] | object;
+};
+
+/**
+ * CRUD at its finest
+ */
 export interface IItems<T extends Item> {
-	// TODO: add fields
-	read(query: QueryMany<T>): Promise<T[]>;
-	readOne(id: ID, query: QueryOne<T>): Promise<T>;
-	readMany(ids: ID[], query: QueryOne<T>): Promise<T[]>;
+	createOne(item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>>;
+	createMany(items: PartialItem<T>[], query?: QueryMany<T>): Promise<ManyItems<T>>;
 
-	// TODO: add fields
-	createOne(item: PartialItem<T>): Promise<T>;
-	createMany(items: PartialItem<T>[]): Promise<T[]>;
+	readOne(id: ID, query?: QueryOne<T>): Promise<OneItem<T>>;
+	readMany(query?: QueryOne<T>): Promise<ManyItems<T>>;
 
-	// TODO: add fields
-	updateOne(id: ID, item: PartialItem<T>): Promise<T>;
-	//updateMany(id: PrimaryKey[], item: PartialItem<T>): Promise<T>;
+	updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>>;
+	updateMany(items: PartialItem<T>[], query?: QueryMany<T>): Promise<ManyItems<T>>;
 
 	deleteOne(id: ID): Promise<void>;
-	deleteMany(id: ID[]): Promise<void>;
+	deleteMany(ids: ID[]): Promise<void>;
 }

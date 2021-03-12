@@ -2,9 +2,9 @@
  * Permissions handler
  */
 
-import { ItemsHandler } from '../items';
-import { ITransport } from '../../transport';
-import { PermissionType } from '../../types';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { PermissionType } from '../types';
 
 export type PermissionItem<T extends object = {}> = PermissionType & T;
 

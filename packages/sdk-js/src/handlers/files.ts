@@ -2,9 +2,9 @@
  * Files handler
  */
 
-import { ItemsHandler } from '../items';
-import { ITransport } from '../../transport';
-import { FileType } from '../../types';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { FileType } from '../types';
 
 export type FileItem<T extends object = {}> = FileType & T;
 

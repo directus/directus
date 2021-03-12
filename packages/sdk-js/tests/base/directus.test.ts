@@ -9,6 +9,7 @@ import { Directus } from '../../src/base';
 import {
 	ActivityHandler,
 	CollectionsHandler,
+	CommentsHandler,
 	FieldsHandler,
 	FilesHandler,
 	FoldersHandler,
@@ -21,7 +22,8 @@ import {
 	SettingsHandler,
 	UsersHandler,
 	UtilsHandler,
-} from '../../src/base/handlers';
+} from '../../src/handlers';
+import { test } from '../utils';
 
 describe('node sdk', function () {
 	const sdk = new Directus('http://example.com');
@@ -36,6 +38,10 @@ describe('node sdk', function () {
 
 	it('has activity instance', function () {
 		expect(sdk.activity).toBeInstanceOf(ActivityHandler);
+	});
+
+	it('has activity instance', function () {
+		expect(sdk.activity.comments).toBeInstanceOf(CommentsHandler);
 	});
 
 	it('has collections instance', function () {
@@ -92,5 +98,40 @@ describe('node sdk', function () {
 
 	it('has items', async function () {
 		expect(sdk.items('collection')).toBeInstanceOf(ItemsHandler);
+	});
+
+	test('can run graphql', async function (url, nock) {
+		const scope = nock()
+			.post('/graphql')
+			.times(2)
+			.reply(200, {
+				data: {
+					items: {
+						posts: [
+							{ id: 1, title: 'My first post' },
+							{ id: 2, title: 'My second post' },
+						],
+					},
+				},
+			});
+
+		const query = `
+			query {
+				items {
+					posts {
+						id
+						title
+					}
+				}
+			}
+		`;
+
+		const sdk = new Directus(url);
+
+		const response1 = await sdk.graphql(query);
+		const response2 = await sdk.gql(query);
+
+		expect(response1).toMatchObject(response2);
+		expect(scope.pendingMocks().length).toBe(0);
 	});
 });

@@ -2,9 +2,9 @@
  * Collections handler
  */
 
-import { ItemsHandler } from '../items';
-import { ITransport } from '../../transport';
-import { CollectionType } from '../../types';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { CollectionType } from '../types';
 
 export type CollectionItem<T extends object = {}> = CollectionType & T;
 

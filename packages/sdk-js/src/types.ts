@@ -3,7 +3,7 @@ export type ID = string | number;
 export type ActivityType = {
 	action: string;
 	ip: string;
-	item: ID;
+	item: string;
 	user_agent: string;
 	timestamp: string;
 	id: number;
@@ -11,6 +11,12 @@ export type ActivityType = {
 	comment: string | null;
 	collection: string;
 	revisions: [number] | null;
+};
+
+export type Comment = {
+	item: string;
+	collection: string;
+	comment: string;
 };
 
 export type CollectionType = {

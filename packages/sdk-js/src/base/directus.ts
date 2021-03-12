@@ -15,21 +15,25 @@ import {
 	SettingsHandler,
 	UsersHandler,
 	UtilsHandler,
-} from './handlers';
+} from '../handlers';
 import { Item } from '../items';
-import { ITransport } from '../transport';
+import { ITransport, TransportResponse } from '../transport';
 import { ItemsHandler } from './items';
 import { AxiosTransport } from './transport';
 import { Auth } from './auth';
+import { IStorage } from '../storage';
+import { LocalStorage, MemoryStorage } from './storage';
 
 export type DirectusOptions = {
 	auth?: IAuth;
 	transport?: ITransport;
+	storage?: IStorage;
 };
 
 export class Directus<T extends DirectusFields = DirectusFields> implements IDirectus<T> {
 	private _auth: IAuth;
 	private _transport: ITransport;
+	private _storage: IStorage;
 	private _activity?: ActivityHandler<Pick<T, 'activity'>>;
 	private _collections?: CollectionsHandler<Pick<T, 'collections'>>;
 	private _fields?: FieldsHandler<Pick<T, 'fields'>>;
@@ -49,8 +53,9 @@ export class Directus<T extends DirectusFields = DirectusFields> implements IDir
 	};
 
 	constructor(url: string, options?: DirectusOptions) {
-		this._transport = options?.transport || new AxiosTransport(url);
-		this._auth = options?.auth || new Auth(this._transport);
+		this._storage = options?.storage || (typeof window !== 'undefined' ? new LocalStorage() : new MemoryStorage());
+		this._transport = options?.transport || new AxiosTransport(url, this._storage);
+		this._auth = options?.auth || new Auth(this._transport, this._storage);
 		this._items = {};
 	}
 
@@ -120,5 +125,16 @@ export class Directus<T extends DirectusFields = DirectusFields> implements IDir
 
 	items<T extends Item>(collection: string): ItemsHandler<T> {
 		return this._items[collection] || (this._items[collection] = new ItemsHandler<T>(collection, this.transport));
+	}
+
+	async gql<T>(query: string, variables?: any): Promise<TransportResponse<T>> {
+		return this.graphql(query, variables);
+	}
+
+	async graphql<T>(query: string, variables?: any): Promise<TransportResponse<T>> {
+		return await this.transport.post<T>('/graphql', {
+			query,
+			variables: typeof variables === 'undefined' ? {} : variables,
+		});
 	}
 }

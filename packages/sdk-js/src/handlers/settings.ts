@@ -2,9 +2,9 @@
  * Settings handler
  */
 
-import { ItemsHandler } from '../items';
-import { ITransport } from '../../transport';
-import { SettingType } from '../../types';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { SettingType } from '../types';
 
 export type SettingItem<T extends object = {}> = SettingType & T;
 

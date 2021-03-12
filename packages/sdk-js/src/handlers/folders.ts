@@ -2,9 +2,9 @@
  * Folders handler
  */
 
-import { ItemsHandler } from '../items';
-import { ITransport } from '../../transport';
-import { FolderType } from '../../types';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { FolderType } from '../types';
 
 export type FolderItem<T extends object = {}> = FolderType & T;
 

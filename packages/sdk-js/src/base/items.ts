@@ -1,121 +1,71 @@
 import { ITransport } from '../transport';
-import { IItems, Item, QueryOne, QueryMany } from '../items';
+import { IItems, Item, QueryOne, QueryMany, OneItem, ManyItems, PartialItem } from '../items';
 import { ID } from '../types';
 
 export class ItemsHandler<T extends Item> implements IItems<T> {
-	private transport: ITransport;
-	private endpoint: string;
+	protected transport: ITransport;
+	protected endpoint: string;
 
 	constructor(collection: string, transport: ITransport) {
 		this.transport = transport;
 		this.endpoint = collection.startsWith('directus_') ? `/${collection.substring(9)}` : `/items/${collection}`;
 	}
 
-	async read(_query: QueryMany<T>): Promise<T[]> {
-		throw new Error('Not implemented.');
+	async readOne(id: ID, query?: QueryOne<T>): Promise<OneItem<T>> {
+		const response = await this.transport.get<T>(`${this.endpoint}/${encodeURI(id as string)}`, {
+			params: query,
+		});
+
+		return response.data as T;
 	}
 
-	async readOne(id: ID, _query?: QueryOne<T>): Promise<T> {
-		const response = await this.transport.get(`${this.endpoint}/${id}`);
-		return response.data;
+	async readMany(query?: QueryMany<T>): Promise<ManyItems<T>> {
+		const { data, meta } = await this.transport.get<T[]>(`${this.endpoint}`, {
+			params: query,
+		});
+
+		return {
+			data,
+			meta,
+		};
 	}
 
-	async readMany(_ids: ID[], _query?: QueryOne<T>): Promise<T[]> {
-		throw new Error('Not implemented.');
-	}
-
-	async createOne(_item: Partial<T>): Promise<T> {
-		throw new Error('Not implemented.');
-	}
-
-	async createMany(_items: Partial<T>[]): Promise<T[]> {
-		throw new Error('Not implemented.');
-	}
-
-	async updateOne(_id: ID, _item: Partial<T>): Promise<T> {
-		throw new Error('Not implemented.');
-	}
-
-	async deleteOne(_id: ID): Promise<void> {
-		throw new Error('Not implemented.');
-	}
-
-	async deleteMany(_id: ID[]): Promise<void> {
-		throw new Error('Not implemented.');
-	}
-
-	/*
-	async read(): Promise<Response<T | T[]>>;
-	async read(query: Query & { single: true }): Promise<Response<T>>;
-	async read(query: Query): Promise<Response<T | T[]>>;
-	async read(key: PrimaryKey, query?: Query): Promise<Response<T>>;
-	async read(keys: PrimaryKey[], query?: Query): Promise<Response<T | T[]>>;
-	async read(
-		keysOrQuery?: PrimaryKey | PrimaryKey[] | Query,
-		query?: Query & { single: boolean }
-	): Promise<Response<T | T[]>> {
-		let keys: PrimaryKey | PrimaryKey[] | null = null;
-
-		if (
-			keysOrQuery &&
-			(Array.isArray(keysOrQuery) || typeof keysOrQuery === 'string' || typeof keysOrQuery === 'number')
-		) {
-			keys = keysOrQuery;
-		}
-
-		let params: Query = {};
-
-		if (query) {
-			params = query;
-		} else if (!query && typeof keysOrQuery === 'object' && Array.isArray(keysOrQuery) === false) {
-			params = keysOrQuery as Query;
-		}
-
-		let endpoint = this._endpoint;
-
-		if (keys) {
-			endpoint += keys;
-		}
-
-		const result = await this._transport.get(endpoint, { params });
-
-		return result.data;
-	}
-
-	async update(key: PrimaryKey, payload: Payload, query?: Query): Promise<Response<T>>;
-	async update(keys: PrimaryKey[], payload: Payload, query?: Query): Promise<Response<T[]>>;
-	async update(payload: Payload[], query?: Query): Promise<Response<T[]>>;
-	async update(payload: Payload, query: Query): Promise<Response<T[]>>;
-	async update(
-		keyOrPayload: PrimaryKey | PrimaryKey[] | Payload | Payload[],
-		payloadOrQuery?: Payload | Query,
-		query?: Query
-	): Promise<Response<T | T[]>> {
-		if (
-			typeof keyOrPayload === 'string' ||
-			typeof keyOrPayload === 'number' ||
-			(Array.isArray(keyOrPayload) && (keyOrPayload as any[]).every((key) => ['string', 'number'].includes(typeof key)))
-		) {
-			const key = keyOrPayload as PrimaryKey | PrimaryKey[];
-			const payload = payloadOrQuery as Payload;
-
-			const result = await this._transport.patch(`${this._endpoint}${key}`, payload, {
+	async createOne(item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>> {
+		return (
+			await this.transport.post<T>(`${this.endpoint}`, item, {
 				params: query,
-			});
-			return result.data;
-		} else {
-			const result = await this._transport.patch(`${this._endpoint}`, keyOrPayload, {
-				params: payloadOrQuery,
-			});
-
-			return result.data;
-		}
+			})
+		).data;
 	}
 
-	async delete(key: PrimaryKey): Promise<void>;
-	async delete(keys: PrimaryKey[]): Promise<void>;
-	async delete(keys: PrimaryKey | PrimaryKey[]): Promise<void> {
-		await this._transport.delete(`${this._endpoint}${keys}`);
+	async createMany(items: PartialItem<T>[], query?: QueryMany<T>): Promise<ManyItems<T>> {
+		return await this.transport.post<PartialItem<T>[]>(`${this.endpoint}`, items, {
+			params: query,
+		});
 	}
-	*/
+
+	async updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>> {
+		return (
+			await this.transport.patch<PartialItem<T>>(`${this.endpoint}/${encodeURI(id as string)}`, item, {
+				params: query,
+			})
+		).data;
+	}
+
+	// TODO: needs to support submitting arrays
+	// async updateMany(ids: item: PartialItem<T>, query?: QueryMany<T>): Promise<ManyItems<T>>;
+
+	async updateMany(items: PartialItem<T>[], query?: QueryMany<T>): Promise<ManyItems<T>> {
+		return await this.transport.patch<PartialItem<T>[]>(`${this.endpoint}`, items, {
+			params: query,
+		});
+	}
+
+	async deleteOne(id: ID): Promise<void> {
+		await this.transport.delete(`${this.endpoint}/${encodeURI(id as string)}`);
+	}
+
+	async deleteMany(ids: ID[]): Promise<void> {
+		await this.transport.delete(`${this.endpoint}`, ids);
+	}
 }

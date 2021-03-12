@@ -1,4 +1,4 @@
-import { Item, ItemMetadata } from './items';
+import { ItemMetadata } from './items';
 
 export type TransportErrorDescription = {
 	message?: string;
@@ -7,8 +7,8 @@ export type TransportErrorDescription = {
 	};
 };
 
-export type TransportResponse<T extends Item> = {
-	data?: T | T[];
+export type TransportResponse<T> = {
+	data?: T;
 	meta?: ItemMetadata;
 	errors?: TransportErrorDescription[];
 	status: number;
@@ -24,9 +24,9 @@ export type TransportOptions = {
 
 export interface ITransport {
 	get<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
-	delete<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
 	head<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
 	options<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
+	delete<T = any, P = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T>>;
 	post<T = any, P = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T>>;
 	put<T = any, P = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T>>;
 	patch<T = any, P = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T>>;

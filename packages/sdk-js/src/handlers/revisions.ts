@@ -2,9 +2,9 @@
  * Revisions handler
  */
 
-import { ItemsHandler } from '../items';
-import { ITransport } from '../../transport';
-import { RevisionType } from '../../types';
+import { ItemsHandler } from '../base/items';
+import { ITransport } from '../transport';
+import { RevisionType } from '../types';
 
 export type RevisionItem<T extends object = {}> = RevisionType & T;
 
