@@ -45,7 +45,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 			this.$signedCredentials
 		);
 		this.$containerClient = this.$client.getContainerClient(config.containerName);
-		this.$root = config.root ?? '';
+		this.$root = config.root ? path.normalize(config.root) : '';
 	}
 
 	/**
@@ -232,13 +232,15 @@ export class AzureBlobWebServicesStorage extends Storage {
 	}
 
 	public async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
+		prefix = this._fullPath(prefix);
+
 		try {
-			const blobs = await this.$containerClient.listBlobsFlat();
+			const blobs = this.$containerClient.listBlobsFlat();
 
 			for await (const blob of blobs) {
 				yield {
 					raw: blob,
-					path: blob.name as string,
+					path: (blob.name as string).substring(this.$root.length),
 				};
 			}
 		} catch (e) {

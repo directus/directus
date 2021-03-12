@@ -55,7 +55,7 @@ export class GoogleCloudStorage extends Storage {
 		const GCSStorage = require('@google-cloud/storage').Storage;
 		this.$driver = new GCSStorage(config);
 		this.$bucket = this.$driver.bucket(config.bucket);
-		this.$root = config.root ?? '';
+		this.$root = config.root ? path.normalize(config.root) : '';
 	}
 
 	/**
@@ -234,6 +234,8 @@ export class GoogleCloudStorage extends Storage {
 	 * Iterate over all files in the bucket.
 	 */
 	public async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
+		prefix = this._fullPath(prefix);
+
 		let nextQuery: GetFilesOptions | undefined = {
 			prefix,
 			autoPaginate: false,
@@ -248,7 +250,7 @@ export class GoogleCloudStorage extends Storage {
 				for (const file of result[0]) {
 					yield {
 						raw: file.metadata,
-						path: file.name,
+						path: file.name.substring(this.$root.length),
 					};
 				}
 			} catch (e) {
