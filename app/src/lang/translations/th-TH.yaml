@@ -12,6 +12,7 @@ role_name: ชื่อบทบาท
 db_only_click_to_configure: 'ฐานข้อมูลเท่านั้น: คลิกเพื่อกำหนดค่า '
 show_archived_items: แสดงรายการเก็บถาวร
 required: จำเป็นต้องระบุ
+required_for_app_access: จำเป็นต้องระบุเพื่อเข้าถึงแอป
 requires_value: ต้องการข้อมูล
 create_preset: สร้างที่ตั้งไว้ล่วงหน้า
 create_role: สร้างบทบาท
