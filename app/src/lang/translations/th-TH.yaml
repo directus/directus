@@ -41,15 +41,17 @@ logoutReason:
   SIGN_OUT: ออกจากระบบ
   SESSION_EXPIRED: เซสชั่นหมดอายุแล้ว
 public: สาธารณะ
+public_description: สามารถเข้าถึง API เหล่านี้ได้โดยไม่ต้องยืนยันตัวตน
 not_allowed: ไม่อนุญาต
 directus_version: เวอร์ชั่น Directus
-node_version: เวอร์ชั่นโหนด
-node_uptime: เวลาออนไลน์โหนด
-os_type: ประเภทระบบปฏิบัติการ
-os_version: เวอร์ชั่นระบบปฏิบัติการ
-os_uptime: เวลาออนไลน์ระบบปฏิบัติการ
-os_totalmem: หน่วยความจำระบบปฏิบัติการ
+node_version: เวอร์ชั่น Node
+node_uptime: เวลาออนไลน์ Node
+os_type: ประเภท OS
+os_version: เวอร์ชั่น OS
+os_uptime: เวลาออนไลน์ OS
+os_totalmem: หน่วยความจำ OS
 archive: เก็บถาวร
+archive_confirm: คุณแน่ใจว่าจะเก็บถาวรรายการนี้?
 fields:
   directus_fields:
     translation: คำแปลชื่อฟิลด์
