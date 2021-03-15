@@ -3,5 +3,23 @@ edit_field: แก้ไขฟิลด์ข้อมูล
 item_revision: ประวัติข้อมูล
 duplicate_field: สำเนาฟิลด์ข้อมูล
 half_width: กว้างครึ่งหนึ่ง
-full_width: กว้างขยายเต็ม
-fill_width: กว้างเติมเต็มหน้า
+full_width: กว้างเต็มหน้า
+fill_width: กว้างเติมเต็ม
+field_name_translations: ชื่อคำแปลฟิลด์ข้อมูล
+enter_password_to_enable_tfa: กรอกรหัสของคุณเพื่อเปิดการยืนยันรหัส 2 ขั้นตอน
+add_field: เพิ่มฟิลด์ข้อมูล
+role_name: ชื่อบทบาท
+required: จำเป็นต้องระบุ
+invite_users: เชิญชวนผู้ใช้งาน
+email_examples: 'admin@example.com, user@example.com...'
+invite: เชิญชวน
+emails: อีเมล
+connection_excellent: สัญญาณดีมาก
+connection_good: สัญญาณดี
+connection_fair: สัญญาณพอใช้ได้
+connection_poor: สัญญาณอ่อน
+fields:
+  directus_fields:
+    translation: ชื่อคำแปลฟิลด์ข้อมูล
+  directus_roles:
+    name: ชื่อบทบาท
