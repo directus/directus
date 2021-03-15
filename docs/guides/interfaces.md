@@ -51,21 +51,32 @@ for more info on what can go into this object.
 ```vue
 <template>
 	<div>My Custom Interface</div>
+	<!-- Expects type string -->
+	<input v-model="value" @input="handleChange" />
 </template>
 
 <script>
-export default {};
+export default {
+	props: {
+		value: String,
+	},
+	methods: {
+		handleChange() {
+			this.$emit('input', this.value);
+		},
+	},
+};
 </script>
 ```
 
 #### Available Props
 
-- `value` — The value of the parent field.
-- `width` — The layout width of the parent field. Either `half`, `half-left`, `half-right`, `full`, or `fill`.
-- `type` — The type of the parent field.
-- `collection` — The collection name of the parent field.
-- `field` — The key of the parent field.
-- `primary-key` — The current item's primary key.
+- `value` — The value of the field.
+- `width` — The layout width of the field. Either `half`, `half-right`, `full`, or `fill`.
+- `type` — The type of the field.
+- `collection` — The collection name of the field.
+- `field` — The key of the field.
+- `primaryKey` — The current item's primary key.
 
 ## 2. Install Dependencies and Configure the Buildchain
 
@@ -112,5 +123,6 @@ To build the interface for use within Directus, run:
 npx rollup -c
 ```
 
-Finally, move the output from your interface's `dist` folder into your project's `/extensions/interfaces` folder. Keep
-in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your interface's `dist` folder into your project's
+`/extensions/interfaces/my-custom-interface` folder. Keep in mind that the extensions directory is configurable within
+your env file, and may be located elsewhere.

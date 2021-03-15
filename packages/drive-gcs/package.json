@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-gcs",
-	"version": "9.0.0-rc.48",
+	"version": "9.0.0-rc.50",
 	"description": "Google Cloud Storage driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -45,7 +45,7 @@
 		"@directus/drive": "file:../drive"
 	},
 	"devDependencies": {
-		"@directus/drive": "^9.0.0-rc.48",
+		"@directus/drive": "^9.0.0-rc.50",
 		"@lukeed/uuid": "^1.0.1"
 	},
 	"publishConfig": {

@@ -79,6 +79,7 @@ validationError:
   null: Стойността трябва да е null
   nnull: Стойността не трябва да е null
   required: Изисква се стойност
+  unique: Изисква се уникална стойност
 all_access: Пълен достъп
 no_access: Без достъп
 use_custom: Персонализиран
@@ -386,6 +387,7 @@ errors:
   ITEM_LIMIT_REACHED: Достигнат лимит на записи
   ITEM_NOT_FOUND: Записът не е намерен
   ROUTE_NOT_FOUND: Не е намерен
+  RECORD_NOT_UNIQUE: Вече съществува такава стойност
   UNKNOWN: Неочаквана грешка
 value_hashed: Хеширана стойност
 bookmark_name: Име на отметка...
@@ -475,7 +477,7 @@ rows: Редове
 columns: Колони
 collection_setup: Настройки на колекция
 optional_system_fields: Незадължителни системни полета
-value_unique: Стойността трябва да е уникална
+value_unique: Изисква се уникална стойност
 all_activity: Цялата активност
 create_item: Създаване на запис
 display_template: Шаблон при показване

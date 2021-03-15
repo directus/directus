@@ -79,6 +79,7 @@ validationError:
   null: La valeur doit être nulle
   nnull: La valeur ne peut être nulle
   required: Une valeur est requise
+  unique: La valeur doit être unique
 all_access: Accès total
 no_access: Pas d'accès
 use_custom: Personnalisé
@@ -386,6 +387,7 @@ errors:
   ITEM_LIMIT_REACHED: Nombre d'éléments max atteint
   ITEM_NOT_FOUND: Élément introuvable
   ROUTE_NOT_FOUND: Non trouvé
+  RECORD_NOT_UNIQUE: Valeur dupliquée détecté
   UNKNOWN: Erreur inconnue
 value_hashed: Valeur hashée de manière sûre
 bookmark_name: Nom du signet...

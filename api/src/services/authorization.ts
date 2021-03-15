@@ -11,6 +11,7 @@ import {
 	Item,
 	PrimaryKey,
 	SchemaOverview,
+	Filter,
 } from '../types';
 import { Knex } from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
@@ -268,7 +269,7 @@ export class AuthorizationService {
 			}
 		}
 
-		validationErrors.push(...this.validateJoi(permission.validation, payloads));
+		validationErrors.push(...this.validateJoi(parseFilter(permission.validation || {}, this.accountability), payloads));
 
 		if (validationErrors.length > 0) throw validationErrors;
 
@@ -279,10 +280,7 @@ export class AuthorizationService {
 		}
 	}
 
-	validateJoi(
-		validation: null | Record<string, any>,
-		payloads: Partial<Record<string, any>>[]
-	): FailedValidationException[] {
+	validateJoi(validation: Filter, payloads: Partial<Record<string, any>>[]): FailedValidationException[] {
 		if (!validation) return [];
 
 		const errors: FailedValidationException[] = [];
@@ -334,21 +332,13 @@ export class AuthorizationService {
 			schema: this.schema,
 		});
 
-		try {
-			const query: Query = {
-				fields: ['*'],
-			};
+		const query: Query = {
+			fields: ['*'],
+		};
 
-			const result = await itemsService.readByKey(pk as any, query, action);
+		const result = await itemsService.readByKey(pk as any, query, action);
 
-			if (!result) throw '';
-			if (Array.isArray(pk) && pk.length > 1 && result.length !== pk.length) throw '';
-		} catch {
-			throw new ForbiddenException(`You're not allowed to ${action} item "${pk}" in collection "${collection}".`, {
-				collection,
-				item: pk,
-				action,
-			});
-		}
+		if (!result) throw new ForbiddenException();
+		if (Array.isArray(pk) && pk.length > 1 && result.length !== pk.length) throw new ForbiddenException();
 	}
 }

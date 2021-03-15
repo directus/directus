@@ -81,6 +81,12 @@ export class UsersService extends ItemsService {
 	async inviteUser(email: string | string[], role: string, url: string | null) {
 		const emails = toArray(email);
 
+		const urlWhitelist = toArray(env.USER_INVITE_URL_ALLOW_LIST);
+
+		if (url && urlWhitelist.includes(url) === false) {
+			throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
+		}
+
 		for (const email of emails) {
 			await this.service.create({ email, role, status: 'invited' });
 

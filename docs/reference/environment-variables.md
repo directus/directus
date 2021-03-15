@@ -57,6 +57,7 @@ All the `DB_POOL_` prefixed options are passed [to `tarn.js`](https://github.com
 | `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                     | `false`       |
 | `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                           | `lax`         |
 | `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/api/rest/authentication/#request-password-reset) | --            |
+| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/api/rest/users/#invite-a-new-user)                  | --            |
 
 ::: tip Cookie Strictness
 
@@ -191,11 +192,12 @@ Based on your configured driver, you must also provide the following configurati
 
 ### Azure (`azure`)
 
-| Variable                            | Description                | Default Value |
-| ----------------------------------- | -------------------------- | ------------- |
-| `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --            |
-| `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --            |
-| `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --            |
+| Variable                            | Description                | Default Value                         |
+| ----------------------------------- | -------------------------- | ------------------------------------- |
+| `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --                                    |
+| `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --                                    |
+| `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --                                    |
+| `STORAGE_<LOCATION>_ENDPOINT`       | Azure URL                  | "{ACCOUNT_KEY}.blob.core.windows.net" |
 
 ### Google Cloud Storage (`gcs`)
 

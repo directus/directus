@@ -79,6 +79,7 @@ validationError:
   null: Arvon on oltava null
   nnull: Arvo ei voi olla null
   required: Arvo vaaditaan
+  unique: Arvon on oltava yksilöllinen
 all_access: Täysi pääsy
 no_access: Ei pääsyä
 use_custom: Käytä mukautettua
@@ -161,13 +162,13 @@ choose_a_type: Valitse tyyppi...
 determined_by_relationship: Suhteen määrittämä
 add_note: Lisää käyttäjälle hyödyllinen huomautus...
 default_value: Oletusarvo
-standard_field: Vakio Kenttä
+standard_field: Vakiokenttä
 single_file: Yksittäinen tiedosto
 multiple_files: Useita tiedostoja
 m2o_relationship: Moni yhteen (M2O) -suhde
 o2m_relationship: Yksi moneen (O2M) -suhde
 m2m_relationship: Moni moneen (M2M) -suhde
-m2a_relationship: Mony mihin tahansa (M2A) -suhde
+m2a_relationship: Moni mihin tahansa (M2A) -suhde
 invalid_item: Virheellinen kohde
 next: Seuraava
 field_name: Kentän nimi
@@ -386,6 +387,7 @@ errors:
   ITEM_LIMIT_REACHED: Kohteiden rajoitus saavutettu
   ITEM_NOT_FOUND: Kohdetta ei löydy
   ROUTE_NOT_FOUND: Ei löytynyt
+  RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
   UNKNOWN: Odottamaton virhe
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
@@ -646,7 +648,7 @@ fields:
     display_template: Esitysmalli
     hidden: Piilotettu
     singleton: Singleton
-    translations: Kokoelmien nimien käännökset
+    translations: Kokoelman nimen käännökset
     archive_app_filter: Arkistoi sovelluksen suodatin
     archive_value: Arkistoi arvo
     unarchive_value: Palauta arkistoitu arvo

@@ -126,7 +126,7 @@ export default function useUpdatePermissions(
 		saving.value = true;
 
 		try {
-			await api.delete(`/permissions/${permissions.value.map((p) => p.id).join(',')}`);
+			await api.delete('/permissions', { data: permissions.value.map((p) => p.id) });
 		} catch (err) {
 			unexpectedError(err);
 		} finally {

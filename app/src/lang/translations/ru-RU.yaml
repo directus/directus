@@ -72,6 +72,7 @@ validationError:
   null: Значение должно быть null
   nnull: Значение не может быть null
   required: Значение обязательно
+  unique: Значение должно быть уникальным
 all_access: Полный доступ
 no_access: Нет Доступа
 use_custom: Использовать Свой

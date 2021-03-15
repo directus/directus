@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-s3",
-	"version": "9.0.0-rc.48",
+	"version": "9.0.0-rc.50",
 	"description": "AWS S3 driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -46,7 +46,7 @@
 		"@directus/drive": "file:../drive"
 	},
 	"devDependencies": {
-		"@directus/drive": "^9.0.0-rc.48",
+		"@directus/drive": "^9.0.0-rc.50",
 		"@types/fs-extra": "^9.0.1",
 		"fs-extra": "^9.0.0"
 	},

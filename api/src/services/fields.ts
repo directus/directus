@@ -13,6 +13,7 @@ import cache from '../cache';
 import SchemaInspector from '@directus/schema';
 import { toArray } from '../utils/to-array';
 import env from '../env';
+import { Column } from 'knex-schema-inspector/dist/types/column';
 
 import { systemFieldRows } from '../database/system-data/fields/';
 
@@ -254,9 +255,10 @@ export class FieldsService {
 		}
 
 		if (field.schema) {
+			const existingColumn = await this.schemaInspector.columnInfo(collection, field.field);
 			await this.knex.schema.alterTable(collection, (table) => {
 				if (!field.schema) return;
-				this.addColumnToTable(table, field, true);
+				this.addColumnToTable(table, field, existingColumn);
 			});
 		}
 
@@ -331,7 +333,7 @@ export class FieldsService {
 		}
 	}
 
-	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: boolean = false) {
+	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null) {
 		let column: Knex.ColumnBuilder;
 
 		if (field.schema?.has_auto_increment) {
@@ -369,9 +371,13 @@ export class FieldsService {
 		}
 
 		if (field.schema?.is_unique === true) {
-			column.unique();
-		} else if (field.schema?.is_unique === false && alter === true) {
-			table.dropUnique([field.field]);
+			if (!alter || alter.is_unique === false) {
+				column.unique();
+			}
+		} else if (field.schema?.is_unique === false) {
+			if (alter && alter.is_unique === true) {
+				table.dropUnique([field.field]);
+			}
 		}
 
 		if (field.schema?.is_primary_key) {

@@ -7,7 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role which defines its granular Permissions. [Learn more about Users](/concepts/users/).
+> Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role
+> which defines its granular Permissions. [Learn more about Users](/concepts/users/).
 
 </div>
 <div class="right">
@@ -481,7 +482,9 @@ User email to invite.
 Role of the new user.
 
 `invite_url`\
-Provide a custom invite url which the link in the email will lead to. The invite token will be passed as a parameter.
+Provide a custom invite url which the link in the email will lead to. The invite token will be passed as a parameter.\
+**Note**: You need to configure the
+[`USER_INVITE_URL_ALLOW_LIST` environment variable](/reference/environment-variables/#security) to enable this feature.
 
 </div>
 
