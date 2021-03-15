@@ -1,14 +1,16 @@
 ---
-edit_field: แก้ไขฟิลด์ข้อมูล
-item_revision: ประวัติข้อมูล
-duplicate_field: สำเนาฟิลด์ข้อมูล
+edit_field: แก้ไขฟิลด์
+item_revision: ประวัติรายการ
+duplicate_field: สำเนาฟิลด์
 half_width: กว้างครึ่งหนึ่ง
 full_width: กว้างเต็มหน้า
 fill_width: กว้างเติมเต็ม
-field_name_translations: ชื่อคำแปลฟิลด์ข้อมูล
+field_name_translations: คำแปลชื่อฟิลด์
 enter_password_to_enable_tfa: กรอกรหัสของคุณเพื่อเปิดการยืนยันรหัส 2 ขั้นตอน
-add_field: เพิ่มฟิลด์ข้อมูล
+add_field: เพิ่มฟิลด์
 role_name: ชื่อบทบาท
+db_only_click_to_configure: 'ฐานข้อมูลเท่านั้น: คลิกเพื่อกำหนดค่า '
+show_archived_items: แสดงรายการเก็บถาวร
 required: จำเป็นต้องระบุ
 invite_users: เชิญชวนผู้ใช้งาน
 email_examples: 'admin@example.com, user@example.com...'
@@ -18,8 +20,20 @@ connection_excellent: สัญญาณดีมาก
 connection_good: สัญญาณดี
 connection_fair: สัญญาณพอใช้ได้
 connection_poor: สัญญาณอ่อน
+primary: หลัก
+rename_folder: เปลี่ยนชื่อโฟลเดอร์
+delete_folder: ลบโฟลเดอร์
+prefix: คำนำหน้า
+suffix: คำต่อท้าย
+reset_bookmark: รีเซ็ตบุ๊คมาร์ค
+rename_bookmark: เปลี่ยนชื่อบุ๊คมาร์ค
+update_bookmark: ปรับปรุงบุ๊คมาร์ค
+delete_bookmark: ลบ​บุ๊ค​มา​ร์ค
 fields:
   directus_fields:
-    translation: ชื่อคำแปลฟิลด์ข้อมูล
+    translation: คำแปลชื่อฟิลด์
   directus_roles:
     name: ชื่อบทบาท
+interfaces:
+  button-links:
+    primary: หลัก
