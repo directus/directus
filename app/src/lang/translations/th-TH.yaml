@@ -42,8 +42,13 @@ logoutReason:
 public: สาธารณะ
 not_allowed: ไม่อนุญาต
 directus_version: เวอร์ชั่น Directus
-node_version: เวอร์ชั่น Node
-node_uptime: เวลาออนไลน์ Node
+node_version: เวอร์ชั่นโหนด
+node_uptime: เวลาออนไลน์โหนด
+os_type: ประเภทระบบปฏิบัติการ
+os_version: เวอร์ชั่นระบบปฏิบัติการ
+os_uptime: เวลาออนไลน์ระบบปฏิบัติการ
+os_totalmem: หน่วยความจำระบบปฏิบัติการ
+archive: เก็บถาวร
 fields:
   directus_fields:
     translation: คำแปลชื่อฟิลด์
