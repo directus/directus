@@ -32,7 +32,8 @@ describe('axios transport', function () {
 			const route = `/${method}/response`;
 			(nock(URL) as any)[method](route).reply(200);
 
-			const transport = new AxiosTransport(URL) as any;
+			const storage = new MemoryStorage();
+			const transport = new AxiosTransport(URL, storage) as any;
 			const response = await transport[method](route);
 			expectResponse(response, {
 				status: 200,
@@ -43,7 +44,9 @@ describe('axios transport', function () {
 			const route = `/${method}/500`;
 			(nock(URL) as any)[method](route).reply(500);
 
-			const transport = new AxiosTransport(URL) as any;
+			const storage = new MemoryStorage();
+			const transport = new AxiosTransport(URL, storage) as any;
+
 			try {
 				await transport[method](route);
 				fail();
@@ -65,7 +68,9 @@ describe('axios transport', function () {
 				],
 			});
 
-			const transport = new AxiosTransport(URL) as any;
+			const storage = new MemoryStorage();
+			const transport = new AxiosTransport(URL, storage) as any;
+
 			try {
 				await transport[method](route);
 				fail();
@@ -84,7 +89,8 @@ describe('axios transport', function () {
 			const route = `/${method}/this/raises/error`;
 			(nock(URL) as any)[method](route).replyWithError('Random error');
 
-			const transport = new AxiosTransport(URL) as any;
+			const storage = new MemoryStorage();
+			const transport = new AxiosTransport(URL, storage) as any;
 
 			try {
 				await transport[method](route);
@@ -101,7 +107,8 @@ describe('axios transport', function () {
 	});
 
 	it('non axios errors are set in parent', async function () {
-		const transport = new AxiosTransport(URL);
+		const storage = new MemoryStorage();
+		const transport = new AxiosTransport(URL, storage);
 		const mock = jest.spyOn(transport.axios, 'get');
 		mock.mockImplementation(() => {
 			throw new Error('this is not an axios error');

@@ -63,6 +63,10 @@ export class Directus<T extends DirectusFields = DirectusFields> implements IDir
 		return this._auth;
 	}
 
+	get storage(): IStorage {
+		return this._storage;
+	}
+
 	get transport(): ITransport {
 		return this._transport;
 	}

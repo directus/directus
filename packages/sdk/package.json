@@ -18,10 +18,9 @@
 	],
 	"scripts": {
 		"prebuild": "yon run cleanup",
-		"build": "run-p build:* && yon run build:types",
+		"build": "run-p build:*",
 		"build:targets": "rollup -c",
 		"build:node": "tsc --project ./tsconfig.json",
-		"build:types": "tsc --project ./tsconfig.types.json",
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
 		"cleanup:types": "rimraf ./types",

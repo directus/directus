@@ -3,19 +3,33 @@
 ## Installation
 
 ```
-npm install @directus/sdk-js
+npm install @directus/sdk
 ```
 
 ## Usage
 
 ```js
-import DirectusSDK from '@directus/sdk-js';
+import { Directus } from '@directus/sdk';
 
-const directus = new DirectusSDK('https://api.example.com/');
+(async () => {
+	const directus = new Directus('https://api.example.com/');
+	return await directus.items('articles').readOne(15);
+})();
+```
 
-directus.items('articles').read(15);
+```js
+import { Directus } from '@directus/sdk';
+
+const directus = new Directus('https://api.example.com/');
+
+directus
+	.items('articles')
+	.readOne(15)
+	.then((item) => {
+		console.log(item);
+	});
 ```
 
 ## Docs
 
-See [the docs](https://docs.directus.io/reference/sdk-js/)
+See [the docs](https://docs.directus.io/reference/sdk/)

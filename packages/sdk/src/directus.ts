@@ -19,6 +19,7 @@ import {
 import { Item } from './items';
 import { ITransport, TransportResponse } from './transport';
 import { UtilsHandler } from './handlers/utils';
+import { IStorage } from './storage';
 
 export type DirectusTypes = {
 	activity: {};
@@ -37,6 +38,7 @@ export type DirectusTypes = {
 
 export interface IDirectus<T extends DirectusTypes = DirectusTypes> {
 	readonly auth: IAuth;
+	readonly storage: IStorage;
 	readonly transport: ITransport;
 
 	readonly activity: ActivityHandler<Pick<T, 'activity'>>;

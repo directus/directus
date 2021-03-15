@@ -8,7 +8,7 @@ import { test } from '../utils';
 describe('comments', function () {
 	test(`creates comments`, async (url, nock) => {
 		nock()
-			.post('/activity/comments', {
+			.post('/activity/comment', {
 				collection: 'posts',
 				item: '1',
 				comment: 'Awesome post!',
@@ -35,7 +35,7 @@ describe('comments', function () {
 
 	test(`updates comments`, async (url, nock) => {
 		nock()
-			.patch('/activity/comments/5', {
+			.patch('/activity/comment/5', {
 				comment: 'Awesome content!',
 			})
 			.reply(202, {
@@ -54,7 +54,7 @@ describe('comments', function () {
 	});
 
 	test(`deletes comments`, async (url, nock) => {
-		const scope = nock().delete('/activity/comments/5').reply(204);
+		const scope = nock().delete('/activity/comment/5').reply(204);
 
 		const sdk = new Directus(url);
 		await sdk.activity.comments.delete(5);

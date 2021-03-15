@@ -23,6 +23,7 @@ export type TransportOptions = {
 };
 
 export interface ITransport {
+	url: string;
 	get<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
 	head<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
 	options<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;

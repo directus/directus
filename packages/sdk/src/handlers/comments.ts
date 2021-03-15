@@ -10,18 +10,18 @@ export class CommentsHandler<T extends object> {
 	}
 
 	async create(comment: Comment): Promise<ActivityItem<T>> {
-		const response = await this.transport.post('/activity/comments', comment);
+		const response = await this.transport.post('/activity/comment', comment);
 		return response.data;
 	}
 
 	async update(comment_activity_id: ID, comment: string): Promise<ActivityItem<T>> {
-		const response = await this.transport.patch(`/activity/comments/${encodeURI(comment_activity_id as string)}`, {
+		const response = await this.transport.patch(`/activity/comment/${encodeURI(comment_activity_id as string)}`, {
 			comment,
 		});
 		return response.data;
 	}
 
 	async delete(comment_activity_id: ID): Promise<void> {
-		await this.transport.delete(`/activity/comments/${encodeURI(comment_activity_id as string)}`);
+		await this.transport.delete(`/activity/comment/${encodeURI(comment_activity_id as string)}`);
 	}
 }
