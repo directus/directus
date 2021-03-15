@@ -12,6 +12,11 @@ role_name: ชื่อบทบาท
 db_only_click_to_configure: 'ฐานข้อมูลเท่านั้น: คลิกเพื่อกำหนดค่า '
 show_archived_items: แสดงรายการเก็บถาวร
 required: จำเป็นต้องระบุ
+requires_value: ต้องการข้อมูล
+create_preset: สร้างที่ตั้งไว้ล่วงหน้า
+create_role: สร้างบทบาท
+create_user: สร้างผู้ใช้งาน
+create_webhook: สร้างเว็บฮุก
 invite_users: เชิญชวนผู้ใช้งาน
 email_examples: 'admin@example.com, user@example.com...'
 invite: เชิญชวน
@@ -29,6 +34,16 @@ reset_bookmark: รีเซ็ตบุ๊คมาร์ค
 rename_bookmark: เปลี่ยนชื่อบุ๊คมาร์ค
 update_bookmark: ปรับปรุงบุ๊คมาร์ค
 delete_bookmark: ลบ​บุ๊ค​มา​ร์ค
+delete_bookmark_copy: >-
+  คุณแน่ใจต้องการลบบุ๊ค​มา​ร์ค "{bookmark}"? การกระทำดังกล่าวไม่สามารถกู้คืนกลับมาได้
+logoutReason:
+  SIGN_OUT: ออกจากระบบ
+  SESSION_EXPIRED: เซสชั่นหมดอายุแล้ว
+public: สาธารณะ
+not_allowed: ไม่อนุญาต
+directus_version: เวอร์ชั่น Directus
+node_version: เวอร์ชั่น Node
+node_uptime: เวลาออนไลน์ Node
 fields:
   directus_fields:
     translation: คำแปลชื่อฟิลด์
