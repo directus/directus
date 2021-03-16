@@ -1,5 +1,5 @@
 <template>
-	<div class="v-error">
+	<div class="v-error selectable">
 		<output>[{{ code }}] {{ message }}</output>
 		<v-icon
 			v-tooltip="$t('copy_details')"
