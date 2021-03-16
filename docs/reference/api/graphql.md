@@ -18,6 +18,10 @@ experiment with GraphQL, and explore the data within.
 Like, where to post, where to enter the token, some basic queries, disclaimer that there are no mutations yet, how to do
 system tables vs custom tables, etc
 
+
+## Schema
+
+In order to use the GraphQL schema on a external GraphQL explorer the `content-type` header needs to be set to `application/json`, otherwise it will not load the schema correctly.
 ## Authentication
 
 By default, the GraphQL endpoint will access data as the public role. If you feel like collections or fields are
