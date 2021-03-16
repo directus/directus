@@ -5,7 +5,7 @@ export type Field = string;
 export type Item = Record<string, any>;
 
 export type PartialItem<T> = {
-	[P in keyof T]?: T[P];
+	[P in keyof T]?: PartialItem<T[P]>;
 };
 
 export type OneItem<T extends Item> = PartialItem<T> | null | undefined;

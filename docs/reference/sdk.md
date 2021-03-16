@@ -15,7 +15,7 @@ npm install @directus/sdk
 ## TypeScript
 
 If you are using TypeScript, the JS SDK requires TypeScript 3.8 or newer. It will also improve the development
-experience by providing relevant changes to your data that is done by Directus.
+experience by providing relevant information when manipulating your data.
 
 For example, `directus.items` will accept an user data type which allows for a more detailed IDE suggestions for return
 types, sorting and filtering.
@@ -29,6 +29,39 @@ type Post = {
 const posts = directus.items<Post>('posts');
 
 const post = await posts.readOne(1);
+```
+
+You can also extend Directus system type information by providing type information on Directus constructor.
+
+```ts
+type UserType = {
+	level: number;
+	experience: number;
+};
+
+type CustomTypes = {
+	// This type will be merged with Directus user type.
+	// Getting `users` name here is important.
+	users: UserType;
+};
+
+async function whoami() {
+	const directus = new Directus<CustomTypes>('https://api.example.com');
+
+	await directus.auth.login({
+		email: 'admin@example.com',
+		password: 'password',
+	});
+
+	// typeof me = typeof CustomTypes.users;
+	const me = await directus.users.me.read();
+
+	// OK
+	me.level = 42;
+
+	// Error TS2322: Type 'string' is not assignable to type 'number'.
+	me.experience = 'high';
+}
 ```
 
 ## Usage
@@ -592,7 +625,7 @@ Same methods as `directus.items("directus_users")`, and:
 ### Invite a New User
 
 ```js
-await directus.users.invite('admin@example.com', 'fe38136e-52f7-4622-8498-112b8a32a1e2');
+await directus.users.invites.send('admin@example.com', 'fe38136e-52f7-4622-8498-112b8a32a1e2');
 ```
 
 The second parameter is the role of the user
@@ -600,7 +633,7 @@ The second parameter is the role of the user
 ### Accept a User Invite
 
 ```js
-await directus.users.acceptInvite('abc.def.ghi', 'n3w-p455w0rd');
+await directus.users.invites.accept('<accept-token>', 'n3w-p455w0rd');
 ```
 
 The provided token is sent to the user's email
@@ -608,7 +641,7 @@ The provided token is sent to the user's email
 ### Enable Two-Factor Authentication
 
 ```js
-await directus.users.tfa.enable('my-password');
+await directus.users.tfa.ena ble('my-password');
 ```
 
 ### Disable Two-Factor Authentication

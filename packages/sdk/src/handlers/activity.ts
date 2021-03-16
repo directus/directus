@@ -4,12 +4,12 @@
 
 import { ItemsHandler } from '../base/items';
 import { ITransport } from '../transport';
-import { ActivityType } from '../types';
+import { ActivityType, DefaultType } from '../types';
 import { CommentsHandler } from './comments';
 
-export type ActivityItem<T extends object = {}> = ActivityType & T;
+export type ActivityItem<T = DefaultType> = ActivityType & T;
 
-export class ActivityHandler<T extends object> extends ItemsHandler<ActivityItem<T>> {
+export class ActivityHandler<T = DefaultType> extends ItemsHandler<ActivityItem<T>> {
 	private _comments: CommentsHandler<T>;
 
 	constructor(transport: ITransport) {

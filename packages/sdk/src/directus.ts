@@ -20,39 +20,40 @@ import { Item } from './items';
 import { ITransport, TransportResponse } from './transport';
 import { UtilsHandler } from './handlers/utils';
 import { IStorage } from './storage';
+import { TypeMap, TypeOf } from './types';
 
 export type DirectusTypes = {
-	activity: {};
-	collections: {};
-	fields: {};
-	files: {};
-	folders: {};
-	permissions: {};
-	presets: {};
-	relations: {};
-	revisions: {};
-	roles: {};
-	settings: {};
-	users: {};
+	activity: undefined;
+	collections: undefined;
+	fields: undefined;
+	files: undefined;
+	folders: undefined;
+	permissions: undefined;
+	presets: undefined;
+	relations: undefined;
+	revisions: undefined;
+	roles: undefined;
+	settings: undefined;
+	users: undefined;
 };
 
-export interface IDirectus<T extends DirectusTypes = DirectusTypes> {
+export interface IDirectus<T extends TypeMap> {
 	readonly auth: IAuth;
 	readonly storage: IStorage;
 	readonly transport: ITransport;
 
-	readonly activity: ActivityHandler<Pick<T, 'activity'>>;
-	readonly collections: CollectionsHandler<Pick<T, 'collections'>>;
-	readonly fields: FieldsHandler<Pick<T, 'fields'>>;
-	readonly files: FilesHandler<Pick<T, 'files'>>;
-	readonly folders: FoldersHandler<Pick<T, 'folders'>>;
-	readonly permissions: PermissionsHandler<Pick<T, 'permissions'>>;
-	readonly presets: PresetsHandler<Pick<T, 'presets'>>;
-	readonly relations: RelationsHandler<Pick<T, 'relations'>>;
-	readonly revisions: RevisionsHandler<Pick<T, 'revisions'>>;
-	readonly roles: RolesHandler<Pick<T, 'roles'>>;
-	readonly settings: SettingsHandler<Pick<T, 'settings'>>;
-	readonly users: UsersHandler<Pick<T, 'users'>>;
+	readonly activity: ActivityHandler<TypeOf<T, 'activity'>>;
+	readonly collections: CollectionsHandler<TypeOf<T, 'collections'>>;
+	readonly fields: FieldsHandler<TypeOf<T, 'fields'>>;
+	readonly files: FilesHandler<TypeOf<T, 'files'>>;
+	readonly folders: FoldersHandler<TypeOf<T, 'folders'>>;
+	readonly permissions: PermissionsHandler<TypeOf<T, 'permissions'>>;
+	readonly presets: PresetsHandler<TypeOf<T, 'presets'>>;
+	readonly relations: RelationsHandler<TypeOf<T, 'relations'>>;
+	readonly revisions: RevisionsHandler<TypeOf<T, 'revisions'>>;
+	readonly roles: RolesHandler<TypeOf<T, 'roles'>>;
+	readonly settings: SettingsHandler<TypeOf<T, 'settings'>>;
+	readonly users: UsersHandler<TypeOf<T, 'users'>>;
 	readonly server: ServerHandler;
 	readonly utils: UtilsHandler;
 

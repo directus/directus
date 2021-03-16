@@ -1,0 +1,13 @@
+{
+	"name": "examples",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.ts",
+	"scripts": {
+		"start": "ts-node"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"@directus/sdk": "file:.."
+	}
+}

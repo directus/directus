@@ -1,5 +1,5 @@
 import { IAuth } from '../auth';
-import { DirectusTypes as DirectusFields, IDirectus } from '../directus';
+import { IDirectus } from '../directus';
 import {
 	ActivityHandler,
 	CollectionsHandler,
@@ -23,6 +23,7 @@ import { AxiosTransport } from './transport';
 import { Auth } from './auth';
 import { IStorage } from '../storage';
 import { LocalStorage, MemoryStorage } from './storage';
+import { TypeMap, TypeOf } from '../types';
 
 export type DirectusOptions = {
 	auth?: IAuth;
@@ -30,22 +31,22 @@ export type DirectusOptions = {
 	storage?: IStorage;
 };
 
-export class Directus<T extends DirectusFields = DirectusFields> implements IDirectus<T> {
+export class Directus<T extends TypeMap> implements IDirectus<T> {
 	private _auth: IAuth;
 	private _transport: ITransport;
 	private _storage: IStorage;
-	private _activity?: ActivityHandler<Pick<T, 'activity'>>;
-	private _collections?: CollectionsHandler<Pick<T, 'collections'>>;
-	private _fields?: FieldsHandler<Pick<T, 'fields'>>;
-	private _files?: FilesHandler<Pick<T, 'files'>>;
-	private _folders?: FoldersHandler<Pick<T, 'folders'>>;
-	private _permissions?: PermissionsHandler<Pick<T, 'permissions'>>;
-	private _presets?: PresetsHandler<Pick<T, 'presets'>>;
-	private _relations?: RelationsHandler<Pick<T, 'relations'>>;
-	private _revisions?: RevisionsHandler<Pick<T, 'revisions'>>;
-	private _roles?: RolesHandler<Pick<T, 'roles'>>;
-	private _settings?: SettingsHandler<Pick<T, 'settings'>>;
-	private _users?: UsersHandler<Pick<T, 'users'>>;
+	private _activity?: ActivityHandler<TypeOf<T, 'activity'>>;
+	private _collections?: CollectionsHandler<TypeOf<T, 'collections'>>;
+	private _fields?: FieldsHandler<TypeOf<T, 'fields'>>;
+	private _files?: FilesHandler<TypeOf<T, 'files'>>;
+	private _folders?: FoldersHandler<TypeOf<T, 'folders'>>;
+	private _permissions?: PermissionsHandler<TypeOf<T, 'permissions'>>;
+	private _presets?: PresetsHandler<TypeOf<T, 'presets'>>;
+	private _relations?: RelationsHandler<TypeOf<T, 'relations'>>;
+	private _revisions?: RevisionsHandler<TypeOf<T, 'revisions'>>;
+	private _roles?: RolesHandler<TypeOf<T, 'roles'>>;
+	private _settings?: SettingsHandler<TypeOf<T, 'settings'>>;
+	private _users?: UsersHandler<TypeOf<T, 'users'>>;
 	private _server?: ServerHandler;
 	private _utils?: UtilsHandler;
 	private _items: {
@@ -71,52 +72,52 @@ export class Directus<T extends DirectusFields = DirectusFields> implements IDir
 		return this._transport;
 	}
 
-	get activity(): ActivityHandler<Pick<T, 'activity'>> {
-		return this._activity || (this._activity = new ActivityHandler<Pick<T, 'activity'>>(this.transport));
+	get activity(): ActivityHandler<TypeOf<T, 'activity'>> {
+		return this._activity || (this._activity = new ActivityHandler<TypeOf<T, 'activity'>>(this.transport));
 	}
 
-	get collections(): CollectionsHandler<Pick<T, 'collections'>> {
-		return this._collections || (this._collections = new CollectionsHandler<Pick<T, 'collections'>>(this.transport));
+	get collections(): CollectionsHandler<TypeOf<T, 'collections'>> {
+		return this._collections || (this._collections = new CollectionsHandler<TypeOf<T, 'collections'>>(this.transport));
 	}
 
-	get fields(): FieldsHandler<Pick<T, 'fields'>> {
-		return this._fields || (this._fields = new FieldsHandler<Pick<T, 'fields'>>(this.transport));
+	get fields(): FieldsHandler<TypeOf<T, 'fields'>> {
+		return this._fields || (this._fields = new FieldsHandler<TypeOf<T, 'fields'>>(this.transport));
 	}
 
-	get files(): FilesHandler<Pick<T, 'files'>> {
-		return this._files || (this._files = new FilesHandler<Pick<T, 'files'>>(this.transport));
+	get files(): FilesHandler<TypeOf<T, 'files'>> {
+		return this._files || (this._files = new FilesHandler<TypeOf<T, 'files'>>(this.transport));
 	}
 
-	get folders(): FoldersHandler<Pick<T, 'folders'>> {
-		return this._folders || (this._folders = new FoldersHandler<Pick<T, 'folders'>>(this.transport));
+	get folders(): FoldersHandler<TypeOf<T, 'folders'>> {
+		return this._folders || (this._folders = new FoldersHandler<TypeOf<T, 'folders'>>(this.transport));
 	}
 
-	get permissions(): PermissionsHandler<Pick<T, 'permissions'>> {
-		return this._permissions || (this._permissions = new PermissionsHandler<Pick<T, 'permissions'>>(this.transport));
+	get permissions(): PermissionsHandler<TypeOf<T, 'permissions'>> {
+		return this._permissions || (this._permissions = new PermissionsHandler<TypeOf<T, 'permissions'>>(this.transport));
 	}
 
-	get presets(): PresetsHandler<Pick<T, 'presets'>> {
-		return this._presets || (this._presets = new PresetsHandler<Pick<T, 'presets'>>(this.transport));
+	get presets(): PresetsHandler<TypeOf<T, 'presets'>> {
+		return this._presets || (this._presets = new PresetsHandler<TypeOf<T, 'presets'>>(this.transport));
 	}
 
-	get relations(): RelationsHandler<Pick<T, 'relations'>> {
-		return this._relations || (this._relations = new RelationsHandler<Pick<T, 'relations'>>(this.transport));
+	get relations(): RelationsHandler<TypeOf<T, 'relations'>> {
+		return this._relations || (this._relations = new RelationsHandler<TypeOf<T, 'relations'>>(this.transport));
 	}
 
-	get revisions(): RevisionsHandler<Pick<T, 'revisions'>> {
-		return this._revisions || (this._revisions = new RevisionsHandler<Pick<T, 'revisions'>>(this.transport));
+	get revisions(): RevisionsHandler<TypeOf<T, 'revisions'>> {
+		return this._revisions || (this._revisions = new RevisionsHandler<TypeOf<T, 'revisions'>>(this.transport));
 	}
 
-	get roles(): RolesHandler<Pick<T, 'roles'>> {
-		return this._roles || (this._roles = new RolesHandler<Pick<T, 'roles'>>(this.transport));
+	get roles(): RolesHandler<TypeOf<T, 'roles'>> {
+		return this._roles || (this._roles = new RolesHandler<TypeOf<T, 'roles'>>(this.transport));
 	}
 
-	get settings(): SettingsHandler<Pick<T, 'settings'>> {
-		return this._settings || (this._settings = new SettingsHandler<Pick<T, 'settings'>>(this.transport));
+	get settings(): SettingsHandler<TypeOf<T, 'settings'>> {
+		return this._settings || (this._settings = new SettingsHandler<TypeOf<T, 'settings'>>(this.transport));
 	}
 
-	get users(): UsersHandler<Pick<T, 'users'>> {
-		return this._users || (this._users = new UsersHandler<Pick<T, 'users'>>(this.transport));
+	get users(): UsersHandler<TypeOf<T, 'users'>> {
+		return this._users || (this._users = new UsersHandler<TypeOf<T, 'users'>>(this.transport));
 	}
 
 	get server(): ServerHandler {

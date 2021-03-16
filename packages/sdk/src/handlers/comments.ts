@@ -2,7 +2,7 @@ import { Comment, ID } from '../types';
 import { ITransport } from '../transport';
 import { ActivityItem } from './activity';
 
-export class CommentsHandler<T extends object> {
+export class CommentsHandler<T> {
 	private transport: ITransport;
 
 	constructor(transport: ITransport) {

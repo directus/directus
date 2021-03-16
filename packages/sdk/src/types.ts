@@ -1,5 +1,12 @@
 export type ID = string | number;
 
+export type DefaultType = {
+	[field: string]: any;
+};
+
+export type TypeMap = { [k: string]: unknown };
+export type TypeOf<T extends TypeMap, K extends keyof T> = T[K] extends unknown ? DefaultType : T[K];
+
 export type ActivityType = {
 	action: string;
 	ip: string;
@@ -20,39 +27,39 @@ export type Comment = {
 };
 
 export type CollectionType = {
-	[field: string]: any;
+	// TODO: complete
 };
 
 export type FieldType = {
-	[field: string]: any;
+	// TODO: complete
 };
 
 export type FileType = {
-	[field: string]: any;
+	// TODO: complete
 };
 
 export type FolderType = {
-	[field: string]: any;
+	// TODO: complete
 };
 
 export type PermissionType = {
-	[field: string]: any;
+	// TODO: complete
 };
 
 export type PresetType = {
-	[field: string]: any;
+	// TODO: complete
 };
 
 export type RelationType = {
-	[field: string]: any;
+	// TODO: complete
 };
 
 export type RevisionType = {
-	[field: string]: any;
+	// TODO: complete
 };
 
 export type RoleType = {
-	[field: string]: any;
+	// TODO: complete
 };
 
 export type SettingType = {
@@ -81,5 +88,5 @@ export type SettingType = {
 };
 
 export type UserType = {
-	[field: string]: any;
+	// TODO: complete
 };

@@ -4,11 +4,11 @@
 
 import { ItemsHandler } from '../base/items';
 import { ITransport } from '../transport';
-import { SettingType } from '../types';
+import { SettingType, DefaultType } from '../types';
 
-export type SettingItem<T extends object = {}> = SettingType & T;
+export type SettingItem<T = DefaultType> = SettingType & T;
 
-export class SettingsHandler<T extends object> extends ItemsHandler<SettingItem<T>> {
+export class SettingsHandler<T = DefaultType> extends ItemsHandler<SettingItem<T>> {
 	constructor(transport: ITransport) {
 		super('directus_settings', transport);
 	}

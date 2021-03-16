@@ -4,11 +4,11 @@
 
 import { ItemsHandler } from '../base/items';
 import { ITransport } from '../transport';
-import { FieldType } from '../types';
+import { FieldType, DefaultType } from '../types';
 
-export type FieldItem<T extends object = {}> = FieldType & T;
+export type FieldItem<T = DefaultType> = FieldType & T;
 
-export class FieldsHandler<T extends object> extends ItemsHandler<FieldItem<T>> {
+export class FieldsHandler<T = DefaultType> extends ItemsHandler<FieldItem<T>> {
 	constructor(transport: ITransport) {
 		super('directus_fields', transport);
 	}
