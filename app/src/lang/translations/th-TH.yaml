@@ -52,6 +52,7 @@ os_uptime: เวลาออนไลน์ OS
 os_totalmem: หน่วยความจำ OS
 archive: เก็บถาวร
 archive_confirm: คุณแน่ใจว่าจะเก็บถาวรรายการนี้?
+reset_system_permissions_to: 'รีเซ็ตสิทธิ์ระบบเพื่อ:'
 fields:
   directus_fields:
     translation: คำแปลชื่อฟิลด์
