@@ -596,12 +596,6 @@ Same methods as `directus.items("directus_settings")`.
 
 ## Server
 
-### Get the API Spec in OAS Format
-
-```js
-await directus.server.specs.oas();
-```
-
 ### Ping the Server
 
 ```js
@@ -641,7 +635,7 @@ The provided token is sent to the user's email
 ### Enable Two-Factor Authentication
 
 ```js
-await directus.users.tfa.ena ble('my-password');
+await directus.users.tfa.enable('my-password');
 ```
 
 ### Disable Two-Factor Authentication
