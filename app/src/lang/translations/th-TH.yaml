@@ -53,7 +53,123 @@ os_totalmem: หน่วยความจำ OS
 archive: เก็บถาวร
 archive_confirm: คุณแน่ใจว่าจะเก็บถาวรรายการนี้?
 reset_system_permissions_to: 'รีเซ็ตสิทธิ์ระบบเพื่อ:'
+field_file: ไฟล์เดียว
+field_files: หลายไฟล์
+field_m2o: ความสัมพันธ์แบบ M2O
+field_m2a: ความสัมพันธ์แบบ M2A
+field_o2m: ความสัมพันธ์แบบ O2M
+field_m2m: ความสัมพันธ์แบบ M2M
+field_translations: การแปลภาษา
+item_permissions: สิทธิ์การเข้าถึงไอเท็ม
+field_permissions: สิทธิ์การเข้าถึงฟิลด์
+field_validation: การตรวจสอบฟิลด์
+delete_field: ลบฟิลด์
+fields_and_layout: ฟิลด์และเลย์เอ้าต์
+field_create_success: 'ฟิลด์ "{field}" ถูกสร้างแล้ว'
+field_update_success: 'ฟิลด์ "{field}" ถูกแก้ไขแล้ว'
+duplicate_where_to: ต้องการคัดลอกฟิลด์นี้ไปที่ไหน?
+language: ภาษา
+admins_have_all_permissions: ผู้ดูแลระบบมีสิทธิ์ทุกสิทธิ์
+camera: กล้อง
+exposure: การรับแสง
+shutter: ชัตเตอร์
+iso: ISO
+focal_length: ระยะโฟกัส
+create_field: สร้างฟิลด์
+reset_page_preferences: รีเซ็ตการตั้งค่าเพจ
+hidden_field: ซ่อนฟิลด์
+key: คีย์
+create_translations: สร้างการแปลใหม่
+auto_generate: สร้างอัตโนมัติ
+this_will_auto_setup_fields_relations: นี่จะตั้งค่าทุกฟิลด์ และความสัมพันธ์ที่จำเป็นโดยอัตโนมัติ
+click_here: คลิกที่นี่
+to_manually_setup_translations: ตั้งค่าการแปลภาษาเอง
+new_data_alert: 'สิ่งเหล่านี้จะถูกสร้างใน Data Model ของคุณ'
+new_field: 'สร้างฟิลด์ใหม่'
+new_collection: 'คอลเลกชันใหม่'
+add_m2o_to_collection: 'เพิ่ม Many-to-One ให้ "{collection}"'
+add_o2m_to_collection: 'เพิ่ม One-to-Many ให้ "{collection}"'
+add_m2m_to_collection: 'เพิ่ม Many-to-Many ให้ "{collection}"'
+choose_a_type: เลือกชนิด...
+determined_by_relationship: กำหนดโดยความสัมพันธ์
+add_note: เพิ่มโน้ตเพื่อแนะนำผู้ใช้
+default_value: ค่าเริ่มต้น
+standard_field: ฟิลด์หลัก
+single_file: ไฟล์เดียว
+multiple_files: หลายไฟล์
+m2o_relationship: ความสัมพันธ์แบบ Many to One
+o2m_relationship: ความสัมพันธ์แบบ One to Many
+m2m_relationship: ความสัมพันธ์แบบ Many to Many
+m2a_relationship: ความสัมพันธ์แบบ Many to Any
+invalid_item: ไอเท็มไม่ถูกต้อง
+next: ถัดไป
+field_name: ชื่อฟิลด์
+translations: การแปลภาษา
+note: หมายเหตุ
+enter_a_value: กรุณาใส่ค่า
+enter_a_placeholder: กรุณาใส่คำแนะนำในช่องสำหรับกรอก
+length: ความยาว
+precision_scale: ความแม่นยำ และมาตราส่วน
+readonly: อ่านเท่านั้น
+unique: ไม่ซ้ำ
+updated_on: แก้ไขเมื่อ
+updated_by: แก้ไขโดย
+primary_key: คีย์หลัก
+foreign_key: คีย์นอก
+finish_setup: ตั้งค่าเสร็จ
+dismiss: ปิด
+raw_value: ข้อมูลดิบ
+edit_raw_value: แก้ไขข้อมูลดิบ
+enter_raw_value: กรุณาใส่ข้อมูลดิบ
+clear_value: ล้างค่า
+reset_to_default: คืนค่าเริ่มต้น
+undo_changes: ยกเลิกการเปลี่ยนแปลง
+notifications: การแจ้งเตือน
+show_all_activity: แสดงทุกกิจกรรม
+page_not_found: ไม่พบหน้านี้
+page_not_found_body: ไม่มีหน้าที่คุณกำลังมองหา
+confirm_revert: ยืนยันการย้อนกลับ
+confirm_revert_body: นี่จะเป็นการย้อนกลับไอเท็มไปยังสถานะที่เลือก
+display: การแสดงผล
+settings_update_success: ปรับปรุงการตั้งค่าเรียบร้อยแล้ว
+title: ชื่อ
+revision_delta_created: สร้างแล้ว
+revision_delta_updated: 'อัพเดทแล้ว 1 ฟิลด์ | อัพเดทแล้ว {count} ฟิลด์'
+revision_delta_deleted: ลบแล้ว
+revision_delta_reverted: แปลงกลับแล้ว
+revision_delta_other: ประวัติการปรับปรุง
+revision_delta_by: '{date} โดย {user}'
+private_user: ผู้ใช้งานแบบส่วนตัว
+revision_preview: ตัวอย่างประวัติการแก้ไข
+leave_comment: แสดงความคิดเห็น
+post_comment_success: ความคิดเห็นถูกโพสต์แล้ว
+item_create_success: ไอเท็มถูกสร้างแล้ว|ไอเท็มถูกสร้างแล้ว
+item_update_success: ไอเท็มถูกแก้ไขแล้ว|ไอเท็มถูกแก้ไขแล้ว
+item_delete_success: ไอเท็มถูกลบแล้ว|ไอเท็มถูกลบแล้ว
+this_collection: คอลเลกชันนี้
+related_collection: คอลเลกชันที่เกี่ยวข้อง
+related_collections: คอลเลกชันที่เกี่ยวข้อง
+translations_collection: คอลเลกชันการแปล
+languages_collection: คอลเลกชันภาษา
+export_data: ส่งข้อมูลออก
+format: รูปแบบ
+use_current_filters_settings: ใช้ตัวกรองและการตั้งค่าปัจจุบัน
+export_collection: 'ส่งออก {collection}'
+last_page: หน้าสุดท้าย
+last_access: การเข้าถึงล่าสุด
+fill_template: กรอกด้วยค่าจากแม่แบบ
+submit: ส่งข้อมูล
+move_to_folder: ย้ายไปยังโฟลเดอร์
+move: ย้าย
+system: ระบบ
+add_field_related: เพิ่มฟิลด์ไปยังคอลเลกชันที่เกี่ยวข้อง
+interface: อินเทอร์เฟซ
+today: วันนี้
+yesterday: เมื่อวาน
+delete_comment: ลบความคิดเห็น
 month: เดือน
+year: ปี
+select_all: เลือกทั้งหมด
 months:
   january: มกราคม
   february: กุมภาพันธ์
@@ -67,11 +183,60 @@ months:
   october: ตุลาคม
   november: พฤศจิกายน
   december: ธันวาคม
+drag_mode: โหลดคลิ๊กแล้วลาก
+cancel_crop: ยกเลิกการครอบตัด
+original: ต้นฉบับ
+url: URL
+import: นำ​เข้า
+file_details: รายละเอียดไฟล์
+dimensions: ขนาด
+size: ขนาด
+created: สร้างแล้ว
+modified: ถูกแก้ไข
+checksum: Checksum
+owner: เจ้าของ
+edited_by: แก้ไขโดย
+folder: โฟลเดอร์
+zoom: ซูม
+download: ดาวน์โหลด
+open: เปิด
+open_in_new_window: เปิดในหน้าต่างใหม่
+foreground_color: สีพื้นด้านหน้า
+background_color: สีพื้นหลัง
+upload_from_device: อัพโหลดจากอุปกรณ์
+choose_from_library: เลือกจากไลบรารี
+wysiwyg_options:
+  forecolor: สีพื้นด้านหน้า
+  backcolor: สีพื้นหลัง
+  selectall: เลือกทั้งหมด
 fields:
+  directus_collections:
+    note: หมายเหตุ
+  directus_files:
+    title: ชื่อ
+    folder: โฟลเดอร์
+  directus_users:
+    title: ชื่อ
+    language: ภาษา
+    last_page: หน้าสุดท้าย
+    last_access: การเข้าถึงล่าสุด
   directus_fields:
+    note: หมายเหตุ
     translation: คำแปลชื่อฟิลด์
   directus_roles:
     name: ชื่อบทบาท
 interfaces:
   button-links:
     primary: หลัก
+  dropdown:
+    choices_value_placeholder: กรุณาใส่ค่า
+  interface:
+    interface: อินเทอร์เฟซ
+displays:
+  datetime:
+    format: รูปแบบ
+  labels:
+    choices_value_placeholder: กรุณาใส่ค่า
+layouts:
+  cards:
+    title: ชื่อ
