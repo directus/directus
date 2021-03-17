@@ -4,8 +4,11 @@ import { GraphQLService } from '../services';
 import { respond } from '../middleware/respond';
 import asyncHandler from '../utils/async-handler';
 import { cloneDeep } from 'lodash';
+import { parseGraphQL } from '../middleware/parse-graphql';
 
 const router = Router();
+
+router.use(parseGraphQL);
 
 router.use(
 	asyncHandler(async (req, res, next) => {
@@ -16,30 +19,33 @@ router.use(
 
 		const schema = await service.getSchema();
 
-		/**
-		 * @NOTE express-graphql will attempt to respond directly on the `res` object
-		 * We don't want that, as that will skip our regular `respond` middleware
-		 * and therefore skip the cache. This custom response object overwrites
-		 * express' regular `json` function in order to trick express-graphql to
-		 * use the next middleware instead of respond with data directly
-		 */
-		const customResponse = cloneDeep(res);
+		// Ideal syntax:
+		// response.payload = await service.execute(query);
 
-		customResponse.json = customResponse.end = function (payload: Record<string, any>) {
-			res.locals.payload = payload;
+		// /**
+		//  * @NOTE express-graphql will attempt to respond directly on the `res` object
+		//  * We don't want that, as that will skip our regular `respond` middleware
+		//  * and therefore skip the cache. This custom response object overwrites
+		//  * express' regular `json` function in order to trick express-graphql to
+		//  * use the next middleware instead of respond with data directly
+		//  */
+		// const customResponse = cloneDeep(res);
 
-			if (customResponse.getHeader('content-type')) {
-				res.setHeader('Content-Type', customResponse.getHeader('content-type')!);
-			}
+		// customResponse.json = customResponse.end = function (payload: Record<string, any>) {
+		// 	res.locals.payload = payload;
 
-			if (customResponse.getHeader('content-length')) {
-				res.setHeader('content-length', customResponse.getHeader('content-length')!);
-			}
+		// 	if (customResponse.getHeader('content-type')) {
+		// 		res.setHeader('Content-Type', customResponse.getHeader('content-type')!);
+		// 	}
 
-			return next();
-		} as any;
+		// 	if (customResponse.getHeader('content-length')) {
+		// 		res.setHeader('content-length', customResponse.getHeader('content-length')!);
+		// 	}
 
-		graphqlHTTP({ schema, graphiql: true })(req, customResponse);
+		// 	return next();
+		// } as any;
+
+		// graphqlHTTP({ schema, graphiql: true })(req, customResponse);
 	}),
 	respond
 );
