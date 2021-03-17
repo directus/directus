@@ -205,6 +205,10 @@ foreground_color: สีพื้นด้านหน้า
 background_color: สีพื้นหลัง
 upload_from_device: อัพโหลดจากอุปกรณ์
 choose_from_library: เลือกจากไลบรารี
+import_from_url: นำเข้าไฟล์จาก URL
+replace_from_device: แทนที่ไฟล์จากอุปกรณ์
+replace_from_library: แทนที่ไฟล์จากไลบรารี
+replace_from_url: แทนที่ไฟล์จาก URL
 wysiwyg_options:
   forecolor: สีพื้นด้านหน้า
   backcolor: สีพื้นหลัง
