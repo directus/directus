@@ -315,6 +315,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				payloadWithoutAliases = await payloadService.processValues('update', payloadWithoutAliases);
 
 				if (Object.keys(payloadWithoutAliases).length > 0) {
+					// Always delete primaryKeyField from payload to prevent issues with updating in databases
+					// that do not allow updating primary key columns (for example mssql identity columns).
+					if (payloadWithoutAliases.hasOwnProperty(primaryKeyField)) {
+						delete payloadWithoutAliases[primaryKeyField];
+					}
+
 					try {
 						await trx(this.collection).update(payloadWithoutAliases).whereIn(primaryKeyField, keys);
 					} catch (err) {
