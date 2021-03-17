@@ -209,6 +209,51 @@ import_from_url: นำเข้าไฟล์จาก URL
 replace_from_device: แทนที่ไฟล์จากอุปกรณ์
 replace_from_library: แทนที่ไฟล์จากไลบรารี
 replace_from_url: แทนที่ไฟล์จาก URL
+no_file_selected: ไม่มีไฟล์ที่เลือก
+download_file: ดาวน์โหลดไฟล์
+name: ชื่อ
+primary_key_field: ฟิล์ของคีย์หลัก
+type: ชนิด
+creating_new_collection: สร้างคอลเลกชันใหม่
+created_by: สร้างโดย
+created_on: สร้างเมื่อ
+auto_increment_integer: ตัวเลขที่เพิ่มขึ้นอัตโนมัติ
+generated_uuid: UUID ที่ถูกสร้างโดยอัตโนมัติ
+manual_string: กรอกข้อความด้วยตนเอง
+save_and_create_new: บันทึกและสร้างใหม่อีก
+save_and_stay: บันทึกและอยู่หน้าเดิม
+save_as_copy: บันทึกเป็นสำเนา
+add_existing: เพิ่มจากที่มีอยู่
+comments: ความคิดเห็น
+no_comments: ยังไม่มีความเห็น
+click_to_expand: คลิกเพื่อขยาย
+select_item: เลือกรายการ
+no_items: ไม่มีรายการ
+search_items: ค้นหารายการ
+disabled: ปิดใช้งาน
+information: ข้อมูล
+report_bug: รายงานข้อบกพร่อง
+request_feature: ขอฟีเจอร์ใหม่ๆ
+interface_not_found: 'ไม่พบอินเทอร์เฟส "{interface}"'
+reset_interface: ล้างการตั้งค่าอินเทอร์เฟส
+display_not_found: 'ไม่พบการแสดงผล "{display}"'
+reset_display: ล้างค่าการแสดงผล
+item_count: 'ไม่พบไอเท็ม|1 ไอเท็ม|{count} ไอเท็ม'
+no_items_copy: ไม่มีรายการในคอลเล็กชันนี้
+file_count: 'ไม่มีไฟล์ | 1 ไฟล์ | {count} ไฟล์'
+no_files_copy: ไม่มีไฟล์ที่นี่
+user_count: 'ไม่มีผู้ใช้ | ผู้ใช้ 1 คน | ผู้ใช้ {count} คน'
+no_users_copy: ยังไม่มีผู้ใช้ในบทบาท
+webhooks_count: 'ไม่มี webhook | มี 1 webhook | มี {count} webhook'
+no_webhooks_copy: ยังไม่มี webhook
+all_items: รายการทั้งหมด
+csv: CSV
+no_collections: ไม่มีคอลเลกชัน
+create_collection: สร้างคอลเลกชัน
+no_collections_copy_admin: ยังไม่มีคอลเลกชันใดๆ คลิ๊กที่ปุ่มด้านล่างเพื่อสร้าง
+no_collections_copy: ยังไม่มีคอลเลกชันใดๆ กรุณาติดต่อผู้ดูแลระบบ
+relationship_not_setup: ความสัมพันธ์ยังไม่ถูกตั้งค่าให้ถูกต้อง
+display_template_not_setup: การตั้งค่าของการแสดงผลไม่ถูกต้อง
 wysiwyg_options:
   forecolor: สีพื้นด้านหน้า
   backcolor: สีพื้นหลัง
@@ -218,6 +263,8 @@ fields:
     note: หมายเหตุ
   directus_files:
     title: ชื่อ
+    created_on: สร้างเมื่อ
+    created_by: สร้างโดย
     folder: โฟลเดอร์
   directus_users:
     title: ชื่อ
@@ -241,6 +288,8 @@ displays:
     format: รูปแบบ
   labels:
     choices_value_placeholder: กรุณาใส่ค่า
+  user:
+    name: ชื่อ
 layouts:
   cards:
     title: ชื่อ
