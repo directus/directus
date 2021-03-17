@@ -53,6 +53,20 @@ os_totalmem: หน่วยความจำ OS
 archive: เก็บถาวร
 archive_confirm: คุณแน่ใจว่าจะเก็บถาวรรายการนี้?
 reset_system_permissions_to: 'รีเซ็ตสิทธิ์ระบบเพื่อ:'
+month: เดือน
+months:
+  january: มกราคม
+  february: กุมภาพันธ์
+  march: มีนาคม
+  april: เมษายน
+  may: พฤษภาคม
+  june: มิถุนายน
+  july: กรกฎาคม
+  august: สิงหาคม
+  september: กันยายน
+  october: ตุลาคม
+  november: พฤศจิกายน
+  december: ธันวาคม
 fields:
   directus_fields:
     translation: คำแปลชื่อฟิลด์
