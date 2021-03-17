@@ -284,6 +284,31 @@ select_an_item: เลือก 1 รายการ
 edit: แก้ไข
 enabled: เปิดใช้งาน
 disable_tfa: ปิดใช้งาน 2FA
+tfa_scan_code: สแกนโค้ดในแอป Autuehticator เพื่อตั้งค่า 2FA ให้เสร็จ
+enter_otp_to_disable_tfa: กรอก OTP เพื่อปิดการทำงาน 2FA
+create_account: สร้างบัญชี
+account_created_successfully: สร้างบัญชีสำเร็จ
+auto_fill: กรอกอัตโนมัติ
+corresponding_field: ฟิลด์ที่สอดคล้องกัน
+errors:
+  COLLECTION_NOT_FOUND: "ไม่พบคอลเลกชัน"
+  FIELD_NOT_FOUND: ไม่พบฟิลด์
+  FORBIDDEN: ไม่ได้รับอนุญาต
+  INVALID_CREDENTIALS: ชื่อผู้ใช้หรือรหัสผ่านผิด
+  INVALID_OTP: OTP ไม่ถูกต้อง
+  INVALID_PAYLOAD: payload ไม่ถูกต้อง
+  INVALID_QUERY: query ไม่ถูกต้อง
+  ITEM_LIMIT_REACHED: ไอเท็มถึงขีดจำกัด
+  ITEM_NOT_FOUND: ไม่พบไอเท็ม
+  ROUTE_NOT_FOUND: ไม่พบข้อมูลที่ต้องการ
+  RECORD_NOT_UNIQUE: พบค่าที่ซ้ำกัน
+  UNKNOWN: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
+value_hashed: ข้อมูลถูกเข้ารหัสไว้อย่างปลอดภัย
+bookmark_name: ชื่อบุ๊กมาร์ก...
+create_bookmark: สร้างบุ๊กมาร์ก
+edit_bookmark: แก้ไขบุ๊กมาร์ก
+bookmarks: บุ๊กมาร์ก
+unexpected_error: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
 wysiwyg_options:
   forecolor: สีพื้นด้านหน้า
   backcolor: สีพื้นหลัง
