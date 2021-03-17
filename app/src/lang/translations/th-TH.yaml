@@ -53,6 +53,8 @@ os_totalmem: หน่วยความจำ OS
 archive: เก็บถาวร
 archive_confirm: คุณแน่ใจว่าจะเก็บถาวรรายการนี้?
 reset_system_permissions_to: 'รีเซ็ตสิทธิ์ระบบเพื่อ:'
+validationError:
+  unique: ค่าต้องไม่ซ้ำ
 field_file: ไฟล์เดียว
 field_files: หลายไฟล์
 field_m2o: ความสัมพันธ์แบบ M2O
@@ -308,15 +310,208 @@ bookmark_name: ชื่อบุ๊กมาร์ก...
 create_bookmark: สร้างบุ๊กมาร์ก
 edit_bookmark: แก้ไขบุ๊กมาร์ก
 bookmarks: บุ๊กมาร์ก
+presets: ที่ตั้งไว้ล่วงหน้า
 unexpected_error: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
+unexpected_error_copy: เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้งในภายหลัง
+copy_details: คัดลอกรายละเอียด
+no_app_access: ไม่สามารถเข้าถึงแอป
+no_app_access_copy: ผู้ใช้นี้ไม่ได้รับอนุญาตให้เข้าถึงส่วนแอดมิน
+password_reset_sent: เราได้ส่งขั้นตอนการกำหนดรหัสผ่านใหม่ให้คุณแล้วทางอีเมล
+password_reset_successful: รหัสผ่านถูกรีเซ็ตแล้ว
+back: ย้อนกลับ
+editing_image: แก้ไขรูปภาพ
+square: สี่เหลี่ยมจัตุรัส
+free: อิสระ
+flip_horizontal: พลิกตามแนวนอน
+flip_vertical: พลิกตามแนวตั้ง
+aspect_ratio: ตามอัตราส่วนภาพ
+rotate: หมุน
+all_users: ผู้ใช้ทั้งหมด
+delete_collection: ลบคอลเลกชัน
+update_collection_success: แก้ไขคอลเลกชัน
+delete_collection_success: คอลเลกชันถูกลบแล้ว
+one_item: '1 รายการ'
+delete_collection_are_you_sure: >-
+  แน่ใจหรือว่าต้องการลบคอลเลกชันนี้? นี่คือการลบคอลเลกชันและรายการทั้งหมดที่มีอยู่ในคอลเลกชัน ไม่สามารถกู้คืนได้
+collections_shown: แสดงคอลเลกชัน
+visible_collections: คอลเลกชันที่มองเห็นได้
+hidden_collections: คอลเลกชันที่ซ่อนอยู่
+show_hidden_collections: แสดงคอลเลกชันที่ซ่อนอยู่
+hide_hidden_collections: ซ่อนคอลเลกชันที่ซ่อนอยู่
+unmanaged_collections: คอลเลกชันที่ยังไม่ถูกตั้งค่า
+system_collections: คอลเลกชันของระบบ
+placeholder: ค่าที่ใช้ชั่วคราว
+icon_left: ไอคอนทางซ้าย
+icon_right: ไอคอนทางขวา
+count_other_revisions: 'ยังมีอีก {count} การแก้ไข'
+font: ฟอนท์
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: ตัวแบ่ง
+color: สี
+circle: วงกลม
+empty_item: ไอเท็มเปล่า
+log_in_with: 'ลงชื่อเข้าใช้ด้วย {provider}'
+advanced_filter: ตัวกรองขั้นสูง
+delete_advanced_filter: ลบตัวกรองนี้
+change_advanced_filter_operator: เปลี่ยนตัวดำเนินการ
+operators:
+  eq: เท่ากับ
+  neq: ไม่เท่ากับ
+  lt: น้อยกว่า
+  gt: มากกว่า
+  lte: น้อยกว่าหรือเท่ากับ
+  gte: มากกว่าหรือเท่ากับ
+  in: เป็น 1 ใน
+  nin: ไม่ใช่ 1 ใน
+  null: เป็นค่าว่าง
+  nnull: ไม่ใช่ค่าว่าง
+  contains: ประกอบด้วย
+  ncontains: ไม่ประกอบด้วย
+  between: อยู่ระหว่าง
+  nbetween: ไม่อยู่ระหว่าง
+  empty: เป็นค่าว่างเปล่า
+  nempty: ไม่ว่างเปล่า
+  all: ประกอบด้วยคีย์เหล่านี้
+  has: ประกอบด้วยบางคีย์เหล่านี้
+loading: กำลังโหลด...
+drop_to_upload: วางเพื่ออัพโหลด
+upload_file: อัพโหลดไฟล์
+upload_file_indeterminate: กำลังอัพโหลดไฟล์...
+upload_file_success: อัพโหลดไฟล์แล้ว
+upload_files_indeterminate: 'อัพโหลดไปแล้ว {done} ไฟล์ จาก {total} ไฟล์'
+upload_files_success: '{count} ไฟล์ถูกอัพโหลดแล้ว'
+upload_pending: รอการอัพโหลด
+drag_file_here: ลากและวางไฟล์ที่นี่
+click_to_browse: คลิ๊กเพื่อเรียกดู
+layout_options: ตัวเลือกเค้าโครง
+rows: แถว
+columns: คอลัมน์
+collection_setup: การตั้งค่าคอลเลกชัน
+optional_system_fields: ฟิลด์ระบบอื่นๆ ที่ไม่จำเป็น
+value_unique: ค่าต้องไม่ซ้ำ
+all_activity: กิจกรรมทั้งหมด
+create_item: สร้างไอเท็ม
+display_template: แม่แบบการแสดงผล
+n_items_selected: 'ไม่มีรายการที่เลือก | เลือกแล้ว 1 รายการ | เลือกแล้ว {n} รายการ'
+per_page: ต่อหน้า
+all_files: ทุกไฟล์
+my_files: ไฟล์ของฉัน
+recent_files: ไฟล์ล่าสุด
+create_folder: สร้างโฟลเดอร์
+folder_name: ชื่อโฟลเดอร์...
+add_file: เพิ่มไฟล์
+replace_file: แทนที่ไฟล์
+no_results: ไม่มีผลลัพธ์
+no_results_copy: ปรับแต่งหรือล้างตัวกรองเพื่อดูผลลัพธ์
+clear_filters: ล้างตัวกรอง
+saves_automatically: บันทึกอัตโนมัติ
+role: บทบาท
+user: ผู้ใช้
+no_presets: ไม่มีค่าที่ตั้งไว้ล่วงหน้า
+no_presets_copy: ยังไม่มีค่าที่ตั้งไว้ล่วงหน้าหรือบุ๊กมาร์กที่ถูกบันทึกไว้
+no_presets_cta: เพิ่มค่าที่ตั้งไว้ล่วงหน้าใหม่
+create: สร้าง
+on_create: เมื่อสร้าง
+on_update: เมื่อแก้ไข
+read: อ่าน
+update: แก้ไข
+select_fields: เลือกฟิลด์
+format_text: รูปแบบข้อความ
+bold: ตัวหนา
+toggle: สลับ
+icon_on: แสดงไอคอน
+icon_off: ไม่แสดงไอคอน
+label: ป้าย
 wysiwyg_options:
+  aligncenter: จัดตำแหน่งกึ่งกลาง
+  alignjustify: จัดตำแหน่งชิดขอบซ้ายและขวา
+  alignleft: จัดตำแหน่งชิดซ้าย
+  alignnone: ไม่จัดตำแหน่ง
+  alignright: จัดตำแหน่งชิดขวา
   forecolor: สีพื้นด้านหน้า
   backcolor: สีพื้นหลัง
+  bold: ตัวหนา
+  italic: ตัวเอียง
+  underline: ขีดเส้นใต้
+  strikethrough: จีดฆ่าตรงกลาง
+  subscript: ตัวห้อย
+  superscript: ตัวยก
+  blockquote: ข้อความอ้างอิง
+  bullist: รายการแบบไม่มีลําดับ
+  numlist: รายการแบบมีลำดับ
+  hr: เส้นคั่นแนวนอน
+  link: ลิ้งก์
+  unlink: ลบลิงค์
+  media: เพิ่มสื่อ
+  image: เพิ่มรูปภาพ
+  copy: คัดลอก
+  cut: ตัด
+  paste: วาง
+  heading: หัวข้อ
+  h1: หัวข้อที่ 1
+  h2: หัวข้อที่ 2
+  h3: หัวข้อที่ 3
+  h4: หัวข้อที่ 4
+  h5: หัวข้อที่ 5
+  h6: หัวข้อที่ 6
+  fontselect: เลือกแบบอักษร
+  fontsizeselect: เลือกขนาดตัวอักษร
+  indent: เยื้องเข้า
+  outdent: เยื้องออก
+  undo: เรียกคืน
+  redo: ทำซ้ำ
+  remove: เอาออก
+  removeformat: เอารูปแบบออก
   selectall: เลือกทั้งหมด
+  table: ตาราง
+  visualaid: แสดงเครื่องหมายที่มองไม่เห็น
+  code: ดู source
+  fullscreen: เต็มจอ
+  directionality: อย่างมีทิศทาง
+dropdown: ตัวเลือกแบบดรอปดาวน์
+choices: ตัวเลือกแบบช้อยส์
+choices_option_configured_incorrectly: ตั้งค่าตัวเลือกแบบช้อยส์ไม่ถูกต้อง
+deselect: ไม่เลือก
+deselect_all: ไม่เลือกทั้งหมด
+other: อื่นๆ
+adding_user: เพิ่มผู้ใช้
+unknown_user: ผู้ใช้ที่ไม่รู้จัก
+creating_in: 'กำลังสร้างไอเท็มใน {collection}'
+editing_in: 'กำลังแก้ไขไอเท็มใน {collection}'
+editing_in_batch: 'กำลังแก้ไข {count} ไอเท็ม'
+no_options_available: ไม่มีตัวเลือกให้ใช้
+settings_data_model: รูปแบบข้อมูล
+settings_permissions: บทบาทและสิทธิ
+settings_project: การตั้งค่าโครงการ
 settings_webhooks: Webhooks
+settings_presets: ค่าที่ตั้งไว้ล่วงหน้าและบุ๊คมาร์ก
+scope: ขอบเขต
+layout: เค้าโครง
+changes_are_permanent: การเปลี่ยนแปลงนี้ถาวร
+preset_name_placeholder: ชื่อของบุ๊คมาร์ก
+preset_search_placeholder: ค้นหาด้วย...
+editing_preset: แก้ไขค่าที่ตั้งไว้ล่วงหน้า
+layout_preview: ตัวอย่างเค้าโครง
+layout_setup: ตั้งค่าเค้าโครง
+unsaved_changes: ไม่ได้บันทึกการเปลี่ยนแปลง
+unsaved_changes_copy: คุณแน่ใจว่าต้องการออกจากหน้านี้?
+discard_changes: ยกเลิกการเปลี่ยนแปลง
+keep_editing: แก้ไขต่อไป
+page_help_collections_overview: '**ภาพรวมของคอลเลกชัน** — รายการของคอลเลกชันที่คุณเข้าถึง'
+page_help_collections_collection: >-
+  **รายการที่เรียกดู** — รายการของ {collection} ที่คุณเรียกดู, ปรับแต่งเค้าโครง, กรอง, และเรียงเพื่อปรับแต่งมุมมองในแบบของคุณ, รวมถึงการบันทึกบุ๊คมาร์กเพื่อเข้าถึงการตั้งค่าเหล่านี้อย่างรวดเร็ว
+page_help_collections_item: >-
+  **รายละเอียดรายการ** — คือรูปแบบของการมองเห็นและจัดการรายการนี้ พื้นที่ด้านข้างนี้จะแสดงทั้งประวัติการแก้ไขและความเห็นทั้งหมด
+page_help_activity_collection: >-
+  **เรียกดูกิจกรรม** — รายการกิจกรรมทั้งหมดของผู้ใช้และเนื้อหาต่างๆ ในระบบ
+page_help_docs_global: >-
+  **ภาพรวมเอกสาร** — เอกสารที่ถูกสร้างขึ้นสำหรับเวอร์ชั่นและสคีมาของโครงการโดยเฉพาะ
 fields:
   directus_collections:
     note: หมายเหตุ
+    display_template: แม่แบบการแสดงผล
     sort_field: เรียงฟิลด์
   directus_files:
     title: ชื่อ
@@ -329,6 +524,7 @@ fields:
   directus_users:
     title: ชื่อ
     language: ภาษา
+    role: บทบาท
     last_page: หน้าสุดท้าย
     last_access: การเข้าถึงล่าสุด
   directus_fields:
@@ -339,22 +535,46 @@ fields:
 interfaces:
   button-links:
     primary: หลัก
+  color:
+    color: สี
   display-template:
+    display-template: แม่แบบการแสดงผล
     collection_field_not_setup: การตั้งค่าของฟิลด์ยังไม่ถูกต้อง
     select_a_collection: เลือกคอลเลกชัน
+  divider:
+    divider: ตัวแบ่ง
   dropdown:
     choices_value_placeholder: กรุณาใส่ค่า
   interface:
     interface: อินเทอร์เฟซ
+  many-to-one:
+    display_template: แม่แบบการแสดงผล
   toggle:
+    toggle: สลับ
     label_default: เปิดใช้งาน
+  translations:
+    display_template: แม่แบบการแสดงผล
+  user:
+    user: ผู้ใช้
+    modes:
+      dropdown: ตัวเลือกแบบดรอปดาวน์
 displays:
+  boolean:
+    icon_on: แสดงไอคอน
+    icon_off: ไม่แสดงไอคอน
+  color:
+    color: สี
   datetime:
     format: รูปแบบ
+  image:
+    circle: วงกลม
   labels:
     choices_value_placeholder: กรุณาใส่ค่า
   user:
+    user: ผู้ใช้
     name: ชื่อ
 layouts:
   cards:
     title: ชื่อ
+  tabular:
+    tabular: ตาราง
