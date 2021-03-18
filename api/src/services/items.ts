@@ -21,7 +21,7 @@ import env from '../env';
 import { PayloadService } from './payload';
 import { AuthorizationService } from './authorization';
 
-import { pick, clone, cloneDeep, merge } from 'lodash';
+import { pick, clone, cloneDeep, merge, without } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
@@ -310,19 +310,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				payload = await payloadService.processM2O(payload);
 				payload = await payloadService.processA2O(payload);
 
-				let payloadWithoutAliases = pick(payload, columns);
+				let payloadWithoutAliasAndPK = pick(payload, without(columns, primaryKeyField));
 
-				payloadWithoutAliases = await payloadService.processValues('update', payloadWithoutAliases);
+				payloadWithoutAliasAndPK = await payloadService.processValues('update', payloadWithoutAliasAndPK);
 
-				if (Object.keys(payloadWithoutAliases).length > 0) {
-					// Always delete primaryKeyField from payload to prevent issues with updating in databases
-					// that do not allow updating primary key columns (for example mssql identity columns).
-					if (payloadWithoutAliases.hasOwnProperty(primaryKeyField)) {
-						delete payloadWithoutAliases[primaryKeyField];
-					}
+				console.log(payloadWithoutAliasAndPK);
 
+				if (Object.keys(payloadWithoutAliasAndPK).length > 0) {
 					try {
-						await trx(this.collection).update(payloadWithoutAliases).whereIn(primaryKeyField, keys);
+						await trx(this.collection).update(payloadWithoutAliasAndPK).whereIn(primaryKeyField, keys);
 					} catch (err) {
 						throw await translateDatabaseError(err);
 					}
@@ -367,7 +363,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						item: keys[index],
 						data:
 							snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots?.[index]) : JSON.stringify(snapshots),
-						delta: JSON.stringify(payloadWithoutAliases),
+						delta: JSON.stringify(payloadWithoutAliasAndPK),
 					}));
 
 					if (revisionRecords.length > 0) {
