@@ -67,6 +67,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					action: 'create',
 					payload: payloads[i],
 					schema: this.schema,
+					database: this.knex,
 				});
 
 				if (customProcessed && customProcessed.length > 0) {
@@ -177,6 +178,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			action: 'create',
 			payload: payloads,
 			schema: this.schema,
+			database: this.knex,
 		});
 
 		return Array.isArray(data) ? savedPrimaryKeys : savedPrimaryKeys[0];
@@ -282,6 +284,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				action: 'update',
 				payload,
 				schema: this.schema,
+				database: this.knex,
 			});
 
 			if (customProcessed && customProcessed.length > 0) {
@@ -382,6 +385,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				action: 'update',
 				payload,
 				schema: this.schema,
+				database: this.knex,
 			});
 
 			return key;
@@ -486,6 +490,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			action: 'delete',
 			payload: null,
 			schema: this.schema,
+			database: this.knex,
 		});
 
 		await this.knex.transaction(async (trx) => {
@@ -519,6 +524,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			action: 'delete',
 			payload: null,
 			schema: this.schema,
+			database: this.knex,
 		});
 
 		return key;

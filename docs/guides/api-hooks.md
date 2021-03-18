@@ -140,6 +140,7 @@ properties:
 - `action` — Action that is performed
 - `payload` — Payload of the request
 - `schema` - The current API schema in use
+- `database` - Current database transaction
 
 #### Auth
 
