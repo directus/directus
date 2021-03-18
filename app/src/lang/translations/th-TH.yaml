@@ -814,8 +814,21 @@ interfaces:
     repeater: การทำซ้ำ
     description: สร้างหลายรายการโดคใช้โครงสร้างเดียวกัน
     edit_fields: แก้ไขฟิลด์
+    add_label: 'ป้ายกำกับ "เพิ่มแถวใหม่"'
+    field_name_placeholder: กรอกชื่อฟิลด์
+    field_note_placeholder: กรอกโน้ตให้ฟิลด์
+  slider:
+    slider: แถบเลื่อน
+    description: เลือกตัวเลขโดยใช้แถบเลื่อน
+    always_show_value: แสดงค่าเสมอ
+  slug:
+    description: กรอกคำที่เชื่อมโยงกันด้วยเครื่องหมายขีดกลาง
   tags:
     tags: แท็ก
+    description: เลือกหรือเพิ่มแท็ก
+    whitespace: ช่องว่าง
+    hyphen: แทนด้วยขีดกลาง
+    underscore: แทนด้วยขีดเส้นใต้
   text-input:
     mask: Masked
   toggle:
