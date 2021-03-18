@@ -28,7 +28,7 @@ type anyNested = {
 export default async function getASTFromQuery(
 	collection: string,
 	query: Query,
-	schema: SchemaOverview['user'],
+	schema: SchemaOverview,
 	options?: GetASTOptions
 ): Promise<AST> {
 	query = cloneDeep(query);

@@ -24,13 +24,7 @@ type CollectionsOverview = {
 };
 
 export type SchemaOverview = {
-	full: {
-		collections: CollectionsOverview;
-		relations: Relation[];
-	};
-	user: {
-		collections: CollectionsOverview;
-		relations: Relation[];
-		permissions: Permission[];
-	};
+	collections: CollectionsOverview;
+	relations: Relation[];
+	permissions: Permission[];
 };
