@@ -332,10 +332,6 @@ export class GraphQLService {
 									type: relatedType,
 								};
 							}
-							/** @TODO M2A — Handle m2a case here */
-							/** @TODO
-							 * Figure out how to setup filter fields for a union type output
-							 */
 						} else {
 							const fieldType = collection.primary === field.field ? GraphQLID : getGraphQLType(field.type);
 
