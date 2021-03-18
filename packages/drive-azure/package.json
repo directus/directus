@@ -43,7 +43,7 @@
 		"@azure/storage-blob": "^12.2.1"
 	},
 	"peerDependencies": {
-		"@directus/drive": "file:../drive"
+		"@directus/drive": "^9.0.0-rc.51"
 	},
 	"devDependencies": {
 		"@directus/drive": "9.0.0-rc.51",

@@ -43,7 +43,7 @@
 		"aws-sdk": "^2.680.0"
 	},
 	"peerDependencies": {
-		"@directus/drive": "file:../drive"
+		"@directus/drive": "^9.0.0-rc.51"
 	},
 	"devDependencies": {
 		"@directus/drive": "9.0.0-rc.51",
