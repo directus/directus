@@ -54,6 +54,7 @@ archive: เก็บถาวร
 archive_confirm: คุณแน่ใจว่าจะเก็บถาวรรายการนี้?
 reset_system_permissions_to: 'รีเซ็ตสิทธิ์ระบบเพื่อ:'
 validationError:
+  eq: ค่าต้องเท่ากับ {valid}
   unique: ค่าต้องไม่ซ้ำ
 field_file: ไฟล์เดียว
 field_files: หลายไฟล์
@@ -829,43 +830,144 @@ interfaces:
     whitespace: ช่องว่าง
     hyphen: แทนด้วยขีดกลาง
     underscore: แทนด้วยขีดเส้นใต้
+    remove: ลบช่องว่าง
+    capitalization: ตัวพิมพ์ใหญ่
+    uppercase: แปลงเป็นตัวพิมพ์ใหญ่
+    lowercase: แปลงเป็นตัวพิมพ์เล็ก
+    auto_formatter: ใช้การจัดรูปแบบชื่อเรื่องอัตโนมัติ
+    alphabetize: เรียงตามตัวอักษร
+    alphabetize_label: บังคับเรียงตามตัวอักษร
+    add_tags: เพิ่มแท็ก...
   text-input:
+    text-input: การป้อนข้อความ
+    description: กรอกข้อความบรรทัดเดียว
+    trim: ตัดขอบ
+    trim_label: ตัดช่องว่างหน้าหลัง
     mask: Masked
+    mask_label: ซ่อนค่าจริง
+    nullable: สามารถเป็นค่า NULL ได้
+    nullable_label: บันทึกค่าว่างด้วยค่า NULL
+  textarea:
+    textarea: พื้นที่ข้อความ
+    description: กรอกข้อความได้แบบหลายบรรทัด
   toggle:
     toggle: สลับ
+    description: สลับระหว่าง เปิด และ ปิด
+    label_placeholder: กรอกป้ายชื่อ...
     label_default: เปิดใช้งาน
   translations:
     display_template: แม่แบบการแสดงผล
+    no_collection: ไม่มีคอลเลกชัน
   user:
     user: ผู้ใช้
+    description: เลือกผู้ใช้ของ directus ที่มีอยู่แล้ว
+    select_mode: เลือกโหมด
     modes:
+      auto: อัตโนมัติ
       dropdown: ตัวเลือกแบบดรอปดาวน์
+  wysiwyg:
+    wysiwyg: WYSIWYG
+    description: เขียนข้อความที่สามารถตกแต่งได้ด้วย HTML
+    toolbar: แถบเครื่องมือ
+    custom_formats: รูปแบบที่กำหนดเอง
+    options_override: กำหนดตัวเลือกเอง
 displays:
   boolean:
+    description: แสดงสถานะ เปิด และปิด
+    label_on: แสดงป้ายกำกับ
+    label_on_placeholder: กรอกป้ายกำกับที่แสดงว่า เปิด
+    label_off: ไม่แสดงป้ายกำกับ
+    label_off_placeholder: กรอกป้ายกำกับที่แสดงว่า ปิด
     icon_on: แสดงไอคอน
     icon_off: ไม่แสดงไอคอน
+    color_on: แสดงสี
+    color_off: ไม่แสดงสี
   collection:
     collection: คอลเลกชัน
+    description: แสดงคอลเลกชัน
+    icon_label: แสดงไอคอนของคอลเลกชัน
   color:
     color: สี
+    description: แสดงจุดที่เป็นสี
+    default_color: สีเริ่มต้น
   datetime:
     datetime: วันที่และเวลา
+    description: แสดงค่าที่เกี่ยวกับเวลา
     format: รูปแบบ
+    format_note: >-
+      ฟอร์แมตของวันเวลาต้องสอดคล้องกับ __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: ยาว
+    short: สั้น
+    relative: อิงเวลา
+    relative_label: 'แสดงเป็นเวลาที่อิงกัน เช่น 5 นาทีที่แล้ว'
   file:
     file: ไฟล์
+    description: แสดงไฟล์
+  filesize:
+    filesize: ขนาดไฟล์
+    description: แสดงขนาดของไฟล์
+  formatted-value:
+    formatted-value: ค่าที่ถูกกำหนดรูปแบบ
+    description: แสดงข้อความในเวอร์ชั่นที่ถูกกำหนดรูปแบบ
+    format_title: รูปแบบหัวเรื่อง
+    format_title_label: จัดรูปแบบอัตโนมัติ
+    bold_label: ใช้ตัวหนา
+  formatted-json-value:
+    formatted-json-value: ค่า JSON ที่ถูกจัดรูปแบบแล้ว
+    description: แสดงค่าของ JSON ที่ถูกจัดรูปแบบแล้ว
   icon:
     icon: ไอคอน
+    description: แสดงไอคอน
+    filled: เติมให้เต็ม
   image:
     image: รูปภาพ
+    description: แสดงการพรีวิวรูปภาพแบบเล็ก
     circle: วงกลม
+    circle_label: แสดงรูปเป็นวงกลม
   labels:
+    labels: ป้ายกำกับ
+    description: แสดงป้ายกำกับทั้งแบบเดี่ยวหรือเป็นรายการ
+    default_foreground: ค่าตั้งต้นพื้นหน้า
+    default_background: ค่าตั้งต้นพื้นหลัง
+    format_label: จัดรูปแบบแต่ละป้ายกำกับ
+    show_as_dot: แสดงเป็นจุด
     choices_value_placeholder: กรุณาใส่ค่า
+    choices_text_placeholder: กรอกข้อความ...
+  mime-type:
+    mime-type: MIME Type
+    description: แสดง MIME-Type ของไฟล์
+    extension_only: นามสกุลเท่านั้น
+    extension_only_label: แสดงแค่นามสกุลไฟล์
+  rating:
+    rating: เรตติ้ง
+    description: แสดงค่าของตัวเลขเป็นจำนวนดาวที่อิงจากค่าสูงสุด
+    simple: เรียบง่าย
+    simple_label: แสดงรูปดาวในรูปแบบง่ายๆ
+  raw:
+    raw: ข้อมูลดิบ
+  related-values:
+    related-values: ค่าที่เกี่ยวข้อง
+    description: แสดงค่าที่เกี่ยวข้อง
   user:
     user: ผู้ใช้
+    description: แสดงผู้ใช้ของ directus
     avatar: ภาพประจำตัว
     name: ชื่อ
+    both: ทั้งคู่
+    circle_label: แสดงผู้ใช้ในวงกลม
 layouts:
   cards:
+    cards: การ์ด
+    image_source: ที่มารูปภาพ
+    image_fit: แสดงรูปเต็มพอดีพื้นที่
+    crop: ครอบตัด
+    contain: บรรจุให้เต็ม
     title: ชื่อ
+    subtitle: คำบรรยาย
   tabular:
     tabular: ตาราง
+    fields: ฟิลด์
+    spacing: ระยะห่าง
+    comfortable: สบายตา
+    compact: กระชับ
+    cozy: สบาย
