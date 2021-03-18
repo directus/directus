@@ -210,11 +210,7 @@ export class FieldsService {
 		}
 
 		// Check if field already exists, either as a column, or as a row in directus_fields
-		if (field.field in this.schema.tables[collection].columns) {
-			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
-		} else if (
-			!!this.schema.fields.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field.field)
-		) {
+		if (field.field in this.schema.collections[collection].fields) {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
@@ -300,7 +296,7 @@ export class FieldsService {
 
 		await this.knex('directus_fields').delete().where({ collection, field });
 
-		if (this.schema.tables[collection] && field in this.schema.tables[collection].columns) {
+		if (this.schema.collections[collection] && field in this.schema.collections[collection].fields) {
 			await this.knex.schema.table(collection, (table) => {
 				table.dropColumn(field);
 			});

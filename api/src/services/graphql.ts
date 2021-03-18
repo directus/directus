@@ -1,6 +1,16 @@
 import { Knex } from 'knex';
 import database from '../database';
-import { AbstractServiceOptions, Accountability, Collection, Field, Relation, Query, SchemaOverview } from '../types';
+import {
+	AbstractServiceOptions,
+	Accountability,
+	Collection,
+	Field,
+	Relation,
+	Query,
+	SchemaOverview,
+	GraphQLParams,
+	PermissionsAction,
+} from '../types';
 import {
 	GraphQLString,
 	GraphQLSchema,
@@ -22,6 +32,12 @@ import {
 	GraphQLBoolean,
 	ObjectValueNode,
 	GraphQLUnionType,
+	execute,
+	validate,
+	ExecutionResult,
+	FormattedExecutionResult,
+	specifiedRules,
+	formatError,
 } from 'graphql';
 import logger from '../logger';
 import { getGraphQLType } from '../utils/get-graphql-type';
@@ -45,22 +61,23 @@ import { WebhooksService } from './webhooks';
 
 import { getRelationType } from '../utils/get-relation-type';
 import { systemCollectionRows } from '../database/system-data/collections';
+import { InvalidPayloadException } from '../exceptions';
 
 export class GraphQLService {
 	accountability: Accountability | null;
 	knex: Knex;
+	schemaOverview: SchemaOverview;
 	fieldsService: FieldsService;
 	collectionsService: CollectionsService;
 	relationsService: RelationsService;
-	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
 		this.accountability = options?.accountability || null;
 		this.knex = options?.knex || database;
+		this.schemaOverview = options.schema;
 		this.fieldsService = new FieldsService(options);
 		this.collectionsService = new CollectionsService(options);
 		this.relationsService = new RelationsService(options);
-		this.schema = options.schema;
 	}
 
 	args = {
@@ -81,33 +98,51 @@ export class GraphQLService {
 		},
 	};
 
-	async getSchema() {
-		let collectionsInSystem: Collection[] = [];
+	async execute({ document, query, variables, operationName }: GraphQLParams, scope: 'items' | 'system' = 'items') {
+		const schema = await this.getSchema(scope);
 
-		// Collections service will throw an error if you don't have access to any collection.
-		// We still want GraphQL / GraphiQL to function though, even if you don't have access to `items`
-		// (you could still have access to auth/server/etc)
-		try {
-			collectionsInSystem = await this.collectionsService.readByQuery();
-		} catch {
-			collectionsInSystem = [];
+		const validationErrors = validate(schema, document, specifiedRules);
+
+		if (validationErrors.length > 0) {
+			throw new InvalidPayloadException('GraphQL validation error.', { graphqlErrors: validationErrors });
 		}
 
-		const fieldsInSystem = await this.fieldsService.readAll();
-		const relationsInSystem = (await this.relationsService.readByQuery({ limit: -1 })) as Relation[];
+		let result: ExecutionResult;
 
-		const schema = this.getGraphQLSchema(collectionsInSystem, fieldsInSystem, relationsInSystem);
+		try {
+			result = await execute({
+				schema,
+				document,
+				contextValue: {},
+				variableValues: variables,
+				operationName,
+			});
+		} catch (err) {
+			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err] });
+		}
 
-		return schema;
+		const formattedResult: FormattedExecutionResult = {
+			...result,
+			errors: result.errors?.map(formatError),
+		};
+
+		return formattedResult;
 	}
 
-	getGraphQLSchema(collections: Collection[], fields: Field[], relations: Relation[]) {
-		const filterTypes = this.getFilterArgs(collections, fields, relations);
-		const schema: any = { items: {} };
+	async getSchema(scope: 'items' | 'system') {
+		const collections = await this.collectionsService.readByQuery();
+		const fields = await this.fieldsService.readAll();
+
+		return this.getDynamicQuerySchema(collections, fields, scope);
+	}
+
+	getScopedDataSchema(action: PermissionsAction = 'read') {}
+
+	getDynamicQuerySchema(collections: Collection[], fields: Field[], scope: 'items' | 'system') {
+		const filterTypes = this.getFilterArgs(collections, fields, this.schemaOverview.relations);
+		const schema: any = {};
 
 		for (const collection of collections) {
-			const systemCollection = collection.collection.startsWith('directus_');
-
 			const schemaSection: any = {
 				type: new GraphQLObjectType({
 					name: collection.collection,
@@ -124,7 +159,7 @@ export class GraphQLService {
 								continue;
 							}
 
-							const relationForField = relations.find((relation) => {
+							const relationForField = this.schemaOverview.relations.find((relation) => {
 								return (
 									(relation.many_collection === collection.collection && relation.many_field === field.field) ||
 									(relation.one_collection === collection.collection && relation.one_field === field.field)
@@ -139,21 +174,13 @@ export class GraphQLService {
 								});
 
 								if (relationType === 'm2o') {
-									const relatedIsSystem = relationForField.one_collection!.startsWith('directus_');
-
-									const relatedType = relatedIsSystem
-										? schema[relationForField.one_collection!.substring(9)].type
-										: schema.items[relationForField.one_collection!].type;
+									const relatedType = schema[relationForField.one_collection!].type;
 
 									fieldsObject[field.field] = {
 										type: relatedType,
 									};
 								} else if (relationType === 'o2m') {
-									const relatedIsSystem = relationForField.many_collection.startsWith('directus_');
-
-									const relatedType = relatedIsSystem
-										? schema[relationForField.many_collection.substring(9)].type
-										: schema.items[relationForField.many_collection].type;
+									const relatedType = schema[relationForField.many_collection].type;
 
 									fieldsObject[field.field] = {
 										type: new GraphQLList(relatedType),
@@ -170,10 +197,7 @@ export class GraphQLService {
 									const types: any = [];
 
 									for (const relatedCollection of relatedCollections) {
-										const relatedType = relatedCollection.startsWith('directus_')
-											? schema[relatedCollection.substring(9)].type
-											: schema.items[relatedCollection].type;
-
+										const relatedType = schema[relatedCollection].type;
 										types.push(relatedType);
 									}
 
@@ -217,7 +241,7 @@ export class GraphQLService {
 					},
 				}),
 				resolve: async (source: any, args: any, context: any, info: GraphQLResolveInfo) => {
-					const data = await this.resolve(info);
+					const data = await this.resolve(info, scope);
 					context.data = data;
 					return data;
 				},
@@ -230,65 +254,36 @@ export class GraphQLService {
 				},
 			};
 
-			if (systemCollection) {
-				schema[collection.collection.substring(9)] = schemaSection;
-			} else {
-				schema.items[collection.collection] = schemaSection;
-			}
+			schema[collection.collection] = schemaSection;
 		}
 
 		const schemaWithLists = cloneDeep(schema);
 
 		for (const collection of collections) {
 			if (collection.meta?.singleton !== true) {
-				const systemCollection = collection.collection.startsWith('directus_');
-
-				if (systemCollection) {
-					schemaWithLists[collection.collection.substring(9)].type = new GraphQLList(
-						schemaWithLists[collection.collection.substring(9)].type
-					);
-				} else {
-					schemaWithLists.items[collection.collection].type = new GraphQLList(
-						schemaWithLists.items[collection.collection].type
-					);
-				}
+				schemaWithLists[collection.collection].type = new GraphQLList(schemaWithLists[collection.collection].type);
 			}
 		}
 
 		const queryBase: any = {
 			name: 'Query',
-			fields: {
-				server: {
-					type: new GraphQLObjectType({
-						name: 'server',
-						fields: {
-							ping: {
-								type: GraphQLString,
-								resolve: () => 'pong',
-							},
-						},
-					}),
-					resolve: () => ({}),
-				},
-			},
+			fields: {},
 		};
 
 		if (Object.keys(schemaWithLists).length > 0) {
-			for (const key of Object.keys(schemaWithLists)) {
-				if (key !== 'items') {
+			if (scope === 'system') {
+				for (const key of Object.keys(schemaWithLists)) {
+					if (key.startsWith('directus_') === false) continue;
+					queryBase.fields[key.substring(9)] = schemaWithLists[key];
+				}
+			}
+
+			if (scope === 'items') {
+				for (const key of Object.keys(schemaWithLists)) {
+					if (key.startsWith('directus_')) continue;
 					queryBase.fields[key] = schemaWithLists[key];
 				}
 			}
-		}
-
-		if (Object.keys(schemaWithLists.items).length > 0) {
-			queryBase.fields.items = {
-				type: new GraphQLObjectType({
-					name: 'items',
-					fields: schemaWithLists.items,
-				}),
-				resolve: () => ({}),
-			};
 		}
 
 		return new GraphQLSchema({
@@ -412,9 +407,8 @@ export class GraphQLService {
 		return filterTypes;
 	}
 
-	async resolve(info: GraphQLResolveInfo) {
-		const systemField = info.path.prev?.key !== 'items';
-		const collection = systemField ? `directus_${info.fieldName}` : info.fieldName;
+	async resolve(info: GraphQLResolveInfo, scope: 'items' | 'system') {
+		const collection = scope === 'system' ? `directus_${info.fieldName}` : info.fieldName;
 		const selections = info.fieldNodes[0]?.selectionSet?.selections;
 		if (!selections) return null;
 
@@ -580,6 +574,7 @@ export class GraphQLService {
 		const result = collectionInfo?.singleton
 			? await service.readSingleton(query, { stripNonRequested: false })
 			: await service.readByQuery(query, { stripNonRequested: false });
+
 		return result;
 	}
 
