@@ -1,24 +1,36 @@
 import { PermissionsAction, SchemaOverview } from '../types';
 import { uniq } from 'lodash';
 
-export function reduceSchema(schema: SchemaOverview, actions: PermissionsAction[]) {
+/**
+ * Reduces the schema based on the included permissions. The resulting object is the schema structure, but with only
+ * the allowed collections/fields/relations included based on the permissions.
+ * @param schema The full project schema
+ * @param actions Array of permissions actions (crud)
+ * @returns Reduced schema
+ */
+export function reduceSchema(
+	schema: SchemaOverview,
+	actions: PermissionsAction[] = ['create', 'read', 'update', 'delete']
+) {
 	const reduced: SchemaOverview = {
 		collections: {},
 		relations: [],
 		permissions: schema.permissions,
 	};
 
-	const allowedFieldsInCollection = schema.permissions.reduce((acc, permission) => {
-		if (!acc[permission.collection]) {
-			acc[permission.collection] = [];
-		}
+	const allowedFieldsInCollection = schema.permissions
+		.filter((permission) => actions.includes(permission.action))
+		.reduce((acc, permission) => {
+			if (!acc[permission.collection]) {
+				acc[permission.collection] = [];
+			}
 
-		if (permission.fields) {
-			acc[permission.collection] = uniq([...acc[permission.collection], ...permission.fields]);
-		}
+			if (permission.fields) {
+				acc[permission.collection] = uniq([...acc[permission.collection], ...permission.fields]);
+			}
 
-		return acc;
-	}, {} as { [collection: string]: string[] });
+			return acc;
+		}, {} as { [collection: string]: string[] });
 
 	for (const [collectionName, collection] of Object.entries(schema.collections)) {
 		if (schema.permissions.some((permission) => permission.collection === collectionName)) {

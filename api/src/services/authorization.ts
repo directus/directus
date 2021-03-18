@@ -21,7 +21,6 @@ import { ItemsService } from './items';
 import { PayloadService } from './payload';
 import { parseFilter } from '../utils/parse-filter';
 import { toArray } from '../utils/to-array';
-import { systemFieldRows } from '../database/system-data/fields';
 
 export class AuthorizationService {
 	knex: Knex;
