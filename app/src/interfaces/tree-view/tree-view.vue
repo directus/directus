@@ -134,6 +134,12 @@ export default defineComponent({
 			async function fetchValues() {
 				if (!props.primaryKey || !relation.value || props.primaryKey === '+') return;
 
+				// In case props.value is already an array of edited objects
+				if (props.value?.length > 0 && props.value.every((item) => typeof item === 'object')) {
+					stagedValues.value = props.value as Record<string, any>[];
+					return;
+				}
+
 				loading.value = true;
 
 				try {
