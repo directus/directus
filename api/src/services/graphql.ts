@@ -63,7 +63,7 @@ import { WebhooksService } from './webhooks';
 
 import { getRelationType } from '../utils/get-relation-type';
 import { systemCollectionRows } from '../database/system-data/collections';
-import { InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 
 import { reduceSchema } from '../utils/reduce-schema';
 
@@ -151,21 +151,27 @@ export class GraphQLService {
 		const { ReadableCollectionTypes } = getReadableTypes();
 		const { CreateCollectionTypes } = getWritableTypes();
 
-		schemaComposer.Query.addFields(
-			Object.values(schema.read.collections).reduce((acc, collection) => {
-				acc[collection.collection] = ReadableCollectionTypes[collection.collection].getResolver(collection.collection);
-				return acc;
-			}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
-		);
+		if (Object.keys(schema.read.collections).length > 0) {
+			schemaComposer.Query.addFields(
+				Object.values(schema.read.collections).reduce((acc, collection) => {
+					acc[collection.collection] = ReadableCollectionTypes[collection.collection].getResolver(
+						collection.collection
+					);
+					return acc;
+				}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+			);
+		}
 
-		schemaComposer.Mutation.addFields(
-			Object.values(schema.create.collections).reduce((acc, collection) => {
-				acc[`create_${collection.collection}`] = CreateCollectionTypes[collection.collection].getResolver(
-					collection.collection
-				);
-				return acc;
-			}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
-		);
+		if (Object.keys(schema.create.collections).length > 0) {
+			schemaComposer.Mutation.addFields(
+				Object.values(schema.create.collections).reduce((acc, collection) => {
+					acc[`create_${collection.collection}`] = CreateCollectionTypes[collection.collection].getResolver(
+						collection.collection
+					);
+					return acc;
+				}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+			);
+		}
 
 		return schemaComposer.buildSchema();
 
@@ -303,12 +309,6 @@ export class GraphQLService {
 					_neq: {
 						type: GraphQLFloat,
 					},
-					_contains: {
-						type: GraphQLFloat,
-					},
-					_ncontains: {
-						type: GraphQLFloat,
-					},
 					_in: {
 						type: new GraphQLList(GraphQLFloat),
 					},
@@ -331,12 +331,6 @@ export class GraphQLService {
 						type: GraphQLBoolean,
 					},
 					_nnull: {
-						type: GraphQLBoolean,
-					},
-					_empty: {
-						type: GraphQLBoolean,
-					},
-					_nempty: {
 						type: GraphQLBoolean,
 					},
 				},
@@ -423,12 +417,17 @@ export class GraphQLService {
 
 			for (const collection of Object.values(schema.read.collections)) {
 				CreateCollectionTypes[collection.collection].addResolver({
-					name: `create_${collection.collection}`,
+					name: collection.collection,
 					type: [ReadableCollectionTypes[collection.collection]],
 					args: {
-						data: [toInputObjectType(CreateCollectionTypes[collection.collection])],
+						data: [
+							toInputObjectType(CreateCollectionTypes[collection.collection]).setTypeName(
+								`create_${collection.collection}_input`
+							),
+						],
 					},
-					resolve: async () => {},
+					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+						await self.resolveMutation(args, info),
 				});
 			}
 
@@ -441,19 +440,84 @@ export class GraphQLService {
 		const selections = info.fieldNodes[0]?.selectionSet?.selections;
 		if (!selections) return null;
 
-		const result = await this.getData(collection, selections, info.fieldNodes[0].arguments || [], info.variableValues);
+		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
+
+		const query = this.getQuery(args, selections, info.variableValues);
+
+		const result = await this.read(collection, query);
+
 		return result;
 	}
 
-	async getData(
-		collection: string,
+	async resolveMutation(args: Record<string, any>, info: GraphQLResolveInfo) {
+		const action = info.fieldName.split('_')[0] as 'create' | 'update' | 'delete';
+		const collection = info.fieldName.substring(action.length + 1);
+		// const collection = info.fieldName;
+		// const selections = info.fieldNodes[0]?.selectionSet?.selections;
+		// if (!selections) return null;
+
+		// const result = await this.getData(collection, selections, info.fieldNodes[0].arguments || [], info.variableValues);
+		// return result;
+		return {};
+	}
+
+	async read(collection: string, query: Query) {
+		const service = new ItemsService(collection, {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const result = this.schema.collections[collection].singleton
+			? await service.readSingleton(query, { stripNonRequested: false })
+			: await service.readByQuery(query, { stripNonRequested: false });
+
+		return result;
+	}
+
+	parseArgs(
+		args: readonly ArgumentNode[] | readonly ObjectFieldNode[],
+		variableValues: GraphQLResolveInfo['variableValues']
+	): Record<string, any> {
+		if (!args || args.length === 0) return {};
+
+		const parseObjectValue = (arg: ObjectValueNode) => {
+			return this.parseArgs(arg.fields, variableValues);
+		};
+
+		const argsObject: any = {};
+
+		for (const argument of args) {
+			if (argument.value.kind === 'ObjectValue') {
+				argsObject[argument.name.value] = parseObjectValue(argument.value);
+			} else if (argument.value.kind === 'Variable') {
+				argsObject[argument.name.value] = variableValues[argument.value.name.value];
+			} else if (argument.value.kind === 'ListValue') {
+				const values: any = [];
+
+				for (const valueNode of argument.value.values) {
+					if (valueNode.kind === 'ObjectValue') {
+						values.push(this.parseArgs(valueNode.fields, variableValues));
+					} else {
+						values.push((valueNode as any).value);
+					}
+				}
+
+				argsObject[argument.name.value] = values;
+			} else {
+				argsObject[argument.name.value] = (argument.value as IntValueNode | StringValueNode | BooleanValueNode).value;
+			}
+		}
+
+		return argsObject;
+	}
+
+	getQuery(
+		rawQuery: Query,
 		selections: readonly SelectionNode[],
-		argsArray: readonly ArgumentNode[],
 		variableValues: GraphQLResolveInfo['variableValues']
 	) {
-		const args: Record<string, any> = this.parseArgs(argsArray, variableValues);
-
-		const query: Query = sanitizeQuery(args, this.accountability);
+		const query: Query = sanitizeQuery(rawQuery, this.accountability);
 
 		const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
 			const fields: string[] = [];
@@ -510,138 +574,6 @@ export class GraphQLService {
 
 		query.fields = parseFields(selections);
 
-		let service: ItemsService;
-
-		switch (collection) {
-			case 'directus_activity':
-				service = new ActivityService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			// case 'directus_collections':
-			// 	service = new CollectionsService({ knex: this.knex, accountability: this.accountability });
-			// case 'directus_fields':
-			// 	service = new FieldsService({ knex: this.knex, accountability: this.accountability });
-			case 'directus_files':
-				service = new FilesService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_folders':
-				service = new FoldersService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_folders':
-				service = new FoldersService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_permissions':
-				service = new PermissionsService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_presets':
-				service = new PresetsService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_relations':
-				service = new RelationsService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_revisions':
-				service = new RevisionsService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_roles':
-				service = new RolesService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_settings':
-				service = new SettingsService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_users':
-				service = new UsersService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_webhooks':
-				service = new WebhooksService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			default:
-				service = new ItemsService(collection, {
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-		}
-
-		const collectionInfo =
-			(await this.knex.select('singleton').from('directus_collections').where({ collection: collection }).first()) ||
-			systemCollectionRows.find((collectionMeta) => collectionMeta?.collection === collection);
-
-		const result = collectionInfo?.singleton
-			? await service.readSingleton(query, { stripNonRequested: false })
-			: await service.readByQuery(query, { stripNonRequested: false });
-
-		return result;
-	}
-
-	parseArgs(
-		args: readonly ArgumentNode[] | readonly ObjectFieldNode[],
-		variableValues: GraphQLResolveInfo['variableValues']
-	): Record<string, any> {
-		if (!args || args.length === 0) return {};
-
-		const parseObjectValue = (arg: ObjectValueNode) => {
-			return this.parseArgs(arg.fields, variableValues);
-		};
-
-		const argsObject: any = {};
-
-		for (const argument of args) {
-			if (argument.value.kind === 'ObjectValue') {
-				argsObject[argument.name.value] = parseObjectValue(argument.value);
-			} else if (argument.value.kind === 'Variable') {
-				argsObject[argument.name.value] = variableValues[argument.value.name.value];
-			} else if (argument.value.kind === 'ListValue') {
-				const values: any = [];
-
-				for (const valueNode of argument.value.values) {
-					if (valueNode.kind === 'ObjectValue') {
-						values.push(this.parseArgs(valueNode.fields, variableValues));
-					} else {
-						values.push((valueNode as any).value);
-					}
-				}
-
-				argsObject[argument.name.value] = values;
-			} else {
-				argsObject[argument.name.value] = (argument.value as IntValueNode | StringValueNode | BooleanValueNode).value;
-			}
-		}
-
-		return argsObject;
+		return query;
 	}
 }

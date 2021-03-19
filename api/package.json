@@ -99,7 +99,6 @@
 		"grant": "^5.4.5",
 		"graphql": "^15.4.0",
 		"graphql-compose": "^7.25.1",
-		"graphql-type-json": "^0.3.2",
 		"icc": "^2.0.0",
 		"inquirer": "^7.3.3",
 		"joi": "^17.3.0",
