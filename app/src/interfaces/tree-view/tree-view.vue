@@ -1,29 +1,15 @@
 <template>
-	<div class="interface-tree-view">
-		<v-list v-model="openItems" :mandatory="false">
-			<draggable
-				:list="stagedValues"
-				:set-data="hideDragImage"
-				:group="`${collection}.${field}`"
-				@change="onDraggableChange"
-				@start="dragging = true"
-				@end="dragging = false"
-			>
-				<div v-for="(item, index) in stagedValues" :key="item[primaryKeyField]">
-					<tree-view-group
-						:primary-key-field="primaryKeyField.field"
-						:children-field="relation.one_field"
-						:template="template"
-						:item="item"
-						:collection="collection"
-						:draggable-group="`${collection}.${field}`"
-						@input="replaceItem(index, $event)"
-						@deselect="removeItem(index)"
-						@change="onDraggableChange"
-					/>
-				</div>
-			</draggable>
-		</v-list>
+	<div class="tree-view">
+		<nested-draggable
+			:template="template"
+			:collection="collection"
+			:tree="stagedValues"
+			:primary-key-field="primaryKeyField.field"
+			:children-field="relation.one_field"
+			root
+			@change="onDraggableChange"
+			@input="emitValue"
+		/>
 	</div>
 </template>
 
@@ -33,14 +19,14 @@ import { useCollection } from '@/composables/use-collection';
 import { useRelationsStore } from '@/stores';
 import api from '@/api';
 import getFieldsFromTemplate from '@/utils/get-fields-from-template';
-import TreeViewGroup from './tree-view-group.vue';
 import draggable from 'vuedraggable';
 import hideDragImage from '@/utils/hide-drag-image';
+import NestedDraggable from './nested-draggable.vue';
 
 import { ChangesObject } from './types';
 
 export default defineComponent({
-	components: { TreeViewGroup, draggable },
+	components: { draggable, NestedDraggable },
 	props: {
 		value: {
 			type: [Array, Object] as PropType<(number | string)[] | ChangesObject>,
@@ -69,7 +55,7 @@ export default defineComponent({
 
 		const { relation } = useRelation();
 		const { info, primaryKeyField } = useCollection(relation.value.one_collection);
-		const { loading, error, stagedValues, fetchValues, replaceItem, removeItem } = useValues();
+		const { loading, error, stagedValues, fetchValues, emitValue } = useValues();
 
 		const template = computed(() => {
 			return props.displayTemplate || info.value?.meta?.display_template || `{{${primaryKeyField.value.field}}}`;
@@ -90,10 +76,9 @@ export default defineComponent({
 			fetchValues,
 			primaryKeyField,
 			onDraggableChange,
-			replaceItem,
 			hideDragImage,
 			dragging,
-			removeItem,
+			emitValue,
 		};
 
 		function useValues() {
@@ -102,7 +87,7 @@ export default defineComponent({
 
 			const stagedValues = ref<Record<string, any>[]>([]);
 
-			return { loading, error, stagedValues, fetchValues, replaceItem, removeItem };
+			return { loading, error, stagedValues, fetchValues, emitValue };
 
 			async function fetchValues() {
 				if (!props.primaryKey || !relation.value || props.primaryKey === '+') return;
@@ -142,23 +127,9 @@ export default defineComponent({
 				return result;
 			}
 
-			function replaceItem(index: number, item: Record<string, any>) {
-				console.log(stagedValues.value[relation.value.one_field]);
-
-				stagedValues.value = (stagedValues.value as any[]).map((value: any, childIndex) => {
-					if (childIndex === index) {
-						return item;
-					}
-
-					return value;
-				});
-
-				emit('input', stagedValues.value);
-			}
-
-			function removeItem(index: number) {
-				stagedValues.value = stagedValues.value.filter((item, childIndex) => childIndex !== index);
-				emit('input', stagedValues.value);
+			function emitValue(value: Record<string, any>[]) {
+				stagedValues.value = value;
+				emit('input', value);
 			}
 		}
 
@@ -178,25 +149,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.interface-tree-view {
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+::v-deep {
+	ul,
+	li {
+		list-style: none;
+	}
 
-	--v-list-item-background-color: transparent;
-	--v-list-item-background-color-hover: var(--background-highlight);
-	--v-list-item-background-color-active: transparent;
-
-	::v-deep {
-		.v-list-item {
-			cursor: grab;
-		}
-
-		.sortable-chosen {
-			--v-list-item-color: var(--primary);
-			--v-list-item-color-hover: var(--primary);
-			--v-list-item-background-color: var(--background-highlight);
-			--v-list-item-background-color-hover: var(--background-highlight);
-		}
+	ul {
+		margin-left: 24px;
+		padding-left: 0;
 	}
 }
 </style>
