@@ -1,9 +1,0 @@
-{
-	"extends": "./tsconfig.json",
-	"compilerOptions": {
-		"declaration": true,
-		"emitDeclarationOnly": true,
-		"isolatedModules": false,
-		"outFile": "./dist/index.d.ts"
-	}
-}
