@@ -11,6 +11,7 @@
 		@start="drag = true"
 		@end="drag = false"
 		:set-data="hideDragImage"
+		:disabled="disabled"
 		@change="$emit('change', $event)"
 	>
 		<li class="row" v-for="(item, index) in tree" :key="item.id">
@@ -19,15 +20,17 @@
 				:template="template"
 				:collection="collection"
 				:primary-key-field="primaryKeyField"
+				:disabled="disabled"
 				@input="replaceItem(index, $event)"
 				@deselect="removeItem(index)"
 			/>
 			<nested-draggable
-				:tree="item[childrenField]"
+				:tree="item[childrenField] || []"
 				:template="template"
 				:collection="collection"
 				:primary-key-field="primaryKeyField"
 				:children-field="childrenField"
+				:disabled="disabled"
 				@change="$emit('change', $event)"
 				@input="replaceChildren(index, $event)"
 			/>
@@ -47,6 +50,7 @@ export default defineComponent({
 		tree: {
 			required: true,
 			type: Array as PropType<Record<string, any>[]>,
+			default: () => [],
 		},
 		root: {
 			type: Boolean,
@@ -67,6 +71,10 @@ export default defineComponent({
 		childrenField: {
 			type: String,
 			required: true,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	components: {

@@ -2,7 +2,7 @@
 	<div class="preview">
 		<render-template :collection="collection" :template="template" :item="item" />
 		<div class="spacer" />
-		<div class="actions">
+		<div class="actions" v-if="!disabled">
 			<v-icon v-tooltip="$t('edit')" name="launch" @click="editActive = true" />
 			<v-icon v-tooltip="$t('deselect')" name="clear" @click="$emit('deselect')" />
 		</div>
@@ -39,6 +39,10 @@ export default defineComponent({
 		primaryKeyField: {
 			type: String,
 			required: true,
+		},
+		disabled: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
