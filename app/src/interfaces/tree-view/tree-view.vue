@@ -24,6 +24,7 @@ import hideDragImage from '@/utils/hide-drag-image';
 import NestedDraggable from './nested-draggable.vue';
 
 import { ChangesObject } from './types';
+import { Relation } from '@/types';
 
 export default defineComponent({
 	components: { draggable, NestedDraggable },
@@ -101,7 +102,7 @@ export default defineComponent({
 						},
 					});
 
-					stagedValues.value = response.data.data?.[relation.value.one_field] ?? [];
+					stagedValues.value = response.data.data?.[relation.value.one_field!] ?? [];
 				} catch (err) {
 					error.value = err;
 				} finally {
@@ -129,12 +130,27 @@ export default defineComponent({
 
 			function emitValue(value: Record<string, any>[]) {
 				stagedValues.value = value;
+
+				if (relation.value.sort_field) {
+					return emit('input', addSort(value));
+				}
+
 				emit('input', value);
+
+				function addSort(value: Record<string, any>[]): Record<string, any>[] {
+					return value.map((item, index) => {
+						return {
+							...item,
+							[relation.value.sort_field!]: index,
+							[relation.value.one_field!]: addSort(item[relation.value.one_field!]),
+						};
+					});
+				}
 			}
 		}
 
 		function useRelation() {
-			const relation = computed(() => {
+			const relation = computed<Relation>(() => {
 				return relationsStore.getRelationsForField(props.collection, props.field)?.[0];
 			});
 
