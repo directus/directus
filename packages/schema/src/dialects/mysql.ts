@@ -20,7 +20,7 @@ export default class MySQL extends KnexMySQL implements SchemaInspector {
 				INFORMATION_SCHEMA.TABLES AS T ON C.TABLE_NAME = T.TABLE_NAME
 			WHERE
 				T.TABLE_TYPE = 'BASE TABLE' AND
-				T.TABLE_SCHEMA = ?;
+				C.TABLE_SCHEMA = ?;
 			`,
 			[this.knex.client.database()]
 		);

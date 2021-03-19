@@ -1,6 +1,6 @@
 # Migrating from v8
 
-There's two ways to migrate from an existing v8 instance:
+There are two ways to migrate from an existing Directus 8.X instance:
 
 - [Automated Script](#automated-script) (recommended)
 - [Manual Database Export/Import](#manual-database-export-import)
@@ -26,7 +26,7 @@ This tool will copy over:
 - Roles
 - Users
 
-This tool will NOT copy over:
+Due to significant differences in data structure between versions, this tool will **NOT** copy over:
 
 - Interface/display configurations
 - Permissions
@@ -63,4 +63,4 @@ Directus v9 will automatically recognize your tables, and you'll be ready to get
 Once the tables are in, you can start configuring the details of the schema. This includes choosing the correct
 interfaces, displays, and their options for your fields.
 
-This would also be a good time to reconfigure your permissions, to ensure they are what you need them to be.
+This would also be a good time to reconfigure your permissions, to ensure they are accurate.

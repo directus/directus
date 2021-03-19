@@ -1,0 +1,858 @@
+---
+edit_field: แก้ไขฟิลด์
+item_revision: ประวัติรายการ
+duplicate_field: สำเนาฟิลด์
+half_width: กว้างครึ่งหนึ่ง
+full_width: กว้างเต็มหน้า
+fill_width: กว้างเติมเต็ม
+field_name_translations: คำแปลชื่อฟิลด์
+enter_password_to_enable_tfa: กรอกรหัสของคุณเพื่อเปิดการยืนยันรหัส 2 ขั้นตอน
+add_field: เพิ่มฟิลด์
+role_name: ชื่อบทบาท
+db_only_click_to_configure: 'ฐานข้อมูลเท่านั้น: คลิกเพื่อกำหนดค่า '
+show_archived_items: แสดงรายการเก็บถาวร
+required: จำเป็นต้องระบุ
+required_for_app_access: จำเป็นต้องระบุเพื่อเข้าถึงแอป
+requires_value: ต้องการข้อมูล
+create_preset: สร้างที่ตั้งไว้ล่วงหน้า
+create_role: สร้างบทบาท
+create_user: สร้างผู้ใช้งาน
+create_webhook: สร้างเว็บฮุก
+invite_users: เชิญชวนผู้ใช้งาน
+email_examples: 'admin@example.com, user@example.com...'
+invite: เชิญชวน
+emails: อีเมล
+connection_excellent: สัญญาณดีมาก
+connection_good: สัญญาณดี
+connection_fair: สัญญาณพอใช้ได้
+connection_poor: สัญญาณอ่อน
+primary: หลัก
+rename_folder: เปลี่ยนชื่อโฟลเดอร์
+delete_folder: ลบโฟลเดอร์
+prefix: คำนำหน้า
+suffix: คำต่อท้าย
+reset_bookmark: รีเซ็ตบุ๊คมาร์ค
+rename_bookmark: เปลี่ยนชื่อบุ๊คมาร์ค
+update_bookmark: ปรับปรุงบุ๊คมาร์ค
+delete_bookmark: ลบ​บุ๊ค​มา​ร์ค
+delete_bookmark_copy: >-
+  คุณแน่ใจต้องการลบบุ๊ค​มา​ร์ค "{bookmark}"? การกระทำดังกล่าวไม่สามารถกู้คืนกลับมาได้
+logoutReason:
+  SIGN_OUT: ออกจากระบบ
+  SESSION_EXPIRED: เซสชั่นหมดอายุแล้ว
+public: สาธารณะ
+public_description: สามารถเข้าถึง API เหล่านี้ได้โดยไม่ต้องยืนยันตัวตน
+not_allowed: ไม่อนุญาต
+directus_version: เวอร์ชั่น Directus
+node_version: เวอร์ชั่น Node
+node_uptime: เวลาออนไลน์ Node
+os_type: ประเภท OS
+os_version: เวอร์ชั่น OS
+os_uptime: เวลาออนไลน์ OS
+os_totalmem: หน่วยความจำ OS
+archive: เก็บถาวร
+archive_confirm: คุณแน่ใจว่าจะเก็บถาวรรายการนี้?
+reset_system_permissions_to: 'รีเซ็ตสิทธิ์ระบบเพื่อ:'
+validationError:
+  unique: ค่าต้องไม่ซ้ำ
+field_file: ไฟล์เดียว
+field_files: หลายไฟล์
+field_m2o: ความสัมพันธ์แบบ M2O
+field_m2a: ความสัมพันธ์แบบ M2A
+field_o2m: ความสัมพันธ์แบบ O2M
+field_m2m: ความสัมพันธ์แบบ M2M
+field_translations: การแปลภาษา
+item_permissions: สิทธิ์การเข้าถึงไอเท็ม
+field_permissions: สิทธิ์การเข้าถึงฟิลด์
+field_validation: การตรวจสอบฟิลด์
+delete_field: ลบฟิลด์
+fields_and_layout: ฟิลด์และเลย์เอ้าต์
+field_create_success: 'ฟิลด์ "{field}" ถูกสร้างแล้ว'
+field_update_success: 'ฟิลด์ "{field}" ถูกแก้ไขแล้ว'
+duplicate_where_to: ต้องการคัดลอกฟิลด์นี้ไปที่ไหน?
+language: ภาษา
+admins_have_all_permissions: ผู้ดูแลระบบมีสิทธิ์ทุกสิทธิ์
+camera: กล้อง
+exposure: การรับแสง
+shutter: ชัตเตอร์
+iso: ISO
+focal_length: ระยะโฟกัส
+create_field: สร้างฟิลด์
+reset_page_preferences: รีเซ็ตการตั้งค่าเพจ
+hidden_field: ซ่อนฟิลด์
+key: คีย์
+hash: ค่าแฮช
+create_translations: สร้างการแปลใหม่
+auto_generate: สร้างอัตโนมัติ
+this_will_auto_setup_fields_relations: นี่จะตั้งค่าทุกฟิลด์ และความสัมพันธ์ที่จำเป็นโดยอัตโนมัติ
+click_here: คลิกที่นี่
+to_manually_setup_translations: ตั้งค่าการแปลภาษาเอง
+new_data_alert: 'สิ่งเหล่านี้จะถูกสร้างใน Data Model ของคุณ'
+new_field: 'สร้างฟิลด์ใหม่'
+new_collection: 'คอลเลกชันใหม่'
+add_m2o_to_collection: 'เพิ่ม Many-to-One ให้ "{collection}"'
+add_o2m_to_collection: 'เพิ่ม One-to-Many ให้ "{collection}"'
+add_m2m_to_collection: 'เพิ่ม Many-to-Many ให้ "{collection}"'
+choose_a_type: เลือกชนิด...
+determined_by_relationship: กำหนดโดยความสัมพันธ์
+add_note: เพิ่มโน้ตเพื่อแนะนำผู้ใช้
+default_value: ค่าเริ่มต้น
+standard_field: ฟิลด์หลัก
+single_file: ไฟล์เดียว
+multiple_files: หลายไฟล์
+m2o_relationship: ความสัมพันธ์แบบ Many to One
+o2m_relationship: ความสัมพันธ์แบบ One to Many
+m2m_relationship: ความสัมพันธ์แบบ Many to Many
+m2a_relationship: ความสัมพันธ์แบบ Many to Any
+invalid_item: ไอเท็มไม่ถูกต้อง
+next: ถัดไป
+field_name: ชื่อฟิลด์
+translations: การแปลภาษา
+note: หมายเหตุ
+enter_a_value: กรุณาใส่ค่า
+enter_a_placeholder: กรุณาใส่คำแนะนำในช่องสำหรับกรอก
+length: ความยาว
+precision_scale: ความแม่นยำ และมาตราส่วน
+readonly: อ่านเท่านั้น
+unique: ไม่ซ้ำ
+updated_on: แก้ไขเมื่อ
+updated_by: แก้ไขโดย
+primary_key: คีย์หลัก
+foreign_key: คีย์นอก
+finish_setup: ตั้งค่าเสร็จ
+dismiss: ปิด
+raw_value: ข้อมูลดิบ
+edit_raw_value: แก้ไขข้อมูลดิบ
+enter_raw_value: กรุณาใส่ข้อมูลดิบ
+clear_value: ล้างค่า
+reset_to_default: คืนค่าเริ่มต้น
+undo_changes: ยกเลิกการเปลี่ยนแปลง
+notifications: การแจ้งเตือน
+show_all_activity: แสดงทุกกิจกรรม
+page_not_found: ไม่พบหน้านี้
+page_not_found_body: ไม่มีหน้าที่คุณกำลังมองหา
+confirm_revert: ยืนยันการย้อนกลับ
+confirm_revert_body: นี่จะเป็นการย้อนกลับไอเท็มไปยังสถานะที่เลือก
+display: การแสดงผล
+settings_update_success: ปรับปรุงการตั้งค่าเรียบร้อยแล้ว
+title: ชื่อ
+revision_delta_created: สร้างแล้ว
+revision_delta_updated: 'อัพเดทแล้ว 1 ฟิลด์ | อัพเดทแล้ว {count} ฟิลด์'
+revision_delta_deleted: ลบแล้ว
+revision_delta_reverted: แปลงกลับแล้ว
+revision_delta_other: ประวัติการปรับปรุง
+revision_delta_by: '{date} โดย {user}'
+private_user: ผู้ใช้งานแบบส่วนตัว
+revision_preview: ตัวอย่างประวัติการแก้ไข
+leave_comment: แสดงความคิดเห็น
+post_comment_success: ความคิดเห็นถูกโพสต์แล้ว
+item_create_success: ไอเท็มถูกสร้างแล้ว|ไอเท็มถูกสร้างแล้ว
+item_update_success: ไอเท็มถูกแก้ไขแล้ว|ไอเท็มถูกแก้ไขแล้ว
+item_delete_success: ไอเท็มถูกลบแล้ว|ไอเท็มถูกลบแล้ว
+this_collection: คอลเลกชันนี้
+related_collection: คอลเลกชันที่เกี่ยวข้อง
+related_collections: คอลเลกชันที่เกี่ยวข้อง
+translations_collection: คอลเลกชันการแปล
+languages_collection: คอลเลกชันภาษา
+export_data: ส่งข้อมูลออก
+format: รูปแบบ
+use_current_filters_settings: ใช้ตัวกรองและการตั้งค่าปัจจุบัน
+export_collection: 'ส่งออก {collection}'
+last_page: หน้าสุดท้าย
+last_access: การเข้าถึงล่าสุด
+fill_template: กรอกด้วยค่าจากแม่แบบ
+submit: ส่งข้อมูล
+move_to_folder: ย้ายไปยังโฟลเดอร์
+move: ย้าย
+system: ระบบ
+add_field_related: เพิ่มฟิลด์ไปยังคอลเลกชันที่เกี่ยวข้อง
+interface: อินเทอร์เฟซ
+today: วันนี้
+yesterday: เมื่อวาน
+delete_comment: ลบความคิดเห็น
+month: เดือน
+year: ปี
+select_all: เลือกทั้งหมด
+months:
+  january: มกราคม
+  february: กุมภาพันธ์
+  march: มีนาคม
+  april: เมษายน
+  may: พฤษภาคม
+  june: มิถุนายน
+  july: กรกฎาคม
+  august: สิงหาคม
+  september: กันยายน
+  october: ตุลาคม
+  november: พฤศจิกายน
+  december: ธันวาคม
+drag_mode: โหลดคลิ๊กแล้วลาก
+cancel_crop: ยกเลิกการครอบตัด
+original: ต้นฉบับ
+url: URL
+import: นำ​เข้า
+file_details: รายละเอียดไฟล์
+dimensions: ขนาด
+size: ขนาด
+created: สร้างแล้ว
+modified: ถูกแก้ไข
+checksum: Checksum
+owner: เจ้าของ
+edited_by: แก้ไขโดย
+folder: โฟลเดอร์
+zoom: ซูม
+download: ดาวน์โหลด
+open: เปิด
+open_in_new_window: เปิดในหน้าต่างใหม่
+foreground_color: สีพื้นด้านหน้า
+background_color: สีพื้นหลัง
+upload_from_device: อัพโหลดจากอุปกรณ์
+choose_from_library: เลือกจากไลบรารี
+import_from_url: นำเข้าไฟล์จาก URL
+replace_from_device: แทนที่ไฟล์จากอุปกรณ์
+replace_from_library: แทนที่ไฟล์จากไลบรารี
+replace_from_url: แทนที่ไฟล์จาก URL
+no_file_selected: ไม่มีไฟล์ที่เลือก
+download_file: ดาวน์โหลดไฟล์
+name: ชื่อ
+primary_key_field: ฟิล์ของคีย์หลัก
+type: ชนิด
+creating_new_collection: สร้างคอลเลกชันใหม่
+created_by: สร้างโดย
+created_on: สร้างเมื่อ
+auto_increment_integer: ตัวเลขที่เพิ่มขึ้นอัตโนมัติ
+generated_uuid: UUID ที่ถูกสร้างโดยอัตโนมัติ
+manual_string: กรอกข้อความด้วยตนเอง
+save_and_create_new: บันทึกและสร้างใหม่อีก
+save_and_stay: บันทึกและอยู่หน้าเดิม
+save_as_copy: บันทึกเป็นสำเนา
+add_existing: เพิ่มจากที่มีอยู่
+comments: ความคิดเห็น
+no_comments: ยังไม่มีความเห็น
+click_to_expand: คลิกเพื่อขยาย
+select_item: เลือกรายการ
+no_items: ไม่มีรายการ
+search_items: ค้นหารายการ
+disabled: ปิดใช้งาน
+information: ข้อมูล
+report_bug: รายงานข้อบกพร่อง
+request_feature: ขอฟีเจอร์ใหม่ๆ
+interface_not_found: 'ไม่พบอินเทอร์เฟส "{interface}"'
+reset_interface: ล้างการตั้งค่าอินเทอร์เฟส
+display_not_found: 'ไม่พบการแสดงผล "{display}"'
+reset_display: ล้างค่าการแสดงผล
+item_count: 'ไม่พบไอเท็ม|1 ไอเท็ม|{count} ไอเท็ม'
+no_items_copy: ไม่มีรายการในคอลเล็กชันนี้
+file_count: 'ไม่มีไฟล์ | 1 ไฟล์ | {count} ไฟล์'
+no_files_copy: ไม่มีไฟล์ที่นี่
+user_count: 'ไม่มีผู้ใช้ | ผู้ใช้ 1 คน | ผู้ใช้ {count} คน'
+no_users_copy: ยังไม่มีผู้ใช้ในบทบาท
+webhooks_count: 'ไม่มี webhook | มี 1 webhook | มี {count} webhook'
+no_webhooks_copy: ยังไม่มี webhook
+all_items: รายการทั้งหมด
+csv: CSV
+no_collections: ไม่มีคอลเลกชัน
+create_collection: สร้างคอลเลกชัน
+no_collections_copy_admin: ยังไม่มีคอลเลกชันใดๆ คลิ๊กที่ปุ่มด้านล่างเพื่อสร้าง
+no_collections_copy: ยังไม่มีคอลเลกชันใดๆ กรุณาติดต่อผู้ดูแลระบบ
+relationship_not_setup: ความสัมพันธ์ยังไม่ถูกตั้งค่าให้ถูกต้อง
+display_template_not_setup: การตั้งค่าของการแสดงผลไม่ถูกต้อง
+collection_field_not_setup: การตั้งค่าของฟิลด์ยังไม่ถูกต้อง
+select_a_collection: เลือกคอลเลกชัน
+active: เปิดใช้งาน
+users: ผู้ใช้
+activity: กิจกรรม
+webhooks: Webhooks
+field_width: ความกว้างของฟิลด์
+add_a_new_item: เพิ่มรายการใหม่
+add_filter: เพิ่มตัวกรอง
+upper_limit: ขีดจำกัดบน
+lower_limit: ขีดจำกัดล่าง
+user_directory: ไดเรกทอรีของผู้ใช้
+documentation: เอกสาร
+sidebar: แถบด้านข้าง
+duration: ระยะเวลา
+charset: 'ชุดอักขระ:'
+second: วินาที
+file_moved: ย้ายไฟล์เสร็จสิ้น
+collection_created: คอลเลกชันถูกสร้างแล้ว
+modified_on: ถูกแก้ไขเมื่อ
+card_size: ขนาดการ์ด
+sort_field: เรียงฟิลด์
+sort: เรียง
+status: สถานะ
+bookmark_doesnt_exist: ไม่มีบุ๊กมาร์ก
+bookmark_doesnt_exist_copy: ไม่พบบุ๊กมาร์กที่พยายามเปิด
+bookmark_doesnt_exist_cta: กลับไปยังคอลเลกชัน
+select_an_item: เลือก 1 รายการ
+edit: แก้ไข
+enabled: เปิดใช้งาน
+disable_tfa: ปิดใช้งาน 2FA
+tfa_scan_code: สแกนโค้ดในแอป Autuehticator เพื่อตั้งค่า 2FA ให้เสร็จ
+enter_otp_to_disable_tfa: กรอก OTP เพื่อปิดการทำงาน 2FA
+create_account: สร้างบัญชี
+account_created_successfully: สร้างบัญชีสำเร็จ
+auto_fill: กรอกอัตโนมัติ
+corresponding_field: ฟิลด์ที่สอดคล้องกัน
+errors:
+  COLLECTION_NOT_FOUND: "ไม่พบคอลเลกชัน"
+  FIELD_NOT_FOUND: ไม่พบฟิลด์
+  FORBIDDEN: ไม่ได้รับอนุญาต
+  INVALID_CREDENTIALS: ชื่อผู้ใช้หรือรหัสผ่านผิด
+  INVALID_OTP: OTP ไม่ถูกต้อง
+  INVALID_PAYLOAD: payload ไม่ถูกต้อง
+  INVALID_QUERY: query ไม่ถูกต้อง
+  ITEM_LIMIT_REACHED: ไอเท็มถึงขีดจำกัด
+  ITEM_NOT_FOUND: ไม่พบไอเท็ม
+  ROUTE_NOT_FOUND: ไม่พบข้อมูลที่ต้องการ
+  RECORD_NOT_UNIQUE: พบค่าที่ซ้ำกัน
+  UNKNOWN: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
+value_hashed: ข้อมูลถูกเข้ารหัสไว้อย่างปลอดภัย
+bookmark_name: ชื่อบุ๊กมาร์ก...
+create_bookmark: สร้างบุ๊กมาร์ก
+edit_bookmark: แก้ไขบุ๊กมาร์ก
+bookmarks: บุ๊กมาร์ก
+presets: ที่ตั้งไว้ล่วงหน้า
+unexpected_error: พบข้อผิดพลาดบางอย่างที่ไม่คาดคิด
+unexpected_error_copy: เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้งในภายหลัง
+copy_details: คัดลอกรายละเอียด
+no_app_access: ไม่สามารถเข้าถึงแอป
+no_app_access_copy: ผู้ใช้นี้ไม่ได้รับอนุญาตให้เข้าถึงส่วนแอดมิน
+password_reset_sent: เราได้ส่งขั้นตอนการกำหนดรหัสผ่านใหม่ให้คุณแล้วทางอีเมล
+password_reset_successful: รหัสผ่านถูกรีเซ็ตแล้ว
+back: ย้อนกลับ
+editing_image: แก้ไขรูปภาพ
+square: สี่เหลี่ยมจัตุรัส
+free: อิสระ
+flip_horizontal: พลิกตามแนวนอน
+flip_vertical: พลิกตามแนวตั้ง
+aspect_ratio: ตามอัตราส่วนภาพ
+rotate: หมุน
+all_users: ผู้ใช้ทั้งหมด
+delete_collection: ลบคอลเลกชัน
+update_collection_success: แก้ไขคอลเลกชัน
+delete_collection_success: คอลเลกชันถูกลบแล้ว
+one_item: '1 รายการ'
+delete_collection_are_you_sure: >-
+  แน่ใจหรือว่าต้องการลบคอลเลกชันนี้? นี่คือการลบคอลเลกชันและรายการทั้งหมดที่มีอยู่ในคอลเลกชัน ไม่สามารถกู้คืนได้
+collections_shown: แสดงคอลเลกชัน
+visible_collections: คอลเลกชันที่มองเห็นได้
+hidden_collections: คอลเลกชันที่ซ่อนอยู่
+show_hidden_collections: แสดงคอลเลกชันที่ซ่อนอยู่
+hide_hidden_collections: ซ่อนคอลเลกชันที่ซ่อนอยู่
+unmanaged_collections: คอลเลกชันที่ยังไม่ถูกตั้งค่า
+system_collections: คอลเลกชันของระบบ
+placeholder: ค่าที่ใช้ชั่วคราว
+icon_left: ไอคอนทางซ้าย
+icon_right: ไอคอนทางขวา
+count_other_revisions: 'ยังมีอีก {count} การแก้ไข'
+font: ฟอนท์
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: ตัวแบ่ง
+color: สี
+circle: วงกลม
+empty_item: ไอเท็มเปล่า
+log_in_with: 'ลงชื่อเข้าใช้ด้วย {provider}'
+advanced_filter: ตัวกรองขั้นสูง
+delete_advanced_filter: ลบตัวกรองนี้
+change_advanced_filter_operator: เปลี่ยนตัวดำเนินการ
+operators:
+  eq: เท่ากับ
+  neq: ไม่เท่ากับ
+  lt: น้อยกว่า
+  gt: มากกว่า
+  lte: น้อยกว่าหรือเท่ากับ
+  gte: มากกว่าหรือเท่ากับ
+  in: เป็น 1 ใน
+  nin: ไม่ใช่ 1 ใน
+  null: เป็นค่าว่าง
+  nnull: ไม่ใช่ค่าว่าง
+  contains: ประกอบด้วย
+  ncontains: ไม่ประกอบด้วย
+  between: อยู่ระหว่าง
+  nbetween: ไม่อยู่ระหว่าง
+  empty: เป็นค่าว่างเปล่า
+  nempty: ไม่ว่างเปล่า
+  all: ประกอบด้วยคีย์เหล่านี้
+  has: ประกอบด้วยบางคีย์เหล่านี้
+loading: กำลังโหลด...
+drop_to_upload: วางเพื่ออัพโหลด
+upload_file: อัพโหลดไฟล์
+upload_file_indeterminate: กำลังอัพโหลดไฟล์...
+upload_file_success: อัพโหลดไฟล์แล้ว
+upload_files_indeterminate: 'อัพโหลดไปแล้ว {done} ไฟล์ จาก {total} ไฟล์'
+upload_files_success: '{count} ไฟล์ถูกอัพโหลดแล้ว'
+upload_pending: รอการอัพโหลด
+drag_file_here: ลากและวางไฟล์ที่นี่
+click_to_browse: คลิ๊กเพื่อเรียกดู
+layout_options: ตัวเลือกเค้าโครง
+rows: แถว
+columns: คอลัมน์
+collection_setup: การตั้งค่าคอลเลกชัน
+optional_system_fields: ฟิลด์ระบบอื่นๆ ที่ไม่จำเป็น
+value_unique: ค่าต้องไม่ซ้ำ
+all_activity: กิจกรรมทั้งหมด
+create_item: สร้างไอเท็ม
+display_template: แม่แบบการแสดงผล
+n_items_selected: 'ไม่มีรายการที่เลือก | เลือกแล้ว 1 รายการ | เลือกแล้ว {n} รายการ'
+per_page: ต่อหน้า
+all_files: ทุกไฟล์
+my_files: ไฟล์ของฉัน
+recent_files: ไฟล์ล่าสุด
+create_folder: สร้างโฟลเดอร์
+folder_name: ชื่อโฟลเดอร์...
+add_file: เพิ่มไฟล์
+replace_file: แทนที่ไฟล์
+no_results: ไม่มีผลลัพธ์
+no_results_copy: ปรับแต่งหรือล้างตัวกรองเพื่อดูผลลัพธ์
+clear_filters: ล้างตัวกรอง
+saves_automatically: บันทึกอัตโนมัติ
+role: บทบาท
+user: ผู้ใช้
+no_presets: ไม่มีค่าที่ตั้งไว้ล่วงหน้า
+no_presets_copy: ยังไม่มีค่าที่ตั้งไว้ล่วงหน้าหรือบุ๊กมาร์กที่ถูกบันทึกไว้
+no_presets_cta: เพิ่มค่าที่ตั้งไว้ล่วงหน้าใหม่
+create: สร้าง
+on_create: เมื่อสร้าง
+on_update: เมื่อแก้ไข
+read: อ่าน
+update: แก้ไข
+select_fields: เลือกฟิลด์
+format_text: รูปแบบข้อความ
+bold: ตัวหนา
+toggle: สลับ
+icon_on: แสดงไอคอน
+icon_off: ไม่แสดงไอคอน
+label: ป้าย
+wysiwyg_options:
+  aligncenter: จัดตำแหน่งกึ่งกลาง
+  alignjustify: จัดตำแหน่งชิดขอบซ้ายและขวา
+  alignleft: จัดตำแหน่งชิดซ้าย
+  alignnone: ไม่จัดตำแหน่ง
+  alignright: จัดตำแหน่งชิดขวา
+  forecolor: สีพื้นด้านหน้า
+  backcolor: สีพื้นหลัง
+  bold: ตัวหนา
+  italic: ตัวเอียง
+  underline: ขีดเส้นใต้
+  strikethrough: จีดฆ่าตรงกลาง
+  subscript: ตัวห้อย
+  superscript: ตัวยก
+  codeblock: โค้ด
+  blockquote: ข้อความอ้างอิง
+  bullist: รายการแบบไม่มีลําดับ
+  numlist: รายการแบบมีลำดับ
+  hr: เส้นคั่นแนวนอน
+  link: ลิ้งก์
+  unlink: ลบลิงค์
+  media: เพิ่มสื่อ
+  image: เพิ่มรูปภาพ
+  copy: คัดลอก
+  cut: ตัด
+  paste: วาง
+  heading: หัวข้อ
+  h1: หัวข้อที่ 1
+  h2: หัวข้อที่ 2
+  h3: หัวข้อที่ 3
+  h4: หัวข้อที่ 4
+  h5: หัวข้อที่ 5
+  h6: หัวข้อที่ 6
+  fontselect: เลือกแบบอักษร
+  fontsizeselect: เลือกขนาดตัวอักษร
+  indent: เยื้องเข้า
+  outdent: เยื้องออก
+  undo: เรียกคืน
+  redo: ทำซ้ำ
+  remove: เอาออก
+  removeformat: เอารูปแบบออก
+  selectall: เลือกทั้งหมด
+  table: ตาราง
+  visualaid: แสดงเครื่องหมายที่มองไม่เห็น
+  code: ดู source
+  fullscreen: เต็มจอ
+  directionality: อย่างมีทิศทาง
+dropdown: ตัวเลือกแบบดรอปดาวน์
+choices: ตัวเลือกแบบช้อยส์
+choices_option_configured_incorrectly: ตั้งค่าตัวเลือกแบบช้อยส์ไม่ถูกต้อง
+deselect: ไม่เลือก
+deselect_all: ไม่เลือกทั้งหมด
+other: อื่นๆ
+adding_user: เพิ่มผู้ใช้
+unknown_user: ผู้ใช้ที่ไม่รู้จัก
+creating_in: 'กำลังสร้างไอเท็มใน {collection}'
+editing_in: 'กำลังแก้ไขไอเท็มใน {collection}'
+editing_in_batch: 'กำลังแก้ไข {count} ไอเท็ม'
+no_options_available: ไม่มีตัวเลือกให้ใช้
+settings_data_model: รูปแบบข้อมูล
+settings_permissions: บทบาทและสิทธิ
+settings_project: การตั้งค่าโครงการ
+settings_webhooks: Webhooks
+settings_presets: ค่าที่ตั้งไว้ล่วงหน้าและบุ๊คมาร์ก
+scope: ขอบเขต
+layout: เค้าโครง
+changes_are_permanent: การเปลี่ยนแปลงนี้ถาวร
+preset_name_placeholder: ชื่อของบุ๊คมาร์ก
+preset_search_placeholder: ค้นหาด้วย...
+editing_preset: แก้ไขค่าที่ตั้งไว้ล่วงหน้า
+layout_preview: ตัวอย่างเค้าโครง
+layout_setup: ตั้งค่าเค้าโครง
+unsaved_changes: ไม่ได้บันทึกการเปลี่ยนแปลง
+unsaved_changes_copy: คุณแน่ใจว่าต้องการออกจากหน้านี้?
+discard_changes: ยกเลิกการเปลี่ยนแปลง
+keep_editing: แก้ไขต่อไป
+page_help_collections_overview: '**ภาพรวมของคอลเลกชัน** — รายการของคอลเลกชันที่คุณเข้าถึง'
+page_help_collections_collection: >-
+  **รายการที่เรียกดู** — รายการของ {collection} ที่คุณเรียกดู สามารถปรับแต่งเค้าโครง, การกรอง, และการเรียงเพื่อปรับแต่งมุมมองในแบบที่ต้องการ, และสามารถสร้างเป็นบุ๊คมาร์กเพื่อเข้าถึงการตั้งค่าเหล่านี้ได้อย่างรวดเร็ว
+page_help_collections_item: >-
+  **รายละเอียดรายการ** — คือรูปแบบของการมองเห็นและจัดการรายการนี้ พื้นที่ด้านข้างนี้จะแสดงทั้งประวัติการแก้ไขและความเห็นทั้งหมด
+page_help_activity_collection: >-
+  **เรียกดูกิจกรรม** — รายการกิจกรรมทั้งหมดของผู้ใช้และเนื้อหาต่างๆ ในระบบ
+page_help_docs_global: >-
+  **ภาพรวมเอกสาร** — เอกสารที่ถูกสร้างขึ้นสำหรับเวอร์ชั่นและสคีมาของโครงการโดยเฉพาะ
+page_help_files_collection: >-
+  **ไฟล์ไลบรารี** — แสดงทุกไฟล์ที่ถูกอัพโหลดมาที่โปรเจ็คนี้ สามารถแก้ไขเค้าโครง, การกรอง, และการเรียงลำดับให้สอดคล้องกับมุมมองที่ต้องการ และบันทึกเป็นบุ๊คมาร์กของการตั้งค่าแต่ละแบบเพื่อความรวดเร็วในการเข้าถึงได้
+activity_feed: ฟีดกิจกรรม
+add_new: เพิ่มใหม่
+create_new: สร้างใหม่
+all: ทั้งหมด
+none: ไม่ระบุ
+no_layout_collection_selected_yet: ไม่มีมุมมอง หรือคอลเลกชันที่ถูกเลือก
+batch_delete_confirm: >-
+  ไม่มีไอเท็มไหนที่ถูกเลือก | คุณแน่ใจหรือว่าต้องการลบไอเท็มนี้? การกระทำนี้ไม่สามารถเรียกคืนได้ | คุณต้องการลบทั้ง {count} ไอเท็มนี้ใช่หรือไม่? การกระทำนี้ไม่สามารถเรียกคืนได้
+cancel: ยกเลิก
+collection: คอลเลกชัน
+collections: คอลเลกชัน
+singleton: Singleton
+singleton_label: ทำเสมือนว่ามีออปเจ็คเดียว
+system_fields_locked: ฟิลด์ระบบถูกล็อคและไม่สามารถแก้ไขได้
+fields:
+  directus_activity:
+    item: คีย์หลัก
+    action: ดำเนินการ
+    collection: คอลเลกชัน
+    timestamp: ดำเนินการกับ
+    user: ดำเนินการโดย
+    comment: ความคิดเห็น
+    user_agent: ตัวแทนของผู้ใช้
+    ip: หมายเลขไอพี
+    revisions: ประวัติการปรับปรุง
+  directus_collections:
+    collection: คอลเลกชัน
+    icon: ไอคอน
+    note: หมายเหตุ
+    display_template: แม่แบบการแสดงผล
+    hidden: ซ่อน
+    singleton: Singleton
+    translations: การแปลชื่อคอลเลกชัน
+    archive_app_filter: เก็บตัวกรองแอป
+    archive_value: เก็บค่า
+    unarchive_value: ยกเลิกการเก็บค่า
+    sort_field: เรียงฟิลด์
+  directus_files:
+    title: ชื่อ
+    description: รายละเอียด
+    tags: แท็ก
+    location: ตำแหน่งที่ตั้ง
+    storage: ที่เก็บข้อมูล
+    filename_disk: ชื่อไฟล์ (ดิสก์)
+    filename_download: ชื่อไฟล์ (ดาวน์โหลด)
+    metadata: เมตาดาต้า
+    type: Mime Type
+    filesize: ขนาดไฟล์
+    modified_by: ถูกแก้ไขโดย
+    modified_on: ถูกแก้ไขเมื่อ
+    created_on: สร้างเมื่อ
+    created_by: สร้างโดย
+    embed: ฝัง
+    uploaded_by: ถูกอัพโหลดโดย
+    folder: โฟลเดอร์
+    width: กว้าง
+    uploaded_on: ถูกอัพโหลดเมื่อ
+    height: สูง
+    charset: 'ชุดอักขระ:'
+    duration: ระยะเวลา
+  directus_users:
+    first_name: ชื่อ
+    last_name: นามสกุล
+    email: อีเมล
+    password: รหัสผ่าน
+    avatar: ภาพประจำตัว
+    location: ตำแหน่งที่ตั้ง
+    title: ชื่อ
+    description: รายละเอียด
+    tags: แท็ก
+    language: ภาษา
+    theme: ธีม
+    tfa_secret: การยืนยันตัวตนแบบสองปัจจัย
+    status: สถานะ
+    role: บทบาท
+    token: โทเค็น
+    last_page: หน้าสุดท้าย
+    last_access: การเข้าถึงล่าสุด
+  directus_settings:
+    project_name: ชื่อโครงการ
+    project_url: URL ของโครงการ
+    project_color: สีของโปรเจ็ค
+    project_logo: โลโก้ของโปรเจ็ค
+    public_foreground: Public Foreground
+    public_background: Public Background
+    public_note: Public Note
+    auth_password_policy: นโยบายในการตั้งรหัสผ่าน
+    auth_login_attempts: ความพยายามในการเข้าสู่ระบบ
+    storage_asset_presets: การจัดเก็บที่ตั้งค่าไว้ล่วงหน้า
+    custom_css: CSS ที่กำหนดเอง
+  directus_fields:
+    collection: ชื่อคอลเลกชัน
+    icon: ไอคอนของคอลเลกชัน
+    note: หมายเหตุ
+    hidden: ซ่อน
+    singleton: Singleton
+    translation: คำแปลชื่อฟิลด์
+    display_template: แม่แบบ
+  directus_roles:
+    name: ชื่อบทบาท
+    icon: ไอคอนของบทบาท
+    description: รายละเอียด
+    app_access: การเข้าถึงแอป
+    admin_access: ผู้ดูแลเท่านั้น
+    ip_access: IP ที่เข้าถึง
+    enforce_tfa: ต้องการ 2FA
+    users: ผู้ใช้ในบทบาทนี้
+    module_list: รายการโมดูล
+    collection_list: รายการคอลเลกชัน
+no_fields_in_collection: 'ยังไม่มีฟิลด์ใน {collection}'
+do_nothing: ไม่ต้องทำอะไร
+generate_and_save_uuid: สร้างและบันทึก UUID โดยอัตโนมัติ
+save_current_user_id: บันทึกID ของผู้ใช้ปัจจุบัน
+save_current_user_role: บันทึกบทบาทของผู้ใช้ปัจจุบัน
+save_current_datetime: บันทึกวันเวลาปัจจุบัน
+block: ปิดกั้น
+comment: ความคิดเห็น
+continue: ทำต่อ
+continue_as: >-
+  บัญชี <b>{name}</b> ยังไม่ถูกยืนยัน ถ้าคุณคุ้นเคยกับบัญชีนี้ คลิ๊กทำต่อ
+editing_role: 'บทบาท {role}'
+creating_webhook: สร้าง webhook
+default: ค่าเริ่มต้น
+delete: ลบ
+delete_are_you_sure: >-
+  การกระทำนี้ถาวร และไม่สามรถย้อนกลับได้ คุณยังต้องการจะทำต่อหรือไม่?
+delete_field_are_you_sure: >-
+  คุณแน่ใจหรือว่าต้องการลบฟิลด์ "{field}"? การกระทำนี้ไม่สามารถย้อนกลับได้
+description: รายละเอียด
+done: เรียบร้อยแล้ว
+duplicate: ทำสำเนา
+email: อีเมล
+embed: ฝัง
+field: ฟิลด์ | ฟิลด์
+file: ไฟล์
+file_library: ไลบรารีไฟล์
+forgot_password: ลืมรหัสผ่าน
+hidden: ซ่อน
+icon: ไอคอน
+info: ข้อมูล
+normal: ปกติ
+success: สำเร็จ
+warning: คำเตือน
+danger: อันตราย
+latency: ใช้เวลา
+login: ลงชื่อเข้าใช้
+my_activity: กิจกรรมของฉัน
+not_authenticated: ไม่ได้รับการรับรอง
+authenticated: ได้รับการรับรองแล้ว
+options: ตัวเลือก
+otp: รหัสผ่านแบบใช้ครั้งเดียว
+password: รหัสผ่าน
+permissions: การอนุญาต
+relationship: ความ​สัมพันธ์
+reset: ตั้งค่าใหม่
+reset_password: รีเซ็ตรหัสผ่าน
+revisions: ประวัติการปรับปรุง
+revert: แปลงกลับ
+save: บันทึก
+schema: เค้าโครง
+search: ค้นหา
+select_existing: เลือกที่มีอยู่
+select_field_type: เลือกชนิดฟิลด์
+select_interface: เลือกอินเทอร์เฟส
+settings: การตั้งค่า
+sign_in: เข้าสู่ระบบ
+sign_out: ออกจากระบบ
+sign_out_confirm: คุณแน่ใจหรือไม่ว่าต้องการลงชื่อออก
+something_went_wrong: มีบางอย่างผิดพลาด
+sort_direction: รูปแบบการเรียง
+sort_asc: เรียงจากน้อยไปมาก
+sort_desc: เรียงจากมากไปน้อย
+template: แม่แบบ
+translation: แปลภาษา
+value: ค่า
+view_project: ดูโครงการ
+report_error: แจ้งข้อผิดพลาด
+interfaces:
+  button-links:
+    button-links: ลิงก์ปุ่ม
+    links: ลิ้งก์
+    description: ลิงก์ปุ่มที่สามารถตั้งค่าได้เพื่อเปิด URLs
+    style: รูปแบบ
+    primary: หลัก
+    link: ลิ้งก์
+    button: ปุ่ม
+    error: ไม่สามารถดำเนินการได้
+  checkboxes:
+    checkboxes: ตัวเลือกแบบกล่อง
+    description: เลือกได้มากกว่าครั้งละ 1 ตัวเลือก ด้วยตัวเลือกแบบกล่อง
+    allow_other: อนุญาตคนอื่น
+    show_more: 'แสดงเพิ่มอีก {count}'
+    items_shown: ไอเท็มที่ถูกแสดง
+  code:
+    code: โค้ด
+    description: เขียนหรือแชร์โค้ดสั้นๆ
+    line_number: เลขบรรทัด
+    placeholder: กรอกโค้ดที่นี่
+  collection:
+    collection: คอลเลกชัน
+    description: เลือคอลเลกชันที่มีอยู่แล้ว
+    include_system_collections: รวมถึงคอลเลกชันของระบบ
+  collections:
+    collections: คอลเลกชัน
+    description: เลือคอลเลกชันที่มีอยู่แล้ว
+    include_system_collections: รวมถึงคอลเลกชันของระบบ
+  color:
+    color: สี
+    description: กรอกหรือเลือกค่าของสี
+    placeholder: เลือกสี...
+    preset_colors: สีที่กำหนดไว้ล่วงหน้า
+    preset_colors_add_label: เพิ่มสีใหม่...
+    name_placeholder: กรอกชื่อสี
+  datetime:
+    datetime: วันที่และเวลา
+    description: กรอกวันที่และเวลา
+    include_seconds: รวมวินาทีด้วย
+    set_to_now: ตั้งค่าเป็นตอนนี้
+    use_24: ใช้รูปแบบ 24 ชั่วโมง
+  display-template:
+    display-template: แม่แบบการแสดงผล
+    description: ผสมระหว่างข้อความและค่าของฟิลด์
+    collection_field: ฟิลด์คอลเลกชัน
+    collection_field_not_setup: การตั้งค่าของฟิลด์ยังไม่ถูกต้อง
+    select_a_collection: เลือกคอลเลกชัน
+  divider:
+    divider: ตัวแบ่ง
+    description: แบ่งฟิลด์ออกเป็นส่วนๆ
+    title_placeholder: ระบุชื่อ...
+    inline_title_label: แสดงชื่อในเส้นแบ่ง
+    margin_top: ระยะห่างด้านบน
+    margin_top_label: เพิ่มระยะห่างด้านบน
+  dropdown:
+    description: เลือกค่าจากตัวเลือกแบบดรอปดาวน์
+    choices_placeholder: เพิ่มตัวเลือกใหม่
+    allow_other: อนุญาตคนอื่น
+    allow_other_label: อนุญาตให้เพิ่มค่าอื่นได้
+    allow_none: ไม่อนุญาตเลย
+    allow_none_label: อนุญาตให้ไม่เลือกอะไรเลย
+    choices_name_placeholder: กรอกชื่อ...
+    choices_value_placeholder: กรุณาใส่ค่า
+  dropdown-multiselect:
+    dropdown-multiselect: ตัวเลือกแบบดรอปดาวน์ (เลือกได้มากกว่า 1 ค่า)
+    description: เลือกได้มากกว่า 1 ค่าจากตัวเลือกแบบดรอปดาวน์
+  file:
+    file: ไฟล์
+    description: เลือกหรืออัพโหลดไฟล์
+  files:
+    files: ไฟล์
+    description: เลือกหรืออัพโหลดทีละหลายไฟล์
+  hash:
+    hash: ค่าแฮช
+    description: กรอกค่าที่ต้องการแฮช
+    masked: Masked
+    masked_label: ซ่อนค่าจริง
+  icon:
+    icon: ไอคอน
+    description: เลือกไอคอนจากดรอปดาวน์
+    search_for_icon: ค้นหาไอคอน...
+  image:
+    image: รูปภาพ
+    description: เลือกหรืออัพโหลดรูปภาพ
+  interface:
+    interface: อินเทอร์เฟซ
+    description: เลือกอินเทอเฟสที่มีอยู่แล้ว
+    placeholder: เลือกอินเทอร์เฟส...
+  interface-options:
+    interface-options: ตัวเลือกอินเทอร์เฟส
+  many-to-many:
+    many-to-many: Many to Many
+  many-to-one:
+    many-to-one: Many to One
+    description: เลือก 1 ไอเท็มที่เกี่ยวข้อง
+    display_template: แม่แบบการแสดงผล
+  markdown:
+    markdown: Markdown
+    description: กรอกและดู Markdown ล่วงหน้าก่อน
+    customSyntax: บล็อกที่ออกแบบเอง
+    customSyntax_label: เพิ่มชนิด syntax ที่ออกแบบเอง
+    customSyntax_add: เพิ่ม syntax ที่ออกแบบเอง
+  notice:
+    notice: แจ้งให้ทราบ
+    description: แสดงการแจ้งให้ทราบแบบย่อ
+    text: กรอกเนื้อหาการแจ้งให้ทราบที่นี่...
+  numeric:
+    numeric: ตัวเลข
+    description: กรอกตัวเลข
+    minimum_value: ค่าน้อยสุด
+    maximum_value: ค่ามากสุด
+    step_interval: ขั้นในการเพิ่มลดค่า
+  one-to-many:
+    one-to-many: One to Many
+    description: เลือกหลายไอเท็มที่เกี่ยวข้อง
+    no_collection: ไม่พบคอลเลกชัน
+  radio-buttons:
+    radio-buttons: ตัวเลือกแบบเรดิโอ
+    description: เลือกได้ 1 จากหลายตัวเลือก
+  repeater:
+    repeater: การทำซ้ำ
+    description: สร้างหลายรายการโดคใช้โครงสร้างเดียวกัน
+    edit_fields: แก้ไขฟิลด์
+  tags:
+    tags: แท็ก
+  text-input:
+    mask: Masked
+  toggle:
+    toggle: สลับ
+    label_default: เปิดใช้งาน
+  translations:
+    display_template: แม่แบบการแสดงผล
+  user:
+    user: ผู้ใช้
+    modes:
+      dropdown: ตัวเลือกแบบดรอปดาวน์
+displays:
+  boolean:
+    icon_on: แสดงไอคอน
+    icon_off: ไม่แสดงไอคอน
+  collection:
+    collection: คอลเลกชัน
+  color:
+    color: สี
+  datetime:
+    datetime: วันที่และเวลา
+    format: รูปแบบ
+  file:
+    file: ไฟล์
+  icon:
+    icon: ไอคอน
+  image:
+    image: รูปภาพ
+    circle: วงกลม
+  labels:
+    choices_value_placeholder: กรุณาใส่ค่า
+  user:
+    user: ผู้ใช้
+    avatar: ภาพประจำตัว
+    name: ชื่อ
+layouts:
+  cards:
+    title: ชื่อ
+  tabular:
+    tabular: ตาราง
