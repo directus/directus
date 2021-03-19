@@ -1,13 +1,19 @@
 ---
 edit_field: تعديل الحقل
+item_revision: التعديلات على العنصر
 duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
 fill_width: العرض الكامل
+field_name_translations: ترجمة اسم الحقل
 enter_password_to_enable_tfa: أدخل كلمة المرور الخاصة بك لتمكين المصادقة الثنائية
 add_field: إضافة حقل
 role_name: إسم الدور
+db_only_click_to_configure: 'فقط قاعدة البيانات: انقر لتعديل الإعدادات '
+show_archived_items: أظهر العناصر المؤرشفة
 required: مطلوب
+required_for_app_access: مطلوب للوصول إلى التطبيق
+requires_value: قيمة مطلوبة
 create_role: إنشاء دور أو صلاحية
 create_user: إضافة مستخدم
 delete_bookmark: حذف إشارة مرجعية
@@ -213,6 +219,7 @@ fields:
   directus_fields:
     note: ملحوظة
     hidden: مخفي
+    translation: ترجمة اسم الحقل
     display_template: قالب
   directus_roles:
     name: إسم الدور
