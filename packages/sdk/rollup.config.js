@@ -31,9 +31,6 @@ function target(format) {
 			}),
 			commonjs(),
 			sourceMaps(),
-			terser({
-				ecma: 2015,
-			}),
 		],
 	};
 	return [
@@ -44,13 +41,19 @@ function target(format) {
 				...config.output,
 				file: config.output.file.replace(/\.js$/, '.min.js'),
 			},
+			plugins: [
+				...config.plugins,
+				terser({
+					ecma: 2015,
+				}),
+			],
 		},
 	];
 }
 
 export default [
 	// Browser targets
-	//...target('iife'),
+	...target('iife'),
 	...target('umd'),
 	...target('esm'),
 	...target('system'),
