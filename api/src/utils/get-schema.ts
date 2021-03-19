@@ -79,7 +79,8 @@ export async function getSchema(options?: {
 		result.collections[collection] = {
 			collection,
 			primary: info.primary,
-			singleton: collectionMeta?.singleton === 1 || collectionMeta?.singleton === 1,
+			singleton:
+				collectionMeta?.singleton === true || collectionMeta?.singleton === 'true' || collectionMeta?.singleton === 1,
 			note: collectionMeta?.note || null,
 			fields: mapValues(schemaOverview[collection].columns, (column) => ({
 				field: column.column_name,
