@@ -8,7 +8,7 @@
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/sdk.esm.js",
-	"unpkg": "./dist/sdk.esm.js",
+	"unpkg": "./dist/sdk.esm.min.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		"./": "./dist"
