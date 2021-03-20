@@ -89,8 +89,8 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const result = await service.readByKey(primaryKey as any, req.sanitizedQuery);
+
+		const result = await service.readByKey(req.params.pk, req.sanitizedQuery);
 
 		res.locals.payload = {
 			data: result || null,
@@ -179,9 +179,8 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 
-		const updatedPrimaryKey = await service.update(req.body, primaryKey as any);
+		const updatedPrimaryKey = await service.update(req.body, req.params.pk);
 
 		try {
 			const result = await service.readByKey(updatedPrimaryKey, req.sanitizedQuery);
@@ -232,9 +231,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-
-		await service.delete(pk as any);
+		await service.delete(req.params.pk);
 		return next();
 	}),
 	respond

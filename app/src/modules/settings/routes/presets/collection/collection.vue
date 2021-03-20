@@ -40,13 +40,7 @@
 		</template>
 
 		<div class="presets-collection">
-			<v-info
-				center
-				type="warning"
-				v-if="!loading && presets.length === 0"
-				:title="$t('no_presets')"
-				icon="bookmark"
-			>
+			<v-info center type="warning" v-if="!loading && presets.length === 0" :title="$t('no_presets')" icon="bookmark">
 				{{ $t('no_presets_copy') }}
 
 				<template #append>
@@ -276,8 +270,8 @@ export default defineComponent({
 				deleting.value = true;
 
 				try {
-					const IDs = selection.value.map((item) => item.id).join(',');
-					await api.delete(`/presets/${IDs}`);
+					const IDs = selection.value.map((item) => item.id);
+					await api.delete(`/presets/${IDs}`, { data: IDs });
 					selection.value = [];
 					await getPresets();
 					confirmDelete.value = false;

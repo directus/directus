@@ -229,12 +229,12 @@ router.get(
 router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const record = await service.readByKey(keys as any, req.sanitizedQuery);
+
+		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
 		res.locals.payload = { data: record || null };
 		return next();
 	}),
@@ -308,8 +308,7 @@ router.patch(
 		if (req.is('multipart/form-data')) {
 			keys = res.locals.savedFiles;
 		} else {
-			keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-			await service.update(req.body, keys as any);
+			await service.update(req.body, req.params.pk);
 		}
 
 		try {
@@ -348,12 +347,13 @@ router.delete(
 router.delete(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.delete(keys as any);
+
+		await service.delete(req.params.pk);
+
 		return next();
 	}),
 	respond

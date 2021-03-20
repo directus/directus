@@ -5,6 +5,7 @@ full_width: 最大幅
 field_name_translations: 項目名の翻訳を追加する
 add_field: フィールドの追加
 role_name: 権限名
+db_only_click_to_configure: 'データベースのみ: クリックして設定する '
 required: 必須
 requires_value: この項目は必須です
 create_preset: プリセットの作成
@@ -186,9 +187,19 @@ sort: 並べ替え
 status: ステータス
 toggle_manual_sorting: 手動ソートを有効にする
 errors:
+  COLLECTION_NOT_FOUND: "コレクションが存在しません"
+  FORBIDDEN: アクセス禁止
+  INVALID_CREDENTIALS: ユーザー名またはパスワードが間違っています
+  INVALID_OTP: ワンタイムパスワードが間違っています
+  INVALID_QUERY: 無効なクエリー
+  ITEM_LIMIT_REACHED: アイテムの上限に達しました
+  ITEM_NOT_FOUND: アイテムが見つかりませんでした。
   ROUTE_NOT_FOUND: 見つかりません
+  RECORD_NOT_UNIQUE: 重複値が検出されました
+  UNKNOWN: 予期しないエラーが発生しました
 create_bookmark: ブックマークを作成
 bookmarks: ブックマーク
+unexpected_error: 予期しないエラーが発生しました
 back: 戻る
 rotate: 回転
 all_users: すべてのユーザー
@@ -257,6 +268,7 @@ settings_permissions: 役割・権限
 settings_project: プロジェクト設定
 settings_webhooks: Webhook
 layout: レイアウト
+layout_setup: レイアウト設定
 unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
 keep_editing: 編集を続ける
@@ -285,6 +297,8 @@ fields:
     description: 説明
     tags: タグ
     location: 場所
+    filename_disk: ファイル名 (ディスク)
+    filename_download: ファイル名 (ダウンロード)
     type: MIMEタイプ
     filesize: ファイルサイズ
     modified_on: 修正日時

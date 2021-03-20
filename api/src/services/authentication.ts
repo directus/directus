@@ -59,6 +59,7 @@ export class AuthenticationService {
 			accountability: this.accountability,
 			status: 'pending',
 			user: user?.id,
+			database: this.knex,
 		});
 
 		const emitStatus = (status: 'fail' | 'success') => {
@@ -70,6 +71,7 @@ export class AuthenticationService {
 				accountability: this.accountability,
 				status,
 				user: user?.id,
+				database: this.knex,
 			});
 		};
 

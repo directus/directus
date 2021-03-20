@@ -28,7 +28,7 @@ export default function createDBConnection(
 
 			connection = {
 				host: host,
-				port: port,
+				port: Number(port),
 				database: database,
 				user: user,
 				password: password,
@@ -38,7 +38,7 @@ export default function createDBConnection(
 
 			connection = {
 				host: host,
-				port: port,
+				port: Number(port),
 				database: database,
 				user: user,
 				password: password,

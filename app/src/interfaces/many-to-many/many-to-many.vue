@@ -30,8 +30,14 @@
 				/>
 			</template>
 
-			<template #item-append="{ item }" v-show="!disabled">
-				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
+			<template #item-append="{ item }">
+				<v-icon
+					v-show="!disabled"
+					name="close"
+					v-tooltip="$t('deselect')"
+					class="deselect"
+					@click.stop="deleteItem(item)"
+				/>
 			</template>
 		</v-table>
 

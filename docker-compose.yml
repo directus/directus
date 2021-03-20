@@ -10,6 +10,7 @@
 #   Oracle:          5104
 #   Redis:           5105
 #   Minio (S3):      5106
+#   Azure            5107
 #
 # Credentials:
 #   Postgres:
@@ -41,12 +42,16 @@
 #     Key:           minioadmin
 #     Secret:        minioadmin
 #     (Make sure to set S3_FORCE_PATH_STYLE to true)
+#
+#   Azure Blob Storage
+#     Name:          devstoreaccount1
+#     Key:           Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
+#     Container:     devstoreaccount1
 
 version: '3.1'
 services:
   postgres:
     image: postgres:12-alpine
-    restart: always
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
@@ -55,7 +60,6 @@ services:
 
   mysql:
     image: mysql:8
-    restart: always
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: secret
@@ -65,7 +69,6 @@ services:
 
   maria:
     image: mariadb:10.5
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
@@ -74,7 +77,6 @@ services:
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2019-latest
-    restart: always
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Test@123
@@ -83,7 +85,6 @@ services:
 
   oracle:
     image: quillbuilduser/oracle-18-xe-micro-sq
-    restart: always
     ports:
       - 5104:1521
     environment:
@@ -93,13 +94,16 @@ services:
 
   redis:
     image: redis:6-alpine
-    restart: always
     ports:
       - 5105:6379
 
   minio:
     image: minio/minio:latest
-    restart: always
     command: server /data/minio/
     ports:
       - 5106:9000
+
+  azure:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - 5107:10000
