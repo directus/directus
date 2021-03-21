@@ -11,7 +11,7 @@
 	"unpkg": "./dist/sdk.esm.min.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
-		".": "./dist"
+		".": "./dist/index.js"
 	},
 	"files": [
 		"dist"
