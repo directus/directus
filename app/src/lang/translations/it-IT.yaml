@@ -86,6 +86,7 @@ field_standard: Standard
 field_file: File Singolo
 field_files: File Multipli
 field_m2o: Relazione M2O
+field_m2a: Relazione M2A
 field_o2m: Relazione O2M
 field_m2m: Relazione M2M
 field_translations: Traduzioni
@@ -93,7 +94,11 @@ item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
+fields_for_role: 'Campi che il ruolo {role} può {action}.'
+presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
 no_relational_data: Tieni presente che questo non include dati relazionali.
+hide_field_on_detail: Nascondi campo nel dettaglio
+show_field_on_detail: Mostra campo nel dettaglio
 delete_field: Elimina campo
 fields_and_layout: Campi & Layout
 field_create_success: 'Campo Creato: "{field}"'
@@ -140,6 +145,8 @@ click_to_manage_translated_fields: >-
   Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
 fields_group: Gruppo campi
 new_field: 'Nuovo campo'
+new_collection: 'Nuova Collezione'
+add_m2o_to_collection: 'Aggiungi Molti-a-Uno a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
