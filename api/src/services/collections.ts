@@ -1,3 +1,4 @@
+import { ALIAS_TYPES } from '../constants';
 import database, { schemaInspector } from '../database';
 import { AbstractServiceOptions, Accountability, Collection, CollectionMeta, Relation, SchemaOverview } from '../types';
 import { Knex } from 'knex';
@@ -77,7 +78,9 @@ export class CollectionsService {
 
 				await trx.schema.createTable(payload.collection, (table) => {
 					for (const field of payload.fields!) {
-						fieldsService.addColumnToTable(table, field);
+						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+							fieldsService.addColumnToTable(table, field);
+						}
 					}
 				});
 
