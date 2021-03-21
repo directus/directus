@@ -96,6 +96,7 @@ field_validation: Convalida di Campo
 field_presets: Preset di Campo
 fields_for_role: 'Campi che il ruolo {role} può {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
+changes_made: Questi sono i cambiamenti specifici che sono stati fatti...
 no_relational_data: Tieni presente che questo non include dati relazionali.
 hide_field_on_detail: Nascondi campo nel dettaglio
 show_field_on_detail: Mostra campo nel dettaglio
@@ -168,15 +169,19 @@ enter_a_placeholder: Inserisci un segnaposto...
 length: Lunghezza
 readonly: Sola lettura
 unique: Unico
+updated_on: Aggiornato il
+updated_by: Aggiornato da
 primary_key: Chiave primaria
 foreign_key: Chiave Esterna
 finish_setup: Termina Configurazione
 dismiss: Chiudi
 raw_value: Valore grezzo
+enter_raw_value: Inserisci un valore...
 clear_value: Cancella valore
 reset_to_default: Reimposta a predefinito
 undo_changes: Annulla modifica
 notifications: Notifiche
+show_all_activity: Mostra tutte le attività
 page_not_found: Pagina non trovata
 page_not_found_body: La pagina che stai cercando non sembra esistere.
 confirm_revert: Conferma Ripristino
@@ -215,6 +220,7 @@ submit: Invia
 move_to_folder: Sposta nella cartella
 move: Sposta
 system: Sistema
+interface: Interfaccia
 today: Oggi
 yesterday: Ieri
 delete_comment: Elimina Commento
@@ -258,6 +264,8 @@ zoom: Zoom
 download: Scarica
 open: Apri
 open_in_new_window: Apri in una Nuova Finestra
+foreground_color: Colore di primo piano
+background_color: Colore dello sfondo
 upload_from_device: Carica File dal Dispositivo
 choose_from_library: Scegli File dalla Libreria
 import_from_url: Importa File da URL
@@ -290,11 +298,17 @@ disabled: Disabilitato
 information: Informazioni
 report_bug: Segnala un Bug
 request_feature: Richiesta caratteristica
+interface_not_found: 'Interfaccia "{interface}" non trovata.'
+reset_interface: '"Reimposta interfaccia"'
+m2a_builder: Costruttore (M2A)
 item_count: 'Nessun elemento | Un articolo | {count} Articoli'
 no_items_copy: Non ci sono ancora elementi in questa raccolta.
 file_count: 'Nessun File | Un File | {count} File'
 no_files_copy: Non ci sono file qui.
 user_count: 'Nessun Utente | Un Utente | {count} Utenti'
+no_users_copy: Non ci sono ancora utenti in questo ruolo.
+webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
+no_webhooks_copy: Non ci sono ancora webhook.
 all_items: Tutti gli Elementi
 csv: CSV
 no_collections: Nessuna Raccolta
@@ -323,6 +337,7 @@ file_moved: File Spostato
 collection_created: Raccolta Creata
 modified_on: Modificato il
 sort_field: Ordina per
+add_sort_field: Aggiungi Campo Ordinamento
 sort: Ordina
 status: Stato
 bookmark_doesnt_exist: Segnalibro Non Esiste
@@ -446,6 +461,8 @@ format_text: Formato testo
 bold: Grassetto
 label: Etichetta
 wysiwyg_options:
+  forecolor: Colore di primo piano
+  backcolor: Colore dello sfondo
   bold: Grassetto
   italic: Corsivo
   underline: Sottolineato
@@ -701,6 +718,8 @@ interfaces:
   image:
     image: Immagine
     description: Seleziona o carica un'immagine
+  interface:
+    interface: Interfaccia
   interface-options:
     interface-options: Opzioni interfaccia
   many-to-many:
