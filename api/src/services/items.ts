@@ -313,15 +313,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				payload = await payloadService.processM2O(payload);
 				payload = await payloadService.processA2O(payload);
 
-<<<<<<< HEAD
-				let payloadWithoutAliasAndPK = pick(payload, without(columns, primaryKeyField));
-=======
-				let payloadWithoutAliases = pick(payload, fields);
->>>>>>> [WIP] Add pre-filtered schema to SchemaOverview
+				let payloadWithoutAliasAndPK = pick(payload, without(fields, primaryKeyField));
 
 				payloadWithoutAliasAndPK = await payloadService.processValues('update', payloadWithoutAliasAndPK);
-
-				console.log(payloadWithoutAliasAndPK);
 
 				if (Object.keys(payloadWithoutAliasAndPK).length > 0) {
 					try {

@@ -80,6 +80,17 @@ import {
 	toInputObjectType,
 } from 'graphql-compose';
 
+/**
+ * These should be ignored in the context of GraphQL, or are replaced by a custom resolver (for non-standard structures)
+ */
+const SYSTEM_DENY_LIST = [
+	'directus_activity',
+	'directus_collections',
+	'directus_fields',
+	'directus_migrations',
+	'directus_sessions',
+];
+
 export class GraphQLService {
 	accountability: Accountability | null;
 	knex: Knex;
@@ -159,7 +170,10 @@ export class GraphQLService {
 
 		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
 			if (this.scope === 'items' && collection.collection.startsWith('directus_') === true) return false;
-			if (this.scope === 'system' && collection.collection.startsWith('directus_') === false) return false;
+			if (this.scope === 'system') {
+				if (collection.collection.startsWith('directus_') === false) return false;
+				if (SYSTEM_DENY_LIST.includes(collection.collection)) return false;
+			}
 			return true;
 		};
 
@@ -179,7 +193,7 @@ export class GraphQLService {
 		if (Object.keys(schema.create.collections).length > 0) {
 			schemaComposer.Mutation.addFields(
 				Object.values(schema.create.collections)
-					.filter((collection) => collection.collection in CreateCollectionTypes)
+					.filter((collection) => collection.collection in CreateCollectionTypes && collection.singleton === false)
 					.filter(scopeFilter)
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
@@ -209,7 +223,7 @@ export class GraphQLService {
 		if (Object.keys(schema.delete.collections).length > 0) {
 			schemaComposer.Mutation.addFields(
 				Object.values(schema.delete.collections)
-					.filter((collection) => collection.collection in DeleteCollectionTypes)
+					.filter((collection) => collection.collection in DeleteCollectionTypes && collection.singleton === false)
 					.filter(scopeFilter)
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
