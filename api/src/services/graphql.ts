@@ -40,6 +40,7 @@ import {
 	formatError,
 	GraphQLObjectTypeConfig,
 	GraphQLFloat,
+	GraphQLError,
 } from 'graphql';
 import logger from '../logger';
 import { getGraphQLType } from '../utils/get-graphql-type';
@@ -63,7 +64,8 @@ import { WebhooksService } from './webhooks';
 
 import { getRelationType } from '../utils/get-relation-type';
 import { systemCollectionRows } from '../database/system-data/collections';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { BaseException, ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { toArray } from '../utils/to-array';
 
 import { reduceSchema } from '../utils/reduce-schema';
 
@@ -416,19 +418,26 @@ export class GraphQLService {
 			const { CollectionTypes: CreateCollectionTypes } = getTypes('create');
 
 			for (const collection of Object.values(schema.read.collections)) {
+				const fields = CreateCollectionTypes[collection.collection].getFields();
+
 				CreateCollectionTypes[collection.collection].addResolver({
 					name: collection.collection,
 					type: [ReadableCollectionTypes[collection.collection]],
-					args: {
+					args: ReadableCollectionTypes[collection.collection].getResolver(collection.collection).getArgs(),
+					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+						await self.resolveMutation(args, info),
+				});
+
+				if (Object.keys(fields).length > 0) {
+					CreateCollectionTypes[collection.collection].getResolver(collection.collection).addArgs({
+						...CreateCollectionTypes[collection.collection].getResolver(collection.collection).getArgs(),
 						data: [
 							toInputObjectType(CreateCollectionTypes[collection.collection]).setTypeName(
 								`create_${collection.collection}_input`
 							),
 						],
-					},
-					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
-						await self.resolveMutation(args, info),
-				});
+					});
+				}
 			}
 
 			return { CreateCollectionTypes };
@@ -441,9 +450,7 @@ export class GraphQLService {
 		if (!selections) return null;
 
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
-
 		const query = this.getQuery(args, selections, info.variableValues);
-
 		const result = await this.read(collection, query);
 
 		return result;
@@ -452,13 +459,17 @@ export class GraphQLService {
 	async resolveMutation(args: Record<string, any>, info: GraphQLResolveInfo) {
 		const action = info.fieldName.split('_')[0] as 'create' | 'update' | 'delete';
 		const collection = info.fieldName.substring(action.length + 1);
-		// const collection = info.fieldName;
-		// const selections = info.fieldNodes[0]?.selectionSet?.selections;
-		// if (!selections) return null;
+		const selections = info.fieldNodes[0]?.selectionSet?.selections;
 
-		// const result = await this.getData(collection, selections, info.fieldNodes[0].arguments || [], info.variableValues);
-		// return result;
-		return {};
+		if (!args.data) return null;
+		if (!selections) return null;
+
+		const query = this.getQuery(args, selections, info.variableValues);
+
+		switch (action) {
+			case 'create':
+				return await this.create(collection, args.data, query);
+		}
 	}
 
 	async read(collection: string, query: Query) {
@@ -473,6 +484,23 @@ export class GraphQLService {
 			: await service.readByQuery(query, { stripNonRequested: false });
 
 		return result;
+	}
+
+	async create(collection: string, body: Record<string, any>[], query: Query) {
+		const service = new ItemsService(collection, {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		try {
+			const keys = await service.create(body);
+			const result = await service.readByKey(keys, query);
+
+			return toArray(result);
+		} catch (err) {
+			throw this.formatError(err);
+		}
 	}
 
 	parseArgs(
@@ -575,5 +603,13 @@ export class GraphQLService {
 		query.fields = parseFields(selections);
 
 		return query;
+	}
+
+	formatError(error: BaseException | BaseException[]) {
+		if (Array.isArray(error)) {
+			return new GraphQLError(error[0].message, undefined, undefined, undefined, undefined, error[0]);
+		}
+
+		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
 	}
 }
