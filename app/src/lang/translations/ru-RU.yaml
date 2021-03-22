@@ -764,6 +764,9 @@ value: Значение
 view_project: Просмотр Проекта
 report_error: Сообщить об Ошибке
 interfaces:
+  button-links:
+    links: Ссылки
+    link: Ссылки
   checkboxes:
     checkboxes: Флажки
     description: Выбрать из нескольких опций с помощью флажков
@@ -808,6 +811,8 @@ interfaces:
     title_placeholder: Введите название...
     inline_title: Встроенный Заголовок
     inline_title_label: Показать заголовок внутри строки
+    margin_top: Отступ сверху
+    margin_top_label: Увеличить верхний отступ
   dropdown:
     description: Выберите значение из выпадающего списка
     choices_placeholder: Добавить новый выбор
