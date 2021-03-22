@@ -13,9 +13,10 @@ router.use(
 		const service = new GraphQLService({
 			accountability: req.accountability,
 			schema: req.schema,
+			scope: 'system',
 		});
 
-		res.locals.payload = await service.execute(res.locals.graphqlParams, 'system');
+		res.locals.payload = await service.execute(res.locals.graphqlParams);
 
 		return next();
 	}),
@@ -29,9 +30,10 @@ router.use(
 		const service = new GraphQLService({
 			accountability: req.accountability,
 			schema: req.schema,
+			scope: 'items',
 		});
 
-		res.locals.payload = await service.execute(res.locals.graphqlParams, 'items');
+		res.locals.payload = await service.execute(res.locals.graphqlParams);
 
 		return next();
 	}),

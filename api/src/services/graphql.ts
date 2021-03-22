@@ -48,7 +48,7 @@ import logger from '../logger';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
 import { ItemsService } from './items';
-import { cloneDeep, set, merge, get, mapKeys } from 'lodash';
+import { cloneDeep, set, merge, get, mapKeys, filter } from 'lodash';
 import { sanitizeQuery } from '../utils/sanitize-query';
 
 import { ActivityService } from './activity';
@@ -84,11 +84,13 @@ export class GraphQLService {
 	accountability: Accountability | null;
 	knex: Knex;
 	schema: SchemaOverview;
+	scope: 'items' | 'system';
 
-	constructor(options: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions & { scope: 'items' | 'system' }) {
 		this.accountability = options?.accountability || null;
 		this.knex = options?.knex || database;
 		this.schema = options.schema;
+		this.scope = options.scope;
 	}
 
 	args = {
@@ -155,12 +157,20 @@ export class GraphQLService {
 		const { ReadCollectionTypes } = getReadableTypes();
 		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
 
+		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
+			if (this.scope === 'items' && collection.collection.startsWith('directus_') === true) return false;
+			if (this.scope === 'system' && collection.collection.startsWith('directus_') === false) return false;
+			return true;
+		};
+
 		if (Object.keys(schema.read.collections).length > 0) {
 			schemaComposer.Query.addFields(
 				Object.values(schema.read.collections)
 					.filter((collection) => collection.collection in ReadCollectionTypes)
+					.filter(scopeFilter)
 					.reduce((acc, collection) => {
-						acc[collection.collection] = ReadCollectionTypes[collection.collection].getResolver(collection.collection);
+						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
+						acc[collectionName] = ReadCollectionTypes[collection.collection].getResolver(collection.collection);
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
 			);
@@ -170,8 +180,10 @@ export class GraphQLService {
 			schemaComposer.Mutation.addFields(
 				Object.values(schema.create.collections)
 					.filter((collection) => collection.collection in CreateCollectionTypes)
+					.filter(scopeFilter)
 					.reduce((acc, collection) => {
-						acc[`create_${collection.collection}`] = CreateCollectionTypes[collection.collection].getResolver(
+						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
+						acc[`create_${collectionName}`] = CreateCollectionTypes[collection.collection].getResolver(
 							collection.collection
 						);
 						return acc;
@@ -183,8 +195,10 @@ export class GraphQLService {
 			schemaComposer.Mutation.addFields(
 				Object.values(schema.update.collections)
 					.filter((collection) => collection.collection in UpdateCollectionTypes)
+					.filter(scopeFilter)
 					.reduce((acc, collection) => {
-						acc[`update_${collection.collection}`] = UpdateCollectionTypes[collection.collection].getResolver(
+						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
+						acc[`update_${collectionName}`] = UpdateCollectionTypes[collection.collection].getResolver(
 							collection.collection
 						);
 						return acc;
@@ -196,8 +210,10 @@ export class GraphQLService {
 			schemaComposer.Mutation.addFields(
 				Object.values(schema.delete.collections)
 					.filter((collection) => collection.collection in DeleteCollectionTypes)
+					.filter(scopeFilter)
 					.reduce((acc, collection) => {
-						acc[`delete_${collection.collection}`] = DeleteCollectionTypes[collection.collection].getResolver(
+						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
+						acc[`delete_${collectionName}`] = DeleteCollectionTypes[collection.collection].getResolver(
 							collection.collection
 						);
 
@@ -537,7 +553,9 @@ export class GraphQLService {
 	}
 
 	async resolveQuery(info: GraphQLResolveInfo) {
-		const collection = info.fieldName;
+		let collection = info.fieldName;
+		if (this.scope === 'system') collection = `directus_${collection}`;
+
 		const selections = info.fieldNodes[0]?.selectionSet?.selections;
 		if (!selections) return null;
 
@@ -550,7 +568,9 @@ export class GraphQLService {
 
 	async resolveMutation(args: Record<string, any>, info: GraphQLResolveInfo) {
 		const action = info.fieldName.split('_')[0] as 'create' | 'update' | 'delete';
-		const collection = info.fieldName.substring(action.length + 1);
+		let collection = info.fieldName.substring(action.length + 1);
+		if (this.scope === 'system') collection = `directus_${collection}`;
+
 		const selections = info.fieldNodes[0]?.selectionSet?.selections;
 
 		const query = this.getQuery(args, selections || [], info.variableValues);
