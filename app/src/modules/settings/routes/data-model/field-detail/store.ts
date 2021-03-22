@@ -169,6 +169,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 					one_collection: 'directus_files',
 					one_primary: fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field,
+					sort_field: null,
 				},
 			];
 		}
@@ -217,6 +218,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 					one_collection: '',
 					one_primary: '',
+					sort_field: 'null',
 				},
 			];
 		}
@@ -327,6 +329,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					one_collection: collection,
 					one_field: state.fieldData.field,
 					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+					sort_field: null,
 				},
 			];
 		}
@@ -565,6 +568,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					one_collection: collection,
 					one_field: state.fieldData.field,
 					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+					sort_field: null,
 				},
 				{
 					many_collection: '',
@@ -573,6 +577,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					one_collection: '',
 					one_field: null,
 					one_primary: '',
+					sort_field: null,
 				},
 			];
 		}
@@ -840,6 +845,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					one_collection: collection,
 					one_field: state.fieldData.field,
 					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+					sort_field: null,
 				},
 				{
 					many_collection: '',
@@ -850,6 +856,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					one_primary: null,
 					one_allowed_collections: [],
 					one_collection_field: '',
+					sort_field: null,
 				},
 			];
 		}
