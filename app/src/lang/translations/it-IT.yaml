@@ -56,6 +56,8 @@ archive_confirm_count: >-
   Nessun elemento selezionato | Sei sicuro*a di voler archiviare questo elemento? | Sei sicuro*a di voler archiviare {count} elementi?
 reset_system_permissions_to: 'Reimposta i permessi di sistema a:'
 reset_system_permissions_copy: Questa azione sovrascriverà qualsiasi permesso personalizzato che potresti aver applicato alle collezioni di sistema. Sei sicuro?
+the_following_are_minimum_permissions: Di seguito sono riportati i permessi minimi richiesti quando "App Access" è abilitato. È possibile estendere i permessi, ma non ridurli.
+recommended_defaults: Impostazioni di base consigliate
 unarchive: Ripristina
 unarchive_confirm: Sei sicuro*a di voler ripristinare questo elemento?
 nested_files_folders_will_be_moved: I file e le cartelle annidate verranno spostate di un livello in su.
@@ -84,6 +86,7 @@ field_standard: Standard
 field_file: File Singolo
 field_files: File Multipli
 field_m2o: Relazione M2O
+field_m2a: Relazione M2A
 field_o2m: Relazione O2M
 field_m2m: Relazione M2M
 field_translations: Traduzioni
@@ -91,7 +94,12 @@ item_permissions: Permessi Oggetto
 field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
+fields_for_role: 'Campi che il ruolo {role} può {action}.'
+presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
+changes_made: Questi sono i cambiamenti specifici che sono stati fatti...
 no_relational_data: Tieni presente che questo non include dati relazionali.
+hide_field_on_detail: Nascondi campo nel dettaglio
+show_field_on_detail: Mostra campo nel dettaglio
 delete_field: Elimina campo
 fields_and_layout: Campi & Layout
 field_create_success: 'Campo Creato: "{field}"'
@@ -138,6 +146,8 @@ click_to_manage_translated_fields: >-
   Non ci sono ancora campi tradotti. Clicca qui per crearli. | C'è un campo tradotto. Clicca qui per gestirlo. | Ci sono {count} campi tradotti. Clicca qui per gestirli.
 fields_group: Gruppo campi
 new_field: 'Nuovo campo'
+new_collection: 'Nuova Collezione'
+add_m2o_to_collection: 'Aggiungi Molti-a-Uno a "{collection}"'
 choose_a_type: Seleziona un Tipo...
 determined_by_relationship: Determinato dalla Relazione
 add_note: Aggiungi una nota utile per gli utenti ...
@@ -159,15 +169,19 @@ enter_a_placeholder: Inserisci un segnaposto...
 length: Lunghezza
 readonly: Sola lettura
 unique: Unico
+updated_on: Aggiornato il
+updated_by: Aggiornato da
 primary_key: Chiave primaria
 foreign_key: Chiave Esterna
 finish_setup: Termina Configurazione
 dismiss: Chiudi
 raw_value: Valore grezzo
+enter_raw_value: Inserisci un valore...
 clear_value: Cancella valore
 reset_to_default: Reimposta a predefinito
 undo_changes: Annulla modifica
 notifications: Notifiche
+show_all_activity: Mostra tutte le attività
 page_not_found: Pagina non trovata
 page_not_found_body: La pagina che stai cercando non sembra esistere.
 confirm_revert: Conferma Ripristino
@@ -206,6 +220,7 @@ submit: Invia
 move_to_folder: Sposta nella cartella
 move: Sposta
 system: Sistema
+interface: Interfaccia
 today: Oggi
 yesterday: Ieri
 delete_comment: Elimina Commento
@@ -249,6 +264,8 @@ zoom: Zoom
 download: Scarica
 open: Apri
 open_in_new_window: Apri in una Nuova Finestra
+foreground_color: Colore di primo piano
+background_color: Colore dello sfondo
 upload_from_device: Carica File dal Dispositivo
 choose_from_library: Scegli File dalla Libreria
 import_from_url: Importa File da URL
@@ -281,11 +298,17 @@ disabled: Disabilitato
 information: Informazioni
 report_bug: Segnala un Bug
 request_feature: Richiesta caratteristica
+interface_not_found: 'Interfaccia "{interface}" non trovata.'
+reset_interface: '"Reimposta interfaccia"'
+m2a_builder: Costruttore (M2A)
 item_count: 'Nessun elemento | Un articolo | {count} Articoli'
 no_items_copy: Non ci sono ancora elementi in questa raccolta.
 file_count: 'Nessun File | Un File | {count} File'
 no_files_copy: Non ci sono file qui.
 user_count: 'Nessun Utente | Un Utente | {count} Utenti'
+no_users_copy: Non ci sono ancora utenti in questo ruolo.
+webhooks_count: 'Nessun webhook | 1 Webhook | {count} Webhook'
+no_webhooks_copy: Non ci sono ancora webhook.
 all_items: Tutti gli Elementi
 csv: CSV
 no_collections: Nessuna Raccolta
@@ -314,6 +337,7 @@ file_moved: File Spostato
 collection_created: Raccolta Creata
 modified_on: Modificato il
 sort_field: Ordina per
+add_sort_field: Aggiungi Campo Ordinamento
 sort: Ordina
 status: Stato
 bookmark_doesnt_exist: Segnalibro Non Esiste
@@ -437,6 +461,8 @@ format_text: Formato testo
 bold: Grassetto
 label: Etichetta
 wysiwyg_options:
+  forecolor: Colore di primo piano
+  backcolor: Colore dello sfondo
   bold: Grassetto
   italic: Corsivo
   underline: Sottolineato
@@ -692,6 +718,8 @@ interfaces:
   image:
     image: Immagine
     description: Seleziona o carica un'immagine
+  interface:
+    interface: Interfaccia
   interface-options:
     interface-options: Opzioni interfaccia
   many-to-many:
