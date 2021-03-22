@@ -153,7 +153,7 @@ export class GraphQLService {
 		};
 
 		const { ReadCollectionTypes } = getReadableTypes();
-		const { CreateCollectionTypes, UpdateCollectionTypes } = getWritableTypes();
+		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
 
 		if (Object.keys(schema.read.collections).length > 0) {
 			schemaComposer.Query.addFields(
@@ -187,6 +187,20 @@ export class GraphQLService {
 						acc[`update_${collection.collection}`] = UpdateCollectionTypes[collection.collection].getResolver(
 							collection.collection
 						);
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+			);
+		}
+
+		if (Object.keys(schema.delete.collections).length > 0) {
+			schemaComposer.Mutation.addFields(
+				Object.values(schema.delete.collections)
+					.filter((collection) => collection.collection in DeleteCollectionTypes)
+					.reduce((acc, collection) => {
+						acc[`delete_${collection.collection}`] = DeleteCollectionTypes[collection.collection].getResolver(
+							collection.collection
+						);
+
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
 			);
@@ -438,7 +452,7 @@ export class GraphQLService {
 		function getWritableTypes() {
 			const { CollectionTypes: CreateCollectionTypes } = getTypes('create');
 			const { CollectionTypes: UpdateCollectionTypes } = getTypes('update');
-			// const { CollectionTypes: DeleteCollectionTypes } = getTypes('delete');
+			const DeleteCollectionTypes: Record<string, ObjectTypeComposer<any, any>> = {};
 
 			for (const collection of Object.values(schema.create.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
@@ -491,7 +505,7 @@ export class GraphQLService {
 
 					UpdateCollectionTypes[collection.collection].getResolver(collection.collection).addArgs({
 						...UpdateCollectionTypes[collection.collection].getResolver(collection.collection).getArgs(),
-						keys: [GraphQLID],
+						ids: [GraphQLID],
 						data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
 							`update_${collection.collection}_input`
 						),
@@ -499,7 +513,26 @@ export class GraphQLService {
 				}
 			}
 
-			return { CreateCollectionTypes, UpdateCollectionTypes };
+			for (const collection of Object.values(schema.delete.collections)) {
+				DeleteCollectionTypes[collection.collection] = schemaComposer.createObjectTC({
+					name: `delete_${collection.collection}`,
+					fields: {
+						ids: [GraphQLID],
+					},
+				});
+
+				DeleteCollectionTypes[collection.collection].addResolver({
+					name: collection.collection,
+					type: DeleteCollectionTypes[collection.collection],
+					args: {
+						ids: [GraphQLID],
+					},
+					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+						await self.resolveMutation(args, info),
+				});
+			}
+
+			return { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes };
 		}
 	}
 
@@ -526,7 +559,9 @@ export class GraphQLService {
 			case 'create':
 				return await this.create(collection, args.data, query);
 			case 'update':
-				return await this.update(collection, args.keys, args.data, query);
+				return await this.update(collection, args.ids, args.data, query);
+			case 'delete':
+				return await this.delete(collection, args.ids);
 		}
 	}
 
@@ -581,6 +616,21 @@ export class GraphQLService {
 			}
 
 			return true;
+		} catch (err) {
+			throw this.formatError(err);
+		}
+	}
+
+	async delete(collection: string, keys: PrimaryKey[]) {
+		const service = new ItemsService(collection, {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		try {
+			await service.delete(keys);
+			return { ids: keys };
 		} catch (err) {
 			throw this.formatError(err);
 		}
