@@ -985,6 +985,8 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: No Collection
+  tree-view:
+    description: Tree view for nested recursive one-to-many items
   user:
     user: User
     description: Select an existing directus user
