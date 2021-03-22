@@ -535,7 +535,7 @@ export class GraphQLService {
 
 					UpdateCollectionTypes[collection.collection].getResolver(collection.collection).addArgs({
 						...UpdateCollectionTypes[collection.collection].getResolver(collection.collection).getArgs(),
-						ids: [GraphQLID],
+						keys: [GraphQLID],
 						data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
 							`update_${collection.collection}_input`
 						),
@@ -547,7 +547,7 @@ export class GraphQLService {
 				DeleteCollectionTypes[collection.collection] = schemaComposer.createObjectTC({
 					name: `delete_${collection.collection}`,
 					fields: {
-						ids: [GraphQLID],
+						keys: [GraphQLID],
 					},
 				});
 
@@ -555,7 +555,7 @@ export class GraphQLService {
 					name: collection.collection,
 					type: DeleteCollectionTypes[collection.collection],
 					args: {
-						ids: [GraphQLID],
+						keys: [GraphQLID],
 					},
 					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 						await self.resolveMutation(args, info),
@@ -593,18 +593,14 @@ export class GraphQLService {
 			case 'create':
 				return await this.create(collection, args.data, query);
 			case 'update':
-				return await this.update(collection, args.ids, args.data, query);
+				return await this.update(collection, args.keys, args.data, query);
 			case 'delete':
-				return await this.delete(collection, args.ids);
+				return await this.delete(collection, args.keys);
 		}
 	}
 
 	async read(collection: string, query: Query) {
-		const service = new ItemsService(collection, {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
+		const service = this.getService(collection);
 
 		const result = this.schema.collections[collection].singleton
 			? await service.readSingleton(query, { stripNonRequested: false })
@@ -614,11 +610,7 @@ export class GraphQLService {
 	}
 
 	async create(collection: string, body: Record<string, any>[], query: Query) {
-		const service = new ItemsService(collection, {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
+		const service = this.getService(collection);
 
 		try {
 			const keys = await service.create(body);
@@ -635,11 +627,7 @@ export class GraphQLService {
 	}
 
 	async update(collection: string, keys: PrimaryKey[], body: Record<string, any>[], query: Query) {
-		const service = new ItemsService(collection, {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
+		const service = this.getService(collection);
 
 		try {
 			const updatedKeys = await service.update(body, keys);
@@ -656,15 +644,11 @@ export class GraphQLService {
 	}
 
 	async delete(collection: string, keys: PrimaryKey[]) {
-		const service = new ItemsService(collection, {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
+		const service = this.getService(collection);
 
 		try {
 			await service.delete(keys);
-			return { ids: keys };
+			return { keys: keys };
 		} catch (err) {
 			throw this.formatError(err);
 		}
@@ -778,5 +762,88 @@ export class GraphQLService {
 		}
 
 		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
+	}
+
+	getService(collection: string) {
+		switch (collection) {
+			case 'directus_activity':
+				return new ActivityService({
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+			case 'directus_files':
+				return new FilesService({
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+			case 'directus_folders':
+				return new FoldersService({
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+			case 'directus_folders':
+				return new FoldersService({
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+			case 'directus_permissions':
+				return new PermissionsService({
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+			case 'directus_presets':
+				return new PresetsService({
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+			case 'directus_relations':
+				return new RelationsService({
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+			case 'directus_revisions':
+				return new RevisionsService({
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+			case 'directus_roles':
+				return new RolesService({
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+			case 'directus_settings':
+				return new SettingsService({
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+			case 'directus_users':
+				return new UsersService({
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+			case 'directus_webhooks':
+				return new WebhooksService({
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+			default:
+				return new ItemsService(collection, {
+					knex: this.knex,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+		}
 	}
 }
