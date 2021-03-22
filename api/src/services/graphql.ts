@@ -9,6 +9,7 @@ import {
 	Query,
 	SchemaOverview,
 	GraphQLParams,
+	PrimaryKey,
 	PermissionsAction,
 } from '../types';
 import {
@@ -65,7 +66,7 @@ import { WebhooksService } from './webhooks';
 
 import { getRelationType } from '../utils/get-relation-type';
 import { systemCollectionRows } from '../database/system-data/collections';
-import { BaseException, ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { BaseException, ForbiddenException, InvalidPayloadException, GraphQLValidationException } from '../exceptions';
 import { toArray } from '../utils/to-array';
 
 import { reduceSchema } from '../utils/reduce-schema';
@@ -114,7 +115,7 @@ export class GraphQLService {
 		const validationErrors = validate(schema, document, specifiedRules);
 
 		if (validationErrors.length > 0) {
-			throw new InvalidPayloadException('GraphQL validation error.', { graphqlErrors: validationErrors });
+			throw new GraphQLValidationException({ graphqlErrors: validationErrors });
 		}
 
 		let result: ExecutionResult;
@@ -152,7 +153,7 @@ export class GraphQLService {
 		};
 
 		const { ReadCollectionTypes } = getReadableTypes();
-		const { CreateCollectionTypes } = getWritableTypes();
+		const { CreateCollectionTypes, UpdateCollectionTypes } = getWritableTypes();
 
 		if (Object.keys(schema.read.collections).length > 0) {
 			schemaComposer.Query.addFields(
@@ -178,6 +179,19 @@ export class GraphQLService {
 			);
 		}
 
+		if (Object.keys(schema.update.collections).length > 0) {
+			schemaComposer.Mutation.addFields(
+				Object.values(schema.update.collections)
+					.filter((collection) => collection.collection in UpdateCollectionTypes)
+					.reduce((acc, collection) => {
+						acc[`update_${collection.collection}`] = UpdateCollectionTypes[collection.collection].getResolver(
+							collection.collection
+						);
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+			);
+		}
+
 		return schemaComposer.buildSchema();
 
 		function getTypes(action: 'read' | 'create' | 'update' | 'delete') {
@@ -187,7 +201,7 @@ export class GraphQLService {
 				if (Object.keys(collection.fields).length === 0) continue;
 
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
-					name: collection.collection,
+					name: `${action}_${collection.collection}`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
 						acc[field.field] = {
 							type: getGraphQLType(field.type),
@@ -423,6 +437,8 @@ export class GraphQLService {
 
 		function getWritableTypes() {
 			const { CollectionTypes: CreateCollectionTypes } = getTypes('create');
+			const { CollectionTypes: UpdateCollectionTypes } = getTypes('update');
+			// const { CollectionTypes: DeleteCollectionTypes } = getTypes('delete');
 
 			for (const collection of Object.values(schema.create.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
@@ -432,17 +448,17 @@ export class GraphQLService {
 
 				const creatableFields = CreateCollectionTypes[collection.collection]?.getFields() || {};
 
-				CreateCollectionTypes[collection.collection].addResolver({
-					name: collection.collection,
-					type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
-					args: collectionIsReadable
-						? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
-						: undefined,
-					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
-						await self.resolveMutation(args, info),
-				});
-
 				if (Object.keys(creatableFields).length > 0) {
+					CreateCollectionTypes[collection.collection].addResolver({
+						name: collection.collection,
+						type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
+						args: collectionIsReadable
+							? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
+							: undefined,
+						resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+							await self.resolveMutation(args, info),
+					});
+
 					CreateCollectionTypes[collection.collection].getResolver(collection.collection).addArgs({
 						...CreateCollectionTypes[collection.collection].getResolver(collection.collection).getArgs(),
 						data: [
@@ -454,7 +470,36 @@ export class GraphQLService {
 				}
 			}
 
-			return { CreateCollectionTypes };
+			for (const collection of Object.values(schema.update.collections)) {
+				if (Object.keys(collection.fields).length === 0) continue;
+				if (collection.collection in UpdateCollectionTypes === false) continue;
+
+				const collectionIsReadable = collection.collection in ReadCollectionTypes;
+
+				const updatableFields = UpdateCollectionTypes[collection.collection]?.getFields() || {};
+
+				if (Object.keys(updatableFields).length > 0) {
+					UpdateCollectionTypes[collection.collection].addResolver({
+						name: collection.collection,
+						type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
+						args: collectionIsReadable
+							? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
+							: undefined,
+						resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+							await self.resolveMutation(args, info),
+					});
+
+					UpdateCollectionTypes[collection.collection].getResolver(collection.collection).addArgs({
+						...UpdateCollectionTypes[collection.collection].getResolver(collection.collection).getArgs(),
+						keys: [GraphQLID],
+						data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
+							`update_${collection.collection}_input`
+						),
+					});
+				}
+			}
+
+			return { CreateCollectionTypes, UpdateCollectionTypes };
 		}
 	}
 
@@ -475,13 +520,13 @@ export class GraphQLService {
 		const collection = info.fieldName.substring(action.length + 1);
 		const selections = info.fieldNodes[0]?.selectionSet?.selections;
 
-		if (!args.data) return null;
-
 		const query = this.getQuery(args, selections || [], info.variableValues);
 
 		switch (action) {
 			case 'create':
 				return await this.create(collection, args.data, query);
+			case 'update':
+				return await this.update(collection, args.keys, args.data, query);
 		}
 	}
 
@@ -511,6 +556,27 @@ export class GraphQLService {
 
 			if ((query.fields || []).length > 0) {
 				const result = await service.readByKey(keys, query);
+				return toArray(result);
+			}
+
+			return true;
+		} catch (err) {
+			throw this.formatError(err);
+		}
+	}
+
+	async update(collection: string, keys: PrimaryKey[], body: Record<string, any>[], query: Query) {
+		const service = new ItemsService(collection, {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		try {
+			const updatedKeys = await service.update(body, keys);
+
+			if ((query.fields || []).length > 0) {
+				const result = await service.readByKey(updatedKeys, query);
 				return toArray(result);
 			}
 

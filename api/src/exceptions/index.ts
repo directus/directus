@@ -1,6 +1,7 @@
 export * from './base';
 export * from './failed-validation';
 export * from './forbidden';
+export * from './graphql-validation';
 export * from './hit-rate-limit';
 export * from './invalid-credentials';
 export * from './invalid-ip';
