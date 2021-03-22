@@ -26,7 +26,7 @@ permissions and other built-in features.
 
 Fetching thumbnails is as easy as adding query parameters to the original file's URL. If a requested thumbnail doesn't
 yet exist, it is dynamically generated and immediately returned. When requesting a thumbnail, the following parameters
-are all required.
+are all required, supports thumbnail for `jpeg`,`png` and `webp`
 
 - **`fit`** — The **fit** of the thumbnail while always preserving the aspect ratio, can be any of the following
   options:
@@ -38,7 +38,7 @@ are all required.
     and height
 - **`width`** — The **width** of the thumbnail in pixels
 - **`height`** — The **height** of the thumbnail in pixels
-- **`quality`** — The **quality** of the thumbnail (`0` to `100`)
+- **`quality`** — The **quality** of the thumbnail (`1` to `100`) is `Optional`
 - **`withoutEnlargement`** — Disable image up-scaling
 - **`download`** — Add `Content-Disposition` header and force browser to download file
 
@@ -86,7 +86,9 @@ four possible qualities (200x200 cover) to visually compare the balance between 
 ## Downloading a File
 
 To download an asset with the correct filename, you need to add the `?download` query parameter to the request and the
-`download` attribute to your anchor tag. This will ensure the appropriate [Content-Disposition](https://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html) headers are added. Without this, the download will work on the _same_ domain, however it will have the file's "id" as the filename for cross-origin requests.
+`download` attribute to your anchor tag. This will ensure the appropriate
+[Content-Disposition](https://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html) headers are added. Without this, the
+download will work on the _same_ domain, however it will have the file's "id" as the filename for cross-origin requests.
 
 Example:
 
