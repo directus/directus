@@ -40,6 +40,7 @@ import {
 	formatError,
 	GraphQLObjectTypeConfig,
 	GraphQLFloat,
+	GraphQLScalarType,
 	GraphQLError,
 } from 'graphql';
 import logger from '../logger';
@@ -150,28 +151,30 @@ export class GraphQLService {
 			delete: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['delete']),
 		};
 
-		const { ReadableCollectionTypes } = getReadableTypes();
+		const { ReadCollectionTypes } = getReadableTypes();
 		const { CreateCollectionTypes } = getWritableTypes();
 
 		if (Object.keys(schema.read.collections).length > 0) {
 			schemaComposer.Query.addFields(
-				Object.values(schema.read.collections).reduce((acc, collection) => {
-					acc[collection.collection] = ReadableCollectionTypes[collection.collection].getResolver(
-						collection.collection
-					);
-					return acc;
-				}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+				Object.values(schema.read.collections)
+					.filter((collection) => collection.collection in ReadCollectionTypes)
+					.reduce((acc, collection) => {
+						acc[collection.collection] = ReadCollectionTypes[collection.collection].getResolver(collection.collection);
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
 			);
 		}
 
 		if (Object.keys(schema.create.collections).length > 0) {
 			schemaComposer.Mutation.addFields(
-				Object.values(schema.create.collections).reduce((acc, collection) => {
-					acc[`create_${collection.collection}`] = CreateCollectionTypes[collection.collection].getResolver(
-						collection.collection
-					);
-					return acc;
-				}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+				Object.values(schema.create.collections)
+					.filter((collection) => collection.collection in CreateCollectionTypes)
+					.reduce((acc, collection) => {
+						acc[`create_${collection.collection}`] = CreateCollectionTypes[collection.collection].getResolver(
+							collection.collection
+						);
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
 			);
 		}
 
@@ -181,6 +184,8 @@ export class GraphQLService {
 			const CollectionTypes: Record<string, ObjectTypeComposer> = {};
 
 			for (const collection of Object.values(schema[action].collections)) {
+				if (Object.keys(collection.fields).length === 0) continue;
+
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
 					name: collection.collection,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
@@ -245,7 +250,7 @@ export class GraphQLService {
 		}
 
 		function getReadableTypes() {
-			const { CollectionTypes: ReadableCollectionTypes } = getTypes('read');
+			const { CollectionTypes: ReadCollectionTypes } = getTypes('read');
 			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
 
 			const StringFilterOperators = schemaComposer.createInputTC({
@@ -339,6 +344,8 @@ export class GraphQLService {
 			});
 
 			for (const collection of Object.values(schema.read.collections)) {
+				if (Object.keys(collection.fields).length === 0) continue;
+
 				ReadableCollectionFilterTypes[collection.collection] = schemaComposer.createInputTC({
 					name: `${collection.collection}_filter`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
@@ -363,7 +370,7 @@ export class GraphQLService {
 					}, {} as InputTypeComposerFieldConfigMapDefinition),
 				});
 
-				ReadableCollectionTypes[collection.collection].addResolver({
+				ReadCollectionTypes[collection.collection].addResolver({
 					name: collection.collection,
 					args: collection.singleton
 						? undefined
@@ -386,8 +393,8 @@ export class GraphQLService {
 								},
 						  },
 					type: collection.singleton
-						? ReadableCollectionTypes[collection.collection]
-						: [ReadableCollectionTypes[collection.collection]],
+						? ReadCollectionTypes[collection.collection]
+						: [ReadCollectionTypes[collection.collection]],
 					resolve: async ({ info }: { info: GraphQLResolveInfo }) => await self.resolveQuery(info),
 				});
 			}
@@ -411,24 +418,31 @@ export class GraphQLService {
 				}
 			}
 
-			return { ReadableCollectionTypes, ReadableCollectionFilterTypes };
+			return { ReadCollectionTypes, ReadableCollectionFilterTypes };
 		}
 
 		function getWritableTypes() {
 			const { CollectionTypes: CreateCollectionTypes } = getTypes('create');
 
-			for (const collection of Object.values(schema.read.collections)) {
-				const fields = CreateCollectionTypes[collection.collection].getFields();
+			for (const collection of Object.values(schema.create.collections)) {
+				if (Object.keys(collection.fields).length === 0) continue;
+				if (collection.collection in CreateCollectionTypes === false) continue;
+
+				const collectionIsReadable = collection.collection in ReadCollectionTypes;
+
+				const creatableFields = CreateCollectionTypes[collection.collection]?.getFields() || {};
 
 				CreateCollectionTypes[collection.collection].addResolver({
 					name: collection.collection,
-					type: [ReadableCollectionTypes[collection.collection]],
-					args: ReadableCollectionTypes[collection.collection].getResolver(collection.collection).getArgs(),
+					type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
+					args: collectionIsReadable
+						? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
+						: undefined,
 					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 						await self.resolveMutation(args, info),
 				});
 
-				if (Object.keys(fields).length > 0) {
+				if (Object.keys(creatableFields).length > 0) {
 					CreateCollectionTypes[collection.collection].getResolver(collection.collection).addArgs({
 						...CreateCollectionTypes[collection.collection].getResolver(collection.collection).getArgs(),
 						data: [
@@ -462,9 +476,8 @@ export class GraphQLService {
 		const selections = info.fieldNodes[0]?.selectionSet?.selections;
 
 		if (!args.data) return null;
-		if (!selections) return null;
 
-		const query = this.getQuery(args, selections, info.variableValues);
+		const query = this.getQuery(args, selections || [], info.variableValues);
 
 		switch (action) {
 			case 'create':
@@ -495,9 +508,13 @@ export class GraphQLService {
 
 		try {
 			const keys = await service.create(body);
-			const result = await service.readByKey(keys, query);
 
-			return toArray(result);
+			if ((query.fields || []).length > 0) {
+				const result = await service.readByKey(keys, query);
+				return toArray(result);
+			}
+
+			return true;
 		} catch (err) {
 			throw this.formatError(err);
 		}
