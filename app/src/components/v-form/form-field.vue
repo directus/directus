@@ -13,6 +13,8 @@
 					:disabled="isDisabled"
 					:batch-mode="batchMode"
 					:batch-active="batchActive"
+					:edited="isEdited"
+					:has-error="!!validationError"
 					@toggle-batch="$emit('toggle-batch', $event)"
 				/>
 			</template>
@@ -132,9 +134,15 @@ export default defineComponent({
 			return defaultValue.value;
 		});
 
+		const isEdited = computed<boolean>(() => {
+			return props.value && isEqual(props.value, props.initialValue) === false;
+		});
+
 		const { showRaw, rawValue } = useRaw();
 
 		const validationMessage = computed(() => {
+			if (!props.validationError) return null;
+
 			if (props.validationError.code === 'RECORD_NOT_UNIQUE') {
 				return i18n.t('validationError.unique');
 			} else {
@@ -142,7 +150,7 @@ export default defineComponent({
 			}
 		});
 
-		return { isDisabled, marked, _value, emitValue, showRaw, rawValue, validationMessage };
+		return { isDisabled, marked, _value, emitValue, showRaw, rawValue, validationMessage, isEdited };
 
 		function emitValue(value: any) {
 			if (

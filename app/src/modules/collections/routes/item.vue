@@ -178,7 +178,7 @@
 				:collection="collection"
 				:primary-key="_primaryKey"
 				ref="revisionsDrawerDetail"
-				@revert="refresh"
+				@revert="revert"
 			/>
 			<comments-sidebar-detail
 				v-if="isNew === false && _primaryKey"
@@ -375,6 +375,7 @@ export default defineComponent({
 			isSingleton,
 			_primaryKey,
 			revisionsAllowed,
+			revert,
 		};
 
 		function useBreadcrumb() {
@@ -469,6 +470,13 @@ export default defineComponent({
 			if (!leaveTo.value) return;
 			edits.value = {};
 			router.push(leaveTo.value);
+		}
+
+		function revert(values: Record<string, any>) {
+			edits.value = {
+				...edits.value,
+				...values,
+			};
 		}
 	},
 	beforeRouteLeave(to, from, next) {
