@@ -5,20 +5,30 @@
 				<p class="type-label">{{ $t('format') }}</p>
 				<v-select
 					:items="[
-						{
-							text: $t('csv'),
-							value: 'csv',
-						},
-						{
-							text: $t('json'),
-							value: 'json',
-						},
+						...[
+							{
+								text: $t('csv'),
+								value: 'csv',
+							},
+							{
+								text: $t('json'),
+								value: 'json',
+							},
+						],
+						// enable XLIFF for translatable content only
+						...(translatable
+							? [
+									{
+										text: $t('xliff'),
+										value: 'xliff',
+									},
+							  ]
+							: []),
 					]"
 					v-model="format"
 				/>
 				<v-checkbox v-model="useFilters" :label="$t('use_current_filters_settings')" />
 			</div>
-
 			<div class="field full">
 				<v-button full-width @click="exportData">
 					{{ $t('export_collection', { collection: collection.name }) }}
@@ -31,6 +41,8 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
 import { Collection } from '@/types';
+import { useFieldsStore, useUserStore } from '@/stores/';
+import { Field } from '@/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 
@@ -49,6 +61,13 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	computed: {
+		translatable(): boolean {
+			const fieldsStore = useFieldsStore();
+			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
+			return fields.some((field: Field) => field.type === 'translations');
+		},
+	},
 	setup(props) {
 		const format = ref('csv');
 		const useFilters = ref(true);
@@ -62,10 +81,19 @@ export default defineComponent({
 				access_token: api.defaults.headers.Authorization.substring(7),
 			};
 
-			if (format.value === 'csv') {
-				params.export = 'csv';
-			} else {
-				params.export = 'json';
+			switch (format.value) {
+				case 'csv':
+					params.export = 'csv';
+					break;
+				case 'json':
+					params.export = 'json';
+					break;
+				case 'xliff':
+					const userStore = useUserStore();
+					const user = userStore.state.currentUser;
+					params.language = (user && user.language) || 'en-US';
+					params.export = 'xliff';
+					break;
 			}
 
 			if (useFilters.value === true) {

@@ -140,6 +140,7 @@ decimal: Decimal
 float: Float
 integer: Integer
 json: JSON
+xliff: XLIFF
 string: String
 text: Text
 time: Time

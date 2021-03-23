@@ -67,6 +67,14 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 				return stream.pipe(json2csv).pipe(res);
 			}
 		}
+		if (req.sanitizedQuery.export === 'xliff') {
+			res.attachment(`${filename}.xliff`);
+			res.set('Content-Type', 'text/xml');
+			const language = req.sanitizedQuery.language;
+			if (res.locals.payload?.data || res.locals.payload.data.length === 0) {
+				// const translationsCollection =
+			}
+		}
 	}
 
 	if (Buffer.isBuffer(res.locals.payload)) {
