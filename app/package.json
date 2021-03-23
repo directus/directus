@@ -34,8 +34,8 @@
 	},
 	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4",
 	"dependencies": {
-		"@directus/docs": "^9.0.0-rc.51",
-		"@directus/format-title": "^9.0.0-rc.51"
+		"@directus/docs": "9.0.0-rc.51",
+		"@directus/format-title": "9.0.0-rc.51"
 	},
 	"devDependencies": {
 		"@vue/cli-plugin-babel": "^4.5.8",
