@@ -39,7 +39,8 @@
 		}
 	},
 	"dependencies": {
-		"@google-cloud/storage": "^5.0.0"
+		"@google-cloud/storage": "^5.0.0",
+		"normalize-path": "^3.0.0"
 	},
 	"peerDependencies": {
 		"@directus/drive": "9.0.0-rc.51"
@@ -47,6 +48,7 @@
 	"devDependencies": {
 		"@directus/drive": "9.0.0-rc.51",
 		"@lukeed/uuid": "^1.0.1",
+		"@types/normalize-path": "^3.0.0",
 		"npm-watch": "^0.9.0",
 		"typescript": "^4.2.3"
 	},
