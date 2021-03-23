@@ -63,6 +63,12 @@ router.get(
 		if (transformation.hasOwnProperty('key') && Object.keys(transformation).length > 1) {
 			throw new InvalidQueryException(`You can't combine the "key" query parameter with any other transformation.`);
 		}
+		if (
+			transformation.hasOwnProperty('quality') &&
+			(Number(transformation.quality) < 1 || Number(transformation.quality) > 100)
+		) {
+			throw new InvalidQueryException(`"quality" Parameter has to between 1 to 100`);
+		}
 
 		const systemKeys = SYSTEM_ASSET_ALLOW_LIST.map((transformation) => transformation.key);
 		const allKeys: string[] = [
