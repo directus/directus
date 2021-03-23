@@ -796,7 +796,6 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:

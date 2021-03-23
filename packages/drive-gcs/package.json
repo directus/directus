@@ -45,7 +45,7 @@
 		"@directus/drive": "file:../drive"
 	},
 	"devDependencies": {
-		"@directus/drive": "^9.0.0-rc.51",
+		"@directus/drive": "9.0.0-rc.51",
 		"@lukeed/uuid": "^1.0.1"
 	},
 	"publishConfig": {

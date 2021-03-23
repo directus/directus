@@ -796,7 +796,6 @@ template: แม่แบบ
 translation: แปลภาษา
 value: ค่า
 view_project: ดูโครงการ
-weeks: { }
 report_error: แจ้งข้อผิดพลาด
 interfaces:
   button-links:
