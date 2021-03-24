@@ -6,6 +6,7 @@ import cache from '../cache';
 import { Transform, transforms } from 'json2csv';
 import { PassThrough } from 'stream';
 import { ItemsService } from '../services';
+import { UnprocessableEntityException } from '../exceptions';
 import ms from 'ms';
 import xliff from 'xliff';
 
@@ -124,15 +125,17 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 								};
 							});
 						});
-						const json = {
-							resources: {
-								[req.collection]: resources,
-							},
-							sourceLanguage: language,
-						};
-						const output = await xliff.jsToXliff12(json);
-						return res.status(200).send(output);
 					}
+					const json = {
+						resources: {
+							[req.collection]: resources,
+						},
+						sourceLanguage: language,
+					};
+					const output = await xliff.jsToXliff12(json);
+					return res.status(200).send(output);
+				} else {
+					throw new UnprocessableEntityException(`Information about translations cannot be found.`);
 				}
 			}
 		}
