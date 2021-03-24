@@ -9,7 +9,8 @@
 	"scripts": {
 		"lint": "npm-run-all -p lint:*",
 		"lint:eslint": "eslint .",
-		"lint:stylelint": "stylelint ."
+		"lint:stylelint": "stylelint .",
+		"format": "prettier --write \"**/*.{js,vue,ts,md}\""
 	},
 	"devDependencies": {
 		"eslint": "^7.22.0",
@@ -32,14 +33,10 @@
 		}
 	},
 	"lint-staged": {
-		"**/*.{js,ts,md}": [
+		"**/*.{js,ts,md,vue}": [
 			"prettier --write"
 		],
-		"**/*.{css,scss}": [
-			"stylelint --fix"
-		],
-		"**/*.vue": [
-			"eslint --fix",
+		"**/*.{css,scss,vue}": [
 			"stylelint --fix"
 		]
 	}
