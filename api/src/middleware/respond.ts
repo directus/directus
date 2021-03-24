@@ -5,6 +5,7 @@ import { getCacheKey } from '../utils/get-cache-key';
 import cache from '../cache';
 import { Transform, transforms } from 'json2csv';
 import { PassThrough } from 'stream';
+import { ItemsService } from '../services';
 import ms from 'ms';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
@@ -71,8 +72,55 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			res.attachment(`${filename}.xliff`);
 			res.set('Content-Type', 'text/xml');
 			const language = req.sanitizedQuery.language;
-			if (res.locals.payload?.data || res.locals.payload.data.length === 0) {
-				// const translationsCollection =
+			if (res.locals.payload?.data && res.locals.payload.data.length > 0) {
+				const records = res.locals.payload.data;
+				// TODO: is there is a better way to get translations relationship?
+				const relation = req.schema.relations.find(
+					(relation) => relation.one_collection === req.collection && relation.one_field === 'translations'
+				);
+				if (relation) {
+					const translationsCollection = relation.many_collection;
+					const translationsKeyField = <string>relation.one_primary;
+					const translationsFieldName = <string>relation.one_field;
+					const translationsIdFieldName = relation.many_primary;
+					const tranlsationsExternalKey = <string>relation.junction_field;
+					const translationsParentField = relation.many_field;
+					const translations = records.map((r: any) => {
+						return {
+							id: r[translationsKeyField],
+							translationIds: r[translationsFieldName],
+							translations: {},
+						};
+					});
+					const translationsIds = translations.reduce((acc: any[], val: any) => {
+						return val.translationIds.length > 0 ? [...acc, ...val.translationIds] : acc;
+					}, []);
+					const itemsService = new ItemsService(translationsCollection, {
+						accountability: req.accountability,
+						schema: req.schema,
+					});
+					// making query to bring records for all found translations for current language
+					const translationItems = await itemsService.readByQuery({
+						filter: {
+							[translationsIdFieldName]: { _in: translationsIds },
+							[tranlsationsExternalKey]: { _eq: language },
+						},
+						limit: -1,
+					});
+					// obtaining values of translatable fields and putting them to the dictionary
+					if (translationItems && translationItems.length > 0) {
+						translationItems.forEach((item: any) => {
+							const translation = translations.find((t: any) => t.translationIds.includes(item[translationsKeyField]));
+							// removing system fields from output
+							const { id, status, sort, user_created, date_created, user_updated, date_updated, ...rest } = item;
+							// ensuring that key field was removed
+							delete rest[translationsKeyField];
+							delete rest[tranlsationsExternalKey];
+							delete rest[translationsParentField];
+							translation.translations = rest;
+						});
+					}
+				}
 			}
 		}
 	}
