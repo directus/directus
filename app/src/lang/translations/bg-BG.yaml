@@ -11,6 +11,7 @@ add_field: Добавяне на поле
 role_name: Име на роля
 db_only_click_to_configure: 'Само в базата данни: Кликнете за конфигурация '
 show_archived_items: Включително архивираните
+edited: Редактиран
 required: Задължително
 required_for_app_access: Изисква се за достъп до приложението
 requires_value: Изисква се стойност
@@ -796,6 +797,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   button-links:
