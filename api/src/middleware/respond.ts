@@ -81,10 +81,10 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 				);
 				if (relation) {
 					const translationsCollection = relation.many_collection;
-					const translationsKeyField = <string>relation.one_primary;
-					const translationsFieldName = <string>relation.one_field;
+					const translationsKeyField = relation.one_primary;
+					const translationsFieldName = relation.one_field;
 					const translationsIdFieldName = relation.many_primary;
-					const tranlsationsExternalKey = <string>relation.junction_field;
+					const tranlsationsExternalKey = relation.junction_field;
 					const translationsParentField = relation.many_field;
 					const translations = records.map((r: any) => {
 						return {
