@@ -41,5 +41,8 @@
 	"devDependencies": {
 		"npm-watch": "^0.7.0",
 		"swagger-cli": "^4.0.4"
+	},
+	"dependencies": {
+		"openapi3-ts": "^2.0.1"
 	}
 }

@@ -34,8 +34,15 @@
     "lint": "eslint \"src/**/*.ts\""
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^11.2.0",
+    "eslint": "^7.22.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.33.1",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.30.0",
     "typescript": "^4.0.5"
   },
   "gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"

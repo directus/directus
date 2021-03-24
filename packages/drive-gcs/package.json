@@ -42,11 +42,13 @@
 		"@google-cloud/storage": "^5.0.0"
 	},
 	"peerDependencies": {
-		"@directus/drive": "file:../drive"
+		"@directus/drive": "9.0.0-rc.51"
 	},
 	"devDependencies": {
 		"@directus/drive": "9.0.0-rc.51",
-		"@lukeed/uuid": "^1.0.1"
+		"@lukeed/uuid": "^1.0.1",
+		"npm-watch": "^0.9.0",
+		"typescript": "^4.2.3"
 	},
 	"publishConfig": {
 		"access": "public"
