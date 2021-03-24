@@ -7,6 +7,7 @@ import { Transform, transforms } from 'json2csv';
 import { PassThrough } from 'stream';
 import { ItemsService } from '../services';
 import ms from 'ms';
+import xliff from 'xliff';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	if (
@@ -76,7 +77,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 				const records = res.locals.payload.data;
 				// TODO: is there is a better way to get translations relationship?
 				const relation = req.schema.relations.find(
-					(relation) => relation.one_collection === req.collection && relation.one_field === 'translations'
+					(relation: any) => relation.one_collection === req.collection && relation.one_field === 'translations'
 				);
 				if (relation) {
 					const translationsCollection = relation.many_collection;
@@ -89,9 +90,9 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 						return {
 							id: r[translationsKeyField],
 							translationIds: r[translationsFieldName],
-							translations: {},
 						};
 					});
+					const resources = {};
 					const translationsIds = translations.reduce((acc: any[], val: any) => {
 						return val.translationIds.length > 0 ? [...acc, ...val.translationIds] : acc;
 					}, []);
@@ -117,8 +118,20 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 							delete rest[translationsKeyField];
 							delete rest[tranlsationsExternalKey];
 							delete rest[translationsParentField];
-							translation.translations = rest;
+							Object.keys(rest).forEach((key) => {
+								(resources as any)[`${translation.id}.${key}`] = {
+									source: rest[key],
+								};
+							});
 						});
+						const json = {
+							resources: {
+								[req.collection]: resources,
+							},
+							sourceLanguage: language,
+						};
+						const output = await xliff.jsToXliff12(json);
+						return res.status(200).send(output);
 					}
 				}
 			}
