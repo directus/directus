@@ -32,24 +32,11 @@
 	"devDependencies": {
 		"directory-tree": "^2.2.6",
 		"fs-extra": "^9.1.0",
-		"husky": "^5.2.0",
-		"lint-staged": "^10.5.4",
 		"lodash.get": "^4.4.2",
 		"micromark": "^2.10.1",
 		"npm-watch": "^0.7.0",
-		"prettier": "^1.19.1",
 		"slugify": "^1.4.6",
 		"vuepress": "^1.7.1",
 		"vuepress-plugin-clean-urls": "^1.1.2"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "npx lint-staged"
-		}
-	},
-	"lint-staged": {
-		"**/*.{md}": [
-			"prettier --write"
-		]
 	}
 }

@@ -55,9 +55,7 @@
 		"build": "rimraf dist && tsc --build && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
 		"dev": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect -- src/start.ts",
 		"cli": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
-		"lint": "eslint \"src/**/*.ts\" cli.js index.js",
-		"prepublishOnly": "npm run build",
-		"prettier": "prettier --write \"src/**/*.ts\" cli.js index.js"
+		"prepublishOnly": "npm run build"
 	},
 	"files": [
 		"dist",
@@ -167,23 +165,7 @@
 		"@typescript-eslint/parser": "^4.9.1",
 		"copyfiles": "^2.4.0",
 		"cross-env": "^7.0.2",
-		"eslint": "^7.15.0",
-		"eslint-config-prettier": "^7.0.0",
-		"eslint-plugin-prettier": "^3.2.0",
-		"husky": "^5.2.0",
-		"lint-staged": "^10.5.4",
-		"prettier": "^2.2.1",
 		"ts-node-dev": "^1.0.0",
 		"typescript": "^4.0.5"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "npx lint-staged"
-		}
-	},
-	"lint-staged": {
-		"**/*.{js,ts,md}": [
-			"prettier --write"
-		]
 	}
 }

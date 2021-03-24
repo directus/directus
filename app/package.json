@@ -23,12 +23,7 @@
 		"prebuild": "npm run copy-docs-images",
 		"dev": "vue-cli-service serve",
 		"build": "vue-cli-service build",
-		"lint": "vue-cli-service lint",
-		"lint:styles": "stylelint \"**/*.{vue,scss}\"",
-		"fix": "prettier --write \"src/**/*.{js,vue,ts}\"",
-		"fix:styles": "stylelint --fix \"**/*.{vue,scss}\"",
-		"prepublishOnly": "npm run build",
-		"prettier": "prettier --write \"src/**/*.ts\""
+		"prepublishOnly": "npm run build"
 	},
 	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4",
 	"devDependencies": {
@@ -43,7 +38,6 @@
 		"@types/color": "^3.0.1",
 		"@types/diff": "^5.0.0",
 		"@types/dompurify": "^2.2.1",
-		"@types/escape-string-regexp": "^2.0.1",
 		"@types/lodash": "^4.14.168",
 		"@types/markdown-it": "^12.0.1",
 		"@types/marked": "^2.0.0",
@@ -51,14 +45,11 @@
 		"@types/ms": "^0.7.31",
 		"@types/qrcode": "^1.4.0",
 		"@vue/cli-plugin-babel": "^4.5.8",
-		"@vue/cli-plugin-eslint": "^4.5.8",
 		"@vue/cli-plugin-router": "^4.5.8",
 		"@vue/cli-plugin-typescript": "^4.5.8",
 		"@vue/cli-plugin-vuex": "^4.5.8",
 		"@vue/cli-service": "^4.5.8",
 		"@vue/composition-api": "^0.6.7",
-		"@vue/eslint-config-prettier": "^6.0.0",
-		"@vue/eslint-config-typescript": "^7.0.0",
 		"@vue/test-utils": "^1.1.1",
 		"axios": "^0.21.1",
 		"base-64": "^1.0.0",
@@ -68,10 +59,8 @@
 		"date-fns": "^2.19.0",
 		"dompurify": "^2.2.7",
 		"front-matter": "^4.0.2",
-		"husky": "^5.2.0",
 		"joi": "^17.4.0",
 		"jsonlint-mod": "^1.7.6",
-		"lint-staged": "^10.5.4",
 		"marked": "^2.0.1",
 		"micromustache": "^8.0.3",
 		"mitt": "^2.1.0",
@@ -97,22 +86,5 @@
 		"vuedraggable": "^2.24.3",
 		"vuepress": "^1.5.2",
 		"webpack-assets-manifest": "^3.1.1"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "npx lint-staged"
-		}
-	},
-	"lint-staged": {
-		"**/*.{js,ts,md}": [
-			"prettier --write"
-		],
-		"**/*.{css,scss}": [
-			"stylelint --fix"
-		],
-		"**/*.vue": [
-			"vue-cli-service lint",
-			"stylelint --fix"
-		]
 	}
 }
