@@ -1,5 +1,5 @@
 import VueI18n from 'vue-i18n';
-import { Component } from 'vue';
+import { Component, AsyncComponent } from 'vue';
 import { Field, types, localTypes } from '@/types';
 
 export type InterfaceConfig = {
@@ -7,8 +7,8 @@ export type InterfaceConfig = {
 	icon: string;
 	name: string | VueI18n.TranslateResult;
 	description?: string | VueI18n.TranslateResult;
-	component: Component;
-	options: DeepPartial<Field>[] | Component;
+	component: Component | AsyncComponent;
+	options: DeepPartial<Field>[] | Component | AsyncComponent;
 	types: typeof types[number][];
 	groups?: readonly typeof localTypes[number][];
 	relational?: boolean;
