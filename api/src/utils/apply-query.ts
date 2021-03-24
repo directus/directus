@@ -169,7 +169,10 @@ export function applyFilter(
 				const pkField = `${collection}.${o2mRelation.one_primary}`;
 
 				dbQuery[logical].whereIn(pkField, (subQueryKnex) => {
-					subQueryKnex.select([o2mRelation.many_field]).from(o2mRelation.many_collection);
+					const field = o2mRelation.many_field
+					const collection = o2mRelation.many_collection
+					const column = `${collection}.${field}`
+					subQueryKnex.select({[field]: column}).from(collection);
 
 					applyQuery(
 						o2mRelation.many_collection,
