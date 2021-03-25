@@ -12,58 +12,6 @@
 npm install @directus/sdk
 ```
 
-## TypeScript
-
-If you are using TypeScript, the JS SDK requires TypeScript 3.8 or newer. It will also improve the development
-experience by providing relevant information when manipulating your data.
-
-For example, `directus.items` will accept an user data type which allows for a more detailed IDE suggestions for return
-types, sorting and filtering.
-
-```ts
-type Post = {
-	id: ID;
-	title: string;
-};
-
-const posts = directus.items<Post>('posts');
-
-const post = await posts.readOne(1);
-```
-
-You can also extend Directus system type information by providing type information on Directus constructor.
-
-```ts
-type UserType = {
-	level: number;
-	experience: number;
-};
-
-type CustomTypes = {
-	// This type will be merged with Directus user type.
-	// Getting `users` name here is important.
-	users: UserType;
-};
-
-async function whoami() {
-	const directus = new Directus<CustomTypes>('https://api.example.com');
-
-	await directus.auth.login({
-		email: 'admin@example.com',
-		password: 'password',
-	});
-
-	// typeof me = typeof CustomTypes.users;
-	const me = await directus.users.me.read();
-
-	// OK
-	me.level = 42;
-
-	// Error TS2322: Type 'string' is not assignable to type 'number'.
-	me.experience = 'high';
-}
-```
-
 ## Usage
 
 ```js
@@ -711,3 +659,57 @@ await directus.utils.revert(451);
 ```
 
 Note: the key passed is the primary key of the revision you'd like to apply
+
+---
+
+## TypeScript
+
+If you are using TypeScript, the JS SDK requires TypeScript 3.8 or newer. It will also improve the development
+experience by providing relevant information when manipulating your data.
+
+For example, `directus.items` will accept an user data type which allows for a more detailed IDE suggestions for return
+types, sorting and filtering.
+
+```ts
+type Post = {
+	id: ID;
+	title: string;
+};
+
+const posts = directus.items<Post>('posts');
+
+const post = await posts.readOne(1);
+```
+
+You can also extend Directus system type information by providing type information on Directus constructor.
+
+```ts
+type UserType = {
+	level: number;
+	experience: number;
+};
+
+type CustomTypes = {
+	// This type will be merged with Directus user type.
+	// Getting `users` name here is important.
+	users: UserType;
+};
+
+async function whoami() {
+	const directus = new Directus<CustomTypes>('https://api.example.com');
+
+	await directus.auth.login({
+		email: 'admin@example.com',
+		password: 'password',
+	});
+
+	// typeof me = typeof CustomTypes.users;
+	const me = await directus.users.me.read();
+
+	// OK
+	me.level = 42;
+
+	// Error TS2322: Type 'string' is not assignable to type 'number'.
+	me.experience = 'high';
+}
+```
