@@ -22,6 +22,10 @@
 										text: $t('xliff'),
 										value: 'xliff',
 									},
+									{
+										text: $t('xliff2'),
+										value: 'xliff2',
+									},
 							  ]
 							: []),
 					]"
@@ -89,10 +93,11 @@ export default defineComponent({
 					params.export = 'json';
 					break;
 				case 'xliff':
+				case 'xliff2':
 					const userStore = useUserStore();
 					const user = userStore.state.currentUser;
 					params.language = (user && user.language) || 'en-US';
-					params.export = 'xliff';
+					params.export = format.value;
 					break;
 			}
 

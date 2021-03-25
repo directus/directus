@@ -17,6 +17,7 @@ export const types = [
 	'uuid',
 	'hash',
 	'csv',
+	'translations',
 ] as const;
 
 export type FieldMeta = {

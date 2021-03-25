@@ -48,7 +48,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Acc
 	}
 
 	if (rawQuery.export) {
-		query.export = rawQuery.export as 'json' | 'csv' | 'xliff';
+		query.export = rawQuery.export as 'json' | 'csv' | 'xliff' | 'xliff2';
 	}
 
 	if (rawQuery.language && typeof rawQuery.language === 'string') {

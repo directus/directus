@@ -5,10 +5,8 @@ import { getCacheKey } from '../utils/get-cache-key';
 import cache from '../cache';
 import { Transform, transforms } from 'json2csv';
 import { PassThrough } from 'stream';
-import { ItemsService } from '../services';
-import { UnprocessableEntityException } from '../exceptions';
+import { XliffService } from '../services';
 import ms from 'ms';
-import xliff from 'xliff';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	if (
@@ -70,73 +68,18 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 				return stream.pipe(json2csv).pipe(res);
 			}
 		}
-		if (req.sanitizedQuery.export === 'xliff') {
+		if (['xliff', 'xliff2'].includes(req.sanitizedQuery.export)) {
 			res.attachment(`${filename}.xliff`);
 			res.set('Content-Type', 'text/xml');
-			const language = req.sanitizedQuery.language;
 			if (res.locals.payload?.data && res.locals.payload.data.length > 0) {
-				const records = res.locals.payload.data;
-				// TODO: is there is a better way to get translations relationship?
-				const relation = req.schema.relations.find(
-					(relation: any) => relation.one_collection === req.collection && relation.one_field === 'translations'
-				);
-				if (relation) {
-					const translationsCollection = relation.many_collection;
-					const translationsKeyField = relation.one_primary;
-					const translationsFieldName = relation.one_field;
-					const translationsIdFieldName = relation.many_primary;
-					const tranlsationsExternalKey = relation.junction_field;
-					const translationsParentField = relation.many_field;
-					const translations = records.map((r: any) => {
-						return {
-							id: r[translationsKeyField],
-							translationIds: r[translationsFieldName],
-						};
-					});
-					const resources = {};
-					const translationsIds = translations.reduce((acc: any[], val: any) => {
-						return val.translationIds.length > 0 ? [...acc, ...val.translationIds] : acc;
-					}, []);
-					const itemsService = new ItemsService(translationsCollection, {
-						accountability: req.accountability,
-						schema: req.schema,
-					});
-					// making query to bring records for all found translations for current language
-					const translationItems = await itemsService.readByQuery({
-						filter: {
-							[translationsIdFieldName]: { _in: translationsIds },
-							[tranlsationsExternalKey]: { _eq: language },
-						},
-						limit: -1,
-					});
-					// obtaining values of translatable fields and putting them to the dictionary
-					if (translationItems && translationItems.length > 0) {
-						translationItems.forEach((item: any) => {
-							const translation = translations.find((t: any) => t.translationIds.includes(item[translationsKeyField]));
-							// removing system fields from output
-							const { id, status, sort, user_created, date_created, user_updated, date_updated, ...rest } = item;
-							// ensuring that key field was removed
-							delete rest[translationsKeyField];
-							delete rest[tranlsationsExternalKey];
-							delete rest[translationsParentField];
-							Object.keys(rest).forEach((key) => {
-								(resources as any)[`${translation.id}.${key}`] = {
-									source: rest[key],
-								};
-							});
-						});
-					}
-					const json = {
-						resources: {
-							[req.collection]: resources,
-						},
-						sourceLanguage: language,
-					};
-					const output = await xliff.jsToXliff12(json);
-					return res.status(200).send(output);
-				} else {
-					throw new UnprocessableEntityException(`Information about translations cannot be found.`);
-				}
+				const xliffService = new XliffService({
+					language: req.sanitizedQuery.language,
+					version: req.sanitizedQuery.export === 'xliff' ? 1 : 2,
+					accountability: req.accountability,
+					schema: req.schema,
+				});
+				const output = await xliffService.toXliff(req.collection, res.locals.payload?.data);
+				return res.status(200).send(output);
 			}
 		}
 	}

@@ -18,7 +18,7 @@ const querySchema = Joi.object({
 	single: Joi.boolean(),
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
-	export: Joi.string().valid('json', 'csv', 'xliff'),
+	export: Joi.string().valid('json', 'csv', 'xliff', 'xliff2'),
 	language: Joi.string(),
 	deep: Joi.object(),
 }).id('query');
