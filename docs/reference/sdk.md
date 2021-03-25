@@ -1,7 +1,7 @@
 # JavaScript SDK
 
-> The JS SDK provides an intuitive interface to work with Directus API from a JavaScript powered project (browsers and
-> node.js). The default implementations uses [Axios](https://npmjs.com/axios) for transport and `localStorage` for
+> The JS SDK provides an intuitive interface for the Directus API from within a JavaScript-powered project (browsers and
+> node.js). The default implementation uses [Axios](https://npmjs.com/axios) for transport and `localStorage` for
 > storing state.
 
 [[toc]]
@@ -53,7 +53,7 @@ const directus = new Directus('https://api.example.com/');
 
 #### `url`
 
-The constructor will accept the URL as the first parameter.
+The constructor accepts the URL as the first parameter.
 
 #### `options.auth`
 
@@ -81,10 +81,10 @@ const url = 'http://api.example.com/';
 // Storage adapter where refresh tokens are stored in JSON mode.
 const storage = new MemoryStorage();
 
-// Transport is what is used to communicate with the server.
+// Transport used to communicate with the server.
 const transport = new AxiosTransport(url, storage);
 
-// Auth is how authentication is handled, stored, refreshed.
+// Auth is how authentication is handled, stored, and refreshed.
 const auth = new Auth(transport, storage, {
 	mode: 'json', // or cookie, depends on your use  case
 });
@@ -99,7 +99,7 @@ const directus = new Directus(url, {
 ### Get / Set API URL
 
 ```js
-// Get the used API base URL
+// Get the API base URL
 console.log(directus.url); // => https://api.example.com/
 
 // Set the API base URL
@@ -113,8 +113,8 @@ access axios through `directus.transport.axios`.
 
 ## Items
 
-You can get an instance of the item handler by providing the collection (and type in case of TypeScript) to the `items`
-function. The following examples will use the `Article` type and below.
+You can get an instance of the item handler by providing the collection (and type, in the case of TypeScript) to the `items`
+function. The following examples will use the `Article` type.
 
 > JavaScript
 
@@ -343,7 +343,7 @@ Note: The passed key is the primary key of the comment
 
 Directus will accept custom implementations of the `IAuth` interface. The default implementation `Auth` can be imported
 from `@directus/sdk`. The default implementation will require you to pass the transport and storage implementations.
-Options are optional.
+All options are optional.
 
 ```js
 import { Auth } from '@directus/sdk';
@@ -360,23 +360,23 @@ const sdk = new Directus('url', {
 
 The transport responsible for communicating with Directus backend.
 
-Defaults to an instance of `AxiosTransport` when not creating `Auth` it youself.
+Defaults to an instance of `AxiosTransport` when not creating `Auth` youself.
 
 #### storage
 
 The storage responsible for storing authentication and sdk state.
 
-When not creating `Auth` it youself, defaults to `MemoryStorage` in node.js, and `LocalStorage` in browsers.
+When not creating `Auth` youself, defaults to `MemoryStorage` in node.js, and `LocalStorage` in browsers.
 
 #### options.mode
 
 Accepts `cookie` or `json`.
 
-When in `cookie` mode, the API will set the refresh token in a `httpOnly` secure cookie that can't be accessed from
-client side JS. This is the most secure way to connect to the API from a public front-end website.
+When in `cookie` mode, the API will set the refresh token in an `httpOnly` secure cookie that can't be accessed from
+client side JavaScript. This is the most secure way to connect to the API from a public front-end website.
 
 When you can't rely on cookies, or need more control over handling the storage of the cookie (like in node.js), use
-`json` mode. This will return the refresh token like "regular" in the payload. The storage of these tokens are handled
+`json` mode. This will return the refresh token in the "normal" payload. The storage of these tokens are handled
 by the `storage` implementation.
 
 Defaults to `cookie` in browsers, `json` in node.js.
@@ -427,7 +427,7 @@ await directus.auth.login({
 TODO: resolve what to do with refreshing.
 ### Refresh
 
-Note: if you have autoRefresh enabled, you most likely won't need to use this manually.
+Note: If you have `autoRefresh` enabled, you most likely won't need to use this manually.
 
 ```js
 directus.auth.refresh();
@@ -452,7 +452,7 @@ await directus.auth.password.request('admin@example.com');
 await directus.auth.password.reset('abc.def.ghi', 'n3w-p455w0rd');
 ```
 
-Note: the token passed in the first parameter is sent in an email to the user when using `request()`
+Note: The token passed in the first parameter is sent in an email to the user when using `request()`
 
 ## Transport
 
@@ -650,7 +650,7 @@ await directus.utils.hash.verify('My String', '$argon2i$v=19$m=4096,t=3,p=1$A5uo
 await directus.utils.sort('articles', 15, 42);
 ```
 
-This will move item 15 to the position of item 42, and move everything in between one "slot" up
+This will move item `15` to the position of item `42`, and move everything in between one "slot" up.
 
 ### Revert to a Previous Revision
 
@@ -658,17 +658,14 @@ This will move item 15 to the position of item 42, and move everything in betwee
 await directus.utils.revert(451);
 ```
 
-Note: the key passed is the primary key of the revision you'd like to apply
+Note: The key passed is the primary key of the revision you'd like to apply.
 
 ---
 
 ## TypeScript
 
-If you are using TypeScript, the JS SDK requires TypeScript 3.8 or newer. It will also improve the development
-experience by providing relevant information when manipulating your data.
-
-For example, `directus.items` will accept an user data type which allows for a more detailed IDE suggestions for return
-types, sorting and filtering.
+If you are using TypeScript, the JS-SDK requires TypeScript 3.8 or newer. TypeScript will also improve the development
+experience by providing relevant information when manipulating your data. For example, `directus.items` will accept a user data type which allows for a more detailed IDE suggestions for return types, sorting, and filtering.
 
 ```ts
 type Post = {
@@ -681,7 +678,7 @@ const posts = directus.items<Post>('posts');
 const post = await posts.readOne(1);
 ```
 
-You can also extend Directus system type information by providing type information on Directus constructor.
+You can also extend the Directus system type information by providing type information on the Directus constructor.
 
 ```ts
 type UserType = {
