@@ -3,34 +3,7 @@
 		<div class="fields">
 			<div class="field full">
 				<p class="type-label">{{ $t('format') }}</p>
-				<v-select
-					:items="[
-						...[
-							{
-								text: $t('csv'),
-								value: 'csv',
-							},
-							{
-								text: $t('json'),
-								value: 'json',
-							},
-						],
-						// enable XLIFF for translatable content only
-						...(translatable
-							? [
-									{
-										text: $t('xliff'),
-										value: 'xliff',
-									},
-									{
-										text: $t('xliff2'),
-										value: 'xliff2',
-									},
-							  ]
-							: []),
-					]"
-					v-model="format"
-				/>
+				<v-select :items="formats" v-model="format" />
 				<v-checkbox v-model="useFilters" :label="$t('use_current_filters_settings')" />
 			</div>
 			<div class="field full">
@@ -66,10 +39,47 @@ export default defineComponent({
 		},
 	},
 	computed: {
+		formats(): any[] {
+			return [
+				...[
+					{
+						text: this.$t('csv'),
+						value: 'csv',
+					},
+					{
+						text: this.$t('json'),
+						value: 'json',
+					},
+				],
+				// enable XLIFF for translatable content only
+				...(this.translatable
+					? [
+							{
+								text: this.$t('xliff'),
+								value: 'xliff',
+							},
+							{
+								text: this.$t('xliff2'),
+								value: 'xliff2',
+							},
+					  ]
+					: []),
+			];
+		},
 		translatable(): boolean {
 			const fieldsStore = useFieldsStore();
 			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
 			return fields.some((field: Field) => field.type === 'translations');
+		},
+	},
+	watch: {
+		collection: function () {
+			// watch it
+			if (!this.translatable && !this.formats.includes(this.format)) {
+				const [defaultFormat] = this.formats;
+				// reset format in case if current is not available
+				this.format = defaultFormat.value;
+			}
 		},
 	},
 	setup(props) {

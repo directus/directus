@@ -1,4 +1,4 @@
-import { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import xliff from 'xliff';
 import { UnprocessableEntityException } from '../exceptions';
 import { FieldsService } from './fields';
