@@ -14,7 +14,8 @@
 		"dev": "lerna run dev --stream --parallel",
 		"build": "lerna run build",
 		"release": "lerna publish --force-publish",
-		"postinstall": "npm run build"
+		"postinstall": "npm run build",
+		"test": "lerna run test"
 	},
 	"devDependencies": {
 		"eslint": "^7.22.0",
