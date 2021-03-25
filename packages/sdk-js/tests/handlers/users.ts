@@ -69,12 +69,12 @@ describe('UsersHandler', () => {
 	});
 
 	describe('tfa.disable', () => {
-		it('Calls the /users/tfa/disable endpoint', async () => {
+		it('Calls the /users/me/tfa/disable endpoint', async () => {
 			const stub = sandbox.stub(handler.axios, 'post').resolves(Promise.resolve());
 
 			await handler.tfa.disable('351851');
 
-			expect(stub).to.have.been.calledWith('/users/tfa/disable', {
+			expect(stub).to.have.been.calledWith('/users/me/tfa/disable', {
 				otp: '351851',
 			});
 		});

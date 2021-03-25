@@ -41,7 +41,7 @@ export class UsersHandler extends ItemsHandler {
 			await this.axios.post('/users/me/tfa/enable', { password });
 		},
 		disable: async (otp: string): Promise<void> => {
-			await this.axios.post('/users/tfa/disable', { otp });
+			await this.axios.post('/users/me/tfa/disable', { otp });
 		},
 	};
 
