@@ -54,6 +54,7 @@ archive_confirm_count: >-
   Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich archivieren? | Möchten Sie diese {count} Elemente wirklich archivieren?
 reset_system_permissions_to: 'Systemberechtigungen zurücksetzen auf:'
 reset_system_permissions_copy: Diese Aktion wird alle benutzerdefinierten Berechtigungen überschreiben, die Sie möglicherweise auf die System-Sammlungen angewendet haben. Sind Sie sicher?
+the_following_are_minimum_permissions: Die folgenden Berechtigungen sind mindestens errforderlich, falls "App Acces" aktiviert ist. Sie können die Berechtigungen darüber hinaus erweitern, jedoch nicht weiter einschränken.
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Sind Sie sicher, dass das Item aus dem Archiv zurückgeholt werden soll?
@@ -82,6 +83,7 @@ field_standard: Standard
 field_file: Eine Datei
 field_files: Mehrere Dateien
 field_m2o: M2O Beziehung
+field_m2a: M2A Beziehung
 field_o2m: O2M Beziehung
 field_m2m: M2M Beziehung
 field_translations: Übersetzungen
@@ -93,6 +95,7 @@ permissions_for_role: 'Items die {role} Rolle kann {action}.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln welche durch die {role} Rolle befolgt werden muss.'
 presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
+revision_post_update: Hier siehst du, wie das Element nach dem Update aussah...
 changes_made: Dies sind die spezifischen Änderungen, die vorgenommen wurden...
 no_relational_data: Beachten Sie, dass dies keine relationalen Daten enthält.
 hide_field_on_detail: In Detailansicht ausblenden
@@ -109,10 +112,12 @@ iso: ISO
 create_field: Feld erstellen
 creating_new_field: 'Neues Feld ({collection})'
 field_in_collection: '{field} ({collection})'
+reset_page_preferences: Seiteneinstellungen zurücksetzen
 hidden_field: Verstecktes Feld
 hidden_on_detail: In Detailansicht ausblenden
 key: Schlüssel
 alias: Alias
+boolean: Boolean
 date: Datum
 datetime: Datum mit Uhrzeit
 decimal: Dezimal
@@ -150,6 +155,7 @@ note: Notiz
 enter_a_value: Gib einen Wert ein...
 enter_a_placeholder: Platzhalter eingeben...
 length: Länge
+precision_scale: Präzision & Skalierung
 readonly: Lesezugriff
 unique: Eindeutig
 updated_on: Geändert am
@@ -173,11 +179,14 @@ revision_delta_created_externally: Extern erstellt
 revision_delta_deleted: Gelöscht
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
+revision_preview: Überarbeitungs Vorschau
 leave_comment: Kommentieren...
 post_comment_success: Kommentar veröffentlicht
 item_create_success: Eintrag erstellt | Einträge erstellt
 this_collection: Diese Sammlung
 related_collection: Verknüpfte Sammlung
+related_collections: Verwandte Sammlungen
+languages_collection: Sprachen-Sammlung
 export_data: Daten exportieren
 format: Format
 export_collection: '{collection} exportieren'
@@ -188,6 +197,7 @@ submit: Absenden
 move_to_folder: In Ordner verschieben
 move: Verschieben
 system: System
+interface: Benutzeroberfläche
 today: Heute
 yesterday: Gestern
 delete_comment: Kommentar löschen
@@ -599,6 +609,8 @@ interfaces:
     icon: Symbol
   image:
     image: Bild
+  interface:
+    interface: Benutzeroberfläche
   interface-options:
     interface-options: Schnittstellenoptionen
   many-to-many:
@@ -643,6 +655,7 @@ interfaces:
     custom_formats: Benutzerdefiniertes Format
 displays:
   boolean:
+    boolean: Boolean
     icon_on: Symbol an
     icon_off: Symbol aus
   collection:

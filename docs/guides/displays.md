@@ -115,6 +115,13 @@ export default {
 };
 ```
 
+::: tip Building multiple extensions
+
+You can export an array of build configurations, so you can bundle (or even watch) multiple extensions at the same time.
+See the [Rollup configuration file documentation](https://rollupjs.org/guide/en/#configuration-files) for more info.
+
+:::
+
 ## 3. Develop Your Custom Display
 
 The display itself is simply a function or a Vue component, providing a blank canvas for creating anything you need.
@@ -127,5 +134,5 @@ To build the display for use within Directus, run:
 npx rollup -c
 ```
 
-Finally, move the output from your display's `dist` folder into your project's `/extensions/displays` folder. Keep in
-mind that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your display's `dist` folder into your project's `/extensions/displays/my-custom-display`
+folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.

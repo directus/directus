@@ -67,7 +67,7 @@ export function usePopper(
 		observer.disconnect();
 	}
 
-	function getModifiers(callback: () => void = () => undefined) {
+	function getModifiers(callback: (value?: unknown) => void = () => undefined) {
 		const modifiers: Partial<Modifier<string, any>>[] = [
 			popperOffsets,
 			{
