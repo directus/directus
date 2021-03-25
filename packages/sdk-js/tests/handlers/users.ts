@@ -57,12 +57,12 @@ describe('UsersHandler', () => {
 	});
 
 	describe('tfa.enable', () => {
-		it('Calls the /users/tfa/enable endpoint', async () => {
+		it('Calls the /users/me/tfa/enable endpoint', async () => {
 			const stub = sandbox.stub(handler.axios, 'post').resolves(Promise.resolve());
 
 			await handler.tfa.enable('p455w0rd');
 
-			expect(stub).to.have.been.calledWith('/users/tfa/enable', {
+			expect(stub).to.have.been.calledWith('/users/me/tfa/enable', {
 				password: 'p455w0rd',
 			});
 		});
