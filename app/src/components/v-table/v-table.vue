@@ -17,6 +17,7 @@
 				:show-manual-sort="showManualSort"
 				:must-sort="mustSort"
 				:has-item-append-slot="hasItemAppendSlot"
+				:has-row-actions-slot="hasRowActionsSlot"
 				:manual-sort-key="manualSortKey"
 				@toggle-select-all="onToggleSelectAll"
 			>
@@ -70,6 +71,10 @@
 
 					<template v-if="hasItemAppendSlot" #item-append>
 						<slot name="item-append" :item="item" />
+					</template>
+
+					<template v-if="hasRowActionsSlot" #row-actions>
+						<slot name="row-actions" :item="item" />
 					</template>
 				</table-row>
 			</draggable>
@@ -238,12 +243,14 @@ export default defineComponent({
 		});
 
 		const hasItemAppendSlot = computed(() => slots['item-append'] !== undefined);
+		const hasRowActionsSlot = computed(() => slots['row-actions'] !== undefined);
 
 		const fullColSpan = computed<string>(() => {
 			let length = _headers.value.length + 1; // +1 account for spacer
 			if (props.showSelect) length++;
 			if (props.showManualSort) length++;
 			if (hasItemAppendSlot.value) length++;
+			if (hasRowActionsSlot.value) length++;
 
 			return `1 / span ${length}`;
 		});
@@ -288,6 +295,7 @@ export default defineComponent({
 			gridTemplateColumns = gridTemplateColumns + ' 1fr';
 
 			if (hasItemAppendSlot.value) gridTemplateColumns += ' min-content';
+			if (hasRowActionsSlot.value) gridTemplateColumns += ' min-content';
 
 			return gridTemplateColumns;
 		});
@@ -306,6 +314,7 @@ export default defineComponent({
 			fullColSpan,
 			columnStyle,
 			hasItemAppendSlot,
+			hasRowActionsSlot,
 			hideDragImage,
 		};
 

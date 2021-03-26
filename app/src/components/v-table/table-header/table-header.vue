@@ -40,6 +40,7 @@
 
 			<th class="spacer cell" scope="col" />
 			<th v-if="hasItemAppendSlot" class="spacer cell" scope="col" />
+			<th v-if="hasRowActionsSlot" class="spacer cell" scope="col" />
 		</tr>
 	</thead>
 </template>
@@ -89,6 +90,10 @@ export default defineComponent({
 			default: false,
 		},
 		hasItemAppendSlot: {
+			type: Boolean,
+			default: false,
+		},
+		hasRowActionsSlot: {
 			type: Boolean,
 			default: false,
 		},
@@ -253,8 +258,8 @@ export default defineComponent({
 			display: flex;
 			align-items: center;
 			height: 100%;
-			font-weight: 600;
 			color: var(--foreground-normal-alt);
+			font-weight: 600;
 
 			> span {
 				overflow: hidden;
