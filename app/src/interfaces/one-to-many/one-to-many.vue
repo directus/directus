@@ -33,6 +33,12 @@
 			<template #item-append="{ item }" v-if="!disabled">
 				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
 			</template>
+
+			<template #row-actions="{ item }" v-if="!disabled">
+				<v-button rounded icon class="action action-delete" v-tooltip="$t('deselect')" @click.stop="deleteItem(item)">
+					<v-icon name="close" outline />
+				</v-button>
+			</template>
 		</v-table>
 
 		<div class="actions" v-if="!disabled">
@@ -458,5 +464,11 @@ export default defineComponent({
 	&:hover {
 		--v-icon-color: var(--danger);
 	}
+}
+.action-delete {
+	--v-button-background-color: transparent;
+	--v-button-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-25);
+	--v-button-color-hover: var(--danger);
 }
 </style>
