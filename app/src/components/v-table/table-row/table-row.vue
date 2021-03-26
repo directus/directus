@@ -148,8 +148,9 @@ export default defineComponent({
 	}
 
 	.append {
+		display: flex;
 		align-items: center;
-		justify-content: flex-start;
+		justify-content: center;
 	}
 
 	.row-actions {
