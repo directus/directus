@@ -137,6 +137,8 @@ decimal: Desimaali
 float: Liukuluku
 integer: Kokonaisluku
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: Merkkijono
 text: Teksti
 time: Aika
@@ -796,7 +798,6 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
-weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:

@@ -137,6 +137,8 @@ decimal: Decimal
 float: Número Flotante
 integer: Número Entero
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: Cadena de Texto
 text: Texto
 time: Hora
@@ -796,7 +798,6 @@ template: Plantilla
 translation: Traducción
 value: Valor
 view_project: Ver Proyecto
-weeks: { }
 report_error: Reportar Error
 interfaces:
   button-links:

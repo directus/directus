@@ -95,6 +95,8 @@ decimal: Tizedes szám
 float: Törtszám
 integer: Egész szám
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: Karaktersor
 text: Szöveg
 time: Idő

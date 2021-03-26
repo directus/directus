@@ -35,11 +35,16 @@
 		"dist",
 		"LICENSE",
 		"README.md",
+		"index.d.ts",
 		"index.js"
 	],
 	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4",
 	"devDependencies": {
 		"npm-watch": "^0.7.0",
-		"swagger-cli": "^4.0.4"
+		"swagger-cli": "^4.0.4",
+		"swagger-ui-watcher": "^2.1.11"
+	},
+	"dependencies": {
+		"openapi3-ts": "^2.0.1"
 	}
 }
