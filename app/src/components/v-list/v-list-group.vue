@@ -5,37 +5,33 @@
 			class="activator"
 			:to="to"
 			:exact="exact"
+			@click="onClick"
 			:disabled="disabled"
 			:dense="dense"
-			@click="onClick"
 		>
-			<slot name="activator" v-bind="{ toggle, active: groupActive }" />
+			<slot name="activator" :active="groupActive" />
 
-			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }" v-if="expandIcon && $slots.default">
+			<v-list-item-icon class="activator-icon" :class="{ active: groupActive }" v-if="$slots.default">
 				<v-icon name="chevron_right" @click.stop.prevent="toggle" :disabled="disabled" />
 			</v-list-item-icon>
 		</v-list-item>
 
-		<template v-if="hideMethod === 'show'">
-			<div class="items" v-show="groupActive">
-				<slot />
-			</div>
-		</template>
-
-		<template v-else>
-			<div class="items" v-if="groupActive">
-				<slot />
-			</div>
-		</template>
+		<div class="items" v-if="groupActive">
+			<slot />
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, nextTick, toRefs, watch, PropType, ref } from '@vue/composition-api';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
 	props: {
+		multiple: {
+			type: Boolean,
+			default: true,
+		},
 		to: {
 			type: String,
 			default: null,
@@ -54,28 +50,21 @@ export default defineComponent({
 		},
 		scope: {
 			type: String,
-			default: 'v-list',
+			default: undefined,
 		},
 		value: {
-			type: [String, Number, Object],
+			type: [String, Number],
 			default: undefined,
 		},
 		dense: {
 			type: Boolean,
 			default: false,
 		},
-		expandIcon: {
-			type: Boolean,
-			default: true,
-		},
-		hideMethod: {
-			type: String,
-			default: 'if',
-			validator: (val: string) => ['if', 'show'].includes(val),
-		},
 	},
 	setup(props, { listeners, emit }) {
-		const { active: groupActive, toggle } = useGroupable({
+		const { multiple } = toRefs(props);
+
+		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
 			group: props.scope,
 			value: props.value,
 		});

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs } from '@vue/composition-api';
+import { defineComponent, PropType, ref, toRefs } from '@vue/composition-api';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
@@ -30,14 +30,9 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-		scope: {
-			type: String,
-			default: 'v-list',
-		},
 	},
 	setup(props, { emit }) {
 		const { activeItems, multiple, mandatory } = toRefs(props);
-
 		useGroupableParent(
 			{
 				selection: activeItems,
@@ -48,8 +43,7 @@ export default defineComponent({
 			{
 				mandatory,
 				multiple,
-			},
-			props.scope
+			}
 		);
 
 		return {};

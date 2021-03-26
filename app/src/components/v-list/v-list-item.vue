@@ -69,10 +69,6 @@ export default defineComponent({
 			type: [String, Number],
 			default: undefined,
 		},
-		scope: {
-			type: String,
-			default: 'v-list',
-		},
 	},
 	setup(props, { listeners }) {
 		const component = computed<string>(() => {
@@ -81,9 +77,8 @@ export default defineComponent({
 			return 'li';
 		});
 
-		useGroupable({
+		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
 			value: props.value,
-			group: props.scope,
 		});
 
 		const isClickable = computed(() => Boolean(props.to || props.href || listeners.click !== undefined));
@@ -109,9 +104,8 @@ body {
 	--v-list-item-color: var(--v-list-color, var(--foreground-normal));
 	--v-list-item-color-hover: var(--v-list-color-hover, var(--foreground-normal));
 	--v-list-item-color-active: var(--v-list-color-active, var(--foreground-normal));
-	--v-list-item-background-color: transparent;
-	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--background-normal-alt));
-	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--background-normal-alt));
+	--v-list-item-background-color-hover: var(--v-list-background-color-hover, var(--background-normal));
+	--v-list-item-background-color-active: var(--v-list-background-color-active, var(--background-normal));
 }
 </style>
 
@@ -121,9 +115,9 @@ body {
 
 	position: relative;
 	display: flex;
+	flex-basis: 100%;
 	flex-grow: 1;
 	flex-shrink: 1;
-	flex-basis: 100%;
 	align-items: center;
 	min-width: var(--v-list-item-min-width);
 	max-width: var(--v-list-item-max-width);
@@ -134,7 +128,6 @@ body {
 	overflow: hidden;
 	color: var(--v-list-item-color);
 	text-decoration: none;
-	background-color: var(--v-list-item-background-color);
 	border-radius: var(--v-list-item-border-radius);
 
 	&.dashed {
@@ -146,8 +139,8 @@ body {
 			width: calc(100% - 4px);
 			height: calc(100% - 4px);
 			border: 2px dashed var(--border-normal);
-			pointer-events: none;
 			content: '';
+			pointer-events: none;
 		}
 	}
 
