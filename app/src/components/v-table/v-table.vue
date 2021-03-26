@@ -287,7 +287,7 @@ export default defineComponent({
 
 			gridTemplateColumns = gridTemplateColumns + ' 1fr';
 
-			if (hasItemAppendSlot.value) gridTemplateColumns += ' auto';
+			if (hasItemAppendSlot.value) gridTemplateColumns += ' min-content';
 
 			return gridTemplateColumns;
 		});
