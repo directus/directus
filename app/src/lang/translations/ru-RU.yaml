@@ -128,6 +128,8 @@ decimal: Десятичная
 float: Десятичное
 integer: Целое
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: Строка
 text: Текст
 time: Время
@@ -681,7 +683,6 @@ fields:
     auth_login_attempts: Попыток Входа
     storage_asset_presets: Пресеты Элементов Хранилища
     storage_asset_transform: Преобразование Элементов Хранилища
-    custom_css: Пользовательский CSS
   directus_fields:
     collection: Название Коллекции
     icon: Значок Коллекции

@@ -128,6 +128,8 @@ decimal: 十进制
 float: 浮点数
 integer: 整数
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: 字符串
 text: 文字
 time: 时间

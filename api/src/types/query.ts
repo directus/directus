@@ -10,8 +10,9 @@ export type Query = {
 	single?: boolean;
 	meta?: Meta[];
 	search?: string;
-	export?: 'json' | 'csv';
+	export?: 'json' | 'csv' | 'xliff' | 'xliff2';
 	deep?: Record<string, Query>;
+	language?: string;
 };
 
 export type Sort = {
