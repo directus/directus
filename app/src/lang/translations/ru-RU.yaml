@@ -681,6 +681,7 @@ fields:
     auth_login_attempts: Попыток Входа
     storage_asset_presets: Пресеты Элементов Хранилища
     storage_asset_transform: Преобразование Элементов Хранилища
+    custom_css: Пользовательский CSS
   directus_fields:
     collection: Название Коллекции
     icon: Значок Коллекции
