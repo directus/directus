@@ -246,27 +246,6 @@ await articles.updateMany(
 );
 ```
 
-<!--
-TODO: This needs to be discussed.
-
-### Update Multiple Items by Query, Single Value
-
-```js
-await articles.update(
-	{
-		archived: true,
-	},
-	{
-		filter: {
-			publish_date: {
-				_gte: '$NOW',
-			},
-		},
-	}
-);
-```
--->
-
 ### Delete
 
 ```js
@@ -423,16 +402,51 @@ await directus.auth.login({
 });
 ```
 
-<!--
-TODO: resolve what to do with refreshing.
-### Refresh
+#### Auth Refresh Auth Token
 
-Note: If you have `autoRefresh` enabled, you most likely won't need to use this manually.
+You can set authentication to auto-refresh the token once it's close to expire.
 
 ```js
-directus.auth.refresh();
+await directus.auth.login({
+	email: 'admin@example.com',
+	password: 'd1r3ctu5',
+}, {
+	refresh: {
+		auto: true,
+	}
+});
 ```
--->
+
+You can also set how much time before the expiration you want to auto-refresh the token.
+
+```js
+await directus.auth.login({
+	email: 'admin@example.com',
+	password: 'd1r3ctu5',
+}, {
+	refresh: {
+		auto: true,
+		time: 30000, // refesh the token 30 secs before the expiration
+	},
+});
+```
+
+### Refresh Auth Token
+
+You can manually refresh the authentication token.
+
+```js
+await directus.auth.refresh();
+```
+
+An optional parameter will accept auto-refresh information.
+
+```js
+await directus.auth.refresh({
+	auto: true,
+	time: 30000, // refesh the token 30 secs before the expiration
+});
+```
 
 ### Logout
 
@@ -456,11 +470,56 @@ Note: The token passed in the first parameter is sent in an email to the user wh
 
 ## Transport
 
-> TODO
+The transport object abstracts how you communicate with Directus. Transports can be customized to use different HTTP libraries for example.
+
+### Interface
+
+```ts
+// Simplified version, `import { ITransport } from '@directus/sdk';`
+interface ITransport {
+	url;
+	get(path);
+	head(path);
+	options(path);
+	delete(path, data = undefined);
+	post(path, data);
+	put(path, data);
+	patch(path, data);
+}
+```
+
+### AxiosTransport
+
+The default transport used in both browser and node deployments.
+
+#### Options
+
+AxiosTransport requires a base URL and a storage implementation to work.
+
+```ts
+const transport = new AxiosTransport('http://example.com', new MemoryStorage());
+await transport.get('/server/info');
+```
 
 ## Storage
 
-> TODO
+The storage is used to load and save SDK data.
+
+### LocalStorage
+
+The storage used in environments where Local Storage is supported.
+
+#### Options
+
+The `LocalStorage` implementation accepts a *transparent* prefix. Use this when you need multiple SDK instances with independent authentication for example.
+
+### MemoryStorage
+
+The storage used when SDK data is ephemeral. For example: only during the lifecycle of the process.
+
+#### Options
+
+The `MemoryStorage` implementation accepts a *transparent* prefix so you can have multiple instances of the SDK without having clashing keys.
 
 ## Collections
 
