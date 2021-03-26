@@ -22,9 +22,14 @@
 		</td>
 
 		<td class="spacer cell" />
+
 		<td v-if="$scopedSlots['item-append']" class="append cell" @click.stop>
 			<slot name="item-append" />
 		</td>
+
+		<div v-if="$scopedSlots['row-actions']" class="row-actions cell" @click.stop>
+			<slot name="row-actions" />
+		</div>
 	</tr>
 </template>
 
@@ -143,9 +148,27 @@ export default defineComponent({
 	}
 
 	.append {
+		align-items: center;
+		justify-content: flex-start;
+	}
+
+	.row-actions {
+		position: sticky;
+		top: 0;
+		right: 0;
 		display: flex;
 		align-items: center;
-		justify-content: flex-end;
+		justify-content: flex-start;
+
+		.action {
+			opacity: 0;
+		}
+	}
+
+	&:hover .row-actions {
+		.action {
+			opacity: 1;
+		}
 	}
 }
 </style>
