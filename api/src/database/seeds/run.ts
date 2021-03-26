@@ -39,7 +39,7 @@ export default async function runSeed(database: Knex) {
 
 		const yamlRaw = await fse.readFile(path.resolve(__dirname, tableSeedFile), 'utf8');
 
-		const seedData = yaml.safeLoad(yamlRaw) as TableSeed;
+		const seedData = yaml.load(yamlRaw) as TableSeed;
 
 		await database.schema.createTable(seedData.table, (tableBuilder) => {
 			for (const [columnName, columnInfo] of Object.entries(seedData.columns)) {

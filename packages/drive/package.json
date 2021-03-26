@@ -42,5 +42,9 @@
 	"bugs": {
 		"url": "https://github.com/directus/directus/issues"
 	},
-	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"
+	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4",
+	"devDependencies": {
+		"npm-watch": "^0.9.0",
+		"typescript": "^4.2.3"
+	}
 }

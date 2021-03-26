@@ -137,6 +137,8 @@ decimal: เลขฐานสิบ
 float: เลขทศนิยม
 integer: จำนวนเต็ม
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: ข้อความแบบสั้น
 text: ข้อความแบบยาว
 time: เวลา
@@ -796,7 +798,6 @@ template: แม่แบบ
 translation: แปลภาษา
 value: ค่า
 view_project: ดูโครงการ
-weeks: { }
 report_error: แจ้งข้อผิดพลาด
 interfaces:
   button-links:

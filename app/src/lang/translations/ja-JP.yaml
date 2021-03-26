@@ -53,6 +53,8 @@ decimal: Decimal
 float: Float
 integer: 整数
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: 文字列
 text: テキスト
 time: 時刻

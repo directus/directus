@@ -11,6 +11,7 @@ add_field: Добавить поле
 role_name: Название роли
 db_only_click_to_configure: 'Только База данных: Нажмите для Настройки '
 show_archived_items: Показать Архивные Элементы
+edited: Изменено
 required: Необходимые
 requires_value: Требуется значение
 create_preset: Создать Пресет
@@ -127,6 +128,8 @@ decimal: Десятичная
 float: Десятичное
 integer: Целое
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: Строка
 text: Текст
 time: Время

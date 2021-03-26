@@ -27,10 +27,12 @@
 </template>
 
 <script lang="ts">
+import { AsyncComponent } from 'vue';
 import { defineComponent, ref, computed } from '@vue/composition-api';
 import DocsNavigation from '../components/navigation.vue';
-import Markdown from '../components/markdown.vue';
 import marked from 'marked';
+
+const Markdown = () => import(/* webpackChunkName: 'markdown', webpackPrefetch: true */ '../components/markdown.vue');
 
 async function getMarkdownForPath(path: string) {
 	const pathParts = path.split('/');
@@ -52,7 +54,7 @@ async function getMarkdownForPath(path: string) {
 
 export default defineComponent({
 	name: 'StaticDocs',
-	components: { DocsNavigation, Markdown },
+	components: { DocsNavigation, Markdown: Markdown as AsyncComponent },
 	async beforeRouteEnter(to, from, next) {
 		const md = await getMarkdownForPath(to.path);
 

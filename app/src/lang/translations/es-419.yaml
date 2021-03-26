@@ -137,6 +137,8 @@ decimal: Decimal
 float: Número Flotante
 integer: Número Entero
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: Cadena de Texto
 text: Texto
 time: Hora
@@ -387,6 +389,7 @@ errors:
   ITEM_LIMIT_REACHED: Límite de elementos alcanzado
   ITEM_NOT_FOUND: Elemento no encontrado
   ROUTE_NOT_FOUND: No encontrado
+  RECORD_NOT_UNIQUE: Se ha detectado un valor duplicado
   UNKNOWN: Error Inesperado
 value_hashed: Valor Hasheado de Manera Segura
 bookmark_name: Nombre del Marcador...

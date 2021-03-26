@@ -1,24 +1,21 @@
 {
-  "name": "create-directus-project",
-  "version": "9.0.0-rc.51",
-  "description": "A small installer util that will create a directory, add boilerplate folders, and install Directus through npm.",
-  "main": "lib/index.js",
-  "bin": "./lib/index.js",
-  "scripts": {
-    "lint": "eslint \"lib/**/*.js\""
-  },
-  "keywords": [
-    "directus",
-    "installer"
-  ],
-  "author": "Rijk van Zanten <rijkvanzanten@me.com>",
-  "license": "GPL-3.0-only",
-  "dependencies": {
-    "chalk": "^4.1.0",
-    "commander": "^6.2.0",
-    "execa": "^4.1.0",
-    "fs-extra": "^9.0.1",
-    "ora": "^5.1.0"
-  },
-  "gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"
+	"name": "create-directus-project",
+	"version": "9.0.0-rc.51",
+	"description": "A small installer util that will create a directory, add boilerplate folders, and install Directus through npm.",
+	"main": "lib/index.js",
+	"bin": "./lib/index.js",
+	"keywords": [
+		"directus",
+		"installer"
+	],
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"license": "GPL-3.0-only",
+	"dependencies": {
+		"chalk": "^4.1.0",
+		"commander": "^6.2.0",
+		"execa": "^4.1.0",
+		"fs-extra": "^9.0.1",
+		"ora": "^5.1.0"
+	},
+	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"
 }

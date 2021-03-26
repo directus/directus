@@ -1,6 +1,6 @@
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import xliff from 'xliff';
-import { UnprocessableEntityException } from '../exceptions';
+import { InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
 import { FieldsService } from './fields';
 import { ItemsService } from './items';
 
@@ -27,9 +27,9 @@ export class XliffService {
 		});
 	}
 
-	async toXliff(collection: string, data: any[]) {
+	async toXliff(collection: string, data?: any[]) {
 		const fields = await this.fieldsService.readAll(collection);
-		const translationsFields = fields.filter((field) => field.type === 'translations');
+		const translationsFields = fields.filter((field) => (field.type as string) === 'translations');
 		const translationsFieldsNames = translationsFields.map((field) => field.field);
 		const relations = this.schema.relations.filter(
 			(relation: any) => relation.one_collection === collection && translationsFieldsNames.includes(relation.one_field)
@@ -38,16 +38,19 @@ export class XliffService {
 			resources: {},
 			sourceLanguage: this.language,
 		};
+		if (!data || data.length === 0) {
+			throw new InvalidPayloadException(`Body has to be a non-empty array of translatable items.`);
+		}
 		if (relations.length === 0) {
 			throw new UnprocessableEntityException(`Information about translations cannot be found.`);
 		}
 		for (const relation of relations) {
-			const translationsCollection = relation.many_collection;
-			const translationsKeyField = relation.one_primary;
-			const translationsFieldName = relation.one_field;
-			const translationsIdFieldName = relation.many_primary;
-			const tranlsationsExternalKey = relation.junction_field;
-			const translationsParentField = relation.many_field;
+			const translationsCollection = <string>relation.many_collection;
+			const translationsKeyField = <string>relation.one_primary;
+			const translationsFieldName = <string>relation.one_field;
+			const translationsIdFieldName = <string>relation.many_primary;
+			const tranlsationsExternalKey = <string>relation.junction_field;
+			const translationsParentField = <string>relation.many_field;
 			const translations = data.map((r: any) => {
 				return {
 					id: r[translationsKeyField],
@@ -74,22 +77,24 @@ export class XliffService {
 			if (translationItems && translationItems.length > 0) {
 				translationItems.forEach((item: any) => {
 					const translation = translations.find((t: any) => t.translationIds.includes(item[translationsKeyField]));
-					// removing system fields from output
-					const { id, status, sort, user_created, date_created, user_updated, date_updated, ...rest } = item;
-					// ensuring that key field was removed
-					delete rest[translationsKeyField];
-					delete rest[tranlsationsExternalKey];
-					delete rest[translationsParentField];
-					Object.keys(rest).forEach((key) => {
-						(resources as any)[`${translation.id}.${key}`] = {
-							source: rest[key],
-						};
-					});
+					if (translation) {
+						// removing system fields from output
+						const { id, status, sort, user_created, date_created, user_updated, date_updated, ...rest } = item;
+						// ensuring that key field was removed
+						delete rest[translationsKeyField];
+						delete rest[tranlsationsExternalKey];
+						delete rest[translationsParentField];
+						Object.keys(rest).forEach((key) => {
+							(resources as any)[`${translation.id}.${key}`] = {
+								source: rest[key],
+							};
+						});
+					}
 				});
 			}
-			json.resources[translationsCollection] = resources;
+			(json.resources as any)[translationsCollection] = resources;
 		}
-		const output = (await this.version) === 1 ? xliff.jsToXliff12(json) : xliff.js2xliff(json);
+		const output = await (this.version === 1 ? xliff.jsToXliff12(json) : xliff.js2xliff(json));
 		return output;
 	}
 }
