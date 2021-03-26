@@ -7,7 +7,6 @@ import { ITransport } from '../transport';
 import { DefaultType, UserType } from '../types';
 import { InvitesHandler } from './invites';
 import { MeHandler } from './me';
-import { TFAHandler } from './tfa';
 
 export type UserItem<T = DefaultType> = UserType & T;
 
