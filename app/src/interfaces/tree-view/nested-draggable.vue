@@ -146,6 +146,10 @@ export default defineComponent({
 	&.root {
 		margin-left: 0;
 		padding: 0;
+
+		&:empty {
+			min-height: 0;
+		}
 	}
 }
 
