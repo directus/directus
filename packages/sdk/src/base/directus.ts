@@ -17,13 +17,14 @@ import {
 	UtilsHandler,
 } from '../handlers';
 import { Item } from '../items';
-import { ITransport, TransportResponse } from '../transport';
+import { ITransport } from '../transport';
 import { ItemsHandler } from './items';
 import { AxiosTransport } from './transport';
 import { Auth } from './auth';
 import { IStorage } from '../storage';
 import { LocalStorage, MemoryStorage } from './storage';
 import { TypeMap, TypeOf } from '../types';
+import { GraphQLHandler } from '../handlers/graphql';
 
 export type DirectusOptions = {
 	auth?: IAuth;
@@ -49,6 +50,8 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	private _users?: UsersHandler<TypeOf<T, 'users'>>;
 	private _server?: ServerHandler;
 	private _utils?: UtilsHandler;
+	private _graphql?: GraphQLHandler;
+
 	private _items: {
 		[collection: string]: ItemsHandler<any>;
 	};
@@ -128,18 +131,11 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		return this._utils || (this._utils = new UtilsHandler(this.transport));
 	}
 
+	get graphql(): GraphQLHandler {
+		return this._graphql || (this._graphql = new GraphQLHandler(this.transport));
+	}
+
 	items<T extends Item>(collection: string): ItemsHandler<T> {
 		return this._items[collection] || (this._items[collection] = new ItemsHandler<T>(collection, this.transport));
-	}
-
-	async gql<T>(query: string, variables?: any): Promise<TransportResponse<T>> {
-		return this.graphql(query, variables);
-	}
-
-	async graphql<T>(query: string, variables?: any): Promise<TransportResponse<T>> {
-		return await this.transport.post<T>('/graphql', {
-			query,
-			variables: typeof variables === 'undefined' ? {} : variables,
-		});
 	}
 }

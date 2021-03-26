@@ -69,13 +69,21 @@ describe('utils', function () {
 		expect(result).toBe(true);
 	});
 
-	test(`sort`, async (url, _nock) => {
+	test(`sort`, async (url, nock) => {
+		nock()
+			.post('/utils/sort/posts', {
+				item: 10,
+				to: 5,
+			})
+			.reply(204);
+
 		const sdk = new Directus(url);
-		expect(sdk).toBeDefined();
+		await sdk.utils.sort('posts', 10, 5);
 	});
 
-	test(`revert`, async (url, _nock) => {
+	test(`revert`, async (url, nock) => {
+		nock().post('/utils/revert/555').reply(204);
 		const sdk = new Directus(url);
-		expect(sdk).toBeDefined();
+		await sdk.utils.revert(555);
 	});
 });

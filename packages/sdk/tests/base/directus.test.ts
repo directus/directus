@@ -24,8 +24,11 @@ import {
 	UtilsHandler,
 } from '../../src/handlers';
 import { test } from '../utils';
+import { InvitesHandler } from '../../src/handlers/invites';
+import { TFAHandler } from '../../src/handlers/tfa';
+import { MeHandler } from '../../src/handlers/me';
 
-describe('node sdk', function () {
+describe('sdk', function () {
 	const sdk = new Directus('http://example.com');
 
 	it('has auth', function () {
@@ -92,6 +95,18 @@ describe('node sdk', function () {
 		expect(sdk.users).toBeInstanceOf(UsersHandler);
 	});
 
+	it('has users invites', function () {
+		expect(sdk.users.invites).toBeInstanceOf(InvitesHandler);
+	});
+
+	it('has user profile', function () {
+		expect(sdk.users.me).toBeInstanceOf(MeHandler);
+	});
+
+	it('has users tfa', function () {
+		expect(sdk.users.me.tfa).toBeInstanceOf(TFAHandler);
+	});
+
 	it('has utils instance', function () {
 		expect(sdk.utils).toBeInstanceOf(UtilsHandler);
 	});
@@ -106,12 +121,41 @@ describe('node sdk', function () {
 			.times(2)
 			.reply(200, {
 				data: {
-					items: {
-						posts: [
-							{ id: 1, title: 'My first post' },
-							{ id: 2, title: 'My second post' },
-						],
-					},
+					posts: [
+						{ id: 1, title: 'My first post' },
+						{ id: 2, title: 'My second post' },
+					],
+				},
+			});
+
+		const query = `
+			query {
+				posts {
+					id
+					title
+				}
+			}
+		`;
+
+		const sdk = new Directus(url);
+
+		const response1 = await sdk.graphql.data(query);
+		const response2 = await sdk.graphql.system(query);
+
+		expect(response1).toMatchObject(response2);
+		expect(scope.pendingMocks().length).toBe(0);
+	});
+
+	test('can run graphql on system', async function (url, nock) {
+		const scope = nock()
+			.post('/graphql')
+			.times(2)
+			.reply(200, {
+				data: {
+					posts: [
+						{ id: 1, title: 'My first post' },
+						{ id: 2, title: 'My second post' },
+					],
 				},
 			});
 
@@ -128,8 +172,8 @@ describe('node sdk', function () {
 
 		const sdk = new Directus(url);
 
-		const response1 = await sdk.graphql(query);
-		const response2 = await sdk.gql(query);
+		const response1 = await sdk.graphql.data(query);
+		const response2 = await sdk.graphql.system(query);
 
 		expect(response1).toMatchObject(response2);
 		expect(scope.pendingMocks().length).toBe(0);

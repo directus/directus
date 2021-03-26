@@ -31,10 +31,10 @@ export class UtilsHandler {
 	};
 
 	async sort(collection: string, item: ID, to: ID): Promise<void> {
-		await this.transport.post(`/utils/sort/${collection}`, { item, to });
+		await this.transport.post(`/utils/sort/${encodeURI(collection as string)}`, { item, to });
 	}
 
 	async revert(revision: ID): Promise<void> {
-		await this.transport.post(`/utils/revert/${revision}`);
+		await this.transport.post(`/utils/revert/${encodeURI(revision as string)}`);
 	}
 }

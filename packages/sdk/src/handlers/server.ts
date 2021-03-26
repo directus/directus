@@ -39,7 +39,7 @@ export class ServerHandler {
 	}
 
 	async ping(): Promise<'pong'> {
-		return (await this.transport.get<'pong'>('/server/ping')).data!;
+		return (await this.transport.get<any, 'pong'>('/server/ping')).raw;
 	}
 
 	async info(): Promise<ServerInfo> {

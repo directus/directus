@@ -1,6 +1,5 @@
 // Interfaces
 export * from './auth';
-export * from './collections';
 export * from './directus';
 export * from './handlers';
 export * from './items';

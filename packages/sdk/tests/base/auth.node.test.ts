@@ -20,7 +20,7 @@ describe('auth (node)', function () {
 				data: {
 					access_token: 'access_token',
 					refresh_token: 'refresh_token',
-					expires: Date.now() + 1000,
+					expires: 60000,
 				},
 			});
 
@@ -31,6 +31,64 @@ describe('auth (node)', function () {
 		});
 
 		expect(scope.pendingMocks().length).toBe(0);
+	});
+
+	test(`authentication should auto refresh after specified period`, async (url, nock) => {
+		jest.useFakeTimers();
+
+		const scope = nock();
+
+		scope
+			.post('/auth/login', (body) => body.mode === 'json')
+			.reply(200, {
+				data: {
+					access_token: 'some_access_token',
+					refresh_token: 'some_refresh_token',
+					expires: 60000,
+				},
+			});
+
+		scope
+			.post('/auth/refresh', {
+				refresh_token: 'some_refresh_token',
+			})
+			.reply(200, {
+				data: {
+					access_token: 'a_new_access_token',
+					refresh_token: 'a_new_refresh_token',
+					expires: 60000,
+				},
+			});
+
+		const sdk = new Directus(url);
+		await sdk.auth.login(
+			{
+				email: 'wolfulus@gmail.com',
+				password: 'password',
+			},
+			{
+				refresh: {
+					auto: true,
+				},
+			}
+		);
+
+		jest.advanceTimersByTime(30000);
+		expect(scope.pendingMocks().length).toBe(1);
+
+		jest.advanceTimersByTime(25000);
+
+		// Refresh is done in background, need to wait for it to complete
+		await new Promise((resolve) => {
+			jest.useRealTimers();
+			setTimeout(resolve, 100);
+			jest.useFakeTimers();
+		});
+
+		expect(scope.pendingMocks().length).toBe(0);
+		expect(sdk.auth.token).toBe('a_new_access_token');
+
+		jest.clearAllTimers();
 	});
 
 	test(`logout sends a refresh token in body`, async (url, nock) => {

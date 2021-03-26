@@ -8,10 +8,10 @@ export class TFAHandler {
 	}
 
 	async enable(password: string): Promise<void> {
-		await this.transport.post('/users/tfa/enable', { password });
+		await this.transport.post('/users/me/tfa/enable', { password });
 	}
 
 	async disable(otp: string): Promise<void> {
-		await this.transport.post('/users/tfa/disable', { otp });
+		await this.transport.post('/users/me/tfa/disable', { otp });
 	}
 }

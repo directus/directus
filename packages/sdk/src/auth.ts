@@ -12,9 +12,19 @@ export type AuthResult = {
 	refresh_token?: string | null;
 };
 
+export type AuthLoginOptions = {
+	refresh: AuthRefreshOptions;
+};
+
+export type AuthRefreshOptions = {
+	auto: boolean;
+	time?: number;
+};
+
 export interface IAuth {
 	readonly token: string | null;
-	login(credentials: AuthCredentials): Promise<AuthResult>;
+	login(credentials: AuthCredentials, options?: AuthLoginOptions): Promise<AuthResult>;
+	refresh(options?: AuthRefreshOptions): Promise<AuthResult>;
 	static(token: AuthToken): Promise<boolean>;
 	logout(): Promise<void>;
 }

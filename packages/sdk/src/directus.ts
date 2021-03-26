@@ -17,10 +17,11 @@ import {
 } from './handlers';
 
 import { Item } from './items';
-import { ITransport, TransportResponse } from './transport';
+import { ITransport } from './transport';
 import { UtilsHandler } from './handlers/utils';
 import { IStorage } from './storage';
 import { TypeMap, TypeOf } from './types';
+import { GraphQLHandler } from './handlers/graphql';
 
 export type DirectusTypes = {
 	activity: undefined;
@@ -56,9 +57,7 @@ export interface IDirectus<T extends TypeMap> {
 	readonly users: UsersHandler<TypeOf<T, 'users'>>;
 	readonly server: ServerHandler;
 	readonly utils: UtilsHandler;
+	readonly graphql: GraphQLHandler;
 
 	items<T extends Item>(collection: string): ItemsHandler<T>;
-
-	gql<T>(query: string, variables: any): Promise<TransportResponse<T>>;
-	graphql<T>(query: string, variables: any): Promise<TransportResponse<T>>;
 }

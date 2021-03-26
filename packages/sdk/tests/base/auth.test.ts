@@ -3,6 +3,7 @@
  */
 
 import { Directus } from '../../src';
+import { InvalidRefreshTime, NotAuthenticated } from '../../src/errors';
 import { test } from '../utils';
 
 describe('auth', function () {
@@ -16,6 +17,48 @@ describe('auth', function () {
 
 		const sdk = new Directus(url);
 		await sdk.auth.static('token');
+	});
+
+	it(`throws when refreshing without authenticating first`, async () => {
+		const sdk = new Directus('http://localhost');
+
+		try {
+			await sdk.auth.refresh();
+			fail('Should have failed');
+		} catch (err) {
+			expect(err).toBeInstanceOf(NotAuthenticated);
+		}
+	});
+
+	test(`throws when refresh time resolves to an invalid value`, async (url, nock) => {
+		nock()
+			.post('/auth/login')
+			.reply(200, {
+				data: {
+					access_token: 'access_token',
+					refresh_token: 'refresh_token',
+					expires: 10000, // expires in 10 seconds
+				},
+			});
+
+		const sdk = new Directus(url);
+		try {
+			await sdk.auth.login(
+				{
+					email: 'wolfulus@gmail.com',
+					password: 'password',
+				},
+				{
+					refresh: {
+						auto: true,
+						time: 15000, // but we ask to refresh 15 seconds before the expiration
+					},
+				}
+			);
+			fail('Should have failed');
+		} catch (err) {
+			expect(err).toBeInstanceOf(InvalidRefreshTime);
+		}
 	});
 
 	test(`successful auth should set the token`, async (url, nock) => {

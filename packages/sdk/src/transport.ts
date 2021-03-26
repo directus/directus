@@ -7,7 +7,8 @@ export type TransportErrorDescription = {
 	};
 };
 
-export type TransportResponse<T> = {
+export type TransportResponse<T, R = any> = {
+	raw: R;
 	data?: T;
 	meta?: ItemMetadata;
 	errors?: TransportErrorDescription[];
@@ -24,21 +25,29 @@ export type TransportOptions = {
 
 export interface ITransport {
 	url: string;
-	get<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
-	head<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
-	options<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>>;
-	delete<T = any, P = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T>>;
-	post<T = any, P = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T>>;
-	put<T = any, P = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T>>;
-	patch<T = any, P = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T>>;
+	get<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
+	head<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
+	options<T = any, R = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T, R>>;
+	delete<T = any, P = any, R = any>(
+		path: string,
+		data?: P,
+		options?: TransportOptions
+	): Promise<TransportResponse<T, R>>;
+	post<T = any, P = any, R = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T, R>>;
+	put<T = any, P = any, R = any>(path: string, data?: P, options?: TransportOptions): Promise<TransportResponse<T, R>>;
+	patch<T = any, P = any, R = any>(
+		path: string,
+		data?: P,
+		options?: TransportOptions
+	): Promise<TransportResponse<T, R>>;
 }
 
-export class TransportError<T = any> extends Error {
+export class TransportError<T = any, R = any> extends Error {
 	public readonly errors: TransportErrorDescription[];
-	public readonly response?: Partial<TransportResponse<T>>;
+	public readonly response?: Partial<TransportResponse<T, R>>;
 	public readonly parent: Error | null;
 
-	constructor(parent: Error | null, response?: Partial<TransportResponse<T>>) {
+	constructor(parent: Error | null, response?: Partial<TransportResponse<T, R>>) {
 		if (response?.errors?.length) {
 			super(response?.errors[0]?.message);
 		} else {

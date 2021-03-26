@@ -31,54 +31,55 @@ export class AxiosTransport implements ITransport {
 		return this._axios;
 	}
 
-	private async request<T = any>(
+	private async request<T = any, R = any>(
 		method: 'get',
 		path: string,
 		options?: TransportOptions
-	): Promise<TransportResponse<T>>;
-	private async request<T = any>(
+	): Promise<TransportResponse<T, R>>;
+	private async request<T = any, R = any>(
 		method: 'delete',
 		path: string,
 		options?: TransportOptions
-	): Promise<TransportResponse<T>>;
-	private async request<T = any>(
+	): Promise<TransportResponse<T, R>>;
+	private async request<T = any, R = any>(
 		method: 'head',
 		path: string,
 		options?: TransportOptions
-	): Promise<TransportResponse<T>>;
-	private async request<T = any>(
+	): Promise<TransportResponse<T, R>>;
+	private async request<T = any, R = any>(
 		method: 'options',
 		path: string,
 		options?: TransportOptions
-	): Promise<TransportResponse<T>>;
-	private async request<T = any, D = any>(
+	): Promise<TransportResponse<T, R>>;
+	private async request<T = any, D = any, R = any>(
 		method: 'post',
 		path: string,
 		data?: D,
 		options?: TransportOptions
-	): Promise<TransportResponse<T>>;
-	private async request<T = any, D = any>(
+	): Promise<TransportResponse<T, R>>;
+	private async request<T = any, D = any, R = any>(
 		method: 'put',
 		path: string,
 		data?: D,
 		options?: TransportOptions
-	): Promise<TransportResponse<T>>;
-	private async request<T = any, D = any>(
+	): Promise<TransportResponse<T, R>>;
+	private async request<T = any, D = any, R = any>(
 		method: 'patch',
 		path: string,
 		data?: D,
 		options?: TransportOptions
-	): Promise<TransportResponse<T>>;
-	private async request<M extends TransportMethods, T = any>(
+	): Promise<TransportResponse<T, R>>;
+	private async request<M extends TransportMethods, T = any, R = any>(
 		method: M,
 		path: string,
 		...args: any
-	): Promise<TransportResponse<T>> {
+	): Promise<TransportResponse<T, R>> {
 		try {
 			const make = this.axios[method] as AxiosInstance[M];
 			const response = await make<TransportResponse<T>>(path, ...args);
 			const { data, meta, errors } = response.data;
 			const content = {
+				raw: response.data as any,
 				status: response.status,
 				statusText: response.statusText,
 				headers: response.headers,
@@ -88,7 +89,7 @@ export class AxiosTransport implements ITransport {
 			};
 
 			if (errors) {
-				throw new TransportError<T>(null, content);
+				throw new TransportError<T, R>(null, content);
 			}
 
 			return content;
@@ -96,6 +97,7 @@ export class AxiosTransport implements ITransport {
 			if (axios.isAxiosError(err)) {
 				const data = err.response?.data;
 				throw new TransportError<T>(err, {
+					raw: err.response?.data,
 					status: err.response?.status,
 					statusText: err.response?.statusText,
 					headers: err.response?.headers,

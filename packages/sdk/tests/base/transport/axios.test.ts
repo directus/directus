@@ -106,6 +106,12 @@ describe('axios transport', function () {
 		});
 	});
 
+	it('returns the configured url', async function () {
+		const storage = new MemoryStorage();
+		const transport = new AxiosTransport(URL, storage);
+		expect(transport.url).toBe(URL);
+	});
+
 	it('non axios errors are set in parent', async function () {
 		const storage = new MemoryStorage();
 		const transport = new AxiosTransport(URL, storage);
