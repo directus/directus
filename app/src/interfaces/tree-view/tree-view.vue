@@ -1,5 +1,9 @@
 <template>
-	<div class="tree-view">
+	<v-notice type="warning" v-if="relation.many_collection !== relation.one_collection">
+		{{ $t('interfaces.tree-view.recursive_only') }}
+	</v-notice>
+
+	<div v-else class="tree-view">
 		<nested-draggable
 			:template="template"
 			:collection="collection"
