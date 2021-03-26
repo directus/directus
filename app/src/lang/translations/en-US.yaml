@@ -987,6 +987,7 @@ interfaces:
     no_collection: No Collection
   tree-view:
     description: Tree view for nested recursive one-to-many items
+    recursive_only: The tree view interface only works for recursive relationships.
   user:
     user: User
     description: Select an existing directus user
