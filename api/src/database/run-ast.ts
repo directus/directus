@@ -119,12 +119,6 @@ async function parseCurrentLevel(
 			columnsToSelectInternal.push(child.relation.one_collection_field!);
 		}
 
-		if (child.type === 'o2m') {
-			if (child.relation.sort_field) {
-				columnsToSelectInternal.push(child.relation.sort_field);
-			}
-		}
-
 		nestedCollectionNodes.push(child);
 	}
 
@@ -189,6 +183,10 @@ function applyParentFilters(nestedCollectionNodes: NestedCollectionNode[], paren
 
 			if (relatedM2OisFetched === false) {
 				nestedNode.children.push({ type: 'field', name: nestedNode.relation.many_field });
+			}
+
+			if (nestedNode.relation.sort_field) {
+				nestedNode.children.push({ type: 'field', name: nestedNode.relation.sort_field });
 			}
 
 			nestedNode.query = {
