@@ -11,7 +11,9 @@ add_field: Tambah Kolom
 role_name: Nama Peran
 db_only_click_to_configure: 'Khusus Database: Tekan Untuk Konfigurasi '
 show_archived_items: Tampilkan Yang Diarsipkan
+edited: Disunting
 required: Diperlukan
+required_for_app_access: Diperlukan untuk Akses Aplikasi
 requires_value: Wajib memiliki nilai
 create_preset: Buat Preset
 create_role: Buat Peran
@@ -25,6 +27,7 @@ connection_excellent: Koneksi Luar Biasa
 connection_good: Koneksi Bagus
 connection_fair: Koneksi Standar
 connection_poor: Koneksi Buruk
+primary: Primer
 rename_folder: Ubah nama folder
 delete_folder: Hapus Folder
 prefix: Awalan
@@ -43,23 +46,47 @@ public_description: Kendalikan data API yang tersedia tanpa autentikasi.
 not_allowed: Tidak Diizinkan
 directus_version: Versi Directus
 node_version: Versi Node
+node_uptime: Waktu Jalan Node
 os_type: Tipe OS
 os_version: Versi OS
+os_uptime: Waktu Jalan OS
 os_totalmem: Memori OS
 archive: Arsip
 archive_confirm: Apakah Anda yakin ingin mengarsipkan item ini?
 archive_confirm_count: >-
   Tidak ada item terpilih | Apakah Anda yakin ingin mengarsipkan item ini? | Apakah Anda yakin ingin mengarsipkan {count} item ini?
+reset_system_permissions_to: 'Set Ulang Perizinan Sistem ke:'
+reset_system_permissions_copy: Tindakan ini akan menimpa perizinan kustom apapun yang mungkin telah diterapkan ke koleksi sistem. Apakah Anda yakin?
+the_following_are_minimum_permissions: Berikut adalah perizinan minimum yang diperlukan ketika "Akses Aplikasi" diaktifkan. Anda dapat mengembangkan perizinan lebih dari ini, tetapi tidak dibawahnya.
+app_access_minimum: Minimum Akses Aplikasi
+recommended_defaults: Bawaan yang Direkomendasikan
 unarchive: Batalkan pengarsipan
 unarchive_confirm: Apakah Anda yakin ingin membatalkan arsip dari item ini?
+nested_files_folders_will_be_moved: Berkas dan folder yang disarang akan dipindahkan satu tingkat keatas.
 unknown_validation_errors: 'Ada kesalahan validasi untuk kolom tersembunyi berikut:'
 validationError:
   eq: Nilai harus {valid}
+  neq: Nilai tidak boleh {invalid}
+  in: Nilai harus salah satu dari {valid}
+  nin: Nilai tidal boleh salah satu dari {invalid}
+  contains: Nilai harus memiliki {substring}
+  ncontains: Nilai tidak boleh memiliki {substring}
+  gt: Nilai harus lebih besar dari {valid}
+  gte: Nilai harus lebih besar atau sama dengan {valid}
+  lt: Nilai harus kurang dari {valid}
+  lte: Nilai harus kurang dari ataus sama dengan {valid}
+  empty: Nilai harus kosong
+  nempty: Nilai tidak boleh kosong
   null: Nilai harus kosong
   nnull: Nilai tidak boleh kosong
+  required: Nilai diperlukan
+all_access: Semua Akses
+no_access: Tidak Ada Akses
+use_custom: Gunakan Kustom
 field_standard: Standar
 field_file: Satu Berkas
 field_files: Beberapa Berkas
+field_m2o: Hubungan M2O
 field_translations: Terjemahan
 language: Bahasa
 global: Global
@@ -343,6 +370,8 @@ something_went_wrong: Ada yang salah.
 template: Templat
 value: Nilai
 interfaces:
+  button-links:
+    primary: Primer
   checkboxes:
     checkboxes: Kotak Centang
     allow_other: Izinkan lainnya
