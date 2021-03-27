@@ -11,6 +11,7 @@ add_field: Adicionar Campo
 role_name: Nome do cargo
 db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar'
 show_archived_items: Mostrar itens arquivados
+edited: Editado
 required: Obrigatório
 required_for_app_access: Obrigatório para o Acesso ao Aplicativo
 requires_value: Requer valor
@@ -122,6 +123,7 @@ focal_length: Distância focal
 schema_setup_key: O nome da coluna do banco de dados deste campo e a chave API
 create_field: Criar Campo
 creating_new_field: 'Novo campo ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Redefinir preferências da página
 hidden_field: Campo oculto
 hidden_on_detail: Oculto em Detalhe
@@ -153,6 +155,7 @@ click_to_manage_translated_fields: >-
 fields_group: Grupo de Campos
 new_data_alert: 'O seguinte será criado em seu modelo de dados:'
 new_field: 'Novo campo'
+new_collection: 'Nova Coleção'
 add_m2o_to_collection: 'Adicionar Muitos-para-Um a "{collection}"'
 add_o2m_to_collection: 'Adicionar Um-para-Muitos a "{collection}"'
 add_m2m_to_collection: 'Adicionar Muitos-para-Muitos a "{collection}"'
@@ -167,6 +170,7 @@ m2o_relationship: Relacionamento Muitos-pra-Um
 o2m_relationship: Relacionamento Um-pra-Muitos
 m2m_relationship: Relacionamento Muitos-pra-Muitos
 m2a_relationship: Relacionamento Muitos-pra-Qualquer
+invalid_item: Item inválido
 next: Próximo
 field_name: Nome do campo
 translations: Traduções
@@ -177,7 +181,10 @@ length: Comprimento
 precision_scale: Precisão e Escala
 readonly: Leitura apenas
 unique: Único
+updated_on: Atualizado em
+updated_by: Atualizado por
 primary_key: Chave primária
+foreign_key: Chave Extrangeira
 finish_setup: Concluir a instalação
 dismiss: Dispensar
 raw_value: Valor bruto
@@ -235,6 +242,11 @@ today: Hoje
 yesterday: Ontem
 delete_comment: Excluir comentário
 date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
 month: Mês
 year: Ano
 select_all: Selecionar todos
@@ -274,6 +286,9 @@ background_color: Cor de fundo
 upload_from_device: Carregar do dispositivo
 choose_from_library: Selecionar a partir da biblioteca
 import_from_url: Importar arquivo de URL
+replace_from_device: Substituir Arquivo do Dispositivo
+replace_from_library: Substituir Arquivo da Biblioteca
+replace_from_url: Substituir Arquivo da URL
 no_file_selected: Nenhum arquivo selecionado
 download_file: Baixar arquivo
 collection_key: Chave da coleção
@@ -284,6 +299,7 @@ creating_new_collection: Criando nova coleção
 created_by: Criado por
 created_on: Criado em
 creating_collection_info: Nomeie a coleção e configure seu campo de "chave" única...
+creating_collection_system: Ativar e renomear qualquer um desses campos opcionais.
 auto_increment_integer: Integer auto-incremental
 generated_uuid: UUID gerado
 manual_string: String inserida manualmente
@@ -296,6 +312,7 @@ no_comments: Nenhum comentário ainda
 click_to_expand: Clique para expandir
 select_item: Selecionar item
 no_items: Nenhum item
+search_items: Buscar Itens...
 disabled: Desabilitado
 information: Informação
 report_bug: Relatar erro
@@ -320,6 +337,8 @@ create_collection: Criar Coleção
 no_collections_copy_admin: Você ainda não tem nenhuma coleção. Clique no botão abaixo para começar.
 no_collections_copy: Você ainda não tem nenhuma coleção. Entre em contato com o administrador do sistema.
 relationship_not_setup: O relacionamento não foi configurado corretamente
+display_template_not_setup: A opção do modelo de exibição está configurada incorretamente
+collection_field_not_setup: A opção do campo de coleção está configurada incorretamente
 select_a_collection: Selecione uma coleção
 active: Ativo
 users: Usuários
@@ -341,6 +360,8 @@ collection_created: Coleção criada
 modified_on: Modificado em
 card_size: Tamanho do cartão
 sort_field: Campo de ordenação
+add_sort_field: Adicionar campo de ordenação
+sort: Ordenar
 status: Status
 toggle_manual_sorting: Alternar ordenação manual
 bookmark_doesnt_exist: Marcador não existe
@@ -367,6 +388,7 @@ errors:
   ITEM_LIMIT_REACHED: Limite de elementos alcançado
   ITEM_NOT_FOUND: Item não encontrado
   ROUTE_NOT_FOUND: Não encontrado
+  RECORD_NOT_UNIQUE: Valor duplicado detectado
   UNKNOWN: Erro inesperado
 value_hashed: Valor secretamente salvo em hash
 bookmark_name: Nome do marcador...
@@ -394,11 +416,15 @@ delete_collection: Excluir coleção
 update_collection_success: Coleção atualizada
 delete_collection_success: Coleção excluída
 start_end_of_count_items: '{start}-{end} de {count} itens'
+start_end_of_count_filtered_items: '{start}-{end} de {count} itens filtrados'
+one_item: '1 item'
+one_filtered_item: '1 item filtrado'
 delete_collection_are_you_sure: >-
   Tem certeza que deseja excluir esta coleção? Isto irá apagar a coleção e todos os itens nela. Esta ação é permanente.
 collections_shown: Coleções mostradas
 visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas
+show_hidden_collections: Mostrar Coleções Ocultas
 unmanaged_collections: Coleções não configuradas
 system_collections: Coleções do sistema
 placeholder: Placeholder
@@ -444,6 +470,8 @@ upload_pending: Envio pendente
 drag_file_here: Arraste e solte arquivos aqui para enviar
 click_to_browse: Clique para pesquisar
 layout_options: Opções de Layout
+rows: Linhas
+columns: Colunas
 collection_setup: Configurando coleção
 optional_system_fields: Campos de sistema opcionais
 value_unique: O valor deve ser único
@@ -492,10 +520,14 @@ wysiwyg_options:
   italic: Itálico
   underline: Sublinhado
   strikethrough: Tachado
+  subscript: Subscrito
+  superscript: Sobrescrito
   codeblock: Código
   blockquote: Bloco de citação
   bullist: Lista de itens
   numlist: Lista numerada
+  hr: Linha Horizontal
+  link: Link
   unlink: Excluir Link
   media: Adicionar mídia
   image: Adicionar Imagem
@@ -775,6 +807,7 @@ interfaces:
     use_24: Usar formato de 24 horas
   display-template:
     display-template: Modelo de exibição
+    collection_field_not_setup: A opção do campo de coleção está configurada incorretamente
     select_a_collection: Selecione uma coleção
   divider:
     divider: Divisor
