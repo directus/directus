@@ -425,11 +425,13 @@ collections_shown: Coleções mostradas
 visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas
 show_hidden_collections: Mostrar Coleções Ocultas
+hide_hidden_collections: Não Mostrar Coleções Ocultas
 unmanaged_collections: Coleções não configuradas
 system_collections: Coleções do sistema
 placeholder: Placeholder
 icon_left: Ícone à Esquerda
 icon_right: Ícone à Direita
+count_other_revisions: '{count} Outras Revisões'
 font: Fonte
 sans_serif: Sans Serif
 serif: Serif
@@ -440,6 +442,8 @@ circle: Círculo
 empty_item: Item vazio
 log_in_with: 'Entrar com {provider}'
 advanced_filter: Filtro avançado
+delete_advanced_filter: Excluir Filtro
+change_advanced_filter_operator: Modificar Operador
 operators:
   eq: É igual
   neq: Não é igual
@@ -534,6 +538,7 @@ wysiwyg_options:
   copy: Copiar
   cut: Recortar
   paste: Colar
+  heading: Cabeçalho
   h1: Cabeçalho 1
   h2: Cabeçalho 2
   h3: Cabeçalho 3
@@ -573,8 +578,10 @@ settings_webhooks: Webhooks
 settings_presets: Predefinições & Marcadores
 scope: Escopo
 layout: Layout
+tree_view: Exibição em Árvore
 changes_are_permanent: As alterações são permanentes
 preset_name_placeholder: Nome do marcador...
+preset_search_placeholder: Termos da pesquisa...
 editing_preset: Editando predefinição
 layout_preview: Pré-visualização do Layout
 layout_setup: Configuração de Layout
@@ -615,6 +622,7 @@ activity_feed: Feed de atividade
 add_new: Adicionar Novo
 create_new: Criar novo
 all: Tudo
+none: Nenhum
 batch_delete_confirm: >-
   Nenhum item foi selecionado | Você tem certeza que deseja deletar esse item? Essa ação não pode ser desfeita. | Você tem certeza que deseja deletar esses {count} itens? Essa ação não pode ser desfeita.
 cancel: Cancelar
@@ -647,8 +655,13 @@ fields:
     description: Descrição
     tags: Tags
     location: Local
+    storage: Armazenamento
+    filename_disk: Nome do Arquivo (Disco)
+    filename_download: Nome do arquivo (Download)
     metadata: Metadados
+    type: Tipo Mime
     filesize: Tamanho do Arquivo
+    modified_by: Modificado Por
     modified_on: Modificado em
     created_on: Criado em
     created_by: Criado por
@@ -675,6 +688,7 @@ fields:
     tfa_secret: Autenticação em Duas Etapas
     status: Status
     role: Função
+    token: Token
     last_page: Última página
     last_access: Último acesso
   directus_settings:
@@ -687,6 +701,7 @@ fields:
     public_note: Nota pública
     auth_password_policy: Política de senha para autenticação
     auth_login_attempts: Tentativas de autenticação
+    custom_css: CSS Personalizado
   directus_fields:
     collection: Nome da coleção
     icon: Ícone da coleção
@@ -704,11 +719,16 @@ fields:
     ip_access: Acesso IP
     enforce_tfa: Exigir 2FA
     users: Usuários no cargo
+    module_list: Navegação do Módulo
+    collection_list: Navegação da Coleção
 no_fields_in_collection: 'Ainda não há campos em "{collection}"'
 do_nothing: Não fazer nada
 generate_and_save_uuid: Gerar e salvar UUID
 save_current_user_id: Salvar ID de usuário atual
+save_current_user_role: Salvar a Função de Usuário Atual
 save_current_datetime: Salvar data/hora atual
+block: Bloco
+inline: Em linha
 comment: Comentário
 continue: Continuar
 continue_as: >-
@@ -765,6 +785,8 @@ sign_out: Sair
 sign_out_confirm: Tem certeza que deseja sair?
 something_went_wrong: Algo está errado.
 sort_direction: Direção da ordenação
+sort_asc: Ordenação Crescente
+sort_desc: Ordenação Decrescente
 template: Template
 translation: Tradução
 value: Valor
@@ -772,7 +794,14 @@ view_project: Visualizar projeto
 report_error: Relatar erro
 interfaces:
   button-links:
+    button-links: Links do Botão
+    links: Links
+    description: Botões de link configuráveis para iniciar URLs dinâmicas
+    style: Estilo
     primary: Primário
+    link: Links
+    button: Botões
+    error: Não foi possível executar a ação
   checkboxes:
     checkboxes: Caixas de Seleção
     description: Escolha entre várias opções através de caixas de seleção
@@ -813,6 +842,7 @@ interfaces:
     divider: Divisor
     title_placeholder: Insira um título...
     inline_title_label: Mostrar título dentro da linha
+    margin_top: Margem Superior
   dropdown:
     description: Selecione um valor a partir de uma seleção
     choices_placeholder: Adicionar uma nova escolha
@@ -858,6 +888,8 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Inserir e pré-visualizar markdown
+    customSyntax: Blocos Personalizados
+    box: Bloco / Em linha
   notice:
     notice: Aviso
     description: Mostrar um breve aviso
@@ -909,6 +941,7 @@ interfaces:
     trim_label: Aparar o início e fim
     mask: Mascarado
     mask_label: Ocultar o valor real
+    nullable_label: Salvar valor vazio como NULO
   textarea:
     textarea: Área de texto
     description: Insira texto puro de múltiplas linhas
