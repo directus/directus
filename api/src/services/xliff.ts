@@ -52,14 +52,14 @@ export class XliffService {
 	}
 
 	// prepares output for specific relation
- private async getXliffResources(relation: Relation, data: any[]) {
+	private async getXliffResources(relation: Relation, data: any[]) {
 		const translationsCollection = <string>relation.many_collection;
 		const translationsKeyField = <string>relation.one_primary;
 		const tranlsationsExternalKey = <string>relation.junction_field;
 		const translationsParentField = <string>relation.many_field;
 		// getting items keys values
 		const itemsKeys = data.map((r: any) => r[translationsKeyField]);
-	  // initializing output object
+		// initializing output object
 		const resources = {};
 		const itemsService = new ItemsService(translationsCollection, {
 			accountability: this.accountability,
@@ -76,28 +76,27 @@ export class XliffService {
 		// obtaining values of translatable fields and putting them to the dictionary
 		if (translationItems && translationItems.length > 0) {
 			translationItems.forEach((item: any) => {
-					// removing system and key fields from output
-					const translatableData =
-						this.cleanupEmptyFields(
-							this.removeFields(
-								this.removeSystemFields(item),
-								translationsKeyField,
-								tranlsationsExternalKey,
-								translationsParentField
-							)
-						);
-					// populating output object with translations data
-					Object.keys(translatableData).forEach((key) => {
-						(resources as any)[`${item[translationsParentField]}.${key}`] = {
-							source: translatableData[key],
-						};
-					});
+				// removing system and key fields from output
+				const translatableData = this.cleanupEmptyFields(
+					this.removeFields(
+						this.removeSystemFields(item),
+						translationsKeyField,
+						tranlsationsExternalKey,
+						translationsParentField
+					)
+				);
+				// populating output object with translations data
+				Object.keys(translatableData).forEach((key) => {
+					(resources as any)[`${item[translationsParentField]}.${key}`] = {
+						source: translatableData[key],
+					};
+				});
 			});
 		}
 		return resources;
 	}
 
-  // removes system fields from the passed item object
+	// removes system fields from the passed item object
 	private removeSystemFields(item: any) {
 		const { id, status, sort, user_created, date_created, user_updated, date_updated, ...rest } = item;
 		return rest;
