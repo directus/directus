@@ -430,7 +430,7 @@ export default defineComponent({
 							// Don't attempt fetching anything if there's no keys to fetch
 							if (relatedKeys.length === 0) return Promise.resolve({ data: { data: [] } } as any);
 
-							const fields = getFieldsFromTemplate(templates.value[collection]);
+							const fields = getFieldsFromTemplate(templates.value[collection], collection);
 
 							// Make sure to always fetch the primary key, so we can match that with the value
 							if (fields.includes(primaryKeys.value[collection]) === false) fields.push(primaryKeys.value[collection]);

@@ -430,11 +430,11 @@ export default defineComponent({
 				const titleSubtitleFields: string[] = [];
 
 				if (title.value) {
-					titleSubtitleFields.push(...getFieldsFromTemplate(title.value));
+					titleSubtitleFields.push(...getFieldsFromTemplate(title.value, props.collection));
 				}
 
 				if (subtitle.value) {
-					titleSubtitleFields.push(...getFieldsFromTemplate(subtitle.value));
+					titleSubtitleFields.push(...getFieldsFromTemplate(subtitle.value, props.collection));
 				}
 
 				return [...fields, ...adjustFieldsForDisplays(titleSubtitleFields, props.collection)];
@@ -480,8 +480,8 @@ export default defineComponent({
 
 .footer {
 	display: flex;
-	align-items: center;
 	justify-content: space-between;
+	align-items: center;
 	padding-top: 40px;
 
 	.pagination {
@@ -490,8 +490,8 @@ export default defineComponent({
 
 	.per-page {
 		display: flex;
-		align-items: center;
 		justify-content: flex-end;
+		align-items: center;
 		width: 240px;
 		color: var(--foreground-subdued);
 

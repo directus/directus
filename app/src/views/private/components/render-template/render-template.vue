@@ -10,6 +10,8 @@
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
 				:type="part.type"
+				:collection="part.collection"
+				:field="part.fieldKey"
 				v-bind="part.options"
 			/>
 			<span :key="index" v-else>{{ part }}</span>
@@ -20,7 +22,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores';
-import { get } from 'lodash';
+import get from '@/utils/get-nested-field';
 import { Field } from '@/types';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
@@ -62,14 +64,13 @@ export default defineComponent({
 					if (!field) return null;
 
 					// Try getting the value from the item, return some question marks if it doesn't exist
-					const value = get(props.item, fieldKey);
+					const value = get(props.item, fieldKey, props.collection);
 					if (value === undefined) return null;
 
 					// If no display is configured, we can render the raw value
 					if (field.meta?.display === null) return value;
 
 					const displayInfo = displays.value.find((display) => display.id === field.meta?.display);
-
 					// If used display doesn't exist in the current project, return raw value
 					if (!displayInfo) return value;
 
@@ -86,6 +87,8 @@ export default defineComponent({
 						interface: field.meta?.interface,
 						interfaceOptions: field.meta?.options,
 						type: field.type,
+						fieldKey,
+						collection: props.collection,
 					};
 				})
 				.map((p) => p || null)

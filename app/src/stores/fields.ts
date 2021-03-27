@@ -255,7 +255,10 @@ export const useFieldsStore = createStore({
 
 			if (relationshipForField === undefined) return false;
 
-			const relatedCollection = relationshipForField.one_collection;
+			const relatedCollection =
+				relationshipForField.many_field === parts[0]
+					? relationshipForField.one_collection
+					: relationshipForField.many_collection;
 			parts.shift();
 			const relatedField = parts.join('.');
 			return this.getField(relatedCollection, relatedField);

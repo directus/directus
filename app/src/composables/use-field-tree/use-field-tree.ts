@@ -25,8 +25,7 @@ export default function useFieldTree(
 			})
 			.filter(filter)
 			.map((field: Field) => ({
-				name: field.name,
-				field: field.field,
+				...field,
 				key: parentPath ? `${parentPath}.${field.field}` : field.field,
 			}));
 
@@ -35,6 +34,11 @@ export default function useFieldTree(
 		for (const field of fieldsInLevel) {
 			const relations = relationsStore.getRelationsForField(collection, field.field);
 			const relation = relations.find(
+				(relation: Relation) =>
+					(relation.many_collection === collection && relation.many_field === field.field) ||
+					(relation.one_collection === collection && relation.one_field === field.field)
+			);
+			const _r = relations.filter(
 				(relation: Relation) =>
 					(relation.many_collection === collection && relation.many_field === field.field) ||
 					(relation.one_collection === collection && relation.one_field === field.field)
@@ -49,6 +53,14 @@ export default function useFieldTree(
 					level + 1
 				);
 			} else {
+				field.children = parseLevel(
+					relation.many_collection,
+					parentPath ? `${parentPath}.${field.field}` : field.field,
+					level + 1
+				);
+			}
+
+			if (relationType === 'o2m') {
 				field.children = parseLevel(
 					relation.many_collection,
 					parentPath ? `${parentPath}.${field.field}` : field.field,

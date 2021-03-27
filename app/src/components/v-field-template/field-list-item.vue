@@ -7,13 +7,16 @@
 		<v-list-item-content>{{ field.name || formatTitle(field.field) }}</v-list-item-content>
 	</v-list-item>
 	<v-list-group v-else>
-		<template #activator>{{ field.name || formatTitle(field.field) }}</template>
+		<template #activator>
+			<div @click="addParent">{{ field.name || formatTitle(field.field) }}</div>
+		</template>
 		<field-list-item
 			v-for="childField in field.children"
 			:key="childField.key"
 			:parent="`${parent ? parent + '.' : ''}${field.field}`"
 			:field="childField"
 			:depth="depth - 1"
+			:addable-parent="addableParent"
 			@add="$emit('add', $event)"
 		/>
 	</v-list-group>
@@ -39,9 +42,18 @@ export default defineComponent({
 			type: Number,
 			default: 2,
 		},
+		addableParent: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	setup() {
-		return { formatTitle };
+	setup(props, { emit }) {
+		function addParent() {
+			if (props.addableParent) {
+				emit('add', `${props.parent ? props.parent + '.' : ''}${props.field.field}`);
+			}
+		}
+		return { formatTitle, addParent };
 	},
 });
 </script>

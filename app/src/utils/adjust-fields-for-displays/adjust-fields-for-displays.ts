@@ -1,6 +1,7 @@
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types/';
 import { getDisplays } from '@/displays';
+import adjustFieldsForTranslations from '@/utils/adjust-fields-for-translations';
 
 export default function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string) {
 	const fieldsStore = useFieldsStore();
@@ -35,6 +36,5 @@ export default function adjustFieldsForDisplays(fields: readonly string[], paren
 			return fieldKey;
 		})
 		.flat();
-
-	return adjustedFields;
+	return adjustFieldsForTranslations(adjustedFields, parentCollection);
 }

@@ -39,13 +39,7 @@
 					</v-checkbox>
 				</draggable>
 
-				<v-checkbox
-					v-for="field in availableFields.filter((field) => fields.includes(field.field) === false)"
-					v-model="fields"
-					:key="field.field"
-					:value="field.field"
-					:label="field.name"
-				/>
+				<v-field-select :collection="collection" v-model="fields" hide-value class="add-field" addable-parent />
 			</div>
 		</portal>
 
@@ -87,7 +81,7 @@
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
 					:key="header.value"
-					:value="item[header.value]"
+					:value="get(item, header.value, collection)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
@@ -141,7 +135,7 @@ import Vue from 'vue';
 import { defineComponent, PropType, ref, computed, inject, toRefs, Ref, watch } from '@vue/composition-api';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
-import { Field, Filter } from '@/types';
+import { Field, Filter, FieldMeta } from '@/types';
 import router from '@/router';
 import useSync from '@/composables/use-sync';
 import { debounce, clone } from 'lodash';
@@ -152,6 +146,14 @@ import i18n from '@/lang';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import hideDragImage from '@/utils/hide-drag-image';
 import useShortcut from '@/composables/use-shortcut';
+import get from '@/utils/get-nested-field';
+import useFieldTree from '@/composables/use-field-tree';
+import { TranslateResult } from 'vue-i18n';
+
+type FieldTree = Field & {
+	key: string;
+	children?: FieldTree[];
+};
 
 type layoutOptions = {
 	widths?: {
@@ -217,7 +219,27 @@ export default defineComponent({
 		const _searchQuery = useSync(props, 'searchQuery', emit);
 
 		const { collection, searchQuery } = toRefs(props);
-		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
+		const { info, primaryKeyField, sortField } = useCollection(collection);
+
+		const { tree } = useFieldTree(collection);
+
+		function flatten(tree: FieldTree[]) {
+			const flat: FieldTree[] = [];
+			function walk(tree: FieldTree[], baseName: string | undefined = undefined) {
+				tree.forEach((item) => {
+					flat.push({ ...item, field: item.key, name: baseName ? `${baseName} ${item.name}` : item.name });
+					if (item.children) {
+						walk(item.children, baseName ? `${baseName} ${item.name}` : `${item.name}`);
+					}
+				});
+			}
+			walk(tree);
+			return flat;
+		}
+
+		const fieldsInCollection = computed<FieldTree[]>(() => {
+			return flatten(tree.value);
+		});
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
 
@@ -316,6 +338,7 @@ export default defineComponent({
 			refresh,
 			resetPresetAndRefresh,
 			availableFields,
+			get,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -438,11 +461,11 @@ export default defineComponent({
 				};
 			}, 350);
 
-			const activeFields = computed<Field[]>({
+			const activeFields = computed<FieldTree[]>({
 				get() {
 					return fields.value
-						.map((key) => fieldsInCollection.value.find((field) => field.field === key))
-						.filter((f) => f) as Field[];
+						.map((key) => fieldsInCollection.value.find((field) => field.key === key))
+						.filter((f) => f) as FieldTree[];
 				},
 				set(val) {
 					fields.value = val.map((field) => field.field);
@@ -453,7 +476,7 @@ export default defineComponent({
 				get() {
 					return activeFields.value.map((field) => ({
 						text: field.name,
-						value: field.field,
+						value: field.key,
 						width: localWidths.value[field.field] || _layoutOptions.value?.widths?.[field.field] || null,
 						field: {
 							display: field.meta?.display,
@@ -463,7 +486,9 @@ export default defineComponent({
 							type: field.type,
 							field: field.field,
 						},
-						sortable: ['json', 'o2m', 'm2o', 'file', 'files', 'alias', 'presentation'].includes(field.type) === false,
+						sortable:
+							['json', 'o2m', 'm2o', 'file', 'files', 'alias', 'presentation'].includes(field.type) === false &&
+							!field.key.includes('.'),
 					}));
 				},
 				set(val) {
@@ -653,5 +678,12 @@ export default defineComponent({
 
 .reset-preset {
 	margin-top: 24px;
+}
+
+.add-field {
+	margin-top: 8px;
+	::v-deep .v-button {
+		margin: auto;
+	}
 }
 </style>

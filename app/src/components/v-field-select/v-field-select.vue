@@ -3,23 +3,18 @@
 		{{ $t('no_fields_in_collection', { collection: (collectionInfo && collectionInfo.name) || collection }) }}
 	</v-notice>
 
-	<draggable
-		v-else
-		:force-fallback="true"
-		v-model="selectedFields"
-		draggable=".draggable"
-		:set-data="hideDragImage"
-		class="v-field-select"
-	>
-		<v-chip
-			v-for="(field, index) in selectedFields"
-			:key="index"
-			class="field draggable"
-			v-tooltip="field.field"
-			@click="removeField(field.field)"
-		>
-			{{ field.name }}
-		</v-chip>
+	<draggable v-else v-model="selectedFields" draggable=".draggable" :set-data="hideDragImage" class="v-field-select">
+		<template v-if="!hideValue">
+			<v-chip
+				v-for="(field, index) in selectedFields"
+				:key="index"
+				class="field draggable"
+				v-tooltip="field.field"
+				@click="removeField(field.field)"
+			>
+				{{ field.name }}
+			</v-chip>
+		</template>
 
 		<template #footer>
 			<v-menu show-arrow v-model="menuActive" class="add" placement="bottom">
@@ -37,6 +32,7 @@
 						:field="field"
 						:depth="depth"
 						@add="addField"
+						:addable-parent="addableParent"
 					/>
 				</v-list>
 			</v-menu>
@@ -74,9 +70,17 @@ export default defineComponent({
 			type: Number,
 			default: 1,
 		},
+		hideValue: {
+			type: Boolean,
+			default: false,
+		},
 		inject: {
 			type: Object as PropType<{ fields: Field[]; collections: Collection[]; relations: Relation[] } | null>,
 			default: () => ({ fields: [], collections: [], relations: [] }),
+		},
+		addableParent: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {

@@ -1,4 +1,6 @@
-export default function getFieldsFromTemplate(string: string) {
+import adjustFieldsForTranslations from '@/utils/adjust-fields-for-translations';
+
+export default function getFieldsFromTemplate(string: string, collection: string | undefined = undefined) {
 	const regex = /{{(.*?)}}/g;
 	let fields = string.match(regex);
 
@@ -9,5 +11,9 @@ export default function getFieldsFromTemplate(string: string) {
 	fields = fields.map((field) => {
 		return field.replace(/{{/g, '').replace(/}}/g, '').trim();
 	});
+
+	if (collection) {
+		return adjustFieldsForTranslations(fields, collection);
+	}
 	return fields;
 }

@@ -19,7 +19,7 @@
 			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
 					:key="header.value"
-					:value="get(item, header.value)"
+					:value="get(item, header.value, relationInfo.junctionCollection)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
 					:interface="header.field.interface"
@@ -70,7 +70,7 @@
 import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
-import { get } from 'lodash';
+import get from '@/utils/get-nested-field';
 
 import useActions from './use-actions';
 import useRelation from './use-relation';
@@ -78,6 +78,7 @@ import usePreview from './use-preview';
 import useEdit from './use-edit';
 import useSelection from './use-selection';
 import useSort from './use-sort';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection },
@@ -116,15 +117,24 @@ export default defineComponent({
 
 		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
 
-		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
-			value,
-			relationInfo,
-			emitter
-		);
+		const adjustedFields = computed(() => {
+			return adjustFieldsForDisplays(fields.value, junctionCollection.value.collection);
+		});
 
-		const { tableHeaders, items, loading, error } = usePreview(
+		const {
+			deleteItem,
+			getUpdatedItems,
+			getNewItems,
+			getPrimaryKeys,
+			getNewSelectedItems,
+			getJunctionItem,
+			getJunctionFromRelatedId,
+		} = useActions(value, relationInfo, emitter);
+
+		const { tableHeaders: tableHeadersWithHidden, items, loading, error } = usePreview(
 			value,
-			fields,
+			adjustedFields,
+			sortField,
 			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,
@@ -144,7 +154,11 @@ export default defineComponent({
 
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection(value, items, relationInfo, emitter);
 
-		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
+		const { sort, sortItems, sortedItems } = useSort(relationInfo, adjustedFields, items, emitter);
+
+		const tableHeaders = computed(() => {
+			return tableHeadersWithHidden.value.filter((header) => fields.value.includes(header.value));
+		});
 
 		return {
 			junction,
