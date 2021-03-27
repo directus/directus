@@ -122,6 +122,19 @@ export default defineComponent({
 				}
 			}
 
+			// add primary key to request for XLIFF export
+			// it's required for correct generation of XLIFF file
+			if (['xliff', 'xliff2'].includes(format.value)) {
+				const fieldsStore = useFieldsStore();
+				const { field: primaryKey } = fieldsStore.getPrimaryKeyFieldForCollection(props.collection.collection);
+				if (!params.fields) {
+					params.fields = [primaryKey];
+				}
+				else if (!params.fields.includes(primaryKey)) {
+					params.fields = [...params.fields, primaryKey];
+				}
+			}
+
 			const qs = Object.keys(params)
 				.map((key) => `${key}=${params[key]}`)
 				.join('&');
