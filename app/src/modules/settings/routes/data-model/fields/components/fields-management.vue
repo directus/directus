@@ -75,7 +75,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const parsedFields = computed(() => {
-			return orderBy(fields.value, [(o) => o.meta?.sort || null, (o) => o.meta?.id]).filter(
+			return orderBy(fields.value, [(o) => (o.meta?.sort ? Number(o.meta?.sort) : null), (o) => o.meta?.id]).filter(
 				(field) => field.field.startsWith('$') === false
 			);
 		});

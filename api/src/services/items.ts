@@ -21,7 +21,7 @@ import env from '../env';
 import { PayloadService } from './payload';
 import { AuthorizationService } from './authorization';
 
-import { pick, clone, cloneDeep, merge } from 'lodash';
+import { pick, clone, cloneDeep, merge, without } from 'lodash';
 import getDefaultValue from '../utils/get-default-value';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
@@ -67,6 +67,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					action: 'create',
 					payload: payloads[i],
 					schema: this.schema,
+					database: this.knex,
 				});
 
 				if (customProcessed && customProcessed.length > 0) {
@@ -177,6 +178,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			action: 'create',
 			payload: payloads,
 			schema: this.schema,
+			database: this.knex,
 		});
 
 		return Array.isArray(data) ? savedPrimaryKeys : savedPrimaryKeys[0];
@@ -282,6 +284,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				action: 'update',
 				payload,
 				schema: this.schema,
+				database: this.knex,
 			});
 
 			if (customProcessed && customProcessed.length > 0) {
@@ -310,13 +313,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				payload = await payloadService.processM2O(payload);
 				payload = await payloadService.processA2O(payload);
 
-				let payloadWithoutAliases = pick(payload, columns);
+				let payloadWithoutAliasAndPK = pick(payload, without(columns, primaryKeyField));
 
-				payloadWithoutAliases = await payloadService.processValues('update', payloadWithoutAliases);
+				payloadWithoutAliasAndPK = await payloadService.processValues('update', payloadWithoutAliasAndPK);
 
-				if (Object.keys(payloadWithoutAliases).length > 0) {
+				console.log(payloadWithoutAliasAndPK);
+
+				if (Object.keys(payloadWithoutAliasAndPK).length > 0) {
 					try {
-						await trx(this.collection).update(payloadWithoutAliases).whereIn(primaryKeyField, keys);
+						await trx(this.collection).update(payloadWithoutAliasAndPK).whereIn(primaryKeyField, keys);
 					} catch (err) {
 						throw await translateDatabaseError(err);
 					}
@@ -361,7 +366,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						item: keys[index],
 						data:
 							snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots?.[index]) : JSON.stringify(snapshots),
-						delta: JSON.stringify(payloadWithoutAliases),
+						delta: JSON.stringify(payloadWithoutAliasAndPK),
 					}));
 
 					if (revisionRecords.length > 0) {
@@ -382,6 +387,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				action: 'update',
 				payload,
 				schema: this.schema,
+				database: this.knex,
 			});
 
 			return key;
@@ -486,6 +492,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			action: 'delete',
 			payload: null,
 			schema: this.schema,
+			database: this.knex,
 		});
 
 		await this.knex.transaction(async (trx) => {
@@ -519,6 +526,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			action: 'delete',
 			payload: null,
 			schema: this.schema,
+			database: this.knex,
 		});
 
 		return key;

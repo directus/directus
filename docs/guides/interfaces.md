@@ -111,6 +111,13 @@ export default {
 };
 ```
 
+::: tip Building multiple extensions
+
+You can export an array of build configurations, so you can bundle (or even watch) multiple extensions at the same time.
+See the [Rollup configuration file documentation](https://rollupjs.org/guide/en/#configuration-files) for more info.
+
+:::
+
 ## 3. Develop your Custom Interface
 
 The interface itself is simply a Vue component, which provides an blank canvas for creating anything you need.

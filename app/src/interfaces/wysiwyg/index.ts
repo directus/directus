@@ -1,12 +1,15 @@
-import InterfaceWYSIWYG from './wysiwyg.vue';
+import { AsyncComponent } from 'vue';
 import { defineInterface } from '@/interfaces/define';
+
+const InterfaceWYSIWYG = () =>
+	import(/* webpackChunkName: 'interface-wysiwyg', webpackPrefetch: true */ './wysiwyg.vue');
 
 export default defineInterface(({ i18n }) => ({
 	id: 'wysiwyg',
 	name: i18n.t('interfaces.wysiwyg.wysiwyg'),
 	description: i18n.t('interfaces.wysiwyg.description'),
 	icon: 'format_quote',
-	component: InterfaceWYSIWYG,
+	component: InterfaceWYSIWYG as AsyncComponent,
 	types: ['text'],
 	options: [
 		{

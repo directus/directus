@@ -445,7 +445,9 @@ export class PayloadService {
 				const relatedRecords: Partial<Item>[] = [];
 
 				if (Array.isArray(payload[relation.one_field!])) {
-					for (const relatedRecord of payload[relation.one_field!] || []) {
+					for (let i = 0; i < (payload[relation.one_field!] || []).length; i++) {
+						const relatedRecord = (payload[relation.one_field!] || [])[i];
+
 						let record = cloneDeep(relatedRecord);
 
 						if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
@@ -466,6 +468,15 @@ export class PayloadService {
 								[relation.many_primary]: relatedRecord,
 							};
 						}
+
+						if (relation.sort_field) {
+							record = {
+								...record,
+								[relation.sort_field]: i + 1,
+							};
+						}
+
+						console.log(record);
 
 						relatedRecords.push({
 							...record,

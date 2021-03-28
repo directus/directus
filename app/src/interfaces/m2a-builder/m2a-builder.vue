@@ -619,6 +619,7 @@ export default defineComponent({
 							};
 						} else {
 							return {
+								...sortedItems[sortedItemIndex],
 								[o2mRelation.value.many_primary]: rawValue,
 								[o2mRelation.value.sort_field]: sortedItemIndex + 1,
 							};

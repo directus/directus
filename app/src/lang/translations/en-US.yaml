@@ -10,6 +10,7 @@ add_field: Add Field
 role_name: Role Name
 db_only_click_to_configure: 'Database Only: Click to Configure '
 show_archived_items: Show Archived Items
+edited: Edited
 required: Required
 required_for_app_access: Required for App Access
 requires_value: Requires value
@@ -582,6 +583,7 @@ settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
 scope: Scope
 layout: Layout
+tree_view: Tree View
 changes_are_permanent: Changes are permanent
 preset_name_placeholder: Name of bookmark...
 preset_search_placeholder: Search query...
@@ -983,6 +985,9 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: No Collection
+  tree-view:
+    description: Tree view for nested recursive one-to-many items
+    recursive_only: The tree view interface only works for recursive relationships.
   user:
     user: User
     description: Select an existing directus user

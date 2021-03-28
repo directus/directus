@@ -58,6 +58,7 @@ reset_system_permissions_to: 'Redefinir permissões do sistema para:'
 reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você pode ter aplicado às coleções do sistema. Tem certeza?
 the_following_are_minimum_permissions: As seguintes são as permissões mínimas necessárias quando o "Acesso ao Aplicativo" estiver ativado. Você pode estender as permissões além disto, mas não abaixo.
 app_access_minimum: Acesso ao App Mínimo
+recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
 unarchive_confirm: Tem certeza de que deseja desarquivar este item?
 nested_files_folders_will_be_moved: Arquivos e pastas aninhadas serão movidos a um nível acima.
@@ -87,6 +88,7 @@ field_presentation: Apresentação e pseudônimos
 field_file: Arquivo único
 field_files: Múltiplos arquivos
 field_m2o: Relacionamento M2O
+field_m2a: Relacionamento M2A
 field_o2m: Relacionamento O2M
 field_m2m: Relacionamento M2M
 field_translations: Traduções
@@ -97,6 +99,7 @@ field_presets: Predefinições de campo
 permissions_for_role: 'Itens que o cargo {role} pode {action}.'
 fields_for_role: 'Campos que o cargo {role} pode {action}.'
 validation_for_role: 'As regras {action} do campo que o papel {role} deve obedecer.'
+presets_for_role: 'Valores de campo padrões para a função {role}.'
 presentation_and_aliases: Apresentação e pseudônimos
 revision_post_update: Aqui está como este item ficou após a atualização...
 changes_made: Estas são as mudanças específicas que foram feitas...
@@ -116,6 +119,7 @@ exposure: Exposição
 shutter: Obturador
 iso: ISO
 focal_length: Distância focal
+schema_setup_key: O nome da coluna do banco de dados deste campo e a chave API
 create_field: Criar Campo
 creating_new_field: 'Novo campo ({collection})'
 reset_page_preferences: Redefinir preferências da página
@@ -143,9 +147,12 @@ create_translations: Criar Traduções
 auto_generate: Gerar automaticamente
 this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
 click_here: Clique aqui
+to_manually_setup_translations: to manually setup translations.
 click_to_manage_translated_fields: >-
   Ainda não há campos traduzidos. Clique aqui para criá-los. | Há um campo traduzido. Clique aqui para gerenciá-lo. | Há {count} campos traduzidos. Clique aqui para gerenciá-los.
 fields_group: Grupo de Campos
+new_data_alert: 'O seguinte será criado em seu modelo de dados:'
+new_field: 'Novo campo'
 add_m2o_to_collection: 'Adicionar Muitos-para-Um a "{collection}"'
 add_o2m_to_collection: 'Adicionar Um-para-Muitos a "{collection}"'
 add_m2m_to_collection: 'Adicionar Muitos-para-Muitos a "{collection}"'
