@@ -2,7 +2,7 @@ import { StorageManager } from '@directus/drive';
 import { GoogleCloudStorage, GoogleCloudStorageConfig } from '../src';
 
 describe('drive', function () {
-	it('Pass', function () {
+	it('Instantiate', function () {
 		const storage = new StorageManager({
 			default: 'gcs',
 			disks: {
