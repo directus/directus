@@ -119,8 +119,7 @@ channels:
 
 Please read our [Contributing Guide](./contributing.md) before submitting Pull Requests.
 
-All security vulnerabilities should be reported in accordance with our
-[Security Policy](https://docs.directus.io/contributing/introduction/#reporting-security-vulnerabilities).
+All security vulnerabilities should be reported in accordance with our [Security Policy](https://docs.directus.io/contributing/introduction/#reporting-security-vulnerabilities).
 
 Directus is a premium open-source ([GPLv3](./license)) project, made possible with support from our passionate core
 team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!
