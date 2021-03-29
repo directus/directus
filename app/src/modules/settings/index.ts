@@ -21,7 +21,7 @@ import { useCollectionsStore, useFieldsStore } from '@/stores';
 
 export default defineModule(({ i18n }) => ({
 	id: 'settings',
-	name: 'settings',
+	name: '$t:settings',
 	icon: 'settings',
 	color: 'var(--warning)',
 	routes: [

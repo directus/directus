@@ -5,7 +5,7 @@ import ActivityItem from './routes/item.vue';
 export default defineModule(({ i18n }) => ({
 	id: 'activity',
 	hidden: true,
-	name: 'activity',
+	name: '$t:activity',
 	icon: 'notifications',
 	routes: [
 		{
