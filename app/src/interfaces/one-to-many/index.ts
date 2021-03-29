@@ -4,8 +4,8 @@ import Options from './options.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'one-to-many',
-	name: i18n.t('interfaces.one-to-many.one-to-many'),
-	description: i18n.t('interfaces.one-to-many.description'),
+	name: '$t:interfaces.one-to-many.one-to-many'
+	description: '$t:interfaces.one-to-many.description'
 	icon: 'arrow_right_alt',
 	component: InterfaceOneToMany,
 	types: ['alias'],

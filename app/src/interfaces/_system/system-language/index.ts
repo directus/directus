@@ -3,7 +3,7 @@ import { defineInterface } from '@/interfaces/define';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'system-language',
-	name: i18n.t('language'),
+	name: '$t:language'
 	icon: 'translate',
 	component: InterfaceSystemLanguage,
 	system: true,
