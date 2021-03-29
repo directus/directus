@@ -1,11 +1,9 @@
 import VueI18n from 'vue-i18n';
 import { Component, AsyncComponent } from 'vue';
 import { Field, types, localTypes } from '@/types';
+import { Extension } from '@/extension';
 
-export type InterfaceConfig = {
-	id: string;
-	icon: string;
-	name: string | VueI18n.TranslateResult;
+export interface InterfaceConfig extends Extension {
 	description?: string | VueI18n.TranslateResult;
 	component: Component | AsyncComponent;
 	options: DeepPartial<Field>[] | Component | AsyncComponent;
@@ -16,7 +14,7 @@ export type InterfaceConfig = {
 	hideLoader?: boolean;
 	system?: boolean;
 	recommendedDisplays?: string[];
-};
+}
 
 export type InterfaceContext = { i18n: VueI18n };
 export type InterfaceDefineParam = InterfaceDefineParamGeneric<InterfaceConfig>;

@@ -1,12 +1,11 @@
 import VueI18n from 'vue-i18n';
 import { VueConstructor, Component } from 'vue';
+import { Extension } from '@/extension';
 
-export type LayoutConfig = {
-	id: string;
+export interface LayoutConfig extends Extension {
 	icon: string;
-	name: string | VueI18n.TranslateResult;
 	component: Component;
-};
+}
 
 export type LayoutContext = { i18n: VueI18n };
 
