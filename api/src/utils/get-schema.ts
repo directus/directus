@@ -6,6 +6,7 @@ import { Knex } from 'knex';
 import SchemaInspector from '@directus/schema';
 import { mapValues } from 'lodash';
 
+import { systemCollectionRows } from '../database/system-data/collections';
 import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';
 import getLocalType from './get-local-type';
@@ -66,9 +67,10 @@ export async function getSchema(options?: {
 
 	const schemaOverview = await schemaInspector.overview();
 
-	const collections = await database
-		.select('collection', 'singleton', 'note', 'sort_field')
-		.from('directus_collections');
+	const collections = [
+		...(await database.select('collection', 'singleton', 'note', 'sort_field').from('directus_collections')),
+		...systemCollectionRows,
+	];
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
 		if (!info.primary) {
