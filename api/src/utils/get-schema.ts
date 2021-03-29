@@ -109,7 +109,7 @@ export async function getSchema(options?: {
 			)
 			.from('directus_fields')),
 		...systemFieldRows,
-	];
+	].filter((field) => (field.special ? toArray(field.special) : []).includes('no-data') === false);
 
 	for (const field of fields) {
 		const existing = result.collections[field.collection].fields[field.field];

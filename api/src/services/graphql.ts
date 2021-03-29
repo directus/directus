@@ -43,6 +43,7 @@ import {
 	GraphQLFloat,
 	GraphQLScalarType,
 	GraphQLError,
+	GraphQLNonNull,
 } from 'graphql';
 import logger from '../logger';
 import { getGraphQLType } from '../utils/get-graphql-type';
@@ -185,6 +186,13 @@ export class GraphQLService {
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
 						acc[collectionName] = ReadCollectionTypes[collection.collection].getResolver(collection.collection);
+
+						if (this.schema.collections[collection.collection].singleton === false) {
+							acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
+								`${collectionName}_by_id`
+							);
+						}
+
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
 			);
@@ -455,6 +463,17 @@ export class GraphQLService {
 						: [ReadCollectionTypes[collection.collection]],
 					resolve: async ({ info }: { info: GraphQLResolveInfo }) => await self.resolveQuery(info),
 				});
+
+				if (collection.singleton === false) {
+					ReadCollectionTypes[collection.collection].addResolver({
+						name: `${collection.collection}_by_id`,
+						type: ReadCollectionTypes[collection.collection],
+						args: {
+							id: GraphQLNonNull(GraphQLID),
+						},
+						resolve: async ({ info }: { info: GraphQLResolveInfo }) => await self.resolveQuery(info),
+					});
+				}
 			}
 
 			for (const relation of schema.read.relations) {
@@ -575,7 +594,31 @@ export class GraphQLService {
 
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
 		const query = this.getQuery(args, selections, info.variableValues);
+
+		if (collection.endsWith('_by_id') && this.schema.collections.hasOwnProperty(collection) === false) {
+			collection = collection.slice(0, -6);
+		}
+
+		if (args.id) {
+			query.filter = {
+				_and: [
+					query.filter || {},
+					{
+						[this.schema.collections[collection].primary]: {
+							_eq: args.id,
+						},
+					},
+				],
+			};
+
+			query.limit = 1;
+		}
+
 		const result = await this.read(collection, query);
+
+		if (args.id) {
+			return result?.[0] || null;
+		}
 
 		return result;
 	}
