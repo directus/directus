@@ -13,6 +13,7 @@ db_only_click_to_configure: 'Только База данных: Нажмите 
 show_archived_items: Показать Архивные Элементы
 edited: Изменено
 required: Необходимые
+required_for_app_access: Требуется для доступа к приложению
 requires_value: Требуется значение
 create_preset: Создать Пресет
 create_role: Создать Роль
@@ -159,6 +160,7 @@ m2o_relationship: Связка Many to One
 o2m_relationship: Связка One to Many
 m2m_relationship: Связка Many to Many
 m2a_relationship: Связка Many to Any
+invalid_item: Неверное содержимое
 next: Дальше
 field_name: Название поля
 translations: Переводы
@@ -773,7 +775,9 @@ report_error: Сообщить об Ошибке
 interfaces:
   button-links:
     links: Ссылки
+    style: Стиль
     link: Ссылки
+    button: Кнопки
   checkboxes:
     checkboxes: Флажки
     description: Выбрать из нескольких опций с помощью флажков
