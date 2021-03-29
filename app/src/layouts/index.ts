@@ -9,7 +9,5 @@ export function getLayouts() {
 		layouts = ref([]);
 	}
 
-	translateExtensions(layouts);
-
-	return layouts;
+	return translateExtensions(layouts);
 }

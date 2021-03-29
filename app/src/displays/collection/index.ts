@@ -3,20 +3,20 @@ import DisplayCollection from './collection.vue';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'collection',
-	name: '$t:displays.collection.collection'
-	description: '$t:displays.collection.description'
+	name: '$t:displays.collection.collection',
+	description: '$t:displays.collection.description',
 	types: ['string'],
 	icon: 'label',
 	handler: DisplayCollection,
 	options: [
 		{
 			field: 'icon',
-			name: '$t:icon'
+			name: '$t:icon',
 			type: 'boolean',
 			meta: {
 				interface: 'toggle',
 				options: {
-					label: '$t:displays.collection.icon_label'
+					label: '$t:displays.collection.icon_label',
 				},
 			},
 			schema: {

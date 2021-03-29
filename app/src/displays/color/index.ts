@@ -3,15 +3,15 @@ import DisplayColor from './color.vue';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'color',
-	name: '$t:displays.color.color'
-	description: '$t:displays.color.description'
+	name: '$t:displays.color.color',
+	description: '$t:displays.color.description',
 	types: ['string'],
 	icon: 'flag',
 	handler: DisplayColor,
 	options: [
 		{
 			field: 'defaultColor',
-			name: '$t:displays.color.default_color'
+			name: '$t:displays.color.default_color',
 			type: 'string',
 			meta: {
 				interface: 'color',

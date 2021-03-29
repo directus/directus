@@ -9,7 +9,5 @@ export function getInterfaces() {
 		interfaces = ref([]);
 	}
 
-	translateExtensions(interfaces);
-
-	return interfaces;
+	return translateExtensions(interfaces);
 }

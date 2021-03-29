@@ -9,7 +9,5 @@ export function getModules() {
 		modules = ref([]);
 	}
 
-	translateExtensions(modules);
-
-	return modules;
+	return translateExtensions(modules);
 }

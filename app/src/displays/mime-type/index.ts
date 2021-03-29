@@ -4,18 +4,18 @@ import { defineDisplay } from '@/displays/define';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'mime-type',
-	name: '$t:displays.mime-type.mime-type'
-	description: '$t:displays.mime-type.description'
+	name: '$t:displays.mime-type.mime-type',
+	description: '$t:displays.mime-type.description',
 	icon: 'picture_as_pdf',
 	options: [
 		{
 			field: 'showAsExtension',
-			name: '$t:displays.mime-type.extension_only'
+			name: '$t:displays.mime-type.extension_only',
 			type: 'boolean',
 			meta: {
 				interface: 'toggle',
 				options: {
-					label: '$t:displays.mime-type.extension_only_label'
+					label: '$t:displays.mime-type.extension_only_label',
 				},
 			},
 			schema: {

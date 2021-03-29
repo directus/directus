@@ -13,8 +13,8 @@ type Options = {
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'related-values',
-	name: '$t:displays.related-values.related-values'
-	description: '$t:displays.related-values.description'
+	name: '$t:displays.related-values.related-values',
+	description: '$t:displays.related-values.description',
 	icon: 'settings_ethernet',
 	handler: DisplayRelatedValues,
 	options: options,

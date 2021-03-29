@@ -3,21 +3,21 @@ import InterfaceCollection from './collection.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'collection',
-	name: '$t:interfaces.collection.collection'
-	description: '$t:interfaces.collection.description'
+	name: '$t:interfaces.collection.collection',
+	description: '$t:interfaces.collection.description',
 	icon: 'featured_play_list',
 	component: InterfaceCollection,
 	types: ['string'],
 	options: [
 		{
 			field: 'includeSystem',
-			name: '$t:system'
+			name: '$t:system',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.collection.include_system_collections'
+					label: '$t:interfaces.collection.include_system_collections',
 				},
 			},
 			schema: {

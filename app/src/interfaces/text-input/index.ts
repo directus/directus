@@ -3,35 +3,35 @@ import { defineInterface } from '@/interfaces/define';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'text-input',
-	name: '$t:interfaces.text-input.text-input'
-	description: '$t:interfaces.text-input.description'
+	name: '$t:interfaces.text-input.text-input',
+	description: '$t:interfaces.text-input.description',
 	icon: 'text_fields',
 	component: InterfaceTextInput,
 	types: ['string', 'uuid'],
 	options: [
 		{
 			field: 'placeholder',
-			name: '$t:placeholder'
+			name: '$t:placeholder',
 			meta: {
 				width: 'half',
 				interface: 'text-input',
 				options: {
-					placeholder: '$t:enter_a_placeholder'
+					placeholder: '$t:enter_a_placeholder',
 				},
 			},
 		},
 		{
 			field: 'font',
-			name: '$t:font'
+			name: '$t:font',
 			type: 'string',
 			meta: {
 				width: 'half',
 				interface: 'dropdown',
 				options: {
 					choices: [
-						{ text: '$t:sans_serif' value: 'sans-serif' },
-						{ text: '$t:monospace' value: 'monospace' },
-						{ text: '$t:serif' value: 'serif' },
+						{ text: '$t:sans_serif', value: 'sans-serif' },
+						{ text: '$t:monospace', value: 'monospace' },
+						{ text: '$t:serif', value: 'serif' },
 					],
 				},
 			},
@@ -41,7 +41,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'iconLeft',
-			name: '$t:icon_left'
+			name: '$t:icon_left',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -50,7 +50,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'iconRight',
-			name: '$t:icon_right'
+			name: '$t:icon_right',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -59,13 +59,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'trim',
-			name: '$t:interfaces.text-input.trim'
+			name: '$t:interfaces.text-input.trim',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.text-input.trim_label'
+					label: '$t:interfaces.text-input.trim_label',
 				},
 			},
 			schema: {
@@ -74,13 +74,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'masked',
-			name: '$t:interfaces.text-input.mask'
+			name: '$t:interfaces.text-input.mask',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.text-input.mask_label'
+					label: '$t:interfaces.text-input.mask_label',
 				},
 			},
 			schema: {
@@ -89,13 +89,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'nullable',
-			name: '$t:interfaces.text-input.nullable'
+			name: '$t:interfaces.text-input.nullable',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.text-input.nullable_label'
+					label: '$t:interfaces.text-input.nullable_label',
 				},
 			},
 			schema: {

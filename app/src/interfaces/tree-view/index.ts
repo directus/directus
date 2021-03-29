@@ -3,8 +3,8 @@ import InterfaceTreeView from './tree-view.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'tree-view',
-	name: '$t:tree_view'
-	description: '$t:interfaces.tree-view.description'
+	name: '$t:tree_view',
+	description: '$t:interfaces.tree-view.description',
 	icon: 'account_tree',
 	types: ['alias'],
 	groups: ['o2m'],

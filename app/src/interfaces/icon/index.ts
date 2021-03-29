@@ -3,8 +3,8 @@ import InterfaceIcon from './icon.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'icon',
-	name: '$t:interfaces.icon.icon'
-	description: '$t:interfaces.icon.description'
+	name: '$t:interfaces.icon.icon',
+	description: '$t:interfaces.icon.description',
 	icon: 'insert_emoticon',
 	component: InterfaceIcon,
 	types: ['string'],

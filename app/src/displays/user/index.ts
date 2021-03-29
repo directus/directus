@@ -3,15 +3,15 @@ import DisplayUser from './user.vue';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'user',
-	name: '$t:displays.user.user'
-	description: '$t:displays.user.description'
+	name: '$t:displays.user.user',
+	description: '$t:displays.user.description',
 	types: ['uuid'],
 	icon: 'person',
 	handler: DisplayUser,
 	options: [
 		{
 			field: 'display',
-			name: '$t:display'
+			name: '$t:display',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -19,15 +19,15 @@ export default defineDisplay(({ i18n }) => ({
 				options: {
 					choices: [
 						{
-							text: '$t:displays.user.avatar'
+							text: '$t:displays.user.avatar',
 							value: 'avatar',
 						},
 						{
-							text: '$t:displays.user.name'
+							text: '$t:displays.user.name',
 							value: 'name',
 						},
 						{
-							text: '$t:displays.user.both'
+							text: '$t:displays.user.both',
 							value: 'both',
 						},
 					],
@@ -39,13 +39,13 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'circle',
-			name: '$t:circle'
+			name: '$t:circle',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:displays.user.circle_label'
+					label: '$t:displays.user.circle_label',
 				},
 			},
 			schema: {

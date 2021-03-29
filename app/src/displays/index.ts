@@ -1,4 +1,4 @@
-import { rendertranslateExtensionsNames } from '@/extension';
+import { translateExtensions } from '@/extension';
 import { ref, Ref } from '@vue/composition-api';
 import { DisplayConfig } from './types';
 
@@ -9,7 +9,5 @@ export function getDisplays() {
 		displays = ref([]);
 	}
 
-	translateExtensions(displays);
-
-	return displays;
+	return translateExtensions(displays);
 }

@@ -1,10 +1,9 @@
-import { Ref } from '@vue/composition-api';
+import { computed, Ref } from '@vue/composition-api';
 import { cloneDeepWith } from 'lodash';
-import { TranslateResult } from 'vue-i18n';
 import i18n from './lang';
 
 export function translateExtensions(extensions: Ref<Extension[]>) {
-	return cloneDeepWith(extensions.value, translateStrings);
+	return computed(() => cloneDeepWith(extensions.value, translateStrings));
 }
 function translateStrings(obj: Record<string, any>) {
 	Object.entries(obj).forEach(([key, val]) => {
@@ -15,6 +14,5 @@ function translateStrings(obj: Record<string, any>) {
 
 export interface Extension {
 	id: string;
-	name: TranslateResult;
-	translation: string;
+	name: string;
 }

@@ -29,15 +29,15 @@ const choices = Object.entries(choicesMap).map(([key, value]) => ({
 
 export default defineInterface(({ i18n }) => ({
 	id: 'code',
-	name: '$t:interfaces.code.code'
-	description: '$t:interfaces.code.description'
+	name: '$t:interfaces.code.code',
+	description: '$t:interfaces.code.description',
 	icon: 'code',
 	component: InterfaceCode,
 	types: ['string', 'json', 'text'],
 	options: [
 		{
 			field: 'language',
-			name: '$t:language'
+			name: '$t:language',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -47,7 +47,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'lineNumber',
-			name: '$t:interfaces.code.line_number'
+			name: '$t:interfaces.code.line_number',
 			type: 'boolean',
 			meta: {
 				width: 'half',
@@ -59,13 +59,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'template',
-			name: '$t:template'
+			name: '$t:template',
 			type: 'text',
 			meta: {
 				width: 'full',
 				interface: 'code',
 				options: {
-					placeholder: '$t:interfaces.code.placeholder'
+					placeholder: '$t:interfaces.code.placeholder',
 				},
 			},
 			schema: {

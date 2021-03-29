@@ -3,8 +3,8 @@ import InterfaceOptions from './interface-options.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'interface-options',
-	name: '$t:interfaces.interface-options.interface-options'
-	description: '$t:interfaces.interface-options.description'
+	name: '$t:interfaces.interface-options.interface-options',
+	description: '$t:interfaces.interface-options.description',
 	icon: 'box',
 	component: InterfaceOptions,
 	types: ['string'],

@@ -3,8 +3,8 @@ import InterfaceButtonLinks from './button-links.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'button-links',
-	name: '$t:interfaces.button-links.button-links'
-	description: '$t:interfaces.button-links.description'
+	name: '$t:interfaces.button-links.button-links',
+	description: '$t:interfaces.button-links.description',
 	icon: 'smart_button',
 	component: InterfaceButtonLinks,
 	hideLabel: true,
@@ -15,29 +15,29 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'links',
 			type: 'json',
-			name: '$t:interfaces.button-links.links'
+			name: '$t:interfaces.button-links.links',
 			meta: {
 				width: 'full',
 				interface: 'repeater',
 				options: {
-					placeholder: '$t:title'
+					placeholder: '$t:title',
 					template: '{{ label }}',
 					fields: [
 						{
 							field: 'label',
 							type: 'string',
-							name: '$t:label'
+							name: '$t:label',
 							meta: {
 								width: 'full',
 								interface: 'text-input',
 								options: {
-									placeholder: '$t:label'
+									placeholder: '$t:label',
 								},
 							},
 						},
 						{
 							field: 'icon',
-							name: '$t:icon'
+							name: '$t:icon',
 							type: 'string',
 							meta: {
 								width: 'half',
@@ -46,7 +46,7 @@ export default defineInterface(({ i18n }) => ({
 						},
 						{
 							field: 'type',
-							name: '$t:type'
+							name: '$t:type',
 							type: 'string',
 							meta: {
 								width: 'half',
@@ -54,12 +54,12 @@ export default defineInterface(({ i18n }) => ({
 								default_value: 'normal',
 								options: {
 									choices: [
-										{ text: '$t:primary' value: 'primary' },
-										{ text: '$t:normal' value: 'normal' },
-										{ text: '$t:info' value: 'info' },
-										{ text: '$t:success' value: 'success' },
-										{ text: '$t:warning' value: 'warning' },
-										{ text: '$t:danger' value: 'danger' },
+										{ text: '$t:primary', value: 'primary' },
+										{ text: '$t:normal', value: 'normal' },
+										{ text: '$t:info', value: 'info' },
+										{ text: '$t:success', value: 'success' },
+										{ text: '$t:warning', value: 'warning' },
+										{ text: '$t:danger', value: 'danger' },
 									],
 								},
 							},
@@ -70,7 +70,7 @@ export default defineInterface(({ i18n }) => ({
 						{
 							field: 'url',
 							type: 'string',
-							name: '$t:url'
+							name: '$t:url',
 							meta: {
 								width: 'full',
 								interface: 'text-input',

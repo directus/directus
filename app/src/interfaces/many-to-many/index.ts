@@ -4,8 +4,8 @@ import Options from './options.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'many-to-many',
-	name: '$t:interfaces.many-to-many.many-to-many'
-	description: '$t:interfaces.many-to-many.description'
+	name: '$t:interfaces.many-to-many.many-to-many',
+	description: '$t:interfaces.many-to-many.description',
 	icon: 'note_add',
 	component: InterfaceManyToMany,
 	relational: true,

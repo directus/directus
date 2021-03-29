@@ -3,33 +3,33 @@ import { defineInterface } from '@/interfaces/define';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'textarea',
-	name: '$t:interfaces.textarea.textarea'
-	description: '$t:interfaces.textarea.description'
+	name: '$t:interfaces.textarea.textarea',
+	description: '$t:interfaces.textarea.description',
 	icon: 'text_fields',
 	component: InterfaceTextarea,
 	types: ['text'],
 	options: [
 		{
 			field: 'placeholder',
-			name: '$t:placeholder'
+			name: '$t:placeholder',
 			type: 'string',
 			meta: {
 				width: 'full',
 				interface: 'text-input',
 				options: {
-					placeholder: '$t:enter_a_placeholder'
+					placeholder: '$t:enter_a_placeholder',
 				},
 			},
 		},
 		{
 			field: 'trim',
-			name: '$t:interfaces.text-input.trim'
+			name: '$t:interfaces.text-input.trim',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.text-input.trim_label'
+					label: '$t:interfaces.text-input.trim_label',
 				},
 			},
 			schema: {
@@ -38,16 +38,16 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'font',
-			name: '$t:font'
+			name: '$t:font',
 			type: 'string',
 			meta: {
 				width: 'half',
 				interface: 'dropdown',
 				options: {
 					choices: [
-						{ text: '$t:sans_serif' value: 'sans-serif' },
-						{ text: '$t:monospace' value: 'monospace' },
-						{ text: '$t:serif' value: 'serif' },
+						{ text: '$t:sans_serif', value: 'sans-serif' },
+						{ text: '$t:monospace', value: 'monospace' },
+						{ text: '$t:serif', value: 'serif' },
 					],
 				},
 			},

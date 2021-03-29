@@ -3,8 +3,8 @@ import InterfaceDisplayTemplate from './display-template.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'display-template',
-	name: '$t:interfaces.display-template.display-template'
-	description: '$t:interfaces.display-template.description'
+	name: '$t:interfaces.display-template.display-template',
+	description: '$t:interfaces.display-template.description',
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceDisplayTemplate,
 	types: ['string'],
@@ -12,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'collectionField',
-			name: '$t:interfaces.display-template.collection_field'
+			name: '$t:interfaces.display-template.collection_field',
 			type: 'string',
 			meta: {
 				width: 'full',

@@ -3,8 +3,8 @@ import InterfaceNotice from './notice.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'notice',
-	name: '$t:interfaces.notice.notice'
-	description: '$t:interfaces.notice.description'
+	name: '$t:interfaces.notice.notice',
+	description: '$t:interfaces.notice.description',
 	icon: 'info',
 	component: InterfaceNotice,
 	hideLabel: true,
@@ -14,7 +14,7 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'color',
-			name: '$t:color'
+			name: '$t:color',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -22,11 +22,11 @@ export default defineInterface(({ i18n }) => ({
 				default_value: 'normal',
 				options: {
 					choices: [
-						{ text: '$t:normal' value: 'normal' },
-						{ text: '$t:info' value: 'info' },
-						{ text: '$t:success' value: 'success' },
-						{ text: '$t:warning' value: 'warning' },
-						{ text: '$t:danger' value: 'danger' },
+						{ text: '$t:normal', value: 'normal' },
+						{ text: '$t:info', value: 'info' },
+						{ text: '$t:success', value: 'success' },
+						{ text: '$t:warning', value: 'warning' },
+						{ text: '$t:danger', value: 'danger' },
 					],
 				},
 			},
@@ -36,7 +36,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'icon',
-			name: '$t:icon'
+			name: '$t:icon',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -45,13 +45,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'text',
-			name: '$t:text'
+			name: '$t:text',
 			type: 'string',
 			meta: {
 				width: 'full',
 				interface: 'textarea',
 				options: {
-					placeholder: '$t:interfaces.notice.text'
+					placeholder: '$t:interfaces.notice.text',
 				},
 			},
 		},

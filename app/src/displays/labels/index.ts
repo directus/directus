@@ -3,15 +3,15 @@ import DisplayLabels from './labels.vue';
 
 export default defineDisplay(({ i18n }) => ({
 	id: 'labels',
-	name: '$t:displays.labels.labels'
-	description: '$t:displays.labels.description'
+	name: '$t:displays.labels.labels',
+	description: '$t:displays.labels.description',
 	types: ['string', 'json', 'csv'],
 	icon: 'flag',
 	handler: DisplayLabels,
 	options: [
 		{
 			field: 'defaultForeground',
-			name: '$t:displays.labels.default_foreground'
+			name: '$t:displays.labels.default_foreground',
 			type: 'string',
 			meta: {
 				interface: 'color',
@@ -23,7 +23,7 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'defaultBackground',
-			name: '$t:displays.labels.default_background'
+			name: '$t:displays.labels.default_background',
 			type: 'string',
 			meta: {
 				interface: 'color',
@@ -35,13 +35,13 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'format',
-			name: '$t:format_text'
+			name: '$t:format_text',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:displays.labels.format_label'
+					label: '$t:displays.labels.format_label',
 				},
 			},
 			schema: {
@@ -50,7 +50,7 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'showAsDot',
-			name: '$t:displays.labels.show_as_dot'
+			name: '$t:displays.labels.show_as_dot',
 			type: 'boolean',
 			meta: {
 				width: 'half',
@@ -62,7 +62,7 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'choices',
-			name: '$t:choices'
+			name: '$t:choices',
 			type: 'json',
 			meta: {
 				interface: 'repeater',
@@ -71,32 +71,32 @@ export default defineDisplay(({ i18n }) => ({
 					fields: [
 						{
 							field: 'text',
-							name: '$t:text'
+							name: '$t:text',
 							type: 'string',
 							meta: {
 								interface: 'text-input',
 								width: 'half',
 								options: {
-									placeholder: '$t:displays.labels.choices_text_placeholder'
+									placeholder: '$t:displays.labels.choices_text_placeholder',
 								},
 							},
 						},
 						{
 							field: 'value',
-							name: '$t:value'
+							name: '$t:value',
 							type: 'string',
 							meta: {
 								interface: 'text-input',
 								options: {
 									font: 'monospace',
-									placeholder: '$t:displays.labels.choices_value_placeholder'
+									placeholder: '$t:displays.labels.choices_value_placeholder',
 								},
 								width: 'half',
 							},
 						},
 						{
 							field: 'foreground',
-							name: '$t:foreground_color'
+							name: '$t:foreground_color',
 							type: 'string',
 							meta: {
 								interface: 'color',
@@ -105,7 +105,7 @@ export default defineDisplay(({ i18n }) => ({
 						},
 						{
 							field: 'background',
-							name: '$t:background_color'
+							name: '$t:background_color',
 							type: 'string',
 							meta: {
 								interface: 'color',
