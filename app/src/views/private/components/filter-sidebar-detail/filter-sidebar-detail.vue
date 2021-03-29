@@ -44,6 +44,7 @@ import FieldListItem from './field-list-item.vue';
 import { useCollection } from '@/composables/use-collection';
 import getAvailableOperatorsForType from './get-available-operators-for-type';
 import { useFieldTree } from '@/composables/use-field-tree';
+import { getFieldDeep } from '@/utils/get-field-deep';
 
 export default defineComponent({
 	components: { FieldFilter, FieldListItem },
@@ -129,7 +130,8 @@ export default defineComponent({
 		return { fieldTree, addFilterForField, filters, removeFilter, updateFilter, showArchiveToggle, archived };
 
 		function addFilterForField(fieldKey: string) {
-			const field = fieldsStore.getField(props.collection, fieldKey);
+			const field = getFieldDeep(props.collection, fieldKey);
+			console.log(field);
 			const defaultOperator = getAvailableOperatorsForType(field.type).operators[0];
 
 			emit('input', [

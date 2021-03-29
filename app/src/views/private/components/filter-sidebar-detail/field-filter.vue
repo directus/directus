@@ -39,6 +39,7 @@ import { Filter } from '@/types';
 import { useFieldsStore } from '@/stores';
 import getAvailableOperatorsForType from './get-available-operators-for-type';
 import FilterInput from './filter-input.vue';
+import { getFieldDeep } from '@/utils/get-field-deep';
 
 export default defineComponent({
 	components: { FilterInput },
@@ -89,7 +90,7 @@ export default defineComponent({
 		return { activeOperator, value, name, parsedField };
 
 		function getFieldForKey(fieldKey: string) {
-			return fieldsStore.getField(props.collection, fieldKey);
+			return getFieldDeep(props.collection, fieldKey);
 		}
 
 		function getNameForFieldKey(fieldKey: string) {
