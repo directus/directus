@@ -11,7 +11,9 @@ add_field: Tambah Kolom
 role_name: Nama Peran
 db_only_click_to_configure: 'Khusus Database: Tekan Untuk Konfigurasi '
 show_archived_items: Tampilkan Yang Diarsipkan
+edited: Disunting
 required: Diperlukan
+required_for_app_access: Diperlukan untuk Akses Aplikasi
 requires_value: Wajib memiliki nilai
 create_preset: Buat Preset
 create_role: Buat Peran
@@ -25,6 +27,7 @@ connection_excellent: Koneksi Luar Biasa
 connection_good: Koneksi Bagus
 connection_fair: Koneksi Standar
 connection_poor: Koneksi Buruk
+primary: Primer
 rename_folder: Ubah nama folder
 delete_folder: Hapus Folder
 prefix: Awalan
@@ -43,28 +46,83 @@ public_description: Kendalikan data API yang tersedia tanpa autentikasi.
 not_allowed: Tidak Diizinkan
 directus_version: Versi Directus
 node_version: Versi Node
+node_uptime: Waktu Jalan Node
 os_type: Tipe OS
 os_version: Versi OS
+os_uptime: Waktu Jalan OS
 os_totalmem: Memori OS
 archive: Arsip
 archive_confirm: Apakah Anda yakin ingin mengarsipkan item ini?
 archive_confirm_count: >-
   Tidak ada item terpilih | Apakah Anda yakin ingin mengarsipkan item ini? | Apakah Anda yakin ingin mengarsipkan {count} item ini?
+reset_system_permissions_to: 'Set Ulang Perizinan Sistem ke:'
+reset_system_permissions_copy: Tindakan ini akan menimpa perizinan kustom apapun yang mungkin telah diterapkan ke koleksi sistem. Apakah Anda yakin?
+the_following_are_minimum_permissions: Berikut adalah perizinan minimum yang diperlukan ketika "Akses Aplikasi" diaktifkan. Anda dapat mengembangkan perizinan lebih dari ini, tetapi tidak dibawahnya.
+app_access_minimum: Minimum Akses Aplikasi
+recommended_defaults: Bawaan yang Direkomendasikan
 unarchive: Batalkan pengarsipan
 unarchive_confirm: Apakah Anda yakin ingin membatalkan arsip dari item ini?
+nested_files_folders_will_be_moved: Berkas dan folder yang disarang akan dipindahkan satu tingkat keatas.
 unknown_validation_errors: 'Ada kesalahan validasi untuk kolom tersembunyi berikut:'
 validationError:
   eq: Nilai harus {valid}
+  neq: Nilai tidak boleh {invalid}
+  in: Nilai harus salah satu dari {valid}
+  nin: Nilai tidal boleh salah satu dari {invalid}
+  contains: Nilai harus memiliki {substring}
+  ncontains: Nilai tidak boleh memiliki {substring}
+  gt: Nilai harus lebih besar dari {valid}
+  gte: Nilai harus lebih besar atau sama dengan {valid}
+  lt: Nilai harus kurang dari {valid}
+  lte: Nilai harus kurang dari ataus sama dengan {valid}
+  empty: Nilai harus kosong
+  nempty: Nilai tidak boleh kosong
   null: Nilai harus kosong
   nnull: Nilai tidak boleh kosong
+  required: Nilai diperlukan
+all_access: Semua Akses
+no_access: Tidak Ada Akses
+use_custom: Gunakan Kustom
 field_standard: Standar
+field_presentation: Presentasi & Alias
 field_file: Satu Berkas
 field_files: Beberapa Berkas
+field_m2o: Hubungan M2O
+field_m2a: Hubungan M2A
+field_o2m: Hubungan O2M
+field_m2m: Hubungan M2M
 field_translations: Terjemahan
+item_permissions: Perizinan Item
+field_permissions: Perizinan Baris
+field_validation: Validasi Baris
+field_presets: Preset Baris
+permissions_for_role: 'Item {role} Peran dapat {action}.'
+fields_for_role: 'Baris {role} Peran dapat {action}.'
+validation_for_role: 'Aturan baris {action} Peran {role} harus tunduk.'
+presets_for_role: 'Nilai bawaan baris untuk Peran {role}.'
+presentation_and_aliases: Presentasi & Alias
+revision_post_update: Ini adalah bagaimana item ini terlihat setelah pembaruan...
+changes_made: Ini adalah perubahan spesifik yang telah dibuat...
+no_relational_data: Untuk catatan bahwa ini tidak termasuk data relasional.
+hide_field_on_detail: Sembunyikan Baris pada Rincian
+show_field_on_detail: Tampilkan Baris pada Rincian
+delete_field: Hapus Baris
+fields_and_layout: Baris & Layout
+field_create_success: 'Buat Baris: "{field}"'
+field_update_success: 'Perbarui Baris: "{field}"'
+duplicate_where_to: Dimana Anda ingin menggandakan baris ini?
 language: Bahasa
 global: Global
+admins_have_all_permissions: Admin memiliki semua perizinan
+camera: Kamera
+exposure: Eksposur
+shutter: Shutter
+iso: ISO
+focal_length: Jarak Fokus
+schema_setup_key: Nama kolom baris database ini dan kunci API
 create_field: Buat Bidang
 creating_new_field: 'Kolom Baru ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Preferensi Halaman
 hidden_field: Kolom Tersembunyi
 hidden_on_detail: Disembunyikan dalam Rincian
@@ -90,7 +148,12 @@ auto_generate: Buat Otomatis
 this_will_auto_setup_fields_relations: Ini akan secara otomatis menkonfigurasi seluruh kolom dan hubungan yang dibutuhkan.
 click_here: Tekan di sini
 to_manually_setup_translations: untuk secara manual menkonfirgurasi penerjemah.
+click_to_manage_translated_fields: >-
+  Belum ada baris yang diterjemahkan. Klik disini untuk membuatnya. | Terdapat satu baris yang diterjemahan. Klik disini untuk mengelolanya. | Terdapat {count} baris yang diterjemahkan. Klik disini untuk mengelola baris tersebut.
 fields_group: Grup kolom-kolom
+new_data_alert: 'Berikut ini akan dibuat menurut Model Data Anda:'
+new_field: 'Baris Baru'
+new_collection: 'Koleksi Baru'
 add_m2o_to_collection: 'Tambahkan Many-to-One ke "{collection}"'
 add_o2m_to_collection: 'Tambahkan One-to-Many ke "{collection}"'
 add_m2m_to_collection: 'Tambahkan Many-to-Many ke "{collection}"'
@@ -105,6 +168,7 @@ m2o_relationship: Relasi Banyak ke Satu
 o2m_relationship: Relasi Satu ke Banyak
 m2m_relationship: Relasi Banyak ke Banyak
 m2a_relationship: Relasi Banyak ke Semua
+invalid_item: Item tidak Valid
 next: Lanjut
 field_name: Nama Kolom
 translations: Terjemahan
@@ -115,15 +179,39 @@ length: Panjang
 precision_scale: Presisi & Skala
 readonly: Hanya-baca
 unique: Unik
+updated_on: Diperbarui Pada
+updated_by: Diperbarui Oleh
 primary_key: Primary Key
+foreign_key: Kunci Asing
+finish_setup: Selesai Setup
+dismiss: Abaikan
+raw_value: Nilai mentah
+edit_raw_value: Sunting Nilai Mentah
+enter_raw_value: Masukkan nilai mentah...
 clear_value: Bersihkan nilai
 reset_to_default: Kembalikan ke default
 undo_changes: Batalkan Perubahan
 notifications: Notifikasi
+show_all_activity: Tampilkan Semua Aktivitas
 page_not_found: Halaman Tidak Ditemukan
 page_not_found_body: Halaman yang Anda cari sepertinya tidak ada.
+confirm_revert: Konfirmasi Kembalikan
+confirm_revert_body: Ini akan mengembalikan item ke keadaaan yang dipilih.
+display: Tampilkan
+settings_update_success: Pengaturan telah diperbarui
 title: Judul
+revision_delta_created: Dibuat
+revision_delta_created_externally: Buat secara Eksternal
+revision_delta_updated: 'Diperbarui 1 Baris | Diperbarui {count} Baris'
+revision_delta_deleted: Terhapus
+revision_delta_reverted: Dikembalikan
+revision_delta_other: Revisi
+revision_delta_by: '{date} oleh {user}'
+private_user: Pengguna Pribadi
+revision_preview: Pratinjau Revisi
+updates_made: Pembaruan Dibuat
 leave_comment: Tinggalkan komentar...
+post_comment_success: Komentar telah diposting
 this_collection: Pengumpulan ini
 related_collection: Pengumpulan Terkait
 format: Format
@@ -160,6 +248,7 @@ import: Impor
 file_details: Rincian Berkas
 dimensions: Dimensi
 size: Ukuran
+created: Dibuat
 modified: Telah dimodifikasi
 checksum: Checksum
 owner: Pemilik
@@ -202,12 +291,63 @@ create_collection: Buat Pengumpulan
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
 users: Pengguna
 activity: Aktivitas
+webhooks: Webhooks
 field_width: Lebar Bidang
+add_a_new_item: Tambah sebuah item baru...
+add_filter: Tambah Filter
+upper_limit: Batas atas...
+lower_limit: Batas bawah...
 user_directory: Direktori Pengguna
+documentation: Dokumentasi
+sidebar: Bilahsamping
+duration: Durasi
+charset: Charset
+second: Detik
+file_moved: Berkas Dipindahkan
+collection_created: Koleksi Dibuat
 modified_on: Dimodifikasi Pada
+card_size: Ukuran Kartu
+sort_field: Sortir Baris
+add_sort_field: Tambah Baris Sortir
+sort: Sortir
 status: Status
+toggle_manual_sorting: Aktifkan Sortir Manual
+bookmark_doesnt_exist: Bookmark Tidak Tersedia
+bookmark_doesnt_exist_copy: Bookmark yang Anda ingin bukan tidak dapat ditemukan.
+bookmark_doesnt_exist_cta: Kembali ke koleksi
+select_an_item: Pilih sebuah item...
 edit: Edit
+enabled: Diaktifkan
+disable_tfa: Nonaktifkan 2FA
+tfa_scan_code: Scan kode pada aplikasi peng-autentifikasi untuk menyelesaikan pengaturan 2FA
+enter_otp_to_disable_tfa: Masukkan kode OTP untuk menonaktifkan 2FA
+create_account: Buat Akun
+account_created_successfully: Akun Berhasil Dibuat
+auto_fill: Isi Otomatis
+errors:
+  COLLECTION_NOT_FOUND: "Koleksi tidak tersedia"
+  FIELD_NOT_FOUND: Baris tidak ditemukan
+  FORBIDDEN: Dilarang
+  INVALID_CREDENTIALS: Nama pengguna atau kata sandi salah
+  INVALID_OTP: Kata sandi satu-kali salah
+  INVALID_PAYLOAD: Payload tidak valid
+  INVALID_QUERY: Kueri tidak valid
+  ITEM_LIMIT_REACHED: Batas item tercapai
+  ITEM_NOT_FOUND: Item tidak ditemukan
+  ROUTE_NOT_FOUND: Tidak ditemukan
+  RECORD_NOT_UNIQUE: Nilai duplikat terdeteksi
+  UNKNOWN: Kesalahan Tidak Terduga
+value_hashed: Nilai telah Di-hash secara Aman
+bookmark_name: Nama bookmark...
+create_bookmark: Buat Bookmark
+edit_bookmark: Sunting Bookmark
 bookmarks: Markah
+presets: Preset
+unexpected_error: Kesalahan Tidak Terduga
+unexpected_error_copy: Terjadi galat yang tidak terduga, Silahkan mencoba lagi nanti.
+copy_details: Salin Rincian
+no_app_access: Tidak Ada Akses Aplikasi
+no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
 back: Kembali
 placeholder: Tulisan default pada input
 icon_left: Ikon Kiri
@@ -244,6 +384,7 @@ deselect: Hapus pilihan
 editing_in_batch: 'Mengedit Masal {count} item'
 settings_permissions: Peran dan Izin
 settings_project: Pengaturan Proyek
+settings_webhooks: Webhooks
 discard_changes: Batalkan Perubahan
 keep_editing: Tetap Mengedit
 add_new: Tambah Baru
@@ -266,6 +407,7 @@ fields:
     note: Catatan
     display_template: Tampilan Template
     hidden: Tersembunyi
+    sort_field: Sortir Baris
   directus_files:
     title: Judul
     description: Deskripsi
@@ -279,6 +421,8 @@ fields:
     folder: Direktori
     width: Lebar
     height: Tinggi
+    charset: Charset
+    duration: Durasi
   directus_users:
     first_name: Nama Depan
     last_name: Nama belakang
@@ -343,6 +487,8 @@ something_went_wrong: Ada yang salah.
 template: Templat
 value: Nilai
 interfaces:
+  button-links:
+    primary: Primer
   checkboxes:
     checkboxes: Kotak Centang
     allow_other: Izinkan lainnya
@@ -379,6 +525,8 @@ interfaces:
     display_template: Tampilan Template
   numeric:
     numeric: Numerik
+  toggle:
+    label_default: Diaktifkan
   translations:
     display_template: Tampilan Template
   user:

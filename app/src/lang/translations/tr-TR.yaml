@@ -11,7 +11,6 @@ add_field: Alan Ekle
 role_name: Rol Adı
 db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın '
 show_archived_items: Arşivlenmiş Öğeleri Göster
-edited: Düzenlenmiş
 required: Gerekli
 required_for_app_access: Uygulama Erişimi için Gereklidir
 requires_value: Gerekli değer
@@ -46,10 +45,10 @@ public_description: Kimlik doğrulaması olmadan hangi API verilerinin kullanıl
 not_allowed: İzin Verilmedi
 directus_version: Directus Versiyon
 node_version: Node Versiyon
-node_uptime: Node Ayakta Kalma Süresi
+node_uptime: Node Uptime
 os_type: OS Tip
 os_version: OS Versiyon
-os_uptime: OS Ayakta Kalma Süresi
+os_uptime: OS Uptime
 os_totalmem: OS Hafıza
 archive: Arşiv
 archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
@@ -80,12 +79,10 @@ validationError:
   null: Değer null olmalı
   nnull: Değer null olamaz
   required: Değer gereklidir
-  unique: Değer benzersiz olmalıdır
 all_access: Tam Erişim
 no_access: Erişim Yok
 use_custom: Özelleştirilmiş kullan
 field_standard: Standart
-field_presentation: Sunum & Takma Adlar
 field_file: Tek Dosya
 field_files: Birden Fazla Dosya
 field_m2o: M2O İlişkisi
@@ -99,12 +96,6 @@ field_validation: Alan Doğrulama
 field_presets: Alan Hazır Ayarları
 permissions_for_role: '{role} rolünün {action} yapabileceği öğeler.'
 fields_for_role: '{role} rolünün {action} yapabileceği alanlar.'
-validation_for_role: '{role} rolünün {action} kuralına uymak zorunda olduğu alan.'
-presets_for_role: '{role} rolünün alanları için varsayılan değerler.'
-presentation_and_aliases: Sunum & Takma Adlar
-revision_post_update: Burada güncellemeden sonra öğenin nasıl görüneceği bulunmaktadır...
-changes_made: Bunlar yapılan belirli değişikliklerdir...
-no_relational_data: Bunun ilişkisel veriler içerdiğini unutmayınız.
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
@@ -120,7 +111,6 @@ exposure: Pozlama
 shutter: Deklanşör
 iso: ISO
 focal_length: Odak Uzaklığı
-schema_setup_key: Bu alanın veritabanı sütun adı ve API anahtarı
 create_field: Alan Ekle
 creating_new_field: 'Yeni alan ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -153,14 +143,12 @@ to_manually_setup_translations: çevirileri manuel olarak ayarlamak için.
 click_to_manage_translated_fields: >-
   Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
 fields_group: Alanlar Grubu
-new_data_alert: 'Veri Modelinizde aşağıdakiler oluşturulacaktır:'
 new_field: 'Yeni Alan'
 new_collection: 'Yeni Koleksiyon'
 add_m2o_to_collection: '"{collection}" koleksiyonuna Çoktan Bire''yi ekleyin'
 add_o2m_to_collection: '"{collection}" koleksiyonuna Bire Çok ekleyin'
 add_m2m_to_collection: '"{collection}" koleksiyonuna Çoktan Çoğa ekle'
 choose_a_type: Bir Tür Seçin...
-determined_by_relationship: İlişkiye göre belirlenir
 add_note: Kullanıcılar için yardımcı bir not ekleyin...
 default_value: Öntanımlı Değer
 standard_field: Standart Alan
@@ -170,7 +158,6 @@ m2o_relationship: Çoktan Bire İlişki
 o2m_relationship: Bire Çok İlişki
 m2m_relationship: Çoktan Çoka İlişki
 m2a_relationship: Çoktan Herhangi Bir İlişki
-invalid_item: Geçersiz Öğe
 next: Sonraki
 field_name: Alan adı
 translations: Çeviriler
@@ -178,7 +165,6 @@ note: Not
 enter_a_value: Bir değer girin...
 enter_a_placeholder: Placeholder ekle...
 length: Uzunluk
-precision_scale: Hassasiyet & Ölçek
 readonly: Salt-Okunur
 unique: Benzersiz
 updated_on: Güncelleme tarihi
@@ -198,13 +184,10 @@ show_all_activity: Tüm etkinliği göster
 page_not_found: Sayfa Bulunamadı
 page_not_found_body: Aradığınız sayfanın var olduğuna emin misiniz? Biz bulamadık da...
 confirm_revert: Geri Alma İşlemini Onayla
-confirm_revert_body: Bu işlem, öğeyi seçilen duruma geri döndürecektir.
 display: Göster
 settings_update_success: Ayarlar güncellendi
 title: Ünvan
 revision_delta_created: Oluşturulma tarihi
-revision_delta_created_externally: Harici Olarak Oluşturuldu
-revision_delta_updated: '1 Alan Güncellendi | {count} Alan Güncellendi'
 revision_delta_deleted: Silindi
 revision_delta_reverted: Geri Alındı
 revision_delta_other: Revizyon
@@ -220,33 +203,22 @@ item_delete_success: Alan(lar) Silindi
 this_collection: Bu Koleksiyon
 related_collection: İlişkili Koleksiyon
 related_collections: İlişkili Koleksiyonlar
-translations_collection: Çeviriler Koleksiyonu
 languages_collection: Dil Koleksiyonu
 export_data: Verileri Dışa Aktar
 format: Biçim
-use_current_filters_settings: Mevcut Filtreleri & Ayarları Kullan
 export_collection: 'Koleksiyonu ({collection}) dışarı aktar'
 last_page: Son Sayfa
 last_access: Son Erişim
 fill_template: Şablonla Doldur
-a_unique_table_name: Benzersiz bir tablo adı...
-a_unique_column_name: Benzersiz bir sütun adı...
 enable_custom_values: Kişisel başlıklara izin ver
 submit: Gönder
 move_to_folder: Klasöre Taşı
 move: Taşı
 system: Sistem
-add_field_related: İlgili koleksiyona bir alan ekle
 interface: Arayüz
 today: Bugün
 yesterday: Dün
 delete_comment: Yorumu sil
-date-fns_date: PPP
-date-fns_time: 'h:mm:ss a'
-date-fns_time_no_seconds: 'h:mm a'
-date-fns_date_short: 'MMM d, u'
-date-fns_time_short: 'h:mma'
-date-fns_date_short_no_year: MMM d
 month: Ay
 year: Yıl
 select_all: Tümünü Seç
@@ -286,23 +258,13 @@ background_color: Arkaplan Rengi
 upload_from_device: Cihazdan Yükle
 choose_from_library: Kütüphaneden seç
 import_from_url: URL’den Dosya Yükle
-replace_from_device: Dosyayı Cihazdan Değiştirin
-replace_from_library: Dosyayı Kütüphaneden Değiştirin
-replace_from_url: Dosyayı URL'den Değiştirin
 no_file_selected: Dosya seçilmedi
 download_file: Dosyayı İndir
-collection_key: Koleksiyon Anahtarı
 name: İsim
-primary_key_field: Birincil Anahtar Alanı
 type: Tür
 creating_new_collection: Yeni Koleksiyon Oluştur
 created_by: Oluşturan
 created_on: Oluşturulma tarihi
-creating_collection_info: Koleksiyonu adlandırın ve benzersiz "anahtar" alanını ayarlayın...
-creating_collection_system: Bu isteğe bağlı alanlardan herhangi birini etkinleştirin ve yeniden adlandırın.
-auto_increment_integer: Otomatik artan tam sayı
-generated_uuid: Otomatik Oluşturulan UUID
-manual_string: Manuel olarak girilen karakter
 save_and_create_new: Kaydet ve Yeni Oluştur
 save_and_stay: Kaydet ve Sayfada Kal
 save_as_copy: Kopya Olarak Kaydet
@@ -317,33 +279,19 @@ disabled: Pasif
 information: Bilgi
 report_bug: Hata Bildir
 request_feature: Ek Özellik Talep Et
-interface_not_found: '"{interface}" isimli arayüz bulunamadı'
 reset_interface: Arayüzü Sıfırla
-display_not_found: '"{display}" isimli görüntü bulunamadı.'
-reset_display: Görüntüyü Sıfırla
-m2a_builder: İnşa Edici (M2A)
-item_count: 'Öge Yok | 1 Öge | {count} Öğe'
-no_items_copy: Bu koleksiyonda henüz öğe bulunmamaktadır.
-file_count: 'Dosya Yok | 1 Dosya | {count} Dosya'
-no_files_copy: Burada dosya bulunmamaktadır.
-user_count: 'Kullanıcı Yok | 1 Kullanıcı | {count} Kullanıcı'
-no_users_copy: Henüz bu rolde kullanıcı bulunmamaktadır.
-webhooks_count: 'Web Kancası Yok | 1 Web Kancası | {count} Web Kancası'
-no_webhooks_copy: Henüz hiç bir web kancası bulunmamaktadır.
+item_count: 'Öge yok | 1 Öge | {count}  Öge'
+no_webhooks_copy: Henüz hiç bir webhook yok.
 all_items: Tüm öğeler
 csv: CSV
 no_collections: Koleksiyon Yok
 create_collection: Koleksiyon Oluştur
-no_collections_copy_admin: Henüz koleksiyonunuz bulunmamaktadır. Başlamak için aşağıdaki butona tıklayın.
-no_collections_copy: Henüz koleksiyonunuz bulunmamaktadır. Lütfen sistem yöneticinize başvurunuz.
 relationship_not_setup: İlişki doğru bir şekilde konfigüre edilmedi
-display_template_not_setup: Görüntü şablonu seçeneği yanlış yapılandırılmış
-collection_field_not_setup: Koleksiyon alanı seçeneği yanlış yapılandırılmış
 select_a_collection: Koleksiyon Seç
 active: Aktif
 users: Kullanıcılar
 activity: Aktivite
-webhooks: Web Kancaları
+webhooks: Ağ Kancaları
 field_width: Alan Genişliği
 add_a_new_item: Yeni Öğe ekle...
 add_filter: Filtre Ekle
@@ -360,37 +308,26 @@ collection_created: Koleksiyon oluşturuldu
 modified_on: Düzenleme Tarihi
 card_size: Kart Boyutu
 sort_field: Sıralama Alanı
-add_sort_field: Sıralama Alanı Ekle
 sort: Sırala
 status: Durum
 toggle_manual_sorting: Elle sıralamayı aç/kapa
-bookmark_doesnt_exist: Yer İşareti Mevcut Değil
-bookmark_doesnt_exist_copy: Açmaya çalıştığınız yer işareti bulunamadı.
 bookmark_doesnt_exist_cta: Koleksiyona dön
 select_an_item: Seçim Yapın...
 edit: Düzenle
 enabled: Etkin
 disable_tfa: 2FA'yı devre dışı bırak
-tfa_scan_code: 2FA kurulumunu tamamlamak için kimlik doğrulayıcı uygulamanızdaki kodu tarayın
-enter_otp_to_disable_tfa: 2FA'yı devre dışı bırakmak için OTP'yi girin
 create_account: Hesap Oluştur
 account_created_successfully: Hesap başarıyla oluşturuldu
 auto_fill: Otomatik Doldur
-corresponding_field: İlgili Alan
 errors:
-  COLLECTION_NOT_FOUND: "Koleksiyon mevcut değil"
   FIELD_NOT_FOUND: Alan Bulunmadı
   FORBIDDEN: Yetkisiz erişim
   INVALID_CREDENTIALS: Hatalı kullanıcı adı ya da parola
   INVALID_OTP: Tek kullanımlık şifre hatalı
-  INVALID_PAYLOAD: Geçersiz veri
   INVALID_QUERY: Geçersiz sorgu
-  ITEM_LIMIT_REACHED: Öğe sınırına ulaşıldı
   ITEM_NOT_FOUND: Öğe bulunamadı
   ROUTE_NOT_FOUND: Bulunamadı
-  RECORD_NOT_UNIQUE: Yinelenen değer algılandı
   UNKNOWN: Beklenmeyen hata
-value_hashed: Değer Güvenli Biçimde Şifrelendi
 bookmark_name: Yer imi adı...
 create_bookmark: Yer imi oluştur
 edit_bookmark: Yer imini düzenle
@@ -398,9 +335,7 @@ bookmarks: Yer İmleri
 presets: Ön ayarlar
 unexpected_error: Beklenmeyen hata
 unexpected_error_copy: Beklenmedik bir hata oluştu. Lütfen daha sonra tekrar deneyin.
-copy_details: Detayları Kopyala
 no_app_access: Uygulama erişimi yok
-no_app_access_copy: Bu kullanıcının yönetici uygulamasını kullanmasına izin verilmiyor.
 password_reset_sent: Sana içinde şifreni yenilemeni sağlayacak bağlantı olan bir eposta gönderdik
 password_reset_successful: Şifre başarıyla sıfırlandı
 back: Geri
@@ -415,23 +350,14 @@ all_users: Tüm Kullanıcılar
 delete_collection: Koleksiyonu sil
 update_collection_success: Güncellenmiş Koleksiyon
 delete_collection_success: Silinmiş Koleksiyon
-start_end_of_count_items: '{start}-{end}/{count} öğe'
-start_end_of_count_filtered_items: '{start}-{end}/{count} filtreli öğe'
 one_item: '1 öğe'
-one_filtered_item: '1 filtreli öğe'
-delete_collection_are_you_sure: >-
-  Bu koleksiyonu silmek istediğinizden emin misiniz? Bu işlem, koleksiyonu ve içindeki tüm öğeleri siler. Bu işlem kalıcıdır.
 collections_shown: Görüntülenen Koleksiyonlar
 visible_collections: Görünen Koleksiyonlar
 hidden_collections: Gizli Koleksiyonlar
-show_hidden_collections: Gizli Koleksiyonları Göster
-hide_hidden_collections: Gizli Koleksiyoları Gizle
-unmanaged_collections: Yapılandırılmamış Koleksiyonlar
 system_collections: Sistem Koleksiyonları
 placeholder: Yertutucu
 icon_left: İkon Sol
 icon_right: İkon Sağ
-count_other_revisions: '{count} Diğer Gözden Geçirme'
 font: Font
 sans_serif: Sans Serif
 serif: Serif
@@ -443,7 +369,6 @@ empty_item: Boş öğe
 log_in_with: '{provider} ile giriş yap'
 advanced_filter: Gelişmiş Filtre
 delete_advanced_filter: Filtreyi Sil
-change_advanced_filter_operator: Operatörü Değiştir
 operators:
   eq: Eşittir
   neq: Eşit değildir
@@ -472,45 +397,17 @@ upload_files_indeterminate: 'Dosyalar yükleniyor {done}/{total}'
 upload_files_success: '{count} Dosya Yüklendi'
 upload_pending: Yükleme Bekliyor
 drag_file_here: Dosyayı buraya Sürükle & Bırak
-click_to_browse: Göz atmak için tıklayın
 layout_options: Sayfa Düzeni Seçenekleri
 rows: Satırlar
-columns: Sütunlar
-collection_setup: Koleksiyon Kurulumu
-optional_system_fields: İsteğe Bağlı Sistem Alanları
-value_unique: Değer benzersiz olmalı
-all_activity: Tüm Aktivite
-create_item: Öğe Oluştur
 display_template: Görüntüleme Şablonu
-n_items_selected: 'Hiçbir Öğe Seçilmedi | 1 Öğe Seçildi | {n} Öğe Seçildi'
-per_page: Sayfa başına
-all_files: Tüm dosyalar
-my_files: Dosyalarım
-recent_files: Son Dosyalar
-create_folder: Klasör Oluştur
-folder_name: Klasör İsmi...
-add_file: Dosya Ekle
-replace_file: Dosya Değiştir
 no_results: Sonuç Yok
-no_results_copy: Sonuçları görmek için arama filtrelerini ayarlayın veya temizleyin.
-clear_filters: Filtreleri Temizle
-saves_automatically: Otomatik Olarak Kaydeder
 role: Rol
 user: Kullanıcı
-no_presets: Ön Ayar Yok
-no_presets_copy: Henüz hiçbir ön ayar veya yer imi kaydedilmedi.
-no_presets_cta: Ön Ayar Ekle
 create: Oluştur
-on_create: Oluşturulduğunda (On Create)
-on_update: Güncellendiğinde (On Update)
+on_update: Güncellemede (On Update)
 read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
-format_text: Metni Biçimlendir
-bold: Kalın
-toggle: Değiştir
-icon_on: Simge Açık
-icon_off: Simge Kapalı
 label: Etiket
 wysiwyg_options:
   aligncenter: Ortala
@@ -520,7 +417,6 @@ wysiwyg_options:
   alignright: Sağa Hizala
   forecolor: Ön Plan Rengi
   backcolor: Arkaplan Rengi
-  bold: Kalın
   italic: İtalik
   underline: Alt çizgi
   strikethrough: Üstü Çizili
@@ -555,13 +451,10 @@ wysiwyg_options:
   removeformat: Biçimi Kaldır
   selectall: Tümünü Seç
   table: Tablo
-  visualaid: Görünmez öğeleri görüntüleyin
   code: Kaynağı Göster
   fullscreen: Tam Ekran
-  directionality: Yönlülük
 dropdown: Açılır Liste
 choices: Seçenekler
-choices_option_configured_incorrectly: Yanlış yapılandırılmış seçenekler
 deselect: Seçimi Kaldır
 deselect_all: Tüm Seçimi Kaldır
 other: Diğer...
@@ -571,71 +464,24 @@ creating_in: 'Öge Oluşturuluyor: {collection}'
 editing_in: 'Öge Düzenleniyor: {collection}'
 editing_in_batch: '{count} Ögeyi Toplu Düzenle'
 no_options_available: Kullanılabilir seçenek yok
-settings_data_model: Veri Modeli
 settings_permissions: Roller & İzinler
 settings_project: Proje Ayarları
-settings_webhooks: Web Kancaları
-settings_presets: Ön Ayarlar & Yer İmleri
+settings_webhooks: Ağ Kancaları
 scope: Kapsam
 layout: Yerleşim
-changes_are_permanent: Değişiklikler kalıcıdır
 preset_name_placeholder: Yer imi adı...
-preset_search_placeholder: Arama sorgusu ...
-editing_preset: Ön Ayarı Düzenle
-layout_preview: Düzen Önizlemesi
-layout_setup: Düzen Kurulumu
+editing_preset: Önayarı Düzenle
 unsaved_changes: Kaydedilmemiş Değişiklikler
 unsaved_changes_copy: Bu sayfayı terketmek istediğine emin misin?
 discard_changes: Değişiklikleri İptal Et
 keep_editing: Düzenlemeye Devam Et
-page_help_collections_overview: '**Koleksiyonlara Genel Bakış** — Erişiminiz olan tüm koleksiyonların listeleri.'
-page_help_collections_collection: >-
-  **Öğelere Göz At** — Erişiminizin olduğu tüm {collection} öğeleri listeler. Görünümünüzü özelleştirmek için düzeni,
-  filtreleri ve sıralamayı özelleştirin ve hatta hızlı erişim için bu farklı yapılandırmaların yer imlerini kaydedin.
-page_help_collections_item: >-
-  **Öğe Detayı** — Bu öğeyi görüntülemek ve yönetmek için bir form. Bu kenar çubuğu aynı zamanda tam bir gözden
-  geçirmelerin geçmişi ve yerleştirilmiş yorumlar içerir.
-page_help_activity_collection: >-
-  **Aktiviteye göz atın** — Tüm kullanıcı sisteminizin ve içerik etkinliğinin kapsamlı bir listesi.
-page_help_docs_global: >-
-  **Belgelere Genel Bakış** — Bu projenin sürümüne ve şemasına özel olarak uyarlanmış dokümanlar.
-page_help_files_collection: >-
-  **Dosya Kütüphanesi** — Bu projeye yüklenen tüm dosya varlıklarını listeler. Görünümünüzü özelleştirmek için düzeni,
-  filtreleri ve sıralamayı özelleştirin ve hatta hızlı erişim için bu farklı yapılandırmaların yer imlerini kaydedin.
-page_help_files_item: >-
-  **Dosya Detayı** — Dosya meta verilerini yönetmek, orijinal varlığı düzenlemek ve erişim ayarlarını güncellemek için bir form.
-page_help_settings_project: "**Proje Ayarları** — Projenizin tüm ayarlarını kapsayan seçenekler."
-page_help_settings_datamodel_collections: >-
-  **Veri Modeli: Koleksiyonlar** — Mevcut tüm koleksiyonları listeler. Bu, görünür, gizli ve sistem koleksiyonlarının
-  yanı sıra eklenebilecek yönetilmeyen veritabanı tablolarını içerir..
-page_help_settings_datamodel_fields: >-
-  **Veri Modeli: Koleksiyon** — Bu koleksiyonu ve alanlarını yönetmek için bir form.
-page_help_settings_roles_collection: '**Rollere Göz At** — Yönetici, Genel ve Özel Kullanıcı Rollerini listeler.'
-page_help_settings_roles_item: "**Rol Detayı** — Bir rolün izinlerini ve diğer ayarları yönetin."
-page_help_settings_presets_collection: >-
-  **Ön Ayarlara Göz At** — Kullanıcı, rol ve genel yer imleri ve varsayılan görünümler dahil olmak üzere projedeki
-  tüm ön ayarları listeler.
-page_help_settings_presets_item: >-
-  **Ön Ayar Detayı** — Yer imlerini ve varsayılan koleksiyon ön ayarlarını yönetmek için bir form.
-page_help_settings_webhooks_collection: '**Web Kancalarına Göz Atın** — Projedeki tüm web kancalarını listeler.'
-page_help_settings_webhooks_item: '**Web Kancası Detayı** — Proje web kancaları oluşturmak ve yönetmek için bir form.'
-page_help_users_collection: '**Kullanıcı Dizini** — Bu projedeki tüm sistem kullanıcılarını listeler.'
-page_help_users_item: >-
-  **Kullanıcı Detayı** — Hesap bilgilerinizi yönetin veya diğer kullanıcıların ayrıntılarını görüntüleyin.
-activity_feed: Etkinlik Akışı
 add_new: Yeni ekle
-create_new: Yeni Oluştur
 all: Tümü
-none: Hiçbiri
-no_layout_collection_selected_yet: Henüz düzen/koleksiyon seçilmedi
 batch_delete_confirm: >-
   Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count} ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 cancel: İptal
 collection: Koleksiyon
 collections: Koleksiyonlar
-singleton: Tekil Kalıp (Singleton)
-singleton_label: Tek nesne gibi davran
-system_fields_locked: Sistem alanları kilitlidir ve düzenlenemez
 fields:
   directus_activity:
     item: Öğe Birincil Anahtarı
@@ -653,24 +499,14 @@ fields:
     note: Not
     display_template: Görüntüleme Şablonu
     hidden: Gizli
-    singleton: Tekil Kalıp (Singleton)
-    translations: Koleksiyon Adı Çevirileri
-    archive_app_filter: Arşiv Uygulaması Filtresi
-    archive_value: Arşiv Değeri
-    unarchive_value: Arşivden Çıkarma Değeri
     sort_field: Sıralama Alanı
   directus_files:
     title: Ünvan
     description: Açıklama
     tags: Etiketler
     location: Konum
-    storage: Depolama
-    filename_disk: Dosya Adı (Disk)
-    filename_download: Dosya Adı (İndirme)
     metadata: Metaveri
-    type: MIME Türü
     filesize: Dosya boyutu
-    modified_by: Düzenleyen
     modified_on: Düzenleme Tarihi
     created_on: Oluşturulma tarihi
     created_by: Oluşturan
@@ -687,7 +523,7 @@ fields:
     last_name: Soyad
     email: E-posta
     password: Şifre
-    avatar: Görünüm
+    avatar: Avatar
     location: Konum
     title: Ünvan
     description: Açıklama
@@ -697,28 +533,16 @@ fields:
     tfa_secret: İki Faktörlü Kimlik Doğrulama
     status: Durum
     role: Rol
-    token: Jeton (Token)
     last_page: Son Sayfa
     last_access: Son Erişim
   directus_settings:
     project_name: Proje Adı
-    project_url: Proje URL'i
-    project_color: Proje Rengi
-    project_logo: Proje Logosu
-    public_foreground: Genel Ön Plan
-    public_background: Genel Arka Plan
-    public_note: Genel Not
-    auth_password_policy: Kimlik Doğrulama Parola Politikası
-    auth_login_attempts: Kimlik Doğrulama Giriş Denemeleri
-    storage_asset_presets: Depolama Varlık Ön Ayarları
-    storage_asset_transform: Depolama Varlık Dönüşümü
     custom_css: Özel CSS
   directus_fields:
     collection: Koleksiyon Adı
     icon: Koleksiyon İkonu
     note: Not
     hidden: Gizli
-    singleton: Tekil Kalıp (Singleton)
     translation: Alan İsim Çevirileri
     display_template: Şablon
   directus_roles:
@@ -730,26 +554,16 @@ fields:
     ip_access: IP Erişimi
     enforce_tfa: 2FA Gerekli
     users: Rol'deki Kullanıcılar
-    module_list: Modül Gezintisi
-    collection_list: Koleksiyon Gezintisi
-no_fields_in_collection: 'Henüz "{collection}" içinde alan yok'
 do_nothing: Hiçbir Şey Yapma
-generate_and_save_uuid: UUID Oluştur ve Kaydet
-save_current_user_id: Mevcut Kullanıcı Kimliğini Kaydet
-save_current_user_role: Mevcut Kullanıcı Rolünü Kaydet
-save_current_datetime: Güncel Tarih/Saati Kaydet
 block: Blok
-inline: Satır İçi
 comment: Yorum
 continue: Devam
 continue_as: >-
   <b>{name}</b> bu projede oturum açmış durumda. Bu hesabı tanıyorsanız lütfen Devam butonuna basınız.
 editing_role: '{role} Rolü'
-creating_webhook: Web Kancası Oluştur
-default: Varsayılan
+creating_webhook: Webhook Oluştur
+default: Öntanımlı
 delete: Sil
-delete_are_you_sure: >-
-  Bu işlem kalıcıdır ve geri alınamaz. Devam etmek istediğinizden emin misiniz?
 delete_field_are_you_sure: >-
   "{field}" alanını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 description: Açıklama
@@ -802,13 +616,11 @@ template: Şablon
 translation: Çeviri
 value: Değer
 view_project: Projeyi görüntüle
-weeks: {}
 report_error: Hata bildir
 interfaces:
   button-links:
     button-links: Buton Linki
-    links: Bağlantılar
-    description: Dinamik URL'leri başlatmak için yapılandırılabilir bağlantı düğmeleri
+    links: Linkler
     style: Stil
     primary: Birincil
     link: Linkler
@@ -816,269 +628,131 @@ interfaces:
     error: İşlem gerçekleştirilemiyor
   checkboxes:
     checkboxes: Onay Kutuları
-    description: Onay kutuları aracılığıyla birden çok seçenek arasından seçim yapın
     allow_other: Diğerlerine İzin Ver
-    show_more: '{Count} tane daha göster'
-    items_shown: Gösterilen Öğeler
   code:
     code: Kod
-    description: Kod parçacıkları yazın veya paylaşın
     line_number: Satır Numarası
-    placeholder: Kodu buraya girin...
   collection:
     collection: Koleksiyon
-    description: Mevcut koleksiyonlar arasından seçim yapın
-    include_system_collections: Sistem Koleksiyonlarını Dahil Et
   collections:
     collections: Koleksiyonlar
-    description: Mevcut koleksiyonlar arasından seçim yapın
-    include_system_collections: Sistem Koleksiyonlarını Dahil Et
   color:
     color: Renk
-    description: Bir renk değeri girin veya seçin
-    placeholder: Bir renk seçin...
-    preset_colors: Önceden Ayarlanmış Renkler
-    preset_colors_add_label: Yeni Renk Ekle...
-    name_placeholder: Renk İsmi Girin...
   datetime:
     datetime: Tarih/Saat
-    description: Tarihleri ve saatleri girin
-    include_seconds: Saniyeleri Dahil Et
-    set_to_now: Şimdiki Zamanı Ayarla
-    use_24: 24-Saat Biçimini Kullan
   display-template:
     display-template: Görüntüleme Şablonu
-    description: Statik metin ve dinamik alan değerlerini karıştırın
-    collection_field: Koleksiyon alanı
-    collection_field_not_setup: Koleksiyon alanı seçeneği yanlış yapılandırılmış
     select_a_collection: Koleksiyon Seç
   divider:
     divider: Ayırıcı
-    description: Alanları etiketleyin ve bölümlere ayırın
-    title_placeholder: Bir başlık girin...
-    inline_title: Satır İçi Başlık
-    inline_title_label: Başlığı satırın içinde göster
-    margin_top: Üst Kenar Boşluğu
-    margin_top_label: Üst Kenar Boşluğunu Artırın
   dropdown:
-    description: Açılır menüden bir değer seçin
-    choices_placeholder: Yeni bir seçenek ekleyin
     allow_other: Diğerlerine İzin Ver
-    allow_other_label: Diğer Değerlere İzin Ver
-    allow_none: Hiçbirine İzin Verme
-    allow_none_label: Seçim Yapılmamasına İzin Ver
-    choices_name_placeholder: İsim girin...
     choices_value_placeholder: Bir değer girin...
-  dropdown-multiselect:
-    dropdown-multiselect: Açılır Liste (Çoklu)
-    description: Açılır menüden birden çok değer seçin
   file:
     file: Dosya
-    description: Bir dosya seçin veya yükleyin
   files:
     files: Dosyalar
-    description: Birden çok dosya seçin veya yükleyin
   hash:
     hash: Hash
-    description: Hash uygulanacak bir değer girin
     masked: Maskeli
-    masked_label: Gerçek değerleri gizle
   icon:
     icon: İkon
-    description: Açılır menüden bir simge seçin
     search_for_icon: Simge ara...
-  image:
-    image: Resim
-    description: Bir resim seçin veya yükleyin
   interface:
     interface: Arayüz
-    description: Mevcut bir arayüz seçin
     placeholder: Arayüz seçin...
   interface-options:
     interface-options: Arayüz Ayarları
-    description: Bir arayüzün seçeneklerini belirlemek için bir modal
   many-to-many:
     many-to-many: Çoktan Çoka
-    description: Birden çok ilgili bağlantı öğesi seçin
   many-to-one:
     many-to-one: Çoktan Bire
-    description: İlgili tek bir öğe seçin
     display_template: Görüntüleme Şablonu
   markdown:
-    markdown: Metin Biçimlendirme
-    description: Metin biçimlendirmesini görmek için bir değer girin
-    customSyntax: Özel Biçim
-    customSyntax_label: Özel biçim tipleri ekleyin
-    customSyntax_add: Özel biçim ekleyin
-    box: Blok / Satır İçi
-    imageToken: Görüntü Jetonu (Token)
-    imageToken_label: Görüntü kaynaklarına eklenecek (statik) jeton (token)
-  notice:
-    notice: Bildirim
-    description: Kısa bir bildirim görüntüle
-    text: Bildirim içeriğini buraya girin...
+    markdown: Markdown
   numeric:
     numeric: Sayısal
     description: Bir sayı girin
-    minimum_value: En Küçük Değer
-    maximum_value: En Büyük Değer
-    step_interval: Adım Aralığı
   one-to-many:
     one-to-many: Bire Çok
-    description: Birden çok ilgili öğe seçin
-    no_collection: Koleksiyon bulunamadı
   radio-buttons:
     radio-buttons: Radyo Düğmeleri
-    description: Birden çok seçenekten birini seçin
   repeater:
     repeater: Tekrarlayıcı
-    description: Aynı yapıda birden çok girdi oluşturun
-    edit_fields: Alanları Düzenle
-    add_label: '"Yeni Satır Ekle" Etiketi"'
-    field_name_placeholder: Alan ismi girin...
-    field_note_placeholder: Alan için not ekleyin...
   slider:
     slider: Kaydırıcı
-    description: Kaydırıcıyı kullanarak bir numara seçin
-    always_show_value: Her zaman değeri göster
   slug:
-    slug: Kısa Ad
-    description: Kısa çizgilerle bağlantılı bir kelime girin
+    slug: Slug
   tags:
     tags: Etiketler
-    description: Etiket seçin veya ekleyin
-    whitespace: Boşluk
-    hyphen: Kısa çizgiyle değiştir
-    underscore: Alt çizgiyle değiştir
-    remove: Boşluğu kaldır
-    capitalization: Büyük Harfe Dönüştür
-    uppercase: Büyük Harfe Dönüştür
-    lowercase: Küçük Harfe Dönüştür
-    auto_formatter: Başlık Otomatik Biçimlendiriciyi Kullan
     alphabetize: Alfabetik
     alphabetize_label: Alfabetik olarak sırala
     add_tags: Etiket ekle...
   text-input:
     text-input: Metin Girişi
-    description: Tek satırlık bir metin girin
     trim: Kırp
-    trim_label: Başlangıç ve bitişi kırp
     mask: Maskeli
-    mask_label: Gerçek değeri gizle
     nullable: Boş (null) olabilir
-    nullable_label: Boş değeri NULL olarak kaydet
   textarea:
     textarea: Metin Alanı
-    description: Çok satırlı düz metin girin
   toggle:
-    toggle: Değiştir
-    description: Açık ve kapalı arasında geçiş yapın
-    label_placeholder: Bir etiket girin...
     label_default: Etkin
   translations:
     display_template: Görüntüleme Şablonu
     no_collection: Koleksiyon Yok
   user:
     user: Kullanıcı
-    description: Mevcut bir directus kullanıcısını seçin
     select_mode: Mod Seç
     modes:
       auto: Otomatik
       dropdown: Açılır Liste
-      modal: Modal
   wysiwyg:
     wysiwyg: WYSIWYG
-    description: HTML içeriği yazan zengin metin düzenleyici
     toolbar: Araç Çubuğu
     custom_formats: Özel Biçimler
-    options_override: Seçenekleri Geçersiz Kılma
 displays:
   boolean:
     boolean: Evet/Hayır
-    description: Açık ve kapalı durumları göster
-    label_on: Açık Durum Etiketi
-    label_on_placeholder: Açık durum için etiket girin...
-    label_off: Kapalı Durum Etiketi
-    label_off_placeholder: Kapalı durum için etiket girin...
-    icon_on: Açık durum ikonu
-    icon_off: Kapalı durum ikonu
-    color_on: Açık durum rengi
-    color_off: Kapalı durum rengi
   collection:
     collection: Koleksiyon
-    description: Bir koleksiyon göster
-    icon_label: Koleksiyonun simgesini göster
   color:
     color: Renk
-    description: Renkli bir nokta göster
     default_color: Varsayılan Renk
   datetime:
     datetime: Tarih/Saat
-    description: Zamanla ilgili değerleri göster
     format: Biçim
-    format_note: >-
-      Özel biçim __ [Tarih Alanı Sembol Tablosu] 'nu kabul eder
-      (https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table) __
-    long: Long
-    short: Short
-    relative: Göreli Zaman
-    relative_label: 'Göreli zamanı göster, örneğin: 5 dakika önce'
   file:
     file: Dosya
-    description: Dosyaları görüntüle
   filesize:
     filesize: Dosya Boyutu
-    description: Bir dosyanın boyutunu görüntüleyin
   formatted-value:
-    formatted-value: Biçimlendirilmiş Değer
-    description: Metnin biçimlendirilmiş bir versiyonunu görüntüle
     format_title: Başlığı Biçimlendir
-    format_title_label: Otomatik biçimlendirilmiş çerçeve
     bold_label: Kalınlaştır
-  formatted-json-value:
-    formatted-json-value: Biçimlendirilmiş JSON değeri
-    description: Nesnenin biçimlendirilmiş bir versiyonunu görüntüle
   icon:
     icon: İkon
     description: Simge olarak görüntüle
     filled: Dolu
-    filled_label: Dolu varyantı kullanın
   image:
-    image: Resim
-    description: Küçük bir görüntü önizlemesi görüntüleyin
     circle: Daire
-    circle_label: Daire olarak görüntüle
   labels:
     labels: Etiketler
-    description: Tek bir etiket veya bir etiket listesi görüntüleyin
     default_foreground: Varsayılan Ön plan
     default_background: Varsayılan Arkaplan
-    format_label: Her etiketi biçimlendirin
-    show_as_dot: Nokta Olarak Göster
     choices_value_placeholder: Bir değer girin...
     choices_text_placeholder: Metin girin...
   mime-type:
-    mime-type: MIME Türü
-    description: Bir dosyanın MIME-Türünü göster
+    mime-type: MIME Type
     extension_only: Sadece Eklentilerr
-    extension_only_label: Yalnızca dosya uzantısını göster
   rating:
     rating: Puanlama
-    description: Bir sayıyı ek büyük değere göre yıldız olarak görselleştirin
     simple: Basit
-    simple_label: Yıldızları basit bir biçimde gösterin
   raw:
     raw: Ham Veri
-  related-values:
-    related-values: İlgili Değerler
-    description: Göreli değerleri göster
   user:
     user: Kullanıcı
-    description: Sistem kullanıcısını görüntüleyin
-    avatar: Görünüm
+    avatar: Avatar
     name: İsim
     both: İkisi de
-    circle_label: Kullanıcıyı bir daire içinde göster
 layouts:
   cards:
     cards: Kartlar

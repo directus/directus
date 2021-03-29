@@ -11,6 +11,7 @@ add_field: เพิ่มฟิลด์
 role_name: ชื่อบทบาท
 db_only_click_to_configure: 'ฐานข้อมูลเท่านั้น: คลิกเพื่อกำหนดค่า '
 show_archived_items: แสดงรายการเก็บถาวร
+edited: แก้ไขแล้ว
 required: จำเป็นต้องระบุ
 required_for_app_access: จำเป็นต้องระบุเพื่อเข้าถึงแอป
 requires_value: ต้องการข้อมูล
@@ -577,6 +578,7 @@ settings_webhooks: Webhooks
 settings_presets: ค่าที่ตั้งไว้ล่วงหน้าและบุ๊คมาร์ก
 scope: ขอบเขต
 layout: เค้าโครง
+tree_view: มุมมองแผนภูมิ
 changes_are_permanent: การเปลี่ยนแปลงนี้ถาวร
 preset_name_placeholder: ชื่อของบุ๊คมาร์ก
 preset_search_placeholder: ค้นหาด้วย...
@@ -796,6 +798,7 @@ template: แม่แบบ
 translation: แปลภาษา
 value: ค่า
 view_project: ดูโครงการ
+weeks: { }
 report_error: แจ้งข้อผิดพลาด
 interfaces:
   button-links:
@@ -971,6 +974,9 @@ interfaces:
   translations:
     display_template: แม่แบบการแสดงผล
     no_collection: ไม่มีคอลเลกชัน
+  tree-view:
+    description: มุมมองแผนภูมิสำหรับรายการข้อมูลหนึ่งต่อหลายรายการแบบซ้ำซ้อน
+    recursive_only: อินเทอร์เฟซมุมมองแผนภูมิใช้งานได้กับความสัมพันธ์แบบซ้ำซ้อนเท่านั้น
   user:
     user: ผู้ใช้
     description: เลือกผู้ใช้ของ directus ที่มีอยู่แล้ว
