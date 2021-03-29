@@ -205,8 +205,11 @@ export class GraphQLService {
 					.filter(scopeFilter)
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
-						acc[`create_${collectionName}`] = CreateCollectionTypes[collection.collection].getResolver(
-							collection.collection
+						acc[`create_${collectionName}_items`] = CreateCollectionTypes[collection.collection].getResolver(
+							`create_${collection.collection}_items`
+						);
+						acc[`create_${collectionName}_item`] = CreateCollectionTypes[collection.collection].getResolver(
+							`create_${collection.collection}_item`
 						);
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
@@ -220,9 +223,21 @@ export class GraphQLService {
 					.filter(scopeFilter)
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
-						acc[`update_${collectionName}`] = UpdateCollectionTypes[collection.collection].getResolver(
-							collection.collection
-						);
+
+						if (collection.singleton) {
+							acc[`update_${collectionName}`] = UpdateCollectionTypes[collection.collection].getResolver(
+								`update_${collection.collection}`
+							);
+						} else {
+							acc[`update_${collectionName}_items`] = UpdateCollectionTypes[collection.collection].getResolver(
+								`update_${collection.collection}_items`
+							);
+
+							acc[`update_${collectionName}_item`] = UpdateCollectionTypes[collection.collection].getResolver(
+								`update_${collection.collection}_item`
+							);
+						}
+
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
 			);
@@ -231,13 +246,23 @@ export class GraphQLService {
 		if (Object.keys(schema.delete.collections).length > 0) {
 			schemaComposer.Mutation.addFields(
 				Object.values(schema.delete.collections)
-					.filter((collection) => collection.collection in DeleteCollectionTypes && collection.singleton === false)
+					.filter(
+						(collection) =>
+							`delete_${collection.collection}_items` in DeleteCollectionTypes &&
+							`delete_${collection.collection}_item` in DeleteCollectionTypes &&
+							collection.singleton === false
+					)
 					.filter(scopeFilter)
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
-						acc[`delete_${collectionName}`] = DeleteCollectionTypes[collection.collection].getResolver(
-							collection.collection
-						);
+
+						acc[`delete_${collectionName}_items`] = DeleteCollectionTypes[
+							`delete_${collection.collection}_items`
+						].getResolver(`delete_${collection.collection}_items`);
+
+						acc[`delete_${collectionName}_item`] = DeleteCollectionTypes[
+							`delete_${collection.collection}_item`
+						].getResolver(`delete_${collection.collection}_item`);
 
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
@@ -513,7 +538,7 @@ export class GraphQLService {
 
 				if (Object.keys(creatableFields).length > 0) {
 					CreateCollectionTypes[collection.collection].addResolver({
-						name: collection.collection,
+						name: `create_${collection.collection}_items`,
 						type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
 						args: collectionIsReadable
 							? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
@@ -522,13 +547,31 @@ export class GraphQLService {
 							await self.resolveMutation(args, info),
 					});
 
-					CreateCollectionTypes[collection.collection].getResolver(collection.collection).addArgs({
-						...CreateCollectionTypes[collection.collection].getResolver(collection.collection).getArgs(),
+					CreateCollectionTypes[collection.collection].addResolver({
+						name: `create_${collection.collection}_item`,
+						type: collectionIsReadable ? ReadCollectionTypes[collection.collection] : GraphQLBoolean,
+						resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+							await self.resolveMutation(args, info),
+					});
+
+					CreateCollectionTypes[collection.collection].getResolver(`create_${collection.collection}_items`).addArgs({
+						...CreateCollectionTypes[collection.collection]
+							.getResolver(`create_${collection.collection}_items`)
+							.getArgs(),
 						data: [
 							toInputObjectType(CreateCollectionTypes[collection.collection]).setTypeName(
 								`create_${collection.collection}_input`
-							),
+							).NonNull,
 						],
+					});
+
+					CreateCollectionTypes[collection.collection].getResolver(`create_${collection.collection}_item`).addArgs({
+						...CreateCollectionTypes[collection.collection]
+							.getResolver(`create_${collection.collection}_item`)
+							.getArgs(),
+						data: toInputObjectType(CreateCollectionTypes[collection.collection]).setTypeName(
+							`create_${collection.collection}_input`
+						).NonNull,
 					});
 				}
 			}
@@ -542,39 +585,81 @@ export class GraphQLService {
 				const updatableFields = UpdateCollectionTypes[collection.collection]?.getFields() || {};
 
 				if (Object.keys(updatableFields).length > 0) {
-					UpdateCollectionTypes[collection.collection].addResolver({
-						name: collection.collection,
-						type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
-						args: collectionIsReadable
-							? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
-							: undefined,
-						resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
-							await self.resolveMutation(args, info),
-					});
+					if (collection.singleton) {
+						UpdateCollectionTypes[collection.collection].addResolver({
+							name: `update_${collection.collection}`,
+							type: collectionIsReadable ? ReadCollectionTypes[collection.collection] : GraphQLBoolean,
+							args: {
+								data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
+									`update_${collection.collection}_input`
+								).NonNull,
+							},
+							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+								await self.resolveMutation(args, info),
+						});
+					} else {
+						UpdateCollectionTypes[collection.collection].addResolver({
+							name: `update_${collection.collection}_items`,
+							type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
+							args: {
+								...(collectionIsReadable
+									? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
+									: {}),
+								ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
+								data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
+									`update_${collection.collection}_input`
+								).NonNull,
+							},
+							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+								await self.resolveMutation(args, info),
+						});
 
-					UpdateCollectionTypes[collection.collection].getResolver(collection.collection).addArgs({
-						...UpdateCollectionTypes[collection.collection].getResolver(collection.collection).getArgs(),
-						keys: [GraphQLID],
-						data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
-							`update_${collection.collection}_input`
-						),
-					});
+						UpdateCollectionTypes[collection.collection].addResolver({
+							name: `update_${collection.collection}_item`,
+							type: collectionIsReadable ? ReadCollectionTypes[collection.collection] : GraphQLBoolean,
+							args: {
+								id: GraphQLNonNull(GraphQLID),
+								data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
+									`update_${collection.collection}_input`
+								).NonNull,
+							},
+							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+								await self.resolveMutation(args, info),
+						});
+					}
 				}
 			}
 
 			for (const collection of Object.values(schema.delete.collections)) {
-				DeleteCollectionTypes[collection.collection] = schemaComposer.createObjectTC({
-					name: `delete_${collection.collection}`,
+				DeleteCollectionTypes[`delete_${collection.collection}_items`] = schemaComposer.createObjectTC({
+					name: `delete_${collection.collection}_items`,
 					fields: {
-						keys: [GraphQLID],
+						ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
 					},
 				});
 
-				DeleteCollectionTypes[collection.collection].addResolver({
-					name: collection.collection,
-					type: DeleteCollectionTypes[collection.collection],
+				DeleteCollectionTypes[`delete_${collection.collection}_item`] = schemaComposer.createObjectTC({
+					name: `delete_${collection.collection}_item`,
+					fields: {
+						id: GraphQLNonNull(GraphQLID),
+					},
+				});
+
+				DeleteCollectionTypes[`delete_${collection.collection}_items`].addResolver({
+					name: `delete_${collection.collection}_items`,
+					type: DeleteCollectionTypes[`delete_${collection.collection}_items`],
 					args: {
-						keys: [GraphQLID],
+						ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
+					},
+					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+						await self.resolveMutation(args, info),
+				});
+
+				DeleteCollectionTypes[`delete_${collection.collection}_item`].addResolver({
+					name: `delete_${collection.collection}_item`,
+					type: DeleteCollectionTypes[`delete_${collection.collection}_item`],
+					args: {
+						id: GraphQLNonNull(GraphQLID),
 					},
 					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 						await self.resolveMutation(args, info),
@@ -629,16 +714,27 @@ export class GraphQLService {
 		if (this.scope === 'system') collection = `directus_${collection}`;
 
 		const selections = info.fieldNodes[0]?.selectionSet?.selections;
-
 		const query = this.getQuery(args, selections || [], info.variableValues);
+
+		const singleton =
+			collection.endsWith('_items') === false &&
+			collection.endsWith('_item') === false &&
+			this.schema.collections.hasOwnProperty(collection);
+
+		const single = collection.endsWith('_items') === false;
+
+		if (collection.endsWith('_items')) collection = collection.slice(0, -6);
+		if (collection.endsWith('_item')) collection = collection.slice(0, -5);
 
 		switch (action) {
 			case 'create':
 				return await this.create(collection, args.data, query);
 			case 'update':
-				return await this.update(collection, args.keys, args.data, query);
+				return singleton
+					? await this.upsertSingleton(collection, args.data, query)
+					: await this.update(collection, single ? args.id : args.ids, args.data, query);
 			case 'delete':
-				return await this.delete(collection, args.keys);
+				return await this.delete(collection, single ? args.id : args.ids);
 		}
 	}
 
@@ -652,7 +748,7 @@ export class GraphQLService {
 		return result;
 	}
 
-	async create(collection: string, body: Record<string, any>[], query: Query) {
+	async create(collection: string, body: Record<string, any> | Record<string, any>[], query: Query) {
 		const service = this.getService(collection);
 
 		try {
@@ -660,7 +756,7 @@ export class GraphQLService {
 
 			if ((query.fields || []).length > 0) {
 				const result = await service.readByKey(keys, query);
-				return toArray(result);
+				return Array.isArray(body) ? toArray(result) : result;
 			}
 
 			return true;
@@ -669,7 +765,12 @@ export class GraphQLService {
 		}
 	}
 
-	async update(collection: string, keys: PrimaryKey[], body: Record<string, any>[], query: Query) {
+	async update(
+		collection: string,
+		keys: PrimaryKey[],
+		body: Record<string, any> | Record<string, any>[],
+		query: Query
+	) {
 		const service = this.getService(collection);
 
 		try {
@@ -677,7 +778,7 @@ export class GraphQLService {
 
 			if ((query.fields || []).length > 0) {
 				const result = await service.readByKey(updatedKeys, query);
-				return toArray(result);
+				return Array.isArray(body) ? toArray(result) : result;
 			}
 
 			return true;
@@ -686,12 +787,29 @@ export class GraphQLService {
 		}
 	}
 
-	async delete(collection: string, keys: PrimaryKey[]) {
+	async upsertSingleton(collection: string, body: Record<string, any> | Record<string, any>[], query: Query) {
 		const service = this.getService(collection);
 
 		try {
-			await service.delete(keys);
-			return { keys: keys };
+			await service.upsertSingleton(body);
+
+			if ((query.fields || []).length > 0) {
+				const result = await service.readSingleton(query);
+				return result;
+			}
+
+			return true;
+		} catch (err) {
+			throw this.formatError(err);
+		}
+	}
+
+	async delete(collection: string, keys: PrimaryKey | PrimaryKey[]) {
+		const service = this.getService(collection);
+
+		try {
+			await service.delete(keys as any);
+			return Array.isArray(keys) ? { ids: keys } : { id: keys };
 		} catch (err) {
 			throw this.formatError(err);
 		}
