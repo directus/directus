@@ -136,7 +136,7 @@ audio {
 }
 
 .svg {
-	padding: 64px;
+	overflow: hidden;
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
 }
