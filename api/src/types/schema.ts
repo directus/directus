@@ -7,6 +7,7 @@ type CollectionsOverview = {
 		collection: string;
 		primary: string;
 		singleton: boolean;
+		sortField: string | null;
 		note: string | null;
 		fields: {
 			[name: string]: {

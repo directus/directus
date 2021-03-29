@@ -58,8 +58,8 @@ export default async function getASTFromQuery(
 	delete query.deep;
 
 	if (!query.sort) {
-		const sortField = schema.collections.find((collectionInfo) => collectionInfo.collection === collection)?.sort_field;
-		query.sort = [{ column: sortField || schema.tables[collection].primary, order: 'asc' }];
+		const sortField = schema.collections[collection]?.sortField;
+		query.sort = [{ column: sortField || schema.collections[collection].primary, order: 'asc' }];
 	}
 
 	ast.children = await parseFields(collection, fields, deep);

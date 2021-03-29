@@ -300,7 +300,7 @@ export class PayloadService {
 					);
 				}
 
-				const allowedCollections = relation.one_allowed_collections.split(',');
+				const allowedCollections = relation.one_allowed_collections;
 
 				if (allowedCollections.includes(relatedCollection) === false) {
 					throw new InvalidPayloadException(
@@ -461,8 +461,6 @@ export class PayloadService {
 								[relation.sort_field]: i + 1,
 							};
 						}
-
-						console.log(record);
 
 						relatedRecords.push({
 							...record,

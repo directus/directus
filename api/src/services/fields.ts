@@ -259,9 +259,11 @@ export class FieldsService {
 		}
 
 		if (field.meta) {
-			const record = this.schema.fields.find(
-				(fieldMeta) => fieldMeta.field === field.field && fieldMeta.collection === collection
-			);
+			const record = await this.knex
+				.select('id')
+				.from('directus_fields')
+				.where({ collection, field: field.field })
+				.first();
 
 			if (record) {
 				await this.itemsService.update(

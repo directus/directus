@@ -66,7 +66,9 @@ export async function getSchema(options?: {
 
 	const schemaOverview = await schemaInspector.overview();
 
-	const collections = await database.select('collection', 'singleton', 'note').from('directus_collections');
+	const collections = await database
+		.select('collection', 'singleton', 'note', 'sort_field')
+		.from('directus_collections');
 
 	for (const [collection, info] of Object.entries(schemaOverview)) {
 		if (!info.primary) {
@@ -82,6 +84,7 @@ export async function getSchema(options?: {
 			singleton:
 				collectionMeta?.singleton === true || collectionMeta?.singleton === 'true' || collectionMeta?.singleton === 1,
 			note: collectionMeta?.note || null,
+			sortField: collectionMeta?.sort_field || null,
 			fields: mapValues(schemaOverview[collection].columns, (column) => ({
 				field: column.column_name,
 				defaultValue: getDefaultValue(column) || null,
