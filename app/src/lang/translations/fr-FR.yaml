@@ -11,6 +11,7 @@ add_field: Ajouter un champ
 role_name: Nom de rôle
 db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
 show_archived_items: Afficher les éléments archivés
+edited: Modifié
 required: Requis
 required_for_app_access: Requis pour l'accès à l'application
 requires_value: Valeurs obligatoires
@@ -577,6 +578,7 @@ settings_webhooks: Webhooks
 settings_presets: Préréglages et favoris
 scope: Périmètre d'application
 layout: Mise en page
+tree_view: Vue Arborescente
 changes_are_permanent: Les modifications sont irréversibles
 preset_name_placeholder: Nom du favori...
 preset_search_placeholder: Recherche...
@@ -796,6 +798,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:
@@ -971,6 +974,9 @@ interfaces:
   translations:
     display_template: Modèle d'affichage
     no_collection: Aucune collection
+  tree-view:
+    description: Arborescence pour les éléments récursifs imbriqués de type "un vers plusieurs"
+    recursive_only: L'interface de l'arborescence ne fonctionne que pour les relations récursives.
   user:
     user: Utilisateur
     description: Sélectionnez un utilisateur directus existant

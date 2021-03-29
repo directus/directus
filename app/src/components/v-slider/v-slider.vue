@@ -34,7 +34,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { ChangeEvent } from 'react';
 
 export default defineComponent({
 	props: {
@@ -86,7 +85,7 @@ export default defineComponent({
 			onInput,
 		};
 
-		function onChange(event: ChangeEvent) {
+		function onChange(event: InputEvent) {
 			const target = event.target as HTMLInputElement;
 			emit('change', Number(target.value));
 		}
@@ -205,8 +204,8 @@ body {
 			left: 0;
 			z-index: 2;
 			display: flex;
-			justify-content: space-between;
 			align-items: center;
+			justify-content: space-between;
 			width: 100%;
 			height: 4px;
 			padding: 0 7px;

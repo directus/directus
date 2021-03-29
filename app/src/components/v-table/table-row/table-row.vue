@@ -8,7 +8,7 @@
 			'--table-row-line-height': 1,
 		}"
 	>
-		<td v-if="showManualSort" class="manual cell">
+		<td v-if="showManualSort" class="manual cell" @click.stop>
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 		<td v-if="showSelect" class="select cell" @click.stop>

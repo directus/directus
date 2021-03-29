@@ -24,6 +24,7 @@ jobs:
           username: "${{ secrets.REGISTRY_USERNAME }}"
           password: "${{ secrets.REGISTRY_PASSWORD }}"
           version: "${{ github.ref }}"
+          latest: "true"
           push: "true"
 
       - name: Build Docker Hub
@@ -34,4 +35,5 @@ jobs:
           username: "${{ secrets.DOCKERHUB_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_PASSWORD }}"
           version: "${{ github.ref }}"
+          latest: "true"
           push: "true"
