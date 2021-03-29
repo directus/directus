@@ -189,7 +189,7 @@ export class GraphQLService {
 
 						if (this.schema.collections[collection.collection].singleton === false) {
 							acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
-								`${collectionName}_by_id`
+								`${collection.collection}_by_id`
 							);
 						}
 
