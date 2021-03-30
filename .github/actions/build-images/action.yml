@@ -23,6 +23,10 @@ inputs:
     description: "Push"
     required: false
     default: "false"
+  latest:
+    description: "Latest"
+    required: false
+    default: "false"
 runs:
   using: "docker"
   image: "Dockerfile"
@@ -39,3 +43,5 @@ runs:
     - ${{ inputs.version }}
     - --push
     - ${{ inputs.push }}
+    - --latest
+    - ${{ inputs.latest }}

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-s3",
-	"version": "9.0.0-rc.51",
+	"version": "9.0.0-rc.53",
 	"description": "AWS S3 driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -40,14 +40,11 @@
 		}
 	},
 	"dependencies": {
+		"@directus/drive": "^9.0.0-rc.53",
 		"aws-sdk": "^2.680.0",
 		"normalize-path": "^3.0.0"
 	},
-	"peerDependencies": {
-		"@directus/drive": "9.0.0-rc.51"
-	},
 	"devDependencies": {
-		"@directus/drive": "9.0.0-rc.51",
 		"@types/fs-extra": "^9.0.1",
 		"@types/normalize-path": "^3.0.0",
 		"fs-extra": "^9.0.0",

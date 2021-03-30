@@ -10,6 +10,7 @@ add_field: Feld hinzufügen
 role_name: Rollenname
 db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
+edited: Bearbeitet
 required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
 requires_value: Benötigt Wert
@@ -80,6 +81,7 @@ all_access: Zugriff auf alles
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
 field_standard: Standard
+field_presentation: Darstellung & Aliasse
 field_file: Eine Datei
 field_files: Mehrere Dateien
 field_m2o: M2O Beziehung
@@ -95,12 +97,14 @@ permissions_for_role: 'Items die {role} Rolle kann {action}.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln welche durch die {role} Rolle befolgt werden muss.'
 presets_for_role: 'Feld Voreinstellungen für die {role} Rolle.'
+presentation_and_aliases: Darstellung & Aliasse
 revision_post_update: Hier siehst du, wie das Element nach dem Update aussah...
 changes_made: Dies sind die spezifischen Änderungen, die vorgenommen wurden...
 no_relational_data: Beachten Sie, dass dies keine relationalen Daten enthält.
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
+fields_and_layout: Felder & Layout
 field_create_success: 'Erstelltes Feld: "{field}"'
 field_update_success: 'Geändertes Feld: "{field}"'
 duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
