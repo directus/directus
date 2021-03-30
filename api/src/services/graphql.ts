@@ -246,23 +246,18 @@ export class GraphQLService {
 		if (Object.keys(schema.delete.collections).length > 0) {
 			schemaComposer.Mutation.addFields(
 				Object.values(schema.delete.collections)
-					.filter(
-						(collection) =>
-							`delete_${collection.collection}_items` in DeleteCollectionTypes &&
-							`delete_${collection.collection}_item` in DeleteCollectionTypes &&
-							collection.singleton === false
-					)
+					.filter((collection) => collection.singleton === false)
 					.filter(scopeFilter)
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
 
-						acc[`delete_${collectionName}_items`] = DeleteCollectionTypes[
+						acc[`delete_${collectionName}_items`] = DeleteCollectionTypes.many.getResolver(
 							`delete_${collection.collection}_items`
-						].getResolver(`delete_${collection.collection}_items`);
+						);
 
-						acc[`delete_${collectionName}_item`] = DeleteCollectionTypes[
+						acc[`delete_${collectionName}_item`] = DeleteCollectionTypes.one.getResolver(
 							`delete_${collection.collection}_item`
-						].getResolver(`delete_${collection.collection}_item`);
+						);
 
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
@@ -630,24 +625,24 @@ export class GraphQLService {
 				}
 			}
 
+			DeleteCollectionTypes.many = schemaComposer.createObjectTC({
+				name: `delete_many`,
+				fields: {
+					ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
+				},
+			});
+
+			DeleteCollectionTypes.one = schemaComposer.createObjectTC({
+				name: `delete_one`,
+				fields: {
+					id: GraphQLNonNull(GraphQLID),
+				},
+			});
+
 			for (const collection of Object.values(schema.delete.collections)) {
-				DeleteCollectionTypes[`delete_${collection.collection}_items`] = schemaComposer.createObjectTC({
+				DeleteCollectionTypes.many.addResolver({
 					name: `delete_${collection.collection}_items`,
-					fields: {
-						ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
-					},
-				});
-
-				DeleteCollectionTypes[`delete_${collection.collection}_item`] = schemaComposer.createObjectTC({
-					name: `delete_${collection.collection}_item`,
-					fields: {
-						id: GraphQLNonNull(GraphQLID),
-					},
-				});
-
-				DeleteCollectionTypes[`delete_${collection.collection}_items`].addResolver({
-					name: `delete_${collection.collection}_items`,
-					type: DeleteCollectionTypes[`delete_${collection.collection}_items`],
+					type: DeleteCollectionTypes.many,
 					args: {
 						ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
 					},
@@ -655,9 +650,9 @@ export class GraphQLService {
 						await self.resolveMutation(args, info),
 				});
 
-				DeleteCollectionTypes[`delete_${collection.collection}_item`].addResolver({
+				DeleteCollectionTypes.one.addResolver({
 					name: `delete_${collection.collection}_item`,
-					type: DeleteCollectionTypes[`delete_${collection.collection}_item`],
+					type: DeleteCollectionTypes.one,
 					args: {
 						id: GraphQLNonNull(GraphQLID),
 					},
