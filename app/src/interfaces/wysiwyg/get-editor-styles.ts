@@ -119,7 +119,7 @@ video,
 	height: auto;
 }
 hr {
-	border: 1px solid #D3DAE4;
+	border: 1px solid ${cssVar('--border-normal')};
 	margin-top: 52px;
 	margin-bottom: 56px;
 	text-align: center;
