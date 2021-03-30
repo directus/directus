@@ -11,7 +11,7 @@ type Options = {
 	template: string;
 };
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay(() => ({
 	id: 'related-values',
 	name: '$t:displays.related-values.related-values',
 	description: '$t:displays.related-values.description',
