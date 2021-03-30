@@ -15,6 +15,7 @@
 		"build": "lerna run build",
 		"release": "lerna publish --force-publish",
 		"postinstall": "npm run build",
+		"test": "lerna run test",
 		"cli": "cross-env DIRECTUS_DEV=true NODE_ENV=development DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/index.ts"
 	},
 	"devDependencies": {
