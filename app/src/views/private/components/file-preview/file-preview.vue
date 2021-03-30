@@ -136,8 +136,12 @@ audio {
 }
 
 .svg {
-	overflow: hidden;
+	padding: 64px;
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
+
+	&.max-size img {
+		max-height: calc(75vh - 128px);
+	}
 }
 </style>
