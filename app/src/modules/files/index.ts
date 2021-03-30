@@ -3,7 +3,7 @@ import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
 import AddNew from './routes/add-new.vue';
 
-export default defineModule(({ i18n }) => ({
+export default defineModule({
 	id: 'files',
 	name: '$t:file_library',
 	icon: 'folder',
@@ -63,4 +63,4 @@ export default defineModule(({ i18n }) => ({
 		);
 		return !!permission;
 	},
-}));
+});

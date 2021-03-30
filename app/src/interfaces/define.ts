@@ -1,11 +1,10 @@
-import { i18n } from '@/lang';
 import { InterfaceDefineParam, InterfaceContext, InterfaceConfig } from './types';
 
 export function defineInterface(config: InterfaceDefineParam): InterfaceConfig {
 	let options: InterfaceConfig;
 
 	if (typeof config === 'function') {
-		const context: InterfaceContext = { i18n };
+		const context: InterfaceContext = {};
 		options = config(context);
 	} else {
 		options = config;

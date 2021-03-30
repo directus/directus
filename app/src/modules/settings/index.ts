@@ -19,7 +19,7 @@ import { useCollection } from '@/composables/use-collection';
 import { ref } from '@vue/composition-api';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 
-export default defineModule(({ i18n }) => ({
+export default defineModule({
 	id: 'settings',
 	name: '$t:settings',
 	icon: 'settings',
@@ -158,4 +158,4 @@ export default defineModule(({ i18n }) => ({
 	},
 	order: Infinity,
 	persistent: true,
-}));
+});

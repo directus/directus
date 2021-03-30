@@ -2,7 +2,7 @@ import { defineModule } from '@/modules/define';
 import ActivityCollection from './routes/collection.vue';
 import ActivityItem from './routes/item.vue';
 
-export default defineModule(({ i18n }) => ({
+export default defineModule({
 	id: 'activity',
 	hidden: true,
 	name: '$t:activity',
@@ -24,4 +24,4 @@ export default defineModule(({ i18n }) => ({
 			],
 		},
 	],
-}));
+});

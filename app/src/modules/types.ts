@@ -16,6 +16,6 @@ export interface ModuleConfig {
 	persistent?: boolean;
 }
 
-export type ModuleContext = { i18n: VueI18n };
+export type ModuleContext = {};
 
 export type ModuleDefineParam = ModuleConfig | ((context: ModuleContext) => ModuleConfig);

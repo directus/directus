@@ -17,6 +17,6 @@ export interface InterfaceConfig {
 	recommendedDisplays?: string[];
 }
 
-export type InterfaceContext = { i18n: VueI18n };
+export type InterfaceContext = {};
 export type InterfaceDefineParam = InterfaceDefineParamGeneric<InterfaceConfig>;
 export type InterfaceDefineParamGeneric<T> = T | ((context: InterfaceContext) => T);

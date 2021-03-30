@@ -8,7 +8,7 @@ export interface LayoutConfig {
 	component: Component;
 }
 
-export type LayoutContext = { i18n: VueI18n };
+export type LayoutContext = {};
 
 export type LayoutDefineParam = LayoutConfig | ((context: LayoutContext) => LayoutConfig);
 
