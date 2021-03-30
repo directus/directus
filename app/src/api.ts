@@ -60,6 +60,8 @@ export const onError = async (error: RequestError) => {
 	if (
 		status === 401 &&
 		code === 'INVALID_CREDENTIALS' &&
+		navigator &&
+		navigator.onLine &&
 		error.request.responseURL.includes('refresh') === false &&
 		error.request.responseURL.includes('login') === false &&
 		error.request.responseURL.includes('tfa') === false
