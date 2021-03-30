@@ -455,13 +455,6 @@ export class PayloadService {
 							};
 						}
 
-						if (relation.sort_field) {
-							record = {
-								...record,
-								[relation.sort_field]: i + 1,
-							};
-						}
-
 						relatedRecords.push({
 							...record,
 							[relation.many_field]: parent || payload[relation.one_primary!],

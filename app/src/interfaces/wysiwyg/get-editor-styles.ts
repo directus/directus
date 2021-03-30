@@ -119,16 +119,10 @@ video,
 	height: auto;
 }
 hr {
-	border: 0;
+	border: 1px solid ${cssVar('--border-normal')};
 	margin-top: 52px;
 	margin-bottom: 56px;
 	text-align: center;
-}
-hr:after {
-	content: "...";
-	font-size: 28px;
-	letter-spacing: 16px;
-	line-height: 0;
 }
 table {
 	border-collapse: collapse;
