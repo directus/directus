@@ -4,7 +4,10 @@ export type DefaultType = {
 	[field: string]: any;
 };
 
-export type TypeMap = { [k: string]: unknown };
+export type TypeMap = {
+	[k: string]: unknown;
+};
+
 export type TypeOf<T extends TypeMap, K extends keyof T> = T[K] extends undefined ? DefaultType : T[K];
 
 export type ActivityType = {

@@ -16,7 +16,7 @@ import {
 	UsersHandler,
 	UtilsHandler,
 } from '../handlers';
-import { Item } from '../items';
+import { IItems, Item } from '../items';
 import { ITransport } from '../transport';
 import { ItemsHandler } from './items';
 import { AxiosTransport } from './transport';
@@ -25,6 +25,8 @@ import { IStorage } from '../storage';
 import { LocalStorage, MemoryStorage } from './storage';
 import { TypeMap, TypeOf } from '../types';
 import { GraphQLHandler } from '../handlers/graphql';
+import { ISingleton } from '../singleton';
+import { SingletonHandler } from './singleton';
 
 export type DirectusOptions = {
 	auth?: IAuth;
@@ -36,18 +38,18 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 	private _auth: IAuth;
 	private _transport: ITransport;
 	private _storage: IStorage;
-	private _activity?: ActivityHandler<TypeOf<T, 'activity'>>;
-	private _collections?: CollectionsHandler<TypeOf<T, 'collections'>>;
-	private _fields?: FieldsHandler<TypeOf<T, 'fields'>>;
-	private _files?: FilesHandler<TypeOf<T, 'files'>>;
-	private _folders?: FoldersHandler<TypeOf<T, 'folders'>>;
-	private _permissions?: PermissionsHandler<TypeOf<T, 'permissions'>>;
-	private _presets?: PresetsHandler<TypeOf<T, 'presets'>>;
-	private _relations?: RelationsHandler<TypeOf<T, 'relations'>>;
-	private _revisions?: RevisionsHandler<TypeOf<T, 'revisions'>>;
-	private _roles?: RolesHandler<TypeOf<T, 'roles'>>;
-	private _settings?: SettingsHandler<TypeOf<T, 'settings'>>;
-	private _users?: UsersHandler<TypeOf<T, 'users'>>;
+	private _activity?: ActivityHandler<TypeOf<T, 'directus_activity'>>;
+	private _collections?: CollectionsHandler<TypeOf<T, 'directus_collections'>>;
+	private _fields?: FieldsHandler<TypeOf<T, 'directus_fields'>>;
+	private _files?: FilesHandler<TypeOf<T, 'directus_files'>>;
+	private _folders?: FoldersHandler<TypeOf<T, 'directus_folders'>>;
+	private _permissions?: PermissionsHandler<TypeOf<T, 'directus_permissions'>>;
+	private _presets?: PresetsHandler<TypeOf<T, 'directus_presets'>>;
+	private _relations?: RelationsHandler<TypeOf<T, 'directus_relations'>>;
+	private _revisions?: RevisionsHandler<TypeOf<T, 'directus_revisions'>>;
+	private _roles?: RolesHandler<TypeOf<T, 'directus_roles'>>;
+	private _settings?: SettingsHandler<TypeOf<T, 'directus_settings'>>;
+	private _users?: UsersHandler<TypeOf<T, 'directus_users'>>;
 	private _server?: ServerHandler;
 	private _utils?: UtilsHandler;
 	private _graphql?: GraphQLHandler;
@@ -56,11 +58,16 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		[collection: string]: ItemsHandler<any>;
 	};
 
+	private _singletons: {
+		[collection: string]: SingletonHandler<any>;
+	};
+
 	constructor(url: string, options?: DirectusOptions) {
 		this._storage = options?.storage || (typeof window !== 'undefined' ? new LocalStorage() : new MemoryStorage());
 		this._transport = options?.transport || new AxiosTransport(url, this._storage);
 		this._auth = options?.auth || new Auth(this._transport, this._storage);
 		this._items = {};
+		this._singletons = {};
 	}
 
 	get auth(): IAuth {
@@ -75,52 +82,58 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		return this._transport;
 	}
 
-	get activity(): ActivityHandler<TypeOf<T, 'activity'>> {
-		return this._activity || (this._activity = new ActivityHandler<TypeOf<T, 'activity'>>(this.transport));
+	get activity(): ActivityHandler<TypeOf<T, 'directus_activity'>> {
+		return this._activity || (this._activity = new ActivityHandler<TypeOf<T, 'directus_activity'>>(this.transport));
 	}
 
-	get collections(): CollectionsHandler<TypeOf<T, 'collections'>> {
-		return this._collections || (this._collections = new CollectionsHandler<TypeOf<T, 'collections'>>(this.transport));
+	get collections(): CollectionsHandler<TypeOf<T, 'directus_collections'>> {
+		return (
+			this._collections ||
+			(this._collections = new CollectionsHandler<TypeOf<T, 'directus_collections'>>(this.transport))
+		);
 	}
 
-	get fields(): FieldsHandler<TypeOf<T, 'fields'>> {
-		return this._fields || (this._fields = new FieldsHandler<TypeOf<T, 'fields'>>(this.transport));
+	get fields(): FieldsHandler<TypeOf<T, 'directus_fields'>> {
+		return this._fields || (this._fields = new FieldsHandler<TypeOf<T, 'directus_fields'>>(this.transport));
 	}
 
-	get files(): FilesHandler<TypeOf<T, 'files'>> {
-		return this._files || (this._files = new FilesHandler<TypeOf<T, 'files'>>(this.transport));
+	get files(): FilesHandler<TypeOf<T, 'directus_files'>> {
+		return this._files || (this._files = new FilesHandler<TypeOf<T, 'directus_files'>>(this.transport));
 	}
 
-	get folders(): FoldersHandler<TypeOf<T, 'folders'>> {
-		return this._folders || (this._folders = new FoldersHandler<TypeOf<T, 'folders'>>(this.transport));
+	get folders(): FoldersHandler<TypeOf<T, 'directus_folders'>> {
+		return this._folders || (this._folders = new FoldersHandler<TypeOf<T, 'directus_folders'>>(this.transport));
 	}
 
-	get permissions(): PermissionsHandler<TypeOf<T, 'permissions'>> {
-		return this._permissions || (this._permissions = new PermissionsHandler<TypeOf<T, 'permissions'>>(this.transport));
+	get permissions(): PermissionsHandler<TypeOf<T, 'directus_permissions'>> {
+		return (
+			this._permissions ||
+			(this._permissions = new PermissionsHandler<TypeOf<T, 'directus_permissions'>>(this.transport))
+		);
 	}
 
-	get presets(): PresetsHandler<TypeOf<T, 'presets'>> {
-		return this._presets || (this._presets = new PresetsHandler<TypeOf<T, 'presets'>>(this.transport));
+	get presets(): PresetsHandler<TypeOf<T, 'directus_presets'>> {
+		return this._presets || (this._presets = new PresetsHandler<TypeOf<T, 'directus_presets'>>(this.transport));
 	}
 
-	get relations(): RelationsHandler<TypeOf<T, 'relations'>> {
-		return this._relations || (this._relations = new RelationsHandler<TypeOf<T, 'relations'>>(this.transport));
+	get relations(): RelationsHandler<TypeOf<T, 'directus_relations'>> {
+		return this._relations || (this._relations = new RelationsHandler<TypeOf<T, 'directus_relations'>>(this.transport));
 	}
 
-	get revisions(): RevisionsHandler<TypeOf<T, 'revisions'>> {
-		return this._revisions || (this._revisions = new RevisionsHandler<TypeOf<T, 'revisions'>>(this.transport));
+	get revisions(): RevisionsHandler<TypeOf<T, 'directus_revisions'>> {
+		return this._revisions || (this._revisions = new RevisionsHandler<TypeOf<T, 'directus_revisions'>>(this.transport));
 	}
 
-	get roles(): RolesHandler<TypeOf<T, 'roles'>> {
-		return this._roles || (this._roles = new RolesHandler<TypeOf<T, 'roles'>>(this.transport));
+	get roles(): RolesHandler<TypeOf<T, 'directus_roles'>> {
+		return this._roles || (this._roles = new RolesHandler<TypeOf<T, 'directus_roles'>>(this.transport));
 	}
 
-	get settings(): SettingsHandler<TypeOf<T, 'settings'>> {
-		return this._settings || (this._settings = new SettingsHandler<TypeOf<T, 'settings'>>(this.transport));
+	get settings(): SettingsHandler<TypeOf<T, 'directus_settings'>> {
+		return this._settings || (this._settings = new SettingsHandler<TypeOf<T, 'directus_settings'>>(this.transport));
 	}
 
-	get users(): UsersHandler<TypeOf<T, 'users'>> {
-		return this._users || (this._users = new UsersHandler<TypeOf<T, 'users'>>(this.transport));
+	get users(): UsersHandler<TypeOf<T, 'directus_users'>> {
+		return this._users || (this._users = new UsersHandler<TypeOf<T, 'directus_users'>>(this.transport));
 	}
 
 	get server(): ServerHandler {
@@ -135,7 +148,14 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 		return this._graphql || (this._graphql = new GraphQLHandler(this.transport));
 	}
 
-	items<T extends Item>(collection: string): ItemsHandler<T> {
+	singleton<C extends string, I = TypeOf<T, C>>(collection: C): ISingleton<I> {
+		return (
+			this._singletons[collection] ||
+			(this._singletons[collection] = new SingletonHandler<I>(collection, this.transport))
+		);
+	}
+
+	items<C extends string, I = TypeOf<T, C>>(collection: C): IItems<I> {
 		return this._items[collection] || (this._items[collection] = new ItemsHandler<T>(collection, this.transport));
 	}
 }

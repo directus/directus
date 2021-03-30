@@ -1,3 +1,5 @@
+import { PasswordsHandler } from './handlers/passwords';
+
 export type AuthCredentials = {
 	email: string;
 	password: string;
@@ -23,6 +25,8 @@ export type AuthRefreshOptions = {
 
 export interface IAuth {
 	readonly token: string | null;
+	readonly password: PasswordsHandler;
+
 	login(credentials: AuthCredentials, options?: AuthLoginOptions): Promise<AuthResult>;
 	refresh(options?: AuthRefreshOptions): Promise<AuthResult>;
 	static(token: AuthToken): Promise<boolean>;

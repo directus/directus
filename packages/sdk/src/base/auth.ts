@@ -1,5 +1,6 @@
 import { AuthCredentials, AuthLoginOptions, AuthRefreshOptions, AuthResult, AuthToken, IAuth } from '../auth';
 import { InvalidRefreshTime, NotAuthenticated } from '../errors';
+import { PasswordsHandler } from '../handlers/passwords';
 import { IStorage } from '../storage';
 import { ITransport } from '../transport';
 
@@ -12,6 +13,7 @@ export class Auth implements IAuth {
 	private transport: ITransport;
 	private storage: IStorage;
 	private refreshTimeout: ReturnType<typeof setTimeout> | false;
+	private passwords?: PasswordsHandler;
 
 	constructor(transport: ITransport, storage: IStorage, options?: AuthOptions) {
 		this.options = options || {};
@@ -23,6 +25,10 @@ export class Auth implements IAuth {
 
 	get token(): string | null {
 		return this.storage.auth_token;
+	}
+
+	get password(): PasswordsHandler {
+		return (this.passwords = this.passwords || new PasswordsHandler(this.transport));
 	}
 
 	private async refreshToken(): Promise<AuthResult> {

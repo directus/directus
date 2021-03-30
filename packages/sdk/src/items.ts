@@ -78,7 +78,7 @@ export interface IItems<T extends Item> {
 	createMany(items: PartialItem<T>[], query?: QueryMany<T>): Promise<ManyItems<T>>;
 
 	readOne(id: ID, query?: QueryOne<T>): Promise<OneItem<T>>;
-	readMany(query?: QueryOne<T>): Promise<ManyItems<T>>;
+	readMany(query?: QueryMany<T>): Promise<ManyItems<T>>;
 
 	updateOne(id: ID, item: PartialItem<T>, query?: QueryOne<T>): Promise<OneItem<T>>;
 	updateMany(items: PartialItem<T>[], query?: QueryMany<T>): Promise<ManyItems<T>>;
