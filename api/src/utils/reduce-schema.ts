@@ -33,7 +33,11 @@ export function reduceSchema(
 		}, {} as { [collection: string]: string[] });
 
 	for (const [collectionName, collection] of Object.entries(schema.collections)) {
-		if (schema.permissions.some((permission) => permission.collection === collectionName)) {
+		if (
+			schema.permissions.some(
+				(permission) => permission.collection === collectionName && actions.includes(permission.action)
+			)
+		) {
 			const fields: SchemaOverview['collections'][string]['fields'] = {};
 
 			for (const [fieldName, field] of Object.entries(schema.collections[collectionName].fields)) {
