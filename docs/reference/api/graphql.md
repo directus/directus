@@ -198,7 +198,7 @@ mutation {
 	}
 
 	# Single
-	delete_articles_items(id: 15) {
+	delete_articles_item(id: 15) {
 		id
 	}
 }
