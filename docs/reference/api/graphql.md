@@ -203,3 +203,9 @@ mutation {
 	}
 }
 ```
+
+## SDL Spec
+
+You can download the SDL for the current project / user by opening `/server/specs/graphql` (or
+`/server/specs/graphql/system`) in the browser. See [Get GraphQL SDL](/reference/api/rest/server/#get-graphql-sdl) for
+more information.
