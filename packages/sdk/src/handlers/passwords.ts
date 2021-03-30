@@ -7,11 +7,11 @@ export class PasswordsHandler {
 		this.transport = transport;
 	}
 
-	async request(email: string): Promise<void> {
-		await this.transport.post('/auth/password/request', { email });
+	async request(email: string, reset_url?: string | null): Promise<void> {
+		await this.transport.post('/auth/password/request', { email, reset_url });
 	}
 
-	async reset(token: string, password: string, reset_url?: string | null): Promise<void> {
-		await this.transport.post('/auth/password/reset', { token, password, reset_url });
+	async reset(token: string, password: string): Promise<void> {
+		await this.transport.post('/auth/password/reset', { token, password });
 	}
 }
