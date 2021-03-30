@@ -254,6 +254,10 @@ export class GraphQLService {
 
 		return schemaComposer.buildSchema();
 
+		/**
+		 * Construct an object of types for every collection, using the permitted fields per action type
+		 * as it's fields.
+		 */
 		function getTypes(action: 'read' | 'create' | 'update' | 'delete') {
 			const CollectionTypes: Record<string, ObjectTypeComposer> = {};
 
@@ -261,7 +265,7 @@ export class GraphQLService {
 				if (Object.keys(collection.fields).length === 0) continue;
 
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
-					name: `${action}_${collection.collection}`,
+					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
 					fields: Object.values(collection.fields).reduce((acc, field) => {
 						acc[field.field] = {
 							type: getGraphQLType(field.type),
@@ -323,6 +327,9 @@ export class GraphQLService {
 			return { CollectionTypes };
 		}
 
+		/**
+		 * Create readable types and attach resolvers for each. Also prepares full filter argument structures
+		 */
 		function getReadableTypes() {
 			const { CollectionTypes: ReadCollectionTypes } = getTypes('read');
 			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
