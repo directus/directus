@@ -1,7 +1,6 @@
 import VueI18n from 'vue-i18n';
 import { Component } from 'vue';
 import { Field, localTypes, types } from '@/types';
-import { Extension } from '@/extension';
 
 export type DisplayHandlerFunctionContext = {
 	type: string;
@@ -22,7 +21,9 @@ export type DisplayFieldsFunction = (
 	}
 ) => string[];
 
-export interface DisplayConfig extends Extension {
+export interface DisplayConfig {
+	id: string;
+	name: string;
 	description?: string | VueI18n.TranslateResult;
 
 	handler: DisplayHandlerFunction | Component;

@@ -2,9 +2,10 @@ import VueI18n from 'vue-i18n';
 import { RouteConfig } from 'vue-router';
 import { Ref } from '@vue/composition-api';
 import { User, Permission } from '@/types';
-import { Extension } from '@/extension';
 
-export interface ModuleConfig extends Extension {
+export interface ModuleConfig {
+	id: string;
+	name: string;
 	hidden?: boolean | Ref<boolean>;
 	icon: string;
 	routes?: RouteConfig[];

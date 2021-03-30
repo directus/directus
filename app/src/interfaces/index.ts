@@ -1,4 +1,4 @@
-import { translateExtensions } from '@/extension';
+import { translateReactive } from '@/utils/translate';
 import { ref, Ref } from '@vue/composition-api';
 import { InterfaceConfig } from './types';
 
@@ -9,5 +9,5 @@ export function getInterfaces() {
 		interfaces = ref([]);
 	}
 
-	return translateExtensions(interfaces);
+	return translateReactive(interfaces);
 }

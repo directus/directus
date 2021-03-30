@@ -1,9 +1,10 @@
 import VueI18n from 'vue-i18n';
 import { Component, AsyncComponent } from 'vue';
 import { Field, types, localTypes } from '@/types';
-import { Extension } from '@/extension';
 
-export interface InterfaceConfig extends Extension {
+export interface InterfaceConfig {
+	id: string;
+	name: string;
 	description?: string | VueI18n.TranslateResult;
 	component: Component | AsyncComponent;
 	options: DeepPartial<Field>[] | Component | AsyncComponent;

@@ -1,4 +1,4 @@
-import { translateExtensions } from '@/extension';
+import { translateReactive } from '@/utils/translate';
 import { ref, Ref } from '@vue/composition-api';
 import { ModuleConfig } from './types';
 
@@ -9,5 +9,5 @@ export function getModules() {
 		modules = ref([]);
 	}
 
-	return translateExtensions(modules);
+	return translateReactive(modules);
 }

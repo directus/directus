@@ -1,8 +1,9 @@
 import VueI18n from 'vue-i18n';
 import { VueConstructor, Component } from 'vue';
-import { Extension } from '@/extension';
 
-export interface LayoutConfig extends Extension {
+export interface LayoutConfig {
+	id: string;
+	name: string;
 	icon: string;
 	component: Component;
 }
