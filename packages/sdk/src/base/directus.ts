@@ -16,7 +16,7 @@ import {
 	UsersHandler,
 	UtilsHandler,
 } from '../handlers';
-import { IItems, Item } from '../items';
+import { IItems } from '../items';
 import { ITransport } from '../transport';
 import { ItemsHandler } from './items';
 import { AxiosTransport } from './transport';

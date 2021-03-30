@@ -1,4 +1,3 @@
-import { ItemsHandler } from './base/items';
 import { IAuth } from './auth';
 import {
 	ActivityHandler,
@@ -16,7 +15,7 @@ import {
 	UsersHandler,
 } from './handlers';
 
-import { IItems, Item } from './items';
+import { IItems } from './items';
 import { ITransport } from './transport';
 import { UtilsHandler } from './handlers/utils';
 import { IStorage } from './storage';
