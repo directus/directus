@@ -1,6 +1,5 @@
 <template>
 	<div>
-
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
@@ -224,7 +223,6 @@
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[0].sort_field) }"
 				v-model="relations[0].sort_field"
-				:nullable="false"
 				:placeholder="$t('add_sort_field') + '...'"
 				db-safe
 			>
