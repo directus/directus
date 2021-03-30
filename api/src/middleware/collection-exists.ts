@@ -11,7 +11,7 @@ import { systemCollectionRows } from '../database/system-data/collections';
 const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.params.collection) return next();
 
-	if (req.params.collection in req.schema.tables === false) {
+	if (req.params.collection in req.schema.collections === false) {
 		throw new ForbiddenException();
 	}
 

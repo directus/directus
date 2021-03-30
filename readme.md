@@ -1,3 +1,5 @@
+<br>
+
 <p align="center"><img width="400" alt="Logo" src="https://user-images.githubusercontent.com/522079/89687381-23943700-d8ce-11ea-9a4d-ae3eae136423.png"></p>
 
 <br>
@@ -117,7 +119,8 @@ channels:
 
 Please read our [Contributing Guide](./contributing.md) before submitting Pull Requests.
 
-All security vulnerabilities should be reported in accordance with our [Security Policy](https://docs.directus.io/contributing/introduction/#reporting-security-vulnerabilities).
+All security vulnerabilities should be reported in accordance with our
+[Security Policy](https://docs.directus.io/contributing/introduction/#reporting-security-vulnerabilities).
 
 Directus is a premium open-source ([GPLv3](./license)) project, made possible with support from our passionate core
 team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!

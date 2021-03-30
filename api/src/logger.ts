@@ -1,8 +1,9 @@
 import pino, { LoggerOptions } from 'pino';
+import env from './env';
 
-const pinoOptions: LoggerOptions = { level: process.env.LOG_LEVEL || 'info' };
+const pinoOptions: LoggerOptions = { level: env.LOG_LEVEL || 'info' };
 
-if (process.env.LOG_STYLE !== 'raw') {
+if (env.LOG_STYLE !== 'raw') {
 	pinoOptions.prettyPrint = true;
 	pinoOptions.prettifier = require('pino-colada');
 }

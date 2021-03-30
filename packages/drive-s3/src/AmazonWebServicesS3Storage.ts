@@ -16,6 +16,7 @@ import {
 	Range,
 } from '@directus/drive';
 import path from 'path';
+import normalize from 'normalize-path';
 
 function handleError(err: Error, path: string, bucket: string): Error {
 	switch (err.name) {
@@ -47,7 +48,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 		});
 
 		this.$bucket = config.bucket;
-		this.$root = config.root ? path.normalize(config.root) : '';
+		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
 	}
 
 	/**

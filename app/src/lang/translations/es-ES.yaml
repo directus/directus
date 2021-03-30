@@ -11,6 +11,7 @@ add_field: Agregar Campo
 role_name: Nombre del Rol
 db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
 show_archived_items: Mostrar Elementos Archivados
+edited: Editado
 required: Requerido
 required_for_app_access: Necesario para el acceso a App
 requires_value: Valor obligatorio
@@ -577,6 +578,7 @@ settings_webhooks: Webhooks
 settings_presets: Predefinidos y Marcadores
 scope: Alcance
 layout: Diseño
+tree_view: Vista en árbol
 changes_are_permanent: Los cambios son permanentes
 preset_name_placeholder: Nombre del Marcador...
 preset_search_placeholder: Consulta de búsqueda...
@@ -796,6 +798,7 @@ template: Plantilla
 translation: Traducción
 value: Valor
 view_project: Ver Proyecto
+weeks: { }
 report_error: Reportar Error
 interfaces:
   button-links:
@@ -971,6 +974,9 @@ interfaces:
   translations:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
+  tree-view:
+    description: Vista en árbol para elementos anidados recursivos uno-a-muchos
+    recursive_only: La interfaz de vista en árbol sólo funciona para relaciones recursivas.
   user:
     user: Usuario
     description: Seleccionar un usuario existente de Directus

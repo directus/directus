@@ -72,7 +72,7 @@ export class CollectionsService {
 					throw new InvalidPayloadException(`Collections can't start with "directus_"`);
 				}
 
-				if (payload.collection in this.schema.tables) {
+				if (payload.collection in this.schema.collections) {
 					throw new InvalidPayloadException(`Collection "${payload.collection}" already exists.`);
 				}
 
@@ -277,7 +277,7 @@ export class CollectionsService {
 			schema: this.schema,
 		});
 
-		const tablesInDatabase = Object.keys(this.schema.tables);
+		const tablesInDatabase = Object.keys(this.schema.collections);
 
 		const collectionKeys = toArray(collection);
 

@@ -26,6 +26,8 @@ import path from 'path';
 
 import { PassThrough, Readable } from 'stream';
 
+import normalize from 'normalize-path';
+
 function handleError(err: Error, path: string): Error {
 	return new UnknownException(err, err.name, path);
 }
@@ -45,7 +47,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 			this.$signedCredentials
 		);
 		this.$containerClient = this.$client.getContainerClient(config.containerName);
-		this.$root = config.root ? path.normalize(config.root) : '';
+		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
 	}
 
 	/**

@@ -11,7 +11,9 @@ add_field: Lägg till fält
 role_name: Rollens namn
 db_only_click_to_configure: 'Endast databas: Klicka för att konfigurera '
 show_archived_items: Visa arkiverade objekt
+edited: Redigerad
 required: Obligatoriskt
+required_for_app_access: Krävs för tillgång till applikationen
 requires_value: Kräver ett värde
 create_preset: Skapa förval
 create_role: Skapa roll
@@ -25,6 +27,7 @@ connection_excellent: Utmärkt anslutning
 connection_good: Bra anslutning
 connection_fair: God anslutning
 connection_poor: Dålig anslutning
+primary: Primär
 rename_folder: Döp om mapp
 delete_folder: Ta bort mapp
 prefix: Prefix
@@ -52,6 +55,11 @@ archive: Arkivera
 archive_confirm: Är du säker på att du vill arkivera detta objekt?
 archive_confirm_count: >-
   Inga objekt valda | Är du säker på att du vill arkivera detta objekt? | Är du säker på att du vill arkivera dessa {count} objekt?
+reset_system_permissions_to: 'Återställ systemrättigheter till:'
+reset_system_permissions_copy: Den här åtgärden kommer att skriva över alla anpassade behörigheter som du kan ha tillämpat på systemkollektionerna. Är du säker?
+the_following_are_minimum_permissions: Följande är minimirättigheter som krävs när "App Access" är aktiverat. Du kan utöka behörigheterna utöver detta, men inte nedan.
+app_access_minimum: Minsta tillgång till applikationen
+recommended_defaults: Rekommenderade standardvärden
 unarchive: Ångra arkivering
 unarchive_confirm: Är du säker på att du vill ångra arkivering av detta objekt?
 nested_files_folders_will_be_moved: Nästlade filer och mappar kommer flyttas upp en nivå.
@@ -81,6 +89,7 @@ field_presentation: Presentation & alias
 field_file: Enskild fil
 field_files: Flera filer
 field_m2o: M2O Relation
+field_m2a: M2A Relationship
 field_o2m: O2M Relation
 field_m2m: M2M Relation
 field_translations: Översättningar
@@ -111,6 +120,7 @@ exposure: Exponering
 shutter: Slutare
 iso: ISO
 focal_length: Skärpedjup
+schema_setup_key: Detta fälts kolumnnamn i databasen och API-nyckel
 create_field: Skapa fält
 creating_new_field: 'Nytt fält ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -143,6 +153,9 @@ to_manually_setup_translations: för att manuellt konfigurera översättningar.
 click_to_manage_translated_fields: >-
   Det finns inga översatta fält ännu. Klicka här för att skapa dem. | Det finns ett översatt fält. Klicka här för att administrera det. | Det finns {count} översatta fält. Klicka här för att administrera dem.
 fields_group: Fältens grupp
+new_data_alert: 'Följande kommer att skapas inom din datamodell:'
+new_field: 'Nytt fält'
+new_collection: 'Ny kollektion'
 add_m2o_to_collection: 'Lägg till Many-to-One i "{collection}"'
 add_o2m_to_collection: 'Lägg till One-to-Many i "{collection}"'
 add_m2m_to_collection: 'Lägg till Many-to-Many i "{collection}"'
@@ -157,6 +170,7 @@ m2o_relationship: Many to One relation
 o2m_relationship: One to Many relation
 m2m_relationship: Many to Many relation
 m2a_relationship: Many to Any relation
+invalid_item: Ogiltigt objekt
 next: Nästa
 field_name: Fältnamn
 translations: Översättningar
@@ -346,6 +360,7 @@ collection_created: Kollektion skapad
 modified_on: Ändrad den
 card_size: Kortets storlek
 sort_field: Sortera fält
+add_sort_field: Lägg till sorteringsfält
 sort: Sortera
 status: Status
 toggle_manual_sorting: Växla manuell sortering
@@ -373,6 +388,7 @@ errors:
   ITEM_LIMIT_REACHED: Objektgränsen har uppnåtts
   ITEM_NOT_FOUND: Objektet hittades inte
   ROUTE_NOT_FOUND: Hittades inte
+  RECORD_NOT_UNIQUE: Duplicerat värde upptäckt
   UNKNOWN: Oväntat fel
 value_hashed: Värde säkert hashat
 bookmark_name: Bokmärkesnamn...
@@ -400,16 +416,22 @@ delete_collection: Ta bort kollektion
 update_collection_success: Uppdaterad kollektion
 delete_collection_success: Raderar kollektion
 start_end_of_count_items: '{start}-{end} av {count} objekt'
+start_end_of_count_filtered_items: '{start}-{end} av {count} filtrerade objekt'
+one_item: '1 objekt'
+one_filtered_item: '1 filtrerat objekt'
 delete_collection_are_you_sure: >-
   Är du säker på att du vill ta bort denna kollektion? Detta kommer att ta bort kollektionen och alla objekt i den. Denna åtgärd är permanent.
 collections_shown: Visade kollektioner
 visible_collections: Synliga kollektioner
 hidden_collections: Dolda kollektioner
+show_hidden_collections: Visa dolda kollektioner
+hide_hidden_collections: Dölj dolda kollektioner
 unmanaged_collections: Okonfigurerade kollektioner
 system_collections: Systemets kollektioner
 placeholder: Platshållare
 icon_left: Ikon till vänster
 icon_right: Ikon höger
+count_other_revisions: '{count} Andra revisioner'
 font: Typsnitt
 sans_serif: Sans Serif
 serif: Serif
@@ -558,6 +580,7 @@ scope: Omfattning
 layout: Layout
 changes_are_permanent: Ändringar är permanenta
 preset_name_placeholder: Bokmärkets namn...
+preset_search_placeholder: Sök...
 editing_preset: Redigerar förval
 layout_preview: Förhandsgranska layout
 layout_setup: Konfiguration av layout
@@ -777,10 +800,14 @@ view_project: Visa projekt
 report_error: Rapportera fel
 interfaces:
   button-links:
+    button-links: Knappens länkar
     links: Länkar
+    description: Konfigurerbara länkknappar för att starta dynamiska URL:er
     style: Stil
+    primary: Primär
     link: Länkar
     button: Knappar
+    error: Kan inte utföra åtgärd
   checkboxes:
     checkboxes: Kryssrutor
     description: Välj mellan flera alternativ av kryssrutor
