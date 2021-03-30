@@ -1,7 +1,7 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayUser from './user.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'user',
 	name: '$t:displays.user.user',
 	description: '$t:displays.user.description',
@@ -54,4 +54,4 @@ export default defineDisplay(({ i18n }) => ({
 		},
 	],
 	fields: ['id', 'avatar.id', 'email', 'first_name', 'last_name'],
-}));
+});

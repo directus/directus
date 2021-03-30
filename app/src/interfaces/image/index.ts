@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceImage from './image.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'image',
 	name: '$t:interfaces.image.image',
 	description: '$t:interfaces.image.description',
@@ -12,4 +12,4 @@ export default defineInterface(({ i18n }) => ({
 	relational: true,
 	options: [],
 	recommendedDisplays: ['image'],
-}));
+});

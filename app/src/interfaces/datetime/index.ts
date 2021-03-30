@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceDateTime from './datetime.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'datetime',
 	name: '$t:interfaces.datetime.datetime',
 	description: '$t:interfaces.datetime.description',
@@ -35,4 +35,4 @@ export default defineInterface(({ i18n }) => ({
 		},
 	],
 	recommendedDisplays: ['datetime'],
-}));
+});

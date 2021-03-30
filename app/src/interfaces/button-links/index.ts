@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceButtonLinks from './button-links.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'button-links',
 	name: '$t:interfaces.button-links.button-links',
 	description: '$t:interfaces.button-links.description',
@@ -85,4 +85,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

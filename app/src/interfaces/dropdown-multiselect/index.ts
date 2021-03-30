@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceDropdownMultiselect from './dropdown-multiselect.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'dropdown-multiselect',
 	name: '$t:interfaces.dropdown-multiselect.dropdown-multiselect',
 	description: '$t:interfaces.dropdown-multiselect.description',
@@ -102,4 +102,4 @@ export default defineInterface(({ i18n }) => ({
 		},
 	],
 	recommendedDisplays: ['labels'],
-}));
+});

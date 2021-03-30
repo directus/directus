@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceDisplayTemplate from './display-template.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'display-template',
 	name: '$t:interfaces.display-template.display-template',
 	description: '$t:interfaces.display-template.description',
@@ -23,4 +23,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

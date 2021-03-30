@@ -1,7 +1,7 @@
 import InterfaceNumeric from './numeric.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'numeric',
 	name: '$t:interfaces.numeric.numeric',
 	description: '$t:interfaces.numeric.description',
@@ -89,4 +89,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

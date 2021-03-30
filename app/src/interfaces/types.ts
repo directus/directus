@@ -5,6 +5,7 @@ import { Field, types, localTypes } from '@/types';
 export interface InterfaceConfig {
 	id: string;
 	name: string;
+	icon: string;
 	description?: string | VueI18n.TranslateResult;
 	component: Component | AsyncComponent;
 	options: DeepPartial<Field>[] | Component | AsyncComponent;

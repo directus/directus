@@ -1,7 +1,7 @@
 import InterfaceHash from './hash.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'hash',
 	name: '$t:interfaces.hash.hash',
 	description: '$t:interfaces.hash.description',
@@ -37,4 +37,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

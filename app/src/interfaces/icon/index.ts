@@ -1,7 +1,7 @@
 import { defineInterface } from '../define';
 import InterfaceIcon from './icon.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'icon',
 	name: '$t:interfaces.icon.icon',
 	description: '$t:interfaces.icon.description',
@@ -10,4 +10,4 @@ export default defineInterface(({ i18n }) => ({
 	types: ['string'],
 	options: [],
 	recommendedDisplays: ['icon'],
-}));
+});

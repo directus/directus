@@ -1,7 +1,7 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayIcon from './icon.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'icon',
 	name: '$t:displays.icon.icon',
 	description: '$t:displays.icon.description',
@@ -34,4 +34,4 @@ export default defineDisplay(({ i18n }) => ({
 		},
 	],
 	types: ['string'],
-}));
+});

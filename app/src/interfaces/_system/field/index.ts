@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceField from './field.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'field',
 	name: '$t:field',
 	icon: 'box',
@@ -9,4 +9,4 @@ export default defineInterface(({ i18n }) => ({
 	types: ['string'],
 	options: [],
 	system: true,
-}));
+});

@@ -1,7 +1,7 @@
 import { defineInterface } from '../define';
 import InterfaceFiles from './files.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'files',
 	name: '$t:interfaces.files.files',
 	description: '$t:interfaces.files.description',
@@ -12,4 +12,4 @@ export default defineInterface(({ i18n }) => ({
 	relational: true,
 	options: [],
 	recommendedDisplays: ['files'],
-}));
+});

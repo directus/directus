@@ -2,7 +2,7 @@ import readableMimeType from '@/utils/readable-mime-type';
 import { extension } from 'mime-types';
 import { defineDisplay } from '@/displays/define';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'mime-type',
 	name: '$t:displays.mime-type.mime-type',
 	description: '$t:displays.mime-type.description',
@@ -31,4 +31,4 @@ export default defineDisplay(({ i18n }) => ({
 
 		return readableMimeType(value);
 	},
-}));
+});

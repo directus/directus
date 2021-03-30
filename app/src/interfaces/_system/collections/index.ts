@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceCollections from './collections.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'collections',
 	name: '$t:interfaces.collections.collections',
 	description: '$t:interfaces.collections.description',
@@ -27,4 +27,4 @@ export default defineInterface(({ i18n }) => ({
 	],
 	system: true,
 	recommendedDisplays: ['labels'],
-}));
+});

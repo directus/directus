@@ -1,7 +1,7 @@
 import InterfaceToggle from './toggle.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'toggle',
 	name: '$t:interfaces.toggle.toggle',
 	description: '$t:interfaces.toggle.description',
@@ -62,4 +62,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

@@ -1,7 +1,7 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayCollection from './collection.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'collection',
 	name: '$t:displays.collection.collection',
 	description: '$t:displays.collection.description',
@@ -24,4 +24,4 @@ export default defineDisplay(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

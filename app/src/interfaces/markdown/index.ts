@@ -1,7 +1,7 @@
 import InterfaceMarkdown from './markdown.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'markdown',
 	name: '$t:interfaces.markdown.markdown',
 	description: '$t:interfaces.markdown.description',
@@ -108,4 +108,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

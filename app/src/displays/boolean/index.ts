@@ -1,7 +1,7 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayBoolean from './boolean.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'boolean',
 	name: '$t:displays.boolean.boolean',
 	description: '$t:displays.boolean.description',
@@ -82,4 +82,4 @@ export default defineDisplay(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

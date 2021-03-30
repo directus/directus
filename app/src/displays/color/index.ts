@@ -1,7 +1,7 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayColor from './color.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'color',
 	name: '$t:displays.color.color',
 	description: '$t:displays.color.description',
@@ -22,4 +22,4 @@ export default defineDisplay(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

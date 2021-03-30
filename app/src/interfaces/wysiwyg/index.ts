@@ -4,7 +4,7 @@ import { defineInterface } from '@/interfaces/define';
 const InterfaceWYSIWYG = () =>
 	import(/* webpackChunkName: 'interface-wysiwyg', webpackPrefetch: true */ './wysiwyg.vue');
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'wysiwyg',
 	name: '$t:interfaces.wysiwyg.wysiwyg',
 	description: '$t:interfaces.wysiwyg.description',
@@ -286,4 +286,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

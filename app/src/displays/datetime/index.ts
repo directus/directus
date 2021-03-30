@@ -1,7 +1,7 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayDateTime from './datetime.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'datetime',
 	name: '$t:displays.datetime.datetime',
 	description: '$t:displays.datetime.description',
@@ -45,4 +45,4 @@ export default defineDisplay(({ i18n }) => ({
 		},
 	],
 	types: ['dateTime', 'date', 'time', 'timestamp'],
-}));
+});

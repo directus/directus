@@ -24,6 +24,7 @@ export type DisplayFieldsFunction = (
 export interface DisplayConfig {
 	id: string;
 	name: string;
+	icon: string;
 	description?: string | VueI18n.TranslateResult;
 
 	handler: DisplayHandlerFunction | Component;

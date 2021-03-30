@@ -1,7 +1,7 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayRating from './rating.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'rating',
 	name: '$t:displays.rating.rating',
 	description: '$t:displays.rating.description',
@@ -25,4 +25,4 @@ export default defineDisplay(({ i18n }) => ({
 		},
 	],
 	types: ['integer', 'decimal', 'float'],
-}));
+});

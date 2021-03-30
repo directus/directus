@@ -2,7 +2,7 @@ import { defineInterface } from '../define';
 import InterfaceOneToMany from './one-to-many.vue';
 import Options from './options.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'one-to-many',
 	name: '$t:interfaces.one-to-many.one-to-many',
 	description: '$t:interfaces.one-to-many.description',
@@ -13,4 +13,4 @@ export default defineInterface(({ i18n }) => ({
 	relational: true,
 	options: Options,
 	recommendedDisplays: ['related-values'],
-}));
+});

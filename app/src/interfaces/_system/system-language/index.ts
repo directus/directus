@@ -1,7 +1,7 @@
 import InterfaceSystemLanguage from './system-language.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'system-language',
 	name: '$t:language',
 	icon: 'translate',
@@ -9,4 +9,4 @@ export default defineInterface(({ i18n }) => ({
 	system: true,
 	types: ['string'],
 	options: [],
-}));
+});

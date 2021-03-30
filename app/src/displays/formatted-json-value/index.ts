@@ -1,7 +1,7 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayJsonValue from './formatted-json-value.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'formatted-json-value',
 	name: '$t:displays.formatted-json-value.formatted-json-value',
 	description: '$t:displays.formatted-json-value.description',
@@ -22,4 +22,4 @@ export default defineDisplay(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

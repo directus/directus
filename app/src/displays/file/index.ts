@@ -1,7 +1,7 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayFile from './file.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'file',
 	name: '$t:displays.file.file',
 	description: '$t:displays.file.description',
@@ -10,4 +10,4 @@ export default defineDisplay(({ i18n }) => ({
 	types: ['uuid'],
 	options: [],
 	fields: ['data', 'type', 'title'],
-}));
+});

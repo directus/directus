@@ -1,7 +1,7 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayLabels from './labels.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'labels',
 	name: '$t:displays.labels.labels',
 	description: '$t:displays.labels.description',
@@ -117,4 +117,4 @@ export default defineDisplay(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

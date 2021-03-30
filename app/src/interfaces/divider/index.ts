@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceDivider from './divider.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'divider',
 	name: '$t:interfaces.divider.divider',
 	description: '$t:interfaces.divider.description',
@@ -73,4 +73,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

@@ -27,7 +27,7 @@ const choices = Object.entries(choicesMap).map(([key, value]) => ({
 	value: key,
 }));
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'code',
 	name: '$t:interfaces.code.code',
 	description: '$t:interfaces.code.description',
@@ -73,4 +73,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

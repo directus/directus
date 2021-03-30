@@ -1,7 +1,7 @@
 import InterfaceTags from './tags.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'tags',
 	name: '$t:interfaces.tags.tags',
 	description: '$t:interfaces.tags.description',
@@ -114,4 +114,4 @@ export default defineInterface(({ i18n }) => ({
 		},
 	],
 	recommendedDisplays: ['labels'],
-}));
+});

@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceColor from './color.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'color',
 	name: '$t:interfaces.color.color',
 	description: '$t:interfaces.color.description',
@@ -47,4 +47,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

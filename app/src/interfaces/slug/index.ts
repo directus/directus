@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceSlug from './slug.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'slug',
 	name: '$t:interfaces.slug.slug',
 	description: '$t:interfaces.slug.description',
@@ -39,4 +39,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

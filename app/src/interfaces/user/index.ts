@@ -1,7 +1,7 @@
 import InterfaceUser from './user.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'user',
 	name: '$t:interfaces.user.user',
 	description: '$t:interfaces.user.description',
@@ -31,4 +31,4 @@ export default defineInterface(({ i18n }) => ({
 		},
 	],
 	recommendedDisplays: ['user'],
-}));
+});

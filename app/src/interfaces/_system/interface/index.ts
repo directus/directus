@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceInterface from './interface.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'interface',
 	name: '$t:interfaces.interface.interface',
 	description: '$t:interfaces.interface.description',
@@ -10,4 +10,4 @@ export default defineInterface(({ i18n }) => ({
 	types: ['string'],
 	system: true,
 	options: [],
-}));
+});

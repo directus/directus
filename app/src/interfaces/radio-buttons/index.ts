@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceRadioButtons from './radio-buttons.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'radio-buttons',
 	name: '$t:interfaces.radio-buttons.radio-buttons',
 	description: '$t:interfaces.radio-buttons.description',
@@ -94,4 +94,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

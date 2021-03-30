@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceDropdown from './dropdown.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'dropdown',
 	name: '$t:dropdown',
 	description: '$t:interfaces.dropdown.description',
@@ -102,4 +102,4 @@ export default defineInterface(({ i18n }) => ({
 		},
 	],
 	recommendedDisplays: ['labels'],
-}));
+});

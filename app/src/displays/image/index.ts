@@ -1,7 +1,7 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayImage from './image.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'image',
 	name: '$t:displays.image.image',
 	description: '$t:displays.image.description',
@@ -26,4 +26,4 @@ export default defineDisplay(({ i18n }) => ({
 		},
 	],
 	fields: ['id', 'type', 'title'],
-}));
+});

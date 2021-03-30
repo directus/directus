@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceNotice from './notice.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'notice',
 	name: '$t:interfaces.notice.notice',
 	description: '$t:interfaces.notice.description',
@@ -56,4 +56,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

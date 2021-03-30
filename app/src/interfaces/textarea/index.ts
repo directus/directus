@@ -1,7 +1,7 @@
 import InterfaceTextarea from './textarea.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'textarea',
 	name: '$t:interfaces.textarea.textarea',
 	description: '$t:interfaces.textarea.description',
@@ -56,4 +56,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

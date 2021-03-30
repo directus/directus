@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceCheckboxes from './checkboxes.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'checkboxes',
 	name: '$t:interfaces.checkboxes.checkboxes',
 	icon: 'check_box',
@@ -113,4 +113,4 @@ export default defineInterface(({ i18n }) => ({
 		},
 	],
 	recommendedDisplays: ['labels'],
-}));
+});

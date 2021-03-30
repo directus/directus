@@ -1,7 +1,7 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayFormattedValue from './formatted-value.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'formatted-value',
 	name: '$t:displays.formatted-value.formatted-value',
 	description: '$t:displays.formatted-value.description',
@@ -66,4 +66,4 @@ export default defineDisplay(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

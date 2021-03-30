@@ -1,7 +1,7 @@
 import InterfaceTextInput from './text-input.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'text-input',
 	name: '$t:interfaces.text-input.text-input',
 	description: '$t:interfaces.text-input.description',
@@ -103,4 +103,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

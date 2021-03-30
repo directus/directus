@@ -1,7 +1,7 @@
 import InterfaceSlider from './slider.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'slider',
 	name: '$t:interfaces.slider.slider',
 	description: '$t:interfaces.slider.description',
@@ -46,4 +46,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});
