@@ -17,11 +17,11 @@ export default defineComponent({
 	props: {
 		value: {
 			type: Number,
-			default: 0,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {
-		const interval = computed<number>({
+		const interval = computed<number | null>({
 			get() {
 				return props.value;
 			},
@@ -36,7 +36,7 @@ export default defineComponent({
 			if (activeInterval.value !== null) {
 				clearInterval(activeInterval.value);
 			}
-			if (newInterval !== 0) {
+			if (newInterval !== null && newInterval > 0) {
 				activeInterval.value = setInterval(() => {
 					emit('refresh');
 				}, newInterval * 1000);
@@ -44,15 +44,26 @@ export default defineComponent({
 		});
 
 		const items = computed(() => {
-			const intervals = [0, 1, 10, 60];
+			const intervals = [null, 1, 5, 10, 60, 300, 600];
 			return intervals.map((seconds) => {
-				return {
-					text: i18n.tc('refresh_interval_seconds', seconds, { seconds }),
-					value: seconds,
-				};
+				if (seconds === null)
+					return {
+						text: i18n.t('no_refresh'),
+						value: null,
+					};
+
+				return seconds >= 60 && seconds % 60 === 0
+					? {
+							text: i18n.tc('refresh_interval_minutes', seconds / 60, { minutes: seconds / 60 }),
+							value: seconds,
+					  }
+					: {
+							text: i18n.tc('refresh_interval_seconds', seconds, { seconds }),
+							value: seconds,
+					  };
 			});
 		});
-		const active = computed(() => interval.value !== 0);
+		const active = computed(() => interval.value !== null);
 
 		return { active, interval, items };
 	},

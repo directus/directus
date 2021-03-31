@@ -151,7 +151,9 @@ not_available_for_type: Not Available for this Type
 create_translations: Create Translations
 auto_refresh: Auto Refresh
 refresh_interval: Refresh Interval
-refresh_interval_seconds: Do not refresh | Every Second | Every {seconds} Seconds
+no_refresh: Do not refresh
+refresh_interval_seconds: Refresh Instantly | Every Second | Every {seconds} Seconds
+refresh_interval_minutes: Every Minute | Every {minutes} Minutes
 auto_generate: Auto-Generate
 this_will_auto_setup_fields_relations: This will automatically setup all required fields and relations.
 click_here: Click here

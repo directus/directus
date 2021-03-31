@@ -131,9 +131,9 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		},
 	});
 
-	const refreshInterval = computed<number>({
+	const refreshInterval = computed<number | null>({
 		get() {
-			return localPreset.value.refresh_interval || 0;
+			return localPreset.value.refresh_interval || null;
 		},
 		set(val) {
 			localPreset.value = {
@@ -210,7 +210,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 			layout: 'tabular',
 			filters: null,
 			search: null,
-			refresh_interval: 0,
+			refresh_interval: null,
 		};
 
 		await savePreset();
