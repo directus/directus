@@ -72,6 +72,7 @@ import NotificationsPreview from './components/notifications-preview/';
 import NotificationDialogs from './components/notification-dialogs/';
 import { useUserStore, useAppStore } from '@/stores';
 import router from '@/router';
+import useTitle from '@/composables/use-title';
 
 export default defineComponent({
 	components: {
@@ -90,7 +91,8 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	setup() {
+	setup(props) {
+		const { title } = toRefs(props);
 		const navOpen = ref(false);
 		const contentEl = ref<Element>();
 		const userStore = useUserStore();
@@ -126,6 +128,8 @@ export default defineComponent({
 			// 	}
 			// }
 		});
+
+		useTitle(title);
 
 		return {
 			navOpen,
