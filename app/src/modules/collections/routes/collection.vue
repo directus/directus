@@ -221,7 +221,7 @@
 			<layout-sidebar-detail @input="layout = $event" :value="layout" />
 			<portal-target name="sidebar" />
 			<export-sidebar-detail :layout-query="layoutQuery" :search-query="searchQuery" :collection="currentCollection" />
-			<sidebar-auto-refresh @refresh="refresh" />
+			<sidebar-auto-refresh @refresh="refresh" v-model="refreshInterval" />
 		</template>
 
 		<v-dialog v-if="deleteError" active>
@@ -311,6 +311,7 @@ export default defineComponent({
 			resetPreset,
 			bookmarkSaved,
 			bookmarkIsMine,
+			refreshInterval,
 			busy: bookmarkSaving,
 			clearLocalSave,
 		} = usePreset(collection, bookmarkID);
@@ -344,7 +345,6 @@ export default defineComponent({
 			addNewLink,
 			batchDelete,
 			batchEditActive,
-
 			confirmDelete,
 			currentCollection,
 			deleting,
@@ -381,6 +381,7 @@ export default defineComponent({
 			bookmarkSaving,
 			clearLocalSave,
 			refresh,
+			refreshInterval,
 		};
 
 		function refresh() {

@@ -33,3 +33,6 @@ fields:
 
   - field: layout
     width: half
+  
+  - field: refresh_interval
+    width: half

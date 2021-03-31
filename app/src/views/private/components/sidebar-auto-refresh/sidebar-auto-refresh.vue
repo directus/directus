@@ -14,8 +14,22 @@ import i18n from '@/lang';
 import { computed, defineComponent, ref, watch } from '@vue/composition-api';
 
 export default defineComponent({
+	props: {
+		value: {
+			type: Number,
+			default: 0,
+		},
+	},
 	setup(props, { emit }) {
-		const interval = ref(0);
+		const interval = computed<number>({
+			get() {
+				return props.value;
+			},
+			set(newVal) {
+				emit('input', newVal);
+			},
+		});
+
 		const activeInterval = ref<NodeJS.Timeout | null>(null);
 
 		watch(interval, (newInterval) => {
