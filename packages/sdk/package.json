@@ -27,8 +27,8 @@
 		"cleanup:node": "rimraf ./node",
 		"cleanup:browser": "rimraf ./browser",
 		"cleanup:coverage": "rimraf ./coverage",
-		"dev": "jest --coverage --watchAll",
-		"test": "jest --coverage"
+		"test": "jest --coverage",
+		"test:watch": "jest --coverage --watchAll"
 	},
 	"keywords": [
 		"api",
