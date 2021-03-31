@@ -115,18 +115,6 @@ export default defineComponent({
 
 		router.afterEach(async (to, from) => {
 			contentEl.value?.scrollTo({ top: 0 });
-
-			// await nextTick();
-
-			// const hash = to.hash;
-
-			// if (hash) {
-			// 	const linkedEl = document.querySelector(hash) as HTMLElement;
-
-			// 	if (linkedEl) {
-			// 		contentEl.value?.scrollTo({ top: linkedEl.offsetTop - 100, behavior: 'smooth' });
-			// 	}
-			// }
 		});
 
 		useTitle(title);

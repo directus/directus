@@ -86,7 +86,7 @@
 import { defineComponent, computed, ref, toRefs, watch, PropType } from '@vue/composition-api';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
-import { getFieldsFromTemplate } from '@/utils/render-template';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';

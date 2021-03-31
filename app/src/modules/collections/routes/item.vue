@@ -208,7 +208,7 @@ import { NavigationGuard } from 'vue-router';
 import { usePermissions } from '@/composables/use-permissions';
 import unsavedChanges from '@/composables/unsaved-changes';
 import { useTitle } from '@/composables/use-title';
-import renderTemplate from '@/utils/render-template';
+import { renderStringTemplate } from '@/utils/render-string-template';
 
 export default defineComponent({
 	name: 'collections-item',
@@ -303,13 +303,13 @@ export default defineComponent({
 		});
 
 		const tabTitle = computed(() => {
-			let tabTitle = (collectionInfo.value?.name || '') + ' / ';
+			let tabTitle = (collectionInfo.value?.name || '') + ' | ';
 
 			if (collectionInfo.value && collectionInfo.value.meta) {
 				if (collectionInfo.value.meta.singleton === true) {
 					return tabTitle + collectionInfo.value.name;
 				} else if (isNew.value === false && collectionInfo.value.meta.display_template) {
-					const { displayValue } = renderTemplate(collectionInfo.value.meta.display_template, templateValues);
+					const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateValues);
 
 					if (displayValue.value !== undefined) return tabTitle + displayValue.value;
 				}
