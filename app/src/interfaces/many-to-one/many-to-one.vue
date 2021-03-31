@@ -28,26 +28,11 @@
 
 					<template #append v-if="!disabled">
 						<template v-if="currentItem">
-							<v-icon
-								name="open_in_new"
-								class="edit"
-								v-tooltip="$t('edit')"
-								@click.stop="editModalActive = true"
-							/>
-							<v-icon
-								name="close"
-								class="deselect"
-								@click.stop="$emit('input', null)"
-								v-tooltip="$t('deselect')"
-							/>
+							<v-icon name="open_in_new" class="edit" v-tooltip="$t('edit')" @click.stop="editModalActive = true" />
+							<v-icon name="close" class="deselect" @click.stop="$emit('input', null)" v-tooltip="$t('deselect')" />
 						</template>
 						<template v-else>
-							<v-icon
-								class="add"
-								name="add"
-								v-tooltip="$t('create_item')"
-								@click.stop="editModalActive = true"
-							/>
+							<v-icon class="add" name="add" v-tooltip="$t('create_item')" @click.stop="editModalActive = true" />
 							<v-icon class="expand" :class="{ active }" name="expand_more" />
 						</template>
 					</template>
@@ -71,11 +56,7 @@
 						@click="setCurrent(item)"
 					>
 						<v-list-item-content>
-							<render-template
-								:collection="relatedCollection.collection"
-								:template="displayTemplate"
-								:item="item"
-							/>
+							<render-template :collection="relatedCollection.collection" :template="displayTemplate" :item="item" />
 						</v-list-item-content>
 					</v-list-item>
 				</template>
@@ -105,7 +86,7 @@
 import { defineComponent, computed, ref, toRefs, watch, PropType } from '@vue/composition-api';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
-import getFieldsFromTemplate from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';

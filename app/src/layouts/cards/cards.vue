@@ -141,7 +141,7 @@ import useSync from '@/composables/use-sync/';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
 import Card from './components/card.vue';
-import getFieldsFromTemplate from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { useRelationsStore } from '@/stores/';
 
 import CardsHeader from './components/header.vue';
