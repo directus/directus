@@ -6,3 +6,13 @@ export type Post = {
 	body: string;
 	published: boolean;
 };
+
+export type Category = {
+	slug: string;
+	name: string;
+};
+
+export type Blog = {
+	posts: Post;
+	categories: Category;
+};

@@ -18,13 +18,15 @@ describe('profile', function () {
 	test(`update`, async (url, nock) => {
 		const scope = nock()
 			.patch('/users/me', {
-				updated: 'data',
+				email: 'other@email.com',
+				untyped_field: 12345,
 			})
 			.reply(200, {});
 
 		const sdk = new Directus(url);
 		await sdk.users.me.update({
-			updated: 'data',
+			email: 'other@email.com',
+			untyped_field: 12345,
 		});
 
 		expect(scope.pendingMocks().length).toBe(0);

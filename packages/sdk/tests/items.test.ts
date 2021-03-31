@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { Post } from '.';
+import { Blog } from './blog.d';
 import { Directus } from '../src';
 import { test } from './utils';
 
@@ -18,14 +18,8 @@ describe('items', function () {
 				},
 			});
 
-		type Post = {
-			id: number;
-			title: string;
-			body: string;
-		};
-
-		const sdk = new Directus(url);
-		const item = await sdk.items<Post>('posts').readOne(1);
+		const sdk = new Directus<Blog>(url);
+		const item = await sdk.items('posts').readOne(1);
 
 		expect(item).not.toBeNull();
 		expect(item).not.toBeUndefined();
@@ -44,13 +38,8 @@ describe('items', function () {
 				},
 			});
 
-		type Category = {
-			slug: string;
-			name: string;
-		};
-
-		const sdk = new Directus(url);
-		const item = await sdk.items<Category>('categories').readOne('double slash');
+		const sdk = new Directus<Blog>(url);
+		const item = await sdk.items('categories').readOne('double slash');
 
 		expect(item).not.toBeNull();
 		expect(item).not.toBeUndefined();
@@ -78,8 +67,8 @@ describe('items', function () {
 				],
 			});
 
-		const sdk = new Directus(url);
-		const items = await sdk.items<Post>('posts').readMany();
+		const sdk = new Directus<Blog>(url);
+		const items = await sdk.items('posts').readMany();
 
 		expect(items.data![0]).toMatchObject({
 			id: 1,
@@ -115,8 +104,8 @@ describe('items', function () {
 				],
 			});
 
-		const sdk = new Directus(url);
-		const items = await sdk.items<Post>('posts').readMany({
+		const sdk = new Directus<Blog>(url);
+		const items = await sdk.items('posts').readMany({
 			fields: ['id', 'title'],
 		});
 
@@ -141,8 +130,8 @@ describe('items', function () {
 				},
 			});
 
-		const sdk = new Directus(url);
-		const item = await sdk.items<Post>('posts').createOne({
+		const sdk = new Directus<Blog>(url);
+		const item = await sdk.items('posts').createOne({
 			title: 'New post',
 			body: 'This is a new post',
 			published: false,
@@ -176,8 +165,8 @@ describe('items', function () {
 				],
 			});
 
-		const sdk = new Directus(url);
-		const items = await sdk.items<Post>('posts').createMany([
+		const sdk = new Directus<Blog>(url);
+		const items = await sdk.items('posts').createMany([
 			{
 				title: 'New post 2',
 				body: 'This is a new post 2',
@@ -217,8 +206,8 @@ describe('items', function () {
 				},
 			});
 
-		const sdk = new Directus(url);
-		const item = await sdk.items<Post>('posts').updateOne(1, {
+		const sdk = new Directus<Blog>(url);
+		const item = await sdk.items('posts').updateOne(1, {
 			title: 'Updated post',
 			body: 'Updated post content',
 			published: true,
@@ -251,8 +240,8 @@ describe('items', function () {
 				],
 			});
 
-		const sdk = new Directus(url);
-		const item = await sdk.items<Post>('posts').updateMany([
+		const sdk = new Directus<Blog>(url);
+		const item = await sdk.items('posts').updateMany([
 			{
 				id: 1,
 				title: 'Updated post',
@@ -285,8 +274,8 @@ describe('items', function () {
 	test(`delete one item`, async (url, nock) => {
 		const scope = nock().delete('/items/posts/1').reply(204);
 
-		const sdk = new Directus(url);
-		await sdk.items<Post>('posts').deleteOne(1);
+		const sdk = new Directus<Blog>(url);
+		await sdk.items('posts').deleteOne(1);
 
 		expect(scope.pendingMocks().length).toBe(0);
 	});
@@ -294,8 +283,8 @@ describe('items', function () {
 	test(`delete many item`, async (url, nock) => {
 		const scope = nock().delete('/items/posts').reply(204);
 
-		const sdk = new Directus(url);
-		await sdk.items<Post>('posts').deleteMany([1, 2]);
+		const sdk = new Directus<Blog>(url);
+		await sdk.items('posts').deleteMany([1, 2]);
 
 		expect(scope.pendingMocks().length).toBe(0);
 	});

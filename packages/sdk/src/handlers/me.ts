@@ -14,14 +14,14 @@ export class MeHandler<T> {
 		return this._tfa || (this._tfa = new TFAHandler(this._transport));
 	}
 
-	async read(query?: QueryOne<T>): Promise<T> {
+	async read(query?: QueryOne<T>): Promise<PartialItem<T>> {
 		const response = await this._transport.get<T>('/users/me', {
 			params: query,
 		});
 		return response.data!;
 	}
 
-	async update(data: PartialItem<T>, query?: QueryOne<T>): Promise<T> {
+	async update(data: PartialItem<T>, query?: QueryOne<T>): Promise<PartialItem<T>> {
 		const response = await this._transport.patch<T>(`/users/me`, data, {
 			params: query,
 		});
