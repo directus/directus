@@ -120,7 +120,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection/';
 import DrawerItem from '@/views/private/components/drawer-item/';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@/utils/render-template';
 import { isPlainObject, cloneDeep } from 'lodash';
 import { getEndpoint } from '@/utils/get-endpoint';
 import { hideDragImage } from '@/utils/hide-drag-image';
