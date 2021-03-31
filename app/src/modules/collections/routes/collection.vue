@@ -221,6 +221,7 @@
 			<layout-sidebar-detail @input="layout = $event" :value="layout" />
 			<portal-target name="sidebar" />
 			<export-sidebar-detail :layout-query="layoutQuery" :search-query="searchQuery" :collection="currentCollection" />
+			<sidebar-auto-refresh @refresh="refresh" />
 		</template>
 
 		<v-dialog v-if="deleteError" active>
@@ -247,6 +248,7 @@ import useCollection from '@/composables/use-collection';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
+import SidebarAutoRefresh from '@/views/private/components/sidebar-auto-refresh';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
@@ -271,6 +273,7 @@ export default defineComponent({
 		BookmarkAdd,
 		BookmarkEdit,
 		DrawerBatch,
+		SidebarAutoRefresh,
 	},
 	props: {
 		collection: {
