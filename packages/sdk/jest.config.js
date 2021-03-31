@@ -6,4 +6,5 @@ module.exports = {
 	setupFiles: ['dotenv/config'],
 	testURL: process.env.TEST_URL || 'http://localhost',
 	collectCoverageFrom: ['src/**/*.ts'],
+	testPathIgnorePatterns: ['dist'],
 };
