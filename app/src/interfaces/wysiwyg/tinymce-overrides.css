@@ -5,7 +5,6 @@
 }
 
 .tox .tox-tbtn {
-	width: 36px;
 	height: 36px;
 	margin: 0;
 	color: var(--foreground-normal);
@@ -265,6 +264,10 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-collection--list .tox-collection__item--active {
 	color: var(--foreground-normal) !important;
 	background-color: var(--background-normal-alt) !important;
+}
+
+.tox .tox-collection__item-label {
+	line-height: unset;
 }
 
 .tox .tox-textfield:focus,

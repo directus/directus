@@ -70,7 +70,7 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 
 		const { info: collectionInfo } = useCollection(collection);
-		const { layout, layoutOptions, layoutQuery, searchQuery } = usePreset(collection);
+		const { layout, layoutOptions, layoutQuery, searchQuery } = usePreset(collection, ref(null), true);
 
 		// This is a local copy of the layout. This means that we can sync it the layout without
 		// having use-preset auto-save the values

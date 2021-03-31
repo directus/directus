@@ -23,6 +23,7 @@ import openapi from '@directus/specs';
 import { Knex } from 'knex';
 import database from '../database';
 import { getRelationType } from '../utils/get-relation-type';
+import { GraphQLService } from './graphql';
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -33,7 +34,8 @@ export class SpecificationService {
 	collectionsService: CollectionsService;
 	relationsService: RelationsService;
 
-	oas: OASService;
+	oas: OASSpecsService;
+	graphql: GraphQLSpecsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
@@ -44,22 +46,21 @@ export class SpecificationService {
 		this.collectionsService = new CollectionsService(options);
 		this.relationsService = new RelationsService(options);
 
-		this.oas = new OASService(
-			{ knex: this.knex, accountability: this.accountability, schema: this.schema },
-			{
-				fieldsService: this.fieldsService,
-				collectionsService: this.collectionsService,
-				relationsService: this.relationsService,
-			}
-		);
+		this.oas = new OASSpecsService(options, {
+			fieldsService: this.fieldsService,
+			collectionsService: this.collectionsService,
+			relationsService: this.relationsService,
+		});
+
+		this.graphql = new GraphQLSpecsService(options);
 	}
 }
 
 interface SpecificationSubService {
-	generate: () => Promise<any>;
+	generate: (_?: any) => Promise<any>;
 }
 
-class OASService implements SpecificationSubService {
+class OASSpecsService implements SpecificationSubService {
 	accountability: Accountability | null;
 	knex: Knex;
 	schema: SchemaOverview;
@@ -530,4 +531,28 @@ class OASService implements SpecificationSubService {
 			type: 'string',
 		},
 	};
+}
+
+class GraphQLSpecsService implements SpecificationSubService {
+	accountability: Accountability | null;
+	knex: Knex;
+	schema: SchemaOverview;
+
+	items: GraphQLService;
+	system: GraphQLService;
+
+	constructor(options: AbstractServiceOptions) {
+		this.accountability = options.accountability || null;
+		this.knex = options.knex || database;
+		this.schema = options.schema;
+
+		this.items = new GraphQLService({ ...options, scope: 'items' });
+		this.system = new GraphQLService({ ...options, scope: 'system' });
+	}
+
+	async generate(scope: 'items' | 'system') {
+		if (scope === 'items') return this.items.getSchema('sdl');
+		if (scope === 'system') return this.system.getSchema('sdl');
+		return null;
+	}
 }

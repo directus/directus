@@ -42,7 +42,7 @@ export class UtilsService {
 			}
 		}
 
-		const primaryKeyField = this.schema.tables[collection].primary;
+		const primaryKeyField = this.schema.collections[collection].primary;
 
 		// Make sure all rows have a sort value
 		const countResponse = await this.knex.count('* as count').from(collection).whereNull(sortField).first();

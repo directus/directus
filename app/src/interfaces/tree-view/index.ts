@@ -1,5 +1,6 @@
 import { defineInterface } from '../define';
 import InterfaceTreeView from './tree-view.vue';
+import Options from './options.vue';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'tree-view',
@@ -10,5 +11,5 @@ export default defineInterface(({ i18n }) => ({
 	groups: ['o2m'],
 	relational: true,
 	component: InterfaceTreeView,
-	options: [],
+	options: Options,
 }));
