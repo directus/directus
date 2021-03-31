@@ -11,7 +11,6 @@ add_field: Добавить поле
 role_name: Название роли
 db_only_click_to_configure: 'Только База данных: Нажмите для Настройки '
 show_archived_items: Показать Архивные Элементы
-edited: Изменено
 required: Необходимые
 required_for_app_access: Требуется для доступа к приложению
 requires_value: Требуется значение
