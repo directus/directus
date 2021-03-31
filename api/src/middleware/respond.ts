@@ -69,7 +69,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			}
 		}
 		if (['xliff', 'xliff2'].includes(req.sanitizedQuery.export)) {
-			res.attachment(`${filename}.xliff`);
+			res.attachment(`${filename}.xlf`);
 			res.set('Content-Type', 'text/xml');
 			const xliffService = new XliffService({
 				language: req.sanitizedQuery.language || 'en-US',
