@@ -27,18 +27,19 @@ import { Directus } from '@directus/sdk';
 
 const directus = new Directus('https://api.example.com/');
 
-async function getData() {
-	// Wait for login to be done...
-	await directus.auth.login({
-		email: 'admin@example.com',
-		password: 'password',
-	});
+// Wait for login to be done...
+await directus.auth.login({
+	email: 'admin@example.com',
+	password: 'password',
+});
 
-	// ... before fetching items
-	return await directus.items('articles').readMany();
-}
+// ... before fetching items
+const articles = await directus.items('articles').readMany();
 
-getData();
+console.log({
+	items: articles.data,
+	total: articles.meta.total_count,
+});
 ```
 
 ## Global
@@ -113,8 +114,8 @@ access axios through `directus.transport.axios`.
 
 ## Items
 
-You can get an instance of the item handler by providing the collection (and type, in the case of TypeScript) to the `items`
-function. The following examples will use the `Article` type.
+You can get an instance of the item handler by providing the collection (and type, in the case of TypeScript) to the
+`items` function. The following examples will use the `Article` type.
 
 > JavaScript
 
@@ -130,9 +131,9 @@ const articles = directus.items('articles');
 > TypeScript
 
 ```ts
-import { ID } from '@directus/sdk';
+import { Directus, ID } from '@directus/sdk';
 
-// This is written by you, but it's not required.
+// Map your collection structure based on its fields.
 type Article = {
 	id: ID;
 	title: string;
@@ -140,11 +141,28 @@ type Article = {
 	published: boolean;
 };
 
-// 'articles' refers to the actual collection name.
-const articles = directus.items<Article>('articles');
+// Map your collections to its respective types. The SDK will
+// infer its types based on usage later.
+type MyBlog = {
+	// [collection_name]: typescript_type
+	articles: Article;
 
-// This also works since the type is optional, but we highly recommended it. See #TypeScript section.
-// const articles = directus.items('articles');
+	// You can also extend Directus collection. The naming has
+	// to match a Directus system collection and it will be merged
+	// into the system spec.
+	directus_users: {
+		bio: string;
+	};
+};
+
+// Let the SDK know about your collection types.
+const directus = new Directus<MyBlog>('https://directus.myblog.com');
+
+// typeof(article) is a partial "Article"
+const article = await directus.items('articles').readOne(10);
+
+// Error TS2322: "hello" is not assignable to type "boolean".
+// post.published = 'hello';
 ```
 
 ### Create Single Item
@@ -321,8 +339,8 @@ Note: The passed key is the primary key of the comment
 ### Configuration
 
 Directus will accept custom implementations of the `IAuth` interface. The default implementation `Auth` can be imported
-from `@directus/sdk`. The default implementation will require you to pass the transport and storage implementations.
-All options are optional.
+from `@directus/sdk`. The default implementation will require you to pass the transport and storage implementations. All
+options are optional.
 
 ```js
 import { Auth } from '@directus/sdk';
@@ -355,8 +373,8 @@ When in `cookie` mode, the API will set the refresh token in an `httpOnly` secur
 client side JavaScript. This is the most secure way to connect to the API from a public front-end website.
 
 When you can't rely on cookies, or need more control over handling the storage of the cookie (like in node.js), use
-`json` mode. This will return the refresh token in the "normal" payload. The storage of these tokens are handled
-by the `storage` implementation.
+`json` mode. This will return the refresh token in the "normal" payload. The storage of these tokens are handled by the
+`storage` implementation.
 
 Defaults to `cookie` in browsers, `json` in node.js.
 
@@ -365,26 +383,24 @@ Defaults to `cookie` in browsers, `json` in node.js.
 ```js
 import { Auth, AxiosTransport, Directus, MemoryStorage } from '@directus/sdk';
 
-async function main() {
-	const url = 'http://directus';
+const url = 'http://directus';
 
-	const storage = new MemoryStorage();
-	const transport = new AxiosTransport(url, storage);
-	const auth = new Auth(transport, storage, {
-		mode: 'json',
-	});
+const storage = new MemoryStorage();
+const transport = new AxiosTransport(url, storage);
+const auth = new Auth(transport, storage, {
+	mode: 'json',
+});
 
-	const directus = new Directus(url, {
-		auth,
-		storage,
-		transport,
-	});
+const directus = new Directus(url, {
+	auth,
+	storage,
+	transport,
+});
 
-	await directus.auth.login({
-		email: 'admin@example.com',
-		password: 'password',
-	});
-}
+await directus.auth.login({
+	email: 'admin@example.com',
+	password: 'password',
+});
 ```
 
 ### Get / Set Token
@@ -407,28 +423,34 @@ await directus.auth.login({
 You can set authentication to auto-refresh the token once it's close to expire.
 
 ```js
-await directus.auth.login({
-	email: 'admin@example.com',
-	password: 'd1r3ctu5',
-}, {
-	refresh: {
-		auto: true,
+await directus.auth.login(
+	{
+		email: 'admin@example.com',
+		password: 'd1r3ctu5',
+	},
+	{
+		refresh: {
+			auto: true,
+		},
 	}
-});
+);
 ```
 
 You can also set how much time before the expiration you want to auto-refresh the token.
 
 ```js
-await directus.auth.login({
-	email: 'admin@example.com',
-	password: 'd1r3ctu5',
-}, {
-	refresh: {
-		auto: true,
-		time: 30000, // refesh the token 30 secs before the expiration
+await directus.auth.login(
+	{
+		email: 'admin@example.com',
+		password: 'd1r3ctu5',
 	},
-});
+	{
+		refresh: {
+			auto: true,
+			time: 30000, // refesh the token 30 secs before the expiration
+		},
+	}
+);
 ```
 
 ### Refresh Auth Token
@@ -470,7 +492,8 @@ Note: The token passed in the first parameter is sent in an email to the user wh
 
 ## Transport
 
-The transport object abstracts how you communicate with Directus. Transports can be customized to use different HTTP libraries for example.
+The transport object abstracts how you communicate with Directus. Transports can be customized to use different HTTP
+libraries for example.
 
 ### Interface
 
@@ -511,7 +534,8 @@ The storage used in environments where Local Storage is supported.
 
 #### Options
 
-The `LocalStorage` implementation accepts a *transparent* prefix. Use this when you need multiple SDK instances with independent authentication for example.
+The `LocalStorage` implementation accepts a _transparent_ prefix. Use this when you need multiple SDK instances with
+independent authentication for example.
 
 ### MemoryStorage
 
@@ -519,7 +543,8 @@ The storage used when SDK data is ephemeral. For example: only during the lifecy
 
 #### Options
 
-The `MemoryStorage` implementation accepts a *transparent* prefix so you can have multiple instances of the SDK without having clashing keys.
+The `MemoryStorage` implementation accepts a _transparent_ prefix so you can have multiple instances of the SDK without
+having clashing keys.
 
 ## Collections
 
@@ -724,48 +749,71 @@ Note: The key passed is the primary key of the revision you'd like to apply.
 ## TypeScript
 
 If you are using TypeScript, the JS-SDK requires TypeScript 3.8 or newer. TypeScript will also improve the development
-experience by providing relevant information when manipulating your data. For example, `directus.items` will accept a user data type which allows for a more detailed IDE suggestions for return types, sorting, and filtering.
+experience by providing relevant information when manipulating your data. For example, `directus.items` knows about your
+collection types if you feed the SDK with enough information in the construction of the SDK instance. This allows for a
+more detailed IDE suggestions for return types, sorting, and filtering.
 
 ```ts
-type Post = {
+type BlogPost = {
 	id: ID;
 	title: string;
 };
 
-const posts = directus.items<Post>('posts');
+type BlogSettings = {
+	display_promotions: boolean;
+};
 
-const post = await posts.readOne(1);
+type MyCollections = {
+	posts: BlogPost;
+	settings: BlogSettings;
+};
+
+// This is how you feed custom type information to Directus.
+const directus = new Directus<MyCollections>('http://url');
+
+// ...
+
+const post = await directus.items('posts').readOne(1);
+// typeof(post) is a partial BlogPost object
+
+const settings = await posts.singleton('settings').read();
+// typeof(settings) is a partial BlogSettings object
 ```
 
-You can also extend the Directus system type information by providing type information on the Directus constructor.
+You can also extend the Directus system type information by providing type information for system collections as well.
 
 ```ts
+import { Directus } from '@directus/sdk';
+
+// Custom fields added to Directus user collection.
 type UserType = {
 	level: number;
 	experience: number;
 };
 
 type CustomTypes = {
-	// This type will be merged with Directus user type.
-	// Getting `users` name here is important.
-	users: UserType;
+	/*
+	This type will be merged with Directus user type.
+	It's important that the naming matches a directus
+	collection name exactly. Typos won't get caught here
+	since SDK will assume it's a custom user collection.
+	*/
+	directus_users: UserType;
 };
 
-async function whoami() {
-	const directus = new Directus<CustomTypes>('https://api.example.com');
+const directus = new Directus<CustomTypes>('https://api.example.com');
 
-	await directus.auth.login({
-		email: 'admin@example.com',
-		password: 'password',
-	});
+await directus.auth.login({
+	email: 'admin@example.com',
+	password: 'password',
+});
 
-	// typeof me = typeof CustomTypes.users;
-	const me = await directus.users.me.read();
+const me = await directus.users.me.read();
+// typeof me = partial DirectusUser & UserType;
 
-	// OK
-	me.level = 42;
+// OK
+me.level = 42;
 
-	// Error TS2322: Type 'string' is not assignable to type 'number'.
-	me.experience = 'high';
-}
+// Error TS2322: Type "string" is not assignable to type "number".
+me.experience = 'high';
 ```
