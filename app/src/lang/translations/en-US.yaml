@@ -229,9 +229,11 @@ related_collections: Related Collections
 translations_collection: Translations Collection
 languages_collection: Languages Collection
 export_data: Export Data
+import_data: Import Data
 format: Format
 use_current_filters_settings: Use Current Filters & Settings
 export_collection: 'Export {collection}'
+import_collection: 'Import {collection}'
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value
