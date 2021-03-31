@@ -25,24 +25,21 @@ const directus = new Directus('https://api.example.com/');
 ```js
 import { Directus } from '@directus/sdk';
 
-// Async functions
-(async function () {
-	const directus = new Directus('https://api.example.com/');
+const directus = new Directus('https://api.example.com/');
 
-	// Wait for login to be done...
-	await directus.auth.login({
-		email: 'admin@example.com',
-		password: 'password',
-	});
+// Wait for login to be done...
+await directus.auth.login({
+	email: 'admin@example.com',
+	password: 'password',
+});
 
-	// ... before fetching items
-	const articles = await directus.items('articles').readMany();
+// ... before fetching items
+const articles = await directus.items('articles').readMany();
 
-	console.log({
-		items: articles.data,
-		total: articles.meta.total_count,
-	});
-})();
+console.log({
+	items: articles.data,
+	total: articles.meta.total_count,
+});
 ```
 
 ## Global
@@ -158,18 +155,14 @@ type MyBlog = {
 	};
 };
 
-async function example() {
-	// Let the SDK know about your collection types.
-	const directus = new Directus<MyBlog>('https://directus.myblog.com');
+// Let the SDK know about your collection types.
+const directus = new Directus<MyBlog>('https://directus.myblog.com');
 
-	// typeof(article) is a partial "Article"
-	const article = await directus.items('articles').readOne(10);
+// typeof(article) is a partial "Article"
+const article = await directus.items('articles').readOne(10);
 
-	// Error TS2322: "hello" is not assignable to type "boolean".
-	// post.published = 'hello';
-}
-
-example().catch(console.error);
+// Error TS2322: "hello" is not assignable to type "boolean".
+// post.published = 'hello';
 ```
 
 ### Create Single Item
@@ -390,26 +383,24 @@ Defaults to `cookie` in browsers, `json` in node.js.
 ```js
 import { Auth, AxiosTransport, Directus, MemoryStorage } from '@directus/sdk';
 
-async function main() {
-	const url = 'http://directus';
+const url = 'http://directus';
 
-	const storage = new MemoryStorage();
-	const transport = new AxiosTransport(url, storage);
-	const auth = new Auth(transport, storage, {
-		mode: 'json',
-	});
+const storage = new MemoryStorage();
+const transport = new AxiosTransport(url, storage);
+const auth = new Auth(transport, storage, {
+	mode: 'json',
+});
 
-	const directus = new Directus(url, {
-		auth,
-		storage,
-		transport,
-	});
+const directus = new Directus(url, {
+	auth,
+	storage,
+	transport,
+});
 
-	await directus.auth.login({
-		email: 'admin@example.com',
-		password: 'password',
-	});
-}
+await directus.auth.login({
+	email: 'admin@example.com',
+	password: 'password',
+});
 ```
 
 ### Get / Set Token
@@ -792,6 +783,8 @@ const settings = await posts.singleton('settings').read();
 You can also extend the Directus system type information by providing type information for system collections as well.
 
 ```ts
+import { Directus } from '@directus/sdk';
+
 // Custom fields added to Directus user collection.
 type UserType = {
 	level: number;
@@ -808,21 +801,19 @@ type CustomTypes = {
 	directus_users: UserType;
 };
 
-async function whoami() {
-	const directus = new Directus<CustomTypes>('https://api.example.com');
+const directus = new Directus<CustomTypes>('https://api.example.com');
 
-	await directus.auth.login({
-		email: 'admin@example.com',
-		password: 'password',
-	});
+await directus.auth.login({
+	email: 'admin@example.com',
+	password: 'password',
+});
 
-	const me = await directus.users.me.read();
-	// typeof me = partial DirectusUser & UserType;
+const me = await directus.users.me.read();
+// typeof me = partial DirectusUser & UserType;
 
-	// OK
-	me.level = 42;
+// OK
+me.level = 42;
 
-	// Error TS2322: Type "string" is not assignable to type "number".
-	me.experience = 'high';
-}
+// Error TS2322: Type "string" is not assignable to type "number".
+me.experience = 'high';
 ```
