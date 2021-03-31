@@ -1,5 +1,12 @@
 <template>
 	<v-list large class="collections-navigation" @contextmenu.native.prevent.stop="$refs.contextMenu.activate">
+		<v-input
+			small
+			v-if="searchQuery !== null || navItems.length + bookmarks.length > 10"
+			v-model="searchQuery"
+			:placeholder="$t('search_collection')"
+		/>
+
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<template v-for="(group, index) in customNavItems">
 				<template
@@ -46,7 +53,10 @@
 		</template>
 
 		<div v-if="!customNavItems && !navItems.length && !bookmarks.length" class="empty">
-			<template v-if="isAdmin">
+			<template v-if="searchQuery !== null">
+				<v-notice type="info">{{ $t('no_collections_found') }}</v-notice>
+			</template>
+			<template v-else-if="isAdmin">
 				<v-button fullWidth outlined dashed to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
 			</template>
 			<template v-else>
@@ -102,12 +112,13 @@ export default defineComponent({
 		},
 	},
 	setup() {
+		const searchQuery = ref<string | null>(null);
 		const contextMenu = ref();
 
 		const presetsStore = usePresetsStore();
 		const userStore = useUserStore();
 		const isAdmin = computed(() => userStore.state.currentUser?.role.admin_access === true);
-		const { hiddenShown, customNavItems, navItems, activeGroups, hiddenNavItems } = useNavigation();
+		const { hiddenShown, customNavItems, navItems, activeGroups, hiddenNavItems, search } = useNavigation(searchQuery);
 
 		const bookmarks = computed(() => {
 			return orderBy(
@@ -115,6 +126,11 @@ export default defineComponent({
 					.filter((preset) => {
 						return preset.bookmark !== null && preset.collection.startsWith('directus_') === false;
 					})
+					.filter(
+						(preset) =>
+							typeof preset.bookmark !== 'string' ||
+							preset.bookmark.toLocaleLowerCase().includes(searchQuery?.value?.toLocaleLowerCase() || '')
+					)
 					.map((preset) => {
 						let scope = 'global';
 						if (!!preset.role) scope = 'role';
@@ -142,6 +158,7 @@ export default defineComponent({
 			contextMenu,
 			hiddenShown,
 			hiddenNavItems,
+			searchQuery,
 		};
 
 		function isActive(name: string) {

@@ -21,7 +21,7 @@ export type NavItemGroup = {
 let activeGroups: Ref<string[]>;
 let hiddenShown: Ref<boolean>;
 
-export default function useNavigation() {
+export default function useNavigation(searchQuery?: Ref<string | null>) {
 	const collectionsStore = useCollectionsStore();
 	const userStore = useUserStore();
 
@@ -71,7 +71,8 @@ export default function useNavigation() {
 			})
 			.sort((navA: NavItem, navB: NavItem) => {
 				return navA.name > navB.name ? 1 : -1;
-			});
+			})
+			.filter(search);
 	});
 
 	const hiddenNavItems = computed<NavItem[]>(() => {
@@ -89,7 +90,8 @@ export default function useNavigation() {
 			})
 			.sort((navA: NavItem, navB: NavItem) => {
 				return navA.name > navB.name ? 1 : -1;
-			});
+			})
+			.filter(search);
 	});
 
 	if (!activeGroups) {
@@ -104,5 +106,12 @@ export default function useNavigation() {
 		hiddenShown = ref(false);
 	}
 
-	return { customNavItems, navItems, activeGroups, hiddenNavItems, hiddenShown };
+	return { customNavItems, navItems, activeGroups, hiddenNavItems, hiddenShown, search };
+
+	function search(item: NavItem) {
+		return (
+			typeof item.name !== 'string' ||
+			item.name.toLocaleLowerCase().includes(searchQuery?.value?.toLocaleLowerCase() || '')
+		);
+	}
 }
