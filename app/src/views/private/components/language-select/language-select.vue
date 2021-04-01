@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/';
 import api from '@/api';
 import { Relation } from '@/types';
@@ -17,10 +17,6 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		value: {
-			type: Array as PropType<(string | number | Record<string, any>)[]>,
-			default: () => [],
-		},
 		collection: {
 			type: String,
 			required: true,
@@ -29,6 +25,9 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
+		value: {
+			type: String
+		}
 	},
 	watch: {
 		languages: function () {
@@ -41,7 +40,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const items = ref([]);
+		const items = ref<any[]>([]);
 		const relationsStore = useRelationsStore();
 		const {
 			languagesCollection,
@@ -56,7 +55,7 @@ export default defineComponent({
 			const regex = /\{\{(.*?)\}\}/g;
 
 			const applyTemplate = (template: String, item: any) => {
-				const result = template.replace(regex, (match, token) => {
+				const result = template.replace(regex, (_, token) => {
 					const fieldKey = token.replace(/{{/g, '').replace(/}}/g, '').trim();
 					return item[fieldKey];
 				});
@@ -84,11 +83,6 @@ export default defineComponent({
 				return translationsRelation.value.many_collection;
 			});
 
-			const translationsPrimaryKeyField = computed(() => {
-				if (!translationsRelation.value) return null;
-				return translationsRelation.value.many_primary;
-			});
-
 			const languagesRelation = computed(() => {
 				if (!relationsForField.value) return null;
 				return relationsForField.value.find((relation: Relation) => relation !== translationsRelation.value) || null;
@@ -104,20 +98,14 @@ export default defineComponent({
 				return languagesRelation.value.one_primary;
 			});
 
-			const translationsLanguageField = computed(() => {
-				if (!languagesRelation.value) return null;
-				return languagesRelation.value.many_field;
-			});
 
 			return {
 				relationsForField,
 				translationsRelation,
 				translationsCollection,
-				translationsPrimaryKeyField,
 				languagesRelation,
 				languagesCollection,
 				languagesPrimaryKeyField,
-				translationsLanguageField,
 			};
 		}
 

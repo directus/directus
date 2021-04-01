@@ -236,6 +236,7 @@ export_collection: 'Export {collection}'
 import_collection: 'Import {collection}'
 use_language_from_file: Use Language from File
 target_language: Target Language
+target_translation_field: Target Translation Field
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value

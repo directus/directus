@@ -9,13 +9,27 @@
 				<p class="type-label">{{ $t('upload_file') }}</p>
 				<file-select @change="onSelectFile" @load="onFileLoad" />
 			</div>
+			<div class="field full" v-show="!useFileLanguage">
+				<p class="type-label">{{ $t('target_translation_field') }}</p>
+				<translation-field-select
+				@input="onSelectTranslationField"
+				v-show="hasMoreThanOneTranslationFields"
+				:collection="collection.collection"
+				:value="translationField" />
+			</div>
 			<div class="field full">
 				<p class="type-label">{{ $t('target_language') }}</p>
-				<language-select :disabled="useFileLanguage" :collection="collection.collection" :value="['en-US']" :field="'translations'" />
+				<language-select
+				@input="onSelectLanguage"
+				v-show="!useFileLanguage"
+				:collection="collection.collection"
+				:value="language"
+				:field="'translations'"
+				/>
 				<v-checkbox v-model="useFileLanguage" :label="$t('use_language_from_file')" />
 			</div>
 			<div class="field full">
-				<v-button full-width @click="importData" :disabled="file === null">
+				<v-button full-width @click="importData" :disabled="file === null && !language && !useFileLanguage">
 					{{ $t('import_collection', { collection: collection.name }) }}
 				</v-button>
 			</div>
@@ -29,11 +43,14 @@ import { Collection, Field } from '@/types';
 import { useFieldsStore } from '@/stores/';
 import { FileSelect } from '../file-select';
 import { LanguageSelect } from '../language-select';
+import { TranslationFieldSelect } from '../translation-field-select';
+
 
 export default defineComponent({
 	components: {
 		FileSelect,
 		LanguageSelect,
+		TranslationFieldSelect,
 	},
 	props: {
 		collection: {
@@ -45,7 +62,7 @@ export default defineComponent({
 		formats(): any[] {
 			return [
 				...[
-					// TODO: add more formats
+					// TODO: add more formats in the future...
 				],
 				// enable XLIFF for translatable content only
 				...(this.translatable
@@ -67,6 +84,11 @@ export default defineComponent({
 			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
 			return fields.some((field: Field) => field.type === 'translations');
 		},
+		hasMoreThanOneTranslationFields(): boolean {
+			const fieldsStore = useFieldsStore();
+			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
+			return fields.filter((field: Field) => field.type === 'translations').length > 1;
+		},
 		visible(): boolean {
 			return this.formats.length > 0;
 		},
@@ -81,16 +103,38 @@ export default defineComponent({
 	},
 	setup(props) {
 		const format = ref('xliff');
+		const language = ref<any>(null);
+		const translationField = ref<any>(null);
 		const file = ref<File | null>(null);
 		const useFileLanguage = ref(true);
 		const clearFileSelection = ref<Function>(() => {});
 
-		return { format, file, useFileLanguage, importData, onSelectFile, onFileLoad, clearFileSelection };
+		return {
+			format,
+		 	file,
+			language,
+			translationField,
+			useFileLanguage,
+			importData,
+			onSelectFile,
+			onSelectLanguage,
+			onSelectTranslationField,
+			onFileLoad,
+			clearFileSelection
+		};
 
 		function importData() {}
 
+		function onSelectLanguage(selection: any[]) {
+			language.value = selection;
+		}
+
 		function onSelectFile(selection: File | null) {
 			file.value = selection;
+		}
+
+		function onSelectTranslationField(selection: any[]){
+			translationField.value = selection;
 		}
 
 		function onFileLoad(options: any) {
