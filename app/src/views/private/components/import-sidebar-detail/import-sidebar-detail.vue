@@ -1,5 +1,5 @@
 <template>
-	<sidebar-detail v-if="visible" icon="upload" :title="$t('import_data')">
+	<sidebar-detail v-show="visible" icon="upload" :title="$t('import_data')">
 		<div class="fields">
 			<div class="field full">
 				<p class="type-label">{{ $t('format') }}</p>
@@ -7,10 +7,10 @@
 			</div>
 			<div class="field full">
 				<p class="type-label">{{ $t('upload_file') }}</p>
-				<file-upload />
+				<file-select @change="onSelectFile" @load="onFileLoad" />
 			</div>
 			<div class="field full">
-				<v-button full-width @click="importData">
+				<v-button full-width @click="importData" :disabled="file === null">
 					{{ $t('import_collection', { collection: collection.name }) }}
 				</v-button>
 			</div>
@@ -23,11 +23,11 @@ import { defineComponent, ref, PropType } from '@vue/composition-api';
 import { Collection } from '@/types';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
-import { FileUpload } from '../file-upload';
+import { FileSelect} from '../file-select';
 
 export default defineComponent({
 	components: {
-		FileUpload
+		FileSelect,
 	},
 	props: {
 		collection: {
@@ -63,24 +63,31 @@ export default defineComponent({
 		},
 		visible(): boolean {
 			return this.formats.length > 0;
-		}
+		},
 	},
 	watch: {
 		collection: function () {
-			// watch it
-			if (!this.translatable && !this.formats.includes(this.format)) {
-				const [defaultFormat] = this.formats;
-				// reset format in case if current is not available
-				this.format = defaultFormat.value;
-			}
+			// clear file selection each time when user
+			// switching between collections
+			this.file = null;
+			this.clearFileSelection();
 		},
 	},
 	setup(props) {
 		const format = ref('xliff');
+		const file = ref<File | null>(null);
+		const clearFileSelection = ref<Function>(() => {});
 
-		return { format, importData };
+		return { format, file, importData, onSelectFile, onFileLoad, clearFileSelection };
 
-		function importData() {
+		function importData() {}
+
+		function onSelectFile(selection: File | null) {
+			file.value = selection;
+		}
+
+		function onFileLoad(options: any){
+			clearFileSelection.value = options.clear;
 		}
 	},
 });

@@ -1,11 +1,6 @@
 <template>
 	<div class="file">
-		<v-input
-			readonly
-			:placeholder="$t('no_file_selected')"
-			:disabled="disabled"
-			:value="file && file.name"
-		>
+		<v-input readonly :placeholder="$t('no_file_selected')" :disabled="disabled" :value="file && file.name">
 			<template #append>
 				<template v-if="file">
 					<v-icon class="deselect" name="close" @click="clearSelection()" v-tooltip="$t('deselect')" />
@@ -14,13 +9,13 @@
 			</template>
 		</v-input>
 		<input
-      :disabled="disabled"
-      v-show="false"
-      type="file"
-      ref="import_file"
-      accept=".xlf, application/xliff+xml"
+			:disabled="disabled"
+			v-show="false"
+			type="file"
+			ref="import_file"
+			accept=".xlf, application/xliff+xml"
 			@change="fileSelected"
-    >
+		/>
 	</div>
 </template>
 
@@ -38,12 +33,15 @@ export default defineComponent({
 		fileSelected(event: Event) {
 			const files = (event.target as HTMLInputElement).files;
 			this.file = files && files?.length > 0 ? files?.item(0) : null;
-			this.$emit('onChange', this.file);
+			this.$emit('change', this.file);
 		},
 		clearSelection() {
 			this.file = null;
-			this.$emit('onChange', this.file);
-		}
+			this.$emit('change', this.file);
+		},
+	},
+	mounted() {
+		this.$emit('load', { clear: this.clearSelection });
 	},
 	setup(props) {
 		const file = ref<File | null>(null);
@@ -53,7 +51,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 .deselect:hover {
 	--v-icon-color: var(--danger);
 }
