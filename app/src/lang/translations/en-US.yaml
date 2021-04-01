@@ -234,6 +234,8 @@ format: Format
 use_current_filters_settings: Use Current Filters & Settings
 export_collection: 'Export {collection}'
 import_collection: 'Import {collection}'
+use_language_from_file: Use Language from File
+target_language: Target Language
 last_page: Last Page
 last_access: Last Access
 fill_template: Fill with Template Value
