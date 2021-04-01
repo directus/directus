@@ -1,12 +1,6 @@
 <template>
-	<div class="container">
-		<v-input
-			small
-			class="search"
-			v-show="searchQuery !== null || visible > 30"
-			v-model="searchQuery"
-			:placeholder="$t('search_collection')"
-		>
+	<div class="container" v-show="searchQuery !== null || visible > 30">
+		<v-input small class="search" v-model="searchQuery" :placeholder="$t('search_collection')">
 			<template #prepend><v-icon name="search" /></template>
 		</v-input>
 	</div>
