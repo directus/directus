@@ -1,11 +1,78 @@
 ---
 edit_field: Rediger Felt
 item_revision: Genstandsrevision
+duplicate_field: Dupliker Felt
+half_width: Halv Bredde
 full_width: Fuld Bredde
+fill_width: Fuld Bredde
+field_name_translations: Oversættelse af feltnavn
+enter_password_to_enable_tfa: Indtast dit kodeord for at aktivere To-faktor-godkendelse (2FA)
+add_field: Tilføj Felt
+role_name: Rollenavn
+db_only_click_to_configure: 'Kun i databasen: Klik for at konfigurere '
+show_archived_items: Vis arkiverede element
+edited: Værdi Ændret
 required: Påkrævet
+required_for_app_access: Påkrævet for App adgang
+requires_value: Påkrævet værdi
+create_preset: Opret forudindstilling
 create_role: Opret Rolle
+create_user: Opret bruger
+create_webhook: Opret Webhook
+invite_users: Inviter brugere
+email_examples: 'admin@eksempel.dk, bruger@eksempel.dk...'
+invite: Inviter
+emails: E-mail
+connection_excellent: Udmærket forbindelse
+connection_good: God forbindelse
+connection_fair: Ok forbindelse
+connection_poor: Dårlig forbindelse
+primary: Primær
+rename_folder: Omdøb mappe
+delete_folder: Slet mappe
+prefix: Præfiks
+suffix: Suffiks
+reset_bookmark: Nustil bogmærke
+rename_bookmark: Omdøb bogmærke
+update_bookmark: Opdater bogmærke
 delete_bookmark: Slet Bogmærke
+delete_bookmark_copy: >-
+  Er du sikker på at du vil slette "{bookmark}"-bogmærket? Denne handling kan ikke fortrydes.
+logoutReason:
+  SIGN_OUT: Logget ud
+  SESSION_EXPIRED: Sessionen er udløbet
+public: Offentlig
+public_description: Kontrollerer, hvilke API-data der er tilgængelige uden godkendelse.
+not_allowed: Ikke tilladt
 directus_version: Directus Version
+node_version: Node version
+node_uptime: Node Oppetid
+os_type: OS type
+os_version: OS version
+os_uptime: OS oppetid
+os_totalmem: OS hukommelse
+archive: Arkiver
+archive_confirm: Er du sikker på at du vil arkivere dette element?
+archive_confirm_count: >-
+  Ingen elementer valgt | Er du sikker på at du vil arkivere dette element? | Er du sikker på du vil arkiverer disse {count} elementer?
+reset_system_permissions_to: 'Nulstil systemtilladelser til:'
+reset_system_permissions_copy: Denne handling vil overskrive eventuelle tilpassede tilladelser, du måtte have anvendt på systemsamlingerne. Er du sikker?
+the_following_are_minimum_permissions: Følgende er minimum tilladelser der kræves, når "App Adgang" er aktiveret. Du kan udvide tilladelser ud over dette, men ikke nedenfor.
+app_access_minimum: Minimum App-adgang
+recommended_defaults: Anbefalede Standarder
+unarchive: Fjern fra arkiv
+unarchive_confirm: Er du sikker på, at du vil fjerne arkiveringen af dette element?
+nested_files_folders_will_be_moved: Indlejrede filer og mapper vil blive flyttet et niveau op.
+unknown_validation_errors: 'Der var valideringsfejl for følgende skjulte felter:'
+validationError:
+  eq: Værdien skal være {valid}
+  neq: Værdi kan ikke være {invalid}
+  in: Værdien skal være en af {valid}
+  nin: Værdi kan ikke være en af {invalid}
+  contains: Værdien skal indeholde {substring}
+  ncontains: Værdi kan ikke indeholde {substring}
+  gt: Værdien skal være større end {valid}
+  gte: Værdien skal være større end eller lig med {valid}
 language: Sprog
 create_field: Opret felt
 hidden_on_detail: Skjult på detalje
@@ -159,8 +226,10 @@ fields:
   directus_fields:
     note: Kommentar
     hidden: Skjult
+    translation: Oversættelse af feltnavn
     display_template: Skabelon
   directus_roles:
+    name: Rollenavn
     description: Beskrivelse
 comment: Kommenter
 continue: Forsæt
@@ -208,6 +277,8 @@ template: Skabelon
 translation: Oversættelse
 value: Værdi
 interfaces:
+  button-links:
+    primary: Primær
   checkboxes:
     checkboxes: Afkrydsningsfelter
     allow_other: Tillad Andre
