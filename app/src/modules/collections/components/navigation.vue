@@ -1,12 +1,5 @@
 <template>
 	<v-list large class="collections-navigation" @contextmenu.native.prevent.stop="$refs.contextMenu.activate">
-		<v-input
-			small
-			v-if="searchQuery !== null || navItems.length + bookmarks.length > 10"
-			v-model="searchQuery"
-			:placeholder="$t('search_collection')"
-		/>
-
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<template v-for="(group, index) in customNavItems">
 				<template
@@ -97,11 +90,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref, toRefs, watchEffect } from '@vue/composition-api';
 import useNavigation from '../composables/use-navigation';
 import { usePresetsStore, useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
 import NavigationBookmark from './navigation-bookmark.vue';
+import { useSearch } from '../composables/use-search';
 
 export default defineComponent({
 	components: { NavigationBookmark },
@@ -111,14 +105,14 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup() {
-		const searchQuery = ref<string | null>(null);
+	setup(props) {
+		const { searchQuery, visible } = useSearch();
 		const contextMenu = ref();
 
 		const presetsStore = usePresetsStore();
 		const userStore = useUserStore();
 		const isAdmin = computed(() => userStore.state.currentUser?.role.admin_access === true);
-		const { hiddenShown, customNavItems, navItems, activeGroups, hiddenNavItems, search } = useNavigation(searchQuery);
+		const { hiddenShown, customNavItems, navItems, activeGroups, hiddenNavItems } = useNavigation(searchQuery);
 
 		const bookmarks = computed(() => {
 			return orderBy(
@@ -145,6 +139,10 @@ export default defineComponent({
 				['bookmark'],
 				['asc']
 			);
+		});
+
+		watchEffect(() => {
+			visible.value = bookmarks.value.length + navItems.value.length;
 		});
 
 		return {
@@ -192,7 +190,7 @@ export default defineComponent({
 }
 
 .collections-navigation {
-	--v-list-min-height: 100%;
+	--v-list-min-height: calc(100% - 64px);
 }
 
 .hidden-collection {
