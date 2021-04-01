@@ -73,9 +73,61 @@ validationError:
   ncontains: Værdi kan ikke indeholde {substring}
   gt: Værdien skal være større end {valid}
   gte: Værdien skal være større end eller lig med {valid}
+  lt: Værdien skal være mindre end {valid}
+  lte: Værdien skal være mindre end eller lig med {valid}
+  empty: Værdien skal være tom
+  nempty: Værdien må ikke være tom
+  null: Værdien skal være null
+  nnull: Værdien kan ikke være null
+  required: Værdi er påkrævet
+all_access: Alle Adgang
+no_access: Ingen Adgang
+use_custom: Brug Brugerdefineret
+field_standard: Standard
+field_presentation: Presentation & Aliases
+field_m2o: M2O Forhold
+field_m2a: M2A Forhold
+field_o2m: O2M Forhold
+field_m2m: M2M Forhold
+item_permissions: Element Tilladelser
+field_permissions: Felt Tilladelser
+field_validation: Felt Validering
+field_presets: Felt Forudindstillinger
+permissions_for_role: 'Elementer {role} Rollen kan {action}.'
+fields_for_role: 'Felter {role} Rollen kan {action}.'
+validation_for_role: 'Felt {action} reglerne for {role} Rollen skal adlyde.'
+presets_for_role: 'Feltets værdi er standard for {role} Rollen.'
+presentation_and_aliases: Presentation & Aliases
+revision_post_update: Her er hvad dette element så ud som, efter opdateringen...
+changes_made: Disse er de specifikke ændringer, der blev lavet...
+no_relational_data: Husk, at dette ikke omfatter relationelle data.
+hide_field_on_detail: Skjul felt på detalje
+show_field_on_detail: Vis felt på detalje
+delete_field: Slet Felt
+fields_and_layout: Felter & Layout
+field_create_success: 'Oprettet Felt: "{field}"'
+field_update_success: 'Opdateret Felt: "{field}"'
+duplicate_where_to: Hvor vil du kopiere dette felt til?
 language: Sprog
+global: Globalt
+admins_have_all_permissions: Admins har alle tilladelser
+camera: Kamera
+exposure: Eksponering
+shutter: Lukker
+iso: ISO
+focal_length: Fokal Længde
+schema_setup_key: Dette felts database kolonne-navn og API-nøgle
 create_field: Opret felt
+creating_new_field: 'Nyt Felt ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Nulstil Sideindstillinger
+hidden_field: Skjult Felt
 hidden_on_detail: Skjult på detalje
+disabled_editing_value: Deaktiver redigering af værdi
+key: Nøgle
+alias: Alias
+bigInteger: Big Integer
+boolean: Boolean
 date: Dato
 text: Tekst
 auto_generate: Auto- Generér
@@ -94,7 +146,20 @@ notifications: Notifikationer
 page_not_found: Siden blev ikke fundet
 page_not_found_body: Den side, du leder efter, synes ikke at eksistere.
 title: Titel
+revision_delta_created: Oprettet
+revision_delta_created_externally: Oprettet Eksternt
+revision_delta_updated: 'Opdateret 1 Felt | Opdaterede {count} felter'
+revision_delta_deleted: Slettet
+revision_delta_reverted: Omvendt
+revision_delta_other: Revision
+revision_delta_by: '{date} af {user}'
+private_user: Privat Bruger
+revision_preview: Revision Forhåndsvisning
+updates_made: Opdateringer Lavet
 leave_comment: Skriv en kommentar...
+post_comment_success: Kommentar sendt
+item_create_success: Element oprettet | Elementer oprettet
+item_update_success: Element opdateret | Elementer opdateret
 this_collection: Denne Samling
 related_collection: Relateret Samling
 format: Format
@@ -112,6 +177,7 @@ months:
   october: Oktober
   november: November
   december: December
+created: Oprettet
 checksum: Kontrolsum
 owner: Ejer
 download: Download
@@ -308,6 +374,8 @@ interfaces:
   tags:
     tags: Tags
 displays:
+  boolean:
+    boolean: Boolean
   collection:
     collection: Samling
   color:
