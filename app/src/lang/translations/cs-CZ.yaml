@@ -30,6 +30,8 @@ validationError:
   null: Hodnota musí být null
   nnull: Hodnota nesmí být null
   required: Hodnota je povinná
+field_standard: Standardní
+field_validation: Validace pole
 delete_field: Smazat pole
 language: Jazyk
 create_field: Vytvořit pole
