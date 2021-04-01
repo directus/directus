@@ -3,7 +3,7 @@
 		<v-input
 			small
 			class="search"
-			v-show="searchQuery !== null || visible > 10"
+			v-show="searchQuery !== null || visible > 30"
 			v-model="searchQuery"
 			:placeholder="$t('search_collection')"
 		>
