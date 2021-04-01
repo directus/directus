@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import 'maplibre-gl/dist/mapbox-gl.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 import maplibre, {
 	MapLayerMouseEvent,
