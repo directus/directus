@@ -218,24 +218,12 @@
 
 <script lang="ts">
 import MapComponent from './components/map.vue';
-import { CameraOptions, Style, AnyLayer, MapLayerMouseEvent, LngLatBoundsLike } from 'maplibre-gl';
+import { CameraOptions, AnyLayer } from 'maplibre-gl';
 import { basemapNames, rootStyle, dataStyle } from './styles';
 import type { GeoJSONSerializer } from './worker';
 
-import {
-	defineComponent,
-	toRefs,
-	inject,
-	computed,
-	ref,
-	watch,
-	watchEffect,
-	onMounted,
-	onUnmounted,
-} from '@vue/composition-api';
-import type { PropType, Ref, ComputedRef } from '@vue/composition-api';
-
-import adjustFieldsForDisplays from '../../utils/adjust-fields-for-displays';
+import { defineComponent, toRefs, inject, computed, ref, watch } from '@vue/composition-api';
+import type { PropType, Ref } from '@vue/composition-api';
 import router from '../../router';
 import { Filter } from '../../types';
 import useCollection from '../../composables/use-collection/';
@@ -244,11 +232,7 @@ import useItems from '../../composables/use-items';
 import { useRelationsStore } from '../../stores/';
 
 import i18n from '../../lang';
-import { AnyCnameRecord } from 'dns';
-
-import { assert } from 'joi';
-import { wrap, proxy, releaseProxy, Remote } from 'comlink';
-import { update } from 'lodash';
+import { wrap, proxy, Remote } from 'comlink';
 
 function isObject(obj: any): boolean {
 	return typeof obj == 'object' && obj != null;
