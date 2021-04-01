@@ -103,18 +103,19 @@
 				<div class="type-label">{{ $t('layouts.map.simplify') }}</div>
 				<v-input v-model="simplification" type="number" :step="0.05" :min="0" :max="1" />
 			</div>
-			<v-detail class="field">
-				<template #title>Style</template>
-				<div class="nested-options">
-					<div class="field">
-						<interface-code v-model="customLayers" language="json" type="json" :lineNumber="false" />
-						<div class="form">
-							<v-button x-small outlined class="set" @click="updateLayers">Set</v-button>
-							<v-button x-small outlined class="reset" @click="resetLayers">Reset</v-button>
-						</div>
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.map.simplify') }}</div>
+				<v-drawer title="Style">
+					<template #activator="{ on }">
+						<v-button @click="on">Edit style</v-button>
+					</template>
+					<interface-code v-model="customLayers" language="json" type="json" :lineNumber="false" />
+					<div class="form">
+						<v-button x-small outlined class="set" @click="updateLayers">Set</v-button>
+						<v-button x-small outlined class="reset" @click="resetLayers">Reset</v-button>
 					</div>
-				</div>
-			</v-detail>
+				</v-drawer>
+			</div>
 		</portal>
 
 		<portal to="sidebar">
@@ -257,10 +258,10 @@ function isArray(obj: any): boolean {
 }
 
 function objectMap<T extends Object>(object: T, fun: (v: T[keyof T]) => T[keyof T]) {
-  return Object.keys(object).reduce((result: T, key: unknown) => {
-    result[key as keyof T] = fun(object[key as keyof T])
-    return result
-  }, {} as T)
+	return Object.keys(object).reduce((result: T, key: unknown) => {
+		result[key as keyof T] = fun(object[key as keyof T]);
+		return result;
+	}, {} as T);
 }
 function clone<A>(a: A): A {
 	// @ts-ignore
@@ -455,7 +456,7 @@ export default defineComponent({
 		);
 
 		function resetWorker() {
-			if(geojsonWorker) geojsonWorker.terminate();
+			if (geojsonWorker) geojsonWorker.terminate();
 			geojsonLoading.value = false;
 			geojsonWorker = new Worker('./worker', { name: 'geojson-converter', type: 'module' });
 			workerProxy = wrap(geojsonWorker);
@@ -520,7 +521,7 @@ export default defineComponent({
 		}
 
 		function updateSelection(selected: Array<string | number>) {
-			_selection.value = selected as unknown as Record<string, any>[];
+			_selection.value = (selected as unknown) as Record<string, any>[];
 		}
 
 		const featureId = computed(() => {
