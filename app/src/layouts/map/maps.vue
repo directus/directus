@@ -230,6 +230,7 @@ import useCollection from '../../composables/use-collection/';
 import useSync from '../../composables/use-sync/';
 import useItems from '../../composables/use-items';
 import { useRelationsStore } from '../../stores/';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 
 import i18n from '../../lang';
 import { wrap, proxy, Remote } from 'comlink';
@@ -358,9 +359,15 @@ export default defineComponent({
 			);
 		});
 
+		const template = computed(() => {
+			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
+			const fields = fieldsInCollection.value;
+			const primaryKeyField = fields.find((field) => field.schema?.is_primary_key);
+			return `{{${primaryKeyField}}}`;
+		});
+
 		const queryFields = computed(() => {
-			return [geometryField, latitudeField, longitudeField]
-				.map((ref) => ref.value)
+			return [geometryField.value, latitudeField.value, longitudeField.value, ...getFieldsFromTemplate(template.value)]
 				.concat(primaryKeyField.value?.field)
 				.filter((e) => !!e) as string[];
 		});
@@ -433,7 +440,7 @@ export default defineComponent({
 					geojsonLoading.value = true;
 					geojsonProgress.value = 0;
 					geojsonError.value = null;
-					geojson.value = await workerProxy(items.value, _layoutOptions.value, '', proxy(onProgress));
+					geojson.value = await workerProxy(items.value, _layoutOptions.value, template.value, proxy(onProgress));
 					geojsonLoading.value = false;
 					if (!cameraOptions.value || (geojsonDataChanged.value && fitDataBounds.value)) {
 						geojsonBounds.value = geojson.value.bbox;
