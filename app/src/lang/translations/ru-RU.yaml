@@ -413,6 +413,7 @@ delete_collection_are_you_sure: >-
 collections_shown: Показано Коллекций
 visible_collections: Видимые Коллекции
 hidden_collections: Скрытые Коллекции
+show_hidden_collections: Показать скрытые коллекции
 hide_hidden_collections: Скрыть скрытые коллекции
 unmanaged_collections: Ненастроенные Коллекции
 system_collections: Системные коллекции
