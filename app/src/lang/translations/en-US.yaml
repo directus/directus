@@ -446,6 +446,7 @@ color: Color
 circle: Circle
 empty_item: Empty Item
 log_in_with: 'Log In with {provider}'
+advanced_settings: Advanced Settings
 advanced_filter: Advanced Filter
 delete_advanced_filter: Delete Filter
 change_advanced_filter_operator: Change Operator
@@ -1107,7 +1108,9 @@ layouts:
     cozy: Cozy
   map:
     map: Map
-    layers: Layers
+    layers: Layers,
+    custom_layers: Custom Layers
+    edit_custom_layers: Edit Custom Layers
     cluster_options: Clustering
     cluster: Activate clustering
     cluster_radius: Cluster radius
