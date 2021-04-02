@@ -94,6 +94,7 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
+import { usePermissions } from '@/composables/use-permissions';
 import { useUserStore, usePermissionsStore } from '@/stores/';
 import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
@@ -117,10 +118,23 @@ export default defineComponent({
 		const permissionsStore = usePermissionsStore();
 		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
+		const { fields } = usePermissions(ref('directus_roles'), primaryKey, ref(false));
+		const fieldsToFetch = computed(() =>
+			fields.value.map((field) => {
+				const relationalFieldTypes = ['m2o', 'o2m', 'm2m', 'm2a'];
+
+				if (relationalFieldTypes.includes(field.type)) {
+					return `${field.field}.*`;
+				}
+
+				return field.field;
+			})
+		);
 
 		const { edits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
 			ref('directus_roles'),
-			primaryKey
+			primaryKey,
+			fieldsToFetch
 		);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
