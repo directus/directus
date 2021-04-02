@@ -379,7 +379,10 @@ export default defineComponent({
 			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
 			const fields = fieldsInCollection.value;
 			const primaryKeyField = fields.find((field) => field.schema?.is_primary_key);
-			return `{{${primaryKeyField}}}`;
+			return fields
+				.slice(0, 3)
+				.map((f) => `{{${f.field}}}`)
+				.join(' ');
 		});
 
 		const queryFields = computed(() => {
@@ -557,6 +560,7 @@ export default defineComponent({
 		const mapStyleOptions = basemapNames;
 
 		return {
+			template,
 			_selection,
 			geojson,
 			rootStyle,
