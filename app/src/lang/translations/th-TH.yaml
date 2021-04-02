@@ -200,7 +200,7 @@ confirm_revert: ยืนยันการย้อนกลับ
 confirm_revert_body: นี่จะเป็นการย้อนกลับไอเท็มไปยังสถานะที่เลือก
 display: การแสดงผล
 settings_update_success: ปรับปรุงการตั้งค่าเรียบร้อยแล้ว
-title: ชื่อ
+title: ตำแหน่ง
 revision_delta_created: สร้างแล้ว
 revision_delta_created_externally: ถูกสร้างจากภายนอก
 revision_delta_updated: 'อัพเดทแล้ว 1 ฟิลด์ | อัพเดทแล้ว {count} ฟิลด์'
@@ -655,7 +655,7 @@ fields:
     unarchive_value: ยกเลิกการเก็บค่า
     sort_field: เรียงฟิลด์
   directus_files:
-    title: ชื่อ
+    title: ตำแหน่ง
     description: รายละเอียด
     tags: แท็ก
     location: ตำแหน่งที่ตั้ง
@@ -684,7 +684,7 @@ fields:
     password: รหัสผ่าน
     avatar: ภาพประจำตัว
     location: ตำแหน่งที่ตั้ง
-    title: ชื่อ
+    title: ตำแหน่ง
     description: รายละเอียด
     tags: แท็ก
     language: ภาษา
@@ -1082,7 +1082,7 @@ layouts:
     image_fit: แสดงรูปเต็มพอดีพื้นที่
     crop: ครอบตัด
     contain: บรรจุให้เต็ม
-    title: ชื่อ
+    title: ตำแหน่ง
     subtitle: คำบรรยาย
   tabular:
     tabular: ตาราง
