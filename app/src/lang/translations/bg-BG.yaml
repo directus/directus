@@ -798,6 +798,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   button-links:
@@ -975,6 +976,7 @@ interfaces:
     no_collection: Няма колекция
   tree-view:
     description: Дървовиден изглед за вложени рекурсивни записи от тип - един-към-много
+    recursive_only: Дървовидния интерфейс работи само за рекурсивни релации.
   user:
     user: Потребител
     description: Избор на съществуващ потребител
