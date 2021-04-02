@@ -3,6 +3,7 @@ import { Buffer } from 'buffer';
 import { coordEach } from '@turf/meta';
 import wkx from 'wkx';
 import { render } from 'micromustache';
+import proj4 from 'proj4';
 
 type geometryOptions = {
 	geometryFormat?: GeometryFormat;
@@ -87,7 +88,14 @@ function toGeoJSON(
 	onProgress: (p: number) => void
 ): GeoJSON.FeatureCollection {
 	const parser = getGeometryParser(options);
-	const project = (coord: any): any => coord; // TODO
+
+	const project = (coord: any): any => {
+		if (options.geometrySRID) {
+			return proj4(options.geometrySRID, 'EPSG:4326', coord);
+		}
+		return coord;
+	};
+
 	const geojson: GeoJSON.FeatureCollection = {
 		type: 'FeatureCollection',
 		features: [],

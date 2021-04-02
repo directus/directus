@@ -101,6 +101,17 @@
 						<v-input v-model="fitBoundsPadding" type="number" />
 					</div>
 					<div class="field">
+						<div class="type-label">{{ $t('layouts.map.projection') }}</div>
+						<v-select
+							v-model="geometrySRID"
+							:items="[
+								{ value: 'EPSG:4326', text: 'WGS84' },
+								{ value: 'EPSG:4269', text: 'EPSG:4269' },
+								{ value: 'EPSG:3857', text: 'EPSG:3857' },
+							]"
+						/>
+					</div>
+					<div class="field">
 						<div class="type-label">{{ $t('layouts.map.simplify') }}</div>
 						<v-input v-model="simplification" type="number" :step="0.05" :min="0" :max="1" />
 					</div>
@@ -352,7 +363,7 @@ export default defineComponent({
 		const clusterRadius = syncOption(_layoutOptions, 'clusterRadius', 50);
 		const clusterMaxZoom = syncOption(_layoutOptions, 'clusterMaxZoom', 12);
 		const clusterMinPoints = syncOption(_layoutOptions, 'clusterMinPoints', 2);
-		const geometrySRID = syncOption(_layoutOptions, 'geometrySRID', '2154');
+		const geometrySRID = syncOption(_layoutOptions, 'geometrySRID', 'EPSG:4326');
 		const longitudeField = syncOption(_layoutOptions, 'longitudeField', undefined);
 		const latitudeField = syncOption(_layoutOptions, 'latitudeField', undefined);
 		const geometryField = syncOption(_layoutOptions, 'geometryField', undefined);
