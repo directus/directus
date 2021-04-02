@@ -85,37 +85,51 @@
 				<div class="field">
 					<div class="type-label">{{ $t('layouts.map.cluster_maxzoom') }}</div>
 					<v-input v-model="clusterMaxZoom" type="number" :min="0" />
-					<v-divider></v-divider>
 				</div>
 			</template>
-			<div class="field">
-				<v-checkbox v-model="fitBoundsAnimate" :label="$t('layouts.map.fit_animate')" />
-			</div>
-			<div class="field">
-				<div class="type-label">{{ $t('layouts.map.fit_speed') }}</div>
-				<v-input v-model="fitBoundsSpeed" type="number" :step="0.1" :min="0" />
-			</div>
-			<div class="field">
-				<div class="type-label">{{ $t('layouts.map.fit_padding') }}</div>
-				<v-input v-model="fitBoundsPadding" type="number" />
-			</div>
-			<div class="field">
-				<div class="type-label">{{ $t('layouts.map.simplify') }}</div>
-				<v-input v-model="simplification" type="number" :step="0.05" :min="0" :max="1" />
-			</div>
-			<div class="field">
-				<div class="type-label">{{ $t('layouts.map.simplify') }}</div>
-				<v-drawer title="Style">
-					<template #activator="{ on }">
-						<v-button @click="on">Edit style</v-button>
-					</template>
-					<interface-code v-model="customLayers" language="json" type="json" :lineNumber="false" />
-					<div class="form">
-						<v-button x-small outlined class="set" @click="updateLayers">Set</v-button>
-						<v-button x-small outlined class="reset" @click="resetLayers">Reset</v-button>
+			<v-detail class="field" :label="$t('advanced_settings')">
+				<div class="nested-options">
+					<div class="field">
+						<v-checkbox v-model="fitBoundsAnimate" :label="$t('layouts.map.fit_animate')" />
 					</div>
-				</v-drawer>
-			</div>
+					<div class="field">
+						<div class="type-label">{{ $t('layouts.map.fit_speed') }}</div>
+						<v-input v-model="fitBoundsSpeed" type="number" :step="0.1" :min="0" />
+					</div>
+					<div class="field">
+						<div class="type-label">{{ $t('layouts.map.fit_padding') }}</div>
+						<v-input v-model="fitBoundsPadding" type="number" />
+					</div>
+					<div class="field">
+						<div class="type-label">{{ $t('layouts.map.simplify') }}</div>
+						<v-input v-model="simplification" type="number" :step="0.05" :min="0" :max="1" />
+					</div>
+					<div class="field">
+						<div class="type-label">{{ $t('layouts.map.custom_layers') }}</div>
+						<v-drawer
+							v-model="customLayerDrawerOpen"
+							:title="$t('layouts.map.custom_layers')"
+							@cancel="customLayerDrawerOpen = false"
+						>
+							<template #activator="{ on }">
+								<v-button @click="on">{{ $t('layouts.map.edit_custom_layers') }}</v-button>
+							</template>
+
+							<template #actions>
+								<v-button icon rounded class="delete-action" @click="resetLayers" v-tooltip.bottom="$t('reset')">
+									<v-icon name="replay" />
+								</v-button>
+								<v-button icon rounded @click="updateLayers" v-tooltip.bottom="$t('save')">
+									<v-icon name="check" />
+								</v-button>
+							</template>
+							<div class="custom-layers">
+								<interface-code v-model="customLayers" language="json" type="json" :lineNumber="false" />
+							</div>
+						</v-drawer>
+					</div>
+				</div>
+			</v-detail>
 		</portal>
 
 		<portal to="sidebar">
@@ -309,6 +323,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const customLayerDrawerOpen = ref(false);
+
 		const relationsStore = useRelationsStore();
 		const layoutElement = ref<HTMLElement | null>(null);
 		const mainElement = inject('main-element', ref<Element | null>(null));
@@ -467,6 +483,7 @@ export default defineComponent({
 		watch(() => simplification.value, updateSource);
 
 		function updateLayers() {
+			customLayerDrawerOpen.value = false;
 			userLayers.value = customLayers.value;
 		}
 
@@ -594,6 +611,7 @@ export default defineComponent({
 			resetPresetAndRefresh,
 			availableFields,
 			availableFieldsForFormat,
+			customLayerDrawerOpen,
 		};
 
 		async function resetPresetAndRefresh() {
@@ -652,11 +670,6 @@ export default defineComponent({
 	transform: translate(-50%, -50%);
 }
 
-.form .v-button {
-	--v-button-background-color: var(--foreground-subdued);
-	--v-button-background-color-hover: var(--foreground-normal);
-}
-
 .v-progress-circular {
 	--v-progress-circular-background-color: var(--primary-25);
 	--v-progress-circular-color: var(--primary-75);
@@ -690,6 +703,18 @@ export default defineComponent({
 
 .reset-preset {
 	margin-top: 24px;
+}
+
+.delete-action {
+	--v-button-background-color: var(--danger-10);
+	--v-button-color: var(--danger);
+	--v-button-background-color-hover: var(--danger-25);
+	--v-button-color-hover: var(--danger);
+}
+
+.custom-layers {
+	padding: var(--content-padding);
+	padding-top: 0;
 }
 
 .footer {
