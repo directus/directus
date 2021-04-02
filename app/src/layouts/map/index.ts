@@ -6,4 +6,5 @@ export default defineLayout(({ i18n }) => ({
 	name: i18n.t('layouts.map.map'),
 	icon: 'map',
 	component: MapLayout,
+	smallHeader: true,
 }));

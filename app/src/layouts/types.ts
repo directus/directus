@@ -6,6 +6,7 @@ export type LayoutConfig = {
 	icon: string;
 	name: string | VueI18n.TranslateResult;
 	component: Component;
+	smallHeader?: boolean;
 };
 
 export type LayoutContext = { i18n: VueI18n };

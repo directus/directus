@@ -1,6 +1,10 @@
 <template>
 	<collections-not-found v-if="!currentCollection || collection.startsWith('directus_')" />
-	<private-view v-else :title="bookmark ? bookmarkTitle : currentCollection.name">
+	<private-view
+		v-else
+		:title="bookmark ? bookmarkTitle : currentCollection.name"
+		:smallHeader="currentLayout.smallHeader"
+	>
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon secondary disabled>
 				<v-icon :name="currentCollection.icon" />
@@ -255,6 +259,7 @@ import marked from 'marked';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { getLayouts } from '@/layouts';
 
 type Item = {
 	[field: string]: any;
@@ -283,6 +288,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const layouts = getLayouts();
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref<LayoutComponent | null>(null);
@@ -324,6 +330,8 @@ export default defineComponent({
 		} = useBatch();
 
 		const { bookmarkDialogActive, creatingBookmark, createBookmark, editingBookmark, editBookmark } = useBookmarks();
+
+		const currentLayout = computed(() => layouts.value.find((l) => l.id === layout.value));
 
 		watch(
 			collection,
@@ -378,6 +386,7 @@ export default defineComponent({
 			bookmarkSaving,
 			clearLocalSave,
 			refresh,
+			currentLayout,
 		};
 
 		function refresh() {

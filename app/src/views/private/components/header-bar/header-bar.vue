@@ -1,5 +1,5 @@
 <template>
-	<header class="header-bar" ref="headerEl" :class="{ collapsed: collapsed }">
+	<header class="header-bar" ref="headerEl" :class="{ collapsed, small }">
 		<v-button secondary class="nav-toggle" icon rounded @click="$emit('primary')" v-if="$listeners.primary">
 			<v-icon :name="primaryActionIcon" />
 		</v-button>
@@ -54,6 +54,10 @@ export default defineComponent({
 		primaryActionIcon: {
 			type: String,
 			default: 'menu',
+		},
+		small: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup() {
@@ -168,6 +172,11 @@ export default defineComponent({
 		}
 	}
 
+	&.small .title-container .headline {
+		opacity: 0;
+		pointer-events: none;
+	}
+
 	&.collapsed {
 		box-shadow: 0 4px 7px -4px rgba(0, 0, 0, 0.2);
 
@@ -193,8 +202,10 @@ export default defineComponent({
 	}
 
 	@include breakpoint(small) {
-		margin: 24px 0;
-		padding: 0 32px;
+		&:not(.small) {
+			margin: 24px 0;
+			padding: 0 32px;
+		}
 	}
 }
 </style>
