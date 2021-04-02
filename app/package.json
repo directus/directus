@@ -48,6 +48,7 @@
 		"@types/marked": "^2.0.0",
 		"@types/mime-types": "^2.1.0",
 		"@types/ms": "^0.7.31",
+		"@types/proj4": "^2.5.0",
 		"@types/qrcode": "^1.4.0",
 		"@vue/cli-plugin-babel": "^4.5.8",
 		"@vue/cli-plugin-router": "^4.5.8",
@@ -95,6 +96,7 @@
 		"vuepress": "^1.5.2",
 		"webpack-assets-manifest": "^3.1.1",
 		"wkx": "^0.5.0",
-		"worker-plugin": "^5.0.0"
+		"worker-plugin": "^5.0.0",
+		"proj4": "^2.7.2"
 	}
 }
