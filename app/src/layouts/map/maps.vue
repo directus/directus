@@ -233,31 +233,7 @@ import { useRelationsStore } from '../../stores/';
 
 import i18n from '../../lang';
 import { wrap, proxy, Remote } from 'comlink';
-
-function isObject(obj: any): boolean {
-	return typeof obj == 'object' && obj != null;
-}
-function isArray(obj: any): boolean {
-	return Array.isArray(obj);
-}
-
-function objectMap<T extends Object>(object: T, fun: (v: T[keyof T]) => T[keyof T]) {
-	return Object.keys(object).reduce((result: T, key: unknown) => {
-		result[key as keyof T] = fun(object[key as keyof T]);
-		return result;
-	}, {} as T);
-}
-function clone<A>(a: A): A {
-	// @ts-ignore
-	return !isObject(a) ? a : isArray(a) ? a.map(clone) : objectMap(a, clone);
-}
-
-function assign(a: any, b: any): any {
-	if (![a, b].every(isObject)) return (a = b);
-	if ([a, b].every(isArray)) return a.concat(b);
-	for (const key in b) a[key] = assign(a[key], b[key]);
-	return a;
-}
+import { cloneDeep, merge } from 'lodash';
 
 type Item = Record<string, any>;
 
@@ -457,7 +433,7 @@ export default defineComponent({
 					geojsonLoading.value = true;
 					geojsonProgress.value = 0;
 					geojsonError.value = null;
-					geojson.value = await workerProxy(items.value, _layoutOptions.value, proxy(onProgress));
+					geojson.value = await workerProxy(items.value, _layoutOptions.value, '', proxy(onProgress));
 					geojsonLoading.value = false;
 					if (!cameraOptions.value || (geojsonDataChanged.value && fitDataBounds.value)) {
 						geojsonBounds.value = geojson.value.bbox;
@@ -473,7 +449,7 @@ export default defineComponent({
 			}
 		}
 
-		const userStyle = clone(dataStyle);
+		const userStyle = cloneDeep(dataStyle);
 		const userSource = ref(userStyle.sources);
 		const userLayers = ref(userStyle.layers);
 		updateSource();
@@ -488,11 +464,11 @@ export default defineComponent({
 		}
 
 		function resetLayers() {
-			userLayers.value = clone(dataStyle.layers);
+			userLayers.value = cloneDeep(dataStyle.layers);
 		}
 
 		function updateSource() {
-			assign(userSource.value, {
+			merge(userSource.value, {
 				__directus: {
 					cluster: clusterActive.value,
 					clusterRadius: clusterRadius.value,
