@@ -56,6 +56,8 @@ export default defineComponent({
 	font-family: var(--family-monospace);
 	background-color: var(--danger-alt);
 	border-radius: var(--border-radius);
+	max-height: 50vh;
+	overflow: auto;
 
 	.copy-error {
 		margin-left: 12px;
