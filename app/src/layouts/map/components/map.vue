@@ -1,5 +1,5 @@
 <template>
-	<div id="map-container" ref="container" :class="{ 'select': selectMode, 'hover': hoveredId != null }">
+	<div id="map-container" ref="container" :class="{ select: selectMode, hover: hoveredId != null }">
 		<div id="selection" :style="boxStyle"></div>
 	</div>
 </template>
@@ -18,15 +18,7 @@ import maplibre, {
 	Style,
 	Map,
 } from 'maplibre-gl';
-import {
-	ref,
-	watch,
-	computed,
-	PropType,
-	onMounted,
-	onUnmounted,
-	defineComponent,
-} from '@vue/composition-api';
+import { ref, watch, computed, PropType, onMounted, onUnmounted, defineComponent } from '@vue/composition-api';
 
 import { useAppStore } from '@/stores';
 
@@ -104,7 +96,7 @@ export default defineComponent({
 		selection: {
 			type: Array as PropType<Array<string | number>>,
 			default: () => [],
-		}
+		},
 	},
 	setup(props, { emit }) {
 		const appStore = useAppStore();
@@ -112,11 +104,11 @@ export default defineComponent({
 		maplibre.accessToken = 'yo';
 		let map: Map;
 		const container = ref<HTMLElement>();
-		const hoveredId =  ref<string | number>();
+		const hoveredId = ref<string | number>();
 		const boxStyle = ref<unknown>({});
 		const selecting = ref(false);
 		const shiftPressed = ref(false);
-		const selectMode = computed(() => shiftPressed.value || selecting.value)
+		const selectMode = computed(() => shiftPressed.value || selecting.value);
 		let startPos: Point;
 		let currentPos: Point;
 
@@ -125,14 +117,22 @@ export default defineComponent({
 			onUnmounted(cleanup);
 		});
 
-		return { container, boxStyle, selectMode, hoveredId }
+		const popup = new maplibre.Popup({
+			closeButton: false,
+			closeOnClick: false,
+		});
+
+		return { container, boxStyle, selectMode, hoveredId };
 
 		function setupMap() {
 			const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds);
 			const selectControl = new ButtonControl('mapboxgl-ctrl-select', () => {
 				shiftPressed.value = !shiftPressed.value;
 			});
-			watch(() => selectMode.value, (value) => selectControl.activate(value));
+			watch(
+				() => selectMode.value,
+				(value) => selectControl.activate(value)
+			);
 
 			map = new maplibre.Map({
 				container: 'map-container',
@@ -148,6 +148,7 @@ export default defineComponent({
 			map.addControl(new maplibre.AttributionControl({ compact: true }), 'top-right');
 			map.addControl(fitDataControl, 'top-left');
 			map.addControl(selectControl, 'top-left');
+
 			map.on('load', () => {
 				attachFeatureEvents();
 				watch(() => props.backgroundLayer, updateBackground, { immediate: true });
@@ -197,7 +198,7 @@ export default defineComponent({
 				map.remove();
 				document.removeEventListener('keydown', onKeyDown);
 				document.removeEventListener('keyup', onKeyUp);
-			}
+			};
 		}
 
 		function fitDataBounds() {
@@ -257,11 +258,11 @@ export default defineComponent({
 		function updateSelection(next: (string | number)[], previous?: (string | number)[]) {
 			if (previous) {
 				for (const id of previous || []) {
-					map.setFeatureState({ id, source: '__directus'}, { selected: false });
+					map.setFeatureState({ id, source: '__directus' }, { selected: false });
 				}
 			}
 			for (const id of next || []) {
-				map.setFeatureState({ id, source: '__directus'}, { selected: true });
+				map.setFeatureState({ id, source: '__directus' }, { selected: true });
 			}
 		}
 
@@ -296,13 +297,13 @@ export default defineComponent({
 				return;
 			}
 			if (event.button === 0) {
-				selecting.value = true
+				selecting.value = true;
 				map.dragPan.disable();
 				document.addEventListener('mousemove', onMouseMove);
 				document.addEventListener('mouseup', onMouseUp);
 				startPos = getMousePosition(event);
 				currentPos = startPos;
-			};
+			}
 		}
 
 		function onMouseMove(event: MouseEvent) {
@@ -324,14 +325,17 @@ export default defineComponent({
 			document.removeEventListener('mouseup', onMouseUp);
 			map.dragPan.enable();
 		}
-		
+
 		function onMouseUp() {
 			onDragEnd();
 
 			const features = map.queryRenderedFeatures([startPos, currentPos], {
-				layers: ['__directus_polygons','__directus_points','__directus_lines']
+				layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
 			});
-			emit('select', features.map(feature => feature.id));
+			emit(
+				'select',
+				features.map((feature) => feature.id)
+			);
 			// let diff = new Set(props.selection);
 			// for (const feature of features) {
 			// 	if (diff.has(feature.id!)) {
@@ -352,17 +356,22 @@ export default defineComponent({
 
 		function onFeatureEnter(event: MapLayerMouseEvent) {
 			const feature = event.features?.[0];
-			if (feature && props.featureId) {
+			if (feature && props.featureId && feature.geometry.type === 'Point') {
 				hoveredId.value = feature.id;
-				map.setFeatureState({ id: hoveredId.value, source: '__directus'}, { hovered: true });
+				map.setFeatureState({ id: hoveredId.value, source: '__directus' }, { hovered: true });
 				emit('hover', hoveredId.value);
+				popup
+					.setLngLat([feature.geometry.coordinates[0], feature.geometry.coordinates[1]])
+					.setHTML(feature.properties?.description)
+					.addTo(map);
 			}
 		}
 
 		function onFeatureLeave(event: MapLayerMouseEvent) {
-			map.setFeatureState({ id: hoveredId.value, source: '__directus'}, { hovered: false });
+			map.setFeatureState({ id: hoveredId.value, source: '__directus' }, { hovered: false });
 			emit('leave', hoveredId.value);
 			hoveredId.value = undefined;
+			popup.remove();
 		}
 
 		function expandCluster(event: MapLayerMouseEvent) {
@@ -381,8 +390,12 @@ export default defineComponent({
 			});
 		}
 		function attachFeatureEvents() {
-			map.on('mouseenter', '__directus_clusters', () => { hoveredId.value = -1 });
-			map.on('mouseleave', '__directus_clusters', () => { hoveredId.value = undefined });
+			map.on('mouseenter', '__directus_clusters', () => {
+				hoveredId.value = -1;
+			});
+			map.on('mouseleave', '__directus_clusters', () => {
+				hoveredId.value = undefined;
+			});
 			map.on('mouseenter', '__directus_polygons', onFeatureEnter);
 			map.on('mouseleave', '__directus_polygons', onFeatureLeave);
 			map.on('mouseenter', '__directus_points', onFeatureEnter);
@@ -398,8 +411,31 @@ export default defineComponent({
 });
 </script>
 
-
 <style lang="scss">
+.mapboxgl-ctrl-attrib-button {
+	background-color: var(--foreground-normal) !important;
+	background-image: none !important;
+	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='24' height='24' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd'%3E%3Cpath d='M4 10a6 6 0 1012 0 6 6 0 10-12 0m5-3a1 1 0 102 0 1 1 0 10-2 0m0 3a1 1 0 112 0v3a1 1 0 11-2 0'/%3E%3C/svg%3E");
+}
+.mapboxgl-ctrl-zoom-in .mapboxgl-ctrl-icon {
+	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='29' height='29' viewBox='0 0 29 29' xmlns='http://www.w3.org/2000/svg' fill='%23333'%3E%3Cpath d='M14.5 8.5c-.75 0-1.5.75-1.5 1.5v3h-3c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h3v3c0 .75.75 1.5 1.5 1.5S16 19.75 16 19v-3h3c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-3v-3c0-.75-.75-1.5-1.5-1.5z'/%3E%3C/svg%3E");
+}
+.mapboxgl-ctrl-zoom-out .mapboxgl-ctrl-icon {
+	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='29' height='29' viewBox='0 0 29 29' xmlns='http://www.w3.org/2000/svg' fill='%23333'%3E%3Cpath d='M10 13c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h9c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-9z'/%3E%3C/svg%3E");
+}
+.mapboxgl-ctrl-compass .mapboxgl-ctrl-icon {
+	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='29' height='29' viewBox='0 0 29 29' xmlns='http://www.w3.org/2000/svg' fill='%23333'%3E%3Cpath d='M10.5 14l4-8 4 8h-8z'/%3E%3Cpath d='M10.5 16l4 8 4-8h-8z' fill='%23ccc'/%3E%3C/svg%3E");
+}
+.mapboxgl-ctrl-geolocate .mapboxgl-ctrl-icon {
+	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='29' height='29' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%23333'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 005.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 009 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 003.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0011 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 110 7 3.5 3.5 0 110-7z'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E");
+}
+.mapboxgl-ctrl-fitdata .mapboxgl-ctrl-icon {
+	mask-image: url("data:image/svg+xml,%3Csvg width='29' height='29' viewBox='-4 -4 32 32' xmlns='http://www.w3.org/2000/svg' %3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M3 5v4h2V5h4V3H5c-1.1 0-2 .9-2 2zm2 10H3v4c0 1.1.9 2 2 2h4v-2H5v-4zm14 4h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4zm0-16h-4v2h4v4h2V5c0-1.1-.9-2-2-2z'/%3E%3C/svg%3E%0A");
+}
+.mapboxgl-ctrl-select .mapboxgl-ctrl-icon {
+	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-2 -2 24 24' fill='black' width='25' height='25' %3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2zM7 17h10V7H7v10zm2-8h6v6H9V9z'/%3E%3C/svg%3E%0A");
+}
+
 .mapboxgl-ctrl-group {
 	overflow: hidden;
 	background: none;
@@ -433,29 +469,6 @@ export default defineComponent({
 	}
 }
 
-.mapboxgl-ctrl-attrib-button {
-	background-color: var(--foreground-normal) !important;
-	background-image: none !important;
-	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='24' height='24' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd'%3E%3Cpath d='M4 10a6 6 0 1012 0 6 6 0 10-12 0m5-3a1 1 0 102 0 1 1 0 10-2 0m0 3a1 1 0 112 0v3a1 1 0 11-2 0'/%3E%3C/svg%3E");
-}
-.mapboxgl-ctrl-zoom-in .mapboxgl-ctrl-icon {
-	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='29' height='29' viewBox='0 0 29 29' xmlns='http://www.w3.org/2000/svg' fill='%23333'%3E%3Cpath d='M14.5 8.5c-.75 0-1.5.75-1.5 1.5v3h-3c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h3v3c0 .75.75 1.5 1.5 1.5S16 19.75 16 19v-3h3c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-3v-3c0-.75-.75-1.5-1.5-1.5z'/%3E%3C/svg%3E");
-}
-.mapboxgl-ctrl-zoom-out .mapboxgl-ctrl-icon {
-	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='29' height='29' viewBox='0 0 29 29' xmlns='http://www.w3.org/2000/svg' fill='%23333'%3E%3Cpath d='M10 13c-.75 0-1.5.75-1.5 1.5S9.25 16 10 16h9c.75 0 1.5-.75 1.5-1.5S19.75 13 19 13h-9z'/%3E%3C/svg%3E");
-}
-.mapboxgl-ctrl-compass .mapboxgl-ctrl-icon {
-	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='29' height='29' viewBox='0 0 29 29' xmlns='http://www.w3.org/2000/svg' fill='%23333'%3E%3Cpath d='M10.5 14l4-8 4 8h-8z'/%3E%3Cpath d='M10.5 16l4 8 4-8h-8z' fill='%23ccc'/%3E%3C/svg%3E");
-}
-.mapboxgl-ctrl-geolocate .mapboxgl-ctrl-icon {
-	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='29' height='29' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%23333'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 005.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 009 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 003.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0011 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 110 7 3.5 3.5 0 110-7z'/%3E%3Ccircle cx='10' cy='10' r='2'/%3E%3C/svg%3E");
-}
-.mapboxgl-ctrl-fitdata .mapboxgl-ctrl-icon {
-	mask-image: url("data:image/svg+xml,%3Csvg width='29' height='29' viewBox='-4 -4 32 32' xmlns='http://www.w3.org/2000/svg' %3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3Cpath d='M3 5v4h2V5h4V3H5c-1.1 0-2 .9-2 2zm2 10H3v4c0 1.1.9 2 2 2h4v-2H5v-4zm14 4h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4zm0-16h-4v2h4v4h2V5c0-1.1-.9-2-2-2z'/%3E%3C/svg%3E%0A");
-}
-.mapboxgl-ctrl-select .mapboxgl-ctrl-icon {
-	mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-2 -2 24 24' fill='black' width='25' height='25' %3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M3 5h2V3c-1.1 0-2 .9-2 2zm0 8h2v-2H3v2zm4 8h2v-2H7v2zM3 9h2V7H3v2zm10-6h-2v2h2V3zm6 0v2h2c0-1.1-.9-2-2-2zM5 21v-2H3c0 1.1.9 2 2 2zm-2-4h2v-2H3v2zM9 3H7v2h2V3zm2 18h2v-2h-2v2zm8-8h2v-2h-2v2zm0 8c1.1 0 2-.9 2-2h-2v2zm0-12h2V7h-2v2zm0 8h2v-2h-2v2zm-4 4h2v-2h-2v2zm0-16h2V3h-2v2zM7 17h10V7H7v10zm2-8h6v6H9V9z'/%3E%3C/svg%3E%0A");
-}
 .mapboxgl-ctrl-attrib.mapboxgl-compact {
 	min-width: 24px;
 	height: 24px;
@@ -466,9 +479,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 #map-container {
+	position: relative;
 	width: 100%;
 	height: 100%;
-	position: relative;
 }
 #map-container.hover::v-deep .mapboxgl-canvas-container {
 	cursor: pointer !important;
@@ -482,15 +495,14 @@ export default defineComponent({
 #selection {
 	position: absolute;
 	top: 0;
-	left: 0;
-	bottom: 0;
 	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1000;
 	width: 0;
 	height: 0;
 	background: rgba(56, 135, 190, 0.1);
 	border: 1px solid rgb(56, 135, 190);
-	z-index: 1000;
 	pointer-events: none;
 }
-
 </style>

@@ -2,6 +2,7 @@ import { expose } from 'comlink';
 import { Buffer } from 'buffer';
 import { coordEach } from '@turf/meta';
 import wkx from 'wkx';
+import { render } from 'micromustache';
 
 type geometryOptions = {
 	geometryFormat?: GeometryFormat;
@@ -82,6 +83,7 @@ type AllGeoJSON = GeoJSON.FeatureCollection & GeoJSON.Feature & GeoJSON.Geometry
 function toGeoJSON(
 	entries: any[],
 	options: geometryOptions,
+	template: string,
 	onProgress: (p: number) => void
 ): GeoJSON.FeatureCollection {
 	const parser = getGeometryParser(options);
@@ -104,6 +106,7 @@ function toGeoJSON(
 		delete properties[options.geometryField!];
 		delete properties[options.longitudeField!];
 		delete properties[options.latitudeField!];
+		properties.description = render(template, entries[i]);
 		const feature = { type: 'Feature', properties, geometry };
 		geojson.features.push(feature as GeoJSON.Feature);
 	}
