@@ -7,7 +7,11 @@ import { APIError } from '@/types';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
+export function useItem(
+	collection: Ref<string>,
+	primaryKey: Ref<string | number | null>,
+	fieldsToFetch?: Ref<string[] | null>
+) {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 	const item = ref<Record<string, any> | null>(null);
@@ -73,7 +77,11 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		error.value = null;
 
 		try {
-			const response = await api.get(itemEndpoint.value);
+			const response = await api.get(itemEndpoint.value, {
+				params: {
+					fields: fieldsToFetch?.value || ['*'],
+				},
+			});
 			setItemValueToResponse(response);
 		} catch (err) {
 			error.value = err;

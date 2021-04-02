@@ -241,7 +241,21 @@ export default defineComponent({
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
-		const { info: collectionInfo, defaults, primaryKeyField, isSingleton } = useCollection(collection);
+		const { info: collectionInfo, defaults, fields: fieldsInCollection, primaryKeyField, isSingleton } = useCollection(
+			collection
+		);
+
+		const fieldsToFetch = computed(() =>
+			fieldsInCollection.value.map((field) => {
+				const relationalFieldTypes = ['m2o', 'o2m', 'm2m', 'm2a'];
+
+				if (relationalFieldTypes.includes(field.type)) {
+					return `${field.field}.*`;
+				}
+
+				return field.field;
+			})
+		);
 
 		const {
 			isNew,
@@ -259,7 +273,7 @@ export default defineComponent({
 			saveAsCopy,
 			refresh,
 			validationErrors,
-		} = useItem(collection, primaryKey);
+		} = useItem(collection, primaryKey, fieldsToFetch);
 
 		const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
