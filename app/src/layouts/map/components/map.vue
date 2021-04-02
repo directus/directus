@@ -120,6 +120,8 @@ export default defineComponent({
 		const popup = new maplibre.Popup({
 			closeButton: false,
 			closeOnClick: false,
+			className: 'mapboxgl-point-popup',
+			maxWidth: 'unset',
 		});
 
 		return { container, boxStyle, selectMode, hoveredId };
@@ -336,15 +338,6 @@ export default defineComponent({
 				'select',
 				features.map((feature) => feature.id)
 			);
-			// let diff = new Set(props.selection);
-			// for (const feature of features) {
-			// 	if (diff.has(feature.id!)) {
-			// 		diff.delete(feature.id!);
-			// 	} else {
-			// 		diff.add(feature.id!);
-			// 	}
-			// }
-			// emit('select', Array.from(diff));
 		}
 
 		function onFeatureClick(event: MapLayerMouseEvent) {
@@ -474,6 +467,33 @@ export default defineComponent({
 	height: 24px;
 	color: var(--foreground-normal);
 	background: var(--background-subdued) !important;
+}
+
+.mapboxgl-point-popup {
+	&.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+		border-right-color: var(--background-normal);
+	}
+
+	&.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+		border-bottom-color: var(--background-normal);
+	}
+
+	&.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+		border-top-color: var(--background-normal);
+	}
+
+	&.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+		border-left-color: var(--background-normal);
+	}
+
+	.mapboxgl-popup-content {
+		color: var(--foreground-normal-alt);
+		font-weight: 500;
+		font-size: 14px;
+		font-family: var(--family-sans-serif);
+		background-color: var(--background-normal);
+		border-radius: var(--border-radius);
+	}
 }
 </style>
 
