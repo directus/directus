@@ -23,7 +23,6 @@
 		"resolveJsonModule": false,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"allowSyntheticDefaultImports": true,
-		"isolatedModules": true
+		"allowSyntheticDefaultImports": true
 	}
 }

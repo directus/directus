@@ -24,7 +24,7 @@ export default async () => {
 					[
 						{
 							title: 'Postgres',
-							task: async () => await global.__containers__[0].stop(),
+							task: async () => await Promise.all(global.__containers__.map((container) => container.stop())),
 						},
 					],
 					{ concurrent: true }
@@ -37,7 +37,7 @@ export default async () => {
 					[
 						{
 							title: 'Postgres',
-							task: async () => await global.__containers__[0].remove(),
+							task: async () => await Promise.all(global.__containers__.map((container) => container.remove())),
 						},
 					],
 					{ concurrent: true }
@@ -45,5 +45,5 @@ export default async () => {
 		},
 	]).run();
 
-	console.log('\n');
+	console.log(`👮‍♀️ Done testing!\n`);
 };

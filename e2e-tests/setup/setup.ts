@@ -1,13 +1,17 @@
 import Dockerode, { ContainerSpec } from 'dockerode';
-import { nanoid } from 'nanoid';
-// import { seedDatabase } from './utils/seed';
 import knex from 'knex';
-import { awaitConnection } from './utils/await-connection';
+import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
 import Listr from 'listr';
+
+// const generateId = customAlphabet('abcdefghijklmnopqrstuvwxyz', 6);
 
 const docker = new Dockerode();
 
 export default async () => {
+	console.log('\n\n');
+
+	console.log(`👮‍♀️ Start testing!\n`);
+
 	global.__containers__ = [];
 	global.__databases__ = [];
 
@@ -15,32 +19,66 @@ export default async () => {
 		{
 			title: 'Create Docker containers',
 			task: () =>
-				new Listr(
-					[
-						{
-							title: 'Postgres',
-							task: async () => {
-								const container = await docker.createContainer({
-									name: 'directus-test-' + nanoid(),
-									Image: 'postgres:12-alpine',
-									Env: ['POSTGRES_PASSWORD=secret', 'POSTGRES_DB=directus'],
-									Tty: false,
-									HostConfig: {
-										PortBindings: {
-											'5432/tcp': [{ HostPort: '5100' }],
-										},
-									},
-								} as ContainerSpec);
+				new Listr([
+					{
+						title: 'Postgres',
+						task: () => {
+							return new Listr([
+								{
+									title: 'Database',
+									task: async () => {
+										const container = await docker.createContainer({
+											name: 'directus-test-postgres',
+											Image: 'postgres:12-alpine',
+											Hostname: 'directus-test-postgres',
+											Env: ['POSTGRES_PASSWORD=secret', 'POSTGRES_DB=directus'],
+											HostConfig: {
+												PortBindings: {
+													'5432/tcp': [{ HostPort: '5100' }],
+												},
+											},
+										} as ContainerSpec);
 
-								global.__containers__.push(container);
-							},
+										global.__containers__.push(container);
+									},
+								},
+								{
+									title: 'Directus',
+									task: async () => {
+										const directus = await docker.createContainer({
+											name: 'directus-directus-directus',
+											Image: 'directus-e2e',
+											Env: [
+												'DB_CLIENT=pg',
+												'DB_HOST=directus-test-postgres',
+												'DB_USER=postgres',
+												'DB_PASSWORD=secret',
+												'DB_PORT=5432',
+												'DB_DATABASE=directus',
+												'ADMIN_EMAIL=admin@example.com',
+												'ADMIN_PASSWORD=password',
+												'KEY=directus-test',
+												'SECRET=directus-test',
+												'TELEMETRY=false',
+											],
+											HostConfig: {
+												Links: ['directus-test-postgres:directus-test-postgres'],
+												PortBindings: {
+													'8055/tcp': [{ HostPort: '6100' }],
+												},
+											},
+										} as ContainerSpec);
+
+										global.__containers__.push(directus);
+									},
+								},
+							]);
 						},
-					],
-					{ concurrent: true }
-				),
+					},
+				]),
 		},
 		{
-			title: 'Start Docker containers',
+			title: 'Start Database Docker containers',
 			task: () =>
 				new Listr(
 					[
@@ -87,11 +125,30 @@ export default async () => {
 					[
 						{
 							title: 'Postgres',
-							task: async () => await awaitConnection(global.__databases__[0]),
+							task: async () => await awaitDatabaseConnection(global.__databases__[0]),
 						},
 					],
 					{ concurrent: true }
 				),
+		},
+		{
+			title: 'Start Directus Docker containers',
+			task: () =>
+				new Listr(
+					[
+						{
+							title: 'Postgres',
+							task: async () => {
+								await global.__containers__[1].start();
+							},
+						},
+					],
+					{ concurrent: true }
+				),
+		},
+		{
+			title: 'Wait for Directus to be ready',
+			task: async () => await awaitDirectusConnection(),
 		},
 	]).run();
 
