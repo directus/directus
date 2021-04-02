@@ -45,5 +45,7 @@ export default async () => {
 		},
 	]).run();
 
+	console.log('\n');
+
 	console.log(`👮‍♀️ Done testing!\n`);
 };
