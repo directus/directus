@@ -46,6 +46,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start-period: 10s
 
   mysql:
     image: mysql:8
@@ -60,6 +61,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start-period: 10s
 
   maria:
     image: mariadb:10.5
@@ -73,6 +75,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start-period: 10s
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -86,6 +89,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start-period: 10s
 
   oracle:
     image: quillbuilduser/oracle-18-xe-micro-sq
@@ -99,12 +103,13 @@ services:
       test:
         [
           'CMD-SHELL',
-          '/opt/oracle/product/18c/dbhomeXE/bin/sqlplus -s secretsysuser/secretpassword@oracle/XE as SYSDEFAULT <<<
-          "SELECT 13376411 FROM DUAL; exit;" | grep "13376411";',
+          '/opt/oracle/product/18c/dbhomeXE/bin/sqlplus / as SYSDBA <<< "SELECT 13376411 FROM DUAL; exit;" | grep
+          "13376411";',
         ]
       interval: 10s
       timeout: 5s
       retries: 5
+      start-period: 10s
 
 volumes:
   mysql_data:
