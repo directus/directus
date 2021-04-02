@@ -1,8 +1,11 @@
-import { AbstractServiceOptions, Accountability, Relation, SchemaOverview } from '../types';
 import xliff from 'xliff';
+import { omit } from 'lodash';
 import { InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
+import { AbstractServiceOptions, Accountability, Relation, SchemaOverview } from '../types';
 import { FieldsService } from './fields';
 import { ItemsService } from './items';
+
+const systemFields = ['id', 'status', 'sort', 'user_created', 'date_created', 'user_updated', 'date_updated'];
 
 export type XliffServiceOptions = AbstractServiceOptions & {
 	language: string;
@@ -78,13 +81,9 @@ export class XliffService {
 			translationItems.forEach((item: any) => {
 				// removing system and key fields from output
 				const translatableData = this.cleanupEmptyFields(
-					this.removeFields(
-						this.removeSystemFields(item),
-						translationsKeyField,
-						tranlsationsExternalKey,
-						translationsParentField
-					)
+					omit(item, [...systemFields, translationsKeyField, tranlsationsExternalKey, translationsParentField])
 				);
+
 				// populating output object with translations data
 				Object.keys(translatableData).forEach((key) => {
 					(resources as any)[`${item[translationsParentField]}.${key}`] = {
@@ -96,24 +95,11 @@ export class XliffService {
 		return resources;
 	}
 
-	// removes system fields from the passed item object
-	private removeSystemFields(item: any) {
-		const { id, status, sort, user_created, date_created, user_updated, date_updated, ...rest } = item;
-		return rest;
-	}
-
-	// removes specific fields from the passed item object
-	private removeFields(item: any, ...fields: string[]) {
-		return fields.reduce((acc: any, val: string) => {
-			const { [val]: removed, ...rest } = acc;
-			return rest;
-		}, item);
-	}
-
 	// replaces null/undefined values with empty strings
 	private cleanupEmptyFields(item: any) {
 		Object.keys(item).forEach((key) => {
-			if (!item[key]) item[key] = '';
+			// '== null' checks for both null and undefined
+			if (item[key] == null) item[key] = '';
 		});
 		return item;
 	}
