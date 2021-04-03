@@ -1,4 +1,11 @@
 import Listr from 'listr';
+import { Knex } from 'knex';
+import Dockerode from 'dockerode';
+
+declare module global {
+	let __containers__: Dockerode.Container[];
+	let __databases__: Knex[];
+}
 
 export default async () => {
 	console.log('\n');
@@ -11,7 +18,7 @@ export default async () => {
 					[
 						{
 							title: 'Postgres',
-							task: async () => await global.__databases__[0].destroy(),
+							task: async () => await global.__databases__[0]!.destroy(),
 						},
 					],
 					{ concurrent: true }

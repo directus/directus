@@ -1,9 +1,14 @@
 import Dockerode, { ContainerSpec } from 'dockerode';
-import knex from 'knex';
+import knex, { Knex } from 'knex';
 import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
 import Listr from 'listr';
+import { getDBsToTest } from './utils/get-dbs-to-test';
+import config from '../config';
 
-// const generateId = customAlphabet('abcdefghijklmnopqrstuvwxyz', 6);
+declare module global {
+	let __containers__: Dockerode.Container[];
+	let __databases__: Knex[];
+}
 
 const docker = new Dockerode();
 
@@ -14,6 +19,10 @@ export default async () => {
 
 	global.__containers__ = [];
 	global.__databases__ = [];
+
+	const vendors = getDBsToTest();
+
+	console.log(vendors, config);
 
 	await new Listr([
 		{
@@ -85,7 +94,7 @@ export default async () => {
 						{
 							title: 'Postgres',
 							task: async () => {
-								await global.__containers__[0].start();
+								await global.__containers__[0]!.start();
 							},
 						},
 					],
@@ -125,7 +134,7 @@ export default async () => {
 					[
 						{
 							title: 'Postgres',
-							task: async () => await awaitDatabaseConnection(global.__databases__[0]),
+							task: async () => await awaitDatabaseConnection(global.__databases__[0]!),
 						},
 					],
 					{ concurrent: true }
@@ -139,7 +148,7 @@ export default async () => {
 						{
 							title: 'Postgres',
 							task: async () => {
-								await global.__containers__[1].start();
+								await global.__containers__[1]!.start();
 							},
 						},
 					],
