@@ -1,9 +1,9 @@
 import { Knex } from 'knex';
 import axios from 'axios';
 
-export async function awaitDatabaseConnection(database: Knex, currentAttempt: number = 0) {
+export async function awaitDatabaseConnection(database: Knex, checkSQL: string, currentAttempt: number = 0) {
 	try {
-		await database.select(1);
+		await database.raw(checkSQL);
 	} catch {
 		if (currentAttempt === 10) {
 			throw new Error('Couldnt connect to DB');
@@ -11,7 +11,7 @@ export async function awaitDatabaseConnection(database: Knex, currentAttempt: nu
 
 		return new Promise((resolve) => {
 			setTimeout(async () => {
-				await awaitDatabaseConnection(database, currentAttempt + 1);
+				await awaitDatabaseConnection(database, checkSQL, currentAttempt + 1);
 				resolve(null);
 			}, 5000);
 		});

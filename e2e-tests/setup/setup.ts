@@ -4,10 +4,13 @@ import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-
 import Listr from 'listr';
 import { getDBsToTest } from './utils/get-dbs-to-test';
 import config from '../config';
+import globby from 'globby';
+import path from 'path';
 
 declare module global {
-	let __containers__: Dockerode.Container[];
-	let __databases__: Knex[];
+	let databaseContainers: { vendor: string; container: Dockerode.Container }[];
+	let directusContainers: { vendor: string; container: Dockerode.Container }[];
+	let knexInstances: { vendor: string; knex: Knex }[];
 }
 
 const docker = new Dockerode();
@@ -15,149 +18,215 @@ const docker = new Dockerode();
 export default async () => {
 	console.log('\n\n');
 
-	console.log(`👮‍♀️ Start testing!\n`);
+	console.log(`👮‍♀️ Starting tests!\n`);
 
-	global.__containers__ = [];
-	global.__databases__ = [];
+	global.databaseContainers = [];
+	global.directusContainers = [];
+	global.knexInstances = [];
 
 	const vendors = getDBsToTest();
 
-	console.log(vendors, config);
+	const NODE_VERSION = process.env.TEST_NODE_VERSION || '15-alpine';
 
 	await new Listr([
 		{
-			title: 'Create Docker containers',
-			task: () =>
-				new Listr([
+			title: 'Create Directus Docker Image',
+			task: async () => {
+				const result = await globby(['**/*', '!node_modules', '!**/node_modules', '!**/src'], {
+					cwd: path.resolve(__dirname, '..', '..'),
+					gitignore: true,
+				});
+
+				const stream = await docker.buildImage(
 					{
-						title: 'Postgres',
-						task: () => {
-							return new Listr([
-								{
-									title: 'Database',
-									task: async () => {
-										const container = await docker.createContainer({
-											name: 'directus-test-postgres',
-											Image: 'postgres:12-alpine',
-											Hostname: 'directus-test-postgres',
-											Env: ['POSTGRES_PASSWORD=secret', 'POSTGRES_DB=directus'],
-											HostConfig: {
-												PortBindings: {
-													'5432/tcp': [{ HostPort: '5100' }],
-												},
-											},
-										} as ContainerSpec);
-
-										global.__containers__.push(container);
-									},
-								},
-								{
-									title: 'Directus',
-									task: async () => {
-										const directus = await docker.createContainer({
-											name: 'directus-directus-directus',
-											Image: 'directus-e2e',
-											Env: [
-												'DB_CLIENT=pg',
-												'DB_HOST=directus-test-postgres',
-												'DB_USER=postgres',
-												'DB_PASSWORD=secret',
-												'DB_PORT=5432',
-												'DB_DATABASE=directus',
-												'ADMIN_EMAIL=admin@example.com',
-												'ADMIN_PASSWORD=password',
-												'KEY=directus-test',
-												'SECRET=directus-test',
-												'TELEMETRY=false',
-											],
-											HostConfig: {
-												Links: ['directus-test-postgres:directus-test-postgres'],
-												PortBindings: {
-													'8055/tcp': [{ HostPort: '6100' }],
-												},
-											},
-										} as ContainerSpec);
-
-										global.__containers__.push(directus);
-									},
-								},
-							]);
-						},
+						context: path.resolve(__dirname, '..', '..'),
+						src: ['Dockerfile', ...result],
 					},
-				]),
+					{ t: 'directus-test-image', buildargs: { NODE_VERSION } }
+				);
+
+				await new Promise((resolve, reject) => {
+					docker.modem.followProgress(stream, (err: Error, res: any) => {
+						if (err) {
+							console.log(JSON.stringify(err, null, 2));
+							reject(err);
+						} else {
+							console.log(JSON.stringify(res, null, 2));
+							resolve(res);
+						}
+					});
+				});
+			},
+		},
+		{
+			title: 'Pulling Required Images',
+			task: () => {
+				return new Listr(
+					vendors.map((vendor) => {
+						return {
+							title: config.names[vendor]!,
+							task: async () => {
+								const image =
+									config.containerConfig[vendor]! && (config.containerConfig[vendor]! as Dockerode.ContainerSpec).Image;
+
+								console.log('Pulling ' + image);
+
+								if (!image) return;
+
+								const stream = await docker.pull(image);
+
+								await new Promise((resolve, reject) => {
+									docker.modem.followProgress(stream, (err: Error, res: any) => {
+										if (err) {
+											reject(err);
+										} else {
+											resolve(res);
+										}
+									});
+								});
+							},
+						};
+					}),
+					{ concurrent: true }
+				);
+			},
+		},
+		{
+			title: 'Create Docker containers',
+			task: () => {
+				return new Listr(
+					vendors.map((vendor) => {
+						return {
+							title: config.names[vendor]!,
+							task: () => {
+								return new Listr([
+									{
+										title: 'Database',
+										task: async () => {
+											if (!config.containerConfig[vendor] || config.containerConfig[vendor] === false) return;
+											const container = await docker.createContainer(config.containerConfig[vendor]! as ContainerSpec);
+											global.databaseContainers.push({
+												vendor,
+												container,
+											});
+										},
+									},
+									{
+										title: 'Directus',
+										task: async () => {
+											const container = await docker.createContainer({
+												name: `directus-test-directus-${vendor}-${process.pid}`,
+												Image: 'directus-test-image',
+												Env: [
+													...config.envs[vendor]!,
+													'ADMIN_EMAIL=admin@example.com',
+													'ADMIN_PASSWORD=password',
+													'KEY=directus-test',
+													'SECRET=directus-test',
+													'TELEMETRY=false',
+												],
+												HostConfig: {
+													Links:
+														vendor === 'sqlite3'
+															? undefined
+															: [
+																	`directus-test-database-${vendor}-${process.pid}:directus-test-database-${vendor}-${process.pid}`,
+															  ],
+													PortBindings: {
+														'8055/tcp': [{ HostPort: String(config.ports[vendor]!) }],
+													},
+												},
+											} as ContainerSpec);
+
+											global.directusContainers.push({
+												vendor,
+												container,
+											});
+										},
+									},
+								]);
+							},
+						};
+					}),
+					{ concurrent: true }
+				);
+			},
 		},
 		{
 			title: 'Start Database Docker containers',
-			task: () =>
-				new Listr(
-					[
-						{
-							title: 'Postgres',
-							task: async () => {
-								await global.__containers__[0]!.start();
-							},
-						},
-					],
+			task: () => {
+				return new Listr(
+					global.databaseContainers.map(({ vendor, container }) => {
+						return {
+							title: config.names[vendor]!,
+							task: async () => await container.start(),
+						};
+					}),
 					{ concurrent: true }
-				),
+				);
+			},
 		},
 		{
 			title: 'Create Knex instances',
-			task: () =>
-				new Listr(
-					[
-						{
-							title: 'Postgres',
+			task: () => {
+				return new Listr(
+					vendors.map((vendor) => {
+						return {
+							title: config.names[vendor]!,
 							task: () => {
-								global.__databases__.push(
-									knex({
-										client: 'pg',
-										connection: {
-											host: 'localhost',
-											port: 5100,
-											database: 'directus',
-											user: 'postgres',
-											password: 'secret',
-										},
-									})
-								);
+								global.knexInstances.push({ vendor, knex: knex(config.knexConfig[vendor]!) });
 							},
-						},
-					],
+						};
+					}),
 					{ concurrent: true }
-				),
+				);
+			},
 		},
 		{
 			title: 'Wait for databases to be ready',
-			task: async () =>
-				new Listr(
-					[
-						{
-							title: 'Postgres',
-							task: async () => await awaitDatabaseConnection(global.__databases__[0]!),
-						},
-					],
+			task: async () => {
+				return new Listr(
+					global.knexInstances.map(({ vendor, knex }) => {
+						return {
+							title: config.names[vendor]!,
+							/**
+							 * @TODO
+							 * Figure out why this doesn't work anymore
+							 */
+							task: async () => await awaitDatabaseConnection(knex, config.knexConfig[vendor]!.waitTestSQL),
+						};
+					}),
 					{ concurrent: true }
-				),
+				);
+			},
 		},
 		{
 			title: 'Start Directus Docker containers',
-			task: () =>
-				new Listr(
-					[
-						{
-							title: 'Postgres',
-							task: async () => {
-								await global.__containers__[1]!.start();
-							},
-						},
-					],
+			task: () => {
+				return new Listr(
+					global.directusContainers.map(({ vendor, container }) => {
+						return {
+							title: config.names[vendor]!,
+							task: async () => await container.start(),
+						};
+					}),
 					{ concurrent: true }
-				),
+				);
+			},
 		},
 		{
 			title: 'Wait for Directus to be ready',
-			task: async () => await awaitDirectusConnection(),
+			task: async () => {
+				return new Listr(
+					vendors.map((vendor) => {
+						return {
+							title: config.names[vendor]!,
+							task: async () => await awaitDirectusConnection(config.ports[vendor]!),
+						};
+					}),
+					{ concurrent: true }
+				);
+			},
 		},
 	]).run();
 

@@ -1,15 +1,12 @@
 # NOTE: Testing Only. DO NOT use this in production
 
-# Build this image from the root folder:
-# docker build -t directus-e2e -f e2e-tests/Dockerfile .
-
-ARG NODE_VERSION=latest
+ARG NODE_VERSION=15-alpine
 
 FROM node:${NODE_VERSION}
 
 WORKDIR /directus
 
-COPY package*.json .
+COPY package*.json ./
 COPY api/package.json api/
 COPY api/cli.js api/
 COPY app/package.json app/

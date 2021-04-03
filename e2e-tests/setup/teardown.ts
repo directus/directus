@@ -1,58 +1,106 @@
 import Listr from 'listr';
 import { Knex } from 'knex';
 import Dockerode from 'dockerode';
+import { getDBsToTest } from './utils/get-dbs-to-test';
+import config from '../config';
 
 declare module global {
-	let __containers__: Dockerode.Container[];
-	let __databases__: Knex[];
+	let databaseContainers: { vendor: string; container: Dockerode.Container }[];
+	let directusContainers: { vendor: string; container: Dockerode.Container }[];
+	let knexInstances: { vendor: string; knex: Knex }[];
 }
 
 export default async () => {
+	const vendors = getDBsToTest();
+
 	console.log('\n');
 
 	await new Listr([
 		{
 			title: 'Close database connections',
-			task: () =>
-				new Listr(
-					[
-						{
-							title: 'Postgres',
-							task: async () => await global.__databases__[0]!.destroy(),
-						},
-					],
+			task: () => {
+				return new Listr(
+					global.knexInstances.map(({ vendor, knex }) => {
+						return {
+							title: config.names[vendor]!,
+							task: async () => await knex.destroy(),
+						};
+					}),
 					{ concurrent: true }
-				),
+				);
+			},
 		},
 		{
 			title: 'Stop Docker containers',
-			task: () =>
-				new Listr(
-					[
-						{
-							title: 'Postgres',
-							task: async () => await Promise.all(global.__containers__.map((container) => container.stop())),
-						},
-					],
+			task: () => {
+				return new Listr(
+					vendors.map((vendor) => {
+						return {
+							title: config.names[vendor]!,
+							task: () => {
+								return new Listr(
+									[
+										{
+											title: 'Database',
+											task: async () =>
+												await global.databaseContainers
+													.find((containerInfo) => containerInfo.vendor === vendor)
+													?.container.stop(),
+										},
+										{
+											title: 'Directus',
+											task: async () =>
+												await global.directusContainers
+													.find((containerInfo) => containerInfo.vendor === vendor)
+													?.container.stop(),
+										},
+									],
+									{ concurrent: true }
+								);
+							},
+						};
+					}),
 					{ concurrent: true }
-				),
+				);
+			},
 		},
 		{
 			title: 'Remove Docker containers',
-			task: () =>
-				new Listr(
-					[
-						{
-							title: 'Postgres',
-							task: async () => await Promise.all(global.__containers__.map((container) => container.remove())),
-						},
-					],
+			task: () => {
+				return new Listr(
+					vendors.map((vendor) => {
+						return {
+							title: config.names[vendor]!,
+							task: () => {
+								return new Listr(
+									[
+										{
+											title: 'Database',
+											task: async () =>
+												await global.databaseContainers
+													.find((containerInfo) => containerInfo.vendor === vendor)
+													?.container.remove(),
+										},
+										{
+											title: 'Directus',
+											task: async () =>
+												await global.directusContainers
+													.find((containerInfo) => containerInfo.vendor === vendor)
+													?.container.remove(),
+										},
+									],
+									{ concurrent: true }
+								);
+							},
+						};
+					}),
 					{ concurrent: true }
-				),
+				);
+			},
 		},
 	]).run();
 
 	console.log('\n');
 
-	console.log(`👮‍♀️ Done testing!\n`);
+	console.log(`👮‍♀️ Tests complete!\n`);
 };

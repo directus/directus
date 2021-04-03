@@ -12,6 +12,7 @@ export type Config = {
 	knexConfig: Record<Vendor, Knex.Config & { waitTestSQL: string }>;
 	ports: Record<Vendor, number>;
 	names: Record<Vendor, string>;
+	envs: Record<Vendor, string[]>;
 };
 
 export const processID = generateID();
@@ -93,7 +94,7 @@ const config: Config = {
 			waitTestSQL: 'SELECT 1',
 		},
 		mssql: {
-			client: 'tedious',
+			client: 'mssql',
 			connection: {
 				host: `directus-test-database-mssql-${process.pid}`,
 				port: 1433,
@@ -108,7 +109,7 @@ const config: Config = {
 			connection: {
 				user: 'secretsysuser',
 				password: 'secretpassword',
-				connectString: `localhost:5104/XE`,
+				connectString: `directus-test-database-mssql-${process.pid}:1521/XE`,
 			},
 			waitTestSQL: 'SELECT 1 FROM DUAL',
 		},
@@ -135,6 +136,47 @@ const config: Config = {
 		mssql: 'MS SQL Server',
 		oracle: 'OracleDB',
 		sqlite3: 'SQLite 3',
+	},
+	envs: {
+		postgres: [
+			'DB_CLIENT=pg',
+			`DB_HOST=directus-test-database-postgres-${process.pid}`,
+			'DB_USER=postgres',
+			'DB_PASSWORD=secret',
+			'DB_PORT=5432',
+			'DB_DATABASE=directus',
+		],
+		mysql: [
+			'DB_CLIENT=mysql',
+			`DB_HOST=directus-test-database-mysql-${process.pid}`,
+			'DB_PORT=3306',
+			'DB_USER=root',
+			'DB_PASSWORD=secret',
+			'DB_DATABASE=directus',
+		],
+		maria: [
+			'DB_CLIENT=mysql',
+			`DB_HOST=directus-test-database-maria-${process.pid}`,
+			'DB_PORT=3306',
+			'DB_USER=root',
+			'DB_PASSWORD=secret',
+			'DB_DATABASE=directus',
+		],
+		mssql: [
+			'DB_CLIENT=mssql',
+			`DB_HOST=directus-test-database-mssql-${process.pid}`,
+			'DB_PORT=3306',
+			'DB_USER=root',
+			'DB_PASSWORD=secret',
+			'DB_DATABASE=directus',
+		],
+		oracle: [
+			'DB_CLIENT=oracledb',
+			'DB_USER=secretsysuser',
+			'DB_PASSWORD=secretpassword',
+			`DB_CONNECT_STRING=directus-test-database-mssql-${process.pid}:1521/XE`,
+		],
+		sqlite3: ['DB_CLIENT=sqlite3', 'DB_FILENAME=./data.db'],
 	},
 };
 
