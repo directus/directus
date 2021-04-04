@@ -10,6 +10,7 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { PayloadService } from '../services/payload';
 import getDefaultValue from '../utils/get-default-value';
 import cache from '../cache';
+import emitter, { emitAsyncSafe } from '../emitter';
 import SchemaInspector from '@directus/schema';
 import { toArray } from '../utils/to-array';
 import env from '../env';
@@ -296,6 +297,19 @@ export class FieldsService {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
+		const eventScope = 'fields';
+
+		await emitter.emitAsync(`${eventScope}.delete.before`, {
+			event: `${eventScope}.delete.before`,
+			accountability: this.accountability,
+			collection: collection,
+			item: field,
+			action: 'delete',
+			payload: null,
+			schema: this.schema,
+			database: this.knex,
+		});
+
 		await this.knex('directus_fields').delete().where({ collection, field });
 
 		if (this.schema.collections[collection] && field in this.schema.collections[collection].fields) {
@@ -329,6 +343,17 @@ export class FieldsService {
 		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
+
+		emitAsyncSafe(`${eventScope}.delete`, {
+			event: `${eventScope}.delete`,
+			accountability: this.accountability,
+			collection: collection,
+			item: field,
+			action: 'delete',
+			payload: null,
+			schema: this.schema,
+			database: this.knex,
+		});
 	}
 
 	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null) {
