@@ -72,6 +72,8 @@ validationError:
   contains: يجب أن تحتوي القيمة على {substring}
   ncontains: يجب أن لا تحتوي القيمة على {substring}
   gt: يجب أن تكون القيمة أكبر من {valid}
+  gte: يجب أن تكون القيمة أكبر من أو تساوي {valid}
+  lt: يجب أن تكون القيمة أقل من {valid}
   empty: يجب أن تكون القيمة فارغة
   nempty: لا يمكن أن تكون القيمة فارغة
 field_file: ملف واحد
@@ -83,6 +85,9 @@ camera: الكاميرا
 create_field: إنشاء حقل
 hidden_field: حقل مخفي
 hidden_on_detail: مخفي في التفاصيل
+key: مفتاح
+bigInteger: عدد صحيح كبير
+boolean: نعم/لا
 date: التاريخ
 decimal: عشري
 float: عشري
@@ -488,6 +493,8 @@ interfaces:
     wysiwyg: ما تراه هو ما تحصل عليه
     toolbar: شريط الأدوات
 displays:
+  boolean:
+    boolean: نعم/لا
   collection:
     collection: المجموعة
   color:
