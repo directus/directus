@@ -1,6 +1,14 @@
 import { Knex } from 'knex';
 import database from '../database';
-import { AbstractServiceOptions, Accountability, Query, SchemaOverview, GraphQLParams, PrimaryKey } from '../types';
+import {
+	AbstractServiceOptions,
+	Accountability,
+	Query,
+	SchemaOverview,
+	GraphQLParams,
+	PrimaryKey,
+	Action,
+} from '../types';
 import {
 	GraphQLString,
 	GraphQLList,
@@ -32,6 +40,7 @@ import {
 	GraphQLEnumType,
 	GraphQLScalarType,
 } from 'graphql';
+import { listExtensions } from '../extensions';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
 import { ItemsService } from './items';
@@ -88,13 +97,8 @@ import {
 /**
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
  */
-const SYSTEM_DENY_LIST = [
-	'directus_activity',
-	'directus_collections',
-	'directus_fields',
-	'directus_migrations',
-	'directus_sessions',
-];
+const SYSTEM_DENY_LIST = ['directus_collections', 'directus_fields', 'directus_migrations', 'directus_sessions'];
+const READ_ONLY = ['directus_activity'];
 
 export class GraphQLService {
 	accountability: Accountability | null;
@@ -194,6 +198,15 @@ export class GraphQLService {
 			return true;
 		};
 
+		if (this.scope === 'system') {
+			this.injectSystemResolvers(schemaComposer, {
+				CreateCollectionTypes,
+				ReadCollectionTypes,
+				UpdateCollectionTypes,
+				DeleteCollectionTypes,
+			});
+		}
+
 		if (Object.keys(schema.read.collections).length > 0) {
 			schemaComposer.Query.addFields(
 				Object.values(schema.read.collections)
@@ -219,6 +232,7 @@ export class GraphQLService {
 				Object.values(schema.create.collections)
 					.filter((collection) => collection.collection in CreateCollectionTypes && collection.singleton === false)
 					.filter(scopeFilter)
+					.filter((collection) => READ_ONLY.includes(collection.collection) === false)
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
 						acc[`create_${collectionName}_items`] = CreateCollectionTypes[collection.collection].getResolver(
@@ -237,6 +251,7 @@ export class GraphQLService {
 				Object.values(schema.update.collections)
 					.filter((collection) => collection.collection in UpdateCollectionTypes)
 					.filter(scopeFilter)
+					.filter((collection) => READ_ONLY.includes(collection.collection) === false)
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
 
@@ -264,6 +279,7 @@ export class GraphQLService {
 				Object.values(schema.delete.collections)
 					.filter((collection) => collection.singleton === false)
 					.filter(scopeFilter)
+					.filter((collection) => READ_ONLY.includes(collection.collection) === false)
 					.reduce((acc, collection) => {
 						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
 
@@ -278,10 +294,6 @@ export class GraphQLService {
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
 			);
-		}
-
-		if (this.scope === 'system') {
-			this.injectSystemMutations(schemaComposer);
 		}
 
 		if (type === 'sdl') {
@@ -1052,7 +1064,20 @@ export class GraphQLService {
 		).filter((s) => s) as SelectionNode[];
 	}
 
-	injectSystemMutations(schemaComposer: SchemaComposer<GraphQLParams['contextValue']>) {
+	injectSystemResolvers(
+		schemaComposer: SchemaComposer<GraphQLParams['contextValue']>,
+		{
+			CreateCollectionTypes,
+			ReadCollectionTypes,
+			UpdateCollectionTypes,
+			DeleteCollectionTypes,
+		}: {
+			CreateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
+			ReadCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
+			UpdateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
+			DeleteCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
+		}
+	) {
 		const AuthTokens = schemaComposer.createObjectTC({
 			name: 'auth_tokens',
 			fields: {
@@ -1070,7 +1095,98 @@ export class GraphQLService {
 			},
 		});
 
+		schemaComposer.Query.addFields({
+			extensions: {
+				type: schemaComposer.createObjectTC({
+					name: 'extensions',
+					fields: {
+						interfaces: new GraphQLList(GraphQLString),
+						displays: new GraphQLList(GraphQLString),
+						layouts: new GraphQLList(GraphQLString),
+						modules: new GraphQLList(GraphQLString),
+					},
+				}),
+				resolve: async () => ({
+					interfaces: await listExtensions('interfaces'),
+					displays: await listExtensions('displays'),
+					layouts: await listExtensions('layouts'),
+					modules: await listExtensions('modules'),
+				}),
+			},
+		});
+
 		schemaComposer.Mutation.addFields({
+			create_comment: {
+				type: ReadCollectionTypes['directus_activity'],
+				args: {
+					collection: GraphQLNonNull(GraphQLString),
+					item: GraphQLNonNull(GraphQLID),
+					comment: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args, __, info) => {
+					const service = new ActivityService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					const primaryKey = await service.create({
+						...args,
+						action: Action.COMMENT,
+						user: this.accountability?.user,
+						ip: this.accountability?.ip,
+						user_agent: this.accountability?.userAgent,
+					});
+
+					const selections = this.replaceFragmentsInSelections(
+						info.fieldNodes[0]?.selectionSet?.selections,
+						info.fragments
+					);
+					const query = this.getQuery(args, selections || [], info.variableValues);
+					return await service.readByKey(primaryKey, query);
+				},
+			},
+
+			update_comment: {
+				type: ReadCollectionTypes['directus_activity'],
+				args: {
+					id: GraphQLNonNull(GraphQLID),
+					comment: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args, __, info) => {
+					const service = new ActivityService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					const primaryKey = await service.update({ comment: args.comment }, args.id);
+
+					const selections = this.replaceFragmentsInSelections(
+						info.fieldNodes[0]?.selectionSet?.selections,
+						info.fragments
+					);
+					const query = this.getQuery(args, selections || [], info.variableValues);
+
+					return await service.readByKey(primaryKey, query);
+				},
+			},
+
+			delete_comment: {
+				type: ReadCollectionTypes['directus_activity'],
+				args: {
+					id: GraphQLNonNull(GraphQLID),
+				},
+				resolve: async (_, args) => {
+					const service = new ActivityService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					await service.delete(args.id);
+
+					return { id: args.id };
+				},
+			},
+
 			auth_login: {
 				type: AuthTokens,
 				args: {
@@ -1228,6 +1344,30 @@ export class GraphQLService {
 
 					const service = new UsersService({ accountability, schema: this.schema });
 					await service.resetPassword(args.token, args.password);
+				},
+			},
+
+			import_file: {
+				type: ReadCollectionTypes['directus_files'],
+				args: {
+					url: GraphQLNonNull(GraphQLString),
+					data: toInputObjectType(CreateCollectionTypes['directus_files']).setTypeName('create_directus_files_input'),
+				},
+				resolve: async (_, args, __, info) => {
+					const service = new FilesService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					const primaryKey = await service.import(args.url, args.data);
+
+					const selections = this.replaceFragmentsInSelections(
+						info.fieldNodes[0]?.selectionSet?.selections,
+						info.fragments
+					);
+					const query = this.getQuery(args, selections || [], info.variableValues);
+
+					return await service.readByKey(primaryKey, query);
 				},
 			},
 		});
