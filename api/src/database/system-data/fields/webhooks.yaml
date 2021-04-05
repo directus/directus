@@ -67,7 +67,9 @@ fields:
     options:
       icon: api
       title: Triggers
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: actions

@@ -50,7 +50,9 @@ fields:
     options:
       icon: insert_drive_file
       title: File Naming
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: filename_disk
