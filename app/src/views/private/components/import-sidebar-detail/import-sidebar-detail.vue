@@ -9,27 +9,27 @@
 				<p class="type-label">{{ $t('upload_file') }}</p>
 				<file-select @change="onSelectFile" @load="onFileLoad" />
 			</div>
-			<div class="field full" v-show="!useFileLanguage">
+			<div class="field full" v-show="!useFileLanguage && hasMoreThanOneTranslationFields">
 				<p class="type-label">{{ $t('target_translation_field') }}</p>
 				<translation-field-select
-				@input="onSelectTranslationField"
-				v-show="hasMoreThanOneTranslationFields"
-				:collection="collection.collection"
-				:value="translationField" />
+					@input="onSelectTranslationField"
+					:collection="collection.collection"
+					:value="translationField"
+				/>
 			</div>
 			<div class="field full">
 				<p class="type-label">{{ $t('target_language') }}</p>
 				<language-select
-				@input="onSelectLanguage"
-				v-show="!useFileLanguage"
-				:collection="collection.collection"
-				:value="language"
-				:field="'translations'"
+					@input="onSelectLanguage"
+					v-show="!useFileLanguage"
+					:collection="collection.collection"
+					:value="language"
+					:field="'translations'"
 				/>
 				<v-checkbox v-model="useFileLanguage" :label="$t('use_language_from_file')" />
 			</div>
 			<div class="field full">
-				<v-button full-width @click="importData" :disabled="file === null && !language && !useFileLanguage">
+				<v-button full-width @click="importData" :disabled="file === null || (!language && !useFileLanguage)">
 					{{ $t('import_collection', { collection: collection.name }) }}
 				</v-button>
 			</div>
@@ -44,7 +44,6 @@ import { useFieldsStore } from '@/stores/';
 import { FileSelect } from '../file-select';
 import { LanguageSelect } from '../language-select';
 import { TranslationFieldSelect } from '../translation-field-select';
-
 
 export default defineComponent({
 	components: {
@@ -99,6 +98,7 @@ export default defineComponent({
 			// switching between collections
 			this.file = null;
 			this.clearFileSelection();
+			this.language = null;
 		},
 	},
 	setup(props) {
@@ -111,7 +111,7 @@ export default defineComponent({
 
 		return {
 			format,
-		 	file,
+			file,
 			language,
 			translationField,
 			useFileLanguage,
@@ -120,7 +120,7 @@ export default defineComponent({
 			onSelectLanguage,
 			onSelectTranslationField,
 			onFileLoad,
-			clearFileSelection
+			clearFileSelection,
 		};
 
 		function importData() {}
@@ -133,7 +133,7 @@ export default defineComponent({
 			file.value = selection;
 		}
 
-		function onSelectTranslationField(selection: any[]){
+		function onSelectTranslationField(selection: any[]) {
 			translationField.value = selection;
 		}
 

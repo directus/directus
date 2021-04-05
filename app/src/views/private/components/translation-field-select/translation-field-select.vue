@@ -1,6 +1,6 @@
 <template>
 	<v-select @input="$listeners.input" :value="value" :items="items" :disabled="disabled">
-		  <template #selected-option="{ text }">{{ text }}</template>
+		<template #selected-option="{ text }">{{ text }}</template>
 	</v-select>
 </template>
 
@@ -11,7 +11,7 @@ import { useFieldsStore } from '@/stores/';
 export default defineComponent({
 	props: {
 		value: {
-			type: String
+			type: String,
 		},
 		disabled: {
 			type: Boolean,
@@ -22,16 +22,21 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	computed: {
+		items(): any[] {
+			const fieldsStore = useFieldsStore();
+			const fields = fieldsStore
+				.getFieldsForCollectionAlphabetical(this.collection)
+				.filter((field: any) => field.type === 'translations');
+			return fields.map((field: any) => ({
+				text: field.name,
+				value: field.field,
+			}));
+		},
+	},
 	setup(props) {
-		const items = ref<any[]>([]);
-		const fieldsStore = useFieldsStore();
-    const fields = fieldsStore.getFieldsForCollectionAlphabetical(props.collection)
-			.filter((field: any) => field.type === 'translations');
-		items.value = fields.map((field: any) => ({
-			text: field.name,
-			value: field.field
-		}));
-		return { items };
+		const collection = props.collection;
+		return { collection };
 	},
 });
 </script>
