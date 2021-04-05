@@ -1,7 +1,6 @@
 # NOTE: Testing Only. DO NOT use this in production
 
 ARG NODE_VERSION=15-alpine
-ARG VENDOR
 
 FROM node:${NODE_VERSION}
 
