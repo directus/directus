@@ -113,7 +113,7 @@
       name: Field Transforms
     - to: '/reference/filter-rules'
       name: Filter Rules
-    - to: '/reference/sdk-js'
+    - to: '/reference/sdk'
       name: JavaScript SDK
 
 - name: API Reference

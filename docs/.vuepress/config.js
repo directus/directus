@@ -340,7 +340,7 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/reference/sdk-js',
+						path: '/reference/sdk',
 						title: 'JavaScript SDK',
 					},
 					{

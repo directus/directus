@@ -10,7 +10,7 @@ add_field: Add Field
 role_name: Role Name
 db_only_click_to_configure: 'Database Only: Click to Configure '
 show_archived_items: Show Archived Items
-edited: Edited
+edited: Value Edited
 required: Required
 required_for_app_access: Required for App Access
 requires_value: Requires value
