@@ -63,6 +63,12 @@ While you can not change the **Key** of a field via Directus (as of now), you ca
 6. Enter a **Translation**
 7. Click the **Save** button
 
+::: tip Special Casing
+
+If you are trying to update the specific casing (uppercase/lowercase) for a word (eg: `Dna` to `DNA`) you will want to add the edge-case to the [Format Title package](https://github.com/directus/directus/tree/main/packages/format-title/src). If you feel the case passes our [80/20 rule](https://docs.directus.io/contributing/introduction/#feature-requests) you should submit a Pull Request to the codebase, otherwise you can update this in your instance.
+
+:::
+
 ## Duplicating a Field
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
