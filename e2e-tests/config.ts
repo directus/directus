@@ -1,6 +1,6 @@
 import Dockerode from 'dockerode';
 import { Knex } from 'knex';
-import { allVendors } from './setup/utils/get-dbs-to-test';
+import { allVendors } from './get-dbs-to-test';
 import { customAlphabet } from 'nanoid';
 
 const generateID = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
@@ -8,7 +8,10 @@ const generateID = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 type Vendor = typeof allVendors[number];
 
 export type Config = {
-	containerConfig: Record<Vendor, (Dockerode.ContainerSpec & { name: string }) | false>;
+	containerConfig: Record<
+		Vendor,
+		(Dockerode.ContainerSpec & Dockerode.ContainerCreateOptions & { name: string }) | false
+	>;
 	knexConfig: Record<Vendor, Knex.Config & { waitTestSQL: string }>;
 	ports: Record<Vendor, number>;
 	names: Record<Vendor, string>;
@@ -24,6 +27,11 @@ const config: Config = {
 			Image: 'postgres:12-alpine',
 			Hostname: `directus-test-database-postgres-${process.pid}`,
 			Env: ['POSTGRES_PASSWORD=secret', 'POSTGRES_DB=directus'],
+			HostConfig: {
+				PortBindings: {
+					'5432/tcp': [{ HostPort: '6000' }],
+				},
+			},
 		},
 		mysql: {
 			name: `directus-test-database-mysql-${process.pid}`,
@@ -31,6 +39,11 @@ const config: Config = {
 			Command: ['--default-authentication-plugin=mysql_native_password'],
 			Hostname: `directus-test-database-mysql-${process.pid}`,
 			Env: ['MYSQL_ROOT_PASSWORD=secret', 'MYSQL_DATABASE=directus'],
+			HostConfig: {
+				PortBindings: {
+					'3306/tcp': [{ HostPort: '6001' }],
+				},
+			},
 		},
 		maria: {
 			name: `directus-test-database-maria-${process.pid}`,
@@ -38,6 +51,11 @@ const config: Config = {
 			Command: ['--default-authentication-plugin=maria_native_password'],
 			Hostname: `directus-test-database-maria-${process.pid}`,
 			Env: ['MYSQL_ROOT_PASSWORD=secret', 'MYSQL_DATABASE=directus'],
+			HostConfig: {
+				PortBindings: {
+					'3306/tcp': [{ HostPort: '6002' }],
+				},
+			},
 		},
 		mssql: {
 			name: `directus-test-database-mssql-${process.pid}`,
@@ -45,6 +63,11 @@ const config: Config = {
 			Command: ['--default-authentication-plugin=mssql_native_password'],
 			Hostname: `directus-test-database-mssql-${process.pid}`,
 			Env: ['ACCEPT_EULA=Y', 'SA_PASSWORD=Test@123'],
+			HostConfig: {
+				PortBindings: {
+					'1433/tcp': [{ HostPort: '6003' }],
+				},
+			},
 		},
 		oracle: {
 			name: `directus-test-database-oracle-${process.pid}`,
@@ -55,7 +78,11 @@ const config: Config = {
 				'OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m',
 				'ORACLE_ALLOW_REMOTE=true',
 			],
-			// SHM-Size ?
+			HostConfig: {
+				PortBindings: {
+					'1521/tcp': [{ HostPort: '6004' }],
+				},
+			},
 		},
 		sqlite3: false,
 	},
@@ -63,8 +90,8 @@ const config: Config = {
 		postgres: {
 			client: 'pg',
 			connection: {
-				host: `directus-test-database-postgres-${process.pid}`,
-				port: 5432,
+				host: 'localhost',
+				port: 6000,
 				user: 'postgres',
 				password: 'secret',
 				database: 'directus',
@@ -74,8 +101,8 @@ const config: Config = {
 		mysql: {
 			client: 'mysql',
 			connection: {
-				host: `directus-test-database-mysql-${process.pid}`,
-				port: 3306,
+				host: 'localhost',
+				port: 6001,
 				user: 'root',
 				password: 'secret',
 				database: 'directus',
@@ -85,8 +112,8 @@ const config: Config = {
 		maria: {
 			client: 'mysql',
 			connection: {
-				host: `directus-test-database-maria-${process.pid}`,
-				port: 3306,
+				host: 'localhost',
+				port: 6002,
 				user: 'root',
 				password: 'secret',
 				database: 'directus',
@@ -96,11 +123,11 @@ const config: Config = {
 		mssql: {
 			client: 'mssql',
 			connection: {
-				host: `directus-test-database-mssql-${process.pid}`,
-				port: 1433,
+				host: 'localhost',
+				port: 6003,
 				user: 'sa',
 				password: 'Test@123',
-				database: 'directus',
+				database: 'model',
 			},
 			waitTestSQL: 'SELECT 1',
 		},
@@ -109,7 +136,7 @@ const config: Config = {
 			connection: {
 				user: 'secretsysuser',
 				password: 'secretpassword',
-				connectString: `directus-test-database-mssql-${process.pid}:1521/XE`,
+				connectString: 'localhost:6004/XE',
 			},
 			waitTestSQL: 'SELECT 1 FROM DUAL',
 		},
@@ -168,7 +195,7 @@ const config: Config = {
 			'DB_PORT=3306',
 			'DB_USER=root',
 			'DB_PASSWORD=secret',
-			'DB_DATABASE=directus',
+			'DB_DATABASE=model',
 		],
 		oracle: [
 			'DB_CLIENT=oracledb',

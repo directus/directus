@@ -2,7 +2,7 @@ import Dockerode, { ContainerSpec } from 'dockerode';
 import knex, { Knex } from 'knex';
 import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
 import Listr from 'listr';
-import { getDBsToTest } from './utils/get-dbs-to-test';
+import { getDBsToTest } from '../get-dbs-to-test';
 import config from '../config';
 import globby from 'globby';
 import path from 'path';
@@ -48,10 +48,8 @@ export default async () => {
 				await new Promise((resolve, reject) => {
 					docker.modem.followProgress(stream, (err: Error, res: any) => {
 						if (err) {
-							console.log(JSON.stringify(err, null, 2));
 							reject(err);
 						} else {
-							console.log(JSON.stringify(res, null, 2));
 							resolve(res);
 						}
 					});
@@ -68,8 +66,6 @@ export default async () => {
 							task: async () => {
 								const image =
 									config.containerConfig[vendor]! && (config.containerConfig[vendor]! as Dockerode.ContainerSpec).Image;
-
-								console.log('Pulling ' + image);
 
 								if (!image) return;
 
@@ -189,10 +185,6 @@ export default async () => {
 					global.knexInstances.map(({ vendor, knex }) => {
 						return {
 							title: config.names[vendor]!,
-							/**
-							 * @TODO
-							 * Figure out why this doesn't work anymore
-							 */
 							task: async () => await awaitDatabaseConnection(knex, config.knexConfig[vendor]!.waitTestSQL),
 						};
 					}),

@@ -1,7 +1,7 @@
 import Listr from 'listr';
 import { Knex } from 'knex';
 import Dockerode from 'dockerode';
-import { getDBsToTest } from './utils/get-dbs-to-test';
+import { getDBsToTest } from '../get-dbs-to-test';
 import config from '../config';
 
 declare module global {
