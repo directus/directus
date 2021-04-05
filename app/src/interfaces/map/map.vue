@@ -21,7 +21,9 @@
 			<a class="directus-leaflet-button" @click="locatePosition" :class="{ loading: locationLoading }">
 				<i class="icon">my_location</i>
 			</a>
-			<a class="directus-leaflet-button" @click="registerNewMarker"><i class="icon">add_location_alt</i></a>
+			<a v-show="markers.length < maxMarkers" class="directus-leaflet-button" @click="registerNewMarker">
+				<i class="icon">add_location_alt</i>
+			</a>
 		</div>
 	</div>
 </template>
@@ -93,6 +95,9 @@ export default defineComponent({
 			type: Number,
 			default: 1,
 		},
+		type: {
+			type: String,
+		},
 	},
 	setup(props, { emit, attrs }) {
 		const mapElement = ref<HTMLElement | null>(null);
@@ -135,9 +140,6 @@ export default defineComponent({
 
 				if (newValue) {
 					newValue.forEach((marker) => marker.addTo(mapInstance.value as Map));
-
-					if (newValue.length >= props.maxMarkers) {
-					}
 				}
 			}
 		);
@@ -151,6 +153,7 @@ export default defineComponent({
 			centerMap,
 			locatePosition,
 			locationLoading,
+			markers,
 		};
 
 		function onAddressSelected(coords: any) {
@@ -304,12 +307,17 @@ export default defineComponent({
 		function emitValue() {
 			if (props.disabled) return;
 
-			if (markers.value.length > 0) {
-				if (attrs.type === 'string') {
+			if (markers.value.length == 1) {
+				if (props.type === 'json') emit('input', markers.value[0].toGeoJSON());
+				else {
 					const markerPosition = markers.value[0].getLatLng();
-					emit('input', markerPosition.lng + ',' + markerPosition.lat);
-				} else {
-					emit('input', leaflet.featureGroup(markers.value).toGeoJSON());
+					emit('input', [markerPosition.lng, markerPosition.lat]);
+				}
+			} else if (markers.value.length > 1) {
+				if (props.type === 'json') emit('input', leaflet.featureGroup(markers.value).toGeoJSON());
+				else {
+					const markerPosition = markers.value[0].getLatLng();
+					emit('input', [markerPosition.lng, markerPosition.lat]);
 				}
 			} else {
 				emit('input', null);
