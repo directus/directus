@@ -16,6 +16,7 @@ import createDBConnection, { Credentials } from '../../utils/create-db-connectio
 import { Knex } from 'knex';
 
 export default async function init(options: Record<string, any>) {
+	const dev = options.args[0] === 'dev';
 	const rootPath = process.cwd();
 
 	let { client } = await inquirer.prompt([
@@ -30,7 +31,7 @@ export default async function init(options: Record<string, any>) {
 	const dbClient = getDriverForClient(client)!;
 
 	const spinnerDriver = ora('Installing Database Driver...').start();
-	await execa('npm', ['install', dbClient, '--production']);
+	await execa('npm', ['install', dbClient, dev ? '' : '--production']);
 	spinnerDriver.stop();
 
 	let attemptsRemaining = 5;
@@ -70,7 +71,9 @@ export default async function init(options: Record<string, any>) {
 		return { credentials, db };
 	}
 
-	await createEnv(dbClient, credentials!, rootPath);
+	const envPath = rootPath + (dev ? '/api' : '');
+
+	await createEnv(dbClient, credentials!, envPath);
 
 	console.log();
 	console.log();
@@ -124,7 +127,7 @@ export default async function init(options: Record<string, any>) {
 	console.log(`
 Your project has been created at ${chalk.green(rootPath)}.
 
-The configuration can be found in ${chalk.green(rootPath + '/.env')}
+The configuration can be found in ${chalk.green(envPath + '/.env')}
 
 Start Directus by running:
   ${chalk.blue('cd')} ${rootPath}

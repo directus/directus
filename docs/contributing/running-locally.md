@@ -1,10 +1,13 @@
 # Running Locally
 
-> This guide explains how to install the _Development_ version of Directus locally so that you can work on the platform's source code. To install the _Production_ version locally, please follow to our [standard installation guides](/getting-started/installation/).
+> This guide explains how to install the _Development_ version of Directus locally so that you can work on the
+> platform's source code. To install the _Production_ version locally, please follow to our
+> [standard installation guides](/getting-started/installation/).
 
 ::: tip Minimum Requirements
 
-You will need to have [the latest version of Node](https://nodejs.org/en/download/current/) to _build_ a Development version of Directus.
+You will need to have [the latest version of Node](https://nodejs.org/en/download/current/) to _build_ a Development
+version of Directus.
 
 :::
 
@@ -32,13 +35,13 @@ git checkout -b YOUR-BRANCH-NAME
 npm install
 ```
 
-## 5. Setup the Database & Env File
+## 5. Setup the Database
 
 For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver,
 which will create the database for you. Run the following command from within root of the project:
 
 ```bash
-npm run cli -- init
+npm run cli -- init dev
 ```
 
 ## 6. Start the development server
@@ -49,7 +52,8 @@ Run the following command from the root directory.
 npm run dev
 ```
 
-If you are only looking to work on the Documentation (public website version), you can navigate to the `docs` directory and run the following command:
+If you are only looking to work on the Documentation (public website version), you can navigate to the `docs` directory
+and run the following command:
 
 ```bash
 npm run dev:site
