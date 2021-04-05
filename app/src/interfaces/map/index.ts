@@ -10,7 +10,7 @@ export default defineInterface(({ i18n }) => ({
 	icon: 'map',
 	recommendedDisplays: ['formatted-json-value'],
 	component: InterfaceMap,
-	types: ['json', 'string'],
+	types: ['json', 'csv'],
 	options: [
 		{
 			field: 'lat',
@@ -58,6 +58,21 @@ export default defineInterface(({ i18n }) => ({
 			},
 			schema: {
 				default_value: 17,
+			},
+		},
+		{
+			field: 'max-markers',
+			name: i18n.t('interfaces.map.max-markers'),
+			type: 'integer',
+			meta: {
+				width: 'half',
+				interface: 'numeric',
+				options: {
+					min: 1,
+				},
+			},
+			schema: {
+				default_value: 1,
 			},
 		},
 		{

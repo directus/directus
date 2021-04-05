@@ -15,6 +15,14 @@
 		<address-to-code v-if="addressToCode" :disabled="disabled" @select="onAddressSelected" />
 
 		<div :style="{ height: height + 'px' }" ref="mapElement"></div>
+
+		<div ref="controlElements">
+			<a class="directus-leaflet-button" @click="centerMap"><i class="icon">center_focus_strong</i></a>
+			<a class="directus-leaflet-button" @click="locatePosition" :class="{ loading: locationLoading }">
+				<i class="icon">my_location</i>
+			</a>
+			<a class="directus-leaflet-button" @click="registerNewMarker"><i class="icon">add_location_alt</i></a>
+		</div>
 	</div>
 </template>
 
@@ -22,7 +30,7 @@
 import i18n from '@/lang';
 import { defineComponent, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
 import { debounce } from 'lodash';
-import * as L from 'leaflet';
+import leaflet, { Map, Icon, Marker, LatLngExpression, DomUtil, LocationEvent, ErrorEvent, LatLngTuple } from 'leaflet';
 // Fix wrong build because of webpack.
 // https://github.com/Leaflet/Leaflet/issues/4968
 // @ts-ignore this is marker icon and is not defined in @types/leaflet
@@ -35,8 +43,9 @@ import 'leaflet/dist/leaflet.css';
 import AddressToCode from './address-to-code.vue';
 
 // @ts-ignore
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
+delete Icon.Default.prototype._getIconUrl;
+
+Icon.Default.mergeOptions({
 	iconRetinaUrl: leafletIconRetinaUrl,
 	iconUrl: leafletIconUrl,
 	shadowUrl: leafletIconShadowUrl,
@@ -80,11 +89,17 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		maxMarkers: {
+			type: Number,
+			default: 1,
+		},
 	},
 	setup(props, { emit, attrs }) {
 		const mapElement = ref<HTMLElement | null>(null);
-		const mapInstance = ref<L.Map | null>(null);
-		const markers = ref<L.Marker[]>([]);
+		const controlElements = ref<HTMLElement | null>(null);
+		const mapInstance = ref<Map | null>(null);
+		const locationLoading = ref(false);
+		const markers = ref<Marker[]>([]);
 		const myLocationError = ref<string | null>(null);
 		const tilesUrl = props.theme || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
@@ -115,11 +130,14 @@ export default defineComponent({
 				if (!mapInstance.value || newValue === oldValue) return;
 
 				if (oldValue) {
-					oldValue.forEach((marker: L.Marker) => marker.removeFrom(mapInstance.value as L.Map));
+					oldValue.forEach((marker) => marker.removeFrom(mapInstance.value as Map));
 				}
 
 				if (newValue) {
-					newValue.forEach((marker: L.Marker) => marker.addTo(mapInstance.value as L.Map));
+					newValue.forEach((marker) => marker.addTo(mapInstance.value as Map));
+
+					if (newValue.length >= props.maxMarkers) {
+					}
 				}
 			}
 		);
@@ -128,15 +146,22 @@ export default defineComponent({
 			onAddressSelected,
 			mapElement,
 			myLocationError,
+			controlElements,
+			registerNewMarker,
+			centerMap,
+			locatePosition,
+			locationLoading,
 		};
 
 		function onAddressSelected(coords: any) {
 			if (!mapInstance.value) return;
-			mapInstance.value.flyTo(coords as L.LatLngExpression, props.zoom);
+			mapInstance.value.flyTo(coords as LatLngExpression, props.zoom);
 		}
 
 		function initMap() {
-			mapInstance.value = L.map(mapElement.value as HTMLElement, {
+			if (!mapElement.value) return;
+
+			mapInstance.value = leaflet.map(mapElement.value, {
 				center: [props.lat, props.lng],
 				zoom: props.zoom,
 				preferCanvas: true,
@@ -157,46 +182,26 @@ export default defineComponent({
 			}
 
 			mapInstance.value.addLayer(
-				L.tileLayer(tilesUrl, {
+				leaflet.tileLayer(tilesUrl, {
 					attribution: attribution.join(' | '),
 				})
 			);
 
-			const fitMarkersInMapControll = L.DomUtil.create(
-				'a',
-				'directus-leaflet-custom-button',
-				mapInstance.value.zoomControl.getContainer()
-			);
-			fitMarkersInMapControll.title = i18n.t('interfaces.map.fit-points').toString();
-			fitMarkersInMapControll.innerHTML = '<i class="icon">center_focus_strong</i>';
-			fitMarkersInMapControll.addEventListener('click', (event: MouseEvent) => {
-				event.preventDefault();
-				centerMap();
-			});
-
-			const controlMyLocationControll = L.DomUtil.create(
-				'a',
-				'directus-leaflet-custom-button',
-				mapInstance.value.zoomControl.getContainer()
-			);
-			controlMyLocationControll.title = i18n.t('interfaces.map.my-location').toString();
-			controlMyLocationControll.innerHTML = '<i class="icon">my_location</i>';
-			controlMyLocationControll.addEventListener('click', (event: MouseEvent) => {
-				event.preventDefault();
-				if (L.DomUtil.hasClass(controlMyLocationControll, 'loading')) return;
-				L.DomUtil.addClass(controlMyLocationControll, 'loading');
-				(mapInstance.value as L.Map).locate({ enableHighAccuracy: true });
-			});
+			if (controlElements.value !== null) {
+				while (controlElements.value.children.length > 0) {
+					const element = controlElements.value.children[0];
+					mapInstance.value.zoomControl.getContainer()?.appendChild(element);
+				}
+			}
 
 			mapInstance.value
-				.on('locationfound', (event: L.LocationEvent) => {
+				.on('locationfound', (event: LocationEvent) => {
 					const suggestedZoomLevel = 13 + (4 - Math.round(Math.min(200, event.accuracy || 100) / 50));
 					event.target.flyTo(event.latlng, suggestedZoomLevel);
-					L.DomUtil.removeClass(controlMyLocationControll, 'loading');
+					locationLoading.value = false;
 				})
-				.on('locationerror', (error: L.ErrorEvent) => {
-					controlMyLocationControll.classList.remove('loading');
-					L.DomUtil.removeClass(controlMyLocationControll, 'loading');
+				.on('locationerror', (error: ErrorEvent) => {
+					locationLoading.value = false;
 					if (error.code === 1) {
 						myLocationError.value = i18n.t('interfaces.map.user-location-error-blocked').toString();
 					} else {
@@ -204,20 +209,15 @@ export default defineComponent({
 					}
 				});
 
-			const controlAddMarkerControll = L.DomUtil.create(
-				'a',
-				'directus-leaflet-custom-button add-point',
-				mapInstance.value.zoomControl.getContainer()
-			);
-			controlAddMarkerControll.title = i18n.t('interfaces.map.add-point').toString();
-			controlAddMarkerControll.innerHTML = '<i class="icon">add_location_alt</i>';
-			controlAddMarkerControll.addEventListener('click', (event: MouseEvent) => {
-				event.preventDefault();
-				registerNewMarker();
-			});
-
 			renderValue(props.value);
 			centerMap();
+		}
+
+		function locatePosition() {
+			if (!mapInstance.value || locationLoading.value) return;
+
+			locationLoading.value = true;
+			mapInstance.value.locate({ enableHighAccuracy: true });
 		}
 
 		function renderValue(value: any) {
@@ -238,7 +238,7 @@ export default defineComponent({
 			} else if (attrs.type === 'json') {
 				if (Array.isArray(value?.coordinates)) {
 					for (const point of value.coordinates) {
-						createMarker(point as L.LatLngTuple);
+						createMarker(point as LatLngTuple);
 					}
 				} else if (value?.type === 'FeatureCollection' && Array.isArray(value?.features)) {
 					for (const point of value.features) {
@@ -263,19 +263,19 @@ export default defineComponent({
 			emitValue();
 		}
 
-		function createMarker(latlng: L.LatLngTuple) {
-			const marker = L.marker(latlng, {
+		function createMarker(latlng: LatLngTuple) {
+			const marker = leaflet.marker(latlng, {
 				draggable: !props.disabled,
 				riseOnHover: true,
 			});
 
-			const popup = L.DomUtil.create('div');
+			const popup = DomUtil.create('div');
 			popup.innerHTML = `
 				<div>${i18n.t('interfaces.map.lat')}: ${latlng[0]}</div>
 				<div>${i18n.t('interfaces.map.lng')}: ${latlng[1]}</div>`;
 
 			if (!props.disabled) {
-				const deleteLink = L.DomUtil.create('button', 'directus-leaflet-delete-marker', popup);
+				const deleteLink = DomUtil.create('button', 'directus-leaflet-delete-marker', popup);
 				deleteLink.innerText = i18n.t('delete').toString();
 				deleteLink.addEventListener('click', (event: MouseEvent) => {
 					event.preventDefault();
@@ -297,7 +297,7 @@ export default defineComponent({
 			} else if (markers.value.length === 1) {
 				mapInstance.value.setView(markers.value[0].getLatLng(), props.zoom);
 			} else {
-				mapInstance.value.fitBounds(L.featureGroup(markers.value).getBounds());
+				mapInstance.value.fitBounds(leaflet.featureGroup(markers.value).getBounds());
 			}
 		}
 
@@ -309,7 +309,7 @@ export default defineComponent({
 					const markerPosition = markers.value[0].getLatLng();
 					emit('input', markerPosition.lng + ',' + markerPosition.lat);
 				} else {
-					emit('input', L.featureGroup(markers.value).toGeoJSON());
+					emit('input', leaflet.featureGroup(markers.value).toGeoJSON());
 				}
 			} else {
 				emit('input', null);
@@ -332,7 +332,7 @@ export default defineComponent({
 }
 
 ::v-deep {
-	.directus-leaflet-custom-button {
+	.directus-leaflet-button {
 		font-size: 1em;
 		cursor: pointer;
 
@@ -353,7 +353,7 @@ export default defineComponent({
 
 	.leaflet-control-zoom-in,
 	.leaflet-control-zoom-out,
-	.directus-leaflet-custom-button {
+	.directus-leaflet-button {
 		color: var(--v-list-color);
 		background-color: var(--background-normal);
 		border-color: var(--border-normal);
@@ -383,18 +383,18 @@ export default defineComponent({
 
 	.leaflet-popup-tip,
 	.leaflet-popup-content-wrapper {
-		color: var(--foreground-inverted);
-		background-color: var(--background-inverted);
+		color: var(--foreground-normal);
+		background-color: var(--background-normal);
 	}
 
 	.leaflet-popup-content-wrapper {
 		padding: 4px 8px;
-		border-radius: 4px;
+		border-radius: var(--border-radius);
 		transition: opacity 200ms;
 	}
 
 	.leaflet-container .leaflet-popup-close-button {
-		color: var(--foreground-inverted);
+		color: var(--foreground-normal);
 
 		&:hover {
 			color: var(--foreground-subdued);
@@ -402,7 +402,7 @@ export default defineComponent({
 	}
 }
 
-.map.disabled ::v-deep .directus-leaflet-custom-button.add-point {
+.map.disabled ::v-deep .directus-leaflet-button.add-point {
 	color: var(--foreground-subdued);
 	pointer-events: none;
 }

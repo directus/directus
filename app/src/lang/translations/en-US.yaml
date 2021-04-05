@@ -928,6 +928,7 @@ interfaces:
     user-location-error-blocked: You've disabled the location access. Kindly enable it from the browser addressbar to auto detect your location.
     user-location-error: There was an error while trying to get your location. Please try again.
     address-to-code-error: No geocode found for this address
+    max-markers: Max marker count
   markdown:
     markdown: Markdown
     description: Enter and preview markdown
