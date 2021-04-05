@@ -29,6 +29,8 @@ import {
 	GraphQLNonNull,
 	FragmentDefinitionNode,
 	GraphQLSchema,
+	GraphQLEnumType,
+	GraphQLScalarType,
 } from 'graphql';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
@@ -37,6 +39,7 @@ import { set, merge, get, mapKeys, uniq, flatten } from 'lodash';
 import { sanitizeQuery } from '../utils/sanitize-query';
 
 import { ActivityService } from './activity';
+import { AuthenticationService } from './authentication';
 import { FilesService } from './files';
 import { FoldersService } from './folders';
 import { PermissionsService } from './permissions';
@@ -50,7 +53,28 @@ import { WebhooksService } from './webhooks';
 import { BaseException, InvalidPayloadException, GraphQLValidationException } from '../exceptions';
 import { toArray } from '../utils/to-array';
 
+import env from '../env';
+import ms from 'ms';
+
 import { reduceSchema } from '../utils/reduce-schema';
+
+const Void = new GraphQLScalarType({
+	name: 'Void',
+
+	description: 'Represents NULL values',
+
+	serialize() {
+		return null;
+	},
+
+	parseValue() {
+		return null;
+	},
+
+	parseLiteral() {
+		return null;
+	},
+});
 
 import {
 	ObjectTypeComposer,
@@ -109,7 +133,7 @@ export class GraphQLService {
 	/**
 	 * Execute a GraphQL structure
 	 */
-	async execute({ document, variables, operationName }: GraphQLParams) {
+	async execute({ document, variables, operationName, contextValue }: GraphQLParams) {
 		const schema = this.getSchema();
 
 		const validationErrors = validate(schema, document, specifiedRules);
@@ -124,7 +148,7 @@ export class GraphQLService {
 			result = await execute({
 				schema,
 				document,
-				contextValue: {},
+				contextValue,
 				variableValues: variables,
 				operationName,
 			});
@@ -149,7 +173,7 @@ export class GraphQLService {
 	getSchema(type: 'schema' | 'sdl' = 'schema') {
 		const self = this;
 
-		const schemaComposer = new SchemaComposer();
+		const schemaComposer = new SchemaComposer<GraphQLParams['contextValue']>();
 
 		const schema = {
 			read: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['read']),
@@ -254,6 +278,10 @@ export class GraphQLService {
 						return acc;
 					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
 			);
+		}
+
+		if (this.scope === 'system') {
+			this.injectSystemMutations(schemaComposer);
 		}
 
 		if (type === 'sdl') {
@@ -1022,5 +1050,145 @@ export class GraphQLService {
 				return selection;
 			})
 		).filter((s) => s) as SelectionNode[];
+	}
+
+	injectSystemMutations(schemaComposer: SchemaComposer<GraphQLParams['contextValue']>) {
+		const AuthTokens = schemaComposer.createObjectTC({
+			name: 'auth_tokens',
+			fields: {
+				access_token: GraphQLString,
+				expires: GraphQLInt,
+				refresh_token: GraphQLString,
+			},
+		});
+
+		const AuthMode = new GraphQLEnumType({
+			name: 'auth_mode',
+			values: {
+				json: { value: 'json' },
+				cookie: { value: 'cookie' },
+			},
+		});
+
+		schemaComposer.Mutation.addFields({
+			auth_login: {
+				type: AuthTokens,
+				args: {
+					email: GraphQLNonNull(GraphQLString),
+					password: GraphQLNonNull(GraphQLString),
+					mode: AuthMode,
+					otp: GraphQLString,
+				},
+				resolve: async (_, args, { req, res }) => {
+					const accountability = {
+						ip: req?.ip,
+						userAgent: req?.get('user-agent'),
+						role: null,
+					};
+
+					const authenticationService = new AuthenticationService({
+						accountability: accountability,
+						schema: this.schema,
+					});
+
+					const result = await authenticationService.authenticate({
+						...args,
+						ip: req?.ip,
+						userAgent: req?.get('user-agent'),
+					});
+
+					if (args.mode === 'cookie') {
+						res?.cookie('directus_refresh_token', result.refreshToken, {
+							httpOnly: true,
+							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+							secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
+							sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+						});
+					}
+
+					return {
+						access_token: result.accessToken,
+						expires: result.expires,
+						refresh_token: result.refreshToken,
+					};
+				},
+			},
+
+			auth_refresh: {
+				type: AuthTokens,
+				args: {
+					refresh_token: GraphQLString,
+					mode: AuthMode,
+				},
+				resolve: async (_, args, { req, res }) => {
+					const accountability = {
+						ip: req?.ip,
+						userAgent: req?.get('user-agent'),
+						role: null,
+					};
+
+					const authenticationService = new AuthenticationService({
+						accountability: accountability,
+						schema: this.schema,
+					});
+
+					const currentRefreshToken = args.refresh_token || req?.cookies.directus_refresh_token;
+
+					if (!currentRefreshToken) {
+						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
+					}
+
+					const result = await authenticationService.refresh(currentRefreshToken);
+
+					if (args.mode === 'cookie') {
+						res?.cookie('directus_refresh_token', result.refreshToken, {
+							httpOnly: true,
+							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+							secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
+							sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+						});
+					}
+
+					return {
+						access_token: result.accessToken,
+						expires: result.expires,
+						refresh_token: result.refreshToken,
+					};
+				},
+			},
+
+			auth_logout: {
+				type: Void,
+				args: {
+					refresh_token: GraphQLString,
+				},
+				resolve: async (_, args, { req }) => {
+					const accountability = {
+						ip: req?.ip,
+						userAgent: req?.get('user-agent'),
+						role: null,
+					};
+
+					const authenticationService = new AuthenticationService({
+						accountability: accountability,
+						schema: this.schema,
+					});
+
+					const currentRefreshToken = args.refresh_token || req?.cookies.directus_refresh_token;
+
+					if (!currentRefreshToken) {
+						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
+					}
+
+					await authenticationService.logout(currentRefreshToken);
+
+					return null;
+				},
+			},
+		});
+
+		return schemaComposer;
 	}
 }

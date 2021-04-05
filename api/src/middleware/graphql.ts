@@ -56,7 +56,7 @@ export const parseGraphQL: RequestHandler = asyncHandler(async (req, res, next) 
 		}
 	}
 
-	res.locals.graphqlParams = { document, query, variables, operationName } as GraphQLParams;
+	res.locals.graphqlParams = { document, query, variables, operationName, contextValue: { req, res } } as GraphQLParams;
 
 	return next();
 });
