@@ -39,7 +39,6 @@
 import i18n from '@/lang';
 import { defineComponent, ref, watch } from '@vue/composition-api';
 import axios from 'axios';
-import { debounce, throttle } from 'lodash';
 
 export default defineComponent({
 	props: {
