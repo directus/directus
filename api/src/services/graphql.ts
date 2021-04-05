@@ -1187,6 +1187,49 @@ export class GraphQLService {
 					return null;
 				},
 			},
+
+			auth_password_request: {
+				type: Void,
+				args: {
+					email: GraphQLNonNull(GraphQLString),
+					reset_url: GraphQLString,
+				},
+				resolve: async (_, args, { req }) => {
+					const accountability = {
+						ip: req?.ip,
+						userAgent: req?.get('user-agent'),
+						role: null,
+					};
+
+					const service = new UsersService({ accountability, schema: this.schema });
+
+					try {
+						await service.requestPasswordReset(args.email, args.reset_url || null);
+					} catch (err) {
+						if (err instanceof InvalidPayloadException) {
+							throw err;
+						}
+					}
+				},
+			},
+
+			auth_password_reset: {
+				type: Void,
+				args: {
+					token: GraphQLNonNull(GraphQLString),
+					password: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args, { req }) => {
+					const accountability = {
+						ip: req?.ip,
+						userAgent: req?.get('user-agent'),
+						role: null,
+					};
+
+					const service = new UsersService({ accountability, schema: this.schema });
+					await service.resetPassword(args.token, args.password);
+				},
+			},
 		});
 
 		return schemaComposer;
