@@ -94,6 +94,16 @@ field, the collection's sort settings will automatically be configured for you.
 
 :::
 
+## Renaming a Collection
+
+While you can not change the **Key** of a collection via Directus (as of now), you can change its **Name** and translations.
+
+1. Navigate to **Settings > Data Model > [Collection Name]**
+2. Click the Add New button under **Collection Name Translations**
+3. Choose the desired **Language** (your primary language for "renaming")
+4. Enter a **Translation**
+5. Click the **Save** button
+
 ## Deleting a Collection
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
