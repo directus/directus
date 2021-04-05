@@ -10,7 +10,6 @@ add_field: Feld hinzufügen
 role_name: Rollenname
 db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
-edited: Bearbeitet
 required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
 requires_value: Benötigt Wert

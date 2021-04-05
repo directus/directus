@@ -218,7 +218,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 					one_collection: '',
 					one_primary: '',
-					sort_field: 'null',
+					sort_field: null,
 				},
 			];
 		}

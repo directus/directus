@@ -11,7 +11,6 @@ add_field: Tambah Kolom
 role_name: Nama Peran
 db_only_click_to_configure: 'Khusus Database: Tekan Untuk Konfigurasi '
 show_archived_items: Tampilkan Yang Diarsipkan
-edited: Disunting
 required: Diperlukan
 required_for_app_access: Diperlukan untuk Akses Aplikasi
 requires_value: Wajib memiliki nilai
