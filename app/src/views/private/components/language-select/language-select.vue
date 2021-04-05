@@ -7,7 +7,7 @@ import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import { useRelationsStore } from '@/stores/';
 import api from '@/api';
 import { Relation } from '@/types';
-import getFieldsFromTemplate from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { useCollection } from '@/composables/use-collection';
 import { unexpectedError } from '@/utils/unexpected-error';
 
