@@ -1,6 +1,6 @@
 <template>
 	<v-menu attached>
-		<template #activator="{ active, activate }">
+		<template #activator="{ activate }">
 			<v-input
 				class="address-to-code"
 				:placeholder="$t('interfaces.map.address-to-code')"
@@ -13,7 +13,7 @@
 				</template>
 			</v-input>
 		</template>
-		<v-list v-if="searchQuery.length > 3">
+		<v-list>
 			<v-skeleton-loader v-if="loading" type="list-item-icon"></v-skeleton-loader>
 			<template v-else-if="suggestions.length > 0">
 				<v-list-item v-for="item in suggestions" :key="item.place_id" @click="() => emitSelection(item)">
@@ -39,7 +39,7 @@
 import i18n from '@/lang';
 import { defineComponent, ref, watch } from '@vue/composition-api';
 import axios from 'axios';
-import { debounce } from 'lodash';
+import { debounce, throttle } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -50,12 +50,13 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const error = ref<string | null>(null);
-		const searchQuery = ref<string>('');
+		const searchQuery = ref<string | null>(null);
 		const suggestions = ref<any[]>([]);
 		const cached = ref<Map<string, any>>(new Map());
 		const loading = ref<boolean>(false);
+		const token = ref(0);
 
-		watch(() => searchQuery.value, debounce(makeQuery, 800));
+		watch(searchQuery, makeQuery);
 
 		return {
 			emitSelection,
@@ -70,32 +71,30 @@ export default defineComponent({
 			emit('select', { lat: record.lat, lng: record.lon });
 		}
 
-		function makeQuery(newValue: string, oldValue: string | undefined) {
-			if (newValue === oldValue || newValue.length <= 3) return;
+		function makeQuery(newValue: string | null, oldValue: string | null) {
+			if (!newValue || newValue === oldValue) return;
 
 			const query = encodeURIComponent(newValue.trim());
 
 			if (cached.value.has(query)) {
 				suggestions.value = cached.value.get(query);
-			} else if (!newValue) {
-				suggestions.value = [];
 			} else {
 				loading.value = true;
-				axios
-					.get(`https://nominatim.openstreetmap.org/search?format=json&limit=10&q=${query}`)
-					.then((response) => {
-						loading.value = false;
-						if (response.status === 200) {
-							suggestions.value = response.data;
-							cached.value.set(query, response.data);
-						} else {
-							error.value = i18n.t('interfaces.map.address-to-code-error').toString();
-						}
-					})
-					.catch((err) => {
-						loading.value = false;
-						error.value = err.toString();
-					});
+				token.value++;
+				makeRequest(query, token.value);
+			}
+		}
+
+		async function makeRequest(query: string, currentToken: number) {
+			const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&limit=10&q=${query}`);
+			if (currentToken !== token.value) return;
+
+			loading.value = false;
+			if (response.status === 200) {
+				suggestions.value = response.data;
+				cached.value.set(query, response.data);
+			} else {
+				error.value = i18n.t('interfaces.map.address-to-code-error').toString();
 			}
 		}
 	},

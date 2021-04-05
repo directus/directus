@@ -178,9 +178,9 @@ export default defineComponent({
 			canAddMarkers,
 		};
 
-		function onAddressSelected(coords: any) {
+		function onAddressSelected(coords: LatLngExpression) {
 			if (!mapInstance.value) return;
-			mapInstance.value.flyTo(coords as LatLngExpression, props.zoom);
+			mapInstance.value.flyTo(coords, props.zoom, { duration: 2 });
 		}
 
 		function initMap() {
