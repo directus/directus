@@ -11,6 +11,7 @@ add_field: Добавяне на поле
 role_name: Име на роля
 db_only_click_to_configure: 'Само в базата данни: Кликнете за конфигурация '
 show_archived_items: Включително архивираните
+edited: Стойността е редактирана
 required: Задължително
 required_for_app_access: Изисква се за достъп до приложението
 requires_value: Изисква се стойност
@@ -577,6 +578,7 @@ settings_webhooks: Уеб-куки
 settings_presets: Изгледи и отметки
 scope: Обхват
 layout: Оформление
+tree_view: Дървовиден изглед
 changes_are_permanent: Промените са постоянни
 preset_name_placeholder: Име на отметка...
 preset_search_placeholder: Заявка за търсене...
@@ -796,6 +798,7 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
+weeks: { }
 report_error: Докладване на грешка
 interfaces:
   button-links:
@@ -971,6 +974,9 @@ interfaces:
   translations:
     display_template: Шаблон при показване
     no_collection: Няма колекция
+  tree-view:
+    description: Дървовиден изглед за вложени рекурсивни записи от тип - един-към-много
+    recursive_only: Дървовидния интерфейс работи само за рекурсивни релации.
   user:
     user: Потребител
     description: Избор на съществуващ потребител

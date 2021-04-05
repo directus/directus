@@ -11,6 +11,7 @@ add_field: Добавить поле
 role_name: Название роли
 db_only_click_to_configure: 'Только База данных: Нажмите для Настройки '
 show_archived_items: Показать Архивные Элементы
+edited: Изменённое значение
 required: Необходимые
 required_for_app_access: Требуется для доступа к приложению
 requires_value: Требуется значение
@@ -26,6 +27,7 @@ connection_excellent: Отличное Подключение
 connection_good: Хорошее Подключение
 connection_fair: Нормальное Подключение
 connection_poor: Плохое Подключение
+primary: Первичный
 rename_folder: Переименовать папку
 delete_folder: Удалить папку
 prefix: Префикс
@@ -53,6 +55,7 @@ archive: Архивировать
 archive_confirm: Вы уверены, что хотите архивировать этот элемент?
 archive_confirm_count: >-
   Элементы не выбраны | Вы уверены, что хотите архивировать этот элемент? | Вы уверены, что хотите архивировать эти {count} элементов?
+recommended_defaults: Рекомендуемые значения по умолчанию
 unarchive: Разархивировать
 unarchive_confirm: Вы уверены, что хотите разархивировать этот элемент?
 nested_files_folders_will_be_moved: Вложенные файлы и папки будут перемещены на один уровень вверх.
@@ -410,6 +413,7 @@ delete_collection_are_you_sure: >-
 collections_shown: Показано Коллекций
 visible_collections: Видимые Коллекции
 hidden_collections: Скрытые Коллекции
+show_hidden_collections: Показать скрытые коллекции
 hide_hidden_collections: Скрыть скрытые коллекции
 unmanaged_collections: Ненастроенные Коллекции
 system_collections: Системные коллекции
@@ -564,6 +568,7 @@ scope: Область
 layout: Макет
 changes_are_permanent: Изменения необратимы
 preset_name_placeholder: Название закладки...
+preset_search_placeholder: Строка поиска...
 editing_preset: Редактирование Пресета
 layout_preview: Предпросмотр Макета
 layout_setup: Настройка Макета
@@ -633,12 +638,17 @@ fields:
     hidden: Скрыто
     singleton: Синглтон
     translations: Переводы Названия Коллекции
+    archive_value: Заархивировать содержимое
+    unarchive_value: Распаковать содержимое
     sort_field: Поле сортировки
   directus_files:
     title: Заголовок
     description: Описание
     tags: Теги
     location: Местоположение
+    storage: Память
+    filename_disk: Имя файла (на диске)
+    filename_download: Имя файла (Загруженое)
     metadata: Метаданные
     filesize: Размер файла
     modified_by: Изменил
@@ -668,6 +678,7 @@ fields:
     tfa_secret: Двухфакторная аутентификация
     status: Статус
     role: Роль
+    token: Жетон
     last_page: Последняя Страница
     last_access: Последний Доступ
   directus_settings:
@@ -775,6 +786,7 @@ interfaces:
   button-links:
     links: Ссылки
     style: Стиль
+    primary: Первичный
     link: Ссылки
     button: Кнопки
   checkboxes:
@@ -870,6 +882,8 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Ввод и предпросмотр markdown
+    customSyntax_label: Добавить пользовательский тип синтаксиса
+    customSyntax_add: Добавить пользовательский синтаксис
   notice:
     notice: Примечание
     description: Показать короткое примечание
