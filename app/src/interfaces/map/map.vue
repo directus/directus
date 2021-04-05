@@ -21,7 +21,7 @@
 			<a class="directus-leaflet-button" @click="locatePosition" :class="{ loading: locationLoading }">
 				<i class="icon">my_location</i>
 			</a>
-			<a v-show="markers.length < maxMarkers" class="directus-leaflet-button" @click="registerNewMarker">
+			<a v-show="canAddMarkers" class="directus-leaflet-button" @click="registerNewMarker">
 				<i class="icon">add_location_alt</i>
 			</a>
 		</div>
@@ -30,9 +30,20 @@
 
 <script lang="ts">
 import i18n from '@/lang';
-import { defineComponent, onMounted, onUnmounted, ref, watch } from '@vue/composition-api';
-import { debounce } from 'lodash';
-import leaflet, { Map, Icon, Marker, LatLngExpression, DomUtil, LocationEvent, ErrorEvent, LatLngTuple } from 'leaflet';
+import { computed, defineComponent, onMounted, onUnmounted, PropType, ref, watch } from '@vue/composition-api';
+import { debounce, isArray } from 'lodash';
+import leaflet, {
+	Map,
+	Icon,
+	Marker,
+	LatLngExpression,
+	DomUtil,
+	LocationEvent,
+	ErrorEvent,
+	LatLngTuple,
+	Point,
+	FeatureGroup,
+} from 'leaflet';
 // Fix wrong build because of webpack.
 // https://github.com/Leaflet/Leaflet/issues/4968
 // @ts-ignore this is marker icon and is not defined in @types/leaflet
@@ -43,6 +54,7 @@ import leafletIconUrl from 'leaflet/dist/images/marker-icon.png';
 import leafletIconShadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/leaflet.css';
 import AddressToCode from './address-to-code.vue';
+import { FeatureCollection, Point as FeaturePoint } from 'geojson';
 
 // @ts-ignore
 delete Icon.Default.prototype._getIconUrl;
@@ -53,10 +65,13 @@ Icon.Default.mergeOptions({
 	shadowUrl: leafletIconShadowUrl,
 });
 
+type ModelValue = FeatureCollection | FeaturePoint | [number, number];
+
 export default defineComponent({
 	components: { AddressToCode },
 	props: {
 		value: {
+			type: [Object, Array] as PropType<ModelValue>,
 			default: null,
 		},
 		lat: {
@@ -99,7 +114,7 @@ export default defineComponent({
 			type: String,
 		},
 	},
-	setup(props, { emit, attrs }) {
+	setup(props, { emit }) {
 		const mapElement = ref<HTMLElement | null>(null);
 		const controlElements = ref<HTMLElement | null>(null);
 		const mapInstance = ref<Map | null>(null);
@@ -144,6 +159,10 @@ export default defineComponent({
 			}
 		);
 
+		const canAddMarkers = computed(
+			() => props.maxMarkers > markers.value.length || (props.type === 'csv' && markers.value.length === 0)
+		);
+
 		return {
 			onAddressSelected,
 			mapElement,
@@ -154,6 +173,7 @@ export default defineComponent({
 			locatePosition,
 			locationLoading,
 			markers,
+			canAddMarkers,
 		};
 
 		function onAddressSelected(coords: any) {
@@ -223,32 +243,21 @@ export default defineComponent({
 			mapInstance.value.locate({ enableHighAccuracy: true });
 		}
 
-		function renderValue(value: any) {
-			if (!mapInstance.value) return;
+		function renderValue(value: ModelValue) {
+			if (!mapInstance.value || !value) return;
 
 			markers.value = [];
-			if (attrs.type === 'string') {
-				if (value) {
-					const center = value
-						.split(',')
-						.map((i: string) => parseFloat(i))
-						.slice(0, 2)
-						.reverse();
-					if (!isNaN(center[1]) && !isNaN(center[0])) {
-						createMarker(center);
-					}
-				}
-			} else if (attrs.type === 'json') {
-				if (Array.isArray(value?.coordinates)) {
-					for (const point of value.coordinates) {
-						createMarker(point as LatLngTuple);
-					}
-				} else if (value?.type === 'FeatureCollection' && Array.isArray(value?.features)) {
+			if (props.type === 'csv' && isArray(value)) {
+				createMarker(value);
+			} else if (props.type === 'json' && 'type' in value) {
+				if (value.type === 'FeatureCollection' && Array.isArray(value.features)) {
 					for (const point of value.features) {
-						if (point?.geometry?.type === 'Point') {
-							createMarker([point.geometry.coordinates[1], point.geometry.coordinates[0]]);
+						if (point.geometry.type === 'Point') {
+							createMarker([point.geometry.coordinates[0], point.geometry.coordinates[1]]);
 						}
 					}
+				} else if (value.type === 'Point') {
+					createMarker([value.coordinates[0], value.coordinates[1]]);
 				}
 			}
 		}
@@ -256,13 +265,9 @@ export default defineComponent({
 		function registerNewMarker() {
 			const center = mapInstance.value?.getCenter();
 			if (!center) return;
+			if (props.type === 'csv') markers.value = [];
 
-			if (attrs.type === 'json') {
-				createMarker([center.lat, center.lng]);
-			} else {
-				markers.value = [];
-				createMarker([center.lat, center.lng]);
-			}
+			createMarker([center.lat, center.lng]);
 			emitValue();
 		}
 
@@ -307,21 +312,19 @@ export default defineComponent({
 		function emitValue() {
 			if (props.disabled) return;
 
-			if (markers.value.length == 1) {
-				if (props.type === 'json') emit('input', markers.value[0].toGeoJSON());
-				else {
-					const markerPosition = markers.value[0].getLatLng();
-					emit('input', [markerPosition.lng, markerPosition.lat]);
-				}
-			} else if (markers.value.length > 1) {
-				if (props.type === 'json') emit('input', leaflet.featureGroup(markers.value).toGeoJSON());
-				else {
-					const markerPosition = markers.value[0].getLatLng();
-					emit('input', [markerPosition.lng, markerPosition.lat]);
-				}
-			} else {
-				emit('input', null);
+			if (props.type === 'json') {
+				if (markers.value.length == 1)
+					return emit('input', {
+						type: 'Point',
+						coordinates: [markers.value[0].getLatLng().lat, markers.value[0].getLatLng().lng],
+					});
+
+				if (markers.value.length > 1) return emit('input', leaflet.featureGroup(markers.value).toGeoJSON());
+			} else if (props.type === 'csv' && markers.value.length >= 1) {
+				const markerPosition = markers.value[0].getLatLng();
+				return emit('input', [markerPosition.lat, markerPosition.lng]);
 			}
+			emit('input', null);
 		}
 	},
 });
