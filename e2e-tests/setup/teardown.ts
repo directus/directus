@@ -17,20 +17,6 @@ export default async () => {
 
 	await new Listr([
 		{
-			title: 'Close database connections',
-			task: () => {
-				return new Listr(
-					global.knexInstances.map(({ vendor, knex }) => {
-						return {
-							title: config.names[vendor]!,
-							task: async () => await knex.destroy(),
-						};
-					}),
-					{ concurrent: true }
-				);
-			},
-		},
-		{
 			title: 'Stop Docker containers',
 			task: () => {
 				return new Listr(

@@ -211,6 +211,20 @@ export default async () => {
 			},
 		},
 		{
+			title: 'Close Knex instances',
+			task: () => {
+				return new Listr(
+					global.knexInstances.map(({ vendor, knex }) => {
+						return {
+							title: config.names[vendor]!,
+							task: async () => await knex.destroy(),
+						};
+					}),
+					{ concurrent: true }
+				);
+			},
+		},
+		{
 			title: 'Start Directus Docker containers',
 			task: () => {
 				return new Listr(
