@@ -17,11 +17,11 @@
 		<div :style="{ height: height + 'px' }" ref="mapElement"></div>
 
 		<div ref="controlElements">
-			<a class="directus-leaflet-button" @click="centerMap"><i class="icon">center_focus_strong</i></a>
-			<a class="directus-leaflet-button" @click="locatePosition" :class="{ loading: locationLoading }">
+			<a class="directus-leaflet-button" @click.stop="centerMap"><i class="icon">center_focus_strong</i></a>
+			<a class="directus-leaflet-button" @click.stop="locatePosition" :class="{ loading: locationLoading }">
 				<i class="icon">my_location</i>
 			</a>
-			<a v-show="canAddMarkers" class="directus-leaflet-button" @click="registerNewMarker">
+			<a v-show="canAddMarkers" class="directus-leaflet-button" @click.stop="registerNewMarker">
 				<i class="icon">add_location_alt</i>
 			</a>
 		</div>
@@ -160,7 +160,9 @@ export default defineComponent({
 		);
 
 		const canAddMarkers = computed(
-			() => props.maxMarkers > markers.value.length || (props.type === 'csv' && markers.value.length === 0)
+			() =>
+				(props.type === 'json' && props.maxMarkers > markers.value.length) ||
+				(props.type === 'csv' && markers.value.length === 0)
 		);
 
 		return {
@@ -248,16 +250,16 @@ export default defineComponent({
 
 			markers.value = [];
 			if (props.type === 'csv' && isArray(value)) {
-				createMarker(value);
+				createMarker([value[1], value[0]]);
 			} else if (props.type === 'json' && 'type' in value) {
 				if (value.type === 'FeatureCollection' && Array.isArray(value.features)) {
 					for (const point of value.features) {
 						if (point.geometry.type === 'Point') {
-							createMarker([point.geometry.coordinates[0], point.geometry.coordinates[1]]);
+							createMarker([point.geometry.coordinates[1], point.geometry.coordinates[0]]);
 						}
 					}
 				} else if (value.type === 'Point') {
-					createMarker([value.coordinates[0], value.coordinates[1]]);
+					createMarker([value.coordinates[1], value.coordinates[0]]);
 				}
 			}
 		}
@@ -316,13 +318,13 @@ export default defineComponent({
 				if (markers.value.length == 1)
 					return emit('input', {
 						type: 'Point',
-						coordinates: [markers.value[0].getLatLng().lat, markers.value[0].getLatLng().lng],
+						coordinates: [markers.value[0].getLatLng().lng, markers.value[0].getLatLng().lat],
 					});
 
 				if (markers.value.length > 1) return emit('input', leaflet.featureGroup(markers.value).toGeoJSON());
 			} else if (props.type === 'csv' && markers.value.length >= 1) {
 				const markerPosition = markers.value[0].getLatLng();
-				return emit('input', [markerPosition.lat, markerPosition.lng]);
+				return emit('input', [markerPosition.lng, markerPosition.lat]);
 			}
 			emit('input', null);
 		}
