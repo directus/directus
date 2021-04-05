@@ -36,7 +36,7 @@ const config: Config = {
 		mysql: {
 			name: `directus-test-database-mysql-${process.pid}`,
 			Image: 'mysql:8',
-			Command: ['--default-authentication-plugin=mysql_native_password'],
+			Cmd: ['--default-authentication-plugin=mysql_native_password'],
 			Hostname: `directus-test-database-mysql-${process.pid}`,
 			Env: ['MYSQL_ROOT_PASSWORD=secret', 'MYSQL_DATABASE=directus'],
 			HostConfig: {
@@ -48,7 +48,6 @@ const config: Config = {
 		maria: {
 			name: `directus-test-database-maria-${process.pid}`,
 			Image: 'mariadb:10.5',
-			Command: ['--default-authentication-plugin=maria_native_password'],
 			Hostname: `directus-test-database-maria-${process.pid}`,
 			Env: ['MYSQL_ROOT_PASSWORD=secret', 'MYSQL_DATABASE=directus'],
 			HostConfig: {
@@ -60,7 +59,6 @@ const config: Config = {
 		mssql: {
 			name: `directus-test-database-mssql-${process.pid}`,
 			Image: 'mcr.microsoft.com/mssql/server:2019-latest',
-			Command: ['--default-authentication-plugin=mssql_native_password'],
 			Hostname: `directus-test-database-mssql-${process.pid}`,
 			Env: ['ACCEPT_EULA=Y', 'SA_PASSWORD=Test@123'],
 			HostConfig: {
@@ -72,7 +70,6 @@ const config: Config = {
 		oracle: {
 			name: `directus-test-database-oracle-${process.pid}`,
 			Image: 'quillbuilduser/oracle-18-xe-micro-sq',
-			Command: ['--default-authentication-plugin=oracle_native_password'],
 			Hostname: `directus-test-database-oracle-${process.pid}`,
 			Env: [
 				'OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m',
@@ -192,16 +189,16 @@ const config: Config = {
 		mssql: [
 			'DB_CLIENT=mssql',
 			`DB_HOST=directus-test-database-mssql-${process.pid}`,
-			'DB_PORT=3306',
-			'DB_USER=root',
-			'DB_PASSWORD=secret',
+			'DB_PORT=1433',
+			'DB_USER=sa',
+			'DB_PASSWORD=Test@123',
 			'DB_DATABASE=model',
 		],
 		oracle: [
 			'DB_CLIENT=oracledb',
 			'DB_USER=secretsysuser',
 			'DB_PASSWORD=secretpassword',
-			`DB_CONNECT_STRING=directus-test-database-mssql-${process.pid}:1521/XE`,
+			`DB_CONNECT_STRING=directus-test-database-oracle-${process.pid}:1521/XE`,
 		],
 		sqlite3: ['DB_CLIENT=sqlite3', 'DB_FILENAME=./data.db'],
 	},

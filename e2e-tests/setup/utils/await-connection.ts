@@ -6,7 +6,7 @@ export async function awaitDatabaseConnection(database: Knex, checkSQL: string, 
 		await database.raw(checkSQL);
 	} catch {
 		if (currentAttempt === 10) {
-			throw new Error('Couldnt connect to DB');
+			throw new Error(`Couldn't connect to DB`);
 		}
 
 		return new Promise((resolve) => {
@@ -23,7 +23,7 @@ export async function awaitDirectusConnection(port: number = 6100, currentAttemp
 		await axios.get(`http://localhost:${port}/server/ping`);
 	} catch {
 		if (currentAttempt === 10) {
-			throw new Error('Couldnt connect to Directus');
+			throw new Error(`Couldn't connect to Directus`);
 		}
 
 		return new Promise((resolve) => {

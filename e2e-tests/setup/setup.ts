@@ -1,7 +1,7 @@
 import Dockerode, { ContainerSpec } from 'dockerode';
 import knex, { Knex } from 'knex';
 import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
-import Listr from 'listr';
+import Listr, { ListrTask } from 'listr';
 import { getDBsToTest } from '../get-dbs-to-test';
 import config from '../config';
 import globby from 'globby';
@@ -31,10 +31,9 @@ export default async () => {
 	await new Listr([
 		{
 			title: 'Create Directus Docker Image',
-			task: async () => {
+			task: async (_, task) => {
 				const result = await globby(['**/*', '!node_modules', '!**/node_modules', '!**/src'], {
 					cwd: path.resolve(__dirname, '..', '..'),
-					gitignore: true,
 				});
 
 				const stream = await docker.buildImage(
@@ -46,13 +45,21 @@ export default async () => {
 				);
 
 				await new Promise((resolve, reject) => {
-					docker.modem.followProgress(stream, (err: Error, res: any) => {
-						if (err) {
-							reject(err);
-						} else {
-							resolve(res);
+					docker.modem.followProgress(
+						stream,
+						(err: Error, res: any) => {
+							if (err) {
+								reject(err);
+							} else {
+								resolve(res);
+							}
+						},
+						(event: any) => {
+							if (event.stream?.startsWith('Step')) {
+								task.output = event.stream;
+							}
 						}
-					});
+					);
 				});
 			},
 		},
@@ -60,29 +67,40 @@ export default async () => {
 			title: 'Pulling Required Images',
 			task: () => {
 				return new Listr(
-					vendors.map((vendor) => {
-						return {
-							title: config.names[vendor]!,
-							task: async () => {
-								const image =
-									config.containerConfig[vendor]! && (config.containerConfig[vendor]! as Dockerode.ContainerSpec).Image;
+					vendors
+						.map((vendor) => {
+							return {
+								title: config.names[vendor]!,
+								task: async (_, task) => {
+									const image =
+										config.containerConfig[vendor]! &&
+										(config.containerConfig[vendor]! as Dockerode.ContainerSpec).Image;
 
-								if (!image) return;
+									if (!image) return;
 
-								const stream = await docker.pull(image);
+									const stream = await docker.pull(image);
 
-								await new Promise((resolve, reject) => {
-									docker.modem.followProgress(stream, (err: Error, res: any) => {
-										if (err) {
-											reject(err);
-										} else {
-											resolve(res);
-										}
+									await new Promise((resolve, reject) => {
+										docker.modem.followProgress(
+											stream,
+											(err: Error, res: any) => {
+												if (err) {
+													reject(err);
+												} else {
+													resolve(res);
+												}
+											},
+											(event: any) => {
+												if (event.stream?.startsWith('Step')) {
+													task.output = event.stream;
+												}
+											}
+										);
 									});
-								});
-							},
-						};
-					}),
+								},
+							} as ListrTask;
+						})
+						.filter((t) => t),
 					{ concurrent: true }
 				);
 			},
