@@ -50,6 +50,19 @@ Learn more about the field options for [Adjusting the Field Layout](#adjusting-f
 
 :::
 
+
+## Renaming a Field
+
+While you can not change the **Key** of a field via Directus (as of now), you can change its **Name** and translations.
+
+1. Navigate to **Settings > Data Model > [Collection Name]**
+2. **Click the Field** you want to update
+3. Navigate to the **Field Tab**
+4. Click the Add New button under **Field Name Translations**
+5. Choose the desired **Language** (your primary language for "renaming")
+6. Enter a **Translation**
+7. Click the **Save** button
+
 ## Duplicating a Field
 
 1. Navigate to **Settings > Data Model > [Collection Name]**
