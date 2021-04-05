@@ -5,7 +5,7 @@ import { getCacheKey } from '../utils/get-cache-key';
 import cache from '../cache';
 import { Transform, transforms } from 'json2csv';
 import { PassThrough } from 'stream';
-import { XliffService } from '../services';
+import { XliffService, XliffSupportedFormats } from '../services';
 import ms from 'ms';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
@@ -73,7 +73,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			res.set('Content-Type', 'text/xml');
 			const xliffService = new XliffService({
 				language: req.sanitizedQuery.language || 'en-US',
-				version: req.sanitizedQuery.export === 'xliff' ? 1 : 2,
+				format: req.sanitizedQuery.export,
 				accountability: req.accountability,
 				schema: req.schema,
 			});

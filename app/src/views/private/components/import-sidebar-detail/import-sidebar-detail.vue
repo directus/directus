@@ -38,6 +38,7 @@
 </template>
 
 <script lang="ts">
+import api from '@/api';
 import { defineComponent, ref, PropType } from '@vue/composition-api';
 import { Collection, Field } from '@/types';
 import { useFieldsStore } from '@/stores/';
@@ -101,7 +102,7 @@ export default defineComponent({
 			this.language = null;
 		},
 	},
-	setup(props) {
+	setup(props, { emit }) {
 		const format = ref('xliff');
 		const language = ref<any>(null);
 		const translationField = ref<any>(null);
@@ -123,7 +124,26 @@ export default defineComponent({
 			clearFileSelection,
 		};
 
-		function importData() {}
+		async function importData() {
+			if (!file.value) throw new Error('[import-sidebar-detail]: You need to select a file for import.');
+			const formData = new FormData();
+			formData.append('file', file.value);
+
+			const params: Record<string, any> = {
+				field: translationField.value,
+				...(!useFileLanguage.value ? { language: language.value } : {}),
+			} as any;
+
+			const qs = Object.keys(params)
+				.map((key) => `${key}=${params[key]}`)
+				.join('&');
+			try {
+				await api.post(`/collections/${props.collection.collection}/import/${format.value}?${qs}`, formData);
+				emit('refresh');
+			} catch (err) {
+			} finally {
+			}
+		}
 
 		function onSelectLanguage(selection: any[]) {
 			language.value = selection;

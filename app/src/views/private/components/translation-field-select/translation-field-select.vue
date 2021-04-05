@@ -26,17 +26,13 @@ export default defineComponent({
 		items(): any[] {
 			const fieldsStore = useFieldsStore();
 			const fields = fieldsStore
-				.getFieldsForCollectionAlphabetical(this.collection)
+				.getFieldsForCollectionAlphabetical(this.$props.collection)
 				.filter((field: any) => field.type === 'translations');
 			return fields.map((field: any) => ({
 				text: field.name,
 				value: field.field,
 			}));
 		},
-	},
-	setup(props) {
-		const collection = props.collection;
-		return { collection };
 	},
 });
 </script>

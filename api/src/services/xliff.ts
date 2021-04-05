@@ -4,30 +4,35 @@ import { InvalidPayloadException, UnprocessableEntityException } from '../except
 import { FieldsService } from './fields';
 import { ItemsService } from './items';
 
+export enum XliffSupportedFormats {
+	XLIFF_1_2 = 'xliff', // 1.2
+	XLIFF_2_0 = 'xliff2', // 2.0
+}
+
 export type XliffServiceOptions = AbstractServiceOptions & {
-	language: string;
-	version: 1 | 2;
+	language?: string;
+	format: string;
 };
 
 export class XliffService {
 	accountability: Accountability | null;
 	schema: SchemaOverview;
 	fieldsService: FieldsService;
-	language: string;
-	version: number;
+	language?: string;
+	format: string;
 
 	constructor(options: XliffServiceOptions) {
 		this.accountability = options.accountability || null;
 		this.schema = options.schema;
 		this.language = options.language;
-		this.version = options.version;
+		this.format = options.format;
 		this.fieldsService = new FieldsService({
 			accountability: this.accountability,
 			schema: this.schema,
 		});
 	}
 
-	async toXliff(collection: string, data?: any[]) {
+	async toXliff(collection: string, data?: any[]): Promise<any> {
 		const fields = await this.fieldsService.readAll(collection);
 		const translationsFields = fields.filter((field) => (field.type as string) === 'translations');
 		const translationsFieldsNames = translationsFields.map((field) => field.field);
@@ -47,8 +52,14 @@ export class XliffService {
 		for (const relation of relations) {
 			(json.resources as any)[relation.many_collection] = await this.getXliffResources(relation, data);
 		}
-		const output = await (this.version === 1 ? xliff.jsToXliff12(json) : xliff.js2xliff(json));
+		const output = await (this.format === XliffSupportedFormats.XLIFF_1_2
+			? xliff.jsToXliff12(json)
+			: xliff.js2xliff(json));
 		return output;
+	}
+
+	static validateFormat(format: string): boolean {
+		return (<any>Object).values(XliffSupportedFormats).includes(format);
 	}
 
 	// prepares output for specific relation

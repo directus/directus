@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import asyncHandler from '../utils/async-handler';
-import { CollectionsService, MetaService } from '../services';
-import { ForbiddenException } from '../exceptions';
+import { CollectionsService, MetaService, XliffService, XliffSupportedFormats } from '../services';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 
 const router = Router();
@@ -86,6 +86,15 @@ router.patch(
 			throw error;
 		}
 
+		return next();
+	}),
+	respond
+);
+
+router.post(
+	'/:collection/import/:format',
+	asyncHandler(async (req, res, next) => {
+		if (req.is('multipart/form-data') === false) return next();
 		return next();
 	}),
 	respond
