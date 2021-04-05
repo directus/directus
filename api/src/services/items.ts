@@ -49,7 +49,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const fields = Object.keys(this.schema.collections[this.collection].fields);
 		const aliases = Object.values(this.schema.collections[this.collection].fields)
-			.filter((field) => field.type === 'alias')
+			.filter((field) => field.alias === true)
 			.map((field) => field.field);
 
 		let payloads: AnyItem[] = clone(toArray(data));
@@ -273,7 +273,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const fields = Object.keys(this.schema.collections[this.collection].fields);
 		const aliases = Object.values(this.schema.collections[this.collection].fields)
-			.filter((field) => field.type === 'alias')
+			.filter((field) => field.alias === true)
 			.map((field) => field.field);
 
 		// Updating one or more items to the same payload
