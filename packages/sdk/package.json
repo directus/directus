@@ -17,6 +17,7 @@
 		"dist"
 	],
 	"scripts": {
+		"prepublishOnly": "npm run build",
 		"prebuild": "npm run cleanup",
 		"build": "run-p build:*",
 		"build:targets": "rollup -c",
