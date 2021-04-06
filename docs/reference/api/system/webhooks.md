@@ -7,7 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> Webhooks are configured within the App (no code required) and send HTTP requests to an external service when a specific event is triggered.
+> Webhooks are configured within the App (no code required) and send HTTP requests to an external service when a
+> specific event is triggered.
 
 </div>
 <div class="right">

@@ -7,8 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> Collections are the individual collections of items, similar to tables in a database. Changes to collections will alter
-the schema of the database. [Learn more about Collections](/concepts/collections/).
+> Collections are the individual collections of items, similar to tables in a database. Changes to collections will
+> alter the schema of the database. [Learn more about Collections](/concepts/collections/).
 
 </div>
 <div class="right">

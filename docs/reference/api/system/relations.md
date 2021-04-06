@@ -7,8 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever other
-structures you can think of. [Learn more about Relationships](/concepts/relationships/).
+> What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever
+> other structures you can think of. [Learn more about Relationships](/concepts/relationships/).
 
 </div>
 <div class="right">

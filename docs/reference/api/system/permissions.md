@@ -7,7 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> Permissions are assigned to Roles, and control data access throughout the platform. [Learn more about Permissions](/concepts/permissions/).
+> Permissions are assigned to Roles, and control data access throughout the platform.
+> [Learn more about Permissions](/concepts/permissions/).
 
 </div>
 <div class="right">

@@ -7,7 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> Roles define a specific set of access permissions, and are the primary organizational structure for Users within the platform. [Learn more about Roles](/concepts/roles/).
+> Roles define a specific set of access permissions, and are the primary organizational structure for Users within the
+> platform. [Learn more about Roles](/concepts/roles/).
 
 </div>
 <div class="right">

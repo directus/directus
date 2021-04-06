@@ -7,7 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> Folders can be used to organize files within the platform. Folders are virtual, and aren't mirrored within the storage adapter.
+> Folders can be used to organize files within the platform. Folders are virtual, and aren't mirrored within the storage
+> adapter.
 
 </div>
 <div class="right">

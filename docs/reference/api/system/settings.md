@@ -7,7 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> Settings are key-value pairs that are stored in the database, and control different aspects of the project. Only administrators have access to manage Settings.
+> Settings are key-value pairs that are stored in the database, and control different aspects of the project. Only
+> administrators have access to manage Settings.
 
 </div>
 <div class="right">

@@ -42,10 +42,11 @@ Get all top-level fields\
 Get all top-level fields and all second-level relational fields\
 `*.*`
 
-::: warning Nested Wildcard
+::: tip Performance & Size
 
-While you can theoretically nest wildcards infinitely, it's not recommended for production use. Nested wildcards can
-result in degraded performance, and circular parent-child-parent structures.
+While the fields wildcard is very useful for debugging purposes, we recommend only requesting _specific_ fields for
+production use. By only requesting the fields you really need, you can speed up the request, and reduce the overall
+output size.
 
 :::
 
@@ -95,7 +96,7 @@ In GraphQL, this can be achieved using [Union Types](/reference/api/graphql/#man
 
 ### GraphQL
 
-n/a
+_Natively supported in GraphQL_
 
 </div>
 </div>
@@ -497,7 +498,7 @@ Only get 3 related articles, with only the top rated comment nested
 
 ### GraphQL
 
-n/a
+_Natively supported in GraphQL. Any attribute can be used on a nested relational dataset._
 
 </div>
 </div>
