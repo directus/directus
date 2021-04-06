@@ -39,6 +39,7 @@ import {
 	GraphQLSchema,
 	GraphQLEnumType,
 	GraphQLScalarType,
+	GraphQLObjectType,
 } from 'graphql';
 import { listExtensions } from '../extensions';
 import { getGraphQLType } from '../utils/get-graphql-type';
@@ -56,6 +57,7 @@ import { PresetsService } from './presets';
 import { RevisionsService } from './revisions';
 import { RolesService } from './roles';
 import { SettingsService } from './settings';
+import { ServerService } from './server';
 import { UsersService } from './users';
 import { WebhooksService } from './webhooks';
 
@@ -92,7 +94,9 @@ import {
 	SchemaComposer,
 	InputTypeComposer,
 	toInputObjectType,
+	GraphQLJSON,
 } from 'graphql-compose';
+import { SpecificationService } from './specifications';
 
 /**
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
@@ -1095,6 +1099,66 @@ export class GraphQLService {
 			},
 		});
 
+		const ServerInfo = schemaComposer.createObjectTC({
+			name: 'server_info',
+			fields: {
+				project_name: { type: GraphQLString },
+				project_logo: { type: GraphQLString },
+				project_color: { type: GraphQLString },
+				project_foreground: { type: GraphQLString },
+				project_background: { type: GraphQLString },
+				project_note: { type: GraphQLString },
+				custom_css: { type: GraphQLString },
+			},
+		});
+
+		if (this.accountability?.admin === true) {
+			ServerInfo.addFields({
+				directus: {
+					type: new GraphQLObjectType({
+						name: 'server_info_directus',
+						fields: {
+							version: {
+								type: GraphQLString,
+							},
+						},
+					}),
+				},
+				node: {
+					type: new GraphQLObjectType({
+						name: 'server_info_node',
+						fields: {
+							version: {
+								type: GraphQLString,
+							},
+							uptime: {
+								type: GraphQLInt,
+							},
+						},
+					}),
+				},
+				os: {
+					type: new GraphQLObjectType({
+						name: 'server_info_os',
+						fields: {
+							type: {
+								type: GraphQLString,
+							},
+							version: {
+								type: GraphQLString,
+							},
+							uptime: {
+								type: GraphQLInt,
+							},
+							totalmem: {
+								type: GraphQLInt,
+							},
+						},
+					}),
+				},
+			});
+		}
+
 		schemaComposer.Query.addFields({
 			extensions: {
 				type: schemaComposer.createObjectTC({
@@ -1112,6 +1176,64 @@ export class GraphQLService {
 					layouts: await listExtensions('layouts'),
 					modules: await listExtensions('modules'),
 				}),
+			},
+
+			server_specs_oas: {
+				type: GraphQLJSON,
+				resolve: async () => {
+					const service = new SpecificationService({ schema: this.schema, accountability: this.accountability });
+					return await service.oas.generate();
+				},
+			},
+
+			server_specs_graphql: {
+				type: GraphQLString,
+				args: {
+					scope: new GraphQLEnumType({
+						name: 'graphql_sdl_scope',
+						values: {
+							items: { value: 'items' },
+							system: { value: 'system' },
+						},
+					}),
+				},
+				resolve: async (_, args) => {
+					const service = new GraphQLService({
+						schema: this.schema,
+						accountability: this.accountability,
+						scope: args.scope ?? 'items',
+					});
+					return service.getSchema('sdl');
+				},
+			},
+
+			server_ping: {
+				type: GraphQLString,
+				resolve: () => 'pong',
+			},
+
+			server_info: {
+				type: ServerInfo,
+				resolve: async () => {
+					const service = new ServerService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					return await service.serverInfo();
+				},
+			},
+
+			server_health: {
+				type: GraphQLJSON,
+				resolve: async () => {
+					const service = new ServerService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					return await service.serverInfo();
+				},
 			},
 		});
 
