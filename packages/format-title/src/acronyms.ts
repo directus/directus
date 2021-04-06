@@ -19,6 +19,7 @@ export default [
 	'DIY',
 	'DVD',
 	'DB',
+	'DNA',
 	'E3',
 	'EIN',
 	'ESPN',

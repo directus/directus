@@ -7,7 +7,7 @@
 	"scripts": {
 		"build": "node build.js",
 		"dev": "npm-watch build",
-		"prepublish": "npm run build",
+		"prepublishOnly": "npm run build",
 		"dev:site": "vuepress dev",
 		"build:site": "vuepress build"
 	},

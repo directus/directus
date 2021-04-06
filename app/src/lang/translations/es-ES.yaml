@@ -577,6 +577,7 @@ settings_webhooks: Webhooks
 settings_presets: Predefinidos y Marcadores
 scope: Alcance
 layout: Diseño
+tree_view: Vista en árbol
 changes_are_permanent: Los cambios son permanentes
 preset_name_placeholder: Nombre del Marcador...
 preset_search_placeholder: Consulta de búsqueda...
@@ -971,6 +972,9 @@ interfaces:
   translations:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
+  tree-view:
+    description: Vista en árbol para elementos anidados recursivos uno-a-muchos
+    recursive_only: La interfaz de vista en árbol sólo funciona para relaciones recursivas.
   user:
     user: Usuario
     description: Seleccionar un usuario existente de Directus

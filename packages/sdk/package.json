@@ -1,0 +1,70 @@
+{
+	"name": "@directus/sdk",
+	"version": "9.0.0-rc.49",
+	"description": "The official Directus SDK for use in JavaScript!",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/sdk.esm.js",
+	"unpkg": "./dist/sdk.esm.min.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": "./dist/index.js"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"prebuild": "npm run cleanup",
+		"build": "run-p build:*",
+		"build:targets": "rollup -c",
+		"build:node": "tsc --project ./tsconfig.json",
+		"cleanup": "run-p cleanup:*",
+		"cleanup:dist": "rimraf ./dist",
+		"cleanup:types": "rimraf ./types",
+		"cleanup:node": "rimraf ./node",
+		"cleanup:browser": "rimraf ./browser",
+		"cleanup:coverage": "rimraf ./coverage",
+		"test": "jest --coverage",
+		"test:watch": "jest --coverage --watchAll"
+	},
+	"keywords": [
+		"api",
+		"client",
+		"cms",
+		"directus",
+		"headless",
+		"javascript",
+		"node",
+		"sdk"
+	],
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"license": "MIT",
+	"dependencies": {
+		"axios": "^0.21.1"
+	},
+	"devDependencies": {
+		"@rollup/plugin-commonjs": "^17.1.0",
+		"@rollup/plugin-json": "^4.1.0",
+		"@rollup/plugin-node-resolve": "^11.2.0",
+		"@types/jest": "^26.0.22",
+		"argon2": "^0.27.1",
+		"dotenv": "^8.2.0",
+		"jest": "^26.6.3",
+		"jest-environment-jsdom": "^26.6.2",
+		"jest-environment-jsdom-global": "^2.0.4",
+		"nock": "^13.0.10",
+		"npm-run-all": "^4.1.5",
+		"rimraf": "^3.0.2",
+		"rollup": "^2.40.0",
+		"rollup-plugin-copy": "^3.4.0",
+		"rollup-plugin-sourcemaps": "^0.6.3",
+		"rollup-plugin-terser": "^7.0.2",
+		"rollup-plugin-typescript2": "^0.30.0",
+		"ts-jest": "^26.5.2",
+		"ts-node": "^9.1.1",
+		"typescript": "^4.2.2"
+	}
+}

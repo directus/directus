@@ -68,6 +68,56 @@ GET /server/specs/oas
 
 ---
 
+## Get GraphQL SDL
+
+Retrieve the GraphQL SDL for the current project.
+
+<div class="two-up">
+<div class="left">
+
+::: tip Permissions
+
+The SDL is based on the permissions of the currently authenticated user.
+
+:::
+
+### Returns
+
+GraphQL SDL file.
+
+</div>
+<div class="right">
+
+```
+GET /server/specs/graphql/
+GET /server/specs/graphql/system
+```
+
+```graphql
+type about_us {
+  id: Int
+  introduction: String
+  our_process: String
+  sales_email: String
+  general_email: String
+  primary_color: String
+  secondary_color: String
+  logo: directus_files
+  mark: directus_files
+}
+
+type articles {
+  id: Int
+  status: String
+	...
+# etc
+```
+
+</div>
+</div>
+
+---
+
 ## Ping
 
 Ping... pong! 🏓

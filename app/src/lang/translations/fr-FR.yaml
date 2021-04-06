@@ -11,7 +11,6 @@ add_field: Ajouter un champ
 role_name: Nom de rôle
 db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
 show_archived_items: Afficher les éléments archivés
-edited: Modifié
 required: Requis
 required_for_app_access: Requis pour l'accès à l'application
 requires_value: Valeurs obligatoires
@@ -798,7 +797,6 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:
