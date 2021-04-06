@@ -96,14 +96,6 @@ fields:
     display: datetime
     readonly: true
 
-  - field: created_on
-    display: datetime
-    readonly: true
-
-  - field: created_by
-    display: user
-    readonly: true
-
   - field: embed
     width: half
     hidden: true
