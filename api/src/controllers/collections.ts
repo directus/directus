@@ -51,11 +51,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const collectionKey = req.params.collection.includes(',')
-			? req.params.collection.split(',')
-			: req.params.collection;
-
-		const collection = await collectionsService.readByKey(collectionKey as any);
+		const collection = await collectionsService.readByKey(req.params.collection);
 		res.locals.payload = { data: collection || null };
 
 		return next();
@@ -70,13 +66,10 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const collectionKey = req.params.collection.includes(',')
-			? req.params.collection.split(',')
-			: req.params.collection;
-		await collectionsService.update(req.body, collectionKey as any);
+		await collectionsService.update(req.body, req.params.collection);
 
 		try {
-			const collection = await collectionsService.readByKey(collectionKey as any);
+			const collection = await collectionsService.readByKey(req.params.collection);
 			res.locals.payload = { data: collection || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
@@ -99,11 +92,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		const collectionKey = req.params.collection.includes(',')
-			? req.params.collection.split(',')
-			: req.params.collection;
-
-		await collectionsService.delete(collectionKey as any);
+		await collectionsService.delete(req.params.collection);
 
 		return next();
 	}),

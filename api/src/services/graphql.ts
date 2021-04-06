@@ -51,6 +51,8 @@ import { sanitizeQuery } from '../utils/sanitize-query';
 
 import { ActivityService } from './activity';
 import { AuthenticationService } from './authentication';
+import { CollectionsService } from './collections';
+import { FieldsService } from './fields';
 import { FilesService } from './files';
 import { FoldersService } from './folders';
 import { PermissionsService } from './permissions';
@@ -205,12 +207,16 @@ export class GraphQLService {
 		};
 
 		if (this.scope === 'system') {
-			this.injectSystemResolvers(schemaComposer, {
-				CreateCollectionTypes,
-				ReadCollectionTypes,
-				UpdateCollectionTypes,
-				DeleteCollectionTypes,
-			});
+			this.injectSystemResolvers(
+				schemaComposer,
+				{
+					CreateCollectionTypes,
+					ReadCollectionTypes,
+					UpdateCollectionTypes,
+					DeleteCollectionTypes,
+				},
+				schema
+			);
 		}
 
 		if (Object.keys(schema.read.collections).length > 0) {
@@ -317,6 +323,7 @@ export class GraphQLService {
 
 			for (const collection of Object.values(schema[action].collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
+				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
 
 				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
 					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
@@ -333,21 +340,21 @@ export class GraphQLService {
 
 			for (const relation of schema[action].relations) {
 				if (relation.one_collection) {
-					CollectionTypes[relation.many_collection].addFields({
+					CollectionTypes[relation.many_collection]?.addFields({
 						[relation.many_field]: {
 							type: CollectionTypes[relation.one_collection],
 						},
 					});
 
 					if (relation.one_field) {
-						CollectionTypes[relation.one_collection].addFields({
+						CollectionTypes[relation.one_collection]?.addFields({
 							[relation.one_field]: {
 								type: [CollectionTypes[relation.many_collection]],
 							},
 						});
 					}
 				} else if (relation.one_allowed_collections) {
-					CollectionTypes[relation.many_collection].addFields({
+					CollectionTypes[relation.many_collection]?.addFields({
 						[relation.many_field]: {
 							type: new GraphQLUnionType({
 								name: `${relation.many_collection}_${relation.many_field}_union`,
@@ -480,6 +487,7 @@ export class GraphQLService {
 
 			for (const collection of Object.values(schema.read.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
+				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
 
 				ReadableCollectionFilterTypes[collection.collection] = schemaComposer.createInputTC({
 					name: `${collection.collection}_filter`,
@@ -547,12 +555,12 @@ export class GraphQLService {
 
 			for (const relation of schema.read.relations) {
 				if (relation.one_collection) {
-					ReadableCollectionFilterTypes[relation.many_collection].addFields({
+					ReadableCollectionFilterTypes[relation.many_collection]?.addFields({
 						[relation.many_field]: ReadableCollectionFilterTypes[relation.one_collection],
 					});
 
 					if (relation.one_field) {
-						ReadableCollectionFilterTypes[relation.one_collection].addFields({
+						ReadableCollectionFilterTypes[relation.one_collection]?.addFields({
 							[relation.one_field]: ReadableCollectionFilterTypes[relation.many_collection],
 						});
 					}
@@ -574,6 +582,7 @@ export class GraphQLService {
 
 			for (const collection of Object.values(schema.create.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
+				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
 				if (collection.collection in CreateCollectionTypes === false) continue;
 
 				const collectionIsReadable = collection.collection in ReadCollectionTypes;
@@ -622,6 +631,7 @@ export class GraphQLService {
 
 			for (const collection of Object.values(schema.update.collections)) {
 				if (Object.keys(collection.fields).length === 0) continue;
+				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
 				if (collection.collection in UpdateCollectionTypes === false) continue;
 
 				const collectionIsReadable = collection.collection in ReadCollectionTypes;
@@ -1082,6 +1092,12 @@ export class GraphQLService {
 			ReadCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
 			UpdateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
 			DeleteCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
+		},
+		schema: {
+			create: SchemaOverview;
+			read: SchemaOverview;
+			update: SchemaOverview;
+			delete: SchemaOverview;
 		}
 	) {
 		const AuthTokens = schemaComposer.createObjectTC({
@@ -1161,7 +1177,141 @@ export class GraphQLService {
 			});
 		}
 
+		const Collection = schemaComposer.createObjectTC({
+			name: 'directus_collections',
+			fields: {
+				collection: GraphQLString,
+				meta: schemaComposer.createObjectTC({
+					name: 'directus_collections_meta',
+					fields: Object.values(schema.create.collections['directus_collections'].fields).reduce((acc, field) => {
+						acc[field.field] = {
+							type: getGraphQLType(field.type),
+							description: field.note,
+						};
+
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				}),
+				schema: schemaComposer.createObjectTC({
+					name: 'directus_collections_schema',
+					fields: {
+						name: GraphQLString,
+						comment: GraphQLString,
+					},
+				}),
+			},
+		});
+
+		const Field = schemaComposer.createObjectTC({
+			name: 'directus_fields',
+			fields: {
+				collection: GraphQLString,
+				field: GraphQLString,
+				type: GraphQLString,
+				meta: schemaComposer.createObjectTC({
+					name: 'directus_fields_meta',
+					fields: Object.values(schema.create.collections['directus_fields'].fields).reduce((acc, field) => {
+						acc[field.field] = {
+							type: getGraphQLType(field.type),
+							description: field.note,
+						};
+
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				}),
+				schema: schemaComposer.createObjectTC({
+					name: 'directus_fields_schema',
+					fields: {
+						name: GraphQLString,
+						table: GraphQLString,
+						data_type: GraphQLString,
+						default_value: GraphQLString,
+						max_length: GraphQLInt,
+						numeric_precision: GraphQLInt,
+						numeric_scale: GraphQLInt,
+						is_nullable: GraphQLBoolean,
+						is_unique: GraphQLBoolean,
+						is_primary_key: GraphQLBoolean,
+						has_auto_increment: GraphQLBoolean,
+						foreign_key_column: GraphQLString,
+						foreign_key_table: GraphQLString,
+						comment: GraphQLString,
+					},
+				}),
+			},
+		});
+
 		schemaComposer.Query.addFields({
+			collections: {
+				type: [Collection],
+				resolve: async () => {
+					const collectionsService = new CollectionsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					return await collectionsService.readByQuery();
+				},
+			},
+
+			collections_by_name: {
+				type: Collection,
+				args: {
+					name: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					const collectionsService = new CollectionsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					return await collectionsService.readByKey(args.name);
+				},
+			},
+
+			fields: {
+				type: [Field],
+				resolve: async () => {
+					const service = new FieldsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					return await service.readAll();
+				},
+			},
+
+			fields_in_collection: {
+				type: Field,
+				args: {
+					collection: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					const service = new FieldsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					return await service.readAll(args.collection);
+				},
+			},
+
+			fields_by_name: {
+				type: Field,
+				args: {
+					collection: GraphQLNonNull(GraphQLString),
+					field: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					const service = new FieldsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					return await service.readOne(args.collection, args.field);
+				},
+			},
+
 			extensions: {
 				type: schemaComposer.createObjectTC({
 					name: 'extensions',
@@ -1325,6 +1475,134 @@ export class GraphQLService {
 					await service.delete(args.id);
 
 					return { id: args.id };
+				},
+			},
+
+			create_collections_item: {
+				type: Collection,
+				args: {
+					data: toInputObjectType(Collection.clone('create_directus_collections'), {
+						postfix: '_input',
+					}).addFields({
+						fields: [
+							toInputObjectType(Field.clone('create_directus_collections_fields'), { postfix: '_input' }).NonNull,
+						],
+					}).NonNull,
+				},
+				resolve: async (_, args) => {
+					const collectionsService = new CollectionsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					const collectionKey = await collectionsService.create(args.data);
+					return await collectionsService.readByKey(collectionKey);
+				},
+			},
+
+			update_collections_item: {
+				type: Collection,
+				args: {
+					collection: GraphQLNonNull(GraphQLString),
+					data: toInputObjectType(Collection.clone('update_directus_collections'), {
+						postfix: '_input',
+					}).removeField(['collection', 'schema']).NonNull,
+				},
+				resolve: async (_, args) => {
+					const collectionsService = new CollectionsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					const collectionKey = await collectionsService.update(args.collection, args.data);
+					return await collectionsService.readByKey(collectionKey);
+				},
+			},
+
+			delete_collections_item: {
+				type: schemaComposer.createObjectTC({
+					name: 'delete_collection',
+					fields: {
+						collection: GraphQLString,
+					},
+				}),
+				args: {
+					collection: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					const collectionsService = new CollectionsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					await collectionsService.delete(args.collection);
+
+					return { collection: args.collection };
+				},
+			},
+
+			create_fields_item: {
+				type: Field,
+				args: {
+					collection: GraphQLNonNull(GraphQLString),
+					data: toInputObjectType(Field.clone('create_directus_fields'), { postfix: '_input' }).NonNull,
+				},
+				resolve: async (_, args) => {
+					const service = new FieldsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					await service.createField(args.collection, args.data);
+
+					return await service.readOne(args.collection, args.data.field);
+				},
+			},
+
+			update_fields_item: {
+				type: Field,
+				args: {
+					collection: GraphQLNonNull(GraphQLString),
+					field: GraphQLNonNull(GraphQLString),
+					data: toInputObjectType(Field.clone('update_directus_fields'), { postfix: '_input' }).NonNull,
+				},
+				resolve: async (_, args) => {
+					const service = new FieldsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					await service.updateField(args.collection, {
+						...args.data,
+						field: args.field,
+					});
+
+					return await service.readOne(args.collection, args.data.field);
+				},
+			},
+
+			delete_fields_item: {
+				type: schemaComposer.createObjectTC({
+					name: 'delete_field',
+					fields: {
+						collection: GraphQLString,
+						field: GraphQLString,
+					},
+				}),
+				args: {
+					collection: GraphQLNonNull(GraphQLString),
+					field: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					const service = new FieldsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					await service.deleteField(args.collection, args.field);
+
+					const { collection, field } = args;
+					return { collection, field };
 				},
 			},
 
