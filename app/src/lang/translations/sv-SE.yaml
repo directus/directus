@@ -11,7 +11,6 @@ add_field: Lägg till fält
 role_name: Rollens namn
 db_only_click_to_configure: 'Endast databas: Klicka för att konfigurera '
 show_archived_items: Visa arkiverade objekt
-edited: Redigerad
 required: Obligatoriskt
 required_for_app_access: Krävs för tillgång till applikationen
 requires_value: Kräver ett värde
