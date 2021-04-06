@@ -20,7 +20,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, toRefs, ref, watch } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores';
-import { get } from 'lodash';
+import { get, has } from 'lodash';
 import { Field } from '@/types';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
@@ -35,7 +35,7 @@ export default defineComponent({
 			required: true,
 		},
 		item: {
-			type: [Object, String] as PropType<Record<string, any> | string>,
+			type: Object as PropType<Record<string, any>>,
 			required: true,
 		},
 		template: {
@@ -47,16 +47,20 @@ export default defineComponent({
 		const { collection, item, template } = toRefs(props);
 		const fieldsStore = useFieldsStore();
 		const displays = getDisplays();
-		const loadedItem = ref<Record<string, any>>({});
+		const missingItemData = ref<Record<string, any>>({});
 
 		const regex = /({{.*?}})/g;
 
 		const _item = computed(() => {
-			if (typeof item.value === 'object') return item.value;
-			return loadedItem.value;
+			return { ...item.value, ...missingItemData.value };
 		});
 
-		const fieldsInTemplate = computed(() => getFieldsFromTemplate(props.template));
+		const primaryKeyField = computed(
+			() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field as string
+		);
+		const nonExistendFields = computed(() =>
+			getFieldsFromTemplate(props.template).filter((field) => !has(item.value, field))
+		);
 
 		watch(item, loadItem);
 		watch(collection, loadItem);
@@ -107,16 +111,22 @@ export default defineComponent({
 				.map((p) => p || null)
 		);
 
-		return { parts, loadedItem, _item };
+		return { parts };
 
 		async function loadItem() {
-			if (typeof item.value !== 'string') return;
-			const result = await api.get(`items/${collection.value}/${item.value}`, {
+			if (nonExistendFields.value.length === 0 || primaryKeyField.value in item.value === false) return;
+
+			const id = item.value[primaryKeyField.value];
+			const endpoint = collection.value.startsWith('directus_')
+				? `/${collection.value.substring(9)}/${id}`
+				: `/items/${collection.value}/${id}`;
+
+			const result = await api.get(endpoint, {
 				params: {
-					fields: fieldsInTemplate.value,
+					fields: nonExistendFields.value,
 				},
 			});
-			loadedItem.value = result.data.data;
+			missingItemData.value = result.data.data;
 		}
 	},
 });
