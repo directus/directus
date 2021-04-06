@@ -1,6 +1,7 @@
 import { Router } from 'express';
+import Busboy from 'busboy';
 import asyncHandler from '../utils/async-handler';
-import { CollectionsService, MetaService, XliffService, XliffSupportedFormats } from '../services';
+import { CollectionsService, MetaService, XliffService } from '../services';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 
@@ -92,10 +93,52 @@ router.patch(
 );
 
 router.post(
-	'/:collection/import/:format',
+	'/:collection',
 	asyncHandler(async (req, res, next) => {
 		if (req.is('multipart/form-data') === false) return next();
-		return next();
+		let content = '';
+		/* req
+			.on('data', (data) => content += data)
+			.on('end', (...args: any[]) => {
+			const format = req.query.format as string;
+			// console.log(data);
+		});*/
+		const busboy = new Busboy({ headers: req.headers });
+		let fileCount = 0;
+		const format = req.query.format as string;
+		const collectionKey = req.params.collection;
+		busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
+			fileCount++;
+			if (['xliff', 'xliff2'].includes(format)) {
+				if (fileCount > 1) {
+					busboy.emit('error', new InvalidPayloadException(`Only one import file supported for XLIFF format.`));
+				}
+				let content = '';
+				fileStream
+					.on('data', (d) => (content += d))
+					.on('end', async () => {
+						const xliffService = new XliffService({
+							accountability: req.accountability,
+							schema: req.schema,
+							language: req.query.language as string,
+							format,
+						});
+						try {
+							await xliffService.fromXliff(collectionKey, content, req.query.field as string | undefined);
+						} catch (error) {
+							busboy.emit('error', error);
+						}
+					});
+			}
+		});
+		busboy.on('error', (error: Error) => {
+			next(error);
+		});
+
+		busboy.on('finish', () => {
+			next();
+		});
+		req.pipe(busboy);
 	}),
 	respond
 );

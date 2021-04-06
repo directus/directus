@@ -130,15 +130,21 @@ export default defineComponent({
 			formData.append('file', file.value);
 
 			const params: Record<string, any> = {
-				field: translationField.value,
-				...(!useFileLanguage.value ? { language: language.value } : {}),
+				access_token: api.defaults.headers.Authorization.substring(7),
+				format: format.value,
+				...(!useFileLanguage.value
+					? {
+							language: language.value,
+							field: translationField.value,
+					  }
+					: {}),
 			} as any;
 
 			const qs = Object.keys(params)
 				.map((key) => `${key}=${params[key]}`)
 				.join('&');
 			try {
-				await api.post(`/collections/${props.collection.collection}/import/${format.value}?${qs}`, formData);
+				await api.post(`/collections/${props.collection.collection}?${qs}`, formData);
 				emit('refresh');
 			} catch (err) {
 			} finally {

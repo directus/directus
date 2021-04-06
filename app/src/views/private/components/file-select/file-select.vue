@@ -37,6 +37,7 @@ export default defineComponent({
 		},
 		clearSelection() {
 			this.file = null;
+			(this.$refs.import_file as HTMLInputElement).value = '';
 			this.$emit('change', this.file);
 		},
 	},

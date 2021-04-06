@@ -1,6 +1,6 @@
-import { AbstractServiceOptions, Accountability, Relation, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Accountability, Field, Relation, SchemaOverview } from '../types';
 import xliff from 'xliff';
-import { InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException, UnprocessableEntityException } from '../exceptions';
 import { FieldsService } from './fields';
 import { ItemsService } from './items';
 
@@ -30,6 +30,55 @@ export class XliffService {
 			accountability: this.accountability,
 			schema: this.schema,
 		});
+	}
+
+	async fromXliff(collection: string, content: string, translationsFieldName: string | undefined) {
+		if (!content || content.length === 0) {
+			throw new InvalidPayloadException(`There is no content to import.`);
+		}
+		const fields = await this.fieldsService.readAll(collection);
+		const translationsFields = fields.filter((field) => (field.type as string) === 'translations');
+		const translationsFieldsNames = translationsFields.map((field) => field.field);
+		let translationsField: Field | undefined = undefined;
+		if (translationsFieldName) {
+			translationsField = translationsFields.find((t) => t.field === translationsFieldName);
+			throw new InvalidPayloadException(
+				`Field '${translationsFieldName}' doesn't exist in '${collection}' collection.`
+			);
+		}
+		const relations = this.schema.relations.filter(
+			(relation: any) =>
+				relation.one_collection === collection &&
+				(translationsField
+					? relation.one_field === translationsField.field
+					: translationsFieldsNames.includes(relation.one_field))
+		);
+		const json = await (this.format === XliffSupportedFormats.XLIFF_1_2
+			? xliff.xliff12ToJs(content)
+			: xliff.xliff2js(content));
+		const language = this.language || json.targetLanguage;
+		if (!language) {
+			throw new InvalidPayloadException(`Cannot obtain information about target language.`);
+		}
+		for (const relation of relations) {
+			const translatedItems = json.resources[relation.many_collection];
+			if (!translatedItems) {
+				throw new InvalidPayloadException(`The import file doesn't match the target collection.`);
+			}
+			const itemsService = new ItemsService(relation.many_collection, {
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+			const fields = await this.fieldsService.readAll(relation.many_collection);
+			const items = Object.keys(translatedItems).map((key) => {
+				const [parentKey, fieldName] = key.split('.');
+				if (!parentKey || !fieldName) {
+					throw new InvalidPayloadException(`The import file doesn't match the target collection.`);
+				}
+				const content = translatedItems[key].target;
+				return { parentKey, fieldName, content };
+			});
+		}
 	}
 
 	async toXliff(collection: string, data?: any[]): Promise<any> {
