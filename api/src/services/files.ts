@@ -7,12 +7,15 @@ import parseIPTC from '../utils/parse-iptc';
 import { AbstractServiceOptions, File, PrimaryKey } from '../types';
 import { clone } from 'lodash';
 import cache from '../cache';
-import { ForbiddenException } from '../exceptions';
+import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
 import { toArray } from '../utils/to-array';
 import { extension } from 'mime-types';
 import path from 'path';
 import env from '../env';
 import logger from '../logger';
+import axios, { AxiosResponse } from 'axios';
+import url from 'url';
+import formatTitle from '@directus/format-title';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -117,6 +120,43 @@ export class FilesService extends ItemsService {
 		}
 
 		return primaryKey;
+	}
+
+	async import(importURL: string, body: Partial<File>) {
+		const fileCreatePermissions = this.schema.permissions.find(
+			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
+		);
+
+		if (this.accountability?.admin !== true && !fileCreatePermissions) {
+			throw new ForbiddenException();
+		}
+
+		let fileResponse: AxiosResponse<NodeJS.ReadableStream>;
+
+		try {
+			fileResponse = await axios.get<NodeJS.ReadableStream>(importURL, {
+				responseType: 'stream',
+			});
+		} catch (err) {
+			logger.warn(`Couldn't fetch file from url "${url}"`);
+			logger.warn(err);
+			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+				service: 'external-file',
+			});
+		}
+
+		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
+		const filename = path.basename(parsedURL.pathname as string);
+
+		const payload = {
+			filename_download: filename,
+			storage: toArray(env.STORAGE_LOCATIONS)[0],
+			type: fileResponse.headers['content-type'],
+			title: formatTitle(filename),
+			...(body || {}),
+		};
+
+		return await this.upload(fileResponse.data, payload);
 	}
 
 	delete(key: PrimaryKey): Promise<PrimaryKey>;
