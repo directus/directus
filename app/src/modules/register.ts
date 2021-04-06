@@ -21,20 +21,21 @@ export async function loadModules() {
 
 		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
 			for (const customKey of customResponse.data.data) {
-				try {
-					const module = await import(/* webpackIgnore: true */ `/extensions/modules/${customKey}/index.js`);
-					module.default.routes = module.default.routes.map((route: RouteConfig) => {
-						if (route.path) {
-							route.path = `/${module.default.id}/${route.path}`;
-						}
+				import(/* webpackIgnore: true */ `/extensions/modules/${customKey}/index.js`)
+					.then((module) => {
+						module.default.routes = module.default.routes.map((route: RouteConfig) => {
+							if (route.path) {
+								route.path = `/${module.default.id}/${route.path}`;
+							}
 
-						return route;
+							return route;
+						});
+						loadedModules.push(module.default);
+					})
+					.catch((err) => {
+						console.warn(`Couldn't load custom module "${customKey}"`);
+						console.warn(err);
 					});
-					loadedModules.push(module.default);
-				} catch (err) {
-					console.warn(`Couldn't load custom module "${customKey}"`);
-					console.warn(err);
-				}
 			}
 		}
 	} catch {

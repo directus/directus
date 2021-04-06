@@ -19,13 +19,14 @@ export async function registerDisplays() {
 
 		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
 			for (const customKey of customResponse.data.data) {
-				try {
-					const module = await import(/* webpackIgnore: true */ `/extensions/displays/${customKey}/index.js`);
-					modules.push(module.default);
-				} catch (err) {
-					console.warn(`Couldn't load custom displays "${customKey}"`);
-					console.warn(err);
-				}
+				import(/* webpackIgnore: true */ `/extensions/displays/${customKey}/index.js`)
+					.then((module) => {
+						modules.push(module.default);
+					})
+					.catch((err) => {
+						console.warn(`Couldn't load custom displays "${customKey}"`);
+						console.warn(err);
+					});
 			}
 		}
 	} catch {
