@@ -98,7 +98,7 @@ import {
  * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
  */
 const SYSTEM_DENY_LIST = ['directus_collections', 'directus_fields', 'directus_migrations', 'directus_sessions'];
-const READ_ONLY = ['directus_activity'];
+const READ_ONLY = ['directus_activity', 'directus_revisions'];
 
 export class GraphQLService {
 	accountability: Accountability | null;
