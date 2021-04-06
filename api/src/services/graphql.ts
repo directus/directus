@@ -9,6 +9,7 @@ import {
 	PrimaryKey,
 	Action,
 } from '../types';
+import argon2 from 'argon2';
 import {
 	GraphQLString,
 	GraphQLList,
@@ -59,6 +60,7 @@ import { RolesService } from './roles';
 import { SettingsService } from './settings';
 import { ServerService } from './server';
 import { UsersService } from './users';
+import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 
 import { BaseException, InvalidPayloadException, GraphQLValidationException } from '../exceptions';
@@ -1235,6 +1237,23 @@ export class GraphQLService {
 					return await service.serverInfo();
 				},
 			},
+
+			users_me: {
+				type: ReadCollectionTypes['directus_users'],
+				resolve: async (_, args, __, info) => {
+					if (!this.accountability?.user) return null;
+
+					const service = new UsersService({ schema: this.schema, accountability: this.accountability });
+
+					const selections = this.replaceFragmentsInSelections(
+						info.fieldNodes[0]?.selectionSet?.selections,
+						info.fragments
+					);
+					const query = this.getQuery(args, selections || [], info.variableValues);
+
+					return await service.readByKey(this.accountability.user, query);
+				},
+			},
 		});
 
 		schemaComposer.Mutation.addFields({
@@ -1490,6 +1509,160 @@ export class GraphQLService {
 					const query = this.getQuery(args, selections || [], info.variableValues);
 
 					return await service.readByKey(primaryKey, query);
+				},
+			},
+
+			users_invite: {
+				type: Void,
+				args: {
+					email: GraphQLNonNull(GraphQLString),
+					role: GraphQLNonNull(GraphQLString),
+					invite_url: GraphQLString,
+				},
+				resolve: async (_, args) => {
+					const service = new UsersService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					await service.inviteUser(args.email, args.role, args.invite_url || null);
+
+					return null;
+				},
+			},
+
+			users_invite_accept: {
+				type: Void,
+				args: {
+					token: GraphQLNonNull(GraphQLString),
+					password: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					const service = new UsersService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					await service.acceptInvite(args.token, args.password);
+
+					return null;
+				},
+			},
+
+			users_me_tfa_enable: {
+				type: new GraphQLObjectType({
+					name: 'users_me_tfa_enable_data',
+					fields: {
+						secret: { type: GraphQLString },
+						otpauth_url: { type: GraphQLString },
+					},
+				}),
+				args: {
+					password: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					if (!this.accountability?.user) return null;
+
+					const service = new UsersService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					const authService = new AuthenticationService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					await authService.verifyPassword(this.accountability.user, args.password);
+
+					const { url, secret } = await service.enableTFA(this.accountability.user);
+
+					return { secret, otpauth_url: url };
+				},
+			},
+
+			users_me_tfa_disable: {
+				type: Void,
+				args: {
+					otp: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					if (!this.accountability?.user) return null;
+
+					const service = new UsersService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					const authService = new AuthenticationService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					const otpValid = await authService.verifyOTP(this.accountability.user, args.otp);
+
+					if (otpValid === false) {
+						throw new InvalidPayloadException(`"otp" is invalid`);
+					}
+
+					await service.disableTFA(this.accountability.user);
+
+					return null;
+				},
+			},
+
+			utils_hash_generate: {
+				type: GraphQLString,
+				args: {
+					string: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					return await argon2.hash(args.string);
+				},
+			},
+
+			utils_hash_verify: {
+				type: GraphQLBoolean,
+				args: {
+					string: GraphQLNonNull(GraphQLString),
+					hash: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					return await argon2.verify(args.hash, args.string);
+				},
+			},
+
+			utils_sort: {
+				type: Void,
+				args: {
+					collection: GraphQLNonNull(GraphQLString),
+					item: GraphQLNonNull(GraphQLID),
+					to: GraphQLNonNull(GraphQLID),
+				},
+				resolve: async (_, args) => {
+					const service = new UtilsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					const { item, to } = args;
+
+					await service.sort(args.collection, { item, to });
+				},
+			},
+
+			utils_revert: {
+				type: Void,
+				args: {
+					revision: GraphQLNonNull(GraphQLID),
+				},
+				resolve: async (_, args) => {
+					const service = new RevisionsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					await service.revert(args.revision);
 				},
 			},
 		});
