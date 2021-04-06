@@ -18,12 +18,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed, toRefs, ref, watch } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores';
 import { get } from 'lodash';
 import { Field } from '@/types';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
+import api from '@/api';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -33,7 +35,7 @@ export default defineComponent({
 			required: true,
 		},
 		item: {
-			type: Object as PropType<Record<string, any>>,
+			type: [Object, String] as PropType<Record<string, any> | string>,
 			required: true,
 		},
 		template: {
@@ -42,10 +44,24 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const { collection, item, template } = toRefs(props);
 		const fieldsStore = useFieldsStore();
 		const displays = getDisplays();
+		const loadedItem = ref<Record<string, any>>({});
 
 		const regex = /({{.*?}})/g;
+
+		const _item = computed(() => {
+			if (typeof item.value === 'object') return item.value;
+			return loadedItem.value;
+		});
+
+		const fieldsInTemplate = computed(() => getFieldsFromTemplate(props.template));
+
+		watch(item, loadItem);
+		watch(collection, loadItem);
+		watch(template, loadItem);
+		loadItem();
 
 		const parts = computed(() =>
 			props.template
@@ -62,7 +78,7 @@ export default defineComponent({
 					if (!field) return null;
 
 					// Try getting the value from the item, return some question marks if it doesn't exist
-					const value = get(props.item, fieldKey);
+					const value = get(_item.value, fieldKey);
 					if (value === undefined) return null;
 
 					// If no display is configured, we can render the raw value
@@ -91,7 +107,17 @@ export default defineComponent({
 				.map((p) => p || null)
 		);
 
-		return { parts };
+		return { parts, loadedItem, _item };
+
+		async function loadItem() {
+			if (typeof item.value !== 'string') return;
+			const result = await api.get(`items/${collection.value}/${item.value}`, {
+				params: {
+					fields: fieldsInTemplate.value,
+				},
+			});
+			loadedItem.value = result.data.data;
+		}
 	},
 });
 </script>

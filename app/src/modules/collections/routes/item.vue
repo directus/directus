@@ -16,7 +16,7 @@
 			<h1 class="type-title" v-else>
 				<render-template
 					:collection="collectionInfo.collection"
-					:item="templateValues"
+					:item="_primaryKey"
 					:template="collectionInfo.meta.display_template"
 				/>
 			</h1>
