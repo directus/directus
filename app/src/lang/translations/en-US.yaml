@@ -580,7 +580,9 @@ settings_data_model: Data Model
 settings_permissions: Roles & Permissions
 settings_project: Project Settings
 settings_webhooks: Webhooks
-settings_presets: Presets & Bookmarks
+settings_presets: Presets & bookmarks
+edit_own_role_warning_title: Changing own role.
+edit_own_role_warning: You are about to change your own role. Be aware that you might lose access to change roles again.
 scope: Scope
 layout: Layout
 tree_view: Tree View

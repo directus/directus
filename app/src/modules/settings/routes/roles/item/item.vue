@@ -80,6 +80,16 @@
 			/>
 		</div>
 
+		<v-dialog v-model="warnChaningOwnRole">
+			<v-card>
+				<v-card-title>{{ $t('edit_own_role_warning_title') }}</v-card-title>
+				<v-card-text>{{ $t('edit_own_role_warning') }}</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="warnChaningOwnRole = false">{{ $t('dismiss') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+
 		<template #sidebar>
 			<role-info-sidebar-detail :role="item" />
 			<revisions-drawer-detail collection="directus_roles" :primary-key="primaryKey" />
@@ -88,7 +98,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 
 import SettingsNavigation from '../../../components/navigation.vue';
 import router from '@/router';
@@ -117,6 +127,7 @@ export default defineComponent({
 		const permissionsStore = usePermissionsStore();
 		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
+		const warnChaningOwnRole = ref(false);
 
 		const { edits, item, saving, loading, error, save, remove, deleting, isBatch } = useItem(
 			ref('directus_roles'),
@@ -124,6 +135,17 @@ export default defineComponent({
 		);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+
+		watch(edits, (newEdits, oldEdits) => {
+			if ('users' in newEdits) {
+				const userId = userStore.state.currentUser?.id;
+				if (
+					newEdits.users.includes(userId) &&
+					('users' in oldEdits === false || oldEdits.users.includes(userId) === false)
+				)
+					warnChaningOwnRole.value = true;
+			}
+		});
 
 		const confirmDelete = ref(false);
 
@@ -160,6 +182,7 @@ export default defineComponent({
 			adminEnabled,
 			userInviteModalActive,
 			appAccess,
+			warnChaningOwnRole,
 		};
 
 		/**
