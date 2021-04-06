@@ -2,7 +2,6 @@ export default [
 	'2FA',
 	'3D',
 	'DateTime',
-	'DNA',
 	'GitHub',
 	'ID',
 	'IDs',
