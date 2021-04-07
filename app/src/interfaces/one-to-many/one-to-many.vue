@@ -363,7 +363,12 @@ export default defineComponent({
 				const pkField = relatedPrimaryKeyField.value.field;
 				const hasPrimaryKey = pkField in item;
 
-				const edits = (props.value || []).find((edit: any) => edit === item);
+				const edits = (props.value || []).find(
+					(edit: any) =>
+						typeof edit === 'object' &&
+						edit[relatedPrimaryKeyField.value.field] === item[relatedPrimaryKeyField.value.field]
+				);
+				console.log(JSON.stringify(props.value, null, 4), JSON.stringify(item, null, 4), edits);
 
 				editsAtStart.value = edits || { [pkField]: item[pkField] || {} };
 				currentlyEditing.value = hasPrimaryKey ? item[pkField] : '+';
