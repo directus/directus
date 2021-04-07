@@ -495,7 +495,6 @@ export class GraphQLService {
 						const graphqlType = getGraphQLType(field.type);
 
 						let filterOperatorType: InputTypeComposer;
-
 						switch (graphqlType) {
 							case GraphQLBoolean:
 								filterOperatorType = BooleanFilterOperators;
@@ -503,6 +502,7 @@ export class GraphQLService {
 							case GraphQLInt:
 							case GraphQLFloat:
 								filterOperatorType = NumberFilterOperators;
+								break;
 							default:
 								filterOperatorType = StringFilterOperators;
 						}
@@ -1033,8 +1033,6 @@ export class GraphQLService {
 				return new ActivityService(opts);
 			case 'directus_files':
 				return new FilesService(opts);
-			case 'directus_folders':
-				return new FoldersService(opts);
 			case 'directus_folders':
 				return new FoldersService(opts);
 			case 'directus_permissions':
