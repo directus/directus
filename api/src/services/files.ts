@@ -52,7 +52,7 @@ export class FilesService extends ItemsService {
 		}
 
 		try {
-			await storage.disk(data.storage).put(payload.filename_disk, stream);
+			await storage.disk(data.storage).put(payload.filename_disk, stream, payload.type);
 		} catch (err) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
