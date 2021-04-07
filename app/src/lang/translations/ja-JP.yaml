@@ -273,6 +273,7 @@ unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
 keep_editing: 編集を続ける
 add_new: 新規追加
+create_new: 新規作成
 all: すべて
 batch_delete_confirm: >-
   項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count} 個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。
