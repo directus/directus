@@ -261,7 +261,7 @@ export default defineComponent({
 
 						if (!field) return '';
 
-						return `<button contenteditable="false" data-field="${field.field}">${field.name}</button>`;
+						return `<button contenteditable="false" data-field="${fieldKey}">${field.name}</button>`;
 					})
 					.join('');
 				contentEl.value.innerHTML = newInnerHTML;
@@ -278,8 +278,8 @@ export default defineComponent({
 	height: 100%;
 	padding: var(--input-padding) 0;
 	overflow: hidden;
-	font-family: var(--family-monospace);
 	font-size: 14px;
+	font-family: var(--family-monospace);
 	white-space: nowrap;
 
 	::v-deep {
