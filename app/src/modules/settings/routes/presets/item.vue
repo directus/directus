@@ -271,8 +271,9 @@ export default defineComponent({
 			const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
 			const initialValues = computed(() => {
-				if (isNew.value === true) return {};
-				if (preset.value === null) return {};
+				const defaultValues = { scope: 'all', layout: 'tabular' };
+				if (isNew.value === true) return defaultValues;
+				if (preset.value === null) return defaultValues;
 
 				let scope = 'all';
 

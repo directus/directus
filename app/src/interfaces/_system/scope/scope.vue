@@ -44,7 +44,7 @@ export default defineComponent({
 		const options = computed(() => {
 			const options = [
 				{
-					text: i18n.t('global') + ': ' + i18n.t('all'),
+					text: i18n.t('global') + ': ' + i18n.t('all_users'),
 					value: 'all',
 				},
 				{
