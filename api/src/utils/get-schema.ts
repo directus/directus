@@ -115,6 +115,8 @@ export async function getSchema(options?: {
 	].filter((field) => (field.special ? toArray(field.special) : []).includes('no-data') === false);
 
 	for (const field of fields) {
+		if (!result.collections[field.collection]) continue;
+
 		const existing = result.collections[field.collection].fields[field.field];
 
 		result.collections[field.collection].fields[field.field] = {

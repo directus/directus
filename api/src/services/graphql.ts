@@ -219,23 +219,24 @@ export class GraphQLService {
 			);
 		}
 
-		if (Object.keys(schema.read.collections).length > 0) {
+		const readableCollections = Object.values(schema.read.collections)
+			.filter((collection) => collection.collection in ReadCollectionTypes)
+			.filter(scopeFilter);
+
+		if (readableCollections.length > 0) {
 			schemaComposer.Query.addFields(
-				Object.values(schema.read.collections)
-					.filter((collection) => collection.collection in ReadCollectionTypes)
-					.filter(scopeFilter)
-					.reduce((acc, collection) => {
-						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
-						acc[collectionName] = ReadCollectionTypes[collection.collection].getResolver(collection.collection);
+				readableCollections.reduce((acc, collection) => {
+					const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
+					acc[collectionName] = ReadCollectionTypes[collection.collection].getResolver(collection.collection);
 
-						if (this.schema.collections[collection.collection].singleton === false) {
-							acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
-								`${collection.collection}_by_id`
-							);
-						}
+					if (this.schema.collections[collection.collection].singleton === false) {
+						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
+							`${collection.collection}_by_id`
+						);
+					}
 
-						return acc;
-					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+					return acc;
+				}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
 			);
 		} else {
 			schemaComposer.Query.addFields({
