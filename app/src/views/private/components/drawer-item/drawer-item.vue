@@ -1,5 +1,10 @@
 <template>
 	<v-drawer v-model="_active" :title="title" persistent @cancel="cancel">
+		<template #title v-if="template !== null">
+			<h1 class="type-title">
+				<render-template :collection="templateCollection" :item="templateItem" :template="template" />
+			</h1>
+		</template>
 		<template #actions>
 			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
@@ -118,6 +123,17 @@ export default defineComponent({
 			computed(() => props.primaryKey === '+')
 		);
 
+		const templateItem = computed(() => ({ ...item.value, ..._edits.value }));
+		const templateCollection = computed(
+			() => junctionRelatedCollectionInfo.value?.collection || collectionInfo.value?.collection || null
+		);
+		const template = computed(
+			() =>
+				junctionRelatedCollectionInfo.value?.meta?.display_template ||
+				collectionInfo.value?.meta?.display_template ||
+				null
+		);
+
 		return {
 			_active,
 			_edits,
@@ -132,6 +148,9 @@ export default defineComponent({
 			showDivider,
 			junctionRelatedCollectionFields,
 			fields,
+			template,
+			templateCollection,
+			templateItem,
 		};
 
 		function useActiveState() {

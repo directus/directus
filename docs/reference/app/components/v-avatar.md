@@ -34,7 +34,7 @@ profile picture or an icon or text can be inserted.
 
 n/a
 
-###### CSS Variables
+#### CSS Variables
 
 | Variable           | Default                    |
 | ------------------ | -------------------------- |

@@ -50,7 +50,9 @@ fields:
     options:
       icon: insert_drive_file
       title: File Naming
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: filename_disk
@@ -94,20 +96,17 @@ fields:
     display: datetime
     readonly: true
 
-  - field: created_on
-    display: datetime
-    readonly: true
-
-  - field: created_by
-    display: user
-    readonly: true
-
   - field: embed
     width: half
     hidden: true
 
   - field: uploaded_by
     display: user
+    width: half
+    hidden: true
+
+  - field: uploaded_on
+    display: datetime
     width: half
     hidden: true
 
@@ -122,11 +121,6 @@ fields:
   - field: width
     width: half
     readonly: true
-
-  - field: uploaded_on
-    display: datetime
-    width: half
-    hidden: true
 
   - field: height
     width: half
