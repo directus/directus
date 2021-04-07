@@ -26,9 +26,6 @@ export class AxiosTransport implements ITransport {
 		this._axios = axios.create({
 			baseURL: value,
 			withCredentials: true,
-			headers: {
-				'Cache-Control': 'no-cache',
-			},
 		});
 		this._axios.interceptors.request.use(this.createRequestConfig.bind(this));
 	}
