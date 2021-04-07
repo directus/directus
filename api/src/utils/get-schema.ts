@@ -1,5 +1,5 @@
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
-import { Accountability, SchemaOverview, Permission, RelationRaw, Relation } from '../types';
+import { Accountability, SchemaOverview, Permission, RelationRaw } from '../types';
 import logger from '../logger';
 import { mergePermissions } from './merge-permissions';
 import { Knex } from 'knex';
@@ -96,6 +96,7 @@ export async function getSchema(options?: {
 				scale: column.numeric_scale || null,
 				special: [],
 				note: null,
+				alias: false,
 			})),
 		};
 	}
@@ -114,6 +115,8 @@ export async function getSchema(options?: {
 	].filter((field) => (field.special ? toArray(field.special) : []).includes('no-data') === false);
 
 	for (const field of fields) {
+		if (!result.collections[field.collection]) continue;
+
 		const existing = result.collections[field.collection].fields[field.field];
 
 		result.collections[field.collection].fields[field.field] = {
@@ -129,6 +132,7 @@ export async function getSchema(options?: {
 			scale: existing?.scale || null,
 			special: field.special ? toArray(field.special) : [],
 			note: field.note,
+			alias: existing?.alias ?? true,
 		};
 	}
 

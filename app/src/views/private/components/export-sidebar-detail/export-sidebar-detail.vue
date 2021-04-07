@@ -129,8 +129,7 @@ export default defineComponent({
 				const { field: primaryKey } = fieldsStore.getPrimaryKeyFieldForCollection(props.collection.collection);
 				if (!params.fields) {
 					params.fields = [primaryKey];
-				}
-				else if (!params.fields.includes(primaryKey)) {
+				} else if (!params.fields.includes(primaryKey)) {
 					params.fields = [...params.fields, primaryKey];
 				}
 			}
@@ -159,6 +158,10 @@ export default defineComponent({
 }
 
 .v-checkbox {
+	width: 100%;
 	margin-top: 8px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 </style>

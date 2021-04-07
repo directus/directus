@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<v-checkbox block :input-value="!!tfaEnabled" @click.native="toggle">
-			{{ $t('enabled') }}
+		<v-checkbox block :input-value="tfaEnabled" @click.native="toggle" :disabled="!isCurrentUser">
+			{{ tfaEnabled ? $t('enabled') : $t('disabled') }}
 			<div class="spacer" />
 			<template #append>
 				<v-icon name="launch" class="checkbox-icon" :class="{ enabled: tfaEnabled }" />
@@ -27,7 +27,7 @@
 
 				<v-progress-circular class="loader" indeterminate v-else-if="loading === true" />
 
-				<div v-show="tfaEnabled === true && loading === false">
+				<div v-show="tfaEnabled && loading === false">
 					<v-card-title>
 						{{ $t('tfa_scan_code') }}
 					</v-card-title>
@@ -62,10 +62,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, watch, onMounted, computed } from '@vue/composition-api';
 import api from '@/api';
 import qrcode from 'qrcode';
 import { nanoid } from 'nanoid';
+import { useUserStore } from '@/stores';
 
 export default defineComponent({
 	props: {
@@ -73,8 +74,13 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		primaryKey: {
+			type: String,
+			default: null,
+		},
 	},
 	setup(props) {
+		const userStore = useUserStore();
 		const tfaEnabled = ref(!!props.value);
 		const enableActive = ref(false);
 		const disableActive = ref(false);
@@ -96,6 +102,7 @@ export default defineComponent({
 			},
 			{ immediate: true }
 		);
+		const isCurrentUser = computed(() => userStore.state.currentUser?.id === props.primaryKey);
 
 		return {
 			tfaEnabled,
@@ -110,6 +117,7 @@ export default defineComponent({
 			disableTFA,
 			otp,
 			error,
+			isCurrentUser,
 		};
 
 		function toggle() {

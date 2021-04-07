@@ -200,11 +200,7 @@ export default async function getASTFromQuery(
 	async function convertWildcards(parentCollection: string, fields: string[]) {
 		fields = cloneDeep(fields);
 
-		const fieldsInCollection = Object.entries(schema.collections[parentCollection].fields)
-			.filter(([name, field]) => {
-				return field.type !== 'alias';
-			})
-			.map(([name]) => name);
+		const fieldsInCollection = Object.entries(schema.collections[parentCollection].fields).map(([name]) => name);
 
 		let allowedFields: string[] | null = fieldsInCollection;
 

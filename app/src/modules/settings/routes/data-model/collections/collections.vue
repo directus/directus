@@ -106,11 +106,11 @@ import CollectionOptions from './components/collection-options.vue';
 import CollectionsFilter from './components/collections-filter.vue';
 import marked from 'marked';
 
+const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
+
 export default defineComponent({
 	components: { SettingsNavigation, CollectionOptions, CollectionsFilter },
 	setup() {
-		const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
-
 		const collectionsStore = useCollectionsStore();
 
 		const tableHeaders = ref<HeaderRaw[]>([

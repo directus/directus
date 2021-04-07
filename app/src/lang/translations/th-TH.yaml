@@ -11,7 +11,6 @@ add_field: เพิ่มฟิลด์
 role_name: ชื่อบทบาท
 db_only_click_to_configure: 'ฐานข้อมูลเท่านั้น: คลิกเพื่อกำหนดค่า '
 show_archived_items: แสดงรายการเก็บถาวร
-edited: แก้ไขแล้ว
 required: จำเป็นต้องระบุ
 required_for_app_access: จำเป็นต้องระบุเพื่อเข้าถึงแอป
 requires_value: ต้องการข้อมูล
@@ -203,7 +202,7 @@ confirm_revert: ยืนยันการย้อนกลับ
 confirm_revert_body: นี่จะเป็นการย้อนกลับไอเท็มไปยังสถานะที่เลือก
 display: การแสดงผล
 settings_update_success: ปรับปรุงการตั้งค่าเรียบร้อยแล้ว
-title: ชื่อ
+title: ตำแหน่ง
 revision_delta_created: สร้างแล้ว
 revision_delta_created_externally: ถูกสร้างจากภายนอก
 revision_delta_updated: 'อัพเดทแล้ว 1 ฟิลด์ | อัพเดทแล้ว {count} ฟิลด์'
@@ -658,7 +657,7 @@ fields:
     unarchive_value: ยกเลิกการเก็บค่า
     sort_field: เรียงฟิลด์
   directus_files:
-    title: ชื่อ
+    title: ตำแหน่ง
     description: รายละเอียด
     tags: แท็ก
     location: ตำแหน่งที่ตั้ง
@@ -687,7 +686,7 @@ fields:
     password: รหัสผ่าน
     avatar: ภาพประจำตัว
     location: ตำแหน่งที่ตั้ง
-    title: ชื่อ
+    title: ตำแหน่ง
     description: รายละเอียด
     tags: แท็ก
     language: ภาษา
@@ -800,7 +799,6 @@ template: แม่แบบ
 translation: แปลภาษา
 value: ค่า
 view_project: ดูโครงการ
-weeks: { }
 report_error: แจ้งข้อผิดพลาด
 interfaces:
   button-links:
@@ -1086,7 +1084,7 @@ layouts:
     image_fit: แสดงรูปเต็มพอดีพื้นที่
     crop: ครอบตัด
     contain: บรรจุให้เต็ม
-    title: ชื่อ
+    title: ตำแหน่ง
     subtitle: คำบรรยาย
   tabular:
     tabular: ตาราง

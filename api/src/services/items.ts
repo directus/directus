@@ -48,6 +48,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const fields = Object.keys(this.schema.collections[this.collection].fields);
+		const aliases = Object.values(this.schema.collections[this.collection].fields)
+			.filter((field) => field.alias === true)
+			.map((field) => field.field);
 
 		let payloads: AnyItem[] = clone(toArray(data));
 
@@ -88,7 +91,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			payloads = await payloadService.processM2O(payloads);
 			payloads = await payloadService.processA2O(payloads);
 
-			let payloadsWithoutAliases = payloads.map((payload) => pick(payload, fields));
+			let payloadsWithoutAliases = payloads.map((payload) => pick(payload, without(fields, ...aliases)));
 
 			payloadsWithoutAliases = await payloadService.processValues('create', payloadsWithoutAliases);
 
@@ -269,6 +272,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	): Promise<PrimaryKey | PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const fields = Object.keys(this.schema.collections[this.collection].fields);
+		const aliases = Object.values(this.schema.collections[this.collection].fields)
+			.filter((field) => field.alias === true)
+			.map((field) => field.field);
 
 		// Updating one or more items to the same payload
 		if (data && key) {
@@ -313,7 +319,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				payload = await payloadService.processM2O(payload);
 				payload = await payloadService.processA2O(payload);
 
-				let payloadWithoutAliasAndPK = pick(payload, without(fields, primaryKeyField));
+				let payloadWithoutAliasAndPK = pick(payload, without(fields, primaryKeyField, ...aliases));
 
 				payloadWithoutAliasAndPK = await payloadService.processValues('update', payloadWithoutAliasAndPK);
 
