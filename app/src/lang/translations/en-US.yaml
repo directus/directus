@@ -582,6 +582,7 @@ settings_project: Project Settings
 settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
 scope: Scope
+select: Select...
 layout: Layout
 tree_view: Tree View
 changes_are_permanent: Changes are permanent
