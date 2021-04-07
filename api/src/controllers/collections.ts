@@ -96,13 +96,6 @@ router.post(
 	'/:collection',
 	asyncHandler(async (req, res, next) => {
 		if (req.is('multipart/form-data') === false) return next();
-		let content = '';
-		/* req
-			.on('data', (data) => content += data)
-			.on('end', (...args: any[]) => {
-			const format = req.query.format as string;
-			// console.log(data);
-		});*/
 		const busboy = new Busboy({ headers: req.headers });
 		let fileCount = 0;
 		const format = req.query.format as string;
@@ -124,7 +117,12 @@ router.post(
 							format,
 						});
 						try {
-							await xliffService.fromXliff(collectionKey, content, req.query.field as string | undefined);
+							const savedKeys = await xliffService.fromXliff(
+								collectionKey,
+								content,
+								req.query.field as string | undefined
+							);
+							busboy.emit('finish', savedKeys);
 						} catch (error) {
 							busboy.emit('error', error);
 						}
@@ -135,7 +133,8 @@ router.post(
 			next(error);
 		});
 
-		busboy.on('finish', () => {
+		busboy.on('finish', (savedKeys: any) => {
+			res.locals.savedKeys = savedKeys;
 			next();
 		});
 		req.pipe(busboy);
