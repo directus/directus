@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-azure",
-	"version": "9.0.0-rc.54",
+	"version": "9.0.0-rc.55",
 	"description": "Azure Blob driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -41,7 +41,7 @@
 	],
 	"dependencies": {
 		"@azure/storage-blob": "^12.2.1",
-		"@directus/drive": "^9.0.0-rc.54",
+		"@directus/drive": "^9.0.0-rc.55",
 		"normalize-path": "^3.0.0"
 	},
 	"devDependencies": {
