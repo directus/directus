@@ -35,16 +35,23 @@ git checkout -b YOUR-BRANCH-NAME
 npm install
 ```
 
-## 5. Setup the Database
+## 5. Create a `.env` file
+
+Create a `.env` file under the `api` folder the API to use. You can use the `example.env` file provided under `api` as a
+starting point.
+
+## 6. Setup the Database
 
 For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver,
 which will create the database for you. Run the following command from within root of the project:
 
 ```bash
-npm run cli -- init dev
+npm run cli bootstrap
 ```
 
-## 6. Start the development server
+This will install Directus, and make sure all the migrations have run.
+
+## 7. Start the development server
 
 Run the following command from the root directory.
 
@@ -66,7 +73,7 @@ If you encounter errors during this installation process, make sure your node ve
 
 :::
 
-## 7. Make your fixes/changes
+## 8. Make your fixes/changes
 
 At this point you are ready to start working on Directus! Before diving in however, it's worth reading through our docs
 on [submitting a pull-request](#Submitting-a-Pull-Request).
