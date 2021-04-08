@@ -94,6 +94,22 @@ field, the collection's sort settings will automatically be configured for you.
 
 :::
 
+## Renaming a Collection
+
+While you can not change the **Key** of a collection via Directus (as of now), you can change its **Name** and translations.
+
+1. Navigate to **Settings > Data Model > [Collection Name]**
+2. Click the Add New button under **Collection Name Translations**
+3. Choose the desired **Language** (your primary language for "renaming")
+4. Enter a **Translation**
+5. Click the **Save** button
+
+::: tip Special Casing
+
+If you are trying to update the specific casing (uppercase/lowercase) for a word (eg: `Dna` to `DNA`) you will want to add the edge-case to the [Format Title package](https://github.com/directus/directus/tree/main/packages/format-title/src). If you feel the case passes our [80/20 rule](https://docs.directus.io/contributing/introduction/#feature-requests) you should submit a Pull Request to the codebase, otherwise you can update this in your instance.
+
+:::
+
 ## Deleting a Collection
 
 1. Navigate to **Settings > Data Model > [Collection Name]**

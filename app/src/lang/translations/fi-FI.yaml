@@ -11,6 +11,7 @@ add_field: Lisää kenttä
 role_name: Roolin nimi
 db_only_click_to_configure: 'Vain tietokanta: Klikkaa määrittääksesi '
 show_archived_items: Näytä arkistoidut kohteet
+edited: Arvoa muokattu
 required: Vaadittu
 required_for_app_access: Vaaditaan sovelluspääsyyn
 requires_value: Vaatii arvon
@@ -577,6 +578,7 @@ settings_webhooks: Webhookit
 settings_presets: Esiasetukset ja kirjanmerkit
 scope: Laajuus
 layout: Asettelu
+tree_view: Puunäkymä
 changes_are_permanent: Muutokset ovat pysyviä
 preset_name_placeholder: Kirjanmerkin nimi...
 preset_search_placeholder: Hakulauseke...
@@ -796,6 +798,7 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
+weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:
@@ -971,6 +974,9 @@ interfaces:
   translations:
     display_template: Esitysmalli
     no_collection: Ei kokoelmaa
+  tree-view:
+    description: Puunäkymä sisäkkäisille rekursiivisille yksi-monille (O2M) -kohteille
+    recursive_only: Puunäkymäliittymä toimii vain rekursiivisille suhteille.
   user:
     user: Käyttäjänimi
     description: Valitse olemassaoleva directus-käyttäjä

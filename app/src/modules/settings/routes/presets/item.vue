@@ -551,7 +551,6 @@ export default defineComponent({
 						width: 'fill',
 						options: {
 							title: i18n.t('layout_preview'),
-							color: '#00C897',
 							icon: 'visibility',
 						},
 					},

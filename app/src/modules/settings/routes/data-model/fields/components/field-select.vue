@@ -60,8 +60,8 @@
 			</template>
 
 			<template #input>
-				<div class="label">
-					<span class="name" v-tooltip="field.name">
+				<div class="label" v-tooltip="field.name + ' (' + interfaceName + ')'">
+					<span class="name">
 						{{ field.field }}
 						<v-icon name="star" class="required" sup v-if="field.schema && field.schema.is_nullable === false" />
 					</span>
@@ -493,6 +493,7 @@ export default defineComponent({
 		flex-grow: 1;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		white-space: nowrap;
 
 		.name {
 			font-family: var(--family-monospace);

@@ -40,6 +40,7 @@ logoutReason:
   SIGN_OUT: 注销
   SESSION_EXPIRED: 会话过期
 public: 公共
+public_description: 控制哪些API数据没有认证时可用
 not_allowed: 不允许
 directus_version: Directus 版本
 node_version: 节点版本
@@ -53,6 +54,7 @@ archive_confirm: 您确定要存档此项目吗？
 archive_confirm_count: >-
   没有选定项目 | 你确定要存档这个项目吗？| 你确定你想要存档这些 {count} 个项目吗？
 reset_system_permissions_to: '重置系统权限为：'
+reset_system_permissions_copy: 此操作将覆盖您可能应用到系统集合中的任何自定义权限。确定吗？
 recommended_defaults: 推荐的默认值
 unarchive: 取消存档
 unarchive_confirm: 您确定要取消归档此项目吗？
@@ -143,6 +145,7 @@ to_manually_setup_translations: 手动设置翻译。
 click_to_manage_translated_fields: >-
   还没有翻译的字段。点击这里创建它们。 点击这里来管理它。| 有 {count} 个翻译的字段。点击这里来管理。
 fields_group: 字段组
+new_field: '新建字段'
 add_m2o_to_collection: '添加多对一到"{collection}"'
 add_o2m_to_collection: '添加一到多个到 "{collection}"'
 add_m2m_to_collection: '添加多对多到"{collection}"'
@@ -157,6 +160,7 @@ m2o_relationship: 多对一关系
 o2m_relationship: 一对多关系
 m2m_relationship: 多对多关系
 m2a_relationship: 多对任何关系
+invalid_item: 无效条目
 next: 下一条
 field_name: 字段名
 translations: 翻译
@@ -184,6 +188,7 @@ show_all_activity: 显示所有活动
 page_not_found: 找不到页面
 page_not_found_body: 您正在寻找的页面似乎不存在。
 confirm_revert: 确认恢复
+confirm_revert_body: 此操作会使条目恢复至选中状态
 display: 显示
 settings_update_success: 设置已更新
 title: 标题
@@ -194,18 +199,24 @@ revision_delta_by: '由 {user} 于 {date}'
 revision_preview: 修订预览
 updates_made: 更新完成
 leave_comment: 留下注释...
+item_create_success: 条目已创建 | 条目已创建
+item_update_success: 条目已更新 | 条目已更新
 item_delete_success: 项目已删除 | 项目已删除
 this_collection: 此集合
 related_collection: 相关集合
 related_collections: 相关集合
+translations_collection: 翻译集合
+languages_collection: 语言集合
 export_data: 导出数据
 format: 格式
 export_collection: '导出 {collection}'
 last_page: 尾页
 last_access: 上次访问
+fill_template: 使用模板填入
 submit: 提交
 move: 移动
 system: 系统
+add_field_related: 将字段添加到关联集合
 today: 今天
 yesterday: 昨天
 delete_comment: 删除评论
@@ -374,10 +385,18 @@ aspect_ratio: 宽高比
 rotate: 旋转
 all_users: 全部用户
 delete_collection: 删除集合
+update_collection_success: 集合已更新
+delete_collection_success: 集合已删除
 one_item: '1项'
 one_filtered_item: '1 个已过滤项目'
 delete_collection_are_you_sure: >-
   您确定要删除此收藏吗？这将删除收藏及其中的所有项目。此操作是永久性的。
+collections_shown: 集合展开
+visible_collections: 显示集合
+hidden_collections: 隐藏集合
+show_hidden_collections: 展开隐藏集合
+hide_hidden_collections: 不显示隐藏集合
+system_collections: 系统集合
 placeholder: 占位文本
 icon_left: 左图标
 icon_right: 右图标
