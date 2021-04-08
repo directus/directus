@@ -1,11 +1,10 @@
-import { ModuleDefineParam, ModuleContext, ModuleConfig } from './types';
+import { ModuleDefineParam, ModuleConfig } from './types';
 
-export function defineModule(config: ModuleDefineParam | ((context: ModuleContext) => ModuleConfig)): ModuleConfig {
+export function defineModule(config: ModuleDefineParam): ModuleConfig {
 	let options: ModuleConfig;
 
 	if (typeof config === 'function') {
-		const context: ModuleContext = {};
-		options = config(context);
+		options = config();
 	} else {
 		options = config;
 	}

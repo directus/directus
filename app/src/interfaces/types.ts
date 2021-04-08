@@ -18,6 +18,5 @@ export interface InterfaceConfig {
 	recommendedDisplays?: string[];
 }
 
-export type InterfaceContext = {};
 export type InterfaceDefineParam = InterfaceDefineParamGeneric<InterfaceConfig>;
-export type InterfaceDefineParamGeneric<T> = T | ((context: InterfaceContext) => T);
+export type InterfaceDefineParamGeneric<T> = T | (() => T);

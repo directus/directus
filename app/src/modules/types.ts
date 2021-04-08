@@ -1,4 +1,3 @@
-import VueI18n from 'vue-i18n';
 import { RouteConfig } from 'vue-router';
 import { Ref } from '@vue/composition-api';
 import { User, Permission } from '@/types';
@@ -18,4 +17,4 @@ export interface ModuleConfig {
 
 export type ModuleContext = {};
 
-export type ModuleDefineParam = ModuleConfig | ((context: ModuleContext) => ModuleConfig);
+export type ModuleDefineParam = ModuleConfig | (() => ModuleConfig);
