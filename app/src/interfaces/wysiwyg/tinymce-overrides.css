@@ -86,7 +86,7 @@
 }
 
 .tox .tox-edit-area__iframe {
-	background-color: var(--background-page);
+	background-color: var(--background-input);
 }
 
 .tox-tinymce {
