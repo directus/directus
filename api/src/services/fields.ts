@@ -342,6 +342,26 @@ export class FieldsService {
 			}
 		}
 
+		const collectionMeta = await this.knex
+			.select('archive_field', 'sort_field')
+			.from('directus_collections')
+			.where({ collection })
+			.first();
+
+		const collectionMetaUpdates: Record<string, null> = {};
+
+		if (collectionMeta?.archive_field === field) {
+			collectionMetaUpdates.archive_field = null;
+		}
+
+		if (collectionMeta?.sort_field === field) {
+			collectionMetaUpdates.sort_field = null;
+		}
+
+		if (Object.keys(collectionMetaUpdates).length > 0) {
+			await this.knex('directus_collections').update(collectionMetaUpdates).where({ collection });
+		}
+
 		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
