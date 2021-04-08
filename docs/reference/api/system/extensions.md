@@ -20,9 +20,10 @@ pageClass: page-reference
 
 ---
 
-## List Interfaces
+## List Extensions
 
-List the available interfaces in the project.
+List the available extensions in the project. The types of extensions that you can list are interfaces, displays,
+layouts, modules.
 
 <div class="two-up">
 <div class="left">
@@ -38,124 +39,35 @@ An array of interface extension keys.
 </div>
 <div class="right">
 
+### REST API
+
+```
+GET /extensions/:type
+```
+
+##### Example
+
 ```
 GET /extensions/interfaces
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": ["custom-wysiwyg", "stocks"]
+```graphql
+type Query {
+	extensions: extensions
+}
+```
+
+##### Example
+
+```graphql
+query {
+	extensions {
+		interfaces
+	}
 }
 ```
 
 </div>
 </div>
-
----
-
-## List Displays
-
-List the available displays in the project.
-
-<div class="two-up">
-<div class="left">
-
-### Query Parameters
-
-This endpoint doesn't currently support any query parameters.
-
-### Returns
-
-An array of display extension keys.
-
-</div>
-<div class="right">
-
-```
-GET /extensions/displays
-```
-
-```json
-// Response
-
-{
-	"data": ["related-values"]
-}
-```
-
-</div>
-</div>
-
----
-
-## List Layouts
-
-List the available layouts in the project.
-
-<div class="two-up">
-<div class="left">
-
-### Query Parameters
-
-This endpoint doesn't currently support any query parameters.
-
-### Returns
-
-An array of layout extension keys.
-
-</div>
-<div class="right">
-
-```
-GET /extensions/layouts
-```
-
-```json
-// Response
-
-{
-	"data": ["map", "calendar"]
-}
-```
-
-</div>
-</div>
-
----
-
-## List Modules
-
-List the available modules in the project.
-
-<div class="two-up">
-<div class="left">
-
-### Query Parameters
-
-This endpoint doesn't currently support any query parameters.
-
-### Returns
-
-An array of module extension keys.
-
-</div>
-<div class="right">
-
-```
-GET /extensions/modules
-```
-
-```json
-// Response
-
-{
-	"data": ["bookings"]
-}
-```
-
-</div>
-</div>
-
----

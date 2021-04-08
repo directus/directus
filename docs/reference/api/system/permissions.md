@@ -108,35 +108,29 @@ available, data will be an empty array.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /permissions
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": [
-		{
-			"id": 34,
-			"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
-			"collection": "pages",
-			"action": "create",
-			"permissions": null,
-			"validation": {
-				"title": {
-					"_contains": "Directus"
-				}
-			},
-			"presets": {
-				"published": false
-			},
-			"fields": ["title", "translations"],
-			"limit": null
-		},
-		{...},
-		{...}
-	]
+```graphql
+type Query {
+	permissions: directus_permissions
+}
+```
+
+##### Example
+
+```graphql
+query {
+	permissions {
+		action
+		role
+		collection
+	}
 }
 ```
 
@@ -163,12 +157,16 @@ Returns the requested [permission object](#the-permission-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /permissions/:id
 ```
 
+##### Example
+
 ```json
-// Response
+// GET /permissions/34
 
 {
 	"data": {
@@ -191,14 +189,34 @@ GET /permissions/:id
 }
 ```
 
+### GraphQL
+
+```graphql
+type Query {
+	permissions_by_id(id: ID!): directus_permissions
+}
+```
+
+##### Example
+
+```graphql
+query {
+	permissions_by_id(id: 34) {
+		role
+		collection
+		action
+	}
+}
+```
+
 </div>
 </div>
 
 ---
 
-## Create Permissions
+## Create a Permission Rule
 
-Create one or more new permission rule(s)
+Create a new permission rule
 
 <div class="two-up">
 <div class="left">
@@ -209,8 +227,7 @@ Supports all [global query parameters](/reference/api/query).
 
 ### Request Body
 
-A partial [permissions object](#the-permission-object) or an array of partial
-[permissions objects](#the-permission-object). `action` and `collection` are required.
+A partial [permissions object](#the-permission-object). `action` and `collection` are required.
 
 ### Returns
 
@@ -219,9 +236,13 @@ Returns the [permission object](#the-permission-object) for the created permissi
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /permissions
 ```
+
+##### Example
 
 ```json
 // Request
@@ -234,20 +255,103 @@ POST /permissions
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": 36,
-		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
+```graphql
+type Mutation {
+	create_permissions_item(data: create_directus_permissions_input!): directus_permissions
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_permissions_item(
+		data: { collection: "pages", action: "read", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", fields: ["id", "title"] }
+	) {
+		id
+		collection
+		action
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Create Multiple Permission Rules
+
+Create multiple new permission rules
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Request Body
+
+An array of partial [permissions objects](#the-permission-object). `action` and `collection` are required.
+
+### Returns
+
+Returns the [permission objects](#the-permission-object) for the created permissions.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+POST /permissions
+```
+
+##### Example
+
+```json
+// Request
+
+[
+	{
 		"collection": "pages",
 		"action": "read",
-		"permissions": null,
-		"validation": null,
-		"presets": null,
-		"fields": ["id", "title"],
-		"limit": null
+		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
+		"fields": ["id", "title"]
+	},
+	{
+		"collection": "pages",
+		"action": "create",
+		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
+		"fields": ["id", "title"]
+	}
+]
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	create_permissions_itemss(data: [create_directus_permissions_input!]!): [directus_permissions]
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_permissions_items(
+		data: [
+			{ collection: "pages", action: "read", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", fields: ["id", "title"] }
+			{ collection: "pages", action: "create", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", fields: ["id", "title"] }
+		]
+	) {
+		id
+		collection
+		action
 	}
 }
 ```
@@ -274,37 +378,119 @@ A partial [permissions object](#the-permission-object).
 
 ### Returns
 
-Returns the [permission object](#the-permission-object) for the created permission.
+Returns the [permission object](#the-permission-object) for the updated permission.
 
 </div>
 <div class="right">
+
+### REST API
 
 ```
 PATCH /permissions/:id
 ```
 
+##### Example
+
 ```json
-// Request
+// PATCH /permissions/34
 
 {
 	"fields": ["id", "title", "body"]
 }
 ```
 
+### GraphQL
+
+```graphql
+type Mutation {
+	update_permissions_item(id: ID!, data: update_directus_permissions_input!): directus_permissions
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_permissions_item(id: 34, data: { fields: ["id", "title", "body"] }) {
+		id
+		action
+		collection
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Update Multiple Permissions
+
+Update multiple existing permissions rules.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Request Body
+
+### Request Body
+
+<div class="definitions">
+
+`keys` **Required**\
+Array of primary keys of the permissions you'd like to update.
+
+`data` **Required**\
+Any of [the permission object](#the-permission-object)'s properties.
+
+</div>
+
+### Returns
+
+Returns the [permission object](#the-permission-object) for the updated permissions.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+PATCH /permissions
+```
+
+##### Example
+
 ```json
-// Response
+// PATCH /permissions
 
 {
+	"keys": [34, 65],
 	"data": {
-		"id": 36,
-		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
-		"collection": "pages",
-		"action": "read",
-		"permissions": null,
-		"validation": null,
-		"presets": null,
-		"fields": ["id", "title", "body"],
-		"limit": null
+		"fields": ["id", "title", "body"]
+	}
+}
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	update_permissions_items(id: [ID!]!, data: update_directus_permissions_input!): [directus_permissions]
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_permissions_items(ids: [34, 64], data: { fields: ["id", "title", "body"] }) {
+		id
+		action
+		collection
 	}
 }
 ```
@@ -328,12 +514,34 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /permissions/:id
 ```
 
-```json
-// Empty Response
+##### Example
+
+```
+DELETE /permissions/34
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_permissions_item(id: ID!): delete_one
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_permissions_item(id: 34) {
+		id
+	}
+}
 ```
 
 </div>
@@ -359,17 +567,36 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /permissions
 ```
 
-```json
-// Request
-[15, 251, 810]
-```
+##### Example
 
 ```json
-// Empty Response
+// DELETE /permissions
+
+[34, 64]
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_permissions_items(ids: [ID!]!): delete_many
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_permissions_items(ids: [34, 64]) {
+		ids
+	}
+}
 ```
 
 </div>

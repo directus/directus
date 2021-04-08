@@ -99,28 +99,27 @@ available, data will be an empty array.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /activity
 ```
 
-```json
-{
-	"data": [
-		{
-			"id": 1,
-			"action": "create",
-			"user": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
-			"timestamp": "2021-01-27T10:14:33-05:00",
-			"ip": "127.0.0.1",
-			"user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.60",
-			"collection": "directus_fields",
-			"item": "1",
-			"comment": null,
-			"revisions": [2]
-		},
-		{...},
-		{...}
-	]
+### GraphQL
+
+```graphql
+type Query {
+	activity: [directus_activity]
+}
+```
+
+##### Example
+
+```graphql
+query {
+	activity {
+		...
+	}
 }
 ```
 
@@ -147,23 +146,26 @@ Returns an [activity object](#the-activity-object) if a valid identifier was pro
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /activity/:id
 ```
 
-```json
-{
-	"data": {
-		"id": 1,
-		"action": "create",
-		"user": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
-		"timestamp": "2021-01-27T10:14:33-05:00",
-		"ip": "127.0.0.1",
-		"user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.60",
-		"collection": "directus_fields",
-		"item": "1",
-		"comment": null,
-		"revisions": [2]
+### GraphQL
+
+```graphql
+type Query {
+	activity_by_id(id: ID!): directus_activity
+}
+```
+
+##### Example
+
+```graphql
+query {
+	activity_by_id(id: 15) {
+		...
 	}
 }
 ```
@@ -202,12 +204,16 @@ Returns the [activity object](#the-activity-object) of the created comment.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /activity/comment
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /activity/comment
 
 {
 	"collection": "pages",
@@ -216,22 +222,23 @@ POST /activity/comment
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": 390,
-		"action": "comment",
-		"user": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
-		"timestamp": "2021-02-03T18:04:32-05:00",
-		"ip": "127.0.0.1",
-		"user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.60",
-		"collection": "pages",
-		"item": "3",
-		"comment": "Hello World",
-		"revisions": null
-	}
+```graphql
+type Mutation {
+	create_comment(collection: String!, item: ID!, comment: String!): directus_activity
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_comment(
+		collection: "pages",
+		item: 3,
+		comment: "Hello World"
+	) { ... }
 }
 ```
 
@@ -263,34 +270,38 @@ Returns the [activity object](#the-activity-object) of the created comment.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 PATCH /activity/comment/:id
 ```
 
+##### Example
+
 ```json
-// Request
+// PATCH /activity/comment/15
 
 {
 	"comment": "Hello World!!"
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": 390,
-		"action": "comment",
-		"user": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
-		"timestamp": "2021-02-03T18:04:32-05:00",
-		"ip": "127.0.0.1",
-		"user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.60",
-		"collection": "pages",
-		"item": "3",
-		"comment": "Hello World!!",
-		"revisions": null
-	}
+```graphql
+type Mutation {
+	update_comment(id: ID!, comment: String!): directus_activity
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_comment(
+		id: 3,
+		comment: "Hello World",
+	) { ... }
 }
 ```
 
@@ -307,12 +318,32 @@ Deletes a comment.
 <div class="left"></div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /activity/comment/:id
 ```
 
-```json
-// Empty Response
+##### Example
+
+```
+DELETE /activity/comment/15
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_comment(id: ID): delete_one
+}
+```
+
+```graphql
+mutation {
+	delete_comment(id: 3) {
+		id
+	}
+}
 ```
 
 </div>

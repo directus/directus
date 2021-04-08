@@ -122,45 +122,28 @@ data will be an empty array.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /presets
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": [
-		{
-			"id": 39,
-			"bookmark": null,
-			"user": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
-			"role": null,
-			"collection": "directus_activity",
-			"search": null,
-			"filters": [],
-			"layout": "tabular",
-			"layout_query": {
-				"tabular": {
-					"sort": "-timestamp",
-					"fields": ["action", "collection", "timestamp", "user"],
-					"page": 1
-				}
-			},
-			"layout_options": {
-				"tabular": {
-					"widths": {
-						"action": 100,
-						"collection": 210,
-						"timestamp": 240,
-						"user": 240
-					}
-				}
-			}
-		},
-		{...},
-		{...}
-	]
+```graphql
+type Query {
+	presets: [directus_presets]
+}
+```
+
+##### Example
+
+```graphql
+query {
+	presets {
+		id
+		user
+	}
 }
 ```
 
@@ -187,40 +170,33 @@ Returns the requested [preset object](#the-preset-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /presets/:id
 ```
 
-```json
-// Response
+##### Example
 
-{
-	"data": {
-		"id": 39,
-		"bookmark": null,
-		"user": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
-		"role": null,
-		"collection": "directus_activity",
-		"search": null,
-		"filters": [],
-		"layout": "tabular",
-		"layout_query": {
-			"tabular": {
-				"sort": "-timestamp",
-				"fields": ["action", "collection", "timestamp", "user"],
-				"page": 1
-			}
-		},
-		"layout_options": {
-			"tabular": {
-				"widths": {
-					"action": 100,
-					"collection": 210,
-					"timestamp": 240,
-					"user": 240
-				}
-			}
-		}
+```
+GET /presets/42
+```
+
+### GraphQL
+
+```graphql
+type Query {
+	presets_by_id(id: ID!): directus_presets
+}
+```
+
+##### Example
+
+```graphql
+query {
+	presets_by_id(id: 42) {
+		id
+		user
 	}
 }
 ```
@@ -230,69 +206,9 @@ GET /presets/:id
 
 ---
 
-## Create Preset
+## Create a Preset
 
-Create one or more new preset(s).
-
-<div class="two-up">
-<div class="left">
-
-### Query Parameters
-
-Supports all [global query parameters](/reference/api/query).
-
-### Request Body
-
-A partial [preset object](#the-preset-object) or an array of partial [preset objects](#the-preset-object).
-
-### Returns
-
-Returns the [preset object](#the-preset-object) for the created preset.
-
-</div>
-<div class="right">
-
-```
-POST /presets
-```
-
-```json
-// Request
-
-{
-	"user": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
-	"layout": "cards",
-	"search": "Directus"
-}
-```
-
-```json
-// Response
-
-{
-	"data": {
-		"id": 42,
-		"bookmark": null,
-		"user": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
-		"role": null,
-		"collection": null,
-		"search": "Directus",
-		"filters": null,
-		"layout": "cards",
-		"layout_query": null,
-		"layout_options": null
-	}
-}
-```
-
-</div>
-</div>
-
----
-
-## Update Preset
-
-Update an existing preset.
+Create a new preset.
 
 <div class="two-up">
 <div class="left">
@@ -312,33 +228,39 @@ Returns the [preset object](#the-preset-object) for the created preset.
 </div>
 <div class="right">
 
+### REST API
+
 ```
-PATCH /presets/:id
+POST /presets
 ```
+
+##### Example
 
 ```json
-// Request
+// POST /presets
 
 {
-	"layout": "tabular"
+	"user": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
+	"layout": "cards",
+	"search": "Directus"
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": 42,
-		"bookmark": null,
-		"user": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
-		"role": null,
-		"collection": null,
-		"search": "Directus",
-		"filters": null,
-		"layout": "tabular",
-		"layout_query": null,
-		"layout_options": null
+```graphql
+type Mutation {
+	create_presets_item(data: create_directus_presets_input!): directus_presets
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_presets_item(data: { user: "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca", layout: "cards", search: "Directus" }) {
+		id
+		user
 	}
 }
 ```
@@ -348,7 +270,224 @@ PATCH /presets/:id
 
 ---
 
-## Delete Preset
+## Create Multiple Presets
+
+Create multiple new presets.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Request Body
+
+An array of partial [preset objects](#the-preset-object).
+
+### Returns
+
+Returns the [preset object](#the-preset-object) for the created preset.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+POST /presets
+```
+
+##### Example
+
+```json
+// POST /presets
+
+[
+	{
+		"collection": "directus_files",
+		"user": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
+		"layout": "cards",
+		"search": "Directus"
+	},
+	{
+		"collection": "articles",
+		"user": "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca",
+		"layout": "tabular"
+	}
+]
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	create_presets_items(data: [create_directus_presets_input!]!): [directus_presets]
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_presets_items(
+		data: [
+			{
+				collection: "directus_files"
+				user: "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca"
+				layout: "cards"
+				search: "Directus"
+			}
+			{ collection: "articles", user: "410b5772-e63f-4ae6-9ea2-39c3a31bd6ca", layout: "tabular" }
+		]
+	) {
+		id
+		user
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Update a Preset
+
+Update an existing preset.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Request Body
+
+A partial [preset object](#the-preset-object).
+
+### Returns
+
+Returns the [preset object](#the-preset-object) for the updated preset.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+PATCH /presets/:id
+```
+
+##### Example
+
+```json
+// PATCH /presets/34
+
+{
+	"layout": "tabular"
+}
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	update_presets_item(id: ID!, data: update_directus_presets_input): directus_presets
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_presets_item(id: 32, data: { layout: "tabular" }) {
+		id
+		user
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Update Multiple Presets
+
+Update multiple existing presets.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Request Body
+
+<div class="definitions">
+
+`keys` **Required**\
+Array of primary keys of the presets you'd like to update.
+
+`data` **Required**\
+Any of [the preset object](#the-preset-object)'s properties.
+
+</div>
+
+### Returns
+
+Returns the [preset objects](#the-preset-object) for the updated presets.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+PATCH /presets
+```
+
+##### Example
+
+```json
+// PATCH /presets
+
+{
+	"keys": [15, 64],
+	"data": {
+		"layout": "tabular"
+	}
+}
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	update_presets_items(ids: [ID!]!, data: update_directus_presets_input): [directus_presets]
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_presets_items(ids: [15, 64], data: { layout: "tabular" }) {
+		id
+		user
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Delete a Preset
 
 Delete an existing preset.
 
@@ -362,12 +501,34 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /presets/:id
 ```
 
-```json
-// Empty Response
+##### Example
+
+```
+DELETE /presets/34
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_presets_item(id: ID!): delete_one
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_presets_item(id: 32) {
+		id
+	}
+}
 ```
 
 </div>
@@ -393,20 +554,36 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /presets
 ```
 
+##### Example
+
 ```json
-// Request
+// DELETE /presets
 [15, 251, 810]
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_presets_items(ids: [ID!]!): delete_many
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_presets_items(ids: [15, 251, 810]) {
+		ids
+	}
+}
 ```
 
 </div>
 </div>
-
----

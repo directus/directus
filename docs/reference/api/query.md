@@ -498,7 +498,20 @@ Only get 3 related articles, with only the top rated comment nested
 
 ### GraphQL
 
-_Natively supported in GraphQL. Any attribute can be used on a nested relational dataset._
+_Natively supported in GraphQL:_
+
+```graphql
+query {
+	members {
+		favorite_games(filter: { name: { _eq: "Mariokart 8" } }) {
+			id
+			featured_image {
+				filename_disk
+			}
+		}
+	}
+}
+```
 
 </div>
 </div>
