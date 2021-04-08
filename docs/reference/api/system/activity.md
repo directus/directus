@@ -48,13 +48,13 @@ Unique identifier for the item the action applied to. This is always a string, e
 When the action happened.
 
 `user` **many-to-one**\
-The user who performed this action. Many-to-one to [users](/reference/api/rest/users/#the-users-object).
+The user who performed this action. Many-to-one to [users](/reference/api/system/users/#the-users-object).
 
 `user_agent` **string**\
 User agent string of the browser the user used when the action took place.
 
 `revisions` **one-to-many**\
-Any changes that were made in this activity. One-to-many to [revisions](/reference/api/rest/revisions/#the-revisions-object).
+Any changes that were made in this activity. One-to-many to [revisions](/reference/api/system/revisions/#the-revisions-object).
 
 </div>
 </div>

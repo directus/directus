@@ -30,7 +30,7 @@ pageClass: page-reference
 Primary key of the permission rule.
 
 `role` **many-to-one**\
-Role this permission applies to. Many-to-one to [roles](/reference/api/rest/roles/). `null` is used for public permissions.
+Role this permission applies to. Many-to-one to [roles](/reference/api/system/roles/). `null` is used for public permissions.
 
 `collection` **string**\
 Collection this permission rule applies to.

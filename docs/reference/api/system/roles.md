@@ -57,7 +57,7 @@ If this role is considered an admin role. This means that users in this role hav
 Whether or not users in this role have access to use the Admin App.
 
 `users` **one-to-many**\
-The users in this role. One-to-many to [users](/reference/api/rest/users/).
+The users in this role. One-to-many to [users](/reference/api/system/users/).
 
 </div>
 </div>

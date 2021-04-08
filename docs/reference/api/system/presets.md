@@ -34,10 +34,10 @@ Primary key of the preset.
 The title of the bookmark. If this value is `null`, it's considered a preset instead of a bookmark.
 
 `user` **many-to-one**\
-User this preset applies to. Many-to-one to [users](/reference/api/rest/users/).
+User this preset applies to. Many-to-one to [users](/reference/api/system/users/).
 
 `role` **many-to-one**\
-Role this preset applies to. Many-to-one to [users](/reference/api/rest/roles/).
+Role this preset applies to. Many-to-one to [users](/reference/api/system/roles/).
 
 `collection` **string**\
 Collection this preset applies to.

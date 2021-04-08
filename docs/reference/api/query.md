@@ -77,7 +77,7 @@ sections.item:paragraphs.body
 sections.item:videos.body
 ```
 
-In GraphQL, this can be achieved using [Union Types](/reference/api/graphql/#many-to-any-union-types).
+In GraphQL, this can be achieved using Union Types.
 
 </div>
 <div class="right">

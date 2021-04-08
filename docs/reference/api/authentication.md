@@ -33,7 +33,7 @@ There are two types of tokens that can be used to authenticate within Directus:
 These are the tokens as returned by the [login](/reference/api/system/authentication/#login) endpoint/mutation. These
 tokens have a relatively short expiration time, and are thus the most secure option to use. The tokens are returned with
 a `refresh_token` that can be used to retrieve a new access token via the
-[refresh](/reference/api/rest/authentication/#refresh) endpoint/mutation.
+[refresh](/reference/api/system/authentication/#refresh) endpoint/mutation.
 
 ### Static Token
 

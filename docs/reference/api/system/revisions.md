@@ -30,7 +30,7 @@ pageClass: page-reference
 Primary key of the revision.
 
 `activity` **many-to-one**\
-Related activity record. Many-to-one to [activity](/reference/api/rest/activity/).
+Related activity record. Many-to-one to [activity](/reference/api/system/activity/).
 
 `collection` **string**\
 Collection in which this revision happened.

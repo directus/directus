@@ -46,16 +46,16 @@ Title for the file.
 Mimetype of the file.
 
 `folder` **many-to-one**\
-What (virtual) folder the file is in. Many-to-one to [folders](/reference/api/rest/folders/).
+What (virtual) folder the file is in. Many-to-one to [folders](/reference/api/system/folders/).
 
 `uploaded_by` **many-to-one**\
-Who uploaded the file. Many-to-one to [users](/reference/api/rest/users/).
+Who uploaded the file. Many-to-one to [users](/reference/api/system/users/).
 
 `uploaded_on` **datetime**\
 When the file was uploaded.
 
 `modified_by` **many-to-one**\
-Who updated the file last. Many-to-one to [users](/reference/api/rest/users/).
+Who updated the file last. Many-to-one to [users](/reference/api/system/users/).
 
 `filesize` **number**\
 Size of the file in bytes.

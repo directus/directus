@@ -247,8 +247,8 @@ The `collection` property is required, all other properties of the [collection o
 optional.
 
 You are able to provide an array of `fields` to be created during the creation of the collection. See the
-[fields object](/reference/api/rest/fields/#the-fields-object) for more information on what properties are available in
-a field.
+[fields object](/reference/api/system/fields/#the-fields-object) for more information on what properties are available
+in a field.
 
 ### Returns
 

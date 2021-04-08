@@ -54,7 +54,7 @@ Description of the user.
 Tags for the user.
 
 `avatar` **many-to-one**\
-Avatar file. Many-to-one to [files](/reference/api/rest/files/).
+Avatar file. Many-to-one to [files](/reference/api/system/files/).
 
 `language` **string**\
 Language the Admin App is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages and
