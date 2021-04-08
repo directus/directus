@@ -22,7 +22,7 @@ import maplibre, {
 	LngLat,
 } from 'maplibre-gl';
 import { ButtonControl } from '@/layouts/map/components/map.vue';
-import sources from '@/layouts/map/styles/sources';
+import { sources, mapbox_sources } from '@/layouts/map/styles/sources';
 import { Point as JSONPoint } from 'geojson';
 import proj4 from 'proj4';
 
@@ -81,32 +81,29 @@ export default defineComponent({
 			const locateMarkerControl = new ButtonControl('mapboxgl-ctrl-fitdata', locateMarker);
 			addMarkerControl.value = new ButtonControl('mapboxgl--ctrl-add', toggleMarker);
 
-			const mapboxStyle = props.background.toLowerCase().startsWith('mapbox')
-				? (sources[props.background] as any).url
-				: null;
-
-			map = new Map({
+			const mapboxStyle = (map = new Map({
 				container: container.value,
-				style: mapboxStyle
-					? mapboxStyle
-					: {
-							version: 8,
-							glyphs:
-								'https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf',
-							sprite: 'https://rawgit.com/lukasmartinelli/osm-liberty/gh-pages/sprites/osm-liberty',
-							layers: [
-								{
-									id: props.background,
-									source: props.background,
-									type: 'raster',
-								},
-							],
-							sources,
-					  },
+				style:
+					props.background in mapbox_sources
+						? mapbox_sources[props.background]
+						: {
+								version: 8,
+								glyphs:
+									'https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf',
+								sprite: 'https://rawgit.com/lukasmartinelli/osm-liberty/gh-pages/sprites/osm-liberty',
+								layers: [
+									{
+										id: props.background,
+										source: props.background,
+										type: 'raster',
+									},
+								],
+								sources,
+						  },
 				center: [props.longitude, props.latitude],
 				zoom: props.zoom,
 				attributionControl: false,
-			});
+			}));
 
 			map.addControl(new maplibre.NavigationControl(), 'top-left');
 			map.addControl(new maplibre.GeolocateControl(), 'top-left');

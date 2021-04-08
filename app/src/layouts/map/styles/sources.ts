@@ -3,11 +3,14 @@ import type { Sources } from 'maplibre-gl';
 const tiles = (subdomains: string, url: string) => Array.from(subdomains || '').map((s) => url.replace('{s}', s));
 const esri = (url: string) => ['server', 'services'].map((s) => url.replace('{s}', s));
 
-export default <Sources>{
-	Mapbox_Light: {
-		url: 'mapbox://styles/mapbox/light-v10',
-		type: 'vector',
-	},
+export const mapbox_sources: Record<string, string> = {
+	Mapbox_Light: 'mapbox://styles/mapbox/light-v10',
+	Mapbox_Outdoors: 'mapbox://styles/mapbox/outdoors-v11',
+	Mapbox_Dark: 'mapbox://styles/mapbox/dark-v10',
+	Mapbox_Satellite: 'mapbox://styles/mapbox/satellite-v9',
+};
+
+export const sources = <Sources>{
 	OpenStreetMap_Mapnik: {
 		tiles: tiles('abc', 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
 		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
