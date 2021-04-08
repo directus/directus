@@ -76,27 +76,33 @@ export default defineComponent({
 		function setupMap() {
 			if (container.value === null) return;
 
-			maplibre.accessToken = 'hei';
+			maplibre.accessToken = 'pk.eyJ1Ijoibml0d2VsIiwiYSI6ImNrbjkxa2VmZTA5dGYycG11ODRxbnFqcjkifQ.z4Hj1rgxhE02LhAKmeF-jQ';
 
 			const locateMarkerControl = new ButtonControl('mapboxgl-ctrl-fitdata', locateMarker);
 			addMarkerControl.value = new ButtonControl('mapboxgl--ctrl-add', toggleMarker);
 
+			const mapboxStyle = props.background.toLowerCase().startsWith('mapbox')
+				? (sources[props.background] as any).url
+				: null;
+
 			map = new Map({
 				container: container.value,
-				style: {
-					version: 8,
-					glyphs:
-						'https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf',
-					sprite: 'https://rawgit.com/lukasmartinelli/osm-liberty/gh-pages/sprites/osm-liberty',
-					layers: [
-						{
-							id: props.background,
-							source: props.background,
-							type: 'raster',
-						},
-					],
-					sources,
-				},
+				style: mapboxStyle
+					? mapboxStyle
+					: {
+							version: 8,
+							glyphs:
+								'https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf',
+							sprite: 'https://rawgit.com/lukasmartinelli/osm-liberty/gh-pages/sprites/osm-liberty',
+							layers: [
+								{
+									id: props.background,
+									source: props.background,
+									type: 'raster',
+								},
+							],
+							sources,
+					  },
 				center: [props.longitude, props.latitude],
 				zoom: props.zoom,
 				attributionControl: false,
