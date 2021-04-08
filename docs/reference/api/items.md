@@ -92,8 +92,8 @@ GET /items/articles
 ### GraphQL
 
 ```graphql
-query {
-	<collection> { ... }
+type Query {
+	<collection>: [<collection>]
 }
 ```
 
@@ -149,8 +149,8 @@ GET /items/articles/15
 ### GraphQL
 
 ```graphql
-query {
-	<collection>_by_id(id: ID!) { ... }
+type Query {
+	<collection>_by_id(id: ID!): <collection>
 }
 ```
 
@@ -214,8 +214,8 @@ POST /items/articles
 ### GraphQL
 
 ```graphql
-mutation {
-	create_<collection>_item(data: {}) { ... }
+type Mutation {
+	create_<collection>_item(data: create_<collection>_input): <collection>
 }
 ```
 
@@ -285,8 +285,8 @@ POST /items/articles
 ### GraphQL
 
 ```graphql
-mutation {
-	create_<collection>_items(data: []) { ... }
+type Mutation {
+	create_<collection>_items(data: [create_<collection>_input]): [<collection>]
 }
 ```
 
@@ -354,8 +354,8 @@ PATCH /items/articles/15
 ### GraphQL
 
 ```graphql
-mutation {
-	update_articles_item(id: ID!, data: {}) { ... }
+type Mutation {
+	update_<collection>_item(id: ID!, data: update_<collection>_input!): <collection>
 }
 ```
 
@@ -425,8 +425,8 @@ PATCH /items/articles
 ### GraphQL
 
 ```graphql
-mutation {
-	update_<collection>_items(ids: [ID!]!, data: {}) { ... }
+type Mutation {
+	update_<collection>_items(ids: [ID!]!, data: [update_<collection>_input]): [<collection>]
 }
 ```
 
@@ -475,8 +475,8 @@ DELETE /items/articles/15
 ### GraphQL
 
 ```graphql
-mutation {
-	delete_<collection>_item(id: ID!) { id }
+type Mutation {
+	delete_<collection>_item(id: ID!): delete_one
 }
 ```
 
@@ -532,8 +532,8 @@ DELETE /items/articles
 ### GraphQL
 
 ```graphql
-mutation {
-	delete_<collection>_items(ids: [ID!]!) { ids }
+type Mutation {
+	delete_<collection>_items(ids: [ID!]!): delete_many
 }
 ```
 
