@@ -33,8 +33,6 @@
 		"@popperjs/core": "^2.9.1",
 		"@sindresorhus/slugify": "^1.1.0",
 		"@tinymce/tinymce-vue": "^3.2.8",
-		"@turf/boolean-disjoint": "^6.2.0",
-		"@turf/meta": "^6.2.0",
 		"@types/base-64": "^0.1.3",
 		"@types/bytes": "^3.1.0",
 		"@types/codemirror": "^0.0.108",
