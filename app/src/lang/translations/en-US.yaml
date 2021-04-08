@@ -921,6 +921,16 @@ interfaces:
     box: Block / Inline
     imageToken: Image Token
     imageToken_label: What (static) token to append to image sources
+  map:
+    map: Map
+    description: Select a location on a map
+    lat: Latitude
+    lat_placeholder: Enter the latitude...
+    lng: Longitude
+    lng_placeholder: Enter the longitude...
+    background: Map Style
+    projection: Projection
+    zoom: Zoom
   notice:
     notice: Notice
     description: Display a short notice

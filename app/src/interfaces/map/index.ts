@@ -1,5 +1,6 @@
 import { defineInterface } from '../define';
 import InterfaceMap from './map.vue';
+import sources from '@/layouts/map/styles/sources';
 
 export default defineInterface(({ i18n }) => ({
 	id: 'map',
@@ -40,6 +41,21 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 		{
+			field: 'zoom',
+			name: i18n.t('interfaces.map.zoom'),
+			type: 'decimal',
+			meta: {
+				width: 'half',
+				interface: 'numeric',
+				options: {
+					placeholder: i18n.t('interfaces.map.lng_placeholder'),
+				},
+			},
+			schema: {
+				default_value: 8,
+			},
+		},
+		{
 			field: 'background',
 			name: i18n.t('interfaces.map.background'),
 			type: 'string',
@@ -47,16 +63,11 @@ export default defineInterface(({ i18n }) => ({
 				width: 'half',
 				interface: 'dropdown',
 				options: {
-					choices: [
-						{
-							text: 'a',
-							value: 'a',
-						},
-					],
+					choices: Object.keys(sources).map((choice) => ({ value: choice, text: choice })),
 				},
 			},
 			schema: {
-				default_value: 'a',
+				default_value: 'CartoDB_PositronNoLabels',
 			},
 		},
 		{
@@ -68,15 +79,14 @@ export default defineInterface(({ i18n }) => ({
 				interface: 'dropdown',
 				options: {
 					choices: [
-						{
-							text: 'a',
-							value: 'a',
-						},
+						{ value: 'EPSG:4326', text: 'WGS84' },
+						{ value: 'EPSG:4269', text: 'EPSG:4269' },
+						{ value: 'EPSG:3857', text: 'EPSG:3857' },
 					],
 				},
 			},
 			schema: {
-				default_value: 'a',
+				default_value: 'EPSG:4326',
 			},
 		},
 	],
