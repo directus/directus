@@ -109,30 +109,26 @@ Returns the [settings object](#the-settings-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /settings
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": 1,
-		"project_name": "Directus",
-		"project_url": null,
-		"project_color": null,
-		"project_logo": null,
-		"public_foreground": null,
-		"public_background": null,
-		"public_note": null,
-		"auth_login_attempts": 25,
-		"auth_password_policy": null,
-		"storage_asset_transform": "all",
-		"storage_asset_presets": [
-			{ "key": "small", "fit": "cover", "width": 200, "height": 161, "quality": 80, "withoutEnlargement": false }
-		],
-		"custom_css": null
+```graphql
+type Query {
+	settings: directus_settings
+}
+```
+
+##### Example
+
+```graphql
+query {
+	settings {
+		project_name
 	}
 }
 ```
@@ -162,38 +158,37 @@ Returns the [settings object](#the-setting-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 PATCH /settings
 ```
 
+##### Example
+
 ```json
-// Request
+// PATCH /settings
 
 {
 	"project_url": "https://example.com/"
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": 1,
-		"project_name": "Directus",
-		"project_url": "https://example.com/",
-		"project_color": null,
-		"project_logo": null,
-		"public_foreground": null,
-		"public_background": null,
-		"public_note": null,
-		"auth_login_attempts": 25,
-		"auth_password_policy": null,
-		"storage_asset_transform": "all",
-		"storage_asset_presets": [
-			{ "key": "small", "fit": "cover", "width": 200, "height": 161, "quality": 80, "withoutEnlargement": false }
-		],
-		"custom_css": null
+```graphql
+type Mutation {
+	update_settings(data: update_directus_settings_input!): directus_settings
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_settings(data: { project_url: "https://example.com" }) {
+		project_name
+		project_url
 	}
 }
 ```

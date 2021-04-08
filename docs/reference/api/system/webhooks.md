@@ -93,28 +93,28 @@ available, data will be an empty array.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /webhooks
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": [
-		{
-			"id": 1,
-			"name": "Build Website",
-			"method": "POST",
-			"url": "https://example.com/",
-			"status": "active",
-			"data": true,
-			"actions": ["create", "update"],
-			"collections": ["articles"]
-		},
-		{...},
-		{...}
-	]
+```graphql
+type Query {
+	webhooks: [directus_webhooks]
+}
+```
+
+##### Example
+
+```graphql
+query {
+	webhooks {
+		url
+		method
+	}
 }
 ```
 
@@ -141,23 +141,28 @@ Returns the requested [webhook object](#the-webhook-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /webhooks/:id
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": 1,
-		"name": "Build Website",
-		"method": "POST",
-		"url": "https://example.com/",
-		"status": "active",
-		"data": true,
-		"actions": ["create", "update"],
-		"collections": ["articles"]
+```graphql
+type Query {
+	webhooks_by_id(id: ID!): directus_webhooks
+}
+```
+
+##### Examples
+
+```graphql
+query {
+	webhooks_by_id(id: 15) {
+		url
+		actions
+		method
 	}
 }
 ```
@@ -169,7 +174,7 @@ GET /webhooks/:id
 
 ## Create a Webhook
 
-Create one or more new webhook(s).
+Create a new webhook.
 
 <div class="two-up">
 <div class="left">
@@ -180,23 +185,27 @@ Supports all [global query parameters](/reference/api/query).
 
 ### Request Body
 
-A partial [webhook object](#the-webhook-object) or an array of partial [webhook objects](#the-webhook-object).
+A partial [webhook object](#the-webhook-object).
 
 `name`, `actions`, `collections`, and `url` are required.
 
 ### Returns
 
-Returns the [webhook object(s)](#the-webhook-object) for the created webhook(s).
+Returns the [webhook object](#the-webhook-object) for the created webhook.
 
 </div>
 <div class="right">
+
+### REST API
 
 ```
 POST /webhooks
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /webhooks
 
 {
 	"name": "Example",
@@ -206,19 +215,103 @@ POST /webhooks
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": 3,
+```graphql
+type Mutation {
+	create_webhooks_item(data: create_directus_webhooks_input!): directus_webhooks
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_webhooks_item(
+		data: { name: "Example", actions: ["create", "update"], collections: ["articles"], url: "https://example.com" }
+	) {
+		id
+		name
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Create Multiple Webhook
+
+Create multiple new webhooks.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Request Body
+
+An array of partial [webhook object](#the-webhook-object).
+
+`name`, `actions`, `collections`, and `url` are required.
+
+### Returns
+
+Returns the [webhook objects](#the-webhook-object) for the created webhooks.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+POST /webhooks
+```
+
+##### Example
+
+```json
+// POST /webhooks
+
+[
+	{
 		"name": "Example",
-		"method": "POST",
-		"url": "https://example.com",
-		"status": "active",
-		"data": true,
 		"actions": ["create", "update"],
-		"collections": ["articles"]
+		"collections": ["articles"],
+		"url": "https://example.com"
+	},
+	{
+		"name": "Second Example",
+		"actions": ["delete"],
+		"collections": ["articles"],
+		"url": "https://example.com/on-delete"
+	}
+]
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	create_webhooks_items(data: [create_directus_webhooks_input!]!): [directus_webhooks]
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_webhooks_items(
+		data: [
+			{ name: "Example", actions: ["create", "update"], collections: ["articles"], url: "https://example.com" }
+			{ name: "Second Example", actions: ["delete"], collections: ["articles"], url: "https://example.com/on-delete" }
+		]
+	) {
+		id
+		name
 	}
 }
 ```
@@ -245,36 +338,113 @@ A partial [webhook object](#the-webhook-object).
 
 ### Returns
 
-Returns the [webhook object](#the-webhook-object) for the created webhook.
+Returns the [webhook object](#the-webhook-object) for the updated webhook.
 
 </div>
 <div class="right">
+
+### REST API
 
 ```
 PATCH /webhooks/:id
 ```
 
+##### Example
+
 ```json
-// Request
+// PATCH /webhooks/15
 
 {
 	"name": "Build Website"
 }
 ```
 
+### GraphQL
+
+```graphql
+type Mutation {
+	update_webhooks_item(id: ID!, data: update_directus_webhooks_input!): directus_webhooks
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_webhooks_item(id: 15, data: { name: "Build Website" }) {
+		name
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Update Multiple Webhooks
+
+Update multiple existing webhooks.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Request Body
+
+<div class="definitions">
+
+`keys` **Required**\
+Array of primary keys of the webhooks you'd like to update.
+
+`data` **Required**\
+Any of [the webhook object](#the-webhook-object)'s properties.
+
+</div>
+
+### Returns
+
+Returns the [webhook objects](#the-webhook-object) for the updated webhooks.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+PATCH /webhooks
+```
+
+##### Example
+
 ```json
-// Response
+// PATCH /webhooks
 
 {
+	"keys": [15, 41],
 	"data": {
-		"id": 3,
-		"name": "Build Website",
-		"method": "POST",
-		"url": "https://example.com",
-		"status": "active",
-		"data": true,
-		"actions": ["create", "update"],
-		"collections": ["articles"]
+		"name": "Build Website"
+	}
+}
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	update_webhooks_items(ids: [ID!]!, data: update_directus_webhooks_input!): [directus_webhooks]
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_webhooks_items(ids: [15, 41], data: { name: "Build Website" }) {
+		name
 	}
 }
 ```
@@ -298,12 +468,34 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /webhooks/:id
 ```
 
-```json
-// Empty Response
+##### Example
+
+```
+DELETE /webhooks/15
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_webhooks_item(id: ID!): delete_one
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_webhooks_item(id: 15) {
+		id
+	}
+}
 ```
 
 </div>
@@ -329,17 +521,36 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /webhooks
 ```
 
+##### Example
+
 ```json
-// Request
+// DELETE /webhooks
+
 [2, 15, 41]
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_webhooks_items(ids: [ID!]!): delete_many
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_webhooks_items(ids: [2, 15, 41]) {
+		ids
+	}
+}
 ```
 
 </div>

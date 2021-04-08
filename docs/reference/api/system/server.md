@@ -40,26 +40,25 @@ Object conforming to [the OpenAPI Specification](https://swagger.io/specificatio
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /server/specs/oas
 ```
 
-```json
-// Response
-{
-	"openapi": "3.0.1",
-	"info": {
-		"title": "Dynamic API Specification",
-		"description": "This is a dynamically generated API specification for all endpoints existing on the current .",
-		"version": "9.0.0-rc.34"
-	},
-	"servers": [
-		{
-			"url": "http://localhost:8055",
-			"description": "Your current Directus instance."
-		}
-	]
-	// etc
+### GraphQL
+
+```graphql
+type Query {
+	server_specs_oas: String
+}
+```
+
+##### Example
+
+```graphql
+query {
+	server_specs_oas
 }
 ```
 
@@ -85,14 +84,6 @@ The SDL is based on the permissions of the currently authenticated user.
 
 GraphQL SDL file.
 
-</div>
-<div class="right">
-
-```
-GET /server/specs/graphql/
-GET /server/specs/graphql/system
-```
-
 ```graphql
 type about_us {
   id: Int
@@ -114,6 +105,32 @@ type articles {
 ```
 
 </div>
+<div class="right">
+
+### REST API
+
+```
+GET /server/specs/graphql/
+GET /server/specs/graphql/system
+```
+
+### GraphQL
+
+```graphql
+type Query {
+	server_specs_graphql(scope: graphql_sdl_scope): String
+}
+```
+
+##### Example
+
+```graphql
+query {
+	server_specs_graphql(scope: "system")
+}
+```
+
+</div>
 </div>
 
 ---
@@ -132,13 +149,26 @@ Pong.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /server/ping
 ```
 
-```json
-// Returns
-pong
+### GraphQL
+
+```graphql
+type Query {
+	server_ping: String
+}
+```
+
+##### Example
+
+```graphql
+query {
+	server_ping
+}
 ```
 
 </div>
@@ -201,54 +231,29 @@ How much memory is available on the operating system.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /server/info
 ```
 
-```json
-// Response
+### GraphQL
 
-// Non-admin
-{
-	"data": {
-		"project": {
-			"project_name": "Directus",
-			"project_logo": null,
-			"project_color": null,
-			"public_foreground": null,
-			"public_background": null,
-			"public_note": null,
-			"custom_css": null
+```graphql
+type Query {
+	server_info: server_info
+}
+```
+
+##### Example
+
+```graphql
+query {
+	server_info {
+		directus {
+			version
 		}
 	}
-}
-
-// Admin
-{
-  "data": {
-    "project": {
-      "project_name": "Directus",
-      "project_logo": null,
-      "project_color": null,
-      "public_foreground": null,
-      "public_background": null,
-      "public_note": null,
-      "custom_css": null
-    },
-    "directus": {
-      "version": "9.0.0-rc.34"
-    },
-    "node": {
-      "version": "15.5.1",
-      "uptime": 77586
-    },
-    "os": {
-      "type": "macOS",
-      "version": "Big Sur (11)",
-      "uptime": 180836,
-      "totalmem": 34359738368
-    }
-  }
 }
 ```
 
@@ -357,61 +362,25 @@ Array with the status of all individually connected services.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /server/health
 ```
 
-```json
-// Response
+### GraphQL
 
-// Non-admin
-{
-  "status": "ok"
+```graphql
+type Query {
+	server_health: JSON
 }
+```
 
-// Admin
-{
-  "status": "ok",
-  "releaseId": "9.0.0",
-  "serviceId": "3292c816-ae02-43b4-ba91-f0bb549f040c",
-  "checks": {
-    "pg:responseTime": [
-      {
-        "status": "ok",
-        "componentType": "datastore",
-        "observedUnit": "ms",
-        "observedValue": 0.489
-      }
-    ],
-    "pg:connectionsAvailable": [
-      {
-        "status": "ok",
-        "componentType": "datastore",
-        "observedValue": 2
-      }
-    ],
-    "pg:connectionsUsed": [
-      {
-        "status": "ok",
-        "componentType": "datastore",
-        "observedValue": 0
-      }
-    ],
-    "storage:local:responseTime": [
-      {
-        "status": "ok",
-        "componentType": "objectstore",
-        "observedValue": 1.038,
-        "observedUnit": "ms"
-      }
-    ],
-    "email:connection": [
-      {
-        "status": "ok",
-        "componentType": "email"
-      }
-    ]
-  }
+##### Example
+
+```graphql
+query {
+	server_health
 }
 ```
 

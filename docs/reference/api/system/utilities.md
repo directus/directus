@@ -42,23 +42,35 @@ Hashed string.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /utils/hash/generate
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /utils/hash/generate
 
 {
 	"string": "Hello World!"
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": "$arg...fEfM"
+```graphql
+type Mutation {
+	utils_hash_generate(string: String!): String
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	utils_hash_generate(string: "Hello World!")
 }
 ```
 
@@ -93,12 +105,16 @@ Boolean.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /utils/hash/verify
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /utils/hash/verify
 
 {
 	"string": "Hello World!",
@@ -106,11 +122,11 @@ POST /utils/hash/verify
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": true
+```graphql
+type Mutation {
+	utils_hash_verify(hash: String!, string: String!): Boolean
 }
 ```
 
@@ -145,12 +161,16 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /utils/sort/:collection
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /utils/sort/articles
 
 {
 	"item": 16,
@@ -158,8 +178,20 @@ POST /utils/sort/:collection
 }
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+type Mutation {
+	utils_sort(collection: String!, item: ID!, to: ID!): Boolean
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	utils_sort(collection: "articles", item: 16, to: 51)
+}
 ```
 
 </div>

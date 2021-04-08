@@ -103,31 +103,31 @@ will be an empty array.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /roles
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": [
-		{
-			"id": "653925a9-970e-487a-bfc0-ab6c96affcdc",
-			"name": "Admin",
-			"icon": "supervised_user_circle",
-			"description": null,
-			"ip_access": null,
-			"enforce_tfa": false,
-			"module_list": null,
-			"collection_list": null,
-			"admin_access": true,
-			"app_access": true,
-			"users": ["0bc7b36a-9ba9-4ce0-83f0-0a526f354e07"]
-		},
-		{...},
-		{...}
-	]
+```graphql
+type Query {
+	roles: [directus_roles]
+}
+```
+
+##### Example
+
+```graphql
+query {
+	roles {
+		id
+		name
+		users {
+			email
+		}
+	}
 }
 ```
 
@@ -154,26 +154,36 @@ Returns the requested [role object](#the-role-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /roles/:id
 ```
 
-```json
-// Response
+##### Example
 
-{
-	"data": {
-		"id": "653925a9-970e-487a-bfc0-ab6c96affcdc",
-		"name": "Admin",
-		"icon": "supervised_user_circle",
-		"description": null,
-		"ip_access": null,
-		"enforce_tfa": false,
-		"module_list": null,
-		"collection_list": null,
-		"admin_access": true,
-		"app_access": true,
-		"users": ["0bc7b36a-9ba9-4ce0-83f0-0a526f354e07"]
+```
+GET /roles/b4cb3b64-8580-4ad9-a099-eade6da24302
+```
+
+### GraphQL
+
+```graphql
+type Query {
+	roles_by_id(id: ID!): directus_roles
+}
+```
+
+##### Example
+
+```graphql
+query {
+	roles_by_id(id: 2) {
+		id
+		name
+		users {
+			email
+		}
 	}
 }
 ```
@@ -185,7 +195,7 @@ GET /roles/:id
 
 ## Create a Role
 
-Create one or more new role(s).
+Create a new role.
 
 <div class="two-up">
 <div class="left">
@@ -196,21 +206,25 @@ Supports all [global query parameters](/reference/api/query).
 
 ### Request Body
 
-A partial [role object](#the-role-object) or an array of partial [role objects](#the-role-object).
+A partial [role object](#the-role-object).
 
 ### Returns
 
-Returns the [role object(s)](#the-role-object) for the created role(s).
+Returns the [role object](#the-role-object) for the created role.
 
 </div>
 <div class="right">
+
+### REST API
 
 ```
 POST /roles
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /roles
 
 {
 	"name": "Interns",
@@ -221,22 +235,109 @@ POST /roles
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": "2e6c5fc1-e2bb-4bfc-9f74-8a91604b3b31",
+```graphql
+type Mutation {
+	create_roles_item(data: create_directus_roles_input!): directus_roles
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_roles_item(
+		data: { name: "Interns", icon: "verified_user", description: null, admin_access: false, app_access: true }
+	) {
+		id
+		name
+		users {
+			email
+		}
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Create Multiple Roles
+
+Create multiple new roles.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Request Body
+
+An array of partial [role objects](#the-role-object).
+
+### Returns
+
+Returns the [role objects](#the-role-object) for the created roles.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+POST /roles
+```
+
+##### Example
+
+```json
+// POST /roles
+
+[
+	{
 		"name": "Interns",
 		"icon": "verified_user",
 		"description": null,
-		"ip_access": null,
-		"enforce_tfa": false,
-		"module_list": null,
-		"collection_list": null,
 		"admin_access": false,
-		"app_access": true,
-		"users": null
+		"app_access": true
+	},
+	{
+		"name": "Customers",
+		"icon": "person",
+		"description": null,
+		"admin_access": false,
+		"app_access": false
+	}
+]
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	create_roles_items(data: [create_directus_roles_input!]!): [directus_roles]
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_roles_items(
+		data: [
+			{ name: "Interns", icon: "verified_user", description: null, admin_access: false, app_access: true }
+			{ name: "Customers", icon: "person", description: null, admin_access: false, app_access: false }
+		]
+	) {
+		id
+		name
+		users {
+			email
+		}
 	}
 }
 ```
@@ -263,39 +364,124 @@ A partial [role object](#the-role-object).
 
 ### Returns
 
-Returns the [role object](#the-role-object) for the created role.
+Returns the [role object](#the-role-object) for the updated role.
 
 </div>
 <div class="right">
+
+### REST API
 
 ```
 PATCH /roles/:id
 ```
 
+##### Example
+
 ```json
-// Request
+// PATCH /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7
 
 {
 	"icon": "attractions"
 }
 ```
 
+### GraphQL
+
+```graphql
+type Mutation {
+	update_roles_item(id: ID!, data: update_directus_roles_input): directus_roles
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_roles_item(id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7", data: { icon: "attractions" }) {
+		id
+		name
+		users {
+			email
+		}
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Update Multiple Roles
+
+Update multiple existing roles.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Request Body
+
+<div class="definitions">
+
+`keys` **Required**\
+Array of primary keys of the roles you'd like to update.
+
+`data` **Required**\
+Any of [the role object](#the-role-object)'s properties.
+
+</div>
+
+### Returns
+
+Returns the [role objects](#the-role-object) for the updated roles.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+PATCH /roles
+```
+
+##### Example
+
 ```json
-// Response
+// PATCH /roles
 
 {
+	"keys": ["c86c2761-65d3-43c3-897f-6f74ad6a5bd7", "6fc3d5d3-a37b-4da8-a2f4-ed62ad5abe03"],
 	"data": {
-		"id": "2e6c5fc1-e2bb-4bfc-9f74-8a91604b3b31",
-		"name": "Interns",
-		"icon": "attractions",
-		"description": null,
-		"ip_access": null,
-		"enforce_tfa": false,
-		"module_list": null,
-		"collection_list": null,
-		"admin_access": false,
-		"app_access": true,
-		"users": null
+		"icon": "attractions"
+	}
+}
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	update_roles_items(ids: [ID!]!, data: update_directus_roles_input): [directus_roles]
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_roles_items(
+		ids: ["c86c2761-65d3-43c3-897f-6f74ad6a5bd7", "6fc3d5d3-a37b-4da8-a2f4-ed62ad5abe03"]
+		data: { icon: "attractions" }
+	) {
+		id
+		name
+		users {
+			email
+		}
 	}
 }
 ```
@@ -319,12 +505,34 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /roles/:id
 ```
 
-```json
-// Empty Response
+##### Example
+
+```
+DELETE /roles/c86c2761-65d3-43c3-897f-6f74ad6a5bd7
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_roles_item(id: ID!): delete_one
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_roles_item(id: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7") {
+		id
+	}
+}
 ```
 
 </div>
@@ -350,17 +558,33 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /roles
 ```
 
+##### Example
+
 ```json
-// Request
+// DELETE /roles
 ["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_roles_items(ids: [ID!]!): delete_many
+}
+```
+
+```graphql
+mutation {
+	delete_roles_items(ids: ["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]) {
+		ids
+	}
+}
 ```
 
 </div>
