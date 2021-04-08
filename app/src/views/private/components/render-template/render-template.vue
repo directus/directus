@@ -18,14 +18,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, toRefs, ref, watch } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores';
-import { get, has } from 'lodash';
+import { get } from 'lodash';
 import { Field } from '@/types';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
-import api from '@/api';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -44,28 +42,10 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const { collection, item, template } = toRefs(props);
 		const fieldsStore = useFieldsStore();
 		const displays = getDisplays();
-		const missingItemData = ref<Record<string, any>>({});
 
 		const regex = /({{.*?}})/g;
-
-		const _item = computed(() => {
-			return { ...item.value, ...missingItemData.value };
-		});
-
-		const primaryKeyField = computed(
-			() => fieldsStore.getPrimaryKeyFieldForCollection(props.collection)?.field as string
-		);
-		const nonExistendFields = computed(() =>
-			getFieldsFromTemplate(props.template).filter((field) => !has(item.value, field))
-		);
-
-		watch(item, loadItem);
-		watch(collection, loadItem);
-		watch(template, loadItem);
-		loadItem();
 
 		const parts = computed(() =>
 			props.template
@@ -82,7 +62,7 @@ export default defineComponent({
 					if (!field) return null;
 
 					// Try getting the value from the item, return some question marks if it doesn't exist
-					const value = get(_item.value, fieldKey);
+					const value = get(props.item, fieldKey);
 					if (value === undefined) return null;
 
 					// If no display is configured, we can render the raw value
@@ -112,22 +92,6 @@ export default defineComponent({
 		);
 
 		return { parts };
-
-		async function loadItem() {
-			if (nonExistendFields.value.length === 0 || primaryKeyField.value in item.value === false) return;
-
-			const id = item.value[primaryKeyField.value];
-			const endpoint = collection.value.startsWith('directus_')
-				? `/${collection.value.substring(9)}/${id}`
-				: `/items/${collection.value}/${id}`;
-
-			const result = await api.get(endpoint, {
-				params: {
-					fields: nonExistendFields.value,
-				},
-			});
-			missingItemData.value = result.data.data;
-		}
 	},
 });
 </script>
