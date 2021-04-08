@@ -186,10 +186,8 @@ filter the related items themselves, take a look at [the `deep` parameter](#deep
 
 ```graphql
 query {
-	items {
-		users(filter: { first_name: { _eq: "Rijk" } }) {
-			id
-		}
+	users(filter: { first_name: { _eq: "Rijk" } }) {
+		id
 	}
 }
 ```
@@ -232,10 +230,8 @@ Find all items that mention Directus\
 
 ```graphql
 query {
-	items {
-		articles(search: "Directus") {
-			id
-		}
+	articles(search: "Directus") {
+		id
 	}
 }
 ```
@@ -285,10 +281,8 @@ Sort by a "sort" field, followed by publish date descending\
 
 ```graphql
 query {
-	items {
-		articles(sort: ["sort", "-date_created"]) {
-			id
-		}
+	articles(sort: ["sort", "-date_created"]) {
+		id
 	}
 }
 ```
@@ -339,10 +333,8 @@ with caution.
 
 ```graphql
 query {
-	items {
-		articles(limit: 200) {
-			id
-		}
+	articles(limit: 200) {
+		id
 	}
 }
 ```
@@ -383,10 +375,8 @@ Get items 100—200\
 
 ```graphql
 query {
-	items {
-		articles(offset: 100) {
-			id
-		}
+	articles(offset: 100) {
+		id
 	}
 }
 ```
@@ -431,10 +421,8 @@ Get items 101-200\
 
 ```graphql
 query {
-	items {
-		articles(page: 2) {
-			id
-		}
+	articles(page: 2) {
+		id
 	}
 }
 ```
