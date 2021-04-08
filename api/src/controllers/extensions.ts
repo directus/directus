@@ -12,7 +12,7 @@ const extensionsPath = env.EXTENSIONS_PATH as string;
 const appExtensions = ['interfaces', 'layouts', 'displays', 'modules'];
 
 router.get(
-	'/:type/*',
+	['/:type', '/:type/*'],
 	asyncHandler(async (req, res, next) => {
 		if (appExtensions.includes(req.params.type) === false) {
 			throw new RouteNotFoundException(req.path);
