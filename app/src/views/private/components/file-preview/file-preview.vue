@@ -141,6 +141,7 @@ audio {
 	border-radius: var(--border-radius);
 
 	&.max-size img {
+		// Max height - padding * 2
 		max-height: calc(75vh - 128px);
 	}
 }
