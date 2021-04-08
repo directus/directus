@@ -107,8 +107,6 @@
 			<v-input
 				db-safe
 				v-model="relations[0].sort_field"
-				:nullable="false"
-				:disabled="isExisting"
 				:placeholder="$t('add_sort_field') + '...'"
 				:class="{ matches: sortFieldExists }"
 			>
@@ -134,36 +132,6 @@
 					</v-menu>
 				</template>
 			</v-input>
-
-			<!-- <v-input
-				:class="{ matches: sortFieldExists }"
-				v-model="relations[0].sort_field"
-				:nullable="false"
-				:placeholder="$t('add_sort_field') + '...'"
-				db-safe
-			>
-				<template #append v-show="fields && fields.length > 0">
-					<v-menu show-arrow placement="bottom-end">
-						<template #activator="{ toggle }">
-							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
-						</template>
-
-						<v-list class="monospace">
-							<v-list-item
-								v-for="field in fields"
-								:key="field.value"
-								:active="relations[0].sort_field === field.value"
-								:disabled="field.disabled"
-								@click="relations[0].sort_field = field.value"
-							>
-								<v-list-item-content>
-									{{ field.text }}
-								</v-list-item-content>
-							</v-list-item>
-						</v-list>
-					</v-menu>
-				</template>
-			</v-input> -->
 		</div>
 
 		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">

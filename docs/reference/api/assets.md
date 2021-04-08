@@ -2,6 +2,13 @@
 
 > The `/assets` endpoint can be used to stream or retrieve the actual file contents from assets managed within Directus.
 
+::: tip Uploading Files
+
+To learn more about uploading files, see the [Upload a File](/reference/api/system/files/#upload-a-file) and
+[Import a File](<(/reference/api/system/files/#import-a-file)>) endpoint reference.
+
+:::
+
 ## Accessing an Original File
 
 The location of your actual file originals is based on the project's configuration, but you can consistently access them

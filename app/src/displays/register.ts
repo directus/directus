@@ -15,7 +15,7 @@ export async function registerDisplays() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/displays');
+		const customResponse = await api.get('/extensions/displays/');
 
 		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
 			for (const customKey of customResponse.data.data) {

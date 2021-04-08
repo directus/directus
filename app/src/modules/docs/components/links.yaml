@@ -113,7 +113,7 @@
       name: Field Transforms
     - to: '/reference/filter-rules'
       name: Filter Rules
-    - to: '/reference/sdk-js'
+    - to: '/reference/sdk'
       name: JavaScript SDK
 
 - name: API Reference
@@ -126,53 +126,47 @@
       name: Authentication
     - name: Global Query Parameters
       to: '/reference/api/query'
-    - name: REST API
-      to: '/reference/api/rest'
+    - name: Data Access
+      to: '/reference/api/items'
+    - name: Assets
+      to: '/reference/api/assets'
+    - name: System
+      to: '/reference/api/system'
       children:
-        - to: '/reference/api/rest/introduction'
-          name: Introduction
-        - to: '/reference/api/rest/activity'
+        - to: '/reference/api/system/activity'
           name: Activity
-        - to: '/reference/api/rest/authentication'
+        - to: '/reference/api/system/authentication'
           name: Authentication
-        - to: '/reference/api/rest/collections'
+        - to: '/reference/api/system/collections'
           name: Collections
-        - to: '/reference/api/rest/extensions'
+        - to: '/reference/api/system/extensions'
           name: Extensions
-        - to: '/reference/api/rest/fields'
+        - to: '/reference/api/system/fields'
           name: Fields
-        - to: '/reference/api/rest/files'
+        - to: '/reference/api/system/files'
           name: Files
-        - to: '/reference/api/rest/folders'
+        - to: '/reference/api/system/folders'
           name: Folders
-        - to: '/reference/api/rest/items'
-          name: Items
-        - to: '/reference/api/rest/permissions'
+        - to: '/reference/api/system/permissions'
           name: Permissions
-        - to: '/reference/api/rest/presets'
+        - to: '/reference/api/system/presets'
           name: Presets
-        - to: '/reference/api/rest/relations'
+        - to: '/reference/api/system/relations'
           name: Relations
-        - to: '/reference/api/rest/revisions'
+        - to: '/reference/api/system/revisions'
           name: Revisions
-        - to: '/reference/api/rest/roles'
+        - to: '/reference/api/system/roles'
           name: Roles
-        - to: '/reference/api/rest/server'
+        - to: '/reference/api/system/server'
           name: Server
-        - to: '/reference/api/rest/settings'
+        - to: '/reference/api/system/settings'
           name: Settings
-        - to: '/reference/api/rest/users'
+        - to: '/reference/api/system/users'
           name: Users
-        - to: '/reference/api/rest/utilities'
+        - to: '/reference/api/system/utilities'
           name: Utilities
-        - to: '/reference/api/rest/webhooks'
+        - to: '/reference/api/system/webhooks'
           name: Webhooks
-    - to: '/reference/api/graphql'
-      name: GraphQL API
-    - to: '/reference/api/assets'
-      name: Assets
-    - to: '/reference/api/health'
-      name: Health Check
 # - name: Contributing
 #   to: '/contributing'
 #   children:

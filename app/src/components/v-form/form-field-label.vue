@@ -102,13 +102,18 @@ export default defineComponent({
 		&::before {
 			position: absolute;
 			top: 7px;
-			left: -12px;
+			left: -10px;
 			display: block;
 			width: 6px;
 			height: 6px;
 			background-color: var(--foreground-subdued);
 			border-radius: 4px;
 			content: '';
+			pointer-events: none;
+		}
+		> span {
+			padding-left: 16px;
+			margin-left: -16px;
 		}
 	}
 }

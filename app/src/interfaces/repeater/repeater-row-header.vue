@@ -10,8 +10,7 @@
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
 import { render } from 'micromustache';
-import i18n from '@/lang';
-import getFieldsFromTemplate from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 
 export default defineComponent({
 	props: {
