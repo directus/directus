@@ -17,7 +17,7 @@ export default defineComponent({});
 <style lang="scss" scoped>
 .permissions-overview-header {
 	--v-icon-color: var(--foreground-subdued);
-
+	background-color: var(--background-input);
 	display: flex;
 	padding: 12px;
 	border-bottom: var(--border-width) solid var(--border-normal);
