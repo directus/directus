@@ -1,3 +1,4 @@
+import { translateReactive } from '@/utils/translate-object-values';
 import { ref, Ref } from '@vue/composition-api';
 import { InterfaceConfig } from './types';
 
@@ -8,5 +9,5 @@ export function getInterfaces() {
 		interfaces = ref([]);
 	}
 
-	return interfaces;
+	return translateReactive(interfaces);
 }
