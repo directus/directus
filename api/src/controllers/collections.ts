@@ -4,6 +4,7 @@ import asyncHandler from '../utils/async-handler';
 import { CollectionsService, MetaService, XliffService } from '../services';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
+import logger from '../logger';
 
 const router = Router();
 
@@ -123,6 +124,7 @@ router.post(
 			}
 		});
 		busboy.on('error', (error: Error) => {
+			logger.error(error);
 			next(error);
 		});
 

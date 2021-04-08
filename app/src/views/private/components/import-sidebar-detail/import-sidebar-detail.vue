@@ -29,7 +29,12 @@
 				<v-checkbox v-model="useFileLanguage" :label="$t('use_language_from_file')" />
 			</div>
 			<div class="field full">
-				<v-button full-width @click="importData" :disabled="file === null || (!language && !useFileLanguage)">
+				<v-button
+					:loading="importing"
+					full-width
+					@click="importData"
+					:disabled="file === null || (!language && !useFileLanguage)"
+				>
 					{{ $t('import_collection', { collection: collection.name }) }}
 				</v-button>
 			</div>
@@ -95,11 +100,9 @@ export default defineComponent({
 	},
 	watch: {
 		collection: function () {
-			// clear file selection each time when user
+			// clear file and language selection each time when user
 			// switching between collections
-			this.file = null;
-			this.clearFileSelection();
-			this.language = null;
+			this.clearFileAndLanguage();
 		},
 	},
 	setup(props, { emit }) {
@@ -109,6 +112,8 @@ export default defineComponent({
 		const file = ref<File | null>(null);
 		const useFileLanguage = ref(true);
 		const clearFileSelection = ref<Function>(() => {});
+		const percentageCompleted = ref<number>(0);
+		const importing = ref<boolean>(false);
 
 		return {
 			format,
@@ -117,15 +122,19 @@ export default defineComponent({
 			translationField,
 			useFileLanguage,
 			importData,
+			percentageCompleted,
+			importing,
 			onSelectFile,
 			onSelectLanguage,
 			onSelectTranslationField,
 			onFileLoad,
+			clearFileAndLanguage,
 			clearFileSelection,
 		};
 
 		async function importData() {
 			if (!file.value) throw new Error('[import-sidebar-detail]: You need to select a file for import.');
+			importing.value = true;
 			const formData = new FormData();
 			formData.append('file', file.value);
 
@@ -144,10 +153,26 @@ export default defineComponent({
 				.map((key) => `${key}=${params[key]}`)
 				.join('&');
 			try {
-				await api.post(`/collections/${props.collection.collection}?${qs}`, formData);
-				emit('refresh');
+				await api.post(`/collections/${props.collection.collection}?${qs}`, formData, {
+					onUploadProgress,
+				});
 			} catch (err) {
 			} finally {
+			}
+		}
+
+		function clearFileAndLanguage() {
+			file.value = null;
+			clearFileSelection.value();
+			language.value = null;
+		}
+
+		function onUploadProgress(progressEvent: { loaded: number; total: number }) {
+			percentageCompleted.value = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
+			if (percentageCompleted.value === 100) {
+				importing.value = false;
+				clearFileAndLanguage();
+				emit('refresh');
 			}
 		}
 

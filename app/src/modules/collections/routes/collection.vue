@@ -221,7 +221,7 @@
 			<layout-sidebar-detail @input="layout = $event" :value="layout" />
 			<portal-target name="sidebar" />
 			<export-sidebar-detail :layout-query="layoutQuery" :search-query="searchQuery" :collection="currentCollection" />
-			<import-sidebar-detail :collection="currentCollection" />
+			<import-sidebar-detail :collection="currentCollection" @refresh="refresh" />
 		</template>
 
 		<v-dialog v-if="deleteError" active>
