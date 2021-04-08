@@ -1,19 +1,34 @@
 ---
 edit_field: Upravit pole
+item_revision: Revize položky
 duplicate_field: Duplikovat pole
+half_width: Poloviční šířka
 full_width: Plná šířka
+fill_width: Plná šířka
+field_name_translations: Překlady názvu polí
+enter_password_to_enable_tfa: Zadejte své heslo pro zapnutí dvoufázového ověřování
 add_field: Přidat pole
+role_name: Jméno role
+db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení '
 show_archived_items: Zobrazit archivované položky
+edited: Hodnota upravena
 required: Povinné
+required_for_app_access: Vyžadováno pro přístup k aplikacím
+requires_value: Vyžaduje hodnotu
+create_preset: Vytvořit šablonu
 create_role: Vytvořit roli
 create_user: Vytvořit uživatele
+create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
+invite: Pozvat
+emails: E-mail
 connection_excellent: Vynikající připojení
 connection_good: Dobré připojení
 connection_fair: Zhoršené připojení
 connection_poor: Špatné připojení
 rename_folder: Přejmenovat složku
 delete_folder: Smazat složku
+reset_bookmark: Obnovit záložku
 delete_bookmark: Smazat záložku
 directus_version: Verze Directusu
 archive: Archivovat
@@ -223,7 +238,9 @@ fields:
   directus_fields:
     note: Poznámka
     hidden: Skryté
+    translation: Překlady názvu polí
   directus_roles:
+    name: Jméno role
     description: Popis
 comment: Komentář
 continue: Pokračovat

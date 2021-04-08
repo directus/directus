@@ -179,6 +179,7 @@ export default defineComponent({
 		}
 
 		.svg {
+			position: absolute;
 			width: 50%;
 			height: 50%;
 			object-fit: contain;

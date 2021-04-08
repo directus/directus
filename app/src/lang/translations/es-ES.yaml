@@ -11,6 +11,7 @@ add_field: Agregar Campo
 role_name: Nombre del Rol
 db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
 show_archived_items: Mostrar Elementos Archivados
+edited: Valor Editado
 required: Requerido
 required_for_app_access: Necesario para el acceso a App
 requires_value: Valor obligatorio
@@ -797,6 +798,7 @@ template: Plantilla
 translation: Traducción
 value: Valor
 view_project: Ver Proyecto
+weeks: { }
 report_error: Reportar Error
 interfaces:
   button-links:

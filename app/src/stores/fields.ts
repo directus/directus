@@ -233,6 +233,9 @@ export const useFieldsStore = createStore({
 				else return 1;
 			});
 		},
+		/**
+		 * Retrieve field info for a field or a related field
+		 */
 		getField(collection: string, fieldKey: string) {
 			if (fieldKey.includes('.')) {
 				return this.getRelationalField(collection, fieldKey);
@@ -249,13 +252,13 @@ export const useFieldsStore = createStore({
 			const relationshipStore = useRelationsStore();
 			const parts = fields.split('.');
 
-			const relationshipForField = relationshipStore
+			const relation = relationshipStore
 				.getRelationsForField(collection, parts[0])
-				?.find((relation: Relation) => relation.many_field === parts[0] || relation.one_field === parts[0]);
+				?.find((relation: Relation) => relation.many_field === parts[0] || relation.one_field === parts[0]) as Relation;
 
-			if (relationshipForField === undefined) return false;
+			if (relation === undefined) return false;
 
-			const relatedCollection = relationshipForField.one_collection;
+			const relatedCollection = relation.many_field === parts[0] ? relation.one_collection : relation.many_collection;
 			parts.shift();
 			const relatedField = parts.join('.');
 			return this.getField(relatedCollection, relatedField);

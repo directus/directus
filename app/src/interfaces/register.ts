@@ -15,7 +15,7 @@ export async function registerInterfaces() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/interfaces');
+		const customResponse = await api.get('/extensions/interfaces/');
 
 		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
 			for (const customKey of customResponse.data.data) {

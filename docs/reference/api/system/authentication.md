@@ -73,27 +73,26 @@ The token's expiration time can be configured through
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /auth/login
 ```
 
 ```json
-// Request
-
 {
 	"email": "admin@example.com",
 	"password": "d1r3ct5us"
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"access_token": "eyJh...KmUk",
-		"expires": 900000,
-		"refresh_token": "gmPd...8wuB"
+```graphql
+mutation {
+	auth_login(email: "admin@example.com", password: "d1r3ctu5") {
+		access_token
+		refresh_token
 	}
 }
 ```
@@ -139,26 +138,25 @@ as the mode in the request, the refresh token won't be returned in the JSON.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /auth/refresh
 ```
 
 ```json
-// Request
-
 {
 	"refresh_token": "gmPd...8wuB"
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"access_token": "eyJh...KmUk",
-		"expires": 900000,
-		"refresh_token": "JAnU...E-Gc"
+```graphql
+mutation {
+	auth_refresh(refresh_token: "abc...def") {
+		access_token
+		refresh_token
 	}
 }
 ```
@@ -188,20 +186,24 @@ to submit it here.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /auth/logout
 ```
 
 ```json
-// Request
-
 {
 	"refresh_token": "gmPd...8wuB"
 }
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+mutation {
+	auth_logout(refresh_token: "gmPd...8wuB")
+}
 ```
 
 </div>
@@ -234,20 +236,24 @@ feature.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /auth/password/request
 ```
 
 ```json
-// Request
-
 {
 	"email": "admin@example.com"
 }
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+mutation {
+	auth_password_request(email: "admin@example.com")
+}
 ```
 
 </div>
@@ -278,21 +284,25 @@ New password for the user.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /auth/password/reset
 ```
 
 ```json
-// Request
-
 {
 	"token": "eyJh...KmUk",
 	"password": "d1r3ctu5"
 }
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+mutation {
+	auth_password_reset(token: "eyJh...KmUk", password: "d1r3ctu5")
+}
 ```
 
 </div>
@@ -331,8 +341,6 @@ GET /auth/oauth
 ```
 
 ```json
-// Response
-
 {
 	"data": ["GitHub", "Google", "Okta"]
 }
@@ -352,10 +360,6 @@ Will redirect to the configured oAuth provider for the user to login.
 
 ```
 GET /auth/oauth/:provider
-```
-
-```json
-// Redirect to oAuth provider
 ```
 
 </div>

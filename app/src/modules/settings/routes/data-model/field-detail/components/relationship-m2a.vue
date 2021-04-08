@@ -358,17 +358,17 @@ export default defineComponent({
 		pointer-events: none;
 
 		&:first-of-type {
-			top: 105px;
+			top: 117px;
 			left: 32.5%;
 		}
 
 		&:nth-of-type(2) {
-			bottom: 143px;
+			bottom: 161px;
 			left: 67.4%;
 		}
 
 		&:last-of-type {
-			bottom: 76px;
+			bottom: 89px;
 			left: 67.4%;
 		}
 	}

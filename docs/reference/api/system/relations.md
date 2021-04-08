@@ -7,8 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever other
-structures you can think of. [Learn more about Relationships](/concepts/relationships/).
+> What data is linked to what other data. Allows you to assign authors to articles, products to sales, and whatever
+> other structures you can think of. [Learn more about Relationships](/concepts/relationships/).
 
 </div>
 <div class="right">
@@ -98,28 +98,29 @@ available, data will be an empty array.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /relations
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": [
-		{
-			"id": 13,
-			"many_collection": "articles",
-			"many_field": "featured_image",
-			"one_collection": "directus_files",
-			"one_field": null,
-			"one_collection_field": null,
-			"one_allowed_collections": null,
-			"junction_field": null
-		},
-		{...},
-		{...}
-	]
+```graphql
+type Query {
+	relations: [directus_relations]
+}
+```
+
+##### Example
+
+```graphql
+query {
+	relations {
+		id
+		many_collection
+		one_collection
+	}
 }
 ```
 
@@ -146,23 +147,34 @@ Returns the requested [relation object](#the-relation-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /relations/:id
 ```
 
-```json
-// Response
+##### Example
 
-{
-	"data": {
-		"id": 13,
-		"many_collection": "articles",
-		"many_field": "featured_image",
-		"one_collection": "directus_files",
-		"one_field": null,
-		"one_collection_field": null,
-		"one_allowed_collections": null,
-		"junction_field": null
+```
+GET /relations/15
+```
+
+### GraphQL
+
+```graphql
+type Query {
+	relations_by_id(id: ID!): directus_relations
+}
+```
+
+##### Example
+
+```graphql
+query {
+	relations_by_id(id: 15) {
+		id
+		many_collection
+		one_collection
 	}
 }
 ```
@@ -172,9 +184,9 @@ GET /relations/:id
 
 ---
 
-## Create relation
+## Create a Relation
 
-Create one or more new relation(s).
+Create a new relation.
 
 <div class="two-up">
 <div class="left">
@@ -185,7 +197,7 @@ Supports all [global query parameters](/reference/api/query).
 
 ### Request Body
 
-A partial [relation object](#the-relation-object) or an array of partial [relation objects](#the-relation-object).
+A partial [relation object](#the-relation-object).
 
 ### Returns
 
@@ -194,12 +206,14 @@ Returns the [relation object](#the-relation-object) for the created relation.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /relations
 ```
 
 ```json
-// Request
+// POST /relations
 
 {
 	"many_collection": "articles",
@@ -208,19 +222,24 @@ POST /relations
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": 13,
-		"many_collection": "articles",
-		"many_field": "featured_image",
-		"one_collection": "directus_files",
-		"one_field": null,
-		"one_collection_field": null,
-		"one_allowed_collections": null,
-		"junction_field": null
+```graphql
+type Mutation {
+	create_relations_item(data: create_directus_relations_input!): directus_relations
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_relations_item(
+		data: { many_collection: "articles", many_field: "featured_image", one_collection: "directus_files" }
+	) {
+		id
+		many_collection
+		one_collection
 	}
 }
 ```
@@ -230,7 +249,82 @@ POST /relations
 
 ---
 
-## Update relation
+## Create Multiple Relations
+
+Create multiple new relations.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Request Body
+
+An array of partial [relation objects](#the-relation-object).
+
+### Returns
+
+Returns the [relation objects](#the-relation-object) for the created relations.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+POST /relations
+```
+
+```json
+// POST /relations
+
+[
+	{
+		"many_collection": "articles",
+		"many_field": "featured_image",
+		"one_collection": "directus_files"
+	},
+	{
+		"many_collection": "articles",
+		"many_field": "category",
+		"one_collection": "categories"
+	}
+]
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	create_relations_items(data: [create_directus_relations_input!]!): [directus_relations]
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_relations_items(
+		data: [
+			{ many_collection: "articles", many_field: "featured_image", one_collection: "directus_files" }
+			{ many_collection: "articles", many_field: "category", one_collection: "categories" }
+		]
+	) {
+		id
+		many_collection
+		one_collection
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Update a Relation
 
 Update an existing relation.
 
@@ -252,31 +346,38 @@ Returns the [relation object](#the-relation-object) for the created relation.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 PATCH /relations/:id
 ```
 
+##### Example
+
 ```json
-// Request
+// PATCH /relations/15
 
 {
 	"one_field": "articles"
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": 13,
-		"many_collection": "articles",
-		"many_field": "featured_image",
-		"one_collection": "directus_files",
-		"one_field": "articles",
-		"one_collection_field": null,
-		"one_allowed_collections": null,
-		"junction_field": null
+```graphql
+type Mutation {
+	update_relations_item(id: ID!, data: update_directus_relations_input!): directus_relations
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_relations_item(id: 15, data: { one_field: "articles" }) {
+		id
+		many_collection
+		one_collection
 	}
 }
 ```
@@ -286,7 +387,7 @@ PATCH /relations/:id
 
 ---
 
-## Delete relation
+## Delete a Relation
 
 Delete an existing relation.
 
@@ -300,12 +401,34 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /relations/:id
 ```
 
-```json
-// Empty Response
+##### Example
+
+```
+DELETE /relations/15
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_relations_item(id: ID!): delete_one
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_relations_item(id: 15) {
+		id
+	}
+}
 ```
 
 </div>
@@ -313,7 +436,7 @@ DELETE /relations/:id
 
 ---
 
-## Delete Multiple relations
+## Delete Multiple Relations
 
 Delete multiple existing relations.
 
@@ -322,7 +445,7 @@ Delete multiple existing relations.
 
 ### Request Body
 
-An array of relation primary keys
+An array of relation primary keys.
 
 ### Returns
 
@@ -331,17 +454,35 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /relations
 ```
 
+##### Example
+
 ```json
-// Request
+// DELETE /relations
 [15, 251, 810]
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_relations_items(ids: [ID!]!): delete_many
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_relations_items(ids: [15, 251, 810]) {
+		ids
+	}
+}
 ```
 
 </div>

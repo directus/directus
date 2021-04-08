@@ -66,7 +66,7 @@ export class AssetsService {
 				transformer.toFormat(type.substring(6), { quality: Number(transformation.quality) });
 			}
 
-			await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer));
+			await storage.disk(file.storage).put(assetFilename, readStream.pipe(transformer), type);
 
 			return {
 				stream: storage.disk(file.storage).getStream(assetFilename, range),

@@ -17,7 +17,7 @@ export async function loadModules() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/modules');
+		const customResponse = await api.get('/extensions/modules/');
 
 		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
 			for (const customKey of customResponse.data.data) {

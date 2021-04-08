@@ -85,7 +85,7 @@ export default defineComponent({
 					filenameParts.shift();
 				}
 
-				const newFilename = `${rootPath}img/docs/${filenameParts.join('/')}`;
+				const newFilename = `/admin${rootPath}img/docs/${filenameParts.join('/')}`;
 				const newImage = rawImage[0].replace(rawImage.groups!.filename, newFilename);
 				markdown = markdown.replace(rawImage[0], newImage);
 			}
@@ -168,7 +168,6 @@ export default defineComponent({
 		h4,
 		h5,
 		h6 {
-
 			position: relative;
 			margin: 40px 0 8px;
 			padding: 0;
@@ -386,7 +385,7 @@ export default defineComponent({
 
 		blockquote {
 			margin-bottom: 4rem;
-			padding: .25rem 0 .25rem 1rem;
+			padding: 0.25rem 0 0.25rem 1rem;
 			color: var(--foreground-subdued);
 			font-size: 18px;
 			border-left: 2px solid var(--background-normal);

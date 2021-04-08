@@ -1,10 +1,10 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceRadioButtons from './radio-buttons.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'radio-buttons',
-	name: i18n.t('interfaces.radio-buttons.radio-buttons'),
-	description: i18n.t('interfaces.radio-buttons.description'),
+	name: '$t:interfaces.radio-buttons.radio-buttons',
+	description: '$t:interfaces.radio-buttons.description',
 	icon: 'radio_button_checked',
 	component: InterfaceRadioButtons,
 	types: ['string'],
@@ -13,7 +13,7 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'choices',
 			type: 'json',
-			name: i18n.t('choices'),
+			name: '$t:choices',
 			meta: {
 				width: 'full',
 				interface: 'repeater',
@@ -23,7 +23,7 @@ export default defineInterface(({ i18n }) => ({
 						{
 							field: 'text',
 							type: 'string',
-							name: i18n.t('text'),
+							name: '$t:text',
 							meta: {
 								width: 'half',
 								interface: 'text-input',
@@ -32,7 +32,7 @@ export default defineInterface(({ i18n }) => ({
 						{
 							field: 'value',
 							type: 'string',
-							name: i18n.t('value'),
+							name: '$t:value',
 							meta: {
 								width: 'half',
 								interface: 'text-input',
@@ -47,7 +47,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'iconOn',
-			name: i18n.t('icon_on'),
+			name: '$t:icon_on',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -59,7 +59,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'iconOff',
-			name: i18n.t('icon_off'),
+			name: '$t:icon_off',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -71,7 +71,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'color',
-			name: i18n.t('color'),
+			name: '$t:color',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -80,13 +80,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'allowOther',
-			name: i18n.t('interfaces.dropdown.allow_other'),
+			name: '$t:interfaces.dropdown.allow_other',
 			type: 'string',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('interfaces.dropdown.allow_other_label'),
+					label: '$t:interfaces.dropdown.allow_other_label',
 				},
 			},
 			schema: {
@@ -94,4 +94,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});
