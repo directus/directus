@@ -2,6 +2,7 @@ import registerComponent from '@/utils/register-component/';
 import { getDisplays } from './index';
 import { Component } from 'vue';
 import api from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
 
 const displays = getDisplays();
 
@@ -20,7 +21,9 @@ export async function registerDisplays() {
 		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
 			for (const customKey of customResponse.data.data) {
 				try {
-					const module = await import(/* webpackIgnore: true */ `/extensions/displays/${customKey}/index.js`);
+					const module = await import(
+						/* webpackIgnore: true */ getRootPath() + `extensions/displays/${customKey}/index.js`
+					);
 					modules.push(module.default);
 				} catch (err) {
 					console.warn(`Couldn't load custom displays "${customKey}"`);

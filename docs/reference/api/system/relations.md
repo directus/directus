@@ -212,6 +212,8 @@ Returns the [relation object](#the-relation-object) for the created relation.
 POST /relations
 ```
 
+##### Example
+
 ```json
 // POST /relations
 
@@ -276,6 +278,8 @@ Returns the [relation objects](#the-relation-object) for the created relations.
 ```
 POST /relations
 ```
+
+##### Example
 
 ```json
 // POST /relations

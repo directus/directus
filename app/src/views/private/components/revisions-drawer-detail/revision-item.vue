@@ -7,9 +7,7 @@
 		<div class="content">
 			<span class="time">{{ time }}</span>
 			–
-			<user-popover v-if="revision.activity.user" class="user" :user="revision.activity.user.id">
-				<router-link :to="`/users/${revision.activity.user.id}`">{{ user }}</router-link>
-			</user-popover>
+			<user-popover v-if="revision.activity.user" class="user" :user="revision.activity.user.id">{{ user }}</user-popover>
 
 			<span v-else>{{ $t('private_user') }}</span>
 		</div>

@@ -87,16 +87,24 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
 		}
 
-		for (const email of emails) {
-			await this.service.create({ email, role, status: 'invited' });
+		await this.knex.transaction(async (trx) => {
+			const service = new ItemsService('directus_users', {
+				schema: this.schema,
+				accountability: this.accountability,
+				knex: trx,
+			});
 
-			const payload = { email, scope: 'invite' };
-			const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
-			const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
-			const acceptURL = inviteURL + '?token=' + token;
+			for (const email of emails) {
+				await service.create({ email, role, status: 'invited' });
 
-			await sendInviteMail(email, acceptURL);
-		}
+				const payload = { email, scope: 'invite' };
+				const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
+				const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
+				const acceptURL = inviteURL + '?token=' + token;
+
+				await sendInviteMail(email, acceptURL);
+			}
+		});
 	}
 
 	async acceptInvite(token: string, password: string) {

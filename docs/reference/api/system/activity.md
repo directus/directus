@@ -338,6 +338,8 @@ type Mutation {
 }
 ```
 
+##### Example
+
 ```graphql
 mutation {
 	delete_comment(id: 3) {

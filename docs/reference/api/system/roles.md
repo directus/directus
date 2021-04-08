@@ -579,6 +579,8 @@ type Mutation {
 }
 ```
 
+##### Example
+
 ```graphql
 mutation {
 	delete_roles_items(ids: ["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]) {

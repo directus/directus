@@ -305,6 +305,8 @@ body {
 			overflow: hidden;
 			white-space: nowrap;
 			text-overflow: ellipsis;
+			padding: 0 1px; // Fixes slightly cropped icons
+			margin: 0 -1px; // Fixes slightly cropped icons
 		}
 
 		.content {

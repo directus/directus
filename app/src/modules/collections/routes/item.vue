@@ -263,7 +263,7 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(collection, primaryKey);
 
-		const { templateValues, fetchTemplateValues } = useTemplate();
+		const { templateValues } = useTemplate();
 
 		const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
