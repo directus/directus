@@ -12,7 +12,7 @@
 			:sort.sync="sort"
 			@update:items="sortItems($event)"
 			@click:row="editItem"
-			:disabled="disabled"
+			:disabled="disabled || updateAllowed === false"
 			:show-manual-sort="relation.sort_field !== null"
 			:manual-sort-key="relation.sort_field"
 		>
@@ -32,7 +32,7 @@
 
 			<template #item-append="{ item }">
 				<v-icon
-					v-if="!disabled"
+					v-if="!disabled && updateAllowed === true"
 					name="close"
 					v-tooltip="$t('deselect')"
 					class="deselect"
@@ -41,7 +41,7 @@
 			</template>
 		</v-table>
 
-		<div class="actions" v-if="!disabled">
+		<div class="actions" v-if="!disabled && updateAllowed === true">
 			<v-button class="new" @click="currentlyEditing = '+'">{{ $t('create_new') }}</v-button>
 			<v-button class="existing" @click="selectModalActive = true">
 				{{ $t('add_existing') }}
@@ -49,7 +49,7 @@
 		</div>
 
 		<drawer-item
-			v-if="!disabled"
+			v-if="!disabled && updateAllowed === true"
 			:active="currentlyEditing !== null"
 			:collection="relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
@@ -59,7 +59,7 @@
 		/>
 
 		<drawer-collection
-			v-if="!disabled"
+			v-if="!disabled && updateAllowed === true"
 			:active.sync="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="[]"
@@ -71,7 +71,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, PropType } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
 import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';
@@ -82,6 +82,9 @@ import { Header, Sort } from '@/components/v-table/types';
 import { isEqual, sortBy } from 'lodash';
 import { get } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
+
+import useItem from '@/composables/use-item';
+import { usePermissions } from '@/composables/use-permissions';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection },
@@ -122,7 +125,18 @@ export default defineComponent({
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
 		const { sort, sortItems, sortedItems } = useSort();
 
+		const { collection, primaryKey } = toRefs(props);
+
+		const { isNew, item } = useItem(relation, primaryKey);
+
+		const { updateAllowed } = usePermissions(collection, item, isNew);
+
 		return {
+			collection,
+			primaryKey,
+			isNew,
+			item,
+			updateAllowed,
 			relation,
 			tableHeaders,
 			loading,
