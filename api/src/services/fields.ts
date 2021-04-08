@@ -297,10 +297,8 @@ export class FieldsService {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
-		const eventScope = 'fields';
-
-		await emitter.emitAsync(`${eventScope}.delete.before`, {
-			event: `${eventScope}.delete.before`,
+		await emitter.emitAsync(`fields.delete.before`, {
+			event: `fields.delete.before`,
 			accountability: this.accountability,
 			collection: collection,
 			item: field,
@@ -344,8 +342,8 @@ export class FieldsService {
 			await cache.clear();
 		}
 
-		emitAsyncSafe(`${eventScope}.delete`, {
-			event: `${eventScope}.delete`,
+		emitAsyncSafe(`fields.delete`, {
+			event: `fields.delete`,
 			accountability: this.accountability,
 			collection: collection,
 			item: field,
