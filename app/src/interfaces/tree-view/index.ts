@@ -12,4 +12,4 @@ export default defineInterface({
 	relational: true,
 	component: InterfaceTreeView,
 	options: Options,
-}));
+});
