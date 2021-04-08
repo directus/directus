@@ -4,6 +4,10 @@ const tiles = (subdomains: string, url: string) => Array.from(subdomains || '').
 const esri = (url: string) => ['server', 'services'].map((s) => url.replace('{s}', s));
 
 export default <Sources>{
+	Mapbox_Light: {
+		url: 'mapbox://styles/mapbox/light-v10',
+		type: 'vector',
+	},
 	OpenStreetMap_Mapnik: {
 		tiles: tiles('abc', 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
 		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
