@@ -13,7 +13,6 @@ import grantConfig from '../grant';
 import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailableException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { toArray } from '../utils/to-array';
-import QueryString from 'qs';
 
 const router = Router();
 
@@ -266,15 +265,16 @@ router.get(
 		} catch (error) {
 			if (redirect) {
 				let reason = 'UNKNOWN_EXCEPTION';
+
 				if (error instanceof ServiceUnavailableException) {
 					reason = 'SERVICE_UNAVAILABLE';
 				} else if (error instanceof InvalidCredentialsException) {
 					reason = 'INVALID_USER';
 				}
-				const query = QueryString.stringify({ reason });
 
-				return res.redirect(redirect.split('?')[0] + '?' + query);
+				return res.redirect(`${redirect.split('?')[0]}?reason=${reason}`);
 			}
+
 			throw error;
 		}
 
