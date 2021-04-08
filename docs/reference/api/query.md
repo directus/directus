@@ -4,8 +4,15 @@ pageClass: page-reference
 
 # Global Query Parameters
 
+<div class="two-up">
+<div class="left">
+
 > Most Directus API Endpoint operations can be manipulated with the following parameters. It is important to understand
 > them to get the most out of the platform.
+
+</div>
+<div class="right"><p></p>
+<div class="table-of-contents">
 
 - [Fields](#fields)
 - [Filter](#filter)
@@ -17,6 +24,10 @@ pageClass: page-reference
 - [Metadata](#metadata)
   - [Total Count](#total-count)
   - [Filter Count](#filter-count)
+
+</div>
+</div>
+</div>
 
 ---
 
