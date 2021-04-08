@@ -22,7 +22,7 @@ import { ref, watch, computed, PropType, onMounted, onUnmounted, defineComponent
 
 import { useAppStore } from '@/stores';
 
-class ButtonControl {
+export class ButtonControl {
 	container?: HTMLElement;
 	active: boolean;
 	constructor(private className: string, private cb: (...args: any) => any) {

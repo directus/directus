@@ -49,7 +49,7 @@ function wkbParser(options: geometryOptions): GeometryParser {
 function csvParser(options: geometryOptions): GeometryParser {
 	return function (entry) {
 		const geom = entry[options.geometryField!];
-		return geom && new wkx.Point(...geom.split(','));
+		return geom && new wkx.Point(...[Number(geom[0]), Number(geom[1])]);
 	};
 }
 
