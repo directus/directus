@@ -41,7 +41,7 @@ import marked from 'marked';
 import FormField from './form-field.vue';
 import useFormFields from '@/composables/use-form-fields';
 import { ValidationError } from './types';
-import { translate } from '@/utils/translate';
+import { translate } from '@/utils/translate-object-values';
 
 type FieldValues = {
 	[field: string]: any;
