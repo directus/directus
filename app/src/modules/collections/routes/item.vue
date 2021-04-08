@@ -190,7 +190,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref, onBeforeUnmount, onBeforeMount } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 import Vue from 'vue';
 
 import CollectionsNavigation from '../components/navigation.vue';
@@ -209,6 +209,8 @@ import { usePermissions } from '@/composables/use-permissions';
 import unsavedChanges from '@/composables/unsaved-changes';
 import { useTitle } from '@/composables/use-title';
 import { renderStringTemplate } from '@/utils/render-string-template';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import api from '@/api';
 
 export default defineComponent({
 	name: 'collections-item',
@@ -261,6 +263,8 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(collection, primaryKey);
 
+		const { templateValues, fetchTemplateValues } = useTemplate();
+
 		const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
 		const isSavable = computed(() => {
@@ -288,13 +292,6 @@ export default defineComponent({
 
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
-
-		const templateValues = computed(() => {
-			return {
-				...(item.value || {}),
-				...edits.value,
-			};
-		});
 
 		const title = computed(() => {
 			return isNew.value
@@ -498,6 +495,52 @@ export default defineComponent({
 				...edits.value,
 				...values,
 			};
+		}
+
+		function useTemplate() {
+			const templateItem = ref<Record<string, any>>({});
+			const loading = ref(false);
+			const error = ref(null);
+
+			const templateValues = computed(() => {
+				return {
+					...(item.value || {}),
+					...templateItem.value,
+					...edits.value,
+				};
+			});
+
+			watch([collection, primaryKey], fetchTemplateValues, { immediate: true });
+
+			return { templateValues };
+
+			async function fetchTemplateValues() {
+				if (!props.primaryKey || props.primaryKey === '+') return;
+				const template = collectionInfo.value?.meta?.display_template;
+				if (!template) return;
+
+				const fields = getFieldsFromTemplate(template);
+
+				loading.value = true;
+
+				const endpoint = collection.value.startsWith('directus_')
+					? `/${collection.value.substring(9)}/${props.primaryKey}`
+					: `/items/${collection.value}/${props.primaryKey}`;
+
+				try {
+					const result = await api.get(endpoint, {
+						params: {
+							fields,
+						},
+					});
+
+					templateItem.value = result.data.data;
+				} catch (err) {
+					error.value = err;
+				} finally {
+					loading.value = false;
+				}
+			}
 		}
 	},
 	beforeRouteLeave(to, from, next) {
