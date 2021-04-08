@@ -40,26 +40,25 @@ Object conforming to [the OpenAPI Specification](https://swagger.io/specificatio
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /server/specs/oas
 ```
 
-```json
-// Response
-{
-	"openapi": "3.0.1",
-	"info": {
-		"title": "Dynamic API Specification",
-		"description": "This is a dynamically generated API specification for all endpoints existing on the current .",
-		"version": "9.0.0-rc.34"
-	},
-	"servers": [
-		{
-			"url": "http://localhost:8055",
-			"description": "Your current Directus instance."
-		}
-	]
-	// etc
+### GraphQL
+
+```graphql
+type Query {
+	server_specs_oas: String
+}
+```
+
+##### Example
+
+```graphql
+query {
+	server_specs_oas
 }
 ```
 
@@ -85,14 +84,6 @@ The SDL is based on the permissions of the currently authenticated user.
 
 GraphQL SDL file.
 
-</div>
-<div class="right">
-
-```
-GET /server/specs/graphql/
-GET /server/specs/graphql/system
-```
-
 ```graphql
 type about_us {
   id: Int
@@ -114,6 +105,32 @@ type articles {
 ```
 
 </div>
+<div class="right">
+
+### REST API
+
+```
+GET /server/specs/graphql/
+GET /server/specs/graphql/system
+```
+
+### GraphQL
+
+```graphql
+type Query {
+	server_specs_graphql(scope: graphql_sdl_scope): String
+}
+```
+
+##### Example
+
+```graphql
+query {
+	server_specs_graphql(scope: "system")
+}
+```
+
+</div>
 </div>
 
 ---
@@ -132,13 +149,26 @@ Pong.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /server/ping
 ```
 
-```json
-// Returns
-pong
+### GraphQL
+
+```graphql
+type Query {
+	server_ping: String
+}
+```
+
+##### Example
+
+```graphql
+query {
+	server_ping
+}
 ```
 
 </div>
@@ -201,54 +231,29 @@ How much memory is available on the operating system.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /server/info
 ```
 
-```json
-// Response
+### GraphQL
 
-// Non-admin
-{
-	"data": {
-		"project": {
-			"project_name": "Directus",
-			"project_logo": null,
-			"project_color": null,
-			"public_foreground": null,
-			"public_background": null,
-			"public_note": null,
-			"custom_css": null
+```graphql
+type Query {
+	server_info: server_info
+}
+```
+
+##### Example
+
+```graphql
+query {
+	server_info {
+		directus {
+			version
 		}
 	}
-}
-
-// Admin
-{
-  "data": {
-    "project": {
-      "project_name": "Directus",
-      "project_logo": null,
-      "project_color": null,
-      "public_foreground": null,
-      "public_background": null,
-      "public_note": null,
-      "custom_css": null
-    },
-    "directus": {
-      "version": "9.0.0-rc.34"
-    },
-    "node": {
-      "version": "15.5.1",
-      "uptime": 77586
-    },
-    "os": {
-      "type": "macOS",
-      "version": "Big Sur (11)",
-      "uptime": 180836,
-      "totalmem": 34359738368
-    }
-  }
 }
 ```
 
@@ -264,45 +269,17 @@ Get the current health status of the server.
 <div class="two-up">
 <div class="left">
 
-The health check response structure is based on the
+The `/server/health` endpoint shows you a general health status for the server and all connected (third party) services,
+such as Redis or S3.
+
+The output is based on the "Health Check Response for HTTP APIs" draft spec:
 [Health Check Response Format for HTTP APIs Draft Specification](https://tools.ietf.org/id/draft-inadarei-api-health-check-05.html).
 
-::: tip Permissions
+This endpoint can be used to ensure a healthy system when running in a horizontally scaled setup, like Kubernetes or AWS
+Elastic Beanstalk.
 
-Admin users get a wide range of information, including database connection speed, email connection status etc.
-
-:::
-
-### Returns
-
-<div class="definitions">
-
-`status` **string**\
-One of `ok`, `warn`, `error`.
-
-</div>
-
-Authenticated admin users also get the following information:
-
-<div class="definitions">
-
-`releaseId` **string**\
-Directus version in use.
-
-`serviceId` **string**\
-UUID of the current Directus instance.
-
-`checks` **array**\
-Array with the status of all individually connected services.
-
-</div>
-
-</div>
-<div class="right">
-
-```
-GET /server/health
-```
+By default, the endpoint only returns a `status` of `ok`, `warn` or `error`. By authenticating as an admin, it will
+return more in-depth information about the current health status of the system.
 
 ```json
 // Response
@@ -355,6 +332,55 @@ GET /server/health
       }
     ]
   }
+}
+```
+
+### Returns
+
+<div class="definitions">
+
+`status` **string**\
+One of `ok`, `warn`, `error`.
+
+</div>
+
+Authenticated admin users also get the following information:
+
+<div class="definitions">
+
+`releaseId` **string**\
+Directus version in use.
+
+`serviceId` **string**\
+UUID of the current Directus instance.
+
+`checks` **array**\
+Array with the status of all individually connected services.
+
+</div>
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+GET /server/health
+```
+
+### GraphQL
+
+```graphql
+type Query {
+	server_health: JSON
+}
+```
+
+##### Example
+
+```graphql
+query {
+	server_health
 }
 ```
 

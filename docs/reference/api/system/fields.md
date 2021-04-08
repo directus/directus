@@ -198,52 +198,28 @@ An array of [field objects](#the-field-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /fields
 ```
 
-```json
-{
-	"data": [
-		{
-			"collection": "articles",
-			"field": "id",
-			"type": "integer",
-			"meta": {
-				"id": 16,
-				"collection": "articles",
-				"field": "id",
-				"special": null,
-				"interface": "numeric",
-				"options": null,
-				"display": null,
-				"display_options": null,
-				"readonly": true,
-				"hidden": true,
-				"sort": 1,
-				"width": "full",
-				"translations": null,
-				"note": "The unique identifier of the article"
-			},
-			"schema": {
-				"name": "id",
-				"table": "articles",
-				"data_type": "integer",
-				"default_value": null,
-				"max_length": null,
-				"numeric_precision": 32,
-				"numeric_scale": 0,
-				"is_nullable": false,
-				"is_primary_key": true,
-				"has_auto_increment": true,
-				"foreign_key_column": null,
-				"foreign_key_table": null,
-				"comment": null
-			}
-		},
-		{ ... },
-		{ ... }
-	]
+### GraphQL
+
+```graphql
+type Query {
+	fields: [directus_fields]
+}
+```
+
+##### Example
+
+```graphql
+query {
+	fields {
+		collection
+		field
+	}
 }
 ```
 
@@ -270,52 +246,34 @@ An array of [field objects](#the-field-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /fields/:collection
 ```
 
-```json
-{
-	"data": [
-		{
-			"collection": "articles",
-			"field": "id",
-			"type": "integer",
-			"meta": {
-				"id": 16,
-				"collection": "articles",
-				"field": "id",
-				"special": null,
-				"interface": "numeric",
-				"options": null,
-				"display": null,
-				"display_options": null,
-				"readonly": true,
-				"hidden": true,
-				"sort": 1,
-				"width": "full",
-				"translations": null,
-				"note": "The unique identifier of the article"
-			},
-			"schema": {
-				"name": "id",
-				"table": "articles",
-				"data_type": "integer",
-				"default_value": null,
-				"max_length": null,
-				"numeric_precision": 32,
-				"numeric_scale": 0,
-				"is_nullable": false,
-				"is_primary_key": true,
-				"has_auto_increment": true,
-				"foreign_key_column": null,
-				"foreign_key_table": null,
-				"comment": null
-			}
-		},
-		{ ... },
-		{ ... }
-	]
+##### Example
+
+```
+GET /fields/articles
+```
+
+### GraphQL
+
+```graphql
+type Query {
+	fields_in_collection(collection: String!): directus_fields
+}
+```
+
+##### Example
+
+```graphql
+query {
+	fields_in_collection(collection: "articles") {
+		collection
+		field
+	}
 }
 ```
 
@@ -342,47 +300,33 @@ A [field object](#the-field-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /fields/:collection/:field
 ```
 
-```json
-{
-	"data": {
-		"collection": "articles",
-		"field": "id",
-		"type": "integer",
-		"meta": {
-			"id": 16,
-			"collection": "articles",
-			"field": "id",
-			"special": null,
-			"interface": "numeric",
-			"options": null,
-			"display": null,
-			"display_options": null,
-			"readonly": true,
-			"hidden": true,
-			"sort": 1,
-			"width": "full",
-			"translations": null,
-			"note": "The unique identifier of the article"
-		},
-		"schema": {
-			"name": "id",
-			"table": "articles",
-			"data_type": "integer",
-			"default_value": null,
-			"max_length": null,
-			"numeric_precision": 32,
-			"numeric_scale": 0,
-			"is_nullable": false,
-			"is_primary_key": true,
-			"has_auto_increment": true,
-			"foreign_key_column": null,
-			"foreign_key_table": null,
-			"comment": null
-		}
+##### Example
+
+```
+GET /fields/articles/title
+```
+
+### GraphQL
+
+```graphql
+type Query {
+	fields_by_name(collection: String!, field: String!): directus_fields
+}
+```
+
+##### Example
+
+```graphql
+query {
+	fields_by_name(collection: "articles", field: "title") {
+		collection
+		field
 	}
 }
 ```
@@ -429,12 +373,16 @@ The [field object](#the-field-object) for the created field.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /fields/:collection
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /fields/articles
 
 {
 	"field": "title",
@@ -448,46 +396,24 @@ POST /fields/:collection
 }
 ```
 
-```json
-{
-	"data": {
-		"collection": "articles",
-		"field": "title",
-		"type": "string",
-		"meta": {
-			"id": 50,
-			"collection": "articles",
-			"field": "title",
-			"special": null,
-			"interface": null,
-			"options": null,
-			"display": null,
-			"display_options": null,
-			"readonly": false,
-			"hidden": false,
-			"sort": null,
-			"width": "full",
-			"group": null,
-			"translations": null,
-			"note": null
-		},
-		"schema": {
-			"name": "title",
-			"table": "articles",
-			"data_type": "character varying",
-			"default_value": "Hello World",
-			"max_length": 255,
-			"numeric_precision": null,
-			"numeric_scale": null,
-			"is_nullable": true,
-			"is_primary_key": false,
-			"has_auto_increment": false,
-			"foreign_key_column": null,
-			"foreign_key_table": null,
-			"comment": null,
-			"schema": "public",
-			"foreign_key_schema": null
-		}
+### GraphQL
+
+```graphql
+type Mutation {
+	create_fields_item(collection: String!, data: create_directus_fields_input!): directus_fields
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_fields_item(
+		collection: "articles"
+		data: { field: "title", type: "string", meta: { icon: "title" }, schema: { default_value: "Hello World" } }
+	) {
+		collection
+		field
 	}
 }
 ```
@@ -540,12 +466,16 @@ The [field object](#the-field-object) for the updated field.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 PATCH /fields/:collection/:field
 ```
 
+##### Example
+
 ```json
-// Request
+// PATCH /fields/articles/title
 
 {
 	"meta": {
@@ -557,46 +487,25 @@ PATCH /fields/:collection/:field
 }
 ```
 
-```json
-{
-	"data": {
-		"collection": "articles",
-		"field": "title",
-		"type": "string",
-		"meta": {
-			"id": 50,
-			"collection": "articles",
-			"field": "title",
-			"special": null,
-			"interface": null,
-			"options": null,
-			"display": null,
-			"display_options": null,
-			"readonly": false,
-			"hidden": false,
-			"sort": null,
-			"width": "full",
-			"group": null,
-			"translations": null,
-			"note": "Put the title here"
-		},
-		"schema": {
-			"name": "title",
-			"table": "articles",
-			"data_type": "character varying",
-			"default_value": "Hello World!",
-			"max_length": 255,
-			"numeric_precision": null,
-			"numeric_scale": null,
-			"is_nullable": true,
-			"is_primary_key": false,
-			"has_auto_increment": false,
-			"foreign_key_column": null,
-			"foreign_key_table": null,
-			"comment": null,
-			"schema": "public",
-			"foreign_key_schema": null
-		}
+### GraphQL
+
+```graphql
+type Mutation {
+	update_fields_item(collection: String!, field: String!, data: update_directus_fields_input!): directus_fields
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_fields_item(
+		collection: "articles"
+		field: "title"
+		data: { meta: { note: "Put the title here" }, schema: { default_value: "Hello World!" } }
+	) {
+		collection
+		field
 	}
 }
 ```
@@ -622,12 +531,35 @@ Be aware, this will delete the column from the database, including all data in i
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /fields/:collection/:field
 ```
 
-```json
-// Empty Response
+##### Example
+
+```
+DELETE /fields/articles/title
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_fields_item(collection: String!, field: String!): delete_field
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_fields_item(collection: "articles", field: "title") {
+		collection
+		field
+	}
+}
 ```
 
 </div>

@@ -8,7 +8,7 @@ pageClass: page-reference
 <div class="left">
 
 > Revisions are individual changes to items made. Directus keeps track of changes made, so you're able to revert to a
-previous state at will. [Learn more about Revisions](/concepts/revisions/).
+> previous state at will. [Learn more about Revisions](/concepts/revisions/).
 
 </div>
 <div class="right">
@@ -98,31 +98,29 @@ available, data will be an empty array.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /revisions
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": [
-		{
-			"id": 368,
-			"activity": 438,
-			"collection": "articles",
-			"item": "1",
-			"data": {
-				"title": "Hello World"
-			},
-			"delta": {
-				"title": "Hello from the Docs!"
-			},
-			"parent": null
-		},
-		{...},
-		{...}
-	]
+```graphql
+type Query {
+	revisions: [directus_revisions]
+}
+```
+
+##### Examples
+
+```graphql
+query {
+	revisions {
+		id
+		data
+		delta
+	}
 }
 ```
 
@@ -149,26 +147,34 @@ Returns the requested [revision object](#the-revision-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /revisions/:id
 ```
 
-```json
-// Response
+##### Example
 
-{
-	"data": {
-		"id": 368,
-		"activity": 438,
-		"collection": "articles",
-		"item": "1",
-		"data": {
-			"title": "Hello World"
-		},
-		"delta": {
-			"title": "Hello from the Docs!"
-		},
-		"parent": null
+```
+GET /revisions/322
+```
+
+### GraphQL
+
+```graphql
+type Query {
+	revisions_by_id(id: ID!): directus_revisions
+}
+```
+
+##### Example
+
+```graphql
+query {
+	revisions_by_id(id: 322) {
+		id
+		data
+		delta
 	}
 }
 ```
