@@ -41,6 +41,12 @@ configuration field is disabled.
 	 entered.
 6. **Field Permissions** control which fields can be read. Fields are individually toggled.
 
+::: warning Read Field Permissions
+
+The Directus App always requires read access to the Primary Key field (eg: `id`) so it can uniquely identify items. Also, if a Collection has "Archive" or "Sort" fields configured, those fields will also need read access to use the App's soft-delete and manual sorting features.
+
+:::
+
 ### Update (Custom Access)
 
 5. **Item Permissions** control which items can be updated, as defined by the [Filter Rules](/reference/filter-rules))
