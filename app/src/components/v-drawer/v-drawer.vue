@@ -24,9 +24,9 @@
 				</nav>
 				<main ref="mainEl" class="main">
 					<header-bar :title="title" @primary="$emit('cancel')" primary-action-icon="close">
-						<template #title><slot name="title" /></template>
+						<template #title><slot :name="title" /></template>
 						<template #headline>
-							<slot name="subtitle">
+							<slot :name="subtitle">
 								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
 							</slot>
 						</template>
