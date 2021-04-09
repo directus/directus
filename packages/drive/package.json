@@ -26,25 +26,13 @@
 		"dist"
 	],
 	"scripts": {
-		"prebuild": "npm run cleanup",
 		"build": "tsc --project ./tsconfig.json",
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
 		"cleanup:coverage": "rimraf ./coverage",
 		"test:watch": "jest --coverage --watchAll",
 		"test": "jest --coverage",
-		"dev": "npm-watch build"
-	},
-	"watch": {
-		"build": {
-			"patterns": [
-				"src/*"
-			],
-			"ignore": "dist",
-			"extensions": "ts",
-			"silent": true,
-			"quiet": true
-		}
+		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
 		"fs-extra": "^9.1.0",
