@@ -16,7 +16,7 @@
 			<h1 class="type-title" v-else>
 				<render-template
 					:collection="collectionInfo.collection"
-					:item="templateValues"
+					:item="templateItem"
 					:template="collectionInfo.meta.display_template"
 				/>
 			</h1>
@@ -209,8 +209,7 @@ import { usePermissions } from '@/composables/use-permissions';
 import unsavedChanges from '@/composables/unsaved-changes';
 import { useTitle } from '@/composables/use-title';
 import { renderStringTemplate } from '@/utils/render-string-template';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
-import api from '@/api';
+import useTemplate from '@/composables/use-template';
 
 export default defineComponent({
 	name: 'collections-item',
@@ -263,7 +262,7 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(collection, primaryKey);
 
-		const { templateValues } = useTemplate();
+		const { templateItem } = useTemplate(collection, primaryKey, item, edits);
 
 		const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
@@ -306,7 +305,7 @@ export default defineComponent({
 				if (collectionInfo.value.meta.singleton === true) {
 					return tabTitle + collectionInfo.value.name;
 				} else if (isNew.value === false && collectionInfo.value.meta.display_template) {
-					const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateValues);
+					const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateItem);
 
 					if (displayValue.value !== undefined) return tabTitle + displayValue.value;
 				}
@@ -369,7 +368,7 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
-			templateValues,
+			templateItem,
 			archiveTooltip,
 			breadcrumb,
 			title,
@@ -495,52 +494,6 @@ export default defineComponent({
 				...edits.value,
 				...values,
 			};
-		}
-
-		function useTemplate() {
-			const templateItem = ref<Record<string, any>>({});
-			const loading = ref(false);
-			const error = ref(null);
-
-			const templateValues = computed(() => {
-				return {
-					...(item.value || {}),
-					...templateItem.value,
-					...edits.value,
-				};
-			});
-
-			watch([collection, primaryKey], fetchTemplateValues, { immediate: true });
-
-			return { templateValues };
-
-			async function fetchTemplateValues() {
-				if (!props.primaryKey || props.primaryKey === '+') return;
-				const template = collectionInfo.value?.meta?.display_template;
-				if (!template) return;
-
-				const fields = getFieldsFromTemplate(template);
-
-				loading.value = true;
-
-				const endpoint = collection.value.startsWith('directus_')
-					? `/${collection.value.substring(9)}/${props.primaryKey}`
-					: `/items/${collection.value}/${props.primaryKey}`;
-
-				try {
-					const result = await api.get(endpoint, {
-						params: {
-							fields,
-						},
-					});
-
-					templateItem.value = result.data.data;
-				} catch (err) {
-					error.value = err;
-				} finally {
-					loading.value = false;
-				}
-			}
 		}
 	},
 	beforeRouteLeave(to, from, next) {

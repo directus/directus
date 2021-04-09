@@ -40,6 +40,7 @@ import i18n from '@/lang';
 import { Relation, Field } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { usePermissions } from '@/composables/use-permissions';
+import useTemplate from '@/composables/use-template';
 
 export default defineComponent({
 	model: {
@@ -123,13 +124,21 @@ export default defineComponent({
 			computed(() => props.primaryKey === '+')
 		);
 
-		const templateItem = computed(() => {
-			if (junctionFieldInfo.value === null) return { ...item.value, ..._edits.value };
-			return { ...item.value?.[junctionFieldInfo.value.field], ..._edits.value[junctionFieldInfo.value.field] };
-		});
-		const templateCollection = computed(
-			() => junctionRelatedCollectionInfo.value?.collection || collectionInfo.value?.collection || null
+		const templatePrimaryKey = computed(() =>
+			junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)
 		);
+
+		const templateCollection = computed(() => junctionRelatedCollectionInfo.value?.collection || collection.value);
+
+		const prepend = computed(() =>
+			junctionFieldInfo.value ? item.value?.[junctionFieldInfo.value.field] : item.value
+		);
+		const append = computed(() =>
+			junctionFieldInfo.value ? _edits.value?.[junctionFieldInfo.value.field] : _edits.value
+		);
+
+		const { templateItem } = useTemplate(templateCollection, templatePrimaryKey, prepend, append);
+
 		const template = computed(
 			() =>
 				junctionRelatedCollectionInfo.value?.meta?.display_template ||
@@ -154,6 +163,9 @@ export default defineComponent({
 			template,
 			templateCollection,
 			templateItem,
+			templatePrimaryKey,
+			prepend,
+			append,
 		};
 
 		function useActiveState() {
