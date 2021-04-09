@@ -216,7 +216,9 @@ fields:
     options:
       icon: vpn_key
       title: Third-Party API Keys
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: mapbox_key
@@ -228,7 +230,9 @@ fields:
   
   - field: mapbox_description
     interface: notice
-    special: alias
+    special:
+      - alias
+      - no-data
     options:
       color: warning
       text: Unlock more backgrounds for the map interface / layout.

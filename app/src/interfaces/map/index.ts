@@ -2,23 +2,23 @@ import { defineInterface } from '../define';
 import InterfaceMap from './map.vue';
 import { sources, mapbox_sources } from '@/layouts/map/styles/sources';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'map',
-	name: i18n.t('interfaces.map.map'),
-	description: i18n.t('interfaces.map.description'),
+	name: '$t:interfaces.map.map',
+	description: '$t:interfaces.map.description',
 	icon: 'map',
 	component: InterfaceMap,
 	types: ['json', 'csv'],
 	options: [
 		{
 			field: 'latitude',
-			name: i18n.t('interfaces.map.lat'),
+			name: '$t:interfaces.map.lat',
 			type: 'decimal',
 			meta: {
 				width: 'half',
 				interface: 'numeric',
 				options: {
-					placeholder: i18n.t('interfaces.map.lat_placeholder'),
+					placeholder: '$t:interfaces.map.lat_placeholder',
 				},
 			},
 			schema: {
@@ -27,13 +27,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'longitude',
-			name: i18n.t('interfaces.map.lng'),
+			name: '$t:interfaces.map.lng',
 			type: 'decimal',
 			meta: {
 				width: 'half',
 				interface: 'numeric',
 				options: {
-					placeholder: i18n.t('interfaces.map.lng_placeholder'),
+					placeholder: '$t:interfaces.map.lng_placeholder',
 				},
 			},
 			schema: {
@@ -42,13 +42,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'zoom',
-			name: i18n.t('interfaces.map.zoom'),
+			name: '$t:interfaces.map.zoom',
 			type: 'decimal',
 			meta: {
 				width: 'half',
 				interface: 'numeric',
 				options: {
-					placeholder: i18n.t('interfaces.map.lng_placeholder'),
+					placeholder: '$t:interfaces.map.lng_placeholder',
 				},
 			},
 			schema: {
@@ -57,7 +57,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'background',
-			name: i18n.t('interfaces.map.background'),
+			name: '$t:interfaces.map.background',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -72,7 +72,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'projection',
-			name: i18n.t('interfaces.map.projection'),
+			name: '$t:interfaces.map.projection',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -91,4 +91,4 @@ export default defineInterface(({ i18n }) => ({
 		},
 	],
 	recommendedDisplays: [],
-}));
+});

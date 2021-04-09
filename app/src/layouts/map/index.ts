@@ -1,10 +1,10 @@
 import { defineLayout } from '@/layouts/define';
 import MapLayout from './maps.vue';
 
-export default defineLayout(({ i18n }) => ({
+export default defineLayout({
 	id: 'map',
-	name: i18n.t('layouts.map.map'),
+	name: '$t:layouts.map.map',
 	icon: 'map',
 	component: MapLayout,
 	smallHeader: true,
-}));
+});
