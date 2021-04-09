@@ -47,7 +47,7 @@
 
 		<div v-if="!customNavItems && !navItems.length && !bookmarks.length" class="empty">
 			<template v-if="searchQuery !== null">
-				<v-notice type="info">{{ $t('no_collections_found') }}</v-notice>
+				<em>{{ $t('no_collections_found') }}</em>
 			</template>
 			<template v-else-if="isAdmin">
 				<v-button fullWidth outlined dashed to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
