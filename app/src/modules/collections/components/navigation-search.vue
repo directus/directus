@@ -1,7 +1,7 @@
 <template>
-	<div class="container" v-show="searchQuery !== null || visible > 30">
+	<div class="container" v-show="searchQuery !== null || visible > 20">
 		<v-input small class="search" v-model="searchQuery" :placeholder="$t('search_collection')">
-			<template #prepend><v-icon name="search" /></template>
+			<template #prepend><v-icon small name="search" /></template>
 		</v-input>
 	</div>
 </template>
@@ -36,11 +36,20 @@ export default defineComponent({
 	z-index: 10;
 	display: flex;
 	align-items: center;
-	width: calc(100% - 24px);
+	width: 100%;
 	height: 64px;
-	margin: 0 12px;
+	padding: 0 12px;
 	background-color: var(--background-normal);
-	border-bottom: 2px solid var(--border-normal);
+
+	&::after {
+		position: absolute;
+		bottom: -2px;
+		left: 12px;
+		width: calc(100% - 24px);
+		height: 2px;
+		background-color: var(--border-normal);
+		content: '';
+	}
 }
 
 .v-input {
