@@ -19,6 +19,7 @@ type CollectionsOverview = {
 				scale: number | null;
 				special: string[];
 				note: string | null;
+				alias: boolean;
 			};
 		};
 	};

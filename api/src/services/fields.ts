@@ -10,6 +10,7 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { PayloadService } from '../services/payload';
 import getDefaultValue from '../utils/get-default-value';
 import cache from '../cache';
+import emitter, { emitAsyncSafe } from '../emitter';
 import SchemaInspector from '@directus/schema';
 import { toArray } from '../utils/to-array';
 import env from '../env';
@@ -296,9 +297,24 @@ export class FieldsService {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
+		await emitter.emitAsync(`fields.delete.before`, {
+			event: `fields.delete.before`,
+			accountability: this.accountability,
+			collection: collection,
+			item: field,
+			action: 'delete',
+			payload: null,
+			schema: this.schema,
+			database: this.knex,
+		});
+
 		await this.knex('directus_fields').delete().where({ collection, field });
 
-		if (this.schema.collections[collection] && field in this.schema.collections[collection].fields) {
+		if (
+			this.schema.collections[collection] &&
+			field in this.schema.collections[collection].fields &&
+			this.schema.collections[collection].fields[field].alias === false
+		) {
 			await this.knex.schema.table(collection, (table) => {
 				table.dropColumn(field);
 			});
@@ -326,9 +342,40 @@ export class FieldsService {
 			}
 		}
 
+		const collectionMeta = await this.knex
+			.select('archive_field', 'sort_field')
+			.from('directus_collections')
+			.where({ collection })
+			.first();
+
+		const collectionMetaUpdates: Record<string, null> = {};
+
+		if (collectionMeta?.archive_field === field) {
+			collectionMetaUpdates.archive_field = null;
+		}
+
+		if (collectionMeta?.sort_field === field) {
+			collectionMetaUpdates.sort_field = null;
+		}
+
+		if (Object.keys(collectionMetaUpdates).length > 0) {
+			await this.knex('directus_collections').update(collectionMetaUpdates).where({ collection });
+		}
+
 		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
+
+		emitAsyncSafe(`fields.delete`, {
+			event: `fields.delete`,
+			accountability: this.accountability,
+			collection: collection,
+			item: field,
+			action: 'delete',
+			payload: null,
+			schema: this.schema,
+			database: this.knex,
+		});
 	}
 
 	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null) {

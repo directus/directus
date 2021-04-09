@@ -33,8 +33,9 @@ You can also override any core CSS directly within the App through Project Setti
 Since App styles are inserted/removed whenever a component is rendered, you'll need to be aware of CSS priority. Using `:root` or `body` likely isn't scoped enough, you'll need to define a more specific scope, such as `#app`, or use `!important`.
 
 ```css
-#app {
+body {
   --family-sans-serif: 'Comic Sans MS';
+  --primary: MediumSlateBlue !important;
 }
 ```
 

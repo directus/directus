@@ -118,7 +118,6 @@ describe('sdk', function () {
 	test('can run graphql', async function (url, nock) {
 		const scope = nock()
 			.post('/graphql')
-			.times(2)
 			.reply(200, {
 				data: {
 					posts: [
@@ -139,43 +138,41 @@ describe('sdk', function () {
 
 		const sdk = new Directus(url);
 
-		const response1 = await sdk.graphql.data(query);
-		const response2 = await sdk.graphql.system(query);
+		const response = await sdk.graphql.items(query);
 
-		expect(response1).toMatchObject(response2);
+		expect(response.data).toMatchObject({
+			posts: [
+				{ id: 1, title: 'My first post' },
+				{ id: 2, title: 'My second post' },
+			],
+		});
 		expect(scope.pendingMocks().length).toBe(0);
 	});
 
 	test('can run graphql on system', async function (url, nock) {
 		const scope = nock()
-			.post('/graphql')
-			.times(2)
+			.post('/graphql/system')
 			.reply(200, {
 				data: {
-					posts: [
-						{ id: 1, title: 'My first post' },
-						{ id: 2, title: 'My second post' },
-					],
+					users: [{ email: 'someone@example.com' }, { email: 'someone.else@example.com' }],
 				},
 			});
 
 		const query = `
 			query {
-				items {
-					posts {
-						id
-						title
-					}
+				users {
+					email
 				}
 			}
 		`;
 
 		const sdk = new Directus(url);
 
-		const response1 = await sdk.graphql.data(query);
-		const response2 = await sdk.graphql.system(query);
+		const response = await sdk.graphql.system(query);
 
-		expect(response1).toMatchObject(response2);
+		expect(response.data).toMatchObject({
+			users: [{ email: 'someone@example.com' }, { email: 'someone.else@example.com' }],
+		});
 		expect(scope.pendingMocks().length).toBe(0);
 	});
 });

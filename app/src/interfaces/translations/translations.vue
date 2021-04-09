@@ -33,7 +33,7 @@ import { defineComponent, PropType, computed, ref, watch } from '@vue/compositio
 import { useRelationsStore } from '@/stores/';
 import api from '@/api';
 import { Relation } from '@/types';
-import getFieldsFromTemplate from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import DrawerItem from '@/views/private/components/drawer-item/drawer-item.vue';
 import { useCollection } from '@/composables/use-collection';
 import { unexpectedError } from '@/utils/unexpected-error';

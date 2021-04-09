@@ -1,10 +1,10 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceButtonLinks from './button-links.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'button-links',
-	name: i18n.t('interfaces.button-links.button-links'),
-	description: i18n.t('interfaces.button-links.description'),
+	name: '$t:interfaces.button-links.button-links',
+	description: '$t:interfaces.button-links.description',
 	icon: 'smart_button',
 	component: InterfaceButtonLinks,
 	hideLabel: true,
@@ -15,29 +15,29 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'links',
 			type: 'json',
-			name: i18n.t('interfaces.button-links.links'),
+			name: '$t:interfaces.button-links.links',
 			meta: {
 				width: 'full',
 				interface: 'repeater',
 				options: {
-					placeholder: i18n.t('title'),
+					placeholder: '$t:title',
 					template: '{{ label }}',
 					fields: [
 						{
 							field: 'label',
 							type: 'string',
-							name: i18n.t('label'),
+							name: '$t:label',
 							meta: {
 								width: 'full',
 								interface: 'text-input',
 								options: {
-									placeholder: i18n.t('label'),
+									placeholder: '$t:label',
 								},
 							},
 						},
 						{
 							field: 'icon',
-							name: i18n.t('icon'),
+							name: '$t:icon',
 							type: 'string',
 							meta: {
 								width: 'half',
@@ -46,7 +46,7 @@ export default defineInterface(({ i18n }) => ({
 						},
 						{
 							field: 'type',
-							name: i18n.t('type'),
+							name: '$t:type',
 							type: 'string',
 							meta: {
 								width: 'half',
@@ -54,12 +54,12 @@ export default defineInterface(({ i18n }) => ({
 								default_value: 'normal',
 								options: {
 									choices: [
-										{ text: i18n.t('primary'), value: 'primary' },
-										{ text: i18n.t('normal'), value: 'normal' },
-										{ text: i18n.t('info'), value: 'info' },
-										{ text: i18n.t('success'), value: 'success' },
-										{ text: i18n.t('warning'), value: 'warning' },
-										{ text: i18n.t('danger'), value: 'danger' },
+										{ text: '$t:primary', value: 'primary' },
+										{ text: '$t:normal', value: 'normal' },
+										{ text: '$t:info', value: 'info' },
+										{ text: '$t:success', value: 'success' },
+										{ text: '$t:warning', value: 'warning' },
+										{ text: '$t:danger', value: 'danger' },
 									],
 								},
 							},
@@ -70,7 +70,7 @@ export default defineInterface(({ i18n }) => ({
 						{
 							field: 'url',
 							type: 'string',
-							name: i18n.t('url'),
+							name: '$t:url',
 							meta: {
 								width: 'full',
 								interface: 'text-input',
@@ -85,4 +85,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

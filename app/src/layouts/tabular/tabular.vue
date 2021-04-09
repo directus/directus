@@ -113,7 +113,12 @@
 
 					<div v-if="loading === false && items.length >= 25" class="per-page">
 						<span>{{ $t('per_page') }}</span>
-						<v-select @input="limit = +$event" :value="`${limit}`" :items="['25', '50', '100', '250']" inline />
+						<v-select
+							@input="limit = +$event"
+							:value="`${limit}`"
+							:items="['25', '50', '100', '250', '500', ' 1000']"
+							inline
+						/>
 					</div>
 				</div>
 			</template>
@@ -464,7 +469,7 @@ export default defineComponent({
 							field: field.field,
 						},
 						sortable:
-							['json', 'o2m', 'm2o', 'm2a', 'file', 'files', 'alias', 'presentation', 'translations'].includes(
+							['json', 'o2m', 'm2o', 'm2m', 'm2a', 'file', 'files', 'alias', 'presentation', 'translations'].includes(
 								field.type
 							) === false,
 					}));

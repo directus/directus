@@ -2,7 +2,9 @@ table: directus_collections
 
 fields:
   - field: collection_divider
-    special: alias
+    special:
+      - alias
+      - no-data
     interface: divider
     options:
       icon: box
@@ -72,7 +74,9 @@ fields:
     width: full
 
   - field: archive_divider
-    special: alias
+    special:
+      - alias
+      - no-data
     interface: divider
     options:
       icon: archive
@@ -111,7 +115,9 @@ fields:
     width: half
 
   - field: sort_divider
-    special: alias
+    special:
+      - alias
+      - no-data
     interface: divider
     options:
       icon: sort

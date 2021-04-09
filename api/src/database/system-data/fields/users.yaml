@@ -65,7 +65,9 @@ fields:
     options:
       icon: face
       title: User Preferences
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: language
@@ -95,7 +97,9 @@ fields:
       icon: verified_user
       title: Admin Options
       color: '#E35169'
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: status
