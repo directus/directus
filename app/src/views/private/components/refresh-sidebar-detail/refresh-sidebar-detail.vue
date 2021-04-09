@@ -1,5 +1,5 @@
 <template>
-	<sidebar-detail :icon="active ? 'sync' : 'sync_disabled'" :title="$t('auto_refresh')">
+	<sidebar-detail :icon="active ? 'sync' : 'sync_disabled'" :title="$t('auto_refresh')" :badge="active">
 		<div class="fields">
 			<div class="field full">
 				<p class="type-label">{{ $t('refresh_interval') }}</p>
@@ -44,7 +44,8 @@ export default defineComponent({
 		});
 
 		const items = computed(() => {
-			const intervals = [null, 1, 5, 10, 60, 300, 600];
+			const intervals = [null, 10, 30, 60, 300];
+
 			return intervals.map((seconds) => {
 				if (seconds === null)
 					return {
@@ -63,6 +64,7 @@ export default defineComponent({
 					  };
 			});
 		});
+
 		const active = computed(() => interval.value !== null);
 
 		return { active, interval, items };
