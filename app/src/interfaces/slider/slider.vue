@@ -44,3 +44,9 @@ export default defineComponent({
 	},
 });
 </script>
+
+<style lang="scss" scoped>
+.v-slider {
+	margin-top: 12px;
+}
+</style>

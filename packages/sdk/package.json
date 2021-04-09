@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "9.0.0-rc.49",
+	"version": "9.0.0-rc.56",
 	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
 		"type": "git",
@@ -17,6 +17,7 @@
 		"dist"
 	],
 	"scripts": {
+		"prepublishOnly": "npm run build",
 		"prebuild": "npm run cleanup",
 		"build": "run-p build:*",
 		"build:targets": "rollup -c",
@@ -27,8 +28,8 @@
 		"cleanup:node": "rimraf ./node",
 		"cleanup:browser": "rimraf ./browser",
 		"cleanup:coverage": "rimraf ./coverage",
-		"dev": "jest --coverage --watchAll",
-		"test": "jest --coverage"
+		"test": "jest --coverage",
+		"test:watch": "jest --coverage --watchAll"
 	},
 	"keywords": [
 		"api",

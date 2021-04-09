@@ -10,7 +10,7 @@ add_field: Add Field
 role_name: Role Name
 db_only_click_to_configure: 'Database Only: Click to Configure '
 show_archived_items: Show Archived Items
-edited: Edited
+edited: Value Edited
 required: Required
 required_for_app_access: Required for App Access
 requires_value: Requires value
@@ -162,7 +162,9 @@ click_to_manage_translated_fields: >-
   There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage
   it. | There are {count} translated fields. Click here to manage them.
 fields_group: Fields Group
+no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
+search_collection: Search Collection...
 new_field: 'New Field'
 new_collection: 'New Collection'
 add_m2o_to_collection: 'Add Many-to-One to "{collection}"'

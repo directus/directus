@@ -1,17 +1,17 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayUser from './user.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'user',
-	name: i18n.t('displays.user.user'),
-	description: i18n.t('displays.user.description'),
+	name: '$t:displays.user.user',
+	description: '$t:displays.user.description',
 	types: ['uuid'],
 	icon: 'person',
 	handler: DisplayUser,
 	options: [
 		{
 			field: 'display',
-			name: i18n.t('display'),
+			name: '$t:display',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -19,15 +19,15 @@ export default defineDisplay(({ i18n }) => ({
 				options: {
 					choices: [
 						{
-							text: i18n.t('displays.user.avatar'),
+							text: '$t:displays.user.avatar',
 							value: 'avatar',
 						},
 						{
-							text: i18n.t('displays.user.name'),
+							text: '$t:displays.user.name',
 							value: 'name',
 						},
 						{
-							text: i18n.t('displays.user.both'),
+							text: '$t:displays.user.both',
 							value: 'both',
 						},
 					],
@@ -39,13 +39,13 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'circle',
-			name: i18n.t('circle'),
+			name: '$t:circle',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('displays.user.circle_label'),
+					label: '$t:displays.user.circle_label',
 				},
 			},
 			schema: {
@@ -54,4 +54,4 @@ export default defineDisplay(({ i18n }) => ({
 		},
 	],
 	fields: ['id', 'avatar.id', 'email', 'first_name', 'last_name'],
-}));
+});

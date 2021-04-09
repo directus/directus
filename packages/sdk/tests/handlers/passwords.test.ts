@@ -10,11 +10,12 @@ describe('password', function () {
 		const scope = nock()
 			.post('/auth/password/request', {
 				email: 'admin@example.com',
+				reset_url: 'http://some_url.com',
 			})
 			.reply(200, {});
 
 		const sdk = new Directus(url);
-		await sdk.auth.password.request('admin@example.com');
+		await sdk.auth.password.request('admin@example.com', 'http://some_url.com');
 
 		expect(scope.pendingMocks().length).toBe(0);
 	});
@@ -24,12 +25,11 @@ describe('password', function () {
 			.post('/auth/password/reset', {
 				token: 'token',
 				password: 'newpassword',
-				reset_url: 'http://some_url.com',
 			})
 			.reply(200, {});
 
 		const sdk = new Directus(url);
-		await sdk.auth.password.reset('token', 'newpassword', 'http://some_url.com');
+		await sdk.auth.password.reset('token', 'newpassword');
 
 		expect(scope.pendingMocks().length).toBe(0);
 	});

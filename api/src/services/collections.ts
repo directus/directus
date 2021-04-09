@@ -283,7 +283,7 @@ export class CollectionsService {
 
 		for (const collectionKey of collectionKeys) {
 			if (tablesInDatabase.includes(collectionKey) === false) {
-				throw new InvalidPayloadException(`Collection "${collectionKey}" doesn't exist.`);
+				throw new ForbiddenException();
 			}
 		}
 
