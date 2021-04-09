@@ -43,9 +43,9 @@ const checkForSystem: NavigationGuard = (to, from, next) => {
 	return next();
 };
 
-export default defineModule(({ i18n }) => ({
+export default defineModule({
 	id: 'collections',
-	name: 'collections',
+	name: '$t:collections',
 	icon: 'box',
 	routes: [
 		{
@@ -78,4 +78,4 @@ export default defineModule(({ i18n }) => ({
 		},
 	],
 	order: 5,
-}));
+});

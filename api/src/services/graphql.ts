@@ -122,27 +122,6 @@ export class GraphQLService {
 	}
 
 	/**
-	 * The default read args that are available across all "regular" items / system query resolvers
-	 */
-	args = {
-		sort: {
-			type: new GraphQLList(GraphQLString),
-		},
-		limit: {
-			type: GraphQLInt,
-		},
-		offset: {
-			type: GraphQLInt,
-		},
-		page: {
-			type: GraphQLInt,
-		},
-		search: {
-			type: GraphQLString,
-		},
-	};
-
-	/**
 	 * Execute a GraphQL structure
 	 */
 	async execute({ document, variables, operationName, contextValue }: GraphQLParams) {
@@ -361,7 +340,8 @@ export class GraphQLService {
 							},
 						});
 					}
-				} else if (relation.one_allowed_collections) {
+				} else if (relation.one_allowed_collections && action === 'read') {
+					// NOTE: There are no union input types in GraphQL, so this only applies to Read actions
 					CollectionTypes[relation.many_collection]?.addFields({
 						[relation.many_field]: {
 							type: new GraphQLUnionType({
@@ -376,7 +356,7 @@ export class GraphQLService {
 										currentPath = currentPath.prev;
 									}
 
-									path = path.reverse().slice(1, -1);
+									path = path.reverse().slice(0, -1);
 
 									let parent = context.data;
 
@@ -546,7 +526,11 @@ export class GraphQLService {
 					type: collection.singleton
 						? ReadCollectionTypes[collection.collection]
 						: [ReadCollectionTypes[collection.collection]],
-					resolve: async ({ info }: { info: GraphQLResolveInfo }) => await self.resolveQuery(info),
+					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
+						const result = await self.resolveQuery(info);
+						context.data = result;
+						return result;
+					},
 				});
 
 				if (collection.singleton === false) {
@@ -556,7 +540,11 @@ export class GraphQLService {
 						args: {
 							id: GraphQLNonNull(GraphQLID),
 						},
-						resolve: async ({ info }: { info: GraphQLResolveInfo }) => await self.resolveQuery(info),
+						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
+							const result = await self.resolveQuery(info);
+							context.data = result;
+							return result;
+						},
 					});
 				}
 			}
@@ -567,9 +555,47 @@ export class GraphQLService {
 						[relation.many_field]: ReadableCollectionFilterTypes[relation.one_collection],
 					});
 
+					ReadCollectionTypes[relation.many_collection]?.addFieldArgs(relation.many_field, {
+						filter: ReadableCollectionFilterTypes[relation.one_collection],
+						sort: {
+							type: new GraphQLList(GraphQLString),
+						},
+						limit: {
+							type: GraphQLInt,
+						},
+						offset: {
+							type: GraphQLInt,
+						},
+						page: {
+							type: GraphQLInt,
+						},
+						search: {
+							type: GraphQLString,
+						},
+					});
+
 					if (relation.one_field) {
 						ReadableCollectionFilterTypes[relation.one_collection]?.addFields({
 							[relation.one_field]: ReadableCollectionFilterTypes[relation.many_collection],
+						});
+
+						ReadCollectionTypes[relation.one_collection]?.addFieldArgs(relation.one_field, {
+							filter: ReadableCollectionFilterTypes[relation.many_collection],
+							sort: {
+								type: new GraphQLList(GraphQLString),
+							},
+							limit: {
+								type: GraphQLInt,
+							},
+							offset: {
+								type: GraphQLInt,
+							},
+							page: {
+								type: GraphQLInt,
+							},
+							search: {
+								type: GraphQLString,
+							},
 						});
 					}
 				} else if (relation.one_allowed_collections) {

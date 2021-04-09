@@ -1,6 +1,7 @@
 import registerComponent from '@/utils/register-component/';
 import { getLayouts } from './index';
 import api from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
 
 const layouts = getLayouts();
 
@@ -14,12 +15,14 @@ export async function registerLayouts() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/layouts');
+		const customResponse = await api.get('/extensions/layouts/');
 
 		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
 			for (const customKey of customResponse.data.data) {
 				try {
-					const module = await import(/* webpackIgnore: true */ `/extensions/layouts/${customKey}/index.js`);
+					const module = await import(
+						/* webpackIgnore: true */ getRootPath() + `extensions/layouts/${customKey}/index.js`
+					);
 					modules.push(module.default);
 				} catch (err) {
 					console.warn(`Couldn't load custom layout "${customKey}"`);

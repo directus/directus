@@ -7,8 +7,8 @@ pageClass: page-reference
 <div class="two-up">
 <div class="left">
 
-> Collections are the individual collections of items, similar to tables in a database. Changes to collections will alter
-the schema of the database. [Learn more about Collections](/concepts/collections/).
+> Collections are the individual collections of items, similar to tables in a database. Changes to collections will
+> alter the schema of the database. [Learn more about Collections](/concepts/collections/).
 
 </div>
 <div class="right">
@@ -148,46 +148,27 @@ An array of [collection objects](#the-collection-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /collections
 ```
 
-```json
-{
-	"data": [
-		{
-			"collection": "articles",
-			"meta": {
-				"collection": "articles",
-				"icon": "article",
-				"note": "Blog posts",
-				"display_template": "{{ title }}",
-				"hidden": false,
-				"singleton": false,
-				"translations": [
-					{
-						"language": "en-US",
-						"translation": "Articles"
-					},
-					{
-						"language": "nl-NL",
-						"translation": "Artikelen"
-					}
-				],
-				"archive_field": "status",
-				"archive_value": "archived",
-				"unarchive_value": "draft",
-				"archive_app_filter": true,
-				"sort_field": "sort"
-			},
-			"schema": {
-				"name": "pages",
-				"comment": null
-			}
-		},
-		{ ... },
-		{ ... }
-	]
+### GraphQL
+
+```graphql
+type Query {
+	collections: [directus_collections]
+}
+```
+
+##### Example
+
+```graphql
+query {
+	collections {
+		...
+	}
 }
 ```
 
@@ -214,41 +195,32 @@ A [collection object](#the-collection-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /collections/:collection
 ```
 
-```json
-{
-	"data": {
-		"collection": "articles",
-		"meta": {
-			"collection": "articles",
-			"icon": "article",
-			"note": "Blog posts",
-			"display_template": "{{ title }}",
-			"hidden": false,
-			"singleton": false,
-			"translations": [
-				{
-					"language": "en-US",
-					"translation": "Articles"
-				},
-				{
-					"language": "nl-NL",
-					"translation": "Artikelen"
-				}
-			],
-			"archive_field": "status",
-			"archive_value": "archived",
-			"unarchive_value": "draft",
-			"archive_app_filter": true,
-			"sort_field": "sort"
-		},
-		"schema": {
-			"name": "pages",
-			"comment": null
-		}
+##### Example
+
+```
+GET /collections/articles
+```
+
+### GraphQL
+
+```graphql
+type Query {
+	collections_by_name(name: String!): directus_collections
+}
+```
+
+##### Example
+
+```graphql
+query {
+	collections_by_name(name: "articles") {
+		...
 	}
 }
 ```
@@ -275,8 +247,8 @@ The `collection` property is required, all other properties of the [collection o
 optional.
 
 You are able to provide an array of `fields` to be created during the creation of the collection. See the
-[fields object](/reference/api/rest/fields/#the-fields-object) for more information on what properties are available in
-a field.
+[fields object](/reference/api/system/fields/#the-fields-object) for more information on what properties are available
+in a field.
 
 ### Returns
 
@@ -285,12 +257,16 @@ The [collection object](#the-collection-object) for the collection created in th
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /collections
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /collections
 
 {
 	"collection": "testimonials",
@@ -300,30 +276,25 @@ POST /collections
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"collection": "testimonials",
-		"meta": {
-			"collection": "testimonials",
-			"icon": null,
-			"note": null,
-			"display_template": null,
-			"hidden": false,
-			"singleton": false,
-			"translations": null,
-			"archive_field": null,
-			"archive_app_filter": true,
-			"archive_value": null,
-			"unarchive_value": null,
-			"sort_field": null
-		},
-		"schema": {
-			"name": "testimonials",
-			"comment": null
+```graphql
+type Mutation {
+	create_collections_item(data: directus_collections): directus_collections
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_collections_item(data: {
+		collection: "testimonials",
+		meta: {
+			icon: "format_quote"
 		}
+	}) {
+		...
 	}
 }
 ```
@@ -356,12 +327,16 @@ The [collection object](#the-collection-object) for the updated collection in th
 </div>
 <div class="right">
 
+### REST API
+
 ```
 PATCH /collections/:collection
 ```
 
+##### Example
+
 ```json
-// Request
+// PATCH /collections/testimonials
 
 {
 	"meta": {
@@ -370,30 +345,20 @@ PATCH /collections/:collection
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"collection": "testimonials",
-		"meta": {
-			"collection": "testimonials",
-			"icon": null,
-			"note": "Short quotes from happy customers.",
-			"display_template": null,
-			"hidden": false,
-			"singleton": false,
-			"translations": null,
-			"archive_field": null,
-			"archive_app_filter": true,
-			"archive_value": null,
-			"unarchive_value": null,
-			"sort_field": null
-		},
-		"schema": {
-			"name": "testimonials",
-			"comment": null
-		}
+```graphql
+type Mutation {
+	update_collections_item(collection: String!, data: update_directus_collections_input!): directus_collections
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_collections_item(collection: "testimonials", data: { meta: { note: "Short quotes from happy customers." } }) {
+		collection
 	}
 }
 ```
@@ -419,12 +384,34 @@ Be aware, this will delete the table from the database, including all items in i
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /collections/:collection
 ```
 
-```json
-// Empty Response
+##### Example
+
+```
+DELETE /collections/articles
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_collections_item(collection: String!): delete_collection
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_collections_item(collection: "articles") {
+		collection
+	}
+}
 ```
 
 </div>

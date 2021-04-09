@@ -1,3 +1,4 @@
+import { translateReactive } from '@/utils/translate-object-values';
 import { ref, Ref } from '@vue/composition-api';
 import { ModuleConfig } from './types';
 
@@ -8,5 +9,5 @@ export function getModules() {
 		modules = ref([]);
 	}
 
-	return modules;
+	return translateReactive(modules);
 }
