@@ -3,6 +3,7 @@ import { getInterfaces } from './index';
 import { Component } from 'vue';
 import api from '@/api';
 import { batchPromises } from '@/utils/paginate';
+import { getRootPath } from '@/utils/get-root-path';
 
 const interfaces = getInterfaces();
 
@@ -23,7 +24,7 @@ export async function registerInterfaces() {
 			const loadedInterfaces = await batchPromises(
 				data,
 				5,
-				(customKey) => import(/* webpackIgnore: true */ `/extensions/interfaces/${customKey}/index.js`)
+				(customKey) => import(/* webpackIgnore: true */ getRootPath() + `/extensions/interfaces/${customKey}/index.js`)
 			);
 
 			loadedInterfaces.forEach((result, i) => {

@@ -3,9 +3,9 @@ import { defineModule } from '@/modules/define';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
 
-export default defineModule(({ i18n }) => ({
+export default defineModule({
 	id: 'users',
-	name: 'user_directory',
+	name: '$t:user_directory',
 	icon: 'people_alt',
 	routes: [
 		{
@@ -37,4 +37,4 @@ export default defineModule(({ i18n }) => ({
 
 		return !!permission;
 	},
-}));
+});

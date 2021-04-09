@@ -54,14 +54,6 @@ router.get(
 			schema: req.schema,
 		});
 
-		if (req.accountability?.admin !== true) {
-			const schema = reduceSchema(req.schema, ['read']);
-
-			if (req.params.field in schema.collections[req.params.collection].fields === false) {
-				throw new ForbiddenException();
-			}
-		}
-
 		const field = await service.readOne(req.params.collection, req.params.field);
 
 		res.locals.payload = { data: field || null };

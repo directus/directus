@@ -4,6 +4,7 @@ import { getModules } from './index';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import api from '@/api';
 import { batchPromises } from '@/utils/paginate';
+import { getRootPath } from '@/utils/get-root-path';
 
 const modules = getModules();
 let loadedModules: any = [];
@@ -18,7 +19,7 @@ export async function loadModules() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/modules');
+		const customResponse = await api.get('/extensions/modules/');
 
 		const data = customResponse.data.data;
 
@@ -26,7 +27,7 @@ export async function loadModules() {
 			const loadedModules = await batchPromises(
 				data,
 				5,
-				(customKey) => import(/* webpackIgnore: true */ `/extensions/modules/${customKey}/index.js`)
+				(customKey) => import(/* webpackIgnore: true */ getRootPath() + `/extensions/modules/${customKey}/index.js`)
 			);
 
 			loadedModules.forEach((result, i) => {

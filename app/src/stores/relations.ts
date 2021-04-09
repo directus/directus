@@ -52,7 +52,10 @@ export const useRelationsStore = createStore({
 			}
 
 			const relations: Relation[] = this.getRelationsForCollection(collection).filter((relation: Relation) => {
-				return relation.many_field === field || relation.one_field === field;
+				return (
+					(relation.many_collection === collection && relation.many_field === field) ||
+					(relation.one_collection === collection && relation.one_field === field)
+				);
 			});
 
 			if (relations.length > 0) {

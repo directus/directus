@@ -223,11 +223,11 @@ class OASSpecsService implements SpecificationSubService {
 																{
 																	type: 'array',
 																	items: {
-																		$ref: `#/components/schema/${tag.name}`,
+																		$ref: `#/components/schemas/${tag.name}`,
 																	},
 																},
 																{
-																	$ref: `#/components/schema/${tag.name}`,
+																	$ref: `#/components/schemas/${tag.name}`,
 																},
 															],
 														},
@@ -245,7 +245,7 @@ class OASSpecsService implements SpecificationSubService {
 																	properties: {
 																		data: {
 																			items: {
-																				$ref: `#/components/schema/${tag.name}`,
+																				$ref: `#/components/schemas/${tag.name}`,
 																			},
 																		},
 																	},
@@ -274,7 +274,7 @@ class OASSpecsService implements SpecificationSubService {
 												content: {
 													'application/json': {
 														schema: {
-															$ref: `#/components/schema/${tag.name}`,
+															$ref: `#/components/schemas/${tag.name}`,
 														},
 													},
 												},
@@ -290,7 +290,7 @@ class OASSpecsService implements SpecificationSubService {
 																	properties: {
 																		data: {
 																			items: {
-																				$ref: `#/components/schema/${tag.name}`,
+																				$ref: `#/components/schemas/${tag.name}`,
 																			},
 																		},
 																	},

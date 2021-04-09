@@ -46,16 +46,16 @@ Title for the file.
 Mimetype of the file.
 
 `folder` **many-to-one**\
-What (virtual) folder the file is in. Many-to-one to [folders](/reference/api/rest/folders/).
+What (virtual) folder the file is in. Many-to-one to [folders](/reference/api/system/folders/).
 
 `uploaded_by` **many-to-one**\
-Who uploaded the file. Many-to-one to [users](/reference/api/rest/users/).
+Who uploaded the file. Many-to-one to [users](/reference/api/system/users/).
 
 `uploaded_on` **datetime**\
 When the file was uploaded.
 
 `modified_by` **many-to-one**\
-Who updated the file last. Many-to-one to [users](/reference/api/rest/users/).
+Who updated the file last. Many-to-one to [users](/reference/api/system/users/).
 
 `filesize` **number**\
 Size of the file in bytes.
@@ -146,52 +146,28 @@ will be an empty array.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /files
 ```
 
-```json
-{
-	"data": [
-		{
-			"id": "4f4b14fa-a43a-46d0-b7ad-90af5919bebb",
-			"storage": "local",
-			"filename_disk": "4f4b14fa-a43a-46d0-b7ad-90af5919bebb.jpeg",
-			"filename_download": "paulo-silva-vSRgXtQuns8-unsplash.jpg",
-			"title": "Paulo Silva (via Unsplash)",
-			"type": "image/jpeg",
-			"folder": null,
-			"uploaded_by": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
-			"uploaded_on": "2021-02-04T11:37:41-05:00",
-			"modified_by": null,
-			"modified_on": "2021-02-04T11:37:42-05:00",
-			"charset": null,
-			"filesize": 3442252,
-			"width": 3456,
-			"height": 5184,
-			"duration": null,
-			"embed": null,
-			"description": null,
-			"location": null,
-			"tags": null,
-			"metadata": {
-				"icc": {
-					"version": "2.1",
-					"intent": "Perceptual",
-					"cmm": "lcms",
-					"deviceClass": "Monitor",
-					"colorSpace": "RGB",
-					"connectionSpace": "XYZ",
-					"platform": "Apple",
-					"creator": "lcms",
-					"description": "c2",
-					"copyright": ""
-				}
-			}
-		},
-		{...},
-		{...}
-	]
+### GraphQL
+
+```graphql
+type Query {
+	files: [directus_files]
+}
+```
+
+##### Example
+
+```graphql
+query {
+	files {
+		id
+		filename_disk
+	}
 }
 ```
 
@@ -218,47 +194,33 @@ Returns a [file object](#the-file-object) if a valid primary key was provided.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /files/:id
 ```
 
-```json
-{
-	"data": {
-		"id": "4f4b14fa-a43a-46d0-b7ad-90af5919bebb",
-		"storage": "local",
-		"filename_disk": "4f4b14fa-a43a-46d0-b7ad-90af5919bebb.jpeg",
-		"filename_download": "paulo-silva-vSRgXtQuns8-unsplash.jpg",
-		"title": "Paulo Silva (via Unsplash)",
-		"type": "image/jpeg",
-		"folder": null,
-		"uploaded_by": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
-		"uploaded_on": "2021-02-04T11:37:41-05:00",
-		"modified_by": null,
-		"modified_on": "2021-02-04T11:37:42-05:00",
-		"charset": null,
-		"filesize": 3442252,
-		"width": 3456,
-		"height": 5184,
-		"duration": null,
-		"embed": null,
-		"description": null,
-		"location": null,
-		"tags": null,
-		"metadata": {
-			"icc": {
-				"version": "2.1",
-				"intent": "Perceptual",
-				"cmm": "lcms",
-				"deviceClass": "Monitor",
-				"colorSpace": "RGB",
-				"connectionSpace": "XYZ",
-				"platform": "Apple",
-				"creator": "lcms",
-				"description": "c2",
-				"copyright": ""
-			}
-		}
+##### Example
+
+```
+GET /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
+```
+
+### GraphQL
+
+```graphql
+type Query {
+	files_by_id(id: ID!): directus_files
+}
+```
+
+##### Example
+
+```graphql
+query {
+	files_by_id(id: "0fca80c4-d61c-4404-9fd7-6ba86b64154d") {
+		id
+		filename_disk
 	}
 }
 ```
@@ -353,49 +315,6 @@ Content-Type: image/jpeg
 descü^cprt\wtpthbkpt|rXYZgXYZ¤bXYZ¸rTRCÌ@gTRCÌ@bTRCÌ@descc2textIXXYZ öÖÓ-XYZ 3¤XYZ o¢8õXYZ b·ÚXYZ $ ¶ÏcurvËÉckö?Q4!ñ)2;FQw]íkpz±|¬i¿}ÓÃé0ÿÿÿÛ
 ```
 
-```json
-// Response
-
-{
-	"data": {
-		"id": "cbda3d4f-5f84-4357-97ba-0851aba68dee",
-		"storage": "local",
-		"filename_disk": "cbda3d4f-5f84-4357-97ba-0851aba68dee.jpeg",
-		"filename_download": "paulo-silva-vSRgXtQuns8-unsplash.jpg",
-		"title": "Paulo Silva (via Unsplash)",
-		"type": "image/jpeg",
-		"folder": null,
-		"uploaded_by": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
-		"uploaded_on": "2021-02-04T12:07:50-05:00",
-		"modified_by": null,
-		"modified_on": "2021-02-04T12:07:50-05:00",
-		"charset": null,
-		"filesize": 3442252,
-		"width": 3456,
-		"height": 5184,
-		"duration": null,
-		"embed": null,
-		"description": null,
-		"location": null,
-		"tags": null,
-		"metadata": {
-			"icc": {
-				"version": "2.1",
-				"intent": "Perceptual",
-				"cmm": "lcms",
-				"deviceClass": "Monitor",
-				"colorSpace": "RGB",
-				"connectionSpace": "XYZ",
-				"platform": "Apple",
-				"creator": "lcms",
-				"description": "c2",
-				"copyright": ""
-			}
-		}
-	}
-}
-```
-
 </div>
 </div>
 
@@ -431,12 +350,16 @@ Returns the [file object](#the-file-object) for the imported file.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /files/import
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /files/import
 
 {
 	"url": "https://source.unsplash.com/random",
@@ -446,45 +369,20 @@ POST /files/import
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": "d17c10aa-0bad-4864-9296-84f522c753e5",
-		"storage": "local",
-		"filename_disk": "d17c10aa-0bad-4864-9296-84f522c753e5.jpeg",
-		"filename_download": "photo-1610484637796-22140be4b7ef",
-		"title": "Example",
-		"type": "image/jpeg",
-		"folder": null,
-		"uploaded_by": null,
-		"uploaded_on": "2021-02-04T12:31:59-05:00",
-		"modified_by": null,
-		"modified_on": "2021-02-04T12:31:59-05:00",
-		"charset": null,
-		"filesize": 167141,
-		"width": 1080,
-		"height": 1350,
-		"duration": null,
-		"embed": null,
-		"description": null,
-		"location": null,
-		"tags": null,
-		"metadata": {
-			"icc": {
-				"version": "2.1",
-				"intent": "Perceptual",
-				"cmm": "lcms",
-				"deviceClass": "Monitor",
-				"colorSpace": "RGB",
-				"connectionSpace": "XYZ",
-				"platform": "Apple",
-				"creator": "lcms",
-				"description": "c2",
-				"copyright": ""
-			}
-		}
+```graphql
+type Mutation {
+	import_file(url: String!, data: create_directus_files_input!): directus_files
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	import_file(url: "https://source.unsplash.com/random", data: { title: "Example" }) {
+		id
 	}
 }
 ```
@@ -518,57 +416,37 @@ Returns the [file object](#the-file-object) for the updated file.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 PATCH /files/:id
 ```
 
+##### Example
+
 ```json
-// Request
+// PATCH /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
 
 {
 	"title": "Example"
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": "d17c10aa-0bad-4864-9296-84f522c753e5",
-		"storage": "local",
-		"filename_disk": "d17c10aa-0bad-4864-9296-84f522c753e5.jpeg",
-		"filename_download": "photo-1610484637796-22140be4b7ef",
-		"title": "Example",
-		"type": "image/jpeg",
-		"folder": null,
-		"uploaded_by": null,
-		"uploaded_on": "2021-02-04T12:31:59-05:00",
-		"modified_by": null,
-		"modified_on": "2021-02-04T12:31:59-05:00",
-		"charset": null,
-		"filesize": 167141,
-		"width": 1080,
-		"height": 1350,
-		"duration": null,
-		"embed": null,
-		"description": null,
-		"location": null,
-		"tags": null,
-		"metadata": {
-			"icc": {
-				"version": "2.1",
-				"intent": "Perceptual",
-				"cmm": "lcms",
-				"deviceClass": "Monitor",
-				"colorSpace": "RGB",
-				"connectionSpace": "XYZ",
-				"platform": "Apple",
-				"creator": "lcms",
-				"description": "c2",
-				"copyright": ""
-			}
-		}
+```graphql
+type Mutation {
+	update_files_item(id: ID!, data: update_directus_files_input!): directus_files
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_files_item(id: "0fca80c4-d61c-4404-9fd7-6ba86b64154d", data: { title: "Example" }) {
+		id
+		title
 	}
 }
 ```
@@ -591,18 +469,6 @@ Supports all [global query parameters](/reference/api/query).
 
 ### Request Body
 
-There's two ways to update files: Update multiple files to _different_ values, or to update multiple files to _the same_
-values.
-
-#### Different Values
-
-Post an array of (partial) [file objects](#the-file-object). Make sure to include `id` for every object in the array in
-order for Directus to be able to know what the file is you're updating.
-
-#### Same Value
-
-Alternatively, you can send the following:
-
 <div class="definitions">
 
 `keys` **Required**\
@@ -620,26 +486,17 @@ Returns the [file objects](#the-file-object) for the updated files.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 PATCH /files
 ```
 
+##### Example
+
 ```json
-// Request
+// PATCH /files
 
-// Multiple files, different values
-[
-	{
-		"id": "d17c10aa-0bad-4864-9296-84f522c753e5",
-		"title": "New York City"
-	},
-	{
-		"id": "b6123925-2fc0-4a30-9d86-863eafc0a6e7",
-		"title": "Amsterdam"
-	}
-]
-
-// Multiple files, same value
 {
 	"keys": ["b6123925-2fc0-4a30-9d86-863eafc0a6e7", "d17c10aa-0bad-4864-9296-84f522c753e5"],
 	"data": {
@@ -648,49 +505,22 @@ PATCH /files
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": [
-		{
-			"id": "d17c10aa-0bad-4864-9296-84f522c753e5",
-			"storage": "local",
-			"filename_disk": "d17c10aa-0bad-4864-9296-84f522c753e5.jpeg",
-			"filename_download": "photo-1610484637796-22140be4b7ef",
-			"title": "Example",
-			"type": "image/jpeg",
-			"folder": null,
-			"uploaded_by": null,
-			"uploaded_on": "2021-02-04T12:31:59-05:00",
-			"modified_by": null,
-			"modified_on": "2021-02-04T12:31:59-05:00",
-			"charset": null,
-			"filesize": 167141,
-			"width": 1080,
-			"height": 1350,
-			"duration": null,
-			"embed": null,
-			"description": null,
-			"location": null,
-			"tags": null,
-			"metadata": {
-				"icc": {
-					"version": "2.1",
-					"intent": "Perceptual",
-					"cmm": "lcms",
-					"deviceClass": "Monitor",
-					"colorSpace": "RGB",
-					"connectionSpace": "XYZ",
-					"platform": "Apple",
-					"creator": "lcms",
-					"description": "c2",
-					"copyright": ""
-				}
-			}
-		},
-		{...}
-	]
+```graphql
+type Mutation {
+	update_files_items(ids: [ID!]!, data: update_directus_files!): [directus_files]
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_files_items(
+		ids: ["b6123925-2fc0-4a30-9d86-863eafc0a6e7", "d17c10aa-0bad-4864-9296-84f522c753e5"]
+		data: { tags: "cities" }
+	)
 }
 ```
 
@@ -723,12 +553,32 @@ Empty response.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /files/:id
 ```
 
-```json
-// Empty Response
+##### Example
+
+```
+DELETE /files/0fca80c4-d61c-4404-9fd7-6ba86b64154d
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_files_item(id: ID!): delete_one
+}
+```
+
+```graphql
+mutation {
+	delete_files_item(id: "0fca80c4-d61c-4404-9fd7-6ba86b64154d") {
+		id
+	}
+}
 ```
 
 </div>
@@ -760,17 +610,36 @@ Empty response.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /files
 ```
 
+##### Example
+
 ```json
-// Request
+// DELETE /files
+
 ["d17c10aa-0bad-4864-9296-84f522c753e5", "b6123925-2fc0-4a30-9d86-863eafc0a6e7"]
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_files_items(ids: [ID!]!): delete_many
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_files_items(ids: ["d17c10aa-0bad-4864-9296-84f522c753e5", "b6123925-2fc0-4a30-9d86-863eafc0a6e7"]) {
+		ids
+	}
+}
 ```
 
 </div>

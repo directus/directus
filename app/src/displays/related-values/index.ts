@@ -11,10 +11,10 @@ type Options = {
 	template: string;
 };
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay(() => ({
 	id: 'related-values',
-	name: i18n.t('displays.related-values.related-values'),
-	description: i18n.t('displays.related-values.description'),
+	name: '$t:displays.related-values.related-values',
+	description: '$t:displays.related-values.description',
 	icon: 'settings_ethernet',
 	handler: DisplayRelatedValues,
 	options: options,

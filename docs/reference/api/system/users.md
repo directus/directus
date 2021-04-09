@@ -54,7 +54,7 @@ Description of the user.
 Tags for the user.
 
 `avatar` **many-to-one**\
-Avatar file. Many-to-one to [files](/reference/api/rest/files/).
+Avatar file. Many-to-one to [files](/reference/api/system/files/).
 
 `language` **string**\
 Language the Admin App is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages and
@@ -117,38 +117,29 @@ will be an empty array.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /users
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": [
-		{
-			"id": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
-			"first_name": "Admin",
-			"last_name": "User",
-			"email": "admin@example.com",
-			"password": "**********",
-			"location": "New York City",
-			"title": "CTO",
-			"description": null,
-			"tags": null,
-			"avatar": null,
-			"language": "en-US",
-			"theme": "auto",
-			"tfa_secret": null,
-			"status": "active",
-			"role": "653925a9-970e-487a-bfc0-ab6c96affcdc",
-			"token": null,
-			"last_access": "2021-02-05T10:18:13-05:00",
-			"last_page": "/settings/roles/653925a9-970e-487a-bfc0-ab6c96affcdc"
-		},
-		{...},
-		{...}
-	]
+```graphql
+type Query {
+	users: [directus_users]
+}
+```
+
+##### Example
+
+```graphql
+query {
+	users {
+		first_name
+		last_name
+		email
+	}
 }
 ```
 
@@ -175,33 +166,34 @@ Returns the requested [user object](#the-user-object).
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /users/:id
 ```
 
-```json
-// Response
+##### Example
 
-{
-	"data": {
-		"id": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
-		"first_name": "Admin",
-		"last_name": "User",
-		"email": "admin@example.com",
-		"password": "**********",
-		"location": "New York City",
-		"title": "CTO",
-		"description": null,
-		"tags": null,
-		"avatar": null,
-		"language": "en-US",
-		"theme": "auto",
-		"tfa_secret": null,
-		"status": "active",
-		"role": "653925a9-970e-487a-bfc0-ab6c96affcdc",
-		"token": null,
-		"last_access": "2021-02-05T10:18:13-05:00",
-		"last_page": "/settings/roles/653925a9-970e-487a-bfc0-ab6c96affcdc"
+```
+GET /users/72a1ce24-4748-47de-a05f-ce9af3033727
+```
+
+### GraphQL
+
+```graphql
+type Query {
+	users_by_id(id: ID!): directus_users
+}
+```
+
+##### Example
+
+```graphql
+query {
+	users_by_id(id: "72a1ce24-4748-47de-a05f-ce9af3033727") {
+		first_name
+		last_name
+		email
 	}
 }
 ```
@@ -229,33 +221,26 @@ Returns the [user object](#the-user-object) for the currently authenticated user
 </div>
 <div class="right">
 
+### REST API
+
 ```
 GET /users/me
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
-		"first_name": "Admin",
-		"last_name": "User",
-		"email": "admin@example.com",
-		"password": "**********",
-		"location": "New York City",
-		"title": "CTO",
-		"description": null,
-		"tags": null,
-		"avatar": null,
-		"language": "en-US",
-		"theme": "auto",
-		"tfa_secret": null,
-		"status": "active",
-		"role": "653925a9-970e-487a-bfc0-ab6c96affcdc",
-		"token": null,
-		"last_access": "2021-02-05T10:18:13-05:00",
-		"last_page": "/settings/roles/653925a9-970e-487a-bfc0-ab6c96affcdc"
+```graphql
+type Query {
+	users_me: directus_users
+}
+```
+
+##### Example
+
+```graphql
+query {
+	users_me {
+		email
 	}
 }
 ```
@@ -267,7 +252,7 @@ GET /users/me
 
 ## Create a User
 
-Create one or more new user(s).
+Create a new user
 
 <div class="two-up">
 <div class="left">
@@ -278,23 +263,27 @@ Supports all [global query parameters](/reference/api/query).
 
 ### Request Body
 
-A partial [user object](#the-user-object) or an array of partial [user objects](#the-user-object).
+A partial [user object](#the-user-object).
 
 `email` and `password` are required.
 
 ### Returns
 
-Returns the [user object(s)](#the-user-object) for the created user(s).
+Returns the [user object](#the-user-object) for the created user.
 
 </div>
 <div class="right">
+
+### REST API
 
 ```
 POST /users
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /users
 
 {
 	"email": "another@example.com",
@@ -303,29 +292,101 @@ POST /users
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"id": "b917be29-e326-4597-ad73-ff892be35aac",
-		"first_name": null,
-		"last_name": null,
+```graphql
+type Mutation {
+	create_users_item(data: create_directus_users_input!): directus_users
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_users_item(
+		data: { email: "another@example.com", password: "d1r3ctu5", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7" }
+	) {
+		email
+		role
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Create Multiple Users
+
+Create multiple new users
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Request Body
+
+An array of partial [user objects](#the-user-object).
+
+`email` and `password` are required.
+
+### Returns
+
+Returns the [user objects](#the-user-object) for the created users.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+POST /users
+```
+
+##### Example
+
+```json
+// POST /users
+
+[
+	{
+		"email": "admin@example.com",
+		"password": "p455w0rd",
+		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
+	},
+	{
 		"email": "another@example.com",
-		"password": "**********",
-		"location": null,
-		"title": null,
-		"description": null,
-		"tags": null,
-		"avatar": null,
-		"language": "en-US",
-		"theme": "auto",
-		"tfa_secret": null,
-		"status": "active",
-		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
-		"token": null,
-		"last_access": null,
-		"last_page": null
+		"password": "d1r3ctu5",
+		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"
+	}
+]
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	create_users_items(data: [create_directus_users_input!]!): [directus_users]
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	create_users_items(
+		data: [
+			{ email: "admin@example.com", password: "p455w0rd", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7" }
+			{ email: "another@example.com", password: "d1r3ctu5", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7" }
+		]
+	) {
+		email
+		role
 	}
 }
 ```
@@ -352,46 +413,118 @@ A partial [user object](#the-user-object).
 
 ### Returns
 
-Returns the [user object](#the-user-object) for the created user.
+Returns the [user object](#the-user-object) for the updated user.
 
 </div>
 <div class="right">
+
+### REST API
 
 ```
 PATCH /users/:id
 ```
 
+##### Example
+
 ```json
-// Request
+// PATCH /users/72a1ce24-4748-47de-a05f-ce9af3033727
 
 {
 	"title": "CTO"
 }
 ```
 
+### GraphQL
+
+```graphql
+type Mutation {
+	update_users_item(id: ID!, data: update_directus_users_input!): directus_users
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_users_item(id: "72a1ce24-4748-47de-a05f-ce9af3033727", data: { title: "CTO" }) {
+		first_name
+		last_name
+	}
+}
+```
+
+</div>
+</div>
+
+---
+
+## Update Multiple Users
+
+Update multiple existing users.
+
+<div class="two-up">
+<div class="left">
+
+### Query Parameters
+
+Supports all [global query parameters](/reference/api/query).
+
+### Request Body
+
+<div class="definitions">
+
+`keys` **Required**\
+Array of primary keys of the users you'd like to update.
+
+`data` **Required**\
+Any of [the user object](#the-user-object)'s properties.
+
+</div>
+
+### Returns
+
+Returns the [user objects](#the-user-object) for the updated users.
+
+</div>
+<div class="right">
+
+### REST API
+
+```
+PATCH /users
+```
+
+##### Example
+
 ```json
-// Response
+// PATCH /users
 
 {
+	"keys": ["72a1ce24-4748-47de-a05f-ce9af3033727", "9c3d75a8-7a5f-41a4-be0a-1488fd974511"],
 	"data": {
-		"id": "b917be29-e326-4597-ad73-ff892be35aac",
-		"first_name": null,
-		"last_name": null,
-		"email": "another@example.com",
-		"password": "**********",
-		"location": null,
-		"title": "CTO",
-		"description": null,
-		"tags": null,
-		"avatar": null,
-		"language": "en-US",
-		"theme": "auto",
-		"tfa_secret": null,
-		"status": "active",
-		"role": "c86c2761-65d3-43c3-897f-6f74ad6a5bd7",
-		"token": null,
-		"last_access": null,
-		"last_page": null
+		"title": "CTO"
+	}
+}
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	update_users_items(ids: [ID!]!, data: update_directus_users_input!): [directus_users]
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	update_users_items(
+		ids: ["72a1ce24-4748-47de-a05f-ce9af3033727", "9c3d75a8-7a5f-41a4-be0a-1488fd974511"]
+		data: { title: "CTO" }
+	) {
+		first_name
+		last_name
 	}
 }
 ```
@@ -415,12 +548,34 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /users/:id
 ```
 
-```json
-// Empty Response
+##### Example
+
+```
+DELETE /users/72a1ce24-4748-47de-a05f-ce9af3033727
+```
+
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_users_item(id: ID!): delete_one
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_users_item(id: "72a1ce24-4748-47de-a05f-ce9af3033727") {
+		id
+	}
+}
 ```
 
 </div>
@@ -446,17 +601,35 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 DELETE /users
 ```
+
+##### Example
 
 ```json
 // Request
 ["653925a9-970e-487a-bfc0-ab6c96affcdc", "c86c2761-65d3-43c3-897f-6f74ad6a5bd7"]
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+type Mutation {
+	delete_users_items(ids: [ID!]!): delete_many
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	delete_users_items(ids: ["72a1ce24-4748-47de-a05f-ce9af3033727", "9c3d75a8-7a5f-41a4-be0a-1488fd974511"]) {
+		ids
+	}
+}
 ```
 
 </div>
@@ -495,12 +668,16 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /users/invite
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /users/invite
 
 {
 	"email": "another@example.com",
@@ -508,8 +685,20 @@ POST /users/invite
 }
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+type Mutation {
+	users_invite(email: String!, role: String!, invite_url: String): Boolean
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	users_invite(email: "another@example.com", role: "c86c2761-65d3-43c3-897f-6f74ad6a5bd7")
+}
 ```
 
 </div>
@@ -545,12 +734,16 @@ Empty body.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /users/invite/accept
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /users/invite/accept
 
 {
 	"token": "eyJh...KmUk",
@@ -558,8 +751,20 @@ POST /users/invite/accept
 }
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+type Mutation {
+	users_invite_accept(token: String!, password: String!): Boolean
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	users_invite_accept(token: "eyJh...KmUk", password: "d1r3ctu5")
+}
 ```
 
 </div>
@@ -598,24 +803,36 @@ OTP secret to be saved in the authenticator app.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /users/me/tfa/enable
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /users/me/tfa/enable
 {
 	"password": "d1r3ctu5"
 }
 ```
 
-```json
-// Response
+### GraphQL
 
-{
-	"data": {
-		"secret": "PUITSOZFEEPXABIG",
-		"otpauth_url": "otpauth://totp/Directus:null%20null?secret=PUITSOZFEEPXABIG&period=30&digits=6&algorithm=SHA1&issuer=Directus"
+```graphql
+type Mutation {
+	users_me_tfa_enable(password: String!): users_me_tfa_enable_data
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	users_me_tfa_enable(password: "d1r3ctu5") {
+		secret
+		otpauth_url
 	}
 }
 ```
@@ -648,19 +865,36 @@ Empty response.
 </div>
 <div class="right">
 
+### REST API
+
 ```
 POST /users/me/tfa/disable
 ```
 
+##### Example
+
 ```json
-// Request
+// POST /users/me/tfa/disable
+
 {
 	"otp": "859014"
 }
 ```
 
-```json
-// Empty Response
+### GraphQL
+
+```graphql
+type Mutation {
+	users_me_tfa_disable(otp: String!): Boolean
+}
+```
+
+##### Example
+
+```graphql
+mutation {
+	users_me_tfa_disable(otp: "591763")
+}
 ```
 
 </div>

@@ -11,6 +11,7 @@ add_field: Lägg till fält
 role_name: Rollens namn
 db_only_click_to_configure: 'Endast databas: Klicka för att konfigurera '
 show_archived_items: Visa arkiverade objekt
+edited: Redigerat värde
 required: Obligatoriskt
 required_for_app_access: Krävs för tillgång till applikationen
 requires_value: Kräver ett värde
@@ -577,6 +578,7 @@ settings_webhooks: Webhooks
 settings_presets: Förinställningar & bokmärken
 scope: Omfattning
 layout: Layout
+tree_view: Trädvy
 changes_are_permanent: Ändringar är permanenta
 preset_name_placeholder: Bokmärkets namn...
 preset_search_placeholder: Sök...
@@ -796,6 +798,7 @@ template: Mall
 translation: Översättning
 value: Värde
 view_project: Visa projekt
+weeks: { }
 report_error: Rapportera fel
 interfaces:
   button-links:
@@ -971,6 +974,9 @@ interfaces:
   translations:
     display_template: Visningsmall
     no_collection: Ingen kollektion
+  tree-view:
+    description: Trädvy för kapslade rekursiva en-till-många objekt
+    recursive_only: Trädvyns gränssnitt fungerar bara för rekursiva relationer.
   user:
     user: Användare
     description: Välj en befintlig Directus användare

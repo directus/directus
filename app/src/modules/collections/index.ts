@@ -4,6 +4,7 @@ import CollectionOrItem from './routes/collection-or-item.vue';
 import Item from './routes/item.vue';
 import ItemNotFound from './routes/not-found.vue';
 import { NavigationGuard } from 'vue-router';
+import { addQueryToPath } from '@/utils/add-query-to-path';
 
 const checkForSystem: NavigationGuard = (to, from, next) => {
 	if (!to.params?.collection) return next();
@@ -40,12 +41,21 @@ const checkForSystem: NavigationGuard = (to, from, next) => {
 		}
 	}
 
+	if (
+		'bookmark' in from.query &&
+		typeof from.query.bookmark === 'string' &&
+		'bookmark' in to.query === false &&
+		to.params.collection === from.params.collection
+	) {
+		return next(addQueryToPath(to.fullPath, { bookmark: from.query.bookmark }));
+	}
+
 	return next();
 };
 
-export default defineModule(({ i18n }) => ({
+export default defineModule({
 	id: 'collections',
-	name: 'collections',
+	name: '$t:collections',
 	icon: 'box',
 	routes: [
 		{
@@ -78,4 +88,4 @@ export default defineModule(({ i18n }) => ({
 		},
 	],
 	order: 5,
-}));
+});

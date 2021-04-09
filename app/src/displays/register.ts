@@ -3,6 +3,7 @@ import { getDisplays } from './index';
 import { Component } from 'vue';
 import api from '@/api';
 import { batchPromises } from '@/utils/paginate';
+import { getRootPath } from '@/utils/get-root-path';
 
 const displays = getDisplays();
 
@@ -23,7 +24,7 @@ export async function registerDisplays() {
 			const loadedDisplays = await batchPromises(
 				data,
 				5,
-				(customKey) => import(/* webpackIgnore: true */ `/extensions/displays/${customKey}/index.js`)
+				(customKey) => import(/* webpackIgnore: true */ getRootPath() + `/extensions/displays/${customKey}/index.js`)
 			);
 
 			loadedDisplays.forEach((result, i) => {

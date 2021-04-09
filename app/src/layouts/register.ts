@@ -2,6 +2,7 @@ import registerComponent from '@/utils/register-component/';
 import { getLayouts } from './index';
 import api from '@/api';
 import { batchPromises } from '@/utils/paginate';
+import { getRootPath } from '@/utils/get-root-path';
 
 const layouts = getLayouts();
 
@@ -22,7 +23,7 @@ export async function registerLayouts() {
 			const loadedLayouts = await batchPromises(
 				data,
 				5,
-				(customKey) => import(/* webpackIgnore: true */ `/extensions/layouts/${customKey}/index.js`)
+				(customKey) => import(/* webpackIgnore: true */ getRootPath() + `/extensions/layouts/${customKey}/index.js`)
 			);
 
 			loadedLayouts.forEach((result, i) => {

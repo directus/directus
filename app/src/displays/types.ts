@@ -1,4 +1,3 @@
-import VueI18n from 'vue-i18n';
 import { Component } from 'vue';
 import { Field, localTypes, types } from '@/types';
 
@@ -21,19 +20,17 @@ export type DisplayFieldsFunction = (
 	}
 ) => string[];
 
-export type DisplayConfig = {
+export interface DisplayConfig {
 	id: string;
+	name: string;
 	icon: string;
-	name: string | VueI18n.TranslateResult;
-	description?: string | VueI18n.TranslateResult;
+	description?: string;
 
 	handler: DisplayHandlerFunction | Component;
 	options: null | DeepPartial<Field>[] | Component;
 	types: readonly typeof types[number][];
 	groups?: readonly typeof localTypes[number][];
 	fields?: string[] | DisplayFieldsFunction;
-};
+}
 
-export type DisplayContext = { i18n: VueI18n };
-
-export type DisplayDefineParam = DisplayConfig | ((context: DisplayContext) => DisplayConfig);
+export type DisplayDefineParam = DisplayConfig | (() => DisplayConfig);

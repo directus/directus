@@ -480,6 +480,7 @@ body {
 	.loading-text,
 	.no-items-text {
 		text-align: center;
+		background-color: var(--background-input);
 
 		td {
 			padding: 16px;

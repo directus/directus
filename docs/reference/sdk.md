@@ -403,13 +403,15 @@ await directus.auth.login({
 });
 ```
 
-### Get / Set Token
+### Get current token
 
-```
-directus.auth.token = 'abc.def.ghi';
+```ts
+const token = directus.auth.token;
 ```
 
 ### Login
+
+#### With credentials
 
 ```js
 await directus.auth.login({
@@ -418,7 +420,13 @@ await directus.auth.login({
 });
 ```
 
-#### Auth Refresh Auth Token
+#### With static tokens
+
+```js
+await directus.auth.static('static_token');
+```
+
+#### Refresh auth token
 
 You can set authentication to auto-refresh the token once it's close to expire.
 
