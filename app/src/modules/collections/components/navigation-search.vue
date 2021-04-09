@@ -11,12 +11,6 @@ import { defineComponent } from '@vue/composition-api';
 import { useSearch } from '../composables/use-search';
 
 export default defineComponent({
-	props: {
-		exact: {
-			type: Boolean,
-			default: false,
-		},
-	},
 	setup() {
 		const { visible, searchQuery } = useSearch();
 
