@@ -7,14 +7,15 @@
 
 ## General
 
-| Variable           | Description                                                                                         | Default Value |
-| ------------------ | --------------------------------------------------------------------------------------------------- | ------------- |
-| `CONFIG_PATH`      | Where your config file is located. See [Config Files](/reference/config-files/)                     | `.env`        |
-| `PORT`             | What port to run the API under.                                                                     | `8055`        |
-| `PUBLIC_URL`       | URL where your API can be reached on the web.                                                       | `/`           |
-| `LOG_LEVEL`        | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. | `info`        |
-| `LOG_STYLE`        | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                         | `pretty`      |
-| `MAX_PAYLOAD_SIZE` | Controls the maximum request body size. Accepts number of bytes, or human readable string.          | `100kb`       |
+| Variable           | Description                                                                                                | Default Value |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- | ------------- |
+| `CONFIG_PATH`      | Where your config file is located. See [Config Files](/reference/config-files/)                            | `.env`        |
+| `PORT`             | What port to run the API under.                                                                            | `8055`        |
+| `PUBLIC_URL`       | URL where your API can be reached on the web.                                                              | `/`           |
+| `LOG_LEVEL`        | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
+| `LOG_STYLE`        | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                | `pretty`      |
+| `MAX_PAYLOAD_SIZE` | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `100kb`       |
+| `ROOT_REDIRECT`    | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
 
 ## Database
 
