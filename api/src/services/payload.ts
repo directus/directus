@@ -256,14 +256,16 @@ export class PayloadService {
 						payload[name] = newValue;
 					}
 				} else {
-					if (dateColumn.type === 'date') {
-						const newValue = parse(value, 'yyyy-MM-dd', new Date());
-						payload[name] = newValue;
-					}
+					if (value instanceof Date === false) {
+						if (dateColumn.type === 'date') {
+							const newValue = parse(value, 'yyyy-MM-dd', new Date());
+							payload[name] = newValue;
+						}
 
-					if (dateColumn.type === 'timestamp' || dateColumn.type === 'dateTime') {
-						const newValue = parseISO(value);
-						payload[name] = newValue;
+						if (dateColumn.type === 'timestamp' || dateColumn.type === 'dateTime') {
+							const newValue = parseISO(value);
+							payload[name] = newValue;
+						}
 					}
 				}
 			}
