@@ -18,25 +18,13 @@
 		"directus"
 	],
 	"scripts": {
-		"prebuild": "npm run cleanup",
 		"build": "tsc --project ./tsconfig.json",
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
 		"cleanup:coverage": "rimraf ./coverage",
 		"test:watch": "jest --coverage --watchAll",
 		"test": "jest --coverage",
-		"dev": "npm-watch build"
-	},
-	"watch": {
-		"build": {
-			"patterns": [
-				"src/*"
-			],
-			"ignore": "dist",
-			"extensions": "ts",
-			"silent": true,
-			"quiet": true
-		}
+		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"author": "Robin Grundvåg <robgru52@gmail.com>",
 	"contributors": [
@@ -61,7 +49,6 @@
 		"ts-jest": "^26.5.4",
 		"@types/normalize-path": "^3.0.0",
 		"fs-extra": "^9.0.0",
-		"npm-watch": "^0.9.0",
 		"typescript": "^4.2.3"
 	},
 	"publishConfig": {
