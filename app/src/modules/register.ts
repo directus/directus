@@ -4,6 +4,7 @@ import { getModules } from './index';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import asyncPool from 'tiny-async-pool';
 
 const modules = getModules();
 let loadedModules: any = [];
@@ -18,28 +19,19 @@ export async function loadModules() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/modules/');
+		const customResponse = await api.get('/extensions/modules');
+		const modules: string[] = customResponse.data.data || [];
 
-		if (customResponse.data.data && Array.isArray(customResponse.data.data) && customResponse.data.data.length > 0) {
-			for (const customKey of customResponse.data.data) {
-				try {
-					const module = await import(
-						/* webpackIgnore: true */ getRootPath() + `extensions/modules/${customKey}/index.js`
-					);
-					module.default.routes = module.default.routes.map((route: RouteConfig) => {
-						if (route.path) {
-							route.path = `/${module.default.id}/${route.path}`;
-						}
-
-						return route;
-					});
-					loadedModules.push(module.default);
-				} catch (err) {
-					console.warn(`Couldn't load custom module "${customKey}"`);
-					console.warn(err);
-				}
+		await asyncPool(5, modules, async (moduleName) => {
+			try {
+				const result = await import(
+					/* webpackIgnore: true */ getRootPath() + `extensions/modules/${moduleName}/index.js`
+				);
+				modules.push(result.value.default);
+			} catch (err) {
+				console.warn(`Couldn't load custom module "${moduleName}"`);
 			}
-		}
+		});
 	} catch {
 		console.warn(`Couldn't load custom modules`);
 	}
