@@ -34,7 +34,8 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_TTL: '7d',
 	REFRESH_TOKEN_COOKIE_SECURE: false,
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
-	REDIRECT_TO_ADMIN: true,
+
+	ROOT_REDIRECT: './admin',
 
 	CORS_ENABLED: true,
 	CORS_ORIGIN: true,
