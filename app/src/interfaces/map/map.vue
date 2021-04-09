@@ -1,11 +1,14 @@
 <template>
 	<div class="interface-map">
 		<div class="map" ref="container"></div>
+		<div v-if="!canRenderBackground" class="error">
+			<v-info icon="vpn_key" center type="warning" :title="$t('interfaces.map.no_api_key')"></v-info>
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref, watch, watchEffect } from '@vue/composition-api';
+import { computed, defineComponent, onMounted, PropType, ref, watch, watchEffect } from '@vue/composition-api';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 import maplibre, {
@@ -70,13 +73,15 @@ export default defineComponent({
 		let apiKey = getSetting('mapbox_key');
 		if (apiKey !== null) maplibre.accessToken = apiKey;
 
+		const canRenderBackground = computed(() => props.background in mapbox_sources === false || apiKey !== null);
+
 		onMounted(() => {
 			setupMap();
 		});
 
 		watch(() => props.value, renderMarker);
 
-		return { container };
+		return { container, canRenderBackground };
 
 		function setupMap() {
 			if (container.value === null) return;
@@ -84,11 +89,13 @@ export default defineComponent({
 			const locateMarkerControl = new ButtonControl('mapboxgl-ctrl-fitdata', locateMarker);
 			addMarkerControl.value = new ButtonControl('mapboxgl--ctrl-add', toggleMarker);
 
+			const background = canRenderBackground.value ? props.background : 'CartoDB_PositronNoLabels';
+
 			map = new Map({
 				container: container.value,
 				style:
-					props.background in mapbox_sources
-						? mapbox_sources[props.background]
+					background in mapbox_sources
+						? mapbox_sources[background]
 						: {
 								version: 8,
 								glyphs:
@@ -96,8 +103,8 @@ export default defineComponent({
 								sprite: 'https://rawgit.com/lukasmartinelli/osm-liberty/gh-pages/sprites/osm-liberty',
 								layers: [
 									{
-										id: props.background,
-										source: props.background,
+										id: background,
+										source: background,
 										type: 'raster',
 									},
 								],
@@ -198,9 +205,26 @@ export default defineComponent({
 </style>
 
 <style lang="scss" scoped>
-.map {
-	position: relative;
-	width: 100%;
-	height: 500px;
+.interface-map {
+	.map {
+		position: relative;
+		width: 100%;
+		height: 500px;
+	}
+
+	.error {
+		position: absolute;
+		top: 0;
+		z-index: 10;
+		width: 100%;
+		height: 100%;
+
+		.v-info {
+			padding: 20px;
+			background-color: var(--background-subdued);
+			border-radius: var(--border-radius);
+			box-shadow: var(--card-shadow);
+		}
+	}
 }
 </style>

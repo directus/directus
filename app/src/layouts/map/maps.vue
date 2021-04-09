@@ -188,7 +188,13 @@
 					</v-button>
 				</template>
 			</v-info>
-			<v-info v-else-if="!canRenderMap" icon="vpn_key" center :title="$t('layouts.map.no_api_key')"></v-info>
+			<v-info
+				v-else-if="!canRenderMap"
+				icon="vpn_key"
+				type="warning"
+				center
+				:title="$t('layouts.map.no_api_key')"
+			></v-info>
 			<v-info
 				v-else-if="!geojsonOptionsOk"
 				icon="not_listed_location"
@@ -738,6 +744,13 @@ export default defineComponent({
 .custom-layers {
 	padding: var(--content-padding);
 	padding-top: 0;
+}
+
+.v-info {
+	padding: 20px;
+	background-color: var(--background-subdued);
+	border-radius: var(--border-radius);
+	box-shadow: var(--card-shadow);
 }
 
 .footer {

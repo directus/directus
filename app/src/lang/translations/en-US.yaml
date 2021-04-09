@@ -931,6 +931,7 @@ interfaces:
     background: Map Style
     projection: Projection
     zoom: Zoom
+    no_api_key: The currently selected background requires a Mapbox api key.
   notice:
     notice: Notice
     description: Display a short notice
