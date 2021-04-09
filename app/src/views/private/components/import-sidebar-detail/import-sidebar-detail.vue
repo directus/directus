@@ -44,12 +44,14 @@
 
 <script lang="ts">
 import api from '@/api';
+import i18n from '@/lang';
 import { defineComponent, ref, PropType } from '@vue/composition-api';
 import { Collection, Field } from '@/types';
 import { useFieldsStore } from '@/stores/';
 import { FileSelect } from '../file-select';
 import { LanguageSelect } from '../language-select';
 import { TranslationFieldSelect } from '../translation-field-select';
+import { notify } from '@/utils/notify';
 
 export default defineComponent({
 	components: {
@@ -112,7 +114,6 @@ export default defineComponent({
 		const file = ref<File | null>(null);
 		const useFileLanguage = ref(true);
 		const clearFileSelection = ref<Function>(() => {});
-		const percentageCompleted = ref<number>(0);
 		const importing = ref<boolean>(false);
 
 		return {
@@ -122,7 +123,6 @@ export default defineComponent({
 			translationField,
 			useFileLanguage,
 			importData,
-			percentageCompleted,
 			importing,
 			onSelectFile,
 			onSelectLanguage,
@@ -136,25 +136,27 @@ export default defineComponent({
 			if (!file.value) throw new Error('[import-sidebar-detail]: You need to select a file for import.');
 			importing.value = true;
 			const formData = new FormData();
+
+			formData.append('format', format.value);
+			if (!useFileLanguage.value) {
+				formData.append('language', language.value);
+				formData.append('field', translationField.value);
+			}
 			formData.append('file', file.value);
 
-			const params: Record<string, any> = {
-				access_token: api.defaults.headers.Authorization.substring(7),
-				format: format.value,
-				...(!useFileLanguage.value
-					? {
-							language: language.value,
-							field: translationField.value,
-					  }
-					: {}),
-			} as any;
-
-			const qs = Object.keys(params)
-				.map((key) => `${key}=${params[key]}`)
-				.join('&');
 			try {
-				await api.post(`/collections/${props.collection.collection}?${qs}`, formData, {
-					onUploadProgress,
+				const result = await api.post(`/collections/${props.collection.collection}`, formData);
+				// cleanup fields in case of successfull import
+				const { data } = result.data;
+				const importedAmount = data ? Object.keys(data).reduce((acc, val) => acc + data[val].length, 0) : 0;
+				importing.value = false;
+				clearFileAndLanguage();
+				emit('refresh');
+				notify({
+					title: i18n.tc('import_successfull', importedAmount > 0 ? (importedAmount > 1 ? 2 : 1) : 0, {
+						amount: importedAmount,
+					}),
+					type: 'success',
 				});
 			} catch (err) {
 			} finally {
@@ -165,15 +167,6 @@ export default defineComponent({
 			file.value = null;
 			clearFileSelection.value();
 			language.value = null;
-		}
-
-		function onUploadProgress(progressEvent: { loaded: number; total: number }) {
-			percentageCompleted.value = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
-			if (percentageCompleted.value === 100) {
-				importing.value = false;
-				clearFileAndLanguage();
-				emit('refresh');
-			}
 		}
 
 		function onSelectLanguage(selection: any[]) {

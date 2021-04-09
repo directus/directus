@@ -64,10 +64,10 @@ export class XliffService {
 			? xliff.xliff12ToJs(content)
 			: xliff.xliff2js(content));
 		// prepare output object
-		const output: any = {};
+		let output: any = null;
 		for (const relation of relations) {
 			const savedKeys = await this.import(relation, json);
-			output[relation.many_collection] = savedKeys;
+			output = { ...output, [relation.many_collection]: savedKeys };
 		}
 		return output;
 	}
