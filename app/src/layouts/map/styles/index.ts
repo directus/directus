@@ -1,5 +1,5 @@
 import type { Style } from 'maplibre-gl';
-import { sources } from './sources';
+import { sources, mapbox_sources } from './sources';
 
 export { default as dataStyle } from './style';
 export { basemapNames, rootStyle };
@@ -13,4 +13,4 @@ const rootStyle: Style = {
 	sources,
 };
 
-const basemapNames = Object.keys(rootStyle.sources!);
+const basemapNames = Object.keys({ ...mapbox_sources, ...rootStyle.sources });

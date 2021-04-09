@@ -210,3 +210,26 @@ fields:
       language: css
       lineNumber: true
     width: full
+
+  - field: api_key_divider
+    interface: divider
+    options:
+      icon: vpn_key
+      title: Third-Party API Keys
+    special: alias
+    width: full
+
+  - field: mapbox_key
+    interface: text-input
+    options:
+      iconRight: map
+      placeholder: Enter a mapbox key...
+    width: half
+  
+  - field: mapbox_description
+    interface: notice
+    special: alias
+    options:
+      color: warning
+      text: Unlock more backgrounds for the map interface / layout.
+    width: half

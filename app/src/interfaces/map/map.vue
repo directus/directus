@@ -25,6 +25,8 @@ import { ButtonControl } from '@/layouts/map/components/map.vue';
 import { sources, mapbox_sources } from '@/layouts/map/styles/sources';
 import { Point as JSONPoint } from 'geojson';
 import proj4 from 'proj4';
+import { useSettingsStore } from '@/stores';
+import getSetting from '@/utils/get-setting';
 
 type ModelValue = JSONPoint | [string, string] | null;
 
@@ -65,6 +67,9 @@ export default defineComponent({
 		const marker = ref<Marker | null>(null);
 		const addMarkerControl = ref<ButtonControl | null>(null);
 
+		let apiKey = getSetting('mapbox_key');
+		if (apiKey !== null) maplibre.accessToken = apiKey;
+
 		onMounted(() => {
 			setupMap();
 		});
@@ -76,12 +81,10 @@ export default defineComponent({
 		function setupMap() {
 			if (container.value === null) return;
 
-			maplibre.accessToken = 'pk.eyJ1Ijoibml0d2VsIiwiYSI6ImNrbjkxa2VmZTA5dGYycG11ODRxbnFqcjkifQ.z4Hj1rgxhE02LhAKmeF-jQ';
-
 			const locateMarkerControl = new ButtonControl('mapboxgl-ctrl-fitdata', locateMarker);
 			addMarkerControl.value = new ButtonControl('mapboxgl--ctrl-add', toggleMarker);
 
-			const mapboxStyle = (map = new Map({
+			map = new Map({
 				container: container.value,
 				style:
 					props.background in mapbox_sources
@@ -103,7 +106,7 @@ export default defineComponent({
 				center: [props.longitude, props.latitude],
 				zoom: props.zoom,
 				attributionControl: false,
-			}));
+			});
 
 			map.addControl(new maplibre.NavigationControl(), 'top-left');
 			map.addControl(new maplibre.GeolocateControl(), 'top-left');
@@ -145,7 +148,6 @@ export default defineComponent({
 				center: lngLat,
 				animate,
 				speed: 1.2,
-				zoom: props.zoom,
 			});
 		}
 

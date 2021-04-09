@@ -21,6 +21,7 @@ import maplibre, {
 import { ref, watch, computed, PropType, onMounted, onUnmounted, defineComponent } from '@vue/composition-api';
 
 import { useAppStore } from '@/stores';
+import getSetting from '@/utils/get-setting';
 
 export class ButtonControl {
 	container?: HTMLElement;
@@ -101,7 +102,8 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const appStore = useAppStore();
 
-		maplibre.accessToken = 'yo';
+		const apiKey = getSetting('mapbox_key');
+		if (apiKey !== null) maplibre.accessToken = apiKey;
 		let map: Map;
 		const container = ref<HTMLElement>();
 		const hoveredId = ref<string | number>();
