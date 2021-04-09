@@ -145,7 +145,7 @@
 		</template>
 
 		<template #navigation>
-			<navigation-search />
+			<collections-navigation-search />
 			<collections-navigation exact />
 		</template>
 
@@ -241,7 +241,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, toRefs } from '@vue/composition-api';
 import CollectionsNavigation from '../components/navigation.vue';
-import NavigationSearch from '../components/navigation-search.vue';
+import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import CollectionsNotFound from './not-found.vue';
@@ -266,7 +266,7 @@ export default defineComponent({
 	name: 'collections-collection',
 	components: {
 		CollectionsNavigation,
-		NavigationSearch,
+		CollectionsNavigationSearch,
 		CollectionsNotFound,
 		LayoutSidebarDetail,
 		ExportSidebarDetail,

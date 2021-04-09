@@ -142,7 +142,7 @@
 		</template>
 
 		<template #navigation>
-			<navigation-search />
+			<collections-navigation-search />
 			<collections-navigation />
 		</template>
 
@@ -194,7 +194,7 @@
 import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 import Vue from 'vue';
 
-import NavigationSearch from '../components/navigation-search.vue';
+import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import router from '@/router';
 import CollectionsNotFound from './not-found.vue';
@@ -218,7 +218,7 @@ export default defineComponent({
 	name: 'collections-item',
 	components: {
 		CollectionsNavigation,
-		NavigationSearch,
+		CollectionsNavigationSearch,
 		CollectionsNotFound,
 		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
