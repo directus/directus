@@ -51,13 +51,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .v-error {
+	max-height: 50vh;
 	padding: 6px 12px;
+	overflow: auto;
 	color: var(--danger);
 	font-family: var(--family-monospace);
 	background-color: var(--danger-alt);
 	border-radius: var(--border-radius);
-	max-height: 50vh;
-	overflow: auto;
 
 	.copy-error {
 		margin-left: 12px;
