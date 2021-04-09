@@ -93,8 +93,8 @@ async function parseCurrentLevel(
 	children: (NestedCollectionNode | FieldNode)[],
 	schema: SchemaOverview
 ) {
-	const primaryKeyField = schema.tables[collection].primary;
-	const columnsInCollection = Object.keys(schema.tables[collection].columns);
+	const primaryKeyField = schema.collections[collection].primary;
+	const columnsInCollection = Object.keys(schema.collections[collection].fields);
 
 	const columnsToSelectInternal: string[] = [];
 	const nestedCollectionNodes: NestedCollectionNode[] = [];
@@ -155,8 +155,6 @@ function getDBQuery(
 		delete queryCopy.limit;
 	}
 
-	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
-
 	applyQuery(table, dbQuery, queryCopy, schema);
 
 	return dbQuery;
@@ -185,6 +183,10 @@ function applyParentFilters(nestedCollectionNodes: NestedCollectionNode[], paren
 
 			if (relatedM2OisFetched === false) {
 				nestedNode.children.push({ type: 'field', name: nestedNode.relation.many_field });
+			}
+
+			if (nestedNode.relation.sort_field) {
+				nestedNode.children.push({ type: 'field', name: nestedNode.relation.sort_field });
 			}
 
 			nestedNode.query = {
@@ -245,16 +247,30 @@ function mergeWithParentItems(
 		}
 	} else if (nestedNode.type === 'o2m') {
 		for (const parentItem of parentItems) {
-			let itemChildren = nestedItems.filter((nestedItem) => {
-				if (nestedItem === null) return false;
-				if (Array.isArray(nestedItem[nestedNode.relation.many_field])) return true;
+			let itemChildren = nestedItems
+				.filter((nestedItem) => {
+					if (nestedItem === null) return false;
+					if (Array.isArray(nestedItem[nestedNode.relation.many_field])) return true;
 
-				return (
-					nestedItem[nestedNode.relation.many_field] == parentItem[nestedNode.relation.one_primary!] ||
-					nestedItem[nestedNode.relation.many_field]?.[nestedNode.relation.one_primary!] ==
-						parentItem[nestedNode.relation.one_primary!]
-				);
-			});
+					return (
+						nestedItem[nestedNode.relation.many_field] == parentItem[nestedNode.relation.one_primary!] ||
+						nestedItem[nestedNode.relation.many_field]?.[nestedNode.relation.one_primary!] ==
+							parentItem[nestedNode.relation.one_primary!]
+					);
+				})
+				.sort((a, b) => {
+					// This is pre-filled in get-ast-from-query
+					const { column, order } = nestedNode.query.sort![0]!;
+
+					if (a[column] === b[column]) return 0;
+					if (a[column] === null) return 1;
+					if (b[column] === null) return -1;
+					if (order === 'asc') {
+						return a[column] < b[column] ? -1 : 1;
+					} else {
+						return a[column] < b[column] ? 1 : -1;
+					}
+				});
 
 			// We re-apply the requested limit here. This forces the _n_ nested items per parent concept
 			if (nested) {

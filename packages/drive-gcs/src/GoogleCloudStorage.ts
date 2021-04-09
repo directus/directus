@@ -28,6 +28,8 @@ import {
 
 import path from 'path';
 
+import normalize from 'normalize-path';
+
 function handleError(err: Error & { code?: number | string }, path: string): Error {
 	switch (err.code) {
 		case 401:
@@ -55,7 +57,7 @@ export class GoogleCloudStorage extends Storage {
 		const GCSStorage = require('@google-cloud/storage').Storage;
 		this.$driver = new GCSStorage(config);
 		this.$bucket = this.$driver.bucket(config.bucket);
-		this.$root = config.root ? path.normalize(config.root) : '';
+		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
 	}
 
 	/**
