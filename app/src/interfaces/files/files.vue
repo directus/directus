@@ -26,8 +26,20 @@
 			</template>
 
 			<template #item-append="{ item }">
-				<v-icon name="save_alt" v-show="!disabled" v-tooltip="$t('download')" class="download" @click.stop="downloadItem(item)" />
-				<v-icon name="close" v-show="!disabled" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
+				<v-icon
+					name="save_alt"
+					v-show="!disabled"
+					v-tooltip="$t('download')"
+					class="download"
+					@click.stop="downloadItem(item)"
+				/>
+				<v-icon
+					name="close"
+					v-show="!disabled"
+					v-tooltip="$t('deselect')"
+					class="deselect"
+					@click.stop="deleteItem(item)"
+				/>
 			</template>
 		</v-table>
 

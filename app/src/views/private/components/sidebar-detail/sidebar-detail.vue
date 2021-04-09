@@ -2,7 +2,7 @@
 	<div class="sidebar-detail" :class="{ open: sidebarOpen }">
 		<button class="toggle" @click="toggle" :class="{ open: active }">
 			<div class="icon">
-				<v-badge bordered :value="badge" :disabled="!badge">
+				<v-badge :dot="badge === true" bordered :value="badge" :disabled="!badge">
 					<v-icon :name="icon" outline />
 				</v-badge>
 			</div>
@@ -42,7 +42,7 @@ export default defineComponent({
 			required: true,
 		},
 		badge: {
-			type: [String, Number],
+			type: [Boolean, String, Number],
 			default: null,
 		},
 		close: {
