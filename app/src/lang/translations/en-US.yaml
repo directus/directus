@@ -1142,3 +1142,4 @@ layouts:
     missing_option: Unspecified geometry field or format
     simplify: Geometry simplification tolerance
     projection: Projection
+    no_api_key: You need to set the Mapbox api key to access this background.

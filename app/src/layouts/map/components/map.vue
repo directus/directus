@@ -22,6 +22,7 @@ import { ref, watch, computed, PropType, onMounted, onUnmounted, defineComponent
 
 import { useAppStore } from '@/stores';
 import getSetting from '@/utils/get-setting';
+import { mapbox_sources } from '../styles/sources';
 
 export class ButtonControl {
 	container?: HTMLElement;
@@ -215,11 +216,33 @@ export default defineComponent({
 		}
 
 		function updateBackground(id: string, previous?: string) {
-			if (id in map.getStyle().sources! == false) return;
-			const before = previous || map.getStyle().layers?.[0]?.id;
-			map.addLayer({ id, source: id, type: 'raster' }, before);
-			if (previous) {
-				map.removeLayer(previous);
+			if (id in mapbox_sources) {
+				if (!maplibre.accessToken) {
+					updateBackground('CartoDB_PositronNoLabels', previous);
+					return;
+				}
+
+				if (previous) {
+					map.once('styledata', () => {
+						updateSource(props.source, undefined);
+					});
+				}
+
+				map.setStyle(mapbox_sources[id], { diff: false });
+			} else {
+				if (previous && previous in mapbox_sources) {
+					map.once('styledata', () => {
+						updateSource(props.source, undefined);
+						map.addLayer({ id, source: id, type: 'raster' }, map.getStyle().layers?.[0]?.id);
+					});
+					map.setStyle(props.rootStyle);
+				} else {
+					const before = previous || map.getStyle().layers?.[0]?.id;
+					map.addLayer({ id, source: id, type: 'raster' }, before);
+					if (previous) {
+						map.removeLayer(previous);
+					}
+				}
 			}
 		}
 

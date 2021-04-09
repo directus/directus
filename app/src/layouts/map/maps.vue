@@ -188,6 +188,7 @@
 					</v-button>
 				</template>
 			</v-info>
+			<v-info v-else-if="!canRenderMap" icon="vpn_key" center :title="$t('layouts.map.no_api_key')"></v-info>
 			<v-info
 				v-else-if="!geojsonOptionsOk"
 				icon="not_listed_location"
@@ -260,6 +261,8 @@ import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import i18n from '../../lang';
 import { wrap, proxy, Remote } from 'comlink';
 import { cloneDeep, merge } from 'lodash';
+import { mapbox_sources } from './styles/sources';
+import getSetting from '@/utils/get-setting';
 
 type Item = Record<string, any>;
 
@@ -385,6 +388,10 @@ export default defineComponent({
 				(geometryFormat.value && geometryField.value)
 			);
 		});
+
+		const canRenderMap = computed(
+			() => (backgroundLayer.value || '') in mapbox_sources === false || getSetting('mapbox_key')
+		);
 
 		const template = computed(() => {
 			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
@@ -627,6 +634,7 @@ export default defineComponent({
 			availableFields,
 			availableFieldsForFormat,
 			customLayerDrawerOpen,
+			canRenderMap,
 		};
 
 		async function resetPresetAndRefresh() {
