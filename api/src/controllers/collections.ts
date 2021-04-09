@@ -4,9 +4,35 @@ import asyncHandler from '../utils/async-handler';
 import { CollectionsService, MetaService, XliffService } from '../services';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
-import logger from '../logger';
 
 const router = Router();
+
+const multipartHandler = asyncHandler(async (req, res, next) => {
+	if (req.is('multipart/form-data') === false) return next();
+	const busboy = new Busboy({ headers: req.headers });
+	let fileCount = 0;
+	const format = req.query.format as string;
+	busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
+		fileCount++;
+		if (['xliff', 'xliff2'].includes(format)) {
+			if (fileCount > 1) {
+				busboy.emit('error', new InvalidPayloadException(`Only one import file supported for XLIFF format.`));
+			}
+			let content = '';
+			fileStream.on('data', (d) => (content += d)).on('end', () => (res.locals.data = content));
+		} else {
+			busboy.emit('error', new InvalidPayloadException(`Only XLIFF 1.2/2.0 is supported.`));
+		}
+	});
+	busboy.on('error', (error: Error) => {
+		next(error);
+	});
+
+	busboy.on('finish', () => {
+		next();
+	});
+	req.pipe(busboy);
+});
 
 router.post(
 	'/',
@@ -88,51 +114,34 @@ router.patch(
 
 router.post(
 	'/:collection',
+	multipartHandler,
 	asyncHandler(async (req, res, next) => {
-		if (req.is('multipart/form-data') === false) return next();
-		const busboy = new Busboy({ headers: req.headers });
-		let fileCount = 0;
-		const format = req.query.format as string;
-		const collectionKey = req.params.collection;
-		busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
-			fileCount++;
-			if (['xliff', 'xliff2'].includes(format)) {
-				if (fileCount > 1) {
-					busboy.emit('error', new InvalidPayloadException(`Only one import file supported for XLIFF format.`));
+		if (req.is('multipart/form-data')) {
+			const format = req.query.format as string;
+			if (['xliff', 'xliff2'].includes(format) && res.locals.data) {
+				const collectionKey = req.params.collection;
+				const xliffService = new XliffService({
+					accountability: req.accountability,
+					schema: req.schema,
+					language: req.query.language as string,
+					format,
+				});
+				try {
+					const savedKeys = await xliffService.fromXliff(
+						collectionKey,
+						res.locals.data,
+						req.query.field as string | undefined
+					);
+					res.locals.payload = { data: savedKeys };
+				} catch (error) {
+					if (error instanceof ForbiddenException) {
+						return next();
+					}
+					throw error;
 				}
-				let content = '';
-				fileStream
-					.on('data', (d) => (content += d))
-					.on('end', async () => {
-						const xliffService = new XliffService({
-							accountability: req.accountability,
-							schema: req.schema,
-							language: req.query.language as string,
-							format,
-						});
-						try {
-							const savedKeys = await xliffService.fromXliff(
-								collectionKey,
-								content,
-								req.query.field as string | undefined
-							);
-							busboy.emit('finish', savedKeys);
-						} catch (error) {
-							busboy.emit('error', error);
-						}
-					});
 			}
-		});
-		busboy.on('error', (error: Error) => {
-			logger.error(error);
-			next(error);
-		});
-
-		busboy.on('finish', (savedKeys: any) => {
-			res.locals.savedKeys = savedKeys;
-			next();
-		});
-		req.pipe(busboy);
+			return next();
+		}
 	}),
 	respond
 );
