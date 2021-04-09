@@ -57,7 +57,7 @@ import { nanoid } from 'nanoid';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
-import DrawerItem from '../../views/private/components/drawer-item';
+import DrawerItem from '@/views/private/components/drawer-item';
 
 type Image = {
 	id: string; // uuid
@@ -239,7 +239,7 @@ img {
 
 .is-svg {
 	padding: 32px;
-	background-color: var(--background-normal);
+	background-color: var(--background-normal-alt);
 
 	img {
 		object-fit: contain;

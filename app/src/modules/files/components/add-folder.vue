@@ -31,9 +31,9 @@
 <script lang="ts">
 import { defineComponent, ref } from '@vue/composition-api';
 import useFolders from '../composables/use-folders';
-import api from '../../../api';
-import router from '../../../router';
-import { unexpectedError } from '../../../utils/unexpected-error';
+import api from '@/api';
+import router from '@/router';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	props: {
@@ -82,9 +82,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .add-new {
-	--v-button-background-color: var(--primary-25);
+	--v-button-background-color: var(--primary-10);
 	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-50);
+	--v-button-background-color-hover: var(--primary-25);
 	--v-button-color-hover: var(--primary);
 }
 </style>

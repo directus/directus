@@ -25,7 +25,7 @@
 					</v-button>
 				</template>
 				<template #append>
-					<v-icon name="palette" />
+					<v-icon :name="isValidColor ? 'close' : 'palette'" @click="unsetColor" />
 				</template>
 			</v-input>
 		</template>
@@ -100,11 +100,11 @@ export default defineComponent({
 			default: () => [
 				{
 					name: 'Red',
-					color: '#EB5757',
+					color: '#E35169',
 				},
 				{
 					name: 'Orange',
-					color: '#F2994A',
+					color: '#F7971C',
 				},
 				{
 					name: 'Yellow',
@@ -112,19 +112,15 @@ export default defineComponent({
 				},
 				{
 					name: 'Green',
-					color: '#27AE60',
-				},
-				{
-					name: 'Light Blue',
-					color: '#56CCF2',
+					color: '#00C897',
 				},
 				{
 					name: 'Blue',
-					color: '#2F80ED',
+					color: '#68B0F4',
 				},
 				{
 					name: 'Purple',
-					color: '#9B51E0',
+					color: '#9E8DE4',
 				},
 				{
 					name: 'Gray',
@@ -148,6 +144,10 @@ export default defineComponent({
 		const colorTypes = ['RGB', 'HSL'] as ColorType[];
 		const colorType = ref<ColorType>('RGB');
 
+		function unsetColor() {
+			emit('input', null);
+		}
+
 		function activateColorPicker() {
 			(htmlColorInput.value?.$el as HTMLElement).getElementsByTagName('input')[0].click();
 		}
@@ -160,7 +160,7 @@ export default defineComponent({
 			const pageColorString = getComputedStyle(document.body).getPropertyValue('--background-page').trim();
 			const pageColor = Color(pageColorString);
 
-			return color.value.contrast(pageColor) < 2;
+			return color.value.contrast(pageColor) < 1.1;
 		});
 
 		const { hsl, rgb, hex, color } = useColor();
@@ -180,6 +180,7 @@ export default defineComponent({
 			Color,
 			setValue,
 			lowContrast,
+			unsetColor,
 		};
 
 		function setValue(type: 'rgb' | 'hsl', i: number, val: number) {
@@ -229,7 +230,7 @@ export default defineComponent({
 				},
 				set(newHex) {
 					if (newHex === null || newHex === '') {
-						setColor(null);
+						unsetColor();
 					} else {
 						if (isHex(newHex) === false) return;
 						setColor(Color(newHex));
@@ -243,7 +244,7 @@ export default defineComponent({
 				color.value = newColor;
 
 				if (newColor === null) {
-					emit('input', null);
+					unsetColor();
 				} else {
 					emit('input', newColor.hex());
 				}

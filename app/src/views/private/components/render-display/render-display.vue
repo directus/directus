@@ -1,9 +1,11 @@
 <template>
 	<value-null v-if="value === null || value === undefined" />
-	<span v-else-if="displayInfo === null" class="display">{{ value }}</span>
-	<span v-else-if="typeof displayInfo.handler === 'function'" class="display">
-		{{ displayInfo.handler(value, options, { type }) }}
-	</span>
+	<v-text-overflow v-else-if="displayInfo === null" class="display" :text="value" />
+	<v-text-overflow
+		v-else-if="typeof displayInfo.handler === 'function'"
+		class="display"
+		:text="displayInfo.handler(value, options, { type })"
+	/>
 	<component
 		v-else
 		:is="`display-${display}`"

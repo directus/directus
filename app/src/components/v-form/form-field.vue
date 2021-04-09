@@ -13,6 +13,8 @@
 					:disabled="isDisabled"
 					:batch-mode="batchMode"
 					:batch-active="batchActive"
+					:edited="isEdited"
+					:has-error="!!validationError"
 					@toggle-batch="$emit('toggle-batch', $event)"
 				/>
 			</template>
@@ -54,21 +56,22 @@
 		<small class="note" v-if="field.meta && field.meta.note" v-html="marked(field.meta.note)" />
 
 		<small class="validation-error" v-if="validationError">
-			{{ $t(`validationError.${validationError.type}`, validationError) }}
+			{{ validationMessage }}
 		</small>
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
-import { Field } from '../../types/';
+import { Field } from '@/types/';
 import marked from 'marked';
 import FormFieldLabel from './form-field-label.vue';
 import FormFieldMenu from './form-field-menu.vue';
 import FormFieldInterface from './form-field-interface.vue';
 import { ValidationError } from './types';
-import { getJSType } from '../../utils/get-js-type';
+import { getJSType } from '@/utils/get-js-type';
 import { isEqual } from 'lodash';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	components: { FormFieldLabel, FormFieldMenu, FormFieldInterface },
@@ -131,14 +134,29 @@ export default defineComponent({
 			return defaultValue.value;
 		});
 
+		const isEdited = computed<boolean>(() => {
+			return props.value && isEqual(props.value, props.initialValue) === false;
+		});
+
 		const { showRaw, rawValue } = useRaw();
 
-		return { isDisabled, marked, _value, emitValue, showRaw, rawValue };
+		const validationMessage = computed(() => {
+			if (!props.validationError) return null;
+
+			if (props.validationError.code === 'RECORD_NOT_UNIQUE') {
+				return i18n.t('validationError.unique');
+			} else {
+				return i18n.t(`validationError.${props.validationError.type}`, props.validationError);
+			}
+		});
+
+		return { isDisabled, marked, _value, emitValue, showRaw, rawValue, validationMessage, isEdited };
 
 		function emitValue(value: any) {
 			if (
-				isEqual(value, props.initialValue) ||
-				(props.initialValue === undefined && isEqual(value, defaultValue.value))
+				(isEqual(value, props.initialValue) ||
+					(props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
+				props.batchMode === false
 			) {
 				emit('unset', props.field);
 			} else {

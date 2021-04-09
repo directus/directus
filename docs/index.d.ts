@@ -30,9 +30,5 @@ export type Divider = {
 	divider: true;
 };
 
-export const files: Directory;
-
-export const nav: {
-	app: (Group | Link | Divider)[];
-	web: (Group | Link | Divider)[];
-};
+declare const files: Directory;
+export default files;

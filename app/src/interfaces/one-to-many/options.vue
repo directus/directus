@@ -11,22 +11,13 @@
 				:inject="relatedCollectionExists ? null : { fields: newFields, collections: newCollections, relations }"
 			/>
 		</div>
-		<div class="field half">
-			<p class="type-label">{{ $t('sort_field') }}</p>
-			<interface-field
-				v-model="sortField"
-				:collection="relatedCollection"
-				:type-allow-list="['bigInteger', 'integer']"
-				allowNone
-			></interface-field>
-		</div>
 	</div>
 </template>
 
 <script lang="ts">
 import { Field, Relation, Collection } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { useRelationsStore, useCollectionsStore } from '@/stores/';
+import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
 	props: {
@@ -57,7 +48,6 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
-		const relationsStore = useRelationsStore();
 
 		const fields = computed({
 			get() {
@@ -67,18 +57,6 @@ export default defineComponent({
 				emit('input', {
 					...(props.value || {}),
 					fields: newFields,
-				});
-			},
-		});
-
-		const sortField = computed({
-			get() {
-				return props.value?.sortField;
-			},
-			set(newFields: string) {
-				emit('input', {
-					...(props.value || {}),
-					sortField: newFields,
 				});
 			},
 		});
@@ -98,7 +76,7 @@ export default defineComponent({
 			);
 		});
 
-		return { fields, sortField, relatedCollection, relatedCollectionExists };
+		return { fields, relatedCollection, relatedCollectionExists };
 	},
 });
 </script>

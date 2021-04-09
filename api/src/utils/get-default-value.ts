@@ -1,6 +1,6 @@
 import getLocalType from './get-local-type';
-import { Column } from '@directus/schema/dist/types/column';
-import { SchemaOverview } from '../types';
+import { Column } from 'knex-schema-inspector/dist/types/column';
+import { SchemaOverview } from '@directus/schema/dist/types/overview';
 
 export default function getDefaultValue(column: SchemaOverview[string]['columns'][string] | Column) {
 	const type = getLocalType(column);
@@ -24,7 +24,7 @@ export default function getDefaultValue(column: SchemaOverview[string]['columns'
 		case 'integer':
 		case 'decimal':
 		case 'float':
-			return Number(defaultValue);
+			return Number.isNaN(Number(defaultValue)) === false ? Number(defaultValue) : defaultValue;
 		case 'boolean':
 			return castToBoolean(defaultValue);
 		default:

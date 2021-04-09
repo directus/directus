@@ -1,10 +1,11 @@
 import express from 'express';
 import asyncHandler from '../utils/async-handler';
 import { FoldersService, MetaService } from '../services';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException, FailedValidationException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
 import { PrimaryKey } from '../types';
+import Joi from 'joi';
 
 const router = express.Router();
 
@@ -63,10 +64,63 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const record = await service.readByKey(primaryKey as any, req.sanitizedQuery);
+		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
 
 		res.locals.payload = { data: record || null };
+		return next();
+	}),
+	respond
+);
+
+router.patch(
+	'/:collection',
+	asyncHandler(async (req, res, next) => {
+		const service = new FoldersService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		if (Array.isArray(req.body)) {
+			const primaryKeys = await service.update(req.body);
+
+			try {
+				const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
+				res.locals.payload = { data: result || null };
+			} catch (error) {
+				if (error instanceof ForbiddenException) {
+					return next();
+				}
+
+				throw error;
+			}
+
+			return next();
+		}
+
+		const updateSchema = Joi.object({
+			keys: Joi.array().items(Joi.alternatives(Joi.string(), Joi.number())).required(),
+			data: Joi.object().required().unknown(),
+		});
+
+		const { error } = updateSchema.validate(req.body);
+
+		if (error) {
+			throw new FailedValidationException(error.details[0]);
+		}
+
+		const primaryKeys = await service.update(req.body.data, req.body.keys);
+
+		try {
+			const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
+			res.locals.payload = { data: result || null };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	}),
 	respond
@@ -79,8 +133,8 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const primaryKey = await service.update(req.body, pk as any);
+
+		const primaryKey = await service.update(req.body, req.params.pk);
 
 		try {
 			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
@@ -122,8 +176,9 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		await service.delete(primaryKey as any);
+
+		await service.delete(req.params.pk);
+
 		return next();
 	}),
 	respond

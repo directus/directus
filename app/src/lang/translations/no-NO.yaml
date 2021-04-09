@@ -50,8 +50,6 @@ archive: Arkiv
 archive_confirm: Er du sikker på at du vil arkivere dette elementet?
 archive_confirm_count: >-
   Ingen elementer valgt | Er du sikker på at du vil arkivere dette elementet? | Er du sikker på at du vil arkivere disse {count} elementene?
-reset_system_permissions: Tilbakestill systemrettigheter
-reset_system_permissions_copy: Tilbakestill alle systemrettigheter til standardinnstillingene
 unarchive: Uarkivér
 unarchive_confirm: Er du sikker på at du vil uarkivere dette elementet?
 nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett nivå opp.
@@ -104,11 +102,8 @@ exposure: Eksponering
 shutter: Utløser
 iso: ISO
 focal_length: Brennvidde
-schema_setup_title: Hvordan skal dette feltet lagre i databasen?
-schema_field_title: Hvordan skal dette feltet oppføre seg i applikasjonen?
 create_field: Opprett felt
 creating_new_field: 'Nytt felt ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: Tilbakestill sideinnstillinger
 hidden_field: Skjult felt
 hidden_on_detail: Skjult ved detaljer
@@ -135,10 +130,6 @@ this_will_auto_setup_fields_relations: Dette vil automatisk sette opp alle oblig
 click_here: Klikk her
 to_manually_setup_translations: for manuelt å sette opp oversettelser.
 fields_group: Feltgruppe
-configure_m2o: Konfigurer din mange-til-En relasjon...
-configure_o2m: Konfigurer din en-til-mange relasjon...
-configure_m2m: Konfigurer din mange-til-mange relasjon...
-configure_m2a: Konfigurer din mange-til-alt relasjon...
 add_m2o_to_collection: 'Legg til mange-til-en til "{collection}"'
 add_o2m_to_collection: 'Legg til en-til-mange til "{collection}"'
 add_m2m_to_collection: 'Legg til mange-til mange til "{collection}'
@@ -146,7 +137,6 @@ choose_a_type: Velg en Type...
 determined_by_relationship: Fastsatt av relasjon
 add_note: Legg til en god beskrivelse til brukerne...
 default_value: Standardverdi
-add_a_default_value: Legg til en standardverdi...
 next: Neste
 translations: Oversettelser
 note: Notat

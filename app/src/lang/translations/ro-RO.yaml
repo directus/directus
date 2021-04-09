@@ -50,8 +50,6 @@ archive: Arhivează
 archive_confirm: Sunteţi sigur că doriţi să arhivaţi acest element?
 archive_confirm_count: >-
   Niciun element selectat | Sunteţi sigur că doriţi să arhivaţi acest element? | Sunteţi sigur că doriţi să arhivaţi aceste {count} elemente?
-reset_system_permissions: Resetare permisiuni de sistem
-reset_system_permissions_copy: Resetează toate permisiunile de sistem la valorile implicite
 unarchive: Dezarhivare
 unarchive_confirm: Sunteţi sigur că doriţi să dezarhivaţi acest element?
 nested_files_folders_will_be_moved: Fişierele şi folderele suprapuse vor fi mutate cu un nivel mai sus.

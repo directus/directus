@@ -1,334 +1,333 @@
 # Environment Variables
 
-> Each Directus project supports a number of environment variables for configuration. These variables are added to the
-> `/api/.env` file, with an example file at `/api/example.env` for easier boilerplate setup.
+> Environment Variables are used for all configuration within Directus projects. They are managed in the root `.env`
+> file, which is created during the installation process.
+
+[[toc]]
 
 ## General
 
-### `PORT`
-
-What port to run the API under.<br>**Default: `8055`**
-
-### `PUBLIC_URL`
-
-URL where your API can be reached on the web.<br>**Default: `/`**
-
-### `LOG_LEVEL`
-
-What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.<br>**Default:
-`info`**
-
-### `LOG_STYLE`
-
-Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.<br>**Default: `pretty`**
+| Variable           | Description                                                                                                | Default Value |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- | ------------- |
+| `CONFIG_PATH`      | Where your config file is located. See [Config Files](/reference/config-files/)                            | `.env`        |
+| `PORT`             | What port to run the API under.                                                                            | `8055`        |
+| `PUBLIC_URL`       | URL where your API can be reached on the web.                                                              | `/`           |
+| `LOG_LEVEL`        | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
+| `LOG_STYLE`        | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                | `pretty`      |
+| `MAX_PAYLOAD_SIZE` | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `100kb`       |
+| `ROOT_REDIRECT`    | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
 
 ## Database
 
-### `DB_CLIENT`
+| Variable               | Description                                                                                                                                        | Default Value |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `DB_CLIENT`            | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, or `sqlite3`.                                  | --            |
+| `DB_HOST`              | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
+| `DB_PORT`              | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
+| `DB_DATABASE`          | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
+| `DB_USER`              | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --            |
+| `DB_PASSWORD`          | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --            |
+| `DB_FILENAME`          | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --            |
+| `DB_CONNECTION_STRING` | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --            |
+| `DB_POOL_*`            | Pooling settings. Passed on to [the `tarn.js`](https://github.com/vincit/tarn.js#usage) library.                                                   | --            |
 
-What database client to use. One of `pg` or `postgres`, `mysql`, `mysql2`, `oracledb`, `mssql`, or `sqlite3`. For all
-database clients except SQLite, you will also need to configure the following variables:
-
-### `DB_HOST`
-
-Database host. Required when using `pg`, `mysql`, `mysql2`, `oracledb`, or `mssql`.
-
-### `DB_PORT`
-
-Database port. Required when using `pg`, `mysql`, `mysql2`, `oracledb`, or `mssql`.
-
-### `DB_DATABASE`
-
-Database name. Required when using `pg`, `mysql`, `mysql2`, `oracledb`, or `mssql`.
-
-### `DB_USER`
-
-Database user. Required when using `pg`, `mysql`, `mysql2`, `oracledb`, or `mssql`.
-
-### `DB_PASSWORD`
-
-Database user's password. Required when using `pg`, `mysql`, `mysql2`, `oracledb`, or `mssql`.
-
-### `DB_FILENAME` (SQLite Only)
-
-Where to read/write the SQLite database. Required when using `sqlite3`.
-
-<!-- prettier-ignore-start -->
 ::: tip Additional Database Variables
-All `DB_*` environment variables are passed to the `connection`
-configuration of a [`Knex` instance](http://knexjs.org). Based on your project's needs, you can
-extend the `DB_*` environment variables with any config you need to pass to the database instance.
+
+All `DB_*` environment variables are passed to the `connection` configuration of a [`Knex` instance](http://knexjs.org).
+Based on your project's needs, you can extend the `DB_*` environment variables with any config you need to pass to the
+database instance.
+
 :::
-<!-- prettier-ignore-end -->
 
-### `DB_CONNECTION_STRING` (Postgres Only)
+::: tip Pooling
 
-When using Postgres, you can submit a connection string instead of individual properties. Using this will ignore any of
-the other connection settings.
+All the `DB_POOL_` prefixed options are passed [to `tarn.js`](https://github.com/vincit/tarn.js#usage) through
+[Knex](http://knexjs.org/#Installation-pooling)
+
+:::
 
 ## Security
 
-### `KEY`
+| Variable                         | Description                                                                                                                     | Default Value |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `KEY`                            | Unique identifier for the project.                                                                                              | --            |
+| `SECRET`                         | Secret string for the project.                                                                                                  | --            |
+| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                    | 15m           |
+| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                | 7d            |
+| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                        | --            |
+| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                     | `false`       |
+| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                           | `lax`         |
+| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/api/rest/authentication/#request-password-reset) | --            |
+| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/api/rest/users/#invite-a-new-user)                  | --            |
 
-Unique identifier for the project.
+::: tip Cookie Strictness
 
-### `SECRET`
+Browser are pretty strict when it comes to third-party cookies. If you're running into unexpected problems when running
+your project and API on different domains, make sure to verify your configuration for `REFRESH_TOKEN_COOKIE_SECURE` and
+`REFRESH_TOKEN_COOKIE_SAME_SITE`.
 
-Secret string for the project. Generated on installation.
-
-### `ACCESS_TOKEN_TTL`
-
-The duration that the access token is valid.<br>**Default: `15m`**
-
-### `REFRESH_TOKEN_TTL`
-
-The duration that the refresh token is valid, and also how long users stay logged-in to the App.<br>**Default: `7d`**
-
-### `REFRESH_TOKEN_COOKIE_SECURE`
-
-Whether or not to use a secure cookie for the refresh token in cookie mode.<br>**Default: `false`**
-
-### `REFRESH_TOKEN_COOKIE_SAME_SITE`
-
-Value for `sameSite` in the refresh token cookie when in cookie mode.<br>**Default: `lax`**
+:::
 
 ## CORS
 
-### `CORS_ENABLED`
-
-Whether or not to enable the CORS headers.<br>**Default: `true`**
-
-### `CORS_ORIGIN`
-
-Value for the `Access-Control-Allow-Origin` header. Possible values:
-
-- `true` - reflect the Origin header
-- String - set the origin to a specific domain
-- CSV - multiple domains
-
-### `CORS_METHODS`
-
-Value for the `Access-Control-Allow-Methods` header.<br>**Default: `GET,POST,PATCH,DELETE`**
-
-### `CORS_ALLOWED_HEADERS`
-
-Value for the `Access-Control-Allow-Headers` header.<br>**Default: `Content-Type,Authorization`**
-
-### `CORS_EXPOSED_HEADERS`
-
-Value for the `Access-Control-Expose-Headers` header.<br>**Default: `Content-Range`**
-
-### `CORS_CREDENTIALS`
-
-Whether or not to send the `Access-Control-Allow-Credentials` header.<br>**Default: `true`**
-
-### `CORS_MAX_AGE`
-
-Value for the `Access-Control-Max-Age` header.<br>**Default: `18000`**
+| Variable               | Description                                                                                                                                            | Default Value                |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| `CORS_ENABLED`         | Whether or not to enable the CORS headers.                                                                                                             | `true`                       |
+| `CORS_ORIGIN`          | Value for the `Access-Control-Allow-Origin` header. Use `true` to match the Origin header, or provide a domain or a CSV of domains for specific access | `true`                       |
+| `CORS_METHODS`         | Value for the `Access-Control-Allow-Methods` header.                                                                                                   | `GET,POST,PATCH,DELETE`      |
+| `CORS_ALLOWED_HEADERS` | Value for the `Access-Control-Allow-Headers` header.                                                                                                   | `Content-Type,Authorization` |
+| `CORS_EXPOSED_HEADERS` | Value for the `Access-Control-Expose-Headers` header.                                                                                                  | `Content-Range`              |
+| `CORS_CREDENTIALS`     | Whether or not to send the `Access-Control-Allow-Credentials` header.                                                                                  | `true`                       |
+| `CORS_MAX_AGE`         | Value for the `Access-Control-Max-Age` header.                                                                                                         | `18000`                      |
 
 ## Rate Limiting
 
-### `RATE_LIMITER_ENABLED`
+| Variable                | Description                                                                      | Default Value |
+| ----------------------- | -------------------------------------------------------------------------------- | ------------- |
+| `RATE_LIMITER_ENABLED`  | Whether or not to enable rate limiting on the API.                               | `false`       |
+| `RATE_LIMITER_POINTS`   | The amount of allowed hits per duration.                                         | `50`          |
+| `RATE_LIMITER_DURATION` | The time window in seconds in which the points are counted.                      | `1`           |
+| `RATE_LIMITER_STORE`    | Where to store the rate limiter counts. One of `memory`, `redis`, or `memcache`. | `memory`      |
 
-Whether or not to enable rate limiting on the API.<br>**Default: `false`**
+Based on the `RATE_LIMITER_STORE` used, you must also provide the following configurations:
 
-### `RATE_LIMITER_POINTS`
+### Memory
 
-The amount of allowed hits per duration.<br>**Default: `50`**
+No additional configuration required.
 
-### `RATE_LIMITER_DURATION`
+### Redis
 
-The time window in seconds in which the points are counted.<br>**Default: `1`**
+| Variable             | Description                                                           | Default Value |
+| -------------------- | --------------------------------------------------------------------- | ------------- |
+| `RATE_LIMITER_REDIS` | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
 
-### `RATE_LIMITER_STORE`
+Alternatively, you can provide the individual connection parameters:
 
-Where to store the rate limiter counts. Either `memory`, `redis`, or `memcache`. Based on the rate limiter used, you
-must also provide the following configurations.<br>**Default: `memory`**
+| Variable                      | Description                      | Default Value |
+| ----------------------------- | -------------------------------- | ------------- |
+| `RATE_LIMITER_REDIS_HOST`     | Hostname of the Redis instance   | --            |
+| `RATE_LIMITER_REDIS_PORT`     | Port of the Redis instance       | --            |
+| `RATE_LIMITER_REDIS_PASSWORD` | Password for your Redis instance | --            |
 
-- **Memory**
-  - No additional configuration required
-- **Redis**
-  - **`RATE_LIMITER_REDIS`** — Redis connection string
-    - eg: `redis://:authpassword@127.0.0.1:6380/4`
-  - Alternatively, you can enter individual connection parameters:
-    - **`RATE_LIMITER_REDIS_HOST`**
-    - **`RATE_LIMITER_REDIS_PORT`**
-    - **`RATE_LIMITER_REDIS_PASSWORD`**
-    - **`RATE_LIMITER_REDIS_DB`**
-- **Memcache**
-  - **`RATE_LIMITER_MEMCACHE`** — Location of your memcache instance
+### Memcache
 
-<!-- prettier-ignore-start -->
-::: tip Additional Rate Limiter Variables All `RATE_LIMITER_*` variables are passed directly to a
-`rate-limiter-flexible` instance. Depending on your project's needs, you can extend the above
-environment variables to configure any of
+| Variable                | Description                        | Default Value |
+| ----------------------- | ---------------------------------- | ------------- |
+| `RATE_LIMITER_MEMCACHE` | Location of your memcache instance | ---           |
+
+::: tip Additional Rate Limiter Variables
+
+All `RATE_LIMITER_*` variables are passed directly to a `rate-limiter-flexible` instance. Depending on your project's
+needs, you can extend the above environment variables to configure any of
 [the `rate-limiter-flexible` options](https://github.com/animir/node-rate-limiter-flexible/wiki/Options).
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Cache
 
-### `CACHE_ENABLED`
+| Variable           | Description                                                                                                | Default Value    |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- | ---------------- |
+| `ASSETS_CACHE_TTL` | How long assets will be cached for in the browser. Sets the `max-age` value of the `Cache-Control` header. | `30m`            |
+| `CACHE_ENABLED`    | Whether or not caching is enabled.                                                                         | `false`          |
+| `CACHE_TTL`        | How long the cache is persisted.                                                                           | `30m`            |
+| `CACHE_AUTO_PURGE` | Automatically purge the cache on `create`/`update`/`delete` actions.                                       | `false`          |
+| `CACHE_NAMESPACE`  | How to scope the cache data.                                                                               | `directus-cache` |
+| `CACHE_STORE`      | Where to store the cache data. Either `memory`, `redis`, or `memcache`.                                    | `memory`         |
 
-Whether or not caching is enabled.<br>**Default: `false`**
+Based on the `CACHE_STORE` used, you must also provide the following configurations:
 
-### `CACHE_TTL`
+### Memory
 
-How long the cache is persisted.<br>**Default: `30m`**
+No additional configuration required.
 
-<!-- prettier-ignore-start -->
-::: warning Forced Flush
-Regardless of TTL, the cache is always flushed for every create, update, and
-delete action.
-:::
-<!-- prettier-ignore-end -->
+### Redis
 
-### `CACHE_NAMESPACE`
+| Variable      | Description                                                           | Default Value |
+| ------------- | --------------------------------------------------------------------- | ------------- |
+| `CACHE_REDIS` | Redis connection string, eg: `redis://:authpassword@127.0.0.1:6380/4` | ---           |
 
-How to scope the cache data.<br>**Default: `directus-cache`**
+Alternatively, you can provide the individual connection parameters:
 
-### `CACHE_STORE`
+| Variable               | Description                      | Default Value |
+| ---------------------- | -------------------------------- | ------------- |
+| `CACHE_REDIS_HOST`     | Hostname of the Redis instance   | --            |
+| `CACHE_REDIS_PORT`     | Port of the Redis instance       | --            |
+| `CACHE_REDIS_PASSWORD` | Password for your Redis instance | --            |
 
-Where to store the cache data. Either `memory`, `redis`, or `memcache`. Based on the cache used, you must also provide
-the following configurations.<br>**Default: `memory`**
+### Memcache
 
-- **Memory**
-  - No additional configuration required
-- **Redis**
-  - **`CACHE_REDIS`** — Redis connection string
-    - eg: `redis://:authpassword@127.0.0.1:6380/4`
-  - Alternatively, you can enter individual connection parameters:
-    - **`CACHE_REDIS_HOST`**
-    - **`CACHE_REDIS_PORT`**
-    - **`CACHE_REDIS_PASSWORD`**
-    - **`CACHE_REDIS_DB`**
-- **Memcache**
-  - **`CACHE_MEMCACHE`** — Location of your memcache instance
-
-### `CACHE_AUTO_PURGE`
-
-Controls whether or not the cache will be auto-purged on create/update/delete actions within the system. Enabling this
-feature means that the API will remain real-time, while caching subsequent read calls when no changes have happened.
-**Note**: enabling auto-purge will remove the `Cache-Control` header, as the cache can be invalidated at any point.
-
-### `ASSETS_CACHE_TTL`
-
-How long assets will be cached for in the browser. Sets the `max-age` value of the `Cache-Control` header.
+| Variable         | Description                        | Default Value |
+| ---------------- | ---------------------------------- | ------------- |
+| `CACHE_MEMCACHE` | Location of your memcache instance | ---           |
 
 ## File Storage
 
-### `STORAGE_LOCATIONS`
-
-A CSV of storage locations (eg: `local,digitalocean,amazon`) to use. You can use any names you'd like for these keys,
-but each must have a matching `<LOCATION>` configuration.<br>**Default: `local`**
+| Variable            | Description                                                                                                           | Default Value |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `STORAGE_LOCATIONS` | A CSV of storage locations (eg: `local,digitalocean,amazon`) to use. You can use any names you'd like for these keys. | `local`       |
 
 For each of the storage locations listed, you must provide the following configuration:
 
-- **`STORAGE_<LOCATION>_PUBLIC_URL`** — Location on the internet where the files are accessible
-- **`STORAGE_<LOCATION>_DRIVER`** — Which driver to use, either `local`, `s3`, or `gcs`
+| Variable                    | Description                                               | Default Value |
+| --------------------------- | --------------------------------------------------------- | ------------- |
+| `STORAGE_<LOCATION>_DRIVER` | Which driver to use, either `local`, `s3`, `gcs`, `azure` |               |
+| `STORAGE_<LOCATION>_ROOT`   | Where to store the files on disk                          | `''`          |
 
-Based on your configured driver, you must also provide the following configurations.
+Based on your configured driver, you must also provide the following configurations:
 
-- **Local**
-  - `STORAGE_<LOCATION>_ROOT` — Where to store the files on disk
-- **S3**
-  - **`STORAGE_<LOCATION>_KEY`** — User key
-  - **`STORAGE_<LOCATION>_SECRET`** — User secret
-  - **`STORAGE_<LOCATION>_ENDPOINT`** — S3 Endpoint
-  - **`STORAGE_<LOCATION>_BUCKET`** — S3 Bucket
-  - **`STORAGE_<LOCATION>_REGION`** — S3 Region
-- **Google Cloud**
-  - **`STORAGE_<LOCATION>_KEY_FILENAME`** — Path to key file on disk
-  - **`STORAGE_<LOCATION>_BUCKET`** — Google Cloud Storage bucket
+### Local (`local`)
 
-## oAuth
+| Variable                  | Description                      | Default Value |
+| ------------------------- | -------------------------------- | ------------- |
+| `STORAGE_<LOCATION>_ROOT` | Where to store the files on disk | --            |
 
-### `OAUTH_PROVIDERS`
+### S3 (`s3`)
 
-CSV of oAuth providers you want to use. For each of the oAuth providers you list, you must also provide 
-a number of extra variables. The exact configuration is going to be provider dependant, so please check the 
-provider's reference documentation.
+| Variable                      | Description | Default Value      |
+| ----------------------------- | ----------- | ------------------ |
+| `STORAGE_<LOCATION>_KEY`      | User key    | --                 |
+| `STORAGE_<LOCATION>_SECRET`   | User secret | --                 |
+| `STORAGE_<LOCATION>_BUCKET`   | S3 Bucket   | --                 |
+| `STORAGE_<LOCATION>_REGION`   | S3 Region   | --                 |
+| `STORAGE_<LOCATION>_ENDPOINT` | S3 Endpoint | "s3.amazonaws.com" |
+| `STORAGE_<LOCATION>_ACL`      | S3 ACL      | --                 |
 
-- **`OAUTH_<PROVIDER>_KEY`** — oAuth key (a.k.a. application id) for the external service.
-- **`OAUTH_<PROVIDER>_SECRET`** — oAuth secret for the external service.
-- **`OAUTH_<PROVIDER>_SCOPE`** — A white-space separated list of privileges directus should ask for. 
-A very common value is: `openid email`.
-- **`OAUTH_<PROVIDER>_ACCESS_URL`** — The provider's oAuth *authorization endpoint*. 
-- **`OAUTH_<PROVIDER>_AUTHORIZE_URL`** — The provider's oAuth *token endpoint*.
+### Azure (`azure`)
 
-**`OAUTH_<PROVIDER>_ACCESS_URL`** and **`OAUTH_<PROVIDER>_AUTHORIZE_URL`** will be only necessary
-to access data from a particular tenant (e.g. a particular instance/domain of G-Suite or MS Office 365).
+| Variable                            | Description                | Default Value                         |
+| ----------------------------------- | -------------------------- | ------------------------------------- |
+| `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --                                    |
+| `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --                                    |
+| `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --                                    |
+| `STORAGE_<LOCATION>_ENDPOINT`       | Azure URL                  | "{ACCOUNT_KEY}.blob.core.windows.net" |
 
-For a complete list of supported providers please see the [grant library](https://www.npmjs.com/package/grant).
+### Google Cloud Storage (`gcs`)
 
-#### oAuth And Reverse Proxy
+| Variable                          | Description                 | Default Value |
+| --------------------------------- | --------------------------- | ------------- |
+| `STORAGE_<LOCATION>_KEY_FILENAME` | Path to key file on disk    | --            |
+| `STORAGE_<LOCATION>_BUCKET`       | Google Cloud Storage bucket | --            |
 
-In case you are running Directus behind a reverse proxy (e.g. for implementing SSL/TLS) you also need to pay
-attention to the configation of the **`PUBLIC_URL`**, or the oAuth provider will be try to reach Directus on 
-the its private URL. 
-
-More specifically, the **`PUBLIC_URL`** variable is used to construct the oAuth request's *redirection endpoint*.
-
-#### oAuth Example
-
-Assuming that your providers are Google and Microsoft, that Directus is running behind a proxy, and that Microsoft's 
-login is not multi-tenant, then you would need to set the following environment variables:
+If you don't provide any configuration for storage adapters, Directus will default to the following:
 
 ```
-OAUTH_PROVIDERS ="google microsoft"
-
-OAUTH_GOOGLE_KEY = "<google_application_id>"
-OAUTH_GOOGLE_SECRET=  "<google_application_secret_key>"
-OAUTH_GOOGLE_SCOPE="openid email"
-
-OAUTH_MICROSOFT_KEY = "<microsoft_application_id>"
-OAUTH_MICROSOFT_SECRET = "<microsoft_application_secret_key>"
-OAUTH_MICROSOFT_SCOPE = "openid email"
-OAUTH_MICROSOFT_AUTHORIZE_URL = "https://login.microsoftonline.com/<microsoft_application_id>/oauth2/v2.0/authorize"
-OAUTH_MICROSOFT_ACCESS_URL = "https://login.microsoftonline.com/<microsoft_application_id>/oauth2/v2.0/token"
-
-PUBLIC_URL = "<public_url_of_directus_instance>"
+STORAGE_LOCATIONS="local"
+STORAGE_LOCAL_ROOT="./uploads"
 ```
+
+## OAuth
+
+| Variable          | Description                             | Default Value |
+| ----------------- | --------------------------------------- | ------------- |
+| `OAUTH_PROVIDERS` | CSV of oAuth providers you want to use. | --            |
+
+For each of the OAuth providers you list, you must also provide a number of extra variables. These differ per external
+service. The following is a list of common required configuration options:
+
+| Variable                         | Description                                                                                            | Default Value |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------- |
+| `OAUTH_<PROVIDER>_KEY`           | oAuth key (a.k.a. application id) for the external service.                                            | --            |
+| `OAUTH_<PROVIDER>_SECRET`        | oAuth secret for the external service.                                                                 | --            |
+| `OAUTH_<PROVIDER>_SCOPE`         | A white-space separated list of privileges directus should ask for. A common value is: `openid email`. | --            |
+| `OAUTH_<PROVIDER>_AUTHORIZE_URL` | The authorize page URL of the external service                                                         | --            |
+| `OAUTH_<PROVIDER>_ACCESS_URL`    | The access URL of the external service                                                                 | --            |
+| `OAUTH_<PROVIDER>_PROFILE_URL`   | Where Directus can fetch the profile information of the authenticated user.                            | --            |
+
+Directus relies on [`grant`](https://www.npmjs.com/package/grant) for the handling of the oAuth flow. Grant includes
+[a lot of default values](https://github.com/simov/grant/blob/master/config/oauth.json) for popular services. For
+example, if you use `apple` as one of your providers, you only have to specify the key and secret, as Grant has the rest
+covered. Checkout [the grant repo](https://github.com/simov/grant) for more information.
 
 ## Extensions
 
-### `EXTENSIONS_PATH`
-
-Path to your local extensions folder.<br>**Default: `./extensions`**
+| Variable          | Description                           | Default Value  |
+| ----------------- | ------------------------------------- | -------------- |
+| `EXTENSIONS_PATH` | Path to your local extensions folder. | `./extensions` |
 
 ## Email
 
-### `EMAIL_FROM`
+| Variable          | Description                                            | Default Value          |
+| ----------------- | ------------------------------------------------------ | ---------------------- |
+| `EMAIL_FROM`      | Email address from which emails are sent.              | `no-reply@directus.io` |
+| `EMAIL_TRANSPORT` | What to use to send emails. One of `sendmail`, `smtp`. | `sendmail`             |
 
-Email address from which emails are sent.<br>**Default: `no-reply@directus.io`**
+Based on the `EMAIL_TRANSPORT` used, you must also provide the following configurations:
 
-### `EMAIL_TRANSPORT`
+### Sendmail (`sendmail`)
 
-What to use to send emails. One of `sendmail`, `smtp`. Based on the transport used, you must also provide the following
-configurations.<br>**Default: `sendmail`**
+| Variable                  | Description                             | Default Value        |
+| ------------------------- | --------------------------------------- | -------------------- |
+| `EMAIL_SENDMAIL_NEW_LINE` | What new line style to use in sendmail. | `unix`               |
+| `EMAIL_SENDMAIL_PATH`     | Path to your sendmail executable.       | `/usr/sbin/sendmail` |
 
-- **Sendmail** (`sendmail`)
-  - **`EMAIL_SENDMAIL_NEW_LINE`** — What new line style to use in sendmail. **Default: `unix`**
-  - **`EMAIL_SENDMAIL_PATH`** — Path to your sendmail executable. **Default: `/usr/sbin/sendmail`**
-- **SMTP** (`smtp`)
-  - **`EMAIL_SMTP_HOST`** — SMTP Host
-  - **`EMAIL_SMTP_PORT`** — SMTP Port
-  - **`EMAIL_SMTP_USER`** — SMTP User
-  - **`EMAIL_SMTP_PASSWORD`** — SMTP Password
-  - **`EMAIL_SMTP_POOL`** — Use SMTP pooling
-  - **`EMAIL_SMTP_SECURE`** — Enable TLS
+### SMTP (`smtp`)
+
+| Variable              | Description      | Default Value |
+| --------------------- | ---------------- | ------------- |
+| `EMAIL_SMTP_HOST`     | SMTP Host        | --            |
+| `EMAIL_SMTP_PORT`     | SMTP Port        | --            |
+| `EMAIL_SMTP_USER`     | SMTP User        | --            |
+| `EMAIL_SMTP_PASSWORD` | SMTP Password    | --            |
+| `EMAIL_SMTP_POOL`     | Use SMTP pooling | --            |
+| `EMAIL_SMTP_SECURE`   | Enable TLS       | --            |
 
 ## Misc.
 
 If you're relying on Docker and/or the `directus bootstrap` CLI command, you can pass the following two environment
 variables to automatically configure the first user:
 
-### `ADMIN_EMAIL`
+| Variable         | Description                                                                                       | Default Value |
+| ---------------- | ------------------------------------------------------------------------------------------------- | ------------- |
+| `ADMIN_EMAIL`    | The email address of the first user that's automatically created when using `directus bootstrap`. | --            |
+| `ADMIN_PASSWORD` | The password of the first user that's automatically created when using `directus bootstrap`.      | --            |
 
-The email address of the first user that's automatically created when using `directus bootstrap`. Defaults to
-`admin@example.com`
+---
 
-### `ADMIN_PASSWORD`
+## Type Casting and Nesting
 
-The password of the first user that's automatically created when using `directus bootstrap`. Defaults to a random string
-of 12 characters.
+Environment variables are automatically type cast based on the structure of the variable, for example:
+
+```
+PUBLIC_URL="https://example.com"
+// "https://example.com"
+
+DB_HOST="3306"
+// 3306
+
+CORS_ENABLED="false"
+// false
+
+STORAGE_LOCATIONS="s3,local,example"
+// ["s3", "local", "example"]
+```
+
+In cases where the environment variables are converted to a configuration object for third party library use, like in
+`DB_*` or `RATE_LIMITER_REDIS_*`, the environment variable will be converted to camelCase. You can use a double
+underscore (`__`) for nested objects:
+
+```
+DB_CLIENT="pg"
+DB_CONNECTION_STRING="postgresql://postgres:example@127.0.0.1"
+DB_SSL__REJECT_UNAUTHORIZED="false"
+
+{
+	client: "pg",
+	connectionString: "postgresql://postgres:example@127.0.0.1",
+	ssl: {
+		rejectUnauthorized: false
+	}
+}
+```
+
+## Environment Syntax Prefix
+
+Directus will attempt to automatically type cast environment variables based on context clues
+([see above](#type-casting-and-nesting)). If you have a specific need for a given type, you can tell Directus what type
+to use for the given value by prefixing the value with `{type}:`. The following types are available:
+
+| Syntax Prefix | Example                                          | Output                                           |
+| ------------- | ------------------------------------------------ | ------------------------------------------------ |
+| `string`      | `string:value`                                   | `"value"`                                        |
+| `number`      | `number:3306`                                    | `3306`                                           |
+| `regex`       | `regex:/\.example\.com$/`                        | `/\.example\.com$/`                              |
+| `array`       | `array:https://example.com,https://example2.com` | `["https://example.com","https://example2.com"]` |

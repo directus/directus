@@ -1,36 +1,44 @@
-import { Router, Response } from 'express';
-import { graphqlHTTP } from 'express-graphql';
+import { Router } from 'express';
 import { GraphQLService } from '../services';
 import { respond } from '../middleware/respond';
 import asyncHandler from '../utils/async-handler';
-import { cloneDeep } from 'lodash';
+import { parseGraphQL } from '../middleware/graphql';
+import cookieParser from 'cookie-parser';
 
 const router = Router();
 
 router.use(
+	'/system',
+	parseGraphQL,
+	cookieParser(),
 	asyncHandler(async (req, res, next) => {
 		const service = new GraphQLService({
 			accountability: req.accountability,
 			schema: req.schema,
+			scope: 'system',
 		});
 
-		const schema = await service.getSchema();
+		res.locals.payload = await service.execute(res.locals.graphqlParams);
 
-		/**
-		 * @NOTE express-graphql will attempt to respond directly on the `res` object
-		 * We don't want that, as that will skip our regular `respond` middleware
-		 * and therefore skip the cache. This custom response object overwrites
-		 * express' regular `json` function in order to trick express-graphql to
-		 * use the next middleware instead of respond with data directly
-		 */
-		const customResponse = cloneDeep(res);
+		return next();
+	}),
+	respond
+);
 
-		customResponse.json = customResponse.end = function (payload: Record<string, any>) {
-			res.locals.payload = payload;
-			return next();
-		} as any;
+router.use(
+	'/',
+	parseGraphQL,
+	cookieParser(),
+	asyncHandler(async (req, res, next) => {
+		const service = new GraphQLService({
+			accountability: req.accountability,
+			schema: req.schema,
+			scope: 'items',
+		});
 
-		graphqlHTTP({ schema, graphiql: true })(req, customResponse);
+		res.locals.payload = await service.execute(res.locals.graphqlParams);
+
+		return next();
 	}),
 	respond
 );

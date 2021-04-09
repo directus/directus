@@ -112,7 +112,7 @@
 				<v-info :title="$tc('user_count', 0)" icon="people_alt" center>
 					{{ $t('no_users_copy') }}
 
-					<template #append>
+					<template v-if="canInviteUsers" #append>
 						<v-button :to="{ path: '/users/+', query: queryFilters }">{{ $t('create_user') }}</v-button>
 					</template>
 				</v-info>
@@ -139,18 +139,18 @@
 <script lang="ts">
 import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
 import UsersNavigation from '../components/navigation.vue';
-import UsersInvite from '../../../views/private/components/users-invite';
+import UsersInvite from '@/views/private/components/users-invite';
 
-import { i18n } from '../../../lang';
-import api from '../../../api';
-import { LayoutComponent } from '../../../layouts/types';
-import usePreset from '../../../composables/use-preset';
-import LayoutSidebarDetail from '../../../views/private/components/layout-sidebar-detail';
-import SearchInput from '../../../views/private/components/search-input';
-import { useUserStore, usePermissionsStore } from '../../../stores';
+import { i18n } from '@/lang';
+import api from '@/api';
+import { LayoutComponent } from '@/layouts/types';
+import usePreset from '@/composables/use-preset';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
+import SearchInput from '@/views/private/components/search-input';
+import { useUserStore, usePermissionsStore } from '@/stores';
 import marked from 'marked';
 import useNavigation from '../composables/use-navigation';
-import DrawerBatch from '../../../views/private/components/drawer-batch';
+import DrawerBatch from '@/views/private/components/drawer-batch';
 
 type Item = {
 	[field: string]: any;
@@ -174,9 +174,7 @@ export default defineComponent({
 
 		const selection = ref<Item[]>([]);
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(
-			ref('directus_users')
-		);
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(ref('directus_users'));
 		const { addNewLink } = useLinks();
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
@@ -355,16 +353,16 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
 .action-batch {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 
@@ -377,9 +375,9 @@ export default defineComponent({
 }
 
 .invite-user {
-	--v-button-background-color: var(--primary-25);
+	--v-button-background-color: var(--primary-10);
 	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-50);
+	--v-button-background-color-hover: var(--primary-25);
 	--v-button-color-hover: var(--primary);
 }
 </style>

@@ -7,6 +7,7 @@
 		<draggable
 			class="field-grid"
 			:value="usableFields"
+			:force-fallback="true"
 			handle=".drag-handle"
 			group="fields"
 			:set-data="hideDragImage"
@@ -60,18 +61,6 @@ import hideDragImage from '@/utils/hide-drag-image';
 import { i18n } from '@/lang';
 import { orderBy } from 'lodash';
 
-type DraggableEvent = {
-	moved?: {
-		element: Field;
-		newIndex: number;
-		oldIndex: number;
-	};
-	added?: {
-		element: Field;
-		newIndex: number;
-	};
-};
-
 export default defineComponent({
 	components: { Draggable, FieldSelect },
 	props: {
@@ -86,7 +75,7 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const parsedFields = computed(() => {
-			return orderBy(fields.value, [(o) => o.meta?.sort || null, (o) => o.meta?.id]).filter(
+			return orderBy(fields.value, [(o) => (o.meta?.sort ? Number(o.meta?.sort) : null), (o) => o.meta?.id]).filter(
 				(field) => field.field.startsWith('$') === false
 			);
 		});

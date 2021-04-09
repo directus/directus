@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import asyncHandler from '../utils/async-handler';
 import { CollectionsService, MetaService } from '../services';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
 import { respond } from '../middleware/respond';
 
 const router = Router();
@@ -51,20 +51,8 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const collectionKey = req.params.collection.includes(',')
-			? req.params.collection.split(',')
-			: req.params.collection;
-
-		try {
-			const collection = await collectionsService.readByKey(collectionKey as any);
-			res.locals.payload = { data: collection || null };
-		} catch (error) {
-			if (error instanceof ForbiddenException) {
-				return next();
-			}
-
-			throw error;
-		}
+		const collection = await collectionsService.readByKey(req.params.collection);
+		res.locals.payload = { data: collection || null };
 
 		return next();
 	}),
@@ -78,13 +66,10 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const collectionKey = req.params.collection.includes(',')
-			? req.params.collection.split(',')
-			: req.params.collection;
-		await collectionsService.update(req.body, collectionKey as any);
+		await collectionsService.update(req.body, req.params.collection);
 
 		try {
-			const collection = await collectionsService.readByKey(collectionKey as any);
+			const collection = await collectionsService.readByKey(req.params.collection);
 			res.locals.payload = { data: collection || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
@@ -100,34 +85,14 @@ router.patch(
 );
 
 router.delete(
-	'/',
-	asyncHandler(async (req, res, next) => {
-		if (!req.body || Array.isArray(req.body) === false) {
-			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
-		}
-
-		const collectionsService = new CollectionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-		await collectionsService.delete(req.body as string[]);
-
-		return next();
-	}),
-	respond
-);
-
-router.delete(
 	'/:collection',
 	asyncHandler(async (req, res, next) => {
 		const collectionsService = new CollectionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const collectionKey = req.params.collection.includes(',')
-			? req.params.collection.split(',')
-			: req.params.collection;
-		await collectionsService.delete(collectionKey as any);
+
+		await collectionsService.delete(req.params.collection);
 
 		return next();
 	}),

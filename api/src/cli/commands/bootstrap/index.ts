@@ -2,6 +2,7 @@ import env from '../../../env';
 import logger from '../../../logger';
 import installDatabase from '../../../database/seeds/run';
 import runMigrations from '../../../database/migrations/run';
+import { getSchema } from '../../../utils/get-schema';
 import { nanoid } from 'nanoid';
 
 export default async function bootstrap() {
@@ -12,7 +13,7 @@ export default async function bootstrap() {
 		process.exit(1);
 	}
 
-	const { isInstalled, default: database, schemaInspector } = require('../../../database');
+	const { isInstalled, default: database } = require('../../../database');
 	const { RolesService } = require('../../../services/roles');
 	const { UsersService } = require('../../../services/users');
 	const { SettingsService } = require('../../../services/settings');
@@ -22,7 +23,7 @@ export default async function bootstrap() {
 
 		await installDatabase(database);
 
-		const schema = await schemaInspector.overview();
+		const schema = await getSchema();
 
 		logger.info('Setting up first admin role...');
 		const rolesService = new RolesService({ schema });

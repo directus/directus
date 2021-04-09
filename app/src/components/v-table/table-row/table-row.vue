@@ -8,14 +8,17 @@
 			'--table-row-line-height': 1,
 		}"
 	>
-		<td v-if="showManualSort" class="manual cell">
+		<td v-if="showManualSort" class="manual cell" @click.stop>
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 		<td v-if="showSelect" class="select cell" @click.stop>
 			<v-checkbox :inputValue="isSelected" @change="toggleSelect" />
 		</td>
 		<td class="cell" :class="getClassesForCell(header)" v-for="header in headers" :key="header.value">
-			<slot :name="`item.${header.value}`" :item="item">{{ get(item, header.value) }}</slot>
+			<slot :name="`item.${header.value}`" :item="item">
+				<v-text-overflow v-if="get(item, header.value)" :text="get(item, header.value)" />
+				<value-null v-else />
+			</slot>
 		</td>
 
 		<td class="spacer cell" />

@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref } from '@vue/composition-api';
-import { i18n } from '../../lang';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	model: {
@@ -67,10 +67,12 @@ export default defineComponent({
 	cursor: pointer;
 }
 
-.v-detail:not(.disabled) .v-divider:hover {
-	--v-divider-label-color: var(--foreground-normal);
-
-	cursor: pointer;
+.v-detail:not(.disabled) .v-divider {
+	--v-divider-label-color: var(--foreground-subdued);
+	&:hover {
+		--v-divider-label-color: var(--foreground-normal-alt);
+		cursor: pointer;
+	}
 }
 
 .v-icon {

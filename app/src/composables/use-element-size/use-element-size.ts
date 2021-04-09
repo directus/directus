@@ -8,7 +8,7 @@ declare global {
 	}
 }
 
-export default function useElementSize<T extends Element>(target: T | Ref<T> | Ref<null>) {
+export default function useElementSize<T extends Element>(target: T | Ref<T> | Ref<undefined>) {
 	const width = ref(0);
 	const height = ref(0);
 

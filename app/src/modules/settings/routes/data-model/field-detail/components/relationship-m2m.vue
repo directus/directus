@@ -1,7 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('configure_m2m') }}</v-notice>
-
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
@@ -218,17 +216,63 @@
 			</div>
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
+
+		<div class="sort-field">
+			<v-divider large :inline-title="false">{{ $t('sort_field') }}</v-divider>
+
+			<v-input
+				:class="{ matches: junctionFieldExists(relations[0].sort_field) }"
+				v-model="relations[0].sort_field"
+				:placeholder="$t('add_sort_field') + '...'"
+				db-safe
+			>
+				<template #append v-if="junctionCollectionExists">
+					<v-menu show-arrow placement="bottom-end">
+						<template #activator="{ toggle }">
+							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
+						</template>
+
+						<v-list class="monospace">
+							<v-list-item
+								v-for="item in junctionFields"
+								:key="item.value"
+								:active="relations[0].sort_field === item.value"
+								:disabled="item.disabled"
+								@click="relations[0].sort_field = item.value"
+							>
+								<v-list-item-content>
+									{{ item.text }}
+								</v-list-item-content>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+				</template>
+			</v-input>
+		</div>
+
+		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
+			<span>
+				{{ $t('new_data_alert') }}
+
+				<ul>
+					<li v-for="(data, index) in generationInfo" :key="index">
+						<span class="field-name">{{ data.name }}</span>
+						({{ $t(data.type === 'field' ? 'new_field' : 'new_collection') }})
+					</li>
+				</ul>
+			</span>
+		</v-notice>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import i18n from '@/lang';
 
-import { state } from '../store';
+import { state, generationInfo } from '../store';
 
 export default defineComponent({
 	props: {
@@ -299,7 +343,7 @@ export default defineComponent({
 		const junctionFields = computed(() => {
 			if (!junctionCollection.value) return [];
 
-			return fieldsStore.getFieldsForCollection(junctionCollection.value).map((field: Field) => ({
+			return fieldsStore.getFieldsForCollectionAlphabetical(junctionCollection.value).map((field: Field) => ({
 				text: field.field,
 				value: field.field,
 				disabled:
@@ -324,10 +368,11 @@ export default defineComponent({
 			hasCorresponding,
 			correspondingField,
 			correspondingLabel,
+			generationInfo,
 		};
 
 		function junctionFieldExists(fieldKey: string) {
-			if (!junctionCollection.value) return false;
+			if (!junctionCollection.value || !fieldKey) return false;
 			return !!fieldsStore.getField(junctionCollection.value, fieldKey);
 		}
 
@@ -344,6 +389,7 @@ export default defineComponent({
 								$type: 'corresponding',
 								field: state.relations[0].one_collection,
 								collection: state.relations[1].one_collection,
+								type: 'alias',
 								meta: {
 									special: 'm2m',
 									interface: 'many-to-many',
@@ -404,10 +450,6 @@ export default defineComponent({
 	gap: 12px 28px;
 	margin-top: 48px;
 
-	.v-input.matches {
-		--v-input-color: var(--primary);
-	}
-
 	.v-icon.arrow {
 		--v-icon-color: var(--primary);
 
@@ -416,15 +458,19 @@ export default defineComponent({
 		pointer-events: none;
 
 		&:first-of-type {
-			bottom: 141px;
+			bottom: 161px;
 			left: 32.5%;
 		}
 
 		&:last-of-type {
-			bottom: 76px;
+			bottom: 89px;
 			left: 67.4%;
 		}
 	}
+}
+
+.v-input.matches {
+	--v-input-color: var(--primary);
 }
 
 .type-label {
@@ -432,7 +478,7 @@ export default defineComponent({
 }
 
 .v-divider {
-	margin: 48px 0;
+	margin: 48px 0 24px;
 }
 
 .v-list {
@@ -444,13 +490,12 @@ export default defineComponent({
 	display: grid;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 	gap: 12px 32px;
-	margin-top: 48px;
 
 	.arrow {
 		--v-icon-color: var(--primary);
 
 		position: absolute;
-		bottom: 14px;
+		bottom: 17px;
 		left: 50%;
 		transform: translateX(-50%);
 	}
@@ -458,5 +503,27 @@ export default defineComponent({
 
 .v-notice {
 	margin-bottom: 36px;
+}
+
+.generated-data {
+	margin-top: 36px;
+
+	ul {
+		padding-top: 4px;
+		padding-left: 24px;
+	}
+
+	.field-name {
+		font-family: var(--family-monospace);
+	}
+}
+
+.sort-field {
+	--v-input-font-family: var(--family-monospace);
+
+	.v-divider {
+		margin-top: 48px;
+		margin-bottom: 24px;
+	}
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<value-null v-if="!relatedCollection" />
 	<v-menu
-		v-else-if="type.toLowerCase() === 'o2m' || type.toLowerCase() === 'm2m'"
+		v-else-if="['o2m', 'm2m', 'm2a', 'translations'].includes(type.toLowerCase())"
 		show-arrow
 		:disabled="value.length === 0"
 	>

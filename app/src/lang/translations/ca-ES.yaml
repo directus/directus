@@ -48,8 +48,6 @@ archive: Arxiu
 archive_confirm: Estàs segur de que vols arxivar aquest element?
 archive_confirm_count: >-
   No hi ha elements seleccionats | Segur que voleu arxivar aquest element? | Segur que voleu arxivar aquests {count} elements?
-reset_system_permissions: Restableix els permisos del sistema
-reset_system_permissions_copy: Restableix tots els permisos del sistema als seus valors predeterminats
 unarchive: Desarxivar
 unarchive_confirm: Segur que voleu desarxivar aquest element?
 language: Idioma

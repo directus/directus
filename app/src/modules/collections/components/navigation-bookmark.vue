@@ -1,7 +1,9 @@
 <template>
 	<v-list-item exact :to="bookmark.to" class="bookmark" @contextmenu.native.prevent.stop="$refs.contextMenu.activate">
 		<v-list-item-icon><v-icon name="bookmark" /></v-list-item-icon>
-		<v-list-item-content>{{ bookmark.bookmark }}</v-list-item-content>
+		<v-list-item-content>
+			<v-text-overflow :text="bookmark.bookmark" />
+		</v-list-item-content>
 		<v-list-item-icon v-if="bookmark.scope !== 'user'" class="bookmark-scope">
 			<v-icon :name="bookmark.scope === 'role' ? 'people' : 'public'" />
 		</v-list-item-icon>
@@ -13,7 +15,7 @@
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('rename_bookmark') }}
+						<v-text-overflow :text="$t('rename_bookmark')" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item @click="deleteActive = true" class="danger" :disabled="isMine === false">
@@ -21,7 +23,7 @@
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('delete_bookmark') }}
+						<v-text-overflow :text="$t('delete_bookmark')" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -61,6 +63,7 @@ import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
 import { Preset } from '@/types';
 import { useUserStore, usePresetsStore } from '@/stores';
 import { unexpectedError } from '@/utils/unexpected-error';
+import router from '@/router';
 
 export default defineComponent({
 	props: {
@@ -128,8 +131,18 @@ export default defineComponent({
 				deleteSaving.value = true;
 
 				try {
+					let navigateTo: string | null = null;
+
+					if (+router.currentRoute.query?.bookmark === props.bookmark.id) {
+						navigateTo = `/collections/${props.bookmark.collection}`;
+					}
+
 					await presetsStore.delete(props.bookmark.id);
 					deleteActive.value = false;
+
+					if (navigateTo) {
+						router.push(navigateTo);
+					}
 				} catch (err) {
 					unexpectedError(err);
 				} finally {

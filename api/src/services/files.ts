@@ -7,12 +7,15 @@ import parseIPTC from '../utils/parse-iptc';
 import { AbstractServiceOptions, File, PrimaryKey } from '../types';
 import { clone } from 'lodash';
 import cache from '../cache';
-import { ForbiddenException } from '../exceptions';
+import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
 import { toArray } from '../utils/to-array';
 import { extension } from 'mime-types';
 import path from 'path';
 import env from '../env';
 import logger from '../logger';
+import axios, { AxiosResponse } from 'axios';
+import url from 'url';
+import formatTitle from '@directus/format-title';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -27,6 +30,8 @@ export class FilesService extends ItemsService {
 		const payload = clone(data);
 
 		if (primaryKey !== undefined) {
+			await this.update(payload, primaryKey);
+
 			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
 			// delete the previously saved file and thumbnails to ensure they're generated fresh
 			const disk = storage.disk(payload.storage);
@@ -34,8 +39,6 @@ export class FilesService extends ItemsService {
 			for await (const file of disk.flatList(String(primaryKey))) {
 				await disk.delete(file.path);
 			}
-
-			await this.update(payload, primaryKey);
 		} else {
 			primaryKey = await this.create(payload);
 		}
@@ -48,66 +51,59 @@ export class FilesService extends ItemsService {
 			payload.type = 'application/octet-stream';
 		}
 
-		if (['image/jpeg', 'image/png', 'image/webp'].includes(payload.type)) {
-			const pipeline = sharp();
+		try {
+			await storage.disk(data.storage).put(payload.filename_disk, stream, payload.type);
+		} catch (err) {
+			logger.warn(`Couldn't save file ${payload.filename_disk}`);
+			logger.warn(err);
+		}
 
-			pipeline
-				.metadata()
-				.then((meta) => {
-					payload.width = meta.width;
-					payload.height = meta.height;
-					payload.filesize = meta.size;
-					payload.metadata = {};
+		const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);
+		payload.filesize = size;
 
-					if (meta.icc) {
-						try {
-							payload.metadata.icc = parseICC(meta.icc);
-						} catch (err) {
-							logger.warn(`Couldn't extract ICC information from file`);
-							logger.warn(err);
-						}
-					}
+		if (['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/tiff'].includes(payload.type)) {
+			const buffer = await storage.disk(data.storage).getBuffer(payload.filename_disk);
+			const meta = await sharp(buffer.content, {}).metadata();
 
-					if (meta.exif) {
-						try {
-							payload.metadata.exif = parseEXIF(meta.exif);
-						} catch (err) {
-							logger.warn(`Couldn't extract EXIF information from file`);
-							logger.warn(err);
-						}
-					}
+			if (meta.orientation && meta.orientation >= 5) {
+				payload.height = meta.width;
+				payload.width = meta.height;
+			} else {
+				payload.width = meta.width;
+				payload.height = meta.height;
+			}
 
-					if (meta.iptc) {
-						try {
-							payload.metadata.iptc = parseIPTC(meta.iptc);
-							payload.title = payload.title || payload.metadata.iptc.headline;
-							payload.description = payload.description || payload.metadata.iptc.caption;
-						} catch (err) {
-							logger.warn(`Couldn't extract IPTC information from file`);
-							logger.warn(err);
-						}
-					}
-				})
-				.catch((err) => {
-					logger.warn(`Couldn't extract file metadata from ${payload.filename_disk}`);
+			payload.filesize = meta.size;
+			payload.metadata = {};
+
+			if (meta.icc) {
+				try {
+					payload.metadata.icc = parseICC(meta.icc);
+				} catch (err) {
+					logger.warn(`Couldn't extract ICC information from file`);
 					logger.warn(err);
-				});
-			try {
-				await storage.disk(data.storage).put(payload.filename_disk, stream.pipe(pipeline));
-			} catch (err) {
-				logger.warn(`Couldn't save file ${payload.filename_disk}`);
-				logger.warn(err);
-			}
-		} else {
-			try {
-				await storage.disk(data.storage).put(payload.filename_disk, stream);
-			} catch (err) {
-				logger.warn(`Couldn't save file ${payload.filename_disk}`);
-				logger.warn(err);
+				}
 			}
 
-			const { size } = await storage.disk(data.storage).getStat(payload.filename_disk);
-			payload.filesize = size;
+			if (meta.exif) {
+				try {
+					payload.metadata.exif = parseEXIF(meta.exif);
+				} catch (err) {
+					logger.warn(`Couldn't extract EXIF information from file`);
+					logger.warn(err);
+				}
+			}
+
+			if (meta.iptc) {
+				try {
+					payload.metadata.iptc = parseIPTC(meta.iptc);
+					payload.title = payload.title || payload.metadata.iptc.headline;
+					payload.description = payload.description || payload.metadata.iptc.caption;
+				} catch (err) {
+					logger.warn(`Couldn't extract IPTC information from file`);
+					logger.warn(err);
+				}
+			}
 		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
@@ -116,6 +112,7 @@ export class FilesService extends ItemsService {
 			knex: this.knex,
 			schema: this.schema,
 		});
+
 		await sudoService.update(payload, primaryKey);
 
 		if (cache && env.CACHE_AUTO_PURGE) {
@@ -123,6 +120,43 @@ export class FilesService extends ItemsService {
 		}
 
 		return primaryKey;
+	}
+
+	async import(importURL: string, body: Partial<File>) {
+		const fileCreatePermissions = this.schema.permissions.find(
+			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
+		);
+
+		if (this.accountability?.admin !== true && !fileCreatePermissions) {
+			throw new ForbiddenException();
+		}
+
+		let fileResponse: AxiosResponse<NodeJS.ReadableStream>;
+
+		try {
+			fileResponse = await axios.get<NodeJS.ReadableStream>(importURL, {
+				responseType: 'stream',
+			});
+		} catch (err) {
+			logger.warn(`Couldn't fetch file from url "${url}"`);
+			logger.warn(err);
+			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
+				service: 'external-file',
+			});
+		}
+
+		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
+		const filename = path.basename(parsedURL.pathname as string);
+
+		const payload = {
+			filename_download: filename,
+			storage: toArray(env.STORAGE_LOCATIONS)[0],
+			type: fileResponse.headers['content-type'],
+			title: formatTitle(filename),
+			...(body || {}),
+		};
+
+		return await this.upload(fileResponse.data, payload);
 	}
 
 	delete(key: PrimaryKey): Promise<PrimaryKey>;

@@ -1,11 +1,13 @@
 <template>
-	<private-view :title="title" ref="view">
-		<template #headline>{{ headline }}</template>
-
+	<private-view :title="title">
 		<template #title-outer:prepend>
 			<v-button rounded disabled icon>
 				<v-icon name="info" />
 			</v-button>
+		</template>
+
+		<template #title>
+			<h1 v-html="title" class="type-title"></h1>
 		</template>
 
 		<template #navigation>
@@ -25,10 +27,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, inject, onUpdated } from '@vue/composition-api';
+import { AsyncComponent } from 'vue';
+import { defineComponent, ref, computed } from '@vue/composition-api';
 import DocsNavigation from '../components/navigation.vue';
-import Markdown from '../components/markdown.vue';
 import marked from 'marked';
+
+const Markdown = () => import(/* webpackChunkName: 'markdown', webpackPrefetch: true */ '../components/markdown.vue');
 
 async function getMarkdownForPath(path: string) {
 	const pathParts = path.split('/');
@@ -39,9 +43,8 @@ async function getMarkdownForPath(path: string) {
 
 	let docsPath = pathParts.join('/');
 
-	// Home
-	if (!docsPath) {
-		docsPath = 'readme';
+	if (docsPath.endsWith('/')) {
+		docsPath = docsPath.slice(0, -1);
 	}
 
 	const mdModule = await import('raw-loader!@directus/docs/' + docsPath + '.md');
@@ -49,62 +52,56 @@ async function getMarkdownForPath(path: string) {
 	return mdModule.default;
 }
 
-function getHeadlineFromPath(path: string) {
-	const paths = path.split('/').filter(Boolean);
-	
-	if (paths.length === 1) return 'Documentation';
-	
-	return paths[1].replace(/-/g, ' ').replace(/\b\w/g, (c) => {return c.toUpperCase()});
-}
-
 export default defineComponent({
 	name: 'StaticDocs',
-	components: { DocsNavigation, Markdown },
+	components: { DocsNavigation, Markdown: Markdown as AsyncComponent },
 	async beforeRouteEnter(to, from, next) {
 		const md = await getMarkdownForPath(to.path);
-		
+
 		next((vm: any) => {
 			vm.markdown = md;
 			vm.path = to.path;
-			vm.headline = getHeadlineFromPath(to.path);
 		});
 	},
 	async beforeRouteUpdate(to, from, next) {
 		this.markdown = await getMarkdownForPath(to.path);
 		this.path = to.path;
-		this.headline = getHeadlineFromPath(to.path);
-		
+
 		next();
 	},
 	setup() {
-		const headline = ref<string | null>(null);
 		const path = ref<string | null>(null);
 		const markdown = ref('');
-		const view = ref<Vue>();		
-
 		const title = computed(() => {
-			const firstLine = markdown.value.split('\n').shift();
-			return firstLine?.substring(2).trim();
+			const lines = markdown.value.split('\n');
+
+			for (let i = 0; i < lines.length; i++) {
+				if (lines[i].startsWith('# ')) {
+					return lines[i].substring(2).trim();
+				}
+			}
 		});
 
 		const markdownWithoutTitle = computed(() => {
 			const lines = markdown.value.split('\n');
-			lines.shift();
+
+			for (let i = 0; i < lines.length; i++) {
+				if (lines[i].startsWith('# ')) {
+					lines.splice(i, 1);
+					break;
+				}
+			}
+
 			return lines.join('\n');
 		});
-		
-		onUpdated(() => {
-			view.value?.$data.contentEl?.scrollTo({ top: 0 });
-		});
 
-		return { markdown, headline, title, markdownWithoutTitle, view, marked, path };
+		return { markdown, title, markdownWithoutTitle, marked, path };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .docs-content {
-	max-width: 740px;
 	padding: 0 var(--content-padding) var(--content-padding-bottom);
 }
 </style>
