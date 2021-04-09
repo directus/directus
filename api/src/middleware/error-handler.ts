@@ -1,5 +1,5 @@
 import { ErrorRequestHandler } from 'express';
-import { BaseException } from '../exceptions';
+import { BaseException, MethodNotAllowedException } from '../exceptions';
 import logger from '../logger';
 import env from '../env';
 import { toArray } from '../utils/to-array';
@@ -44,10 +44,14 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 			payload.errors.push({
 				message: err.message,
 				extensions: {
-					...err.extensions,
 					code: err.code,
+					...err.extensions,
 				},
 			});
+
+			if (err instanceof MethodNotAllowedException) {
+				res.header('Allow', err.extensions.allow.join(', '));
+			}
 		} else {
 			logger.error(err);
 
@@ -59,8 +63,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 						{
 							message: err.message,
 							extensions: {
-								...err.extensions,
 								code: 'INTERNAL_SERVER_ERROR',
+								...err.extensions,
 							},
 						},
 					],

@@ -1,6 +1,7 @@
 # Custom Layouts <small></small>
 
-> Custom Layouts allow for building new ways to view or interact with Items via the Collection Detail pages. [Learn more about Layouts](/concept/layouts/).
+> Custom Layouts allow for building new ways to view or interact with Items via the Collection Detail pages.
+> [Learn more about Layouts](/guides/layouts/).
 
 ## 1. Setup the Boilerplate
 
@@ -91,6 +92,13 @@ export default {
 };
 ```
 
+::: tip Building multiple extensions
+
+You can export an array of build configurations, so you can bundle (or even watch) multiple extensions at the same time.
+See the [Rollup configuration file documentation](https://rollupjs.org/guide/en/#configuration-files) for more info.
+
+:::
+
 ## 3. Develop Your Custom Layout
 
 The layout itself is simply a Vue component, which provides an blank canvas for creating anything you need.
@@ -103,5 +111,5 @@ To build the layout for use within Directus, run:
 npx rollup -c
 ```
 
-Finally, move the output from your layout's `dist` folder into your project's `/extensions/layouts` folder. Keep in mind
-that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your layout's `dist` folder into your project's `/extensions/layouts/my-custom-layout`
+folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.

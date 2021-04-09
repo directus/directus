@@ -71,6 +71,7 @@ validationError:
   null: Reikšmė turi būti null
   nnull: Reikšmė negali būti null
   required: Reikšmė turi būti užpildyta
+  unique: Reikšmė turi būti unikali
 all_access: Pilna prieiga
 no_access: Jokios prieigos
 use_custom: Pasirinktinai
@@ -105,8 +106,6 @@ exposure: Išlaikymas
 shutter: Užraktas
 iso: ISO
 focal_length: Židinio nuotolis
-schema_setup_title: Kaip šis laukas turėtų būti saugojamas duomenų bazėje?
-schema_field_title: Kaip šis laukas turėtų atrodyti aplikacijoje?
 create_field: Kurti lauką
 creating_new_field: 'Naujas laukas ({collection})'
 reset_page_preferences: Atstatyti puslapio nustatymus
@@ -137,10 +136,6 @@ click_here: Spauskite čia
 click_to_manage_translated_fields: >-
   Dar nėra laukų su vertimais. Paspauskite čia, kad juos sukurtumėte | Yra vienas laukas su vertimais. Paspauskite čia norėdami redaguoti | Yra {count} laukų su vertimais. Paspauskite čia norėdami redaguoti.
 fields_group: Laukų grupė
-configure_m2o: Konfigūruoti daug-su-vienu sąryšį...
-configure_o2m: Konfigūruoti vienas-su-daug sąryšį...
-configure_m2m: Konfigūruoti daug-su-daug sąryšį...
-configure_m2a: Konfigūruoti daug-su-bet-kiek sąryšį...
 add_m2o_to_collection: 'Pridėti daug-su-vienu į "{collection}"'
 add_o2m_to_collection: 'Pridėti vienas-su-daug į "{collection}"'
 add_m2m_to_collection: 'Pridėti daug-su-daug į "{collection}"'
@@ -148,8 +143,6 @@ choose_a_type: Pasirinkite tipą...
 determined_by_relationship: Nustatoma pagal sąryšį
 add_note: Pridėkite paaiškinimą vartotojui...
 default_value: Numatytoji reikšmė
-interface_setup_title: Kaip vartotojai valdys šį lauką?
-display_setup_title: Kaip turėtų būti atvaizduojama lauko reikšmė?
 standard_field: Standartinis laukas
 single_file: Vienas failas
 multiple_files: Keli failai

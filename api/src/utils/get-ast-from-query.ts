@@ -11,12 +11,9 @@ import {
 	Accountability,
 	SchemaOverview,
 } from '../types';
-import database from '../database';
-import { cloneDeep } from 'lodash';
-import Knex from 'knex';
+import { cloneDeep, omitBy, mapKeys } from 'lodash';
+import { Knex } from 'knex';
 import { getRelationType } from '../utils/get-relation-type';
-import { systemFieldRows } from '../database/system-data/fields';
-import { systemRelationRows } from '../database/system-data/relations';
 
 type GetASTOptions = {
 	accountability?: Accountability | null;
@@ -39,8 +36,6 @@ export default async function getASTFromQuery(
 	const accountability = options?.accountability;
 	const action = options?.action || 'read';
 
-	const relations = [...schema.relations, ...systemRelationRows];
-
 	const permissions =
 		accountability && accountability.admin !== true
 			? schema.permissions.filter((permission) => {
@@ -62,11 +57,16 @@ export default async function getASTFromQuery(
 	delete query.fields;
 	delete query.deep;
 
+	if (!query.sort) {
+		const sortField = schema.collections[collection]?.sortField;
+		query.sort = [{ column: sortField || schema.collections[collection].primary, order: 'asc' }];
+	}
+
 	ast.children = await parseFields(collection, fields, deep);
 
 	return ast;
 
-	async function parseFields(parentCollection: string, fields: string[] | null, deep?: Record<string, Query>) {
+	async function parseFields(parentCollection: string, fields: string[] | null, deep?: Record<string, any>) {
 		if (!fields) return [];
 
 		fields = await convertWildcards(parentCollection, fields);
@@ -82,7 +82,9 @@ export default async function getASTFromQuery(
 				field.includes('.') ||
 				// We'll always treat top level o2m fields as a related item. This is an alias field, otherwise it won't return
 				// anything
-				!!relations.find((relation) => relation.one_collection === parentCollection && relation.one_field === field);
+				!!schema.relations.find(
+					(relation) => relation.one_collection === parentCollection && relation.one_field === field
+				);
 
 			if (isRelational) {
 				// field is relational
@@ -141,7 +143,7 @@ export default async function getASTFromQuery(
 			let child: NestedCollectionNode | null = null;
 
 			if (relationType === 'm2a') {
-				const allowedCollections = relation.one_allowed_collections!.split(',').filter((collection) => {
+				const allowedCollections = relation.one_allowed_collections!.filter((collection) => {
 					if (!permissions) return true;
 					return permissions.some((permission) => permission.collection === collection);
 				});
@@ -152,7 +154,7 @@ export default async function getASTFromQuery(
 					children: {},
 					query: {},
 					relatedKey: {},
-					parentKey: schema.tables[parentCollection].primary,
+					parentKey: schema.collections[parentCollection].primary,
 					fieldKey: relationalField,
 					relation: relation,
 				};
@@ -164,7 +166,7 @@ export default async function getASTFromQuery(
 					);
 
 					child.query[relatedCollection] = {};
-					child.relatedKey[relatedCollection] = schema.tables[relatedCollection].primary;
+					child.relatedKey[relatedCollection] = schema.collections[relatedCollection].primary;
 				}
 			} else if (relatedCollection) {
 				if (permissions && permissions.some((permission) => permission.collection === relatedCollection) === false) {
@@ -175,12 +177,16 @@ export default async function getASTFromQuery(
 					type: relationType,
 					name: relatedCollection,
 					fieldKey: relationalField,
-					parentKey: schema.tables[parentCollection].primary,
-					relatedKey: schema.tables[relatedCollection].primary,
+					parentKey: schema.collections[parentCollection].primary,
+					relatedKey: schema.collections[relatedCollection].primary,
 					relation: relation,
-					query: deep?.[relationalField] || {},
-					children: await parseFields(relatedCollection, nestedFields as string[]),
+					query: getDeepQuery(deep?.[relationalField] || {}),
+					children: await parseFields(relatedCollection, nestedFields as string[], deep?.[relationalField] || {}),
 				};
+
+				if (relationType === 'o2m' && !child!.query.sort) {
+					child!.query.sort = [{ column: relation.sort_field || relation.many_primary, order: 'asc' }];
+				}
 			}
 
 			if (child) {
@@ -194,7 +200,7 @@ export default async function getASTFromQuery(
 	async function convertWildcards(parentCollection: string, fields: string[]) {
 		fields = cloneDeep(fields);
 
-		const fieldsInCollection = await getFieldsInCollection(parentCollection);
+		const fieldsInCollection = Object.entries(schema.collections[parentCollection].fields).map(([name]) => name);
 
 		let allowedFields: string[] | null = fieldsInCollection;
 
@@ -228,7 +234,7 @@ export default async function getASTFromQuery(
 				const parts = fieldKey.split('.');
 
 				const relationalFields = allowedFields.includes('*')
-					? relations
+					? schema.relations
 							.filter(
 								(relation) =>
 									relation.many_collection === parentCollection || relation.one_collection === parentCollection
@@ -258,7 +264,7 @@ export default async function getASTFromQuery(
 	}
 
 	function getRelation(collection: string, field: string) {
-		const relation = relations.find((relation) => {
+		const relation = schema.relations.find((relation) => {
 			return (
 				(relation.many_collection === collection && relation.many_field === field) ||
 				(relation.one_collection === collection && relation.one_field === field)
@@ -283,21 +289,11 @@ export default async function getASTFromQuery(
 
 		return null;
 	}
+}
 
-	async function getFieldsInCollection(collection: string) {
-		const columns = Object.keys(schema.tables[collection].columns);
-		const fields = [
-			...schema.fields.filter((field) => field.collection === collection).map((field) => field.field),
-			...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection).map((fieldMeta) => fieldMeta.field),
-		];
-
-		const fieldsInCollection = [
-			...columns,
-			...fields.filter((field) => {
-				return columns.includes(field) === false;
-			}),
-		];
-
-		return fieldsInCollection;
-	}
+function getDeepQuery(query: Record<string, any>) {
+	return mapKeys(
+		omitBy(query, (value, key) => key.startsWith('_') === false),
+		(value, key) => key.substring(1)
+	);
 }

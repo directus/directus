@@ -1,23 +1,23 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayFormattedValue from './formatted-value.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'formatted-value',
-	name: i18n.t('displays.formatted-value.formatted-value'),
-	description: i18n.t('displays.formatted-value.description'),
+	name: '$t:displays.formatted-value.formatted-value',
+	description: '$t:displays.formatted-value.description',
 	types: ['string', 'text', 'integer', 'float', 'decimal', 'bigInteger'],
 	icon: 'text_format',
 	handler: DisplayFormattedValue,
 	options: [
 		{
 			field: 'formatTitle',
-			name: i18n.t('displays.formatted-value.format_title'),
+			name: '$t:displays.formatted-value.format_title',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('displays.formatted-value.format_title_label'),
+					label: '$t:displays.formatted-value.format_title_label',
 				},
 			},
 			schema: {
@@ -26,13 +26,13 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'bold',
-			name: i18n.t('bold'),
+			name: '$t:bold',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('displays.formatted-value.bold_label'),
+					label: '$t:displays.formatted-value.bold_label',
 				},
 			},
 			schema: {
@@ -41,7 +41,7 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'color',
-			name: i18n.t('color'),
+			name: '$t:color',
 			meta: {
 				width: 'half',
 				interface: 'color',
@@ -49,15 +49,15 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'font',
-			name: i18n.t('font'),
+			name: '$t:font',
 			meta: {
 				width: 'half',
 				interface: 'dropdown',
 				options: {
 					choices: [
-						{ text: i18n.t('sans_serif'), value: 'sans-serif' },
-						{ text: i18n.t('serif'), value: 'serif' },
-						{ text: i18n.t('monospace'), value: 'monospace' },
+						{ text: '$t:sans_serif', value: 'sans-serif' },
+						{ text: '$t:serif', value: 'serif' },
+						{ text: '$t:monospace', value: 'monospace' },
 					],
 				},
 			},
@@ -66,4 +66,4 @@ export default defineDisplay(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

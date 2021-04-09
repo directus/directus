@@ -11,6 +11,7 @@ add_field: Добавяне на поле
 role_name: Име на роля
 db_only_click_to_configure: 'Само в базата данни: Кликнете за конфигурация '
 show_archived_items: Включително архивираните
+edited: Стойността е редактирана
 required: Задължително
 required_for_app_access: Изисква се за достъп до приложението
 requires_value: Изисква се стойност
@@ -22,8 +23,8 @@ invite_users: Покана към потребители
 email_examples: 'admin@example.com, potrebitel@example.com...'
 invite: Покана
 emails: E-пощи
-connection_excellent: Отлична свързаност
-connection_good: Добра свързаност
+connection_excellent: Връзката е отлична
+connection_good: Връзката е добра
 connection_fair: Връзката е приемлива
 connection_poor: Връзката е лоша
 primary: Първичен
@@ -41,7 +42,7 @@ logoutReason:
   SIGN_OUT: Отписан
   SESSION_EXPIRED: Сесията е изтекла
 public: Публичен
-public_description: Контрол на позволенията за API, без нужда от оторизиране.
+public_description: Контрол на позволенията към API, без нужда от оторизиране.
 not_allowed: Не е позволено
 directus_version: Версия на Directus
 node_version: Версия на Node
@@ -79,6 +80,7 @@ validationError:
   null: Стойността трябва да е null
   nnull: Стойността не трябва да е null
   required: Изисква се стойност
+  unique: Изисква се уникална стойност
 all_access: Пълен достъп
 no_access: Без достъп
 use_custom: Персонализиран
@@ -87,6 +89,7 @@ field_presentation: Презентационни и псевдоними
 field_file: Единствен файл
 field_files: Множество файлове
 field_m2o: M2O релация
+field_m2a: M2A релация
 field_o2m: O2M релация
 field_m2m: M2M релация
 field_translations: Преводи
@@ -117,8 +120,7 @@ exposure: Експозиция
 shutter: Затвор
 iso: ISO
 focal_length: Фокусно разстояние
-schema_setup_title: Как ще бъде запазено полето в базата данни?
-schema_field_title: Как това поле ще се държи в приложението?
+schema_setup_key: Име на колоната в базата данни, както и име на полето в API
 create_field: Създаване на поле
 creating_new_field: 'Ново поле ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -154,10 +156,6 @@ fields_group: Групи от полета
 new_data_alert: 'Следващото ще бъде създадено във вашият модел:'
 new_field: 'Ново поле'
 new_collection: 'Нова колекция'
-configure_m2o: Конфигуриране на релация от тип "много към един"...
-configure_o2m: Конфигуриране на релация от тип "един към много"...
-configure_m2m: Конфигуриране на релация от тип "много към много"...
-configure_m2a: Конфигуриране на релация от тип "много към нещо"...
 add_m2o_to_collection: 'Добавяне на "много към един" в "{collection}"'
 add_o2m_to_collection: 'Добавяне на "един към много" в "{collection}"'
 add_m2m_to_collection: 'Добавяне на "много към много" в "{collection}"'
@@ -165,8 +163,6 @@ choose_a_type: Избиране на тип...
 determined_by_relationship: Определяне по тип на релация
 add_note: Въвеждане на полезна бележка към потребителите...
 default_value: Стойност по подразбиране
-interface_setup_title: Как потребителите ще взаимодействат с това поле?
-display_setup_title: Как ще бъде показвана стойността на това поле?
 standard_field: Стандартно поле
 single_file: Единствен файл
 multiple_files: Множество файлове
@@ -174,6 +170,7 @@ m2o_relationship: Много към един
 o2m_relationship: Един към много
 m2m_relationship: Много към много
 m2a_relationship: Много към нещо
+invalid_item: Невалиден запис
 next: Напред
 field_name: Име на поле
 translations: Преводи
@@ -363,6 +360,7 @@ collection_created: Колекцията е създадена
 modified_on: Променен на
 card_size: Големина на картите
 sort_field: Поле за сортиране
+add_sort_field: Добавяне на поле за сортиране
 sort: Сортиране
 status: Статус
 toggle_manual_sorting: Ръчна подредба
@@ -390,6 +388,7 @@ errors:
   ITEM_LIMIT_REACHED: Достигнат лимит на записи
   ITEM_NOT_FOUND: Записът не е намерен
   ROUTE_NOT_FOUND: Не е намерен
+  RECORD_NOT_UNIQUE: Вече съществува такава стойност
   UNKNOWN: Неочаквана грешка
 value_hashed: Хеширана стойност
 bookmark_name: Име на отметка...
@@ -432,6 +431,7 @@ system_collections: Системни колекции
 placeholder: Заместител (placeholder)
 icon_left: Икона вляво
 icon_right: Икона вдясно
+count_other_revisions: '{count} други ревизии'
 font: Шрифт
 sans_serif: Несерифен
 serif: Серифен
@@ -466,7 +466,7 @@ operators:
 loading: Зареждане...
 drop_to_upload: Пускане за качване
 upload_file: Качване на файл
-upload_file_indeterminate: Качване на файл...
+upload_file_indeterminate: Файлът се качва...
 upload_file_success: Файлът е качен
 upload_files_indeterminate: 'Качване на файлове {done}/{total}'
 upload_files_success: '{count} файла са качени'
@@ -478,7 +478,7 @@ rows: Редове
 columns: Колони
 collection_setup: Настройки на колекция
 optional_system_fields: Незадължителни системни полета
-value_unique: Стойността трябва да е уникална
+value_unique: Изисква се уникална стойност
 all_activity: Цялата активност
 create_item: Създаване на запис
 display_template: Шаблон при показване
@@ -578,6 +578,7 @@ settings_webhooks: Уеб-куки
 settings_presets: Изгледи и отметки
 scope: Обхват
 layout: Оформление
+tree_view: Дървовиден изглед
 changes_are_permanent: Промените са постоянни
 preset_name_placeholder: Име на отметка...
 preset_search_placeholder: Заявка за търсене...
@@ -587,7 +588,7 @@ layout_setup: Настройка на оформление
 unsaved_changes: Незапазени промени
 unsaved_changes_copy: Сигурни ли сте, че искате да напуснете тази страница?
 discard_changes: Отмяна на промените
-keep_editing: Продължаване с промените
+keep_editing: Продължаване на редакцията
 page_help_collections_overview: '**Обзор на колекциите** — Показва всички налични колекции до които имате достъп.'
 page_help_collections_collection: >-
   **Преглед на записи** — Показва всички записи от {collection}, до които имате достъп. Дава възможност за персонализиране на оформлението, филтрите и подредбата, така, че да се впишат по-добре към вашите нужди, дори имате възможност да добавите отметки с тези конфигурации за по-бърз достъп.
@@ -972,6 +973,9 @@ interfaces:
   translations:
     display_template: Шаблон при показване
     no_collection: Няма колекция
+  tree-view:
+    description: Дървовиден изглед за вложени рекурсивни записи от тип - един-към-много
+    recursive_only: Дървовидния интерфейс работи само за рекурсивни релации.
   user:
     user: Потребител
     description: Избор на съществуващ потребител

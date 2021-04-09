@@ -53,6 +53,8 @@ archive_confirm_count: >-
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
+validationError:
+  unique: Egyedi érték szükséges
 all_access: Összes hozzáférés
 no_access: Nincs hozzáférés
 use_custom: Egyéni használata
@@ -77,8 +79,6 @@ exposure: Megvilágítás
 shutter: Exponálógomb
 iso: ISO
 focal_length: Fókusztávolság
-schema_setup_title: Hogyan kerüljön ez a mező az adatbázisba?
-schema_field_title: Hogyan viselkedjen ez a mező az alkalmazásban?
 create_field: Mező létrehozása
 creating_new_field: 'Új mező ({collection})'
 reset_page_preferences: Oldalbeállítások visszaállítása
@@ -112,10 +112,6 @@ click_to_manage_translated_fields: >-
 fields_group: Mező csoport
 new_field: 'Új mező'
 new_collection: 'Új gyűjtemény'
-configure_m2o: A Sok-az-Egyhez kapcsolatok beállítása...
-configure_o2m: Az Egy-a-Sokhoz kapcsolatok beállítása...
-configure_m2m: A Sok-a-Sokhoz kapcsolatok beállítása...
-configure_m2a: A Sok-az-Akárhányhoz kapcsolatok beállítása...
 add_m2o_to_collection: 'Egy Sok-az-Egyhez kapcsolat hozzáadása a {collection} gyűjteményhez'
 add_o2m_to_collection: 'Egy Egy-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
 add_m2m_to_collection: 'Egy Sok-a-Sokhoz kapcsolat hozzáadása a {collection} gyűjteményhez'
@@ -123,8 +119,6 @@ choose_a_type: Válassz típust...
 determined_by_relationship: A kapcsolat által meghatározott
 add_note: Segítő jelzés a kitöltő felhasználónak...
 default_value: Alapértelmezett érték
-interface_setup_title: Hogyan fogják a felhasználók ezt a mezőt használni?
-display_setup_title: Hogyan kell ennek a mezőnek az értékét megjeleníteni?
 standard_field: Általános mező
 single_file: Egyetlen fájl
 multiple_files: Több fájl egyidejű hozzáadása

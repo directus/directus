@@ -145,6 +145,7 @@
 		</template>
 
 		<template #navigation>
+			<collections-navigation-search />
 			<collections-navigation exact />
 		</template>
 
@@ -221,6 +222,7 @@
 			<layout-sidebar-detail @input="layout = $event" :value="layout" />
 			<portal-target name="sidebar" />
 			<export-sidebar-detail :layout-query="layoutQuery" :search-query="searchQuery" :collection="currentCollection" />
+			<refresh-sidebar-detail @refresh="refresh" v-model="refreshInterval" />
 		</template>
 
 		<v-dialog v-if="deleteError" active>
@@ -240,6 +242,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch, toRefs } from '@vue/composition-api';
 import CollectionsNavigation from '../components/navigation.vue';
+import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import api from '@/api';
 import { LayoutComponent } from '@/layouts/types';
 import CollectionsNotFound from './not-found.vue';
@@ -247,6 +250,7 @@ import useCollection from '@/composables/use-collection';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
+import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
@@ -264,6 +268,7 @@ export default defineComponent({
 	name: 'collections-collection',
 	components: {
 		CollectionsNavigation,
+		CollectionsNavigationSearch,
 		CollectionsNotFound,
 		LayoutSidebarDetail,
 		ExportSidebarDetail,
@@ -271,6 +276,7 @@ export default defineComponent({
 		BookmarkAdd,
 		BookmarkEdit,
 		DrawerBatch,
+		RefreshSidebarDetail,
 	},
 	props: {
 		collection: {
@@ -308,6 +314,7 @@ export default defineComponent({
 			resetPreset,
 			bookmarkSaved,
 			bookmarkIsMine,
+			refreshInterval,
 			busy: bookmarkSaving,
 			clearLocalSave,
 		} = usePreset(collection, bookmarkID);
@@ -341,7 +348,6 @@ export default defineComponent({
 			addNewLink,
 			batchDelete,
 			batchEditActive,
-
 			confirmDelete,
 			currentCollection,
 			deleting,
@@ -378,6 +384,7 @@ export default defineComponent({
 			bookmarkSaving,
 			clearLocalSave,
 			refresh,
+			refreshInterval,
 		};
 
 		function refresh() {
@@ -570,23 +577,23 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
 .action-archive {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 
 .action-batch {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 

@@ -51,7 +51,10 @@ export default defineComponent({
 
 			return changedFields
 				.map((fieldKey) => {
-					const name = fieldsStore.getField(props.revision.collection, fieldKey).name;
+					const name = fieldsStore.getField(props.revision.collection, fieldKey)?.name;
+
+					if (!name) return null;
+
 					const currentValue = props.revision.delta[fieldKey];
 					const previousValue = previousRevision.value.data[fieldKey];
 
@@ -59,11 +62,16 @@ export default defineComponent({
 
 					let changes;
 
-					if (typeof currentValue === 'string' && currentValue.length > 25) {
+					if (typeof previousValue === 'string' && typeof currentValue === 'string' && currentValue.length > 25) {
 						changes = diffWordsWithSpace(previousValue, currentValue);
-					} else if (Array.isArray(currentValue)) {
+					} else if (Array.isArray(previousValue) && Array.isArray(currentValue)) {
 						changes = diffArrays(previousValue, currentValue);
-					} else if (typeof currentValue === 'object') {
+					} else if (
+						previousValue &&
+						currentValue &&
+						typeof currentValue === 'object' &&
+						typeof currentValue === 'object'
+					) {
 						changes = diffJson(previousValue, currentValue);
 					} else {
 						// This is considering the whole thing a change

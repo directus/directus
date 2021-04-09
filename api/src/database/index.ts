@@ -1,4 +1,4 @@
-import knex, { Config } from 'knex';
+import { knex, Knex } from 'knex';
 import dotenv from 'dotenv';
 import path from 'path';
 import logger from '../logger';
@@ -22,7 +22,7 @@ const poolConfig = getConfigFromEnv('DB_POOL');
 
 validateEnv(['DB_CLIENT']);
 
-const knexConfig: Config = {
+const knexConfig: Knex.Config = {
 	client: env.DB_CLIENT,
 	searchPath: env.DB_SEARCH_PATH,
 	connection: env.DB_CONNECTION_STRING || connectionConfig,
@@ -37,6 +37,9 @@ const knexConfig: Config = {
 
 if (env.DB_CLIENT === 'sqlite3') {
 	knexConfig.useNullAsDefault = true;
+	poolConfig.afterCreate = (conn: any, cb: any) => {
+		conn.run('PRAGMA foreign_keys = ON', cb);
+	};
 }
 
 const database = knex(knexConfig);
@@ -54,7 +57,11 @@ database
 
 export async function hasDatabaseConnection() {
 	try {
-		await database.raw('select 1 + 1 as result');
+		if (env.DB_CLIENT === 'oracledb') {
+			await database.raw('select 1 from DUAL');
+		} else {
+			await database.raw('SELECT 1');
+		}
 		return true;
 	} catch {
 		return false;

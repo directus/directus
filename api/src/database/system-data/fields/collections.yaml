@@ -2,12 +2,13 @@ table: directus_collections
 
 fields:
   - field: collection_divider
-    special: alias
+    special:
+      - alias
+      - no-data
     interface: divider
     options:
       icon: box
       title: Collection Setup
-      color: '#2F80ED'
     width: full
 
   - field: collection
@@ -73,12 +74,13 @@ fields:
     width: full
 
   - field: archive_divider
-    special: alias
+    special:
+      - alias
+      - no-data
     interface: divider
     options:
       icon: archive
       title: Archive
-      color: '#2F80ED'
     width: full
 
   - field: archive_field
@@ -113,12 +115,13 @@ fields:
     width: half
 
   - field: sort_divider
-    special: alias
+    special:
+      - alias
+      - no-data
     interface: divider
     options:
       icon: sort
       title: Sort
-      color: '#2F80ED'
     width: full
 
   - field: sort_field

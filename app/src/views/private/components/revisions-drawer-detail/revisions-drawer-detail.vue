@@ -42,13 +42,13 @@
 			:revisions="revisions"
 			:current.sync="modalCurrentRevision"
 			:active.sync="modalActive"
-			@revert="onRevert"
+			@revert="$emit('revert', $event)"
 		/>
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { Revision, RevisionsByDate } from './types';
 
 import api from '@/api';
@@ -91,7 +91,6 @@ export default defineComponent({
 			modalActive,
 			modalCurrentRevision,
 			openModal,
-			onRevert,
 			revisionsCount,
 			created,
 			abbreviateNumber,
@@ -186,11 +185,14 @@ export default defineComponent({
 
 					created.value = createdResponse.data.data?.[0];
 
-					const revisionsGroupedByDate = groupBy(response.data.data, (revision: Revision) => {
-						// revision's timestamp date is in iso-8601
-						const date = new Date(new Date(revision.activity.timestamp).toDateString());
-						return date;
-					});
+					const revisionsGroupedByDate = groupBy(
+						response.data.data.filter((revision: any) => !!revision.activity),
+						(revision: Revision) => {
+							// revision's timestamp date is in iso-8601
+							const date = new Date(new Date(revision.activity.timestamp).toDateString());
+							return date;
+						}
+					);
 
 					const revisionsGrouped: RevisionsByDate[] = [];
 
@@ -228,11 +230,6 @@ export default defineComponent({
 			async function refresh() {
 				await getRevisions();
 			}
-		}
-
-		function onRevert() {
-			refresh();
-			emit('revert');
 		}
 	},
 });

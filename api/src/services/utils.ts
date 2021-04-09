@@ -1,6 +1,6 @@
 import { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
 import database from '../database';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import { systemCollectionRows } from '../database/system-data/collections';
 
@@ -42,7 +42,7 @@ export class UtilsService {
 			}
 		}
 
-		const primaryKeyField = this.schema.tables[collection].primary;
+		const primaryKeyField = this.schema.collections[collection].primary;
 
 		// Make sure all rows have a sort value
 		const countResponse = await this.knex.count('* as count').from(collection).whereNull(sortField).first();

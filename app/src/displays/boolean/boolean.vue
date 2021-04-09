@@ -41,7 +41,7 @@ export default defineComponent({
 		},
 		colorOn: {
 			type: String,
-			default: '#2F80ED',
+			default: '#00C897',
 		},
 		colorOff: {
 			type: String,

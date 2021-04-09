@@ -57,6 +57,7 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
 reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
 the_following_are_minimum_permissions: Homm
+app_access_minimum: Minimum Uygulama Erişimi
 recommended_defaults: Önerilen Ön Tanımlı Veriler
 unarchive: Arşivden çıkar
 unarchive_confirm: Bu öğeyi arşivden çıkarmak istediğinizden emin misiniz?
@@ -85,12 +86,16 @@ field_standard: Standart
 field_file: Tek Dosya
 field_files: Birden Fazla Dosya
 field_m2o: M2O İlişkisi
+field_m2a: M2A İlişkisi
 field_o2m: O2M İlişkisi
 field_m2m: M2M İlişkisi
 field_translations: Çeviriler
 item_permissions: Alan İzinleri
 field_permissions: Alan İzinleri
 field_validation: Alan Doğrulama
+field_presets: Alan Hazır Ayarları
+permissions_for_role: '{role} rolünün {action} yapabileceği öğeler.'
+fields_for_role: '{role} rolünün {action} yapabileceği alanlar.'
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
@@ -106,8 +111,6 @@ exposure: Pozlama
 shutter: Deklanşör
 iso: ISO
 focal_length: Odak Uzaklığı
-schema_setup_title: Bu alan veritabanına nasıl kaydedilsin?
-schema_field_title: Bu alan uygulamada nasıl gözüksün?
 create_field: Alan Ekle
 creating_new_field: 'Yeni alan ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -142,18 +145,12 @@ click_to_manage_translated_fields: >-
 fields_group: Alanlar Grubu
 new_field: 'Yeni Alan'
 new_collection: 'Yeni Koleksiyon'
-configure_m2o: Çoktan Bire İlişkinizi Yapılandırın...
-configure_o2m: Bire Çoğa İlişkinizi Yapılandırın...
-configure_m2m: Çoktan Çoğa İlişkinizi Yapılandırın...
-configure_m2a: Çoktan Herhangi Bir İlişkinizi Yapılandırın...
 add_m2o_to_collection: '"{collection}" koleksiyonuna Çoktan Bire''yi ekleyin'
 add_o2m_to_collection: '"{collection}" koleksiyonuna Bire Çok ekleyin'
 add_m2m_to_collection: '"{collection}" koleksiyonuna Çoktan Çoğa ekle'
 choose_a_type: Bir Tür Seçin...
 add_note: Kullanıcılar için yardımcı bir not ekleyin...
 default_value: Öntanımlı Değer
-interface_setup_title: Kullanıcılar bu alanla nasıl etkileşim kuracak?
-display_setup_title: Bu alanın değeri nasıl görüntülenmelidir?
 standard_field: Standart Alan
 single_file: Tek Dosya
 multiple_files: Birden Fazla Dosya
@@ -261,7 +258,11 @@ background_color: Arkaplan Rengi
 upload_from_device: Cihazdan Yükle
 choose_from_library: Kütüphaneden seç
 import_from_url: URL’den Dosya Yükle
+no_file_selected: Dosya seçilmedi
+download_file: Dosyayı İndir
 name: İsim
+type: Tür
+creating_new_collection: Yeni Koleksiyon Oluştur
 created_by: Oluşturan
 created_on: Oluşturulma tarihi
 save_and_create_new: Kaydet ve Yeni Oluştur

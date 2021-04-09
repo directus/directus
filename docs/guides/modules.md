@@ -1,6 +1,7 @@
 # Custom Modules <small></small>
 
-> Custom Modules are completely open-ended components that allow you to create new experiences within the Directus platform. [Learn more about Modules](/concepts/modules/).
+> Custom Modules are completely open-ended components that allow you to create new experiences within the Directus
+> platform. [Learn more about Modules](/concepts/modules/).
 
 ## 1. Setup the Boilerplate
 
@@ -72,7 +73,7 @@ To be read by the Admin App, your custom module's Vue component must first be bu
 recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
 ```bash
-npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler
+npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc rollup-plugin-vue@next
 ```
 
 You can then use the following Rollup configuration within `rollup.config.js`:
@@ -93,6 +94,13 @@ export default {
 };
 ```
 
+::: tip Building multiple extensions
+
+You can export an array of build configurations, so you can bundle (or even watch) multiple extensions at the same time.
+See the [Rollup configuration file documentation](https://rollupjs.org/guide/en/#configuration-files) for more info.
+
+:::
+
 ## 3. Develop Your Custom Module
 
 The module itself is simply a Vue component, which provides an blank canvas for creating anything you need.
@@ -105,5 +113,5 @@ To build the module for use within Directus, run:
 npx rollup -c
 ```
 
-Finally, move the output from your module's `dist` folder into your project's `/extensions/modules` folder. Keep in mind
-that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your module's `dist` folder into your project's `/extensions/modules/my-custom-module`
+folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.

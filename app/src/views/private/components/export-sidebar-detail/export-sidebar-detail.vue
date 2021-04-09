@@ -32,6 +32,7 @@
 import { defineComponent, ref, PropType } from '@vue/composition-api';
 import { Collection } from '@/types';
 import api from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
 
 export default defineComponent({
 	props: {
@@ -48,14 +49,14 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
+	setup(props) {
 		const format = ref('csv');
 		const useFilters = ref(true);
 
 		return { format, useFilters, exportData };
 
 		function exportData() {
-			const url = `/items/${props.collection.collection}`;
+			const url = getRootPath() + `items/${props.collection.collection}`;
 
 			let params: Record<string, any> = {
 				access_token: api.defaults.headers.Authorization.substring(7),
@@ -81,6 +82,7 @@ export default defineComponent({
 			const qs = Object.keys(params)
 				.map((key) => `${key}=${params[key]}`)
 				.join('&');
+
 			window.open(`${url}?${qs}`);
 		}
 	},
@@ -101,6 +103,10 @@ export default defineComponent({
 }
 
 .v-checkbox {
+	width: 100%;
 	margin-top: 8px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 </style>

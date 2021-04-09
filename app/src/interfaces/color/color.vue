@@ -100,11 +100,11 @@ export default defineComponent({
 			default: () => [
 				{
 					name: 'Red',
-					color: '#EB5757',
+					color: '#E35169',
 				},
 				{
 					name: 'Orange',
-					color: '#F2994A',
+					color: '#F7971C',
 				},
 				{
 					name: 'Yellow',
@@ -112,19 +112,15 @@ export default defineComponent({
 				},
 				{
 					name: 'Green',
-					color: '#27AE60',
-				},
-				{
-					name: 'Light Blue',
-					color: '#56CCF2',
+					color: '#00C897',
 				},
 				{
 					name: 'Blue',
-					color: '#2F80ED',
+					color: '#68B0F4',
 				},
 				{
 					name: 'Purple',
-					color: '#9B51E0',
+					color: '#9E8DE4',
 				},
 				{
 					name: 'Gray',
@@ -164,7 +160,7 @@ export default defineComponent({
 			const pageColorString = getComputedStyle(document.body).getPropertyValue('--background-page').trim();
 			const pageColor = Color(pageColorString);
 
-			return color.value.contrast(pageColor) < 2;
+			return color.value.contrast(pageColor) < 1.1;
 		});
 
 		const { hsl, rgb, hex, color } = useColor();

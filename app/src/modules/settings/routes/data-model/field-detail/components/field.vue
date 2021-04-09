@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('schema_field_title') }}</v-notice>
 
 		<div class="form">
 			<div class="field half-left" v-if="fieldData.meta">

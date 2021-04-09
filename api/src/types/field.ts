@@ -1,4 +1,4 @@
-import { Column } from '@directus/schema/dist/types/column';
+import { Column } from 'knex-schema-inspector/dist/types/column';
 
 export const types = [
 	'bigInteger',
@@ -26,7 +26,6 @@ export type FieldMeta = {
 	special: string[] | null;
 	interface: string | null;
 	options: Record<string, any> | null;
-	locked: boolean;
 	readonly: boolean;
 	hidden: boolean;
 	sort: number | null;

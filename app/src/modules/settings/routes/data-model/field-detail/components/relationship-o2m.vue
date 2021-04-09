@@ -1,7 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('configure_o2m') }}</v-notice>
-
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
@@ -107,11 +105,10 @@
 			<v-divider large :inline-title="false">{{ $t('sort_field') }}</v-divider>
 
 			<v-input
-				:class="{ matches: sortFieldExists }"
-				v-model="relations[0].sort_field"
-				:nullable="false"
-				:placeholder="$t('add_sort_field') + '...'"
 				db-safe
+				v-model="relations[0].sort_field"
+				:placeholder="$t('add_sort_field') + '...'"
+				:class="{ matches: sortFieldExists }"
 			>
 				<template #append v-if="fields && fields.length > 0">
 					<v-menu show-arrow placement="bottom-end">
@@ -121,14 +118,14 @@
 
 						<v-list class="monospace">
 							<v-list-item
-								v-for="item in fields"
-								:key="item.value"
-								:active="relations[0].sort_field === item.value"
-								:disabled="item.disabled"
-								@click="relations[0].sort_field = item.value"
+								v-for="field in fields"
+								:key="field.value"
+								:active="relations[0].sort_field === field.value"
+								@click="relations[0].sort_field = field.value"
+								:disabled="field.disabled"
 							>
 								<v-list-item-content>
-									{{ item.text }}
+									{{ field.text }}
 								</v-list-item-content>
 							</v-list-item>
 						</v-list>
@@ -224,9 +221,7 @@ export default defineComponent({
 			const availableCollections = computed(() => {
 				return orderBy(
 					collectionsStore.state.collections.filter((collection) => {
-						return (
-							collection.collection.startsWith('directus_') === false && collection.collection !== props.collection
-						);
+						return collection.collection.startsWith('directus_') === false;
 					}),
 					['collection'],
 					['asc']
@@ -236,7 +231,7 @@ export default defineComponent({
 			const systemCollections = computed(() => {
 				return orderBy(
 					collectionsStore.state.collections.filter((collection) => {
-						return collection.collection.startsWith('directus_') === true && collection.collection !== props.collection;
+						return collection.collection.startsWith('directus_') === true;
 					}),
 					['collection'],
 					['asc']
@@ -248,12 +243,14 @@ export default defineComponent({
 			const fields = computed(() => {
 				if (!state.relations[0].many_collection) return [];
 
-				return fieldsStore.getFieldsForCollection(state.relations[0].many_collection).map((field: Field) => ({
-					text: field.field,
-					value: field.field,
-					disabled:
-						!field.schema || field.schema?.is_primary_key || field.type !== currentCollectionPrimaryKey.value.type,
-				}));
+				return fieldsStore
+					.getFieldsForCollectionAlphabetical(state.relations[0].many_collection)
+					.map((field: Field) => ({
+						text: field.field,
+						value: field.field,
+						disabled:
+							!field.schema || field.schema?.is_primary_key || field.type !== currentCollectionPrimaryKey.value.type,
+					}));
 			});
 
 			const collectionMany = computed({
@@ -380,7 +377,7 @@ export default defineComponent({
 		--v-icon-color: var(--primary);
 
 		position: absolute;
-		bottom: 14px;
+		bottom: 17px;
 		left: 50%;
 		transform: translateX(-50%);
 	}
@@ -413,7 +410,7 @@ export default defineComponent({
 		--v-icon-color: var(--primary);
 
 		position: absolute;
-		bottom: 14px;
+		bottom: 17px;
 		left: 50%;
 		transform: translateX(-50%);
 	}

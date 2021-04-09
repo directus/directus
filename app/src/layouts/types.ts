@@ -1,14 +1,14 @@
 import VueI18n from 'vue-i18n';
 import { VueConstructor, Component } from 'vue';
 
-export type LayoutConfig = {
+export interface LayoutConfig {
 	id: string;
+	name: string;
 	icon: string;
-	name: string | VueI18n.TranslateResult;
 	component: Component;
-};
+}
 
-export type LayoutContext = { i18n: VueI18n };
+export type LayoutContext = {};
 
 export type LayoutDefineParam = LayoutConfig | ((context: LayoutContext) => LayoutConfig);
 

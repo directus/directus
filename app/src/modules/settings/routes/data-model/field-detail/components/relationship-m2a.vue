@@ -1,7 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('configure_m2a') }}</v-notice>
-
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
@@ -64,7 +62,6 @@
 				<div class="type-label">{{ $t('related_collections') }}</div>
 
 				<v-select
-					:disabled="isExisting"
 					:placeholder="$t('collection') + '...'"
 					:items="availableCollections"
 					item-value="collection"
@@ -198,7 +195,6 @@
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[0].sort_field) }"
 				v-model="relations[0].sort_field"
-				:nullable="false"
 				:placeholder="$t('add_sort_field') + '...'"
 				db-safe
 			>
@@ -313,7 +309,7 @@ export default defineComponent({
 		const junctionFields = computed(() => {
 			if (!junctionCollection.value) return [];
 
-			return fieldsStore.getFieldsForCollection(junctionCollection.value).map((field: Field) => ({
+			return fieldsStore.getFieldsForCollectionAlphabetical(junctionCollection.value).map((field: Field) => ({
 				text: field.field,
 				value: field.field,
 				disabled:
@@ -362,17 +358,17 @@ export default defineComponent({
 		pointer-events: none;
 
 		&:first-of-type {
-			top: 105px;
+			top: 117px;
 			left: 32.5%;
 		}
 
 		&:nth-of-type(2) {
-			bottom: 143px;
+			bottom: 161px;
 			left: 67.4%;
 		}
 
 		&:last-of-type {
-			bottom: 76px;
+			bottom: 89px;
 			left: 67.4%;
 		}
 	}
@@ -408,8 +404,8 @@ export default defineComponent({
 }
 
 .related-collections-preview {
-	grid-column: 3;
 	grid-row: 2 / span 2;
+	grid-column: 3;
 	padding: var(--input-padding);
 	overflow: auto;
 	color: var(--foreground-subdued);

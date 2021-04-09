@@ -40,6 +40,7 @@
 				</tr>
 			</tbody>
 			<draggable
+				:force-fallback="true"
 				v-else
 				v-model="_items"
 				tag="tbody"
@@ -380,7 +381,7 @@ body {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
 	--v-table-color: var(--foreground-normal);
-	--v-table-background-color: var(--background-page);
+	--v-table-background-color: var(--background-input);
 }
 </style>
 
@@ -479,6 +480,7 @@ body {
 	.loading-text,
 	.no-items-text {
 		text-align: center;
+		background-color: var(--background-input);
 
 		td {
 			padding: 16px;

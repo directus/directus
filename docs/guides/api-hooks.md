@@ -126,6 +126,7 @@ The `registerHook` function receives a context parameter with the following prop
 - `services` — All API internal services
 - `exceptions` — API exception objects that can be used for throwing "proper" errors
 - `database` — Knex instance that is connected to the current database
+- `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables
 
 ### Event Handler Function
@@ -140,6 +141,7 @@ properties:
 - `action` — Action that is performed
 - `payload` — Payload of the request
 - `schema` - The current API schema in use
+- `database` - Current database transaction
 
 #### Auth
 

@@ -13,7 +13,7 @@ export default async function bootstrap() {
 		process.exit(1);
 	}
 
-	const { isInstalled, default: database, schemaInspector } = require('../../../database');
+	const { isInstalled, default: database } = require('../../../database');
 	const { RolesService } = require('../../../services/roles');
 	const { UsersService } = require('../../../services/users');
 	const { SettingsService } = require('../../../services/settings');

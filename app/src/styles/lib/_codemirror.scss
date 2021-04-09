@@ -11,7 +11,7 @@
 	font-family: var(--family-monospace);
 	line-height: 22px;
 	direction: ltr;
-	background-color: var(--background-page);
+	background-color: var(--background-input);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 	transition: all var(--fast) var(--transition);
@@ -147,7 +147,7 @@
 .cm-link {text-decoration: underline;}
 .cm-strikethrough {text-decoration: line-through;}
 
-.cm-s-default .cm-keyword {color: var(--secondary);}
+.cm-s-default .cm-keyword {color: var(--purple);}
 .cm-s-default .cm-atom {color: var(--primary);}
 .cm-s-default .cm-number {color: var(--success);}
 .cm-s-default .cm-def {color: var(--primary);}
@@ -358,11 +358,11 @@ div.CodeMirror-dragcursors {
 	visibility: visible;
 }
 
-.CodeMirror-selected { background: #d9d9d9; }
-.CodeMirror-focused .CodeMirror-selected { background: var(--background-normal); }
+.CodeMirror-selected { background: var(--background-normal-alt); }
+.CodeMirror-focused .CodeMirror-selected { background: var(--background-normal-alt); }
 .CodeMirror-crosshair { cursor: crosshair; }
-.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: var(--background-normal); }
-.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection { background: var(--background-normal); }
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: var(--background-normal-alt); }
+.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection { background: var(--background-normal-alt); }
 
 .cm-searching {
 	background-color: #ffa;

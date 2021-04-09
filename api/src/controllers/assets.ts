@@ -63,6 +63,12 @@ router.get(
 		if (transformation.hasOwnProperty('key') && Object.keys(transformation).length > 1) {
 			throw new InvalidQueryException(`You can't combine the "key" query parameter with any other transformation.`);
 		}
+		if (
+			transformation.hasOwnProperty('quality') &&
+			(Number(transformation.quality) < 1 || Number(transformation.quality) > 100)
+		) {
+			throw new InvalidQueryException(`"quality" Parameter has to between 1 to 100`);
+		}
 
 		const systemKeys = SYSTEM_ASSET_ALLOW_LIST.map((transformation) => transformation.key);
 		const allKeys: string[] = [
@@ -121,14 +127,6 @@ router.get(
 
 		const { stream, file, stat } = await service.getAsset(req.params.pk, transformation, range);
 
-		if (req.method.toLowerCase() === 'head') {
-			res.status(200);
-			res.setHeader('Accept-Ranges', 'bytes');
-			res.setHeader('Content-Length', stat.size);
-
-			return res.end();
-		}
-
 		const access = !!req.accountability?.role ? 'private' : 'public';
 
 		res.attachment(file.filename_download);
@@ -146,6 +144,14 @@ router.get(
 
 		if (req.query.hasOwnProperty('download') === false) {
 			res.removeHeader('Content-Disposition');
+		}
+
+		if (req.method.toLowerCase() === 'head') {
+			res.status(200);
+			res.setHeader('Accept-Ranges', 'bytes');
+			res.setHeader('Content-Length', stat.size);
+
+			return res.end();
 		}
 
 		stream.pipe(res);

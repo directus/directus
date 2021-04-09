@@ -9,12 +9,10 @@ import database from '../database';
 import { clone, isObject, cloneDeep } from 'lodash';
 import { Item, AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
 import { ItemsService } from './items';
-import Knex from 'knex';
-import getLocalType from '../utils/get-local-type';
-import { format, formatISO } from 'date-fns';
+import { Knex } from 'knex';
+import { format, formatISO, parse, parseISO } from 'date-fns';
 import { ForbiddenException } from '../exceptions';
 import { toArray } from '../utils/to-array';
-import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';
 import { InvalidPayloadException } from '../exceptions';
 import { isPlainObject } from 'lodash';
@@ -149,41 +147,28 @@ export class PayloadService {
 
 		const fieldsInPayload = Object.keys(processedPayload[0]);
 
-		let specialFieldsInCollection = this.schema.fields.filter(
-			(field) => field.collection === this.collection && field.special && field.special.length > 0
-		);
-
-		specialFieldsInCollection.push(
-			...systemFieldRows
-				.filter((fieldMeta) => fieldMeta.collection === this.collection)
-				.map((fieldMeta) => ({
-					id: fieldMeta.id,
-					collection: fieldMeta.collection,
-					field: fieldMeta.field,
-					special: fieldMeta.special ?? [],
-				}))
+		let specialFieldsInCollection = Object.entries(this.schema.collections[this.collection].fields).filter(
+			([name, field]) => field.special && field.special.length > 0
 		);
 
 		if (action === 'read') {
-			specialFieldsInCollection = specialFieldsInCollection.filter((fieldMeta) => {
-				return fieldsInPayload.includes(fieldMeta.field);
+			specialFieldsInCollection = specialFieldsInCollection.filter(([name, field]) => {
+				return fieldsInPayload.includes(name);
 			});
 		}
 
 		await Promise.all(
 			processedPayload.map(async (record: any) => {
 				await Promise.all(
-					specialFieldsInCollection.map(async (field) => {
+					specialFieldsInCollection.map(async ([name, field]) => {
 						const newValue = await this.processField(field, record, action, this.accountability);
-						if (newValue !== undefined) record[field.field] = newValue;
+						if (newValue !== undefined) record[name] = newValue;
 					})
 				);
 			})
 		);
 
-		if (action === 'read') {
-			await this.processDates(processedPayload);
-		}
+		await this.processDates(processedPayload, action);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
@@ -203,7 +188,7 @@ export class PayloadService {
 	}
 
 	async processField(
-		field: SchemaOverview['fields'][number],
+		field: SchemaOverview['collections'][string]['fields'][string],
 		payload: Partial<Item>,
 		action: Action,
 		accountability: Accountability | null
@@ -231,45 +216,54 @@ export class PayloadService {
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
-	async processDates(payloads: Partial<Record<string, any>>[]) {
-		const columnsInCollection = Object.values(this.schema.tables[this.collection].columns);
+	async processDates(payloads: Partial<Record<string, any>>[], action: Action) {
+		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 
-		const columnsWithType = columnsInCollection.map((column) => ({
-			name: column.column_name,
-			type: getLocalType(column),
-		}));
-
-		const dateColumns = columnsWithType.filter((column) => ['dateTime', 'date', 'timestamp'].includes(column.type));
+		const dateColumns = fieldsInCollection.filter(([name, field]) =>
+			['dateTime', 'date', 'timestamp'].includes(field.type)
+		);
 
 		if (dateColumns.length === 0) return payloads;
 
-		for (const dateColumn of dateColumns) {
+		for (const [name, dateColumn] of dateColumns) {
 			for (const payload of payloads) {
-				let value: string | Date = payload[dateColumn.name];
+				let value = payload[name];
 
 				if (value === null || value === '0000-00-00') {
-					payload[dateColumn.name] = null;
+					payload[name] = null;
 					continue;
 				}
 
-				if (typeof value === 'string') value = new Date(value);
+				if (!value) continue;
 
-				if (value) {
+				if (action === 'read') {
+					if (typeof value === 'string') value = new Date(value);
+
 					if (dateColumn.type === 'timestamp') {
 						const newValue = formatISO(value);
-						payload[dateColumn.name] = newValue;
+						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'dateTime') {
 						// Strip off the Z at the end of a non-timezone datetime value
 						const newValue = format(value, "yyyy-MM-dd'T'HH:mm:ss");
-						payload[dateColumn.name] = newValue;
+						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'date') {
 						// Strip off the time / timezone information from a date-only value
 						const newValue = format(value, 'yyyy-MM-dd');
-						payload[dateColumn.name] = newValue;
+						payload[name] = newValue;
+					}
+				} else {
+					if (dateColumn.type === 'date') {
+						const newValue = parse(value, 'yyyy-MM-dd', new Date());
+						payload[name] = newValue;
+					}
+
+					if (dateColumn.type === 'timestamp' || dateColumn.type === 'dateTime') {
+						const newValue = parseISO(value);
+						payload[name] = newValue;
 					}
 				}
 			}
@@ -314,7 +308,7 @@ export class PayloadService {
 					);
 				}
 
-				const allowedCollections = relation.one_allowed_collections.split(',');
+				const allowedCollections = relation.one_allowed_collections;
 
 				if (allowedCollections.includes(relatedCollection) === false) {
 					throw new InvalidPayloadException(
@@ -328,7 +322,7 @@ export class PayloadService {
 					schema: this.schema,
 				});
 
-				const relatedPrimary = this.schema.tables[relatedCollection].primary;
+				const relatedPrimary = this.schema.collections[relatedCollection].primary;
 				const relatedRecord: Partial<Item> = payload[relation.many_field];
 				const hasPrimaryKey = relatedRecord.hasOwnProperty(relatedPrimary);
 
@@ -445,7 +439,9 @@ export class PayloadService {
 				const relatedRecords: Partial<Item>[] = [];
 
 				if (Array.isArray(payload[relation.one_field!])) {
-					for (const relatedRecord of payload[relation.one_field!] || []) {
+					for (let i = 0; i < (payload[relation.one_field!] || []).length; i++) {
+						const relatedRecord = (payload[relation.one_field!] || [])[i];
+
 						let record = cloneDeep(relatedRecord);
 
 						if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {

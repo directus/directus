@@ -22,7 +22,6 @@ const defaults: Record<string, any> = {
 	MAX_PAYLOAD_SIZE: '100kb',
 
 	STORAGE_LOCATIONS: 'local',
-	STORAGE_LOCAL_PUBLIC_URL: 'http://localhost:8055/uploads',
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
 
@@ -35,6 +34,8 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_TTL: '7d',
 	REFRESH_TOKEN_COOKIE_SECURE: false,
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
+
+	ROOT_REDIRECT: './admin',
 
 	CORS_ENABLED: true,
 	CORS_ORIGIN: true,
@@ -88,7 +89,7 @@ env = processValues(env);
 export default env;
 
 function getEnv() {
-	const configPath = process.env.CONFIG_PATH || defaults.CONFIG_PATH;
+	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
 
 	if (fs.existsSync(configPath) === false) return {};
 

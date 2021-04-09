@@ -1,5 +1,12 @@
 <template>
 	<v-drawer v-model="_active" :title="title" persistent @cancel="cancel">
+		<template #title v-if="template !== null">
+			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
+
+			<h1 class="type-title" v-else>
+				<render-template :collection="templateCollection.collection" :item="templateData" :template="template" />
+			</h1>
+		</template>
 		<template #actions>
 			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
@@ -35,6 +42,7 @@ import i18n from '@/lang';
 import { Relation, Field } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { usePermissions } from '@/composables/use-permissions';
+import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
 	model: {
@@ -118,6 +126,20 @@ export default defineComponent({
 			computed(() => props.primaryKey === '+')
 		);
 
+		const templatePrimaryKey = computed(() =>
+			junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)
+		);
+
+		const templateCollection = computed(() => junctionRelatedCollectionInfo.value || collectionInfo.value);
+		const { templateData, loading: templateDataLoading } = useTemplateData(templateCollection, templatePrimaryKey);
+
+		const template = computed(
+			() =>
+				junctionRelatedCollectionInfo.value?.meta?.display_template ||
+				collectionInfo.value?.meta?.display_template ||
+				null
+		);
+
 		return {
 			_active,
 			_edits,
@@ -132,6 +154,11 @@ export default defineComponent({
 			showDivider,
 			junctionRelatedCollectionFields,
 			fields,
+			template,
+			templateCollection,
+			templatePrimaryKey,
+			templateData,
+			templateDataLoading,
 		};
 
 		function useActiveState() {

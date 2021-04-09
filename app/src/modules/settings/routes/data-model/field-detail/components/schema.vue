@@ -1,9 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">
-			{{ $t('schema_setup_title') }}
-		</v-notice>
-
 		<div class="form">
 			<div class="field">
 				<div class="label type-label">
@@ -19,6 +15,7 @@
 					db-safe
 					:placeholder="$t('a_unique_column_name')"
 				/>
+				<small class="note" v-html="$t('schema_setup_key')" />
 			</div>
 
 			<div class="field half">
@@ -138,6 +135,16 @@
 					:input-value="fieldData.schema.is_nullable === false"
 					@change="fieldData.schema.is_nullable = !$event"
 					:label="$t('requires_value')"
+					block
+				/>
+			</div>
+
+			<div class="field half-right" v-if="fieldData.schema">
+				<div class="label type-label">{{ $t('unique') }}</div>
+				<v-checkbox
+					:input-value="fieldData.schema.is_unique"
+					@change="fieldData.schema.is_unique = $event"
+					:label="$t('value_unique')"
 					block
 				/>
 			</div>
@@ -407,6 +414,14 @@ export default defineComponent({
 	--form-horizontal-gap: 32px;
 
 	@include form-grid;
+}
+
+.note {
+	display: block;
+	max-width: 520px;
+	margin-top: 4px;
+	color: var(--foreground-subdued);
+	font-style: italic;
 }
 
 .monospace {

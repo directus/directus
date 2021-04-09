@@ -6,7 +6,7 @@ import { i18n } from '@/lang';
 import formatTitle from '@directus/format-title';
 import { useRelationsStore } from '@/stores/';
 import { Relation, FieldRaw, Field } from '@/types';
-import { merge } from 'lodash';
+import { merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -27,7 +27,6 @@ const fakeFilesField: Field = {
 		display: 'file',
 		display_options: null,
 		hidden: false,
-		locked: true,
 		translations: null,
 		readonly: true,
 		width: 'full',
@@ -221,15 +220,22 @@ export const useFieldsStore = createStore({
 
 			return primaryKeyField;
 		},
-		getFieldsForCollection(collection: string) {
-			return this.state.fields
-				.filter((field) => field.collection === collection)
-				.sort((a, b) => {
-					if (a.field < b.field) return -1;
-					else if (a.field > b.field) return 1;
-					else return 1;
-				});
+		getFieldsForCollection(collection: string): Field[] {
+			return orderBy(
+				this.state.fields.filter((field) => field.collection === collection),
+				(collection) => (collection.meta?.sort ? Number(collection.meta?.sort) : null)
+			);
 		},
+		getFieldsForCollectionAlphabetical(collection: string): Field[] {
+			return this.getFieldsForCollection(collection).sort((a: Field, b: Field) => {
+				if (a.field < b.field) return -1;
+				else if (a.field > b.field) return 1;
+				else return 1;
+			});
+		},
+		/**
+		 * Retrieve field info for a field or a related field
+		 */
 		getField(collection: string, fieldKey: string) {
 			if (fieldKey.includes('.')) {
 				return this.getRelationalField(collection, fieldKey);
@@ -246,13 +252,13 @@ export const useFieldsStore = createStore({
 			const relationshipStore = useRelationsStore();
 			const parts = fields.split('.');
 
-			const relationshipForField = relationshipStore
+			const relation = relationshipStore
 				.getRelationsForField(collection, parts[0])
-				?.find((relation: Relation) => relation.many_field === parts[0] || relation.one_field === parts[0]);
+				?.find((relation: Relation) => relation.many_field === parts[0] || relation.one_field === parts[0]) as Relation;
 
-			if (relationshipForField === undefined) return false;
+			if (relation === undefined) return false;
 
-			const relatedCollection = relationshipForField.one_collection;
+			const relatedCollection = relation.many_field === parts[0] ? relation.one_collection : relation.many_collection;
 			parts.shift();
 			const relatedField = parts.join('.');
 			return this.getField(relatedCollection, relatedField);

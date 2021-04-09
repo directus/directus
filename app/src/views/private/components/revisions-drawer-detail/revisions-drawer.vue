@@ -28,7 +28,7 @@
 			</div>
 
 			<template #actions>
-				<v-button @click="confirmRevert = true" class="revert" icon rounded v-tooltip.bottom="$t('revert')">
+				<v-button @click="revert" class="revert" icon rounded v-tooltip.bottom="$t('revert')">
 					<v-icon name="restore" />
 				</v-button>
 				<v-button @click="_active = false" icon rounded v-tooltip.bottom="$t('done')">
@@ -36,21 +36,6 @@
 				</v-button>
 			</template>
 		</v-drawer>
-
-		<v-dialog v-model="confirmRevert" :persistent="reverting" @esc="confirmRevert = false">
-			<v-card>
-				<v-card-title>{{ $t('confirm_revert') }}</v-card-title>
-				<v-card-text>{{ $t('confirm_revert_body') }}</v-card-text>
-				<v-card-actions>
-					<v-button secondary @click="confirmRevert = false" :disabled="reverting">
-						{{ $t('cancel') }}
-					</v-button>
-					<v-button class="revert" @click="revert" :loading="reverting">
-						{{ $t('revert') }}
-					</v-button>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
 	</div>
 </template>
 
@@ -62,8 +47,7 @@ import i18n from '@/lang';
 import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
 import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
 import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
-import api from '@/api';
-import { unexpectedError } from '@/utils/unexpected-error';
+import { isEqual } from 'lodash';
 
 export default defineComponent({
 	components: { RevisionsDrawerPicker, RevisionsDrawerPreview, RevisionsDrawerUpdates },
@@ -73,7 +57,7 @@ export default defineComponent({
 			required: true,
 		},
 		current: {
-			type: Number,
+			type: [Number, String],
 			default: null,
 		},
 		active: {
@@ -91,6 +75,13 @@ export default defineComponent({
 			return props.revisions.find((revision) => revision.id === props.current);
 		});
 
+		const previousRevision = computed(() => {
+			const currentIndex = props.revisions.findIndex((revision) => revision.id === props.current);
+
+			// This is assuming props.revisions is in chronological order from newest to oldest
+			return props.revisions[currentIndex + 1];
+		});
+
 		const tabs = [
 			{
 				text: i18n.t('revision_preview'),
@@ -102,41 +93,29 @@ export default defineComponent({
 			},
 		];
 
-		const { confirmRevert, reverting, revert } = useRevert();
-
 		return {
 			_active,
 			_current,
 			currentRevision,
 			currentTab,
 			tabs,
-			confirmRevert,
-			reverting,
 			revert,
 		};
 
-		function useRevert() {
-			const confirmRevert = ref(false);
-			const reverting = ref(false);
+		function revert() {
+			if (!currentRevision.value) return;
 
-			return { reverting, revert, confirmRevert };
+			const revertToValues: Record<string, any> = {};
 
-			async function revert() {
-				reverting.value = true;
-				if (!currentRevision.value) return;
-
-				try {
-					const endpoint = `/utils/revert/${currentRevision.value.id}`;
-					await api.post(endpoint);
-					confirmRevert.value = false;
-					_active.value = false;
-					emit('revert');
-				} catch (err) {
-					unexpectedError(err);
-				} finally {
-					reverting.value = false;
-				}
+			for (const [field, newValue] of Object.entries(currentRevision.value.delta)) {
+				const previousValue = previousRevision.value.data[field];
+				if (isEqual(newValue, previousValue)) continue;
+				revertToValues[field] = previousValue;
 			}
+
+			emit('revert', revertToValues);
+
+			_active.value = false;
 		}
 	},
 });

@@ -1,6 +1,7 @@
 # Custom Displays <small></small>
 
-> Displays are small inline components that allow you to create new ways of viewing field values throughout the App. [Learn more about Displays](/concepts/displays/).
+> Displays are small inline components that allow you to create new ways of viewing field values throughout the App.
+> [Learn more about Displays](/concepts/displays/).
 
 ## 1. Setup the Boilerplate
 
@@ -93,7 +94,7 @@ To be read by the Admin App, your custom display's Vue component must first be b
 recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
 ```bash
-npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler
+npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc rollup-plugin-vue@next
 ```
 
 You can then use the following Rollup configuration within `rollup.config.js`:
@@ -114,6 +115,13 @@ export default {
 };
 ```
 
+::: tip Building multiple extensions
+
+You can export an array of build configurations, so you can bundle (or even watch) multiple extensions at the same time.
+See the [Rollup configuration file documentation](https://rollupjs.org/guide/en/#configuration-files) for more info.
+
+:::
+
 ## 3. Develop Your Custom Display
 
 The display itself is simply a function or a Vue component, providing a blank canvas for creating anything you need.
@@ -126,5 +134,5 @@ To build the display for use within Directus, run:
 npx rollup -c
 ```
 
-Finally, move the output from your display's `dist` folder into your project's `/extensions/displays` folder. Keep in
-mind that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your display's `dist` folder into your project's `/extensions/displays/my-custom-display`
+folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.

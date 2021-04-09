@@ -121,6 +121,7 @@ body {
 @import '@/styles/mixins/no-wrap';
 
 .v-checkbox {
+	--v-icon-color-hover: var(--primary);
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -167,16 +168,21 @@ body {
 
 	&:not(:disabled):hover {
 		.checkbox {
-			--v-icon-color: var(--foreground-normal);
+			--v-icon-color: var(--primary);
+		}
+		&.block {
+			border-color: var(--border-normal-alt);
+			background-color: var(--background-subdued);
 		}
 	}
 
 	&.block {
+		transition: all var(--fast) var(--transition);
 		position: relative;
 		width: 100%;
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
-		border: 2px solid var(--border-subdued);
+		border: 2px solid var(--border-normal);
 		border-radius: var(--border-radius);
 
 		&::before {
@@ -186,7 +192,6 @@ body {
 			z-index: 0;
 			width: 100%;
 			height: 100%;
-			background-color: var(--background-subdued);
 			border-radius: var(--border-radius);
 			content: '';
 		}
@@ -206,20 +211,17 @@ body {
 		}
 
 		&.block {
-			border-color: var(--v-checkbox-color);
-
 			.label {
 				color: var(--v-checkbox-color);
 			}
 
 			&::before {
-				background-color: var(--v-checkbox-color);
 				opacity: 0.1;
 			}
 		}
 
 		input {
-			border-color: var(--v-checkbox-color);
+			//
 		}
 	}
 

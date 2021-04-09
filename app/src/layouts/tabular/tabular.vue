@@ -24,7 +24,7 @@
 
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.tabular.fields') }}</div>
-				<draggable v-model="activeFields" handle=".drag-handle" :set-data="hideDragImage">
+				<draggable v-model="activeFields" handle=".drag-handle" :set-data="hideDragImage" :force-fallback="true">
 					<v-checkbox
 						v-for="field in activeFields"
 						v-model="fields"
@@ -113,7 +113,12 @@
 
 					<div v-if="loading === false && items.length >= 25" class="per-page">
 						<span>{{ $t('per_page') }}</span>
-						<v-select @input="limit = +$event" :value="`${limit}`" :items="['25', '50', '100', '250']" inline />
+						<v-select
+							@input="limit = +$event"
+							:value="`${limit}`"
+							:items="['25', '50', '100', '250', '500', ' 1000']"
+							inline
+						/>
 					</div>
 				</div>
 			</template>
@@ -391,6 +396,11 @@ export default defineComponent({
 						fieldsInCollection.value
 							.filter((field) => !!field.meta?.hidden === false)
 							.slice(0, 4)
+							.sort((a?: Field, b?: Field) => {
+								if (a!.field < b!.field) return -1;
+								else if (a!.field > b!.field) return 1;
+								else return 1;
+							})
 							.map(({ field }) => field);
 
 					return fields;
@@ -458,7 +468,10 @@ export default defineComponent({
 							type: field.type,
 							field: field.field,
 						},
-						sortable: ['json', 'o2m', 'm2o', 'file', 'files', 'alias', 'presentation'].includes(field.type) === false,
+						sortable:
+							['json', 'o2m', 'm2o', 'm2m', 'm2a', 'file', 'files', 'alias', 'presentation', 'translations'].includes(
+								field.type
+							) === false,
 					}));
 				},
 				set(val) {

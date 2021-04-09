@@ -10,6 +10,7 @@ add_field: Add Field
 role_name: Role Name
 db_only_click_to_configure: 'Database Only: Click to Configure '
 show_archived_items: Show Archived Items
+edited: Value Edited
 required: Required
 required_for_app_access: Required for App Access
 requires_value: Requires value
@@ -82,6 +83,7 @@ validationError:
   null: Value has to be null
   nnull: Value can't be null
   required: Value is required
+  unique: Value has to be unique
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -121,8 +123,7 @@ exposure: Exposure
 shutter: Shutter
 iso: ISO
 focal_length: Focal Length
-schema_setup_title: How should this field save to the database?
-schema_field_title: How should this field behave in the app?
+schema_setup_key: This field's database column name and API key
 create_field: Create Field
 creating_new_field: 'New Field ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -148,6 +149,11 @@ uuid: UUID
 hash: Hash
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
+auto_refresh: Auto Refresh
+refresh_interval: Refresh Interval
+no_refresh: Do not refresh
+refresh_interval_seconds: Refresh Instantly | Every Second | Every {seconds} Seconds
+refresh_interval_minutes: Every Minute | Every {minutes} Minutes
 auto_generate: Auto-Generate
 this_will_auto_setup_fields_relations: This will automatically setup all required fields and relations.
 click_here: Click here
@@ -156,13 +162,11 @@ click_to_manage_translated_fields: >-
   There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage
   it. | There are {count} translated fields. Click here to manage them.
 fields_group: Fields Group
+no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
+search_collection: Search Collection...
 new_field: 'New Field'
 new_collection: 'New Collection'
-configure_m2o: Configure your Many-to-One Relationship...
-configure_o2m: Configure your One-to-Many Relationship...
-configure_m2m: Configure your Many-to-Many Relationship...
-configure_m2a: Configure your Many-to-Any Relationship...
 add_m2o_to_collection: 'Add Many-to-One to "{collection}"'
 add_o2m_to_collection: 'Add One-to-Many to "{collection}"'
 add_m2m_to_collection: 'Add Many-to-Many to "{collection}"'
@@ -170,8 +174,6 @@ choose_a_type: Choose a Type...
 determined_by_relationship: Determined by Relationship
 add_note: Add a helpful note for users...
 default_value: Default Value
-interface_setup_title: How will users interact with this field?
-display_setup_title: How should this field’s value be displayed?
 standard_field: Standard Field
 single_file: Single File
 multiple_files: Multiple Files
@@ -179,6 +181,7 @@ m2o_relationship: Many to One Relationship
 o2m_relationship: One to Many Relationship
 m2m_relationship: Many to Many Relationship
 m2a_relationship: Many to Any Relationship
+invalid_item: Invalid Item
 next: Next
 field_name: Field Name
 translations: Translations
@@ -396,6 +399,7 @@ errors:
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
   ROUTE_NOT_FOUND: Not found
+  RECORD_NOT_UNIQUE: Duplicate value detected
   UNKNOWN: Unexpected Error
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -600,6 +604,7 @@ settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
 scope: Scope
 layout: Layout
+tree_view: Tree View
 changes_are_permanent: Changes are permanent
 preset_name_placeholder: Name of bookmark...
 preset_search_placeholder: Search query...
@@ -1001,6 +1006,9 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: No Collection
+  tree-view:
+    description: Tree view for nested recursive one-to-many items
+    recursive_only: The tree view interface only works for recursive relationships.
   user:
     user: User
     description: Select an existing directus user

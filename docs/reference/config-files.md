@@ -11,7 +11,7 @@ The config file can be one of the following formats:
 
 ::: tip Configuration Parameters
 
-See [Environment Variables](/reference/environment/variables/) for an overview of all available environment variables.
+See [Environment Variables](/reference/environment-variables/) for an overview of all available environment variables.
 
 :::
 

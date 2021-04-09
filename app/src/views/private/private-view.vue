@@ -72,6 +72,7 @@ import NotificationsPreview from './components/notifications-preview/';
 import NotificationDialogs from './components/notification-dialogs/';
 import { useUserStore, useAppStore } from '@/stores';
 import router from '@/router';
+import useTitle from '@/composables/use-title';
 
 export default defineComponent({
 	components: {
@@ -90,7 +91,8 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	setup() {
+	setup(props) {
+		const { title } = toRefs(props);
 		const navOpen = ref(false);
 		const contentEl = ref<Element>();
 		const userStore = useUserStore();
@@ -113,19 +115,9 @@ export default defineComponent({
 
 		router.afterEach(async (to, from) => {
 			contentEl.value?.scrollTo({ top: 0 });
-
-			// await nextTick();
-
-			// const hash = to.hash;
-
-			// if (hash) {
-			// 	const linkedEl = document.querySelector(hash) as HTMLElement;
-
-			// 	if (linkedEl) {
-			// 		contentEl.value?.scrollTo({ top: linkedEl.offsetTop - 100, behavior: 'smooth' });
-			// 	}
-			// }
 		});
+
+		useTitle(title);
 
 		return {
 			navOpen,
@@ -197,6 +189,9 @@ export default defineComponent({
 			background-color: var(--background-normal);
 
 			&-content {
+				--v-list-item-background-color-hover: var(--background-normal-alt);
+				--v-list-item-background-color-active: var(--background-normal-alt);
+
 				height: calc(100% - 64px);
 				overflow-x: hidden;
 				overflow-y: auto;

@@ -9,6 +9,7 @@ export type FormField = DeepPartial<Field> & {
 };
 
 export type ValidationError = {
+	code: string;
 	field: string;
 	type: FilterOperator;
 	valid?: number | string | (number | string)[];

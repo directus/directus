@@ -3,6 +3,8 @@ import { ServerService } from '../services';
 import { SpecificationService } from '../services';
 import asyncHandler from '../utils/async-handler';
 import { respond } from '../middleware/respond';
+import { format } from 'date-fns';
+import { RouteNotFoundException } from '../exceptions';
 
 const router = Router();
 
@@ -13,10 +15,37 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		res.locals.payload = await service.oas.generate();
 		return next();
 	}),
 	respond
+);
+
+router.get(
+	'/specs/graphql/:scope?',
+	asyncHandler(async (req, res) => {
+		const service = new SpecificationService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const serverService = new ServerService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const scope = req.params.scope || 'items';
+
+		if (['items', 'system'].includes(scope) === false) throw new RouteNotFoundException(req.path);
+
+		const info = await serverService.serverInfo();
+		const result = await service.graphql.generate(scope as 'items' | 'system');
+		const filename = info.project.project_name + '_' + format(new Date(), 'yyyy-MM-dd') + '.graphql';
+
+		res.attachment(filename);
+		res.send(result);
+	})
 );
 
 router.get('/ping', (req, res) => res.send('pong'));

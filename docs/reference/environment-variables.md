@@ -7,14 +7,15 @@
 
 ## General
 
-| Variable           | Description                                                                                         | Default Value |
-| ------------------ | --------------------------------------------------------------------------------------------------- | ------------- |
-| `CONFIG_PATH`      | Where your config file is located. See [Config Files](/reference/config-files/)                     | `.env`        |
-| `PORT`             | What port to run the API under.                                                                     | `8055`        |
-| `PUBLIC_URL`       | URL where your API can be reached on the web.                                                       | `/`           |
-| `LOG_LEVEL`        | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. | `info`        |
-| `LOG_STYLE`        | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                         | `pretty`      |
-| `MAX_PAYLOAD_SIZE` | Controls the maximum request body size. Accepts number of bytes, or human readable string.          | `100kb`       |
+| Variable           | Description                                                                                                | Default Value |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- | ------------- |
+| `CONFIG_PATH`      | Where your config file is located. See [Config Files](/reference/config-files/)                            | `.env`        |
+| `PORT`             | What port to run the API under.                                                                            | `8055`        |
+| `PUBLIC_URL`       | URL where your API can be reached on the web.                                                              | `/`           |
+| `LOG_LEVEL`        | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.        | `info`        |
+| `LOG_STYLE`        | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                | `pretty`      |
+| `MAX_PAYLOAD_SIZE` | Controls the maximum request body size. Accepts number of bytes, or human readable string.                 | `100kb`       |
+| `ROOT_REDIRECT`    | Where to redirect to when navigating to `/`. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`     |
 
 ## Database
 
@@ -47,14 +48,17 @@ All the `DB_POOL_` prefixed options are passed [to `tarn.js`](https://github.com
 
 ## Security
 
-| Variable                         | Description                                                                                      | Default Value |
-| -------------------------------- | ------------------------------------------------------------------------------------------------ | ------------- |
-| `KEY`                            | Unique identifier for the project.                                                               | --            |
-| `SECRET`                         | Secret string for the project.                                                                   | --            |
-| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                     | 15m           |
-| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App. | 7d            |
-| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                      | `false`       |
-| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                            | `lax`         |
+| Variable                         | Description                                                                                                                     | Default Value |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `KEY`                            | Unique identifier for the project.                                                                                              | --            |
+| `SECRET`                         | Secret string for the project.                                                                                                  | --            |
+| `ACCESS_TOKEN_TTL`               | The duration that the access token is valid.                                                                                    | 15m           |
+| `REFRESH_TOKEN_TTL`              | The duration that the refresh token is valid, and also how long users stay logged-in to the App.                                | 7d            |
+| `REFRESH_TOKEN_COOKIE_DOMAIN`    | Which domain to use for the refresh cookie. Useful for development mode.                                                        | --            |
+| `REFRESH_TOKEN_COOKIE_SECURE`    | Whether or not to use a secure cookie for the refresh token in cookie mode.                                                     | `false`       |
+| `REFRESH_TOKEN_COOKIE_SAME_SITE` | Value for `sameSite` in the refresh token cookie when in cookie mode.                                                           | `lax`         |
+| `PASSWORD_RESET_URL_ALLOW_LIST`  | List of URLs that can be used [as `reset_url` in /password/request](/reference/api/rest/authentication/#request-password-reset) | --            |
+| `USER_INVITE_URL_ALLOW_LIST`     | List of URLs that can be used [as `invite_url` in /users/invite](/reference/api/rest/users/#invite-a-new-user)                  | --            |
 
 ::: tip Cookie Strictness
 
@@ -164,10 +168,10 @@ Alternatively, you can provide the individual connection parameters:
 
 For each of the storage locations listed, you must provide the following configuration:
 
-| Variable                        | Description                                               | Default Value |
-| ------------------------------- | --------------------------------------------------------- | ------------- |
-| `STORAGE_<LOCATION>_PUBLIC_URL` | Location on the internet where the files are accessible   |               |
-| `STORAGE_<LOCATION>_DRIVER`     | Which driver to use, either `local`, `s3`, `gcs`, `azure` |               |
+| Variable                    | Description                                               | Default Value |
+| --------------------------- | --------------------------------------------------------- | ------------- |
+| `STORAGE_<LOCATION>_DRIVER` | Which driver to use, either `local`, `s3`, `gcs`, `azure` |               |
+| `STORAGE_<LOCATION>_ROOT`   | Where to store the files on disk                          | `''`          |
 
 Based on your configured driver, you must also provide the following configurations:
 
@@ -179,21 +183,23 @@ Based on your configured driver, you must also provide the following configurati
 
 ### S3 (`s3`)
 
-| Variable                      | Description | Default Value |
-| ----------------------------- | ----------- | ------------- |
-| `STORAGE_<LOCATION>_KEY`      | User key    | --            |
-| `STORAGE_<LOCATION>_SECRET`   | User secret | --            |
-| `STORAGE_<LOCATION>_ENDPOINT` | S3 Endpoint | --            |
-| `STORAGE_<LOCATION>_BUCKET`   | S3 Bucket   | --            |
-| `STORAGE_<LOCATION>_REGION`   | S3 Region   | --            |
+| Variable                      | Description | Default Value      |
+| ----------------------------- | ----------- | ------------------ |
+| `STORAGE_<LOCATION>_KEY`      | User key    | --                 |
+| `STORAGE_<LOCATION>_SECRET`   | User secret | --                 |
+| `STORAGE_<LOCATION>_BUCKET`   | S3 Bucket   | --                 |
+| `STORAGE_<LOCATION>_REGION`   | S3 Region   | --                 |
+| `STORAGE_<LOCATION>_ENDPOINT` | S3 Endpoint | "s3.amazonaws.com" |
+| `STORAGE_<LOCATION>_ACL`      | S3 ACL      | --                 |
 
 ### Azure (`azure`)
 
-| Variable                            | Description                | Default Value |
-| ----------------------------------- | -------------------------- | ------------- |
-| `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --            |
-| `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --            |
-| `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --            |
+| Variable                            | Description                | Default Value                         |
+| ----------------------------------- | -------------------------- | ------------------------------------- |
+| `STORAGE_<LOCATION>_CONTAINER_NAME` | Azure Storage container    | --                                    |
+| `STORAGE_<LOCATION>_ACCOUNT_NAME`   | Azure Storage account name | --                                    |
+| `STORAGE_<LOCATION>_ACCOUNT_KEY`    | Azure Storage key          | --                                    |
+| `STORAGE_<LOCATION>_ENDPOINT`       | Azure URL                  | "{ACCOUNT_KEY}.blob.core.windows.net" |
 
 ### Google Cloud Storage (`gcs`)
 

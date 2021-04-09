@@ -1,5 +1,5 @@
 import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import database from '../database';
 import os from 'os';
 import logger from '../logger';

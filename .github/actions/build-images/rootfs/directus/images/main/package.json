@@ -7,7 +7,7 @@
 		"ioredis": "^4.19.2",
 		"keyv-memcache": "^1.0.1",
 		"memcached": "^2.2.2",
-		"mssql": "^6.2.3",
+		"tedious": "^11.0.5",
 		"mysql": "^2.18.1",
 		"oracledb": "^5.0.0",
 		"pg": "^8.4.2",

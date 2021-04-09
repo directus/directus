@@ -11,8 +11,9 @@ import {
 	Item,
 	PrimaryKey,
 	SchemaOverview,
+	Filter,
 } from '../types';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
 import { uniq, merge, flatten } from 'lodash';
 import generateJoi from '../utils/generate-joi';
@@ -20,7 +21,6 @@ import { ItemsService } from './items';
 import { PayloadService } from './payload';
 import { parseFilter } from '../utils/parse-filter';
 import { toArray } from '../utils/to-array';
-import { systemFieldRows } from '../database/system-data/fields';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -224,27 +224,19 @@ export class AuthorizationService {
 
 		payloads = payloads.map((payload) => merge({}, preset, payload));
 
-		const columns = Object.values(this.schema.tables[collection].columns);
-
 		let requiredColumns: string[] = [];
 
-		for (const column of columns) {
-			const field =
-				this.schema.fields.find((field) => field.collection === collection && field.field === column.column_name) ||
-				systemFieldRows.find(
-					(fieldMeta) => fieldMeta.field === column.column_name && fieldMeta.collection === collection
-				);
-
+		for (const [name, field] of Object.entries(this.schema.collections[collection].fields)) {
 			const specials = field?.special ?? [];
 
 			const hasGenerateSpecial = ['uuid', 'date-created', 'role-created', 'user-created'].some((name) =>
 				specials.includes(name)
 			);
 
-			const isRequired = column.is_nullable === false && column.default_value === null && hasGenerateSpecial === false;
+			const isRequired = field.nullable === false && field.defaultValue === null && hasGenerateSpecial === false;
 
 			if (isRequired) {
-				requiredColumns.push(column.column_name);
+				requiredColumns.push(name);
 			}
 		}
 
@@ -268,7 +260,7 @@ export class AuthorizationService {
 			}
 		}
 
-		validationErrors.push(...this.validateJoi(permission.validation, payloads));
+		validationErrors.push(...this.validateJoi(parseFilter(permission.validation || {}, this.accountability), payloads));
 
 		if (validationErrors.length > 0) throw validationErrors;
 
@@ -279,10 +271,7 @@ export class AuthorizationService {
 		}
 	}
 
-	validateJoi(
-		validation: null | Record<string, any>,
-		payloads: Partial<Record<string, any>>[]
-	): FailedValidationException[] {
+	validateJoi(validation: Filter, payloads: Partial<Record<string, any>>[]): FailedValidationException[] {
 		if (!validation) return [];
 
 		const errors: FailedValidationException[] = [];
@@ -334,21 +323,13 @@ export class AuthorizationService {
 			schema: this.schema,
 		});
 
-		try {
-			const query: Query = {
-				fields: ['*'],
-			};
+		const query: Query = {
+			fields: ['*'],
+		};
 
-			const result = await itemsService.readByKey(pk as any, query, action);
+		const result = await itemsService.readByKey(pk as any, query, action);
 
-			if (!result) throw '';
-			if (Array.isArray(pk) && pk.length > 1 && result.length !== pk.length) throw '';
-		} catch {
-			throw new ForbiddenException(`You're not allowed to ${action} item "${pk}" in collection "${collection}".`, {
-				collection,
-				item: pk,
-				action,
-			});
-		}
+		if (!result) throw new ForbiddenException();
+		if (Array.isArray(pk) && pk.length > 1 && result.length !== pk.length) throw new ForbiddenException();
 	}
 }

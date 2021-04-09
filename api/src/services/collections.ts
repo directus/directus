@@ -1,6 +1,7 @@
+import { ALIAS_TYPES } from '../constants';
 import database, { schemaInspector } from '../database';
 import { AbstractServiceOptions, Accountability, Collection, CollectionMeta, Relation, SchemaOverview } from '../types';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
@@ -71,13 +72,15 @@ export class CollectionsService {
 					throw new InvalidPayloadException(`Collections can't start with "directus_"`);
 				}
 
-				if (payload.collection in this.schema.tables) {
+				if (payload.collection in this.schema.collections) {
 					throw new InvalidPayloadException(`Collection "${payload.collection}" already exists.`);
 				}
 
 				await trx.schema.createTable(payload.collection, (table) => {
 					for (const field of payload.fields!) {
-						fieldsService.addColumnToTable(table, field);
+						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+							fieldsService.addColumnToTable(table, field);
+						}
 					}
 				});
 
@@ -158,6 +161,7 @@ export class CollectionsService {
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
 			schema: this.schema,
+			accountability: this.accountability,
 		});
 
 		let tablesInDatabase = await schemaInspector.tableInfo();
@@ -172,10 +176,6 @@ export class CollectionsService {
 			tablesInDatabase = tablesInDatabase.filter((table) => {
 				return collectionsYouHavePermissionToRead.includes(table.name);
 			});
-
-			if (tablesInDatabase.length === 0) {
-				throw new ForbiddenException();
-			}
 		}
 
 		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
@@ -204,7 +204,7 @@ export class CollectionsService {
 
 	/**
 	 * @NOTE
-	 * We only suppport updating the content in directus_collections
+	 * We only support updating the content in directus_collections
 	 */
 	update(data: Partial<Collection>, keys: string[]): Promise<string[]>;
 	update(data: Partial<Collection>, key: string): Promise<string>;
@@ -277,13 +277,13 @@ export class CollectionsService {
 			schema: this.schema,
 		});
 
-		const tablesInDatabase = Object.keys(this.schema.tables);
+		const tablesInDatabase = Object.keys(this.schema.collections);
 
 		const collectionKeys = toArray(collection);
 
 		for (const collectionKey of collectionKeys) {
 			if (tablesInDatabase.includes(collectionKey) === false) {
-				throw new InvalidPayloadException(`Collection "${collectionKey}" doesn't exist.`);
+				throw new ForbiddenException();
 			}
 		}
 
