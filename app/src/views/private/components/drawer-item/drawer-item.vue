@@ -123,7 +123,10 @@ export default defineComponent({
 			computed(() => props.primaryKey === '+')
 		);
 
-		const templateItem = computed(() => ({ ...item.value, ..._edits.value }));
+		const templateItem = computed(() => {
+			if (junctionFieldInfo.value === null) return { ...item.value, ..._edits.value };
+			return { ...item.value?.[junctionFieldInfo.value.field], ..._edits.value[junctionFieldInfo.value.field] };
+		});
 		const templateCollection = computed(
 			() => junctionRelatedCollectionInfo.value?.collection || collectionInfo.value?.collection || null
 		);
