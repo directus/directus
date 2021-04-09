@@ -29,8 +29,20 @@
 		"cleanup": "run-p cleanup:*",
 		"cleanup:dist": "rimraf ./dist",
 		"cleanup:coverage": "rimraf ./coverage",
-		"dev": "jest --coverage --watchAll",
-		"test": "jest --coverage"
+		"test:watch": "jest --coverage --watchAll",
+		"test": "jest --coverage",
+		"dev": "npm-watch build"
+	},
+	"watch": {
+		"build": {
+			"patterns": [
+				"src/*"
+			],
+			"ignore": "dist",
+			"extensions": "ts",
+			"silent": true,
+			"quiet": true
+		}
 	},
 	"dependencies": {
 		"@directus/drive": "^9.0.0-rc.56",
