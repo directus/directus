@@ -250,7 +250,7 @@ import useCollection from '@/composables/use-collection';
 import usePreset from '@/composables/use-preset';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import ExportSidebarDetail from '@/views/private/components/export-sidebar-detail';
-import SidebarAutoRefresh from '@/views/private/components/refresh-sidebar-detail';
+import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail';
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
@@ -276,7 +276,7 @@ export default defineComponent({
 		BookmarkAdd,
 		BookmarkEdit,
 		DrawerBatch,
-		SidebarAutoRefresh,
+		RefreshSidebarDetail,
 	},
 	props: {
 		collection: {
