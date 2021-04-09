@@ -1,8 +1,10 @@
 <template>
 	<v-drawer v-model="_active" :title="title" persistent @cancel="cancel">
 		<template #title v-if="template !== null">
-			<h1 class="type-title">
-				<render-template :collection="templateCollection" :item="templateItem" :template="template" />
+			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
+
+			<h1 class="type-title" v-else>
+				<render-template :collection="templateCollection.collection" :item="templateData" :template="template" />
 			</h1>
 		</template>
 		<template #actions>
@@ -40,7 +42,7 @@ import i18n from '@/lang';
 import { Relation, Field } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { usePermissions } from '@/composables/use-permissions';
-import useTemplate from '@/composables/use-template';
+import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
 	model: {
@@ -128,16 +130,8 @@ export default defineComponent({
 			junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)
 		);
 
-		const templateCollection = computed(() => junctionRelatedCollectionInfo.value?.collection || collection.value);
-
-		const prepend = computed(() =>
-			junctionFieldInfo.value ? item.value?.[junctionFieldInfo.value.field] : item.value
-		);
-		const append = computed(() =>
-			junctionFieldInfo.value ? _edits.value?.[junctionFieldInfo.value.field] : _edits.value
-		);
-
-		const { templateItem } = useTemplate(templateCollection, templatePrimaryKey, prepend, append);
+		const templateCollection = computed(() => junctionRelatedCollectionInfo.value || collectionInfo.value);
+		const { templateData, loading: templateDataLoading } = useTemplateData(templateCollection, templatePrimaryKey);
 
 		const template = computed(
 			() =>
@@ -162,10 +156,9 @@ export default defineComponent({
 			fields,
 			template,
 			templateCollection,
-			templateItem,
 			templatePrimaryKey,
-			prepend,
-			append,
+			templateData,
+			templateDataLoading,
 		};
 
 		function useActiveState() {

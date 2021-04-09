@@ -11,12 +11,12 @@
 		</template>
 
 		<template #title v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template">
-			<v-skeleton-loader class="title-loader" type="text" v-if="loading" />
+			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
 
 			<h1 class="type-title" v-else>
 				<render-template
 					:collection="collectionInfo.collection"
-					:item="templateItem"
+					:item="templateData"
 					:template="collectionInfo.meta.display_template"
 				/>
 			</h1>
@@ -211,7 +211,7 @@ import { usePermissions } from '@/composables/use-permissions';
 import unsavedChanges from '@/composables/unsaved-changes';
 import { useTitle } from '@/composables/use-title';
 import { renderStringTemplate } from '@/utils/render-string-template';
-import useTemplate from '@/composables/use-template';
+import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
 	name: 'collections-item',
@@ -265,7 +265,7 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(collection, primaryKey);
 
-		const { templateItem } = useTemplate(collection, primaryKey, item, edits);
+		const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
 
 		const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
@@ -308,7 +308,7 @@ export default defineComponent({
 				if (collectionInfo.value.meta.singleton === true) {
 					return tabTitle + collectionInfo.value.name;
 				} else if (isNew.value === false && collectionInfo.value.meta.display_template) {
-					const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateItem);
+					const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateData);
 
 					if (displayValue.value !== undefined) return tabTitle + displayValue.value;
 				}
@@ -371,7 +371,8 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
-			templateItem,
+			templateData,
+			templateDataLoading,
 			archiveTooltip,
 			breadcrumb,
 			title,

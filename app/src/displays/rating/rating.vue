@@ -25,7 +25,7 @@ type InterfaceOptions = {
 export default defineComponent({
 	props: {
 		value: {
-			type: Number,
+			type: [String, Number],
 			default: null,
 		},
 		simple: {
