@@ -253,7 +253,9 @@ router.get(
 			accountability: accountability,
 			schema: req.schema,
 		});
+
 		let authResponse: { accessToken: any; refreshToken: any; expires: any; id?: any };
+
 		try {
 			const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
 
