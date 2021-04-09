@@ -32,16 +32,20 @@ export default defineComponent({
 
 		const activeInterval = ref<NodeJS.Timeout | null>(null);
 
-		watch(interval, (newInterval) => {
-			if (activeInterval.value !== null) {
-				clearInterval(activeInterval.value);
-			}
-			if (newInterval !== null && newInterval > 0) {
-				activeInterval.value = setInterval(() => {
-					emit('refresh');
-				}, newInterval * 1000);
-			}
-		});
+		watch(
+			interval,
+			(newInterval) => {
+				if (activeInterval.value !== null) {
+					clearInterval(activeInterval.value);
+				}
+				if (newInterval !== null && newInterval > 0) {
+					activeInterval.value = setInterval(() => {
+						emit('refresh');
+					}, newInterval * 1000);
+				}
+			},
+			{ immediate: true }
+		);
 
 		const items = computed(() => {
 			const intervals = [null, 10, 30, 60, 300];

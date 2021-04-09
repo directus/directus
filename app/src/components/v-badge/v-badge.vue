@@ -15,7 +15,7 @@ import { defineComponent } from '@vue/composition-api';
 export default defineComponent({
 	props: {
 		value: {
-			type: [String, Number],
+			type: [Boolean, String, Number],
 			default: null,
 		},
 		dot: {
@@ -103,7 +103,9 @@ body {
 		}
 
 		&.bordered {
-			border: 2px solid var(--v-badge-border-color);
+			filter: drop-shadow(1.5px 1.5px 0 var(--v-badge-border-color))
+				drop-shadow(1.5px -1.5px 0 var(--v-badge-border-color)) drop-shadow(-1.5px 1.5px 0 var(--v-badge-border-color))
+				drop-shadow(-1.5px -1.5px 0 var(--v-badge-border-color));
 		}
 
 		&.dot {
