@@ -2,8 +2,8 @@ import registerComponent from '@/utils/register-component/';
 import { getDisplays } from './index';
 import { Component } from 'vue';
 import api from '@/api';
-import { batchPromises } from '@/utils/paginate';
 import { getRootPath } from '@/utils/get-root-path';
+import asyncPool from 'tiny-async-pool';
 
 const displays = getDisplays();
 
@@ -18,24 +18,18 @@ export async function registerDisplays() {
 
 	try {
 		const customResponse = await api.get('/extensions/displays');
-		const data = customResponse.data.data;
+		const displays: string[] = customResponse.data.data || [];
 
-		if (data && Array.isArray(data) && data.length > 0) {
-			const loadedDisplays = await batchPromises(
-				data,
-				5,
-				(customKey) => import(/* webpackIgnore: true */ getRootPath() + `/extensions/displays/${customKey}/index.js`)
-			);
-
-			loadedDisplays.forEach((result, i) => {
-				if (result.status === 'rejected') {
-					console.warn(`Couldn't load custom layout "${data[i]}"`);
-					console.warn(result.reason);
-				} else {
-					modules.push(result.value.default);
-				}
-			});
-		}
+		await asyncPool(5, displays, async (displayName) => {
+			try {
+				const result = await import(
+					/* webpackIgnore: true */ getRootPath() + `extensions/displays/${displayName}/index.js`
+				);
+				modules.push(result.value.default);
+			} catch (err) {
+				console.warn(`Couldn't load custom displays "${displayName}"`);
+			}
+		});
 	} catch {
 		console.warn(`Couldn't load custom displays`);
 	}
