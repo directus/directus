@@ -477,6 +477,8 @@ toggle: Perjungti
 icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
+width: Plotis
+height: Aukštis
 wysiwyg_options:
   aligncenter: Vidurinė lygiuotė
   alignjustify: Abipusė lygiuotė
@@ -496,10 +498,7 @@ wysiwyg_options:
   bullist: Suženklintasis sąrašas
   numlist: Numeruotasis sąrašas
   hr: Horizontali linija
-  link: Nuoroda
   unlink: Pašalinti nuorodą
-  media: Pridėti mediją
-  image: Pridėti nuotrauką
   copy: Kopijuoti
   cut: Iškirpti
   paste: Įklijuoti
@@ -521,7 +520,6 @@ wysiwyg_options:
   selectall: Pažymėti visus
   table: Lentelė
   visualaid: Peržiūrėti nematomos elementus
-  code: Peržiūrėti išeities tekstą
   fullscreen: Per visą ekraną
   directionality: Kryptingumas
 dropdown: Išskleidžiamasis meniu
