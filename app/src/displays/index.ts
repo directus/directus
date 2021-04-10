@@ -1,3 +1,4 @@
+import { translateReactive } from '@/utils/translate-object-values';
 import { ref, Ref } from '@vue/composition-api';
 import { DisplayConfig } from './types';
 
@@ -8,5 +9,5 @@ export function getDisplays() {
 		displays = ref([]);
 	}
 
-	return displays;
+	return translateReactive(displays);
 }

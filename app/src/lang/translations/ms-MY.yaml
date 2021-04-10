@@ -51,6 +51,8 @@ on_update: Apabila Dikemaskini
 read: Baca
 update: Kemaskini
 select_fields: Pilih medan-medan
+width: Lebar
+height: Tinggi
 wysiwyg_options:
   remove: Buang
 editing_in_batch: 'Menyunting Secara Kumpulan Sebanyak {count} Benda'

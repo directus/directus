@@ -1,10 +1,10 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceDisplayTemplate from './display-template.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'display-template',
-	name: i18n.t('interfaces.display-template.display-template'),
-	description: i18n.t('interfaces.display-template.description'),
+	name: '$t:interfaces.display-template.display-template',
+	description: '$t:interfaces.display-template.description',
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceDisplayTemplate,
 	types: ['string'],
@@ -12,7 +12,7 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'collectionField',
-			name: i18n.t('interfaces.display-template.collection_field'),
+			name: '$t:interfaces.display-template.collection_field',
 			type: 'string',
 			meta: {
 				width: 'full',
@@ -23,4 +23,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

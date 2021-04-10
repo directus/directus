@@ -1,5 +1,5 @@
 import { GraphQLBoolean, GraphQLFloat, GraphQLInt, GraphQLString } from 'graphql';
-import { GraphQLJSON, GraphQLDate } from 'graphql-compose';
+import { GraphQLJSON } from 'graphql-compose';
 import { types } from '../types';
 
 export function getGraphQLType(localType: typeof types[number] | 'alias' | 'unknown') {
@@ -15,9 +15,6 @@ export function getGraphQLType(localType: typeof types[number] | 'alias' | 'unkn
 		case 'csv':
 		case 'json':
 			return GraphQLJSON;
-		case 'timestamp':
-		case 'dateTime':
-			return GraphQLDate;
 		default:
 			return GraphQLString;
 	}

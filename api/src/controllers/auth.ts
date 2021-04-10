@@ -10,7 +10,7 @@ import cookieParser from 'cookie-parser';
 import env from '../env';
 import { UsersService, AuthenticationService } from '../services';
 import grantConfig from '../grant';
-import { RouteNotFoundException } from '../exceptions';
+import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailableException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { toArray } from '../utils/to-array';
 
@@ -254,13 +254,33 @@ router.get(
 			schema: req.schema,
 		});
 
-		const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
+		let authResponse: { accessToken: any; refreshToken: any; expires: any; id?: any };
 
-		req.session?.destroy(() => {});
+		try {
+			const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
 
-		const { accessToken, refreshToken, expires } = await authenticationService.authenticate({
-			email,
-		});
+			req.session?.destroy(() => {});
+
+			authResponse = await authenticationService.authenticate({
+				email,
+			});
+		} catch (error) {
+			if (redirect) {
+				let reason = 'UNKNOWN_EXCEPTION';
+
+				if (error instanceof ServiceUnavailableException) {
+					reason = 'SERVICE_UNAVAILABLE';
+				} else if (error instanceof InvalidCredentialsException) {
+					reason = 'INVALID_USER';
+				}
+
+				return res.redirect(`${redirect.split('?')[0]}?reason=${reason}`);
+			}
+
+			throw error;
+		}
+
+		const { accessToken, refreshToken, expires } = authResponse;
 
 		if (redirect) {
 			res.cookie('directus_refresh_token', refreshToken, {

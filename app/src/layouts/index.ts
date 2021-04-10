@@ -1,3 +1,4 @@
+import { translateReactive } from '@/utils/translate-object-values';
 import { ref, Ref } from '@vue/composition-api';
 import { LayoutConfig } from './types';
 
@@ -8,5 +9,5 @@ export function getLayouts() {
 		layouts = ref([]);
 	}
 
-	return layouts;
+	return translateReactive(layouts);
 }

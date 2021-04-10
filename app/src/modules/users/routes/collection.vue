@@ -112,7 +112,7 @@
 				<v-info :title="$tc('user_count', 0)" icon="people_alt" center>
 					{{ $t('no_users_copy') }}
 
-					<template #append>
+					<template v-if="canInviteUsers" #append>
 						<v-button :to="{ path: '/users/+', query: queryFilters }">{{ $t('create_user') }}</v-button>
 					</template>
 				</v-info>

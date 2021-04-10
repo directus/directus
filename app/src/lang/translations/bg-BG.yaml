@@ -514,6 +514,8 @@ toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
 label: Етикет
+width: Ширина
+height: Височина
 wysiwyg_options:
   aligncenter: Центриране
   alignjustify: Двустранно подравняване
@@ -533,10 +535,7 @@ wysiwyg_options:
   bullist: Списък
   numlist: Номериран списък
   hr: Хоризонтална линия
-  link: Връзка
   unlink: Премахване на връзка
-  media: Добавяне на медиа
-  image: Добавяне на изображене
   copy: Копиране
   cut: Изрязване
   paste: Поставяне
@@ -558,7 +557,6 @@ wysiwyg_options:
   selectall: Избиране на всичко
   table: Таблица
   visualaid: Преглед на невидимите елементи
-  code: Преглед на кода
   fullscreen: Пълен Екран
   directionality: Подравняване
 dropdown: Падащо меню
@@ -800,7 +798,6 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 interfaces:
   button-links:

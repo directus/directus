@@ -256,6 +256,8 @@ on_update: Uuendamisel
 read: Loe
 update: Uuenda
 select_fields: Vali väljad
+width: Laius
+height: Kõrgus
 wysiwyg_options:
   aligncenter: Joonda Keskele
   alignjustify: Joonda kahepoolselt
