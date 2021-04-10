@@ -157,8 +157,9 @@ on_update: Při úpravě
 read: Číst
 update: Úpravy
 select_fields: Vybrat pole
+width: Šířka
+height: Výška
 wysiwyg_options:
-  image: Přidat obrázek
   copy: Kopírovat
   cut: Vyjmout
   paste: Vložit

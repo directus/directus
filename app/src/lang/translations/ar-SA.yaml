@@ -274,6 +274,8 @@ on_update: عند التحديث
 read: قراءة
 update: تحديث
 select_fields: حدد حقول
+width: العرض
+height: الارتفاع
 wysiwyg_options:
   codeblock: نص برمجي
   remove: احذف

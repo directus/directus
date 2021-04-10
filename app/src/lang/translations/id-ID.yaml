@@ -370,6 +370,8 @@ on_update: Saat Pembaruan
 read: Baca
 update: Perbarui
 select_fields: Pilih Bidang
+width: Lebar
+height: Tinggi
 wysiwyg_options:
   forecolor: Warna Latar Depan
   backcolor: Warna Latar Belakang
