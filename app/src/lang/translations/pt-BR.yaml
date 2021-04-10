@@ -511,6 +511,8 @@ toggle: Alternar
 icon_on: Ícone ligado
 icon_off: Ícone desligado
 label: Rótulo
+width: Largura
+height: Altura
 wysiwyg_options:
   aligncenter: Alinhar ao centro
   alignjustify: Justificar
@@ -530,10 +532,7 @@ wysiwyg_options:
   bullist: Lista de itens
   numlist: Lista numerada
   hr: Linha Horizontal
-  link: Link
   unlink: Excluir Link
-  media: Adicionar mídia
-  image: Adicionar Imagem
   copy: Copiar
   cut: Recortar
   paste: Colar
@@ -555,7 +554,6 @@ wysiwyg_options:
   selectall: Selecionar todos
   table: Tabela
   visualaid: Ver elementos invisíveis
-  code: Ver Fonte
   fullscreen: Tela cheia
   directionality: Direcionalidade
 dropdown: Seleção
