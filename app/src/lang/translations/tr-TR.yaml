@@ -409,6 +409,8 @@ read: Görüntüleme
 update: Güncelle
 select_fields: Alan Seçiniz
 label: Etiket
+width: Genişlik
+height: Yükseklik
 wysiwyg_options:
   aligncenter: Ortala
   alignjustify: İki Yana Yasla
@@ -427,10 +429,7 @@ wysiwyg_options:
   bullist: Liste
   numlist: Sıralı Liste
   hr: Yatay çizgi
-  link: Link
   unlink: Linki sil
-  media: Medya Ekle
-  image: Görsel ekle
   copy: Kopyala
   cut: Kes
   paste: Yapıştır
@@ -451,7 +450,6 @@ wysiwyg_options:
   removeformat: Biçimi Kaldır
   selectall: Tümünü Seç
   table: Tablo
-  code: Kaynağı Göster
   fullscreen: Tam Ekran
 dropdown: Açılır Liste
 choices: Seçenekler
