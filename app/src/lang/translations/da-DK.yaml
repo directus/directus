@@ -220,6 +220,8 @@ on_update: Ved Opdatering
 read: Læs
 update: Opdater
 select_fields: Vælg felter
+width: Bredde
+height: Højde
 wysiwyg_options:
   codeblock: Kode
   remove: Fjern
