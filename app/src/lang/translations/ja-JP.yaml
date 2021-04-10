@@ -236,15 +236,14 @@ on_update: 更新時
 read: 読取り
 update: 更新
 select_fields: 入力欄の選択
+width: 幅
+height: 高さ
 wysiwyg_options:
   aligncenter: 中央揃え
   alignjustify: 両端揃え
   alignleft: 左揃え
   backcolor: 背景色
   hr: 水平線
-  link: リンク
-  media: メディアを追加
-  image: 画像を追加
   copy: コピー
   paste: ペースト
   heading: 見出し
