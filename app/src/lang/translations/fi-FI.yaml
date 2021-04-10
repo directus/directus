@@ -512,6 +512,8 @@ toggle: Vaihda
 icon_on: Päällä-kuvake
 icon_off: Pois-kuvake
 label: Tunniste
+width: Leveys
+height: Korkeus
 wysiwyg_options:
   aligncenter: Tasaa keskelle
   alignjustify: Tasaa tasapalstaksi
@@ -531,10 +533,7 @@ wysiwyg_options:
   bullist: Merkitty lista
   numlist: Numeroitu luettelo
   hr: Vaakaviivain
-  link: Linkki
   unlink: Poista linkki
-  media: Lisää media
-  image: Lisää kuva
   copy: Kopioi
   cut: Leikkaa
   paste: Liitä
@@ -556,7 +555,6 @@ wysiwyg_options:
   selectall: Valitse kaikki
   table: Taulukko
   visualaid: Näytä näkymättömät elementit
-  code: Näytä lähde
   fullscreen: Koko näyttö
   directionality: Suuntaus
 dropdown: Pudotusvalikko
@@ -798,7 +796,6 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
-weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:

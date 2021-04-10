@@ -10,11 +10,9 @@ import { clone, isObject, cloneDeep } from 'lodash';
 import { Item, AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
 import { ItemsService } from './items';
 import { Knex } from 'knex';
-import getLocalType from '../utils/get-local-type';
-import { format, formatISO } from 'date-fns';
+import { format, formatISO, parse, parseISO } from 'date-fns';
 import { ForbiddenException } from '../exceptions';
 import { toArray } from '../utils/to-array';
-import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';
 import { InvalidPayloadException } from '../exceptions';
 import { isPlainObject } from 'lodash';
@@ -170,9 +168,7 @@ export class PayloadService {
 			})
 		);
 
-		if (action === 'read') {
-			await this.processDates(processedPayload);
-		}
+		await this.processDates(processedPayload, action);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
@@ -220,7 +216,7 @@ export class PayloadService {
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
-	async processDates(payloads: Partial<Record<string, any>>[]) {
+	async processDates(payloads: Partial<Record<string, any>>[], action: Action) {
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 
 		const dateColumns = fieldsInCollection.filter(([name, field]) =>
@@ -231,16 +227,18 @@ export class PayloadService {
 
 		for (const [name, dateColumn] of dateColumns) {
 			for (const payload of payloads) {
-				let value: string | Date = payload[name];
+				let value = payload[name];
 
 				if (value === null || value === '0000-00-00') {
 					payload[name] = null;
 					continue;
 				}
 
-				if (typeof value === 'string') value = new Date(value);
+				if (!value) continue;
 
-				if (value) {
+				if (action === 'read') {
+					if (typeof value === 'string') value = new Date(value);
+
 					if (dateColumn.type === 'timestamp') {
 						const newValue = formatISO(value);
 						payload[name] = newValue;
@@ -256,6 +254,18 @@ export class PayloadService {
 						// Strip off the time / timezone information from a date-only value
 						const newValue = format(value, 'yyyy-MM-dd');
 						payload[name] = newValue;
+					}
+				} else {
+					if (value instanceof Date === false) {
+						if (dateColumn.type === 'date') {
+							const newValue = parse(value, 'yyyy-MM-dd', new Date());
+							payload[name] = newValue;
+						}
+
+						if (dateColumn.type === 'timestamp' || dateColumn.type === 'dateTime') {
+							const newValue = parseISO(value);
+							payload[name] = newValue;
+						}
 					}
 				}
 			}

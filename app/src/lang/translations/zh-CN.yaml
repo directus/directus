@@ -477,6 +477,8 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+width: 宽
+height: 高度
 wysiwyg_options:
   aligncenter: 居中对齐
   alignjustify: 两端对齐
@@ -493,10 +495,7 @@ wysiwyg_options:
   superscript: 上标
   codeblock: 代码
   blockquote: 块引用
-  link: 链接
   unlink: 移除链接
-  media: 添加媒体
-  image: 添加图片
   copy: 复制
   cut: 剪切
   paste: 粘帖
@@ -517,7 +516,6 @@ wysiwyg_options:
   removeformat: 清除格式
   selectall: 全选
   table: 表
-  code: 查看源代码
   fullscreen: 全屏显示
 dropdown: 下拉列表
 choices: 选择项

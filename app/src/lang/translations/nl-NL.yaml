@@ -510,6 +510,8 @@ toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+width: Breedte
+height: Hoogte
 wysiwyg_options:
   aligncenter: Align Center
   alignjustify: Align Justify
@@ -529,10 +531,7 @@ wysiwyg_options:
   bullist: Opsomming
   numlist: Genummerde lijst
   hr: Horizontale lijn
-  link: Link
   unlink: Link verwijderen
-  media: Media toevoegen
-  image: Afbeelding toevoegen
   copy: Kopieer
   cut: Knippen
   paste: Plakken
@@ -554,7 +553,6 @@ wysiwyg_options:
   selectall: Alles selecteren
   table: Tabel
   visualaid: Onzichtbare elementen weergeven
-  code: Bekijk broncode
   fullscreen: Volledig scherm
   directionality: Richting
 dropdown: Keuzemenu

@@ -512,6 +512,8 @@ toggle: Activer/Désactiver
 icon_on: Icône Activée
 icon_off: Icône Désactivée
 label: Étiquette
+width: Largeur
+height: Hauteur
 wysiwyg_options:
   aligncenter: Centrer
   alignjustify: Justifier
@@ -531,10 +533,7 @@ wysiwyg_options:
   bullist: Liste à puces
   numlist: Liste numérotée
   hr: Barre horizontale
-  link: Lien
   unlink: Supprimer le lien
-  media: Ajouter un média
-  image: Ajouter une image
   copy: Copier
   cut: Couper
   paste: Coller
@@ -556,7 +555,6 @@ wysiwyg_options:
   selectall: Tout sélectionner
   table: Table
   visualaid: Voir les éléments invisibles
-  code: Afficher la source
   fullscreen: Plein écran
   directionality: Sens de lecture
 dropdown: Liste déroulante
@@ -798,7 +796,6 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:
