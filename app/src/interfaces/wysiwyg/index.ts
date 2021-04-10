@@ -22,15 +22,15 @@ export default defineInterface({
 					'italic',
 					'underline',
 					'removeformat',
-					'link',
+					'custom-link',
 					'bullist',
 					'numlist',
 					'blockquote',
 					'h1',
 					'h2',
 					'h3',
-					'image',
-					'media',
+					'custom-image',
+					'custom-media',
 					'hr',
 					'code',
 					'fullscreen',
@@ -110,7 +110,7 @@ export default defineInterface({
 							text: '$t:wysiwyg_options.hr',
 						},
 						{
-							value: 'link',
+							value: 'custom-link',
 							text: '$t:wysiwyg_options.link',
 						},
 						{
@@ -118,11 +118,11 @@ export default defineInterface({
 							text: '$t:wysiwyg_options.unlink',
 						},
 						{
-							value: 'media',
+							value: 'custom-media',
 							text: '$t:wysiwyg_options.media',
 						},
 						{
-							value: 'image',
+							value: 'custom-image',
 							text: '$t:wysiwyg_options.image',
 						},
 						{
@@ -207,7 +207,7 @@ export default defineInterface({
 						},
 						{
 							value: 'code',
-							text: '$t:wysiwyg_options.code',
+							text: '$t:wysiwyg_options.source_code',
 						},
 						{
 							value: 'fullscreen',
