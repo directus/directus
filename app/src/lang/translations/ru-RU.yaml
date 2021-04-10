@@ -500,6 +500,8 @@ toggle: Переключить
 icon_on: Значок Вкл
 icon_off: Значок Выкл
 label: Метка
+width: Ширина
+height: Высота
 wysiwyg_options:
   aligncenter: По Середине
   alignjustify: По Ширине
@@ -519,10 +521,7 @@ wysiwyg_options:
   bullist: Маркированный Список
   numlist: Нумерованный Список
   hr: Горизонтальный Разделитель
-  link: Ссылка
   unlink: Удалить Ссылку
-  media: Добавить Медиа
-  image: Добавить Изображение
   copy: Копировать
   cut: Вырезать
   paste: Вставить
@@ -544,7 +543,6 @@ wysiwyg_options:
   selectall: Выбрать Все
   table: Таблица
   visualaid: Показать невидимые элементы
-  code: Показать Исходник
   fullscreen: Во Весь Экран
   directionality: Направленность
 dropdown: Выпадающий список
