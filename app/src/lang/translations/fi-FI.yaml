@@ -528,7 +528,11 @@ source: Lähde
 url_placeholder: Syötä URL...
 display_text: Näyttöteksti
 display_text_placeholder: Syötä näyttöteksti...
-tooltip: Vihje
+tooltip: Työkaluvihje
+tooltip_placeholder: Syötä työkaluvihje...
+open_link_in: Avaa linkki
+new_tab: Uusi välilehti
+current_tab: Nykyinen välilehti
 wysiwyg_options:
   aligncenter: Tasaa keskelle
   alignjustify: Tasaa tasapalstaksi
@@ -548,7 +552,10 @@ wysiwyg_options:
   bullist: Merkitty lista
   numlist: Numeroitu luettelo
   hr: Vaakaviivain
+  link: Lisää/Muokkaa Linkki
   unlink: Poista linkki
+  media: Lisää/Muokkaa Mediaa
+  image: Lisää/Muokkaa kuva
   copy: Kopioi
   cut: Leikkaa
   paste: Liitä
@@ -570,6 +577,7 @@ wysiwyg_options:
   selectall: Valitse kaikki
   table: Taulukko
   visualaid: Näytä näkymättömät elementit
+  source_code: Muokkaa lähdekoodia
   fullscreen: Koko näyttö
   directionality: Suuntaus
 dropdown: Pudotusvalikko
@@ -811,6 +819,7 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
+weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:
