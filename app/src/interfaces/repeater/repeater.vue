@@ -3,6 +3,7 @@
 		<draggable :value="value" handle=".drag-handle" @input="onSort" :set-data="hideDragImage">
 			<repeater-row
 				v-for="(row, index) in value"
+				:force-fallback="true"
 				:key="index"
 				:value="row"
 				:template="_template"

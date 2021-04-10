@@ -12,33 +12,29 @@
 			</th>
 
 			<th v-if="showSelect" class="select cell" scope="col">
-				<v-checkbox
-					:inputValue="allItemsSelected"
-					:indeterminate="someItemsSelected"
-					@change="toggleSelectAll"
-				/>
+				<v-checkbox :inputValue="allItemsSelected" :indeterminate="someItemsSelected" @change="toggleSelectAll" />
 			</th>
 
-			<th
-				v-for="header in headers"
-				:key="header.value"
-				:class="getClassesForHeader(header)"
-				class="cell"
-				scope="col"
-			>
+			<th v-for="header in headers" :key="header.value" :class="getClassesForHeader(header)" class="cell" scope="col">
 				<div class="content" @click="changeSort(header)">
 					<span v-show="header.width > 90 || header.width === null">
 						<slot :name="`header.${header.value}`" :header="header">
 							{{ header.text }}
 						</slot>
 					</span>
-					<v-icon v-if="header.sortable" name="sort" class="sort-icon" small />
+					<v-icon
+						v-if="header.sortable"
+						name="sort"
+						class="sort-icon"
+						small
+						v-tooltip.top="$t(getTooltipForSortIcon(header))"
+					/>
 				</div>
 				<span
 					class="resize-handle"
 					v-if="showResize"
 					@click.stop
-					@mousedown="onResizeHandleMouseDown(header, $event)"
+					@pointerdown="onResizeHandleMouseDown(header, $event)"
 				/>
 			</th>
 
@@ -107,8 +103,8 @@ export default defineComponent({
 		const dragStartWidth = ref<number>(0);
 		const dragHeader = ref<Header | null>(null);
 
-		useEventListener(window, 'mousemove', throttle(onMouseMove, 40));
-		useEventListener(window, 'mouseup', onMouseUp);
+		useEventListener(window, 'pointermove', throttle(onMouseMove, 40));
+		useEventListener(window, 'pointerup', onMouseUp);
 
 		return {
 			changeSort,
@@ -121,6 +117,7 @@ export default defineComponent({
 			onResizeHandleMouseDown,
 			toggleManualSort,
 			toggleSelectAll,
+			getTooltipForSortIcon,
 		};
 
 		function getClassesForHeader(header: Header) {
@@ -143,6 +140,10 @@ export default defineComponent({
 			}
 
 			return classes;
+		}
+
+		function getTooltipForSortIcon(header: Header) {
+			return props.sort.by === header.value && props.sort.desc === false ? 'sort_desc' : 'sort_asc';
 		}
 
 		function changeSort(header: Header) {
@@ -180,7 +181,7 @@ export default defineComponent({
 			emit('toggle-select-all', !props.allItemsSelected);
 		}
 
-		function onResizeHandleMouseDown(header: Header, event: MouseEvent) {
+		function onResizeHandleMouseDown(header: Header, event: PointerEvent) {
 			const target = event.target as HTMLDivElement;
 			const parent = target.parentElement as HTMLTableHeaderCellElement;
 
@@ -190,7 +191,7 @@ export default defineComponent({
 			dragHeader.value = header;
 		}
 
-		function onMouseMove(event: MouseEvent) {
+		function onMouseMove(event: PointerEvent) {
 			if (dragging.value === true) {
 				const newWidth = dragStartWidth.value + (event.pageX - dragStartX.value);
 				const currentHeaders = clone(props.headers);
@@ -252,6 +253,7 @@ export default defineComponent({
 			display: flex;
 			align-items: center;
 			height: 100%;
+			color: var(--foreground-normal-alt);
 			font-weight: 600;
 
 			> span {

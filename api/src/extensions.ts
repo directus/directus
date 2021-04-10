@@ -7,6 +7,7 @@ import emitter from './emitter';
 import logger from './logger';
 import { HookRegisterFunction, EndpointRegisterFunction } from './types';
 import { ensureDir } from 'fs-extra';
+import { getSchema } from './utils/get-schema';
 
 import * as exceptions from './exceptions';
 import * as services from './services';
@@ -23,6 +24,10 @@ export async function ensureFoldersExist() {
 			logger.warn(err);
 		}
 	}
+}
+
+export async function initializeExtensions() {
+	await ensureFoldersExist();
 }
 
 export async function listExtensions(type: string) {
@@ -42,20 +47,25 @@ export async function listExtensions(type: string) {
 }
 
 export async function registerExtensions(router: Router) {
-	await ensureFoldersExist();
-	let hooks: string[] = [];
+	await registerExtensionHooks();
+	await registerExtensionEndpoints(router);
+}
+
+export async function registerExtensionEndpoints(router: Router) {
 	let endpoints: string[] = [];
-
-	try {
-		hooks = await listExtensions('hooks');
-		registerHooks(hooks);
-	} catch (err) {
-		logger.warn(err);
-	}
-
 	try {
 		endpoints = await listExtensions('endpoints');
 		registerEndpoints(endpoints, router);
+	} catch (err) {
+		logger.warn(err);
+	}
+}
+
+export async function registerExtensionHooks() {
+	let hooks: string[] = [];
+	try {
+		hooks = await listExtensions('hooks');
+		registerHooks(hooks);
 	} catch (err) {
 		logger.warn(err);
 	}
@@ -84,7 +94,7 @@ function registerHooks(hooks: string[]) {
 			}
 		}
 
-		let events = register({ services, exceptions, env, database });
+		let events = register({ services, exceptions, env, database, getSchema });
 		for (const [event, handler] of Object.entries(events)) {
 			emitter.on(event, handler);
 		}
@@ -117,6 +127,6 @@ function registerEndpoints(endpoints: string[], router: Router) {
 		const scopedRouter = express.Router();
 		router.use(`/${endpoint}/`, scopedRouter);
 
-		register(scopedRouter, { services, exceptions, env, database });
+		register(scopedRouter, { services, exceptions, env, database, getSchema });
 	}
 }

@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('schema_field_title') }}</v-notice>
 
 		<div class="form">
 			<div class="field half-left" v-if="fieldData.meta">
@@ -90,8 +89,8 @@ export default defineComponent({
 }
 
 .form {
-	--v-form-vertical-gap: 32px;
-	--v-form-horizontal-gap: 32px;
+	--form-vertical-gap: 32px;
+	--form-horizontal-gap: 32px;
 
 	@include form-grid;
 }

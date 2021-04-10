@@ -32,7 +32,7 @@ export default defineComponent({
 	width: 100%;
 	height: 64px;
 	padding: 0 20px;
-	color: var(--foreground-normal);
+	color: var(--foreground-normal-alt);
 	text-align: left;
 	background-color: var(--background-normal-alt);
 

@@ -29,9 +29,10 @@ export function isAllowed(
 		if (attemptedFields.every((field) => allowedFields.includes(field)) === false) return false;
 	}
 
-	const schema = generateJoi(['create', 'update'] ? permissionInfo.validation : permissionInfo.permissions, {
+	const schema = generateJoi(permissionInfo.permissions, {
 		allowUnknown: true,
 	});
+
 	const { error } = schema.validate(value);
 
 	if (!error) {

@@ -118,14 +118,14 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from '@vue/composition-api';
-import readableMimeType from '../../../utils/readable-mime-type';
+import readableMimeType from '@/utils/readable-mime-type';
 import bytes from 'bytes';
-import i18n from '../../../lang';
+import i18n from '@/lang';
 import marked from 'marked';
-import localizedFormat from '../../../utils/localized-format';
-import api, { addTokenToURL } from '../../../api';
-import getRootPath from '../../../utils/get-root-path';
-import { userName } from '../../../utils/user-name';
+import localizedFormat from '@/utils/localized-format';
+import api, { addTokenToURL } from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
+import { userName } from '@/utils/user-name';
 
 export default defineComponent({
 	inheritAttrs: false,

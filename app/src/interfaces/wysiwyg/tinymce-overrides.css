@@ -5,7 +5,8 @@
 }
 
 .tox .tox-tbtn {
-	margin: 2px 2px 4px 0;
+	height: 36px;
+	margin: 0;
 	color: var(--foreground-normal);
 }
 
@@ -65,11 +66,11 @@
 	font-feature-settings: 'liga';
 }
 
-.tox-tbtn[aria-label='Insert/edit link'] .tox-icon svg {
+.tox-tbtn[aria-label='Add/Edit Link'] .tox-icon svg {
 	display: none;
 }
 
-.tox-tbtn[aria-label='Insert/edit link'] .tox-icon::after {
+.tox-tbtn[aria-label='Add/Edit Link'] .tox-icon::after {
 	display: inline-block;
 	margin-top: 4px;
 	color: var(--foreground-normal);
@@ -85,7 +86,7 @@
 }
 
 .tox .tox-edit-area__iframe {
-	background-color: var(--background-page);
+	background-color: var(--background-input);
 }
 
 .tox-tinymce {
@@ -108,8 +109,10 @@
 .tox .tox-toolbar,
 .tox .tox-toolbar__primary,
 .tox .tox-toolbar__overflow {
-	background: url("data:image/svg+xml;charset=utf8,%3Csvg height='40px' viewBox='0 0 40 40px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='2' fill='%23cfd8dc'/%3E%3C/svg%3E")
-		left 0 top 0 var(--background-subdued);
+	min-height: 40px;
+	padding: 2px 0;
+	background: var(--background-subdued);
+	border-bottom: 2px solid var(--border-normal);
 }
 
 .tox .tox-pop__dialog .tox-toolbar {
@@ -149,6 +152,10 @@ body.dark .tox .tox-toolbar__overflow {
 	background: var(--border-normal);
 }
 
+.tox .tox-tbtn + .tox .tox-tbtn {
+	margin-left: 2px;
+}
+
 .tox .tox-swatches__picker-btn:hover {
 	background: transparent;
 	border: none;
@@ -167,7 +174,11 @@ body.dark .tox .tox-toolbar__overflow {
 /* Modal */
 
 .tox .tox-dialog-wrap__backdrop {
-	background-color: rgba(0, 0, 0, 0.75);
+	background-color: var(--v-overlay-color);
+}
+
+.tox.tox-tinymce-aux {
+	z-index: 510;
 }
 
 .tox .tox-dialog {
@@ -188,9 +199,12 @@ body.dark .tox .tox-toolbar__overflow {
 	background-color: var(--background-page);
 }
 
+.tox .tox-dialog__body {
+	color: var(--foreground-normal);
+}
+
 .tox .tox-dialog__body-content {
 	padding: 24px 24px;
-
 }
 
 .tox .tox-dialog__footer {
@@ -252,6 +266,10 @@ body.dark .tox .tox-toolbar__overflow {
 	background-color: var(--background-normal-alt) !important;
 }
 
+.tox .tox-collection__item-label {
+	line-height: unset;
+}
+
 .tox .tox-textfield:focus,
 .tox .tox-selectfield select:focus,
 .tox .tox-textarea:focus {
@@ -260,8 +278,8 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-button {
 	display: flex;
-	align-items: center;
 	justify-content: center;
+	align-items: center;
 	min-width: 136px;
 	height: 44px;
 	padding: 0 20px 1px;
@@ -355,7 +373,6 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-collection--list .tox-collection__group {
 	border-color: var(--border-normal);
 }
-
 
 .tox .tox-insert-table-picker__label {
 	color: var(--foreground-normal);

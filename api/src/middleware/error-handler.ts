@@ -1,8 +1,9 @@
 import { ErrorRequestHandler } from 'express';
-import { BaseException } from '../exceptions';
+import { BaseException, MethodNotAllowedException } from '../exceptions';
 import logger from '../logger';
 import env from '../env';
 import { toArray } from '../utils/to-array';
+import { emitAsyncSafe } from '../emitter';
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 	let payload: any = {
@@ -43,30 +44,49 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 			payload.errors.push({
 				message: err.message,
 				extensions: {
-					...err.extensions,
 					code: err.code,
+					...err.extensions,
 				},
 			});
+
+			if (err instanceof MethodNotAllowedException) {
+				res.header('Allow', err.extensions.allow.join(', '));
+			}
 		} else {
 			logger.error(err);
 
 			res.status(500);
 
-			payload = {
-				errors: [
-					{
-						message: err.message,
-						extensions: {
-							...err.extensions,
-							code: 'INTERNAL_SERVER_ERROR',
+			if (req.accountability?.admin === true) {
+				payload = {
+					errors: [
+						{
+							message: err.message,
+							extensions: {
+								code: 'INTERNAL_SERVER_ERROR',
+								...err.extensions,
+							},
 						},
-					},
-				],
-			};
+					],
+				};
+			} else {
+				payload = {
+					errors: [
+						{
+							message: 'An unexpected error occurred.',
+							extensions: {
+								code: 'INTERNAL_SERVER_ERROR',
+							},
+						},
+					],
+				};
+			}
 		}
 	}
 
-	return res.json(payload);
+	emitAsyncSafe('error', payload.errors).then(() => {
+		return res.json(payload);
+	});
 };
 
 export default errorHandler;

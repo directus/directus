@@ -85,21 +85,21 @@ body {
 	}
 
 	&.tile .v-item-group ::v-deep .v-button {
-		&:first-child {
+		&:first-child .button {
 			--border-radius: 0px;
 		}
 
-		&:last-child {
+		&:last-child .button {
 			--border-radius: 0px;
 		}
 	}
 
 	&.rounded:not(.tile) .v-item-group ::v-deep .v-button {
-		&:first-child {
+		&:first-child .button {
 			--border-radius: var(--v-button-height) 0px 0px var(--v-button-height);
 		}
 
-		&:last-child {
+		&:last-child .button {
 			--border-radius: 0px var(--v-button-height) var(--v-button-height) 0px;
 		}
 	}

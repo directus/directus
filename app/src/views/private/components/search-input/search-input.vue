@@ -7,14 +7,13 @@
 		v-tooltip.bottom="active ? null : $t('search')"
 	>
 		<v-icon name="search" />
-		<input ref="input" :value="value" @input="emitValue" :placeholder="$t('search_items')" />
+		<input ref="input" :value="value" @input="emitValue" @paste="emitValue" :placeholder="$t('search_items')" />
 		<v-icon v-if="value" class="empty" name="close" @click.stop="emptyAndClose" />
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, watch } from '@vue/composition-api';
-import { debounce } from 'lodash';
 
 export default defineComponent({
 	props: {
@@ -34,9 +33,7 @@ export default defineComponent({
 			}
 		});
 
-		const emitValue = debounce((event: InputEvent) => emit('input', (event.target as HTMLInputElement).value), 850);
-
-		return { active, disable, input, emitValue, emptyAndClose };
+		return { active, disable, input, emptyAndClose, emitValue };
 
 		function disable() {
 			active.value = false;
@@ -45,6 +42,12 @@ export default defineComponent({
 		function emptyAndClose() {
 			emit('input', null);
 			active.value = false;
+		}
+
+		function emitValue() {
+			if (!input.value) return;
+			const value = input.value?.value;
+			emit('input', value);
 		}
 	},
 });

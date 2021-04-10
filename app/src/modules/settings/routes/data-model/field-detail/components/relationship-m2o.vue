@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('configure_m2o') }}</v-notice>
 
 		<div class="grid">
 			<div class="field">
@@ -14,6 +13,7 @@
 					db-safe
 					key="related-collection"
 					v-model="relations[0].one_collection"
+					:nullable="false"
 					:disabled="isExisting"
 					:placeholder="$t('collection') + '...'"
 				>
@@ -60,6 +60,7 @@
 				db-safe
 				:disabled="relatedCollectionExists"
 				v-model="relations[0].one_primary"
+				:nullable="false"
 				:placeholder="$t('primary_key') + '...'"
 			/>
 			<v-icon class="arrow" name="arrow_back" />
@@ -83,19 +84,29 @@
 			</div>
 			<v-icon name="arrow_forward" class="arrow" />
 		</div>
+
+		<v-notice class="generated-data" v-if="generationInfo.length > 0" type="warning">
+			<span>
+				{{ $t('new_data_alert') }}
+
+				<ul>
+					<li v-for="(data, index) in generationInfo" :key="index">
+						<span class="field-name">{{ data.name }}</span>
+						({{ $t(data.type === 'field' ? 'new_field' : 'new_collection') }})
+					</li>
+				</ul>
+			</span>
+		</v-notice>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch } from '@vue/composition-api';
-import { Relation } from '@/types';
-import { Field } from '@/types';
+import { defineComponent, computed } from '@vue/composition-api';
 import { orderBy } from 'lodash';
-import useSync from '@/composables/use-sync';
-import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { useCollectionsStore } from '@/stores';
 import i18n from '@/lang';
 
-import { state } from '../store';
+import { state, generationInfo } from '../store';
 
 export default defineComponent({
 	props: {
@@ -112,9 +123,8 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { emit }) {
+	setup() {
 		const collectionsStore = useCollectionsStore();
-		const fieldsStore = useFieldsStore();
 
 		const { availableCollections, systemCollections } = useRelation();
 		const { hasCorresponding, correspondingField, correspondingLabel } = useCorresponding();
@@ -132,6 +142,7 @@ export default defineComponent({
 			correspondingLabel,
 			fieldData: state.fieldData,
 			relatedCollectionExists,
+			generationInfo,
 		};
 
 		function useRelation() {
@@ -165,16 +176,18 @@ export default defineComponent({
 				},
 				set(enabled: boolean) {
 					if (enabled === true) {
+						state.relations[0].one_field = state.relations[0].many_collection;
+
 						state.newFields.push({
 							$type: 'corresponding',
-							field: state.relations[0].many_collection,
-							collection: state.relations[0].many_collection,
+							type: null,
+							field: state.relations[0].one_field,
+							collection: state.relations[0].one_collection,
 							meta: {
 								special: 'o2m',
 								interface: 'one-to-many',
 							},
 						});
-						state.relations[0].one_field = state.relations[0].many_collection;
 					} else {
 						state.newFields = state.newFields.filter((field: any) => field.$type !== 'corresponding');
 					}
@@ -234,7 +247,7 @@ export default defineComponent({
 		--v-icon-color: var(--primary);
 
 		position: absolute;
-		bottom: 14px;
+		bottom: 17px;
 		left: 50%;
 		transform: translateX(-50%);
 	}
@@ -254,5 +267,18 @@ export default defineComponent({
 
 .v-notice {
 	margin-bottom: 36px;
+}
+
+.generated-data {
+	margin-top: 36px;
+
+	ul {
+		padding-top: 4px;
+		padding-left: 24px;
+	}
+
+	.field-name {
+		font-family: var(--family-monospace);
+	}
 }
 </style>

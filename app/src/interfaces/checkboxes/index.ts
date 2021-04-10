@@ -1,18 +1,18 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceCheckboxes from './checkboxes.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'checkboxes',
-	name: i18n.t('interfaces.checkboxes.checkboxes'),
+	name: '$t:interfaces.checkboxes.checkboxes',
 	icon: 'check_box',
 	component: InterfaceCheckboxes,
-	description: i18n.t('interfaces.checkboxes.description'),
+	description: '$t:interfaces.checkboxes.description',
 	types: ['json', 'csv'],
 	options: [
 		{
 			field: 'choices',
 			type: 'json',
-			name: i18n.t('choices'),
+			name: '$t:choices',
 			meta: {
 				width: 'full',
 				interface: 'repeater',
@@ -22,25 +22,25 @@ export default defineInterface(({ i18n }) => ({
 						{
 							field: 'text',
 							type: 'string',
-							name: i18n.t('text'),
+							name: '$t:text',
 							meta: {
 								width: 'half',
 								interface: 'text-input',
 								options: {
-									placeholder: i18n.t('interfaces.dropdown.choices_name_placeholder'),
+									placeholder: '$t:interfaces.dropdown.choices_name_placeholder',
 								},
 							},
 						},
 						{
 							field: 'value',
 							type: 'string',
-							name: i18n.t('value'),
+							name: '$t:value',
 							meta: {
 								width: 'half',
 								interface: 'text-input',
 								options: {
 									font: 'monospace',
-									placeholder: i18n.t('interfaces.dropdown.choices_name_placeholder'),
+									placeholder: '$t:interfaces.dropdown.choices_name_placeholder',
 								},
 							},
 						},
@@ -50,13 +50,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'allowOther',
-			name: i18n.t('interfaces.checkboxes.allow_other'),
+			name: '$t:interfaces.checkboxes.allow_other',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('enable_custom_values'),
+					label: '$t:enable_custom_values',
 				},
 			},
 			schema: {
@@ -65,19 +65,19 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'color',
-			name: i18n.t('color'),
+			name: '$t:color',
 			type: 'string',
 			meta: {
 				width: 'half',
 				interface: 'color',
 			},
 			schema: {
-				default_value: '#2f80ed',
+				default_value: '#00C897',
 			},
 		},
 		{
 			field: 'iconOn',
-			name: i18n.t('icon_on'),
+			name: '$t:icon_on',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -89,7 +89,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'iconOff',
-			name: i18n.t('icon_off'),
+			name: '$t:icon_off',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -101,7 +101,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'itemsShown',
-			name: i18n.t('interfaces.checkboxes.items_shown'),
+			name: '$t:interfaces.checkboxes.items_shown',
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -113,4 +113,4 @@ export default defineInterface(({ i18n }) => ({
 		},
 	],
 	recommendedDisplays: ['labels'],
-}));
+});

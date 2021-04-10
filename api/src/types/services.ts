@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { Accountability } from './accountability';
 import { Item, PrimaryKey } from './items';
 import { Query } from './query';

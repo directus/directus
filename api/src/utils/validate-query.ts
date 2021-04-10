@@ -19,7 +19,7 @@ const querySchema = Joi.object({
 	meta: Joi.array().items(Joi.string().valid('total_count', 'filter_count')),
 	search: Joi.string(),
 	export: Joi.string().valid('json', 'csv'),
-	deep: Joi.object().pattern(/\w+/, Joi.link('#query')),
+	deep: Joi.object(),
 }).id('query');
 
 export function validateQuery(query: Query) {
@@ -61,6 +61,8 @@ function validateFilter(filter: Query['filter']) {
 					break;
 				case '_in':
 				case '_nin':
+				case '_between':
+				case '_nbetween':
 					validateList(value, key);
 					break;
 				case '_null':
@@ -79,8 +81,13 @@ function validateFilter(filter: Query['filter']) {
 }
 
 function validateFilterPrimitive(value: any, key: string) {
-	if ((typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') === false) {
-		throw new InvalidQueryException(`The filter value for "${key}" has to be a string or a number`);
+	if (value === null) return true;
+
+	if (
+		(typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value instanceof Date) ===
+		false
+	) {
+		throw new InvalidQueryException(`The filter value for "${key}" has to be a string, number, or boolean`);
 	}
 
 	if (typeof value === 'number' && Number.isNaN(value)) {

@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import { RouteNotFoundException } from '../exceptions';
 import { listExtensions } from '../extensions';
 import env from '../env';
@@ -8,17 +8,20 @@ import { respond } from '../middleware/respond';
 const router = Router();
 
 const extensionsPath = env.EXTENSIONS_PATH as string;
-router.use(express.static(extensionsPath));
+
+const appExtensions = ['interfaces', 'layouts', 'displays', 'modules'];
 
 router.get(
-	'/:type',
+	['/:type', '/:type/*'],
 	asyncHandler(async (req, res, next) => {
-		const typeAllowList = ['interfaces', 'layouts', 'displays', 'modules'];
-
-		if (typeAllowList.includes(req.params.type) === false) {
+		if (appExtensions.includes(req.params.type) === false) {
 			throw new RouteNotFoundException(req.path);
 		}
 
+		return next();
+	}),
+	express.static(extensionsPath),
+	asyncHandler(async (req, res, next) => {
 		const extensions = await listExtensions(req.params.type);
 
 		res.locals.payload = {

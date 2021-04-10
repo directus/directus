@@ -1,10 +1,10 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceDivider from './divider.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'divider',
-	name: i18n.t('interfaces.divider.divider'),
-	description: i18n.t('interfaces.divider.description'),
+	name: '$t:interfaces.divider.divider',
+	description: '$t:interfaces.divider.description',
 	icon: 'remove',
 	component: InterfaceDivider,
 	hideLabel: true,
@@ -14,7 +14,7 @@ export default defineInterface(({ i18n }) => ({
 	options: [
 		{
 			field: 'color',
-			name: i18n.t('color'),
+			name: '$t:color',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -23,7 +23,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'icon',
-			name: i18n.t('icon'),
+			name: '$t:icon',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -32,25 +32,40 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'title',
-			name: i18n.t('title'),
+			name: '$t:title',
 			type: 'string',
 			meta: {
-				width: 'half',
+				width: 'full',
 				interface: 'text-input',
 				options: {
-					placeholder: i18n.t('interfaces.divider.title_placeholder'),
+					placeholder: '$t:interfaces.divider.title_placeholder',
 				},
 			},
 		},
 		{
-			field: 'inlineTitle',
-			name: i18n.t('interfaces.divider.inline_title'),
+			field: 'marginTop',
+			name: '$t:interfaces.divider.margin_top',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('interfaces.divider.inline_title_label'),
+					label: '$t:interfaces.divider.margin_top_label',
+				},
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+		{
+			field: 'inlineTitle',
+			name: '$t:interfaces.divider.inline_title',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				options: {
+					label: '$t:interfaces.divider.inline_title_label',
 				},
 			},
 			schema: {
@@ -58,4 +73,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

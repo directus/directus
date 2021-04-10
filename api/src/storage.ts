@@ -1,12 +1,13 @@
-import { StorageManager, LocalFileSystemStorage, StorageManagerConfig, Storage } from '@slynova/flydrive';
+import { StorageManager, LocalFileSystemStorage, StorageManagerConfig, Storage } from '@directus/drive';
 import env from './env';
 import { validateEnv } from './utils/validate-env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 import { toArray } from './utils/to-array';
 
 /** @todo dynamically load these storage adapters */
-import { AmazonWebServicesS3Storage } from '@slynova/flydrive-s3';
-import { GoogleCloudStorage } from '@slynova/flydrive-gcs';
+import { AmazonWebServicesS3Storage } from '@directus/drive-s3';
+import { GoogleCloudStorage } from '@directus/drive-gcs';
+import { AzureBlobWebServicesStorage } from '@directus/drive-azure';
 
 validateEnv(['STORAGE_LOCATIONS']);
 
@@ -65,5 +66,7 @@ function getStorageDriver(driver: string) {
 			return AmazonWebServicesS3Storage;
 		case 'gcs':
 			return GoogleCloudStorage;
+		case 'azure':
+			return AzureBlobWebServicesStorage;
 	}
 }

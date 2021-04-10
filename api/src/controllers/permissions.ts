@@ -1,8 +1,7 @@
 import express from 'express';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import { PermissionsService, MetaService } from '../services';
-import { clone } from 'lodash';
-import { InvalidCredentialsException, ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
 import { PrimaryKey } from '../types';
@@ -42,6 +41,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const metaService = new MetaService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -57,31 +57,6 @@ router.get(
 );
 
 router.get(
-	'/me',
-	asyncHandler(async (req, res, next) => {
-		if (!req.accountability?.user) {
-			throw new InvalidCredentialsException();
-		}
-
-		const service = new PermissionsService({ schema: req.schema });
-		const query = clone(req.sanitizedQuery || {});
-
-		query.filter = {
-			...(query.filter || {}),
-			role: {
-				_eq: req.accountability.role,
-			},
-		};
-
-		const items = await service.readByQuery(req.sanitizedQuery);
-
-		res.locals.payload = { data: items || null };
-		return next();
-	}),
-	respond
-);
-
-router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
 		if (req.path.endsWith('me')) return next();
@@ -89,8 +64,8 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const record = await service.readByKey(primaryKey as any, req.sanitizedQuery);
+
+		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
 
 		res.locals.payload = { data: record || null };
 		return next();
@@ -105,8 +80,8 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const primaryKey = await service.update(req.body, pk as any);
+
+		const primaryKey = await service.update(req.body, req.params.pk);
 
 		try {
 			const item = await service.readByKey(primaryKey, req.sanitizedQuery);
@@ -148,8 +123,9 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		await service.delete(pk as any);
+
+		await service.delete(req.params.pk);
+
 		return next();
 	}),
 	respond

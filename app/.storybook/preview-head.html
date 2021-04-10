@@ -1,8 +1,0 @@
-<script defer>
-	// This hack is needed to prevent Netlify from shouting at us for mixed http / https 🙄
-	window.addEventListener('load', () => {
-		const script = document.createElement('script');
-		script.src = 'h' + 'tt' + 'p:' + '//localhost:8098';
-		document.body.appendChild(script);
-	});
-</script>

@@ -1,5 +1,12 @@
 <template>
 	<v-drawer v-model="_active" :title="title" persistent @cancel="cancel">
+		<template #title v-if="template !== null">
+			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
+
+			<h1 class="type-title" v-else>
+				<render-template :collection="templateCollection.collection" :item="templateData" :template="template" />
+			</h1>
+		</template>
 		<template #actions>
 			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
@@ -11,35 +18,31 @@
 				<v-form
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
-					:collection="junctionRelatedCollection"
 					:primary-key="relatedPrimaryKey"
 					:edits="_edits[junctionField]"
+					:fields="junctionRelatedCollectionFields"
 					@input="setJunctionEdits"
 				/>
 
 				<v-divider v-if="showDivider" />
 			</template>
 
-			<v-form
-				:loading="loading"
-				:initial-values="item"
-				:collection="collection"
-				:primary-key="primaryKey"
-				v-model="_edits"
-			/>
+			<v-form :loading="loading" :initial-values="item" :primary-key="primaryKey" :fields="fields" v-model="_edits" />
 		</div>
 	</v-drawer>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
-import api from '../../../../api';
+import api from '@/api';
 
-import useCollection from '../../../../composables/use-collection';
-import { useFieldsStore, useRelationsStore } from '../../../../stores';
-import i18n from '../../../../lang';
-import { Relation, Field } from '../../../../types';
-import { unexpectedError } from '../../../../utils/unexpected-error';
+import useCollection from '@/composables/use-collection';
+import { useFieldsStore, useRelationsStore } from '@/stores';
+import i18n from '@/lang';
+import { Relation, Field } from '@/types';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { usePermissions } from '@/composables/use-permissions';
+import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
 	model: {
@@ -106,11 +109,36 @@ export default defineComponent({
 
 		const showDivider = computed(() => {
 			return (
-				fieldsStore
-					.getFieldsForCollection(props.collection)
-					.filter((field: Field) => field.meta?.hidden !== true).length > 0
+				fieldsStore.getFieldsForCollection(props.collection).filter((field: Field) => field.meta?.hidden !== true)
+					.length > 0
 			);
 		});
+
+		const { fields: junctionRelatedCollectionFields } = usePermissions(
+			junctionRelatedCollection,
+			computed(() => item.value && item.value[props.junctionField]),
+			computed(() => props.primaryKey === '+')
+		);
+
+		const { fields } = usePermissions(
+			collection,
+			item,
+			computed(() => props.primaryKey === '+')
+		);
+
+		const templatePrimaryKey = computed(() =>
+			junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)
+		);
+
+		const templateCollection = computed(() => junctionRelatedCollectionInfo.value || collectionInfo.value);
+		const { templateData, loading: templateDataLoading } = useTemplateData(templateCollection, templatePrimaryKey);
+
+		const template = computed(
+			() =>
+				junctionRelatedCollectionInfo.value?.meta?.display_template ||
+				collectionInfo.value?.meta?.display_template ||
+				null
+		);
 
 		return {
 			_active,
@@ -124,6 +152,13 @@ export default defineComponent({
 			junctionRelatedCollection,
 			setJunctionEdits,
 			showDivider,
+			junctionRelatedCollectionFields,
+			fields,
+			template,
+			templateCollection,
+			templatePrimaryKey,
+			templateData,
+			templateDataLoading,
 		};
 
 		function useActiveState() {
@@ -243,13 +278,14 @@ export default defineComponent({
 				const relations = relationsStore.getRelationsForField(props.collection, props.junctionField);
 
 				const relationForField = relations.find((relation: Relation) => {
-					return (
-						relation.many_collection === props.collection && relation.many_field === props.junctionField
-					);
+					return relation.many_collection === props.collection && relation.many_field === props.junctionField;
 				});
 
 				if (relationForField.one_collection) return relationForField.one_collection;
-				if (relationForField.one_collection_field) return props.edits[relationForField.one_collection_field];
+				if (relationForField.one_collection_field)
+					return (
+						props.edits[relationForField.one_collection_field] || item.value?.[relationForField.one_collection_field]
+					);
 				return null;
 			});
 

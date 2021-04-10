@@ -1,5 +1,7 @@
+import { getSchema } from '../../../utils/get-schema';
+
 export default async function rolesCreate({ name, admin }: any) {
-	const { default: database, schemaInspector } = require('../../../database/index');
+	const { default: database } = require('../../../database/index');
 	const { RolesService } = require('../../../services/roles');
 
 	if (!name) {
@@ -8,7 +10,7 @@ export default async function rolesCreate({ name, admin }: any) {
 	}
 
 	try {
-		const schema = await schemaInspector.overview();
+		const schema = await getSchema();
 		const service = new RolesService({ schema: schema, knex: database });
 
 		const id = await service.create({ name, admin_access: admin });

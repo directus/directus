@@ -11,12 +11,12 @@
 		</template>
 
 		<template #title v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template">
-			<v-skeleton-loader class="title-loader" type="text" v-if="loading" />
+			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
 
 			<h1 class="type-title" v-else>
 				<render-template
 					:collection="collectionInfo.collection"
-					:item="templateValues"
+					:item="templateData"
 					:template="collectionInfo.meta.display_template"
 				/>
 			</h1>
@@ -57,12 +57,7 @@
 		</template>
 
 		<template #actions>
-			<v-dialog
-				v-if="!isNew"
-				v-model="confirmDelete"
-				:disabled="deleteAllowed === false"
-				@esc="confirmDelete = false"
-			>
+			<v-dialog v-if="!isNew" v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
 						rounded
@@ -129,7 +124,7 @@
 				rounded
 				icon
 				:loading="saving"
-				:disabled="isSavable === false"
+				:disabled="isSavable === false || saveAllowed === false"
 				v-tooltip.bottom="saveAllowed ? $t('save') : $t('not_allowed')"
 				@click="saveAndQuit"
 			>
@@ -137,8 +132,7 @@
 
 				<template #append-outer>
 					<save-options
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true"
-						:disabled="isSavable === false"
+						v-if="collectionInfo.meta && collectionInfo.meta.singleton !== true && isSavable === true"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
 						@save-as-copy="saveAsCopyAndNavigate"
@@ -148,6 +142,7 @@
 		</template>
 
 		<template #navigation>
+			<collections-navigation-search />
 			<collections-navigation />
 		</template>
 
@@ -180,11 +175,11 @@
 				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="isNew === false && _primaryKey"
+				v-if="isNew === false && _primaryKey && revisionsAllowed"
 				:collection="collection"
 				:primary-key="_primaryKey"
 				ref="revisionsDrawerDetail"
-				@revert="refresh"
+				@revert="revert"
 			/>
 			<comments-sidebar-detail
 				v-if="isNew === false && _primaryKey"
@@ -196,35 +191,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 import Vue from 'vue';
 
+import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import CollectionsNavigation from '../components/navigation.vue';
-import router from '../../../router';
+import router from '@/router';
 import CollectionsNotFound from './not-found.vue';
-import useCollection from '../../../composables/use-collection';
-import RevisionsDrawerDetail from '../../../views/private/components/revisions-drawer-detail';
-import CommentsSidebarDetail from '../../../views/private/components/comments-sidebar-detail';
-import useItem from '../../../composables/use-item';
-import SaveOptions from '../../../views/private/components/save-options';
-import i18n from '../../../lang';
+import useCollection from '@/composables/use-collection';
+import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
+import useItem from '@/composables/use-item';
+import SaveOptions from '@/views/private/components/save-options';
+import i18n from '@/lang';
 import marked from 'marked';
-import useShortcut from '../../../composables/use-shortcut';
+import useShortcut from '@/composables/use-shortcut';
 import { NavigationGuard } from 'vue-router';
-import { useUserStore, usePermissionsStore } from '../../../stores';
-import generateJoi from '../../../utils/generate-joi';
-import { cloneDeep } from 'lodash';
-import { Field } from '../../../types';
-import { usePermissions } from '../../../composables/use-permissions';
-
-type Values = {
-	[field: string]: any;
-};
+import { usePermissions } from '@/composables/use-permissions';
+import unsavedChanges from '@/composables/unsaved-changes';
+import { useTitle } from '@/composables/use-title';
+import { renderStringTemplate } from '@/utils/render-string-template';
+import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
 	name: 'collections-item',
 	components: {
 		CollectionsNavigation,
+		CollectionsNavigationSearch,
 		CollectionsNotFound,
 		RevisionsDrawerDetail,
 		CommentsSidebarDetail,
@@ -246,8 +239,6 @@ export default defineComponent({
 	},
 	setup(props) {
 		const form = ref<HTMLElement>();
-		const userStore = useUserStore();
-		const permissionsStore = usePermissionsStore();
 
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
@@ -274,6 +265,8 @@ export default defineComponent({
 			validationErrors,
 		} = useItem(collection, primaryKey);
 
+		const { templateData, loading: templateDataLoading } = useTemplateData(collectionInfo, primaryKey);
+
 		const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 
 		const isSavable = computed(() => {
@@ -294,24 +287,37 @@ export default defineComponent({
 			return hasEdits.value;
 		});
 
+		unsavedChanges(isSavable);
+
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
 
 		const confirmLeave = ref(false);
 		const leaveTo = ref<string | null>(null);
 
-		const templateValues = computed(() => {
-			return {
-				...(item.value || {}),
-				...edits.value,
-			};
-		});
-
 		const title = computed(() => {
 			return isNew.value
 				? i18n.t('creating_in', { collection: collectionInfo.value?.name })
 				: i18n.t('editing_in', { collection: collectionInfo.value?.name });
 		});
+
+		const tabTitle = computed(() => {
+			let tabTitle = (collectionInfo.value?.name || '') + ' | ';
+
+			if (collectionInfo.value && collectionInfo.value.meta) {
+				if (collectionInfo.value.meta.singleton === true) {
+					return tabTitle + collectionInfo.value.name;
+				} else if (isNew.value === false && collectionInfo.value.meta.display_template) {
+					const { displayValue } = renderStringTemplate(collectionInfo.value.meta.display_template, templateData);
+
+					if (displayValue.value !== undefined) return tabTitle + displayValue.value;
+				}
+			}
+
+			return tabTitle + title.value;
+		});
+
+		useTitle(tabTitle);
 
 		const archiveTooltip = computed(() => {
 			if (archiveAllowed.value === false) return i18n.t('not_allowed');
@@ -332,7 +338,7 @@ export default defineComponent({
 			return next();
 		};
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields } = usePermissions(
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
 			collection,
 			item,
 			isNew
@@ -365,7 +371,8 @@ export default defineComponent({
 			saveAndStay,
 			saveAndAddNew,
 			saveAsCopyAndNavigate,
-			templateValues,
+			templateData,
+			templateDataLoading,
 			archiveTooltip,
 			breadcrumb,
 			title,
@@ -387,6 +394,8 @@ export default defineComponent({
 			fields,
 			isSingleton,
 			_primaryKey,
+			revisionsAllowed,
+			revert,
 		};
 
 		function useBreadcrumb() {
@@ -448,7 +457,7 @@ export default defineComponent({
 		async function saveAsCopyAndNavigate() {
 			try {
 				const newPrimaryKey = await saveAsCopy();
-				router.push(`/collections/${props.collection}/${newPrimaryKey}`);
+				if (newPrimaryKey) router.push(`/collections/${props.collection}/${newPrimaryKey}`);
 			} catch {
 				// Save shows unexpected error dialog
 			}
@@ -480,7 +489,15 @@ export default defineComponent({
 		function discardAndLeave() {
 			if (!leaveTo.value) return;
 			edits.value = {};
+			confirmLeave.value = false;
 			router.push(leaveTo.value);
+		}
+
+		function revert(values: Record<string, any>) {
+			edits.value = {
+				...edits.value,
+				...values,
+			};
 		}
 	},
 	beforeRouteLeave(to, from, next) {
@@ -493,19 +510,19 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../../styles/mixins/breakpoint';
+@import '@/styles/mixins/breakpoint';
 
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
 .action-archive {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 

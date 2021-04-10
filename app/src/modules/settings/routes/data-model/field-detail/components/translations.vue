@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('configure_m2m') }}</v-notice>
 
 		<div class="grid">
 			<div class="field">
@@ -12,6 +11,7 @@
 				<v-input
 					:class="{ matches: junctionCollectionExists }"
 					v-model="junctionCollection"
+					:nullable="false"
 					:placeholder="$t('collection') + '...'"
 					:disabled="autoFill || isExisting"
 					db-safe
@@ -65,6 +65,7 @@
 					:autofocus="autoFill"
 					:class="{ matches: relatedCollectionExists }"
 					v-model="relations[1].one_collection"
+					:nullable="false"
 					:placeholder="$t('collection') + '...'"
 					:disabled="type === 'files' || isExisting"
 					db-safe
@@ -116,6 +117,7 @@
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[0].many_field) }"
 				v-model="relations[0].many_field"
+				:nullable="false"
 				:placeholder="$t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
 				db-safe
@@ -152,6 +154,7 @@
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[1].many_field) }"
 				v-model="relations[1].many_field"
+				:nullable="false"
 				:placeholder="$t('foreign_key') + '...'"
 				:disabled="autoFill || isExisting"
 				db-safe
@@ -187,6 +190,7 @@
 				db-safe
 				:disabled="relatedCollectionExists"
 				v-model="relations[1].one_primary"
+				:nullable="false"
 				:placeholder="$t('primary_key') + '...'"
 			/>
 			<div class="spacer" />

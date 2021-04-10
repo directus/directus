@@ -1,14 +1,13 @@
 import { defineInterface } from '../define';
 import InterfaceManyToAny from './m2a-builder.vue';
-import Options from './options.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'm2a-builder',
-	name: i18n.t('m2a_builder'),
+	name: '$t:m2a_builder',
 	icon: 'note_add',
 	component: InterfaceManyToAny,
 	relational: true,
 	types: ['alias'],
 	groups: ['m2a'],
-	options: Options,
-}));
+	options: [],
+});

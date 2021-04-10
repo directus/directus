@@ -11,12 +11,7 @@
 			</button>
 		</div>
 		<div class="end">
-			<v-icon
-				class="size-selector"
-				:name="`grid_${7 - size}`"
-				v-tooltip.top="$t('card_size')"
-				@click="toggleSize"
-			/>
+			<v-icon class="size-selector" :name="`grid_${7 - size}`" v-tooltip.top="$t('card_size')" @click="toggleSize" />
 
 			<v-menu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
@@ -50,8 +45,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { Field } from '../../../types';
-import useSync from '../../../composables/use-sync';
+import { Field } from '@/types';
+import useSync from '@/composables/use-sync';
 
 export default defineComponent({
 	props: {
@@ -90,7 +85,7 @@ export default defineComponent({
 				.map((field) => ({
 					field: field.field,
 					name: field.name,
-					disabled: ['json', 'o2m', 'm2o', 'file', 'files', 'alias', 'presentation'].includes(field.type),
+					disabled: ['json', 'o2m', 'm2o', 'm2a', 'file', 'files', 'alias', 'presentation'].includes(field.type),
 				}));
 		});
 
@@ -131,8 +126,8 @@ export default defineComponent({
 	top: var(--layout-offset-top);
 	z-index: 4;
 	display: flex;
-	align-items: center;
 	justify-content: space-between;
+	align-items: center;
 	width: 100%;
 	height: 52px;
 	margin-bottom: 36px;

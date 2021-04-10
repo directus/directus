@@ -7,20 +7,16 @@ import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
 import { clone, isObject, cloneDeep } from 'lodash';
-import { Relation, Item, AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
+import { Item, AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
 import { ItemsService } from './items';
-import { URL } from 'url';
-import Knex from 'knex';
-import env from '../env';
-import getLocalType from '../utils/get-local-type';
-import { format, formatISO } from 'date-fns';
+import { Knex } from 'knex';
+import { format, formatISO, parse, parseISO } from 'date-fns';
 import { ForbiddenException } from '../exceptions';
 import { toArray } from '../utils/to-array';
-import { FieldMeta } from '../types';
-import { systemFieldRows } from '../database/system-data/fields';
 import { systemRelationRows } from '../database/system-data/relations';
 import { InvalidPayloadException } from '../exceptions';
 import { isPlainObject } from 'lodash';
+import Joi from 'joi';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -31,6 +27,16 @@ type Transformers = {
 		payload: Partial<Item>;
 		accountability: Accountability | null;
 	}) => Promise<any>;
+};
+
+type Alterations = {
+	create: {
+		[key: string]: any;
+	}[];
+	update: {
+		[key: string]: any;
+	}[];
+	delete: (Number | String)[];
 };
 
 export class PayloadService {
@@ -71,19 +77,6 @@ export class PayloadService {
 			}
 
 			return value;
-		},
-		async 'file-links'({ action, value, payload }) {
-			if (action === 'read' && payload && payload.storage && payload.filename_disk) {
-				const publicKey = `STORAGE_${payload.storage.toUpperCase()}_PUBLIC_URL`;
-
-				return {
-					asset_url: new URL(`/assets/${payload.id}`, env.PUBLIC_URL),
-					public_url: new URL(payload.filename_disk, env[publicKey]),
-				};
-			}
-
-			// This is an non-existing column, so there isn't any data to save
-			return undefined;
 		},
 		async boolean({ action, value }) {
 			if (action === 'read') {
@@ -154,34 +147,28 @@ export class PayloadService {
 
 		const fieldsInPayload = Object.keys(processedPayload[0]);
 
-		let specialFieldsInCollection: FieldMeta[] = await this.knex
-			.select('field', 'special')
-			.from('directus_fields')
-			.where({ collection: this.collection })
-			.whereNotNull('special');
-
-		specialFieldsInCollection.push(...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === this.collection));
+		let specialFieldsInCollection = Object.entries(this.schema.collections[this.collection].fields).filter(
+			([name, field]) => field.special && field.special.length > 0
+		);
 
 		if (action === 'read') {
-			specialFieldsInCollection = specialFieldsInCollection.filter((fieldMeta) => {
-				return fieldsInPayload.includes(fieldMeta.field);
+			specialFieldsInCollection = specialFieldsInCollection.filter(([name, field]) => {
+				return fieldsInPayload.includes(name);
 			});
 		}
 
 		await Promise.all(
 			processedPayload.map(async (record: any) => {
 				await Promise.all(
-					specialFieldsInCollection.map(async (field) => {
+					specialFieldsInCollection.map(async ([name, field]) => {
 						const newValue = await this.processField(field, record, action, this.accountability);
-						if (newValue !== undefined) record[field.field] = newValue;
+						if (newValue !== undefined) record[name] = newValue;
 					})
 				);
 			})
 		);
 
-		if (action === 'read') {
-			await this.processDates(processedPayload);
-		}
+		await this.processDates(processedPayload, action);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
@@ -200,7 +187,12 @@ export class PayloadService {
 		return processedPayload[0];
 	}
 
-	async processField(field: FieldMeta, payload: Partial<Item>, action: Action, accountability: Accountability | null) {
+	async processField(
+		field: SchemaOverview['collections'][string]['fields'][string],
+		payload: Partial<Item>,
+		action: Action,
+		accountability: Accountability | null
+	) {
 		if (!field.special) return payload[field.field];
 		const fieldSpecials = field.special ? toArray(field.special) : [];
 
@@ -224,45 +216,56 @@ export class PayloadService {
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
-	async processDates(payloads: Partial<Record<string, any>>[]) {
-		const columnsInCollection = Object.values(this.schema[this.collection].columns);
+	async processDates(payloads: Partial<Record<string, any>>[], action: Action) {
+		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 
-		const columnsWithType = columnsInCollection.map((column) => ({
-			name: column.column_name,
-			type: getLocalType(column),
-		}));
-
-		const dateColumns = columnsWithType.filter((column) => ['dateTime', 'date', 'timestamp'].includes(column.type));
+		const dateColumns = fieldsInCollection.filter(([name, field]) =>
+			['dateTime', 'date', 'timestamp'].includes(field.type)
+		);
 
 		if (dateColumns.length === 0) return payloads;
 
-		for (const dateColumn of dateColumns) {
+		for (const [name, dateColumn] of dateColumns) {
 			for (const payload of payloads) {
-				let value: string | Date = payload[dateColumn.name];
+				let value = payload[name];
 
 				if (value === null || value === '0000-00-00') {
-					payload[dateColumn.name] = null;
+					payload[name] = null;
 					continue;
 				}
 
-				if (typeof value === 'string') value = new Date(value);
+				if (!value) continue;
 
-				if (value) {
+				if (action === 'read') {
+					if (typeof value === 'string') value = new Date(value);
+
 					if (dateColumn.type === 'timestamp') {
 						const newValue = formatISO(value);
-						payload[dateColumn.name] = newValue;
+						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'dateTime') {
 						// Strip off the Z at the end of a non-timezone datetime value
 						const newValue = format(value, "yyyy-MM-dd'T'HH:mm:ss");
-						payload[dateColumn.name] = newValue;
+						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'date') {
 						// Strip off the time / timezone information from a date-only value
 						const newValue = format(value, 'yyyy-MM-dd');
-						payload[dateColumn.name] = newValue;
+						payload[name] = newValue;
+					}
+				} else {
+					if (value instanceof Date === false) {
+						if (dateColumn.type === 'date') {
+							const newValue = parse(value, 'yyyy-MM-dd', new Date());
+							payload[name] = newValue;
+						}
+
+						if (dateColumn.type === 'timestamp' || dateColumn.type === 'dateTime') {
+							const newValue = parseISO(value);
+							payload[name] = newValue;
+						}
 					}
 				}
 			}
@@ -278,10 +281,9 @@ export class PayloadService {
 	processA2O(payloads: Partial<Item>): Promise<Partial<Item>>;
 	async processA2O(payload: Partial<Item> | Partial<Item>[]): Promise<Partial<Item> | Partial<Item>[]> {
 		const relations = [
-			...(await this.knex
-				.select<Relation[]>('*')
-				.from('directus_relations')
-				.where({ many_collection: this.collection })),
+			...this.schema.relations.filter((relation) => {
+				return relation.many_collection === this.collection;
+			}),
 			...systemRelationRows.filter((systemRelation) => systemRelation.many_collection === this.collection),
 		];
 
@@ -308,7 +310,7 @@ export class PayloadService {
 					);
 				}
 
-				const allowedCollections = relation.one_allowed_collections.split(',');
+				const allowedCollections = relation.one_allowed_collections;
 
 				if (allowedCollections.includes(relatedCollection) === false) {
 					throw new InvalidPayloadException(
@@ -322,7 +324,7 @@ export class PayloadService {
 					schema: this.schema,
 				});
 
-				const relatedPrimary = this.schema[relatedCollection].primary;
+				const relatedPrimary = this.schema.collections[relatedCollection].primary;
 				const relatedRecord: Partial<Item> = payload[relation.many_field];
 				const hasPrimaryKey = relatedRecord.hasOwnProperty(relatedPrimary);
 
@@ -350,10 +352,9 @@ export class PayloadService {
 	processM2O(payloads: Partial<Item>): Promise<Partial<Item>>;
 	async processM2O(payload: Partial<Item> | Partial<Item>[]): Promise<Partial<Item> | Partial<Item>[]> {
 		const relations = [
-			...(await this.knex
-				.select<Relation[]>('*')
-				.from('directus_relations')
-				.where({ many_collection: this.collection })),
+			...this.schema.relations.filter((relation) => {
+				return relation.many_collection === this.collection;
+			}),
 			...systemRelationRows.filter((systemRelation) => systemRelation.many_collection === this.collection),
 		];
 
@@ -403,11 +404,16 @@ export class PayloadService {
 	 * Recursively save/update all nested related o2m items
 	 */
 	async processO2M(payload: Partial<Item> | Partial<Item>[], parent?: PrimaryKey) {
+		const nestedUpdateSchema = Joi.object({
+			create: Joi.array().items(Joi.object().unknown()),
+			update: Joi.array().items(Joi.object().unknown()),
+			delete: Joi.array().items(Joi.string(), Joi.number()),
+		});
+
 		const relations = [
-			...(await this.knex
-				.select<Relation[]>('*')
-				.from('directus_relations')
-				.where({ one_collection: this.collection })),
+			...this.schema.relations.filter((relation) => {
+				return relation.one_collection === this.collection;
+			}),
 			...systemRelationRows.filter((systemRelation) => systemRelation.one_collection === this.collection),
 		];
 
@@ -424,6 +430,8 @@ export class PayloadService {
 			});
 
 			for (const relation of relationsToProcess) {
+				if (!payload[relation.one_field!]) continue;
+
 				const itemsService = new ItemsService(relation.many_collection, {
 					accountability: this.accountability,
 					knex: this.knex,
@@ -431,10 +439,11 @@ export class PayloadService {
 				});
 
 				const relatedRecords: Partial<Item>[] = [];
-				let savedPrimaryKeys: PrimaryKey[] = [];
 
-				if (payload[relation.one_field!] && Array.isArray(payload[relation.one_field!])) {
-					for (const relatedRecord of payload[relation.one_field!] || []) {
+				if (Array.isArray(payload[relation.one_field!])) {
+					for (let i = 0; i < (payload[relation.one_field!] || []).length; i++) {
+						const relatedRecord = (payload[relation.one_field!] || [])[i];
+
 						let record = cloneDeep(relatedRecord);
 
 						if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
@@ -462,28 +471,72 @@ export class PayloadService {
 						});
 					}
 
-					savedPrimaryKeys = await itemsService.upsert(relatedRecords);
-				}
+					const savedPrimaryKeys = await itemsService.upsert(relatedRecords);
 
-				await itemsService.updateByQuery(
-					{ [relation.many_field]: null },
-					{
-						filter: {
-							_and: [
-								{
-									[relation.many_field]: {
-										_eq: parent,
+					await itemsService.updateByQuery(
+						{ [relation.many_field]: null },
+						{
+							filter: {
+								_and: [
+									{
+										[relation.many_field]: {
+											_eq: parent,
+										},
 									},
-								},
-								{
-									[relation.many_primary]: {
-										_nin: savedPrimaryKeys,
+									{
+										[relation.many_primary]: {
+											_nin: savedPrimaryKeys,
+										},
 									},
-								},
-							],
-						},
+								],
+							},
+						}
+					);
+				} else {
+					const alterations = payload[relation.one_field!] as Alterations;
+					const { error } = nestedUpdateSchema.validate(alterations);
+					if (error) throw new InvalidPayloadException(`Invalid one-to-many update structure: ${error.message}`);
+
+					if (alterations.create) {
+						await itemsService.create(
+							alterations.create.map((item) => ({
+								...item,
+								[relation.many_field]: parent || payload[relation.one_primary!],
+							}))
+						);
 					}
-				);
+
+					if (alterations.update) {
+						await itemsService.update(
+							alterations.update.map((item) => ({
+								...item,
+								[relation.many_field]: parent || payload[relation.one_primary!],
+							}))
+						);
+					}
+
+					if (alterations.delete) {
+						await itemsService.updateByQuery(
+							{ [relation.many_field]: null },
+							{
+								filter: {
+									_and: [
+										{
+											[relation.many_field]: {
+												_eq: parent,
+											},
+										},
+										{
+											[relation.many_primary]: {
+												_in: alterations.delete,
+											},
+										},
+									],
+								},
+							}
+						);
+					}
+				}
 			}
 		}
 	}

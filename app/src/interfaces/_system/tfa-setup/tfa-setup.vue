@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<v-checkbox block :input-value="!!tfaEnabled" @click.native="toggle">
-			{{ $t('enabled') }}
+		<v-checkbox block :input-value="tfaEnabled" @click.native="toggle" :disabled="!isCurrentUser">
+			{{ tfaEnabled ? $t('enabled') : $t('disabled') }}
 			<div class="spacer" />
 			<template #append>
 				<v-icon name="launch" class="checkbox-icon" :class="{ enabled: tfaEnabled }" />
@@ -15,7 +15,7 @@
 						{{ $t('enter_password_to_enable_tfa') }}
 					</v-card-title>
 					<v-card-text>
-						<v-input v-model="password" type="password" :placeholder="$t('password')" />
+						<v-input v-model="password" :nullable="false" type="password" :placeholder="$t('password')" />
 
 						<v-error v-if="error" :error="error" />
 					</v-card-text>
@@ -27,7 +27,7 @@
 
 				<v-progress-circular class="loader" indeterminate v-else-if="loading === true" />
 
-				<div v-show="tfaEnabled === true && loading === false">
+				<div v-show="tfaEnabled && loading === false">
 					<v-card-title>
 						{{ $t('tfa_scan_code') }}
 					</v-card-title>
@@ -48,7 +48,8 @@
 					{{ $t('enter_otp_to_disable_tfa') }}
 				</v-card-title>
 				<v-card-text>
-					<v-input type="text" :placeholder="$t('otp')" v-model="otp" />
+					<v-input type="text" :placeholder="$t('otp')" v-model="otp" :nullable="false" />
+					<v-error v-if="error" :error="error" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button class="disable" :loading="loading" @click="disableTFA" :disabled="otp.length !== 6">
@@ -61,10 +62,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted } from '@vue/composition-api';
+import { defineComponent, ref, watch, onMounted, computed } from '@vue/composition-api';
 import api from '@/api';
 import qrcode from 'qrcode';
 import { nanoid } from 'nanoid';
+import { useUserStore } from '@/stores';
 
 export default defineComponent({
 	props: {
@@ -72,8 +74,13 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		primaryKey: {
+			type: String,
+			default: null,
+		},
 	},
 	setup(props) {
+		const userStore = useUserStore();
 		const tfaEnabled = ref(!!props.value);
 		const enableActive = ref(false);
 		const disableActive = ref(false);
@@ -95,6 +102,7 @@ export default defineComponent({
 			},
 			{ immediate: true }
 		);
+		const isCurrentUser = computed(() => userStore.state.currentUser?.id === props.primaryKey);
 
 		return {
 			tfaEnabled,
@@ -109,6 +117,7 @@ export default defineComponent({
 			disableTFA,
 			otp,
 			error,
+			isCurrentUser,
 		};
 
 		function toggle() {

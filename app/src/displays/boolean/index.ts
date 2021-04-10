@@ -1,41 +1,41 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayBoolean from './boolean.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'boolean',
-	name: i18n.t('displays.boolean.boolean'),
-	description: i18n.t('displays.boolean.description'),
+	name: '$t:displays.boolean.boolean',
+	description: '$t:displays.boolean.description',
 	types: ['boolean'],
 	icon: 'check_box',
 	handler: DisplayBoolean,
 	options: [
 		{
 			field: 'labelOn',
-			name: i18n.t('displays.boolean.label_on'),
+			name: '$t:displays.boolean.label_on',
 			type: 'string',
 			meta: {
 				interface: 'text-input',
 				width: 'half',
 				options: {
-					placeholder: i18n.t('displays.boolean.label_on_placeholder'),
+					placeholder: '$t:displays.boolean.label_on_placeholder',
 				},
 			},
 		},
 		{
 			field: 'labelOff',
-			name: i18n.t('displays.boolean.label_off'),
+			name: '$t:displays.boolean.label_off',
 			type: 'string',
 			meta: {
 				interface: 'text-input',
 				width: 'half',
 				options: {
-					placeholder: i18n.t('displays.boolean.label_off_placeholder'),
+					placeholder: '$t:displays.boolean.label_off_placeholder',
 				},
 			},
 		},
 		{
 			field: 'iconOn',
-			name: i18n.t('displays.boolean.icon_on'),
+			name: '$t:displays.boolean.icon_on',
 			type: 'string',
 			meta: {
 				interface: 'icon',
@@ -47,7 +47,7 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'iconOff',
-			name: i18n.t('displays.boolean.icon_off'),
+			name: '$t:displays.boolean.icon_off',
 			type: 'string',
 			meta: {
 				interface: 'icon',
@@ -59,19 +59,19 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'colorOn',
-			name: i18n.t('displays.boolean.color_on'),
+			name: '$t:displays.boolean.color_on',
 			type: 'string',
 			meta: {
 				interface: 'color',
 				width: 'half',
 			},
 			schema: {
-				default_value: '#2F80ED',
+				default_value: '#00C897',
 			},
 		},
 		{
 			field: 'colorOff',
-			name: i18n.t('displays.boolean.color_off'),
+			name: '$t:displays.boolean.color_off',
 			type: 'string',
 			meta: {
 				interface: 'color',
@@ -82,4 +82,4 @@ export default defineDisplay(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

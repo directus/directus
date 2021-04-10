@@ -1,3 +1,5 @@
+import { getSchema } from '../../../utils/get-schema';
+
 export default async function usersCreate({ email, password, role }: any) {
 	const { default: database, schemaInspector } = require('../../../database/index');
 	const { UsersService } = require('../../../services/users');
@@ -8,7 +10,7 @@ export default async function usersCreate({ email, password, role }: any) {
 	}
 
 	try {
-		const schema = await schemaInspector.overview();
+		const schema = await getSchema();
 		const service = new UsersService({ schema, knex: database });
 
 		const id = await service.create({ email, password, role, status: 'active' });

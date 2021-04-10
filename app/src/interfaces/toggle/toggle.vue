@@ -37,7 +37,7 @@ export default defineComponent({
 		},
 		color: {
 			type: String,
-			default: '#2f80ed',
+			default: '#00C897',
 		},
 	},
 });

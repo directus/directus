@@ -4,7 +4,7 @@
 		<div class="modules">
 			<v-button
 				v-for="module in _modules"
-				v-tooltip.right="module.name"
+				v-tooltip.right="$t(module.name)"
 				:key="module.id"
 				icon
 				x-large
@@ -81,13 +81,11 @@ export default defineComponent({
 							};
 						}
 					}),
-					...registeredModules.filter((module) => module.persistent === true)
-				]
+					...registeredModules.filter((module) => module.persistent === true),
+				];
 			}
-
 			return registeredModules;
 		});
-
 		return { _modules };
 	},
 });
@@ -95,10 +93,10 @@ export default defineComponent({
 
 <style>
 body {
-    --module-background: #18222F;
-    --module-background-alt: var(--background-normal);
-    --module-icon: #8196B1;
-    --module-icon-alt: var(--foreground-normal);
+	--module-background: #18222f;
+	--module-background-alt: var(--background-normal);
+	--module-icon: #8196b1;
+	--module-icon-alt: var(--foreground-normal-alt);
 }
 </style>
 

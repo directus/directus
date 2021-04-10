@@ -63,6 +63,7 @@
 					:layout-options.sync="layoutOptions"
 					:layout-query.sync="layoutQuery"
 					:filters="values.filters || []"
+					:search-query="searchQuery"
 					@update:filters="updateFilters"
 					readonly
 				>
@@ -88,6 +89,10 @@
 		<template #sidebar>
 			<sidebar-detail icon="info_outline" :title="$t('information')" close>
 				<div class="page-description" v-html="marked($t('page_help_settings_presets_item'))" />
+			</sidebar-detail>
+
+			<sidebar-detail icon="search" :title="$t('search')" class="layout-sidebar">
+				<v-input v-model="searchQuery" :placeholder="$t('preset_search_placeholder')"></v-input>
 			</sidebar-detail>
 
 			<portal-target class="layout-sidebar" name="sidebar" />
@@ -131,6 +136,7 @@ type FormattedPreset = {
 	collection: string;
 	layout: string | null;
 	name: string | null;
+	search: string | null;
 
 	layout_query: Record<string, any> | null;
 
@@ -158,7 +164,16 @@ export default defineComponent({
 		const { loading: rolesLoading, roles } = useRoles();
 		const { loading: presetLoading, preset } = usePreset();
 		const { fields } = useForm();
-		const { edits, hasEdits, initialValues, values, layoutQuery, layoutOptions, updateFilters } = useValues();
+		const {
+			edits,
+			hasEdits,
+			initialValues,
+			values,
+			layoutQuery,
+			layoutOptions,
+			updateFilters,
+			searchQuery,
+		} = useValues();
 		const { save, saving } = useSave();
 		const { deleting, deleteAndQuit, confirmDelete } = useDelete();
 
@@ -182,6 +197,7 @@ export default defineComponent({
 			confirmDelete,
 			marked,
 			updateFilters,
+			searchQuery,
 		};
 
 		function useSave() {
@@ -201,6 +217,7 @@ export default defineComponent({
 				if (edits.value.layout_query) editsParsed.layout_query = edits.value.layout_query;
 				if (edits.value.layout_options) editsParsed.layout_options = edits.value.layout_options;
 				if (edits.value.filters) editsParsed.filters = edits.value.filters;
+				editsParsed.search = edits.value.search;
 
 				if (edits.value.scope) {
 					if (edits.value.scope.startsWith('role_')) {
@@ -275,6 +292,7 @@ export default defineComponent({
 					collection: preset.value.collection,
 					layout: preset.value.layout,
 					name: preset.value.bookmark,
+					search: preset.value.search,
 					scope: scope,
 					layout_query: preset.value.layout_query,
 					layout_options: preset.value.layout_options,
@@ -327,7 +345,19 @@ export default defineComponent({
 				},
 			});
 
-			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters };
+			const searchQuery = computed({
+				get() {
+					return values.value.search;
+				},
+				set(newSearch) {
+					edits.value = {
+						...edits.value,
+						search: newSearch,
+					};
+				},
+			});
+
+			return { edits, initialValues, values, layoutQuery, layoutOptions, hasEdits, updateFilters, searchQuery };
 
 			function updateFilters(newFilters: Filter) {
 				edits.value = {
@@ -521,7 +551,7 @@ export default defineComponent({
 						width: 'fill',
 						options: {
 							title: i18n.t('layout_preview'),
-							color: '#2F80ED',
+							icon: 'visibility',
 						},
 					},
 				},
@@ -537,16 +567,16 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .header-icon {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
@@ -559,16 +589,17 @@ export default defineComponent({
 	--content-padding: 0px;
 	--content-padding-bottom: 32px;
 
+	position: relative;
 	width: 100%;
 	margin-top: 48px;
 	overflow: auto;
 }
 
 .layout-sidebar {
-	--sidebar-detail-icon-color: var(--warning);
-	--sidebar-detail-color: var(--warning);
-	--sidebar-detail-color-active: var(--warning);
-	--v-form-vertical-gap: 24px;
+	--sidebar-detail-icon-color: var(--primary);
+	--sidebar-detail-color: var(--primary);
+	--sidebar-detail-color-active: var(--primary);
+	--form-vertical-gap: 24px;
 }
 
 .portal-contents {
@@ -576,7 +607,7 @@ export default defineComponent({
 }
 
 .layout-options ::v-deep {
-	--v-form-vertical-gap: 24px;
+	--form-vertical-gap: 24px;
 
 	.type-label {
 		font-size: 1rem;

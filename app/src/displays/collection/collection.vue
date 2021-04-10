@@ -1,5 +1,5 @@
 <template>
-	<value-null v-if="value === null" />
+	<value-null v-if="value === null || !info" />
 	<div v-else>
 		<v-icon v-if="icon" :name="info.icon" left small />
 		{{ info.name }}

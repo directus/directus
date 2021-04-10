@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, provide, toRefs, computed } from '@vue/composition-api';
+import { defineComponent, ref, provide, toRefs, computed, onUpdated, nextTick } from '@vue/composition-api';
 import ModuleBar from './components/module-bar/';
 import SidebarDetailGroup from './components/sidebar-detail-group/';
 import HeaderBar from './components/header-bar';
@@ -70,9 +70,9 @@ import SidebarButton from './components/sidebar-button/';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
 import NotificationDialogs from './components/notification-dialogs/';
-import { useUserStore, useAppStore } from '../../stores';
-import i18n from '../../lang';
-import emitter, { Events } from '../../events';
+import { useUserStore, useAppStore } from '@/stores';
+import router from '@/router';
+import useTitle from '@/composables/use-title';
 
 export default defineComponent({
 	components: {
@@ -91,7 +91,8 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	setup() {
+	setup(props) {
+		const { title } = toRefs(props);
 		const navOpen = ref(false);
 		const contentEl = ref<Element>();
 		const userStore = useUserStore();
@@ -111,6 +112,12 @@ export default defineComponent({
 		});
 
 		provide('main-element', contentEl);
+
+		router.afterEach(async (to, from) => {
+			contentEl.value?.scrollTo({ top: 0 });
+		});
+
+		useTitle(title);
 
 		return {
 			navOpen,
@@ -132,7 +139,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/mixins/breakpoint';
+@import '@/styles/mixins/breakpoint';
 
 .private-view {
 	--content-padding: 12px;
@@ -182,6 +189,9 @@ export default defineComponent({
 			background-color: var(--background-normal);
 
 			&-content {
+				--v-list-item-background-color-hover: var(--background-normal-alt);
+				--v-list-item-background-color-active: var(--background-normal-alt);
+
 				height: calc(100% - 64px);
 				overflow-x: hidden;
 				overflow-y: auto;
@@ -195,13 +205,21 @@ export default defineComponent({
 	}
 
 	.content {
+		--border-radius: 6px;
+		--input-height: 60px;
+		--input-padding: 16px; // (60 - 4 - 24) / 2
+		--form-vertical-gap: 52px;
+
 		position: relative;
 		flex-grow: 1;
 		width: 100%;
 		height: 100%;
 		overflow: auto;
 		scroll-padding-top: 100px;
-		scroll-behavior: smooth;
+
+		// Page Content Spacing (Could be converted to Project Setting toggle)
+		font-size: 15px;
+		line-height: 24px;
 
 		main {
 			display: contents;

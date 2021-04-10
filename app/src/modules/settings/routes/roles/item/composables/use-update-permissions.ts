@@ -1,7 +1,7 @@
 import { ref, inject, Ref } from '@vue/composition-api';
 import api from '@/api';
 import { Collection, Permission } from '@/types';
-import { unexpectedError } from '../../../../../../utils/unexpected-error';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default function useUpdatePermissions(
 	collection: Ref<Collection>,
@@ -126,7 +126,7 @@ export default function useUpdatePermissions(
 		saving.value = true;
 
 		try {
-			await api.delete(`/permissions/${permissions.value.map((p) => p.id).join(',')}`);
+			await api.delete('/permissions', { data: permissions.value.map((p) => p.id) });
 		} catch (err) {
 			unexpectedError(err);
 		} finally {

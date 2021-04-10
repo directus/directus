@@ -19,8 +19,9 @@ export type NavItemGroup = {
 };
 
 let activeGroups: Ref<string[]>;
+let hiddenShown: Ref<boolean>;
 
-export default function useNavigation() {
+export default function useNavigation(searchQuery?: Ref<string | null>) {
 	const collectionsStore = useCollectionsStore();
 	const userStore = useUserStore();
 
@@ -70,15 +71,47 @@ export default function useNavigation() {
 			})
 			.sort((navA: NavItem, navB: NavItem) => {
 				return navA.name > navB.name ? 1 : -1;
-			});
+			})
+			.filter(search);
 	});
 
-	if (!activeGroups)
+	const hiddenNavItems = computed<NavItem[]>(() => {
+		return collectionsStore.hiddenCollections.value
+			.map((collection: Collection) => {
+				const navItem: NavItem = {
+					collection: collection.collection,
+					name: collection.name,
+					icon: collection.meta?.icon || 'label',
+					note: collection.meta?.note || null,
+					to: `/collections/${collection.collection}`,
+				};
+
+				return navItem;
+			})
+			.sort((navA: NavItem, navB: NavItem) => {
+				return navA.name > navB.name ? 1 : -1;
+			})
+			.filter(search);
+	});
+
+	if (!activeGroups) {
 		activeGroups = ref(
 			customNavItems.value
 				? customNavItems.value.filter((navItem) => navItem.accordion === 'start_open').map((navItem) => navItem.name)
 				: []
 		);
+	}
 
-	return { customNavItems, navItems, activeGroups };
+	if (hiddenShown === undefined) {
+		hiddenShown = ref(false);
+	}
+
+	return { customNavItems, navItems, activeGroups, hiddenNavItems, hiddenShown, search };
+
+	function search(item: NavItem) {
+		return (
+			typeof item.name !== 'string' ||
+			item.name.toLocaleLowerCase().includes(searchQuery?.value?.toLocaleLowerCase() || '')
+		);
+	}
 }

@@ -2,6 +2,7 @@ import env from '../../../env';
 import logger from '../../../logger';
 import installDatabase from '../../../database/seeds/run';
 import runMigrations from '../../../database/migrations/run';
+import { getSchema } from '../../../utils/get-schema';
 import { nanoid } from 'nanoid';
 
 export default async function bootstrap() {
@@ -12,16 +13,17 @@ export default async function bootstrap() {
 		process.exit(1);
 	}
 
-	const { isInstalled, default: database, schemaInspector } = require('../../../database');
+	const { isInstalled, default: database } = require('../../../database');
 	const { RolesService } = require('../../../services/roles');
 	const { UsersService } = require('../../../services/users');
+	const { SettingsService } = require('../../../services/settings');
 
 	if ((await isInstalled()) === false) {
 		logger.info('Installing Directus system tables...');
 
 		await installDatabase(database);
 
-		const schema = await schemaInspector.overview();
+		const schema = await getSchema();
 
 		logger.info('Setting up first admin role...');
 		const rolesService = new RolesService({ schema });
@@ -45,6 +47,11 @@ export default async function bootstrap() {
 		}
 
 		await usersService.create({ email: adminEmail, password: adminPassword, role });
+
+		if (env.PROJECT_NAME && typeof env.PROJECT_NAME === 'string' && env.PROJECT_NAME.length > 0) {
+			const settingsService = new SettingsService({ schema });
+			await settingsService.upsertSingleton({ project_name: env.PROJECT_NAME });
+		}
 	} else {
 		logger.info('Database already initialized, skipping install');
 	}

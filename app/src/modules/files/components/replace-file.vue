@@ -49,9 +49,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .add-new {
-	--v-button-background-color: var(--primary-25);
+	--v-button-background-color: var(--primary-10);
 	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-50);
+	--v-button-background-color-hover: var(--primary-25);
 	--v-button-color-hover: var(--primary);
 }
 </style>

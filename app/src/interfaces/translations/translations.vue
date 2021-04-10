@@ -33,9 +33,9 @@ import { defineComponent, PropType, computed, ref, watch } from '@vue/compositio
 import { useRelationsStore } from '@/stores/';
 import api from '@/api';
 import { Relation } from '@/types';
-import getFieldsFromTemplate from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import DrawerItem from '@/views/private/components/drawer-item/drawer-item.vue';
-import { useCollection } from '../../composables/use-collection';
+import { useCollection } from '@/composables/use-collection';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -76,12 +76,7 @@ export default defineComponent({
 			translationsLanguageField,
 		} = useRelations();
 
-		const {
-			languages,
-			loading: languagesLoading,
-			error: languagesError,
-			template: languagesTemplate,
-		} = useLanguages();
+		const { languages, loading: languagesLoading, error: languagesError, template: languagesTemplate } = useLanguages();
 
 		const { startEditing, editing, edits, stageEdits, cancelEdit } = useEdits();
 
@@ -112,8 +107,7 @@ export default defineComponent({
 				if (!relationsForField.value) return null;
 				return (
 					relationsForField.value.find(
-						(relation: Relation) =>
-							relation.one_collection === props.collection && relation.one_field === props.field
+						(relation: Relation) => relation.one_collection === props.collection && relation.one_field === props.field
 					) || null
 				);
 			});
@@ -130,10 +124,7 @@ export default defineComponent({
 
 			const languagesRelation = computed(() => {
 				if (!relationsForField.value) return null;
-				return (
-					relationsForField.value.find((relation: Relation) => relation !== translationsRelation.value) ||
-					null
-				);
+				return relationsForField.value.find((relation: Relation) => relation !== translationsRelation.value) || null;
 			});
 
 			const languagesCollection = computed(() => {

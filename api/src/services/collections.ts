@@ -1,6 +1,7 @@
+import { ALIAS_TYPES } from '../constants';
 import database, { schemaInspector } from '../database';
 import { AbstractServiceOptions, Accountability, Collection, CollectionMeta, Relation, SchemaOverview } from '../types';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
 import { ItemsService } from '../services/items';
@@ -71,13 +72,15 @@ export class CollectionsService {
 					throw new InvalidPayloadException(`Collections can't start with "directus_"`);
 				}
 
-				if (payload.collection in this.schema) {
+				if (payload.collection in this.schema.collections) {
 					throw new InvalidPayloadException(`Collection "${payload.collection}" already exists.`);
 				}
 
 				await trx.schema.createTable(payload.collection, (table) => {
 					for (const field of payload.fields!) {
-						fieldsService.addColumnToTable(table, field);
+						if (field.type && ALIAS_TYPES.includes(field.type) === false) {
+							fieldsService.addColumnToTable(table, field);
+						}
 					}
 				});
 
@@ -113,12 +116,9 @@ export class CollectionsService {
 		const collectionKeys = toArray(collection);
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = await this.knex
-				.select('collection')
-				.from('directus_permissions')
-				.where({ action: 'read' })
-				.where({ role: this.accountability.role })
-				.whereIn('collection', collectionKeys);
+			const permissions = this.schema.permissions.filter((permission) => {
+				return permission.action === 'read' && collectionKeys.includes(permission.collection);
+			});
 
 			if (collectionKeys.length !== permissions.length) {
 				const collectionsYouHavePermissionToRead = permissions.map(({ collection }) => collection);
@@ -133,8 +133,10 @@ export class CollectionsService {
 
 		const tablesInDatabase = await schemaInspector.tableInfo();
 		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
+
 		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: collectionKeys } },
+			limit: -1,
 		})) as CollectionMeta[];
 
 		meta.push(...systemCollectionRows);
@@ -154,21 +156,22 @@ export class CollectionsService {
 		return Array.isArray(collection) ? collections : collections[0];
 	}
 
-	/** @todo, read by query without query support is a bit ironic, isnt it */
+	/** @todo, read by query without query support is a bit ironic, isn't it */
 	async readByQuery(): Promise<Collection[]> {
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
 			schema: this.schema,
+			accountability: this.accountability,
 		});
+
 		let tablesInDatabase = await schemaInspector.tableInfo();
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const collectionsYouHavePermissionToRead: string[] = (
-				await this.knex.select('collection').from('directus_permissions').where({
-					role: this.accountability.role,
-					action: 'read',
+			const collectionsYouHavePermissionToRead: string[] = this.schema.permissions
+				.filter((permission) => {
+					return permission.action === 'read';
 				})
-			).map(({ collection }) => collection);
+				.map(({ collection }) => collection);
 
 			tablesInDatabase = tablesInDatabase.filter((table) => {
 				return collectionsYouHavePermissionToRead.includes(table.name);
@@ -176,8 +179,10 @@ export class CollectionsService {
 		}
 
 		const tablesToFetchInfoFor = tablesInDatabase.map((table) => table.name);
+
 		const meta = (await collectionItemsService.readByQuery({
 			filter: { collection: { _in: tablesToFetchInfoFor } },
+			limit: -1,
 		})) as CollectionMeta[];
 
 		meta.push(...systemCollectionRows);
@@ -199,7 +204,7 @@ export class CollectionsService {
 
 	/**
 	 * @NOTE
-	 * We only suppport updating the content in directus_collections
+	 * We only support updating the content in directus_collections
 	 */
 	update(data: Partial<Collection>, keys: string[]): Promise<string[]>;
 	update(data: Partial<Collection>, key: string): Promise<string>;
@@ -260,21 +265,29 @@ export class CollectionsService {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
 
+		const collectionItemsService = new ItemsService('directus_collections', {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
 		const fieldsService = new FieldsService({
 			knex: this.knex,
 			accountability: this.accountability,
 			schema: this.schema,
 		});
 
-		const tablesInDatabase = Object.keys(this.schema);
+		const tablesInDatabase = Object.keys(this.schema.collections);
 
 		const collectionKeys = toArray(collection);
 
 		for (const collectionKey of collectionKeys) {
 			if (tablesInDatabase.includes(collectionKey) === false) {
-				throw new InvalidPayloadException(`Collection "${collectionKey}" doesn't exist.`);
+				throw new ForbiddenException();
 			}
 		}
+
+		await collectionItemsService.delete(collectionKeys);
 
 		await this.knex('directus_fields').delete().whereIn('collection', collectionKeys);
 		await this.knex('directus_presets').delete().whereIn('collection', collectionKeys);
@@ -282,11 +295,9 @@ export class CollectionsService {
 		await this.knex('directus_activity').delete().whereIn('collection', collectionKeys);
 		await this.knex('directus_permissions').delete().whereIn('collection', collectionKeys);
 
-		const relations = await this.knex
-			.select<Relation[]>('*')
-			.from('directus_relations')
-			.where({ many_collection: collection })
-			.orWhere({ one_collection: collection });
+		const relations = this.schema.relations.filter((relation) => {
+			return relation.many_collection === collection || relation.one_collection === collection;
+		});
 
 		for (const relation of relations) {
 			const isM2O = relation.many_collection === collection;
@@ -304,14 +315,6 @@ export class CollectionsService {
 				await fieldsService.deleteField(relation.many_collection, relation.many_field);
 			}
 		}
-
-		const collectionItemsService = new ItemsService('directus_collections', {
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
-
-		await collectionItemsService.delete(collectionKeys);
 
 		for (const collectionKey of collectionKeys) {
 			await this.knex.schema.dropTable(collectionKey);

@@ -1,10 +1,10 @@
 <template>
 	<div class="v-divider" :class="{ vertical, inlineTitle, large }">
-		<hr role="separator" :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
 		<span v-if="$slots.icon || $slots.default" class="wrapper">
 			<slot name="icon" class="icon" />
 			<span v-if="!vertical && $slots.default" class="type-text"><slot /></span>
 		</span>
+		<hr role="separator" :aria-orientation="vertical ? 'vertical' : 'horizontal'" />
 	</div>
 </template>
 
@@ -32,7 +32,7 @@ export default defineComponent({
 <style>
 body {
 	--v-divider-color: var(--border-normal);
-	--v-divider-label-color: var(--foreground-subdued);
+	--v-divider-label-color: var(--foreground-normal-alt);
 }
 </style>
 
@@ -49,7 +49,7 @@ body {
 		flex-grow: 1;
 		order: 1;
 		max-width: 100%;
-		margin-bottom: 8px;
+		margin-top: 8px;
 		border: solid;
 		border-color: var(--v-divider-color);
 		border-width: 2px 0 0 0;
@@ -61,17 +61,19 @@ body {
 		color: var(--v-divider-label-color);
 
 		.v-icon {
-			margin-right: 8px;
+			margin-right: 4px;
 			transform: translateY(-1px);
 		}
 	}
 
 	.type-text {
+		transition: color var(--fast) var(--transition);
+		font-weight: 600;
 		color: var(--v-divider-label-color);
 	}
 
 	&.large .type-text {
-		font-weight: 400;
+		font-weight: 700;
 		font-size: 24px;
 	}
 

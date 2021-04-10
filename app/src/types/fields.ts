@@ -23,6 +23,7 @@ export const types = [
 	'timestamp',
 	'binary',
 	'uuid',
+	'hash',
 	'csv',
 	'unknown',
 ] as const;
@@ -64,7 +65,6 @@ export type FieldMeta = {
 	field: string;
 	group: number | null;
 	hidden: boolean;
-	locked: boolean;
 	interface: string | null;
 	display: string | null;
 	options: null | Record<string, any>;

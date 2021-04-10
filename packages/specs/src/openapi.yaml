@@ -89,10 +89,10 @@ paths:
     $ref: "./paths/auth/password-request.yaml"
   /auth/password/reset:
     $ref: "./paths/auth/password-reset.yaml"
-  /auth/sso:
-    $ref: "./paths/auth/sso.yaml"
-  /auth/sso/{provider}:
-    $ref: "./paths/auth/sso-provider.yaml"
+  /auth/oauth:
+    $ref: "./paths/auth/oauth.yaml"
+  /auth/oauth/{provider}:
+    $ref: "./paths/auth/oauth-provider.yaml"
 
   # Items
   /items/{collection}:

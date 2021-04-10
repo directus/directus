@@ -17,6 +17,7 @@
 					v-bind="$attrs"
 					v-focus="autofocus"
 					v-on="_listeners"
+					:autocomplete="autocomplete"
 					:type="type"
 					:min="min"
 					:max="max"
@@ -29,18 +30,18 @@
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="type === 'number' && !hideArrows">
 				<v-icon
-					:class="{ disabled: max !== null && parseInt(value, 10) >= max }"
+					:class="{ disabled: !isStepUpAllowed }"
 					name="keyboard_arrow_up"
 					class="step-up"
 					@click="stepUp"
-					:disabled="disabled"
+					:disabled="!isStepUpAllowed"
 				/>
 				<v-icon
-					:class="{ disabled: min !== null && parseInt(value, 10) <= min }"
+					:class="{ disabled: !isStepDownAllowed }"
 					name="keyboard_arrow_down"
 					class="step-down"
 					@click="stepDown"
-					:disabled="disabled"
+					:disabled="!isStepDownAllowed"
 				/>
 			</span>
 			<div v-if="$slots.append" class="append">
@@ -84,6 +85,10 @@ export default defineComponent({
 			type: [String, Number],
 			default: null,
 		},
+		nullable: {
+			type: Boolean,
+			default: true,
+		},
 		slug: {
 			type: Boolean,
 			default: false,
@@ -125,6 +130,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		autocomplete: {
+			type: String,
+			default: 'off',
+		},
 	},
 	setup(props, { emit, listeners }) {
 		const input = ref<HTMLInputElement | null>(null);
@@ -140,7 +149,15 @@ export default defineComponent({
 			return listeners.click !== undefined;
 		});
 
-		return { _listeners, hasClick, stepUp, stepDown, input };
+		const isStepUpAllowed = computed(() => {
+			return props.disabled === false && (props.max === null || parseInt(String(props.value), 10) < props.max);
+		});
+
+		const isStepDownAllowed = computed(() => {
+			return props.disabled === false && (props.min === null || parseInt(String(props.value), 10) > props.min);
+		});
+
+		return { _listeners, hasClick, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
 
 		function processValue(event: KeyboardEvent) {
 			if (!event.key) return;
@@ -189,6 +206,11 @@ export default defineComponent({
 		function emitValue(event: InputEvent) {
 			let value = (event.target as HTMLInputElement).value;
 
+			if (props.nullable === true && !value) {
+				emit('input', null);
+				return;
+			}
+
 			if (props.type === 'number') {
 				emit('input', Number(value));
 			} else {
@@ -211,8 +233,7 @@ export default defineComponent({
 
 		function stepUp() {
 			if (!input.value) return;
-			if (props.disabled === true) return;
-			if (props.max !== null && props.value >= props.max) return;
+			if (isStepUpAllowed.value === false) return;
 
 			input.value.stepUp();
 
@@ -223,8 +244,7 @@ export default defineComponent({
 
 		function stepDown() {
 			if (!input.value) return;
-			if (props.disabled === true) return;
-			if (props.min !== null && props.value <= props.min) return;
+			if (isStepDownAllowed.value === false) return;
 
 			input.value.stepDown();
 
@@ -250,6 +270,7 @@ body {
 	--arrow-color: var(--border-normal);
 	--v-icon-color: var(--foreground-subdued);
 	--v-input-color: var(--foreground-normal);
+	--v-input-background-color: var(--background-input);
 	--v-input-border-color-focus: var(--primary);
 
 	display: flex;
@@ -267,9 +288,11 @@ body {
 		align-items: center;
 		height: 100%;
 		padding: var(--input-padding);
+		padding-top: 0px;
+		padding-bottom: 0px;
 		color: var(--v-input-color);
 		font-family: var(--v-input-font-family);
-		background-color: var(--background-page);
+		background-color: var(--v-input-background-color);
 		border: var(--border-width) solid var(--border-normal);
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
@@ -311,7 +334,7 @@ body {
 			--arrow-color: var(--border-normal-alt);
 
 			color: var(--v-input-color);
-			background-color: var(--background-page);
+			background-color: var(--background-input);
 			border-color: var(--border-normal-alt);
 		}
 
@@ -320,7 +343,7 @@ body {
 			--arrow-color: var(--border-normal-alt);
 
 			color: var(--v-input-color);
-			background-color: var(--background-page);
+			background-color: var(--background-input);
 			border-color: var(--v-input-border-color-focus);
 		}
 
@@ -346,6 +369,9 @@ body {
 		flex-grow: 1;
 		width: 20px; // allows flex to grow/shrink to allow for slots
 		height: 100%;
+		padding: var(--input-padding);
+		padding-right: 0px;
+		padding-left: 0px;
 		font-family: var(--v-input-font-family);
 		background-color: transparent;
 		border: none;
@@ -359,6 +385,10 @@ body {
 		&::-webkit-inner-spin-button {
 			margin: 0;
 			-webkit-appearance: none;
+		}
+
+		&:focus {
+			border-color: var(--v-input-border-color-focus);
 		}
 
 		/* Firefox */

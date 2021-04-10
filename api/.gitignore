@@ -9,3 +9,5 @@ debug.db
 test
 dist
 tmp
+keys.json
+

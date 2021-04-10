@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import { FieldsService } from '../services/fields';
 import validateCollection from '../middleware/collection-exists';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
@@ -7,6 +7,8 @@ import Joi from 'joi';
 import { types, Field } from '../types';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
+import { ALIAS_TYPES } from '../constants';
+import { reduceSchema } from '../utils/reduce-schema';
 
 const router = Router();
 
@@ -52,8 +54,6 @@ router.get(
 			schema: req.schema,
 		});
 
-		if (req.params.field in req.schema[req.params.collection].columns === false) throw new ForbiddenException();
-
 		const field = await service.readOne(req.params.collection, req.params.field);
 
 		res.locals.payload = { data: field || null };
@@ -65,13 +65,17 @@ router.get(
 const newFieldSchema = Joi.object({
 	collection: Joi.string().optional(),
 	field: Joi.string().required(),
-	type: Joi.string().valid(...types, null),
+	type: Joi.string()
+		.valid(...types, ...ALIAS_TYPES)
+		.allow(null)
+		.required(),
 	schema: Joi.object({
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
 		is_nullable: Joi.bool(),
-	}).unknown(),
-	/** @todo base this on default validation */
+	})
+		.unknown()
+		.allow(null),
 	meta: Joi.any(),
 });
 
@@ -79,8 +83,6 @@ router.post(
 	'/:collection',
 	validateCollection,
 	asyncHandler(async (req, res, next) => {
-		if (!req.body.schema && !req.body.meta) throw new InvalidPayloadException(`"schema" or "meta" is required`);
-
 		const service = new FieldsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -149,15 +151,39 @@ router.patch(
 	respond
 );
 
+const updateSchema = Joi.object({
+	type: Joi.string()
+		.valid(...types, ...ALIAS_TYPES)
+		.allow(null),
+	schema: Joi.object({
+		default_value: Joi.any(),
+		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
+		is_nullable: Joi.bool(),
+	})
+		.unknown()
+		.allow(null),
+	meta: Joi.any(),
+}).unknown();
+
 router.patch(
 	'/:collection/:field',
 	validateCollection,
-	// @todo: validate field
 	asyncHandler(async (req, res, next) => {
 		const service = new FieldsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
+		const { error } = updateSchema.validate(req.body);
+
+		if (error) {
+			throw new InvalidPayloadException(error.message);
+		}
+
+		if (req.body.schema && !req.body.type) {
+			throw new InvalidPayloadException(`You need to provide "type" when providing "schema".`);
+		}
+
 		const fieldData: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
 
 		if (!fieldData.field) fieldData.field = req.params.field;

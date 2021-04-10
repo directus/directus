@@ -1,14 +1,14 @@
 import VueI18n from 'vue-i18n';
-import { Component } from 'vue';
+import { Component, AsyncComponent } from 'vue';
 import { Field, types, localTypes } from '@/types';
 
-export type InterfaceConfig = {
+export interface InterfaceConfig {
 	id: string;
+	name: string;
 	icon: string;
-	name: string | VueI18n.TranslateResult;
 	description?: string | VueI18n.TranslateResult;
-	component: Component;
-	options: DeepPartial<Field>[] | Component;
+	component: Component | AsyncComponent;
+	options: DeepPartial<Field>[] | Component | AsyncComponent;
 	types: typeof types[number][];
 	groups?: readonly typeof localTypes[number][];
 	relational?: boolean;
@@ -16,8 +16,7 @@ export type InterfaceConfig = {
 	hideLoader?: boolean;
 	system?: boolean;
 	recommendedDisplays?: string[];
-};
+}
 
-export type InterfaceContext = { i18n: VueI18n };
 export type InterfaceDefineParam = InterfaceDefineParamGeneric<InterfaceConfig>;
-export type InterfaceDefineParamGeneric<T> = T | ((context: InterfaceContext) => T);
+export type InterfaceDefineParamGeneric<T> = T | (() => T);

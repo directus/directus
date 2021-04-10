@@ -3,7 +3,7 @@
  */
 
 import { RequestHandler } from 'express';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import database from '../database';
 import { ForbiddenException } from '../exceptions';
 import { systemCollectionRows } from '../database/system-data/collections';
@@ -11,7 +11,7 @@ import { systemCollectionRows } from '../database/system-data/collections';
 const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.params.collection) return next();
 
-	if (req.params.collection in req.schema === false) {
+	if (req.params.collection in req.schema.collections === false) {
 		throw new ForbiddenException();
 	}
 

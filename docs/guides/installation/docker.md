@@ -39,31 +39,33 @@ When using Docker compose, you can use the following setup to get you started:
 version: '3.2'
 services:
   database:
+    container_name: database
     image: postgres:12
     volumes:
       - ./data/database:/var/lib/postgresql/data
     networks:
       - directus
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_USER: 'directus'
       POSTGRES_PASSWORD: 'directus'
       POSTGRES_DB: 'directus'
 
   cache:
+    container_name: cache
     image: redis:6
     networks:
       - directus
-    ports:
-      - 6379:6379
 
   directus:
+    container_name: directus
     image: directus/directus:v9.0.0-rc.24
     ports:
       - 8055:8055
     networks:
       - directus
+    depends_on:
+      - cache
+      - database
     environment:
       KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
       SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
@@ -80,7 +82,7 @@ services:
       CACHE_REDIS: 'redis://cache:6379'
 
       ADMIN_EMAIL: 'admin@example.com'
-      ADMIN_PASSWORD: 'password'
+      ADMIN_PASSWORD: 'd1r3ctu5'
 
 networks:
   directus:
