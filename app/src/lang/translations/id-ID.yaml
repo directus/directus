@@ -219,10 +219,31 @@ revision_preview: Pratinjau Revisi
 updates_made: Pembaruan Dibuat
 leave_comment: Tinggalkan komentar...
 post_comment_success: Komentar telah diposting
+item_create_success: Item telah Dibuat | Item telah Dibuat
+item_update_success: Item telah Diperbarui | Item telah Diperbarui
+item_delete_success: Item telah Dihapus | Item telah Dihapus
 this_collection: Pengumpulan ini
 related_collection: Pengumpulan Terkait
+related_collections: Koleksi Terkait
+translations_collection: Koleksi Terjemahan
+languages_collection: Koleksi Bahasa
+export_data: Ekspor Data
 format: Format
+use_current_filters_settings: Gunakan Filter Saat Ini & Pengaturan
+export_collection: 'Ekspor {collection}'
+last_page: Halaman Terakhir
+last_access: Akses Terakhir
+fill_template: Isi dengan Nilai Template
+a_unique_table_name: Sebuah nama tabel unik...
+a_unique_column_name: Sebuah nama kolom unik...
+enable_custom_values: Aktifkan nilai khusus
 submit: Kirim
+move_to_folder: Pindahkan ke Folder
+move: Pindah
+system: Sistem
+add_field_related: Tambah Baris ke Koleksi Terkait
+interface: Antarmuka
+today: Hari Ini
 yesterday: Kemarin
 delete_comment: Hapus Komentar
 date-fns_date: PPP
@@ -282,6 +303,10 @@ type: Tipe
 creating_new_collection: Membuat Koleksi Baru
 created_by: Dibuat Oleh
 created_on: Dibuat Pada
+creating_collection_info: Nama dari koleksi dan pengaturan/setup baris "kunci" unik...
+creating_collection_system: Aktifkan dan ganti nama baris opsional manapun ini.
+auto_increment_integer: Integer bertambah-otomatis
+generated_uuid: UUID yang Dihasilkan
 manual_string: String yang diinput manual
 save_and_create_new: Simpan dan Buat Baru
 save_and_stay: Simpan dan Tinggal
@@ -292,8 +317,25 @@ no_comments: Belum Ada Komentar
 click_to_expand: Tekan Untuk Memperluas
 select_item: Pilih Item
 no_items: Tidak Ada Item
+search_items: Cari item...
+disabled: Dinonaktifkan
+information: Informasi
+report_bug: Laporkan Bug
 request_feature: Meminta Fitur
+interface_not_found: 'Antarmuka "{interface}" tidak ditemukan.'
+reset_interface: Atur ulang Antarmuka
+display_not_found: 'Tampilan "{display}" tidka ditemukan.'
+reset_display: Set ulang Tampilan
+m2a_builder: Pembangun (M2A)
 item_count: 'Tidak Ada Item | Satu Item | {count} Item'
+no_items_copy: Belum ada item pada koleksi ini.
+file_count: 'Tidak Ada Berkas | Satu Berkas | {count} Berkas'
+no_files_copy: Tidak ada berkas disini.
+user_count: 'Tidak Ada Pengguna | Satu Pengguna | {count} Pengguna'
+no_users_copy: Belum ada pengguna didalam peran ini.
+webhooks_count: 'Tidak Ada Webhook | Satu Webhook | {count} Webhook'
+no_webhooks_copy: Belum ada webhook.
+all_items: Semua Item
 create_collection: Buat Pengumpulan
 relationship_not_setup: Relasi tidak dikonfigurasi dengan benar
 users: Pengguna
@@ -366,9 +408,13 @@ operators:
   gt: Lebih besar dari
   lte: Kurang dari atau sama dengan
   gte: Lebih besar dari atau sama dengan
+  nnull: Bukan null
   contains: Mengandung
   ncontains: Tidak mengandung
+  between: Diantara
+  nbetween: Tidak Diantara
   empty: Kosong
+  nempty: Tidak kosong
 loading: Memuat...
 display_template: Tampilan Template
 no_results: Tidak Ada Hasil
@@ -445,6 +491,8 @@ fields:
     theme: Tema
     status: Status
     role: Peran
+    last_page: Halaman Terakhir
+    last_access: Akses Terakhir
   directus_settings:
     project_name: Nama Proyek
   directus_fields:
@@ -525,6 +573,8 @@ interfaces:
     files: Berkas
   icon:
     icon: Ikon
+  interface:
+    interface: Antarmuka
   interface-options:
     interface-options: Opsi Antarmuka
   many-to-many:
