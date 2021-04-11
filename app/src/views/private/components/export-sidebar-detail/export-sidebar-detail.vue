@@ -106,7 +106,9 @@ export default defineComponent({
 				case 'xliff2':
 					const userStore = useUserStore();
 					const user = userStore.state.currentUser;
-					params.language = (user && user.language) || 'en-US';
+					if (user && user.language) {
+						params.optional = JSON.stringify({ language: user.language });
+					}
 					params.export = format.value;
 					break;
 			}
