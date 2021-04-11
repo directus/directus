@@ -43,6 +43,12 @@ export class Auth implements IAuth {
 		this.storage.auth_token = response.data!.access_token;
 		this.storage.auth_refresh_token = response.data?.refresh_token || null;
 		this.storage.auth_expires = response.data?.expires || null;
+		if (response.data?.expires) {
+			const now = new Date();
+			const expiry = now.setTime(now.getTime() + response.data?.expires)
+			this.storage.auth_valid_until = expiry;
+		}
+
 
 		return {
 			access_token: response.data!.access_token,
@@ -86,6 +92,11 @@ export class Auth implements IAuth {
 		this.storage.auth_token = response.data!.access_token;
 		this.storage.auth_refresh_token = response.data?.refresh_token || null;
 		this.storage.auth_expires = response.data?.expires || null;
+		if (response.data?.expires) {
+			const now = new Date();
+			const expiry = now.setTime(now.getTime() + response.data?.expires)
+			this.storage.auth_valid_until = expiry;
+		}
 
 		return {
 			access_token: response.data!.access_token,
