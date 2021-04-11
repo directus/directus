@@ -1,0 +1,52 @@
+name: Run e2e tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        db: ['mssql', 'mysql', 'postgres', 'maria', 'sqlite3']
+        node-version: [ '12-alpine', '14-alpine', '15-alpine']
+    env:
+      CACHE_IMAGE_NAME: ghcr.io/directus/directus/e2e-test-cache:${{ matrix.node_version }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '15'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Docker login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.REGISTRY_PASSWORD }}
+          password: ${{ secrets.REGISTRY_USERNAME }}
+      - name: Restore docker cache
+        run: |
+          docker pull $CACHE_IMAGE_NAME || true
+          docker tag $CACHE_IMAGE_NAME directus-test-image || true
+      - name: Install dependencies & Build
+        run: |
+          npm ci
+          npm run build
+      - name: Run tests
+        env:
+          TEST_NODE_VERSION: ${{ matrix.node-version }}
+          TEST_DB: ${{ matrix.db }}
+        run: npm run test:e2e
+      - name: Save docker cache
+        run: |
+          docker tag directus-test-image $CACHE_IMAGE_NAME
+          docker push $CACHE_IMAGE_NAME
