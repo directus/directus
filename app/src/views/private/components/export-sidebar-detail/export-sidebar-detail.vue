@@ -106,7 +106,9 @@ export default defineComponent({
 				case 'xliff2':
 					const userStore = useUserStore();
 					const user = userStore.state.currentUser;
-					params.language = (user && user.language) || 'en-US';
+					if (user && user.language) {
+						params.optional = JSON.stringify({ language: user.language });
+					}
 					params.export = format.value;
 					break;
 			}
@@ -129,8 +131,7 @@ export default defineComponent({
 				const { field: primaryKey } = fieldsStore.getPrimaryKeyFieldForCollection(props.collection.collection);
 				if (!params.fields) {
 					params.fields = [primaryKey];
-				}
-				else if (!params.fields.includes(primaryKey)) {
+				} else if (!params.fields.includes(primaryKey)) {
 					params.fields = [...params.fields, primaryKey];
 				}
 			}
@@ -159,8 +160,8 @@ export default defineComponent({
 }
 
 .v-checkbox {
-	margin-top: 8px;
 	width: 100%;
+	margin-top: 8px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;

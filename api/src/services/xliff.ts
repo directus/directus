@@ -73,6 +73,9 @@ export class XliffService {
 	}
 
 	async toXliff(collection: string, data?: any[]): Promise<any> {
+		if (!this.language) {
+			throw new InvalidPayloadException(`Language has to be specified.`);
+		}
 		const fields = await this.fieldsService.readAll(collection);
 		const translationsFields = fields.filter((field) => (field.type as string) === 'translations');
 		const translationsFieldsNames = translationsFields.map((field) => field.field);
