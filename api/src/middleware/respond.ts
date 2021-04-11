@@ -72,7 +72,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			res.attachment(`${filename}.xlf`);
 			res.set('Content-Type', 'text/xml');
 			const xliffService = new XliffService({
-				language: req.sanitizedQuery.language || 'en-US',
+				language: req.sanitizedQuery.optional?.language,
 				version: req.sanitizedQuery.export === 'xliff' ? 1 : 2,
 				accountability: req.accountability,
 				schema: req.schema,

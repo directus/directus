@@ -12,7 +12,7 @@ export type Query = {
 	search?: string;
 	export?: 'json' | 'csv' | 'xliff' | 'xliff2';
 	deep?: Record<string, Query>;
-	language?: string;
+	optional?: Record<string, any>;
 };
 
 export type Sort = {
