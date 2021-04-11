@@ -197,17 +197,17 @@ export default defineComponent({
 				'italic',
 				'underline',
 				'removeformat',
-				'customLink',
+				'link',
 				'bullist',
 				'numlist',
 				'blockquote',
 				'h1',
 				'h2',
 				'h3',
-				'customImage',
-				'customMedia',
+				'image',
+				'media',
 				'hr',
-				'customCode',
+				'code',
 				'fullscreen',
 			],
 		},
@@ -275,7 +275,15 @@ export default defineComponent({
 				styleFormats = props.customFormats;
 			}
 
-			let toolbarString = props.toolbar.join(' ');
+			let toolbarString = props.toolbar
+				.map((t) =>
+					t
+						.replace(/^link$/g, 'customLink')
+						.replace(/^media$/g, 'customMedia')
+						.replace(/^code$/g, 'customCode')
+						.replace(/^image$/g, 'customImage')
+				)
+				.join(' ');
 
 			if (styleFormats) {
 				toolbarString += ' styleselect';
@@ -378,8 +386,8 @@ export default defineComponent({
 	width: 100%;
 	height: var(--input-height-tall);
 	margin-bottom: 24px;
-	border-radius: var(--border-radius);
 	object-fit: cover;
+	border-radius: var(--border-radius);
 }
 
 .content {
