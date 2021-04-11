@@ -108,6 +108,7 @@ field_create_success: 'Erstelltes Feld: "{field}"'
 field_update_success: 'Geändertes Feld: "{field}"'
 duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
 language: Sprache
+global: Globale Objekte
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
 exposure: Belichtung

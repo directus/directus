@@ -131,7 +131,7 @@ export default abstract class Storage {
 	 *
 	 * Supported drivers: "local", "s3", "gcs", "azure"
 	 */
-	put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
+	put(location: string, content: Buffer | NodeJS.ReadableStream | string, type?: string): Promise<Response> {
 		throw new MethodNotSupported('put', this.constructor.name);
 	}
 

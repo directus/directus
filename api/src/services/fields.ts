@@ -298,7 +298,11 @@ export class FieldsService {
 
 		await this.knex('directus_fields').delete().where({ collection, field });
 
-		if (this.schema.collections[collection] && field in this.schema.collections[collection].fields) {
+		if (
+			this.schema.collections[collection] &&
+			field in this.schema.collections[collection].fields &&
+			this.schema.collections[collection].fields[field].alias === false
+		) {
 			await this.knex.schema.table(collection, (table) => {
 				table.dropColumn(field);
 			});
