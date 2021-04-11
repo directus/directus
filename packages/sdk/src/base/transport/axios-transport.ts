@@ -143,7 +143,9 @@ export class AxiosTransport implements ITransport {
 
 	private createRequestConfig(config: AxiosRequestConfig): AxiosRequestConfig {
 		let token = this._storage.auth_token;
-		if (!token) {
+		let validUntil = this._storage.auth_valid_until;
+		const now = new Date();
+		if (!token || validUntil && validUntil < now.getTime()) {
 			return config;
 		}
 
