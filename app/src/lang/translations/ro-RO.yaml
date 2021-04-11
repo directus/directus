@@ -78,6 +78,8 @@ operators:
   contains: Conține
 role: Rol
 create: Creează
+width: Lățime
+height: Înălţime
 wysiwyg_options:
   table: Tabel
 choices: Opțiuni

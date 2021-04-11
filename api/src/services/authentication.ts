@@ -48,7 +48,7 @@ export class AuthenticationService {
 		const user = await database
 			.select('id', 'password', 'role', 'tfa_secret', 'status')
 			.from('directus_users')
-			.where({ email })
+			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
 			.first();
 
 		await emitter.emitAsync('auth.login.before', hookPayload, {

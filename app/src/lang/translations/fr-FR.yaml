@@ -11,6 +11,7 @@ add_field: Ajouter un champ
 role_name: Nom de rôle
 db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
 show_archived_items: Afficher les éléments archivés
+edited: Valeur modifiée
 required: Requis
 required_for_app_access: Requis pour l'accès à l'application
 requires_value: Valeurs obligatoires
@@ -513,6 +514,8 @@ toggle: Activer/Désactiver
 icon_on: Icône Activée
 icon_off: Icône Désactivée
 label: Étiquette
+width: Largeur
+height: Hauteur
 wysiwyg_options:
   aligncenter: Centrer
   alignjustify: Justifier
@@ -532,10 +535,7 @@ wysiwyg_options:
   bullist: Liste à puces
   numlist: Liste numérotée
   hr: Barre horizontale
-  link: Lien
   unlink: Supprimer le lien
-  media: Ajouter un média
-  image: Ajouter une image
   copy: Copier
   cut: Couper
   paste: Coller
@@ -557,7 +557,6 @@ wysiwyg_options:
   selectall: Tout sélectionner
   table: Table
   visualaid: Voir les éléments invisibles
-  code: Afficher la source
   fullscreen: Plein écran
   directionality: Sens de lecture
 dropdown: Liste déroulante

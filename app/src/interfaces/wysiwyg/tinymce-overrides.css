@@ -66,11 +66,11 @@
 	font-feature-settings: 'liga';
 }
 
-.tox-tbtn[aria-label='Insert/edit link'] .tox-icon svg {
+.tox-tbtn[aria-label='Add/Edit Link'] .tox-icon svg {
 	display: none;
 }
 
-.tox-tbtn[aria-label='Insert/edit link'] .tox-icon::after {
+.tox-tbtn[aria-label='Add/Edit Link'] .tox-icon::after {
 	display: inline-block;
 	margin-top: 4px;
 	color: var(--foreground-normal);
@@ -86,7 +86,7 @@
 }
 
 .tox .tox-edit-area__iframe {
-	background-color: var(--background-page);
+	background-color: var(--background-input);
 }
 
 .tox-tinymce {
@@ -278,8 +278,8 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-button {
 	display: flex;
-	align-items: center;
 	justify-content: center;
+	align-items: center;
 	min-width: 136px;
 	height: 44px;
 	padding: 0 20px 1px;

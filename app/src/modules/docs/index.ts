@@ -4,7 +4,7 @@ import files, { Directory } from '@directus/docs';
 import StaticDocs from './routes/static.vue';
 import NotFound from './routes/not-found.vue';
 
-export default defineModule(({ i18n }) => {
+export default defineModule(() => {
 	const routes: RouteConfig[] = [
 		{
 			path: '/',
@@ -19,7 +19,7 @@ export default defineModule(({ i18n }) => {
 
 	return {
 		id: 'docs',
-		name: 'documentation',
+		name: '$t:documentation',
 		icon: 'info',
 		routes,
 		order: 20,

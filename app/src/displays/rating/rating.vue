@@ -25,7 +25,7 @@ type InterfaceOptions = {
 export default defineComponent({
 	props: {
 		value: {
-			type: Number,
+			type: [String, Number],
 			default: null,
 		},
 		simple: {
@@ -45,7 +45,7 @@ export default defineComponent({
 		});
 
 		const ratingPercentage = computed(() => ({
-			width: (props.value / starCount.value) * 100 + '%',
+			width: (Number(props.value) / starCount.value) * 100 + '%',
 		}));
 
 		return { starCount, ratingPercentage };

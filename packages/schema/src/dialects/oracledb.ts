@@ -1,19 +1,42 @@
 import KnexOracle from 'knex-schema-inspector/dist/dialects/oracledb';
 import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
+import { mapKeys } from 'lodash';
 
 export default class Oracle extends KnexOracle implements SchemaInspector {
 	async overview() {
-		const columns = await this.knex.raw(`
+		type RawColumn = {
+			TABLE_NAME: string;
+			COLUMN_NAME: string;
+			DEFAULT_VALUE: string;
+			IS_NULLABLE: string;
+			DATA_TYPE: string;
+			NUMERIC_PRECISION: number | null;
+			NUMERIC_SCALE: number | null;
+			COLUMN_KEY: string;
+		};
+
+		type RawColumnLowercase = {
+			table_name: string;
+			column_name: string;
+			default_value: string;
+			is_nullable: string;
+			data_type: string;
+			numeric_precision: number | null;
+			numeric_scale: number | null;
+			column_key: string;
+		};
+
+		const columns = await this.knex.raw<RawColumn[]>(`
 			SELECT
-				"USER_TAB_COLUMNS"."TABLE_NAME" AS table_name,
-				"USER_TAB_COLUMNS"."COLUMN_NAME" AS column_name,
-				"USER_TAB_COLUMNS"."DATA_DEFAULT" AS default_value,
-				"USER_TAB_COLUMNS"."NULLABLE" AS is_nullable,
-				"USER_TAB_COLUMNS"."DATA_TYPE" AS data_type,
-				"USER_TAB_COLUMNS"."DATA_PRECISION" AS numeric_precision,
-				"USER_TAB_COLUMNS"."DATA_SCALE" AS numeric_scale,
-				"USER_CONSTRAINTS"."CONSTRAINT_TYPE" AS column_key
+				"USER_TAB_COLUMNS"."TABLE_NAME" AS TABLE_NAME,
+				"USER_TAB_COLUMNS"."COLUMN_NAME" AS COLUMN_NAME,
+				"USER_TAB_COLUMNS"."DATA_DEFAULT" AS DEFAULT_VALUE,
+				"USER_TAB_COLUMNS"."NULLABLE" AS IS_NULLABLE,
+				"USER_TAB_COLUMNS"."DATA_TYPE" AS DATA_TYPE,
+				"USER_TAB_COLUMNS"."DATA_PRECISION" AS NUMERIC_PRECISION,
+				"USER_TAB_COLUMNS"."DATA_SCALE" AS NUMERIC_SCALE,
+				"USER_CONSTRAINTS"."CONSTRAINT_TYPE" AS COLUMN_KEY
 			FROM
 				"USER_TAB_COLUMNS"
 				LEFT JOIN "USER_CONS_COLUMNS" ON "USER_TAB_COLUMNS"."TABLE_NAME" = "USER_CONS_COLUMNS"."TABLE_NAME"
@@ -21,14 +44,19 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				LEFT JOIN "USER_CONSTRAINTS" ON "USER_CONS_COLUMNS"."CONSTRAINT_NAME" = "USER_CONSTRAINTS"."CONSTRAINT_NAME"
 		`);
 
+		const columnsLowercase: RawColumnLowercase[] = columns.map(
+			(column) => mapKeys(column, (value, key) => key.toLowerCase()) as RawColumnLowercase
+		);
+
 		const overview: SchemaOverview = {};
 
-		for (const column of columns[0]) {
+		for (const column of columnsLowercase) {
 			if (column.table_name in overview === false) {
 				overview[column.table_name] = {
-					primary: columns[0].find((nested: { column_key: string; table_name: string }) => {
-						return nested.table_name === column.table_name && nested.column_key === 'P';
-					})?.column_name,
+					primary:
+						columnsLowercase.find((nested: { column_key: string; table_name: string }) => {
+							return nested.table_name === column.table_name && nested.column_key === 'P';
+						})?.column_name || 'id',
 					columns: {},
 				};
 			}
@@ -38,6 +66,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				is_nullable: column.is_nullable === 'YES',
 			};
 		}
+
 		return overview;
 	}
 }
