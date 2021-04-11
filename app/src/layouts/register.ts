@@ -24,7 +24,7 @@ export async function registerLayouts() {
 				const result = await import(
 					/* webpackIgnore: true */ getRootPath() + `extensions/layouts/${layoutName}/index.js`
 				);
-				modules.push(result.value.default);
+				modules.push(result.default);
 			} catch (err) {
 				console.warn(`Couldn't load custom layout "${layoutName}"`);
 			}

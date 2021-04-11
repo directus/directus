@@ -7,12 +7,12 @@ import { getRootPath } from '@/utils/get-root-path';
 import asyncPool from 'tiny-async-pool';
 
 const modules = getModules();
-let loadedModules: any = [];
+let queuedModules: any = [];
 
 export async function loadModules() {
 	const context = require.context('.', true, /^.*index\.ts$/);
 
-	loadedModules = context
+	queuedModules = context
 		.keys()
 		.map((key) => context(key))
 		.map((mod) => mod.default)
@@ -27,7 +27,14 @@ export async function loadModules() {
 				const result = await import(
 					/* webpackIgnore: true */ getRootPath() + `extensions/modules/${moduleName}/index.js`
 				);
-				modules.push(result.value.default);
+				result.default.routes = result.default.routes.map((route: RouteConfig) => {
+					if (route.path) {
+						if (route.path[0] === '/') route.path = route.path.substr(1);
+						route.path = `/${result.default.id}/${route.path}`;
+					}
+					return route;
+				});
+				queuedModules.push(result.default);
 			} catch (err) {
 				console.warn(`Couldn't load custom module "${moduleName}"`);
 			}
@@ -41,7 +48,7 @@ export async function register() {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 
-	const registeredModules = loadedModules.filter((mod: any) => {
+	const registeredModules = queuedModules.filter((mod: any) => {
 		if (!userStore.state.currentUser) return false;
 
 		if (mod.preRegisterCheck) {

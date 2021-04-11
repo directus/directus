@@ -25,7 +25,7 @@ export async function registerInterfaces() {
 				const result = await import(
 					/* webpackIgnore: true */ getRootPath() + `extensions/interfaces/${interfaceName}/index.js`
 				);
-				modules.push(result.value.default);
+				modules.push(result.default);
 			} catch (err) {
 				console.warn(`Couldn't load custom interface "${interfaceName}"`);
 			}
