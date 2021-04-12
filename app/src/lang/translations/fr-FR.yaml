@@ -146,6 +146,11 @@ uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
 not_available_for_type: Non disponible pour ce type
 create_translations: Créer des traductions
+auto_refresh: Rafraichissement automatique
+refresh_interval: Fréquence d'actualisation
+no_refresh: Ne pas actualiser
+refresh_interval_seconds: Rafraîchir instantanément | Toutes les {seconds} secondes
+refresh_interval_minutes: Chaque minute | Toutes les {minutes} minutes
 auto_generate: Générer automatiquement
 this_will_auto_setup_fields_relations: Tous les champs et relations requis seront configurés automatiquement.
 click_here: Cliquez ici
@@ -153,7 +158,9 @@ to_manually_setup_translations: pour configurer manuellement les traductions.
 click_to_manage_translated_fields: >-
   Il n'y a pas encore de champ traduit. Cliquez-ici pour en créer un. | Il y a un champ traduit. Cliquez ici pour le gérer. | Il y a {count} champs traduits. Cliquez ici pour les gérer.
 fields_group: Groupe de champs
+no_collections_found: Aucune collection trouvée.
 new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
+search_collection: Rechercher une collection...
 new_field: 'Nouveau Champ'
 new_collection: 'Nouvelle Collection'
 add_m2o_to_collection: 'Ajouter une relation Many-to-One à "{collection}"'
@@ -512,8 +519,20 @@ toggle: Activer/Désactiver
 icon_on: Icône Activée
 icon_off: Icône Désactivée
 label: Étiquette
+image_url: Url de l’image
+alt_text: Texte alternatif
+media: Média
 width: Largeur
 height: Hauteur
+source: Source
+url_placeholder: Entrez une url...
+display_text: Afficher le texte
+display_text_placeholder: Entrez un texte d'affichage...
+tooltip: Info-bulle
+tooltip_placeholder: Entrez une infobulle ...
+open_link_in: Ouvrir le lien dans
+new_tab: Nouvel onglet
+current_tab: Onglet actif
 wysiwyg_options:
   aligncenter: Centrer
   alignjustify: Justifier
@@ -533,7 +552,10 @@ wysiwyg_options:
   bullist: Liste à puces
   numlist: Liste numérotée
   hr: Barre horizontale
+  link: Ajouter/modifier un lien
   unlink: Supprimer le lien
+  media: Ajouter/Modifier un média
+  image: Ajouter/Modifier une image
   copy: Copier
   cut: Couper
   paste: Coller
@@ -555,6 +577,7 @@ wysiwyg_options:
   selectall: Tout sélectionner
   table: Table
   visualaid: Voir les éléments invisibles
+  source_code: Modifier le code source
   fullscreen: Plein écran
   directionality: Sens de lecture
 dropdown: Liste déroulante
@@ -796,6 +819,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:

@@ -1,8 +1,100 @@
 ---
 edit_field: Editar campo
+item_revision: Revisão do documento
+duplicate_field: Duplicar este campo
+half_width: Metade da largura
+full_width: Largura total
+fill_width: Ocupar a largura
+field_name_translations: Nome do campo para as traduções
+enter_password_to_enable_tfa: Coloque a password para ativar a autenticação de 2 fatores
 add_field: Adicionar Campo
 role_name: Nome do cargo
 db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar '
+show_archived_items: Mostrar documentos arquivados
+edited: Valor alterado
+required: Obrigatório
+required_for_app_access: Necessário para o acesso da App
+requires_value: Valor obrigatório
+create_preset: Criar uma predefinação
+create_role: Criar estatuto
+create_user: Criar utilizador
+create_webhook: Criar webhook
+invite_users: Convidar utlizadores
+email_examples: 'admin@example.com, user@example.com...'
+invite: Convidar
+emails: Emails
+connection_excellent: Excelente Conexão
+connection_good: Boa conexão
+connection_fair: Conexão razoável
+connection_poor: Fraca conexão
+primary: Primário
+rename_folder: Mudar o nome da pasta
+delete_folder: Eliminar pasta
+prefix: Prefixo
+suffix: Sufixo
+reset_bookmark: Restaurar marcador
+rename_bookmark: Mudar o nome do marcador
+update_bookmark: Atualizar o marcador
+delete_bookmark: Eliminar o marcador
+delete_bookmark_copy: >-
+  Tem a certeza que pretende remover o marcador "{bookmark}"?
+  Esta ação não pode ser desfeita.
+logoutReason:
+  SIGN_OUT: Sessão terminada
+  SESSION_EXPIRED: Sessão expirada
+public: Público
+public_description: Controla quais dados da API estão disponíveis sem autenticação.
+not_allowed: Não permitido
+directus_version: Versão do Directus
+node_version: Versão do Node.js
+node_uptime: Tempo de atividade do Node.js
+os_type: Tipo do Sistema Operativo
+os_version: Versão do Sistema Operativo
+os_uptime: Tempo de atividade do Sistema Operativo
+os_totalmem: Memória utilizada
+archive: Arquivar
+archive_confirm: Tem a certeza que pretende arquivar este documento?
+archive_confirm_count: >-
+  Nenhum documento selecionado | Tem a certeza que pretende arquivar este documento? | Tem a certeza que pretende arquivar {count} documentos?
+reset_system_permissions_to: 'Restaurar permissões do sistema para:'
+reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que tenha aplicado às coleções do sistema. Tem certeza que pretende continuar?
+the_following_are_minimum_permissions: As permissões mínimas seguintes são necessárias para quando o "Acesso à App" está ativo. É permitido acrescentar permissões, mas não reduzir.
+app_access_minimum: Permissões mínimas para Acesso à App
+recommended_defaults: Predefinições recomendadas
+unarchive: Desarquivar
+unarchive_confirm: Tem a certeza que pretende desarquivar este item?
+nested_files_folders_will_be_moved: Ficheiros e pastas neste grupo vão ser movidos um nível acima.
+unknown_validation_errors: 'Foram encontrados erros de validação nos seguintes campos ocultos:'
+validationError:
+  eq: O valor tem de ser {valid}
+  neq: O valor não pode ser {invalid}
+  in: O valor tem de ser um de {valid}
+  nin: O valor não pode ser um de {invalid}
+  contains: O valor tem de conter {substring}
+  ncontains: O valor não pode conter {substring}
+  gt: O valor tem de ser maior que {valid}
+  gte: O valor tem de ser maior ou igual a {valid}
+  lt: O valor tem de ser menor que {valid}
+  lte: O valor deve ser menor ou igual a {valid}
+  empty: O valor tem de estar vazio
+  nempty: Valor não pode estar vazio
+  null: O valor tem de ser nulo
+  nnull: O valor não pode ser nulo
+  required: O valor é obrigatório
+all_access: Acesso Global
+no_access: Sem Acesso
+use_custom: Usar personalizado
+field_standard: Predefinido
+field_m2o: Relação Muitos para Um
+field_m2a: Relação Muitos para Alguns
+field_o2m: Relação Um para Muitos
+field_m2m: Relação Muitos para Muitos
+item_permissions: Permissões do documento
+field_permissions: Permisões do campo
+field_validation: Validação do Campo
+field_presets: Predefinições para o campo
+permissions_for_role: 'Documentos que o estatuto {role} pode {action}.'
+fields_for_role: 'Campos que o estatuto {role} pode {action}.'
 create_field: Criar campo
 auto_generate: Geração Automatica
 add_note: Adicionar uma nota para os utilizadores...
@@ -56,6 +148,8 @@ fields:
     title: Título
     description: Descrição
     tags: Etiquetas
+  directus_fields:
+    translation: Nome do campo para as traduções
   directus_roles:
     name: Nome do cargo
     description: Descrição
@@ -63,6 +157,8 @@ comment: Comentário
 continue: Continuar
 description: Descrição
 interfaces:
+  button-links:
+    primary: Primário
   checkboxes:
     checkboxes: Caixas de seleção
   collection:
