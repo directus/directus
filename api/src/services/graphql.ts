@@ -84,7 +84,7 @@ import {
 } from 'graphql-compose';
 import { SpecificationService } from './specifications';
 
-const Void = new GraphQLScalarType({
+const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
 
 	description: 'Represents NULL values',
@@ -100,6 +100,12 @@ const Void = new GraphQLScalarType({
 	parseLiteral() {
 		return null;
 	},
+});
+
+export const GraphQLDate = new GraphQLScalarType({
+	...GraphQLString,
+	name: 'Date',
+	description: 'ISO8601 Date values',
 });
 
 /**
@@ -220,7 +226,7 @@ export class GraphQLService {
 		} else {
 			schemaComposer.Query.addFields({
 				_empty: {
-					type: Void,
+					type: GraphQLVoid,
 					description: "There's no data to query.",
 				},
 			});
@@ -437,6 +443,36 @@ export class GraphQLService {
 				},
 			});
 
+			const DateFilterOperators = schemaComposer.createInputTC({
+				name: 'date_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLString,
+					},
+					_neq: {
+						type: GraphQLString,
+					},
+					_gt: {
+						type: GraphQLString,
+					},
+					_gte: {
+						type: GraphQLString,
+					},
+					_lt: {
+						type: GraphQLString,
+					},
+					_lte: {
+						type: GraphQLString,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+				},
+			});
+
 			const NumberFilterOperators = schemaComposer.createInputTC({
 				name: 'number_filter_operators',
 				fields: {
@@ -490,6 +526,9 @@ export class GraphQLService {
 							case GraphQLInt:
 							case GraphQLFloat:
 								filterOperatorType = NumberFilterOperators;
+								break;
+							case GraphQLDate:
+								filterOperatorType = DateFilterOperators;
 								break;
 							default:
 								filterOperatorType = StringFilterOperators;
