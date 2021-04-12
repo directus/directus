@@ -1,8 +1,28 @@
 ---
 edit_field: Editar campo
+item_revision: Revisão do documento
+duplicate_field: Duplicar este campo
+half_width: Metade da largura
+full_width: Largura total
+fill_width: Ocupar a largura
+field_name_translations: Nome do campo para as traduções
+enter_password_to_enable_tfa: Coloque a password para ativar a autenticação de 2 fatores
 add_field: Adicionar Campo
 role_name: Nome do cargo
 db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar '
+show_archived_items: Mostrar documentos arquivados
+edited: Valor alterado
+required: Obrigatório
+required_for_app_access: Necessário para o acesso da App
+requires_value: Valor obrigatório
+create_preset: Criar uma predefinação
+create_role: Criar estatuto
+create_user: Criar utilizador
+create_webhook: Criar webhook
+invite_users: Convidar utlizadores
+email_examples: 'admin@example.com, user@example.com...'
+invite: Convidar
+emails: Emails
 create_field: Criar campo
 auto_generate: Geração Automatica
 add_note: Adicionar uma nota para os utilizadores...
@@ -56,6 +76,8 @@ fields:
     title: Título
     description: Descrição
     tags: Etiquetas
+  directus_fields:
+    translation: Nome do campo para as traduções
   directus_roles:
     name: Nome do cargo
     description: Descrição
