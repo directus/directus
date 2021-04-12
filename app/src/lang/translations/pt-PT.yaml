@@ -144,6 +144,7 @@ no_refresh: Não atualizar
 refresh_interval_seconds: Atualizar instantaneamente | A cada segundo | A cada {seconds} segundos
 refresh_interval_minutes: A cada minuto | a cada {minutes} minutos
 auto_generate: Geração Automatica
+click_here: Clique aqui
 add_note: Adicionar uma nota para os utilizadores...
 unique: Único
 clear_value: Limpar valor
@@ -268,6 +269,13 @@ one_item: '1 documento'
 one_filtered_item: '1 documento filtrado'
 delete_collection_are_you_sure: >-
   Tem a certeza que deseja remover esta coleção? Isto irá apagar a coleção e todos os documentos associados. Esta ação é irreversível.
+collections_shown: Coleções visíveis
+visible_collections: Coleções visíveis
+hidden_collections: Coleções ocultas
+show_hidden_collections: Mostrar coleções ocultas
+hide_hidden_collections: Esconder coleções ocultas
+unmanaged_collections: Coleções não configuradas
+system_collections: Coleções do sistema
 wysiwyg_options:
   table: Tabela
 choices: Opções
