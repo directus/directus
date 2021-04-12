@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "9.0.0-rc.56",
+	"version": "9.0.0-rc.57",
 	"description": "Utility for extracting information about existing DB schema",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -43,7 +43,8 @@
 		"typescript": "^4.0.5"
 	},
 	"dependencies": {
-		"knex-schema-inspector": "^1.2.0"
+		"knex-schema-inspector": "^1.2.0",
+		"lodash": "^4.17.21"
 	},
 	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"
 }

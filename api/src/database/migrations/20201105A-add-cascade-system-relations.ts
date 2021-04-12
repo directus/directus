@@ -7,7 +7,6 @@ const updates = [
 			{
 				column: 'group',
 				references: 'directus_fields.id',
-				onDelete: 'SET NULL',
 			},
 		],
 	},
@@ -17,17 +16,14 @@ const updates = [
 			{
 				column: 'folder',
 				references: 'directus_folders.id',
-				onDelete: 'SET NULL',
 			},
 			{
 				column: 'uploaded_by',
 				references: 'directus_users.id',
-				onDelete: 'SET NULL',
 			},
 			{
 				column: 'modified_by',
 				references: 'directus_users.id',
-				onDelete: 'SET NULL',
 			},
 		],
 	},
@@ -37,7 +33,6 @@ const updates = [
 			{
 				column: 'parent',
 				references: 'directus_folders.id',
-				onDelete: 'CASCADE',
 			},
 		],
 	},
@@ -47,7 +42,6 @@ const updates = [
 			{
 				column: 'role',
 				references: 'directus_roles.id',
-				onDelete: 'CASCADE',
 			},
 		],
 	},
@@ -57,12 +51,10 @@ const updates = [
 			{
 				column: 'user',
 				references: 'directus_users.id',
-				onDelete: 'CASCADE',
 			},
 			{
 				column: 'role',
 				references: 'directus_roles.id',
-				onDelete: 'CASCADE',
 			},
 		],
 	},
@@ -72,12 +64,10 @@ const updates = [
 			{
 				column: 'activity',
 				references: 'directus_activity.id',
-				onDelete: 'CASCADE',
 			},
 			{
 				column: 'parent',
 				references: 'directus_revisions.id',
-				onDelete: 'SET NULL',
 			},
 		],
 	},
@@ -87,7 +77,6 @@ const updates = [
 			{
 				column: 'user',
 				references: 'directus_users.id',
-				onDelete: 'CASCADE',
 			},
 		],
 	},
@@ -97,17 +86,14 @@ const updates = [
 			{
 				column: 'project_logo',
 				references: 'directus_files.id',
-				onDelete: 'SET NULL',
 			},
 			{
 				column: 'public_foreground',
 				references: 'directus_files.id',
-				onDelete: 'SET NULL',
 			},
 			{
 				column: 'public_background',
 				references: 'directus_files.id',
-				onDelete: 'SET NULL',
 			},
 		],
 	},
@@ -117,7 +103,6 @@ const updates = [
 			{
 				column: 'role',
 				references: 'directus_roles.id',
-				onDelete: 'SET NULL',
 			},
 		],
 	},
@@ -125,38 +110,26 @@ const updates = [
 
 /**
  * NOTE:
- * MS SQL doesn't support recursive foreign key constraints, nor having multiple foreign key constraints to the same
- * related table. This means that about half of the above constraint triggers won't be available in MS SQL. To avoid
- * confusion in what's there and what isn't, we'll skip the on-delete / on-update triggers altogether in MS SQL.
+ * Not all databases allow (or support) recursive onUpdate/onDelete triggers. MS SQL / Oracle flat out deny creating them,
+ * Postgres behaves erratic on those triggers, not sure if MySQL / Maria plays nice either.
  */
 
 export async function up(knex: Knex) {
-	if (knex.client.config.client === 'mssql') return;
-
 	for (const update of updates) {
 		await knex.schema.alterTable(update.table, (table) => {
 			for (const constraint of update.constraints) {
 				table.dropForeign([constraint.column]);
-
-				table
-					.foreign(constraint.column)
-					.references(constraint.references)
-					.onUpdate('CASCADE')
-					.onDelete(constraint.onDelete);
+				table.foreign(constraint.column).references(constraint.references);
 			}
 		});
 	}
 }
 
 export async function down(knex: Knex) {
-	if (knex.client.config.client === 'mssql') return;
-
 	for (const update of updates) {
 		await knex.schema.alterTable(update.table, (table) => {
 			for (const constraint of update.constraints) {
 				table.dropForeign([constraint.column]);
-
-				table.foreign(constraint.column).references(constraint.references).onUpdate('NO ACTION').onDelete('NO ACTION');
 			}
 		});
 	}

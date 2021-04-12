@@ -13,6 +13,8 @@ status: სტატუსი
 back: უკან დაბრუნება
 role: როლი
 create: შექმნა
+width: სიგანე
+height: სიმაღლე
 all: ყველა
 cancel: გაუქმება
 collection: კოლექცია

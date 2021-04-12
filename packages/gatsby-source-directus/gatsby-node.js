@@ -137,7 +137,7 @@ exports.sourceNodes = async (gatsby, options) => {
 			Object.assign(obj, (await graphql?.headers()) || {});
 		}
 
-		if (hasToken) {
+		if (!hasToken) {
 			return obj;
 		}
 

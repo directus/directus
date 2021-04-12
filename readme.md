@@ -27,8 +27,6 @@ certain features might be missing or broken. You can follow along with
 [the issue tracker](https://github.com/directus/directus/issues) for an in-depth list of upcoming enhancements, with the
 following notable features still under development:
 
-- [ ] MS SQL Support
-- [ ] OracleDB Support
 - [ ] Import/Export Endpoints
 
 <br>
@@ -96,7 +94,8 @@ Directus only requires Node.js and supports most operating systems and SQL datab
 - CentOS / RHEL 8
 - macOS Catalina or newer
 - Windows 10
-- Docker ([DockerHub](https://hub.docker.com/r/directus/directus) + [Dockerfile](https://github.com/directus/directus/blob/43f4e63179b7c370ceee721c0a5ca0f616f30c58/.github/actions/build-images/Dockerfile))
+- Docker ([DockerHub](https://hub.docker.com/r/directus/directus) +
+  [Dockerfile](https://github.com/directus/directus/blob/43f4e63179b7c370ceee721c0a5ca0f616f30c58/.github/actions/build-images/Dockerfile))
 
 _Other operating systems may also work, but are not officially supported._
 

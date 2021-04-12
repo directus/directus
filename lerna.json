@@ -1,16 +1,16 @@
 {
-  "packages": [
-    "api",
-    "app",
-    "docs",
-    "packages/*"
-  ],
-  "version": "9.0.0-rc.56",
-  "command": {
-    "bootstrap": {
-      "npmClientArgs": [
-        "--no-package-lock"
-      ]
-    }
-  }
+	"packages": [
+		"packages/*",
+		"app",
+		"docs",
+		"api"
+	],
+	"version": "9.0.0-rc.57",
+	"command": {
+		"bootstrap": {
+			"npmClientArgs": [
+				"--no-package-lock"
+			]
+		}
+	}
 }

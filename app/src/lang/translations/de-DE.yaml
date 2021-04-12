@@ -418,6 +418,8 @@ bold: Fett
 toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
+width: Breite
+height: Höhe
 wysiwyg_options:
   forecolor: Vordergrundfarbe
   backcolor: Hintergrundfarbe
@@ -443,7 +445,6 @@ wysiwyg_options:
   remove: Löschen
   selectall: Alles auswählen
   table: Tabelle
-  code: Quelltext anzeigen
   fullscreen: Vollbild
 dropdown: Dropdown
 choices: Optionen

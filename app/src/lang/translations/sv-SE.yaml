@@ -512,6 +512,8 @@ toggle: Växla
 icon_on: Ikon på
 icon_off: Ikon Av
 label: Etikett
+width: Bredd
+height: Höjd
 wysiwyg_options:
   aligncenter: Centrera
   alignjustify: Justera
@@ -531,10 +533,7 @@ wysiwyg_options:
   bullist: Punktlista
   numlist: Numrerad lista
   hr: Horisontell linje
-  link: Länk
   unlink: Ta bort länk
-  media: Lägg till media
-  image: Lägg till bild
   copy: Kopiera
   cut: Klipp
   paste: Klistra in
@@ -556,7 +555,6 @@ wysiwyg_options:
   selectall: Markera alla
   table: Tabell
   visualaid: Visa osynliga element
-  code: Visa källa
   fullscreen: Helskärm
   directionality: Riktning
 dropdown: Rullgardinsmeny
@@ -798,7 +796,6 @@ template: Mall
 translation: Översättning
 value: Värde
 view_project: Visa projekt
-weeks: { }
 report_error: Rapportera fel
 interfaces:
   button-links:

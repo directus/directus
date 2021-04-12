@@ -1,6 +1,6 @@
 {
 	"name": "directus",
-	"version": "9.0.0-rc.56",
+	"version": "9.0.0-rc.57",
 	"license": "GPL-3.0-only",
 	"homepage": "https://github.com/directus/directus#readme",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content.",
@@ -52,8 +52,9 @@
 	},
 	"scripts": {
 		"start": "npx directus start",
-		"build": "rimraf dist && tsc --build && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
-		"dev": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect -- src/start.ts",
+		"build": "tsc --build && copyfiles \"src/**/*.*\" -e \"src/**/*.ts\" -u 1 dist",
+		"cleanup": "rimraf dist",
+		"dev": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node-dev --files --transpile-only --respawn --watch \".env\" --inspect --exit-child -- src/start.ts",
 		"cli": "cross-env DIRECTUS_DEV=true NODE_ENV=development ts-node --script-mode --transpile-only src/cli/index.ts",
 		"prepublishOnly": "npm run build"
 	},
@@ -64,14 +65,14 @@
 		"example.env"
 	],
 	"dependencies": {
-		"@directus/app": "^9.0.0-rc.56",
-		"@directus/drive": "^9.0.0-rc.56",
-		"@directus/drive-azure": "^9.0.0-rc.56",
-		"@directus/drive-gcs": "^9.0.0-rc.56",
-		"@directus/drive-s3": "^9.0.0-rc.56",
-		"@directus/format-title": "^9.0.0-rc.56",
-		"@directus/schema": "^9.0.0-rc.56",
-		"@directus/specs": "^9.0.0-rc.56",
+		"@directus/app": "^9.0.0-rc.57",
+		"@directus/drive": "^9.0.0-rc.57",
+		"@directus/drive-azure": "^9.0.0-rc.57",
+		"@directus/drive-gcs": "^9.0.0-rc.57",
+		"@directus/drive-s3": "^9.0.0-rc.57",
+		"@directus/format-title": "^9.0.0-rc.57",
+		"@directus/schema": "^9.0.0-rc.57",
+		"@directus/specs": "^9.0.0-rc.57",
 		"@godaddy/terminus": "^4.4.1",
 		"argon2": "^0.27.0",
 		"atob": "^2.1.2",

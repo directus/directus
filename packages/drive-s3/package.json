@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-s3",
-	"version": "9.0.0-rc.56",
+	"version": "9.0.0-rc.57",
 	"description": "AWS S3 driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -25,30 +25,31 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc -b tsconfig.json",
-		"dev": "npm-watch build"
-	},
-	"watch": {
-		"build": {
-			"patterns": [
-				"src/*"
-			],
-			"ignore": "dist",
-			"extensions": "ts",
-			"silent": true,
-			"quiet": true
-		}
+		"build": "tsc --project ./tsconfig.json",
+		"cleanup": "run-p cleanup:*",
+		"cleanup:dist": "rimraf ./dist",
+		"cleanup:coverage": "rimraf ./coverage",
+		"test:watch": "jest --coverage --watchAll",
+		"test": "jest --coverage",
+		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"@directus/drive": "^9.0.0-rc.56",
+		"@directus/drive": "^9.0.0-rc.57",
 		"aws-sdk": "^2.680.0",
 		"normalize-path": "^3.0.0"
 	},
 	"devDependencies": {
-		"@types/fs-extra": "^9.0.1",
+		"@directus/drive": "9.0.0-rc.51",
+		"@lukeed/uuid": "^1.0.1",
+		"@types/fs-extra": "^9.0.9",
+		"@types/jest": "^26.0.22",
+		"@types/node": "^14.14.37",
 		"@types/normalize-path": "^3.0.0",
+		"dotenv": "^8.2.0",
 		"fs-extra": "^9.0.0",
-		"npm-watch": "^0.9.0",
+		"jest": "^26.6.3",
+		"npm-run-all": "^4.1.5",
+		"ts-jest": "^26.5.4",
 		"typescript": "^4.2.3"
 	},
 	"publishConfig": {
