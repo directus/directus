@@ -77,7 +77,11 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 				accountability: req.accountability,
 				schema: req.schema,
 			});
-			const output = await xliffService.toXliff(req.collection, res.locals.payload?.data);
+			const output = await xliffService.toXliff(
+				req.collection,
+				req.sanitizedQuery.optional?.field,
+				res.locals.payload?.data
+			);
 			return res.status(200).send(output);
 		}
 	}

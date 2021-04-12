@@ -35,7 +35,7 @@ export class XliffService {
 		});
 	}
 
-	async fromXliff(collection: string, content: string, translationsFieldName: string | undefined) {
+	async fromXliff(collection: string, translationsFieldName: string | undefined, content: string) {
 		// check if passed file is not empty
 		if (!content || content.length === 0) {
 			throw new InvalidPayloadException(`There is no content to import.`);
@@ -47,9 +47,11 @@ export class XliffService {
 		// validate if translations field name exist in collection
 		if (translationsFieldName) {
 			translationsField = translationsFields.find((t) => t.field === translationsFieldName);
-			throw new InvalidPayloadException(
-				`Field '${translationsFieldName}' doesn't exist in '${collection}' collection.`
-			);
+			if (!translationsField) {
+				throw new InvalidPayloadException(
+					`Field '${translationsFieldName}' doesn't exist in '${collection}' collection.`
+				);
+			}
 		}
 		// obtain relations related to translations fields
 		const relations = this.schema.relations.filter(
@@ -72,13 +74,16 @@ export class XliffService {
 		return output;
 	}
 
-	async toXliff(collection: string, data?: any[]): Promise<any> {
+	async toXliff(collection: string, translationsFieldName: string, data: any[]): Promise<any> {
 		if (!this.language) {
 			throw new InvalidPayloadException(`Language has to be specified.`);
 		}
 		const fields = await this.fieldsService.readAll(collection);
 		const translationsFields = fields.filter((field) => (field.type as string) === 'translations');
-		const translationsFieldsNames = translationsFields.map((field) => field.field);
+		const translationsFieldsNames = translationsFields
+			.map((field) => field.field)
+			.filter((f) => f === translationsFieldName);
+
 		const relations = this.schema.relations.filter(
 			(relation: any) => relation.one_collection === collection && translationsFieldsNames.includes(relation.one_field)
 		);

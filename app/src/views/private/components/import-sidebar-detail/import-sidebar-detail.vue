@@ -24,7 +24,7 @@
 					v-show="!useFileLanguage"
 					:collection="collection.collection"
 					:value="language"
-					:field="'translations'"
+					:field="translationField"
 				/>
 				<v-checkbox v-model="useFileLanguage" :label="$t('use_language_from_file')" />
 			</div>

@@ -20,12 +20,15 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 		const { format } = res.locals.fields;
 		if (['xliff', 'xliff2'].includes(format)) {
 			if (fileCount > 1) {
-				busboy.emit('error', new InvalidPayloadException(`Only one import file supported for XLIFF format.`));
+				busboy.emit('error', new InvalidPayloadException(`Only one import file can be used for XLIFF format.`));
 			}
 			let content = '';
 			fileStream.on('data', (d) => (content += d)).on('end', () => (res.locals.data = content));
 		} else {
-			busboy.emit('error', new InvalidPayloadException(`Only XLIFF 1.2/2.0 is supported.`));
+			busboy.emit(
+				'error',
+				new InvalidPayloadException(`Only XLIFF 1.2/2.0 formats are available for import right now.`)
+			);
 		}
 	});
 	busboy.on('error', (error: Error) => {
@@ -121,7 +124,7 @@ router.post(
 	multipartHandler,
 	asyncHandler(async (req, res, next) => {
 		if (req.is('multipart/form-data')) {
-			const { format, language } = res.locals.fields;
+			const { format, language, field } = res.locals.fields;
 			if (['xliff', 'xliff2'].includes(format) && res.locals.data) {
 				const collectionKey = req.params.collection;
 				const xliffService = new XliffService({
@@ -131,11 +134,7 @@ router.post(
 					format,
 				});
 				try {
-					const savedKeys = await xliffService.fromXliff(
-						collectionKey,
-						res.locals.data,
-						req.query.field as string | undefined
-					);
+					const savedKeys = await xliffService.fromXliff(collectionKey, field, res.locals.data);
 					res.locals.payload = { data: savedKeys || null };
 				} catch (error) {
 					if (error instanceof ForbiddenException) {

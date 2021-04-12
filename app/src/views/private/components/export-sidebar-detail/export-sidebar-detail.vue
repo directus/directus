@@ -24,7 +24,7 @@
 				/>
 			</div>
 			<div class="field full">
-				<v-button full-width @click="exportData">
+				<v-button full-width @click="exportData" :disabled="isExportDisabled">
 					{{ $t('export_collection', { collection: collection.name }) }}
 				</v-button>
 			</div>
@@ -35,7 +35,7 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
 import { Collection } from '@/types';
-import { useFieldsStore, useUserStore } from '@/stores/';
+import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -99,6 +99,9 @@ export default defineComponent({
 			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
 			return fields.filter((field: Field) => field.type === 'translations').length > 1;
 		},
+		isExportDisabled(): boolean {
+			return ['xliff', 'xliff2'].includes(this.format) && (!this.language.value || !this.translationField.value);
+		},
 	},
 	watch: {
 		collection: function () {
@@ -116,7 +119,15 @@ export default defineComponent({
 		const language = ref<any>(null);
 		const translationField = ref<any>(null);
 
-		return { format, language, translationField, useFilters, exportData };
+		return { format, language, translationField, useFilters, exportData, onSelectTranslationField, onSelectLanguage };
+
+		function onSelectTranslationField(selection: any[]) {
+			translationField.value = selection;
+		}
+
+		function onSelectLanguage(selection: any[]) {
+			language.value = selection;
+		}
 
 		function exportData() {
 			const url = getRootPath() + `items/${props.collection.collection}`;
@@ -134,11 +145,10 @@ export default defineComponent({
 					break;
 				case 'xliff':
 				case 'xliff2':
-					const userStore = useUserStore();
-					const user = userStore.state.currentUser;
-					if (user && user.language) {
-						params.optional = JSON.stringify({ language: user.language });
-					}
+					params.optional = JSON.stringify({
+						language,
+						field: translationField,
+					});
 					params.export = format.value;
 					break;
 			}
