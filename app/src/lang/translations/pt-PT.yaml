@@ -23,6 +23,41 @@ invite_users: Convidar utlizadores
 email_examples: 'admin@example.com, user@example.com...'
 invite: Convidar
 emails: Emails
+connection_excellent: Excelente Conexão
+connection_good: Boa conexão
+connection_fair: Conexão razoável
+connection_poor: Fraca conexão
+primary: Primário
+rename_folder: Mudar o nome da pasta
+delete_folder: Eliminar pasta
+prefix: Prefixo
+suffix: Sufixo
+reset_bookmark: Restaurar marcador
+rename_bookmark: Mudar o nome do marcador
+update_bookmark: Atualizar o marcador
+delete_bookmark: Eliminar o marcador
+delete_bookmark_copy: >-
+  Tem a certeza que pretende remover o marcador "{bookmark}"?
+  Esta ação não pode ser desfeita.
+logoutReason:
+  SIGN_OUT: Sessão terminada
+  SESSION_EXPIRED: Sessão expirada
+public: Público
+public_description: Controla quais dados da API estão disponíveis sem autenticação.
+not_allowed: Não permitido
+directus_version: Versão do Directus
+node_version: Versão do Node.js
+node_uptime: Tempo de atividade do Node.js
+os_type: Tipo do Sistema Operativo
+os_version: Versão do Sistema Operativo
+os_uptime: Tempo de atividade do Sistema Operativo
+os_totalmem: Memória utilizada
+archive: Arquivar
+archive_confirm: Tem a certeza que pretende arquivar este documento?
+archive_confirm_count: >-
+  Nenhum documento selecionado | Tem a certeza que pretende arquivar este documento? | Tem a certeza que pretende arquivar {count} documentos?
+reset_system_permissions_to: 'Restaurar permissões do sistema para:'
+reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que tenha aplicado às coleções do sistema. Tem certeza que pretende continuar?
 create_field: Criar campo
 auto_generate: Geração Automatica
 add_note: Adicionar uma nota para os utilizadores...
@@ -85,6 +120,8 @@ comment: Comentário
 continue: Continuar
 description: Descrição
 interfaces:
+  button-links:
+    primary: Primário
   checkboxes:
     checkboxes: Caixas de seleção
   collection:
