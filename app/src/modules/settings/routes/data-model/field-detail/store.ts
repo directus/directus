@@ -118,6 +118,30 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		];
 	});
 
+	watch([() => interfaces.value, () => state.fieldData.meta.interface], () => {
+		state.selectedInterface = interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
+		state.interfaceValues = {};
+	});
+
+	watch([() => displays.value, () => state.fieldData.meta.display], () => {
+		state.selectedDisplay = displays.value.find((display) => display.id === state.fieldData.meta.display);
+		state.displayValues = {};
+	});
+
+	watch(
+		() => state.interfaceValues,
+		() => {
+			state.fieldData.meta.options = { ...getDefaultValues(state.selectedInterface), ...state.interfaceValues };
+		}
+	);
+
+	watch(
+		() => state.displayValues,
+		() => {
+			state.fieldData.meta.display_options = { ...getDefaultValues(state.selectedDisplay), ...state.displayValues };
+		}
+	);
+
 	const isExisting = field !== '+';
 
 	if (isExisting) {
@@ -148,30 +172,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 			}
 		);
 	}
-
-	watch([() => interfaces.value, () => state.fieldData.meta.interface], () => {
-		state.selectedInterface = interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
-		state.interfaceValues = {};
-	});
-
-	watch([() => displays.value, () => state.fieldData.meta.display], () => {
-		state.selectedDisplay = displays.value.find((display) => display.id === state.fieldData.meta.display);
-		state.displayValues = {};
-	});
-
-	watch(
-		() => state.interfaceValues,
-		() => {
-			state.fieldData.meta.options = { ...getDefaultValues(state.selectedInterface), ...state.interfaceValues };
-		}
-	);
-
-	watch(
-		() => state.displayValues,
-		() => {
-			state.fieldData.meta.display_options = { ...getDefaultValues(state.selectedDisplay), ...state.displayValues };
-		}
-	);
 
 	// Auto generate translations
 	if (isExisting === false && type === 'translations') {
