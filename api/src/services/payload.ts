@@ -240,19 +240,19 @@ export class PayloadService {
 					if (typeof value === 'string') value = new Date(value);
 
 					if (dateColumn.type === 'timestamp') {
-						const newValue = new Date(formatISO(value));
+						const newValue = formatISO(value);
 						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'dateTime') {
 						// Strip off the Z at the end of a non-timezone datetime value
-						const newValue = new Date(format(value, "yyyy-MM-dd'T'HH:mm:ss"));
+						const newValue = format(value, "yyyy-MM-dd'T'HH:mm:ss");
 						payload[name] = newValue;
 					}
 
 					if (dateColumn.type === 'date') {
 						// Strip off the time / timezone information from a date-only value
-						const newValue = new Date(format(value, 'yyyy-MM-dd'));
+						const newValue = format(value, 'yyyy-MM-dd');
 						payload[name] = newValue;
 					}
 				} else {
