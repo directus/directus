@@ -9,7 +9,8 @@
 	"command": {
 		"bootstrap": {
 			"npmClientArgs": [
-				"--no-package-lock"
+				"--no-package-lock",
+				"--legacy-peer-deps"
 			]
 		}
 	}

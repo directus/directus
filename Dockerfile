@@ -27,9 +27,12 @@ ENV LD_LIBRARY_PATH /usr/lib/instantclient
 ENV TNS_ADMIN /usr/lib/instantclient
 ENV ORACLE_HOME /usr/lib/instantclient
 
+RUN npm i -g lerna
+
 WORKDIR /directus
 
 COPY package*.json ./
+COPY lerna.json ./
 COPY api/package.json api/
 COPY api/cli.js api/
 COPY app/package.json app/
@@ -46,15 +49,11 @@ COPY packages/schema/package.json packages/schema/
 COPY packages/sdk/package.json packages/sdk/
 COPY packages/specs/package.json packages/specs/
 
-RUN npm ci
+RUN npx lerna bootstrap
 
 COPY . .
 
-# Required for Node < 15 (no native workspaces)
-RUN npx lerna link
-
 WORKDIR /directus/api
-
 CMD ["sh", "-c", "node ./dist/cli/index.js bootstrap; node ./dist/start.js;"]
 
 EXPOSE 8055/tcp
