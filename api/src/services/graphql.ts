@@ -81,11 +81,10 @@ import {
 	InputTypeComposer,
 	toInputObjectType,
 	GraphQLJSON,
-	GraphQLDate,
 } from 'graphql-compose';
 import { SpecificationService } from './specifications';
 
-const Void = new GraphQLScalarType({
+const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
 
 	description: 'Represents NULL values',
@@ -101,6 +100,12 @@ const Void = new GraphQLScalarType({
 	parseLiteral() {
 		return null;
 	},
+});
+
+export const GraphQLDate = new GraphQLScalarType({
+	...GraphQLString,
+	name: 'Date',
+	description: 'ISO8601 Date values',
 });
 
 /**
@@ -221,7 +226,7 @@ export class GraphQLService {
 		} else {
 			schemaComposer.Query.addFields({
 				_empty: {
-					type: Void,
+					type: GraphQLVoid,
 					description: "There's no data to query.",
 				},
 			});
