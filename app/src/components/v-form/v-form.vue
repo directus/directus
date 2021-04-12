@@ -5,8 +5,13 @@
 				<p>{{ $t('unknown_validation_errors') }}</p>
 				<ul>
 					<li v-for="(validationError, index) of unknownValidationErrors" :key="index">
-						<strong>{{ validationError.field }}</strong>
-						: {{ $t(`validationError.${validationError.type}`, validationError) }}
+						<strong v-if="validationError.field">{{ validationError.field }}:</strong>
+						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
+							{{ $t('validationError.unique', validationError) }}
+						</template>
+						<template v-else>
+							{{ $t(`validationError.${validationError.code}`, validationError) }}
+						</template>
 					</li>
 				</ul>
 			</div>
