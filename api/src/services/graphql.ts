@@ -81,6 +81,7 @@ import {
 	InputTypeComposer,
 	toInputObjectType,
 	GraphQLJSON,
+	GraphQLDate,
 } from 'graphql-compose';
 import { SpecificationService } from './specifications';
 
@@ -437,6 +438,36 @@ export class GraphQLService {
 				},
 			});
 
+			const DateFilterOperators = schemaComposer.createInputTC({
+				name: 'date_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLString,
+					},
+					_neq: {
+						type: GraphQLString,
+					},
+					_gt: {
+						type: GraphQLString,
+					},
+					_gte: {
+						type: GraphQLString,
+					},
+					_lt: {
+						type: GraphQLString,
+					},
+					_lte: {
+						type: GraphQLString,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+				},
+			});
+
 			const NumberFilterOperators = schemaComposer.createInputTC({
 				name: 'number_filter_operators',
 				fields: {
@@ -490,6 +521,9 @@ export class GraphQLService {
 							case GraphQLInt:
 							case GraphQLFloat:
 								filterOperatorType = NumberFilterOperators;
+								break;
+							case GraphQLDate:
+								filterOperatorType = DateFilterOperators;
 								break;
 							default:
 								filterOperatorType = StringFilterOperators;
