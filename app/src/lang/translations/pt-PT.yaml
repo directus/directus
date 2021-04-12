@@ -61,6 +61,40 @@ reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissõ
 the_following_are_minimum_permissions: As permissões mínimas seguintes são necessárias para quando o "Acesso à App" está ativo. É permitido acrescentar permissões, mas não reduzir.
 app_access_minimum: Permissões mínimas para Acesso à App
 recommended_defaults: Predefinições recomendadas
+unarchive: Desarquivar
+unarchive_confirm: Tem a certeza que pretende desarquivar este item?
+nested_files_folders_will_be_moved: Ficheiros e pastas neste grupo vão ser movidos um nível acima.
+unknown_validation_errors: 'Foram encontrados erros de validação nos seguintes campos ocultos:'
+validationError:
+  eq: O valor tem de ser {valid}
+  neq: O valor não pode ser {invalid}
+  in: O valor tem de ser um de {valid}
+  nin: O valor não pode ser um de {invalid}
+  contains: O valor tem de conter {substring}
+  ncontains: O valor não pode conter {substring}
+  gt: O valor tem de ser maior que {valid}
+  gte: O valor tem de ser maior ou igual a {valid}
+  lt: O valor tem de ser menor que {valid}
+  lte: O valor deve ser menor ou igual a {valid}
+  empty: O valor tem de estar vazio
+  nempty: Valor não pode estar vazio
+  null: O valor tem de ser nulo
+  nnull: O valor não pode ser nulo
+  required: O valor é obrigatório
+all_access: Acesso Global
+no_access: Sem Acesso
+use_custom: Usar personalizado
+field_standard: Predefinido
+field_m2o: Relação Muitos para Um
+field_m2a: Relação Muitos para Alguns
+field_o2m: Relação Um para Muitos
+field_m2m: Relação Muitos para Muitos
+item_permissions: Permissões do documento
+field_permissions: Permisões do campo
+field_validation: Validação do Campo
+field_presets: Predefinições para o campo
+permissions_for_role: 'Documentos que o estatuto {role} pode {action}.'
+fields_for_role: 'Campos que o estatuto {role} pode {action}.'
 create_field: Criar campo
 auto_generate: Geração Automatica
 add_note: Adicionar uma nota para os utilizadores...
