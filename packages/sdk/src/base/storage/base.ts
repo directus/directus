@@ -41,6 +41,22 @@ export abstract class BaseStorage implements IStorage {
 		}
 	}
 
+	get auth_valid_until(): number | null {
+		const value = this.get('auth_valid_until');
+		if (value === null) {
+			return null;
+		}
+		return parseInt(value);
+	}
+
+	set auth_valid_until(value: number | null) {
+		if (value === null) {
+			this.delete('auth_valid_until');
+		} else {
+			this.set('auth_valid_until', value!.toString());
+		}
+	}
+
 	abstract get(key: string): string | null;
 	abstract set(key: string, value: string): string;
 	abstract delete(key: string): string | null;
