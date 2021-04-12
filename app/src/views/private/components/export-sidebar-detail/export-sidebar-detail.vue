@@ -6,6 +6,23 @@
 				<v-select :items="formats" v-model="format" />
 				<v-checkbox v-model="useFilters" :label="$t('use_current_filters_settings')" />
 			</div>
+			<div class="field full" v-show="hasMoreThanOneTranslationFields">
+				<p class="type-label">{{ $t('translation_field') }}</p>
+				<translation-field-select
+					@input="onSelectTranslationField"
+					:collection="collection.collection"
+					:value="translationField"
+				/>
+			</div>
+			<div class="field full">
+				<p class="type-label">{{ $t('language') }}</p>
+				<language-select
+					@input="onSelectLanguage"
+					:collection="collection.collection"
+					:value="language"
+					:field="translationField"
+				/>
+			</div>
 			<div class="field full">
 				<v-button full-width @click="exportData">
 					{{ $t('export_collection', { collection: collection.name }) }}
@@ -22,8 +39,14 @@ import { useFieldsStore, useUserStore } from '@/stores/';
 import { Field } from '@/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import { LanguageSelect } from '../language-select';
+import { TranslationFieldSelect } from '../translation-field-select';
 
 export default defineComponent({
+	components: {
+		LanguageSelect,
+		TranslationFieldSelect,
+	},
 	props: {
 		layoutQuery: {
 			type: Object,
@@ -71,6 +94,11 @@ export default defineComponent({
 			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
 			return fields.some((field: Field) => field.type === 'translations');
 		},
+		hasMoreThanOneTranslationFields(): boolean {
+			const fieldsStore = useFieldsStore();
+			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
+			return fields.filter((field: Field) => field.type === 'translations').length > 1;
+		},
 	},
 	watch: {
 		collection: function () {
@@ -85,8 +113,10 @@ export default defineComponent({
 	setup(props) {
 		const format = ref('csv');
 		const useFilters = ref(true);
+		const language = ref<any>(null);
+		const translationField = ref<any>(null);
 
-		return { format, useFilters, exportData };
+		return { format, language, translationField, useFilters, exportData };
 
 		function exportData() {
 			const url = getRootPath() + `items/${props.collection.collection}`;
