@@ -39,17 +39,6 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 		return false;
 	}
 
-	(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
-
-	modules.value = translate(modulesRaw.value);
-	layouts.value = translate(layoutsRaw.value);
-	interfaces.value = translate(interfacesRaw.value);
-	displays.value = translate(displaysRaw.value);
-
-	if (i18n.locale === lang) {
-		return true;
-	}
-
 	if (loadedLanguages.includes(lang) === false) {
 		const translations = await import(`@/lang/translations/${lang}.yaml`).catch((err) => console.warn(err));
 		i18n.mergeLocaleMessage(lang, translations);
@@ -57,6 +46,13 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	}
 
 	i18n.locale = lang;
+
+	(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
+
+	modules.value = translate(modulesRaw.value);
+	layouts.value = translate(layoutsRaw.value);
+	interfaces.value = translate(interfacesRaw.value);
+	displays.value = translate(displaysRaw.value);
 
 	return true;
 }

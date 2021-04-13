@@ -86,7 +86,7 @@ export default defineComponent({
 			}
 			return registeredModules;
 		});
-		return { _modules };
+		return { _modules, modules };
 	},
 });
 </script>
