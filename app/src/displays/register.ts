@@ -17,7 +17,7 @@ export async function registerDisplays() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/displays');
+		const customResponse = await api.get('/extensions/displays/');
 		const displays: string[] = customResponse.data.data || [];
 
 		await asyncPool(5, displays, async (displayName) => {
@@ -27,7 +27,7 @@ export async function registerDisplays() {
 				);
 				modules.push(result.default);
 			} catch (err) {
-				console.warn(`Couldn't load custom displays "${displayName}"`);
+				console.warn(`Couldn't load custom displays "${displayName}":`, err);
 			}
 		});
 	} catch {

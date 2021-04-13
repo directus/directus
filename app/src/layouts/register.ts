@@ -16,7 +16,7 @@ export async function registerLayouts() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/layouts');
+		const customResponse = await api.get('/extensions/layouts/');
 		const layouts: string[] = customResponse.data.data || [];
 
 		await asyncPool(5, layouts, async (layoutName) => {
@@ -26,7 +26,7 @@ export async function registerLayouts() {
 				);
 				modules.push(result.default);
 			} catch (err) {
-				console.warn(`Couldn't load custom layout "${layoutName}"`);
+				console.warn(`Couldn't load custom layout "${layoutName}":`, err);
 			}
 		});
 	} catch {

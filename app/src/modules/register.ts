@@ -19,7 +19,7 @@ export async function loadModules() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/modules');
+		const customResponse = await api.get('/extensions/modules/');
 		const modules: string[] = customResponse.data.data || [];
 
 		await asyncPool(5, modules, async (moduleName) => {
@@ -36,7 +36,7 @@ export async function loadModules() {
 				});
 				queuedModules.push(result.default);
 			} catch (err) {
-				console.warn(`Couldn't load custom module "${moduleName}"`);
+				console.warn(`Couldn't load custom module "${moduleName}":`, err);
 			}
 		});
 	} catch {
