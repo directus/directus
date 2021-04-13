@@ -9,7 +9,7 @@
 				<p class="type-label">{{ $t('upload_file') }}</p>
 				<file-select @change="onSelectFile" @load="onFileLoad" />
 			</div>
-			<div class="field full" v-show="!useFileLanguage && hasMoreThanOneTranslationFields">
+			<div class="field full" v-show="hasMoreThanOneTranslationFields">
 				<p class="type-label">{{ $t('target_translation_field') }}</p>
 				<translation-field-select @input="onSelectTranslationField" :collection="collection.collection" />
 			</div>
@@ -130,12 +130,12 @@ export default defineComponent({
 		async function importData() {
 			if (!file.value) throw new Error('[import-sidebar-detail]: You need to select a file for import.');
 			importing.value = true;
-			const formData = new FormData();
 
+			const formData = new FormData();
 			formData.append('format', format.value);
+			formData.append('field', translationField.value);
 			if (!useFileLanguage.value) {
 				formData.append('language', language.value);
-				formData.append('field', translationField.value);
 			}
 			formData.append('file', file.value);
 

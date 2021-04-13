@@ -237,6 +237,7 @@ import_collection: 'Import {collection}'
 use_language_from_file: Use Language from File
 target_language: Target Language
 import_successfull: No items were imported | Successfully imported {amount} item | Successfully imported {amount} items
+import_failed: Import failed
 target_translation_field: Target Translation Field
 translation_field: Translation Field
 last_page: Last Page

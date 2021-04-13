@@ -138,6 +138,9 @@ router.post(
 					const savedKeys = await xliffService.fromXliff(collectionKey, field, res.locals.data);
 					res.locals.payload = { data: savedKeys || null };
 				} catch (error) {
+					if (error instanceof ForbiddenException) {
+						return next();
+					}
 					logger.error(error);
 					throw error;
 				}
