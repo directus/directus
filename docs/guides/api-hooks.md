@@ -83,6 +83,7 @@ module.exports = function registerHook({ exceptions }) {
 | `response`           |                                   | No†      |
 | `error`              |                                   | No       |
 | `auth`               | `login`, `logout`† and `refresh`† | Optional |
+| `oauth`              | `login` and `provider`            | Optional |
 | `items`              | `create`, `update` and `delete`   | Optional |
 | `activity`           | `create`, `update` and `delete`   | Optional |
 | `collections`        | `create`, `update` and `delete`   | Optional |
@@ -145,15 +146,17 @@ properties:
 
 #### Auth
 
-The `auth` hooks have the following context properties:
+The `auth` and `oauth` hooks have the following context properties:
 
 - `event` — Full event string
 - `accountability` — Information about the current user
 - `action` — Action that is performed
 - `payload` — Payload of the request
-- `schema` - The current API schema in use
+- `schema` † - The current API schema in use
 - `status` - One of `pending`, `success`, `fail`
-- `user` - ID of the user that tried logging in/has logged in
+- `user` † - ID of the user that tried logging in/has logged in
+
+† Not available in `oauth`
 
 ## 5. Restart the API
 

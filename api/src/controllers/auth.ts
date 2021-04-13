@@ -246,7 +246,6 @@ router.get(
 			payload: null,
 			accountability: accountability,
 			user: null,
-			database: null,
 		});
 
 		next();
@@ -283,7 +282,6 @@ router.get(
 			accountability: accountability,
 			status: 'pending',
 			user: null,
-			database: null,
 		});
 
 		const emitStatus = (status: 'fail' | 'success') => {
@@ -295,7 +293,6 @@ router.get(
 				accountability: accountability,
 				status,
 				user: null,
-				database: null,
 			});
 		};
 
