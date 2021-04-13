@@ -477,6 +477,8 @@ toggle: 切换
 icon_on: 图标开启
 icon_off: 关闭图标
 label: 标签
+width: 宽
+height: 高度
 wysiwyg_options:
   aligncenter: 居中对齐
   alignjustify: 两端对齐
@@ -493,10 +495,7 @@ wysiwyg_options:
   superscript: 上标
   codeblock: 代码
   blockquote: 块引用
-  link: 链接
   unlink: 移除链接
-  media: 添加媒体
-  image: 添加图片
   copy: 复制
   cut: 剪切
   paste: 粘帖
@@ -517,7 +516,6 @@ wysiwyg_options:
   removeformat: 清除格式
   selectall: 全选
   table: 表
-  code: 查看源代码
   fullscreen: 全屏显示
 dropdown: 下拉列表
 choices: 选择项
@@ -561,6 +559,7 @@ fields:
     comment: 注释
     user_agent: 用户代理（User Agent）
     ip: IP 地址
+    revisions: 修订版本
   directus_collections:
     collection: 集合
     icon: 图标
@@ -673,6 +672,7 @@ permissions: 权限
 relationship: 关联
 reset: 重置
 reset_password: 重置密码
+revisions: 修订版本
 revert: 还原
 save: 保存
 schema: Schema

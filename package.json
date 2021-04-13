@@ -13,7 +13,7 @@
 		"format": "prettier --write \"**/*.{js,vue,ts,md}\"",
 		"dev": "lerna run dev --stream --parallel",
 		"build": "lerna run build",
-		"release": "lerna publish --force-publish",
+		"release": "lerna publish --force-publish --exact",
 		"test": "lerna run test",
 		"test:e2e": "jest e2e-tests -c e2e-tests/jest.config.js",
 		"cli": "cross-env DIRECTUS_DEV=true NODE_ENV=development DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/index.ts"

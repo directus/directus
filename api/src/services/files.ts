@@ -52,7 +52,7 @@ export class FilesService extends ItemsService {
 		}
 
 		try {
-			await storage.disk(data.storage).put(payload.filename_disk, stream);
+			await storage.disk(data.storage).put(payload.filename_disk, stream, payload.type);
 		} catch (err) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
@@ -138,7 +138,7 @@ export class FilesService extends ItemsService {
 				responseType: 'stream',
 			});
 		} catch (err) {
-			logger.warn(`Couldn't fetch file from url "${url}"`);
+			logger.warn(`Couldn't fetch file from url "${importURL}"`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
 				service: 'external-file',

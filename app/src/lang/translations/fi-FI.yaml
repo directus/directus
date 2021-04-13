@@ -11,6 +11,7 @@ add_field: Lisää kenttä
 role_name: Roolin nimi
 db_only_click_to_configure: 'Vain tietokanta: Klikkaa määrittääksesi '
 show_archived_items: Näytä arkistoidut kohteet
+edited: Arvoa muokattu
 required: Vaadittu
 required_for_app_access: Vaaditaan sovelluspääsyyn
 requires_value: Vaatii arvon
@@ -145,6 +146,11 @@ uuid: UUID
 hash: Tiiviste
 not_available_for_type: Ei saatavilla tälle tyypille
 create_translations: Luo käännökset
+auto_refresh: Automaattinen päivitys
+refresh_interval: Päivitysväli
+no_refresh: Älä päivitä
+refresh_interval_seconds: Päivitä välittömästi | Joka sekunti | Joka {seconds} sekuntia
+refresh_interval_minutes: Joka minuutti | Joka {minutes} minuuttia
 auto_generate: Luo automaattisesti
 this_will_auto_setup_fields_relations: Tämä määrittää automaattisesti kaikki tarvittavat kentät ja suhteet.
 click_here: Klikkaa tästä
@@ -152,7 +158,9 @@ to_manually_setup_translations: käännösten manuaaliseen määrittämiseen.
 click_to_manage_translated_fields: >-
   Käännettyjä kenttiä ei vielä ole. Klikkaa tästä luodaksesi ne. | On olemassa yksi käännetty kenttä. Klikkaa tästä hallitaksesi sitä. | On {count} käännettyä kenttää. Hallinnoi niitä kikkaamalla tästä.
 fields_group: Kenttien ryhmä
+no_collections_found: Kokoelmia ei löytynyt.
 new_data_alert: 'Seuraava tullaa luomaan tietomallisi sisällä:'
+search_collection: Hae kokoelmasta...
 new_field: 'Uusi kenttä'
 new_collection: 'Uusi kokoelma'
 add_m2o_to_collection: 'Lisää moni-yhteen (M2O) kokoelmaan "{collection}"'
@@ -511,6 +519,20 @@ toggle: Vaihda
 icon_on: Päällä-kuvake
 icon_off: Pois-kuvake
 label: Tunniste
+image_url: Kuvan URL
+alt_text: Vaihtoehtoinen teksti
+media: Media
+width: Leveys
+height: Korkeus
+source: Lähde
+url_placeholder: Syötä URL...
+display_text: Näyttöteksti
+display_text_placeholder: Syötä näyttöteksti...
+tooltip: Työkaluvihje
+tooltip_placeholder: Syötä työkaluvihje...
+open_link_in: Avaa linkki
+new_tab: Uusi välilehti
+current_tab: Nykyinen välilehti
 wysiwyg_options:
   aligncenter: Tasaa keskelle
   alignjustify: Tasaa tasapalstaksi
@@ -530,10 +552,10 @@ wysiwyg_options:
   bullist: Merkitty lista
   numlist: Numeroitu luettelo
   hr: Vaakaviivain
-  link: Linkki
+  link: Lisää/Muokkaa Linkki
   unlink: Poista linkki
-  media: Lisää media
-  image: Lisää kuva
+  media: Lisää/Muokkaa Mediaa
+  image: Lisää/Muokkaa kuva
   copy: Kopioi
   cut: Leikkaa
   paste: Liitä
@@ -555,7 +577,7 @@ wysiwyg_options:
   selectall: Valitse kaikki
   table: Taulukko
   visualaid: Näytä näkymättömät elementit
-  code: Näytä lähde
+  source_code: Muokkaa lähdekoodia
   fullscreen: Koko näyttö
   directionality: Suuntaus
 dropdown: Pudotusvalikko
@@ -577,6 +599,7 @@ settings_webhooks: Webhookit
 settings_presets: Esiasetukset ja kirjanmerkit
 scope: Laajuus
 layout: Asettelu
+tree_view: Puunäkymä
 changes_are_permanent: Muutokset ovat pysyviä
 preset_name_placeholder: Kirjanmerkin nimi...
 preset_search_placeholder: Hakulauseke...
@@ -796,6 +819,7 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
+weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:
@@ -971,6 +995,9 @@ interfaces:
   translations:
     display_template: Esitysmalli
     no_collection: Ei kokoelmaa
+  tree-view:
+    description: Puunäkymä sisäkkäisille rekursiivisille yksi-monille (O2M) -kohteille
+    recursive_only: Puunäkymäliittymä toimii vain rekursiivisille suhteille.
   user:
     user: Käyttäjänimi
     description: Valitse olemassaoleva directus-käyttäjä

@@ -27,7 +27,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const layouts = getLayouts();
+		const { layouts } = getLayouts();
 
 		const currentLayout = computed(() => {
 			const layout = layouts.value.find((layout) => layout.id === props.value);

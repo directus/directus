@@ -115,6 +115,8 @@ on_update: При оновленні
 read: Прочитайте
 update: Оновити
 select_fields: Обрати поля
+width: Ширина
+height: Висота
 wysiwyg_options:
   codeblock: Код
   remove: Видалити

@@ -20,6 +20,7 @@ export default defineComponent({});
 
 	display: flex;
 	padding: 12px;
+	background-color: var(--background-input);
 	border-bottom: var(--border-width) solid var(--border-normal);
 
 	.name {

@@ -23,7 +23,10 @@ export class AxiosTransport implements ITransport {
 
 	set url(value: string) {
 		this._url = value;
-		this._axios = axios.create({ baseURL: value });
+		this._axios = axios.create({
+			baseURL: value,
+			withCredentials: true,
+		});
 		this._axios.interceptors.request.use(this.createRequestConfig.bind(this));
 	}
 

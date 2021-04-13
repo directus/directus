@@ -112,12 +112,11 @@
 						<v-skeleton-loader type="text" />
 					</template>
 					<template v-else-if="isNew === false && item">
-						<div class="name type-title">
-							{{ userName(item) }}
-							<span v-if="item.title" class="title">, {{ item.title }}</span>
+						<div class="name type-label">
+							{{ userName(item) }}<span v-if="item.title" class="title">, {{ item.title }}</span>
 						</div>
-						<div class="email">{{ item.email }}</div>
-						<div class="location" v-if="item.location">{{ item.location }}</div>
+						<div class="email"><v-icon name="alternate_email" small outline /> {{ item.email }}</div>
+						<div class="location" v-if="item.location"><v-icon name="place" small outline /> {{ item.location }}</div>
 						<v-chip :class="item.status" small v-if="roleName">{{ roleName }}</v-chip>
 					</template>
 				</div>
@@ -526,10 +525,9 @@ export default defineComponent({
 	max-width: calc(var(--form-column-max-width) * 2 + var(--form-horizontal-gap));
 	height: 112px;
 	margin-bottom: var(--form-vertical-gap);
-	padding: 12px;
-	background-color: var(--background-subdued);
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	padding: 20px;
+	border-radius: calc(var(--border-radius) + 4px);
+	background-color: var(--background-normal);
 
 	.avatar {
 		--v-icon-color: var(--foreground-subdued);
@@ -543,8 +541,9 @@ export default defineComponent({
 		margin-right: 16px;
 		overflow: hidden;
 		background-color: var(--background-normal);
-		border: solid var(--border-width) var(--border-normal);
-		border-radius: var(--border-radius);
+		border: solid 6px var(--white);
+		border-radius: 100%;
+		box-shadow: var(--card-shadow);
 
 		.v-skeleton-loader {
 			width: 100%;
@@ -607,7 +606,7 @@ export default defineComponent({
 	}
 
 	@include breakpoint(small) {
-		height: 172px;
+		height: 188px;
 
 		.user-box-content .location {
 			display: block;

@@ -437,6 +437,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .many-to-one {
 	position: relative;
+
+	::v-deep .v-input .append {
+		display: flex;
+	}
 }
 
 .v-skeleton-loader {
@@ -447,6 +451,7 @@ export default defineComponent({
 .preview {
 	display: block;
 	flex-grow: 1;
+	overflow: hidden;
 }
 
 .expand {

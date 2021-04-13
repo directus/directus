@@ -4,8 +4,15 @@ pageClass: page-reference
 
 # Global Query Parameters
 
+<div class="two-up">
+<div class="left">
+
 > Most Directus API Endpoint operations can be manipulated with the following parameters. It is important to understand
 > them to get the most out of the platform.
+
+</div>
+<div class="right"><p></p>
+<div class="table-of-contents">
 
 - [Fields](#fields)
 - [Filter](#filter)
@@ -17,6 +24,10 @@ pageClass: page-reference
 - [Metadata](#metadata)
   - [Total Count](#total-count)
   - [Filter Count](#filter-count)
+
+</div>
+</div>
+</div>
 
 ---
 
@@ -42,10 +53,11 @@ Get all top-level fields\
 Get all top-level fields and all second-level relational fields\
 `*.*`
 
-::: warning Nested Wildcard
+::: tip Performance & Size
 
-While you can theoretically nest wildcards infinitely, it's not recommended for production use. Nested wildcards can
-result in degraded performance, and circular parent-child-parent structures.
+While the fields wildcard is very useful for debugging purposes, we recommend only requesting _specific_ fields for
+production use. By only requesting the fields you really need, you can speed up the request, and reduce the overall
+output size.
 
 :::
 
@@ -73,10 +85,10 @@ Lets say we have a collection `pages` with a many-to-any field called `sections`
 sections.item:headings.title
 sections.item:headings.level
 sections.item:paragraphs.body
-sections.item:videos.body
+sections.item:videos.source
 ```
 
-In GraphQL, this can be achieved using [Union Types](/reference/api/graphql/#many-to-any-union-types).
+In GraphQL, this can be achieved using Union Types.
 
 </div>
 <div class="right">
@@ -95,7 +107,7 @@ In GraphQL, this can be achieved using [Union Types](/reference/api/graphql/#man
 
 ### GraphQL
 
-n/a
+_Natively supported in GraphQL_
 
 </div>
 </div>
@@ -185,10 +197,8 @@ filter the related items themselves, take a look at [the `deep` parameter](#deep
 
 ```graphql
 query {
-	items {
-		users(filter: { first_name: { _eq: "Rijk" } }) {
-			id
-		}
+	users(filter: { first_name: { _eq: "Rijk" } }) {
+		id
 	}
 }
 ```
@@ -231,10 +241,8 @@ Find all items that mention Directus\
 
 ```graphql
 query {
-	items {
-		articles(search: "Directus") {
-			id
-		}
+	articles(search: "Directus") {
+		id
 	}
 }
 ```
@@ -284,10 +292,8 @@ Sort by a "sort" field, followed by publish date descending\
 
 ```graphql
 query {
-	items {
-		articles(sort: ["sort", "-date_created"]) {
-			id
-		}
+	articles(sort: ["sort", "-date_created"]) {
+		id
 	}
 }
 ```
@@ -338,10 +344,8 @@ with caution.
 
 ```graphql
 query {
-	items {
-		articles(limit: 200) {
-			id
-		}
+	articles(limit: 200) {
+		id
 	}
 }
 ```
@@ -382,10 +386,8 @@ Get items 100—200\
 
 ```graphql
 query {
-	items {
-		articles(offset: 100) {
-			id
-		}
+	articles(offset: 100) {
+		id
 	}
 }
 ```
@@ -430,10 +432,8 @@ Get items 101-200\
 
 ```graphql
 query {
-	items {
-		articles(page: 2) {
-			id
-		}
+	articles(page: 2) {
+		id
 	}
 }
 ```
@@ -497,7 +497,20 @@ Only get 3 related articles, with only the top rated comment nested
 
 ### GraphQL
 
-n/a
+_Natively supported in GraphQL:_
+
+```graphql
+query {
+	members {
+		favorite_games(filter: { name: { _eq: "Mariokart 8" } }) {
+			id
+			featured_image {
+				filename_disk
+			}
+		}
+	}
+}
+```
 
 </div>
 </div>
