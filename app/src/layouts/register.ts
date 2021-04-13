@@ -26,7 +26,7 @@ export async function registerLayouts() {
 				);
 				modules.push(result.default);
 			} catch (err) {
-				console.warn(`Couldn't load custom layout "${layoutName}"`);
+				console.warn(`Couldn't load custom layout "${layoutName}":`, err);
 			}
 		});
 	} catch {

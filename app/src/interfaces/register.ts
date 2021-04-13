@@ -27,7 +27,7 @@ export async function registerInterfaces() {
 				);
 				modules.push(result.default);
 			} catch (err) {
-				console.warn(`Couldn't load custom interface "${interfaceName}"`);
+				console.warn(`Couldn't load custom interface "${interfaceName}":`, err);
 			}
 		});
 	} catch {

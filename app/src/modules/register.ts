@@ -36,7 +36,7 @@ export async function loadModules() {
 				});
 				queuedModules.push(result.default);
 			} catch (err) {
-				console.warn(`Couldn't load custom module "${moduleName}"`);
+				console.warn(`Couldn't load custom module "${moduleName}":`, err);
 			}
 		});
 	} catch {
