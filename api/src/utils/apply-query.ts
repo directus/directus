@@ -3,7 +3,6 @@ import { Query, Filter, Relation, SchemaOverview } from '../types';
 import { clone, isPlainObject, get, set } from 'lodash';
 import { systemRelationRows } from '../database/system-data/relations';
 import { customAlphabet } from 'nanoid';
-import getLocalType from './get-local-type';
 import validate from 'uuid-validate';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
@@ -169,10 +168,10 @@ export function applyFilter(
 				const pkField = `${collection}.${o2mRelation.one_primary}`;
 
 				dbQuery[logical].whereIn(pkField, (subQueryKnex) => {
-					const field = o2mRelation.many_field
-					const collection = o2mRelation.many_collection
-					const column = `${collection}.${field}`
-					subQueryKnex.select({[field]: column}).from(collection);
+					const field = o2mRelation.many_field;
+					const collection = o2mRelation.many_collection;
+					const column = `${collection}.${field}`;
+					subQueryKnex.select({ [field]: column }).from(collection);
 
 					applyQuery(
 						o2mRelation.many_collection,
@@ -323,27 +322,19 @@ export async function applySearch(
 	searchQuery: string,
 	collection: string
 ) {
-	const columns = Object.values(schema.tables[collection].columns);
+	const fields = Object.entries(schema.collections[collection].fields);
 
 	dbQuery.andWhere(function () {
-		columns
-			.map((column) => ({
-				...column,
-				localType: getLocalType(column),
-			}))
-			.forEach((column) => {
-				if (['text', 'string'].includes(column.localType)) {
-					this.orWhereRaw(`LOWER(??) LIKE ?`, [
-						`${column.table_name}.${column.column_name}`,
-						`%${searchQuery.toLowerCase()}%`,
-					]);
-				} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(column.localType)) {
-					const number = Number(searchQuery);
-					if (!isNaN(number)) this.orWhere({ [`${column.table_name}.${column.column_name}`]: number });
-				} else if (column.localType === 'uuid' && validate(searchQuery)) {
-					this.orWhere({ [`${column.table_name}.${column.column_name}`]: searchQuery });
-				}
-			});
+		fields.forEach(([name, field]) => {
+			if (['text', 'string'].includes(field.type)) {
+				this.orWhereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
+			} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(field.type)) {
+				const number = Number(searchQuery);
+				if (!isNaN(number)) this.orWhere({ [`${collection}.${name}`]: number });
+			} else if (field.type === 'uuid' && validate(searchQuery)) {
+				this.orWhere({ [`${collection}.${name}`]: searchQuery });
+			}
+		});
 	});
 }
 

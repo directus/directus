@@ -1,17 +1,17 @@
 import InterfaceSlider from './slider.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'slider',
-	name: i18n.t('interfaces.slider.slider'),
-	description: i18n.t('interfaces.slider.description'),
+	name: '$t:interfaces.slider.slider',
+	description: '$t:interfaces.slider.description',
 	icon: 'linear_scale',
 	component: InterfaceSlider,
 	types: ['integer', 'decimal', 'float', 'bigInteger'],
 	options: [
 		{
 			field: 'minValue',
-			name: i18n.t('interfaces.numeric.minimum_value'),
+			name: '$t:interfaces.numeric.minimum_value',
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -20,7 +20,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'maxValue',
-			name: i18n.t('interfaces.numeric.maximum_value'),
+			name: '$t:interfaces.numeric.maximum_value',
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -29,7 +29,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'stepInterval',
-			name: i18n.t('interfaces.numeric.step_interval'),
+			name: '$t:interfaces.numeric.step_interval',
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -38,7 +38,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'alwaysShowValue',
-			name: i18n.t('interfaces.slider.always_show_value'),
+			name: '$t:interfaces.slider.always_show_value',
 			type: 'boolean',
 			meta: {
 				width: 'half',
@@ -46,4 +46,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

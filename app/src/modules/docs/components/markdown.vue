@@ -85,7 +85,7 @@ export default defineComponent({
 					filenameParts.shift();
 				}
 
-				const newFilename = `${rootPath}img/docs/${filenameParts.join('/')}`;
+				const newFilename = `/admin${rootPath}img/docs/${filenameParts.join('/')}`;
 				const newImage = rawImage[0].replace(rawImage.groups!.filename, newFilename);
 				markdown = markdown.replace(rawImage[0], newImage);
 			}
@@ -168,7 +168,6 @@ export default defineComponent({
 		h4,
 		h5,
 		h6 {
-
 			position: relative;
 			margin: 40px 0 8px;
 			padding: 0;
@@ -386,10 +385,11 @@ export default defineComponent({
 
 		blockquote {
 			margin-bottom: 4rem;
-			padding: .25rem 0 .25rem 1rem;
+			padding: 0.25rem 0 0.25rem 1rem;
 			color: var(--foreground-subdued);
 			font-size: 18px;
 			border-left: 2px solid var(--background-normal);
+			max-width: 740px;
 		}
 
 		blockquote > :first-child {
@@ -522,10 +522,22 @@ export default defineComponent({
 
 		.two-up .right {
 			margin-top: 50px;
+
+			h5 {
+				color: var(--foreground-subdued);
+				margin-top: 20px;
+			}
 		}
 
 		.table-of-contents {
 			margin-top: -20px;
+			ul,
+			ol {
+				margin-top: 0;
+				li {
+					margin: 4px 0;
+				}
+			}
 		}
 
 		// pre,
@@ -586,6 +598,7 @@ export default defineComponent({
 
 			.definitions {
 				font-size: 0.9rem;
+				line-height: 1.5rem;
 
 				> p {
 					border-bottom: 2px solid var(--border-subdued);
@@ -606,7 +619,7 @@ export default defineComponent({
 					}
 
 					> strong {
-						color: #aaa;
+						color: var(--foreground-subdued);
 					}
 				}
 			}

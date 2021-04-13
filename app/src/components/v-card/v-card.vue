@@ -30,7 +30,7 @@ body {
 	--v-card-max-width: 400px;
 	--v-card-height: auto;
 	--v-card-min-height: none;
-	--v-card-max-height: min-content;
+	--v-card-max-height: 90vh;
 	--v-card-padding: 16px;
 	--v-card-background-color: var(--background-subdued);
 }
@@ -38,21 +38,22 @@ body {
 
 <style lang="scss" scoped>
 .v-card {
+	--border-radius: 6px;
+	--input-height: 60px;
+	--input-padding: 16px; // (60 - 4 - 24) / 2
+	--form-vertical-gap: 52px;
+
 	min-width: var(--v-card-min-width);
 	max-width: var(--v-card-max-width);
 	height: var(--v-card-height);
 	min-height: var(--v-card-min-height);
 	max-height: var(--v-card-max-height);
-	background-color: var(--v-card-background-color);
-	border-radius: var(--border-radius);
 
 	// Page Content Spacing
 	font-size: 15px;
 	line-height: 24px;
-	--border-radius: 6px;
-	--input-height: 60px;
-	--input-padding: 16px; // (60 - 4 - 24) / 2
-	--form-vertical-gap: 52px;
+	background-color: var(--v-card-background-color);
+	border-radius: var(--border-radius);
 
 	& > :first-child {
 		border-top-left-radius: var(--border-radius);

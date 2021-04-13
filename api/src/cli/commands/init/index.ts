@@ -89,6 +89,10 @@ export default async function init(options: Record<string, any>) {
 			name: 'password',
 			message: 'Password',
 			mask: '*',
+			validate: (input: string | null) => {
+				if (input === null || input === '') throw new Error('The password cannot be empty!');
+				return true;
+			},
 		},
 	]);
 

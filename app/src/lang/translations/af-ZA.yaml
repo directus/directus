@@ -23,6 +23,8 @@ operators:
   contains: Bevat
 role: Rol
 create: Skep
+width: Breedte
+height: Hoogte
 wysiwyg_options:
   codeblock: Kode
   table: Tafel

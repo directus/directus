@@ -11,8 +11,9 @@ add_field: Добавить поле
 role_name: Название роли
 db_only_click_to_configure: 'Только База данных: Нажмите для Настройки '
 show_archived_items: Показать Архивные Элементы
-edited: Изменено
+edited: Изменённое значение
 required: Необходимые
+required_for_app_access: Требуется для доступа к приложению
 requires_value: Требуется значение
 create_preset: Создать Пресет
 create_role: Создать Роль
@@ -26,6 +27,7 @@ connection_excellent: Отличное Подключение
 connection_good: Хорошее Подключение
 connection_fair: Нормальное Подключение
 connection_poor: Плохое Подключение
+primary: Первичный
 rename_folder: Переименовать папку
 delete_folder: Удалить папку
 prefix: Префикс
@@ -53,6 +55,7 @@ archive: Архивировать
 archive_confirm: Вы уверены, что хотите архивировать этот элемент?
 archive_confirm_count: >-
   Элементы не выбраны | Вы уверены, что хотите архивировать этот элемент? | Вы уверены, что хотите архивировать эти {count} элементов?
+recommended_defaults: Рекомендуемые значения по умолчанию
 unarchive: Разархивировать
 unarchive_confirm: Вы уверены, что хотите разархивировать этот элемент?
 nested_files_folders_will_be_moved: Вложенные файлы и папки будут перемещены на один уровень вверх.
@@ -159,6 +162,7 @@ m2o_relationship: Связка Many to One
 o2m_relationship: Связка One to Many
 m2m_relationship: Связка Many to Many
 m2a_relationship: Связка Many to Any
+invalid_item: Неверное содержимое
 next: Дальше
 field_name: Название поля
 translations: Переводы
@@ -409,6 +413,7 @@ delete_collection_are_you_sure: >-
 collections_shown: Показано Коллекций
 visible_collections: Видимые Коллекции
 hidden_collections: Скрытые Коллекции
+show_hidden_collections: Показать скрытые коллекции
 hide_hidden_collections: Скрыть скрытые коллекции
 unmanaged_collections: Ненастроенные Коллекции
 system_collections: Системные коллекции
@@ -495,6 +500,8 @@ toggle: Переключить
 icon_on: Значок Вкл
 icon_off: Значок Выкл
 label: Метка
+width: Ширина
+height: Высота
 wysiwyg_options:
   aligncenter: По Середине
   alignjustify: По Ширине
@@ -514,10 +521,7 @@ wysiwyg_options:
   bullist: Маркированный Список
   numlist: Нумерованный Список
   hr: Горизонтальный Разделитель
-  link: Ссылка
   unlink: Удалить Ссылку
-  media: Добавить Медиа
-  image: Добавить Изображение
   copy: Копировать
   cut: Вырезать
   paste: Вставить
@@ -539,7 +543,6 @@ wysiwyg_options:
   selectall: Выбрать Все
   table: Таблица
   visualaid: Показать невидимые элементы
-  code: Показать Исходник
   fullscreen: Во Весь Экран
   directionality: Направленность
 dropdown: Выпадающий список
@@ -563,6 +566,7 @@ scope: Область
 layout: Макет
 changes_are_permanent: Изменения необратимы
 preset_name_placeholder: Название закладки...
+preset_search_placeholder: Строка поиска...
 editing_preset: Редактирование Пресета
 layout_preview: Предпросмотр Макета
 layout_setup: Настройка Макета
@@ -632,12 +636,17 @@ fields:
     hidden: Скрыто
     singleton: Синглтон
     translations: Переводы Названия Коллекции
+    archive_value: Заархивировать содержимое
+    unarchive_value: Распаковать содержимое
     sort_field: Поле сортировки
   directus_files:
     title: Заголовок
     description: Описание
     tags: Теги
     location: Местоположение
+    storage: Память
+    filename_disk: Имя файла (на диске)
+    filename_download: Имя файла (Загруженое)
     metadata: Метаданные
     filesize: Размер файла
     modified_by: Изменил
@@ -667,6 +676,7 @@ fields:
     tfa_secret: Двухфакторная аутентификация
     status: Статус
     role: Роль
+    token: Жетон
     last_page: Последняя Страница
     last_access: Последний Доступ
   directus_settings:
@@ -681,6 +691,7 @@ fields:
     auth_login_attempts: Попыток Входа
     storage_asset_presets: Пресеты Элементов Хранилища
     storage_asset_transform: Преобразование Элементов Хранилища
+    custom_css: Пользовательский CSS
   directus_fields:
     collection: Название Коллекции
     icon: Значок Коллекции
@@ -772,7 +783,10 @@ report_error: Сообщить об Ошибке
 interfaces:
   button-links:
     links: Ссылки
+    style: Стиль
+    primary: Первичный
     link: Ссылки
+    button: Кнопки
   checkboxes:
     checkboxes: Флажки
     description: Выбрать из нескольких опций с помощью флажков
@@ -866,6 +880,8 @@ interfaces:
   markdown:
     markdown: Markdown
     description: Ввод и предпросмотр markdown
+    customSyntax_label: Добавить пользовательский тип синтаксиса
+    customSyntax_add: Добавить пользовательский синтаксис
   notice:
     notice: Примечание
     description: Показать короткое примечание

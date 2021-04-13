@@ -5,7 +5,6 @@ import { MetaService, FilesService } from '../services';
 import { File, PrimaryKey } from '../types';
 import formatTitle from '@directus/format-title';
 import env from '../env';
-import axios, { AxiosResponse } from 'axios';
 import Joi from 'joi';
 import {
 	InvalidPayloadException,
@@ -13,12 +12,10 @@ import {
 	FailedValidationException,
 	ServiceUnavailableException,
 } from '../exceptions';
-import url from 'url';
 import path from 'path';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
 import { toArray } from '../utils/to-array';
-import logger from '../logger';
 
 const router = express.Router();
 
@@ -154,40 +151,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const fileCreatePermissions = req.schema.permissions.find(
-			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
-		);
-
-		if (req.accountability?.admin !== true && !fileCreatePermissions) {
-			throw new ForbiddenException();
-		}
-
-		let fileResponse: AxiosResponse<NodeJS.ReadableStream>;
-
-		try {
-			fileResponse = await axios.get<NodeJS.ReadableStream>(req.body.url, {
-				responseType: 'stream',
-			});
-		} catch (err) {
-			logger.warn(`Couldn't fetch file from url "${req.body.url}"`);
-			logger.warn(err);
-			throw new ServiceUnavailableException(`Couldn't fetch file from url "${req.body.url}"`, {
-				service: 'external-file',
-			});
-		}
-
-		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
-		const filename = path.basename(parsedURL.pathname as string);
-
-		const payload = {
-			filename_download: filename,
-			storage: toArray(env.STORAGE_LOCATIONS)[0],
-			type: fileResponse.headers['content-type'],
-			title: formatTitle(filename),
-			...(req.body.data || {}),
-		};
-
-		const primaryKey = await service.upload(fileResponse.data, payload);
+		const primaryKey = await service.import(req.body.url, req.body.data);
 
 		try {
 			const record = await service.readByKey(primaryKey, req.sanitizedQuery);

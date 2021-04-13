@@ -410,6 +410,8 @@ update: Cập nhật
 select_fields: Chọn trường
 icon_on: Biểu tượng của trạng thái Bật
 icon_off: Biểu tượng của trạng thái Tắt
+width: Độ rộng
+height: Độ dài
 wysiwyg_options:
   alignright: Canh phải
   forecolor: Màu Tô
@@ -424,10 +426,7 @@ wysiwyg_options:
   bullist: Danh sách dấu đầu dòng
   numlist: Danh Sách Đánh Số
   hr: Thước ngang
-  link: Liên kết
   unlink: Loại bỏ liên kết
-  media: Thêm đa phương tiện
-  image: Thêm hình ảnh
   copy: Sao chép
   cut: Cắt
   paste: Dán

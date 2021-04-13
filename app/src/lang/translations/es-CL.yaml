@@ -11,6 +11,7 @@ add_field: Agregar Campo
 role_name: Nombre del Rol
 db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
 show_archived_items: Mostrar Elementos Archivados
+edited: Valor Editado
 required: Necesario
 required_for_app_access: Necesario para el acceso a App
 requires_value: Valor obligatorio
@@ -511,6 +512,8 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+width: Ancho
+height: Altura
 wysiwyg_options:
   aligncenter: Alinear al Centro
   alignjustify: Alinear Justificado
@@ -530,10 +533,7 @@ wysiwyg_options:
   bullist: Lista con viñetas
   numlist: Lista Numerada
   hr: Regla Horizontal
-  link: Enlace
   unlink: Remover Enlace
-  media: Agregar Multimedia
-  image: Agregar Imagen
   copy: Copiar
   cut: Cortar
   paste: Pegar
@@ -555,7 +555,6 @@ wysiwyg_options:
   selectall: Seleccionar Todo
   table: Tabular
   visualaid: Ver elementos invisibles
-  code: Ver Fuente
   fullscreen: Pantalla Completa
   directionality: Direccionalidad
 dropdown: Lista Desplegable
@@ -577,6 +576,7 @@ settings_webhooks: Webhooks
 settings_presets: Predefinidos y Marcadores
 scope: Alcance
 layout: Diseño
+tree_view: Vista en árbol
 changes_are_permanent: Los cambios son permanentes
 preset_name_placeholder: Nombre del Marcador...
 preset_search_placeholder: Consulta de búsqueda...
@@ -971,6 +971,9 @@ interfaces:
   translations:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
+  tree-view:
+    description: Vista en árbol para elementos anidados recursivos uno-a-muchos
+    recursive_only: La interfaz de vista en árbol sólo funciona para relaciones recursivas.
   user:
     user: Usuario
     description: Seleccionar un usuario existente de Directus

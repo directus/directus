@@ -1,19 +1,34 @@
 ---
 edit_field: Upravit pole
+item_revision: Revize položky
 duplicate_field: Duplikovat pole
+half_width: Poloviční šířka
 full_width: Plná šířka
+fill_width: Plná šířka
+field_name_translations: Překlady názvu polí
+enter_password_to_enable_tfa: Zadejte své heslo pro zapnutí dvoufázového ověřování
 add_field: Přidat pole
+role_name: Jméno role
+db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení '
 show_archived_items: Zobrazit archivované položky
+edited: Hodnota upravena
 required: Povinné
+required_for_app_access: Vyžadováno pro přístup k aplikacím
+requires_value: Vyžaduje hodnotu
+create_preset: Vytvořit šablonu
 create_role: Vytvořit roli
 create_user: Vytvořit uživatele
+create_webhook: Vytvořit webhook
 invite_users: Pozvat uživatele
+invite: Pozvat
+emails: E-mail
 connection_excellent: Vynikající připojení
 connection_good: Dobré připojení
 connection_fair: Zhoršené připojení
 connection_poor: Špatné připojení
 rename_folder: Přejmenovat složku
 delete_folder: Smazat složku
+reset_bookmark: Obnovit záložku
 delete_bookmark: Smazat záložku
 directus_version: Verze Directusu
 archive: Archivovat
@@ -30,9 +45,14 @@ validationError:
   null: Hodnota musí být null
   nnull: Hodnota nesmí být null
   required: Hodnota je povinná
+field_standard: Standardní
+field_validation: Validace pole
 delete_field: Smazat pole
 language: Jazyk
+global: Globální
+admins_have_all_permissions: Administrátoři mají všechna oprávnění
 create_field: Vytvořit pole
+hidden_field: Skryté pole
 hidden_on_detail: Skryté v detailu
 date: Datum
 text: Text
@@ -95,6 +115,7 @@ activity: Aktivita
 webhooks: Webhooky
 field_width: Šířka pole
 user_directory: Uživatelé
+documentation: Dokumentace
 duration: Trvání
 modified_on: Upraveno
 status: Stav
@@ -120,6 +141,7 @@ upload_file_success: Soubor nahrán
 upload_files_indeterminate: 'Nahrávám soubory {done}/{total}'
 upload_files_success: 'Nahráno {count} souborů'
 drag_file_here: Přetáhněte sem soubor
+layout_options: Možnosti rozvržení
 all_files: Všechny soubory
 my_files: Mé soubory
 recent_files: Nedávné soubory
@@ -135,20 +157,24 @@ on_update: Při úpravě
 read: Číst
 update: Úpravy
 select_fields: Vybrat pole
+width: Šířka
+height: Výška
 wysiwyg_options:
-  image: Přidat obrázek
   copy: Kopírovat
   cut: Vyjmout
   paste: Vložit
   fontselect: Výběr písma
   fontsizeselect: Výběr velikosti písma
   remove: Odebrat
+  table: Tabulka
 choices: Volby
 deselect: Zrušit výběr
 editing_in_batch: 'Hromadná úprava {count} položek'
 settings_permissions: Role a oprávnění
 settings_project: Nastavení projektu
 settings_webhooks: Webhooky
+layout: Rozvržení
+layout_preview: Náhled rozvržení
 unsaved_changes: Neuložené změny
 unsaved_changes_copy: Jste si jisti, že chcete opustit tuto stránku?
 discard_changes: Ano, odejít bez uložení
@@ -213,7 +239,9 @@ fields:
   directus_fields:
     note: Poznámka
     hidden: Skryté
+    translation: Překlady názvu polí
   directus_roles:
+    name: Jméno role
     description: Popis
 comment: Komentář
 continue: Pokračovat
@@ -305,8 +333,10 @@ displays:
     both: Vše
 layouts:
   cards:
+    cards: Karty
     title: Název
   tabular:
+    tabular: Tabulka
     fields: Sloupce
     spacing: Odsazení
     comfortable: Komfortní

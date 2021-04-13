@@ -11,7 +11,7 @@ add_field: Добавяне на поле
 role_name: Име на роля
 db_only_click_to_configure: 'Само в базата данни: Кликнете за конфигурация '
 show_archived_items: Включително архивираните
-edited: Редактиран
+edited: Стойността е редактирана
 required: Задължително
 required_for_app_access: Изисква се за достъп до приложението
 requires_value: Изисква се стойност
@@ -512,6 +512,8 @@ toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
 label: Етикет
+width: Ширина
+height: Височина
 wysiwyg_options:
   aligncenter: Центриране
   alignjustify: Двустранно подравняване
@@ -531,10 +533,7 @@ wysiwyg_options:
   bullist: Списък
   numlist: Номериран списък
   hr: Хоризонтална линия
-  link: Връзка
   unlink: Премахване на връзка
-  media: Добавяне на медиа
-  image: Добавяне на изображене
   copy: Копиране
   cut: Изрязване
   paste: Поставяне
@@ -556,7 +555,6 @@ wysiwyg_options:
   selectall: Избиране на всичко
   table: Таблица
   visualaid: Преглед на невидимите елементи
-  code: Преглед на кода
   fullscreen: Пълен Екран
   directionality: Подравняване
 dropdown: Падащо меню
@@ -578,6 +576,7 @@ settings_webhooks: Уеб-куки
 settings_presets: Изгледи и отметки
 scope: Обхват
 layout: Оформление
+tree_view: Дървовиден изглед
 changes_are_permanent: Промените са постоянни
 preset_name_placeholder: Име на отметка...
 preset_search_placeholder: Заявка за търсене...
@@ -797,7 +796,6 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 interfaces:
   button-links:
@@ -973,6 +971,9 @@ interfaces:
   translations:
     display_template: Шаблон при показване
     no_collection: Няма колекция
+  tree-view:
+    description: Дървовиден изглед за вложени рекурсивни записи от тип - един-към-много
+    recursive_only: Дървовидния интерфейс работи само за рекурсивни релации.
   user:
     user: Потребител
     description: Избор на съществуващ потребител
