@@ -577,7 +577,6 @@ scope: Escopo
 layout: Layout
 tree_view: Exibição em Árvore
 changes_are_permanent: As alterações são permanentes
-preset_name_placeholder: Nome do marcador...
 preset_search_placeholder: Termos da pesquisa...
 editing_preset: Editando predefinição
 layout_preview: Pré-visualização do Layout
