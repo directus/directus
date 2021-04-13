@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "9.0.0-rc.49",
+	"version": "9.0.0-rc.57",
 	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
 		"type": "git",
@@ -17,6 +17,7 @@
 		"dist"
 	],
 	"scripts": {
+		"prepublishOnly": "npm run build",
 		"prebuild": "npm run cleanup",
 		"build": "run-p build:*",
 		"build:targets": "rollup -c",

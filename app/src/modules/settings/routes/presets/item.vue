@@ -155,7 +155,7 @@ export default defineComponent({
 	setup(props) {
 		const collectionsStore = useCollectionsStore();
 		const presetsStore = usePresetsStore();
-		const layouts = getLayouts();
+		const { layouts } = getLayouts();
 		const { backLink } = useLinks();
 
 		const isNew = computed(() => props.id === '+');
@@ -551,7 +551,6 @@ export default defineComponent({
 						width: 'fill',
 						options: {
 							title: i18n.t('layout_preview'),
-							color: '#00C897',
 							icon: 'visibility',
 						},
 					},

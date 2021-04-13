@@ -15,7 +15,7 @@ import {
 } from '../types';
 import { Knex } from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
-import { uniq, merge, flatten } from 'lodash';
+import { uniq, uniqWith, merge, flatten } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
@@ -41,12 +41,15 @@ export class AuthorizationService {
 	async processAST(ast: AST, action: PermissionsAction = 'read'): Promise<AST> {
 		const collectionsRequested = getCollectionsFromAST(ast);
 
-		let permissionsForCollections = this.schema.permissions.filter((permission) => {
-			return (
-				permission.action === action &&
-				collectionsRequested.map(({ collection }) => collection).includes(permission.collection)
-			);
-		});
+		let permissionsForCollections = uniqWith(
+			this.schema.permissions.filter((permission) => {
+				return (
+					permission.action === action &&
+					collectionsRequested.map(({ collection }) => collection).includes(permission.collection)
+				);
+			}),
+			(curr, prev) => curr.collection === prev.collection && curr.action === prev.action && curr.role === prev.role
+		);
 
 		// If the permissions don't match the collections, you don't have permission to read all of them
 		const uniqueCollectionsRequestedCount = uniq(collectionsRequested.map(({ collection }) => collection)).length;

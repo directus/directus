@@ -11,6 +11,7 @@ add_field: Agregar Campo
 role_name: Nombre del Rol
 db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
 show_archived_items: Mostrar Elementos Archivados
+edited: Valor Editado
 required: Requerido
 required_for_app_access: Necesario para el acceso a App
 requires_value: Valor obligatorio
@@ -511,6 +512,8 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+width: Ancho
+height: Alto
 wysiwyg_options:
   aligncenter: Alinear al Centro
   alignjustify: Alinear Justificado
@@ -530,10 +533,7 @@ wysiwyg_options:
   bullist: Lista con viñetas
   numlist: Lista Numerada
   hr: Regla Horizontal
-  link: Enlace
   unlink: Remover Enlace
-  media: Agregar Multimedia
-  image: Agregar Imagen
   copy: Copiar
   cut: Cortar
   paste: Pegar
@@ -555,7 +555,6 @@ wysiwyg_options:
   selectall: Seleccionar Todo
   table: Tabla
   visualaid: Ver elementos invisibles
-  code: Ver Fuente
   fullscreen: Pantalla Completa
   directionality: Direccionalidad
 dropdown: Lista Desplegable

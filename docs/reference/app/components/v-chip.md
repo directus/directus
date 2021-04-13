@@ -56,13 +56,9 @@ called `close`.
 | `active`     | Change visibility. Can be reacted to via `sync`      | `null`    | `Boolean` |
 | `close`      | Displays a close icon which triggers the close event | `false`   | `Boolean` |
 | `close-icon` | Which icon should be displayed instead of `close `   | `'close'` | `String`  |
-| `outlined`   |                                                      | `false`   | `Boolean` |
-| `label`      |                                                      | `true`    | `Boolean` |
-| `disabled`   |                                                      | `false`   | `Boolean` |
 | `outlined`   | No background                                        | `false`   | `Boolean` |
 | `label`      | Label style                                          | `true`    | `Boolean` |
 | `disabled`   | Disabled state                                       | `false`   | `Boolean` |
-| `close-icon` |                                                      | `'close'` | `String`  |
 
 #### Slots
 

@@ -57,6 +57,8 @@ role: Ρόλος
 create: Δημιουργία
 read: Ανάγνωση
 update: Ενημέρωση
+width: Πλάτος
+height: Ύψος
 wysiwyg_options:
   remove: Διαγραφή
   table: Πίνακας

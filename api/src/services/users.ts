@@ -10,6 +10,7 @@ import { Knex } from 'knex';
 import env from '../env';
 import cache from '../cache';
 import { toArray } from '../utils/to-array';
+import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
@@ -26,6 +27,40 @@ export class UsersService extends ItemsService {
 		this.schema = options.schema;
 	}
 
+	/**
+	 * User email has to be unique case-insensitive. This is an additional check to make sure that
+	 * the email is unique regardless of casing
+	 */
+	private async checkUniqueEmails(emails: string[]) {
+		if (emails.length > 0) {
+			const results = await this.knex
+				.select('email')
+				.from('directus_users')
+				.whereRaw(`LOWER(??) IN (${emails.map(() => '?')})`, ['email', ...emails]);
+
+			if (results.length > 0) {
+				throw new RecordNotUniqueException('email', {
+					collection: 'directus_users',
+					field: 'email',
+					invalid: results[0].email,
+				});
+			}
+		}
+	}
+
+	async create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
+	async create(data: Partial<Item>): Promise<PrimaryKey>;
+	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
+		const emails = toArray(data)
+			.map((payload: Record<string, any>) => payload.email)
+			.filter((e) => e)
+			.map((e) => e.toLowerCase()) as string[];
+
+		await this.checkUniqueEmails(emails);
+
+		return await super.create(data);
+	}
+
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
 	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
@@ -39,6 +74,13 @@ export class UsersService extends ItemsService {
 		 * the regular /users endpoint. Period. You should only be able to manage the 2fa status through the /tfa endpoint.
 		 */
 		const payloads = toArray(data);
+
+		const emails = payloads
+			.map((payload: Record<string, any>) => payload.email)
+			.filter((e) => e)
+			.map((e) => e.toLowerCase()) as string[];
+
+		await this.checkUniqueEmails(emails);
 
 		for (const payload of payloads) {
 			if (payload.hasOwnProperty('tfa_secret')) {
@@ -87,16 +129,24 @@ export class UsersService extends ItemsService {
 			throw new InvalidPayloadException(`Url "${url}" can't be used to invite users.`);
 		}
 
-		for (const email of emails) {
-			await this.service.create({ email, role, status: 'invited' });
+		await this.knex.transaction(async (trx) => {
+			const service = new ItemsService('directus_users', {
+				schema: this.schema,
+				accountability: this.accountability,
+				knex: trx,
+			});
 
-			const payload = { email, scope: 'invite' };
-			const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
-			const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
-			const acceptURL = inviteURL + '?token=' + token;
+			for (const email of emails) {
+				await service.create({ email, role, status: 'invited' });
 
-			await sendInviteMail(email, acceptURL);
-		}
+				const payload = { email, scope: 'invite' };
+				const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
+				const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
+				const acceptURL = inviteURL + '?token=' + token;
+
+				await sendInviteMail(email, acceptURL);
+			}
+		});
 	}
 
 	async acceptInvite(token: string, password: string) {

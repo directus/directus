@@ -511,6 +511,8 @@ toggle: สลับ
 icon_on: แสดงไอคอน
 icon_off: ไม่แสดงไอคอน
 label: ป้าย
+width: กว้าง
+height: สูง
 wysiwyg_options:
   aligncenter: จัดตำแหน่งกึ่งกลาง
   alignjustify: จัดตำแหน่งชิดขอบซ้ายและขวา
@@ -530,10 +532,7 @@ wysiwyg_options:
   bullist: รายการแบบไม่มีลําดับ
   numlist: รายการแบบมีลำดับ
   hr: เส้นคั่นแนวนอน
-  link: ลิ้งก์
   unlink: ลบลิงค์
-  media: เพิ่มสื่อ
-  image: เพิ่มรูปภาพ
   copy: คัดลอก
   cut: ตัด
   paste: วาง
@@ -555,7 +554,6 @@ wysiwyg_options:
   selectall: เลือกทั้งหมด
   table: ตาราง
   visualaid: แสดงเครื่องหมายที่มองไม่เห็น
-  code: ดู source
   fullscreen: เต็มจอ
   directionality: อย่างมีทิศทาง
 dropdown: ตัวเลือกแบบดรอปดาวน์

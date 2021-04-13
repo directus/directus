@@ -14,6 +14,7 @@ const defaultPreset: Omit<Preset, 'collection'> = {
 	layout: null,
 	layout_query: null,
 	layout_options: null,
+	refresh_interval: null,
 };
 
 const systemDefaults: Record<string, Partial<Preset>> = {

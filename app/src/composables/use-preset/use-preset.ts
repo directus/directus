@@ -131,6 +131,20 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		},
 	});
 
+	const refreshInterval = computed<number | null>({
+		get() {
+			return localPreset.value.refresh_interval || null;
+		},
+		set(val) {
+			localPreset.value = {
+				...localPreset.value,
+				refresh_interval: val,
+			};
+
+			handleChanges();
+		},
+	});
+
 	const searchQuery = computed<string | null>({
 		get() {
 			return localPreset.value.search || null;
@@ -167,6 +181,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		layoutQuery,
 		filters,
 		searchQuery,
+		refreshInterval,
 		savePreset,
 		saveCurrentAsBookmark,
 		bookmarkTitle,
@@ -195,6 +210,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 			layout: 'tabular',
 			filters: null,
 			search: null,
+			refresh_interval: null,
 		};
 
 		await savePreset();
