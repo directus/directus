@@ -32,16 +32,19 @@ export default async () => {
 		{
 			title: 'Create Directus Docker Image',
 			task: async (_, task) => {
-				const result = await globby(['**/*', '!node_modules', '!**/node_modules', '!**/src'], {
-					cwd: path.resolve(__dirname, '..', '..'),
-				});
+				const result = await globby(
+					['**/*', '!node_modules', '!**/node_modules', '!**/src', '!e2e-tests', '!**/tests'],
+					{
+						cwd: path.resolve(__dirname, '..', '..'),
+					}
+				);
 
 				const stream = await docker.buildImage(
 					{
 						context: path.resolve(__dirname, '..', '..'),
 						src: ['Dockerfile', ...result],
 					},
-					{ t: 'directus-test-image', buildargs: { NODE_VERSION } }
+					{ t: 'directus-test-image', buildargs: { NODE_VERSION }, cachefrom: '["directus-test-image"]' }
 				);
 
 				await new Promise((resolve, reject) => {
