@@ -1,5 +1,6 @@
 ---
 edit_field: Feld bearbeiten
+item_revision: Element Revision
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
@@ -10,6 +11,7 @@ add_field: Feld hinzufügen
 role_name: Rollenname
 db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
+edited: Bearbeiteter Wert
 required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
 requires_value: Benötigt Wert
@@ -25,6 +27,7 @@ connection_excellent: Ausgezeichnete Verbindung
 connection_good: Gute Verbindung
 connection_fair: Brauchbare Verbindung
 connection_poor: Schlechte Verbindung
+primary: Primär
 rename_folder: Ordner umbenennen
 delete_folder: Ordner löschen
 prefix: Präfix
@@ -55,6 +58,7 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Systemberechtigungen zurücksetzen auf:'
 reset_system_permissions_copy: Diese Aktion wird alle benutzerdefinierten Berechtigungen überschreiben, die Sie möglicherweise auf die System-Sammlungen angewendet haben. Sind Sie sicher?
 the_following_are_minimum_permissions: Die folgenden Berechtigungen sind mindestens errforderlich, falls "App Acces" aktiviert ist. Sie können die Berechtigungen darüber hinaus erweitern, jedoch nicht weiter einschränken.
+app_access_minimum: App-Zugriff Minimum
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Sind Sie sicher, dass das Item aus dem Archiv zurückgeholt werden soll?
@@ -113,18 +117,23 @@ admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
 exposure: Belichtung
 iso: ISO
+schema_setup_key: Datenbankspaltenname und API-Schlüssel dieses Feldes
 create_field: Feld erstellen
 creating_new_field: 'Neues Feld ({collection})'
 field_in_collection: '{field} ({collection})'
 reset_page_preferences: Seiteneinstellungen zurücksetzen
 hidden_field: Verstecktes Feld
 hidden_on_detail: In Detailansicht ausblenden
+disabled_editing_value: Bearbeitung des Wertes deaktivieren
 key: Schlüssel
 alias: Alias
+bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 datetime: Datum mit Uhrzeit
 decimal: Dezimal
+float: Float
+integer: Integer
 json: JSON
 string: Zeichenkette
 text: Text
@@ -133,15 +142,26 @@ timestamp: Zeitstempel
 uuid: UUID
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
+auto_refresh: Auto-Aktualisierung
+refresh_interval: Aktualisierungsintervall
+no_refresh: Nicht aktualisieren
+refresh_interval_seconds: Sofort aktualisieren | Jede Sekunde | Alle {seconds} Sekunden
+refresh_interval_minutes: Jede Minute | Alle {minutes} Minuten
 auto_generate: Automatisch generieren
 this_will_auto_setup_fields_relations: Dies wird automatisch alle benötigten Felder und Beziehungen einrichten.
 click_here: Hier klicken
+to_manually_setup_translations: um die Übersetzung manuell einzurichten.
 click_to_manage_translated_fields: >-
   Es gibt noch keine übersetzten Felder. Klicke hier, um sie zu erstellen| Es gibt ein übersetztes Feld. Klicke hier, um es zu verwalten. | Es gibt {count} übersetzte Felder. Klicke hier, um sie zu verwalten.
 fields_group: Feldergruppe
+no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
+search_collection: Sammlung durchsuchen...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
+add_m2o_to_collection: 'n:1 zu "{collection}" hinzufügen'
+add_o2m_to_collection: '1:n zu "{collection}" hinzufügen'
+add_m2m_to_collection: 'n:m zu "{collection}" hinzufügen'
 choose_a_type: Wähle einen Typ...
 determined_by_relationship: Bestimmt durch Beziehung
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
@@ -152,6 +172,8 @@ multiple_files: Mehrere Dateien
 m2o_relationship: n:1-Beziehung
 o2m_relationship: 1:n-Beziehung
 m2m_relationship: n:m-Beziehung
+m2a_relationship: n:x-Beziehung (Many to Any)
+invalid_item: Ungültiges Element
 next: Weiter
 field_name: Feldname
 translations: Übersetzungen
@@ -168,39 +190,56 @@ primary_key: Primärschlüssel
 foreign_key: Fremdschlüssel
 finish_setup: Einrichtung abschließen
 dismiss: Verwerfen
+raw_value: Rohwert
+edit_raw_value: Rohwert bearbeiten
+enter_raw_value: Rohwert eingeben...
 clear_value: Wert löschen
 reset_to_default: Auf Standard zurücksetzen
 undo_changes: Änderungen verwerfen
 notifications: Benachrichtigungen
+show_all_activity: Alle Aktivitäten anzeigen
 page_not_found: Seite nicht gefunden
 page_not_found_body: Die Seite, nach der Du gesucht hast, wurde nicht gefunden.
+confirm_revert: Zurücksetzen bestätigen
 confirm_revert_body: Dadurch wird das Element auf den ausgewählten Zustand zurückgesetzt.
 display: Anzeige
 settings_update_success: Einstellungen aktualisiert
 title: Titel
 revision_delta_created: Erstellt
 revision_delta_created_externally: Extern erstellt
+revision_delta_updated: '1 Feld aktualisiert | {count} Felder aktualisiert'
 revision_delta_deleted: Gelöscht
+revision_delta_reverted: Zurückgesetzt
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
+private_user: Privater Benutzer
 revision_preview: Überarbeitungs Vorschau
+updates_made: Erfolgte Updates
 leave_comment: Kommentieren...
 post_comment_success: Kommentar veröffentlicht
 item_create_success: Eintrag erstellt | Einträge erstellt
+item_update_success: Element aktualisiert | Elemente aktualisiert
+item_delete_success: Element gelöscht | Elemente gelöscht
 this_collection: Diese Sammlung
 related_collection: Verknüpfte Sammlung
 related_collections: Verwandte Sammlungen
+translations_collection: Übersetzungs-Sammlung
 languages_collection: Sprachen-Sammlung
 export_data: Daten exportieren
 format: Format
+use_current_filters_settings: Aktuelle Filter & Einstellungen verwenden
 export_collection: '{collection} exportieren'
 last_page: Letzte Seite
 last_access: Letzter Zugriff
 fill_template: Mit Vorlagenwert füllen
+a_unique_table_name: Ein eindeutiger Tabellenname...
+a_unique_column_name: Ein eindeutiger Spaltenname...
+enable_custom_values: Benutzerdefinierte Werte aktivieren
 submit: Absenden
 move_to_folder: In Ordner verschieben
 move: Verschieben
 system: System
+add_field_related: Feld zur abhängigen Sammlung hinzufügen
 interface: Benutzeroberfläche
 today: Heute
 yesterday: Gestern
@@ -221,6 +260,7 @@ months:
   october: Oktober
   november: November
   december: Dezember
+drag_mode: Drag-Modus
 cancel_crop: Zuschneiden abbrechen
 original: Original
 url: URL
@@ -255,6 +295,8 @@ type: Typ
 creating_new_collection: Neue Sammlung wird erstellt
 created_by: Erstellt von
 created_on: Erstellt am
+creating_collection_info: Benennen Sie die Sammlung und richten Sie ein eindeutiges „Schlüsselfeld“ ein...
+creating_collection_system: Aktivieren und benennen Sie eines dieser optionalen Felder.
 generated_uuid: Generierte UUID
 manual_string: Manuell eingegebene Zeichenkette
 save_and_stay: Speichern und Bleiben
@@ -388,6 +430,8 @@ upload_files_indeterminate: 'Hochladen von Dateien {done}/{total}'
 upload_files_success: '{count} Dateien hochgeladen'
 upload_pending: Upload ausstehend
 click_to_browse: Zum Durchsuchen klicken
+collection_setup: Einrichtung Sammlung
+optional_system_fields: Optionale Systemfelder
 all_activity: Alle Aktivitäten
 create_item: Eintrag erstellen
 display_template: Anzeigevorlage
@@ -583,6 +627,8 @@ template: Vorlage
 translation: Übersetzung
 value: Wert
 interfaces:
+  button-links:
+    primary: Primär
   checkboxes:
     checkboxes: Kontrollkästchen
     allow_other: Andere erlauben
