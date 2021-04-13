@@ -1,5 +1,6 @@
 ---
 edit_field: Feld bearbeiten
+item_revision: Element Revision
 duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
@@ -10,6 +11,7 @@ add_field: Feld hinzufügen
 role_name: Rollenname
 db_only_click_to_configure: 'Nur Datenbank: Zum Konfigurieren klicken '
 show_archived_items: Zeige archivierte Elemente
+edited: Bearbeiteter Wert
 required: Erforderlich
 required_for_app_access: Benötigt für App-Zugriff
 requires_value: Benötigt Wert
@@ -25,6 +27,7 @@ connection_excellent: Ausgezeichnete Verbindung
 connection_good: Gute Verbindung
 connection_fair: Brauchbare Verbindung
 connection_poor: Schlechte Verbindung
+primary: Primär
 rename_folder: Ordner umbenennen
 delete_folder: Ordner löschen
 prefix: Präfix
@@ -55,6 +58,7 @@ archive_confirm_count: >-
 reset_system_permissions_to: 'Systemberechtigungen zurücksetzen auf:'
 reset_system_permissions_copy: Diese Aktion wird alle benutzerdefinierten Berechtigungen überschreiben, die Sie möglicherweise auf die System-Sammlungen angewendet haben. Sind Sie sicher?
 the_following_are_minimum_permissions: Die folgenden Berechtigungen sind mindestens errforderlich, falls "App Acces" aktiviert ist. Sie können die Berechtigungen darüber hinaus erweitern, jedoch nicht weiter einschränken.
+app_access_minimum: App-Zugriff Minimum
 recommended_defaults: Empfohlene Standardwerte
 unarchive: Archivierung zurücksetzen
 unarchive_confirm: Sind Sie sicher, dass das Item aus dem Archiv zurückgeholt werden soll?
@@ -76,6 +80,7 @@ validationError:
   null: Der Wert muss leer sein
   nnull: Der Wert darf nicht leer sein
   required: Wert erforderlich
+  unique: Wert muss eindeutig sein
 all_access: Zugriff auf alles
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
@@ -113,18 +118,23 @@ admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
 exposure: Belichtung
 iso: ISO
+schema_setup_key: Datenbankspaltenname und API-Schlüssel dieses Feldes
 create_field: Feld erstellen
 creating_new_field: 'Neues Feld ({collection})'
 field_in_collection: '{field} ({collection})'
 reset_page_preferences: Seiteneinstellungen zurücksetzen
 hidden_field: Verstecktes Feld
 hidden_on_detail: In Detailansicht ausblenden
+disabled_editing_value: Bearbeitung des Wertes deaktivieren
 key: Schlüssel
 alias: Alias
+bigInteger: Big Integer
 boolean: Boolean
 date: Datum
 datetime: Datum mit Uhrzeit
 decimal: Dezimal
+float: Float
+integer: Integer
 json: JSON
 string: Zeichenkette
 text: Text
@@ -133,15 +143,26 @@ timestamp: Zeitstempel
 uuid: UUID
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
+auto_refresh: Auto-Aktualisierung
+refresh_interval: Aktualisierungsintervall
+no_refresh: Nicht aktualisieren
+refresh_interval_seconds: Sofort aktualisieren | Jede Sekunde | Alle {seconds} Sekunden
+refresh_interval_minutes: Jede Minute | Alle {minutes} Minuten
 auto_generate: Automatisch generieren
 this_will_auto_setup_fields_relations: Dies wird automatisch alle benötigten Felder und Beziehungen einrichten.
 click_here: Hier klicken
+to_manually_setup_translations: um die Übersetzung manuell einzurichten.
 click_to_manage_translated_fields: >-
   Es gibt noch keine übersetzten Felder. Klicke hier, um sie zu erstellen| Es gibt ein übersetztes Feld. Klicke hier, um es zu verwalten. | Es gibt {count} übersetzte Felder. Klicke hier, um sie zu verwalten.
 fields_group: Feldergruppe
+no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
+search_collection: Sammlung durchsuchen...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
+add_m2o_to_collection: 'n:1 zu "{collection}" hinzufügen'
+add_o2m_to_collection: '1:n zu "{collection}" hinzufügen'
+add_m2m_to_collection: 'n:m zu "{collection}" hinzufügen'
 choose_a_type: Wähle einen Typ...
 determined_by_relationship: Bestimmt durch Beziehung
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
@@ -152,6 +173,8 @@ multiple_files: Mehrere Dateien
 m2o_relationship: n:1-Beziehung
 o2m_relationship: 1:n-Beziehung
 m2m_relationship: n:m-Beziehung
+m2a_relationship: n:x-Beziehung (Many to Any)
+invalid_item: Ungültiges Element
 next: Weiter
 field_name: Feldname
 translations: Übersetzungen
@@ -168,39 +191,56 @@ primary_key: Primärschlüssel
 foreign_key: Fremdschlüssel
 finish_setup: Einrichtung abschließen
 dismiss: Verwerfen
+raw_value: Rohwert
+edit_raw_value: Rohwert bearbeiten
+enter_raw_value: Rohwert eingeben...
 clear_value: Wert löschen
 reset_to_default: Auf Standard zurücksetzen
 undo_changes: Änderungen verwerfen
 notifications: Benachrichtigungen
+show_all_activity: Alle Aktivitäten anzeigen
 page_not_found: Seite nicht gefunden
 page_not_found_body: Die Seite, nach der Du gesucht hast, wurde nicht gefunden.
+confirm_revert: Zurücksetzen bestätigen
 confirm_revert_body: Dadurch wird das Element auf den ausgewählten Zustand zurückgesetzt.
 display: Anzeige
 settings_update_success: Einstellungen aktualisiert
 title: Titel
 revision_delta_created: Erstellt
 revision_delta_created_externally: Extern erstellt
+revision_delta_updated: '1 Feld aktualisiert | {count} Felder aktualisiert'
 revision_delta_deleted: Gelöscht
+revision_delta_reverted: Zurückgesetzt
 revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
+private_user: Privater Benutzer
 revision_preview: Überarbeitungs Vorschau
+updates_made: Erfolgte Updates
 leave_comment: Kommentieren...
 post_comment_success: Kommentar veröffentlicht
 item_create_success: Eintrag erstellt | Einträge erstellt
+item_update_success: Element aktualisiert | Elemente aktualisiert
+item_delete_success: Element gelöscht | Elemente gelöscht
 this_collection: Diese Sammlung
 related_collection: Verknüpfte Sammlung
 related_collections: Verwandte Sammlungen
+translations_collection: Übersetzungs-Sammlung
 languages_collection: Sprachen-Sammlung
 export_data: Daten exportieren
 format: Format
+use_current_filters_settings: Aktuelle Filter & Einstellungen verwenden
 export_collection: '{collection} exportieren'
 last_page: Letzte Seite
 last_access: Letzter Zugriff
 fill_template: Mit Vorlagenwert füllen
+a_unique_table_name: Ein eindeutiger Tabellenname...
+a_unique_column_name: Ein eindeutiger Spaltenname...
+enable_custom_values: Benutzerdefinierte Werte aktivieren
 submit: Absenden
 move_to_folder: In Ordner verschieben
 move: Verschieben
 system: System
+add_field_related: Feld zur abhängigen Sammlung hinzufügen
 interface: Benutzeroberfläche
 today: Heute
 yesterday: Gestern
@@ -221,6 +261,7 @@ months:
   october: Oktober
   november: November
   december: Dezember
+drag_mode: Drag-Modus
 cancel_crop: Zuschneiden abbrechen
 original: Original
 url: URL
@@ -255,8 +296,12 @@ type: Typ
 creating_new_collection: Neue Sammlung wird erstellt
 created_by: Erstellt von
 created_on: Erstellt am
+creating_collection_info: Benennen Sie die Sammlung und richten Sie ein eindeutiges „Schlüsselfeld“ ein...
+creating_collection_system: Aktivieren und benennen Sie eines dieser optionalen Felder.
+auto_increment_integer: Automatisch erhöhter Integer-Wert
 generated_uuid: Generierte UUID
 manual_string: Manuell eingegebene Zeichenkette
+save_and_create_new: Speichern und Neues anlegen
 save_and_stay: Speichern und Bleiben
 save_as_copy: Als Kopie speichern
 add_existing: Vorhandene hinzufügen
@@ -270,6 +315,11 @@ disabled: Deaktiviert
 information: Information
 report_bug: Bug melden
 request_feature: Feature anfragen
+interface_not_found: 'Schnittstelle "{interface}" nicht gefunden.'
+reset_interface: Schnittstelle zurücksetzen
+display_not_found: 'Anzeige "{display}" nicht gefunden.'
+reset_display: Anzeige zurücksetzen
+m2a_builder: Builder (Many-to-Any)
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
 no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
 file_count: 'Keine Dateien | Eine Datei | {count} Dateien'
@@ -282,6 +332,8 @@ all_items: Alle Elemente
 csv: CSV
 no_collections: Keine Sammlungen
 create_collection: Sammlung erstellen
+no_collections_copy_admin: Keine Sammlungen vorhanden. Auf die untenstehende Schaltfläche klicken, um loszulegen.
+no_collections_copy: Keine Sammlungen vorhanden. Bitte Systemadministrator kontaktieren.
 relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
 select_a_collection: Sammlung auswählen
 active: Aktiv
@@ -388,6 +440,9 @@ upload_files_indeterminate: 'Hochladen von Dateien {done}/{total}'
 upload_files_success: '{count} Dateien hochgeladen'
 upload_pending: Upload ausstehend
 click_to_browse: Zum Durchsuchen klicken
+collection_setup: Einrichtung Sammlung
+optional_system_fields: Optionale Systemfelder
+value_unique: Wert muss eindeutig sein
 all_activity: Alle Aktivitäten
 create_item: Eintrag erstellen
 display_template: Anzeigevorlage
@@ -410,50 +465,97 @@ no_presets: Keine Voreinstellungen
 no_presets_copy: Es wurden noch keine Voreinstellungen oder Lesezeichen gespeichert.
 no_presets_cta: Voreinstellung hinzufügen
 create: Erstellen
+on_create: Beim Erstellen
 on_update: Beim Aktualisieren
 read: Lesen
 update: Aktualisieren
 select_fields: Fielder auswählen
+format_text: Text formatieren
 bold: Fett
 toggle: Umschalten
 icon_on: Symbol an
 icon_off: Symbol aus
+label: Label
+image_url: Bild-Url
+alt_text: Alternativ-Text
+media: Medien
 width: Breite
 height: Höhe
+source: Quelle
+url_placeholder: URL eingeben...
+display_text: Text anzeigen
+display_text_placeholder: Anzeigetext eingeben...
+tooltip: Tooltip
+tooltip_placeholder: Tooltip eingeben...
+open_link_in: Link öffnen in
+new_tab: Neuer Tab
+current_tab: Aktueller Tab
 wysiwyg_options:
+  aligncenter: Zentriert
+  alignjustify: Blocksatz
+  alignleft: Linksbündig
+  alignnone: Nicht ausrichten
+  alignright: Rechtsbündig
   forecolor: Vordergrundfarbe
   backcolor: Hintergrundfarbe
   bold: Fett
   italic: Kursiv
   underline: Unterstrichen
   strikethrough: Durchgestrichen
+  subscript: Tiefgestellt
+  superscript: Hochgestellt
   codeblock: Code
+  blockquote: Zitatblock
   bullist: Aufzählung
   numlist: Nummerierte Liste
+  hr: Horizontale Linie
+  link: Link einfügen/bearbeiten
+  unlink: Link entfernen
+  media: Medien hinzufügen/bearbeiten
+  image: Bild hinzufügen/bearbeiten
   copy: Kopieren
   cut: Ausschneiden
   paste: Einfügen
+  heading: Überschrift
   h1: Überschrift 1
   h2: Überschrift 2
   h3: Überschrift 3
   h4: Überschrift 4
   h5: Überschrift 5
   h6: Überschrift 6
+  fontselect: Schriftart auswählen
+  fontsizeselect: Schriftgröße auswählen
   indent: Einrücken
+  outdent: Ausrücken
   undo: Rückgängig
   redo: Wiederherstellen
   remove: Löschen
+  removeformat: Formatierung entfernen
   selectall: Alles auswählen
   table: Tabelle
+  visualaid: Unsichtbare Elemente anzeigen
+  source_code: Quellcode bearbeiten
   fullscreen: Vollbild
+  directionality: Richtung
 dropdown: Dropdown
 choices: Optionen
+choices_option_configured_incorrectly: Auswahl falsch konfiguriert
 deselect: Abwählen
+deselect_all: Alle abwählen
+other: Andere...
+adding_user: Benutzer hinzufügen
+unknown_user: Unbekannter Benutzer
 creating_in: 'Erstelle Element in {collection}'
+editing_in: 'Bearbeite Element in {collection}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
+no_options_available: Keine Optionen verfügbar
+settings_data_model: Datenmodell
 settings_permissions: Rollen & Berechtigungen
 settings_project: Projekt-Einstellungen
 settings_webhooks: Webhooks
+settings_presets: Vorlagen & Lesezeichen
+scope: Scope
+layout: Layout
 unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Bist Du sicher, dass Du diese Seite verlassen willst?
 discard_changes: Änderungen verwerfen
@@ -476,6 +578,7 @@ fields:
     comment: Kommentar
     user_agent: User Agent
     ip: IP Adresse
+    revisions: Revisionen
   directus_collections:
     collection: Sammlung
     icon: Symbol
@@ -530,13 +633,33 @@ fields:
     display_template: Vorlage
   directus_roles:
     name: Rollenname
+    icon: Rollen-Symbol
     description: Beschreibung
+    app_access: App-Zugriff
+    admin_access: Admin-Zugriff
+    ip_access: IP-Zugriff
+    enforce_tfa: 2FA erforderlich
+    users: Benutzer in Rolle
+    module_list: Modulnavigation
+    collection_list: Sammlungsnavigation
+no_fields_in_collection: 'Es gibt noch keine Felder in "{collection}"'
+do_nothing: Keine Aktion
+generate_and_save_uuid: UUID generieren und speichern
+save_current_user_id: Aktuelle Benutzer-ID speichern
+save_current_user_role: Aktuelle Benutzerrolle speichern
+save_current_datetime: Aktuelles Datum/Zeit speichern
+block: Blockieren
+inline: Inline
 comment: Kommentar
 continue: Weiter
+continue_as: >-
+  <b>{name}</b> ist bereits authentifiziert. Wenn Sie dieses Konto kennen, drücken Sie bitte auf Fortfahren.
 editing_role: '{role} Rolle'
 creating_webhook: Webhook erstellen
 default: Standard
 delete: Löschen
+delete_are_you_sure: >-
+  Diese Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher, dass Sie fortfahren möchten?
 delete_field_are_you_sure: >-
   Soll das Feld "{field}" wirklich gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.
 description: Beschreibung
@@ -544,6 +667,7 @@ done: Erledigt
 duplicate: Duplikat
 email: E-Mail
 embed: Einbetten
+fallback_icon: Fallback-Symbol
 field: Feld | Felder
 file: Datei
 file_library: Datei-Browser
@@ -560,6 +684,7 @@ latency: Latenz
 login: Login
 my_activity: Meine Aktivität
 not_authenticated: Nicht authentifiziert
+authenticated: Authentifiziert
 options: Optionen
 otp: Einmaliges Passwort
 password: Passwort
@@ -567,11 +692,13 @@ permissions: Berechtigungen
 relationship: Beziehung
 reset: Zurücksetzen
 reset_password: Passwort zurücksetzen
+revisions: Revisionen
 revert: Zurücksetzen
 save: Speichern
 schema: Schema
 search: Suche
 select_existing: Bitte auswählen
+select_field_type: Feldtyp wählen
 select_interface: Wähle eine Schnittstelle
 settings: Einstellungen
 sign_in: Login
@@ -579,30 +706,63 @@ sign_out: Ausloggen
 sign_out_confirm: Bist Du sicher, dass Du Dich ausloggen möchtest?
 something_went_wrong: Irgendwas ist schief gelaufen...
 sort_direction: Sortierreihenfolge
+sort_asc: Aufsteigend sortieren
+sort_desc: Absteigend sortieren
 template: Vorlage
 translation: Übersetzung
 value: Wert
+view_project: Projekt anzeigen
+report_error: Fehler melden
 interfaces:
+  button-links:
+    button-links: Button-Links
+    links: Links
+    description: Konfigurierbare Link-Buttons zum Starten dynamischer URLs
+    style: Style
+    primary: Primär
+    link: Links
+    button: Buttons
+    error: Aktion kann nicht ausgeführt werden
   checkboxes:
     checkboxes: Kontrollkästchen
+    description: Zwischen mehreren Optionen auswählen über Kontrollkästchen
     allow_other: Andere erlauben
+    show_more: 'Zeige {count} mehr'
+    items_shown: Angezeigte Elemente
   code:
     code: Code
+    description: Code-Snippets schreiben oder teilen
     line_number: Zeilennummer
+    placeholder: Code hier eingeben...
   collection:
     collection: Sammlung
+    description: Aus bestehenden Sammlungen auswählen
+    include_system_collections: Systemsammlungen einbeziehen
   collections:
     collections: Sammlungen
+    description: Aus bestehenden Sammlungen auswählen
+    include_system_collections: Systemsammlungen einbeziehen
   color:
     color: Farbe
+    description: Farbwert eingeben oder auswählen
+    placeholder: Farbe wählen...
+    preset_colors: Preset-Farben
+    preset_colors_add_label: Farbe hinzufügen...
+    name_placeholder: Farbnamen eingeben...
   datetime:
     datetime: Datum & Uhrzeit
+    description: Datum und Uhrzeit eingeben
+    include_seconds: Sekunden einbeziehen
+    set_to_now: Auf Jetzt setzen
     use_24: 24-Stunden-Format verwenden
   display-template:
     display-template: Anzeigevorlage
+    description: Statische Text- und dynamische Feldwerte mischen
+    collection_field: Sammlungsfeld
     select_a_collection: Sammlung auswählen
   divider:
     divider: Divider
+    description: Felder beschriften und in Abschnitte teilen
   dropdown:
     allow_other: Andere erlauben
     choices_value_placeholder: Gib einen Wert ein...
@@ -635,45 +795,98 @@ interfaces:
     repeater: Repeater
   slider:
     slider: Slider
+    always_show_value: Wert immer anzeigen
   slug:
     slug: Slug
+    description: Wort eingeben, das mit Bindestrichen verbunden ist
   tags:
     tags: Stichwörter
+    description: Tags auswählen oder hinzufügen
+    whitespace: Leerzeichen
+    hyphen: Mit Bindestrich ersetzen
+    underscore: Mit Unterstrich ersetzen
+    remove: Leerzeichen entfernen
+    capitalization: Großschreibung
+    uppercase: In Großbuchstaben umwandeln
+    lowercase: In Kleinbuchstaben konvertieren
+    auto_formatter: Auto-Formatierung für Titel verwenden
+    alphabetize: Alphabetisch
+    alphabetize_label: Alphabetische Reihenfolge erzwingen
+    add_tags: Tags hinzufügen...
   text-input:
     text-input: Texteingabe
+    description: Einen einzeiligen Text eingeben
     trim: Beschneiden
+    trim_label: Anfang und Ende kürzen
+    mask_label: Tatsächlichen Wert ausblenden
+    nullable: Nullable
+    nullable_label: Leeren Wert als NULL speichern
   textarea:
     textarea: Textfeld
+    description: Mehrzeiligen Klartext eingeben
   toggle:
     toggle: Umschalten
+    description: Zwischen Ein und Aus wechseln
+    label_placeholder: Label eingeben...
     label_default: Aktiviert
   translations:
     display_template: Anzeigevorlage
     no_collection: Keine Sammlung
+  tree-view:
+    description: Baumansicht für verschachtelte rekursive 1:n-Elemente
+    recursive_only: Die Baumansicht funktioniert nur für rekursive Abhängigkeiten.
   user:
     user: Benutzer
+    description: Bestehenden Benutzer auswählen
+    select_mode: Modus wählen
     modes:
+      auto: Auto
       dropdown: Dropdown
+      modal: Modal
   wysiwyg:
     wysiwyg: WYSIWYG
+    description: Rich-Text-Editor, der HTML-Inhalte erzeugt
     toolbar: Symbolleiste
     custom_formats: Benutzerdefiniertes Format
+    options_override: Optionen überschreiben
 displays:
   boolean:
     boolean: Boolean
+    description: Ein-/Aus-Status anzeigen
+    label_on: Label Ein
+    label_on_placeholder: Label für Ein eingeben...
+    label_off: Label Aus
+    label_off_placeholder: Label für Aus eingeben...
     icon_on: Symbol an
     icon_off: Symbol aus
+    color_on: Farbe Ein
+    color_off: Farbe Aus
   collection:
     collection: Sammlung
+    description: Sammlung anzeigen
+    icon_label: Symbol der Sammlung anzeigen
   color:
     color: Farbe
+    description: Einen farbigen Punkt anzeigen
+    default_color: Standardfarbe
   datetime:
     datetime: Datum & Uhrzeit
+    description: Werte in Bezug zur Zeit anzeigen
     format: Format
+    format_note: >-
+      Das benutzerdefinierte Format akzeptiert die __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Long
+    short: Short
+    relative: Relativ
+    relative_label: 'Zeige relative Zeit, z. B.: vor 5 Minuten'
   file:
     file: Datei
+    description: Dateien anzeigen
   filesize:
     filesize: Dateigröße
+    description: Dateigröße anzeigen
+  formatted-value:
+    formatted-value: Formatierter Wert
   icon:
     icon: Symbol
   image:
