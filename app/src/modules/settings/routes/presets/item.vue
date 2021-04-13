@@ -155,7 +155,7 @@ export default defineComponent({
 	setup(props) {
 		const collectionsStore = useCollectionsStore();
 		const presetsStore = usePresetsStore();
-		const layouts = getLayouts();
+		const { layouts } = getLayouts();
 		const { backLink } = useLinks();
 
 		const isNew = computed(() => props.id === '+');

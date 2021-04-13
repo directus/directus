@@ -42,7 +42,7 @@ export default defineComponent({
 	},
 	setup() {
 		const userStore = useUserStore();
-		const modules = getModules();
+		const { modules } = getModules();
 
 		const _modules = computed(() => {
 			const customModuleListing = userStore.state.currentUser?.role.module_list;

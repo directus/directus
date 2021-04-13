@@ -70,7 +70,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const interfaces = getInterfaces();
+		const { interfaces } = getInterfaces();
 
 		const interfaceExists = computed(() => {
 			return !!interfaces.value.find((inter) => inter.id === props.field?.meta?.interface || 'text-input');
