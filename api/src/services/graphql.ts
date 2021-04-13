@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Knex } from 'knex';
 import database from '../database';
 import {

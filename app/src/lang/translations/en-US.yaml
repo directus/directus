@@ -932,6 +932,11 @@ interfaces:
     projection: Projection
     zoom: Zoom
     no_api_key: The currently selected background requires a Mapbox api key.
+    geometry: Geometry
+    multiple_geometries: Multiple geometries
+    point: Point
+    line_string: Line
+    polygon: Polygon 
   notice:
     notice: Notice
     description: Display a short notice
@@ -1134,7 +1139,7 @@ layouts:
     fit_speed: Animation speed
     fit_duration: Animation duration
     preview: Preview
-    format: Format
+    geometry_format: Geometry format
     field: Geometry
     lnglat: Longitude | Latitude
     longitude: Longitude

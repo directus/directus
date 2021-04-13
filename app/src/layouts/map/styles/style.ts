@@ -3,20 +3,14 @@ import type { Style } from 'maplibre-gl';
 let baseColor = '#09f'; // '#11b4da'
 let hoverColor = '#FFA500'; // '#11b4da'
 let selectColor = '#FFA500'; // '#11b4da'
-let color = ['case',
-	['boolean', ['feature-state', 'selected'], false],
-	selectColor, baseColor
-];
+let color = ['case', ['boolean', ['feature-state', 'selected'], false], selectColor, baseColor];
 
-export default <Style>{
+export const style = <Style>{
 	version: 8,
 	sources: {
 		__directus: {
 			type: 'geojson',
 			data: { type: 'FeatureCollection', features: [] },
-			cluster: true,
-			clusterRadius: 50,
-			clusterMaxZoom: 12,
 		},
 	},
 	layers: [
@@ -42,14 +36,19 @@ export default <Style>{
 		},
 		{
 			id: '__directus_points',
-			type: 'circle',
+			type: 'symbol',
 			source: '__directus',
 			filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
+			layout: {
+				'icon-image': 'place',
+				'icon-anchor': 'bottom',
+				'icon-allow-overlap': true,
+				'icon-pitch-alignment': 'viewport',
+				'icon-size': 2,
+				'icon-offset': [0, 3],
+			},
 			paint: {
-				'circle-color': color,
-				'circle-radius': 4,
-				'circle-stroke-width': 1,
-				'circle-stroke-color': '#fff',
+				'icon-color': color,
 			},
 		},
 		{
@@ -69,8 +68,8 @@ export default <Style>{
 			filter: ['has', 'point_count'],
 			layout: {
 				'text-field': '{point_count_abbreviated}',
-				'text-font': ['Noto Sans Regular'],
-				'text-size': ['step', ['get', 'point_count'], 14, 100, 16, 750, 18],
+				'text-font': ['Open Sans Semibold'],
+				'text-size': ['step', ['get', 'point_count'], 15, 100, 17, 750, 19],
 			},
 		},
 	],

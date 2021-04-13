@@ -8,8 +8,78 @@ export default defineInterface({
 	description: '$t:interfaces.map.description',
 	icon: 'map',
 	component: InterfaceMap,
-	types: ['json', 'csv'],
+	types: ['json', 'csv', 'string', 'text', 'binary'],
 	options: [
+		{
+			field: 'geometry',
+			name: '$t:interfaces.map.geometry',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'dropdown',
+				options: {
+					choices: [
+						{ value: 'point', text: '$t:interfaces.map.point' },
+						{ value: 'line_string', text: '$t:interfaces.map.line_string' },
+						{ value: 'polygon', text: '$t:interfaces.map.polygon' },
+					],
+				},
+			},
+			schema: {
+				default_value: 'point',
+			},
+		},
+		{
+			field: 'multipleGeometries',
+			name: '$t:interfaces.map.multiple_geometries',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+		{
+			field: 'geometryFormat',
+			name: '$t:layouts.map.geometry_format',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'dropdown',
+				options: {
+					choices: [
+						{ value: 'geojson', text: 'GeoJSON' },
+						{ value: 'wkt', text: 'WKT' },
+						{ value: 'ewkt', text: 'EWKT' },
+						{ value: 'wkb', text: 'WKB' },
+						{ value: 'ewkb', text: 'EWKB' },
+						{ value: 'twkb', text: 'TWKB' },
+						{ value: 'csv', text: 'CSV' },
+					],
+				},
+			},
+		},
+		{
+			field: 'projection',
+			name: '$t:interfaces.map.projection',
+			type: 'string',
+			meta: {
+				width: 'half',
+				interface: 'dropdown',
+				options: {
+					choices: [
+						{ value: 'EPSG:4326', text: 'WGS84' },
+						{ value: 'EPSG:4269', text: 'EPSG:4269' },
+						{ value: 'EPSG:3857', text: 'EPSG:3857' },
+					],
+				},
+			},
+			schema: {
+				default_value: 'EPSG:4326',
+			},
+		},
 		{
 			field: 'latitude',
 			name: '$t:interfaces.map.lat',
@@ -68,25 +138,6 @@ export default defineInterface({
 			},
 			schema: {
 				default_value: 'CartoDB_PositronNoLabels',
-			},
-		},
-		{
-			field: 'projection',
-			name: '$t:interfaces.map.projection',
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'dropdown',
-				options: {
-					choices: [
-						{ value: 'EPSG:4326', text: 'WGS84' },
-						{ value: 'EPSG:4269', text: 'EPSG:4269' },
-						{ value: 'EPSG:3857', text: 'EPSG:3857' },
-					],
-				},
-			},
-			schema: {
-				default_value: 'EPSG:4326',
 			},
 		},
 	],

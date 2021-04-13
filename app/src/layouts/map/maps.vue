@@ -6,7 +6,7 @@
 				<v-select v-model="backgroundLayer" :items="mapStyleOptions" item-icon="icon" />
 			</div>
 			<div class="field">
-				<div class="type-label">{{ $t('layouts.map.format') }}</div>
+				<div class="type-label">{{ $t('layouts.map.geometry_format') }}</div>
 				<v-select
 					v-model="geometryFormat"
 					:items="[
@@ -424,12 +424,6 @@ export default defineComponent({
 			searchQuery: _searchQuery,
 		});
 
-		function onQueryChange(next: any, prev: any) {
-			resetWorker();
-			page.value = 1;
-			geojsonDataChanged.value = true;
-		}
-
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
 		const geojsonBounds = ref<GeoJSON.BBox>();
 		const geojsonError = ref<string | null>();
@@ -464,6 +458,12 @@ export default defineComponent({
 			() => geometryField.value,
 			() => (geojsonDataChanged.value = true)
 		);
+
+		function onQueryChange(next: any, prev: any) {
+			resetWorker();
+			page.value = 1;
+			geojsonDataChanged.value = true;
+		}
 
 		function resetWorker() {
 			if (geojsonWorker) geojsonWorker.terminate();
@@ -516,6 +516,7 @@ export default defineComponent({
 
 		function resetLayers() {
 			userLayers.value = cloneDeep(dataStyle.layers);
+			customLayers.value = userLayers.value;
 		}
 
 		function updateSource() {

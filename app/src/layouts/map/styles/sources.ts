@@ -1,7 +1,8 @@
 import type { Sources } from 'maplibre-gl';
 
-const tiles = (subdomains: string, url: string) => Array.from(subdomains || '').map((s) => url.replace('{s}', s));
-const esri = (url: string) => ['server', 'services'].map((s) => url.replace('{s}', s));
+function tiles(subdomains: string | string[], url: string) {
+	return Array.from(subdomains || '').map((s) => url.replace('{s}', s));
+}
 
 export const mapbox_sources: Record<string, string> = {
 	Mapbox_Light: 'mapbox://styles/mapbox/light-v10',
@@ -67,21 +68,30 @@ export const sources = <Sources>{
 		tileSize: 256,
 	},
 	Esri_Streets: {
-		tiles: esri('https://{s}.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'),
+		tiles: tiles(
+			['server', 'services'],
+			'https://{s}.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
+		),
 		attribution: 'USGS, NOAA',
 		type: 'raster',
 		minzoom: 1,
 		maxzoom: 19,
 	},
 	Esri_Topographic: {
-		tiles: esri('https://{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'),
+		tiles: tiles(
+			['server', 'services'],
+			'https://{s}.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+		),
 		attribution: 'USGS, NOAA',
 		type: 'raster',
 		minzoom: 1,
 		maxzoom: 19,
 	},
 	Esri_NationalGeographic: {
-		tiles: esri('https://{s}.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}'),
+		tiles: tiles(
+			['server', 'services'],
+			'https://{s}.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}'
+		),
 		attribution:
 			'National Geographic, DeLorme, HERE, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, increment P Corp.',
 		type: 'raster',
@@ -89,7 +99,8 @@ export const sources = <Sources>{
 		maxzoom: 16,
 	},
 	Esri_Gray: {
-		tiles: esri(
+		tiles: tiles(
+			['server', 'services'],
 			'https://{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
 		),
 		attribution: 'HERE, DeLorme, MapmyIndia, &copy; OpenStreetMap contributors',
@@ -98,7 +109,8 @@ export const sources = <Sources>{
 		maxzoom: 16,
 	},
 	Esri_DarkGray: {
-		tiles: esri(
+		tiles: tiles(
+			['server', 'services'],
 			'https://{s}.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
 		),
 		attribution: 'HERE, DeLorme, MapmyIndia, &copy; OpenStreetMap contributors',
@@ -107,7 +119,10 @@ export const sources = <Sources>{
 		maxzoom: 16,
 	},
 	Esri_Imagery: {
-		tiles: esri('https://{s}.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'),
+		tiles: tiles(
+			['server', 'services'],
+			'https://{s}.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+		),
 		attribution:
 			'DigitalGlobe, GeoEye, i-cubed, USDA, USGS, AEX, Getmapping, Aerogrid, IGN, IGP, swisstopo, and the GIS User Community',
 		type: 'raster',
