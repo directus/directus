@@ -39,6 +39,7 @@ export default defineComponent({
 		);
 
 		watch(() => props.value, loadItemName);
+
 		loadItemName();
 
 		const options = computed(() => {
@@ -80,6 +81,7 @@ export default defineComponent({
 				collection.value = null;
 				return emit('input', 'all');
 			}
+
 			collection.value = value;
 		}
 
@@ -90,26 +92,32 @@ export default defineComponent({
 
 		async function loadItemName() {
 			if (!isItem.value) {
-				return (itemName.value = null);
+				itemName.value = null;
+				return;
 			}
+
 			loading.value = true;
+
 			const [endpoint, id] = props.value.split('_');
 
 			if (endpoint === 'role') {
-				const result = await api.get('roles/' + id, {
+				const result = await api.get('/roles/' + id, {
 					params: {
 						fields: ['id', 'name'],
 					},
 				});
+
 				itemName.value = result.data.data.name;
 			} else if (endpoint === 'user') {
-				const result = await api.get('users/' + id, {
+				const result = await api.get('/users/' + id, {
 					params: {
 						fields: ['id', 'first_name', 'last_name', 'email'],
 					},
 				});
+
 				itemName.value = userName(result.data.data);
 			}
+
 			loading.value = false;
 		}
 	},
