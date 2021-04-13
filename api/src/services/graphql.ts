@@ -150,7 +150,7 @@ export class GraphQLService {
 				operationName,
 			});
 		} catch (err) {
-			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err] });
+			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err.message] });
 		}
 
 		const formattedResult: FormattedExecutionResult = {
