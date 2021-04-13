@@ -17,7 +17,7 @@ export async function registerInterfaces() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/interfaces');
+		const customResponse = await api.get('/extensions/interfaces/');
 		const interfaces: string[] = customResponse.data.data || [];
 
 		await asyncPool(5, interfaces, async (interfaceName) => {

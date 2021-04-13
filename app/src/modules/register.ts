@@ -19,7 +19,7 @@ export async function loadModules() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/modules');
+		const customResponse = await api.get('/extensions/modules/');
 		const modules: string[] = customResponse.data.data || [];
 
 		await asyncPool(5, modules, async (moduleName) => {
