@@ -13,6 +13,7 @@ import grantConfig from '../grant';
 import { InvalidCredentialsException, RouteNotFoundException, ServiceUnavailableException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { toArray } from '../utils/to-array';
+import emitter, { emitAsyncSafe } from '../emitter';
 
 const router = Router();
 
@@ -232,6 +233,22 @@ router.get(
 			req.session.redirect = req.query.redirect as string;
 		}
 
+		const accountability = {
+			ip: req.ip,
+			userAgent: req.get('user-agent'),
+			role: null,
+		};
+
+		emitAsyncSafe('oauth.provider', {
+			event: 'oauth.provider',
+			action: 'provider',
+			schema: null,
+			payload: null,
+			accountability: accountability,
+			user: null,
+			database: null,
+		});
+
 		next();
 	})
 );
@@ -256,6 +273,32 @@ router.get(
 
 		let authResponse: { accessToken: any; refreshToken: any; expires: any; id?: any };
 
+		let hookPayload = req.session.grant.response;
+
+		await emitter.emitAsync('oauth.login.before', hookPayload, {
+			event: 'oauth.login.before',
+			action: 'oauth.login',
+			schema: req.schema,
+			payload: hookPayload,
+			accountability: accountability,
+			status: 'pending',
+			user: null,
+			database: null,
+		});
+
+		const emitStatus = (status: 'fail' | 'success') => {
+			emitAsyncSafe('oauth.login', hookPayload, {
+				event: 'oauth.login',
+				action: 'oauth.login',
+				schema: req.schema,
+				payload: hookPayload,
+				accountability: accountability,
+				status,
+				user: null,
+				database: null,
+			});
+		};
+
 		try {
 			const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
 
@@ -265,6 +308,7 @@ router.get(
 				email,
 			});
 		} catch (error) {
+			emitStatus('fail');
 			if (redirect) {
 				let reason = 'UNKNOWN_EXCEPTION';
 
@@ -281,6 +325,8 @@ router.get(
 		}
 
 		const { accessToken, refreshToken, expires } = authResponse;
+
+		emitStatus('success');
 
 		if (redirect) {
 			res.cookie('directus_refresh_token', refreshToken, {
