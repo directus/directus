@@ -575,7 +575,6 @@ settings_presets: Voorkeuren & Bladwijzers
 scope: Bereik
 layout: Lay-out
 changes_are_permanent: Wijzigingen zijn permanent
-preset_name_placeholder: Naam van de bladwijzer...
 preset_search_placeholder: Zoekterm...
 editing_preset: Voorkeur aan het Wijzigen
 layout_preview: Lay-out voorbeeld
