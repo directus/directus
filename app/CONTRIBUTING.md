@@ -5,4 +5,4 @@ email, or any other method with the owners of this repository before making a ch
 
 Please note we have a [code of conduct](./CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
 
-Learn more about contributing to the platform: https://docs.directus.io/getting-started/contributing.html#repositories
+Learn more about contributing to the platform: https://docs.directus.io/contributing/introduction/
