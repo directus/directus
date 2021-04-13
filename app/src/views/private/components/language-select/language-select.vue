@@ -1,5 +1,12 @@
 <template>
-	<v-select @input="$listeners.input" :value="value" :items="items" :disabled="disabled" />
+	<v-select
+		@input="$listeners.input"
+		item-text="text"
+		item-value="value"
+		v-model="language"
+		:items="items"
+		:disabled="disabled"
+	/>
 </template>
 
 <script lang="ts">
@@ -25,31 +32,31 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		value: {
-			type: String
-		}
 	},
 	watch: {
 		languages: function () {
+			const language = this.language;
 			this.items = this.languages.map((language: any) => {
 				return {
 					text: this.applyTemplate(this.template, language),
 					value: language[this.languagesPrimaryKeyField],
 				};
 			});
+			const [item] = this.items;
+			this.language = item?.value || null;
+			if (this.language !== language) {
+				this.$emit('input', this.language);
+			}
 		},
 	},
 	setup(props) {
 		const items = ref<any[]>([]);
+		const language = ref<any>(null);
 		const relationsStore = useRelationsStore();
-		const {
-			languagesCollection,
-			languagesPrimaryKeyField,
-		} = useRelations();
-
+		const { languagesCollection, languagesPrimaryKeyField } = useRelations();
 		const { languages, template } = useLanguages();
 		const { applyTemplate } = useTemplate();
-		return { languages, items, languagesPrimaryKeyField, template, applyTemplate };
+		return { languages, language, items, languagesPrimaryKeyField, template, applyTemplate };
 
 		function useTemplate() {
 			const regex = /\{\{(.*?)\}\}/g;
@@ -97,7 +104,6 @@ export default defineComponent({
 				if (!languagesRelation.value) return null;
 				return languagesRelation.value.one_primary;
 			});
-
 
 			return {
 				relationsForField,

@@ -6,22 +6,13 @@
 				<v-select :items="formats" v-model="format" />
 				<v-checkbox v-model="useFilters" :label="$t('use_current_filters_settings')" />
 			</div>
-			<div class="field full" v-show="hasMoreThanOneTranslationFields">
+			<div class="field full" v-show="isXliff && hasMoreThanOneTranslationFields">
 				<p class="type-label">{{ $t('translation_field') }}</p>
-				<translation-field-select
-					@input="onSelectTranslationField"
-					:collection="collection.collection"
-					:value="translationField"
-				/>
+				<translation-field-select @input="onSelectTranslationField" :collection="collection.collection" />
 			</div>
-			<div class="field full">
+			<div class="field full" v-if="isXliff && translationField">
 				<p class="type-label">{{ $t('language') }}</p>
-				<language-select
-					@input="onSelectLanguage"
-					:collection="collection.collection"
-					:value="language"
-					:field="translationField"
-				/>
+				<language-select @input="onSelectLanguage" :collection="collection.collection" :field="translationField" />
 			</div>
 			<div class="field full">
 				<v-button full-width @click="exportData" :disabled="isExportDisabled">
@@ -100,7 +91,10 @@ export default defineComponent({
 			return fields.filter((field: Field) => field.type === 'translations').length > 1;
 		},
 		isExportDisabled(): boolean {
-			return ['xliff', 'xliff2'].includes(this.format) && (!this.language.value || !this.translationField.value);
+			return this.isXliff && (!this.language || !this.translationField);
+		},
+		isXliff(): boolean {
+			return ['xliff', 'xliff2'].includes(this.format);
 		},
 	},
 	watch: {
@@ -121,11 +115,11 @@ export default defineComponent({
 
 		return { format, language, translationField, useFilters, exportData, onSelectTranslationField, onSelectLanguage };
 
-		function onSelectTranslationField(selection: any[]) {
+		function onSelectTranslationField(selection: string) {
 			translationField.value = selection;
 		}
 
-		function onSelectLanguage(selection: any[]) {
+		function onSelectLanguage(selection: string) {
 			language.value = selection;
 		}
 
@@ -146,8 +140,8 @@ export default defineComponent({
 				case 'xliff':
 				case 'xliff2':
 					params.optional = JSON.stringify({
-						language,
-						field: translationField,
+						language: language.value,
+						field: translationField.value,
 					});
 					params.export = format.value;
 					break;

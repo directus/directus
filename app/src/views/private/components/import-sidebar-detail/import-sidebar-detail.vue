@@ -11,19 +11,14 @@
 			</div>
 			<div class="field full" v-show="!useFileLanguage && hasMoreThanOneTranslationFields">
 				<p class="type-label">{{ $t('target_translation_field') }}</p>
-				<translation-field-select
-					@input="onSelectTranslationField"
-					:collection="collection.collection"
-					:value="translationField"
-				/>
+				<translation-field-select @input="onSelectTranslationField" :collection="collection.collection" />
 			</div>
 			<div class="field full">
 				<p class="type-label">{{ $t('target_language') }}</p>
 				<language-select
 					@input="onSelectLanguage"
-					v-show="!useFileLanguage"
+					v-if="!useFileLanguage && translationField"
 					:collection="collection.collection"
-					:value="language"
 					:field="translationField"
 				/>
 				<v-checkbox v-model="useFileLanguage" :label="$t('use_language_from_file')" />
@@ -169,7 +164,7 @@ export default defineComponent({
 			language.value = null;
 		}
 
-		function onSelectLanguage(selection: any[]) {
+		function onSelectLanguage(selection: string) {
 			language.value = selection;
 		}
 
@@ -177,7 +172,7 @@ export default defineComponent({
 			file.value = selection;
 		}
 
-		function onSelectTranslationField(selection: any[]) {
+		function onSelectTranslationField(selection: string) {
 			translationField.value = selection;
 		}
 
