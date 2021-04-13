@@ -101,6 +101,23 @@ export default [
 		},
 	},
 	{
+		id: 'directus-points-shadow',
+		filter: [
+			'all',
+			['==', 'active', 'false'],
+			['==', '$type', 'Point'],
+			['==', 'meta', 'feature'],
+			['!=', 'meta', 'midpoint'],
+		],
+		type: 'circle',
+		paint: {
+			'circle-pitch-alignment': 'map',
+			'circle-blur': 1,
+			'circle-opacity': 0.5,
+			'circle-radius': 6,
+		},
+	},
+	{
 		id: 'directus-point-inactive',
 		filter: [
 			'all',

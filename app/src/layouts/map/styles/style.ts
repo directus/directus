@@ -35,6 +35,19 @@ export const style = <Style>{
 			},
 		},
 		{
+			id: '__directus_points_shadow',
+			type: 'circle',
+			source: '__directus',
+			filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
+			layout: {},
+			paint: {
+				'circle-pitch-alignment': 'map',
+				'circle-blur': 1,
+				'circle-opacity': 0.5,
+				'circle-radius': 6,
+			},
+		},
+		{
 			id: '__directus_points',
 			type: 'symbol',
 			source: '__directus',

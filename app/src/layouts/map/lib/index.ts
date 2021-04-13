@@ -11,7 +11,7 @@ export type geometryOptions = {
 	geometrySRID?: string;
 };
 
-export type GeometryFormat = 'geojson' | 'csv' | 'wkt' | 'ewkt' | 'wkb' | 'ewkb' | 'twkb' | 'lnglat';
+export type GeometryFormat = 'geojson' | 'postgis' | 'csv' | 'wkt' | 'ewkt' | 'wkb' | 'ewkb' | 'twkb' | 'lnglat';
 export type AnyGeoJSON = FeatureCollection | Feature | GeometryCollection | Geometry;
 export type AllGeoJSON = FeatureCollection & Feature & GeometryCollection & Geometry;
 type GeometryParser = (entry: any) => wkx.Geometry | undefined;
@@ -63,6 +63,7 @@ export function getGeometryParser(options: geometryOptions): GeometryParser {
 			return lnglatParser(options);
 		case 'twkb':
 			return twkbParser(options);
+		case 'postgis':
 		case 'ewkb':
 		case 'wkb':
 			return wkbParser(options);
@@ -88,6 +89,7 @@ export function getGeometrySerializer(options: geometryOptions): (entry: AnyGeoJ
 			return (entry) => wkx.Geometry.parseGeoJSON(entry).toTwkb();
 		case 'wkt':
 			return (entry) => wkx.Geometry.parseGeoJSON(entry).toWkt();
+		case 'postgis':
 		case 'ewkt':
 			return (entry) => wkx.Geometry.parseGeoJSON(entry).toEwkt();
 		case 'csv':

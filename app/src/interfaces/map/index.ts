@@ -51,6 +51,7 @@ export default defineInterface({
 				options: {
 					choices: [
 						{ value: 'geojson', text: 'GeoJSON' },
+						{ value: 'postgis', text: 'PostGIS' },
 						{ value: 'wkt', text: 'WKT' },
 						{ value: 'ewkt', text: 'EWKT' },
 						{ value: 'wkb', text: 'WKB' },

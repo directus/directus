@@ -12,6 +12,7 @@
 					:items="[
 						{ value: 'lnglat', text: $t('layouts.map.lnglat') },
 						{ value: 'geojson', text: 'GeoJSON' },
+						{ value: 'postgis', text: 'PostGIS' },
 						{ value: 'wkt', text: '(E)WKT' },
 						{ value: 'wkb', text: '(E)WKB' },
 						{ value: 'twkb', text: 'TWKB' },
