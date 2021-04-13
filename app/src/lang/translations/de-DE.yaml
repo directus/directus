@@ -126,6 +126,8 @@ date: Datum
 datetime: Datum mit Uhrzeit
 decimal: Dezimal
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: Zeichenkette
 text: Text
 time: Zeit

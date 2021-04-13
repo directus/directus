@@ -136,6 +136,8 @@ decimal: Desimal
 float: Float
 integer: Integer
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: String
 text: Teks
 time: Time

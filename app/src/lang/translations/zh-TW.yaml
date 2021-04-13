@@ -103,6 +103,8 @@ alias: 別名
 date: 日期
 decimal: 小數
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 text: 文字
 time: 時間
 uuid: UUID

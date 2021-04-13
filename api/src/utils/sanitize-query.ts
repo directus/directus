@@ -2,6 +2,7 @@ import { Accountability, Query, Sort, Filter, Meta } from '../types';
 import logger from '../logger';
 import { parseFilter } from '../utils/parse-filter';
 import { flatten, set, merge, get } from 'lodash';
+import { string } from 'joi';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Accountability | null) {
 	const query: Query = {};
@@ -47,7 +48,11 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Acc
 	}
 
 	if (rawQuery.export) {
-		query.export = rawQuery.export as 'json' | 'csv';
+		query.export = rawQuery.export as 'json' | 'csv' | 'xliff' | 'xliff2';
+	}
+
+	if (rawQuery.optional) {
+		query.optional = sanitizeOptional(rawQuery.optional);
 	}
 
 	if (rawQuery.deep as Record<string, any>) {
@@ -139,6 +144,18 @@ function sanitizeMeta(rawMeta: any) {
 	}
 
 	return [rawMeta];
+}
+
+function sanitizeOptional(optional: any) {
+	let result: Record<string, any> = {};
+	if (typeof optional === 'string') {
+		try {
+			result = JSON.parse(optional);
+		} catch {
+			logger.warn('Invalid value passed for optional query parameter.');
+		}
+	}
+	return result;
 }
 
 function sanitizeDeep(deep: Record<string, any>, accountability: Accountability | null) {

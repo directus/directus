@@ -3,24 +3,19 @@
 		<div class="fields">
 			<div class="field full">
 				<p class="type-label">{{ $t('format') }}</p>
-				<v-select
-					:items="[
-						{
-							text: $t('csv'),
-							value: 'csv',
-						},
-						{
-							text: $t('json'),
-							value: 'json',
-						},
-					]"
-					v-model="format"
-				/>
+				<v-select :items="formats" v-model="format" />
 				<v-checkbox v-model="useFilters" :label="$t('use_current_filters_settings')" />
 			</div>
-
+			<div class="field full" v-show="isXliff && hasMoreThanOneTranslationFields">
+				<p class="type-label">{{ $t('translation_field') }}</p>
+				<translation-field-select @input="onSelectTranslationField" :collection="collection.collection" />
+			</div>
+			<div class="field full" v-if="isXliff && translationField">
+				<p class="type-label">{{ $t('language') }}</p>
+				<language-select @input="onSelectLanguage" :collection="collection.collection" :field="translationField" />
+			</div>
 			<div class="field full">
-				<v-button full-width @click="exportData">
+				<v-button full-width @click="exportData" :disabled="isExportDisabled">
 					{{ $t('export_collection', { collection: collection.name }) }}
 				</v-button>
 			</div>
@@ -31,10 +26,18 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from '@vue/composition-api';
 import { Collection } from '@/types';
+import { useFieldsStore } from '@/stores/';
+import { Field } from '@/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import { LanguageSelect } from '../language-select';
+import { TranslationFieldSelect } from '../translation-field-select';
 
 export default defineComponent({
+	components: {
+		LanguageSelect,
+		TranslationFieldSelect,
+	},
 	props: {
 		layoutQuery: {
 			type: Object,
@@ -49,11 +52,76 @@ export default defineComponent({
 			required: true,
 		},
 	},
+	computed: {
+		formats(): any[] {
+			return [
+				...[
+					{
+						text: this.$t('csv'),
+						value: 'csv',
+					},
+					{
+						text: this.$t('json'),
+						value: 'json',
+					},
+				],
+				// enable XLIFF for translatable content only
+				...(this.translatable
+					? [
+							{
+								text: this.$t('xliff'),
+								value: 'xliff',
+							},
+							{
+								text: this.$t('xliff2'),
+								value: 'xliff2',
+							},
+					  ]
+					: []),
+			];
+		},
+		translatable(): boolean {
+			const fieldsStore = useFieldsStore();
+			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
+			return fields.some((field: Field) => field.type === 'translations');
+		},
+		hasMoreThanOneTranslationFields(): boolean {
+			const fieldsStore = useFieldsStore();
+			const fields = fieldsStore.getFieldsForCollection(this.collection.collection);
+			return fields.filter((field: Field) => field.type === 'translations').length > 1;
+		},
+		isExportDisabled(): boolean {
+			return this.isXliff && (!this.language || !this.translationField);
+		},
+		isXliff(): boolean {
+			return ['xliff', 'xliff2'].includes(this.format);
+		},
+	},
+	watch: {
+		collection: function () {
+			// watch it
+			if (!this.translatable && !this.formats.includes(this.format)) {
+				const [defaultFormat] = this.formats;
+				// reset format in case if current is not available
+				this.format = defaultFormat.value;
+			}
+		},
+	},
 	setup(props) {
 		const format = ref('csv');
 		const useFilters = ref(true);
+		const language = ref<any>(null);
+		const translationField = ref<any>(null);
 
-		return { format, useFilters, exportData };
+		return { format, language, translationField, useFilters, exportData, onSelectTranslationField, onSelectLanguage };
+
+		function onSelectTranslationField(selection: string) {
+			translationField.value = selection;
+		}
+
+		function onSelectLanguage(selection: string) {
+			language.value = selection;
+		}
 
 		function exportData() {
 			const url = getRootPath() + `items/${props.collection.collection}`;
@@ -62,10 +130,21 @@ export default defineComponent({
 				access_token: api.defaults.headers.Authorization.substring(7),
 			};
 
-			if (format.value === 'csv') {
-				params.export = 'csv';
-			} else {
-				params.export = 'json';
+			switch (format.value) {
+				case 'csv':
+					params.export = 'csv';
+					break;
+				case 'json':
+					params.export = 'json';
+					break;
+				case 'xliff':
+				case 'xliff2':
+					params.optional = JSON.stringify({
+						language: language.value,
+						field: translationField.value,
+					});
+					params.export = format.value;
+					break;
 			}
 
 			if (useFilters.value === true) {
@@ -76,6 +155,18 @@ export default defineComponent({
 
 				if (props.searchQuery) {
 					params.search = props.searchQuery;
+				}
+			}
+
+			// add primary key to request for XLIFF export
+			// it's required for correct generation of XLIFF file
+			if (['xliff', 'xliff2'].includes(format.value)) {
+				const fieldsStore = useFieldsStore();
+				const { field: primaryKey } = fieldsStore.getPrimaryKeyFieldForCollection(props.collection.collection);
+				if (!params.fields) {
+					params.fields = [primaryKey];
+				} else if (!params.fields.includes(primaryKey)) {
+					params.fields = [...params.fields, primaryKey];
 				}
 			}
 

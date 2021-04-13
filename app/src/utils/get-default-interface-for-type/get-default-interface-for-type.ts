@@ -19,6 +19,7 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	unknown: 'text-input',
 	csv: 'tags',
 	hash: 'hash',
+	translations: 'translations',
 };
 
 /**

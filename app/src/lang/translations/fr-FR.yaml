@@ -138,6 +138,8 @@ decimal: Décimale
 float: Décimal
 integer: Entier
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: Chaine de caractères
 text: Texte
 time: Date et heure

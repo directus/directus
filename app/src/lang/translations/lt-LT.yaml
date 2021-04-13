@@ -122,6 +122,8 @@ decimal: Dešimtainis skaičius
 float: Slankiojo kablelio skaičius
 integer: Sveikasis skaičius
 json: JSON
+xliff: XLIFF 1.2
+xliff2: XLIFF 2.0
 string: Simbolių eilutė
 text: Tekstas
 time: Laikas
