@@ -105,7 +105,7 @@ export default defineComponent({
 			} else if (endpoint === 'user') {
 				const result = await api.get('users/' + id, {
 					params: {
-						fields: ['id', 'first_name', 'last_name'],
+						fields: ['id', 'first_name', 'last_name', 'email'],
 					},
 				});
 				itemName.value = userName(result.data.data);
