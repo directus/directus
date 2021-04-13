@@ -4,6 +4,7 @@ import asyncHandler from '../utils/async-handler';
 import { CollectionsService, MetaService, XliffService } from '../services';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
+import logger from '../logger';
 
 const router = Router();
 
@@ -137,9 +138,7 @@ router.post(
 					const savedKeys = await xliffService.fromXliff(collectionKey, field, res.locals.data);
 					res.locals.payload = { data: savedKeys || null };
 				} catch (error) {
-					if (error instanceof ForbiddenException) {
-						return next();
-					}
+					logger.error(error);
 					throw error;
 				}
 			}

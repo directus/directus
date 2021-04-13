@@ -99,7 +99,7 @@ export default defineComponent({
 		collection: function () {
 			// clear file and language selection each time when user
 			// switching between collections
-			this.clearFileAndLanguage();
+			this.clearFile();
 		},
 	},
 	setup(props, { emit }) {
@@ -123,7 +123,7 @@ export default defineComponent({
 			onSelectLanguage,
 			onSelectTranslationField,
 			onFileLoad,
-			clearFileAndLanguage,
+			clearFile,
 			clearFileSelection,
 		};
 
@@ -144,8 +144,7 @@ export default defineComponent({
 				// cleanup fields in case of successfull import
 				const { data } = result.data;
 				const importedAmount = data ? Object.keys(data).reduce((acc, val) => acc + data[val].length, 0) : 0;
-				importing.value = false;
-				clearFileAndLanguage();
+				clearFile();
 				emit('refresh');
 				notify({
 					title: i18n.tc('import_successfull', importedAmount > 0 ? (importedAmount > 1 ? 2 : 1) : 0, {
@@ -153,15 +152,22 @@ export default defineComponent({
 					}),
 					type: 'success',
 				});
-			} catch (err) {
+			} catch (error) {
+				notify({
+					title: i18n.tc('import_failed'),
+					text: error.message,
+					type: 'error',
+					dialog: true,
+					error,
+				});
 			} finally {
+				importing.value = false;
 			}
 		}
 
-		function clearFileAndLanguage() {
+		function clearFile() {
 			file.value = null;
 			clearFileSelection.value();
-			language.value = null;
 		}
 
 		function onSelectLanguage(selection: string) {
