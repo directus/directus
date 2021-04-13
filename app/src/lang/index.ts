@@ -39,6 +39,13 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 		return false;
 	}
 
+	(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
+
+	modules.value = translate(modulesRaw.value);
+	layouts.value = translate(layoutsRaw.value);
+	interfaces.value = translate(interfacesRaw.value);
+	displays.value = translate(displaysRaw.value);
+
 	if (i18n.locale === lang) {
 		return true;
 	}
@@ -50,12 +57,6 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	}
 
 	i18n.locale = lang;
-	(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
-
-	modules.value = translate(modulesRaw.value);
-	layouts.value = translate(layoutsRaw.value);
-	interfaces.value = translate(interfacesRaw.value);
-	displays.value = translate(displaysRaw.value);
 
 	return true;
 }
