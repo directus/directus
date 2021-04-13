@@ -42,7 +42,7 @@ export default defineComponent({
 		loadItemName();
 
 		const options = computed(() => {
-			const options = [
+			let options: any[] = [
 				{
 					text: i18n.t('global') + ': ' + i18n.t('all_users'),
 					value: 'all',
@@ -56,14 +56,20 @@ export default defineComponent({
 					value: 'directus_roles',
 				},
 			];
+
 			if (isItem.value) {
 				const [type, id] = props.value.split('_');
 
-				options.push({
-					text: i18n.t(type) + ': ' + (itemName.value || id),
-					value: props.value,
-				});
+				options = [
+					{
+						text: i18n.t(type) + ': ' + (itemName.value || id),
+						value: props.value,
+					},
+					{ divider: true },
+					...options,
+				];
 			}
+
 			return options;
 		});
 
