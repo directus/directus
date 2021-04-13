@@ -577,7 +577,6 @@ scope: ขอบเขต
 layout: เค้าโครง
 tree_view: มุมมองแผนภูมิ
 changes_are_permanent: การเปลี่ยนแปลงนี้ถาวร
-preset_name_placeholder: ชื่อของบุ๊คมาร์ก
 preset_search_placeholder: ค้นหาด้วย...
 editing_preset: แก้ไขค่าที่ตั้งไว้ล่วงหน้า
 layout_preview: ตัวอย่างเค้าโครง
