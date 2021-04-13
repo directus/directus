@@ -5,7 +5,7 @@ import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import asyncPool from 'tiny-async-pool';
 
-const displays = getDisplays();
+const { displaysRaw } = getDisplays();
 
 export async function registerDisplays() {
 	const context = require.context('.', true, /^.*index\.ts$/);
@@ -34,9 +34,9 @@ export async function registerDisplays() {
 		console.warn(`Couldn't load custom displays`);
 	}
 
-	displays.value = modules;
+	displaysRaw.value = modules;
 
-	displays.value.forEach((display) => {
+	displaysRaw.value.forEach((display) => {
 		if (typeof display.handler !== 'function') {
 			registerComponent('display-' + display.id, display.handler as Component);
 		}

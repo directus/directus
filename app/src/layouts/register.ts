@@ -4,7 +4,7 @@ import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import asyncPool from 'tiny-async-pool';
 
-const layouts = getLayouts();
+const { layoutsRaw } = getLayouts();
 
 export async function registerLayouts() {
 	const context = require.context('.', true, /^.*index\.ts$/);
@@ -33,9 +33,9 @@ export async function registerLayouts() {
 		console.warn(`Couldn't load custom layouts`);
 	}
 
-	layouts.value = modules;
+	layoutsRaw.value = modules;
 
-	layouts.value.forEach((layout) => {
+	layoutsRaw.value.forEach((layout) => {
 		registerComponent('layout-' + layout.id, layout.component);
 	});
 }

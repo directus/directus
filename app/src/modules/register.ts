@@ -6,7 +6,8 @@ import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import asyncPool from 'tiny-async-pool';
 
-const modules = getModules();
+const { modulesRaw } = getModules();
+
 let queuedModules: any = [];
 
 export async function loadModules() {
@@ -65,7 +66,7 @@ export async function register() {
 
 	replaceRoutes((routes) => insertBeforeProjectWildcard(routes, moduleRoutes));
 
-	modules.value = registeredModules;
+	modulesRaw.value = registeredModules;
 
 	function insertBeforeProjectWildcard(currentRoutes: RouteConfig[], routesToBeAdded: RouteConfig[]) {
 		// Find the index of the /* route, so we can insert the module routes right above that
@@ -76,5 +77,5 @@ export async function register() {
 
 export function unregister() {
 	replaceRoutes((routes) => routes);
-	modules.value = [];
+	modulesRaw.value = [];
 }
