@@ -860,16 +860,40 @@ interfaces:
     display_template: Anzeigevorlage
   markdown:
     markdown: Markdown
+    description: Markdown eingeben und Vorschau anzeigen
+    customSyntax: Benutzerdefinierte Blöcke
+    customSyntax_label: Eigene Syntaxtypen hinzufügen
+    customSyntax_add: Eigene Syntax hinzufügen
+    box: Block / Inline
+    imageToken: Bild-Token
+    imageToken_label: (Statischer) Token, der an Bildquellen angehängt werden soll
+  notice:
+    notice: Anmerkung
+    description: Kurze Anmerkung anzeigen
+    text: Inhalt der Anmerkung eingeben...
   numeric:
     numeric: Numerisch
+    description: Nummer eingeben
+    minimum_value: Minimalwert
+    maximum_value: Maximalwert
+    step_interval: Schrittintervall
   one-to-many:
     one-to-many: 1 zu n
+    description: Mehrere verwandte Elemente auswählen
+    no_collection: Die Sammlung konnte nicht gefunden werden
   radio-buttons:
     radio-buttons: Radio Buttons
+    description: Eine von mehreren Optionen auswählen
   repeater:
     repeater: Repeater
+    description: Mehrere Einträge derselben Struktur erstellen
+    edit_fields: Felder bearbeiten
+    add_label: 'Label "Neue Zeile hinzufügen"'
+    field_name_placeholder: Feldnamen eingeben...
+    field_note_placeholder: Feldnotiz eingeben...
   slider:
     slider: Slider
+    description: Nummer mit Schieberegler auswählen
     always_show_value: Wert immer anzeigen
   slug:
     slug: Slug
