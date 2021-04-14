@@ -233,18 +233,12 @@ router.get(
 			req.session.redirect = req.query.redirect as string;
 		}
 
-		const accountability = {
-			ip: req.ip,
-			userAgent: req.get('user-agent'),
-			role: null,
-		};
-
 		emitAsyncSafe('oauth.provider', {
 			event: 'oauth.provider',
 			action: 'provider',
 			schema: null,
 			payload: null,
-			accountability: accountability,
+			accountability: req.accountability,
 			user: null,
 		});
 
