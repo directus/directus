@@ -233,11 +233,16 @@ router.get(
 			req.session.redirect = req.query.redirect as string;
 		}
 
+		let hookPayload = {
+			provider: req.params.provider,
+			redirect: req.query?.redirect,
+		};
+
 		emitAsyncSafe(`oauth.${req.params.provider}.redirect`, {
 			event: `oauth.${req.params.provider}.redirect`,
 			action: 'redirect',
 			schema: null,
-			payload: req.params.provider,
+			payload: hookPayload,
 			accountability: req.accountability,
 			user: null,
 		});
@@ -246,7 +251,7 @@ router.get(
 			event: `oauth.${req.params.provider}.redirect.before`,
 			action: 'redirect',
 			schema: null,
-			payload: req.params.provider,
+			payload: hookPayload,
 			accountability: req.accountability,
 			user: null,
 		});
