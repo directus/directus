@@ -14,8 +14,12 @@ declare module global {
 }
 
 const docker = new Dockerode();
+let started = false;
 
 export default async () => {
+	if (started) return;
+	started = true;
+
 	console.log('\n\n');
 
 	console.log(`👮‍♀️ Starting tests!\n`);

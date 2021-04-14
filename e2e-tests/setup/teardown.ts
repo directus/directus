@@ -3,6 +3,7 @@ import { Knex } from 'knex';
 import Dockerode from 'dockerode';
 import { getDBsToTest } from '../get-dbs-to-test';
 import config from '../config';
+import { GlobalConfigTsJest } from 'ts-jest/dist/types';
 
 declare module global {
 	let databaseContainers: { vendor: string; container: Dockerode.Container }[];
@@ -10,7 +11,9 @@ declare module global {
 	let knexInstances: { vendor: string; knex: Knex }[];
 }
 
-export default async () => {
+export default async (jestConfig: GlobalConfigTsJest) => {
+	if (jestConfig.watch || jestConfig.watchAll) return;
+
 	const vendors = getDBsToTest();
 
 	console.log('\n');
