@@ -578,7 +578,6 @@ scope: Omfattning
 layout: Layout
 tree_view: Trädvy
 changes_are_permanent: Ändringar är permanenta
-preset_name_placeholder: Bokmärkets namn...
 preset_search_placeholder: Sök...
 editing_preset: Redigerar förval
 layout_preview: Förhandsgranska layout

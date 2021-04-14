@@ -601,7 +601,6 @@ scope: Laajuus
 layout: Asettelu
 tree_view: Puunäkymä
 changes_are_permanent: Muutokset ovat pysyviä
-preset_name_placeholder: Kirjanmerkin nimi...
 preset_search_placeholder: Hakulauseke...
 editing_preset: Muokataan esiasetusta
 layout_preview: Asettelun esikatselu
@@ -819,7 +818,6 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
-weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:

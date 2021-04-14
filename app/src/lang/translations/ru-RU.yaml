@@ -565,7 +565,6 @@ settings_presets: Пресеты и Закладки
 scope: Область
 layout: Макет
 changes_are_permanent: Изменения необратимы
-preset_name_placeholder: Название закладки...
 preset_search_placeholder: Строка поиска...
 editing_preset: Редактирование Пресета
 layout_preview: Предпросмотр Макета

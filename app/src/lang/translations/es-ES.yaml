@@ -584,7 +584,6 @@ scope: Alcance
 layout: Diseño
 tree_view: Vista en árbol
 changes_are_permanent: Los cambios son permanentes
-preset_name_placeholder: Nombre del Marcador...
 preset_search_placeholder: Consulta de búsqueda...
 editing_preset: Editar Predefinido
 layout_preview: Vista Previa de Diseño

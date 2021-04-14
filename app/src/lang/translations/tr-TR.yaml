@@ -467,7 +467,6 @@ settings_project: Proje Ayarları
 settings_webhooks: Ağ Kancaları
 scope: Kapsam
 layout: Yerleşim
-preset_name_placeholder: Yer imi adı...
 editing_preset: Önayarı Düzenle
 unsaved_changes: Kaydedilmemiş Değişiklikler
 unsaved_changes_copy: Bu sayfayı terketmek istediğine emin misin?

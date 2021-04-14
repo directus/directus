@@ -578,7 +578,6 @@ scope: Обхват
 layout: Оформление
 tree_view: Дървовиден изглед
 changes_are_permanent: Промените са постоянни
-preset_name_placeholder: Име на отметка...
 preset_search_placeholder: Заявка за търсене...
 editing_preset: Редактиране на подготвени изгледи
 layout_preview: Предварителен преглед

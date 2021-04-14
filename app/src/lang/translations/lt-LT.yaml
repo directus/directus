@@ -542,7 +542,6 @@ settings_presets: Ruošiniai ir žymos
 scope: Apimtis
 layout: Išdėstymas
 changes_are_permanent: Pakeitimai neatstatomi
-preset_name_placeholder: Žymos pavadinimas...
 editing_preset: Redaguojamas ruošinys
 layout_preview: Išdėstymo peržiūra
 layout_setup: Išdėstymo nustatymai
