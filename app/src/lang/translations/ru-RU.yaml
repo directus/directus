@@ -933,7 +933,6 @@ interfaces:
     trim_label: Обрезать начало и конец
     mask: Маскированный
     mask_label: Скрыть настоящее значение
-    nullable_label: Сохранить пустое значение как NULL
   textarea:
     textarea: Текстовое поле
     description: Введите простой текст в несколько строк
