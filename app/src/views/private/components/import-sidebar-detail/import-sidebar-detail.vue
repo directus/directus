@@ -7,7 +7,7 @@
 			</div>
 			<div class="field full">
 				<p class="type-label">{{ $t('upload_file') }}</p>
-				<file-select @change="onSelectFile" @load="onFileLoad" />
+				<file-select @change="onSelectFile" @load="onFileLoad" accept=".xlf, application/xliff+xml" />
 			</div>
 			<div class="field full" v-show="hasMoreThanOneTranslationFields">
 				<p class="type-label">{{ $t('target_translation_field') }}</p>
