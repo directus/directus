@@ -598,9 +598,11 @@ settings_project: Paramètres du projet
 settings_webhooks: Webhooks
 settings_presets: Préréglages et favoris
 scope: Périmètre d'application
+select: Sélectionner...
 layout: Mise en page
 tree_view: Vue Arborescente
 changes_are_permanent: Les modifications sont irréversibles
+preset_name_placeholder: Sert par défaut quand il est vide...
 preset_search_placeholder: Recherche...
 editing_preset: Édition du préréglage
 layout_preview: Aperçu de la mise en page
@@ -818,6 +820,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:

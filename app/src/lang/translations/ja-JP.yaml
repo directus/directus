@@ -224,6 +224,7 @@ layout_options: レイアウト設定
 collection_setup: コレクションの作成
 optional_system_fields: システムフィールドのオプション
 value_unique: 他と重複しない値である必要があります
+create_item: アイテムの作成
 all_files: すべてのファイル
 my_files: マイファイル
 recent_files: 最近使用したファイル
