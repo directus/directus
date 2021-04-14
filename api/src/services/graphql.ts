@@ -84,7 +84,7 @@ import {
 } from 'graphql-compose';
 import { SpecificationService } from './specifications';
 
-const Void = new GraphQLScalarType({
+const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
 
 	description: 'Represents NULL values',
@@ -100,6 +100,12 @@ const Void = new GraphQLScalarType({
 	parseLiteral() {
 		return null;
 	},
+});
+
+export const GraphQLDate = new GraphQLScalarType({
+	...GraphQLString,
+	name: 'Date',
+	description: 'ISO8601 Date values',
 });
 
 /**
@@ -144,7 +150,7 @@ export class GraphQLService {
 				operationName,
 			});
 		} catch (err) {
-			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err] });
+			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err.message] });
 		}
 
 		const formattedResult: FormattedExecutionResult = {
@@ -220,7 +226,7 @@ export class GraphQLService {
 		} else {
 			schemaComposer.Query.addFields({
 				_empty: {
-					type: Void,
+					type: GraphQLVoid,
 					description: "There's no data to query.",
 				},
 			});
@@ -437,6 +443,36 @@ export class GraphQLService {
 				},
 			});
 
+			const DateFilterOperators = schemaComposer.createInputTC({
+				name: 'date_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLString,
+					},
+					_neq: {
+						type: GraphQLString,
+					},
+					_gt: {
+						type: GraphQLString,
+					},
+					_gte: {
+						type: GraphQLString,
+					},
+					_lt: {
+						type: GraphQLString,
+					},
+					_lte: {
+						type: GraphQLString,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+				},
+			});
+
 			const NumberFilterOperators = schemaComposer.createInputTC({
 				name: 'number_filter_operators',
 				fields: {
@@ -491,6 +527,9 @@ export class GraphQLService {
 							case GraphQLFloat:
 								filterOperatorType = NumberFilterOperators;
 								break;
+							case GraphQLDate:
+								filterOperatorType = DateFilterOperators;
+								break;
 							default:
 								filterOperatorType = StringFilterOperators;
 						}
@@ -499,6 +538,11 @@ export class GraphQLService {
 
 						return acc;
 					}, {} as InputTypeComposerFieldConfigMapDefinition),
+				});
+
+				ReadableCollectionFilterTypes[collection.collection].addFields({
+					_and: [ReadableCollectionFilterTypes[collection.collection]],
+					_or: [ReadableCollectionFilterTypes[collection.collection]],
 				});
 
 				ReadCollectionTypes[collection.collection].addResolver({
@@ -1100,16 +1144,26 @@ export class GraphQLService {
 	): readonly SelectionNode[] | null {
 		if (!selections) return null;
 
-		return flatten(
+		const result = flatten(
 			selections.map((selection) => {
+				// Fragments can contains fragments themselves. This allows for nested fragments
 				if (selection.kind === 'FragmentSpread') {
-					// Fragments can contains fragments themselves. This allows for nested fragments
 					return this.replaceFragmentsInSelections(fragments[selection.name.value].selectionSet.selections, fragments);
+				}
+
+				// Nested relational fields can also contain fragments
+				if (selection.kind === 'Field' && selection.selectionSet) {
+					selection.selectionSet.selections = this.replaceFragmentsInSelections(
+						selection.selectionSet.selections,
+						fragments
+					) as readonly SelectionNode[];
 				}
 
 				return selection;
 			})
 		).filter((s) => s) as SelectionNode[];
+
+		return result;
 	}
 
 	injectSystemResolvers(

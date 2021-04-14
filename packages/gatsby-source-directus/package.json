@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@directus/sdk-js": "^9.0.0-rc.53",
 		"@lnfusion/gatsby-source-graphql": "0.0.3",
+    "gatsby-source-filesystem": "^3.2.0",
 		"chalk": "^4.1.0",
 		"invariant": "^2.2.4",
 		"ms": "^2.1.3"

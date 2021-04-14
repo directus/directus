@@ -495,7 +495,6 @@ settings_project: Impostazioni del progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
 layout: Layout
-preset_name_placeholder: Nome del segnalibro...
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
 layout_setup: Configurazione Layout
