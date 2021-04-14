@@ -1,7 +1,7 @@
 <template>
 	<v-input
 		:value="value"
-		:nullable="nullable"
+		:nullable="!clear"
 		:placeholder="placeholder"
 		:disabled="disabled"
 		:trim="trim"
@@ -40,9 +40,9 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		nullable: {
+		clear: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		disabled: {
 			type: Boolean,
