@@ -141,6 +141,7 @@ text: Text
 time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
+hash: Hash
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
 auto_refresh: Auto-Aktualisierung
@@ -335,6 +336,8 @@ create_collection: Sammlung erstellen
 no_collections_copy_admin: Keine Sammlungen vorhanden. Auf die untenstehende Schaltfläche klicken, um loszulegen.
 no_collections_copy: Keine Sammlungen vorhanden. Bitte Systemadministrator kontaktieren.
 relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
+display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
+collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
 select_a_collection: Sammlung auswählen
 active: Aktiv
 users: Benutzer
@@ -349,14 +352,19 @@ user_directory: Benutzerverzeichnis
 documentation: Dokumentation
 sidebar: Seitenleiste
 duration: Dauer
+charset: Zeichensatz
 second: Sekunde
 file_moved: Datei verschoben
 collection_created: Sammlung erstellt
 modified_on: Geändert am
+card_size: Kartengröße
 sort_field: Sortierfeld
 add_sort_field: Sortierfeld hinzufügen
 sort: Sortieren
 status: Status
+toggle_manual_sorting: Manuelle Sortierung umschalten
+bookmark_doesnt_exist: Lesezeichen existiert nicht
+bookmark_doesnt_exist_copy: Das zu öffnende Lesezeichen konnte nicht gefunden werden.
 bookmark_doesnt_exist_cta: Zurück zur Sammlung
 select_an_item: Element auswählen...
 edit: Bearbeiten
@@ -379,7 +387,10 @@ errors:
   ITEM_LIMIT_REACHED: Elementlimit erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
   ROUTE_NOT_FOUND: Nicht gefunden
+  RECORD_NOT_UNIQUE: Doppelter Wert erkannt
   UNKNOWN: Unerwarteter Fehler
+value_hashed: Wert sicher gehashed
+bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen
 edit_bookmark: Lesezeichen bearbeiten
 bookmarks: Lesezeichen
@@ -388,6 +399,7 @@ unexpected_error: Unerwarteter Fehler
 unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.
 copy_details: Details kopieren
 no_app_access: Kein App-Zugriff
+no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.
 password_reset_sent: Wir haben dir einen sicheren Link zum Zurücksetzen deines Passworts gesendet
 password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
 back: Zurück
@@ -403,14 +415,22 @@ delete_collection: Sammlung löschen
 update_collection_success: Sammlung aktualisiert
 delete_collection_success: Sammlung gelöscht
 start_end_of_count_items: '{start}-{end} von {count} Elementen'
+start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 one_item: '1 Element'
 one_filtered_item: '1 gefiltertes Element'
+delete_collection_are_you_sure: >-
+  Sind Sie sicher, dass Sie diese Sammlung löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
+collections_shown: Angezeigte Sammlungen
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
+show_hidden_collections: Ausgeblendete Sammlungen anzeigen
+hide_hidden_collections: Sammlungen ausblenden
 unmanaged_collections: Nicht konfigurierte Sammlungen
+system_collections: Systemsammlungen
 placeholder: Platzhalter
 icon_left: Icon links
 icon_right: Icon rechts
+count_other_revisions: '{count} andere Revisionen'
 font: Schriftart
 sans_serif: Sans Serif
 serif: Serif
@@ -420,6 +440,9 @@ color: Farbe
 circle: Kreis
 empty_item: Leeres Element
 log_in_with: 'Einloggen mit {provider}'
+advanced_filter: Erweiterter Filter
+delete_advanced_filter: Filter zurücksetzen
+change_advanced_filter_operator: Operator ändern
 operators:
   eq: Gleich
   neq: Ungleich
@@ -427,19 +450,31 @@ operators:
   gt: Größer als
   lte: Weniger oder gleich
   gte: Größer oder gleich
+  in: Ist einer von
+  nin: Ist nicht einer von
+  null: Ist null
+  nnull: Ist nicht null
   contains: Enthält
   ncontains: Enthält nicht
+  between: Ist zwischen
   nbetween: Ist nicht zwischen
   empty: Ist leer
   nempty: Ist nicht leer
+  all: Enthält diese Schlüssel
+  has: Enthält einige dieser Schlüssel
 loading: Wird geladen...
+drop_to_upload: Zum Hochladen ablegen
 upload_file: Datei hochladen
 upload_file_indeterminate: Datei wird hochgeladen...
 upload_file_success: Datei wurde hochgeladen
 upload_files_indeterminate: 'Hochladen von Dateien {done}/{total}'
 upload_files_success: '{count} Dateien hochgeladen'
 upload_pending: Upload ausstehend
+drag_file_here: Datei hierher ziehen
 click_to_browse: Zum Durchsuchen klicken
+layout_options: Layout-Optionen
+rows: Reihen
+columns: Spalten
 collection_setup: Einrichtung Sammlung
 optional_system_fields: Optionale Systemfelder
 value_unique: Wert muss eindeutig sein
@@ -555,11 +590,20 @@ settings_project: Projekt-Einstellungen
 settings_webhooks: Webhooks
 settings_presets: Vorlagen & Lesezeichen
 scope: Scope
+select: Auswählen...
 layout: Layout
+tree_view: Baumansicht
+changes_are_permanent: Änderungen können nicht rückgängig gemacht werden
+preset_name_placeholder: Dient als Standard wenn leer...
+preset_search_placeholder: Suchabfrage...
+editing_preset: Preset bearbeiten
+layout_preview: Layoutvorschau
+layout_setup: Einrichtung Layout
 unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Bist Du sicher, dass Du diese Seite verlassen willst?
 discard_changes: Änderungen verwerfen
 keep_editing: Weiter bearbeiten
+page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
 add_new: Neu erstellen
 create_new: Neu anlegen
 all: Alles
@@ -602,6 +646,7 @@ fields:
     width: Breite
     uploaded_on: Hochgeladen am
     height: Höhe
+    charset: Zeichensatz
     duration: Dauer
   directus_users:
     first_name: Vorname
@@ -759,29 +804,59 @@ interfaces:
     display-template: Anzeigevorlage
     description: Statische Text- und dynamische Feldwerte mischen
     collection_field: Sammlungsfeld
+    collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
     select_a_collection: Sammlung auswählen
   divider:
     divider: Divider
     description: Felder beschriften und in Abschnitte teilen
+    title_placeholder: Titel eingeben...
+    inline_title: Inline-Titel
+    inline_title_label: Titel in Zeile anzeigen
+    margin_top: Oberer Rand
+    margin_top_label: Oberen Rand erhöhen
   dropdown:
+    description: Wert aus einer Dropdown-Liste auswählen
+    choices_placeholder: Neue Auswahl hinzufügen
     allow_other: Andere erlauben
+    allow_other_label: Andere Werte erlauben
+    allow_none: Keine Auswahl zulassen
+    allow_none_label: Keine Auswahl zulassen
+    choices_name_placeholder: Namen eingeben...
     choices_value_placeholder: Gib einen Wert ein...
+  dropdown-multiselect:
+    dropdown-multiselect: Dropdown (Mehrfachauswahl)
+    description: Mehrere Werte aus einer Dropdown-Liste auswählen
   file:
     file: Datei
+    description: Datei auswählen oder hochladen
   files:
     files: Dateien
+    description: Mehrere Dateien auswählen oder hochladen
+  hash:
+    hash: Hash
+    description: Den zu hashenden Wert eingeben
+    masked: Maskiert
+    masked_label: Wahre Werte ausblenden
   icon:
     icon: Symbol
+    description: Icon aus einer Dropdown-Liste auswählen
+    search_for_icon: Nach Icon suchen...
   image:
     image: Bild
+    description: Bild auswählen oder hochladen
   interface:
     interface: Benutzeroberfläche
+    description: Vorhandene Schnittstelle auswählen
+    placeholder: Schnittstelle auswählen...
   interface-options:
     interface-options: Schnittstellenoptionen
+    description: Ein modales Popup zum Auswählen der Schnittstellen-Optionen
   many-to-many:
     many-to-many: n:n-Beziehung
+    description: Mehrere verwandte Elemente auswählen
   many-to-one:
     many-to-one: n:1-Beziehung
+    description: Ein einzelnes verwandtes Element auswählen
     display_template: Anzeigevorlage
   markdown:
     markdown: Markdown
@@ -818,6 +893,7 @@ interfaces:
     description: Einen einzeiligen Text eingeben
     trim: Beschneiden
     trim_label: Anfang und Ende kürzen
+    mask: Maskiert
     mask_label: Tatsächlichen Wert ausblenden
     nullable: Nullable
     nullable_label: Leeren Wert als NULL speichern
