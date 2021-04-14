@@ -233,9 +233,18 @@ router.get(
 			req.session.redirect = req.query.redirect as string;
 		}
 
-		emitAsyncSafe(`oauth.${req.params.provider}`, {
-			event: `oauth.${req.params.provider}`,
-			action: 'provider',
+		emitAsyncSafe(`oauth.${req.params.provider}.redirect`, {
+			event: `oauth.${req.params.provider}.redirect`,
+			action: 'redirect',
+			schema: null,
+			payload: req.params.provider,
+			accountability: req.accountability,
+			user: null,
+		});
+
+		await emitter.emitAsync(`oauth.${req.params.provider}.redirect.before`, {
+			event: `oauth.${req.params.provider}.redirect.before`,
+			action: 'redirect',
 			schema: null,
 			payload: req.params.provider,
 			accountability: req.accountability,

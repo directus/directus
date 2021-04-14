@@ -83,7 +83,7 @@ module.exports = function registerHook({ exceptions }) {
 | `response`           |                                   | No†      |
 | `error`              |                                   | No       |
 | `auth`               | `login`, `logout`† and `refresh`† | Optional |
-| `oauth.google` §     | `login` and `provider`            | Optional |
+| `oauth.google` §     | `login` and `redirect`            | Optional |
 | `items`              | `create`, `update` and `delete`   | Optional |
 | `activity`           | `create`, `update` and `delete`   | Optional |
 | `collections`        | `create`, `update` and `delete`   | Optional |
@@ -101,7 +101,7 @@ module.exports = function registerHook({ exceptions }) {
 
 † Feature Coming Soon
 
-§ Oauth provider name can replaced with wildcard for all oauth providers `oauth.*.login`
+§ Oauth provider name can replaced with wildcard for any oauth providers `oauth.*.login`
 
 ## 3. Register your Hook
 
