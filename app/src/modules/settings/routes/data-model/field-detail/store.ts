@@ -7,7 +7,7 @@
 
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
 import { reactive, watch, computed, ComputedRef, WatchStopHandle } from '@vue/composition-api';
-import { clone, throttle } from 'lodash';
+import { clone, omit, throttle } from 'lodash';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
 import { InterfaceConfig } from '@/interfaces/types';
@@ -60,8 +60,10 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		},
 		selectedInterface: undefined,
 		selectedDisplay: undefined,
-		interfaceValues: {},
-		displayValues: {},
+		interfaceEdits: {},
+		interfaceInitialValues: {},
+		displayEdits: {},
+		displayInitialValues: {},
 		relations: [],
 		newCollections: [],
 		newFields: [],
@@ -120,25 +122,33 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 	watch([() => interfaces.value, () => state.fieldData.meta.interface], () => {
 		state.selectedInterface = interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
-		state.interfaceValues = {};
+		state.interfaceEdits = {};
 	});
 
 	watch([() => displays.value, () => state.fieldData.meta.display], () => {
 		state.selectedDisplay = displays.value.find((display) => display.id === state.fieldData.meta.display);
-		state.displayValues = {};
+		state.displayEdits = {};
 	});
 
 	watch(
-		() => state.interfaceValues,
+		() => state.interfaceEdits,
 		() => {
-			state.fieldData.meta.options = { ...getDefaultValues(state.selectedInterface), ...state.interfaceValues };
+			state.fieldData.meta.options = {
+				...getDefaultValues(state.selectedInterface),
+				...state.interfaceInitialValues,
+				...state.interfaceEdits,
+			};
 		}
 	);
 
 	watch(
-		() => state.displayValues,
+		() => state.displayEdits,
 		() => {
-			state.fieldData.meta.display_options = { ...getDefaultValues(state.selectedDisplay), ...state.displayValues };
+			state.fieldData.meta.display_options = {
+				...getDefaultValues(state.selectedDisplay),
+				...state.displayInitialValues,
+				...state.displayEdits,
+			};
 		}
 	);
 
@@ -150,7 +160,9 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		state.fieldData.field = existingField.field;
 		state.fieldData.type = existingField.type;
 		state.fieldData.schema = existingField.schema;
-		state.fieldData.meta = existingField.meta;
+		state.fieldData.meta = omit(existingField.meta, ['options', 'display_options']);
+		state.interfaceInitialValues = existingField.meta.options;
+		state.displayInitialValues = existingField.meta.display_options;
 
 		state.relations = relationsStore.getRelationsForField(collection, field);
 	} else {

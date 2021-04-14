@@ -1,6 +1,5 @@
 <template>
 	<div>
-
 		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.interface" />
 
 		<v-notice class="not-found" type="danger" v-if="fieldData.meta.interface && !selectedInterface">
@@ -17,8 +16,9 @@
 			<v-form
 				v-else-if="Array.isArray(selectedInterface.options)"
 				:fields="selectedInterface.options"
+				:initial-values="interfaceInitialValues"
 				primary-key="+"
-				v-model="interfaceValues"
+				v-model="interfaceEdits"
 			/>
 
 			<component
@@ -112,9 +112,26 @@ export default defineComponent({
 			return recommendedItems;
 		});
 
-		const { fieldData, selectedInterface, interfaceValues, relations, newCollections, newFields } = toRefs(state);
+		const {
+			fieldData,
+			selectedInterface,
+			interfaceEdits,
+			interfaceInitialValues,
+			relations,
+			newCollections,
+			newFields,
+		} = toRefs(state);
 
-		return { fieldData, interfaceValues, relations, selectItems, selectedInterface, newCollections, newFields };
+		return {
+			fieldData,
+			interfaceEdits,
+			interfaceInitialValues,
+			relations,
+			selectItems,
+			selectedInterface,
+			newCollections,
+			newFields,
+		};
 	},
 });
 </script>
