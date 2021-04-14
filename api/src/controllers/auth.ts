@@ -237,7 +237,7 @@ router.get(
 			event: 'oauth.provider',
 			action: 'provider',
 			schema: null,
-			payload: null,
+			payload: req.params.provider,
 			accountability: req.accountability,
 			user: null,
 		});
