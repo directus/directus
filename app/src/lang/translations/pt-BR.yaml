@@ -937,7 +937,6 @@ interfaces:
     trim_label: Aparar o início e fim
     mask: Mascarado
     mask_label: Ocultar o valor real
-    nullable_label: Salvar valor vazio como NULO
   textarea:
     textarea: Área de texto
     description: Insira texto puro de múltiplas linhas

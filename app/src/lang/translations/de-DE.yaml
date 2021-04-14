@@ -820,7 +820,6 @@ template: Vorlage
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
-weeks: { }
 report_error: Fehler melden
 interfaces:
   button-links:
@@ -983,8 +982,6 @@ interfaces:
     trim_label: Anfang und Ende kürzen
     mask: Maskiert
     mask_label: Tatsächlichen Wert ausblenden
-    nullable: Nullable
-    nullable_label: Leeren Wert als NULL speichern
   textarea:
     textarea: Textfeld
     description: Mehrzeiligen Klartext eingeben

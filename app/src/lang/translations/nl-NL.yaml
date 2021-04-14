@@ -954,8 +954,6 @@ interfaces:
     trim_label: Begin en einde bijsnijden
     mask: Gemaskeerd
     mask_label: De echte waarde verbergen
-    nullable: Mag leeg zijn
-    nullable_label: Sla lege waarde op als NULL
   textarea:
     textarea: Tekstvlak
     description: Voer multiline tekst in

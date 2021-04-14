@@ -957,8 +957,6 @@ interfaces:
     trim_label: Trimma början och slut
     mask: Maskerad
     mask_label: Dölj det riktiga värdet
-    nullable: Nullable
-    nullable_label: Spara tomt värde som NULL
   textarea:
     textarea: Textfält
     description: Ange fritext på flera rader
