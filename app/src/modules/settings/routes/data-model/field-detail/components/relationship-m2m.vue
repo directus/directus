@@ -458,12 +458,12 @@ export default defineComponent({
 		pointer-events: none;
 
 		&:first-of-type {
-			bottom: 141px;
+			bottom: 161px;
 			left: 32.5%;
 		}
 
 		&:last-of-type {
-			bottom: 76px;
+			bottom: 89px;
 			left: 67.4%;
 		}
 	}
@@ -495,7 +495,7 @@ export default defineComponent({
 		--v-icon-color: var(--primary);
 
 		position: absolute;
-		bottom: 14px;
+		bottom: 17px;
 		left: 50%;
 		transform: translateX(-50%);
 	}

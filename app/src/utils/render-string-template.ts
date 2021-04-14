@@ -2,7 +2,10 @@ import { computed, Ref } from '@vue/composition-api';
 import { render } from 'micromustache';
 import { getFieldsFromTemplate } from './get-fields-from-template';
 
-export function renderStringTemplate(template: Ref<string | null> | string, item: Ref<Record<string, any> | null>) {
+export function renderStringTemplate(
+	template: Ref<string | null> | string,
+	item: Ref<Record<string, any> | undefined | null>
+) {
 	const templateString = computed(() => (typeof template === 'string' ? template : template.value));
 
 	const fieldsInTemplate = computed(() => getFieldsFromTemplate(templateString.value));

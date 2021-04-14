@@ -46,7 +46,10 @@
 		</template>
 
 		<div v-if="!customNavItems && !navItems.length && !bookmarks.length" class="empty">
-			<template v-if="isAdmin">
+			<template v-if="searchQuery !== null">
+				<em>{{ $t('no_collections_found') }}</em>
+			</template>
+			<template v-else-if="isAdmin">
 				<v-button fullWidth outlined dashed to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
 			</template>
 			<template v-else>
@@ -87,11 +90,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref, watchEffect } from '@vue/composition-api';
 import useNavigation from '../composables/use-navigation';
 import { usePresetsStore, useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
 import NavigationBookmark from './navigation-bookmark.vue';
+import { useSearch } from '../composables/use-search';
 
 export default defineComponent({
 	components: { NavigationBookmark },
@@ -101,13 +105,14 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup() {
+	setup(props) {
+		const { searchQuery, visible } = useSearch();
 		const contextMenu = ref();
 
 		const presetsStore = usePresetsStore();
 		const userStore = useUserStore();
 		const isAdmin = computed(() => userStore.state.currentUser?.role.admin_access === true);
-		const { hiddenShown, customNavItems, navItems, activeGroups, hiddenNavItems } = useNavigation();
+		const { hiddenShown, customNavItems, navItems, activeGroups, hiddenNavItems } = useNavigation(searchQuery);
 
 		const bookmarks = computed(() => {
 			return orderBy(
@@ -115,6 +120,11 @@ export default defineComponent({
 					.filter((preset) => {
 						return preset.bookmark !== null && preset.collection.startsWith('directus_') === false;
 					})
+					.filter(
+						(preset) =>
+							typeof preset.bookmark !== 'string' ||
+							preset.bookmark.toLocaleLowerCase().includes(searchQuery?.value?.toLocaleLowerCase() || '')
+					)
 					.map((preset) => {
 						let scope = 'global';
 						if (!!preset.role) scope = 'role';
@@ -131,6 +141,10 @@ export default defineComponent({
 			);
 		});
 
+		watchEffect(() => {
+			visible.value = bookmarks.value.length + navItems.value.length;
+		});
+
 		return {
 			navItems,
 			bookmarks,
@@ -142,6 +156,7 @@ export default defineComponent({
 			contextMenu,
 			hiddenShown,
 			hiddenNavItems,
+			searchQuery,
 		};
 
 		function isActive(name: string) {
@@ -175,7 +190,7 @@ export default defineComponent({
 }
 
 .collections-navigation {
-	--v-list-min-height: 100%;
+	--v-list-min-height: calc(100% - 64px);
 }
 
 .hidden-collection {

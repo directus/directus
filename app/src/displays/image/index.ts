@@ -1,23 +1,23 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayImage from './image.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'image',
-	name: i18n.t('displays.image.image'),
-	description: i18n.t('displays.image.description'),
+	name: '$t:displays.image.image',
+	description: '$t:displays.image.description',
 	types: ['uuid'],
 	icon: 'insert_photo',
 	handler: DisplayImage,
 	options: [
 		{
 			field: 'circle',
-			name: i18n.t('displays.image.circle'),
+			name: '$t:displays.image.circle',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('displays.image.circle_label'),
+					label: '$t:displays.image.circle_label',
 				},
 			},
 			schema: {
@@ -26,4 +26,4 @@ export default defineDisplay(({ i18n }) => ({
 		},
 	],
 	fields: ['id', 'type', 'title'],
-}));
+});

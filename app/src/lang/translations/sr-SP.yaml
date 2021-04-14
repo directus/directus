@@ -58,6 +58,8 @@ operators:
   contains: Садржи
 role: Рола
 create: Креирај
+width: Ширина
+height: Висина
 wysiwyg_options:
   codeblock: Код
   table: Табела

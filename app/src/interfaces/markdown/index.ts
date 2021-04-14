@@ -1,42 +1,42 @@
 import InterfaceMarkdown from './markdown.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'markdown',
-	name: i18n.t('interfaces.markdown.markdown'),
-	description: i18n.t('interfaces.markdown.description'),
+	name: '$t:interfaces.markdown.markdown',
+	description: '$t:interfaces.markdown.description',
 	icon: 'functions',
 	component: InterfaceMarkdown,
 	types: ['text'],
 	options: [
 		{
 			field: 'placeholder',
-			name: i18n.t('placeholder'),
+			name: '$t:placeholder',
 			type: 'string',
 			meta: {
 				width: 'full',
 				interface: 'textarea',
 				options: {
-					placeholder: i18n.t('enter_a_placeholder'),
+					placeholder: '$t:enter_a_placeholder',
 				},
 			},
 		},
 		{
 			field: 'customSyntax',
-			name: i18n.t('interfaces.markdown.customSyntax'),
+			name: '$t:interfaces.markdown.customSyntax',
 			type: 'json',
 			meta: {
-				note: i18n.t('interfaces.markdown.customSyntax_label'),
+				note: '$t:interfaces.markdown.customSyntax_label',
 				width: 'full',
 				interface: 'repeater',
 				options: {
-					addLabel: i18n.t('interfaces.markdown.customSyntax_add'),
+					addLabel: '$t:interfaces.markdown.customSyntax_add',
 					template: '{{ name }}',
 					fields: [
 						{
 							field: 'name',
 							type: 'string',
-							name: i18n.t('name'),
+							name: '$t:name',
 							meta: {
 								interface: 'text-input',
 								width: 'half',
@@ -45,7 +45,7 @@ export default defineInterface(({ i18n }) => ({
 						{
 							field: 'icon',
 							type: 'string',
-							name: i18n.t('icon'),
+							name: '$t:icon',
 							meta: {
 								interface: 'icon',
 								width: 'half',
@@ -54,7 +54,7 @@ export default defineInterface(({ i18n }) => ({
 						{
 							field: 'prefix',
 							type: 'string',
-							name: i18n.t('prefix'),
+							name: '$t:prefix',
 							meta: {
 								interface: 'text-input',
 								width: 'half',
@@ -63,7 +63,7 @@ export default defineInterface(({ i18n }) => ({
 						{
 							field: 'suffix',
 							type: 'string',
-							name: i18n.t('suffix'),
+							name: '$t:suffix',
 							meta: {
 								interface: 'text-input',
 								width: 'half',
@@ -72,18 +72,18 @@ export default defineInterface(({ i18n }) => ({
 						{
 							field: 'box',
 							type: 'string',
-							name: i18n.t('interfaces.markdown.box'),
+							name: '$t:interfaces.markdown.box',
 							meta: {
 								interface: 'radio-buttons',
 								width: 'half',
 								options: {
 									choices: [
 										{
-											text: i18n.t('inline'),
+											text: '$t:inline',
 											value: 'inline',
 										},
 										{
-											text: i18n.t('block'),
+											text: '$t:block',
 											value: 'block',
 										},
 									],
@@ -99,13 +99,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'imageToken',
-			name: i18n.t('interfaces.markdown.imageToken'),
+			name: '$t:interfaces.markdown.imageToken',
 			type: 'string',
 			meta: {
-				note: i18n.t('interfaces.markdown.imageToken_label'),
+				note: '$t:interfaces.markdown.imageToken_label',
 				width: 'full',
 				interface: 'text-input',
 			},
 		},
 	],
-}));
+});
