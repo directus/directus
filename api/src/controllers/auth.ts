@@ -233,8 +233,8 @@ router.get(
 			req.session.redirect = req.query.redirect as string;
 		}
 
-		emitAsyncSafe('oauth.provider', {
-			event: 'oauth.provider',
+		emitAsyncSafe(`oauth.${req.params.provider}`, {
+			event: `oauth.${req.params.provider}`,
 			action: 'provider',
 			schema: null,
 			payload: req.params.provider,
