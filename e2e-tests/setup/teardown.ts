@@ -13,8 +13,12 @@ declare module global {
 }
 const docker = new Dockerode();
 
-export default async (jestConfig: GlobalConfigTsJest, isAfterWatch = false) => {
-	if (jestConfig.watch || jestConfig.watchAll) return;
+if (require.main === module) {
+	teardown(undefined, true);
+}
+
+export default async function teardown(jestConfig?: GlobalConfigTsJest, isAfterWatch = false) {
+	if (jestConfig?.watch || jestConfig?.watchAll) return;
 
 	const vendors = getDBsToTest();
 
@@ -111,4 +115,4 @@ export default async (jestConfig: GlobalConfigTsJest, isAfterWatch = false) => {
 	console.log('\n');
 
 	console.log(`👮‍♀️ Tests complete!\n`);
-};
+}
