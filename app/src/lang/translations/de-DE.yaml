@@ -117,7 +117,9 @@ global: Globale Objekte
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
 exposure: Belichtung
+shutter: Blende
 iso: ISO
+focal_length: Brennweite
 schema_setup_key: Datenbankspaltenname und API-Schlüssel dieses Feldes
 create_field: Feld erstellen
 creating_new_field: 'Neues Feld ({collection})'
@@ -246,6 +248,12 @@ interface: Benutzeroberfläche
 today: Heute
 yesterday: Gestern
 delete_comment: Kommentar löschen
+date-fns_date: PPP
+date-fns_time: 'H:mm:ss'
+date-fns_time_no_seconds: 'H:mm'
+date-fns_date_short: 'd MMM u'
+date-fns_time_short: 'H:mm'
+date-fns_date_short_no_year: d MMM
 month: Monat
 year: Jahr
 select_all: Alles auswählen
@@ -604,14 +612,48 @@ unsaved_changes_copy: Bist Du sicher, dass Du diese Seite verlassen willst?
 discard_changes: Änderungen verwerfen
 keep_editing: Weiter bearbeiten
 page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
+page_help_collections_collection: >-
+  **Durchsuche Elemente** — Listet alle {collection} Elemente, auf die Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
+page_help_collections_item: >-
+  **Element-Detail** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
+page_help_activity_collection: >-
+  **Aktivität durchsuchen** — Eine umfassende Auflistung aller System- und Inhaltstätigkeiten Ihres Benutzers.
+page_help_docs_global: >-
+  **Dokumentationsübersicht** — Dokumente, die speziell auf die Version und das Schema dieses Projekts zugeschnitten sind.
+page_help_files_collection: >-
+  **Dateibibliothek** — Listet alle Dateien auf, die in dieses Projekt hochgeladen wurden. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
+page_help_files_item: >-
+  **Datei-Detail** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
+page_help_settings_project: "**Projekteinstellungen** — die globalen Konfigurationsoptionen Ihres Projekts."
+page_help_settings_datamodel_collections: >-
+  **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
+page_help_settings_datamodel_fields: >-
+  **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
+page_help_settings_roles_collection: '**Rollen durchsuchen** — Listet die Admin-, öffentlichen und benutzerdefinierten Benutzerrollen auf.'
+page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
+page_help_settings_presets_collection: >-
+  **Presets durchsuchen** — Listet alle Presets im Projekt auf, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
+page_help_settings_presets_item: >-
+  **Preset-Detail** — Ein Formular zur Verwaltung von Lesezeichen und Sammlung-Presets.
+page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Listet alle Webhooks im Projekt auf.'
+page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
+page_help_users_collection: '**Benutzerverzeichnis** — Listet alle Benutzer in diesem Projekt auf.'
+page_help_users_item: >-
+  **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
+activity_feed: Aktivitätenverlauf
 add_new: Neu erstellen
 create_new: Neu anlegen
 all: Alles
+none: Kein/e
+no_layout_collection_selected_yet: Noch kein Layout oder keine Sammlung ausgewählt
 batch_delete_confirm: >-
   Keine Elemente ausgewählt | Bist Du sicher, dass Du dieses Element löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden. | Bist Du sicher, dass Du diese {count} Elemente löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
 collection: Sammlung
 collections: Sammlungen
+singleton: Singleton
+singleton_label: Als einzelnes Objekt behandeln
+system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet werden
 fields:
   directus_activity:
     item: Item-Primärschlüssel
@@ -629,14 +671,24 @@ fields:
     note: Notiz
     display_template: Anzeigevorlage
     hidden: Ausgeblendet
+    singleton: Singleton
+    translations: Übersetzungen des Namens der Sammlung
+    archive_app_filter: Archivierungs-App-Filter
+    archive_value: Archivierungswert
+    unarchive_value: Dearchivierungswert
     sort_field: Sortierfeld
   directus_files:
     title: Titel
     description: Beschreibung
     tags: Stichwörter
     location: Ort
+    storage: Speicher
+    filename_disk: Dateiname (Festplatte)
+    filename_download: Dateiname (Download)
     metadata: Metadaten
+    type: MIME-Typ
     filesize: Dateigröße
+    modified_by: Geändert von
     modified_on: Geändert am
     created_on: Erstellt am
     created_by: Erstellt von
@@ -663,6 +715,7 @@ fields:
     tfa_secret: Zwei-Faktor-Authentifizierung
     status: Status
     role: Rolle
+    token: Token
     last_page: Letzte Seite
     last_access: Letzter Zugriff
   directus_settings:
@@ -670,10 +723,20 @@ fields:
     project_url: Projekt URL
     project_color: Projekt Farbe
     project_logo: Projekt Logo
+    public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
+    public_note: Öffentliche Anmerkung
+    auth_password_policy: Kennwortrichtlinie
+    auth_login_attempts: Maximale Anmeldeversuche
+    storage_asset_presets: Asset-Presets
+    storage_asset_transform: Asset-Transformierung
+    custom_css: Benutzerdefiniertes CSS
   directus_fields:
+    collection: Sammlungsname
+    icon: Sammlungsicon
     note: Notiz
     hidden: Ausgeblendet
+    singleton: Singleton
     translation: Feldnamen-Übersetzungen
     display_template: Vorlage
   directus_roles:
@@ -757,6 +820,7 @@ template: Vorlage
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 interfaces:
   button-links:
@@ -987,25 +1051,61 @@ displays:
     description: Dateigröße anzeigen
   formatted-value:
     formatted-value: Formatierter Wert
+    description: Eine formatierte Version des Textes anzeigen
+    format_title: Titel formatieren
+    format_title_label: Automatische Groß-/Kleinschreibung
+    bold_label: Fett-Schnitt verwenden
+  formatted-json-value:
+    formatted-json-value: Formatierter JSON-Wert
+    description: Eine formatierte Version des Objekts anzeigen
   icon:
     icon: Symbol
+    description: Icon anzeigen
+    filled: Ausgefüllt
+    filled_label: Gefüllte Variante verwenden
   image:
     image: Bild
+    description: Eine kleine Bildvorschau zeigen
     circle: Kreis
+    circle_label: Als Kreis anzeigen
   labels:
+    labels: Labels
+    description: Entweder eine einzelne oder eine Liste von Labels anzeigen
+    default_foreground: Standard Vordergrund
+    default_background: Standard Hintergrund
+    format_label: Jedes Label formatieren
+    show_as_dot: Als Punkt anzeigen
     choices_value_placeholder: Gib einen Wert ein...
+    choices_text_placeholder: Text eingeben...
+  mime-type:
+    mime-type: MIME-Typ
+    description: MIME-Typ einer Datei anzeigen
+    extension_only: Nur Dateiendung
+    extension_only_label: Nur die Dateiendung anzeigen
   rating:
     rating: Bewertung
+    description: Eine Zahl als Sterne im Verhältnis zum Maximalwert anzeigen
+    simple: Einfach
+    simple_label: Sterne in einem einfachen Format anzeigen
+  raw:
+    raw: Rohwert
+  related-values:
+    related-values: Verwandte Werte
+    description: Relative Werte anzeigen
   user:
     user: Benutzer
+    description: Benutzer anzeigen
     avatar: Avatar
     name: Name
     both: Beide
+    circle_label: Benutzer in einem Kreis anzeigen
 layouts:
   cards:
     cards: Karten
     image_source: Bildquelle
+    image_fit: Bildeinpassung
     crop: Zuschneiden
+    contain: Enthalten
     title: Titel
     subtitle: Untertitel
   tabular:
