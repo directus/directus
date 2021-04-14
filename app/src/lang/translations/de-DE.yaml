@@ -117,7 +117,9 @@ global: Globale Objekte
 admins_have_all_permissions: Administratoren haben alle Berechtigungen
 camera: Kamera
 exposure: Belichtung
+shutter: Blende
 iso: ISO
+focal_length: Brennweite
 schema_setup_key: Datenbankspaltenname und API-Schlüssel dieses Feldes
 create_field: Feld erstellen
 creating_new_field: 'Neues Feld ({collection})'
@@ -141,6 +143,7 @@ text: Text
 time: Zeit
 timestamp: Zeitstempel
 uuid: UUID
+hash: Hash
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
 auto_refresh: Auto-Aktualisierung
@@ -245,6 +248,12 @@ interface: Benutzeroberfläche
 today: Heute
 yesterday: Gestern
 delete_comment: Kommentar löschen
+date-fns_date: PPP
+date-fns_time: 'H:mm:ss'
+date-fns_time_no_seconds: 'H:mm'
+date-fns_date_short: 'd MMM u'
+date-fns_time_short: 'H:mm'
+date-fns_date_short_no_year: d MMM
 month: Monat
 year: Jahr
 select_all: Alles auswählen
@@ -335,6 +344,8 @@ create_collection: Sammlung erstellen
 no_collections_copy_admin: Keine Sammlungen vorhanden. Auf die untenstehende Schaltfläche klicken, um loszulegen.
 no_collections_copy: Keine Sammlungen vorhanden. Bitte Systemadministrator kontaktieren.
 relationship_not_setup: Die relationale Beziehung wurde nicht korrekt konfiguriert
+display_template_not_setup: Die Anzeige-Vorlage ist falsch konfiguriert
+collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
 select_a_collection: Sammlung auswählen
 active: Aktiv
 users: Benutzer
@@ -349,14 +360,19 @@ user_directory: Benutzerverzeichnis
 documentation: Dokumentation
 sidebar: Seitenleiste
 duration: Dauer
+charset: Zeichensatz
 second: Sekunde
 file_moved: Datei verschoben
 collection_created: Sammlung erstellt
 modified_on: Geändert am
+card_size: Kartengröße
 sort_field: Sortierfeld
 add_sort_field: Sortierfeld hinzufügen
 sort: Sortieren
 status: Status
+toggle_manual_sorting: Manuelle Sortierung umschalten
+bookmark_doesnt_exist: Lesezeichen existiert nicht
+bookmark_doesnt_exist_copy: Das zu öffnende Lesezeichen konnte nicht gefunden werden.
 bookmark_doesnt_exist_cta: Zurück zur Sammlung
 select_an_item: Element auswählen...
 edit: Bearbeiten
@@ -379,7 +395,10 @@ errors:
   ITEM_LIMIT_REACHED: Elementlimit erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
   ROUTE_NOT_FOUND: Nicht gefunden
+  RECORD_NOT_UNIQUE: Doppelter Wert erkannt
   UNKNOWN: Unerwarteter Fehler
+value_hashed: Wert sicher gehashed
+bookmark_name: Name des Lesezeichens...
 create_bookmark: Lesezeichen erstellen
 edit_bookmark: Lesezeichen bearbeiten
 bookmarks: Lesezeichen
@@ -388,6 +407,7 @@ unexpected_error: Unerwarteter Fehler
 unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.
 copy_details: Details kopieren
 no_app_access: Kein App-Zugriff
+no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.
 password_reset_sent: Wir haben dir einen sicheren Link zum Zurücksetzen deines Passworts gesendet
 password_reset_successful: Das Passwort wurde erfolgreich zurückgesetzt
 back: Zurück
@@ -403,14 +423,22 @@ delete_collection: Sammlung löschen
 update_collection_success: Sammlung aktualisiert
 delete_collection_success: Sammlung gelöscht
 start_end_of_count_items: '{start}-{end} von {count} Elementen'
+start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 one_item: '1 Element'
 one_filtered_item: '1 gefiltertes Element'
+delete_collection_are_you_sure: >-
+  Sind Sie sicher, dass Sie diese Sammlung löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
+collections_shown: Angezeigte Sammlungen
 visible_collections: Sichtbare Sammlungen
 hidden_collections: Versteckte Sammlungen
+show_hidden_collections: Ausgeblendete Sammlungen anzeigen
+hide_hidden_collections: Sammlungen ausblenden
 unmanaged_collections: Nicht konfigurierte Sammlungen
+system_collections: Systemsammlungen
 placeholder: Platzhalter
 icon_left: Icon links
 icon_right: Icon rechts
+count_other_revisions: '{count} andere Revisionen'
 font: Schriftart
 sans_serif: Sans Serif
 serif: Serif
@@ -420,6 +448,9 @@ color: Farbe
 circle: Kreis
 empty_item: Leeres Element
 log_in_with: 'Einloggen mit {provider}'
+advanced_filter: Erweiterter Filter
+delete_advanced_filter: Filter zurücksetzen
+change_advanced_filter_operator: Operator ändern
 operators:
   eq: Gleich
   neq: Ungleich
@@ -427,19 +458,31 @@ operators:
   gt: Größer als
   lte: Weniger oder gleich
   gte: Größer oder gleich
+  in: Ist einer von
+  nin: Ist nicht einer von
+  null: Ist null
+  nnull: Ist nicht null
   contains: Enthält
   ncontains: Enthält nicht
+  between: Ist zwischen
   nbetween: Ist nicht zwischen
   empty: Ist leer
   nempty: Ist nicht leer
+  all: Enthält diese Schlüssel
+  has: Enthält einige dieser Schlüssel
 loading: Wird geladen...
+drop_to_upload: Zum Hochladen ablegen
 upload_file: Datei hochladen
 upload_file_indeterminate: Datei wird hochgeladen...
 upload_file_success: Datei wurde hochgeladen
 upload_files_indeterminate: 'Hochladen von Dateien {done}/{total}'
 upload_files_success: '{count} Dateien hochgeladen'
 upload_pending: Upload ausstehend
+drag_file_here: Datei hierher ziehen
 click_to_browse: Zum Durchsuchen klicken
+layout_options: Layout-Optionen
+rows: Reihen
+columns: Spalten
 collection_setup: Einrichtung Sammlung
 optional_system_fields: Optionale Systemfelder
 value_unique: Wert muss eindeutig sein
@@ -555,19 +598,62 @@ settings_project: Projekt-Einstellungen
 settings_webhooks: Webhooks
 settings_presets: Vorlagen & Lesezeichen
 scope: Scope
+select: Auswählen...
 layout: Layout
+tree_view: Baumansicht
+changes_are_permanent: Änderungen können nicht rückgängig gemacht werden
+preset_name_placeholder: Dient als Standard wenn leer...
+preset_search_placeholder: Suchabfrage...
+editing_preset: Preset bearbeiten
+layout_preview: Layoutvorschau
+layout_setup: Einrichtung Layout
 unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Bist Du sicher, dass Du diese Seite verlassen willst?
 discard_changes: Änderungen verwerfen
 keep_editing: Weiter bearbeiten
+page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
+page_help_collections_collection: >-
+  **Durchsuche Elemente** — Listet alle {collection} Elemente, auf die Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
+page_help_collections_item: >-
+  **Element-Detail** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
+page_help_activity_collection: >-
+  **Aktivität durchsuchen** — Eine umfassende Auflistung aller System- und Inhaltstätigkeiten Ihres Benutzers.
+page_help_docs_global: >-
+  **Dokumentationsübersicht** — Dokumente, die speziell auf die Version und das Schema dieses Projekts zugeschnitten sind.
+page_help_files_collection: >-
+  **Dateibibliothek** — Listet alle Dateien auf, die in dieses Projekt hochgeladen wurden. Passen Sie Layout, Filter und Sortierung für Ihre Ansicht an und speichern Sie sogar Lesezeichen dieser verschiedenen Konfigurationen für einen schnelleren Zugriff.
+page_help_files_item: >-
+  **Datei-Detail** — Ein Formular zur Verwaltung von Metadaten, zur Bearbeitung der ursprünglichen Datei und zur Aktualisierung der Zugriffseinstellungen.
+page_help_settings_project: "**Projekteinstellungen** — die globalen Konfigurationsoptionen Ihres Projekts."
+page_help_settings_datamodel_collections: >-
+  **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
+page_help_settings_datamodel_fields: >-
+  **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
+page_help_settings_roles_collection: '**Rollen durchsuchen** — Listet die Admin-, öffentlichen und benutzerdefinierten Benutzerrollen auf.'
+page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
+page_help_settings_presets_collection: >-
+  **Presets durchsuchen** — Listet alle Presets im Projekt auf, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
+page_help_settings_presets_item: >-
+  **Preset-Detail** — Ein Formular zur Verwaltung von Lesezeichen und Sammlung-Presets.
+page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Listet alle Webhooks im Projekt auf.'
+page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
+page_help_users_collection: '**Benutzerverzeichnis** — Listet alle Benutzer in diesem Projekt auf.'
+page_help_users_item: >-
+  **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
+activity_feed: Aktivitätenverlauf
 add_new: Neu erstellen
 create_new: Neu anlegen
 all: Alles
+none: Kein/e
+no_layout_collection_selected_yet: Noch kein Layout oder keine Sammlung ausgewählt
 batch_delete_confirm: >-
   Keine Elemente ausgewählt | Bist Du sicher, dass Du dieses Element löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden. | Bist Du sicher, dass Du diese {count} Elemente löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
 collection: Sammlung
 collections: Sammlungen
+singleton: Singleton
+singleton_label: Als einzelnes Objekt behandeln
+system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet werden
 fields:
   directus_activity:
     item: Item-Primärschlüssel
@@ -585,14 +671,24 @@ fields:
     note: Notiz
     display_template: Anzeigevorlage
     hidden: Ausgeblendet
+    singleton: Singleton
+    translations: Übersetzungen des Namens der Sammlung
+    archive_app_filter: Archivierungs-App-Filter
+    archive_value: Archivierungswert
+    unarchive_value: Dearchivierungswert
     sort_field: Sortierfeld
   directus_files:
     title: Titel
     description: Beschreibung
     tags: Stichwörter
     location: Ort
+    storage: Speicher
+    filename_disk: Dateiname (Festplatte)
+    filename_download: Dateiname (Download)
     metadata: Metadaten
+    type: MIME-Typ
     filesize: Dateigröße
+    modified_by: Geändert von
     modified_on: Geändert am
     created_on: Erstellt am
     created_by: Erstellt von
@@ -602,6 +698,7 @@ fields:
     width: Breite
     uploaded_on: Hochgeladen am
     height: Höhe
+    charset: Zeichensatz
     duration: Dauer
   directus_users:
     first_name: Vorname
@@ -618,6 +715,7 @@ fields:
     tfa_secret: Zwei-Faktor-Authentifizierung
     status: Status
     role: Rolle
+    token: Token
     last_page: Letzte Seite
     last_access: Letzter Zugriff
   directus_settings:
@@ -625,10 +723,20 @@ fields:
     project_url: Projekt URL
     project_color: Projekt Farbe
     project_logo: Projekt Logo
+    public_foreground: Öffentlicher Vordergrund
     public_background: Öffentlicher Hintergrund
+    public_note: Öffentliche Anmerkung
+    auth_password_policy: Kennwortrichtlinie
+    auth_login_attempts: Maximale Anmeldeversuche
+    storage_asset_presets: Asset-Presets
+    storage_asset_transform: Asset-Transformierung
+    custom_css: Benutzerdefiniertes CSS
   directus_fields:
+    collection: Sammlungsname
+    icon: Sammlungsicon
     note: Notiz
     hidden: Ausgeblendet
+    singleton: Singleton
     translation: Feldnamen-Übersetzungen
     display_template: Vorlage
   directus_roles:
@@ -712,6 +820,7 @@ template: Vorlage
 translation: Übersetzung
 value: Wert
 view_project: Projekt anzeigen
+weeks: { }
 report_error: Fehler melden
 interfaces:
   button-links:
@@ -759,42 +868,96 @@ interfaces:
     display-template: Anzeigevorlage
     description: Statische Text- und dynamische Feldwerte mischen
     collection_field: Sammlungsfeld
+    collection_field_not_setup: Das Sammlungsfeld ist falsch konfiguriert
     select_a_collection: Sammlung auswählen
   divider:
     divider: Divider
     description: Felder beschriften und in Abschnitte teilen
+    title_placeholder: Titel eingeben...
+    inline_title: Inline-Titel
+    inline_title_label: Titel in Zeile anzeigen
+    margin_top: Oberer Rand
+    margin_top_label: Oberen Rand erhöhen
   dropdown:
+    description: Wert aus einer Dropdown-Liste auswählen
+    choices_placeholder: Neue Auswahl hinzufügen
     allow_other: Andere erlauben
+    allow_other_label: Andere Werte erlauben
+    allow_none: Keine Auswahl zulassen
+    allow_none_label: Keine Auswahl zulassen
+    choices_name_placeholder: Namen eingeben...
     choices_value_placeholder: Gib einen Wert ein...
+  dropdown-multiselect:
+    dropdown-multiselect: Dropdown (Mehrfachauswahl)
+    description: Mehrere Werte aus einer Dropdown-Liste auswählen
   file:
     file: Datei
+    description: Datei auswählen oder hochladen
   files:
     files: Dateien
+    description: Mehrere Dateien auswählen oder hochladen
+  hash:
+    hash: Hash
+    description: Den zu hashenden Wert eingeben
+    masked: Maskiert
+    masked_label: Wahre Werte ausblenden
   icon:
     icon: Symbol
+    description: Icon aus einer Dropdown-Liste auswählen
+    search_for_icon: Nach Icon suchen...
   image:
     image: Bild
+    description: Bild auswählen oder hochladen
   interface:
     interface: Benutzeroberfläche
+    description: Vorhandene Schnittstelle auswählen
+    placeholder: Schnittstelle auswählen...
   interface-options:
     interface-options: Schnittstellenoptionen
+    description: Ein modales Popup zum Auswählen der Schnittstellen-Optionen
   many-to-many:
     many-to-many: n:n-Beziehung
+    description: Mehrere verwandte Elemente auswählen
   many-to-one:
     many-to-one: n:1-Beziehung
+    description: Ein einzelnes verwandtes Element auswählen
     display_template: Anzeigevorlage
   markdown:
     markdown: Markdown
+    description: Markdown eingeben und Vorschau anzeigen
+    customSyntax: Benutzerdefinierte Blöcke
+    customSyntax_label: Eigene Syntaxtypen hinzufügen
+    customSyntax_add: Eigene Syntax hinzufügen
+    box: Block / Inline
+    imageToken: Bild-Token
+    imageToken_label: (Statischer) Token, der an Bildquellen angehängt werden soll
+  notice:
+    notice: Anmerkung
+    description: Kurze Anmerkung anzeigen
+    text: Inhalt der Anmerkung eingeben...
   numeric:
     numeric: Numerisch
+    description: Nummer eingeben
+    minimum_value: Minimalwert
+    maximum_value: Maximalwert
+    step_interval: Schrittintervall
   one-to-many:
     one-to-many: 1 zu n
+    description: Mehrere verwandte Elemente auswählen
+    no_collection: Die Sammlung konnte nicht gefunden werden
   radio-buttons:
     radio-buttons: Radio Buttons
+    description: Eine von mehreren Optionen auswählen
   repeater:
     repeater: Repeater
+    description: Mehrere Einträge derselben Struktur erstellen
+    edit_fields: Felder bearbeiten
+    add_label: 'Label "Neue Zeile hinzufügen"'
+    field_name_placeholder: Feldnamen eingeben...
+    field_note_placeholder: Feldnotiz eingeben...
   slider:
     slider: Slider
+    description: Nummer mit Schieberegler auswählen
     always_show_value: Wert immer anzeigen
   slug:
     slug: Slug
@@ -818,6 +981,7 @@ interfaces:
     description: Einen einzeiligen Text eingeben
     trim: Beschneiden
     trim_label: Anfang und Ende kürzen
+    mask: Maskiert
     mask_label: Tatsächlichen Wert ausblenden
     nullable: Nullable
     nullable_label: Leeren Wert als NULL speichern
@@ -887,25 +1051,61 @@ displays:
     description: Dateigröße anzeigen
   formatted-value:
     formatted-value: Formatierter Wert
+    description: Eine formatierte Version des Textes anzeigen
+    format_title: Titel formatieren
+    format_title_label: Automatische Groß-/Kleinschreibung
+    bold_label: Fett-Schnitt verwenden
+  formatted-json-value:
+    formatted-json-value: Formatierter JSON-Wert
+    description: Eine formatierte Version des Objekts anzeigen
   icon:
     icon: Symbol
+    description: Icon anzeigen
+    filled: Ausgefüllt
+    filled_label: Gefüllte Variante verwenden
   image:
     image: Bild
+    description: Eine kleine Bildvorschau zeigen
     circle: Kreis
+    circle_label: Als Kreis anzeigen
   labels:
+    labels: Labels
+    description: Entweder eine einzelne oder eine Liste von Labels anzeigen
+    default_foreground: Standard Vordergrund
+    default_background: Standard Hintergrund
+    format_label: Jedes Label formatieren
+    show_as_dot: Als Punkt anzeigen
     choices_value_placeholder: Gib einen Wert ein...
+    choices_text_placeholder: Text eingeben...
+  mime-type:
+    mime-type: MIME-Typ
+    description: MIME-Typ einer Datei anzeigen
+    extension_only: Nur Dateiendung
+    extension_only_label: Nur die Dateiendung anzeigen
   rating:
     rating: Bewertung
+    description: Eine Zahl als Sterne im Verhältnis zum Maximalwert anzeigen
+    simple: Einfach
+    simple_label: Sterne in einem einfachen Format anzeigen
+  raw:
+    raw: Rohwert
+  related-values:
+    related-values: Verwandte Werte
+    description: Relative Werte anzeigen
   user:
     user: Benutzer
+    description: Benutzer anzeigen
     avatar: Avatar
     name: Name
     both: Beide
+    circle_label: Benutzer in einem Kreis anzeigen
 layouts:
   cards:
     cards: Karten
     image_source: Bildquelle
+    image_fit: Bildeinpassung
     crop: Zuschneiden
+    contain: Enthalten
     title: Titel
     subtitle: Untertitel
   tabular:

@@ -540,6 +540,11 @@ export class GraphQLService {
 					}, {} as InputTypeComposerFieldConfigMapDefinition),
 				});
 
+				ReadableCollectionFilterTypes[collection.collection].addFields({
+					_and: [ReadableCollectionFilterTypes[collection.collection]],
+					_or: [ReadableCollectionFilterTypes[collection.collection]],
+				});
+
 				ReadCollectionTypes[collection.collection].addResolver({
 					name: collection.collection,
 					args: collection.singleton
@@ -1139,16 +1144,26 @@ export class GraphQLService {
 	): readonly SelectionNode[] | null {
 		if (!selections) return null;
 
-		return flatten(
+		const result = flatten(
 			selections.map((selection) => {
+				// Fragments can contains fragments themselves. This allows for nested fragments
 				if (selection.kind === 'FragmentSpread') {
-					// Fragments can contains fragments themselves. This allows for nested fragments
 					return this.replaceFragmentsInSelections(fragments[selection.name.value].selectionSet.selections, fragments);
+				}
+
+				// Nested relational fields can also contain fragments
+				if (selection.kind === 'Field' && selection.selectionSet) {
+					selection.selectionSet.selections = this.replaceFragmentsInSelections(
+						selection.selectionSet.selections,
+						fragments
+					) as readonly SelectionNode[];
 				}
 
 				return selection;
 			})
 		).filter((s) => s) as SelectionNode[];
+
+		return result;
 	}
 
 	injectSystemResolvers(

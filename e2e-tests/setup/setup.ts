@@ -3,9 +3,11 @@ import knex, { Knex } from 'knex';
 import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
 import Listr, { ListrTask } from 'listr';
 import { getDBsToTest } from '../get-dbs-to-test';
-import config from '../config';
+import config, { CONTAINER_PERSISTENCE_FILE } from '../config';
 import globby from 'globby';
 import path from 'path';
+import { GlobalConfigTsJest } from 'ts-jest/dist/types';
+import { writeFileSync } from 'fs';
 
 declare module global {
 	let databaseContainers: { vendor: string; container: Dockerode.Container }[];
@@ -14,8 +16,12 @@ declare module global {
 }
 
 const docker = new Dockerode();
+let started = false;
 
-export default async () => {
+export default async (jestConfig: GlobalConfigTsJest) => {
+	if (started) return;
+	started = true;
+
 	console.log('\n\n');
 
 	console.log(`👮‍♀️ Starting tests!\n`);
@@ -253,6 +259,21 @@ export default async () => {
 					}),
 					{ concurrent: true }
 				);
+			},
+		},
+		{
+			skip: () => !jestConfig.watch,
+			title: 'Persist container info',
+			task: () => {
+				const persistContainer = ({ container, vendor }: { container: Dockerode.Container; vendor: string }) => ({
+					id: container.id,
+					vendor,
+				});
+				const containers = {
+					db: global.databaseContainers.map(persistContainer),
+					directus: global.directusContainers.map(persistContainer),
+				};
+				writeFileSync(CONTAINER_PERSISTENCE_FILE, JSON.stringify(containers));
 			},
 		},
 	]).run();

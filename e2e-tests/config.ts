@@ -20,6 +20,8 @@ export type Config = {
 
 export const processID = generateID();
 
+export const CONTAINER_PERSISTENCE_FILE = '.e2e-containers.json';
+
 const config: Config = {
 	containerConfig: {
 		postgres: {

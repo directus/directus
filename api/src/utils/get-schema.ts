@@ -89,8 +89,8 @@ export async function getSchema(options?: {
 			sortField: collectionMeta?.sort_field || null,
 			fields: mapValues(schemaOverview[collection].columns, (column) => ({
 				field: column.column_name,
-				defaultValue: getDefaultValue(column) || null,
-				nullable: column.is_nullable || true,
+				defaultValue: getDefaultValue(column) ?? null,
+				nullable: column.is_nullable ?? true,
 				type: getLocalType(column) || 'alias',
 				precision: column.numeric_precision || null,
 				scale: column.numeric_scale || null,
@@ -121,8 +121,8 @@ export async function getSchema(options?: {
 
 		result.collections[field.collection].fields[field.field] = {
 			field: field.field,
-			defaultValue: existing?.defaultValue || null,
-			nullable: existing?.nullable || true,
+			defaultValue: existing?.defaultValue ?? null,
+			nullable: existing?.nullable ?? true,
 			type: existing
 				? getLocalType(schemaOverview[field.collection].columns[field.field], {
 						special: field.special ? toArray(field.special) : [],
