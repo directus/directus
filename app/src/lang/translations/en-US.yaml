@@ -995,7 +995,7 @@ interfaces:
     mask: Masked
     mask_label: Hide the real value
     clear: Cleared Value
-    clear_label: Save cleared value as empty string
+    clear_label: Save as empty string
   textarea:
     textarea: Textarea
     description: Enter multiline plain-text
