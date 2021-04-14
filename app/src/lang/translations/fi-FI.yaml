@@ -980,8 +980,6 @@ interfaces:
     trim_label: Leikkaa tyhjät merkit alusta ja lopusta
     mask: Maskeerattu
     mask_label: Piilota todellinen arvo
-    nullable: Nullable
-    nullable_label: Tallenna tyhjä arvo NULL:nä
   textarea:
     textarea: Tekstialue
     description: Syötä monirivinen tavallinen teksti
