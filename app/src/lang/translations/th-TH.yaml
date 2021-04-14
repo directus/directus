@@ -956,8 +956,6 @@ interfaces:
     trim_label: ตัดช่องว่างหน้าหลัง
     mask: Masked
     mask_label: ซ่อนค่าจริง
-    nullable: สามารถเป็นค่า NULL ได้
-    nullable_label: บันทึกค่าว่างด้วยค่า NULL
   textarea:
     textarea: พื้นที่ข้อความ
     description: กรอกข้อความได้แบบหลายบรรทัด
