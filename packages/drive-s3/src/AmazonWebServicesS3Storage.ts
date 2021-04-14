@@ -57,7 +57,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Prefixes the given filePath with the storage root location
 	 */
 	protected _fullPath(filePath: string) {
-		return path.join(this.$root, filePath);
+		return normalize(path.join(this.$root, filePath));
 	}
 
 	/**
