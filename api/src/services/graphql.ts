@@ -540,6 +540,11 @@ export class GraphQLService {
 					}, {} as InputTypeComposerFieldConfigMapDefinition),
 				});
 
+				ReadableCollectionFilterTypes[collection.collection].addFields({
+					_and: [ReadableCollectionFilterTypes[collection.collection]],
+					_or: [ReadableCollectionFilterTypes[collection.collection]],
+				});
+
 				ReadCollectionTypes[collection.collection].addResolver({
 					name: collection.collection,
 					args: collection.singleton
