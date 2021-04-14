@@ -47,11 +47,15 @@ for more info on what can go into this object.
 
 ```vue
 <template>
-	<div>My Custom Display</div>
+	<div>Value: {{ value }}</div>
 </template>
 
 <script>
-export default {};
+export default {
+	props: {
+		value: String,
+	},
+};
 </script>
 ```
 
@@ -94,15 +98,15 @@ To be read by the Admin App, your custom display's Vue component must first be b
 recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
 ```bash
-npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc rollup-plugin-vue@next
+npm i -D rollup @rollup/plugin-commonjs @rollup/plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5 vue-template-compiler
 ```
 
 You can then use the following Rollup configuration within `rollup.config.js`:
 
 ```js
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
 import vue from 'rollup-plugin-vue';
 
 export default {
@@ -111,7 +115,7 @@ export default {
 		format: 'es',
 		file: 'dist/index.js',
 	},
-	plugins: [terser(), resolve(), commonjs(), vue()],
+	plugins: [vue(), nodeResolve(), commonjs(), terser()],
 };
 ```
 
