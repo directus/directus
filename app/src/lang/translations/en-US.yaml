@@ -994,7 +994,7 @@ interfaces:
     trim_label: Trim the start and end
     mask: Masked
     mask_label: Hide the real value
-    clear: Clear
+    clear: Cleared Value
     clear_label: Save cleared value as empty string
   textarea:
     textarea: Textarea
