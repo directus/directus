@@ -76,6 +76,13 @@ export default defineComponent({
 			type: [String, Number],
 			default: '+',
 		},
+
+		// If this drawer-item is opened from a relational interface, we need to force-block the field
+		// that relates back to the parent item.
+		circularField: {
+			type: String,
+			default: null,
+		},
 	},
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
@@ -120,11 +127,21 @@ export default defineComponent({
 			computed(() => props.primaryKey === '+')
 		);
 
-		const { fields } = usePermissions(
+		const { fields: fieldsWithPermissions } = usePermissions(
 			collection,
 			item,
 			computed(() => props.primaryKey === '+')
 		);
+
+		const fields = computed(() => {
+			if (props.circularField) {
+				return fieldsWithPermissions.value.filter((field) => {
+					return field.field !== props.circularField;
+				});
+			} else {
+				return fieldsWithPermissions.value;
+			}
+		});
 
 		const templatePrimaryKey = computed(() =>
 			junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)

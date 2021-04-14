@@ -22,6 +22,7 @@
 			:collection="translationsCollection"
 			:primary-key="editing"
 			:edits="edits"
+			:circular-field="translationsRelation.many_field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
