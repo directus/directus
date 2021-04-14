@@ -146,6 +146,8 @@ uuid: UUID
 hash: Хеш
 not_available_for_type: Не е налично за този тип
 create_translations: Създаване на преводи
+auto_refresh: Автоматично опресняване
+refresh_interval: Интервал за опресняване
 auto_generate: Автоматично генериране
 this_will_auto_setup_fields_relations: Автоматично настройване на задължителните полета и релации.
 click_here: Натиснете тук
@@ -534,6 +536,7 @@ wysiwyg_options:
   numlist: Номериран списък
   hr: Хоризонтална линия
   unlink: Премахване на връзка
+  image: Добавяне/редактиране на изображение
   copy: Копиране
   cut: Изрязване
   paste: Поставяне
@@ -555,6 +558,7 @@ wysiwyg_options:
   selectall: Избиране на всичко
   table: Таблица
   visualaid: Преглед на невидимите елементи
+  source_code: Редактиране на изходен код
   fullscreen: Пълен Екран
   directionality: Подравняване
 dropdown: Падащо меню
@@ -575,6 +579,7 @@ settings_project: Настройки на проект
 settings_webhooks: Уеб-куки
 settings_presets: Изгледи и отметки
 scope: Обхват
+select: Избор...
 layout: Оформление
 tree_view: Дървовиден изглед
 changes_are_permanent: Промените са постоянни
