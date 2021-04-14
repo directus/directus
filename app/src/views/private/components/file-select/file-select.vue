@@ -8,14 +8,7 @@
 				<v-icon v-else class="select" name="attach_file" @click="$refs.import_file.click()" />
 			</template>
 		</v-input>
-		<input
-			:disabled="disabled"
-			v-show="false"
-			type="file"
-			ref="import_file"
-			accept=".xlf, application/xliff+xml"
-			@change="fileSelected"
-		/>
+		<input :disabled="disabled" v-show="false" type="file" ref="import_file" :accept="accept" @change="fileSelected" />
 	</div>
 </template>
 
@@ -27,6 +20,10 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		accept: {
+			type: String,
+			default: null,
 		},
 	},
 	methods: {
