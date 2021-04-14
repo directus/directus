@@ -17,6 +17,7 @@
 			:layout-options.sync="localOptions"
 			:search-query="searchQuery"
 			@update:selection="onSelect"
+			@update:filters="$emit('update:filters', $event)"
 			select-mode
 			class="layout"
 		>
