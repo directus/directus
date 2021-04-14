@@ -268,8 +268,8 @@ router.get(
 
 		let hookPayload = req.session.grant.response;
 
-		await emitter.emitAsync('oauth.login.before', hookPayload, {
-			event: 'oauth.login.before',
+		await emitter.emitAsync(`oauth.${req.params.provider}.login.before`, hookPayload, {
+			event: `oauth.${req.params.provider}.login.before`,
 			action: 'oauth.login',
 			schema: req.schema,
 			payload: hookPayload,
@@ -279,8 +279,8 @@ router.get(
 		});
 
 		const emitStatus = (status: 'fail' | 'success') => {
-			emitAsyncSafe('oauth.login', hookPayload, {
-				event: 'oauth.login',
+			emitAsyncSafe(`oauth.${req.params.provider}.login`, hookPayload, {
+				event: `oauth.${req.params.provider}.login`,
 				action: 'oauth.login',
 				schema: req.schema,
 				payload: hookPayload,
