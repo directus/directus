@@ -820,7 +820,6 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 interfaces:
   button-links:
@@ -983,8 +982,6 @@ interfaces:
     trim_label: Почистване на краищата от интервали
     mask: Маскиране
     mask_label: Скриване на истинската стойност
-    nullable: Може да е null
-    nullable_label: Празните стойности са NULL
   textarea:
     textarea: Поле за текст
     description: Въвеждане на чист текст на няколко реда
