@@ -13,7 +13,8 @@ import {
 } from '@/stores';
 import { register as registerModules, unregister as unregisterModules } from '@/modules/register';
 
-import { setLanguage, Language } from '@/lang';
+import { Language } from '@/lang';
+import { setLanguage } from '@/lang/set-language';
 
 type GenericStore = {
 	id: string;

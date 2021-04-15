@@ -113,10 +113,17 @@
 					</template>
 					<template v-else-if="isNew === false && item">
 						<div class="name type-label">
-							{{ userName(item) }}<span v-if="item.title" class="title">, {{ item.title }}</span>
+							{{ userName(item) }}
+							<span v-if="item.title" class="title">, {{ item.title }}</span>
 						</div>
-						<div class="email"><v-icon name="alternate_email" small outline /> {{ item.email }}</div>
-						<div class="location" v-if="item.location"><v-icon name="place" small outline /> {{ item.location }}</div>
+						<div class="email">
+							<v-icon name="alternate_email" small outline />
+							{{ item.email }}
+						</div>
+						<div class="location" v-if="item.location">
+							<v-icon name="place" small outline />
+							{{ item.location }}
+						</div>
 						<v-chip :class="item.status" small v-if="roleName">{{ roleName }}</v-chip>
 					</template>
 				</div>
@@ -169,7 +176,8 @@
 import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 
 import UsersNavigation from '../components/navigation.vue';
-import { i18n, setLanguage } from '@/lang';
+import { i18n } from '@/lang';
+import { setLanguage } from '@/lang/set-language';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
@@ -526,16 +534,16 @@ export default defineComponent({
 	height: 112px;
 	margin-bottom: var(--form-vertical-gap);
 	padding: 20px;
-	border-radius: calc(var(--border-radius) + 4px);
 	background-color: var(--background-normal);
+	border-radius: calc(var(--border-radius) + 4px);
 
 	.avatar {
 		--v-icon-color: var(--foreground-subdued);
 
 		display: flex;
 		flex-shrink: 0;
-		justify-content: center;
 		align-items: center;
+		justify-content: center;
 		width: 84px;
 		height: 84px;
 		margin-right: 16px;
