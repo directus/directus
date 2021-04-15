@@ -1152,7 +1152,7 @@ export class GraphQLService {
 				}
 
 				// Nested relational fields can also contain fragments
-				if (selection.kind === 'Field' && selection.selectionSet) {
+				if ((selection.kind === 'Field' || selection.kind === 'InlineFragment') && selection.selectionSet) {
 					selection.selectionSet.selections = this.replaceFragmentsInSelections(
 						selection.selectionSet.selections,
 						fragments
