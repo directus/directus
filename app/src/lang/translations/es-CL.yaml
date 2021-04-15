@@ -2,11 +2,11 @@
 edit_field: Editar Campo
 item_revision: Revisión de Elemento
 duplicate_field: Duplicar Campo
-half_width: Anchura 50%
+half_width: Mitad del ancho
 full_width: Ancho completo
-fill_width: Llenar Ancho
-field_name_translations: 'Nombre de Campo: Traducciones'
-enter_password_to_enable_tfa: Introduzca la contraseña para habilitar la Autenticación de doble factor
+fill_width: Rellenar ancho
+field_name_translations: Traducción de campos
+enter_password_to_enable_tfa: Escribe tu contraseña para habilitar el doble factor de autenticación
 add_field: Agregar Campo
 role_name: Nombre del Rol
 db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
@@ -718,7 +718,7 @@ fields:
     note: Nota
     hidden: Oculto
     singleton: Singleton
-    translation: 'Nombre de Campo: Traducciones'
+    translation: Traducción de campos
     display_template: Plantilla
   directus_roles:
     name: Nombre del Rol
