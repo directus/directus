@@ -1,4 +1,5 @@
 import expressLogger from 'express-pino-logger';
+import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import express from 'express';
 import logger from './logger';
@@ -89,6 +90,8 @@ export default async function createApp() {
 			return next();
 		});
 	});
+	
+	app.use(cookieParser())
 
 	app.use(extractToken);
 
