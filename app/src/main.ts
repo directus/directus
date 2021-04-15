@@ -58,17 +58,15 @@ import { registerDisplays } from './displays/register';
 import App from './app.vue';
 
 async function init() {
-	const app = new Vue({
-		render: (h) => h(App),
-		router,
-		i18n,
-	});
-
 	await Promise.all([registerInterfaces(), registerDisplays(), registerLayouts(), loadModules()]);
 
 	Vue.config.productionTip = false;
 
-	app.$mount('#app');
+	new Vue({
+		render: (h) => h(App),
+		router,
+		i18n,
+	}).$mount('#app');
 
 	console.timeEnd('🕓 Application Loaded');
 
