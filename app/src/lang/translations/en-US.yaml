@@ -665,6 +665,9 @@ collections: Collections
 singleton: Singleton
 singleton_label: Treat as single object
 system_fields_locked: System fields are locked and can't be edited
+fit: Fit
+quality: Quality
+no_upscale: Don't upscale images
 fields:
   directus_activity:
     item: Item Primary Key
@@ -761,6 +764,30 @@ fields:
     users: Users in Role
     module_list: Module Navigation
     collection_list: Collection Navigation
+field_options:
+  directus_settings:
+    project_name_placeholder: My project...
+    project_color_note: Login & Logo Background
+    project_logo_note: White 40x40 SVG/PNG
+    public_divider_title: Public Pages
+    public_note_placeholder: A short, public message that supports markdown formatting...
+    security_divider_title: Security
+    auth_password_policy:
+      none_text: None – Not Recommended
+      weak_text: Weak – Minimum 8 Characters
+      strong_text: Strong – Upper / Lowercase / Numbers / Special
+    storage_asset_presets:
+      fit:
+       contain_text: Contain (preserve aspect ratio)
+       cover_text: Cover (forces exact size)
+       inside_text: Fit inside
+       outside_text: Fit outside
+    files_divider_title: Files & Thumbnails
+    storage_asset_transform:
+      all_text: All
+      none_text: None
+      presets_text: Presets Only
+    overrides_divider_title: App Overrides
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 do_nothing: Do Nothing
 generate_and_save_uuid: Generate and Save UUID

@@ -8,7 +8,7 @@ fields:
     interface: text-input
     options:
       iconRight: title
-      placeholder: My project...
+      placeholder: $t:field_options.directus_settings.project_name_placeholder
     translations:
       language: en-US
       translations: Name
@@ -26,7 +26,7 @@ fields:
 
   - field: project_color
     interface: color
-    note: Login & Logo Background
+    note: $t:field_options.directus_settings.project_color_note
     translations:
       language: en-US
       translations: Brand Color
@@ -34,7 +34,7 @@ fields:
 
   - field: project_logo
     interface: file
-    note: White 40x40 SVG/PNG
+    note: $t:field_options.directus_settings.project_logo_note
     translations:
       language: en-US
       translations: Brand Logo
@@ -44,7 +44,7 @@ fields:
     interface: divider
     options:
       icon: public
-      title: Public Pages
+      title: $t:field_options.directus_settings.public_divider_title
     special:
       - alias
       - no-data
@@ -67,14 +67,14 @@ fields:
   - field: public_note
     interface: textarea
     options:
-      placeholder: A short, public message that supports markdown formatting...
+      placeholder: $t:field_options.directus_settings.public_note_placeholder
     width: full
 
   - field: security_divider
     interface: divider
     options:
       icon: security
-      title: Security
+      title: $t:field_options.directus_settings.security_divider_title
     special:
       - alias
       - no-data
@@ -85,11 +85,11 @@ fields:
     options:
       choices:
         - value: null
-          text: None – Not Recommended
+          text: $t:field_options.directus_settings.auth_password_policy.none_text
         - value: '/^.{8,}$/'
-          text: Weak – Minimum 8 Characters
+          text: $t:field_options.directus_settings.auth_password_policy.weak_text
         - value: "/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/"
-          text: Strong – Upper / Lowercase / Numbers / Special
+          text: $t:field_options.directus_settings.auth_password_policy.strong_text
     width: half
 
   - field: auth_login_attempts
@@ -102,7 +102,7 @@ fields:
     interface: divider
     options:
       icon: storage
-      title: Files & Thumbnails
+      title: $t:field_options.directus_settings.files_divider_title
     special:
       - alias
       - no-data
@@ -113,7 +113,7 @@ fields:
     options:
       fields:
         - field: key
-          name: Key
+          name: $t:key
           type: string
           schema:
             is_nullable: false
@@ -123,7 +123,7 @@ fields:
               onlyOnCreate: false
             width: half
         - field: fit
-          name: Fit
+          name: $t:fit
           type: string
           schema:
             is_nullable: false
@@ -132,16 +132,16 @@ fields:
             options:
               choices:
                 - value: contain
-                  text: Contain (preserve aspect ratio)
+                  text: $t:field_options.directus_settings.storage_asset_presets.fit.contain_text
                 - value: cover
-                  text: Cover (forces exact size)
+                  text: $t:field_options.directus_settings.storage_asset_presets.fit.cover_text
                 - value: inside
-                  text: Fit inside
+                  text: $t:field_options.directus_settings.storage_asset_presets.fit.fit_text
                 - value: outside
-                  text: Fit outside
+                  text: $t:field_options.directus_settings.storage_asset_presets.fit.outside_text
             width: half
         - field: width
-          name: Width
+          name: $t:width
           type: integer
           schema:
             is_nullable: false
@@ -149,7 +149,7 @@ fields:
             interface: numeric
             width: half
         - field: height
-          name: Height
+          name: $t:height
           type: integer
           schema:
             is_nullable: false
@@ -158,7 +158,7 @@ fields:
             width: half
         - field: quality
           type: integer
-          name: Quality
+          name: $t:quality
           schema:
             default_value: 80
             is_nullable: false
@@ -177,7 +177,7 @@ fields:
             interface: toggle
             width: half
             options:
-              label: Don't upscale images
+              label: $t:no_upscale
       template: '{{key}}'
     special: json
     width: full
@@ -187,18 +187,18 @@ fields:
     options:
       choices:
         - value: all
-          text: All
+          text: $t:field_options.directus_settings.storage_asset_transform.all_text
         - value: none
-          text: None
+          text: $t:field_options.directus_settings.storage_asset_transform.none_text
         - value: presets
-          text: Presets Only
+          text: $t:field_options.directus_settings.storage_asset_transform.presets_text
     width: half
 
   - field: overrides_divider
     interface: divider
     options:
       icon: brush
-      title: App Overrides
+      title: $t:field_options.directus_settings.overrides_divider_title
     special:
       - alias
       - no-data
