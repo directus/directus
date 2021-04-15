@@ -820,6 +820,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:
@@ -982,6 +983,8 @@ interfaces:
     trim_label: Couper le début et la fin
     mask: Masqué
     mask_label: Cacher la valeur réelle
+    clear: Valeur effacée
+    clear_label: Enregistrer en tant que chaîne vide
   textarea:
     textarea: Zone de texte
     description: Entrez le texte brut en multiligne

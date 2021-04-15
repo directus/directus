@@ -11,7 +11,9 @@ add_field: Legg til felt
 role_name: Rollenavn
 db_only_click_to_configure: 'Kun database: Klikk for å konfigurere '
 show_archived_items: Vis arkiverte elementer
+edited: Verdi endret
 required: Påkrevd
+required_for_app_access: Påkrevd for app-tilgang
 requires_value: Krever verdi
 create_preset: Opprett forhåndsinnstilling
 create_role: Opprett rolle
@@ -25,8 +27,11 @@ connection_excellent: Utmerket tilkobling
 connection_good: God tilkobling
 connection_fair: Ok tilkobling
 connection_poor: Dårlig tilkobling
+primary: Primær
 rename_folder: Endre mappenavn
 delete_folder: Slett mappe
+prefix: Prefiks
+suffix: Suffiks
 reset_bookmark: Tilbakestill bokmerke
 rename_bookmark: Endre navn på bokmerke
 update_bookmark: Oppdater bokmerke
@@ -50,6 +55,11 @@ archive: Arkiv
 archive_confirm: Er du sikker på at du vil arkivere dette elementet?
 archive_confirm_count: >-
   Ingen elementer valgt | Er du sikker på at du vil arkivere dette elementet? | Er du sikker på at du vil arkivere disse {count} elementene?
+reset_system_permissions_to: 'Tilbakestill systemtillatelser til:'
+reset_system_permissions_copy: Denne handlingen vil overskrive eventuelle egendefinerte rettigheter du kan ha brukt på systemkolleksjonene. Er du sikker?
+the_following_are_minimum_permissions: Følgende minimumstilganger kreves når "Applikasjons-tilgang" er aktivert. Du kan utvide tillatelsene ut over dette, men ikke nedenfor.
+app_access_minimum: App Minimumstilgang
+recommended_defaults: Anbefalte standardinnstillinger
 unarchive: Uarkivér
 unarchive_confirm: Er du sikker på at du vil uarkivere dette elementet?
 nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett nivå opp.
@@ -73,7 +83,14 @@ validationError:
 all_access: All tilgang
 no_access: Ingen tilgang
 use_custom: Bruk egendefinert
+field_standard: Standard
 field_presentation: Presentation & Aliaser
+field_file: En fil
+field_files: Flere filer
+field_m2o: M2O Relasjon
+field_m2a: M2A Relasjon
+field_o2m: O2M Relasjon
+field_m2m: M2M Relasjon
 field_translations: Oversettelser
 item_permissions: Element Tillatelser
 field_permissions: Felt Tillatelser
@@ -102,8 +119,10 @@ exposure: Eksponering
 shutter: Utløser
 iso: ISO
 focal_length: Brennvidde
+schema_setup_key: Dette feltets databasekolonne navn og API nøkkel
 create_field: Opprett felt
 creating_new_field: 'Nytt felt ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Tilbakestill sideinnstillinger
 hidden_field: Skjult felt
 hidden_on_detail: Skjult ved detaljer
@@ -125,11 +144,23 @@ timestamp: Tidsstempel
 uuid: UUID
 not_available_for_type: Ikke tilgjengelig for denne typen
 create_translations: Lag oversettelser
+auto_refresh: Automatisk oppdatering
+refresh_interval: Oppdateringsintervall
+no_refresh: Ikke oppdater
+refresh_interval_seconds: Oppdater øyeblikkelig | Hvert sekund | Hvert {seconds} sekund
+refresh_interval_minutes: Hvert minutt | Hvert {minutes} minutt
 auto_generate: Autogenerer
 this_will_auto_setup_fields_relations: Dette vil automatisk sette opp alle obligatoriske felt og relasjoner.
 click_here: Klikk her
 to_manually_setup_translations: for manuelt å sette opp oversettelser.
+click_to_manage_translated_fields: >-
+  Der er ingen oversatte felter enda. Klikk her for å lage dem. | Der er ett oversatt felt. Klikk her for å redigere det | Der er {count} oversatte felter. Klikk her for å redigere dem.
 fields_group: Feltgruppe
+no_collections_found: Ingen kolleksjoner funnet.
+new_data_alert: 'Følgende vil bli opprettet i din Data Model:'
+search_collection: Søk i kolleksjonen...
+new_field: 'Nytt felt'
+new_collection: 'Ny Kolleksjon'
 add_m2o_to_collection: 'Legg til mange-til-en til "{collection}"'
 add_o2m_to_collection: 'Legg til en-til-mange til "{collection}"'
 add_m2m_to_collection: 'Legg til mange-til mange til "{collection}'
@@ -137,7 +168,16 @@ choose_a_type: Velg en Type...
 determined_by_relationship: Fastsatt av relasjon
 add_note: Legg til en god beskrivelse til brukerne...
 default_value: Standardverdi
+standard_field: Standard felt
+single_file: En fil
+multiple_files: Flere filer
+m2o_relationship: Mange til én relasjon
+o2m_relationship: Én til mange relasjon
+m2m_relationship: Mange til mange relasjon
+m2a_relationship: Mange til alle relasjon
+invalid_item: Ugyldig element
 next: Neste
+field_name: Feltnavn
 translations: Oversettelser
 note: Notat
 enter_a_value: Legg inn verdi...
@@ -146,6 +186,8 @@ length: Lengde
 precision_scale: Presisjon og skala
 readonly: Skrivebeskyttet
 unique: Unik
+updated_on: Opprettet den
+updated_by: Oppdatert av
 primary_key: Primærnøkkel
 foreign_key: Fremmednøkkel
 finish_setup: Fullfør oppsett
@@ -204,6 +246,15 @@ interface: Grensesnitt
 today: Idag
 yesterday: Igår
 delete_comment: Slett kommentar
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_date_short: 'd MMM, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: d MMM
+month: Måned
+year: År
+select_all: Merk alt
 months:
   january: januar
   february: februar
@@ -217,6 +268,8 @@ months:
   october: oktober
   november: november
   december: desember
+drag_mode: Dra modus
+cancel_crop: Avbryt beskjæring
 created: Opprettet
 owner: Eier
 name: Navn
@@ -227,13 +280,64 @@ save_as_copy: Lagre som kopi
 comments: Kommentarer
 request_feature: Foreslå ny funksjon
 item_count: 'Ingen elementer | Ett element | {count} elementer'
+no_files_copy: Det er ingen filer her.
+user_count: 'Ingen brukere | En bruker | {count} brukere'
+no_users_copy: Det er ingen brukere i denne rollen enda.
+webhooks_count: 'Ingen Webhooks | En Webhook | {count} Webhooks'
+no_webhooks_copy: Det finnes ingen webhooks ennå.
+all_items: Alle elementer
+csv: CSV
+no_collections: Ingen kolleksjoner
 create_collection: Opprett kolleksjon
+no_collections_copy_admin: Du har ingen kolleksjoner enda. Klikk knappen nedenfor for å starte.
+no_collections_copy: Du har ingen kolleksjoner enda. Vennligst kontakt din systemadministrator.
+relationship_not_setup: Relasjonen er ikke konfigurert riktig
+display_template_not_setup: Visningsmalen alternativet er feilkonfigurert
+collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert
+select_a_collection: Velg en Kolleksjon
+active: Aktiv
 users: Brukere
 activity: Aktivitet
+webhooks: Webhooks
 field_width: Feltbredde
+add_a_new_item: Legg til et nytt element...
+add_filter: Legg til filter
+upper_limit: Øvre grense...
+lower_limit: Nedre grense...
 user_directory: Brukeroversikt
+documentation: Dokumentasjon
+sidebar: Sidepanel
+duration: Varighet
+charset: Charset
+second: Sekund
+file_moved: Fil Flyttet
+collection_created: Kolleksjon opprettet
 modified_on: Modifisert den
+card_size: Kort størrelse
+sort_field: Sorter felt
+add_sort_field: Legg til sorteringsfelt
+sort: Sorter
 status: Status
+toggle_manual_sorting: Veksle manuell sortering
+bookmark_doesnt_exist: Bokmerket finnes ikke
+bookmark_doesnt_exist_copy: Kunne ikke finne bokmerket du prøver å åpne.
+bookmark_doesnt_exist_cta: Returner til kolleksjon
+select_an_item: Velg et element...
+edit: Rediger
+enabled: Aktivert
+disable_tfa: Deaktiver 2FA
+tfa_scan_code: Skann koden i autentiseringsappen for å fullføre oppsettet av 2FA
+enter_otp_to_disable_tfa: Angi OTP for å deaktivere 2FA
+create_account: Opprett konto
+account_created_successfully: Kontoen ble opprettet
+auto_fill: Autofyll
+corresponding_field: Tilsvarende felt
+errors:
+  COLLECTION_NOT_FOUND: "Kolleksjonen eksisterer ikke"
+  FIELD_NOT_FOUND: Feltet ble ikke funnet
+  FORBIDDEN: Forbudt
+  INVALID_CREDENTIALS: Feil brukernavn eller passord
+  INVALID_OTP: Feil engangspassord
 bookmarks: Bokmerke
 back: Tilbake
 operators:
@@ -253,11 +357,13 @@ update: Oppdater
 select_fields: Velg felter
 wysiwyg_options:
   remove: Fjern
+  selectall: Merk alt
   table: Tabell
 deselect: Velg bort
 editing_in_batch: 'Batch Editing {count} elementer'
 settings_permissions: Roller og tilganger
 settings_project: Prosjektinnstillinger
+settings_webhooks: Webhooks
 discard_changes: Forkast endringer
 keep_editing: Fortsett å rediger
 add_new: Legg til ny
@@ -279,6 +385,7 @@ fields:
     icon: Ikon
     note: Notat
     hidden: Skjult
+    sort_field: Sorter felt
   directus_files:
     title: Tittel
     description: Beskrivelse
@@ -288,6 +395,8 @@ fields:
     created_on: Opprettet den
     created_by: Opprettet av
     embed: Embed
+    charset: Charset
+    duration: Varighet
   directus_users:
     email: E-post
     password: Passord
@@ -348,10 +457,15 @@ sign_out_confirm: Er du sikker på at du vil logge ut?
 something_went_wrong: Noe gikk galt.
 value: Verdi
 interfaces:
+  button-links:
+    primary: Primær
   collection:
     collection: Kolleksjon
   collections:
     collections: Kolleksjoner
+  display-template:
+    collection_field_not_setup: Kolleksjonsfeltalternativet er feilkonfigurert
+    select_a_collection: Velg en Kolleksjon
   dropdown:
     choices_value_placeholder: Legg inn verdi...
   file:
@@ -366,6 +480,8 @@ interfaces:
     numeric: Nummerisk
   tags:
     tags: Etiketter
+  toggle:
+    label_default: Aktivert
 displays:
   boolean:
     boolean: Sann/usann
