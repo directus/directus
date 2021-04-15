@@ -251,7 +251,7 @@ export class AuthorizationService {
 			if (action === 'create') {
 				for (const name of requiredColumns) {
 					permission.validation._and[1][name] = {
-						_required: true,
+						_submitted: true,
 					};
 				}
 			} else {
