@@ -783,10 +783,6 @@ field_options:
        inside_text: Fit inside
        outside_text: Fit outside
     files_divider_title: Files & Thumbnails
-    storage_asset_transform:
-      all_text: All
-      none_text: None
-      presets_text: Presets Only
     overrides_divider_title: App Overrides
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 do_nothing: Do Nothing

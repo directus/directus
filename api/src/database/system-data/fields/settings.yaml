@@ -187,11 +187,11 @@ fields:
     options:
       choices:
         - value: all
-          text: $t:field_options.directus_settings.storage_asset_transform.all_text
+          text: $t:all
         - value: none
-          text: $t:field_options.directus_settings.storage_asset_transform.none_text
+          text: $t:none
         - value: presets
-          text: $t:field_options.directus_settings.storage_asset_transform.presets_text
+          text: $t:presets
     width: half
 
   - field: overrides_divider
