@@ -84,6 +84,7 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
+  regex: Value doesn't have the correct format
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
