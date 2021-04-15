@@ -11,7 +11,9 @@ add_field: Legg til felt
 role_name: Rollenavn
 db_only_click_to_configure: 'Kun database: Klikk for å konfigurere '
 show_archived_items: Vis arkiverte elementer
+edited: Verdi endret
 required: Påkrevd
+required_for_app_access: Påkrevd for app-tilgang
 requires_value: Krever verdi
 create_preset: Opprett forhåndsinnstilling
 create_role: Opprett rolle
@@ -25,8 +27,11 @@ connection_excellent: Utmerket tilkobling
 connection_good: God tilkobling
 connection_fair: Ok tilkobling
 connection_poor: Dårlig tilkobling
+primary: Primær
 rename_folder: Endre mappenavn
 delete_folder: Slett mappe
+prefix: Prefiks
+suffix: Suffiks
 reset_bookmark: Tilbakestill bokmerke
 rename_bookmark: Endre navn på bokmerke
 update_bookmark: Oppdater bokmerke
@@ -50,6 +55,11 @@ archive: Arkiv
 archive_confirm: Er du sikker på at du vil arkivere dette elementet?
 archive_confirm_count: >-
   Ingen elementer valgt | Er du sikker på at du vil arkivere dette elementet? | Er du sikker på at du vil arkivere disse {count} elementene?
+reset_system_permissions_to: 'Tilbakestill systemtillatelser til:'
+reset_system_permissions_copy: Denne handlingen vil overskrive eventuelle egendefinerte rettigheter du kan ha brukt på systemkolleksjonene. Er du sikker?
+the_following_are_minimum_permissions: Følgende minimumstilganger kreves når "Applikasjons-tilgang" er aktivert. Du kan utvide tillatelsene ut over dette, men ikke nedenfor.
+app_access_minimum: App Minimumstilgang
+recommended_defaults: Anbefalte standardinnstillinger
 unarchive: Uarkivér
 unarchive_confirm: Er du sikker på at du vil uarkivere dette elementet?
 nested_files_folders_will_be_moved: Nøstede filer og mapper vil bli flyttet ett nivå opp.
@@ -73,7 +83,14 @@ validationError:
 all_access: All tilgang
 no_access: Ingen tilgang
 use_custom: Bruk egendefinert
+field_standard: Standard
 field_presentation: Presentation & Aliaser
+field_file: En fil
+field_files: Flere filer
+field_m2o: M2O Relasjon
+field_m2a: M2A Relasjon
+field_o2m: O2M Relasjon
+field_m2m: M2M Relasjon
 field_translations: Oversettelser
 item_permissions: Element Tillatelser
 field_permissions: Felt Tillatelser
@@ -102,8 +119,10 @@ exposure: Eksponering
 shutter: Utløser
 iso: ISO
 focal_length: Brennvidde
+schema_setup_key: Dette feltets databasekolonne navn og API nøkkel
 create_field: Opprett felt
 creating_new_field: 'Nytt felt ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Tilbakestill sideinnstillinger
 hidden_field: Skjult felt
 hidden_on_detail: Skjult ved detaljer
@@ -125,11 +144,23 @@ timestamp: Tidsstempel
 uuid: UUID
 not_available_for_type: Ikke tilgjengelig for denne typen
 create_translations: Lag oversettelser
+auto_refresh: Automatisk oppdatering
+refresh_interval: Oppdateringsintervall
+no_refresh: Ikke oppdater
+refresh_interval_seconds: Oppdater øyeblikkelig | Hvert sekund | Hvert {seconds} sekund
+refresh_interval_minutes: Hvert minutt | Hvert {minutes} minutt
 auto_generate: Autogenerer
 this_will_auto_setup_fields_relations: Dette vil automatisk sette opp alle obligatoriske felt og relasjoner.
 click_here: Klikk her
 to_manually_setup_translations: for manuelt å sette opp oversettelser.
+click_to_manage_translated_fields: >-
+  Der er ingen oversatte felter enda. Klikk her for å lage dem. | Der er ett oversatt felt. Klikk her for å redigere det | Der er {count} oversatte felter. Klikk her for å redigere dem.
 fields_group: Feltgruppe
+no_collections_found: Ingen kolleksjoner funnet.
+new_data_alert: 'Følgende vil bli opprettet i din Data Model:'
+search_collection: Søk i kolleksjonen...
+new_field: 'Nytt felt'
+new_collection: 'Ny Kolleksjon'
 add_m2o_to_collection: 'Legg til mange-til-en til "{collection}"'
 add_o2m_to_collection: 'Legg til en-til-mange til "{collection}"'
 add_m2m_to_collection: 'Legg til mange-til mange til "{collection}'
@@ -137,6 +168,14 @@ choose_a_type: Velg en Type...
 determined_by_relationship: Fastsatt av relasjon
 add_note: Legg til en god beskrivelse til brukerne...
 default_value: Standardverdi
+standard_field: Standard felt
+single_file: En fil
+multiple_files: Flere filer
+m2o_relationship: Mange til én relasjon
+o2m_relationship: Én til mange relasjon
+m2m_relationship: Mange til mange relasjon
+m2a_relationship: Mange til alle relasjon
+invalid_item: Ugyldig element
 next: Neste
 translations: Oversettelser
 note: Notat
@@ -348,6 +387,8 @@ sign_out_confirm: Er du sikker på at du vil logge ut?
 something_went_wrong: Noe gikk galt.
 value: Verdi
 interfaces:
+  button-links:
+    primary: Primær
   collection:
     collection: Kolleksjon
   collections:
