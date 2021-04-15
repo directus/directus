@@ -3,14 +3,12 @@ import { GraphQLService } from '../services';
 import { respond } from '../middleware/respond';
 import asyncHandler from '../utils/async-handler';
 import { parseGraphQL } from '../middleware/graphql';
-import cookieParser from 'cookie-parser';
 
 const router = Router();
 
 router.use(
 	'/system',
 	parseGraphQL,
-	cookieParser(),
 	asyncHandler(async (req, res, next) => {
 		const service = new GraphQLService({
 			accountability: req.accountability,
@@ -28,7 +26,6 @@ router.use(
 router.use(
 	'/',
 	parseGraphQL,
-	cookieParser(),
 	asyncHandler(async (req, res, next) => {
 		const service = new GraphQLService({
 			accountability: req.accountability,
