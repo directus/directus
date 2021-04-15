@@ -102,7 +102,7 @@ export default defineComponent({
 	padding: 0 12px;
 	background-color: var(--background-page);
 	box-shadow: 0;
-	transition: box-shadow var(--medium) var(--transition);
+	transition: box-shadow var(--medium) var(--transition), margin var(--fast) var(--transition);
 
 	.nav-toggle {
 		@include breakpoint(medium) {
@@ -202,9 +202,9 @@ export default defineComponent({
 	}
 
 	@include breakpoint(small) {
+		padding: 0 32px;
 		&:not(.small) {
 			margin: 24px 0;
-			padding: 0 32px;
 		}
 	}
 }

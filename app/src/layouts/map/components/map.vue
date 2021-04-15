@@ -454,6 +454,8 @@ export default defineComponent({
 		box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
 	}
 	button {
+		width: 36px;
+		height: 36px;
 		background: var(--background-subdued) !important;
 		border: none !important;
 		& + button {
@@ -475,7 +477,6 @@ export default defineComponent({
 	button::after {
 		display: flex;
 		justify-content: center;
-		font-weight: 900;
 		font-size: 24px;
 		font-family: 'Material Icons Outline', sans-serif;
 		font-style: normal;
