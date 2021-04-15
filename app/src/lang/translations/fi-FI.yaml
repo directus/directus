@@ -598,9 +598,11 @@ settings_project: Projektin asetukset
 settings_webhooks: Webhookit
 settings_presets: Esiasetukset ja kirjanmerkit
 scope: Laajuus
+select: Valitse...
 layout: Asettelu
 tree_view: Puunäkymä
 changes_are_permanent: Muutokset ovat pysyviä
+preset_name_placeholder: Toimii oletuksena kun tyhjä...
 preset_search_placeholder: Hakulauseke...
 editing_preset: Muokataan esiasetusta
 layout_preview: Asettelun esikatselu
@@ -818,6 +820,7 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
+weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:
@@ -980,6 +983,8 @@ interfaces:
     trim_label: Leikkaa tyhjät merkit alusta ja lopusta
     mask: Maskeerattu
     mask_label: Piilota todellinen arvo
+    clear: Tyhjennetty arvo
+    clear_label: Tallenna tyhjänä merkkijonona
   textarea:
     textarea: Tekstialue
     description: Syötä monirivinen tavallinen teksti

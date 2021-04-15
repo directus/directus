@@ -2,64 +2,64 @@
 edit_field: Editar Campo
 item_revision: Revisión de Elemento
 duplicate_field: Duplicar Campo
-half_width: Anchura 50%
+half_width: Mitad del ancho
 full_width: Ancho completo
-fill_width: Llenar Ancho
-field_name_translations: 'Nombre de Campo: Traducciones'
-enter_password_to_enable_tfa: Introduzca la contraseña para habilitar la Autenticación de doble factor
-add_field: Agregar Campo
-role_name: Nombre del Rol
-db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
-show_archived_items: Mostrar Elementos Archivados
-edited: Valor Editado
+fill_width: Rellenar ancho
+field_name_translations: Traducción de campos
+enter_password_to_enable_tfa: Escribe tu contraseña para habilitar el doble factor de autenticación
+add_field: Añadir campo
+role_name: Nombre de rol
+db_only_click_to_configure: 'Sólo para base de datos: Haz clic para configurar '
+show_archived_items: Mostrar ítems archivados
+edited: Campo editado
 required: Necesario
-required_for_app_access: Necesario para el acceso a App
-requires_value: Valor obligatorio
-create_preset: Crear Predefinido
+required_for_app_access: Necesario para acceder a la aplicación
+requires_value: Requiere un valor
+create_preset: Crear un pre-definido
 create_role: Crear Rol
-create_user: Crear Usuario
-create_webhook: Crear Webhook
-invite_users: Invitar Usuarios
-email_examples: 'admin@example.com, user@example.com...'
+create_user: Crear usuario
+create_webhook: Crear un webhook(conección)
+invite_users: Invitar usuarios
+email_examples: 'admin@ejemplo.com, usuario@ejemplo.com...'
 invite: Invitar
-emails: Correos Electrónicos
-connection_excellent: Excelente Conexión
-connection_good: Buena Conexión
-connection_fair: Conexión Suficiente
-connection_poor: Conexión Pobre
+emails: Correos electrónicos
+connection_excellent: La conexión es excelente
+connection_good: La conexión es buena
+connection_fair: La conexión es óptima
+connection_poor: La conexión es débil
 primary: Principal
-rename_folder: Renombrar Directorio
-delete_folder: Eliminar Directorio
+rename_folder: Renombrar carpeta
+delete_folder: Eliminar carpeta
 prefix: Prefijo
 suffix: Sufijo
-reset_bookmark: Restablecer Marcador
-rename_bookmark: Renombrar Marcador
-update_bookmark: Actualizar Marcador
+reset_bookmark: Restablecer el marcador
+rename_bookmark: Renombrar el marcador
+update_bookmark: Actualizar el marcador
 delete_bookmark: Eliminar Marcador
 delete_bookmark_copy: >-
-  ¿Está seguro que desea eliminar el Marcador "{bookmark}"? Esta acción no es reversible.
+  ¿Estás seguro de eliminar el marcador "{bookmark}"? Esta acción no se puede deshacer.
 logoutReason:
-  SIGN_OUT: Sesión terminada
-  SESSION_EXPIRED: Sesión expirada
+  SIGN_OUT: Tu sesión ha sido cerrada
+  SESSION_EXPIRED: Tu sesión ha expirado
 public: Público
-public_description: Controla qué datos de la API estarán disponibles sin requerir autenticarse
-not_allowed: No Permitido
+public_description: Controlar qué datos de la API están disponibles sin autenticación.
+not_allowed: No permitido
 directus_version: Versión Directus
-node_version: Versión de Node
-node_uptime: Tiempo de actividad de Node
-os_type: Tipo de SO
-os_version: Versión de SO
-os_uptime: Tiempo de actividad del SO
-os_totalmem: Memoria del SO
+node_version: Versión de Node.js
+node_uptime: Tiempo de actividad de Node.js
+os_type: Tipo de sistema operativo
+os_version: Versión de sistema operativo
+os_uptime: Tiempo de actividad del sistema operativo
+os_totalmem: Memoria del sistema operativo
 archive: Archivar
-archive_confirm: '¿Está seguro que desea archivar este elemento?'
+archive_confirm: '¿Estás seguro de archivar este ítem?'
 archive_confirm_count: >-
-  Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
-reset_system_permissions_to: 'Restablecer Permisos del Sistema:'
-reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
-the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
-app_access_minimum: Mínimo acceso a App
-recommended_defaults: Valores predeterminados recomendados
+  No hay elementos seleccionados | ¿Estás seguro de archivar este ítem? | ¿Estás seguro de archivar estos {count} ítems?
+reset_system_permissions_to: 'Restablecer permisos del sistema a:'
+reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que hayas aplicado a las colecciones de Directus. ¿Estás seguro?
+the_following_are_minimum_permissions: Estos son los permisos mínimos requeridos cuando "Acceso a la app" está activado. Puedes ampliar los permisos un poco más, pero no menos que esto.
+app_access_minimum: Acceso mínimo a la app
+recommended_defaults: Valores recomendados
 unarchive: Desarchivar
 unarchive_confirm: '¿Realmente desea desarchivar este elemento?'
 nested_files_folders_will_be_moved: Los archivos y directorios anidados serán movidos a un nivel superior.
@@ -718,10 +718,10 @@ fields:
     note: Nota
     hidden: Oculto
     singleton: Singleton
-    translation: 'Nombre de Campo: Traducciones'
+    translation: Traducción de campos
     display_template: Plantilla
   directus_roles:
-    name: Nombre del Rol
+    name: Nombre de rol
     icon: Ícono del Rol
     description: Descripción
     app_access: Acceso a App
