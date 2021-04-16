@@ -66,7 +66,7 @@ The props you can use in an layout are:
 
 #### Accessing the API from within your extension
 The Directus App's Vue app instance provides a field called `system`, which can be injected into Vue components 
-using [Vue's inject framework](https://v3.vuejs.org/guide/component-provide-inject.html). This `system` field contains functions to access Vuex stores, and more importantly, contains a property called `api`, which is an authenticated Axios instance. Here's an example of how to use it: 
+using [Vue's inject framework](https://v3.vuejs.org/guide/component-provide-inject.html). This `system` field contains functions to access [Pinia](https://pinia.esm.dev) stores, and more importantly, contains a property called `api`, which is an authenticated Axios instance. Here's an example of how to use it: 
 
 ```vue
 <template>
