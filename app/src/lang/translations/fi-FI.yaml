@@ -81,6 +81,7 @@ validationError:
   nnull: Arvo ei voi olla null
   required: Arvo vaaditaan
   unique: Arvon on oltava yksilöllinen
+  regex: Arvon muoto ei ole oikea
 all_access: Täysi pääsy
 no_access: Ei pääsyä
 use_custom: Käytä mukautettua
