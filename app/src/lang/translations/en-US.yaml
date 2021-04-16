@@ -689,6 +689,7 @@ fields:
     archive_value: Archive Value
     unarchive_value: Unarchive Value
     sort_field: Sort Field
+    accountability: Track
   directus_files:
     title: Title
     description: Description
