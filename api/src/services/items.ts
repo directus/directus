@@ -586,7 +586,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
 
 		if (record) {
-			return await this.update(data, record.id);
+			return await this.update(data, record[primaryKeyField]);
 		}
 
 		return await this.create(data);

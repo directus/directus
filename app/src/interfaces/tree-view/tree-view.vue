@@ -10,6 +10,7 @@
 			:tree="stagedValues || []"
 			:primary-key-field="primaryKeyField.field"
 			:children-field="relation.one_field"
+			:parent-field="relation.many_field"
 			:disabled="disabled"
 			root
 			@change="onDraggableChange"
@@ -29,6 +30,7 @@
 			:collection="collection"
 			:primary-key="'+'"
 			:edits="{}"
+			:circular-field="relation.many_field"
 			@input="addNew"
 			@update:active="addNewActive = false"
 		/>

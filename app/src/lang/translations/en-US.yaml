@@ -84,6 +84,7 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
+  regex: Value doesn't have the correct format
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -603,10 +604,11 @@ settings_project: Project Settings
 settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
 scope: Scope
+select: Select...
 layout: Layout
 tree_view: Tree View
 changes_are_permanent: Changes are permanent
-preset_name_placeholder: Name of bookmark...
+preset_name_placeholder: Serves as default when empty...
 preset_search_placeholder: Search query...
 editing_preset: Editing Preset
 layout_preview: Layout Preview
@@ -993,8 +995,8 @@ interfaces:
     trim_label: Trim the start and end
     mask: Masked
     mask_label: Hide the real value
-    nullable: Nullable
-    nullable_label: Save empty value as NULL
+    clear: Cleared Value
+    clear_label: Save as empty string
   textarea:
     textarea: Textarea
     description: Enter multiline plain-text

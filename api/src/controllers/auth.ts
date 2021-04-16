@@ -6,7 +6,6 @@ import grant from 'grant';
 import getEmailFromProfile from '../utils/get-email-from-profile';
 import { InvalidPayloadException } from '../exceptions/invalid-payload';
 import ms from 'ms';
-import cookieParser from 'cookie-parser';
 import env from '../env';
 import { UsersService, AuthenticationService } from '../services';
 import grantConfig from '../grant';
@@ -78,7 +77,6 @@ router.post(
 
 router.post(
 	'/refresh',
-	cookieParser(),
 	asyncHandler(async (req, res, next) => {
 		const accountability = {
 			ip: req.ip,
@@ -127,7 +125,6 @@ router.post(
 
 router.post(
 	'/logout',
-	cookieParser(),
 	asyncHandler(async (req, res, next) => {
 		const accountability = {
 			ip: req.ip,

@@ -1,6 +1,5 @@
 <template>
 	<div>
-
 		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.interface" />
 
 		<v-notice class="not-found" type="danger" v-if="fieldData.meta.interface && !selectedInterface">
@@ -54,7 +53,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const interfaces = getInterfaces();
+		const { interfaces } = getInterfaces();
 
 		const selectItems = computed(() => {
 			const type: string = state.fieldData?.type || 'alias';

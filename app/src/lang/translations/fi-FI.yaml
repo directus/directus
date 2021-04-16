@@ -81,6 +81,7 @@ validationError:
   nnull: Arvo ei voi olla null
   required: Arvo vaaditaan
   unique: Arvon on oltava yksilöllinen
+  regex: Arvon muoto ei ole oikea
 all_access: Täysi pääsy
 no_access: Ei pääsyä
 use_custom: Käytä mukautettua
@@ -598,10 +599,11 @@ settings_project: Projektin asetukset
 settings_webhooks: Webhookit
 settings_presets: Esiasetukset ja kirjanmerkit
 scope: Laajuus
+select: Valitse...
 layout: Asettelu
 tree_view: Puunäkymä
 changes_are_permanent: Muutokset ovat pysyviä
-preset_name_placeholder: Kirjanmerkin nimi...
+preset_name_placeholder: Toimii oletuksena kun tyhjä...
 preset_search_placeholder: Hakulauseke...
 editing_preset: Muokataan esiasetusta
 layout_preview: Asettelun esikatselu
@@ -982,8 +984,8 @@ interfaces:
     trim_label: Leikkaa tyhjät merkit alusta ja lopusta
     mask: Maskeerattu
     mask_label: Piilota todellinen arvo
-    nullable: Nullable
-    nullable_label: Tallenna tyhjä arvo NULL:nä
+    clear: Tyhjennetty arvo
+    clear_label: Tallenna tyhjänä merkkijonona
   textarea:
     textarea: Tekstialue
     description: Syötä monirivinen tavallinen teksti
