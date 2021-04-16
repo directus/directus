@@ -81,6 +81,7 @@ validationError:
   nnull: La valeur ne peut être nulle
   required: Une valeur est requise
   unique: La valeur doit être unique
+  regex: La valeur n'a pas le bon format
 all_access: Accès total
 no_access: Pas d'accès
 use_custom: Personnalisé
@@ -820,6 +821,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:
