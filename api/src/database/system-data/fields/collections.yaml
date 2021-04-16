@@ -135,3 +135,25 @@ fields:
         - integer
       allowNone: true
     width: half
+
+  - field: accountability_divider
+    special:
+      - alias
+      - no-data
+    interface: divider
+    options:
+      icon: admin_panel_settings
+      title: Accountability
+    width: full
+
+  - field: accountability
+    interface: dropdown
+    options:
+      choices:
+        - text: '$t:all'
+          value: all
+        - text: '$t:activity'
+          value: activity
+        - text: '$t:none'
+          value: null
+    width: half
