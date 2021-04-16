@@ -175,9 +175,10 @@
 				<div class="page-description" v-html="marked($t('page_help_collections_item'))" />
 			</sidebar-detail>
 			<revisions-drawer-detail
-				v-if="isNew === false && _primaryKey && revisionsAllowed"
+				v-if="isNew === false && _primaryKey && revisionsAllowed && accountabilityScope === 'all'"
 				:collection="collection"
 				:primary-key="_primaryKey"
+				:scope="accountabilityScope"
 				ref="revisionsDrawerDetail"
 				@revert="revert"
 			/>
@@ -191,7 +192,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 import Vue from 'vue';
 
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
@@ -245,7 +246,9 @@ export default defineComponent({
 
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
-		const { info: collectionInfo, defaults, primaryKeyField, isSingleton } = useCollection(collection);
+		const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(
+			collection
+		);
 
 		const {
 			isNew,
@@ -396,6 +399,7 @@ export default defineComponent({
 			_primaryKey,
 			revisionsAllowed,
 			revert,
+			accountabilityScope,
 		};
 
 		function useBreadcrumb() {

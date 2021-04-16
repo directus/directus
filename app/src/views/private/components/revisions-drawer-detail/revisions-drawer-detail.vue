@@ -74,7 +74,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
+	setup(props) {
 		const { revisions, revisionsByDate, loading, refresh, revisionsCount, created } = useRevisions(
 			props.collection,
 			props.primaryKey
