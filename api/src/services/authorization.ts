@@ -173,13 +173,7 @@ export class AuthorizationService {
 	/**
 	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
 	 */
-	validatePayload(action: PermissionsAction, collection: string, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
-	validatePayload(action: PermissionsAction, collection: string, payload: Partial<Item>): Promise<Partial<Item>>;
-	async validatePayload(
-		action: PermissionsAction,
-		collection: string,
-		payload: Partial<Item>[] | Partial<Item>
-	): Promise<Partial<Item>[] | Partial<Item>> {
+	validatePayload(action: PermissionsAction, collection: string, payload: Partial<Item>): Promise<Partial<Item>> {
 		const validationErrors: FailedValidationException[] = [];
 
 		let payloads = toArray(payload);
@@ -266,12 +260,6 @@ export class AuthorizationService {
 		validationErrors.push(...this.validateJoi(parseFilter(permission.validation || {}, this.accountability), payloads));
 
 		if (validationErrors.length > 0) throw validationErrors;
-
-		if (Array.isArray(payload)) {
-			return payloads;
-		} else {
-			return payloads[0];
-		}
 	}
 
 	validateJoi(validation: Filter, payloads: Partial<Record<string, any>>[]): FailedValidationException[] {

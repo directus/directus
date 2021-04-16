@@ -22,9 +22,22 @@ import { PayloadService } from './payload';
 import { AuthorizationService } from './authorization';
 
 import { pick, clone, cloneDeep, merge, without } from 'lodash';
-import getDefaultValue from '../utils/get-default-value';
 import { translateDatabaseError } from '../exceptions/database/translate';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
+
+import logger from '../logger';
+
+type MutationOptions = {
+	/**
+	 * Callback function that's fired whenever a revision is made in the mutation
+	 */
+	onRevisionCreate?: (id: number) => void;
+
+	/**
+	 * Flag to disable the auto purging of the cache. Is ignored when CACHE_AUTO_PURGE isn't enabled.
+	 */
+	autoPurgeCache?: false;
+};
 
 export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
 	collection: string;
@@ -43,150 +56,185 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return this;
 	}
 
-	async create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async create(data: Partial<Item>): Promise<PrimaryKey>;
-	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
+	/**
+	 * Create a single new item.
+	 */
+	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const fields = Object.keys(this.schema.collections[this.collection].fields);
 		const aliases = Object.values(this.schema.collections[this.collection].fields)
 			.filter((field) => field.alias === true)
 			.map((field) => field.field);
 
-		let payloads: AnyItem[] = clone(toArray(data));
+		let payload: AnyItem = cloneDeep(data);
 
-		const savedPrimaryKeys = await this.knex.transaction(async (trx) => {
+		// By wrapping the logic in a transaction, we make sure we automatically roll back all the
+		// changes in the DB if any of the parts contained within throws an error. This also means
+		// that any errors thrown in any nested relational changes will bubble up and cancel the whole
+		// update tree
+		const primaryKey: PrimaryKey = await this.knex.transaction(async (trx) => {
+			// We're creating new services instances so they can use the transaction as their Knex interface
 			const payloadService = new PayloadService(this.collection, {
 				accountability: this.accountability,
 				knex: trx,
 				schema: this.schema,
 			});
 
-			for (let i = 0; i < payloads.length; i++) {
-				const customProcessed = await emitter.emitAsync(`${this.eventScope}.create.before`, payloads[i], {
-					event: `${this.eventScope}.create.before`,
-					accountability: this.accountability,
-					collection: this.collection,
-					item: null,
-					action: 'create',
-					payload: payloads[i],
-					schema: this.schema,
-					database: this.knex,
-				});
-
-				if (customProcessed && customProcessed.length > 0) {
-					payloads[i] = customProcessed.reverse().reduce((val, acc) => merge(acc, val));
-				}
-			}
-
-			if (this.accountability) {
-				const authorizationService = new AuthorizationService({
-					accountability: this.accountability,
-					knex: trx,
-					schema: this.schema,
-				});
-
-				payloads = await authorizationService.validatePayload('create', this.collection, payloads);
-			}
-
-			payloads = await payloadService.processM2O(payloads);
-			payloads = await payloadService.processA2O(payloads);
-
-			let payloadsWithoutAliases = payloads.map((payload) => pick(payload, without(fields, ...aliases)));
-
-			payloadsWithoutAliases = await payloadService.processValues('create', payloadsWithoutAliases);
-
-			const primaryKeys: PrimaryKey[] = [];
-
-			for (const payloadWithoutAlias of payloadsWithoutAliases) {
-				// string / uuid primary
-				let primaryKey = payloadWithoutAlias[primaryKeyField];
-
-				try {
-					await trx.insert(payloadWithoutAlias).into(this.collection);
-				} catch (err) {
-					throw await translateDatabaseError(err);
-				}
-
-				// Auto-incremented id
-				if (!primaryKey) {
-					const result = await trx
-						.select(primaryKeyField)
-						.from(this.collection)
-						.orderBy(primaryKeyField, 'desc')
-						.first();
-					primaryKey = result[primaryKeyField];
-				}
-
-				primaryKeys.push(primaryKey);
-			}
-
-			payloads = payloads.map((payload, index) => {
-				payload[primaryKeyField] = primaryKeys[index];
-				return payload;
+			const authorizationService = new AuthorizationService({
+				accountability: this.accountability,
+				knex: trx,
+				schema: this.schema,
 			});
 
-			for (const key of primaryKeys) {
-				await payloadService.processO2M(payloads, key);
+			// Run all hooks that are attached to this event so the end user has the chance to augment the
+			// item that is about to be saved
+			const hooksResult = await emitter.emitAsync(`${this.eventScope}.create.before`, payload, {
+				event: `${this.eventScope}.create.before`,
+				accountability: this.accountability,
+				collection: this.collection,
+				item: null,
+				action: 'create',
+				payload,
+				schema: this.schema,
+				database: this.knex,
+			});
+
+			// The events are fired last-to-first based on when they were created. By reversing the
+			// output array of results, we ensure that the augmentations are applied in
+			// "chronological" order
+			const payloadAfterHooks =
+				hooksResult.length > 0 ? hooksResult.reverse().reduce((val, acc) => merge(acc, val)) : payload;
+
+			const payloadWithPresets = this.accountability
+				? await authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
+				: payloadAfterHooks;
+
+			const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(payloadWithPresets);
+			const { payload: payloadWithA2O, revisions: revisionsA2O } = await payloadService.processA2O(payloadWithM2O);
+
+			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
+			const payloadWithTypeCasting = await payloadService.processValues('create', payloadWithoutAliases);
+
+			// In case of manual string / UUID primary keys, they PK already exists in the object we're saving.
+			let primaryKey = payloadWithTypeCasting[primaryKeyField];
+
+			try {
+				await trx.insert(payloadWithoutAliases).into(this.collection);
+			} catch (err) {
+				throw await translateDatabaseError(err);
 			}
 
+			// When relying on a database auto-incremented ID, we'll have to fetch it from the DB in
+			// order to know what the PK is of the just-inserted item
+			if (!primaryKey) {
+				// Fetching it with max should be safe, as we're in the context of the current transaction
+				const result = await trx.max(primaryKeyField, { as: 'id' }).from(this.collection).first();
+				primaryKey = result.id;
+				// Set the primary key on the input item, in order for the "after" event hook to be able
+				// to read from it
+				payload[primaryKeyField] = primaryKey;
+			}
+
+			const { revisions: revisionsO2M } = await payloadService.processO2M(payload, primaryKey);
+
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
-				const activityRecords = primaryKeys.map((key) => ({
+				const activityRecord = {
 					action: Action.CREATE,
 					user: this.accountability!.user,
 					collection: this.collection,
 					ip: this.accountability!.ip,
 					user_agent: this.accountability!.userAgent,
-					item: key,
-				}));
+					item: primaryKey,
+				};
 
-				const activityPrimaryKeys: PrimaryKey[] = [];
-
-				for (const activityRecord of activityRecords) {
-					await trx.insert(activityRecord).into('directus_activity');
-
-					let primaryKey;
-
-					const result = await trx.select('id').from('directus_activity').orderBy('id', 'desc').first();
-
-					primaryKey = result.id;
-
-					activityPrimaryKeys.push(primaryKey);
-				}
+				await trx.insert(activityRecord).into('directus_activity');
+				const { id: activityID } = await trx.max('id', { as: 'id ' }).from('directus_activity').first();
 
 				if (this.schema.collections[this.collection].accountability === 'all') {
-					const revisionRecords = activityPrimaryKeys.map((key, index) => ({
-						activity: key,
+					const revisionRecord = {
+						activity: activityID,
 						collection: this.collection,
-						item: primaryKeys[index],
-						data: JSON.stringify(payloads[index]),
-						delta: JSON.stringify(payloads[index]),
-					}));
+						item: primaryKey,
+						data: JSON.stringify(payload),
+						delta: JSON.stringify(payload),
+					};
 
-					if (revisionRecords.length > 0) {
-						await trx.insert(revisionRecords).into('directus_revisions');
+					await trx.insert(revisionRecord).into('directus_revisions');
+					const { id: revisionID } = await trx.max('id', { as: 'id' }).from('directus_revisions').first();
+
+					const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M];
+
+					if (childrenRevisions.length > 0) {
+						await trx('directus_revisions').update({ parent: revisionID }).whereIn('id', childrenRevisions);
+					}
+
+					if (opts?.onRevisionCreate) {
+						opts.onRevisionCreate(revisionID);
 					}
 				}
 			}
 
-			if (cache && env.CACHE_AUTO_PURGE) {
-				await cache.clear();
-			}
-
-			return primaryKeys;
+			return primaryKey;
 		});
 
 		emitAsyncSafe(`${this.eventScope}.create`, {
 			event: `${this.eventScope}.create`,
 			accountability: this.accountability,
 			collection: this.collection,
-			item: savedPrimaryKeys,
+			item: primaryKey,
 			action: 'create',
-			payload: payloads,
+			payload,
 			schema: this.schema,
 			database: this.knex,
 		});
 
-		return Array.isArray(data) ? savedPrimaryKeys : savedPrimaryKeys[0];
+		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await cache.clear();
+		}
+
+		return primaryKey;
+	}
+
+	/**
+	 * Create multiple new items at once. Inserts all provided records sequentially wrapped in a transaction.
+	 */
+	async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const primaryKeys = await this.knex.transaction(async (trx) => {
+			const service = new ItemsService(this.collection, {
+				accountability: this.accountability,
+				schema: this.schema,
+				knex: trx,
+			});
+
+			const primaryKeys: PrimaryKey[] = [];
+
+			for (const payload of data) {
+				const primaryKey = await service.createOne(payload, { autoPurgeCache: false });
+				primaryKeys.push(primaryKey);
+			}
+
+			return primaryKeys;
+		});
+
+		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await cache.clear();
+		}
+
+		return primaryKeys;
+	}
+
+	/**
+	 * @deprecated Use createOne or createMany instead
+	 */
+	async create(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]>;
+	async create(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey>;
+	async create(data: Partial<Item> | Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey | PrimaryKey[]> {
+		logger.warn(
+			'ItemsService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
+		);
+
+		if (Array.isArray(data)) return this.createMany(data, opts);
+		return this.createOne(data, opts);
 	}
 
 	async readByQuery(

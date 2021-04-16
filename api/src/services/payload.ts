@@ -1,8 +1,3 @@
-/**
- * Process a given payload for a collection to ensure the special fields (hash, uuid, date etc) are
- * handled correctly.
- */
-
 import argon2 from 'argon2';
 import { v4 as uuidv4 } from 'uuid';
 import database from '../database';
@@ -39,6 +34,10 @@ type Alterations = {
 	delete: (Number | String)[];
 };
 
+/**
+ * Process a given payload for a collection to ensure the special fields (hash, uuid, date etc) are
+ * handled correctly.
+ */
 export class PayloadService {
 	accountability: Accountability | null;
 	knex: Knex;
@@ -346,58 +345,54 @@ export class PayloadService {
 	}
 
 	/**
-	 * Recursively save/update all nested related m2o items
+	 * Save/update all nested related m2o items inside the payload
 	 */
-	processM2O(payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
-	processM2O(payloads: Partial<Item>): Promise<Partial<Item>>;
-	async processM2O(payload: Partial<Item> | Partial<Item>[]): Promise<Partial<Item> | Partial<Item>[]> {
+	async processM2O(data: Partial<Item>): Promise<{ payload: Partial<Item>; revisions: PrimaryKey[] }> {
+		const payload = clone(data);
+		let revisions: PrimaryKey[] = [];
+
 		const relations = [
 			...this.schema.relations.filter((relation) => {
 				return relation.many_collection === this.collection;
 			}),
-			...systemRelationRows.filter((systemRelation) => systemRelation.many_collection === this.collection),
 		];
 
-		const payloads = clone(toArray(payload));
+		// Only process related records that are actually in the payload
+		const relationsToProcess = relations.filter((relation) => {
+			return payload.hasOwnProperty(relation.many_field) && isObject(payload[relation.many_field]);
+		});
 
-		for (let i = 0; i < payloads.length; i++) {
-			let payload = payloads[i];
+		for (const relation of relationsToProcess) {
+			if (!relation.one_collection || !relation.one_primary) continue;
 
-			// Only process related records that are actually in the payload
-			const relationsToProcess = relations.filter((relation) => {
-				return payload.hasOwnProperty(relation.many_field) && isObject(payload[relation.many_field]);
+			const itemsService = new ItemsService(relation.one_collection, {
+				accountability: this.accountability,
+				knex: this.knex,
+				schema: this.schema,
 			});
 
-			for (const relation of relationsToProcess) {
-				if (!relation.one_collection || !relation.one_primary) continue;
+			const relatedRecord: Partial<Item> = payload[relation.many_field];
+			const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.one_primary);
 
-				const itemsService = new ItemsService(relation.one_collection, {
-					accountability: this.accountability,
-					knex: this.knex,
-					schema: this.schema,
+			if (['string', 'number'].includes(typeof relatedRecord)) continue;
+
+			let relatedPrimaryKey: PrimaryKey = relatedRecord[relation.one_primary];
+			const exists =
+				hasPrimaryKey && !!(await this.knex.select(relation.one_primary).from(relation.one_collection).first());
+
+			if (exists) {
+				await itemsService.update(relatedRecord, relatedPrimaryKey);
+			} else {
+				relatedPrimaryKey = await itemsService.create(relatedRecord, {
+					onRevisionCreate: (id) => revisions.push(id),
 				});
-
-				const relatedRecord: Partial<Item> = payload[relation.many_field];
-				const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.one_primary);
-
-				if (['string', 'number'].includes(typeof relatedRecord)) continue;
-
-				let relatedPrimaryKey: PrimaryKey = relatedRecord[relation.one_primary];
-				const exists =
-					hasPrimaryKey && !!(await this.knex.select(relation.one_primary).from(relation.one_collection).first());
-
-				if (exists) {
-					await itemsService.update(relatedRecord, relatedPrimaryKey);
-				} else {
-					relatedPrimaryKey = await itemsService.create(relatedRecord);
-				}
-
-				// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
-				payload[relation.many_field] = relatedPrimaryKey;
 			}
+
+			// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
+			payload[relation.many_field] = relatedPrimaryKey;
 		}
 
-		return Array.isArray(payload) ? payloads : payloads[0];
+		return { payload, revisions };
 	}
 
 	/**
