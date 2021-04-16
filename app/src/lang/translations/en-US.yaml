@@ -84,6 +84,7 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
+  regex: Value doesn't have the correct format
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -691,6 +692,7 @@ fields:
     archive_value: Archive Value
     unarchive_value: Unarchive Value
     sort_field: Sort Field
+    accountability: Activity & Revision Tracking
   directus_files:
     title: Title
     description: Description
@@ -765,6 +767,10 @@ fields:
     module_list: Module Navigation
     collection_list: Collection Navigation
 field_options:
+  directus_collections:
+    track_activity_revisions: Track Activity & Revisions
+    only_track_activity: Only Track Activity
+    do_not_track_anything: Do Not Track Anything
   directus_settings:
     project_name_placeholder: My project...
     project_color_note: Login & Logo Background

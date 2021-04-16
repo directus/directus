@@ -129,7 +129,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				await payloadService.processO2M(payloads, key);
 			}
 
-			if (this.accountability) {
+			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
 				const activityRecords = primaryKeys.map((key) => ({
 					action: Action.CREATE,
 					user: this.accountability!.user,
@@ -153,16 +153,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					activityPrimaryKeys.push(primaryKey);
 				}
 
-				const revisionRecords = activityPrimaryKeys.map((key, index) => ({
-					activity: key,
-					collection: this.collection,
-					item: primaryKeys[index],
-					data: JSON.stringify(payloads[index]),
-					delta: JSON.stringify(payloads[index]),
-				}));
+				if (this.schema.collections[this.collection].accountability === 'all') {
+					const revisionRecords = activityPrimaryKeys.map((key, index) => ({
+						activity: key,
+						collection: this.collection,
+						item: primaryKeys[index],
+						data: JSON.stringify(payloads[index]),
+						delta: JSON.stringify(payloads[index]),
+					}));
 
-				if (revisionRecords.length > 0) {
-					await trx.insert(revisionRecords).into('directus_revisions');
+					if (revisionRecords.length > 0) {
+						await trx.insert(revisionRecords).into('directus_revisions');
+					}
 				}
 			}
 
@@ -335,7 +337,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					await payloadService.processO2M(payload, key);
 				}
 
-				if (this.accountability) {
+				if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
 					const activityRecords = keys.map((key) => ({
 						action: Action.UPDATE,
 						user: this.accountability!.user,
@@ -357,24 +359,26 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						activityPrimaryKeys.push(primaryKey);
 					}
 
-					const itemsService = new ItemsService(this.collection, {
-						knex: trx,
-						schema: this.schema,
-					});
+					if (this.schema.collections[this.collection].accountability === 'all') {
+						const itemsService = new ItemsService(this.collection, {
+							knex: trx,
+							schema: this.schema,
+						});
 
-					const snapshots = await itemsService.readByKey(keys);
+						const snapshots = await itemsService.readByKey(keys);
 
-					const revisionRecords = activityPrimaryKeys.map((key, index) => ({
-						activity: key,
-						collection: this.collection,
-						item: keys[index],
-						data:
-							snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots?.[index]) : JSON.stringify(snapshots),
-						delta: JSON.stringify(payloadWithoutAliasAndPK),
-					}));
+						const revisionRecords = activityPrimaryKeys.map((key, index) => ({
+							activity: key,
+							collection: this.collection,
+							item: keys[index],
+							data:
+								snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots?.[index]) : JSON.stringify(snapshots),
+							delta: JSON.stringify(payloadWithoutAliasAndPK),
+						}));
 
-					if (revisionRecords.length > 0) {
-						await trx.insert(revisionRecords).into('directus_revisions');
+						if (revisionRecords.length > 0) {
+							await trx.insert(revisionRecords).into('directus_revisions');
+						}
 					}
 				}
 			});
@@ -502,7 +506,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		await this.knex.transaction(async (trx) => {
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
 
-			if (this.accountability) {
+			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
 				const activityRecords = keys.map((key) => ({
 					action: Action.DELETE,
 					user: this.accountability!.user,
@@ -586,7 +590,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
 
 		if (record) {
-			return await this.update(data, record.id);
+			return await this.update(data, record[primaryKeyField]);
 		}
 
 		return await this.create(data);
