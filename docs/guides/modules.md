@@ -98,6 +98,7 @@ using [Vue's inject framework](https://v3.vuejs.org/guide/component-provide-inje
     },
   };
 </script>
+```
 
 In the above example, you can see that:	
 - The `system` field gets injected into the component and becomes available as an attribute of the component (ie `this.system`)
