@@ -15,9 +15,9 @@
 		"build": "lerna run build",
 		"release": "lerna publish --force-publish --exact",
 		"test": "lerna run test",
-		"test:e2e": "jest e2e-tests -c e2e-tests/jest.config.js",
+		"test:e2e": "jest tests -c tests/jest.config.js",
 		"test:e2e:watch": "npm run test:e2e -- --watch",
-		"posttest:e2e:watch": "ts-node --project ./e2e-tests/tsconfig.json --transpile-only ./e2e-tests/setup/teardown.ts",
+		"posttest:e2e:watch": "ts-node --project ./tests/tsconfig.json --transpile-only ./tests/setup/teardown.ts",
 		"cli": "cross-env DIRECTUS_DEV=true NODE_ENV=development DOTENV_CONFIG_PATH=api/.env ts-node -r dotenv/config --script-mode --transpile-only api/src/cli/index.ts"
 	},
 	"devDependencies": {
