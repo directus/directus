@@ -68,7 +68,9 @@ export async function getSchema(options?: {
 	const schemaOverview = await schemaInspector.overview();
 
 	const collections = [
-		...(await database.select('collection', 'singleton', 'note', 'sort_field').from('directus_collections')),
+		...(await database
+			.select('collection', 'singleton', 'note', 'sort_field', 'accountability')
+			.from('directus_collections')),
 		...systemCollectionRows,
 	];
 
@@ -87,6 +89,7 @@ export async function getSchema(options?: {
 				collectionMeta?.singleton === true || collectionMeta?.singleton === 'true' || collectionMeta?.singleton === 1,
 			note: collectionMeta?.note || null,
 			sortField: collectionMeta?.sort_field || null,
+			accountability: collectionMeta ? collectionMeta.accountability : 'all',
 			fields: mapValues(schemaOverview[collection].columns, (column) => ({
 				field: column.column_name,
 				defaultValue: getDefaultValue(column) ?? null,
