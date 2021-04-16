@@ -7,7 +7,7 @@ export async function up(knex: Knex) {
 }
 
 export async function down(knex: Knex) {
-	await knex.schema.alterTable('directus_presets', (table) => {
+	await knex.schema.alterTable('directus_files', (table) => {
 		table.integer('filesize').notNullable().defaultTo(0).alter();
 	});
 }
