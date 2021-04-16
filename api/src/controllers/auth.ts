@@ -241,7 +241,7 @@ router.get(
 		emitAsyncSafe(`oauth.${req.params.provider}.redirect`, {
 			event: `oauth.${req.params.provider}.redirect`,
 			action: 'redirect',
-			schema: null,
+			schema: req.schema,
 			payload: hookPayload,
 			accountability: req.accountability,
 			user: null,
@@ -250,7 +250,7 @@ router.get(
 		await emitter.emitAsync(`oauth.${req.params.provider}.redirect.before`, {
 			event: `oauth.${req.params.provider}.redirect.before`,
 			action: 'redirect',
-			schema: null,
+			schema: req.schema,
 			payload: hookPayload,
 			accountability: req.accountability,
 			user: null,
