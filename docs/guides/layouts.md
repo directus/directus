@@ -63,6 +63,57 @@ The props you can use in an layout are:
 - `filters` (sync) - The user's currently active filters.
 - `search-query` (sync) - The user's current search query.
 
+
+#### Accessing the API from within your extension
+The Directus App's Vue app instance provides a field called `system`, which can be injected into Vue components 
+using [Vue's inject framework](https://v3.vuejs.org/guide/component-provide-inject.html). This `system` field contains functions to access [Pinia](https://pinia.esm.dev) stores, and more importantly, contains a property called `api`, which is an authenticated Axios instance. Here's an example of how to use it: 
+
+```vue
+<template>
+  <div>
+    <div>Collection: {{ collection }}</div>
+    <v-list>
+      <v-list-item v-for="item in items" v-bind:key="item.id">
+        {{item}}
+      </v-list-item>
+    </v-list>
+    <v-button v-on:click="logToConsole">CLog items to console</v-button>
+  </div>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        items: null,
+      };
+    },
+    methods: {
+      logToConsole: function () {
+        console.log(this.items);
+      },
+    },
+    inject: ["system"],
+    mounted() {
+      // log the system field so you can see what attributes are available under it
+      // remove this line when you're done.
+      console.log(this.system);
+      // Get a list of all available collections to use with this module
+      this.system.api.get(`/items/${this.collection}`).then((res) => {
+        this.items = res;
+      });
+    },
+  };
+</script>
+```
+
+In the above example, you can see that:	
+- The `system` field gets injected into the component and becomes available as an attribute of the component (ie `this.system`)
+- When the component is mounted, it uses `this.system.api.get` to request a list of all available collections
+- The names of the collections are rendered into a list in the component's template
+- a button is added with a method the logs all the data for the collections to the console
+
+This is just a basic example. A more efficient way to access and work with the list of collections would be to get an instance of the `collectionsStore` using `system.useCollectionsStore()`, but that's beyond the scope of this guide
+
 ## 2. Install Dependencies and Configure the Buildchain
 
 Set up a package.json file by running:
