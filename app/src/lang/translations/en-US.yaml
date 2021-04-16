@@ -689,6 +689,7 @@ fields:
     archive_value: Archive Value
     unarchive_value: Unarchive Value
     sort_field: Sort Field
+    accountability: Activity & Revision Tracking
   directus_files:
     title: Title
     description: Description
@@ -762,6 +763,11 @@ fields:
     users: Users in Role
     module_list: Module Navigation
     collection_list: Collection Navigation
+field_options:
+  directus_collections:
+    track_activity_revisions: Track Activity & Revisions
+    only_track_activity: Only Track Activity
+    do_not_track_anything: Do Not Track Anything
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 do_nothing: Do Nothing
 generate_and_save_uuid: Generate and Save UUID
