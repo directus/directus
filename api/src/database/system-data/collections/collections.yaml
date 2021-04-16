@@ -21,10 +21,10 @@ data:
   - collection: directus_files
     icon: folder
     note: Metadata for all managed file assets
-    display_template: "{{ title }}"
+    display_template: '{{ title }}'
   - collection: directus_folders
     note: Provides virtual directories for files
-    display_template: "{{ name }}"
+    display_template: '{{ name }}'
   - collection: directus_migrations
     note: What version of the database you're using
   - collection: directus_permissions
@@ -33,6 +33,7 @@ data:
   - collection: directus_presets
     icon: bookmark_border
     note: Presets for collection defaults and bookmarks
+    accountability: null
   - collection: directus_relations
     icon: merge_type
     note: Relationship configuration and metadata
@@ -52,6 +53,6 @@ data:
     unarchive_value: draft
     icon: people_alt
     note: System users for the platform
-    display_template: "{{ first_name }} {{ last_name }}"
+    display_template: '{{ first_name }} {{ last_name }}'
   - collection: directus_webhooks
     note: Configuration for event-based HTTP requests
