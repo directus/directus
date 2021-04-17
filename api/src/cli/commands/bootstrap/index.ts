@@ -23,6 +23,9 @@ export default async function bootstrap() {
 
 		await installDatabase(database);
 
+		logger.info('Running migrations...');
+		await runMigrations(database, 'latest');
+
 		const schema = await getSchema();
 
 		logger.info('Setting up first admin role...');
@@ -54,10 +57,9 @@ export default async function bootstrap() {
 		}
 	} else {
 		logger.info('Database already initialized, skipping install');
+		logger.info('Running migrations...');
+		await runMigrations(database, 'latest');
 	}
-
-	logger.info('Running migrations...');
-	await runMigrations(database, 'latest');
 
 	logger.info('Done');
 	process.exit(0);
