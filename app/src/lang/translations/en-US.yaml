@@ -84,6 +84,7 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
+  regex: Value doesn't have the correct format
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -613,10 +614,11 @@ settings_project: Project Settings
 settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
 scope: Scope
+select: Select...
 layout: Layout
 tree_view: Tree View
 changes_are_permanent: Changes are permanent
-preset_name_placeholder: Name of bookmark...
+preset_name_placeholder: Serves as default when empty...
 preset_search_placeholder: Search query...
 editing_preset: Editing Preset
 layout_preview: Layout Preview
@@ -697,6 +699,7 @@ fields:
     archive_value: Archive Value
     unarchive_value: Unarchive Value
     sort_field: Sort Field
+    accountability: Activity & Revision Tracking
   directus_files:
     title: Title
     description: Description
@@ -770,6 +773,11 @@ fields:
     users: Users in Role
     module_list: Module Navigation
     collection_list: Collection Navigation
+field_options:
+  directus_collections:
+    track_activity_revisions: Track Activity & Revisions
+    only_track_activity: Only Track Activity
+    do_not_track_anything: Do Not Track Anything
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 do_nothing: Do Nothing
 generate_and_save_uuid: Generate and Save UUID
@@ -1003,8 +1011,8 @@ interfaces:
     trim_label: Trim the start and end
     mask: Masked
     mask_label: Hide the real value
-    nullable: Nullable
-    nullable_label: Save empty value as NULL
+    clear: Cleared Value
+    clear_label: Save as empty string
   textarea:
     textarea: Textarea
     description: Enter multiline plain-text

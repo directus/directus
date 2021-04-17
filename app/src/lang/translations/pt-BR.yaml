@@ -579,7 +579,6 @@ scope: Escopo
 layout: Layout
 tree_view: Exibição em Árvore
 changes_are_permanent: As alterações são permanentes
-preset_name_placeholder: Nome do marcador...
 preset_search_placeholder: Termos da pesquisa...
 editing_preset: Editando predefinição
 layout_preview: Pré-visualização do Layout
@@ -940,7 +939,6 @@ interfaces:
     trim_label: Aparar o início e fim
     mask: Mascarado
     mask_label: Ocultar o valor real
-    nullable_label: Salvar valor vazio como NULO
   textarea:
     textarea: Área de texto
     description: Insira texto puro de múltiplas linhas

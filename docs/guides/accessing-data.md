@@ -2,6 +2,10 @@
 
 > TK
 
+## Accessing API Data from your extensions
+
+For examples on how to access collections and fields in the API from within your custom extensions, see the [Layout](/guides/layouts/) and [Module](/guides/modules/) guides.
+
 ## Storing Sensitive Extension Variables
 
 If your extension requires storing sensitive data, such as an API Key, you can store that information in

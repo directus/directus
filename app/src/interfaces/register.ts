@@ -5,7 +5,7 @@ import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import asyncPool from 'tiny-async-pool';
 
-const interfaces = getInterfaces();
+const { interfacesRaw } = getInterfaces();
 
 export async function registerInterfaces() {
 	const context = require.context('.', true, /^.*index\.ts$/);
@@ -17,7 +17,7 @@ export async function registerInterfaces() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/interfaces');
+		const customResponse = await api.get('/extensions/interfaces/');
 		const interfaces: string[] = customResponse.data.data || [];
 
 		await asyncPool(5, interfaces, async (interfaceName) => {
@@ -25,18 +25,18 @@ export async function registerInterfaces() {
 				const result = await import(
 					/* webpackIgnore: true */ getRootPath() + `extensions/interfaces/${interfaceName}/index.js`
 				);
-				modules.push(result.value.default);
+				modules.push(result.default);
 			} catch (err) {
-				console.warn(`Couldn't load custom interface "${interfaceName}"`);
+				console.warn(`Couldn't load custom interface "${interfaceName}":`, err);
 			}
 		});
 	} catch {
 		console.warn(`Couldn't load custom interfaces`);
 	}
 
-	interfaces.value = modules;
+	interfacesRaw.value = modules;
 
-	interfaces.value.forEach((inter) => {
+	interfacesRaw.value.forEach((inter) => {
 		registerComponent('interface-' + inter.id, inter.component);
 
 		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false) {

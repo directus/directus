@@ -54,6 +54,7 @@
 			:collection="relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:edits="editsAtStart"
+			:circular-field="relation.many_field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>

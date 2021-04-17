@@ -69,6 +69,7 @@
 			:collection="relatedCollection.collection"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
+			:circular-field="relation.one_field"
 			@input="stageEdits"
 		/>
 

@@ -56,6 +56,7 @@
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="relationInfo.junctionField"
 			:edits="editsAtStart"
+			:circular-field="junction.many_field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>

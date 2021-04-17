@@ -5,7 +5,7 @@ import { SchemaOverview } from '@directus/schema/dist/types/overview';
 export default function getDefaultValue(column: SchemaOverview[string]['columns'][string] | Column) {
 	const type = getLocalType(column);
 
-	let defaultValue = column.default_value || null;
+	let defaultValue = column.default_value ?? null;
 	if (defaultValue === null) return null;
 	if (defaultValue === 'null') return null;
 	if (defaultValue === 'NULL') return null;

@@ -148,6 +148,11 @@ uuid: UUID
 hash: Хеш
 not_available_for_type: Не е налично за този тип
 create_translations: Създаване на преводи
+auto_refresh: Автоматично опресняване
+refresh_interval: Интервал за опресняване
+no_refresh: Да не се опреснява
+refresh_interval_seconds: Моментално опресняване | На всяка секунда | На всеки {seconds} секунди
+refresh_interval_minutes: Всяка минута | На всеки {minutes} минути
 auto_generate: Автоматично генериране
 this_will_auto_setup_fields_relations: Автоматично настройване на задължителните полета и релации.
 click_here: Натиснете тук
@@ -155,7 +160,9 @@ to_manually_setup_translations: за ръчна настройка на прев
 click_to_manage_translated_fields: >-
   Все още няма преведени полета. Натиснете тук за да ги създадете. | Има едно преведено поле. Натиснете тук за да го управлявате. | Има {count} преведени полета. Натиснете тук за да ги управлявате.
 fields_group: Групи от полета
+no_collections_found: Не са намерени колекции.
 new_data_alert: 'Следващото ще бъде създадено във вашият модел:'
+search_collection: Търсене на колекция...
 new_field: 'Ново поле'
 new_collection: 'Нова колекция'
 add_m2o_to_collection: 'Добавяне на "много към един" в "{collection}"'
@@ -514,8 +521,20 @@ toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
 label: Етикет
+image_url: URL на изображение
+alt_text: Алтернативен текст
+media: Медия
 width: Ширина
 height: Височина
+source: Източник
+url_placeholder: Въвеждане на URL...
+display_text: Текст за показване
+display_text_placeholder: Въвеждане на текст за показване...
+tooltip: Подсказка
+tooltip_placeholder: Въвеждане на подсказка...
+open_link_in: Отваряне не връзката в
+new_tab: Нов таб
+current_tab: Текущ таб
 wysiwyg_options:
   aligncenter: Центриране
   alignjustify: Двустранно подравняване
@@ -535,7 +554,10 @@ wysiwyg_options:
   bullist: Списък
   numlist: Номериран списък
   hr: Хоризонтална линия
+  link: Добавяне/редактиране на връзка
   unlink: Премахване на връзка
+  media: Добавяне/редактиране на медия
+  image: Добавяне/редактиране на изображение
   copy: Копиране
   cut: Изрязване
   paste: Поставяне
@@ -557,6 +579,7 @@ wysiwyg_options:
   selectall: Избиране на всичко
   table: Таблица
   visualaid: Преглед на невидимите елементи
+  source_code: Редактиране на изходен код
   fullscreen: Пълен Екран
   directionality: Подравняване
 dropdown: Падащо меню
@@ -577,10 +600,11 @@ settings_project: Настройки на проект
 settings_webhooks: Уеб-куки
 settings_presets: Изгледи и отметки
 scope: Обхват
+select: Избор...
 layout: Оформление
 tree_view: Дървовиден изглед
 changes_are_permanent: Промените са постоянни
-preset_name_placeholder: Име на отметка...
+preset_name_placeholder: По подразбиране когато е празно...
 preset_search_placeholder: Заявка за търсене...
 editing_preset: Редактиране на подготвени изгледи
 layout_preview: Предварителен преглед
@@ -960,8 +984,6 @@ interfaces:
     trim_label: Почистване на краищата от интервали
     mask: Маскиране
     mask_label: Скриване на истинската стойност
-    nullable: Може да е null
-    nullable_label: Празните стойности са NULL
   textarea:
     textarea: Поле за текст
     description: Въвеждане на чист текст на няколко реда
