@@ -136,7 +136,6 @@ export function getParser(options: geometryOptions): GeoJSONParser {
 		if (!geom) return undefined;
 		geom.bbox = [Infinity, Infinity, -Infinity, -Infinity];
 		if (options.geometrySRID && options.geometrySRID !== 'EPSG:4326') {
-			(geom as any).crs = { type: 'name', properties: { name: options.geometrySRID } };
 			coordEach(geom as AllGeoJSON, (coord) => {
 				[coord[0], coord[1]] = project(coord as Coord);
 				expand(geom.bbox!, coord as Coord);

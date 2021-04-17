@@ -1,14 +1,40 @@
 <template>
 	<div class="interface-map">
-		<div class="map" ref="container"></div>
-		<div v-if="!canRenderBackground" class="error">
-			<v-info icon="vpn_key" center type="warning" :title="$t('interfaces.map.no_api_key')"></v-info>
+		<div class="map" ref="container" :class="{ error }"></div>
+		<div v-if="error" class="info">
+			<v-info
+				v-if="!canRenderBackground"
+				icon="vpn_key"
+				center
+				type="warning"
+				:title="$t('interfaces.map.no_api_key')"
+			></v-info>
+			<v-info v-if="geometryCompatibilityError" icon="error" center type="warning" title="Incompatible geometry">
+				<template #append>
+					<v-button small @click="resetGeometry" class="reset-preset">Reset Geometry</v-button>
+				</template>
+			</v-info>
+			<v-info v-if="geometryParsingError" icon="error" center type="error" title="Couldn't parse geometry">
+				<template #append>
+					<v-button small @click="resetGeometry" class="reset-preset">Reset Geometry</v-button>
+				</template>
+			</v-info>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, PropType, ref, watch, watchEffect } from '@vue/composition-api';
+import {
+	computed,
+	defineComponent,
+	onMounted,
+	onUnmounted,
+	PropType,
+	ref,
+	toRefs,
+	watch,
+	watchEffect,
+} from '@vue/composition-api';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import type { Feature, FeatureCollection, Geometry, GeometryCollection, BBox } from 'geojson';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
@@ -22,7 +48,6 @@ import maplibre, {
 	CameraOptions,
 	LngLatLike,
 	Source,
-	Point,
 	Style,
 	Map,
 	Marker,
@@ -33,16 +58,15 @@ import { ButtonControl } from '@/layouts/map/components/map.vue';
 import { sources, mapbox_sources } from '@/layouts/map/styles/sources';
 import { getParser, getSerializer, assignBBox } from '@/layouts/map/lib';
 import type { GeometryFormat, AnyGeoJSON } from '@/layouts/map/lib';
-import proj4 from 'proj4';
-import { merge, clone } from 'lodash';
-import { useSettingsStore } from '@/stores';
+import { snakeCase } from 'lodash';
 import getSetting from '@/utils/get-setting';
-import { coordEach } from '@turf/meta';
 import style from './style';
 
-function areGeometryTypesCompatible(a: string, b: string) {
-	return a.replace('Multi', '') == b.replace('Multi', '');
-}
+import { Position, Point, Polygon, LineString, MultiPoint, MultiPolygon, MultiLineString } from 'geojson';
+type _GeometryType = 'Point' | 'Polygon' | 'LineString' | 'MultiPoint' | 'MultiPolygon' | 'MultiLineString';
+type _SimpleGeometry = Point | Polygon | LineString;
+type _MultiGeometry = MultiPoint | MultiPolygon | MultiLineString;
+type _Geometry = _SimpleGeometry | _MultiGeometry;
 
 function bboxCenter(bbox: BBox) {
 	return [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2];
@@ -57,6 +81,9 @@ export default defineComponent({
 		longitude: {
 			type: Number,
 			default: -73.94896388,
+		},
+		loading: {
+			type: Boolean,
 		},
 		latitude: {
 			type: Number,
@@ -78,28 +105,33 @@ export default defineComponent({
 			type: String,
 			default: 'CartoDB_PositronNoLabels',
 		},
-		geometry: {
-			type: String,
-			default: 'point',
+		geometryType: {
+			type: String as PropType<_GeometryType>,
+			default: 'Point',
 		},
 		geometryFormat: {
 			type: String as PropType<GeometryFormat>,
 			required: true,
 		},
-		multipleGeometries: {
+		multiGeometry: {
 			type: Boolean,
 			default: false,
 		},
 	},
 	setup(props, { emit }) {
 		const container = ref<HTMLElement | null>(null);
-		let map: Map;
-		let apiKey = getSetting('mapbox_key');
+		const apiKey = getSetting('mapbox_key');
 		if (apiKey !== null) maplibre.accessToken = apiKey;
-		let currentGeometry: Geometry | null | undefined;
-		let lastDrawMode: string;
+
+		let map: Map;
+		let currentGeometry: _Geometry | null | undefined;
 
 		const canRenderBackground = computed(() => props.background in mapbox_sources === false || apiKey !== null);
+		const geometryParsingError = ref(false);
+		const geometryCompatibilityError = ref(false);
+		const error = computed(
+			() => !canRenderBackground.value || geometryParsingError.value || geometryCompatibilityError.value
+		);
 
 		const geometryOptions = {
 			geometrySRID: props.projection,
@@ -111,13 +143,29 @@ export default defineComponent({
 		const serialize = getSerializer(geometryOptions);
 
 		onMounted(() => {
-			setupMap();
+			const cleanup = setupMap();
+			onUnmounted(cleanup);
 		});
 
-		return { container, canRenderBackground };
+		function resetGeometry() {
+			emit('input', null);
+			geometryCompatibilityError.value = false;
+			geometryParsingError.value = false;
+		}
 
-		function setupMap() {
-			if (container.value === null) return;
+		return {
+			container,
+			error,
+			canRenderBackground,
+			geometryParsingError,
+			geometryCompatibilityError,
+			resetGeometry,
+		};
+
+		function setupMap(): () => void {
+			if (container.value === null) {
+				return () => {};
+			}
 
 			const background = canRenderBackground.value ? props.background : 'CartoDB_PositronNoLabels';
 
@@ -144,56 +192,108 @@ export default defineComponent({
 				attributionControl: false,
 			});
 
-			let draw = new MapboxDraw({
+			const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds);
+			const draw = new MapboxDraw({
 				displayControlsDefault: false,
 				controls: {
 					trash: true,
-					[props.geometry]: true,
-					uncombine_features: props.multipleGeometries,
+					[snakeCase(props.geometryType)]: true,
 				},
 				styles: style,
 			});
 			map.addControl(new maplibre.NavigationControl(), 'top-left');
 			map.addControl(new maplibre.GeolocateControl(), 'top-left');
-			const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds);
 			map.addControl(fitDataControl, 'top-left');
 			map.addControl(draw as IControl, 'top-left');
 
 			map.on('load', () => {
-				currentGeometry = parse(props) as Geometry;
-				if (currentGeometry) {
-					draw.add(currentGeometry);
-					getCurrentGeometry();
-					fitDataBounds({ duration: 0, zoom: props.zoom });
-				}
 				map.on('draw.create', handleDrawUpdate);
 				map.on('draw.delete', handleDrawUpdate);
 				map.on('draw.update', handleDrawUpdate);
+				map.once('resize', () => {
+					if (props.loading) {
+						watch(() => props.loading, addInitialValue);
+					} else {
+						addInitialValue();
+					}
+				});
+				map.resize();
 			});
 
-			function getCurrentGeometry() {
-				let features = draw.getAll().features;
-				if (features.length == 0) {
-					return null;
+			return () => {
+				map.remove();
+			};
+
+			function addInitialValue() {
+				if (!props.value) return;
+				try {
+					const initialValue = parse(props) as _Geometry | undefined;
+					if (initialValue) {
+						const uncombined = uncombine(initialValue as _MultiGeometry);
+						if (uncombined.length == 0 || (uncombined.length > 1 && !props.multiGeometry)) {
+							console.log('invalid geometry');
+							geometryCompatibilityError.value = true;
+							return;
+						}
+						uncombined.forEach((geometry) => {
+							draw.add(geometry);
+						});
+						getCurrentGeometry();
+						fitDataBounds({ duration: 0 });
+					}
+				} catch (error) {
+					console.log('parsing error');
+					geometryParsingError.value = true;
 				}
-				if (props.multipleGeometries) {
-					draw.changeMode('simple_select', {
-						featureIds: features.map((f) => f.id) as string[],
-					});
-					draw.combineFeatures();
-					features = draw.getAll().features;
-					currentGeometry = features[0].geometry;
-					draw.uncombineFeatures();
-					draw.changeMode('simple_select', {
-						featureIds: [],
-					});
-					features = draw.getAll().features;
+			}
+
+			function combine(geometries: _SimpleGeometry[]): _MultiGeometry {
+				const geometry = {
+					type: `Multi${props.geometryType}` as _GeometryType,
+					coordinates: [] as (Position | Position[] | Position[][])[],
+				};
+				for (const { type, coordinates } of geometries) {
+					if (type == props.geometryType) {
+						geometry.coordinates.push(coordinates);
+					}
+				}
+				return geometry as _MultiGeometry;
+			}
+
+			function uncombine(geometry: _MultiGeometry): _SimpleGeometry[] {
+				const geometries: _SimpleGeometry[] = [];
+				if (!geometry.type.startsWith('Multi')) {
+					geometry = {
+						type: `Multi${geometry.type}`,
+						coordinates: [geometry.coordinates],
+					} as _MultiGeometry;
+				}
+				if (geometry.type !== `Multi${props.geometryType}`) {
+					return geometries;
+				}
+				for (const coordinates of geometry.coordinates) {
+					geometries.push({
+						type: props.geometryType,
+						coordinates,
+					} as _SimpleGeometry);
+				}
+				return geometries;
+			}
+
+			function getCurrentGeometry() {
+				let geometries = draw.getAll().features.map((f) => f.geometry as _SimpleGeometry);
+				if (geometries.length == 0) {
+					currentGeometry = null;
+					return;
+				} else if (props.multiGeometry) {
+					currentGeometry = combine(geometries);
 				} else {
-					currentGeometry = features[0].geometry;
+					currentGeometry = geometries[0];
 					draw.deleteAll();
 					draw.add(currentGeometry!);
 				}
-				assignBBox(currentGeometry);
+				console.log(currentGeometry);
+				assignBBox(currentGeometry!);
 			}
 
 			function handleDrawUpdate() {
@@ -216,16 +316,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.mapboxgl-ctrl .mapbox-gl-draw_ctrl-draw-btn::after {
-	display: flex;
-	justify-content: center;
-	font-size: 24px;
-	font-family: 'Material Icons Outline', sans-serif;
-	font-style: normal;
-	font-variant: normal;
-	text-rendering: auto;
-	-webkit-font-smoothing: antialiased;
-}
 .mapboxgl-ctrl .mapbox-gl-draw_point::after {
 	content: '\ef3a'; // add_location
 }
@@ -241,6 +331,9 @@ export default defineComponent({
 .mapboxgl-ctrl .mapbox-gl-draw_uncombine::after {
 	content: '\e14e'; // content_cut
 }
+// .mapboxgl-map.mouse-add .mapboxgl-canvas-container.mapboxgl-interactive {
+// 	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 24 24" fill="%23000000"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 1v3h3v2h-3v3h-2V6h-3V4h3V1h2zm-8 12c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm2-9.75V7h3v3h2.92c.05.39.08.79.08 1.2 0 3.32-2.67 7.25-8 11.8-5.33-4.55-8-8.48-8-11.8C4 6.22 7.8 3 12 3c.68 0 1.35.08 2 .25z"/></svg>'), auto !important;
+// }
 </style>
 
 <style lang="scss" scoped>
@@ -249,9 +342,13 @@ export default defineComponent({
 		position: relative;
 		width: 100%;
 		height: 500px;
+		&.error {
+			opacity: 0.15;
+			pointer-events: none;
+		}
 	}
 
-	.error {
+	.info {
 		position: absolute;
 		top: 0;
 		z-index: 10;

@@ -11,27 +11,27 @@ export default defineInterface({
 	types: ['json', 'csv', 'string', 'text', 'binary'],
 	options: [
 		{
-			field: 'geometry',
-			name: '$t:interfaces.map.geometry',
+			field: 'geometryType',
+			name: '$t:interfaces.map.geometry_type',
 			type: 'string',
 			meta: {
 				width: 'half',
 				interface: 'dropdown',
 				options: {
 					choices: [
-						{ value: 'point', text: '$t:interfaces.map.point' },
-						{ value: 'line_string', text: '$t:interfaces.map.line_string' },
-						{ value: 'polygon', text: '$t:interfaces.map.polygon' },
+						{ value: 'Point', text: '$t:interfaces.map.point' },
+						{ value: 'LineString', text: '$t:interfaces.map.line_string' },
+						{ value: 'Polygon', text: '$t:interfaces.map.polygon' },
 					],
 				},
 			},
 			schema: {
-				default_value: 'point',
+				default_value: 'Point',
 			},
 		},
 		{
-			field: 'multipleGeometries',
-			name: '$t:interfaces.map.multiple_geometries',
+			field: 'multiGeometry',
+			name: '$t:interfaces.map.multi_geometry',
 			type: 'boolean',
 			meta: {
 				width: 'half',
