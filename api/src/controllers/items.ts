@@ -25,9 +25,10 @@ router.post(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.create(req.body);
-
+		
 		try {
+			const primaryKey = await service.create(req.body);
+
 			const result = await service.readByKey(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: result || null };
 		} catch (error) {
@@ -120,9 +121,10 @@ router.patch(
 		}
 
 		if (Array.isArray(req.body)) {
-			const primaryKeys = await service.update(req.body);
-
+			
 			try {
+				const primaryKeys = await service.update(req.body);
+
 				const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
 				res.locals.payload = { data: result || null };
 			} catch (error) {
@@ -147,9 +149,10 @@ router.patch(
 			throw new FailedValidationException(error.details[0]);
 		}
 
-		const primaryKeys = await service.update(req.body.data, req.body.keys);
-
+		
 		try {
+			const primaryKeys = await service.update(req.body.data, req.body.keys);
+
 			const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
 			res.locals.payload = { data: result || null };
 		} catch (error) {
@@ -180,9 +183,10 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const updatedPrimaryKey = await service.update(req.body, req.params.pk);
-
+		
 		try {
+			const updatedPrimaryKey = await service.update(req.body, req.params.pk);
+			
 			const result = await service.readByKey(updatedPrimaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: result || null };
 		} catch (error) {
