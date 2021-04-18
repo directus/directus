@@ -128,7 +128,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Нулиране на предпочитанията за страницата
 hidden_field: Скрито поле
 hidden_on_detail: Скриване в детайлния изглед
-disabled_editing_value: Без промени по стойността
+disabled_editing_value: Без възможност за редакция
 key: Ключ
 alias: Псевдоним
 bigInteger: Голямо цяло число
@@ -436,7 +436,7 @@ show_hidden_collections: Показване на скритите колекци
 hide_hidden_collections: Скриване на скритите колекции
 unmanaged_collections: Неконфигурирани колекции
 system_collections: Системни колекции
-placeholder: Заместител (placeholder)
+placeholder: Подсказка
 icon_left: Икона вляво
 icon_right: Икона вдясно
 count_other_revisions: '{count} други ревизии'
