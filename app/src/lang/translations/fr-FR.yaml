@@ -1,19 +1,19 @@
 ---
 edit_field: Modifier le champ
-item_revision: Révision de l'article
+item_revision: Historique de l'article
 duplicate_field: Dupliquer le champ
-half_width: Demi-largeur
-full_width: Pleine largeur
-fill_width: Largeur de remplissage
+half_width: Demi-colonne
+full_width: Largeur de colonne
+fill_width: Pleine largeur
 field_name_translations: Traductions du nom de champ
-enter_password_to_enable_tfa: Entrez votre mot de passe pour activer l'authentification à deux facteurs
+enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
 add_field: Ajouter un champ
 role_name: Nom de rôle
 db_only_click_to_configure: 'Base de données uniquement: cliquez pour configurer '
 show_archived_items: Afficher les éléments archivés
 edited: Valeur modifiée
-required: Requis
-required_for_app_access: Requis pour l'accès à l'application
+required: Obligatoire
+required_for_app_access: Obligatoire pour l'accès à l'application
 requires_value: La valeur est obligatoire
 create_preset: Créer un préréglage
 create_role: Créer un rôle
@@ -32,8 +32,8 @@ rename_folder: Renommer le fichier
 delete_folder: Supprimer le fichier
 prefix: Préfixe
 suffix: Suffixe
-reset_bookmark: Réinitialiser le signet
-rename_bookmark: Renommer le signet
+reset_bookmark: Réinitialiser le favori
+rename_bookmark: Renommer le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
 delete_bookmark_copy: >-
@@ -57,18 +57,18 @@ archive_confirm_count: >-
   Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
 reset_system_permissions_to: 'Réinitialiser les autorisations système:'
 reset_system_permissions_copy: Cette action écrasera toutes les autorisations personnalisées que vous avez peut-être appliquées aux collections du système. Êtes-vous sûr ?
-the_following_are_minimum_permissions: Il s'agit des autorisations minimales lorsque "Accès à l'application" est activé. Vous pouvez étendre ces permissions au-delà, mais pas les restreindre.
-app_access_minimum: Permission d'accès minimale à l'application
+the_following_are_minimum_permissions: Il s'agit des autorisations minimales lorsque "Accès à l'application" est activé. Vous pouvez donner davantage de permissions, mais pas les restreindre.
+app_access_minimum: Autorisation minimale requise pour accéder à l'application
 recommended_defaults: Valeurs par défaut recommandées
 unarchive: Restaurer
 unarchive_confirm: Êtes-vous sûr de vouloir restaurer cet élément ?
 nested_files_folders_will_be_moved: Le contenu du dossier sera déplacé vers le dossier parent.
-unknown_validation_errors: 'Il y a eu des erreurs de validation pour les champs cachés suivants :'
+unknown_validation_errors: 'Des erreurs de validation se sont produites pour les champs cachés suivants :'
 validationError:
   eq: La valeur doit être {valid}
   neq: La valeur ne peut pas être {invalid}
-  in: La valeur doit être l'une des {valid}
-  nin: La valeur ne peut pas être une des {invalid}
+  in: La valeur doit être l'une de celles-ci {valid}
+  nin: La valeur ne peut pas être une de celles-ci {invalid}
   contains: La valeur doit contenir {substring}
   ncontains: La valeur ne peut pas contenir {substring}
   gt: La valeur doit être supérieure à {valid}
@@ -76,26 +76,26 @@ validationError:
   lt: La valeur doit être inférieure à {valid}
   lte: La valeur doit être inférieure ou égale à {valid}
   empty: La valeur doit être vide
-  nempty: La valeur ne peut être vide
+  nempty: La valeur ne peut pas être vide
   null: La valeur doit être nulle
-  nnull: La valeur ne peut être nulle
-  required: Une valeur est requise
+  nnull: La valeur ne peut pas être nulle
+  required: Une valeur est obligatoire
   unique: La valeur doit être unique
   regex: La valeur n'a pas le bon format
 all_access: Accès total
-no_access: Pas d'accès
+no_access: Aucun accès
 use_custom: Personnalisé
 field_standard: Standard
 field_presentation: Présentation & Alias
-field_file: Fichier simple
+field_file: Fichier unique
 field_files: Fichiers multiples
 field_m2o: Relation M2O
 field_m2a: Relation M2A
 field_o2m: Relation O2M
 field_m2m: Relation M2M
 field_translations: Traductions
-item_permissions: Permissions de l'élément
-field_permissions: Permissions du champ
+item_permissions: Autorisations pour l'élément
+field_permissions: Autorisations pour le champ
 field_validation: Validation du champ
 field_presets: Préréglages du champ
 permissions_for_role: 'Éléments que le rôle {role} peut {action}.'
@@ -109,7 +109,7 @@ no_relational_data: Gardez à l'esprit que cela n'inclut pas les données relati
 hide_field_on_detail: Masquer le champ dans le détail
 show_field_on_detail: Afficher le champ dans le détail
 delete_field: Supprimer le champ
-fields_and_layout: Champs & Disposition
+fields_and_layout: Champs et disposition
 field_create_success: 'Champ créé : "{field}"'
 field_update_success: 'Champ mis à jour : "{field}"'
 duplicate_where_to: Vers où souhaitez-vous dupliquer ce champ ?
@@ -147,14 +147,14 @@ uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
 not_available_for_type: Non disponible pour ce type
 create_translations: Créer des traductions
-auto_refresh: Rafraichissement automatique
+auto_refresh: Actualisation automatique
 refresh_interval: Fréquence d'actualisation
 no_refresh: Ne pas actualiser
-refresh_interval_seconds: Rafraîchir instantanément | Toutes les {seconds} secondes
+refresh_interval_seconds: Actualiser instantanément | Toutes les {seconds} secondes
 refresh_interval_minutes: Chaque minute | Toutes les {minutes} minutes
 auto_generate: Générer automatiquement
-this_will_auto_setup_fields_relations: Tous les champs et relations requis seront configurés automatiquement.
-click_here: Cliquez ici
+this_will_auto_setup_fields_relations: Tous les champs et relations obligatoires seront configurés automatiquement.
+click_here: Cliquer ici
 to_manually_setup_translations: pour configurer manuellement les traductions.
 click_to_manage_translated_fields: >-
   Il n'y a pas encore de champ traduit. Cliquez-ici pour en créer un. | Il y a un champ traduit. Cliquez ici pour le gérer. | Il y a {count} champs traduits. Cliquez ici pour les gérer.
@@ -172,7 +172,7 @@ determined_by_relationship: Déterminé par la relation
 add_note: Ajouter une note utile aux utilisateurs…
 default_value: Valeur par défaut
 standard_field: Champ standard
-single_file: Fichier simple
+single_file: Fichier unique
 multiple_files: Fichiers multiples
 m2o_relationship: Relation Many-to-One
 o2m_relationship: Relation One-to-Many
@@ -186,10 +186,10 @@ note: Remarque
 enter_a_value: Saisissez une valeur...
 enter_a_placeholder: Entrez un placeholder...
 length: Taille
-precision_scale: Précision & Echelle
+precision_scale: Précision et échelle
 readonly: Lecture seule
 unique: Unique
-updated_on: Mis à jour le
+updated_on: Modifié le
 updated_by: Modifié par
 primary_key: Clef primaire
 foreign_key: Clé étrangère
@@ -205,7 +205,7 @@ notifications: Notifications
 show_all_activity: Afficher toute l'activité
 page_not_found: Page non trouvée
 page_not_found_body: La page que vous recherchez ne semble pas exister.
-confirm_revert: Confirmer le rétablissement
+confirm_revert: Confirmer la restauration
 confirm_revert_body: Cela restaurera l'élément à l'état sélectionné.
 display: Affichage
 settings_update_success: Paramètres enregistrés
@@ -214,7 +214,7 @@ revision_delta_created: Créé
 revision_delta_created_externally: Créé en externe
 revision_delta_updated: '1 champ mis à jour | {count} champs mis à jour'
 revision_delta_deleted: Supprimé
-revision_delta_reverted: Rétabli
+revision_delta_reverted: Restauré
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
 private_user: Utilisateur privé
@@ -271,7 +271,7 @@ months:
   october: Octobre
   november: Novembre
   december: Décembre
-drag_mode: Mode Glisser
+drag_mode: Mode Glisser/Déposer
 cancel_crop: Annuler le recadrage
 original: Initial
 url: URL
@@ -283,7 +283,7 @@ created: Créé
 modified: Modifié
 checksum: Code de vérification
 owner: Propriétaire
-edited_by: Édité par
+edited_by: Modifié par
 folder: Dossier
 zoom: Zoom
 download: Télécharger
@@ -367,7 +367,7 @@ file_moved: Fichier déplacé
 collection_created: Collection créée
 modified_on: Modifié le
 card_size: Taille de la carte
-sort_field: Trier les champs
+sort_field: Champ de tri
 add_sort_field: Ajouter un champ de tri
 sort: Trier
 status: Etat
@@ -399,9 +399,9 @@ errors:
   RECORD_NOT_UNIQUE: Valeur dupliquée détecté
   UNKNOWN: Erreur inconnue
 value_hashed: Valeur hashée de manière sûre
-bookmark_name: Nom du signet...
-create_bookmark: Créer un signet
-edit_bookmark: Modifier le signet
+bookmark_name: Nom du favori...
+create_bookmark: Ajouter comme favori
+edit_bookmark: Modifier le favori
 bookmarks: Favoris
 presets: Pré-réglages
 unexpected_error: Erreur inconnue
@@ -439,7 +439,7 @@ system_collections: Collections système
 placeholder: Placeholder
 icon_left: Icône gauche
 icon_right: Icône droite
-count_other_revisions: '{count} autres Révisions'
+count_other_revisions: '{count} autres versions'
 font: Police de caractères
 sans_serif: Sans Sérif
 serif: Sérif
@@ -491,7 +491,7 @@ all_activity: Toutes les activités
 create_item: Créer un élément
 display_template: Modèle d'affichage
 n_items_selected: 'Aucun élément sélectionné | 1 élément sélectionné | {n} éléments sélectionnés'
-per_page: Par Page
+per_page: Par page
 all_files: Tous les fichiers
 my_files: Mes fichiers
 recent_files: Fichiers Récents
@@ -517,8 +517,8 @@ select_fields: Sélectionner des champs
 format_text: Format du texte
 bold: Gras
 toggle: Activer/Désactiver
-icon_on: Icône Activée
-icon_off: Icône Désactivée
+icon_on: Icône de sélection
+icon_off: Icône de dé-selection
 label: Étiquette
 image_url: Url de l’image
 alt_text: Texte alternatif
@@ -555,7 +555,7 @@ wysiwyg_options:
   hr: Barre horizontale
   link: Ajouter/modifier un lien
   unlink: Supprimer le lien
-  media: Ajouter/Modifier un média
+  media: Ajouter/modifier un média
   image: Ajouter/Modifier une image
   copy: Copier
   cut: Couper
@@ -582,30 +582,30 @@ wysiwyg_options:
   fullscreen: Plein écran
   directionality: Sens de lecture
 dropdown: Liste déroulante
-choices: Choix
-choices_option_configured_incorrectly: Choix mal configurés
+choices: Liste de choix
+choices_option_configured_incorrectly: Choix configurés incorrectement
 deselect: Désélectionner
 deselect_all: Tout désélectionner
 other: Autre...
 adding_user: Ajout de l'utilisateur
 unknown_user: Utilisateur inconnu
 creating_in: 'Création de l''élément dans {collection}'
-editing_in: 'Édition de l''élément dans {collection}'
-editing_in_batch: 'Édition par lot de {count} élément(s)'
+editing_in: 'Modification de l''élément dans {collection}'
+editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
 settings_permissions: Rôles et autorisations
 settings_project: Paramètres du projet
 settings_webhooks: Webhooks
 settings_presets: Préréglages et favoris
-scope: Périmètre d'application
+scope: Utilisateurs ou rôles
 select: Sélectionner...
 layout: Mise en page
 tree_view: Vue Arborescente
 changes_are_permanent: Les modifications sont irréversibles
 preset_name_placeholder: Sert par défaut quand il est vide...
 preset_search_placeholder: Recherche...
-editing_preset: Édition du préréglage
+editing_preset: Modifier le préréglage
 layout_preview: Aperçu de la mise en page
 layout_setup: Configuration de la mise en page
 unsaved_changes: Modifications non enregistrées
@@ -614,7 +614,7 @@ discard_changes: Annuler les modifications
 keep_editing: Continuer l’édition
 page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
 page_help_collections_collection: >-
-  **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer les signets de ces différentes configurations pour un accès rapide.
+  **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
 page_help_collections_item: >-
   **Détail de l'élément** — Un formulaire pour visualiser et gérer cet élément. Cette barre latérale contient également un historique complet des révisions et des commentaires intégrés.
 page_help_activity_collection: >-
@@ -622,7 +622,7 @@ page_help_activity_collection: >-
 page_help_docs_global: >-
   **Aperçu de la documentation** — Documents adaptés spécifiquement à la version et au schéma de ce projet.
 page_help_files_collection: >-
-  **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer les signets de ces différentes configurations pour un accès rapide.
+  **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
 page_help_files_item: >-
   **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et de mise à jour des paramètres d'accès.
 page_help_settings_project: "**Paramètres du projet** — Les options de configuration globale de votre projet."
@@ -631,11 +631,11 @@ page_help_settings_datamodel_collections: >-
 page_help_settings_datamodel_fields: >-
   **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
 page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste les rôles Administrateur, Public et les rôles utilisateurs personnalisés.'
-page_help_settings_roles_item: "**Détail du rôle** — Gérer les permissions et les autres paramètres d'un rôle."
+page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
 page_help_settings_presets_collection: >-
-  **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les signets globaux, ainsi que les vues par défaut.
+  **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris globaux et les vues par défaut.
 page_help_settings_presets_item: >-
-  **Détail du préréglage** — Un formulaire pour gérer les signets et les préréglages de collection par défaut.
+  **Détail du préréglage** — Un formulaire pour gérer les favoris et les préréglages de collection par défaut.
 page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste tous les webhooks du projet.'
 page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
@@ -674,10 +674,11 @@ fields:
     hidden: Caché
     singleton: Singleton
     translations: Traductions du nom de la collection
-    archive_app_filter: Archiver le filtre de l'application
-    archive_value: Archiver la valeur
-    unarchive_value: Désarchiver la valeur
-    sort_field: Trier les champs
+    archive_app_filter: Filtrer les valeurs archivées dans l'application
+    archive_value: Valeur pour archivage
+    unarchive_value: Valeur au désarchivage
+    sort_field: Champ de tri
+    accountability: Enregistrement de l'activité et de l'historique
   directus_files:
     title: Titre
     description: Description
@@ -724,14 +725,14 @@ fields:
     project_url: URL du projet
     project_color: Couleur du projet
     project_logo: Logo du projet
-    public_foreground: Avant-plan public
-    public_background: Arrière-plan public
-    public_note: Note publique
+    public_foreground: Image au premier plan de l'accueil
+    public_background: Image en arrière-plan de l'accueil
+    public_note: Message sur la page d'accueil
     auth_password_policy: Politique des mots de passe
     auth_login_attempts: Tentatives de connexion
-    storage_asset_presets: Préréglages des fichiers dans Stockage
+    storage_asset_presets: Préréglages des fichiers dans le stockage
     storage_asset_transform: Transformation des fichiers du stockage
-    custom_css: Personnalisation CSS
+    custom_css: Personnalisation du CSS
   directus_fields:
     collection: Nom de la Collection
     icon: Icône de Collection
@@ -751,6 +752,11 @@ fields:
     users: Membres avec le rôle
     module_list: Module de Navigation
     collection_list: Navigation de la collection
+field_options:
+  directus_collections:
+    track_activity_revisions: Enregistrer les activités et l'historique
+    only_track_activity: Enregistrer seulement l'activité
+    do_not_track_anything: Ne rien enregistrer
 no_fields_in_collection: 'Il n''y a pas encore de champs dans "{collection}"'
 do_nothing: Ne rien faire
 generate_and_save_uuid: Générer et Enregistrer l'UUID
@@ -802,7 +808,7 @@ relationship: Relation
 reset: Réinitialiser
 reset_password: Réinitialiser le mot de passe
 revisions: Historique
-revert: Revenir en arriére
+revert: Restaurer
 save: Enregistrer
 schema: Schéma
 search: Recherche
@@ -821,6 +827,7 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
+weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:
@@ -835,7 +842,7 @@ interfaces:
   checkboxes:
     checkboxes: Cases à cocher
     description: Choisissez entre plusieurs options via les cases à cocher
-    allow_other: Autoriser les autres
+    allow_other: Autoriser d'autres valeurs
     show_more: 'Afficher {count} de plus'
     items_shown: Éléments affichés
   code:
@@ -853,7 +860,7 @@ interfaces:
     include_system_collections: Inclure les collections système
   color:
     color: Couleur
-    description: Entrez ou sélectionnez une valeur de couleur
+    description: Saisir ou choisir une couleur
     placeholder: Choisir une couleur...
     preset_colors: Couleurs prédéfinies
     preset_colors_add_label: Ajouter une nouvelle couleur...
@@ -881,9 +888,9 @@ interfaces:
   dropdown:
     description: Sélectionner une valeur à partir d'une liste déroulante
     choices_placeholder: Ajouter un nouveau choix
-    allow_other: Autoriser les autres
+    allow_other: Autoriser d'autres valeurs
     allow_other_label: Autoriser d'autres valeurs
-    allow_none: Ne rien autoriser
+    allow_none: Autoriser une valeur vide
     allow_none_label: Autoriser aucune sélection
     choices_name_placeholder: Entrer un nom...
     choices_value_placeholder: Saisissez une valeur...
@@ -903,14 +910,14 @@ interfaces:
     masked_label: Cacher les vraies valeurs
   icon:
     icon: Icone
-    description: Sélectionnez une icône dans la liste déroulante
+    description: Sélectionner une icône dans la liste déroulante
     search_for_icon: Rechercher une icône...
   image:
     image: Image
     description: Sélectionner ou Transférer une image
   interface:
     interface: Interface
-    description: Sélectionnez une interface existante
+    description: Sélectionner une interface existante
     placeholder: Sélectionner une interface...
   interface-options:
     interface-options: Options d'interface
@@ -920,7 +927,7 @@ interfaces:
     description: Sélectionner plusieurs éléments de jonction liés
   many-to-one:
     many-to-one: Plusieurs à un
-    description: Sélectionnez un seul élément lié
+    description: Sélectionner un seul élément lié
     display_template: Modèle d'affichage
   markdown:
     markdown: Markdown
@@ -947,21 +954,21 @@ interfaces:
     no_collection: La collection est introuvable
   radio-buttons:
     radio-buttons: Boutons radio
-    description: Sélectionnez l'un des choix
+    description: Sélectionner l'un des choix proposés
   repeater:
     repeater: Répéteur
     description: Créer plusieurs entrées de la même structure
-    edit_fields: Éditer les champs
+    edit_fields: Modifier les champs
     add_label: 'Libellé "Ajouter une nouvelle ligne"'
     field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
   slider:
     slider: Slider
-    description: Sélectionnez un numéro à l'aide d'un curseur
+    description: Sélectionner un numéro à l'aide d'un curseur
     always_show_value: Toujours afficher la valeur
   slug:
     slug: Slug
-    description: Entrez un mot connecté avec des traits d'union
+    description: Saisir des mots sans accents reliés par des tirets
   tags:
     tags: Étiquettes
     description: Sélectionner ou ajouter des tags
@@ -978,7 +985,7 @@ interfaces:
     add_tags: Ajouter des tags...
   text-input:
     text-input: Champ de texte
-    description: Texte d'une seule ligne
+    description: Entrer un texte d'une seule ligne
     trim: Ajuster
     trim_label: Couper le début et la fin
     mask: Masqué
@@ -1001,7 +1008,7 @@ interfaces:
     recursive_only: L'interface de l'arborescence ne fonctionne que pour les relations récursives.
   user:
     user: Utilisateur
-    description: Sélectionnez un utilisateur directus existant
+    description: Sélectionner un utilisateur directus existant
     select_mode: Sélectionner un mode
     modes:
       auto: Auto
@@ -1009,7 +1016,7 @@ interfaces:
       modal: Modal
   wysiwyg:
     wysiwyg: WYSIWYG
-    description: Un éditeur de texte riche écrivant du contenu HTML
+    description: Un éditeur de texte enrichi pouvant contenir du HTML
     toolbar: Barre d’outils
     custom_formats: Format personnalisé
     options_override: Remplacement des options
@@ -1021,8 +1028,8 @@ displays:
     label_on_placeholder: Entrez un libellé ...
     label_off: Étiquette désactivée
     label_off_placeholder: Entrez un libellé pour la désactivation...
-    icon_on: Icône Activée
-    icon_off: Icône Désactivée
+    icon_on: Icône de sélection
+    icon_off: Icône de dé-selection
     color_on: Couleur activée
     color_off: Couleur Désactivée
   collection:
@@ -1070,7 +1077,7 @@ displays:
     circle_label: Afficher en tant que cercle
   labels:
     labels: Libellés
-    description: Afficher une seule ou la liste d'étiquettes
+    description: Afficher sous forme d'étiquette(s)
     default_foreground: Premier plan par défaut
     default_background: Arrière-plan par défaut
     format_label: Formater chaque libellés
@@ -1091,7 +1098,7 @@ displays:
     raw: Valeur brute
   related-values:
     related-values: Valeurs liées
-    description: Afficher les valeurs relatives
+    description: Afficher des valeurs provenant d'une relation
   user:
     user: Utilisateur
     description: Afficher un utilisateur directus
