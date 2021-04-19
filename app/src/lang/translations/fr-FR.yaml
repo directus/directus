@@ -518,7 +518,7 @@ format_text: Format du texte
 bold: Gras
 toggle: Activer/Désactiver
 icon_on: Icône de sélection
-icon_off: Icône de dé-selection
+icon_off: Icône de désélection
 label: Étiquette
 image_url: Url de l’image
 alt_text: Texte alternatif
@@ -907,14 +907,14 @@ interfaces:
     hash: Hash
     description: Entrer une valeur pour hachage
     masked: Masqué
-    masked_label: Cacher les vraies valeurs
+    masked_label: Cacher les valeurs marquées "vrai"
   icon:
     icon: Icône
     description: Sélectionner une icône dans la liste déroulante
     search_for_icon: Rechercher une icône...
   image:
     image: Image
-    description: Sélectionner ou Transférer une image
+    description: Sélectionner ou envoyer une image
   interface:
     interface: Interface
     description: Sélectionner une interface existante
@@ -941,7 +941,7 @@ interfaces:
   notice:
     notice: Remarque
     description: Afficher une courte remarque
-    text: Entrez le contenu de la notice ici...
+    text: Entrez le contenu de la remarque ici...
   numeric:
     numeric: Numérique
     description: Entrez un nombre
@@ -963,31 +963,31 @@ interfaces:
     field_name_placeholder: Entrez le nom du champ...
     field_note_placeholder: Entrez la note du champ...
   slider:
-    slider: Slider
-    description: Sélectionner un numéro à l'aide d'un curseur
+    slider: Curseur
+    description: Sélectionner un nombre à l'aide d'un curseur
     always_show_value: Toujours afficher la valeur
   slug:
     slug: Slug
-    description: Saisir des mots sans accents reliés par des tirets
+    description: Saisir des mots reliés par des tirets
   tags:
     tags: Étiquettes
     description: Sélectionner ou ajouter des tags
     whitespace: Espace
     hyphen: Remplacer par un trait d'union
-    underscore: Remplacer par un trait de soulignement
+    underscore: Remplacer par un underscore
     remove: Supprimer les espaces
     capitalization: Mise en majuscules
     uppercase: Convertir en majuscule
     lowercase: Convertir en minuscule
-    auto_formatter: Utiliser le auto-formatter de titre
+    auto_formatter: Utiliser le formatteur automatique de titre
     alphabetize: Alphabétiser
     alphabetize_label: Forcer l'ordre alphabétique
     add_tags: Ajouter des tags...
   text-input:
     text-input: Champ de texte
     description: Entrer un texte d'une seule ligne
-    trim: Ajuster
-    trim_label: Couper le début et la fin
+    trim: Espaces aux extrêmités
+    trim_label: Enlever les espaces en première et dernière position
     mask: Masqué
     mask_label: Cacher la valeur réelle
     clear: Valeur effacée
@@ -997,7 +997,7 @@ interfaces:
     description: Entrez le texte brut en multiligne
   toggle:
     toggle: Activer/Désactiver
-    description: Basculer entre l'activé et la désactivé
+    description: Basculer entre sélectionné et désélectionné
     label_placeholder: Entrer un libellé...
     label_default: Activé
   translations:
@@ -1018,20 +1018,20 @@ interfaces:
     wysiwyg: WYSIWYG
     description: Un éditeur de texte enrichi pouvant contenir du HTML
     toolbar: Barre d’outils
-    custom_formats: Format personnalisé
+    custom_formats: Formats personnalisés
     options_override: Remplacement des options
 displays:
   boolean:
     boolean: Booléen
-    description: Afficher les états activés et désactivés
-    label_on: Libellé Actif
+    description: Afficher les états sélectionnés et désélectionnés
+    label_on: Avec libellé
     label_on_placeholder: Entrez un libellé ...
-    label_off: Étiquette désactivée
+    label_off: Sans libellé
     label_off_placeholder: Entrez un libellé pour la désactivation...
     icon_on: Icône de sélection
-    icon_off: Icône de dé-selection
+    icon_off: Icône de désélection
     color_on: Couleur activée
-    color_off: Couleur Désactivée
+    color_off: Couleur désactivée
   collection:
     collection: Collection
     description: Afficher une collection
@@ -1068,20 +1068,20 @@ displays:
   icon:
     icon: Icône
     description: Afficher une icône
-    filled: Rempli
-    filled_label: Utiliser la variante remplie
+    filled: Remplissage
+    filled_label: Utiliser la version avec remplissage
   image:
     image: Image
     description: Afficher un petit aperçu de l'image
     circle: Cercle
-    circle_label: Afficher en tant que cercle
+    circle_label: Afficher dans un cercle
   labels:
     labels: Libellés
     description: Afficher sous forme d'étiquette(s)
     default_foreground: Premier plan par défaut
     default_background: Arrière-plan par défaut
     format_label: Formater chaque libellés
-    show_as_dot: Afficher en tant que point
+    show_as_dot: Afficher sous forme de point
     choices_value_placeholder: Saisissez une valeur...
     choices_text_placeholder: Entrez du texte...
   mime-type:
