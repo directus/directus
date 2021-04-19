@@ -357,7 +357,7 @@ add_a_new_item: Ajouter un nouvel élément...
 add_filter: Ajouter un filtre
 upper_limit: Limite supérieure...
 lower_limit: Limite inférieure...
-user_directory: Utilisateurs
+user_directory: Répertoire des utilisateurs
 documentation: Documentation
 sidebar: Barre latérale
 duration: Durée
@@ -366,11 +366,11 @@ second: Seconde
 file_moved: Fichier déplacé
 collection_created: Collection créée
 modified_on: Modifié le
-card_size: Taille de la carte
+card_size: Taille de carte
 sort_field: Champ de tri
 add_sort_field: Ajouter un champ de tri
 sort: Trier
-status: Etat
+status: État
 toggle_manual_sorting: Activer/désactiver le tri manuel
 bookmark_doesnt_exist: Le favori n'existe pas
 bookmark_doesnt_exist_copy: Le favori que vous essayez d'ouvrir est introuvable.
@@ -395,7 +395,7 @@ errors:
   INVALID_QUERY: Requête invalide
   ITEM_LIMIT_REACHED: Nombre d'éléments max atteint
   ITEM_NOT_FOUND: Élément introuvable
-  ROUTE_NOT_FOUND: Non trouvé
+  ROUTE_NOT_FOUND: Introuvable
   RECORD_NOT_UNIQUE: Valeur dupliquée détecté
   UNKNOWN: Erreur inconnue
 value_hashed: Valeur hashée de manière sûre
@@ -576,7 +576,7 @@ wysiwyg_options:
   remove: Retirer
   removeformat: Supprimer le formatage
   selectall: Tout sélectionner
-  table: Table
+  table: Tableau
   visualaid: Voir les éléments invisibles
   source_code: Modifier le code source
   fullscreen: Plein écran
@@ -653,22 +653,22 @@ cancel: Annuler
 collection: Collection
 collections: Collections
 singleton: Singleton
-singleton_label: Traiter comme un objet unique
+singleton_label: Est un objet unique
 system_fields_locked: Les champs système sont verrouillés et ne peuvent pas être modifiés
 fields:
   directus_activity:
     item: Clé principale de l'élément
     action: Action
     collection: Collection
-    timestamp: Action quand
-    user: Action par
+    timestamp: Fait le
+    user: Fait par
     comment: Commentaire
     user_agent: Agent utilisateur
     ip: Adresse IP
     revisions: Historique
   directus_collections:
     collection: Collection
-    icon: Icone
+    icon: Icône
     note: Remarque
     display_template: Modèle d'affichage
     hidden: Caché
@@ -684,7 +684,7 @@ fields:
     description: Description
     tags: Étiquettes
     location: Localisation
-    storage: Stockage
+    storage: Espace de stockage
     filename_disk: Nom du fichier (disque)
     filename_download: Nom du fichier (Télécharger)
     metadata: Métadonnée
@@ -715,7 +715,7 @@ fields:
     language: Langue
     theme: Thème
     tfa_secret: Authentification à deux facteurs
-    status: Etat
+    status: État
     role: Rôle
     token: Token
     last_page: Dernière page
@@ -743,12 +743,12 @@ fields:
     display_template: Modèle
   directus_roles:
     name: Nom de rôle
-    icon: Icône de Rôle
+    icon: Icône de rôle
     description: Description
     app_access: Accès à l'application
     admin_access: Accès Administrateur
     ip_access: Accès IP
-    enforce_tfa: Nécessite 2FA
+    enforce_tfa: Nécessite A2F
     users: Membres avec le rôle
     module_list: Module de Navigation
     collection_list: Navigation de la collection
@@ -785,18 +785,18 @@ embed: Encapsulation
 fallback_icon: Icône par défaut
 field: Champ | Champs
 file: Fichier
-file_library: Fichiers
+file_library: Bibliothèque de fichiers
 forgot_password: Mot de passe oublié
 hidden: Caché
-icon: Icone
+icon: Icône
 info: Information
 normal: Normal
 success: Succès
 warning: Avertissement
 danger: Danger
-junction_collection: Collection de jonction
+junction_collection: Collection de jointure
 latency: Latence
-login: S’identifier
+login: Se connecter
 my_activity: Mon activité
 not_authenticated: Non authentifié
 authenticated: Authentifié
@@ -812,7 +812,7 @@ revert: Restaurer
 save: Enregistrer
 schema: Schéma
 search: Recherche
-select_existing: Sélectionner un existant
+select_existing: Sélectionner un élément existant
 select_field_type: Sélectionnez un type de champ
 select_interface: Sélectionner une interface
 settings: Réglages
@@ -821,8 +821,8 @@ sign_out: Déconnexion
 sign_out_confirm: Êtes-vous certain de vouloir vous déconnecter ?
 something_went_wrong: Quelque chose s’est mal passé.
 sort_direction: Ordre de tri
-sort_asc: Tri Croissant
-sort_desc: Tri Décroissant
+sort_asc: Tri croissant
+sort_desc: Tri décroissant
 template: Modèle
 translation: Traduction
 value: Valeur
@@ -833,7 +833,7 @@ interfaces:
   button-links:
     button-links: Bouton de liens
     links: Liens
-    description: Boutons de lien configurables pour le lancement d'URL dynamiques
+    description: Boutons de liens configurables pour lancer des URL
     style: Style
     primary: Primaire
     link: Liens
@@ -867,13 +867,13 @@ interfaces:
     name_placeholder: Entrer le nom de la couleur...
   datetime:
     datetime: Date / Heure
-    description: Entrez les dates et heures
+    description: Saisir des dates et des heures
     include_seconds: Inclure les secondes
     set_to_now: Configurer à maintenant
     use_24: Utiliser le format 24h
   display-template:
     display-template: Modèle d'affichage
-    description: Mélanger le texte statique et les valeurs des champs dynamiques
+    description: Mélanger du texte statique et des valeurs de champs dynamiques
     collection_field: Champ de collection
     collection_field_not_setup: L'option de champ de collection est mal configurée
     select_a_collection: Sélectionner une collection
@@ -892,10 +892,10 @@ interfaces:
     allow_other_label: Autoriser d'autres valeurs
     allow_none: Autoriser une valeur vide
     allow_none_label: Autoriser aucune sélection
-    choices_name_placeholder: Entrer un nom...
+    choices_name_placeholder: Entrez un nom...
     choices_value_placeholder: Saisissez une valeur...
   dropdown-multiselect:
-    dropdown-multiselect: Liste déroulante (Multiple)
+    dropdown-multiselect: Liste déroulante (choix multiple)
     description: Sélectionner plusieurs valeurs à partir d'une liste déroulante
   file:
     file: Fichier
@@ -905,11 +905,11 @@ interfaces:
     description: Sélectionner ou Transférer plusieurs fichiers
   hash:
     hash: Hash
-    description: Entrez une valeur à hacher
+    description: Entrer une valeur pour hachage
     masked: Masqué
     masked_label: Cacher les vraies valeurs
   icon:
-    icon: Icone
+    icon: Icône
     description: Sélectionner une icône dans la liste déroulante
     search_for_icon: Rechercher une icône...
   image:
@@ -1066,7 +1066,7 @@ displays:
     formatted-json-value: Valeur JSON formatée
     description: Afficher une version formatée de l'objet
   icon:
-    icon: Icone
+    icon: Icône
     description: Afficher une icône
     filled: Rempli
     filled_label: Utiliser la variante remplie
@@ -1116,7 +1116,7 @@ layouts:
     title: Titre
     subtitle: Sous-titre
   tabular:
-    tabular: Table
+    tabular: Tableau
     fields: Champs
     spacing: Espacement
     comfortable: Confortable
