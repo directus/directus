@@ -70,7 +70,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					action: 'create',
 					payload: payloads[i],
 					schema: this.schema,
-					database: this.knex,
+					database: trx,
 				});
 
 				if (customProcessed && customProcessed.length > 0) {
