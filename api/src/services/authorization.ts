@@ -317,9 +317,13 @@ export class AuthorizationService {
 			fields: ['*'],
 		};
 
-		const result = await itemsService.readByKey(pk as any, query, action);
-
-		if (!result) throw new ForbiddenException();
-		if (Array.isArray(pk) && pk.length > 1 && result.length !== pk.length) throw new ForbiddenException();
+		if (Array.isArray(pk)) {
+			const result = await itemsService.readMany(pk, query, { permissionsAction: action });
+			if (!result) throw new ForbiddenException();
+			if (result.length !== pk.length) throw new ForbiddenException();
+		} else {
+			const result = await itemsService.readOne(pk, query, { permissionsAction: action });
+			if (!result) throw new ForbiddenException();
+		}
 	}
 }
