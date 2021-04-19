@@ -259,6 +259,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		let ast = await getASTFromQuery(this.collection, query, this.schema, {
 			accountability: this.accountability,
+			// By setting the permissions action, you can read items using the permissions for another
+			// operation's permissions. This is used to dynamically check if you have update/delete
+			// access to (a) certain item(s)
 			action: opts?.permissionsAction || 'read',
 			knex: this.knex,
 		});
@@ -269,6 +272,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		const records = await runAST(ast, this.schema, {
 			knex: this.knex,
+			// GraphQL requires relational keys to be returned regardless
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
 		});
 
@@ -358,9 +362,19 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			schema: this.schema,
 		});
 
+		// We read the IDs of the items based on the query, and then run `updateMany`. `updateMany` does it's own
+		// permissions check for the keys, so we don't have to make this an authenticated read
 		const itemsToUpdate = await itemsService.readByQuery(readQuery);
 		const keys: PrimaryKey[] = itemsToUpdate.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
 		return await this.updateMany(keys, data);
+	}
+
+	/**
+	 * Update a single item by primary key
+	 */
+	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		await this.updateMany([key], data, opts);
+		return key;
 	}
 
 	/**
@@ -373,9 +387,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			.filter((field) => field.alias === true)
 			.map((field) => field.field);
 
-		let payload: Partial<AnyItem> = clone(data);
+		const payload: Partial<AnyItem> = cloneDeep(data);
 
-		const customProcessed = await emitter.emitAsync(`${this.eventScope}.update.before`, payload, {
+		const authorizationService = new AuthorizationService({
+			accountability: this.accountability,
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		// Run all hooks that are attached to this event so the end user has the chance to augment the
+		// item that is about to be saved
+		const hooksResult = await emitter.emitAsync(`${this.eventScope}.update.before`, payload, {
 			event: `${this.eventScope}.update.before`,
 			accountability: this.accountability,
 			collection: this.collection,
@@ -386,21 +408,19 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			database: this.knex,
 		});
 
-		if (customProcessed && customProcessed.length > 0) {
-			payload = customProcessed.reverse().reduce((val, acc) => merge(acc, val));
-		}
+		// The events are fired last-to-first based on when they were created. By reversing the
+		// output array of results, we ensure that the augmentations are applied in
+		// "chronological" order
+		const payloadAfterHooks =
+			hooksResult.length > 0 ? hooksResult.reverse().reduce((val, acc) => merge(acc, val)) : payload;
 
 		if (this.accountability) {
-			const authorizationService = new AuthorizationService({
-				accountability: this.accountability,
-				knex: this.knex,
-				schema: this.schema,
-			});
-
 			await authorizationService.checkAccess('update', this.collection, keys);
-
-			payload = await authorizationService.validatePayload('update', this.collection, payload);
 		}
+
+		const payloadWithPresets = this.accountability
+			? await authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
+			: payloadAfterHooks;
 
 		await this.knex.transaction(async (trx) => {
 			const payloadService = new PayloadService(this.collection, {
@@ -409,25 +429,28 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				schema: this.schema,
 			});
 
-			payload = await payloadService.processM2O(payload);
-			payload = await payloadService.processA2O(payload);
+			const { payload: payloadWithM2O, revisions: revisionsM2O } = await payloadService.processM2O(payloadWithPresets);
+			const { payload: payloadWithA2O, revisions: revisionsA2O } = await payloadService.processA2O(payloadWithM2O);
 
-			let payloadWithoutAliasAndPK = pick(payload, without(fields, primaryKeyField, ...aliases));
+			const payloadWithoutAliasAndPK = pick(payloadWithA2O, without(fields, primaryKeyField, ...aliases));
+			const payloadWithTypeCasting = await payloadService.processValues('update', payloadWithoutAliasAndPK);
 
-			payloadWithoutAliasAndPK = await payloadService.processValues('update', payloadWithoutAliasAndPK);
-
-			if (Object.keys(payloadWithoutAliasAndPK).length > 0) {
+			if (Object.keys(payloadWithTypeCasting).length > 0) {
 				try {
-					await trx(this.collection).update(payloadWithoutAliasAndPK).whereIn(primaryKeyField, keys);
+					await trx(this.collection).update(payloadWithTypeCasting).whereIn(primaryKeyField, keys);
 				} catch (err) {
 					throw await translateDatabaseError(err);
 				}
 			}
 
+			const childrenRevisions = [...revisionsM2O, ...revisionsA2O];
+
 			for (const key of keys) {
-				await payloadService.processO2M(payload, key);
+				const { revisions } = await payloadService.processO2M(payload, key);
+				childrenRevisions.push(...revisions);
 			}
 
+			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
 				const activityRecords = keys.map((key) => ({
 					action: Action.UPDATE,
@@ -444,9 +467,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					await trx.insert(activityRecord).into('directus_activity');
 					let primaryKey;
 
-					const result = await trx.select('id').from('directus_activity').orderBy('id', 'desc').first();
-
+					const result = await trx.max('id', { as: 'id' }).from('directus_activity').first();
 					primaryKey = result.id;
+
 					activityPrimaryKeys.push(primaryKey);
 				}
 
@@ -464,11 +487,26 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 						item: keys[index],
 						data:
 							snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots?.[index]) : JSON.stringify(snapshots),
-						delta: JSON.stringify(payloadWithoutAliasAndPK),
+						delta: JSON.stringify(payloadWithTypeCasting),
 					}));
 
-					if (revisionRecords.length > 0) {
-						await trx.insert(revisionRecords).into('directus_revisions');
+					for (let i = 0; i < revisionRecords.length; i++) {
+						await trx.insert(revisionRecords[i]).into('directus_revisions');
+						const { id: revisionID } = await trx.max('id', { as: 'id' }).from('directus_revisions').first();
+
+						if (opts?.onRevisionCreate) {
+							opts.onRevisionCreate(revisionID);
+						}
+
+						if (i === 0) {
+							// In case of a nested relational creation/update in a updateMany, the nested m2o/a2o
+							// creation is only done once. We treat the first updated item as the "main" update,
+							// with all other revisions on the current level as regular "flat" updates, and
+							// nested revisions as children of this first "root" item.
+							if (childrenRevisions.length > 0) {
+								await trx('directus_revisions').update({ parent: revisionID }).whereIn('id', childrenRevisions);
+							}
+						}
 					}
 				}
 			}
@@ -490,14 +528,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		return keys;
-	}
-
-	/**
-	 * Update a single item by primary key
-	 */
-	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.updateMany([key], data, opts);
-		return key;
 	}
 
 	/**
@@ -611,6 +641,25 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
+	 * Delete multiple items by query
+	 */
+	async deleteByQuery(query: Query): Promise<PrimaryKey[]> {
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+		const readQuery = cloneDeep(query);
+		readQuery.fields = [primaryKeyField];
+
+		// Not authenticated:
+		const itemsService = new ItemsService(this.collection, {
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		const itemsToDelete = await itemsService.readByQuery(readQuery);
+		const keys: PrimaryKey[] = itemsToDelete.map((item: AnyItem) => item[primaryKeyField]);
+		return await this.deleteMany(keys);
+	}
+
+	/**
 	 * Delete a single item by primary key
 	 */
 	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -696,24 +745,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Delete multiple items by query
+	 * Read/treat collection as singleton
 	 */
-	async deleteByQuery(query: Query): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection].primary;
-		const readQuery = cloneDeep(query);
-		readQuery.fields = [primaryKeyField];
-
-		// Not authenticated:
-		const itemsService = new ItemsService(this.collection, {
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		const itemsToDelete = await itemsService.readByQuery(readQuery);
-		const keys: PrimaryKey[] = itemsToDelete.map((item: AnyItem) => item[primaryKeyField]);
-		return await this.deleteMany(keys);
-	}
-
 	async readSingleton(query: Query, opts?: QueryOptions): Promise<Partial<Item>> {
 		query = clone(query);
 
@@ -740,6 +773,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return record;
 	}
 
+	/**
+	 * Upsert/treat collection as singleton
+	 */
 	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions) {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
