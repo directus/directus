@@ -5,7 +5,7 @@ duplicate_field: Dupliquer le champ
 half_width: Demi-largeur
 full_width: Pleine largeur
 fill_width: Largeur de remplissage
-field_name_translations: Traductions des noms de champs
+field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Entrez votre mot de passe pour activer l'authentification à deux facteurs
 add_field: Ajouter un champ
 role_name: Nom de rôle
@@ -14,7 +14,7 @@ show_archived_items: Afficher les éléments archivés
 edited: Valeur modifiée
 required: Requis
 required_for_app_access: Requis pour l'accès à l'application
-requires_value: Valeurs obligatoires
+requires_value: La valeur est obligatoire
 create_preset: Créer un préréglage
 create_role: Créer un rôle
 create_user: Créer un utilisateur
@@ -128,7 +128,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Réinitialiser les préférences de la page
 hidden_field: Champ caché
 hidden_on_detail: Caché dans les détails
-disabled_editing_value: Désactiver l'édition de la valeur
+disabled_editing_value: Désactiver la modification de la valeur
 key: Clé
 alias: Alias
 bigInteger: Grand entier
@@ -738,7 +738,7 @@ fields:
     note: Remarque
     hidden: Caché
     singleton: Singleton
-    translation: Traductions des noms de champs
+    translation: Traductions du nom de champ
     display_template: Modèle
   directus_roles:
     name: Nom de rôle
@@ -977,8 +977,8 @@ interfaces:
     alphabetize_label: Forcer l'ordre alphabétique
     add_tags: Ajouter des tags...
   text-input:
-    text-input: Entrée de texte
-    description: Entrez un texte d'une seule ligne
+    text-input: Champ de texte
+    description: Texte d'une seule ligne
     trim: Ajuster
     trim_label: Couper le début et la fin
     mask: Masqué
@@ -1084,7 +1084,7 @@ displays:
     extension_only_label: Afficher uniquement l'extension de fichier
   rating:
     rating: Évaluation
-    description: Visualiser un nombre en tant qu'étoiles par rapport à la valeur max
+    description: Visualiser un nombre sous forme d'étoiles par rapport à la valeur max
     simple: Simple
     simple_label: Afficher les étoiles dans un format simple
   raw:
