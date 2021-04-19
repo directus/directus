@@ -29,10 +29,11 @@ git clone git@github.com:YOUR-USERNAME/directus.git
 git checkout -b YOUR-BRANCH-NAME
 ```
 
-## 4. Install the dependencies
+## 4. Install the dependencies and build the project
 
 ```bash
 npm install
+npm run build
 ```
 
 ## 5. Create a `.env` file

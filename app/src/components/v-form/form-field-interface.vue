@@ -16,6 +16,7 @@
 			"
 			v-bind="(field.meta && field.meta.options) || {}"
 			:disabled="disabled"
+			:loading="loading"
 			:value="value === undefined ? field.schema.default_value : value"
 			:width="(field.meta && field.meta.width) || 'full'"
 			:type="field.type"
@@ -70,7 +71,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const interfaces = getInterfaces();
+		const { interfaces } = getInterfaces();
 
 		const interfaceExists = computed(() => {
 			return !!interfaces.value.find((inter) => inter.id === props.field?.meta?.interface || 'text-input');

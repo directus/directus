@@ -85,7 +85,7 @@ Lets say we have a collection `pages` with a many-to-any field called `sections`
 sections.item:headings.title
 sections.item:headings.level
 sections.item:paragraphs.body
-sections.item:videos.body
+sections.item:videos.source
 ```
 
 In GraphQL, this can be achieved using Union Types.

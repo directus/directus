@@ -42,6 +42,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		nullable: {
+			type: Boolean,
+			default: true,
+		},
 		expandOnFocus: {
 			type: Boolean,
 			default: false,
@@ -68,7 +72,12 @@ export default defineComponent({
 
 		function emitValue(event: InputEvent) {
 			const value = (event.target as HTMLInputElement).value;
-			emit('input', value);
+
+			if (props.nullable === true && value === '') {
+				emit('input', null);
+			} else {
+				emit('input', value);
+			}
 		}
 
 		function trimIfEnabled() {

@@ -476,7 +476,6 @@ settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
 settings_presets: Szablony i zakładki
 changes_are_permanent: Zmiany są trwałe
-preset_name_placeholder: Nazwa zakładki...
 editing_preset: Edycja szablonu
 layout_preview: Podgląd układu
 unsaved_changes: Niezapisane zmiany

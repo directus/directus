@@ -50,5 +50,11 @@ export function useCollection(collectionKey: string | Ref<string>) {
 		return info.value?.meta?.singleton === true;
 	});
 
-	return { info, fields, defaults, primaryKeyField, userCreatedField, sortField, isSingleton };
+	const accountabilityScope = computed(() => {
+		if (!info.value) return null;
+		if (!info.value.meta) return null;
+		return info.value.meta.accountability;
+	});
+
+	return { info, fields, defaults, primaryKeyField, userCreatedField, sortField, isSingleton, accountabilityScope };
 }

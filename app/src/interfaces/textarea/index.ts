@@ -55,5 +55,20 @@ export default defineInterface({
 				default_value: 'sans-serif',
 			},
 		},
+		{
+			field: 'clear',
+			name: '$t:interfaces.text-input.clear',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				options: {
+					label: '$t:interfaces.text-input.clear_label',
+				},
+			},
+			schema: {
+				default_value: false,
+			},
+		},
 	],
 });

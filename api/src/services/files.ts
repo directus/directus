@@ -138,7 +138,7 @@ export class FilesService extends ItemsService {
 				responseType: 'stream',
 			});
 		} catch (err) {
-			logger.warn(`Couldn't fetch file from url "${url}"`);
+			logger.warn(`Couldn't fetch file from url "${importURL}"`);
 			logger.warn(err);
 			throw new ServiceUnavailableException(`Couldn't fetch file from url "${importURL}"`, {
 				service: 'external-file',

@@ -50,9 +50,7 @@ for more info on what can go into this object.
 
 ```vue
 <template>
-	<div>My Custom Interface</div>
-	<!-- Expects type string -->
-	<input v-model="value" @input="handleChange" />
+	<input :value="value" @input="handleChange($event.target.value)" />
 </template>
 
 <script>
@@ -61,8 +59,8 @@ export default {
 		value: String,
 	},
 	methods: {
-		handleChange() {
-			this.$emit('input', this.value);
+		handleChange(value) {
+			this.$emit('input', value);
 		},
 	},
 };
@@ -90,15 +88,15 @@ To be read by the Admin App, your custom interface's Vue component must first be
 We recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
 ```bash
-npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc rollup-plugin-vue@next
+npm i -D rollup @rollup/plugin-commonjs @rollup/plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5 vue-template-compiler
 ```
 
 You can then use the following Rollup configuration within `rollup.config.js`:
 
 ```js
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
 import vue from 'rollup-plugin-vue';
 
 export default {
@@ -107,7 +105,7 @@ export default {
 		format: 'es',
 		file: 'dist/index.js',
 	},
-	plugins: [terser(), resolve(), commonjs(), vue()],
+	plugins: [vue(), nodeResolve(), commonjs(), terser()],
 };
 ```
 

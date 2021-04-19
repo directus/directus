@@ -25,11 +25,11 @@ export default defineComponent({
 	},
 	setup(props) {
 		const code = computed(() => {
-			return props.error?.response?.data?.errors?.[0]?.extensions?.code || 'UNKNOWN';
+			return props.error?.response?.data?.errors?.[0]?.extensions?.code || props.error?.extensions?.code || 'UNKNOWN';
 		});
 
 		const message = computed(() => {
-			return props.error?.response?.data?.errors?.[0]?.message || props.error.message;
+			return props.error?.response?.data?.errors?.[0]?.message || props.error?.message;
 		});
 
 		const copied = ref(false);
