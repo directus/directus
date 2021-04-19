@@ -610,10 +610,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return await this.upsertOne(data);
 	}
 
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const keys = toArray(key);
+	/**
+	 * Delete a single item by primary key
+	 */
+	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+		await this.deleteMany([key], opts);
+		return key;
+	}
+
+	/**
+	 * Delete multiple items by primary key
+	 */
+	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 
 		if (this.accountability && this.accountability.admin !== true) {
@@ -655,7 +663,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			}
 		});
 
-		if (cache && env.CACHE_AUTO_PURGE) {
+		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await cache.clear();
 		}
 
@@ -670,9 +678,26 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			database: this.knex,
 		});
 
-		return key;
+		return keys;
 	}
 
+	/**
+	 * @deprecated Use `deleteOne` or `deleteMany` instead
+	 */
+	delete(key: PrimaryKey): Promise<PrimaryKey>;
+	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
+		logger.warn(
+			'ItemsService.delete is deprecated and will be removed before v9.0.0. Use deleteOne or deleteMany instead.'
+		);
+
+		if (Array.isArray(key)) return await this.deleteMany(key);
+		else return await this.deleteOne(key);
+	}
+
+	/**
+	 * Delete multiple items by query
+	 */
 	async deleteByQuery(query: Query): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const readQuery = cloneDeep(query);
@@ -684,18 +709,16 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			schema: this.schema,
 		});
 
-		let itemsToDelete = await itemsService.readByQuery(readQuery);
-		itemsToDelete = toArray(itemsToDelete);
-
-		const keys: PrimaryKey[] = itemsToDelete.map((item: Partial<Item>) => item[primaryKeyField]);
-		return await this.delete(keys);
+		const itemsToDelete = await itemsService.readByQuery(readQuery);
+		const keys: PrimaryKey[] = itemsToDelete.map((item: AnyItem) => item[primaryKeyField]);
+		return await this.deleteMany(keys);
 	}
 
-	async readSingleton(query: Query, opts?: { stripNonRequested?: boolean }): Promise<Partial<Item>> {
+	async readSingleton(query: Query, opts?: QueryOptions): Promise<Partial<Item>> {
 		query = clone(query);
-		query.single = true;
 
-		const record = (await this.readByQuery(query, opts)) as Partial<Item>;
+		const records = await this.readByQuery(query, opts);
+		const record = records[0];
 
 		if (!record) {
 			let fields = Object.entries(this.schema.collections[this.collection].fields);
@@ -717,15 +740,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return record;
 	}
 
-	async upsertSingleton(data: Partial<Item>) {
+	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions) {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
-
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
 
 		if (record) {
-			return await this.update(data, record[primaryKeyField]);
+			return await this.updateOne(record[primaryKeyField], data, opts);
 		}
 
-		return await this.create(data);
+		return await this.createOne(data, opts);
 	}
 }
