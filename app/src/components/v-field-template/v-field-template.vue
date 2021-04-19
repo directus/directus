@@ -39,6 +39,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		nullable: {
+			type: Boolean,
+			default: true,
+		},
 		collection: {
 			type: String,
 			required: true,
@@ -223,7 +227,7 @@ export default defineComponent({
 		function getInputValue() {
 			if (!contentEl.value) return null;
 
-			return Array.from(contentEl.value.childNodes).reduce((acc, node) => {
+			const value = Array.from(contentEl.value.childNodes).reduce((acc, node) => {
 				const el = node as HTMLElement;
 				const tag = el.tagName;
 
@@ -234,6 +238,12 @@ export default defineComponent({
 
 				return (acc += '');
 			}, '');
+
+			if (props.nullable === true && value === '') {
+				return null;
+			}
+
+			return value;
 		}
 
 		function setContent() {
