@@ -129,7 +129,7 @@
 						<div class="grid">
 							<div class="field">
 								<div class="type-label">{{ $t('embed') }}</div>
-								<v-textarea v-model="embed" />
+								<v-textarea v-model="embed" :nullable="false" />
 							</div>
 						</div>
 					</v-tab-item>

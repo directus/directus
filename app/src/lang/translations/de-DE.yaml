@@ -81,6 +81,7 @@ validationError:
   nnull: Der Wert darf nicht leer sein
   required: Wert erforderlich
   unique: Wert muss eindeutig sein
+  regex: Wert hat nicht das richtige Format
 all_access: Zugriff auf alles
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
@@ -677,6 +678,7 @@ fields:
     archive_value: Archivierungswert
     unarchive_value: Dearchivierungswert
     sort_field: Sortierfeld
+    accountability: Aktivitäts- und Änderungsverfolgung
   directus_files:
     title: Titel
     description: Beschreibung
@@ -750,6 +752,11 @@ fields:
     users: Benutzer in Rolle
     module_list: Modulnavigation
     collection_list: Sammlungsnavigation
+field_options:
+  directus_collections:
+    track_activity_revisions: Verfolge Aktivitäten und Änderungen
+    only_track_activity: Nur Aktivitäten verfolgen
+    do_not_track_anything: Nichts verfolgen
 no_fields_in_collection: 'Es gibt noch keine Felder in "{collection}"'
 do_nothing: Keine Aktion
 generate_and_save_uuid: UUID generieren und speichern
