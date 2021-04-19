@@ -15,12 +15,11 @@ import {
 } from '../types';
 import { Knex } from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
-import { uniq, uniqWith, merge, flatten } from 'lodash';
+import { uniq, uniqWith, merge, flatten, cloneDeep } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
 import { parseFilter } from '../utils/parse-filter';
-import { toArray } from '../utils/to-array';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -173,10 +172,10 @@ export class AuthorizationService {
 	/**
 	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
 	 */
-	validatePayload(action: PermissionsAction, collection: string, payload: Partial<Item>): Promise<Partial<Item>> {
+	validatePayload(action: PermissionsAction, collection: string, data: Partial<Item>): Promise<Partial<Item>> {
 		const validationErrors: FailedValidationException[] = [];
 
-		let payloads = toArray(payload);
+		const payload = cloneDeep(data);
 
 		let permission: Permission | undefined;
 
@@ -204,22 +203,20 @@ export class AuthorizationService {
 			const allowedFields = permission.fields || [];
 
 			if (allowedFields.includes('*') === false) {
-				for (const payload of payloads) {
-					const keysInData = Object.keys(payload);
-					const invalidKeys = keysInData.filter((fieldKey) => allowedFields.includes(fieldKey) === false);
+				const keysInData = Object.keys(payload);
+				const invalidKeys = keysInData.filter((fieldKey) => allowedFields.includes(fieldKey) === false);
 
-					if (invalidKeys.length > 0) {
-						throw new ForbiddenException(
-							`You're not allowed to ${action} field "${invalidKeys[0]}" in collection "${collection}".`
-						);
-					}
+				if (invalidKeys.length > 0) {
+					throw new ForbiddenException(
+						`You're not allowed to ${action} field "${invalidKeys[0]}" in collection "${collection}".`
+					);
 				}
 			}
 		}
 
 		const preset = parseFilter(permission.presets || {}, this.accountability);
 
-		payloads = payloads.map((payload) => merge({}, preset, payload));
+		const payloadWithPresets = merge({}, preset, payload);
 
 		let requiredColumns: string[] = [];
 
@@ -257,12 +254,16 @@ export class AuthorizationService {
 			}
 		}
 
-		validationErrors.push(...this.validateJoi(parseFilter(permission.validation || {}, this.accountability), payloads));
+		validationErrors.push(
+			...this.validateJoi(parseFilter(permission.validation || {}, this.accountability), payloadWithPresets)
+		);
 
 		if (validationErrors.length > 0) throw validationErrors;
+
+		return payloadWithPresets;
 	}
 
-	validateJoi(validation: Filter, payloads: Partial<Record<string, any>>[]): FailedValidationException[] {
+	validateJoi(validation: Filter, payload: Partial<Item>): FailedValidationException[] {
 		if (!validation) return [];
 
 		const errors: FailedValidationException[] = [];
@@ -276,14 +277,14 @@ export class AuthorizationService {
 
 			const nestedErrors = flatten<FailedValidationException>(
 				subValidation.map((subObj: Record<string, any>) => {
-					return this.validateJoi(subObj, payloads);
+					return this.validateJoi(subObj, payload);
 				})
 			).filter((err?: FailedValidationException) => err);
 			errors.push(...nestedErrors);
 		} else if (Object.keys(validation)[0] === '_or') {
 			const subValidation = Object.values(validation)[0];
 			const nestedErrors = flatten<FailedValidationException>(
-				subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads))
+				subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payload))
 			);
 			const allErrored = nestedErrors.every((err?: FailedValidationException) => err);
 
@@ -293,12 +294,10 @@ export class AuthorizationService {
 		} else {
 			const schema = generateJoi(validation);
 
-			for (const payload of payloads) {
-				const { error } = schema.validate(payload, { abortEarly: false });
+			const { error } = schema.validate(payload, { abortEarly: false });
 
-				if (error) {
-					errors.push(...error.details.map((details) => new FailedValidationException(details)));
-				}
+			if (error) {
+				errors.push(...error.details.map((details) => new FailedValidationException(details)));
 			}
 		}
 

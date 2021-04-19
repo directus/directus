@@ -27,6 +27,11 @@ import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 
 import logger from '../logger';
 
+type QueryOptions = {
+	stripNonRequested?: boolean;
+	permissionsAction?: PermissionsAction;
+};
+
 type MutationOptions = {
 	/**
 	 * Callback function that's fired whenever a revision is made in the mutation
@@ -137,6 +142,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			const { revisions: revisionsO2M } = await payloadService.processO2M(payload, primaryKey);
 
+			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
 				const activityRecord = {
 					action: Action.CREATE,
@@ -148,8 +154,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				};
 
 				await trx.insert(activityRecord).into('directus_activity');
+
 				const { id: activityID } = await trx.max('id', { as: 'id ' }).from('directus_activity').first();
 
+				// If revisions are tracked, create revisions record
 				if (this.schema.collections[this.collection].accountability === 'all') {
 					const revisionRecord = {
 						activity: activityID,
@@ -160,8 +168,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					};
 
 					await trx.insert(revisionRecord).into('directus_revisions');
+
 					const { id: revisionID } = await trx.max('id', { as: 'id' }).from('directus_revisions').first();
 
+					// Make sure to set the parent field of the child-revision rows
 					const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M];
 
 					if (childrenRevisions.length > 0) {
@@ -237,10 +247,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return this.createOne(data, opts);
 	}
 
-	async readByQuery(
-		query: Query,
-		opts?: { stripNonRequested?: boolean }
-	): Promise<null | Partial<Item> | Partial<Item>[]> {
+	/**
+	 * Get items by query
+	 */
+	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
 		const authorizationService = new AuthorizationService({
 			accountability: this.accountability,
 			knex: this.knex,
@@ -249,6 +259,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		let ast = await getASTFromQuery(this.collection, query, this.schema, {
 			accountability: this.accountability,
+			action: opts?.permissionsAction || 'read',
 			knex: this.knex,
 		});
 
@@ -261,26 +272,44 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
 		});
 
-		return records as Partial<Item> | Partial<Item>[] | null;
-	}
-
-	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>>;
-	async readByKey(
-		key: PrimaryKey | PrimaryKey[],
-		query: Query = {},
-		action: PermissionsAction = 'read'
-	): Promise<null | Partial<Item> | Partial<Item>[]> {
-		query = clone(query);
-
-		const primaryKeyField = this.schema.collections[this.collection].primary;
-		const keys = toArray(key);
-
-		if (keys.length === 1) {
-			query.single = true;
+		if (records === null) {
+			throw new ForbiddenException();
 		}
 
-		const queryWithFilter = {
+		return records as Item[];
+	}
+
+	/**
+	 * Get single item by primary key
+	 */
+	async readOne(key: PrimaryKey, query?: Query, opts?: QueryOptions): Promise<Item> {
+		query = query ?? {};
+
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+
+		const queryWithKey = {
+			...query,
+			filter: {
+				...(query.filter || {}),
+				[primaryKeyField]: {
+					_eq: key,
+				},
+			},
+		};
+
+		const results = await this.readByQuery(queryWithKey, opts);
+		return results?.[0] || null;
+	}
+
+	/**
+	 * Get multiple items by primary keys
+	 */
+	async readMany(keys: PrimaryKey[], query?: Query, opts?: QueryOptions): Promise<Item[]> {
+		query = query ?? {};
+
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+
+		const queryWithKeys = {
 			...query,
 			filter: {
 				...(query.filter || {}),
@@ -290,29 +319,190 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			},
 		};
 
-		let ast = await getASTFromQuery(this.collection, queryWithFilter, this.schema, {
-			accountability: this.accountability,
-			action,
+		const results = await this.readByQuery(queryWithKeys, opts);
+		return results ?? null;
+	}
+
+	/**
+	 * @deprecated Use `readOne` or `readMany` instead
+	 */
+	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>[]>;
+	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>>;
+	async readByKey(
+		key: PrimaryKey | PrimaryKey[],
+		query: Query = {},
+		action: PermissionsAction = 'read'
+	): Promise<null | Partial<Item> | Partial<Item>[]> {
+		logger.warn(
+			'ItemsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
+		);
+
+		if (Array.isArray(key)) {
+			return this.readMany(key, query, { permissionsAction: action });
+		} else {
+			return this.readOne(key, query, { permissionsAction: action });
+		}
+	}
+
+	/**
+	 * Update multiple items by query
+	 */
+	async updateByQuery(query: Query, data: Partial<Item>): Promise<PrimaryKey[]> {
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+		const readQuery = cloneDeep(query);
+		readQuery.fields = [primaryKeyField];
+
+		// Not authenticated:
+		const itemsService = new ItemsService(this.collection, {
 			knex: this.knex,
+			schema: this.schema,
 		});
 
-		if (this.accountability && this.accountability.admin !== true) {
+		const itemsToUpdate = await itemsService.readByQuery(readQuery);
+		const keys: PrimaryKey[] = itemsToUpdate.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
+		return await this.updateMany(keys, data);
+	}
+
+	/**
+	 * Update many items by query
+	 */
+	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+		const fields = Object.keys(this.schema.collections[this.collection].fields);
+		const aliases = Object.values(this.schema.collections[this.collection].fields)
+			.filter((field) => field.alias === true)
+			.map((field) => field.field);
+
+		let payload: Partial<AnyItem> = clone(data);
+
+		const customProcessed = await emitter.emitAsync(`${this.eventScope}.update.before`, payload, {
+			event: `${this.eventScope}.update.before`,
+			accountability: this.accountability,
+			collection: this.collection,
+			item: keys,
+			action: 'update',
+			payload,
+			schema: this.schema,
+			database: this.knex,
+		});
+
+		if (customProcessed && customProcessed.length > 0) {
+			payload = customProcessed.reverse().reduce((val, acc) => merge(acc, val));
+		}
+
+		if (this.accountability) {
 			const authorizationService = new AuthorizationService({
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
 			});
 
-			ast = await authorizationService.processAST(ast, action);
+			await authorizationService.checkAccess('update', this.collection, keys);
+
+			payload = await authorizationService.validatePayload('update', this.collection, payload);
 		}
 
-		const result = await runAST(ast, this.schema, { knex: this.knex });
+		await this.knex.transaction(async (trx) => {
+			const payloadService = new PayloadService(this.collection, {
+				accountability: this.accountability,
+				knex: trx,
+				schema: this.schema,
+			});
 
-		if (result === null) throw new ForbiddenException();
+			payload = await payloadService.processM2O(payload);
+			payload = await payloadService.processA2O(payload);
 
-		return result as Partial<Item> | Partial<Item>[] | null;
+			let payloadWithoutAliasAndPK = pick(payload, without(fields, primaryKeyField, ...aliases));
+
+			payloadWithoutAliasAndPK = await payloadService.processValues('update', payloadWithoutAliasAndPK);
+
+			if (Object.keys(payloadWithoutAliasAndPK).length > 0) {
+				try {
+					await trx(this.collection).update(payloadWithoutAliasAndPK).whereIn(primaryKeyField, keys);
+				} catch (err) {
+					throw await translateDatabaseError(err);
+				}
+			}
+
+			for (const key of keys) {
+				await payloadService.processO2M(payload, key);
+			}
+
+			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
+				const activityRecords = keys.map((key) => ({
+					action: Action.UPDATE,
+					user: this.accountability!.user,
+					collection: this.collection,
+					ip: this.accountability!.ip,
+					user_agent: this.accountability!.userAgent,
+					item: key,
+				}));
+
+				const activityPrimaryKeys: PrimaryKey[] = [];
+
+				for (const activityRecord of activityRecords) {
+					await trx.insert(activityRecord).into('directus_activity');
+					let primaryKey;
+
+					const result = await trx.select('id').from('directus_activity').orderBy('id', 'desc').first();
+
+					primaryKey = result.id;
+					activityPrimaryKeys.push(primaryKey);
+				}
+
+				if (this.schema.collections[this.collection].accountability === 'all') {
+					const itemsService = new ItemsService(this.collection, {
+						knex: trx,
+						schema: this.schema,
+					});
+
+					const snapshots = await itemsService.readMany(keys);
+
+					const revisionRecords = activityPrimaryKeys.map((key, index) => ({
+						activity: key,
+						collection: this.collection,
+						item: keys[index],
+						data:
+							snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots?.[index]) : JSON.stringify(snapshots),
+						delta: JSON.stringify(payloadWithoutAliasAndPK),
+					}));
+
+					if (revisionRecords.length > 0) {
+						await trx.insert(revisionRecords).into('directus_revisions');
+					}
+				}
+			}
+		});
+
+		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await cache.clear();
+		}
+
+		emitAsyncSafe(`${this.eventScope}.update`, {
+			event: `${this.eventScope}.update`,
+			accountability: this.accountability,
+			collection: this.collection,
+			item: keys,
+			action: 'update',
+			payload,
+			schema: this.schema,
+			database: this.knex,
+		});
+
+		return keys;
 	}
 
+	/**
+	 * Update a single item by primary key
+	 */
+	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		await this.updateMany([key], data, opts);
+		return key;
+	}
+
+	/**
+	 * @deprecated Use `updateOne` or `updateMany` instead
+	 */
 	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
 	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
@@ -320,133 +510,16 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		data: Partial<Item> | Partial<Item>[],
 		key?: PrimaryKey | PrimaryKey[]
 	): Promise<PrimaryKey | PrimaryKey[]> {
+		logger.warn(
+			'ItemsService.update is deprecated and will be removed before v9.0.0. Use updateOne or updateMany instead.'
+		);
+
 		const primaryKeyField = this.schema.collections[this.collection].primary;
-		const fields = Object.keys(this.schema.collections[this.collection].fields);
-		const aliases = Object.values(this.schema.collections[this.collection].fields)
-			.filter((field) => field.alias === true)
-			.map((field) => field.field);
 
-		// Updating one or more items to the same payload
-		if (data && key) {
-			const keys = toArray(key);
-
-			let payload: Partial<AnyItem> | Partial<AnyItem>[] = clone(data);
-
-			const customProcessed = await emitter.emitAsync(`${this.eventScope}.update.before`, payload, {
-				event: `${this.eventScope}.update.before`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: key,
-				action: 'update',
-				payload,
-				schema: this.schema,
-				database: this.knex,
-			});
-
-			if (customProcessed && customProcessed.length > 0) {
-				payload = customProcessed.reverse().reduce((val, acc) => merge(acc, val));
-			}
-
-			if (this.accountability) {
-				const authorizationService = new AuthorizationService({
-					accountability: this.accountability,
-					knex: this.knex,
-					schema: this.schema,
-				});
-
-				await authorizationService.checkAccess('update', this.collection, keys);
-
-				payload = await authorizationService.validatePayload('update', this.collection, payload);
-			}
-
-			await this.knex.transaction(async (trx) => {
-				const payloadService = new PayloadService(this.collection, {
-					accountability: this.accountability,
-					knex: trx,
-					schema: this.schema,
-				});
-
-				payload = await payloadService.processM2O(payload);
-				payload = await payloadService.processA2O(payload);
-
-				let payloadWithoutAliasAndPK = pick(payload, without(fields, primaryKeyField, ...aliases));
-
-				payloadWithoutAliasAndPK = await payloadService.processValues('update', payloadWithoutAliasAndPK);
-
-				if (Object.keys(payloadWithoutAliasAndPK).length > 0) {
-					try {
-						await trx(this.collection).update(payloadWithoutAliasAndPK).whereIn(primaryKeyField, keys);
-					} catch (err) {
-						throw await translateDatabaseError(err);
-					}
-				}
-
-				for (const key of keys) {
-					await payloadService.processO2M(payload, key);
-				}
-
-				if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
-					const activityRecords = keys.map((key) => ({
-						action: Action.UPDATE,
-						user: this.accountability!.user,
-						collection: this.collection,
-						ip: this.accountability!.ip,
-						user_agent: this.accountability!.userAgent,
-						item: key,
-					}));
-
-					const activityPrimaryKeys: PrimaryKey[] = [];
-
-					for (const activityRecord of activityRecords) {
-						await trx.insert(activityRecord).into('directus_activity');
-						let primaryKey;
-
-						const result = await trx.select('id').from('directus_activity').orderBy('id', 'desc').first();
-
-						primaryKey = result.id;
-						activityPrimaryKeys.push(primaryKey);
-					}
-
-					if (this.schema.collections[this.collection].accountability === 'all') {
-						const itemsService = new ItemsService(this.collection, {
-							knex: trx,
-							schema: this.schema,
-						});
-
-						const snapshots = await itemsService.readByKey(keys);
-
-						const revisionRecords = activityPrimaryKeys.map((key, index) => ({
-							activity: key,
-							collection: this.collection,
-							item: keys[index],
-							data:
-								snapshots && Array.isArray(snapshots) ? JSON.stringify(snapshots?.[index]) : JSON.stringify(snapshots),
-							delta: JSON.stringify(payloadWithoutAliasAndPK),
-						}));
-
-						if (revisionRecords.length > 0) {
-							await trx.insert(revisionRecords).into('directus_revisions');
-						}
-					}
-				}
-			});
-
-			if (cache && env.CACHE_AUTO_PURGE) {
-				await cache.clear();
-			}
-
-			emitAsyncSafe(`${this.eventScope}.update`, {
-				event: `${this.eventScope}.update`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: key,
-				action: 'update',
-				payload,
-				schema: this.schema,
-				database: this.knex,
-			});
-
-			return key;
+		if (key) {
+			data = Array.isArray(data) ? data[0] : data;
+			if (Array.isArray(key)) return await this.updateMany(key, data);
+			else return await this.updateOne(key, data);
 		}
 
 		const keys: PrimaryKey[] = [];
@@ -477,52 +550,64 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		return keys;
 	}
 
-	async updateByQuery(data: Partial<Item>, query: Query): Promise<PrimaryKey[]> {
+	/**
+	 * Upsert a single item
+	 */
+	async upsertOne(payload: Partial<Item>, opts?: MutationOptions) {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
-		const readQuery = cloneDeep(query);
-		readQuery.fields = [primaryKeyField];
+		const primaryKey: PrimaryKey | undefined = payload[primaryKeyField];
 
-		// Not authenticated:
-		const itemsService = new ItemsService(this.collection, {
-			knex: this.knex,
-			schema: this.schema,
-		});
+		const exists =
+			primaryKey &&
+			!!(await this.knex
+				.select(primaryKeyField)
+				.from(this.collection)
+				.where({ [primaryKeyField]: primaryKey })
+				.first());
 
-		let itemsToUpdate = await itemsService.readByQuery(readQuery);
-		itemsToUpdate = toArray(itemsToUpdate);
-
-		const keys: PrimaryKey[] = itemsToUpdate.map((item: Partial<Item>) => item[primaryKeyField]);
-
-		return await this.update(data, keys);
+		if (exists) {
+			return await this.updateOne(primaryKey as PrimaryKey, payload, opts);
+		} else {
+			return await this.createOne(payload, opts);
+		}
 	}
 
+	/**
+	 * Upsert many items
+	 */
+	async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions) {
+		const primaryKeys = await this.knex.transaction(async (trx) => {
+			const service = new ItemsService(this.collection, {
+				accountability: this.accountability,
+				schema: this.schema,
+				knex: trx,
+			});
+
+			const primaryKeys: PrimaryKey[] = [];
+
+			for (const payload of payloads) {
+				const primaryKey = await service.upsertOne(payload, { autoPurgeCache: false });
+				primaryKeys.push(primaryKey);
+			}
+
+			return primaryKeys;
+		});
+
+		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
+			await cache.clear();
+		}
+
+		return primaryKeys;
+	}
+
+	/**
+	 * @deprecated Use `upsertOne` or `upsertMany` instead
+	 */
 	upsert(data: Partial<Item>[]): Promise<PrimaryKey[]>;
 	upsert(data: Partial<Item>): Promise<PrimaryKey>;
 	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection].primary;
-		const payloads = toArray(data);
-		const primaryKeys: PrimaryKey[] = [];
-
-		for (const payload of payloads) {
-			const primaryKey = payload[primaryKeyField];
-			const exists =
-				primaryKey &&
-				!!(await this.knex
-					.select(primaryKeyField)
-					.from(this.collection)
-					.where({ [primaryKeyField]: primaryKey })
-					.first());
-
-			if (exists) {
-				const keys = await this.update([payload]);
-				primaryKeys.push(...keys);
-			} else {
-				const key = await this.create(payload);
-				primaryKeys.push(key);
-			}
-		}
-
-		return Array.isArray(data) ? primaryKeys : primaryKeys[0];
+		if (Array.isArray(data)) return await this.upsertMany(data);
+		return await this.upsertOne(data);
 	}
 
 	delete(key: PrimaryKey): Promise<PrimaryKey>;
