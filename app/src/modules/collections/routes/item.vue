@@ -34,16 +34,7 @@
 				<v-icon :name="collectionInfo.icon" />
 			</v-button>
 
-			<v-button
-				v-else
-				class="header-icon"
-				rounded
-				icon
-				secondary
-				exact
-				v-tooltip.bottom="$t('back')"
-				:to="'/collections/' + collection"
-			>
+			<v-button v-else class="header-icon" rounded icon secondary exact v-tooltip.bottom="$t('back')" @click="goBack">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -400,7 +391,12 @@ export default defineComponent({
 			revisionsAllowed,
 			revert,
 			accountabilityScope,
+			goBack,
 		};
+
+		function goBack() {
+			router.back();
+		}
 
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
