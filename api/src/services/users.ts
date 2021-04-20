@@ -74,8 +74,11 @@ export class UsersService extends ItemsService {
 	}
 
 	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const email = data.email.toLowerCase();
-		await this.checkUniqueEmails([email]);
+		const email = data.email?.toLowerCase();
+
+		if (email) {
+			await this.checkUniqueEmails([email]);
+		}
 
 		if (data.hasOwnProperty('tfa_secret')) {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
@@ -85,8 +88,11 @@ export class UsersService extends ItemsService {
 	}
 
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const email = data.email.toLowerCase();
-		await this.checkUniqueEmails([email]);
+		const email = data.email?.toLowerCase();
+
+		if (email) {
+			await this.checkUniqueEmails([email]);
+		}
 
 		if (data.hasOwnProperty('tfa_secret')) {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
@@ -96,8 +102,11 @@ export class UsersService extends ItemsService {
 	}
 
 	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const email = data.email.toLowerCase();
-		await this.checkUniqueEmails([email]);
+		const email = data.email?.toLowerCase();
+
+		if (email) {
+			await this.checkUniqueEmails([email]);
+		}
 
 		if (data.hasOwnProperty('tfa_secret')) {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
