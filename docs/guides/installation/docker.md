@@ -72,14 +72,14 @@ services:
     ports:
       - 8055:8055
     volumes:
-		  # By default, Directus images writes uploads to /directus/uploads
-			# Always make sure your volumes matches the storage root when using 
-			# local driver
-		  - ./uploads:/directus/uploads
-		  # Make sure to also mount the volume When using SQLite
-		  # - ./database:/directus/database
-			# If you want to load extensions from the host
-			# - ./extensions:/directus/extensions
+      # By default, Directus images writes uploads to /directus/uploads
+      # Always make sure your volumes matches the storage root when using 
+      # local driver
+      - ./uploads:/directus/uploads
+      # Make sure to also mount the volume When using SQLite
+      # - ./database:/directus/database
+      # If you want to load extensions from the host
+      # - ./extensions:/directus/extensions
     networks:
       - directus
     depends_on:
