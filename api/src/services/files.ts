@@ -1,4 +1,4 @@
-import { ItemsService } from './items';
+import { ItemsService, MutationOptions } from './items';
 import storage from '../storage';
 import sharp from 'sharp';
 import { parse as parseICC } from 'icc';
@@ -22,7 +22,23 @@ export class FilesService extends ItemsService {
 		super('directus_files', options);
 	}
 
+	/**
+	 * @deprecated Use `uploadOne` instead
+	 */
 	async upload(
+		stream: NodeJS.ReadableStream,
+		data: Partial<File> & { filename_download: string; storage: string },
+		primaryKey?: PrimaryKey
+	) {
+		logger.warn('FilesService.upload is deprecated and will be removed before v9.0.0. Use uploadOne instead.');
+
+		return await this.uploadOne(stream, data, primaryKey);
+	}
+
+	/**
+	 * Upload a single new file to the configured storage adapter
+	 */
+	async uploadOne(
 		stream: NodeJS.ReadableStream,
 		data: Partial<File> & { filename_download: string; storage: string },
 		primaryKey?: PrimaryKey
@@ -122,7 +138,17 @@ export class FilesService extends ItemsService {
 		return primaryKey;
 	}
 
+	/**
+	 * @deprecated Use `importOne` instead
+	 */
 	async import(importURL: string, body: Partial<File>) {
+		return await this.importOne(importURL, body);
+	}
+
+	/**
+	 * Import a single file from an external URL
+	 */
+	async importOne(importURL: string, body: Partial<File>) {
 		const fileCreatePermissions = this.schema.permissions.find(
 			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
 		);
@@ -159,19 +185,25 @@ export class FilesService extends ItemsService {
 		return await this.upload(fileResponse.data, payload);
 	}
 
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const keys = toArray(key);
-		let files = await super.readByKey(keys, { fields: ['id', 'storage'] });
+	/**
+	 * Delete a file
+	 */
+	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+		await this.deleteMany([key], opts);
+		return key;
+	}
+
+	/**
+	 * Delete multiple files
+	 */
+	async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const files = await super.readMany(keys, { fields: ['id', 'storage'] });
 
 		if (!files) {
 			throw new ForbiddenException();
 		}
 
 		await super.delete(keys);
-
-		files = toArray(files);
 
 		for (const file of files) {
 			const disk = storage.disk(file.storage);
@@ -182,10 +214,23 @@ export class FilesService extends ItemsService {
 			}
 		}
 
-		if (cache && env.CACHE_AUTO_PURGE) {
+		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await cache.clear();
 		}
 
-		return key;
+		return keys;
+	}
+
+	/**
+	 * @deprecated Use `deleteOne` or `deleteMany` instead
+	 */
+	delete(key: PrimaryKey): Promise<PrimaryKey>;
+	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
+		logger.warn(
+			'FilesService.delete is deprecated and will be removed before v9.0.0. Use deleteOne or deleteMany instead.'
+		);
+		if (Array.isArray(key)) return await this.deleteMany(key);
+		return await this.deleteOne(key);
 	}
 }
