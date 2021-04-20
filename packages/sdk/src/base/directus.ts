@@ -26,7 +26,7 @@ import { LocalStorage, MemoryStorage } from './storage';
 import { TypeMap, TypeOf } from '../types';
 import { GraphQLHandler } from '../handlers/graphql';
 import { ISingleton } from '../singleton';
-import { SingletonHandler } from './singleton';
+import { SingletonHandler } from '../handlers/singleton';
 
 export type DirectusOptions = {
 	auth?: IAuth;
