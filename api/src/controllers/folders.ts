@@ -1,11 +1,10 @@
 import express from 'express';
 import asyncHandler from '../utils/async-handler';
 import { FoldersService, MetaService } from '../services';
-import { ForbiddenException, InvalidPayloadException, FailedValidationException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
 import { PrimaryKey } from '../types';
-import Joi from 'joi';
 import { validateBatch } from '../middleware/validate-batch';
 
 const router = express.Router();
@@ -51,26 +50,34 @@ router.post(
 	respond
 );
 
-router.get(
-	'/',
-	asyncHandler(async (req, res, next) => {
-		const service = new FoldersService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-		const metaService = new MetaService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+const readHandler = asyncHandler(async (req, res, next) => {
+	const service = new FoldersService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
+	const metaService = new MetaService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const records = await service.readByQuery(req.sanitizedQuery);
-		const meta = await metaService.getMetaForQuery('directus_files', req.sanitizedQuery);
+	let result;
 
-		res.locals.payload = { data: records || null, meta };
-		return next();
-	}),
-	respond
-);
+	if (req.singleton) {
+		result = await service.readSingleton(req.sanitizedQuery);
+	} else if (req.body.keys) {
+		result = await service.readMany(req.body.keys, req.sanitizedQuery);
+	} else {
+		result = await service.readByQuery(req.sanitizedQuery);
+	}
+
+	const meta = await metaService.getMetaForQuery('directus_files', req.sanitizedQuery);
+
+	res.locals.payload = { data: result, meta };
+	return next();
+});
+
+router.get('/', validateBatch('read'), readHandler, respond);
+router.search('/', validateBatch('read'), readHandler, respond);
 
 router.get(
 	'/:pk',

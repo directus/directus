@@ -3,7 +3,7 @@ import logger from '../logger';
 import { parseFilter } from '../utils/parse-filter';
 import { flatten, set, merge, get } from 'lodash';
 
-export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Accountability | null) {
+export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null) {
 	const query: Query = {};
 
 	if (rawQuery.limit !== undefined) {
@@ -129,7 +129,7 @@ function sanitizeMeta(rawMeta: any) {
 	return [rawMeta];
 }
 
-function sanitizeDeep(deep: Record<string, any>, accountability: Accountability | null) {
+function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability | null) {
 	const result: Record<string, any> = {};
 
 	if (typeof deep === 'string') {

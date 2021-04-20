@@ -1,12 +1,10 @@
-import express from 'express';
+import express, { RequestHandler } from 'express';
 import asyncHandler from '../utils/async-handler';
 import collectionExists from '../middleware/collection-exists';
 import { ItemsService, MetaService } from '../services';
-import { RouteNotFoundException, ForbiddenException, FailedValidationException } from '../exceptions';
+import { RouteNotFoundException, ForbiddenException } from '../exceptions';
 import { respond } from '../middleware/respond';
-import { InvalidPayloadException } from '../exceptions';
 import { PrimaryKey } from '../types';
-import Joi from 'joi';
 import { validateBatch } from '../middleware/validate-batch';
 
 const router = express.Router();
@@ -57,37 +55,41 @@ router.post(
 	respond
 );
 
-router.get(
-	'/:collection',
-	collectionExists,
-	asyncHandler(async (req, res, next) => {
-		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
+const readHandler = asyncHandler(async (req, res, next) => {
+	if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
 
-		const service = new ItemsService(req.collection, {
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+	const service = new ItemsService(req.collection, {
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const metaService = new MetaService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+	const metaService = new MetaService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const records = req.singleton
-			? await service.readSingleton(req.sanitizedQuery)
-			: await service.readByQuery(req.sanitizedQuery);
+	let result;
 
-		const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
+	if (req.singleton) {
+		result = await service.readSingleton(req.sanitizedQuery);
+	} else if (req.body.keys) {
+		result = await service.readMany(req.body.keys, req.sanitizedQuery);
+	} else {
+		result = await service.readByQuery(req.sanitizedQuery);
+	}
 
-		res.locals.payload = {
-			meta: meta,
-			data: records || null,
-		};
+	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
 
-		return next();
-	}),
-	respond
-);
+	res.locals.payload = {
+		meta: meta,
+		data: result,
+	};
+
+	return next();
+});
+
+router.search('/:collection', collectionExists, validateBatch('read'), readHandler, respond);
+router.get('/:collection', collectionExists, readHandler, respond);
 
 router.get(
 	'/:collection/:pk',
