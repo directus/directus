@@ -27,12 +27,12 @@ import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 
 import logger from '../logger';
 
-type QueryOptions = {
+export type QueryOptions = {
 	stripNonRequested?: boolean;
 	permissionsAction?: PermissionsAction;
 };
 
-type MutationOptions = {
+export type MutationOptions = {
 	/**
 	 * Callback function that's fired whenever a revision is made in the mutation
 	 */
