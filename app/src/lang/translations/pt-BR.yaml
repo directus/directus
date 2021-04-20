@@ -219,7 +219,6 @@ item_delete_success: Item deletado | Itens deletados
 this_collection: Esta coleção
 related_collection: Coleções relacionadas
 related_collections: Coleções relacionadas
-translations_collection: Coleção de traduções
 languages_collection: Coleção de idiomas
 export_data: Exportar dados
 format: Formato
