@@ -2,10 +2,6 @@ import { ItemsService } from './items';
 import { AbstractServiceOptions, PrimaryKey, Revision } from '../types';
 import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 
-/**
- * @TODO only return data / delta based on permissions you have for the requested collection
- */
-
 export class RevisionsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_revisions', options);
