@@ -205,7 +205,6 @@ item_delete_success: 项目已删除 | 项目已删除
 this_collection: 此集合
 related_collection: 相关集合
 related_collections: 相关集合
-translations_collection: 翻译集合
 languages_collection: 语言集合
 export_data: 导出数据
 format: 格式
