@@ -7,15 +7,15 @@ export const validateBatch = (scope: 'update' | 'delete'): RequestHandler =>
 	asyncHandler(async (req, res, next) => {
 		if (!req.body) throw new InvalidPayloadException('Payload in body is required');
 
-		const batchSchema = Joi.object()
+		let batchSchema = Joi.object()
 			.keys({
-				keys: Joi.array().items(Joi.alternatives(Joi.string(), Joi.number())).required(),
-				query: Joi.object().unknown().required(),
+				keys: Joi.array().items(Joi.alternatives(Joi.string(), Joi.number())),
+				query: Joi.object().unknown(),
 			})
 			.xor('query', 'keys');
 
 		if (scope === 'update') {
-			batchSchema.keys({
+			batchSchema = batchSchema.keys({
 				data: Joi.object().unknown().required(),
 			});
 		}
