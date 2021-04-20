@@ -331,7 +331,7 @@ export class PayloadService {
 					.first());
 
 			if (exists) {
-				await itemsService.update(relatedRecord, relatedPrimaryKey);
+				await itemsService.updateOne(relatedPrimaryKey, relatedRecord);
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (id) => revisions.push(id),
@@ -391,7 +391,7 @@ export class PayloadService {
 					.first());
 
 			if (exists) {
-				await itemsService.update(relatedRecord, relatedPrimaryKey);
+				await itemsService.updateOne(relatedPrimaryKey, relatedRecord);
 			} else {
 				relatedPrimaryKey = await itemsService.createOne(relatedRecord, {
 					onRevisionCreate: (id) => revisions.push(id),
@@ -510,12 +510,14 @@ export class PayloadService {
 				}
 
 				if (alterations.update) {
-					await itemsService.update(
-						alterations.update.map((item) => ({
+					const primaryKeyField = this.schema.collections[this.collection].primary;
+
+					for (const item of alterations.update) {
+						await itemsService.updateOne(item[primaryKeyField], {
 							...item,
 							[relation.many_field]: parent || payload[relation.one_primary!],
-						}))
-					);
+						});
+					}
 				}
 
 				if (alterations.delete) {

@@ -132,7 +132,7 @@ router.patch(
 		const primaryKey = await service.updateOne(req.params.pk, req.body);
 
 		try {
-			const item = await service.readByKey(primaryKey, req.sanitizedQuery);
+			const item = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: item || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {

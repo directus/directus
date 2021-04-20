@@ -33,7 +33,7 @@ export class FilesService extends ItemsService {
 		const payload = clone(data);
 
 		if (primaryKey !== undefined) {
-			await this.update(payload, primaryKey);
+			await this.updateOne(primaryKey, payload);
 
 			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
 			// delete the previously saved file and thumbnails to ensure they're generated fresh
@@ -116,7 +116,7 @@ export class FilesService extends ItemsService {
 			schema: this.schema,
 		});
 
-		await sudoService.update(payload, primaryKey);
+		await sudoService.updateOne(primaryKey, payload);
 
 		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
@@ -183,7 +183,7 @@ export class FilesService extends ItemsService {
 			throw new ForbiddenException();
 		}
 
-		await super.delete(keys);
+		await super.deleteMany(keys);
 
 		for (const file of files) {
 			const disk = storage.disk(file.storage);
