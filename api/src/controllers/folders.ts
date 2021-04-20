@@ -6,6 +6,7 @@ import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
 import { PrimaryKey } from '../types';
 import Joi from 'joi';
+import { validateBatch } from '../middleware/validate-batch';
 
 const router = express.Router();
 
@@ -18,11 +19,25 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const primaryKey = await service.create(req.body);
+
+		const savedKeys: PrimaryKey[] = [];
+
+		if (Array.isArray(req.body)) {
+			const keys = await service.createMany(req.body);
+			savedKeys.push(...keys);
+		} else {
+			const primaryKey = await service.createOne(req.body);
+			savedKeys.push(primaryKey);
+		}
 
 		try {
-			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
-			res.locals.payload = { data: record || null };
+			if (Array.isArray(req.body)) {
+				const records = await service.readMany(savedKeys, req.sanitizedQuery);
+				res.locals.payload = { data: records };
+			} else {
+				const record = await service.readOne(savedKeys[0], req.sanitizedQuery);
+				res.locals.payload = { data: record };
+			}
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -64,7 +79,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
+		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
 
 		res.locals.payload = { data: record || null };
 		return next();
@@ -74,44 +89,23 @@ router.get(
 
 router.patch(
 	'/:collection',
+	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
 		const service = new FoldersService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		if (Array.isArray(req.body)) {
-			const primaryKeys = await service.update(req.body);
+		let keys: PrimaryKey[] = [];
 
-			try {
-				const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
-				res.locals.payload = { data: result || null };
-			} catch (error) {
-				if (error instanceof ForbiddenException) {
-					return next();
-				}
-
-				throw error;
-			}
-
-			return next();
+		if (req.body.keys) {
+			keys = await service.updateMany(req.body.keys, req.body.data);
+		} else {
+			keys = await service.updateByQuery(req.body.query, req.body.data);
 		}
-
-		const updateSchema = Joi.object({
-			keys: Joi.array().items(Joi.alternatives(Joi.string(), Joi.number())).required(),
-			data: Joi.object().required().unknown(),
-		});
-
-		const { error } = updateSchema.validate(req.body);
-
-		if (error) {
-			throw new FailedValidationException(error.details[0]);
-		}
-
-		const primaryKeys = await service.update(req.body.data, req.body.keys);
 
 		try {
-			const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
+			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals.payload = { data: result || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
@@ -134,10 +128,10 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.update(req.body, req.params.pk);
+		const primaryKey = await service.updateOne(req.params.pk, req.body);
 
 		try {
-			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: record || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
@@ -154,16 +148,21 @@ router.patch(
 
 router.delete(
 	'/',
+	validateBatch('delete'),
 	asyncHandler(async (req, res, next) => {
-		if (!req.body || Array.isArray(req.body) === false) {
-			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
-		}
-
 		const service = new FoldersService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.delete(req.body as PrimaryKey[]);
+
+		if (Array.isArray(req.body)) {
+			await service.deleteMany(req.body);
+		} else if (req.body.keys) {
+			await service.deleteMany(req.body.keys);
+		} else {
+			await service.deleteByQuery(req.body.query);
+		}
+
 		return next();
 	}),
 	respond
@@ -177,7 +176,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await service.delete(req.params.pk);
+		await service.deleteOne(req.params.pk);
 
 		return next();
 	}),

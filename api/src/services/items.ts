@@ -288,7 +288,12 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		};
 
 		const results = await this.readByQuery(queryWithKey, opts);
-		return results?.[0] || null;
+
+		if (results.length === 0) {
+			throw new ForbiddenException();
+		}
+
+		return results[0];
 	}
 
 	/**
@@ -310,7 +315,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		};
 
 		const results = await this.readByQuery(queryWithKeys, opts);
-		return results ?? null;
+		return results;
 	}
 
 	/**
@@ -641,6 +646,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	 */
 	async readSingleton(query: Query, opts?: QueryOptions): Promise<Partial<Item>> {
 		query = clone(query);
+
+		query.limit = 1;
 
 		const records = await this.readByQuery(query, opts);
 		const record = records[0];

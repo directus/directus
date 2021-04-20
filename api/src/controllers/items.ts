@@ -7,6 +7,7 @@ import { respond } from '../middleware/respond';
 import { InvalidPayloadException } from '../exceptions';
 import { PrimaryKey } from '../types';
 import Joi from 'joi';
+import { validateBatch } from '../middleware/validate-batch';
 
 const router = express.Router();
 
@@ -25,11 +26,24 @@ router.post(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.create(req.body);
+		const savedKeys: PrimaryKey[] = [];
+
+		if (Array.isArray(req.body)) {
+			const keys = await service.createMany(req.body);
+			savedKeys.push(...keys);
+		} else {
+			const key = await service.createOne(req.body);
+			savedKeys.push(key);
+		}
 
 		try {
-			const result = await service.readByKey(primaryKey, req.sanitizedQuery);
-			res.locals.payload = { data: result || null };
+			if (Array.isArray(req.body)) {
+				const result = await service.readMany(savedKeys, req.sanitizedQuery);
+				res.locals.payload = { data: result || null };
+			} else {
+				const result = await service.readOne(savedKeys[0], req.sanitizedQuery);
+				res.locals.payload = { data: result || null };
+			}
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -90,7 +104,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const result = await service.readByKey(req.params.pk, req.sanitizedQuery);
+		const result = await service.readOne(req.params.pk, req.sanitizedQuery);
 
 		res.locals.payload = {
 			data: result || null,
@@ -103,6 +117,7 @@ router.get(
 router.patch(
 	'/:collection',
 	collectionExists,
+	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
 		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
 
@@ -119,39 +134,17 @@ router.patch(
 			return next();
 		}
 
-		if (Array.isArray(req.body)) {
-			const primaryKeys = await service.update(req.body);
+		let keys: PrimaryKey[] = [];
 
-			try {
-				const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
-				res.locals.payload = { data: result || null };
-			} catch (error) {
-				if (error instanceof ForbiddenException) {
-					return next();
-				}
-
-				throw error;
-			}
-
-			return next();
+		if (req.body.keys) {
+			keys = await service.updateMany(req.body.keys, req.body.data);
+		} else {
+			keys = await service.updateByQuery(req.body.query, req.body.data);
 		}
-
-		const updateSchema = Joi.object({
-			keys: Joi.array().items(Joi.alternatives(Joi.string(), Joi.number())).required(),
-			data: Joi.object().required().unknown(),
-		});
-
-		const { error } = updateSchema.validate(req.body);
-
-		if (error) {
-			throw new FailedValidationException(error.details[0]);
-		}
-
-		const primaryKeys = await service.update(req.body.data, req.body.keys);
 
 		try {
-			const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
-			res.locals.payload = { data: result || null };
+			const result = await service.readMany(keys, req.sanitizedQuery);
+			res.locals.payload = { data: result };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -180,10 +173,10 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const updatedPrimaryKey = await service.update(req.body, req.params.pk);
+		const updatedPrimaryKey = await service.updateOne(req.params.pk, req.body);
 
 		try {
-			const result = await service.readByKey(updatedPrimaryKey, req.sanitizedQuery);
+			const result = await service.readOne(updatedPrimaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: result || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
@@ -201,19 +194,22 @@ router.patch(
 router.delete(
 	'/:collection',
 	collectionExists,
+	validateBatch('delete'),
 	asyncHandler(async (req, res, next) => {
 		if (req.params.collection.startsWith('directus_')) throw new ForbiddenException();
-
-		if (!req.body || Array.isArray(req.body) === false) {
-			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
-		}
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		await service.delete(req.body as PrimaryKey[]);
+		if (Array.isArray(req.body)) {
+			await service.deleteMany(req.body);
+		} else if (req.body.keys) {
+			await service.deleteMany(req.body.keys);
+		} else {
+			await service.deleteByQuery(req.body.query);
+		}
 
 		return next();
 	}),
@@ -231,7 +227,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await service.delete(req.params.pk);
+		await service.deleteOne(req.params.pk);
 		return next();
 	}),
 	respond

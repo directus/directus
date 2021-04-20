@@ -37,7 +37,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
+		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
 
 		res.locals.payload = { data: record || null };
 		return next();

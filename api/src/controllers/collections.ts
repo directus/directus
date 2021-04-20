@@ -14,10 +14,16 @@ router.post(
 			schema: req.schema,
 		});
 
-		const collectionKey = await collectionsService.create(req.body);
-		const record = await collectionsService.readByKey(collectionKey);
+		if (Array.isArray(req.body)) {
+			const collectionKey = await collectionsService.createMany(req.body);
+			const records = await collectionsService.readMany(collectionKey);
+			res.locals.payload = { data: records || null };
+		} else {
+			const collectionKey = await collectionsService.createOne(req.body);
+			const record = await collectionsService.readOne(collectionKey);
+			res.locals.payload = { data: record || null };
+		}
 
-		res.locals.payload = { data: record || null };
 		return next();
 	}),
 	respond
@@ -51,7 +57,8 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const collection = await collectionsService.readByKey(req.params.collection);
+
+		const collection = await collectionsService.readOne(req.params.collection);
 		res.locals.payload = { data: collection || null };
 
 		return next();
@@ -66,10 +73,10 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await collectionsService.update(req.body, req.params.collection);
+		await collectionsService.updateOne(req.params.collection, req.body);
 
 		try {
-			const collection = await collectionsService.readByKey(req.params.collection);
+			const collection = await collectionsService.readOne(req.params.collection);
 			res.locals.payload = { data: collection || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
@@ -92,7 +99,7 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await collectionsService.delete(req.params.collection);
+		await collectionsService.deleteOne(req.params.collection);
 
 		return next();
 	}),
