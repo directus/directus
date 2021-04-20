@@ -351,7 +351,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Update multiple items by query
 	 */
-	async updateByQuery(query: Query, data: Partial<Item>): Promise<PrimaryKey[]> {
+	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const readQuery = cloneDeep(query);
 		readQuery.fields = [primaryKeyField];
@@ -366,7 +366,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// permissions check for the keys, so we don't have to make this an authenticated read
 		const itemsToUpdate = await itemsService.readByQuery(readQuery);
 		const keys: PrimaryKey[] = itemsToUpdate.map((item: AnyItem) => item[primaryKeyField]).filter((pk) => pk);
-		return await this.updateMany(keys, data);
+
+		return await this.updateMany(keys, data, opts);
 	}
 
 	/**
