@@ -17,7 +17,12 @@ invite: 招待する
 emails: メールアドレス
 rename_folder: フォルダ名の変更
 delete_folder: フォルダーの削除
-delete_bookmark: ブックマーク削除
+reset_bookmark: ブックマークをリセット
+rename_bookmark: ブックマークの名前を変更
+update_bookmark: ブックマークを更新
+delete_bookmark: ブックマークを削除
+delete_bookmark_copy: >-
+  "{bookmark}" ブックマークを削除してもよろしいですか？この操作は元に戻せません。
 logoutReason:
   SIGN_OUT: ログアウト
   SESSION_EXPIRED: セッションが期限切れです
@@ -186,6 +191,8 @@ sort_field: フィールドの並べ替え
 sort: 並べ替え
 status: ステータス
 toggle_manual_sorting: 手動ソートを有効にする
+bookmark_doesnt_exist: ブックマークは存在しません
+bookmark_doesnt_exist_copy: 開こうとしているブックマークが見つかりませんでした。
 errors:
   COLLECTION_NOT_FOUND: "コレクションが存在しません"
   FORBIDDEN: アクセス禁止
@@ -197,8 +204,11 @@ errors:
   ROUTE_NOT_FOUND: 見つかりません
   RECORD_NOT_UNIQUE: 重複値が検出されました
   UNKNOWN: 予期しないエラーが発生しました
+bookmark_name: ブックマーク名
 create_bookmark: ブックマークを作成
+edit_bookmark: ブックマークを編集
 bookmarks: ブックマーク
+presets: プリセット
 unexpected_error: 予期しないエラーが発生しました
 back: 戻る
 rotate: 回転
@@ -224,14 +234,20 @@ layout_options: レイアウト設定
 collection_setup: コレクションの作成
 optional_system_fields: システムフィールドのオプション
 value_unique: 他と重複しない値である必要があります
+all_activity: すべてのアクティビティ
 create_item: アイテムの作成
 all_files: すべてのファイル
 my_files: マイファイル
 recent_files: 最近使用したファイル
+create_folder: フォルダを作成
+folder_name: フォルダ名...
 add_file: ファイルを追加する
 no_results: 結果なし
 saves_automatically: 変更は自動的に保存されます
 user: ユーザー
+no_presets: プリセットがありません
+no_presets_copy: プリセットやブックマークはまだ保存されていません。
+no_presets_cta: プリセットを追加
 create: 作成
 on_update: 更新時
 read: 読取り
@@ -267,7 +283,9 @@ settings_data_model: データモデル
 settings_permissions: 役割・権限
 settings_project: プロジェクト設定
 settings_webhooks: Webhook
+settings_presets: プリセットとブックマーク
 layout: レイアウト
+editing_preset: プリセットを編集
 layout_setup: レイアウト設定
 unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
@@ -400,6 +418,7 @@ interfaces:
   color:
     color: 色
     description: 色の入力または選択
+    preset_colors: プリセットカラー
   dropdown:
     description: ドロップダウンから値を選択
     choices_value_placeholder: 値を入力...

@@ -101,7 +101,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 				action: 'create',
 				payload,
 				schema: this.schema,
-				database: this.knex,
+				database: trx,
 			});
 
 			// The events are fired last-to-first based on when they were created. By reversing the
