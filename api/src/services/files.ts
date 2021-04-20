@@ -23,19 +23,6 @@ export class FilesService extends ItemsService {
 	}
 
 	/**
-	 * @deprecated Use `uploadOne` instead
-	 */
-	async upload(
-		stream: NodeJS.ReadableStream,
-		data: Partial<File> & { filename_download: string; storage: string },
-		primaryKey?: PrimaryKey
-	) {
-		logger.warn('FilesService.upload is deprecated and will be removed before v9.0.0. Use uploadOne instead.');
-
-		return await this.uploadOne(stream, data, primaryKey);
-	}
-
-	/**
 	 * Upload a single new file to the configured storage adapter
 	 */
 	async uploadOne(
@@ -139,13 +126,6 @@ export class FilesService extends ItemsService {
 	}
 
 	/**
-	 * @deprecated Use `importOne` instead
-	 */
-	async import(importURL: string, body: Partial<File>) {
-		return await this.importOne(importURL, body);
-	}
-
-	/**
 	 * Import a single file from an external URL
 	 */
 	async importOne(importURL: string, body: Partial<File>) {
@@ -219,6 +199,26 @@ export class FilesService extends ItemsService {
 		}
 
 		return keys;
+	}
+
+	/**
+	 * @deprecated Use `uploadOne` instead
+	 */
+	async upload(
+		stream: NodeJS.ReadableStream,
+		data: Partial<File> & { filename_download: string; storage: string },
+		primaryKey?: PrimaryKey
+	) {
+		logger.warn('FilesService.upload is deprecated and will be removed before v9.0.0. Use uploadOne instead.');
+
+		return await this.uploadOne(stream, data, primaryKey);
+	}
+
+	/**
+	 * @deprecated Use `importOne` instead
+	 */
+	async import(importURL: string, body: Partial<File>) {
+		return await this.importOne(importURL, body);
 	}
 
 	/**

@@ -73,20 +73,6 @@ export class UsersService extends ItemsService {
 		return await super.createMany(data, opts);
 	}
 
-	/**
-	 * @deprecated Use `createOne` or `createMany` instead
-	 */
-	async create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async create(data: Partial<Item>): Promise<PrimaryKey>;
-	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'UsersService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
-		);
-
-		if (Array.isArray(data)) return this.createMany(data);
-		return this.createOne(data);
-	}
-
 	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const email = data.email.toLowerCase();
 		await this.checkUniqueEmails([email]);
@@ -118,49 +104,6 @@ export class UsersService extends ItemsService {
 		}
 
 		return await super.updateByQuery(query, data, opts);
-	}
-
-	/**
-	 * @deprecated Use `updateOne` or `updateMany` instead
-	 */
-	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
-	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async update(
-		data: Partial<Item> | Partial<Item>[],
-		key?: PrimaryKey | PrimaryKey[]
-	): Promise<PrimaryKey | PrimaryKey[]> {
-		if (Array.isArray(key)) return await this.updateMany(key, data);
-		else if (key) await this.updateOne(key, data);
-
-		const primaryKeyField = this.schema.collections[this.collection].primary;
-
-		const keys: PrimaryKey[] = [];
-
-		await this.knex.transaction(async (trx) => {
-			const itemsService = new ItemsService(this.collection, {
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
-
-			const payloads = toArray(data);
-
-			for (const single of payloads as Partial<Item>[]) {
-				const payload = clone(single);
-				const key = payload[primaryKeyField];
-
-				if (!key) {
-					throw new InvalidPayloadException('Primary key is missing in update payload.');
-				}
-
-				keys.push(key);
-
-				await itemsService.updateOne(key, payload);
-			}
-		});
-
-		return keys;
 	}
 
 	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -203,16 +146,6 @@ export class UsersService extends ItemsService {
 		await super.deleteMany(keys, opts);
 
 		return keys;
-	}
-
-	/**
-	 * @deprecated Use `deleteOne` or `deleteMany` instead
-	 */
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		if (Array.isArray(key)) return await this.deleteMany(key);
-		return await this.deleteOne(key);
 	}
 
 	async inviteUser(email: string | string[], role: string, url: string | null) {
@@ -332,5 +265,72 @@ export class UsersService extends ItemsService {
 
 	async disableTFA(pk: string) {
 		await this.knex('directus_users').update({ tfa_secret: null }).where({ id: pk });
+	}
+
+	/**
+	 * @deprecated Use `createOne` or `createMany` instead
+	 */
+	async create(data: Partial<Item>[]): Promise<PrimaryKey[]>;
+	async create(data: Partial<Item>): Promise<PrimaryKey>;
+	async create(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
+		logger.warn(
+			'UsersService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
+		);
+
+		if (Array.isArray(data)) return this.createMany(data);
+		return this.createOne(data);
+	}
+
+	/**
+	 * @deprecated Use `updateOne` or `updateMany` instead
+	 */
+	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
+	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
+	async update(
+		data: Partial<Item> | Partial<Item>[],
+		key?: PrimaryKey | PrimaryKey[]
+	): Promise<PrimaryKey | PrimaryKey[]> {
+		if (Array.isArray(key)) return await this.updateMany(key, data);
+		else if (key) await this.updateOne(key, data);
+
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+
+		const keys: PrimaryKey[] = [];
+
+		await this.knex.transaction(async (trx) => {
+			const itemsService = new ItemsService(this.collection, {
+				accountability: this.accountability,
+				knex: trx,
+				schema: this.schema,
+			});
+
+			const payloads = toArray(data);
+
+			for (const single of payloads as Partial<Item>[]) {
+				const payload = clone(single);
+				const key = payload[primaryKeyField];
+
+				if (!key) {
+					throw new InvalidPayloadException('Primary key is missing in update payload.');
+				}
+
+				keys.push(key);
+
+				await itemsService.updateOne(key, payload);
+			}
+		});
+
+		return keys;
+	}
+
+	/**
+	 * @deprecated Use `deleteOne` or `deleteMany` instead
+	 */
+	delete(key: PrimaryKey): Promise<PrimaryKey>;
+	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
+		if (Array.isArray(key)) return await this.deleteMany(key);
+		return await this.deleteOne(key);
 	}
 }

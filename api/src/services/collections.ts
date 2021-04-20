@@ -6,7 +6,6 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
 import { ItemsService, MutationOptions } from '../services/items';
 import cache from '../cache';
-import { toArray } from '../utils/to-array';
 import { systemCollectionRows } from '../database/system-data/collections';
 import env from '../env';
 import logger from '../logger';
@@ -131,25 +130,6 @@ export class CollectionsService {
 	}
 
 	/**
-	 * @deprecated Use `createOne` or `createMany` instead
-	 */
-	create(data: (Partial<Collection> & { collection: string })[]): Promise<string[]>;
-	create(data: Partial<Collection> & { collection: string }): Promise<string>;
-	async create(
-		data: (Partial<Collection> & { collection: string }) | (Partial<Collection> & { collection: string })[]
-	): Promise<string | string[]> {
-		logger.warn(
-			'CollectionsService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
-		);
-
-		if (Array.isArray(data)) {
-			return await this.createMany(data);
-		} else {
-			return await this.createOne(data);
-		}
-	}
-
-	/**
 	 * Read all collections. Currently doesn't support any query.
 	 */
 	async readByQuery(): Promise<Collection[]> {
@@ -257,20 +237,6 @@ export class CollectionsService {
 	}
 
 	/**
-	 * @deprecated Use `readOne` or `readMany` instead
-	 */
-	readByKey(collection: string[]): Promise<Collection[]>;
-	readByKey(collection: string): Promise<Collection>;
-	async readByKey(collection: string | string[]): Promise<Collection | Collection[]> {
-		logger.warn(
-			'CollectionsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
-		);
-
-		if (Array.isArray(collection)) return await this.readMany(collection);
-		return await this.readOne(collection);
-	}
-
-	/**
 	 * Update a single collection by name
 	 *
 	 * Note: only supports updating `meta`
@@ -320,16 +286,6 @@ export class CollectionsService {
 		});
 
 		return collectionKeys;
-	}
-
-	/**
-	 * @deprecated Use `updateOne` or `updateMany` instead
-	 */
-	update(data: Partial<Collection>, keys: string[]): Promise<string[]>;
-	update(data: Partial<Collection>, key: string): Promise<string>;
-	async update(data: Partial<Collection>, key: string | string[]): Promise<string | string[]> {
-		if (Array.isArray(key)) return await this.updateMany(key, data);
-		return await this.updateOne(key, data);
 	}
 
 	/**
@@ -422,6 +378,49 @@ export class CollectionsService {
 		}
 
 		return collectionKeys;
+	}
+
+	/**
+	 * @deprecated Use `createOne` or `createMany` instead
+	 */
+	create(data: (Partial<Collection> & { collection: string })[]): Promise<string[]>;
+	create(data: Partial<Collection> & { collection: string }): Promise<string>;
+	async create(
+		data: (Partial<Collection> & { collection: string }) | (Partial<Collection> & { collection: string })[]
+	): Promise<string | string[]> {
+		logger.warn(
+			'CollectionsService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
+		);
+
+		if (Array.isArray(data)) {
+			return await this.createMany(data);
+		} else {
+			return await this.createOne(data);
+		}
+	}
+
+	/**
+	 * @deprecated Use `readOne` or `readMany` instead
+	 */
+	readByKey(collection: string[]): Promise<Collection[]>;
+	readByKey(collection: string): Promise<Collection>;
+	async readByKey(collection: string | string[]): Promise<Collection | Collection[]> {
+		logger.warn(
+			'CollectionsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
+		);
+
+		if (Array.isArray(collection)) return await this.readMany(collection);
+		return await this.readOne(collection);
+	}
+
+	/**
+	 * @deprecated Use `updateOne` or `updateMany` instead
+	 */
+	update(data: Partial<Collection>, keys: string[]): Promise<string[]>;
+	update(data: Partial<Collection>, key: string): Promise<string>;
+	async update(data: Partial<Collection>, key: string | string[]): Promise<string | string[]> {
+		if (Array.isArray(key)) return await this.updateMany(key, data);
+		return await this.updateOne(key, data);
 	}
 
 	/**

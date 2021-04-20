@@ -234,20 +234,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * @deprecated Use createOne or createMany instead
-	 */
-	async create(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]>;
-	async create(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey>;
-	async create(data: Partial<Item> | Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'ItemsService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
-		);
-
-		if (Array.isArray(data)) return this.createMany(data, opts);
-		return this.createOne(data, opts);
-	}
-
-	/**
 	 * Get items by query
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
@@ -325,27 +311,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		const results = await this.readByQuery(queryWithKeys, opts);
 		return results ?? null;
-	}
-
-	/**
-	 * @deprecated Use `readOne` or `readMany` instead
-	 */
-	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>>;
-	async readByKey(
-		key: PrimaryKey | PrimaryKey[],
-		query: Query = {},
-		action: PermissionsAction = 'read'
-	): Promise<null | Partial<Item> | Partial<Item>[]> {
-		logger.warn(
-			'ItemsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
-		);
-
-		if (Array.isArray(key)) {
-			return this.readMany(key, query, { permissionsAction: action });
-		} else {
-			return this.readOne(key, query, { permissionsAction: action });
-		}
 	}
 
 	/**
@@ -532,56 +497,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * @deprecated Use `updateOne` or `updateMany` instead
-	 */
-	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
-	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	async update(
-		data: Partial<Item> | Partial<Item>[],
-		key?: PrimaryKey | PrimaryKey[]
-	): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'ItemsService.update is deprecated and will be removed before v9.0.0. Use updateOne or updateMany instead.'
-		);
-
-		const primaryKeyField = this.schema.collections[this.collection].primary;
-
-		if (key) {
-			data = Array.isArray(data) ? data[0] : data;
-			if (Array.isArray(key)) return await this.updateMany(key, data);
-			else return await this.updateOne(key, data);
-		}
-
-		const keys: PrimaryKey[] = [];
-
-		await this.knex.transaction(async (trx) => {
-			const itemsService = new ItemsService(this.collection, {
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
-
-			const payloads = toArray(data);
-
-			for (const single of payloads as Partial<Item>[]) {
-				const payload = clone(single);
-				const key = payload[primaryKeyField];
-
-				if (!key) {
-					throw new InvalidPayloadException('Primary key is missing in update payload.');
-				}
-
-				keys.push(key);
-
-				await itemsService.update(payload, key);
-			}
-		});
-
-		return keys;
-	}
-
-	/**
 	 * Upsert a single item
 	 */
 	async upsertOne(payload: Partial<Item>, opts?: MutationOptions) {
@@ -629,16 +544,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		return primaryKeys;
-	}
-
-	/**
-	 * @deprecated Use `upsertOne` or `upsertMany` instead
-	 */
-	upsert(data: Partial<Item>[]): Promise<PrimaryKey[]>;
-	upsert(data: Partial<Item>): Promise<PrimaryKey>;
-	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
-		if (Array.isArray(data)) return await this.upsertMany(data);
-		return await this.upsertOne(data);
 	}
 
 	/**
@@ -732,20 +637,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * @deprecated Use `deleteOne` or `deleteMany` instead
-	 */
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		logger.warn(
-			'ItemsService.delete is deprecated and will be removed before v9.0.0. Use deleteOne or deleteMany instead.'
-		);
-
-		if (Array.isArray(key)) return await this.deleteMany(key);
-		else return await this.deleteOne(key);
-	}
-
-	/**
 	 * Read/treat collection as singleton
 	 */
 	async readSingleton(query: Query, opts?: QueryOptions): Promise<Partial<Item>> {
@@ -786,5 +677,118 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		}
 
 		return await this.createOne(data, opts);
+	}
+
+	/**
+	 * @deprecated Use createOne or createMany instead
+	 */
+	async create(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]>;
+	async create(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey>;
+	async create(data: Partial<Item> | Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey | PrimaryKey[]> {
+		logger.warn(
+			'ItemsService.create is deprecated and will be removed before v9.0.0. Use createOne or createMany instead.'
+		);
+
+		if (Array.isArray(data)) return this.createMany(data, opts);
+		return this.createOne(data, opts);
+	}
+
+	/**
+	 * @deprecated Use `readOne` or `readMany` instead
+	 */
+	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>[]>;
+	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>>;
+	async readByKey(
+		key: PrimaryKey | PrimaryKey[],
+		query: Query = {},
+		action: PermissionsAction = 'read'
+	): Promise<null | Partial<Item> | Partial<Item>[]> {
+		logger.warn(
+			'ItemsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
+		);
+
+		if (Array.isArray(key)) {
+			return this.readMany(key, query, { permissionsAction: action });
+		} else {
+			return this.readOne(key, query, { permissionsAction: action });
+		}
+	}
+
+	/**
+	 * @deprecated Use `updateOne` or `updateMany` instead
+	 */
+	update(data: Partial<Item>, keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	update(data: Partial<Item>, key: PrimaryKey): Promise<PrimaryKey>;
+	update(data: Partial<Item>[]): Promise<PrimaryKey[]>;
+	async update(
+		data: Partial<Item> | Partial<Item>[],
+		key?: PrimaryKey | PrimaryKey[]
+	): Promise<PrimaryKey | PrimaryKey[]> {
+		logger.warn(
+			'ItemsService.update is deprecated and will be removed before v9.0.0. Use updateOne or updateMany instead.'
+		);
+
+		const primaryKeyField = this.schema.collections[this.collection].primary;
+
+		if (key) {
+			data = Array.isArray(data) ? data[0] : data;
+			if (Array.isArray(key)) return await this.updateMany(key, data);
+			else return await this.updateOne(key, data);
+		}
+
+		const keys: PrimaryKey[] = [];
+
+		await this.knex.transaction(async (trx) => {
+			const itemsService = new ItemsService(this.collection, {
+				accountability: this.accountability,
+				knex: trx,
+				schema: this.schema,
+			});
+
+			const payloads = toArray(data);
+
+			for (const single of payloads as Partial<Item>[]) {
+				const payload = clone(single);
+				const key = payload[primaryKeyField];
+
+				if (!key) {
+					throw new InvalidPayloadException('Primary key is missing in update payload.');
+				}
+
+				keys.push(key);
+
+				await itemsService.updateOne(key, payload);
+			}
+		});
+
+		return keys;
+	}
+
+	/**
+	 * @deprecated Use `upsertOne` or `upsertMany` instead
+	 */
+	upsert(data: Partial<Item>[]): Promise<PrimaryKey[]>;
+	upsert(data: Partial<Item>): Promise<PrimaryKey>;
+	async upsert(data: Partial<Item> | Partial<Item>[]): Promise<PrimaryKey | PrimaryKey[]> {
+		logger.warn(
+			'ItemsService.upsert is deprecated and will be removed before v9.0.0. Use upsertOne or upsertMany instead.'
+		);
+
+		if (Array.isArray(data)) return await this.upsertMany(data);
+		return await this.upsertOne(data);
+	}
+
+	/**
+	 * @deprecated Use `deleteOne` or `deleteMany` instead
+	 */
+	delete(key: PrimaryKey): Promise<PrimaryKey>;
+	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
+		logger.warn(
+			'ItemsService.delete is deprecated and will be removed before v9.0.0. Use deleteOne or deleteMany instead.'
+		);
+
+		if (Array.isArray(key)) return await this.deleteMany(key);
+		else return await this.deleteOne(key);
 	}
 }

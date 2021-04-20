@@ -88,24 +88,6 @@ export class RelationsService extends ItemsService {
 	}
 
 	/**
-	 * @deprecated Use `readOne` or `readMany` instead
-	 */
-	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<Relation[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<Relation>;
-	async readByKey(
-		key: PrimaryKey | PrimaryKey[],
-		query: Query = {},
-		action: PermissionsAction = 'read'
-	): Promise<Relation | Relation[]> {
-		logger.warn(
-			'RelationsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
-		);
-
-		if (Array.isArray(key)) return await this.readMany(key, query, { permissionsAction: action });
-		return await this.readOne(key, query, { permissionsAction: action });
-	}
-
-	/**
 	 * Loop over all relations and filter out the ones that contain collections/fields you don't have
 	 * permissions to
 	 */
@@ -161,5 +143,23 @@ export class RelationsService extends ItemsService {
 
 			return collectionsAllowed && fieldsAllowed;
 		});
+	}
+
+	/**
+	 * @deprecated Use `readOne` or `readMany` instead
+	 */
+	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<Relation[]>;
+	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<Relation>;
+	async readByKey(
+		key: PrimaryKey | PrimaryKey[],
+		query: Query = {},
+		action: PermissionsAction = 'read'
+	): Promise<Relation | Relation[]> {
+		logger.warn(
+			'RelationsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
+		);
+
+		if (Array.isArray(key)) return await this.readMany(key, query, { permissionsAction: action });
+		return await this.readOne(key, query, { permissionsAction: action });
 	}
 }
