@@ -133,7 +133,7 @@ export class AuthenticationService {
 		await database('directus_sessions').delete().where('expires', '<', new Date());
 
 		if (this.accountability) {
-			await this.activityService.create({
+			await this.activityService.createOne({
 				action: Action.AUTHENTICATE,
 				user: user.id,
 				ip: this.accountability.ip,

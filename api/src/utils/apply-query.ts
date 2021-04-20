@@ -35,10 +35,6 @@ export default function applyQuery(
 		dbQuery.offset(query.limit * (query.page - 1));
 	}
 
-	if (query.single) {
-		dbQuery.limit(1).first();
-	}
-
 	if (query.filter) {
 		applyFilter(schema, dbQuery, query.filter, collection, subQuery);
 	}

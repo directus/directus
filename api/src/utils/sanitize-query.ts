@@ -34,10 +34,6 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Acc
 		query.page = sanitizePage(rawQuery.page);
 	}
 
-	if (rawQuery.single || rawQuery.single === '') {
-		query.single = sanitizeSingle(rawQuery.single);
-	}
-
 	if (rawQuery.meta) {
 		query.meta = sanitizeMeta(rawQuery.meta);
 	}
@@ -115,14 +111,6 @@ function sanitizeOffset(rawOffset: any) {
 
 function sanitizePage(rawPage: any) {
 	return Number(rawPage);
-}
-
-function sanitizeSingle(rawSingle: any) {
-	if (rawSingle !== undefined && rawSingle !== null && ['', 'true', 1, '1'].includes(rawSingle)) {
-		return true;
-	}
-
-	return false;
 }
 
 function sanitizeMeta(rawMeta: any) {

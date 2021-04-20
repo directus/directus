@@ -18,6 +18,7 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		const metaService = new MetaService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -43,7 +44,8 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
+
+		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
 
 		res.locals.payload = {
 			data: record || null,
@@ -74,7 +76,7 @@ router.post(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const primaryKey = await service.create({
+		const primaryKey = await service.createOne({
 			...req.body,
 			action: Action.COMMENT,
 			user: req.accountability?.user,
@@ -83,7 +85,7 @@ router.post(
 		});
 
 		try {
-			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 
 			res.locals.payload = {
 				data: record || null,
@@ -119,10 +121,10 @@ router.patch(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const primaryKey = await service.update(req.body, req.params.pk);
+		const primaryKey = await service.updateOne(req.params.pk, req.body);
 
 		try {
-			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 
 			res.locals.payload = {
 				data: record || null,
@@ -152,13 +154,13 @@ router.delete(
 			schema: req.schema,
 		});
 
-		const item = await adminService.readByKey(req.params.pk, { fields: ['action'] });
+		const item = await adminService.readOne(req.params.pk, { fields: ['action'] });
 
 		if (!item || item.action !== 'comment') {
 			throw new ForbiddenException();
 		}
 
-		await service.delete(req.params.pk);
+		await service.deleteOne(req.params.pk);
 
 		return next();
 	}),

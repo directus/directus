@@ -8,6 +8,7 @@ import {
 	GraphQLParams,
 	PrimaryKey,
 	Action,
+	Item,
 } from '../types';
 import argon2 from 'argon2';
 import {
@@ -867,15 +868,47 @@ export class GraphQLService {
 		if (collection.endsWith('_items')) collection = collection.slice(0, -6);
 		if (collection.endsWith('_item')) collection = collection.slice(0, -5);
 
-		switch (action) {
-			case 'create':
-				return await this.create(collection, args.data, query);
-			case 'update':
-				return singleton
-					? await this.upsertSingleton(collection, args.data, query)
-					: await this.update(collection, single ? args.id : args.ids, args.data, query);
-			case 'delete':
-				return await this.delete(collection, single ? args.id : args.ids);
+		if (singleton && action === 'update') {
+			return await this.upsertSingleton(collection, args.data, query);
+		}
+
+		const service = this.getService(collection);
+		const hasQuery = (query.fields || []).length > 0;
+
+		try {
+			if (single) {
+				if (action === 'create') {
+					const key = await service.createOne(args.data);
+					return hasQuery ? await service.readOne(key, query) : true;
+				}
+
+				if (action === 'update') {
+					const key = await service.updateOne(args.id, args.data);
+					return hasQuery ? await service.readOne(key, query) : true;
+				}
+
+				if (action === 'delete') {
+					await service.deleteOne(args.id);
+					return { id: args.id };
+				}
+			} else {
+				if (action === 'create') {
+					const keys = await service.createMany(args.data);
+					return hasQuery ? await service.readMany(keys, query) : true;
+				}
+
+				if (action === 'update') {
+					const keys = await service.updateMany(args.ids, args.data);
+					return hasQuery ? await service.readMany(keys, query) : true;
+				}
+
+				if (action === 'delete') {
+					const keys = await service.deleteMany(args.ids);
+					return { ids: keys };
+				}
+			}
+		} catch (err) {
+			this.formatError(err);
 		}
 	}
 
@@ -893,51 +926,6 @@ export class GraphQLService {
 	}
 
 	/**
-	 * Run create on the correct service, return created item using services' readByKey
-	 */
-	async create(collection: string, body: Record<string, any> | Record<string, any>[], query: Query) {
-		const service = this.getService(collection);
-
-		try {
-			const keys = await service.create(body);
-
-			if ((query.fields || []).length > 0) {
-				const result = await service.readByKey(keys, query);
-				return Array.isArray(body) ? toArray(result) : result;
-			}
-
-			return true;
-		} catch (err) {
-			throw this.formatError(err);
-		}
-	}
-
-	/**
-	 * Run update on the correct service, return updated item using services' readByKey
-	 */
-	async update(
-		collection: string,
-		keys: PrimaryKey[],
-		body: Record<string, any> | Record<string, any>[],
-		query: Query
-	) {
-		const service = this.getService(collection);
-
-		try {
-			const updatedKeys = await service.update(body, keys);
-
-			if ((query.fields || []).length > 0) {
-				const result = await service.readByKey(updatedKeys, query);
-				return Array.isArray(body) ? toArray(result) : result;
-			}
-
-			return true;
-		} catch (err) {
-			throw this.formatError(err);
-		}
-	}
-
-	/**
 	 * Upsert and read singleton item
 	 */
 	async upsertSingleton(collection: string, body: Record<string, any> | Record<string, any>[], query: Query) {
@@ -952,20 +940,6 @@ export class GraphQLService {
 			}
 
 			return true;
-		} catch (err) {
-			throw this.formatError(err);
-		}
-	}
-
-	/**
-	 * Run delete on the correct service, return deleted item's keys
-	 */
-	async delete(collection: string, keys: PrimaryKey | PrimaryKey[]) {
-		const service = this.getService(collection);
-
-		try {
-			await service.delete(keys as any);
-			return Array.isArray(keys) ? { ids: keys } : { id: keys };
 		} catch (err) {
 			throw this.formatError(err);
 		}
@@ -1651,7 +1625,7 @@ export class GraphQLService {
 							schema: this.schema,
 						});
 
-						return await collectionsService.readByKey(args.name);
+						return await collectionsService.readOne(args.name);
 					},
 				},
 			});
@@ -1753,8 +1727,8 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						const collectionKey = await collectionsService.create(args.data);
-						return await collectionsService.readByKey(collectionKey);
+						const collectionKey = await collectionsService.createOne(args.data);
+						return await collectionsService.readOne(collectionKey);
 					},
 				},
 				update_collections_item: {
@@ -1770,8 +1744,8 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						const collectionKey = await collectionsService.update(args.collection, args.data);
-						return await collectionsService.readByKey(collectionKey);
+						const collectionKey = await collectionsService.updateOne(args.collection, args.data);
+						return await collectionsService.readOne(collectionKey);
 					},
 				},
 				delete_collections_item: {
@@ -1789,7 +1763,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						await collectionsService.delete(args.collection);
+						await collectionsService.deleteOne(args.collection);
 						return { collection: args.collection };
 					},
 				},
@@ -1867,7 +1841,7 @@ export class GraphQLService {
 							info.fragments
 						);
 						const query = this.getQuery(args, selections || [], info.variableValues);
-						return await service.readByKey(this.accountability.user, query);
+						return await service.readOne(this.accountability.user, query);
 					},
 				},
 			});
@@ -1888,7 +1862,7 @@ export class GraphQLService {
 							schema: this.schema,
 						});
 
-						const primaryKey = await service.create({
+						const primaryKey = await service.createOne({
 							...args,
 							action: Action.COMMENT,
 							user: this.accountability?.user,
@@ -1903,7 +1877,7 @@ export class GraphQLService {
 							);
 							const query = this.getQuery(args, selections || [], info.variableValues);
 
-							return await service.readByKey(primaryKey, query);
+							return await service.readOne(primaryKey, query);
 						}
 
 						return true;
@@ -1925,7 +1899,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						const primaryKey = await service.update({ comment: args.comment }, args.id);
+						const primaryKey = await service.updateOne(args.id, { comment: args.comment });
 
 						if ('directus_activity' in ReadCollectionTypes) {
 							const selections = this.replaceFragmentsInSelections(
@@ -1934,7 +1908,7 @@ export class GraphQLService {
 							);
 							const query = this.getQuery(args, selections || [], info.variableValues);
 
-							return await service.readByKey(primaryKey, query);
+							return await service.readOne(primaryKey, query);
 						}
 
 						return true;
@@ -1955,7 +1929,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						await service.delete(args.id);
+						await service.deleteOne(args.id);
 						return { id: args.id };
 					},
 				},
@@ -1975,7 +1949,7 @@ export class GraphQLService {
 							accountability: this.accountability,
 							schema: this.schema,
 						});
-						const primaryKey = await service.import(args.url, args.data);
+						const primaryKey = await service.importOne(args.url, args.data);
 
 						if ('directus_files' in ReadCollectionTypes) {
 							const selections = this.replaceFragmentsInSelections(
@@ -1983,7 +1957,7 @@ export class GraphQLService {
 								info.fragments
 							);
 							const query = this.getQuery(args, selections || [], info.variableValues);
-							return await service.readByKey(primaryKey, query);
+							return await service.readOne(primaryKey, query);
 						}
 
 						return true;
