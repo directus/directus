@@ -222,7 +222,6 @@ item_delete_success: Элемент Удален | Элементы Удален
 this_collection: Эта коллекция
 related_collection: Связанная Коллекция
 related_collections: Связанные Коллекции
-translations_collection: Коллекция Переводов
 languages_collection: Коллекция Языков
 export_data: Экспорт Данных
 format: Формат
