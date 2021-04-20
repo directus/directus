@@ -233,7 +233,7 @@ export class FieldsService {
 			}
 
 			if (field.meta) {
-				await itemsService.create({
+				await itemsService.createOne({
 					...field.meta,
 					collection: collection,
 					field: field.field,
@@ -276,7 +276,7 @@ export class FieldsService {
 					record.id
 				);
 			} else {
-				await this.itemsService.create({
+				await this.itemsService.createOne({
 					...field.meta,
 					collection: collection,
 					field: field.field,

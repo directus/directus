@@ -76,9 +76,7 @@ export class WebhooksService extends ItemsService {
 	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
 	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
 		const result = await super.delete(key as any);
-
 		await register();
-
 		return result;
 	}
 }

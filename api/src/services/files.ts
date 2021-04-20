@@ -43,7 +43,7 @@ export class FilesService extends ItemsService {
 				await disk.delete(file.path);
 			}
 		} else {
-			primaryKey = await this.create(payload);
+			primaryKey = await this.createOne(payload);
 		}
 
 		const fileExtension = (payload.type && extension(payload.type)) || path.extname(payload.filename_download);

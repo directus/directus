@@ -165,7 +165,7 @@ export class UsersService extends ItemsService {
 			});
 
 			for (const email of emails) {
-				await service.create({ email, role, status: 'invited' });
+				await service.createOne({ email, role, status: 'invited' });
 
 				const payload = { email, scope: 'invite' };
 				const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });

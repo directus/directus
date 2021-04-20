@@ -74,7 +74,7 @@ router.post(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const primaryKey = await service.create({
+		const primaryKey = await service.createOne({
 			...req.body,
 			action: Action.COMMENT,
 			user: req.accountability?.user,

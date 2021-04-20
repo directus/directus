@@ -1,6 +1,13 @@
 import { ALIAS_TYPES } from '../constants';
 import database, { schemaInspector } from '../database';
-import { AbstractServiceOptions, Accountability, Collection, CollectionMeta, SchemaOverview } from '../types';
+import {
+	AbstractServiceOptions,
+	Accountability,
+	Collection,
+	CollectionMeta,
+	FieldMeta,
+	SchemaOverview,
+} from '../types';
 import { Knex } from 'knex';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { FieldsService } from '../services/fields';
@@ -83,13 +90,13 @@ export class CollectionsService {
 				}
 			});
 
-			await collectionItemsService.create({
+			await collectionItemsService.createOne({
 				...(payload.meta || {}),
 				collection: payload.collection,
 			});
 
-			const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta);
-			await fieldItemsService.create(fieldPayloads);
+			const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
+			await fieldItemsService.createMany(fieldPayloads);
 
 			return payload.collection;
 		});

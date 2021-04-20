@@ -501,7 +501,7 @@ export class PayloadService {
 				if (error) throw new InvalidPayloadException(`Invalid one-to-many update structure: ${error.message}`);
 
 				if (alterations.create) {
-					await itemsService.create(
+					await itemsService.createMany(
 						alterations.create.map((item) => ({
 							...item,
 							[relation.many_field]: parent || payload[relation.one_primary!],
