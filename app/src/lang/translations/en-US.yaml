@@ -232,7 +232,7 @@ item_delete_success: Item Deleted | Items Deleted
 this_collection: This Collection
 related_collection: Related Collection
 related_collections: Related Collections
-translations_collection: Translations Collection
+translations_collection: Translation Collection
 languages_collection: Languages Collection
 export_data: Export Data
 format: Format
