@@ -13,7 +13,7 @@ export default async function bootstrap() {
 		process.exit(1);
 	}
 
-	const { isInstalled, default: database, schemaInspector } = require('../../../database');
+	const { isInstalled, default: database } = require('../../../database');
 	const { RolesService } = require('../../../services/roles');
 	const { UsersService } = require('../../../services/users');
 	const { SettingsService } = require('../../../services/settings');
@@ -23,11 +23,14 @@ export default async function bootstrap() {
 
 		await installDatabase(database);
 
+		logger.info('Running migrations...');
+		await runMigrations(database, 'latest');
+
 		const schema = await getSchema();
 
 		logger.info('Setting up first admin role...');
 		const rolesService = new RolesService({ schema });
-		const role = await rolesService.create({ name: 'Admin', admin_access: true });
+		const role = await rolesService.createOne({ name: 'Admin', admin_access: true });
 
 		logger.info('Adding first admin user...');
 		const usersService = new UsersService({ schema });
@@ -46,7 +49,7 @@ export default async function bootstrap() {
 			logger.info(`No admin password provided. Defaulting to "${adminPassword}"`);
 		}
 
-		await usersService.create({ email: adminEmail, password: adminPassword, role });
+		await usersService.createOne({ email: adminEmail, password: adminPassword, role });
 
 		if (env.PROJECT_NAME && typeof env.PROJECT_NAME === 'string' && env.PROJECT_NAME.length > 0) {
 			const settingsService = new SettingsService({ schema });
@@ -54,10 +57,9 @@ export default async function bootstrap() {
 		}
 	} else {
 		logger.info('Database already initialized, skipping install');
+		logger.info('Running migrations...');
+		await runMigrations(database, 'latest');
 	}
-
-	logger.info('Running migrations...');
-	await runMigrations(database, 'latest');
 
 	logger.info('Done');
 	process.exit(0);

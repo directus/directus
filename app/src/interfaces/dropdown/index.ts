@@ -1,10 +1,10 @@
 import { defineInterface } from '@/interfaces/define';
 import InterfaceDropdown from './dropdown.vue';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'dropdown',
-	name: i18n.t('dropdown'),
-	description: i18n.t('interfaces.dropdown.description'),
+	name: '$t:dropdown',
+	description: '$t:interfaces.dropdown.description',
 	icon: 'arrow_drop_down_circle',
 	component: InterfaceDropdown,
 	types: ['string'],
@@ -12,35 +12,35 @@ export default defineInterface(({ i18n }) => ({
 		{
 			field: 'choices',
 			type: 'json',
-			name: i18n.t('choices'),
+			name: '$t:choices',
 			meta: {
 				width: 'full',
 				interface: 'repeater',
 				options: {
-					placeholder: i18n.t('interfaces.dropdown.choices_placeholder'),
+					placeholder: '$t:interfaces.dropdown.choices_placeholder',
 					template: '{{ text }}',
 					fields: [
 						{
 							field: 'text',
 							type: 'string',
-							name: i18n.t('text'),
+							name: '$t:text',
 							meta: {
 								interface: 'text-input',
 								width: 'half',
 								options: {
-									placeholder: i18n.t('interfaces.dropdown.choices_name_placeholder'),
+									placeholder: '$t:interfaces.dropdown.choices_name_placeholder',
 								},
 							},
 						},
 						{
 							field: 'value',
 							type: 'string',
-							name: i18n.t('value'),
+							name: '$t:value',
 							meta: {
 								interface: 'text-input',
 								options: {
 									font: 'monospace',
-									placeholder: i18n.t('interfaces.dropdown.choices_value_placeholder'),
+									placeholder: '$t:interfaces.dropdown.choices_value_placeholder',
 								},
 								width: 'half',
 							},
@@ -51,13 +51,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'allowOther',
-			name: i18n.t('interfaces.dropdown.allow_other'),
+			name: '$t:interfaces.dropdown.allow_other',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('interfaces.dropdown.allow_other_label'),
+					label: '$t:interfaces.dropdown.allow_other_label',
 				},
 			},
 			schema: {
@@ -66,13 +66,13 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'allowNone',
-			name: i18n.t('interfaces.dropdown.allow_none'),
+			name: '$t:interfaces.dropdown.allow_none',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('interfaces.dropdown.allow_none_label'),
+					label: '$t:interfaces.dropdown.allow_none_label',
 				},
 			},
 			schema: {
@@ -81,7 +81,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'icon',
-			name: i18n.t('icon'),
+			name: '$t:icon',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -90,16 +90,16 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'placeholder',
-			name: i18n.t('placeholder'),
+			name: '$t:placeholder',
 			type: 'string',
 			meta: {
 				width: 'half',
 				interface: 'text-input',
 				options: {
-					placeholder: i18n.t('enter_a_placeholder'),
+					placeholder: '$t:enter_a_placeholder',
 				},
 			},
 		},
 	],
 	recommendedDisplays: ['labels'],
-}));
+});

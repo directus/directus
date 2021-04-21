@@ -21,7 +21,7 @@
 				<v-notice type="info">{{ $t('creating_collection_info') }}</v-notice>
 
 				<div class="grid">
-					<div>
+					<div class="field half">
 						<div class="type-label">
 							{{ $t('name') }}
 							<v-icon class="required" v-tooltip="$t('required')" name="star" sup />
@@ -34,12 +34,12 @@
 							:placeholder="$t('a_unique_table_name')"
 						/>
 					</div>
-					<div>
+					<div class="field half">
 						<div class="type-label">{{ $t('singleton') }}</div>
 						<v-checkbox block :label="$t('singleton_label')" v-model="singleton" />
 					</div>
 					<v-divider class="full" />
-					<div>
+					<div class="field half">
 						<div class="type-label">{{ $t('primary_key_field') }}</div>
 						<v-input
 							class="monospace"
@@ -48,7 +48,7 @@
 							:placeholder="$t('a_unique_column_name')"
 						/>
 					</div>
-					<div>
+					<div class="field half">
 						<div class="type-label">{{ $t('type') }}</div>
 						<v-select
 							:items="[
@@ -74,7 +74,7 @@
 				<v-notice type="info">{{ $t('creating_collection_system') }}</v-notice>
 
 				<div class="grid system">
-					<div v-for="(info, field) in systemFields" :key="field">
+					<div class="field" v-for="(info, field, index) in systemFields" :key="field" :class="index % 2 === 0 ? 'half':'half-right'">
 						<div class="type-label">{{ $t(info.label) }}</div>
 						<v-input
 							v-model="info.name"
@@ -321,15 +321,15 @@ export default defineComponent({
 							showAsDot: true,
 							choices: [
 								{
-									background: '#2F80ED',
+									background: '#00C897',
 									value: 'published',
 								},
 								{
-									background: '#ECEFF1',
+									background: '#D3DAE4',
 									value: 'draft',
 								},
 								{
-									background: '#F2994A',
+									background: '#F7971C',
 									value: 'archived',
 								},
 							],

@@ -6,9 +6,9 @@ export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospac
 	return `
 body {
 	color: ${cssVar('--foreground-normal')};
-	background-color: ${cssVar('--background-page')};
+	background-color: ${cssVar('--background-input')};
 	margin: 20px;
-	font-family: 'Roboto', sans-serif;
+	font-family: ${cssVar('--family-sans-serif')};
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
@@ -119,16 +119,10 @@ video,
 	height: auto;
 }
 hr {
-	border: 0;
+	border: 1px solid ${cssVar('--border-normal')};
 	margin-top: 52px;
 	margin-bottom: 56px;
 	text-align: center;
-}
-hr:after {
-	content: "...";
-	font-size: 28px;
-	letter-spacing: 16px;
-	line-height: 0;
 }
 table {
 	border-collapse: collapse;

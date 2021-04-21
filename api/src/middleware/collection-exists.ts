@@ -4,14 +4,13 @@
 
 import { RequestHandler } from 'express';
 import asyncHandler from '../utils/async-handler';
-import database from '../database';
 import { ForbiddenException } from '../exceptions';
 import { systemCollectionRows } from '../database/system-data/collections';
 
 const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => {
 	if (!req.params.collection) return next();
 
-	if (req.params.collection in req.schema.tables === false) {
+	if (req.params.collection in req.schema.collections === false) {
 		throw new ForbiddenException();
 	}
 
@@ -24,13 +23,7 @@ const collectionExists: RequestHandler = asyncHandler(async (req, res, next) => 
 
 		req.singleton = !!systemRow?.singleton;
 	} else {
-		const collectionInfo = await database
-			.select('singleton')
-			.from('directus_collections')
-			.where({ collection: req.collection })
-			.first();
-
-		req.singleton = collectionInfo?.singleton === true || collectionInfo?.singleton === 1;
+		req.singleton = req.schema.collections[req.collection].singleton;
 	}
 
 	return next();

@@ -5,6 +5,7 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
 import { PrimaryKey } from '../types';
+import { validateBatch } from '../middleware/validate-batch';
 
 const router = express.Router();
 
@@ -17,11 +18,25 @@ router.post(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const primaryKey = await service.create(req.body);
+
+		const savedKeys: PrimaryKey[] = [];
+
+		if (Array.isArray(req.body)) {
+			const keys = await service.createMany(req.body);
+			savedKeys.push(...keys);
+		} else {
+			const key = await service.createOne(req.body);
+			savedKeys.push(key);
+		}
 
 		try {
-			const item = await service.readByKey(primaryKey, req.sanitizedQuery);
-			res.locals.payload = { data: item || null };
+			if (Array.isArray(req.body)) {
+				const items = await service.readMany(savedKeys, req.sanitizedQuery);
+				res.locals.payload = { data: items };
+			} else {
+				const item = await service.readOne(savedKeys[0], req.sanitizedQuery);
+				res.locals.payload = { data: item };
+			}
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -34,27 +49,35 @@ router.post(
 	respond
 );
 
-router.get(
-	'/',
-	asyncHandler(async (req, res, next) => {
-		const service = new PermissionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+const readHandler = asyncHandler(async (req, res, next) => {
+	const service = new PermissionsService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const metaService = new MetaService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+	const metaService = new MetaService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const item = await service.readByQuery(req.sanitizedQuery);
-		const meta = await metaService.getMetaForQuery('directus_permissions', req.sanitizedQuery);
+	let result;
 
-		res.locals.payload = { data: item || null, meta };
-		return next();
-	}),
-	respond
-);
+	if (req.singleton) {
+		result = await service.readSingleton(req.sanitizedQuery);
+	} else if (req.body.keys) {
+		result = await service.readMany(req.body.keys, req.sanitizedQuery);
+	} else {
+		result = await service.readByQuery(req.sanitizedQuery);
+	}
+
+	const meta = await metaService.getMetaForQuery('directus_permissions', req.sanitizedQuery);
+
+	res.locals.payload = { data: result, meta };
+	return next();
+});
+
+router.get('/', validateBatch('read'), readHandler, respond);
+router.search('/', validateBatch('read'), readHandler, respond);
 
 router.get(
 	'/:pk',
@@ -64,10 +87,43 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const primaryKey = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const record = await service.readByKey(primaryKey as any, req.sanitizedQuery);
 
-		res.locals.payload = { data: record || null };
+		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
+
+		res.locals.payload = { data: record };
+		return next();
+	}),
+	respond
+);
+
+router.patch(
+	'/',
+	validateBatch('update'),
+	asyncHandler(async (req, res, next) => {
+		const service = new PermissionsService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		let keys: PrimaryKey[] = [];
+
+		if (req.body.keys) {
+			keys = await service.updateMany(req.body.keys, req.body.data);
+		} else {
+			keys = await service.updateByQuery(req.body.query, req.body.data);
+		}
+
+		try {
+			const result = await service.readMany(keys, req.sanitizedQuery);
+			res.locals.payload = { data: result };
+		} catch (error) {
+			if (error instanceof ForbiddenException) {
+				return next();
+			}
+
+			throw error;
+		}
+
 		return next();
 	}),
 	respond
@@ -80,11 +136,11 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		const primaryKey = await service.update(req.body, pk as any);
+
+		const primaryKey = await service.updateOne(req.params.pk, req.body);
 
 		try {
-			const item = await service.readByKey(primaryKey, req.sanitizedQuery);
+			const item = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: item || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
@@ -101,16 +157,21 @@ router.patch(
 
 router.delete(
 	'/',
+	validateBatch('delete'),
 	asyncHandler(async (req, res, next) => {
-		if (!req.body || Array.isArray(req.body) === false) {
-			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
-		}
-
 		const service = new PermissionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.delete(req.body as PrimaryKey[]);
+
+		if (Array.isArray(req.body)) {
+			await service.deleteMany(req.body);
+		} else if (req.body.keys) {
+			await service.deleteMany(req.body.keys);
+		} else {
+			await service.deleteByQuery(req.body.query);
+		}
+
 		return next();
 	}),
 	respond
@@ -123,8 +184,9 @@ router.delete(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const pk = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-		await service.delete(pk as any);
+
+		await service.deleteOne(req.params.pk);
+
 		return next();
 	}),
 	respond

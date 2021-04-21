@@ -12,6 +12,7 @@ role_name: Rolli nimi
 db_only_click_to_configure: 'Ainult andmebaas: kliki, et konfigureerida '
 show_archived_items: Näita arhiveeritud üksuseid
 required: Nõutud
+required_for_app_access: Vajalik äpi ligipääsuks
 requires_value: Väärtus nõutud
 create_preset: Loo seadistus
 create_role: Loo roll
@@ -25,6 +26,7 @@ connection_excellent: Suurepärane ühendus
 connection_good: Hea ühendus
 connection_fair: Keskmine ühendus
 connection_poor: Kehv ühendus
+primary: Peamine
 rename_folder: Nimeta kaust ümber
 delete_folder: Kustuta kaust
 prefix: Eesliide
@@ -52,6 +54,7 @@ archive: Arhiveeri
 archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
 archive_confirm_count: >-
   Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
+reset_system_permissions_to: 'Lähtesta süsteemi load:'
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
 nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
@@ -86,13 +89,18 @@ field_validation: Välja valideerimine
 field_presets: Välja eelseadistused
 permissions_for_role: '{role} rollil lubatud üksuste {action}.'
 fields_for_role: '{role} rollil lubatud väljade {action}.'
+delete_field: Kustuta väli
 language: Keel
+camera: Kaamera
 create_field: Loo väli
 hidden_on_detail: Üksikasjavaates peidetud
+key: Võti
 date: Kuupäev
 text: Tekst
 time: Kellaaeg
 auto_generate: Automaatselt loodud
+click_here: Kliki siia
+new_collection: 'Uus kogumik'
 choose_a_type: Vali Tüüp...
 add_note: Lisa kasutajaid abistav märkus...
 default_value: Vaikeväärtus
@@ -126,8 +134,10 @@ leave_comment: Jäta kommentaar...
 post_comment_success: Kommentaar postitatud
 this_collection: See kogu
 related_collection: Seotud kogu
+export_data: Ekspordi andmed
 format: Vorming
 submit: Saada
+move_to_folder: Teisalda kausta
 move: Liiguta
 system: Süsteem
 interface: Kasutajaliides
@@ -167,11 +177,22 @@ download: Laadi alla
 open: Ava
 open_in_new_window: Ava Uues Aknas
 background_color: Taustavärv
+upload_from_device: Lae Fail seadmest
+choose_from_library: Vali teegist
+import_from_url: Lae aadressilt
+replace_from_device: Asenda Fail seadmest
+replace_from_library: Asenda Fail teegist
+replace_from_url: Asenda Fail aadressilt
+no_file_selected: Faili pole valitud
+download_file: Lae fail alla
+collection_key: Kogumi võti
 name: Nimi
 primary_key_field: Primaarse Võtme Väli
 type: Tüüp
+creating_new_collection: Uue kogumi loomine
 created_by: Autor
 created_on: Loodud
+creating_collection_info: Nimeta kogum ja säti unikaalne võtme väli...
 generated_uuid: Genereeritud UUID
 manual_string: Sisesta sõne käsitsi
 save_and_create_new: Salvesta ja Lisa Uus
@@ -235,6 +256,8 @@ on_update: Uuendamisel
 read: Loe
 update: Uuenda
 select_fields: Vali väljad
+width: Laius
+height: Kõrgus
 wysiwyg_options:
   aligncenter: Joonda Keskele
   alignjustify: Joonda kahepoolselt
@@ -382,6 +405,8 @@ template: Mall
 translation: Tõlkija
 value: Väärtus
 interfaces:
+  button-links:
+    primary: Peamine
   checkboxes:
     checkboxes: Märkeruudud
     allow_other: Luba muud

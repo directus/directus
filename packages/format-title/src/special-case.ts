@@ -12,7 +12,7 @@ export default [
 	'iPad',
 	'iPhone',
 	'iPod',
-	'MacOS',
+	'macOS',
 	'M2M',
 	'M2O',
 	'McDonalds',
@@ -24,5 +24,10 @@ export default [
 	'YouTube',
 	'UUID',
 	'SEO',
-	'CTA'
+	'CTA',
+	'4K',
+	'HD',
+	'UHD',
+	'5K',
+	'8K',
 ];

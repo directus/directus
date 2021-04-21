@@ -1,6 +1,8 @@
 const invariant = require('invariant');
 const Directus = require('@directus/sdk-js');
 const { sourceNodes } = require('@lnfusion/gatsby-source-graphql');
+const { createRemoteFileNode } = require("gatsby-source-filesystem");
+
 const ms = require('ms');
 const chalk = require('chalk');
 
@@ -137,7 +139,7 @@ exports.sourceNodes = async (gatsby, options) => {
 			Object.assign(obj, (await graphql?.headers()) || {});
 		}
 
-		if (hasToken) {
+		if (!hasToken) {
 			return obj;
 		}
 
@@ -158,3 +160,42 @@ exports.sourceNodes = async (gatsby, options) => {
 		headers,
 	});
 };
+
+/**
+ * Gatsby file implementation.
+ */
+ exports.createResolvers = async ({
+	actions,
+	cache,
+	createNodeId,
+	createResolvers,
+	store,
+	reporter,
+  }, options) => {
+	const { createNode } = actions;
+	
+	const { url } = options;
+
+	let endpoints = normalizeEndpoint(url);
+  
+	await createResolvers({
+	  DirectusData_directus_files: {
+		imageFile: {
+		  type: "File",
+		  async resolve(source) {
+			if (!source || !source.id) {
+			  return null;
+			}
+			return await createRemoteFileNode({
+			  url: `${endpoints.base}assets/${source.id}`,
+			  store,
+			  cache,
+			  createNode,
+			  createNodeId,
+			  reporter,
+			});
+		  },
+		},
+	  },
+	});
+  };

@@ -48,8 +48,8 @@ include all actions available to the scope.
 Many scopes (see chart below) support an optional `.before` suffix for running a _blocking_ hook prior to the event
 being fired. This allows you to check and/or modify the event's payload before it is processed.
 
-- `items.create` (Non Blocking)
 - `items.create.before` (Blocking)
+- `items.create` (Non Blocking, also called 'after' implicitly)
 
 This also allows you to cancel an event based on the logic within the hook. Below is an example of how you can cancel a
 create event by throwing a standard Directus exception.
@@ -72,32 +72,35 @@ module.exports = function registerHook({ exceptions }) {
 
 ### Event Format Options
 
-| Scope                | Actions                            | Before   |
-| -------------------- | ---------------------------------- | -------- |
-| `server`             | `start` and `stop`                 | Optional |
-| `init`               |                                    | Optional |
-| `routes.init`        | `before` and `after`               | No       |
-| `routes.custom.init` | `before` and `after`               | No       |
-| `middlewares.init`   | `before` and `after`               | No       |
-| `request`            | `not_found`                        | No       |
-| `response`           |                                    | No†      |
-| `items`              | `create`, `update` and `delete`    | Optional |
-| `auth`               | `success`†, `fail`† and `refresh`† | No       |
-| `activity`           | `create`, `update` and `delete`    | Optional |
-| `collections`        | `create`, `update` and `delete`    | Optional |
-| `fields`             | `create`, `update` and `delete`    | Optional |
-| `files`              | `create`, `update` and `delete`    | Optional |
-| `folders`            | `create`, `update` and `delete`    | Optional |
-| `permissions`        | `create`, `update` and `delete`    | Optional |
-| `presets`            | `create`, `update` and `delete`    | Optional |
-| `relations`          | `create`, `update` and `delete`    | Optional |
-| `revisions`          | `create`, `update` and `delete`    | Optional |
-| `roles`              | `create`, `update` and `delete`    | Optional |
-| `settings`           | `create`, `update` and `delete`    | Optional |
-| `users`              | `create`, `update` and `delete`    | Optional |
-| `webhooks`           | `create`, `update` and `delete`    | Optional |
+| Scope                         | Actions                                                 | Before         |
+| ----------------------------- | ------------------------------------------------------- | -------------- |
+| `server`                      | `start` and `stop`                                      | Optional       |
+| `init`                        |                                                         | Optional       |
+| `routes.init`                 | `before` and `after`                                    | No             |
+| `routes.custom.init`          | `before` and `after`                                    | No             |
+| `middlewares.init`            | `before` and `after`                                    | No             |
+| `request`                     | `not_found`                                             | No             |
+| `response`                    |                                                         | No<sup>†</sup> |
+| `error`                       |                                                         | No             |
+| `auth`                        | `login`, `logout`<sup>†</sup> and `refresh`<sup>†</sup> | Optional       |
+| `oauth.:provider`<sup>§</sup> | `login` and `redirect`                                  | Optional       |
+| `items`                       | `create`, `update` and `delete`                         | Optional       |
+| `activity`                    | `create`, `update` and `delete`                         | Optional       |
+| `collections`                 | `create`, `update` and `delete`                         | Optional       |
+| `fields`                      | `create`, `update` and `delete`                         | Optional       |
+| `files`                       | `create`, `update` and `delete`                         | Optional       |
+| `folders`                     | `create`, `update` and `delete`                         | Optional       |
+| `permissions`                 | `create`, `update` and `delete`                         | Optional       |
+| `presets`                     | `create`, `update` and `delete`                         | Optional       |
+| `relations`                   | `create`, `update` and `delete`                         | Optional       |
+| `revisions`                   | `create`, `update` and `delete`                         | Optional       |
+| `roles`                       | `create`, `update` and `delete`                         | Optional       |
+| `settings`                    | `create`, `update` and `delete`                         | Optional       |
+| `users`                       | `create`, `update` and `delete`                         | Optional       |
+| `webhooks`                    | `create`, `update` and `delete`                         | Optional       |
 
-† TBD
+<sup>†</sup> Feature Coming Soon\
+<sup>§</sup> oAuth provider name can replaced with wildcard for any oauth providers `oauth.*.login`
 
 ## 3. Register your Hook
 
@@ -122,14 +125,15 @@ and the value is the handler function itself.
 
 The `registerHook` function receives a context parameter with the following properties:
 
-- `services` — All API interal services
+- `services` — All API internal services
 - `exceptions` — API exception objects that can be used for throwing "proper" errors
 - `database` — Knex instance that is connected to the current database
+- `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables
 
 ### Event Handler Function
 
-The event handler function (eg: `'items.create': function()`) recieves a context parameter with the following
+The event handler function (eg: `'items.create': function()`) receives a context parameter with the following
 properties:
 
 - `event` — Full event string
@@ -138,6 +142,22 @@ properties:
 - `item` — Primary key(s) of the item(s) being modified
 - `action` — Action that is performed
 - `payload` — Payload of the request
+- `schema` - The current API schema in use
+- `database` - Current database transaction
+
+#### Auth
+
+The `auth` and `oauth` hooks have the following context properties:
+
+- `event` — Full event string
+- `accountability` — Information about the current user
+- `action` — Action that is performed
+- `payload` — Payload of the request
+- `schema` - The current API schema in use
+- `status` - One of `pending`, `success`, `fail`
+- `user` <sup>†</sup> - ID of the user that tried logging in/has logged in
+
+<sup>†</sup> Not available in `oauth`
 
 ## 5. Restart the API
 

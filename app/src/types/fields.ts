@@ -65,7 +65,6 @@ export type FieldMeta = {
 	field: string;
 	group: number | null;
 	hidden: boolean;
-	locked: boolean;
 	interface: string | null;
 	display: string | null;
 	options: null | Record<string, any>;

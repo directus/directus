@@ -42,6 +42,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		nullable: {
+			type: Boolean,
+			default: true,
+		},
 		expandOnFocus: {
 			type: Boolean,
 			default: false,
@@ -68,7 +72,12 @@ export default defineComponent({
 
 		function emitValue(event: InputEvent) {
 			const value = (event.target as HTMLInputElement).value;
-			emit('input', value);
+
+			if (props.nullable === true && value === '') {
+				emit('input', null);
+			} else {
+				emit('input', value);
+			}
 		}
 
 		function trimIfEnabled() {
@@ -98,7 +107,7 @@ body {
 	height: var(--v-textarea-height);
 	min-height: var(--v-textarea-min-height);
 	max-height: var(--v-textarea-max-height);
-	background-color: var(--background-page);
+	background-color: var(--background-input);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 	transition: border-color var(--fast) var(--transition);

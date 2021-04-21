@@ -14,6 +14,7 @@ columns:
   project_color:
     type: string
     length: 10
+    default: '#00C897'
   project_logo:
     type: uuid
     references:

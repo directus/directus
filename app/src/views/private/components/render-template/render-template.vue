@@ -42,7 +42,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const fieldsStore = useFieldsStore();
-		const displays = getDisplays();
+		const { displays } = getDisplays();
 
 		const regex = /({{.*?}})/g;
 

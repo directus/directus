@@ -1,17 +1,17 @@
 import InterfaceNumeric from './numeric.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'numeric',
-	name: i18n.t('interfaces.numeric.numeric'),
-	description: i18n.t('interfaces.numeric.description'),
+	name: '$t:interfaces.numeric.numeric',
+	description: '$t:interfaces.numeric.description',
 	icon: 'dialpad',
 	component: InterfaceNumeric,
 	types: ['integer', 'decimal', 'float', 'bigInteger'],
 	options: [
 		{
 			field: 'min',
-			name: i18n.t('interfaces.numeric.minimum_value'),
+			name: '$t:interfaces.numeric.minimum_value',
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -20,7 +20,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'max',
-			name: i18n.t('interfaces.numeric.maximum_value'),
+			name: '$t:interfaces.numeric.maximum_value',
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -29,7 +29,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'step',
-			name: i18n.t('interfaces.numeric.step_interval'),
+			name: '$t:interfaces.numeric.step_interval',
 			type: 'integer',
 			meta: {
 				width: 'half',
@@ -41,19 +41,19 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'placeholder',
-			name: i18n.t('placeholder'),
+			name: '$t:placeholder',
 			type: 'string',
 			meta: {
 				width: 'half',
 				interface: 'text-input',
 				options: {
-					placeholder: i18n.t('enter_a_placeholder'),
+					placeholder: '$t:enter_a_placeholder',
 				},
 			},
 		},
 		{
 			field: 'iconLeft',
-			name: i18n.t('icon_left'),
+			name: '$t:icon_left',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -62,7 +62,7 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'iconRight',
-			name: i18n.t('icon_right'),
+			name: '$t:icon_right',
 			type: 'string',
 			meta: {
 				width: 'half',
@@ -71,16 +71,16 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'font',
-			name: i18n.t('font'),
+			name: '$t:font',
 			type: 'string',
 			meta: {
 				width: 'half',
 				interface: 'dropdown',
 				options: {
 					choices: [
-						{ text: i18n.t('sans_serif'), value: 'sans-serif' },
-						{ text: i18n.t('monospace'), value: 'monospace' },
-						{ text: i18n.t('serif'), value: 'serif' },
+						{ text: '$t:sans_serif', value: 'sans-serif' },
+						{ text: '$t:monospace', value: 'monospace' },
+						{ text: '$t:serif', value: 'serif' },
 					],
 				},
 			},
@@ -89,4 +89,4 @@ export default defineInterface(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

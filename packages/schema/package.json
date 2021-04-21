@@ -1,50 +1,50 @@
 {
-  "name": "@directus/schema",
-  "version": "9.0.0-rc.40",
-  "description": "Utility for extracting information about existing DB schema",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc --build && echo \"Built successfully\"",
-    "prepare": "npm run build",
-    "test": "npm run lint && ts-mocha test/**/*.spec.ts",
-    "dev": "npm-watch build",
-    "lint": "eslint \"src/**/*.ts\""
-  },
-  "watch": {
-    "build": {
-      "patterns": [
-        "src"
-      ],
-      "extensions": "ts",
-      "quiet": true,
-      "silent": true
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/directus/directus.git"
-  },
-  "keywords": [
-    "sql",
-    "knex",
-    "schema",
-    "mysql",
-    "postgresql",
-    "sqlite3",
-    "javascript"
-  ],
-  "author": "Rijk van Zanten <rijkvanzanten@me.com>",
-  "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/directus/directus/issues"
-  },
-  "homepage": "https://github.com/directus/directus#readme",
-  "devDependencies": {
-    "npm-watch": "^0.7.0",
-    "typescript": "^3.9.5"
-  },
-  "peerDependencies": {
-    "knex": "^0.21.12"
-  }
+	"name": "@directus/schema",
+	"version": "9.0.0-rc.59",
+	"description": "Utility for extracting information about existing DB schema",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc --build && echo \"Built successfully\"",
+		"prepare": "npm run build",
+		"dev": "npm-watch build"
+	},
+	"watch": {
+		"build": {
+			"patterns": [
+				"src/*"
+			],
+			"extensions": "ts",
+			"quiet": true,
+			"silent": true
+		}
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/directus/directus.git"
+	},
+	"keywords": [
+		"sql",
+		"knex",
+		"schema",
+		"mysql",
+		"postgresql",
+		"sqlite3",
+		"javascript"
+	],
+	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
+	"license": "GPL-3.0",
+	"bugs": {
+		"url": "https://github.com/directus/directus/issues"
+	},
+	"homepage": "https://github.com/directus/directus#readme",
+	"devDependencies": {
+		"npm-watch": "^0.7.0",
+		"typescript": "^4.0.5"
+	},
+	"dependencies": {
+		"knex-schema-inspector": "^1.2.0",
+		"lodash": "^4.17.21"
+	},
+	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"
 }

@@ -24,7 +24,7 @@
 
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.tabular.fields') }}</div>
-				<draggable v-model="activeFields" handle=".drag-handle" :set-data="hideDragImage">
+				<draggable v-model="activeFields" handle=".drag-handle" :set-data="hideDragImage" :force-fallback="true">
 					<v-checkbox
 						v-for="field in activeFields"
 						v-model="fields"
@@ -113,7 +113,12 @@
 
 					<div v-if="loading === false && items.length >= 25" class="per-page">
 						<span>{{ $t('per_page') }}</span>
-						<v-select @input="limit = +$event" :value="`${limit}`" :items="['25', '50', '100', '250']" inline />
+						<v-select
+							@input="limit = +$event"
+							:value="`${limit}`"
+							:items="['25', '50', '100', '250', '500', ' 1000']"
+							inline
+						/>
 					</div>
 				</div>
 			</template>
@@ -221,14 +226,17 @@ export default defineComponent({
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
 
-		const { items, loading, error, totalPages, itemCount, changeManualSort, getItems } = useItems(collection, {
-			sort,
-			limit,
-			page,
-			fields: fieldsWithRelational,
-			filters: _filters,
-			searchQuery: _searchQuery,
-		});
+		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
+			collection,
+			{
+				sort,
+				limit,
+				page,
+				fields: fieldsWithRelational,
+				filters: _filters,
+				searchQuery: _searchQuery,
+			}
+		);
 
 		const {
 			tableSort,
@@ -241,6 +249,19 @@ export default defineComponent({
 		} = useTable();
 
 		const showingCount = computed(() => {
+			if ((itemCount.value || 0) < (totalCount.value || 0)) {
+				if (itemCount.value === 1) {
+					return i18n.t('one_filtered_item');
+				}
+				return i18n.t('start_end_of_count_filtered_items', {
+					start: i18n.n((+page.value - 1) * limit.value + 1),
+					end: i18n.n(Math.min(page.value * limit.value, itemCount.value || 0)),
+					count: i18n.n(itemCount.value || 0),
+				});
+			}
+			if (itemCount.value === 1) {
+				return i18n.t('one_item');
+			}
 			return i18n.t('start_end_of_count_items', {
 				start: i18n.n((+page.value - 1) * limit.value + 1),
 				end: i18n.n(Math.min(page.value * limit.value, itemCount.value || 0)),
@@ -283,6 +304,7 @@ export default defineComponent({
 			page,
 			toPage,
 			itemCount,
+			totalCount,
 			fieldsInCollection,
 			fields,
 			limit,
@@ -374,6 +396,11 @@ export default defineComponent({
 						fieldsInCollection.value
 							.filter((field) => !!field.meta?.hidden === false)
 							.slice(0, 4)
+							.sort((a?: Field, b?: Field) => {
+								if (a!.field < b!.field) return -1;
+								else if (a!.field > b!.field) return 1;
+								else return 1;
+							})
 							.map(({ field }) => field);
 
 					return fields;
@@ -441,7 +468,10 @@ export default defineComponent({
 							type: field.type,
 							field: field.field,
 						},
-						sortable: ['json', 'o2m', 'm2o', 'file', 'files', 'alias', 'presentation'].includes(field.type) === false,
+						sortable:
+							['json', 'o2m', 'm2o', 'm2m', 'm2a', 'file', 'files', 'alias', 'presentation', 'translations'].includes(
+								field.type
+							) === false,
 					}));
 				},
 				set(val) {
@@ -507,7 +537,7 @@ export default defineComponent({
 					const primaryKey = item[primaryKeyField.value!.field];
 
 					// eslint-disable-next-line @typescript-eslint/no-empty-function
-					router.push(`/collections/${collection.value}/${primaryKey}`, () => {});
+					router.push(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`, () => {});
 				}
 			}
 

@@ -60,8 +60,8 @@
 			</template>
 
 			<template #input>
-				<div class="label">
-					<span class="name" v-tooltip="field.name">
+				<div class="label" v-tooltip="field.name + ' (' + interfaceName + ')'">
+					<span class="name">
 						{{ field.field }}
 						<v-icon name="star" class="required" sup v-if="field.schema && field.schema.is_nullable === false" />
 					</span>
@@ -218,7 +218,7 @@ export default defineComponent({
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
-		const interfaces = getInterfaces();
+		const { interfaces } = getInterfaces();
 
 		const editActive = ref(false);
 
@@ -443,9 +443,9 @@ export default defineComponent({
 .group {
 	position: relative;
 	padding: var(--input-padding);
-	background-color: var(--background-subdued);
-	border: 2px solid var(--border-normal);
+	background-color: var(--card-face-color);
 	border-radius: var(--border-radius);
+	box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
 
 	.header {
 		display: flex;
@@ -476,9 +476,23 @@ export default defineComponent({
 }
 
 .field {
+	--input-height: 48px;
+	--input-padding: 8px;
+
+	::v-deep .input {
+		background-color: var(--card-face-color);
+		border: none;
+		box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2);
+
+		&:hover {
+			background-color: var(--card-face-color);
+		}
+	}
+
 	.label {
 		flex-grow: 1;
 		overflow: hidden;
+		white-space: nowrap;
 		text-overflow: ellipsis;
 
 		.name {
@@ -487,8 +501,8 @@ export default defineComponent({
 
 		.interface {
 			display: none;
-			margin-left: 4px;
 			color: var(--foreground-subdued);
+			font-family: var(--family-monospace);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 

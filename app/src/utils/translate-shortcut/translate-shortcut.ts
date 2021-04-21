@@ -9,6 +9,7 @@ export default function translateShortcut(keys: string[]) {
 				if (key === 'meta') return '⌘';
 				if (key === 'option') return '⌥';
 				if (key === 'shift') return '⇧';
+				if (key === 'alt') return '⌥';
 				return capitalizeFirst(key);
 			})
 			.join('');

@@ -5,14 +5,13 @@ import { MetaService, FilesService } from '../services';
 import { File, PrimaryKey } from '../types';
 import formatTitle from '@directus/format-title';
 import env from '../env';
-import axios from 'axios';
 import Joi from 'joi';
-import { InvalidPayloadException, ForbiddenException, FailedValidationException } from '../exceptions';
-import url from 'url';
+import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import path from 'path';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
 import { toArray } from '../utils/to-array';
+import { validateBatch } from '../middleware/validate-batch';
 
 const router = express.Router();
 
@@ -68,7 +67,7 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 		};
 
 		try {
-			const primaryKey = await service.upload(fileStream, payloadWithRequiredFields, existingPrimaryKey);
+			const primaryKey = await service.uploadOne(fileStream, payloadWithRequiredFields, existingPrimaryKey);
 			savedFiles.push(primaryKey);
 			tryDone();
 		} catch (error) {
@@ -107,15 +106,23 @@ router.post(
 		if (req.is('multipart/form-data')) {
 			keys = res.locals.savedFiles;
 		} else {
-			keys = await service.create(req.body);
+			keys = await service.createOne(req.body);
 		}
 
 		try {
-			const record = await service.readByKey(keys as any, req.sanitizedQuery);
+			if (Array.isArray(keys)) {
+				const records = await service.readMany(keys, req.sanitizedQuery);
 
-			res.locals.payload = {
-				data: record,
-			};
+				res.locals.payload = {
+					data: records,
+				};
+			} else {
+				const record = await service.readOne(keys, req.sanitizedQuery);
+
+				res.locals.payload = {
+					data: record,
+				};
+			}
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
 				return next();
@@ -148,25 +155,10 @@ router.post(
 			schema: req.schema,
 		});
 
-		const fileResponse = await axios.get<NodeJS.ReadableStream>(req.body.url, {
-			responseType: 'stream',
-		});
-
-		const parsedURL = url.parse(fileResponse.request.res.responseUrl);
-		const filename = path.basename(parsedURL.pathname as string);
-
-		const payload = {
-			filename_download: filename,
-			storage: toArray(env.STORAGE_LOCATIONS)[0],
-			type: fileResponse.headers['content-type'],
-			title: formatTitle(filename),
-			...(req.body.data || {}),
-		};
-
-		const primaryKey = await service.upload(fileResponse.data, payload);
+		const primaryKey = await service.importOne(req.body.url, req.body.data);
 
 		try {
-			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 			res.locals.payload = { data: record || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
@@ -181,36 +173,45 @@ router.post(
 	respond
 );
 
-router.get(
-	'/',
-	asyncHandler(async (req, res, next) => {
-		const service = new FilesService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-		const metaService = new MetaService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+const readHandler = asyncHandler(async (req, res, next) => {
+	const service = new FilesService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const records = await service.readByQuery(req.sanitizedQuery);
-		const meta = await metaService.getMetaForQuery('directus_files', req.sanitizedQuery);
+	const metaService = new MetaService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		res.locals.payload = { data: records || null, meta };
-		return next();
-	}),
-	respond
-);
+	let result;
+
+	if (req.singleton) {
+		result = await service.readSingleton(req.sanitizedQuery);
+	} else if (req.body.keys) {
+		result = await service.readMany(req.body.keys, req.sanitizedQuery);
+	} else {
+		result = await service.readByQuery(req.sanitizedQuery);
+	}
+
+	const meta = await metaService.getMetaForQuery('directus_files', req.sanitizedQuery);
+
+	res.locals.payload = { data: result, meta };
+	return next();
+});
+
+router.get('/', validateBatch('read'), readHandler, respond);
+router.search('/', validateBatch('read'), readHandler, respond);
 
 router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const record = await service.readByKey(keys as any, req.sanitizedQuery);
+
+		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
 		res.locals.payload = { data: record || null };
 		return next();
 	}),
@@ -219,44 +220,23 @@ router.get(
 
 router.patch(
 	'/',
+	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		if (Array.isArray(req.body)) {
-			const primaryKeys = await service.update(req.body);
+		let keys: PrimaryKey[] = [];
 
-			try {
-				const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
-				res.locals.payload = { data: result || null };
-			} catch (error) {
-				if (error instanceof ForbiddenException) {
-					return next();
-				}
-
-				throw error;
-			}
-
-			return next();
+		if (req.body.keys) {
+			keys = await service.updateMany(req.body.keys, req.body.data);
+		} else {
+			keys = await service.updateByQuery(req.body.query, req.body.data);
 		}
-
-		const updateSchema = Joi.object({
-			keys: Joi.array().items(Joi.alternatives(Joi.string(), Joi.number())).required(),
-			data: Joi.object().required().unknown(),
-		});
-
-		const { error } = updateSchema.validate(req.body);
-
-		if (error) {
-			throw new FailedValidationException(error.details[0]);
-		}
-
-		const primaryKeys = await service.update(req.body.data, req.body.keys);
 
 		try {
-			const result = await service.readByKey(primaryKeys, req.sanitizedQuery);
+			const result = await service.readMany(keys, req.sanitizedQuery);
 			res.locals.payload = { data: result || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
@@ -279,17 +259,11 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		let keys: PrimaryKey | PrimaryKey[] = [];
 
-		if (req.is('multipart/form-data')) {
-			keys = res.locals.savedFiles;
-		} else {
-			keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
-			await service.update(req.body, keys as any);
-		}
+		await service.updateOne(req.params.pk, req.body);
 
 		try {
-			const record = await service.readByKey(keys as any, req.sanitizedQuery);
+			const record = await service.readOne(req.params.pk, req.sanitizedQuery);
 			res.locals.payload = { data: record || null };
 		} catch (error) {
 			if (error instanceof ForbiddenException) {
@@ -306,16 +280,21 @@ router.patch(
 
 router.delete(
 	'/',
+	validateBatch('delete'),
 	asyncHandler(async (req, res, next) => {
-		if (!req.body || Array.isArray(req.body) === false) {
-			throw new InvalidPayloadException(`Body has to be an array of primary keys`);
-		}
-
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.delete(req.body as PrimaryKey[]);
+
+		if (Array.isArray(req.body)) {
+			await service.deleteMany(req.body);
+		} else if (req.body.keys) {
+			await service.deleteMany(req.body.keys);
+		} else {
+			await service.deleteByQuery(req.body.query);
+		}
+
 		return next();
 	}),
 	respond
@@ -324,12 +303,13 @@ router.delete(
 router.delete(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const keys = req.params.pk.includes(',') ? req.params.pk.split(',') : req.params.pk;
 		const service = new FilesService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		await service.delete(keys as any);
+
+		await service.deleteOne(req.params.pk);
+
 		return next();
 	}),
 	respond

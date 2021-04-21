@@ -40,6 +40,7 @@
 				</tr>
 			</tbody>
 			<draggable
+				:force-fallback="true"
 				v-else
 				v-model="_items"
 				tag="tbody"
@@ -61,7 +62,12 @@
 					:has-click-listener="!disabled && hasRowClick"
 					:height="rowHeight"
 					@click="hasRowClick ? $emit('click:row', item) : null"
-					@item-selected="onItemSelected"
+					@item-selected="
+						onItemSelected({
+							item: item,
+							value: !getSelectedState(item),
+						})
+					"
 				>
 					<template v-for="header in _headers" #[`item.${header.value}`]>
 						<slot :item="item" :name="`item.${header.value}`" />
@@ -380,7 +386,7 @@ body {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
 	--v-table-color: var(--foreground-normal);
-	--v-table-background-color: var(--background-page);
+	--v-table-background-color: var(--background-input);
 }
 </style>
 
@@ -410,10 +416,6 @@ body {
 				grid-template-columns: var(--grid-columns);
 			}
 
-			.loading-indicator {
-				position: relative;
-			}
-
 			td,
 			th {
 				color: var(--v-table-color);
@@ -428,6 +430,15 @@ body {
 
 				&.align-right {
 					text-align: right;
+				}
+			}
+
+			.loading-indicator {
+				position: relative;
+				z-index: 3;
+
+				> th {
+					margin-right: var(--content-padding);
 				}
 			}
 
@@ -474,6 +485,7 @@ body {
 	.loading-text,
 	.no-items-text {
 		text-align: center;
+		background-color: var(--background-input);
 
 		td {
 			padding: 16px;

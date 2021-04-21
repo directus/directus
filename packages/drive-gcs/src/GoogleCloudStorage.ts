@@ -23,7 +23,12 @@ import {
 	UnknownException,
 	AuthorizationRequired,
 	WrongKeyPath,
+	Range,
 } from '@directus/drive';
+
+import path from 'path';
+
+import normalize from 'normalize-path';
 
 function handleError(err: Error & { code?: number | string }, path: string): Error {
 	switch (err.code) {
@@ -44,6 +49,7 @@ export class GoogleCloudStorage extends Storage {
 	protected $config: GoogleCloudStorageConfig;
 	protected $driver: GCSDriver;
 	protected $bucket: Bucket;
+	protected $root: string;
 
 	public constructor(config: GoogleCloudStorageConfig) {
 		super();
@@ -51,10 +57,18 @@ export class GoogleCloudStorage extends Storage {
 		const GCSStorage = require('@google-cloud/storage').Storage;
 		this.$driver = new GCSStorage(config);
 		this.$bucket = this.$driver.bucket(config.bucket);
+		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
 	}
 
-	private _file(path: string): File {
-		return this.$bucket.file(path);
+	/**
+	 * Prefixes the given filePath with the storage root location
+	 */
+	protected _fullPath(filePath: string) {
+		return normalize(path.join(this.$root, filePath));
+	}
+
+	private _file(filePath: string): File {
+		return this.$bucket.file(this._fullPath(filePath));
 	}
 
 	/**
@@ -169,8 +183,8 @@ export class GoogleCloudStorage extends Storage {
 	/**
 	 * Returns the stream for the given file.
 	 */
-	public getStream(location: string): NodeJS.ReadableStream {
-		return this._file(location).createReadStream();
+	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
+		return this._file(location).createReadStream({ start: range?.start, end: range?.end });
 	}
 
 	/**
@@ -179,7 +193,7 @@ export class GoogleCloudStorage extends Storage {
 	 * status.
 	 */
 	public getUrl(location: string): string {
-		return `https://storage.googleapis.com/${this.$bucket.name}/${location}`;
+		return `https://storage.googleapis.com/${this.$bucket.name}/${this._fullPath(location)}`;
 	}
 
 	/**
@@ -222,6 +236,8 @@ export class GoogleCloudStorage extends Storage {
 	 * Iterate over all files in the bucket.
 	 */
 	public async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
+		prefix = this._fullPath(prefix);
+
 		let nextQuery: GetFilesOptions | undefined = {
 			prefix,
 			autoPaginate: false,
@@ -236,7 +252,7 @@ export class GoogleCloudStorage extends Storage {
 				for (const file of result[0]) {
 					yield {
 						raw: file.metadata,
-						path: file.name,
+						path: file.name.substring(this.$root.length),
 					};
 				}
 			} catch (e) {
@@ -248,4 +264,5 @@ export class GoogleCloudStorage extends Storage {
 
 export interface GoogleCloudStorageConfig extends StorageOptions {
 	bucket: string;
+	root?: string;
 }

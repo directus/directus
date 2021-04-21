@@ -8,6 +8,7 @@ import { types, Field } from '../types';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
 import { ALIAS_TYPES } from '../constants';
+import { reduceSchema } from '../utils/reduce-schema';
 
 const router = Router();
 
@@ -53,8 +54,6 @@ router.get(
 			schema: req.schema,
 		});
 
-		if (req.params.field in req.schema.tables[req.params.collection].columns === false) throw new ForbiddenException();
-
 		const field = await service.readOne(req.params.collection, req.params.field);
 
 		res.locals.payload = { data: field || null };
@@ -74,7 +73,9 @@ const newFieldSchema = Joi.object({
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
 		is_nullable: Joi.bool(),
-	}).unknown(),
+	})
+		.unknown()
+		.allow(null),
 	meta: Joi.any(),
 });
 
@@ -158,7 +159,9 @@ const updateSchema = Joi.object({
 		default_value: Joi.any(),
 		max_length: [Joi.number(), Joi.string(), Joi.valid(null)],
 		is_nullable: Joi.bool(),
-	}).unknown(),
+	})
+		.unknown()
+		.allow(null),
 	meta: Joi.any(),
 }).unknown();
 

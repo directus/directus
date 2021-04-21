@@ -1,12 +1,133 @@
 ---
+edit_field: Rediger Felt
+item_revision: Genstandsrevision
+duplicate_field: Dupliker Felt
+half_width: Halv Bredde
 full_width: Fuld Bredde
+fill_width: Fuld Bredde
+field_name_translations: Oversættelse af feltnavn
+enter_password_to_enable_tfa: Indtast dit kodeord for at aktivere To-faktor-godkendelse (2FA)
+add_field: Tilføj Felt
+role_name: Rollenavn
+db_only_click_to_configure: 'Kun i databasen: Klik for at konfigurere '
+show_archived_items: Vis arkiverede element
+edited: Værdi Ændret
 required: Påkrævet
+required_for_app_access: Påkrævet for App adgang
+requires_value: Påkrævet værdi
+create_preset: Opret forudindstilling
 create_role: Opret Rolle
+create_user: Opret bruger
+create_webhook: Opret Webhook
+invite_users: Inviter brugere
+email_examples: 'admin@eksempel.dk, bruger@eksempel.dk...'
+invite: Inviter
+emails: E-mail
+connection_excellent: Udmærket forbindelse
+connection_good: God forbindelse
+connection_fair: Ok forbindelse
+connection_poor: Dårlig forbindelse
+primary: Primær
+rename_folder: Omdøb mappe
+delete_folder: Slet mappe
+prefix: Præfiks
+suffix: Suffiks
+reset_bookmark: Nustil bogmærke
+rename_bookmark: Omdøb bogmærke
+update_bookmark: Opdater bogmærke
 delete_bookmark: Slet Bogmærke
+delete_bookmark_copy: >-
+  Er du sikker på at du vil slette "{bookmark}"-bogmærket? Denne handling kan ikke fortrydes.
+logoutReason:
+  SIGN_OUT: Logget ud
+  SESSION_EXPIRED: Sessionen er udløbet
+public: Offentlig
+public_description: Kontrollerer, hvilke API-data der er tilgængelige uden godkendelse.
+not_allowed: Ikke tilladt
 directus_version: Directus Version
+node_version: Node version
+node_uptime: Node Oppetid
+os_type: OS type
+os_version: OS version
+os_uptime: OS oppetid
+os_totalmem: OS hukommelse
+archive: Arkiver
+archive_confirm: Er du sikker på at du vil arkivere dette element?
+archive_confirm_count: >-
+  Ingen elementer valgt | Er du sikker på at du vil arkivere dette element? | Er du sikker på du vil arkiverer disse {count} elementer?
+reset_system_permissions_to: 'Nulstil systemtilladelser til:'
+reset_system_permissions_copy: Denne handling vil overskrive eventuelle tilpassede tilladelser, du måtte have anvendt på systemsamlingerne. Er du sikker?
+the_following_are_minimum_permissions: Følgende er minimum tilladelser der kræves, når "App Adgang" er aktiveret. Du kan udvide tilladelser ud over dette, men ikke nedenfor.
+app_access_minimum: Minimum App-adgang
+recommended_defaults: Anbefalede Standarder
+unarchive: Fjern fra arkiv
+unarchive_confirm: Er du sikker på, at du vil fjerne arkiveringen af dette element?
+nested_files_folders_will_be_moved: Indlejrede filer og mapper vil blive flyttet et niveau op.
+unknown_validation_errors: 'Der var valideringsfejl for følgende skjulte felter:'
+validationError:
+  eq: Værdien skal være {valid}
+  neq: Værdi kan ikke være {invalid}
+  in: Værdien skal være en af {valid}
+  nin: Værdi kan ikke være en af {invalid}
+  contains: Værdien skal indeholde {substring}
+  ncontains: Værdi kan ikke indeholde {substring}
+  gt: Værdien skal være større end {valid}
+  gte: Værdien skal være større end eller lig med {valid}
+  lt: Værdien skal være mindre end {valid}
+  lte: Værdien skal være mindre end eller lig med {valid}
+  empty: Værdien skal være tom
+  nempty: Værdien må ikke være tom
+  null: Værdien skal være null
+  nnull: Værdien kan ikke være null
+  required: Værdi er påkrævet
+all_access: Alle Adgang
+no_access: Ingen Adgang
+use_custom: Brug Brugerdefineret
+field_standard: Standard
+field_presentation: Presentation & Aliases
+field_m2o: M2O Forhold
+field_m2a: M2A Forhold
+field_o2m: O2M Forhold
+field_m2m: M2M Forhold
+item_permissions: Element Tilladelser
+field_permissions: Felt Tilladelser
+field_validation: Felt Validering
+field_presets: Felt Forudindstillinger
+permissions_for_role: 'Elementer {role} Rollen kan {action}.'
+fields_for_role: 'Felter {role} Rollen kan {action}.'
+validation_for_role: 'Felt {action} reglerne for {role} Rollen skal adlyde.'
+presets_for_role: 'Feltets værdi er standard for {role} Rollen.'
+presentation_and_aliases: Presentation & Aliases
+revision_post_update: Her er hvad dette element så ud som, efter opdateringen...
+changes_made: Disse er de specifikke ændringer, der blev lavet...
+no_relational_data: Husk, at dette ikke omfatter relationelle data.
+hide_field_on_detail: Skjul felt på detalje
+show_field_on_detail: Vis felt på detalje
+delete_field: Slet Felt
+fields_and_layout: Felter & Layout
+field_create_success: 'Oprettet Felt: "{field}"'
+field_update_success: 'Opdateret Felt: "{field}"'
+duplicate_where_to: Hvor vil du kopiere dette felt til?
 language: Sprog
+global: Globalt
+admins_have_all_permissions: Admins har alle tilladelser
+camera: Kamera
+exposure: Eksponering
+shutter: Lukker
+iso: ISO
+focal_length: Fokal Længde
+schema_setup_key: Dette felts database kolonne-navn og API-nøgle
 create_field: Opret felt
+creating_new_field: 'Nyt Felt ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Nulstil Sideindstillinger
+hidden_field: Skjult Felt
 hidden_on_detail: Skjult på detalje
+disabled_editing_value: Deaktiver redigering af værdi
+key: Nøgle
+alias: Alias
+bigInteger: Big Integer
+boolean: Boolean
 date: Dato
 text: Tekst
 auto_generate: Auto- Generér
@@ -25,7 +146,20 @@ notifications: Notifikationer
 page_not_found: Siden blev ikke fundet
 page_not_found_body: Den side, du leder efter, synes ikke at eksistere.
 title: Titel
+revision_delta_created: Oprettet
+revision_delta_created_externally: Oprettet Eksternt
+revision_delta_updated: 'Opdateret 1 Felt | Opdaterede {count} felter'
+revision_delta_deleted: Slettet
+revision_delta_reverted: Omvendt
+revision_delta_other: Revision
+revision_delta_by: '{date} af {user}'
+private_user: Privat Bruger
+revision_preview: Revision Forhåndsvisning
+updates_made: Opdateringer Lavet
 leave_comment: Skriv en kommentar...
+post_comment_success: Kommentar sendt
+item_create_success: Element oprettet | Elementer oprettet
+item_update_success: Element opdateret | Elementer opdateret
 this_collection: Denne Samling
 related_collection: Relateret Samling
 format: Format
@@ -43,6 +177,7 @@ months:
   october: Oktober
   november: November
   december: December
+created: Oprettet
 checksum: Kontrolsum
 owner: Ejer
 download: Download
@@ -85,6 +220,8 @@ on_update: Ved Opdatering
 read: Læs
 update: Opdater
 select_fields: Vælg felter
+width: Bredde
+height: Højde
 wysiwyg_options:
   codeblock: Kode
   remove: Fjern
@@ -157,8 +294,10 @@ fields:
   directus_fields:
     note: Kommentar
     hidden: Skjult
+    translation: Oversættelse af feltnavn
     display_template: Skabelon
   directus_roles:
+    name: Rollenavn
     description: Beskrivelse
 comment: Kommenter
 continue: Forsæt
@@ -206,6 +345,8 @@ template: Skabelon
 translation: Oversættelse
 value: Værdi
 interfaces:
+  button-links:
+    primary: Primær
   checkboxes:
     checkboxes: Afkrydsningsfelter
     allow_other: Tillad Andre
@@ -235,6 +376,8 @@ interfaces:
   tags:
     tags: Tags
 displays:
+  boolean:
+    boolean: Boolean
   collection:
     collection: Samling
   color:

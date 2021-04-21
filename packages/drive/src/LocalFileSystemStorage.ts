@@ -1,10 +1,18 @@
 import * as fse from 'fs-extra';
-import { promises as fs } from 'fs';
+//import { promises as fs } from 'fs';
 import { dirname, join, resolve, relative, sep } from 'path';
 import Storage from './Storage';
 import { isReadableStream, pipeline } from './utils';
 import { FileNotFound, UnknownException, PermissionMissing } from './exceptions';
-import { Response, ExistsResponse, ContentResponse, StatResponse, FileListResponse, DeleteResponse } from './types';
+import {
+	Response,
+	ExistsResponse,
+	ContentResponse,
+	StatResponse,
+	FileListResponse,
+	DeleteResponse,
+	Range,
+} from './types';
 
 function handleError(err: Error & { code: string; path?: string }, location: string): Error {
 	switch (err.code) {
@@ -136,8 +144,11 @@ export class LocalFileSystemStorage extends Storage {
 	/**
 	 * Returns a read stream for a file location.
 	 */
-	public getStream(location: string): NodeJS.ReadableStream {
-		return fse.createReadStream(this._fullPath(location));
+	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
+		return fse.createReadStream(this._fullPath(location), {
+			start: range?.start,
+			end: range?.end,
+		});
 	}
 
 	/**
@@ -203,7 +214,7 @@ export class LocalFileSystemStorage extends Storage {
 		const prefixDirectory = prefix[prefix.length - 1] === sep ? prefix : dirname(prefix);
 
 		try {
-			const dir = await fs.opendir(prefixDirectory);
+			const dir = await fse.opendir(prefixDirectory);
 
 			for await (const file of dir) {
 				const fileName = join(prefixDirectory, file.name);

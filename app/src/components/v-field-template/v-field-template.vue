@@ -39,6 +39,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		nullable: {
+			type: Boolean,
+			default: true,
+		},
 		collection: {
 			type: String,
 			required: true,
@@ -223,7 +227,7 @@ export default defineComponent({
 		function getInputValue() {
 			if (!contentEl.value) return null;
 
-			return Array.from(contentEl.value.childNodes).reduce((acc, node) => {
+			const value = Array.from(contentEl.value.childNodes).reduce((acc, node) => {
 				const el = node as HTMLElement;
 				const tag = el.tagName;
 
@@ -234,6 +238,12 @@ export default defineComponent({
 
 				return (acc += '');
 			}, '');
+
+			if (props.nullable === true && value === '') {
+				return null;
+			}
+
+			return value;
 		}
 
 		function setContent() {
@@ -261,7 +271,7 @@ export default defineComponent({
 
 						if (!field) return '';
 
-						return `<button contenteditable="false" data-field="${field.field}">${field.name}</button>`;
+						return `<button contenteditable="false" data-field="${fieldKey}">${field.name}</button>`;
 					})
 					.join('');
 				contentEl.value.innerHTML = newInnerHTML;
@@ -278,6 +288,7 @@ export default defineComponent({
 	height: 100%;
 	padding: var(--input-padding) 0;
 	overflow: hidden;
+	font-size: 14px;
 	font-family: var(--family-monospace);
 	white-space: nowrap;
 
@@ -297,8 +308,8 @@ export default defineComponent({
 		}
 
 		button {
-			margin: 0 4px;
-			padding: 0 4px;
+			margin: -1px 4px 0; // top offset for monospace
+			padding: 2px 4px 0; // top offset for monospace
 			color: var(--primary);
 			background-color: var(--primary-alt);
 			border-radius: var(--border-radius);

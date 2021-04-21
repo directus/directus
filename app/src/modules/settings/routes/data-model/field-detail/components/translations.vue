@@ -1,7 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('configure_m2m') }}</v-notice>
-
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
@@ -333,12 +331,12 @@ export default defineComponent({
 		pointer-events: none;
 
 		&:first-of-type {
-			bottom: 141px;
+			bottom: 161px;
 			left: 32.5%;
 		}
 
 		&:last-of-type {
-			bottom: 76px;
+			bottom: 89px;
 			left: 67.4%;
 		}
 	}

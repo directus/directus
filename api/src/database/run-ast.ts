@@ -4,16 +4,34 @@ import database from './index';
 import { Query, Item, SchemaOverview } from '../types';
 import { PayloadService } from '../services/payload';
 import applyQuery from '../utils/apply-query';
-import Knex, { QueryBuilder } from 'knex';
+import { Knex } from 'knex';
 import { toArray } from '../utils/to-array';
 
 type RunASTOptions = {
+	/**
+	 * Query override for the current level
+	 */
 	query?: AST['query'];
+
+	/**
+	 * Knex instance
+	 */
 	knex?: Knex;
+
+	/**
+	 * Whether or not the current execution is a nested dataset in another AST
+	 */
 	nested?: boolean;
+
+	/**
+	 * Whether or not to strip out non-requested required fields automatically (eg IDs / FKs)
+	 */
 	stripNonRequested?: boolean;
 };
 
+/**
+ * Execute a given AST using Knex. Returns array of items based on requested AST.
+ */
 export default async function runAST(
 	originalAST: AST | NestedCollectionNode,
 	schema: SchemaOverview,
@@ -93,16 +111,16 @@ async function parseCurrentLevel(
 	children: (NestedCollectionNode | FieldNode)[],
 	schema: SchemaOverview
 ) {
-	const primaryKeyField = schema.tables[collection].primary;
-	const columnsInCollection = Object.keys(schema.tables[collection].columns);
+	const primaryKeyField = schema.collections[collection].primary;
+	const columnsInCollection = Object.keys(schema.collections[collection].fields);
 
-	const columnsToSelect: string[] = [];
+	const columnsToSelectInternal: string[] = [];
 	const nestedCollectionNodes: NestedCollectionNode[] = [];
 
 	for (const child of children) {
 		if (child.type === 'field') {
 			if (columnsInCollection.includes(child.name) || child.name === '*') {
-				columnsToSelect.push(child.name);
+				columnsToSelectInternal.push(child.name);
 			}
 
 			continue;
@@ -111,26 +129,29 @@ async function parseCurrentLevel(
 		if (!child.relation) continue;
 
 		if (child.type === 'm2o') {
-			columnsToSelect.push(child.relation.many_field);
+			columnsToSelectInternal.push(child.relation.many_field);
 		}
 
 		if (child.type === 'm2a') {
-			columnsToSelect.push(child.relation.many_field);
-			columnsToSelect.push(child.relation.one_collection_field!);
+			columnsToSelectInternal.push(child.relation.many_field);
+			columnsToSelectInternal.push(child.relation.one_collection_field!);
 		}
 
 		nestedCollectionNodes.push(child);
 	}
 
 	/** Always fetch primary key in case there's a nested relation that needs it */
-	if (columnsToSelect.includes(primaryKeyField) === false) {
-		columnsToSelect.push(primaryKeyField);
+	if (columnsToSelectInternal.includes(primaryKeyField) === false) {
+		columnsToSelectInternal.push(primaryKeyField);
 	}
+
+	/** Make sure select list has unique values */
+	const columnsToSelect = [...new Set(columnsToSelectInternal)];
 
 	return { columnsToSelect, nestedCollectionNodes, primaryKeyField };
 }
 
-async function getDBQuery(
+function getDBQuery(
 	knex: Knex,
 	table: string,
 	columns: string[],
@@ -138,7 +159,7 @@ async function getDBQuery(
 	primaryKeyField: string,
 	schema: SchemaOverview,
 	nested?: boolean
-): Promise<QueryBuilder> {
+): Knex.QueryBuilder {
 	let dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
 
 	const queryCopy = clone(query);
@@ -152,14 +173,7 @@ async function getDBQuery(
 		delete queryCopy.limit;
 	}
 
-	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
-
-	await applyQuery(table, dbQuery, queryCopy, schema);
-
-	// Nested filters use joins to filter on the parent level, to prevent duplicate
-	// parents, we group the query by the current tables primary key (which is unique)
-	// ref #3798
-	dbQuery.groupBy(`${table}.${primaryKeyField}`);
+	applyQuery(table, dbQuery, queryCopy, schema);
 
 	return dbQuery;
 }
@@ -187,6 +201,10 @@ function applyParentFilters(nestedCollectionNodes: NestedCollectionNode[], paren
 
 			if (relatedM2OisFetched === false) {
 				nestedNode.children.push({ type: 'field', name: nestedNode.relation.many_field });
+			}
+
+			if (nestedNode.relation.sort_field) {
+				nestedNode.children.push({ type: 'field', name: nestedNode.relation.sort_field });
 			}
 
 			nestedNode.query = {
@@ -247,23 +265,37 @@ function mergeWithParentItems(
 		}
 	} else if (nestedNode.type === 'o2m') {
 		for (const parentItem of parentItems) {
-			let itemChildren = nestedItems.filter((nestedItem) => {
-				if (nestedItem === null) return false;
-				if (Array.isArray(nestedItem[nestedNode.relation.many_field])) return true;
+			let itemChildren = nestedItems
+				.filter((nestedItem) => {
+					if (nestedItem === null) return false;
+					if (Array.isArray(nestedItem[nestedNode.relation.many_field])) return true;
 
-				return (
-					nestedItem[nestedNode.relation.many_field] == parentItem[nestedNode.relation.one_primary!] ||
-					nestedItem[nestedNode.relation.many_field]?.[nestedNode.relation.one_primary!] ==
-						parentItem[nestedNode.relation.one_primary!]
-				);
-			});
+					return (
+						nestedItem[nestedNode.relation.many_field] == parentItem[nestedNode.relation.one_primary!] ||
+						nestedItem[nestedNode.relation.many_field]?.[nestedNode.relation.one_primary!] ==
+							parentItem[nestedNode.relation.one_primary!]
+					);
+				})
+				.sort((a, b) => {
+					// This is pre-filled in get-ast-from-query
+					const { column, order } = nestedNode.query.sort![0]!;
+
+					if (a[column] === b[column]) return 0;
+					if (a[column] === null) return 1;
+					if (b[column] === null) return -1;
+					if (order === 'asc') {
+						return a[column] < b[column] ? -1 : 1;
+					} else {
+						return a[column] < b[column] ? 1 : -1;
+					}
+				});
 
 			// We re-apply the requested limit here. This forces the _n_ nested items per parent concept
 			if (nested) {
-				itemChildren = itemChildren.slice(0, nestedNode.query.limit);
+				itemChildren = itemChildren.slice(0, nestedNode.query.limit ?? 100);
 			}
 
-			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : null;
+			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : [];
 		}
 	} else if (nestedNode.type === 'm2a') {
 		for (const parentItem of parentItems) {

@@ -10,6 +10,7 @@ add_field: Add Field
 role_name: Role Name
 db_only_click_to_configure: 'Database Only: Click to Configure '
 show_archived_items: Show Archived Items
+edited: Value Edited
 required: Required
 required_for_app_access: Required for App Access
 requires_value: Requires value
@@ -25,6 +26,7 @@ connection_excellent: Excellent Connection
 connection_good: Good Connection
 connection_fair: Fair Connection
 connection_poor: Poor Connection
+primary: Primary
 rename_folder: Rename Folder
 delete_folder: Delete Folder
 prefix: Prefix
@@ -81,6 +83,8 @@ validationError:
   null: Value has to be null
   nnull: Value can't be null
   required: Value is required
+  unique: Value has to be unique
+  regex: Value doesn't have the correct format
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -89,6 +93,7 @@ field_presentation: Presentation & Aliases
 field_file: Single File
 field_files: Multiple Files
 field_m2o: M2O Relationship
+field_m2a: M2A Relationship
 field_o2m: O2M Relationship
 field_m2m: M2M Relationship
 field_translations: Translations
@@ -119,11 +124,10 @@ exposure: Exposure
 shutter: Shutter
 iso: ISO
 focal_length: Focal Length
-schema_setup_title: How should this field save to the database?
-schema_field_title: How should this field behave in the app?
+schema_setup_key: This field's database column name and API key
 create_field: Create Field
 creating_new_field: 'New Field ({collection})'
-updating_field_field: '{field} ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Page Preferences
 hidden_field: Hidden Field
 hidden_on_detail: Hidden on Detail
@@ -146,6 +150,11 @@ uuid: UUID
 hash: Hash
 not_available_for_type: Not Available for this Type
 create_translations: Create Translations
+auto_refresh: Auto Refresh
+refresh_interval: Refresh Interval
+no_refresh: Do not refresh
+refresh_interval_seconds: Refresh Instantly | Every Second | Every {seconds} Seconds
+refresh_interval_minutes: Every Minute | Every {minutes} Minutes
 auto_generate: Auto-Generate
 this_will_auto_setup_fields_relations: This will automatically setup all required fields and relations.
 click_here: Click here
@@ -154,10 +163,11 @@ click_to_manage_translated_fields: >-
   There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage
   it. | There are {count} translated fields. Click here to manage them.
 fields_group: Fields Group
-configure_m2o: Configure your Many-to-One Relationship...
-configure_o2m: Configure your One-to-Many Relationship...
-configure_m2m: Configure your Many-to-Many Relationship...
-configure_m2a: Configure your Many-to-Any Relationship...
+no_collections_found: No collections found.
+new_data_alert: 'The following will be created within your Data Model:'
+search_collection: Search Collection...
+new_field: 'New Field'
+new_collection: 'New Collection'
 add_m2o_to_collection: 'Add Many-to-One to "{collection}"'
 add_o2m_to_collection: 'Add One-to-Many to "{collection}"'
 add_m2m_to_collection: 'Add Many-to-Many to "{collection}"'
@@ -165,8 +175,6 @@ choose_a_type: Choose a Type...
 determined_by_relationship: Determined by Relationship
 add_note: Add a helpful note for users...
 default_value: Default Value
-interface_setup_title: How will users interact with this field?
-display_setup_title: How should this field’s value be displayed?
 standard_field: Standard Field
 single_file: Single File
 multiple_files: Multiple Files
@@ -174,6 +182,7 @@ m2o_relationship: Many to One Relationship
 o2m_relationship: One to Many Relationship
 m2m_relationship: Many to Many Relationship
 m2a_relationship: Many to Any Relationship
+invalid_item: Invalid Item
 next: Next
 field_name: Field Name
 translations: Translations
@@ -223,7 +232,7 @@ item_delete_success: Item Deleted | Items Deleted
 this_collection: This Collection
 related_collection: Related Collection
 related_collections: Related Collections
-translations_collection: Translations Collection
+translations_collection: Translation Collection
 languages_collection: Languages Collection
 export_data: Export Data
 format: Format
@@ -363,6 +372,7 @@ collection_created: Collection Created
 modified_on: Modified On
 card_size: Card Size
 sort_field: Sort Field
+add_sort_field: Add Sort Field
 sort: Sort
 status: Status
 toggle_manual_sorting: Toggle Manual Sorting
@@ -390,6 +400,7 @@ errors:
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
   ROUTE_NOT_FOUND: Not found
+  RECORD_NOT_UNIQUE: Duplicate value detected
   UNKNOWN: Unexpected Error
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -417,17 +428,23 @@ delete_collection: Delete Collection
 update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
 start_end_of_count_items: '{start}-{end} of {count} items'
+start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
+one_item: '1 item'
+one_filtered_item: '1 filtered item'
 delete_collection_are_you_sure: >-
   Are you sure you want to delete this collection? This will delete the collection and all items in it. This action is
   permanent.
 collections_shown: Collections Shown
 visible_collections: Visible Collections
 hidden_collections: Hidden Collections
+show_hidden_collections: Show Hidden Collections
+hide_hidden_collections: Hide Hidden Collections
 unmanaged_collections: Unconfigured Collections
 system_collections: System Collections
 placeholder: Placeholder
 icon_left: Icon Left
 icon_right: Icon Right
+count_other_revisions: '{count} Other Revisions'
 font: Font
 sans_serif: Sans Serif
 serif: Serif
@@ -508,6 +525,20 @@ toggle: Toggle
 icon_on: Icon On
 icon_off: Icon Off
 label: Label
+image_url: Image Url
+alt_text: Alternative Text
+media: Media
+width: Width
+height: Height
+source: Source
+url_placeholder: Enter an url...
+display_text: Display Text
+display_text_placeholder: Enter a display text...
+tooltip: Tooltip
+tooltip_placeholder: Enter a tooltip...
+open_link_in: Open link in
+new_tab: New tab
+current_tab: Current tab
 wysiwyg_options:
   aligncenter: Align Center
   alignjustify: Align Justify
@@ -527,10 +558,10 @@ wysiwyg_options:
   bullist: Bullet List
   numlist: Numbered List
   hr: Horizontal Rule
-  link: Link
+  link: Add/Edit Link
   unlink: Remove Link
-  media: Add Media
-  image: Add Image
+  media: Add/Edit Media
+  image: Add/Edit Image
   copy: Copy
   cut: Cut
   paste: Paste
@@ -552,7 +583,7 @@ wysiwyg_options:
   selectall: Select All
   table: Table
   visualaid: View invisible elements
-  code: View Source
+  source_code: Edit Source Code
   fullscreen: Full Screen
   directionality: Directionality
 dropdown: Dropdown
@@ -573,9 +604,12 @@ settings_project: Project Settings
 settings_webhooks: Webhooks
 settings_presets: Presets & Bookmarks
 scope: Scope
+select: Select...
 layout: Layout
+tree_view: Tree View
 changes_are_permanent: Changes are permanent
-preset_name_placeholder: Name of bookmark...
+preset_name_placeholder: Serves as default when empty...
+preset_search_placeholder: Search query...
 editing_preset: Editing Preset
 layout_preview: Layout Preview
 layout_setup: Layout Setup
@@ -655,6 +689,7 @@ fields:
     archive_value: Archive Value
     unarchive_value: Unarchive Value
     sort_field: Sort Field
+    accountability: Activity & Revision Tracking
   directus_files:
     title: Title
     description: Description
@@ -728,6 +763,11 @@ fields:
     users: Users in Role
     module_list: Module Navigation
     collection_list: Collection Navigation
+field_options:
+  directus_collections:
+    track_activity_revisions: Track Activity & Revisions
+    only_track_activity: Only Track Activity
+    do_not_track_anything: Do Not Track Anything
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 do_nothing: Do Nothing
 generate_and_save_uuid: Generate and Save UUID
@@ -801,6 +841,15 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 interfaces:
+  button-links:
+    button-links: Button Links
+    links: Links
+    description: Configurable link buttons for launching dynamic URLs
+    style: Style
+    primary: Primary
+    link: Links
+    button: Buttons
+    error: Cannot perform action
   checkboxes:
     checkboxes: Checkboxes
     description: Choose between multiple options via checkboxes
@@ -952,8 +1001,8 @@ interfaces:
     trim_label: Trim the start and end
     mask: Masked
     mask_label: Hide the real value
-    nullable: Nullable
-    nullable_label: Save empty value as NULL
+    clear: Cleared Value
+    clear_label: Save as empty string
   textarea:
     textarea: Textarea
     description: Enter multiline plain-text
@@ -965,6 +1014,9 @@ interfaces:
   translations:
     display_template: Display Template
     no_collection: No Collection
+  tree-view:
+    description: Tree view for nested recursive one-to-many items
+    recursive_only: The tree view interface only works for recursive relationships.
   user:
     user: User
     description: Select an existing directus user

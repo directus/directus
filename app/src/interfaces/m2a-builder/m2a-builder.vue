@@ -1,6 +1,6 @@
 <template>
 	<div class="m2a-builder">
-		<div v-if="previewLoading" class="loader">
+		<div v-if="previewLoading && !previewValues" class="loader">
 			<v-skeleton-loader v-for="n in (value || []).length" :key="n" />
 		</div>
 
@@ -88,7 +88,6 @@
 			@input="stageSelection"
 			@update:active="selectingFrom = null"
 		/>
-		<!-- :filters="selectionFilters" -->
 
 		<drawer-item
 			v-if="!disabled"
@@ -98,6 +97,7 @@
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="o2mRelation.junction_field"
 			:edits="editsAtStart"
+			:circular-field="o2mRelation.many_field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -141,19 +141,15 @@ export default defineComponent({
 			type: [String, Number] as PropType<string | number>,
 			required: true,
 		},
-		sortField: {
-			type: String,
-			default: null,
-		},
 	},
 	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 
-		const { o2mRelation, anyRelation } = useRelations();
-		const { collections, templates, primaryKeys } = useCollections();
+		const { o2mRelation, anyRelation, allowedCollections } = useRelations();
 		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
+		const { collections, templates, primaryKeys } = useCollections();
 		const { selectingFrom, stageSelection, deselect } = useSelection();
 		const {
 			currentlyEditing,
@@ -188,6 +184,7 @@ export default defineComponent({
 			relatedItemValues,
 			hideDragImage,
 			onSort,
+			allowedCollections,
 		};
 
 		function useRelations() {
@@ -198,12 +195,12 @@ export default defineComponent({
 			const o2mRelation = computed(() => relationsForField.value.find((relation) => relation.one_collection !== null)!);
 			const anyRelation = computed(() => relationsForField.value.find((relation) => relation.one_collection === null)!);
 
-			return { relationsForField, o2mRelation, anyRelation };
+			const allowedCollections = computed(() => anyRelation.value.one_allowed_collections!);
+
+			return { relationsForField, o2mRelation, anyRelation, allowedCollections };
 		}
 
 		function useCollections() {
-			const allowedCollections = computed(() => anyRelation.value.one_allowed_collections!);
-
 			const collections = computed<Record<string, Collection>>(() => {
 				const collections: Record<string, Collection> = {};
 
@@ -248,16 +245,21 @@ export default defineComponent({
 
 			// Holds "expanded" junction rows so we can lookup what "raw" junction row ID in props.value goes with
 			// what related item for pre-saved-unchanged-items
-			const junctionRowMap = ref<any[]>([]);
+			const junctionRowMap = ref<any[]>();
 
 			const previewValues = computed(() => {
+				// Need to wait until junctionRowMap got properly populated
+				if (junctionRowMap.value === undefined) {
+					return [];
+				}
+
 				// Convert all string/number junction rows into junction row records from the map so we can inject the
 				// related values
 				const values = cloneDeep(props.value || [])
 					.map((val, index) => {
 						const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
 
-						const savedValues = junctionRowMap.value.find(
+						const savedValues = (junctionRowMap.value || []).find(
 							(junctionRow) => junctionRow[o2mRelation.value.many_primary] === junctionKey
 						);
 
@@ -268,15 +270,17 @@ export default defineComponent({
 								$index: index,
 							};
 						} else {
+							if (savedValues === undefined) {
+								return null;
+							}
+
 							return {
 								...savedValues,
 								$index: index,
 							};
 						}
 					})
-					.filter((val) => val);
-
-				return values
+					.filter((val) => val)
 					.map((val) => {
 						// Find and nest the related item values for use in the preview
 						const collection = val[anyRelation.value.one_collection_field!];
@@ -299,27 +303,33 @@ export default defineComponent({
 							} else {
 								val[anyRelation.value.many_field] = cloneDeep(item);
 							}
+						} else {
 						}
 
 						return val;
-					})
-					.sort((a, b) => {
-						const aSort = a[props.sortField];
-						const bSort = b[props.sortField];
-
-						if (aSort === bSort) {
-							return 0;
-						} else if (aSort === null) {
-							return 1;
-						} else if (bSort === null) {
-							return -1;
-						} else {
-							return aSort < bSort ? -1 : 1;
-						}
 					});
+
+				if (o2mRelation.value?.sort_field) {
+					return [
+						...values
+							.filter((val) => val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.sort((a, b) => a[o2mRelation.value.sort_field!] - b[o2mRelation.value.sort_field!]), // sort by sort field if it exists
+						...values
+							.filter((val) => !val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.sort((a, b) => a.$index - b.$index), // sort the rest with $index
+					];
+				} else {
+					return [...values.sort((a, b) => a.$index - b.$index)];
+				}
 			});
 
-			return { fetchValues, previewValues, loading, junctionRowMap, relatedItemValues };
+			return {
+				fetchValues,
+				previewValues,
+				loading,
+				junctionRowMap,
+				relatedItemValues,
+			};
 
 			async function fetchValues() {
 				if (props.value === null) return;
@@ -387,18 +397,23 @@ export default defineComponent({
 									o2mRelation.value.many_primary,
 									anyRelation.value.many_field,
 									anyRelation.value.one_collection_field!,
-									props.sortField,
+									o2mRelation.value.sort_field,
 								],
 							},
 						});
 
 						for (const junctionRow of junctionInfoResponse.data.data) {
-							itemsToFetchPerCollection[junctionRow[anyRelation.value.one_collection_field!]].push(
-								junctionRow[anyRelation.value.many_field]
-							);
+							const relatedCollection = junctionRow[anyRelation.value.one_collection_field!];
+
+							// When the collection exists in the setup
+							if (relatedCollection in itemsToFetchPerCollection) {
+								itemsToFetchPerCollection[relatedCollection].push(junctionRow[anyRelation.value.many_field]);
+							}
 						}
 
 						junctionRowMap.value = junctionInfoResponse.data.data;
+					} else {
+						junctionRowMap.value = [];
 					}
 
 					// Fetch all related items from their individual endpoints using the fields from their templates
@@ -489,7 +504,14 @@ export default defineComponent({
 			function stageEdits(edits: Record<string, any>) {
 				const currentValue = props.value || [];
 
-				if (currentlyEditing.value === '+' && relatedPrimaryKey.value === '+') {
+				// Whether or not the currently-being-edited item exists in the staged values
+				const hasBeenStaged =
+					currentValue.includes(editsAtStart.value) || currentValue.includes(currentlyEditing.value);
+
+				// Whether or not the currently-being-edited item has been saved to the database
+				const isNew = currentlyEditing.value === '+' && relatedPrimaryKey.value === '+';
+
+				if (isNew && hasBeenStaged === false) {
 					emit('input', [...currentValue, edits]);
 				} else {
 					emit(
@@ -498,7 +520,6 @@ export default defineComponent({
 							if (val === editsAtStart.value || val == currentlyEditing.value) {
 								return edits;
 							}
-
 							return val;
 						})
 					);
@@ -512,8 +533,9 @@ export default defineComponent({
 			}
 
 			function editExisting(item: Record<string, any>) {
+				// Edit a saved item
 				if (typeof item === 'string' || typeof item === 'number') {
-					const junctionRow = junctionRowMap.value.find((row) => {
+					const junctionRow = (junctionRowMap.value || []).find((row) => {
 						return row[o2mRelation.value.many_primary] == item;
 					});
 
@@ -529,6 +551,10 @@ export default defineComponent({
 							[primaryKeys.value[collection]]: relatedKey,
 						},
 					};
+
+					if (o2mRelation.value.sort_field) {
+						editsAtStart.value[o2mRelation.value.sort_field] = junctionRow[o2mRelation.value.sort_field];
+					}
 
 					relatedPrimaryKey.value = relatedKey || '+';
 					currentlyEditing.value = item;
@@ -554,6 +580,11 @@ export default defineComponent({
 					[anyRelation.value.many_field]: {},
 				};
 
+				if (previewValues.value && o2mRelation.value?.sort_field) {
+					const maxSort = Math.max(-1, ...previewValues.value.map((val) => val[o2mRelation.value.sort_field!]));
+					newItem[o2mRelation.value.sort_field!] = maxSort + 1;
+				}
+
 				editsAtStart.value = newItem;
 				relatedPrimaryKey.value = '+';
 				currentlyEditing.value = '+';
@@ -567,6 +598,8 @@ export default defineComponent({
 				emit(
 					'input',
 					props.value.map((rawValue, index) => {
+						if (!o2mRelation.value.sort_field) return rawValue;
+
 						const sortedItemIndex = sortedItems.findIndex((sortedItem) => {
 							return sortedItem.$index === index;
 						});
@@ -574,12 +607,13 @@ export default defineComponent({
 						if (isPlainObject(rawValue)) {
 							return {
 								...rawValue,
-								[props.sortField]: sortedItemIndex + 1,
+								[o2mRelation.value.sort_field]: sortedItemIndex + 1,
 							};
 						} else {
 							return {
+								...sortedItems[sortedItemIndex],
 								[o2mRelation.value.many_primary]: rawValue,
-								[props.sortField]: sortedItemIndex + 1,
+								[o2mRelation.value.sort_field]: sortedItemIndex + 1,
 							};
 						}
 					})
@@ -617,6 +651,14 @@ export default defineComponent({
 
 .drag-handle {
 	cursor: grab;
+}
+
+.invalid {
+	cursor: default;
+
+	.invalid-icon {
+		--v-icon-color: var(--danger);
+	}
 }
 
 .clear-icon {

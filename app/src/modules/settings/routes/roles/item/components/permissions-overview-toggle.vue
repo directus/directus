@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="permissions-overview-toggle"
-		:class="{ 'has-app-minimal': !!appMinimal }"
+		:class="[{ 'has-app-minimal': !!appMinimal }, permissionLevel, appMinimalLevel]"
 		v-tooltip="appMinimal && $t('required_for_app_access')"
 	>
 		<v-icon v-if="appMinimalLevel === 'full'" name="check" class="all app-minimal" />
@@ -10,14 +10,13 @@
 			<template #activator="{ toggle }">
 				<div>
 					<v-progress-circular indeterminate v-if="loading || saving" small />
-					<v-icon v-else-if="permissionLevel === 'all'" @click="toggle" name="check" class="all" />
+					<v-icon v-else-if="permissionLevel === 'all'" @click="toggle" name="check" />
 					<v-icon
 						v-else-if="appMinimalLevel === 'partial' || permissionLevel === 'custom'"
 						@click="toggle"
 						name="rule"
-						class="custom"
 					/>
-					<v-icon v-else-if="permissionLevel === 'none'" @click="toggle" name="block" class="none" />
+					<v-icon v-else-if="permissionLevel === 'none'" @click="toggle" name="block" />
 				</div>
 			</template>
 
@@ -164,7 +163,8 @@ export default defineComponent({
 .permissions-overview-toggle {
 	position: relative;
 
-	&.has-app-minimal::before {
+	&::before {
+		transition: opacity var(--slow) var(--transition);
 		position: absolute;
 		top: -4px;
 		left: -4px;
@@ -173,19 +173,46 @@ export default defineComponent({
 		background-color: var(--background-highlight);
 		border-radius: 50%;
 		content: '';
+		opacity: 0;
+	}
+	&:hover::before,
+	&.has-app-minimal::before {
+		opacity: 1;
+	}
+}
+
+.none {
+	--v-icon-color: var(--danger);
+	--v-icon-color-hover: var(--danger);
+
+	&::before {
+		background-color: var(--danger-10);
+	}
+}
+
+.partial,
+.custom {
+	--v-icon-color: var(--warning);
+	--v-icon-color-hover: var(--warning);
+
+	&::before {
+		background-color: var(--warning-10);
 	}
 }
 
 .all {
 	--v-icon-color: var(--success);
+	--v-icon-color-hover: var(--success);
+
+	&::before {
+		background-color: var(--success-10);
+	}
 }
 
-.custom {
-	--v-icon-color: var(--warning);
-}
-
-.none {
-	--v-icon-color: var(--danger);
+.has-app-minimal {
+	&::before {
+		background-color: var(--background-highlight) !important;
+	}
 }
 
 .app-minimal {

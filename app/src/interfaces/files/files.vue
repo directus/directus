@@ -12,8 +12,8 @@
 			:disabled="disabled"
 			@update:items="sortItems($event)"
 			@click:row="editItem"
-			:show-manual-sort="sortField !== null"
-			:manual-sort-key="sortField"
+			:show-manual-sort="relationInfo.sortField !== null"
+			:manual-sort-key="relationInfo.sortField"
 		>
 			<template #item.$thumbnail="{ item }">
 				<render-display
@@ -25,8 +25,21 @@
 				/>
 			</template>
 
-			<template #item-append="{ item }" v-show="!disabled">
-				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
+			<template #item-append="{ item }">
+				<v-icon
+					name="save_alt"
+					v-show="!disabled"
+					v-tooltip="$t('download')"
+					class="download"
+					@click.stop="downloadItem(item)"
+				/>
+				<v-icon
+					name="close"
+					v-show="!disabled"
+					v-tooltip="$t('deselect')"
+					class="deselect"
+					@click.stop="deleteItem(item)"
+				/>
 			</template>
 		</v-table>
 
@@ -45,6 +58,7 @@
 			:edits="editsAtStart"
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="relationInfo.junctionField"
+			:circular-field="junction.many_field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -78,6 +92,8 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
 import { get } from 'lodash';
 import i18n from '@/lang';
+import { getRootPath } from '@/utils/get-root-path';
+import { addTokenToURL } from '@/api';
 
 import useActions from '@/interfaces/many-to-many/use-actions';
 import useRelation from '@/interfaces/many-to-many/use-relation';
@@ -101,10 +117,6 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		sortField: {
-			type: String,
-			default: null,
-		},
 		value: {
 			type: Array as PropType<(string | number | Record<string, any>)[] | null>,
 			default: null,
@@ -115,23 +127,19 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { collection, field, value, primaryKey, sortField } = toRefs(props);
+		const { collection, field, value } = toRefs(props);
 
-		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
+		const { junction, junctionCollection, relation, relationInfo } = useRelation(collection, field);
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
 		}
 
-		const {
-			deleteItem,
-			getUpdatedItems,
-			getNewItems,
-			getPrimaryKeys,
-			getNewSelectedItems,
-			getJunctionItem,
-			getJunctionFromRelatedId,
-		} = useActions(value, relationInfo, emitter);
+		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
+			value,
+			relationInfo,
+			emitter
+		);
 
 		const fields = computed(() => {
 			const { junctionField } = relationInfo.value;
@@ -159,7 +167,6 @@ export default defineComponent({
 		const { loading, error, items } = usePreview(
 			value,
 			fields,
-			sortField,
 			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,
@@ -181,7 +188,7 @@ export default defineComponent({
 
 		const { showUpload, onUpload } = useUpload();
 
-		const { sort, sortItems, sortedItems } = useSort(sortField, fields, items, emitter);
+		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
 		return {
 			junction,
@@ -209,7 +216,13 @@ export default defineComponent({
 			sort,
 			sortItems,
 			sortedItems,
+			downloadItem,
 		};
+
+		function downloadItem(item: any) {
+			const filePath = addTokenToURL(getRootPath() + `assets/${item.directus_files_id.id}?download`);
+			window.open(filePath, '_blank');
+		}
 
 		function useUpload() {
 			const showUpload = ref(false);
@@ -244,12 +257,14 @@ export default defineComponent({
 .existing {
 	margin-left: 12px;
 }
+.download {
+	--v-icon-color: var(--foreground-subdued);
+
+	margin-right: 8px;
+}
 
 .deselect {
 	--v-icon-color: var(--foreground-subdued);
-
-	&:hover {
-		--v-icon-color: var(--danger);
-	}
+	--v-icon-color-hover: var(--danger);
 }
 </style>

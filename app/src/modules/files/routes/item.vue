@@ -137,6 +137,7 @@
 				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				:disabled="updateAllowed === false"
+				:validation-errors="validationErrors"
 				v-model="edits"
 			/>
 		</div>
@@ -157,7 +158,7 @@
 		<template #sidebar>
 			<file-info-sidebar-detail :file="item" />
 			<revisions-drawer-detail
-				v-if="isBatch === false && isNew === false && hasRevisionsPermissions"
+				v-if="isBatch === false && isNew === false && revisionsAllowed"
 				collection="directus_files"
 				:primary-key="primaryKey"
 				ref="revisionsDrawerDetail"
@@ -195,7 +196,7 @@ import ReplaceFile from '../components/replace-file.vue';
 import { usePermissions } from '@/composables/use-permissions';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { usePermissionsStore } from '@/stores';
+import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
 	name: 'files-item',
@@ -235,14 +236,6 @@ export default defineComponent({
 		const { breadcrumb } = useBreadcrumb();
 		const replaceFileDialogActive = ref(false);
 
-		const permissionsStore = usePermissionsStore();
-
-		const hasRevisionsPermissions = computed(() => {
-			return !!permissionsStore.state.permissions.find(
-				(permission) => permission.collection === 'directus_revisions' && permission.action === 'read'
-			);
-		});
-
 		const revisionsDrawerDetail = ref<Vue | null>(null);
 
 		const {
@@ -258,9 +251,13 @@ export default defineComponent({
 			saveAsCopy,
 			isBatch,
 			refresh,
+			validationErrors,
 		} = useItem(ref('directus_files'), primaryKey);
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
+
+		unsavedChanges(hasEdits);
+
 		const confirmDelete = ref(false);
 		const editActive = ref(false);
 		const fileSrc = computed(() => {
@@ -302,7 +299,11 @@ export default defineComponent({
 
 		useShortcut('meta+s', saveAndStay, form);
 
-		const { deleteAllowed, saveAllowed, updateAllowed, fields } = usePermissions(ref('directus_files'), item, isNew);
+		const { deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
+			ref('directus_files'),
+			item,
+			isNew
+		);
 
 		const fieldsFiltered = computed(() => {
 			return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);
@@ -344,7 +345,8 @@ export default defineComponent({
 			updateAllowed,
 			fields,
 			fieldsFiltered,
-			hasRevisionsPermissions,
+			revisionsAllowed,
+			validationErrors,
 		};
 
 		function useBreadcrumb() {
@@ -466,9 +468,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
@@ -479,9 +481,9 @@ export default defineComponent({
 .edit,
 .folder,
 .download {
-	--v-button-background-color: var(--primary-25);
+	--v-button-background-color: var(--primary-10);
 	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-50);
+	--v-button-background-color-hover: var(--primary-25);
 	--v-button-color-hover: var(--primary);
 }
 

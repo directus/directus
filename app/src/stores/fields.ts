@@ -6,7 +6,7 @@ import { i18n } from '@/lang';
 import formatTitle from '@directus/format-title';
 import { useRelationsStore } from '@/stores/';
 import { Relation, FieldRaw, Field } from '@/types';
-import { merge } from 'lodash';
+import { merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { unexpectedError } from '@/utils/unexpected-error';
 
@@ -27,7 +27,6 @@ const fakeFilesField: Field = {
 		display: 'file',
 		display_options: null,
 		hidden: false,
-		locked: true,
 		translations: null,
 		readonly: true,
 		width: 'full',
@@ -67,16 +66,16 @@ export const useFieldsStore = createStore({
 			 */
 
 			this.state.fields = [...fields.map(this.parseField), fakeFilesField];
+
+			this.translateFields();
 		},
 		async dehydrate() {
 			this.reset();
 		},
 		parseField(field: FieldRaw): Field {
-			let name: string | VueI18n.TranslateResult;
+			const name = formatTitle(field.field);
 
-			if (i18n.te(`fields.${field.collection}.${field.field}`)) {
-				name = i18n.t(`fields.${field.collection}.${field.field}`);
-			} else if (field.meta && notEmpty(field.meta.translations) && field.meta.translations.length > 0) {
+			if (field.meta && notEmpty(field.meta.translations) && field.meta.translations.length > 0) {
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
 
@@ -88,16 +87,28 @@ export const useFieldsStore = createStore({
 						},
 					});
 				}
-
-				name = i18n.t(`fields.${field.collection}.${field.field}`);
-			} else {
-				name = formatTitle(field.field);
 			}
 
 			return {
 				...field,
 				name,
 			};
+		},
+		translateFields() {
+			this.state.fields = this.state.fields.map((field) => {
+				let name: string | VueI18n.TranslateResult;
+
+				if (i18n.te(`fields.${field.collection}.${field.field}`)) {
+					name = i18n.t(`fields.${field.collection}.${field.field}`);
+				} else {
+					name = formatTitle(field.field);
+				}
+
+				return {
+					...field,
+					name,
+				};
+			});
 		},
 		async createField(collectionKey: string, newField: Field) {
 			const stateClone = [...this.state.fields];
@@ -221,9 +232,22 @@ export const useFieldsStore = createStore({
 
 			return primaryKeyField;
 		},
-		getFieldsForCollection(collection: string) {
-			return this.state.fields.filter((field) => field.collection === collection);
+		getFieldsForCollection(collection: string): Field[] {
+			return orderBy(
+				this.state.fields.filter((field) => field.collection === collection),
+				(collection) => (collection.meta?.sort ? Number(collection.meta?.sort) : null)
+			);
 		},
+		getFieldsForCollectionAlphabetical(collection: string): Field[] {
+			return this.getFieldsForCollection(collection).sort((a: Field, b: Field) => {
+				if (a.field < b.field) return -1;
+				else if (a.field > b.field) return 1;
+				else return 1;
+			});
+		},
+		/**
+		 * Retrieve field info for a field or a related field
+		 */
 		getField(collection: string, fieldKey: string) {
 			if (fieldKey.includes('.')) {
 				return this.getRelationalField(collection, fieldKey);
@@ -233,19 +257,20 @@ export const useFieldsStore = createStore({
 		},
 		/**
 		 * Retrieve field info for a (deeply) nested field
-		 * Recursively searches through the relationhips to find the field info that matches the
+		 * Recursively searches through the relationships to find the field info that matches the
 		 * dot notation.
 		 */
 		getRelationalField(collection: string, fields: string) {
 			const relationshipStore = useRelationsStore();
 			const parts = fields.split('.');
-			const relationshipForField = relationshipStore
+
+			const relation = relationshipStore
 				.getRelationsForField(collection, parts[0])
-				?.find((relation: Relation) => relation.many_field === parts[0]);
+				?.find((relation: Relation) => relation.many_field === parts[0] || relation.one_field === parts[0]) as Relation;
 
-			if (relationshipForField === undefined) return false;
+			if (relation === undefined) return false;
 
-			const relatedCollection = relationshipForField.one_collection;
+			const relatedCollection = relation.many_field === parts[0] ? relation.one_collection : relation.many_collection;
 			parts.shift();
 			const relatedField = parts.join('.');
 			return this.getField(relatedCollection, relatedField);

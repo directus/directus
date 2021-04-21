@@ -52,7 +52,7 @@ export default defineComponent({
 			[() => serverStore.state.info?.project?.project_color, () => serverStore.state.info?.project?.project_logo],
 			() => {
 				const hasCustomLogo = !!serverStore.state.info?.project?.project_logo;
-				setFavicon(serverStore.state.info?.project?.project_color || '#2f80ed', hasCustomLogo);
+				setFavicon(serverStore.state.info?.project?.project_color || '#00C897', hasCustomLogo);
 			}
 		);
 

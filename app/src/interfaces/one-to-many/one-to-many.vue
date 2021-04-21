@@ -4,9 +4,14 @@
 	</v-notice>
 	<div class="one-to-many" v-else>
 		<v-list>
-			<draggable :value="sortedItems || items" @input="sortItems($event)" handler=".drag-handle" :disabled="!sortField">
+			<draggable
+				:value="sortedItems || items"
+				@input="sortItems($event)"
+				handler=".drag-handle"
+				:disabled="!relation.sort_field"
+			>
 				<v-list-item v-for="item in sortedItems || items" :key="item.id" block @click="editItem(item)">
-					<v-icon v-if="sortField" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template :item="item" :template="template" />
 					<div class="spacer" />
 					<v-icon name="close" @click.stop="deleteItem(item)" />
@@ -27,6 +32,7 @@
 			:collection="relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:edits="editsAtStart"
+			:circular-field="relation.many_field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -81,10 +87,6 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		sortField: {
-			type: String,
-			default: null,
-		},
 		disabled: {
 			type: Boolean,
 			default: false,
@@ -130,16 +132,6 @@ export default defineComponent({
 			return (sortedItems.value || items.value)[index];
 		}
 
-		function getItem(id: string | number) {
-			const pkField = relatedPrimaryKeyField.value.field;
-			if (props.value === null) return null;
-			return (
-				props.value.find(
-					(item) => (typeof item === 'object' && pkField in item && item[pkField] === id) || item === id
-				) || null
-			);
-		}
-
 		function getNewItems() {
 			const pkField = relatedPrimaryKeyField.value.field;
 			if (props.value === null) return [];
@@ -156,12 +148,6 @@ export default defineComponent({
 				string,
 				any
 			>[];
-		}
-
-		function getExistingItems() {
-			if (props.value === null) return [];
-			const pkField = relatedPrimaryKeyField.value.field;
-			return props.value.filter((item) => typeof item === 'string' || typeof item === 'number');
 		}
 
 		function getPrimaryKeys() {
@@ -205,13 +191,13 @@ export default defineComponent({
 		}
 
 		function useSort() {
-			const sort = ref<Sort>({ by: props.sortField || fields.value[0], desc: false });
+			const sort = ref<Sort>({ by: relation.value.sort_field || fields.value[0], desc: false });
 
 			function sortItems(newItems: Record<string, any>[]) {
-				if (props.sortField === null) return;
+				if (relation.value.sort_field === null) return;
 
 				const itemsSorted = newItems.map((item, i) => {
-					item[props.sortField] = i;
+					item[relation.value.sort_field] = i;
 					return item;
 				});
 
@@ -219,10 +205,10 @@ export default defineComponent({
 			}
 
 			const sortedItems = computed(() => {
-				if (props.sortField === null || sort.value.by !== props.sortField) return null;
+				if (relation.value.sort_field === null || sort.value.by !== relation.value.sort_field) return null;
 
 				const desc = sort.value.desc;
-				const sorted = sortBy(items.value, [props.sortField]);
+				const sorted = sortBy(items.value, [relation.value.sort_field]);
 				return desc ? sorted.reverse() : sorted;
 			});
 
@@ -256,7 +242,7 @@ export default defineComponent({
 
 			watch(
 				() => props.value,
-				async (newVal) => {
+				async () => {
 					loading.value = true;
 					const pkField = relatedPrimaryKeyField.value.field;
 
@@ -266,8 +252,8 @@ export default defineComponent({
 						fieldsList.push(pkField);
 					}
 
-					if (props.sortField !== null && fieldsList.includes(props.sortField) === false)
-						fieldsList.push(props.sortField);
+					if (relation.value.sort_field !== null && fieldsList.includes(relation.value.sort_field) === false)
+						fieldsList.push(relation.value.sort_field);
 
 					try {
 						const endpoint = relatedCollection.value.collection.startsWith('directus_')
@@ -366,7 +352,11 @@ export default defineComponent({
 				const pkField = relatedPrimaryKeyField.value.field;
 				const hasPrimaryKey = pkField in item;
 
-				const edits = (props.value || []).find((edit: any) => edit === item);
+				const edits = (props.value || []).find(
+					(edit: any) =>
+						typeof edit === 'object' &&
+						edit[relatedPrimaryKeyField.value.field] === item[relatedPrimaryKeyField.value.field]
+				);
 
 				editsAtStart.value = edits || { [pkField]: item[pkField] || {} };
 				currentlyEditing.value = hasPrimaryKey ? item[pkField] : '+';
@@ -374,8 +364,6 @@ export default defineComponent({
 
 			function stageEdits(edits: any) {
 				const pkField = relatedPrimaryKeyField.value.field;
-
-				const hasPrimaryKey = pkField in edits;
 
 				const newValue = (props.value || []).map((item) => {
 					if (typeof item === 'object' && pkField in item && pkField in edits && item[pkField] === edits[pkField]) {
@@ -393,7 +381,7 @@ export default defineComponent({
 					return item;
 				});
 
-				if (hasPrimaryKey === false && newValue.includes(edits) === false) {
+				if (newValue.includes(edits) === false) {
 					newValue.push(edits);
 				}
 
@@ -437,8 +425,6 @@ export default defineComponent({
 			return { stageSelection, selectModalActive, selectionFilters };
 
 			function stageSelection(newSelection: (number | string)[]) {
-				const pkField = relatedPrimaryKeyField.value.field;
-
 				const selection = newSelection.filter((item) => selectedPrimaryKeys.value.includes(item) === false);
 
 				const newVal = [...selection, ...(props.value || [])];

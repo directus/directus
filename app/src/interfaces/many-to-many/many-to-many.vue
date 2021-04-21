@@ -4,9 +4,14 @@
 	</v-notice>
 	<div class="many-to-many" v-else>
 		<v-list>
-			<draggable :value="sortedItems || items" @input="sortItems($event)" handler=".drag-handle" :disabled="!sortField">
+			<draggable
+				:value="sortedItems || items"
+				@input="sortItems($event)"
+				handler=".drag-handle"
+				:disabled="!relation.sort_field"
+			>
 				<v-list-item v-for="item in sortedItems || items" :key="item.id" block @click="editItem(item)">
-					<v-icon v-if="sortField" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template :item="item" :template="template" />
 					<div class="spacer" />
 					<v-icon name="close" @click.stop="deleteItem(item)" />
@@ -29,6 +34,7 @@
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="relationInfo.junctionField"
 			:edits="editsAtStart"
+			:circular-field="junction.many_field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -79,10 +85,6 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		sortField: {
-			type: String,
-			default: null,
-		},
 		template: {
 			type: String,
 			default: null,
@@ -93,7 +95,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { value, collection, field, template, sortField } = toRefs(props);
+		const { value, collection, field, template } = toRefs(props);
 		const fields = computed(() => getFieldsFromTemplate(template.value));
 
 		function emitter(newVal: any[] | null) {
@@ -102,20 +104,15 @@ export default defineComponent({
 
 		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
 
-		const {
-			deleteItem,
-			getUpdatedItems,
-			getNewItems,
-			getPrimaryKeys,
-			getNewSelectedItems,
-			getJunctionItem,
-			getJunctionFromRelatedId,
-		} = useActions(value, relationInfo, emitter);
+		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
+			value,
+			relationInfo,
+			emitter
+		);
 
 		const { tableHeaders, items, loading, error } = usePreview(
 			value,
 			fields,
-			sortField,
 			relationInfo,
 			getNewSelectedItems,
 			getUpdatedItems,
@@ -135,7 +132,7 @@ export default defineComponent({
 
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection(value, items, relationInfo, emitter);
 
-		const { sort, sortItems, sortedItems } = useSort(sortField, fields, items, emitter);
+		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
 
 		return {
 			junction,

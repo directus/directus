@@ -12,13 +12,16 @@ import { clone, toString, toNumber } from 'lodash';
 import { toArray } from './utils/to-array';
 import logger from './logger';
 
+const acceptableEnvTypes = ['string', 'number', 'regex', 'array'];
+
 const defaults: Record<string, any> = {
 	CONFIG_PATH: path.resolve(process.cwd(), '.env'),
+
 	PORT: 8055,
 	PUBLIC_URL: 'http://localhost:8055',
+	MAX_PAYLOAD_SIZE: '100kb',
 
 	STORAGE_LOCATIONS: 'local',
-	STORAGE_LOCAL_PUBLIC_URL: 'http://localhost:8055/uploads',
 	STORAGE_LOCAL_DRIVER: 'local',
 	STORAGE_LOCAL_ROOT: './uploads',
 
@@ -31,6 +34,8 @@ const defaults: Record<string, any> = {
 	REFRESH_TOKEN_TTL: '7d',
 	REFRESH_TOKEN_COOKIE_SECURE: false,
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
+
+	ROOT_REDIRECT: './admin',
 
 	CORS_ENABLED: true,
 	CORS_ORIGIN: true,
@@ -71,18 +76,20 @@ const typeMap: Record<string, string> = {
 	DB_PORT: 'number',
 };
 
-const env: Record<string, any> = processValues({
+let env: Record<string, any> = {
 	...defaults,
-	...process.env,
 	...getEnv(),
-});
+	...process.env,
+};
 
 process.env = env;
+
+env = processValues(env);
 
 export default env;
 
 function getEnv() {
-	const configPath = process.env.CONFIG_PATH || defaults.CONFIG_PATH;
+	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
 
 	if (fs.existsSync(configPath) === false) return {};
 
@@ -121,10 +128,39 @@ function getEnv() {
 	return dotenv.parse(fs.readFileSync(configPath).toString());
 }
 
+function getVariableType(variable: string) {
+	return variable.split(':').slice(0, -1)[0];
+}
+
+function getEnvVariableValue(variableValue: string, variableType: string) {
+	return variableValue.split(`${variableType}:`)[1];
+}
+
+function getEnvironmentValueByType(envVariableString: string) {
+	const variableType = getVariableType(envVariableString);
+	const envVariableValue = getEnvVariableValue(envVariableString, variableType);
+
+	switch (variableType) {
+		case 'number':
+			return toNumber(envVariableValue);
+		case 'array':
+			return toArray(envVariableValue);
+		case 'regex':
+			return new RegExp(envVariableValue);
+		case 'string':
+			return envVariableValue;
+	}
+}
+
 function processValues(env: Record<string, any>) {
 	env = clone(env);
 
 	for (const [key, value] of Object.entries(env)) {
+		if (typeof value === 'string' && acceptableEnvTypes.some((envType) => value.includes(`${envType}:`))) {
+			env[key] = getEnvironmentValueByType(value);
+			continue;
+		}
+
 		if (typeMap[key]) {
 			switch (typeMap[key]) {
 				case 'number':

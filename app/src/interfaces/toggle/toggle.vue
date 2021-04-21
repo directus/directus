@@ -6,6 +6,7 @@
 		:label="label"
 		:input-value="value"
 		:indeterminate="value === null"
+		:disabled="disabled"
 		@change="$listeners.input"
 		:style="{
 			'--v-checkbox-color': color,
@@ -23,6 +24,10 @@ export default defineComponent({
 			type: Boolean,
 			default: null,
 		},
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 		label: {
 			type: String,
 			default: i18n.t('enabled'),
@@ -37,7 +42,7 @@ export default defineComponent({
 		},
 		color: {
 			type: String,
-			default: '#2f80ed',
+			default: '#00C897',
 		},
 	},
 });

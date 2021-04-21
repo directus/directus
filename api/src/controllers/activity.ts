@@ -6,35 +6,45 @@ import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
 import Joi from 'joi';
+import { validateBatch } from '../middleware/validate-batch';
 
 const router = express.Router();
 
 router.use(useCollection('directus_activity'));
 
-router.get(
-	'/',
-	asyncHandler(async (req, res, next) => {
-		const service = new ActivityService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-		const metaService = new MetaService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+const readHandler = asyncHandler(async (req, res, next) => {
+	const service = new ActivityService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const records = await service.readByQuery(req.sanitizedQuery);
-		const meta = await metaService.getMetaForQuery('directus_activity', req.sanitizedQuery);
+	const metaService = new MetaService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		res.locals.payload = {
-			data: records || null,
-			meta,
-		};
+	let result;
 
-		return next();
-	}),
-	respond
-);
+	if (req.singleton) {
+		result = await service.readSingleton(req.sanitizedQuery);
+	} else if (req.body.keys) {
+		result = await service.readMany(req.body.keys, req.sanitizedQuery);
+	} else {
+		result = await service.readByQuery(req.sanitizedQuery);
+	}
+
+	const meta = await metaService.getMetaForQuery('directus_activity', req.sanitizedQuery);
+
+	res.locals.payload = {
+		data: result,
+		meta,
+	};
+
+	return next();
+});
+
+router.search('/', validateBatch('read'), readHandler, respond);
+router.get('/', readHandler, respond);
 
 router.get(
 	'/:pk',
@@ -43,7 +53,8 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
-		const record = await service.readByKey(req.params.pk, req.sanitizedQuery);
+
+		const record = await service.readOne(req.params.pk, req.sanitizedQuery);
 
 		res.locals.payload = {
 			data: record || null,
@@ -74,7 +85,7 @@ router.post(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const primaryKey = await service.create({
+		const primaryKey = await service.createOne({
 			...req.body,
 			action: Action.COMMENT,
 			user: req.accountability?.user,
@@ -83,7 +94,7 @@ router.post(
 		});
 
 		try {
-			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 
 			res.locals.payload = {
 				data: record || null,
@@ -119,10 +130,10 @@ router.patch(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const primaryKey = await service.update(req.body, req.params.pk);
+		const primaryKey = await service.updateOne(req.params.pk, req.body);
 
 		try {
-			const record = await service.readByKey(primaryKey, req.sanitizedQuery);
+			const record = await service.readOne(primaryKey, req.sanitizedQuery);
 
 			res.locals.payload = {
 				data: record || null,
@@ -152,13 +163,13 @@ router.delete(
 			schema: req.schema,
 		});
 
-		const item = await adminService.readByKey(req.params.pk, { fields: ['action'] });
+		const item = await adminService.readOne(req.params.pk, { fields: ['action'] });
 
 		if (!item || item.action !== 'comment') {
 			throw new ForbiddenException();
 		}
 
-		await service.delete(req.params.pk);
+		await service.deleteOne(req.params.pk);
 
 		return next();
 	}),

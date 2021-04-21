@@ -24,6 +24,7 @@
 				</nav>
 				<main ref="mainEl" class="main">
 					<header-bar :title="title" @primary="$emit('cancel')" primary-action-icon="close">
+						<template #title><slot name="title" /></template>
 						<template #headline>
 							<slot name="subtitle">
 								<p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
@@ -171,6 +172,9 @@ body {
 		line-height: 24px;
 
 		.sidebar {
+			--v-list-item-background-color-hover: var(--background-normal-alt);
+			--v-list-item-background-color-active: var(--background-normal-alt);
+
 			display: none;
 
 			@include breakpoint(medium) {

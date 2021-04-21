@@ -111,13 +111,19 @@
 						<v-skeleton-loader type="text" />
 						<v-skeleton-loader type="text" />
 					</template>
-					<template v-else-if="isNew === false">
-						<div class="name type-title">
+					<template v-else-if="isNew === false && item">
+						<div class="name type-label">
 							{{ userName(item) }}
 							<span v-if="item.title" class="title">, {{ item.title }}</span>
 						</div>
-						<div class="email">{{ item.email }}</div>
-						<div class="location" v-if="item.location">{{ item.location }}</div>
+						<div class="email">
+							<v-icon name="alternate_email" small outline />
+							{{ item.email }}
+						</div>
+						<div class="location" v-if="item.location">
+							<v-icon name="place" small outline />
+							{{ item.location }}
+						</div>
 						<v-chip :class="item.status" small v-if="roleName">{{ roleName }}</v-chip>
 					</template>
 				</div>
@@ -125,12 +131,13 @@
 
 			<v-form
 				ref="form"
-				:disabled="isNew ? createAllowed === false : updateAllowed === false"
+				:disabled="isNew ? false : updateAllowed === false"
 				:fields="formFields"
 				:loading="loading"
 				:initial-values="item"
 				:batch-mode="isBatch"
 				:primary-key="primaryKey"
+				:validation-errors="validationErrors"
 				v-model="edits"
 			/>
 		</div>
@@ -151,7 +158,7 @@
 		<template #sidebar>
 			<user-info-sidebar-detail :is-new="isNew" :user="item" />
 			<revisions-drawer-detail
-				v-if="isBatch === false && isNew === false && hasRevisionsPermissions"
+				v-if="isBatch === false && isNew === false && revisionsAllowed"
 				collection="directus_users"
 				:primary-key="primaryKey"
 				ref="revisionsDrawerDetail"
@@ -169,14 +176,15 @@
 import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
 
 import UsersNavigation from '../components/navigation.vue';
-import { i18n, setLanguage } from '@/lang';
+import { i18n } from '@/lang';
+import { setLanguage } from '@/lang/set-language';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import api from '@/api';
-import { useFieldsStore, useCollectionsStore, useUserStore } from '@/stores/';
+import { useFieldsStore, useCollectionsStore } from '@/stores/';
 import useFormFields from '@/composables/use-form-fields';
 import { Field } from '@/types';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
@@ -187,7 +195,8 @@ import { userName } from '@/utils/user-name';
 import { usePermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
-import { usePermissionsStore } from '@/stores';
+import { useUserStore } from '@/stores';
+import unsavedChanges from '@/composables/unsaved-changes';
 
 export default defineComponent({
 	name: 'users-item',
@@ -219,13 +228,6 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 		const userStore = useUserStore();
-		const permissionsStore = usePermissionsStore();
-
-		const hasRevisionsPermissions = computed(() => {
-			return !!permissionsStore.state.permissions.find(
-				(permission) => permission.collection === 'directus_revisions' && permission.action === 'read'
-			);
-		});
 
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
@@ -240,7 +242,6 @@ export default defineComponent({
 			item,
 			saving,
 			loading,
-			error,
 			save,
 			remove,
 			deleting,
@@ -249,6 +250,7 @@ export default defineComponent({
 			archive,
 			archiving,
 			isArchived,
+			validationErrors,
 		} = useItem(ref('directus_users'), primaryKey);
 
 		if (props.preset) {
@@ -260,13 +262,15 @@ export default defineComponent({
 
 		const hasEdits = computed<boolean>(() => Object.keys(edits.value).length > 0);
 
+		unsavedChanges(hasEdits);
+
 		const confirmDelete = ref(false);
 		const confirmArchive = ref(false);
 
 		const title = computed(() => {
 			if (loading.value === true) return i18n.t('loading');
 
-			if (isNew.value === false && item.value !== null) {
+			if (isNew.value === false && item.value) {
 				const user = item.value as any;
 				return userName(user);
 			}
@@ -299,7 +303,7 @@ export default defineComponent({
 
 		const { formFields } = useFormFields(fieldsFiltered);
 
-		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed } = usePermissions(
+		const { deleteAllowed, archiveAllowed, saveAllowed, updateAllowed, revisionsAllowed } = usePermissions(
 			ref('directus_users'),
 			item,
 			isNew
@@ -351,7 +355,8 @@ export default defineComponent({
 			archiveTooltip,
 			form,
 			userName,
-			hasRevisionsPermissions,
+			revisionsAllowed,
+			validationErrors,
 		};
 
 		function useBreadcrumb() {
@@ -386,7 +391,7 @@ export default defineComponent({
 				if (props.primaryKey === '+') {
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const newPrimaryKey = savedItem.id;
-					router.replace(`/collections/users/${newPrimaryKey}`);
+					router.replace(`/users/${newPrimaryKey}`);
 				}
 			} catch {
 				// `save` will show unexpected error dialog
@@ -498,16 +503,16 @@ export default defineComponent({
 @import '@/styles/mixins/breakpoint';
 
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
 .action-archive {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 
@@ -528,10 +533,9 @@ export default defineComponent({
 	max-width: calc(var(--form-column-max-width) * 2 + var(--form-horizontal-gap));
 	height: 112px;
 	margin-bottom: var(--form-vertical-gap);
-	padding: 12px;
-	background-color: var(--background-subdued);
-	border: 2px solid var(--border-normal);
-	border-radius: var(--border-radius);
+	padding: 20px;
+	background-color: var(--background-normal);
+	border-radius: calc(var(--border-radius) + 4px);
 
 	.avatar {
 		--v-icon-color: var(--foreground-subdued);
@@ -545,8 +549,9 @@ export default defineComponent({
 		margin-right: 16px;
 		overflow: hidden;
 		background-color: var(--background-normal);
-		border: solid var(--border-width) var(--border-normal);
-		border-radius: var(--border-radius);
+		border: solid 6px var(--white);
+		border-radius: 100%;
+		box-shadow: var(--card-shadow);
 
 		.v-skeleton-loader {
 			width: 100%;
@@ -568,6 +573,7 @@ export default defineComponent({
 
 	.user-box-content {
 		flex-grow: 1;
+		overflow: hidden;
 
 		.v-skeleton-loader {
 			width: 175px;
@@ -597,10 +603,22 @@ export default defineComponent({
 		.location {
 			color: var(--foreground-subdued);
 		}
+
+		.name {
+			white-space: nowrap;
+		}
+
+		.location {
+			display: none;
+		}
 	}
 
 	@include breakpoint(small) {
-		height: 172px;
+		height: 188px;
+
+		.user-box-content .location {
+			display: block;
+		}
 	}
 }
 </style>

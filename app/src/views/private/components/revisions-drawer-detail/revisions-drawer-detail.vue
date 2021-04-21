@@ -2,28 +2,39 @@
 	<sidebar-detail
 		:title="$t('revisions')"
 		icon="change_history"
-		:badge="!loading && revisions ? revisions.length : null"
+		:badge="!loading && revisions ? abbreviateNumber(revisionsCount) : null"
 	>
 		<v-progress-linear indeterminate v-if="loading" />
 
-		<template v-else v-for="group in revisionsByDate">
-			<v-divider :key="group.date.toString()">{{ group.dateFormatted }}</v-divider>
+		<template v-else>
+			<template v-for="group in revisionsByDate">
+				<v-divider :key="group.date.toString()">{{ group.dateFormatted }}</v-divider>
 
-			<template v-for="(item, index) in group.revisions">
-				<revision-item
-					:key="item.id"
-					:revision="item"
-					:last="index === group.revisions.length - 1"
-					@click="openModal(item.id)"
-				/>
+				<template v-for="(item, index) in group.revisions">
+					<revision-item
+						:key="item.id"
+						:revision="item"
+						:last="index === group.revisions.length - 1"
+						@click="openModal(item.id)"
+					/>
+				</template>
 			</template>
-		</template>
 
-		<template v-if="loading === false && hasCreate === false">
-			<v-divider v-if="revisionsByDate.length > 0" />
-			<div class="external">
-				{{ $t('revision_delta_created_externally') }}
-			</div>
+			<v-divider class="other" v-if="revisionsCount > 100">
+				{{ $tc('count_other_revisions', revisionsCount - 101) }}
+			</v-divider>
+
+			<template v-if="created">
+				<revision-item :revision="created" last @click="openModal(created.id)" />
+			</template>
+
+			<template v-else>
+				<v-divider v-if="revisionsByDate.length > 0" />
+
+				<div class="external">
+					{{ $t('revision_delta_created_externally') }}
+				</div>
+			</template>
 		</template>
 
 		<revisions-drawer
@@ -31,13 +42,13 @@
 			:revisions="revisions"
 			:current.sync="modalCurrentRevision"
 			:active.sync="modalActive"
-			@revert="onRevert"
+			@revert="$emit('revert', $event)"
 		/>
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { Revision, RevisionsByDate } from './types';
 
 import api from '@/api';
@@ -49,6 +60,7 @@ import formatLocalized from '@/utils/localized-format';
 import RevisionItem from './revision-item.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { abbreviateNumber } from '@/utils/abbreviate-number';
 
 export default defineComponent({
 	components: { RevisionItem, RevisionsDrawer },
@@ -62,17 +74,11 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
-		const { revisions, revisionsByDate, loading, refresh } = useRevisions(props.collection, props.primaryKey);
-
-		const hasCreate = computed(() => {
-			// We expect the very first revision record to be a creation
-			return (
-				revisions.value &&
-				revisions.value.length > 0 &&
-				revisions.value[revisions.value.length - 1].activity.action === 'create'
-			);
-		});
+	setup(props) {
+		const { revisions, revisionsByDate, loading, refresh, revisionsCount, created } = useRevisions(
+			props.collection,
+			props.primaryKey
+		);
 
 		const modalActive = ref(false);
 		const modalCurrentRevision = ref<number | null>(null);
@@ -82,11 +88,12 @@ export default defineComponent({
 			revisionsByDate,
 			loading,
 			refresh,
-			hasCreate,
 			modalActive,
 			modalCurrentRevision,
 			openModal,
-			onRevert,
+			revisionsCount,
+			created,
+			abbreviateNumber,
 		};
 
 		function openModal(id: number) {
@@ -98,10 +105,12 @@ export default defineComponent({
 			const revisions = ref<Revision[] | null>(null);
 			const revisionsByDate = ref<RevisionsByDate[] | null>(null);
 			const loading = ref(false);
+			const revisionsCount = ref(0);
+			const created = ref<Revision>();
 
 			getRevisions();
 
-			return { revisions, revisionsByDate, loading, refresh };
+			return { created, revisions, revisionsByDate, loading, refresh, revisionsCount };
 
 			async function getRevisions() {
 				loading.value = true;
@@ -117,6 +126,8 @@ export default defineComponent({
 									_eq: primaryKey,
 								},
 							},
+							sort: '-id',
+							limit: 100,
 							fields: [
 								'id',
 								'data',
@@ -132,14 +143,56 @@ export default defineComponent({
 								'activity.ip',
 								'activity.user_agent',
 							],
+							meta: ['filter_count'],
 						},
 					});
 
-					const revisionsGroupedByDate = groupBy(response.data.data, (revision: Revision) => {
-						// revision's timestamp date is in iso-8601
-						const date = new Date(new Date(revision.activity.timestamp).toDateString());
-						return date;
+					const createdResponse = await api.get(`/revisions`, {
+						params: {
+							filter: {
+								collection: {
+									_eq: collection,
+								},
+								item: {
+									_eq: primaryKey,
+								},
+								activity: {
+									action: {
+										_eq: 'create',
+									},
+								},
+							},
+							sort: '-id',
+							limit: 1,
+							fields: [
+								'id',
+								'data',
+								'delta',
+								'collection',
+								'item',
+								'activity.action',
+								'activity.timestamp',
+								'activity.user.id',
+								'activity.user.email',
+								'activity.user.first_name',
+								'activity.user.last_name',
+								'activity.ip',
+								'activity.user_agent',
+							],
+							meta: ['filter_count'],
+						},
 					});
+
+					created.value = createdResponse.data.data?.[0];
+
+					const revisionsGroupedByDate = groupBy(
+						response.data.data.filter((revision: any) => !!revision.activity),
+						(revision: Revision) => {
+							// revision's timestamp date is in iso-8601
+							const date = new Date(new Date(revision.activity.timestamp).toDateString());
+							return date;
+						}
+					);
 
 					const revisionsGrouped: RevisionsByDate[] = [];
 
@@ -166,6 +219,7 @@ export default defineComponent({
 
 					revisionsByDate.value = orderBy(revisionsGrouped, ['date'], ['desc']);
 					revisions.value = orderBy(response.data.data, ['activity.timestamp'], ['desc']);
+					revisionsCount.value = response.data.meta.filter_count;
 				} catch (err) {
 					unexpectedError(err);
 				} finally {
@@ -176,11 +230,6 @@ export default defineComponent({
 			async function refresh() {
 				await getRevisions();
 			}
-		}
-
-		function onRevert() {
-			refresh();
-			emit('revert');
 		}
 	},
 });
@@ -217,6 +266,12 @@ export default defineComponent({
 .external {
 	margin-left: 20px;
 	color: var(--foreground-subdued);
+	font-style: italic;
+}
+
+.other {
+	--v-divider-label-color: var(--foreground-subdued);
+
 	font-style: italic;
 }
 </style>

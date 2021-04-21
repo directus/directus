@@ -208,17 +208,24 @@ export default defineComponent({
 
 	.presets {
 		.v-chip {
+			--v-chip-background-color: var(--primary);
+			--v-chip-color: var(--foreground-inverted);
+			--v-chip-background-color-hover: var(--danger);
+			--v-chip-color-hover: var(--foreground-inverted);
 			&.inactive {
 				--v-chip-background-color: var(--background-subdued);
 				--v-chip-color: var(--foreground-subdued);
-				--v-chip-background-color-hover: var(--background-normal);
-				--v-chip-color-hover: var(--foreground-subdued);
+				--v-chip-background-color-hover: var(--primary);
+				--v-chip-color-hover: var(--foreground-inverted);
 			}
 		}
 	}
 
 	.custom {
 		.v-chip {
+			transition: all var(--fast) var(--transition);
+			--v-chip-background-color: var(--primary);
+			--v-chip-color: var(--foreground-inverted);
 			--v-chip-background-color-hover: var(--danger);
 			--v-chip-close-color: var(--v-chip-background-color);
 			--v-chip-close-color-hover: var(--white);

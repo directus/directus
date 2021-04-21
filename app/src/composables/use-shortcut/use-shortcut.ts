@@ -9,7 +9,7 @@ const handlers: Record<string, ShortcutHandler[]> = {};
 document.body.addEventListener('keydown', (event: KeyboardEvent) => {
 	if (event.repeat || !event.key) return;
 
-	keysdown.add(mapKeys(event.key));
+	keysdown.add(mapKeys(event));
 	callHandlers(event);
 });
 
@@ -62,16 +62,19 @@ export default function useShortcut(
 	});
 }
 
-function mapKeys(key: string) {
+function mapKeys(key: KeyboardEvent) {
 	const map: Record<string, string> = {
 		Control: 'meta',
 		Command: 'meta',
 	};
+	const isLatinAlphabet = /^[a-zA-Z0-9]*?$/g;
 
-	key = map.hasOwnProperty(key) ? map[key] : key;
-	key = key.toLowerCase();
+	let keyString = key.key.match(isLatinAlphabet) === null ? key.code.replace(/(Key|Digit)/g, '') : key.key;
 
-	return key;
+	keyString = map.hasOwnProperty(keyString) ? map[keyString] : keyString;
+	keyString = keyString.toLowerCase();
+
+	return keyString;
 }
 
 function callHandlers(event: KeyboardEvent) {

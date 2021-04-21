@@ -50,8 +50,7 @@ Directus is a simple solution for complex problems, with a data-first approach g
   limitations.
 - **Extensible** — Every aspect of the platform is modular, allowing you to adapt, customize, and infinitely extend the
   Core engine.
-- **Unopinionated** — Choose your stack (node or PHP), database (all SQL vendors), API (REST or GraphQL), and infra
-  (self-hosted or Cloud).
+- **Unopinionated** — Choose your database (all SQL vendors), API (REST or GraphQL), and infra (self-hosted or Cloud).
 
 ## The Directus Ecosystem
 
@@ -118,6 +117,11 @@ Our [marketing site](https://directus.io) provides general information, resource
 ### Social
 
 For the latest product info and sneak-peeks, be sure to follow us on [Twitter](https://twitter.com/directus).
+
+### Videos
+
+Our [YouTube Channel](https://www.youtube.com/c/DirectusVideos) has video tutorials, release updates, feature overviews,
+and more.
 
 ### Community
 

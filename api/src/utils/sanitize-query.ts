@@ -1,9 +1,9 @@
 import { Accountability, Query, Sort, Filter, Meta } from '../types';
 import logger from '../logger';
 import { parseFilter } from '../utils/parse-filter';
-import { flatten } from 'lodash';
+import { flatten, set, merge, get } from 'lodash';
 
-export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Accountability | null) {
+export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null) {
 	const query: Query = {};
 
 	if (rawQuery.limit !== undefined) {
@@ -34,10 +34,6 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Acc
 		query.page = sanitizePage(rawQuery.page);
 	}
 
-	if (rawQuery.single || rawQuery.single === '') {
-		query.single = sanitizeSingle(rawQuery.single);
-	}
-
 	if (rawQuery.meta) {
 		query.meta = sanitizeMeta(rawQuery.meta);
 	}
@@ -53,9 +49,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Acc
 	if (rawQuery.deep as Record<string, any>) {
 		if (!query.deep) query.deep = {};
 
-		for (const [field, deepRawQuery] of Object.entries(rawQuery.deep)) {
-			query.deep[field] = sanitizeQuery(deepRawQuery as any, accountability);
-		}
+		query.deep = sanitizeDeep(rawQuery.deep, accountability);
 	}
 
 	return query;
@@ -119,14 +113,6 @@ function sanitizePage(rawPage: any) {
 	return Number(rawPage);
 }
 
-function sanitizeSingle(rawSingle: any) {
-	if (rawSingle !== undefined && rawSingle !== null && ['', 'true', 1, '1'].includes(rawSingle)) {
-		return true;
-	}
-
-	return false;
-}
-
 function sanitizeMeta(rawMeta: any) {
 	if (rawMeta === '*') {
 		return Object.values(Meta);
@@ -141,4 +127,42 @@ function sanitizeMeta(rawMeta: any) {
 	}
 
 	return [rawMeta];
+}
+
+function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability | null) {
+	const result: Record<string, any> = {};
+
+	if (typeof deep === 'string') {
+		try {
+			deep = JSON.parse(deep);
+		} catch {
+			logger.warn('Invalid value passed for deep query parameter.');
+		}
+	}
+
+	parse(deep);
+
+	return result;
+
+	function parse(level: Record<string, any>, path: string[] = []) {
+		const parsedLevel: Record<string, any> = {};
+
+		for (const [key, value] of Object.entries(level)) {
+			if (!key) break;
+
+			if (key.startsWith('_')) {
+				// Sanitize query only accepts non-underscore-prefixed query options
+				const parsedSubQuery = sanitizeQuery({ [key.substring(1)]: value }, accountability);
+				// ...however we want to keep them for the nested structure of deep, otherwise there's no
+				// way of knowing when to keep nesting and when to stop
+				parsedLevel[key] = Object.values(parsedSubQuery)[0];
+			} else {
+				parse(value, [...path, key]);
+			}
+		}
+
+		if (Object.keys(parsedLevel).length > 0) {
+			set(result, path, merge({}, get(result, path, {}), parsedLevel));
+		}
+	}
 }

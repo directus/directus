@@ -1,35 +1,35 @@
 import InterfaceTextarea from './textarea.vue';
 import { defineInterface } from '@/interfaces/define';
 
-export default defineInterface(({ i18n }) => ({
+export default defineInterface({
 	id: 'textarea',
-	name: i18n.t('interfaces.textarea.textarea'),
-	description: i18n.t('interfaces.textarea.description'),
+	name: '$t:interfaces.textarea.textarea',
+	description: '$t:interfaces.textarea.description',
 	icon: 'text_fields',
 	component: InterfaceTextarea,
 	types: ['text'],
 	options: [
 		{
 			field: 'placeholder',
-			name: i18n.t('placeholder'),
+			name: '$t:placeholder',
 			type: 'string',
 			meta: {
 				width: 'full',
 				interface: 'text-input',
 				options: {
-					placeholder: i18n.t('enter_a_placeholder'),
+					placeholder: '$t:enter_a_placeholder',
 				},
 			},
 		},
 		{
 			field: 'trim',
-			name: i18n.t('interfaces.text-input.trim'),
+			name: '$t:interfaces.text-input.trim',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('interfaces.text-input.trim_label'),
+					label: '$t:interfaces.text-input.trim_label',
 				},
 			},
 			schema: {
@@ -38,16 +38,16 @@ export default defineInterface(({ i18n }) => ({
 		},
 		{
 			field: 'font',
-			name: i18n.t('font'),
+			name: '$t:font',
 			type: 'string',
 			meta: {
 				width: 'half',
 				interface: 'dropdown',
 				options: {
 					choices: [
-						{ text: i18n.t('sans_serif'), value: 'sans-serif' },
-						{ text: i18n.t('monospace'), value: 'monospace' },
-						{ text: i18n.t('serif'), value: 'serif' },
+						{ text: '$t:sans_serif', value: 'sans-serif' },
+						{ text: '$t:monospace', value: 'monospace' },
+						{ text: '$t:serif', value: 'serif' },
 					],
 				},
 			},
@@ -55,5 +55,20 @@ export default defineInterface(({ i18n }) => ({
 				default_value: 'sans-serif',
 			},
 		},
+		{
+			field: 'clear',
+			name: '$t:interfaces.text-input.clear',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'toggle',
+				options: {
+					label: '$t:interfaces.text-input.clear_label',
+				},
+			},
+			schema: {
+				default_value: false,
+			},
+		},
 	],
-}));
+});

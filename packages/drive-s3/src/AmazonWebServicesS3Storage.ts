@@ -13,7 +13,10 @@ import {
 	StatResponse,
 	FileListResponse,
 	DeleteResponse,
+	Range,
 } from '@directus/drive';
+import path from 'path';
+import normalize from 'normalize-path';
 
 function handleError(err: Error, path: string, bucket: string): Error {
 	switch (err.name) {
@@ -31,6 +34,8 @@ function handleError(err: Error, path: string, bucket: string): Error {
 export class AmazonWebServicesS3Storage extends Storage {
 	protected $driver: S3;
 	protected $bucket: string;
+	protected $root: string;
+	protected $acl: string;
 
 	constructor(config: AmazonWebServicesS3StorageConfig) {
 		super();
@@ -44,16 +49,29 @@ export class AmazonWebServicesS3Storage extends Storage {
 		});
 
 		this.$bucket = config.bucket;
+		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
+		this.$acl = config.acl ? config.acl : '';
+	}
+
+	/**
+	 * Prefixes the given filePath with the storage root location
+	 */
+	protected _fullPath(filePath: string) {
+		return normalize(path.join(this.$root, filePath));
 	}
 
 	/**
 	 * Copy a file to a location.
 	 */
 	public async copy(src: string, dest: string): Promise<Response> {
+		src = this._fullPath(src);
+		dest = this._fullPath(src);
+
 		const params = {
 			Key: dest,
 			Bucket: this.$bucket,
 			CopySource: `/${this.$bucket}/${src}`,
+			ACL: this.$acl,
 		};
 
 		try {
@@ -68,6 +86,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Delete existing file.
 	 */
 	public async delete(location: string): Promise<DeleteResponse> {
+		location = this._fullPath(location);
+
 		const params = { Key: location, Bucket: this.$bucket };
 
 		try {
@@ -90,6 +110,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Determines if a file or folder already exists.
 	 */
 	public async exists(location: string): Promise<ExistsResponse> {
+		location = this._fullPath(location);
+
 		const params = { Key: location, Bucket: this.$bucket };
 
 		try {
@@ -108,7 +130,10 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Returns the file contents.
 	 */
 	public async get(location: string, encoding: BufferEncoding = 'utf-8'): Promise<ContentResponse<string>> {
+		location = this._fullPath(location);
+
 		const bufferResult = await this.getBuffer(location);
+
 		return {
 			content: bufferResult.content.toString(encoding),
 			raw: bufferResult.raw,
@@ -119,6 +144,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Returns the file contents as Buffer.
 	 */
 	public async getBuffer(location: string): Promise<ContentResponse<Buffer>> {
+		location = this._fullPath(location);
+
 		const params = { Key: location, Bucket: this.$bucket };
 
 		try {
@@ -137,6 +164,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Returns signed url for an existing file
 	 */
 	public async getSignedUrl(location: string, options: SignedUrlOptions = {}): Promise<SignedUrlResponse> {
+		location = this._fullPath(location);
+
 		const { expiry = 900 } = options;
 
 		try {
@@ -157,6 +186,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Returns file's size and modification date.
 	 */
 	public async getStat(location: string): Promise<StatResponse> {
+		location = this._fullPath(location);
+
 		const params = { Key: location, Bucket: this.$bucket };
 
 		try {
@@ -174,8 +205,15 @@ export class AmazonWebServicesS3Storage extends Storage {
 	/**
 	 * Returns the stream for the given file.
 	 */
-	public getStream(location: string): NodeJS.ReadableStream {
-		const params = { Key: location, Bucket: this.$bucket };
+	public getStream(location: string, range?: Range): NodeJS.ReadableStream {
+		location = this._fullPath(location);
+
+		const params: S3.GetObjectRequest = {
+			Key: location,
+			Bucket: this.$bucket,
+			Range: range ? `${range.start}-${range.end || ''}` : undefined,
+		};
+
 		return this.$driver.getObject(params).createReadStream();
 	}
 
@@ -183,6 +221,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Returns url for a given key.
 	 */
 	public getUrl(location: string): string {
+		location = this._fullPath(location);
+
 		const { href } = this.$driver.endpoint;
 
 		if (href.startsWith('https://s3.amazonaws')) {
@@ -198,6 +238,9 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * the hood.
 	 */
 	public async move(src: string, dest: string): Promise<Response> {
+		src = this._fullPath(src);
+		dest = this._fullPath(dest);
+
 		await this.copy(src, dest);
 		await this.delete(src);
 		return { raw: undefined };
@@ -207,8 +250,21 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Creates a new file.
 	 * This method will create missing directories on the fly.
 	 */
-	public async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
-		const params = { Key: location, Body: content, Bucket: this.$bucket };
+	public async put(
+		location: string,
+		content: Buffer | NodeJS.ReadableStream | string,
+		type?: string
+	): Promise<Response> {
+		location = this._fullPath(location);
+
+		const params = {
+			Key: location,
+			Body: content,
+			Bucket: this.$bucket,
+			ACL: this.$acl,
+			ContentType: type ? type : '',
+		};
+
 		try {
 			const result = await this.$driver.upload(params).promise();
 			return { raw: result };
@@ -221,6 +277,8 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Iterate over all files in the bucket.
 	 */
 	public async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
+		prefix = this._fullPath(prefix);
+
 		let continuationToken: string | undefined;
 
 		do {
@@ -237,9 +295,11 @@ export class AmazonWebServicesS3Storage extends Storage {
 				continuationToken = response.NextContinuationToken;
 
 				for (const file of response.Contents as ObjectList) {
+					const path = file.Key as string;
+
 					yield {
 						raw: file,
-						path: file.Key as string,
+						path: path.substring(this.$root.length),
 					};
 				}
 			} catch (e) {
@@ -253,4 +313,6 @@ export interface AmazonWebServicesS3StorageConfig extends ClientConfiguration {
 	key: string;
 	secret: string;
 	bucket: string;
+	root?: string;
+	acl?: string;
 }

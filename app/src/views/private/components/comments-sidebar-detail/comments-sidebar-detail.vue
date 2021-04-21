@@ -140,7 +140,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .sidebar-detail {
-	--v-badge-background-color: var(--foreground-normal);
+	--v-badge-background-color: var(--primary);
 }
 
 .v-progress-linear {

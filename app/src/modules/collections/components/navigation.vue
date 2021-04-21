@@ -1,5 +1,5 @@
 <template>
-	<v-list large>
+	<v-list large class="collections-navigation" @contextmenu.native.prevent.stop="$refs.contextMenu.activate">
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<template v-for="(group, index) in customNavItems">
 				<template
@@ -46,22 +46,56 @@
 		</template>
 
 		<div v-if="!customNavItems && !navItems.length && !bookmarks.length" class="empty">
-			<template v-if="isAdmin">
+			<template v-if="searchQuery !== null">
+				<em>{{ $t('no_collections_found') }}</em>
+			</template>
+			<template v-else-if="isAdmin">
 				<v-button fullWidth outlined dashed to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
 			</template>
 			<template v-else>
 				{{ $t('no_collections_copy') }}
 			</template>
 		</div>
+
+		<template v-if="hiddenShown">
+			<v-divider />
+
+			<v-list-item
+				class="hidden-collection"
+				:exact="exact"
+				v-for="navItem in hiddenNavItems"
+				:key="navItem.to"
+				:to="navItem.to"
+			>
+				<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
+				<v-list-item-content>
+					<v-text-overflow :text="navItem.name" />
+				</v-list-item-content>
+			</v-list-item>
+		</template>
+
+		<v-menu ref="contextMenu" show-arrow placement="bottom-start">
+			<v-list>
+				<v-list-item @click="hiddenShown = !hiddenShown">
+					<v-list-item-icon>
+						<v-icon :name="hiddenShown ? 'visibility_off' : 'visibility'" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-text-overflow :text="hiddenShown ? $t('hide_hidden_collections') : $t('show_hidden_collections')" />
+					</v-list-item-content>
+				</v-list-item>
+			</v-list>
+		</v-menu>
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed, ref, watchEffect } from '@vue/composition-api';
 import useNavigation from '../composables/use-navigation';
 import { usePresetsStore, useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
 import NavigationBookmark from './navigation-bookmark.vue';
+import { useSearch } from '../composables/use-search';
 
 export default defineComponent({
 	components: { NavigationBookmark },
@@ -71,11 +105,14 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup() {
+	setup(props) {
+		const { searchQuery, visible } = useSearch();
+		const contextMenu = ref();
+
 		const presetsStore = usePresetsStore();
-		const { customNavItems, navItems, activeGroups } = useNavigation();
 		const userStore = useUserStore();
 		const isAdmin = computed(() => userStore.state.currentUser?.role.admin_access === true);
+		const { hiddenShown, customNavItems, navItems, activeGroups, hiddenNavItems } = useNavigation(searchQuery);
 
 		const bookmarks = computed(() => {
 			return orderBy(
@@ -83,6 +120,11 @@ export default defineComponent({
 					.filter((preset) => {
 						return preset.bookmark !== null && preset.collection.startsWith('directus_') === false;
 					})
+					.filter(
+						(preset) =>
+							typeof preset.bookmark !== 'string' ||
+							preset.bookmark.toLocaleLowerCase().includes(searchQuery?.value?.toLocaleLowerCase() || '')
+					)
 					.map((preset) => {
 						let scope = 'global';
 						if (!!preset.role) scope = 'role';
@@ -99,7 +141,23 @@ export default defineComponent({
 			);
 		});
 
-		return { navItems, bookmarks, customNavItems, isAdmin, activeGroups, isActive, toggleActive };
+		watchEffect(() => {
+			visible.value = bookmarks.value.length + navItems.value.length;
+		});
+
+		return {
+			navItems,
+			bookmarks,
+			customNavItems,
+			isAdmin,
+			activeGroups,
+			isActive,
+			toggleActive,
+			contextMenu,
+			hiddenShown,
+			hiddenNavItems,
+			searchQuery,
+		};
 
 		function isActive(name: string) {
 			return activeGroups.value.includes(name);
@@ -124,9 +182,18 @@ export default defineComponent({
 
 .empty {
 	color: var(--foreground-subdued);
+
 	.v-button {
 		--v-button-background-color: var(--foreground-subdued);
 		--v-button-background-color-hover: var(--primary);
 	}
+}
+
+.collections-navigation {
+	--v-list-min-height: calc(100% - 64px);
+}
+
+.hidden-collection {
+	--v-list-item-color: var(--foreground-subdued);
 }
 </style>

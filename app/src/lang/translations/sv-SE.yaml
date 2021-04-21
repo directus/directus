@@ -11,7 +11,9 @@ add_field: Lägg till fält
 role_name: Rollens namn
 db_only_click_to_configure: 'Endast databas: Klicka för att konfigurera '
 show_archived_items: Visa arkiverade objekt
+edited: Redigerat värde
 required: Obligatoriskt
+required_for_app_access: Krävs för tillgång till applikationen
 requires_value: Kräver ett värde
 create_preset: Skapa förval
 create_role: Skapa roll
@@ -25,6 +27,7 @@ connection_excellent: Utmärkt anslutning
 connection_good: Bra anslutning
 connection_fair: God anslutning
 connection_poor: Dålig anslutning
+primary: Primär
 rename_folder: Döp om mapp
 delete_folder: Ta bort mapp
 prefix: Prefix
@@ -52,6 +55,11 @@ archive: Arkivera
 archive_confirm: Är du säker på att du vill arkivera detta objekt?
 archive_confirm_count: >-
   Inga objekt valda | Är du säker på att du vill arkivera detta objekt? | Är du säker på att du vill arkivera dessa {count} objekt?
+reset_system_permissions_to: 'Återställ systemrättigheter till:'
+reset_system_permissions_copy: Den här åtgärden kommer att skriva över alla anpassade behörigheter som du kan ha tillämpat på systemkollektionerna. Är du säker?
+the_following_are_minimum_permissions: Följande är minimirättigheter som krävs när "App Access" är aktiverat. Du kan utöka behörigheterna utöver detta, men inte nedan.
+app_access_minimum: Minsta tillgång till applikationen
+recommended_defaults: Rekommenderade standardvärden
 unarchive: Ångra arkivering
 unarchive_confirm: Är du säker på att du vill ångra arkivering av detta objekt?
 nested_files_folders_will_be_moved: Nästlade filer och mappar kommer flyttas upp en nivå.
@@ -72,6 +80,7 @@ validationError:
   null: Värdet måste vara null
   nnull: Värdet kan inte vara null
   required: Ett värde är obligatoriskt
+  unique: Värdet måste vara unikt
 all_access: Alla behörigheter
 no_access: Ingen åtkomst
 use_custom: Använd anpassad
@@ -80,6 +89,7 @@ field_presentation: Presentation & alias
 field_file: Enskild fil
 field_files: Flera filer
 field_m2o: M2O Relation
+field_m2a: M2A Relationship
 field_o2m: O2M Relation
 field_m2m: M2M Relation
 field_translations: Översättningar
@@ -110,11 +120,10 @@ exposure: Exponering
 shutter: Slutare
 iso: ISO
 focal_length: Skärpedjup
-schema_setup_title: Hur ska detta fält spara till databasen?
-schema_field_title: Hur ska detta fält bete sig i appen?
+schema_setup_key: Detta fälts kolumnnamn i databasen och API-nyckel
 create_field: Skapa fält
 creating_new_field: 'Nytt fält ({collection})'
-updating_field_field: '{field} ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Återställ sidans inställningar
 hidden_field: Dolt fält
 hidden_on_detail: Dolt på detaljnivå
@@ -144,10 +153,9 @@ to_manually_setup_translations: för att manuellt konfigurera översättningar.
 click_to_manage_translated_fields: >-
   Det finns inga översatta fält ännu. Klicka här för att skapa dem. | Det finns ett översatt fält. Klicka här för att administrera det. | Det finns {count} översatta fält. Klicka här för att administrera dem.
 fields_group: Fältens grupp
-configure_m2o: Konfigurera din Many-to-One relation...
-configure_o2m: Konfigurera din One-to-Many relation...
-configure_m2m: Konfigurera din Many-to-Many relation...
-configure_m2a: Konfigurera din Many-to-Any relation...
+new_data_alert: 'Följande kommer att skapas inom din datamodell:'
+new_field: 'Nytt fält'
+new_collection: 'Ny kollektion'
 add_m2o_to_collection: 'Lägg till Many-to-One i "{collection}"'
 add_o2m_to_collection: 'Lägg till One-to-Many i "{collection}"'
 add_m2m_to_collection: 'Lägg till Many-to-Many i "{collection}"'
@@ -155,8 +163,6 @@ choose_a_type: Välj en typ...
 determined_by_relationship: Bestämd av relation
 add_note: Lägg till kommentar för användare...
 default_value: Standardvärde
-interface_setup_title: Hur kommer användarna att interagera med detta fält?
-display_setup_title: Hur ska det här fältets värde visas?
 standard_field: Standardfält
 single_file: Enskild fil
 multiple_files: Flera filer
@@ -164,6 +170,7 @@ m2o_relationship: Many to One relation
 o2m_relationship: One to Many relation
 m2m_relationship: Many to Many relation
 m2a_relationship: Many to Any relation
+invalid_item: Ogiltigt objekt
 next: Nästa
 field_name: Fältnamn
 translations: Översättningar
@@ -213,7 +220,6 @@ item_delete_success: Objekt raderat | Objekt raderade
 this_collection: Den här kollektionen
 related_collection: Relaterad kollektion
 related_collections: Relaterade kollektioner
-translations_collection: Kollektion med översättningar
 languages_collection: Kollektion med språk
 export_data: Exportera data
 format: Format
@@ -353,6 +359,7 @@ collection_created: Kollektion skapad
 modified_on: Ändrad den
 card_size: Kortets storlek
 sort_field: Sortera fält
+add_sort_field: Lägg till sorteringsfält
 sort: Sortera
 status: Status
 toggle_manual_sorting: Växla manuell sortering
@@ -380,6 +387,7 @@ errors:
   ITEM_LIMIT_REACHED: Objektgränsen har uppnåtts
   ITEM_NOT_FOUND: Objektet hittades inte
   ROUTE_NOT_FOUND: Hittades inte
+  RECORD_NOT_UNIQUE: Duplicerat värde upptäckt
   UNKNOWN: Oväntat fel
 value_hashed: Värde säkert hashat
 bookmark_name: Bokmärkesnamn...
@@ -407,16 +415,22 @@ delete_collection: Ta bort kollektion
 update_collection_success: Uppdaterad kollektion
 delete_collection_success: Raderar kollektion
 start_end_of_count_items: '{start}-{end} av {count} objekt'
+start_end_of_count_filtered_items: '{start}-{end} av {count} filtrerade objekt'
+one_item: '1 objekt'
+one_filtered_item: '1 filtrerat objekt'
 delete_collection_are_you_sure: >-
   Är du säker på att du vill ta bort denna kollektion? Detta kommer att ta bort kollektionen och alla objekt i den. Denna åtgärd är permanent.
 collections_shown: Visade kollektioner
 visible_collections: Synliga kollektioner
 hidden_collections: Dolda kollektioner
+show_hidden_collections: Visa dolda kollektioner
+hide_hidden_collections: Dölj dolda kollektioner
 unmanaged_collections: Okonfigurerade kollektioner
 system_collections: Systemets kollektioner
 placeholder: Platshållare
 icon_left: Ikon till vänster
 icon_right: Ikon höger
+count_other_revisions: '{count} Andra revisioner'
 font: Typsnitt
 sans_serif: Sans Serif
 serif: Serif
@@ -497,6 +511,8 @@ toggle: Växla
 icon_on: Ikon på
 icon_off: Ikon Av
 label: Etikett
+width: Bredd
+height: Höjd
 wysiwyg_options:
   aligncenter: Centrera
   alignjustify: Justera
@@ -516,10 +532,7 @@ wysiwyg_options:
   bullist: Punktlista
   numlist: Numrerad lista
   hr: Horisontell linje
-  link: Länk
   unlink: Ta bort länk
-  media: Lägg till media
-  image: Lägg till bild
   copy: Kopiera
   cut: Klipp
   paste: Klistra in
@@ -541,7 +554,6 @@ wysiwyg_options:
   selectall: Markera alla
   table: Tabell
   visualaid: Visa osynliga element
-  code: Visa källa
   fullscreen: Helskärm
   directionality: Riktning
 dropdown: Rullgardinsmeny
@@ -563,8 +575,9 @@ settings_webhooks: Webhooks
 settings_presets: Förinställningar & bokmärken
 scope: Omfattning
 layout: Layout
+tree_view: Trädvy
 changes_are_permanent: Ändringar är permanenta
-preset_name_placeholder: Bokmärkets namn...
+preset_search_placeholder: Sök...
 editing_preset: Redigerar förval
 layout_preview: Förhandsgranska layout
 layout_setup: Konfiguration av layout
@@ -783,6 +796,15 @@ value: Värde
 view_project: Visa projekt
 report_error: Rapportera fel
 interfaces:
+  button-links:
+    button-links: Knappens länkar
+    links: Länkar
+    description: Konfigurerbara länkknappar för att starta dynamiska URL:er
+    style: Stil
+    primary: Primär
+    link: Länkar
+    button: Knappar
+    error: Kan inte utföra åtgärd
   checkboxes:
     checkboxes: Kryssrutor
     description: Välj mellan flera alternativ av kryssrutor
@@ -934,8 +956,6 @@ interfaces:
     trim_label: Trimma början och slut
     mask: Maskerad
     mask_label: Dölj det riktiga värdet
-    nullable: Nullable
-    nullable_label: Spara tomt värde som NULL
   textarea:
     textarea: Textfält
     description: Ange fritext på flera rader
@@ -947,6 +967,9 @@ interfaces:
   translations:
     display_template: Visningsmall
     no_collection: Ingen kollektion
+  tree-view:
+    description: Trädvy för kapslade rekursiva en-till-många objekt
+    recursive_only: Trädvyns gränssnitt fungerar bara för rekursiva relationer.
   user:
     user: Användare
     description: Välj en befintlig Directus användare

@@ -94,10 +94,8 @@ duplicate_where_to: 你想將欄位複製到哪裡?
 language: 語言
 global: 全域
 admins_have_all_permissions: 管理員擁有所有權限
-schema_setup_title: 此欄位應該如何儲存到資料庫中?
 create_field: 新建欄位
 creating_new_field: '新欄位 ({collection})'
-updating_field_field: '{field} ({collection})'
 reset_page_preferences: 重設頁面偏好設定
 hidden_field: 隱藏欄位
 hidden_on_detail: 從詳細內容隱藏
@@ -113,10 +111,6 @@ create_translations: 創建翻譯
 auto_generate: 自動產生
 click_here: 點擊此處
 fields_group: 欄位群組
-configure_m2o: 配置你的多對一關聯...
-configure_o2m: 配置你的一對多關聯...
-configure_m2m: 配置你的多對多關聯...
-configure_m2a: 配置你的多對Any關聯
 add_m2o_to_collection: '新增 多對一 到 "{collection}"'
 add_o2m_to_collection: '新增 一對多 到 "{collection}"'
 add_m2m_to_collection: '新增 多對多 到 "{collection}"'
@@ -169,7 +163,6 @@ item_delete_success: 項目已刪除 | 多個項目已刪除
 this_collection: 此集合
 related_collection: 相關收藏
 related_collections: 關聯的集合
-translations_collection: 譯文集合
 languages_collection: 語系集合
 export_data: 匯出資料
 format: 格式
@@ -387,6 +380,8 @@ select_fields: 選擇欄位
 format_text: 格式化文本
 bold: 粗體
 toggle: 切換
+width: 寬度
+height: 高度
 wysiwyg_options:
   aligncenter: 置中
   alignleft: 置左對齊
@@ -405,10 +400,7 @@ wysiwyg_options:
   bullist: 項目列表
   numlist: 編號列表
   hr: 分隔線
-  link: 連結
   unlink: 移除連結
-  media: 新增媒體
-  image: 新增圖像
   copy: 複製
   cut: 剪下
   paste: 貼上
@@ -690,7 +682,6 @@ interfaces:
     description: 輸入單行文本
     trim: 去除內容前後空格
     trim_label: 修剪開頭與結尾
-    nullable_label: 儲存空值為null
   textarea:
     textarea: 文本區
     description: 輸入多行純文本

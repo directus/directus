@@ -11,16 +11,15 @@ import {
 	Item,
 	PrimaryKey,
 	SchemaOverview,
+	Filter,
 } from '../types';
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
-import { uniq, merge, flatten } from 'lodash';
+import { uniq, uniqWith, merge, flatten, cloneDeep } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
 import { parseFilter } from '../utils/parse-filter';
-import { toArray } from '../utils/to-array';
-import { systemFieldRows } from '../database/system-data/fields';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -41,12 +40,15 @@ export class AuthorizationService {
 	async processAST(ast: AST, action: PermissionsAction = 'read'): Promise<AST> {
 		const collectionsRequested = getCollectionsFromAST(ast);
 
-		let permissionsForCollections = this.schema.permissions.filter((permission) => {
-			return (
-				permission.action === action &&
-				collectionsRequested.map(({ collection }) => collection).includes(permission.collection)
-			);
-		});
+		let permissionsForCollections = uniqWith(
+			this.schema.permissions.filter((permission) => {
+				return (
+					permission.action === action &&
+					collectionsRequested.map(({ collection }) => collection).includes(permission.collection)
+				);
+			}),
+			(curr, prev) => curr.collection === prev.collection && curr.action === prev.action && curr.role === prev.role
+		);
 
 		// If the permissions don't match the collections, you don't have permission to read all of them
 		const uniqueCollectionsRequestedCount = uniq(collectionsRequested.map(({ collection }) => collection)).length;
@@ -170,16 +172,10 @@ export class AuthorizationService {
 	/**
 	 * Checks if the provided payload matches the configured permissions, and adds the presets to the payload.
 	 */
-	validatePayload(action: PermissionsAction, collection: string, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
-	validatePayload(action: PermissionsAction, collection: string, payload: Partial<Item>): Promise<Partial<Item>>;
-	async validatePayload(
-		action: PermissionsAction,
-		collection: string,
-		payload: Partial<Item>[] | Partial<Item>
-	): Promise<Partial<Item>[] | Partial<Item>> {
+	validatePayload(action: PermissionsAction, collection: string, data: Partial<Item>): Promise<Partial<Item>> {
 		const validationErrors: FailedValidationException[] = [];
 
-		let payloads = toArray(payload);
+		const payload = cloneDeep(data);
 
 		let permission: Permission | undefined;
 
@@ -197,7 +193,7 @@ export class AuthorizationService {
 			};
 		} else {
 			permission = this.schema.permissions.find((permission) => {
-				return permission.action === action;
+				return permission.collection === collection && permission.action === action;
 			});
 
 			if (!permission) throw new ForbiddenException();
@@ -207,44 +203,34 @@ export class AuthorizationService {
 			const allowedFields = permission.fields || [];
 
 			if (allowedFields.includes('*') === false) {
-				for (const payload of payloads) {
-					const keysInData = Object.keys(payload);
-					const invalidKeys = keysInData.filter((fieldKey) => allowedFields.includes(fieldKey) === false);
+				const keysInData = Object.keys(payload);
+				const invalidKeys = keysInData.filter((fieldKey) => allowedFields.includes(fieldKey) === false);
 
-					if (invalidKeys.length > 0) {
-						throw new ForbiddenException(
-							`You're not allowed to ${action} field "${invalidKeys[0]}" in collection "${collection}".`
-						);
-					}
+				if (invalidKeys.length > 0) {
+					throw new ForbiddenException(
+						`You're not allowed to ${action} field "${invalidKeys[0]}" in collection "${collection}".`
+					);
 				}
 			}
 		}
 
 		const preset = parseFilter(permission.presets || {}, this.accountability);
 
-		payloads = payloads.map((payload) => merge({}, preset, payload));
-
-		const columns = Object.values(this.schema.tables[collection].columns);
+		const payloadWithPresets = merge({}, preset, payload);
 
 		let requiredColumns: string[] = [];
 
-		for (const column of columns) {
-			const field =
-				this.schema.fields.find((field) => field.collection === collection && field.field === column.column_name) ||
-				systemFieldRows.find(
-					(fieldMeta) => fieldMeta.field === column.column_name && fieldMeta.collection === collection
-				);
-
+		for (const [name, field] of Object.entries(this.schema.collections[collection].fields)) {
 			const specials = field?.special ?? [];
 
 			const hasGenerateSpecial = ['uuid', 'date-created', 'role-created', 'user-created'].some((name) =>
 				specials.includes(name)
 			);
 
-			const isRequired = column.is_nullable === false && column.default_value === null && hasGenerateSpecial === false;
+			const isRequired = field.nullable === false && field.defaultValue === null && hasGenerateSpecial === false;
 
 			if (isRequired) {
-				requiredColumns.push(column.column_name);
+				requiredColumns.push(name);
 			}
 		}
 
@@ -256,7 +242,7 @@ export class AuthorizationService {
 			if (action === 'create') {
 				for (const name of requiredColumns) {
 					permission.validation._and[1][name] = {
-						_required: true,
+						_submitted: true,
 					};
 				}
 			} else {
@@ -268,21 +254,16 @@ export class AuthorizationService {
 			}
 		}
 
-		validationErrors.push(...this.validateJoi(permission.validation, payloads));
+		validationErrors.push(
+			...this.validateJoi(parseFilter(permission.validation || {}, this.accountability), payloadWithPresets)
+		);
 
 		if (validationErrors.length > 0) throw validationErrors;
 
-		if (Array.isArray(payload)) {
-			return payloads;
-		} else {
-			return payloads[0];
-		}
+		return payloadWithPresets;
 	}
 
-	validateJoi(
-		validation: null | Record<string, any>,
-		payloads: Partial<Record<string, any>>[]
-	): FailedValidationException[] {
+	validateJoi(validation: Filter, payload: Partial<Item>): FailedValidationException[] {
 		if (!validation) return [];
 
 		const errors: FailedValidationException[] = [];
@@ -296,14 +277,14 @@ export class AuthorizationService {
 
 			const nestedErrors = flatten<FailedValidationException>(
 				subValidation.map((subObj: Record<string, any>) => {
-					return this.validateJoi(subObj, payloads);
+					return this.validateJoi(subObj, payload);
 				})
 			).filter((err?: FailedValidationException) => err);
 			errors.push(...nestedErrors);
 		} else if (Object.keys(validation)[0] === '_or') {
 			const subValidation = Object.values(validation)[0];
 			const nestedErrors = flatten<FailedValidationException>(
-				subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payloads))
+				subValidation.map((subObj: Record<string, any>) => this.validateJoi(subObj, payload))
 			);
 			const allErrored = nestedErrors.every((err?: FailedValidationException) => err);
 
@@ -313,12 +294,10 @@ export class AuthorizationService {
 		} else {
 			const schema = generateJoi(validation);
 
-			for (const payload of payloads) {
-				const { error } = schema.validate(payload, { abortEarly: false });
+			const { error } = schema.validate(payload, { abortEarly: false });
 
-				if (error) {
-					errors.push(...error.details.map((details) => new FailedValidationException(details)));
-				}
+			if (error) {
+				errors.push(...error.details.map((details) => new FailedValidationException(details)));
 			}
 		}
 
@@ -334,21 +313,17 @@ export class AuthorizationService {
 			schema: this.schema,
 		});
 
-		try {
-			const query: Query = {
-				fields: ['*'],
-			};
+		const query: Query = {
+			fields: ['*'],
+		};
 
-			const result = await itemsService.readByKey(pk as any, query, action);
-
-			if (!result) throw '';
-			if (Array.isArray(pk) && pk.length > 1 && result.length !== pk.length) throw '';
-		} catch {
-			throw new ForbiddenException(`You're not allowed to ${action} item "${pk}" in collection "${collection}".`, {
-				collection,
-				item: pk,
-				action,
-			});
+		if (Array.isArray(pk)) {
+			const result = await itemsService.readMany(pk, query, { permissionsAction: action });
+			if (!result) throw new ForbiddenException();
+			if (result.length !== pk.length) throw new ForbiddenException();
+		} else {
+			const result = await itemsService.readOne(pk, query, { permissionsAction: action });
+			if (!result) throw new ForbiddenException();
 		}
 	}
 }

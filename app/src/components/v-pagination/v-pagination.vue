@@ -185,9 +185,9 @@ body {
 		}
 
 		&.active {
-			--v-button-background-color-hover: var(--foreground-normal);
+			--v-button-background-color-hover: var(--primary);
 			--v-button-color-hover: var(--foreground-inverted);
-			--v-button-background-color: var(--foreground-normal);
+			--v-button-background-color: var(--primary);
 			--v-button-color: var(--foreground-inverted);
 		}
 	}

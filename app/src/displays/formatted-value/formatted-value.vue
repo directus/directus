@@ -13,7 +13,7 @@ import formatTitle from '@directus/format-title';
 export default defineComponent({
 	props: {
 		value: {
-			type: String,
+			type: [String, Number],
 			default: null,
 		},
 		formatTitle: {
@@ -38,7 +38,7 @@ export default defineComponent({
 		const displayValue = computed(() => {
 			if (!props.value) return null;
 			let value = String(props.value);
-			value = props.value.replace(/(<([^>]+)>)/gi, '');
+			value = value.replace(/(<([^>]+)>)/gi, '');
 
 			if (props.formatTitle) {
 				value = formatTitle(value);

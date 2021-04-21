@@ -1,6 +1,7 @@
 # Custom Displays <small></small>
 
-> Displays are small inline components that allow you to create new ways of viewing field values throughout the App. [Learn more about Displays](/concepts/displays/).
+> Displays are small inline components that allow you to create new ways of viewing field values throughout the App.
+> [Learn more about Displays](/concepts/displays/).
 
 ## 1. Setup the Boilerplate
 
@@ -46,11 +47,15 @@ for more info on what can go into this object.
 
 ```vue
 <template>
-	<div>My Custom Display</div>
+	<div>Value: {{ value }}</div>
 </template>
 
 <script>
-export default {};
+export default {
+	props: {
+		value: String,
+	},
+};
 </script>
 ```
 
@@ -93,15 +98,15 @@ To be read by the Admin App, your custom display's Vue component must first be b
 recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
 ```bash
-npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc vue-template-compiler
+npm i -D rollup @rollup/plugin-commonjs @rollup/plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5 vue-template-compiler
 ```
 
 You can then use the following Rollup configuration within `rollup.config.js`:
 
 ```js
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
 import vue from 'rollup-plugin-vue';
 
 export default {
@@ -110,9 +115,16 @@ export default {
 		format: 'es',
 		file: 'dist/index.js',
 	},
-	plugins: [terser(), resolve(), commonjs(), vue()],
+	plugins: [vue(), nodeResolve(), commonjs(), terser()],
 };
 ```
+
+::: tip Building multiple extensions
+
+You can export an array of build configurations, so you can bundle (or even watch) multiple extensions at the same time.
+See the [Rollup configuration file documentation](https://rollupjs.org/guide/en/#configuration-files) for more info.
+
+:::
 
 ## 3. Develop Your Custom Display
 
@@ -126,5 +138,5 @@ To build the display for use within Directus, run:
 npx rollup -c
 ```
 
-Finally, move the output from your display's `dist` folder into your project's `/extensions/displays` folder. Keep in
-mind that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your display's `dist` folder into your project's `/extensions/displays/my-custom-display`
+folder. Keep in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
