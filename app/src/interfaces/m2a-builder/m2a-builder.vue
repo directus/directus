@@ -10,7 +10,7 @@
 				handle=".drag-handle"
 				@input="onSort"
 				:set-data="hideDragImage"
-				:disabled="!sortField"
+				:disabled="!o2mRelation.sort_field"
 			>
 				<v-list-item
 					class="m2a-row"
@@ -19,7 +19,7 @@
 					block
 					@click="editExisting((value || [])[item.$index])"
 				>
-					<v-icon class="drag-handle" left name="drag_handle" @click.stop v-if="sortField" />
+					<v-icon class="drag-handle" left name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
 					<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
 					<span
 						v-if="typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'"
