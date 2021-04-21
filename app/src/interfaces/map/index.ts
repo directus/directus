@@ -1,6 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
+import { getBasemapSources } from '@/layouts/map/basemap';
 import InterfaceMap from './map.vue';
-import { sources, mapbox_sources } from '@/layouts/map/styles/sources';
+const basemaps = getBasemapSources();
 
 export default defineInterface({
 	id: 'map',
@@ -134,7 +135,7 @@ export default defineInterface({
 				width: 'half',
 				interface: 'dropdown',
 				options: {
-					choices: Object.keys({ ...mapbox_sources, ...sources }).map((choice) => ({ value: choice, text: choice })),
+					choices: basemaps.map((b) => ({ value: b.name, text: b.name })),
 				},
 			},
 			schema: {

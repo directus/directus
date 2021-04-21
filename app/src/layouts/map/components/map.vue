@@ -11,17 +11,21 @@ import maplibre, {
 	GeoJSONSource,
 	CameraOptions,
 	LngLatLike,
-	PointLike,
-	Source,
-	Point,
 	Style,
 	Map,
 } from 'maplibre-gl';
-import { ref, watch, computed, PropType, onMounted, onUnmounted, defineComponent } from '@vue/composition-api';
+import {
+	ref,
+	watch,
+	computed,
+	PropType,
+	onMounted,
+	onUnmounted,
+	defineComponent,
+	WatchStopHandle,
+} from '@vue/composition-api';
 
 import { useAppStore } from '@/stores';
-import getSetting from '@/utils/get-setting';
-import { mapbox_sources } from '../styles/sources';
 import { BoxSelectControl, ControlButton, ControlGroup } from '../controls';
 
 export default defineComponent({
@@ -31,20 +35,16 @@ export default defineComponent({
 			type: Object as PropType<GeoJSON.FeatureCollection>,
 			required: true,
 		},
-		rootStyle: {
-			type: Object as PropType<Style>,
-			required: true,
-		},
 		source: {
-			type: Object as PropType<Source>,
-			default: () => ({} as Source),
+			type: Object as PropType<GeoJSONSource>,
+			required: true,
 		},
 		layers: {
 			type: Array as PropType<maplibre.AnyLayer[]>,
 			default: () => [],
 		},
-		backgroundLayer: {
-			type: String,
+		mapboxStyle: {
+			type: [Object, String] as PropType<Style | string>,
 			required: true,
 		},
 		animateOptions: {
@@ -69,17 +69,17 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const appStore = useAppStore();
-
-		const apiKey = getSetting('mapbox_key');
-		if (apiKey !== null) maplibre.accessToken = apiKey;
 		let map: Map;
 		const container = ref<HTMLElement>();
 		const hoveredId = ref<string | number>();
 		const selectMode = ref(false);
+		const unwatchers = [] as WatchStopHandle[];
 
 		onMounted(() => {
-			const cleanup = setupMap();
-			onUnmounted(cleanup);
+			setupMap();
+		});
+		onUnmounted(() => {
+			map.remove();
 		});
 
 		const popup = new maplibre.Popup({
@@ -107,7 +107,11 @@ export default defineComponent({
 		function setupMap() {
 			map = new maplibre.Map({
 				container: 'map-container',
-				style: props.rootStyle,
+				style: {
+					version: 8,
+					layers: [],
+					sources: {},
+				},
 				attributionControl: false,
 				...props.camera,
 			});
@@ -119,16 +123,20 @@ export default defineComponent({
 			map.addControl(boxSelectControl, 'top-left');
 
 			map.on('load', () => {
-				attachFeatureEvents();
-				watch(() => props.backgroundLayer, updateBackground, { immediate: true });
-				map.once('styledata', () => {
-					watch(() => props.source, updateSource, { immediate: true });
-					watch(() => props.selection, updateSelection, { immediate: true });
-					watch(() => props.layers, updateLayers);
-				});
+				map.on('mouseenter', '__directus_polygons', onFeatureEnter);
+				map.on('mouseleave', '__directus_polygons', onFeatureLeave);
+				map.on('mouseenter', '__directus_points', onFeatureEnter);
+				map.on('mouseleave', '__directus_points', onFeatureLeave);
+				map.on('mouseenter', '__directus_lines', onFeatureEnter);
+				map.on('mouseleave', '__directus_lines', onFeatureLeave);
+				map.on('click', '__directus_clusters', expandCluster);
+				map.on('click', '__directus_polygons', onFeatureClick);
+				map.on('click', '__directus_points', onFeatureClick);
+				map.on('click', '__directus_lines', onFeatureClick);
+				watch(() => props.mapboxStyle, updateStyle, { immediate: true });
 			});
 
-			map.on('select.end', (event) => {
+			map.on('select.end', (event: MapLayerMouseEvent) => {
 				const ids = event.features?.map((f) => f.id);
 				emit('select', ids);
 			});
@@ -142,32 +150,13 @@ export default defineComponent({
 				});
 			});
 
+			watch(() => props.bounds, fitDataBounds);
 			watch(
 				() => appStore.state.sidebarOpen,
 				(opened) => {
 					if (!opened) setTimeout(() => map.resize(), 300);
 				}
 			);
-
-			watch(
-				() => props.data,
-				(data) => {
-					const source = map.getSource('__directus') as GeoJSONSource;
-					source?.setData(data);
-					updateSelection(props.selection, undefined);
-				}
-			);
-
-			watch(
-				() => props.bounds,
-				(bounds) => {
-					fitDataBounds();
-				}
-			);
-
-			return () => {
-				map.remove();
-			};
 		}
 
 		function fitDataBounds() {
@@ -177,87 +166,69 @@ export default defineComponent({
 			}
 		}
 
-		function updateBackground(id: string, previous?: string) {
-			if (id in mapbox_sources) {
-				if (!maplibre.accessToken) {
-					updateBackground('CartoDB_PositronNoLabels', previous);
-					return;
-				}
-
-				if (previous) {
-					console.log(props.source);
-					map.once('styledata', () => {
-						updateSource(props.source, undefined);
-					});
-				}
-
-				map.setStyle(mapbox_sources[id], { diff: false });
-			} else {
-				if (previous && previous in mapbox_sources) {
-					map.once('styledata', () => {
-						updateSource(props.source, undefined);
-						map.addLayer({ id, source: id, type: 'raster' }, map.getStyle().layers?.[0]?.id);
-					});
-					map.setStyle(props.rootStyle);
-				} else {
-					const before = previous || map.getStyle().layers?.[0]?.id;
-					map.addLayer({ id, source: id, type: 'raster' }, before);
-					if (previous) {
-						map.removeLayer(previous);
-					}
-				}
-			}
+		function updateStyle(newStyle: Style | string, oldStyle?: Style | string) {
+			unwatchers.forEach((unwatch) => unwatch());
+			unwatchers.length = 0;
+			map.setStyle(newStyle, { diff: false });
+			map.once('styledata', () => {
+				unwatchers.push(
+					watch(() => props.source, updateSource, { immediate: true }),
+					watch(() => props.selection, updateSelection, { immediate: true }),
+					watch(() => props.layers, updateLayers),
+					watch(() => props.data, updateData)
+				);
+			});
 		}
 
-		function updateSource(next: Source | undefined, previous: Source | undefined) {
-			if (previous) {
-				const currentMapLayersId = map.getStyle().layers?.map(({ id }) => id);
-				for (const layer of props.layers || []) {
-					if (currentMapLayersId?.includes(layer.id)) map.removeLayer(layer.id);
-				}
-				for (const source of Object.keys(previous || {})) {
-					map.removeSource(source);
-				}
-			}
-			for (const [id, source] of Object.entries(next || {})) {
-				if (props.featureId) {
-					source.promoteId = props.featureId;
-				} else {
-					source.generateId = true;
-				}
-				map.addSource(id, source);
-			}
-			for (const layer of props.layers || []) {
-				// this is a hack, unsolvable error otherwise
-				// map.addLayer(layer)
-				setTimeout(() => map.addLayer(layer));
-			}
+		function updateData(newData: any, previousData: any) {
 			const source = map.getSource('__directus') as GeoJSONSource;
-			source?.setData(props.data);
+			source?.setData(newData);
+			updateSelection(props.selection, undefined);
 		}
 
-		function updateLayers(next: maplibre.AnyLayer[], previous: maplibre.AnyLayer[]) {
-			for (const layer of previous || []) {
-				map.removeLayer(layer.id);
-			}
-			for (const layer of next || []) {
-				map.addLayer(layer);
-			}
-		}
-
-		function updateSelection(next: (string | number)[], previous?: (string | number)[]) {
-			if (previous) {
-				for (const id of previous || []) {
-					map.setFeatureState({ id, source: '__directus' }, { selected: false });
+		function updateSource(newSource: GeoJSONSource, previousSource?: GeoJSONSource) {
+			const layersId = new Set(map.getStyle().layers?.map(({ id }) => id));
+			for (const layer of props.layers) {
+				if (layersId.has(layer.id)) {
+					map.removeLayer(layer.id);
 				}
 			}
-			for (const id of next || []) {
-				map.setFeatureState({ id, source: '__directus' }, { selected: true });
+			if (props.featureId) {
+				(newSource as any).promoteId = props.featureId;
+			} else {
+				(newSource as any).generateId = true;
 			}
+			if ('__directus' in (map.getStyle().sources || {})) {
+				map.removeSource('__directus');
+			}
+			map.addSource('__directus', { ...newSource, data: props.data });
+			map.once('sourcedata', () => {
+				for (const layer of props.layers) {
+					setTimeout(() => map.addLayer(layer));
+				}
+			});
+		}
+
+		function updateLayers(newLayers?: maplibre.AnyLayer[], previousLayers?: maplibre.AnyLayer[]) {
+			const currentMapLayersId = new Set(map.getStyle().layers?.map(({ id }) => id));
+			previousLayers?.forEach((layer) => {
+				if (currentMapLayersId.has(layer.id)) map.removeLayer(layer.id);
+			});
+			newLayers?.forEach((layer) => {
+				map.addLayer(layer);
+			});
+		}
+
+		function updateSelection(newSelection?: (string | number)[], previousSelection?: (string | number)[]) {
+			previousSelection?.forEach((id) => {
+				map.setFeatureState({ id, source: '__directus' }, { selected: false });
+			});
+			newSelection?.forEach((id) => {
+				map.setFeatureState({ id, source: '__directus' }, { selected: true });
+			});
 		}
 
 		function onFeatureClick(event: MapLayerMouseEvent) {
-			console.log(event);
 			const feature = event.features?.[0];
 			if (feature && props.featureId) {
 				if (boxSelectControl.active()) {
@@ -273,21 +244,22 @@ export default defineComponent({
 			if (feature && props.featureId && feature.properties) {
 				hoveredId.value = feature.id;
 				map.setFeatureState({ id: hoveredId.value, source: '__directus' }, { hovered: true });
+				if (feature.geometry.type === 'Point') {
+					popup.setLngLat(feature.geometry.coordinates as LngLatLike);
+				} else {
+					popup.setLngLat(event.lngLat);
+				}
+				popup.setHTML(feature.properties.description).addTo(map);
 				emit('hover', hoveredId.value);
-				const coordinates = feature.geometry.type === 'Point' ? feature.geometry.coordinates : event.lngLat;
-				popup
-					.setLngLat(coordinates as LngLatLike)
-					.setHTML(feature.properties.description)
-					.addTo(map);
 			}
 		}
 
 		function onFeatureLeave(event: MapLayerMouseEvent) {
 			if (hoveredId.value) {
 				map.setFeatureState({ id: hoveredId.value, source: '__directus' }, { hovered: false });
-				emit('leave', hoveredId.value);
 				hoveredId.value = undefined;
 				popup.remove();
+				emit('leave', hoveredId.value);
 			}
 		}
 
@@ -305,18 +277,6 @@ export default defineComponent({
 					...props.animateOptions,
 				});
 			});
-		}
-		function attachFeatureEvents() {
-			map.on('mouseenter', '__directus_polygons', onFeatureEnter);
-			map.on('mouseleave', '__directus_polygons', onFeatureLeave);
-			map.on('mouseenter', '__directus_points', onFeatureEnter);
-			map.on('mouseleave', '__directus_points', onFeatureLeave);
-			map.on('mouseenter', '__directus_lines', onFeatureEnter);
-			map.on('mouseleave', '__directus_lines', onFeatureLeave);
-			map.on('click', '__directus_clusters', expandCluster);
-			map.on('click', '__directus_polygons', onFeatureClick);
-			map.on('click', '__directus_points', onFeatureClick);
-			map.on('click', '__directus_lines', onFeatureClick);
 		}
 	},
 });
@@ -433,6 +393,7 @@ export default defineComponent({
 		font-family: var(--family-sans-serif);
 		background-color: var(--background-normal);
 		border-radius: var(--border-radius);
+		pointer-events: none;
 	}
 }
 </style>

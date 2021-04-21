@@ -146,38 +146,3 @@ export function getParser(options: geometryOptions): GeoJSONParser {
 		return geom;
 	};
 }
-
-export function expandUrl(url: string): string[] {
-	const urls = [];
-	let match = /\{([a-z])-([a-z])\}/.exec(url);
-	if (match) {
-		// char range
-		const startCharCode = match[1].charCodeAt(0);
-		const stopCharCode = match[2].charCodeAt(0);
-		let charCode;
-		for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
-			urls.push(url.replace(match[0], String.fromCharCode(charCode)));
-		}
-		return urls;
-	}
-	match = /\{(\d+)-(\d+)\}/.exec(url);
-	if (match) {
-		// number range
-		const stop = parseInt(match[2], 10);
-		for (let i = parseInt(match[1], 10); i <= stop; i++) {
-			urls.push(url.replace(match[0], i.toString()));
-		}
-		return urls;
-	}
-	match = /\{(([a-z0-9]+)(,([a-z0-9]+))+)\}/.exec(url);
-	if (match) {
-		// csv
-		const subdomains = match[1].split(',');
-		for (let subdomain of subdomains) {
-			urls.push(url.replace(match[0], subdomain));
-		}
-		return urls;
-	}
-	urls.push(url);
-	return urls;
-}

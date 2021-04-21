@@ -211,29 +211,48 @@ fields:
       lineNumber: true
     width: full
 
-  - field: api_key_divider
+  - field: map_divider
     interface: divider
     options:
-      icon: vpn_key
-      title: Third-Party API Keys
+      icon: map
+      title: Map
     special:
       - alias
       - no-data
     width: full
 
-  - field: mapbox_key
-    interface: text-input
+  - field: basemaps
+    interface: repeater
     options:
-      iconRight: map
-      placeholder: Enter a mapbox key...
-    width: half
-  
-  - field: mapbox_description
-    interface: notice
-    special:
-      - alias
-      - no-data
-    options:
-      color: warning
-      text: Unlock more backgrounds for the map interface / layout.
-    width: half
+      template: '{{name}}'
+      fields:
+        - field: type
+          name: Type
+          meta:
+            interface: dropdown
+            width: half
+            options:
+              choices:
+                - value: style
+                  text: Mapbox Style
+                - value: raster
+                  text: Raster
+                - value: tile
+                  text: Raster TileJSON
+        - field: name
+          name: Name
+          schema:
+            is_nullable: false
+          meta:
+            interface: text-input
+            width: half
+            options:
+              placeholder: Enter the basemap name...
+        - field: url
+          name: Url
+          schema:
+            is_nullable: false
+          meta:
+            interface: text-input
+            options:
+              placeholder: http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png

@@ -3,7 +3,7 @@
 		<portal to="layout-options">
 			<div class="field">
 				<div class="type-label">Background</div>
-				<v-select v-model="backgroundLayer" :items="mapStyleOptions" item-icon="icon" />
+				<v-select v-model="basemapName" :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.map.geometry_format') }}</div>
@@ -165,13 +165,12 @@
 			:selection="_selection"
 			:camera="cameraOptions"
 			:bounds="geojsonBounds"
-			:rootStyle="rootStyle"
-			:source="userSource"
-			:layers="userLayers"
+			:source="directusSource"
+			:layers="directusLayers"
+			:mapboxStyle="mapboxStyle"
 			@click="gotoEdit"
 			@select="updateSelection"
 			@moveend="cameraOptions = $event"
-			:backgroundLayer="backgroundLayer"
 			:animateOptions="{
 				animate: fitBoundsAnimate,
 				padding: fitBoundsPadding,
@@ -189,13 +188,6 @@
 					</v-button>
 				</template>
 			</v-info>
-			<v-info
-				v-else-if="!canRenderMap"
-				icon="vpn_key"
-				type="warning"
-				center
-				:title="$t('layouts.map.no_api_key')"
-			></v-info>
 			<v-info
 				v-else-if="!geojsonOptionsOk"
 				icon="not_listed_location"
@@ -251,25 +243,22 @@
 
 <script lang="ts">
 import MapComponent from './components/map.vue';
-import { CameraOptions, AnyLayer } from 'maplibre-gl';
-import { basemapNames, rootStyle, dataStyle } from './styles';
+import { CameraOptions, AnyLayer, Style } from 'maplibre-gl';
 import type { GeoJSONSerializer } from './worker';
-
-import { defineComponent, toRefs, inject, computed, ref, watch } from '@vue/composition-api';
+import { layers } from './style';
+import { getBasemapSources, getStyleFromBasemapSource } from './basemap';
+import { defineComponent, toRefs, computed, ref, watch } from '@vue/composition-api';
 import type { PropType, Ref } from '@vue/composition-api';
 import router from '@/router';
 import { Filter } from '@/types';
 import useCollection from '@/composables/use-collection/';
 import useSync from '@/composables/use-sync/';
 import useItems from '@/composables/use-items';
-import { useRelationsStore } from '@/stores/';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 
 import i18n from '@/lang';
 import { wrap, proxy, Remote } from 'comlink';
 import { cloneDeep, merge } from 'lodash';
-import { mapbox_sources } from './styles/sources';
-import getSetting from '@/utils/get-setting';
 
 type Item = Record<string, any>;
 
@@ -283,7 +272,7 @@ type LayoutQuery = {
 type LayoutOptions = {
 	cameraOptions?: CameraOptions;
 	customLayers?: Array<AnyLayer>;
-	backgroundLayer?: string;
+	basemapName?: string;
 	geometryFormat?: GeometryFormat;
 	geometryField?: string;
 	longitudeField?: string;
@@ -345,10 +334,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const customLayerDrawerOpen = ref(false);
-
-		const relationsStore = useRelationsStore();
 		const layoutElement = ref<HTMLElement | null>(null);
-		const mainElement = inject('main-element', ref<Element | null>(null));
 		const _filters = useSync(props, 'filters', emit);
 		const _selection = useSync(props, 'selection', emit);
 		const _searchQuery = useSync(props, 'searchQuery', emit);
@@ -361,9 +347,10 @@ export default defineComponent({
 		const limit = syncOption(_layoutQuery, 'limit', 1000);
 		const sort = syncOption(_layoutQuery, 'sort', fieldsInCollection.value[0].field);
 
+		const basemaps = getBasemapSources();
+		const basemapName = syncOption(_layoutOptions, 'basemapName', basemaps[0].name);
 		const cameraOptions = syncOption(_layoutOptions, 'cameraOptions', undefined);
-		const customLayers = syncOption(_layoutOptions, 'customLayers', dataStyle.layers);
-		const backgroundLayer = syncOption(_layoutOptions, 'backgroundLayer', 'CartoDB_PositronNoLabels');
+		const customLayers = syncOption(_layoutOptions, 'customLayers', layers);
 		const simplification = syncOption(_layoutOptions, 'simplification', 0.375);
 		const fitDataBounds = syncOption(_layoutOptions, 'fitDataBounds', true);
 		const fitBoundsAnimate = syncOption(_layoutOptions, 'fitBoundsAnimate', true);
@@ -396,14 +383,9 @@ export default defineComponent({
 			);
 		});
 
-		const canRenderMap = computed(
-			() => (backgroundLayer.value || '') in mapbox_sources === false || getSetting('mapbox_key')
-		);
-
 		const template = computed(() => {
 			if (info.value?.meta?.display_template) return info.value?.meta?.display_template;
 			const fields = fieldsInCollection.value;
-			const primaryKeyField = fields.find((field) => field.schema?.is_primary_key);
 			return fields
 				.slice(0, 3)
 				.map((f) => `{{${f.field}}}`)
@@ -424,6 +406,17 @@ export default defineComponent({
 			filters: _filters,
 			searchQuery: _searchQuery,
 		});
+
+		const mapboxStyle = ref<string | Style>();
+		watch(
+			() => basemapName.value,
+			() => {
+				let basemap = basemaps.find((source) => source.name == basemapName.value);
+				if (!basemap) basemap = basemaps[0];
+				mapboxStyle.value = getStyleFromBasemapSource(basemap);
+			},
+			{ immediate: true }
+		);
 
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
 		const geojsonBounds = ref<GeoJSON.BBox>();
@@ -500,10 +493,17 @@ export default defineComponent({
 			}
 		}
 
-		const userStyle = cloneDeep(dataStyle);
-		const userSource = ref(userStyle.sources);
-		const userLayers = ref(userStyle.layers);
+		const directusLayers = ref(layers);
+		const directusSource = ref({
+			type: 'geojson',
+			data: {
+				type: 'FeatureCollection',
+				features: [],
+			},
+		});
+
 		updateSource();
+		updateLayers();
 		watch(() => clusterActive.value, updateSource);
 		watch(() => clusterRadius.value, updateSource);
 		watch(() => clusterMinPoints.value, updateSource);
@@ -512,25 +512,22 @@ export default defineComponent({
 
 		function updateLayers() {
 			customLayerDrawerOpen.value = false;
-			userLayers.value = customLayers.value;
+			directusLayers.value = customLayers.value ?? [];
 		}
 
 		function resetLayers() {
-			userLayers.value = cloneDeep(dataStyle.layers);
-			customLayers.value = userLayers.value;
+			directusLayers.value = cloneDeep(layers);
+			customLayers.value = directusLayers.value;
 		}
 
 		function updateSource() {
-			merge(userSource.value, {
-				__directus: {
-					cluster: clusterActive.value,
-					clusterRadius: clusterRadius.value,
-					clusterMinPoints: clusterMinPoints.value,
-					clusterMaxZoom: clusterMaxZoom.value,
-					tolerance: simplification.value,
-				},
+			directusSource.value = merge({}, directusSource.value, {
+				cluster: clusterActive.value,
+				clusterRadius: clusterRadius.value,
+				clusterMinPoints: clusterMinPoints.value,
+				clusterMaxZoom: clusterMaxZoom.value,
+				tolerance: simplification.value,
 			});
-			userSource.value = { ...userSource.value };
 		}
 
 		function updateSelection(selected: Array<string | number> | null) {
@@ -588,21 +585,20 @@ export default defineComponent({
 					return [];
 			}
 		}
-		const mapStyleOptions = basemapNames;
 
 		return {
 			template,
 			_selection,
 			geojson,
-			rootStyle,
-			userSource,
-			userLayers,
+			basemapName,
+			basemaps,
+			mapboxStyle,
+			directusSource,
+			directusLayers,
 			customLayers,
 			updateLayers,
 			resetLayers,
 			featureId,
-			mapStyleOptions,
-			backgroundLayer,
 			geojsonBounds,
 			geojsonLoading,
 			geojsonProgress,
@@ -647,7 +643,6 @@ export default defineComponent({
 			availableFields,
 			availableFieldsForFormat,
 			customLayerDrawerOpen,
-			canRenderMap,
 		};
 
 		async function resetPresetAndRefresh() {

@@ -2,13 +2,6 @@
 	<div class="interface-map">
 		<div class="map" ref="container" :class="{ error }"></div>
 		<div v-if="error" class="info">
-			<v-info
-				v-if="!canRenderBackground"
-				icon="vpn_key"
-				center
-				type="warning"
-				:title="$t('interfaces.map.no_api_key')"
-			></v-info>
 			<v-info v-if="geometryParsingError" icon="error" center type="warning" title="Incompatible geometry">
 				<template #append>
 					<v-button small @click="resetGeometry" class="reset-preset">Reset Geometry</v-button>
@@ -30,11 +23,6 @@ import {
 	watch,
 	watchEffect,
 } from '@vue/composition-api';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import type { Feature, FeatureCollection, Geometry, GeometryCollection, BBox } from 'geojson';
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
-import 'maplibre-gl/dist/maplibre-gl.css';
-
 import maplibre, {
 	MapLayerMouseEvent,
 	LngLatBoundsLike,
@@ -49,13 +37,18 @@ import maplibre, {
 	LngLat,
 	IControl,
 } from 'maplibre-gl';
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import type { Feature, FeatureCollection, Geometry, GeometryCollection, BBox } from 'geojson';
+
+// import { getBasemapSources, BasemapSource, getStyleFromBasemapSource } from '@/layouts/map/styles';
+import { getBasemapSources, BasemapSource, getStyleFromBasemapSource } from '@/layouts/map/basemap';
 import { ControlButton, ControlGroup } from '@/layouts/map/controls';
-import { sources, mapbox_sources } from '@/layouts/map/styles/sources';
 import { getParser, getSerializer, assignBBox } from '@/layouts/map/lib';
 import type { GeometryFormat, AnyGeoJSON } from '@/layouts/map/lib';
 import { snakeCase } from 'lodash';
-import getSetting from '@/utils/get-setting';
-import style from './style';
+import drawStyle from './style';
 
 import { Position, Point, Polygon, LineString, MultiPoint, MultiPolygon, MultiLineString } from 'geojson';
 type _GeometryType = 'Point' | 'Polygon' | 'LineString' | 'MultiPoint' | 'MultiPolygon' | 'MultiLineString';
@@ -94,7 +87,7 @@ export default defineComponent({
 		},
 		background: {
 			type: String,
-			default: 'CartoDB_PositronNoLabels',
+			default: 'OpenStreetMap',
 		},
 		geometryType: {
 			type: String as PropType<_GeometryType>,
@@ -115,17 +108,11 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const container = ref<HTMLElement | null>(null);
-		const apiKey = getSetting('mapbox_key');
-		if (apiKey !== null) maplibre.accessToken = apiKey;
-
 		let map: Map;
 		let currentGeometry: _Geometry | null | undefined;
 
-		const canRenderBackground = computed(() => props.background in mapbox_sources === false || apiKey !== null);
 		const geometryParsingError = ref<string | null>();
-		const error = computed(
-			() => !canRenderBackground.value || geometryParsingError.value || geometryParsingError.value
-		);
+		const error = computed(() => geometryParsingError.value || geometryParsingError.value);
 
 		const geometryOptions = {
 			geometrySRID: props.geometryProjection,
@@ -135,6 +122,13 @@ export default defineComponent({
 
 		const parse = getParser(geometryOptions);
 		const serialize = getSerializer(geometryOptions);
+
+		const basemaps = getBasemapSources();
+		const style = computed(() => {
+			let basemap = basemaps.find((source) => source.name == props.background);
+			if (!basemap) basemap = basemaps[0];
+			return getStyleFromBasemapSource(basemap);
+		});
 
 		onMounted(() => {
 			const cleanup = setupMap();
@@ -149,31 +143,14 @@ export default defineComponent({
 		return {
 			error,
 			container,
-			canRenderBackground,
 			geometryParsingError,
 			resetGeometry,
 		};
 
 		function setupMap(): () => void {
-			const background = canRenderBackground.value ? props.background : 'CartoDB_PositronNoLabels';
-
 			map = new Map({
 				container: container.value!,
-				style:
-					background in mapbox_sources
-						? mapbox_sources[background]
-						: {
-								version: 8,
-								glyphs: 'http://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
-								layers: [
-									{
-										id: background,
-										source: background,
-										type: 'raster',
-									},
-								],
-								sources,
-						  },
+				style: style.value,
 				center: [props.longitude, props.latitude],
 				zoom: props.zoom,
 				attributionControl: false,
@@ -188,7 +165,7 @@ export default defineComponent({
 					[snakeGeometryType]: true,
 				},
 				defaultMode: `draw_${snakeGeometryType}`,
-				styles: style,
+				styles: drawStyle,
 			});
 			map.addControl(new maplibre.NavigationControl(), 'top-left');
 			map.addControl(new maplibre.GeolocateControl(), 'top-left');
