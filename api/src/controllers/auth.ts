@@ -144,6 +144,13 @@ router.post(
 		}
 
 		await authenticationService.logout(currentRefreshToken);
+
+		if (req.cookies.directus_refresh_token) {
+			res.clearCookie('directus_refresh_token', {
+				domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+			});
+		}
+
 		return next();
 	}),
 	respond
