@@ -102,7 +102,6 @@ item_delete_success: 削除されたアイテム|削除されたアイテム
 this_collection: このコレクション
 related_collection: 関連するコレクション
 related_collections: 関連するコレクション
-translations_collection: 翻訳コレクション
 languages_collection: 言語コレクション
 format: 書式
 last_access: 最後にアクセスした日時

@@ -228,7 +228,6 @@ item_delete_success: Изтрит запис | Изтрити записи
 this_collection: Тази колекция
 related_collection: Релационна колекция
 related_collections: Релационни колекции
-translations_collection: Колекция с преводи
 languages_collection: Колекция с езици
 export_data: Експорт на данните
 format: Формат
@@ -827,7 +826,6 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 interfaces:
   button-links:

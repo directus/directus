@@ -228,7 +228,6 @@ item_delete_success: Élément supprimé | Éléments supprimés
 this_collection: Cette collection
 related_collection: Collection associée
 related_collections: Collections associées
-translations_collection: Collection de traductions
 languages_collection: Collection de langues
 export_data: Exporter les données
 format: Format
@@ -827,7 +826,6 @@ template: Modèle
 translation: Traduction
 value: Valeur
 view_project: Voir le projet
-weeks: { }
 report_error: Signaler l'erreur
 interfaces:
   button-links:

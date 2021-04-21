@@ -11,6 +11,7 @@ add_field: Adicionar Campo
 role_name: Nome do cargo
 db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar'
 show_archived_items: Mostrar itens arquivados
+edited: Valor editado
 required: Obrigatório
 required_for_app_access: Obrigatório para o Acesso ao Aplicativo
 requires_value: Requer valor
@@ -80,6 +81,7 @@ validationError:
   nnull: Valor não pode ser nulo
   required: Valor obrigatório
   unique: O valor deve ser único
+  regex: O valor não tem o formato correto
 all_access: Acesso Total
 no_access: Sem acesso
 use_custom: Usar Personalizado
@@ -145,6 +147,11 @@ uuid: UUID
 hash: Hash
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
+auto_refresh: Atualização automática
+refresh_interval: Intervalo de atualização
+no_refresh: Não atualizar
+refresh_interval_seconds: Atualizar automaticamente a cada segundo, a cada {seconds} segundos
+refresh_interval_minutes: A cada minuto, a cada {minutes} minutos
 auto_generate: Gerar automaticamente
 this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
 click_here: Clique aqui
@@ -152,7 +159,9 @@ to_manually_setup_translations: to manually setup translations.
 click_to_manage_translated_fields: >-
   Ainda não há campos traduzidos. Clique aqui para criá-los. | Há um campo traduzido. Clique aqui para gerenciá-lo. | Há {count} campos traduzidos. Clique aqui para gerenciá-los.
 fields_group: Grupo de Campos
+no_collections_found: Nenhuma coleção encontrada.
 new_data_alert: 'O seguinte será criado em seu modelo de dados:'
+search_collection: Pesquisar Coleção...
 new_field: 'Novo campo'
 new_collection: 'Nova Coleção'
 add_m2o_to_collection: 'Adicionar Muitos-para-Um a "{collection}"'
@@ -219,7 +228,6 @@ item_delete_success: Item deletado | Itens deletados
 this_collection: Esta coleção
 related_collection: Coleções relacionadas
 related_collections: Coleções relacionadas
-translations_collection: Coleção de traduções
 languages_collection: Coleção de idiomas
 export_data: Exportar dados
 format: Formato
@@ -511,8 +519,20 @@ toggle: Alternar
 icon_on: Ícone ligado
 icon_off: Ícone desligado
 label: Rótulo
+image_url: URL da Imagem
+alt_text: Texto Alternativo
+media: Mídia
 width: Largura
 height: Altura
+source: Código
+url_placeholder: Digite uma URL...
+display_text: Texto de Exibição
+display_text_placeholder: Digite um texto de exibição...
+tooltip: Dica
+tooltip_placeholder: Insira uma dica de ferramenta...
+open_link_in: Abrir link em
+new_tab: Nova aba
+current_tab: Aba atual
 wysiwyg_options:
   aligncenter: Alinhar ao centro
   alignjustify: Justificar
@@ -532,7 +552,10 @@ wysiwyg_options:
   bullist: Lista de itens
   numlist: Lista numerada
   hr: Linha Horizontal
+  link: Adicionar/Editar link
   unlink: Excluir Link
+  media: Adicionar/Editar mídia
+  image: Adicionar/Editar imagem
   copy: Copiar
   cut: Recortar
   paste: Colar
@@ -554,6 +577,7 @@ wysiwyg_options:
   selectall: Selecionar todos
   table: Tabela
   visualaid: Ver elementos invisíveis
+  source_code: Editar o código-fonte
   fullscreen: Tela cheia
   directionality: Direcionalidade
 dropdown: Seleção
@@ -574,9 +598,11 @@ settings_project: Configurações do projeto
 settings_webhooks: Webhooks
 settings_presets: Predefinições & Marcadores
 scope: Escopo
+select: Selecionar...
 layout: Layout
 tree_view: Exibição em Árvore
 changes_are_permanent: As alterações são permanentes
+preset_name_placeholder: Serve como padrão quando vazio...
 preset_search_placeholder: Termos da pesquisa...
 editing_preset: Editando predefinição
 layout_preview: Pré-visualização do Layout
@@ -619,6 +645,7 @@ add_new: Adicionar Novo
 create_new: Criar novo
 all: Tudo
 none: Nenhum
+no_layout_collection_selected_yet: Nenhum layout/coleção selecionado ainda
 batch_delete_confirm: >-
   Nenhum item foi selecionado | Você tem certeza que deseja deletar esse item? Essa ação não pode ser desfeita. | Você tem certeza que deseja deletar esses {count} itens? Essa ação não pode ser desfeita.
 cancel: Cancelar
@@ -645,6 +672,7 @@ fields:
     display_template: Modelo de exibição
     hidden: Oculto
     singleton: Singleton
+    translations: Traduções de Nomes da Coleção
     sort_field: Campo de ordenação
   directus_files:
     title: Título
@@ -697,6 +725,7 @@ fields:
     public_note: Nota pública
     auth_password_policy: Política de senha para autenticação
     auth_login_attempts: Tentativas de autenticação
+    storage_asset_presets: Predefinições de armazenamento
     custom_css: CSS Personalizado
   directus_fields:
     collection: Nome da coleção
@@ -717,6 +746,10 @@ fields:
     users: Usuários no cargo
     module_list: Navegação do Módulo
     collection_list: Navegação da Coleção
+field_options:
+  directus_collections:
+    only_track_activity: Acompanhar apenas Atividade
+    do_not_track_anything: Não rastreie nada
 no_fields_in_collection: 'Ainda não há campos em "{collection}"'
 do_nothing: Não fazer nada
 generate_and_save_uuid: Gerar e salvar UUID
@@ -832,13 +865,16 @@ interfaces:
     use_24: Usar formato de 24 horas
   display-template:
     display-template: Modelo de exibição
+    description: Misturar texto estático e valores dos campos dinâmicos
     collection_field_not_setup: A opção do campo de coleção está configurada incorretamente
     select_a_collection: Selecione uma coleção
   divider:
     divider: Divisor
+    description: Rótulo e divisão de campos em seções
     title_placeholder: Insira um título...
     inline_title_label: Mostrar título dentro da linha
     margin_top: Margem Superior
+    margin_top_label: Aumentar margem superior
   dropdown:
     description: Selecione um valor a partir de uma seleção
     choices_placeholder: Adicionar uma nova escolha
@@ -875,8 +911,10 @@ interfaces:
     placeholder: Selecione uma interface...
   interface-options:
     interface-options: Opções de Interface
+    description: Um modal para selecionar opções de uma interface
   many-to-many:
     many-to-many: Muitos-para-muitos (N para N)
+    description: Selecione vários itens relacionados
   many-to-one:
     many-to-one: Muitos-para-um (N para 1)
     description: Selecione um único item relacionado
@@ -885,7 +923,11 @@ interfaces:
     markdown: Markdown
     description: Inserir e pré-visualizar markdown
     customSyntax: Blocos Personalizados
+    customSyntax_label: Adicionar tipos de sintaxe personalizados
+    customSyntax_add: Adicionar tipos de sintaxe personalizados
     box: Bloco / Em linha
+    imageToken: Token da imagem
+    imageToken_label: Qual token (estático) a ser adicionado nas imagens
   notice:
     notice: Aviso
     description: Mostrar um breve aviso
@@ -937,6 +979,8 @@ interfaces:
     trim_label: Aparar o início e fim
     mask: Mascarado
     mask_label: Ocultar o valor real
+    clear: Limpar valor
+    clear_label: Salvar como string vazia
   textarea:
     textarea: Área de texto
     description: Insira texto puro de múltiplas linhas
@@ -948,6 +992,9 @@ interfaces:
   translations:
     display_template: Modelo de exibição
     no_collection: Nenhuma coleção
+  tree-view:
+    description: Visualização de árvore para itens recursivos aninhados um-para-muitos
+    recursive_only: A interface de exibição em árvore só funciona para relações recursivas.
   user:
     user: Usuário
     description: Selecione um usuário Directus existente
