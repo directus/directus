@@ -232,6 +232,9 @@ export default defineComponent({
 				try {
 					const initialValue = parse(props) as _Geometry | undefined;
 					const uncombined = uncombine(initialValue as _MultiGeometry);
+					if (uncombined.length > 1 && !props.multiGeometry) {
+						throw `Expeted single ${props.geometryType}, found multiple.`;
+					}
 					uncombined.forEach((geometry) => {
 						draw.add(geometry);
 					});
@@ -265,7 +268,7 @@ export default defineComponent({
 					} as _MultiGeometry;
 				}
 				if (geometry.type !== `Multi${props.geometryType}`) {
-					throw new Error(`Expected ${props.geometryType}, got ${geometry.type}`);
+					throw `Expected ${props.geometryType}, got ${geometry.type}`;
 				}
 				for (const coordinates of geometry.coordinates) {
 					geometries.push({
