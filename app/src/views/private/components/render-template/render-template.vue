@@ -30,6 +30,7 @@ export default defineComponent({
 	props: {
 		collection: {
 			type: String,
+			required: true,
 		},
 		item: {
 			type: Object as PropType<Record<string, any>>,

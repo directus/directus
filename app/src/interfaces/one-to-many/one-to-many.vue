@@ -5,14 +5,14 @@
 	<div class="one-to-many" v-else>
 		<v-list>
 			<draggable
-				:value="sortedItems || items"
+				:value="sortedItems"
 				@input="sortItems($event)"
 				handler=".drag-handle"
 				:disabled="!relation.sort_field"
 			>
-				<v-list-item v-for="item in sortedItems || items" :key="item.id" block @click="editItem(item)">
+				<v-list-item v-for="item in sortedItems" :key="item.id" block large @click="editItem(item)">
 					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-					<render-template :item="item" :template="template" />
+					<render-template :collection="relation.many_collection" :item="item" :template="template" />
 					<div class="spacer" />
 					<v-icon name="close" @click.stop="deleteItem(item)" />
 				</v-list-item>
@@ -205,7 +205,7 @@ export default defineComponent({
 			}
 
 			const sortedItems = computed(() => {
-				if (relation.value.sort_field === null || sort.value.by !== relation.value.sort_field) return null;
+				if (relation.value.sort_field === null || sort.value.by !== relation.value.sort_field) return items.value;
 
 				const desc = sort.value.desc;
 				const sorted = sortBy(items.value, [relation.value.sort_field]);
@@ -444,11 +444,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .actions {
-	margin-top: 12px;
+	margin-top: 8px;
 }
 
 .existing {
-	margin-left: 12px;
+	margin-left: 8px;
 }
 
 .deselect {
