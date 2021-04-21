@@ -228,6 +228,7 @@ item_delete_success: Kohde poistettu | Kohteet poistettu
 this_collection: Tämä kokoelma
 related_collection: Liittyvät kokoelmat
 related_collections: Liittyvät kokoelmat
+translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
 export_data: Vie tiedot
 format: Muoto
@@ -826,6 +827,7 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
+weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:
