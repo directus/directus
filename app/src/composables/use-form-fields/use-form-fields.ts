@@ -8,7 +8,7 @@ import { Field } from '@/types';
 import { clone } from 'lodash';
 
 export default function useFormFields(fields: Ref<Field[]>) {
-	const interfaces = getInterfaces();
+	const { interfaces } = getInterfaces();
 
 	const formFields = computed(() => {
 		let formFields = clone(fields.value);

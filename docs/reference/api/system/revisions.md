@@ -102,7 +102,10 @@ available, data will be an empty array.
 
 ```
 GET /revisions
+SEARCH /revisions
 ```
+
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
 
 ### GraphQL
 

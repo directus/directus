@@ -66,6 +66,7 @@
 					:items="availableCollections"
 					item-value="collection"
 					item-text="name"
+					item-disabled="meta.singleton"
 					multiple
 					v-model="relations[1].one_allowed_collections"
 					:multiple-preview-threshold="0"

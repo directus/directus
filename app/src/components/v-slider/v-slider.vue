@@ -235,7 +235,7 @@ body {
 			position: absolute;
 			top: 0px;
 			left: calc(var(--_v-slider-percentage) * 1%);
-			width: max-content;
+			width: auto;
 			padding: 2px 6px;
 			color: var(--foreground-inverted);
 			font-weight: 600;

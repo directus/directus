@@ -69,6 +69,7 @@
 			:collection="relatedCollection.collection"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
+			:circular-field="relation.one_field"
 			@input="stageEdits"
 		/>
 
@@ -233,7 +234,7 @@ export default defineComponent({
 				try {
 					const endpoint = relatedCollection.value.collection.startsWith('directus_')
 						? `/${relatedCollection.value.collection.substring(9)}/${props.value}`
-						: `/items/${relatedCollection.value.collection}/${props.value}`;
+						: `/items/${relatedCollection.value.collection}/${encodeURIComponent(props.value)}`;
 
 					const response = await api.get(endpoint, {
 						params: {

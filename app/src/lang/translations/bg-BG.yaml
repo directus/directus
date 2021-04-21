@@ -81,6 +81,7 @@ validationError:
   nnull: Стойността не трябва да е null
   required: Изисква се стойност
   unique: Изисква се уникална стойност
+  regex: Стойността е неправилно форматирана
 all_access: Пълен достъп
 no_access: Без достъп
 use_custom: Персонализиран
@@ -127,7 +128,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Нулиране на предпочитанията за страницата
 hidden_field: Скрито поле
 hidden_on_detail: Скриване в детайлния изглед
-disabled_editing_value: Без промени по стойността
+disabled_editing_value: Без възможност за редакция
 key: Ключ
 alias: Псевдоним
 bigInteger: Голямо цяло число
@@ -148,6 +149,11 @@ uuid: UUID
 hash: Хеш
 not_available_for_type: Не е налично за този тип
 create_translations: Създаване на преводи
+auto_refresh: Автоматично опресняване
+refresh_interval: Интервал за опресняване
+no_refresh: Да не се опреснява
+refresh_interval_seconds: Моментално опресняване | Всяка секунда | Всеки {seconds} секунди
+refresh_interval_minutes: Всяка минута | Всеки {minutes} минути
 auto_generate: Автоматично генериране
 this_will_auto_setup_fields_relations: Автоматично настройване на задължителните полета и релации.
 click_here: Натиснете тук
@@ -155,7 +161,9 @@ to_manually_setup_translations: за ръчна настройка на прев
 click_to_manage_translated_fields: >-
   Все още няма преведени полета. Натиснете тук за да ги създадете. | Има едно преведено поле. Натиснете тук за да го управлявате. | Има {count} преведени полета. Натиснете тук за да ги управлявате.
 fields_group: Групи от полета
+no_collections_found: Не са намерени колекции.
 new_data_alert: 'Следващото ще бъде създадено във вашият модел:'
+search_collection: Търсене на колекция...
 new_field: 'Ново поле'
 new_collection: 'Нова колекция'
 add_m2o_to_collection: 'Добавяне на "много към един" в "{collection}"'
@@ -222,7 +230,6 @@ item_delete_success: Изтрит запис | Изтрити записи
 this_collection: Тази колекция
 related_collection: Релационна колекция
 related_collections: Релационни колекции
-translations_collection: Колекция с преводи
 languages_collection: Колекция с езици
 export_data: Експорт на данните
 format: Формат
@@ -430,7 +437,7 @@ show_hidden_collections: Показване на скритите колекци
 hide_hidden_collections: Скриване на скритите колекции
 unmanaged_collections: Неконфигурирани колекции
 system_collections: Системни колекции
-placeholder: Заместител (placeholder)
+placeholder: Подсказка
 icon_left: Икона вляво
 icon_right: Икона вдясно
 count_other_revisions: '{count} други ревизии'
@@ -514,8 +521,20 @@ toggle: Превключване
 icon_on: Активна икона
 icon_off: Неактивна икона
 label: Етикет
+image_url: URL на изображение
+alt_text: Алтернативен текст
+media: Медия
 width: Ширина
 height: Височина
+source: Източник
+url_placeholder: Въвеждане на URL...
+display_text: Текст за показване
+display_text_placeholder: Въвеждане на текст за показване...
+tooltip: Подсказка
+tooltip_placeholder: Въвеждане на подсказка...
+open_link_in: Отваряне не връзката в
+new_tab: Нов таб
+current_tab: Текущ таб
 wysiwyg_options:
   aligncenter: Центриране
   alignjustify: Двустранно подравняване
@@ -535,7 +554,10 @@ wysiwyg_options:
   bullist: Списък
   numlist: Номериран списък
   hr: Хоризонтална линия
+  link: Добавяне/редактиране на връзка
   unlink: Премахване на връзка
+  media: Добавяне/редактиране на медия
+  image: Добавяне/редактиране на изображение
   copy: Копиране
   cut: Изрязване
   paste: Поставяне
@@ -557,6 +579,7 @@ wysiwyg_options:
   selectall: Избиране на всичко
   table: Таблица
   visualaid: Преглед на невидимите елементи
+  source_code: Редактиране на изходен код
   fullscreen: Пълен Екран
   directionality: Подравняване
 dropdown: Падащо меню
@@ -577,10 +600,11 @@ settings_project: Настройки на проект
 settings_webhooks: Уеб-куки
 settings_presets: Изгледи и отметки
 scope: Обхват
+select: Избор...
 layout: Оформление
 tree_view: Дървовиден изглед
 changes_are_permanent: Промените са постоянни
-preset_name_placeholder: Име на отметка...
+preset_name_placeholder: По подразбиране когато е празно...
 preset_search_placeholder: Заявка за търсене...
 editing_preset: Редактиране на подготвени изгледи
 layout_preview: Предварителен преглед
@@ -655,6 +679,7 @@ fields:
     archive_value: Стойност при архивиране
     unarchive_value: Стойност при разархивиране
     sort_field: Поле за сортиране
+    accountability: Следене за активност и ревизии
   directus_files:
     title: Заглавие
     description: Описание
@@ -728,6 +753,11 @@ fields:
     users: Потребители към роля
     module_list: Модули
     collection_list: Навигация в колекции
+field_options:
+  directus_collections:
+    track_activity_revisions: Проследяване на активността и ревизиите
+    only_track_activity: Проследяване само на активността
+    do_not_track_anything: Без следене
 no_fields_in_collection: 'Все още няма полета в {collection}'
 do_nothing: Без действие
 generate_and_save_uuid: Генериране и запазване на UUID
@@ -913,7 +943,7 @@ interfaces:
     description: Показване на кратка бележка
     text: Въвеждане на бележката...
   numeric:
-    numeric: Числен
+    numeric: Числов
     description: Въвеждане на число
     minimum_value: Минимална стойност
     maximum_value: Максимална стойност
@@ -960,8 +990,8 @@ interfaces:
     trim_label: Почистване на краищата от интервали
     mask: Маскиране
     mask_label: Скриване на истинската стойност
-    nullable: Може да е null
-    nullable_label: Празните стойности са NULL
+    clear: Изчистване на стойност
+    clear_label: Запазване като празен стринг
   textarea:
     textarea: Поле за текст
     description: Въвеждане на чист текст на няколко реда

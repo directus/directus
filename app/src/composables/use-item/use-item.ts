@@ -43,7 +43,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			return endpoint.value;
 		}
 
-		return `${endpoint.value}/${primaryKey.value}`;
+		return `${endpoint.value}/${encodeURIComponent(primaryKey.value as string)}`;
 	});
 
 	watch([collection, primaryKey], refresh, { immediate: true });

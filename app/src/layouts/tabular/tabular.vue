@@ -537,7 +537,7 @@ export default defineComponent({
 					const primaryKey = item[primaryKeyField.value!.field];
 
 					// eslint-disable-next-line @typescript-eslint/no-empty-function
-					router.push(`/collections/${collection.value}/${primaryKey}`, () => {});
+					router.push(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`, () => {});
 				}
 			}
 

@@ -4,7 +4,7 @@ import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import asyncPool from 'tiny-async-pool';
 
-const layouts = getLayouts();
+const { layoutsRaw } = getLayouts();
 
 export async function registerLayouts() {
 	const context = require.context('.', true, /^.*index\.ts$/);
@@ -16,7 +16,7 @@ export async function registerLayouts() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/layouts');
+		const customResponse = await api.get('/extensions/layouts/');
 		const layouts: string[] = customResponse.data.data || [];
 
 		await asyncPool(5, layouts, async (layoutName) => {
@@ -24,18 +24,18 @@ export async function registerLayouts() {
 				const result = await import(
 					/* webpackIgnore: true */ getRootPath() + `extensions/layouts/${layoutName}/index.js`
 				);
-				modules.push(result.value.default);
+				modules.push(result.default);
 			} catch (err) {
-				console.warn(`Couldn't load custom layout "${layoutName}"`);
+				console.warn(`Couldn't load custom layout "${layoutName}":`, err);
 			}
 		});
 	} catch {
 		console.warn(`Couldn't load custom layouts`);
 	}
 
-	layouts.value = modules;
+	layoutsRaw.value = modules;
 
-	layouts.value.forEach((layout) => {
+	layoutsRaw.value.forEach((layout) => {
 		registerComponent('layout-' + layout.id, layout.component);
 	});
 }

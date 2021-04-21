@@ -201,7 +201,6 @@ item_delete_success: Elementas pašalintas | Elementai pašalinti
 this_collection: Ši kolekcija
 related_collection: Susijusi kolekcija
 related_collections: Susijusios kolekcijos
-translations_collection: Vertimų kolekcija
 languages_collection: Kalbų kolekcija
 export_data: Eksportuoti duomenis
 format: Formatas
@@ -544,7 +543,6 @@ settings_presets: Ruošiniai ir žymos
 scope: Apimtis
 layout: Išdėstymas
 changes_are_permanent: Pakeitimai neatstatomi
-preset_name_placeholder: Žymos pavadinimas...
 editing_preset: Redaguojamas ruošinys
 layout_preview: Išdėstymo peržiūra
 layout_setup: Išdėstymo nustatymai
@@ -858,8 +856,6 @@ interfaces:
     trim_label: Apkarpyti iš pradžios ir pabaigos
     mask: Paslėptas
     mask_label: Paslėpti tikrąją reikšmę
-    nullable: Gali būti Null
-    nullable_label: Išsaugoti tuščią reikšmė kaip NULL
   textarea:
     textarea: Teksto sritis
     description: Įveskite kelių eilučių neformatuotą tesktą

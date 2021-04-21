@@ -126,7 +126,10 @@ data will be an empty array.
 
 ```
 GET /presets
+SEARCH /presets
 ```
+
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
 
 ### GraphQL
 

@@ -29,7 +29,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const interfaces = getInterfaces();
+		const { interfaces } = getInterfaces();
 
 		const values = inject('values', ref<Record<string, any>>({}));
 

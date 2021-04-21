@@ -1,10 +1,10 @@
 import { BaseException } from './base';
 import { ValidationErrorItem } from 'joi';
-import { FilterOperator } from '../types';
+import { FilterOperator, ValidationOperator } from '../types';
 
 type FailedValidationExtensions = {
 	field: string;
-	type: FilterOperator | 'required';
+	type: FilterOperator | ValidationOperator;
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;
@@ -95,6 +95,11 @@ export class FailedValidationException extends BaseException {
 		// required
 		if (joiType.endsWith('required')) {
 			extensions.type = 'required';
+		}
+
+		if (joiType.endsWith('.pattern.base')) {
+			extensions.type = 'regex';
+			extensions.invalid = error.context?.value;
 		}
 
 		super(error.message, 400, 'FAILED_VALIDATION', extensions);

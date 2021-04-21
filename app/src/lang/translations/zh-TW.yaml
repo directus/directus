@@ -165,7 +165,6 @@ item_delete_success: 項目已刪除 | 多個項目已刪除
 this_collection: 此集合
 related_collection: 相關收藏
 related_collections: 關聯的集合
-translations_collection: 譯文集合
 languages_collection: 語系集合
 export_data: 匯出資料
 format: 格式
@@ -685,7 +684,6 @@ interfaces:
     description: 輸入單行文本
     trim: 去除內容前後空格
     trim_label: 修剪開頭與結尾
-    nullable_label: 儲存空值為null
   textarea:
     textarea: 文本區
     description: 輸入多行純文本

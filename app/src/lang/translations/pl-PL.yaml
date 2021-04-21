@@ -175,7 +175,6 @@ item_delete_success: Element usunięty | Elementy usunięte
 this_collection: Ta kolekcja
 related_collection: Powiązana kolekcja
 related_collections: Powiązane kolekcje
-translations_collection: Kolekcja tłumaczeń
 languages_collection: Kolekcja języków
 export_data: Eksportuj dane
 format: Formatowanie
@@ -478,7 +477,6 @@ settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
 settings_presets: Szablony i zakładki
 changes_are_permanent: Zmiany są trwałe
-preset_name_placeholder: Nazwa zakładki...
 editing_preset: Edycja szablonu
 layout_preview: Podgląd układu
 unsaved_changes: Niezapisane zmiany

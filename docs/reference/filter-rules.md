@@ -67,6 +67,16 @@
 | `_empty`     | The value is empty (null or falsy)     |
 | `_nempty`    | The value is not empty (null or falsy) |
 
+The following operators are **only available in validation permissions**:
+
+| Operator                | Description               |
+| ----------------------- | ------------------------- |
+| `_submitted`            | Field has to be submitted |
+| `_regex` <sup>[1]</sup> | Field has to match regex  |
+
+<sup>[1]</sup> JavaScript "flavor" regex. Save the regex without leading/trailing `/` character, and make sure to escape
+backslashes.
+
 ## Relational
 
 You can target related values by nesting field names. For example, if you have a relational

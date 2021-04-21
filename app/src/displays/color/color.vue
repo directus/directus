@@ -28,8 +28,8 @@ export default defineComponent({
 		});
 
 		const styles = computed(() => {
-			const defaultColor = props.defaultColor.startsWith('var(') ? getVar(props.defaultColor) : props.defaultColor;
-			const value = props.value && props.value.startsWith('var(') ? getVar(props.value) : props.value;
+			const defaultColor = props.defaultColor?.startsWith('var(') ? getVar(props.defaultColor) : props.defaultColor;
+			const value = props.value?.startsWith('var(') ? getVar(props.value) : props.value;
 
 			const style: Record<string, any> = { 'background-color': defaultColor };
 

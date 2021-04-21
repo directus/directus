@@ -8,6 +8,7 @@ export type CollectionMeta = {
 	singleton: boolean;
 	icon: string | null;
 	translations: Record<string, string>;
+	accountability: 'all' | 'accountability' | null;
 };
 
 export type Collection = {

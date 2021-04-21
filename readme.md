@@ -27,8 +27,6 @@ certain features might be missing or broken. You can follow along with
 [the issue tracker](https://github.com/directus/directus/issues) for an in-depth list of upcoming enhancements, with the
 following notable features still under development:
 
-- [ ] MS SQL Support
-- [ ] OracleDB Support
 - [ ] Import/Export Endpoints
 
 <br>

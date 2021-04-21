@@ -5,7 +5,7 @@ import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import asyncPool from 'tiny-async-pool';
 
-const displays = getDisplays();
+const { displaysRaw } = getDisplays();
 
 export async function registerDisplays() {
 	const context = require.context('.', true, /^.*index\.ts$/);
@@ -17,7 +17,7 @@ export async function registerDisplays() {
 		.filter((m) => m);
 
 	try {
-		const customResponse = await api.get('/extensions/displays');
+		const customResponse = await api.get('/extensions/displays/');
 		const displays: string[] = customResponse.data.data || [];
 
 		await asyncPool(5, displays, async (displayName) => {
@@ -25,18 +25,18 @@ export async function registerDisplays() {
 				const result = await import(
 					/* webpackIgnore: true */ getRootPath() + `extensions/displays/${displayName}/index.js`
 				);
-				modules.push(result.value.default);
+				modules.push(result.default);
 			} catch (err) {
-				console.warn(`Couldn't load custom displays "${displayName}"`);
+				console.warn(`Couldn't load custom displays "${displayName}":`, err);
 			}
 		});
 	} catch {
 		console.warn(`Couldn't load custom displays`);
 	}
 
-	displays.value = modules;
+	displaysRaw.value = modules;
 
-	displays.value.forEach((display) => {
+	displaysRaw.value.forEach((display) => {
 		if (typeof display.handler !== 'function') {
 			registerComponent('display-' + display.id, display.handler as Component);
 		}

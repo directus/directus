@@ -1,0 +1,57 @@
+name: Run e2e tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        db: ['mssql', 'mysql', 'postgres', 'maria', 'sqlite3']
+        node-version: [ '12-alpine', '14-alpine', '15-alpine' ]
+    env:
+      CACHED_IMAGE: ghcr.io/directus/directus-e2e-test-cache:${{ matrix.node-version }}
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pull cached directus image
+        run: |
+          docker pull $CACHED_IMAGE || true
+          docker tag $CACHED_IMAGE directus-test-image || true
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '15'
+      - name: restore node_modules cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            **/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: |
+          npm install
+      - name: Build
+        run: |
+          npm run build
+      - name: Run tests
+        env:
+          TEST_NODE_VERSION: ${{ matrix.node-version }}
+          TEST_DB: ${{ matrix.db }}
+        run: npm run test:e2e
+      - name: Push cached image
+        # only push the new cache image on the main branch once per node version
+        if: github.ref == 'refs/heads/main' && github.repository == 'directus/directus' && matrix.db == 'sqlite3'
+        run: |
+          docker tag directus-test-image $CACHED_IMAGE
+          docker push $CACHED_IMAGE || true

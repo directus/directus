@@ -135,7 +135,7 @@ export default defineComponent({
 		});
 
 		const isEdited = computed<boolean>(() => {
-			return props.value && isEqual(props.value, props.initialValue) === false;
+			return props.value !== undefined && isEqual(props.value, props.initialValue) === false;
 		});
 
 		const { showRaw, rawValue } = useRaw();

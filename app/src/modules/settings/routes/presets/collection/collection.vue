@@ -120,7 +120,7 @@ type Preset = {
 export default defineComponent({
 	components: { SettingsNavigation, ValueNull, PresetsInfoSidebarDetail },
 	setup() {
-		const layouts = getLayouts();
+		const { layouts } = getLayouts();
 		const collectionsStore = useCollectionsStore();
 
 		const selection = ref<Preset[]>([]);

@@ -4,7 +4,7 @@ import { getDisplays } from '@/displays';
 
 export default function adjustFieldsForDisplays(fields: readonly string[], parentCollection: string) {
 	const fieldsStore = useFieldsStore();
-	const displays = getDisplays();
+	const { displays } = getDisplays();
 
 	const adjustedFields: string[] = fields
 		.map((fieldKey) => {

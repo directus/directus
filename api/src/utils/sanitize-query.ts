@@ -4,7 +4,7 @@ import { parseFilter } from '../utils/parse-filter';
 import { flatten, set, merge, get } from 'lodash';
 import { string } from 'joi';
 
-export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Accountability | null) {
+export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null) {
 	const query: Query = {};
 
 	if (rawQuery.limit !== undefined) {
@@ -33,10 +33,6 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability: Acc
 
 	if (rawQuery.page) {
 		query.page = sanitizePage(rawQuery.page);
-	}
-
-	if (rawQuery.single || rawQuery.single === '') {
-		query.single = sanitizeSingle(rawQuery.single);
 	}
 
 	if (rawQuery.meta) {
@@ -122,14 +118,6 @@ function sanitizePage(rawPage: any) {
 	return Number(rawPage);
 }
 
-function sanitizeSingle(rawSingle: any) {
-	if (rawSingle !== undefined && rawSingle !== null && ['', 'true', 1, '1'].includes(rawSingle)) {
-		return true;
-	}
-
-	return false;
-}
-
 function sanitizeMeta(rawMeta: any) {
 	if (rawMeta === '*') {
 		return Object.values(Meta);
@@ -158,7 +146,7 @@ function sanitizeOptional(optional: any) {
 	return result;
 }
 
-function sanitizeDeep(deep: Record<string, any>, accountability: Accountability | null) {
+function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability | null) {
 	const result: Record<string, any> = {};
 
 	if (typeof deep === 'string') {
