@@ -307,10 +307,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const queryWithKeys = {
 			...query,
 			filter: {
-				...(query.filter || {}),
-				[primaryKeyField]: {
-					_in: keys,
-				},
+				_and: [
+					query.filter || {},
+					{
+						[primaryKeyField]: {
+							_in: keys,
+						},
+					},
+				],
 			},
 		};
 

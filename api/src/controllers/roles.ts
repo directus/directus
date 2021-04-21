@@ -50,26 +50,25 @@ router.post(
 	respond
 );
 
-router.get(
-	'/',
-	asyncHandler(async (req, res, next) => {
-		const service = new RolesService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-		const metaService = new MetaService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+const readHandler = asyncHandler(async (req, res, next) => {
+	const service = new RolesService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
+	const metaService = new MetaService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const records = await service.readByQuery(req.sanitizedQuery);
-		const meta = await metaService.getMetaForQuery('directus_roles', req.sanitizedQuery);
+	const records = await service.readByQuery(req.sanitizedQuery);
+	const meta = await metaService.getMetaForQuery('directus_roles', req.sanitizedQuery);
 
-		res.locals.payload = { data: records || null, meta };
-		return next();
-	}),
-	respond
-);
+	res.locals.payload = { data: records || null, meta };
+	return next();
+});
+
+router.get('/', validateBatch('read'), readHandler, respond);
+router.search('/', validateBatch('read'), readHandler, respond);
 
 router.get(
 	'/:pk',

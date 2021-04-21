@@ -6,12 +6,7 @@ import { File, PrimaryKey } from '../types';
 import formatTitle from '@directus/format-title';
 import env from '../env';
 import Joi from 'joi';
-import {
-	InvalidPayloadException,
-	ForbiddenException,
-	FailedValidationException,
-	ServiceUnavailableException,
-} from '../exceptions';
+import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import path from 'path';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
@@ -178,27 +173,35 @@ router.post(
 	respond
 );
 
-router.get(
-	'/',
-	asyncHandler(async (req, res, next) => {
-		const service = new FilesService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+const readHandler = asyncHandler(async (req, res, next) => {
+	const service = new FilesService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const metaService = new MetaService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+	const metaService = new MetaService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const records = await service.readByQuery(req.sanitizedQuery);
-		const meta = await metaService.getMetaForQuery('directus_files', req.sanitizedQuery);
+	let result;
 
-		res.locals.payload = { data: records || null, meta };
-		return next();
-	}),
-	respond
-);
+	if (req.singleton) {
+		result = await service.readSingleton(req.sanitizedQuery);
+	} else if (req.body.keys) {
+		result = await service.readMany(req.body.keys, req.sanitizedQuery);
+	} else {
+		result = await service.readByQuery(req.sanitizedQuery);
+	}
+
+	const meta = await metaService.getMetaForQuery('directus_files', req.sanitizedQuery);
+
+	res.locals.payload = { data: result, meta };
+	return next();
+});
+
+router.get('/', validateBatch('read'), readHandler, respond);
+router.search('/', validateBatch('read'), readHandler, respond);
 
 router.get(
 	'/:pk',

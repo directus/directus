@@ -51,26 +51,25 @@ router.post(
 	respond
 );
 
-router.get(
-	'/',
-	asyncHandler(async (req, res, next) => {
-		const service = new UsersService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-		const metaService = new MetaService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
+const readHandler = asyncHandler(async (req, res, next) => {
+	const service = new UsersService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
+	const metaService = new MetaService({
+		accountability: req.accountability,
+		schema: req.schema,
+	});
 
-		const item = await service.readByQuery(req.sanitizedQuery);
-		const meta = await metaService.getMetaForQuery('directus_users', req.sanitizedQuery);
+	const item = await service.readByQuery(req.sanitizedQuery);
+	const meta = await metaService.getMetaForQuery('directus_users', req.sanitizedQuery);
 
-		res.locals.payload = { data: item || null, meta };
-		return next();
-	}),
-	respond
-);
+	res.locals.payload = { data: item || null, meta };
+	return next();
+});
+
+router.get('/', validateBatch('read'), readHandler, respond);
+router.search('/', validateBatch('read'), readHandler, respond);
 
 router.get(
 	'/me',
