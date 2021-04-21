@@ -93,8 +93,8 @@ async function parseCurrentLevel(
 	children: (NestedCollectionNode | FieldNode)[],
 	schema: SchemaOverview
 ) {
-	const primaryKeyField = schema.tables[collection].primary;
-	const columnsInCollection = Object.keys(schema.tables[collection].columns);
+	const primaryKeyField = schema.collections[collection].primary;
+	const columnsInCollection = Object.keys(schema.collections[collection].fields);
 
 	const columnsToSelectInternal: string[] = [];
 	const nestedCollectionNodes: NestedCollectionNode[] = [];

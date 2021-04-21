@@ -11,6 +11,7 @@ add_field: Agregar Campo
 role_name: Nombre del Rol
 db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
 show_archived_items: Mostrar Elementos Archivados
+edited: Valor Editado
 required: Requerido
 required_for_app_access: Necesario para el acceso a App
 requires_value: Valor obligatorio
@@ -145,6 +146,11 @@ uuid: UUID
 hash: Hash
 not_available_for_type: No disponible para este Tipo
 create_translations: Crear Traducciones
+auto_refresh: Actualización automática
+refresh_interval: Intervalo de actualización
+no_refresh: No actualizar
+refresh_interval_seconds: Refrescar Instantáneamente | Cada Segundo | Cada {seconds} Segundos
+refresh_interval_minutes: Cada Minuto | Cada {minutes} Minutos
 auto_generate: Auto Generado
 this_will_auto_setup_fields_relations: Esto configurará automáticamente todos los campos y relaciones requeridas.
 click_here: Clic aquí
@@ -152,6 +158,7 @@ to_manually_setup_translations: configurar manualmente las traducciones.
 click_to_manage_translated_fields: >-
   Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
 fields_group: Grupo de Campos
+no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 new_field: 'Nuevo Campo'
 new_collection: 'Colección Nueva'
@@ -511,6 +518,8 @@ toggle: Alternar
 icon_on: Icono Activado
 icon_off: Icono Desactivado
 label: Etiqueta
+width: Ancho
+height: Alto
 wysiwyg_options:
   aligncenter: Alinear al Centro
   alignjustify: Alinear Justificado
@@ -530,10 +539,7 @@ wysiwyg_options:
   bullist: Lista con viñetas
   numlist: Lista Numerada
   hr: Regla Horizontal
-  link: Enlace
   unlink: Remover Enlace
-  media: Agregar Multimedia
-  image: Agregar Imagen
   copy: Copiar
   cut: Cortar
   paste: Pegar
@@ -555,7 +561,6 @@ wysiwyg_options:
   selectall: Seleccionar Todo
   table: Tabla
   visualaid: Ver elementos invisibles
-  code: Ver Fuente
   fullscreen: Pantalla Completa
   directionality: Direccionalidad
 dropdown: Lista Desplegable
@@ -577,8 +582,8 @@ settings_webhooks: Webhooks
 settings_presets: Predefinidos y Marcadores
 scope: Alcance
 layout: Diseño
+tree_view: Vista en árbol
 changes_are_permanent: Los cambios son permanentes
-preset_name_placeholder: Nombre del Marcador...
 preset_search_placeholder: Consulta de búsqueda...
 editing_preset: Editar Predefinido
 layout_preview: Vista Previa de Diseño
@@ -958,8 +963,6 @@ interfaces:
     trim_label: Eliminar espacios al inicio y al final
     mask: Enmascarado
     mask_label: Ocultar el valor real
-    nullable: Nulo
-    nullable_label: Guardar valor vacío como NULL
   textarea:
     textarea: Área de Texto
     description: Ingresar texto plano multi-línea
@@ -971,6 +974,9 @@ interfaces:
   translations:
     display_template: Plantilla de Presentación
     no_collection: Sin Colección
+  tree-view:
+    description: Vista en árbol para elementos anidados recursivos uno-a-muchos
+    recursive_only: La interfaz de vista en árbol sólo funciona para relaciones recursivas.
   user:
     user: Usuario
     description: Seleccionar un usuario existente de Directus

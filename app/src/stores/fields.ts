@@ -66,16 +66,16 @@ export const useFieldsStore = createStore({
 			 */
 
 			this.state.fields = [...fields.map(this.parseField), fakeFilesField];
+
+			this.translateFields();
 		},
 		async dehydrate() {
 			this.reset();
 		},
 		parseField(field: FieldRaw): Field {
-			let name: string | VueI18n.TranslateResult;
+			const name = formatTitle(field.field);
 
-			if (i18n.te(`fields.${field.collection}.${field.field}`)) {
-				name = i18n.t(`fields.${field.collection}.${field.field}`);
-			} else if (field.meta && notEmpty(field.meta.translations) && field.meta.translations.length > 0) {
+			if (field.meta && notEmpty(field.meta.translations) && field.meta.translations.length > 0) {
 				for (let i = 0; i < field.meta.translations.length; i++) {
 					const { language, translation } = field.meta.translations[i];
 
@@ -87,16 +87,28 @@ export const useFieldsStore = createStore({
 						},
 					});
 				}
-
-				name = i18n.t(`fields.${field.collection}.${field.field}`);
-			} else {
-				name = formatTitle(field.field);
 			}
 
 			return {
 				...field,
 				name,
 			};
+		},
+		translateFields() {
+			this.state.fields = this.state.fields.map((field) => {
+				let name: string | VueI18n.TranslateResult;
+
+				if (i18n.te(`fields.${field.collection}.${field.field}`)) {
+					name = i18n.t(`fields.${field.collection}.${field.field}`);
+				} else {
+					name = formatTitle(field.field);
+				}
+
+				return {
+					...field,
+					name,
+				};
+			});
 		},
 		async createField(collectionKey: string, newField: Field) {
 			const stateClone = [...this.state.fields];
@@ -233,6 +245,9 @@ export const useFieldsStore = createStore({
 				else return 1;
 			});
 		},
+		/**
+		 * Retrieve field info for a field or a related field
+		 */
 		getField(collection: string, fieldKey: string) {
 			if (fieldKey.includes('.')) {
 				return this.getRelationalField(collection, fieldKey);
@@ -249,16 +264,13 @@ export const useFieldsStore = createStore({
 			const relationshipStore = useRelationsStore();
 			const parts = fields.split('.');
 
-			const relationshipForField = relationshipStore
+			const relation = relationshipStore
 				.getRelationsForField(collection, parts[0])
-				?.find((relation: Relation) => relation.many_field === parts[0] || relation.one_field === parts[0]);
+				?.find((relation: Relation) => relation.many_field === parts[0] || relation.one_field === parts[0]) as Relation;
 
-			if (relationshipForField === undefined) return false;
+			if (relation === undefined) return false;
 
-			const relatedCollection =
-				relationshipForField.many_field === parts[0]
-					? relationshipForField.one_collection
-					: relationshipForField.many_collection;
+			const relatedCollection = relation.many_field === parts[0] ? relation.one_collection : relation.many_collection;
 			parts.shift();
 			const relatedField = parts.join('.');
 			return this.getField(relatedCollection, relatedField);

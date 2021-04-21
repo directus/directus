@@ -1,22 +1,35 @@
-<template>
+<template functional>
 	<tr
 		class="table-row"
-		:class="{ subdued, clickable: hasClickListener }"
-		@click="$emit('click', $event)"
+		:class="{ subdued: props.subdued, clickable: props.hasClickListener }"
+		@click="listeners.click"
 		:style="{
-			'--table-row-height': height + 2 + 'px',
+			'--table-row-height': props.height + 2 + 'px',
 			'--table-row-line-height': 1,
 		}"
 	>
-		<td v-if="showManualSort" class="manual cell">
-			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
+		<td v-if="props.showManualSort" class="manual cell" @click.stop>
+			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': props.sortedManually }" />
 		</td>
-		<td v-if="showSelect" class="select cell" @click.stop>
-			<v-checkbox :inputValue="isSelected" @change="toggleSelect" />
+
+		<td v-if="props.showSelect" class="select cell" @click.stop>
+			<v-checkbox :inputValue="props.isSelected" @change="listeners['item-selected']" />
 		</td>
-		<td class="cell" :class="getClassesForCell(header)" v-for="header in headers" :key="header.value">
-			<slot :name="`item.${header.value}`" :item="item">
-				<v-text-overflow v-if="get(item, header.value)" :text="get(item, header.value)" />
+
+		<td class="cell" :class="`align-${header.align}`" v-for="header in props.headers" :key="header.value">
+			<slot :name="`item.${header.value}`" :item="props.item">
+				<v-text-overflow
+					v-if="
+						header.value.split('.').reduce((acc, val) => {
+							return acc[val];
+						}, props.item)
+					"
+					:text="
+						header.value.split('.').reduce((acc, val) => {
+							return acc[val];
+						}, props.item)
+					"
+				/>
 				<value-null v-else />
 			</slot>
 		</td>
@@ -30,7 +43,6 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from '@vue/composition-api';
-import { get } from 'lodash';
 import { Header } from '../types';
 
 export default defineComponent({
@@ -71,26 +83,6 @@ export default defineComponent({
 			type: Number,
 			default: 48,
 		},
-	},
-	setup(props, { emit }) {
-		return { getClassesForCell, toggleSelect, get };
-
-		function getClassesForCell(header: Header) {
-			const classes: string[] = [];
-
-			if (header.align) {
-				classes.push(`align-${header.align}`);
-			}
-
-			return classes;
-		}
-
-		function toggleSelect() {
-			emit('item-selected', {
-				item: props.item,
-				value: !props.isSelected,
-			});
-		}
 	},
 });
 </script>

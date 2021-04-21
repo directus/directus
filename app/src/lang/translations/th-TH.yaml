@@ -200,7 +200,7 @@ confirm_revert: ยืนยันการย้อนกลับ
 confirm_revert_body: นี่จะเป็นการย้อนกลับไอเท็มไปยังสถานะที่เลือก
 display: การแสดงผล
 settings_update_success: ปรับปรุงการตั้งค่าเรียบร้อยแล้ว
-title: ชื่อ
+title: ตำแหน่ง
 revision_delta_created: สร้างแล้ว
 revision_delta_created_externally: ถูกสร้างจากภายนอก
 revision_delta_updated: 'อัพเดทแล้ว 1 ฟิลด์ | อัพเดทแล้ว {count} ฟิลด์'
@@ -511,6 +511,8 @@ toggle: สลับ
 icon_on: แสดงไอคอน
 icon_off: ไม่แสดงไอคอน
 label: ป้าย
+width: กว้าง
+height: สูง
 wysiwyg_options:
   aligncenter: จัดตำแหน่งกึ่งกลาง
   alignjustify: จัดตำแหน่งชิดขอบซ้ายและขวา
@@ -530,10 +532,7 @@ wysiwyg_options:
   bullist: รายการแบบไม่มีลําดับ
   numlist: รายการแบบมีลำดับ
   hr: เส้นคั่นแนวนอน
-  link: ลิ้งก์
   unlink: ลบลิงค์
-  media: เพิ่มสื่อ
-  image: เพิ่มรูปภาพ
   copy: คัดลอก
   cut: ตัด
   paste: วาง
@@ -555,7 +554,6 @@ wysiwyg_options:
   selectall: เลือกทั้งหมด
   table: ตาราง
   visualaid: แสดงเครื่องหมายที่มองไม่เห็น
-  code: ดู source
   fullscreen: เต็มจอ
   directionality: อย่างมีทิศทาง
 dropdown: ตัวเลือกแบบดรอปดาวน์
@@ -577,8 +575,8 @@ settings_webhooks: Webhooks
 settings_presets: ค่าที่ตั้งไว้ล่วงหน้าและบุ๊คมาร์ก
 scope: ขอบเขต
 layout: เค้าโครง
+tree_view: มุมมองแผนภูมิ
 changes_are_permanent: การเปลี่ยนแปลงนี้ถาวร
-preset_name_placeholder: ชื่อของบุ๊คมาร์ก
 preset_search_placeholder: ค้นหาด้วย...
 editing_preset: แก้ไขค่าที่ตั้งไว้ล่วงหน้า
 layout_preview: ตัวอย่างเค้าโครง
@@ -654,7 +652,7 @@ fields:
     unarchive_value: ยกเลิกการเก็บค่า
     sort_field: เรียงฟิลด์
   directus_files:
-    title: ชื่อ
+    title: ตำแหน่ง
     description: รายละเอียด
     tags: แท็ก
     location: ตำแหน่งที่ตั้ง
@@ -683,7 +681,7 @@ fields:
     password: รหัสผ่าน
     avatar: ภาพประจำตัว
     location: ตำแหน่งที่ตั้ง
-    title: ชื่อ
+    title: ตำแหน่ง
     description: รายละเอียด
     tags: แท็ก
     language: ภาษา
@@ -958,8 +956,6 @@ interfaces:
     trim_label: ตัดช่องว่างหน้าหลัง
     mask: Masked
     mask_label: ซ่อนค่าจริง
-    nullable: สามารถเป็นค่า NULL ได้
-    nullable_label: บันทึกค่าว่างด้วยค่า NULL
   textarea:
     textarea: พื้นที่ข้อความ
     description: กรอกข้อความได้แบบหลายบรรทัด
@@ -971,6 +967,9 @@ interfaces:
   translations:
     display_template: แม่แบบการแสดงผล
     no_collection: ไม่มีคอลเลกชัน
+  tree-view:
+    description: มุมมองแผนภูมิสำหรับรายการข้อมูลหนึ่งต่อหลายรายการแบบซ้ำซ้อน
+    recursive_only: อินเทอร์เฟซมุมมองแผนภูมิใช้งานได้กับความสัมพันธ์แบบซ้ำซ้อนเท่านั้น
   user:
     user: ผู้ใช้
     description: เลือกผู้ใช้ของ directus ที่มีอยู่แล้ว
@@ -1078,7 +1077,7 @@ layouts:
     image_fit: แสดงรูปเต็มพอดีพื้นที่
     crop: ครอบตัด
     contain: บรรจุให้เต็ม
-    title: ชื่อ
+    title: ตำแหน่ง
     subtitle: คำบรรยาย
   tabular:
     tabular: ตาราง

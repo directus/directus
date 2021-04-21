@@ -381,6 +381,8 @@ select_fields: 選擇欄位
 format_text: 格式化文本
 bold: 粗體
 toggle: 切換
+width: 寬度
+height: 高度
 wysiwyg_options:
   aligncenter: 置中
   alignleft: 置左對齊
@@ -399,10 +401,7 @@ wysiwyg_options:
   bullist: 項目列表
   numlist: 編號列表
   hr: 分隔線
-  link: 連結
   unlink: 移除連結
-  media: 新增媒體
-  image: 新增圖像
   copy: 複製
   cut: 剪下
   paste: 貼上
@@ -684,7 +683,6 @@ interfaces:
     description: 輸入單行文本
     trim: 去除內容前後空格
     trim_label: 修剪開頭與結尾
-    nullable_label: 儲存空值為null
   textarea:
     textarea: 文本區
     description: 輸入多行純文本

@@ -1,4 +1,5 @@
 import expressLogger from 'express-pino-logger';
+import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import express from 'express';
 import logger from './logger';
@@ -89,6 +90,8 @@ export default async function createApp() {
 			return next();
 		});
 	});
+	
+	app.use(cookieParser())
 
 	app.use(extractToken);
 
@@ -110,7 +113,14 @@ export default async function createApp() {
 		html = html.replace(/href="\//g, `href="${publicUrl}`);
 		html = html.replace(/src="\//g, `src="${publicUrl}`);
 
-		app.get('/', (req, res) => res.redirect(`./admin/`));
+		app.get('/', (req, res, next) => {
+			if (env.ROOT_REDIRECT) {
+				res.redirect(env.ROOT_REDIRECT);
+			} else {
+				next();
+			}
+		});
+
 		app.get('/admin', (req, res) => res.send(html));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
 		app.use('/admin/*', (req, res) => {

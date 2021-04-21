@@ -103,6 +103,10 @@ export default defineComponent({
 }
 
 .v-checkbox {
+	width: 100%;
 	margin-top: 8px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 </style>

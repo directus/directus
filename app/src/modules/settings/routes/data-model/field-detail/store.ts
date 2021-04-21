@@ -32,8 +32,8 @@ let generationInfo: ComputedRef<GenerationInfo[]>;
 export { state, availableInterfaces, availableDisplays, generationInfo, initLocalStore, clearLocalStore };
 
 function initLocalStore(collection: string, field: string, type: typeof localTypes[number]) {
-	const interfaces = getInterfaces();
-	const displays = getDisplays();
+	const { interfaces } = getInterfaces();
+	const { displays } = getDisplays();
 
 	state = reactive<any>({
 		fieldData: {
@@ -218,7 +218,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 					one_collection: '',
 					one_primary: '',
-					sort_field: 'null',
+					sort_field: null,
 				},
 			];
 		}

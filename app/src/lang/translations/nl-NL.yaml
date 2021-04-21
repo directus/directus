@@ -510,6 +510,8 @@ toggle: Schakel
 icon_on: Icoon aan
 icon_off: Icoon Uit
 label: Label
+width: Breedte
+height: Hoogte
 wysiwyg_options:
   aligncenter: Align Center
   alignjustify: Align Justify
@@ -529,10 +531,7 @@ wysiwyg_options:
   bullist: Opsomming
   numlist: Genummerde lijst
   hr: Horizontale lijn
-  link: Link
   unlink: Link verwijderen
-  media: Media toevoegen
-  image: Afbeelding toevoegen
   copy: Kopieer
   cut: Knippen
   paste: Plakken
@@ -554,7 +553,6 @@ wysiwyg_options:
   selectall: Alles selecteren
   table: Tabel
   visualaid: Onzichtbare elementen weergeven
-  code: Bekijk broncode
   fullscreen: Volledig scherm
   directionality: Richting
 dropdown: Keuzemenu
@@ -577,7 +575,6 @@ settings_presets: Voorkeuren & Bladwijzers
 scope: Bereik
 layout: Lay-out
 changes_are_permanent: Wijzigingen zijn permanent
-preset_name_placeholder: Naam van de bladwijzer...
 preset_search_placeholder: Zoekterm...
 editing_preset: Voorkeur aan het Wijzigen
 layout_preview: Lay-out voorbeeld
@@ -957,8 +954,6 @@ interfaces:
     trim_label: Begin en einde bijsnijden
     mask: Gemaskeerd
     mask_label: De echte waarde verbergen
-    nullable: Mag leeg zijn
-    nullable_label: Sla lege waarde op als NULL
   textarea:
     textarea: Tekstvlak
     description: Voer multiline tekst in

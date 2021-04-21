@@ -96,7 +96,6 @@
 			@input="stageSelection"
 			@update:active="selectingFrom = null"
 		/>
-		<!-- :filters="selectionFilters" -->
 
 		<drawer-item
 			v-if="!disabled"
@@ -106,6 +105,7 @@
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="o2mRelation.junction_field"
 			:edits="editsAtStart"
+			:circular-field="o2mRelation.many_field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>

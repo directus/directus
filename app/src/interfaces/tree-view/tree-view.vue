@@ -10,6 +10,7 @@
 			:tree="stagedValues || []"
 			:primary-key-field="primaryKeyField.field"
 			:children-field="relation.one_field"
+			:parent-field="relation.many_field"
 			:disabled="disabled"
 			root
 			@change="onDraggableChange"
@@ -29,6 +30,7 @@
 			:collection="collection"
 			:primary-key="'+'"
 			:edits="{}"
+			:circular-field="relation.many_field"
 			@input="addNew"
 			@update:active="addNewActive = false"
 		/>
@@ -50,7 +52,7 @@ import { defineComponent, ref, computed, PropType, onMounted, watch } from '@vue
 import { useCollection } from '@/composables/use-collection';
 import { useRelationsStore } from '@/stores';
 import api from '@/api';
-import getFieldsFromTemplate from '@/utils/get-fields-from-template';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import draggable from 'vuedraggable';
 import hideDragImage from '@/utils/hide-drag-image';
 import NestedDraggable from './nested-draggable.vue';

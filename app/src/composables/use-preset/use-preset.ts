@@ -5,7 +5,7 @@ import { useCollection } from '@/composables/use-collection';
 
 import { Filter, Preset } from '@/types/';
 
-export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> = ref(null)) {
+export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> = ref(null), temporary = false) {
 	const presetsStore = usePresetsStore();
 	const userStore = useUserStore();
 
@@ -29,6 +29,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 	 * @param preset The preset that should be saved
 	 */
 	const savePreset = async (preset?: Partial<Preset>) => {
+		if (temporary) return;
 		busy.value = true;
 
 		const updatedValues = await presetsStore.savePreset(preset ? preset : localPreset.value);
@@ -130,6 +131,20 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		},
 	});
 
+	const refreshInterval = computed<number | null>({
+		get() {
+			return localPreset.value.refresh_interval || null;
+		},
+		set(val) {
+			localPreset.value = {
+				...localPreset.value,
+				refresh_interval: val,
+			};
+
+			handleChanges();
+		},
+	});
+
 	const searchQuery = computed<string | null>({
 		get() {
 			return localPreset.value.search || null;
@@ -166,6 +181,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		layoutQuery,
 		filters,
 		searchQuery,
+		refreshInterval,
 		savePreset,
 		saveCurrentAsBookmark,
 		bookmarkTitle,
@@ -194,6 +210,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 			layout: 'tabular',
 			filters: null,
 			search: null,
+			refresh_interval: null,
 		};
 
 		await savePreset();

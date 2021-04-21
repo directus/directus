@@ -224,6 +224,7 @@ layout_options: レイアウト設定
 collection_setup: コレクションの作成
 optional_system_fields: システムフィールドのオプション
 value_unique: 他と重複しない値である必要があります
+create_item: アイテムの作成
 all_files: すべてのファイル
 my_files: マイファイル
 recent_files: 最近使用したファイル
@@ -236,15 +237,14 @@ on_update: 更新時
 read: 読取り
 update: 更新
 select_fields: 入力欄の選択
+width: 幅
+height: 高さ
 wysiwyg_options:
   aligncenter: 中央揃え
   alignjustify: 両端揃え
   alignleft: 左揃え
   backcolor: 背景色
   hr: 水平線
-  link: リンク
-  media: メディアを追加
-  image: 画像を追加
   copy: コピー
   paste: ペースト
   heading: 見出し
@@ -273,6 +273,7 @@ unsaved_changes_copy: このページを離れてもよろしいですか？
 discard_changes: 変更の破棄
 keep_editing: 編集を続ける
 add_new: 新規追加
+create_new: 新規作成
 all: すべて
 batch_delete_confirm: >-
   項目が選択されていません | この項目を削除してよろしいですか？この操作を取り消すことはできません。 | これら {count} 個の項目を削除してもよろしいですか？ この操作を取り消すことはできません。

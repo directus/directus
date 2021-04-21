@@ -23,27 +23,6 @@ export type Language = keyof typeof availableLanguages;
 
 export const loadedLanguages: Language[] = ['en-US'];
 
-export async function setLanguage(lang: Language): Promise<boolean> {
-	if (Object.keys(availableLanguages).includes(lang) === false) {
-		return false;
-	}
-
-	if (i18n.locale === lang) {
-		return true;
-	}
-
-	if (loadedLanguages.includes(lang) === false) {
-		const translations = await import(`@/lang/translations/${lang}.yaml`).catch((err) => console.warn(err));
-		i18n.mergeLocaleMessage(lang, translations);
-		loadedLanguages.push(lang);
-	}
-
-	i18n.locale = lang;
-	(document.querySelector('html') as HTMLElement).setAttribute('lang', lang);
-
-	return true;
-}
-
 export default i18n;
 
 export function translateAPIError(error: RequestError | string) {

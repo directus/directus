@@ -15,7 +15,7 @@ import { defineComponent } from '@vue/composition-api';
 export default defineComponent({
 	props: {
 		value: {
-			type: [String, Number],
+			type: [Boolean, String, Number],
 			default: null,
 		},
 		dot: {
@@ -102,12 +102,21 @@ body {
 			bottom: calc(var(--v-badge-size) / -2 + var(--v-badge-offset-y));
 		}
 
-		&.dot * {
-			display: none;
+		&.bordered {
+			filter: drop-shadow(1.5px 1.5px 0 var(--v-badge-border-color))
+				drop-shadow(1.5px -1.5px 0 var(--v-badge-border-color)) drop-shadow(-1.5px 1.5px 0 var(--v-badge-border-color))
+				drop-shadow(-1.5px -1.5px 0 var(--v-badge-border-color));
 		}
 
-		&.bordered {
-			border: 2px solid var(--v-badge-border-color);
+		&.dot {
+			width: var(--v-badge-size);
+			min-width: 0;
+			height: var(--v-badge-size);
+			border: 0;
+
+			* {
+				display: none;
+			}
 		}
 	}
 }

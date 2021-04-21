@@ -418,6 +418,8 @@ toggle: Przełącz
 icon_on: Ikona włączona
 icon_off: Ikona wyłączona
 label: Etykieta
+width: Szerokość
+height: Wysokość
 wysiwyg_options:
   aligncenter: Wyśrodkuj
   alignjustify: Wyjustuj
@@ -437,8 +439,6 @@ wysiwyg_options:
   numlist: Lista numerowana
   hr: Pozioma linia
   unlink: Usuń link
-  media: Dodaj multimedia
-  image: Dodaj obraz
   copy: Kopiuj
   cut: Wytnij
   paste: Wklej
@@ -458,7 +458,6 @@ wysiwyg_options:
   selectall: Wybierz wszystkie
   table: Tabela
   visualaid: Pokaż niewidoczne elementy
-  code: Zobacz źródło
   fullscreen: Pełny ekran
 dropdown: Lista rozwijana
 choices: Opcje
@@ -477,7 +476,6 @@ settings_project: Ustawienia projektu
 settings_webhooks: Webhooki
 settings_presets: Szablony i zakładki
 changes_are_permanent: Zmiany są trwałe
-preset_name_placeholder: Nazwa zakładki...
 editing_preset: Edycja szablonu
 layout_preview: Podgląd układu
 unsaved_changes: Niezapisane zmiany

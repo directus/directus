@@ -1,5 +1,5 @@
 import * as fse from 'fs-extra';
-import { promises as fs } from 'fs';
+//import { promises as fs } from 'fs';
 import { dirname, join, resolve, relative, sep } from 'path';
 import Storage from './Storage';
 import { isReadableStream, pipeline } from './utils';
@@ -214,7 +214,7 @@ export class LocalFileSystemStorage extends Storage {
 		const prefixDirectory = prefix[prefix.length - 1] === sep ? prefix : dirname(prefix);
 
 		try {
-			const dir = await fs.opendir(prefixDirectory);
+			const dir = await fse.opendir(prefixDirectory);
 
 			for await (const file of dir) {
 				const fileName = join(prefixDirectory, file.name);

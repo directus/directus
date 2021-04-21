@@ -15,13 +15,12 @@ import {
 } from '../types';
 import { Knex } from 'knex';
 import { ForbiddenException, FailedValidationException } from '../exceptions';
-import { uniq, merge, flatten } from 'lodash';
+import { uniq, uniqWith, merge, flatten } from 'lodash';
 import generateJoi from '../utils/generate-joi';
 import { ItemsService } from './items';
 import { PayloadService } from './payload';
 import { parseFilter } from '../utils/parse-filter';
 import { toArray } from '../utils/to-array';
-import { systemFieldRows } from '../database/system-data/fields';
 
 export class AuthorizationService {
 	knex: Knex;
@@ -42,12 +41,15 @@ export class AuthorizationService {
 	async processAST(ast: AST, action: PermissionsAction = 'read'): Promise<AST> {
 		const collectionsRequested = getCollectionsFromAST(ast);
 
-		let permissionsForCollections = this.schema.permissions.filter((permission) => {
-			return (
-				permission.action === action &&
-				collectionsRequested.map(({ collection }) => collection).includes(permission.collection)
-			);
-		});
+		let permissionsForCollections = uniqWith(
+			this.schema.permissions.filter((permission) => {
+				return (
+					permission.action === action &&
+					collectionsRequested.map(({ collection }) => collection).includes(permission.collection)
+				);
+			}),
+			(curr, prev) => curr.collection === prev.collection && curr.action === prev.action && curr.role === prev.role
+		);
 
 		// If the permissions don't match the collections, you don't have permission to read all of them
 		const uniqueCollectionsRequestedCount = uniq(collectionsRequested.map(({ collection }) => collection)).length;
@@ -225,27 +227,19 @@ export class AuthorizationService {
 
 		payloads = payloads.map((payload) => merge({}, preset, payload));
 
-		const columns = Object.values(this.schema.tables[collection].columns);
-
 		let requiredColumns: string[] = [];
 
-		for (const column of columns) {
-			const field =
-				this.schema.fields.find((field) => field.collection === collection && field.field === column.column_name) ||
-				systemFieldRows.find(
-					(fieldMeta) => fieldMeta.field === column.column_name && fieldMeta.collection === collection
-				);
-
+		for (const [name, field] of Object.entries(this.schema.collections[collection].fields)) {
 			const specials = field?.special ?? [];
 
 			const hasGenerateSpecial = ['uuid', 'date-created', 'role-created', 'user-created'].some((name) =>
 				specials.includes(name)
 			);
 
-			const isRequired = column.is_nullable === false && column.default_value === null && hasGenerateSpecial === false;
+			const isRequired = field.nullable === false && field.defaultValue === null && hasGenerateSpecial === false;
 
 			if (isRequired) {
-				requiredColumns.push(column.column_name);
+				requiredColumns.push(name);
 			}
 		}
 

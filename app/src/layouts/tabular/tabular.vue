@@ -107,7 +107,12 @@
 
 					<div v-if="loading === false && items.length >= 25" class="per-page">
 						<span>{{ $t('per_page') }}</span>
-						<v-select @input="limit = +$event" :value="`${limit}`" :items="['25', '50', '100', '250']" inline />
+						<v-select
+							@input="limit = +$event"
+							:value="`${limit}`"
+							:items="['25', '50', '100', '250', '500', ' 1000']"
+							inline
+						/>
 					</div>
 				</div>
 			</template>
@@ -487,8 +492,9 @@ export default defineComponent({
 							field: field.field,
 						},
 						sortable:
-							['json', 'o2m', 'm2o', 'file', 'files', 'alias', 'presentation'].includes(field.type) === false &&
-							!field.key.includes('.'),
+							['json', 'o2m', 'm2o', 'm2m', 'm2a', 'file', 'files', 'alias', 'presentation', 'translations'].includes(
+								field.type
+							) === false && !field.key.includes('.'),
 					}));
 				},
 				set(val) {
@@ -609,8 +615,8 @@ export default defineComponent({
 	position: sticky;
 	left: 0;
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
+	justify-content: space-between;
 	width: 100%;
 	padding: 32px var(--content-padding);
 
@@ -620,8 +626,8 @@ export default defineComponent({
 
 	.per-page {
 		display: flex;
-		justify-content: flex-end;
 		align-items: center;
+		justify-content: flex-end;
 		width: 240px;
 		color: var(--foreground-subdued);
 

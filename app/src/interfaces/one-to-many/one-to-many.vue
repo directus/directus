@@ -30,8 +30,14 @@
 				/>
 			</template>
 
-			<template #item-append="{ item }" v-if="!disabled">
-				<v-icon name="close" v-tooltip="$t('deselect')" class="deselect" @click.stop="deleteItem(item)" />
+			<template #item-append="{ item }">
+				<v-icon
+					v-if="!disabled"
+					name="close"
+					v-tooltip="$t('deselect')"
+					class="deselect"
+					@click.stop="deleteItem(item)"
+				/>
 			</template>
 		</v-table>
 
@@ -48,6 +54,7 @@
 			:collection="relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:edits="editsAtStart"
+			:circular-field="relation.many_field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -359,7 +366,11 @@ export default defineComponent({
 				const pkField = relatedPrimaryKeyField.value.field;
 				const hasPrimaryKey = pkField in item;
 
-				const edits = (props.value || []).find((edit: any) => edit === item);
+				const edits = (props.value || []).find(
+					(edit: any) =>
+						typeof edit === 'object' &&
+						edit[relatedPrimaryKeyField.value.field] === item[relatedPrimaryKeyField.value.field]
+				);
 
 				editsAtStart.value = edits || { [pkField]: item[pkField] || {} };
 				currentlyEditing.value = hasPrimaryKey ? item[pkField] : '+';

@@ -11,6 +11,7 @@ add_field: إضافة حقل
 role_name: إسم الدور
 db_only_click_to_configure: 'فقط قاعدة البيانات: انقر لتعديل الإعدادات '
 show_archived_items: أظهر العناصر المؤرشفة
+edited: تم تعديل القيمة
 required: مطلوب
 required_for_app_access: مطلوب للوصول إلى التطبيق
 requires_value: قيمة مطلوبة
@@ -69,6 +70,10 @@ validationError:
   in: يجب أن تكون القيمة واحدة من {valid}
   nin: لا يمكن أن تكون القيمة واحدة من {invalid}
   contains: يجب أن تحتوي القيمة على {substring}
+  ncontains: يجب أن لا تحتوي القيمة على {substring}
+  gt: يجب أن تكون القيمة أكبر من {valid}
+  gte: يجب أن تكون القيمة أكبر من أو تساوي {valid}
+  lt: يجب أن تكون القيمة أقل من {valid}
   empty: يجب أن تكون القيمة فارغة
   nempty: لا يمكن أن تكون القيمة فارغة
 field_file: ملف واحد
@@ -80,6 +85,9 @@ camera: الكاميرا
 create_field: إنشاء حقل
 hidden_field: حقل مخفي
 hidden_on_detail: مخفي في التفاصيل
+key: مفتاح
+bigInteger: عدد صحيح كبير
+boolean: نعم/لا
 date: التاريخ
 decimal: عشري
 float: عشري
@@ -266,6 +274,8 @@ on_update: عند التحديث
 read: قراءة
 update: تحديث
 select_fields: حدد حقول
+width: العرض
+height: الارتفاع
 wysiwyg_options:
   codeblock: نص برمجي
   remove: احذف
@@ -485,6 +495,8 @@ interfaces:
     wysiwyg: ما تراه هو ما تحصل عليه
     toolbar: شريط الأدوات
 displays:
+  boolean:
+    boolean: نعم/لا
   collection:
     collection: المجموعة
   color:

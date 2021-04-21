@@ -5,8 +5,13 @@
 				<p>{{ $t('unknown_validation_errors') }}</p>
 				<ul>
 					<li v-for="(validationError, index) of unknownValidationErrors" :key="index">
-						<strong>{{ validationError.field }}</strong>
-						: {{ $t(`validationError.${validationError.type}`, validationError) }}
+						<strong v-if="validationError.field">{{ validationError.field }}:</strong>
+						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
+							{{ $t('validationError.unique', validationError) }}
+						</template>
+						<template v-else>
+							{{ $t(`validationError.${validationError.code}`, validationError) }}
+						</template>
 					</li>
 				</ul>
 			</div>
@@ -41,6 +46,7 @@ import marked from 'marked';
 import FormField from './form-field.vue';
 import useFormFields from '@/composables/use-form-fields';
 import { ValidationError } from './types';
+import { translate } from '@/utils/translate-object-values';
 
 type FieldValues = {
 	[field: string]: any;
@@ -142,19 +148,21 @@ export default defineComponent({
 			const { formFields } = useFormFields(fields);
 
 			const formFieldsParsed = computed(() => {
-				return formFields.value.map((field: Field) => {
-					if (
-						field.schema?.has_auto_increment === true ||
-						(field.schema?.is_primary_key === true && props.primaryKey !== '+')
-					) {
-						const fieldClone = cloneDeep(field) as any;
-						if (!fieldClone.meta) fieldClone.meta = {};
-						fieldClone.meta.readonly = true;
-						return fieldClone;
-					}
+				return translate(
+					formFields.value.map((field: Field) => {
+						if (
+							field.schema?.has_auto_increment === true ||
+							(field.schema?.is_primary_key === true && props.primaryKey !== '+')
+						) {
+							const fieldClone = cloneDeep(field) as any;
+							if (!fieldClone.meta) fieldClone.meta = {};
+							fieldClone.meta.readonly = true;
+							return fieldClone;
+						}
 
-					return field;
-				});
+						return field;
+					})
+				);
 			});
 
 			const { width } = useElementSize(el);
@@ -167,8 +175,6 @@ export default defineComponent({
 				} else {
 					return 'grid';
 				}
-
-				return null;
 			});
 
 			return { formFields: formFieldsParsed, gridClass, isDisabled };

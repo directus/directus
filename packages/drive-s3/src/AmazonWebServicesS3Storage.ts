@@ -35,6 +35,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 	protected $driver: S3;
 	protected $bucket: string;
 	protected $root: string;
+	protected $acl: string;
 
 	constructor(config: AmazonWebServicesS3StorageConfig) {
 		super();
@@ -49,13 +50,14 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 		this.$bucket = config.bucket;
 		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
+		this.$acl = config.acl ? config.acl : '';
 	}
 
 	/**
 	 * Prefixes the given filePath with the storage root location
 	 */
 	protected _fullPath(filePath: string) {
-		return path.join(this.$root, filePath);
+		return normalize(path.join(this.$root, filePath));
 	}
 
 	/**
@@ -69,6 +71,7 @@ export class AmazonWebServicesS3Storage extends Storage {
 			Key: dest,
 			Bucket: this.$bucket,
 			CopySource: `/${this.$bucket}/${src}`,
+			ACL: this.$acl,
 		};
 
 		try {
@@ -247,10 +250,20 @@ export class AmazonWebServicesS3Storage extends Storage {
 	 * Creates a new file.
 	 * This method will create missing directories on the fly.
 	 */
-	public async put(location: string, content: Buffer | NodeJS.ReadableStream | string): Promise<Response> {
+	public async put(
+		location: string,
+		content: Buffer | NodeJS.ReadableStream | string,
+		type?: string
+	): Promise<Response> {
 		location = this._fullPath(location);
 
-		const params = { Key: location, Body: content, Bucket: this.$bucket };
+		const params = {
+			Key: location,
+			Body: content,
+			Bucket: this.$bucket,
+			ACL: this.$acl,
+			ContentType: type ? type : '',
+		};
 
 		try {
 			const result = await this.$driver.upload(params).promise();
@@ -301,4 +314,5 @@ export interface AmazonWebServicesS3StorageConfig extends ClientConfiguration {
 	secret: string;
 	bucket: string;
 	root?: string;
+	acl?: string;
 }

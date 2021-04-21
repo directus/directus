@@ -460,6 +460,8 @@ select_fields: Seleziona campi
 format_text: Formato testo
 bold: Grassetto
 label: Etichetta
+width: Larghezza
+height: Altezza
 wysiwyg_options:
   forecolor: Colore di primo piano
   backcolor: Colore dello sfondo
@@ -468,7 +470,6 @@ wysiwyg_options:
   underline: Sottolineato
   strikethrough: Barrato
   codeblock: Codice
-  link: Link
   unlink: Rimuovi link
   copy: Copia
   cut: Taglia
@@ -479,7 +480,6 @@ wysiwyg_options:
   removeformat: Rimuovi Formato
   selectall: Seleziona tutto
   table: Tabella
-  code: Visualizza Sorgente
   fullscreen: Schermo Intero
 dropdown: Menu a tendina
 choices: Scelta multipla
@@ -495,7 +495,6 @@ settings_project: Impostazioni del progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
 layout: Layout
-preset_name_placeholder: Nome del segnalibro...
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
 layout_setup: Configurazione Layout
