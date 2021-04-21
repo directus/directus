@@ -3,43 +3,22 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="many-to-many" v-else>
-		<v-table
-			:loading="loading"
-			:items="sortedItems || items"
-			:headers.sync="tableHeaders"
-			show-resize
-			inline
-			:sort.sync="sort"
-			@update:items="sortItems($event)"
-			@click:row="editItem"
-			:disabled="disabled"
-			:show-manual-sort="relationInfo.sortField !== null"
-			:manual-sort-key="relationInfo.sortField"
-		>
-			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
-				<render-display
-					:key="header.value"
-					:value="get(item, header.value)"
-					:display="header.field.display"
-					:options="header.field.displayOptions"
-					:interface="header.field.interface"
-					:interface-options="header.field.interfaceOptions"
-					:type="header.field.type"
-					:collection="relationInfo.junctionCollection"
-					:field="header.field.field"
-				/>
-			</template>
-
-			<template #item-append="{ item }">
-				<v-icon
-					v-show="!disabled"
-					name="close"
-					v-tooltip="$t('deselect')"
-					class="deselect"
-					@click.stop="deleteItem(item)"
-				/>
-			</template>
-		</v-table>
+		<v-list>
+			<draggable
+				:force-fallback="true"
+				:value="sortedItems || items"
+				@input="sortItems($event)"
+				handler=".drag-handle"
+				:disabled="!relation.sort_field"
+			>
+				<v-list-item v-for="item in sortedItems || items" :key="item.id" block @click="editItem(item)">
+					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<render-template :item="item" :template="templateWithDefaults" />
+					<div class="spacer" />
+					<v-icon name="close" @click.stop="deleteItem(item)" />
+				</v-list-item>
+			</draggable>
+		</v-list>
 
 		<div class="actions" v-if="!disabled">
 			<v-button class="new" @click="editModalActive = true">{{ $t('create_new') }}</v-button>
@@ -78,6 +57,7 @@ import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/co
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { get } from 'lodash';
+import Draggable from 'vuedraggable';
 
 import useActions from './use-actions';
 import useRelation from './use-relation';
@@ -85,9 +65,10 @@ import usePreview from './use-preview';
 import useEdit from './use-edit';
 import useSelection from './use-selection';
 import useSort from './use-sort';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 
 export default defineComponent({
-	components: { DrawerItem, DrawerCollection },
+	components: { DrawerItem, DrawerCollection, Draggable },
 	props: {
 		value: {
 			type: Array as PropType<(number | string | Record<string, any>)[] | null>,
@@ -105,9 +86,9 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		fields: {
-			type: Array as PropType<string[]>,
-			default: () => [],
+		template: {
+			type: String,
+			default: null,
 		},
 		disabled: {
 			type: Boolean,
@@ -115,13 +96,15 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { value, collection, field, fields } = toRefs(props);
-
-		function emitter(newVal: any[] | null) {
-			emit('input', newVal);
-		}
+		const { value, collection, field } = toRefs(props);
 
 		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
+
+		const templateWithDefaults = computed(
+			() => props.template || junctionCollection.value.meta?.display_template || `{{${junction.value.many_primary}}}`
+		);
+
+		const fields = computed(() => getFieldsFromTemplate(templateWithDefaults.value));
 
 		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
 			value,
@@ -177,7 +160,12 @@ export default defineComponent({
 			sort,
 			sortItems,
 			sortedItems,
+			templateWithDefaults,
 		};
+
+		function emitter(newVal: any[] | null) {
+			emit('input', newVal);
+		}
 	},
 });
 </script>

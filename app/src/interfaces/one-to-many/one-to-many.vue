@@ -3,43 +3,22 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="one-to-many" v-else>
-		<v-table
-			:loading="loading"
-			:items="sortedItems || items"
-			:headers.sync="tableHeaders"
-			show-resize
-			inline
-			:sort.sync="sort"
-			@update:items="sortItems($event)"
-			@click:row="editItem"
-			:disabled="disabled"
-			:show-manual-sort="relation.sort_field !== null"
-			:manual-sort-key="relation.sort_field"
-		>
-			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
-				<render-display
-					:key="header.value"
-					:value="get(item, header.value)"
-					:display="header.field.display"
-					:options="header.field.displayOptions"
-					:interface="header.field.interface"
-					:interface-options="header.field.interfaceOptions"
-					:type="header.field.type"
-					:collection="relatedCollection.collection"
-					:field="header.field.field"
-				/>
-			</template>
-
-			<template #item-append="{ item }">
-				<v-icon
-					v-if="!disabled"
-					name="close"
-					v-tooltip="$t('deselect')"
-					class="deselect"
-					@click.stop="deleteItem(item)"
-				/>
-			</template>
-		</v-table>
+		<v-list>
+			<draggable
+				:force-fallback="true"
+				:value="sortedItems"
+				@input="sortItems($event)"
+				handler=".drag-handle"
+				:disabled="!relation.sort_field"
+			>
+				<v-list-item v-for="item in sortedItems" :key="item.id" block @click="editItem(item)">
+					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<render-template :collection="relation.many_collection" :item="item" :template="templateWithDefaults" />
+					<div class="spacer" />
+					<v-icon name="close" @click.stop="deleteItem(item)" />
+				</v-list-item>
+			</draggable>
+		</v-list>
 
 		<div class="actions" v-if="!disabled">
 			<v-button class="new" @click="currentlyEditing = '+'">{{ $t('create_new') }}</v-button>
@@ -83,9 +62,11 @@ import { Header, Sort } from '@/components/v-table/types';
 import { isEqual, sortBy } from 'lodash';
 import { get } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import Draggable from 'vuedraggable';
 
 export default defineComponent({
-	components: { DrawerItem, DrawerCollection },
+	components: { DrawerItem, DrawerCollection, Draggable },
 	props: {
 		value: {
 			type: Array as PropType<(number | string | Record<string, any>)[] | null>,
@@ -103,9 +84,9 @@ export default defineComponent({
 			type: String,
 			required: true,
 		},
-		fields: {
-			type: Array as PropType<string[]>,
-			default: () => [],
+		template: {
+			type: String,
+			default: null,
 		},
 		disabled: {
 			type: Boolean,
@@ -122,6 +103,11 @@ export default defineComponent({
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
 		const { sort, sortItems, sortedItems } = useSort();
+
+		const templateWithDefaults = computed(
+			() => props.template || relatedCollection.value.meta?.display_template || `{{${relation.value.many_primary}}}`
+		);
+		const fields = computed(() => getFieldsFromTemplate(templateWithDefaults.value));
 
 		return {
 			relation,
@@ -142,7 +128,13 @@ export default defineComponent({
 			sort,
 			sortedItems,
 			get,
+			getItemFromIndex,
+			templateWithDefaults,
 		};
+
+		function getItemFromIndex(index: number) {
+			return (sortedItems.value || items.value)[index];
+		}
 
 		function getNewItems() {
 			const pkField = relatedPrimaryKeyField.value.field;
@@ -203,7 +195,7 @@ export default defineComponent({
 		}
 
 		function useSort() {
-			const sort = ref<Sort>({ by: relation.value.sort_field || props.fields[0], desc: false });
+			const sort = ref<Sort>({ by: relation.value.sort_field || fields.value[0], desc: false });
 
 			function sortItems(newItems: Record<string, any>[]) {
 				if (relation.value.sort_field === null) return;
@@ -217,7 +209,7 @@ export default defineComponent({
 			}
 
 			const sortedItems = computed(() => {
-				if (relation.value.sort_field === null || sort.value.by !== relation.value.sort_field) return null;
+				if (relation.value.sort_field === null || sort.value.by !== relation.value.sort_field) return items.value;
 
 				const desc = sort.value.desc;
 				const sorted = sortBy(items.value, [relation.value.sort_field]);
@@ -258,14 +250,14 @@ export default defineComponent({
 					loading.value = true;
 					const pkField = relatedPrimaryKeyField.value.field;
 
-					const fields = [...(props.fields.length > 0 ? props.fields : getDefaultFields())];
+					const fieldsList = [...(fields.value.length > 0 ? fields.value : getDefaultFields())];
 
-					if (fields.includes(pkField) === false) {
-						fields.push(pkField);
+					if (fieldsList.includes(pkField) === false) {
+						fieldsList.push(pkField);
 					}
 
-					if (relation.value.sort_field !== null && fields.includes(relation.value.sort_field) === false)
-						fields.push(relation.value.sort_field);
+					if (relation.value.sort_field !== null && fieldsList.includes(relation.value.sort_field) === false)
+						fieldsList.push(relation.value.sort_field);
 
 					try {
 						const endpoint = relatedCollection.value.collection.startsWith('directus_')
@@ -279,7 +271,7 @@ export default defineComponent({
 						if (primaryKeys && primaryKeys.length > 0) {
 							const response = await api.get(endpoint, {
 								params: {
-									fields: fields,
+									fields: fieldsList,
 									[`filter[${pkField}][_in]`]: primaryKeys.join(','),
 								},
 							});
@@ -316,9 +308,9 @@ export default defineComponent({
 			// Seeing we don't care about saving those tableHeaders, we can reset it whenever the
 			// fields prop changes (most likely when we're navigating to a different o2m context)
 			watch(
-				() => props.fields,
+				() => fields.value,
 				() => {
-					tableHeaders.value = (props.fields.length > 0 ? props.fields : getDefaultFields())
+					tableHeaders.value = (fields.value.length > 0 ? fields.value : getDefaultFields())
 						.map((fieldKey) => {
 							const field = fieldsStore.getField(relatedCollection.value.collection, fieldKey);
 
@@ -456,11 +448,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .actions {
-	margin-top: 12px;
+	margin-top: 8px;
 }
 
 .existing {
-	margin-left: 12px;
+	margin-left: 8px;
 }
 
 .deselect {
