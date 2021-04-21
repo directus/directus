@@ -61,7 +61,7 @@ import { Header, Sort } from '@/components/v-table/types';
 import { isEqual, sortBy } from 'lodash';
 import { get } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { getFieldsFromTemplate } from '@/utils/render-template';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import Draggable from 'vuedraggable';
 
 export default defineComponent({

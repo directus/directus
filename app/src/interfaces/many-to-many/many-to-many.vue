@@ -64,7 +64,7 @@ import usePreview from './use-preview';
 import useEdit from './use-edit';
 import useSelection from './use-selection';
 import useSort from './use-sort';
-import { getFieldsFromTemplate } from '@/utils/render-template';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },

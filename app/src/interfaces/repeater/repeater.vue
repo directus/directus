@@ -46,7 +46,7 @@ import { defineComponent, PropType, computed, ref, toRefs } from '@vue/compositi
 import { Field } from '@/types';
 import Draggable from 'vuedraggable';
 import i18n from '@/lang';
-import renderTemplate from '@/utils/render-template';
+import { renderStringTemplate } from '@/utils/render-string-template';
 import hideDragImage from '@/utils/hide-drag-image';
 
 export default defineComponent({
@@ -100,7 +100,7 @@ export default defineComponent({
 
 		const activeItem = computed(() => (active.value !== null ? value.value[active.value] : null));
 
-		const { displayValue: title } = renderTemplate(template, activeItem);
+		const { displayValue: title } = renderStringTemplate(template, activeItem);
 
 		return {
 			updateValues,
