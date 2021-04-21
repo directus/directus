@@ -145,6 +145,11 @@ uuid: UUID
 hash: Hash
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar Traduções
+auto_refresh: Atualização automática
+refresh_interval: Intervalo de atualização
+no_refresh: Não atualizar
+refresh_interval_seconds: Atualizar automaticamente a cada segundo, a cada {seconds} segundos
+refresh_interval_minutes: A cada minuto, a cada {minutes} minutos
 auto_generate: Gerar automaticamente
 this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
 click_here: Clique aqui
@@ -152,7 +157,9 @@ to_manually_setup_translations: to manually setup translations.
 click_to_manage_translated_fields: >-
   Ainda não há campos traduzidos. Clique aqui para criá-los. | Há um campo traduzido. Clique aqui para gerenciá-lo. | Há {count} campos traduzidos. Clique aqui para gerenciá-los.
 fields_group: Grupo de Campos
+no_collections_found: Nenhuma coleção encontrada.
 new_data_alert: 'O seguinte será criado em seu modelo de dados:'
+search_collection: Pesquisar Coleção...
 new_field: 'Novo campo'
 new_collection: 'Nova Coleção'
 add_m2o_to_collection: 'Adicionar Muitos-para-Um a "{collection}"'
@@ -510,8 +517,11 @@ toggle: Alternar
 icon_on: Ícone ligado
 icon_off: Ícone desligado
 label: Rótulo
+image_url: URL da Imagem
+alt_text: Texto Alternativo
 width: Largura
 height: Altura
+source: Código
 wysiwyg_options:
   aligncenter: Alinhar ao centro
   alignjustify: Justificar
