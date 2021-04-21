@@ -4,7 +4,7 @@
 			<draggable :value="value" @input="$emit('input', $event)" handler=".drag-handle">
 				<v-list-item v-for="(item, index) in value" :key="item.id" block @click="active = index">
 					<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-					<render-template :fields="fields" :item="item" :template="template" />
+					<render-template :fields="fields" :item="item" :template="templateWithDefaults" />
 					<div class="spacer" />
 					<v-icon name="close" @click.stop="removeItem(item)" />
 				</v-list-item>
@@ -88,7 +88,9 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const active = ref<number | null>(null);
 		const drawerOpen = computed(() => active.value !== null);
-		const { value, template } = toRefs(props);
+		const { value } = toRefs(props);
+
+		const templateWithDefaults = computed(() => props.template || `{{${props.fields[0].field}}}`);
 
 		const showAddNew = computed(() => {
 			if (props.disabled) return false;
@@ -100,7 +102,7 @@ export default defineComponent({
 
 		const activeItem = computed(() => (active.value !== null ? value.value[active.value] : null));
 
-		const { displayValue } = renderStringTemplate(template, activeItem);
+		const { displayValue } = renderStringTemplate(templateWithDefaults, activeItem);
 
 		return {
 			updateValues,
@@ -114,6 +116,7 @@ export default defineComponent({
 			activeItem,
 			closeDrawer,
 			onSort,
+			templateWithDefaults,
 		};
 
 		function updateValues(index: number, updatedValues: any) {

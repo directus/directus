@@ -12,7 +12,7 @@
 			>
 				<v-list-item v-for="item in sortedItems" :key="item.id" block @click="editItem(item)">
 					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-					<render-template :collection="relation.many_collection" :item="item" :template="template" />
+					<render-template :collection="relation.many_collection" :item="item" :template="templateWithDefaults" />
 					<div class="spacer" />
 					<v-icon name="close" @click.stop="deleteItem(item)" />
 				</v-list-item>
@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, PropType } from '@vue/composition-api';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
 import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';
@@ -93,9 +93,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { template } = toRefs(props);
-		const fields = computed(() => getFieldsFromTemplate(template.value));
-
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
@@ -105,6 +102,11 @@ export default defineComponent({
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
 		const { sort, sortItems, sortedItems } = useSort();
+
+		const templateWithDefaults = computed(
+			() => props.template || relatedCollection.value.meta?.display_template || `{{${relation.value.many_primary}}}`
+		);
+		const fields = computed(() => getFieldsFromTemplate(templateWithDefaults.value));
 
 		return {
 			relation,
@@ -126,6 +128,7 @@ export default defineComponent({
 			sortedItems,
 			get,
 			getItemFromIndex,
+			templateWithDefaults,
 		};
 
 		function getItemFromIndex(index: number) {

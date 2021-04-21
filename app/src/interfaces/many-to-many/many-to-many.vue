@@ -12,7 +12,7 @@
 			>
 				<v-list-item v-for="item in sortedItems || items" :key="item.id" block @click="editItem(item)">
 					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-					<render-template :item="item" :template="template" />
+					<render-template :item="item" :template="templateWithDefaults" />
 					<div class="spacer" />
 					<v-icon name="close" @click.stop="deleteItem(item)" />
 				</v-list-item>
@@ -95,14 +95,15 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const { value, collection, field, template } = toRefs(props);
-		const fields = computed(() => getFieldsFromTemplate(template.value));
-
-		function emitter(newVal: any[] | null) {
-			emit('input', newVal);
-		}
+		const { value, collection, field } = toRefs(props);
 
 		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
+
+		const templateWithDefaults = computed(
+			() => props.template || junctionCollection.value.meta?.display_template || `{{${junction.value.many_primary}}}`
+		);
+
+		const fields = computed(() => getFieldsFromTemplate(templateWithDefaults.value));
 
 		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
 			value,
@@ -158,7 +159,12 @@ export default defineComponent({
 			sort,
 			sortItems,
 			sortedItems,
+			templateWithDefaults,
 		};
+
+		function emitter(newVal: any[] | null) {
+			emit('input', newVal);
+		}
 	},
 });
 </script>
