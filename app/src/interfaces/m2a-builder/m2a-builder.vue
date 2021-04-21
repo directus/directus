@@ -13,30 +13,40 @@
 				:set-data="hideDragImage"
 				:disabled="!o2mRelation.sort_field"
 			>
-				<v-list-item
-					class="m2a-row"
-					v-for="item of previewValues"
-					:key="item.$index"
-					block
-					@click="editExisting((value || [])[item.$index])"
-				>
-					<v-icon class="drag-handle" left name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
-					<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
-					<span
-						v-if="typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'"
+				<template v-for="item of previewValues">
+					<v-list-item
+						:key="item.$index"
+						v-if="allowedCollections.includes(item[anyRelation.one_collection_field])"
+						block
+						@click="editExisting((value || [])[item.$index])"
 					>
-						{{ item[anyRelation.many_field] }}
-					</span>
-					<render-template
-						v-else
-						:collection="item[anyRelation.one_collection_field]"
-						:template="templates[item[anyRelation.one_collection_field]]"
-						:item="item[anyRelation.many_field]"
-					/>
-					<div class="spacer" />
-					<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
-					<v-icon class="launch-icon" name="launch" />
-				</v-list-item>
+						<v-icon class="drag-handle" left name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
+						<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
+						<span
+							v-if="
+								typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'
+							"
+						>
+							{{ item[anyRelation.many_field] }}
+						</span>
+						<render-template
+							v-else
+							:collection="item[anyRelation.one_collection_field]"
+							:template="templates[item[anyRelation.one_collection_field]]"
+							:item="item[anyRelation.many_field]"
+						/>
+						<div class="spacer" />
+						<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+						<v-icon class="launch-icon" name="launch" />
+					</v-list-item>
+
+					<v-list-item v-else :key="item.$index" block>
+						<v-icon class="invalid-icon" name="warning" left />
+						<span>{{ $t('invalid_item') }}</span>
+						<div class="spacer" />
+						<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+					</v-list-item>
+				</template>
 			</draggable>
 		</v-list>
 
