@@ -1,7 +1,7 @@
 <template>
 	<div class="repeater">
 		<v-list>
-			<draggable :value="value" @input="$emit('input', $event)" handler=".drag-handle">
+			<draggable :force-fallback="true" :value="value" @input="$emit('input', $event)" handler=".drag-handle">
 				<v-list-item v-for="(item, index) in value" :key="item.id" block @click="active = index">
 					<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template :fields="fields" :item="item" :template="templateWithDefaults" />

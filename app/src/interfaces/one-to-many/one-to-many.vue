@@ -5,6 +5,7 @@
 	<div class="one-to-many" v-else>
 		<v-list>
 			<draggable
+				:force-fallback="true"
 				:value="sortedItems"
 				@input="sortItems($event)"
 				handler=".drag-handle"
