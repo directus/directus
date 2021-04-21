@@ -7,7 +7,6 @@ export { basemapNames, rootStyle };
 const rootStyle: Style = {
 	version: 8,
 	glyphs: 'http://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
-	sprite: 'https://cdn.jsdelivr.net/gh/Oreilles/material-design-mapbox-sprite/sprites/regular',
 	layers: [],
 	sources,
 };

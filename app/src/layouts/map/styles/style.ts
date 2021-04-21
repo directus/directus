@@ -16,6 +16,16 @@ export const style = <Style>{
 	layers: [
 		{
 			id: '__directus_polygons',
+			type: 'fill',
+			source: '__directus',
+			filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Polygon']],
+			paint: {
+				'fill-color': color,
+				'fill-opacity': 0.15,
+			},
+		},
+		{
+			id: '__directus_polygons_outline',
 			type: 'line',
 			source: '__directus',
 			filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Polygon']],
@@ -35,33 +45,14 @@ export const style = <Style>{
 			},
 		},
 		{
-			id: '__directus_points_shadow',
+			id: '__directus_points',
 			type: 'circle',
 			source: '__directus',
 			filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
 			layout: {},
 			paint: {
-				'circle-pitch-alignment': 'map',
-				'circle-blur': 1,
-				'circle-opacity': 0.5,
-				'circle-radius': 6,
-			},
-		},
-		{
-			id: '__directus_points',
-			type: 'symbol',
-			source: '__directus',
-			filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
-			layout: {
-				'icon-image': 'place',
-				'icon-anchor': 'bottom',
-				'icon-allow-overlap': true,
-				'icon-pitch-alignment': 'viewport',
-				'icon-size': 2,
-				'icon-offset': [0, 3],
-			},
-			paint: {
-				'icon-color': color,
+				'circle-radius': 8,
+				'circle-color': color,
 			},
 		},
 		{

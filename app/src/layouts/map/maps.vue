@@ -257,15 +257,15 @@ import type { GeoJSONSerializer } from './worker';
 
 import { defineComponent, toRefs, inject, computed, ref, watch } from '@vue/composition-api';
 import type { PropType, Ref } from '@vue/composition-api';
-import router from '../../router';
-import { Filter } from '../../types';
-import useCollection from '../../composables/use-collection/';
-import useSync from '../../composables/use-sync/';
-import useItems from '../../composables/use-items';
-import { useRelationsStore } from '../../stores/';
+import router from '@/router';
+import { Filter } from '@/types';
+import useCollection from '@/composables/use-collection/';
+import useSync from '@/composables/use-sync/';
+import useItems from '@/composables/use-items';
+import { useRelationsStore } from '@/stores/';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 
-import i18n from '../../lang';
+import i18n from '@/lang';
 import { wrap, proxy, Remote } from 'comlink';
 import { cloneDeep, merge } from 'lodash';
 import { mapbox_sources } from './styles/sources';
@@ -301,7 +301,7 @@ type LayoutOptions = {
 	animateOptions?: any;
 };
 
-type GeometryFormat = 'geojson' | 'csv' | 'wkt' | 'wkb' | 'twkb' | 'lnglat' | undefined;
+type GeometryFormat = 'geojson' | 'postgis' | 'csv' | 'wkt' | 'wkb' | 'twkb' | 'lnglat' | undefined;
 
 export default defineComponent({
 	components: { MapComponent },
@@ -533,8 +533,12 @@ export default defineComponent({
 			userSource.value = { ...userSource.value };
 		}
 
-		function updateSelection(selected: Array<string | number>) {
-			_selection.value = (selected as unknown) as Record<string, any>[];
+		function updateSelection(selected: Array<string | number> | null) {
+			if (selected) {
+				_selection.value = Array.from(new Set(_selection.value.concat(selected)));
+			} else {
+				_selection.value = [];
+			}
 		}
 
 		const featureId = computed(() => {
@@ -578,6 +582,7 @@ export default defineComponent({
 					return ['string', 'text'];
 				case 'wkb':
 				case 'twkb':
+				case 'postgis':
 					return ['string', 'text', 'binary', 'unknown'];
 				default:
 					return [];
@@ -676,8 +681,8 @@ export default defineComponent({
 }
 </style>
 <style lang="scss" scoped>
-@import '../../styles/mixins/breakpoint';
-@import '../../styles/mixins/form-grid';
+@import '@/styles/mixins/breakpoint';
+@import '@/styles/mixins/form-grid';
 
 .layout-map {
 	width: 100%;

@@ -1,7 +1,5 @@
 <template>
-	<div id="map-container" ref="container" :class="{ select: selectMode, hover: hoveredId != null }">
-		<div id="selection" :style="boxStyle"></div>
-	</div>
+	<div id="map-container" ref="container" :class="{ select: selectMode, hover: hoveredId != null }"></div>
 </template>
 
 <script lang="ts">
@@ -24,39 +22,7 @@ import { ref, watch, computed, PropType, onMounted, onUnmounted, defineComponent
 import { useAppStore } from '@/stores';
 import getSetting from '@/utils/get-setting';
 import { mapbox_sources } from '../styles/sources';
-
-export class ButtonControl {
-	container?: HTMLElement;
-	active: boolean;
-	constructor(private className: string, private cb: (...args: any) => any) {
-		this.active = false;
-	}
-	click(...args: any) {
-		this.cb(...args);
-	}
-	onAdd() {
-		this.container = document.createElement('div');
-		this.container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
-		this.container.innerHTML = `
-			<button class="${this.className}" type="button">
-				<span class="mapboxgl-ctrl-icon" aria-hidden="true"></span>
-			</button>
-		`;
-		this.container.addEventListener('click', this.cb.bind(this));
-		return this.container;
-	}
-	onRemove() {
-		this.container?.parentNode?.removeChild(this.container!);
-	}
-	activate(yes: boolean) {
-		this.container?.classList[yes ? 'add' : 'remove']('active');
-		this.active = yes;
-	}
-	toggle() {
-		this.container?.classList.toggle('active');
-		this.active = !this.active;
-	}
-}
+import { BoxSelectControl, ControlButton, ControlGroup } from '../controls';
 
 export default defineComponent({
 	components: {},
@@ -109,65 +75,48 @@ export default defineComponent({
 		let map: Map;
 		const container = ref<HTMLElement>();
 		const hoveredId = ref<string | number>();
-		const boxStyle = ref<unknown>({});
-		const selecting = ref(false);
-		const shiftPressed = ref(false);
-		const selectMode = computed(() => shiftPressed.value || selecting.value);
-		let startPos: Point;
-		let currentPos: Point;
+		const selectMode = ref(false);
 
 		onMounted(() => {
 			const cleanup = setupMap();
 			onUnmounted(cleanup);
 		});
 
-		const markerHeight = 48,
-			markerRadius = 24,
-			linearOffset = 25;
-		var popupOffsets: { [key: string]: PointLike } = {
-			top: [0, 0],
-			'top-left': [0, 0],
-			'top-right': [0, 0],
-			bottom: [0, -markerHeight],
-			'bottom-left': [linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
-			'bottom-right': [-linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
-			left: [markerRadius, (markerHeight - markerRadius) * -1],
-			right: [-markerRadius, (markerHeight - markerRadius) * -1],
-		};
 		const popup = new maplibre.Popup({
 			closeButton: false,
 			closeOnClick: false,
 			className: 'mapboxgl-point-popup',
 			maxWidth: 'unset',
-			offset: popupOffsets,
+			offset: 20,
 		});
 
-		return { container, boxStyle, selectMode, hoveredId };
+		const attributionControl = new maplibre.AttributionControl({ compact: true });
+		const navigationControl = new maplibre.NavigationControl();
+		const geolocateControl = new maplibre.GeolocateControl();
+		const fitDataControlButton = new ControlButton('mapboxgl-ctrl-fitdata', fitDataBounds);
+		const fitDataControl = new ControlGroup(fitDataControlButton);
+		const boxSelectControl = new BoxSelectControl({
+			boxElementClass: 'selection-box',
+			selectButtonClass: 'mapboxgl-ctrl-select',
+			unselectButtonClass: 'mapboxgl-ctrl-unselect',
+			layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
+		});
+
+		return { container, selectMode, hoveredId };
 
 		function setupMap() {
-			const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds);
-			const selectControl = new ButtonControl('mapboxgl-ctrl-select', () => {
-				shiftPressed.value = !shiftPressed.value;
-			});
-			watch(
-				() => selectMode.value,
-				(value) => selectControl.activate(value)
-			);
-
 			map = new maplibre.Map({
 				container: 'map-container',
 				style: props.rootStyle,
 				attributionControl: false,
 				...props.camera,
 			});
-			map.boxZoom.disable();
-			container.value!.addEventListener('mousedown', onMouseDown, true);
 
-			map.addControl(new maplibre.NavigationControl(), 'top-left');
-			map.addControl(new maplibre.GeolocateControl(), 'top-left');
-			map.addControl(new maplibre.AttributionControl({ compact: true }), 'top-right');
+			map.addControl(attributionControl, 'top-right');
+			map.addControl(navigationControl, 'top-left');
+			map.addControl(geolocateControl, 'top-left');
 			map.addControl(fitDataControl, 'top-left');
-			map.addControl(selectControl, 'top-left');
+			map.addControl(boxSelectControl, 'top-left');
 
 			map.on('load', () => {
 				attachFeatureEvents();
@@ -177,6 +126,11 @@ export default defineComponent({
 					watch(() => props.selection, updateSelection, { immediate: true });
 					watch(() => props.layers, updateLayers);
 				});
+			});
+
+			map.on('select.end', (event) => {
+				const ids = event.features?.map((f) => f.id);
+				emit('select', ids);
 			});
 
 			map.on('moveend', () => {
@@ -211,13 +165,8 @@ export default defineComponent({
 				}
 			);
 
-			document.addEventListener('keydown', onKeyDown);
-			document.addEventListener('keyup', onKeyUp);
-
 			return () => {
 				map.remove();
-				document.removeEventListener('keydown', onKeyDown);
-				document.removeEventListener('keyup', onKeyUp);
 			};
 		}
 
@@ -226,9 +175,6 @@ export default defineComponent({
 			if (map && bbox) {
 				map.fitBounds(bbox, props.animateOptions);
 			}
-			// TODO: Fitting a bbox with a different aspect ratio than the viewport can cause artifacts
-			// const camera = map.cameraForBounds(bounds as LngLatBoundsLike);
-			// map.flyTo(camera, Object.assign(props.camera, props.animateOptions));
 		}
 
 		function updateBackground(id: string, previous?: string) {
@@ -239,6 +185,7 @@ export default defineComponent({
 				}
 
 				if (previous) {
+					console.log(props.source);
 					map.once('styledata', () => {
 						updateSource(props.source, undefined);
 					});
@@ -309,92 +256,25 @@ export default defineComponent({
 			}
 		}
 
-		function getMousePosition(event: MouseEvent): Point {
-			const rect = container.value!.getBoundingClientRect();
-			return new maplibre.Point(
-				event.clientX - rect.left - container.value!.clientLeft,
-				event.clientY - rect.top - container.value!.clientTop
-			);
-		}
-
-		function onKeyDown(event: KeyboardEvent) {
-			if (event.key == 'Shift') {
-				shiftPressed.value = true;
-			}
-			if (event.key == 'Escape') {
-				shiftPressed.value = false;
-				onDragEnd();
-				emit('select', []);
-			}
-		}
-
-		function onKeyUp(event: KeyboardEvent) {
-			if (event.key == 'Shift') {
-				shiftPressed.value = false;
-			}
-		}
-
-		function onMouseDown(event: MouseEvent) {
-			if (!shiftPressed.value) {
-				onDragEnd();
-				return;
-			}
-			if (event.button === 0) {
-				selecting.value = true;
-				map.dragPan.disable();
-				document.addEventListener('mousemove', onMouseMove);
-				document.addEventListener('mouseup', onMouseUp);
-				startPos = getMousePosition(event);
-				currentPos = startPos;
-			}
-		}
-
-		function onMouseMove(event: MouseEvent) {
-			currentPos = getMousePosition(event);
-			let minX = Math.min(startPos.x, currentPos.x),
-				maxX = Math.max(startPos.x, currentPos.x),
-				minY = Math.min(startPos.y, currentPos.y),
-				maxY = Math.max(startPos.y, currentPos.y);
-			const transform = `translate(${minX}px, ${minY}px)`;
-			const width = maxX - minX + 'px';
-			const height = maxY - minY + 'px';
-			boxStyle.value = { transform, width, height };
-		}
-
-		function onDragEnd() {
-			boxStyle.value = {};
-			selecting.value = false;
-			document.removeEventListener('mousemove', onMouseMove);
-			document.removeEventListener('mouseup', onMouseUp);
-			map.dragPan.enable();
-		}
-
-		function onMouseUp() {
-			onDragEnd();
-
-			const features = map.queryRenderedFeatures([startPos, currentPos], {
-				layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
-			});
-			emit(
-				'select',
-				features.map((feature) => feature.id)
-			);
-		}
-
 		function onFeatureClick(event: MapLayerMouseEvent) {
+			console.log(event);
 			const feature = event.features?.[0];
 			if (feature && props.featureId) {
-				emit('click', feature.id);
+				if (boxSelectControl.active()) {
+					emit('select', [feature.id]);
+				} else {
+					emit('click', feature.id);
+				}
 			}
 		}
 
 		function onFeatureEnter(event: MapLayerMouseEvent) {
 			const feature = event.features?.[0];
 			if (feature && props.featureId && feature.properties) {
-				const coordinates = feature.geometry.type === 'Point' ? feature.geometry.coordinates : event.lngLat;
 				hoveredId.value = feature.id;
-				emit('hover', hoveredId.value);
 				map.setFeatureState({ id: hoveredId.value, source: '__directus' }, { hovered: true });
+				emit('hover', hoveredId.value);
+				const coordinates = feature.geometry.type === 'Point' ? feature.geometry.coordinates : event.lngLat;
 				popup
 					.setLngLat(coordinates as LngLatLike)
 					.setHTML(feature.properties.description)
@@ -403,10 +283,12 @@ export default defineComponent({
 		}
 
 		function onFeatureLeave(event: MapLayerMouseEvent) {
-			map.setFeatureState({ id: hoveredId.value, source: '__directus' }, { hovered: false });
-			emit('leave', hoveredId.value);
-			hoveredId.value = undefined;
-			popup.remove();
+			if (hoveredId.value) {
+				map.setFeatureState({ id: hoveredId.value, source: '__directus' }, { hovered: false });
+				emit('leave', hoveredId.value);
+				hoveredId.value = undefined;
+				popup.remove();
+			}
 		}
 
 		function expandCluster(event: MapLayerMouseEvent) {
@@ -425,12 +307,6 @@ export default defineComponent({
 			});
 		}
 		function attachFeatureEvents() {
-			map.on('mouseenter', '__directus_clusters', () => {
-				hoveredId.value = -1;
-			});
-			map.on('mouseleave', '__directus_clusters', () => {
-				hoveredId.value = undefined;
-			});
 			map.on('mouseenter', '__directus_polygons', onFeatureEnter);
 			map.on('mouseleave', '__directus_polygons', onFeatureLeave);
 			map.on('mouseenter', '__directus_points', onFeatureEnter);
@@ -458,20 +334,21 @@ export default defineComponent({
 		height: 36px;
 		background: var(--background-subdued) !important;
 		border: none !important;
+		span {
+			display: none !important;
+		}
 		& + button {
 			margin-top: 1px;
 		}
 		&:hover {
 			background: var(--background-normal) !important;
 		}
-		span {
-			display: none !important;
-		}
-	}
-	&.active {
-		button {
+		&.active {
 			color: var(--background-subdued) !important;
 			background: var(--foreground-normal) !important;
+		}
+		&.hidden {
+			display: none;
 		}
 	}
 	button::after {
@@ -508,6 +385,9 @@ export default defineComponent({
 .mapboxgl-ctrl-select::after {
 	content: '\ef52'; // highlight_alt
 }
+.mapboxgl-ctrl-unselect::after {
+	content: '\e14c'; // clear
+}
 
 .mapboxgl-ctrl-attrib.mapboxgl-compact {
 	min-width: 24px;
@@ -516,6 +396,19 @@ export default defineComponent({
 	background: var(--background-subdued) !important;
 }
 
+.selection-box {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 1000;
+	width: 0;
+	height: 0;
+	background: rgba(56, 135, 190, 0.1);
+	border: 1px solid rgb(56, 135, 190);
+	pointer-events: none;
+}
 .mapboxgl-point-popup {
 	&.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
 		border-right-color: var(--background-normal);
@@ -557,19 +450,7 @@ export default defineComponent({
 	cursor: crosshair !important;
 }
 #map-container.select::v-deep canvas {
-	pointer-events: none;
-}
-#selection {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	z-index: 1000;
-	width: 0;
-	height: 0;
-	background: rgba(56, 135, 190, 0.1);
-	border: 1px solid rgb(56, 135, 190);
-	pointer-events: none;
+	cursor: crosshair !important;
+	// pointer-events: none;
 }
 </style>

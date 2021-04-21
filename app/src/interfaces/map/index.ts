@@ -1,4 +1,4 @@
-import { defineInterface } from '../define';
+import { defineInterface } from '@/interfaces/define';
 import InterfaceMap from './map.vue';
 import { sources, mapbox_sources } from '@/layouts/map/styles/sources';
 
@@ -8,7 +8,7 @@ export default defineInterface({
 	description: '$t:interfaces.map.description',
 	icon: 'map',
 	component: InterfaceMap,
-	types: ['json', 'csv', 'string', 'text', 'binary'],
+	types: ['json', 'csv', 'string', 'text', 'binary', 'unknown'],
 	options: [
 		{
 			field: 'geometryType',
@@ -63,7 +63,7 @@ export default defineInterface({
 			},
 		},
 		{
-			field: 'projection',
+			field: 'geometryProjection',
 			name: '$t:interfaces.map.projection',
 			type: 'string',
 			meta: {

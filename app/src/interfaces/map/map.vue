@@ -9,12 +9,7 @@
 				type="warning"
 				:title="$t('interfaces.map.no_api_key')"
 			></v-info>
-			<v-info v-if="geometryCompatibilityError" icon="error" center type="warning" title="Incompatible geometry">
-				<template #append>
-					<v-button small @click="resetGeometry" class="reset-preset">Reset Geometry</v-button>
-				</template>
-			</v-info>
-			<v-info v-if="geometryParsingError" icon="error" center type="error" title="Couldn't parse geometry">
+			<v-info v-if="geometryParsingError" icon="error" center type="warning" title="Incompatible geometry">
 				<template #append>
 					<v-button small @click="resetGeometry" class="reset-preset">Reset Geometry</v-button>
 				</template>
@@ -54,7 +49,7 @@ import maplibre, {
 	LngLat,
 	IControl,
 } from 'maplibre-gl';
-import { ButtonControl } from '@/layouts/map/components/map.vue';
+import { ControlButton, ControlGroup } from '@/layouts/map/controls';
 import { sources, mapbox_sources } from '@/layouts/map/styles/sources';
 import { getParser, getSerializer, assignBBox } from '@/layouts/map/lib';
 import type { GeometryFormat, AnyGeoJSON } from '@/layouts/map/lib';
@@ -97,10 +92,6 @@ export default defineComponent({
 			type: Number,
 			default: 8,
 		},
-		projection: {
-			type: String,
-			default: 'EPSG:4326',
-		},
 		background: {
 			type: String,
 			default: 'CartoDB_PositronNoLabels',
@@ -112,6 +103,10 @@ export default defineComponent({
 		geometryFormat: {
 			type: String as PropType<GeometryFormat>,
 			required: true,
+		},
+		geometryProjection: {
+			type: String,
+			default: 'EPSG:4326',
 		},
 		multiGeometry: {
 			type: Boolean,
@@ -127,14 +122,13 @@ export default defineComponent({
 		let currentGeometry: _Geometry | null | undefined;
 
 		const canRenderBackground = computed(() => props.background in mapbox_sources === false || apiKey !== null);
-		const geometryParsingError = ref(false);
-		const geometryCompatibilityError = ref(false);
+		const geometryParsingError = ref<string | null>();
 		const error = computed(
-			() => !canRenderBackground.value || geometryParsingError.value || geometryCompatibilityError.value
+			() => !canRenderBackground.value || geometryParsingError.value || geometryParsingError.value
 		);
 
 		const geometryOptions = {
-			geometrySRID: props.projection,
+			geometrySRID: props.geometryProjection,
 			geometryFormat: props.geometryFormat,
 			geometryField: 'value',
 		};
@@ -149,35 +143,28 @@ export default defineComponent({
 
 		function resetGeometry() {
 			emit('input', null);
-			geometryCompatibilityError.value = false;
-			geometryParsingError.value = false;
+			geometryParsingError.value = null;
 		}
 
 		return {
-			container,
 			error,
+			container,
 			canRenderBackground,
 			geometryParsingError,
-			geometryCompatibilityError,
 			resetGeometry,
 		};
 
 		function setupMap(): () => void {
-			if (container.value === null) {
-				return () => {};
-			}
-
 			const background = canRenderBackground.value ? props.background : 'CartoDB_PositronNoLabels';
 
 			map = new Map({
-				container: container.value,
+				container: container.value!,
 				style:
 					background in mapbox_sources
 						? mapbox_sources[background]
 						: {
 								version: 8,
 								glyphs: 'http://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
-								sprite: 'https://cdn.jsdelivr.net/gh/Oreilles/material-design-mapbox-sprite/sprites/regular',
 								layers: [
 									{
 										id: background,
@@ -192,21 +179,24 @@ export default defineComponent({
 				attributionControl: false,
 			});
 
-			const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds);
+			const fitDataControl = new ControlButton('mapboxgl-ctrl-fitdata', fitDataBounds);
+			const snakeGeometryType = snakeCase(props.geometryType);
 			const draw = new MapboxDraw({
 				displayControlsDefault: false,
 				controls: {
 					trash: true,
-					[snakeCase(props.geometryType)]: true,
+					[snakeGeometryType]: true,
 				},
+				defaultMode: `draw_${snakeGeometryType}`,
 				styles: style,
 			});
 			map.addControl(new maplibre.NavigationControl(), 'top-left');
 			map.addControl(new maplibre.GeolocateControl(), 'top-left');
-			map.addControl(fitDataControl, 'top-left');
+			map.addControl(new ControlGroup(fitDataControl), 'top-left');
 			map.addControl(draw as IControl, 'top-left');
 
-			map.on('load', () => {
+			map.on('load', async () => {
+				await addMarkerImage().catch(() => {});
 				map.on('draw.create', handleDrawUpdate);
 				map.on('draw.delete', handleDrawUpdate);
 				map.on('draw.update', handleDrawUpdate);
@@ -224,26 +214,32 @@ export default defineComponent({
 				map.remove();
 			};
 
+			function addMarkerImage() {
+				return new Promise((resolve, reject) => {
+					map.loadImage(
+						'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/24dp/1x/baseline_place_black_24dp.png',
+						(error: any, image: any) => {
+							if (error) reject(error);
+							map.addImage('place', image, { sdf: true });
+							resolve(true);
+						}
+					);
+				});
+			}
+
 			function addInitialValue() {
 				if (!props.value) return;
 				try {
 					const initialValue = parse(props) as _Geometry | undefined;
-					if (initialValue) {
-						const uncombined = uncombine(initialValue as _MultiGeometry);
-						if (uncombined.length == 0 || (uncombined.length > 1 && !props.multiGeometry)) {
-							console.log('invalid geometry');
-							geometryCompatibilityError.value = true;
-							return;
-						}
-						uncombined.forEach((geometry) => {
-							draw.add(geometry);
-						});
-						getCurrentGeometry();
-						fitDataBounds({ duration: 0 });
-					}
+					const uncombined = uncombine(initialValue as _MultiGeometry);
+					uncombined.forEach((geometry) => {
+						draw.add(geometry);
+					});
+					draw.changeMode('simple_select');
+					getCurrentGeometry();
+					fitDataBounds({ duration: 0 });
 				} catch (error) {
-					console.log('parsing error');
-					geometryParsingError.value = true;
+					geometryParsingError.value = error;
 				}
 			}
 
@@ -269,7 +265,7 @@ export default defineComponent({
 					} as _MultiGeometry;
 				}
 				if (geometry.type !== `Multi${props.geometryType}`) {
-					return geometries;
+					throw new Error(`Expected ${props.geometryType}, got ${geometry.type}`);
 				}
 				for (const coordinates of geometry.coordinates) {
 					geometries.push({
@@ -288,11 +284,10 @@ export default defineComponent({
 				} else if (props.multiGeometry) {
 					currentGeometry = combine(geometries);
 				} else {
-					currentGeometry = geometries[0];
+					currentGeometry = geometries[geometries.length - 1];
 					draw.deleteAll();
 					draw.add(currentGeometry!);
 				}
-				console.log(currentGeometry);
 				assignBBox(currentGeometry!);
 			}
 
