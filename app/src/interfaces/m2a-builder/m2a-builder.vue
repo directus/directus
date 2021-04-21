@@ -40,10 +40,11 @@
 		</v-list>
 
 		<div class="buttons">
-			<v-menu attached>
+			<v-menu show-arrow>
 				<template #activator="{ toggle }">
-					<v-button outlined full-width @click="toggle">
+					<v-button @click="toggle">
 						{{ $t('create_new') }}
+						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
 
@@ -59,10 +60,11 @@
 				</v-list>
 			</v-menu>
 
-			<v-menu attached>
+			<v-menu show-arrow>
 				<template #activator="{ toggle }">
-					<v-button outlined full-width @click="toggle">
+					<v-button @click="toggle" class="existing">
 						{{ $t('add_existing') }}
+						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
 
@@ -643,10 +645,11 @@ export default defineComponent({
 }
 
 .buttons {
-	display: grid;
-	grid-gap: var(--form-horizontal-gap);
-	grid-template-columns: 1fr 1fr;
-	margin-top: 12px;
+	margin-top: 8px;
+}
+
+.existing {
+	margin-left: 8px;
 }
 
 .drag-handle {
