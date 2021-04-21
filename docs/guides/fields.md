@@ -81,7 +81,7 @@ field on the parent Collection. If the chosen Related Collection already exists,
 selected. If the Related Collection does not already exist, you will be prompted to enter the name of its new primary
 key field.
 
-![M2O](../../assets/guides-fields/m2o.png)
+![M2O](../assets/guides-fields/m2o.png)
 
 #### One-to-Many
 
@@ -89,7 +89,7 @@ The [One-to-Many](/concepts/relationships/#one-to-many-o2m) creates an [Alias](/
 parent Collection. To configure, enter or select a Related Collection and a field therein for storing the foreign key.
 The related field must have a data type that matches the type of "This" Collection's primary key field.
 
-![O2M](../../assets/guides-fields/o2m.png)
+![O2M](../assets/guides-fields/o2m.png)
 
 The optional **Sort Field** can be used enable the reordering of items within the O2M field. Configured by entering the
 name/key of a Field (numeric type only) from the Related Collection.
@@ -102,7 +102,7 @@ parent Collection. To configure, enter or select a Related Collection and a fiel
 To configure the Junction Collection, you can leave "Auto Fill" enabled to let Directus generate intelligent defaults,
 or disable it to select existing options or enter custom naming.
 
-![M2M](../../assets/guides-fields/m2m.png)
+![M2M](../assets/guides-fields/m2m.png)
 
 #### Many-to-Any
 
@@ -113,7 +113,7 @@ automatically be referenced.
 To configure the Junction Collection, you can leave "Auto Fill" enabled to let Directus generate intelligent defaults,
 or disable it to select existing options or enter custom naming.
 
-![M2A](../../assets/guides-fields/m2a.png)
+![M2A](../assets/guides-fields/m2a.png)
 
 #### Translations
 
@@ -121,7 +121,7 @@ or disable it to select existing options or enter custom naming.
 parent Collection. The easiest way to create this is to use the modal wizard, which only asks for the Translation field
 name:
 
-![Translations](../../assets/guides-fields/translations.png)
+![Translations](../assets/guides-fields/translations.png)
 
 If you choose to switch to the **manual editor**, enter or select a Related Collection and a field therein for storing
 the foreign key.
@@ -129,7 +129,7 @@ the foreign key.
 To configure the Translations Collection, you can leave "Auto Fill" enabled to let Directus generate intelligent
 defaults, or disable it to select existing options or enter custom naming.
 
-![Translations](../../assets/guides-fields/translations-2.png)
+![Translations](../assets/guides-fields/translations-2.png)
 
 ### Field Setup
 
@@ -159,14 +159,6 @@ This pane includes any customization options that may be defined by the Display.
 1. Navigate to **Settings > Data Model > [Collection Name]**
 2. Click the field you want to update
 3. Follow the specific setup guide for the field type...
-
-- [Standard Field](/guides/field-types/standard-field)
-- [Presentation Field](/guides/field-types/presentation-field)
-- [Many-to-One Field](/guides/field-types/many-to-one-field)
-- [One-to-Many Field](/guides/field-types/one-to-many-field)
-- [Many-to-Many Field](/guides/field-types/many-to-many-field)
-- [Many-to-Any Field](/guides/field-types/many-to-any-field)
-- [Translated Fields](/guides/field-types/translated-fields)
 
 ::: tip
 
@@ -222,7 +214,7 @@ The form design of the collection's fields is determined by the following option
 
 <!-- @TODO 1. Create any desired groupings by **[Creating a Field Group](/guides/fields)** -->
 
-2. Click the **More Options** icon for any fields/groups to adjust visibility
+2. Click the **More Options** icon for any fields to adjust visibility
 3. Click the **More Options** icon for any fields to adjust width
 4. **Rearrange fields and groups** with their drag-and-drop handles
 
