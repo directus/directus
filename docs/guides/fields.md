@@ -160,14 +160,6 @@ This pane includes any customization options that may be defined by the Display.
 2. Click the field you want to update
 3. Follow the specific setup guide for the field type...
 
-- [Standard Field](/guides/field-types/standard-field)
-- [Presentation Field](/guides/field-types/presentation-field)
-- [Many-to-One Field](/guides/field-types/many-to-one-field)
-- [One-to-Many Field](/guides/field-types/one-to-many-field)
-- [Many-to-Many Field](/guides/field-types/many-to-many-field)
-- [Many-to-Any Field](/guides/field-types/many-to-any-field)
-- [Translated Fields](/guides/field-types/translated-fields)
-
 ::: tip
 
 Learn more about the field options for [Adjusting the Field Layout](#adjusting-field-arrangement).
@@ -222,7 +214,7 @@ The form design of the collection's fields is determined by the following option
 
 <!-- @TODO 1. Create any desired groupings by **[Creating a Field Group](/guides/fields)** -->
 
-2. Click the **More Options** icon for any fields/groups to adjust visibility
+2. Click the **More Options** icon for any fields to adjust visibility
 3. Click the **More Options** icon for any fields to adjust width
 4. **Rearrange fields and groups** with their drag-and-drop handles
 
