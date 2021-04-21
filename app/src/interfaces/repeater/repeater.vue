@@ -4,7 +4,7 @@
 			<draggable :value="value" @input="$emit('input', $event)" handler=".drag-handle">
 				<v-list-item v-for="(item, index) in value" :key="item.id" block @click="active = index">
 					<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-					<render-template :item="item" :template="template" />
+					<render-template :fields="fields" :item="item" :template="template" />
 					<div class="spacer" />
 					<v-icon name="close" @click.stop="removeItem(item)" />
 				</v-list-item>
@@ -18,7 +18,7 @@
 		<v-drawer
 			:active="drawerOpen"
 			@toggle="closeDrawer()"
-			:title="title || headerPlaceholder"
+			:title="displayValue || headerPlaceholder"
 			persistent
 			@cancel="closeDrawer()"
 		>
@@ -100,7 +100,7 @@ export default defineComponent({
 
 		const activeItem = computed(() => (active.value !== null ? value.value[active.value] : null));
 
-		const { displayValue: title } = renderStringTemplate(template, activeItem);
+		const { displayValue } = renderStringTemplate(template, activeItem);
 
 		return {
 			updateValues,
@@ -110,7 +110,7 @@ export default defineComponent({
 			hideDragImage,
 			active,
 			drawerOpen,
-			title,
+			displayValue,
 			activeItem,
 			closeDrawer,
 			onSort,
@@ -193,6 +193,6 @@ export default defineComponent({
 }
 
 .add-new {
-	margin-top: 12px;
+	margin-top: 8px;
 }
 </style>

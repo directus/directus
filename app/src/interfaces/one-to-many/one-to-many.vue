@@ -10,7 +10,7 @@
 				handler=".drag-handle"
 				:disabled="!relation.sort_field"
 			>
-				<v-list-item v-for="item in sortedItems" :key="item.id" block large @click="editItem(item)">
+				<v-list-item v-for="item in sortedItems" :key="item.id" block @click="editItem(item)">
 					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template :collection="relation.many_collection" :item="item" :template="template" />
 					<div class="spacer" />

@@ -190,7 +190,7 @@ body {
 	}
 
 	&.block {
-		--v-list-item-min-height: 34px;
+		--v-list-item-min-height: 44px;
 
 		display: flex;
 		background-color: var(--background-subdued);
@@ -224,14 +224,14 @@ body {
 		}
 
 		& + & {
-			margin-top: 4px;
+			margin-top: 8px;
 		}
 
-		&.large {
-			--v-list-item-min-height: 44px;
+		&.dense {
+			--v-list-item-min-height: 34px;
 
 			& + & {
-				margin-top: 8px;
+				margin-top: 4px;
 			}
 		}
 	}

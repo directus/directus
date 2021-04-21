@@ -3,13 +3,18 @@
 		{{ $t('interfaces.one-to-many.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
-		<div class="field full">
+		<div class="field half-left">
 			<p class="type-label">{{ $t('select_fields') }}</p>
 			<v-field-template
 				:collection="relatedCollection"
 				v-model="template"
 				:inject="relatedCollectionExists ? null : { fields: newFields, collections: newCollections, relations }"
 			/>
+		</div>
+
+		<div class="field half-right">
+			<p class="type-label">{{ $t('order') }}</p>
+			<v-field-select v-model="order" :collection="relatedCollection" />
 		</div>
 	</div>
 </template>
@@ -61,6 +66,18 @@ export default defineComponent({
 			},
 		});
 
+		const order = computed({
+			get() {
+				return props.value?.order;
+			},
+			set(newTemplate: string) {
+				emit('input', {
+					...(props.value || {}),
+					order: newTemplate,
+				});
+			},
+		});
+
 		const relatedCollection = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
@@ -76,7 +93,7 @@ export default defineComponent({
 			);
 		});
 
-		return { template, relatedCollection, relatedCollectionExists };
+		return { template, order, relatedCollection, relatedCollectionExists };
 	},
 });
 </script>
