@@ -35,63 +35,33 @@ export class AxiosTransport implements ITransport {
 	}
 
 	private async request<T = any, R = any>(
-		method: 'get',
+		method: TransportMethods,
 		path: string,
+		data?: any,
 		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<T = any, R = any>(
-		method: 'delete',
-		path: string,
-		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<T = any, R = any>(
-		method: 'head',
-		path: string,
-		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<T = any, R = any>(
-		method: 'options',
-		path: string,
-		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<T = any, D = any, R = any>(
-		method: 'post',
-		path: string,
-		data?: D,
-		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<T = any, D = any, R = any>(
-		method: 'put',
-		path: string,
-		data?: D,
-		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<T = any, D = any, R = any>(
-		method: 'patch',
-		path: string,
-		data?: D,
-		options?: TransportOptions
-	): Promise<TransportResponse<T, R>>;
-	private async request<M extends TransportMethods, T = any, R = any>(
-		method: M,
-		path: string,
-		...args: any
 	): Promise<TransportResponse<T, R>> {
 		try {
-			const make = this.axios[method] as AxiosInstance[M];
-			const response = await make<TransportResponse<T>>(path, ...args);
-			const { data, meta, errors } = response.data;
+			options = options || {};
+			const response = await this.axios.request({
+				method,
+				url: path,
+				data: data,
+				params: options.params,
+				headers: options.headers,
+			});
+
+			const responseData = response.data;
 			const content = {
 				raw: response.data as any,
 				status: response.status,
 				statusText: response.statusText,
 				headers: response.headers,
-				data,
-				meta,
-				errors,
+				data: responseData.data,
+				meta: responseData.meta,
+				errors: responseData.errors,
 			};
 
-			if (errors) {
+			if (responseData.errors) {
 				throw new TransportError<T, R>(null, content);
 			}
 
@@ -114,19 +84,19 @@ export class AxiosTransport implements ITransport {
 	}
 
 	async get<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>> {
-		return await this.request('get', path, options);
-	}
-
-	async delete<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>> {
-		return await this.request('delete', path, options);
+		return await this.request('get', path, undefined, options);
 	}
 
 	async head<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>> {
-		return await this.request('head', path, options);
+		return await this.request('head', path, undefined, options);
 	}
 
 	async options<T = any>(path: string, options?: TransportOptions): Promise<TransportResponse<T>> {
-		return await this.request('options', path, options);
+		return await this.request('options', path, undefined, options);
+	}
+
+	async delete<T = any, D = any>(path: string, data?: D, options?: TransportOptions): Promise<TransportResponse<T>> {
+		return await this.request('delete', path, data, options);
 	}
 
 	async put<T = any, D = any>(path: string, data?: D, options?: TransportOptions): Promise<TransportResponse<T>> {
