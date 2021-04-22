@@ -191,15 +191,13 @@ export class XliffService {
 				return { ...acc, [val.fieldName]: val.content };
 			}, {});
 			// validate if there is already an existing translation item in the database
-			// '=='used in order to find match for numeric key values as well (parentKey is a string value)
-			const existingItem = existingItems?.find((item: any) => item[parentFieldName] == parentKey);
+			const existingItem = existingItems?.find((item: any) => item[parentFieldName].toString() == parentKey);
 			// if there is item in database - add it to the storage that will be used for updating existing  items
 			if (existingItem) {
 				itemsToUpdate.push({ ...existingItem, ...translations });
 			}
 			// only add new translation if there related parent item exists
-			// '=='used in order to find match for numeric key values as well (parentKey is a string value)
-			else if (parentItems?.find((item: any) => item[parentCollectionKeyFieldName] == parentKey)) {
+			else if (parentItems?.find((item: any) => item[parentCollectionKeyFieldName].toString() === parentKey)) {
 				itemsToAdd.push({
 					...translations,
 					[parentFieldName]: parentKey,
@@ -208,7 +206,7 @@ export class XliffService {
 			}
 		}
 		// return arrays of primary keys for new and updated translation items
-		return [...(await itemsService.update(itemsToUpdate)), ...(await itemsService.create(itemsToAdd))];
+		return [...(await itemsService.update(itemsToUpdate)), ...(await itemsService.createMany(itemsToAdd))];
 	}
 
 	// validates if language related to specific translations collection
