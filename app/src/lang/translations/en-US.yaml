@@ -691,6 +691,7 @@ fields:
     sort_field: Sort Field
     accountability: Activity & Revision Tracking
   directus_files:
+    $thumbnail: Thumbnail
     title: Title
     description: Description
     tags: Tags
