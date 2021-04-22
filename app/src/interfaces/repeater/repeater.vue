@@ -4,7 +4,7 @@
 			{{ $t('no_items') }}
 		</v-notice>
 
-		<v-list>
+		<v-list v-if="value && value.length > 0">
 			<draggable :force-fallback="true" :value="value" @input="$emit('input', $event)" handler=".drag-handle">
 				<v-list-item
 					:dense="value.length > 4"
@@ -190,6 +190,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
+.v-notice {
+	margin-bottom: 6px;
+}
+
+.v-list {
+	--v-list-padding: 0 0 4px;
+}
+
 .v-list-item {
 	display: flex;
 	color: var(--foreground-normal);

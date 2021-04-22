@@ -184,6 +184,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
+.v-list {
+	--v-list-padding: 0 0 4px;
+}
+
 .actions {
 	margin-top: 12px;
 }

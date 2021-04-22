@@ -643,6 +643,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
+.v-list {
+	--v-list-padding: 0 0 4px;
+}
+
 .v-list-item {
 	.collection {
 		margin-right: 1ch;

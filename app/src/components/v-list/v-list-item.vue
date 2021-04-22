@@ -229,7 +229,7 @@ body {
 		}
 
 		&.dense {
-			height: 34px;
+			height: 44px;
 			padding: 4px 8px;
 
 			& + & {
