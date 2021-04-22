@@ -64,7 +64,11 @@ export class Directus<T extends TypeMap> implements IDirectus<T> {
 
 	constructor(url: string, options?: DirectusOptions) {
 		this._storage = options?.storage || (typeof window !== 'undefined' ? new LocalStorage() : new MemoryStorage());
-		this._transport = options?.transport || new AxiosTransport(url, this._storage);
+		this._transport =
+			options?.transport ||
+			new AxiosTransport(url, this._storage, async () => {
+				await this._auth.refresh();
+			});
 		this._auth = options?.auth || new Auth(this._transport, this._storage);
 		this._items = {};
 		this._singletons = {};
