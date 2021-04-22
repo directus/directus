@@ -54,21 +54,6 @@ export default defineComponent({
 
 		const repeaterFields: DeepPartial<Field>[] = [
 			{
-				name: i18n.tc('name'),
-				field: 'name',
-				type: 'string',
-				meta: {
-					interface: 'text-input',
-					width: 'full',
-					sort: 1,
-					options: {
-						font: 'monospace',
-						placeholder: i18n.t('interfaces.repeater.field_name_placeholder'),
-					},
-				},
-				schema: null,
-			},
-			{
 				name: i18n.tc('field', 1),
 				field: 'field',
 				type: 'string',
