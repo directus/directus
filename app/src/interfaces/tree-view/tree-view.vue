@@ -149,7 +149,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/items/${props.collection}/${props.primaryKey}`, {
+					const response = await api.get(`/items/${props.collection}/${encodeURIComponent(props.primaryKey)}`, {
 						params: {
 							fields: getFieldsToFetch(),
 						},

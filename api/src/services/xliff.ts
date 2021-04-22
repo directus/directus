@@ -117,18 +117,14 @@ export class XliffService {
 		if (!language) {
 			throw new InvalidPayloadException(`Cannot obtain information about target language.`);
 		}
-		const translationsCollection = <string>relation.many_collection;
-		const translationsKeyField = <string>relation.one_primary;
-		const translationsExternalKey = <string>relation.junction_field;
-		const translationsParentField = <string>relation.many_field;
-		const parentCollection = <string>relation.one_collection;
-		const nonTranslatableFields = [
-			...systemFields,
-			translationsKeyField,
-			translationsExternalKey,
-			translationsParentField,
-		];
-		const isLanguageValid = await this.validateLanguage(translationsCollection, translationsExternalKey, language);
+		const collectionName = <string>relation.many_collection;
+		const keyFieldName = <string>relation.many_primary;
+		const externalFieldName = <string>relation.junction_field;
+		const parentFieldName = <string>relation.many_field;
+		const parentCollectionName = <string>relation.one_collection;
+		const parentCollectionKeyFieldName = <string>relation.one_primary;
+		const nonTranslatableFields = [...systemFields, keyFieldName, externalFieldName, parentFieldName];
+		const isLanguageValid = await this.validateLanguage(collectionName, externalFieldName, language);
 		// ensure that passed language exists in related collection
 		if (!isLanguageValid) {
 			throw new InvalidPayloadException(`Target language '${language} is not supported.`);
@@ -138,18 +134,22 @@ export class XliffService {
 		if (!translatedItems) {
 			throw new InvalidPayloadException(`The xliff file doesn't match the target collection.`);
 		}
-		const itemsService = new ItemsService(translationsCollection, {
+		const itemsService = new ItemsService(collectionName, {
 			accountability: this.accountability,
 			schema: this.schema,
 		});
-		const parentItemsService = new ItemsService(parentCollection, {
+		const parentItemsService = new ItemsService(parentCollectionName, {
 			accountability: this.accountability,
 			schema: this.schema,
 		});
-		const fields = await this.fieldsService.readAll(translationsCollection);
+		const fields = await this.fieldsService.readAll(collectionName);
 		// extract data items from the xliff object
 		const items = Object.keys(translatedItems).map((key) => {
-			const [parentKey, fieldName] = key.split('.');
+			const index = key.lastIndexOf('.');
+			// the key format is {parentKeyValue}.{translatableFieldName}, where {parentKeyValue}
+			// may have a '.' as well in case if it's a custom string key
+			const parentKey = index >= 0 ? key.substr(0, index) : null;
+			const fieldName = index >= 0 ? key.substr(index + 1) : null;
 			if (!parentKey || !fieldName) {
 				throw new InvalidPayloadException(`The xliff file has a wrong structure.`);
 			}
@@ -167,19 +167,18 @@ export class XliffService {
 		}
 		// group data items by the value of the key field from the parent collection
 		const groups = groupBy(items, (item) => item.parentKey);
-		const parentCollectionKeyField = this.schema.collections[parentCollection].primary;
 		const parentKeys = Object.keys(groups);
 		const parentItems = await parentItemsService.readByQuery({
 			filter: {
-				[parentCollectionKeyField]: { _in: parentKeys },
+				[parentCollectionKeyFieldName]: { _in: parentKeys },
 			},
 			limit: -1,
 		});
 		// find translation items in database that matching data items from xliff file
 		const existingItems = await itemsService.readByQuery({
 			filter: {
-				[translationsParentField]: { _in: parentKeys },
-				[translationsExternalKey]: { _eq: language },
+				[parentFieldName]: { _in: parentKeys },
+				[externalFieldName]: { _eq: language },
 			},
 			limit: 1,
 		});
@@ -192,17 +191,19 @@ export class XliffService {
 				return { ...acc, [val.fieldName]: val.content };
 			}, {});
 			// validate if there is already an existing translation item in the database
-			const existingItem = existingItems?.find((item: any) => item[translationsParentField] === parentKey);
+			// '=='used in order to find match for numeric key values as well (parentKey is a string value)
+			const existingItem = existingItems?.find((item: any) => item[parentFieldName] == parentKey);
 			// if there is item in database - add it to the storage that will be used for updating existing  items
 			if (existingItem) {
 				itemsToUpdate.push({ ...existingItem, ...translations });
 			}
 			// only add new translation if there related parent item exists
-			else if (parentItems?.find((item: any) => item[parentCollectionKeyField] === parentKey)) {
+			// '=='used in order to find match for numeric key values as well (parentKey is a string value)
+			else if (parentItems?.find((item: any) => item[parentCollectionKeyFieldName] == parentKey)) {
 				itemsToAdd.push({
 					...translations,
-					[translationsParentField]: parentKey,
-					[translationsExternalKey]: language,
+					[parentFieldName]: parentKey,
+					[externalFieldName]: language,
 				});
 			}
 		}
@@ -252,7 +253,7 @@ export class XliffService {
 		if (translationItems && translationItems.length > 0) {
 			translationItems.forEach((item: any) => {
 				// removing system and key fields from output
-				const translatableData = this.cleanupEmptyFields(
+				const translatableData = XliffService.cleanupEmptyFields(
 					omit(item, [...systemFields, translationsKeyField, tranlsationsExternalKey, translationsParentField])
 				);
 
@@ -268,7 +269,7 @@ export class XliffService {
 	}
 
 	// replaces null/undefined values with empty strings
-	private cleanupEmptyFields(item: any) {
+	private static cleanupEmptyFields(item: any) {
 		Object.keys(item).forEach((key) => {
 			// '== null' checks for both null and undefined
 			if (item[key] == null) item[key] = '';

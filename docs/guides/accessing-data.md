@@ -4,7 +4,8 @@
 
 ## Accessing API Data from your extensions
 
-For examples on how to access collections and fields in the API from within your custom extensions, see the [Layout](/guides/layouts/) and [Module](/guides/modules/) guides.
+For examples on how to access collections and fields in the API from within your custom extensions, see the
+[Layout](/guides/layouts/) and [Module](/guides/modules/) guides.
 
 ## Storing Sensitive Extension Variables
 

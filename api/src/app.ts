@@ -90,8 +90,8 @@ export default async function createApp() {
 			return next();
 		});
 	});
-	
-	app.use(cookieParser())
+
+	app.use(cookieParser());
 
 	app.use(extractToken);
 

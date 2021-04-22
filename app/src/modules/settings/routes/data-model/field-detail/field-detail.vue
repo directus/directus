@@ -12,7 +12,6 @@
 				<v-notice>
 					<div>
 						{{ $t('this_will_auto_setup_fields_relations') }}
-						<br />
 						<button class="manual-toggle" @click="translationsManual = true">{{ $t('click_here') }}</button>
 						{{ $t('to_manually_setup_translations') }}
 					</div>

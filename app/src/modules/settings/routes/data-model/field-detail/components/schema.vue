@@ -56,7 +56,7 @@
 				</div>
 			</template>
 
-			<template v-if="['uuid', 'date', 'time', 'datetime', 'timestamp'].includes(fieldData.type) && type !== 'file'">
+			<template v-if="['uuid', 'date', 'time', 'dateTime', 'timestamp'].includes(fieldData.type) && type !== 'file'">
 				<div class="field half-left">
 					<div class="label type-label">{{ $t('on_create') }}</div>
 					<v-select :items="onCreateOptions" v-model="onCreateValue" />
@@ -102,7 +102,7 @@
 					placeholder="NULL"
 				/>
 				<v-input
-					v-else-if="['timestamp', 'datetime', 'date', 'time'].includes(fieldData.type)"
+					v-else-if="['timestamp', 'dateTime', 'date', 'time'].includes(fieldData.type)"
 					class="monospace"
 					v-model="defaultValue"
 					placeholder="NULL"
@@ -299,7 +299,7 @@ export default defineComponent({
 							value: 'role-created',
 						},
 					];
-				} else if (['date', 'time', 'datetime', 'timestamp'].includes(state.fieldData.type)) {
+				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
 					return [
 						{
 							text: i18n.t('do_nothing'),
@@ -360,7 +360,7 @@ export default defineComponent({
 							value: 'role-updated',
 						},
 					];
-				} else if (['date', 'time', 'datetime', 'timestamp'].includes(state.fieldData.type)) {
+				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
 					return [
 						{
 							text: i18n.t('do_nothing'),

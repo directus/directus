@@ -25,7 +25,7 @@ export default function useTemplateData(collection: ComputedRef<Collection | und
 
 		const endpoint = collection.value.collection.startsWith('directus_')
 			? `/${collection.value.collection.substring(9)}/${primaryKey.value}`
-			: `/items/${collection.value.collection}/${primaryKey.value}`;
+			: `/items/${collection.value.collection}/${encodeURIComponent(primaryKey.value)}`;
 
 		try {
 			const result = await api.get(endpoint, {

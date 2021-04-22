@@ -72,7 +72,8 @@ will be an empty array.
 
 #### Singleton
 
-If your collection is a singleton, this endpoint will return the item.
+If your collection is a singleton, this endpoint will return the item. If the item doesn't exist in the database, the
+default values will be returned.
 
 </div>
 <div class="right">
@@ -81,7 +82,10 @@ If your collection is a singleton, this endpoint will return the item.
 
 ```
 GET /items/:collection
+SEARCH /items/:collection
 ```
+
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
 
 ##### Example
 
