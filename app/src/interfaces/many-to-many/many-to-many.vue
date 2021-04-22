@@ -3,11 +3,19 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="many-to-many" v-else>
-		<v-notice v-if="sortedItems.length === 0">
+		<template v-if="loading">
+			<v-skeleton-loader
+				v-for="n in (value || []).length || 3"
+				:key="n"
+				:type="(value || []).length > 4 ? 'block-list-item-dense' : 'block-list-item'"
+			/>
+		</template>
+
+		<v-notice v-else-if="sortedItems.length === 0">
 			{{ $t('no_items') }}
 		</v-notice>
 
-		<v-list>
+		<v-list v-else>
 			<draggable
 				:force-fallback="true"
 				:value="sortedItems"
