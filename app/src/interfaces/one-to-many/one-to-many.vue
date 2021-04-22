@@ -99,15 +99,16 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
-		const { tableHeaders, items, loading } = useTable();
-		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
-		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
-		const { sort, sortItems, sortedItems } = useSort();
 
 		const templateWithDefaults = computed(
 			() => props.template || relatedCollection.value.meta?.display_template || `{{${relation.value.many_primary}}}`
 		);
 		const fields = computed(() => getFieldsFromTemplate(templateWithDefaults.value));
+
+		const { tableHeaders, items, loading } = useTable();
+		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
+		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
+		const { sort, sortItems, sortedItems } = useSort();
 
 		return {
 			relation,
