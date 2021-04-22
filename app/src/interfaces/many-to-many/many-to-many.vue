@@ -111,9 +111,28 @@ export default defineComponent({
 
 		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
 
-		const templateWithDefaults = computed(
-			() => props.template || junctionCollection.value.meta?.display_template || `{{${junction.value.many_primary}}}`
-		);
+		const templateWithDefaults = computed(() => {
+			if (props.template) return props.template;
+			if (junctionCollection.value.meta?.display_template) return junctionCollection.value.meta.display_template;
+
+			let relatedDisplayTemplate = relationCollection.value.meta?.display_template;
+			if (relatedDisplayTemplate) {
+				const regex = /({{.*?}})/g;
+				const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
+
+				for (const part of parts) {
+					if (part.startsWith('{{') === false) continue;
+					const key = part.replace(/{{/g, '').replace(/}}/g, '').trim();
+					const newPart = `{{${relation.value.many_field}.${key}}}`;
+
+					relatedDisplayTemplate = relatedDisplayTemplate.replace(part, newPart);
+				}
+
+				return relatedDisplayTemplate;
+			}
+
+			return `{{${relation.value.many_field}.${relationInfo.value.relationPkField}}}`;
+		});
 
 		const fields = computed(() =>
 			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), junctionCollection.value.collection)
@@ -125,7 +144,7 @@ export default defineComponent({
 			emitter
 		);
 
-		const { tableHeaders, items, loading, error } = usePreview(
+		const { tableHeaders, items, loading } = usePreview(
 			value,
 			fields,
 			relationInfo,
@@ -184,7 +203,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 .v-list {
 	--v-list-padding: 0 0 4px;
 }
