@@ -216,7 +216,7 @@ export default defineComponent({
 		}
 
 		function useSort() {
-			const sort = ref<Sort>({ by: relation.value.sort_field || fields.value[0], desc: false });
+			const sort = ref({ by: relation.value.sort_field || fields.value[0], desc: false });
 
 			function sortItems(newItems: Record<string, any>[]) {
 				if (relation.value.sort_field === null) return;
