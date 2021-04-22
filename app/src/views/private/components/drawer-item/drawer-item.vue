@@ -7,6 +7,11 @@
 				<render-template :collection="templateCollection.collection" :item="templateData" :template="template" />
 			</h1>
 		</template>
+
+		<template #subtitle>
+			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
+		</template>
+
 		<template #actions>
 			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
@@ -176,6 +181,7 @@ export default defineComponent({
 			templatePrimaryKey,
 			templateData,
 			templateDataLoading,
+			collectionInfo,
 		};
 
 		function useActiveState() {
