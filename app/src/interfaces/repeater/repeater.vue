@@ -200,7 +200,6 @@ export default defineComponent({
 
 .v-list-item {
 	display: flex;
-	color: var(--foreground-normal);
 	cursor: pointer;
 }
 
