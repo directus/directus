@@ -190,9 +190,10 @@ body {
 	}
 
 	&.block {
-		--v-list-item-min-height: 44px;
-
+		position: relative;
 		display: flex;
+		height: var(--input-height);
+		padding: 8px;
 		background-color: var(--background-subdued);
 		border: 2px solid var(--border-subdued);
 		border-radius: var(--border-radius);
@@ -228,7 +229,8 @@ body {
 		}
 
 		&.dense {
-			--v-list-item-min-height: 34px;
+			height: 34px;
+			padding: 4px 8px;
 
 			& + & {
 				margin-top: 4px;

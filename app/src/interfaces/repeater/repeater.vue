@@ -1,8 +1,18 @@
 <template>
 	<div class="repeater">
+		<v-notice v-if="!value || value.length === 0">
+			{{ $t('no_items') }}
+		</v-notice>
+
 		<v-list>
 			<draggable :force-fallback="true" :value="value" @input="$emit('input', $event)" handler=".drag-handle">
-				<v-list-item v-for="(item, index) in value" :key="item.id" block @click="active = index">
+				<v-list-item
+					:dense="value.length > 4"
+					v-for="(item, index) in value"
+					:key="item.id"
+					block
+					@click="active = index"
+				>
 					<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template :fields="fields" :item="item" :template="templateWithDefaults" />
 					<div class="spacer" />

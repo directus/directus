@@ -159,7 +159,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			}
 		}
 
-		// Filter out fake internal columns. This is (among other things) for a fake $file m2o field
+		// Filter out fake internal columns. This is (among other things) for a fake $thumbnail m2o field
 		// on directus_files
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
@@ -184,13 +184,13 @@ export function useItems(collection: Ref<string>, query: Query) {
 			 * able to render out the directus_files collection (file library) using regular layouts
 			 *
 			 * Layouts expect the file to be a m2o of a `file` type, however, directus_files is the
-			 * only collection that doesn't have this (obviously). This fake $file field is used to
+			 * only collection that doesn't have this (obviously). This fake $thumbnail field is used to
 			 * pretend there is a file m2o, so we can use the regular layout logic for files as well
 			 */
 			if (collection.value === 'directus_files') {
 				fetchedItems = fetchedItems.map((file: any) => ({
 					...file,
-					$file: file,
+					$thumbnail: file,
 				}));
 			}
 

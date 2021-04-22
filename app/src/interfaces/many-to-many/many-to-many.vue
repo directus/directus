@@ -3,17 +3,27 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="many-to-many" v-else>
+		<v-notice v-if="sortedItems.length === 0">
+			{{ $t('no_items') }}
+		</v-notice>
+
 		<v-list>
 			<draggable
 				:force-fallback="true"
-				:value="sortedItems || items"
+				:value="sortedItems"
 				@input="sortItems($event)"
 				handler=".drag-handle"
-				:disabled="!relation.sort_field"
+				:disabled="!junction.sort_field"
 			>
-				<v-list-item v-for="item in sortedItems || items" :key="item.id" block @click="editItem(item)">
-					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-					<render-template :item="item" :template="templateWithDefaults" />
+				<v-list-item
+					:dense="sortedItems.length > 4"
+					v-for="item in sortedItems"
+					:key="item.id"
+					block
+					@click="editItem(item)"
+				>
+					<v-icon v-if="junction.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<render-template :collection="junctionCollection.collection" :item="item" :template="templateWithDefaults" />
 					<div class="spacer" />
 					<v-icon name="close" @click.stop="deleteItem(item)" />
 				</v-list-item>
@@ -66,6 +76,7 @@ import useEdit from './use-edit';
 import useSelection from './use-selection';
 import useSort from './use-sort';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -104,7 +115,9 @@ export default defineComponent({
 			() => props.template || junctionCollection.value.meta?.display_template || `{{${junction.value.many_primary}}}`
 		);
 
-		const fields = computed(() => getFieldsFromTemplate(templateWithDefaults.value));
+		const fields = computed(() =>
+			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), junctionCollection.value.collection)
+		);
 
 		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
 			value,

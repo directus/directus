@@ -1,7 +1,7 @@
 <template>
 	<value-null v-if="!relatedCollection" />
 	<v-menu
-		v-else-if="['o2m', 'm2m', 'm2a', 'translations'].includes(type.toLowerCase())"
+		v-else-if="['o2m', 'm2m', 'm2a', 'translations', 'files'].includes(type.toLowerCase())"
 		show-arrow
 		:disabled="value.length === 0"
 	>
@@ -11,7 +11,7 @@
 			</span>
 		</template>
 
-		<v-list>
+		<v-list class="links">
 			<v-list-item v-for="item in value" :key="item[primaryKeyField]" :to="getLinkForItem(item)">
 				<v-list-item-content>
 					<render-template :template="_template" :item="item" :collection="relatedCollection" />
@@ -116,5 +116,11 @@ export default defineComponent({
 
 .subdued {
 	color: var(--foreground-subdued);
+}
+
+.links {
+	.v-list-item-content {
+		height: var(--v-list-item-min-height);
+	}
 }
 </style>

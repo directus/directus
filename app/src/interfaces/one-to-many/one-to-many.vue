@@ -3,6 +3,10 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="one-to-many" v-else>
+		<v-notice v-if="sortedItems.length === 0">
+			{{ $t('no_items') }}
+		</v-notice>
+
 		<v-list>
 			<draggable
 				:force-fallback="true"
@@ -11,7 +15,13 @@
 				handler=".drag-handle"
 				:disabled="!relation.sort_field"
 			>
-				<v-list-item v-for="item in sortedItems" :key="item.id" block @click="editItem(item)">
+				<v-list-item
+					:dense="sortedItems.length > 4"
+					v-for="item in sortedItems"
+					:key="item.id"
+					block
+					@click="editItem(item)"
+				>
 					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template :collection="relation.many_collection" :item="item" :template="templateWithDefaults" />
 					<div class="spacer" />
@@ -64,6 +74,7 @@ import { get } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import Draggable from 'vuedraggable';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -103,7 +114,10 @@ export default defineComponent({
 		const templateWithDefaults = computed(
 			() => props.template || relatedCollection.value.meta?.display_template || `{{${relation.value.many_primary}}}`
 		);
-		const fields = computed(() => getFieldsFromTemplate(templateWithDefaults.value));
+
+		const fields = computed(() =>
+			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), relatedCollection.value.collection)
+		);
 
 		const { tableHeaders, items, loading } = useTable();
 		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();

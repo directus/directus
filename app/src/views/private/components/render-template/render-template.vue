@@ -3,13 +3,15 @@
 		<template v-for="(part, index) in parts">
 			<value-null :key="index" v-if="part === null || part.value === null" />
 			<component
-				v-else-if="typeof part === 'object'"
+				v-else-if="typeof part === 'object' && part.component"
 				:is="`display-${part.component}`"
 				:key="index"
 				:value="part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
 				:type="part.type"
+				:collection="part.collection"
+				:field="part.field"
 				v-bind="part.options"
 			/>
 			<span :key="index" v-else>{{ part }}</span>
@@ -51,20 +53,6 @@ export default defineComponent({
 
 		const regex = /({{.*?}})/g;
 
-		const fields = computed(() => {
-			const fields: Field[] = [];
-
-			if (props.collection) {
-				fields.push(...fieldsStore.getFieldsForCollection(props.collection));
-			}
-
-			if (props.fields) {
-				fields.push(...props.fields);
-			}
-
-			return fields;
-		});
-
 		const parts = computed(() =>
 			props.template
 				.split(regex)
@@ -72,15 +60,31 @@ export default defineComponent({
 				.map((part) => {
 					if (part.startsWith('{{') === false) return part;
 
-					const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-					const field: Field | undefined = fields.value.find((field) => field.field === fieldKey);
+					let fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
+					const field: Field | undefined =
+						fieldsStore.getField(props.collection, fieldKey) || props.fields?.find((field) => field.field === fieldKey);
+
+					/**
+					 * This is for cases where you are rendering a display template directly on
+					 * directus_files. The $thumbnail fields doesn't exist, but instead renders a
+					 * thumbnail based on the other fields in the file info. In that case, the value
+					 * should be the whole related file object, not just the fake "thumbnail" field. By
+					 * stripping out the thumbnail part in the field key path, the rest of the function
+					 * will extract the value correctly.
+					 */
+					if (field && field.collection === 'directus_files' && field.field === '$thumbnail') {
+						fieldKey = fieldKey
+							.split('.')
+							.filter((part) => part !== '$thumbnail')
+							.join('.');
+					}
 
 					// Try getting the value from the item, return some question marks if it doesn't exist
 					const value = get(props.item, fieldKey);
 					if (value === undefined) return null;
 
 					// If no display is configured, we can render the raw value
-					if (!field || field.meta?.display === null) return value;
+					if (!field || !field.meta?.display) return value;
 
 					const displayInfo = displays.value.find((display) => display.id === field.meta?.display);
 
@@ -100,6 +104,8 @@ export default defineComponent({
 						interface: field.meta?.interface,
 						interfaceOptions: field.meta?.options,
 						type: field.type,
+						collection: field.collection,
+						field: field.field,
 					};
 				})
 				.map((p) => p || null)
@@ -116,14 +122,15 @@ export default defineComponent({
 .render-template {
 	position: relative;
 	max-width: 100%;
+	height: 100%;
 	padding-right: 8px;
 	line-height: normal;
 
-	& > * {
+	@include no-wrap;
+
+	> * {
 		vertical-align: middle;
 	}
-
-	@include no-wrap;
 }
 
 .subdued {

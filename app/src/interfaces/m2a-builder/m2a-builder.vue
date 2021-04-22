@@ -5,6 +5,10 @@
 		</div>
 
 		<v-list v-else>
+			<v-notice v-if="previewValues.length === 0">
+				{{ $t('no_items') }}
+			</v-notice>
+
 			<draggable
 				:force-fallback="true"
 				:value="previewValues"
