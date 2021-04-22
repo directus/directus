@@ -1,15 +1,6 @@
 import { Knex } from 'knex';
 import database from '../database';
-import {
-	AbstractServiceOptions,
-	Accountability,
-	Query,
-	SchemaOverview,
-	GraphQLParams,
-	PrimaryKey,
-	Action,
-	Item,
-} from '../types';
+import { AbstractServiceOptions, Accountability, Query, SchemaOverview, GraphQLParams, Action } from '../types';
 import argon2 from 'argon2';
 import {
 	GraphQLString,
