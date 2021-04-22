@@ -181,7 +181,6 @@ users: ユーザー
 activity: 操作履歴
 webhooks: Webhook
 field_width: 入力欄幅
-add_a_new_item: 項目の追加
 user_directory: ユーザーディレクトリ
 documentation: ドキュメンテーション
 collection_created: コレクションが作成されました
