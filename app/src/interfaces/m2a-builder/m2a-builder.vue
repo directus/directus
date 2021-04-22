@@ -12,7 +12,6 @@
 			<draggable
 				:force-fallback="true"
 				:value="previewValues"
-				handle=".drag-handle"
 				@input="onSort"
 				:set-data="hideDragImage"
 				:disabled="!o2mRelation.sort_field"
@@ -642,7 +641,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 .v-list {
 	--v-list-padding: 0 0 4px;
 }

@@ -193,12 +193,12 @@ body {
 		position: relative;
 		display: flex;
 		height: var(--input-height);
+		margin: 0;
 		padding: 8px;
 		background-color: var(--background-subdued);
 		border: 2px solid var(--border-subdued);
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
-		margin: 0;
 
 		.v-icon {
 			color: var(--foreground-subdued);
@@ -223,6 +223,10 @@ body {
 		&:hover {
 			background-color: var(--background-subdued);
 			border: 2px solid var(--border-normal);
+		}
+
+		&.sortable-chosen {
+			border: 2px solid var(--primary) !important;
 		}
 
 		& + & {
