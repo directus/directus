@@ -1,7 +1,8 @@
+import type { Feature, FeatureCollection, Geometry, GeometryCollection, Point, BBox } from 'geojson';
 import { coordEach } from '@turf/meta';
 import proj4 from 'proj4';
 import wkx from 'wkx';
-import type { Feature, FeatureCollection, Geometry, GeometryCollection, Point, BBox } from 'geojson';
+import { i18n } from '@/lang';
 
 export type geometryOptions = {
 	geometryFormat?: GeometryFormat;
@@ -73,7 +74,7 @@ export function getGeometryParser(options: geometryOptions): GeometryParser {
 		case 'csv':
 			return csvParser(options);
 		default:
-			throw new Error('unimplemented format');
+			throw i18n.t('unimplemented_format');
 	}
 }
 
@@ -95,7 +96,7 @@ export function getGeometrySerializer(options: geometryOptions): (entry: AnyGeoJ
 		case 'csv':
 			return (entry) => (entry as GeoJSON.Point).coordinates;
 		default:
-			throw new Error('unimplemented format');
+			throw i18n.t('unimplemented_format');
 	}
 }
 

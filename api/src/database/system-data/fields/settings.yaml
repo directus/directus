@@ -215,7 +215,7 @@ fields:
     interface: divider
     options:
       icon: map
-      title: Map
+      title: $t:layouts.map.map
     special:
       - alias
       - no-data
@@ -227,7 +227,7 @@ fields:
       template: '{{name}}'
       fields:
         - field: type
-          name: Type
+          name: $t:type
           meta:
             interface: dropdown
             width: half
@@ -240,7 +240,7 @@ fields:
                 - value: tile
                   text: Raster TileJSON
         - field: name
-          name: Name
+          name: $t:name
           schema:
             is_nullable: false
           meta:
@@ -249,7 +249,7 @@ fields:
             options:
               placeholder: Enter the basemap name...
         - field: url
-          name: Url
+          name: $t:url
           schema:
             is_nullable: false
           meta:

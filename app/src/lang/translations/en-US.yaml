@@ -936,7 +936,10 @@ interfaces:
     multi_geometry: Multiple geometries
     point: Point
     line_string: LineString
-    polygon: Polygon 
+    polygon: Polygon
+    incompatible_geometry: Incompatible geometry
+    expected_single_geometry: Expeted single geometry, found multiple.
+    expected_other_geometry: Expeted {expected}, got {found}.
   notice:
     notice: Notice
     description: Display a short notice
@@ -1148,4 +1151,4 @@ layouts:
     missing_option: Unspecified geometry field or format
     simplify: Geometry simplification tolerance
     projection: Projection
-    no_api_key: You need to set the Mapbox api key to access this background.
+    unimplemented_format: Unimplemented format

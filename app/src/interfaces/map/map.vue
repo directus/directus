@@ -2,9 +2,9 @@
 	<div class="interface-map">
 		<div class="map" ref="container" :class="{ error }"></div>
 		<div v-if="error" class="info">
-			<v-info v-if="geometryParsingError" icon="error" center type="warning" title="Incompatible geometry">
+			<v-info v-if="geometryParsingError" icon="error" center type="warning" :title="$t('incompatible_geometry')">
 				<template #append>
-					<v-button small @click="resetGeometry" class="reset-preset">Reset Geometry</v-button>
+					<v-button small @click="resetInterface" class="reset-preset">{{ $t('reset_interface') }}</v-button>
 				</template>
 			</v-info>
 		</div>
@@ -40,17 +40,15 @@ import maplibre, {
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import type { Feature, FeatureCollection, Geometry, GeometryCollection, BBox } from 'geojson';
-
-// import { getBasemapSources, BasemapSource, getStyleFromBasemapSource } from '@/layouts/map/styles';
+import { Position, Point, Polygon, LineString, MultiPoint, MultiPolygon, MultiLineString, BBox } from 'geojson';
 import { getBasemapSources, BasemapSource, getStyleFromBasemapSource } from '@/layouts/map/basemap';
 import { ControlButton, ControlGroup } from '@/layouts/map/controls';
 import { getParser, getSerializer, assignBBox } from '@/layouts/map/lib';
-import type { GeometryFormat, AnyGeoJSON } from '@/layouts/map/lib';
+import { GeometryFormat, AnyGeoJSON } from '@/layouts/map/lib';
 import { snakeCase } from 'lodash';
 import drawStyle from './style';
+import i18n from '@/lang';
 
-import { Position, Point, Polygon, LineString, MultiPoint, MultiPolygon, MultiLineString } from 'geojson';
 type _GeometryType = 'Point' | 'Polygon' | 'LineString' | 'MultiPoint' | 'MultiPolygon' | 'MultiLineString';
 type _SimpleGeometry = Point | Polygon | LineString;
 type _MultiGeometry = MultiPoint | MultiPolygon | MultiLineString;
@@ -135,7 +133,7 @@ export default defineComponent({
 			onUnmounted(cleanup);
 		});
 
-		function resetGeometry() {
+		function resetInterface() {
 			emit('input', null);
 			geometryParsingError.value = null;
 		}
@@ -144,7 +142,7 @@ export default defineComponent({
 			error,
 			container,
 			geometryParsingError,
-			resetGeometry,
+			resetInterface,
 		};
 
 		function setupMap(): () => void {
@@ -210,7 +208,7 @@ export default defineComponent({
 					const initialValue = parse(props) as _Geometry | undefined;
 					const uncombined = uncombine(initialValue as _MultiGeometry);
 					if (uncombined.length > 1 && !props.multiGeometry) {
-						throw `Expeted single ${props.geometryType}, found multiple.`;
+						throw i18n.t('expected_single_geometry');
 					}
 					uncombined.forEach((geometry) => {
 						draw.add(geometry);
@@ -245,7 +243,7 @@ export default defineComponent({
 					} as _MultiGeometry;
 				}
 				if (geometry.type !== `Multi${props.geometryType}`) {
-					throw `Expected ${props.geometryType}, got ${geometry.type}`;
+					throw i18n.t('expected_other_geometry', { expected: props.geometryType, found: geometry.type });
 				}
 				for (const coordinates of geometry.coordinates) {
 					geometries.push({

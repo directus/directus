@@ -247,6 +247,7 @@ import { CameraOptions, AnyLayer, Style } from 'maplibre-gl';
 import type { GeoJSONSerializer } from './worker';
 import { layers } from './style';
 import { getBasemapSources, getStyleFromBasemapSource } from './basemap';
+import type { BasemapSource } from './basemap';
 import { defineComponent, toRefs, computed, ref, watch } from '@vue/composition-api';
 import type { PropType, Ref } from '@vue/composition-api';
 import router from '@/router';
@@ -408,15 +409,13 @@ export default defineComponent({
 		});
 
 		const mapboxStyle = ref<string | Style>();
-		watch(
-			() => basemapName.value,
-			() => {
-				let basemap = basemaps.find((source) => source.name == basemapName.value);
-				if (!basemap) basemap = basemaps[0];
-				mapboxStyle.value = getStyleFromBasemapSource(basemap);
-			},
-			{ immediate: true }
-		);
+		watch(() => basemapName.value, updateMapboxStyle, { immediate: true });
+
+		function updateMapboxStyle() {
+			let basemap = basemaps.find((source) => source.name == basemapName.value);
+			if (!basemap) basemap = basemaps[0];
+			mapboxStyle.value = getStyleFromBasemapSource(basemap);
+		}
 
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
 		const geojsonBounds = ref<GeoJSON.BBox>();

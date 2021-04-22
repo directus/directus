@@ -20,25 +20,24 @@ export function getBasemapSources(): BasemapSource[] {
 		  ];
 }
 
-export function getStyleFromBasemapSource(background: BasemapSource) {
-	if (background.type == 'style') {
-		return background.url;
+export function getStyleFromBasemapSource(basemap: BasemapSource) {
+	if (basemap.type == 'style') {
+		return basemap.url;
 	} else {
 		const style: Style = {
 			version: 8,
-			// glyphs: 'http://fonts.openmaptiles.org/{fontstack}/{range}.pbf'
 			glyphs:
 				'https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_GCS_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf',
 		};
 		const source: RasterSource = { type: 'raster' };
-		if (background.type == 'raster') {
-			source.tiles = expandUrl(background.url);
+		if (basemap.type == 'raster') {
+			source.tiles = expandUrl(basemap.url);
 		}
-		if (background.type == 'tile') {
-			source.url = background.url;
+		if (basemap.type == 'tile') {
+			source.url = basemap.url;
 		}
-		style.layers = [{ id: background.name, source: background.name, type: 'raster' }];
-		style.sources = { [background.name]: source };
+		style.layers = [{ id: basemap.name, source: basemap.name, type: 'raster' }];
+		style.sources = { [basemap.name]: source };
 		return style;
 	}
 }
