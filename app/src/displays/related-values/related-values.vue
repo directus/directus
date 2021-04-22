@@ -7,7 +7,8 @@
 	>
 		<template #activator="{ toggle }">
 			<span @click.stop="toggle" class="toggle" :class="{ subdued: value.length === 0 }">
-				<span class="label">{{ $tc('item_count', value.length) }}</span>
+				<span class="label" v-if="value.length < 100">{{ $tc('item_count', value.length) }}</span>
+				<span class="label" v-else>{{ $tc('item_count', value.length, { count: '100+' }) }}</span>
 			</span>
 		</template>
 
