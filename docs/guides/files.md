@@ -26,12 +26,18 @@ keep in mind that files can also be added directly through different interfaces.
 
 ## Downloading an Original File
 
-TK (download button)
+The File Library and the Image and File interfaces all include buttons to download the original copy of a file.
 
-## Requesting a Thumbnail
-
-TK
+1. Navigate to the **File Library**
+2. Click a file to open it's detail page
+3. Click the download button in the top right.
 
 ## Editing Images
 
-TK (image editor on file detail page?)
+The detail page for a file contains an image editor you can use for some basic editing like rotating, cropping, or
+mirroring the file.
+
+1. Navigate to the **File Library**
+2. Click a file to open it's detail page
+3. Click the edit button in the top right to open the image editor
+4. Make your changes and hit save in the top right to save the updates to the file

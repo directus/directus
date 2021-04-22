@@ -30,7 +30,11 @@ export default defineComponent({
 	props: {
 		collection: {
 			type: String,
-			required: true,
+			default: null,
+		},
+		fields: {
+			type: Array as PropType<Field[]>,
+			default: null,
 		},
 		item: {
 			type: Object as PropType<Record<string, any>>,
@@ -47,6 +51,20 @@ export default defineComponent({
 
 		const regex = /({{.*?}})/g;
 
+		const fields = computed(() => {
+			const fields: Field[] = [];
+
+			if (props.collection) {
+				fields.push(...fieldsStore.getFieldsForCollection(props.collection));
+			}
+
+			if (props.fields) {
+				fields.push(...props.fields);
+			}
+
+			return fields;
+		});
+
 		const parts = computed(() =>
 			props.template
 				.split(regex)
@@ -55,18 +73,14 @@ export default defineComponent({
 					if (part.startsWith('{{') === false) return part;
 
 					const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-					const field: Field | null = fieldsStore.getField(props.collection, fieldKey);
-
-					// Instead of crashing when the field doesn't exist, we'll render a couple question
-					// marks to indicate it's absence
-					if (!field) return null;
+					const field: Field | undefined = fields.value.find((field) => field.field === fieldKey);
 
 					// Try getting the value from the item, return some question marks if it doesn't exist
 					const value = get(props.item, fieldKey);
 					if (value === undefined) return null;
 
 					// If no display is configured, we can render the raw value
-					if (field.meta?.display === null) return value;
+					if (!field || field.meta?.display === null) return value;
 
 					const displayInfo = displays.value.find((display) => display.id === field.meta?.display);
 

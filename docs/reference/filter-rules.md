@@ -79,9 +79,8 @@ backslashes.
 
 ## Relational
 
-You can target related values by nesting field names. For example, if you have a relational
-[Many-to-One](/guides/field-types/many-to-one-field) `author` field, you can set a rule for the `author.name` field
-using the following syntax.
+You can target related values by nesting field names. For example, if you have a relational Many-to-One `author` field,
+you can set a rule for the `author.name` field using the following syntax.
 
 ```json
 {
