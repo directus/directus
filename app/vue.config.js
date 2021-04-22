@@ -2,7 +2,6 @@
 /* eslint-disable */
 
 const WebpackAssetsManifest = require('webpack-assets-manifest');
-const WorkerPlugin = require('worker-plugin');
 
 module.exports = {
 	lintOnSave: false,
@@ -23,13 +22,7 @@ module.exports = {
 	},
 
 	configureWebpack: {
-		plugins: [
-			new WorkerPlugin(),
-			new WebpackAssetsManifest({ output: 'assets.json' })
-		],
-		output: {
-			globalObject: 'globalThis'
-		}
+		plugins: [new WebpackAssetsManifest({ output: 'assets.json' })],
 	},
 
 	// There are so many chunks (from all the interfaces / layouts) that we need to make sure to not

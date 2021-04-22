@@ -203,14 +203,7 @@
 			>
 				{{ geojsonError }}
 			</v-info>
-			<v-progress-circular v-else-if="loading" indeterminate x-large class="center" />
-			<v-progress-circular
-				v-else-if="geojsonLoading"
-				x-large
-				class="center"
-				:value="geojsonProgress * 100"
-				:indeterminate="geojsonProgress == 1"
-			/>
+			<v-progress-circular v-else-if="loading || geojsonLoading" indeterminate x-large class="center" />
 			<slot v-else-if="itemCount === 0 && (_searchQuery || activeFilterCount > 0)" name="no-results" />
 			<slot v-else-if="itemCount === 0" name="no-items" />
 		</transition>
@@ -244,7 +237,7 @@
 <script lang="ts">
 import MapComponent from './components/map.vue';
 import { CameraOptions, AnyLayer, Style } from 'maplibre-gl';
-import { GeoJSONSerializer } from './worker';
+import { toGeoJSON } from './lib';
 import { layers } from './style';
 import { getBasemapSources, getStyleFromBasemapSource } from './basemap';
 import type { BasemapSource } from './basemap';
@@ -258,7 +251,6 @@ import useItems from '@/composables/use-items';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 
 import i18n from '@/lang';
-import { wrap, proxy, Remote } from 'comlink';
 import { cloneDeep, merge } from 'lodash';
 
 type Item = Record<string, any>;
@@ -421,17 +413,12 @@ export default defineComponent({
 		const geojsonBounds = ref<GeoJSON.BBox>();
 		const geojsonError = ref<string | null>();
 		const geojsonLoading = ref(false);
-		const geojsonProgress = ref(0);
 		const geojsonDataChanged = ref(false);
-		let geojsonWorker: Worker;
-		let workerProxy: Remote<GeoJSONSerializer>;
 
-		resetWorker();
 		watch(() => searchQuery.value, onQueryChange);
 		watch(() => collection.value, onQueryChange);
 		watch(() => limit.value, onQueryChange);
 		watch(() => sort.value, onQueryChange);
-		watch(() => page.value, resetWorker);
 		watch(() => geometrySRID.value, updateGeojson);
 		watch(() => items.value, updateGeojson);
 
@@ -453,30 +440,18 @@ export default defineComponent({
 		);
 
 		function onQueryChange(next: any, prev: any) {
-			resetWorker();
+			geojsonLoading.value = false;
 			page.value = 1;
 			geojsonDataChanged.value = true;
 		}
 
-		function resetWorker() {
-			if (geojsonWorker) geojsonWorker.terminate();
-			geojsonLoading.value = false;
-			geojsonWorker = new Worker('./worker', { name: 'geojson-converter', type: 'module' });
-			workerProxy = wrap(geojsonWorker);
-		}
-
-		function onProgress(progress: number) {
-			geojsonProgress.value = progress;
-		}
-
-		async function updateGeojson() {
+		function updateGeojson() {
 			if (geojsonOptionsOk.value) {
 				try {
 					geojson.value = { type: 'FeatureCollection', features: [] };
 					geojsonLoading.value = true;
-					geojsonProgress.value = 0;
 					geojsonError.value = null;
-					geojson.value = await workerProxy(items.value, _layoutOptions.value, template.value, proxy(onProgress));
+					geojson.value = toGeoJSON(items.value, _layoutOptions.value, template.value);
 					geojsonLoading.value = false;
 					if (!cameraOptions.value || (geojsonDataChanged.value && fitDataBounds.value)) {
 						geojsonBounds.value = geojson.value.bbox;
@@ -600,7 +575,6 @@ export default defineComponent({
 			featureId,
 			geojsonBounds,
 			geojsonLoading,
-			geojsonProgress,
 			geojsonError,
 			geojsonOptionsOk,
 			gotoEdit,

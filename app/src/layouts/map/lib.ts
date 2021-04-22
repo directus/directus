@@ -149,12 +149,7 @@ export function getParser(options: geometryOptions): GeoJSONParser {
 	};
 }
 
-export function toGeoJSON(
-	entries: any[],
-	options: geometryOptions,
-	template: string,
-	onProgress: (p: number) => void
-): GeoJSON.FeatureCollection {
+export function toGeoJSON(entries: any[], options: geometryOptions, template: string): GeoJSON.FeatureCollection {
 	const parser = getParser(options);
 	const geojson: GeoJSON.FeatureCollection = {
 		type: 'FeatureCollection',
@@ -163,7 +158,6 @@ export function toGeoJSON(
 	};
 	const throttle = entries.length / 15;
 	for (let i = 0; i < entries.length; i++) {
-		if (i % throttle < 1) onProgress(i / entries.length);
 		const geometry = parser(entries[i]);
 		if (!geometry) continue;
 		const bbox = geometry.bbox!;
@@ -177,7 +171,6 @@ export function toGeoJSON(
 		const feature = { type: 'Feature', properties, geometry };
 		geojson.features.push(feature as GeoJSON.Feature);
 	}
-	onProgress(1);
 	if (geojson.features.length == 0) {
 		delete geojson.bbox;
 	}

@@ -78,6 +78,7 @@ export class BoxSelectControl {
 			this.selectButton.activate(this.shiftPressed);
 		});
 		this.unselectButton = new ControlButton(options?.unselectButtonClass ?? 'ctrl-unselect', () => {
+			this.reset();
 			this.map!.fire('select.end');
 		});
 		this.groupElement.appendChild(this.selectButton.element);

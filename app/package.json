@@ -60,7 +60,6 @@
 		"axios": "^0.21.1",
 		"base-64": "^1.0.0",
 		"codemirror": "^5.60.0",
-		"comlink": "^4.3.0",
 		"copyfiles": "^2.4.1",
 		"cropperjs": "^1.5.11",
 		"date-fns": "^2.19.0",
@@ -96,7 +95,6 @@
 		"vuedraggable": "^2.24.3",
 		"vuepress": "^1.5.2",
 		"webpack-assets-manifest": "^3.1.1",
-		"wkx": "^0.5.0",
-		"worker-plugin": "^5.0.0"
+		"wkx": "^0.5.0"
 	}
 }
