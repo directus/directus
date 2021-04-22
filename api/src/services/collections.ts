@@ -265,9 +265,17 @@ export class CollectionsService {
 			throw new InvalidPayloadException(`"meta" key is required`);
 		}
 
-		// We upsert the directus_collections row here, as the database itself can already exist, but
-		// the meta data missing
-		await collectionItemsService.upsertOne(payload.meta, opts);
+		const exists = !!(await this.knex
+			.select('collection')
+			.from('directus_collections')
+			.where({ collection: collectionKey })
+			.first());
+
+		if (exists) {
+			await collectionItemsService.updateOne(collectionKey, payload.meta, opts);
+		} else {
+			await collectionItemsService.createOne({ ...payload.meta, collection: collectionKey }, opts);
+		}
 
 		return collectionKey;
 	}
