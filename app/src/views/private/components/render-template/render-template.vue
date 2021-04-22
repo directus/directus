@@ -1,5 +1,11 @@
 <template>
-	<div class="render-template">
+	<div
+		class="render-template"
+		ref="templateEl"
+		:style="{
+			lineHeight: height + 'px',
+		}"
+	>
 		<template v-for="(part, index) in parts">
 			<value-null :key="index" v-if="part === null || part.value === null" />
 			<component
@@ -20,12 +26,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores';
 import { get } from 'lodash';
 import { Field } from '@/types';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
+import useElementSize from '@/composables/use-element-size';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -50,6 +57,10 @@ export default defineComponent({
 	setup(props) {
 		const fieldsStore = useFieldsStore();
 		const { displays } = getDisplays();
+
+		const templateEl = ref<HTMLElement>();
+
+		const { height } = useElementSize(templateEl);
 
 		const regex = /({{.*?}})/g;
 
@@ -111,7 +122,7 @@ export default defineComponent({
 				.map((p) => p || null)
 		);
 
-		return { parts };
+		return { parts, templateEl, height };
 	},
 });
 </script>

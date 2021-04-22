@@ -22,6 +22,7 @@
 						:key="item.$index"
 						v-if="allowedCollections.includes(item[anyRelation.one_collection_field])"
 						block
+						:dense="previewValues.length > 4"
 						@click="editExisting((value || [])[item.$index])"
 					>
 						<v-icon class="drag-handle" left name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
