@@ -15,7 +15,7 @@
 					:disabled="autoFill || isExisting"
 					db-safe
 				>
-					<template #append>
+					<template #append v-if="!isExisting">
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
 								<v-icon
@@ -56,6 +56,10 @@
 							</v-list>
 						</v-menu>
 					</template>
+
+					<template #input v-if="isExisting">
+						<v-text-overflow :text="junctionCollection" />
+					</template>
 				</v-input>
 			</div>
 			<div class="field">
@@ -72,7 +76,11 @@
 					:multiple-preview-threshold="0"
 				/>
 			</div>
-			<v-input disabled :value="relations[0].one_primary" />
+			<v-input disabled>
+				<template #input>
+					<v-text-overflow :text="relations[0].one_primary" />
+				</template>
+			</v-input>
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[0].many_field) }"
 				v-model="relations[0].many_field"
@@ -81,7 +89,7 @@
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists">
+				<template #append v-if="junctionCollectionExists && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon
@@ -106,6 +114,10 @@
 							</v-list-item>
 						</v-list>
 					</v-menu>
+				</template>
+
+				<template #input v-if="isExisting">
+					<v-text-overflow :text="relations[0].many_field" />
 				</template>
 			</v-input>
 			<div class="related-collections-preview">{{ (relations[1].one_allowed_collections || []).join(', ') }}</div>
@@ -119,7 +131,7 @@
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists">
+				<template #append v-if="junctionCollectionExists && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon
@@ -145,6 +157,10 @@
 						</v-list>
 					</v-menu>
 				</template>
+
+				<template #input v-if="isExisting">
+					<v-text-overflow :text="relations[1].one_collection_field" />
+				</template>
 			</v-input>
 			<div class="spacer" />
 			<v-input
@@ -155,7 +171,7 @@
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists">
+				<template #append v-if="junctionCollectionExists && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon
@@ -181,6 +197,10 @@
 						</v-list>
 					</v-menu>
 				</template>
+
+				<template #input v-if="isExisting">
+					<v-text-overflow :text="relations[1].many_field" />
+				</template>
 			</v-input>
 			<v-input disabled :value="$t('primary_key')" />
 			<div class="spacer" />
@@ -199,7 +219,7 @@
 				:placeholder="$t('add_sort_field') + '...'"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists">
+				<template #append v-if="junctionCollectionExists && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />

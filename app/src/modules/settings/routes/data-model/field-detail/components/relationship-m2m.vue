@@ -15,7 +15,7 @@
 					:disabled="autoFill || isExisting"
 					db-safe
 				>
-					<template #append>
+					<template #append v-if="!isExisting">
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
 								<v-icon
@@ -56,6 +56,10 @@
 							</v-list>
 						</v-menu>
 					</template>
+
+					<template #input v-if="isExisting">
+						<v-text-overflow :text="junctionCollection" />
+					</template>
 				</v-input>
 			</div>
 			<div class="field">
@@ -71,7 +75,7 @@
 				>
 					<template #append>
 						<v-menu show-arrow placement="bottom-end">
-							<template #activator="{ toggle }">
+							<template #activator="{ toggle }" v-if="!isExisting">
 								<v-icon
 									name="list_alt"
 									@click="toggle"
@@ -110,6 +114,10 @@
 							</v-list>
 						</v-menu>
 					</template>
+
+					<template #input v-if="isExisting">
+						<v-text-overflow :text="relations[1].one_collection" />
+					</template>
 				</v-input>
 			</div>
 			<v-input disabled :value="relations[0].one_primary" />
@@ -121,7 +129,7 @@
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists">
+				<template #append v-if="junctionCollectionExists && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon
@@ -147,6 +155,10 @@
 						</v-list>
 					</v-menu>
 				</template>
+
+				<template #input v-if="isExisting">
+					<v-text-overflow :text="relations[0].many_field" />
+				</template>
 			</v-input>
 			<div class="spacer" />
 			<div class="spacer" />
@@ -158,7 +170,7 @@
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists">
+				<template #append v-if="junctionCollectionExists && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon
@@ -183,6 +195,10 @@
 							</v-list-item>
 						</v-list>
 					</v-menu>
+				</template>
+
+				<template #input v-if="isExisting">
+					<v-text-overflow :text="relations[1].many_field" />
 				</template>
 			</v-input>
 			<v-input
