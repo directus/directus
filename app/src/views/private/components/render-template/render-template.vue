@@ -1,11 +1,6 @@
 <template>
-	<div
-		class="render-template"
-		ref="templateEl"
-		:style="{
-			lineHeight: height + 'px',
-		}"
-	>
+	<div class="render-template" ref="templateEl">
+		<span class="vertical-aligner" />
 		<template v-for="(part, index) in parts">
 			<value-null :key="index" v-if="part === null || part.value === null" />
 			<component
@@ -32,7 +27,6 @@ import { get } from 'lodash';
 import { Field } from '@/types';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
-import useElementSize from '@/composables/use-element-size';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -59,8 +53,6 @@ export default defineComponent({
 		const { displays } = getDisplays();
 
 		const templateEl = ref<HTMLElement>();
-
-		const { height } = useElementSize(templateEl);
 
 		const regex = /({{.*?}})/g;
 
@@ -122,7 +114,7 @@ export default defineComponent({
 				.map((p) => p || null)
 		);
 
-		return { parts, templateEl, height };
+		return { parts, templateEl };
 	},
 });
 </script>
@@ -135,7 +127,13 @@ export default defineComponent({
 	max-width: 100%;
 	height: 100%;
 	padding-right: 8px;
-	line-height: normal;
+
+	.vertical-aligner {
+		display: inline-block;
+		width: 0;
+		height: 100%;
+		vertical-align: middle;
+	}
 
 	@include no-wrap;
 

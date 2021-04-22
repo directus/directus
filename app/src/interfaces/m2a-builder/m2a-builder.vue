@@ -42,7 +42,6 @@
 						/>
 						<div class="spacer" />
 						<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
-						<v-icon class="launch-icon" name="launch" />
 					</v-list-item>
 
 					<v-list-item v-else :key="item.$index" block>
