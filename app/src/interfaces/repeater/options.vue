@@ -7,7 +7,7 @@
 
 		<div class="grid-element half">
 			<p class="type-label">{{ $t('interfaces.repeater.add_label') }}</p>
-			<v-input class="input" v-model="addLabel" :placeholder="$t('add_a_new_item')" />
+			<v-input class="input" v-model="addLabel" :placeholder="$t('create_new')" />
 		</div>
 
 		<div class="grid-element full">

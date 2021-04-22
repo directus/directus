@@ -21,7 +21,6 @@
 			</draggable>
 		</v-list>
 		<v-button @click="addNew" class="add-new" v-if="showAddNew">
-			<v-icon name="add" />
 			{{ addLabel }}
 		</v-button>
 
@@ -76,7 +75,7 @@ export default defineComponent({
 		},
 		addLabel: {
 			type: String,
-			default: i18n.t('add_a_new_item'),
+			default: i18n.t('create_new'),
 		},
 		limit: {
 			type: Number,
