@@ -55,6 +55,7 @@ archive_confirm_count: >-
   没有选定项目 | 你确定要存档这个项目吗？| 你确定你想要存档这些 {count} 个项目吗？
 reset_system_permissions_to: '重置系统权限为：'
 reset_system_permissions_copy: 此操作将覆盖您可能应用到系统集合中的任何自定义权限。确定吗？
+the_following_are_minimum_permissions: 以下是启用"应用访问"时所需的最低权限，您可以对除以下权限外的其他权限进行扩展。
 recommended_defaults: 推荐的默认值
 unarchive: 取消存档
 unarchive_confirm: 您确定要取消归档此项目吗？
@@ -322,7 +323,6 @@ users: 用户
 activity: 活动
 webhooks: Webhook
 field_width: 字段宽度
-add_a_new_item: 添加新项目...
 add_filter: 添加过滤器
 upper_limit: 上限...
 lower_limit: 下限...

@@ -353,7 +353,6 @@ users: Käyttäjät
 activity: Tapahtuma
 webhooks: Webhookit
 field_width: Kentän leveys
-add_a_new_item: Lisää uusi kohde...
 add_filter: Lisää suodatin
 upper_limit: Yläraja...
 lower_limit: Alaraja...
@@ -827,7 +826,6 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
-weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:
@@ -959,7 +957,6 @@ interfaces:
     repeater: Toistaja
     description: Luo useita saman rakenteen merkintöjä
     edit_fields: Muokkaa kenttiä
-    add_label: '"Lisää Uusi Rivi" -tunniste'
     field_name_placeholder: Syötä kentän nimi...
     field_note_placeholder: Syötä kentän muistiinpano...
   slider:

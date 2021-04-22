@@ -343,7 +343,6 @@ users: ผู้ใช้
 activity: กิจกรรม
 webhooks: Webhooks
 field_width: ความกว้างของฟิลด์
-add_a_new_item: เพิ่มรายการใหม่
 add_filter: เพิ่มตัวกรอง
 upper_limit: ขีดจำกัดบน
 lower_limit: ขีดจำกัดล่าง
@@ -924,7 +923,6 @@ interfaces:
     repeater: การทำซ้ำ
     description: สร้างหลายรายการโดคใช้โครงสร้างเดียวกัน
     edit_fields: แก้ไขฟิลด์
-    add_label: 'ป้ายกำกับ "เพิ่มแถวใหม่"'
     field_name_placeholder: กรอกชื่อฟิลด์
     field_note_placeholder: กรอกโน้ตให้ฟิลด์
   slider:

@@ -271,7 +271,6 @@ users: 用戶
 activity: 活動
 webhooks: Webhooks
 field_width: 欄位寬度
-add_a_new_item: 添加新項目
 add_filter: 新增篩選器
 upper_limit: 上限...
 lower_limit: 下限...

@@ -719,7 +719,6 @@ interfaces:
   repeater:
     description: Utwórz wiele wpisów o tej samej strukturze
     edit_fields: Edytuj pola
-    add_label: 'Etykieta "Dodaj nowy wiersz"'
     field_name_placeholder: Wprowadź nazwę pola...
   slider:
     slider: Suwak
