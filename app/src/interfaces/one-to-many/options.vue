@@ -3,13 +3,18 @@
 		{{ $t('interfaces.one-to-many.no_collection') }}
 	</v-notice>
 	<div v-else class="form-grid">
-		<div class="field full">
+		<div class="field half-left">
 			<p class="type-label">{{ $t('select_fields') }}</p>
-			<v-field-select
+			<v-field-template
 				:collection="relatedCollection"
-				v-model="fields"
+				v-model="template"
 				:inject="relatedCollectionExists ? null : { fields: newFields, collections: newCollections, relations }"
 			/>
+		</div>
+
+		<div class="field half-right">
+			<p class="type-label">{{ $t('order') }}</p>
+			<v-field-select v-model="order" :collection="relatedCollection" />
 		</div>
 	</div>
 </template>
@@ -49,14 +54,26 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
 
-		const fields = computed({
+		const template = computed({
 			get() {
-				return props.value?.fields;
+				return props.value?.template;
 			},
-			set(newFields: string) {
+			set(newTemplate: string) {
 				emit('input', {
 					...(props.value || {}),
-					fields: newFields,
+					template: newTemplate,
+				});
+			},
+		});
+
+		const order = computed({
+			get() {
+				return props.value?.order;
+			},
+			set(newTemplate: string) {
+				emit('input', {
+					...(props.value || {}),
+					order: newTemplate,
 				});
 			},
 		});
@@ -76,7 +93,7 @@ export default defineComponent({
 			);
 		});
 
-		return { fields, relatedCollection, relatedCollectionExists };
+		return { template, order, relatedCollection, relatedCollectionExists };
 	},
 });
 </script>
