@@ -198,6 +198,7 @@ body {
 		border: 2px solid var(--border-subdued);
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
+		margin: 0;
 
 		.v-icon {
 			color: var(--foreground-subdued);

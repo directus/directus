@@ -192,7 +192,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 
 .v-notice {
-	margin-bottom: 6px;
+	margin-bottom: 4px;
 }
 
 .v-list {
