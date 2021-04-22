@@ -7,28 +7,28 @@ export type BasemapSource = {
 	url: string;
 };
 
+const defaultBasemap: BasemapSource = {
+	name: 'OpenStreetMap',
+	type: 'raster',
+	url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+};
+
+const baseStyle: Style = {
+	version: 8,
+	glyphs:
+		'https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_GCS_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf',
+};
+
 export function getBasemapSources(): BasemapSource[] {
 	const basemaps = getSetting('basemaps');
-	return basemaps?.length
-		? basemaps
-		: [
-				{
-					name: 'OpenStreetMap',
-					type: 'raster',
-					url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-				},
-		  ];
+	return basemaps?.length ? basemaps : [{ ...defaultBasemap }];
 }
 
 export function getStyleFromBasemapSource(basemap: BasemapSource) {
 	if (basemap.type == 'style') {
 		return basemap.url;
 	} else {
-		const style: Style = {
-			version: 8,
-			glyphs:
-				'https://basemaps.arcgis.com/arcgis/rest/services/OpenStreetMap_GCS_v2/VectorTileServer/resources/fonts/{fontstack}/{range}.pbf',
-		};
+		const style: Style = { ...baseStyle };
 		const source: RasterSource = { type: 'raster' };
 		if (basemap.type == 'raster') {
 			source.tiles = expandUrl(basemap.url);

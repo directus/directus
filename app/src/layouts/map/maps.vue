@@ -244,7 +244,7 @@
 <script lang="ts">
 import MapComponent from './components/map.vue';
 import { CameraOptions, AnyLayer, Style } from 'maplibre-gl';
-import type { GeoJSONSerializer } from './worker';
+import { GeoJSONSerializer } from './worker';
 import { layers } from './style';
 import { getBasemapSources, getStyleFromBasemapSource } from './basemap';
 import type { BasemapSource } from './basemap';
