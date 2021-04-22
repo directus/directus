@@ -193,7 +193,7 @@
 				:placeholder="$t('primary_key') + '...'"
 			/>
 			<div class="spacer" />
-			<v-checkbox :disabled="isExisting" block v-model="autoFill" :label="$t('auto_fill')" />
+			<v-checkbox v-if="!isExisting" block v-model="autoFill" :label="$t('auto_fill')" />
 			<v-icon class="arrow" name="arrow_forward" />
 			<v-icon class="arrow" name="arrow_backward" />
 		</div>
@@ -458,12 +458,12 @@ export default defineComponent({
 		pointer-events: none;
 
 		&:first-of-type {
-			bottom: 161px;
+			top: 117px;
 			left: 32.5%;
 		}
 
 		&:last-of-type {
-			bottom: 89px;
+			top: 190px;
 			left: 67.4%;
 		}
 	}

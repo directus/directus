@@ -184,7 +184,7 @@
 			</v-input>
 			<v-input disabled :value="$t('primary_key')" />
 			<div class="spacer" />
-			<v-checkbox :disabled="isExisting" block v-model="autoFill" :label="$t('auto_fill')" />
+			<v-checkbox v-if="!isExisting" block v-model="autoFill" :label="$t('auto_fill')" />
 			<v-icon class="arrow" name="arrow_forward" />
 			<v-icon class="arrow" name="arrow_backward" />
 			<v-icon class="arrow" name="arrow_backward" />
@@ -364,12 +364,12 @@ export default defineComponent({
 		}
 
 		&:nth-of-type(2) {
-			bottom: 161px;
+			top: 190px;
 			left: 67.4%;
 		}
 
 		&:last-of-type {
-			bottom: 89px;
+			top: 261px;
 			left: 67.4%;
 		}
 	}
