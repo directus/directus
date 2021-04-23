@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact to="/users">
+			<v-button class="header-icon" rounded icon secondary exact @click="$router.back()">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
