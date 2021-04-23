@@ -22,7 +22,7 @@ export async function loadModules(): Promise<void> {
 
 		await asyncPool(5, customModules, async (moduleName) => {
 			try {
-				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/modules/${moduleName}/index.js`);
+				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/modules/${encodeURIComponent(moduleName)}/index.js`);
 
 				modules.push(result.default);
 			} catch (err) {

@@ -18,7 +18,7 @@ export async function registerLayouts(app: App): Promise<void> {
 
 		await asyncPool(5, customLayouts, async (layoutName) => {
 			try {
-				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/layouts/${layoutName}/index.js`);
+				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/layouts/${encodeURIComponent(layoutName)}/index.js`);
 				layouts.push(result.default);
 			} catch (err) {
 				// eslint-disable-next-line no-console

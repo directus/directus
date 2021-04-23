@@ -41,3 +41,5 @@ export const ASSET_TRANSFORM_QUERY_KEYS = ['key', 'width', 'height', 'fit', 'wit
 export const FILTER_VARIABLES = ['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'];
 
 export const ALIAS_TYPES = ['alias', 'o2m', 'm2m', 'm2a', 'files', 'files', 'translations'];
+
+export const EXTENSION_NAME = /^(?:(?:@[^\/]+\/)?directus-extension-|@directus\/extension-).+$/;
