@@ -400,6 +400,7 @@ errors:
   ITEM_NOT_FOUND: Item not found
   ROUTE_NOT_FOUND: Not found
   RECORD_NOT_UNIQUE: Duplicate value detected
+  USER_SUSPENDED: User Suspended
   UNKNOWN: Unexpected Error
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -535,6 +536,7 @@ display_text: Display Text
 display_text_placeholder: Enter a display text...
 tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
+unlimited: Unlimited
 open_link_in: Open link in
 new_tab: New tab
 current_tab: Current tab

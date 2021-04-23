@@ -6,6 +6,7 @@ import { AxiosResponse } from 'axios';
 import { APIError } from '@/types';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { VALIDATION_TYPES } from '@/constants';
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
@@ -110,16 +111,14 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			return response.data.data;
 		} catch (err) {
 			if (err?.response?.data?.errors) {
-				const validationTypes = ['FAILED_VALIDATION', 'RECORD_NOT_UNIQUE'];
-
 				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => validationTypes.includes(err?.extensions?.code))
+					.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 					.map((err: APIError) => {
 						return err.extensions;
 					});
 
 				const otherErrors = err.response.data.errors.filter(
-					(err: APIError) => validationTypes.includes(err?.extensions?.code) === false
+					(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
 				);
 
 				if (otherErrors.length > 0) {

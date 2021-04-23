@@ -147,6 +147,7 @@ function getJoi(operator: string, value: any) {
 	}
 
 	if (operator === '_regex') {
-		return Joi.string().regex(new RegExp(value));
+		const wrapped = value.startsWith('/') && value.endsWith('/');
+		return Joi.string().regex(new RegExp(wrapped ? value.slice(1, -1) : value));
 	}
 }

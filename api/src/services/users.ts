@@ -4,7 +4,12 @@ import jwt from 'jsonwebtoken';
 import { sendInviteMail, sendPasswordResetMail } from '../mail';
 import database from '../database';
 import argon2 from 'argon2';
-import { InvalidPayloadException, ForbiddenException, UnprocessableEntityException } from '../exceptions';
+import {
+	InvalidPayloadException,
+	ForbiddenException,
+	UnprocessableEntityException,
+	FailedValidationException,
+} from '../exceptions';
 import { Accountability, PrimaryKey, Item, AbstractServiceOptions, SchemaOverview, Query } from '../types';
 import { Knex } from 'knex';
 import env from '../env';
@@ -12,7 +17,8 @@ import cache from '../cache';
 import { toArray } from '../utils/to-array';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 import logger from '../logger';
-import { clone, keys } from 'lodash';
+import { clone } from 'lodash';
+import { SettingsService } from './settings';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
@@ -51,6 +57,40 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * Check if the provided password matches the strictness as configured in
+	 * directus_settings.auth_password_policy
+	 */
+	private async checkPasswordPolicy(passwords: string[]) {
+		const settingsService = new SettingsService({
+			schema: this.schema,
+			knex: this.knex,
+		});
+
+		const { auth_password_policy: policyRegExString } = await settingsService.readSingleton({
+			fields: ['auth_password_policy'],
+		});
+
+		const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
+
+		const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
+
+		for (const password of passwords) {
+			if (regex.test(password) === false) {
+				throw new FailedValidationException({
+					message: `Provided password doesn't match password policy`,
+					path: ['password'],
+					type: 'custom.pattern.base',
+					context: {
+						value: password,
+					},
+				});
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Create a new user
 	 */
 	async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -70,6 +110,12 @@ export class UsersService extends ItemsService {
 
 		await this.checkUniqueEmails(emails);
 
+		const passwords = data.map((payload) => payload.password).filter((pw) => pw);
+
+		if (passwords.length > 0) {
+			await this.checkPasswordPolicy(passwords);
+		}
+
 		return await super.createMany(data, opts);
 	}
 
@@ -78,6 +124,10 @@ export class UsersService extends ItemsService {
 
 		if (email) {
 			await this.checkUniqueEmails([email]);
+		}
+
+		if (data.password) {
+			await this.checkPasswordPolicy([data.password]);
 		}
 
 		if (data.hasOwnProperty('tfa_secret')) {
@@ -94,6 +144,10 @@ export class UsersService extends ItemsService {
 			await this.checkUniqueEmails([email]);
 		}
 
+		if (data.password) {
+			await this.checkPasswordPolicy([data.password]);
+		}
+
 		if (data.hasOwnProperty('tfa_secret')) {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
@@ -106,6 +160,10 @@ export class UsersService extends ItemsService {
 
 		if (email) {
 			await this.checkUniqueEmails([email]);
+		}
+
+		if (data.password) {
+			await this.checkPasswordPolicy([data.password]);
 		}
 
 		if (data.hasOwnProperty('tfa_secret')) {
