@@ -189,7 +189,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 .v-notice {
 	margin-bottom: 4px;
 }

@@ -78,7 +78,7 @@ nullifying the field:
 }
 ```
 
-#### One-to-Many (/ Many-to-Many / Many-to-Any)
+#### One-to-Many (/ Many-to-Many)
 
 One-to-Many, and therefore Many-to-Many and Many-to-Any, relationships can be updated in one of two ways:
 
@@ -143,6 +143,73 @@ dataset.
 Directus won't _delete_ relational data from the database. Instead, relational "deletions" will nullify the related
 foreign key. This means that your data will never suddenly disappear, but it also means that you might end up with
 orphaned items.
+
+:::
+
+#### Many-to-Any (Union Types)
+
+Many-to-Any fields work very similar to a "regular" many-to-many, with the exception that the related field can pull in
+the fields from any of the related collections, for example:
+
+```json
+{
+	"sections": [
+		{
+			"collection": "headings",
+			"item": {
+				/* headings fields */
+			}
+		},
+		{
+			"collection": "paragraphs",
+			"item": {
+				/* paragraphs fields */
+			}
+		}
+	]
+}
+```
+
+##### REST API
+
+To scope the fields that are returned per collection type, you can use the `<field>:<scope>` syntax in the fields
+parameter as follows:
+
+```
+GET /items/pages
+	?fields[]=sections.item:headings.id
+	&fields[]=sections.item:headings.title
+	&fields[]=sections.item:paragraphs.body
+	&fields[]=sections.item:paragraphs.background_color
+```
+
+##### GraphQL
+
+In GraphQL, you can use nested fragments on the Union Type to select the fields:
+
+```graphql
+query {
+	pages {
+		sections {
+			item {
+				... on headings {
+					id
+					title
+				}
+
+				... on paragraphs {
+					body
+					background_color
+				}
+			}
+		}
+	}
+}
+```
+
+::: tip Updating
+
+Updating records in a many-to-any is identical to the other relationship types.
 
 :::
 
