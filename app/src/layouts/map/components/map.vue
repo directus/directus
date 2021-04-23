@@ -123,6 +123,7 @@ export default defineComponent({
 			map.addControl(boxSelectControl, 'top-left');
 
 			map.on('load', () => {
+				watch(() => props.bounds, fitDataBounds);
 				map.on('mouseenter', '__directus_polygons', onFeatureEnter);
 				map.on('mouseleave', '__directus_polygons', onFeatureLeave);
 				map.on('mouseenter', '__directus_points', onFeatureEnter);
@@ -133,24 +134,21 @@ export default defineComponent({
 				map.on('click', '__directus_polygons', onFeatureClick);
 				map.on('click', '__directus_points', onFeatureClick);
 				map.on('click', '__directus_lines', onFeatureClick);
-				watch(() => props.mapboxStyle, updateStyle, { immediate: true });
-			});
-
-			map.on('select.end', (event: MapLayerMouseEvent) => {
-				const ids = event.features?.map((f) => f.id);
-				emit('select', ids);
-			});
-
-			map.on('moveend', () => {
-				emit('moveend', {
-					center: map.getCenter(),
-					zoom: map.getZoom(),
-					bearing: map.getBearing(),
-					pitch: map.getPitch(),
+				map.on('select.end', (event: MapLayerMouseEvent) => {
+					const ids = event.features?.map((f) => f.id);
+					emit('select', ids);
+				});
+				map.on('moveend', () => {
+					emit('moveend', {
+						center: map.getCenter(),
+						zoom: map.getZoom(),
+						bearing: map.getBearing(),
+						pitch: map.getPitch(),
+					});
 				});
 			});
 
-			watch(() => props.bounds, fitDataBounds);
+			watch(() => props.mapboxStyle, updateStyle, { immediate: true });
 			watch(
 				() => appStore.state.sidebarOpen,
 				(opened) => {
@@ -181,8 +179,8 @@ export default defineComponent({
 		}
 
 		function updateData(newData: any, previousData: any) {
-			const source = map.getSource('__directus') as GeoJSONSource;
-			source?.setData(newData);
+			const source = map.getSource('__directus');
+			(source as GeoJSONSource).setData(newData);
 			updateSelection(props.selection, undefined);
 		}
 

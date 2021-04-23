@@ -929,7 +929,7 @@ interfaces:
     lng: Longitude
     lng_placeholder: Enter the longitude...
     background: Map Style
-    projection: Projection
+    crs: Coordinate Reference System
     zoom: Zoom
     no_api_key: The currently selected background requires a Mapbox api key.
     geometry_type: Geometry type

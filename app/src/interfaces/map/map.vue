@@ -95,7 +95,7 @@ export default defineComponent({
 			type: String as PropType<GeometryFormat>,
 			required: true,
 		},
-		geometryProjection: {
+		geometryCRS: {
 			type: String,
 			default: 'EPSG:4326',
 		},
@@ -113,7 +113,7 @@ export default defineComponent({
 		const error = computed(() => geometryParsingError.value || geometryParsingError.value);
 
 		const geometryOptions = {
-			geometrySRID: props.geometryProjection,
+			geometryCRS: props.geometryCRS,
 			geometryFormat: props.geometryFormat,
 			geometryField: 'value',
 		};
@@ -280,7 +280,11 @@ export default defineComponent({
 
 			function fitDataBounds(options: CameraOptions & AnimationOptions) {
 				if (map && currentGeometry) {
-					map.fitBounds(currentGeometry.bbox! as LngLatBoundsLike, { padding: 80, ...options });
+					map.fitBounds(currentGeometry.bbox! as LngLatBoundsLike, {
+						padding: 80,
+						maxZoom: props.zoom,
+						...options,
+					});
 				}
 			}
 		}

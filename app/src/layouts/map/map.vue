@@ -102,9 +102,9 @@
 						<v-input v-model="fitBoundsPadding" type="number" />
 					</div>
 					<div class="field">
-						<div class="type-label">{{ $t('layouts.map.projection') }}</div>
+						<div class="type-label">{{ $t('layouts.map.crs') }}</div>
 						<v-select
-							v-model="geometrySRID"
+							v-model="geometryCRS"
 							:items="[
 								{ value: 'EPSG:4326', text: 'WGS84' },
 								{ value: 'EPSG:4269', text: 'EPSG:4269' },
@@ -270,7 +270,7 @@ type LayoutOptions = {
 	geometryField?: string;
 	longitudeField?: string;
 	latitudeField?: string;
-	geometrySRID?: string;
+	geometryCRS?: string;
 	simplification?: number;
 	fitDataBounds?: boolean;
 	fitBoundsAnimate?: boolean;
@@ -353,7 +353,7 @@ export default defineComponent({
 		const clusterRadius = syncOption(_layoutOptions, 'clusterRadius', 50);
 		const clusterMaxZoom = syncOption(_layoutOptions, 'clusterMaxZoom', 12);
 		const clusterMinPoints = syncOption(_layoutOptions, 'clusterMinPoints', 2);
-		const geometrySRID = syncOption(_layoutOptions, 'geometrySRID', 'EPSG:4326');
+		const geometryCRS = syncOption(_layoutOptions, 'geometryCRS', 'EPSG:4326');
 		const longitudeField = syncOption(_layoutOptions, 'longitudeField', undefined);
 		const latitudeField = syncOption(_layoutOptions, 'latitudeField', undefined);
 		const geometryField = syncOption(_layoutOptions, 'geometryField', undefined);
@@ -419,11 +419,11 @@ export default defineComponent({
 		watch(() => collection.value, onQueryChange);
 		watch(() => limit.value, onQueryChange);
 		watch(() => sort.value, onQueryChange);
-		watch(() => geometrySRID.value, updateGeojson);
+		watch(() => geometryCRS.value, updateGeojson);
 		watch(() => items.value, updateGeojson);
 
 		watch(
-			() => geometrySRID.value,
+			() => geometryCRS.value,
 			() => (geojsonDataChanged.value = true)
 		);
 		watch(
@@ -578,7 +578,7 @@ export default defineComponent({
 			geojsonError,
 			geojsonOptionsOk,
 			gotoEdit,
-			geometrySRID,
+			geometryCRS,
 			geometryFormat,
 			geometryField,
 			longitudeField,
@@ -635,7 +635,7 @@ export default defineComponent({
 			return computed<R[T]>({
 				get: () => ref.value?.[key] ?? defaultValue,
 				set: (value: R[T]) => {
-					ref.value = { ...(ref.value ?? {}), [key]: value } as R;
+					ref.value = Object.assign({}, ref.value, { [key]: value }) as R;
 				},
 			});
 		}

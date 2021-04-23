@@ -63,8 +63,8 @@ export default defineInterface({
 			},
 		},
 		{
-			field: 'geometryProjection',
-			name: '$t:interfaces.map.projection',
+			field: 'geometryCRS',
+			name: '$t:layouts.map.crs',
 			type: 'string',
 			meta: {
 				width: 'half',

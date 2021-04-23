@@ -5,12 +5,12 @@ import { i18n } from '@/lang';
 import proj4 from 'proj4';
 import wkx from 'wkx';
 
-export type geometryOptions = {
+export type GeometryOptions = {
 	geometryFormat?: GeometryFormat;
 	geometryField?: string;
 	longitudeField?: string;
 	latitudeField?: string;
-	geometrySRID?: string;
+	geometryCRS?: string;
 };
 
 export type GeometryFormat = 'geojson' | 'postgis' | 'csv' | 'wkt' | 'ewkt' | 'wkb' | 'ewkb' | 'twkb' | 'lnglat';
@@ -20,44 +20,44 @@ type GeometryParser = (entry: any) => wkx.Geometry | undefined;
 type GeoJSONParser = (entry: any) => Geometry | GeometryCollection | undefined;
 type Coord = [number, number];
 
-function lnglatParser(options: geometryOptions): GeometryParser {
+function lnglatParser(options: GeometryOptions): GeometryParser {
 	return function (entry: any) {
 		const [lng, lat] = [entry[options.longitudeField!], entry[options.latitudeField!]];
 		return lng && lat && new wkx.Point(lng, lat);
 	};
 }
-function geojsonParser(options: geometryOptions): GeometryParser {
+function geojsonParser(options: GeometryOptions): GeometryParser {
 	return function (entry: any) {
 		const geom = entry[options.geometryField!];
 		return geom && wkx.Geometry.parseGeoJSON(geom);
 	};
 }
-function twkbParser(options: geometryOptions): GeometryParser {
+function twkbParser(options: GeometryOptions): GeometryParser {
 	return function (entry: any) {
 		const geom = entry[options.geometryField!];
 		return geom && wkx.Geometry.parseTwkb(Buffer.from(geom, 'hex'));
 	};
 }
-function wktParser(options: geometryOptions): GeometryParser {
+function wktParser(options: GeometryOptions): GeometryParser {
 	return function (entry: any) {
 		const geom = entry[options.geometryField!];
 		return geom && wkx.Geometry.parse(geom);
 	};
 }
-function wkbParser(options: geometryOptions): GeometryParser {
+function wkbParser(options: GeometryOptions): GeometryParser {
 	return function (entry: any) {
 		const geom = entry[options.geometryField!];
 		return geom && wkx.Geometry.parse(Buffer.from(geom, 'hex'));
 	};
 }
-function csvParser(options: geometryOptions): GeometryParser {
+function csvParser(options: GeometryOptions): GeometryParser {
 	return function (entry: any) {
 		const geom = entry[options.geometryField!];
 		return geom && new wkx.Point(...[Number(geom[0]), Number(geom[1])]);
 	};
 }
 
-export function getGeometryParser(options: geometryOptions): GeometryParser {
+export function getGeometryParser(options: GeometryOptions): GeometryParser {
 	switch (options.geometryFormat) {
 		case 'geojson':
 			return geojsonParser(options);
@@ -79,7 +79,7 @@ export function getGeometryParser(options: geometryOptions): GeometryParser {
 	}
 }
 
-export function getGeometrySerializer(options: geometryOptions): (entry: AnyGeoJSON) => any {
+export function getGeometrySerializer(options: GeometryOptions): (entry: AnyGeoJSON) => any {
 	switch (options.geometryFormat) {
 		case 'geojson':
 			return (entry) => wkx.Geometry.parseGeoJSON(entry).toGeoJSON();
@@ -101,12 +101,12 @@ export function getGeometrySerializer(options: geometryOptions): (entry: AnyGeoJ
 	}
 }
 
-export function getSerializer(options: geometryOptions) {
+export function getSerializer(options: GeometryOptions) {
 	const serialize = getGeometrySerializer(options);
-	const project = (coord: Coord) => proj4(options.geometrySRID!, coord);
+	const project = (coord: Coord) => proj4(options.geometryCRS!, coord);
 
 	return function (entry: AnyGeoJSON) {
-		if (options.geometrySRID && options.geometrySRID !== 'EPSG:4326') {
+		if (options.geometryCRS && options.geometryCRS !== 'EPSG:4326') {
 			coordEach(entry as AllGeoJSON, (coord) => {
 				[coord[0], coord[1]] = project(coord as Coord);
 			});
@@ -129,15 +129,15 @@ export function assignBBox(object: AnyGeoJSON) {
 	});
 }
 
-export function getParser(options: geometryOptions): GeoJSONParser {
+export function getParser(options: GeometryOptions): GeoJSONParser {
 	const parse = getGeometryParser(options);
-	const project = (coord: Coord) => proj4(options.geometrySRID!, 'EPSG:4326', coord);
+	const project = (coord: Coord) => proj4(options.geometryCRS!, 'EPSG:4326', coord);
 
 	return function (entry: any) {
 		const geom = parse(entry)?.toGeoJSON() as Geometry | GeometryCollection;
 		if (!geom) return undefined;
 		geom.bbox = [Infinity, Infinity, -Infinity, -Infinity];
-		if (options.geometrySRID && options.geometrySRID !== 'EPSG:4326') {
+		if (options.geometryCRS && options.geometryCRS !== 'EPSG:4326') {
 			coordEach(geom as AllGeoJSON, (coord) => {
 				[coord[0], coord[1]] = project(coord as Coord);
 				expand(geom.bbox!, coord as Coord);
@@ -149,7 +149,7 @@ export function getParser(options: geometryOptions): GeoJSONParser {
 	};
 }
 
-export function toGeoJSON(entries: any[], options: geometryOptions, template: string): GeoJSON.FeatureCollection {
+export function toGeoJSON(entries: any[], options: GeometryOptions, template: string): GeoJSON.FeatureCollection {
 	const parser = getParser(options);
 	const geojson: GeoJSON.FeatureCollection = {
 		type: 'FeatureCollection',

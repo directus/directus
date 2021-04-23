@@ -1,5 +1,5 @@
 import { defineLayout } from '@/layouts/define';
-import MapLayout from './maps.vue';
+import MapLayout from './map.vue';
 
 export default defineLayout({
 	id: 'map',
