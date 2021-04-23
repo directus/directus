@@ -78,6 +78,7 @@ validationError:
   null: Väärtus peab olema null
   nnull: Väärtus ei saa olla null
   required: Väärtus on nõutud
+  unique: Väärtus peab olema unikaalne
   regex: Väärtuse vorming on vigane
 all_access: Ligipääs kõigele
 no_access: Ei ole ligipääsu
@@ -341,6 +342,7 @@ create_collection: Loo kogu
 no_collections_copy_admin: Sa pole lisanud veel ühtegi andmekogu. Alustamiseks kliki nupul.
 no_collections_copy: Andmekogusid ei leitud. Palun võta ühendust süsteemi administraatoriga.
 relationship_not_setup: Seos pole korrektselt seadistatud
+display_template_not_setup: Vaadete mall on seadistamata
 collection_field_not_setup: Andmekogu väli on valesti seadistatud
 select_a_collection: Vali andmekogu
 active: aktiivne
@@ -418,9 +420,21 @@ delete_collection: Kustuta andmekogu
 update_collection_success: Andmekogu uuendatud
 delete_collection_success: Andmekogu kustutatud
 start_end_of_count_items: '{start}-{end} / {count}'
+start_end_of_count_filtered_items: '{start}-{end} / {count}'
+one_item: '1 kirje'
+one_filtered_item: '1 filtreeritud kirje'
+delete_collection_are_you_sure: >-
+  Kas sa kindlasti soovid selle andmekogu täielikult kustutada? Seda ei saa hiljem enam taastada!
+visible_collections: Nähtavad andmekogud
+hidden_collections: Peidetud andmekogud
+show_hidden_collections: Näita peidetud andmekogusid
+hide_hidden_collections: Peida andmekogud
+unmanaged_collections: Seadistamata andmekogud
+system_collections: Süsteemsed andmekogud
 placeholder: Kohatäitja
 icon_left: Ikoon vasakul
 icon_right: Ikoon paremal
+count_other_revisions: '{count} versiooni'
 font: Kirjatüüp
 sans_serif: Sans Serif
 serif: Serif
@@ -428,13 +442,20 @@ monospace: Monospace
 divider: Eraldaja
 color: Värv
 circle: Ring
+empty_item: Tühi kirje
+log_in_with: 'Logi sisse {provider} kontoga'
+advanced_filter: Laiendatud filter
 delete_advanced_filter: Kustuta Filter
+change_advanced_filter_operator: Muuda operaatorit
 operators:
   eq: Võrdub
+  neq: Pole võrdne
   lt: Vähem kui
   gt: Suurem kui
   lte: Väiksem või võrdne
   gte: Suurem või võrdne
+  in: kuulub
+  nin: ei kuulu
   null: On null
   nnull: Ei ole null
   contains: Sisaldab
@@ -444,21 +465,69 @@ operators:
   empty: On tühi
   nempty: Ei ole tühi
   all: Sisaldab neid võtmeid
+  has: Sisaldab neid võtmeid
 loading: Laadimine...
+drop_to_upload: Lohista üleslaadimiseks
+upload_file: Lae fail üles
+upload_file_indeterminate: Laen faili...
+upload_file_success: Fail on laetud
+upload_files_indeterminate: 'Laen faile {done}/{total}'
+upload_files_success: '{count} faili üles laetud'
+upload_pending: Laadimine on ootel
+drag_file_here: Lohista failid siia
+click_to_browse: Kliki otsimiseks
+layout_options: Paiguse valikud
 rows: Read
 columns: Veerud
+collection_setup: Andmekogu seadistus
+optional_system_fields: Valikulised süsteemsed väljad
+value_unique: Väärtus peab olema unikaalne
+all_activity: Kõik tegevused
+create_item: Loo kirje
 display_template: Vaate mall
+n_items_selected: 'Kirjeid pole valitud | Valitud 1 kirje | {n} kirjet valitud'
+per_page: Lehe kohta
+all_files: Kõik failid
+my_files: Minu failid
+recent_files: Hiljutised failid
+create_folder: Loo kaust
+folder_name: Kausta nimi...
+add_file: Lisa fail
+replace_file: Asenda fail
 no_results: Tulemusi pole
+no_results_copy: Muuda või nulli otsingufilter, et tulemusi näha.
+clear_filters: Tühjenda filtrid
 saves_automatically: Salvestab Automaatselt
 role: Roll
 user: Kasutaja
+no_presets: Eelsätteid ei ole
+no_presets_copy: Eelsätteid ja järjehoidjaid pole veel salvestatud.
+no_presets_cta: Lisa uus eelseadistus
 create: Loo
+on_create: Loomisel
 on_update: Uuendamisel
 read: Loe
 update: Uuenda
 select_fields: Vali väljad
+format_text: Vormista tekst
+bold: Paks kiri
+toggle: Lülita
+icon_on: Ikoon sees
+icon_off: Ikoon väljas
+label: Silt
+image_url: Pildi URL
+alt_text: Alternatiivne Tekst
+media: Meedia
 width: Laius
 height: Kõrgus
+source: Allikas
+url_placeholder: Sisesta URL
+display_text: Kuva teksti
+tooltip: Vihje
+tooltip_placeholder: Sisesta vihje...
+open_link_in: Ava link
+new_tab: Uus vahekaart
+current_tab: Praegune vahekaart
 wysiwyg_options:
   aligncenter: Joonda Keskele
   alignjustify: Joonda kahepoolselt
@@ -467,7 +536,21 @@ wysiwyg_options:
   alignright: Joonda Paremale
   forecolor: Esiplaani värv
   backcolor: Taustavärv
+  bold: Paks kiri
+  italic: Kaldkiri
+  underline: Allajoonitud
+  strikethrough: Läbijoonitud
+  subscript: Alaindeks
+  superscript: Ülaindeks
   codeblock: Kood
+  blockquote: Plokk-tsitaat
+  bullist: Punktloetelu
+  numlist: Numbriline loetelu
+  hr: Horisontaaljoon
+  link: Lisa/muuda linki
+  unlink: Eemalda link
+  media: Lisa/muuda meedia
+  image: Lisa/muuda pilt
   copy: Kopeeri
   cut: Lõika
   paste: Kleebi
@@ -478,9 +561,14 @@ wysiwyg_options:
   h4: Pealkiri 4
   h5: Pealkiri 5
   h6: Pealkiri 6
+  fontselect: Vali font
+  fontsizeselect: Vali teksti suurus
+  indent: Taane
+  outdent: Taane
   undo: Võta tagasi
   redo: Tee uuesti
   remove: Eemalda
+  removeformat: Eemalda vormistus
   selectall: Vali Kõik
   table: Tabel
   fullscreen: Täisekraan
@@ -666,6 +754,7 @@ interfaces:
     text-input: Tekstisisestus
     trim: Kärbi
   toggle:
+    toggle: Lülita
     label_default: lubatud
   translations:
     display_template: Vaate mall
@@ -678,6 +767,8 @@ interfaces:
 displays:
   boolean:
     boolean: Boolean
+    icon_on: Ikoon sees
+    icon_off: Ikoon väljas
   collection:
     collection: Kogud
   color:
