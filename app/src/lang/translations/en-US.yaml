@@ -400,6 +400,7 @@ errors:
   ITEM_NOT_FOUND: Item not found
   ROUTE_NOT_FOUND: Not found
   RECORD_NOT_UNIQUE: Duplicate value detected
+  USER_SUSPENDED: User Suspended
   UNKNOWN: Unexpected Error
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
