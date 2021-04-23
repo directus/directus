@@ -17,5 +17,6 @@ export function getFieldsFromTemplate(template: string | null, collection: strin
 	if (collection) {
 		return adjustFieldsForTranslations(fields, collection);
 	}
+
 	return fields as string[];
 }

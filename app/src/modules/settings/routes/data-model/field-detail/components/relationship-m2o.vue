@@ -1,6 +1,5 @@
 <template>
 	<div>
-
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
@@ -17,7 +16,7 @@
 					:disabled="isExisting"
 					:placeholder="$t('collection') + '...'"
 				>
-					<template #append>
+					<template #append v-if="!isExisting">
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
 								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
@@ -53,16 +52,28 @@
 							</v-list>
 						</v-menu>
 					</template>
+
+					<template #input v-if="isExisting">
+						<v-text-overflow :text="relations[0].one_collection" />
+					</template>
 				</v-input>
 			</div>
-			<v-input disabled :value="relations[0].many_field" />
+			<v-input disabled>
+				<template #input>
+					<v-text-overflow :text="relations[0].many_field" />
+				</template>
+			</v-input>
 			<v-input
 				db-safe
 				:disabled="relatedCollectionExists"
 				v-model="relations[0].one_primary"
 				:nullable="false"
 				:placeholder="$t('primary_key') + '...'"
-			/>
+			>
+				<template #input>
+					<v-text-overflow :text="relations[0].one_primary" />
+				</template>
+			</v-input>
 			<v-icon class="arrow" name="arrow_back" />
 		</div>
 

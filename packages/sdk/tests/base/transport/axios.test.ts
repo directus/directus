@@ -115,7 +115,7 @@ describe('axios transport', function () {
 	it('non axios errors are set in parent', async function () {
 		const storage = new MemoryStorage();
 		const transport = new AxiosTransport(URL, storage);
-		const mock = jest.spyOn(transport.axios, 'get');
+		const mock = jest.spyOn(transport.axios, 'request');
 		mock.mockImplementation(() => {
 			throw new Error('this is not an axios error');
 		});

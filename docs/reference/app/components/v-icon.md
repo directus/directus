@@ -37,7 +37,8 @@ Oftentimes, you'll use the icon next to some text, for example in a button. When
 
 ```html
 <v-button>
-	<v-icon name="add" left> Add new
+	<v-icon name="add" left />
+	Add new
 </v-button>
 ```
 

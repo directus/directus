@@ -15,7 +15,7 @@
 					:disabled="isExisting"
 					:class="{ matches: relatedCollectionExists }"
 				>
-					<template #append>
+					<template #append v-if="!isExisting">
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
 								<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" :disabled="isExisting" />
@@ -51,9 +51,17 @@
 							</v-list>
 						</v-menu>
 					</template>
+
+					<template #input v-if="isExisting">
+						<v-text-overflow :text="relations[0].many_collection" />
+					</template>
 				</v-input>
 			</div>
-			<v-input disabled :value="currentCollectionPrimaryKey.field" />
+			<v-input disabled :value="currentCollectionPrimaryKey.field">
+				<template #input>
+					<v-text-overflow :text="currentCollectionPrimaryKey.field" />
+				</template>
+			</v-input>
 			<v-input
 				db-safe
 				v-model="relations[0].many_field"
@@ -62,7 +70,7 @@
 				:placeholder="$t('foreign_key') + '...'"
 				:class="{ matches: relatedFieldExists }"
 			>
-				<template #append v-if="fields && fields.length > 0">
+				<template #append v-if="fields && fields.length > 0 && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
@@ -82,6 +90,10 @@
 							</v-list-item>
 						</v-list>
 					</v-menu>
+				</template>
+
+				<template #input v-if="isExisting">
+					<v-text-overflow :text="relations[0].many_field" />
 				</template>
 			</v-input>
 			<v-icon class="arrow" name="arrow_forward" />
@@ -110,7 +122,7 @@
 				:placeholder="$t('add_sort_field') + '...'"
 				:class="{ matches: sortFieldExists }"
 			>
-				<template #append v-if="fields && fields.length > 0">
+				<template #append v-if="fields && fields.length > 0 && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />

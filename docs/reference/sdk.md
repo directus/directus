@@ -74,20 +74,36 @@ The transport implementation. See [Transport](#transport) for more information.
 
 Defaults to an instance of `AxiosTransport`.
 
-### Full Example
+### Example
 
 ```js
+const directus = new Directus('http://api.example.com/');
+```
+
+### Advanced Example
+
+```js
+//
+// WARNING: OK, not exactly a warning, but this isn't needed at all.
+// It's just to illustrate how the SDK is instantiated by default when
+// passing only the URL as the first parameter.
+//
+
 const url = 'http://api.example.com/';
 
+const isBrowser = typeof window !== 'undefined';
+
 // Storage adapter where refresh tokens are stored in JSON mode.
-const storage = new MemoryStorage();
+const storage = isBrowser ? new LocalStorage() : new MemoryStorage();
 
 // Transport used to communicate with the server.
-const transport = new AxiosTransport(url, storage);
+const transport = new AxiosTransport(url, storage, async () => {
+	await auth.refresh(); // This is how axios checks for refresh
+});
 
 // Auth is how authentication is handled, stored, and refreshed.
 const auth = new Auth(transport, storage, {
-	mode: 'json', // or cookie, depends on your use  case
+	mode: isBrowser ? 'cookie' : 'json',
 });
 
 const directus = new Directus(url, {
@@ -378,31 +394,6 @@ When you can't rely on cookies, or need more control over handling the storage o
 
 Defaults to `cookie` in browsers, `json` in node.js.
 
-### Full example
-
-```js
-import { Auth, AxiosTransport, Directus, MemoryStorage } from '@directus/sdk';
-
-const url = 'http://directus';
-
-const storage = new MemoryStorage();
-const transport = new AxiosTransport(url, storage);
-const auth = new Auth(transport, storage, {
-	mode: 'json',
-});
-
-const directus = new Directus(url, {
-	auth,
-	storage,
-	transport,
-});
-
-await directus.auth.login({
-	email: 'admin@example.com',
-	password: 'password',
-});
-```
-
 ### Get current token
 
 ```ts
@@ -439,12 +430,14 @@ await directus.auth.login(
 	{
 		refresh: {
 			auto: true,
+			time: 15000,
 		},
 	}
 );
 ```
 
-You can also set how much time before the expiration you want to auto-refresh the token.
+You can also set how much time before the expiration you want to auto-refresh the token. When not specified, 30 sec is
+the default time.
 
 ```js
 await directus.auth.login(
@@ -463,20 +456,27 @@ await directus.auth.login(
 
 ### Refresh Auth Token
 
-You can manually refresh the authentication token.
+You can manually refresh the authentication token. This won't try to refresh the token if it's still valid in the eyes
+of the SDK.
+
+Also worth mentioning that any concurrent refreshes (trying to refresh while a there's an existing refresh running),
+will result in only a single refresh hitting the server, and promises resolving/rejecting with the result from the first
+call. This depends on the implementation of IAuth you're using.
 
 ```js
 await directus.auth.refresh();
 ```
 
+You can force the refresh by passing true in the first parameter.
+
 An optional parameter will accept auto-refresh information.
 
 ```js
-await directus.auth.refresh({
-	auto: true,
-	time: 30000, // refesh the token 30 secs before the expiration
-});
+await directus.auth.refresh(true);
 ```
+
+This function can either return the `AuthResult` in case a refresh was made, `false` in case SDK thinks it's not needed,
+or throw an error in case refresh fails.
 
 ### Logout
 
@@ -521,14 +521,16 @@ interface ITransport {
 
 ### AxiosTransport
 
-The default transport used in both browser and node deployments.
+The default transport used in both browser and node deployments. It supports auto refresh on request.
 
 #### Options
 
 AxiosTransport requires a base URL and a storage implementation to work.
 
 ```ts
-const transport = new AxiosTransport('http://example.com', new MemoryStorage());
+const transport = new AxiosTransport('http://example.com', new MemoryStorage(), async () => {
+	await sdk.auth.refresh();
+});
 await transport.get('/server/info');
 ```
 

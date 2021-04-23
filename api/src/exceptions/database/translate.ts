@@ -5,6 +5,15 @@ import { extractError as mssql } from './dialects/mssql';
 import { extractError as sqlite } from './dialects/sqlite';
 import { extractError as oracle } from './dialects/oracle';
 
+/**
+ * Translates an error thrown by any of the databases into a pre-defined Exception. Currently
+ * supports:
+ * - Invalid Foreign Key
+ * - Not Null Violation
+ * - Record Not Unique
+ * - Value Out of Range
+ * - Value Too Long
+ */
 export async function translateDatabaseError(error: any) {
 	switch (database.client.constructor.name) {
 		case 'Client_MySQL':

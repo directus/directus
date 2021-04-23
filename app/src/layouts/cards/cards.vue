@@ -229,7 +229,7 @@ export default defineComponent({
 
 		const fileFields = computed(() => {
 			return fieldsInCollection.value.filter((field) => {
-				if (field.field === '$file') return true;
+				if (field.field === '$thumbnail') return true;
 
 				const relation = relationsStore.state.relations.find((relation) => {
 					return (
@@ -419,7 +419,7 @@ export default defineComponent({
 					fields.push(`${imageSource.value}.id`);
 				}
 
-				if (props.collection === 'directus_files' && imageSource.value === '$file') {
+				if (props.collection === 'directus_files' && imageSource.value === '$thumbnail') {
 					fields.push('modified_on');
 					fields.push('type');
 				}
@@ -450,7 +450,7 @@ export default defineComponent({
 
 		function getLinkForItem(item: Record<string, any>) {
 			if (!primaryKeyField.value) return;
-			return `/collections/${props.collection}/${item[primaryKeyField.value!.field]}`;
+			return `/collections/${props.collection}/${encodeURIComponent(item[primaryKeyField.value!.field])}`;
 		}
 
 		function selectAll() {
@@ -485,8 +485,8 @@ export default defineComponent({
 
 .footer {
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
+	justify-content: space-between;
 	padding-top: 40px;
 
 	.pagination {
@@ -495,8 +495,8 @@ export default defineComponent({
 
 	.per-page {
 		display: flex;
-		justify-content: flex-end;
 		align-items: center;
+		justify-content: flex-end;
 		width: 240px;
 		color: var(--foreground-subdued);
 

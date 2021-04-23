@@ -7,6 +7,11 @@
 				<render-template :collection="templateCollection.collection" :item="templateData" :template="template" />
 			</h1>
 		</template>
+
+		<template #subtitle>
+			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
+		</template>
+
 		<template #actions>
 			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
@@ -176,6 +181,7 @@ export default defineComponent({
 			templatePrimaryKey,
 			templateData,
 			templateDataLoading,
+			collectionInfo,
 		};
 
 		function useActiveState() {
@@ -238,7 +244,7 @@ export default defineComponent({
 
 				const endpoint = props.collection.startsWith('directus_')
 					? `/${props.collection.substring(9)}/${props.primaryKey}`
-					: `/items/${props.collection}/${props.primaryKey}`;
+					: `/items/${props.collection}/${encodeURIComponent(props.primaryKey)}`;
 
 				let fields = '*';
 
@@ -264,7 +270,7 @@ export default defineComponent({
 
 				const endpoint = collection.startsWith('directus_')
 					? `/${collection.substring(9)}/${props.relatedPrimaryKey}`
-					: `/items/${collection}/${props.relatedPrimaryKey}`;
+					: `/items/${collection}/${encodeURIComponent(props.relatedPrimaryKey)}`;
 
 				try {
 					const response = await api.get(endpoint);

@@ -281,7 +281,7 @@ describe('items', function () {
 	});
 
 	test(`delete many item`, async (url, nock) => {
-		const scope = nock().delete('/items/posts').reply(204);
+		const scope = nock().delete('/items/posts', [1, 2]).reply(204);
 
 		const sdk = new Directus<Blog>(url);
 		await sdk.items('posts').deleteMany([1, 2]);

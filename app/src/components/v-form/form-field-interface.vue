@@ -16,6 +16,7 @@
 			"
 			v-bind="(field.meta && field.meta.options) || {}"
 			:disabled="disabled"
+			:loading="loading"
 			:value="value === undefined ? field.schema.default_value : value"
 			:width="(field.meta && field.meta.width) || 'full'"
 			:type="field.type"

@@ -31,6 +31,19 @@ ADMIN_EMAIL="admin@example.com"
 ADMIN_PASSWORD="d1r3ctu5"
 ```
 
+## Persistence
+
+Containers are ephemeral, and this means that whenever you stop a container, all the data associated with it is going to
+be removed [unless you persist them](https://docs.docker.com/storage/) when creating your container.
+
+Directus image by default
+[will use the following locations](https://github.com/directus/directus/blob/main/.github/actions/build-images/rootfs/directus/images/main/Dockerfile#L93-L96)
+for data persistence (note that these can be changed through environment variables)
+
+- `/directus/uploads` for uploads
+- `/directus/database` (only when using SQLite and not configured to a different folder)
+- `/directus/extensions` for extension loadings
+
 ## Docker Compose
 
 When using Docker compose, you can use the following setup to get you started:
@@ -61,6 +74,15 @@ services:
     image: directus/directus:v9.0.0-rc.24
     ports:
       - 8055:8055
+    volumes:
+      # By default, Directus images writes uploads to /directus/uploads
+      # Always make sure your volumes matches the storage root when using
+      # local driver
+      - ./uploads:/directus/uploads
+      # Make sure to also mount the volume When using SQLite
+      # - ./database:/directus/database
+      # If you want to load extensions from the host
+      # - ./extensions:/directus/extensions
     networks:
       - directus
     depends_on:

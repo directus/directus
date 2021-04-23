@@ -173,7 +173,6 @@ item_delete_success: Element usunięty | Elementy usunięte
 this_collection: Ta kolekcja
 related_collection: Powiązana kolekcja
 related_collections: Powiązane kolekcje
-translations_collection: Kolekcja tłumaczeń
 languages_collection: Kolekcja języków
 export_data: Eksportuj dane
 format: Formatowanie
@@ -720,7 +719,6 @@ interfaces:
   repeater:
     description: Utwórz wiele wpisów o tej samej strukturze
     edit_fields: Edytuj pola
-    add_label: 'Etykieta "Dodaj nowy wiersz"'
     field_name_placeholder: Wprowadź nazwę pola...
   slider:
     slider: Suwak

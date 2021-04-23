@@ -84,6 +84,7 @@ validationError:
   nnull: Value can't be null
   required: Value is required
   unique: Value has to be unique
+  regex: Value doesn't have the correct format
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
@@ -231,7 +232,7 @@ item_delete_success: Item Deleted | Items Deleted
 this_collection: This Collection
 related_collection: Related Collection
 related_collections: Related Collections
-translations_collection: Translations Collection
+translations_collection: Translation Collection
 languages_collection: Languages Collection
 export_data: Export Data
 format: Format
@@ -356,7 +357,6 @@ users: Users
 activity: Activity
 webhooks: Webhooks
 field_width: Field Width
-add_a_new_item: Add a new item...
 add_filter: Add Filter
 upper_limit: Upper limit...
 lower_limit: Lower limit...
@@ -688,7 +688,9 @@ fields:
     archive_value: Archive Value
     unarchive_value: Unarchive Value
     sort_field: Sort Field
+    accountability: Activity & Revision Tracking
   directus_files:
+    $thumbnail: Thumbnail
     title: Title
     description: Description
     tags: Tags
@@ -761,6 +763,11 @@ fields:
     users: Users in Role
     module_list: Module Navigation
     collection_list: Collection Navigation
+field_options:
+  directus_collections:
+    track_activity_revisions: Track Activity & Revisions
+    only_track_activity: Only Track Activity
+    do_not_track_anything: Do Not Track Anything
 no_fields_in_collection: 'There are no fields in "{collection}" yet'
 do_nothing: Do Nothing
 generate_and_save_uuid: Generate and Save UUID
@@ -963,7 +970,7 @@ interfaces:
     repeater: Repeater
     description: Create multiple entries of the same structure
     edit_fields: Edit Fields
-    add_label: '"Add New Row" Label'
+    add_label: '"Create New" Label'
     field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
   slider:

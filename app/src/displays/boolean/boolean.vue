@@ -66,7 +66,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .boolean {
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 
 	.v-icon {

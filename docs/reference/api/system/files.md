@@ -150,7 +150,10 @@ will be an empty array.
 
 ```
 GET /files
+SEARCH /files
 ```
+
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
 
 ### GraphQL
 

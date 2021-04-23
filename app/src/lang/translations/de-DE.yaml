@@ -81,6 +81,7 @@ validationError:
   nnull: Der Wert darf nicht leer sein
   required: Wert erforderlich
   unique: Wert muss eindeutig sein
+  regex: Wert hat nicht das richtige Format
 all_access: Zugriff auf alles
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
@@ -227,7 +228,6 @@ item_delete_success: Element gelöscht | Elemente gelöscht
 this_collection: Diese Sammlung
 related_collection: Verknüpfte Sammlung
 related_collections: Verwandte Sammlungen
-translations_collection: Übersetzungs-Sammlung
 languages_collection: Sprachen-Sammlung
 export_data: Daten exportieren
 format: Format
@@ -352,7 +352,6 @@ users: Benutzer
 activity: Aktivität
 webhooks: Webhooks
 field_width: Feldbreite
-add_a_new_item: Neues Element hinzufügen...
 add_filter: Filter hinzufügen
 upper_limit: Obere Grenze...
 lower_limit: Untere Grenze...
@@ -677,6 +676,7 @@ fields:
     archive_value: Archivierungswert
     unarchive_value: Dearchivierungswert
     sort_field: Sortierfeld
+    accountability: Aktivitäts- und Änderungsverfolgung
   directus_files:
     title: Titel
     description: Beschreibung
@@ -750,6 +750,11 @@ fields:
     users: Benutzer in Rolle
     module_list: Modulnavigation
     collection_list: Sammlungsnavigation
+field_options:
+  directus_collections:
+    track_activity_revisions: Verfolge Aktivitäten und Änderungen
+    only_track_activity: Nur Aktivitäten verfolgen
+    do_not_track_anything: Nichts verfolgen
 no_fields_in_collection: 'Es gibt noch keine Felder in "{collection}"'
 do_nothing: Keine Aktion
 generate_and_save_uuid: UUID generieren und speichern
@@ -951,7 +956,6 @@ interfaces:
     repeater: Repeater
     description: Mehrere Einträge derselben Struktur erstellen
     edit_fields: Felder bearbeiten
-    add_label: 'Label "Neue Zeile hinzufügen"'
     field_name_placeholder: Feldnamen eingeben...
     field_note_placeholder: Feldnotiz eingeben...
   slider:
