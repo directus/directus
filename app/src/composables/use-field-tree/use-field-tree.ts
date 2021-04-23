@@ -4,7 +4,7 @@ import { Field, Relation } from '@/types';
 import { cloneDeep } from 'lodash';
 import { getRelationType } from '@/utils/get-relation-type';
 
-type FieldOption = { name: string; field: string; key: string; children?: FieldOption[] };
+export type FieldOption = { name: string; field: string; key: string; children?: FieldOption[] };
 
 export default function useFieldTree(
 	collection: Ref<string>,

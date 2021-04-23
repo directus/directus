@@ -242,8 +242,8 @@ export default defineComponent({
 			return flat;
 		}
 
-		const fieldsInCollection = computed<FieldTree[]>(() => {
-			return flatten(tree.value);
+		const fieldsInCollection = computed(() => {
+			return flatten(tree.value as FieldTree[]);
 		});
 
 		const { sort, limit, page, fields, fieldsWithRelational } = useItemOptions();
