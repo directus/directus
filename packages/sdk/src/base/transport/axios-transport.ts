@@ -64,7 +64,7 @@ export class AxiosTransport implements ITransport {
 			const token = this._storage.auth_token;
 			const expiration = this._storage.auth_expires;
 			if (options.sendAuthorizationHeaders) {
-				if (token && ((expiration !== null && expiration < Date.now()) || expiration === null)) {
+				if (token && ((expiration !== null && expiration > Date.now()) || expiration === null)) {
 					if (token.startsWith(`Bearer `)) {
 						config.headers.Authorization = token;
 					} else {
