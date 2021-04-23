@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+
+const debug = require('debug')('directus-cli');
+const devMode = require('fs').existsSync(`${__dirname}/../src`);
+const wantsCompiled = process.argv.indexOf('--compiled-build') >= 0;
+
+async function main(run) {
+	try {
+		const { error, output } = await run(process.argv);
+		if (output) {
+			await output.flush();
+		}
+
+		if (error) {
+			debug(error);
+			process.exit(1);
+		}
+
+		process.exit(0);
+	} catch (error) {
+		console.error(error);
+		process.exit(1);
+	}
+}
+
+let run = () => {};
+if (wantsCompiled || !devMode) {
+	run = require(`${__dirname}/../dist/index`).default;
+} else {
+	require('ts-node').register({ project: `${__dirname}/../tsconfig.json` });
+	run = require(`${__dirname}/../src/index`).default;
+}
+
+main(run);
