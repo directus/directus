@@ -63,7 +63,6 @@ export class UsersService extends ItemsService {
 	private async checkPasswordPolicy(passwords: string[]) {
 		const settingsService = new SettingsService({
 			schema: this.schema,
-			accountability: this.accountability,
 			knex: this.knex,
 		});
 
