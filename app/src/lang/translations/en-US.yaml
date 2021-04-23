@@ -21,6 +21,7 @@ create_webhook: Create Webhook
 invite_users: Invite Users
 email_examples: 'admin@example.com, user@example.com...'
 invite: Invite
+email_already_invited: Email "{email}" has already been invited
 emails: Emails
 connection_excellent: Excellent Connection
 connection_good: Good Connection
