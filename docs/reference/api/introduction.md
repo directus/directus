@@ -78,7 +78,7 @@ nullifying the field:
 }
 ```
 
-#### One-to-Many (/ Many-to-Many / Many-to-Any)
+#### One-to-Many (/ Many-to-Many)
 
 One-to-Many, and therefore Many-to-Many and Many-to-Any, relationships can be updated in one of two ways:
 
@@ -145,3 +145,114 @@ foreign key. This means that your data will never suddenly disappear, but it als
 orphaned items.
 
 :::
+
+#### Many-to-Any (Union Types)
+
+Many-to-Any fields work very similar to a "regular" many-to-many, with the exception that the related field can pull in
+the fields from any of the related collections, for example:
+
+```json
+{
+	"sections": [
+		{
+			"collection": "headings",
+			"item": {
+				/* headings fields */
+			}
+		},
+		{
+			"collection": "paragraphs",
+			"item": {
+				/* paragraphs fields */
+			}
+		}
+	]
+}
+```
+
+##### REST API
+
+To scope the fields that are returned per collection type, you can use the `<field>:<scope>` syntax in the fields
+parameter as follows:
+
+```
+GET /items/pages
+	?fields[]=sections.item:headings.id
+	&fields[]=sections.item:headings.title
+	&fields[]=sections.item:paragraphs.body
+	&fields[]=sections.item:paragraphs.background_color
+```
+
+##### GraphQL
+
+In GraphQL, you can use nested fragments on the Union Type to select the fields:
+
+```graphql
+query {
+	pages {
+		sections {
+			item {
+				... on headings {
+					id
+					title
+				}
+
+				... on paragraphs {
+					body
+					background_color
+				}
+			}
+		}
+	}
+}
+```
+
+::: tip Updating
+
+Updating records in a many-to-any is identical to the other relationship types.
+
+:::
+
+## SEARCH HTTP Method
+
+When using the REST API to read multiple items by (very) advanced filters, you might run into the issue where the URL
+simply can't hold enough data to include the full query structure. In those cases, you can use the SEARCH http method as
+a drop-in replacement for GET, where you're allowed to put the query into the request body as follows:
+
+**Before:**
+
+```
+GET /items/articles?filter[title][_eq]=Hello World
+```
+
+**After:**
+
+```json
+SEARCH /items/articles
+
+{
+	"query": {
+		"filter": {
+			"title": {
+				"_eq": "Hello World"
+			}
+		}
+	}
+}
+```
+
+There's a lot of discussion around whether or not to put a body in a GET request, to use POSTs to create search queries,
+or to rely on a different method altogether. As of right now, we've chosen
+[to align with IETF's _HTTP SEARCH Method_ specification](https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/).
+While we recognize this is still a draft spec, the SEARCH method has been used extensively before in the WebDAV world
+([spec](https://tools.ietf.org/html/rfc5323)), and compared to the other available options, it feels like the "cleanest"
+and most correct to handle this moving forward. As with everything else, if you have any ideas, opinions, or concerns,
+[we'd love to hear your thoughts](http://github.com/directus/directus/discussions/new).
+
+Useful reading:
+
+- [_HTTP SEARCH Method_ (IETF, 2021)](https://datatracker.ietf.org/doc/draft-ietf-httpbis-safe-method-w-body/)
+- [_Defining a new HTTP method: HTTP SEARCH_ (Tim Perry, 2021)](https://httptoolkit.tech/blog/http-search-method/)
+- [_HTTP GET with request body_ (StackOverflow, 2009 and ongoing)](https://stackoverflow.com/questions/978061/http-get-with-request-body)
+- [_Elastic Search GET body usage_ (elastic, n.d.)](https://www.elastic.co/guide/en/elasticsearch/guide/current/_empty_search.html)
+- [_Dropbox starts using POST, and why this is poor API design._ (Evert Pot, 2015)](https://evertpot.com/dropbox-post-api/)

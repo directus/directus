@@ -27,30 +27,6 @@ export const useRelationsStore = createStore({
 
 			if (!fieldInfo) return [];
 
-			if (fieldInfo.type === 'file') {
-				return [
-					{
-						many_collection: collection,
-						many_field: field,
-						one_collection: 'directus_files',
-						one_field: null,
-						junction_field: null,
-					},
-				] as Relation[];
-			}
-
-			if (['user', 'user_created', 'user_updated', 'owner'].includes(fieldInfo.type)) {
-				return [
-					{
-						many_collection: collection,
-						many_field: field,
-						one_collection: 'directus_users',
-						one_field: null,
-						junction_field: null,
-					},
-				] as Relation[];
-			}
-
 			const relations: Relation[] = this.getRelationsForCollection(collection).filter((relation: Relation) => {
 				return (
 					(relation.many_collection === collection && relation.many_field === field) ||

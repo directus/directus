@@ -30,7 +30,7 @@ export default async function bootstrap() {
 
 		logger.info('Setting up first admin role...');
 		const rolesService = new RolesService({ schema });
-		const role = await rolesService.create({ name: 'Admin', admin_access: true });
+		const role = await rolesService.createOne({ name: 'Admin', admin_access: true });
 
 		logger.info('Adding first admin user...');
 		const usersService = new UsersService({ schema });
@@ -49,7 +49,7 @@ export default async function bootstrap() {
 			logger.info(`No admin password provided. Defaulting to "${adminPassword}"`);
 		}
 
-		await usersService.create({ email: adminEmail, password: adminPassword, role });
+		await usersService.createOne({ email: adminEmail, password: adminPassword, role });
 
 		if (env.PROJECT_NAME && typeof env.PROJECT_NAME === 'string' && env.PROJECT_NAME.length > 0) {
 			const settingsService = new SettingsService({ schema });

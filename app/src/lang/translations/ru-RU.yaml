@@ -222,7 +222,6 @@ item_delete_success: Элемент Удален | Элементы Удален
 this_collection: Эта коллекция
 related_collection: Связанная Коллекция
 related_collections: Связанные Коллекции
-translations_collection: Коллекция Переводов
 languages_collection: Коллекция Языков
 export_data: Экспорт Данных
 format: Формат
@@ -347,7 +346,6 @@ users: Пользователи
 activity: Активность
 webhooks: Webhooks
 field_width: Ширина поля
-add_a_new_item: Добавить новый элемент...
 add_filter: Добавить Фильтр
 upper_limit: Верхний предел...
 lower_limit: Нижний предел...
@@ -939,7 +937,6 @@ interfaces:
     repeater: Репитер
     description: Создать несколько записей одной структуры
     edit_fields: Редактировать Поля
-    add_label: 'Метка "Добавить Новую Строку"'
     field_name_placeholder: Введите название поля...
     field_note_placeholder: Введите примечание к полю...
   slider:

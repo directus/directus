@@ -13,7 +13,7 @@ export default async function rolesCreate({ name, admin }: any) {
 		const schema = await getSchema();
 		const service = new RolesService({ schema: schema, knex: database });
 
-		const id = await service.create({ name, admin_access: admin });
+		const id = await service.createOne({ name, admin_access: admin });
 		console.log(id);
 		database.destroy();
 		process.exit(0);

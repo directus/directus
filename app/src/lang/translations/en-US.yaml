@@ -232,7 +232,7 @@ item_delete_success: Item Deleted | Items Deleted
 this_collection: This Collection
 related_collection: Related Collection
 related_collections: Related Collections
-translations_collection: Translations Collection
+translations_collection: Translation Collection
 languages_collection: Languages Collection
 export_data: Export Data
 format: Format
@@ -357,7 +357,6 @@ users: Users
 activity: Activity
 webhooks: Webhooks
 field_width: Field Width
-add_a_new_item: Add a new item...
 add_filter: Add Filter
 upper_limit: Upper limit...
 lower_limit: Lower limit...
@@ -691,6 +690,7 @@ fields:
     sort_field: Sort Field
     accountability: Activity & Revision Tracking
   directus_files:
+    $thumbnail: Thumbnail
     title: Title
     description: Description
     tags: Tags
@@ -970,7 +970,7 @@ interfaces:
     repeater: Repeater
     description: Create multiple entries of the same structure
     edit_fields: Edit Fields
-    add_label: '"Add New Row" Label'
+    add_label: '"Create New" Label'
     field_name_placeholder: Enter field name...
     field_note_placeholder: Enter field note...
   slider:

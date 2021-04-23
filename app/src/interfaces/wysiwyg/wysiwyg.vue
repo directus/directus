@@ -4,7 +4,9 @@
 			ref="editorElement"
 			:init="editorOptions"
 			:disabled="disabled"
+			model-events="change keydown blur focus paste ExecCommand SetContent"
 			v-model="_value"
+			@change="onChange"
 			@onFocusIn="setFocus(true)"
 			@onFocusOut="setFocus(false)"
 		/>
@@ -307,8 +309,8 @@ export default defineComponent({
 				style_formats: styleFormats,
 				file_picker_types: 'customImage customMedia image media',
 				link_default_protocol: 'https',
-				...(props.tinymceOverrides || {}),
 				setup,
+				...(props.tinymceOverrides || {}),
 			};
 		});
 
@@ -342,6 +344,9 @@ export default defineComponent({
 			closeCodeDrawer,
 			saveCode,
 			sourceCodeButton,
+			onChange(a: any) {
+				console.log(a);
+			},
 		};
 
 		function setup(editor: any) {
@@ -358,6 +363,7 @@ export default defineComponent({
 			const body = editorElement.value.$el.parentElement?.querySelector('.tox-tinymce');
 
 			if (body == null) return;
+
 			if (val) {
 				body.classList.add('focus');
 			} else {

@@ -13,7 +13,7 @@ export default function useSort(
 
 	const sortedItems = computed(() => {
 		const sField = relation.value.sortField;
-		if (sField === null || sort.value.by !== sField) return null;
+		if (sField === null || sort.value.by !== sField) return items.value;
 
 		const desc = sort.value.desc;
 		const sorted = sortBy(items.value, [sField]);

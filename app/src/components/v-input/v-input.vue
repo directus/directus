@@ -283,6 +283,7 @@ body {
 	}
 
 	.input {
+		position: relative;
 		display: flex;
 		flex-grow: 1;
 		align-items: center;
