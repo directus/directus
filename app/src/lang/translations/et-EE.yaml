@@ -213,21 +213,44 @@ revision_delta_deleted: Kustutatud
 revision_delta_reverted: Taastatud
 revision_delta_other: Versioon
 revision_delta_by: '{date} {user}'
+private_user: Peidetud kasutaja
+revision_preview: Versiooni eelvaade
 updates_made: Uuendused Tehtud
 leave_comment: Jäta kommentaar...
 post_comment_success: Kommentaar postitatud
+item_create_success: Kirje loodud | Kirjed loodud
+item_update_success: Kirje muudetud | Kirjed muudetud
+item_delete_success: Kirje kustutatud | Kirjed kustutatud
 this_collection: See kogu
 related_collection: Seotud kogu
+related_collections: Seotud andmekogud
+translations_collection: Tõlgete andmekogu
+languages_collection: Keelte andmekogu
 export_data: Ekspordi andmed
 format: Vorming
+use_current_filters_settings: Kasuta praegusi filtreid ja seadeid
+export_collection: 'Ekspordi {collection}'
+last_page: Viimane leht
+last_access: Viimati vaadatud
+fill_template: Täida mallist
+a_unique_table_name: Unikaalne tabeli nimetus...
+a_unique_column_name: Unikaalne tulba nimetus...
+enable_custom_values: Luba kohandatud väljad
 submit: Saada
 move_to_folder: Teisalda kausta
 move: Liiguta
 system: Süsteem
+add_field_related: Lisa väli seotud andmekogusse
 interface: Kasutajaliides
 today: Täna
 yesterday: Eile
 delete_comment: Kustuta Kommentaar
+date-fns_date: PPP
+date-fns_time: 'HH:mm:ss'
+date-fns_time_no_seconds: 'HH:mm'
+date-fns_date_short: 'd. MMM'
+date-fns_time_short: 'H:mm'
+date-fns_date_short_no_year: d. MMM
 month: Kuu
 year: Aasta
 select_all: Vali Kõik
@@ -244,6 +267,8 @@ months:
   october: Oktoober
   november: November
   december: Detsember
+drag_mode: Lohistusrežiim
+cancel_crop: Tühista lõikamine
 original: Originaal
 url: URL
 import: Impordi
@@ -260,6 +285,7 @@ zoom: Suurenda
 download: Laadi alla
 open: Ava
 open_in_new_window: Ava Uues Aknas
+foreground_color: Esiplaani värv
 background_color: Taustavärv
 upload_from_device: Lae Fail seadmest
 choose_from_library: Vali teegist
@@ -277,30 +303,121 @@ creating_new_collection: Uue kogumi loomine
 created_by: Autor
 created_on: Loodud
 creating_collection_info: Nimeta kogum ja säti unikaalne võtme väli...
+creating_collection_system: Luba ja nimeta ümber valitud väljad.
+auto_increment_integer: Automaatselt suurenev number
 generated_uuid: Genereeritud UUID
 manual_string: Sisesta sõne käsitsi
 save_and_create_new: Salvesta ja Lisa Uus
 save_and_stay: Salvesta ja jää
 save_as_copy: Salvesta koopiana
+add_existing: Lisa olemasolev
 comments: Kommentaarid
+no_comments: Kommentaarid puuduvad
+click_to_expand: Kliki suurendamiseks
+select_item: Vali kirje
+no_items: Kirjeid pole
+search_items: Otsi kirjeid...
+disabled: keelatud
+information: Teave
+report_bug: Teata veast
 request_feature: Taotle funktsiooni
+interface_not_found: '"{interface}" liidest ei leitud.'
+reset_interface: Nulli liides
+display_not_found: 'Vaadet "{display}" ei leitud.'
+reset_display: Nulli vaade
+m2a_builder: M2A koostamine
 item_count: 'Kirjeid pole | Üks kirje | {count} kirjed'
+no_items_copy: Selles kogus pole veel ühtegi kiret.
+file_count: 'Faile pole | Leiti 1 fail | {count} faili'
+no_files_copy: Faile pole.
+user_count: 'Kasutajaid pole | Üks kasutaja | {count} kasutajat'
+no_users_copy: Selles rollis pole ühtegi kasutajat.
+webhooks_count: 'Webhooke ei leitud | Üks webhook | {count} webhooki'
+no_webhooks_copy: Webhooke ei leitud.
+all_items: Kõik kirjed
+csv: CSV
+no_collections: Andmekogusid pole
 create_collection: Loo kogu
+no_collections_copy_admin: Sa pole lisanud veel ühtegi andmekogu. Alustamiseks kliki nupul.
+no_collections_copy: Andmekogusid ei leitud. Palun võta ühendust süsteemi administraatoriga.
 relationship_not_setup: Seos pole korrektselt seadistatud
+collection_field_not_setup: Andmekogu väli on valesti seadistatud
+select_a_collection: Vali andmekogu
+active: aktiivne
 users: Kasutajad
 activity: Tegevus
 webhooks: Webhooks
 field_width: Välja laius
+add_filter: Lisa filter
+upper_limit: Ülemine piir
+lower_limit: Ülemine piir...
 user_directory: Kasutaja kaust
+documentation: Dokumentatsioon
+sidebar: Külgmenüü
 duration: Kestus
+charset: Sümbolid
+second: sekundit
+file_moved: Fail on liigutatud
+collection_created: Andmekogu on lisatud
 modified_on: Muudetud
+card_size: Kaardi suurus
 sort_field: Sorteeti välja
+add_sort_field: "Lisa sorteerimisväli\n"
+sort: Sorteeri
 status: Staatus
+toggle_manual_sorting: Luba käsitsi sorteerimine
+bookmark_doesnt_exist: Järjehoidjat ei leitud
+bookmark_doesnt_exist_copy: Järjehoidja, mida sa soovid kasutada, ei leitud.
+bookmark_doesnt_exist_cta: Tagasi andmekogusse
+select_an_item: Vali kirje...
 edit: Muuda
+enabled: lubatud
+disable_tfa: Keela 2FA
+tfa_scan_code: Kaheastmeliseks autoriseerimiseks skaneeri kood autoriseerimise äpist.
+enter_otp_to_disable_tfa: Sisesta OTP, et keelata 2FA
+create_account: Loo konto
+account_created_successfully: Konto edukalt loodud
+auto_fill: Täida automaatselt
+corresponding_field: Seotud väli
+errors:
+  COLLECTION_NOT_FOUND: "Andmekogu ei leitud"
+  FIELD_NOT_FOUND: "Välja ei leitud\n"
+  FORBIDDEN: Keelatud
+  INVALID_CREDENTIALS: Vale kasutajanimi või parool
+  INVALID_OTP: Vale ühekordne parool
+  INVALID_PAYLOAD: Vigane päring
+  INVALID_QUERY: Vigane päring
+  ITEM_LIMIT_REACHED: Kirjete limiit sai täis
+  ITEM_NOT_FOUND: Kirjet ei leitud
+  ROUTE_NOT_FOUND: Ei leitud
+  RECORD_NOT_UNIQUE: Kirje pole unikaalne
+  UNKNOWN: Ootamatu viga
+value_hashed: Väärtus salastati
+bookmark_name: Järjehoidja nimi...
+create_bookmark: Loo järjehoidja
+edit_bookmark: Muuda järjehoidjat
 bookmarks: Järjehoidjad
+presets: Eelseadistused
+unexpected_error: Ootamatu viga
+unexpected_error_copy: Ilmnes tõrge. Palun proovi hiljem uuesti.
+copy_details: Kopeeri detailid
+no_app_access: Rakenduse ligipääs puudub
+no_app_access_copy: See kasutaja ei tohi adminni rakendust kasutada.
+password_reset_sent: Saadame teile lingi salasõna muutmiseks
+password_reset_successful: Salasõna on edukalt lähtestatud
 back: Tagasi
+editing_image: Pildi muutmine
 square: Ruut
+free: Vaba
+flip_horizontal: Peegelda horisontaalselt
+flip_vertical: Peegelda vertikaalselt
+aspect_ratio: Külgede suhe
 rotate: Pööra
+all_users: Kõik kasutajad
+delete_collection: Kustuta andmekogu
+update_collection_success: Andmekogu uuendatud
+delete_collection_success: Andmekogu kustutatud
+start_end_of_count_items: '{start}-{end} / {count}'
 placeholder: Kohatäitja
 icon_left: Ikoon vasakul
 icon_right: Ikoon paremal
@@ -348,6 +465,7 @@ wysiwyg_options:
   alignleft: Joonda Vasakule
   alignnone: Eemalda Joondus
   alignright: Joonda Paremale
+  forecolor: Esiplaani värv
   backcolor: Taustavärv
   codeblock: Kood
   copy: Kopeeri
@@ -418,6 +536,7 @@ fields:
     width: Laius
     uploaded_on: Üleslaaditud
     height: Kõrgus
+    charset: Sümbolid
     duration: Kestus
   directus_users:
     first_name: Eesnimi
@@ -434,6 +553,8 @@ fields:
     tfa_secret: Kaheastmeline autentimine
     status: Staatus
     role: Roll
+    last_page: Viimane leht
+    last_access: Viimati vaadatud
   directus_settings:
     project_name: Projekti nimi
   directus_fields:
@@ -507,6 +628,8 @@ interfaces:
     datetime: Kuupäev-kellaaeg
   display-template:
     display-template: Vaate mall
+    collection_field_not_setup: Andmekogu väli on valesti seadistatud
+    select_a_collection: Vali andmekogu
   divider:
     divider: Eraldaja
   dropdown:
@@ -542,6 +665,8 @@ interfaces:
   text-input:
     text-input: Tekstisisestus
     trim: Kärbi
+  toggle:
+    label_default: lubatud
   translations:
     display_template: Vaate mall
   user:
