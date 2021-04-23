@@ -74,10 +74,6 @@ will be an empty array.
 
 If your collection is a singleton, this endpoint will return the item.
 
-#### Example for M2M relation
-
-Let's imagine each article can be related to one or multiple `themes`.
-
 </div>
 <div class="right">
 
@@ -111,27 +107,6 @@ query {
 		author {
 			first_name
 		}
-	}
-}
-```
-
-##### Example with themes related to an article with a M2M relation
-
-```graphql
-query {
-	articles {
-		id
-		title
-		author {
-			first_name
-		}
-		themes {
-		    item {
-		      ... on them {
-			  label
-		      }
-		    }
-          	}
 	}
 }
 ```
