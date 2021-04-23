@@ -5,10 +5,13 @@
 		</div>
 
 		<v-list v-else>
+			<v-notice v-if="previewValues.length === 0">
+				{{ $t('no_items') }}
+			</v-notice>
+
 			<draggable
 				:force-fallback="true"
 				:value="previewValues"
-				handle=".drag-handle"
 				@input="onSort"
 				:set-data="hideDragImage"
 				:disabled="!o2mRelation.sort_field"
@@ -18,6 +21,7 @@
 						:key="item.$index"
 						v-if="allowedCollections.includes(item[anyRelation.one_collection_field])"
 						block
+						:dense="previewValues.length > 4"
 						@click="editExisting((value || [])[item.$index])"
 					>
 						<v-icon class="drag-handle" left name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
@@ -37,7 +41,6 @@
 						/>
 						<div class="spacer" />
 						<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
-						<v-icon class="launch-icon" name="launch" />
 					</v-list-item>
 
 					<v-list-item v-else :key="item.$index" block>
@@ -638,6 +641,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.v-list {
+	--v-list-padding: 0 0 4px;
+}
+
 .v-list-item {
 	.collection {
 		margin-right: 1ch;

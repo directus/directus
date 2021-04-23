@@ -102,10 +102,10 @@ export default defineComponent({
 		&::before {
 			position: absolute;
 			top: 7px;
-			left: -10px;
+			left: -7px;
 			display: block;
-			width: 6px;
-			height: 6px;
+			width: 4px;
+			height: 4px;
 			background-color: var(--foreground-subdued);
 			border-radius: 4px;
 			content: '';

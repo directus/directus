@@ -1,6 +1,8 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { IStorage } from '../../storage';
+import axios, { AxiosInstance } from 'axios';
 import { ITransport, TransportMethods, TransportResponse, TransportError, TransportOptions } from '../../transport';
+
+export type AxiosTransportRefreshHandler = () => Promise<void>;
 
 /**
  * Axios transport implementation
@@ -8,12 +10,14 @@ import { ITransport, TransportMethods, TransportResponse, TransportError, Transp
 export class AxiosTransport implements ITransport {
 	private _url: string;
 	private _storage: IStorage;
+	private _refresh: () => Promise<void>;
 	public _axios: AxiosInstance;
 
-	constructor(url: string, storage: IStorage) {
+	constructor(url: string, storage: IStorage, refresh: AxiosTransportRefreshHandler = () => Promise.resolve()) {
 		this._url = url;
 		this._storage = storage;
 		this._axios = null as any;
+		this._refresh = refresh;
 		this.url = url;
 	}
 
@@ -27,7 +31,6 @@ export class AxiosTransport implements ITransport {
 			baseURL: value,
 			withCredentials: true,
 		});
-		this._axios.interceptors.request.use(this.createRequestConfig.bind(this));
 	}
 
 	get axios(): AxiosInstance {
@@ -42,13 +45,35 @@ export class AxiosTransport implements ITransport {
 	): Promise<TransportResponse<T, R>> {
 		try {
 			options = options || {};
-			const response = await this.axios.request({
+			options.sendAuthorizationHeaders = options.sendAuthorizationHeaders ?? true;
+			options.refreshTokenIfNeeded = options.refreshTokenIfNeeded ?? true;
+			options.headers = options.headers ?? {};
+
+			if (options.refreshTokenIfNeeded) {
+				await this._refresh();
+			}
+
+			const config = {
 				method,
 				url: path,
 				data: data,
 				params: options.params,
 				headers: options.headers,
-			});
+			};
+
+			const token = this._storage.auth_token;
+			const expiration = this._storage.auth_expires;
+			if (options.sendAuthorizationHeaders) {
+				if (token && ((expiration !== null && expiration > Date.now()) || expiration === null)) {
+					if (token.startsWith(`Bearer `)) {
+						config.headers.Authorization = token;
+					} else {
+						config.headers.Authorization = `Bearer ${token}`;
+					}
+				}
+			}
+
+			const response = await this.axios.request(config);
 
 			const responseData = response.data;
 			const content = {
@@ -109,20 +134,5 @@ export class AxiosTransport implements ITransport {
 
 	async patch<T = any, D = any>(path: string, data?: D, options?: TransportOptions): Promise<TransportResponse<T>> {
 		return await this.request('patch', path, data, options);
-	}
-
-	private createRequestConfig(config: AxiosRequestConfig): AxiosRequestConfig {
-		let token = this._storage.auth_token;
-		if (!token) {
-			return config;
-		}
-
-		if (token.startsWith(`Bearer `)) {
-			config.headers.Authorization = token;
-		} else {
-			config.headers.Authorization = `Bearer ${token}`;
-		}
-
-		return config;
 	}
 }

@@ -162,10 +162,12 @@ export default async function getASTFromQuery(
 				for (const relatedCollection of allowedCollections) {
 					child.children[relatedCollection] = await parseFields(
 						relatedCollection,
-						Array.isArray(nestedFields) ? nestedFields : (nestedFields as anyNested)[relatedCollection] || ['*']
+						Array.isArray(nestedFields) ? nestedFields : (nestedFields as anyNested)[relatedCollection] || ['*'],
+						deep?.[`${relationalField}:${relatedCollection}`]
 					);
 
-					child.query[relatedCollection] = {};
+					child.query[relatedCollection] = getDeepQuery(deep?.[`${relationalField}:${relatedCollection}`] || {});
+
 					child.relatedKey[relatedCollection] = schema.collections[relatedCollection].primary;
 				}
 			} else if (relatedCollection) {

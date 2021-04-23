@@ -81,13 +81,10 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const menuActive = ref(false);
-		const { collection } = toRefs(props);
+		const { collection, inject } = toRefs(props);
 
 		const { info } = useCollection(collection);
-		const { tree } = useFieldTree(collection, {
-			fields: props.inject?.fields.filter((field) => field.collection === props.collection) || [],
-			relations: props.inject?.relations || [],
-		});
+		const { tree } = useFieldTree(collection, false, inject);
 
 		const _value = computed({
 			get() {

@@ -1,8 +1,18 @@
 <template>
 	<div class="repeater">
-		<v-list>
+		<v-notice v-if="!value || value.length === 0">
+			{{ $t('no_items') }}
+		</v-notice>
+
+		<v-list v-if="value && value.length > 0">
 			<draggable :force-fallback="true" :value="value" @input="$emit('input', $event)" handler=".drag-handle">
-				<v-list-item v-for="(item, index) in value" :key="item.id" block @click="active = index">
+				<v-list-item
+					:dense="value.length > 4"
+					v-for="(item, index) in value"
+					:key="item.id"
+					block
+					@click="active = index"
+				>
 					<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template :fields="fields" :item="item" :template="templateWithDefaults" />
 					<div class="spacer" />
@@ -11,7 +21,6 @@
 			</draggable>
 		</v-list>
 		<v-button @click="addNew" class="add-new" v-if="showAddNew">
-			<v-icon name="add" />
 			{{ addLabel }}
 		</v-button>
 
@@ -66,7 +75,7 @@ export default defineComponent({
 		},
 		addLabel: {
 			type: String,
-			default: i18n.t('add_a_new_item'),
+			default: i18n.t('create_new'),
 		},
 		limit: {
 			type: Number,
@@ -180,9 +189,17 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
+.v-notice {
+	margin-bottom: 4px;
+}
+
+.v-list {
+	--v-list-padding: 0 0 4px;
+}
+
 .v-list-item {
 	display: flex;
-	color: var(--foreground-normal);
 	cursor: pointer;
 }
 

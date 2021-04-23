@@ -74,6 +74,30 @@ body {
 	height: var(--input-height-tall);
 }
 
+.block-list-item {
+	width: 100%;
+	height: var(--input-height);
+	border-radius: var(--border-radius);
+
+	@include loader;
+
+	& + & {
+		margin-top: 8px;
+	}
+}
+
+.block-list-item-dense {
+	width: 100%;
+	height: 44px;
+	border-radius: var(--border-radius);
+
+	@include loader;
+
+	& + & {
+		margin-top: 4px;
+	}
+}
+
 .text {
 	flex-grow: 1;
 	height: 12px;

@@ -6,7 +6,7 @@
 			{{ $t('disabled') }}
 		</v-notice>
 
-		<div class="image-preview" v-else-if="image" :class="{ 'is-svg': image.type.includes('svg') }">
+		<div class="image-preview" v-else-if="image" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
 			<img :src="src" alt="" role="presentation" />
 
 			<div class="shadow" />

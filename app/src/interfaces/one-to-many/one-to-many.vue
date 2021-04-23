@@ -3,7 +3,19 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="one-to-many" v-else>
-		<v-list>
+		<template v-if="loading">
+			<v-skeleton-loader
+				v-for="n in (value || []).length || 3"
+				:key="n"
+				:type="(value || []).length > 4 ? 'block-list-item-dense' : 'block-list-item'"
+			/>
+		</template>
+
+		<v-notice v-else-if="sortedItems.length === 0">
+			{{ $t('no_items') }}
+		</v-notice>
+
+		<v-list v-else>
 			<draggable
 				:force-fallback="true"
 				:value="sortedItems"
@@ -11,7 +23,13 @@
 				handler=".drag-handle"
 				:disabled="!relation.sort_field"
 			>
-				<v-list-item v-for="item in sortedItems" :key="item.id" block @click="editItem(item)">
+				<v-list-item
+					:dense="sortedItems.length > 4"
+					v-for="item in sortedItems"
+					:key="item.id"
+					block
+					@click="editItem(item)"
+				>
 					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template :collection="relation.many_collection" :item="item" :template="templateWithDefaults" />
 					<div class="spacer" />
@@ -58,12 +76,12 @@ import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { Filter, Field } from '@/types';
-import { Header, Sort } from '@/components/v-table/types';
 import { isEqual, sortBy } from 'lodash';
 import { get } from 'lodash';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import Draggable from 'vuedraggable';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -99,19 +117,22 @@ export default defineComponent({
 		const fieldsStore = useFieldsStore();
 
 		const { relation, relatedCollection, relatedPrimaryKeyField } = useRelation();
-		const { tableHeaders, items, loading } = useTable();
-		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
-		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
-		const { sort, sortItems, sortedItems } = useSort();
 
 		const templateWithDefaults = computed(
 			() => props.template || relatedCollection.value.meta?.display_template || `{{${relation.value.many_primary}}}`
 		);
-		const fields = computed(() => getFieldsFromTemplate(templateWithDefaults.value));
+
+		const fields = computed(() =>
+			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), relatedCollection.value.collection)
+		);
+
+		const { items, loading } = usePreview();
+		const { currentlyEditing, editItem, editsAtStart, stageEdits, cancelEdit } = useEdits();
+		const { stageSelection, selectModalActive, selectionFilters } = useSelection();
+		const { sort, sortItems, sortedItems } = useSort();
 
 		return {
 			relation,
-			tableHeaders,
 			loading,
 			currentlyEditing,
 			editItem,
@@ -195,7 +216,7 @@ export default defineComponent({
 		}
 
 		function useSort() {
-			const sort = ref<Sort>({ by: relation.value.sort_field || fields.value[0], desc: false });
+			const sort = ref({ by: relation.value.sort_field || fields.value[0], desc: false });
 
 			function sortItems(newItems: Record<string, any>[]) {
 				if (relation.value.sort_field === null) return;
@@ -237,10 +258,7 @@ export default defineComponent({
 			return { relation, relatedCollection, relatedPrimaryKeyField };
 		}
 
-		function useTable() {
-			// Using a ref for the table headers here means that the table itself can update the
-			// values if it needs to. This allows the user to manually resize the columns for example
-			const tableHeaders = ref<Header[]>([]);
+		function usePreview() {
 			const loading = ref(false);
 			const items = ref<Record<string, any>[]>([]);
 
@@ -305,41 +323,7 @@ export default defineComponent({
 				{ immediate: true }
 			);
 
-			// Seeing we don't care about saving those tableHeaders, we can reset it whenever the
-			// fields prop changes (most likely when we're navigating to a different o2m context)
-			watch(
-				() => fields.value,
-				() => {
-					tableHeaders.value = (fields.value.length > 0 ? fields.value : getDefaultFields())
-						.map((fieldKey) => {
-							const field = fieldsStore.getField(relatedCollection.value.collection, fieldKey);
-
-							if (!field) return null;
-
-							const header: Header = {
-								text: field.name,
-								value: fieldKey,
-								align: 'left',
-								sortable: true,
-								width: null,
-								field: {
-									display: field.meta?.display,
-									displayOptions: field.meta?.display_options,
-									interface: field.meta?.interface,
-									interfaceOptions: field.meta?.options,
-									type: field.type,
-									field: field.field,
-								},
-							};
-
-							return header;
-						})
-						.filter((h) => h) as Header[];
-				},
-				{ immediate: true }
-			);
-
-			return { tableHeaders, items, loading };
+			return { items, loading };
 		}
 
 		function useEdits() {
@@ -447,6 +431,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.v-list {
+	--v-list-padding: 0 0 4px;
+}
+
 .actions {
 	margin-top: 8px;
 }

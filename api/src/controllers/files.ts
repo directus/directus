@@ -110,14 +110,15 @@ router.post(
 		}
 
 		try {
-			if (Array.isArray(keys)) {
+			if (Array.isArray(keys) && keys.length > 1) {
 				const records = await service.readMany(keys, req.sanitizedQuery);
 
 				res.locals.payload = {
 					data: records,
 				};
 			} else {
-				const record = await service.readOne(keys, req.sanitizedQuery);
+				const key = Array.isArray(keys) ? keys[0] : keys;
+				const record = await service.readOne(key, req.sanitizedQuery);
 
 				res.locals.payload = {
 					data: record,

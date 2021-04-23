@@ -14,7 +14,6 @@
 			<v-icon class="translate" name="translate" left />
 			<render-template :template="languagesTemplate" :collection="languagesCollection" :item="languageItem" />
 			<div class="spacer" />
-			<v-icon class="launch" name="launch" />
 		</v-list-item>
 
 		<drawer-item
@@ -332,15 +331,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-.language-row {
-	.launch {
-		transition: color var(--fast) var(--transition);
-	}
-
-	&:hover .launch {
-		--v-icon-color: var(--foreground-normal);
-	}
-}
-</style>
