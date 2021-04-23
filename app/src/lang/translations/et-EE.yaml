@@ -55,6 +55,8 @@ archive_confirm: Oled kindel, et soovid eemaldada selle üksuse?
 archive_confirm_count: >-
   Üksuseid pole valitud | Oled kindel, et soovid arhiveerida seda üksust? | Oled kindel, et soovid arhiveerida neid {count} üksuseid?
 reset_system_permissions_to: 'Lähtesta süsteemi load:'
+reset_system_permissions_copy: See tegevus kirjutab üle kõik eelnevad süsteemsetele kogudele kohandatud load. Kas oled kindel?
+recommended_defaults: Soovituslikud vaikeväärtused
 unarchive: Eemalda arhiivist
 unarchive_confirm: Oled kindel, et soovid selle üksuse arhiivist eemaldada?
 nested_files_folders_will_be_moved: Pesastatud failid ja kaustad liigutatakse üks aste ülesse.
@@ -75,11 +77,13 @@ validationError:
   null: Väärtus peab olema null
   nnull: Väärtus ei saa olla null
   required: Väärtus on nõutud
+  regex: Väärtuse vorming on vigane
 all_access: Ligipääs kõigele
 no_access: Ei ole ligipääsu
 use_custom: Kasuta kohandatud
 field_standard: Standard
 field_m2o: M2O Seos
+field_m2a: M2A seosed
 field_o2m: O2M Seos
 field_m2m: M2M Seos
 field_translations: Tõlked
@@ -89,6 +93,7 @@ field_validation: Välja valideerimine
 field_presets: Välja eelseadistused
 permissions_for_role: '{role} rollil lubatud üksuste {action}.'
 fields_for_role: '{role} rollil lubatud väljade {action}.'
+validation_for_role: 'Tegevuse {action} jaoks on vajalik roll {role}.'
 delete_field: Kustuta väli
 language: Keel
 camera: Kaamera
