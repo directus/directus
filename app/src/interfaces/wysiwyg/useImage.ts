@@ -60,7 +60,11 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string>) {
 	}
 
 	function onImageSelect(image: Record<string, any>) {
-		const imageUrl = addTokenToURL(getPublicURL() + 'assets/' + image.id, imageToken.value);
+		let imageUrl = getPublicURL() + 'assets/' + image.id;
+
+		if (imageToken.value) {
+			imageUrl = addTokenToURL(imageUrl, imageToken.value);
+		}
 
 		imageSelection.value = {
 			imageUrl,
