@@ -30,7 +30,7 @@ export class HumanOutputFormat implements IOutputFormat<HumanOutputFormatOptions
 			})
 			.option('stacktrace', {
 				type: 'boolean',
-				default: true,
+				default: process.env.DEBUG ? true : false,
 				description: 'Display extended information on error',
 			})
 			.option('table', {
@@ -121,10 +121,11 @@ export class HumanOutputFormat implements IOutputFormat<HumanOutputFormatOptions
 	}
 
 	async formatError(err: CLIError, options: HumanOutputFormatOptions): Promise<string> {
-		const builder = new OutputBuilder(FullTerminalWidth);
+		const builder = new OutputBuilder(2, FullTerminalWidth);
 		await builder.error(err, {
 			stacktrace: options.stacktrace,
 		});
+
 		return await this.formatText(await builder.get(), { err }, options);
 	}
 }

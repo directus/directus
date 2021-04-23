@@ -1,4 +1,6 @@
 import { Argv } from 'yargs';
+import { CLIError } from './core/exceptions';
+import { IOutput } from './output';
 import { Toolbox } from './toolbox';
 
 export type Features = {
@@ -21,9 +23,15 @@ export type Settings<P = {}> = {
 	options?(builder: Argv): Argv<P>;
 };
 
-export type Handler<T extends Toolbox = Toolbox, P = {}> = (toolbox: T, params: P) => Promise<void>;
+export type Handler<T extends Toolbox = Toolbox, P = {}, R extends any = void> = (toolbox: T, params: P) => Promise<R>;
 
-export type Command<T extends Toolbox = Toolbox, P = {}> = {
+export type CommandResult<T extends any> = {
+	error?: CLIError;
+	output?: IOutput;
+	result?: T;
+};
+
+export type Command<T extends Toolbox = Toolbox, P = {}, R extends any = void> = {
 	settings?: Settings<P>;
 	run: {
 		/**
@@ -32,6 +40,6 @@ export type Command<T extends Toolbox = Toolbox, P = {}> = {
 		$directus: {
 			settings: Settings<P>;
 		};
-		(toolbox: T): void | Promise<void>;
+		(toolbox: T): R | Promise<CommandResult<R>>;
 	};
 };

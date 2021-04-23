@@ -3,18 +3,11 @@ import * as path from 'path';
 import { build } from 'gluegun';
 import { command } from './core/command';
 import { Toolbox } from './toolbox';
-import { IOutput } from './output';
-import { CLIError } from './core/exceptions';
+import { CommandResult } from './command';
 
-export type Result<T extends any> = {
-	error?: CLIError;
-	output?: IOutput;
-	result?: T;
-};
-
-export default async function <T extends any>(argv: string[]): Promise<Result<T>> {
+export default async function <T extends any>(argv: string[]): Promise<CommandResult<T>> {
 	// create a runtime
-	const runtime = build('directus')
+	const runtime = build('directusctl')
 		.exclude([
 			'meta',
 			'strings',
@@ -36,7 +29,7 @@ export default async function <T extends any>(argv: string[]): Promise<Result<T>
 		hidden: false,
 	});
 
-	runtime.addPlugin('./node_modules/directus/dist/cli', {
+	runtime.addPlugin('./node_modules/directus/dist/cli/new', {
 		name: 'directus-api',
 		hidden: false,
 		required: false,
@@ -60,7 +53,7 @@ export default async function <T extends any>(argv: string[]): Promise<Result<T>
 		}
 	) as any;
 
-	const data: Result<T> = {};
+	const data: CommandResult<T> = {};
 
 	try {
 		const { result, output } = await runtime.run(argv);

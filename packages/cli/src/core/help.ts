@@ -13,12 +13,14 @@ import { CommandHelp, GeneralHelp, IHelp, OptionHelp } from '../help';
 import { IOptions } from '../options';
 
 export class Help implements IHelp {
+	private entrypoint: string;
 	private options: IOptions;
 	private output: IOutput;
 	private runtime: Runtime;
 
-	constructor(deps: { /*events: IEvents;*/ output: IOutput; runtime: Runtime; options: IOptions }) {
+	constructor(entrypoint: string, deps: { /*events: IEvents;*/ output: IOutput; runtime: Runtime; options: IOptions }) {
 		//this.events = deps.events;
+		this.entrypoint = entrypoint;
 		this.output = deps.output;
 		this.runtime = deps.runtime;
 		this.options = deps.options;
@@ -27,7 +29,7 @@ export class Help implements IHelp {
 	async getHelp(): Promise<GeneralHelp> {
 		const data: GeneralHelp = {
 			description: `Directus CLI version ${require(`${__dirname}/../../package.json`).version}`,
-			synopsis: `directus <command> [options]`,
+			synopsis: `${this.entrypoint} <command> [options]`,
 			commands: this.runtime
 				.commands!.reduce(
 					(commands, command) => {
@@ -121,7 +123,7 @@ export class Help implements IHelp {
 		const gluegun = (command as any) as GluegunCommand;
 		const synopsis =
 			settings.synopsis ||
-			['directus', ...(gluegun.commandPath || []), settings?.parameters ?? '', '[options]']
+			[this.entrypoint, ...(gluegun.commandPath || []), settings?.parameters ?? '', '[options]']
 				.filter((p) => p != '')
 				.join(' ');
 		const description = settings.description ?? 'No command description provided';
@@ -141,12 +143,14 @@ export class Help implements IHelp {
 				})
 			);
 
+		const variables = (text: string) => text.replace(/\$0/g, this.entrypoint);
+
 		return {
-			synopsis,
-			description,
-			documentation,
-			options,
-			usage,
+			usage: variables(usage),
+			synopsis: variables(synopsis),
+			description: variables(description),
+			documentation: variables(documentation),
+			options: options,
 		};
 	}
 
@@ -158,8 +162,8 @@ export class Help implements IHelp {
 				await builder.skip();
 				await builder.section('Description', (builder) => builder.line(data.description));
 				await builder.section('Synopsis', (builder) => builder.line(data.synopsis));
-				await builder.section('Documentation', (builder) => builder.markdown(data.documentation));
 				await builder.section('Usage', (builder) => builder.markdown(data.usage));
+				await builder.section('Documentation', (builder) => builder.markdown(data.documentation));
 				await builder.section('Options', async (builder) => {
 					if (data.options.length <= 0) {
 						await builder.line('No options available');

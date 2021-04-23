@@ -82,14 +82,18 @@ export class OutputBuilder implements IOutputBuilder {
 		this.markdownRenderer = new TerminalRenderer({
 			width: this.terminalWidth - this.indentLevel * this.indentSize - 8,
 			reflowText: true,
-			//showSectionPrefix: false,
+			showSectionPrefix: false,
 			tab: this.indentSize,
 			codespan: (text) => chalk.bgGray.white(` ${text} `),
+			heading: function (text) {
+				console.log({ arguments });
+				return text;
+			},
 			blockquote: (text) =>
 				palette.quote(
 					stripAnsi(text)
 						.split('\n')
-						.map((l) => `| ${l.trim()}`)
+						.map((l) => ` ${l.trim()}`)
 						.join('\n')
 				),
 		});
@@ -101,7 +105,7 @@ export class OutputBuilder implements IOutputBuilder {
 			});
 			code = code
 				.split('\n')
-				.map((line) => `${chalk.gray('| ')}${line}`)
+				.map((line) => `${chalk.gray(' ')}${line}`)
 				.join('\n');
 			return code + '\n\n';
 		};
@@ -242,7 +246,9 @@ export class OutputBuilder implements IOutputBuilder {
 	async markdown(text: string): Promise<void> {
 		await this.text(
 			marked(stripIndent(text), {
+				baseUrl: 'https://docs.directus.io',
 				renderer: this.markdownRenderer,
+				sanitize: false,
 			}).trim()
 		);
 	}
@@ -291,16 +297,17 @@ export class OutputBuilder implements IOutputBuilder {
 			await this.skip(2);
 		} else {
 			const stack = new OutputBuilder(this.indentSize * (this.indentLevel + 1), FullTerminalWidth);
-			await stack.skip(1);
 			await stack.wrap((builder) => builder.line(chalk.grey(err.stack ?? 'No stacktrace available')), 1);
-			await stack.skip(2);
+			await stack.skip(1);
 			this.lines.push(await stack.get());
 		}
 	}
 
 	async get(): Promise<string> {
-		const value = this.lines.join('\n');
+		return this.lines.join('\n');
+	}
+
+	async clear() {
 		this.lines = [];
-		return value;
 	}
 }

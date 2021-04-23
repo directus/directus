@@ -47,6 +47,7 @@ export interface IOutputBuilder {
 	wrap(wrapper: (builder: IOutputBuilder) => Promise<void>, verticalPadding?: number): Promise<void>;
 	error(error: Error): Promise<void>;
 	get(): Promise<string>;
+	clear(): Promise<void>;
 }
 
 export interface IOutputFormat<O extends any = any> {

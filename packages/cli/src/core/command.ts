@@ -1,19 +1,21 @@
 import { Toolbox } from '../toolbox';
-import { Command, Handler, Settings } from '../command';
+import { Command, CommandResult, Handler, Settings } from '../command';
 import { defaults } from './utils';
 import { CLIRuntimeError } from './exceptions';
 
-export function command<T extends Toolbox = Toolbox, P = any>(
+export function command<T extends Toolbox = Toolbox, P = any, R extends any = void>(
 	settings: Settings<P>,
-	execute: Handler<T, P>
+	execute: Handler<T, P, R>
 ): Command<T> {
 	settings = defaults(settings, {
+		hidden: false,
+		description: 'No command description provided',
 		features: {
 			output: true,
 		},
 	});
 
-	const run = async function (toolbox: T) {
+	const run = async function (toolbox: T): Promise<CommandResult<R>> {
 		const { command, options, events, output, help } = toolbox;
 
 		command.settings = command.run.$directus.settings;
@@ -44,9 +46,12 @@ export function command<T extends Toolbox = Toolbox, P = any>(
 			if ((opts.help && !settings.disableHelp) || options.failed()) {
 				await help.displayCommandHelp(command);
 				if (options.failed() && !opts.help) {
-					throw options.error();
+					//throw options.error();
+					return {
+						error: options.error(),
+					};
 				}
-				return;
+				return {};
 			}
 		} catch (error) {
 			if (error instanceof CLIRuntimeError) {
@@ -61,10 +66,10 @@ export function command<T extends Toolbox = Toolbox, P = any>(
 
 		try {
 			await events.emit('command.execute.before', command);
-			const value = await execute(toolbox, opts);
+			const result = await execute(toolbox, opts);
 			await events.emit('command.execute.after', command);
 			return {
-				value,
+				result,
 			};
 		} catch (error) {
 			if (error instanceof CLIRuntimeError) {
@@ -83,8 +88,8 @@ export function command<T extends Toolbox = Toolbox, P = any>(
 	};
 
 	return {
-		hidden: settings.hidden ?? false,
-		description: settings.description ?? 'No command description provided',
+		hidden: settings.hidden,
+		description: settings.description,
 		run,
 	} as Command<T>;
 }
