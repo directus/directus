@@ -9,7 +9,8 @@ export function command<T extends Toolbox = Toolbox, P = any, R extends any = vo
 ): Command<T> {
 	settings = defaults(settings, {
 		hidden: false,
-		description: 'No command description provided',
+		usage: 'No usage information available',
+		description: 'No command description available',
 		features: {
 			output: true,
 		},

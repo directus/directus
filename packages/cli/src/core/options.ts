@@ -90,12 +90,30 @@ export class Options implements IOptions {
 		const descriptions = freeParser.getUsageInstance().getDescriptions();
 		const keys = Object.keys(descriptions);
 
-		return keys.map<Option>((key) => ({
-			name: key,
-			description: descriptions[key],
-			type: 'unknown',
-			required: false,
-			//default: undefined,
-		}));
+		const options = freeParser.getOptions() as any;
+
+		return keys.map<Option>((key) => {
+			const name = key;
+			const description = descriptions[key];
+			const value = options.default[key] ?? undefined;
+			const required = key in options.demandedOptions;
+			const choices = options.choices[key];
+
+			let type = 'string';
+			if (options.boolean.indexOf(key) >= 0) {
+				type = 'boolean';
+			} else if (options.number.indexOf(key) >= 0) {
+				type = 'number';
+			}
+
+			return {
+				name,
+				description,
+				type,
+				required,
+				choices,
+				default: value,
+			};
+		});
 	}
 }

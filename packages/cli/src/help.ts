@@ -3,6 +3,7 @@ import { Command } from './command';
 export type OptionHelp = {
 	name: string;
 	type: string;
+	choices?: string[];
 	group?: string;
 	description: string;
 	required: boolean;

@@ -31,7 +31,7 @@ export function header(indentSize: number = 0) {
 }
 
 export function defaults<T>(value: T | undefined = undefined, defaultValue: T): T {
-	return mergeOptions(value, defaultValue);
+	return mergeOptions(defaultValue, value);
 	/*
 	if (typeof value === 'undefined') {
 		return defaultValue;

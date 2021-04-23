@@ -7,6 +7,7 @@ export type Option = {
 	name: string;
 	description?: string;
 	type: string;
+	choices?: string[];
 	required: boolean;
 	default?: any;
 };

@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import stripIndent from 'strip-indent';
 
 import { header } from '../core/utils';
 
@@ -11,6 +12,9 @@ import { IOutput, OutputColumn } from '../output';
 import { Command } from '../command';
 import { CommandHelp, GeneralHelp, IHelp, OptionHelp } from '../help';
 import { IOptions } from '../options';
+
+import highlight from 'cli-highlight';
+import { DefaultTheme } from './output/formats/json';
 
 export class Help implements IHelp {
 	private entrypoint: string;
@@ -103,7 +107,7 @@ export class Help implements IHelp {
 
 				await builder.section('Options', (builder) =>
 					builder.table([
-						...data.options.map((option) => [`--${option.name}`, chalk.bold(option.type), option.description]),
+						...data.options.map((option) => [`--${option.name}`, chalk.italic(option.type), option.description]),
 					])
 				);
 
@@ -126,9 +130,9 @@ export class Help implements IHelp {
 			[this.entrypoint, ...(gluegun.commandPath || []), settings?.parameters ?? '', '[options]']
 				.filter((p) => p != '')
 				.join(' ');
-		const description = settings.description ?? 'No command description provided';
-		const documentation = settings.documentation ?? 'No documentation provided';
-		const usage = settings.usage ?? 'No usage information provided';
+		const description = settings.description ?? 'Description unavailable';
+		const documentation = settings.documentation ?? 'Documentation unavailable';
+		const usage = settings.usage ?? 'Usage information unavailable';
 		const options = this.options
 			.list()
 			.sort((a, b) => a.name.localeCompare(b.name))
@@ -136,8 +140,9 @@ export class Help implements IHelp {
 				(opt): OptionHelp => ({
 					name: opt.name,
 					group: undefined,
-					description: opt.description ?? 'No description provided',
+					description: opt.description ?? 'Description unavailable',
 					required: opt.required,
+					choices: opt.choices,
 					default: opt.default,
 					type: opt.type,
 				})
@@ -146,10 +151,10 @@ export class Help implements IHelp {
 		const variables = (text: string) => text.replace(/\$0/g, this.entrypoint);
 
 		return {
-			usage: variables(usage),
-			synopsis: variables(synopsis),
-			description: variables(description),
-			documentation: variables(documentation),
+			usage: variables(stripIndent(usage)),
+			synopsis: variables(stripIndent(synopsis)),
+			description: variables(stripIndent(description)),
+			documentation: variables(stripIndent(documentation)),
 			options: options,
 		};
 	}
@@ -171,10 +176,20 @@ export class Help implements IHelp {
 					}
 
 					const makeOption = (option: OptionHelp): OutputColumn[][] => {
-						let type = `[${option.type}]`;
-						if (!option.required) {
-							type = `[default: ${JSON.stringify(option.default)}]${type}`;
+						let defaultValue = '';
+						if (typeof option.default != 'undefined') {
+							defaultValue = `default: ${highlight(JSON.stringify(option.default), {
+								language: 'json',
+								ignoreIllegals: true,
+								theme: DefaultTheme,
+							})}`;
 						}
+
+						let type = option.type;
+						if (option.choices) {
+							type = option.choices.join(' | ');
+						}
+
 						return [
 							[
 								{
@@ -190,7 +205,21 @@ export class Help implements IHelp {
 							],
 							[
 								{
-									text: option.description ?? 'No description provided',
+									text: chalk.italic.gray(option.required ? chalk.bold('required') : 'optional'),
+									options: {
+										padding: [0, 0, 0, 2],
+									},
+								},
+								{
+									text: defaultValue,
+									options: {
+										alignment: 'right',
+									},
+								},
+							],
+							[
+								{
+									text: option.description ?? 'Description unavailable',
 									options: {
 										padding: [1, 2, 1, 2],
 									},
