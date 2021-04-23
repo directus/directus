@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-const debug = require('debug')('directus-cli');
 const devMode = require('fs').existsSync(`${__dirname}/../src`);
 const wantsCompiled = process.argv.indexOf('--compiled-build') >= 0;
 
 async function main(run) {
+	const debug = require('debug')('directus-cli');
 	try {
 		const { error, output } = await run(process.argv);
 		if (output) {
@@ -27,6 +27,7 @@ let run = () => {};
 if (wantsCompiled || !devMode) {
 	run = require(`${__dirname}/../dist/index`).default;
 } else {
+	process.env.DEBUG = `${process.env.DEBUG ?? ''}directus-cli`;
 	require('ts-node').register({ project: `${__dirname}/../tsconfig.json` });
 	run = require(`${__dirname}/../src/index`).default;
 }

@@ -9,10 +9,7 @@
 	"main": "./dist/index.js",
 	"types": "./dist/types.d.ts",
 	"bin": {
-		"directus": "./bin/directus"
-	},
-	"exports": {
-		"./": "./dist"
+		"directusctl": "./bin/directus"
 	},
 	"files": [
 		"bin",
@@ -41,7 +38,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"@directus/format-title": "*",
-		"@directus/sdk": "9.0.0-rc.59",
+		"@directus/sdk": "9.0.0-rc.60",
 		"cli-highlight": "^2.1.11",
 		"cli-table3": "^0.5.1",
 		"cli-ux": "^5.5.1",
