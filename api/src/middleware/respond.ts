@@ -7,6 +7,7 @@ import { Transform, transforms } from 'json2csv';
 import { PassThrough } from 'stream';
 import { XliffService, XliffSupportedFormats } from '../services';
 import ms from 'ms';
+import { TranslationsService } from '../services/translations';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	if (
@@ -77,9 +78,18 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 				accountability: req.accountability,
 				schema: req.schema,
 			});
-			const output = await xliffService.toXliff(
+			const translationsService = new TranslationsService({
+				accountability: req.accountability,
+				schema: req.schema,
+			});
+			const translationsRelation = await translationsService.getTranslationsRelation(
 				req.collection,
-				req.sanitizedQuery.optional?.field,
+				req.sanitizedQuery.optional?.field
+			);
+			const output = await xliffService.toXliff(
+				translationsRelation.many_collection,
+				translationsRelation.many_field,
+				translationsRelation.junction_field,
 				res.locals.payload?.data
 			);
 			return res.status(200).send(output);

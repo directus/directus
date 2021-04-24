@@ -1,11 +1,13 @@
-import express, { RequestHandler } from 'express';
+import express from 'express';
+import Busboy from 'busboy';
 import asyncHandler from '../utils/async-handler';
 import collectionExists from '../middleware/collection-exists';
-import { ItemsService, MetaService } from '../services';
-import { RouteNotFoundException, ForbiddenException } from '../exceptions';
+import { ItemsService, MetaService, XliffService, TranslationsService } from '../services';
+import { RouteNotFoundException, ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { PrimaryKey } from '../types';
 import { validateBatch } from '../middleware/validate-batch';
+import logger from '../logger';
 
 const router = express.Router();
 
@@ -231,6 +233,83 @@ router.delete(
 
 		await service.deleteOne(req.params.pk);
 		return next();
+	}),
+	respond
+);
+
+const multipartHandler = asyncHandler(async (req, res, next) => {
+	if (req.is('multipart/form-data') === false) return next();
+	const busboy = new Busboy({ headers: req.headers });
+	let fileCount = 0;
+	res.locals.fields = {};
+	busboy.on('field', (fieldname: keyof File, val) => {
+		res.locals.fields[fieldname] = val;
+	});
+	busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
+		fileCount++;
+		const { format } = res.locals.fields;
+		if (['xliff', 'xliff2'].includes(format)) {
+			if (fileCount > 1) {
+				busboy.emit('error', new InvalidPayloadException(`Only one import file can be used for XLIFF format.`));
+			}
+			let content = '';
+			fileStream.on('data', (d) => (content += d)).on('end', () => (res.locals.data = content));
+		} else {
+			busboy.emit(
+				'error',
+				new InvalidPayloadException(`Only XLIFF 1.2/2.0 formats are available for import right now.`)
+			);
+		}
+	});
+	busboy.on('error', (error: Error) => {
+		next(error);
+	});
+
+	busboy.on('finish', () => {
+		next();
+	});
+	req.pipe(busboy);
+});
+
+router.post(
+	'/:collection/import',
+	multipartHandler,
+	asyncHandler(async (req, res, next) => {
+		if (req.is('multipart/form-data')) {
+			const { format, language, field } = res.locals.fields;
+			if (['xliff', 'xliff2'].includes(format) && res.locals.data) {
+				const collectionKey = req.params.collection;
+				const xliffService = new XliffService({
+					accountability: req.accountability,
+					schema: req.schema,
+					language,
+					format,
+				});
+				const translationsService = new TranslationsService({
+					accountability: req.accountability,
+					schema: req.schema,
+				});
+
+				try {
+					const translationsRelation = await translationsService.getTranslationsRelation(collectionKey, field);
+					const savedKeys = await xliffService.fromXliff(
+						translationsRelation.many_collection,
+						collectionKey,
+						translationsRelation.many_field,
+						translationsRelation.junction_field,
+						res.locals.data
+					);
+					res.locals.payload = { data: savedKeys || null };
+				} catch (error) {
+					if (error instanceof ForbiddenException) {
+						return next();
+					}
+					logger.error(error);
+					throw error;
+				}
+			}
+			return next();
+		}
 	}),
 	respond
 );

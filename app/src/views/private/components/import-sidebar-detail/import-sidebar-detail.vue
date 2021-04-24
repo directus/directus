@@ -140,10 +140,10 @@ export default defineComponent({
 			formData.append('file', file.value);
 
 			try {
-				const result = await api.post(`/collections/${props.collection.collection}`, formData);
+				const result = await api.post(`/items/${props.collection.collection}/import`, formData);
 				// cleanup fields in case of successfull import
 				const { data } = result.data;
-				const importedAmount = data ? Object.keys(data).reduce((acc, val) => acc + data[val].length, 0) : 0;
+				const importedAmount = data ? data.length : 0;
 				clearFile();
 				emit('refresh');
 				notify({
