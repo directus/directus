@@ -22,6 +22,7 @@ create_webhook: Skapa webhook
 invite_users: Bjud in användare
 email_examples: 'admin@example.com, user@example.com...'
 invite: Bjud in
+email_already_invited: E-postadressen "{email}" har redan blivit inbjuden
 emails: E-postadresser
 connection_excellent: Utmärkt anslutning
 connection_good: Bra anslutning
@@ -147,7 +148,11 @@ uuid: UUID
 hash: Hash
 not_available_for_type: Inte tillgänglig för denna typ
 create_translations: Skapa översättningar
+auto_refresh: Uppdatera automatiskt
+refresh_interval: Uppdateringsintervall
 no_refresh: Uppdatera inte
+refresh_interval_seconds: Uppdatera direkt | Varje sekund | Var {seconds} sekund
+refresh_interval_minutes: Varje minut | Var {minutes} minut
 auto_generate: Generera automatiskt
 this_will_auto_setup_fields_relations: Detta kommer automatiskt att ställa in alla obligatoriska fält och relationer.
 click_here: Klicka här
@@ -514,13 +519,18 @@ toggle: Växla
 icon_on: Ikon på
 icon_off: Ikon Av
 label: Etikett
+image_url: Bild-URL
 alt_text: Alternativ text
 media: Media
 width: Bredd
 height: Höjd
 source: Källa
 url_placeholder: Ange en webbadress...
+display_text: Visningstext
 display_text_placeholder: Ange en visningstext...
+tooltip: Inforuta
+tooltip_placeholder: Ange en inforuta...
+unlimited: Obegränsad
 open_link_in: Öppna länk i
 new_tab: Ny flik
 current_tab: Aktuell flik
