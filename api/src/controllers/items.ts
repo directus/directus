@@ -2,7 +2,7 @@ import express from 'express';
 import Busboy from 'busboy';
 import asyncHandler from '../utils/async-handler';
 import collectionExists from '../middleware/collection-exists';
-import { ItemsService, MetaService, XliffService } from '../services';
+import { ItemsService, MetaService, XliffService, TranslationsService } from '../services';
 import { RouteNotFoundException, ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { PrimaryKey } from '../types';
@@ -285,8 +285,20 @@ router.post(
 					language,
 					format,
 				});
+				const translationsService = new TranslationsService({
+					accountability: req.accountability,
+					schema: req.schema,
+				});
+
 				try {
-					const savedKeys = await xliffService.fromXliff(collectionKey, field, res.locals.data);
+					const translationsRelation = await translationsService.getTranslationsRelation(collectionKey, field);
+					const savedKeys = await xliffService.fromXliff(
+						translationsRelation.many_collection,
+						collectionKey,
+						translationsRelation.many_field,
+						translationsRelation.junction_field,
+						res.locals.data
+					);
 					res.locals.payload = { data: savedKeys || null };
 				} catch (error) {
 					if (error instanceof ForbiddenException) {
