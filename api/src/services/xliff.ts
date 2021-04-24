@@ -5,8 +5,6 @@ import { AbstractServiceOptions, Accountability, Field, Relation, SchemaOverview
 import { FieldsService } from './fields';
 import { ItemsService } from './items';
 
-const systemFields = ['id', 'status', 'sort', 'user_created', 'date_created', 'user_updated', 'date_updated'];
-
 export enum XliffSupportedFormats {
 	XLIFF_1_2 = 'xliff', // 1.2
 	XLIFF_2_0 = 'xliff2', // 2.0
@@ -123,7 +121,7 @@ export class XliffService {
 		const parentFieldName = <string>relation.many_field;
 		const parentCollectionName = <string>relation.one_collection;
 		const parentCollectionKeyFieldName = <string>relation.one_primary;
-		const nonTranslatableFields = [...systemFields, keyFieldName, externalFieldName, parentFieldName];
+		const nonTranslatableFields = [keyFieldName, externalFieldName, parentFieldName];
 		const isLanguageValid = await this.validateLanguage(collectionName, externalFieldName, language);
 		// ensure that passed language exists in related collection
 		if (!isLanguageValid) {
@@ -252,7 +250,7 @@ export class XliffService {
 			translationItems.forEach((item: any) => {
 				// removing system and key fields from output
 				const translatableData = XliffService.cleanupEmptyFields(
-					omit(item, [...systemFields, translationsKeyField, tranlsationsExternalKey, translationsParentField])
+					omit(item, [translationsKeyField, tranlsationsExternalKey, translationsParentField])
 				);
 
 				// populating output object with translations data

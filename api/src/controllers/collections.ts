@@ -1,48 +1,12 @@
 import { Router } from 'express';
-import Busboy from 'busboy';
 import asyncHandler from '../utils/async-handler';
-import { CollectionsService, MetaService, XliffService } from '../services';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { CollectionsService, MetaService } from '../services';
+import { ForbiddenException } from '../exceptions';
 import { respond } from '../middleware/respond';
 import { validateBatch } from '../middleware/validate-batch';
 import { Item } from '../types';
-import logger from '../logger';
 
 const router = Router();
-
-const multipartHandler = asyncHandler(async (req, res, next) => {
-	if (req.is('multipart/form-data') === false) return next();
-	const busboy = new Busboy({ headers: req.headers });
-	let fileCount = 0;
-	res.locals.fields = {};
-	busboy.on('field', (fieldname: keyof File, val) => {
-		res.locals.fields[fieldname] = val;
-	});
-	busboy.on('file', async (fieldname, fileStream, filename, encoding, mimetype) => {
-		fileCount++;
-		const { format } = res.locals.fields;
-		if (['xliff', 'xliff2'].includes(format)) {
-			if (fileCount > 1) {
-				busboy.emit('error', new InvalidPayloadException(`Only one import file can be used for XLIFF format.`));
-			}
-			let content = '';
-			fileStream.on('data', (d) => (content += d)).on('end', () => (res.locals.data = content));
-		} else {
-			busboy.emit(
-				'error',
-				new InvalidPayloadException(`Only XLIFF 1.2/2.0 formats are available for import right now.`)
-			);
-		}
-	});
-	busboy.on('error', (error: Error) => {
-		next(error);
-	});
-
-	busboy.on('finish', () => {
-		next();
-	});
-	req.pipe(busboy);
-});
 
 router.post(
 	'/',
@@ -132,37 +96,6 @@ router.patch(
 		}
 
 		return next();
-	}),
-	respond
-);
-
-router.post(
-	'/:collection',
-	multipartHandler,
-	asyncHandler(async (req, res, next) => {
-		if (req.is('multipart/form-data')) {
-			const { format, language, field } = res.locals.fields;
-			if (['xliff', 'xliff2'].includes(format) && res.locals.data) {
-				const collectionKey = req.params.collection;
-				const xliffService = new XliffService({
-					accountability: req.accountability,
-					schema: req.schema,
-					language,
-					format,
-				});
-				try {
-					const savedKeys = await xliffService.fromXliff(collectionKey, field, res.locals.data);
-					res.locals.payload = { data: savedKeys || null };
-				} catch (error) {
-					if (error instanceof ForbiddenException) {
-						return next();
-					}
-					logger.error(error);
-					throw error;
-				}
-			}
-			return next();
-		}
 	}),
 	respond
 );
