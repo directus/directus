@@ -7,7 +7,7 @@
 
 		<div class="grid-element half">
 			<p class="type-label">{{ $t('interfaces.repeater.add_label') }}</p>
-			<v-input class="input" v-model="addLabel" :placeholder="$t('add_a_new_item')" />
+			<v-input class="input" v-model="addLabel" :placeholder="$t('create_new')" />
 		</div>
 
 		<div class="grid-element full">
@@ -53,21 +53,6 @@ export default defineComponent({
 		});
 
 		const repeaterFields: DeepPartial<Field>[] = [
-			{
-				name: i18n.tc('name'),
-				field: 'name',
-				type: 'string',
-				meta: {
-					interface: 'text-input',
-					width: 'full',
-					sort: 1,
-					options: {
-						font: 'monospace',
-						placeholder: i18n.t('interfaces.repeater.field_name_placeholder'),
-					},
-				},
-				schema: null,
-			},
 			{
 				name: i18n.tc('field', 1),
 				field: 'field',

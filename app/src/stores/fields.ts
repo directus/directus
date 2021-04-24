@@ -10,16 +10,23 @@ import { merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { unexpectedError } from '@/utils/unexpected-error';
 
+/**
+ * directus_files is a special case. For it to play nice with interfaces/layouts/displays, we need
+ * to treat the actual image thumbnail as a separate available field, instead of part of the regular
+ * item (normally all file related info is nested within a separate column). This allows layouts to
+ * render out files as it if were a "normal" collection, where the actual file is a fake m2o to
+ * itself.
+ */
 const fakeFilesField: Field = {
 	collection: 'directus_files',
-	field: '$file',
+	field: '$thumbnail',
 	schema: null,
-	name: i18n.t('file'),
+	name: '$thumbnail',
 	type: 'integer',
 	meta: {
 		id: -1,
 		collection: 'directus_files',
-		field: '$file',
+		field: '$thumbnail',
 		sort: null,
 		special: null,
 		interface: null,
@@ -54,16 +61,6 @@ export const useFieldsStore = createStore({
 			const fieldsResponse = await api.get(`/fields`, { params: { limit: -1 } });
 
 			const fields: FieldRaw[] = fieldsResponse.data.data;
-
-			/**
-			 * @NOTE
-			 *
-			 * directus_files is a special case. For it to play nice with layouts, we need to
-			 * treat the actual image as a separate available field, instead of part of the regular
-			 * item (normally all file related info is nested within a separate column). This allows
-			 * layouts to render out files as it if were a "normal" collection, where the actual file
-			 * is a fake m2o to itself.
-			 */
 
 			this.state.fields = [...fields.map(this.parseField), fakeFilesField];
 

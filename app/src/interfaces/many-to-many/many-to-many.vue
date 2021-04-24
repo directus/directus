@@ -3,17 +3,35 @@
 		{{ $t('relationship_not_setup') }}
 	</v-notice>
 	<div class="many-to-many" v-else>
-		<v-list>
+		<template v-if="loading">
+			<v-skeleton-loader
+				v-for="n in (value || []).length || 3"
+				:key="n"
+				:type="(value || []).length > 4 ? 'block-list-item-dense' : 'block-list-item'"
+			/>
+		</template>
+
+		<v-notice v-else-if="sortedItems.length === 0">
+			{{ $t('no_items') }}
+		</v-notice>
+
+		<v-list v-else>
 			<draggable
 				:force-fallback="true"
-				:value="sortedItems || items"
+				:value="sortedItems"
 				@input="sortItems($event)"
 				handler=".drag-handle"
-				:disabled="!relation.sort_field"
+				:disabled="!junction.sort_field"
 			>
-				<v-list-item v-for="item in sortedItems || items" :key="item.id" block @click="editItem(item)">
-					<v-icon v-if="relation.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-					<render-template :item="item" :template="templateWithDefaults" />
+				<v-list-item
+					:dense="sortedItems.length > 4"
+					v-for="item in sortedItems"
+					:key="item.id"
+					block
+					@click="editItem(item)"
+				>
+					<v-icon v-if="junction.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<render-template :collection="junctionCollection.collection" :item="item" :template="templateWithDefaults" />
 					<div class="spacer" />
 					<v-icon name="close" @click.stop="deleteItem(item)" />
 				</v-list-item>
@@ -66,6 +84,7 @@ import useEdit from './use-edit';
 import useSelection from './use-selection';
 import useSort from './use-sort';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -100,11 +119,32 @@ export default defineComponent({
 
 		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
 
-		const templateWithDefaults = computed(
-			() => props.template || junctionCollection.value.meta?.display_template || `{{${junction.value.many_primary}}}`
-		);
+		const templateWithDefaults = computed(() => {
+			if (props.template) return props.template;
+			if (junctionCollection.value.meta?.display_template) return junctionCollection.value.meta.display_template;
 
-		const fields = computed(() => getFieldsFromTemplate(templateWithDefaults.value));
+			let relatedDisplayTemplate = relationCollection.value.meta?.display_template;
+			if (relatedDisplayTemplate) {
+				const regex = /({{.*?}})/g;
+				const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
+
+				for (const part of parts) {
+					if (part.startsWith('{{') === false) continue;
+					const key = part.replace(/{{/g, '').replace(/}}/g, '').trim();
+					const newPart = `{{${relation.value.many_field}.${key}}}`;
+
+					relatedDisplayTemplate = relatedDisplayTemplate.replace(part, newPart);
+				}
+
+				return relatedDisplayTemplate;
+			}
+
+			return `{{${relation.value.many_field}.${relationInfo.value.relationPkField}}}`;
+		});
+
+		const fields = computed(() =>
+			adjustFieldsForDisplays(getFieldsFromTemplate(templateWithDefaults.value), junctionCollection.value.collection)
+		);
 
 		const { deleteItem, getUpdatedItems, getNewItems, getPrimaryKeys, getNewSelectedItems } = useActions(
 			value,
@@ -112,7 +152,7 @@ export default defineComponent({
 			emitter
 		);
 
-		const { tableHeaders, items, loading, error } = usePreview(
+		const { tableHeaders, items, loading } = usePreview(
 			value,
 			fields,
 			relationInfo,
@@ -171,6 +211,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.v-list {
+	--v-list-padding: 0 0 4px;
+}
+
 .actions {
 	margin-top: 12px;
 }

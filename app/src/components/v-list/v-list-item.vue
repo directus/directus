@@ -190,9 +190,11 @@ body {
 	}
 
 	&.block {
-		--v-list-item-min-height: 44px;
-
+		position: relative;
 		display: flex;
+		height: var(--input-height);
+		margin: 0;
+		padding: 8px;
 		background-color: var(--background-subdued);
 		border: 2px solid var(--border-subdued);
 		border-radius: var(--border-radius);
@@ -223,12 +225,17 @@ body {
 			border: 2px solid var(--border-normal);
 		}
 
+		&.sortable-chosen {
+			border: 2px solid var(--primary) !important;
+		}
+
 		& + & {
 			margin-top: 8px;
 		}
 
 		&.dense {
-			--v-list-item-min-height: 34px;
+			height: 44px;
+			padding: 4px 8px;
 
 			& + & {
 				margin-top: 4px;

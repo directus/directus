@@ -82,6 +82,7 @@ router.patch(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
 		await collectionsService.updateOne(req.params.collection, req.body);
 
 		try {

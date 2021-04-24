@@ -472,10 +472,9 @@ export class PayloadService {
 					});
 				}
 
-				const savedPrimaryKeys = await itemsService.upsert(relatedRecords);
+				const savedPrimaryKeys = await itemsService.upsertMany(relatedRecords);
 
 				await itemsService.updateByQuery(
-					{ [relation.many_field]: null },
 					{
 						filter: {
 							_and: [
@@ -491,7 +490,8 @@ export class PayloadService {
 								},
 							],
 						},
-					}
+					},
+					{ [relation.many_field]: null }
 				);
 			}
 			// "Updates" object w/ create/update/delete
@@ -522,7 +522,6 @@ export class PayloadService {
 
 				if (alterations.delete) {
 					await itemsService.updateByQuery(
-						{ [relation.many_field]: null },
 						{
 							filter: {
 								_and: [
@@ -538,7 +537,8 @@ export class PayloadService {
 									},
 								],
 							},
-						}
+						},
+						{ [relation.many_field]: null }
 					);
 				}
 			}

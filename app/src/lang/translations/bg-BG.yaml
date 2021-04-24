@@ -230,6 +230,7 @@ item_delete_success: Изтрит запис | Изтрити записи
 this_collection: Тази колекция
 related_collection: Релационна колекция
 related_collections: Релационни колекции
+translations_collection: Колекция с преводи
 languages_collection: Колекция с езици
 export_data: Експорт на данните
 format: Формат
@@ -354,7 +355,6 @@ users: Потребители
 activity: Активности
 webhooks: Уеб-куки
 field_width: Ширина на полето
-add_a_new_item: Добавяне на нов запис...
 add_filter: Добавяне на филтър
 upper_limit: Горна граница...
 lower_limit: Долна граница...
@@ -959,7 +959,6 @@ interfaces:
     repeater: Повторение
     description: Създаване на множество записи със същата структура
     edit_fields: Редактиране на полета
-    add_label: 'Етикет за "Добавяне на ред"'
     field_name_placeholder: Въвеждане име на полето...
     field_note_placeholder: Въвеждане бележка към полето...
   slider:
