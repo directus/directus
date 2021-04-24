@@ -1,27 +1,27 @@
 ---
 edit_field: Editar Campo
 item_revision: Revisión de Elemento
-duplicate_field: Duplicar Campo
+duplicate_field: Campo duplicado
 half_width: Anchura 50%
 full_width: Ancho Completo
 fill_width: Llenar Ancho
 field_name_translations: 'Nombre de Campo: Traducciones'
-enter_password_to_enable_tfa: Introduzca la contraseña para habilitar la Autenticación de doble factor
-add_field: Agregar Campo
-role_name: Nombre del Rol
-db_only_click_to_configure: 'Solo Base de Datos: Clic para Configurar '
-show_archived_items: Mostrar Elementos Archivados
-edited: Valor Editado
+enter_password_to_enable_tfa: Ingresa tu contraseña para habilitar "Two-Factor Authentication"
+add_field: Añade un campo
+role_name: Nombra un rol
+db_only_click_to_configure: 'Únicamente base de datos: Click para configurar '
+show_archived_items: Mostrar los registros archivados
+edited: Valor editado
 required: Requerido
-required_for_app_access: Necesario para el acceso a App
-requires_value: Valor obligatorio
+required_for_app_access: Requerido para acceso a la App
+requires_value: Valor requerido
 create_preset: Crear Predefinido
 create_role: Crear Rol
 create_user: Crear Usuario
-create_webhook: Crear Webhook
+create_webhook: Crear un gancho web
 invite_users: Invitar Usuarios
-email_examples: 'admin@example.com, user@example.com...'
-invite: Invitar
+email_examples: 'admin@ejemplo.com, usuario@ejemplo.com...'
+invite: Invita
 emails: Correos Electrónicos
 connection_excellent: Excelente Conexión
 connection_good: Buena Conexión
@@ -719,7 +719,7 @@ fields:
     translation: 'Nombre de Campo: Traducciones'
     display_template: Plantilla
   directus_roles:
-    name: Nombre del Rol
+    name: Nombra un rol
     icon: Ícono del Rol
     description: Descripción
     app_access: Acceso a App
