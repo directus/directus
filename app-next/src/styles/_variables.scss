@@ -1,0 +1,22 @@
+:root {
+	--brand: var(--primary); // will be overriden with directus_settings.project_color
+	--white: #fff;
+	--black: #090C0D;
+	--transition: cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-in: cubic-bezier(0, 0, 0.2, 1);
+	--transition-out: cubic-bezier(0.4, 0, 1, 1);
+	--fast: 125ms;
+	--medium: 200ms;
+	--slow: 300ms;
+	--content-padding: 12px;
+	--border-width: 2px;
+	--border-radius-outline: 6px;
+	--border-radius: 4px;
+	--input-height: 52px;
+	--input-height-tall: 168px;
+	--input-padding: 12px;
+	--form-column-width: 300px;
+	--form-column-max-width: 380px;
+	--form-horizontal-gap: 32px;
+	--form-vertical-gap: 48px;
+}

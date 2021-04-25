@@ -1,0 +1,9 @@
+import { decode } from 'base-64';
+
+export default function jwtPayload(token: string) {
+	const payloadBase64 = token.split('.')[1].replace('-', '+').replace('_', '/');
+	const payloadDecoded = decode(payloadBase64);
+	const payloadObject = JSON.parse(payloadDecoded);
+
+	return payloadObject;
+}
