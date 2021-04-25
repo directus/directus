@@ -55,7 +55,7 @@ function uniqueViolation(error: MySQLError) {
 	 */
 	const indexName = matches[1].slice(1, -1).split('.')[1];
 
-	if (indexName.startsWith(`${collection}_`) && indexName.endsWith('_unique')) {
+	if (indexName?.startsWith(`${collection}_`) && indexName.endsWith('_unique')) {
 		field = indexName.slice(collection.length + 1, -7);
 	}
 

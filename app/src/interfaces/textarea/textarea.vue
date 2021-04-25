@@ -2,6 +2,7 @@
 	<v-textarea
 		v-bind="{ placeholder, trim }"
 		:value="value"
+		:nullable="!clear"
 		:disabled="disabled"
 		:class="font"
 		@input="$listeners.input"
@@ -16,6 +17,10 @@ export default defineComponent({
 		value: {
 			type: String,
 			default: null,
+		},
+		clear: {
+			type: Boolean,
+			default: false,
 		},
 		disabled: {
 			type: Boolean,

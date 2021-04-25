@@ -293,7 +293,6 @@ users: Kullanıcılar
 activity: Aktivite
 webhooks: Ağ Kancaları
 field_width: Alan Genişliği
-add_a_new_item: Yeni Öğe ekle...
 add_filter: Filtre Ekle
 upper_limit: Üst sınır...
 lower_limit: Alt sınır...
@@ -467,7 +466,6 @@ settings_project: Proje Ayarları
 settings_webhooks: Ağ Kancaları
 scope: Kapsam
 layout: Yerleşim
-preset_name_placeholder: Yer imi adı...
 editing_preset: Önayarı Düzenle
 unsaved_changes: Kaydedilmemiş Değişiklikler
 unsaved_changes_copy: Bu sayfayı terketmek istediğine emin misin?
@@ -690,7 +688,6 @@ interfaces:
     text-input: Metin Girişi
     trim: Kırp
     mask: Maskeli
-    nullable: Boş (null) olabilir
   textarea:
     textarea: Metin Alanı
   toggle:

@@ -7,6 +7,11 @@
 				<render-template :collection="templateCollection.collection" :item="templateData" :template="template" />
 			</h1>
 		</template>
+
+		<template #subtitle>
+			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
+		</template>
+
 		<template #actions>
 			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
@@ -76,6 +81,13 @@ export default defineComponent({
 			type: [String, Number],
 			default: '+',
 		},
+
+		// If this drawer-item is opened from a relational interface, we need to force-block the field
+		// that relates back to the parent item.
+		circularField: {
+			type: String,
+			default: null,
+		},
 	},
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
@@ -120,11 +132,21 @@ export default defineComponent({
 			computed(() => props.primaryKey === '+')
 		);
 
-		const { fields } = usePermissions(
+		const { fields: fieldsWithPermissions } = usePermissions(
 			collection,
 			item,
 			computed(() => props.primaryKey === '+')
 		);
+
+		const fields = computed(() => {
+			if (props.circularField) {
+				return fieldsWithPermissions.value.filter((field) => {
+					return field.field !== props.circularField;
+				});
+			} else {
+				return fieldsWithPermissions.value;
+			}
+		});
 
 		const templatePrimaryKey = computed(() =>
 			junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)
@@ -159,6 +181,7 @@ export default defineComponent({
 			templatePrimaryKey,
 			templateData,
 			templateDataLoading,
+			collectionInfo,
 		};
 
 		function useActiveState() {
@@ -221,7 +244,7 @@ export default defineComponent({
 
 				const endpoint = props.collection.startsWith('directus_')
 					? `/${props.collection.substring(9)}/${props.primaryKey}`
-					: `/items/${props.collection}/${props.primaryKey}`;
+					: `/items/${props.collection}/${encodeURIComponent(props.primaryKey)}`;
 
 				let fields = '*';
 
@@ -247,7 +270,7 @@ export default defineComponent({
 
 				const endpoint = collection.startsWith('directus_')
 					? `/${collection.substring(9)}/${props.relatedPrimaryKey}`
-					: `/items/${collection}/${props.relatedPrimaryKey}`;
+					: `/items/${collection}/${encodeURIComponent(props.relatedPrimaryKey)}`;
 
 				try {
 					const response = await api.get(endpoint);

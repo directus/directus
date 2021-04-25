@@ -58,7 +58,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 img {
 	width: auto;
-	height: 100%;
+	max-height: 100%;
 	border-radius: var(--border-radius);
 }
 

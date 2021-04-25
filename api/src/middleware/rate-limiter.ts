@@ -1,17 +1,11 @@
 import { RequestHandler } from 'express';
 import asyncHandler from '../utils/async-handler';
-import {
-	RateLimiterMemory,
-	RateLimiterRedis,
-	RateLimiterMemcache,
-	IRateLimiterOptions,
-	IRateLimiterStoreOptions,
-} from 'rate-limiter-flexible';
+import { RateLimiterMemory, RateLimiterRedis, RateLimiterMemcache } from 'rate-limiter-flexible';
 import env from '../env';
-import { getConfigFromEnv } from '../utils/get-config-from-env';
 import { HitRateLimitException } from '../exceptions';
 import ms from 'ms';
 import { validateEnv } from '../utils/validate-env';
+import { createRateLimiter } from '../rate-limiter';
 
 let checkRateLimit: RequestHandler = (req, res, next) => next();
 export let rateLimiter: RateLimiterRedis | RateLimiterMemcache | RateLimiterMemory;
@@ -19,7 +13,7 @@ export let rateLimiter: RateLimiterRedis | RateLimiterMemcache | RateLimiterMemo
 if (env.RATE_LIMITER_ENABLED === true) {
 	validateEnv(['RATE_LIMITER_STORE', 'RATE_LIMITER_DURATION', 'RATE_LIMITER_POINTS']);
 
-	rateLimiter = getRateLimiter();
+	rateLimiter = createRateLimiter();
 
 	checkRateLimit = asyncHandler(async (req, res, next) => {
 		try {
@@ -39,37 +33,3 @@ if (env.RATE_LIMITER_ENABLED === true) {
 }
 
 export default checkRateLimit;
-
-function getRateLimiter() {
-	switch (env.RATE_LIMITER_STORE) {
-		case 'redis':
-			return new RateLimiterRedis(getConfig('redis'));
-		case 'memcache':
-			return new RateLimiterMemcache(getConfig('memcache'));
-		case 'memory':
-		default:
-			return new RateLimiterMemory(getConfig());
-	}
-}
-
-function getConfig(store?: 'memory'): IRateLimiterOptions;
-function getConfig(store: 'redis' | 'memcache'): IRateLimiterStoreOptions;
-function getConfig(store: 'memory' | 'redis' | 'memcache' = 'memory'): IRateLimiterOptions | IRateLimiterStoreOptions {
-	const config: any = getConfigFromEnv('RATE_LIMITER_', `RATE_LIMITER_${store}_`);
-
-	if (store === 'redis') {
-		const Redis = require('ioredis');
-		delete config.redis;
-		config.storeClient = new Redis(env.RATE_LIMITER_REDIS || getConfigFromEnv('RATE_LIMITER_REDIS_'));
-	}
-
-	if (store === 'memcache') {
-		const Memcached = require('memcached');
-		config.storeClient = new Memcached(env.RATE_LIMITER_MEMCACHE, getConfigFromEnv('RATE_LIMITER_MEMCACHE_'));
-	}
-
-	delete config.enabled;
-	delete config.store;
-
-	return config;
-}

@@ -9,5 +9,5 @@ export default defineDisplay({
 	handler: DisplayFile,
 	types: ['uuid'],
 	options: [],
-	fields: ['data', 'type', 'title'],
+	fields: ['id', 'type', 'title'],
 });

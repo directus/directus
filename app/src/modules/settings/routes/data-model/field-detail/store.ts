@@ -64,7 +64,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		updateFields: [],
 		newRows: {},
 
-		autoFillJunctionRelation: true,
+		autoFillJunctionRelation: false,
 	});
 
 	availableInterfaces = computed<InterfaceConfig[]>(() => {
@@ -126,6 +126,8 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 		state.relations = relationsStore.getRelationsForField(collection, field);
 	} else {
+		state.autoFillJunctionRelation = true;
+
 		watch(
 			() => availableInterfaces.value,
 			() => {

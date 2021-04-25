@@ -121,7 +121,10 @@ will be an empty array.
 
 ```
 GET /users
+SEARCH /users
 ```
+
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
 
 ### GraphQL
 

@@ -18,7 +18,18 @@
 
 		<td class="cell" :class="`align-${header.align}`" v-for="header in props.headers" :key="header.value">
 			<slot :name="`item.${header.value}`" :item="props.item">
-				<v-text-overflow v-if="props.item[header.value]" :text="props.item[header.value]" />
+				<v-text-overflow
+					v-if="
+						header.value.split('.').reduce((acc, val) => {
+							return acc[val];
+						}, props.item)
+					"
+					:text="
+						header.value.split('.').reduce((acc, val) => {
+							return acc[val];
+						}, props.item)
+					"
+				/>
 				<value-null v-else />
 			</slot>
 		</td>

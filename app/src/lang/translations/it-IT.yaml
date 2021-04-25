@@ -206,7 +206,6 @@ item_delete_success: Elemento Eliminato| Elementi Eliminati
 this_collection: Questa Raccolta
 related_collection: Raccolta Correlata
 related_collections: Raccolte Correlate
-translations_collection: Raccolta di Traduzioni
 languages_collection: Raccolta di Lingue
 export_data: Esporta Dati
 format: Formato
@@ -323,7 +322,6 @@ users: Utenti
 activity: Attività
 webhooks: Webhooks
 field_width: Larghezza del Campo
-add_a_new_item: Aggiungi nuovo elemento...
 add_filter: Aggiungi Filtro
 upper_limit: Limite superiore...
 lower_limit: Limite inferiore...
@@ -495,7 +493,6 @@ settings_project: Impostazioni del progetto
 settings_webhooks: Webhooks
 settings_presets: Preset & Segnalibri
 layout: Layout
-preset_name_placeholder: Nome del segnalibro...
 editing_preset: Modifica Preset
 layout_preview: Anteprima Layout
 layout_setup: Configurazione Layout

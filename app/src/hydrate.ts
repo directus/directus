@@ -13,7 +13,8 @@ import {
 } from '@/stores';
 import { register as registerModules, unregister as unregisterModules } from '@/modules/register';
 
-import { setLanguage, Language } from '@/lang';
+import { Language } from '@/lang';
+import { setLanguage } from '@/lang/set-language';
 
 type GenericStore = {
 	id: string;
@@ -60,8 +61,8 @@ export async function hydrate(stores = useStores()) {
 		await userStore.hydrate();
 
 		if (userStore.state.currentUser?.role) {
-			await registerModules();
 			await Promise.all(stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.()));
+			await registerModules();
 			await setLanguage((userStore.state.currentUser?.language as Language) || 'en-US');
 		}
 	} catch (error) {

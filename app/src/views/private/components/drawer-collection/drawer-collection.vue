@@ -1,5 +1,11 @@
 <template>
 	<v-drawer v-model="_active" :title="$t('select_item')" @cancel="cancel">
+		<template #subtitle>
+			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
+		</template>
+
+		<template #actions:prepend><portal-target name="actions:prepend" /></template>
+
 		<template #actions>
 			<search-input v-model="searchQuery" />
 
@@ -17,6 +23,7 @@
 			:layout-options.sync="localOptions"
 			:search-query="searchQuery"
 			@update:selection="onSelect"
+			@update:filters="$emit('update:filters', $event)"
 			select-mode
 			class="layout"
 		>

@@ -12,6 +12,7 @@
 		@end="drag = false"
 		:set-data="hideDragImage"
 		:disabled="disabled"
+		:force-fallback="true"
 		@change="$emit('change', $event)"
 	>
 		<li class="row" v-for="(item, index) in tree" :key="item.id">
@@ -21,6 +22,7 @@
 				:collection="collection"
 				:primary-key-field="primaryKeyField"
 				:disabled="disabled"
+				:parent-field="parentField"
 				@input="replaceItem(index, $event)"
 				@deselect="removeItem(index)"
 			/>
@@ -29,6 +31,7 @@
 				:template="template"
 				:collection="collection"
 				:primary-key-field="primaryKeyField"
+				:parent-field="parentField"
 				:children-field="childrenField"
 				:disabled="disabled"
 				@change="$emit('change', $event)"
@@ -65,6 +68,10 @@ export default defineComponent({
 			required: true,
 		},
 		primaryKeyField: {
+			type: String,
+			required: true,
+		},
+		parentField: {
 			type: String,
 			required: true,
 		},

@@ -107,7 +107,10 @@ will be an empty array.
 
 ```
 GET /roles
+SEARCH /roles
 ```
+
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
 
 ### GraphQL
 

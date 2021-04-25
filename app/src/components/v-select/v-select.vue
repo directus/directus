@@ -62,6 +62,7 @@
 							:inputValue="value || []"
 							:label="item.text"
 							:value="item.value"
+							:disabled="item.disabled"
 							@change="$emit('input', $event.length > 0 ? $event : null)"
 						/>
 					</v-list-item-content>
@@ -121,6 +122,7 @@
 import { defineComponent, PropType, computed, toRefs, Ref } from '@vue/composition-api';
 import i18n from '@/lang';
 import { useCustomSelection, useCustomSelectionMultiple } from '@/composables/use-custom-selection';
+import { get } from 'lodash';
 
 type ItemsRaw = (string | any)[];
 type InputValue = string[] | string;
@@ -142,6 +144,10 @@ export default defineComponent({
 		itemIcon: {
 			type: String,
 			default: null,
+		},
+		itemDisabled: {
+			type: String,
+			default: 'disabled',
 		},
 		value: {
 			type: [Array, String, Number, Boolean] as PropType<InputValue>,
@@ -218,10 +224,10 @@ export default defineComponent({
 					if (item.divider === true) return { divider: true };
 
 					return {
-						text: item[props.itemText],
-						value: item[props.itemValue],
-						icon: item[props.itemIcon],
-						disabled: item.disabled,
+						text: get(item, props.itemText),
+						value: get(item, props.itemValue),
+						icon: get(item, props.itemIcon),
+						disabled: get(item, props.itemDisabled),
 					};
 				});
 

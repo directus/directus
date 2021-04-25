@@ -10,6 +10,7 @@
 			:tree="stagedValues || []"
 			:primary-key-field="primaryKeyField.field"
 			:children-field="relation.one_field"
+			:parent-field="relation.many_field"
 			:disabled="disabled"
 			root
 			@change="onDraggableChange"
@@ -29,6 +30,7 @@
 			:collection="collection"
 			:primary-key="'+'"
 			:edits="{}"
+			:circular-field="relation.many_field"
 			@input="addNew"
 			@update:active="addNewActive = false"
 		/>
@@ -147,7 +149,7 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/items/${props.collection}/${props.primaryKey}`, {
+					const response = await api.get(`/items/${props.collection}/${encodeURIComponent(props.primaryKey)}`, {
 						params: {
 							fields: getFieldsToFetch(),
 						},
