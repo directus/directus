@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 import { Filter } from '@/types';
 import { useFieldsStore } from '@/stores';
 import getAvailableOperatorsForType from './get-available-operators-for-type';

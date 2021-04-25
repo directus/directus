@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import { nanoid } from 'nanoid';
 import useShortcut from '@/composables/use-shortcut';
 

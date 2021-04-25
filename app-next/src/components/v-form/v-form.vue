@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, provide } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref, provide } from 'vue';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 import { useElementSize } from '@/composables/use-element-size';

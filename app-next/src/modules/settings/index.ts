@@ -16,7 +16,7 @@ import NewRole from './routes/roles/add-new.vue';
 import NotFound from './routes/not-found.vue';
 import api from '@/api';
 import { useCollection } from '@/composables/use-collection';
-import { ref } from '@vue/composition-api';
+import { ref } from 'vue';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 
 export default defineModule({

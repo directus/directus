@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, watch } from 'vue';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({

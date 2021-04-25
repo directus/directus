@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import icons from './icons.json';
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({

@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, PropType } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, PropType } from 'vue';
 import formatLocalized from '@/utils/localized-format';
 import { i18n } from '@/lang';
 import { formatISO, parseISO, format, parse } from 'date-fns';

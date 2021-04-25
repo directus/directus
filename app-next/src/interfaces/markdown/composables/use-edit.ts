@@ -1,4 +1,4 @@
-import { Ref } from '@vue/composition-api';
+import { Ref } from 'vue';
 import { Position } from 'codemirror';
 import { cloneDeep } from 'lodash';
 

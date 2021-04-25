@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, watch, computed, provide } from '@vue/composition-api';
+import { defineComponent, toRefs, watch, computed, provide } from 'vue';
 import * as stores from '@/stores';
 import api, { addTokenToURL } from '@/api';
 import axios from 'axios';

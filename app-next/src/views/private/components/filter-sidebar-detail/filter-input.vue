@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 import { FilterOperator } from '@/types';
 
 export default defineComponent({

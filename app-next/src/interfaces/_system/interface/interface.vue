@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, inject, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, PropType, inject, ref, watch } from 'vue';
 import i18n from '@/lang';
 import { getInterfaces } from '@/interfaces';
 import { types } from '@/types';

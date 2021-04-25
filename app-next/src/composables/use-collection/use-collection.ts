@@ -1,4 +1,4 @@
-import { computed, Ref, ref } from '@vue/composition-api';
+import { computed, Ref, ref } from 'vue';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
 

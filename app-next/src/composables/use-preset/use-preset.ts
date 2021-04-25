@@ -1,5 +1,5 @@
 import { usePresetsStore, useUserStore } from '@/stores';
-import { ref, Ref, computed, watch } from '@vue/composition-api';
+import { ref, Ref, computed, watch } from 'vue';
 import { debounce, isEqual } from 'lodash';
 import { useCollection } from '@/composables/use-collection';
 

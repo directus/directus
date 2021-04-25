@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, Ref, isRef, computed } from '@vue/composition-api';
+import { ref, onMounted, onUnmounted, Ref, isRef, computed } from 'vue';
 import { throttle } from 'lodash';
 
 export default function useScrollDistance<T extends Element>(t: T | Ref<T | null | Vue>) {

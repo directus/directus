@@ -1,4 +1,4 @@
-import { Ref, ref, computed } from '@vue/composition-api';
+import { Ref, ref, computed } from 'vue';
 import { RelationInfo } from './use-relation';
 import { get } from 'lodash';
 import { Filter } from '@/types';

@@ -162,7 +162,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { Field } from '@/types';
 import { useFieldsStore, useCollectionsStore } from '@/stores';
 import { orderBy } from 'lodash';

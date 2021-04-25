@@ -1,4 +1,4 @@
-import { computed, Ref } from '@vue/composition-api';
+import { computed, Ref } from 'vue';
 import { isAllowed } from '../utils/is-allowed';
 import { useCollection } from './use-collection';
 import { useUserStore, usePermissionsStore } from '@/stores';

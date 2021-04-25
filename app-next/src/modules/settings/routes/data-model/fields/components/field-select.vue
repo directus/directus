@@ -192,7 +192,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed } from 'vue';
 import { Field, Relation } from '@/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';

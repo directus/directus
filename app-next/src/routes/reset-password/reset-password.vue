@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import router from '@/router';
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import RequestForm from './request.vue';
 import ResetForm from './reset.vue';
 

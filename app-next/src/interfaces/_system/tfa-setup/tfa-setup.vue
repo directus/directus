@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, onMounted, computed } from 'vue';
 import api from '@/api';
 import qrcode from 'qrcode';
 import { nanoid } from 'nanoid';

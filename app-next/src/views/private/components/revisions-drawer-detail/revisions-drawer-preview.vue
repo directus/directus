@@ -6,17 +6,12 @@
 			{{ $t('no_relational_data') }}
 		</v-notice>
 
-		<v-form
-			disabled
-			:collection="revision.collection"
-			:primary-key="revision.item"
-			:initial-values="revision.data"
-		/>
+		<v-form disabled :collection="revision.collection" :primary-key="revision.item" :initial-values="revision.data" />
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/composition-api';
+import { defineComponent, PropType } from 'vue';
 import { Revision } from './types';
 
 export default defineComponent({

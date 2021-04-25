@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, watch, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, watch, ref } from 'vue';
 import { Revision } from './types';
 import useSync from '@/composables/use-sync';
 import localizedFormat from '@/utils/localized-format';

@@ -7,11 +7,7 @@
 						{{ $t('show_all_activity') }}
 					</router-link>
 					<transition-group tag="div" name="notification" class="transition">
-						<notification-item
-							v-for="notification in lastFour"
-							:key="notification.id"
-							v-bind="notification"
-						/>
+						<notification-item v-for="notification in lastFour" :key="notification.id" v-bind="notification" />
 					</transition-group>
 				</div>
 			</div>
@@ -30,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from 'vue';
 import SidebarButton from '../sidebar-button';
 import NotificationItem from '../notification-item';
 import { useNotificationsStore } from '@/stores/';

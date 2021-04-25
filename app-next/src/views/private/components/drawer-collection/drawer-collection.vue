@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, toRefs, watch } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, toRefs, watch } from 'vue';
 import { Filter } from '@/types';
 import usePreset from '@/composables/use-preset';
 import useCollection from '@/composables/use-collection';

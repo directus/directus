@@ -80,7 +80,7 @@
 	</v-menu>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, PropType, watch } from 'vue';
 import { isHex } from '@/utils/color';
 import Color from 'color';
 

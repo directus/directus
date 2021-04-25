@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import availableLanguages from '@/lang/available-languages.yaml';
 
 export default defineComponent({

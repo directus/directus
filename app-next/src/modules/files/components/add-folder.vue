@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import useFolders from '../composables/use-folders';
 import api from '@/api';
 import router from '@/router';

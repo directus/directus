@@ -137,7 +137,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
+import { defineComponent, computed, ref, PropType } from 'vue';
 import UsersNavigation from '../components/navigation.vue';
 import UsersInvite from '@/views/private/components/users-invite';
 

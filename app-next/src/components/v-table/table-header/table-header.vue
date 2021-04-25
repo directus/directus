@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from '@vue/composition-api';
+import { defineComponent, ref, PropType } from 'vue';
 import useEventListener from '@/composables/use-event-listener';
 import { Header, Sort } from '../types';
 import { throttle, clone } from 'lodash';

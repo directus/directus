@@ -1,4 +1,4 @@
-import { ref, Ref } from '@vue/composition-api';
+import { ref, Ref } from 'vue';
 import { DisplayConfig } from './types';
 
 let displaysRaw: Ref<DisplayConfig[]>;

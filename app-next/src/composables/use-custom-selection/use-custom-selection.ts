@@ -1,4 +1,4 @@
-import { Ref, ref, computed, watch } from '@vue/composition-api';
+import { Ref, ref, computed, watch } from 'vue';
 import { nanoid } from 'nanoid';
 
 type EmitFunction = (event: string, ...args: any[]) => void;

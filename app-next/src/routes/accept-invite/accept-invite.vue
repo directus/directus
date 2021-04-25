@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import router from '@/router';
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import { translateAPIError } from '@/lang';
 import api, { RequestError } from '@/api';
 import jwtPayload from '@/utils/jwt-payload';

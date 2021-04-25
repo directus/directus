@@ -11,7 +11,7 @@
 <script lang="ts">
 import CodeMirror from 'codemirror';
 
-import { defineComponent, computed, ref, onMounted, onUnmounted, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, onMounted, onUnmounted, watch } from 'vue';
 
 import 'codemirror/mode/meta';
 import 'codemirror/addon/search/searchcursor.js';

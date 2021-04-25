@@ -1,4 +1,4 @@
-import { ref, Ref, watch } from '@vue/composition-api';
+import { ref, Ref, watch } from 'vue';
 import api from '@/api';
 
 export type Permission = {

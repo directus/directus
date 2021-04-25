@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, PropType } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch, PropType } from 'vue';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
 import { useCollectionsStore, useRelationsStore, useFieldsStore } from '@/stores/';

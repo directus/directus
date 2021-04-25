@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, inject, ref, toRefs } from '@vue/composition-api';
+import { defineComponent, PropType, computed, inject, ref, toRefs } from 'vue';
 import { Collection, Permission } from '@/types';
 import api from '@/api';
 import router from '@/router';

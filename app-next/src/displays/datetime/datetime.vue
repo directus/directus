@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, PropType, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, PropType, computed } from 'vue';
 import localizedFormat from '@/utils/localized-format';
 import localizedFormatDistance from '@/utils/localized-format-distance';
 import i18n from '@/lang';

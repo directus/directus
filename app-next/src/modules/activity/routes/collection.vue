@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import ActivityNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
 import usePreset from '@/composables/use-preset';

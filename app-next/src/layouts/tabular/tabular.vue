@@ -143,7 +143,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { defineComponent, PropType, ref, computed, inject, toRefs, Ref, watch } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, inject, toRefs, Ref, watch } from 'vue';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field, Filter } from '@/types';

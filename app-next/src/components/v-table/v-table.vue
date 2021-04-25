@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType, onMounted, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, PropType, onMounted, watch } from 'vue';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header/';
 import TableRow from './table-row/';

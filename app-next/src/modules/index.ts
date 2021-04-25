@@ -1,4 +1,4 @@
-import { ref, Ref } from '@vue/composition-api';
+import { ref, Ref } from 'vue';
 import { ModuleConfig } from './types';
 
 let modulesRaw: Ref<ModuleConfig[]>;

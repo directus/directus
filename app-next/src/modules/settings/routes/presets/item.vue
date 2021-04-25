@@ -107,7 +107,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
 import { Preset, Filter } from '@/types';

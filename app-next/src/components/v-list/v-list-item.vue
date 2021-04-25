@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { Location } from 'vue-router';
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({

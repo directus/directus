@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed } from 'vue';
 import { Preset } from '@/types';
 import { useUserStore, usePresetsStore } from '@/stores';
 import { unexpectedError } from '@/utils/unexpected-error';

@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, toRefs } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref, toRefs } from 'vue';
 import { Field } from '@/types';
 import Draggable from 'vuedraggable';
 import i18n from '@/lang';

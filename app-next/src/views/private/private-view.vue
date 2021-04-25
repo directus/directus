@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, provide, toRefs, computed, onUpdated, nextTick } from '@vue/composition-api';
+import { defineComponent, ref, provide, toRefs, computed, onUpdated, nextTick } from 'vue';
 import ModuleBar from './components/module-bar/';
 import SidebarDetailGroup from './components/sidebar-detail-group/';
 import HeaderBar from './components/header-bar';

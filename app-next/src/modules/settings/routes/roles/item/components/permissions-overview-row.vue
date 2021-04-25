@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs } from '@vue/composition-api';
+import { defineComponent, PropType, toRefs } from 'vue';
 import { Collection, Permission } from '@/types';
 import PermissionsOverviewToggle from './permissions-overview-toggle.vue';
 import useUpdatePermissions from '../composables/use-update-permissions';

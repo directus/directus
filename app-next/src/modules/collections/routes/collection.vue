@@ -240,7 +240,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, toRefs } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, toRefs } from 'vue';
 import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import api from '@/api';

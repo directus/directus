@@ -32,10 +32,7 @@
 			{{ page }}
 		</v-button>
 
-		<span
-			v-if="showFirstLast && value < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1"
-			class="gap"
-		>
+		<span v-if="showFirstLast && value < length - Math.ceil(totalVisible / 2) && length > totalVisible + 1" class="gap">
 			...
 		</span>
 
@@ -58,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { isEmpty } from '@/utils/is-empty';
 
 export default defineComponent({

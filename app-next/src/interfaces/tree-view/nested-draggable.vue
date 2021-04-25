@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import draggable from 'vuedraggable';
-import { defineComponent, ref, PropType } from '@vue/composition-api';
+import { defineComponent, ref, PropType } from 'vue';
 import hideDragImage from '@/utils/hide-drag-image';
 import ItemPreview from './item-preview.vue';
 

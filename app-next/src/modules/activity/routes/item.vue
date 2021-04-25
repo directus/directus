@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref, watch } from 'vue';
 import router from '@/router';
 import api from '@/api';
 import { userName } from '@/utils/user-name';

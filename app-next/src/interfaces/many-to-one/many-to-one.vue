@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, toRefs, watch, PropType } from '@vue/composition-api';
+import { defineComponent, computed, ref, toRefs, watch, PropType } from 'vue';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';

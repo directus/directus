@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs } from '@vue/composition-api';
+import { defineComponent, computed, toRefs } from 'vue';
 import { getDisplays } from '@/displays';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';

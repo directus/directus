@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from '@vue/composition-api';
+import { defineComponent, computed, ref } from 'vue';
 import { useUserStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';

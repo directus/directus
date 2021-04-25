@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { AsyncComponent } from 'vue';
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import DocsNavigation from '../components/navigation.vue';
 import marked from 'marked';
 

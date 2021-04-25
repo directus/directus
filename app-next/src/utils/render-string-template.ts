@@ -1,4 +1,4 @@
-import { computed, Ref } from '@vue/composition-api';
+import { computed, Ref } from 'vue';
 import { render } from 'micromustache';
 import { getFieldsFromTemplate } from './get-fields-from-template';
 

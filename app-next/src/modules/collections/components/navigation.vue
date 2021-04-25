@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watchEffect } from '@vue/composition-api';
+import { defineComponent, computed, ref, watchEffect } from 'vue';
 import useNavigation from '../composables/use-navigation';
 import { usePresetsStore, useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';

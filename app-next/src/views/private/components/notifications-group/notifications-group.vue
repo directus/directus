@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs } from '@vue/composition-api';
+import { defineComponent, toRefs } from 'vue';
 import { useNotificationsStore } from '@/stores/';
 import NotificationItem from '../notification-item';
 

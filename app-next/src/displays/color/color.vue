@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from 'vue';
 import Color from 'color';
 import { isHex } from '@/utils/color';
 

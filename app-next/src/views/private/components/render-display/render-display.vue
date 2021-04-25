@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
 

@@ -1,4 +1,4 @@
-import { ref, Ref } from '@vue/composition-api';
+import { ref, Ref } from 'vue';
 
 import api from '@/api';
 import { Role } from '@/types';

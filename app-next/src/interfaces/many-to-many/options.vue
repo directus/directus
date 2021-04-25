@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Field } from '@/types';
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 import { Relation, Collection } from '@/types';
 import { useCollectionsStore } from '@/stores';
 export default defineComponent({

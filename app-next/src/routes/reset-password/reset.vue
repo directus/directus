@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import api from '@/api';
 import { translateAPIError } from '@/lang';
 import { RequestError } from '@/api';

@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { version } from '../../../package.json';
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import { useServerStore } from '@/stores';
 import marked from 'marked';
 import { getRootPath } from '@/utils/get-root-path';

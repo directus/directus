@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { Field } from '@/types/';
 import marked from 'marked';
 import FormFieldLabel from './form-field-label.vue';

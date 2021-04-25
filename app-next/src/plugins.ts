@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import VueCompositionAPI from '@vue/composition-api';
+import VueCompositionAPI from 'vue';
 import VueRouter from 'vue-router';
 import PortalVue from 'portal-vue';
 

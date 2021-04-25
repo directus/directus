@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import useCollection from '@/composables/use-collection';
 import { useSettingsStore, useServerStore } from '@/stores';

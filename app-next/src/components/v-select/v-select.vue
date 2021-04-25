@@ -119,7 +119,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, toRefs, Ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, toRefs, Ref } from 'vue';
 import i18n from '@/lang';
 import { useCustomSelection, useCustomSelectionMultiple } from '@/composables/use-custom-selection';
 import { get } from 'lodash';

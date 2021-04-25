@@ -4,7 +4,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 import ValueNull from '@/views/private/components/value-null';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';

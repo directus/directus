@@ -1,4 +1,4 @@
-import { Ref, ref, computed } from '@vue/composition-api';
+import { Ref, ref, computed } from 'vue';
 import { Sort } from '@/components/v-table/types';
 import { sortBy } from 'lodash';
 import { RelationInfo } from './use-relation';

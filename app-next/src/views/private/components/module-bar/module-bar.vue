@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, computed } from '@vue/composition-api';
+import { defineComponent, Ref, computed } from 'vue';
 
 import { getModules } from '@/modules/';
 import ModuleBarLogo from '../module-bar-logo/';

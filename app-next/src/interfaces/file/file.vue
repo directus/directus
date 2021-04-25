@@ -123,7 +123,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from 'vue';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';

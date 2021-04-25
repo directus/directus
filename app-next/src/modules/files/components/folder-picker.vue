@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType } from '@vue/composition-api';
+import { defineComponent, ref, computed, PropType } from 'vue';
 import api from '@/api';
 import FolderPickerListItem from './folder-picker-list-item.vue';
 import { unexpectedError } from '@/utils/unexpected-error';

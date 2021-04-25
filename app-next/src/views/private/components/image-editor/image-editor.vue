@@ -101,7 +101,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, reactive } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed, reactive } from 'vue';
 import api from '@/api';
 import Vue from 'vue';
 

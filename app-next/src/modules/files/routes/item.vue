@@ -175,7 +175,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref, watch } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
 import router from '@/router';

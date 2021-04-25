@@ -1,4 +1,4 @@
-import { watch } from '@vue/composition-api';
+import { watch } from 'vue';
 import { DirectiveOptions } from 'vue';
 import { DirectiveBinding } from 'vue/types/options';
 

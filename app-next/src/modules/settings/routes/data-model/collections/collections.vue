@@ -94,7 +94,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import { HeaderRaw } from '@/components/v-table/types';
 import { i18n } from '@/lang/';

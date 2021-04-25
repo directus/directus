@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onUnmounted, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, onUnmounted, computed } from 'vue';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';

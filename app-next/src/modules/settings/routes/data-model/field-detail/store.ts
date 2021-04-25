@@ -6,7 +6,7 @@
  */
 
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
-import { reactive, watch, computed, ComputedRef, WatchStopHandle } from '@vue/composition-api';
+import { reactive, watch, computed, ComputedRef, WatchStopHandle } from 'vue';
 import { clone, throttle } from 'lodash';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';

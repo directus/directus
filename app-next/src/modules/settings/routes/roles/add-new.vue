@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import api from '@/api';
 import router from '@/router';
 import { appRecommendedPermissions } from './app-permissions';

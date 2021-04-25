@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, toRefs, watch, PropType, ref } from '@vue/composition-api';
+import { defineComponent, nextTick, toRefs, watch, PropType, ref } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({

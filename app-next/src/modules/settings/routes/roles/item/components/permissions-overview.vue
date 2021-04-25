@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, provide } from '@vue/composition-api';
+import { defineComponent, computed, ref, provide } from 'vue';
 import { useCollectionsStore } from '@/stores';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';

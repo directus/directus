@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from 'vue';
 import LoginForm from './components/login-form/';
 import ContinueAs from './components/continue-as/';
 import { useAppStore } from '@/stores';

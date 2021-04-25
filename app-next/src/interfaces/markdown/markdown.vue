@@ -146,16 +146,7 @@
 </template>
 
 <script lang="ts">
-import {
-	defineComponent,
-	computed,
-	ref,
-	onMounted,
-	onUnmounted,
-	watch,
-	reactive,
-	PropType,
-} from '@vue/composition-api';
+import { defineComponent, computed, ref, onMounted, onUnmounted, watch, reactive, PropType } from 'vue';
 import { sanitize } from 'dompurify';
 import marked from 'marked';
 

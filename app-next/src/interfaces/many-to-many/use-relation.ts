@@ -1,4 +1,4 @@
-import { Ref, computed } from '@vue/composition-api';
+import { Ref, computed } from 'vue';
 import { useCollectionsStore, useRelationsStore } from '@/stores/';
 import useCollection from '@/composables/use-collection';
 import { Relation } from '@/types';

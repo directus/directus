@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 import SettingsNavigation from '../../components/navigation.vue';
 import PermissionsOverview from './item/components/permissions-overview.vue';

@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUpdated, inject } from '@vue/composition-api';
+import { defineComponent, ref, onMounted, onUpdated, inject } from 'vue';
 
 import MarkdownIt from 'markdown-it';
 import fm from 'front-matter';

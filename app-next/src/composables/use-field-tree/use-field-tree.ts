@@ -1,4 +1,4 @@
-import { Ref, computed } from '@vue/composition-api';
+import { Ref, computed } from 'vue';
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@/types';
 import { cloneDeep } from 'lodash';

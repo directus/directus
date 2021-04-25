@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, toRefs } from '@vue/composition-api';
+import { defineComponent, ref, computed, PropType, toRefs } from 'vue';
 import SetupTabs from './components/tabs.vue';
 import SetupActions from './components/actions.vue';
 import SetupSchema from './components/schema.vue';

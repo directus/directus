@@ -117,7 +117,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from 'vue';
 import readableMimeType from '@/utils/readable-mime-type';
 import bytes from 'bytes';
 import i18n from '@/lang';

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 
 export default defineComponent({

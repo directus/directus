@@ -1,5 +1,5 @@
 import api from '@/api';
-import { ref, Ref } from '@vue/composition-api';
+import { ref, Ref } from 'vue';
 import { TranslateResult } from 'vue-i18n';
 
 type FolderRaw = {

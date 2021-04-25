@@ -1,4 +1,4 @@
-import { ref, Ref, watch } from '@vue/composition-api';
+import { ref, Ref, watch } from 'vue';
 import { TranslateResult } from 'vue-i18n';
 
 export function useTitle(newTitle: string | Ref<string>) {

@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref, watch } from 'vue';
 import { useRelationsStore } from '@/stores/';
 import api from '@/api';
 import { Relation } from '@/types';

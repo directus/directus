@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch, PropType } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch, PropType } from 'vue';
 import useCollection from '@/composables/use-collection';
 import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item';

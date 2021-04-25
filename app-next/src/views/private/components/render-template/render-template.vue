@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { useFieldsStore } from '@/stores';
 import { get } from 'lodash';
 import { Field } from '@/types';

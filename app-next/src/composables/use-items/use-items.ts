@@ -1,4 +1,4 @@
-import { computed, ref, Ref, watch } from '@vue/composition-api';
+import { computed, ref, Ref, watch } from 'vue';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
 import Vue from 'vue';

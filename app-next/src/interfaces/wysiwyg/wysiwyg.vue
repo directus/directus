@@ -148,7 +148,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, toRefs } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, toRefs } from 'vue';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';

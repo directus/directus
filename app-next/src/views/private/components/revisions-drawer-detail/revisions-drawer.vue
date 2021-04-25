@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import useSync from '@/composables/use-sync';
 import { Revision } from './types';
 import i18n from '@/lang';

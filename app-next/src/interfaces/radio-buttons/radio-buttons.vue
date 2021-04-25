@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, PropType } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, PropType } from 'vue';
 import { useCustomSelection } from '@/composables/use-custom-selection';
 
 type Option = {

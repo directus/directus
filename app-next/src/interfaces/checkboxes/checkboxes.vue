@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, PropType, ref } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, PropType, ref } from 'vue';
 import { useCustomSelectionMultiple } from '@/composables/use-custom-selection';
 
 type Option = {

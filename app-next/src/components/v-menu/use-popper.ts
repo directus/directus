@@ -8,7 +8,7 @@ import flip from '@popperjs/core/lib/modifiers/flip';
 import offset from '@popperjs/core/lib/modifiers/offset';
 import { Instance, Placement, Modifier } from '@popperjs/core';
 
-import { onUnmounted, ref, Ref, watch } from '@vue/composition-api';
+import { onUnmounted, ref, Ref, watch } from 'vue';
 
 export function usePopper(
 	reference: Ref<HTMLElement | null>,

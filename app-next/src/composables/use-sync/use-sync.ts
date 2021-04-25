@@ -1,4 +1,4 @@
-import { computed, Ref } from '@vue/composition-api';
+import { computed, Ref } from 'vue';
 
 export default function useSync<T, K extends keyof T>(
 	props: T,

@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 
 import RelationshipM2o from './relationship-m2o.vue';
 import RelationshipO2m from './relationship-o2m.vue';

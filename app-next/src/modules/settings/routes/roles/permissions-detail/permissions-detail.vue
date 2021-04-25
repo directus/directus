@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, ref, computed, watch } from 'vue';
 import api from '@/api';
 import { Permission, Role } from '@/types';
 import { useCollectionsStore } from '@/stores/';

@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref, computed } from '@vue/composition-api';
+import { defineComponent, inject, ref, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
 
 export default defineComponent({

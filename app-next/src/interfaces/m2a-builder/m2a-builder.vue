@@ -121,7 +121,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, PropType, ref, watch } from 'vue';
 import { useRelationsStore, useCollectionsStore, useFieldsStore } from '@/stores';
 import { Relation, Collection } from '@/types/';
 import DrawerCollection from '@/views/private/components/drawer-collection/';

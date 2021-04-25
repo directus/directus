@@ -1,4 +1,4 @@
-import { computed, Ref, ref, watch } from '@vue/composition-api';
+import { computed, Ref, ref, watch } from 'vue';
 import { getPublicURL } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 import i18n from '@/lang';

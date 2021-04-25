@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 
 export default defineComponent({

@@ -1,4 +1,4 @@
-import { Ref, ref, isRef, onMounted, onUnmounted } from '@vue/composition-api';
+import { Ref, ref, isRef, onMounted, onUnmounted } from 'vue';
 import { notEmpty } from '@/utils/is-empty';
 import { ResizeObserver as ResizeObserverPolyfill } from 'resize-observer';
 

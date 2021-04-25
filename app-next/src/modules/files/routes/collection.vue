@@ -161,7 +161,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType, onMounted, onUnmounted } from '@vue/composition-api';
+import { defineComponent, computed, ref, PropType, onMounted, onUnmounted } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
 import api from '@/api';

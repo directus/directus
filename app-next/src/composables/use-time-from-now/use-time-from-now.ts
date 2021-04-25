@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, ref } from '@vue/composition-api';
+import { onMounted, onUnmounted, ref } from 'vue';
 import localizedFormatDistance from '@/utils/localized-format-distance/';
 
 export async function useTimeFromNow(date: Date | number, autoUpdate = 60000) {

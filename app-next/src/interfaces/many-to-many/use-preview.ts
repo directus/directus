@@ -1,4 +1,4 @@
-import { Ref, ref, watch } from '@vue/composition-api';
+import { Ref, ref, watch } from 'vue';
 import { Header } from '@/components/v-table/types';
 import { RelationInfo } from './use-relation';
 import { useFieldsStore } from '@/stores/';

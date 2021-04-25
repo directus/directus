@@ -86,7 +86,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { nanoid } from 'nanoid';
 import { Filter } from '@/types';

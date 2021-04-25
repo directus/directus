@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref } from 'vue';
 import SettingsNavigation from '../../../components/navigation.vue';
 import useCollection from '@/composables/use-collection/';
 import FieldsManagement from './components/fields-management.vue';

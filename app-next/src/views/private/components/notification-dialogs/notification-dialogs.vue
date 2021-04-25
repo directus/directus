@@ -9,10 +9,7 @@
 					<v-error v-if="notification.error" :error="notification.error" />
 				</v-card-text>
 				<v-card-actions>
-					<v-button
-						secondary
-						v-if="notification.type === 'error' && admin && notification.code === 'UNKNOWN'"
-					>
+					<v-button secondary v-if="notification.type === 'error' && admin && notification.code === 'UNKNOWN'">
 						<a target="_blank" :href="getGitHubIssueLink(notification.id, notification)">
 							{{ $t('report_error') }}
 						</a>
@@ -25,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from 'vue';
 import SidebarButton from '../sidebar-button';
 import NotificationItem from '../notification-item';
 import { useNotificationsStore, useUserStore } from '@/stores/';

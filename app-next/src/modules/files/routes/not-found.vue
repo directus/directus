@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
 
 export default defineComponent({

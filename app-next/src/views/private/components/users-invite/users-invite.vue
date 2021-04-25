@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from 'vue';
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { APIError } from '@/types';

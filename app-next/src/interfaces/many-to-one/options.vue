@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { Field } from '@/types';
-import { defineComponent, PropType, computed } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from 'vue';
 import { useRelationsStore } from '@/stores/';
 import { Relation } from '@/types/relations';
 export default defineComponent({

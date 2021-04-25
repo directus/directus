@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
+import { defineComponent, computed } from 'vue';
 import LatencyIndicator from '../latency-indicator';
 import { useServerStore, useLatencyStore } from '@/stores/';
 import { sortBy } from 'lodash';

@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from 'vue';
 import marked from 'marked';
 import localizedFormat from '@/utils/localized-format';
 import i18n from '@/lang';

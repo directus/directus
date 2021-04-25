@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, inject, ref } from '@vue/composition-api';
+import { defineComponent, computed, inject, ref } from 'vue';
 import { getInterfaces } from '@/interfaces';
 
 export default defineComponent({

@@ -192,7 +192,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
+import { defineComponent, computed, toRefs, ref } from 'vue';
 import Vue from 'vue';
 
 import CollectionsNavigationSearch from '../components/navigation-search.vue';

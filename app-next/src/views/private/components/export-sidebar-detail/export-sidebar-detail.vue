@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from '@vue/composition-api';
+import { defineComponent, ref, PropType } from 'vue';
 import { Collection } from '@/types';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';

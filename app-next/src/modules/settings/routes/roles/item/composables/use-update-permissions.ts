@@ -1,4 +1,4 @@
-import { ref, inject, Ref } from '@vue/composition-api';
+import { ref, inject, Ref } from 'vue';
 import api from '@/api';
 import { Collection, Permission } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';

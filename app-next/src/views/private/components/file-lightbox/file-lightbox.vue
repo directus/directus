@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, ref, watch, computed } from 'vue';
 import api, { addTokenToURL } from '@/api';
 
 import { nanoid } from 'nanoid';

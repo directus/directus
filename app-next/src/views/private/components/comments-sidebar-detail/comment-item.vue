@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch } from '@vue/composition-api';
+import { defineComponent, PropType, ref, computed, watch } from 'vue';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
 import marked from 'marked';

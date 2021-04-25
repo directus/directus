@@ -1,4 +1,4 @@
-import { ref, computed } from '@vue/composition-api';
+import { ref, computed } from 'vue';
 import prettyMS from 'pretty-ms';
 import bytes from 'bytes';
 import api from '@/api';

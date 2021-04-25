@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
+import { defineComponent, computed, PropType } from 'vue';
 import { Location } from 'vue-router';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 import { useGroupable } from '@/composables/groupable';

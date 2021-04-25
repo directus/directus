@@ -135,7 +135,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, toRefs, inject, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, toRefs, inject, computed, ref } from 'vue';
 import { Filter } from '@/types';
 import useSync from '@/composables/use-sync/';
 import useCollection from '@/composables/use-collection/';

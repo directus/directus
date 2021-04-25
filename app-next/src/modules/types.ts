@@ -1,5 +1,5 @@
 import { RouteConfig } from 'vue-router';
-import { Ref } from '@vue/composition-api';
+import { Ref } from 'vue';
 import { User, Permission } from '@/types';
 
 export interface ModuleConfig {

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { computed, onBeforeUnmount, inject, ref, provide, Ref, watch } from '@vue/composition-api';
+import { computed, onBeforeUnmount, inject, ref, provide, Ref, watch } from 'vue';
 import { notEmpty, isEmpty } from '@/utils/is-empty/';
 import { isEqual } from 'lodash';
 

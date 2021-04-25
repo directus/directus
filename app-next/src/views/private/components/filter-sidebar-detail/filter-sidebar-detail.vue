@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, watch, toRefs } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref, watch, toRefs } from 'vue';
 import { Filter } from '@/types';
 import { useFieldsStore } from '@/stores';
 import FieldFilter from './field-filter.vue';

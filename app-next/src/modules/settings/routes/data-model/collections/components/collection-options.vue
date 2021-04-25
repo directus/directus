@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from '@vue/composition-api';
+import { defineComponent, PropType, ref } from 'vue';
 import { Collection } from '@/types';
 import { useCollectionsStore } from '@/stores/';
 

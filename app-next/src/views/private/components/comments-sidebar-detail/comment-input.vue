@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from '@vue/composition-api';
+import { defineComponent, ref, PropType } from 'vue';
 import api from '@/api';
 import i18n from '@/lang';
 import useShortcut from '@/composables/use-shortcut';

@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType } from '@vue/composition-api';
+import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import useFieldTree from '@/composables/use-field-tree';
 import { FieldTree } from './types';

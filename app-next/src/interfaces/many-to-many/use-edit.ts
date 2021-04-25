@@ -1,4 +1,4 @@
-import { Ref, ref } from '@vue/composition-api';
+import { Ref, ref } from 'vue';
 import { RelationInfo } from './use-relation';
 import { isEqual, get } from 'lodash';
 

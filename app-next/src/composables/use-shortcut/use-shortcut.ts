@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, Ref, ref } from '@vue/composition-api';
+import { onMounted, onUnmounted, Ref, ref } from 'vue';
 import Vue from 'vue';
 
 type ShortcutHandler = (event: KeyboardEvent, cancelNext: () => void) => void | any | boolean;

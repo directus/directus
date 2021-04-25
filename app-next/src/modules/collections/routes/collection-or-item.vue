@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref, computed } from 'vue';
 import Vue from 'vue';
 import CollectionRoute from './collection.vue';
 import ItemRoute from './item.vue';

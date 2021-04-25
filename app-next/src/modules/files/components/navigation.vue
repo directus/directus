@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch } from '@vue/composition-api';
+import { defineComponent, watch } from 'vue';
 import useFolders from '../composables/use-folders';
 import NavigationFolder from './navigation-folder.vue';
 import arraysAreEqual from '@/utils/arrays-are-equal';

@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { Field } from '@/types';
 import { getInterfaces } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';

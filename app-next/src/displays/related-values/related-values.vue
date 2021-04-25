@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType, Ref } from '@vue/composition-api';
+import { defineComponent, computed, PropType, Ref } from 'vue';
 import getRelatedCollection from '@/utils/get-related-collection';
 import useCollection from '@/composables/use-collection';
 import ValueNull from '@/views/private/components/value-null';
