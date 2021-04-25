@@ -12,19 +12,23 @@
 		</template>
 
 		<div class="drawer-batch-content">
-			<v-form :collection="collection" v-model="_edits" batch-mode primary-key="+" />
+			<v-form
+				:collection="collection"
+				v-model="_edits"
+				batch-mode
+				primary-key="+"
+				:validation-errors="validationErrors"
+			/>
 		</div>
 	</v-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
+import { defineComponent, ref, computed, PropType, toRefs } from '@vue/composition-api';
 import api from '@/api';
-
-import useCollection from '@/composables/use-collection';
-import { useFieldsStore, useRelationsStore } from '@/stores';
-import i18n from '@/lang';
-import { Relation, Field } from '@/types';
+import { VALIDATION_TYPES } from '@/constants';
+import { APIError } from '@/types';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	model: {
@@ -49,16 +53,11 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const fieldsStore = useFieldsStore();
-		const relationsStore = useRelationsStore();
-
 		const { _edits } = useEdits();
 		const { _active } = useActiveState();
-		const { save, cancel, saving } = useActions();
+		const { save, cancel, saving, validationErrors } = useActions();
 
 		const { collection } = toRefs(props);
-
-		const { info: collectionInfo } = useCollection(collection);
 
 		return {
 			_active,
@@ -66,6 +65,7 @@ export default defineComponent({
 			save,
 			saving,
 			cancel,
+			validationErrors,
 		};
 
 		function useEdits() {
@@ -108,15 +108,21 @@ export default defineComponent({
 
 		function useActions() {
 			const saving = ref(false);
-			const error = ref<any>(null);
+			const validationErrors = ref([]);
 
-			return { save, cancel, saving };
+			const endpoint = computed(() => {
+				return collection.value.startsWith('directus_')
+					? `/${collection.value.substring(9)}`
+					: `/items/${collection.value}`;
+			});
+
+			return { save, cancel, saving, validationErrors };
 
 			async function save() {
 				saving.value = true;
 
 				try {
-					await api.patch(`/items/${props.collection}`, {
+					await api.patch(endpoint.value, {
 						keys: props.primaryKeys,
 						data: _edits.value,
 					});
@@ -126,7 +132,19 @@ export default defineComponent({
 					_active.value = false;
 					_edits.value = {};
 				} catch (err) {
-					error.value = err;
+					validationErrors.value = err.response.data.errors
+						.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
+						.map((err: APIError) => {
+							return err.extensions;
+						});
+
+					const otherErrors = err.response.data.errors.filter(
+						(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
+					);
+
+					if (otherErrors.length > 0) {
+						otherErrors.forEach(unexpectedError);
+					}
 				} finally {
 					saving.value = false;
 				}

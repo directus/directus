@@ -22,6 +22,7 @@ create_webhook: Skapa webhook
 invite_users: Bjud in användare
 email_examples: 'admin@example.com, user@example.com...'
 invite: Bjud in
+email_already_invited: E-postadressen "{email}" har redan blivit inbjuden
 emails: E-postadresser
 connection_excellent: Utmärkt anslutning
 connection_good: Bra anslutning
@@ -81,6 +82,7 @@ validationError:
   nnull: Värdet kan inte vara null
   required: Ett värde är obligatoriskt
   unique: Värdet måste vara unikt
+  regex: Värdet har inte rätt format
 all_access: Alla behörigheter
 no_access: Ingen åtkomst
 use_custom: Använd anpassad
@@ -146,6 +148,11 @@ uuid: UUID
 hash: Hash
 not_available_for_type: Inte tillgänglig för denna typ
 create_translations: Skapa översättningar
+auto_refresh: Uppdatera automatiskt
+refresh_interval: Uppdateringsintervall
+no_refresh: Uppdatera inte
+refresh_interval_seconds: Uppdatera direkt | Varje sekund | Var {seconds} sekund
+refresh_interval_minutes: Varje minut | Var {minutes} minut
 auto_generate: Generera automatiskt
 this_will_auto_setup_fields_relations: Detta kommer automatiskt att ställa in alla obligatoriska fält och relationer.
 click_here: Klicka här
@@ -153,6 +160,7 @@ to_manually_setup_translations: för att manuellt konfigurera översättningar.
 click_to_manage_translated_fields: >-
   Det finns inga översatta fält ännu. Klicka här för att skapa dem. | Det finns ett översatt fält. Klicka här för att administrera det. | Det finns {count} översatta fält. Klicka här för att administrera dem.
 fields_group: Fältens grupp
+no_collections_found: Inga kollektioner hittades.
 new_data_alert: 'Följande kommer att skapas inom din datamodell:'
 new_field: 'Nytt fält'
 new_collection: 'Ny kollektion'
@@ -387,6 +395,7 @@ errors:
   ITEM_NOT_FOUND: Objektet hittades inte
   ROUTE_NOT_FOUND: Hittades inte
   RECORD_NOT_UNIQUE: Duplicerat värde upptäckt
+  USER_SUSPENDED: Användare avstängd
   UNKNOWN: Oväntat fel
 value_hashed: Värde säkert hashat
 bookmark_name: Bokmärkesnamn...
@@ -510,8 +519,21 @@ toggle: Växla
 icon_on: Ikon på
 icon_off: Ikon Av
 label: Etikett
+image_url: Bild-URL
+alt_text: Alternativ text
+media: Media
 width: Bredd
 height: Höjd
+source: Källa
+url_placeholder: Ange en webbadress...
+display_text: Visningstext
+display_text_placeholder: Ange en visningstext...
+tooltip: Inforuta
+tooltip_placeholder: Ange en inforuta...
+unlimited: Obegränsad
+open_link_in: Öppna länk i
+new_tab: Ny flik
+current_tab: Aktuell flik
 wysiwyg_options:
   aligncenter: Centrera
   alignjustify: Justera
@@ -531,7 +553,10 @@ wysiwyg_options:
   bullist: Punktlista
   numlist: Numrerad lista
   hr: Horisontell linje
+  link: Lägg till/redigera länk
   unlink: Ta bort länk
+  media: Lägg till/redigera media
+  image: Lägg till/redigera bild
   copy: Kopiera
   cut: Klipp
   paste: Klistra in
@@ -553,6 +578,7 @@ wysiwyg_options:
   selectall: Markera alla
   table: Tabell
   visualaid: Visa osynliga element
+  source_code: Redigera källkod
   fullscreen: Helskärm
   directionality: Riktning
 dropdown: Rullgardinsmeny
@@ -573,6 +599,7 @@ settings_project: Projektinställningar
 settings_webhooks: Webhooks
 settings_presets: Förinställningar & bokmärken
 scope: Omfattning
+select: Välj...
 layout: Layout
 tree_view: Trädvy
 changes_are_permanent: Ändringar är permanenta
@@ -651,6 +678,7 @@ fields:
     unarchive_value: Avarkivera värde
     sort_field: Sortera fält
   directus_files:
+    $thumbnail: Miniatyrbild
     title: Rubrik
     description: Beskrivning
     tags: Etiketter
@@ -954,6 +982,7 @@ interfaces:
     trim_label: Trimma början och slut
     mask: Maskerad
     mask_label: Dölj det riktiga värdet
+    clear_label: Spara som tom sträng
   textarea:
     textarea: Textfält
     description: Ange fritext på flera rader
