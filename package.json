@@ -9,8 +9,8 @@
 	"scripts": {
 		"lint": "npm-run-all -p lint:*",
 		"lint:eslint": "eslint .",
-		"lint:stylelint": "stylelint .",
-		"format": "prettier --write \"**/*.{js,vue,ts,md}\"",
+		"lint:stylelint": "stylelint \"**/*.{css,scss,vue}\"",
+		"format": "prettier --write \"**/*.{js,ts,vue,md}\"",
 		"dev": "lerna run dev --stream --parallel",
 		"build": "lerna run build",
 		"release": "lerna publish --force-publish --exact",
@@ -63,7 +63,7 @@
 		"pre-commit": "npx lint-staged"
 	},
 	"lint-staged": {
-		"*.{js,ts,md,vue}": "prettier --write",
+		"*.{js,ts,vue,md}": "prettier --write",
 		"*.{css,scss,vue}": "stylelint --fix"
 	}
 }
