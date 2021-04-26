@@ -1,4 +1,4 @@
-import { RouteConfig } from 'vue-router';
+import { RouteRecordRaw } from 'vue-router';
 import { Ref } from 'vue';
 import { User, Permission } from '@/types';
 
@@ -7,7 +7,7 @@ export interface ModuleConfig {
 	name: string;
 	hidden?: boolean | Ref<boolean>;
 	icon: string;
-	routes?: RouteConfig[];
+	routes?: RouteRecordRaw[];
 	link?: string;
 	color?: string;
 	preRegisterCheck?: (user: User, permissions: Permission[]) => boolean;

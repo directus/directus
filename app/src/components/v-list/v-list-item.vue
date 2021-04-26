@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { Location } from 'vue-router';
+import { RouteLocation } from 'vue-router';
 import { defineComponent, PropType, computed } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
@@ -39,7 +39,7 @@ export default defineComponent({
 			default: false,
 		},
 		to: {
-			type: [String, Object] as PropType<string | Location>,
+			type: [String, Object] as PropType<string | RouteLocation>,
 			default: null,
 		},
 		href: {

@@ -1,11 +1,11 @@
 import { defineModule } from '@/modules/define';
-import { RouteConfig } from 'vue-router';
+import { RouteRecordRaw } from 'vue-router';
 import files, { Directory } from '@directus/docs';
 import StaticDocs from './routes/static.vue';
 import NotFound from './routes/not-found.vue';
 
 export default defineModule(() => {
-	const routes: RouteConfig[] = [
+	const routes: RouteRecordRaw[] = [
 		{
 			path: '/',
 			redirect: '/getting-started/introduction/',
@@ -25,8 +25,8 @@ export default defineModule(() => {
 		order: 20,
 	};
 
-	function parseRoutes(directory: Directory): RouteConfig[] {
-		const routes: RouteConfig[] = [];
+	function parseRoutes(directory: Directory): RouteRecordRaw[] {
+		const routes: RouteRecordRaw[] = [];
 
 		for (const doc of directory.children) {
 			if (doc.type === 'file') {

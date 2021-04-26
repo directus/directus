@@ -44,7 +44,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, PropType } from 'vue';
-import { Location } from 'vue-router';
+import { RouteLocation } from 'vue-router';
 import useSizeClass, { sizeProps } from '@/composables/size-class';
 import { useGroupable } from '@/composables/groupable';
 import { notEmpty } from '@/utils/is-empty';
@@ -80,7 +80,7 @@ export default defineComponent({
 			default: false,
 		},
 		to: {
-			type: [String, Object] as PropType<string | Location>,
+			type: [String, Object] as PropType<string | RouteLocation>,
 			default: null,
 		},
 		href: {
