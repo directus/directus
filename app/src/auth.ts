@@ -1,7 +1,7 @@
-import { RawLocation } from 'vue-router';
+import { RouteLocationRaw } from 'vue-router';
 import api from '@/api';
 import { hydrate, dehydrate } from '@/hydrate';
-import router from '@/router';
+import { router } from '@/router';
 import { useAppStore } from '@/stores';
 
 export type LoginCredentials = {
@@ -101,7 +101,7 @@ export async function logout(optionsRaw: LogoutOptions = {}) {
 	await dehydrate();
 
 	if (options.navigate === true) {
-		const location: RawLocation = {
+		const location: RouteLocationRaw = {
 			path: `/login`,
 			query: { reason: options.reason },
 		};
