@@ -5,6 +5,17 @@ import { command } from './core/command';
 import { Toolbox } from './toolbox';
 import { CommandResult } from './command';
 
+export { command } from './core/command';
+export type { Toolbox } from './toolbox';
+
+export * from './command';
+export * from './config';
+export * from './events';
+export * from './help';
+export * from './options';
+export * from './output';
+export * from './toolbox';
+
 export default async function <T extends any>(argv: string[]): Promise<CommandResult<T>> {
 	// create a runtime
 	const runtime = build('directusctl')
@@ -60,7 +71,7 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 			disableHelp: true,
 		},
 		async function (toolbox: Toolbox) {
-			return await toolbox.help.displayHelp();
+			await toolbox.help.displayHelp();
 		}
 	) as any;
 
