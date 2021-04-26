@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
 	props: {
@@ -24,6 +24,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		return { close };
 
 		function close() {

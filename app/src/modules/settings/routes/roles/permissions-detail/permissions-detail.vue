@@ -49,7 +49,7 @@ import { defineComponent, ref, computed, watch } from 'vue';
 import api from '@/api';
 import { Permission, Role } from '@/types';
 import { useCollectionsStore } from '@/stores/';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import i18n from '@/lang';
 import Actions from './components/actions.vue';
 import Tabs from './components/tabs.vue';
@@ -74,6 +74,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const collectionsStore = useCollectionsStore();
 
 		const permission = ref<Permission>();

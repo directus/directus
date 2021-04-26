@@ -10,7 +10,7 @@
 import { defineComponent, PropType, ref, inject } from 'vue';
 import { Permission } from '@/types';
 import api from '@/api';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -25,6 +25,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const router = useRouter();
+
 		const loading = ref(false);
 
 		return { save, loading };

@@ -91,7 +91,7 @@
 import { defineComponent, computed, toRefs, ref } from 'vue';
 
 import SettingsNavigation from '../../../components/navigation.vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
 import { useUserStore, usePermissionsStore } from '@/stores/';
@@ -113,6 +113,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const userInviteModalActive = ref(false);

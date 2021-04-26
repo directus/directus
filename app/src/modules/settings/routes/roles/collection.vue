@@ -65,7 +65,7 @@ import api from '@/api';
 import marked from 'marked';
 import { Header as TableHeader } from '@/components/v-table/types';
 import ValueNull from '@/views/private/components/value-null';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 type Role = {
@@ -80,6 +80,8 @@ export default defineComponent({
 	components: { SettingsNavigation, ValueNull },
 	props: {},
 	setup() {
+		const router = useRouter();
+
 		const roles = ref<Role[]>([]);
 		const loading = ref(false);
 

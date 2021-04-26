@@ -178,7 +178,7 @@
 import { defineComponent, computed, toRefs, ref, watch } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
@@ -231,6 +231,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const form = ref<HTMLElement>();
 		const { primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();

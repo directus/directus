@@ -90,7 +90,7 @@ import useCollection from '@/composables/use-collection/';
 import FieldsManagement from './components/fields-management.vue';
 
 import useItem from '@/composables/use-item';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
 import marked from 'marked';
 
@@ -113,6 +113,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const { collection } = toRefs(props);
 		const { info: collectionInfo, fields } = useCollection(collection);
 		const collectionsStore = useCollectionsStore();

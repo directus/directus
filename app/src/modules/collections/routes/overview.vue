@@ -50,7 +50,7 @@ import CollectionsNavigation from '../components/navigation.vue';
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import { i18n } from '@/lang';
 import useNavigation, { NavItem } from '../composables/use-navigation';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores';
 
 import marked from 'marked';
@@ -63,6 +63,8 @@ export default defineComponent({
 	},
 	props: {},
 	setup() {
+		const router = useRouter();
+
 		const userStore = useUserStore();
 
 		const tableHeaders = [

@@ -93,7 +93,7 @@ import { Header } from '@/components/v-table/types';
 import { useCollectionsStore } from '@/stores/';
 import { getLayouts } from '@/layouts';
 import { TranslateResult } from 'vue-i18n';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import ValueNull from '@/views/private/components/value-null';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 import { userName } from '@/utils/user-name';
@@ -120,6 +120,8 @@ type Preset = {
 export default defineComponent({
 	components: { SettingsNavigation, ValueNull, PresetsInfoSidebarDetail },
 	setup() {
+		const router = useRouter();
+
 		const { layouts } = getLayouts();
 		const collectionsStore = useCollectionsStore();
 

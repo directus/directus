@@ -100,7 +100,7 @@ import { HeaderRaw } from '@/components/v-table/types';
 import { i18n } from '@/lang/';
 import { useCollectionsStore } from '@/stores/';
 import { Collection } from '@/types';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { sortBy } from 'lodash';
 import CollectionOptions from './components/collection-options.vue';
 import CollectionsFilter from './components/collections-filter.vue';
@@ -111,6 +111,8 @@ const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
 export default defineComponent({
 	components: { SettingsNavigation, CollectionOptions, CollectionsFilter },
 	setup() {
+		const router = useRouter();
+
 		const collectionsStore = useCollectionsStore();
 
 		const tableHeaders = ref<HeaderRaw[]>([

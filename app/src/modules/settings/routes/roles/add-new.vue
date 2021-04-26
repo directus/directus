@@ -32,12 +32,14 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import api from '@/api';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { appRecommendedPermissions } from './app-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
+		const router = useRouter();
+
 		const roleName = ref<string | null>(null);
 		const appAccess = ref(true);
 		const adminAccess = ref(false);

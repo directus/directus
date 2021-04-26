@@ -65,7 +65,7 @@
 import { defineComponent, PropType, computed, inject, ref, toRefs } from 'vue';
 import { Collection, Permission } from '@/types';
 import api from '@/api';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import useUpdatePermissions from '../composables/use-update-permissions';
 
 export default defineComponent({
@@ -96,6 +96,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const { collection, role, permissions } = toRefs(props);
 		const { setFullAccess, setNoAccess, getPermission } = useUpdatePermissions(collection, permissions, role);
 
@@ -164,7 +166,6 @@ export default defineComponent({
 	position: relative;
 
 	&::before {
-		transition: opacity var(--slow) var(--transition);
 		position: absolute;
 		top: -4px;
 		left: -4px;
@@ -172,8 +173,9 @@ export default defineComponent({
 		height: calc(100% + 8px);
 		background-color: var(--background-highlight);
 		border-radius: 50%;
-		content: '';
 		opacity: 0;
+		transition: opacity var(--slow) var(--transition);
+		content: '';
 	}
 	&:hover::before,
 	&.has-app-minimal::before {

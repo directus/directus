@@ -26,7 +26,6 @@ import { defineComponent, computed, ref, watch } from 'vue';
 import SidebarButton from '../sidebar-button';
 import NotificationItem from '../notification-item';
 import { useNotificationsStore, useUserStore } from '@/stores/';
-import router from '@/router';
 import { Notification } from '@/types';
 import { useProjectInfo } from '@/modules/settings/composables/use-project-info';
 

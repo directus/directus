@@ -63,7 +63,7 @@ import { defineComponent, PropType, ref, computed } from 'vue';
 import { Preset } from '@/types';
 import { useUserStore, usePresetsStore } from '@/stores';
 import { unexpectedError } from '@/utils/unexpected-error';
-import router from '@/router';
+import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
 	props: {
@@ -73,6 +73,9 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+		const route = useRoute();
+
 		const contextMenu = ref();
 		const userStore = useUserStore();
 		const presetsStore = usePresetsStore();
@@ -133,7 +136,7 @@ export default defineComponent({
 				try {
 					let navigateTo: string | null = null;
 
-					if (+router.currentRoute.query?.bookmark === props.bookmark.id) {
+					if (+route.query?.bookmark === props.bookmark.id) {
 						navigateTo = `/collections/${props.bookmark.collection}`;
 					}
 

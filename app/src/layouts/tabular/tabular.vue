@@ -147,7 +147,7 @@ import { defineComponent, PropType, ref, computed, inject, toRefs, Ref, watch } 
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field, Filter } from '@/types';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import useSync from '@/composables/use-sync';
 import { debounce, clone } from 'lodash';
 import Draggable from 'vuedraggable';
@@ -212,6 +212,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const router = useRouter();
+
 		const table = ref<Vue>();
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
@@ -536,8 +538,8 @@ export default defineComponent({
 					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					const primaryKey = item[primaryKeyField.value!.field];
 
-					// eslint-disable-next-line @typescript-eslint/no-empty-function
-					router.push(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`, () => {});
+					// @TODO3 Why was there an emtpy function as callback?
+					router.push(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`);
 				}
 			}
 

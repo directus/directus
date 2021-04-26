@@ -13,7 +13,7 @@ import hljsGraphQL from '@/utils/hljs-graphql';
 
 import { getRootPath } from '@/utils/get-root-path';
 
-import router from '@/router';
+import { useRoute, useRouter } from 'vue-router';
 
 hljs.registerLanguage('graphql', hljsGraphQL);
 
@@ -56,6 +56,9 @@ md.use(require('markdown-it-container'), 'danger', { render: hintRenderer('dange
 
 export default defineComponent({
 	setup(props, { slots }) {
+		const router = useRouter();
+		const route = useRoute();
+
 		const html = ref('');
 		const pageClass = ref<string>();
 
@@ -100,8 +103,8 @@ export default defineComponent({
 			// This will force the main el to scroll down to the targetted element on updates of the content
 			const mainElement = inject('main-element', ref<Element | null>(null));
 
-			if (router.currentRoute.hash) {
-				const linkedEl = document.querySelector(router.currentRoute.hash) as HTMLElement;
+			if (route.hash) {
+				const linkedEl = document.querySelector(route.hash) as HTMLElement;
 
 				if (linkedEl) {
 					mainElement.value?.scrollTo({ top: linkedEl.offsetTop - 100 });

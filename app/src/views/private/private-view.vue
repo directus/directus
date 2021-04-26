@@ -71,7 +71,7 @@ import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
 import NotificationDialogs from './components/notification-dialogs/';
 import { useUserStore, useAppStore } from '@/stores';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import useTitle from '@/composables/use-title';
 
 export default defineComponent({
@@ -92,6 +92,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const { title } = toRefs(props);
 		const navOpen = ref(false);
 		const contentEl = ref<Element>();

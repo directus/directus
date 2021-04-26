@@ -196,7 +196,7 @@ import { defineComponent, PropType, ref, computed } from 'vue';
 import { Field, Relation } from '@/types';
 import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
 import { getInterfaces } from '@/interfaces';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { i18n } from '@/lang';
 import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
@@ -215,6 +215,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();

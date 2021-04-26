@@ -115,7 +115,7 @@ import api from '@/api';
 import { Relation, Collection } from '@/types';
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
 import { Field } from '@/types';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import useCollection from '@/composables/use-collection';
 import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
@@ -152,6 +152,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();

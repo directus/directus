@@ -115,7 +115,7 @@ import api from '@/api';
 import i18n from '@/lang';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import marked from 'marked';
 import { userName } from '@/utils/user-name';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -153,6 +153,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const collectionsStore = useCollectionsStore();
 		const presetsStore = usePresetsStore();
 		const { layouts } = getLayouts();

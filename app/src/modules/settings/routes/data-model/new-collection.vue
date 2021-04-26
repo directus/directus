@@ -131,12 +131,14 @@ import api from '@/api';
 import { Field, Relation } from '@/types';
 import { useFieldsStore, useCollectionsStore, useRelationsStore } from '@/stores/';
 import { notify } from '@/utils/notify';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import i18n from '@/lang';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
+		const router = useRouter();
+
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();

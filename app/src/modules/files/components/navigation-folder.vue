@@ -120,7 +120,7 @@ import { defineComponent, PropType, ref, watch, computed } from 'vue';
 import useFolders, { Folder } from '../composables/use-folders';
 import api from '@/api';
 import FolderPicker from './folder-picker.vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -141,6 +141,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
 		const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
 		const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();

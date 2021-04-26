@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 import { readableMimeType } from '@/utils/readable-mime-type';
@@ -80,6 +80,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
+		const router = useRouter();
+
 		const type = computed(() => {
 			if (!props.file || !props.file.type) return null;
 			if (props.file.type.startsWith('image')) return null;
@@ -135,8 +137,8 @@ export default defineComponent({
 			if (props.selectMode === true) {
 				toggleSelection();
 			} else {
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
-				router.push(props.to, () => {});
+				// @TODO3 Why was there an emtpy function as callback?
+				router.push(props.to);
 			}
 		}
 	},

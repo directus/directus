@@ -197,7 +197,6 @@ import Vue from 'vue';
 
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import CollectionsNavigation from '../components/navigation.vue';
-import router from '@/router';
 import CollectionsNotFound from './not-found.vue';
 import useCollection from '@/composables/use-collection';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
@@ -207,7 +206,7 @@ import SaveOptions from '@/views/private/components/save-options';
 import i18n from '@/lang';
 import marked from 'marked';
 import useShortcut from '@/composables/use-shortcut';
-import { NavigationGuard } from 'vue-router';
+import { useRouter, NavigationGuard } from 'vue-router';
 import { usePermissions } from '@/composables/use-permissions';
 import unsavedChanges from '@/composables/unsaved-changes';
 import { useTitle } from '@/composables/use-title';
@@ -239,6 +238,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const form = ref<HTMLElement>();
 
 		const { collection, primaryKey } = toRefs(props);

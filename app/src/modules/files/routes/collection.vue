@@ -174,7 +174,7 @@ import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
 import FolderPicker from '../components/folder-picker.vue';
 import emitter, { Events } from '@/events';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import Vue from 'vue';
 import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stores';
 import { subDays } from 'date-fns';
@@ -210,6 +210,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const notificationsStore = useNotificationsStore();
 		const permissionsStore = usePermissionsStore();
 		const { folders } = useFolders();

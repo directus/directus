@@ -254,7 +254,7 @@ import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-det
 import SearchInput from '@/views/private/components/search-input';
 import BookmarkAdd from '@/views/private/components/bookmark-add';
 import BookmarkEdit from '@/views/private/components/bookmark-edit';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import marked from 'marked';
 import { usePermissionsStore, useUserStore } from '@/stores';
 import DrawerBatch from '@/views/private/components/drawer-batch';
@@ -289,6 +289,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const userStore = useUserStore();
 		const permissionsStore = usePermissionsStore();
 		const layoutRef = ref<LayoutComponent | null>(null);

@@ -32,7 +32,7 @@
 import { defineComponent, ref } from 'vue';
 import useFolders from '../composables/use-folders';
 import api from '@/api';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -47,6 +47,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const dialogActive = ref(false);
 		const saving = ref(false);
 		const newFolderName = ref(null);

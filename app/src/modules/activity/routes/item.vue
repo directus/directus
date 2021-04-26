@@ -48,7 +48,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref, watch } from 'vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import api from '@/api';
 import { userName } from '@/utils/user-name';
 
@@ -79,6 +79,8 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
+		const router = useRouter();
+
 		const { primaryKey } = toRefs(props);
 		const item = ref<ActivityRecord>();
 		const loading = ref(false);
