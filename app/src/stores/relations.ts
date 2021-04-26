@@ -14,7 +14,7 @@ export const useRelationsStore = defineStore({
 			this.relations = response.data.data;
 		},
 		async dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 		getRelationsForCollection(collection: string) {
 			return this.relations.filter((relation) => {

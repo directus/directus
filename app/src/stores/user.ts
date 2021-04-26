@@ -40,7 +40,7 @@ export const useUserStore = defineStore({
 			}
 		},
 		async dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 		async trackPage(page: string) {
 			const latencyStore = useLatencyStore();

@@ -72,7 +72,7 @@ export const useCollectionsStore = defineStore({
 			});
 		},
 		async dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 		async updateCollection(collection: string, updates: Partial<Collection>) {
 			try {

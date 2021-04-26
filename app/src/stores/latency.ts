@@ -12,7 +12,7 @@ export const useLatencyStore = defineStore({
 	}),
 	actions: {
 		async dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 		save(latency: Latency) {
 			this.latency.push(latency);

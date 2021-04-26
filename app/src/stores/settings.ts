@@ -17,7 +17,7 @@ export const useSettingsStore = defineStore({
 		},
 
 		async dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 
 		async updateSettings(updates: { [key: string]: any }) {

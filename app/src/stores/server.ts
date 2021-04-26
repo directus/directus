@@ -37,7 +37,7 @@ export const useServerStore = defineStore({
 			this.info = response.data.data;
 		},
 		dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 	},
 });

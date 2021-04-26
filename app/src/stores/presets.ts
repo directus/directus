@@ -147,7 +147,7 @@ export const usePresetsStore = defineStore({
 			this.collectionPresets = presets;
 		},
 		async dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 		async create(newPreset: Partial<Preset>) {
 			const response = await api.post(`/presets`, newPreset);

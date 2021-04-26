@@ -34,7 +34,7 @@ export const usePermissionsStore = defineStore({
 			});
 		},
 		dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 		getPermissionsForUser(collection: string, action: Permission['action']) {
 			const userStore = useUserStore();

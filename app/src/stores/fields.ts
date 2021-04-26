@@ -66,7 +66,7 @@ export const useFieldsStore = defineStore({
 			this.translateFields();
 		},
 		async dehydrate() {
-			this.reset();
+			this.$reset();
 		},
 		parseField(field: FieldRaw): Field {
 			const name = formatTitle(field.field);
