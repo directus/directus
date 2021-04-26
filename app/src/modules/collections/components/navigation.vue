@@ -116,7 +116,7 @@ export default defineComponent({
 
 		const bookmarks = computed(() => {
 			return orderBy(
-				presetsStore.state.collectionPresets
+				presetsStore.collectionPresets
 					.filter((preset) => {
 						return preset.bookmark !== null && preset.collection.startsWith('directus_') === false;
 					})
