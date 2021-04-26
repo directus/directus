@@ -11,4 +11,14 @@ export default defineConfig({
 			'@': path.resolve(__dirname, '/src'),
 		},
 	},
+	base: '/admin/',
+	server: {
+		port: 8080,
+		proxy: {
+			'^/(?!admin)': {
+				target: process.env.API_URL ? process.env.API_URL : 'http://localhost:8055/',
+				changeOrigin: true,
+			},
+		},
+	},
 });
