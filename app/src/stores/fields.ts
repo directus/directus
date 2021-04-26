@@ -95,8 +95,8 @@ export const useFieldsStore = createStore({
 			this.state.fields = this.state.fields.map((field) => {
 				let name: string | VueI18n.TranslateResult;
 
-				if (i18n.te(`fields.${field.collection}.${field.field}`)) {
-					name = i18n.t(`fields.${field.collection}.${field.field}`);
+				if (i18n.global.te(`fields.${field.collection}.${field.field}`)) {
+					name = i18n.global.t(`fields.${field.collection}.${field.field}`);
 				} else {
 					name = formatTitle(field.field);
 				}

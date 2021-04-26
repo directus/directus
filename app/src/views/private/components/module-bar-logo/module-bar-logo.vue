@@ -50,7 +50,7 @@ export default defineComponent({
 		const url = computed(() => settingsStore.state.settings?.project_url);
 
 		const urlTooltip = computed(() => {
-			return settingsStore.state.settings?.project_url ? i18n.t('view_project') : false;
+			return settingsStore.state.settings?.project_url ? i18n.global.t('view_project') : false;
 		});
 
 		return {

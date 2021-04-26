@@ -7,7 +7,7 @@ export default function useSourceCode(editor: Ref<any>) {
 
 	const sourceCodeButton = {
 		icon: 'sourcecode',
-		tooltip: i18n.t('wysiwyg_options.source_code'),
+		tooltip: i18n.global.t('wysiwyg_options.source_code'),
 		onAction: (buttonApi: any) => {
 			codeDrawerOpen.value = true;
 

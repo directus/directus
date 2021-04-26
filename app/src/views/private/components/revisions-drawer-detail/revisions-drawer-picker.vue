@@ -57,14 +57,14 @@ export default defineComponent({
 
 				for (const revision of props.revisions) {
 					const date = await getFormattedDate(revision);
-					let user = i18n.t('private_user');
+					let user = i18n.global.t('private_user');
 
 					if (typeof revision.activity.user === 'object') {
 						const userInfo = revision.activity.user;
 						user = userName(userInfo);
 					}
 
-					const text = String(i18n.t('revision_delta_by', { date, user }));
+					const text = String(i18n.global.t('revision_delta_by', { date, user }));
 					const value = revision.id;
 					newOptions.push({ text, value });
 				}
@@ -81,8 +81,14 @@ export default defineComponent({
 		return { _current, options, selectedOption };
 
 		async function getFormattedDate(revision: Revision) {
-			const date = await localizedFormat(new Date(revision!.activity.timestamp), String(i18n.t('date-fns_date')));
-			const time = await localizedFormat(new Date(revision!.activity.timestamp), String(i18n.t('date-fns_time')));
+			const date = await localizedFormat(
+				new Date(revision!.activity.timestamp),
+				String(i18n.global.t('date-fns_date'))
+			);
+			const time = await localizedFormat(
+				new Date(revision!.activity.timestamp),
+				String(i18n.global.t('date-fns_time'))
+			);
 
 			return `${date} (${time})`;
 		}

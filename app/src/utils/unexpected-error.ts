@@ -18,7 +18,7 @@ export function unexpectedError(error: Error | RequestError | APIError) {
 	console.warn(error);
 
 	store.add({
-		title: i18n.t(`errors.${code}`),
+		title: i18n.global.t(`errors.${code}`),
 		text: message,
 		type: 'error',
 		dialog: true,

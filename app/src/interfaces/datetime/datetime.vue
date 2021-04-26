@@ -264,10 +264,10 @@ export default defineComponent({
 
 				const timeFormat = props.includeSeconds ? 'date-fns_time' : 'date-fns_time_no_seconds';
 
-				let format = `${i18n.t('date-fns_date')} ${i18n.t(timeFormat)}`;
+				let format = `${i18n.global.t('date-fns_date')} ${i18n.global.t(timeFormat)}`;
 
-				if (props.type === 'date') format = String(i18n.t('date-fns_date'));
-				if (props.type === 'time') format = String(i18n.t(timeFormat));
+				if (props.type === 'date') format = String(i18n.global.t('date-fns_date'));
+				if (props.type === 'time') format = String(i18n.global.t(timeFormat));
 
 				displayValue.value = await formatLocalized(_value.value, format);
 			}
@@ -290,18 +290,18 @@ export default defineComponent({
 
 			const monthItems = computed(() =>
 				[
-					i18n.t('months.january'),
-					i18n.t('months.february'),
-					i18n.t('months.march'),
-					i18n.t('months.april'),
-					i18n.t('months.may'),
-					i18n.t('months.june'),
-					i18n.t('months.july'),
-					i18n.t('months.august'),
-					i18n.t('months.september'),
-					i18n.t('months.october'),
-					i18n.t('months.november'),
-					i18n.t('months.december'),
+					i18n.global.t('months.january'),
+					i18n.global.t('months.february'),
+					i18n.global.t('months.march'),
+					i18n.global.t('months.april'),
+					i18n.global.t('months.may'),
+					i18n.global.t('months.june'),
+					i18n.global.t('months.july'),
+					i18n.global.t('months.august'),
+					i18n.global.t('months.september'),
+					i18n.global.t('months.october'),
+					i18n.global.t('months.november'),
+					i18n.global.t('months.december'),
 				].map((text, index) => ({
 					text: text,
 					value: index,

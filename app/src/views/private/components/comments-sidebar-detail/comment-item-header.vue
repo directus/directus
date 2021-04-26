@@ -86,7 +86,7 @@ export default defineComponent({
 		const formattedTime = computed(() => {
 			if (props.activity.timestamp) {
 				// timestamp is in iso-8601
-				return format(new Date(props.activity.timestamp), String(i18n.t('date-fns_time_no_seconds')));
+				return format(new Date(props.activity.timestamp), String(i18n.global.t('date-fns_time_no_seconds')));
 			}
 
 			return null;

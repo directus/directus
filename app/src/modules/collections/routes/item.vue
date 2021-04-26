@@ -301,8 +301,8 @@ export default defineComponent({
 
 		const title = computed(() => {
 			return isNew.value
-				? i18n.t('creating_in', { collection: collectionInfo.value?.name })
-				: i18n.t('editing_in', { collection: collectionInfo.value?.name });
+				? i18n.global.t('creating_in', { collection: collectionInfo.value?.name })
+				: i18n.global.t('editing_in', { collection: collectionInfo.value?.name });
 		});
 
 		const tabTitle = computed(() => {
@@ -324,9 +324,9 @@ export default defineComponent({
 		useTitle(tabTitle);
 
 		const archiveTooltip = computed(() => {
-			if (archiveAllowed.value === false) return i18n.t('not_allowed');
-			if (isArchived.value === true) return i18n.t('unarchive');
-			return i18n.t('archive');
+			if (archiveAllowed.value === false) return i18n.global.t('not_allowed');
+			if (isArchived.value === true) return i18n.global.t('unarchive');
+			return i18n.global.t('archive');
 		});
 
 		useShortcut('meta+s', saveAndStay, form);

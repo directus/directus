@@ -92,7 +92,7 @@ export default defineComponent({
 		},
 		sidebarLabel: {
 			type: String,
-			default: i18n.t('sidebar'),
+			default: i18n.global.t('sidebar'),
 		},
 	},
 	setup(props, { emit, listeners }) {

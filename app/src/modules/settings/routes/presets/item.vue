@@ -405,7 +405,7 @@ export default defineComponent({
 			const fields = computed(() => [
 				{
 					field: 'collection',
-					name: i18n.t('collection'),
+					name: i18n.global.t('collection'),
 					type: 'string',
 					meta: {
 						interface: 'dropdown',
@@ -426,7 +426,7 @@ export default defineComponent({
 				},
 				{
 					field: 'scope',
-					name: i18n.t('scope'),
+					name: i18n.global.t('scope'),
 					type: 'string',
 					meta: {
 						interface: 'scope',
@@ -435,7 +435,7 @@ export default defineComponent({
 				},
 				{
 					field: 'layout',
-					name: i18n.t('layout'),
+					name: i18n.global.t('layout'),
 					type: 'string',
 					meta: {
 						interface: 'dropdown',
@@ -450,25 +450,25 @@ export default defineComponent({
 				},
 				{
 					field: 'name',
-					name: i18n.t('name'),
+					name: i18n.global.t('name'),
 					type: 'string',
 					meta: {
 						interface: 'text-input',
 						width: 'half',
 						options: {
-							placeholder: i18n.t('preset_name_placeholder'),
+							placeholder: i18n.global.t('preset_name_placeholder'),
 						},
 					},
 				},
 				{
 					field: 'divider',
-					name: i18n.t('divider'),
+					name: i18n.global.t('divider'),
 					type: 'alias',
 					meta: {
 						interface: 'divider',
 						width: 'fill',
 						options: {
-							title: i18n.t('layout_preview'),
+							title: i18n.global.t('layout_preview'),
 							icon: 'visibility',
 						},
 					},

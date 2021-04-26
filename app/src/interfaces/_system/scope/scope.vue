@@ -45,15 +45,15 @@ export default defineComponent({
 		const options = computed(() => {
 			let options: any[] = [
 				{
-					text: i18n.t('global') + ': ' + i18n.t('all_users'),
+					text: i18n.global.t('global') + ': ' + i18n.global.t('all_users'),
 					value: 'all',
 				},
 				{
-					text: i18n.t('user') + ': ' + i18n.t('select'),
+					text: i18n.global.t('user') + ': ' + i18n.global.t('select'),
 					value: 'directus_users',
 				},
 				{
-					text: i18n.t('role') + ': ' + i18n.t('select'),
+					text: i18n.global.t('role') + ': ' + i18n.global.t('select'),
 					value: 'directus_roles',
 				},
 			];
@@ -63,7 +63,7 @@ export default defineComponent({
 
 				options = [
 					{
-						text: i18n.t(type) + ': ' + (itemName.value || id),
+						text: i18n.global.t(type) + ': ' + (itemName.value || id),
 						value: props.value,
 					},
 					{ divider: true },

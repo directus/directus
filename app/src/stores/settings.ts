@@ -32,7 +32,7 @@ export const useSettingsStore = createStore({
 				this.state.settings = response.data.data;
 
 				notify({
-					title: i18n.t('settings_update_success'),
+					title: i18n.global.t('settings_update_success'),
 					type: 'success',
 				});
 			} catch (err) {

@@ -29,7 +29,7 @@ export default defineComponent({
 		},
 		label: {
 			type: String,
-			default: i18n.t('toggle'),
+			default: i18n.global.t('toggle'),
 		},
 		startOpen: {
 			type: Boolean,
@@ -71,6 +71,7 @@ export default defineComponent({
 	--v-divider-label-color: var(--foreground-subdued);
 	&:hover {
 		--v-divider-label-color: var(--foreground-normal-alt);
+
 		cursor: pointer;
 	}
 }

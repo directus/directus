@@ -38,28 +38,28 @@ export default defineComponent({
 		const navItems = [
 			{
 				icon: 'public',
-				name: i18n.t('settings_project'),
+				name: i18n.global.t('settings_project'),
 				to: `/settings/project`,
 			},
 			{
 				icon: 'list_alt',
-				name: i18n.t('settings_data_model'),
+				name: i18n.global.t('settings_data_model'),
 				to: `/settings/data-model`,
 			},
 			{
 				icon: 'admin_panel_settings',
-				name: i18n.t('settings_permissions'),
+				name: i18n.global.t('settings_permissions'),
 				to: `/settings/roles`,
 				outline: true,
 			},
 			{
 				icon: 'bookmark_border',
-				name: i18n.t('settings_presets'),
+				name: i18n.global.t('settings_presets'),
 				to: `/settings/presets`,
 			},
 			{
 				icon: 'anchor',
-				name: i18n.t('settings_webhooks'),
+				name: i18n.global.t('settings_webhooks'),
 				to: `/settings/webhooks`,
 			},
 		];
@@ -79,13 +79,13 @@ Node: ${parsedInfo.value?.node.version}
 			return [
 				{
 					icon: 'bug_report',
-					name: i18n.t('report_bug'),
+					name: i18n.global.t('report_bug'),
 					href: `https://github.com/directus/directus/issues/new?body=${encodeURIComponent(debugInfo)}`,
 					outline: true,
 				},
 				{
 					icon: 'new_releases',
-					name: i18n.t('request_feature'),
+					name: i18n.global.t('request_feature'),
 					href: 'https://github.com/directus/directus/discussions/new',
 					outline: true,
 				},

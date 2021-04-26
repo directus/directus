@@ -42,20 +42,20 @@ export default defineComponent({
 		const headerMessage = computed(() => {
 			switch (props.revision.activity.action.toLowerCase()) {
 				case 'create':
-					return i18n.t('revision_delta_created');
+					return i18n.global.t('revision_delta_created');
 				case 'update':
-					return i18n.tc('revision_delta_updated', revisionCount.value);
+					return i18n.global.tc('revision_delta_updated', revisionCount.value);
 				case 'delete':
-					return i18n.t('revision_delta_deleted');
+					return i18n.global.t('revision_delta_deleted');
 				case 'revert':
-					return i18n.t('revision_delta_reverted');
+					return i18n.global.t('revision_delta_reverted');
 				default:
-					return i18n.t('revision_delta_other');
+					return i18n.global.t('revision_delta_other');
 			}
 		});
 
 		const time = computed(() => {
-			return format(new Date(props.revision.activity.timestamp), String(i18n.t('date-fns_time')));
+			return format(new Date(props.revision.activity.timestamp), String(i18n.global.t('date-fns_time')));
 		});
 
 		const user = computed(() => {
@@ -63,7 +63,7 @@ export default defineComponent({
 				return userName(props.revision.activity.user);
 			}
 
-			return i18n.t('private_user');
+			return i18n.global.t('private_user');
 		});
 
 		return { headerMessage, time, user };

@@ -44,13 +44,13 @@ export default defineComponent({
 		const latencyTooltip = computed(() => {
 			switch (connectionStrength.value) {
 				case 4:
-					return `${i18n.t('connection_excellent')}\n(${ms(avgLatency.value)} ${i18n.t('latency')})`;
+					return `${i18n.global.t('connection_excellent')}\n(${ms(avgLatency.value)} ${i18n.global.t('latency')})`;
 				case 3:
-					return `${i18n.t('connection_good')}\n(${ms(avgLatency.value)} ${i18n.t('latency')})`;
+					return `${i18n.global.t('connection_good')}\n(${ms(avgLatency.value)} ${i18n.global.t('latency')})`;
 				case 2:
-					return `${i18n.t('connection_fair')}\n(${ms(avgLatency.value)} ${i18n.t('latency')})`;
+					return `${i18n.global.t('connection_fair')}\n(${ms(avgLatency.value)} ${i18n.global.t('latency')})`;
 				case 1:
-					return `${i18n.t('connection_poor')}\n(${ms(avgLatency.value)} ${i18n.t('latency')})`;
+					return `${i18n.global.t('connection_poor')}\n(${ms(avgLatency.value)} ${i18n.global.t('latency')})`;
 			}
 		});
 

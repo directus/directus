@@ -16,7 +16,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string>) {
 
 	const imageButton = {
 		icon: 'image',
-		tooltip: i18n.t('wysiwyg_options.image'),
+		tooltip: i18n.global.t('wysiwyg_options.image'),
 		onAction: (buttonApi: any) => {
 			imageDrawerOpen.value = true;
 

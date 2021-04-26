@@ -54,7 +54,7 @@ export default defineComponent({
 
 		const repeaterFields: DeepPartial<Field>[] = [
 			{
-				name: i18n.tc('field', 1),
+				name: i18n.global.tc('field', 1),
 				field: 'field',
 				type: 'string',
 				meta: {
@@ -64,13 +64,13 @@ export default defineComponent({
 					options: {
 						dbSafe: true,
 						font: 'monospace',
-						placeholder: i18n.t('interfaces.repeater.field_name_placeholder'),
+						placeholder: i18n.global.t('interfaces.repeater.field_name_placeholder'),
 					},
 				},
 				schema: null,
 			},
 			{
-				name: i18n.t('field_width'),
+				name: i18n.global.t('field_width'),
 				field: 'width',
 				type: 'string',
 				meta: {
@@ -81,11 +81,11 @@ export default defineComponent({
 						choices: [
 							{
 								value: 'half',
-								text: i18n.t('half_width'),
+								text: i18n.global.t('half_width'),
 							},
 							{
 								value: 'full',
-								text: i18n.t('full_width'),
+								text: i18n.global.t('full_width'),
 							},
 						],
 					},
@@ -93,7 +93,7 @@ export default defineComponent({
 				schema: null,
 			},
 			{
-				name: i18n.t('type'),
+				name: i18n.global.t('type'),
 				field: 'type',
 				type: 'string',
 				meta: {
@@ -107,7 +107,7 @@ export default defineComponent({
 				schema: null,
 			},
 			{
-				name: i18n.t('interface'),
+				name: i18n.global.t('interface'),
 				field: 'interface',
 				type: 'string',
 				meta: {
@@ -121,7 +121,7 @@ export default defineComponent({
 				schema: null,
 			},
 			{
-				name: i18n.t('note'),
+				name: i18n.global.t('note'),
 				field: 'note',
 				type: 'string',
 				meta: {
@@ -129,13 +129,13 @@ export default defineComponent({
 					width: 'full',
 					sort: 6,
 					options: {
-						placeholder: i18n.t('interfaces.repeater.field_note_placeholder'),
+						placeholder: i18n.global.t('interfaces.repeater.field_note_placeholder'),
 					},
 				},
 				schema: null,
 			},
 			{
-				name: i18n.t('options'),
+				name: i18n.global.t('options'),
 				field: 'options',
 				type: 'string',
 				meta: {

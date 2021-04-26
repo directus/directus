@@ -41,7 +41,7 @@ export default defineComponent({
 		const localValue = ref<string | null>(null);
 
 		const _placeholder = computed(() => {
-			return isHashed.value ? i18n.t('value_hashed') : props.placeholder;
+			return isHashed.value ? i18n.global.t('value_hashed') : props.placeholder;
 		});
 
 		watch(

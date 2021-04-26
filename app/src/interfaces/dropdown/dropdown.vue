@@ -51,7 +51,7 @@ export default defineComponent({
 		},
 		placeholder: {
 			type: String,
-			default: i18n.t('select_an_item'),
+			default: i18n.global.t('select_an_item'),
 		},
 		allowOther: {
 			type: Boolean,

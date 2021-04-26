@@ -18,7 +18,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string>) {
 
 	const mediaButton = {
 		icon: 'embed',
-		tooltip: i18n.t('wysiwyg_options.media'),
+		tooltip: i18n.global.t('wysiwyg_options.media'),
 		onAction: (buttonApi: any) => {
 			mediaDrawerOpen.value = true;
 

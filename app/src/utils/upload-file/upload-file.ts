@@ -40,7 +40,7 @@ export default async function uploadFile(
 
 		if (options?.notifications) {
 			notify({
-				title: i18n.t('upload_file_success'),
+				title: i18n.global.t('upload_file_success'),
 				type: 'success',
 			});
 		}

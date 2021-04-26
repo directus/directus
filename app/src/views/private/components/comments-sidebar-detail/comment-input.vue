@@ -69,7 +69,7 @@ export default defineComponent({
 				newCommentContent.value = null;
 
 				notify({
-					title: i18n.t('post_comment_success'),
+					title: i18n.global.t('post_comment_success'),
 					type: 'success',
 				});
 			} catch (err) {

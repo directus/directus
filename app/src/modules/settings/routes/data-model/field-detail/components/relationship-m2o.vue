@@ -227,10 +227,10 @@ export default defineComponent({
 
 			const correspondingLabel = computed(() => {
 				if (state.relations[0].one_collection) {
-					return i18n.t('add_o2m_to_collection', { collection: state.relations[0].one_collection });
+					return i18n.global.t('add_o2m_to_collection', { collection: state.relations[0].one_collection });
 				}
 
-				return i18n.t('add_field_related');
+				return i18n.global.t('add_field_related');
 			});
 
 			return { hasCorresponding, correspondingField, correspondingLabel };

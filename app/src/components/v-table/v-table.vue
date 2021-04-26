@@ -162,11 +162,11 @@ export default defineComponent({
 		},
 		loadingText: {
 			type: String,
-			default: i18n.t('loading'),
+			default: i18n.global.t('loading'),
 		},
 		noItemsText: {
 			type: String,
-			default: i18n.t('no_items'),
+			default: i18n.global.t('no_items'),
 		},
 		serverSort: {
 			type: Boolean,

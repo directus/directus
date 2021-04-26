@@ -19,7 +19,7 @@ export default function useLink(editor: Ref<any>) {
 
 	const linkButton = {
 		icon: 'link',
-		tooltip: i18n.t('wysiwyg_options.link'),
+		tooltip: i18n.global.t('wysiwyg_options.link'),
 		onAction: (buttonApi: any) => {
 			linkDrawerOpen.value = true;
 

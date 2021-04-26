@@ -29,7 +29,7 @@ export default async function uploadFiles(
 
 		if (options?.notifications) {
 			notify({
-				title: i18n.t('upload_files_success', { count: files.length }),
+				title: i18n.global.t('upload_files_success', { count: files.length }),
 				type: 'success',
 			});
 		}

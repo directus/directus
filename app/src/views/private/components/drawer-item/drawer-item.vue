@@ -109,12 +109,12 @@ export default defineComponent({
 
 		const title = computed(() => {
 			if (props.primaryKey === '+') {
-				return i18n.t('creating_in', {
+				return i18n.global.t('creating_in', {
 					collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name,
 				});
 			}
 
-			return i18n.t('editing_in', {
+			return i18n.global.t('editing_in', {
 				collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name,
 			});
 		});

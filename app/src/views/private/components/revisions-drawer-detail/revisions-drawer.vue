@@ -84,11 +84,11 @@ export default defineComponent({
 
 		const tabs = [
 			{
-				text: i18n.t('revision_preview'),
+				text: i18n.global.t('revision_preview'),
 				value: 'revision_preview',
 			},
 			{
-				text: i18n.t('updates_made'),
+				text: i18n.global.t('updates_made'),
 				value: 'updates_made',
 			},
 		];

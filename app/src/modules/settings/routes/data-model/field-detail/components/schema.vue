@@ -159,67 +159,67 @@ import { state } from '../store';
 
 export const fieldTypes = [
 	{
-		text: i18n.t('string'),
+		text: i18n.global.t('string'),
 		value: 'string',
 	},
 	{
-		text: i18n.t('text'),
+		text: i18n.global.t('text'),
 		value: 'text',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('boolean'),
+		text: i18n.global.t('boolean'),
 		value: 'boolean',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('integer'),
+		text: i18n.global.t('integer'),
 		value: 'integer',
 	},
 	{
-		text: i18n.t('bigInteger'),
+		text: i18n.global.t('bigInteger'),
 		value: 'bigInteger',
 	},
 	{
-		text: i18n.t('float'),
+		text: i18n.global.t('float'),
 		value: 'float',
 	},
 	{
-		text: i18n.t('decimal'),
+		text: i18n.global.t('decimal'),
 		value: 'decimal',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('timestamp'),
+		text: i18n.global.t('timestamp'),
 		value: 'timestamp',
 	},
 	{
-		text: i18n.t('datetime'),
+		text: i18n.global.t('datetime'),
 		value: 'dateTime',
 	},
 	{
-		text: i18n.t('date'),
+		text: i18n.global.t('date'),
 		value: 'date',
 	},
 	{
-		text: i18n.t('time'),
+		text: i18n.global.t('time'),
 		value: 'time',
 	},
 	{ divider: true },
 	{
-		text: i18n.t('json'),
+		text: i18n.global.t('json'),
 		value: 'json',
 	},
 	{
-		text: i18n.t('csv'),
+		text: i18n.global.t('csv'),
 		value: 'csv',
 	},
 	{
-		text: i18n.t('uuid'),
+		text: i18n.global.t('uuid'),
 		value: 'uuid',
 	},
 	{
-		text: i18n.t('hash'),
+		text: i18n.global.t('hash'),
 		value: 'hash',
 	},
 ];
@@ -246,10 +246,10 @@ export default defineComponent({
 
 		const typePlaceholder = computed(() => {
 			if (props.type === 'm2o') {
-				return i18n.t('determined_by_relationship');
+				return i18n.global.t('determined_by_relationship');
 			}
 
-			return i18n.t('choose_a_type');
+			return i18n.global.t('choose_a_type');
 		});
 
 		const defaultValue = computed({
@@ -283,30 +283,30 @@ export default defineComponent({
 				if (state.fieldData.type === 'uuid') {
 					return [
 						{
-							text: i18n.t('do_nothing'),
+							text: i18n.global.t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.t('generate_and_save_uuid'),
+							text: i18n.global.t('generate_and_save_uuid'),
 							value: 'uuid',
 						},
 						{
-							text: i18n.t('save_current_user_id'),
+							text: i18n.global.t('save_current_user_id'),
 							value: 'user-created',
 						},
 						{
-							text: i18n.t('save_current_user_role'),
+							text: i18n.global.t('save_current_user_role'),
 							value: 'role-created',
 						},
 					];
 				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
 					return [
 						{
-							text: i18n.t('do_nothing'),
+							text: i18n.global.t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.t('save_current_datetime'),
+							text: i18n.global.t('save_current_datetime'),
 							value: 'date-created',
 						},
 					];
@@ -348,26 +348,26 @@ export default defineComponent({
 				if (state.fieldData.type === 'uuid') {
 					return [
 						{
-							text: i18n.t('do_nothing'),
+							text: i18n.global.t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.t('save_current_user_id'),
+							text: i18n.global.t('save_current_user_id'),
 							value: 'user-updated',
 						},
 						{
-							text: i18n.t('save_current_user_role'),
+							text: i18n.global.t('save_current_user_role'),
 							value: 'role-updated',
 						},
 					];
 				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
 					return [
 						{
-							text: i18n.t('do_nothing'),
+							text: i18n.global.t('do_nothing'),
 							value: null,
 						},
 						{
-							text: i18n.t('save_current_datetime'),
+							text: i18n.global.t('save_current_datetime'),
 							value: 'date-updated',
 						},
 					];

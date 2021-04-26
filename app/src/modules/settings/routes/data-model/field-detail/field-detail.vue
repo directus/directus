@@ -190,8 +190,8 @@ export default defineComponent({
 			const fieldName = existingField.value?.name || formatTitle(state.fieldData.field || '');
 
 			if (props.field === '+' && fieldName === '')
-				return i18n.t('creating_new_field', { collection: collectionInfo.value?.name });
-			else return i18n.t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.name });
+				return i18n.global.t('creating_new_field', { collection: collectionInfo.value?.name });
+			else return i18n.global.t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.name });
 		});
 
 		return {
@@ -215,17 +215,17 @@ export default defineComponent({
 			const tabs = computed(() => {
 				const tabs = [
 					{
-						text: i18n.t('schema'),
+						text: i18n.global.t('schema'),
 						value: 'schema',
 						disabled: false,
 					},
 					{
-						text: i18n.tc('field', 1),
+						text: i18n.global.tc('field', 1),
 						value: 'field',
 						disabled: interfaceDisplayDisabled(),
 					},
 					{
-						text: i18n.t('interface'),
+						text: i18n.global.t('interface'),
 						value: 'interface',
 						disabled: interfaceDisplayDisabled(),
 					},
@@ -233,7 +233,7 @@ export default defineComponent({
 
 				if (state.fieldData.type !== 'alias' && localType.value !== 'presentation') {
 					tabs.push({
-						text: i18n.t('display'),
+						text: i18n.global.t('display'),
 						value: 'display',
 						disabled: interfaceDisplayDisabled(),
 					});
@@ -241,7 +241,7 @@ export default defineComponent({
 
 				if (['o2m', 'm2o', 'm2m', 'm2a', 'files'].includes(localType.value)) {
 					tabs.splice(1, 0, {
-						text: i18n.t('relationship'),
+						text: i18n.global.t('relationship'),
 						value: 'relationship',
 						disabled: relationshipDisabled(),
 					});
@@ -253,7 +253,7 @@ export default defineComponent({
 						0,
 						...[
 							{
-								text: i18n.t('translations'),
+								text: i18n.global.t('translations'),
 								value: 'translations',
 								disabled: translationsDisabled(),
 							},
@@ -389,12 +389,12 @@ export default defineComponent({
 
 				if (props.field !== '+') {
 					notify({
-						title: i18n.t('field_update_success', { field: props.field }),
+						title: i18n.global.t('field_update_success', { field: props.field }),
 						type: 'success',
 					});
 				} else {
 					notify({
-						title: i18n.t('field_create_success', { field: fieldData.field }),
+						title: i18n.global.t('field_create_success', { field: fieldData.field }),
 						type: 'success',
 					});
 				}

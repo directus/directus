@@ -361,15 +361,15 @@ export default defineComponent({
 		function useBreadcrumb() {
 			const title = computed(() => {
 				if (props.special === 'all') {
-					return i18n.t('all_files');
+					return i18n.global.t('all_files');
 				}
 
 				if (props.special === 'mine') {
-					return i18n.t('my_files');
+					return i18n.global.t('my_files');
 				}
 
 				if (props.special === 'recent') {
-					return i18n.t('recent_files');
+					return i18n.global.t('recent_files');
 				}
 
 				if (props.queryFilters?.folder) {
@@ -380,14 +380,14 @@ export default defineComponent({
 					}
 				}
 
-				return i18n.t('file_library');
+				return i18n.global.t('file_library');
 			});
 
 			const breadcrumb = computed(() => {
-				if (title.value !== i18n.t('file_library')) {
+				if (title.value !== i18n.global.t('file_library')) {
 					return [
 						{
-							name: i18n.t('file_library'),
+							name: i18n.global.t('file_library'),
 							to: `/files`,
 						},
 					];
@@ -503,7 +503,7 @@ export default defineComponent({
 				showDropEffect.value = true;
 
 				dragNotificationID = notificationsStore.add({
-					title: i18n.t('drop_to_upload'),
+					title: i18n.global.t('drop_to_upload'),
 					icon: 'cloud_upload',
 					type: 'info',
 					persist: true,
@@ -578,7 +578,7 @@ export default defineComponent({
 				const files = [...(event.dataTransfer.files as any)];
 
 				fileUploadNotificationID = notificationsStore.add({
-					title: i18n.tc('upload_file_indeterminate', files.length, {
+					title: i18n.global.tc('upload_file_indeterminate', files.length, {
 						done: 0,
 						total: files.length,
 					}),
@@ -601,7 +601,7 @@ export default defineComponent({
 						const done = progress.filter((p) => p === 100).length;
 
 						notificationsStore.update(fileUploadNotificationID, {
-							title: i18n.tc('upload_file_indeterminate', files.length, {
+							title: i18n.global.tc('upload_file_indeterminate', files.length, {
 								done,
 								total,
 							}),

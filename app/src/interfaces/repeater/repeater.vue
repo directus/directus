@@ -75,7 +75,7 @@ export default defineComponent({
 		},
 		addLabel: {
 			type: String,
-			default: i18n.t('create_new'),
+			default: i18n.global.t('create_new'),
 		},
 		limit: {
 			type: Number,
@@ -87,7 +87,7 @@ export default defineComponent({
 		},
 		headerPlaceholder: {
 			type: String,
-			default: i18n.t('empty_item'),
+			default: i18n.global.t('empty_item'),
 		},
 		collection: {
 			type: String,

@@ -75,12 +75,12 @@ export default defineComponent({
 				sortable: false,
 			},
 			{
-				text: i18n.t('name'),
+				text: i18n.global.t('name'),
 				value: 'name',
 				width: 240,
 			},
 			{
-				text: i18n.t('note'),
+				text: i18n.global.t('note'),
 				value: 'note',
 				width: 360,
 			},

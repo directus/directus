@@ -270,14 +270,14 @@ export default defineComponent({
 		const confirmArchive = ref(false);
 
 		const title = computed(() => {
-			if (loading.value === true) return i18n.t('loading');
+			if (loading.value === true) return i18n.global.t('loading');
 
 			if (isNew.value === false && item.value) {
 				const user = item.value as any;
 				return userName(user);
 			}
 
-			return i18n.t('adding_user');
+			return i18n.global.t('adding_user');
 		});
 
 		const { loading: previewLoading, avatarSrc, roleName } = useUserPreview();
@@ -312,9 +312,9 @@ export default defineComponent({
 		);
 
 		const archiveTooltip = computed(() => {
-			if (archiveAllowed.value === false) return i18n.t('not_allowed');
-			if (isArchived.value === true) return i18n.t('unarchive');
-			return i18n.t('archive');
+			if (archiveAllowed.value === false) return i18n.global.t('not_allowed');
+			if (isArchived.value === true) return i18n.global.t('unarchive');
+			return i18n.global.t('archive');
 		});
 
 		useShortcut('meta+s', saveAndStay, form);
@@ -364,7 +364,7 @@ export default defineComponent({
 		function useBreadcrumb() {
 			const breadcrumb = computed(() => [
 				{
-					name: i18n.t('user_directory'),
+					name: i18n.global.t('user_directory'),
 					to: `/users/`,
 				},
 			]);

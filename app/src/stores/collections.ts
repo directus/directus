@@ -60,8 +60,8 @@ export const useCollectionsStore = createStore({
 			this.state.collections = this.state.collections.map((collection: CollectionRaw) => {
 				let name: string | VueI18n.TranslateResult;
 
-				if (i18n.te(`collection_names.${collection.collection}`)) {
-					name = i18n.t(`collection_names.${collection.collection}`);
+				if (i18n.global.te(`collection_names.${collection.collection}`)) {
+					name = i18n.global.t(`collection_names.${collection.collection}`);
 				} else {
 					name = formatTitle(collection.collection);
 				}
@@ -81,7 +81,7 @@ export const useCollectionsStore = createStore({
 				await this.hydrate();
 				notify({
 					type: 'success',
-					title: i18n.t('update_collection_success'),
+					title: i18n.global.t('update_collection_success'),
 				});
 			} catch (err) {
 				unexpectedError(err);
@@ -93,7 +93,7 @@ export const useCollectionsStore = createStore({
 				await this.hydrate();
 				notify({
 					type: 'success',
-					title: i18n.t('delete_collection_success'),
+					title: i18n.global.t('delete_collection_success'),
 				});
 			} catch (err) {
 				unexpectedError(err);
