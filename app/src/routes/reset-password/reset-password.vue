@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import router from '@/router';
+import { useRoute } from 'vue-router';
 import { defineComponent, computed } from 'vue';
 import RequestForm from './request.vue';
 import ResetForm from './reset.vue';
@@ -21,7 +21,9 @@ import ResetForm from './reset.vue';
 export default defineComponent({
 	components: { RequestForm, ResetForm },
 	setup() {
-		const resetToken = computed(() => router.currentRoute.query.token);
+		const route = useRoute();
+
+		const resetToken = computed(() => route.query.token);
 
 		return {
 			resetToken,

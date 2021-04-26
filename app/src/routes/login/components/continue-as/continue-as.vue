@@ -16,12 +16,14 @@ import { defineComponent, computed, watch, ref } from 'vue';
 
 import api from '@/api';
 import { hydrate } from '@/hydrate';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import { userName } from '@/utils/user-name';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
 	setup() {
+		const router = useRouter();
+
 		const loading = ref(false);
 		const name = ref<string | null>(null);
 		const lastPage = ref<string | null>(null);

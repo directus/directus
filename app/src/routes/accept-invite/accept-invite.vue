@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import router from '@/router';
+import { useRoute } from 'vue-router';
 import { defineComponent, computed, ref } from 'vue';
 import { translateAPIError } from '@/lang';
 import api, { RequestError } from '@/api';
@@ -40,7 +40,9 @@ import jwtPayload from '@/utils/jwt-payload';
 
 export default defineComponent({
 	setup() {
-		const acceptToken = computed(() => router.currentRoute.query.token as string);
+		const route = useRoute();
+
+		const acceptToken = computed(() => route.query.token as string);
 
 		const password = ref(null);
 

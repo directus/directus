@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from 'vue';
-import router from '@/router';
+import { useRouter } from 'vue-router';
 import ssoLinks from '../sso-links.vue';
 import { login } from '@/auth';
 import { RequestError } from '@/api';
@@ -39,6 +39,8 @@ type Credentials = {
 export default defineComponent({
 	components: { ssoLinks },
 	setup() {
+		const router = useRouter();
+
 		const loggingIn = ref(false);
 		const email = ref<string | null>(null);
 		const password = ref<string | null>(null);
