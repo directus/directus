@@ -45,7 +45,7 @@ async function init() {
 	registerComponents(app);
 	registerViews(app);
 
-	await Promise.all([registerInterfaces(app), registerDisplays(app), registerLayouts(app), loadModules(app)]);
+	await Promise.all([registerInterfaces(app), registerDisplays(app), registerLayouts(app), loadModules()]);
 
 	app.mount('#app');
 

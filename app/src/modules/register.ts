@@ -4,31 +4,29 @@ import { getModules } from './index';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import { ModuleConfig } from './types';
 // @TODO3 tiny-async-pool relies on node.js global variables
 import asyncPool from 'tiny-async-pool/lib/es7.js';
 
 const { modulesRaw } = getModules();
 
-let queuedModules: any = [];
+let queuedModules: ModuleConfig[] = [];
 
 const removeRoutes: (() => void)[] = [];
 
 export async function loadModules() {
-	const context = require.context('.', true, /^.*index\.ts$/);
+	const moduleModules = import.meta.globEager('./*/**/index.ts');
 
-	queuedModules = context
-		.keys()
-		.map((key) => context(key))
-		.map((mod) => mod.default)
-		.filter((m) => m);
+	const modules: ModuleConfig[] = Object.values(moduleModules).map((module) => module.default);
 
 	try {
 		const customResponse = await api.get('/extensions/modules/');
-		const modules: string[] = customResponse.data.data || [];
+		const customModules: string[] = customResponse.data.data || [];
 
-		await asyncPool(5, modules, async (moduleName) => {
+		await asyncPool(5, customModules, async (moduleName) => {
 			try {
 				const result = await import(/* @vite-ignore */ getRootPath() + `extensions/modules/${moduleName}/index.js`);
+
 				result.default.routes = result.default.routes.map((route: RouteRecordRaw) => {
 					if (route.path) {
 						if (route.path[0] === '/') route.path = route.path.substr(1);
@@ -36,7 +34,8 @@ export async function loadModules() {
 					}
 					return route;
 				});
-				queuedModules.push(result.default);
+
+				modules.push(result.default);
 			} catch (err) {
 				console.warn(`Couldn't load custom module "${moduleName}":`, err);
 			}
@@ -44,6 +43,8 @@ export async function loadModules() {
 	} catch {
 		console.warn(`Couldn't load custom modules`);
 	}
+
+	queuedModules = modules;
 }
 
 export async function register() {
