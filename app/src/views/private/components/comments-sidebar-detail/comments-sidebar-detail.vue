@@ -28,7 +28,6 @@ import { groupBy } from 'lodash';
 import { i18n } from '@/lang';
 import formatLocalized from '@/utils/localized-format';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
-import { TranslateResult } from 'vue-i18n';
 import CommentItem from './comment-item.vue';
 import { orderBy } from 'lodash';
 
@@ -107,7 +106,7 @@ export default defineComponent({
 						const yesterday = isYesterday(date);
 						const thisYear = isThisYear(date);
 
-						let dateFormatted: TranslateResult;
+						let dateFormatted: string;
 
 						if (today) dateFormatted = i18n.global.t('today');
 						else if (yesterday) dateFormatted = i18n.global.t('yesterday');

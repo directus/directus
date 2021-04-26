@@ -5,7 +5,7 @@ Generate out a field tree based on the given collection.
 ```ts
 type FieldTree = {
 	field: string;
-	name: string | TranslateResult;
+	name: string;
 	children?: FieldTree[];
 };
 

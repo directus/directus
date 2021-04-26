@@ -54,7 +54,6 @@ import { Revision, RevisionsByDate } from './types';
 import api from '@/api';
 import { groupBy, orderBy } from 'lodash';
 import { isToday, isYesterday, isThisYear } from 'date-fns';
-import { TranslateResult } from 'vue-i18n';
 import { i18n } from '@/lang';
 import formatLocalized from '@/utils/localized-format';
 import RevisionItem from './revision-item.vue';
@@ -202,7 +201,7 @@ export default defineComponent({
 						const yesterday = isYesterday(date);
 						const thisYear = isThisYear(date);
 
-						let dateFormatted: TranslateResult;
+						let dateFormatted: string;
 
 						if (today) dateFormatted = i18n.global.t('today');
 						else if (yesterday) dateFormatted = i18n.global.t('yesterday');

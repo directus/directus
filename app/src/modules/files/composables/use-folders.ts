@@ -1,6 +1,5 @@
 import api from '@/api';
 import { ref, Ref } from 'vue';
-import { TranslateResult } from 'vue-i18n';
 
 type FolderRaw = {
 	id: string;
@@ -10,7 +9,7 @@ type FolderRaw = {
 
 export type Folder = {
 	id: string | null;
-	name: string | TranslateResult;
+	name: string;
 	parent: string | null;
 	children?: Folder[];
 };

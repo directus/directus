@@ -1,6 +1,5 @@
 import { createStore } from 'pinia';
 import api from '@/api';
-import VueI18n from 'vue-i18n';
 import { notEmpty } from '@/utils/is-empty/';
 import { i18n } from '@/lang';
 import formatTitle from '@directus/format-title';
@@ -93,7 +92,7 @@ export const useFieldsStore = createStore({
 		},
 		translateFields() {
 			this.state.fields = this.state.fields.map((field) => {
-				let name: string | VueI18n.TranslateResult;
+				let name: string;
 
 				if (i18n.global.te(`fields.${field.collection}.${field.field}`)) {
 					name = i18n.global.t(`fields.${field.collection}.${field.field}`);

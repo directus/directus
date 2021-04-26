@@ -92,7 +92,6 @@ import api from '@/api';
 import { Header } from '@/components/v-table/types';
 import { useCollectionsStore } from '@/stores/';
 import { getLayouts } from '@/layouts';
-import { TranslateResult } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ValueNull from '@/views/private/components/value-null';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
@@ -111,10 +110,10 @@ type PresetRaw = {
 
 type Preset = {
 	id: number;
-	name: null | string | TranslateResult;
+	name: null | string;
 	scope: string;
-	collection: string | TranslateResult;
-	layout: string | TranslateResult;
+	collection: string;
+	layout: string;
 };
 
 export default defineComponent({

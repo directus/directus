@@ -1,9 +1,8 @@
 import { Field, FilterOperator } from '@/types';
-import { TranslateResult } from 'vue-i18n';
 
 export type FormField = DeepPartial<Field> & {
 	field: string;
-	name: string | TranslateResult;
+	name: string;
 	hideLabel?: boolean;
 	hideLoader?: boolean;
 };

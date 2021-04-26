@@ -2,11 +2,10 @@ import { computed, Ref, ref } from 'vue';
 
 import { useCollectionsStore, useUserStore } from '@/stores/';
 import { Collection } from '@/types';
-import VueI18n from 'vue-i18n';
 
 export type NavItem = {
 	collection: string;
-	name: string | VueI18n.TranslateResult;
+	name: string;
 	to: string;
 	icon: string;
 	note: string | null;

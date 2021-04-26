@@ -3,7 +3,6 @@ import api from '@/api';
 import { Collection, CollectionRaw } from '@/types';
 import { i18n } from '@/lang';
 import { notEmpty } from '@/utils/is-empty/';
-import VueI18n from 'vue-i18n';
 import formatTitle from '@directus/format-title';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -58,7 +57,7 @@ export const useCollectionsStore = createStore({
 		},
 		translateCollections() {
 			this.state.collections = this.state.collections.map((collection: CollectionRaw) => {
-				let name: string | VueI18n.TranslateResult;
+				let name: string;
 
 				if (i18n.global.te(`collection_names.${collection.collection}`)) {
 					name = i18n.global.t(`collection_names.${collection.collection}`);
