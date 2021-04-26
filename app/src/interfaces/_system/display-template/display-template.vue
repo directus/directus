@@ -35,7 +35,7 @@ export default defineComponent({
 		const collection = computed(() => {
 			if (!props.collectionField) return null;
 			const collectionName = values.value[props.collectionField];
-			const collectionExists = !!collectionsStore.state.collections.find(
+			const collectionExists = !!collectionsStore.collections.find(
 				(collection) => collection.collection === collectionName
 			);
 			if (collectionExists === false) return null;

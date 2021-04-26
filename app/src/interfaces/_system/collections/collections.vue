@@ -28,9 +28,9 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const collections = computed(() => {
-			if (props.includeSystem) return collectionsStore.state.collections;
+			if (props.includeSystem) return collectionsStore.collections;
 
-			return collectionsStore.state.collections.filter(
+			return collectionsStore.collections.filter(
 				(collection) => collection.collection.startsWith('directus_') === false
 			);
 		});

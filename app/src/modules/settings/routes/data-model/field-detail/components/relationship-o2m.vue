@@ -199,7 +199,7 @@ export default defineComponent({
 
 		const relatedCollectionExists = computed(() => {
 			return (
-				collectionsStore.state.collections.find((col) => col.collection === state.relations?.[0].many_collection) !==
+				collectionsStore.collections.find((col) => col.collection === state.relations?.[0].many_collection) !==
 				undefined
 			);
 		});
@@ -232,7 +232,7 @@ export default defineComponent({
 		function useRelation() {
 			const availableCollections = computed(() => {
 				return orderBy(
-					collectionsStore.state.collections.filter((collection) => {
+					collectionsStore.collections.filter((collection) => {
 						return collection.collection.startsWith('directus_') === false;
 					}),
 					['collection'],
@@ -242,7 +242,7 @@ export default defineComponent({
 
 			const systemCollections = computed(() => {
 				return orderBy(
-					collectionsStore.state.collections.filter((collection) => {
+					collectionsStore.collections.filter((collection) => {
 						return collection.collection.startsWith('directus_') === true;
 					}),
 					['collection'],

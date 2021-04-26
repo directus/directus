@@ -299,7 +299,7 @@ export default defineComponent({
 			const duplicateName = ref(props.field.field + '_copy');
 			const duplicating = ref(false);
 			const collections = computed(() =>
-				collectionsStore.state.collections
+				collectionsStore.collections
 					.map(({ collection }) => collection)
 					.filter((collection) => collection.startsWith('directus_') === false)
 			);

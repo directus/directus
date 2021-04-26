@@ -84,9 +84,8 @@ export default defineComponent({
 
 		const collectionName = computed(() => {
 			if (!permission.value) return null;
-			return collectionsStore.state.collections.find(
-				(collection) => collection.collection === permission.value!.collection
-			)?.name;
+			return collectionsStore.collections.find((collection) => collection.collection === permission.value!.collection)
+				?.name;
 		});
 
 		const modalTitle = computed(() => {

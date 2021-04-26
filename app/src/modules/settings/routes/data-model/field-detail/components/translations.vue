@@ -239,7 +239,7 @@ export default defineComponent({
 
 		const availableCollections = computed(() => {
 			return orderBy(
-				collectionsStore.state.collections.filter((collection) => {
+				collectionsStore.collections.filter((collection) => {
 					return collection.collection.startsWith('directus_') === false;
 				}),
 				['collection'],
@@ -249,7 +249,7 @@ export default defineComponent({
 
 		const systemCollections = computed(() => {
 			return orderBy(
-				collectionsStore.state.collections.filter((collection) => {
+				collectionsStore.collections.filter((collection) => {
 					return collection.collection.startsWith('directus_') === true;
 				}),
 				['collection'],

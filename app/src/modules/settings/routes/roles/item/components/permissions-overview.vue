@@ -93,11 +93,11 @@ export default defineComponent({
 		const collectionsStore = useCollectionsStore();
 
 		const regularCollections = computed(() =>
-			collectionsStore.state.collections.filter((collection) => collection.collection.startsWith('directus_') === false)
+			collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === false)
 		);
 
 		const systemCollections = computed(() =>
-			collectionsStore.state.collections.filter((collection) => collection.collection.startsWith('directus_') === true)
+			collectionsStore.collections.filter((collection) => collection.collection.startsWith('directus_') === true)
 		);
 
 		const systemVisible = ref(false);

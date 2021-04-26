@@ -151,7 +151,7 @@ export default defineComponent({
 		function useItems() {
 			const visible = computed(() => {
 				return sortBy(
-					collectionsStore.state.collections.filter(
+					collectionsStore.collections.filter(
 						(collection) => collection.collection.startsWith('directus_') === false && collection.meta?.hidden === false
 					),
 					'collection'
@@ -160,7 +160,7 @@ export default defineComponent({
 
 			const hidden = computed(() => {
 				return sortBy(
-					collectionsStore.state.collections
+					collectionsStore.collections
 						.filter(
 							(collection) =>
 								collection.collection.startsWith('directus_') === false && collection.meta?.hidden === true
@@ -172,7 +172,7 @@ export default defineComponent({
 
 			const system = computed(() => {
 				return sortBy(
-					collectionsStore.state.collections
+					collectionsStore.collections
 						.filter((collection) => collection.collection.startsWith('directus_') === true)
 						.map((collection) => ({ ...collection, icon: 'settings' })),
 					'collection'
@@ -181,7 +181,7 @@ export default defineComponent({
 
 			const unmanaged = computed(() => {
 				return sortBy(
-					collectionsStore.state.collections
+					collectionsStore.collections
 						.filter((collection) => collection.collection.startsWith('directus_') === false)
 						.filter((collection) => collection.meta === null)
 						.map((collection) => ({ ...collection, icon: 'dns' })),

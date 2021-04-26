@@ -9,7 +9,7 @@ export function useCollection(collectionKey: string | Ref<string>) {
 	const collection: Ref<string> = typeof collectionKey === 'string' ? ref(collectionKey) : collectionKey;
 
 	const info = computed(() => {
-		return collectionsStore.state.collections.find(({ collection: key }) => key === collection.value);
+		return collectionsStore.collections.find(({ collection: key }) => key === collection.value);
 	});
 
 	const fields = computed<Field[]>(() => {
