@@ -434,7 +434,7 @@ export default defineComponent({
 
 			const newLang = user?.language;
 
-			if (newLang && newLang !== i18n.locale) {
+			if (newLang && newLang !== i18n.global.locale.value) {
 				await setLanguage(newLang);
 
 				await fieldsStore.hydrate();

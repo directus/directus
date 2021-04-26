@@ -39,7 +39,7 @@ export const useCollectionsStore = createStore({
 					for (let i = 0; i < collection.meta.translations.length; i++) {
 						const { language, translation } = collection.meta.translations[i];
 
-						i18n.mergeLocaleMessage(language, {
+						i18n.global.mergeLocaleMessage(language, {
 							collection_names: {
 								[collection.collection]: translation,
 							},

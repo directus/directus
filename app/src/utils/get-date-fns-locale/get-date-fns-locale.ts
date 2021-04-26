@@ -1,7 +1,7 @@
 import { i18n } from '@/lang';
 
 export async function getDateFNSLocale() {
-	const lang = i18n.locale;
+	const lang = i18n.global.locale.value;
 
 	const localesToTry = [lang, lang.split('-')[0], 'en-US'];
 
