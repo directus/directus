@@ -36,7 +36,7 @@ export default defineComponent({
 		const notificationsStore = useNotificationsStore();
 		const userStore = useUserStore();
 
-		const notifications = computed(() => notificationsStore.state.dialogs);
+		const notifications = computed(() => notificationsStore.dialogs);
 
 		return { notifications, admin: userStore.isAdmin, done, getGitHubIssueLink };
 

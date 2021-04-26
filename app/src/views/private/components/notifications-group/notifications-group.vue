@@ -27,7 +27,7 @@ export default defineComponent({
 	},
 	setup() {
 		const notificationsStore = useNotificationsStore();
-		const queue = toRefs(notificationsStore.state).queue;
+		const queue = toRefs(notificationsStore).queue;
 
 		return { queue };
 	},
