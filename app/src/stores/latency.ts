@@ -15,8 +15,8 @@ export const useLatencyStore = defineStore({
 			this.reset();
 		},
 		save(latency: Latency) {
-			this.state.latency.push(latency);
-			this.state.latency = this.state.latency.slice(-20);
+			this.latency.push(latency);
+			this.latency = this.latency.slice(-20);
 		},
 	},
 });

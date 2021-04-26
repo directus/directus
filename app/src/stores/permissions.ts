@@ -17,7 +17,7 @@ export const usePermissionsStore = defineStore({
 				params: { limit: -1, filter: { role: { _eq: userStore.state.currentUser!.role.id } } },
 			});
 
-			this.state.permissions = response.data.data.map((rawPermission: any) => {
+			this.permissions = response.data.data.map((rawPermission: any) => {
 				if (rawPermission.permissions) {
 					rawPermission.permissions = parseFilter(rawPermission.permissions);
 				}
@@ -39,7 +39,7 @@ export const usePermissionsStore = defineStore({
 		getPermissionsForUser(collection: string, action: Permission['action']) {
 			const userStore = useUserStore();
 			return (
-				this.state.permissions.find(
+				this.permissions.find(
 					(permission) =>
 						permission.action === action &&
 						permission.collection === collection &&

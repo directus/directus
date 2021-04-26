@@ -13,13 +13,13 @@ export const useCollectionsStore = defineStore({
 		collections: [] as Collection[],
 	}),
 	getters: {
-		visibleCollections: (state) => {
-			return state.collections
+		visibleCollections() {
+			return this.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
 				.filter((collection) => collection.meta?.hidden !== true);
 		},
-		hiddenCollections: (state) => {
-			return state.collections
+		hiddenCollections() {
+			return this.collections
 				.filter(({ collection }) => collection.startsWith('directus_') === false)
 				.filter((collection) => collection.meta?.hidden !== false);
 		},
@@ -30,7 +30,7 @@ export const useCollectionsStore = defineStore({
 
 			const collections: CollectionRaw[] = response.data.data;
 
-			this.state.collections = collections.map((collection: CollectionRaw) => {
+			this.collections = collections.map((collection: CollectionRaw) => {
 				const icon = collection.meta?.icon || 'label';
 				const name = formatTitle(collection.collection);
 
@@ -56,7 +56,7 @@ export const useCollectionsStore = defineStore({
 			this.translateCollections();
 		},
 		translateCollections() {
-			this.state.collections = this.state.collections.map((collection: CollectionRaw) => {
+			this.collections = this.collections.map((collection: CollectionRaw) => {
 				let name: string;
 
 				if (i18n.global.te(`collection_names.${collection.collection}`)) {
@@ -99,7 +99,7 @@ export const useCollectionsStore = defineStore({
 			}
 		},
 		getCollection(collectionKey: string): Collection | null {
-			return this.state.collections.find((collection) => collection.collection === collectionKey) || null;
+			return this.collections.find((collection) => collection.collection === collectionKey) || null;
 		},
 	},
 });

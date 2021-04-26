@@ -13,7 +13,7 @@ export const useSettingsStore = defineStore({
 	actions: {
 		async hydrate() {
 			const response = await api.get(`/settings`);
-			this.state.settings = response.data.data;
+			this.settings = response.data.data;
 		},
 
 		async dehydrate() {
@@ -21,22 +21,22 @@ export const useSettingsStore = defineStore({
 		},
 
 		async updateSettings(updates: { [key: string]: any }) {
-			const settingsCopy = { ...this.state.settings };
-			const newSettings = merge({}, this.state.settings, updates);
+			const settingsCopy = { ...this.settings };
+			const newSettings = merge({}, this.settings, updates);
 
-			this.state.settings = newSettings;
+			this.settings = newSettings;
 
 			try {
 				const response = await api.patch(`/settings`, updates);
 
-				this.state.settings = response.data.data;
+				this.settings = response.data.data;
 
 				notify({
 					title: i18n.global.t('settings_update_success'),
 					type: 'success',
 				});
 			} catch (err) {
-				this.state.settings = settingsCopy;
+				this.settings = settingsCopy;
 				unexpectedError(err);
 			}
 		},

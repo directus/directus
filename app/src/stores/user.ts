@@ -13,17 +13,17 @@ export const useUserStore = defineStore({
 		error: null,
 	}),
 	getters: {
-		fullName(state) {
-			if (state.currentUser === null) return null;
-			return userName(state.currentUser);
+		fullName() {
+			if (this.currentUser === null) return null;
+			return userName(this.currentUser);
 		},
-		isAdmin(state) {
-			return state.currentUser?.role.admin_access === true || false;
+		isAdmin() {
+			return this.currentUser?.role.admin_access === true || false;
 		},
 	},
 	actions: {
 		async hydrate() {
-			this.state.loading = true;
+			this.loading = true;
 
 			try {
 				const { data } = await api.get(`/users/me`, {
@@ -32,11 +32,11 @@ export const useUserStore = defineStore({
 					},
 				});
 
-				this.state.currentUser = data.data;
+				this.currentUser = data.data;
 			} catch (error) {
-				this.state.error = error;
+				this.error = error;
 			} finally {
-				this.state.loading = false;
+				this.loading = false;
 			}
 		},
 		async dehydrate() {
@@ -58,8 +58,8 @@ export const useUserStore = defineStore({
 				latency: end - start,
 			});
 
-			if (this.state.currentUser) {
-				this.state.currentUser.last_page = page;
+			if (this.currentUser) {
+				this.currentUser.last_page = page;
 			}
 		},
 	},

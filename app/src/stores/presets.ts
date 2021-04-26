@@ -144,7 +144,7 @@ export const usePresetsStore = defineStore({
 				}
 			}
 
-			this.state.collectionPresets = presets;
+			this.collectionPresets = presets;
 		},
 		async dehydrate() {
 			this.reset();
@@ -152,7 +152,7 @@ export const usePresetsStore = defineStore({
 		async create(newPreset: Partial<Preset>) {
 			const response = await api.post(`/presets`, newPreset);
 
-			this.state.collectionPresets.push(response.data.data);
+			this.collectionPresets.push(response.data.data);
 
 			return response.data.data;
 		},
@@ -163,7 +163,7 @@ export const usePresetsStore = defineStore({
 			const response = await api.patch(`/presets/${id}`, updates);
 
 			if (currentUpdate[id] === updateID) {
-				this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
+				this.collectionPresets = this.collectionPresets.map((preset) => {
 					const updatedPreset = response.data.data;
 
 					if (preset.id === updatedPreset.id) {
@@ -179,7 +179,7 @@ export const usePresetsStore = defineStore({
 		async delete(id: number) {
 			await api.delete(`/presets/${id}`);
 
-			this.state.collectionPresets = this.state.collectionPresets.filter((preset) => {
+			this.collectionPresets = this.collectionPresets.filter((preset) => {
 				return preset.id !== id;
 			});
 		},
@@ -202,7 +202,7 @@ export const usePresetsStore = defineStore({
 				user: userID,
 			};
 
-			const availablePresets = this.state.collectionPresets.filter((preset) => {
+			const availablePresets = this.collectionPresets.filter((preset) => {
 				const userMatches = preset.user === userID || preset.user === null;
 				const roleMatches = preset.role === userRole.id || preset.role === null;
 				const collectionMatches = preset.collection === collection;
@@ -233,7 +233,7 @@ export const usePresetsStore = defineStore({
 		},
 
 		getBookmark(bookmarkID: number) {
-			return this.state.collectionPresets.find((preset) => preset.id === bookmarkID) || null;
+			return this.collectionPresets.find((preset) => preset.id === bookmarkID) || null;
 		},
 
 		/**
@@ -272,7 +272,7 @@ export const usePresetsStore = defineStore({
 		},
 
 		saveLocal(updatedPreset: Preset) {
-			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
+			this.collectionPresets = this.collectionPresets.map((preset) => {
 				if (preset.id === updatedPreset.id) {
 					return { ...updatedPreset };
 				}
@@ -284,7 +284,7 @@ export const usePresetsStore = defineStore({
 		async clearLocalSave(preset: Preset) {
 			const response = await api.get(`/presets/${preset.id}`);
 
-			this.state.collectionPresets = this.state.collectionPresets.map((preset) => {
+			this.collectionPresets = this.collectionPresets.map((preset) => {
 				if (preset.id === response.data.data.id) {
 					return response.data.data;
 				}

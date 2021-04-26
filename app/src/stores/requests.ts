@@ -7,16 +7,18 @@ export const useRequestsStore = defineStore({
 		queue: [] as string[],
 	}),
 	getters: {
-		queueHasItems: (state) => state.queue.length > 0,
+		queueHasItems() {
+			return this.queue.length > 0;
+		},
 	},
 	actions: {
 		startRequest() {
 			const id = nanoid();
-			this.state.queue = [...this.state.queue, id];
+			this.queue = [...this.queue, id];
 			return id;
 		},
 		endRequest(id: string) {
-			this.state.queue = this.state.queue.filter((queueID: string) => queueID !== id);
+			this.queue = this.queue.filter((queueID: string) => queueID !== id);
 		},
 	},
 });
