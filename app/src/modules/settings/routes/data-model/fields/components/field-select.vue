@@ -372,7 +372,7 @@ export default defineComponent({
 			const translationsCollection = computed(() => {
 				if (localType.value !== 'translations') return null;
 
-				const relation = relationsStore.state.relations.find((relation: Relation) => {
+				const relation = relationsStore.relations.find((relation: Relation) => {
 					return relation.one_collection === props.field.collection && relation.one_field === props.field.field;
 				});
 

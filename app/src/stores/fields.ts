@@ -257,10 +257,10 @@ export const useFieldsStore = defineStore({
 		 * dot notation.
 		 */
 		getRelationalField(collection: string, fields: string) {
-			const relationshipStore = useRelationsStore();
+			const relationsStore = useRelationsStore();
 			const parts = fields.split('.');
 
-			const relation = relationshipStore
+			const relation = relationsStore
 				.getRelationsForField(collection, parts[0])
 				?.find((relation: Relation) => relation.many_field === parts[0] || relation.one_field === parts[0]) as Relation;
 
