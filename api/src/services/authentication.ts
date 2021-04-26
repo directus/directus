@@ -59,19 +59,17 @@ export class AuthenticationService {
 
 		const { email, password, ip, userAgent, otp } = options;
 
-		const hookPayload = omit(options, 'otp');
-
 		let user = await database
 			.select('id', 'password', 'role', 'tfa_secret', 'status')
 			.from('directus_users')
 			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
 			.first();
 
-		const updatedUser = await emitter.emitAsync('auth.login.before', hookPayload, {
+		const updatedUser = await emitter.emitAsync('auth.login.before', options, {
 			event: 'auth.login.before',
 			action: 'login',
 			schema: this.schema,
-			payload: hookPayload,
+			payload: options,
 			accountability: this.accountability,
 			status: 'pending',
 			user: user?.id,
@@ -83,11 +81,11 @@ export class AuthenticationService {
 		}
 
 		const emitStatus = (status: 'fail' | 'success') => {
-			emitAsyncSafe('auth.login', hookPayload, {
+			emitAsyncSafe('auth.login', options, {
 				event: 'auth.login',
 				action: 'login',
 				schema: this.schema,
-				payload: hookPayload,
+				payload: options,
 				accountability: this.accountability,
 				status,
 				user: user?.id,
