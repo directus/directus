@@ -145,6 +145,12 @@ refresh_interval_seconds: Atualizar instantaneamente | A cada segundo | A cada {
 refresh_interval_minutes: A cada minuto | a cada {minutes} minutos
 auto_generate: Geração Automatica
 click_here: Clique aqui
+no_collections_found: Nenhuma coleção encontrada.
+search_collection: Procurar coleção...
+new_collection: 'Nova coleção'
+add_m2o_to_collection: 'Adicionar muitos-para-um a "{collection}"'
+add_o2m_to_collection: 'Adicionar um-para-um a "{collection}"'
+add_m2m_to_collection: 'Adicionar muitos-para-muitos a "{collection}"'
 add_note: Adicionar uma nota para os utilizadores...
 unique: Único
 clear_value: Limpar valor
@@ -172,6 +178,7 @@ item_delete_success: Documento removido | Documentos removidos
 this_collection: Esta Coleção
 related_collection: Coleção relacionada
 related_collections: Coleções relacionadas
+translations_collection: Coleção de tradução
 languages_collection: Coleção de idiomas
 export_data: Exportar dados
 format: Formatar
