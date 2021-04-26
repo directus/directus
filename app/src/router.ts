@@ -1,16 +1,16 @@
-import VueRouter, { NavigationGuard, RouteConfig, Route } from 'vue-router';
+import { createRouter, createWebHistory, RouteRecordRaw, NavigationGuard, NavigationHookAfter } from 'vue-router';
 import LoginRoute from '@/routes/login';
 import LogoutRoute from '@/routes/logout';
 import ResetPasswordRoute from '@/routes/reset-password';
 import AcceptInviteRoute from '@/routes/accept-invite';
+import PrivateNotFoundRoute from '@/routes/private-not-found';
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
-import { useAppStore, useUserStore, useServerStore } from '@/stores/';
-import PrivateNotFoundRoute from '@/routes/private-not-found';
+import { useAppStore, useUserStore, useServerStore } from '@/stores';
 
 import { getRootPath } from '@/utils/get-root-path';
 
-export const defaultRoutes: RouteConfig[] = [
+export const defaultRoutes: RouteRecordRaw[] = [
 	{
 		path: '/',
 		redirect: '/login',
@@ -51,42 +51,17 @@ export const defaultRoutes: RouteConfig[] = [
 			public: true,
 		},
 	},
-	/**
-	 * @NOTE
-	 * Dynamic modules need to be inserted here. By default, VueRouter.addRoutes adds the route
-	 * to the end of this list, meaning that the Private404 will match before the custom module..
-	 * Vue Router dynamic route registration is under discussion:
-	 * https://github.com/vuejs/vue-router/issues/1156, and has an RFC:
-	 * https://github.com/vuejs/rfcs/pull/122
-	 *
-	 * In order to achieve what we need, we can use the custom replaceRoutes function exported
-	 * below to replace all the routes. This allows us to override this list of routes with the
-	 * list augmented with the module routes in the correct location.
-	 */
 	{
 		name: 'private-404',
-		path: '/*',
+		path: '/:path(.*)*',
 		component: PrivateNotFoundRoute,
 	},
 ];
 
-const router = new VueRouter({
-	mode: 'history',
-	base: getRootPath() + 'admin/',
+export const router = createRouter({
+	history: createWebHistory(getRootPath() + 'admin/'),
 	routes: defaultRoutes,
 });
-
-export function replaceRoutes(routeFilter: (routes: RouteConfig[]) => RouteConfig[]): void {
-	const newRoutes = routeFilter([...defaultRoutes]);
-	const newRouter = new VueRouter({
-		mode: 'history',
-		base: getRootPath() + 'admin/',
-		routes: newRoutes,
-	});
-
-	// @ts-ignore - Matcher is not officially part of the public API (https://github.com/vuejs/vue-router/issues/2844#issuecomment-509529927)
-	router.matcher = newRouter.matcher;
-}
 
 export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 	const appStore = useAppStore();
@@ -119,7 +94,7 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 
 let trackTimeout: number | null = null;
 
-export const onAfterEach = (to: Route) => {
+export const onAfterEach: NavigationHookAfter = (to) => {
 	const userStore = useUserStore();
 
 	if (to.meta.public !== true) {
@@ -139,5 +114,3 @@ export const onAfterEach = (to: Route) => {
 
 router.beforeEach(onBeforeEach);
 router.afterEach(onAfterEach);
-
-export default router;

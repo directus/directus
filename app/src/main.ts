@@ -19,7 +19,7 @@ console.time('🕓 Application Loaded');
 import './styles/main.scss';
 
 import i18n from './lang/';
-import router from './router';
+import { router } from './router';
 
 import { registerInterfaces } from './interfaces/register';
 import { loadModules } from './modules/register';
@@ -33,9 +33,10 @@ import { registerComponents } from './components/register';
 import { registerViews } from './views/register';
 
 const app = createApp(App, {
-	router,
 	i18n,
 });
+
+app.use(router);
 
 registerDirectives(app);
 registerComponents(app);
