@@ -17,7 +17,7 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $tc('batch_delete_confirm', selection.length) }}</v-card-title>
+					<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>

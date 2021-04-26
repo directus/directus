@@ -3,7 +3,7 @@
 		<div class="start">
 			<div class="selected" v-if="_selection.length > 0" @click="_selection = []">
 				<v-icon name="cancel" outline />
-				<span class="label">{{ $tc('n_items_selected', _selection.length) }}</span>
+				<span class="label">{{ $t('n_items_selected', _selection.length) }}</span>
 			</div>
 			<button class="select-all" v-else @click="$emit('select-all')">
 				<v-icon name="check_circle" outline />
@@ -126,8 +126,8 @@ export default defineComponent({
 	top: var(--layout-offset-top);
 	z-index: 4;
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
+	justify-content: space-between;
 	width: 100%;
 	height: 52px;
 	margin-bottom: 36px;

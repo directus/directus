@@ -76,7 +76,7 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $tc('batch_delete_confirm', selection.length) }}</v-card-title>
+					<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
@@ -108,7 +108,7 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $tc('archive_confirm_count', selection.length) }}</v-card-title>
+					<v-card-title>{{ $t('archive_confirm_count', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmArchive = false" secondary>
@@ -189,7 +189,7 @@
 			</template>
 
 			<template #no-items>
-				<v-info :title="$tc('item_count', 0)" :icon="currentCollection.icon" center>
+				<v-info :title="$t('item_count', 0)" :icon="currentCollection.icon" center>
 					{{ $t('no_items_copy') }}
 
 					<template #append v-if="createAllowed">

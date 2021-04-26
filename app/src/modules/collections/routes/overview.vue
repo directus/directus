@@ -1,5 +1,5 @@
 <template>
-	<private-view class="collections-overview" :title="$tc('collections')">
+	<private-view class="collections-overview" :title="$t('collections')">
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded disabled icon secondary>
 				<v-icon name="box" />

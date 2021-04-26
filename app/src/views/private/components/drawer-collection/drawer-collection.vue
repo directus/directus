@@ -28,11 +28,11 @@
 			class="layout"
 		>
 			<template #no-results>
-				<v-info :title="$tc('item_count', 0)" :icon="collectionInfo.icon" center />
+				<v-info :title="$t('item_count', 0)" :icon="collectionInfo.icon" center />
 			</template>
 
 			<template #no-items>
-				<v-info :title="$tc('item_count', 0)" :icon="collectionInfo.icon" center />
+				<v-info :title="$t('item_count', 0)" :icon="collectionInfo.icon" center />
 			</template>
 		</component>
 	</v-drawer>

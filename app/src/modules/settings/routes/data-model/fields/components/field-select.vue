@@ -47,7 +47,7 @@
 
 			<router-link :to="`/settings/data-model/${translationsCollection}`">
 				<v-notice type="info" icon="translate">
-					<div>{{ $tc('click_to_manage_translated_fields', translationsFieldsCount) }}</div>
+					<div>{{ $t('click_to_manage_translated_fields', translationsFieldsCount) }}</div>
 					<div class="spacer" />
 					<v-icon name="launch" />
 				</v-notice>
@@ -158,12 +158,12 @@
 				<v-card-text>
 					<div class="form-grid">
 						<div class="field">
-							<span class="type-label">{{ $tc('collection', 0) }}</span>
+							<span class="type-label">{{ $t('collection', 0) }}</span>
 							<v-select class="monospace" :items="collections" v-model="duplicateTo" />
 						</div>
 
 						<div class="field">
-							<span class="type-label">{{ $tc('field', 0) }}</span>
+							<span class="type-label">{{ $t('field', 0) }}</span>
 							<v-input class="monospace" v-model="duplicateName" db-safe autofocus />
 						</div>
 					</div>

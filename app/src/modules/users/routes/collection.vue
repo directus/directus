@@ -32,7 +32,7 @@
 				</template>
 
 				<v-card>
-					<v-card-title>{{ $tc('batch_delete_confirm', selection.length) }}</v-card-title>
+					<v-card-title>{{ $t('batch_delete_confirm', selection.length) }}</v-card-title>
 
 					<v-card-actions>
 						<v-button @click="confirmDelete = false" secondary>
@@ -109,7 +109,7 @@
 			</template>
 
 			<template #no-items>
-				<v-info :title="$tc('user_count', 0)" icon="people_alt" center>
+				<v-info :title="$t('user_count', 0)" icon="people_alt" center>
 					{{ $t('no_users_copy') }}
 
 					<template v-if="canInviteUsers" #append>

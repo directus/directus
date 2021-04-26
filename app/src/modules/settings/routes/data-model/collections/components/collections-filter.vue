@@ -1,5 +1,5 @@
 <template>
-	<sidebar-detail class="collections-filter" icon="filter_list" :title="$tc('collection', 2)">
+	<sidebar-detail class="collections-filter" icon="filter_list" :title="$t('collection', 2)">
 		<div class="type-label label">{{ $t('collections_shown') }}</div>
 		<v-checkbox value="visible" v-model="_value" :label="$t('visible_collections')" />
 		<v-checkbox value="unmanaged" v-model="_value" :label="$t('unmanaged_collections')" />

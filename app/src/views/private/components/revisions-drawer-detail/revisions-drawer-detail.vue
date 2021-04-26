@@ -21,7 +21,7 @@
 			</template>
 
 			<v-divider class="other" v-if="revisionsCount > 100">
-				{{ $tc('count_other_revisions', revisionsCount - 101) }}
+				{{ $t('count_other_revisions', revisionsCount - 101) }}
 			</v-divider>
 
 			<template v-if="created">

@@ -74,7 +74,7 @@
 					</template>
 
 					<template #no-items>
-						<v-info :title="$tc('item_count', 0)" center>
+						<v-info :title="$t('item_count', 0)" center>
 							{{ $t('no_items_copy') }}
 						</v-info>
 					</template>
