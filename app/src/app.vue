@@ -44,17 +44,14 @@ export default defineComponent({
 
 		const brandStyle = computed(() => {
 			return {
-				'--brand': serverStore.state.info?.project?.project_color || 'var(--primary)',
+				'--brand': serverStore.info?.project?.project_color || 'var(--primary)',
 			};
 		});
 
-		watch(
-			[() => serverStore.state.info?.project?.project_color, () => serverStore.state.info?.project?.project_logo],
-			() => {
-				const hasCustomLogo = !!serverStore.state.info?.project?.project_logo;
-				setFavicon(serverStore.state.info?.project?.project_color || '#00C897', hasCustomLogo);
-			}
-		);
+		watch([() => serverStore.info?.project?.project_color, () => serverStore.info?.project?.project_logo], () => {
+			const hasCustomLogo = !!serverStore.info?.project?.project_logo;
+			setFavicon(serverStore.info?.project?.project_color || '#00C897', hasCustomLogo);
+		});
 
 		const { width } = useWindowSize();
 
@@ -93,14 +90,14 @@ export default defineComponent({
 		);
 
 		watch(
-			() => serverStore.state.info?.project?.project_name,
+			() => serverStore.info?.project?.project_name,
 			(projectName) => {
 				document.title = projectName || 'Directus';
 			}
 		);
 
 		const customCSS = computed(() => {
-			return serverStore.state?.info?.project?.custom_css || '';
+			return serverStore.info?.project?.custom_css || '';
 		});
 
 		const error = computed(() => appStore.error);

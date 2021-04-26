@@ -17,7 +17,7 @@ export default defineComponent({
 		const latencyStore = useLatencyStore();
 		const serverStore = useServerStore();
 
-		const name = computed(() => serverStore.state.info?.project?.project_name);
+		const name = computed(() => serverStore.info?.project?.project_name);
 
 		return { name };
 	},
