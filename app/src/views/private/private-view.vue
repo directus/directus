@@ -107,7 +107,7 @@ export default defineComponent({
 
 		const notificationsPreviewActive = ref(false);
 
-		const { sidebarOpen } = toRefs(appStore.state);
+		const { sidebarOpen } = toRefs(appStore);
 
 		const theme = computed(() => {
 			return userStore.state.currentUser?.theme || 'auto';

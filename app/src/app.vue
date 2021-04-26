@@ -40,7 +40,7 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const serverStore = useServerStore();
 
-		const { hydrating, sidebarOpen } = toRefs(appStore.state);
+		const { hydrating, sidebarOpen } = toRefs(appStore);
 
 		const brandStyle = computed(() => {
 			return {
@@ -103,7 +103,7 @@ export default defineComponent({
 			return serverStore.state?.info?.project?.custom_css || '';
 		});
 
-		const error = computed(() => appStore.state.error);
+		const error = computed(() => appStore.error);
 
 		/**
 		 * This allows custom extensions to use the apps internals

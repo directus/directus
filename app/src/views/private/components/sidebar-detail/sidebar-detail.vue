@@ -56,7 +56,7 @@ export default defineComponent({
 			group: 'sidebar-detail',
 		});
 		const appStore = useAppStore();
-		const { sidebarOpen } = toRefs(appStore.state);
+		const { sidebarOpen } = toRefs(appStore);
 		return { active, toggle, sidebarOpen };
 	},
 });
