@@ -1,4 +1,4 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { Preset } from '@/types';
 import { useUserStore } from '@/stores/';
 import api from '@/api';
@@ -95,7 +95,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 
 let currentUpdate: Record<number, string> = {};
 
-export const usePresetsStore = createStore({
+export const usePresetsStore = defineStore({
 	id: 'presetsStore',
 	state: () => ({
 		collectionPresets: [] as Preset[],

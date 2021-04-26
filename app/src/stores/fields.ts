@@ -1,4 +1,4 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import api from '@/api';
 import { notEmpty } from '@/utils/is-empty/';
 import { i18n } from '@/lang';
@@ -50,7 +50,7 @@ const fakeFilesField: Field = {
  */
 let currentUpdate: string;
 
-export const useFieldsStore = createStore({
+export const useFieldsStore = defineStore({
 	id: 'fieldsStore',
 	state: () => ({
 		fields: [] as Field[],

@@ -1,7 +1,7 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { nanoid } from 'nanoid';
 
-export const useRequestsStore = createStore({
+export const useRequestsStore = defineStore({
 	id: 'requestsStore',
 	state: () => ({
 		queue: [] as string[],

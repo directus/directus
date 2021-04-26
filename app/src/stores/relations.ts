@@ -1,9 +1,9 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { Relation } from '@/types';
 import api from '@/api';
 import { useFieldsStore } from '@/stores/';
 
-export const useRelationsStore = createStore({
+export const useRelationsStore = defineStore({
 	id: 'relationsStore',
 	state: () => ({
 		relations: [] as Relation[],

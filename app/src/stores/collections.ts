@@ -1,4 +1,4 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import api from '@/api';
 import { Collection, CollectionRaw } from '@/types';
 import { i18n } from '@/lang';
@@ -7,7 +7,7 @@ import formatTitle from '@directus/format-title';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-export const useCollectionsStore = createStore({
+export const useCollectionsStore = defineStore({
 	id: 'collectionsStore',
 	state: () => ({
 		collections: [] as Collection[],

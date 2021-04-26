@@ -1,11 +1,11 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import api from '@/api';
 import { i18n } from '@/lang';
 import { merge } from 'lodash';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-export const useSettingsStore = createStore({
+export const useSettingsStore = defineStore({
 	id: 'settingsStore',
 	state: () => ({
 		settings: null as null | Record<string, any>,

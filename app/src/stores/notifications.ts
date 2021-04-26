@@ -1,9 +1,9 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import { Notification, NotificationRaw } from '@/types';
 import { nanoid } from 'nanoid';
 import { reverse, sortBy } from 'lodash';
 
-export const useNotificationsStore = createStore({
+export const useNotificationsStore = defineStore({
 	id: 'notificationsStore',
 	state: () => ({
 		dialogs: [] as Notification[],

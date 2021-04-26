@@ -1,4 +1,4 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import api from '@/api';
 
 type Info = {
@@ -26,7 +26,7 @@ type Info = {
 	};
 };
 
-export const useServerStore = createStore({
+export const useServerStore = defineStore({
 	id: 'serverStore',
 	state: () => ({
 		info: null as null | Info,

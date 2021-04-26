@@ -1,10 +1,10 @@
-import { createStore } from 'pinia';
+import { defineStore } from 'pinia';
 import api from '@/api';
 import { Permission } from '@/types';
 import { useUserStore } from '../stores/user';
 import { parseFilter } from '@/utils/parse-filter';
 
-export const usePermissionsStore = createStore({
+export const usePermissionsStore = defineStore({
 	id: 'permissionsStore',
 	state: () => ({
 		permissions: [] as Permission[],
