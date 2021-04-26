@@ -7,7 +7,7 @@ import logger from '../logger';
 import { version } from '../../package.json';
 import macosRelease from 'macos-release';
 import { SettingsService } from './settings';
-import { transporter } from '../mail';
+import mailer from './mailer';
 import env from '../env';
 import { performance } from 'perf_hooks';
 import cache from '../cache';
@@ -317,7 +317,7 @@ export class ServerService {
 			};
 
 			try {
-				await transporter?.verify();
+				await mailer?.verify();
 			} catch (err) {
 				checks['email:connection'][0].status = 'error';
 				checks['email:connection'][0].output = err;
