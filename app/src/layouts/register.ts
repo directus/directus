@@ -2,7 +2,8 @@ import registerComponent from '@/utils/register-component/';
 import { getLayouts } from './index';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import asyncPool from 'tiny-async-pool';
+// @TODO3 tiny-async-pool relies on node.js global variables
+import asyncPool from 'tiny-async-pool/lib/es7.js';
 
 const { layoutsRaw } = getLayouts();
 

@@ -4,7 +4,8 @@ import { getModules } from './index';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import asyncPool from 'tiny-async-pool';
+// @TODO3 tiny-async-pool relies on node.js global variables
+import asyncPool from 'tiny-async-pool/lib/es7.js';
 
 const { modulesRaw } = getModules();
 
