@@ -6,6 +6,7 @@ import { AxiosResponse } from 'axios';
 import { APIError } from '@/types';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { VALIDATION_TYPES } from '@/constants';
 
 export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
@@ -43,7 +44,7 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 			return endpoint.value;
 		}
 
-		return `${endpoint.value}/${primaryKey.value}`;
+		return `${endpoint.value}/${encodeURIComponent(primaryKey.value as string)}`;
 	});
 
 	watch([collection, primaryKey], refresh, { immediate: true });
@@ -111,13 +112,13 @@ export function useItem(collection: Ref<string>, primaryKey: Ref<string | number
 		} catch (err) {
 			if (err?.response?.data?.errors) {
 				validationErrors.value = err.response.data.errors
-					.filter((err: APIError) => err?.extensions?.code === 'FAILED_VALIDATION')
+					.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
 					.map((err: APIError) => {
 						return err.extensions;
 					});
 
 				const otherErrors = err.response.data.errors.filter(
-					(err: APIError) => err?.extensions?.code !== 'FAILED_VALIDATION'
+					(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false
 				);
 
 				if (otherErrors.length > 0) {

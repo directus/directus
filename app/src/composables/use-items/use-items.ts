@@ -5,7 +5,7 @@ import Vue from 'vue';
 import { isEqual } from 'lodash';
 import { Filter } from '@/types/';
 import filtersToQuery from '@/utils/filters-to-query';
-import { orderBy } from 'lodash';
+import { orderBy, throttle } from 'lodash';
 import moveInArray from '@/utils/move-in-array';
 
 type Query = {
@@ -91,16 +91,34 @@ export function useItems(collection: Ref<string>, query: Query) {
 		}
 	});
 
-	watch([filters, limit, searchQuery], async (after, before) => {
+	watch([filters, limit], async (after, before) => {
 		if (!before || isEqual(after, before)) {
 			return;
 		}
-
+		page.value = 1;
 		await Vue.nextTick();
 		if (loading.value === false) {
 			getItems();
 		}
 	});
+
+	watch(
+		searchQuery,
+		throttle(
+			async (after, before) => {
+				if (isEqual(after, before)) {
+					return;
+				}
+				page.value = 1;
+				await Vue.nextTick();
+				if (loading.value === false) {
+					getItems();
+				}
+			},
+			500,
+			{ trailing: true }
+		)
+	);
 
 	return { itemCount, totalCount, items, totalPages, loading, error, changeManualSort, getItems };
 
@@ -141,7 +159,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			}
 		}
 
-		// Filter out fake internal columns. This is (among other things) for a fake $file m2o field
+		// Filter out fake internal columns. This is (among other things) for a fake $thumbnail m2o field
 		// on directus_files
 		fieldsToFetch = fieldsToFetch.filter((field) => field.startsWith('$') === false);
 
@@ -166,22 +184,24 @@ export function useItems(collection: Ref<string>, query: Query) {
 			 * able to render out the directus_files collection (file library) using regular layouts
 			 *
 			 * Layouts expect the file to be a m2o of a `file` type, however, directus_files is the
-			 * only collection that doesn't have this (obviously). This fake $file field is used to
+			 * only collection that doesn't have this (obviously). This fake $thumbnail field is used to
 			 * pretend there is a file m2o, so we can use the regular layout logic for files as well
 			 */
 			if (collection.value === 'directus_files') {
 				fetchedItems = fetchedItems.map((file: any) => ({
 					...file,
-					$file: file,
+					$thumbnail: file,
 				}));
 			}
 
 			items.value = fetchedItems;
 			itemCount.value = response.data.data.length;
 
-			if (response.data.data.length === limit.value || page.value > 1) {
-				getItemCount();
+			if (fetchedItems.length === 0 && page.value !== 1) {
+				page.value = 1;
 			}
+
+			getItemCount();
 		} catch (err) {
 			error.value = err;
 		} finally {

@@ -4,7 +4,7 @@
 		<div class="modules">
 			<v-button
 				v-for="module in _modules"
-				v-tooltip.right="module.name"
+				v-tooltip.right="$t(module.name)"
 				:key="module.id"
 				icon
 				x-large
@@ -42,7 +42,7 @@ export default defineComponent({
 	},
 	setup() {
 		const userStore = useUserStore();
-		const modules = getModules();
+		const { modules } = getModules();
 
 		const _modules = computed(() => {
 			const customModuleListing = userStore.state.currentUser?.role.module_list;
@@ -81,24 +81,22 @@ export default defineComponent({
 							};
 						}
 					}),
-					...registeredModules.filter((module) => module.persistent === true)
-				]
+					...registeredModules.filter((module) => module.persistent === true),
+				];
 			}
-
 			return registeredModules;
 		});
-
-		return { _modules };
+		return { _modules, modules };
 	},
 });
 </script>
 
 <style>
 body {
-    --module-background: #18222F;
-    --module-background-alt: var(--background-normal);
-    --module-icon: #8196B1;
-    --module-icon-alt: var(--foreground-normal);
+	--module-background: #18222f;
+	--module-background-alt: var(--background-normal);
+	--module-icon: #8196b1;
+	--module-icon-alt: var(--foreground-normal-alt);
 }
 </style>
 

@@ -28,7 +28,10 @@
 							</div>
 						</template>
 						<template #append>
-							<v-icon class="deselect" name="close" v-if="file" @click.stop="$emit('input', null)" />
+							<template v-if="file">
+								<v-icon name="open_in_new" class="edit" v-tooltip="$t('edit')" @click.stop="editDrawerActive = true" />
+								<v-icon class="deselect" name="close" @click.stop="$emit('input', null)" v-tooltip="$t('deselect')" />
+							</template>
 							<v-icon v-else name="attach_file" />
 						</template>
 					</v-input>
@@ -67,6 +70,15 @@
 			</v-list>
 		</v-menu>
 
+		<drawer-item
+			v-if="!disabled && file"
+			:active.sync="editDrawerActive"
+			collection="directus_files"
+			:primary-key="file.id"
+			:edits="edits"
+			@input="stageEdits"
+		/>
+
 		<v-dialog :active="activeDialog === 'upload'" @esc="activeDialog = null" @toggle="activeDialog = null">
 			<v-card>
 				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
@@ -95,7 +107,7 @@
 			<v-card>
 				<v-card-title>{{ $t('import_from_url') }}</v-card-title>
 				<v-card-text>
-					<v-input :placeholder="$t('url')" v-model="url" :disabled="urlLoading" />
+					<v-input :placeholder="$t('url')" v-model="url" :nullable="false" :disabled="urlLoading" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button :disabled="urlLoading" @click="activeDialog = null" secondary>
@@ -115,21 +127,23 @@ import { defineComponent, ref, watch, computed } from '@vue/composition-api';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
 import readableMimeType from '@/utils/readable-mime-type';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
+import DrawerItem from '@/views/private/components/drawer-item';
+import { addQueryToPath } from '@/utils/add-query-to-path';
 
 type FileInfo = {
-	id: number;
+	id: string;
 	title: string;
 	type: string;
 };
 
 export default defineComponent({
-	components: { DrawerCollection },
+	components: { DrawerCollection, DrawerItem },
 	props: {
 		value: {
-			type: String,
+			type: [String, Object],
 			default: null,
 		},
 		disabled: {
@@ -148,17 +162,22 @@ export default defineComponent({
 			return readableMimeType(file.value.type, true);
 		});
 
-		const assetURL = computed(() => getRootPath() + `assets/${props.value}`);
+		const assetURL = computed(() => {
+			const id = typeof props.value === 'string' ? props.value : (props.value as Record<string, any>)?.id;
+			return addTokenToURL(getRootPath() + `assets/${id}`);
+		});
 
 		const imageThumbnail = computed(() => {
 			if (file.value === null || props.value === null) return null;
-			if (file.value.type.includes('svg')) return addTokenToURL(assetURL.value);
+			if (file.value.type.includes('svg')) return assetURL.value;
 			if (file.value.type.includes('image') === false) return null;
-			const url = assetURL.value + `?key=system-small-cover`;
-			return addTokenToURL(url);
+			return addQueryToPath(assetURL.value, { key: 'system-small-cover' });
 		});
 
+		const { edits, stageEdits } = useEdits();
 		const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
+
+		const editDrawerActive = ref(false);
 
 		return {
 			activeDialog,
@@ -173,6 +192,9 @@ export default defineComponent({
 			importFromURL,
 			isValidURL,
 			assetURL,
+			editDrawerActive,
+			edits,
+			stageEdits,
 		};
 
 		function useFile() {
@@ -191,13 +213,22 @@ export default defineComponent({
 				loading.value = true;
 
 				try {
-					const response = await api.get(`/files/${props.value}`, {
+					const id = typeof props.value === 'string' ? props.value : (props.value as Record<string, any>)?.id;
+
+					const response = await api.get(`/files/${id}`, {
 						params: {
-							fields: ['title', 'type', 'filename_download'],
+							fields: ['id', 'title', 'type', 'filename_download'],
 						},
 					});
 
-					file.value = response.data.data;
+					if (props.value !== null && typeof props.value === 'object') {
+						file.value = {
+							...response.data.data,
+							...props.value,
+						};
+					} else {
+						file.value = response.data.data;
+					}
 				} catch (err) {
 					unexpectedError(err);
 				} finally {
@@ -255,6 +286,29 @@ export default defineComponent({
 				}
 			}
 		}
+
+		function useEdits() {
+			const edits = computed(() => {
+				// If the current value isn't a primitive, it means we've already staged some changes
+				// This ensures we continue on those changes instead of starting over
+				if (props.value && typeof props.value === 'object') {
+					return props.value;
+				}
+
+				return {};
+			});
+
+			return { edits, stageEdits };
+
+			function stageEdits(newEdits: Record<string, any>) {
+				if (!file.value) return;
+
+				emit('input', {
+					id: file.value.id,
+					...newEdits,
+				});
+			}
+		}
 	},
 });
 </script>
@@ -285,7 +339,7 @@ export default defineComponent({
 
 	&.is-svg {
 		padding: 4px;
-		background-color: var(--background-normal);
+		background-color: var(--background-normal-alt);
 
 		img {
 			object-fit: contain;
@@ -303,5 +357,13 @@ export default defineComponent({
 
 .deselect:hover {
 	--v-icon-color: var(--danger);
+}
+
+.edit {
+	margin-right: 4px;
+
+	&:hover {
+		--v-icon-color: var(--foreground-normal);
+	}
 }
 </style>

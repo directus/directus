@@ -1,9 +1,5 @@
 <template>
-	<sidebar-detail
-		:badge="filters.length > 0 ? filters.length : null"
-		icon="filter_list"
-		:title="$t('advanced_filter')"
-	>
+	<sidebar-detail :badge="filters.length > 0 ? filters.length : null" icon="filter_list" :title="$t('advanced_filter')">
 		<field-filter
 			v-for="filter in filters"
 			:key="filter.key"
@@ -24,13 +20,8 @@
 				</v-input>
 			</template>
 
-			<v-list>
-				<field-list-item
-					@add="addFilterForField"
-					v-for="field in fieldTree"
-					:key="field.field"
-					:field="field"
-				/>
+			<v-list :multiple="false">
+				<field-list-item @add="addFilterForField" v-for="field in fieldTree" :key="field.field" :field="field" />
 			</v-list>
 		</v-menu>
 
@@ -44,15 +35,15 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, watch, toRefs } from '@vue/composition-api';
-import { Filter, Relation, Field } from '@/types';
-import { useFieldsStore, useRelationsStore } from '@/stores';
+import { Filter } from '@/types';
+import { useFieldsStore } from '@/stores';
 import FieldFilter from './field-filter.vue';
 import { nanoid } from 'nanoid';
 import { debounce } from 'lodash';
-import { FieldTree } from './types';
 import FieldListItem from './field-list-item.vue';
 import { useCollection } from '@/composables/use-collection';
 import getAvailableOperatorsForType from './get-available-operators-for-type';
+import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
 	components: { FieldFilter, FieldListItem },
@@ -72,68 +63,18 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
-		const relationsStore = useRelationsStore();
 
 		const { collection } = toRefs(props);
 		const { info: collectionInfo } = useCollection(collection);
 
-		const fieldTree = computed<FieldTree[]>(() => {
-			return fieldsStore
-				.getFieldsForCollection(props.collection)
-				.filter(
-					(field: Field) =>
-						field.meta?.hidden !== true && (field.meta?.special || []).includes('alias') === false
-				)
-				.map((field: Field) => parseField(field, []));
-
-			function parseField(field: Field, parents: Field[]) {
-				const fieldInfo: FieldTree = {
-					field: field.field,
-					name: field.name,
-				};
-
-				if (parents.length === 2) {
-					return fieldInfo;
-				}
-
-				const relations = relationsStore.getRelationsForField(field.collection, field.field);
-
-				if (relations.length > 0) {
-					const relatedFields = relations
-						.map((relation: Relation) => {
-							const relatedCollection =
-								relation.many_collection === field.collection
-									? relation.one_collection
-									: relation.many_collection;
-
-							if (relation.junction_field === field.field) return [];
-
-							return fieldsStore
-								.getFieldsForCollection(relatedCollection)
-								.filter(
-									(field: Field) =>
-										field.meta?.hidden !== true &&
-										(field.meta?.special || []).includes('alias') === false
-								);
-						})
-						.flat()
-						.map((childField: Field) => parseField(childField, [...parents, field]));
-
-					fieldInfo.children = relatedFields;
-				}
-
-				return fieldInfo;
-			}
-		});
+		const { tree: fieldTree } = useFieldTree(collection);
 
 		const localFilters = ref<Filter[]>([]);
 
 		watch(
 			() => props.value,
 			() => {
-				localFilters.value = props.value?.filter((filter) => {
-					return !!fieldsStore.getField(props.collection, filter.field);
-				});
+				localFilters.value = props.value;
 			},
 			{ immediate: true }
 		);
@@ -160,9 +101,7 @@ export default defineComponent({
 
 		const archived = computed({
 			get() {
-				return (
-					props.value.find((filter) => filter.locked === true && filter.key === 'hide-archived') === undefined
-				);
+				return props.value.find((filter) => filter.locked === true && filter.key === 'hide-archived') === undefined;
 			},
 			set(showArchived: boolean) {
 				if (!collectionInfo.value?.meta?.archive_field) return;

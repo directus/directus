@@ -26,7 +26,7 @@
 <script lang="ts">
 import { defineComponent, toRefs, watch, computed, provide } from '@vue/composition-api';
 import * as stores from '@/stores';
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
 import axios from 'axios';
 
 import useWindowSize from '@/composables/use-window-size';
@@ -52,7 +52,7 @@ export default defineComponent({
 			[() => serverStore.state.info?.project?.project_color, () => serverStore.state.info?.project?.project_logo],
 			() => {
 				const hasCustomLogo = !!serverStore.state.info?.project?.project_logo;
-				setFavicon(serverStore.state.info?.project?.project_color || '#2f80ed', hasCustomLogo);
+				setFavicon(serverStore.state.info?.project?.project_color || '#00C897', hasCustomLogo);
 			}
 		);
 
@@ -112,6 +112,7 @@ export default defineComponent({
 			...stores,
 			api,
 			axios,
+			addTokenToURL,
 		});
 
 		return { hydrating, brandStyle, error, customCSS };

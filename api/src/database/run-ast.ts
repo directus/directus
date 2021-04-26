@@ -4,15 +4,34 @@ import database from './index';
 import { Query, Item, SchemaOverview } from '../types';
 import { PayloadService } from '../services/payload';
 import applyQuery from '../utils/apply-query';
-import Knex, { QueryBuilder } from 'knex';
+import { Knex } from 'knex';
 import { toArray } from '../utils/to-array';
 
 type RunASTOptions = {
+	/**
+	 * Query override for the current level
+	 */
 	query?: AST['query'];
+
+	/**
+	 * Knex instance
+	 */
 	knex?: Knex;
-	child?: boolean;
+
+	/**
+	 * Whether or not the current execution is a nested dataset in another AST
+	 */
+	nested?: boolean;
+
+	/**
+	 * Whether or not to strip out non-requested required fields automatically (eg IDs / FKs)
+	 */
+	stripNonRequested?: boolean;
 };
 
+/**
+ * Execute a given AST using Knex. Returns array of items based on requested AST.
+ */
 export default async function runAST(
 	originalAST: AST | NestedCollectionNode,
 	schema: SchemaOverview,
@@ -43,7 +62,15 @@ export default async function runAST(
 		);
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = await getDBQuery(knex, collection, columnsToSelect, query, primaryKeyField, schema);
+		const dbQuery = await getDBQuery(
+			knex,
+			collection,
+			columnsToSelect,
+			query,
+			primaryKeyField,
+			schema,
+			options?.nested
+		);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -59,23 +86,11 @@ export default async function runAST(
 		const nestedNodes = applyParentFilters(nestedCollectionNodes, items);
 
 		for (const nestedNode of nestedNodes) {
-			let tempLimit: number | null = null;
-
-			// Nested o2m-items are fetched from the db in a single query. This means that we're fetching
-			// all nested items for all parent items at once. Because of this, we can't limit that query
-			// to the "standard" item limit. Instead of _n_ nested items per parent item, it would mean
-			// that there's _n_ items, which are then divided on the parent items. (no good)
-			if (nestedNode.type === 'o2m') {
-				tempLimit = nestedNode.query.limit || 100;
-				nestedNode.query.limit = -1;
-			}
-
-			let nestedItems = await runAST(nestedNode, schema, { knex, child: true });
+			let nestedItems = await runAST(nestedNode, schema, { knex, nested: true });
 
 			if (nestedItems) {
 				// Merge all fetched nested records with the parent items
-
-				items = mergeWithParentItems(nestedItems, items, nestedNode, tempLimit);
+				items = mergeWithParentItems(nestedItems, items, nestedNode, true);
 			}
 		}
 
@@ -83,7 +98,7 @@ export default async function runAST(
 		// to work (primary / foreign keys) even if they're not explicitly requested. After all fetching
 		// and nesting is done, we parse through the output structure, and filter out all non-requested
 		// fields
-		if (options?.child !== true) {
+		if (options?.nested !== true && options?.stripNonRequested !== false) {
 			items = removeTemporaryFields(items, originalAST, primaryKeyField);
 		}
 
@@ -96,16 +111,16 @@ async function parseCurrentLevel(
 	children: (NestedCollectionNode | FieldNode)[],
 	schema: SchemaOverview
 ) {
-	const primaryKeyField = schema[collection].primary;
-	const columnsInCollection = Object.keys(schema[collection].columns);
+	const primaryKeyField = schema.collections[collection].primary;
+	const columnsInCollection = Object.keys(schema.collections[collection].fields);
 
-	const columnsToSelect: string[] = [];
+	const columnsToSelectInternal: string[] = [];
 	const nestedCollectionNodes: NestedCollectionNode[] = [];
 
 	for (const child of children) {
 		if (child.type === 'field') {
 			if (columnsInCollection.includes(child.name) || child.name === '*') {
-				columnsToSelect.push(child.name);
+				columnsToSelectInternal.push(child.name);
 			}
 
 			continue;
@@ -114,46 +129,51 @@ async function parseCurrentLevel(
 		if (!child.relation) continue;
 
 		if (child.type === 'm2o') {
-			columnsToSelect.push(child.relation.many_field);
+			columnsToSelectInternal.push(child.relation.many_field);
 		}
 
 		if (child.type === 'm2a') {
-			columnsToSelect.push(child.relation.many_field);
-			columnsToSelect.push(child.relation.one_collection_field!);
+			columnsToSelectInternal.push(child.relation.many_field);
+			columnsToSelectInternal.push(child.relation.one_collection_field!);
 		}
 
 		nestedCollectionNodes.push(child);
 	}
 
 	/** Always fetch primary key in case there's a nested relation that needs it */
-	if (columnsToSelect.includes(primaryKeyField) === false) {
-		columnsToSelect.push(primaryKeyField);
+	if (columnsToSelectInternal.includes(primaryKeyField) === false) {
+		columnsToSelectInternal.push(primaryKeyField);
 	}
+
+	/** Make sure select list has unique values */
+	const columnsToSelect = [...new Set(columnsToSelectInternal)];
 
 	return { columnsToSelect, nestedCollectionNodes, primaryKeyField };
 }
 
-async function getDBQuery(
+function getDBQuery(
 	knex: Knex,
 	table: string,
 	columns: string[],
 	query: Query,
 	primaryKeyField: string,
-	schema: SchemaOverview
-): Promise<QueryBuilder> {
+	schema: SchemaOverview,
+	nested?: boolean
+): Knex.QueryBuilder {
 	let dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
 
 	const queryCopy = clone(query);
 
 	queryCopy.limit = typeof queryCopy.limit === 'number' ? queryCopy.limit : 100;
 
-	if (queryCopy.limit === -1) {
+	// Nested collection sets are retrieved as a batch request (select w/ a filter)
+	// "in", so we shouldn't limit that query, as it's a single request for all
+	// nested items, instead of a query per row
+	if (queryCopy.limit === -1 || nested) {
 		delete queryCopy.limit;
 	}
 
-	query.sort = query.sort || [{ column: primaryKeyField, order: 'asc' }];
-
-	await applyQuery(knex, table, dbQuery, queryCopy, schema);
+	applyQuery(table, dbQuery, queryCopy, schema);
 
 	return dbQuery;
 }
@@ -181,6 +201,10 @@ function applyParentFilters(nestedCollectionNodes: NestedCollectionNode[], paren
 
 			if (relatedM2OisFetched === false) {
 				nestedNode.children.push({ type: 'field', name: nestedNode.relation.many_field });
+			}
+
+			if (nestedNode.relation.sort_field) {
+				nestedNode.children.push({ type: 'field', name: nestedNode.relation.sort_field });
 			}
 
 			nestedNode.query = {
@@ -226,7 +250,7 @@ function mergeWithParentItems(
 	nestedItem: Item | Item[],
 	parentItem: Item | Item[],
 	nestedNode: NestedCollectionNode,
-	o2mLimit?: number | null
+	nested?: boolean
 ) {
 	const nestedItems = toArray(nestedItem);
 	const parentItems = clone(toArray(parentItem));
@@ -241,28 +265,51 @@ function mergeWithParentItems(
 		}
 	} else if (nestedNode.type === 'o2m') {
 		for (const parentItem of parentItems) {
-			let itemChildren = nestedItems.filter((nestedItem) => {
-				if (nestedItem === null) return false;
-				if (Array.isArray(nestedItem[nestedNode.relation.many_field])) return true;
+			let itemChildren = nestedItems
+				.filter((nestedItem) => {
+					if (nestedItem === null) return false;
+					if (Array.isArray(nestedItem[nestedNode.relation.many_field])) return true;
 
-				return (
-					nestedItem[nestedNode.relation.many_field] == parentItem[nestedNode.relation.one_primary!] ||
-					nestedItem[nestedNode.relation.many_field]?.[nestedNode.relation.one_primary!] ==
-						parentItem[nestedNode.relation.one_primary!]
-				);
-			});
+					return (
+						nestedItem[nestedNode.relation.many_field] == parentItem[nestedNode.relation.one_primary!] ||
+						nestedItem[nestedNode.relation.many_field]?.[nestedNode.relation.one_primary!] ==
+							parentItem[nestedNode.relation.one_primary!]
+					);
+				})
+				.sort((a, b) => {
+					// This is pre-filled in get-ast-from-query
+					const { column, order } = nestedNode.query.sort![0]!;
+
+					if (a[column] === b[column]) return 0;
+					if (a[column] === null) return 1;
+					if (b[column] === null) return -1;
+					if (order === 'asc') {
+						return a[column] < b[column] ? -1 : 1;
+					} else {
+						return a[column] < b[column] ? 1 : -1;
+					}
+				});
 
 			// We re-apply the requested limit here. This forces the _n_ nested items per parent concept
-			if (o2mLimit !== null) {
-				itemChildren = itemChildren.slice(0, o2mLimit);
-				nestedNode.query.limit = o2mLimit;
+			if (nested) {
+				itemChildren = itemChildren.slice(0, nestedNode.query.limit ?? 100);
 			}
 
-			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : null;
+			parentItem[nestedNode.fieldKey] = itemChildren.length > 0 ? itemChildren : [];
 		}
 	} else if (nestedNode.type === 'm2a') {
 		for (const parentItem of parentItems) {
-			const relatedCollection = parentItem[nestedNode.relation.one_collection_field!];
+			if (!nestedNode.relation.one_collection_field) {
+				parentItem[nestedNode.fieldKey] = null;
+				continue;
+			}
+
+			const relatedCollection = parentItem[nestedNode.relation.one_collection_field];
+
+			if (!(nestedItem as Record<string, any[]>)[relatedCollection]) {
+				parentItem[nestedNode.fieldKey] = null;
+				continue;
+			}
 
 			const itemChild = (nestedItem as Record<string, any[]>)[relatedCollection].find((nestedItem) => {
 				return nestedItem[nestedNode.relatedKey[relatedCollection]] == parentItem[nestedNode.fieldKey];

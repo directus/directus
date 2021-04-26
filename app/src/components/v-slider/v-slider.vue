@@ -3,8 +3,17 @@
 		<div v-if="$slots['prepend']" class="prepend">
 			<slot name="prepend" :value="value" />
 		</div>
-		<div class="slider">
-			<input type="range" :value="value" :max="max" :min="min" :step="step" @change="onChange" @input="onInput" />
+		<div class="slider" :class="{ disabled }">
+			<input
+				:disabled="disabled"
+				type="range"
+				:value="value"
+				:max="max"
+				:min="min"
+				:step="step"
+				@change="onChange"
+				@input="onInput"
+			/>
 			<div class="fill" />
 			<div v-if="showTicks" class="ticks">
 				<span class="tick" v-for="i in (max - min) / step + 1" :key="i" />
@@ -25,10 +34,13 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { ChangeEvent } from 'react';
 
 export default defineComponent({
 	props: {
+		disabled: {
+			type: Boolean,
+			default: false,
+		},
 		showThumbLabel: {
 			type: Boolean,
 			default: false,
@@ -73,7 +85,7 @@ export default defineComponent({
 			onInput,
 		};
 
-		function onChange(event: ChangeEvent) {
+		function onChange(event: InputEvent) {
 			const target = event.target as HTMLInputElement;
 			emit('change', Number(target.value));
 		}
@@ -108,14 +120,19 @@ body {
 		top: -3px;
 		flex-grow: 1;
 
+		&.disabled {
+			--v-slider-thumb-color: var(--foreground-subdued);
+			--v-slider-fill-color: var(--foreground-subdued);
+		}
+
 		input {
 			width: 100%;
 			height: 4px;
-			-webkit-appearance: none;
-			appearance: none;
-			cursor: pointer;
 			padding: 8px 0;
 			background-color: var(--background-page);
+			cursor: pointer;
+			-webkit-appearance: none;
+			appearance: none;
 
 			&::-webkit-slider-runnable-track {
 				height: 4px;
@@ -134,7 +151,6 @@ body {
 			}
 
 			&::-webkit-slider-thumb {
-				transition: all var(--fast) var(--transition);
 				position: relative;
 				z-index: 3;
 				width: 8px;
@@ -145,13 +161,12 @@ body {
 				border-radius: 50%;
 				box-shadow: none;
 				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
-				cursor: ew-resize;
+				transition: all var(--fast) var(--transition);
 				-webkit-appearance: none;
 				appearance: none;
 			}
 
 			&::-moz-range-thumb {
-				transition: all var(--fast) var(--transition);
 				position: relative;
 				z-index: 3;
 				width: 8px;
@@ -162,33 +177,10 @@ body {
 				border-radius: 50%;
 				box-shadow: none;
 				box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
-				cursor: ew-resize;
+				transition: all var(--fast) var(--transition);
 				-webkit-appearance: none;
 				appearance: none;
 			}
-		}
-
-		&:hover,
-		&:focus-within {
-		    input {
-		        height: 4px;
-		        &::-webkit-slider-thumb {
-		            width: 12px;
-		            height: 12px;
-		            margin-top: -4px;
-		            box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
-		        }
-
-		        &::-moz-range-thumb {
-		            width: 12px;
-		            height: 12px;
-		            margin-top: -4px;
-		            box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
-		        }
-		    }
-		    .thumb-label {
-		        opacity: 1;
-		    }
 		}
 
 		.fill {
@@ -199,8 +191,8 @@ body {
 			z-index: 2;
 			width: 100%;
 			height: 4px;
-			border-radius: 4px;
 			background-color: var(--v-slider-fill-color);
+			border-radius: 4px;
 			transform: translateY(-5px) scaleX(calc(var(--_v-slider-percentage) / 100));
 			transform-origin: left;
 			pointer-events: none;
@@ -210,6 +202,7 @@ body {
 			position: absolute;
 			top: 14px;
 			left: 0;
+			z-index: 2;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
@@ -219,7 +212,6 @@ body {
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 			pointer-events: none;
-			z-index: 2;
 
 			.tick {
 				display: inline-block;
@@ -243,7 +235,7 @@ body {
 			position: absolute;
 			top: 0px;
 			left: calc(var(--_v-slider-percentage) * 1%);
-			width: max-content;
+			width: auto;
 			padding: 2px 6px;
 			color: var(--foreground-inverted);
 			font-weight: 600;
@@ -257,7 +249,32 @@ body {
 			}
 		}
 
-		&:active {
+		&:hover:not(.disabled),
+		&:focus-within:not(.disabled) {
+			input {
+				height: 4px;
+				&::-webkit-slider-thumb {
+					width: 12px;
+					height: 12px;
+					margin-top: -4px;
+					box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
+					cursor: ew-resize;
+				}
+
+				&::-moz-range-thumb {
+					width: 12px;
+					height: 12px;
+					margin-top: -4px;
+					box-shadow: 0 0 0 4px var(--v-slider-thumb-color);
+					cursor: ew-resize;
+				}
+			}
+			.thumb-label {
+				opacity: 1;
+			}
+		}
+
+		&:active:not(.disabled) {
 			.thumb-label,
 			.ticks {
 				opacity: 1;

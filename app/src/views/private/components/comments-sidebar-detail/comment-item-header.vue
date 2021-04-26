@@ -64,7 +64,7 @@ import { defineComponent, PropType, computed, ref, watch } from '@vue/compositio
 import { Activity } from './types';
 import format from 'date-fns/format';
 import i18n from '@/lang';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 
 import api, { addTokenToURL } from '@/api';
@@ -176,12 +176,12 @@ export default defineComponent({
 			display: flex;
 			align-items: center;
 			font-size: 12px;
+			white-space: nowrap;
 			text-align: right;
 			text-transform: lowercase;
 			opacity: 1;
 			transition: opacity var(--slow) var(--transition);
 			pointer-events: none;
-			white-space: nowrap;
 		}
 
 		.more.active + .time {

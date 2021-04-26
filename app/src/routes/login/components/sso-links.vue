@@ -13,7 +13,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from '@vue/composition-api';
 import api from '@/api';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -34,9 +34,7 @@ export default defineComponent({
 				providers.value = response.data.data?.map((providerName: string) => {
 					return {
 						name: providerName,
-						link: `${getRootPath()}auth/oauth/${providerName.toLowerCase()}?redirect=${
-							window.location.href
-						}`,
+						link: `${getRootPath()}auth/oauth/${providerName.toLowerCase()}?redirect=${window.location.href}`,
 					};
 				});
 			} catch (err) {

@@ -22,6 +22,7 @@
 	"application/x-shockwave-flash": "Adobe Flash",
 	"application/vnd.adobe.fxp": "Adobe Flex Project",
 	"application/pdf": "PDF",
+	"application/sql": "SQL",
 	"application/vnd.cups-ppd": "Adobe PostScript Printer Description File Format",
 	"application/x-director": "Adobe Shockwave Player",
 	"application/vnd.adobe.xdp+xml": "Adobe XML Data Package",

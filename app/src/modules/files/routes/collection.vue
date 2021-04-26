@@ -108,7 +108,7 @@
 			:selection.sync="selection"
 			:layout-options.sync="layoutOptions"
 			:layout-query.sync="layoutQuery"
-			:filters="filtersWithFolderAndType"
+			:filters="[...filters, ...filtersWithFolderAndType]"
 			:search-query="searchQuery"
 			:reset-preset="resetPreset"
 			@update:filters="filters = $event"
@@ -163,27 +163,26 @@
 <script lang="ts">
 import { defineComponent, computed, ref, PropType, onMounted, onUnmounted } from '@vue/composition-api';
 import FilesNavigation from '../components/navigation.vue';
-import { i18n } from '../../../lang';
-import api from '../../../api';
-import { LayoutComponent } from '../../../layouts/types';
-import usePreset from '../../../composables/use-preset';
-import FilterSidebarDetail from '../../../views/private/components/filter-sidebar-detail';
-import LayoutSidebarDetail from '../../../views/private/components/layout-sidebar-detail';
+import { i18n } from '@/lang';
+import api from '@/api';
+import { LayoutComponent } from '@/layouts/types';
+import usePreset from '@/composables/use-preset';
+import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
+import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail';
 import AddFolder from '../components/add-folder.vue';
-import SearchInput from '../../../views/private/components/search-input';
+import SearchInput from '@/views/private/components/search-input';
 import marked from 'marked';
 import FolderPicker from '../components/folder-picker.vue';
-import emitter, { Events } from '../../../events';
-import router from '../../../router';
+import emitter, { Events } from '@/events';
+import router from '@/router';
 import Vue from 'vue';
-import { useNotificationsStore, useUserStore, usePermissionsStore } from '../../../stores';
+import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stores';
 import { subDays } from 'date-fns';
 import useFolders from '../composables/use-folders';
-import useEventListener from '../../../composables/use-event-listener';
-import uploadFiles from '../../../utils/upload-files';
-import { unexpectedError } from '../../../utils/unexpected-error';
-import DrawerBatch from '../../../views/private/components/drawer-batch';
-import { useCollection } from '../../../composables/use-collection';
+import useEventListener from '@/composables/use-event-listener';
+import uploadFiles from '@/utils/upload-files';
+import { unexpectedError } from '@/utils/unexpected-error';
+import DrawerBatch from '@/views/private/components/drawer-batch';
 
 type Item = {
 	[field: string]: any;
@@ -217,13 +216,9 @@ export default defineComponent({
 		const layoutRef = ref<LayoutComponent | null>(null);
 		const selection = ref<Item[]>([]);
 
-		const { info: currentCollection } = useCollection(ref('directus_files'));
-
 		const userStore = useUserStore();
 
-		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(
-			ref('directus_files')
-		);
+		const { layout, layoutOptions, layoutQuery, filters, searchQuery, resetPreset } = usePreset(ref('directus_files'));
 
 		const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActive } = useBatch();
 
@@ -231,7 +226,6 @@ export default defineComponent({
 
 		const filtersWithFolderAndType = computed(() => {
 			const filtersParsed: any[] = [
-				...filters.value,
 				{
 					locked: true,
 					field: 'type',
@@ -412,9 +406,13 @@ export default defineComponent({
 
 			async function moveToFolder() {
 				moving.value = true;
+
 				try {
-					await api.patch(`/files/${selection.value}`, {
-						folder: selectedFolder.value,
+					await api.patch(`/files`, {
+						keys: selection.value,
+						data: {
+							folder: selectedFolder.value,
+						},
 					});
 
 					selection.value = [];
@@ -621,23 +619,23 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 
 .action-batch {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 
 .folder {
-	--v-button-background-color: var(--primary-25);
+	--v-button-background-color: var(--primary-10);
 	--v-button-color: var(--primary);
-	--v-button-background-color-hover: var(--primary-50);
+	--v-button-background-color-hover: var(--primary-25);
 	--v-button-color-hover: var(--primary);
 }
 

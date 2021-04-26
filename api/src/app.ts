@@ -1,8 +1,10 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import logger from './logger';
 import expressLogger from 'express-pino-logger';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import express from 'express';
+import logger from './logger';
 import path from 'path';
+import qs from 'qs';
 
 import { validateDBConnection, isInstalled } from './database';
 
@@ -43,9 +45,9 @@ import sanitizeQuery from './middleware/sanitize-query';
 import { checkIP } from './middleware/check-ip';
 import { InvalidPayloadException } from './exceptions';
 
-import { registerExtensions } from './extensions';
+import { initializeExtensions, registerExtensionEndpoints, registerExtensionHooks } from './extensions';
 import { register as registerWebhooks } from './webhooks';
-import emitter from './emitter';
+import { emitAsyncSafe } from './emitter';
 
 import fse from 'fs-extra';
 
@@ -55,9 +57,13 @@ export default async function createApp() {
 	await validateDBConnection();
 
 	if ((await isInstalled()) === false) {
-		logger.fatal(`Database doesn't have Directus tables installed.`);
+		logger.error(`Database doesn't have Directus tables installed.`);
 		process.exit(1);
 	}
+
+	await initializeExtensions();
+
+	await registerExtensionHooks();
 
 	const app = express();
 
@@ -65,11 +71,18 @@ export default async function createApp() {
 
 	app.disable('x-powered-by');
 	app.set('trust proxy', true);
+	app.set('query parser', (str: string) => qs.parse(str, { depth: 10 }));
+
+	await emitAsyncSafe('init.before', { app });
+
+	await emitAsyncSafe('middlewares.init.before', { app });
 
 	app.use(expressLogger({ logger }));
 
 	app.use((req, res, next) => {
-		bodyParser.json()(req, res, (err) => {
+		bodyParser.json({
+			limit: env.MAX_PAYLOAD_SIZE,
+		})(req, res, (err) => {
 			if (err) {
 				return next(new InvalidPayloadException(err.message));
 			}
@@ -78,7 +91,8 @@ export default async function createApp() {
 		});
 	});
 
-	app.use(bodyParser.json());
+	app.use(cookieParser());
+
 	app.use(extractToken);
 
 	app.use((req, res, next) => {
@@ -99,7 +113,14 @@ export default async function createApp() {
 		html = html.replace(/href="\//g, `href="${publicUrl}`);
 		html = html.replace(/src="\//g, `src="${publicUrl}`);
 
-		app.get('/', (req, res) => res.redirect(`./admin/`));
+		app.get('/', (req, res, next) => {
+			if (env.ROOT_REDIRECT) {
+				res.redirect(env.ROOT_REDIRECT);
+			} else {
+				next();
+			}
+		});
+
 		app.get('/admin', (req, res) => res.send(html));
 		app.use('/admin', express.static(path.join(adminPath, '..')));
 		app.use('/admin/*', (req, res) => {
@@ -117,6 +138,10 @@ export default async function createApp() {
 	app.use(checkIP);
 
 	app.use(sanitizeQuery);
+
+	await emitAsyncSafe('middlewares.init.after', { app });
+
+	await emitAsyncSafe('routes.init.before', { app });
 
 	app.use(cache);
 
@@ -145,19 +170,23 @@ export default async function createApp() {
 	app.use('/utils', utilsRouter);
 	app.use('/webhooks', webhooksRouter);
 	app.use('/custom', customRouter);
+
+	// Register custom hooks / endpoints
+	await emitAsyncSafe('routes.custom.init.before', { app });
+	await registerExtensionEndpoints(customRouter);
+	await emitAsyncSafe('routes.custom.init.after', { app });
+
 	app.use(notFoundHandler);
 	app.use(errorHandler);
+
+	await emitAsyncSafe('routes.init.after', { app });
 
 	// Register all webhooks
 	await registerWebhooks();
 
-	// Register custom hooks / endpoints
-	await registerExtensions(customRouter);
-
 	track('serverStarted');
 
-	emitter.emit('init.before', { app });
-	emitter.emitAsync('init').catch((err) => logger.warn(err));
+	emitAsyncSafe('init');
 
 	return app;
 }

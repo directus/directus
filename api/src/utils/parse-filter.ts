@@ -6,8 +6,9 @@ export function parseFilter(filter: Filter, accountability: Accountability | nul
 	return deepMap(filter, (val, key) => {
 		if (val === 'true') return true;
 		if (val === 'false') return false;
+		if (val === 'null' || val === 'NULL') return null;
 
-		if (key === '_in' || key === '_nin') {
+		if (['_in', '_nin', '_between', '_nbetween'].includes(String(key))) {
 			if (typeof val === 'string' && val.includes(',')) return val.split(',');
 			else return toArray(val);
 		}

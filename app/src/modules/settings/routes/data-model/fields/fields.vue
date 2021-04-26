@@ -86,12 +86,12 @@
 <script lang="ts">
 import { defineComponent, computed, toRefs, ref } from '@vue/composition-api';
 import SettingsNavigation from '../../../components/navigation.vue';
-import useCollection from '../../../../../composables/use-collection/';
+import useCollection from '@/composables/use-collection/';
 import FieldsManagement from './components/fields-management.vue';
 
-import useItem from '../../../../../composables/use-item';
-import router from '../../../../../router';
-import { useCollectionsStore, useFieldsStore } from '../../../../../stores';
+import useItem from '@/composables/use-item';
+import router from '@/router';
+import { useCollectionsStore, useFieldsStore } from '@/stores';
 import marked from 'marked';
 
 export default defineComponent({
@@ -187,16 +187,16 @@ export default defineComponent({
 }
 
 .header-icon {
-	--v-button-background-color: var(--warning-25);
+	--v-button-background-color: var(--warning-10);
 	--v-button-color: var(--warning);
-	--v-button-background-color-hover: var(--warning-50);
+	--v-button-background-color-hover: var(--warning-25);
 	--v-button-color-hover: var(--warning);
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 </style>

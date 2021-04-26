@@ -30,7 +30,7 @@ fields:
     translations:
       language: en-US
       translations: Brand Color
-    width: full
+    width: half
 
   - field: project_logo
     interface: file
@@ -45,8 +45,9 @@ fields:
     options:
       icon: public
       title: Public Pages
-      color: '#2F80ED'
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: public_foreground
@@ -74,8 +75,9 @@ fields:
     options:
       icon: security
       title: Security
-      color: '#2F80ED'
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: auth_password_policy
@@ -88,12 +90,14 @@ fields:
           text: Weak – Minimum 8 Characters
         - value: "/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/"
           text: Strong – Upper / Lowercase / Numbers / Special
+      allowOther: true
     width: half
 
   - field: auth_login_attempts
     interface: numeric
     options:
       iconRight: lock
+      placeholder: $t:unlimited
     width: half
 
   - field: files_divider
@@ -101,8 +105,9 @@ fields:
     options:
       icon: storage
       title: Files & Thumbnails
-      color: '#2F80ED'
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: storage_asset_presets
@@ -196,8 +201,9 @@ fields:
     options:
       icon: brush
       title: App Overrides
-      color: '#2F80ED'
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: custom_css

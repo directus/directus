@@ -1,5 +1,5 @@
 import { Filter } from '../types';
-import BaseJoi, { AlternativesSchema, ObjectSchema, AnySchema } from 'joi';
+import BaseJoi, { AnySchema } from 'joi';
 
 const Joi: typeof BaseJoi = BaseJoi.extend({
 	type: 'string',
@@ -75,45 +75,45 @@ export default function generateJoi(filter: Filter | null): AnySchema {
 
 function getJoi(operator: string, value: any) {
 	if (operator === '_eq') {
-		return Joi.any().equal(Object.values(value)[0]);
+		return Joi.any().equal(value);
 	}
 
 	if (operator === '_neq') {
-		return Joi.any().not(Object.values(value)[0]);
+		return Joi.any().not(value);
 	}
 
 	if (operator === '_contains') {
 		// @ts-ignore
-		return Joi.string().contains(Object.values(value)[0]);
+		return Joi.string().contains(value);
 	}
 
 	if (operator === '_ncontains') {
 		// @ts-ignore
-		return Joi.string().ncontains(Object.values(value)[0]);
+		return Joi.string().ncontains(value);
 	}
 
 	if (operator === '_in') {
-		return Joi.any().equal(...(Object.values(value)[0] as (string | number)[]));
+		return Joi.any().equal(...(value as (string | number)[]));
 	}
 
 	if (operator === '_nin') {
-		return Joi.any().not(...(Object.values(value)[0] as (string | number)[]));
+		return Joi.any().not(...(value as (string | number)[]));
 	}
 
 	if (operator === '_gt') {
-		return Joi.number().greater(Number(Object.values(value)[0]));
+		return Joi.number().greater(Number(value));
 	}
 
 	if (operator === '_gte') {
-		return Joi.number().min(Number(Object.values(value)[0]));
+		return Joi.number().min(Number(value));
 	}
 
 	if (operator === '_lt') {
-		return Joi.number().less(Number(Object.values(value)[0]));
+		return Joi.number().less(Number(value));
 	}
 
 	if (operator === '_lte') {
-		return Joi.number().max(Number(Object.values(value)[0]));
+		return Joi.number().max(Number(value));
 	}
 
 	if (operator === '_null') {
@@ -133,16 +133,21 @@ function getJoi(operator: string, value: any) {
 	}
 
 	if (operator === '_between') {
-		const values = Object.values(value)[0] as number[];
+		const values = value as number[];
 		return Joi.number().greater(values[0]).less(values[1]);
 	}
 
 	if (operator === '_nbetween') {
-		const values = Object.values(value)[0] as number[];
+		const values = value as number[];
 		return Joi.number().less(values[0]).greater(values[1]);
 	}
 
-	if (operator === '_required') {
-		return Joi.invalid(null).required();
+	if (operator === '_submitted') {
+		return Joi.required();
+	}
+
+	if (operator === '_regex') {
+		const wrapped = value.startsWith('/') && value.endsWith('/');
+		return Joi.string().regex(new RegExp(wrapped ? value.slice(1, -1) : value));
 	}
 }

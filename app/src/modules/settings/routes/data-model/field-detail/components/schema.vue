@@ -1,9 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">
-			{{ $t('schema_setup_title') }}
-		</v-notice>
-
 		<div class="form">
 			<div class="field">
 				<div class="label type-label">
@@ -15,9 +11,11 @@
 					autofocus
 					class="monospace"
 					v-model="fieldData.field"
+					:nullable="false"
 					db-safe
 					:placeholder="$t('a_unique_column_name')"
 				/>
+				<small class="note" v-html="$t('schema_setup_key')" />
 			</div>
 
 			<div class="field half">
@@ -58,7 +56,7 @@
 				</div>
 			</template>
 
-			<template v-if="['uuid', 'date', 'time', 'datetime', 'timestamp'].includes(fieldData.type) && type !== 'file'">
+			<template v-if="['uuid', 'date', 'time', 'dateTime', 'timestamp'].includes(fieldData.type) && type !== 'file'">
 				<div class="field half-left">
 					<div class="label type-label">{{ $t('on_create') }}</div>
 					<v-select :items="onCreateOptions" v-model="onCreateValue" />
@@ -88,26 +86,26 @@
 					v-if="['string', 'uuid'].includes(fieldData.type)"
 					class="monospace"
 					v-model="defaultValue"
-					:placeholder="$t('add_a_default_value')"
+					placeholder="NULL"
 				/>
 				<v-textarea
 					v-else-if="['text', 'json'].includes(fieldData.type)"
 					class="monospace"
 					v-model="defaultValue"
-					:placeholder="$t('add_a_default_value')"
+					placeholder="NULL"
 				/>
 				<v-input
 					v-else-if="['integer', 'bigInteger', 'float', 'decimal'].includes(fieldData.type)"
 					type="number"
 					class="monospace"
 					v-model="defaultValue"
-					:placeholder="$t('add_a_default_value')"
+					placeholder="NULL"
 				/>
 				<v-input
-					v-else-if="['timestamp', 'datetime', 'date', 'time'].includes(fieldData.type)"
+					v-else-if="['timestamp', 'dateTime', 'date', 'time'].includes(fieldData.type)"
 					class="monospace"
 					v-model="defaultValue"
-					:placeholder="$t('add_a_default_value')"
+					placeholder="NULL"
 				/>
 				<v-select
 					v-else-if="fieldData.type === 'boolean'"
@@ -128,7 +126,7 @@
 						},
 					]"
 				/>
-				<v-input v-else class="monospace" v-model="defaultValue" disabled :placeholder="$t('add_a_default_value')" />
+				<v-input v-else class="monospace" v-model="defaultValue" disabled placeholder="NULL" />
 			</div>
 
 			<div class="field half-left" v-if="fieldData.schema">
@@ -140,15 +138,23 @@
 					block
 				/>
 			</div>
+
+			<div class="field half-right" v-if="fieldData.schema">
+				<div class="label type-label">{{ $t('unique') }}</div>
+				<v-checkbox
+					:input-value="fieldData.schema.is_unique"
+					@change="fieldData.schema.is_unique = $event"
+					:label="$t('value_unique')"
+					block
+				/>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import useSync from '../../../../../../composables/use-sync';
-import { types } from '../../../../../../types';
-import i18n from '../../../../../../lang';
+import i18n from '@/lang';
 import { state } from '../store';
 
 export const fieldTypes = [
@@ -211,6 +217,10 @@ export const fieldTypes = [
 	{
 		text: i18n.t('uuid'),
 		value: 'uuid',
+	},
+	{
+		text: i18n.t('hash'),
+		value: 'hash',
 	},
 ];
 
@@ -289,7 +299,7 @@ export default defineComponent({
 							value: 'role-created',
 						},
 					];
-				} else if (['date', 'time', 'datetime', 'timestamp'].includes(state.fieldData.type)) {
+				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
 					return [
 						{
 							text: i18n.t('do_nothing'),
@@ -350,7 +360,7 @@ export default defineComponent({
 							value: 'role-updated',
 						},
 					];
-				} else if (['date', 'time', 'datetime', 'timestamp'].includes(state.fieldData.type)) {
+				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
 					return [
 						{
 							text: i18n.t('do_nothing'),
@@ -400,10 +410,18 @@ export default defineComponent({
 @import '@/styles/mixins/form-grid';
 
 .form {
-	--v-form-vertical-gap: 32px;
-	--v-form-horizontal-gap: 32px;
+	--form-vertical-gap: 32px;
+	--form-horizontal-gap: 32px;
 
 	@include form-grid;
+}
+
+.note {
+	display: block;
+	max-width: 520px;
+	margin-top: 4px;
+	color: var(--foreground-subdued);
+	font-style: italic;
 }
 
 .monospace {

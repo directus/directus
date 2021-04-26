@@ -2,7 +2,7 @@ import { RequestHandler } from 'express';
 import jwt, { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import isJWT from '../utils/is-jwt';
 import database from '../database';
-import asyncHandler from 'express-async-handler';
+import asyncHandler from '../utils/async-handler';
 import { InvalidCredentialsException } from '../exceptions';
 import env from '../env';
 
@@ -14,6 +14,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		user: null,
 		role: null,
 		admin: false,
+		app: false,
 		ip: req.ip.startsWith('::ffff:') ? req.ip.substring(7) : req.ip,
 		userAgent: req.get('user-agent'),
 	};
@@ -36,7 +37,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		}
 
 		const user = await database
-			.select('role', 'directus_roles.admin_access')
+			.select('role', 'directus_roles.admin_access', 'directus_roles.app_access')
 			.from('directus_users')
 			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
 			.where({
@@ -52,10 +53,11 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.user = payload.id;
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
+		req.accountability.app = user.app_access === true || user.app_access == 1;
 	} else {
 		// Try finding the user with the provided token
 		const user = await database
-			.select('directus_users.id', 'directus_users.role', 'directus_roles.admin_access')
+			.select('directus_users.id', 'directus_users.role', 'directus_roles.admin_access', 'directus_roles.app_access')
 			.from('directus_users')
 			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
 			.where({
@@ -71,6 +73,7 @@ const authenticate: RequestHandler = asyncHandler(async (req, res, next) => {
 		req.accountability.user = user.id;
 		req.accountability.role = user.role;
 		req.accountability.admin = user.admin_access === true || user.admin_access == 1;
+		req.accountability.app = user.app_access === true || user.app_access == 1;
 	}
 
 	if (req.accountability?.user) {

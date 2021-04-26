@@ -25,7 +25,11 @@ fields:
       iconRight: local_offer
     special: json
     width: full
-    display: tags
+    display: labels
+    display_options:
+      defaultBackground: '#ECEFF1'
+      choices: null
+      format: false
 
   - field: location
     interface: text-input
@@ -46,8 +50,9 @@ fields:
     options:
       icon: insert_drive_file
       title: File Naming
-      color: '#2F80ED'
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: filename_disk
@@ -55,6 +60,7 @@ fields:
     options:
       iconRight: publish
       placeholder: Name on disk storage...
+    readonly: true
     width: half
 
   - field: filename_download
@@ -70,48 +76,60 @@ fields:
 
   - field: type
     display: mime-type
+    readonly: true
 
   - field: filesize
     display: filesize
+    readonly: true
 
   - field: modified_by
     interface: user
     special: user-updated
     width: half
     display: user
+    readonly: true
 
   - field: modified_on
     interface: datetime
     special: date-updated
     width: half
     display: datetime
-
-  - field: created_on
-    display: datetime
-
-  - field: created_by
-    display: user
+    readonly: true
 
   - field: embed
     width: half
+    hidden: true
 
   - field: uploaded_by
+    display: user
     width: half
+    hidden: true
+
+  - field: uploaded_on
+    display: datetime
+    width: half
+    hidden: true
 
   - field: folder
     width: half
+    readonly: true
+    special: m2o
+    display: related-values
+    display_options:
+      template: '{{ name }}'
 
   - field: width
     width: half
-
-  - field: uploaded_on
-    width: half
+    readonly: true
 
   - field: height
     width: half
+    readonly: true
 
   - field: charset
     width: half
+    readonly: true
 
   - field: duration
     width: half
+    readonly: true

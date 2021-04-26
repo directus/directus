@@ -1,7 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('schema_field_title') }}</v-notice>
-
 		<div class="form">
 			<div class="field half-left" v-if="fieldData.meta">
 				<div class="label type-label">{{ $t('readonly') }}</div>
@@ -22,7 +20,7 @@
 				<div class="label type-label">{{ $t('field_name_translations') }}</div>
 				<interface-repeater
 					v-model="fieldData.meta.translations"
-					:template="'{{ translation }} ({{ language }})'"
+					:template="'[{{ language }}] {{ translation }}'"
 					:fields="[
 						{
 							field: 'language',
@@ -31,6 +29,11 @@
 							meta: {
 								interface: 'system-language',
 								width: 'half',
+								display: 'formatted-value',
+								display_options: {
+									font: 'monospace',
+									color: 'var(--foreground-subdued)',
+								},
 							},
 							schema: {
 								default_value: 'en-US',
@@ -56,10 +59,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from '@vue/composition-api';
-import useSync from '@/composables/use-sync';
-import { types } from '@/types';
-import i18n from '@/lang';
+import { defineComponent } from '@vue/composition-api';
 import { state } from '../store';
 
 export default defineComponent({
@@ -90,8 +90,8 @@ export default defineComponent({
 }
 
 .form {
-	--v-form-vertical-gap: 32px;
-	--v-form-horizontal-gap: 32px;
+	--form-vertical-gap: 32px;
+	--form-horizontal-gap: 32px;
 
 	@include form-grid;
 }

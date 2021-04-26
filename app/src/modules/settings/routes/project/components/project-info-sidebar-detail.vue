@@ -38,13 +38,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
-import i18n from '@/lang';
+import { defineComponent } from '@vue/composition-api';
 import marked from 'marked';
-import { version } from '../../../../../../package.json';
-import bytes from 'bytes';
-import prettyMS from 'pretty-ms';
-import api from '@/api';
 import { useProjectInfo } from '../../../composables/use-project-info';
 
 export default defineComponent({

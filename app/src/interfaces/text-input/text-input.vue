@@ -1,11 +1,13 @@
 <template>
 	<v-input
 		:value="value"
+		:nullable="!clear"
 		:placeholder="placeholder"
 		:disabled="disabled"
 		:trim="trim"
 		:type="masked ? 'password' : 'text'"
 		:class="font"
+		:db-safe="dbSafe"
 		@input="$listeners.input"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
@@ -38,6 +40,10 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
+		clear: {
+			type: Boolean,
+			default: false,
+		},
 		disabled: {
 			type: Boolean,
 			default: false,
@@ -69,6 +75,10 @@ export default defineComponent({
 		length: {
 			type: Number,
 			default: null,
+		},
+		dbSafe: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props) {

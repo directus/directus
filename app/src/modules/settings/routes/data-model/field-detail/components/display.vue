@@ -1,7 +1,5 @@
 <template>
 	<div>
-		<v-notice type="info">{{ $t('display_setup_title') }}</v-notice>
-
 		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.display" />
 
 		<v-notice class="not-found" type="danger" v-if="fieldData.meta.display && !selectedDisplay">
@@ -57,8 +55,8 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const displays = getDisplays();
-		const interfaces = getInterfaces();
+		const { displays } = getDisplays();
+		const { interfaces } = getInterfaces();
 
 		const selectedInterface = computed(() => {
 			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);

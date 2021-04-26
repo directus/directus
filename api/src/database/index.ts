@@ -1,9 +1,9 @@
-import knex, { Config } from 'knex';
+import { knex, Knex } from 'knex';
 import dotenv from 'dotenv';
-import camelCase from 'camelcase';
 import path from 'path';
 import logger from '../logger';
 import env from '../env';
+import { validateEnv } from '../utils/validate-env';
 import { performance } from 'perf_hooks';
 
 import SchemaInspector from '@directus/schema';
@@ -15,9 +15,14 @@ const connectionConfig: Record<string, any> = getConfigFromEnv('DB_', [
 	'DB_CLIENT',
 	'DB_SEARCH_PATH',
 	'DB_CONNECTION_STRING',
+	'DB_POOL',
 ]);
 
-const knexConfig: Config = {
+const poolConfig = getConfigFromEnv('DB_POOL');
+
+validateEnv(['DB_CLIENT']);
+
+const knexConfig: Knex.Config = {
 	client: env.DB_CLIENT,
 	searchPath: env.DB_SEARCH_PATH,
 	connection: env.DB_CONNECTION_STRING || connectionConfig,
@@ -27,10 +32,14 @@ const knexConfig: Config = {
 		deprecate: (msg) => logger.info(msg),
 		debug: (msg) => logger.debug(msg),
 	},
+	pool: poolConfig,
 };
 
 if (env.DB_CLIENT === 'sqlite3') {
 	knexConfig.useNullAsDefault = true;
+	poolConfig.afterCreate = (conn: any, cb: any) => {
+		conn.run('PRAGMA foreign_keys = ON', cb);
+	};
 }
 
 const database = knex(knexConfig);
@@ -48,7 +57,11 @@ database
 
 export async function hasDatabaseConnection() {
 	try {
-		await database.raw('select 1 + 1 as result');
+		if (env.DB_CLIENT === 'oracledb') {
+			await database.raw('select 1 from DUAL');
+		} else {
+			await database.raw('SELECT 1');
+		}
 		return true;
 	} catch {
 		return false;
@@ -59,8 +72,8 @@ export async function validateDBConnection() {
 	try {
 		await hasDatabaseConnection();
 	} catch (error) {
-		logger.fatal(`Can't connect to the database.`);
-		logger.fatal(error);
+		logger.error(`Can't connect to the database.`);
+		logger.error(error);
 		process.exit(1);
 	}
 }

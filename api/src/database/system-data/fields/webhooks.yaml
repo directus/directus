@@ -14,7 +14,8 @@ fields:
     interface: dropdown
     display: labels
     display_options:
-      defaultBackground: "#ECEFF1"
+      defaultForeground: 'var(--foreground-normal)'
+      defaultBackground: 'var(--background-normal-alt)'
       choices: null
       format: false
     options:
@@ -33,18 +34,18 @@ fields:
     interface: dropdown
     display: labels
     display_options:
-      defaultColor: "#B0BEC5"
-      defaultBackground: "#ECEFF1"
+      defaultForeground: 'var(--foreground-normal)'
+      defaultBackground: 'var(--background-normal-alt)'
       showAsDot: true
       choices:
-      - text: Active
-        value: active
-        foreground: "#607D8B"
-        background: "#2F80ED"
-      - text: Inactive
-        value: inactive
-        foreground: "#607D8B"
-        background: "#ECEFF1"
+        - text: Active
+          value: active
+          foreground: 'var(--primary-10)'
+          background: 'var(--primary)'
+        - text: Inactive
+          value: inactive
+          foreground: 'var(--foreground-normal)'
+          background: 'var(--background-normal-alt)'
     options:
       choices:
         - text: Active
@@ -59,14 +60,16 @@ fields:
       label: Send Event Data
     special: boolean
     width: half
+    display: boolean
 
   - field: triggers_divider
     interface: divider
     options:
       icon: api
       title: Triggers
-      color: '#2F80ED'
-    special: alias
+    special:
+      - alias
+      - no-data
     width: full
 
   - field: actions
@@ -81,8 +84,35 @@ fields:
           value: delete
     special: csv
     width: full
+    display: labels
+    display_options:
+      defaultForeground: 'var(--foreground-normal)'
+      defaultBackground: 'var(--background-normal-alt)'
+      choices:
+        - text: Create
+          value: create
+          foreground: 'var(--primary)'
+          background: 'var(--primary-25)'
+        - text: Update
+          value: update
+          foreground: 'var(--blue)'
+          background: 'var(--blue-25)'
+        - text: Delete
+          value: delete
+          foreground: 'var(--danger)'
+          background: 'var(--danger-25)'
+        - text: Login
+          value: authenticate
+          foreground: 'var(--purple)'
+          background: 'var(--purple-25)'
 
   - field: collections
     interface: collections
     special: csv
     width: full
+    display: labels
+    display_options:
+      defaultForeground: 'var(--foreground-normal)'
+      defaultBackground: 'var(--background-normal-alt)'
+      choices: null
+      format: false

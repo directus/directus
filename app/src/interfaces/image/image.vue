@@ -6,7 +6,7 @@
 			{{ $t('disabled') }}
 		</v-notice>
 
-		<div class="image-preview" v-else-if="image" :class="{ 'is-svg': image.type.includes('svg') }">
+		<div class="image-preview" v-else-if="image" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
 			<img :src="src" alt="" role="presentation" />
 
 			<div class="shadow" />
@@ -15,17 +15,11 @@
 				<v-button icon rounded @click="lightboxActive = true" v-tooltip="$t('zoom')">
 					<v-icon name="zoom_in" />
 				</v-button>
-				<v-button
-					icon
-					rounded
-					:href="downloadSrc"
-					:download="image.filename_download"
-					v-tooltip="$t('download')"
-				>
+				<v-button icon rounded :href="downloadSrc" :download="image.filename_download" v-tooltip="$t('download')">
 					<v-icon name="get_app" />
 				</v-button>
-				<v-button icon rounded @click="editorActive = true" v-tooltip="$t('edit')">
-					<v-icon name="crop_rotate" />
+				<v-button icon rounded @click="editDrawerActive = true" v-tooltip="$t('edit')">
+					<v-icon name="open_in_new" />
 				</v-button>
 				<v-button icon rounded @click="deselect" v-tooltip="$t('deselect')">
 					<v-icon name="close" />
@@ -37,12 +31,15 @@
 				<div class="meta">{{ meta }}</div>
 			</div>
 
-			<image-editor
-				v-if="image && image.type.startsWith('image')"
-				:id="image.id"
-				@refresh="changeCacheBuster"
-				v-model="editorActive"
+			<drawer-item
+				v-if="!disabled && image"
+				:active.sync="editDrawerActive"
+				collection="directus_files"
+				:primary-key="image.id"
+				:edits="edits"
+				@input="stageEdits"
 			/>
+
 			<file-lightbox v-model="lightboxActive" :id="image.id" />
 		</div>
 		<v-upload v-else @input="setImage" from-library from-url />
@@ -57,9 +54,10 @@ import i18n from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
 import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { addTokenToURL } from '@/api';
+import DrawerItem from '@/views/private/components/drawer-item';
 
 type Image = {
 	id: string; // uuid
@@ -71,10 +69,10 @@ type Image = {
 };
 
 export default defineComponent({
-	components: { FileLightbox, ImageEditor },
+	components: { FileLightbox, ImageEditor, DrawerItem },
 	props: {
 		value: {
-			type: String,
+			type: [String, Object],
 			default: null,
 		},
 		disabled: {
@@ -86,7 +84,7 @@ export default defineComponent({
 		const loading = ref(false);
 		const image = ref<Image | null>(null);
 		const lightboxActive = ref(false);
-		const editorActive = ref(false);
+		const editDrawerActive = ref(false);
 
 		const cacheBuster = ref(nanoid());
 
@@ -98,8 +96,7 @@ export default defineComponent({
 			}
 
 			if (image.value.type.includes('image')) {
-				const url =
-					getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`;
+				const url = getRootPath() + `assets/${image.value.id}?key=system-large-cover&cache-buster=${cacheBuster.value}`;
 
 				return addTokenToURL(url);
 			}
@@ -109,7 +106,7 @@ export default defineComponent({
 
 		const downloadSrc = computed(() => {
 			if (!image.value) return null;
-			return getRootPath() + `assets/${image.value.id}`;
+			return addTokenToURL(getRootPath() + `assets/${image.value.id}`);
 		});
 
 		const meta = computed(() => {
@@ -121,18 +118,21 @@ export default defineComponent({
 
 		watch(
 			() => props.value,
-			(newID, oldID) => {
-				if (newID === oldID) return;
+			(newValue, oldValue) => {
+				if (newValue === oldValue) return;
 
-				if (newID) {
+				if (newValue) {
 					fetchImage();
 				}
 
-				if (oldID && newID === null) {
+				if (oldValue && newValue === null) {
 					deselect();
 				}
-			}
+			},
+			{ immediate: true }
 		);
+
+		const { edits, stageEdits } = useEdits();
 
 		return {
 			loading,
@@ -140,24 +140,35 @@ export default defineComponent({
 			src,
 			meta,
 			lightboxActive,
-			editorActive,
+			editDrawerActive,
 			changeCacheBuster,
 			setImage,
 			deselect,
 			downloadSrc,
+			edits,
+			stageEdits,
 		};
 
 		async function fetchImage() {
 			loading.value = true;
 
 			try {
-				const response = await api.get(`/files/${props.value}`, {
+				const id = typeof props.value === 'string' ? props.value : (props.value as Record<string, any>)?.id;
+
+				const response = await api.get(`/files/${id}`, {
 					params: {
 						fields: ['id', 'title', 'width', 'height', 'filesize', 'type', 'filename_download'],
 					},
 				});
 
-				image.value = response.data.data;
+				if (props.value !== null && typeof props.value === 'object') {
+					image.value = {
+						...response.data.data,
+						...props.value,
+					};
+				} else {
+					image.value = response.data.data;
+				}
 			} catch (err) {
 				unexpectedError(err);
 			} finally {
@@ -180,7 +191,30 @@ export default defineComponent({
 			loading.value = false;
 			image.value = null;
 			lightboxActive.value = false;
-			editorActive.value = false;
+			editDrawerActive.value = false;
+		}
+
+		function useEdits() {
+			const edits = computed(() => {
+				// If the current value isn't a primitive, it means we've already staged some changes
+				// This ensures we continue on those changes instead of starting over
+				if (props.value && typeof props.value === 'object') {
+					return props.value;
+				}
+
+				return {};
+			});
+
+			return { edits, stageEdits };
+
+			function stageEdits(newEdits: Record<string, any>) {
+				if (!image.value) return;
+
+				emit('input', {
+					id: image.value.id,
+					...newEdits,
+				});
+			}
 		}
 	},
 });
@@ -205,7 +239,7 @@ img {
 
 .is-svg {
 	padding: 32px;
-	background-color: var(--background-normal);
+	background-color: var(--background-normal-alt);
 
 	img {
 		object-fit: contain;

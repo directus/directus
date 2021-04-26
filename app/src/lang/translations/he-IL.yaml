@@ -1,48 +1,53 @@
 ---
+edit_field: ערוך שדה
+full_width: רוחב מלא
+add_field: הוסף שדה
 directus_version: גרסת דירקטוס
 title: כותרת
 checksum: מחרוזת בדיקה
 users: משתמשים
 activity: פעילות
 duration: משך זמן
+status: סטטוס
 role: תפקיד
+width: רוחב
+height: גובה
 collection: מאגר
 fields:
   directus_activity:
+    item: מפתח ראשי
     action: פעולה
     collection: מאגר
-    item: מפתח ראשי
-    user: מבצע פעולה
     timestamp: מועד פעולה
-    edited_on: מועד עריכה
-    comment_deleted_on: התגובה נמחקה בתאריך
-    ip: '‏כתובת IP'
+    user: מבצע פעולה
     comment: הערה
+    ip: '‏כתובת IP'
+  directus_collections:
+    collection: מאגר
   directus_files:
     title: כותרת
+    description: תיאור
     tags: תגיות
     location: מיקום
-    description: תיאור
-    checksum: מחרוזת בדיקה
+    metadata: מטא-נתונים
+    filesize: גודל קובץ
     width: רוחב
     height: גובה
     duration: משך זמן
-    filesize: גודל קובץ
-    metadata: מטא-נתונים
   directus_users:
-    status: סטטוס
     first_name: שם פרטי
     last_name: שם משפחה
     email: דוא"ל
-    email_notifications: התראות דוא"ל
     password: סיסמה
-    role: תפקיד
-    company: חברה
-    title: כותרת
-    timezone: אזור זמן
     avatar: צלמית
+    location: מיקום
+    title: כותרת
+    description: תיאור
+    tags: תגיות
     theme: ערכת נושא
     tfa_secret: אימות דו-שלבי
+    status: סטטוס
+    role: תפקיד
   directus_roles:
     description: תיאור
 comment: הערה

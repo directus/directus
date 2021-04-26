@@ -8,7 +8,9 @@
 			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
 		>
 			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
-			<v-list-item-content>{{ folder.name }}</v-list-item-content>
+			<v-list-item-content>
+				<v-text-overflow :text="folder.name" />
+			</v-list-item-content>
 		</v-list-item>
 
 		<v-list-group
@@ -25,7 +27,9 @@
 				<v-list-item-icon>
 					<v-icon name="folder" />
 				</v-list-item-icon>
-				<v-list-item-content>{{ folder.name }}</v-list-item-content>
+				<v-list-item-content>
+					<v-text-overflow :text="folder.name" />
+				</v-list-item-content>
 			</template>
 
 			<navigation-folder
@@ -44,7 +48,7 @@
 						<v-icon name="edit" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('rename_folder') }}
+						<v-text-overflow :text="$t('rename_folder')" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item @click="moveActive = true">
@@ -52,7 +56,7 @@
 						<v-icon name="folder_move" />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('move_to_folder') }}
+						<v-text-overflow :text="$t('move_to_folder')" />
 					</v-list-item-content>
 				</v-list-item>
 				<v-list-item @click="deleteActive = true">
@@ -60,7 +64,7 @@
 						<v-icon name="delete" outline />
 					</v-list-item-icon>
 					<v-list-item-content>
-						{{ $t('delete_folder') }}
+						<v-text-overflow :text="$t('delete_folder')" />
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -74,7 +78,9 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="renameActive = false">{{ $t('cancel') }}</v-button>
-					<v-button @click="renameSave" :loading="renameSaving">{{ $t('save') }}</v-button>
+					<v-button @click="renameSave" :disabled="renameValue === null" :loading="renameSaving">
+						{{ $t('save') }}
+					</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
@@ -239,11 +245,21 @@ export default defineComponent({
 					const fileKeys = filesToUpdate.data.data.map((file: { id: string }) => file.id);
 
 					if (folderKeys.length > 0) {
-						await api.patch(`/folders/${folderKeys.join(',')}`, { parent: newParent });
+						await api.patch(`/folders`, {
+							keys: folderKeys,
+							data: {
+								parent: newParent,
+							},
+						});
 					}
 
 					if (fileKeys.length > 0) {
-						await api.patch(`/files/${fileKeys.join(',')}`, { folder: newParent });
+						await api.patch(`/files`, {
+							keys: fileKeys,
+							data: {
+								folder: newParent,
+							},
+						});
 					}
 
 					await api.delete(`/folders/${props.folder.id}`);

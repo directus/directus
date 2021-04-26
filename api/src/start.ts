@@ -1,4 +1,4 @@
-import emitter from './emitter';
+import emitter, { emitAsyncSafe } from './emitter';
 import env from './env';
 import logger from './logger';
 
@@ -19,11 +19,11 @@ export default async function start() {
 	server
 		.listen(port, () => {
 			logger.info(`Server started at port ${port}`);
-			emitter.emitAsync('server.start').catch((err) => logger.warn(err));
+			emitAsyncSafe('server.start');
 		})
 		.once('error', (err: any) => {
 			if (err?.code === 'EADDRINUSE') {
-				logger.fatal(`Port ${port} is already in use`);
+				logger.error(`Port ${port} is already in use`);
 				process.exit(1);
 			} else {
 				throw err;

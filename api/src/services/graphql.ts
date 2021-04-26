@@ -1,17 +1,16 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import database from '../database';
-import { AbstractServiceOptions, Accountability, Collection, Field, Relation, Query, SchemaOverview } from '../types';
+import { AbstractServiceOptions, Accountability, Query, SchemaOverview, GraphQLParams, Action } from '../types';
+import argon2 from 'argon2';
 import {
 	GraphQLString,
-	GraphQLSchema,
-	GraphQLObjectType,
 	GraphQLList,
 	GraphQLResolveInfo,
-	GraphQLInputObjectType,
 	ObjectFieldNode,
 	GraphQLID,
 	FieldNode,
-	GraphQLFieldConfigMap,
+	InlineFragmentNode,
+	SelectionNode,
 	GraphQLInt,
 	IntValueNode,
 	StringValueNode,
@@ -20,14 +19,30 @@ import {
 	GraphQLBoolean,
 	ObjectValueNode,
 	GraphQLUnionType,
+	execute,
+	validate,
+	ExecutionResult,
+	FormattedExecutionResult,
+	specifiedRules,
+	formatError,
+	GraphQLFloat,
+	GraphQLError,
+	GraphQLNonNull,
+	FragmentDefinitionNode,
+	GraphQLSchema,
+	GraphQLEnumType,
+	GraphQLScalarType,
+	GraphQLObjectType,
 } from 'graphql';
+import { listExtensions } from '../extensions';
 import { getGraphQLType } from '../utils/get-graphql-type';
 import { RelationsService } from './relations';
 import { ItemsService } from './items';
-import { cloneDeep } from 'lodash';
+import { set, merge, get, mapKeys, uniq, flatten } from 'lodash';
 import { sanitizeQuery } from '../utils/sanitize-query';
 
 import { ActivityService } from './activity';
+import { AuthenticationService } from './authentication';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { FilesService } from './files';
@@ -37,485 +52,897 @@ import { PresetsService } from './presets';
 import { RevisionsService } from './revisions';
 import { RolesService } from './roles';
 import { SettingsService } from './settings';
+import { ServerService } from './server';
 import { UsersService } from './users';
+import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
 
-import { getRelationType } from '../utils/get-relation-type';
-import { systemCollectionRows } from '../database/system-data/collections';
+import { BaseException, InvalidPayloadException, GraphQLValidationException, ForbiddenException } from '../exceptions';
+import { toArray } from '../utils/to-array';
+
+import env from '../env';
+import ms from 'ms';
+
+import { reduceSchema } from '../utils/reduce-schema';
+
+import {
+	ObjectTypeComposer,
+	ObjectTypeComposerFieldConfigMapDefinition,
+	InputTypeComposerFieldConfigMapDefinition,
+	SchemaComposer,
+	InputTypeComposer,
+	toInputObjectType,
+	GraphQLJSON,
+} from 'graphql-compose';
+import { SpecificationService } from './specifications';
+
+const GraphQLVoid = new GraphQLScalarType({
+	name: 'Void',
+
+	description: 'Represents NULL values',
+
+	serialize() {
+		return null;
+	},
+
+	parseValue() {
+		return null;
+	},
+
+	parseLiteral() {
+		return null;
+	},
+});
+
+export const GraphQLDate = new GraphQLScalarType({
+	...GraphQLString,
+	name: 'Date',
+	description: 'ISO8601 Date values',
+});
+
+/**
+ * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
+ */
+const SYSTEM_DENY_LIST = ['directus_collections', 'directus_fields', 'directus_migrations', 'directus_sessions'];
+const READ_ONLY = ['directus_activity', 'directus_revisions'];
 
 export class GraphQLService {
 	accountability: Accountability | null;
 	knex: Knex;
-	fieldsService: FieldsService;
-	collectionsService: CollectionsService;
-	relationsService: RelationsService;
 	schema: SchemaOverview;
+	scope: 'items' | 'system';
 
-	constructor(options: AbstractServiceOptions) {
+	constructor(options: AbstractServiceOptions & { scope: 'items' | 'system' }) {
 		this.accountability = options?.accountability || null;
 		this.knex = options?.knex || database;
-		this.fieldsService = new FieldsService(options);
-		this.collectionsService = new CollectionsService(options);
-		this.relationsService = new RelationsService(options);
 		this.schema = options.schema;
+		this.scope = options.scope;
 	}
 
-	args = {
-		sort: {
-			type: GraphQLString,
-		},
-		limit: {
-			type: GraphQLInt,
-		},
-		offset: {
-			type: GraphQLInt,
-		},
-		page: {
-			type: GraphQLInt,
-		},
-		search: {
-			type: GraphQLString,
-		},
-	};
+	/**
+	 * Execute a GraphQL structure
+	 */
+	async execute({ document, variables, operationName, contextValue }: GraphQLParams) {
+		const schema = this.getSchema();
 
-	async getSchema() {
-		const collectionsInSystem = await this.collectionsService.readByQuery();
-		const fieldsInSystem = await this.fieldsService.readAll();
-		const relationsInSystem = (await this.relationsService.readByQuery({})) as Relation[];
+		const validationErrors = validate(schema, document, specifiedRules);
 
-		const schema = this.getGraphQLSchema(collectionsInSystem, fieldsInSystem, relationsInSystem);
-
-		return schema;
-	}
-
-	getGraphQLSchema(collections: Collection[], fields: Field[], relations: Relation[]) {
-		const filterTypes = this.getFilterArgs(collections, fields, relations);
-		const schema: any = { items: {} };
-
-		for (const collection of collections) {
-			const systemCollection = collection.collection.startsWith('directus_');
-
-			const schemaSection: any = {
-				type: new GraphQLObjectType({
-					name: collection.collection,
-					description: collection.meta?.note,
-					fields: () => {
-						const fieldsObject: GraphQLFieldConfigMap<any, any> = {};
-						const fieldsInCollection = fields.filter((field) => field.collection === collection.collection);
-
-						for (const field of fieldsInCollection) {
-							const relationForField = relations.find((relation) => {
-								return (
-									(relation.many_collection === collection.collection && relation.many_field === field.field) ||
-									(relation.one_collection === collection.collection && relation.one_field === field.field)
-								);
-							});
-
-							if (relationForField) {
-								const relationType = getRelationType({
-									relation: relationForField,
-									collection: collection.collection,
-									field: field.field,
-								});
-
-								if (relationType === 'm2o') {
-									const relatedIsSystem = relationForField.one_collection!.startsWith('directus_');
-
-									const relatedType = relatedIsSystem
-										? schema[relationForField.one_collection!.substring(9)].type
-										: schema.items[relationForField.one_collection!].type;
-
-									fieldsObject[field.field] = {
-										type: relatedType,
-									};
-								} else if (relationType === 'o2m') {
-									const relatedIsSystem = relationForField.many_collection.startsWith('directus_');
-
-									const relatedType = relatedIsSystem
-										? schema[relationForField.many_collection.substring(9)].type
-										: schema.items[relationForField.many_collection].type;
-
-									fieldsObject[field.field] = {
-										type: new GraphQLList(relatedType),
-										args: {
-											...this.args,
-											filter: {
-												type: filterTypes[relationForField.many_collection],
-											},
-										},
-									};
-								} else if (relationType === 'm2a') {
-									const relatedCollections = relationForField.one_allowed_collections!;
-
-									const types: any = [];
-
-									for (const relatedCollection of relatedCollections) {
-										const relatedType = relatedCollection.startsWith('directus_')
-											? schema[relatedCollection.substring(9)].type
-											: schema.items[relatedCollection].type;
-
-										types.push(relatedType);
-									}
-
-									fieldsObject[field.field] = {
-										type: new GraphQLUnionType({
-											name: field.field,
-											types,
-											resolveType(value, _, info) {
-												/**
-												 * @TODO figure out a way to reach the parent level
-												 * to be able to read one_collection_field
-												 */
-												return types[0];
-											},
-										}),
-									};
-								}
-							} else {
-								fieldsObject[field.field] = {
-									type: field.schema?.is_primary_key ? GraphQLID : getGraphQLType(field.type),
-								};
-							}
-
-							fieldsObject[field.field].description = field.meta?.note;
-						}
-
-						return fieldsObject;
-					},
-				}),
-				resolve: (source: any, args: any, context: any, info: GraphQLResolveInfo) => {
-					return this.resolve(info);
-				},
-				args: {
-					...this.args,
-					filter: {
-						name: `${collection.collection}_filter`,
-						type: filterTypes[collection.collection],
-					},
-				},
-			};
-
-			if (systemCollection) {
-				schema[collection.collection.substring(9)] = schemaSection;
-			} else {
-				schema.items[collection.collection] = schemaSection;
-			}
+		if (validationErrors.length > 0) {
+			throw new GraphQLValidationException({ graphqlErrors: validationErrors });
 		}
 
-		const schemaWithLists = cloneDeep(schema);
+		let result: ExecutionResult;
 
-		for (const collection of collections) {
-			if (collection.meta?.singleton !== true) {
-				const systemCollection = collection.collection.startsWith('directus_');
-
-				if (systemCollection) {
-					schemaWithLists[collection.collection.substring(9)].type = new GraphQLList(
-						schemaWithLists[collection.collection.substring(9)].type
-					);
-				} else {
-					schemaWithLists.items[collection.collection].type = new GraphQLList(
-						schemaWithLists.items[collection.collection].type
-					);
-				}
-			}
+		try {
+			result = await execute({
+				schema,
+				document,
+				contextValue,
+				variableValues: variables,
+				operationName,
+			});
+		} catch (err) {
+			throw new InvalidPayloadException('GraphQL execution error.', { graphqlErrors: [err.message] });
 		}
 
-		const queryBase: any = {
-			name: 'Directus',
-			fields: {
-				server: {
-					type: new GraphQLObjectType({
-						name: 'server',
-						fields: {
-							ping: {
-								type: GraphQLString,
-								resolve: () => 'pong',
-							},
-						},
-					}),
-					resolve: () => ({}),
-				},
-			},
+		const formattedResult: FormattedExecutionResult = {
+			...result,
+			errors: result.errors?.map(formatError),
 		};
 
-		if (Object.keys(schemaWithLists.items).length > 0) {
-			queryBase.fields.items = {
-				type: new GraphQLObjectType({
-					name: 'items',
-					fields: schemaWithLists.items,
-				}),
-				resolve: () => ({}),
-			};
-		}
-
-		return new GraphQLSchema({
-			query: new GraphQLObjectType(queryBase),
-		});
+		return formattedResult;
 	}
 
-	getFilterArgs(collections: Collection[], fields: Field[], relations: Relation[]) {
-		const filterTypes: any = {};
+	/**
+	 * Generate the GraphQL schema. Pulls from the schema information generated by the get-schema util.
+	 */
+	getSchema(): GraphQLSchema;
+	getSchema(type: 'schema'): GraphQLSchema;
+	getSchema(type: 'sdl'): string;
+	getSchema(type: 'schema' | 'sdl' = 'schema') {
+		const self = this;
 
-		for (const collection of collections) {
-			filterTypes[collection.collection] = new GraphQLInputObjectType({
-				name: `${collection.collection}_filter`,
-				fields: () => {
-					const filterFields: any = {
-						_and: {
-							type: new GraphQLList(filterTypes[collection.collection]),
-						},
-						_or: {
-							type: new GraphQLList(filterTypes[collection.collection]),
-						},
-					};
+		const schemaComposer = new SchemaComposer<GraphQLParams['contextValue']>();
 
-					const fieldsInCollection = fields.filter((field) => field.collection === collection.collection);
+		const schema = {
+			read: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['read']),
+			create: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['create']),
+			update: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['update']),
+			delete: this.accountability?.admin === true ? this.schema : reduceSchema(this.schema, ['delete']),
+		};
 
-					for (const field of fieldsInCollection) {
-						const relationForField = relations.find((relation) => {
-							return (
-								(relation.many_collection === collection.collection && relation.many_field === field.field) ||
-								(relation.one_collection === collection.collection && relation.one_field === field.field)
-							);
-						});
+		const { ReadCollectionTypes } = getReadableTypes();
+		const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes();
 
-						if (relationForField) {
-							const relationType = getRelationType({
-								relation: relationForField,
-								collection: collection.collection,
-								field: field.field,
-							});
+		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
+			if (this.scope === 'items' && collection.collection.startsWith('directus_') === true) return false;
+			if (this.scope === 'system') {
+				if (collection.collection.startsWith('directus_') === false) return false;
+				if (SYSTEM_DENY_LIST.includes(collection.collection)) return false;
+			}
+			return true;
+		};
 
-							if (relationType === 'm2o') {
-								const relatedType = filterTypes[relationForField.one_collection!];
+		if (this.scope === 'system') {
+			this.injectSystemResolvers(
+				schemaComposer,
+				{
+					CreateCollectionTypes,
+					ReadCollectionTypes,
+					UpdateCollectionTypes,
+					DeleteCollectionTypes,
+				},
+				schema
+			);
+		}
 
-								filterFields[field.field] = {
-									type: relatedType,
-								};
-							} else if (relationType === 'o2m') {
-								const relatedType = filterTypes[relationForField.many_collection];
+		const readableCollections = Object.values(schema.read.collections)
+			.filter((collection) => collection.collection in ReadCollectionTypes)
+			.filter(scopeFilter);
 
-								filterFields[field.field] = {
-									type: relatedType,
-								};
-							}
-							/** @TODO M2A — Handle m2a case here */
-							/** @TODO
-							 * Figure out how to setup filter fields for a union type output
-							 */
-						} else {
-							const fieldType = field.schema?.is_primary_key ? GraphQLID : getGraphQLType(field.type);
+		if (readableCollections.length > 0) {
+			schemaComposer.Query.addFields(
+				readableCollections.reduce((acc, collection) => {
+					const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
+					acc[collectionName] = ReadCollectionTypes[collection.collection].getResolver(collection.collection);
 
-							filterFields[field.field] = {
-								type: new GraphQLInputObjectType({
-									name: `${collection.collection}_${field.field}_filter_operators`,
-									fields: {
-										/* @todo make this a little smarter by only including filters that work with current type */
-										_eq: {
-											type: fieldType,
-										},
-										_neq: {
-											type: fieldType,
-										},
-										_contains: {
-											type: fieldType,
-										},
-										_ncontains: {
-											type: fieldType,
-										},
-										_in: {
-											type: new GraphQLList(fieldType),
-										},
-										_nin: {
-											type: new GraphQLList(fieldType),
-										},
-										_gt: {
-											type: fieldType,
-										},
-										_gte: {
-											type: fieldType,
-										},
-										_lt: {
-											type: fieldType,
-										},
-										_lte: {
-											type: fieldType,
-										},
-										_null: {
-											type: GraphQLBoolean,
-										},
-										_nnull: {
-											type: GraphQLBoolean,
-										},
-										_empty: {
-											type: GraphQLBoolean,
-										},
-										_nempty: {
-											type: GraphQLBoolean,
-										},
-									},
-								}),
-							};
-						}
+					if (this.schema.collections[collection.collection].singleton === false) {
+						acc[`${collectionName}_by_id`] = ReadCollectionTypes[collection.collection].getResolver(
+							`${collection.collection}_by_id`
+						);
 					}
 
-					return filterFields;
+					return acc;
+				}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+			);
+		} else {
+			schemaComposer.Query.addFields({
+				_empty: {
+					type: GraphQLVoid,
+					description: "There's no data to query.",
 				},
 			});
 		}
 
-		return filterTypes;
-	}
+		if (Object.keys(schema.create.collections).length > 0) {
+			schemaComposer.Mutation.addFields(
+				Object.values(schema.create.collections)
+					.filter((collection) => collection.collection in CreateCollectionTypes && collection.singleton === false)
+					.filter(scopeFilter)
+					.filter((collection) => READ_ONLY.includes(collection.collection) === false)
+					.reduce((acc, collection) => {
+						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
+						acc[`create_${collectionName}_items`] = CreateCollectionTypes[collection.collection].getResolver(
+							`create_${collection.collection}_items`
+						);
+						acc[`create_${collectionName}_item`] = CreateCollectionTypes[collection.collection].getResolver(
+							`create_${collection.collection}_item`
+						);
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+			);
+		}
 
-	async resolve(info: GraphQLResolveInfo) {
-		const systemField = info.path.prev?.key !== 'items';
+		if (Object.keys(schema.update.collections).length > 0) {
+			schemaComposer.Mutation.addFields(
+				Object.values(schema.update.collections)
+					.filter((collection) => collection.collection in UpdateCollectionTypes)
+					.filter(scopeFilter)
+					.filter((collection) => READ_ONLY.includes(collection.collection) === false)
+					.reduce((acc, collection) => {
+						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
 
-		const collection = systemField ? `directus_${info.fieldName}` : info.fieldName;
+						if (collection.singleton) {
+							acc[`update_${collectionName}`] = UpdateCollectionTypes[collection.collection].getResolver(
+								`update_${collection.collection}`
+							);
+						} else {
+							acc[`update_${collectionName}_items`] = UpdateCollectionTypes[collection.collection].getResolver(
+								`update_${collection.collection}_items`
+							);
 
-		const selections = info.fieldNodes[0]?.selectionSet?.selections?.filter((node) => node.kind === 'Field') as
-			| FieldNode[]
-			| undefined;
+							acc[`update_${collectionName}_item`] = UpdateCollectionTypes[collection.collection].getResolver(
+								`update_${collection.collection}_item`
+							);
+						}
 
-		if (!selections) return null;
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+			);
+		}
 
-		return await this.getData(collection, selections, info.fieldNodes[0].arguments || [], info.variableValues);
-	}
+		if (Object.keys(schema.delete.collections).length > 0) {
+			schemaComposer.Mutation.addFields(
+				Object.values(schema.delete.collections)
+					.filter((collection) => collection.singleton === false)
+					.filter(scopeFilter)
+					.filter((collection) => READ_ONLY.includes(collection.collection) === false)
+					.reduce((acc, collection) => {
+						const collectionName = this.scope === 'items' ? collection.collection : collection.collection.substring(9);
 
-	async getData(
-		collection: string,
-		selections: FieldNode[],
-		argsArray: readonly ArgumentNode[],
-		variableValues: GraphQLResolveInfo['variableValues']
-	) {
-		const args: Record<string, any> = this.parseArgs(argsArray, variableValues);
+						acc[`delete_${collectionName}_items`] = DeleteCollectionTypes.many.getResolver(
+							`delete_${collection.collection}_items`
+						);
 
-		const query: Query = sanitizeQuery(args, this.accountability);
+						acc[`delete_${collectionName}_item`] = DeleteCollectionTypes.one.getResolver(
+							`delete_${collection.collection}_item`
+						);
 
-		const parseFields = (selections: FieldNode[], parent?: string): string[] => {
-			const fields: string[] = [];
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>)
+			);
+		}
 
-			for (const selection of selections) {
-				const current = parent ? `${parent}.${selection.name.value}` : selection.name.value;
+		if (type === 'sdl') {
+			return schemaComposer.toSDL();
+		}
 
-				if (selection.selectionSet === undefined) {
-					fields.push(current);
-				} else {
-					const children = parseFields(
-						selection.selectionSet.selections.filter((selection) => selection.kind === 'Field') as FieldNode[],
-						current
-					);
-					fields.push(...children);
-				}
+		return schemaComposer.buildSchema();
 
-				if (selection.arguments && selection.arguments.length > 0) {
-					if (!query.deep) query.deep = {};
+		/**
+		 * Construct an object of types for every collection, using the permitted fields per action type
+		 * as it's fields.
+		 */
+		function getTypes(action: 'read' | 'create' | 'update' | 'delete') {
+			const CollectionTypes: Record<string, ObjectTypeComposer> = {};
 
-					const args: Record<string, any> = this.parseArgs(selection.arguments, variableValues);
-					query.deep[current] = sanitizeQuery(args, this.accountability);
+			for (const collection of Object.values(schema[action].collections)) {
+				if (Object.keys(collection.fields).length === 0) continue;
+				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
+
+				CollectionTypes[collection.collection] = schemaComposer.createObjectTC({
+					name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
+					fields: Object.values(collection.fields).reduce((acc, field) => {
+						acc[field.field] = {
+							type: getGraphQLType(field.type),
+							description: field.note,
+						};
+
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				});
+			}
+
+			for (const relation of schema[action].relations) {
+				if (relation.one_collection) {
+					CollectionTypes[relation.many_collection]?.addFields({
+						[relation.many_field]: {
+							type: CollectionTypes[relation.one_collection],
+						},
+					});
+
+					if (relation.one_field) {
+						CollectionTypes[relation.one_collection]?.addFields({
+							[relation.one_field]: {
+								type: [CollectionTypes[relation.many_collection]],
+							},
+						});
+					}
+				} else if (relation.one_allowed_collections && action === 'read') {
+					// NOTE: There are no union input types in GraphQL, so this only applies to Read actions
+					CollectionTypes[relation.many_collection]?.addFields({
+						[relation.many_field]: {
+							type: new GraphQLUnionType({
+								name: `${relation.many_collection}_${relation.many_field}_union`,
+								types: relation.one_allowed_collections.map((collection) => CollectionTypes[collection].getType()),
+								resolveType(value, context, info) {
+									let path: (string | number)[] = [];
+									let currentPath = info.path;
+
+									while (currentPath.prev) {
+										path.push(currentPath.key);
+										currentPath = currentPath.prev;
+									}
+
+									path = path.reverse().slice(0, -1);
+
+									let parent = context.data;
+
+									for (const pathPart of path) {
+										parent = parent[pathPart];
+									}
+
+									const collection = parent[relation.one_collection_field!];
+									return CollectionTypes[collection].getType();
+								},
+							}),
+						},
+					});
 				}
 			}
 
-			return fields;
-		};
-
-		query.fields = parseFields(selections.filter((selection) => selection.kind === 'Field') as FieldNode[]);
-
-		let service: ItemsService;
-
-		switch (collection) {
-			case 'directus_activity':
-				service = new ActivityService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			// case 'directus_collections':
-			// 	service = new CollectionsService({ knex: this.knex, accountability: this.accountability });
-			// case 'directus_fields':
-			// 	service = new FieldsService({ knex: this.knex, accountability: this.accountability });
-			case 'directus_files':
-				service = new FilesService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_folders':
-				service = new FoldersService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_folders':
-				service = new FoldersService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_permissions':
-				service = new PermissionsService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_presets':
-				service = new PresetsService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_relations':
-				service = new RelationsService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_revisions':
-				service = new RevisionsService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_roles':
-				service = new RolesService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_settings':
-				service = new SettingsService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_users':
-				service = new UsersService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			case 'directus_webhooks':
-				service = new WebhooksService({
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
-			default:
-				service = new ItemsService(collection, {
-					knex: this.knex,
-					accountability: this.accountability,
-					schema: this.schema,
-				});
+			return { CollectionTypes };
 		}
 
-		const collectionInfo =
-			(await this.knex.select('singleton').from('directus_collections').where({ collection: collection }).first()) ||
-			systemCollectionRows.find((collectionMeta) => collectionMeta?.collection === collection);
+		/**
+		 * Create readable types and attach resolvers for each. Also prepares full filter argument structures
+		 */
+		function getReadableTypes() {
+			const { CollectionTypes: ReadCollectionTypes } = getTypes('read');
+			const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
 
-		const result = collectionInfo?.singleton ? await service.readSingleton(query) : await service.readByQuery(query);
+			const StringFilterOperators = schemaComposer.createInputTC({
+				name: 'string_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLString,
+					},
+					_neq: {
+						type: GraphQLString,
+					},
+					_contains: {
+						type: GraphQLString,
+					},
+					_ncontains: {
+						type: GraphQLString,
+					},
+					_in: {
+						type: new GraphQLList(GraphQLString),
+					},
+					_nin: {
+						type: new GraphQLList(GraphQLString),
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+					_empty: {
+						type: GraphQLBoolean,
+					},
+					_nempty: {
+						type: GraphQLBoolean,
+					},
+				},
+			});
+
+			const BooleanFilterOperators = schemaComposer.createInputTC({
+				name: 'boolean_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLBoolean,
+					},
+					_neq: {
+						type: GraphQLBoolean,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+				},
+			});
+
+			const DateFilterOperators = schemaComposer.createInputTC({
+				name: 'date_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLString,
+					},
+					_neq: {
+						type: GraphQLString,
+					},
+					_gt: {
+						type: GraphQLString,
+					},
+					_gte: {
+						type: GraphQLString,
+					},
+					_lt: {
+						type: GraphQLString,
+					},
+					_lte: {
+						type: GraphQLString,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+				},
+			});
+
+			const NumberFilterOperators = schemaComposer.createInputTC({
+				name: 'number_filter_operators',
+				fields: {
+					_eq: {
+						type: GraphQLFloat,
+					},
+					_neq: {
+						type: GraphQLFloat,
+					},
+					_in: {
+						type: new GraphQLList(GraphQLFloat),
+					},
+					_nin: {
+						type: new GraphQLList(GraphQLFloat),
+					},
+					_gt: {
+						type: GraphQLFloat,
+					},
+					_gte: {
+						type: GraphQLFloat,
+					},
+					_lt: {
+						type: GraphQLFloat,
+					},
+					_lte: {
+						type: GraphQLFloat,
+					},
+					_null: {
+						type: GraphQLBoolean,
+					},
+					_nnull: {
+						type: GraphQLBoolean,
+					},
+				},
+			});
+
+			for (const collection of Object.values(schema.read.collections)) {
+				if (Object.keys(collection.fields).length === 0) continue;
+				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
+
+				ReadableCollectionFilterTypes[collection.collection] = schemaComposer.createInputTC({
+					name: `${collection.collection}_filter`,
+					fields: Object.values(collection.fields).reduce((acc, field) => {
+						const graphqlType = getGraphQLType(field.type);
+
+						let filterOperatorType: InputTypeComposer;
+						switch (graphqlType) {
+							case GraphQLBoolean:
+								filterOperatorType = BooleanFilterOperators;
+								break;
+							case GraphQLInt:
+							case GraphQLFloat:
+								filterOperatorType = NumberFilterOperators;
+								break;
+							case GraphQLDate:
+								filterOperatorType = DateFilterOperators;
+								break;
+							default:
+								filterOperatorType = StringFilterOperators;
+						}
+
+						acc[field.field] = filterOperatorType;
+
+						return acc;
+					}, {} as InputTypeComposerFieldConfigMapDefinition),
+				});
+
+				ReadableCollectionFilterTypes[collection.collection].addFields({
+					_and: [ReadableCollectionFilterTypes[collection.collection]],
+					_or: [ReadableCollectionFilterTypes[collection.collection]],
+				});
+
+				ReadCollectionTypes[collection.collection].addResolver({
+					name: collection.collection,
+					args: collection.singleton
+						? undefined
+						: {
+								filter: ReadableCollectionFilterTypes[collection.collection],
+								sort: {
+									type: new GraphQLList(GraphQLString),
+								},
+								limit: {
+									type: GraphQLInt,
+								},
+								offset: {
+									type: GraphQLInt,
+								},
+								page: {
+									type: GraphQLInt,
+								},
+								search: {
+									type: GraphQLString,
+								},
+						  },
+					type: collection.singleton
+						? ReadCollectionTypes[collection.collection]
+						: [ReadCollectionTypes[collection.collection]],
+					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
+						const result = await self.resolveQuery(info);
+						context.data = result;
+						return result;
+					},
+				});
+
+				if (collection.singleton === false) {
+					ReadCollectionTypes[collection.collection].addResolver({
+						name: `${collection.collection}_by_id`,
+						type: ReadCollectionTypes[collection.collection],
+						args: {
+							id: GraphQLNonNull(GraphQLID),
+						},
+						resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
+							const result = await self.resolveQuery(info);
+							context.data = result;
+							return result;
+						},
+					});
+				}
+			}
+
+			for (const relation of schema.read.relations) {
+				if (relation.one_collection) {
+					ReadableCollectionFilterTypes[relation.many_collection]?.addFields({
+						[relation.many_field]: ReadableCollectionFilterTypes[relation.one_collection],
+					});
+
+					ReadCollectionTypes[relation.many_collection]?.addFieldArgs(relation.many_field, {
+						filter: ReadableCollectionFilterTypes[relation.one_collection],
+						sort: {
+							type: new GraphQLList(GraphQLString),
+						},
+						limit: {
+							type: GraphQLInt,
+						},
+						offset: {
+							type: GraphQLInt,
+						},
+						page: {
+							type: GraphQLInt,
+						},
+						search: {
+							type: GraphQLString,
+						},
+					});
+
+					if (relation.one_field) {
+						ReadableCollectionFilterTypes[relation.one_collection]?.addFields({
+							[relation.one_field]: ReadableCollectionFilterTypes[relation.many_collection],
+						});
+
+						ReadCollectionTypes[relation.one_collection]?.addFieldArgs(relation.one_field, {
+							filter: ReadableCollectionFilterTypes[relation.many_collection],
+							sort: {
+								type: new GraphQLList(GraphQLString),
+							},
+							limit: {
+								type: GraphQLInt,
+							},
+							offset: {
+								type: GraphQLInt,
+							},
+							page: {
+								type: GraphQLInt,
+							},
+							search: {
+								type: GraphQLString,
+							},
+						});
+					}
+				} else if (relation.one_allowed_collections) {
+					/**
+					 * @TODO
+					 * Looking to add nested typed filters per union type? This is where that's supposed to go.
+					 */
+				}
+			}
+
+			return { ReadCollectionTypes, ReadableCollectionFilterTypes };
+		}
+
+		function getWritableTypes() {
+			const { CollectionTypes: CreateCollectionTypes } = getTypes('create');
+			const { CollectionTypes: UpdateCollectionTypes } = getTypes('update');
+			const DeleteCollectionTypes: Record<string, ObjectTypeComposer<any, any>> = {};
+
+			for (const collection of Object.values(schema.create.collections)) {
+				if (Object.keys(collection.fields).length === 0) continue;
+				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
+				if (collection.collection in CreateCollectionTypes === false) continue;
+
+				const collectionIsReadable = collection.collection in ReadCollectionTypes;
+
+				const creatableFields = CreateCollectionTypes[collection.collection]?.getFields() || {};
+
+				if (Object.keys(creatableFields).length > 0) {
+					CreateCollectionTypes[collection.collection].addResolver({
+						name: `create_${collection.collection}_items`,
+						type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
+						args: collectionIsReadable
+							? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
+							: undefined,
+						resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+							await self.resolveMutation(args, info),
+					});
+
+					CreateCollectionTypes[collection.collection].addResolver({
+						name: `create_${collection.collection}_item`,
+						type: collectionIsReadable ? ReadCollectionTypes[collection.collection] : GraphQLBoolean,
+						resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+							await self.resolveMutation(args, info),
+					});
+
+					CreateCollectionTypes[collection.collection].getResolver(`create_${collection.collection}_items`).addArgs({
+						...CreateCollectionTypes[collection.collection]
+							.getResolver(`create_${collection.collection}_items`)
+							.getArgs(),
+						data: [
+							toInputObjectType(CreateCollectionTypes[collection.collection]).setTypeName(
+								`create_${collection.collection}_input`
+							).NonNull,
+						],
+					});
+
+					CreateCollectionTypes[collection.collection].getResolver(`create_${collection.collection}_item`).addArgs({
+						...CreateCollectionTypes[collection.collection]
+							.getResolver(`create_${collection.collection}_item`)
+							.getArgs(),
+						data: toInputObjectType(CreateCollectionTypes[collection.collection]).setTypeName(
+							`create_${collection.collection}_input`
+						).NonNull,
+					});
+				}
+			}
+
+			for (const collection of Object.values(schema.update.collections)) {
+				if (Object.keys(collection.fields).length === 0) continue;
+				if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
+				if (collection.collection in UpdateCollectionTypes === false) continue;
+
+				const collectionIsReadable = collection.collection in ReadCollectionTypes;
+
+				const updatableFields = UpdateCollectionTypes[collection.collection]?.getFields() || {};
+
+				if (Object.keys(updatableFields).length > 0) {
+					if (collection.singleton) {
+						UpdateCollectionTypes[collection.collection].addResolver({
+							name: `update_${collection.collection}`,
+							type: collectionIsReadable ? ReadCollectionTypes[collection.collection] : GraphQLBoolean,
+							args: {
+								data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
+									`update_${collection.collection}_input`
+								).NonNull,
+							},
+							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+								await self.resolveMutation(args, info),
+						});
+					} else {
+						UpdateCollectionTypes[collection.collection].addResolver({
+							name: `update_${collection.collection}_items`,
+							type: collectionIsReadable ? [ReadCollectionTypes[collection.collection]] : GraphQLBoolean,
+							args: {
+								...(collectionIsReadable
+									? ReadCollectionTypes[collection.collection].getResolver(collection.collection).getArgs()
+									: {}),
+								ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
+								data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
+									`update_${collection.collection}_input`
+								).NonNull,
+							},
+							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+								await self.resolveMutation(args, info),
+						});
+
+						UpdateCollectionTypes[collection.collection].addResolver({
+							name: `update_${collection.collection}_item`,
+							type: collectionIsReadable ? ReadCollectionTypes[collection.collection] : GraphQLBoolean,
+							args: {
+								id: GraphQLNonNull(GraphQLID),
+								data: toInputObjectType(UpdateCollectionTypes[collection.collection]).setTypeName(
+									`update_${collection.collection}_input`
+								).NonNull,
+							},
+							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+								await self.resolveMutation(args, info),
+						});
+					}
+				}
+			}
+
+			DeleteCollectionTypes.many = schemaComposer.createObjectTC({
+				name: `delete_many`,
+				fields: {
+					ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
+				},
+			});
+
+			DeleteCollectionTypes.one = schemaComposer.createObjectTC({
+				name: `delete_one`,
+				fields: {
+					id: GraphQLNonNull(GraphQLID),
+				},
+			});
+
+			for (const collection of Object.values(schema.delete.collections)) {
+				DeleteCollectionTypes.many.addResolver({
+					name: `delete_${collection.collection}_items`,
+					type: DeleteCollectionTypes.many,
+					args: {
+						ids: GraphQLNonNull(new GraphQLList(GraphQLID)),
+					},
+					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+						await self.resolveMutation(args, info),
+				});
+
+				DeleteCollectionTypes.one.addResolver({
+					name: `delete_${collection.collection}_item`,
+					type: DeleteCollectionTypes.one,
+					args: {
+						id: GraphQLNonNull(GraphQLID),
+					},
+					resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+						await self.resolveMutation(args, info),
+				});
+			}
+
+			return { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes };
+		}
+	}
+
+	/**
+	 * Generic resolver that's used for every "regular" items/system query. Converts the incoming GraphQL AST / fragments into
+	 * Directus' query structure which is then executed by the services.
+	 */
+	async resolveQuery(info: GraphQLResolveInfo) {
+		let collection = info.fieldName;
+		if (this.scope === 'system') collection = `directus_${collection}`;
+
+		const selections = this.replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
+
+		if (!selections) return null;
+
+		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
+		const query = this.getQuery(args, selections, info.variableValues);
+
+		if (collection.endsWith('_by_id') && this.schema.collections.hasOwnProperty(collection) === false) {
+			collection = collection.slice(0, -6);
+		}
+
+		if (args.id) {
+			query.filter = {
+				_and: [
+					query.filter || {},
+					{
+						[this.schema.collections[collection].primary]: {
+							_eq: args.id,
+						},
+					},
+				],
+			};
+
+			query.limit = 1;
+		}
+
+		const result = await this.read(collection, query);
+
+		if (args.id) {
+			return result?.[0] || null;
+		}
 
 		return result;
 	}
 
+	/**
+	 * Generic mutation resolver that converts the incoming GraphQL mutation AST into a Directus query and executes the
+	 * appropriate C-UD operation
+	 */
+	async resolveMutation(args: Record<string, any>, info: GraphQLResolveInfo) {
+		const action = info.fieldName.split('_')[0] as 'create' | 'update' | 'delete';
+		let collection = info.fieldName.substring(action.length + 1);
+		if (this.scope === 'system') collection = `directus_${collection}`;
+
+		const selections = this.replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
+		const query = this.getQuery(args, selections || [], info.variableValues);
+
+		const singleton =
+			collection.endsWith('_items') === false &&
+			collection.endsWith('_item') === false &&
+			this.schema.collections.hasOwnProperty(collection);
+
+		const single = collection.endsWith('_items') === false;
+
+		if (collection.endsWith('_items')) collection = collection.slice(0, -6);
+		if (collection.endsWith('_item')) collection = collection.slice(0, -5);
+
+		if (singleton && action === 'update') {
+			return await this.upsertSingleton(collection, args.data, query);
+		}
+
+		const service = this.getService(collection);
+		const hasQuery = (query.fields || []).length > 0;
+
+		try {
+			if (single) {
+				if (action === 'create') {
+					const key = await service.createOne(args.data);
+					return hasQuery ? await service.readOne(key, query) : true;
+				}
+
+				if (action === 'update') {
+					const key = await service.updateOne(args.id, args.data);
+					return hasQuery ? await service.readOne(key, query) : true;
+				}
+
+				if (action === 'delete') {
+					await service.deleteOne(args.id);
+					return { id: args.id };
+				}
+			} else {
+				if (action === 'create') {
+					const keys = await service.createMany(args.data);
+					return hasQuery ? await service.readMany(keys, query) : true;
+				}
+
+				if (action === 'update') {
+					const keys = await service.updateMany(args.ids, args.data);
+					return hasQuery ? await service.readMany(keys, query) : true;
+				}
+
+				if (action === 'delete') {
+					const keys = await service.deleteMany(args.ids);
+					return { ids: keys };
+				}
+			}
+		} catch (err) {
+			this.formatError(err);
+		}
+	}
+
+	/**
+	 * Execute the read action on the correct service. Checks for singleton as well.
+	 */
+	async read(collection: string, query: Query) {
+		const service = this.getService(collection);
+
+		const result = this.schema.collections[collection].singleton
+			? await service.readSingleton(query, { stripNonRequested: false })
+			: await service.readByQuery(query, { stripNonRequested: false });
+
+		return result;
+	}
+
+	/**
+	 * Upsert and read singleton item
+	 */
+	async upsertSingleton(collection: string, body: Record<string, any> | Record<string, any>[], query: Query) {
+		const service = this.getService(collection);
+
+		try {
+			await service.upsertSingleton(body);
+
+			if ((query.fields || []).length > 0) {
+				const result = await service.readSingleton(query);
+				return result;
+			}
+
+			return true;
+		} catch (err) {
+			throw this.formatError(err);
+		}
+	}
+
+	/**
+	 * GraphQL's regular resolver `args` variable only contains the "top-level" arguments. Seeing that we convert the
+	 * whole nested tree into one big query using Directus' own query resolver, we want to have a nested structure of
+	 * arguments for the whole resolving tree, which can later be transformed into Directus' AST using `deep`.
+	 * In order to do that, we'll parse over all ArgumentNodes and ObjectFieldNodes to manually recreate an object structure
+	 * of arguments
+	 */
 	parseArgs(
 		args: readonly ArgumentNode[] | readonly ObjectFieldNode[],
 		variableValues: GraphQLResolveInfo['variableValues']
@@ -551,5 +978,1006 @@ export class GraphQLService {
 		}
 
 		return argsObject;
+	}
+
+	/**
+	 * Get a Directus Query object from the parsed arguments (rawQuery) and GraphQL AST selectionSet. Converts SelectionSet into
+	 * Directus' `fields` query for use in the resolver. Also applies variables where appropriate.
+	 */
+	getQuery(
+		rawQuery: Query,
+		selections: readonly SelectionNode[],
+		variableValues: GraphQLResolveInfo['variableValues']
+	) {
+		const query: Query = sanitizeQuery(rawQuery, this.accountability);
+
+		const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
+			const fields: string[] = [];
+
+			for (let selection of selections) {
+				if ((selection.kind === 'Field' || selection.kind === 'InlineFragment') !== true) continue;
+				selection = selection as FieldNode | InlineFragmentNode;
+
+				let current: string;
+
+				if (selection.kind === 'InlineFragment') {
+					// filter out graphql pointers, like __typename
+					if (selection.typeCondition!.name.value.startsWith('__')) continue;
+
+					current = `${parent}:${selection.typeCondition!.name.value}`;
+				} else {
+					// filter out graphql pointers, like __typename
+					if (selection.name.value.startsWith('__')) continue;
+					current = selection.name.value;
+
+					if (parent) {
+						current = `${parent}.${current}`;
+					}
+				}
+
+				if (selection.selectionSet) {
+					const children = parseFields(selection.selectionSet.selections, current);
+
+					fields.push(...children);
+				} else {
+					fields.push(current);
+				}
+
+				if (selection.kind === 'Field' && selection.arguments && selection.arguments.length > 0) {
+					if (selection.arguments && selection.arguments.length > 0) {
+						if (!query.deep) query.deep = {};
+
+						const args: Record<string, any> = this.parseArgs(selection.arguments, variableValues);
+
+						set(
+							query.deep,
+							current,
+							merge(
+								get(query.deep, current),
+								mapKeys(sanitizeQuery(args, this.accountability), (value, key) => `_${key}`)
+							)
+						);
+					}
+				}
+			}
+
+			return uniq(fields);
+		};
+
+		query.fields = parseFields(selections);
+
+		return query;
+	}
+
+	/**
+	 * Convert Directus-Exception into a GraphQL format, so it can be returned by GraphQL properly.
+	 */
+	formatError(error: BaseException | BaseException[]) {
+		if (Array.isArray(error)) {
+			return new GraphQLError(error[0].message, undefined, undefined, undefined, undefined, error[0]);
+		}
+
+		return new GraphQLError(error.message, undefined, undefined, undefined, undefined, error);
+	}
+
+	/**
+	 * Select the correct service for the given collection. This allows the individual services to run
+	 * their custom checks (f.e. it allows UsersService to prevent updating TFA secret from outside)
+	 */
+	getService(collection: string) {
+		const opts = {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+		};
+
+		switch (collection) {
+			case 'directus_activity':
+				return new ActivityService(opts);
+			case 'directus_files':
+				return new FilesService(opts);
+			case 'directus_folders':
+				return new FoldersService(opts);
+			case 'directus_permissions':
+				return new PermissionsService(opts);
+			case 'directus_presets':
+				return new PresetsService(opts);
+			case 'directus_relations':
+				return new RelationsService(opts);
+			case 'directus_revisions':
+				return new RevisionsService(opts);
+			case 'directus_roles':
+				return new RolesService(opts);
+			case 'directus_settings':
+				return new SettingsService(opts);
+			case 'directus_users':
+				return new UsersService(opts);
+			case 'directus_webhooks':
+				return new WebhooksService(opts);
+			default:
+				return new ItemsService(collection, opts);
+		}
+	}
+
+	/**
+	 * Replace all fragments in a selectionset for the actual selection set as defined in the fragment
+	 * Effectively merges the selections with the fragments used in those selections
+	 */
+	replaceFragmentsInSelections(
+		selections: readonly SelectionNode[] | undefined,
+		fragments: Record<string, FragmentDefinitionNode>
+	): readonly SelectionNode[] | null {
+		if (!selections) return null;
+
+		const result = flatten(
+			selections.map((selection) => {
+				// Fragments can contains fragments themselves. This allows for nested fragments
+				if (selection.kind === 'FragmentSpread') {
+					return this.replaceFragmentsInSelections(fragments[selection.name.value].selectionSet.selections, fragments);
+				}
+
+				// Nested relational fields can also contain fragments
+				if ((selection.kind === 'Field' || selection.kind === 'InlineFragment') && selection.selectionSet) {
+					selection.selectionSet.selections = this.replaceFragmentsInSelections(
+						selection.selectionSet.selections,
+						fragments
+					) as readonly SelectionNode[];
+				}
+
+				return selection;
+			})
+		).filter((s) => s) as SelectionNode[];
+
+		return result;
+	}
+
+	injectSystemResolvers(
+		schemaComposer: SchemaComposer<GraphQLParams['contextValue']>,
+		{
+			CreateCollectionTypes,
+			ReadCollectionTypes,
+			UpdateCollectionTypes,
+			DeleteCollectionTypes,
+		}: {
+			CreateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
+			ReadCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
+			UpdateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
+			DeleteCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
+		},
+		schema: {
+			create: SchemaOverview;
+			read: SchemaOverview;
+			update: SchemaOverview;
+			delete: SchemaOverview;
+		}
+	) {
+		const AuthTokens = schemaComposer.createObjectTC({
+			name: 'auth_tokens',
+			fields: {
+				access_token: GraphQLString,
+				expires: GraphQLInt,
+				refresh_token: GraphQLString,
+			},
+		});
+
+		const AuthMode = new GraphQLEnumType({
+			name: 'auth_mode',
+			values: {
+				json: { value: 'json' },
+				cookie: { value: 'cookie' },
+			},
+		});
+
+		const ServerInfo = schemaComposer.createObjectTC({
+			name: 'server_info',
+			fields: {
+				project_name: { type: GraphQLString },
+				project_logo: { type: GraphQLString },
+				project_color: { type: GraphQLString },
+				project_foreground: { type: GraphQLString },
+				project_background: { type: GraphQLString },
+				project_note: { type: GraphQLString },
+				custom_css: { type: GraphQLString },
+			},
+		});
+
+		if (this.accountability?.admin === true) {
+			ServerInfo.addFields({
+				directus: {
+					type: new GraphQLObjectType({
+						name: 'server_info_directus',
+						fields: {
+							version: {
+								type: GraphQLString,
+							},
+						},
+					}),
+				},
+				node: {
+					type: new GraphQLObjectType({
+						name: 'server_info_node',
+						fields: {
+							version: {
+								type: GraphQLString,
+							},
+							uptime: {
+								type: GraphQLInt,
+							},
+						},
+					}),
+				},
+				os: {
+					type: new GraphQLObjectType({
+						name: 'server_info_os',
+						fields: {
+							type: {
+								type: GraphQLString,
+							},
+							version: {
+								type: GraphQLString,
+							},
+							uptime: {
+								type: GraphQLInt,
+							},
+							totalmem: {
+								type: GraphQLInt,
+							},
+						},
+					}),
+				},
+			});
+		}
+
+		/** Globally available query */
+		schemaComposer.Query.addFields({
+			extensions: {
+				type: schemaComposer.createObjectTC({
+					name: 'extensions',
+					fields: {
+						interfaces: new GraphQLList(GraphQLString),
+						displays: new GraphQLList(GraphQLString),
+						layouts: new GraphQLList(GraphQLString),
+						modules: new GraphQLList(GraphQLString),
+					},
+				}),
+				resolve: async () => ({
+					interfaces: await listExtensions('interfaces'),
+					displays: await listExtensions('displays'),
+					layouts: await listExtensions('layouts'),
+					modules: await listExtensions('modules'),
+				}),
+			},
+			server_specs_oas: {
+				type: GraphQLJSON,
+				resolve: async () => {
+					const service = new SpecificationService({ schema: this.schema, accountability: this.accountability });
+					return await service.oas.generate();
+				},
+			},
+			server_specs_graphql: {
+				type: GraphQLString,
+				args: {
+					scope: new GraphQLEnumType({
+						name: 'graphql_sdl_scope',
+						values: {
+							items: { value: 'items' },
+							system: { value: 'system' },
+						},
+					}),
+				},
+				resolve: async (_, args) => {
+					const service = new GraphQLService({
+						schema: this.schema,
+						accountability: this.accountability,
+						scope: args.scope ?? 'items',
+					});
+					return service.getSchema('sdl');
+				},
+			},
+			server_ping: {
+				type: GraphQLString,
+				resolve: () => 'pong',
+			},
+			server_info: {
+				type: ServerInfo,
+				resolve: async () => {
+					const service = new ServerService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+					return await service.serverInfo();
+				},
+			},
+			server_health: {
+				type: GraphQLJSON,
+				resolve: async () => {
+					const service = new ServerService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+					return await service.serverInfo();
+				},
+			},
+		});
+
+		const Collection = schemaComposer.createObjectTC({
+			name: 'directus_collections',
+		});
+
+		const Field = schemaComposer.createObjectTC({
+			name: 'directus_fields',
+		});
+
+		/**
+		 * Globally available mutations
+		 */
+		schemaComposer.Mutation.addFields({
+			auth_login: {
+				type: AuthTokens,
+				args: {
+					email: GraphQLNonNull(GraphQLString),
+					password: GraphQLNonNull(GraphQLString),
+					mode: AuthMode,
+					otp: GraphQLString,
+				},
+				resolve: async (_, args, { req, res }) => {
+					const accountability = {
+						ip: req?.ip,
+						userAgent: req?.get('user-agent'),
+						role: null,
+					};
+					const authenticationService = new AuthenticationService({
+						accountability: accountability,
+						schema: this.schema,
+					});
+					const result = await authenticationService.authenticate({
+						...args,
+						ip: req?.ip,
+						userAgent: req?.get('user-agent'),
+					});
+					if (args.mode === 'cookie') {
+						res?.cookie('directus_refresh_token', result.refreshToken, {
+							httpOnly: true,
+							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+							secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
+							sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+						});
+					}
+					return {
+						access_token: result.accessToken,
+						expires: result.expires,
+						refresh_token: result.refreshToken,
+					};
+				},
+			},
+			auth_refresh: {
+				type: AuthTokens,
+				args: {
+					refresh_token: GraphQLString,
+					mode: AuthMode,
+				},
+				resolve: async (_, args, { req, res }) => {
+					const accountability = {
+						ip: req?.ip,
+						userAgent: req?.get('user-agent'),
+						role: null,
+					};
+					const authenticationService = new AuthenticationService({
+						accountability: accountability,
+						schema: this.schema,
+					});
+					const currentRefreshToken = args.refresh_token || req?.cookies.directus_refresh_token;
+					if (!currentRefreshToken) {
+						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
+					}
+					const result = await authenticationService.refresh(currentRefreshToken);
+					if (args.mode === 'cookie') {
+						res?.cookie('directus_refresh_token', result.refreshToken, {
+							httpOnly: true,
+							domain: env.REFRESH_TOKEN_COOKIE_DOMAIN,
+							maxAge: ms(env.REFRESH_TOKEN_TTL as string),
+							secure: env.REFRESH_TOKEN_COOKIE_SECURE ?? false,
+							sameSite: (env.REFRESH_TOKEN_COOKIE_SAME_SITE as 'lax' | 'strict' | 'none') || 'strict',
+						});
+					}
+					return {
+						access_token: result.accessToken,
+						expires: result.expires,
+						refresh_token: result.refreshToken,
+					};
+				},
+			},
+			auth_logout: {
+				type: GraphQLBoolean,
+				args: {
+					refresh_token: GraphQLString,
+				},
+				resolve: async (_, args, { req }) => {
+					const accountability = {
+						ip: req?.ip,
+						userAgent: req?.get('user-agent'),
+						role: null,
+					};
+					const authenticationService = new AuthenticationService({
+						accountability: accountability,
+						schema: this.schema,
+					});
+					const currentRefreshToken = args.refresh_token || req?.cookies.directus_refresh_token;
+					if (!currentRefreshToken) {
+						throw new InvalidPayloadException(`"refresh_token" is required in either the JSON payload or Cookie`);
+					}
+					await authenticationService.logout(currentRefreshToken);
+					return true;
+				},
+			},
+			auth_password_request: {
+				type: GraphQLBoolean,
+				args: {
+					email: GraphQLNonNull(GraphQLString),
+					reset_url: GraphQLString,
+				},
+				resolve: async (_, args, { req }) => {
+					const accountability = {
+						ip: req?.ip,
+						userAgent: req?.get('user-agent'),
+						role: null,
+					};
+					const service = new UsersService({ accountability, schema: this.schema });
+
+					try {
+						await service.requestPasswordReset(args.email, args.reset_url || null);
+					} catch (err) {
+						if (err instanceof InvalidPayloadException) {
+							throw err;
+						}
+					}
+
+					return true;
+				},
+			},
+			auth_password_reset: {
+				type: GraphQLBoolean,
+				args: {
+					token: GraphQLNonNull(GraphQLString),
+					password: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args, { req }) => {
+					const accountability = {
+						ip: req?.ip,
+						userAgent: req?.get('user-agent'),
+						role: null,
+					};
+					const service = new UsersService({ accountability, schema: this.schema });
+					await service.resetPassword(args.token, args.password);
+					return true;
+				},
+			},
+			users_me_tfa_enable: {
+				type: new GraphQLObjectType({
+					name: 'users_me_tfa_enable_data',
+					fields: {
+						secret: { type: GraphQLString },
+						otpauth_url: { type: GraphQLString },
+					},
+				}),
+				args: {
+					password: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					if (!this.accountability?.user) return null;
+					const service = new UsersService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+					const authService = new AuthenticationService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+					await authService.verifyPassword(this.accountability.user, args.password);
+					const { url, secret } = await service.enableTFA(this.accountability.user);
+					return { secret, otpauth_url: url };
+				},
+			},
+			users_me_tfa_disable: {
+				type: GraphQLBoolean,
+				args: {
+					otp: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					if (!this.accountability?.user) return null;
+					const service = new UsersService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+					const authService = new AuthenticationService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+					const otpValid = await authService.verifyOTP(this.accountability.user, args.otp);
+					if (otpValid === false) {
+						throw new InvalidPayloadException(`"otp" is invalid`);
+					}
+					await service.disableTFA(this.accountability.user);
+					return true;
+				},
+			},
+			utils_hash_generate: {
+				type: GraphQLString,
+				args: {
+					string: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					return await argon2.hash(args.string);
+				},
+			},
+			utils_hash_verify: {
+				type: GraphQLBoolean,
+				args: {
+					string: GraphQLNonNull(GraphQLString),
+					hash: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					return await argon2.verify(args.hash, args.string);
+				},
+			},
+			utils_sort: {
+				type: GraphQLBoolean,
+				args: {
+					collection: GraphQLNonNull(GraphQLString),
+					item: GraphQLNonNull(GraphQLID),
+					to: GraphQLNonNull(GraphQLID),
+				},
+				resolve: async (_, args) => {
+					const service = new UtilsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+					const { item, to } = args;
+					await service.sort(args.collection, { item, to });
+					return true;
+				},
+			},
+			utils_revert: {
+				type: GraphQLBoolean,
+				args: {
+					revision: GraphQLNonNull(GraphQLID),
+				},
+				resolve: async (_, args) => {
+					const service = new RevisionsService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+					await service.revert(args.revision);
+					return true;
+				},
+			},
+			users_invite_accept: {
+				type: GraphQLBoolean,
+				args: {
+					token: GraphQLNonNull(GraphQLString),
+					password: GraphQLNonNull(GraphQLString),
+				},
+				resolve: async (_, args) => {
+					const service = new UsersService({
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+					await service.acceptInvite(args.token, args.password);
+					return true;
+				},
+			},
+		});
+
+		if ('directus_collections' in schema.read.collections) {
+			Collection.addFields({
+				collection: GraphQLString,
+				meta: schemaComposer.createObjectTC({
+					name: 'directus_collections_meta',
+					fields: Object.values(schema.read.collections['directus_collections'].fields).reduce((acc, field) => {
+						acc[field.field] = {
+							type: getGraphQLType(field.type),
+							description: field.note,
+						};
+
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				}),
+				schema: schemaComposer.createObjectTC({
+					name: 'directus_collections_schema',
+					fields: {
+						name: GraphQLString,
+						comment: GraphQLString,
+					},
+				}),
+			});
+
+			schemaComposer.Query.addFields({
+				collections: {
+					type: [Collection],
+					resolve: async () => {
+						const collectionsService = new CollectionsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						return await collectionsService.readByQuery();
+					},
+				},
+
+				collections_by_name: {
+					type: Collection,
+					args: {
+						name: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args) => {
+						const collectionsService = new CollectionsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						return await collectionsService.readOne(args.name);
+					},
+				},
+			});
+		}
+
+		if ('directus_fields' in schema.read.collections) {
+			Field.addFields({
+				collection: GraphQLString,
+				field: GraphQLString,
+				type: GraphQLString,
+				meta: schemaComposer.createObjectTC({
+					name: 'directus_fields_meta',
+					fields: Object.values(schema.read.collections['directus_fields'].fields).reduce((acc, field) => {
+						acc[field.field] = {
+							type: getGraphQLType(field.type),
+							description: field.note,
+						};
+
+						return acc;
+					}, {} as ObjectTypeComposerFieldConfigMapDefinition<any, any>),
+				}),
+				schema: schemaComposer.createObjectTC({
+					name: 'directus_fields_schema',
+					fields: {
+						name: GraphQLString,
+						table: GraphQLString,
+						data_type: GraphQLString,
+						default_value: GraphQLString,
+						max_length: GraphQLInt,
+						numeric_precision: GraphQLInt,
+						numeric_scale: GraphQLInt,
+						is_nullable: GraphQLBoolean,
+						is_unique: GraphQLBoolean,
+						is_primary_key: GraphQLBoolean,
+						has_auto_increment: GraphQLBoolean,
+						foreign_key_column: GraphQLString,
+						foreign_key_table: GraphQLString,
+						comment: GraphQLString,
+					},
+				}),
+			});
+
+			schemaComposer.Query.addFields({
+				fields: {
+					type: [Field],
+					resolve: async () => {
+						const service = new FieldsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						return await service.readAll();
+					},
+				},
+				fields_in_collection: {
+					type: Field,
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args) => {
+						const service = new FieldsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						return await service.readAll(args.collection);
+					},
+				},
+				fields_by_name: {
+					type: Field,
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+						field: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args) => {
+						const service = new FieldsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						return await service.readOne(args.collection, args.field);
+					},
+				},
+			});
+		}
+
+		if (this.accountability?.admin === true) {
+			schemaComposer.Mutation.addFields({
+				create_collections_item: {
+					type: Collection,
+					args: {
+						data: toInputObjectType(Collection.clone('create_directus_collections'), {
+							postfix: '_input',
+						}).addFields({
+							fields: [
+								toInputObjectType(Field.clone('create_directus_collections_fields'), { postfix: '_input' }).NonNull,
+							],
+						}).NonNull,
+					},
+					resolve: async (_, args) => {
+						const collectionsService = new CollectionsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						const collectionKey = await collectionsService.createOne(args.data);
+						return await collectionsService.readOne(collectionKey);
+					},
+				},
+				update_collections_item: {
+					type: Collection,
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+						data: toInputObjectType(Collection.clone('update_directus_collections'), {
+							postfix: '_input',
+						}).removeField(['collection', 'schema']).NonNull,
+					},
+					resolve: async (_, args) => {
+						const collectionsService = new CollectionsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						const collectionKey = await collectionsService.updateOne(args.collection, args.data);
+						return await collectionsService.readOne(collectionKey);
+					},
+				},
+				delete_collections_item: {
+					type: schemaComposer.createObjectTC({
+						name: 'delete_collection',
+						fields: {
+							collection: GraphQLString,
+						},
+					}),
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args) => {
+						const collectionsService = new CollectionsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						await collectionsService.deleteOne(args.collection);
+						return { collection: args.collection };
+					},
+				},
+			});
+
+			schemaComposer.Mutation.addFields({
+				create_fields_item: {
+					type: Field,
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+						data: toInputObjectType(Field.clone('create_directus_fields'), { postfix: '_input' }).NonNull,
+					},
+					resolve: async (_, args) => {
+						const service = new FieldsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						await service.createField(args.collection, args.data);
+						return await service.readOne(args.collection, args.data.field);
+					},
+				},
+				update_fields_item: {
+					type: Field,
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+						field: GraphQLNonNull(GraphQLString),
+						data: toInputObjectType(Field.clone('update_directus_fields'), { postfix: '_input' }).NonNull,
+					},
+					resolve: async (_, args) => {
+						const service = new FieldsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						await service.updateField(args.collection, {
+							...args.data,
+							field: args.field,
+						});
+						return await service.readOne(args.collection, args.data.field);
+					},
+				},
+				delete_fields_item: {
+					type: schemaComposer.createObjectTC({
+						name: 'delete_field',
+						fields: {
+							collection: GraphQLString,
+							field: GraphQLString,
+						},
+					}),
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+						field: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args) => {
+						const service = new FieldsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						await service.deleteField(args.collection, args.field);
+						const { collection, field } = args;
+						return { collection, field };
+					},
+				},
+			});
+		}
+
+		if ('directus_users' in schema.read.collections) {
+			schemaComposer.Query.addFields({
+				users_me: {
+					type: ReadCollectionTypes['directus_users'],
+					resolve: async (_, args, __, info) => {
+						if (!this.accountability?.user) return null;
+						const service = new UsersService({ schema: this.schema, accountability: this.accountability });
+						const selections = this.replaceFragmentsInSelections(
+							info.fieldNodes[0]?.selectionSet?.selections,
+							info.fragments
+						);
+						const query = this.getQuery(args, selections || [], info.variableValues);
+						return await service.readOne(this.accountability.user, query);
+					},
+				},
+			});
+		}
+
+		if ('directus_activity' in schema.create.collections) {
+			schemaComposer.Mutation.addFields({
+				create_comment: {
+					type: ReadCollectionTypes['directus_activity'] ?? GraphQLBoolean,
+					args: {
+						collection: GraphQLNonNull(GraphQLString),
+						item: GraphQLNonNull(GraphQLID),
+						comment: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args, __, info) => {
+						const service = new ActivityService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						const primaryKey = await service.createOne({
+							...args,
+							action: Action.COMMENT,
+							user: this.accountability?.user,
+							ip: this.accountability?.ip,
+							user_agent: this.accountability?.userAgent,
+						});
+
+						if ('directus_activity' in ReadCollectionTypes) {
+							const selections = this.replaceFragmentsInSelections(
+								info.fieldNodes[0]?.selectionSet?.selections,
+								info.fragments
+							);
+							const query = this.getQuery(args, selections || [], info.variableValues);
+
+							return await service.readOne(primaryKey, query);
+						}
+
+						return true;
+					},
+				},
+			});
+		}
+
+		if ('directus_activity' in schema.update.collections) {
+			schemaComposer.Mutation.addFields({
+				update_comment: {
+					type: ReadCollectionTypes['directus_activity'] ?? GraphQLBoolean,
+					args: {
+						id: GraphQLNonNull(GraphQLID),
+						comment: GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args, __, info) => {
+						const service = new ActivityService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						const primaryKey = await service.updateOne(args.id, { comment: args.comment });
+
+						if ('directus_activity' in ReadCollectionTypes) {
+							const selections = this.replaceFragmentsInSelections(
+								info.fieldNodes[0]?.selectionSet?.selections,
+								info.fragments
+							);
+							const query = this.getQuery(args, selections || [], info.variableValues);
+
+							return await service.readOne(primaryKey, query);
+						}
+
+						return true;
+					},
+				},
+			});
+		}
+
+		if ('directus_activity' in schema.delete.collections) {
+			schemaComposer.Mutation.addFields({
+				delete_comment: {
+					type: DeleteCollectionTypes.one,
+					args: {
+						id: GraphQLNonNull(GraphQLID),
+					},
+					resolve: async (_, args) => {
+						const service = new ActivityService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						await service.deleteOne(args.id);
+						return { id: args.id };
+					},
+				},
+			});
+		}
+
+		if ('directus_files' in schema.create.collections) {
+			schemaComposer.Mutation.addFields({
+				import_file: {
+					type: ReadCollectionTypes['directus_files'] ?? GraphQLBoolean,
+					args: {
+						url: GraphQLNonNull(GraphQLString),
+						data: toInputObjectType(CreateCollectionTypes['directus_files']).setTypeName('create_directus_files_input'),
+					},
+					resolve: async (_, args, __, info) => {
+						const service = new FilesService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						const primaryKey = await service.importOne(args.url, args.data);
+
+						if ('directus_files' in ReadCollectionTypes) {
+							const selections = this.replaceFragmentsInSelections(
+								info.fieldNodes[0]?.selectionSet?.selections,
+								info.fragments
+							);
+							const query = this.getQuery(args, selections || [], info.variableValues);
+							return await service.readOne(primaryKey, query);
+						}
+
+						return true;
+					},
+				},
+			});
+		}
+
+		if ('directus_users' in schema.create.collections) {
+			schemaComposer.Mutation.addFields({
+				users_invite: {
+					type: GraphQLBoolean,
+					args: {
+						email: GraphQLNonNull(GraphQLString),
+						role: GraphQLNonNull(GraphQLString),
+						invite_url: GraphQLString,
+					},
+					resolve: async (_, args) => {
+						const service = new UsersService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+						await service.inviteUser(args.email, args.role, args.invite_url || null);
+						return true;
+					},
+				},
+			});
+		}
+
+		return schemaComposer;
 	}
 }

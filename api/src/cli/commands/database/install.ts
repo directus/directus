@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import installSeeds from '../../../database/seeds/run';
 import runMigrations from '../../../database/migrations/run';
 

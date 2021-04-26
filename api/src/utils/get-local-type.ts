@@ -1,5 +1,6 @@
-import { FieldMeta, types, SchemaOverview } from '../types';
-import { Column } from '@directus/schema/dist/types/column';
+import { FieldMeta, types } from '../types';
+import { Column } from 'knex-schema-inspector/dist/types/column';
+import { SchemaOverview } from '@directus/schema/dist/types/overview';
 
 /**
  * Typemap graciously provided by @gpetrov
@@ -82,7 +83,7 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 
 export default function getLocalType(
 	column: SchemaOverview[string]['columns'][string] | Column,
-	field?: FieldMeta
+	field?: { special?: FieldMeta['special'] }
 ): typeof types[number] | 'unknown' {
 	const type = localTypeMap[column.data_type.toLowerCase().split('(')[0]];
 
@@ -92,6 +93,7 @@ export default function getLocalType(
 	}
 
 	if (field?.special?.includes('json')) return 'json';
+	if (field?.special?.includes('hash')) return 'hash';
 	if (field?.special?.includes('csv')) return 'csv';
 	if (field?.special?.includes('uuid')) return 'uuid';
 

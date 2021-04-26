@@ -3,7 +3,7 @@
 		<v-list-item v-for="item in navItems" :to="item.to" :key="item.to">
 			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-list-item-text>{{ item.name }}</v-list-item-text>
+				<v-text-overflow :text="item.name" />
 			</v-list-item-content>
 		</v-list-item>
 
@@ -12,21 +12,21 @@
 		<v-list-item v-for="item in externalItems" :href="item.href" :key="item.href">
 			<v-list-item-icon><v-icon :name="item.icon" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-list-item-text>{{ item.name }}</v-list-item-text>
+				<v-text-overflow :text="item.name" />
 			</v-list-item-content>
 		</v-list-item>
 
 		<v-list-item href="https://github.com/directus/directus/releases" class="version">
 			<v-list-item-icon><v-icon name="directus" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-list-item-text class="version">Directus {{ version }}</v-list-item-text>
+				<v-text-overflow class="version" :text="`Directus ${version}`" />
 			</v-list-item-content>
 		</v-list-item>
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, computed } from '@vue/composition-api';
+import { defineComponent, computed } from '@vue/composition-api';
 import { i18n } from '@/lang';
 import { version } from '../../../../package.json';
 import { useProjectInfo } from '../composables/use-project-info';
@@ -103,16 +103,16 @@ Node: ${parsedInfo.value?.node.version}
 		color: var(--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 	}
-	::v-deep .type-text {
+	::v-deep .v-text-overflow {
 		color: var(--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 	}
 	&:hover {
 		.v-icon {
-			color: var(--foreground-normal);
+			color: var(--foreground-normal-alt);
 		}
-		::v-deep .type-text {
-			color: var(--foreground-normal);
+		::v-deep .v-text-overflow {
+			color: var(--foreground-normal-alt);
 		}
 	}
 }

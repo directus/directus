@@ -3,7 +3,14 @@
 		{{ $t('no_fields_in_collection', { collection: (collectionInfo && collectionInfo.name) || collection }) }}
 	</v-notice>
 
-	<draggable v-else v-model="selectedFields" draggable=".draggable" :set-data="hideDragImage" class="v-field-select">
+	<draggable
+		v-else
+		:force-fallback="true"
+		v-model="selectedFields"
+		draggable=".draggable"
+		:set-data="hideDragImage"
+		class="v-field-select"
+	>
 		<v-chip
 			v-for="(field, index) in selectedFields"
 			:key="index"
@@ -38,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, ref, watch, onMounted, onUnmounted, PropType, computed } from '@vue/composition-api';
+import { defineComponent, toRefs, ref, PropType, computed } from '@vue/composition-api';
 import FieldListItem from '../v-field-template/field-list-item.vue';
 import { useFieldsStore } from '@/stores';
 import { Field, Collection, Relation } from '@/types';
@@ -73,16 +80,11 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const fieldsStore = useFieldsStore();
-
 		const menuActive = ref(false);
-		const { collection } = toRefs(props);
+		const { collection, inject } = toRefs(props);
 
-		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
-		const { tree } = useFieldTree(collection, {
-			fields: props.inject?.fields.filter((field) => field.collection === props.collection) || [],
-			relations: props.inject?.relations || [],
-		});
+		const { info } = useCollection(collection);
+		const { tree } = useFieldTree(collection, false, inject);
 
 		const _value = computed({
 			get() {

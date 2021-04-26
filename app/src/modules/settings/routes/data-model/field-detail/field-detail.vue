@@ -12,7 +12,6 @@
 				<v-notice>
 					<div>
 						{{ $t('this_will_auto_setup_fields_relations') }}
-						<br />
 						<button class="manual-toggle" @click="translationsManual = true">{{ $t('click_here') }}</button>
 						{{ $t('to_manually_setup_translations') }}
 					</div>
@@ -33,11 +32,7 @@
 		:active="true"
 		@toggle="cancelField"
 		@cancel="cancelField"
-		:title="
-			field === '+'
-				? $t('creating_new_field', { collection: collectionInfo.name })
-				: $t('updating_field_field', { field: existingField.name, collection: collectionInfo.name })
-		"
+		:title="title"
 		:subtitle="localType ? $t(`field_${localType}`) : null"
 		persistent
 		:sidebar-label="currentTabInfo.text"
@@ -105,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed, reactive, PropType, watch, toRefs } from '@vue/composition-api';
+import { defineComponent, ref, computed, PropType, toRefs } from '@vue/composition-api';
 import SetupTabs from './components/tabs.vue';
 import SetupActions from './components/actions.vue';
 import SetupSchema from './components/schema.vue';
@@ -124,6 +119,7 @@ import router from '@/router';
 import useCollection from '@/composables/use-collection';
 import { getLocalTypeForField } from '../get-local-type';
 import { notify } from '@/utils/notify';
+import formatTitle from '@directus/format-title';
 
 import { initLocalStore, state, clearLocalStore } from './store';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -188,6 +184,14 @@ export default defineComponent({
 
 		const saving = ref(false);
 
+		const title = computed(() => {
+			const fieldName = existingField.value?.name || formatTitle(state.fieldData.field || '');
+
+			if (props.field === '+' && fieldName === '')
+				return i18n.t('creating_new_field', { collection: collectionInfo.value?.name });
+			else return i18n.t('field_in_collection', { field: fieldName, collection: collectionInfo.value?.name });
+		});
+
 		return {
 			tabs,
 			currentTab,
@@ -202,6 +206,7 @@ export default defineComponent({
 			collectionInfo,
 			translationsManual,
 			currentTabInfo,
+			title,
 		};
 
 		function useTabs() {

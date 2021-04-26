@@ -11,7 +11,11 @@ export const usePermissionsStore = createStore({
 	}),
 	actions: {
 		async hydrate() {
-			const response = await api.get('/permissions/me', { params: { limit: -1 } });
+			const userStore = useUserStore();
+
+			const response = await api.get('/permissions', {
+				params: { limit: -1, filter: { role: { _eq: userStore.state.currentUser!.role.id } } },
+			});
 
 			this.state.permissions = response.data.data.map((rawPermission: any) => {
 				if (rawPermission.permissions) {

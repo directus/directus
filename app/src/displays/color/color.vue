@@ -7,7 +7,6 @@
 
 <script lang="ts">
 import { defineComponent, computed, PropType } from '@vue/composition-api';
-import formatTitle from '@directus/format-title';
 import Color from 'color';
 import { isHex } from '@/utils/color';
 
@@ -20,7 +19,7 @@ export default defineComponent({
 		defaultColor: {
 			type: String,
 			default: '#B0BEC5',
-			validator: (value: string) => value === null || isHex(value),
+			validator: (value: string) => value === null || isHex(value) || value.startsWith('var(--'),
 		},
 	},
 	setup(props) {
@@ -29,21 +28,28 @@ export default defineComponent({
 		});
 
 		const styles = computed(() => {
-			const style: Record<string, any> = { 'background-color': props.defaultColor };
+			const defaultColor = props.defaultColor?.startsWith('var(') ? getVar(props.defaultColor) : props.defaultColor;
+			const value = props.value?.startsWith('var(') ? getVar(props.value) : props.value;
 
-			if (props.value !== null) style['background-color'] = props.value;
+			const style: Record<string, any> = { 'background-color': defaultColor };
 
-			const pageColorString = getComputedStyle(document.body).getPropertyValue('--background-page').trim();
+			if (value !== null) style['background-color'] = value;
+
+			const pageColorString = getVar('var(--background-page)');
 
 			const pageColorRGB = Color(pageColorString);
-			const colorRGB = props.value === null ? Color(props.defaultColor) : Color(props.value);
+			const colorRGB = value === null ? Color(defaultColor) : Color(value);
 
-			if (colorRGB.contrast(pageColorRGB) < 1.5) style['border'] = '1px solid var(--border-normal-alt)';
+			if (colorRGB.contrast(pageColorRGB) < 1.1) style['border'] = '1px solid var(--border-normal)';
 
 			return style;
 		});
 
 		return { displayValue, styles };
+
+		function getVar(cssVar: string) {
+			return getComputedStyle(document.body).getPropertyValue(cssVar.slice(4, -1)).trim();
+		}
 	},
 });
 </script>
@@ -56,9 +62,9 @@ export default defineComponent({
 	.dot {
 		display: inline-block;
 		flex-shrink: 0;
-		width: 12px;
-		height: 12px;
-		border-radius: 6px;
+		width: 10px;
+		height: 10px;
+		border-radius: 5px;
 	}
 }
 </style>

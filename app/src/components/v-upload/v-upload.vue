@@ -28,7 +28,7 @@
 		<template v-else>
 			<p class="type-label">{{ $t('drag_file_here') }}</p>
 			<p class="type-text">{{ $t('click_to_browse') }}</p>
-			<input class="browse" type="file" @input="onBrowseSelect" />
+			<input class="browse" type="file" @input="onBrowseSelect" :multiple="multiple" />
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
 				<v-menu showArrow placement="bottom-end">
@@ -68,7 +68,7 @@
 					<v-card>
 						<v-card-title>{{ $t('import_from_url') }}</v-card-title>
 						<v-card-text>
-							<v-input :placeholder="$t('url')" v-model="url" :disabled="urlLoading" />
+							<v-input :placeholder="$t('url')" v-model="url" :nullable="false" :disabled="urlLoading" />
 						</v-card-text>
 						<v-card-actions>
 							<v-button :disabled="urlLoading" @click="activeDialog = null" secondary>
@@ -91,7 +91,6 @@ import uploadFiles from '@/utils/upload-files';
 import uploadFile from '@/utils/upload-file';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import api from '@/api';
-import useItem from '@/composables/use-item';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
@@ -161,9 +160,7 @@ export default defineComponent({
 					if (props.multiple === true) {
 						const uploadedFiles = await uploadFiles(Array.from(files), {
 							onProgressChange: (percentage) => {
-								progress.value = Math.round(
-									percentage.reduce((acc, cur) => (acc += cur)) / files.length
-								);
+								progress.value = Math.round(percentage.reduce((acc, cur) => (acc += cur)) / files.length);
 								done.value = percentage.filter((p) => p === 100).length;
 							},
 							preset: props.preset,

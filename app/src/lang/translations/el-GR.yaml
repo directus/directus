@@ -44,6 +44,7 @@ users: Χρήστες
 activity: Δραστηριότητα
 field_width: Πλάτος πεδίου
 duration: Διάρκεια
+status: Κατάσταση
 bookmarks: Σελιδοδείκτες
 back: Πίσω
 operators:
@@ -56,6 +57,8 @@ role: Ρόλος
 create: Δημιουργία
 read: Ανάγνωση
 update: Ενημέρωση
+width: Πλάτος
+height: Ύψος
 wysiwyg_options:
   remove: Διαγραφή
   table: Πίνακας
@@ -73,46 +76,48 @@ collection: Συλλογή
 collections: Συλλογές
 fields:
   directus_activity:
+    item: Στοιχείο Πρωτεύον Κλειδί
     action: Ενέργεια
     collection: Συλλογή
-    item: Στοιχείο Πρωτεύον Κλειδί
-    user: Ενέργεια από
     timestamp: Ενέργεια στις
-    edited_on: Επεξεργασμένο στις
-    comment_deleted_on: Το σχόλιο διεγράφη στις
-    ip: Διεύθυνση IP
-    user_agent: Πράκτορας χρήστη
+    user: Ενέργεια από
     comment: Σχόλιο
+    user_agent: Πράκτορας χρήστη
+    ip: Διεύθυνση IP
+  directus_collections:
+    collection: Συλλογή
+    icon: Εικονίδιο
+    note: Σημείωση
+    hidden: Κρυφό
   directus_files:
     title: Τίτλος
+    description: Περιγραφή
     tags: Ετικέτες
     location: Τοποθεσία
-    description: Περιγραφή
-    filename_download: Λήψη ονόματος αρχείου
-    filename_disk: Όνομα δίσκου αρχείου
-    private_hash: Ιδιωτική κρυπτογραφική συνάρτηση κατατεμαχισμού
-    checksum: Έλεγχος αθροίσματος
-    uploaded_on: Μεταφορτώθηκε στις
+    metadata: Μεταδεδομένα
+    filesize: Μέγεθος αρχείου
+    created_on: Δημιουργήθηκε στις
+    created_by: Δημιουργήθηκε από
+    embed: Ενσωμάτωση
     uploaded_by: Μεταφορτώθηκε από
     width: Πλάτος
+    uploaded_on: Μεταφορτώθηκε στις
     height: Ύψος
     duration: Διάρκεια
-    filesize: Μέγεθος αρχείου
-    metadata: Μεταδεδομένα
   directus_users:
-    status: Κατάσταση
     first_name: Όνομα
     last_name: Επώνυμο
     email: Ηλεκτρονικό ταχυδρομείο
-    email_notifications: Ειδοποιήσεις ηλεκτρονικού ταχυδρομείου
     password: Κωδικός
-    role: Ρόλος
-    company: Εταιρεία
-    title: Τίτλος
-    timezone: Ζώνη ώρας
     avatar: Άβαταρ
+    location: Τοποθεσία
+    title: Τίτλος
+    description: Περιγραφή
+    tags: Ετικέτες
     theme: Θέμα
     tfa_secret: Έλεγχος ταυτότητας δυο παραγόντων
+    status: Κατάσταση
+    role: Ρόλος
   directus_settings:
     project_name: Όνομα Έργου
   directus_fields:

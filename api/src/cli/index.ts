@@ -9,6 +9,7 @@ import init from './commands/init';
 import dbInstall from './commands/database/install';
 import dbMigrate from './commands/database/migrate';
 import usersCreate from './commands/users/create';
+import usersPasswd from './commands/users/passwd';
 import rolesCreate from './commands/roles/create';
 import count from './commands/count';
 import bootstrap from './commands/bootstrap';
@@ -42,6 +43,12 @@ usersCommand
 	.option('--password <value>', `user's password`)
 	.option('--role <value>', `user's role`)
 	.action(usersCreate);
+usersCommand
+	.command('passwd')
+	.description('Set user password')
+	.option('--email <value>', `user's email`)
+	.option('--password <value>', `user's new password`)
+	.action(usersPasswd);
 
 const rolesCommand = program.command('roles');
 rolesCommand

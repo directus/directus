@@ -9,9 +9,12 @@ comments: კომენტარები
 create_collection: შექმენით კოლექცია
 users: მომხმარებლები
 duration: ხანგრძლივობა
+status: სტატუსი
 back: უკან დაბრუნება
 role: როლი
 create: შექმნა
+width: სიგანე
+height: სიმაღლე
 all: ყველა
 cancel: გაუქმება
 collection: კოლექცია
@@ -19,35 +22,36 @@ fields:
   directus_activity:
     action: მოქმედება
     collection: კოლექცია
-    ip: IP მისამართი
-    user_agent: მომხმარებლის აგენტი
     comment: კომენტარი
+    user_agent: მომხმარებლის აგენტი
+    ip: IP მისამართი
+  directus_collections:
+    collection: კოლექცია
   directus_files:
     title: სათაური
+    description: აღწერა
     tags: იარლიყები
     location: მდებარეობა
-    description: აღწერა
-    private_hash: პირადი ჰეშ კოდი
-    uploaded_on: ატვირთვის თარიღი
+    metadata: მეტა ინფორმაცია
+    filesize: ფაილის ზომა
     width: სიგანე
+    uploaded_on: ატვირთვის თარიღი
     height: სიმაღლე
     duration: ხანგრძლივობა
-    filesize: ფაილის ზომა
-    metadata: მეტა ინფორმაცია
   directus_users:
-    status: სტატუსი
     first_name: სახელი
     last_name: გვარი
     email: ელ-ფოსტა
-    email_notifications: ელ-ფოსტის შეტყობინებები
     password: პაროლი
-    role: როლი
-    company: კომპანია
-    title: სათაური
-    timezone: დროის სარტყელი
     avatar: პროფილის ფოტო
+    location: მდებარეობა
+    title: სათაური
+    description: აღწერა
+    tags: იარლიყები
     theme: ვიზუალური თემა
     tfa_secret: ორფაქტორიანი იდენტიფიკაცია
+    status: სტატუსი
+    role: როლი
   directus_roles:
     description: აღწერა
 comment: კომენტარი

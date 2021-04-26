@@ -18,7 +18,7 @@
 import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import readableMimeType from '@/utils/readable-mime-type';
 import useElementSize from '@/composables/use-element-size';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 
 type File = {
@@ -34,7 +34,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const previewEl = ref<Element | null>(null);
+		const previewEl = ref<Element>();
 
 		const fileExtension = computed(() => {
 			if (!props.value) return null;
@@ -58,7 +58,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 img {
 	width: auto;
-	height: 100%;
+	max-height: 100%;
 	border-radius: var(--border-radius);
 }
 

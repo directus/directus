@@ -37,34 +37,49 @@ export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: R
 	});
 
 	const fields = computed(() => {
-		if (userStore.state.currentUser?.role?.admin_access === true) return rawFields.value;
+		let fields = cloneDeep(rawFields.value);
+
+		if (userStore.state.currentUser?.role?.admin_access === true) return fields;
 
 		const permissions = permissionsStore.getPermissionsForUser(collection.value, isNew.value ? 'create' : 'update');
 
-		if (!permissions) return rawFields.value;
+		if (!permissions) return fields;
 
-		if (permissions?.fields?.includes('*') === true) return rawFields.value;
+		if (permissions?.fields?.includes('*') === false) {
+			fields = fields.map((field: Field) => {
+				if (permissions.fields.includes(field.field) === false) {
+					field.meta = {
+						...(field.meta || {}),
+						readonly: true,
+					} as any;
+				}
 
-		return rawFields.value.map((field: Field) => {
-			field = cloneDeep(field);
+				return field;
+			});
+		}
 
-			if (permissions.fields.includes(field.field) === false) {
-				field.meta = {
-					...(field.meta || {}),
-					readonly: true,
-				} as any;
-			}
+		if (permissions?.presets) {
+			fields = fields.map((field: Field) => {
+				if (field.field in permissions.presets) {
+					field.schema = {
+						...(field.schema || {}),
+						default_value: permissions.presets[field.field],
+					} as any;
+				}
 
-			if (permissions.presets && field.field in permissions.presets) {
-				field.schema = {
-					...(field.schema || {}),
-					default_value: permissions.presets[field.field],
-				} as any;
-			}
+				return field;
+			});
+		}
 
-			return field;
-		});
+		return fields;
 	});
 
-	return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed, fields };
+	const revisionsAllowed = computed(() => {
+		if (userStore.state.currentUser?.role?.admin_access === true) return true;
+		return !!permissionsStore.state.permissions.find(
+			(permission) => permission.collection === 'directus_revisions' && permission.action === 'read'
+		);
+	});
+
+	return { deleteAllowed, saveAllowed, archiveAllowed, updateAllowed, fields, revisionsAllowed };
 }

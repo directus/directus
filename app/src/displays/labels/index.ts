@@ -1,17 +1,17 @@
 import { defineDisplay } from '@/displays/define';
 import DisplayLabels from './labels.vue';
 
-export default defineDisplay(({ i18n }) => ({
+export default defineDisplay({
 	id: 'labels',
-	name: i18n.t('displays.labels.labels'),
-	description: i18n.t('displays.labels.description'),
+	name: '$t:displays.labels.labels',
+	description: '$t:displays.labels.description',
 	types: ['string', 'json', 'csv'],
 	icon: 'flag',
 	handler: DisplayLabels,
 	options: [
 		{
 			field: 'defaultForeground',
-			name: i18n.t('displays.labels.default_foreground'),
+			name: '$t:displays.labels.default_foreground',
 			type: 'string',
 			meta: {
 				interface: 'color',
@@ -23,7 +23,7 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'defaultBackground',
-			name: i18n.t('displays.labels.default_background'),
+			name: '$t:displays.labels.default_background',
 			type: 'string',
 			meta: {
 				interface: 'color',
@@ -35,13 +35,13 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'format',
-			name: i18n.t('format_text'),
+			name: '$t:format_text',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: i18n.t('displays.labels.format_label'),
+					label: '$t:displays.labels.format_label',
 				},
 			},
 			schema: {
@@ -50,7 +50,7 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'showAsDot',
-			name: i18n.t('displays.labels.show_as_dot'),
+			name: '$t:displays.labels.show_as_dot',
 			type: 'boolean',
 			meta: {
 				width: 'half',
@@ -62,7 +62,7 @@ export default defineDisplay(({ i18n }) => ({
 		},
 		{
 			field: 'choices',
-			name: i18n.t('choices'),
+			name: '$t:choices',
 			type: 'json',
 			meta: {
 				interface: 'repeater',
@@ -71,32 +71,32 @@ export default defineDisplay(({ i18n }) => ({
 					fields: [
 						{
 							field: 'text',
-							name: i18n.t('text'),
+							name: '$t:text',
 							type: 'string',
 							meta: {
 								interface: 'text-input',
 								width: 'half',
 								options: {
-									placeholder: i18n.t('displays.labels.choices_text_placeholder'),
+									placeholder: '$t:displays.labels.choices_text_placeholder',
 								},
 							},
 						},
 						{
 							field: 'value',
-							name: i18n.t('value'),
+							name: '$t:value',
 							type: 'string',
 							meta: {
 								interface: 'text-input',
 								options: {
 									font: 'monospace',
-									placeholder: i18n.t('displays.labels.choices_value_placeholder'),
+									placeholder: '$t:displays.labels.choices_value_placeholder',
 								},
 								width: 'half',
 							},
 						},
 						{
 							field: 'foreground',
-							name: i18n.t('foreground_color'),
+							name: '$t:foreground_color',
 							type: 'string',
 							meta: {
 								interface: 'color',
@@ -105,7 +105,7 @@ export default defineDisplay(({ i18n }) => ({
 						},
 						{
 							field: 'background',
-							name: i18n.t('background_color'),
+							name: '$t:background_color',
 							type: 'string',
 							meta: {
 								interface: 'color',
@@ -117,4 +117,4 @@ export default defineDisplay(({ i18n }) => ({
 			},
 		},
 	],
-}));
+});

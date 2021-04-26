@@ -1,20 +1,43 @@
 import { Router } from 'express';
-import { graphqlHTTP } from 'express-graphql';
 import { GraphQLService } from '../services';
-import asyncHandler from 'express-async-handler';
+import { respond } from '../middleware/respond';
+import asyncHandler from '../utils/async-handler';
+import { parseGraphQL } from '../middleware/graphql';
 
 const router = Router();
 
 router.use(
-	asyncHandler(async (req, res) => {
+	'/system',
+	parseGraphQL,
+	asyncHandler(async (req, res, next) => {
 		const service = new GraphQLService({
 			accountability: req.accountability,
 			schema: req.schema,
+			scope: 'system',
 		});
-		const schema = await service.getSchema();
 
-		graphqlHTTP({ schema, graphiql: true })(req, res);
-	})
+		res.locals.payload = await service.execute(res.locals.graphqlParams);
+
+		return next();
+	}),
+	respond
+);
+
+router.use(
+	'/',
+	parseGraphQL,
+	asyncHandler(async (req, res, next) => {
+		const service = new GraphQLService({
+			accountability: req.accountability,
+			schema: req.schema,
+			scope: 'items',
+		});
+
+		res.locals.payload = await service.execute(res.locals.graphqlParams);
+
+		return next();
+	}),
+	respond
 );
 
 export default router;

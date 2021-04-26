@@ -209,12 +209,6 @@ body {
 			border-color: var(--v-button-background-color-hover);
 		}
 
-		&.activated {
-		    color: var(--v-button-color);
-		    background-color: var(--v-button-background-color);
-		    border-color: var(--v-button-background-color);
-		}
-
 		&.align-left {
 			justify-content: flex-start;
 		}
@@ -267,9 +261,9 @@ body {
 			--v-button-font-size: 12px;
 			--v-button-font-weight: 600;
 			--v-button-min-width: 60px;
+			--border-radius: 4px;
 
 			padding: 0 12px;
-			border-radius: 4px;
 		}
 
 		&.small {
@@ -308,6 +302,8 @@ body {
 		.content,
 		.spinner {
 			max-width: 100%;
+			margin: 0 -1px; // Fixes slightly cropped icons
+			padding: 0 1px; // Fixes slightly cropped icons
 			overflow: hidden;
 			white-space: nowrap;
 			text-overflow: ellipsis;
@@ -336,8 +332,10 @@ body {
 			}
 		}
 
-		&.activated {
+		&.activated,
+		&.active {
 			--v-button-color: var(--v-button-color-activated) !important;
+			--v-button-color-hover: var(--v-button-color-activated) !important;
 			--v-button-background-color: var(--v-button-background-color-activated) !important;
 			--v-button-background-color-hover: var(--v-button-background-color-activated) !important;
 		}

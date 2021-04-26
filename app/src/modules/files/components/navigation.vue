@@ -13,7 +13,9 @@
 						<v-list-item-icon>
 							<v-icon name="folder_special" outline />
 						</v-list-item-icon>
-						<v-list-item-content>{{ $t('file_library') }}</v-list-item-content>
+						<v-list-item-content>
+							<v-text-overflow :text="$t('file_library')" />
+						</v-list-item-content>
 					</template>
 
 					<navigation-folder
@@ -30,23 +32,29 @@
 
 		<v-list-item to="/files/all" exact>
 			<v-list-item-icon><v-icon name="file_copy" outline /></v-list-item-icon>
-			<v-list-item-content>{{ $t('all_files') }}</v-list-item-content>
+			<v-list-item-content>
+				<v-text-overflow :text="$t('all_files')" />
+			</v-list-item-content>
 		</v-list-item>
 
 		<v-list-item to="/files/mine" exact>
 			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('my_files') }}</v-list-item-content>
+			<v-list-item-content>
+				<v-text-overflow :text="$t('my_files')" />
+			</v-list-item-content>
 		</v-list-item>
 
 		<v-list-item to="/files/recent" exact>
 			<v-list-item-icon><v-icon name="history" /></v-list-item-icon>
-			<v-list-item-content>{{ $t('recent_files') }}</v-list-item-content>
+			<v-list-item-content>
+				<v-text-overflow :text="$t('recent_files')" />
+			</v-list-item-content>
 		</v-list-item>
 	</v-list>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, watch } from '@vue/composition-api';
 import useFolders from '../composables/use-folders';
 import NavigationFolder from './navigation-folder.vue';
 import arraysAreEqual from '@/utils/arrays-are-equal';

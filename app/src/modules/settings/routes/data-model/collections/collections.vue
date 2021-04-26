@@ -49,17 +49,15 @@
 				</template>
 
 				<template #item.name="{ item }">
-					<span
+					<v-text-overflow
 						class="collection"
 						:class="{
 							hidden: (item.meta && item.meta.hidden) || false,
 							system: item.collection.startsWith('directus_'),
 							unmanaged: item.meta === null && item.collection.startsWith('directus_') === false,
 						}"
-						v-tooltip="item.name"
-					>
-						{{ item.collection }}
-					</span>
+						:text="item.collection"
+					/>
 				</template>
 
 				<template #item.note="{ item }">
@@ -108,11 +106,11 @@ import CollectionOptions from './components/collection-options.vue';
 import CollectionsFilter from './components/collections-filter.vue';
 import marked from 'marked';
 
+const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
+
 export default defineComponent({
 	components: { SettingsNavigation, CollectionOptions, CollectionsFilter },
 	setup() {
-		const activeTypes = ref(['visible', 'hidden', 'unmanaged']);
-
 		const collectionsStore = useCollectionsStore();
 
 		const tableHeaders = ref<HeaderRaw[]>([
@@ -152,8 +150,7 @@ export default defineComponent({
 			const visible = computed(() => {
 				return sortBy(
 					collectionsStore.state.collections.filter(
-						(collection) =>
-							collection.collection.startsWith('directus_') === false && collection.meta?.hidden === false
+						(collection) => collection.collection.startsWith('directus_') === false && collection.meta?.hidden === false
 					),
 					'collection'
 				);
@@ -164,8 +161,7 @@ export default defineComponent({
 					collectionsStore.state.collections
 						.filter(
 							(collection) =>
-								collection.collection.startsWith('directus_') === false &&
-								collection.meta?.hidden === true
+								collection.collection.startsWith('directus_') === false && collection.meta?.hidden === true
 						)
 						.map((collection) => ({ ...collection, icon: 'visibility_off' })),
 					'collection'
@@ -269,7 +265,7 @@ export default defineComponent({
 
 .header-icon {
 	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-25);
+	--v-button-background-color-disabled: var(--warning-10);
 }
 
 .no-meta {

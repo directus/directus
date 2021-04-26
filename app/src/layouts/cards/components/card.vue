@@ -8,14 +8,7 @@
 			<template v-else>
 				<p v-if="type" class="type type-title">{{ type }}</p>
 				<template v-else>
-					<img
-						class="image"
-						loading="lazy"
-						v-if="imageSource"
-						:src="imageSource"
-						alt=""
-						role="presentation"
-					/>
+					<img class="image" loading="lazy" v-if="imageSource" :src="imageSource" alt="" role="presentation" />
 					<img class="svg" v-else-if="svgSource" :src="svgSource" alt="" role="presentation" />
 					<v-icon v-else large :name="icon" />
 				</template>
@@ -32,8 +25,9 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from '@vue/composition-api';
 import router from '@/router';
-import getRootPath from '@/utils/get-root-path';
+import { getRootPath } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
+import { readableMimeType } from '@/utils/readable-mime-type';
 
 type File = {
 	[key: string]: any;
@@ -89,7 +83,7 @@ export default defineComponent({
 		const type = computed(() => {
 			if (!props.file || !props.file.type) return null;
 			if (props.file.type.startsWith('image')) return null;
-			return props.file.type.split('/')[1];
+			return readableMimeType(props.file.type, true);
 		});
 
 		const imageSource = computed(() => {
@@ -185,6 +179,7 @@ export default defineComponent({
 		}
 
 		.svg {
+			position: absolute;
 			width: 50%;
 			height: 50%;
 			object-fit: contain;
@@ -274,14 +269,11 @@ export default defineComponent({
 	align-items: center;
 	width: 100%;
 	height: 20px;
+	margin-top: 4px;
 	overflow: hidden;
 	line-height: 1.3em;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-}
-
-.title {
-	margin-top: 4px;
 }
 
 .subtitle {

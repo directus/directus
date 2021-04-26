@@ -1,50 +1,64 @@
 <template>
 	<div class="m2a-builder">
-		<div v-if="previewLoading" class="loader">
+		<div v-if="previewLoading && !previewValues" class="loader">
 			<v-skeleton-loader v-for="n in (value || []).length" :key="n" />
 		</div>
 
-		<draggable
-			v-else
-			:value="value"
-			handle=".drag-handle"
-			@input="onSort"
-			:set-data="hideDragImage"
-			:disabled="!sortField"
-		>
-			<div
-				class="m2a-row"
-				v-for="(item, index) of previewValues"
-				:key="index"
-				@click="editExisting((value || [])[index])"
+		<v-list v-else>
+			<v-notice v-if="previewValues.length === 0">
+				{{ $t('no_items') }}
+			</v-notice>
+
+			<draggable
+				:force-fallback="true"
+				:value="previewValues"
+				@input="onSort"
+				:set-data="hideDragImage"
+				:disabled="!o2mRelation.sort_field"
 			>
-				<v-icon class="drag-handle" name="drag_handle" @click.stop v-if="sortField" />
-				<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
-				<span
-					v-if="
-						typeof item[anyRelation.many_field] === 'number' ||
-						typeof item[anyRelation.many_field] === 'string'
-					"
-				>
-					{{ item[anyRelation.many_field] }}
-				</span>
-				<render-template
-					v-else
-					:collection="item[anyRelation.one_collection_field]"
-					:template="templates[item[anyRelation.one_collection_field]]"
-					:item="item[anyRelation.many_field]"
-				/>
-				<div class="spacer" />
-				<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[index])" />
-				<v-icon class="launch-icon" name="launch" />
-			</div>
-		</draggable>
+				<template v-for="item of previewValues">
+					<v-list-item
+						:key="item.$index"
+						v-if="allowedCollections.includes(item[anyRelation.one_collection_field])"
+						block
+						:dense="previewValues.length > 4"
+						@click="editExisting((value || [])[item.$index])"
+					>
+						<v-icon class="drag-handle" left name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
+						<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
+						<span
+							v-if="
+								typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'
+							"
+						>
+							{{ item[anyRelation.many_field] }}
+						</span>
+						<render-template
+							v-else
+							:collection="item[anyRelation.one_collection_field]"
+							:template="templates[item[anyRelation.one_collection_field]]"
+							:item="item[anyRelation.many_field]"
+						/>
+						<div class="spacer" />
+						<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+					</v-list-item>
+
+					<v-list-item v-else :key="item.$index" block>
+						<v-icon class="invalid-icon" name="warning" left />
+						<span>{{ $t('invalid_item') }}</span>
+						<div class="spacer" />
+						<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+					</v-list-item>
+				</template>
+			</draggable>
+		</v-list>
 
 		<div class="buttons">
-			<v-menu attached>
+			<v-menu show-arrow>
 				<template #activator="{ toggle }">
-					<v-button dashed outlined full-width @click="toggle">
+					<v-button @click="toggle">
 						{{ $t('create_new') }}
+						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
 
@@ -55,17 +69,16 @@
 						:key="collection.collection"
 					>
 						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
-						<v-list-item-text>
-							{{ $t('from_collection', { collection: collection.name }) }}
-						</v-list-item-text>
+						<v-text-overflow :text="collection.name" />
 					</v-list-item>
 				</v-list>
 			</v-menu>
 
-			<v-menu attached>
+			<v-menu show-arrow>
 				<template #activator="{ toggle }">
-					<v-button dashed outlined full-width @click="toggle">
+					<v-button @click="toggle" class="existing">
 						{{ $t('add_existing') }}
+						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
 
@@ -76,9 +89,7 @@
 						:key="collection.collection"
 					>
 						<v-list-item-icon><v-icon :name="collection.icon" /></v-list-item-icon>
-						<v-list-item-text>
-							{{ $t('from_collection', { collection: collection.name }) }}
-						</v-list-item-text>
+						<v-text-overflow :text="collection.name" />
 					</v-list-item>
 				</v-list>
 			</v-menu>
@@ -93,7 +104,6 @@
 			@input="stageSelection"
 			@update:active="selectingFrom = null"
 		/>
-		<!-- :filters="selectionFilters" -->
 
 		<drawer-item
 			v-if="!disabled"
@@ -103,6 +113,7 @@
 			:related-primary-key="relatedPrimaryKey || '+'"
 			:junction-field="o2mRelation.junction_field"
 			:edits="editsAtStart"
+			:circular-field="o2mRelation.many_field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
@@ -111,16 +122,16 @@
 
 <script lang="ts">
 import { defineComponent, computed, PropType, ref, watch } from '@vue/composition-api';
-import { useRelationsStore, useCollectionsStore, useFieldsStore } from '../../stores';
-import { Relation, Collection } from '../../types/';
-import DrawerCollection from '../../views/private/components/drawer-collection/';
-import DrawerItem from '../../views/private/components/drawer-item/';
-import api from '../../api';
-import { unexpectedError } from '../../utils/unexpected-error';
-import { getFieldsFromTemplate } from '../../utils/get-fields-from-template';
+import { useRelationsStore, useCollectionsStore, useFieldsStore } from '@/stores';
+import { Relation, Collection } from '@/types/';
+import DrawerCollection from '@/views/private/components/drawer-collection/';
+import DrawerItem from '@/views/private/components/drawer-item/';
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { isPlainObject, cloneDeep } from 'lodash';
-import { getEndpoint } from '../../utils/get-endpoint';
-import { hideDragImage } from '../../utils/hide-drag-image';
+import { getEndpoint } from '@/utils/get-endpoint';
+import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
 
 export default defineComponent({
@@ -146,19 +157,15 @@ export default defineComponent({
 			type: [String, Number] as PropType<string | number>,
 			required: true,
 		},
-		sortField: {
-			type: String,
-			default: null,
-		},
 	},
 	setup(props, { emit }) {
 		const relationsStore = useRelationsStore();
 		const fieldsStore = useFieldsStore();
 		const collectionsStore = useCollectionsStore();
 
-		const { o2mRelation, anyRelation } = useRelations();
-		const { collections, templates, primaryKeys } = useCollections();
+		const { o2mRelation, anyRelation, allowedCollections } = useRelations();
 		const { fetchValues, previewValues, loading: previewLoading, junctionRowMap, relatedItemValues } = useValues();
+		const { collections, templates, primaryKeys } = useCollections();
 		const { selectingFrom, stageSelection, deselect } = useSelection();
 		const {
 			currentlyEditing,
@@ -193,6 +200,7 @@ export default defineComponent({
 			relatedItemValues,
 			hideDragImage,
 			onSort,
+			allowedCollections,
 		};
 
 		function useRelations() {
@@ -200,19 +208,15 @@ export default defineComponent({
 				return relationsStore.getRelationsForField(props.collection, props.field);
 			});
 
-			const o2mRelation = computed(
-				() => relationsForField.value.find((relation) => relation.one_collection !== null)!
-			);
-			const anyRelation = computed(
-				() => relationsForField.value.find((relation) => relation.one_collection === null)!
-			);
+			const o2mRelation = computed(() => relationsForField.value.find((relation) => relation.one_collection !== null)!);
+			const anyRelation = computed(() => relationsForField.value.find((relation) => relation.one_collection === null)!);
 
-			return { relationsForField, o2mRelation, anyRelation };
+			const allowedCollections = computed(() => anyRelation.value.one_allowed_collections!);
+
+			return { relationsForField, o2mRelation, anyRelation, allowedCollections };
 		}
 
 		function useCollections() {
-			const allowedCollections = computed(() => anyRelation.value.one_allowed_collections!);
-
 			const collections = computed<Record<string, Collection>>(() => {
 				const collections: Record<string, Collection> = {};
 
@@ -231,9 +235,7 @@ export default defineComponent({
 				const keys: Record<string, string> = {};
 
 				for (const collection of Object.values(collections.value)) {
-					keys[collection.collection] = fieldsStore.getPrimaryKeyFieldForCollection(
-						collection.collection
-					).field!;
+					keys[collection.collection] = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection).field!;
 				}
 
 				return keys;
@@ -244,8 +246,7 @@ export default defineComponent({
 
 				for (const collection of Object.values(collections.value)) {
 					const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection);
-					templates[collection.collection] =
-						collection.meta?.display_template || `{{${primaryKeyField.field}}}`;
+					templates[collection.collection] = collection.meta?.display_template || `{{${primaryKeyField.field}}}`;
 				}
 
 				return templates;
@@ -260,16 +261,21 @@ export default defineComponent({
 
 			// Holds "expanded" junction rows so we can lookup what "raw" junction row ID in props.value goes with
 			// what related item for pre-saved-unchanged-items
-			const junctionRowMap = ref<any[]>([]);
+			const junctionRowMap = ref<any[]>();
 
 			const previewValues = computed(() => {
+				// Need to wait until junctionRowMap got properly populated
+				if (junctionRowMap.value === undefined) {
+					return [];
+				}
+
 				// Convert all string/number junction rows into junction row records from the map so we can inject the
 				// related values
 				const values = cloneDeep(props.value || [])
-					.map((val) => {
+					.map((val, index) => {
 						const junctionKey = isPlainObject(val) ? val[o2mRelation.value.many_primary] : val;
 
-						const savedValues = junctionRowMap.value.find(
+						const savedValues = (junctionRowMap.value || []).find(
 							(junctionRow) => junctionRow[o2mRelation.value.many_primary] === junctionKey
 						);
 
@@ -277,42 +283,69 @@ export default defineComponent({
 							return {
 								...savedValues,
 								...val,
+								$index: index,
 							};
 						} else {
-							return savedValues;
+							if (savedValues === undefined) {
+								return null;
+							}
+
+							return {
+								...savedValues,
+								$index: index,
+							};
 						}
 					})
-					.filter((val) => val);
+					.filter((val) => val)
+					.map((val) => {
+						// Find and nest the related item values for use in the preview
+						const collection = val[anyRelation.value.one_collection_field!];
 
-				return values.map((val) => {
-					// Find and nest the related item values for use in the preview
-					const collection = val[anyRelation.value.one_collection_field!];
+						const key = isPlainObject(val[anyRelation.value.many_field])
+							? val[anyRelation.value.many_field][primaryKeys.value[collection]]
+							: val[anyRelation.value.many_field];
 
-					const key = isPlainObject(val[anyRelation.value.many_field])
-						? val[anyRelation.value.many_field][primaryKeys.value[collection]]
-						: val[anyRelation.value.many_field];
+						const item = relatedItemValues.value[collection]?.find(
+							(item) => item[primaryKeys.value[collection]] == key
+						);
 
-					const item = relatedItemValues.value[collection]?.find(
-						(item) => item[primaryKeys.value[collection]] == key
-					);
-
-					// When this item is created new and it has a uuid / auto increment id, there's no key to lookup
-					if (key && item) {
-						if (isPlainObject(val[anyRelation.value.many_field])) {
-							val[anyRelation.value.many_field] = {
-								...item,
-								...val[anyRelation.value.many_field],
-							};
+						// When this item is created new and it has a uuid / auto increment id, there's no key to lookup
+						if (key && item) {
+							if (isPlainObject(val[anyRelation.value.many_field])) {
+								val[anyRelation.value.many_field] = {
+									...item,
+									...val[anyRelation.value.many_field],
+								};
+							} else {
+								val[anyRelation.value.many_field] = cloneDeep(item);
+							}
 						} else {
-							val[anyRelation.value.many_field] = cloneDeep(item);
 						}
-					}
 
-					return val;
-				});
+						return val;
+					});
+
+				if (o2mRelation.value?.sort_field) {
+					return [
+						...values
+							.filter((val) => val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.sort((a, b) => a[o2mRelation.value.sort_field!] - b[o2mRelation.value.sort_field!]), // sort by sort field if it exists
+						...values
+							.filter((val) => !val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.sort((a, b) => a.$index - b.$index), // sort the rest with $index
+					];
+				} else {
+					return [...values.sort((a, b) => a.$index - b.$index)];
+				}
 			});
 
-			return { fetchValues, previewValues, loading, junctionRowMap, relatedItemValues };
+			return {
+				fetchValues,
+				previewValues,
+				loading,
+				junctionRowMap,
+				relatedItemValues,
+			};
 
 			async function fetchValues() {
 				if (props.value === null) return;
@@ -380,17 +413,23 @@ export default defineComponent({
 									o2mRelation.value.many_primary,
 									anyRelation.value.many_field,
 									anyRelation.value.one_collection_field!,
+									o2mRelation.value.sort_field,
 								],
 							},
 						});
 
 						for (const junctionRow of junctionInfoResponse.data.data) {
-							itemsToFetchPerCollection[junctionRow[anyRelation.value.one_collection_field!]].push(
-								junctionRow[anyRelation.value.many_field]
-							);
+							const relatedCollection = junctionRow[anyRelation.value.one_collection_field!];
+
+							// When the collection exists in the setup
+							if (relatedCollection in itemsToFetchPerCollection) {
+								itemsToFetchPerCollection[relatedCollection].push(junctionRow[anyRelation.value.many_field]);
+							}
 						}
 
 						junctionRowMap.value = junctionInfoResponse.data.data;
+					} else {
+						junctionRowMap.value = [];
 					}
 
 					// Fetch all related items from their individual endpoints using the fields from their templates
@@ -402,8 +441,7 @@ export default defineComponent({
 							const fields = getFieldsFromTemplate(templates.value[collection]);
 
 							// Make sure to always fetch the primary key, so we can match that with the value
-							if (fields.includes(primaryKeys.value[collection]) === false)
-								fields.push(primaryKeys.value[collection]);
+							if (fields.includes(primaryKeys.value[collection]) === false) fields.push(primaryKeys.value[collection]);
 
 							return api.get(getEndpoint(collection), {
 								params: {
@@ -482,7 +520,14 @@ export default defineComponent({
 			function stageEdits(edits: Record<string, any>) {
 				const currentValue = props.value || [];
 
-				if (currentlyEditing.value === '+' && relatedPrimaryKey.value === '+') {
+				// Whether or not the currently-being-edited item exists in the staged values
+				const hasBeenStaged =
+					currentValue.includes(editsAtStart.value) || currentValue.includes(currentlyEditing.value);
+
+				// Whether or not the currently-being-edited item has been saved to the database
+				const isNew = currentlyEditing.value === '+' && relatedPrimaryKey.value === '+';
+
+				if (isNew && hasBeenStaged === false) {
 					emit('input', [...currentValue, edits]);
 				} else {
 					emit(
@@ -491,7 +536,6 @@ export default defineComponent({
 							if (val === editsAtStart.value || val == currentlyEditing.value) {
 								return edits;
 							}
-
 							return val;
 						})
 					);
@@ -505,8 +549,9 @@ export default defineComponent({
 			}
 
 			function editExisting(item: Record<string, any>) {
+				// Edit a saved item
 				if (typeof item === 'string' || typeof item === 'number') {
-					const junctionRow = junctionRowMap.value.find((row) => {
+					const junctionRow = (junctionRowMap.value || []).find((row) => {
 						return row[o2mRelation.value.many_primary] == item;
 					});
 
@@ -522,6 +567,10 @@ export default defineComponent({
 							[primaryKeys.value[collection]]: relatedKey,
 						},
 					};
+
+					if (o2mRelation.value.sort_field) {
+						editsAtStart.value[o2mRelation.value.sort_field] = junctionRow[o2mRelation.value.sort_field];
+					}
 
 					relatedPrimaryKey.value = relatedKey || '+';
 					currentlyEditing.value = item;
@@ -547,6 +596,11 @@ export default defineComponent({
 					[anyRelation.value.many_field]: {},
 				};
 
+				if (previewValues.value && o2mRelation.value?.sort_field) {
+					const maxSort = Math.max(-1, ...previewValues.value.map((val) => val[o2mRelation.value.sort_field!]));
+					newItem[o2mRelation.value.sort_field!] = maxSort + 1;
+				}
+
 				editsAtStart.value = newItem;
 				relatedPrimaryKey.value = '+';
 				currentlyEditing.value = '+';
@@ -559,16 +613,23 @@ export default defineComponent({
 			function onSort(sortedItems: any[]) {
 				emit(
 					'input',
-					sortedItems.map((sortedItem, index) => {
-						if (isPlainObject(sortedItem)) {
+					props.value.map((rawValue, index) => {
+						if (!o2mRelation.value.sort_field) return rawValue;
+
+						const sortedItemIndex = sortedItems.findIndex((sortedItem) => {
+							return sortedItem.$index === index;
+						});
+
+						if (isPlainObject(rawValue)) {
 							return {
-								...sortedItem,
-								[props.sortField]: index + 1,
+								...rawValue,
+								[o2mRelation.value.sort_field]: sortedItemIndex + 1,
 							};
 						} else {
 							return {
-								[o2mRelation.value.many_primary]: sortedItem,
-								[props.sortField]: index + 1,
+								...sortedItems[sortedItemIndex],
+								[o2mRelation.value.many_primary]: rawValue,
+								[o2mRelation.value.sort_field]: sortedItemIndex + 1,
 							};
 						}
 					})
@@ -580,19 +641,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.m2a-row {
-	display: flex;
-	align-items: center;
-	padding: 12px;
-	background-color: var(--background-subdued);
-	border: 2px solid var(--border-subdued);
-	border-radius: var(--border-radius);
-	cursor: pointer;
+.v-list {
+	--v-list-padding: 0 0 4px;
+}
 
-	& + .m2a-row {
-		margin-top: 12px;
-	}
-
+.v-list-item {
 	.collection {
 		margin-right: 1ch;
 		color: var(--primary);
@@ -600,25 +653,33 @@ export default defineComponent({
 }
 
 .loader {
+	.v-skeleton-loader {
+		height: 52px;
+	}
+
 	.v-skeleton-loader + .v-skeleton-loader {
 		margin-top: 12px;
 	}
 }
 
 .buttons {
-	display: grid;
-	grid-gap: 12px;
-	grid-template-columns: 1fr 1fr;
-	margin-top: 12px;
+	margin-top: 8px;
 }
 
-.spacer {
-	flex-grow: 1;
+.existing {
+	margin-left: 8px;
 }
 
 .drag-handle {
-	margin-right: 8px;
-	cursor: grab !important;
+	cursor: grab;
+}
+
+.invalid {
+	cursor: default;
+
+	.invalid-icon {
+		--v-icon-color: var(--danger);
+	}
 }
 
 .clear-icon {

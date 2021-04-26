@@ -2,7 +2,6 @@
 	<v-divider
 		:class="{ margin: icon || title }"
 		:style="{
-			'--v-divider-color': color,
 			'--v-divider-label-color': color,
 		}"
 		large
@@ -40,6 +39,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .margin {
-	margin-top: 12px;
+	margin-top: 20px;
 }
 </style>

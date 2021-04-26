@@ -20,9 +20,9 @@
 					<slot name="title:append" />
 				</slot>
 			</div>
-		</div>
 
-		<slot name="title-outer:append" />
+			<slot name="title-outer:append" />
+		</div>
 
 		<div class="spacer" />
 
@@ -63,7 +63,7 @@ export default defineComponent({
 
 		const observer = new IntersectionObserver(
 			([e]) => {
-				collapsed.value = e.intersectionRatio < 1;
+				collapsed.value = e.boundingClientRect.y === -1;
 			},
 			{ threshold: [1] }
 		);
@@ -118,9 +118,11 @@ export default defineComponent({
 		position: relative;
 		display: flex;
 		align-items: center;
+		width: 100%;
 		max-width: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		height: 100%;
-		margin-left: 12px;
+		margin-left: 16px;
+		overflow: hidden;
 
 		@include breakpoint(small) {
 			max-width: 70%;
@@ -146,7 +148,7 @@ export default defineComponent({
 			transition: opacity var(--fast) var(--transition);
 
 			@include breakpoint(small) {
-				top: 0;
+				top: -2px;
 			}
 		}
 
@@ -161,6 +163,7 @@ export default defineComponent({
 				width: 100%;
 				overflow: hidden;
 				white-space: nowrap;
+				text-overflow: ellipsis;
 			}
 		}
 	}

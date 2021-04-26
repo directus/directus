@@ -40,13 +40,7 @@
 		</template>
 
 		<div class="presets-collection">
-			<v-info
-				center
-				type="warning"
-				v-if="!loading && presets.length === 0"
-				:title="$t('no_presets')"
-				icon="bookmark"
-			>
+			<v-info center type="warning" v-if="!loading && presets.length === 0" :title="$t('no_presets')" icon="bookmark">
 				{{ $t('no_presets_copy') }}
 
 				<template #append>
@@ -126,7 +120,7 @@ type Preset = {
 export default defineComponent({
 	components: { SettingsNavigation, ValueNull, PresetsInfoSidebarDetail },
 	setup() {
-		const layouts = getLayouts();
+		const { layouts } = getLayouts();
 		const collectionsStore = useCollectionsStore();
 
 		const selection = ref<Preset[]>([]);
@@ -276,8 +270,8 @@ export default defineComponent({
 				deleting.value = true;
 
 				try {
-					const IDs = selection.value.map((item) => item.id).join(',');
-					await api.delete(`/presets/${IDs}`);
+					const IDs = selection.value.map((item) => item.id);
+					await api.delete(`/presets`, { data: IDs });
 					selection.value = [];
 					await getPresets();
 					confirmDelete.value = false;
@@ -293,13 +287,13 @@ export default defineComponent({
 <style lang="scss" scoped>
 .header-icon {
 	--v-button-color-disabled: var(--warning);
-	--v-button-background-color-disabled: var(--warning-25);
+	--v-button-background-color-disabled: var(--warning-10);
 }
 
 .action-delete {
-	--v-button-background-color: var(--danger-25);
+	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--danger);
-	--v-button-background-color-hover: var(--danger-50);
+	--v-button-background-color-hover: var(--danger-25);
 	--v-button-color-hover: var(--danger);
 }
 

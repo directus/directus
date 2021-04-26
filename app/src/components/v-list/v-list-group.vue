@@ -16,7 +16,7 @@
 			</v-list-item-icon>
 		</v-list-item>
 
-		<div class="items" v-show="groupActive">
+		<div class="items" v-if="groupActive">
 			<slot />
 		</div>
 	</div>

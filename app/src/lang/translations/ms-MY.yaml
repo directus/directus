@@ -32,6 +32,7 @@ users: Pengguna-pengguna
 activity: Aktiviti
 user_directory: Direktori pengguna
 duration: Durasi
+status: Status
 bookmarks: Penandabuku
 back: Kembali
 operators:
@@ -50,6 +51,8 @@ on_update: Apabila Dikemaskini
 read: Baca
 update: Kemaskini
 select_fields: Pilih medan-medan
+width: Lebar
+height: Tinggi
 wysiwyg_options:
   remove: Buang
 editing_in_batch: 'Menyunting Secara Kumpulan Sebanyak {count} Benda'
@@ -66,39 +69,40 @@ collection: Koleksi
 collections: Koleksi-koleksi
 fields:
   directus_activity:
+    item: Kunci Utama Item
     action: Tindakan
     collection: Koleksi
-    item: Kunci Utama Item
-    user: Tindakan Oleh
     timestamp: Tindakan Pada
-    edited_on: Dikemaskini Pada
-    comment_deleted_on: Komen Dibuang Pada
-    ip: Alamat IP
+    user: Tindakan Oleh
     comment: Komen
+    ip: Alamat IP
+  directus_collections:
+    collection: Koleksi
+    note: Nota
   directus_files:
     title: Tajuk
+    description: Penerangan
     tags: Tag
     location: Lokasi
-    description: Penerangan
-    checksum: Checksum
-    uploaded_on: Dimuat naik pada
+    metadata: Metadata
+    embed: Benamkan
     uploaded_by: Dimuat naik oleh
     width: Lebar
+    uploaded_on: Dimuat naik pada
     height: Tinggi
     duration: Durasi
-    metadata: Metadata
   directus_users:
-    status: Status
     first_name: Nama pertama
     email: Emel
-    email_notifications: Notifikasi E-mel
     password: Katalaluan
-    role: Peranan
-    company: Syarikat
-    title: Tajuk
-    timezone: Zon Waktu
     avatar: Avatar
+    location: Lokasi
+    title: Tajuk
+    description: Penerangan
+    tags: Tag
     theme: Tema
+    status: Status
+    role: Peranan
   directus_settings:
     project_name: Nama Projek
   directus_fields:

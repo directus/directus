@@ -1,16 +1,16 @@
 # Filter Rules
 
-> Permissions, validation, and the API's `filter` parameter all rely on a specific JSON structure to
-> define their rules. This page describes the syntax for creating flat, relational, or complex
-> filter rules.
+> Permissions, validation, and the API's `filter` parameter all rely on a specific JSON structure to define their rules.
+> This page describes the syntax for creating flat, relational, or complex filter rules.
 
-@TODO check+extend
+[[toc]]
 
 ## Syntax
 
--   **Field** — Any valid root field, [relational field](#), or [logical operator](#)
--   **Operator** — Any valid [API operator](#) prefaced with an underscore
--   **Value** — Any valid static value, or [dynamic variable](#)
+- **Field** — Any valid root field, [relational field](/reference/filter-rules#relational), or
+  [logical operator](/reference/filter-rules#logical-operators)
+- **Operator** — Any valid [API operator](/reference/filter-rules#supported-operators) prefaced with an underscore
+- **Value** — Any valid static value, or [dynamic variable](/reference/filter-rules#dynamic-variables)
 
 ```
 {
@@ -46,36 +46,40 @@
 }
 ```
 
-## Supported Operators
+## Filter Operators
 
-| Operator             | Description                               |
-| -------------------- | ----------------------------------------- |
-| `eq`                 | Equal to                                  |
-| `neq`                | Not equal to                              |
-| `lt`                 | Less than                                 |
-| `lte`                | Less than or equal to                     |
-| `gt`                 | Greater than                              |
-| `gte`                | Greater than or equal to                  |
-| `in`                 | Exists in one of the values               |
-| `nin`                | Not in one of the values                  |
-| `null`               | It is null                                |
-| `nnull`              | It is not null                            |
-| `contains`, `like`   | Contains the substring                    |
-| `ncontains`, `nlike` | Doesn't contain the substring             |
-| `rlike`              | Contains a substring using a wildcard     |
-| `nrlike`             | Not contains a substring using a wildcard |
-| `between`            | The value is between two values           |
-| `nbetween`           | The value is not between two values       |
-| `empty`              | The value is empty (null or falsy)        |
-| `nempty`             | The value is not empty (null or falsy)    |
-| `all`                | Contains all given related item's IDs     |
-| `has`                | Has one or more related items's IDs       |
+| Operator     | Description                            |
+| ------------ | -------------------------------------- |
+| `_eq`        | Equal to                               |
+| `_neq`       | Not equal to                           |
+| `_lt`        | Less than                              |
+| `_lte`       | Less than or equal to                  |
+| `_gt`        | Greater than                           |
+| `_gte`       | Greater than or equal to               |
+| `_in`        | Exists in one of the values            |
+| `_nin`       | Not in one of the values               |
+| `_null`      | It is null                             |
+| `_nnull`     | It is not null                         |
+| `_contains`  | Contains the substring                 |
+| `_ncontains` | Doesn't contain the substring          |
+| `_between`   | The value is between two values        |
+| `_nbetween`  | The value is not between two values    |
+| `_empty`     | The value is empty (null or falsy)     |
+| `_nempty`    | The value is not empty (null or falsy) |
+
+The following operators are **only available in validation permissions**:
+
+| Operator                | Description               |
+| ----------------------- | ------------------------- |
+| `_submitted`            | Field has to be submitted |
+| `_regex` <sup>[1]</sup> | Field has to match regex  |
+
+<sup>[1]</sup> JavaScript "flavor" regex. Make sure to escape backslashes.
 
 ## Relational
 
-You can target related values by nesting field names. For example, if you have a relational
-[Many-to-One](/guides/field-types/many-to-one-field) `author` field, you can set a rule for the
-`author.name` field using the following syntax.
+You can target related values by nesting field names. For example, if you have a relational Many-to-One `author` field,
+you can set a rule for the `author.name` field using the following syntax.
 
 ```json
 {
@@ -89,8 +93,8 @@ You can target related values by nesting field names. For example, if you have a
 
 ## Logical Operators
 
-You can nest or group multiple rules using the `_and` or `_or` logical operators. Each operator
-holds an array of rules, allowing for more complex filtering.
+You can nest or group multiple rules using the `_and` or `_or` logical operators. Each operator holds an array of rules,
+allowing for more complex filtering.
 
 ```json
 {
@@ -129,9 +133,8 @@ holds an array of rules, allowing for more complex filtering.
 
 ## Dynamic Variables
 
-In addition to static values, you can also filter against _dynamic_ values using the following
-variables.
+In addition to static values, you can also filter against _dynamic_ values using the following variables.
 
--   `$CURRENT_USER` — The primary key of the currently authenticated user
--   `$CURRENT_ROLE` — The primary key of the role for the currently authenticated user
--   `$NOW` — The current timestamp
+- `$CURRENT_USER` — The primary key of the currently authenticated user
+- `$CURRENT_ROLE` — The primary key of the role for the currently authenticated user
+- `$NOW` — The current timestamp

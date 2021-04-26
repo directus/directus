@@ -1,11 +1,11 @@
 import * as http from 'http';
 import * as https from 'https';
 import qs from 'qs';
-import { URL } from 'url';
+import url from 'url';
 import { createTerminus, TerminusOptions } from '@godaddy/terminus';
 import { Request } from 'express';
 import logger from './logger';
-import emitter from './emitter';
+import { emitAsyncSafe } from './emitter';
 import database from './database';
 import createApp from './app';
 import { once } from 'lodash';
@@ -37,8 +37,7 @@ export default async function createServer() {
 			// Compatibility when supporting serving with certificates
 			const protocol = server instanceof https.Server ? 'https' : 'http';
 
-			const url = new URL((req.originalUrl || req.url) as string, `${protocol}://${req.headers.host}`);
-			const query = url.search.startsWith('?') ? url.search.substr(1) : url.search;
+			const urlInfo = url.parse(req.originalUrl || req.url);
 
 			const info = {
 				finished,
@@ -46,12 +45,12 @@ export default async function createServer() {
 					aborted: req.aborted,
 					completed: req.complete,
 					method: req.method,
-					url: url.href,
-					path: url.pathname,
+					url: urlInfo.href,
+					path: urlInfo.pathname,
 					protocol,
 					host: req.headers.host,
 					size: metrics.in,
-					query: qs.parse(query),
+					query: urlInfo.query ? qs.parse(urlInfo.query) : {},
 					headers: req.headers,
 				},
 				response: {
@@ -63,7 +62,7 @@ export default async function createServer() {
 				duration: elapsedMilliseconds.toFixed(),
 			};
 
-			emitter.emitAsync('response', info).catch((err) => logger.warn(err));
+			emitAsyncSafe('response', info);
 		});
 
 		res.once('finish', complete.bind(null, true));
@@ -83,7 +82,7 @@ export default async function createServer() {
 	return server;
 
 	async function beforeShutdown() {
-		await emitter.emitAsync('server.stop.before', { server });
+		emitAsyncSafe('server.stop.before', { server });
 
 		if ('DIRECTUS_DEV' in process.env) {
 			logger.info('Restarting...');
@@ -98,7 +97,7 @@ export default async function createServer() {
 	}
 
 	async function onShutdown() {
-		emitter.emitAsync('server.stop').catch((err) => logger.warn(err));
+		emitAsyncSafe('server.stop');
 
 		if (!('DIRECTUS_DEV' in process.env)) {
 			logger.info('Directus shut down OK. Bye bye!');

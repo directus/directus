@@ -10,7 +10,7 @@
 				:placeholder="$t('enter_a_value')"
 			>
 				<template #append>
-					<v-icon name="today" :class="{ active }" />
+					<v-icon v-if="!disabled" :name="value ? 'close' : 'today'" :class="{ active }" @click.stop="unsetValue" />
 				</template>
 			</v-input>
 		</template>
@@ -55,19 +55,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, reactive, PropType } from '@vue/composition-api';
-import formatLocalized from '../../utils/localized-format';
-import { i18n } from '../../lang';
+import { defineComponent, ref, watch, computed, PropType } from '@vue/composition-api';
+import formatLocalized from '@/utils/localized-format';
+import { i18n } from '@/lang';
 import { formatISO, parseISO, format, parse } from 'date-fns';
-
-type LocalValue = {
-	month: null | number;
-	date: null | number;
-	year: null | number;
-	hours: null | number;
-	minutes: null | number;
-	seconds: null | number;
-};
 
 export default defineComponent({
 	props: {
@@ -113,7 +104,12 @@ export default defineComponent({
 			hourItems,
 			minutesSecondItems,
 			displayValue,
+			unsetValue,
 		};
+
+		function unsetValue() {
+			emit('input', null);
+		}
 
 		function useLocalValue() {
 			const _value = computed({
@@ -256,7 +252,7 @@ export default defineComponent({
 		function useDisplayValue() {
 			const displayValue = ref<string | null>(null);
 
-			watch(_value, setDisplayValue);
+			watch(_value, setDisplayValue, { immediate: true });
 
 			return { displayValue };
 
@@ -327,7 +323,7 @@ export default defineComponent({
 
 				const hoursInADay = props.use24 ? 24 : 12;
 
-				for (let i = 1; i <= hoursInADay; i++) {
+				for (let i = 0; i < hoursInADay; i++) {
 					let hour = String(i);
 					if (hour.length === 1) hour = '0' + hour;
 

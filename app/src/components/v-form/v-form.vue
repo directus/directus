@@ -5,8 +5,13 @@
 				<p>{{ $t('unknown_validation_errors') }}</p>
 				<ul>
 					<li v-for="(validationError, index) of unknownValidationErrors" :key="index">
-						<strong>{{ validationError.field }}</strong>
-						: {{ $t(`validationError.${validationError.type}`, validationError) }}
+						<strong v-if="validationError.field">{{ validationError.field }}:</strong>
+						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
+							{{ $t('validationError.unique', validationError) }}
+						</template>
+						<template v-else>
+							{{ $t(`validationError.${validationError.code}`, validationError) }}
+						</template>
 					</li>
 				</ul>
 			</div>
@@ -33,14 +38,15 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, provide } from '@vue/composition-api';
-import { useFieldsStore } from '../../stores/';
-import { Field, FilterOperator } from '../../types';
-import { useElementSize } from '../../composables/use-element-size';
+import { useFieldsStore } from '@/stores/';
+import { Field } from '@/types';
+import { useElementSize } from '@/composables/use-element-size';
 import { clone, cloneDeep } from 'lodash';
 import marked from 'marked';
 import FormField from './form-field.vue';
-import useFormFields from '../../composables/use-form-fields';
+import useFormFields from '@/composables/use-form-fields';
 import { ValidationError } from './types';
+import { translate } from '@/utils/translate-object-values';
 
 type FieldValues = {
 	[field: string]: any;
@@ -91,7 +97,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const el = ref<Element | null>(null);
+		const el = ref<Element>();
 		const fieldsStore = useFieldsStore();
 
 		const values = computed(() => {
@@ -142,19 +148,21 @@ export default defineComponent({
 			const { formFields } = useFormFields(fields);
 
 			const formFieldsParsed = computed(() => {
-				return formFields.value.map((field: Field) => {
-					if (
-						field.schema?.has_auto_increment === true ||
-						(field.schema?.is_primary_key === true && props.primaryKey !== '+')
-					) {
-						const fieldClone = cloneDeep(field) as any;
-						if (!fieldClone.meta) fieldClone.meta = {};
-						fieldClone.meta.readonly = true;
-						return fieldClone;
-					}
+				return translate(
+					formFields.value.map((field: Field) => {
+						if (
+							field.schema?.has_auto_increment === true ||
+							(field.schema?.is_primary_key === true && props.primaryKey !== '+')
+						) {
+							const fieldClone = cloneDeep(field) as any;
+							if (!fieldClone.meta) fieldClone.meta = {};
+							fieldClone.meta.readonly = true;
+							return fieldClone;
+						}
 
-					return field;
-				});
+						return field;
+					})
+				);
 			});
 
 			const { width } = useElementSize(el);
@@ -167,8 +175,6 @@ export default defineComponent({
 				} else {
 					return 'grid';
 				}
-
-				return null;
 			});
 
 			return { formFields: formFieldsParsed, gridClass, isDisabled };
@@ -209,6 +215,7 @@ export default defineComponent({
 					unsetValue(field);
 				} else {
 					batchActiveFields.value = [...batchActiveFields.value, field.field];
+					setValue(field, field.schema?.default_value);
 				}
 			}
 		}
@@ -216,18 +223,8 @@ export default defineComponent({
 });
 </script>
 
-<style>
-body {
-	--v-form-column-width: var(--form-column-width);
-	--v-form-column-max-width: var(--form-column-max-width);
-	--v-form-row-max-height: calc(var(--v-form-column-width) * 2);
-	--v-form-horizontal-gap: var(--form-horizontal-gap);
-	--v-form-vertical-gap: var(--form-vertical-gap);
-}
-</style>
-
 <style lang="scss" scoped>
-@import '../../styles/mixins/form-grid';
+@import '@/styles/mixins/form-grid';
 
 .v-form {
 	@include form-grid;
