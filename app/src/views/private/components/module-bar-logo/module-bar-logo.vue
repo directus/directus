@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from 'vue';
+import { defineComponent, ref, computed, watch, toRefs } from 'vue';
 import { useSettingsStore, useRequestsStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
 import { i18n } from '@/lang';
@@ -38,7 +38,7 @@ export default defineComponent({
 
 		const showLoader = ref(false);
 
-		const queueHasItems = requestsStore.queueHasItems;
+		const { queueHasItems } = toRefs(requestsStore);
 
 		watch(
 			() => queueHasItems.value,
