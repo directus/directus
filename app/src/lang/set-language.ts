@@ -23,9 +23,13 @@ export async function setLanguage(lang: Language): Promise<boolean> {
 	}
 
 	if (loadedLanguages.includes(lang) === false) {
-		const translations = await import(`@/lang/translations/${lang}.yaml`).catch((err) => console.warn(err));
-		i18n.global.mergeLocaleMessage(lang, translations);
-		loadedLanguages.push(lang);
+		try {
+			const translations = await import(`./translations/${lang}.yaml`);
+			i18n.global.mergeLocaleMessage(lang, translations);
+			loadedLanguages.push(lang);
+		} catch (err) {
+			console.warn(err);
+		}
 	}
 
 	i18n.global.locale.value = lang;
