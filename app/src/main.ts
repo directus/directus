@@ -1,4 +1,6 @@
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+
 import { version } from '../package.json';
 import { DIRECTUS_LOGO } from './constants';
 
@@ -36,6 +38,7 @@ const app = createApp(App);
 
 app.use(router);
 app.use(i18n);
+app.use(createPinia());
 
 registerDirectives(app);
 registerComponents(app);
