@@ -1,5 +1,5 @@
-import { RouteConfig } from 'vue-router';
-import { replaceRoutes } from '@/router';
+import { RouteRecordRaw } from 'vue-router';
+import { router } from '@/router';
 import { getModules } from './index';
 import { useUserStore, usePermissionsStore } from '@/stores';
 import api from '@/api';
@@ -9,6 +9,8 @@ import asyncPool from 'tiny-async-pool';
 const { modulesRaw } = getModules();
 
 let queuedModules: any = [];
+
+const removeRoutes: (() => void)[] = [];
 
 export async function loadModules() {
 	const context = require.context('.', true, /^.*index\.ts$/);
@@ -28,7 +30,7 @@ export async function loadModules() {
 				const result = await import(
 					/* webpackIgnore: true */ getRootPath() + `extensions/modules/${moduleName}/index.js`
 				);
-				result.default.routes = result.default.routes.map((route: RouteConfig) => {
+				result.default.routes = result.default.routes.map((route: RouteRecordRaw) => {
 					if (route.path) {
 						if (route.path[0] === '/') route.path = route.path.substr(1);
 						route.path = `/${result.default.id}/${route.path}`;
@@ -62,20 +64,20 @@ export async function register() {
 	const moduleRoutes = registeredModules
 		.map((module: any) => module.routes)
 		.filter((r: any) => r)
-		.flat() as RouteConfig[];
+		.flat() as RouteRecordRaw[];
 
-	replaceRoutes((routes) => insertBeforeProjectWildcard(routes, moduleRoutes));
+	for (const route of moduleRoutes) {
+		const removeRoute = router.addRoute(route);
+		removeRoutes.push(removeRoute);
+	}
 
 	modulesRaw.value = registeredModules;
-
-	function insertBeforeProjectWildcard(currentRoutes: RouteConfig[], routesToBeAdded: RouteConfig[]) {
-		// Find the index of the /* route, so we can insert the module routes right above that
-		const wildcardIndex = currentRoutes.findIndex((route) => route.path === '/*');
-		return [...currentRoutes.slice(0, wildcardIndex), ...routesToBeAdded, ...currentRoutes.slice(wildcardIndex)];
-	}
 }
 
 export function unregister() {
-	replaceRoutes((routes) => routes);
+	for (const removeRoute of removeRoutes) {
+		removeRoute();
+	}
+
 	modulesRaw.value = [];
 }
