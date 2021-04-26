@@ -87,10 +87,6 @@ export default defineComponent({
 				creating.value = false;
 			}
 		}
-
-		return {
-			acceptToken,
-		};
 	},
 });
 </script>
