@@ -75,6 +75,7 @@ export class AuthenticationService {
 			accountability: this.accountability,
 			status: 'pending',
 			user: user?.id,
+			obj: user,
 			database: this.knex,
 		});
 
@@ -87,6 +88,7 @@ export class AuthenticationService {
 				accountability: this.accountability,
 				status,
 				user: user?.id,
+				obj: user,
 				database: this.knex,
 			});
 		};
