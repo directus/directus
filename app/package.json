@@ -15,6 +15,7 @@
 		"base-64": "^1.0.0",
 		"marked": "^2.0.3",
 		"micromustache": "^8.0.3",
+		"mitt": "^2.1.0",
 		"pinia": "^2.0.0-alpha.13",
 		"sass": "^1.32.11",
 		"tiny-async-pool": "^1.2.0",
