@@ -71,7 +71,7 @@ export default defineComponent({
 
 ### Project details
 Directus Version: ${parsedInfo.value?.directus.version}
-Environment: ${process.env.NODE_ENV}
+Environment: ${import.meta.env.DEV}
 OS: ${parsedInfo.value?.os.type} ${parsedInfo.value?.os.version}
 Node: ${parsedInfo.value?.node.version}
 			`;
