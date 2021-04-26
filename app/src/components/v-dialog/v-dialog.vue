@@ -2,12 +2,14 @@
 	<div class="v-dialog">
 		<slot name="activator" v-bind="{ on: () => (_active = true) }" />
 
-		<portal to="dialog-outlet">
-			<div v-if="_active" class="container" :class="[className, placement]" :key="id">
-				<v-overlay active absolute @click="emitToggle" />
-				<slot />
-			</div>
-		</portal>
+		<teleport to="#dialog-outlet">
+			<transition-dialog>
+				<div v-if="_active" class="container" :class="[className, placement]" :key="id">
+					<v-overlay active absolute @click="emitToggle" />
+					<slot />
+				</div>
+			</transition-dialog>
+		</teleport>
 	</div>
 </template>
 
@@ -134,34 +136,34 @@ export default defineComponent({
 		}
 
 		.v-card-actions {
-			flex-wrap: wrap;
 			flex-direction: column-reverse;
-			& > .v-button + .v-button {
-				margin-left: 0;
-				margin-bottom: 20px;
-			}
+			flex-wrap: wrap;
 			.v-button {
 				width: 100%;
 				.button {
 					width: 100%;
 				}
 			}
+			& > .v-button + .v-button {
+				margin-bottom: 20px;
+				margin-left: 0;
+			}
 		}
 
 		@include breakpoint(small) {
 			--v-card-min-width: 540px;
 			.v-card-actions {
-				flex-wrap: nowrap;
 				flex-direction: inherit;
-				& > .v-button + .v-button {
-					margin-left: 12px;
-					margin-bottom: 0;
-				}
+				flex-wrap: nowrap;
 				.v-button {
 					width: auto;
 					.button {
 						width: auto;
 					}
+				}
+				& > .v-button + .v-button {
+					margin-bottom: 0;
+					margin-left: 12px;
 				}
 			}
 		}

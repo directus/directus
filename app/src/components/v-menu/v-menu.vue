@@ -18,36 +18,38 @@
 			/>
 		</div>
 
-		<portal to="menu-outlet">
-			<div
-				v-if="isActive"
-				class="v-menu-popper"
-				:key="id"
-				:id="id"
-				:class="{ active: isActive, attached }"
-				:data-placement="popperPlacement"
-				:style="styles"
-				v-click-outside="{
-					handler: deactivate,
-					middleware: onClickOutsideMiddleware,
-					disabled: isActive === false || closeOnClick === false,
-					events: ['click'],
-				}"
-			>
-				<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
-				<div class="v-menu-content" @click.stop="onContentClick">
-					<slot
-						:active="isActive"
-						v-bind="{
-							toggle: toggle,
-							active: isActive,
-							activate: activate,
-							deactivate: deactivate,
-						}"
-					/>
+		<teleport to="#menu-outlet">
+			<transition-bounce>
+				<div
+					v-if="isActive"
+					class="v-menu-popper"
+					:key="id"
+					:id="id"
+					:class="{ active: isActive, attached }"
+					:data-placement="popperPlacement"
+					:style="styles"
+					v-click-outside="{
+						handler: deactivate,
+						middleware: onClickOutsideMiddleware,
+						disabled: isActive === false || closeOnClick === false,
+						events: ['click'],
+					}"
+				>
+					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
+					<div class="v-menu-content" @click.stop="onContentClick">
+						<slot
+							:active="isActive"
+							v-bind="{
+								toggle: toggle,
+								active: isActive,
+								activate: activate,
+								deactivate: deactivate,
+							}"
+						/>
+					</div>
 				</div>
-			</div>
-		</portal>
+			</transition-bounce>
+		</teleport>
 	</div>
 </template>
 
@@ -367,9 +369,9 @@ body {
 	padding: 0 4px;
 	overflow-x: hidden;
 	overflow-y: auto;
-	border-radius: var(--border-radius);
-	border: none;
 	background-color: var(--card-face-color);
+	border: none;
+	border-radius: var(--border-radius);
 	box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2), 0px 0px 12px 2px rgba(var(--card-shadow-color), 0.05);
 	transition-timing-function: var(--transition-out);
 	transition-duration: var(--fast);

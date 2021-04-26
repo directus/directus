@@ -16,10 +16,11 @@
 
 		<router-view v-else-if="!hydrating" />
 
-		<portal-target name="dialog-outlet" transition="transition-dialog" multiple />
-		<portal-target name="menu-outlet" transition="transition-bounce" multiple />
+		<!-- @TODO3 Check if teleports and transitions work -->
+		<div id="dialog-outlet"></div>
+		<div id="menu-outlet"></div>
 
-		<mounting-portal mount-to="#custom-css" target-tag="style">{{ customCSS }}</mounting-portal>
+		<teleport to="#custom-css">{{ customCSS }}</teleport>
 	</div>
 </template>
 
