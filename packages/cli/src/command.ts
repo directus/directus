@@ -1,9 +1,11 @@
 import { Argv } from 'yargs';
 import { CLIError } from './core/exceptions';
+import { CommandHelp, GeneralHelp } from './help';
 import { IOutput } from './output';
 import { Toolbox } from './toolbox';
 
 export type Features = {
+	sdk?: boolean;
 	query?: boolean;
 	output?: boolean;
 	[feature: string]: unknown;
@@ -26,9 +28,10 @@ export type Settings<P = {}> = {
 export type Handler<T extends Toolbox = Toolbox, P = {}, R extends any = void> = (toolbox: T, params: P) => Promise<R>;
 
 export type CommandResult<T extends any> = {
+	data?: T;
+	help?: GeneralHelp | CommandHelp;
 	error?: CLIError;
 	output?: IOutput;
-	result?: T;
 };
 
 export type Command<T extends Toolbox = Toolbox, P = {}, R extends any = void> = {

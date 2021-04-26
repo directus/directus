@@ -1,5 +1,5 @@
 import { command } from '../../../core/command';
-import { FullTerminalWidth } from '../../../core/output/builder';
+import { FullTerminalWidth } from '../../../core/output/ui';
 
 export default command(
 	{
@@ -25,17 +25,17 @@ export default command(
 			endpoint,
 		}));
 
-		await output.build(async (builder) => {
-			builder.configure({
+		await output.compose(async (ui) => {
+			ui.configure({
 				width: FullTerminalWidth,
 			});
 
 			if (instances.length <= 0) {
-				await builder.wrap((builder) => builder.line('No instances available'), 1);
+				await ui.wrap((builder) => builder.line('No instances available'), 1);
 				return;
 			}
 
-			await builder.wrap(
+			await ui.wrap(
 				(builder) =>
 					builder.table(
 						instances.map((instance) => [instance.name, instance.auth, instance.endpoint]),
@@ -45,6 +45,8 @@ export default command(
 					),
 				1
 			);
-		}, instances);
+		});
+
+		return instances;
 	}
 );

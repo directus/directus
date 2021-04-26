@@ -7,12 +7,16 @@ import { InstanceStorage } from '../../../core/sdk/storage';
 export default command(
 	{
 		group: 'instance',
-		parameters: '<name>',
+		parameters: '<url>',
 		description: 'Disconnects from a Directus instance',
 		usage: `
+			**From default instance**
+
 			\`\`\`
 			$ $0 instance disconnect
 			\`\`\`
+
+			**From a named instance**
 
 			\`\`\`
 			$ $0 instance disconnect dev
@@ -52,13 +56,12 @@ export default command(
 		delete config.system.data.instances[params.name];
 		config.system.save();
 
-		await output.build(
-			async (builder) => {
-				await builder.wrap((builder) => builder.line(`Successfully disconnected from ${chalk.bold(params.name)}`), 1);
-			},
-			{
-				success: true,
-			}
-		);
+		await output.compose(async (ui) => {
+			await ui.wrap((ui) => ui.line(`Successfully disconnected from ${chalk.bold(params.name)}`), 1);
+		});
+
+		return {
+			success: true,
+		};
 	}
 );

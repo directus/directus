@@ -6,6 +6,7 @@ import yargsParser from 'yargs-parser';
 import { Command } from '../command';
 import { IEvents } from '../events';
 import { IOptions, Option } from '../options';
+import { CLIRuntimeError } from './exceptions';
 
 export type Registrator = (builder: Argv, command: Command, raw: any) => void;
 
@@ -28,8 +29,8 @@ export class Options implements IOptions {
 				?.concat(...[command.settings?.parameters ?? ''])
 				.filter((p) => p != '')
 				.join(' ');
-			this._parser.fail((_, err) => {
-				this._error = err;
+			this._parser.fail((message, err) => {
+				this._error = err || new CLIRuntimeError(message);
 			});
 
 			this._parser.showHelpOnFail(false).exitProcess(false);

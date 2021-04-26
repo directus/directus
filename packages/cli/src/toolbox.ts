@@ -1,4 +1,4 @@
-import { IDirectus } from '@directus/sdk';
+import { IDirectus, QueryMany, QueryOne } from '@directus/sdk';
 import { TypeMap } from '@directus/sdk/dist/types';
 import { Command } from './command';
 import { IOptions } from './options';
@@ -12,12 +12,16 @@ export type Toolbox<T extends TypeMap = {}> = {
 	help: IHelp;
 	options: IOptions;
 	events: IEvents;
-	instance: IDirectus<T>;
+	sdk: IDirectus<T>;
 	output: IOutput;
 	config: {
 		system: IConfiguration<SystemConfiguration>;
 		project: IStaticConfiguration<ProjectConfiguration>;
 	};
 	result?: any;
+	query: {
+		one: QueryOne<any>;
+		many: QueryMany<any>;
+	};
 	[extension: string]: any | undefined;
 };

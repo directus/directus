@@ -1,10 +1,12 @@
 import { defaults } from './utils';
 import { Argv } from 'yargs';
 import { IOptions } from '../options';
-import { IOutput, IOutputBuilder, IOutputFormat } from '../output';
+import { IOutput, IUIComposer, IOutputFormat } from '../output';
 import { HumanOutputFormat } from './output/formats/human';
-import { OutputBuilder } from './output/builder';
+import { OutputBuilder } from './output/ui';
 import { CLIError, CLIRuntimeError } from './exceptions';
+import { CommandHelp, GeneralHelp } from '../help';
+import { WriteStream } from 'fs';
 
 export type OutputOptions = {
 	format: string;
@@ -16,13 +18,17 @@ export class Output implements IOutput {
 		human: IOutputFormat;
 		[name: string]: IOutputFormat;
 	};
-	private lines: string[];
+	private _text: string[];
+	private _help?: GeneralHelp | CommandHelp;
+	private _value?: any;
+	private _errors: Error[];
 
 	constructor(options: IOptions) {
 		this.formats = {
 			human: new HumanOutputFormat(),
 		};
-		this.lines = [];
+		this._text = [];
+		this._errors = [];
 		this.options = options;
 		this.options.feature('output', (builder: Argv, _, raw) => {
 			builder.option('format', {
@@ -45,34 +51,57 @@ export class Output implements IOutput {
 		});
 	}
 
-	async writeText<T>(text: string, value?: T): Promise<void> {
-		const formatter = this.getFormatter();
-		this.lines.push(await formatter.formatText(text, value, this.getOptions()));
+	async help(help: GeneralHelp | CommandHelp): Promise<void> {
+		this._help = help;
 	}
 
-	async writeValue<T>(value: T): Promise<void> {
-		const formatter = this.getFormatter();
-		this.lines.push(await formatter.formatValue(value, this.getOptions()));
+	async text(text: string): Promise<void> {
+		this._text.push(text);
 	}
 
-	async writeError(err: CLIError): Promise<void> {
-		const formatter = this.getFormatter();
-		this.lines.push(await formatter.formatError(err, this.getOptions()));
+	async value<T>(value: T): Promise<void> {
+		this._value = value;
 	}
 
-	async flush(): Promise<void> {
-		process.stdout.write(this.lines.join('\n'));
-		this.lines = [];
+	async error(err: CLIError): Promise<void> {
+		this._errors.push({
+			name: err.name,
+			message: err.message,
+			stack: err.stack,
+		});
+	}
+
+	async flush(stream: WriteStream): Promise<void> {
+		stream.write(
+			await this.getFormatter().format(
+				{
+					data: {
+						data: this._value,
+						help: this._help,
+						errors: this._errors.length > 0 ? this._errors : undefined,
+					},
+					help: this._help,
+					text: this._text,
+					errors: this._errors,
+				},
+				this.getOptions()
+			)
+		);
+
+		this._help = undefined;
+		this._value = undefined;
+		this._errors = [];
+		this._text = [];
 	}
 
 	registerFormat(name: string, format: IOutputFormat): void {
 		this.formats[name] = format;
 	}
 
-	async build<T>(builder: (builder: IOutputBuilder) => Promise<void>, value?: T): Promise<void> {
+	async compose(builder: (builder: IUIComposer) => Promise<void>): Promise<void> {
 		const outputBuilder = new OutputBuilder();
 		await builder(outputBuilder);
-		await this.writeText(await outputBuilder.get(), value);
+		await this.text(await outputBuilder.get());
 	}
 
 	getFormatter(): IOutputFormat {

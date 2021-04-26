@@ -3,6 +3,7 @@ import yargs from 'yargs';
 import marked from 'marked';
 import TerminalRenderer from 'marked-terminal';
 import stripAnsi from 'strip-ansi';
+import title from '@directus/format-title';
 
 // @ts-ignore
 import cliui from 'cliui';
@@ -11,9 +12,9 @@ import Table from 'cli-table3';
 import figlet from 'figlet';
 //import indent from 'indent-string';
 import stripIndent from 'strip-indent';
-import { highlight } from 'cli-highlight';
+import { DEFAULT_THEME, highlight } from 'cli-highlight';
 
-import { IOutputBuilder, OutputColumn, Style, TableOptions, TextLayoutOptions } from '../../output';
+import { IUIComposer, OutputColumn, Style, TableOptions, TableStyle, TextLayoutOptions } from '../../output';
 
 export const DefaultIndentSize = 2;
 
@@ -57,7 +58,7 @@ const TableMarkdownBorders = {
 	middle: '|',
 };
 
-export class OutputBuilder implements IOutputBuilder {
+export class OutputBuilder implements IUIComposer {
 	private lines: string[];
 	private indentSize: number;
 	private indentLevel: number;
@@ -85,10 +86,6 @@ export class OutputBuilder implements IOutputBuilder {
 			showSectionPrefix: false,
 			tab: this.indentSize,
 			codespan: (text) => chalk.bgGray.white(` ${text} `),
-			heading: function (text) {
-				console.log({ arguments });
-				return text;
-			},
 			blockquote: (text) =>
 				palette.quote(
 					stripAnsi(text)
@@ -257,7 +254,7 @@ export class OutputBuilder implements IOutputBuilder {
 		await this.text(figlet.textSync(text, 'Big'));
 	}
 
-	async section(name: string, wrapper?: (builder: IOutputBuilder) => Promise<void>, style?: Style): Promise<void> {
+	async section(name: string, wrapper?: (builder: IUIComposer) => Promise<void>, style?: Style): Promise<void> {
 		await this.header(name, style);
 		await this.skip();
 		if (wrapper) {
@@ -266,7 +263,7 @@ export class OutputBuilder implements IOutputBuilder {
 		}
 	}
 
-	async wrap(build: (builder: IOutputBuilder) => Promise<void>, verticalPadding?: number): Promise<void> {
+	async wrap(build: (builder: IUIComposer) => Promise<void>, verticalPadding?: number): Promise<void> {
 		this.indentLevel += 1;
 		verticalPadding = verticalPadding ?? 0;
 		await this.skip(verticalPadding);
@@ -301,6 +298,98 @@ export class OutputBuilder implements IOutputBuilder {
 			await stack.skip(1);
 			this.lines.push(await stack.get());
 		}
+	}
+
+	async json(value: any, style: TableStyle = 'compact'): Promise<void> {
+		if (Array.isArray(value)) {
+			this.lines.push(await this.jsonArray(value, style));
+			return;
+		}
+
+		const fields = Object.keys(value).sort();
+		const val = value as Record<string, any>;
+		const builder = new OutputBuilder(DefaultIndentSize, FullTerminalWidth);
+		await builder.table(
+			await Promise.all(
+				fields.map(async (field) => {
+					return [
+						field,
+						await this.jsonHighlight(val[field], {
+							highlight: true,
+							pretty: true,
+						}),
+					];
+				})
+			),
+			{
+				head: ['Property', 'Value'],
+				alignments: ['right', 'left'],
+				style,
+			}
+		);
+
+		this.lines.push(await builder.get());
+	}
+
+	private async jsonArray<T>(values: T[], style: TableStyle = 'compact'): Promise<string> {
+		const builder = new OutputBuilder(DefaultIndentSize, FullTerminalWidth);
+
+		if (values.length <= 0) {
+			await builder.table([], {
+				style,
+			});
+			return await builder.get();
+		}
+
+		const fields = Object.keys(values[0]!).sort();
+
+		await builder.wrap(
+			async (builder) =>
+				await builder.table(
+					await Promise.all(
+						values.map((row: T) =>
+							Promise.all(
+								fields.map((field) =>
+									this.jsonHighlight((row as any)[field], {
+										highlight: true,
+										pretty: true,
+									})
+								)
+							)
+						)
+					),
+					{
+						wrap: true,
+						head: fields,
+						headFormat: (v) => chalk.reset.bold(title(v)),
+						style,
+					}
+				),
+			1
+		);
+
+		return await builder.get();
+	}
+
+	private async jsonHighlight(
+		value: any,
+		options?: {
+			pretty: boolean;
+			highlight: boolean;
+		}
+	): Promise<string> {
+		let formatted = JSON.stringify(value, null, options?.pretty || options?.highlight ? 2 : 0) ?? 'undefined';
+		if (options?.highlight) {
+			formatted = highlight(formatted, {
+				ignoreIllegals: true,
+				language: 'json',
+				theme: {
+					...DEFAULT_THEME,
+					string: chalk.reset.reset,
+				},
+			});
+		}
+		return formatted;
 	}
 
 	async get(): Promise<string> {

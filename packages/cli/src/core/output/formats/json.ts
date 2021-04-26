@@ -3,8 +3,7 @@ import { tty } from '../../utils';
 
 import highlight, { Theme, DEFAULT_THEME } from 'cli-highlight';
 import { Argv } from 'yargs';
-import { IOutputFormat } from '../../../output';
-import { CLIError } from '../../exceptions';
+import { FormatData, IOutputFormat } from '../../../output';
 
 export type JsonOutputFormatOptions = {
 	pretty: boolean;
@@ -38,14 +37,7 @@ export class JsonOutputFormat implements IOutputFormat<JsonOutputFormatOptions> 
 			});
 	}
 
-	async formatText<T>(_text: string, value: T | undefined, options: JsonOutputFormatOptions): Promise<string> {
-		if (typeof value !== 'undefined') {
-			return await this.formatValue<T>(value, options);
-		}
-		return '';
-	}
-
-	async formatValue<T>(value: T, options: JsonOutputFormatOptions): Promise<string> {
+	async value<T>(value: T, options: JsonOutputFormatOptions): Promise<string> {
 		let formatted = JSON.stringify(value, null, options.pretty || options.highlight ? 2 : 0) ?? 'undefined';
 		if (options.highlight) {
 			formatted = highlight(formatted, {
@@ -57,12 +49,7 @@ export class JsonOutputFormat implements IOutputFormat<JsonOutputFormatOptions> 
 		return formatted;
 	}
 
-	async formatError(err: CLIError, options: JsonOutputFormatOptions): Promise<string> {
-		return this.formatValue(
-			{
-				err,
-			},
-			options
-		);
+	async format(data: FormatData, options: JsonOutputFormatOptions): Promise<string> {
+		return await this.value(data.data, options);
 	}
 }

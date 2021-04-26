@@ -38,6 +38,6 @@ export type CommandHelp = {
 export interface IHelp {
 	getHelp(): Promise<GeneralHelp>;
 	getCommandHelp(command: Command): Promise<CommandHelp>;
-	displayHelp(err?: Error): Promise<void>;
-	displayCommandHelp(command: Command, err?: Error): Promise<void>;
+	displayHelp(): Promise<GeneralHelp>;
+	displayCommandHelp(command: Command): Promise<CommandHelp>;
 }

@@ -76,50 +76,44 @@ export class Help implements IHelp {
 		return data;
 	}
 
-	async displayHelp(error?: Error) {
-		const data = await this.getHelp();
-		await this.output.build(
-			async (builder) => {
-				await builder.line(chalk.green(header()));
+	async displayHelp(): Promise<GeneralHelp> {
+		const help = await this.getHelp();
+
+		await this.output.help(help);
+		await this.output.compose(async (ui) => {
+			await ui.line(chalk.green(header()));
+			await ui.skip();
+			await ui.section('Description', (builder) => builder.line(help.description));
+			await ui.section('Synopsis', (builder) => builder.line(help.synopsis));
+			await ui.section('Commands', async (builder) => {
+				await builder.line('These are all the commands you can use to manage your project or installation');
 				await builder.skip();
-				await builder.section('Description', (builder) => builder.line(data.description));
-				await builder.section('Synopsis', (builder) => builder.line(data.synopsis));
-				await builder.section('Commands', async (builder) => {
-					await builder.line('These are all the commands you can use to manage your project or installation');
-					await builder.skip();
 
-					const groups = new Set(data.commands.map((cmd) => cmd.group));
-					for (const group of groups) {
-						const commands = data.commands.filter((cmd) => cmd.group === group);
-						if (commands.length <= 0) {
-							continue;
-						}
-
-						await builder.section(group, (builder) =>
-							builder.table(
-								commands.map((command): [string, string] => {
-									return [command.name, command.description];
-								})
-							)
-						);
+				const groups = new Set(help.commands.map((cmd) => cmd.group));
+				for (const group of groups) {
+					const commands = help.commands.filter((cmd) => cmd.group === group);
+					if (commands.length <= 0) {
+						continue;
 					}
-				});
 
-				await builder.section('Options', (builder) =>
-					builder.table([
-						...data.options.map((option) => [`--${option.name}`, chalk.italic(option.type), option.description]),
-					])
-				);
-
-				if (error) {
-					await builder.error(error);
+					await builder.section(group, (builder) =>
+						builder.table(
+							commands.map((command): [string, string] => {
+								return [command.name, command.description];
+							})
+						)
+					);
 				}
-			},
-			{
-				...data,
-				error,
-			}
-		);
+			});
+
+			await ui.section('Options', (builder) =>
+				builder.table([
+					...help.options.map((option) => [`--${option.name}`, chalk.italic(option.type), option.description]),
+				])
+			);
+		});
+
+		return help;
 	}
 
 	async getCommandHelp(command: Command): Promise<CommandHelp> {
@@ -159,95 +153,88 @@ export class Help implements IHelp {
 		};
 	}
 
-	async displayCommandHelp(command: Command, error?: Error): Promise<void> {
-		const data = await this.getCommandHelp(command);
+	async displayCommandHelp(command: Command): Promise<CommandHelp> {
+		const help = await this.getCommandHelp(command);
 
-		await this.output.build(
-			async (builder) => {
-				await builder.skip();
-				await builder.section('Description', (builder) => builder.line(data.description));
-				await builder.section('Synopsis', (builder) => builder.line(data.synopsis));
-				await builder.section('Usage', (builder) => builder.markdown(data.usage));
-				await builder.section('Documentation', (builder) => builder.markdown(data.documentation));
-				await builder.section('Options', async (builder) => {
-					if (data.options.length <= 0) {
-						await builder.line('No options available');
-						return;
+		await this.output.help(help);
+		await this.output.compose(async (ui) => {
+			await ui.skip();
+			await ui.section('Description', (builder) => builder.line(help.description));
+			await ui.section('Synopsis', (builder) => builder.line(help.synopsis));
+			await ui.section('Usage', (builder) => builder.markdown(help.usage));
+			await ui.section('Documentation', (builder) => builder.markdown(help.documentation));
+			await ui.section('Options', async (builder) => {
+				if (help.options.length <= 0) {
+					await builder.line('No options available');
+					return;
+				}
+
+				const makeOption = (option: OptionHelp): OutputColumn[][] => {
+					let defaultValue = '';
+					if (typeof option.default != 'undefined') {
+						defaultValue = `default: ${highlight(JSON.stringify(option.default), {
+							language: 'json',
+							ignoreIllegals: true,
+							theme: DefaultTheme,
+						})}`;
 					}
 
-					const makeOption = (option: OptionHelp): OutputColumn[][] => {
-						let defaultValue = '';
-						if (typeof option.default != 'undefined') {
-							defaultValue = `default: ${highlight(JSON.stringify(option.default), {
-								language: 'json',
-								ignoreIllegals: true,
-								theme: DefaultTheme,
-							})}`;
-						}
+					let type = option.type;
+					if (option.choices) {
+						type = option.choices.join(' | ');
+					}
 
-						let type = option.type;
-						if (option.choices) {
-							type = option.choices.join(' | ');
-						}
+					return [
+						[
+							{
+								text: option.required ? chalk.bold(`--${option.name}`) : `--${option.name}`,
+								options: {},
+							},
+							{
+								text: type,
+								options: {
+									alignment: 'right',
+								},
+							},
+						],
+						[
+							{
+								text: chalk.italic.gray(option.required ? chalk.bold('required') : 'optional'),
+								options: {
+									padding: [0, 0, 0, 2],
+								},
+							},
+							{
+								text: defaultValue,
+								options: {
+									alignment: 'right',
+								},
+							},
+						],
+						[
+							{
+								text: option.description ?? 'Description unavailable',
+								options: {
+									padding: [1, 2, 1, 2],
+								},
+							},
+						],
+					];
+				};
 
-						return [
-							[
-								{
-									text: option.required ? chalk.bold(`--${option.name}`) : `--${option.name}`,
-									options: {},
-								},
-								{
-									text: type,
-									options: {
-										alignment: 'right',
-									},
-								},
-							],
-							[
-								{
-									text: chalk.italic.gray(option.required ? chalk.bold('required') : 'optional'),
-									options: {
-										padding: [0, 0, 0, 2],
-									},
-								},
-								{
-									text: defaultValue,
-									options: {
-										alignment: 'right',
-									},
-								},
-							],
-							[
-								{
-									text: option.description ?? 'Description unavailable',
-									options: {
-										padding: [1, 2, 1, 2],
-									},
-								},
-							],
-						];
-					};
+				await builder.rows([
+					...help.options
+						.filter((o) => o.required)
+						.map(makeOption)
+						.reduce((prev, curr) => [...prev, ...curr], []),
+					...help.options
+						.filter((o) => !o.required)
+						.map(makeOption)
+						.reduce((prev, curr) => [...prev, ...curr], []),
+				]);
+			});
+		});
 
-					await builder.rows([
-						...data.options
-							.filter((o) => o.required)
-							.map(makeOption)
-							.reduce((prev, curr) => [...prev, ...curr], []),
-						...data.options
-							.filter((o) => !o.required)
-							.map(makeOption)
-							.reduce((prev, curr) => [...prev, ...curr], []),
-					]);
-				});
-
-				if (error) {
-					await builder.error(error);
-				}
-			},
-			{
-				...data,
-				error,
-			}
-		);
+		return help;
 	}
 }

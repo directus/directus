@@ -25,7 +25,6 @@ export function command<T extends Toolbox = Toolbox, P = any, R extends any = vo
 
 		try {
 			await events.emit('command.initialize.before', command);
-
 			await events.emit('output.formats.register', output);
 
 			options.register((registrator) => {
@@ -40,45 +39,62 @@ export function command<T extends Toolbox = Toolbox, P = any, R extends any = vo
 			});
 
 			await events.emit('command.options.register', command);
-
 			await events.emit('command.initialize.after', command);
 
 			opts = options.values();
-			if ((opts.help && !settings.disableHelp) || options.failed()) {
-				await help.displayCommandHelp(command);
-				if (options.failed() && !opts.help) {
-					//throw options.error();
+			if (options.failed()) {
+				const error = options.error()!;
+				await output.error(error);
+				if (error instanceof CLIRuntimeError) {
 					return {
-						error: options.error(),
+						help: await help.displayCommandHelp(command),
+						error,
 					};
 				}
-				return {};
+				return {
+					help: await help.getCommandHelp(command),
+					error,
+				};
+			}
+
+			if (opts.help && !settings.disableHelp) {
+				return {
+					help: await help.displayCommandHelp(command),
+				};
 			}
 		} catch (error) {
+			await output.error(error);
 			if (error instanceof CLIRuntimeError) {
-				await help.displayCommandHelp(command, error);
-			} else {
-				await output.writeError(error);
+				return {
+					help: await help.displayCommandHelp(command),
+					error,
+				};
 			}
 			return {
+				help: await help.getCommandHelp(command),
 				error,
 			};
 		}
 
 		try {
-			await events.emit('command.execute.before', command);
-			const result = await execute(toolbox, opts);
+			await events.emit('command.execute.before', command, opts);
+			const data = await execute(toolbox, opts);
+			await output.value(data);
 			await events.emit('command.execute.after', command);
 			return {
-				result,
+				data,
+				help: await help.getCommandHelp(command),
 			};
 		} catch (error) {
+			await output.error(error);
 			if (error instanceof CLIRuntimeError) {
-				await help.displayCommandHelp(command, error);
-			} else {
-				await output.writeError(error);
+				return {
+					help: await help.displayCommandHelp(command),
+					error,
+				};
 			}
 			return {
+				help: await help.getCommandHelp(command),
 				error,
 			};
 		}

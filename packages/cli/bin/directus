@@ -7,16 +7,15 @@ async function main(run) {
 	const debug = require('debug')('directus-cli');
 	try {
 		const { error, output } = await run(process.argv);
-		if (output) {
-			await output.flush();
-		}
-
 		if (error) {
 			debug(error);
-			process.exit(1);
 		}
 
-		process.exit(0);
+		if (output) {
+			await output.flush(process.stdout);
+		}
+
+		process.exit(error ? 1 : 0);
 	} catch (error) {
 		console.error(error);
 		process.exit(1);

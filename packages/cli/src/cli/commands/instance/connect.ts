@@ -7,30 +7,36 @@ import { CLIRuntimeError } from '../../../core/exceptions';
 export default command(
 	{
 		group: 'instance',
-		parameters: '[name]',
+		parameters: '<url>',
 		description: 'Connects to a Directus instance',
 		usage: `
 			**Public authentication**
 
 			\`\`\`
-			$ $0 instance connect --url <url> --public
+			$ $0 instance connect <url> --public
 			\`\`\`
 
 			**With static tokens**
 
 			\`\`\`
-			$ $0 instance connect \\
-			    --url http://localhost:8055 \\
-			    --token some_static_token
+			$ $0 instance connect <url> \\
+			    --token <token>
 			\`\`\`
 
 			**With credentials**
 
 			\`\`\`
-			$ $0 instance connect \\
-			    --url https://directus.mysite.com \\
-			    --email admin@example.com \\
-			    --password password
+			$ $0 instance connect <url> \\
+			    --email <email> \\
+			    --password <password>
+			\`\`\`
+
+			**Named instance**
+
+			\`\`\`
+			$ $0 instance connect <url> \\
+				--name dev \\
+			    --public
 			\`\`\`
 		`,
 		documentation: `
@@ -50,10 +56,15 @@ export default command(
 		`,
 		options: function (builder) {
 			return builder
-				.positional('name', {
+				.positional('url', {
+					type: 'string',
+					description: 'The Directus endpoint to connect to',
+					demandOption: true,
+				})
+				.option('name', {
 					type: 'string',
 					default: 'default',
-					defaultDescription: 'The local assigned instance name',
+					description: 'The local assigned instance name',
 				})
 				.option('force', {
 					type: 'boolean',
@@ -76,14 +87,7 @@ export default command(
 				.option('password', {
 					type: 'string',
 					description: 'The user password',
-				})
-				.option('url', {
-					type: 'string',
-					description: 'The Directus endpoint to connect to',
-					demandOption: true,
-				})
-				.demandOption('url', 'A Directus endpoint is required')
-				.group(['instance', 'public', 'token', 'email', 'password', 'url'], 'command');
+				});
 		},
 	},
 	async function ({ output, config }, params) {
@@ -93,10 +97,10 @@ export default command(
 			}
 		}
 
-		const sdk = new Directus(params.url);
+		const sdk = new Directus(params.url!);
 		const instance: InstanceConfiguration = {
 			auth: 'public',
-			endpoint: params.url,
+			endpoint: params.url!,
 			data: {},
 		};
 
@@ -124,17 +128,19 @@ export default command(
 		config.system.data.instances[params.name] = instance;
 		config.system.save();
 
-		await output.build(
-			async (builder) => {
-				await builder.wrap(
-					(builder) => builder.line(`Connected successfully through ${chalk.bold(instance.auth)} authentication`),
-					1
-				);
-			},
-			{
-				success: true,
-				mode: instance.auth,
-			}
-		);
+		await output.compose(async (ui) => {
+			await ui.wrap(
+				(builder) =>
+					builder.line(
+						`Successfully connect to ${chalk.bold(params.name)} through ${chalk.bold(instance.auth)} authentication`
+					),
+				1
+			);
+		});
+
+		return {
+			success: true,
+			mode: instance.auth,
+		};
 	}
 );

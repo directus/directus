@@ -11,7 +11,7 @@ export type EventTypes = {
 	'command.initialize.before': (command: Command) => void | Promise<void>;
 	'command.initialize.after': (command: Command) => void | Promise<void>;
 
-	'command.execute.before': (command: Command) => void | Promise<void>;
+	'command.execute.before': (command: Command, options: any) => void | Promise<void>;
 	'command.execute.after': (command: Command) => void | Promise<void>;
 
 	'command.options.register': (command: Command) => void;

@@ -30,7 +30,7 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 	});
 
 	runtime.addPlugin('./node_modules/directus/dist/cli/new', {
-		name: 'directus-api',
+		name: 'directus-server',
 		hidden: false,
 		required: false,
 	});
@@ -40,8 +40,19 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 		runtime.addExtension(extension, require(path.join(__dirname, `core/extensions/${extension}`)))
 	);
 
-	// Uncomment to enables community CLI plugins
-	// runtime.addPlugins('./node_modules', { matching: 'directus-cli-*', hidden: false });
+	if (process.env.ENABLE_COMMUNITY_EXTENSIONS) {
+		runtime.addPlugins('./node_modules', { matching: 'directus-cli-*', hidden: false });
+		runtime.addPlugins('./node_modules', { matching: 'directus-*-cli', hidden: false });
+		runtime.addPlugins('./node_modules', { matching: '@directus/*-cli', hidden: false });
+		runtime.addPlugins('./node_modules', { matching: '@directus/cli-*', hidden: false });
+	}
+
+	const extensionsDir = path.resolve(process.env.EXTENSIONS_PATH ?? './extensions', 'cli');
+	runtime.addPlugin(extensionsDir, {
+		name: 'directus-project',
+		hidden: false,
+		required: false,
+	});
 
 	// add a default command first
 	runtime.defaultCommand = command(
@@ -49,18 +60,19 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 			disableHelp: true,
 		},
 		async function (toolbox: Toolbox) {
-			await toolbox.help.displayHelp();
+			return await toolbox.help.displayHelp();
 		}
 	) as any;
 
-	const data: CommandResult<T> = {};
+	const commandResult: CommandResult<T> = {};
 
 	try {
 		const { result, output } = await runtime.run(argv);
-		data.result = result.value;
-		data.error = result.error;
-		data.output = output;
+		commandResult.help = result.help;
+		commandResult.data = result.data;
+		commandResult.error = result.error;
+		commandResult.output = output;
 	} catch (err) {}
 
-	return data;
+	return commandResult;
 }
