@@ -205,10 +205,10 @@ export default defineComponent({
 
 			if (isAdmin) return true;
 
-			const usersCreatePermission = permissionsStore.state.permissions.find(
+			const usersCreatePermission = permissionsStore.permissions.find(
 				(permission) => permission.collection === 'directus_users' && permission.action === 'create'
 			);
-			const rolesReadPermission = permissionsStore.state.permissions.find(
+			const rolesReadPermission = permissionsStore.permissions.find(
 				(permission) => permission.collection === 'directus_roles' && permission.action === 'read'
 			);
 
@@ -319,7 +319,7 @@ export default defineComponent({
 				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const updatePermissions = permissionsStore.state.permissions.find(
+				const updatePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === 'directus_users'
 				);
 				return !!updatePermissions;
@@ -329,7 +329,7 @@ export default defineComponent({
 				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const deletePermissions = permissionsStore.state.permissions.find(
+				const deletePermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'delete' && permission.collection === 'directus_users'
 				);
 				return !!deletePermissions;
@@ -339,7 +339,7 @@ export default defineComponent({
 				const admin = userStore.state?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				const createPermissions = permissionsStore.state.permissions.find(
+				const createPermissions = permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === 'directus_users'
 				);
 				return !!createPermissions;

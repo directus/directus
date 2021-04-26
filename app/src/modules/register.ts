@@ -53,7 +53,7 @@ export async function register() {
 		if (!userStore.state.currentUser) return false;
 
 		if (mod.preRegisterCheck) {
-			return mod.preRegisterCheck(userStore.state.currentUser, permissionsStore.state.permissions);
+			return mod.preRegisterCheck(userStore.state.currentUser, permissionsStore.permissions);
 		}
 
 		return true;
