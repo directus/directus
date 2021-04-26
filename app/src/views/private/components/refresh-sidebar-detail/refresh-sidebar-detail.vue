@@ -59,11 +59,11 @@ export default defineComponent({
 
 				return seconds >= 60 && seconds % 60 === 0
 					? {
-							text: i18n.global.tc('refresh_interval_minutes', seconds / 60, { minutes: seconds / 60 }),
+							text: i18n.global.t('refresh_interval_minutes', seconds / 60, { named: { minutes: seconds / 60 } }),
 							value: seconds,
 					  }
 					: {
-							text: i18n.global.tc('refresh_interval_seconds', seconds, { seconds }),
+							text: i18n.global.t('refresh_interval_seconds', seconds, { named: { seconds } }),
 							value: seconds,
 					  };
 			});

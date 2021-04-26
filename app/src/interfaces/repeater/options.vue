@@ -54,7 +54,7 @@ export default defineComponent({
 
 		const repeaterFields: DeepPartial<Field>[] = [
 			{
-				name: i18n.global.tc('field', 1),
+				name: i18n.global.t('field', 1),
 				field: 'field',
 				type: 'string',
 				meta: {

@@ -220,7 +220,7 @@ export default defineComponent({
 						disabled: false,
 					},
 					{
-						text: i18n.global.tc('field', 1),
+						text: i18n.global.t('field', 1),
 						value: 'field',
 						disabled: interfaceDisplayDisabled(),
 					},

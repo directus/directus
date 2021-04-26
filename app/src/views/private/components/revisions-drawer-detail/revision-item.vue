@@ -44,7 +44,7 @@ export default defineComponent({
 				case 'create':
 					return i18n.global.t('revision_delta_created');
 				case 'update':
-					return i18n.global.tc('revision_delta_updated', revisionCount.value);
+					return i18n.global.t('revision_delta_updated', revisionCount.value);
 				case 'delete':
 					return i18n.global.t('revision_delta_deleted');
 				case 'revert':

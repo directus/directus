@@ -253,7 +253,7 @@ export default defineComponent({
 						if (itemCount === selectionCount) {
 							return i18n.global.t('all_items');
 						} else {
-							return i18n.global.tc('item_count', selectionCount);
+							return i18n.global.t('item_count', selectionCount);
 						}
 					}
 				}

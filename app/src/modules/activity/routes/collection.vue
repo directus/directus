@@ -83,7 +83,7 @@ export default defineComponent({
 			const breadcrumb = computed(() => {
 				return [
 					{
-						name: i18n.global.tc('collection', 2),
+						name: i18n.global.t('collection', 2),
 						to: `/collections`,
 					},
 				];

@@ -578,9 +578,12 @@ export default defineComponent({
 				const files = [...(event.dataTransfer.files as any)];
 
 				fileUploadNotificationID = notificationsStore.add({
-					title: i18n.global.tc('upload_file_indeterminate', files.length, {
-						done: 0,
-						total: files.length,
+					// @TODO3 Are those named interpolations still needed?
+					title: i18n.global.t('upload_file_indeterminate', files.length, {
+						named: {
+							done: 0,
+							total: files.length,
+						},
 					}),
 					type: 'info',
 					persist: true,
@@ -601,9 +604,12 @@ export default defineComponent({
 						const done = progress.filter((p) => p === 100).length;
 
 						notificationsStore.update(fileUploadNotificationID, {
-							title: i18n.global.tc('upload_file_indeterminate', files.length, {
-								done,
-								total,
+							// @TODO3 Are those named interpolations still needed?
+							title: i18n.global.t('upload_file_indeterminate', files.length, {
+								named: {
+									done,
+									total,
+								},
 							}),
 							loading: false,
 							progress: percentageDone,
