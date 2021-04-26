@@ -253,7 +253,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		});
 
 		if (this.accountability && this.accountability.admin !== true) {
-			ast = await authorizationService.processAST(ast);
+			ast = await authorizationService.processAST(ast, opts?.permissionsAction);
 		}
 
 		const records = await runAST(ast, this.schema, {
