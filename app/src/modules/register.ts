@@ -50,10 +50,10 @@ export async function register() {
 	const permissionsStore = usePermissionsStore();
 
 	const registeredModules = queuedModules.filter((mod: any) => {
-		if (!userStore.state.currentUser) return false;
+		if (!userStore.currentUser) return false;
 
 		if (mod.preRegisterCheck) {
-			return mod.preRegisterCheck(userStore.state.currentUser, permissionsStore.permissions);
+			return mod.preRegisterCheck(userStore.currentUser, permissionsStore.permissions);
 		}
 
 		return true;

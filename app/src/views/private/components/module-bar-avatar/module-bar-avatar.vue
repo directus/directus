@@ -48,15 +48,15 @@ export default defineComponent({
 		const signOutActive = ref(false);
 
 		const avatarURL = computed<string | null>(() => {
-			if (userStore.state.currentUser === null) return null;
-			if (userStore.state.currentUser.avatar === null) return null;
+			if (userStore.currentUser === null) return null;
+			if (userStore.currentUser.avatar === null) return null;
 
-			return addTokenToURL(getRootPath() + `assets/${userStore.state.currentUser.avatar.id}?key=system-medium-cover`);
+			return addTokenToURL(getRootPath() + `assets/${userStore.currentUser.avatar.id}?key=system-medium-cover`);
 		});
 
 		const userProfileLink = computed<string>(() => {
-			const id = userStore.state.currentUser?.id;
-			const role = userStore.state.currentUser?.role?.id;
+			const id = userStore.currentUser?.id;
+			const role = userStore.currentUser?.role?.id;
 
 			return `/users/${id}`;
 		});

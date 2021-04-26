@@ -90,7 +90,7 @@ export default defineComponent({
 				await login(credentials);
 
 				// Stores are hydrated after login
-				const lastPage = userStore.state.currentUser?.last_page;
+				const lastPage = userStore.currentUser?.last_page;
 				router.push(lastPage || '/collections');
 			} catch (err) {
 				if (err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {

@@ -100,7 +100,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const userStore = useUserStore();
-		const currentUserID = computed(() => userStore.state.currentUser?.id);
+		const currentUserID = computed(() => userStore.currentUser?.id);
 
 		const activeFilter = computed(() => {
 			return props.filters.find((filter) => filter.locked === true);

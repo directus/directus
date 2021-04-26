@@ -60,10 +60,10 @@ export async function hydrate(stores = useStores()) {
 		 */
 		await userStore.hydrate();
 
-		if (userStore.state.currentUser?.role) {
+		if (userStore.currentUser?.role) {
 			await Promise.all(stores.filter(({ id }) => id !== 'userStore').map((store) => store.hydrate?.()));
 			await registerModules();
-			await setLanguage((userStore.state.currentUser?.language as Language) || 'en-US');
+			await setLanguage((userStore.currentUser?.language as Language) || 'en-US');
 		}
 	} catch (error) {
 		appStore.error = error;

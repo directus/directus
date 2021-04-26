@@ -201,7 +201,7 @@ export default defineComponent({
 		});
 
 		const canInviteUsers = computed(() => {
-			const isAdmin = !!userStore.state.currentUser?.role?.admin_access;
+			const isAdmin = !!userStore.currentUser?.role?.admin_access;
 
 			if (isAdmin) return true;
 
@@ -316,7 +316,7 @@ export default defineComponent({
 
 		function usePermissions() {
 			const batchEditAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
 				const updatePermissions = permissionsStore.permissions.find(
@@ -326,7 +326,7 @@ export default defineComponent({
 			});
 
 			const batchDeleteAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
 				const deletePermissions = permissionsStore.permissions.find(
@@ -336,7 +336,7 @@ export default defineComponent({
 			});
 
 			const createAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
 				const createPermissions = permissionsStore.permissions.find(

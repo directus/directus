@@ -88,7 +88,7 @@ export default defineComponent({
 
 		const { navItems } = useNavigation();
 
-		const isAdmin = computed(() => userStore.state.currentUser?.role.admin_access === true);
+		const isAdmin = computed(() => userStore.currentUser?.role.admin_access === true);
 
 		return {
 			tableHeaders,

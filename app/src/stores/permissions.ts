@@ -14,7 +14,7 @@ export const usePermissionsStore = defineStore({
 			const userStore = useUserStore();
 
 			const response = await api.get('/permissions', {
-				params: { limit: -1, filter: { role: { _eq: userStore.state.currentUser!.role.id } } },
+				params: { limit: -1, filter: { role: { _eq: userStore.currentUser!.role.id } } },
 			});
 
 			this.permissions = response.data.data.map((rawPermission: any) => {
@@ -43,7 +43,7 @@ export const usePermissionsStore = defineStore({
 					(permission) =>
 						permission.action === action &&
 						permission.collection === collection &&
-						permission.role === userStore.state.currentUser?.role?.id
+						permission.role === userStore.currentUser?.role?.id
 				) || null
 			);
 		},

@@ -103,7 +103,7 @@ export const usePresetsStore = defineStore({
 	actions: {
 		async hydrate() {
 			// Hydrate is only called for logged in users, therefore, currentUser exists
-			const { id, role } = useUserStore().state.currentUser!;
+			const { id, role } = useUserStore().currentUser!;
 
 			const values = await Promise.all([
 				// All user saved bookmarks and presets
@@ -192,9 +192,9 @@ export const usePresetsStore = defineStore({
 		getPresetForCollection(collection: string) {
 			const userStore = useUserStore();
 
-			if (userStore.state.currentUser === null) return null;
+			if (userStore.currentUser === null) return null;
 
-			const { id: userID, role: userRole } = userStore.state.currentUser;
+			const { id: userID, role: userRole } = userStore.currentUser;
 
 			const defaultPresetWithCollection = {
 				...defaultPreset,
@@ -244,8 +244,8 @@ export const usePresetsStore = defineStore({
 		 */
 		async savePreset(preset: Preset) {
 			const userStore = useUserStore();
-			if (userStore.state.currentUser === null) return null;
-			const { id: userID } = userStore.state.currentUser;
+			if (userStore.currentUser === null) return null;
+			const { id: userID } = userStore.currentUser;
 
 			// Clone the preset to make sure the future deletes don't affect the original object
 			preset = cloneDeep(preset);

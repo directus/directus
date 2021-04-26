@@ -22,7 +22,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 	initLocalPreset();
 
 	const bookmarkSaved = ref(true);
-	const bookmarkIsMine = computed(() => localPreset.value.user === userStore.state.currentUser!.id);
+	const bookmarkIsMine = computed(() => localPreset.value.user === userStore.currentUser!.id);
 
 	/**
 	 * Saves the preset to the database
@@ -270,7 +270,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		if (data.id) delete data.id;
 
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		data.user = userStore.state.currentUser!.id;
+		data.user = userStore.currentUser!.id;
 
 		return await savePreset(data);
 	}

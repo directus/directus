@@ -71,7 +71,7 @@ export default defineComponent({
 		);
 
 		watch(
-			() => userStore.state.currentUser,
+			() => userStore.currentUser,
 			(newUser) => {
 				document.body.classList.remove('dark');
 				document.body.classList.remove('light');

@@ -25,10 +25,10 @@ export default function useNavigation(searchQuery?: Ref<string | null>) {
 	const userStore = useUserStore();
 
 	const customNavItems = computed<NavItemGroup[] | null>(() => {
-		if (!userStore.state.currentUser) return null;
-		if (!userStore.state.currentUser.role.collection_list) return null;
+		if (!userStore.currentUser) return null;
+		if (!userStore.currentUser.role.collection_list) return null;
 
-		return userStore.state.currentUser?.role.collection_list.map((groupRaw) => {
+		return userStore.currentUser?.role.collection_list.map((groupRaw) => {
 			const group: NavItemGroup = {
 				name: groupRaw.group_name,
 				accordion: groupRaw.accordion,

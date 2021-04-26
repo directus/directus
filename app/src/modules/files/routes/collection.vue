@@ -256,12 +256,12 @@ export default defineComponent({
 				}
 			}
 
-			if (props.special === 'mine' && userStore.state.currentUser) {
+			if (props.special === 'mine' && userStore.currentUser) {
 				filtersParsed.push({
 					locked: true,
 					operator: 'eq',
 					field: 'uploaded_by',
-					value: userStore.state.currentUser.id,
+					value: userStore.currentUser.id,
 				});
 			}
 
@@ -445,7 +445,7 @@ export default defineComponent({
 
 		function usePermissions() {
 			const batchEditAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
 				const updatePermissions = permissionsStore.permissions.find(
@@ -455,7 +455,7 @@ export default defineComponent({
 			});
 
 			const batchDeleteAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
 				const deletePermissions = permissionsStore.permissions.find(
@@ -465,7 +465,7 @@ export default defineComponent({
 			});
 
 			const createAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
 				const createPermissions = permissionsStore.permissions.find(
@@ -475,7 +475,7 @@ export default defineComponent({
 			});
 
 			const createFolderAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore?.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
 				const createPermissions = permissionsStore.permissions.find(
