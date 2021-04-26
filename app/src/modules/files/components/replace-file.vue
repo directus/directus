@@ -13,10 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import api from '@/api';
-import router from '@/router';
-import { PropType } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	model: {
