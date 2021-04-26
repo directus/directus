@@ -3,7 +3,7 @@ import fse from 'fs-extra';
 import path from 'path';
 import yaml from 'js-yaml';
 import { types } from '../../types';
-import { isObject, merge } from 'lodash';
+import { isObject } from 'lodash';
 
 type TableSeed = {
 	table: string;
@@ -25,7 +25,7 @@ type TableSeed = {
 	};
 };
 
-export default async function runSeed(database: Knex) {
+export default async function runSeed(database: Knex): Promise<void> {
 	const exists = await database.schema.hasTable('directus_collections');
 
 	if (exists) {
@@ -73,7 +73,7 @@ export default async function runSeed(database: Knex) {
 					}
 
 					if (defaultValue === '$now') {
-						defaultValue = database!.fn.now();
+						defaultValue = database.fn.now();
 					}
 
 					column.defaultTo(defaultValue);

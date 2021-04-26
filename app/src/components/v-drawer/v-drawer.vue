@@ -113,7 +113,7 @@ export default defineComponent({
 		});
 
 		const showCancel = computed(() => {
-			return listeners.hasOwnProperty('cancel');
+			return Object.prototype.hasOwnProperty.call(listeners, 'cancel');
 		});
 
 		return { _active, mainEl, showCancel };

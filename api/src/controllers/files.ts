@@ -33,7 +33,7 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 	 */
 
 	let disk: string = toArray(env.STORAGE_LOCATIONS)[0];
-	let payload: Partial<File> = {};
+	const payload: Partial<File> = {};
 	let fileCount = 0;
 
 	busboy.on('field', (fieldname: keyof File, val) => {

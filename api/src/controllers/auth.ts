@@ -237,7 +237,7 @@ router.get(
 			req.session.redirect = req.query.redirect as string;
 		}
 
-		let hookPayload = {
+		const hookPayload = {
 			provider: req.params.provider,
 			redirect: req.query?.redirect,
 		};
@@ -284,7 +284,7 @@ router.get(
 
 		let authResponse: { accessToken: any; refreshToken: any; expires: any; id?: any };
 
-		let hookPayload = req.session.grant.response;
+		const hookPayload = req.session.grant.response;
 
 		await emitter.emitAsync(`oauth.${req.params.provider}.login.before`, hookPayload, {
 			event: `oauth.${req.params.provider}.login.before`,
@@ -311,7 +311,9 @@ router.get(
 		try {
 			const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
 
-			req.session?.destroy(() => {});
+			req.session?.destroy(() => {
+				// Do nothing
+			});
 
 			authResponse = await authenticationService.authenticate({
 				email,

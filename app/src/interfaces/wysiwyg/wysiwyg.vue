@@ -375,13 +375,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.body {
-	padding: 20px;
-}
-
 @import '~tinymce/skins/ui/oxide/skin.css';
 @import './tinymce-overrides.css';
 @import '@/styles/mixins/form-grid';
+
+.body {
+	padding: 20px;
+}
 
 .grid {
 	@include form-grid;

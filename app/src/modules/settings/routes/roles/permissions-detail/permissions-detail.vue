@@ -83,7 +83,7 @@ export default defineComponent({
 		const collectionName = computed(() => {
 			if (!permission.value) return null;
 			return collectionsStore.state.collections.find(
-				(collection) => collection.collection === permission.value!.collection
+				(collection) => collection.collection === permission.value?.collection
 			)?.name;
 		});
 
@@ -91,7 +91,7 @@ export default defineComponent({
 			if (loading.value || !permission.value) return i18n.t('loading');
 
 			if (props.roleKey) {
-				return role.value!.name + ' -> ' + collectionName.value + ' -> ' + i18n.t(permission.value.action);
+				return role.value?.name + ' -> ' + collectionName.value + ' -> ' + i18n.t(permission.value.action);
 			}
 
 			return i18n.t('public') + ' -> ' + collectionName.value + ' -> ' + i18n.t(permission.value.action);
@@ -162,7 +162,7 @@ export default defineComponent({
 			if (!permission.value) return null;
 			return appMinimalPermissions.find(
 				(p: Partial<Permission>) =>
-					p.collection === permission.value!.collection && p.action === permission.value!.action
+					p.collection === permission.value?.collection && p.action === permission.value?.action
 			);
 		});
 

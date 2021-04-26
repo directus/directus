@@ -23,9 +23,9 @@ describe('items', function () {
 
 		expect(item).not.toBeNull();
 		expect(item).not.toBeUndefined();
-		expect(item!.id).toBe(1);
-		expect(item!.title).toBe(`My first post`);
-		expect(item!.body).toBe('<h1>Hey there!</h1>');
+		expect(item?.id).toBe(1);
+		expect(item?.title).toBe(`My first post`);
+		expect(item?.body).toBe('<h1>Hey there!</h1>');
 	});
 
 	test(`should encode ids`, async (url, nock) => {
@@ -43,8 +43,8 @@ describe('items', function () {
 
 		expect(item).not.toBeNull();
 		expect(item).not.toBeUndefined();
-		expect(item!.slug).toBe('double slash');
-		expect(item!.name).toBe('Double Slash');
+		expect(item?.slug).toBe('double slash');
+		expect(item?.name).toBe('Double Slash');
 	});
 
 	test(`can get multiple items by id`, async (url, nock) => {
@@ -70,14 +70,14 @@ describe('items', function () {
 		const sdk = new Directus<Blog>(url);
 		const items = await sdk.items('posts').readMany();
 
-		expect(items.data![0]).toMatchObject({
+		expect(items.data?.[0]).toMatchObject({
 			id: 1,
 			title: 'My first post',
 			body: '<h1>Hey there!</h1>',
 			published: false,
 		});
 
-		expect(items.data![1]).toMatchObject({
+		expect(items.data?.[1]).toMatchObject({
 			id: 2,
 			title: 'My second post',
 			body: '<h1>Hey there!</h1>',
@@ -109,13 +109,13 @@ describe('items', function () {
 			fields: ['id', 'title'],
 		});
 
-		expect(items.data![0]!.id).toBe(1);
-		expect(items.data![0]!.title).toBe(`My first post`);
-		expect(items.data![0]!.body).toBeUndefined();
+		expect(items.data?.[0]?.id).toBe(1);
+		expect(items.data?.[0]?.title).toBe(`My first post`);
+		expect(items.data?.[0]?.body).toBeUndefined();
 
-		expect(items.data![1]!.id).toBe(2);
-		expect(items.data![1]!.title).toBe(`My second post`);
-		expect(items.data![1]!.body).toBeUndefined();
+		expect(items.data?.[1]?.id).toBe(2);
+		expect(items.data?.[1]?.title).toBe(`My second post`);
+		expect(items.data?.[1]?.body).toBeUndefined();
 	});
 
 	test(`create one item`, async (url, nock) => {
@@ -179,14 +179,14 @@ describe('items', function () {
 			},
 		]);
 
-		expect(items.data![0]).toMatchObject({
+		expect(items.data?.[0]).toMatchObject({
 			id: 4,
 			title: 'New post 2',
 			body: 'This is a new post 2',
 			published: false,
 		});
 
-		expect(items.data![1]).toMatchObject({
+		expect(items.data?.[1]).toMatchObject({
 			id: 5,
 			title: 'New post 3',
 			body: 'This is a new post 3',
@@ -256,14 +256,14 @@ describe('items', function () {
 			},
 		]);
 
-		expect(item.data![0]).toMatchObject({
+		expect(item.data?.[0]).toMatchObject({
 			id: 1,
 			title: 'Updated post',
 			body: 'Updated post content',
 			published: true,
 		});
 
-		expect(item.data![1]).toMatchObject({
+		expect(item.data?.[1]).toMatchObject({
 			id: 2,
 			title: 'Updated post 2',
 			body: 'Updated post content 2',

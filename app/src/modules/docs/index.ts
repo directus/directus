@@ -38,7 +38,7 @@ export default defineModule(() => {
 				if (doc.path && doc.children && doc.children.length > 0)
 					routes.push({
 						path: '/' + doc.path.replace('.md', ''),
-						redirect: '/' + doc.children![0].path.replace('.md', ''),
+						redirect: '/' + doc.children[0].path.replace('.md', ''),
 					});
 
 				routes.push(...parseRoutes(doc));

@@ -1,5 +1,5 @@
 import { AbstractServiceOptions, PermissionsAction, Query, Item, PrimaryKey } from '../types';
-import { ItemsService, MutationOptions, QueryOptions } from '../services/items';
+import { ItemsService, QueryOptions } from '../services/items';
 import { filterItems } from '../utils/filter-items';
 import logger from '../logger';
 
@@ -10,13 +10,13 @@ export class PermissionsService extends ItemsService {
 		super('directus_permissions', options);
 	}
 
-	getAllowedFields(action: PermissionsAction, collection?: string) {
+	getAllowedFields(action: PermissionsAction, _collection?: string): Record<string, string[]> {
 		const results = this.schema.permissions.filter((permission) => {
-			let matchesCollection = true;
+			// let matchesCollection = true;
 
-			if (collection) {
-				matchesCollection = permission.collection === collection;
-			}
+			// if (collection) {
+			// 	matchesCollection = permission.collection === collection;
+			// }
 
 			return permission.action === action;
 		});
@@ -40,7 +40,7 @@ export class PermissionsService extends ItemsService {
 				...filterItems(
 					appAccessMinimalPermissions.map((permission) => ({
 						...permission,
-						role: this.accountability!.role,
+						role: this.accountability?.role,
 					})),
 					query.filter
 				)
@@ -58,7 +58,7 @@ export class PermissionsService extends ItemsService {
 				...filterItems(
 					appAccessMinimalPermissions.map((permission) => ({
 						...permission,
-						role: this.accountability!.role,
+						role: this.accountability?.role,
 					})),
 					query.filter
 				)

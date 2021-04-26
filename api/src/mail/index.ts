@@ -88,7 +88,7 @@ async function getDefaultTemplateOptions() {
 	}
 }
 
-export default async function sendMail(options: EmailOptions) {
+export default async function sendMail(options: EmailOptions): Promise<void> {
 	if (!transporter) return;
 
 	const templateString = await readFile(path.join(__dirname, 'templates/base.liquid'), 'utf8');
@@ -104,7 +104,7 @@ export default async function sendMail(options: EmailOptions) {
 	}
 }
 
-export async function sendInviteMail(email: string, url: string) {
+export async function sendInviteMail(email: string, url: string): Promise<void> {
 	if (!transporter) return;
 
 	const defaultOptions = await getDefaultTemplateOptions();
@@ -123,7 +123,7 @@ export async function sendInviteMail(email: string, url: string) {
 	});
 }
 
-export async function sendPasswordResetMail(email: string, url: string) {
+export async function sendPasswordResetMail(email: string, url: string): Promise<void> {
 	if (!transporter) return;
 
 	const defaultOptions = await getDefaultTemplateOptions();

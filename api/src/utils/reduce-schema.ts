@@ -11,7 +11,7 @@ import { uniq } from 'lodash';
 export function reduceSchema(
 	schema: SchemaOverview,
 	actions: PermissionsAction[] = ['create', 'read', 'update', 'delete']
-) {
+): SchemaOverview {
 	const reduced: SchemaOverview = {
 		collections: {},
 		relations: [],

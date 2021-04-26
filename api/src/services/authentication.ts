@@ -18,7 +18,6 @@ import emitter, { emitAsyncSafe } from '../emitter';
 import { omit } from 'lodash';
 import { createRateLimiter } from '../rate-limiter';
 import { SettingsService } from './settings';
-import { rateLimiter } from '../middleware/rate-limiter';
 
 type AuthenticateOptions = {
 	email: string;
@@ -50,7 +49,9 @@ export class AuthenticationService {
 	 * Password is optional to allow usage of this function within the SSO flow and extensions. Make sure
 	 * to handle password existence checks elsewhere
 	 */
-	async authenticate(options: AuthenticateOptions) {
+	async authenticate(
+		options: AuthenticateOptions
+	): Promise<{ accessToken: string; refreshToken: string; expires: number; id?: string }> {
 		const settingsService = new SettingsService({
 			knex: this.knex,
 			schema: this.schema,
@@ -196,7 +197,7 @@ export class AuthenticationService {
 		};
 	}
 
-	async refresh(refreshToken: string) {
+	async refresh(refreshToken: string): Promise<Record<string, any>> {
 		if (!refreshToken) {
 			throw new InvalidCredentialsException();
 		}
@@ -235,16 +236,16 @@ export class AuthenticationService {
 		};
 	}
 
-	async logout(refreshToken: string) {
+	async logout(refreshToken: string): Promise<void> {
 		await this.knex.delete().from('directus_sessions').where({ token: refreshToken });
 	}
 
-	generateTFASecret() {
+	generateTFASecret(): string {
 		const secret = authenticator.generateSecret();
 		return secret;
 	}
 
-	async generateOTPAuthURL(pk: string, secret: string) {
+	async generateOTPAuthURL(pk: string, secret: string): Promise<string> {
 		const user = await this.knex.select('first_name', 'last_name').from('directus_users').where({ id: pk }).first();
 		const name = `${user.first_name} ${user.last_name}`;
 		return authenticator.keyuri(name, 'Directus', secret);
@@ -261,7 +262,7 @@ export class AuthenticationService {
 		return authenticator.check(otp, secret);
 	}
 
-	async verifyPassword(pk: string, password: string) {
+	async verifyPassword(pk: string, password: string): Promise<boolean> {
 		const userRecord = await this.knex.select('password').from('directus_users').where({ id: pk }).first();
 
 		if (!userRecord || !userRecord.password) {

@@ -10,19 +10,21 @@
 
 		<v-dialog persistent v-model="enableActive" @esc="enableActive = false">
 			<v-card>
-				<template v-if="tfaEnabled === false" v-show="loading === false">
-					<v-card-title>
-						{{ $t('enter_password_to_enable_tfa') }}
-					</v-card-title>
-					<v-card-text>
-						<v-input v-model="password" :nullable="false" type="password" :placeholder="$t('password')" />
+				<template v-if="tfaEnabled === false">
+					<div v-show="loading === false">
+						<v-card-title>
+							{{ $t('enter_password_to_enable_tfa') }}
+						</v-card-title>
+						<v-card-text>
+							<v-input v-model="password" :nullable="false" type="password" :placeholder="$t('password')" />
 
-						<v-error v-if="error" :error="error" />
-					</v-card-text>
-					<v-card-actions>
-						<v-button @click="enableActive = false" secondary>{{ $t('cancel') }}</v-button>
-						<v-button @click="enableTFA" :loading="loading">{{ $t('next') }}</v-button>
-					</v-card-actions>
+							<v-error v-if="error" :error="error" />
+						</v-card-text>
+						<v-card-actions>
+							<v-button @click="enableActive = false" secondary>{{ $t('cancel') }}</v-button>
+							<v-button @click="enableTFA" :loading="loading">{{ $t('next') }}</v-button>
+						</v-card-actions>
+					</div>
 				</template>
 
 				<v-progress-circular class="loader" indeterminate v-else-if="loading === true" />

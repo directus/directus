@@ -40,7 +40,7 @@ export class AuthorizationService {
 	async processAST(ast: AST, action: PermissionsAction = 'read'): Promise<AST> {
 		const collectionsRequested = getCollectionsFromAST(ast);
 
-		let permissionsForCollections = uniqWith(
+		const permissionsForCollections = uniqWith(
 			this.schema.permissions.filter((permission) => {
 				return (
 					permission.action === action &&
@@ -104,9 +104,9 @@ export class AuthorizationService {
 				const collection = ast.name;
 
 				// We check the availability of the permissions in the step before this is run
-				const permissions = permissionsForCollections.find((permission) => permission.collection === collection)!;
+				const permissions = permissionsForCollections.find((permission) => permission.collection === collection);
 
-				const allowedFields = permissions.fields || [];
+				const allowedFields = permissions?.fields || [];
 
 				for (const childNode of ast.children) {
 					if (childNode.type !== 'field') {
@@ -218,7 +218,7 @@ export class AuthorizationService {
 
 		const payloadWithPresets = merge({}, preset, payload);
 
-		let requiredColumns: string[] = [];
+		const requiredColumns: string[] = [];
 
 		for (const [name, field] of Object.entries(this.schema.collections[collection].fields)) {
 			const specials = field?.special ?? [];
@@ -304,7 +304,7 @@ export class AuthorizationService {
 		return errors;
 	}
 
-	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]) {
+	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]): Promise<void> {
 		if (this.accountability?.admin === true) return;
 
 		const itemsService = new ItemsService(collection, {

@@ -86,7 +86,7 @@ export default async function runAST(
 		const nestedNodes = applyParentFilters(nestedCollectionNodes, items);
 
 		for (const nestedNode of nestedNodes) {
-			let nestedItems = await runAST(nestedNode, schema, { knex, nested: true });
+			const nestedItems = await runAST(nestedNode, schema, { knex, nested: true });
 
 			if (nestedItems) {
 				// Merge all fetched nested records with the parent items
@@ -160,7 +160,7 @@ function getDBQuery(
 	schema: SchemaOverview,
 	nested?: boolean
 ): Knex.QueryBuilder {
-	let dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
+	const dbQuery = knex.select(columns.map((column) => `${table}.${column}`)).from(table);
 
 	const queryCopy = clone(query);
 
@@ -278,7 +278,7 @@ function mergeWithParentItems(
 				})
 				.sort((a, b) => {
 					// This is pre-filled in get-ast-from-query
-					const { column, order } = nestedNode.query.sort![0]!;
+					const { column, order } = nestedNode.query.sort![0];
 
 					if (a[column] === b[column]) return 0;
 					if (a[column] === null) return 1;

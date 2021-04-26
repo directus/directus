@@ -74,7 +74,12 @@
 				<v-notice type="info">{{ $t('creating_collection_system') }}</v-notice>
 
 				<div class="grid system">
-					<div class="field" v-for="(info, field, index) in systemFields" :key="field" :class="index % 2 === 0 ? 'half':'half-right'">
+					<div
+						class="field"
+						v-for="(info, field, index) in systemFields"
+						:key="field"
+						:class="index % 2 === 0 ? 'half' : 'half-right'"
+					>
 						<div class="type-label">{{ $t(info.label) }}</div>
 						<v-input
 							v-model="info.name"
@@ -445,7 +450,7 @@ export default defineComponent({
 
 			if (systemFields.userCreated.enabled === true) {
 				relations.push({
-					many_collection: collectionName.value!,
+					many_collection: collectionName.value || undefined,
 					many_field: systemFields.userCreated.name,
 					many_primary: primaryKeyFieldName.value,
 					one_collection: 'directus_users',
@@ -455,7 +460,7 @@ export default defineComponent({
 
 			if (systemFields.userUpdated.enabled === true) {
 				relations.push({
-					many_collection: collectionName.value!,
+					many_collection: collectionName.value || undefined,
 					many_field: systemFields.userUpdated.name,
 					many_primary: primaryKeyFieldName.value,
 					one_collection: 'directus_users',

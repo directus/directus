@@ -9,7 +9,7 @@ type MediaSelection = {
 	height?: number;
 };
 
-export default function useMedia(editor: Ref<any>, imageToken: Ref<string>) {
+export default function useMedia(editor: Ref<any>, imageToken: Ref<string>): Record<string, any> {
 	const mediaDrawerOpen = ref(false);
 	const mediaSelection = ref<MediaSelection | null>(null);
 	const openMediaTab = ref(['video']);
@@ -40,7 +40,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string>) {
 
 			editor.value.on('NodeChange', onVideoNodeSelect);
 
-			return function (buttonApi: any) {
+			return function () {
 				editor.value.off('NodeChange', onVideoNodeSelect);
 			};
 		},

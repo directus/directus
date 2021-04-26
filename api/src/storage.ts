@@ -35,7 +35,9 @@ function getStorageConfig(): StorageManagerConfig {
 		delete diskConfig.config.publicUrl;
 		delete diskConfig.config.driver;
 
-		config.disks![location] = diskConfig;
+		if (config.disks) {
+			config.disks[location] = diskConfig;
+		}
 	});
 
 	return config;

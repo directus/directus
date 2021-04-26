@@ -208,7 +208,10 @@ export default defineComponent({
 					return props.value;
 				}
 
-				if (typeof props.value === 'object' && props.value.hasOwnProperty(relatedPrimaryKeyField.value.field)) {
+				if (
+					typeof props.value === 'object' &&
+					Object.prototype.hasOwnProperty.call(props.value, relatedPrimaryKeyField.value.field)
+				) {
 					return props.value[relatedPrimaryKeyField.value.field];
 				}
 
@@ -371,7 +374,10 @@ export default defineComponent({
 			const selection = computed<(number | string)[]>(() => {
 				if (!props.value) return [];
 
-				if (typeof props.value === 'object' && props.value.hasOwnProperty(relatedPrimaryKeyField.value.field)) {
+				if (
+					typeof props.value === 'object' &&
+					Object.prototype.hasOwnProperty.call(props.value, relatedPrimaryKeyField.value.field)
+				) {
 					return [props.value[relatedPrimaryKeyField.value.field]];
 				}
 
@@ -416,7 +422,7 @@ export default defineComponent({
 					});
 				} else {
 					if (
-						newEdits.hasOwnProperty(relatedPrimaryKeyField.value.field) &&
+						Object.prototype.hasOwnProperty.call(newEdits, relatedPrimaryKeyField.value.field) &&
 						newEdits[relatedPrimaryKeyField.value.field] === '+'
 					) {
 						delete newEdits[relatedPrimaryKeyField.value.field];

@@ -71,7 +71,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			.filter((field) => field.alias === true)
 			.map((field) => field.field);
 
-		let payload: AnyItem = cloneDeep(data);
+		const payload: AnyItem = cloneDeep(data);
 
 		// By wrapping the logic in a transaction, we make sure we automatically roll back all the
 		// changes in the DB if any of the parts contained within throws an error. This also means
@@ -146,10 +146,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
 				const activityRecord = {
 					action: Action.CREATE,
-					user: this.accountability!.user,
+					user: this.accountability.user,
 					collection: this.collection,
-					ip: this.accountability!.ip,
-					user_agent: this.accountability!.userAgent,
+					ip: this.accountability.ip,
+					user_agent: this.accountability.userAgent,
 					item: primaryKey,
 				};
 
@@ -429,10 +429,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
 				const activityRecords = keys.map((key) => ({
 					action: Action.UPDATE,
-					user: this.accountability!.user,
+					user: this.accountability?.user,
 					collection: this.collection,
-					ip: this.accountability!.ip,
-					user_agent: this.accountability!.userAgent,
+					ip: this.accountability?.ip,
+					user_agent: this.accountability?.userAgent,
 					item: key,
 				}));
 
@@ -440,10 +440,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 				for (const activityRecord of activityRecords) {
 					await trx.insert(activityRecord).into('directus_activity');
-					let primaryKey;
 
 					const result = await trx.max('id', { as: 'id' }).from('directus_activity').first();
-					primaryKey = result.id;
+					const primaryKey = result.id;
 
 					activityPrimaryKeys.push(primaryKey);
 				}
@@ -508,7 +507,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Upsert a single item
 	 */
-	async upsertOne(payload: Partial<Item>, opts?: MutationOptions) {
+	async upsertOne(payload: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const primaryKey: PrimaryKey | undefined = payload[primaryKeyField];
 
@@ -530,7 +529,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Upsert many items
 	 */
-	async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions) {
+	async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeys = await this.knex.transaction(async (trx) => {
 			const service = new ItemsService(this.collection, {
 				accountability: this.accountability,
@@ -614,10 +613,10 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			if (this.accountability && this.schema.collections[this.collection].accountability !== null) {
 				const activityRecords = keys.map((key) => ({
 					action: Action.DELETE,
-					user: this.accountability!.user,
+					user: this.accountability?.user,
 					collection: this.collection,
-					ip: this.accountability!.ip,
-					user_agent: this.accountability!.userAgent,
+					ip: this.accountability?.ip,
+					user_agent: this.accountability?.userAgent,
 					item: key,
 				}));
 
@@ -662,7 +661,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			if (query.fields && query.fields.includes('*') === false) {
 				fields = fields.filter(([name]) => {
-					return query.fields!.includes(name);
+					return query.fields?.includes(name);
 				});
 			}
 
@@ -679,7 +678,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Upsert/treat collection as singleton
 	 */
-	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions) {
+	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
 

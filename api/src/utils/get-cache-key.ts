@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import url from 'url';
 
-export function getCacheKey(req: Request) {
+export function getCacheKey(req: Request): string {
 	const path = url.parse(req.originalUrl).pathname;
 
 	let key: string;

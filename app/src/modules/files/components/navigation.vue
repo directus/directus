@@ -55,7 +55,7 @@
 
 <script lang="ts">
 import { defineComponent, watch } from '@vue/composition-api';
-import useFolders from '../composables/use-folders';
+import useFolders, { Folder } from '../composables/use-folders';
 import NavigationFolder from './navigation-folder.vue';
 import arraysAreEqual from '@/utils/arrays-are-equal';
 
@@ -85,7 +85,7 @@ export default defineComponent({
 			if (!openFolders?.value) return [];
 
 			const shouldBeOpen: string[] = [];
-			const folder = folders.value.find((folder) => folder.id === props.currentFolder);
+			const folder = folders.value.find((folder: Folder) => folder.id === props.currentFolder);
 
 			if (folder && folder.parent) parseFolder(folder.parent);
 
@@ -105,7 +105,7 @@ export default defineComponent({
 				if (!folders.value) return;
 				shouldBeOpen.push(id);
 
-				const folder = folders.value.find((folder) => folder.id === id);
+				const folder = folders.value.find((folder: Folder) => folder.id === id);
 
 				if (folder && folder.parent) {
 					parseFolder(folder.parent);

@@ -1,7 +1,7 @@
 import express from 'express';
 import asyncHandler from '../utils/async-handler';
 import { WebhooksService, MetaService } from '../services';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ForbiddenException } from '../exceptions';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
 import { PrimaryKey } from '../types';

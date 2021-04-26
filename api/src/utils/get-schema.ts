@@ -58,7 +58,7 @@ export async function getSchema(options?: {
 		if (options.accountability.app === true) {
 			permissions = mergePermissions(
 				permissions,
-				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: options.accountability!.role }))
+				appAccessMinimalPermissions.map((perm) => ({ ...perm, role: options.accountability?.role || null }))
 			);
 		}
 	}

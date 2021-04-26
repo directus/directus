@@ -2,7 +2,7 @@ import { Filter, Accountability } from '../types';
 import { deepMap } from './deep-map';
 import { toArray } from '../utils/to-array';
 
-export function parseFilter(filter: Filter, accountability: Accountability | null) {
+export function parseFilter(filter: Filter, accountability: Accountability | null): any {
 	return deepMap(filter, (val, key) => {
 		if (val === 'true') return true;
 		if (val === 'false') return false;

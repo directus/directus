@@ -2,7 +2,7 @@ import camelcase from 'camelcase';
 import env from '../env';
 import { set } from 'lodash';
 
-export function getConfigFromEnv(prefix: string, omitPrefix?: string | string[]) {
+export function getConfigFromEnv(prefix: string, omitPrefix?: string | string[]): any {
 	const config: any = {};
 
 	for (const [key, value] of Object.entries(env)) {

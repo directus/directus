@@ -100,7 +100,7 @@ export default async function getASTFromQuery(
 					collectionScope = scope;
 				}
 
-				if (relationalStructure.hasOwnProperty(fieldKey) === false) {
+				if (Object.prototype.hasOwnProperty.call(relationalStructure, fieldKey) === false) {
 					if (collectionScope) {
 						relationalStructure[fieldKey] = { [collectionScope]: [] };
 					} else {
@@ -186,8 +186,8 @@ export default async function getASTFromQuery(
 					children: await parseFields(relatedCollection, nestedFields as string[], deep?.[relationalField] || {}),
 				};
 
-				if (relationType === 'o2m' && !child!.query.sort) {
-					child!.query.sort = [{ column: relation.sort_field || relation.many_primary, order: 'asc' }];
+				if (relationType === 'o2m' && child && !child.query.sort) {
+					child.query.sort = [{ column: relation.sort_field || relation.many_primary, order: 'asc' }];
 				}
 			}
 

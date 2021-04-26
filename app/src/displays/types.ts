@@ -8,7 +8,7 @@ export type DisplayHandlerFunctionContext = {
 export type DisplayHandlerFunction = (
 	value: any,
 	options: any,
-	context: DisplayHandlerFunctionContext
+	context?: DisplayHandlerFunctionContext
 ) => string | null;
 
 export type DisplayFieldsFunction = (
@@ -26,7 +26,8 @@ export interface DisplayConfig {
 	icon: string;
 	description?: string;
 
-	handler: DisplayHandlerFunction | Component;
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	handler: DisplayHandlerFunction | Component | Function;
 	options: null | DeepPartial<Field>[] | Component;
 	types: readonly typeof types[number][];
 	groups?: readonly typeof localTypes[number][];

@@ -25,7 +25,7 @@ export abstract class BaseStorage implements IStorage {
 		if (value === null) {
 			this.delete('auth_expires');
 		} else {
-			this.set('auth_expires', value!.toString());
+			this.set('auth_expires', value.toString());
 		}
 	}
 

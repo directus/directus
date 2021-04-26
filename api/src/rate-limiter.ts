@@ -4,6 +4,7 @@ import {
 	RateLimiterMemcache,
 	IRateLimiterOptions,
 	IRateLimiterStoreOptions,
+	RateLimiterAbstract,
 } from 'rate-limiter-flexible';
 
 import { merge } from 'lodash';
@@ -13,7 +14,7 @@ import { getConfigFromEnv } from './utils/get-config-from-env';
 
 type IRateLimiterOptionsOverrides = Partial<IRateLimiterOptions> | Partial<IRateLimiterStoreOptions>;
 
-export function createRateLimiter(configOverrides?: IRateLimiterOptionsOverrides) {
+export function createRateLimiter(configOverrides?: IRateLimiterOptionsOverrides): RateLimiterAbstract {
 	switch (env.RATE_LIMITER_STORE) {
 		case 'redis':
 			return new RateLimiterRedis(getConfig('redis', configOverrides));

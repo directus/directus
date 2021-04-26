@@ -123,7 +123,7 @@ class OASSpecsService implements SpecificationSubService {
 	}
 
 	private async generateTags(collections: Collection[]): Promise<OpenAPIObject['tags']> {
-		const systemTags = cloneDeep(openapi.tags)!;
+		const systemTags = cloneDeep(openapi.tags) || [];
 
 		const tags: OpenAPIObject['tags'] = [];
 
@@ -139,7 +139,7 @@ class OASSpecsService implements SpecificationSubService {
 
 			// If the collection is one of the system collections, pull the tag from the static spec
 			if (isSystem) {
-				for (const tag of openapi.tags!) {
+				for (const tag of openapi.tags || []) {
 					if (tag['x-collection'] === collection.collection) {
 						tags.push(tag);
 						break;
@@ -164,7 +164,9 @@ class OASSpecsService implements SpecificationSubService {
 		if (!tags) return paths;
 
 		for (const tag of tags) {
-			const isSystem = tag.hasOwnProperty('x-collection') === false || tag['x-collection'].startsWith('directus_');
+			const isSystem =
+				Object.prototype.hasOwnProperty.call(tag, 'x-collection') === false ||
+				tag['x-collection'].startsWith('directus_');
 
 			if (isSystem) {
 				for (const [path, pathItem] of Object.entries<PathItemObject>(openapi.paths)) {
@@ -176,7 +178,7 @@ class OASSpecsService implements SpecificationSubService {
 
 							const hasPermission =
 								this.accountability?.admin === true ||
-								tag.hasOwnProperty('x-collection') === false ||
+								Object.prototype.hasOwnProperty.call(tag, 'x-collection') === false ||
 								!!permissions.find(
 									(permission) =>
 										permission.collection === tag['x-collection'] &&
@@ -441,7 +443,7 @@ class OASSpecsService implements SpecificationSubService {
 					],
 				};
 			} else if (relationType === 'm2a') {
-				const relatedTags = tags.filter((tag) => relation.one_allowed_collections!.includes(tag['x-collection']));
+				const relatedTags = tags.filter((tag) => relation.one_allowed_collections?.includes(tag['x-collection']));
 
 				propertyObject.type = 'array';
 				propertyObject.items = {

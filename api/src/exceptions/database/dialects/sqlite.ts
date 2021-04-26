@@ -1,18 +1,13 @@
 import { InvalidForeignKeyException } from '../invalid-foreign-key';
 import { RecordNotUniqueException } from '../record-not-unique';
 import { NotNullViolationException } from '../not-null-violation';
-
-type SQLiteError = {
-	message: string;
-	errno: number;
-	code: string;
-};
+import { SQLiteError } from './types';
 
 // NOTE:
 // - Sqlite doesn't have varchar with length support, so no ValueTooLongException
 // - Sqlite doesn't have a max range for numbers, so no ValueOutOfRangeException
 
-export function extractError(error: SQLiteError) {
+export function extractError(error: SQLiteError): SQLiteError | Error {
 	if (error.message.includes('SQLITE_CONSTRAINT: NOT NULL')) {
 		return notNullConstraint(error);
 	}

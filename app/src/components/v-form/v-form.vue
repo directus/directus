@@ -113,7 +113,7 @@ export default defineComponent({
 		 * admin can be made aware
 		 */
 		const unknownValidationErrors = computed(() => {
-			const fieldKeys = formFields.value.map((field) => field.field);
+			const fieldKeys = formFields.value.map((field: { field: any }) => field.field);
 			return props.validationErrors.filter((error) => fieldKeys.includes(error.field) === false);
 		});
 
@@ -196,7 +196,7 @@ export default defineComponent({
 		}
 
 		function unsetValue(field: Field) {
-			if (props.edits?.hasOwnProperty(field.field)) {
+			if (Object.prototype.hasOwnProperty.call(props.edits, field.field)) {
 				const newEdits = { ...props.edits };
 				delete newEdits[field.field];
 				emit('input', newEdits);

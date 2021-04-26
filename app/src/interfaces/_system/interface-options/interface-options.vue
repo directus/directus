@@ -41,7 +41,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { parent }) {
+	setup(props) {
 		const { interfaces } = getInterfaces();
 
 		const values = inject('values', ref<Record<string, any>>({}));
@@ -49,7 +49,7 @@ export default defineComponent({
 		const selectedInterface = computed(() => {
 			if (!values.value[props.interfaceField]) return;
 
-			return interfaces.value.find((inter) => inter.id === values.value[props.interfaceField]);
+			return interfaces.value.find((inter: { id: any }) => inter.id === values.value[props.interfaceField]);
 		});
 
 		return { selectedInterface, values };

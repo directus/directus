@@ -13,20 +13,20 @@ export class UtilsHandler {
 	}
 
 	random = {
-		string: async (length: number = 32): Promise<string> => {
+		string: async (length = 32): Promise<string | undefined> => {
 			const result = await this.transport.get<string>('/utils/random/string', { params: { length } });
-			return result.data!;
+			return result.data;
 		},
 	};
 
 	hash = {
-		generate: async (string: string): Promise<string> => {
+		generate: async (string: string): Promise<string | undefined> => {
 			const result = await this.transport.post<string>('/utils/hash/generate', { string });
-			return result.data!;
+			return result.data;
 		},
-		verify: async (string: string, hash: string): Promise<boolean> => {
+		verify: async (string: string, hash: string): Promise<boolean | undefined> => {
 			const result = await this.transport.post<boolean>('/utils/hash/verify', { string, hash });
-			return result.data!;
+			return result.data;
 		},
 	};
 

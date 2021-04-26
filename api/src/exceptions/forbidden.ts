@@ -9,7 +9,7 @@ type Extensions = {
 };
 
 export class ForbiddenException extends BaseException {
-	constructor(message = `You don't have permission to access this.`, extensions?: Extensions) {
+	constructor(_message = `You don't have permission to access this.`, _extensions?: Extensions) {
 		super(`You don't have permission to access this.`, 403, 'FORBIDDEN');
 
 		/**

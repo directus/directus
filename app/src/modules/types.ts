@@ -15,6 +15,4 @@ export interface ModuleConfig {
 	persistent?: boolean;
 }
 
-export type ModuleContext = {};
-
 export type ModuleDefineParam = ModuleConfig | (() => ModuleConfig);

@@ -22,7 +22,7 @@ let openFolders: Ref<string[] | null> | null = null;
 
 let error: Ref<any> | null = null;
 
-export default function useFolders() {
+export default function useFolders(): Record<string, any> {
 	if (loading === null) loading = ref(false);
 	if (folders === null) folders = ref<Folder[] | null>(null);
 	if (nestedFolders === null) nestedFolders = ref<Folder[] | null>(null);
@@ -61,11 +61,11 @@ export default function useFolders() {
 	}
 }
 
-export function nestFolders(rawFolders: FolderRaw[]) {
+export function nestFolders(rawFolders: FolderRaw[]): FolderRaw[] {
 	return rawFolders.map((rawFolder) => nestChildren(rawFolder, rawFolders)).filter((folder) => folder.parent === null);
 }
 
-export function nestChildren(rawFolder: FolderRaw, rawFolders: FolderRaw[]) {
+export function nestChildren(rawFolder: FolderRaw, rawFolders: FolderRaw[]): FolderRaw & Folder {
 	const folder: FolderRaw & Folder = { ...rawFolder };
 
 	const children = rawFolders

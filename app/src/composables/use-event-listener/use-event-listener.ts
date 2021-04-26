@@ -5,7 +5,7 @@ export default function useEventListener<T extends EventTarget, E extends Event>
 	type: string,
 	handler: (this: T, evt: E) => void,
 	options?: AddEventListenerOptions
-) {
+): void {
 	onMounted(() => {
 		const t = isRef(target) ? target.value : target;
 		t.addEventListener(type, handler as (evt: Event) => void, options);

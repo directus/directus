@@ -47,7 +47,7 @@ router.get(
 		const payloadService = new PayloadService('directus_settings', { schema: req.schema });
 		const defaults = { storage_asset_presets: [], storage_asset_transform: 'all' };
 
-		let savedAssetSettings = await database
+		const savedAssetSettings = await database
 			.select('storage_asset_presets', 'storage_asset_transform')
 			.from('directus_settings')
 			.first();
@@ -60,11 +60,11 @@ router.get(
 
 		const transformation = pick(req.query, ASSET_TRANSFORM_QUERY_KEYS);
 
-		if (transformation.hasOwnProperty('key') && Object.keys(transformation).length > 1) {
+		if (Object.prototype.hasOwnProperty.call(transformation, 'key') && Object.keys(transformation).length > 1) {
 			throw new InvalidQueryException(`You can't combine the "key" query parameter with any other transformation.`);
 		}
 		if (
-			transformation.hasOwnProperty('quality') &&
+			Object.prototype.hasOwnProperty.call(transformation, 'quality') &&
 			(Number(transformation.quality) < 1 || Number(transformation.quality) > 100)
 		) {
 			throw new InvalidQueryException(`"quality" Parameter has to between 1 to 100`);
@@ -127,7 +127,7 @@ router.get(
 
 		const { stream, file, stat } = await service.getAsset(req.params.pk, transformation, range);
 
-		const access = !!req.accountability?.role ? 'private' : 'public';
+		const access = req.accountability?.role ? 'private' : 'public';
 
 		res.attachment(file.filename_download);
 		res.setHeader('Content-Type', file.type);
@@ -142,7 +142,7 @@ router.get(
 			res.setHeader('Content-Length', stat.size);
 		}
 
-		if (req.query.hasOwnProperty('download') === false) {
+		if (Object.prototype.hasOwnProperty.call(req.query, 'download') === false) {
 			res.removeHeader('Content-Disposition');
 		}
 

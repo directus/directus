@@ -3,7 +3,7 @@ import { Preset } from '@/types';
 import { useUserStore } from '@/stores/';
 import api from '@/api';
 import { nanoid } from 'nanoid';
-import { merge, cloneDeep, isEqual } from 'lodash';
+import { merge, cloneDeep } from 'lodash';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
 	bookmark: null,
@@ -93,7 +93,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 	},
 };
 
-let currentUpdate: Record<number, string> = {};
+const currentUpdate: Record<number, string> = {};
 
 export const usePresetsStore = createStore({
 	id: 'presetsStore',
@@ -258,7 +258,7 @@ export const usePresetsStore = createStore({
 			}
 
 			if (preset.user !== userID) {
-				if (preset.hasOwnProperty('id')) delete preset.id;
+				if (Object.prototype.hasOwnProperty.call(preset, 'id')) delete preset.id;
 
 				return await this.create({
 					...preset,

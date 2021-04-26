@@ -1,6 +1,6 @@
 import { onBeforeMount, onBeforeUnmount, Ref } from '@vue/composition-api';
 
-export default function unsavedChanges(isSavable: Ref<boolean>) {
+export default function unsavedChanges(isSavable: Ref<boolean>): void {
 	onBeforeMount(() => {
 		window.addEventListener('beforeunload', beforeUnload);
 	});

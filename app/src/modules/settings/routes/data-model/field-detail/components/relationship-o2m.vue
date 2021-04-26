@@ -267,7 +267,7 @@ export default defineComponent({
 
 			const collectionMany = computed({
 				get() {
-					return state.relations[0].many_collection!;
+					return state.relations[0].many_collection;
 				},
 				set(collection: string) {
 					state.relations[0].many_collection = collection;

@@ -14,11 +14,11 @@ export class GraphQLHandler {
 		});
 	}
 
-	async items<T>(query: string, variables?: any): Promise<TransportResponse<T>> {
+	async items<T>(query: string, variables?: unknown): Promise<TransportResponse<T>> {
 		return await this.request('/graphql', query, variables);
 	}
 
-	async system<T>(query: string, variables?: any): Promise<TransportResponse<T>> {
+	async system<T>(query: string, variables?: unknown): Promise<TransportResponse<T>> {
 		return await this.request('/graphql/system', query, variables);
 	}
 }

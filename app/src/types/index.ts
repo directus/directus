@@ -6,3 +6,4 @@ export * from './notifications';
 export * from './fields';
 export * from './permissions';
 export * from './error';
+export * from './templates';

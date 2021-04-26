@@ -14,7 +14,7 @@ export const usePermissionsStore = createStore({
 			const userStore = useUserStore();
 
 			const response = await api.get('/permissions', {
-				params: { limit: -1, filter: { role: { _eq: userStore.state.currentUser!.role.id } } },
+				params: { limit: -1, filter: { role: { _eq: userStore.state.currentUser?.role.id } } },
 			});
 
 			this.state.permissions = response.data.data.map((rawPermission: any) => {

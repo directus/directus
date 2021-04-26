@@ -77,7 +77,7 @@ export default defineComponent({
 		const userStore = useUserStore();
 		const presetsStore = usePresetsStore();
 
-		const isMine = computed(() => props.bookmark.user === userStore.state.currentUser!.id);
+		const isMine = computed(() => props.bookmark.user === userStore.state.currentUser?.id);
 
 		const { renameActive, renameValue, renameSave, renameSaving } = useRenameBookmark();
 		const { deleteActive, deleteValue, deleteSave, deleteSaving } = useDeleteBookmark();

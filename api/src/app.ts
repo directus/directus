@@ -51,7 +51,7 @@ import { emitAsyncSafe } from './emitter';
 
 import fse from 'fs-extra';
 
-export default async function createApp() {
+export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
 
 	await validateDBConnection();

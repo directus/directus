@@ -4,7 +4,7 @@ export class MemoryStorage extends BaseStorage {
 	private prefix: string;
 	private values: Record<string, string>;
 
-	constructor(prefix: string = '') {
+	constructor(prefix = '') {
 		super();
 		this.values = {};
 		this.prefix = prefix;
@@ -13,7 +13,7 @@ export class MemoryStorage extends BaseStorage {
 	get(key: string): string | null {
 		const k = this.key(key);
 		if (k in this.values) {
-			return this.values[k]!;
+			return this.values[k] ?? null;
 		}
 		return null;
 	}

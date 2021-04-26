@@ -1,4 +1,4 @@
-import { ref, computed } from '@vue/composition-api';
+import { ref, computed, Ref } from '@vue/composition-api';
 import prettyMS from 'pretty-ms';
 import bytes from 'bytes';
 import api from '@/api';
@@ -19,7 +19,7 @@ type ServerInfo = {
 	};
 };
 
-export function useProjectInfo() {
+export function useProjectInfo(): Record<string, Ref> {
 	const info = ref<ServerInfo>();
 	const loading = ref(false);
 	const error = ref<any>();

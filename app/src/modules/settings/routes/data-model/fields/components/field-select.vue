@@ -202,6 +202,7 @@ import { cloneDeep } from 'lodash';
 import { getLocalTypeForField } from '../../get-local-type';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
 	props: {
@@ -234,7 +235,7 @@ export default defineComponent({
 		} = useDuplicate();
 
 		const interfaceName = computed(() => {
-			return interfaces.value.find((inter) => inter.id === props.field.meta?.interface)?.name;
+			return interfaces.value.find((inter: InterfaceConfig) => inter.id === props.field.meta?.interface)?.name;
 		});
 
 		const hidden = computed(() => props.field.meta?.hidden === true);

@@ -7,7 +7,7 @@ import path from 'path';
 const defaults = requireYAML(require.resolve('./_defaults.yaml'));
 const fieldData = fse.readdirSync(path.resolve(__dirname));
 
-export let systemFieldRows: FieldMeta[] = [];
+export const systemFieldRows: FieldMeta[] = [];
 
 for (const filepath of fieldData) {
 	if (filepath.includes('_defaults') || filepath.includes('index')) continue;

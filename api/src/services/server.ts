@@ -30,7 +30,7 @@ export class ServerService {
 		this.settingsService = new SettingsService({ knex: this.knex, schema: this.schema });
 	}
 
-	async serverInfo() {
+	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
 
 		const projectInfo = await this.settingsService.readSingleton({
@@ -70,7 +70,7 @@ export class ServerService {
 		return info;
 	}
 
-	async health() {
+	async health(): Promise<Record<string, any>> {
 		const checkID = nanoid(5);
 
 		// Based on https://tools.ietf.org/id/draft-inadarei-api-health-check-05.html#name-componenttype
@@ -204,8 +204,8 @@ export class ServerService {
 			const startTime = performance.now();
 
 			try {
-				await cache!.set(`health-${checkID}`, true, 5);
-				await cache!.delete(`health-${checkID}`);
+				await cache?.set(`health-${checkID}`, true, 5);
+				await cache?.delete(`health-${checkID}`);
 			} catch (err) {
 				checks['cache:responseTime'][0].status = 'error';
 				checks['cache:responseTime'][0].output = err;

@@ -46,7 +46,7 @@ export class CollectionsService {
 				field.meta = {
 					...field.meta,
 					field: field.field,
-					collection: payload.collection!,
+					collection: payload.collection,
 				};
 			}
 
@@ -83,7 +83,7 @@ export class CollectionsService {
 			}
 
 			await trx.schema.createTable(payload.collection, (table) => {
-				for (const field of payload.fields!) {
+				for (const field of payload.fields || []) {
 					if (field.type && ALIAS_TYPES.includes(field.type) === false) {
 						fieldsService.addColumnToTable(table, field);
 					}
@@ -95,7 +95,7 @@ export class CollectionsService {
 				collection: payload.collection,
 			});
 
-			const fieldPayloads = payload.fields!.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
+			const fieldPayloads = payload.fields?.filter((field) => field.meta).map((field) => field.meta) as FieldMeta[];
 			await fieldItemsService.createMany(fieldPayloads);
 
 			return payload.collection;
@@ -111,7 +111,10 @@ export class CollectionsService {
 	/**
 	 * Create multiple new collections
 	 */
-	async createMany(payloads: Partial<Collection> & { collection: string }[], opts?: MutationOptions) {
+	async createMany(
+		payloads: Partial<Collection> & { collection: string }[],
+		opts?: MutationOptions
+	): Promise<string[]> {
 		const collections = await this.knex.transaction(async (trx) => {
 			const service = new CollectionsService({
 				schema: this.schema,
@@ -351,7 +354,7 @@ export class CollectionsService {
 					.where({ many_collection: collectionKey, many_field: relation.many_field });
 
 				await fieldsService.deleteField(relation.one_collection!, relation.one_field!);
-			} else if (!!relation.one_collection) {
+			} else if (relation.one_collection) {
 				await this.knex('directus_relations')
 					.update({ one_field: null })
 					.where({ one_collection: collectionKey, one_field: relation.one_field });

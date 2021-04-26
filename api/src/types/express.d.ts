@@ -2,9 +2,6 @@
  * Custom properties on the req object in express
  */
 
-import { Permission } from './permissions';
-import { Relation } from './relation';
-
 import { Query } from './query';
 import { Accountability } from './accountability';
 import { SchemaOverview } from './schema';

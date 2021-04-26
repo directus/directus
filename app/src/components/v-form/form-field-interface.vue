@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { Field } from '@/types';
 import { getInterfaces } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
@@ -74,7 +74,9 @@ export default defineComponent({
 		const { interfaces } = getInterfaces();
 
 		const interfaceExists = computed(() => {
-			return !!interfaces.value.find((inter) => inter.id === props.field?.meta?.interface || 'text-input');
+			return !!interfaces.value.find(
+				(inter: { id: string | null | undefined }) => inter.id === props.field?.meta?.interface || 'text-input'
+			);
 		});
 
 		return { interfaceExists, getDefaultInterfaceForType };

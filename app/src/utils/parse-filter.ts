@@ -1,7 +1,7 @@
 import { deepMap } from './deep-map';
 import { useUserStore } from '@/stores';
 
-export function parseFilter(filter: Record<string, any>) {
+export function parseFilter(filter: Record<string, any>): Record<string, any> {
 	const userStore = useUserStore();
 
 	return deepMap(filter, (val: any, key: string) => {

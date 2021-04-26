@@ -4,7 +4,6 @@ import { PermissionsService } from './permissions';
 import { UsersService } from './users';
 import { PresetsService } from './presets';
 import { UnprocessableEntityException } from '../exceptions';
-import { toArray } from '../utils/to-array';
 
 export class RolesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

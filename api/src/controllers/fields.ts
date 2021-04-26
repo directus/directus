@@ -8,7 +8,6 @@ import { types, Field } from '../types';
 import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
 import { ALIAS_TYPES } from '../constants';
-import { reduceSchema } from '../utils/reduce-schema';
 
 const router = Router();
 
@@ -132,7 +131,7 @@ router.patch(
 		}
 
 		try {
-			let results: any = [];
+			const results: any = [];
 			for (const field of req.body) {
 				const updatedField = await service.readOne(req.params.collection, field.field);
 				results.push(updatedField);

@@ -1,4 +1,4 @@
-import express, { RequestHandler } from 'express';
+import express from 'express';
 import asyncHandler from '../utils/async-handler';
 import collectionExists from '../middleware/collection-exists';
 import { ItemsService, MetaService } from '../services';

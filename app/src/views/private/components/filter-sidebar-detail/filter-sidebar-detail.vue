@@ -113,7 +113,7 @@ export default defineComponent({
 							key: 'hide-archived',
 							field: collectionInfo.value.meta.archive_field,
 							operator: 'neq',
-							value: collectionInfo.value.meta.archive_value!,
+							value: collectionInfo.value.meta.archive_value,
 							locked: true,
 						},
 					]);

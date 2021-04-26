@@ -1,5 +1,5 @@
 import Dockerode, { ContainerSpec } from 'dockerode';
-import knex, { Knex } from 'knex';
+import knex from 'knex';
 import { awaitDatabaseConnection, awaitDirectusConnection } from './utils/await-connection';
 import Listr, { ListrTask } from 'listr';
 import { getDBsToTest } from '../get-dbs-to-test';
@@ -8,27 +8,18 @@ import globby from 'globby';
 import path from 'path';
 import { GlobalConfigTsJest } from 'ts-jest/dist/types';
 import { writeFileSync } from 'fs';
-
-declare module global {
-	let databaseContainers: { vendor: string; container: Dockerode.Container }[];
-	let directusContainers: { vendor: string; container: Dockerode.Container }[];
-	let knexInstances: { vendor: string; knex: Knex }[];
-}
+import global from './global';
 
 const docker = new Dockerode();
 let started = false;
 
-export default async (jestConfig: GlobalConfigTsJest) => {
+export default async (jestConfig: GlobalConfigTsJest): Promise<void> => {
 	if (started) return;
 	started = true;
 
 	console.log('\n\n');
 
 	console.log(`👮‍♀️ Starting tests!\n`);
-
-	global.databaseContainers = [];
-	global.directusContainers = [];
-	global.knexInstances = [];
 
 	const vendors = getDBsToTest();
 
@@ -76,11 +67,10 @@ export default async (jestConfig: GlobalConfigTsJest) => {
 					vendors
 						.map((vendor) => {
 							return {
-								title: config.names[vendor]!,
+								title: config.names[vendor] ?? 'Unknown vendor',
 								task: async (_, task) => {
 									const image =
-										config.containerConfig[vendor]! &&
-										(config.containerConfig[vendor]! as Dockerode.ContainerSpec).Image;
+										config.containerConfig[vendor] && (config.containerConfig[vendor] as Dockerode.ContainerSpec).Image;
 
 									if (!image) return;
 
@@ -117,14 +107,14 @@ export default async (jestConfig: GlobalConfigTsJest) => {
 				return new Listr(
 					vendors.map((vendor) => {
 						return {
-							title: config.names[vendor]!,
+							title: config.names[vendor] ?? 'Unknown vendor',
 							task: () => {
 								return new Listr([
 									{
 										title: 'Database',
 										task: async () => {
 											if (!config.containerConfig[vendor] || config.containerConfig[vendor] === false) return;
-											const container = await docker.createContainer(config.containerConfig[vendor]! as ContainerSpec);
+											const container = await docker.createContainer(config.containerConfig[vendor] as ContainerSpec);
 											global.databaseContainers.push({
 												vendor,
 												container,
@@ -134,11 +124,12 @@ export default async (jestConfig: GlobalConfigTsJest) => {
 									{
 										title: 'Directus',
 										task: async () => {
+											const envs: string[] = config.envs[vendor] || [];
 											const container = await docker.createContainer({
 												name: `directus-test-directus-${vendor}-${process.pid}`,
 												Image: 'directus-test-image',
 												Env: [
-													...config.envs[vendor]!,
+													...envs,
 													'ADMIN_EMAIL=admin@example.com',
 													'ADMIN_PASSWORD=password',
 													'KEY=directus-test',
@@ -153,7 +144,7 @@ export default async (jestConfig: GlobalConfigTsJest) => {
 																	`directus-test-database-${vendor}-${process.pid}:directus-test-database-${vendor}-${process.pid}`,
 															  ],
 													PortBindings: {
-														'8055/tcp': [{ HostPort: String(config.ports[vendor]!) }],
+														'8055/tcp': [{ HostPort: String(config.ports[vendor]) }],
 													},
 												},
 											} as ContainerSpec);
@@ -178,7 +169,7 @@ export default async (jestConfig: GlobalConfigTsJest) => {
 				return new Listr(
 					global.databaseContainers.map(({ vendor, container }) => {
 						return {
-							title: config.names[vendor]!,
+							title: config.names[vendor] ?? 'Unknown vendor',
 							task: async () => await container.start(),
 						};
 					}),
@@ -192,9 +183,12 @@ export default async (jestConfig: GlobalConfigTsJest) => {
 				return new Listr(
 					vendors.map((vendor) => {
 						return {
-							title: config.names[vendor]!,
+							title: config.names[vendor] ?? 'Unknown vendor',
 							task: () => {
-								global.knexInstances.push({ vendor, knex: knex(config.knexConfig[vendor]!) });
+								const knexConfig = config.knexConfig[vendor];
+								if (knexConfig) {
+									global.knexInstances.push({ vendor, knex: knex(knexConfig) });
+								}
 							},
 						};
 					}),
@@ -208,8 +202,13 @@ export default async (jestConfig: GlobalConfigTsJest) => {
 				return new Listr(
 					global.knexInstances.map(({ vendor, knex }) => {
 						return {
-							title: config.names[vendor]!,
-							task: async () => await awaitDatabaseConnection(knex, config.knexConfig[vendor]!.waitTestSQL),
+							title: config.names[vendor] ?? 'Unknown vendor',
+							task: async () => {
+								const knexConfig = config.knexConfig[vendor];
+								if (knexConfig) {
+									await awaitDatabaseConnection(knex, knexConfig.waitTestSQL);
+								}
+							},
 						};
 					}),
 					{ concurrent: true }
@@ -222,7 +221,7 @@ export default async (jestConfig: GlobalConfigTsJest) => {
 				return new Listr(
 					global.knexInstances.map(({ vendor, knex }) => {
 						return {
-							title: config.names[vendor]!,
+							title: config.names[vendor] ?? 'Unknown vendor',
 							task: async () => await knex.destroy(),
 						};
 					}),
@@ -236,7 +235,7 @@ export default async (jestConfig: GlobalConfigTsJest) => {
 				return new Listr(
 					global.directusContainers.map(({ vendor, container }) => {
 						return {
-							title: config.names[vendor]!,
+							title: config.names[vendor] ?? 'Unknown vendor',
 							task: async () => await container.start(),
 						};
 					}),
@@ -250,8 +249,8 @@ export default async (jestConfig: GlobalConfigTsJest) => {
 				return new Listr(
 					vendors.map((vendor) => {
 						return {
-							title: config.names[vendor]!,
-							task: async () => await awaitDirectusConnection(config.ports[vendor]!),
+							title: config.names[vendor] ?? 'Unknown vendor',
+							task: async () => await awaitDirectusConnection(config.ports[vendor]),
 						};
 					}),
 					{ concurrent: true }

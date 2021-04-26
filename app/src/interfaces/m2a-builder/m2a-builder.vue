@@ -235,7 +235,7 @@ export default defineComponent({
 				const keys: Record<string, string> = {};
 
 				for (const collection of Object.values(collections.value)) {
-					keys[collection.collection] = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection).field!;
+					keys[collection.collection] = fieldsStore.getPrimaryKeyFieldForCollection(collection.collection).field;
 				}
 
 				return keys;
@@ -319,7 +319,6 @@ export default defineComponent({
 							} else {
 								val[anyRelation.value.many_field] = cloneDeep(item);
 							}
-						} else {
 						}
 
 						return val;
@@ -328,10 +327,10 @@ export default defineComponent({
 				if (o2mRelation.value?.sort_field) {
 					return [
 						...values
-							.filter((val) => val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.filter((val) => Object.prototype.hasOwnProperty.call(val, o2mRelation.value.sort_field!))
 							.sort((a, b) => a[o2mRelation.value.sort_field!] - b[o2mRelation.value.sort_field!]), // sort by sort field if it exists
 						...values
-							.filter((val) => !val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.filter((val) => !Object.prototype.hasOwnProperty.call(val, o2mRelation.value.sort_field!))
 							.sort((a, b) => a.$index - b.$index), // sort the rest with $index
 					];
 				} else {
@@ -412,7 +411,7 @@ export default defineComponent({
 								fields: [
 									o2mRelation.value.many_primary,
 									anyRelation.value.many_field,
-									anyRelation.value.one_collection_field!,
+									anyRelation.value.one_collection_field,
 									o2mRelation.value.sort_field,
 								],
 							},

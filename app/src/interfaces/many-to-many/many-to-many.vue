@@ -71,7 +71,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
+import { defineComponent, computed, PropType, toRefs } from '@vue/composition-api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { get } from 'lodash';
@@ -85,6 +85,7 @@ import useSelection from './use-selection';
 import useSort from './use-sort';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { DisplayConfig } from '@/displays/types';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -126,7 +127,7 @@ export default defineComponent({
 			let relatedDisplayTemplate = relationCollection.value.meta?.display_template;
 			if (relatedDisplayTemplate) {
 				const regex = /({{.*?}})/g;
-				const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
+				const parts = relatedDisplayTemplate.split(regex).filter((p: DisplayConfig) => p);
 
 				for (const part of parts) {
 					if (part.startsWith('{{') === false) continue;

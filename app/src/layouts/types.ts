@@ -1,4 +1,3 @@
-import VueI18n from 'vue-i18n';
 import { VueConstructor, Component } from 'vue';
 
 export interface LayoutConfig {
@@ -8,7 +7,7 @@ export interface LayoutConfig {
 	component: Component;
 }
 
-export type LayoutContext = {};
+export type LayoutContext = Record<string, any>;
 
 export type LayoutDefineParam = LayoutConfig | ((context: LayoutContext) => LayoutConfig);
 

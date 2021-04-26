@@ -8,7 +8,6 @@ import { Knex } from 'knex';
 import { format, formatISO, parse, parseISO } from 'date-fns';
 import { ForbiddenException } from '../exceptions';
 import { toArray } from '../utils/to-array';
-import { systemRelationRows } from '../database/system-data/relations';
 import { InvalidPayloadException } from '../exceptions';
 import { isPlainObject } from 'lodash';
 import Joi from 'joi';
@@ -31,7 +30,7 @@ type Alterations = {
 	update: {
 		[key: string]: any;
 	}[];
-	delete: (Number | String)[];
+	delete: (number | string)[];
 };
 
 /**
@@ -101,19 +100,19 @@ export class PayloadService {
 			if (action === 'read') return value ? '**********' : null;
 			return value;
 		},
-		async 'user-created'({ action, value, payload, accountability }) {
+		async 'user-created'({ action, value, accountability }) {
 			if (action === 'create') return accountability?.user || null;
 			return value;
 		},
-		async 'user-updated'({ action, value, payload, accountability }) {
+		async 'user-updated'({ action, value, accountability }) {
 			if (action === 'update') return accountability?.user || null;
 			return value;
 		},
-		async 'role-created'({ action, value, payload, accountability }) {
+		async 'role-created'({ action, value, accountability }) {
 			if (action === 'create') return accountability?.role || null;
 			return value;
 		},
-		async 'role-updated'({ action, value, payload, accountability }) {
+		async 'role-updated'({ action, value, accountability }) {
 			if (action === 'update') return accountability?.role || null;
 			return value;
 		},
@@ -140,18 +139,18 @@ export class PayloadService {
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[]
 	): Promise<Partial<Item> | Partial<Item>[]> {
-		let processedPayload = toArray(payload);
+		const processedPayload = toArray(payload);
 
 		if (processedPayload.length === 0) return [];
 
 		const fieldsInPayload = Object.keys(processedPayload[0]);
 
 		let specialFieldsInCollection = Object.entries(this.schema.collections[this.collection].fields).filter(
-			([name, field]) => field.special && field.special.length > 0
+			([, field]) => field.special && field.special.length > 0
 		);
 
 		if (action === 'read') {
-			specialFieldsInCollection = specialFieldsInCollection.filter(([name, field]) => {
+			specialFieldsInCollection = specialFieldsInCollection.filter(([name]) => {
 				return fieldsInPayload.includes(name);
 			});
 		}
@@ -191,14 +190,14 @@ export class PayloadService {
 		payload: Partial<Item>,
 		action: Action,
 		accountability: Accountability | null
-	) {
+	): Promise<any> {
 		if (!field.special) return payload[field.field];
 		const fieldSpecials = field.special ? toArray(field.special) : [];
 
 		let value = clone(payload[field.field]);
 
 		for (const special of fieldSpecials) {
-			if (this.transformers.hasOwnProperty(special)) {
+			if (Object.prototype.hasOwnProperty.call(this.transformers, special)) {
 				value = await this.transformers[special]({
 					action,
 					value,
@@ -215,10 +214,13 @@ export class PayloadService {
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
-	async processDates(payloads: Partial<Record<string, any>>[], action: Action) {
+	async processDates(
+		payloads: Partial<Record<string, any>>[],
+		action: Action
+	): Promise<Partial<Record<string, any>>[]> {
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 
-		const dateColumns = fieldsInCollection.filter(([name, field]) =>
+		const dateColumns = fieldsInCollection.filter(([, field]) =>
 			['dateTime', 'date', 'timestamp'].includes(field.type)
 		);
 
@@ -283,11 +285,14 @@ export class PayloadService {
 
 		const revisions: PrimaryKey[] = [];
 
-		let payload = cloneDeep(data);
+		const payload = cloneDeep(data);
 
 		// Only process related records that are actually in the payload
 		const relationsToProcess = relations.filter((relation) => {
-			return payload.hasOwnProperty(relation.many_field) && isPlainObject(payload[relation.many_field]);
+			return (
+				Object.prototype.hasOwnProperty.call(payload, relation.many_field) &&
+				isPlainObject(payload[relation.many_field])
+			);
 		});
 
 		for (const relation of relationsToProcess) {
@@ -318,7 +323,7 @@ export class PayloadService {
 
 			const relatedPrimary = this.schema.collections[relatedCollection].primary;
 			const relatedRecord: Partial<Item> = payload[relation.many_field];
-			const hasPrimaryKey = relatedRecord.hasOwnProperty(relatedPrimary);
+			const hasPrimaryKey = Object.prototype.hasOwnProperty.call(relatedRecord, relatedPrimary);
 
 			let relatedPrimaryKey: PrimaryKey = relatedRecord[relatedPrimary];
 
@@ -352,7 +357,7 @@ export class PayloadService {
 		const payload = cloneDeep(data);
 
 		// All the revisions saved on this level
-		let revisions: PrimaryKey[] = [];
+		const revisions: PrimaryKey[] = [];
 
 		// Many to one relations that exist on the current collection
 		const relations = this.schema.relations.filter((relation) => {
@@ -361,7 +366,9 @@ export class PayloadService {
 
 		// Only process related records that are actually in the payload
 		const relationsToProcess = relations.filter((relation) => {
-			return payload.hasOwnProperty(relation.many_field) && isObject(payload[relation.many_field]);
+			return (
+				Object.prototype.hasOwnProperty.call(payload, relation.many_field) && isObject(payload[relation.many_field])
+			);
 		});
 
 		for (const relation of relationsToProcess) {
@@ -376,7 +383,7 @@ export class PayloadService {
 			});
 
 			const relatedRecord: Partial<Item> = payload[relation.many_field];
-			const hasPrimaryKey = relatedRecord.hasOwnProperty(relation.one_primary);
+			const hasPrimaryKey = Object.prototype.hasOwnProperty.call(relatedRecord, relation.one_primary);
 
 			if (['string', 'number'].includes(typeof relatedRecord)) continue;
 
@@ -415,12 +422,12 @@ export class PayloadService {
 			return relation.one_collection === this.collection;
 		});
 
-		let payload = cloneDeep(data);
+		const payload = cloneDeep(data);
 
 		// Only process related records that are actually in the payload
 		const relationsToProcess = relations.filter((relation) => {
 			if (!relation.one_field) return false;
-			return payload.hasOwnProperty(relation.one_field);
+			return Object.prototype.hasOwnProperty.call(payload, relation.one_field);
 		});
 
 		const nestedUpdateSchema = Joi.object({
