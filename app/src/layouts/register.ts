@@ -21,9 +21,7 @@ export async function registerLayouts() {
 
 		await asyncPool(5, layouts, async (layoutName) => {
 			try {
-				const result = await import(
-					/* webpackIgnore: true */ getRootPath() + `extensions/layouts/${layoutName}/index.js`
-				);
+				const result = await import(/* @vite-ignore */ getRootPath() + `extensions/layouts/${layoutName}/index.js`);
 				modules.push(result.default);
 			} catch (err) {
 				console.warn(`Couldn't load custom layout "${layoutName}":`, err);

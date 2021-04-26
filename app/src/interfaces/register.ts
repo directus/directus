@@ -23,7 +23,7 @@ export async function registerInterfaces() {
 		await asyncPool(5, interfaces, async (interfaceName) => {
 			try {
 				const result = await import(
-					/* webpackIgnore: true */ getRootPath() + `extensions/interfaces/${interfaceName}/index.js`
+					/* @vite-ignore */ getRootPath() + `extensions/interfaces/${interfaceName}/index.js`
 				);
 				modules.push(result.default);
 			} catch (err) {

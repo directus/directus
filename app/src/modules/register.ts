@@ -27,9 +27,7 @@ export async function loadModules() {
 
 		await asyncPool(5, modules, async (moduleName) => {
 			try {
-				const result = await import(
-					/* webpackIgnore: true */ getRootPath() + `extensions/modules/${moduleName}/index.js`
-				);
+				const result = await import(/* @vite-ignore */ getRootPath() + `extensions/modules/${moduleName}/index.js`);
 				result.default.routes = result.default.routes.map((route: RouteRecordRaw) => {
 					if (route.path) {
 						if (route.path[0] === '/') route.path = route.path.substr(1);

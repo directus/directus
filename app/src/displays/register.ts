@@ -22,9 +22,7 @@ export async function registerDisplays() {
 
 		await asyncPool(5, displays, async (displayName) => {
 			try {
-				const result = await import(
-					/* webpackIgnore: true */ getRootPath() + `extensions/displays/${displayName}/index.js`
-				);
+				const result = await import(/* @vite-ignore */ getRootPath() + `extensions/displays/${displayName}/index.js`);
 				modules.push(result.default);
 			} catch (err) {
 				console.warn(`Couldn't load custom displays "${displayName}":`, err);
