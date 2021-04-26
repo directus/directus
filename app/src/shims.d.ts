@@ -1,12 +1,14 @@
-declare module "*.vue" {
-  import { defineComponent } from "vue";
-  const component: ReturnType<typeof defineComponent>;
-  export default component;
+declare module '*.vue' {
+	import { defineComponent } from 'vue';
+	const component: ReturnType<typeof defineComponent>;
+	export default component;
 }
 
+// @TODO3 Is this still needed?
 declare module '*.svg' {
-	import Vue from 'vue';
-	export default Vue;
+	import { defineComponent } from 'vue';
+	const component: ReturnType<typeof defineComponent>;
+	export default component;
 }
 
 declare module '*.md' {
@@ -27,13 +29,6 @@ declare module '*.json' {
 declare module 'jsonlint-mod' {
 	const x: any;
 	export default x;
-}
-
-interface ImportMeta {
-	env: {
-	  DEV: boolean;
-	  PROD: boolean;
-	};
 }
 
 type Primitive = string | number | boolean | bigint | symbol | undefined | null;
