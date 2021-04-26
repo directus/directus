@@ -38,6 +38,7 @@ export function useStores(
 		usePermissionsStore,
 	]
 ) {
+	// @TODO3 Fix type issue
 	return stores.map((useStore) => useStore()) as GenericStore[];
 }
 
