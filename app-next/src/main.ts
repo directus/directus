@@ -1,7 +1,3 @@
-import { getRootPath } from './utils/get-root-path';
-
-__webpack_public_path__ = getRootPath() + 'admin/';
-
 import { version } from '../package.json';
 
 console.log(`
@@ -30,7 +26,7 @@ console.info(
 	`Hey! Interested in helping build this open-source data management platform?\nIf so, join our growing team of contributors at: https://directus.chat`
 );
 
-if (process.env.NODE_ENV === 'development') {
+if (import.meta.env.DEV) {
 	console.info(`%c🐰 Starting Directus v${version}...`, 'color:Green');
 } else {
 	console.info(`%c🐰 Starting Directus...`, 'color:Green');
