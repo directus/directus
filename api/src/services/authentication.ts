@@ -59,15 +59,15 @@ export class AuthenticationService {
 
 		const { email, password, ip, userAgent, otp } = options;
 
-		const hookPayload = omit(options, 'password', 'otp');
+		const hookPayload = omit(options, 'otp');
 
-		const user = await database
+		let user = await database
 			.select('id', 'password', 'role', 'tfa_secret', 'status')
 			.from('directus_users')
 			.whereRaw('LOWER(??) = ?', ['email', email.toLowerCase()])
 			.first();
 
-		await emitter.emitAsync('auth.login.before', hookPayload, {
+		const updatedUser = await emitter.emitAsync('auth.login.before', hookPayload, {
 			event: 'auth.login.before',
 			action: 'login',
 			schema: this.schema,
@@ -75,9 +75,12 @@ export class AuthenticationService {
 			accountability: this.accountability,
 			status: 'pending',
 			user: user?.id,
-			obj: user,
 			database: this.knex,
 		});
+
+		if (updatedUser) {
+			user = updatedUser;
+		}
 
 		const emitStatus = (status: 'fail' | 'success') => {
 			emitAsyncSafe('auth.login', hookPayload, {
@@ -88,7 +91,6 @@ export class AuthenticationService {
 				accountability: this.accountability,
 				status,
 				user: user?.id,
-				obj: user,
 				database: this.knex,
 			});
 		};

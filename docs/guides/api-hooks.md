@@ -157,7 +157,6 @@ The `auth` and `oauth` hooks have the following context properties:
 - `schema` - The current API schema in use
 - `status` - One of `pending`, `success`, `fail`
 - `user` <sup>†</sup> - ID of the user that tried logging in/has logged in
-- `obj` <sup>†</sup> - User object returned by database. Can be modified, for example, to migrate from bcrypt passwords.
 
 <sup>†</sup> Not available in `oauth`
 
