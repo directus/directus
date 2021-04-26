@@ -154,7 +154,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { state } from '../store';
 
 export const fieldTypes = [

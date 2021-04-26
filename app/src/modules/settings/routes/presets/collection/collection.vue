@@ -97,7 +97,7 @@ import { useRouter } from 'vue-router';
 import ValueNull from '@/views/private/components/value-null';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 import { userName } from '@/utils/user-name';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 type PresetRaw = {

@@ -39,7 +39,7 @@
 import { defineComponent, ref, watch } from 'vue';
 import marked from 'marked';
 import localizedFormat from '@/utils/localized-format';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	props: {

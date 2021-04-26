@@ -115,7 +115,7 @@
 import { defineComponent, computed } from 'vue';
 import { orderBy } from 'lodash';
 import { useCollectionsStore } from '@/stores';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 
 import { state, generationInfo } from '../store';
 

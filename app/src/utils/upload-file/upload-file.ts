@@ -1,5 +1,5 @@
 import api from '@/api';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
 
 import emitter, { Events } from '@/events';

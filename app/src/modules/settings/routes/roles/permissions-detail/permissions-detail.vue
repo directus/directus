@@ -50,7 +50,7 @@ import api from '@/api';
 import { Permission, Role } from '@/types';
 import { useCollectionsStore } from '@/stores/';
 import { useRouter } from 'vue-router';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import Actions from './components/actions.vue';
 import Tabs from './components/tabs.vue';
 

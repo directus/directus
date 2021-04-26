@@ -1,7 +1,7 @@
 import { computed, Ref, ref, watch } from 'vue';
 import { getPublicURL } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 
 type MediaSelection = {
 	source: string;

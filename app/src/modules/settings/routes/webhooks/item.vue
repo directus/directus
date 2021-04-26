@@ -76,7 +76,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
 import marked from 'marked';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 
 type Values = {
 	[field: string]: any;

@@ -59,7 +59,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, provide } from 'vue';
 import HeaderBar from '@/views/private/components/header-bar/header-bar.vue';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	components: {

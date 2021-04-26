@@ -1,5 +1,5 @@
 import uploadFile from '@/utils/upload-file';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '../unexpected-error';
 

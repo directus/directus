@@ -1,6 +1,6 @@
 import api from '@/api';
 import { Ref, ref, watch, computed } from 'vue';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import useCollection from '@/composables/use-collection';
 import { AxiosResponse } from 'axios';
 import { APIError } from '@/types';

@@ -205,7 +205,7 @@ import { defineComponent, computed, ref } from 'vue';
 import { orderBy } from 'lodash';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 
 import { state } from '../store';
 

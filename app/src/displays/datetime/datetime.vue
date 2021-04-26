@@ -6,7 +6,7 @@
 import { defineComponent, ref, watch, PropType, computed } from 'vue';
 import localizedFormat from '@/utils/localized-format';
 import localizedFormatDistance from '@/utils/localized-format-distance';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { parseISO, parse } from 'date-fns';
 
 export default defineComponent({
@@ -88,8 +88,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .datetime {
 	overflow: hidden;
+	line-height: 1.15;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	line-height: 1.15;
 }
 </style>

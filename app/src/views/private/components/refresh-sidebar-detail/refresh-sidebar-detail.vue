@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { computed, defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({

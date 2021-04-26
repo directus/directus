@@ -203,7 +203,7 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail';
 import useItem from '@/composables/use-item';
 import SaveOptions from '@/views/private/components/save-options';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import marked from 'marked';
 import useShortcut from '@/composables/use-shortcut';
 import { useRouter, NavigationGuard } from 'vue-router';

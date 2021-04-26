@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, onMounted, watch } from 'vue';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	props: {

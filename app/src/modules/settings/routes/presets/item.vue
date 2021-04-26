@@ -112,7 +112,7 @@ import { defineComponent, computed, ref } from 'vue';
 import SettingsNavigation from '../../components/navigation.vue';
 import { Preset, Filter } from '@/types';
 import api from '@/api';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
 import { useRouter } from 'vue-router';

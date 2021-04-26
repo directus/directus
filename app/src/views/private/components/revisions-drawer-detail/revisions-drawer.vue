@@ -43,7 +43,7 @@
 import { defineComponent, PropType, computed, ref } from 'vue';
 import useSync from '@/composables/use-sync';
 import { Revision } from './types';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import RevisionsDrawerPicker from './revisions-drawer-picker.vue';
 import RevisionsDrawerPreview from './revisions-drawer-preview.vue';
 import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';

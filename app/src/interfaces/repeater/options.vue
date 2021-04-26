@@ -21,7 +21,7 @@
 import { defineComponent, PropType, computed } from 'vue';
 import Repeater from './repeater.vue';
 import { Field, FieldMeta } from '@/types';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { fieldTypes } from '@/modules/settings/routes/data-model/field-detail/components/schema.vue';
 
 export default defineComponent({

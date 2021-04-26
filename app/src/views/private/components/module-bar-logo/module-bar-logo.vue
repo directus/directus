@@ -22,7 +22,7 @@
 import { defineComponent, ref, computed, watch } from 'vue';
 import { useSettingsStore, useRequestsStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 import { addTokenToURL } from '@/api';
 
 export default defineComponent({

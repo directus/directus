@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import i18n from '@/lang';
+import { i18n } from '@/lang';
 
 type Option = {
 	text: string;
