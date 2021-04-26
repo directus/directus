@@ -1,12 +1,11 @@
 <template>
 	<div class="render-template" ref="templateEl">
 		<span class="vertical-aligner" />
-		<template v-for="(part, index) in parts">
-			<value-null :key="index" v-if="part === null || part.value === null" />
+		<template v-for="(part, index) in parts" :key="index">
+			<value-null v-if="part === null || part.value === null" />
 			<component
 				v-else-if="typeof part === 'object' && part.component"
 				:is="`display-${part.component}`"
-				:key="index"
 				:value="part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
@@ -15,7 +14,7 @@
 				:field="part.field"
 				v-bind="part.options"
 			/>
-			<span :key="index" v-else>{{ part }}</span>
+			<span v-else>{{ part }}</span>
 		</template>
 	</div>
 </template>

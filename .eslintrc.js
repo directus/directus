@@ -3,7 +3,7 @@ module.exports = {
 	env: {
 		node: true,
 	},
-	extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier-vue/recommended', 'plugin:vue/essential'],
+	extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier-vue3/recommended', 'plugin:vue3/essential'],
 	plugins: ['@typescript-eslint', 'prettier'],
 	rules: {
 		'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
@@ -14,7 +14,6 @@ module.exports = {
 		'@typescript-eslint/no-explicit-any': 0,
 		'@typescript-eslint/no-var-requires': 0,
 		'prettier/prettier': ['error', { singleQuote: true }],
-		'vue/valid-v-slot': 0,
 		'comma-dangle': [
 			'error',
 			{

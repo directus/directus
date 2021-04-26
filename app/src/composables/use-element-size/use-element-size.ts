@@ -1,6 +1,5 @@
 import { Ref, ref, isRef, onMounted, onUnmounted } from 'vue';
 import { notEmpty } from '@/utils/is-empty';
-import { ResizeObserver as ResizeObserverPolyfill } from 'resize-observer';
 
 declare global {
 	interface Window {
@@ -12,13 +11,7 @@ export default function useElementSize<T extends Element>(target: T | Ref<T> | R
 	const width = ref(0);
 	const height = ref(0);
 
-	let RO = ResizeObserverPolyfill;
-
-	if ('ResizeObserver' in window) {
-		RO = window.ResizeObserver;
-	}
-
-	const resizeObserver = new RO(([entry]) => {
+	const resizeObserver = new ResizeObserver(([entry]) => {
 		width.value = entry.contentRect.width;
 		height.value = entry.contentRect.height;
 	});

@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import VueI18n from 'vue-i18n';
+import { createI18n } from 'vue-i18n';
 import { RequestError } from '@/api';
 
 import availableLanguages from './available-languages.yaml';
@@ -7,9 +6,8 @@ import availableLanguages from './available-languages.yaml';
 import enUSBase from './translations/en-US.yaml';
 import dateFormats from './date-formats.yaml';
 
-Vue.use(VueI18n);
-
-export const i18n = new VueI18n({
+export const i18n = createI18n({
+	legacy: false,
 	locale: 'en-US',
 	fallbackLocale: 'en-US',
 	messages: {

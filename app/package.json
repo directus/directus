@@ -7,12 +7,22 @@
 		"serve": "vite preview"
 	},
 	"devDependencies": {
+		"@popperjs/core": "^2.9.2",
 		"@rollup/plugin-yaml": "^3.0.0",
 		"@vitejs/plugin-vue": "^1.2.1",
 		"@vue/compiler-sfc": "^3.0.5",
 		"axios": "^0.21.1",
+		"base-64": "^1.0.0",
+		"marked": "^2.0.3",
+		"micromustache": "^8.0.3",
+		"pinia": "^2.0.0-alpha.13",
+		"sass": "^1.32.11",
+		"tiny-async-pool": "^1.2.0",
 		"typescript": "^4.2.4",
 		"vite": "^2.1.5",
-		"vue": "^3.0.5"
+		"vue": "^3.0.5",
+		"vue-i18n": "^9.1.6",
+		"vue-router": "^4.0.6",
+		"vuedraggable": "^4.0.1"
 	}
 }
