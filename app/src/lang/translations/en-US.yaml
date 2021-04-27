@@ -320,6 +320,10 @@ save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
 save_as_copy: Save as Copy
 add_existing: Add Existing
+creating_items: Creating Items
+enable_create_button: Enable Create Button
+selecting_items: Selecting Items
+enable_select_button: Enable Select Button
 comments: Comments
 no_comments: No Comments Yet
 click_to_expand: Click to Expand
