@@ -1,11 +1,12 @@
 import chalk from 'chalk';
+import yaml from 'js-yaml';
 import { tty } from '../../utils';
 
 import highlight, { Theme, DEFAULT_THEME } from 'cli-highlight';
 import { Argv } from 'yargs';
 import { FormatData, IOutputFormat } from '../../../output';
 
-export type JsonOutputFormatOptions = {
+export type YamlOutputFormatOptions = {
 	pretty: boolean;
 	highlight: boolean;
 };
@@ -15,7 +16,7 @@ export const DefaultTheme: Theme = {
 	string: chalk.reset.rgb(234, 118, 116),
 };
 
-export class JsonOutputFormat implements IOutputFormat<JsonOutputFormatOptions> {
+export class YamlOutputFormat implements IOutputFormat<YamlOutputFormatOptions> {
 	private theme: Theme;
 
 	constructor(theme: Theme = DefaultTheme) {
@@ -28,7 +29,6 @@ export class JsonOutputFormat implements IOutputFormat<JsonOutputFormatOptions> 
 				type: 'boolean',
 				default: tty,
 				description: 'Whether or not to highlight the output',
-				implies: ['pretty'],
 			})
 			.option('pretty', {
 				type: 'boolean',
@@ -37,19 +37,23 @@ export class JsonOutputFormat implements IOutputFormat<JsonOutputFormatOptions> 
 			});
 	}
 
-	async value<T>(value: T, options: JsonOutputFormatOptions): Promise<string> {
-		let formatted = JSON.stringify(value, null, options.pretty || options.highlight ? 2 : 0) ?? 'undefined';
+	async value<T>(value: T, options: YamlOutputFormatOptions): Promise<string> {
+		let formatted = yaml.dump(value, {
+			condenseFlow: !options.pretty,
+			forceQuotes: !options.pretty,
+			indent: 2,
+		});
 		if (options.highlight) {
 			formatted = highlight(formatted, {
 				ignoreIllegals: true,
-				language: 'json',
+				language: 'yaml',
 				theme: this.theme,
 			});
 		}
 		return formatted;
 	}
 
-	async format(data: FormatData, options: JsonOutputFormatOptions): Promise<string> {
+	async format(data: FormatData, options: YamlOutputFormatOptions): Promise<string> {
 		return await this.value(data.value, options);
 	}
 }

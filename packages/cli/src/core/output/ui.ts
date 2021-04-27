@@ -389,7 +389,7 @@ export class UIBuilder implements IUIComposer {
 				language: 'json',
 				theme: {
 					...DEFAULT_THEME,
-					string: chalk.reset.reset,
+					string: chalk.reset.rgb(234, 118, 116),
 				},
 			});
 		}
