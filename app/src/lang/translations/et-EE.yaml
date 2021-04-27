@@ -481,6 +481,7 @@ rows: Read
 columns: Veerud
 collection_setup: Andmekogu seadistus
 optional_system_fields: Valikulised süsteemsed väljad
+value_unique: Väärtus peab olema unikaalne
 all_activity: Kõik tegevused
 create_item: Loo kirje
 display_template: Vaate mall
