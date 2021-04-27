@@ -34,7 +34,6 @@ export default command(
 		},
 	},
 	async function ({ output, query, sdk }, params) {
-		console.log(query.many);
 		const item = await sdk.items(params.collection).readMany(query.many);
 
 		await output.compose(async (ui) => {
