@@ -34,7 +34,7 @@
 		"@tinymce/tinymce-vue": "^3.2.8",
 		"@types/base-64": "^0.1.3",
 		"@types/bytes": "^3.1.0",
-		"@types/codemirror": "^0.0.108",
+		"@types/codemirror": "^0.0.109",
 		"@types/color": "^3.0.1",
 		"@types/diff": "^5.0.0",
 		"@types/dompurify": "^2.2.1",
