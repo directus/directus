@@ -11,6 +11,7 @@ add_field: Alan Ekle
 role_name: Rol Adı
 db_only_click_to_configure: 'Yalnızca Veritabanı: Yapılandırmak için Tıklayın '
 show_archived_items: Arşivlenmiş Öğeleri Göster
+edited: Değer Düzenlendi
 required: Gerekli
 required_for_app_access: Uygulama Erişimi için Gereklidir
 requires_value: Gerekli değer
@@ -21,6 +22,7 @@ create_webhook: Webhook Oluşturun
 invite_users: Kullanıcıları Davet Et
 email_examples: 'admin@example.com, user@example.com...'
 invite: Davet et
+email_already_invited: '"{email}" bu e-posta zaten davet edildi'
 emails: E-postalar
 connection_excellent: Mükemmel Bağlantı
 connection_good: İyi Bağlantı
@@ -79,10 +81,13 @@ validationError:
   null: Değer null olmalı
   nnull: Değer null olamaz
   required: Değer gereklidir
+  unique: Değer benzersiz olmalı
+  regex: Değer doğru biçime sahip değil
 all_access: Tam Erişim
 no_access: Erişim Yok
 use_custom: Özelleştirilmiş kullan
 field_standard: Standart
+field_presentation: Sunum ve Takma Adlar
 field_file: Tek Dosya
 field_files: Birden Fazla Dosya
 field_m2o: M2O İlişkisi
@@ -96,6 +101,12 @@ field_validation: Alan Doğrulama
 field_presets: Alan Hazır Ayarları
 permissions_for_role: '{role} rolünün {action} yapabileceği öğeler.'
 fields_for_role: '{role} rolünün {action} yapabileceği alanlar.'
+validation_for_role: '{action} alanı, {role} rolünün uyması gereken kuralları belirler.'
+presets_for_role: '{role} rolü için varsayılan alan değeri.'
+presentation_and_aliases: Sunum ve Takma Adlar
+revision_post_update: İşte güncellemeden sonra bu öğenin nasıl göründüğü...
+changes_made: Bunlar yapılan belirli değişiklikler...
+no_relational_data: Bunun ilişkisel verileri içermediğini unutmayın.
 hide_field_on_detail: Alanı Detayda Gizle
 show_field_on_detail: Alanı Detayda Göster
 delete_field: Alanı Sil
@@ -111,6 +122,7 @@ exposure: Pozlama
 shutter: Deklanşör
 iso: ISO
 focal_length: Odak Uzaklığı
+schema_setup_key: Bu alanın veritabanı sütun adı ve API anahtarı
 create_field: Alan Ekle
 creating_new_field: 'Yeni alan ({collection})'
 field_in_collection: '{field} ({collection})'
@@ -136,6 +148,11 @@ uuid: UUID
 hash: Hash
 not_available_for_type: Bu Tip için Mevcut Değil
 create_translations: Çeviriler Oluşturun
+auto_refresh: Otomatik Yenile
+refresh_interval: Yenileme Aralığı
+no_refresh: Yenileme yapma
+refresh_interval_seconds: Anında Yenileyin | Her Saniyede | Her {seconds} Saniyede
+refresh_interval_minutes: Her Dakika | Her {minutes} Dakikada bir
 auto_generate: Otomatik Oluştur
 this_will_auto_setup_fields_relations: Bu, gerekli tüm alanları ve ilişkileri otomatik olarak kuracaktır.
 click_here: Buraya tıklayın
@@ -143,12 +160,16 @@ to_manually_setup_translations: çevirileri manuel olarak ayarlamak için.
 click_to_manage_translated_fields: >-
   Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
 fields_group: Alanlar Grubu
+no_collections_found: Koleksiyon bulunamadı.
+new_data_alert: 'Veri Modelinizde aşağıdakiler oluşturulacaktır:'
+search_collection: Koleksiyonu Ara...
 new_field: 'Yeni Alan'
 new_collection: 'Yeni Koleksiyon'
 add_m2o_to_collection: '"{collection}" koleksiyonuna Çoktan Bire''yi ekleyin'
 add_o2m_to_collection: '"{collection}" koleksiyonuna Bire Çok ekleyin'
 add_m2m_to_collection: '"{collection}" koleksiyonuna Çoktan Çoğa ekle'
 choose_a_type: Bir Tür Seçin...
+determined_by_relationship: İlişkiye göre belirlenir
 add_note: Kullanıcılar için yardımcı bir not ekleyin...
 default_value: Öntanımlı Değer
 standard_field: Standart Alan
@@ -158,6 +179,7 @@ m2o_relationship: Çoktan Bire İlişki
 o2m_relationship: Bire Çok İlişki
 m2m_relationship: Çoktan Çoka İlişki
 m2a_relationship: Çoktan Herhangi Bir İlişki
+invalid_item: Geçersiz Öğe
 next: Sonraki
 field_name: Alan adı
 translations: Çeviriler
@@ -165,6 +187,7 @@ note: Not
 enter_a_value: Bir değer girin...
 enter_a_placeholder: Placeholder ekle...
 length: Uzunluk
+precision_scale: Hassas & Ölçek
 readonly: Salt-Okunur
 unique: Benzersiz
 updated_on: Güncelleme tarihi
@@ -184,10 +207,13 @@ show_all_activity: Tüm etkinliği göster
 page_not_found: Sayfa Bulunamadı
 page_not_found_body: Aradığınız sayfanın var olduğuna emin misiniz? Biz bulamadık da...
 confirm_revert: Geri Alma İşlemini Onayla
+confirm_revert_body: Bu, öğeyi seçilen duruma geri döndürecektir.
 display: Göster
 settings_update_success: Ayarlar güncellendi
 title: Ünvan
 revision_delta_created: Oluşturulma tarihi
+revision_delta_created_externally: Harici Olarak Oluşturuldu
+revision_delta_updated: '1 Alan Güncellendi | {count} Alan güncellendi'
 revision_delta_deleted: Silindi
 revision_delta_reverted: Geri Alındı
 revision_delta_other: Revizyon
@@ -203,13 +229,17 @@ item_delete_success: Alan(lar) Silindi
 this_collection: Bu Koleksiyon
 related_collection: İlişkili Koleksiyon
 related_collections: İlişkili Koleksiyonlar
+translations_collection: Çeviri Koleksiyonu
 languages_collection: Dil Koleksiyonu
 export_data: Verileri Dışa Aktar
 format: Biçim
+use_current_filters_settings: Mevcut Filtreleri & Ayarları Kullan
 export_collection: 'Koleksiyonu ({collection}) dışarı aktar'
 last_page: Son Sayfa
 last_access: Son Erişim
 fill_template: Şablonla Doldur
+a_unique_table_name: Benzersiz bir tablo adı...
+a_unique_column_name: Benzersiz bir sütun adı...
 enable_custom_values: Kişisel başlıklara izin ver
 submit: Gönder
 move_to_folder: Klasöre Taşı
@@ -398,6 +428,7 @@ upload_pending: Yükleme Bekliyor
 drag_file_here: Dosyayı buraya Sürükle & Bırak
 layout_options: Sayfa Düzeni Seçenekleri
 rows: Satırlar
+value_unique: Değer benzersiz olmalı
 display_template: Görüntüleme Şablonu
 no_results: Sonuç Yok
 role: Rol
