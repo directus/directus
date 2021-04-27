@@ -75,8 +75,8 @@ export class Output implements IOutput {
 		stream.write(
 			await this.getFormatter().format(
 				{
-					data: {
-						data: this._value,
+					value: {
+						result: this._value,
 						help: this._help,
 						errors: this._errors.length > 0 ? this._errors : undefined,
 					},

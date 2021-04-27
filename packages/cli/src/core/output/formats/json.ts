@@ -50,6 +50,6 @@ export class JsonOutputFormat implements IOutputFormat<JsonOutputFormatOptions> 
 	}
 
 	async format(data: FormatData, options: JsonOutputFormatOptions): Promise<string> {
-		return await this.value(data.data, options);
+		return await this.value(data.value, options);
 	}
 }

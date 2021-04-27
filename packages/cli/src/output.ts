@@ -57,7 +57,7 @@ export type FormatData = {
 	help?: GeneralHelp | CommandHelp;
 	text: string[];
 	errors: Error[];
-	data?: any;
+	value?: any;
 };
 
 export interface IOutputFormat<O extends any = any> {

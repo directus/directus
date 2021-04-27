@@ -6,7 +6,7 @@ import { Toolbox } from './toolbox';
 
 export type Features = {
 	sdk?: boolean;
-	query?: boolean;
+	query?: 'one' | 'many';
 	output?: boolean;
 	[feature: string]: unknown;
 };
@@ -28,7 +28,7 @@ export type Settings<P = {}> = {
 export type Handler<T extends Toolbox = Toolbox, P = {}, R extends any = void> = (toolbox: T, params: P) => Promise<R>;
 
 export type CommandResult<T extends any> = {
-	data?: T;
+	result?: T;
 	help?: GeneralHelp | CommandHelp;
 	error?: CLIError;
 	output?: IOutput;

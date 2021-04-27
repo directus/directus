@@ -78,11 +78,11 @@ export function command<T extends Toolbox = Toolbox, P = any, R extends any = vo
 
 		try {
 			await events.emit('command.execute.before', command, opts);
-			const data = await execute(toolbox, opts);
-			await output.value(data);
+			const result = await execute(toolbox, opts);
+			await output.value(result);
 			await events.emit('command.execute.after', command);
 			return {
-				data,
+				result: result,
 				help: await help.getCommandHelp(command),
 			};
 		} catch (error) {

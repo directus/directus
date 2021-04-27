@@ -20,8 +20,8 @@ export type Toolbox<T extends TypeMap = {}> = {
 	};
 	result?: any;
 	query: {
-		one: QueryOne<any>;
-		many: QueryMany<any>;
+		one: QueryOne<unknown>;
+		many: QueryMany<unknown>;
 	};
 	[extension: string]: any | undefined;
 };

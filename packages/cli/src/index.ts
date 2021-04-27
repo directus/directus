@@ -80,7 +80,7 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 	try {
 		const { result, output } = await runtime.run(argv);
 		commandResult.help = result.help;
-		commandResult.data = result.data;
+		commandResult.result = result.data;
 		commandResult.error = result.error;
 		commandResult.output = output;
 	} catch (err) {}

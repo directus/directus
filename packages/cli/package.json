@@ -54,6 +54,7 @@
 		"indent-string": "^4.0.0",
 		"joi": "^17.4.0",
 		"js-yaml": "^4.1.0",
+		"json5": "^2.2.0",
 		"marked": "^2.0.3",
 		"marked-terminal": "^4.1.1",
 		"merge-options": "^3.0.4",
