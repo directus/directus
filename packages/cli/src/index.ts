@@ -16,7 +16,7 @@ export * from './options';
 export * from './output';
 export * from './toolbox';
 
-export default async function <T extends any>(argv: string[]): Promise<CommandResult<T>> {
+export default async function <T extends any>(argv: string[], typescript: boolean = false): Promise<CommandResult<T>> {
 	// create a runtime
 	const runtime = build('directusctl')
 		.exclude([
@@ -33,6 +33,32 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 			'package-manager',
 		])
 		.create();
+
+	const loading = {
+		state: true,
+	};
+
+	// Workaround stupid bug in gluegun
+	// @ts-ignore
+	const list = require('fs-jetpack/lib/list');
+	const shimmer = require('shimmer');
+	shimmer.wrap(list, 'sync', (original: Function) => {
+		return function (this: any) {
+			const result = original.apply(this, arguments);
+			if (!loading.state) {
+				return result;
+			}
+
+			return result.filter((file: string) => {
+				if (!typescript) {
+					if (file.endsWith('.ts')) {
+						return false;
+					}
+				}
+				return !file.endsWith('.d.ts') && !file.endsWith('.ts.map');
+			});
+		};
+	});
 
 	// no exclusions
 	runtime.addDefaultPlugin(path.join(__dirname, 'cli'), {
@@ -74,6 +100,8 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 			await toolbox.help.displayHelp();
 		}
 	) as any;
+
+	loading.state = false;
 
 	const commandResult: CommandResult<T> = {};
 

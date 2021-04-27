@@ -40,6 +40,7 @@
 	"dependencies": {
 		"@directus/format-title": "9.0.0-rc.61",
 		"@directus/sdk": "9.0.0-rc.61",
+		"chalk": "^4.1.0",
 		"cli-highlight": "^2.1.11",
 		"cli-table3": "^0.5.1",
 		"cli-ux": "^5.5.1",
@@ -59,6 +60,7 @@
 		"marked": "^2.0.3",
 		"marked-terminal": "^4.1.1",
 		"merge-options": "^3.0.4",
+		"shimmer": "^1.2.1",
 		"strip-ansi": "^6.0.0",
 		"strip-indent": "^3.0.0",
 		"yargs": "^16.2.0"
