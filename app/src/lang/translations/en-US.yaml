@@ -479,6 +479,8 @@ operators:
   has: Contains some of these keys
 loading: Loading...
 drop_to_upload: Drop to Upload
+item: Item
+items: Items
 upload_file: Upload File
 upload_file_indeterminate: Uploading File...
 upload_file_success: File Uploaded
@@ -598,6 +600,8 @@ adding_user: Adding User
 unknown_user: Unknown User
 creating_in: 'Creating Item in {collection}'
 editing_in: 'Editing Item in {collection}'
+creating_unit: 'Creating {unit}'
+editing_unit: 'Creating {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
