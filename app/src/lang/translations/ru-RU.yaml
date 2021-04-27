@@ -476,7 +476,6 @@ rows: Записи
 columns: Колонки
 collection_setup: Настройки Коллекции
 optional_system_fields: Необязательные Системные Поля
-value_unique: Значение должно быть уникальным
 all_activity: Вся Активность
 create_item: Создать Элемент
 display_template: Шаблон отображения
