@@ -58,16 +58,16 @@ const TableMarkdownBorders = {
 	middle: '|',
 };
 
-export class OutputBuilder implements IUIComposer {
+export class UIBuilder implements IUIComposer {
 	private lines: string[];
 	private indentSize: number;
 	private indentLevel: number;
 	private terminalWidth: number;
 	private markdownRenderer: TerminalRenderer;
 
-	constructor(indentSize: number = DefaultIndentSize, terminalWidth?: number) {
+	constructor(indentSize: number = DefaultIndentSize, terminalWidth?: number, indentLevel?: number) {
 		this.lines = [];
-		this.indentLevel = 0;
+		this.indentLevel = indentLevel ?? 0;
 		this.indentSize = indentSize;
 		this.terminalWidth = terminalWidth ?? DefaultTerminalWidth;
 		this.markdownRenderer = (null as any) as TerminalRenderer;
@@ -293,7 +293,7 @@ export class OutputBuilder implements IUIComposer {
 		if (!options.stacktrace) {
 			await this.skip(2);
 		} else {
-			const stack = new OutputBuilder(this.indentSize * (this.indentLevel + 1), FullTerminalWidth);
+			const stack = new UIBuilder(this.indentSize, FullTerminalWidth, this.indentLevel);
 			await stack.wrap((builder) => builder.line(chalk.grey(err.stack ?? 'No stacktrace available')), 1);
 			await stack.skip(1);
 			this.lines.push(await stack.get());
@@ -308,67 +308,71 @@ export class OutputBuilder implements IUIComposer {
 
 		const fields = Object.keys(value).sort();
 		const val = value as Record<string, any>;
-		const builder = new OutputBuilder(DefaultIndentSize, FullTerminalWidth);
-		await builder.table(
-			await Promise.all(
-				fields.map(async (field) => {
-					return [
-						field,
-						await this.jsonHighlight(val[field], {
-							highlight: true,
-							pretty: true,
-						}),
-					];
-				})
-			),
-			{
-				head: ['Property', 'Value'],
-				alignments: ['right', 'left'],
-				style,
-			}
-		);
-
-		this.lines.push(await builder.get());
-	}
-
-	private async jsonArray<T>(values: T[], style: TableStyle = 'compact'): Promise<string> {
-		const builder = new OutputBuilder(DefaultIndentSize, FullTerminalWidth);
-
-		if (values.length <= 0) {
-			await builder.table([], {
-				style,
-			});
-			return await builder.get();
-		}
-
-		const fields = Object.keys(values[0]!).sort();
-
-		await builder.wrap(
-			async (builder) =>
-				await builder.table(
+		const ui = new UIBuilder(this.indentSize, FullTerminalWidth, this.indentLevel);
+		await ui.wrap(
+			async (ui) =>
+				await ui.table(
 					await Promise.all(
-						values.map((row: T) =>
-							Promise.all(
-								fields.map((field) =>
-									this.jsonHighlight((row as any)[field], {
-										highlight: true,
-										pretty: true,
-									})
-								)
-							)
-						)
+						fields.map(async (field) => {
+							return [
+								field,
+								await this.jsonHighlight(val[field], {
+									highlight: true,
+									pretty: true,
+								}),
+							];
+						})
 					),
 					{
 						wrap: true,
-						head: fields,
+						head: ['Property', 'Value'],
+						alignments: ['right', 'left'],
 						headFormat: (v) => chalk.reset.bold(title(v)),
 						style,
 					}
-				),
-			1
+				)
 		);
 
-		return await builder.get();
+		this.lines.push(await ui.get());
+	}
+
+	private async jsonArray<T>(values: T[], style: TableStyle = 'compact'): Promise<string> {
+		const ui = new UIBuilder(this.indentSize, FullTerminalWidth, this.indentLevel);
+
+		if (values.length <= 0) {
+			await ui.wrap((ui) =>
+				ui.table([], {
+					style,
+				})
+			);
+		} else {
+			const fields = Object.keys(values[0]!).sort();
+			await ui.wrap(
+				async (ui) =>
+					await ui.table(
+						await Promise.all(
+							values.map((row: T) =>
+								Promise.all(
+									fields.map((field) =>
+										this.jsonHighlight((row as any)[field], {
+											highlight: true,
+											pretty: true,
+										})
+									)
+								)
+							)
+						),
+						{
+							wrap: true,
+							head: fields,
+							headFormat: (v) => chalk.reset.bold(title(v)),
+							style,
+						}
+					)
+			);
+		}
+
+		return await ui.get();
 	}
 
 	private async jsonHighlight(

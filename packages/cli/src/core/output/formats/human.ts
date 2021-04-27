@@ -2,7 +2,7 @@ import stripAnsi from 'strip-ansi';
 
 import { Argv } from 'yargs';
 import { FormatData, IOutputFormat } from '../../../output';
-import { FullTerminalWidth, OutputBuilder } from '../ui';
+import { FullTerminalWidth, UIBuilder } from '../ui';
 import { CLIError } from '../../exceptions';
 
 export type HumanOutputFormatOptions = {
@@ -40,7 +40,7 @@ export class HumanOutputFormat implements IOutputFormat<HumanOutputFormatOptions
 	}
 
 	async error(error: CLIError, options: HumanOutputFormatOptions): Promise<string> {
-		const builder = new OutputBuilder(2, FullTerminalWidth);
+		const builder = new UIBuilder(2, FullTerminalWidth);
 		await builder.error(error, {
 			stacktrace: options.stacktrace,
 		});

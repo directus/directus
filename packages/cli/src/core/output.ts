@@ -3,7 +3,7 @@ import { Argv } from 'yargs';
 import { IOptions } from '../options';
 import { IOutput, IUIComposer, IOutputFormat } from '../output';
 import { HumanOutputFormat } from './output/formats/human';
-import { OutputBuilder } from './output/ui';
+import { UIBuilder } from './output/ui';
 import { CLIError, CLIRuntimeError } from './exceptions';
 import { CommandHelp, GeneralHelp } from '../help';
 import { WriteStream } from 'fs';
@@ -99,7 +99,7 @@ export class Output implements IOutput {
 	}
 
 	async compose(builder: (builder: IUIComposer) => Promise<void>): Promise<void> {
-		const outputBuilder = new OutputBuilder();
+		const outputBuilder = new UIBuilder();
 		await builder(outputBuilder);
 		await this.text(await outputBuilder.get());
 	}
