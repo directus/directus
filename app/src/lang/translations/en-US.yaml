@@ -601,7 +601,7 @@ unknown_user: Unknown User
 creating_in: 'Creating Item in {collection}'
 editing_in: 'Editing Item in {collection}'
 creating_unit: 'Creating {unit}'
-editing_unit: 'Creating {unit}'
+editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
