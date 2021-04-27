@@ -38,8 +38,8 @@
 	"author": "João Biondo <wolfulus@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
-		"@directus/format-title": "*",
-		"@directus/sdk": "9.0.0-rc.60",
+		"@directus/format-title": "9.0.0-rc.61",
+		"@directus/sdk": "9.0.0-rc.61",
 		"cli-highlight": "^2.1.11",
 		"cli-table3": "^0.5.1",
 		"cli-ux": "^5.5.1",
@@ -50,7 +50,6 @@
 		"dotenv": "^8.2.0",
 		"eventemitter2": "^6.4.4",
 		"figlet": "^1.5.0",
-		"format-title": "^1.1.1",
 		"fs-extra": "^8.1.0",
 		"gluegun": "^4.6.1",
 		"indent-string": "^4.0.0",
