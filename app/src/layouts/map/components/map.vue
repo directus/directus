@@ -1,5 +1,5 @@
 <template>
-	<div id="map-container" ref="container" :class="{ select: selectMode, hover: hoveredId != null }"></div>
+	<div id="map-container" ref="container" :class="{ hover: hoveredId != null }"></div>
 </template>
 
 <script lang="ts">
@@ -11,9 +11,19 @@ import maplibre, {
 	GeoJSONSource,
 	CameraOptions,
 	LngLatLike,
+	Style,
 	Map,
 } from 'maplibre-gl';
-import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, WatchStopHandle } from '@vue/composition-api';
+import {
+	ref,
+	watch,
+	computed,
+	PropType,
+	onMounted,
+	onUnmounted,
+	defineComponent,
+	WatchStopHandle,
+} from '@vue/composition-api';
 
 import { useAppStore } from '@/stores';
 import { BoxSelectControl, BasemapSelectControl, ButtonControl } from '../controls';
@@ -58,7 +68,6 @@ export default defineComponent({
 		let map: Map;
 		const container = ref<HTMLElement>();
 		const hoveredId = ref<string | number>();
-		const selectMode = ref(false);
 		const unwatchers = [] as WatchStopHandle[];
 
 		onMounted(() => {
@@ -88,7 +97,7 @@ export default defineComponent({
 			layers: ['__directus_polygons', '__directus_points', '__directus_lines'],
 		});
 
-		return { container, selectMode, hoveredId };
+		return { container, hoveredId };
 
 		function setupMap() {
 			map = new maplibre.Map({
@@ -231,14 +240,20 @@ export default defineComponent({
 					popup.setLngLat(feature.geometry.coordinates as LngLatLike);
 				} else {
 					popup.setLngLat(event.lngLat);
+					map.on('mousemove', updatePopupLngLat);
 				}
 				popup.setHTML(feature.properties.description).addTo(map);
 				emit('hover', hoveredId.value);
 			}
 		}
 
+		function updatePopupLngLat(event: MapLayerMouseEvent) {
+			popup.setLngLat(event.lngLat);
+		}
+
 		function onFeatureLeave(event: MapLayerMouseEvent) {
 			if (hoveredId.value) {
+				map.off('mousemove', updatePopupLngLat);
 				map.setFeatureState({ id: hoveredId.value, source: '__directus' }, { hovered: false });
 				hoveredId.value = undefined;
 				popup.remove();
@@ -393,10 +408,7 @@ export default defineComponent({
 #map-container.hover::v-deep .mapboxgl-canvas-container {
 	cursor: pointer !important;
 }
-// #map-container.select {
-// 	cursor: crosshair !important;
-// }
-#map-container.select::v-deep canvas {
+#map-container.box-select::v-deep .mapboxgl-canvas-container {
 	cursor: crosshair !important;
 }
 </style>

@@ -5,10 +5,8 @@ import Vue from 'vue';
 export class ButtonControl {
 	active: boolean;
 	element: HTMLElement;
-	groupElement: HTMLElement;
+	groupElement?: HTMLElement;
 	constructor(private className: string, private callback: (...args: any) => any) {
-		this.groupElement = document.createElement('div');
-		this.groupElement.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
 		this.element = document.createElement('button');
 		this.element.className = className;
 		this.element.onclick = callback;
@@ -25,11 +23,14 @@ export class ButtonControl {
 		this.element.classList[yes ? 'remove' : 'add']('hidden');
 	}
 	onAdd() {
+		this.groupElement = document.createElement('div');
+		this.groupElement.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
+		this.groupElement.appendChild(this.element);
 		return this.groupElement;
 	}
 	onRemove() {
 		this.element.remove();
-		this.groupElement.remove();
+		this.groupElement?.remove();
 	}
 }
 
@@ -83,11 +84,11 @@ export class BoxSelectControl {
 		this.groupElement = document.createElement('div');
 		this.groupElement.className = options?.groupElementClass ?? 'mapboxgl-ctrl mapboxgl-ctrl-group';
 		this.selectButton = new ButtonControl(options?.selectButtonClass ?? 'ctrl-select', () => {
-			this.shiftPressed = !this.shiftPressed;
-			this.selectButton.activate(this.shiftPressed);
+			this.activate(!this.shiftPressed);
 		});
 		this.unselectButton = new ButtonControl(options?.unselectButtonClass ?? 'ctrl-unselect', () => {
 			this.reset();
+			this.activate(false);
 			this.map!.fire('select.end');
 		});
 		this.groupElement.appendChild(this.selectButton.element);
@@ -104,7 +105,7 @@ export class BoxSelectControl {
 		this.map = map;
 		this.map!.boxZoom.disable();
 		this.map!.getContainer().appendChild(this.boxElement);
-		this.map!.getContainer().addEventListener('mousedown', this.onMouseDownHandler, true);
+		this.map!.getContainer().addEventListener('pointerdown', this.onMouseDownHandler, true);
 		document.addEventListener('keydown', this.onKeyDownHandler);
 		document.addEventListener('keyup', this.onKeyUpHandler);
 		return this.groupElement;
@@ -114,7 +115,7 @@ export class BoxSelectControl {
 		this.map!.boxZoom.enable();
 		this.boxElement.remove();
 		this.groupElement.remove();
-		this.map!.getContainer().removeEventListener('mousedown', this.onMouseDownHandler);
+		this.map!.getContainer().removeEventListener('pointerdown', this.onMouseDownHandler);
 		document.removeEventListener('keydown', this.onKeyDownHandler);
 		document.removeEventListener('keyup', this.onKeyUpHandler);
 	}
@@ -131,25 +132,25 @@ export class BoxSelectControl {
 
 	onKeyDown(event: KeyboardEvent) {
 		if (event.key == 'Shift') {
-			this.shiftPressed = true;
-			this.selectButton.activate(true);
-			this.map!.fire('select.enable');
+			this.activate(true);
 		}
 		if (event.key == 'Escape') {
-			if (this.active()) {
-				this.reset();
-				this.map!.fire('select.cancel');
-			} else {
-				this.map!.fire('select.end');
-			}
+			this.reset();
+			this.activate(false);
+			this.map!.fire('select.end');
 		}
+	}
+
+	activate(yes: boolean) {
+		this.shiftPressed = yes;
+		this.selectButton.activate(yes);
+		this.map!.fire(`select.${yes ? 'enable' : 'disable'}`);
+		this.map!.getContainer().classList[yes ? 'add' : 'remove']('box-select');
 	}
 
 	onKeyUp(event: KeyboardEvent) {
 		if (event.key == 'Shift') {
-			this.shiftPressed = false;
-			this.selectButton.activate(false);
-			this.map!.fire('select.disable');
+			this.activate(false);
 		}
 	}
 
@@ -162,8 +163,8 @@ export class BoxSelectControl {
 			this.map!.dragPan.disable();
 			this.startPos = this.getMousePosition(event);
 			this.lastPos = this.startPos;
-			document.addEventListener('mousemove', this.onMouseMoveHandler);
-			document.addEventListener('mouseup', this.onMouseUpHandler);
+			document.addEventListener('pointermove', this.onMouseMoveHandler);
+			document.addEventListener('pointerup', this.onMouseUpHandler);
 			this.map!.fire('select.start');
 		}
 	}
@@ -191,8 +192,8 @@ export class BoxSelectControl {
 	reset() {
 		this.selecting = false;
 		this.updateBoxStyle({ width: '0', height: '0', transform: '' });
-		document.removeEventListener('mousemove', this.onMouseMoveHandler);
-		document.removeEventListener('mouseup', this.onMouseUpHandler);
+		document.removeEventListener('pointermove', this.onMouseMoveHandler);
+		document.removeEventListener('pointerup', this.onMouseUpHandler);
 		this.map!.dragPan.enable();
 	}
 

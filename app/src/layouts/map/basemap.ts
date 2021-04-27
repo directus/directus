@@ -84,7 +84,8 @@ function setMapboxAccessToken(styleURL: string) {
 	try {
 		const url = new URL(styleURL);
 		if (url.host == 'api.mapbox.com') {
-			maplibre.accessToken = url.searchParams.get('access_token')!;
+			const token = url.searchParams.get('access_token');
+			if (token) maplibre.accessToken = token;
 		}
 	} catch (e) {}
 }
