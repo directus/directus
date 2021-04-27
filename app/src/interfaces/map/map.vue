@@ -1,53 +1,39 @@
 <template>
 	<div class="interface-map">
-		<div class="map" ref="container" :class="{ error }"></div>
-		<div v-if="error" class="info">
-			<v-info v-if="geometryParsingError" icon="error" center type="warning" :title="$t('incompatible_geometry')">
-				<template #append>
-					<v-button small @click="resetInterface" class="reset-preset">{{ $t('reset_interface') }}</v-button>
-				</template>
-			</v-info>
-		</div>
+		<div class="map" ref="container" :class="{ error: !!geometryParsingError }"></div>
+		<v-info
+			v-if="geometryParsingError"
+			icon="error"
+			center
+			type="danger"
+			:title="$t('interfaces.map.incompatible_geometry')"
+		>
+			<v-notice type="danger" :icon="false">
+				{{ geometryParsingError }}
+			</v-notice>
+			<template #append>
+				<v-button small @click="resetInterface" class="reset-preset">{{ $t('reset_interface') }}</v-button>
+			</template>
+		</v-info>
 	</div>
 </template>
 
 <script lang="ts">
-import {
-	computed,
-	defineComponent,
-	onMounted,
-	onUnmounted,
-	PropType,
-	ref,
-	toRefs,
-	watch,
-	watchEffect,
-} from '@vue/composition-api';
-import maplibre, {
-	MapLayerMouseEvent,
-	LngLatBoundsLike,
-	GeoJSONSource,
-	AnimationOptions,
-	CameraOptions,
-	LngLatLike,
-	Source,
-	Style,
-	Map,
-	Marker,
-	LngLat,
-	IControl,
-} from 'maplibre-gl';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { defineComponent, onMounted, onUnmounted, PropType, ref, watch } from '@vue/composition-api';
+import maplibre, { LngLatBoundsLike, AnimationOptions, CameraOptions, Map, IControl } from 'maplibre-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { Position, Point, Polygon, LineString, MultiPoint, MultiPolygon, MultiLineString, BBox } from 'geojson';
-import { getBasemapSources, BasemapSource, getStyleFromBasemapSource } from '@/layouts/map/basemap';
-import { ControlButton, ControlGroup } from '@/layouts/map/controls';
+import { ButtonControl, BasemapSelectControl } from '@/layouts/map/controls';
 import { getParser, getSerializer, assignBBox } from '@/layouts/map/lib';
 import { GeometryFormat, AnyGeoJSON } from '@/layouts/map/lib';
 import { snakeCase } from 'lodash';
 import drawStyle from './style';
 import i18n from '@/lang';
+
+const MARKER_ICON_URL =
+	'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/24dp/1x/baseline_place_black_24dp.png';
 
 type _GeometryType = 'Point' | 'Polygon' | 'LineString' | 'MultiPoint' | 'MultiPolygon' | 'MultiLineString';
 type _SimpleGeometry = Point | Polygon | LineString;
@@ -83,10 +69,6 @@ export default defineComponent({
 			type: Number,
 			default: 8,
 		},
-		background: {
-			type: String,
-			default: 'OpenStreetMap',
-		},
 		geometryType: {
 			type: String as PropType<_GeometryType>,
 			default: 'Point',
@@ -110,7 +92,6 @@ export default defineComponent({
 		let currentGeometry: _Geometry | null | undefined;
 
 		const geometryParsingError = ref<string | null>();
-		const error = computed(() => geometryParsingError.value || geometryParsingError.value);
 
 		const geometryOptions = {
 			geometryCRS: props.geometryCRS,
@@ -121,12 +102,15 @@ export default defineComponent({
 		const parse = getParser(geometryOptions);
 		const serialize = getSerializer(geometryOptions);
 
-		const basemaps = getBasemapSources();
-		const style = computed(() => {
-			let basemap = basemaps.find((source) => source.name == props.background);
-			if (!basemap) basemap = basemaps[0];
-			return getStyleFromBasemapSource(basemap);
-		});
+		const snakeGeometryType = snakeCase(props.geometryType);
+		const mapboxDrawArgs = {
+			displayControlsDefault: false,
+			controls: {
+				trash: true,
+				[snakeGeometryType]: true,
+			},
+			styles: drawStyle,
+		};
 
 		onMounted(() => {
 			const cleanup = setupMap();
@@ -139,7 +123,6 @@ export default defineComponent({
 		}
 
 		return {
-			error,
 			container,
 			geometryParsingError,
 			resetInterface,
@@ -148,30 +131,38 @@ export default defineComponent({
 		function setupMap(): () => void {
 			map = new Map({
 				container: container.value!,
-				style: style.value,
+				style: { version: 8, layers: [] },
 				center: [props.longitude, props.latitude],
 				zoom: props.zoom,
 				attributionControl: false,
 			});
 
-			const fitDataControl = new ControlButton('mapboxgl-ctrl-fitdata', fitDataBounds);
-			const snakeGeometryType = snakeCase(props.geometryType);
-			const draw = new MapboxDraw({
-				displayControlsDefault: false,
-				controls: {
-					trash: true,
-					[snakeGeometryType]: true,
-				},
-				defaultMode: `draw_${snakeGeometryType}`,
-				styles: drawStyle,
-			});
+			let draw = new MapboxDraw(mapboxDrawArgs);
 			map.addControl(new maplibre.NavigationControl(), 'top-left');
 			map.addControl(new maplibre.GeolocateControl(), 'top-left');
-			map.addControl(new ControlGroup(fitDataControl), 'top-left');
+			map.addControl(new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds), 'top-left');
+			map.addControl(new BasemapSelectControl(), 'top-right');
 			map.addControl(draw as IControl, 'top-left');
+
+			function reloadDraw() {
+				if (!map.isStyleLoaded()) return;
+				addMarkerImage();
+				map.off('sourcedata', reloadDraw);
+				map.off('styledata', reloadDraw);
+				draw = new MapboxDraw(mapboxDrawArgs);
+				map.addControl(draw as IControl, 'top-left');
+				if (currentGeometry) {
+					draw.add(currentGeometry);
+				}
+			}
 
 			map.on('load', async () => {
 				await addMarkerImage().catch(() => {});
+				map.on('basemapselect', () => {
+					map.removeControl(draw);
+					map.on('sourcedata', reloadDraw);
+					map.on('styledata', reloadDraw);
+				});
 				map.on('draw.create', handleDrawUpdate);
 				map.on('draw.delete', handleDrawUpdate);
 				map.on('draw.update', handleDrawUpdate);
@@ -191,14 +182,11 @@ export default defineComponent({
 
 			function addMarkerImage() {
 				return new Promise((resolve, reject) => {
-					map.loadImage(
-						'https://cdn.jsdelivr.net/gh/google/material-design-icons/png/maps/place/materialicons/24dp/1x/baseline_place_black_24dp.png',
-						(error: any, image: any) => {
-							if (error) reject(error);
-							map.addImage('place', image, { sdf: true });
-							resolve(true);
-						}
-					);
+					map.loadImage(MARKER_ICON_URL, (error: any, image: any) => {
+						if (error) reject(error);
+						map.addImage('place', image, { sdf: true });
+						resolve(true);
+					});
 				});
 			}
 
@@ -208,7 +196,7 @@ export default defineComponent({
 					const initialValue = parse(props) as _Geometry | undefined;
 					const uncombined = uncombine(initialValue as _MultiGeometry);
 					if (uncombined.length > 1 && !props.multiGeometry) {
-						throw i18n.t('expected_single_geometry');
+						throw new Error(i18n.t('interfaces.map.expected_single_geometry') as string);
 					}
 					uncombined.forEach((geometry) => {
 						draw.add(geometry);
@@ -243,7 +231,12 @@ export default defineComponent({
 					} as _MultiGeometry;
 				}
 				if (geometry.type !== `Multi${props.geometryType}`) {
-					throw i18n.t('expected_other_geometry', { expected: props.geometryType, found: geometry.type });
+					throw new Error(
+						i18n.t('interfaces.map.expected_other_geometry', {
+							expected: props.geometryType,
+							found: geometry.type,
+						}) as string
+					);
 				}
 				for (const coordinates of geometry.coordinates) {
 					geometries.push({
@@ -263,8 +256,10 @@ export default defineComponent({
 					currentGeometry = combine(geometries);
 				} else {
 					currentGeometry = geometries[geometries.length - 1];
-					draw.deleteAll();
-					draw.add(currentGeometry!);
+					if (geometries.length > 1) {
+						draw.deleteAll();
+						draw.add(currentGeometry!);
+					}
 				}
 				assignBBox(currentGeometry!);
 			}
@@ -293,24 +288,21 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.mapboxgl-ctrl .mapbox-gl-draw_point::after {
+.mapbox-gl-draw_point::after {
 	content: '\ef3a'; // add_location
 }
-.mapboxgl-ctrl .mapbox-gl-draw_line::after {
+.mapbox-gl-draw_line::after {
 	content: '\e922'; // timeline
 }
-.mapboxgl-ctrl .mapbox-gl-draw_polygon::after {
+.mapbox-gl-draw_polygon::after {
 	content: '\e574'; // category
 }
-.mapboxgl-ctrl .mapbox-gl-draw_trash::after {
+.mapbox-gl-draw_trash::after {
 	content: '\e872'; // delete
 }
-.mapboxgl-ctrl .mapbox-gl-draw_uncombine::after {
+.mapbox-gl-draw_uncombine::after {
 	content: '\e14e'; // content_cut
 }
-// .mapboxgl-map.mouse-add .mapboxgl-canvas-container.mapboxgl-interactive {
-// 	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="32" width="32" viewBox="0 0 24 24" fill="%23000000"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 1v3h3v2h-3v3h-2V6h-3V4h3V1h2zm-8 12c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm2-9.75V7h3v3h2.92c.05.39.08.79.08 1.2 0 3.32-2.67 7.25-8 11.8-5.33-4.55-8-8.48-8-11.8C4 6.22 7.8 3 12 3c.68 0 1.35.08 2 .25z"/></svg>'), auto !important;
-// }
 </style>
 
 <style lang="scss" scoped>
@@ -324,20 +316,11 @@ export default defineComponent({
 			pointer-events: none;
 		}
 	}
-
-	.info {
-		position: absolute;
-		top: 0;
-		z-index: 10;
-		width: 100%;
-		height: 100%;
-
-		.v-info {
-			padding: 20px;
-			background-color: var(--background-subdued);
-			border-radius: var(--border-radius);
-			box-shadow: var(--card-shadow);
-		}
+	.v-info {
+		padding: 20px;
+		background-color: var(--background-subdued);
+		border-radius: var(--border-radius);
+		box-shadow: var(--card-shadow);
 	}
 }
 </style>

@@ -11,22 +11,12 @@ import maplibre, {
 	GeoJSONSource,
 	CameraOptions,
 	LngLatLike,
-	Style,
 	Map,
 } from 'maplibre-gl';
-import {
-	ref,
-	watch,
-	computed,
-	PropType,
-	onMounted,
-	onUnmounted,
-	defineComponent,
-	WatchStopHandle,
-} from '@vue/composition-api';
+import { ref, watch, PropType, onMounted, onUnmounted, defineComponent, WatchStopHandle } from '@vue/composition-api';
 
 import { useAppStore } from '@/stores';
-import { BoxSelectControl, ControlButton, ControlGroup } from '../controls';
+import { BoxSelectControl, BasemapSelectControl, ButtonControl } from '../controls';
 
 export default defineComponent({
 	components: {},
@@ -42,10 +32,6 @@ export default defineComponent({
 		layers: {
 			type: Array as PropType<maplibre.AnyLayer[]>,
 			default: () => [],
-		},
-		mapboxStyle: {
-			type: [Object, String] as PropType<Style | string>,
-			required: true,
 		},
 		animateOptions: {
 			type: Object as PropType<maplibre.FitBoundsOptions>,
@@ -93,8 +79,8 @@ export default defineComponent({
 		const attributionControl = new maplibre.AttributionControl({ compact: true });
 		const navigationControl = new maplibre.NavigationControl();
 		const geolocateControl = new maplibre.GeolocateControl();
-		const fitDataControlButton = new ControlButton('mapboxgl-ctrl-fitdata', fitDataBounds);
-		const fitDataControl = new ControlGroup(fitDataControlButton);
+		const fitDataControl = new ButtonControl('mapboxgl-ctrl-fitdata', fitDataBounds);
+		const basemapSelectControl = new BasemapSelectControl();
 		const boxSelectControl = new BoxSelectControl({
 			boxElementClass: 'selection-box',
 			selectButtonClass: 'mapboxgl-ctrl-select',
@@ -107,20 +93,17 @@ export default defineComponent({
 		function setupMap() {
 			map = new maplibre.Map({
 				container: 'map-container',
-				style: {
-					version: 8,
-					layers: [],
-					sources: {},
-				},
+				style: { version: 8, layers: [] },
 				attributionControl: false,
 				...props.camera,
 			});
 
-			map.addControl(attributionControl, 'top-right');
 			map.addControl(navigationControl, 'top-left');
 			map.addControl(geolocateControl, 'top-left');
 			map.addControl(fitDataControl, 'top-left');
 			map.addControl(boxSelectControl, 'top-left');
+			map.addControl(basemapSelectControl, 'top-right');
+			map.addControl(attributionControl, 'top-right');
 
 			map.on('load', () => {
 				watch(() => props.bounds, fitDataBounds);
@@ -146,9 +129,10 @@ export default defineComponent({
 						pitch: map.getPitch(),
 					});
 				});
+				map.on('basemapselect', updateStyle);
+				startWatchers();
 			});
 
-			watch(() => props.mapboxStyle, updateStyle, { immediate: true });
 			watch(
 				() => appStore.state.sidebarOpen,
 				(opened) => {
@@ -164,18 +148,19 @@ export default defineComponent({
 			}
 		}
 
-		function updateStyle(newStyle: Style | string, oldStyle?: Style | string) {
+		function updateStyle() {
 			unwatchers.forEach((unwatch) => unwatch());
 			unwatchers.length = 0;
-			map.setStyle(newStyle, { diff: false });
-			map.once('styledata', () => {
-				unwatchers.push(
-					watch(() => props.source, updateSource, { immediate: true }),
-					watch(() => props.selection, updateSelection, { immediate: true }),
-					watch(() => props.layers, updateLayers),
-					watch(() => props.data, updateData)
-				);
-			});
+			map.once('styledata', startWatchers);
+		}
+
+		function startWatchers() {
+			unwatchers.push(
+				watch(() => props.source, updateSource, { immediate: true }),
+				watch(() => props.selection, updateSelection, { immediate: true }),
+				watch(() => props.layers, updateLayers),
+				watch(() => props.data, updateData)
+			);
 		}
 
 		function updateData(newData: any, previousData: any) {
@@ -281,6 +266,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.mapboxgl-map {
+	font: inherit;
+}
 .mapboxgl-ctrl-group {
 	overflow: hidden;
 	background: none;
@@ -320,11 +308,6 @@ export default defineComponent({
 		-webkit-font-smoothing: antialiased;
 	}
 }
-.mapboxgl-ctrl-attrib-button {
-	background-color: var(--foreground-normal) !important;
-	background-image: none !important;
-	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='24' height='24' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd'%3E%3Cpath d='M4 10a6 6 0 1012 0 6 6 0 10-12 0m5-3a1 1 0 102 0 1 1 0 10-2 0m0 3a1 1 0 112 0v3a1 1 0 11-2 0'/%3E%3C/svg%3E");
-}
 .mapboxgl-ctrl-zoom-in::after {
 	content: '\e145'; // add
 }
@@ -352,6 +335,11 @@ export default defineComponent({
 	height: 24px;
 	color: var(--foreground-normal);
 	background: var(--background-subdued) !important;
+}
+.mapboxgl-ctrl-attrib-button {
+	background-color: var(--foreground-normal) !important;
+	background-image: none !important;
+	mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='24' height='24' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd'%3E%3Cpath d='M4 10a6 6 0 1012 0 6 6 0 10-12 0m5-3a1 1 0 102 0 1 1 0 10-2 0m0 3a1 1 0 112 0v3a1 1 0 11-2 0'/%3E%3C/svg%3E");
 }
 
 .selection-box {
@@ -405,11 +393,10 @@ export default defineComponent({
 #map-container.hover::v-deep .mapboxgl-canvas-container {
 	cursor: pointer !important;
 }
-#map-container.select {
-	cursor: crosshair !important;
-}
+// #map-container.select {
+// 	cursor: crosshair !important;
+// }
 #map-container.select::v-deep canvas {
 	cursor: crosshair !important;
-	// pointer-events: none;
 }
 </style>

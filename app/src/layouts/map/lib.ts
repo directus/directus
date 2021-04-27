@@ -75,7 +75,7 @@ export function getGeometryParser(options: GeometryOptions): GeometryParser {
 		case 'csv':
 			return csvParser(options);
 		default:
-			throw i18n.t('unimplemented_format');
+			throw new Error(i18n.t('unimplemented_format') as string);
 	}
 }
 
@@ -97,7 +97,7 @@ export function getGeometrySerializer(options: GeometryOptions): (entry: AnyGeoJ
 		case 'csv':
 			return (entry) => (entry as GeoJSON.Point).coordinates;
 		default:
-			throw i18n.t('unimplemented_format');
+			throw new Error(i18n.t('unimplemented_format') as string);
 	}
 }
 

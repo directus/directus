@@ -1,5 +1,4 @@
 import { defineInterface } from '@/interfaces/define';
-import { getBasemapSources } from '@/layouts/map/basemap';
 import InterfaceMap from './map.vue';
 
 export default defineInterface({
@@ -124,21 +123,6 @@ export default defineInterface({
 			},
 			schema: {
 				default_value: 8,
-			},
-		},
-		{
-			field: 'background',
-			name: '$t:interfaces.map.background',
-			type: 'string',
-			meta: {
-				width: 'half',
-				interface: 'dropdown',
-				options: {
-					choices: getBasemapSources().map((b) => ({ value: b.name, text: b.name })),
-				},
-			},
-			schema: {
-				default_value: 'CartoDB_PositronNoLabels',
 			},
 		},
 	],

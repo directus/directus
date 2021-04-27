@@ -2,10 +2,6 @@
 	<div class="layout-map" ref="layoutElement">
 		<portal to="layout-options">
 			<div class="field">
-				<div class="type-label">Background</div>
-				<v-select v-model="basemapName" :items="basemaps.map((s) => ({ text: s.name, value: s.name }))" />
-			</div>
-			<div class="field">
 				<div class="type-label">{{ $t('layouts.map.geometry_format') }}</div>
 				<v-select
 					v-model="geometryFormat"
@@ -29,41 +25,17 @@
 				<template v-if="geometryFormat !== 'lnglat'">
 					<div class="field">
 						<div class="type-label">{{ $t('layouts.map.field') }}</div>
-						<v-select
-							v-model="geometryField"
-							:items="
-								availableFieldsForFormat.map((field) => ({
-									text: field.name,
-									value: field.field,
-								}))
-							"
-						/>
+						<v-select v-model="geometryField" :items="availableFieldsForFormat" />
 					</div>
 				</template>
 				<template v-else>
 					<div class="field">
 						<div class="type-label">{{ $t('layouts.map.longitude') }}</div>
-						<v-select
-							v-model="longitudeField"
-							:items="
-								availableFieldsForFormat.map((field) => ({
-									text: field.name,
-									value: field.field,
-								}))
-							"
-						/>
+						<v-select v-model="longitudeField" :items="availableFieldsForFormat" />
 					</div>
 					<div class="field">
 						<div class="type-label">{{ $t('layouts.map.latitude') }}</div>
-						<v-select
-							v-model="latitudeField"
-							:items="
-								availableFieldsForFormat.map((field) => ({
-									text: field.name,
-									value: field.field,
-								}))
-							"
-						/>
+						<v-select v-model="latitudeField" :items="availableFieldsForFormat" />
 					</div>
 				</template>
 			</template>
@@ -167,7 +139,6 @@
 			:bounds="geojsonBounds"
 			:source="directusSource"
 			:layers="directusLayers"
-			:mapboxStyle="mapboxStyle"
 			@click="gotoEdit"
 			@select="updateSelection"
 			@moveend="cameraOptions = $event"
@@ -220,7 +191,7 @@
 						@input="toPage"
 					/>
 				</div>
-				<div class="per-page">
+				<div class="mapboxgl-ctrl-dropdown">
 					<span>{{ $t('per_page') }}</span>
 					<v-select
 						@input="limit = +$event"
@@ -239,8 +210,6 @@ import MapComponent from './components/map.vue';
 import { CameraOptions, AnyLayer, Style } from 'maplibre-gl';
 import { toGeoJSON } from './lib';
 import { layers } from './style';
-import { getBasemapSources, getStyleFromBasemapSource } from './basemap';
-import type { BasemapSource } from './basemap';
 import { defineComponent, toRefs, computed, ref, watch } from '@vue/composition-api';
 import type { PropType, Ref } from '@vue/composition-api';
 import router from '@/router';
@@ -265,7 +234,6 @@ type LayoutQuery = {
 type LayoutOptions = {
 	cameraOptions?: CameraOptions;
 	customLayers?: Array<AnyLayer>;
-	basemapName?: string;
 	geometryFormat?: GeometryFormat;
 	geometryField?: string;
 	longitudeField?: string;
@@ -340,8 +308,6 @@ export default defineComponent({
 		const limit = syncOption(_layoutQuery, 'limit', 1000);
 		const sort = syncOption(_layoutQuery, 'sort', fieldsInCollection.value[0].field);
 
-		const basemaps = getBasemapSources();
-		const basemapName = syncOption(_layoutOptions, 'basemapName', basemaps[0].name);
 		const cameraOptions = syncOption(_layoutOptions, 'cameraOptions', undefined);
 		const customLayers = syncOption(_layoutOptions, 'customLayers', layers);
 		const simplification = syncOption(_layoutOptions, 'simplification', 0.375);
@@ -399,15 +365,6 @@ export default defineComponent({
 			filters: _filters,
 			searchQuery: _searchQuery,
 		});
-
-		const mapboxStyle = ref<string | Style>();
-		watch(() => basemapName.value, updateMapboxStyle, { immediate: true });
-
-		function updateMapboxStyle() {
-			let basemap = basemaps.find((source) => source.name == basemapName.value);
-			if (!basemap) basemap = basemaps[0];
-			mapboxStyle.value = getStyleFromBasemapSource(basemap);
-		}
 
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
 		const geojsonBounds = ref<GeoJSON.BBox>();
@@ -532,13 +489,11 @@ export default defineComponent({
 			return _filters.value.filter((filter) => !filter.locked).length;
 		});
 
-		const availableFields = computed(() => {
-			return fieldsInCollection.value.filter((field) => field.meta?.special?.includes('no-data') !== true);
-		});
-
 		const availableFieldsForFormat = computed(() => {
 			const types = availableTypesForFormat(geometryFormat.value);
-			return availableFields.value.filter(({ type }) => types.includes(type));
+			return fieldsInCollection.value
+				.filter(({ type, meta }) => types.includes(type) && !meta?.special?.includes('no-data'))
+				.map(({ name, field }) => ({ text: name, value: field }));
 		});
 
 		function availableTypesForFormat(format: GeometryFormat) {
@@ -564,9 +519,6 @@ export default defineComponent({
 			template,
 			_selection,
 			geojson,
-			basemapName,
-			basemaps,
-			mapboxStyle,
 			directusSource,
 			directusLayers,
 			customLayers,
@@ -613,7 +565,6 @@ export default defineComponent({
 			activeFilterCount,
 			refresh,
 			resetPresetAndRefresh,
-			availableFields,
 			availableFieldsForFormat,
 			customLayerDrawerOpen,
 		};
@@ -644,10 +595,28 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.layout-map .CodeMirror.cm-s-default {
-	height: 500px;
+.mapboxgl-ctrl-dropdown {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 36px;
+	padding: 10px;
+	color: var(--foreground-subdued);
+	background-color: var(--background-subdued);
+	border: var(--border-width) solid var(--background-subdued);
+	border-radius: var(--border-radius);
+
+	span {
+		width: auto;
+		margin-right: 4px;
+	}
+
+	.v-select {
+		color: var(--foreground-normal);
+	}
 }
 </style>
+
 <style lang="scss" scoped>
 @import '@/styles/mixins/breakpoint';
 @import '@/styles/mixins/form-grid';
@@ -748,27 +717,6 @@ export default defineComponent({
 
 		button {
 			box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
-		}
-	}
-
-	.per-page {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		height: 36px;
-		padding: 10px;
-		color: var(--foreground-subdued);
-		background-color: var(--background-subdued);
-		border: var(--border-width) solid var(--background-subdued);
-		border-radius: var(--border-radius);
-
-		span {
-			width: auto;
-			margin-right: 4px;
-		}
-
-		.v-select {
-			color: var(--foreground-normal);
 		}
 	}
 }

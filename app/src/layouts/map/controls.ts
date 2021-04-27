@@ -1,9 +1,14 @@
 import { Map, Point } from 'maplibre-gl';
+import BasemapSelectComponent from './components/basemap-select.vue';
+import Vue from 'vue';
 
-export class ControlButton {
-	element: HTMLElement;
+export class ButtonControl {
 	active: boolean;
+	element: HTMLElement;
+	groupElement: HTMLElement;
 	constructor(private className: string, private callback: (...args: any) => any) {
+		this.groupElement = document.createElement('div');
+		this.groupElement.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
 		this.element = document.createElement('button');
 		this.element.className = className;
 		this.element.onclick = callback;
@@ -19,22 +24,26 @@ export class ControlButton {
 	show(yes: boolean) {
 		this.element.classList[yes ? 'remove' : 'add']('hidden');
 	}
-}
-
-export class ControlGroup {
-	element: HTMLElement;
-	constructor(...buttons: ControlButton[]) {
-		this.element = document.createElement('div');
-		this.element.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
-		for (const button of buttons) {
-			this.element.appendChild(button.element);
-		}
-	}
 	onAdd() {
-		return this.element;
+		return this.groupElement;
 	}
 	onRemove() {
-		this.element.parentNode?.removeChild(this.element!);
+		this.element.remove();
+		this.groupElement.remove();
+	}
+}
+
+export class BasemapSelectControl {
+	component?: any;
+	onAdd(map: Map) {
+		this.component = new (Vue.extend(BasemapSelectComponent))({
+			propsData: { map },
+		});
+		this.component.$mount();
+		return this.component.$el as HTMLElement;
+	}
+	onRemove() {
+		this.component!.$destroy();
 	}
 }
 
@@ -50,8 +59,8 @@ export class BoxSelectControl {
 	groupElement: HTMLElement;
 	boxElement: HTMLElement;
 
-	selectButton: ControlButton;
-	unselectButton: ControlButton;
+	selectButton: ButtonControl;
+	unselectButton: ButtonControl;
 
 	map?: Map;
 	layers: string[];
@@ -73,11 +82,11 @@ export class BoxSelectControl {
 		this.boxElement.className = options?.boxElementClass ?? 'selection-box';
 		this.groupElement = document.createElement('div');
 		this.groupElement.className = options?.groupElementClass ?? 'mapboxgl-ctrl mapboxgl-ctrl-group';
-		this.selectButton = new ControlButton(options?.selectButtonClass ?? 'ctrl-select', () => {
+		this.selectButton = new ButtonControl(options?.selectButtonClass ?? 'ctrl-select', () => {
 			this.shiftPressed = !this.shiftPressed;
 			this.selectButton.activate(this.shiftPressed);
 		});
-		this.unselectButton = new ControlButton(options?.unselectButtonClass ?? 'ctrl-unselect', () => {
+		this.unselectButton = new ButtonControl(options?.unselectButtonClass ?? 'ctrl-unselect', () => {
 			this.reset();
 			this.map!.fire('select.end');
 		});

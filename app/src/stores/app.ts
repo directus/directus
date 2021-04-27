@@ -8,5 +8,6 @@ export const useAppStore = createStore({
 		hydrating: false,
 		error: null,
 		authenticated: false,
+		basemap: '',
 	}),
 });
