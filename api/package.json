@@ -123,7 +123,7 @@
 		"rate-limiter-flexible": "^2.1.13",
 		"resolve-cwd": "^3.0.0",
 		"sharp": "^0.27.1",
-		"uuid": "^8.3.1",
+		"uuid": "^8.3.2",
 		"uuid-validate": "0.0.3"
 	},
 	"optionalDependencies": {

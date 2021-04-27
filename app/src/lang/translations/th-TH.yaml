@@ -475,7 +475,6 @@ rows: แถว
 columns: คอลัมน์
 collection_setup: การตั้งค่าคอลเลกชัน
 optional_system_fields: ฟิลด์ระบบอื่นๆ ที่ไม่จำเป็น
-value_unique: ค่าต้องไม่ซ้ำ
 all_activity: กิจกรรมทั้งหมด
 create_item: สร้างไอเท็ม
 display_template: แม่แบบการแสดงผล
@@ -644,7 +643,6 @@ fields:
     display_template: แม่แบบการแสดงผล
     hidden: ซ่อน
     singleton: Singleton
-    translations: การแปลชื่อคอลเลกชัน
     archive_app_filter: เก็บตัวกรองแอป
     archive_value: เก็บค่า
     unarchive_value: ยกเลิกการเก็บค่า

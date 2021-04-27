@@ -485,7 +485,6 @@ rows: Rader
 columns: Kolumner
 collection_setup: Konfiguration av kollektion
 optional_system_fields: Valfria systemfält
-value_unique: Värdet måste vara unikt
 all_activity: All aktivitet
 create_item: Skapa objekt
 display_template: Visningsmall
@@ -672,7 +671,6 @@ fields:
     display_template: Visningsmall
     hidden: Dold
     singleton: Singleton
-    translations: Översättningar för kollektionens namn
     archive_app_filter: Arkivera appfilter
     archive_value: Arkivera värde
     unarchive_value: Avarkivera värde

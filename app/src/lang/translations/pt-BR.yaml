@@ -484,7 +484,6 @@ rows: Linhas
 columns: Colunas
 collection_setup: Configurando coleção
 optional_system_fields: Campos de sistema opcionais
-value_unique: O valor deve ser único
 all_activity: Todas as atividades
 create_item: Criar item
 display_template: Modelo de exibição
@@ -671,7 +670,6 @@ fields:
     display_template: Modelo de exibição
     hidden: Oculto
     singleton: Singleton
-    translations: Traduções de Nomes da Coleção
     sort_field: Campo de ordenação
   directus_files:
     title: Título

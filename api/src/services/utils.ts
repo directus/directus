@@ -65,6 +65,27 @@ export class UtilsService {
 			}
 		}
 
+		// Check to see if there's any duplicate values in the sort counts. If that's the case, we'll have to
+		// reset the count values, otherwise the sort operation will cause unexpected results
+		const duplicates = await this.knex
+			.select(sortField)
+			.count(sortField, { as: 'count' })
+			.groupBy(sortField)
+			.from(collection)
+			.having('count', '>', 1);
+
+		if (duplicates?.length > 0) {
+			const ids = await this.knex.select(primaryKeyField).from(collection).orderBy(sortField);
+
+			// This might not scale that well, but I don't really know how to accurately set all rows
+			// to a sequential value that works cross-DB vendor otherwise
+			for (let i = 0; i < ids.length; i++) {
+				await this.knex(collection)
+					.update({ [sortField]: i + 1 })
+					.where(ids[i]);
+			}
+		}
+
 		const targetSortValueResponse = await this.knex
 			.select(sortField)
 			.from(collection)
