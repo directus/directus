@@ -9,7 +9,7 @@ import { Liquid } from 'liquidjs';
 import path from 'path';
 
 const liquidEngine = new Liquid({
-	root: path.resolve(__dirname, 'templates'),
+	root: [path.resolve(__dirname, 'templates'), path.resolve(env.EXTENSIONS_PATH, 'templates')],
 	extname: '.liquid',
 });
 
