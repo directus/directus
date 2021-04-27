@@ -1,6 +1,22 @@
 {
-	"name": "app-next",
-	"version": "0.0.0",
+	"name": "@directus/app",
+	"version": "9.0.0-rc.61",
+	"private": false,
+	"description": "Directus is an Open-Source Headless CMS & API for Managing Custom Databases",
+	"author": "Rijk van Zanten <rijk@rngr.org>",
+	"main": "dist/index.html",
+	"files": [
+		"dist",
+		"LICENSE",
+		"README.md"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/directus/directus.git"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",

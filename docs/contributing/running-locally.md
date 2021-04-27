@@ -38,19 +38,31 @@ npm run build
 
 ## 5. Create a `.env` file
 
-Create a `.env` file under the `api` folder the API to use. You can use the `example.env` file provided under `api` as a
-starting point.
-
-## 6. Setup the Database
-
-For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver,
-which will create the database for you. Run the following command from within root of the project:
+Create a `.env` file under the `api` folder. You can use the `example.env` file provided under `api` as a starting
+point.
 
 ```bash
+# To use the example file
+cp api/example.env api/.env
+```
+
+## 6. Initialize the database
+
+For this step, you'll need to already have a SQL database up-and-running, except if you're using the SQLite driver,
+which will create the database (file) for you.
+
+To start the initialization run the following command:
+
+```bash
+# From within the root of the project
+npm run cli bootstrap
+
+# For SQLite you need to be in the 'api' folder to initialize the database
+cd api
 npm run cli bootstrap
 ```
 
-This will install Directus, and make sure all the migrations have run.
+This will set-up the required tables for Directus and make sure all the migrations have run.
 
 ## 7. Start the development server
 

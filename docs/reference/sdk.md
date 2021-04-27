@@ -93,7 +93,7 @@ const url = 'http://api.example.com/';
 
 const isBrowser = typeof window !== 'undefined';
 
-// Storage adapter where refresh tokens are stored in JSON mode.
+// Storage adapter where authentication state (token & expiration) is stored.
 const storage = isBrowser ? new LocalStorage() : new MemoryStorage();
 
 // Transport used to communicate with the server.
@@ -381,7 +381,9 @@ The storage responsible for storing authentication and sdk state.
 
 When not creating `Auth` youself, defaults to `MemoryStorage` in node.js, and `LocalStorage` in browsers.
 
-#### options.mode
+#### options
+
+##### options.mode
 
 Accepts `cookie` or `json`.
 
@@ -393,6 +395,10 @@ When you can't rely on cookies, or need more control over handling the storage o
 `storage` implementation.
 
 Defaults to `cookie` in browsers, `json` in node.js.
+
+##### options.refresh
+
+See [Refresh auth token](#refresh-auth-token).
 
 ### Get current token
 
@@ -430,7 +436,6 @@ await directus.auth.login(
 	{
 		refresh: {
 			auto: true,
-			time: 15000,
 		},
 	}
 );
