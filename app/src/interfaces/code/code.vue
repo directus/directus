@@ -283,7 +283,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '~codemirror/addon/lint/lint.css';
+@import 'codemirror/addon/lint/lint.css';
 
 .interface-code {
 	position: relative;
