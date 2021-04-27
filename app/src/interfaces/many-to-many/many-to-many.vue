@@ -33,7 +33,7 @@
 					<v-icon v-if="junction.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template :collection="junctionCollection.collection" :item="item" :template="templateWithDefaults" />
 					<div class="spacer" />
-					<v-icon name="close" @click.stop="deleteItem(item)" />
+					<v-icon v-if="!disabled" name="close" @click.stop="deleteItem(item)" />
 				</v-list-item>
 			</draggable>
 		</v-list>

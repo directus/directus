@@ -40,14 +40,24 @@
 							:item="item[anyRelation.many_field]"
 						/>
 						<div class="spacer" />
-						<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+						<v-icon
+							v-if="!disabled"
+							class="clear-icon"
+							name="clear"
+							@click.stop="deselect((value || [])[item.$index])"
+						/>
 					</v-list-item>
 
 					<v-list-item v-else :key="item.$index" block>
 						<v-icon class="invalid-icon" name="warning" left />
 						<span>{{ $t('invalid_item') }}</span>
 						<div class="spacer" />
-						<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+						<v-icon
+							v-if="!disabled"
+							class="clear-icon"
+							name="clear"
+							@click.stop="deselect((value || [])[item.$index])"
+						/>
 					</v-list-item>
 				</template>
 			</draggable>
