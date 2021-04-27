@@ -18,8 +18,6 @@ create_preset: Create Preset
 create_role: Create Role
 create_user: Create User
 create_webhook: Create Webhook
-nullable: Nullable
-allow_null_value: Allow NULL as value
 invite_users: Invite Users
 email_examples: 'admin@example.com, user@example.com...'
 invite: Invite
@@ -500,7 +498,7 @@ rows: Rows
 columns: Columns
 collection_setup: Collection Setup
 optional_system_fields: Optional System Fields
-value_unique: Value must be unique
+value_unique: Value has to be unique
 all_activity: All Activity
 create_item: Create Item
 display_template: Display Template
