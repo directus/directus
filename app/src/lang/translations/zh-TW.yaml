@@ -457,7 +457,6 @@ fields:
     note: 備註
     display_template: 顯示模板
     hidden: 隱藏
-    translations: 集合名稱翻譯
     sort_field: 排序欄位
   directus_files:
     title: 標題
