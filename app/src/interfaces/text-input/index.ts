@@ -88,18 +88,18 @@ export default defineInterface({
 			},
 		},
 		{
-			field: 'nullable',
-			name: '$t:interfaces.text-input.nullable',
+			field: 'clear',
+			name: '$t:interfaces.text-input.clear',
 			type: 'boolean',
 			meta: {
 				width: 'half',
 				interface: 'toggle',
 				options: {
-					label: '$t:interfaces.text-input.nullable_label',
+					label: '$t:interfaces.text-input.clear_label',
 				},
 			},
 			schema: {
-				default_value: true,
+				default_value: false,
 			},
 		},
 	],

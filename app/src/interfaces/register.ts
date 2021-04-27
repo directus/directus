@@ -5,7 +5,7 @@ import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import asyncPool from 'tiny-async-pool';
 
-const interfaces = getInterfaces();
+const { interfacesRaw } = getInterfaces();
 
 export async function registerInterfaces() {
 	const context = require.context('.', true, /^.*index\.ts$/);
@@ -34,9 +34,9 @@ export async function registerInterfaces() {
 		console.warn(`Couldn't load custom interfaces`);
 	}
 
-	interfaces.value = modules;
+	interfacesRaw.value = modules;
 
-	interfaces.value.forEach((inter) => {
+	interfacesRaw.value.forEach((inter) => {
 		registerComponent('interface-' + inter.id, inter.component);
 
 		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false) {

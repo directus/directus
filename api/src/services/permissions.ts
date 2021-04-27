@@ -1,6 +1,7 @@
 import { AbstractServiceOptions, PermissionsAction, Query, Item, PrimaryKey } from '../types';
-import { ItemsService } from '../services/items';
+import { ItemsService, MutationOptions, QueryOptions } from '../services/items';
 import { filterItems } from '../utils/filter-items';
+import logger from '../logger';
 
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
 
@@ -31,10 +32,7 @@ export class PermissionsService extends ItemsService {
 		return fieldsPerCollection;
 	}
 
-	async readByQuery(
-		query: Query,
-		opts?: { stripNonRequested?: boolean }
-	): Promise<null | Partial<Item> | Partial<Item>[]> {
+	async readByQuery(query: Query, opts?: QueryOptions): Promise<Partial<Item>[]> {
 		const result = await super.readByQuery(query, opts);
 
 		if (Array.isArray(result) && this.accountability && this.accountability.app === true) {
@@ -52,16 +50,10 @@ export class PermissionsService extends ItemsService {
 		return result;
 	}
 
-	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>>;
-	async readByKey(
-		key: PrimaryKey | PrimaryKey[],
-		query: Query = {},
-		action: PermissionsAction = 'read'
-	): Promise<null | Partial<Item> | Partial<Item>[]> {
-		const result = await super.readByKey(key as any, query, action);
+	async readMany(keys: PrimaryKey[], query: Query = {}, opts?: QueryOptions): Promise<Partial<Item>[]> {
+		const result = await super.readMany(keys, query, opts);
 
-		if (Array.isArray(result) && this.accountability && this.accountability.app === true) {
+		if (this.accountability && this.accountability.app === true) {
 			result.push(
 				...filterItems(
 					appAccessMinimalPermissions.map((permission) => ({
@@ -74,5 +66,23 @@ export class PermissionsService extends ItemsService {
 		}
 
 		return result;
+	}
+
+	/**
+	 * @deprecated Use `readOne` or `readMany` instead
+	 */
+	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>[]>;
+	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Partial<Item>>;
+	async readByKey(
+		key: PrimaryKey | PrimaryKey[],
+		query: Query = {},
+		action: PermissionsAction = 'read'
+	): Promise<null | Partial<Item> | Partial<Item>[]> {
+		logger.warn(
+			'PermissionsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
+		);
+
+		if (Array.isArray(key)) return await this.readMany(key, query, { permissionsAction: action });
+		return await this.readOne(key, query, { permissionsAction: action });
 	}
 }

@@ -135,3 +135,25 @@ fields:
         - integer
       allowNone: true
     width: half
+
+  - field: accountability_divider
+    special:
+      - alias
+      - no-data
+    interface: divider
+    options:
+      icon: admin_panel_settings
+      title: Accountability
+    width: full
+
+  - field: accountability
+    interface: dropdown
+    options:
+      choices:
+        - text: '$t:field_options.directus_collections.track_activity_revisions'
+          value: all
+        - text: '$t:field_options.directus_collections.only_track_activity'
+          value: activity
+        - text: '$t:field_options.directus_collections.do_not_track_anything'
+          value: null
+    width: half

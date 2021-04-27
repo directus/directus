@@ -12,6 +12,7 @@
 			:collection="collection"
 			:primary-key="item[primaryKeyField] || '+'"
 			:edits="item"
+			:circular-field="parentField"
 			@input="$emit('input', $event)"
 		/>
 	</div>
@@ -43,6 +44,10 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		parentField: {
+			type: String,
+			required: true,
 		},
 	},
 	setup(props, { emit }) {

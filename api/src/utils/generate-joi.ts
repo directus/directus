@@ -1,5 +1,5 @@
 import { Filter } from '../types';
-import BaseJoi, { AlternativesSchema, ObjectSchema, AnySchema } from 'joi';
+import BaseJoi, { AnySchema } from 'joi';
 
 const Joi: typeof BaseJoi = BaseJoi.extend({
 	type: 'string',
@@ -142,7 +142,12 @@ function getJoi(operator: string, value: any) {
 		return Joi.number().less(values[0]).greater(values[1]);
 	}
 
-	if (operator === '_required') {
-		return Joi.invalid(null).required();
+	if (operator === '_submitted') {
+		return Joi.required();
+	}
+
+	if (operator === '_regex') {
+		const wrapped = value.startsWith('/') && value.endsWith('/');
+		return Joi.string().regex(new RegExp(wrapped ? value.slice(1, -1) : value));
 	}
 }

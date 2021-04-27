@@ -152,7 +152,10 @@ An array of [collection objects](#the-collection-object).
 
 ```
 GET /collections
+SEARCH /collections
 ```
+
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
 
 ### GraphQL
 

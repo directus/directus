@@ -1,6 +1,6 @@
 {
 	"name": "@directus/drive-gcs",
-	"version": "9.0.0-rc.57",
+	"version": "9.0.0-rc.61",
 	"description": "Google Cloud Storage driver for @directus/drive",
 	"license": "MIT",
 	"main": "dist/index.js",
@@ -33,8 +33,8 @@
 		"dev": "npm run build -- -w --preserveWatchOutput --incremental"
 	},
 	"dependencies": {
-		"@directus/drive": "^9.0.0-rc.57",
-		"@google-cloud/storage": "^5.0.0",
+		"@directus/drive": "9.0.0-rc.61",
+		"@google-cloud/storage": "^5.8.4",
 		"normalize-path": "^3.0.0"
 	},
 	"devDependencies": {

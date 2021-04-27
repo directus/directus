@@ -97,7 +97,10 @@ available, data will be an empty array.
 
 ```
 GET /webhooks
+SEARCH /webhooks
 ```
+
+[Learn more about SEARCH ->](/reference/api/introduction/#search-http-method)
 
 ### GraphQL
 

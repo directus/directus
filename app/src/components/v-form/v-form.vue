@@ -175,8 +175,6 @@ export default defineComponent({
 				} else {
 					return 'grid';
 				}
-
-				return null;
 			});
 
 			return { formFields: formFieldsParsed, gridClass, isDisabled };

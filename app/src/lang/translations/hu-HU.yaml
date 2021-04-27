@@ -155,7 +155,6 @@ leave_comment: Hozzászólás írása...
 this_collection: Ez a gyűjtemény
 related_collection: Kapcsolódó gyűjtemény
 related_collections: Kapcsolódó gyűjtemények
-translations_collection: Fordítások gyűjteménye
 languages_collection: Nyelvek gyűjteménye
 export_data: Adatok exportálása
 format: Formátum
@@ -263,7 +262,6 @@ users: Felhasználók
 activity: Tevékenységek
 webhooks: Webhookok
 field_width: Mező szélessége
-add_a_new_item: Új elem hozzáadása...
 add_filter: Szűrő hozzáadása
 upper_limit: Felső határ...
 lower_limit: Alsó határ...

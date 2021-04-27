@@ -218,7 +218,7 @@ export default defineComponent({
 		const relationsStore = useRelationsStore();
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
-		const interfaces = getInterfaces();
+		const { interfaces } = getInterfaces();
 
 		const editActive = ref(false);
 

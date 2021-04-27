@@ -3,18 +3,18 @@
 		<v-skeleton-loader v-for="n in 5" :key="n" />
 	</div>
 
-	<div class="translations" v-else>
-		<button
+	<v-list class="translations" v-else>
+		<v-list-item
 			v-for="languageItem in languages"
 			:key="languageItem[languagesPrimaryKeyField]"
 			@click="startEditing(languageItem[languagesPrimaryKeyField])"
 			class="language-row"
+			block
 		>
-			<v-icon class="translate" name="translate" />
+			<v-icon class="translate" name="translate" left />
 			<render-template :template="languagesTemplate" :collection="languagesCollection" :item="languageItem" />
 			<div class="spacer" />
-			<v-icon class="launch" name="launch" />
-		</button>
+		</v-list-item>
 
 		<drawer-item
 			v-if="editing"
@@ -22,10 +22,11 @@
 			:collection="translationsCollection"
 			:primary-key="editing"
 			:edits="edits"
+			:circular-field="translationsRelation.many_field"
 			@input="stageEdits"
 			@update:active="cancelEdit"
 		/>
-	</div>
+	</v-list>
 </template>
 
 <script lang="ts">
@@ -330,37 +331,3 @@ export default defineComponent({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-.language-row {
-	--v-icon-color: var(--foreground-subdued);
-
-	display: flex;
-	align-items: center;
-	width: 100%;
-	padding: 12px;
-	text-align: left;
-	background-color: var(--background-subdued);
-	border-radius: var(--border-radius);
-
-	& + & {
-		margin-top: 8px;
-	}
-
-	.translate {
-		margin-right: 12px;
-	}
-
-	.spacer {
-		flex-grow: 1;
-	}
-
-	.launch {
-		transition: color var(--fast) var(--transition);
-	}
-
-	&:hover .launch {
-		--v-icon-color: var(--foreground-normal);
-	}
-}
-</style>

@@ -32,8 +32,8 @@ let generationInfo: ComputedRef<GenerationInfo[]>;
 export { state, availableInterfaces, availableDisplays, generationInfo, initLocalStore, clearLocalStore };
 
 function initLocalStore(collection: string, field: string, type: typeof localTypes[number]) {
-	const interfaces = getInterfaces();
-	const displays = getDisplays();
+	const { interfaces } = getInterfaces();
+	const { displays } = getDisplays();
 
 	state = reactive<any>({
 		fieldData: {
@@ -64,7 +64,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		updateFields: [],
 		newRows: {},
 
-		autoFillJunctionRelation: true,
+		autoFillJunctionRelation: false,
 	});
 
 	availableInterfaces = computed<InterfaceConfig[]>(() => {
@@ -126,6 +126,8 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 		state.relations = relationsStore.getRelationsForField(collection, field);
 	} else {
+		state.autoFillJunctionRelation = true;
+
 		watch(
 			() => availableInterfaces.value,
 			() => {

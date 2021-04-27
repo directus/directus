@@ -22,7 +22,11 @@ router.get(
 
 	// Check if file exists and if you have permission to read it
 	asyncHandler(async (req, res, next) => {
-		const id = req.params.pk;
+		/**
+		 * We ignore everything in the id after the first 36 characters (uuid length). This allows the
+		 * user to add an optional extension, or other identifier for use in external software (#4067)
+		 */
+		const id = req.params.pk?.substring(0, 36);
 
 		/**
 		 * This is a little annoying. Postgres will error out if you're trying to search in `where`
@@ -98,6 +102,8 @@ router.get(
 
 	// Return file
 	asyncHandler(async (req, res) => {
+		const id = req.params.pk?.substring(0, 36);
+
 		const service = new AssetsService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -125,14 +131,14 @@ router.get(
 			}
 		}
 
-		const { stream, file, stat } = await service.getAsset(req.params.pk, transformation, range);
+		const { stream, file, stat } = await service.getAsset(id, transformation, range);
 
 		const access = !!req.accountability?.role ? 'private' : 'public';
 
 		res.attachment(file.filename_download);
 		res.setHeader('Content-Type', file.type);
 		res.setHeader('Accept-Ranges', 'bytes');
-		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string)}`);
+		res.setHeader('Cache-Control', `${access}, max-age=${ms(env.ASSETS_CACHE_TTL as string) / 1000}`);
 
 		if (range) {
 			res.setHeader('Content-Range', `bytes ${range.start}-${range.end || stat.size - 1}/${stat.size}`);

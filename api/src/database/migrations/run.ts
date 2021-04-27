@@ -64,6 +64,9 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		}
 
 		const { up } = require(nextVersion.file);
+
+		console.log(`✨ Applying ${nextVersion.name}...`);
+
 		await up(database);
 		await database.insert({ version: nextVersion.version, name: nextVersion.name }).into('directus_migrations');
 	}
@@ -78,10 +81,13 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		const migration = migrations.find((migration) => migration.version === currentVersion.version);
 
 		if (!migration) {
-			throw new Error('Couldnt find migration');
+			throw new Error("Couldn't find migration");
 		}
 
 		const { down } = require(migration.file);
+
+		console.log(`✨ Undoing ${migration.name}...`);
+
 		await down(database);
 		await database('directus_migrations').delete().where({ version: migration.version });
 	}
@@ -90,6 +96,9 @@ export default async function run(database: Knex, direction: 'up' | 'down' | 'la
 		for (const migration of migrations) {
 			if (migration.completed === false) {
 				const { up } = require(migration.file);
+
+				console.log(`✨ Applying ${migration.name}...`);
+
 				await up(database);
 				await database.insert({ version: migration.version, name: migration.name }).into('directus_migrations');
 			}

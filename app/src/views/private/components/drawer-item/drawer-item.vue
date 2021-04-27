@@ -7,6 +7,11 @@
 				<render-template :collection="templateCollection.collection" :item="templateData" :template="template" />
 			</h1>
 		</template>
+
+		<template #subtitle>
+			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
+		</template>
+
 		<template #actions>
 			<v-button @click="save" icon rounded v-tooltip.bottom="$t('save')">
 				<v-icon name="check" />
@@ -15,6 +20,16 @@
 
 		<div class="drawer-item-content">
 			<template v-if="junctionField">
+				<file-preview
+					v-if="file"
+					:src="file.src"
+					:mime="file.type"
+					:width="file.width"
+					:height="file.height"
+					:title="file.title"
+					:inModal="true"
+				/>
+
 				<v-form
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
@@ -34,7 +49,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
+import FilePreview from '@/views/private/components/file-preview';
 
 import useCollection from '@/composables/use-collection';
 import { useFieldsStore, useRelationsStore } from '@/stores';
@@ -45,6 +62,8 @@ import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
+	components: { FilePreview },
+
 	model: {
 		prop: 'edits',
 	},
@@ -75,6 +94,13 @@ export default defineComponent({
 		relatedPrimaryKey: {
 			type: [String, Number],
 			default: '+',
+		},
+
+		// If this drawer-item is opened from a relational interface, we need to force-block the field
+		// that relates back to the parent item.
+		circularField: {
+			type: String,
+			default: null,
 		},
 	},
 	setup(props, { emit }) {
@@ -120,11 +146,21 @@ export default defineComponent({
 			computed(() => props.primaryKey === '+')
 		);
 
-		const { fields } = usePermissions(
+		const { fields: fieldsWithPermissions } = usePermissions(
 			collection,
 			item,
 			computed(() => props.primaryKey === '+')
 		);
+
+		const fields = computed(() => {
+			if (props.circularField) {
+				return fieldsWithPermissions.value.filter((field) => {
+					return field.field !== props.circularField;
+				});
+			} else {
+				return fieldsWithPermissions.value;
+			}
+		});
 
 		const templatePrimaryKey = computed(() =>
 			junctionFieldInfo.value ? String(props.relatedPrimaryKey) : String(props.primaryKey)
@@ -139,6 +175,8 @@ export default defineComponent({
 				collectionInfo.value?.meta?.display_template ||
 				null
 		);
+
+		const { file } = useFile();
 
 		return {
 			_active,
@@ -159,7 +197,28 @@ export default defineComponent({
 			templatePrimaryKey,
 			templateData,
 			templateDataLoading,
+			collectionInfo,
+			file,
 		};
+
+		function useFile() {
+			const file = ref(null);
+
+			watch([() => item.value, () => junctionRelatedCollection.value], () => {
+				const junctionItem = item.value;
+
+				if (junctionRelatedCollection.value === 'directus_files') {
+					const item = junctionItem?.[props.junctionField];
+					const src = addTokenToURL(getRootPath() + `assets/${item.id}?key=system-large-contain`);
+
+					file.value = { ...item, src };
+				} else {
+					file.value = null;
+				}
+			});
+
+			return { file };
+		}
 
 		function useActiveState() {
 			const localActive = ref(false);
@@ -221,7 +280,7 @@ export default defineComponent({
 
 				const endpoint = props.collection.startsWith('directus_')
 					? `/${props.collection.substring(9)}/${props.primaryKey}`
-					: `/items/${props.collection}/${props.primaryKey}`;
+					: `/items/${props.collection}/${encodeURIComponent(props.primaryKey)}`;
 
 				let fields = '*';
 
@@ -247,7 +306,7 @@ export default defineComponent({
 
 				const endpoint = collection.startsWith('directus_')
 					? `/${collection.substring(9)}/${props.relatedPrimaryKey}`
-					: `/items/${collection}/${props.relatedPrimaryKey}`;
+					: `/items/${collection}/${encodeURIComponent(props.relatedPrimaryKey)}`;
 
 				try {
 					const response = await api.get(endpoint);

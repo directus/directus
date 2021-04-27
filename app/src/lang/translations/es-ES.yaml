@@ -226,7 +226,6 @@ item_delete_success: Elemento Eliminado | Elementos Eliminados
 this_collection: Esta Colección
 related_collection: Colección Relacionada
 related_collections: Colecciones Relacionadas
-translations_collection: Colección de Traducciones
 languages_collection: Colección de Idiomas
 export_data: Exportar Datos
 format: Formato
@@ -351,7 +350,6 @@ users: Usuarios
 activity: Actividad
 webhooks: Webhooks
 field_width: Ancho de Campo
-add_a_new_item: Agregar un nuevo Elemento...
 add_filter: Agregar Filtro
 upper_limit: Límite Superior...
 lower_limit: Límite Inferior...
@@ -584,7 +582,6 @@ scope: Alcance
 layout: Diseño
 tree_view: Vista en árbol
 changes_are_permanent: Los cambios son permanentes
-preset_name_placeholder: Nombre del Marcador...
 preset_search_placeholder: Consulta de búsqueda...
 editing_preset: Editar Predefinido
 layout_preview: Vista Previa de Diseño
@@ -933,7 +930,6 @@ interfaces:
     repeater: Repetidor
     description: Crear múltiples entradas para la misma estructura
     edit_fields: Editar Campos
-    add_label: 'Etiqueta "Agregar Nueva Fila"'
     field_name_placeholder: Ingrese el nombre del campo...
     field_note_placeholder: Ingrese la nota del campo...
   slider:
@@ -964,8 +960,6 @@ interfaces:
     trim_label: Eliminar espacios al inicio y al final
     mask: Enmascarado
     mask_label: Ocultar el valor real
-    nullable: Nulo
-    nullable_label: Guardar valor vacío como NULL
   textarea:
     textarea: Área de Texto
     description: Ingresar texto plano multi-línea

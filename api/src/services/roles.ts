@@ -11,11 +11,12 @@ export class RolesService extends ItemsService {
 		super('directus_roles', options);
 	}
 
-	delete(key: PrimaryKey): Promise<PrimaryKey>;
-	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
-	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
-		const keys = toArray(key);
+	async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {
+		await this.deleteMany([key]);
+		return key;
+	}
 
+	async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
 		// Make sure there's at least one admin role left after this deletion is done
 		const otherAdminRoles = await this.knex
 			.count('*', { as: 'count' })
@@ -26,52 +27,64 @@ export class RolesService extends ItemsService {
 		const otherAdminRolesCount = +(otherAdminRoles?.count || 0);
 		if (otherAdminRolesCount === 0) throw new UnprocessableEntityException(`You can't delete the last admin role.`);
 
-		// Remove all permissions associated with this role
-		const permissionsService = new PermissionsService({
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
+		await this.knex.transaction(async (trx) => {
+			const itemsService = new ItemsService('directus_roles', {
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+
+			const permissionsService = new PermissionsService({
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+
+			const presetsService = new PresetsService({
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+
+			const usersService = new UsersService({
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+
+			// Delete permissions/presets for this role, suspend all remaining users in role
+
+			await permissionsService.deleteByQuery({
+				filter: { role: { _in: keys } },
+			});
+
+			await presetsService.deleteByQuery({
+				filter: { role: { _in: keys } },
+			});
+
+			await usersService.updateByQuery(
+				{
+					filter: { role: { _in: keys } },
+				},
+				{
+					status: 'suspended',
+					role: null,
+				}
+			);
+
+			await itemsService.deleteMany(keys);
 		});
 
-		const permissionsForRole = (await permissionsService.readByQuery({
-			fields: ['id'],
-			filter: { role: { _in: keys } },
-		})) as { id: number }[];
+		return keys;
+	}
 
-		const permissionIDs = permissionsForRole.map((permission) => permission.id);
-		await permissionsService.delete(permissionIDs);
-
-		// Remove all presets that are attached to this role
-		const presetsService = new PresetsService({
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
-
-		const presetsForRole = (await presetsService.readByQuery({
-			fields: ['id'],
-			filter: { role: { _in: keys } },
-		})) as { id: string }[];
-
-		const presetIDs = presetsForRole.map((preset) => preset.id);
-		await presetsService.delete(presetIDs);
-
-		// Nullify role for users in this role
-		const usersService = new UsersService({
-			knex: this.knex,
-			accountability: this.accountability,
-			schema: this.schema,
-		});
-
-		const usersInRole = (await usersService.readByQuery({
-			fields: ['id'],
-			filter: { role: { _in: keys } },
-		})) as { id: string }[];
-
-		const userIDs = usersInRole.map((user) => user.id);
-		await usersService.update({ status: 'suspended', role: null }, userIDs);
-
-		await super.delete(key as any);
-		return key;
+	/**
+	 * @deprecated Use `deleteOne` or `deleteMany` instead
+	 */
+	delete(key: PrimaryKey): Promise<PrimaryKey>;
+	delete(keys: PrimaryKey[]): Promise<PrimaryKey[]>;
+	async delete(key: PrimaryKey | PrimaryKey[]): Promise<PrimaryKey | PrimaryKey[]> {
+		if (Array.isArray(key)) return await this.deleteMany(key);
+		return await this.deleteOne(key);
 	}
 }
