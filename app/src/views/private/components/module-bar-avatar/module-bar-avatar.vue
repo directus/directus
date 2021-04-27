@@ -73,6 +73,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .module-bar-avatar {
 	position: relative;
 
@@ -125,6 +127,11 @@ export default defineComponent({
 		top: 0;
 		left: 0;
 		transition: transform var(--fast) var(--transition);
+		transform: translateY(-100%);
+
+		@include breakpoint(medium) {
+			transform: translateY(0);
+		}
 
 		&.show {
 			transform: translateY(-100%);
