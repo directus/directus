@@ -219,7 +219,6 @@ item_delete_success: Item Verwijderd | Items Verwijderd
 this_collection: Deze collectie
 related_collection: Gerelateerde collecties
 related_collections: Gerelateerde collecties
-translations_collection: Vertalingen Collectie
 languages_collection: Talen Collectie
 export_data: Gegevens exporteren
 format: Format
@@ -344,7 +343,6 @@ users: Gebruikers
 activity: Activiteit
 webhooks: Webhooks
 field_width: Veld breedte
-add_a_new_item: Nieuw item toevoegen...
 add_filter: Filter toevoegen
 upper_limit: Bovengrens...
 lower_limit: Lagere limiet...
@@ -923,7 +921,6 @@ interfaces:
     repeater: Herhaler
     description: Meerdere invoergegevens van dezelfde structuur aanmaken
     edit_fields: Velden bewerken
-    add_label: '"Nieuwe regel toevoegen" label'
     field_name_placeholder: Voer een veldnaam in...
     field_note_placeholder: Veldnotitie invoeren...
   slider:

@@ -12,6 +12,7 @@
 		@end="drag = false"
 		:set-data="hideDragImage"
 		:disabled="disabled"
+		:force-fallback="true"
 		@change="$emit('change', $event)"
 	>
 		<li class="row" v-for="(item, index) in tree" :key="item.id">

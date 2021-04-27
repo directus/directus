@@ -25,7 +25,7 @@ Redshift** (PostgreSQL), and **MariaDB**.
 
 ::: tip Apple Silicon
 
-When installing Directus on an Apple-made ARM CPU, make sure you have `libvps` installed. See
+When installing Directus on an Apple-made ARM CPU, make sure you have `libvips` installed. See
 [Apple M1](https://sharp.pixelplumbing.com/install#apple-m1).
 
 :::

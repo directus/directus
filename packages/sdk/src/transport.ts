@@ -21,6 +21,9 @@ export type TransportMethods = 'get' | 'delete' | 'head' | 'options' | 'post' | 
 
 export type TransportOptions = {
 	params?: any;
+	headers?: any;
+	refreshTokenIfNeeded?: boolean;
+	sendAuthorizationHeaders?: boolean;
 };
 
 export interface ITransport {

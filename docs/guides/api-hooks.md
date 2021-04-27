@@ -173,6 +173,7 @@ npx directus start
 // extensions/hooks/sync-with-external/index.js
 
 module.exports = function registerHook({ services, exceptions }) {
+	const { MailService } = services;
 	const { ServiceUnavailableException, ForbiddenException } = exceptions;
 
 	return {
@@ -181,11 +182,22 @@ module.exports = function registerHook({ services, exceptions }) {
 			if (accountability.admin !== true) throw new ForbiddenException();
 		},
 		// Sync with external recipes service, cancel creation on failure
-		'items.create.before': async function (input, { collection }) {
+		'items.create.before': async function (input, { collection, schema }) {
 			if (collection !== 'recipes') return input;
+
+			const mailService = new MailService({ schema });
 
 			try {
 				await axios.post('https://example.com/recipes', input);
+				await mailService.send({
+					to: 'person@example.com',
+					template: {
+						name: 'item-created',
+						data: {
+							collection: collection,
+						},
+					},
+				});
 			} catch (error) {
 				throw new ServiceUnavailableException(error);
 			}

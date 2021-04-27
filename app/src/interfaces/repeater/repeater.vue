@@ -1,37 +1,65 @@
 <template>
-	<v-item-group class="repeater">
-		<draggable :value="value" handle=".drag-handle" @input="onSort" :set-data="hideDragImage">
-			<repeater-row
-				v-for="(row, index) in value"
-				:force-fallback="true"
-				:key="index"
-				:value="row"
-				:template="_template"
-				:fields="fields"
-				@input="updateValues(index, $event)"
-				@delete="removeItem(row)"
-				:disabled="disabled"
-				:headerPlaceholder="headerPlaceholder"
-				:initialActive="addedIndex === index"
-			/>
-		</draggable>
-		<button @click="addNew" class="add-new" v-if="showAddNew">
-			<v-icon name="add" />
+	<div class="repeater">
+		<v-notice v-if="!value || value.length === 0">
+			{{ $t('no_items') }}
+		</v-notice>
+
+		<v-list v-if="value && value.length > 0">
+			<draggable :force-fallback="true" :value="value" @input="$emit('input', $event)" handler=".drag-handle">
+				<v-list-item
+					:dense="value.length > 4"
+					v-for="(item, index) in value"
+					:key="item.id"
+					block
+					@click="active = index"
+				>
+					<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<render-template :fields="fields" :item="item" :template="templateWithDefaults" />
+					<div class="spacer" />
+					<v-icon v-if="!disabled" name="close" @click.stop="removeItem(item)" />
+				</v-list-item>
+			</draggable>
+		</v-list>
+		<v-button @click="addNew" class="add-new" v-if="showAddNew">
 			{{ addLabel }}
-		</button>
-	</v-item-group>
+		</v-button>
+
+		<v-drawer
+			:active="drawerOpen"
+			@toggle="closeDrawer()"
+			:title="displayValue || headerPlaceholder"
+			persistent
+			@cancel="closeDrawer()"
+		>
+			<template #actions>
+				<v-button @click="closeDrawer()" icon rounded v-tooltip.bottom="$t('save')">
+					<v-icon name="check" />
+				</v-button>
+			</template>
+
+			<div class="drawer-item-content">
+				<v-form
+					:disabled="disabled"
+					:fields="fields"
+					:edits="activeItem"
+					primary-key="+"
+					@input="updateValues(active, $event)"
+				/>
+			</div>
+		</v-drawer>
+	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
-import RepeaterRow from './repeater-row.vue';
+import { defineComponent, PropType, computed, ref, toRefs } from '@vue/composition-api';
 import { Field } from '@/types';
 import Draggable from 'vuedraggable';
 import i18n from '@/lang';
+import { renderStringTemplate } from '@/utils/render-string-template';
 import hideDragImage from '@/utils/hide-drag-image';
 
 export default defineComponent({
-	components: { RepeaterRow, Draggable },
+	components: { Draggable },
 	props: {
 		value: {
 			type: Array as PropType<Record<string, any>[]>,
@@ -47,7 +75,7 @@ export default defineComponent({
 		},
 		addLabel: {
 			type: String,
-			default: i18n.t('add_a_new_item'),
+			default: i18n.t('create_new'),
 		},
 		limit: {
 			type: Number,
@@ -61,14 +89,17 @@ export default defineComponent({
 			type: String,
 			default: i18n.t('empty_item'),
 		},
+		collection: {
+			type: String,
+			default: null,
+		},
 	},
 	setup(props, { emit }) {
-		const addedIndex = ref<number | null>(null);
+		const active = ref<number | null>(null);
+		const drawerOpen = computed(() => active.value !== null);
+		const { value } = toRefs(props);
 
-		const _template = computed(() => {
-			if (props.template === null) return props.fields.length > 0 ? `{{${props.fields[0].field}}}` : '';
-			return props.template;
-		});
+		const templateWithDefaults = computed(() => props.template || `{{${props.fields[0].field}}}`);
 
 		const showAddNew = computed(() => {
 			if (props.disabled) return false;
@@ -78,7 +109,24 @@ export default defineComponent({
 			return false;
 		});
 
-		return { updateValues, onSort, removeItem, addNew, showAddNew, hideDragImage, addedIndex, _template };
+		const activeItem = computed(() => (active.value !== null ? value.value[active.value] : null));
+
+		const { displayValue } = renderStringTemplate(templateWithDefaults, activeItem);
+
+		return {
+			updateValues,
+			removeItem,
+			addNew,
+			showAddNew,
+			hideDragImage,
+			active,
+			drawerOpen,
+			displayValue,
+			activeItem,
+			closeDrawer,
+			onSort,
+			templateWithDefaults,
+		};
 
 		function updateValues(index: number, updatedValues: any) {
 			emitValue(
@@ -92,14 +140,9 @@ export default defineComponent({
 			);
 		}
 
-		function onSort(sortedItems: any[]) {
-			emitValue(sortedItems);
-		}
-
-		function removeItem(row: any) {
-			addedIndex.value = null;
-			if (props.value) {
-				emitValue(props.value.filter((existingItem) => existingItem !== row));
+		function removeItem(item: Record<string, any>) {
+			if (value.value) {
+				emitValue(props.value.filter((i) => i !== item));
 			} else {
 				emitValue(null);
 			}
@@ -113,13 +156,13 @@ export default defineComponent({
 				newDefaults[field.field!] = field.schema?.default_value;
 			});
 
-			addedIndex.value = props.value === null ? 0 : props.value.length;
-
 			if (props.value !== null) {
 				emitValue([...props.value, newDefaults]);
 			} else {
 				emitValue([newDefaults]);
 			}
+
+			active.value = (props.value || []).length;
 		}
 
 		function emitValue(value: null | any[]) {
@@ -129,31 +172,46 @@ export default defineComponent({
 
 			return emit('input', value);
 		}
+
+		function onSort(sortedItems: any[]) {
+			if (sortedItems === null || sortedItems.length === 0) {
+				return emit('input', null);
+			}
+
+			return emit('input', sortedItems);
+		}
+
+		function closeDrawer() {
+			active.value = null;
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
-.add-new {
+.v-notice {
+	margin-bottom: 4px;
+}
+
+.v-list {
+	--v-list-padding: 0 0 4px;
+}
+
+.v-list-item {
 	display: flex;
-	align-items: center;
-	width: 100%;
-	height: 48px;
+	cursor: pointer;
+}
+
+.drag-handle {
+	cursor: grap;
+}
+
+.drawer-item-content {
+	padding: var(--content-padding);
+	padding-bottom: var(--content-padding-bottom);
+}
+
+.add-new {
 	margin-top: 8px;
-	padding: 10px; // 10 not 12, offset for border
-	color: var(--foreground-subdued);
-	border: 2px dashed var(--border-normal);
-	border-radius: var(--border-radius);
-	transition: var(--fast) var(--transition);
-	transition-property: color, border-color;
-
-	.v-icon {
-		margin-right: 8px;
-	}
-
-	&:hover {
-		color: var(--primary);
-		border-color: var(--primary);
-	}
 }
 </style>

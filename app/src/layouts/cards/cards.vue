@@ -229,7 +229,7 @@ export default defineComponent({
 
 		const fileFields = computed(() => {
 			return fieldsInCollection.value.filter((field) => {
-				if (field.field === '$file') return true;
+				if (field.field === '$thumbnail') return true;
 
 				const relation = relationsStore.state.relations.find((relation) => {
 					return (
@@ -419,7 +419,7 @@ export default defineComponent({
 					fields.push(`${imageSource.value}.id`);
 				}
 
-				if (props.collection === 'directus_files' && imageSource.value === '$file') {
+				if (props.collection === 'directus_files' && imageSource.value === '$thumbnail') {
 					fields.push('modified_on');
 					fields.push('type');
 				}

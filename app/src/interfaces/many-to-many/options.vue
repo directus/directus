@@ -4,11 +4,15 @@
 	</v-notice>
 	<div v-else class="form-grid">
 		<div class="field full">
-			<p class="type-label">{{ $t('select_fields') }}</p>
-			<v-field-select
+			<p class="type-label">{{ $t('display_template') }}</p>
+			<v-field-template
+				v-model="template"
 				:collection="junctionCollection"
-				v-model="fields"
-				:inject="junctionCollectionExists ? null : { fields: newFields, collections: newCollections, relations }"
+				:depth="2"
+				:inject="!!junctionCollectionInfo ? null : { fields: newFields, collections: newCollections, relations }"
+				:placeholder="
+					junctionCollectionInfo && junctionCollectionInfo.meta && junctionCollectionInfo.meta.display_template
+				"
 			/>
 		</div>
 	</div>
@@ -17,7 +21,6 @@
 <script lang="ts">
 import { Field } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { useRelationsStore } from '@/stores/';
 import { Relation, Collection } from '@/types';
 import { useCollectionsStore } from '@/stores';
 export default defineComponent({
@@ -50,14 +53,14 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const collectionsStore = useCollectionsStore();
 
-		const fields = computed({
+		const template = computed({
 			get() {
-				return props.value?.fields;
+				return props.value?.template;
 			},
-			set(newFields: string) {
+			set(newTemplate: string) {
 				emit('input', {
 					...(props.value || {}),
-					fields: newFields,
+					template: newTemplate,
 				});
 			},
 		});
@@ -71,13 +74,13 @@ export default defineComponent({
 			return junctionRelation?.many_collection || null;
 		});
 
-		const junctionCollectionExists = computed(() => {
-			return !!collectionsStore.state.collections.find(
-				(collection) => collection.collection === junctionCollection.value
-			);
+		const junctionCollectionInfo = computed(() => {
+			if (!junctionCollection.value) return null;
+
+			return collectionsStore.getCollection(junctionCollection.value);
 		});
 
-		return { fields, junctionCollection, junctionCollectionExists };
+		return { template, junctionCollection, junctionCollectionInfo };
 	},
 });
 </script>

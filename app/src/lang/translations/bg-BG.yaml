@@ -353,7 +353,6 @@ users: Потребители
 activity: Активности
 webhooks: Уеб-куки
 field_width: Ширина на полето
-add_a_new_item: Добавяне на нов запис...
 add_filter: Добавяне на филтър
 upper_limit: Горна граница...
 lower_limit: Долна граница...
@@ -827,7 +826,6 @@ template: Шаблон
 translation: Превод
 value: Стойност
 view_project: Преглед на проект
-weeks: { }
 report_error: Докладване на грешка
 interfaces:
   button-links:
@@ -959,7 +957,6 @@ interfaces:
     repeater: Повторение
     description: Създаване на множество записи със същата структура
     edit_fields: Редактиране на полета
-    add_label: 'Етикет за "Добавяне на ред"'
     field_name_placeholder: Въвеждане име на полето...
     field_note_placeholder: Въвеждане бележка към полето...
   slider:

@@ -5,7 +5,7 @@
 			<p v-html="$t('continue_as', { name })" />
 			<div class="actions">
 				<router-link to="/logout" class="sign-out">{{ $t('sign_out') }}</router-link>
-				<v-button large @click="hydrateAndLogin">{{ $t('continue') }}</v-button>
+				<v-button autofocus large @click="hydrateAndLogin">{{ $t('continue') }}</v-button>
 			</div>
 		</template>
 	</div>

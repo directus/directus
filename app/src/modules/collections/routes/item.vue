@@ -42,7 +42,7 @@
 				secondary
 				exact
 				v-tooltip.bottom="$t('back')"
-				:to="'/collections/' + collection"
+				@click="$router.back()"
 			>
 				<v-icon name="arrow_back" />
 			</v-button>

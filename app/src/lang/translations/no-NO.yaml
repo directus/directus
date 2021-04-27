@@ -225,7 +225,6 @@ item_delete_success: Elementet ble slettet | Elementene ble slettet
 this_collection: Denne kolleksjonen
 related_collection: Relatert kolleksjon
 related_collections: Relaterte kolleksjoner
-translations_collection: Oversettelseskolleksjon
 languages_collection: Språkkolleksjon
 export_data: Eksporter data
 format: Format
@@ -300,7 +299,6 @@ users: Brukere
 activity: Aktivitet
 webhooks: Webhooks
 field_width: Feltbredde
-add_a_new_item: Legg til et nytt element...
 add_filter: Legg til filter
 upper_limit: Øvre grense...
 lower_limit: Nedre grense...

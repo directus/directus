@@ -1,17 +1,12 @@
-import { ItemsService } from './items';
+import { ItemsService, QueryOptions } from './items';
 import { AbstractServiceOptions, Query, PrimaryKey, PermissionsAction, Relation } from '../types';
 import { PermissionsService } from './permissions';
 import { toArray } from '../utils/to-array';
 
 import { systemRelationRows } from '../database/system-data/relations';
+import { ForbiddenException } from '../exceptions';
 
-/**
- * @TODO update foreign key constraints when relations are updated
- */
-
-type ParsedRelation = Relation & {
-	one_allowed_collections: string[] | null;
-};
+import logger from '../logger';
 
 export class RelationsService extends ItemsService {
 	permissionsService: PermissionsService;
@@ -21,44 +16,82 @@ export class RelationsService extends ItemsService {
 		this.permissionsService = new PermissionsService(options);
 	}
 
-	async readByQuery(query: Query): Promise<null | Relation | Relation[]> {
-		const service = new ItemsService('directus_relations', {
+	/**
+	 * Read multiple relations by query.
+	 *
+	 * Note: this is based on permissions access to other collections/fields, not permissions to
+	 * directus_relations directly
+	 */
+	async readByQuery(query: Query, opts?: QueryOptions): Promise<Relation[]> {
+		const service = new ItemsService<Relation>('directus_relations', {
 			knex: this.knex,
 			schema: this.schema,
+			// We don't set accountability here. If you have read access to certain fields, you are
+			// allowed to extract the relations regardless of permissions to directus_relations. This
+			// happens in `filterForbidden` down below
 		});
-		const results = (await service.readByQuery(query)) as ParsedRelation | ParsedRelation[] | null;
 
-		if (results && Array.isArray(results)) {
-			results.push(...(systemRelationRows as ParsedRelation[]));
-		}
+		const results = await service.readByQuery(query, opts);
+
+		results.push(...systemRelationRows);
 
 		const filteredResults = await this.filterForbidden(results);
-
 		return filteredResults;
 	}
 
-	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<null | Relation[]>;
-	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<null | Relation>;
-	async readByKey(
-		key: PrimaryKey | PrimaryKey[],
-		query: Query = {},
-		action: PermissionsAction = 'read'
-	): Promise<null | Relation | Relation[]> {
-		const service = new ItemsService('directus_relations', {
+	/**
+	 * Get a single relations row by key. This is based on your permissions to the collections/fields
+	 * involved in the relation, not permissions to directus_relations
+	 */
+	async readOne(key: PrimaryKey, query?: Query, opts?: QueryOptions): Promise<Relation> {
+		const service = new ItemsService<Relation>('directus_relations', {
 			knex: this.knex,
 			schema: this.schema,
+			// We don't set accountability here. If you have read access to certain fields, you are
+			// allowed to extract the relations regardless of permissions to directus_relations. This
+			// happens in `filterForbidden` down below
 		});
-		const results = (await service.readByKey(key as any, query, action)) as ParsedRelation | ParsedRelation[] | null;
+
+		const result = await service.readOne(key, query, opts);
 
 		// No need to merge system relations here. They don't have PKs so can never be directly
-		// targetted
+		// targeted
 
-		const filteredResults = await this.filterForbidden(results);
+		const filteredResults = await this.filterForbidden([result]);
+
+		if (filteredResults.length === 1) return filteredResults[0];
+
+		throw new ForbiddenException();
+	}
+
+	/**
+	 * Get a single relations row by key. This is based on your permissions to the collections/fields
+	 * involved in the relation, not permissions to directus_relations
+	 */
+	async readMany(keys: PrimaryKey[], query?: Query, opts?: QueryOptions): Promise<Relation[]> {
+		const service = new ItemsService<Relation>('directus_relations', {
+			knex: this.knex,
+			schema: this.schema,
+			// We don't set accountability here. If you have read access to certain fields, you are
+			// allowed to extract the relations regardless of permissions to directus_relations. This
+			// happens in `filterForbidden` down below
+		});
+
+		const result = await service.readMany(keys, query, opts);
+
+		// No need to merge system relations here. They don't have PKs so can never be directly
+		// targeted
+
+		const filteredResults = await this.filterForbidden(result);
+		if (filteredResults.length === 0) throw new ForbiddenException();
 		return filteredResults;
 	}
 
-	private async filterForbidden(relations: ParsedRelation | ParsedRelation[] | null) {
-		if (relations === null) return null;
+	/**
+	 * Loop over all relations and filter out the ones that contain collections/fields you don't have
+	 * permissions to
+	 */
+	private async filterForbidden(relations: Relation[]): Promise<Relation[]> {
 		if (this.accountability === null || this.accountability?.admin === true) return relations;
 
 		const allowedCollections = this.schema.permissions
@@ -110,5 +143,23 @@ export class RelationsService extends ItemsService {
 
 			return collectionsAllowed && fieldsAllowed;
 		});
+	}
+
+	/**
+	 * @deprecated Use `readOne` or `readMany` instead
+	 */
+	readByKey(keys: PrimaryKey[], query?: Query, action?: PermissionsAction): Promise<Relation[]>;
+	readByKey(key: PrimaryKey, query?: Query, action?: PermissionsAction): Promise<Relation>;
+	async readByKey(
+		key: PrimaryKey | PrimaryKey[],
+		query: Query = {},
+		action: PermissionsAction = 'read'
+	): Promise<Relation | Relation[]> {
+		logger.warn(
+			'RelationsService.readByKey is deprecated and will be removed before v9.0.0. Use readOne or readMany instead.'
+		);
+
+		if (Array.isArray(key)) return await this.readMany(key, query, { permissionsAction: action });
+		return await this.readOne(key, query, { permissionsAction: action });
 	}
 }
