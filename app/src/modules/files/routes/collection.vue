@@ -579,12 +579,14 @@ export default defineComponent({
 
 				fileUploadNotificationID = notificationsStore.add({
 					// @TODO3 Are those named interpolations still needed?
-					title: i18n.global.t('upload_file_indeterminate', files.length, {
-						named: {
+					title: i18n.global.t(
+						'upload_file_indeterminate',
+						{
 							done: 0,
 							total: files.length,
 						},
-					}),
+						files.length
+					),
 					type: 'info',
 					persist: true,
 					closeable: false,
@@ -605,12 +607,14 @@ export default defineComponent({
 
 						notificationsStore.update(fileUploadNotificationID, {
 							// @TODO3 Are those named interpolations still needed?
-							title: i18n.global.t('upload_file_indeterminate', files.length, {
-								named: {
+							title: i18n.global.t(
+								'upload_file_indeterminate',
+								{
 									done,
 									total,
 								},
-							}),
+								files.length
+							),
 							loading: false,
 							progress: percentageDone,
 						});
