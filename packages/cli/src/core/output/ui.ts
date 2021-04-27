@@ -85,7 +85,7 @@ export class UIBuilder implements IUIComposer {
 			reflowText: true,
 			showSectionPrefix: false,
 			tab: this.indentSize,
-			codespan: (text) => chalk.bgGray.white(` ${text} `),
+			codespan: (text) => chalk.reset.bgGray.white(`${text}`),
 			blockquote: (text) =>
 				palette.quote(
 					stripAnsi(text)
@@ -169,7 +169,7 @@ export class UIBuilder implements IUIComposer {
 	async header(name: string, style?: (text: string) => string): Promise<void> {
 		style = style ?? palette.header;
 		this.lines.push(
-			// This is not a space
+			// This is not a space and it's important that it isn't.
 			// --------------------,
 			//                     V
 			this.makeLayout(style(` ${name.toUpperCase()} `))
@@ -240,14 +240,12 @@ export class UIBuilder implements IUIComposer {
 		await this.text(value);
 	}
 
-	async markdown(text: string): Promise<void> {
-		await this.text(
-			marked(stripIndent(text), {
-				baseUrl: 'https://docs.directus.io',
-				renderer: this.markdownRenderer,
-				sanitize: false,
-			}).trim()
-		);
+	markdown(text: string): string {
+		return marked(stripIndent(text), {
+			baseUrl: 'https://docs.directus.io',
+			renderer: this.markdownRenderer,
+			sanitize: false,
+		}).trim();
 	}
 
 	async figlet(text: string): Promise<void> {

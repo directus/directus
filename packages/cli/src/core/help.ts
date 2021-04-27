@@ -159,13 +159,13 @@ export class Help implements IHelp {
 		await this.output.help(help);
 		await this.output.compose(async (ui) => {
 			await ui.skip();
-			await ui.section('Description', (builder) => builder.line(help.description));
-			await ui.section('Synopsis', (builder) => builder.line(help.synopsis));
-			await ui.section('Usage', (builder) => builder.markdown(help.usage));
-			await ui.section('Documentation', (builder) => builder.markdown(help.documentation));
-			await ui.section('Options', async (builder) => {
+			await ui.section('Description', (ui) => ui.line(help.description));
+			await ui.section('Synopsis', (ui) => ui.line(help.synopsis));
+			await ui.section('Usage', (ui) => ui.text(ui.markdown(help.usage)));
+			await ui.section('Documentation', (ui) => ui.text(ui.markdown(help.documentation)));
+			await ui.section('Options', async (ui) => {
 				if (help.options.length <= 0) {
-					await builder.line('No options available');
+					await ui.line('No options available');
 					return;
 				}
 
@@ -213,7 +213,7 @@ export class Help implements IHelp {
 						],
 						[
 							{
-								text: option.description ?? 'Description unavailable',
+								text: ui.markdown(option.description) ?? 'Description unavailable',
 								options: {
 									padding: [1, 2, 1, 2],
 								},
@@ -222,7 +222,7 @@ export class Help implements IHelp {
 					];
 				};
 
-				await builder.rows([
+				await ui.rows([
 					...help.options
 						.filter((o) => o.required)
 						.map(makeOption)

@@ -39,7 +39,7 @@ export interface IUIComposer {
 	configure(opts: { indent?: number; width?: number }): void;
 	header(name: string, style?: Style): Promise<void>;
 	skip(lines?: number): Promise<void>;
-	markdown(src: string): Promise<void>;
+	markdown(src: string): string;
 	line(value: string): Promise<void>;
 	text(text: string): Promise<void>;
 	rows(data: OutputColumn[][]): Promise<void>;
