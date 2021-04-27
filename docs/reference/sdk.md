@@ -117,7 +117,7 @@ const directus = new Directus(url, {
 
 ```js
 // Get the API base URL
-console.log(directus.url); // => https://api.example.com/
+console.log(directus.transport.url); // => https://api.example.com/
 
 // Set the API base URL
 directus.transport.url = 'https://api2.example.com';

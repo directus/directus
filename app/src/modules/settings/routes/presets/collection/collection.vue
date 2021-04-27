@@ -271,7 +271,7 @@ export default defineComponent({
 
 				try {
 					const IDs = selection.value.map((item) => item.id);
-					await api.delete(`/presets/${IDs}`, { data: IDs });
+					await api.delete(`/presets`, { data: IDs });
 					selection.value = [];
 					await getPresets();
 					confirmDelete.value = false;

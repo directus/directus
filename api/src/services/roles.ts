@@ -28,6 +28,12 @@ export class RolesService extends ItemsService {
 		if (otherAdminRolesCount === 0) throw new UnprocessableEntityException(`You can't delete the last admin role.`);
 
 		await this.knex.transaction(async (trx) => {
+			const itemsService = new ItemsService('directus_roles', {
+				knex: trx,
+				accountability: this.accountability,
+				schema: this.schema,
+			});
+
 			const permissionsService = new PermissionsService({
 				knex: trx,
 				accountability: this.accountability,
@@ -66,7 +72,7 @@ export class RolesService extends ItemsService {
 				}
 			);
 
-			await super.deleteMany(keys);
+			await itemsService.deleteMany(keys);
 		});
 
 		return keys;

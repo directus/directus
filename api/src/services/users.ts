@@ -1,7 +1,6 @@
 import { AuthenticationService } from './authentication';
 import { ItemsService, MutationOptions } from './items';
 import jwt from 'jsonwebtoken';
-import { sendInviteMail, sendPasswordResetMail } from '../mail';
 import database from '../database';
 import argon2 from 'argon2';
 import {
@@ -19,6 +18,7 @@ import { RecordNotUniqueException } from '../exceptions/database/record-not-uniq
 import logger from '../logger';
 import { clone } from 'lodash';
 import { SettingsService } from './settings';
+import { MailService } from './mail';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
@@ -231,6 +231,12 @@ export class UsersService extends ItemsService {
 				knex: trx,
 			});
 
+			const mailService = new MailService({
+				schema: this.schema,
+				accountability: this.accountability,
+				knex: trx,
+			});
+
 			for (const email of emails) {
 				await service.createOne({ email, role, status: 'invited' });
 
@@ -239,7 +245,17 @@ export class UsersService extends ItemsService {
 				const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
 				const acceptURL = inviteURL + '?token=' + token;
 
-				await sendInviteMail(email, acceptURL);
+				await mailService.send({
+					to: email,
+					template: {
+						name: 'user-invitation',
+						data: {
+							url: acceptURL,
+							email,
+						},
+						system: true,
+					},
+				});
 			}
 		});
 	}
@@ -271,6 +287,12 @@ export class UsersService extends ItemsService {
 		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
 		if (!user) throw new ForbiddenException();
 
+		const mailService = new MailService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
 		const payload = { email, scope: 'password-reset' };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
 
@@ -282,7 +304,17 @@ export class UsersService extends ItemsService {
 
 		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
 
-		await sendPasswordResetMail(email, acceptURL);
+		await mailService.send({
+			to: email,
+			template: {
+				name: 'password-reset',
+				data: {
+					url: acceptURL,
+					email,
+				},
+				system: true,
+			},
+		});
 	}
 
 	async resetPassword(token: string, password: string) {

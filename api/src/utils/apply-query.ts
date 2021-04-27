@@ -191,6 +191,34 @@ export function applyFilter(
 		}
 
 		function applyFilterToQuery(key: string, operator: string, compareValue: any, logical: 'and' | 'or' = 'and') {
+			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
+			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
+				dbQuery[logical].whereNull(key);
+			}
+
+			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
+				dbQuery[logical].whereNotNull(key);
+			}
+
+			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
+				dbQuery[logical].andWhere((query) => {
+					query.whereNull(key);
+					query.orWhere(key, '=', '');
+				});
+			}
+
+			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
+				dbQuery[logical].andWhere((query) => {
+					query.whereNotNull(key);
+					query.orWhere(key, '!=', '');
+				});
+			}
+
+			// The following fields however, require a value to be run. If no value is passed, we
+			// ignore them. This allows easier use in GraphQL, where you wouldn't be able to
+			// conditionally build out your filter structure (#4471)
+			if (compareValue === undefined) return;
+
 			if (operator === '_eq') {
 				dbQuery[logical].where({ [key]: compareValue });
 			}
@@ -235,28 +263,6 @@ export function applyFilter(
 				if (typeof value === 'string') value = value.split(',');
 
 				dbQuery[logical].whereNotIn(key, value as string[]);
-			}
-
-			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
-				dbQuery[logical].whereNull(key);
-			}
-
-			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
-				dbQuery[logical].whereNotNull(key);
-			}
-
-			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
-				dbQuery[logical].andWhere((query) => {
-					query.whereNull(key);
-					query.orWhere(key, '=', '');
-				});
-			}
-
-			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
-				dbQuery[logical].andWhere((query) => {
-					query.whereNotNull(key);
-					query.orWhere(key, '!=', '');
-				});
 			}
 
 			if (operator === '_between') {
