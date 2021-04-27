@@ -3,6 +3,8 @@ import VueI18n from 'vue-i18n';
 type Translations = {
 	language: string;
 	translation: string;
+	singular: string;
+	plural: string;
 };
 
 export interface CollectionRaw {
