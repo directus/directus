@@ -642,7 +642,6 @@ fields:
     display_template: Weergavesjabloon
     hidden: Verborgen
     singleton: Singleton
-    translations: Collectie-naam vertalingen
     archive_app_filter: Archiveer App Filter
     archive_value: Archiveer waarde
     unarchive_value: Dearchiveer waarde

@@ -662,7 +662,6 @@ fields:
     display_template: Шаблон отображения
     hidden: Скрыто
     singleton: Синглтон
-    translations: Переводы Названия Коллекции
     archive_value: Заархивировать содержимое
     unarchive_value: Распаковать содержимое
     sort_field: Поле сортировки

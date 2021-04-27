@@ -671,7 +671,6 @@ fields:
     display_template: Modelo de exibição
     hidden: Oculto
     singleton: Singleton
-    translations: Traduções de Nomes da Coleção
     sort_field: Campo de ordenação
   directus_files:
     title: Título

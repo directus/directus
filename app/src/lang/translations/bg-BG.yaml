@@ -672,7 +672,6 @@ fields:
     display_template: Шаблон при показване
     hidden: Скрито
     singleton: Сек
-    translations: Преводи на името на колекцията
     archive_app_filter: Филтър за архиви
     archive_value: Стойност при архивиране
     unarchive_value: Стойност при разархивиране

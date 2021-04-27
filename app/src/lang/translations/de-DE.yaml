@@ -671,7 +671,6 @@ fields:
     display_template: Anzeigevorlage
     hidden: Ausgeblendet
     singleton: Singleton
-    translations: Übersetzungen des Namens der Sammlung
     archive_app_filter: Archivierungs-App-Filter
     archive_value: Archivierungswert
     unarchive_value: Dearchivierungswert

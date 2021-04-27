@@ -607,7 +607,6 @@ fields:
     display_template: Rodymo šablonas
     hidden: Paslėptas
     singleton: Singleton objektas
-    translations: Kolekcijos pavadinimų vertimai
     sort_field: Rūšiavimo laukas
   directus_files:
     title: Pavadinmas

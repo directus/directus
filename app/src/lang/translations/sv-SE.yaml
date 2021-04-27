@@ -672,7 +672,6 @@ fields:
     display_template: Visningsmall
     hidden: Dold
     singleton: Singleton
-    translations: Översättningar för kollektionens namn
     archive_app_filter: Arkivera appfilter
     archive_value: Arkivera värde
     unarchive_value: Avarkivera värde
