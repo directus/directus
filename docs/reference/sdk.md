@@ -430,7 +430,6 @@ await directus.auth.login(
 	{
 		refresh: {
 			auto: true,
-			time: 15000,
 		},
 	}
 );
