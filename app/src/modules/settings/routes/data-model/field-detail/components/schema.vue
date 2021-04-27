@@ -130,11 +130,11 @@
 			</div>
 
 			<div class="field half-left" v-if="fieldData.schema">
-				<div class="label type-label">{{ $t('required') }}</div>
+				<div class="label type-label">{{ $t('nullable') }}</div>
 				<v-checkbox
-					:input-value="fieldData.schema.is_nullable === false"
-					@change="fieldData.schema.is_nullable = !$event"
-					:label="$t('requires_value')"
+					:input-value="fieldData.schema.is_nullable"
+					@change="fieldData.schema.is_nullable = $event"
+					:label="$t('allow_null_value')"
 					block
 				/>
 			</div>

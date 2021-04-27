@@ -33,14 +33,14 @@
 					<v-icon v-if="junction.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template :collection="junctionCollection.collection" :item="item" :template="templateWithDefaults" />
 					<div class="spacer" />
-					<v-icon name="close" @click.stop="deleteItem(item)" />
+					<v-icon v-if="!disabled" name="close" @click.stop="deleteItem(item)" />
 				</v-list-item>
 			</draggable>
 		</v-list>
 
 		<div class="actions" v-if="!disabled">
-			<v-button class="new" @click="editModalActive = true">{{ $t('create_new') }}</v-button>
-			<v-button class="existing" @click="selectModalActive = true">
+			<v-button v-if="enableCreate && createAllowed" @click="editModalActive = true">{{ $t('create_new') }}</v-button>
+			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
 				{{ $t('add_existing') }}
 			</v-button>
 		</div>
@@ -85,6 +85,7 @@ import useSelection from './use-selection';
 import useSort from './use-sort';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { usePermissionsStore, useUserStore } from '@/stores';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -113,8 +114,19 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		enableCreate: {
+			type: Boolean,
+			default: true,
+		},
+		enableSelect: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	setup(props, { emit }) {
+		const permissionsStore = usePermissionsStore();
+		const userStore = useUserStore();
+
 		const { value, collection, field } = toRefs(props);
 
 		const { junction, junctionCollection, relation, relationCollection, relationInfo } = useRelation(collection, field);
@@ -173,8 +185,9 @@ export default defineComponent({
 		} = useEdit(value, relationInfo, emitter);
 
 		const { stageSelection, selectModalActive, selectionFilters } = useSelection(value, items, relationInfo, emitter);
-
 		const { sort, sortItems, sortedItems } = useSort(relationInfo, fields, items, emitter);
+
+		const { createAllowed, selectAllowed } = usePermissions();
 
 		return {
 			junction,
@@ -201,10 +214,45 @@ export default defineComponent({
 			sortItems,
 			sortedItems,
 			templateWithDefaults,
+			createAllowed,
+			selectAllowed,
 		};
 
 		function emitter(newVal: any[] | null) {
 			emit('input', newVal);
+		}
+
+		function usePermissions() {
+			const createAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const hasJunctionPermissions = !!permissionsStore.state.permissions.find(
+					(permission) =>
+						permission.action === 'create' && permission.collection === junctionCollection.value.collection
+				);
+
+				const hasRelatedPermissions = !!permissionsStore.state.permissions.find(
+					(permission) =>
+						permission.action === 'create' && permission.collection === relationCollection.value.collection
+				);
+
+				return hasJunctionPermissions && hasRelatedPermissions;
+			});
+
+			const selectAllowed = computed(() => {
+				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				if (admin) return true;
+
+				const hasJunctionPermissions = !!permissionsStore.state.permissions.find(
+					(permission) =>
+						permission.action === 'create' && permission.collection === junctionCollection.value.collection
+				);
+
+				return hasJunctionPermissions;
+			});
+
+			return { createAllowed, selectAllowed };
 		}
 	},
 });
@@ -217,10 +265,10 @@ export default defineComponent({
 
 .actions {
 	margin-top: 12px;
-}
 
-.existing {
-	margin-left: 12px;
+	.v-button + .v-button {
+		margin-left: 12px;
+	}
 }
 
 .deselect {

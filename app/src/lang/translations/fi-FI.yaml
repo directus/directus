@@ -672,7 +672,6 @@ fields:
     display_template: Esitysmalli
     hidden: Piilotettu
     singleton: Singleton
-    translations: Kokoelman nimen käännökset
     archive_app_filter: Arkistoi sovelluksen suodatin
     archive_value: Arkistoi arvo
     unarchive_value: Palauta arkistoitu arvo

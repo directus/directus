@@ -566,7 +566,6 @@ fields:
     display_template: 显示模板
     hidden: 隐藏
     singleton: 单一
-    translations: 集合名称翻译
     sort_field: 排序字段
   directus_files:
     title: 标题

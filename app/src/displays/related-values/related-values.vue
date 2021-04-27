@@ -7,8 +7,11 @@
 	>
 		<template #activator="{ toggle }">
 			<span @click.stop="toggle" class="toggle" :class="{ subdued: value.length === 0 }">
-				<span class="label" v-if="value.length < 100">{{ $t('item_count', value.length) }}</span>
-				<span class="label" v-else>{{ $t('item_count', { count: '100+' }, value.length) }}</span>
+				<span class="label">
+					{{ value.length }}
+					<template v-if="value.length >= 100">+</template>
+					{{ unit }}
+				</span>
 			</span>
 		</template>
 
@@ -31,6 +34,7 @@ import { defineComponent, computed, PropType, Ref } from 'vue';
 import getRelatedCollection from '@/utils/get-related-collection';
 import useCollection from '@/composables/use-collection';
 import ValueNull from '@/views/private/components/value-null';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -71,7 +75,25 @@ export default defineComponent({
 			return props.template || `{{ ${primaryKeyField.value!.field} }}`;
 		});
 
-		return { relatedCollection, primaryKeyField, getLinkForItem, _template };
+		const unit = computed(() => {
+			if (Array.isArray(props.value)) {
+				if (props.value.length === 1) {
+					if (i18n.global.te(`collection_names_singular.${relatedCollection.value}`)) {
+						return i18n.global.t(`collection_names_singular.${relatedCollection.value}`);
+					} else {
+						return i18n.global.t('item');
+					}
+				} else {
+					if (i18n.global.te(`collection_names_plural.${relatedCollection.value}`)) {
+						return i18n.global.t(`collection_names_plural.${relatedCollection.value}`);
+					} else {
+						return i18n.global.t('items');
+					}
+				}
+			}
+		});
+
+		return { relatedCollection, primaryKeyField, getLinkForItem, _template, unit };
 
 		function getLinkForItem(item: any) {
 			if (!relatedCollection.value || !primaryKeyField.value) return null;

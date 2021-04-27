@@ -7,6 +7,16 @@
 			<p class="type-label">{{ $t('interfaces.many-to-one.display_template') }}</p>
 			<v-field-template :collection="collection" v-model="template" :depth="1"></v-field-template>
 		</div>
+
+		<div class="field half-left">
+			<p class="type-label">{{ $t('creating_items') }}</p>
+			<v-checkbox block :label="$t('enable_create_button')" v-model="enableCreate" />
+		</div>
+
+		<div class="field half-right">
+			<p class="type-label">{{ $t('selecting_items') }}</p>
+			<v-checkbox block :label="$t('enable_select_button')" v-model="enableSelect" />
+		</div>
 	</div>
 </template>
 
@@ -46,7 +56,31 @@ export default defineComponent({
 			},
 		});
 
-		return { template };
+		const enableCreate = computed({
+			get() {
+				return props.value?.enableCreate ?? true;
+			},
+			set(val: boolean) {
+				emit('input', {
+					...(props.value || {}),
+					enableCreate: val,
+				});
+			},
+		});
+
+		const enableSelect = computed({
+			get() {
+				return props.value?.enableSelect ?? true;
+			},
+			set(val: boolean) {
+				emit('input', {
+					...(props.value || {}),
+					enableSelect: val,
+				});
+			},
+		});
+
+		return { template, enableCreate, enableSelect };
 	},
 });
 </script>

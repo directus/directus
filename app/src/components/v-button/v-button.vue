@@ -2,6 +2,7 @@
 	<div class="v-button" :class="{ secondary, 'full-width': fullWidth }">
 		<slot name="prepend-outer" />
 		<component
+			v-focus="autofocus"
 			:is="component"
 			:active-class="to ? 'activated' : null"
 			:exact="exact"
@@ -51,6 +52,10 @@ import { notEmpty } from '@/utils/is-empty';
 
 export default defineComponent({
 	props: {
+		autofocus: {
+			type: Boolean,
+			default: false,
+		},
 		fullWidth: {
 			type: Boolean,
 			default: false,

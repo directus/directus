@@ -1,6 +1,8 @@
 type Translations = {
 	language: string;
 	translation: string;
+	singular: string;
+	plural: string;
 };
 
 export interface CollectionRaw {
