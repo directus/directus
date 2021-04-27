@@ -485,6 +485,7 @@ rows: Редове
 columns: Колони
 collection_setup: Настройки на колекция
 optional_system_fields: Незадължителни системни полета
+value_unique: Изисква се уникална стойност
 all_activity: Цялата активност
 create_item: Създаване на запис
 display_template: Шаблон при показване
