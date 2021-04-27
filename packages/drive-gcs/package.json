@@ -34,7 +34,7 @@
 	},
 	"dependencies": {
 		"@directus/drive": "9.0.0-rc.61",
-		"@google-cloud/storage": "^5.0.0",
+		"@google-cloud/storage": "^5.8.4",
 		"normalize-path": "^3.0.0"
 	},
 	"devDependencies": {
