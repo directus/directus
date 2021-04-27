@@ -4,7 +4,7 @@ export default command(
 	{
 		group: 'items',
 		parameters: '<collection>',
-		description: 'Connects to a Directus instance',
+		description: 'Reads one item in a collection',
 		usage: `
 			\`\`\`
 			$ $0 instance items read one <collection>
