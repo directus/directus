@@ -20,6 +20,16 @@
 
 		<div class="drawer-item-content">
 			<template v-if="junctionField">
+				<file-preview
+					v-if="file"
+					:src="file.src"
+					:mime="file.type"
+					:width="file.width"
+					:height="file.height"
+					:title="file.title"
+					:inModal="true"
+				/>
+
 				<v-form
 					:loading="loading"
 					:initial-values="item && item[junctionField]"
@@ -39,7 +49,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, watch, toRefs } from '@vue/composition-api';
-import api from '@/api';
+import api, { addTokenToURL } from '@/api';
+import { getRootPath } from '@/utils/get-root-path';
+import FilePreview from '@/views/private/components/file-preview';
 
 import useCollection from '@/composables/use-collection';
 import { useFieldsStore, useRelationsStore } from '@/stores';
@@ -50,6 +62,8 @@ import { usePermissions } from '@/composables/use-permissions';
 import useTemplateData from '@/composables/use-template-data';
 
 export default defineComponent({
+	components: { FilePreview },
+
 	model: {
 		prop: 'edits',
 	},
@@ -162,6 +176,8 @@ export default defineComponent({
 				null
 		);
 
+		const { file } = useFile();
+
 		return {
 			_active,
 			_edits,
@@ -182,7 +198,27 @@ export default defineComponent({
 			templateData,
 			templateDataLoading,
 			collectionInfo,
+			file,
 		};
+
+		function useFile() {
+			const file = ref(null);
+
+			watch([() => item.value, () => junctionRelatedCollection.value], () => {
+				const junctionItem = item.value;
+
+				if (junctionRelatedCollection.value === 'directus_files') {
+					const item = junctionItem?.[props.junctionField];
+					const src = addTokenToURL(getRootPath() + `assets/${item.id}?key=system-large-contain`);
+
+					file.value = { ...item, src };
+				} else {
+					file.value = null;
+				}
+			});
+
+			return { file };
+		}
 
 		function useActiveState() {
 			const localActive = ref(false);
