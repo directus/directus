@@ -291,7 +291,7 @@ router.post(
 				});
 
 				try {
-					const translationsRelation = await translationsService.getTranslationsRelation(collectionKey, field);
+					const translationsRelation = translationsService.getTranslationsRelation(collectionKey, field);
 					const savedKeys = await xliffService.fromXliff(
 						translationsRelation.many_collection,
 						collectionKey,

@@ -1,8 +1,7 @@
 import xliff from 'xliff';
 import { omit, groupBy } from 'lodash';
 import { InvalidPayloadException } from '../exceptions';
-import { AbstractServiceOptions, Accountability, Field, Relation, SchemaOverview } from '../types';
-import { FieldsService } from './fields';
+import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import { ItemsService } from './items';
 
 export enum XliffSupportedFormats {
@@ -18,7 +17,6 @@ export type XliffServiceOptions = AbstractServiceOptions & {
 export class XliffService {
 	accountability: Accountability | null;
 	schema: SchemaOverview;
-	fieldsService: FieldsService;
 	language?: string;
 	format: string;
 
@@ -27,10 +25,6 @@ export class XliffService {
 		this.schema = options.schema;
 		this.language = options.language;
 		this.format = options.format;
-		this.fieldsService = new FieldsService({
-			accountability: this.accountability,
-			schema: this.schema,
-		});
 	}
 
 	async fromXliff(
@@ -45,7 +39,7 @@ export class XliffService {
 			throw new InvalidPayloadException(`There is no content to import.`);
 		}
 		if (!languageKeyFieldName) {
-			throw new Error(`Language key field name is undefined.`);
+			throw new InvalidPayloadException(`Parameter 'languageKeyFieldName' is not set.`);
 		}
 		// convert passed Xliff content to json format
 		const json = await (this.format === XliffSupportedFormats.XLIFF_1_2
@@ -69,7 +63,7 @@ export class XliffService {
 		data: any[]
 	): Promise<any> {
 		if (!languageKeyFieldName) {
-			throw new Error(`Language key field name is undefined.`);
+			throw new InvalidPayloadException(`Parameter 'languageKeyFieldName' is not set.`);
 		}
 		if (!this.language) {
 			throw new InvalidPayloadException(`Language has to be specified.`);
@@ -108,7 +102,7 @@ export class XliffService {
 		}
 		const keyFieldName = this.schema.collections[collectionName].primary;
 		if (!keyFieldName) {
-			throw new Error(`The primary key field for '${collectionName}' is not set.`);
+			throw new InvalidPayloadException(`The primary key field for '${collectionName}' is not set.`);
 		}
 		const parentCollectionKeyFieldName = this.schema.collections[parentCollectionName].primary;
 		const nonTranslatableFields = [keyFieldName, languageKeyFieldName, parentKeyFieldName];
@@ -215,7 +209,7 @@ export class XliffService {
 			const item = await itemsService.readByKey(language);
 			return item !== null;
 		}
-		throw new Error(`Cannot find languages relationship for '${collection}' collection.`);
+		throw new InvalidPayloadException(`Cannot find languages relationship for '${collection}' collection.`);
 	}
 
 	// prepares output for specific relation
@@ -227,7 +221,7 @@ export class XliffService {
 	): Promise<any> {
 		const keyFieldName = this.schema.collections[collectionName].primary;
 		if (!keyFieldName) {
-			throw new Error(`The primary key field for '${collectionName}' is not set.`);
+			throw new InvalidPayloadException(`The primary key field for '${collectionName}' is not set.`);
 		}
 		// getting items keys values
 		const itemsKeys = data.map((r: any) => r[keyFieldName]);

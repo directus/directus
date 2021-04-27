@@ -82,7 +82,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 				accountability: req.accountability,
 				schema: req.schema,
 			});
-			const translationsRelation = await translationsService.getTranslationsRelation(
+			const translationsRelation = translationsService.getTranslationsRelation(
 				req.collection,
 				req.sanitizedQuery.optional?.field
 			);
