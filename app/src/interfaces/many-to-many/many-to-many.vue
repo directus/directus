@@ -39,8 +39,8 @@
 		</v-list>
 
 		<div class="actions" v-if="!disabled">
-			<v-button v-if="createAllowed" @click="editModalActive = true">{{ $t('create_new') }}</v-button>
-			<v-button v-if="selectAllowed" @click="selectModalActive = true">
+			<v-button v-if="enableCreate && createAllowed" @click="editModalActive = true">{{ $t('create_new') }}</v-button>
+			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
 				{{ $t('add_existing') }}
 			</v-button>
 		</div>
@@ -113,6 +113,14 @@ export default defineComponent({
 		disabled: {
 			type: Boolean,
 			default: false,
+		},
+		enableCreate: {
+			type: Boolean,
+			default: true,
+		},
+		enableSelect: {
+			type: Boolean,
+			default: true,
 		},
 	},
 	setup(props, { emit }) {
