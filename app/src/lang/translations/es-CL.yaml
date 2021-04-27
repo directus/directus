@@ -651,7 +651,6 @@ fields:
     display_template: Plantilla de Presentación
     hidden: Oculto
     singleton: Singleton
-    translations: Traducciones para Nombre de Colección
     archive_app_filter: Archivar filtros de App
     archive_value: Archivar valor
     unarchive_value: Desarchivar valor
