@@ -247,6 +247,7 @@ export class UsersService extends ItemsService {
 
 				await mailService.send({
 					to: email,
+					subject: "You've been invited",
 					template: {
 						name: 'user-invitation',
 						data: {
@@ -306,6 +307,7 @@ export class UsersService extends ItemsService {
 
 		await mailService.send({
 			to: email,
+			subject: 'Password Reset Request',
 			template: {
 				name: 'password-reset',
 				data: {
