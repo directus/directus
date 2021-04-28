@@ -61,9 +61,17 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 				};
 			}
 
+			/**
+			 * Oracle doesn't return AUTO_INCREMENT. Incrementing is done using triggers, and there is no
+			 * nice way to detect if a trigger is an increment trigger. For compatibility sake, assume all
+			 * numeric primary keys AUTO_INCREMENT to prevent authorization throwing a "required value" error.
+			 */
+			const isNumericPrimary = column.data_type === 'NUMBER' && overview[column.table_name].primary;
+
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
-				is_nullable: column.is_nullable === 'YES',
+				is_nullable: column.is_nullable === 'Y',
+				default_value: !column.default_value && isNumericPrimary ? 'AUTO_INCREMENT' : column.default_value,
 			};
 		}
 

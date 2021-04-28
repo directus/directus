@@ -50,7 +50,7 @@
 	},
 	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4",
 	"devDependencies": {
-		"@types/fs-extra": "^9.0.9",
+		"@types/fs-extra": "^9.0.11",
 		"@types/jest": "^26.0.22",
 		"@types/node": "^14.14.37",
 		"dotenv": "^8.2.0",

@@ -338,6 +338,10 @@ export default defineComponent({
 
 .actions {
 	margin-top: 12px;
+
+	.v-button + .v-button {
+		margin-left: 12px;
+	}
 }
 
 .existing {
