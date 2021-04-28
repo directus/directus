@@ -31,7 +31,7 @@ function moduleRelativeResolve() {
 		name: 'module-relative-resolve',
 		transform(source) {
 			if (source.indexOf('@vite-module!') !== -1) {
-				return source.replace(MODULE_REGEX, (_, module) => path.relative('.', require.resolve(module)));
+				return source.replace(MODULE_REGEX, (_, module) => `./${path.relative('.', require.resolve(module))}`);
 			}
 
 			return null;
