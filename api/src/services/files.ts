@@ -16,6 +16,7 @@ import logger from '../logger';
 import axios, { AxiosResponse } from 'axios';
 import url from 'url';
 import formatTitle from '@directus/format-title';
+import { emitAsyncSafe } from '../emitter';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -33,7 +34,7 @@ export class FilesService extends ItemsService {
 		const payload = clone(data);
 
 		if (primaryKey !== undefined) {
-			await this.updateOne(primaryKey, payload);
+			await this.updateOne(primaryKey, payload, { emitEvents: false });
 
 			// If the file you're uploading already exists, we'll consider this upload a replace. In that case, we'll
 			// delete the previously saved file and thumbnails to ensure they're generated fresh
@@ -43,7 +44,7 @@ export class FilesService extends ItemsService {
 				await disk.delete(file.path);
 			}
 		} else {
-			primaryKey = await this.createOne(payload);
+			primaryKey = await this.createOne(payload, { emitEvents: false });
 		}
 
 		const fileExtension = (payload.type && extension(payload.type)) || path.extname(payload.filename_download);
@@ -116,11 +117,22 @@ export class FilesService extends ItemsService {
 			schema: this.schema,
 		});
 
-		await sudoService.updateOne(primaryKey, payload);
+		await sudoService.updateOne(primaryKey, payload, { emitEvents: false });
 
 		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
+
+		emitAsyncSafe(`files.upload`, {
+			event: `files.upload`,
+			accountability: this.accountability,
+			collection: this.collection,
+			item: primaryKey,
+			action: 'upload',
+			payload,
+			schema: this.schema,
+			database: this.knex,
+		});
 
 		return primaryKey;
 	}

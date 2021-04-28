@@ -109,7 +109,8 @@ export function applyFilter(
 					);
 				}
 
-				if (subQuery === true && isM2O === false) {
+				// Still join o2m relations when in subquery OR when the o2m relation is not at the root level
+				if ((subQuery === true || parentAlias !== undefined) && isM2O === false) {
 					dbQuery.leftJoin(
 						{ [alias]: relation.many_collection },
 						`${parentAlias || parentCollection}.${relation.one_primary}`,
@@ -218,6 +219,14 @@ export function applyFilter(
 			// ignore them. This allows easier use in GraphQL, where you wouldn't be able to
 			// conditionally build out your filter structure (#4471)
 			if (compareValue === undefined) return;
+
+			if (Array.isArray(compareValue)) {
+				// When using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
+				// reported as [undefined]. Seeing that SQL queries will fail when one or more of the
+				// bindings is undefined, we'll make sure here that invalid array values are ignored as
+				// well
+				if (compareValue.some((val) => val === undefined)) return;
+			}
 
 			if (operator === '_eq') {
 				dbQuery[logical].where({ [key]: compareValue });
