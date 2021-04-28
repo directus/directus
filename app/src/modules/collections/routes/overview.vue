@@ -28,11 +28,11 @@
 			<template v-if="isAdmin">
 				{{ $t('no_collections_copy_admin') }}
 			</template>
-			<template #append v-if="isAdmin">
-				<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
-			</template>
 			<template v-else>
 				{{ $t('no_collections_copy') }}
+			</template>
+			<template #append v-if="isAdmin">
+				<v-button to="/settings/data-model/+">{{ $t('create_collection') }}</v-button>
 			</template>
 		</v-info>
 
