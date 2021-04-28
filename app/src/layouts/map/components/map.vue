@@ -190,7 +190,7 @@ export default defineComponent({
 			} else {
 				(newSource as any).generateId = true;
 			}
-			if ('__directus' in (map.getStyle().sources || {})) {
+			if (map.getStyle().sources?.['__directus']) {
 				map.removeSource('__directus');
 			}
 			map.addSource('__directus', { ...newSource, data: props.data });
@@ -235,7 +235,13 @@ export default defineComponent({
 			const feature = event.features?.[0];
 			if (feature && props.featureId && feature.properties) {
 				hoveredId.value = feature.id;
-				map.setFeatureState({ id: hoveredId.value, source: '__directus' }, { hovered: true });
+				map.setFeatureState(
+					{
+						id: hoveredId.value,
+						source: feature.layer.source as string,
+					},
+					{ hovered: true }
+				);
 				if (feature.geometry.type === 'Point') {
 					popup.setLngLat(feature.geometry.coordinates as LngLatLike);
 				} else {

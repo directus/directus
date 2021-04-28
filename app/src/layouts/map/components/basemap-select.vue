@@ -6,6 +6,7 @@
 			:value="basemap.name"
 			@input="handleInput"
 			:items="basemaps.map((s) => ({ text: s.name, value: s.name }))"
+			:disabled="basemaps.length < 2"
 		/>
 	</div>
 </template>
