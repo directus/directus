@@ -8,7 +8,7 @@
 			'has-content': hasContent,
 		}"
 	>
-		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
+		<div class="prepend" v-if="$slots.prepend"><slot name="prepend" /></div>
 		<textarea
 			v-bind="$attrs"
 			v-focus="autofocus"
@@ -17,7 +17,7 @@
 			:disabled="disabled"
 			:value="value"
 		/>
-		<div class="append" v-if="$scopedSlots.append"><slot name="append" /></div>
+		<div class="append" v-if="$slots.append"><slot name="append" /></div>
 	</div>
 </template>
 

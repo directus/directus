@@ -35,7 +35,7 @@
 		</td>
 
 		<td class="spacer cell" />
-		<td v-if="$scopedSlots['item-append']" class="append cell" @click.stop>
+		<td v-if="$slots['item-append']" class="append cell" @click.stop>
 			<slot name="item-append" />
 		</td>
 	</tr>

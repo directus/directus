@@ -9,13 +9,13 @@
 		:disabled="disabled"
 		:class="{ checked: isChecked, indeterminate, block }"
 	>
-		<div class="prepend" v-if="$scopedSlots.prepend"><slot name="prepend" /></div>
+		<div class="prepend" v-if="$slots.prepend"><slot name="prepend" /></div>
 		<v-icon class="checkbox" :name="icon" @click.stop="toggleInput" :disabled="disabled" />
 		<span class="label type-text">
 			<slot v-if="customValue === false">{{ label }}</slot>
 			<input @click.stop class="custom-input" v-else v-model="_value" />
 		</span>
-		<div class="append" v-if="$scopedSlots.append"><slot name="append" /></div>
+		<div class="append" v-if="$slots.append"><slot name="append" /></div>
 	</component>
 </template>
 
@@ -122,6 +122,7 @@ body {
 
 .v-checkbox {
 	--v-icon-color-hover: var(--primary);
+
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -166,24 +167,14 @@ body {
 		}
 	}
 
-	&:not(:disabled):hover {
-		.checkbox {
-			--v-icon-color: var(--primary);
-		}
-		&.block {
-			border-color: var(--border-normal-alt);
-			background-color: var(--background-subdued);
-		}
-	}
-
 	&.block {
-		transition: all var(--fast) var(--transition);
 		position: relative;
 		width: 100%;
 		height: var(--input-height);
 		padding: 10px; // 14 - 4 (border)
 		border: 2px solid var(--border-normal);
 		border-radius: var(--border-radius);
+		transition: all var(--fast) var(--transition);
 
 		&::before {
 			position: absolute;
@@ -198,6 +189,16 @@ body {
 
 		> * {
 			z-index: 1;
+		}
+	}
+
+	&:not(:disabled):hover {
+		.checkbox {
+			--v-icon-color: var(--primary);
+		}
+		&.block {
+			background-color: var(--background-subdued);
+			border-color: var(--border-normal-alt);
 		}
 	}
 

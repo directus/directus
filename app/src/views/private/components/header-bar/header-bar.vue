@@ -4,11 +4,11 @@
 			<v-icon :name="primaryActionIcon" />
 		</v-button>
 
-		<div class="title-outer-prepend" v-if="$scopedSlots['title-outer:prepend']">
+		<div class="title-outer-prepend" v-if="$slots['title-outer:prepend']">
 			<slot name="title-outer:prepend" />
 		</div>
 
-		<div class="title-container" :class="{ full: !$scopedSlots['title-outer:append'] }">
+		<div class="title-container" :class="{ full: !$slots['title-outer:append'] }">
 			<div class="headline">
 				<slot name="headline" />
 			</div>
