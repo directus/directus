@@ -12,7 +12,7 @@
 		<textarea
 			v-bind="$attrs"
 			v-focus="autofocus"
-			v-on="_listeners"
+			v-on="listeners"
 			:placeholder="placeholder"
 			:disabled="disabled"
 			:value="value"
@@ -59,16 +59,15 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { emit, listeners }) {
-		const _listeners = computed(() => ({
-			...listeners,
+	setup(props, { emit }) {
+		const listeners = computed(() => ({
 			input: emitValue,
 			blur: trimIfEnabled,
 		}));
 
 		const hasContent = computed(() => props.value && props.value.length > 0);
 
-		return { _listeners, hasContent };
+		return { listeners, hasContent };
 
 		function emitValue(event: InputEvent) {
 			const value = (event.target as HTMLInputElement).value;

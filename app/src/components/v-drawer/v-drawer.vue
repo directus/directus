@@ -95,7 +95,7 @@ export default defineComponent({
 			default: i18n.global.t('sidebar'),
 		},
 	},
-	setup(props, { emit, listeners }) {
+	setup(props, { emit, attrs }) {
 		const localActive = ref(false);
 
 		const mainEl = ref<Element>();
@@ -113,7 +113,7 @@ export default defineComponent({
 		});
 
 		const showCancel = computed(() => {
-			return listeners.hasOwnProperty('cancel');
+			return attrs.hasOwnProperty('onCancel');
 		});
 
 		return { _active, mainEl, showCancel };

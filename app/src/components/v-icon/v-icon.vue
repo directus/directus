@@ -101,7 +101,7 @@ export default defineComponent({
 		...sizeProps,
 	},
 
-	setup(props, { emit, listeners }) {
+	setup(props, { emit, attrs }) {
 		const sizeClass = computed<string | null>(() => {
 			if (props.sup) return 'sup';
 			return useSizeClass(props).value;
@@ -112,7 +112,7 @@ export default defineComponent({
 			return null;
 		});
 
-		const hasClick = computed<boolean>(() => listeners.hasOwnProperty('click'));
+		const hasClick = computed<boolean>(() => attrs.hasOwnProperty('onClick'));
 
 		return {
 			sizeClass,

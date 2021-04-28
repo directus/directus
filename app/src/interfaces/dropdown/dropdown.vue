@@ -5,7 +5,7 @@
 	<v-select
 		v-else
 		:value="value"
-		@input="$listeners.input"
+		@input="$attrs.onInput"
 		:items="choices"
 		:disabled="disabled"
 		:show-deselect="allowNone"

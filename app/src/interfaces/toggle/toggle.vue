@@ -7,7 +7,7 @@
 		:input-value="value"
 		:indeterminate="value === null"
 		:disabled="disabled"
-		@change="$listeners.input"
+		@change="$attrs.onInput"
 		:style="{
 			'--v-checkbox-color': color,
 		}"

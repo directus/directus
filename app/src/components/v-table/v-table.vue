@@ -189,7 +189,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { emit, listeners, slots }) {
+	setup(props, { emit, attrs, slots }) {
 		const _headers = computed({
 			get: () => {
 				return props.headers
@@ -278,7 +278,7 @@ export default defineComponent({
 			return props.selection.length > 0 && allItemsSelected.value === false;
 		});
 
-		const hasRowClick = computed<boolean>(() => listeners.hasOwnProperty('click:row'));
+		const hasRowClick = computed<boolean>(() => attrs.hasOwnProperty('onClick:row'));
 
 		const columnStyle = computed<string>(() => {
 			let gridTemplateColumns = _headers.value

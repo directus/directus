@@ -5,7 +5,7 @@
 		:nullable="!clear"
 		:disabled="disabled"
 		:class="font"
-		@input="$listeners.input"
+		@input="$attrs.onInput"
 	/>
 </template>
 

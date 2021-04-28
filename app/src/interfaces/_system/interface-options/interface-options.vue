@@ -13,12 +13,12 @@
 			:fields="selectedInterface.options"
 			primary-key="+"
 			:edits="value"
-			@input="$listeners.input"
+			@input="$attrs.onInput"
 		/>
 
 		<component
 			:value="value"
-			@input="$listeners.input"
+			@input="$attrs.onInput"
 			:field-data="fieldData"
 			:is="`interface-options-${selectedInterface.id}`"
 			v-else

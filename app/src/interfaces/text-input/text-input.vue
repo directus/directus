@@ -8,7 +8,7 @@
 		:type="masked ? 'password' : 'text'"
 		:class="font"
 		:db-safe="dbSafe"
-		@input="$listeners.input"
+		@input="$attrs.onInput"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 		<template #append>

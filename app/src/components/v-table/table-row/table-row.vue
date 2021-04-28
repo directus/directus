@@ -2,7 +2,7 @@
 	<tr
 		class="table-row"
 		:class="{ subdued: props.subdued, clickable: props.hasClickListener }"
-		@click="listeners.click"
+		@click="$attrs.onClick"
 		:style="{
 			'--table-row-height': props.height + 2 + 'px',
 			'--table-row-line-height': 1,
@@ -13,7 +13,7 @@
 		</td>
 
 		<td v-if="props.showSelect" class="select cell" @click.stop>
-			<v-checkbox :inputValue="props.isSelected" @change="listeners['item-selected']" />
+			<v-checkbox :inputValue="props.isSelected" @change="$attrs['onItem-selected']" />
 		</td>
 
 		<td class="cell" :class="`align-${header.align}`" v-for="header in props.headers" :key="header.value">

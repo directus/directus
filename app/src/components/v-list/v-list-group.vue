@@ -61,7 +61,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { listeners, emit }) {
+	setup(props, { attrs, emit }) {
 		const { multiple } = toRefs(props);
 
 		const { active: groupActive, toggle, activate, deactivate } = useGroupable({
@@ -73,7 +73,7 @@ export default defineComponent({
 
 		function onClick(event: MouseEvent) {
 			if (props.to) return null;
-			if (listeners.click) return emit('click', event);
+			if (attrs.onClick) return emit('click', event);
 
 			event.stopPropagation();
 			toggle();

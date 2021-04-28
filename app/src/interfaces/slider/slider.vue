@@ -8,7 +8,7 @@
 		:alwaysShowValue="alwaysShowValue"
 		show-thumb-label
 		show-ticks
-		@input="$listeners.input"
+		@input="$attrs.onInput"
 	/>
 </template>
 

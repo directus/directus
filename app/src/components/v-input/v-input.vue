@@ -16,7 +16,7 @@
 				<input
 					v-bind="$attrs"
 					v-focus="autofocus"
-					v-on="_listeners"
+					v-on="listeners"
 					:autocomplete="autocomplete"
 					:type="type"
 					:min="min"
@@ -135,18 +135,17 @@ export default defineComponent({
 			default: 'off',
 		},
 	},
-	setup(props, { emit, listeners }) {
+	setup(props, { emit, attrs }) {
 		const input = ref<HTMLInputElement | null>(null);
 
-		const _listeners = computed(() => ({
-			...listeners,
+		const listeners = computed(() => ({
 			input: emitValue,
 			keydown: processValue,
 			blur: trimIfEnabled,
 		}));
 
 		const hasClick = computed(() => {
-			return listeners.click !== undefined;
+			return attrs.onClick !== undefined;
 		});
 
 		const isStepUpAllowed = computed(() => {
@@ -157,7 +156,7 @@ export default defineComponent({
 			return props.disabled === false && (props.min === null || parseInt(String(props.value), 10) > props.min);
 		});
 
-		return { _listeners, hasClick, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
+		return { listeners, hasClick, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
 
 		function processValue(event: KeyboardEvent) {
 			if (!event.key) return;

@@ -8,7 +8,7 @@
 		:min="min"
 		:max="max"
 		:step="step"
-		@input="$listeners.input"
+		@input="$attrs.onInput"
 	>
 		<template v-if="iconLeft" #prepend>
 			<v-icon :name="iconLeft" />

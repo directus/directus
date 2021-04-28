@@ -19,8 +19,8 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { emit, listeners }) {
-		const hasClick = computed<boolean>(() => listeners.hasOwnProperty('click'));
+	setup(props, { emit, attrs }) {
+		const hasClick = computed<boolean>(() => attrs.hasOwnProperty('onClick'));
 
 		return { hasClick, onClick };
 

@@ -5,7 +5,7 @@
 	<v-select
 		v-else
 		:items="items"
-		@input="$listeners.input"
+		@input="$attrs.onInput"
 		:value="value"
 		:placeholder="$t('interfaces.interface.placeholder')"
 	/>

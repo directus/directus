@@ -1,5 +1,5 @@
 <template>
-	<v-select @input="$listeners.input" :value="value" :items="languages" :disabled="disabled" />
+	<v-select @input="$attrs.onInput" :value="value" :items="languages" :disabled="disabled" />
 </template>
 
 <script lang="ts">

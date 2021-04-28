@@ -8,7 +8,7 @@
 	<v-select
 		v-else
 		:show-deselect="allowNone"
-		@input="$listeners.input"
+		@input="$attrs.onInput"
 		:value="value"
 		:disabled="disabled"
 		:items="selectItems"

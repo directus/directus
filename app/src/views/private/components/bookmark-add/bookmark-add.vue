@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :active="active" @toggle="$listeners.toggle" persistent @esc="cancel">
+	<v-dialog :active="active" @toggle="$attrs.onToggle" persistent @esc="cancel">
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>

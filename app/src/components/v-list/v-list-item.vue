@@ -17,7 +17,7 @@
 		:href="href"
 		:download="download"
 		:target="component === 'a' ? '_blank' : null"
-		v-on="disabled === false && $listeners"
+		v-bind="disabled === false && $attrs"
 	>
 		<slot />
 	</component>
@@ -75,7 +75,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props, { listeners }) {
+	setup(props, { attrs }) {
 		const component = computed<string>(() => {
 			if (props.to) return 'router-link';
 			if (props.href) return 'a';
@@ -86,7 +86,7 @@ export default defineComponent({
 			value: props.value,
 		});
 
-		const isClickable = computed(() => Boolean(props.to || props.href || listeners.click !== undefined));
+		const isClickable = computed(() => Boolean(props.to || props.href || attrs.onClick !== undefined));
 
 		return { component, isClickable };
 	},

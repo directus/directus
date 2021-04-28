@@ -6,7 +6,7 @@
 		v-else
 		multiple
 		:value="value"
-		@input="$listeners.input"
+		@input="$attrs.onInput"
 		:items="choices"
 		:disabled="disabled"
 		:show-deselect="allowNone"
