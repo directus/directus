@@ -157,7 +157,7 @@ export default defineComponent({
 				} else if (lang === 'plaintext') {
 					codemirror.value.setOption('mode', { name: null });
 				} else {
-					await import(`codemirror/mode/${lang}/${lang}.js`);
+					await import(`@vite-module!codemirror/mode/${lang}/${lang}.js`);
 					codemirror.value.setOption('mode', { name: lang });
 				}
 			}
@@ -168,28 +168,28 @@ export default defineComponent({
 
 			if (optionsObj && optionsObj.size > 0) {
 				if (optionsObj.styleActiveLine) {
-					imports.push(import(`codemirror/addon/selection/active-line.js`));
+					imports.push(import('codemirror/addon/selection/active-line.js'));
 				}
 
 				if (optionsObj.markSelection) {
 					// @ts-ignore - @types/codemirror is missing this export
-					imports.push(import(`codemirror/addon/selection/mark-selection.js`));
+					imports.push(import('codemirror/addon/selection/mark-selection.js'));
 				}
 				if (optionsObj.highlightSelectionMatches) {
-					imports.push(import(`codemirror/addon/search/match-highlighter.js`));
+					imports.push(import('codemirror/addon/search/match-highlighter.js'));
 				}
 				if (optionsObj.autoRefresh) {
-					imports.push(import(`codemirror/addon/display/autorefresh.js`));
+					imports.push(import('codemirror/addon/display/autorefresh.js'));
 				}
 				if (optionsObj.matchBrackets) {
-					imports.push(import(`codemirror/addon/edit/matchbrackets.js`));
+					imports.push(import('codemirror/addon/edit/matchbrackets.js'));
 				}
 				if (optionsObj.hintOptions || optionsObj.showHint) {
-					imports.push(import(`codemirror/addon/hint/show-hint.js`));
+					imports.push(import('codemirror/addon/hint/show-hint.js'));
 					// @ts-ignore - @types/codemirror is missing this export
-					imports.push(import(`codemirror/addon/hint/show-hint.css`));
+					imports.push(import('codemirror/addon/hint/show-hint.css'));
 					// @ts-ignore - @types/codemirror is missing this export
-					imports.push(import(`codemirror/addon/hint/javascript-hint.js`));
+					imports.push(import('codemirror/addon/hint/javascript-hint.js'));
 				}
 				await Promise.all(imports);
 			}

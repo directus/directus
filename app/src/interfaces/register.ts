@@ -22,7 +22,7 @@ export async function registerInterfaces(app: App) {
 		await asyncPool(5, customInterfaces, async (interfaceName) => {
 			try {
 				const result = await import(
-					/* @vite-ignore */ getRootPath() + `extensions/interfaces/${interfaceName}/index.js`
+					/* @vite-ignore */ `${getRootPath()}extensions/interfaces/${interfaceName}/index.js`
 				);
 				interfaces.push(result.default);
 			} catch (err) {

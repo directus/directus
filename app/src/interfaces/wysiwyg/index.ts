@@ -1,8 +1,8 @@
 import { AsyncComponent } from 'vue';
 import { defineInterface } from '@/interfaces/define';
 
-const InterfaceWYSIWYG = () =>
-	import(/* webpackChunkName: 'interface-wysiwyg', webpackPrefetch: true */ './wysiwyg.vue');
+// @TODO3 Investigate manual chunking and prefetching
+const InterfaceWYSIWYG = () => import('./wysiwyg.vue');
 
 export default defineInterface({
 	id: 'wysiwyg',

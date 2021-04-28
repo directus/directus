@@ -9,10 +9,8 @@ export async function getDateFNSLocale() {
 
 	for (const l of localesToTry) {
 		try {
-			const mod = await import(
-				/* webpackMode: 'lazy', webpackChunkName: 'df-[index]' */
-				`date-fns/locale/${l}/index.js`
-			);
+			// @TODO3 Investigate manual chunking
+			const mod = await import(`@vite-module!date-fns/locale/${l}/index.js`);
 
 			locale = mod.default;
 			break;

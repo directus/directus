@@ -25,7 +25,7 @@ export async function loadModules() {
 
 		await asyncPool(5, customModules, async (moduleName) => {
 			try {
-				const result = await import(/* @vite-ignore */ getRootPath() + `extensions/modules/${moduleName}/index.js`);
+				const result = await import(/* @vite-ignore */ `${getRootPath()}extensions/modules/${moduleName}/index.js`);
 
 				result.default.routes = result.default.routes.map((route: RouteRecordRaw) => {
 					if (route.path) {

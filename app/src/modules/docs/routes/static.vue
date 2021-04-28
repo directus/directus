@@ -32,7 +32,8 @@ import { defineComponent, ref, computed } from 'vue';
 import DocsNavigation from '../components/navigation.vue';
 import marked from 'marked';
 
-const Markdown = () => import(/* webpackChunkName: 'markdown', webpackPrefetch: true */ '../components/markdown.vue');
+// @TODO3 Investigate manual chunking and prefetching
+const Markdown = () => import('../components/markdown.vue');
 
 async function getMarkdownForPath(path: string) {
 	const pathParts = path.split('/');
@@ -47,7 +48,7 @@ async function getMarkdownForPath(path: string) {
 		docsPath = docsPath.slice(0, -1);
 	}
 
-	const mdModule = await import('raw-loader!@directus/docs/' + docsPath + '.md');
+	const mdModule = await import(`@vite-module!@directus/docs/${docsPath}.md`);
 
 	return mdModule.default;
 }
