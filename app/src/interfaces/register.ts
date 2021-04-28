@@ -1,7 +1,6 @@
-import { App } from 'vue';
+import { App, Component } from 'vue';
 import registerComponent from '@/utils/register-component/';
 import { getInterfaces } from './index';
-import { Component } from 'vue';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import { InterfaceConfig } from './types';

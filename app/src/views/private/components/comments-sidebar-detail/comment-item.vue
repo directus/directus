@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch } from 'vue';
+import { defineComponent, PropType, ref, computed, watch, ComponentPublicInstance } from 'vue';
 import { Activity } from './types';
 import CommentItemHeader from './comment-item-header.vue';
 import marked from 'marked';
@@ -56,7 +56,7 @@ export default defineComponent({
 		},
 	},
 	setup(props) {
-		const textarea = ref<Vue>();
+		const textarea = ref<ComponentPublicInstance>();
 		const htmlContent = computed(() => (props.activity.comment ? marked(props.activity.comment) : null));
 
 		const { edits, editing, savingEdits, saveEdits, cancelEditing } = useEdits();

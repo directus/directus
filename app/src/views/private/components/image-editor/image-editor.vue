@@ -101,9 +101,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, computed, reactive } from 'vue';
+import { defineComponent, ref, watch, computed, reactive, nextTick } from 'vue';
 import api from '@/api';
-import Vue from 'vue';
 
 import Cropper from 'cropperjs';
 import { nanoid } from 'nanoid';
@@ -264,7 +263,7 @@ export default defineComponent({
 			}
 
 			async function onImageLoad() {
-				await Vue.nextTick();
+				await nextTick();
 				initCropper();
 			}
 		}

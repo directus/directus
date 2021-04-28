@@ -1,3 +1,4 @@
+// @TODO3 Fix me
 import Vue, { Component, AsyncComponent } from 'vue';
 
 function registerComponent(id: string, component: Component | AsyncComponent): void;

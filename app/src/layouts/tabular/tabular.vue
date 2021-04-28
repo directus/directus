@@ -142,8 +142,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { defineComponent, PropType, ref, computed, inject, toRefs, Ref, watch } from 'vue';
+import { defineComponent, PropType, ref, computed, inject, toRefs, Ref, watch, ComponentPublicInstance } from 'vue';
 
 import { HeaderRaw, Item } from '@/components/v-table/types';
 import { Field, Filter } from '@/types';
@@ -214,7 +213,7 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const router = useRouter();
 
-		const table = ref<Vue>();
+		const table = ref<ComponentPublicInstance>();
 		const mainElement = inject('main-element', ref<Element | null>(null));
 
 		const _selection = useSync(props, 'selection', emit);

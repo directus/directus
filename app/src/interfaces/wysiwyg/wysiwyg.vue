@@ -148,7 +148,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, toRefs } from 'vue';
+import { defineComponent, PropType, ref, computed, toRefs, ComponentPublicInstance } from 'vue';
 
 import 'tinymce/tinymce';
 import 'tinymce/themes/silver';
@@ -236,7 +236,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const editorRef = ref<any | null>(null);
-		const editorElement = ref<Vue | null>(null);
+		const editorElement = ref<ComponentPublicInstance | null>(null);
 		const { imageToken } = toRefs(props);
 
 		const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(

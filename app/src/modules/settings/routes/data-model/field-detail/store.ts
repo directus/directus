@@ -6,14 +6,13 @@
  */
 
 import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
-import { reactive, watch, computed, ComputedRef, WatchStopHandle } from 'vue';
+import { reactive, watch, computed, ComputedRef, WatchStopHandle, nextTick } from 'vue';
 import { clone, throttle } from 'lodash';
 import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
 import { InterfaceConfig } from '@/interfaces/types';
 import { DisplayConfig } from '@/displays/types';
 import { Field, localTypes } from '@/types';
-import Vue from 'vue';
 
 const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
@@ -653,7 +652,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		);
 
 		if (type === 'files') {
-			Vue.nextTick(() => {
+			nextTick(() => {
 				state.relations[1].one_collection = 'directus_files';
 				state.relations[1].one_primary = 'id';
 			});

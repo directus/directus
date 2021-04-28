@@ -80,7 +80,7 @@
 	</v-menu>
 </template>
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, watch } from 'vue';
+import { defineComponent, ref, computed, PropType, watch, ComponentPublicInstance } from 'vue';
 import { isHex } from '@/utils/color';
 import Color from 'color';
 
@@ -138,7 +138,7 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const htmlColorInput = ref<Vue | null>(null);
+		const htmlColorInput = ref<ComponentPublicInstance | null>(null);
 		type ColorType = 'RGB' | 'HSL';
 
 		const colorTypes = ['RGB', 'HSL'] as ColorType[];

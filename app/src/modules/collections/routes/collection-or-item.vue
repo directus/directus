@@ -9,8 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import Vue from 'vue';
+import { defineComponent, ref, computed, ComponentPublicInstance } from 'vue';
 import CollectionRoute from './collection.vue';
 import ItemRoute from './item.vue';
 import { useCollectionsStore } from '@/stores/';
@@ -32,7 +31,7 @@ export default defineComponent({
 	},
 	setup(props) {
 		const collectionsStore = useCollectionsStore();
-		const component = ref<Vue>();
+		const component = ref<ComponentPublicInstance>();
 
 		const isSingleton = computed(() => {
 			const collectionInfo = collectionsStore.getCollection(props.collection);

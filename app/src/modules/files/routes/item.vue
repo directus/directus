@@ -175,7 +175,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref, watch } from 'vue';
+import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
 import { useRouter } from 'vue-router';
@@ -238,7 +238,7 @@ export default defineComponent({
 		const { breadcrumb } = useBreadcrumb();
 		const replaceFileDialogActive = ref(false);
 
-		const revisionsDrawerDetail = ref<Vue | null>(null);
+		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
 
 		const {
 			isNew,

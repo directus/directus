@@ -1,5 +1,4 @@
-import { watch } from 'vue';
-import { DirectiveOptions } from 'vue';
+import { watch, Directive } from 'vue';
 import { DirectiveBinding } from 'vue/types/options';
 
 type Handler = (event: Event) => void;
@@ -68,7 +67,7 @@ const update = (el: HTMLElement, { value, oldValue }: Partial<DirectiveBinding>)
 	bind(el, { value });
 };
 
-export const directive: DirectiveOptions = {
+export const directive: Directive = {
 	bind,
 	unbind,
 	update,

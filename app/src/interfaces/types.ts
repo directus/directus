@@ -1,4 +1,4 @@
-import { Component, AsyncComponent } from 'vue';
+import { Component } from 'vue';
 import { Field, types, localTypes } from '@/types';
 
 export interface InterfaceConfig {
@@ -6,8 +6,8 @@ export interface InterfaceConfig {
 	name: string;
 	icon: string;
 	description?: string;
-	component: Component | AsyncComponent;
-	options: DeepPartial<Field>[] | Component | AsyncComponent;
+	component: Component | (() => Promise<Component>);
+	options: DeepPartial<Field>[] | Component | (() => Promise<Component>);
 	types: typeof types[number][];
 	groups?: readonly typeof localTypes[number][];
 	relational?: boolean;

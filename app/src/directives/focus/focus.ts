@@ -1,6 +1,6 @@
-import { DirectiveOptions } from 'vue';
+import { Directive } from 'vue';
 
-const Focus: DirectiveOptions = {
+const Focus: Directive = {
 	inserted(el, binding) {
 		if (binding.value) {
 			el.focus();

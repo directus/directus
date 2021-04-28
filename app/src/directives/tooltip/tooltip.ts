@@ -1,4 +1,4 @@
-import { DirectiveOptions } from 'vue';
+import { Directive } from 'vue';
 import { DirectiveBinding } from 'vue/types/options';
 import { nanoid } from 'nanoid';
 
@@ -24,7 +24,7 @@ function unbind(element: HTMLElement) {
 	delete handlers[element.dataset.tooltip as string];
 }
 
-const Tooltip: DirectiveOptions = {
+const Tooltip: Directive = {
 	bind,
 	unbind,
 	update(element, binding) {

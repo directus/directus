@@ -1,7 +1,6 @@
-import { computed, ref, Ref, watch } from 'vue';
+import { computed, ref, Ref, watch, nextTick } from 'vue';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
-import Vue from 'vue';
 import { isEqual } from 'lodash';
 import { Filter } from '@/types/';
 import filtersToQuery from '@/utils/filters-to-query';
@@ -54,7 +53,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 
 			// Waiting for the tick here makes sure the query have been adjusted for the new
 			// collection
-			await Vue.nextTick();
+			await nextTick();
 			reset();
 			getItems();
 		},
@@ -66,7 +65,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			return;
 		}
 
-		await Vue.nextTick();
+		await nextTick();
 		if (loading.value === false) {
 			getItems();
 		}
@@ -85,7 +84,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			return;
 		}
 
-		await Vue.nextTick();
+		await nextTick();
 		if (loading.value === false) {
 			getItems();
 		}
@@ -96,7 +95,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 			return;
 		}
 		page.value = 1;
-		await Vue.nextTick();
+		await nextTick();
 		if (loading.value === false) {
 			getItems();
 		}
@@ -110,7 +109,7 @@ export function useItems(collection: Ref<string>, query: Query) {
 					return;
 				}
 				page.value = 1;
-				await Vue.nextTick();
+				await nextTick();
 				if (loading.value === false) {
 					getItems();
 				}

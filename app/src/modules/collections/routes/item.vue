@@ -192,8 +192,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref } from 'vue';
-import Vue from 'vue';
+import { defineComponent, computed, toRefs, ref, ComponentPublicInstance } from 'vue';
 
 import CollectionsNavigationSearch from '../components/navigation-search.vue';
 import CollectionsNavigation from '../components/navigation.vue';
@@ -245,7 +244,7 @@ export default defineComponent({
 		const { collection, primaryKey } = toRefs(props);
 		const { breadcrumb } = useBreadcrumb();
 
-		const revisionsDrawerDetail = ref<Vue | null>(null);
+		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
 
 		const { info: collectionInfo, defaults, primaryKeyField, isSingleton, accountabilityScope } = useCollection(
 			collection

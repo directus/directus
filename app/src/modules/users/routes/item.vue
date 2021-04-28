@@ -173,7 +173,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref, watch } from 'vue';
+import { defineComponent, computed, toRefs, ref, watch, ComponentPublicInstance } from 'vue';
 
 import UsersNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
@@ -236,7 +236,7 @@ export default defineComponent({
 
 		const { info: collectionInfo } = useCollection(ref('directus_users'));
 
-		const revisionsDrawerDetail = ref<Vue | null>(null);
+		const revisionsDrawerDetail = ref<ComponentPublicInstance | null>(null);
 
 		const {
 			isNew,

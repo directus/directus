@@ -1,4 +1,4 @@
-import { AsyncComponent } from 'vue';
+import { Component } from 'vue';
 import { defineInterface } from '@/interfaces/define';
 
 // @TODO3 Investigate manual chunking and prefetching
@@ -9,7 +9,7 @@ export default defineInterface({
 	name: '$t:interfaces.wysiwyg.wysiwyg',
 	description: '$t:interfaces.wysiwyg.description',
 	icon: 'format_quote',
-	component: InterfaceWYSIWYG as AsyncComponent,
+	component: InterfaceWYSIWYG as () => Promise<Component>,
 	types: ['text'],
 	options: [
 		{

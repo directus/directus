@@ -1,5 +1,4 @@
-import { onMounted, onUnmounted, Ref, ref } from 'vue';
-import Vue from 'vue';
+import { onMounted, onUnmounted, Ref, ref, ComponentPublicInstance } from 'vue';
 
 type ShortcutHandler = (event: KeyboardEvent, cancelNext: () => void) => void | any | boolean;
 
@@ -21,7 +20,7 @@ document.body.addEventListener('keyup', (event: KeyboardEvent) => {
 export default function useShortcut(
 	shortcuts: string | string[],
 	handler: ShortcutHandler,
-	reference: Ref<HTMLElement | undefined> | Ref<Vue | undefined> = ref(document.body)
+	reference: Ref<HTMLElement | undefined> | Ref<ComponentPublicInstance | undefined> = ref(document.body)
 ) {
 	const callback: ShortcutHandler = (event, cancelNext) => {
 		if (!reference.value) return;

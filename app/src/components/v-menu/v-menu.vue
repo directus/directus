@@ -54,11 +54,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType, computed, watch } from 'vue';
+import { defineComponent, ref, PropType, computed, watch, nextTick } from 'vue';
 import { usePopper } from './use-popper';
 import { Placement } from '@popperjs/core';
 import { nanoid } from 'nanoid';
-import Vue from 'vue';
 
 export default defineComponent({
 	props: {
@@ -136,7 +135,7 @@ export default defineComponent({
 			if (newActive === true) {
 				reference.value = ((activator.value as HTMLElement)?.childNodes[0] as HTMLElement) || virtualReference.value;
 
-				Vue.nextTick(() => {
+				nextTick(() => {
 					popper.value = document.getElementById(id.value);
 				});
 			}

@@ -1,4 +1,4 @@
-import { VueConstructor, Component } from 'vue';
+import { Component, ComponentPublicInstance } from 'vue';
 
 export interface LayoutConfig {
 	id: string;
@@ -11,6 +11,6 @@ export type LayoutContext = {};
 
 export type LayoutDefineParam = LayoutConfig | ((context: LayoutContext) => LayoutConfig);
 
-export interface LayoutComponent extends VueConstructor {
+export interface LayoutComponent extends ComponentPublicInstance {
 	refresh: () => Promise<void>;
 }

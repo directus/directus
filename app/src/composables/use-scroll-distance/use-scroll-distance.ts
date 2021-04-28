@@ -1,7 +1,7 @@
-import { ref, onMounted, onUnmounted, Ref, isRef, computed } from 'vue';
+import { ref, onMounted, onUnmounted, Ref, isRef, computed, ComponentPublicInstance } from 'vue';
 import { throttle } from 'lodash';
 
-export default function useScrollDistance<T extends Element>(t: T | Ref<T | null | Vue>) {
+export default function useScrollDistance<T extends Element>(t: T | Ref<T | null | ComponentPublicInstance>) {
 	const top = ref<number>();
 	const left = ref<number>();
 
@@ -19,7 +19,7 @@ export default function useScrollDistance<T extends Element>(t: T | Ref<T | null
 		}
 
 		if (target.hasOwnProperty('$el')) {
-			return (target as Vue).$el as Element;
+			return (target as ComponentPublicInstance).$el as Element;
 		}
 
 		return target as Element;

@@ -27,8 +27,7 @@
 </template>
 
 <script lang="ts">
-import { AsyncComponent } from 'vue';
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, Component } from 'vue';
 import DocsNavigation from '../components/navigation.vue';
 import marked from 'marked';
 
@@ -55,7 +54,7 @@ async function getMarkdownForPath(path: string) {
 
 export default defineComponent({
 	name: 'StaticDocs',
-	components: { DocsNavigation, Markdown: Markdown as AsyncComponent },
+	components: { DocsNavigation, Markdown: Markdown as () => Promise<Component> },
 	async beforeRouteEnter(to, from, next) {
 		const md = await getMarkdownForPath(to.path);
 

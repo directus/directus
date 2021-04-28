@@ -161,7 +161,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType, onMounted, onUnmounted } from 'vue';
+import { defineComponent, computed, ref, PropType, onMounted, onUnmounted, nextTick } from 'vue';
 import FilesNavigation from '../components/navigation.vue';
 import { i18n } from '@/lang';
 import api from '@/api';
@@ -175,7 +175,6 @@ import marked from 'marked';
 import FolderPicker from '../components/folder-picker.vue';
 import emitter, { Events } from '@/events';
 import { useRouter } from 'vue-router';
-import Vue from 'vue';
 import { useNotificationsStore, useUserStore, usePermissionsStore } from '@/stores';
 import { subDays } from 'date-fns';
 import useFolders from '../composables/use-folders';
@@ -423,7 +422,7 @@ export default defineComponent({
 						router.push(`/files?folder=${selectedFolder.value}`);
 					}
 
-					await Vue.nextTick();
+					await nextTick();
 					await refresh();
 				} catch (err) {
 					unexpectedError(err);

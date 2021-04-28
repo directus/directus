@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import { computed, onBeforeUnmount, inject, ref, provide, Ref, watch } from 'vue';
+import { computed, onBeforeUnmount, inject, ref, provide, Ref, watch, nextTick } from 'vue';
 import { notEmpty, isEmpty } from '@/utils/is-empty/';
 import { isEqual } from 'lodash';
 
@@ -141,7 +140,7 @@ export function useGroupableParent(
 
 	// It takes a tick before all children are rendered, this will make sure the start state of the
 	// children matches the start selection
-	Vue.nextTick().then(updateChildren);
+	nextTick().then(updateChildren);
 
 	watch(
 		() => options?.mandatory?.value,
