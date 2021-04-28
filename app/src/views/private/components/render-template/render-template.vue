@@ -6,13 +6,13 @@
 			<component
 				v-else-if="typeof part === 'object' && part.component"
 				:is="`display-${part.component}`"
+				v-bind="part.options"
 				:value="part.value"
 				:interface="part.interface"
 				:interface-options="part.interfaceOptions"
 				:type="part.type"
 				:collection="part.collection"
 				:field="part.field"
-				v-bind="part.options"
 			/>
 			<span v-else>{{ part }}</span>
 		</template>

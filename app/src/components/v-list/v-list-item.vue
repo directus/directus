@@ -1,6 +1,7 @@
 <template>
 	<component
 		:is="component"
+		v-bind="disabled === false && $attrs"
 		active-class="active"
 		class="v-list-item"
 		:exact="exact"
@@ -17,7 +18,6 @@
 		:href="href"
 		:download="download"
 		:target="component === 'a' ? '_blank' : null"
-		v-bind="disabled === false && $attrs"
 	>
 		<slot />
 	</component>
