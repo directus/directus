@@ -1,3 +1,4 @@
+// @TODO3 Type of component is any
 declare module '*.vue' {
 	import { defineComponent } from 'vue';
 	const component: ReturnType<typeof defineComponent>;
