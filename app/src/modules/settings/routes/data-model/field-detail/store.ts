@@ -14,10 +14,6 @@ import { InterfaceConfig } from '@/interfaces/types';
 import { DisplayConfig } from '@/displays/types';
 import { Field, localTypes } from '@/types';
 
-const fieldsStore = useFieldsStore();
-const relationsStore = useRelationsStore();
-const collectionsStore = useCollectionsStore();
-
 type GenerationInfo = {
 	name: string;
 	type: 'collection' | 'field';
@@ -31,6 +27,10 @@ let generationInfo: ComputedRef<GenerationInfo[]>;
 export { state, availableInterfaces, availableDisplays, generationInfo, initLocalStore, clearLocalStore };
 
 function initLocalStore(collection: string, field: string, type: typeof localTypes[number]) {
+	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
+	const collectionsStore = useCollectionsStore();
+
 	const { interfaces } = getInterfaces();
 	const { displays } = getDisplays();
 
