@@ -1,5 +1,6 @@
 import readableMimeType from '@/utils/readable-mime-type';
-import { extension } from 'mime-types';
+// @TODO3 We might want to use mime/lite here
+import mime from 'mime';
 import { defineDisplay } from '@/displays/define';
 
 export default defineDisplay({
@@ -26,7 +27,7 @@ export default defineDisplay({
 	types: ['string'],
 	handler: (value: string, options) => {
 		if (options && options.showAsExtension) {
-			return extension(value);
+			return mime.getExtension(value);
 		}
 
 		return readableMimeType(value);
