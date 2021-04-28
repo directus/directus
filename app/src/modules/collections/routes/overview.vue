@@ -19,7 +19,7 @@
 			fixed-header
 			@click:row="navigateToCollection"
 		>
-			<template #item.icon="{ item }">
+			<template #[`item.icon`]="{ item }">
 				<v-icon class="icon" :name="item.icon" />
 			</template>
 		</v-table>

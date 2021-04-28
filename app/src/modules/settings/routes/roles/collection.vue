@@ -33,21 +33,21 @@
 				:loading="loading"
 				@click:row="navigateToRole"
 			>
-				<template #item.icon="{ item }">
+				<template #[`item.icon`]="{ item }">
 					<v-icon class="icon" :name="item.icon" :class="{ public: item.public }" />
 				</template>
 
-				<template #item.name="{ item }">
+				<template #[`item.name`]="{ item }">
 					<span class="name" :class="{ public: item.public }">
 						{{ item.name }}
 					</span>
 				</template>
 
-				<template #item.count="{ item }">
+				<template #[`item.count`]="{ item }">
 					<value-null v-if="item.public" />
 				</template>
 
-				<template #item.description="{ item }">
+				<template #[`item.description`]="{ item }">
 					<span class="description">{{ item.description }}</span>
 				</template>
 			</v-table>

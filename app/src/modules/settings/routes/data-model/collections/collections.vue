@@ -36,7 +36,7 @@
 				fixed-header
 				item-key="collection"
 			>
-				<template #item.icon="{ item }">
+				<template #[`item.icon`]="{ item }">
 					<v-icon
 						class="icon"
 						:class="{
@@ -48,7 +48,7 @@
 					/>
 				</template>
 
-				<template #item.name="{ item }">
+				<template #[`item.name`]="{ item }">
 					<v-text-overflow
 						class="collection"
 						:class="{
@@ -60,7 +60,7 @@
 					/>
 				</template>
 
-				<template #item.note="{ item }">
+				<template #[`item.note`]="{ item }">
 					<span v-if="item.meta === null" class="note">
 						{{ $t('db_only_click_to_configure') }}
 					</span>

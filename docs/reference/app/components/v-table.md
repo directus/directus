@@ -50,7 +50,7 @@ in the header item for this column sent to `headers`.
 
 ```html
 <v-table :headers="headers" :items="items">
-	<template #header.name="{ header }">
+	<template #[`header.name`]="{ header }">
 		<v-button>{{ header.text }}</v-button>
 	</template>
 </v-table>
@@ -65,7 +65,7 @@ header item for this column sent to `headers`.
 
 ```html
 <v-table :headers="headers" :items="items">
-	<template #item.name="{ item }">
+	<template #[`item.name`]="{ item }">
 		<v-button>{{ item.name }}</v-button>
 	</template>
 </v-table>

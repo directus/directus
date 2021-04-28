@@ -59,18 +59,18 @@
 				show-select
 				v-else
 			>
-				<template #item.scope="{ item }">
+				<template #[`item.scope`]="{ item }">
 					<span :class="{ all: item.scope === 'all' }">
 						{{ item.scope === 'all' ? $t('all') : item.scope }}
 					</span>
 				</template>
 
-				<template #item.layout="{ item }">
+				<template #[`item.layout`]="{ item }">
 					<value-null v-if="!item.layout" />
 					<span v-else>{{ item.layout }}</span>
 				</template>
 
-				<template #item.name="{ item }">
+				<template #[`item.name`]="{ item }">
 					<span :class="{ default: item.name === null }">
 						{{ item.name === null ? $t('default') : item.name }}
 					</span>
