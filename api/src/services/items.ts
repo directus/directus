@@ -114,8 +114,6 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					  ).filter((val) => val)
 					: [];
 
-			console.log(hooksResult);
-
 			// The events are fired last-to-first based on when they were created. By reversing the
 			// output array of results, we ensure that the augmentations are applied in
 			// "chronological" order
