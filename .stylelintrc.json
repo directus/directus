@@ -19,7 +19,7 @@
 		"selector-pseudo-element-no-unknown": [
 			true,
 			{
-				"ignorePseudoElements": ["v-deep"]
+				"ignorePseudoElements": ["v-deep", "v-slotted", "v-global"]
 			}
 		],
 		"string-quotes": "single",
