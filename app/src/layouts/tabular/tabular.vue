@@ -84,9 +84,8 @@
 			@update:sort="onSortChange"
 			@manual-sort="changeManualSort"
 		>
-			<template v-for="header in tableHeaders" v-slot:[`item.${header.value}`]="{ item }">
+			<template v-for="header in tableHeaders" :key="header.value" v-slot:[`item.${header.value}`]="{ item }">
 				<render-display
-					:key="header.value"
 					:value="item[header.value]"
 					:display="header.field.display"
 					:options="header.field.displayOptions"

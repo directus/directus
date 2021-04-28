@@ -4,7 +4,7 @@
 
 		<teleport to="#dialog-outlet">
 			<transition-dialog>
-				<div v-if="_active" class="container" :class="[className, placement]" :key="id">
+				<div v-if="_active" class="container" :class="[className, placement]">
 					<v-overlay active absolute @click="emitToggle" />
 					<slot />
 				</div>

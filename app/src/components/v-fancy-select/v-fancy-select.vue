@@ -1,11 +1,10 @@
 <template>
 	<div class="v-fancy-select">
 		<transition-group tag="div" name="option">
-			<template v-for="(item, index) in visibleItems">
-				<v-divider :key="index" v-if="item.divider === true" />
+			<template v-for="(item, index) in visibleItems" :key="index">
+				<v-divider v-if="item.divider === true" />
 				<div
 					v-else
-					:key="item.value"
 					class="v-fancy-select-option"
 					:class="{ active: item.value === value, disabled }"
 					:style="{

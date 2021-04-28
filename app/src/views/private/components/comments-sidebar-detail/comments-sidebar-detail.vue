@@ -8,11 +8,11 @@
 			<div class="content">{{ $t('no_comments') }}</div>
 		</div>
 
-		<template v-else v-for="group in activity">
-			<v-divider :key="group.date.toString()">{{ group.dateFormatted }}</v-divider>
+		<template v-else v-for="group in activity" :key="group.date.toString()">
+			<v-divider>{{ group.dateFormatted }}</v-divider>
 
-			<template v-for="item in group.activity">
-				<comment-item :refresh="refresh" :activity="item" :key="item.id" />
+			<template v-for="item in group.activity" :key="item.id">
+				<comment-item :refresh="refresh" :activity="item" />
 			</template>
 		</template>
 	</sidebar-detail>

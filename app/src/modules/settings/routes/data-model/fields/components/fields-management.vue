@@ -34,9 +34,9 @@
 			</template>
 
 			<v-list>
-				<template v-for="(option, index) in addOptions">
-					<v-divider v-if="option.divider === true" :key="index" />
-					<v-list-item v-else :key="option.type" :to="`/settings/data-model/${collection}/+?type=${option.type}`">
+				<template v-for="(option, index) in addOptions" :key="index">
+					<v-divider v-if="option.divider === true" />
+					<v-list-item v-else :to="`/settings/data-model/${collection}/+?type=${option.type}`">
 						<v-list-item-icon>
 							<v-icon :name="option.icon" />
 						</v-list-item-icon>

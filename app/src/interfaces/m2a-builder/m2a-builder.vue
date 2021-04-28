@@ -16,9 +16,8 @@
 				:set-data="hideDragImage"
 				:disabled="!o2mRelation.sort_field"
 			>
-				<template v-for="item of previewValues">
+				<template v-for="item of previewValues" :key="item.$index">
 					<v-list-item
-						:key="item.$index"
 						v-if="allowedCollections.includes(item[anyRelation.one_collection_field])"
 						block
 						:dense="previewValues.length > 4"
@@ -48,7 +47,7 @@
 						/>
 					</v-list-item>
 
-					<v-list-item v-else :key="item.$index" block>
+					<v-list-item v-else block>
 						<v-icon class="invalid-icon" name="warning" left />
 						<span>{{ $t('invalid_item') }}</span>
 						<div class="spacer" />

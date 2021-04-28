@@ -42,12 +42,11 @@
 				<v-divider />
 			</template>
 
-			<template v-for="(item, index) in _items">
-				<v-divider :key="index" v-if="item.divider === true" />
+			<template v-for="(item, index) in _items" :key="index">
+				<v-divider v-if="item.divider === true" />
 
 				<v-list-item
 					v-else
-					:key="item.text + item.value"
 					:active="multiple ? (value || []).includes(item.value) : value === item.value"
 					:disabled="item.disabled"
 					@click="multiple ? null : $emit('input', item.value)"

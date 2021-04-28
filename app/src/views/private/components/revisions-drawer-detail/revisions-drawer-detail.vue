@@ -7,16 +7,11 @@
 		<v-progress-linear indeterminate v-if="loading" />
 
 		<template v-else>
-			<template v-for="group in revisionsByDate">
-				<v-divider :key="group.date.toString()">{{ group.dateFormatted }}</v-divider>
+			<template v-for="group in revisionsByDate" :key="group.date.toString()">
+				<v-divider>{{ group.dateFormatted }}</v-divider>
 
-				<template v-for="(item, index) in group.revisions">
-					<revision-item
-						:key="item.id"
-						:revision="item"
-						:last="index === group.revisions.length - 1"
-						@click="openModal(item.id)"
-					/>
+				<template v-for="(item, index) in group.revisions" :key="item.id">
+					<revision-item :revision="item" :last="index === group.revisions.length - 1" @click="openModal(item.id)" />
 				</template>
 			</template>
 

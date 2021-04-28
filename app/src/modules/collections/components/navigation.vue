@@ -1,7 +1,7 @@
 <template>
 	<v-list large class="collections-navigation" @contextmenu.native.prevent.stop="$refs.contextMenu.activate">
 		<template v-if="customNavItems && customNavItems.length > 0">
-			<template v-for="(group, index) in customNavItems">
+			<template v-for="(group, index) in customNavItems" :key="group.name">
 				<template
 					v-if="(group.name === undefined || group.name === null) && group.accordion === 'always_open' && index === 0"
 				>
@@ -18,7 +18,6 @@
 						:disabled="group.accordion === 'always_open'"
 						:start-open="group.accordion === 'start_open'"
 						:label="group.name || null"
-						:key="group.name"
 						@toggle="toggleActive(group.name)"
 					>
 						<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
