@@ -42,6 +42,11 @@ export type MutationOptions = {
 	 * Flag to disable the auto purging of the cache. Is ignored when CACHE_AUTO_PURGE isn't enabled.
 	 */
 	autoPurgeCache?: false;
+
+	/**
+	 * Allow disabling the emitting of hooks. Useful if a custom hook is fired (like files.upload)
+	 */
+	emitEvents?: boolean;
 };
 
 export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
@@ -93,16 +98,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 			// Run all hooks that are attached to this event so the end user has the chance to augment the
 			// item that is about to be saved
-			const hooksResult = await emitter.emitAsync(`${this.eventScope}.create.before`, payload, {
-				event: `${this.eventScope}.create.before`,
-				accountability: this.accountability,
-				collection: this.collection,
-				item: null,
-				action: 'create',
-				payload,
-				schema: this.schema,
-				database: trx,
-			});
+			const hooksResult =
+				opts?.emitEvents !== false
+					? (
+							await emitter.emitAsync(`${this.eventScope}.create.before`, payload, {
+								event: `${this.eventScope}.create.before`,
+								accountability: this.accountability,
+								collection: this.collection,
+								item: null,
+								action: 'create',
+								payload,
+								schema: this.schema,
+								database: trx,
+							})
+					  ).filter((val) => val)
+					: [];
 
 			// The events are fired last-to-first based on when they were created. By reversing the
 			// output array of results, we ensure that the augmentations are applied in
@@ -187,16 +197,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			return primaryKey;
 		});
 
-		emitAsyncSafe(`${this.eventScope}.create`, {
-			event: `${this.eventScope}.create`,
-			accountability: this.accountability,
-			collection: this.collection,
-			item: primaryKey,
-			action: 'create',
-			payload,
-			schema: this.schema,
-			database: this.knex,
-		});
+		if (opts?.emitEvents !== false) {
+			emitAsyncSafe(`${this.eventScope}.create`, {
+				event: `${this.eventScope}.create`,
+				accountability: this.accountability,
+				collection: this.collection,
+				item: primaryKey,
+				action: 'create',
+				payload,
+				schema: this.schema,
+				database: this.knex,
+			});
+		}
 
 		if (cache && env.CACHE_AUTO_PURGE && opts?.autoPurgeCache !== false) {
 			await cache.clear();
@@ -372,16 +384,21 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 		// Run all hooks that are attached to this event so the end user has the chance to augment the
 		// item that is about to be saved
-		const hooksResult = await emitter.emitAsync(`${this.eventScope}.update.before`, payload, {
-			event: `${this.eventScope}.update.before`,
-			accountability: this.accountability,
-			collection: this.collection,
-			item: keys,
-			action: 'update',
-			payload,
-			schema: this.schema,
-			database: this.knex,
-		});
+		const hooksResult =
+			opts?.emitEvents !== false
+				? (
+						await emitter.emitAsync(`${this.eventScope}.update.before`, payload, {
+							event: `${this.eventScope}.update.before`,
+							accountability: this.accountability,
+							collection: this.collection,
+							item: keys,
+							action: 'update',
+							payload,
+							schema: this.schema,
+							database: this.knex,
+						})
+				  ).filter((val) => val)
+				: [];
 
 		// The events are fired last-to-first based on when they were created. By reversing the
 		// output array of results, we ensure that the augmentations are applied in
@@ -491,16 +508,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			await cache.clear();
 		}
 
-		emitAsyncSafe(`${this.eventScope}.update`, {
-			event: `${this.eventScope}.update`,
-			accountability: this.accountability,
-			collection: this.collection,
-			item: keys,
-			action: 'update',
-			payload,
-			schema: this.schema,
-			database: this.knex,
-		});
+		if (opts?.emitEvents !== false) {
+			emitAsyncSafe(`${this.eventScope}.update`, {
+				event: `${this.eventScope}.update`,
+				accountability: this.accountability,
+				collection: this.collection,
+				item: keys,
+				action: 'update',
+				payload,
+				schema: this.schema,
+				database: this.knex,
+			});
+		}
 
 		return keys;
 	}
@@ -597,16 +616,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			await authorizationService.checkAccess('delete', this.collection, keys);
 		}
 
-		await emitter.emitAsync(`${this.eventScope}.delete.before`, {
-			event: `${this.eventScope}.delete.before`,
-			accountability: this.accountability,
-			collection: this.collection,
-			item: keys,
-			action: 'delete',
-			payload: null,
-			schema: this.schema,
-			database: this.knex,
-		});
+		if (opts?.emitEvents !== false) {
+			await emitter.emitAsync(`${this.eventScope}.delete.before`, {
+				event: `${this.eventScope}.delete.before`,
+				accountability: this.accountability,
+				collection: this.collection,
+				item: keys,
+				action: 'delete',
+				payload: null,
+				schema: this.schema,
+				database: this.knex,
+			});
+		}
 
 		await this.knex.transaction(async (trx) => {
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
@@ -631,16 +652,18 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			await cache.clear();
 		}
 
-		emitAsyncSafe(`${this.eventScope}.delete`, {
-			event: `${this.eventScope}.delete`,
-			accountability: this.accountability,
-			collection: this.collection,
-			item: keys,
-			action: 'delete',
-			payload: null,
-			schema: this.schema,
-			database: this.knex,
-		});
+		if (opts?.emitEvents !== false) {
+			emitAsyncSafe(`${this.eventScope}.delete`, {
+				event: `${this.eventScope}.delete`,
+				accountability: this.accountability,
+				collection: this.collection,
+				item: keys,
+				action: 'delete',
+				payload: null,
+				schema: this.schema,
+				database: this.knex,
+			});
+		}
 
 		return keys;
 	}
