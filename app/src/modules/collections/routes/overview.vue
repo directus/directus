@@ -13,7 +13,7 @@
 
 		<v-table
 			v-if="navItems.length > 0"
-			:headers.sync="tableHeaders"
+			v-model:headers="tableHeaders"
 			:items="navItems"
 			show-resize
 			fixed-header

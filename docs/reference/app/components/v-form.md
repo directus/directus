@@ -5,7 +5,7 @@ Renders a form using interfaces based on the passed collection name.
 ```html
 <v-form
 	collection="articles"
-	:edits.sync="{}"
+	v-model:edits="{}"
 	:initial-values="{
 		title: 'Hello World'
 	}"

@@ -15,16 +15,16 @@
 		</template>
 
 		<template #navigation>
-			<activity-navigation :filters.sync="filters" />
+			<activity-navigation v-model:filters="filters" />
 		</template>
 
 		<component
 			class="layout"
 			:is="`layout-${layout}`"
 			collection="directus_activity"
-			:layout-options.sync="layoutOptions"
-			:layout-query.sync="layoutQuery"
-			:filters.sync="filters"
+			v-model:layout-options="layoutOptions"
+			v-model:layout-query="layoutQuery"
+			v-model:filters="filters"
 			:search-query="searchQuery"
 		/>
 

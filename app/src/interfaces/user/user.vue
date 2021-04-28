@@ -49,7 +49,7 @@
 		</v-menu>
 
 		<drawer-item
-			:active.sync="editModalActive"
+			v-model:active="editModalActive"
 			collection="directus_users"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
@@ -58,7 +58,7 @@
 		/>
 
 		<drawer-collection
-			:active.sync="selectModalActive"
+			v-model:active="selectModalActive"
 			collection="directus_users"
 			:selection="selection"
 			@input="stageSelection"

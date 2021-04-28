@@ -7,7 +7,7 @@
 			:sidebar-label="$t(currentTab[0])"
 		>
 			<template #subtitle>
-				<revisions-drawer-picker :revisions="revisions" :current.sync="_current" />
+				<revisions-drawer-picker :revisions="revisions" v-model:current="_current" />
 			</template>
 
 			<template #sidebar>

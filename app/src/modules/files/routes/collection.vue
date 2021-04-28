@@ -105,9 +105,9 @@
 			ref="layoutRef"
 			:is="`layout-${layout}`"
 			collection="directus_files"
-			:selection.sync="selection"
-			:layout-options.sync="layoutOptions"
-			:layout-query.sync="layoutQuery"
+			v-model:selection="selection"
+			v-model:layout-options="layoutOptions"
+			v-model:layout-query="layoutQuery"
 			:filters="[...filters, ...filtersWithFolderAndType]"
 			:search-query="searchQuery"
 			:reset-preset="resetPreset"
@@ -138,7 +138,7 @@
 
 		<drawer-batch
 			:primary-keys="selection"
-			:active.sync="batchEditActive"
+			v-model:active="batchEditActive"
 			collection="directus_files"
 			@refresh="refresh"
 		/>

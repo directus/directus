@@ -60,9 +60,9 @@
 			<cards-header
 				@select-all="selectAll"
 				:fields="fieldsInCollection"
-				:size.sync="size"
-				:selection.sync="_selection"
-				:sort.sync="sort"
+				v-model:size="size"
+				v-model:selection="_selection"
+				v-model:sort="sort"
 			/>
 
 			<div class="grid" :class="{ 'single-row': isSingleRow }">

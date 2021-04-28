@@ -37,7 +37,7 @@
 
 		<drawer-collection
 			v-if="!disabled"
-			:active.sync="selectDrawer"
+			v-model:active="selectDrawer"
 			:collection="collection"
 			:selection="[]"
 			:filters="selectionFilters"

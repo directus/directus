@@ -171,11 +171,11 @@
 			ref="layoutRef"
 			:is="`layout-${layout || 'tabular'}`"
 			:collection="collection"
-			:selection.sync="selection"
-			:layout-options.sync="layoutOptions"
-			:layout-query.sync="layoutQuery"
-			:filters.sync="filters"
-			:search-query.sync="searchQuery"
+			v-model:selection="selection"
+			v-model:layout-options="layoutOptions"
+			v-model:layout-query="layoutQuery"
+			v-model:filters="filters"
+			v-model:search-query="searchQuery"
 			:reset-preset="resetPreset"
 		>
 			<template #no-results>
@@ -201,7 +201,7 @@
 
 		<drawer-batch
 			:primary-keys="selection"
-			:active.sync="batchEditActive"
+			v-model:active="batchEditActive"
 			:collection="collection"
 			@refresh="refresh"
 		/>

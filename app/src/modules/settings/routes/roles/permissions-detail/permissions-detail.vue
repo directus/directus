@@ -8,31 +8,31 @@
 		@cancel="close"
 	>
 		<template #sidebar v-if="!loading">
-			<tabs :current-tab.sync="currentTab" :tabs="tabs" />
+			<tabs v-model:current-tab="currentTab" :tabs="tabs" />
 		</template>
 
 		<div class="content" v-if="!loading">
 			<permissions
 				v-if="currentTab[0] === 'permissions'"
-				:permission.sync="permission"
+				v-model:permission="permission"
 				:role="role"
 				:app-minimal="appMinimal && appMinimal.permissions"
 			/>
 			<fields
 				v-if="currentTab[0] === 'fields'"
-				:permission.sync="permission"
+				v-model:permission="permission"
 				:role="role"
 				:app-minimal="appMinimal && appMinimal.fields"
 			/>
 			<validation
 				v-if="currentTab[0] === 'validation'"
-				:permission.sync="permission"
+				v-model:permission="permission"
 				:role="role"
 				:app-minimal="appMinimal && appMinimal.validation"
 			/>
 			<presets
 				v-if="currentTab[0] === 'presets'"
-				:permission.sync="permission"
+				v-model:permission="permission"
 				:role="role"
 				:app-minimal="appMinimal && appMinimal.presets"
 			/>

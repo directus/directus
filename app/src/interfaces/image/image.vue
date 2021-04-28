@@ -33,7 +33,7 @@
 
 			<drawer-item
 				v-if="!disabled && image"
-				:active.sync="editDrawerActive"
+				v-model:active="editDrawerActive"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"

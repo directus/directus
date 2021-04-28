@@ -38,7 +38,7 @@
 		:sidebar-label="currentTabInfo.text"
 	>
 		<template #sidebar>
-			<setup-tabs :current.sync="currentTab" :tabs="tabs" :type="localType" />
+			<setup-tabs v-model:current="currentTab" :tabs="tabs" :type="localType" />
 		</template>
 
 		<div class="content">
@@ -89,7 +89,7 @@
 			<setup-actions
 				:saving="saving"
 				:collection="collection"
-				:current.sync="currentTab"
+				v-model:current="currentTab"
 				:tabs="tabs"
 				:is-existing="field !== '+'"
 				@save="saveField"

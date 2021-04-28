@@ -40,8 +40,8 @@
 		<revisions-drawer
 			v-if="revisions"
 			:revisions="revisions"
-			:current.sync="modalCurrentRevision"
-			:active.sync="modalActive"
+			v-model:current="modalCurrentRevision"
+			v-model:active="modalActive"
 			@revert="$emit('revert', $event)"
 		/>
 	</sidebar-detail>

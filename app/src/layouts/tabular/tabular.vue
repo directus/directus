@@ -73,7 +73,7 @@
 			:sort="tableSort"
 			:items="items"
 			:loading="loading"
-			:headers.sync="tableHeaders"
+			v-model:headers="tableHeaders"
 			:row-height="tableRowHeight"
 			:server-sort="itemCount === limit || totalPages > 1"
 			:item-key="primaryKeyField.field"

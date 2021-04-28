@@ -61,7 +61,7 @@
 
 		<drawer-collection
 			v-if="!disabled"
-			:active.sync="selectModalActive"
+			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="[]"
 			:filters="selectionFilters"

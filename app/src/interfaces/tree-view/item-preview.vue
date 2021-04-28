@@ -8,7 +8,7 @@
 		</div>
 
 		<drawer-item
-			:active.sync="editActive"
+			v-model:active="editActive"
 			:collection="collection"
 			:primary-key="item[primaryKeyField] || '+'"
 			:edits="item"

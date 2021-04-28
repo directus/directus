@@ -29,7 +29,7 @@
 
 			<v-table
 				v-else
-				:headers.sync="tableHeaders"
+				v-model:headers="tableHeaders"
 				:items="items"
 				@click:row="openCollection"
 				show-resize

@@ -65,7 +65,7 @@
 
 		<drawer-item
 			v-if="!disabled"
-			:active.sync="editModalActive"
+			v-model:active="editModalActive"
 			:collection="relatedCollection.collection"
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
@@ -75,7 +75,7 @@
 
 		<drawer-collection
 			v-if="!disabled"
-			:active.sync="selectModalActive"
+			v-model:active="selectModalActive"
 			:collection="relatedCollection.collection"
 			:selection="selection"
 			@input="stageSelection"

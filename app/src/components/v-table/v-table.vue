@@ -7,8 +7,8 @@
 			}"
 		>
 			<table-header
-				:headers.sync="_headers"
-				:sort.sync="_sort"
+				v-model:headers="_headers"
+				v-model:sort="_sort"
 				:show-select="showSelect"
 				:show-resize="showResize"
 				:some-items-selected="someItemsSelected"
