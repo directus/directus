@@ -5,7 +5,7 @@
 			:to="`/files?folder=${folder.id}`"
 			:active="currentFolder === folder.id"
 			exact
-			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
+			@contextmenu.prevent.stop="$refs.contextMenu.activate"
 		>
 			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
 			<v-list-item-content>
@@ -21,7 +21,7 @@
 			scope="files-navigation"
 			exact
 			disable-groupable-parent
-			@contextmenu.native.prevent.stop="$refs.contextMenu.activate"
+			@contextmenu.prevent.stop="$refs.contextMenu.activate"
 		>
 			<template #activator>
 				<v-list-item-icon>

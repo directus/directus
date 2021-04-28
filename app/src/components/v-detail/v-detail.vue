@@ -1,6 +1,6 @@
 <template>
 	<div class="v-detail" :class="{ disabled }">
-		<v-divider @click.native="_active = !_active">
+		<v-divider @click="_active = !_active">
 			<v-icon v-if="!disabled" :name="_active ? 'unfold_less' : 'unfold_more'" small />
 			<slot name="title">{{ label }}</slot>
 		</v-divider>
