@@ -484,7 +484,6 @@ rows: Reihen
 columns: Spalten
 collection_setup: Einrichtung Sammlung
 optional_system_fields: Optionale Systemfelder
-value_unique: Wert muss eindeutig sein
 all_activity: Alle Aktivitäten
 create_item: Eintrag erstellen
 display_template: Anzeigevorlage
@@ -671,7 +670,6 @@ fields:
     display_template: Anzeigevorlage
     hidden: Ausgeblendet
     singleton: Singleton
-    translations: Übersetzungen des Namens der Sammlung
     archive_app_filter: Archivierungs-App-Filter
     archive_value: Archivierungswert
     unarchive_value: Dearchivierungswert

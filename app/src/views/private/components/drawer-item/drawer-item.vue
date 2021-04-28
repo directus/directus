@@ -122,15 +122,18 @@ export default defineComponent({
 		const { info: collectionInfo } = useCollection(collection);
 
 		const title = computed(() => {
-			if (props.primaryKey === '+') {
-				return i18n.t('creating_in', {
-					collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name,
-				});
+			const collection = junctionRelatedCollectionInfo?.value || collectionInfo.value!;
+			const isNew = props.primaryKey === '+';
+
+			if (i18n.te(`collection_names_singular.${collection.collection}`)) {
+				return isNew
+					? i18n.t('creating_unit', { unit: i18n.t(`collection_names_singular.${collection.collection}`) })
+					: i18n.t('editing_unit', { unit: i18n.t(`collection_names_singular.${collection.collection}`) });
 			}
 
-			return i18n.t('editing_in', {
-				collection: junctionRelatedCollectionInfo?.value?.name || collectionInfo.value?.name,
-			});
+			return isNew
+				? i18n.t('creating_in', { collection: collection.name })
+				: i18n.t('editing_in', { collection: collection.name });
 		});
 
 		const showDivider = computed(() => {

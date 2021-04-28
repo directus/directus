@@ -93,7 +93,7 @@ export class AuthenticationService {
 		if (!user || user.status !== 'active') {
 			emitStatus('fail');
 
-			if (user.status === 'suspended') {
+			if (user?.status === 'suspended') {
 				throw new UserSuspendedException();
 			} else {
 				throw new InvalidCredentialsException();

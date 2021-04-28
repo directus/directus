@@ -11,7 +11,7 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"license": "GPL-3.0-only",
 	"dependencies": {
-		"chalk": "^4.1.0",
+		"chalk": "^4.1.1",
 		"commander": "^6.2.0",
 		"execa": "^4.1.0",
 		"fs-extra": "^9.0.1",

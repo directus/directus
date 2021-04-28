@@ -429,7 +429,6 @@ layout_options: Opzioni Layout
 rows: Righe
 columns: Colonne
 collection_setup: Configurazione Raccolta
-value_unique: Il valore deve essere unico
 all_activity: Tutte le Attività
 create_item: Crea Elemento
 display_template: Display Template
@@ -537,7 +536,6 @@ fields:
     note: Nota
     display_template: Display Template
     hidden: Nascosto
-    translations: Traduzioni del Nome della Raccolta
     sort_field: Ordina per
   directus_files:
     title: Titolo

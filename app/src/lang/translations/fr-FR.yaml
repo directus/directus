@@ -484,7 +484,6 @@ rows: Lignes
 columns: Colonnes
 collection_setup: Configuration de la collection
 optional_system_fields: Champs système optionnels
-value_unique: La valeur doit être unique
 all_activity: Toutes les activités
 create_item: Créer un élément
 display_template: Modèle d'affichage
@@ -671,7 +670,6 @@ fields:
     display_template: Modèle d'affichage
     hidden: Caché
     singleton: Singleton
-    translations: Traductions du nom de la collection
     archive_app_filter: Filtrer les valeurs archivées dans l'application
     archive_value: Valeur pour archivage
     unarchive_value: Valeur au désarchivage

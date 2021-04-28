@@ -441,7 +441,6 @@ rows: Eilutės
 columns: Stulpeliai
 collection_setup: Kolekcijos konfigūracija
 optional_system_fields: Neprivalomi sisteminiai laukai
-value_unique: Reikšmė turi būti unikali
 all_activity: Visa Veikla
 create_item: Sukurti elementą
 display_template: Rodymo šablonas
@@ -607,7 +606,6 @@ fields:
     display_template: Rodymo šablonas
     hidden: Paslėptas
     singleton: Singleton objektas
-    translations: Kolekcijos pavadinimų vertimai
     sort_field: Rūšiavimo laukas
   directus_files:
     title: Pavadinmas

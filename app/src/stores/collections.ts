@@ -37,11 +37,17 @@ export const useCollectionsStore = createStore({
 
 				if (collection.meta && notEmpty(collection.meta.translations)) {
 					for (let i = 0; i < collection.meta.translations.length; i++) {
-						const { language, translation } = collection.meta.translations[i];
+						const { language, translation, singular, plural } = collection.meta.translations[i];
 
 						i18n.mergeLocaleMessage(language, {
 							collection_names: {
 								[collection.collection]: translation,
+							},
+							collection_names_singular: {
+								[collection.collection]: singular,
+							},
+							collection_names_plural: {
+								[collection.collection]: plural,
 							},
 						});
 					}
