@@ -70,20 +70,22 @@ export class UsersService extends ItemsService {
 			fields: ['auth_password_policy'],
 		});
 
-		const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
+		if (policyRegExString) {
+			const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
 
-		const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
+			const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
 
-		for (const password of passwords) {
-			if (regex.test(password) === false) {
-				throw new FailedValidationException({
-					message: `Provided password doesn't match password policy`,
-					path: ['password'],
-					type: 'custom.pattern.base',
-					context: {
-						value: password,
-					},
-				});
+			for (const password of passwords) {
+				if (regex.test(password) === false) {
+					throw new FailedValidationException({
+						message: `Provided password doesn't match password policy`,
+						path: ['password'],
+						type: 'custom.pattern.base',
+						context: {
+							value: password,
+						},
+					});
+				}
 			}
 		}
 
