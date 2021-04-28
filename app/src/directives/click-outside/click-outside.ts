@@ -1,5 +1,4 @@
-import { watch, Directive } from 'vue';
-import { DirectiveBinding } from 'vue/types/options';
+import { watch, Directive, DirectiveBinding } from 'vue';
 
 type Handler = (event: Event) => void;
 type Middleware = (event: Event) => boolean;
@@ -23,14 +22,14 @@ interface ClickOutsideElement extends HTMLElement {
 	}[];
 }
 
-const bind = (el: HTMLElement, { value }: Partial<DirectiveBinding>) => {
+const beforeMount = (el: HTMLElement, { value }: Partial<DirectiveBinding>) => {
 	const { handler, middleware, events, disabled } = processValue(value);
 
 	watch(
 		() => value,
 		(newVal) => {
 			if (JSON.stringify(newVal) !== JSON.stringify(value)) {
-				update(el, { value: newVal, oldValue: null });
+				updated(el, { value: newVal, oldValue: null });
 			}
 		}
 	);
@@ -50,7 +49,7 @@ const bind = (el: HTMLElement, { value }: Partial<DirectiveBinding>) => {
 	});
 };
 
-const unbind = (el: HTMLElement) => {
+const unmounted = (el: HTMLElement) => {
 	const handlers = (el as ClickOutsideElement).$clickOutsideHandlers || [];
 
 	handlers.forEach(({ event, handler }) => {
@@ -58,19 +57,19 @@ const unbind = (el: HTMLElement) => {
 	});
 };
 
-const update = (el: HTMLElement, { value, oldValue }: Partial<DirectiveBinding>) => {
+const updated = (el: HTMLElement, { value, oldValue }: Partial<DirectiveBinding>) => {
 	if (JSON.stringify(value) === JSON.stringify(oldValue)) {
 		return;
 	}
 
-	unbind(el);
-	bind(el, { value });
+	unmounted(el);
+	beforeMount(el, { value });
 };
 
 export const directive: Directive = {
-	bind,
-	unbind,
-	update,
+	beforeMount,
+	unmounted,
+	updated,
 };
 
 export default directive;
