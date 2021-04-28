@@ -1,5 +1,4 @@
 import { App } from 'vue';
-import registerComponent from '@/utils/register-component/';
 import { getLayouts } from './index';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -33,6 +32,6 @@ export async function registerLayouts(app: App) {
 	layoutsRaw.value = layouts;
 
 	layoutsRaw.value.forEach((layout) => {
-		registerComponent('layout-' + layout.id, layout.component);
+		app.component('layout-' + layout.id, layout.component);
 	});
 }

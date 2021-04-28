@@ -1,5 +1,4 @@
-import { App, Component } from 'vue';
-import registerComponent from '@/utils/register-component/';
+import { App } from 'vue';
 import { getInterfaces } from './index';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -35,10 +34,10 @@ export async function registerInterfaces(app: App) {
 	interfacesRaw.value = interfaces;
 
 	interfacesRaw.value.forEach((inter) => {
-		registerComponent('interface-' + inter.id, inter.component);
+		app.component('interface-' + inter.id, inter.component);
 
 		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false) {
-			registerComponent(`interface-options-${inter.id}`, inter.options as Component);
+			app.component(`interface-options-${inter.id}`, inter.options);
 		}
 	});
 }

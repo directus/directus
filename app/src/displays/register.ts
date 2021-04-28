@@ -1,5 +1,4 @@
-import { App, Component } from 'vue';
-import registerComponent from '@/utils/register-component/';
+import { App } from 'vue';
 import { getDisplays } from './index';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
@@ -33,11 +32,11 @@ export async function registerDisplays(app: App) {
 
 	displaysRaw.value.forEach((display) => {
 		if (typeof display.handler !== 'function') {
-			registerComponent('display-' + display.id, display.handler as Component);
+			app.component('display-' + display.id, display.handler);
 		}
 
-		if (typeof display.options !== 'function') {
-			registerComponent('display-options-' + display.id, display.options as Component);
+		if (typeof display.options !== 'function' && display.options !== null) {
+			app.component('display-options-' + display.id, display.options);
 		}
 	});
 }
