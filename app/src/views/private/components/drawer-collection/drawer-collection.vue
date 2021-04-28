@@ -4,7 +4,7 @@
 			<v-breadcrumb :items="[{ name: collectionInfo.name, disabled: true }]" />
 		</template>
 
-		<template #actions:prepend><portal-target name="actions:prepend" /></template>
+		<template #actions:prepend><div id="target-actions:prepend"></div></template>
 
 		<template #actions>
 			<search-input v-model="searchQuery" />

@@ -10,7 +10,7 @@
 				</v-select>
 			</div>
 
-			<portal-target name="layout-options" class="portal-contents" />
+			<div id="target-layout-options" class="teleport-contents"></div>
 		</div>
 	</sidebar-detail>
 </template>
@@ -56,7 +56,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.portal-contents {
+.teleport-contents {
 	display: contents;
 }
 

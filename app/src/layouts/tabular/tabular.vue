@@ -1,6 +1,6 @@
 <template>
 	<div class="layout-tabular">
-		<portal to="layout-options">
+		<teleport to="#target-layout-options">
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.tabular.spacing') }}</div>
 				<v-select
@@ -47,19 +47,19 @@
 					:label="field.name"
 				/>
 			</div>
-		</portal>
+		</teleport>
 
-		<portal to="sidebar">
+		<teleport to="#target-sidebar">
 			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
-		</portal>
+		</teleport>
 
-		<portal to="actions:prepend">
+		<teleport to="#target-actions:prepend">
 			<transition name="fade">
 				<span class="item-count" v-if="itemCount">
 					{{ showingCount }}
 				</span>
 			</transition>
-		</portal>
+		</teleport>
 
 		<v-table
 			v-model="_selection"

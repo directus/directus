@@ -5,7 +5,7 @@
 </template>
 
 <style lang="scss">
-/** @NOTE this is not scoped on purpose. The children are outside of the tree (portal) */
+/** @NOTE this is not scoped on purpose. The children are outside of the tree (teleport) */
 .dialog-enter-active,
 .dialog-leave-active {
 	transition: opacity var(--slow) var(--transition);

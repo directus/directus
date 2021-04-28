@@ -1,6 +1,6 @@
 <template>
 	<div class="layout-cards" :style="{ '--size': size * 40 + 'px' }" ref="layoutElement">
-		<portal to="layout-options">
+		<teleport to="#target-layout-options">
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.cards.image_source') }}</div>
 				<v-select v-model="imageSource" show-deselect item-value="field" item-text="name" :items="fileFields" />
@@ -44,17 +44,17 @@
 					</div>
 				</div>
 			</v-detail>
-		</portal>
+		</teleport>
 
-		<portal to="sidebar">
+		<teleport to="#target-sidebar">
 			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
-		</portal>
+		</teleport>
 
-		<portal to="actions:prepend">
+		<teleport to="#target-actions:prepend">
 			<transition name="fade">
 				<span class="item-count" v-if="itemCount">{{ showingCount }}</span>
 			</transition>
-		</portal>
+		</teleport>
 
 		<template v-if="loading || itemCount > 0">
 			<cards-header

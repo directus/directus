@@ -90,7 +90,7 @@
 				<div class="page-description" v-html="marked($t('page_help_settings_webhooks_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail />
-			<portal-target name="sidebar" />
+			<div id="target-sidebar"></div>
 		</template>
 	</private-view>
 </template>

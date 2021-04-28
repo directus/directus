@@ -11,7 +11,7 @@
 		</template>
 
 		<template #actions:prepend>
-			<portal-target name="actions:prepend" />
+			<div id="target-actions:prepend"></div>
 		</template>
 
 		<template #actions>
@@ -131,7 +131,7 @@
 				<div class="page-description" v-html="marked($t('page_help_users_collection'))" />
 			</sidebar-detail>
 			<layout-sidebar-detail @input="layout = $event" :value="layout" />
-			<portal-target name="sidebar" />
+			<div id="target-sidebar"></div>
 		</template>
 	</private-view>
 </template>

@@ -5,7 +5,7 @@
 </template>
 
 <style lang="scss">
-/** @NOTE this is not scoped on purpose. The children are outsisde of the tree (portal) */
+/** @NOTE this is not scoped on purpose. The children are outsisde of the tree (teleport) */
 .bounce-enter-active,
 .bounce-leave-active {
 	transition: opacity var(--fast) var(--transition);

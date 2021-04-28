@@ -95,11 +95,11 @@
 				<v-input v-model="searchQuery" :placeholder="$t('preset_search_placeholder')"></v-input>
 			</sidebar-detail>
 
-			<portal-target class="layout-sidebar" name="sidebar" />
+			<div id="target-sidebar" class="layout-sidebar"></div>
 
 			<sidebar-detail class="layout-sidebar" icon="layers" :title="$t('layout_options')">
 				<div class="layout-options">
-					<portal-target name="layout-options" class="portal-contents" />
+					<div id="target-layout-options" class="teleport-contents"></div>
 				</div>
 			</sidebar-detail>
 		</template>
@@ -520,7 +520,7 @@ export default defineComponent({
 	--form-vertical-gap: 24px;
 }
 
-.portal-contents {
+.teleport-contents {
 	display: contents;
 }
 
