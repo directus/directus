@@ -63,7 +63,7 @@ export default class Oracle extends KnexOracle implements SchemaInspector {
 
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
-				is_nullable: column.is_nullable === 'YES',
+				is_nullable: column.is_nullable === 'Y',
 			};
 		}
 

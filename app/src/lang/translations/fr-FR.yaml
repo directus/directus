@@ -484,6 +484,7 @@ rows: Lignes
 columns: Colonnes
 collection_setup: Configuration de la collection
 optional_system_fields: Champs système optionnels
+value_unique: La valeur doit être unique
 all_activity: Toutes les activités
 create_item: Créer un élément
 display_template: Modèle d'affichage
