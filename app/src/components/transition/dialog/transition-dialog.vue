@@ -1,5 +1,5 @@
 <template>
-	<transition-group name="dialog">
+	<transition-group name="dialog" tag="span">
 		<slot />
 	</transition-group>
 </template>
