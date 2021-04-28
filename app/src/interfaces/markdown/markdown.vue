@@ -147,7 +147,8 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, onMounted, onUnmounted, watch, reactive, PropType } from 'vue';
-import { sanitize } from 'dompurify';
+// @TODO3 It seems like the dompurify export isn't tree-shakable
+import dompurify from 'dompurify';
 import marked from 'marked';
 
 import CodeMirror from 'codemirror';
@@ -243,7 +244,7 @@ export default defineComponent({
 			}
 
 			const html = marked(md);
-			const htmlSanitized = sanitize(html);
+			const htmlSanitized = dompurify.sanitize(html);
 
 			return htmlSanitized;
 		});
@@ -344,8 +345,8 @@ textarea {
 
 .toolbar {
 	display: flex;
-	align-items: center;
 	flex-wrap: wrap;
+	align-items: center;
 	min-height: 40px;
 	padding: 0 4px;
 	background-color: var(--background-subdued);
