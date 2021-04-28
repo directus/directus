@@ -146,7 +146,7 @@ export default defineComponent({
 	transition: all 500ms var(--transition);
 }
 
-.option-enter,
+.option-enter-from,
 .option-leave-to {
 	opacity: 0;
 }

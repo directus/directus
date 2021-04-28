@@ -140,7 +140,7 @@ export default defineComponent({
 	transition: opacity var(--medium) var(--transition);
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
 }

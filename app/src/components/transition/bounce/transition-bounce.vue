@@ -15,7 +15,7 @@
 	}
 }
 
-.bounce-enter,
+.bounce-enter-from,
 .bounce-leave-to {
 	opacity: 0;
 

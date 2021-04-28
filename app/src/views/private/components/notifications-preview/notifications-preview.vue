@@ -110,7 +110,7 @@ export default defineComponent({
 	transition: all 500ms var(--transition);
 }
 
-.notification-enter,
+.notification-enter-from,
 .notification-leave-to {
 	opacity: 0;
 }

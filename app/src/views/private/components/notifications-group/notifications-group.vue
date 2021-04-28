@@ -72,7 +72,7 @@ export default defineComponent({
 	position: absolute;
 }
 
-.slide-fade-enter {
+.slide-fade-enter-from {
 	transform: translateX(50px) scaleY(0) scaleX(0);
 	transform-origin: right bottom;
 	opacity: 0;

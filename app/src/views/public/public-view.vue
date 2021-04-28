@@ -266,7 +266,7 @@ export default defineComponent({
 	transition: all 600ms var(--transition);
 }
 
-.scale-enter,
+.scale-enter-from,
 .scale-leave-to {
 	position: absolute;
 	transform: scale(0.95);

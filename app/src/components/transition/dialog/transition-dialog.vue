@@ -21,7 +21,7 @@
 	}
 }
 
-.dialog-enter,
+.dialog-enter-from,
 .dialog-leave-to {
 	opacity: 0;
 
