@@ -1,6 +1,6 @@
 <template>
 	<v-drawer v-model="_active" :title="title" persistent @cancel="cancel">
-		<template #title v-if="template !== null">
+		<template #title v-if="template !== null && templateData && primaryKey !== '+'">
 			<v-skeleton-loader class="title-loader" type="text" v-if="loading || templateDataLoading" />
 
 			<h1 class="type-title" v-else>
