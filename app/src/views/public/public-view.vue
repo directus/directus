@@ -116,6 +116,13 @@ export default defineComponent({
 		}
 	}
 
+	// @TODO3 This is needed to affect the slot style. Maybe we should move the style to the parent.
+	::v-slotted(.v-icon) {
+		--v-icon-color: var(--foreground-subdued);
+
+		margin-left: 4px;
+	}
+
 	.container {
 		--border-radius: 6px;
 		--input-height: 60px;
@@ -138,7 +145,8 @@ export default defineComponent({
 		box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.25);
 		transition: max-width var(--medium) var(--transition);
 
-		.type-title {
+		// @TODO3 This is needed to affect the slot style. Maybe we should move the style to the parent.
+		::v-slotted(.type-title) {
 			font-weight: 800;
 			font-size: 42px;
 			line-height: 52px;
@@ -250,12 +258,6 @@ export default defineComponent({
 			object-fit: contain;
 			object-position: center center;
 		}
-	}
-
-	.v-icon {
-		--v-icon-color: var(--foreground-subdued);
-
-		margin-left: 4px;
 	}
 }
 

@@ -1,5 +1,5 @@
 <template>
-	<div id="app" :style="brandStyle">
+	<div id="directus" :style="brandStyle">
 		<transition name="fade">
 			<div class="hydrating" v-if="hydrating">
 				<v-progress-circular indeterminate />
@@ -119,7 +119,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-#app {
+#directus {
 	height: 100%;
 }
 
