@@ -219,6 +219,14 @@ export function applyFilter(
 			// conditionally build out your filter structure (#4471)
 			if (compareValue === undefined) return;
 
+			if (Array.isArray(compareValue)) {
+				// When using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
+				// reported as [undefined]. Seeing that SQL queries will fail when one or more of the
+				// bindings is undefined, we'll make sure here that invalid array values are ignored as
+				// well
+				if (compareValue.some((val) => val === undefined)) return;
+			}
+
 			if (operator === '_eq') {
 				dbQuery[logical].where({ [key]: compareValue });
 			}
