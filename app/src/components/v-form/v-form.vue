@@ -20,7 +20,7 @@
 		<form-field
 			v-for="(field, index) in formFields"
 			:field="field"
-			:autofocus="index === firstEnableFieldIndex && autofocusOnFirstItem"
+			:autofocus="index === firstEditableFieldIndex && autofocusOnFirstItem"
 			:key="field.field"
 			:value="(edits || {})[field.field]"
 			:initial-value="(initialValues || {})[field.field]"
@@ -112,7 +112,7 @@ export default defineComponent({
 		const { formFields, gridClass } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
 
-		const firstEnableFieldIndex = computed(() => {
+		const firstEditableFieldIndex = computed(() => {
 			for (let i = 0; i < formFields.value.length; i++) {
 				if (formFields.value[i].meta && !formFields.value[i].meta.readonly) {
 					return i;
@@ -143,7 +143,7 @@ export default defineComponent({
 			unsetValue,
 			marked,
 			unknownValidationErrors,
-			firstEnableFieldIndex,
+			firstEditableFieldIndex,
 		};
 
 		function useForm() {
