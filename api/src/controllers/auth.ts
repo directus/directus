@@ -311,7 +311,9 @@ router.get(
 		try {
 			const email = getEmailFromProfile(req.params.provider, req.session.grant.response?.profile);
 
-			req.session?.destroy(() => {});
+			req.session?.destroy(() => {
+				// Do nothing
+			});
 
 			authResponse = await authenticationService.authenticate({
 				email,

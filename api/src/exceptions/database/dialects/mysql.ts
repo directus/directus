@@ -3,16 +3,7 @@ import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
 import { ValueTooLongException } from '../value-too-long';
 import { ValueOutOfRangeException } from '../value-out-of-range';
-
-type MySQLError = {
-	message: string;
-	code: string;
-	errno: number;
-	sqlMessage: string;
-	sqlState: string;
-	index: number;
-	sql: string;
-};
+import { MySQLError } from './types';
 
 enum MySQLErrorCodes {
 	UNIQUE_VIOLATION = 'ER_DUP_ENTRY',
@@ -22,7 +13,7 @@ enum MySQLErrorCodes {
 	FOREIGN_KEY_VIOLATION = 'ER_NO_REFERENCED_ROW_2',
 }
 
-export function extractError(error: MySQLError) {
+export function extractError(error: MySQLError): MySQLError | Error {
 	switch (error.code) {
 		case MySQLErrorCodes.UNIQUE_VIOLATION:
 			return uniqueViolation(error);
@@ -39,7 +30,7 @@ export function extractError(error: MySQLError) {
 }
 
 function uniqueViolation(error: MySQLError) {
-	const betweenQuotes = /\'([^\']+)\'/g;
+	const betweenQuotes = /'([^']+)'/g;
 	const matches = error.sqlMessage.match(betweenQuotes);
 
 	if (!matches) return error;
@@ -69,8 +60,8 @@ function uniqueViolation(error: MySQLError) {
 }
 
 function numericValueOutOfRange(error: MySQLError) {
-	const betweenTicks = /\`([^\`]+)\`/g;
-	const betweenQuotes = /\'([^\']+)\'/g;
+	const betweenTicks = /`([^`]+)`/g;
+	const betweenQuotes = /'([^']+)'/g;
 
 	const tickMatches = error.sql.match(betweenTicks);
 	const quoteMatches = error.sqlMessage.match(betweenQuotes);
@@ -87,8 +78,8 @@ function numericValueOutOfRange(error: MySQLError) {
 }
 
 function valueLimitViolation(error: MySQLError) {
-	const betweenTicks = /\`([^\`]+)\`/g;
-	const betweenQuotes = /\'([^\']+)\'/g;
+	const betweenTicks = /`([^`]+)`/g;
+	const betweenQuotes = /'([^']+)'/g;
 
 	const tickMatches = error.sql.match(betweenTicks);
 	const quoteMatches = error.sqlMessage.match(betweenQuotes);
@@ -105,8 +96,8 @@ function valueLimitViolation(error: MySQLError) {
 }
 
 function notNullViolation(error: MySQLError) {
-	const betweenTicks = /\`([^\`]+)\`/g;
-	const betweenQuotes = /\'([^\']+)\'/g;
+	const betweenTicks = /`([^`]+)`/g;
+	const betweenQuotes = /'([^']+)'/g;
 
 	const tickMatches = error.sql.match(betweenTicks);
 	const quoteMatches = error.sqlMessage.match(betweenQuotes);
@@ -123,8 +114,8 @@ function notNullViolation(error: MySQLError) {
 }
 
 function foreignKeyViolation(error: MySQLError) {
-	const betweenTicks = /\`([^\`]+)\`/g;
-	const betweenParens = /\(([^\)]+)\)/g;
+	const betweenTicks = /`([^`]+)`/g;
+	const betweenParens = /\(([^)]+)\)/g;
 
 	const tickMatches = error.sqlMessage.match(betweenTicks);
 	const parenMatches = error.sql.match(betweenParens);

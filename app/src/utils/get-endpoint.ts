@@ -1,4 +1,4 @@
-export function getEndpoint(collection: string) {
+export function getEndpoint(collection: string): string {
 	if (collection.startsWith('directus_')) {
 		return `/${collection.substring(9)}`;
 	}

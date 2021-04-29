@@ -4,10 +4,11 @@ import { Component } from 'vue';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
 import asyncPool from 'tiny-async-pool';
+import { InterfaceConfig } from './types';
 
 const { interfacesRaw } = getInterfaces();
 
-export async function registerInterfaces() {
+export async function registerInterfaces(): Promise<void> {
 	const context = require.context('.', true, /^.*index\.ts$/);
 
 	const modules = context
@@ -36,7 +37,7 @@ export async function registerInterfaces() {
 
 	interfacesRaw.value = modules;
 
-	interfacesRaw.value.forEach((inter) => {
+	interfacesRaw.value.forEach((inter: InterfaceConfig) => {
 		registerComponent('interface-' + inter.id, inter.component);
 
 		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false) {

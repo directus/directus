@@ -304,7 +304,7 @@ export class AuthorizationService {
 		return errors;
 	}
 
-	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]) {
+	async checkAccess(action: PermissionsAction, collection: string, pk: PrimaryKey | PrimaryKey[]): Promise<void> {
 		if (this.accountability?.admin === true) return;
 
 		const itemsService = new ItemsService(collection, {

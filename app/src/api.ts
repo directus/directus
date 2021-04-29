@@ -24,7 +24,7 @@ export interface RequestError extends AxiosError {
 	response: Response;
 }
 
-export const onRequest = (config: AxiosRequestConfig) => {
+export const onRequest = (config: AxiosRequestConfig): RequestConfig => {
 	const requestsStore = useRequestsStore();
 	const id = requestsStore.startRequest();
 
@@ -36,14 +36,14 @@ export const onRequest = (config: AxiosRequestConfig) => {
 	return requestConfig;
 };
 
-export const onResponse = (response: AxiosResponse | Response) => {
+export const onResponse = (response: AxiosResponse | Response): AxiosResponse | Response => {
 	const requestsStore = useRequestsStore();
 	const id = (response.config as RequestConfig).id;
 	requestsStore.endRequest(id);
 	return response;
 };
 
-export const onError = async (error: RequestError) => {
+export const onError = async (error: RequestError): Promise<RequestError> => {
 	const requestsStore = useRequestsStore();
 	const id = (error.response.config as RequestConfig).id;
 	requestsStore.endRequest(id);
@@ -64,7 +64,7 @@ export const onError = async (error: RequestError) => {
 		error.request.responseURL.includes('login') === false &&
 		error.request.responseURL.includes('tfa') === false
 	) {
-		let newToken: string;
+		let newToken: string | undefined;
 
 		try {
 			newToken = await refresh();
@@ -95,7 +95,7 @@ function getToken() {
 	return api.defaults.headers?.['Authorization']?.split(' ')[1] || null;
 }
 
-export function addTokenToURL(url: string, token?: string) {
+export function addTokenToURL(url: string, token?: string): string {
 	token = token || getToken();
 	if (!token) return url;
 

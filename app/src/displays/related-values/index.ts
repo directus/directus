@@ -22,12 +22,12 @@ export default defineDisplay(() => ({
 	groups: ['m2m', 'm2o', 'o2m'],
 	fields: (options: Options | null, { field, collection }) => {
 		const relatedCollection = getRelatedCollection(collection, field);
-		const { primaryKeyField } = useCollection(ref(relatedCollection as string));
+		const { primaryKeyField } = useCollection(ref((relatedCollection as unknown) as string));
 
 		if (!relatedCollection) return [];
 
 		const fields = options?.template
-			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), relatedCollection)
+			? adjustFieldsForDisplays(getFieldsFromTemplate(options.template), (relatedCollection as unknown) as string)
 			: [];
 
 		if (primaryKeyField.value && !fields.includes(primaryKeyField.value.field)) {

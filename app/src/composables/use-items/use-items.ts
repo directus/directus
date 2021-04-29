@@ -17,7 +17,7 @@ type Query = {
 	searchQuery: Ref<string | null>;
 };
 
-export function useItems(collection: Ref<string>, query: Query) {
+export function useItems(collection: Ref<string>, query: Query): Record<string, any> {
 	const { primaryKeyField, sortField } = useCollection(collection);
 
 	let loadingTimeout: any = null;

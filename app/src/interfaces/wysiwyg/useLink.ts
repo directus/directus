@@ -8,7 +8,7 @@ type LinkSelection = {
 	newTab: boolean;
 };
 
-export default function useLink(editor: Ref<any>) {
+export default function useLink(editor: Ref<any>): Record<string, any> {
 	const linkDrawerOpen = ref(false);
 	const linkSelection = ref<LinkSelection>({
 		url: null,

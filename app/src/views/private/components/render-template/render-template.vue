@@ -27,6 +27,7 @@ import { get } from 'lodash';
 import { Field } from '@/types';
 import { getDisplays } from '@/displays';
 import ValueNull from '@/views/private/components/value-null';
+import { DisplayConfig, DisplayHandlerFunction } from '@/displays/types';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -89,14 +90,14 @@ export default defineComponent({
 					// If no display is configured, we can render the raw value
 					if (!field || !field.meta?.display) return value;
 
-					const displayInfo = displays.value.find((display) => display.id === field.meta?.display);
+					const displayInfo = displays.value.find((display: DisplayConfig) => display.id === field.meta?.display);
 
 					// If used display doesn't exist in the current project, return raw value
 					if (!displayInfo) return value;
 
 					// If the display handler is a function, we parse the value and return the result
 					if (typeof displayInfo.handler === 'function') {
-						const handler = displayInfo.handler as Function;
+						const handler = displayInfo.handler as DisplayHandlerFunction;
 						return handler(value, field.meta?.display_options);
 					}
 

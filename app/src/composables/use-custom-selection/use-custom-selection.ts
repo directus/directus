@@ -1,9 +1,13 @@
-import { Ref, ref, computed, watch } from '@vue/composition-api';
+import { Ref, ref, computed, watch, ComputedRef } from '@vue/composition-api';
 import { nanoid } from 'nanoid';
 
 type EmitFunction = (event: string, ...args: any[]) => void;
 
-export function useCustomSelection(currentValue: Ref<string>, items: Ref<any[]>, emit: EmitFunction) {
+export function useCustomSelection(
+	currentValue: Ref<string>,
+	items: Ref<any[]>,
+	emit: EmitFunction
+): Record<string, ComputedRef> {
 	const localOtherValue = ref('');
 
 	const otherValue = computed({
@@ -34,7 +38,11 @@ export function useCustomSelection(currentValue: Ref<string>, items: Ref<any[]>,
 	return { otherValue, usesOtherValue };
 }
 
-export function useCustomSelectionMultiple(currentValues: Ref<string[]>, items: Ref<any[]>, emit: EmitFunction) {
+export function useCustomSelectionMultiple(
+	currentValues: Ref<string[]>,
+	items: Ref<any[]>,
+	emit: EmitFunction
+): Record<string, any> {
 	type OtherValue = {
 		key: string;
 		value: string;

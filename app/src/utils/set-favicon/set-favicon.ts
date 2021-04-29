@@ -15,19 +15,20 @@ const svg = (color: string, hide: boolean) => `
 	}
 </svg>`;
 
-export default function setFavicon(color = '#00C897', hide = false) {
+export default function setFavicon(color = '#00C897', hide = false): void {
 	const icon = svg(color, hide);
 	const wrapper = document.createElement('div');
 	wrapper.innerHTML = icon.trim();
 
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const iconSerialized = new XMLSerializer().serializeToString(wrapper.firstChild!);
+	if (wrapper.firstChild) {
+		const iconSerialized = new XMLSerializer().serializeToString(wrapper.firstChild);
 
-	const string = 'data:image/svg+xml;base64,' + window.btoa(iconSerialized);
+		const string = 'data:image/svg+xml;base64,' + window.btoa(iconSerialized);
 
-	const link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');
-	link.type = 'image/x-icon';
-	link.rel = 'icon';
-	link.href = string;
-	document.getElementsByTagName('head')[0].appendChild(link);
+		const link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');
+		link.type = 'image/x-icon';
+		link.rel = 'icon';
+		link.href = string;
+		document.getElementsByTagName('head')[0].appendChild(link);
+	}
 }

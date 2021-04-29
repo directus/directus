@@ -9,7 +9,7 @@ import env from '../env';
 // @ts-ignore
 import { version } from '../../package.json';
 
-export async function track(event: string) {
+export async function track(event: string): Promise<void> {
 	if (env.TELEMETRY !== false) {
 		const info = await getEnvInfo(event);
 
