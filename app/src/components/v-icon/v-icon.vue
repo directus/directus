@@ -112,7 +112,7 @@ export default defineComponent({
 			return null;
 		});
 
-		const hasClick = computed<boolean>(() => listeners.hasOwnProperty('click'));
+		const hasClick = computed<boolean>(() => 'click' in listeners);
 
 		return {
 			sizeClass,

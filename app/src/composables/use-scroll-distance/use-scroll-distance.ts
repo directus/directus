@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, Ref, isRef, computed } from '@vue/composition-api';
+import { computed, isRef, onMounted, onUnmounted, ref, Ref } from '@vue/composition-api';
 import { throttle } from 'lodash';
 
 export default function useScrollDistance<T extends Element>(t: T | Ref<T | null | Vue>): Record<string, Ref> {
@@ -18,7 +18,7 @@ export default function useScrollDistance<T extends Element>(t: T | Ref<T | null
 			return null;
 		}
 
-		if (target.hasOwnProperty('$el')) {
+		if ('$el' in target) {
 			return (target as Vue).$el as Element;
 		}
 

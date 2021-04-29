@@ -1,6 +1,6 @@
 import camelcase from 'camelcase';
-import env from '../env';
 import { set } from 'lodash';
+import env from '../env';
 
 export function getConfigFromEnv(prefix: string, omitPrefix?: string | string[]): any {
 	const config: any = {};

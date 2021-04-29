@@ -1,9 +1,9 @@
-import registerComponent from '@/utils/register-component/';
-import { getDisplays } from './index';
-import { Component } from 'vue';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import registerComponent from '@/utils/register-component/';
 import asyncPool from 'tiny-async-pool';
+import { Component } from 'vue';
+import { getDisplays } from './index';
 import { DisplayConfig } from './types';
 
 const { displaysRaw } = getDisplays();

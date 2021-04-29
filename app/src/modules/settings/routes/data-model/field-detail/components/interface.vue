@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, toRefs } from '@vue/composition-api';
+import { defineComponent, computed, toRefs } from '@vue/composition-api';
 import { getInterfaces } from '@/interfaces';
 import { FancySelectItem } from '@/components/v-fancy-select/types';
 
@@ -53,7 +53,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props) {
+	setup() {
 		const { interfaces } = getInterfaces();
 
 		const selectItems = computed(() => {

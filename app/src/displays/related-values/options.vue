@@ -13,7 +13,6 @@
 <script lang="ts">
 import { Field } from '@/types';
 import { defineComponent, PropType, computed } from '@vue/composition-api';
-import { useRelationsStore } from '@/stores/';
 import { Relation } from '@/types/relations';
 
 export default defineComponent({
@@ -36,7 +35,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const relationsStore = useRelationsStore();
 		const template = computed({
 			get() {
 				return props.value?.template;

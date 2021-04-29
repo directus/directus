@@ -113,7 +113,7 @@ export default defineComponent({
 		});
 
 		const showCancel = computed(() => {
-			return listeners.hasOwnProperty('cancel');
+			return 'cancel' in listeners;
 		});
 
 		return { _active, mainEl, showCancel };

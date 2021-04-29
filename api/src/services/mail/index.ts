@@ -1,12 +1,12 @@
-import mailer from '../mailer';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../../types';
+import fse from 'fs-extra';
 import { Knex } from 'knex';
+import { Liquid } from 'liquidjs';
+import path from 'path';
 import database from '../../database';
 import env from '../../env';
 import logger from '../../logger';
-import fse from 'fs-extra';
-import { Liquid } from 'liquidjs';
-import path from 'path';
+import { AbstractServiceOptions, Accountability, SchemaOverview } from '../../types';
+import mailer from '../mailer';
 
 const liquidEngine = new Liquid({
 	root: [path.resolve(env.EXTENSIONS_PATH, 'templates'), path.resolve(__dirname, 'templates')],
@@ -37,10 +37,11 @@ export class MailService {
 		this.knex = opts?.knex || database;
 	}
 
-	async send(options: EmailOptions) {
+	async send(options: EmailOptions): Promise<void> {
 		if (!mailer) return;
 
-		let { to, from, subject, html, text } = options;
+		const { to, subject, text } = options;
+		let { from, html } = options;
 
 		from = from || (env.EMAIL_FROM as string);
 
@@ -67,7 +68,7 @@ export class MailService {
 		}
 	}
 
-	private async renderTemplate(template: string, variables: Record<string, any>, system: boolean = false) {
+	private async renderTemplate(template: string, variables: Record<string, any>, system = false) {
 		const resolvedPath = system
 			? path.join(__dirname, 'templates', template + '.liquid')
 			: path.resolve(env.EXTENSIONS_PATH, 'templates', template + '.liquid');

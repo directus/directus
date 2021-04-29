@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType, onMounted, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header/';
 import TableRow from './table-row/';
@@ -278,7 +278,7 @@ export default defineComponent({
 			return props.selection.length > 0 && allItemsSelected.value === false;
 		});
 
-		const hasRowClick = computed<boolean>(() => listeners.hasOwnProperty('click:row'));
+		const hasRowClick = computed<boolean>(() => 'click:row' in listeners);
 
 		const columnStyle = computed<string>(() => {
 			let gridTemplateColumns = _headers.value

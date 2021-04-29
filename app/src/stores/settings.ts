@@ -1,9 +1,9 @@
-import { createStore } from 'pinia';
 import api from '@/api';
 import { i18n } from '@/lang';
-import { merge } from 'lodash';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { merge } from 'lodash';
+import { createStore } from 'pinia';
 
 export const useSettingsStore = createStore({
 	id: 'settingsStore',

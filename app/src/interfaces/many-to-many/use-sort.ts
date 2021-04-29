@@ -1,5 +1,5 @@
-import { Ref, ref, computed } from '@vue/composition-api';
 import { Sort } from '@/components/v-table/types';
+import { computed, Ref, ref } from '@vue/composition-api';
 import { sortBy } from 'lodash';
 import { RelationInfo } from './use-relation';
 

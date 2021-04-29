@@ -1,9 +1,9 @@
-import { Knex } from 'knex';
 import fse from 'fs-extra';
-import path from 'path';
 import yaml from 'js-yaml';
+import { Knex } from 'knex';
+import { isObject } from 'lodash';
+import path from 'path';
 import { types } from '../../types';
-import { isObject, merge } from 'lodash';
 
 type TableSeed = {
 	table: string;

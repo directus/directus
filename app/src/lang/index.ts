@@ -1,11 +1,9 @@
+import { RequestError } from '@/api';
 import Vue from 'vue';
 import VueI18n, { TranslateResult } from 'vue-i18n';
-import { RequestError } from '@/api';
-
 import availableLanguages from './available-languages.yaml';
-
-import enUSBase from './translations/en-US.yaml';
 import dateFormats from './date-formats.yaml';
+import enUSBase from './translations/en-US.yaml';
 
 Vue.use(VueI18n);
 

@@ -1,17 +1,17 @@
-import express from 'express';
-import asyncHandler from '../utils/async-handler';
-import Busboy from 'busboy';
-import { MetaService, FilesService } from '../services';
-import { File, PrimaryKey } from '../types';
 import formatTitle from '@directus/format-title';
-import env from '../env';
+import Busboy from 'busboy';
+import express from 'express';
 import Joi from 'joi';
-import { InvalidPayloadException, ForbiddenException } from '../exceptions';
 import path from 'path';
-import useCollection from '../middleware/use-collection';
+import env from '../env';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
 import { respond } from '../middleware/respond';
-import { toArray } from '../utils/to-array';
+import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
+import { FilesService, MetaService } from '../services';
+import { File, PrimaryKey } from '../types';
+import asyncHandler from '../utils/async-handler';
+import { toArray } from '../utils/to-array';
 
 const router = express.Router();
 
@@ -33,7 +33,7 @@ const multipartHandler = asyncHandler(async (req, res, next) => {
 	 */
 
 	let disk: string = toArray(env.STORAGE_LOCATIONS)[0];
-	let payload: Partial<File> = {};
+	const payload: Partial<File> = {};
 	let fileCount = 0;
 
 	busboy.on('field', (fieldname: keyof File, val) => {

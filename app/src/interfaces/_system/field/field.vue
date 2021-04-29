@@ -67,8 +67,7 @@ export default defineComponent({
 				let disabled = false;
 
 				if (field?.schema?.is_primary_key === true) disabled = true;
-				if (props.typeAllowList.length > 0 && props.typeAllowList.includes(field.type) === false)
-					disabled = true;
+				if (props.typeAllowList.length > 0 && props.typeAllowList.includes(field.type) === false) disabled = true;
 
 				return {
 					text: field.name,

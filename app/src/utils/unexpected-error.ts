@@ -1,6 +1,6 @@
-import { useNotificationsStore } from '@/stores/';
-import { i18n } from '@/lang';
 import { RequestError } from '@/api';
+import { i18n } from '@/lang';
+import { useNotificationsStore } from '@/stores/';
 import { APIError } from '@/types';
 
 let store: any;

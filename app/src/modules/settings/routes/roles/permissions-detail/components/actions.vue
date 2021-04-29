@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, inject } from '@vue/composition-api';
+import { defineComponent, PropType, ref } from '@vue/composition-api';
 import { Permission } from '@/types';
 import api from '@/api';
 import router from '@/router';

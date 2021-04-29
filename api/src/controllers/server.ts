@@ -1,10 +1,9 @@
-import { Router } from 'express';
-import { ServerService } from '../services';
-import { SpecificationService } from '../services';
-import asyncHandler from '../utils/async-handler';
-import { respond } from '../middleware/respond';
 import { format } from 'date-fns';
+import { Router } from 'express';
 import { RouteNotFoundException } from '../exceptions';
+import { respond } from '../middleware/respond';
+import { ServerService, SpecificationService } from '../services';
+import asyncHandler from '../utils/async-handler';
 
 const router = Router();
 

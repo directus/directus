@@ -1,9 +1,9 @@
 import { Knex } from 'knex';
+import { SchemaOverview } from '../types';
 import { Accountability } from './accountability';
 import { Item, PrimaryKey } from './items';
-import { Query } from './query';
 import { PermissionsAction } from './permissions';
-import { SchemaOverview } from '../types';
+import { Query } from './query';
 
 export type AbstractServiceOptions = {
 	knex?: Knex;

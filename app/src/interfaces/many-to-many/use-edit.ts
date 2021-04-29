@@ -1,6 +1,6 @@
 import { Ref, ref } from '@vue/composition-api';
+import { get, isEqual } from 'lodash';
 import { RelationInfo } from './use-relation';
-import { isEqual, get } from 'lodash';
 
 export default function useEdit(
 	value: Ref<(string | number | Record<string, any>)[] | null>,

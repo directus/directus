@@ -1,9 +1,9 @@
-import { Query } from '../types/query';
-import database from '../database';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import { Knex } from 'knex';
-import { applyFilter, applySearch } from '../utils/apply-query';
+import database from '../database';
 import { ForbiddenException } from '../exceptions';
+import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
+import { Query } from '../types/query';
+import { applyFilter, applySearch } from '../utils/apply-query';
 import { parseFilter } from '../utils/parse-filter';
 
 export class MetaService {

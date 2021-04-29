@@ -92,6 +92,8 @@ export default defineComponent({
 					}
 				}
 			}
+
+			return null;
 		});
 
 		return { relatedCollection, primaryKeyField, getLinkForItem, _template, unit };

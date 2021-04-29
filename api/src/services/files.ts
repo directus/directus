@@ -1,22 +1,22 @@
-import { ItemsService, MutationOptions } from './items';
-import storage from '../storage';
-import sharp from 'sharp';
-import { parse as parseICC } from 'icc';
+import formatTitle from '@directus/format-title';
+import axios, { AxiosResponse } from 'axios';
 import parseEXIF from 'exif-reader';
-import parseIPTC from '../utils/parse-iptc';
-import { AbstractServiceOptions, File, PrimaryKey } from '../types';
+import { parse as parseICC } from 'icc';
 import { clone } from 'lodash';
-import cache from '../cache';
-import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
-import { toArray } from '../utils/to-array';
 import { extension } from 'mime-types';
 import path from 'path';
-import env from '../env';
-import logger from '../logger';
-import axios, { AxiosResponse } from 'axios';
+import sharp from 'sharp';
 import url from 'url';
-import formatTitle from '@directus/format-title';
+import cache from '../cache';
 import { emitAsyncSafe } from '../emitter';
+import env from '../env';
+import { ForbiddenException, ServiceUnavailableException } from '../exceptions';
+import logger from '../logger';
+import storage from '../storage';
+import { AbstractServiceOptions, File, PrimaryKey } from '../types';
+import parseIPTC from '../utils/parse-iptc';
+import { toArray } from '../utils/to-array';
+import { ItemsService, MutationOptions } from './items';
 
 export class FilesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

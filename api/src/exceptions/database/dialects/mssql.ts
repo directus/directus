@@ -1,10 +1,9 @@
+import database from '../../../database';
 import { InvalidForeignKeyException } from '../invalid-foreign-key';
 import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
-import { ValueTooLongException } from '../value-too-long';
 import { ValueOutOfRangeException } from '../value-out-of-range';
-
-import database from '../../../database';
+import { ValueTooLongException } from '../value-too-long';
 import { MSSQLError } from './types';
 
 enum MSSQLErrorCodes {

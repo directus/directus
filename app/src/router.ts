@@ -1,14 +1,13 @@
-import VueRouter, { NavigationGuard, RouteConfig, Route } from 'vue-router';
-import LoginRoute from '@/routes/login';
-import LogoutRoute from '@/routes/logout';
-import ResetPasswordRoute from '@/routes/reset-password';
-import AcceptInviteRoute from '@/routes/accept-invite';
 import { refresh } from '@/auth';
 import { hydrate } from '@/hydrate';
-import { useAppStore, useUserStore, useServerStore } from '@/stores/';
+import AcceptInviteRoute from '@/routes/accept-invite';
+import LoginRoute from '@/routes/login';
+import LogoutRoute from '@/routes/logout';
 import PrivateNotFoundRoute from '@/routes/private-not-found';
-
+import ResetPasswordRoute from '@/routes/reset-password';
+import { useAppStore, useServerStore, useUserStore } from '@/stores/';
 import { getRootPath } from '@/utils/get-root-path';
+import VueRouter, { NavigationGuard, Route, RouteConfig } from 'vue-router';
 
 export const defaultRoutes: RouteConfig[] = [
 	{

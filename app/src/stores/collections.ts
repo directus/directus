@@ -1,12 +1,12 @@
-import { createStore } from 'pinia';
 import api from '@/api';
-import { Collection, CollectionRaw } from '@/types';
 import i18n from '@/lang/';
+import { Collection, CollectionRaw } from '@/types';
 import { notEmpty } from '@/utils/is-empty/';
-import VueI18n from 'vue-i18n';
-import formatTitle from '@directus/format-title';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import formatTitle from '@directus/format-title';
+import { createStore } from 'pinia';
+import VueI18n from 'vue-i18n';
 
 export const useCollectionsStore = createStore({
 	id: 'collectionsStore',

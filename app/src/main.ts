@@ -1,8 +1,20 @@
+import Vue from 'vue';
+import { version } from '../package.json';
+import App from './app.vue';
+import './components/register';
+import './directives/register';
+import { registerDisplays } from './displays/register';
+import { registerInterfaces } from './interfaces/register';
+import i18n from './lang/';
+import { registerLayouts } from './layouts/register';
+import { loadModules } from './modules/register';
+import './plugins';
+import router from './router';
+import './styles/main.scss';
 import { getRootPath } from './utils/get-root-path';
+import './views/register';
 
 __webpack_public_path__ = getRootPath() + 'admin/';
-
-import { version } from '../package.json';
 
 console.log(`
 
@@ -37,25 +49,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 console.time('🕓 Application Loaded');
-
-import Vue from 'vue';
-
-import './plugins';
-
-import i18n from './lang/';
-import router from './router';
-
-import './styles/main.scss';
-import './directives/register';
-import './components/register';
-import './views/register';
-
-import { registerInterfaces } from './interfaces/register';
-import { loadModules } from './modules/register';
-import { registerLayouts } from './layouts/register';
-import { registerDisplays } from './displays/register';
-
-import App from './app.vue';
 
 async function init() {
 	await Promise.all([registerInterfaces(), registerDisplays(), registerLayouts(), loadModules()]);

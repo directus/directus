@@ -1,14 +1,14 @@
-import * as http from 'http';
-import * as https from 'https';
-import qs from 'qs';
-import url from 'url';
 import { createTerminus, TerminusOptions } from '@godaddy/terminus';
 import { Request } from 'express';
-import logger from './logger';
-import { emitAsyncSafe } from './emitter';
-import database from './database';
-import createApp from './app';
+import * as http from 'http';
+import * as https from 'https';
 import { once } from 'lodash';
+import qs from 'qs';
+import url from 'url';
+import createApp from './app';
+import database from './database';
+import { emitAsyncSafe } from './emitter';
+import logger from './logger';
 
 export default async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());

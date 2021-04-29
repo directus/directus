@@ -1,5 +1,4 @@
-import VueI18n from 'vue-i18n';
-import { VueConstructor, Component } from 'vue';
+import { Component, VueConstructor } from 'vue';
 
 export interface LayoutConfig {
 	id: string;

@@ -1,7 +1,7 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceCode from './code.vue';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/meta';
+import InterfaceCode from './code.vue';
 
 const choicesMap = CodeMirror.modeInfo.reduce((acc: Record<string, string>, choice) => {
 	if (['JSON', 'JSON-LD'].includes(choice.name)) {

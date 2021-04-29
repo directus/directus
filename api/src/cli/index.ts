@@ -1,18 +1,17 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-
-const pkg = require('../../package.json');
-
 import start from '../start';
-import init from './commands/init';
+import bootstrap from './commands/bootstrap';
+import count from './commands/count';
 import dbInstall from './commands/database/install';
 import dbMigrate from './commands/database/migrate';
+import init from './commands/init';
+import rolesCreate from './commands/roles/create';
 import usersCreate from './commands/users/create';
 import usersPasswd from './commands/users/passwd';
-import rolesCreate from './commands/roles/create';
-import count from './commands/count';
-import bootstrap from './commands/bootstrap';
+
+const pkg = require('../../package.json');
 
 program.name('directus').usage('[command] [options]');
 program.version(pkg.version, '-v, --version');

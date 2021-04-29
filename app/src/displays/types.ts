@@ -1,5 +1,5 @@
-import { Component } from 'vue';
 import { Field, localTypes, types } from '@/types';
+import { Component } from 'vue';
 
 export type DisplayHandlerFunctionContext = {
 	type: string;
