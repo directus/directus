@@ -169,6 +169,7 @@ type layoutQuery = {
 };
 
 export default defineComponent({
+	emits: ['update:selection', 'update:layoutOption', 'update:layoutQuery', 'update:filters', 'update:searchQuery'],
 	components: { Card, CardsHeader },
 	props: {
 		collection: {

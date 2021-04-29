@@ -49,7 +49,7 @@ import { Field } from '@/types';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
-	emits: ['select-all'],
+	emits: ['select-all', 'update:size', 'update:sort', 'update:selection'],
 	props: {
 		fields: {
 			type: Array as PropType<Field[]>,

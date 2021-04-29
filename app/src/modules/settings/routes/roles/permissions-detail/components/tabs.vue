@@ -12,6 +12,7 @@ import { defineComponent } from 'vue';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
+	emits: ['update:currentTab'],
 	props: {
 		currentTab: {
 			type: Array,

@@ -25,6 +25,7 @@ import { Permission, Role } from '@/types';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
+	emits: ['update:permission'],
 	props: {
 		permission: {
 			type: Object as PropType<Permission>,

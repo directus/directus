@@ -27,6 +27,7 @@ import useSync from '@/composables/use-sync';
 import { useFieldsStore } from '@/stores';
 
 export default defineComponent({
+	emits: ['update:permission'],
 	props: {
 		permission: {
 			type: Object as PropType<Permission>,

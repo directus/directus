@@ -170,6 +170,7 @@ type layoutQuery = {
 };
 
 export default defineComponent({
+	emits: ['update:selection', 'update:layoutOption', 'update:layoutQuery', 'update:filters', 'update:searchQuery'],
 	components: { Draggable },
 	props: {
 		collection: {

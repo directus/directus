@@ -24,7 +24,7 @@ import { defineComponent, computed } from 'vue';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
-	emits: ['update:indeterminate', 'change'],
+	emits: ['update:indeterminate', 'change', 'update:value'],
 	model: {
 		prop: 'inputValue',
 		event: 'change',

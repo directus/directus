@@ -11,6 +11,7 @@ import { defineComponent, PropType } from 'vue';
 import useSync from '@/composables/use-sync';
 
 export default defineComponent({
+	emits: ['update:current'],
 	props: {
 		tabs: {
 			type: Array as PropType<string[]>,

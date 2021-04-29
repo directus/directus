@@ -35,6 +35,7 @@ type Option = {
 };
 
 export default defineComponent({
+	emits: ['update:current'],
 	props: {
 		revisions: {
 			type: Array as PropType<Revision[]>,
