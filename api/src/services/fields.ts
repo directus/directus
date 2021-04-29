@@ -207,7 +207,7 @@ export class FieldsService {
 		table?: Knex.CreateTableBuilder // allows collection creation to
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException();
 		}
 
 		// Check if field already exists, either as a column, or as a row in directus_fields
@@ -248,7 +248,7 @@ export class FieldsService {
 
 	async updateField(collection: string, field: RawField): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action');
+			throw new ForbiddenException();
 		}
 
 		if (field.schema) {
@@ -291,7 +291,7 @@ export class FieldsService {
 	/** @todo save accountability */
 	async deleteField(collection: string, field: string): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException();
 		}
 
 		await emitter.emitAsync(`fields.delete.before`, {

@@ -455,10 +455,7 @@ export class PayloadService {
 							.first());
 
 						if (exists === false) {
-							throw new ForbiddenException(undefined, {
-								item: record,
-								collection: relation.many_collection,
-							});
+							throw new ForbiddenException();
 						}
 
 						record = {

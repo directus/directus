@@ -54,17 +54,7 @@ export class AuthorizationService {
 		const uniqueCollectionsRequestedCount = uniq(collectionsRequested.map(({ collection }) => collection)).length;
 
 		if (uniqueCollectionsRequestedCount !== permissionsForCollections.length) {
-			// Find the first collection that doesn't have permissions configured
-			const { collection, field } = collectionsRequested.find(
-				({ collection }) =>
-					permissionsForCollections.find((permission) => permission.collection === collection) === undefined
-			)!;
-
-			if (field) {
-				throw new ForbiddenException(`You don't have permission to access the "${field}" field.`);
-			} else {
-				throw new ForbiddenException(`You don't have permission to access the "${collection}" collection.`);
-			}
+			throw new ForbiddenException();
 		}
 
 		validateFields(ast);
@@ -119,7 +109,7 @@ export class AuthorizationService {
 					const fieldKey = childNode.name;
 
 					if (allowedFields.includes(fieldKey) === false) {
-						throw new ForbiddenException(`You don't have permission to access the "${fieldKey}" field.`);
+						throw new ForbiddenException();
 					}
 				}
 			}
@@ -151,7 +141,7 @@ export class AuthorizationService {
 				if (ast.query.filter._and.length === 0) delete ast.query.filter._and;
 
 				if (permissions.limit && ast.query.limit && ast.query.limit > permissions.limit) {
-					throw new ForbiddenException(`You can't read more than ${permissions.limit} items at a time.`);
+					throw new ForbiddenException();
 				}
 
 				// Default to the permissions limit if limit hasn't been set
@@ -207,9 +197,7 @@ export class AuthorizationService {
 				const invalidKeys = keysInData.filter((fieldKey) => allowedFields.includes(fieldKey) === false);
 
 				if (invalidKeys.length > 0) {
-					throw new ForbiddenException(
-						`You're not allowed to ${action} field "${invalidKeys[0]}" in collection "${collection}".`
-					);
+					throw new ForbiddenException();
 				}
 			}
 		}
