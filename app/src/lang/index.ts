@@ -20,7 +20,7 @@ export type Language = keyof typeof availableLanguages;
 
 export const loadedLanguages: Language[] = ['en-US'];
 
-export function translateAPIError(error: RequestError | string) {
+export function translateAPIError(error: RequestError | string): string {
 	const defaultMsg = i18n.global.t('unexpected_error');
 
 	let code = error;

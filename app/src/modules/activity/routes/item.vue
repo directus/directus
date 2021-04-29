@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRefs, ref, watch } from 'vue';
+import { defineComponent, computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/api';
 import { userName } from '@/utils/user-name';
@@ -76,15 +76,12 @@ export default defineComponent({
 	},
 	setup(props) {
 		const router = useRouter();
-
-		const { primaryKey } = toRefs(props);
 		const item = ref<ActivityRecord>();
 		const loading = ref(false);
 		const error = ref<any>(null);
 
 		const openItemLink = computed(() => {
-			if (!item || !item.value) return;
-
+			if (!item.value) return;
 			return `/collections/${item.value.collection}/${encodeURIComponent(item.value.item)}`;
 		});
 

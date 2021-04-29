@@ -20,7 +20,7 @@ export default function useScrollDistance<T extends Element>(
 			return null;
 		}
 
-		if (target.hasOwnProperty('$el')) {
+		if ('$el' in target) {
 			return (target as ComponentPublicInstance).$el as Element;
 		}
 

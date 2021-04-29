@@ -2,7 +2,7 @@ import api from '@/api';
 import { useCollection } from '@/composables/use-collection';
 import { defineModule } from '@/modules/define';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
-import { ref } from '@vue/composition-api';
+import { ref } from 'vue';
 import Collections from './routes/data-model/collections/collections.vue';
 import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
 import Fields from './routes/data-model/fields/fields.vue';

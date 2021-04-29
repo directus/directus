@@ -116,7 +116,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch, computed } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 import useFolders, { Folder } from '../composables/use-folders';
 import api from '@/api';
 import FolderPicker from './folder-picker.vue';

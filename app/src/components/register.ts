@@ -49,7 +49,7 @@ import VTextOverflow from './v-text-overflow.vue';
 import VTextarea from './v-textarea';
 import VUpload from './v-upload';
 
-export function registerComponents(app: App) {
+export function registerComponents(app: App): void {
 	app.component('v-avatar', VAvatar);
 	app.component('v-badge', VBadge);
 	app.component('v-breadcrumb', VBreadcrumb);

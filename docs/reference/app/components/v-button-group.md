@@ -13,7 +13,7 @@ more information about how to use groups, look into v-item-group.
 </template>
 
 <script lang="ts">
-	import { defineComponent, ref } from '@vue/composition-api';
+	import { defineComponent, ref } from 'vue';
 
 	export default defineComponent({
 		setup() {

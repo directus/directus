@@ -69,7 +69,7 @@ type Image = {
 
 export default defineComponent({
 	emits: ['input'],
-	components: { FileLightbox, ImageEditor, DrawerItem },
+	components: { FileLightbox, DrawerItem },
 	props: {
 		value: {
 			type: [String, Object],
@@ -113,7 +113,7 @@ export default defineComponent({
 			if (!image.value) return null;
 			const { filesize, width, height, type } = image.value;
 
-			return `${i18n.global.n(width)}x${i18n.global.n(height)} • ${formatFilesize(filesize)} • ${type}`;
+			return `${i18n.global.n(width)}x${i18n.global.n(height)} • ${formatFilesize(filesize)} • ${type}`;
 		});
 
 		watch(

@@ -84,7 +84,7 @@ the `v-model` directive or listening to the `update:headers` event:
 </template>
 
 <script>
-import { defineComponent, ref } from '@vue/composition-api';
+import { defineComponent, ref } from 'vue';
 import { HeaderRaw } from '@/components/v-table/types';
 
 export default defineComponent({

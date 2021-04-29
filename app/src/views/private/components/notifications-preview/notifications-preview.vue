@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
+import { defineComponent } from 'vue';
 import SidebarButton from '../sidebar-button';
 import NotificationItem from '../notification-item';
 import { useNotificationsStore } from '@/stores/';

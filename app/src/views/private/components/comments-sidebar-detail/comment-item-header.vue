@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, watch } from 'vue';
+import { defineComponent, PropType, computed, ref } from 'vue';
 import { Activity } from './types';
 import format from 'date-fns/format';
 import { i18n } from '@/lang';

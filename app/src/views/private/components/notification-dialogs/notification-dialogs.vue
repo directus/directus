@@ -22,9 +22,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue';
-import SidebarButton from '../sidebar-button';
-import NotificationItem from '../notification-item';
+import { defineComponent, computed } from 'vue';
 import { useNotificationsStore, useUserStore } from '@/stores/';
 import { Notification } from '@/types';
 import { useProjectInfo } from '@/modules/settings/composables/use-project-info';

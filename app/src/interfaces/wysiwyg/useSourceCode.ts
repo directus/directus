@@ -8,9 +8,8 @@ export default function useSourceCode(editor: Ref<any>): Record<string, any> {
 	const sourceCodeButton = {
 		icon: 'sourcecode',
 		tooltip: i18n.global.t('wysiwyg_options.source_code'),
-		onAction: (buttonApi: any) => {
+		onAction: () => {
 			codeDrawerOpen.value = true;
-
 			code.value = editor.value.getContent();
 		},
 	};

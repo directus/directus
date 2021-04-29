@@ -62,7 +62,7 @@ import DrawerItem from '@/views/private/components/drawer-item';
 
 export default defineComponent({
 	emits: ['input'],
-	components: { draggable, NestedDraggable, DrawerCollection, DrawerItem },
+	components: { NestedDraggable, DrawerCollection, DrawerItem },
 	props: {
 		value: {
 			type: Array as PropType<(number | string | Record<string, any>)[]>,

@@ -56,8 +56,6 @@ export default defineComponent({
 
 		const userProfileLink = computed<string>(() => {
 			const id = userStore.currentUser?.id;
-			const role = userStore.currentUser?.role?.id;
-
 			return `/users/${id}`;
 		});
 

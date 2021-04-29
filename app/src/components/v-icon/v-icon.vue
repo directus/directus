@@ -113,7 +113,7 @@ export default defineComponent({
 			return null;
 		});
 
-		const hasClick = computed<boolean>(() => attrs.hasOwnProperty('onClick'));
+		const hasClick = computed<boolean>(() => 'onClick' in attrs);
 
 		return {
 			sizeClass,

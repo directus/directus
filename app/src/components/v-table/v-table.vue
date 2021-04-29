@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType, onMounted, watch } from 'vue';
+import { defineComponent, computed, ref, PropType } from 'vue';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header/';
 import TableRow from './table-row/';
@@ -279,7 +279,7 @@ export default defineComponent({
 			return props.selection.length > 0 && allItemsSelected.value === false;
 		});
 
-		const hasRowClick = computed<boolean>(() => attrs.hasOwnProperty('onClick:row'));
+		const hasRowClick = computed<boolean>(() => 'onClick:row' in attrs);
 
 		const columnStyle = computed<string>(() => {
 			let gridTemplateColumns = _headers.value

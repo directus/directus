@@ -114,7 +114,7 @@ export default defineComponent({
 		});
 
 		const showCancel = computed(() => {
-			return attrs.hasOwnProperty('onCancel');
+			return 'onCancel' in attrs;
 		});
 
 		return { _active, mainEl, showCancel };

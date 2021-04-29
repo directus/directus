@@ -14,7 +14,7 @@ Use around a `v-if` or `v-show` component to have it expand in and out of view.
 </template>
 
 <script lang="ts">
-	import { defineComponent, ref } from '@vue/composition-api';
+	import { defineComponent, ref } from 'vue';
 
 	export default defineComponent({
 		setup(props) {
