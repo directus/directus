@@ -74,7 +74,7 @@
 		"qrcode": "^1.4.4",
 		"raw-loader": "^4.0.2",
 		"resize-observer": "^1.0.0",
-		"rimraf": "^2.7.1",
+		"rimraf": "^3.0.2",
 		"sass": "^1.26.10",
 		"sass-loader": "^9.0.2",
 		"stylelint": "^13.12.0",
