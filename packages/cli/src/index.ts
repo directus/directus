@@ -1,6 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+// @ts-ignore
+import amp = require('app-module-path');
+amp.addPath(`${__dirname}/../node_modules`);
+amp.addPath(`${process.cwd()}/node_modules`);
+amp.addPath(process.cwd());
+
 import { build } from 'gluegun';
 import { command } from './core/command';
 import { Toolbox } from './toolbox';
@@ -59,16 +65,16 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 	if (config.project.data.experimental?.typescript?.tsconfig) {
 		const project = config.project.data.experimental.typescript.tsconfig;
 		if (fs.existsSync(project)) {
-			if (!fs.existsSync('./node_modules/ts-node')) {
-				const error = new Error("Couldn't find ts-node package");
-				await output.error(error);
-				return {
-					output,
-					error,
-				};
-			}
-
 			if (!hasTsNode()) {
+				if (!fs.existsSync('./node_modules/ts-node')) {
+					const error = new Error("Couldn't find ts-node package");
+					await output.error(error);
+					return {
+						output,
+						error,
+					};
+				}
+
 				require('ts-node').register({
 					project: path.resolve(project),
 				});

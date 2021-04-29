@@ -11,12 +11,6 @@ if (__filename !== entrypoint && fs.existsSync(entrypoint)) {
 
 require('dotenv').config();
 
-const amp = require('app-module-path');
-
-amp.addPath(`${__dirname}/../node_modules`);
-amp.addPath(`${process.cwd()}/node_modules`);
-amp.addPath(process.cwd());
-
 const devMode = require('fs').existsSync(`${__dirname}/../src`);
 const wantsCompiled = process.argv.indexOf('--compiled-build') >= 0;
 
