@@ -1,4 +1,4 @@
-export function getFieldsFromTemplate(template: string | null) {
+export function getFieldsFromTemplate(template: string | null): string[] {
 	if (template === null) return [];
 
 	const regex = /{{(.*?)}}/g;

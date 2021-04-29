@@ -37,13 +37,12 @@ export function useStores(
 		useRelationsStore,
 		usePermissionsStore,
 	]
-) {
-	// @TODO3 Fix type issue
+): GenericStore[] {
 	return stores.map((useStore) => useStore()) as GenericStore[];
 }
 
 /* istanbul ignore next: useStores has a test already */
-export async function hydrate(stores = useStores()) {
+export async function hydrate(stores = useStores()): Promise<void> {
 	const appStore = useAppStore();
 	const userStore = useUserStore();
 
@@ -76,7 +75,7 @@ export async function hydrate(stores = useStores()) {
 }
 
 /* istanbul ignore next: useStores has a test already */
-export async function dehydrate(stores = useStores()) {
+export async function dehydrate(stores = useStores()): Promise<void> {
 	const appStore = useAppStore();
 
 	if (appStore.hydrated === false) return;

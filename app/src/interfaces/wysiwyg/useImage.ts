@@ -10,7 +10,7 @@ type ImageSelection = {
 	height?: number;
 };
 
-export default function useImage(editor: Ref<any>, imageToken: Ref<string>) {
+export default function useImage(editor: Ref<any>, imageToken: Ref<string>): Record<string, any> {
 	const imageDrawerOpen = ref(false);
 	const imageSelection = ref<ImageSelection | null>(null);
 

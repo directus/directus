@@ -19,7 +19,7 @@ export default defineComponent({
 		},
 		current: {
 			type: Array as PropType<string[]>,
-			default: 'schema',
+			default: () => ['schema'],
 		},
 		type: {
 			type: String,

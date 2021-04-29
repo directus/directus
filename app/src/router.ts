@@ -72,7 +72,9 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 		// Try retrieving a fresh access token on first load
 		try {
 			await refresh({ navigate: false });
-		} catch {}
+		} catch {
+			// Ignore error
+		}
 	}
 
 	if (serverStore.info === null) {

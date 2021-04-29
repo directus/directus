@@ -527,7 +527,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Upsert a single item
 	 */
-	async upsertOne(payload: Partial<Item>, opts?: MutationOptions) {
+	async upsertOne(payload: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const primaryKey: PrimaryKey | undefined = payload[primaryKeyField];
 
@@ -549,7 +549,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Upsert many items
 	 */
-	async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions) {
+	async upsertMany(payloads: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const primaryKeys = await this.knex.transaction(async (trx) => {
 			const service = new ItemsService(this.collection, {
 				accountability: this.accountability,
@@ -702,7 +702,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Upsert/treat collection as singleton
 	 */
-	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions) {
+	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection].primary;
 		const record = await this.knex.select(primaryKeyField).from(this.collection).limit(1).first();
 

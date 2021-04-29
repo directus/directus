@@ -136,7 +136,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, toRefs, inject, computed, ref } from 'vue';
-import { Filter } from '@/types';
+import { FieldMeta, Filter } from '@/types';
 import useSync from '@/composables/use-sync/';
 import useCollection from '@/composables/use-collection/';
 import useItems from '@/composables/use-items';
@@ -229,7 +229,7 @@ export default defineComponent({
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const fileFields = computed(() => {
-			return fieldsInCollection.value.filter((field) => {
+			return fieldsInCollection.value.filter((field: FieldMeta) => {
 				if (field.field === '$thumbnail') return true;
 
 				const relation = relationsStore.relations.find((relation) => {

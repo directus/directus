@@ -8,7 +8,7 @@ import asyncPool from 'tiny-async-pool/lib/es7.js';
 
 const { layoutsRaw } = getLayouts();
 
-export async function registerLayouts(app: App) {
+export async function registerLayouts(app: App): Promise<void> {
 	const layoutModules = import.meta.globEager('./*/**/index.ts');
 
 	const layouts: LayoutConfig[] = Object.values(layoutModules).map((module) => module.default);

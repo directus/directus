@@ -14,7 +14,7 @@ let queuedModules: ModuleConfig[] = [];
 
 const removeRoutes: (() => void)[] = [];
 
-export async function loadModules() {
+export async function loadModules(): Promise<void> {
 	const moduleModules = import.meta.globEager('./*/**/index.ts');
 
 	const modules: ModuleConfig[] = Object.values(moduleModules).map((module) => module.default);
@@ -47,7 +47,7 @@ export async function loadModules() {
 	queuedModules = modules;
 }
 
-export async function register() {
+export async function register(): Promise<void> {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 
@@ -74,7 +74,7 @@ export async function register() {
 	modulesRaw.value = registeredModules;
 }
 
-export function unregister() {
+export function unregister(): void {
 	for (const removeRoute of removeRoutes) {
 		removeRoute();
 	}

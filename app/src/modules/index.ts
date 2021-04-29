@@ -4,7 +4,7 @@ import { ModuleConfig } from './types';
 let modulesRaw: Ref<ModuleConfig[]>;
 let modules: Ref<ModuleConfig[]>;
 
-export function getModules() {
+export function getModules(): Record<string, any> {
 	if (!modulesRaw) {
 		modulesRaw = ref([]);
 	}

@@ -6,7 +6,7 @@ import Storage from './Storage';
  * Returns a boolean indication if stream param
  * is a readable stream or not.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function isReadableStream(stream: any): stream is NodeJS.ReadableStream {
 	return (
 		stream !== null &&

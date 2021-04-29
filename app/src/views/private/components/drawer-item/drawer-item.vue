@@ -162,7 +162,7 @@ export default defineComponent({
 
 		const fields = computed(() => {
 			if (props.circularField) {
-				return fieldsWithPermissions.value.filter((field) => {
+				return fieldsWithPermissions.value.filter((field: Field) => {
 					return field.field !== props.circularField;
 				});
 			} else {

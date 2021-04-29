@@ -14,17 +14,20 @@ import { FieldsService } from '../services/fields';
 import { ItemsService, MutationOptions } from '../services/items';
 import cache from '../cache';
 import { systemCollectionRows } from '../database/system-data/collections';
+import SchemaInspector from '@directus/schema';
 import env from '../env';
 import logger from '../logger';
 
 export class CollectionsService {
 	knex: Knex;
 	accountability: Accountability | null;
+	schemaInspector: typeof schemaInspector;
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || database;
 		this.accountability = options.accountability || null;
+		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : schemaInspector;
 		this.schema = options.schema;
 	}
 
@@ -111,7 +114,10 @@ export class CollectionsService {
 	/**
 	 * Create multiple new collections
 	 */
-	async createMany(payloads: Partial<Collection> & { collection: string }[], opts?: MutationOptions) {
+	async createMany(
+		payloads: Partial<Collection> & { collection: string }[],
+		opts?: MutationOptions
+	): Promise<string[]> {
 		const collections = await this.knex.transaction(async (trx) => {
 			const service = new CollectionsService({
 				schema: this.schema,
@@ -146,7 +152,7 @@ export class CollectionsService {
 			accountability: this.accountability,
 		});
 
-		let tablesInDatabase = await schemaInspector.tableInfo();
+		let tablesInDatabase = await this.schemaInspector.tableInfo();
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const collectionsYouHavePermissionToRead: string[] = this.schema.permissions
@@ -218,7 +224,7 @@ export class CollectionsService {
 			}
 		}
 
-		const tablesInDatabase = await schemaInspector.tableInfo();
+		const tablesInDatabase = await this.schemaInspector.tableInfo();
 		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
 
 		const meta = (await collectionItemsService.readByQuery({

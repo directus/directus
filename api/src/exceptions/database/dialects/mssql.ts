@@ -5,17 +5,7 @@ import { ValueTooLongException } from '../value-too-long';
 import { ValueOutOfRangeException } from '../value-out-of-range';
 
 import database from '../../../database';
-
-type MSSQLError = {
-	message: string;
-	code: 'EREQUEST';
-	number: number;
-	state: number;
-	class: number;
-	serverName: string;
-	procName: string;
-	lineNumber: number;
-};
+import { MSSQLError } from './types';
 
 enum MSSQLErrorCodes {
 	FOREIGN_KEY_VIOLATION = 547,
@@ -25,7 +15,7 @@ enum MSSQLErrorCodes {
 	VALUE_LIMIT_VIOLATION = 2628,
 }
 
-export async function extractError(error: MSSQLError) {
+export async function extractError(error: MSSQLError): Promise<MSSQLError | Error> {
 	switch (error.number) {
 		case MSSQLErrorCodes.UNIQUE_VIOLATION:
 		case 2627:
@@ -56,8 +46,8 @@ async function uniqueViolation(error: MSSQLError) {
 	 * information_schema when this happens
 	 */
 
-	const betweenQuotes = /\'([^\']+)\'/;
-	const betweenParens = /\(([^\)]+)\)/g;
+	const betweenQuotes = /'([^']+)'/;
+	const betweenParens = /\(([^)]+)\)/g;
 
 	const quoteMatches = error.message.match(betweenQuotes);
 	const parenMatches = error.message.match(betweenParens);
@@ -117,7 +107,7 @@ function numericValueOutOfRange(error: MSSQLError) {
 
 function valueLimitViolation(error: MSSQLError) {
 	const betweenBrackets = /\[([^\]]+)\]/g;
-	const betweenQuotes = /\'([^\']+)\'/g;
+	const betweenQuotes = /'([^']+)'/g;
 
 	const bracketMatches = error.message.match(betweenBrackets);
 	const quoteMatches = error.message.match(betweenQuotes);
@@ -135,7 +125,7 @@ function valueLimitViolation(error: MSSQLError) {
 
 function notNullViolation(error: MSSQLError) {
 	const betweenBrackets = /\[([^\]]+)\]/g;
-	const betweenQuotes = /\'([^\']+)\'/g;
+	const betweenQuotes = /'([^']+)'/g;
 
 	const bracketMatches = error.message.match(betweenBrackets);
 	const quoteMatches = error.message.match(betweenQuotes);
@@ -152,8 +142,8 @@ function notNullViolation(error: MSSQLError) {
 }
 
 function foreignKeyViolation(error: MSSQLError) {
-	const betweenUnderscores = /\_\_(.+)\_\_/g;
-	const betweenParens = /\(([^\)]+)\)/g;
+	const betweenUnderscores = /__(.+)__/g;
+	const betweenParens = /\(([^)]+)\)/g;
 
 	// NOTE:
 	// Seeing that MS SQL doesn't return the offending column name, we have to extract it from the

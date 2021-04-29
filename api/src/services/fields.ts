@@ -157,7 +157,7 @@ export class FieldsService {
 		return result;
 	}
 
-	async readOne(collection: string, field: string) {
+	async readOne(collection: string, field: string): Promise<Record<string, any>> {
 		if (this.accountability && this.accountability.admin !== true) {
 			if (this.hasReadAccess === false) {
 				throw new ForbiddenException();
@@ -188,7 +188,9 @@ export class FieldsService {
 		try {
 			column = await this.schemaInspector.columnInfo(collection, field);
 			column.default_value = getDefaultValue(column);
-		} catch {}
+		} finally {
+			// Do nothing
+		}
 
 		const data = {
 			collection,
@@ -205,7 +207,7 @@ export class FieldsService {
 		collection: string,
 		field: Partial<Field> & { field: string; type: typeof types[number] },
 		table?: Knex.CreateTableBuilder // allows collection creation to
-	) {
+	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
@@ -246,7 +248,7 @@ export class FieldsService {
 		}
 	}
 
-	async updateField(collection: string, field: RawField) {
+	async updateField(collection: string, field: RawField): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException('Only admins can perform this action');
 		}
@@ -289,7 +291,7 @@ export class FieldsService {
 	}
 
 	/** @todo save accountability */
-	async deleteField(collection: string, field: string) {
+	async deleteField(collection: string, field: string): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenException('Only admins can perform this action.');
 		}
@@ -375,7 +377,7 @@ export class FieldsService {
 		});
 	}
 
-	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null) {
+	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null): void {
 		let column: Knex.ColumnBuilder;
 
 		if (field.schema?.has_auto_increment) {

@@ -4,7 +4,7 @@ import { SchemaInspector } from '../types/schema';
 import { mapKeys } from 'lodash';
 
 export default class Oracle extends KnexOracle implements SchemaInspector {
-	async overview() {
+	async overview(): Promise<SchemaOverview> {
 		type RawColumn = {
 			TABLE_NAME: string;
 			COLUMN_NAME: string;

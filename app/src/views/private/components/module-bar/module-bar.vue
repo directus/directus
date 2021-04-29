@@ -34,6 +34,7 @@ import ModuleBarLogo from '../module-bar-logo/';
 import ModuleBarAvatar from '../module-bar-avatar/';
 import { useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
+import { ModuleConfig } from '@/modules/types';
 
 export default defineComponent({
 	components: {
@@ -49,12 +50,12 @@ export default defineComponent({
 
 			const registeredModules = orderBy(
 				modules.value
-					.map((module) => ({
+					.map((module: ModuleConfig) => ({
 						...module,
 						href: module.link || null,
 						to: module.link === undefined ? `/${module.id}/` : null,
 					}))
-					.filter((module) => {
+					.filter((module: ModuleConfig) => {
 						if (module.hidden !== undefined) {
 							if ((module.hidden as boolean) === true || (module.hidden as Ref<boolean>).value === true) {
 								return false;

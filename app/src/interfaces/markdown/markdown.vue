@@ -228,7 +228,7 @@ export default defineComponent({
 			}
 		);
 
-		const { edit } = useEdit(codemirror, props.customSyntax);
+		const { edit } = useEdit(codemirror);
 
 		const html = computed(() => {
 			let md = props.value || '';

@@ -38,6 +38,7 @@ import { defineComponent, PropType, computed, ref } from 'vue';
 import { Field } from '@/types';
 import { getInterfaces } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
+import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
 	emits: ['input'],
@@ -75,7 +76,9 @@ export default defineComponent({
 		const { interfaces } = getInterfaces();
 
 		const interfaceExists = computed(() => {
-			return !!interfaces.value.find((inter) => inter.id === props.field?.meta?.interface || 'text-input');
+			return !!interfaces.value.find(
+				(inter: InterfaceConfig) => inter.id === props.field?.meta?.interface || 'text-input'
+			);
 		});
 
 		return { interfaceExists, getDefaultInterfaceForType };

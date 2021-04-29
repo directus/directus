@@ -30,7 +30,7 @@ export class FilesService extends ItemsService {
 		stream: NodeJS.ReadableStream,
 		data: Partial<File> & { filename_download: string; storage: string },
 		primaryKey?: PrimaryKey
-	) {
+	): Promise<PrimaryKey> {
 		const payload = clone(data);
 
 		if (primaryKey !== undefined) {
@@ -140,7 +140,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * Import a single file from an external URL
 	 */
-	async importOne(importURL: string, body: Partial<File>) {
+	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
 		const fileCreatePermissions = this.schema.permissions.find(
 			(permission) => permission.collection === 'directus_files' && permission.action === 'create'
 		);
@@ -174,7 +174,7 @@ export class FilesService extends ItemsService {
 			...(body || {}),
 		};
 
-		return await this.upload(fileResponse.data, payload);
+		return await this.uploadOne(fileResponse.data, payload);
 	}
 
 	/**
@@ -220,7 +220,7 @@ export class FilesService extends ItemsService {
 		stream: NodeJS.ReadableStream,
 		data: Partial<File> & { filename_download: string; storage: string },
 		primaryKey?: PrimaryKey
-	) {
+	): Promise<PrimaryKey> {
 		logger.warn('FilesService.upload is deprecated and will be removed before v9.0.0. Use uploadOne instead.');
 
 		return await this.uploadOne(stream, data, primaryKey);
@@ -229,7 +229,7 @@ export class FilesService extends ItemsService {
 	/**
 	 * @deprecated Use `importOne` instead
 	 */
-	async import(importURL: string, body: Partial<File>) {
+	async import(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
 		return await this.importOne(importURL, body);
 	}
 

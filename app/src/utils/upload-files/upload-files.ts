@@ -10,7 +10,7 @@ export default async function uploadFiles(
 		notifications?: boolean;
 		preset?: Record<string, any>;
 	}
-) {
+): Promise<File[] | undefined> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const progressForFiles = files.map(() => 0);
 

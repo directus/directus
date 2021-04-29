@@ -9,7 +9,7 @@ export type LoginCredentials = {
 	password: string;
 };
 
-export async function login(credentials: LoginCredentials) {
+export async function login(credentials: LoginCredentials): Promise<void> {
 	const appStore = useAppStore();
 
 	const response = await api.post(`/auth/login`, {
@@ -38,7 +38,7 @@ export async function login(credentials: LoginCredentials) {
 
 let refreshTimeout: any;
 
-export async function refresh({ navigate }: LogoutOptions = { navigate: true }) {
+export async function refresh({ navigate }: LogoutOptions = { navigate: true }): Promise<string | undefined> {
 	const appStore = useAppStore();
 
 	try {
@@ -79,7 +79,7 @@ export type LogoutOptions = {
 /**
  * Everything that should happen when someone logs out, or is logged out through an external factor
  */
-export async function logout(optionsRaw: LogoutOptions = {}) {
+export async function logout(optionsRaw: LogoutOptions = {}): Promise<void> {
 	const appStore = useAppStore();
 
 	const defaultOptions: Required<LogoutOptions> = {

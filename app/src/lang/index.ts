@@ -1,4 +1,4 @@
-import { createI18n } from 'vue-i18n';
+import { createI18n, TranslateResult } from 'vue-i18n';
 import { RequestError } from '@/api';
 
 import availableLanguages from './available-languages.yaml';

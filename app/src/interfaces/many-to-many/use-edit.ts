@@ -6,7 +6,7 @@ export default function useEdit(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
 	relation: Ref<RelationInfo>,
 	emit: (newVal: any[] | null) => void
-) {
+): Record<string, any> {
 	const editModalActive = ref(false);
 	const currentlyEditing = ref<string | number | null>(null);
 	const relatedPrimaryKey = ref<string | number | null>(null);

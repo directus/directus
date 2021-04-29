@@ -15,7 +15,7 @@ import runMigrations from '../../../database/migrations/run';
 import createDBConnection, { Credentials } from '../../utils/create-db-connection';
 import { Knex } from 'knex';
 
-export default async function init(options: Record<string, any>) {
+export default async function init(): Promise<void> {
 	const rootPath = process.cwd();
 
 	let { client } = await inquirer.prompt([
@@ -39,7 +39,7 @@ export default async function init(options: Record<string, any>) {
 
 	async function trySeed(): Promise<{ credentials: Credentials; db: Knex }> {
 		const credentials: Credentials = await inquirer.prompt(
-			(databaseQuestions[dbClient] as any[]).map((question: Function) =>
+			(databaseQuestions[dbClient] as any[]).map((question: ({ client, filepath }: any) => any) =>
 				question({ client: dbClient, filepath: rootPath })
 			)
 		);

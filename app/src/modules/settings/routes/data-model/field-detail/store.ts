@@ -26,7 +26,7 @@ let generationInfo: ComputedRef<GenerationInfo[]>;
 
 export { state, availableInterfaces, availableDisplays, generationInfo, initLocalStore, clearLocalStore };
 
-function initLocalStore(collection: string, field: string, type: typeof localTypes[number]) {
+function initLocalStore(collection: string, field: string, type: typeof localTypes[number]): void {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 	const collectionsStore = useCollectionsStore();
@@ -68,7 +68,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 	availableInterfaces = computed<InterfaceConfig[]>(() => {
 		return interfaces.value
-			.filter((inter) => {
+			.filter((inter: InterfaceConfig) => {
 				// Filter out all system interfaces
 				if (inter.system === true) return false;
 
@@ -77,18 +77,18 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 				return matchesType && matchesLocalType;
 			})
-			.sort((a, b) => (a.name > b.name ? 1 : -1));
+			.sort((a: InterfaceConfig, b: InterfaceConfig) => (a.name > b.name ? 1 : -1));
 	});
 
 	availableDisplays = computed(() => {
 		return displays.value
-			.filter((inter) => {
+			.filter((inter: InterfaceConfig) => {
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
 				const matchesLocalType = (inter.groups || ['standard']).includes(type) || true;
 
 				return matchesType && matchesLocalType;
 			})
-			.sort((a, b) => (a.name > b.name ? 1 : -1));
+			.sort((a: InterfaceConfig, b: InterfaceConfig) => (a.name > b.name ? 1 : -1));
 	});
 
 	generationInfo = computed(() => {
@@ -977,6 +977,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 	}
 }
 
-function clearLocalStore() {
+function clearLocalStore(): void {
 	state = null;
 }

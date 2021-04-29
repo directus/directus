@@ -1,20 +1,20 @@
 import path from 'path';
 
-const filename = ({ filepath }: { filepath: string }) => ({
+const filename = ({ filepath }: { filepath: string }): Record<string, string> => ({
 	type: 'input',
 	name: 'filename',
 	message: 'Database File Path:',
 	default: path.join(filepath, 'data.db'),
 });
 
-const host = () => ({
+const host = (): Record<string, string> => ({
 	type: 'input',
 	name: 'host',
 	message: 'Database Host:',
 	default: '127.0.0.1',
 });
 
-const port = ({ client }: { client: string }) => ({
+const port = ({ client }: { client: string }): Record<string, any> => ({
 	type: 'input',
 	name: 'port',
 	message: 'Port:',
@@ -30,27 +30,27 @@ const port = ({ client }: { client: string }) => ({
 	},
 });
 
-const database = () => ({
+const database = (): Record<string, string> => ({
 	type: 'input',
 	name: 'database',
 	message: 'Database Name:',
 	default: 'directus',
 });
 
-const user = () => ({
+const user = (): Record<string, string> => ({
 	type: 'input',
 	name: 'user',
 	message: 'Database User:',
 });
 
-const password = () => ({
+const password = (): Record<string, string> => ({
 	type: 'password',
 	name: 'password',
 	message: 'Database Password:',
 	mask: '*',
 });
 
-const ssl = () => ({
+const ssl = (): Record<string, string | boolean> => ({
 	type: 'confirm',
 	name: 'ssl',
 	message: 'Enable SSL:',

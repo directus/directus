@@ -67,6 +67,8 @@ export default defineComponent({
 			if (o2m !== undefined) {
 				return o2m?.many_collection || null;
 			}
+
+			return null;
 		});
 
 		return { template, relatedCollection };

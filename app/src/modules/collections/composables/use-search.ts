@@ -1,8 +1,8 @@
-import { ref, watch } from 'vue';
+import { ref, watch, Ref } from 'vue';
 
 const searchQuery = ref<string | null>(null);
 const visible = ref<number | null>(null);
 
-export function useSearch() {
+export function useSearch(): Record<string, Ref> {
 	return { visible, searchQuery };
 }

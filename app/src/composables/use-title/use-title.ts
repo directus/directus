@@ -1,6 +1,6 @@
 import { ref, Ref, watch } from 'vue';
 
-export function useTitle(newTitle: string | Ref<string>) {
+export function useTitle(newTitle: string | Ref<string>): Ref | undefined {
 	if (newTitle === undefined || newTitle === null) return;
 
 	const titleRef = typeof newTitle === 'string' ? ref(newTitle) : newTitle;

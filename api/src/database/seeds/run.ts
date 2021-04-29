@@ -25,7 +25,7 @@ type TableSeed = {
 	};
 };
 
-export default async function runSeed(database: Knex) {
+export default async function runSeed(database: Knex): Promise<void> {
 	const exists = await database.schema.hasTable('directus_collections');
 
 	if (exists) {

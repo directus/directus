@@ -64,7 +64,7 @@ const defaults: JoiOptions = {
 	allowUnknown: true,
 };
 
-export default function generateJoi(filter: Record<string, any> | null, options?: JoiOptions) {
+export default function generateJoi(filter: Record<string, any> | null, options?: JoiOptions): any {
 	filter = filter || {};
 
 	options = {

@@ -1,4 +1,7 @@
 // @TODO3 Type of component is any
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/ban-types */
+
 declare module '*.vue' {
 	import { defineComponent } from 'vue';
 	const component: ReturnType<typeof defineComponent>;

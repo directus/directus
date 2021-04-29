@@ -7,7 +7,7 @@ export class RevisionsService extends ItemsService {
 		super('directus_revisions', options);
 	}
 
-	async revert(pk: PrimaryKey) {
+	async revert(pk: PrimaryKey): Promise<void> {
 		const revision = await super.readOne(pk);
 
 		if (!revision) throw new ForbiddenException();

@@ -1,23 +1,18 @@
 import Listr from 'listr';
-import { Knex } from 'knex';
 import Dockerode from 'dockerode';
 import { getDBsToTest } from '../get-dbs-to-test';
 import config, { CONTAINER_PERSISTENCE_FILE } from '../config';
 import { GlobalConfigTsJest } from 'ts-jest/dist/types';
 import { readFileSync, rmSync } from 'fs';
+import global from './global';
 
-declare module global {
-	let databaseContainers: { vendor: string; container: Dockerode.Container }[];
-	let directusContainers: { vendor: string; container: Dockerode.Container }[];
-	let knexInstances: { vendor: string; knex: Knex }[];
-}
 const docker = new Dockerode();
 
 if (require.main === module) {
 	teardown(undefined, true);
 }
 
-export default async function teardown(jestConfig?: GlobalConfigTsJest, isAfterWatch = false) {
+export default async function teardown(jestConfig?: GlobalConfigTsJest, isAfterWatch = false): Promise<void> {
 	if (jestConfig?.watch || jestConfig?.watchAll) return;
 
 	const vendors = getDBsToTest();

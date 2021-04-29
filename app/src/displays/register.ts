@@ -8,7 +8,7 @@ import asyncPool from 'tiny-async-pool/lib/es7.js';
 
 const { displaysRaw } = getDisplays();
 
-export async function registerDisplays(app: App) {
+export async function registerDisplays(app: App): Promise<void> {
 	const displayModules = import.meta.globEager('./*/**/index.ts');
 
 	const displays: DisplayConfig[] = Object.values(displayModules).map((module) => module.default);
@@ -30,7 +30,7 @@ export async function registerDisplays(app: App) {
 
 	displaysRaw.value = displays;
 
-	displaysRaw.value.forEach((display) => {
+	displaysRaw.value.forEach((display: DisplayConfig) => {
 		if (typeof display.handler !== 'function') {
 			app.component('display-' + display.id, display.handler);
 		}

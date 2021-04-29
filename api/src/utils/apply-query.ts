@@ -13,7 +13,7 @@ export default function applyQuery(
 	query: Query,
 	schema: SchemaOverview,
 	subQuery: boolean = false
-) {
+): void {
 	if (query.sort) {
 		dbQuery.orderBy(
 			query.sort.map((sort) => ({
@@ -50,7 +50,7 @@ export function applyFilter(
 	rootFilter: Filter,
 	collection: string,
 	subQuery: boolean = false
-) {
+): void {
 	const relations: Relation[] = [...schema.relations, ...systemRelationRows];
 
 	const aliasMap: Record<string, string> = {};
@@ -332,7 +332,7 @@ export async function applySearch(
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string
-) {
+): Promise<void> {
 	const fields = Object.entries(schema.collections[collection].fields);
 
 	dbQuery.andWhere(function () {

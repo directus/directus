@@ -8,7 +8,7 @@ import asyncPool from 'tiny-async-pool/lib/es7.js';
 
 const { interfacesRaw } = getInterfaces();
 
-export async function registerInterfaces(app: App) {
+export async function registerInterfaces(app: App): Promise<void> {
 	const interfaceModules = import.meta.globEager('./*/**/index.ts');
 
 	const interfaces: InterfaceConfig[] = Object.values(interfaceModules).map((module) => module.default);
@@ -33,7 +33,7 @@ export async function registerInterfaces(app: App) {
 
 	interfacesRaw.value = interfaces;
 
-	interfacesRaw.value.forEach((inter) => {
+	interfacesRaw.value.forEach((inter: InterfaceConfig) => {
 		app.component('interface-' + inter.id, inter.component);
 
 		if (typeof inter.options !== 'function' && Array.isArray(inter.options) === false) {

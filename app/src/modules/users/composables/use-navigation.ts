@@ -6,7 +6,7 @@ import { Role } from '@/types';
 let roles: Ref<Role[] | null> | null = null;
 let loading: Ref<boolean> | null = null;
 
-export default function useNavigation() {
+export default function useNavigation(): Record<string, Ref> {
 	if (roles === null) {
 		roles = ref<Role[] | null>(null);
 	}

@@ -1,7 +1,7 @@
 import logger from '../logger';
 import env from '../env';
 
-export function validateEnv(requiredKeys: string[]) {
+export function validateEnv(requiredKeys: string[]): void {
 	if (env.DB_CLIENT && env.DB_CLIENT === 'sqlite3') {
 		requiredKeys.push('DB_FILENAME');
 	} else if (env.DB_CLIENT && env.DB_CLIENT === 'oracledb') {

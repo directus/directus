@@ -4,7 +4,7 @@ import { InterfaceConfig } from './types';
 let interfacesRaw: Ref<InterfaceConfig[]>;
 let interfaces: Ref<InterfaceConfig[]>;
 
-export function getInterfaces() {
+export function getInterfaces(): Record<string, Ref> {
 	if (!interfacesRaw) {
 		interfacesRaw = ref([]);
 	}

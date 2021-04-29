@@ -191,7 +191,7 @@ export class PayloadService {
 		payload: Partial<Item>,
 		action: Action,
 		accountability: Accountability | null
-	) {
+	): Promise<any> {
 		if (!field.special) return payload[field.field];
 		const fieldSpecials = field.special ? toArray(field.special) : [];
 
@@ -215,7 +215,10 @@ export class PayloadService {
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
-	async processDates(payloads: Partial<Record<string, any>>[], action: Action) {
+	async processDates(
+		payloads: Partial<Record<string, any>>[],
+		action: Action
+	): Promise<Partial<Record<string, any>>[]> {
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection].fields);
 
 		const dateColumns = fieldsInCollection.filter(([name, field]) =>

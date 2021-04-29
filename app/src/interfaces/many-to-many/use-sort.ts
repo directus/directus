@@ -8,7 +8,7 @@ export default function useSort(
 	fields: Ref<string[]>,
 	items: Ref<Record<string, any>[]>,
 	emit: (newVal: any[] | null) => void
-) {
+): Record<string, any> {
 	const sort = ref<Sort>({ by: relation.value.sortField || fields.value[0], desc: false });
 
 	const sortedItems = computed(() => {

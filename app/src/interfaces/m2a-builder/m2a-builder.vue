@@ -329,7 +329,6 @@ export default defineComponent({
 							} else {
 								val[anyRelation.value.many_field] = cloneDeep(item);
 							}
-						} else {
 						}
 
 						return val;

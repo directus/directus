@@ -13,7 +13,7 @@ export default async function uploadFile(
 		preset?: Record<string, any>;
 		fileId?: string;
 	}
-) {
+): Promise<any> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const formData = new FormData();
 

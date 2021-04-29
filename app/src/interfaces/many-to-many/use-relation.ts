@@ -12,7 +12,7 @@ export type RelationInfo = {
 	relationCollection: string;
 };
 
-export default function useRelation(collection: Ref<string>, field: Ref<string>) {
+export default function useRelation(collection: Ref<string>, field: Ref<string>): Record<string, any> {
 	const relationsStore = useRelationsStore();
 	const collectionsStore = useCollectionsStore();
 
