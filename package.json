@@ -62,7 +62,7 @@
 		"pre-commit": "npx lint-staged"
 	},
 	"lint-staged": {
-		"*.{js,ts,vue,md}": "eslint . --fix",
+		"*.{js,ts,vue,md}": "eslint --fix",
 		"*.{css,scss,vue}": "stylelint --fix"
 	}
 }
