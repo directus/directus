@@ -5,17 +5,7 @@ import { ValueTooLongException } from '../value-too-long';
 import { ValueOutOfRangeException } from '../value-out-of-range';
 
 import database from '../../../database';
-
-type MSSQLError = {
-	message: string;
-	code: 'EREQUEST';
-	number: number;
-	state: number;
-	class: number;
-	serverName: string;
-	procName: string;
-	lineNumber: number;
-};
+import { MSSQLError } from './types';
 
 enum MSSQLErrorCodes {
 	FOREIGN_KEY_VIOLATION = 547,
@@ -25,7 +15,7 @@ enum MSSQLErrorCodes {
 	VALUE_LIMIT_VIOLATION = 2628,
 }
 
-export async function extractError(error: MSSQLError) {
+export async function extractError(error: MSSQLError): Promise<MSSQLError | Error> {
 	switch (error.number) {
 		case MSSQLErrorCodes.UNIQUE_VIOLATION:
 		case 2627:

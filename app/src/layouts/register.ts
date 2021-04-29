@@ -6,7 +6,7 @@ import asyncPool from 'tiny-async-pool';
 
 const { layoutsRaw } = getLayouts();
 
-export async function registerLayouts() {
+export async function registerLayouts(): Promise<void> {
 	const context = require.context('.', true, /^.*index\.ts$/);
 
 	const modules = context

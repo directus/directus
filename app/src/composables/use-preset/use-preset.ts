@@ -5,7 +5,11 @@ import { useCollection } from '@/composables/use-collection';
 
 import { Filter, Preset } from '@/types/';
 
-export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> = ref(null), temporary = false) {
+export function usePreset(
+	collection: Ref<string>,
+	bookmark: Ref<number | null> = ref(null),
+	temporary = false
+): Record<string, any> {
 	const presetsStore = usePresetsStore();
 	const userStore = useUserStore();
 

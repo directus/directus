@@ -23,7 +23,11 @@ const defaults = {
 	},
 };
 
-export default async function createEnv(client: keyof typeof drivers, credentials: Credentials, directory: string) {
+export default async function createEnv(
+	client: keyof typeof drivers,
+	credentials: Credentials,
+	directory: string
+): Promise<void> {
 	const config: Record<string, any> = {
 		...defaults,
 		database: {

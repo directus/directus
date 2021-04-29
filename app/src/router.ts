@@ -119,7 +119,7 @@ export const onBeforeEach: NavigationGuard = async (to, from, next) => {
 
 let trackTimeout: number | null = null;
 
-export const onAfterEach = (to: Route) => {
+export const onAfterEach = (to: Route): void => {
 	const userStore = useUserStore();
 
 	if (to.meta.public !== true) {

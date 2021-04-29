@@ -14,7 +14,7 @@ export function usePopper(
 	reference: Ref<HTMLElement | null>,
 	popper: Ref<HTMLElement | null>,
 	options: Readonly<Ref<Readonly<{ placement: Placement; attached: boolean; arrow: boolean }>>>
-) {
+): Record<string, any> {
 	const popperInstance = ref<Instance | null>(null);
 	const styles = ref({});
 	const arrowStyles = ref({});

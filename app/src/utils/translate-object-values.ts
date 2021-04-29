@@ -1,7 +1,7 @@
 import i18n from '@/lang';
 import { cloneDeep } from 'lodash';
 
-export function translate<T extends Record<string, any>>(obj: T) {
+export function translate<T extends Record<string, any>>(obj: T): any {
 	obj = cloneDeep(obj);
 
 	Object.entries(obj).forEach(([key, val]) => {

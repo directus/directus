@@ -22,7 +22,7 @@ const querySchema = Joi.object({
 	deep: Joi.object(),
 }).id('query');
 
-export function validateQuery(query: Query) {
+export function validateQuery(query: Query): Query {
 	const { error } = querySchema.validate(query);
 
 	if (query.filter && Object.keys(query.filter).length > 0) {

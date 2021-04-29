@@ -1,7 +1,7 @@
 import { ref, Ref, watch } from '@vue/composition-api';
 import { TranslateResult } from 'vue-i18n';
 
-export function useTitle(newTitle: string | Ref<string>) {
+export function useTitle(newTitle: string | Ref<string>): Ref | undefined {
 	if (newTitle === undefined || newTitle === null) return;
 
 	const titleRef = typeof newTitle === 'string' ? ref(newTitle) : newTitle;

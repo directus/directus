@@ -5,7 +5,7 @@ import { APIError } from '@/types';
 
 let store: any;
 
-export function unexpectedError(error: Error | RequestError | APIError) {
+export function unexpectedError(error: Error | RequestError | APIError): void {
 	if (!store) store = useNotificationsStore();
 
 	const code =

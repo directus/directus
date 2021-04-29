@@ -136,7 +136,7 @@ export default defineComponent({
 					codemirror.value.setOption('mode', { name: 'javascript', json: true });
 
 					CodeMirror.registerHelper('lint', 'json', (text: string) => {
-						const found: {}[] = [];
+						const found: Record<string, any> = [];
 						const parser = jsonlint.parser;
 
 						parser.parseError = (str: string, hash: any) => {

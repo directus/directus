@@ -217,7 +217,7 @@ export class UsersService extends ItemsService {
 		return keys;
 	}
 
-	async inviteUser(email: string | string[], role: string, url: string | null) {
+	async inviteUser(email: string | string[], role: string, url: string | null): Promise<void> {
 		const emails = toArray(email);
 
 		const urlWhitelist = toArray(env.USER_INVITE_URL_ALLOW_LIST);
@@ -263,7 +263,7 @@ export class UsersService extends ItemsService {
 		});
 	}
 
-	async acceptInvite(token: string, password: string) {
+	async acceptInvite(token: string, password: string): Promise<void> {
 		const { email, scope } = jwt.verify(token, env.SECRET as string) as {
 			email: string;
 			scope: string;
@@ -286,7 +286,7 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	async requestPasswordReset(email: string, url: string | null) {
+	async requestPasswordReset(email: string, url: string | null): Promise<void> {
 		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
 		if (!user) throw new ForbiddenException();
 
@@ -321,7 +321,7 @@ export class UsersService extends ItemsService {
 		});
 	}
 
-	async resetPassword(token: string, password: string) {
+	async resetPassword(token: string, password: string): Promise<void> {
 		const { email, scope } = jwt.verify(token, env.SECRET as string) as {
 			email: string;
 			scope: string;
@@ -344,7 +344,7 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	async enableTFA(pk: string) {
+	async enableTFA(pk: string): Promise<Record<string, string>> {
 		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
 
 		if (user?.tfa_secret !== null) {
@@ -366,7 +366,7 @@ export class UsersService extends ItemsService {
 		};
 	}
 
-	async disableTFA(pk: string) {
+	async disableTFA(pk: string): Promise<void> {
 		await this.knex('directus_users').update({ tfa_secret: null }).where({ id: pk });
 	}
 

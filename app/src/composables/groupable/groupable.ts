@@ -19,7 +19,7 @@ type GroupableOptions = {
 	watch?: boolean;
 };
 
-export function useGroupable(options?: GroupableOptions) {
+export function useGroupable(options?: GroupableOptions): Record<string, any> {
 	// Injects the registration / toggle functions from the parent scope
 	const parentFunctions = inject(options?.group || 'item-group', null);
 
@@ -104,7 +104,7 @@ export function useGroupableParent(
 	state: GroupableParentState = {},
 	options: GroupableParentOptions = {},
 	group = 'item-group'
-) {
+): Record<string, any> {
 	// References to the active state and value of the individual child items
 	const items = ref<GroupableInstance[]>([]);
 

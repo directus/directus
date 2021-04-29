@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import installSeeds from '../../../database/seeds/run';
 import runMigrations from '../../../database/migrations/run';
 
-export default async function start() {
+export default async function start(): Promise<void> {
 	const database = require('../../../database/index').default as Knex;
 
 	try {

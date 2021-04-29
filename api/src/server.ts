@@ -10,7 +10,7 @@ import database from './database';
 import createApp from './app';
 import { once } from 'lodash';
 
-export default async function createServer() {
+export default async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());
 
 	server.on('request', function (req: http.IncomingMessage & Request, res: http.ServerResponse) {

@@ -29,6 +29,7 @@
 <script lang="ts">
 import { defineComponent, computed, inject, ref } from '@vue/composition-api';
 import { getInterfaces } from '@/interfaces';
+import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
 	props: {
@@ -49,7 +50,7 @@ export default defineComponent({
 		const selectedInterface = computed(() => {
 			if (!values.value[props.interfaceField]) return;
 
-			return interfaces.value.find((inter) => inter.id === values.value[props.interfaceField]);
+			return interfaces.value.find((inter: InterfaceConfig) => inter.id === values.value[props.interfaceField]);
 		});
 
 		return { selectedInterface, values };

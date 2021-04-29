@@ -6,7 +6,7 @@ export default function useActions(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
 	relation: Ref<RelationInfo>,
 	emit: (newValue: any[] | null) => void
-) {
+): Record<string, any> {
 	// Returns the junction item with the given Id.
 	function getJunctionItem(id: string | number) {
 		const { junctionPkField } = relation.value;

@@ -32,7 +32,7 @@ export type CustomSyntax = {
 	box: 'inline' | 'block';
 };
 
-export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, customSyntaxBlocks: CustomSyntax[]) {
+export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>): Record<string, any> {
 	const alterations: AlterationFunctions = {
 		heading(selection, { cursorTo }, options) {
 			const level = options?.level || 3;

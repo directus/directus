@@ -1,7 +1,7 @@
 import { Ref, ref } from '@vue/composition-api';
 import i18n from '@/lang';
 
-export default function useSourceCode(editor: Ref<any>) {
+export default function useSourceCode(editor: Ref<any>): Record<string, any> {
 	const codeDrawerOpen = ref(false);
 	const code = ref<string>();
 

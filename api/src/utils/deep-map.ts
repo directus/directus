@@ -1,6 +1,7 @@
 export function deepMap(
 	object: Record<string, any>,
 	iterator: (value: any, key: string | number) => any,
+	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 	context?: any
 ): any {
 	if (Array.isArray(object)) {

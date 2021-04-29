@@ -1,4 +1,4 @@
-export function abbreviateNumber(value: number) {
+export function abbreviateNumber(value: number): number | string {
 	if (value >= 1000) {
 		const suffixes = ['', 'K', 'M', 'B', 'T'];
 		const suffixNum = Math.floor(('' + value).length / 3);

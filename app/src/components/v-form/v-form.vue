@@ -39,7 +39,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, provide } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores/';
-import { Field } from '@/types';
+import { Field, FieldRaw } from '@/types';
 import { useElementSize } from '@/composables/use-element-size';
 import { clone, cloneDeep } from 'lodash';
 import marked from 'marked';
@@ -113,7 +113,7 @@ export default defineComponent({
 		 * admin can be made aware
 		 */
 		const unknownValidationErrors = computed(() => {
-			const fieldKeys = formFields.value.map((field) => field.field);
+			const fieldKeys = formFields.value.map((field: FieldRaw) => field.field);
 			return props.validationErrors.filter((error) => fieldKeys.includes(error.field) === false);
 		});
 

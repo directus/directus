@@ -15,7 +15,7 @@ const svg = (color: string, hide: boolean) => `
 	}
 </svg>`;
 
-export default function setFavicon(color = '#00C897', hide = false) {
+export default function setFavicon(color = '#00C897', hide = false): void {
 	const icon = svg(color, hide);
 	const wrapper = document.createElement('div');
 	wrapper.innerHTML = icon.trim();

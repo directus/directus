@@ -64,7 +64,7 @@ export class ExtensionHandler {
 		this.transport = transport;
 	}
 
-	endpoint(name: string) {
+	endpoint(name: string): ExtensionEndpoint {
 		return new ExtensionEndpoint(this.transport, name);
 	}
 }

@@ -22,7 +22,7 @@ export default function useShortcut(
 	shortcuts: string | string[],
 	handler: ShortcutHandler,
 	reference: Ref<HTMLElement | undefined> | Ref<Vue | undefined> = ref(document.body)
-) {
+): void {
 	const callback: ShortcutHandler = (event, cancelNext) => {
 		if (!reference.value) return;
 		const ref = reference.value instanceof HTMLElement ? reference.value : (reference.value.$el as HTMLElement);

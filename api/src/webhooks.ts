@@ -7,7 +7,7 @@ import logger from './logger';
 
 let registered: { event: string; handler: ListenerFn }[] = [];
 
-export async function register() {
+export async function register(): Promise<void> {
 	unregister();
 
 	const webhooks = await database.select<Webhook[]>('*').from('directus_webhooks').where({ status: 'active' });
@@ -29,7 +29,7 @@ export async function register() {
 	}
 }
 
-export function unregister() {
+export function unregister(): void {
 	for (const { event, handler } of registered) {
 		emitter.off(event, handler);
 	}

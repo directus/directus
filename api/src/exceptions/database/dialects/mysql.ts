@@ -3,16 +3,7 @@ import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
 import { ValueTooLongException } from '../value-too-long';
 import { ValueOutOfRangeException } from '../value-out-of-range';
-
-type MySQLError = {
-	message: string;
-	code: string;
-	errno: number;
-	sqlMessage: string;
-	sqlState: string;
-	index: number;
-	sql: string;
-};
+import { MySQLError } from './types';
 
 enum MySQLErrorCodes {
 	UNIQUE_VIOLATION = 'ER_DUP_ENTRY',
@@ -22,7 +13,7 @@ enum MySQLErrorCodes {
 	FOREIGN_KEY_VIOLATION = 'ER_NO_REFERENCED_ROW_2',
 }
 
-export function extractError(error: MySQLError) {
+export function extractError(error: MySQLError): MySQLError | Error {
 	switch (error.code) {
 		case MySQLErrorCodes.UNIQUE_VIOLATION:
 			return uniqueViolation(error);

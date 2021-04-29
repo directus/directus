@@ -10,7 +10,7 @@ export class PermissionsService extends ItemsService {
 		super('directus_permissions', options);
 	}
 
-	getAllowedFields(action: PermissionsAction, collection?: string) {
+	getAllowedFields(action: PermissionsAction, collection?: string): Record<string, string[]> {
 		const results = this.schema.permissions.filter((permission) => {
 			let matchesCollection = true;
 

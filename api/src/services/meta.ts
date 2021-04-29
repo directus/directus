@@ -17,7 +17,7 @@ export class MetaService {
 		this.schema = options.schema;
 	}
 
-	async getMetaForQuery(collection: string, query: Query) {
+	async getMetaForQuery(collection: string, query: Query): Promise<Record<string, any> | undefined> {
 		if (!query || !query.meta) return;
 
 		const results = await Promise.all(
@@ -35,7 +35,7 @@ export class MetaService {
 		}, {});
 	}
 
-	async totalCount(collection: string) {
+	async totalCount(collection: string): Promise<number> {
 		const dbQuery = this.knex(collection).count('*', { as: 'count' }).first();
 
 		if (this.accountability?.admin !== true) {
@@ -55,7 +55,7 @@ export class MetaService {
 		return Number(result?.count ?? 0);
 	}
 
-	async filterCount(collection: string, query: Query) {
+	async filterCount(collection: string, query: Query): Promise<number> {
 		const dbQuery = this.knex(collection).count('*', { as: 'count' });
 
 		let filter = query.filter || {};

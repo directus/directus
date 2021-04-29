@@ -4,6 +4,7 @@ import { extractError as mysql } from './dialects/mysql';
 import { extractError as mssql } from './dialects/mssql';
 import { extractError as sqlite } from './dialects/sqlite';
 import { extractError as oracle } from './dialects/oracle';
+import { SQLError } from './dialects/types';
 
 /**
  * Translates an error thrown by any of the databases into a pre-defined Exception. Currently
@@ -14,7 +15,7 @@ import { extractError as oracle } from './dialects/oracle';
  * - Value Out of Range
  * - Value Too Long
  */
-export async function translateDatabaseError(error: any) {
+export async function translateDatabaseError(error: SQLError): Promise<any> {
 	switch (database.client.constructor.name) {
 		case 'Client_MySQL':
 			return await mysql(error);

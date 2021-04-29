@@ -111,7 +111,10 @@ export class CollectionsService {
 	/**
 	 * Create multiple new collections
 	 */
-	async createMany(payloads: Partial<Collection> & { collection: string }[], opts?: MutationOptions) {
+	async createMany(
+		payloads: Partial<Collection> & { collection: string }[],
+		opts?: MutationOptions
+	): Promise<string[]> {
 		const collections = await this.knex.transaction(async (trx) => {
 			const service = new CollectionsService({
 				schema: this.schema,
