@@ -57,7 +57,7 @@
 		"codemirror": "^5.60.0",
 		"copyfiles": "^2.4.1",
 		"cropperjs": "^1.5.11",
-		"date-fns": "^2.19.0",
+		"date-fns": "^2.21.1",
 		"dompurify": "^2.2.7",
 		"escape-string-regexp": "^4.0.0",
 		"front-matter": "^4.0.2",
