@@ -23,5 +23,6 @@ export type Toolbox<T extends TypeMap = {}> = {
 		one: QueryOne<unknown>;
 		many: QueryMany<unknown>;
 	};
+	stdin?: any;
 	[extension: string]: any | undefined;
 };

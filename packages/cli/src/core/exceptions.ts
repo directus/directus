@@ -1,3 +1,5 @@
+import stripIndent from 'strip-indent';
+
 export type CLIError = Error & {
 	isAxiosError?: true;
 	request?: any;
@@ -7,6 +9,6 @@ export type CLIError = Error & {
 
 export class CLIRuntimeError extends Error {
 	constructor(message: string) {
-		super(message);
+		super(stripIndent(message).trim());
 	}
 }

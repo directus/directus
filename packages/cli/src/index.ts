@@ -142,7 +142,7 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 		required: false,
 	});
 
-	const extensions = ['config', 'events', 'options', 'output', 'query', 'instances', 'help'];
+	const extensions = ['config', 'events', 'options', 'output', 'query', 'stdin', 'instances', 'help'];
 	extensions.forEach((extension) =>
 		runtime.addExtension(extension, require(path.join(__dirname, `core/extensions/${extension}`)))
 	);

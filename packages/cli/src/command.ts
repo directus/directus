@@ -1,5 +1,6 @@
 import { Argv } from 'yargs';
 import { CLIError } from './core/exceptions';
+import { StdinFeatures } from './core/extensions/stdin';
 import { CommandHelp, GeneralHelp } from './help';
 import { IOutput } from './output';
 import { Toolbox } from './toolbox';
@@ -8,6 +9,7 @@ export type Features = {
 	sdk?: boolean;
 	query?: 'one' | 'many';
 	output?: boolean;
+	stdin?: StdinFeatures;
 	[feature: string]: unknown;
 };
 
