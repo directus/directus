@@ -89,6 +89,8 @@ validationError:
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
+nullable: Nullable
+allow_null_value: Allow NULL value
 field_standard: Standard
 field_presentation: Presentation & Aliases
 field_file: Single File
