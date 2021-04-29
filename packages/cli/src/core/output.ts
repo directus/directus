@@ -2,7 +2,7 @@ import { defaults } from './utils';
 import { Argv } from 'yargs';
 import { IOptions } from '../options';
 import { IOutput, IUIComposer, IOutputFormat } from '../output';
-import { HumanOutputFormat } from './output/formats/human';
+import { TableOutputFormat } from './output/formats/table';
 import { UIBuilder } from './output/ui';
 import { CLIError, CLIRuntimeError } from './exceptions';
 import { CommandHelp, GeneralHelp } from '../help';
@@ -15,7 +15,7 @@ export type OutputOptions = {
 export class Output implements IOutput {
 	private options: IOptions;
 	private formats: {
-		human: IOutputFormat;
+		table: IOutputFormat;
 		[name: string]: IOutputFormat;
 	};
 	private _text: string[];
@@ -25,7 +25,7 @@ export class Output implements IOutput {
 
 	constructor(options: IOptions) {
 		this.formats = {
-			human: new HumanOutputFormat(),
+			table: new TableOutputFormat(),
 		};
 		this._text = [];
 		this._errors = [];
@@ -33,19 +33,19 @@ export class Output implements IOutput {
 		this.options.feature('output', (builder: Argv, _, raw) => {
 			builder.option('format', {
 				description: 'The output format',
-				default: 'human',
+				default: 'table',
 				choices: [...Object.keys(this.formats)],
 			});
 
-			const explicitFormat = raw.format ?? 'human';
+			const explicitFormat = raw.format ?? 'table';
 			Object.entries(this.formats).forEach(([name, format]) => {
 				if (name === explicitFormat) {
 					format.registerOptions(builder);
 				}
 			});
 
-			if (explicitFormat != 'human' && !(explicitFormat in this.formats)) {
-				this.formats['human']!.registerOptions(builder);
+			if (explicitFormat != 'table' && !(explicitFormat in this.formats)) {
+				this.formats['table']!.registerOptions(builder);
 				throw new CLIRuntimeError(`Unknown output format: ${explicitFormat}`);
 			}
 		});
@@ -106,14 +106,14 @@ export class Output implements IOutput {
 
 	getFormatter(): IOutputFormat {
 		const { format } = this.getOptions();
-		return this.formats[format] ?? this.formats['human']!;
+		return this.formats[format] ?? this.formats['table']!;
 	}
 
 	getOptions(options?: Partial<OutputOptions>): OutputOptions {
 		const opts = this.options.values() as OutputOptions & { [k: string]: any };
 		return defaults(options, {
 			...opts,
-			format: (opts.format as any) ?? 'human',
+			format: (opts.format as any) ?? 'table',
 		}) as OutputOptions;
 	}
 }

@@ -208,22 +208,25 @@ export default (toolbox: Toolbox) => {
 					type: 'array',
 					description: `
 						What field(s) to sort by. Sorting defaults to ascending,
-						but a minus sign (-) can be used to reverse this to
-						descending order. Fields are prioritized by the order
-						in the parameter.
+						but :desc suffix can be used to reverse this to descending
+						order. Fields are prioritized by the order in the parameter.
+
+						Multiple values are accepted through commas or multiple
+						--sort entries. Order is important in this case.
 
 						# Examples
 
-						## Sort by creation date descending
+						## Sort by publish date descending
 
 						\`\`\`
-						$ command --sort -publish_date
+						$ command --sort publish_date:desc
 						\`\`\`
 
-						## Sort by creation date descending
+						## Sort by creation date ascending
 
 						\`\`\`
-						$ command --limit 100 --offset 100
+						$ command --sort created_date:asc
+						$ command --sort created_date
 						\`\`\`
 					`,
 				})

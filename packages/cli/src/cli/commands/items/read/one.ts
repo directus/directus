@@ -7,7 +7,7 @@ export default command(
 		description: 'Reads one item in a collection',
 		usage: `
 			\`\`\`
-			$ $0 instance items read one <collection>
+			$ $0 items read one <collection>
 			\`\`\`
 		`,
 		documentation: `

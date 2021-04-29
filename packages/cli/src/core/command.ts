@@ -1,7 +1,7 @@
 import { Toolbox } from '../toolbox';
 import { Command, CommandResult, Handler, Settings } from '../command';
 import { defaults } from './utils';
-import { CLIRuntimeError } from './exceptions';
+import { CLIError, CLIRuntimeError } from './exceptions';
 
 export function command<T extends Toolbox = Toolbox, P = any, R extends any = void>(
 	settings: Settings<P>,
@@ -23,6 +23,30 @@ export function command<T extends Toolbox = Toolbox, P = any, R extends any = vo
 
 		let opts: any = {};
 
+		const handleError = async (error: CLIError) => {
+			await output.error(error);
+
+			let helpData = undefined;
+			if (error instanceof CLIRuntimeError) {
+				if (!settings.disableHelp) {
+					helpData = await help.displayCommandHelp(command);
+				}
+				return {
+					help: helpData,
+					error,
+				};
+			}
+
+			if (!settings.disableHelp) {
+				helpData = await help.getCommandHelp(command);
+			}
+
+			return {
+				help: helpData,
+				error,
+			};
+		};
+
 		try {
 			await events.emit('command.initialize.before', command);
 			await events.emit('output.formats.register', output);
@@ -42,19 +66,8 @@ export function command<T extends Toolbox = Toolbox, P = any, R extends any = vo
 			await events.emit('command.initialize.after', command);
 
 			opts = options.values();
-			if (options.failed()) {
-				const error = options.error()!;
-				await output.error(error);
-				if (error instanceof CLIRuntimeError) {
-					return {
-						help: await help.displayCommandHelp(command),
-						error,
-					};
-				}
-				return {
-					help: await help.getCommandHelp(command),
-					error,
-				};
+			if (options.failed() && !opts.help) {
+				return await handleError(options.error()!);
 			}
 
 			if (opts.help && !settings.disableHelp) {
@@ -63,17 +76,7 @@ export function command<T extends Toolbox = Toolbox, P = any, R extends any = vo
 				};
 			}
 		} catch (error) {
-			await output.error(error);
-			if (error instanceof CLIRuntimeError) {
-				return {
-					help: await help.displayCommandHelp(command),
-					error,
-				};
-			}
-			return {
-				help: await help.getCommandHelp(command),
-				error,
-			};
+			return await handleError(error);
 		}
 
 		try {
@@ -81,22 +84,18 @@ export function command<T extends Toolbox = Toolbox, P = any, R extends any = vo
 			const result = await execute(toolbox, opts);
 			await output.value(result);
 			await events.emit('command.execute.after', command);
+
+			let helpData = undefined;
+			if (!settings.disableHelp) {
+				helpData = await help.getCommandHelp(command);
+			}
+
 			return {
 				result: result,
-				help: await help.getCommandHelp(command),
+				help: helpData,
 			};
 		} catch (error) {
-			await output.error(error);
-			if (error instanceof CLIRuntimeError) {
-				return {
-					help: await help.displayCommandHelp(command),
-					error,
-				};
-			}
-			return {
-				help: await help.getCommandHelp(command),
-				error,
-			};
+			return await handleError(error);
 		}
 	};
 

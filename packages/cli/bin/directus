@@ -1,5 +1,13 @@
 #!/usr/bin/env node
 
+require('dotenv').config();
+
+const amp = require('app-module-path');
+
+amp.addPath(`${__dirname}/../node_modules`);
+amp.addPath(`${process.cwd()}/node_modules`);
+amp.addPath(process.cwd());
+
 const devMode = require('fs').existsSync(`${__dirname}/../src`);
 const wantsCompiled = process.argv.indexOf('--compiled-build') >= 0;
 const fs = require('fs');
@@ -14,6 +22,7 @@ async function main(run, ts = false) {
 
 		if (output) {
 			await output.flush(process.stdout);
+			process.stdout.write('\n');
 		}
 
 		process.exit(error ? 1 : 0);

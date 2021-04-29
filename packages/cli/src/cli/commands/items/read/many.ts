@@ -9,13 +9,13 @@ export default command(
 			**Simple read**
 
 			\`\`\`
-			$ $0 instance items read many <collection>
+			$ $0 items read many <collection>
 			\`\`\`
 
 			**Read only first 5 matching items**
 
 			\`\`\`
-			$ $0 instance items read many <collection> --limit 5
+			$ $0 items read many <collection> --limit 5
 			\`\`\`
 		`,
 		documentation: `
@@ -35,6 +35,9 @@ export default command(
 	},
 	async function ({ output, query, sdk }, params) {
 		const item = await sdk.items(params.collection).readMany(query.many);
+		if (item.data && !Array.isArray(item.data)) {
+			item.data = [item.data];
+		}
 
 		await output.compose(async (ui) => {
 			await ui.wrap((ui) => ui.header('Items'), 1);

@@ -7,7 +7,7 @@ import { InstanceStorage } from '../../../core/sdk/storage';
 export default command(
 	{
 		group: 'instance',
-		parameters: '<url>',
+		parameters: '[name]',
 		description: 'Disconnects from a Directus instance',
 		usage: `
 			**From default instance**

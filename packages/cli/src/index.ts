@@ -4,6 +4,7 @@ import { build } from 'gluegun';
 import { command } from './core/command';
 import { Toolbox } from './toolbox';
 import { CommandResult } from './command';
+import { CLIRuntimeError } from './core/exceptions';
 
 export { command } from './core/command';
 export type { Toolbox } from './toolbox';
@@ -96,8 +97,11 @@ export default async function <T extends any>(argv: string[], typescript: boolea
 		{
 			disableHelp: true,
 		},
-		async function (toolbox: Toolbox) {
-			await toolbox.help.displayHelp();
+		async function ({ help, parameters: { array } }: Toolbox) {
+			await help.displayHelp();
+			if (array && array.length) {
+				throw new CLIRuntimeError(`Unknown command: ${array.join(' ')}`);
+			}
 		}
 	) as any;
 

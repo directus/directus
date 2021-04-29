@@ -5,13 +5,13 @@ import { FormatData, IOutputFormat } from '../../../output';
 import { FullTerminalWidth, UIBuilder } from '../ui';
 import { CLIError } from '../../exceptions';
 
-export type HumanOutputFormatOptions = {
+export type TableOutputFormatOptions = {
 	ansi: boolean;
 	table: string | 'minimal' | 'compact' | 'markdown';
 	stacktrace: boolean;
 };
 
-export class HumanOutputFormat implements IOutputFormat<HumanOutputFormatOptions> {
+export class TableOutputFormat implements IOutputFormat<TableOutputFormatOptions> {
 	registerOptions(options: Argv) {
 		return options
 			.option('ansi', {
@@ -32,14 +32,14 @@ export class HumanOutputFormat implements IOutputFormat<HumanOutputFormatOptions
 			});
 	}
 
-	async text(text: string, options: HumanOutputFormatOptions): Promise<string> {
+	async text(text: string, options: TableOutputFormatOptions): Promise<string> {
 		if (!options.ansi) {
 			text = stripAnsi(text);
 		}
 		return text;
 	}
 
-	async error(error: CLIError, options: HumanOutputFormatOptions): Promise<string> {
+	async error(error: CLIError, options: TableOutputFormatOptions): Promise<string> {
 		const builder = new UIBuilder(2, FullTerminalWidth);
 		await builder.error(error, {
 			stacktrace: options.stacktrace,
@@ -48,7 +48,7 @@ export class HumanOutputFormat implements IOutputFormat<HumanOutputFormatOptions
 		return await this.text(await builder.get(), options);
 	}
 
-	async format(data: FormatData, options: HumanOutputFormatOptions): Promise<string> {
+	async format(data: FormatData, options: TableOutputFormatOptions): Promise<string> {
 		let output = await Promise.all([
 			...data.text.map((line) => this.text(line, options)),
 			...data.errors.map((error) => this.error(error, options)),

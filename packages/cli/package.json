@@ -40,6 +40,7 @@
 	"dependencies": {
 		"@directus/format-title": "9.0.0-rc.61",
 		"@directus/sdk": "9.0.0-rc.61",
+		"app-module-path": "^2.2.0",
 		"chalk": "^4.1.0",
 		"cli-highlight": "^2.1.11",
 		"cli-table3": "^0.5.1",
@@ -68,6 +69,7 @@
 	"devDependencies": {
 		"@types/figlet": "^1.5.0",
 		"@types/fs-extra": "^9.0.11",
+		"@types/jest": "^26.0.23",
 		"@types/js-yaml": "^4.0.0",
 		"@types/marked-terminal": "^3.1.1",
 		"@types/yargs": "^15.0.13",
