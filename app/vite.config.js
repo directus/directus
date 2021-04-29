@@ -29,9 +29,12 @@ function moduleRelativeResolve() {
 
 	return {
 		name: 'module-relative-resolve',
-		transform(source) {
-			if (source.indexOf('@vite-module!') !== -1) {
-				return source.replace(MODULE_REGEX, (_, module) => `./${path.relative('.', require.resolve(module))}`);
+		transform(code) {
+			if (code.indexOf('@vite-module!') !== -1) {
+				return {
+					code: code.replace(MODULE_REGEX, (_, module) => `./${path.relative('.', require.resolve(module))}`),
+					map: null,
+				};
 			}
 
 			return null;
