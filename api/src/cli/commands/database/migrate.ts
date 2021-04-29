@@ -1,6 +1,6 @@
 import run from '../../../database/migrations/run';
 
-export default async function migrate(direction: 'latest' | 'up' | 'down') {
+export default async function migrate(direction: 'latest' | 'up' | 'down'): Promise<void> {
 	const database = require('../../../database').default;
 
 	try {

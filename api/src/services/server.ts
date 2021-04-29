@@ -30,7 +30,7 @@ export class ServerService {
 		this.settingsService = new SettingsService({ knex: this.knex, schema: this.schema });
 	}
 
-	async serverInfo() {
+	async serverInfo(): Promise<Record<string, any>> {
 		const info: Record<string, any> = {};
 
 		const projectInfo = await this.settingsService.readSingleton({
@@ -70,7 +70,7 @@ export class ServerService {
 		return info;
 	}
 
-	async health() {
+	async health(): Promise<Record<string, any>> {
 		const checkID = nanoid(5);
 
 		// Based on https://tools.ietf.org/id/draft-inadarei-api-health-check-05.html#name-componenttype

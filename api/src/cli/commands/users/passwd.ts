@@ -1,7 +1,7 @@
 import argon2 from 'argon2';
 import { getSchema } from '../../../utils/get-schema';
 
-export default async function usersPasswd({ email, password }: any) {
+export default async function usersPasswd({ email, password }: any): Promise<void> {
 	const { default: database } = require('../../../database/index');
 	const { UsersService } = require('../../../services/users');
 

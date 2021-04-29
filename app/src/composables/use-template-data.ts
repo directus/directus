@@ -4,7 +4,10 @@ import { computed, Ref, ref, watch } from '@vue/composition-api';
 import { ComputedRef } from '@vue/composition-api';
 import { Collection } from '@/types';
 
-export default function useTemplateData(collection: ComputedRef<Collection | undefined>, primaryKey: Ref<string>) {
+export default function useTemplateData(
+	collection: ComputedRef<Collection | undefined>,
+	primaryKey: Ref<string>
+): Record<string, any> {
 	const templateData = ref<Record<string, any>>();
 	const loading = ref(false);
 	const error = ref(null);

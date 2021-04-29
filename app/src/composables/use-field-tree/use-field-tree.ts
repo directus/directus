@@ -1,4 +1,4 @@
-import { Ref, computed } from '@vue/composition-api';
+import { Ref, computed, ComputedRef } from '@vue/composition-api';
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@/types';
 import { cloneDeep } from 'lodash';
@@ -12,7 +12,7 @@ export default function useFieldTree(
 	strict: boolean = false,
 	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
 	filter: (field: Field) => boolean = () => true
-) {
+): Record<string, ComputedRef> {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
 

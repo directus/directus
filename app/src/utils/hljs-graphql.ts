@@ -1,6 +1,6 @@
 import { HASH_COMMENT_MODE, QUOTE_STRING_MODE, NUMBER_MODE } from 'highlight.js';
 
-export default () => ({
+export default (): LanguageDetail & ModeDetails => ({
 	aliases: ['gql'],
 	keywords: {
 		keyword:

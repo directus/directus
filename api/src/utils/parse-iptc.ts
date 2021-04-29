@@ -13,7 +13,7 @@ const IPTC_ENTRY_TYPES = new Map([
 
 const IPTC_ENTRY_MARKER = Buffer.from([0x1c, 0x02]);
 
-export default function parseIPTC(buffer: Buffer) {
+export default function parseIPTC(buffer: Buffer): Record<string, any> {
 	if (!Buffer.isBuffer(buffer)) return {};
 
 	let iptc: Record<string, any> = {};

@@ -114,7 +114,7 @@ const updates = [
  * Postgres behaves erratic on those triggers, not sure if MySQL / Maria plays nice either.
  */
 
-export async function up(knex: Knex) {
+export async function up(knex: Knex): Promise<void> {
 	for (const update of updates) {
 		await knex.schema.alterTable(update.table, (table) => {
 			for (const constraint of update.constraints) {
@@ -125,7 +125,7 @@ export async function up(knex: Knex) {
 	}
 }
 
-export async function down(knex: Knex) {
+export async function down(knex: Knex): Promise<void> {
 	for (const update of updates) {
 		await knex.schema.alterTable(update.table, (table) => {
 			for (const constraint of update.constraints) {

@@ -6,7 +6,7 @@ const tooltipDelay = 300;
 
 const handlers: Record<string, () => void> = {};
 
-function bind(element: HTMLElement, binding: DirectiveBinding) {
+function bind(element: HTMLElement, binding: DirectiveBinding): void {
 	if (binding.value) {
 		element.dataset.tooltip = nanoid();
 		handlers[element.dataset.tooltip] = createEnterHandler(element, binding);
@@ -15,7 +15,7 @@ function bind(element: HTMLElement, binding: DirectiveBinding) {
 	}
 }
 
-function unbind(element: HTMLElement) {
+function unbind(element: HTMLElement): void {
 	element.removeEventListener('mouseenter', handlers[element.dataset.tooltip as string]);
 	element.removeEventListener('mouseleave', onLeaveTooltip);
 	clearTimeout(tooltipTimer);
@@ -44,7 +44,7 @@ export default Tooltip;
 let tooltipTimer: number;
 
 export function createEnterHandler(element: HTMLElement, binding: DirectiveBinding) {
-	return () => {
+	return (): void => {
 		const tooltip = getTooltip();
 
 		if (binding.modifiers.instant) {
@@ -60,14 +60,14 @@ export function createEnterHandler(element: HTMLElement, binding: DirectiveBindi
 	};
 }
 
-export function onLeaveTooltip() {
+export function onLeaveTooltip(): void {
 	const tooltip = getTooltip();
 
 	clearTimeout(tooltipTimer);
 	animateOut(tooltip);
 }
 
-export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, tooltip: HTMLElement) {
+export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, tooltip: HTMLElement): void {
 	const offset = 10;
 	const arrowAlign = 20;
 
@@ -156,7 +156,7 @@ export function updateTooltip(element: HTMLElement, binding: DirectiveBinding, t
 	}
 }
 
-export function animateIn(tooltip: HTMLElement) {
+export function animateIn(tooltip: HTMLElement): void {
 	tooltip.classList.add('visible', 'enter');
 	tooltip.classList.remove('leave', 'leave-active');
 
@@ -171,7 +171,7 @@ export function animateIn(tooltip: HTMLElement) {
 	}, 200);
 }
 
-export function animateOut(tooltip: HTMLElement) {
+export function animateOut(tooltip: HTMLElement): void {
 	if (tooltip.classList.contains('visible') === false) return;
 
 	tooltip.classList.add('visible', 'leave');

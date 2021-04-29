@@ -22,7 +22,7 @@ export default function useShortcut(
 	shortcuts: string | string[],
 	handler: ShortcutHandler,
 	reference: Ref<HTMLElement | undefined> | Ref<Vue | undefined> = ref(document.body)
-) {
+): void {
 	const callback: ShortcutHandler = (event, cancelNext) => {
 		if (!reference.value) return;
 		const ref = reference.value instanceof HTMLElement ? reference.value : (reference.value.$el as HTMLElement);
@@ -92,14 +92,12 @@ function callHandlers(event: KeyboardEvent) {
 		for (let i = 0; i < value.length; i++) {
 			let cancel = false;
 
-			value[i](event, cancelNext);
+			value[i](event, () => {
+				cancel = true;
+			});
 
 			// if cancelNext is called, discontinue going through the queue.
 			if (typeof cancel === 'boolean' && cancel) break;
-
-			function cancelNext() {
-				cancel = true;
-			}
 		}
 	});
 }

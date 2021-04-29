@@ -8,7 +8,7 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { VALIDATION_TYPES } from '@/constants';
 
-export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>) {
+export function useItem(collection: Ref<string>, primaryKey: Ref<string | number | null>): Record<string, any> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 
 	const item = ref<Record<string, any> | null>(null);

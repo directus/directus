@@ -13,7 +13,7 @@ export type Credentials = {
 export default function createDBConnection(
 	client: 'sqlite3' | 'mysql' | 'pg' | 'oracledb' | 'mssql',
 	credentials: Credentials
-) {
+): Knex<any, unknown[]> {
 	let connection: Knex.Config['connection'] = {};
 
 	if (client === 'sqlite3') {

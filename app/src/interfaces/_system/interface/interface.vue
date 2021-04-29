@@ -15,7 +15,7 @@
 import { defineComponent, computed, PropType, inject, ref, watch } from '@vue/composition-api';
 import i18n from '@/lang';
 import { getInterfaces } from '@/interfaces';
-import { types } from '@/types';
+import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
 	props: {
@@ -47,9 +47,11 @@ export default defineComponent({
 
 		const items = computed(() => {
 			return interfaces.value
-				.filter((inter) => inter.relational !== true && inter.system !== true)
-				.filter((inter) => selectedType.value === undefined || inter.types.includes(selectedType.value))
-				.map((inter) => {
+				.filter((inter: InterfaceConfig) => inter.relational !== true && inter.system !== true)
+				.filter(
+					(inter: InterfaceConfig) => selectedType.value === undefined || inter.types.includes(selectedType.value)
+				)
+				.map((inter: InterfaceConfig) => {
 					return {
 						text: inter.name,
 						value: inter.id,

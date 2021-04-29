@@ -1,3 +1,3 @@
-export function extractError(error: any) {
+export function extractError(error: Error): Error {
 	return error;
 }

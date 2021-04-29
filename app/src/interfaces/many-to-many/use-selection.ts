@@ -8,7 +8,7 @@ export default function useSelection(
 	items: Ref<Record<string, any>[]>,
 	relation: Ref<RelationInfo>,
 	emit: (newVal: any[] | null) => void
-) {
+): Record<string, any> {
 	const selectModalActive = ref(false);
 
 	const selectedPrimaryKeys = computed(() => {

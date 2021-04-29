@@ -86,6 +86,7 @@ import useSort from './use-sort';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { usePermissionsStore, useUserStore } from '@/stores';
+import { DisplayConfig } from '@/displays/types';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -138,7 +139,7 @@ export default defineComponent({
 			let relatedDisplayTemplate = relationCollection.value.meta?.display_template;
 			if (relatedDisplayTemplate) {
 				const regex = /({{.*?}})/g;
-				const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
+				const parts = relatedDisplayTemplate.split(regex).filter((p: DisplayConfig) => p);
 
 				for (const part of parts) {
 					if (part.startsWith('{{') === false) continue;

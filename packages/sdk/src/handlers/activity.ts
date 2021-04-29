@@ -17,7 +17,7 @@ export class ActivityHandler<T = DefaultType> extends ItemsHandler<ActivityItem<
 		this._comments = new CommentsHandler(this.transport);
 	}
 
-	get comments() {
+	get comments(): CommentsHandler<T> {
 		return this._comments;
 	}
 }

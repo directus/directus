@@ -8,7 +8,7 @@ export interface LayoutConfig {
 	component: Component;
 }
 
-export type LayoutContext = {};
+export type LayoutContext = Record<string, any>;
 
 export type LayoutDefineParam = LayoutConfig | ((context: LayoutContext) => LayoutConfig);
 

@@ -29,7 +29,7 @@ describe('Storage Manager', () => {
 		const storageManager = new StorageManager({
 			default: 'local',
 			disks: {
-				// @ts-expect-error
+				// @ts-expect-error No driver
 				local: {},
 			},
 		});

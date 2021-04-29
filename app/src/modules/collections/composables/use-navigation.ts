@@ -21,7 +21,7 @@ export type NavItemGroup = {
 let activeGroups: Ref<string[]>;
 let hiddenShown: Ref<boolean>;
 
-export default function useNavigation(searchQuery?: Ref<string | null>) {
+export default function useNavigation(searchQuery?: Ref<string | null>): Record<string, any> {
 	const collectionsStore = useCollectionsStore();
 	const userStore = useUserStore();
 

@@ -14,7 +14,7 @@ export type TestSettings = {
 	fixture?: string;
 };
 
-export function test(name: string, test: Test, settings?: TestSettings) {
+export function test(name: string, test: Test, settings?: TestSettings): void {
 	it(name, async () => {
 		nock.cleanAll();
 
@@ -40,7 +40,7 @@ export async function timers(
 		skip: (func: () => Promise<void>, date?: boolean) => Promise<any>;
 	}) => Promise<void>,
 	initial: number = Date.now()
-) {
+): Promise<void> {
 	const originals = {
 		setTimeout: global.setTimeout,
 		setImmediate: global.setImmediate,

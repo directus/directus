@@ -136,7 +136,7 @@ export default defineComponent({
 					codemirror.value.setOption('mode', { name: 'javascript', json: true });
 
 					CodeMirror.registerHelper('lint', 'json', (text: string) => {
-						const found: {}[] = [];
+						const found: Record<string, any> = [];
 						const parser = jsonlint.parser;
 
 						parser.parseError = (str: string, hash: any) => {
@@ -150,7 +150,9 @@ export default defineComponent({
 						if (text.length > 0) {
 							try {
 								jsonlint.parse(text);
-							} catch (e) {}
+							} finally {
+								// Do nothing
+							}
 						}
 						return found;
 					});
@@ -273,7 +275,9 @@ export default defineComponent({
 			if (props.type === 'json') {
 				try {
 					emit('input', JSON.parse(props.template));
-				} catch {}
+				} finally {
+					// Do nothing
+				}
 			} else {
 				emit('input', props.template);
 			}

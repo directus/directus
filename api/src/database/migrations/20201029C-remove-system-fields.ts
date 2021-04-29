@@ -1639,12 +1639,12 @@ const systemFields = [
 	return merge({}, defaults, row);
 });
 
-export async function up(knex: Knex) {
+export async function up(knex: Knex): Promise<void> {
 	const fieldKeys = uniq(systemFields.map((field: any) => field.field));
 
 	await knex('directus_fields').delete().where('collection', 'like', 'directus_%').whereIn('field', fieldKeys);
 }
 
-export async function down(knex: Knex) {
+export async function down(knex: Knex): Promise<void> {
 	await knex.insert(systemFields).into('directus_fields');
 }

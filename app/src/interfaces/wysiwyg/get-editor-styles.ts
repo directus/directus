@@ -2,7 +2,7 @@ function cssVar(name: string) {
 	return getComputedStyle(document.body).getPropertyValue(name);
 }
 
-export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace') {
+export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace'): string {
 	return `
 body {
 	color: ${cssVar('--foreground-normal')};

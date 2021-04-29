@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { computed, Ref } from '@vue/composition-api';
+import { computed, ComputedRef, Ref } from '@vue/composition-api';
 import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
 import { getInterfaces } from '@/interfaces';
 import { FormField } from '@/components/v-form/types';
 import { Field } from '@/types';
 import { clone } from 'lodash';
+import { InterfaceConfig } from '@/interfaces/types';
 
-export default function useFormFields(fields: Ref<Field[]>) {
+export default function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef } {
 	const { interfaces } = getInterfaces();
 
 	const formFields = computed(() => {
@@ -16,14 +17,14 @@ export default function useFormFields(fields: Ref<Field[]>) {
 		formFields = formFields.map((field, index) => {
 			if (!field.meta) return field;
 
-			let interfaceUsed = interfaces.value.find((int) => int.id === field.meta?.interface);
+			let interfaceUsed = interfaces.value.find((int: InterfaceConfig) => int.id === field.meta?.interface);
 			const interfaceExists = interfaceUsed !== undefined;
 
 			if (interfaceExists === false) {
 				field.meta.interface = getDefaultInterfaceForType(field.type);
 			}
 
-			interfaceUsed = interfaces.value.find((int) => int.id === field.meta?.interface);
+			interfaceUsed = interfaces.value.find((int: InterfaceConfig) => int.id === field.meta?.interface);
 
 			if (interfaceUsed?.hideLabel === true) {
 				(field as FormField).hideLabel = true;

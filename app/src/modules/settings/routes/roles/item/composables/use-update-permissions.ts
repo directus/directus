@@ -7,7 +7,7 @@ export default function useUpdatePermissions(
 	collection: Ref<Collection>,
 	permissions: Ref<Permission[]>,
 	role: Ref<string>
-) {
+): Record<string, any> {
 	const saving = ref(false);
 	const refresh = inject<() => Promise<void>>('refresh-permissions');
 

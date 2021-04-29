@@ -53,7 +53,7 @@ export class AzureBlobWebServicesStorage extends Storage {
 	/**
 	 * Prefixes the given filePath with the storage root location
 	 */
-	protected _fullPath(filePath: string) {
+	protected _fullPath(filePath: string): string {
 		return normalize(path.join(this.$root, filePath));
 	}
 

@@ -15,7 +15,7 @@ export class UtilsService {
 		this.schema = options.schema;
 	}
 
-	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }) {
+	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }): Promise<void> {
 		const sortFieldResponse =
 			(await this.knex.select('sort_field').from('directus_collections').where({ collection }).first()) ||
 			systemCollectionRows;

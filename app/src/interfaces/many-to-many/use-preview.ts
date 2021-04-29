@@ -14,7 +14,7 @@ export default function usePreview(
 	getUpdatedItems: () => Record<string, any>[],
 	getNewItems: () => Record<string, any>[],
 	getPrimaryKeys: () => (string | number)[]
-) {
+): Record<string, Ref> {
 	// Using a ref for the table headers here means that the table itself can update the
 	// values if it needs to. This allows the user to manually resize the columns for example
 

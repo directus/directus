@@ -113,7 +113,7 @@ export default defineComponent({
 			if (!image.value) return null;
 			const { filesize, width, height, type } = image.value;
 
-			return `${i18n.n(width)}x${i18n.n(height)} • ${formatFilesize(filesize)} • ${type}`;
+			return `${i18n.n(width)}x${i18n.n(height)} • ${formatFilesize(filesize)} • ${type}`;
 		});
 
 		watch(
