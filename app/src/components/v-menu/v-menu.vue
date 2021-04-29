@@ -367,9 +367,9 @@ body {
 	padding: 0 4px;
 	overflow-x: hidden;
 	overflow-y: auto;
-	border-radius: var(--border-radius);
-	border: none;
 	background-color: var(--card-face-color);
+	border: none;
+	border-radius: var(--border-radius);
 	box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2), 0px 0px 12px 2px rgba(var(--card-shadow-color), 0.05);
 	transition-timing-function: var(--transition-out);
 	transition-duration: var(--fast);

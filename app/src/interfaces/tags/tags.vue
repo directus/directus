@@ -223,12 +223,13 @@ export default defineComponent({
 
 	.custom {
 		.v-chip {
-			transition: all var(--fast) var(--transition);
 			--v-chip-background-color: var(--primary);
 			--v-chip-color: var(--foreground-inverted);
 			--v-chip-background-color-hover: var(--danger);
 			--v-chip-close-color: var(--v-chip-background-color);
 			--v-chip-close-color-hover: var(--white);
+
+			transition: all var(--fast) var(--transition);
 
 			&:hover {
 				--v-chip-close-color: var(--white);
