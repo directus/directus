@@ -15,6 +15,7 @@
 					: `interface-${getDefaultInterfaceForType(field.type)}`
 			"
 			v-bind="(field.meta && field.meta.options) || {}"
+			:autofocus="disabled !== true && autofocus"
 			:disabled="disabled"
 			:loading="loading"
 			:value="value === undefined ? field.schema.default_value : value"
@@ -66,6 +67,10 @@ export default defineComponent({
 			default: false,
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		autofocus: {
 			type: Boolean,
 			default: false,
 		},
