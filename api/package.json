@@ -162,8 +162,6 @@
 		"@types/sharp": "^0.27.1",
 		"@types/uuid": "^8.3.0",
 		"@types/uuid-validate": "^0.0.1",
-		"@typescript-eslint/eslint-plugin": "^4.9.1",
-		"@typescript-eslint/parser": "^4.9.1",
 		"copyfiles": "^2.4.0",
 		"cross-env": "^7.0.2",
 		"ts-node-dev": "^1.0.0",

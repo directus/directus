@@ -79,7 +79,7 @@ const localTypeMap: Record<string, { type: typeof types[number]; useTimezone?: b
 	'time without time zone': { type: 'time' },
 	float4: { type: 'float' },
 	float8: { type: 'float' },
-	
+
 	// Oracle
 	number: { type: 'integer' },
 };
