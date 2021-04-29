@@ -63,7 +63,7 @@
 		"front-matter": "^4.0.2",
 		"joi": "^17.4.0",
 		"jsonlint-mod": "^1.7.6",
-		"marked": "^2.0.1",
+		"marked": "^2.0.3",
 		"micromustache": "^8.0.3",
 		"mitt": "^2.1.0",
 		"nanoid": "^3.1.22",
