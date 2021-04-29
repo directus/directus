@@ -26,12 +26,15 @@ export function useGroupable(options?: GroupableOptions): Record<string, any> {
 	if (isEmpty(parentFunctions)) {
 		return {
 			active: ref(false),
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			toggle: () => {},
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			activate: () => {},
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			deactivate: () => {},
+			toggle: () => {
+				// Do nothing
+			},
+			activate: () => {
+				// Do nothing
+			},
+			deactivate: () => {
+				// Do nothing
+			},
 		};
 	}
 

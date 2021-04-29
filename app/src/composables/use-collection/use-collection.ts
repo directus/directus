@@ -32,8 +32,7 @@ export function useCollection(collectionKey: string | Ref<string>): Record<strin
 
 	const primaryKeyField = computed(() => {
 		// Every collection has a primary key; rules of the land
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return fields.value?.find(
+		return fields.value.find(
 			(field) => field.collection === collection.value && field.schema?.is_primary_key === true
 		)!;
 	});

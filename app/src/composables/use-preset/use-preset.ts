@@ -273,7 +273,6 @@ export function usePreset(
 
 		if (data.id) delete data.id;
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		data.user = userStore.state.currentUser!.id;
 
 		return await savePreset(data);

@@ -92,14 +92,12 @@ function callHandlers(event: KeyboardEvent) {
 		for (let i = 0; i < value.length; i++) {
 			let cancel = false;
 
-			value[i](event, cancelNext);
+			value[i](event, () => {
+				cancel = true;
+			});
 
 			// if cancelNext is called, discontinue going through the queue.
 			if (typeof cancel === 'boolean' && cancel) break;
-
-			function cancelNext() {
-				cancel = true;
-			}
 		}
 	});
 }

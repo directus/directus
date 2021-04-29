@@ -17,7 +17,6 @@ export default function getAvailableOperatorsForType(type: string): OperatorType
 		case 'lang':
 		case 'uuid':
 		case 'hash':
-		case 'array':
 		case 'string':
 			return {
 				type: 'text',

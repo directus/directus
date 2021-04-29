@@ -69,6 +69,7 @@ export default defineComponent({
 			if (relatedCollection.value !== null) {
 				return useCollection((relatedCollection as unknown) as Ref<string>).primaryKeyField.value;
 			}
+			return null;
 		});
 
 		const _template = computed(() => {

@@ -33,7 +33,7 @@ export function extractError(error: PostgresError): PostgresError | Error {
 function uniqueViolation(error: PostgresError) {
 	const { table, detail } = error;
 
-	const betweenParens = /\(([^\)]+)\)/g;
+	const betweenParens = /\(([^)]+)\)/g;
 	const matches = detail.match(betweenParens);
 
 	if (!matches) return error;
@@ -100,7 +100,7 @@ function notNullViolation(error: PostgresError) {
 function foreignKeyViolation(error: PostgresError) {
 	const { table, detail } = error;
 
-	const betweenParens = /\(([^\)]+)\)/g;
+	const betweenParens = /\(([^)]+)\)/g;
 	const matches = detail.match(betweenParens);
 
 	if (!matches) return error;

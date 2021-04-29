@@ -312,7 +312,6 @@ export default defineComponent({
 						return 'crop_square';
 					case imageData.value.width / imageData.value.height:
 						return 'crop_original';
-					case NaN:
 					default:
 						return 'crop_free';
 				}

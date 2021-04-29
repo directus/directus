@@ -33,7 +33,9 @@ export class Auth implements IAuth {
 		this.refresher = new Debouncer(this.refreshToken.bind(this));
 		try {
 			this.updateRefresh(this.options?.refresh);
-		} catch (err) {}
+		} catch {
+			// Ignore error
+		}
 	}
 
 	get token(): string | null {
@@ -122,8 +124,12 @@ export class Auth implements IAuth {
 		if (this.options.refresh!.auto) {
 			this.timer = setTimeout(() => {
 				this.refresh()
-					.then(() => {})
-					.catch((_) => {});
+					.then(() => {
+						// Do nothing
+					})
+					.catch(() => {
+						// Do nothing
+					});
 			}, remaining);
 		}
 	}

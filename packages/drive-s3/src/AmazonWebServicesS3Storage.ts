@@ -39,7 +39,6 @@ export class AmazonWebServicesS3Storage extends Storage {
 
 	constructor(config: AmazonWebServicesS3StorageConfig) {
 		super();
-		// eslint-disable-next-line @typescript-eslint/no-var-requires
 		const S3 = require('aws-sdk/clients/s3');
 
 		this.$driver = new S3({

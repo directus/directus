@@ -188,7 +188,9 @@ export class FieldsService {
 		try {
 			column = await this.schemaInspector.columnInfo(collection, field);
 			column.default_value = getDefaultValue(column);
-		} catch {}
+		} finally {
+			// Do nothing
+		}
 
 		const data = {
 			collection,

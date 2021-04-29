@@ -18,14 +18,14 @@ import { SQLError } from './dialects/types';
 export async function translateDatabaseError(error: SQLError): Promise<any> {
 	switch (database.client.constructor.name) {
 		case 'Client_MySQL':
-			return await mysql(error);
+			return mysql(error);
 		case 'Client_PG':
-			return await postgres(error);
+			return postgres(error);
 		case 'Client_SQLite3':
-			return await sqlite(error);
+			return sqlite(error);
 		case 'Client_Oracledb':
 		case 'Client_Oracle':
-			return await oracle(error);
+			return oracle(error);
 		case 'Client_MSSQL':
 			return await mssql(error);
 

@@ -174,7 +174,7 @@ export class FilesService extends ItemsService {
 			...(body || {}),
 		};
 
-		return await this.upload(fileResponse.data, payload);
+		return await this.uploadOne(fileResponse.data, payload);
 	}
 
 	/**
