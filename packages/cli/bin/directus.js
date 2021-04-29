@@ -1,5 +1,14 @@
 #!/usr/bin/env node
 
+const fs = require('fs');
+const path = require('path');
+
+const entrypoint = path.resolve('./node_modules/@directus/cli/bin/directus.js');
+if (__filename !== entrypoint && fs.existsSync(entrypoint)) {
+	require(entrypoint);
+	return;
+}
+
 require('dotenv').config();
 
 const amp = require('app-module-path');
@@ -10,7 +19,6 @@ amp.addPath(process.cwd());
 
 const devMode = require('fs').existsSync(`${__dirname}/../src`);
 const wantsCompiled = process.argv.indexOf('--compiled-build') >= 0;
-const fs = require('fs');
 
 async function main(run, ts = false) {
 	const debug = require('debug')('directus-cli');
@@ -32,19 +40,13 @@ async function main(run, ts = false) {
 	}
 }
 
-let ts = false;
 let run = () => {};
 if (wantsCompiled || !devMode) {
-	if (fs.existsSync('./tsconfig.json') && fs.existsSync('./node_modules/ts-node')) {
-		require('ts-node').register({ project: `./tsconfig.json` });
-		ts = true;
-	}
 	run = require(`${__dirname}/../dist/index`).default;
 } else {
-	ts = true;
 	process.env.DEBUG = `${process.env.DEBUG ?? ''}directus-cli`;
 	require('ts-node').register({ project: `${__dirname}/../tsconfig.json` });
 	run = require(`${__dirname}/../src/index`).default;
 }
 
-main(run, ts);
+main(run);

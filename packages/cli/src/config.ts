@@ -14,6 +14,15 @@ export type SystemConfiguration = {
 
 export type ProjectConfiguration = {
 	instance?: string;
+	dev?: {
+		root?: string;
+	};
+	experimental?: {
+		community_extensions?: boolean;
+		typescript?: {
+			tsconfig?: string;
+		};
+	};
 };
 
 export interface IBaseConfiguration<T extends object = any> {

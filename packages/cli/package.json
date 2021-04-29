@@ -8,9 +8,10 @@
 		"directory": "packages/cli"
 	},
 	"main": "./dist/index.js",
-	"types": "./dist/types.d.ts",
+	"types": "./dist/index.d.ts",
 	"bin": {
-		"directusctl": "./bin/directus"
+		"directusctl": "./bin/directus.js",
+		"directus-ctl": "./bin/directus.js"
 	},
 	"files": [
 		"bin",
