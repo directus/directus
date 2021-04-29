@@ -109,7 +109,8 @@ export function applyFilter(
 					);
 				}
 
-				if (subQuery === true && isM2O === false) {
+				// Still join o2m relations when in subquery OR when the o2m relation is not at the root level
+				if ((subQuery === true || parentAlias !== undefined) && isM2O === false) {
 					dbQuery.leftJoin(
 						{ [alias]: relation.many_collection },
 						`${parentAlias || parentCollection}.${relation.one_primary}`,
