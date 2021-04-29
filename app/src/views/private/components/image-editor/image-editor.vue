@@ -119,6 +119,7 @@ type Image = {
 };
 
 export default defineComponent({
+	emits: ['toggle', 'refresh'],
 	model: {
 		prop: 'active',
 		event: 'toggle',

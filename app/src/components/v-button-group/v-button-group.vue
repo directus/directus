@@ -17,6 +17,7 @@
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		mandatory: {
 			type: Boolean,

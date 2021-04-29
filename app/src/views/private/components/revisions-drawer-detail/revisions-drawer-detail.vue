@@ -57,6 +57,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { abbreviateNumber } from '@/utils/abbreviate-number';
 
 export default defineComponent({
+	emits: ['revert'],
 	components: { RevisionItem, RevisionsDrawer },
 	props: {
 		collection: {

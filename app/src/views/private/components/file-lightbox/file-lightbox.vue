@@ -41,6 +41,7 @@ type File = {
 };
 
 export default defineComponent({
+	emits: ['toggle'],
 	components: { FilePreview },
 	model: {
 		prop: 'active',

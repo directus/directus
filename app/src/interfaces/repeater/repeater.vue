@@ -59,6 +59,7 @@ import { renderStringTemplate } from '@/utils/render-string-template';
 import hideDragImage from '@/utils/hide-drag-image';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { Draggable },
 	props: {
 		value: {

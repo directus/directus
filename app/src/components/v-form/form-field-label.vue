@@ -19,6 +19,7 @@ import { defineComponent, PropType } from 'vue';
 import { Field } from '@/types/';
 
 export default defineComponent({
+	emits: ['toggle-batch'],
 	props: {
 		batchMode: {
 			type: Boolean,

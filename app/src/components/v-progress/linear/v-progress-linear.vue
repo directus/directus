@@ -25,6 +25,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+	emits: ['animationiteration'],
 	props: {
 		absolute: {
 			type: Boolean,

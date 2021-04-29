@@ -61,6 +61,7 @@ import { i18n } from '@/lang';
 import { formatISO, parseISO, format, parse } from 'date-fns';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,

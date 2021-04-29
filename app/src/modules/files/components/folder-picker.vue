@@ -51,6 +51,7 @@ type Folder = {
 };
 
 export default defineComponent({
+	emits: ['input'],
 	components: { FolderPickerListItem },
 	props: {
 		disabledFolders: {

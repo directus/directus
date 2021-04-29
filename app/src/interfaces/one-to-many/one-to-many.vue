@@ -87,6 +87,7 @@ import Draggable from 'vuedraggable';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { DrawerItem, DrawerCollection, Draggable },
 	props: {
 		value: {

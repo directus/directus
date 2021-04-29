@@ -12,6 +12,7 @@ import { defineComponent, PropType, toRefs, computed, provide, ref } from 'vue';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		vertical: {
 			type: Boolean,

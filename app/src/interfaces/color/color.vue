@@ -85,6 +85,7 @@ import { isHex } from '@/utils/color';
 import Color from 'color';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,

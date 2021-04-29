@@ -51,6 +51,7 @@ import { Header, Sort } from '../types';
 import { throttle, clone } from 'lodash';
 
 export default defineComponent({
+	emits: ['update:sort', 'toggle-select-all', 'update:headers'],
 	props: {
 		headers: {
 			type: Array as PropType<Header[]>,

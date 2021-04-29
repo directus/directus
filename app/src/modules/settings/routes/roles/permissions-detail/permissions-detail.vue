@@ -62,6 +62,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { appMinimalPermissions } from '../app-permissions';
 
 export default defineComponent({
+	emits: ['refresh'],
 	components: { Actions, Tabs, Permissions, Fields, Validation, Presets },
 	props: {
 		roleKey: {

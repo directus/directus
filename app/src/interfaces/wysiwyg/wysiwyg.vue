@@ -186,6 +186,7 @@ type CustomFormat = {
 };
 
 export default defineComponent({
+	emits: ['input'],
 	components: { Editor },
 	props: {
 		value: {

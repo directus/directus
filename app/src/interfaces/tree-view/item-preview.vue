@@ -23,6 +23,7 @@ import { defineComponent, ref } from 'vue';
 import DrawerItem from '@/views/private/components/drawer-item';
 
 export default defineComponent({
+	emits: ['deselect', 'input'],
 	components: { DrawerItem },
 	props: {
 		collection: {

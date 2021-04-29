@@ -46,6 +46,7 @@ import useCollection from '@/composables/use-collection';
 import SearchInput from '@/views/private/components/search-input';
 
 export default defineComponent({
+	emits: ['update:filters', 'update:active', 'input'],
 	components: { SearchInput },
 	props: {
 		active: {

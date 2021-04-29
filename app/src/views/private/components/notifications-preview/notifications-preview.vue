@@ -32,6 +32,7 @@ import NotificationItem from '../notification-item';
 import { useNotificationsStore } from '@/stores/';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { SidebarButton, NotificationItem },
 	model: {
 		prop: 'active',

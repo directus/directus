@@ -26,6 +26,7 @@
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
+	emits: ['toggle:sidebar'],
 	props: {
 		showSidebarToggle: {
 			type: Boolean,

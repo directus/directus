@@ -19,6 +19,7 @@ import { defineComponent, toRefs } from 'vue';
 import { useAppStore } from '@/stores';
 
 export default defineComponent({
+	emits: ['click'],
 	props: {
 		to: {
 			type: String,

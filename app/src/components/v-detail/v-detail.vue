@@ -17,6 +17,7 @@ import { defineComponent, computed, ref } from 'vue';
 import { i18n } from '@/lang';
 
 export default defineComponent({
+	emits: ['toggle'],
 	model: {
 		prop: 'active',
 		event: 'toggle',

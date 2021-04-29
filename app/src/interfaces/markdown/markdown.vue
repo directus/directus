@@ -163,6 +163,7 @@ import useShortcut from '@/composables/use-shortcut';
 import translateShortcut from '@/utils/translate-shortcut';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: String,

@@ -18,6 +18,7 @@ import { getInterfaces } from '@/interfaces';
 import { types } from '@/types';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: String,

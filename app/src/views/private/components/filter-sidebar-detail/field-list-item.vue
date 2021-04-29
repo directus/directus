@@ -19,6 +19,7 @@ import { defineComponent, PropType } from 'vue';
 import { FieldTree } from './types';
 
 export default defineComponent({
+	emits: ['add'],
 	name: 'field-list-item',
 	props: {
 		field: {

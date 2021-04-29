@@ -48,6 +48,7 @@ import hideDragImage from '@/utils/hide-drag-image';
 import ItemPreview from './item-preview.vue';
 
 export default defineComponent({
+	emits: ['change'],
 	name: 'nested-draggable',
 	props: {
 		tree: {

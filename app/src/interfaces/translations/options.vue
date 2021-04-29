@@ -24,6 +24,7 @@ import { Relation } from '@/types/relations';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		collection: {
 			type: String,

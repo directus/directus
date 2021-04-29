@@ -36,6 +36,7 @@
 import { defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
+	emits: ['save', 'toggle'],
 	model: {
 		prop: 'active',
 		event: 'toggle',

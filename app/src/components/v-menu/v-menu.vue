@@ -61,6 +61,7 @@ import { Placement } from '@popperjs/core';
 import { nanoid } from 'nanoid';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		placement: {
 			type: String as PropType<Placement>,

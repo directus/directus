@@ -144,6 +144,7 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import Draggable from 'vuedraggable';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { DrawerCollection, DrawerItem, Draggable },
 	props: {
 		collection: {

@@ -65,6 +65,7 @@ import { defineComponent, PropType, computed } from 'vue';
 import { FilterOperator } from '@/types';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: [String, Number, Boolean],

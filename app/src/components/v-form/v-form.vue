@@ -53,6 +53,7 @@ type FieldValues = {
 };
 
 export default defineComponent({
+	emits: ['input'],
 	components: { FormField },
 	model: {
 		prop: 'edits',

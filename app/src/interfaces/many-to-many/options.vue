@@ -34,6 +34,7 @@ import { defineComponent, PropType, computed } from 'vue';
 import { Relation, Collection } from '@/types';
 import { useCollectionsStore } from '@/stores';
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		collection: {
 			type: String,

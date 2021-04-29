@@ -32,6 +32,7 @@ import { defineComponent, PropType, computed, ref } from 'vue';
 import { Field } from '@/types';
 
 export default defineComponent({
+	emits: ['input', 'unset', 'edit-raw'],
 	props: {
 		field: {
 			type: Object as PropType<Field>,

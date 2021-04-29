@@ -41,6 +41,7 @@ import { defineComponent, ref, onMounted, onUnmounted } from 'vue';
 import HeaderBarActions from '../header-bar-actions';
 
 export default defineComponent({
+	emits: ['primary', 'toggle:sidebar'],
 	components: { HeaderBarActions },
 	props: {
 		title: {

@@ -9,6 +9,7 @@ import { defineComponent, PropType, toRefs } from 'vue';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		mandatory: {
 			type: Boolean,

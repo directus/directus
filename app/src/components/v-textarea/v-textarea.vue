@@ -25,6 +25,7 @@
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,

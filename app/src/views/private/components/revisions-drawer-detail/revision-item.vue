@@ -24,6 +24,7 @@ import { format } from 'date-fns';
 import { userName } from '@/utils/user-name';
 
 export default defineComponent({
+	emits: ['click'],
 	props: {
 		revision: {
 			type: Object as PropType<Revision>,

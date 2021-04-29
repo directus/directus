@@ -20,6 +20,7 @@ import { defineComponent, computed } from 'vue';
 import { getLayouts } from '@/layouts';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: String,

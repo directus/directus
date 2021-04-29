@@ -17,6 +17,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: String,

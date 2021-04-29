@@ -51,6 +51,7 @@ import { useGroupable } from '@/composables/groupable';
 import { notEmpty } from '@/utils/is-empty';
 
 export default defineComponent({
+	emits: ['click'],
 	props: {
 		autofocus: {
 			type: Boolean,

@@ -40,6 +40,7 @@ import { useCollection } from '@/composables/use-collection';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { DrawerItem },
 	props: {
 		collection: {

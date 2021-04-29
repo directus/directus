@@ -94,6 +94,7 @@ import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { DrawerCollection },
 	props: {
 		multiple: {

@@ -127,6 +127,7 @@ type ItemsRaw = (string | any)[];
 type InputValue = string[] | string;
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		items: {
 			type: Array as PropType<ItemsRaw>,

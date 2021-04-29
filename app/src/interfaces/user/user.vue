@@ -77,6 +77,7 @@ import { userName } from '@/utils/user-name';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { DrawerItem, DrawerCollection },
 	props: {
 		value: {

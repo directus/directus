@@ -29,6 +29,7 @@ import { FieldTree } from './types';
 import { Field, Relation } from '@/types';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { FieldListItem },
 	props: {
 		disabled: {

@@ -25,6 +25,7 @@ import { Field } from '@/types';
 import { defineComponent, PropType, computed } from 'vue';
 import { Relation } from '@/types/relations';
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		collection: {
 			type: String,

@@ -25,6 +25,7 @@ import { i18n } from '@/lang';
 import { fieldTypes } from '@/modules/settings/routes/data-model/field-detail/components/schema.vue';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { Repeater },
 	props: {
 		value: {

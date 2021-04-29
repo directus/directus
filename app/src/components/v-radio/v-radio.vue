@@ -18,6 +18,7 @@
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
+	emits: ['change'],
 	model: {
 		prop: 'inputValue',
 		event: 'change',

@@ -140,6 +140,7 @@ type FileInfo = {
 };
 
 export default defineComponent({
+	emits: ['input'],
 	components: { DrawerCollection, DrawerItem },
 	props: {
 		value: {

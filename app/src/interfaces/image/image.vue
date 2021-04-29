@@ -69,6 +69,7 @@ type Image = {
 };
 
 export default defineComponent({
+	emits: ['input'],
 	components: { FileLightbox, ImageEditor, DrawerItem },
 	props: {
 		value: {

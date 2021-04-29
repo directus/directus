@@ -41,6 +41,7 @@ import getAvailableOperatorsForType from './get-available-operators-for-type';
 import FilterInput from './filter-input.vue';
 
 export default defineComponent({
+	emits: ['remove', 'update'],
 	components: { FilterInput },
 	props: {
 		filter: {

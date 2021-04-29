@@ -62,6 +62,7 @@ import HeaderBar from '@/views/private/components/header-bar/header-bar.vue';
 import { i18n } from '@/lang';
 
 export default defineComponent({
+	emits: ['cancel', 'toggle'],
 	components: {
 		HeaderBar,
 	},

@@ -102,6 +102,7 @@ const HeaderDefaults: Header = {
 };
 
 export default defineComponent({
+	emits: ['click:row', 'update:sort', 'update:items', 'item-selected', 'select', 'manual-sort'],
 	components: {
 		TableHeader,
 		TableRow,

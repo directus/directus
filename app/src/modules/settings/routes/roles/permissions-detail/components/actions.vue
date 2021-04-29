@@ -14,6 +14,7 @@ import { useRouter } from 'vue-router';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
+	emits: ['refresh'],
 	props: {
 		roleKey: {
 			type: String,

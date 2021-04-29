@@ -19,6 +19,7 @@ import { nanoid } from 'nanoid';
 import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
+	emits: ['esc', 'toggle'],
 	model: {
 		prop: 'active',
 		event: 'toggle',

@@ -72,6 +72,7 @@ import localizedFormat from '@/utils/localized-format';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
+	emits: ['edit'],
 	props: {
 		activity: {
 			type: Object as PropType<Activity>,

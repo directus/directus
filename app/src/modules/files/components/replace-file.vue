@@ -16,6 +16,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+	emits: ['toggle', 'replaced'],
 	model: {
 		prop: 'active',
 		event: 'toggle',

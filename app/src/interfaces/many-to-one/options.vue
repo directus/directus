@@ -16,6 +16,7 @@ import { defineComponent, PropType, computed } from 'vue';
 import { useRelationsStore } from '@/stores/';
 import { Relation } from '@/types/relations';
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		collection: {
 			type: String,

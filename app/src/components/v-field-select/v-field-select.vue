@@ -56,6 +56,7 @@ import { FieldTree } from '../v-field-template/types';
 import hideDragImage from '@/utils/hide-drag-image';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { FieldListItem, Draggable },
 	props: {
 		disabled: {

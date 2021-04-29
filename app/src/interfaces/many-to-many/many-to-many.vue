@@ -88,6 +88,7 @@ import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { usePermissionsStore, useUserStore } from '@/stores';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { DrawerItem, DrawerCollection, Draggable },
 	props: {
 		value: {

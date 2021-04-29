@@ -17,6 +17,7 @@ import { useRelationsStore } from '@/stores/';
 import { Relation } from '@/types/relations';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: Object as PropType<any | null>,

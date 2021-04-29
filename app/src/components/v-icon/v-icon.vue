@@ -54,6 +54,7 @@ const customIcons: string[] = [
 ];
 
 export default defineComponent({
+	emits: ['click'],
 	components: {
 		CustomIconDirectus,
 		CustomIconBookmarkSave,

@@ -28,6 +28,7 @@ import 'codemirror/keymap/sublime.js';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,

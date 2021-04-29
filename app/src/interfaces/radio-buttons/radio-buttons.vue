@@ -47,6 +47,7 @@ type Option = {
 };
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,

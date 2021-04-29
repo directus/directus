@@ -43,6 +43,7 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { APIError } from '@/types';
 
 export default defineComponent({
+	emits: ['toggle'],
 	model: {
 		prop: 'active',
 		event: 'toggle',

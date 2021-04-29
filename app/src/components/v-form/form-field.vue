@@ -74,6 +74,7 @@ import { isEqual } from 'lodash';
 import { i18n } from '@/lang';
 
 export default defineComponent({
+	emits: ['toggle-batch', 'unset', 'input'],
 	components: { FormFieldLabel, FormFieldMenu, FormFieldInterface },
 	props: {
 		field: {

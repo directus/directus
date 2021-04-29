@@ -60,6 +60,7 @@ import { defineComponent, computed, ref } from 'vue';
 import slugify from '@sindresorhus/slugify';
 
 export default defineComponent({
+	emits: ['click', 'keydown', 'input'],
 	inheritAttrs: false,
 	props: {
 		autofocus: {

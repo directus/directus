@@ -46,6 +46,7 @@ import getAvailableOperatorsForType from './get-available-operators-for-type';
 import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { FieldFilter, FieldListItem },
 	props: {
 		value: {

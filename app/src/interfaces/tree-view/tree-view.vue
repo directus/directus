@@ -62,6 +62,7 @@ import DrawerCollection from '@/views/private/components/drawer-collection';
 import DrawerItem from '@/views/private/components/drawer-item';
 
 export default defineComponent({
+	emits: ['input'],
 	components: { draggable, NestedDraggable, DrawerCollection, DrawerItem },
 	props: {
 		value: {

@@ -40,6 +40,7 @@ import { getInterfaces } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		field: {
 			type: Object as PropType<Field>,

@@ -20,6 +20,7 @@ import api from '@/api';
 import { userName } from '@/utils/user-name';
 
 export default defineComponent({
+	emits: ['input'],
 	components: {
 		DrawerCollection,
 	},

@@ -92,6 +92,7 @@ import { nanoid } from 'nanoid';
 import { Filter } from '@/types';
 
 export default defineComponent({
+	emits: ['update:filters'],
 	props: {
 		filters: {
 			type: Array as PropType<Filter[]>,

@@ -9,6 +9,7 @@ import { defineComponent, PropType, ref, toRefs } from 'vue';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
+	emits: ['input'],
 	model: {
 		prop: 'activeItems',
 		event: 'input',

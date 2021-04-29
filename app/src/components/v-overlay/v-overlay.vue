@@ -9,6 +9,7 @@
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
+	emits: ['click'],
 	props: {
 		active: {
 			type: Boolean,

@@ -18,6 +18,7 @@ import { defineComponent, computed, ref, onMounted, watch } from 'vue';
 import { i18n } from '@/lang';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: String,

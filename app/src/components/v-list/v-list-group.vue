@@ -27,6 +27,7 @@ import { defineComponent, nextTick, toRefs, watch, PropType, ref } from 'vue';
 import { useGroupable } from '@/composables/groupable';
 
 export default defineComponent({
+	emits: ['click'],
 	props: {
 		multiple: {
 			type: Boolean,

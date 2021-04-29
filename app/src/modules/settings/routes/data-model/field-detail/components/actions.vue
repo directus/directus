@@ -28,6 +28,7 @@ type Tab = {
 };
 
 export default defineComponent({
+	emits: ['save'],
 	props: {
 		collection: {
 			type: String,

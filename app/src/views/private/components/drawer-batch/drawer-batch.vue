@@ -31,6 +31,7 @@ import { APIError } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({
+	emits: ['update:active', 'refresh'],
 	model: {
 		prop: 'edits',
 	},

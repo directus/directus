@@ -25,6 +25,7 @@ import { FieldTree } from './types';
 import formatTitle from '@directus/format-title';
 
 export default defineComponent({
+	emits: ['add'],
 	name: 'field-list-item',
 	props: {
 		field: {

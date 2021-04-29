@@ -34,6 +34,7 @@ import { defineComponent, PropType, computed } from 'vue';
 import { FancySelectItem } from './types';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		items: {
 			type: Array as PropType<FancySelectItem[]>,

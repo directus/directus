@@ -37,6 +37,7 @@ type File = {
 };
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		icon: {
 			type: String,

@@ -8,6 +8,7 @@
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: Array as PropType<(string | number)[]>,

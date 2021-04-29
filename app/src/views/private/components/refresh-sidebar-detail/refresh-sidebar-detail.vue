@@ -14,6 +14,7 @@ import { i18n } from '@/lang';
 import { computed, defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
+	emits: ['input', 'refresh'],
 	props: {
 		value: {
 			type: Number,

@@ -50,6 +50,7 @@ import RevisionsDrawerUpdates from './revisions-drawer-updates.vue';
 import { isEqual } from 'lodash';
 
 export default defineComponent({
+	emits: ['revert'],
 	components: { RevisionsDrawerPicker, RevisionsDrawerPreview, RevisionsDrawerUpdates },
 	props: {
 		revisions: {

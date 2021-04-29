@@ -7,6 +7,7 @@ import { defineComponent, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: String,
