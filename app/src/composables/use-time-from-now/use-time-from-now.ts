@@ -1,5 +1,5 @@
-import { onMounted, onUnmounted, Ref, ref } from 'vue';
 import localizedFormatDistance from '@/utils/localized-format-distance/';
+import { onMounted, onUnmounted, Ref, ref } from 'vue';
 
 export async function useTimeFromNow(date: Date | number, autoUpdate = 60000): Promise<Ref<string>> {
 	let interval: number;

@@ -1,5 +1,5 @@
-import { computed, ComputedRef, Ref } from 'vue';
 import { render } from 'micromustache';
+import { computed, ComputedRef, Ref } from 'vue';
 import { getFieldsFromTemplate } from './get-fields-from-template';
 
 type StringTemplate = {

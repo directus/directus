@@ -1,10 +1,9 @@
-import { Ref, ref, watch } from 'vue';
 import { Header } from '@/components/v-table/types';
-import { RelationInfo } from './use-relation';
 import { useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
-import api from '@/api';
 import { cloneDeep, get } from 'lodash';
+import { Ref, ref, watch } from 'vue';
+import { RelationInfo } from './use-relation';
 
 export default function usePreview(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
@@ -102,7 +101,7 @@ export default function usePreview(
 				: getDefaultFields().map((field) => `${junctionField}.${field}`)
 			)
 				.map((fieldKey) => {
-					let field = fieldsStore.getField(junctionCollection, fieldKey);
+					const field = fieldsStore.getField(junctionCollection, fieldKey);
 
 					if (!field) return null;
 

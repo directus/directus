@@ -1,4 +1,4 @@
-import { ref, watch, Ref } from 'vue';
+import { ref, Ref } from 'vue';
 
 const searchQuery = ref<string | null>(null);
 const visible = ref<number | null>(null);

@@ -117,18 +117,7 @@ import { useCollectionsStore, usePresetsStore } from '@/stores';
 import { getLayouts } from '@/layouts';
 import { useRouter } from 'vue-router';
 import marked from 'marked';
-import { userName } from '@/utils/user-name';
 import { unexpectedError } from '@/utils/unexpected-error';
-
-type User = {
-	id: number;
-	name: string;
-};
-
-type Role = {
-	id: number;
-	name: string;
-};
 
 type FormattedPreset = {
 	id: number;

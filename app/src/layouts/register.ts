@@ -1,10 +1,10 @@
-import { App } from 'vue';
-import { getLayouts } from './index';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
-import { LayoutConfig } from './types';
 // @TODO3 tiny-async-pool relies on node.js global variables
 import asyncPool from 'tiny-async-pool/lib/es7.js';
+import { App } from 'vue';
+import { getLayouts } from './index';
+import { LayoutConfig } from './types';
 
 const { layoutsRaw } = getLayouts();
 

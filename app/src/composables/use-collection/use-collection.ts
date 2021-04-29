@@ -1,6 +1,6 @@
-import { computed, ComputedRef, Ref, ref } from 'vue';
 import { useCollectionsStore, useFieldsStore } from '@/stores/';
 import { Field } from '@/types';
+import { computed, ComputedRef, Ref, ref } from 'vue';
 
 export function useCollection(collectionKey: string | Ref<string>): Record<string, ComputedRef> {
 	const collectionsStore = useCollectionsStore();

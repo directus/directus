@@ -1,9 +1,9 @@
-import { Webhook } from './types';
-import emitter from './emitter';
-import database from './database';
-import { ListenerFn } from 'eventemitter2';
 import axios from 'axios';
+import { ListenerFn } from 'eventemitter2';
+import database from './database';
+import emitter from './emitter';
 import logger from './logger';
+import { Webhook } from './types';
 
 let registered: { event: string; handler: ListenerFn }[] = [];
 

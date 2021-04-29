@@ -1,6 +1,5 @@
 import { Ref, ref } from 'vue';
 import { RelationInfo } from './use-relation';
-import { isEqual, get } from 'lodash';
 
 export default function useEdit(
 	value: Ref<(string | number | Record<string, any>)[] | null>,

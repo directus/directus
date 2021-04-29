@@ -11,8 +11,8 @@ export function deepMap(
 	} else if (typeof object === 'object') {
 		const res: Record<string, any> = {};
 
-		for (var key in object) {
-			var val = object[key];
+		for (const key in object) {
+			const val = object[key];
 
 			if (typeof val === 'object') {
 				res[key] = deepMap(val, iterator, context);

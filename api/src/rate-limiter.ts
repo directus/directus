@@ -1,14 +1,12 @@
+import { merge } from 'lodash';
 import {
-	RateLimiterMemory,
-	RateLimiterRedis,
-	RateLimiterMemcache,
 	IRateLimiterOptions,
 	IRateLimiterStoreOptions,
 	RateLimiterAbstract,
+	RateLimiterMemcache,
+	RateLimiterMemory,
+	RateLimiterRedis,
 } from 'rate-limiter-flexible';
-
-import { merge } from 'lodash';
-
 import env from './env';
 import { getConfigFromEnv } from './utils/get-config-from-env';
 

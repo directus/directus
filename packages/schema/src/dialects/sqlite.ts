@@ -25,7 +25,7 @@ export default class SQLite extends KnexSQLite implements SchemaInspector {
 
 			if (table in overview === false) {
 				overview[table] = {
-					primary: columns.find((column) => column.pk == 1)?.name!,
+					primary: columns.find((column) => column.pk == 1)!.name!,
 					columns: {},
 				};
 			}

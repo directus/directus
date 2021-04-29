@@ -17,7 +17,7 @@ export default defineComponent({
 			default: null,
 		},
 	},
-	setup(props) {
+	setup() {
 		const languages = Object.entries(availableLanguages).map(([key, value]) => ({
 			text: value,
 			value: key,

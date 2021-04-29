@@ -1,5 +1,5 @@
-import { Directive, DirectiveBinding } from 'vue';
 import { nanoid } from 'nanoid';
+import { Directive, DirectiveBinding } from 'vue';
 
 const tooltipDelay = 300;
 

@@ -1,7 +1,7 @@
-import { Ref, ref } from 'vue';
-import { getPublicURL } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 import { i18n } from '@/lang';
+import { getPublicURL } from '@/utils/get-root-path';
+import { Ref, ref } from 'vue';
 
 type ImageSelection = {
 	imageUrl: string;
@@ -46,7 +46,7 @@ export default function useImage(editor: Ref<any>, imageToken: Ref<string>): Rec
 
 			editor.value.on('NodeChange', onImageNodeSelect);
 
-			return function (buttonApi: any) {
+			return function () {
 				editor.value.off('NodeChange', onImageNodeSelect);
 			};
 		},

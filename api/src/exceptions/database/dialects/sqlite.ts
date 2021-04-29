@@ -1,6 +1,6 @@
 import { InvalidForeignKeyException } from '../invalid-foreign-key';
-import { RecordNotUniqueException } from '../record-not-unique';
 import { NotNullViolationException } from '../not-null-violation';
+import { RecordNotUniqueException } from '../record-not-unique';
 import { SQLiteError } from './types';
 
 // NOTE:

@@ -1,4 +1,4 @@
-import { watch, Directive, DirectiveBinding } from 'vue';
+import { Directive, DirectiveBinding, watch } from 'vue';
 
 type Handler = (event: Event) => void;
 type Middleware = (event: Event) => boolean;

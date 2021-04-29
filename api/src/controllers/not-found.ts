@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express';
-import { RouteNotFoundException } from '../exceptions';
-
 import emitter from '../emitter';
+import { RouteNotFoundException } from '../exceptions';
 
 /**
  * Handles not found routes.

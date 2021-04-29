@@ -1,12 +1,10 @@
-import { ItemsService, QueryOptions } from './items';
-import { AbstractServiceOptions, Query, PrimaryKey, PermissionsAction, Relation } from '../types';
-import { PermissionsService } from './permissions';
-import { toArray } from '../utils/to-array';
-
 import { systemRelationRows } from '../database/system-data/relations';
 import { ForbiddenException } from '../exceptions';
-
 import logger from '../logger';
+import { AbstractServiceOptions, PermissionsAction, PrimaryKey, Query, Relation } from '../types';
+import { toArray } from '../utils/to-array';
+import { ItemsService, QueryOptions } from './items';
+import { PermissionsService } from './permissions';
 
 export class RelationsService extends ItemsService {
 	permissionsService: PermissionsService;

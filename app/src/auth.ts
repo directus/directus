@@ -1,8 +1,8 @@
-import { RouteLocationRaw } from 'vue-router';
 import api from '@/api';
-import { hydrate, dehydrate } from '@/hydrate';
+import { dehydrate, hydrate } from '@/hydrate';
 import { router } from '@/router';
 import { useAppStore } from '@/stores';
+import { RouteLocationRaw } from 'vue-router';
 
 export type LoginCredentials = {
 	email: string;

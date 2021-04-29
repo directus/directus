@@ -52,10 +52,6 @@ import { useRouter } from 'vue-router';
 import api from '@/api';
 import { userName } from '@/utils/user-name';
 
-type Values = {
-	[field: string]: any;
-};
-
 type ActivityRecord = {
 	user: {
 		email: string;

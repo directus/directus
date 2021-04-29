@@ -56,7 +56,7 @@ export class Auth implements IAuth {
 		return expiringAfter <= Date.now();
 	}
 
-	private async refreshToken(force: boolean = false): Promise<AuthResult | false> {
+	private async refreshToken(force = false): Promise<AuthResult | false> {
 		if (force && this.storage.auth_token === null) {
 			throw new NotAuthenticated();
 		}
@@ -134,7 +134,7 @@ export class Auth implements IAuth {
 		}
 	}
 
-	async refresh(force: boolean = false): Promise<AuthResult | false> {
+	async refresh(force = false): Promise<AuthResult | false> {
 		return await this.refresher.debounce(force);
 	}
 

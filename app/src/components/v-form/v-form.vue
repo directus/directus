@@ -197,7 +197,7 @@ export default defineComponent({
 		}
 
 		function unsetValue(field: Field) {
-			if (props.edits?.hasOwnProperty(field.field)) {
+			if (field.field in props.edits || {}) {
 				const newEdits = { ...props.edits };
 				delete newEdits[field.field];
 				emit('input', newEdits);

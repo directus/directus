@@ -1,9 +1,9 @@
 import express from 'express';
-import asyncHandler from '../utils/async-handler';
-import { RevisionsService, MetaService } from '../services';
-import useCollection from '../middleware/use-collection';
 import { respond } from '../middleware/respond';
+import useCollection from '../middleware/use-collection';
 import { validateBatch } from '../middleware/validate-batch';
+import { MetaService, RevisionsService } from '../services';
+import asyncHandler from '../utils/async-handler';
 
 const router = express.Router();
 

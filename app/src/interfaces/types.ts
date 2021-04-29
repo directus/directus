@@ -1,5 +1,5 @@
+import { Field, localTypes, types } from '@/types';
 import { Component } from 'vue';
-import { Field, types, localTypes } from '@/types';
 
 export interface InterfaceConfig {
 	id: string;

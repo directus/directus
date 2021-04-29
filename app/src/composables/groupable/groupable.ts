@@ -1,6 +1,6 @@
-import { computed, onBeforeUnmount, inject, ref, provide, Ref, watch, nextTick } from 'vue';
-import { notEmpty, isEmpty } from '@/utils/is-empty/';
+import { isEmpty, notEmpty } from '@/utils/is-empty/';
 import { isEqual } from 'lodash';
+import { computed, inject, nextTick, onBeforeUnmount, provide, ref, Ref, watch } from 'vue';
 
 type GroupableInstance = {
 	active: Ref<boolean>;

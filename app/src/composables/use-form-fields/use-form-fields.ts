@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { computed, ComputedRef, Ref } from 'vue';
-import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
-import { getInterfaces } from '@/interfaces';
 import { FormField } from '@/components/v-form/types';
-import { Field } from '@/types';
-import { clone } from 'lodash';
+import { getInterfaces } from '@/interfaces';
 import { InterfaceConfig } from '@/interfaces/types';
+import { Field } from '@/types';
+import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
+import { clone } from 'lodash';
+import { computed, ComputedRef, Ref } from 'vue';
 
 export default function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef } {
 	const { interfaces } = getInterfaces();

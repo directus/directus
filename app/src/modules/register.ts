@@ -1,12 +1,12 @@
-import { RouteRecordRaw } from 'vue-router';
-import { router } from '@/router';
-import { getModules } from './index';
-import { useUserStore, usePermissionsStore } from '@/stores';
 import api from '@/api';
+import { router } from '@/router';
+import { usePermissionsStore, useUserStore } from '@/stores';
 import { getRootPath } from '@/utils/get-root-path';
-import { ModuleConfig } from './types';
 // @TODO3 tiny-async-pool relies on node.js global variables
 import asyncPool from 'tiny-async-pool/lib/es7.js';
+import { RouteRecordRaw } from 'vue-router';
+import { getModules } from './index';
+import { ModuleConfig } from './types';
 
 const { modulesRaw } = getModules();
 

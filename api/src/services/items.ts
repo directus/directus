@@ -1,31 +1,28 @@
+import { Knex } from 'knex';
+import { clone, cloneDeep, merge, pick, without } from 'lodash';
+import cache from '../cache';
 import database from '../database';
 import runAST from '../database/run-ast';
-import getASTFromQuery from '../utils/get-ast-from-query';
+import emitter, { emitAsyncSafe } from '../emitter';
+import env from '../env';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { translateDatabaseError } from '../exceptions/database/translate';
+import logger from '../logger';
 import {
-	Action,
-	Accountability,
-	PermissionsAction,
-	Item as AnyItem,
-	Query,
-	PrimaryKey,
 	AbstractService,
 	AbstractServiceOptions,
+	Accountability,
+	Action,
+	Item as AnyItem,
+	PermissionsAction,
+	PrimaryKey,
+	Query,
 	SchemaOverview,
 } from '../types';
-import { Knex } from 'knex';
-import cache from '../cache';
-import emitter, { emitAsyncSafe } from '../emitter';
+import getASTFromQuery from '../utils/get-ast-from-query';
 import { toArray } from '../utils/to-array';
-import env from '../env';
-
-import { PayloadService } from './payload';
 import { AuthorizationService } from './authorization';
-
-import { pick, clone, cloneDeep, merge, without } from 'lodash';
-import { translateDatabaseError } from '../exceptions/database/translate';
-import { InvalidPayloadException, ForbiddenException } from '../exceptions';
-
-import logger from '../logger';
+import { PayloadService } from './payload';
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
@@ -76,7 +73,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			.filter((field) => field.alias === true)
 			.map((field) => field.field);
 
-		let payload: AnyItem = cloneDeep(data);
+		const payload: AnyItem = cloneDeep(data);
 
 		// By wrapping the logic in a transaction, we make sure we automatically roll back all the
 		// changes in the DB if any of the parts contained within throws an error. This also means
@@ -457,10 +454,8 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 				for (const activityRecord of activityRecords) {
 					await trx.insert(activityRecord).into('directus_activity');
-					let primaryKey;
-
 					const result = await trx.max('id', { as: 'id' }).from('directus_activity').first();
-					primaryKey = result.id;
+					const primaryKey = result.id;
 
 					activityPrimaryKeys.push(primaryKey);
 				}

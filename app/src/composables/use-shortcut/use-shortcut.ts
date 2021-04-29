@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, Ref, ref, ComponentPublicInstance } from 'vue';
+import { ComponentPublicInstance, onMounted, onUnmounted, Ref, ref } from 'vue';
 
 type ShortcutHandler = (event: KeyboardEvent, cancelNext: () => void) => void | any | boolean;
 
@@ -40,7 +40,7 @@ export default function useShortcut(
 
 	onMounted(() => {
 		[shortcuts].flat().forEach((shortcut) => {
-			if (handlers.hasOwnProperty(shortcut)) {
+			if (shortcut in handlers) {
 				handlers[shortcut].unshift(callback);
 			} else {
 				handlers[shortcut] = [callback];
@@ -50,7 +50,7 @@ export default function useShortcut(
 
 	onUnmounted(() => {
 		[shortcuts].flat().forEach((shortcut) => {
-			if (handlers.hasOwnProperty(shortcut)) {
+			if (shortcut in handlers) {
 				handlers[shortcut] = handlers[shortcut].filter((f) => f !== callback);
 
 				if (handlers[shortcut].length === 0) {
@@ -70,7 +70,7 @@ function mapKeys(key: KeyboardEvent) {
 
 	let keyString = key.key.match(isLatinAlphabet) === null ? key.code.replace(/(Key|Digit)/g, '') : key.key;
 
-	keyString = map.hasOwnProperty(keyString) ? map[keyString] : keyString;
+	keyString = keyString in map ? map[keyString] : keyString;
 	keyString = keyString.toLowerCase();
 
 	return keyString;

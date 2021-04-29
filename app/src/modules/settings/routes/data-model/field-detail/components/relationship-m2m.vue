@@ -305,7 +305,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props) {
+	setup() {
 		const collectionsStore = useCollectionsStore();
 		const fieldsStore = useFieldsStore();
 

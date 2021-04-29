@@ -1,13 +1,13 @@
-import { requireYAML } from '../../../utils/require-yaml';
-import { merge } from 'lodash';
-import { FieldMeta } from '../../../types';
 import fse from 'fs-extra';
+import { merge } from 'lodash';
 import path from 'path';
+import { FieldMeta } from '../../../types';
+import { requireYAML } from '../../../utils/require-yaml';
 
 const defaults = requireYAML(require.resolve('./_defaults.yaml'));
 const fieldData = fse.readdirSync(path.resolve(__dirname));
 
-export let systemFieldRows: FieldMeta[] = [];
+export const systemFieldRows: FieldMeta[] = [];
 
 for (const filepath of fieldData) {
 	if (filepath.includes('_defaults') || filepath.includes('index')) continue;

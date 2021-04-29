@@ -1,11 +1,11 @@
 import { ErrorRequestHandler } from 'express';
+import { emitAsyncSafe } from '../emitter';
+import env from '../env';
 import { BaseException, MethodNotAllowedException } from '../exceptions';
 import logger from '../logger';
-import env from '../env';
 import { toArray } from '../utils/to-array';
-import { emitAsyncSafe } from '../emitter';
 
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+const errorHandler: ErrorRequestHandler = (err, req, res) => {
 	let payload: any = {
 		errors: [],
 	};

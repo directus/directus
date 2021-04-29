@@ -1,5 +1,5 @@
-import { Ref, ref } from 'vue';
 import { i18n } from '@/lang';
+import { Ref, ref } from 'vue';
 
 type LinkSelection = {
 	url: string | null;
@@ -53,7 +53,7 @@ export default function useLink(editor: Ref<any>): Record<string, any> {
 
 			editor.value.on('NodeChange', onImageNodeSelect);
 
-			return function (buttonApi: any) {
+			return function () {
 				editor.value.off('NodeChange', onImageNodeSelect);
 			};
 		},
@@ -76,7 +76,7 @@ export default function useLink(editor: Ref<any>): Record<string, any> {
 	}
 
 	function saveLink() {
-		let link = linkSelection.value;
+		const link = linkSelection.value;
 		if (link.url === null) return;
 		const linkHtml = `<a href="${link.url}" title="${link.title || ''}" target="${link.newTab ? '_blank' : '_self'}" >${
 			link.displayText || link.url

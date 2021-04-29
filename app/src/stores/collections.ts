@@ -1,11 +1,11 @@
-import { defineStore } from 'pinia';
 import api from '@/api';
-import { Collection, CollectionRaw } from '@/types';
 import { i18n } from '@/lang';
+import { Collection, CollectionRaw } from '@/types';
 import { notEmpty } from '@/utils/is-empty/';
-import formatTitle from '@directus/format-title';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import formatTitle from '@directus/format-title';
+import { defineStore } from 'pinia';
 
 export const useCollectionsStore = defineStore({
 	id: 'collectionsStore',

@@ -1,5 +1,5 @@
-import { Ref, ref } from 'vue';
 import { i18n } from '@/lang';
+import { Ref, ref } from 'vue';
 
 export default function useSourceCode(editor: Ref<any>): Record<string, any> {
 	const codeDrawerOpen = ref(false);

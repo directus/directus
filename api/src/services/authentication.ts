@@ -1,24 +1,23 @@
-import database from '../database';
-import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
-import { nanoid } from 'nanoid';
+import jwt from 'jsonwebtoken';
+import { Knex } from 'knex';
+import { omit } from 'lodash';
 import ms from 'ms';
+import { nanoid } from 'nanoid';
+import { authenticator } from 'otplib';
+import database from '../database';
+import emitter, { emitAsyncSafe } from '../emitter';
+import env from '../env';
 import {
 	InvalidCredentialsException,
-	InvalidPayloadException,
 	InvalidOTPException,
+	InvalidPayloadException,
 	UserSuspendedException,
 } from '../exceptions';
-import { Session, Accountability, AbstractServiceOptions, Action, SchemaOverview } from '../types';
-import { Knex } from 'knex';
-import { ActivityService } from '../services/activity';
-import env from '../env';
-import { authenticator } from 'otplib';
-import emitter, { emitAsyncSafe } from '../emitter';
-import { omit } from 'lodash';
 import { createRateLimiter } from '../rate-limiter';
+import { ActivityService } from '../services/activity';
+import { AbstractServiceOptions, Accountability, Action, SchemaOverview, Session } from '../types';
 import { SettingsService } from './settings';
-import { rateLimiter } from '../middleware/rate-limiter';
 
 type AuthenticateOptions = {
 	email: string;

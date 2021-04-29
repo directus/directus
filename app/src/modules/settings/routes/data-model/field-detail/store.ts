@@ -5,14 +5,14 @@
  * It's reset every time the modal opens and shouldn't be used outside of the field-detail flow.
  */
 
-import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
-import { reactive, watch, computed, ComputedRef, WatchStopHandle, nextTick } from 'vue';
-import { clone, throttle } from 'lodash';
-import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
-import { InterfaceConfig } from '@/interfaces/types';
 import { DisplayConfig } from '@/displays/types';
+import { getInterfaces } from '@/interfaces';
+import { InterfaceConfig } from '@/interfaces/types';
+import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, localTypes } from '@/types';
+import { clone, throttle } from 'lodash';
+import { computed, ComputedRef, nextTick, reactive, watch, WatchStopHandle } from 'vue';
 
 type GenerationInfo = {
 	name: string;
@@ -719,7 +719,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		}
 
 		function getAutomaticJunctionCollectionName() {
-			let index: number = 0;
+			let index = 0;
 			let name = getName(index);
 
 			while (collectionExists(name)) {

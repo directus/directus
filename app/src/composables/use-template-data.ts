@@ -1,7 +1,7 @@
 import api from '@/api';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
-import { computed, Ref, ref, watch, ComputedRef } from 'vue';
 import { Collection } from '@/types';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { computed, ComputedRef, Ref, ref, watch } from 'vue';
 
 export default function useTemplateData(
 	collection: ComputedRef<Collection | undefined>,

@@ -1,12 +1,12 @@
-import storage from '../storage';
+import { Range, StatResponse } from '@directus/drive';
+import { Knex } from 'knex';
+import path from 'path';
 import sharp, { ResizeOptions } from 'sharp';
 import database from '../database';
-import path from 'path';
-import { Knex } from 'knex';
-import { Accountability, AbstractServiceOptions, Transformation } from '../types';
-import { AuthorizationService } from './authorization';
-import { Range, StatResponse } from '@directus/drive';
 import { RangeNotSatisfiableException } from '../exceptions';
+import storage from '../storage';
+import { AbstractServiceOptions, Accountability, Transformation } from '../types';
+import { AuthorizationService } from './authorization';
 
 export class AssetsService {
 	knex: Knex;

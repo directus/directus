@@ -1,7 +1,7 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import { logout, LogoutReason, refresh } from '@/auth';
 import { useRequestsStore } from '@/stores/';
-import { LogoutReason, logout, refresh } from '@/auth';
 import { getRootPath } from '@/utils/get-root-path';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { addQueryToPath } from './utils/add-query-to-path';
 
 const api = axios.create({

@@ -1,23 +1,18 @@
-import { createApp } from 'vue';
 import { createPinia } from 'pinia';
-
-import { router } from './router';
-import { i18n } from './lang/';
-
-import { registerDirectives } from './directives/register';
-import { registerComponents } from './components/register';
-import { registerViews } from './views/register';
-import { registerInterfaces } from './interfaces/register';
-import { loadModules } from './modules/register';
-import { registerLayouts } from './layouts/register';
-import { registerDisplays } from './displays/register';
-
+import { createApp } from 'vue';
 import { version } from '../package.json';
-import { DIRECTUS_LOGO } from './constants';
-
 import App from './app.vue';
-
+import { registerComponents } from './components/register';
+import { DIRECTUS_LOGO } from './constants';
+import { registerDirectives } from './directives/register';
+import { registerDisplays } from './displays/register';
+import { registerInterfaces } from './interfaces/register';
+import { i18n } from './lang/';
+import { registerLayouts } from './layouts/register';
+import { loadModules } from './modules/register';
+import { router } from './router';
 import './styles/main.scss';
+import { registerViews } from './views/register';
 
 init();
 

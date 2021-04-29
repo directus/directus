@@ -40,8 +40,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const dialog = ref<HTMLElement | null>(null);
-
 		useShortcut('escape', (event, cancelNext) => {
 			if (_active.value) {
 				emit('esc');
@@ -141,6 +139,7 @@ export default defineComponent({
 			flex-wrap: wrap;
 			.v-button {
 				width: 100%;
+
 				.button {
 					width: 100%;
 				}

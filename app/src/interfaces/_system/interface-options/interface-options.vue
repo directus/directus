@@ -42,7 +42,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { parent }) {
+	setup(props) {
 		const { interfaces } = getInterfaces();
 
 		const values = inject('values', ref<Record<string, any>>({}));

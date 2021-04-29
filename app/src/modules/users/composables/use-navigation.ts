@@ -1,7 +1,6 @@
-import { ref, Ref } from 'vue';
-
 import api from '@/api';
 import { Role } from '@/types';
+import { ref, Ref } from 'vue';
 
 let roles: Ref<Role[] | null> | null = null;
 let loading: Ref<boolean> | null = null;

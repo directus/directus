@@ -35,7 +35,7 @@ export default defineComponent({
 			default: () => ({}),
 		},
 	},
-	setup(props, { emit }) {
+	setup(_props, { emit }) {
 		return { uploaded };
 		function uploaded() {
 			emit('toggle', false);

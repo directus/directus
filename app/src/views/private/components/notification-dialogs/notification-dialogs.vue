@@ -30,8 +30,7 @@ import { Notification } from '@/types';
 import { useProjectInfo } from '@/modules/settings/composables/use-project-info';
 
 export default defineComponent({
-	components: { SidebarButton, NotificationItem },
-	setup(props) {
+	setup() {
 		const { parsedInfo } = useProjectInfo();
 		const notificationsStore = useNotificationsStore();
 		const userStore = useUserStore();

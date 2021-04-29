@@ -68,7 +68,6 @@ import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 
 import api, { addTokenToURL } from '@/api';
-import localizedFormat from '@/utils/localized-format';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({

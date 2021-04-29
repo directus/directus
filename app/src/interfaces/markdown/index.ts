@@ -1,5 +1,5 @@
-import InterfaceMarkdown from './markdown.vue';
 import { defineInterface } from '@/interfaces/define';
+import InterfaceMarkdown from './markdown.vue';
 
 export default defineInterface({
 	id: 'markdown',

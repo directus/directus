@@ -47,7 +47,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props) {
+	setup() {
 		const notificationsStore = useNotificationsStore();
 		return { lastFour: notificationsStore.lastFour };
 	},

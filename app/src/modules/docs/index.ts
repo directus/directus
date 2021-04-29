@@ -1,8 +1,8 @@
 import { defineModule } from '@/modules/define';
-import { RouteRecordRaw } from 'vue-router';
 import files, { Directory } from '@directus/docs';
-import StaticDocs from './routes/static.vue';
+import { RouteRecordRaw } from 'vue-router';
 import NotFound from './routes/not-found.vue';
+import StaticDocs from './routes/static.vue';
 
 export default defineModule(() => {
 	const routes: RouteRecordRaw[] = [

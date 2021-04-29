@@ -52,7 +52,6 @@ import api from '@/api';
 import formatFilesize from '@/utils/format-filesize';
 import { i18n } from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
-import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';

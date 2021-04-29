@@ -1,17 +1,16 @@
-import listFolders from './utils/list-folders';
-import path from 'path';
-import env from './env';
-import { ServiceUnavailableException } from './exceptions';
 import express, { Router } from 'express';
-import emitter from './emitter';
-import logger from './logger';
-import { HookRegisterFunction, EndpointRegisterFunction } from './types';
 import { ensureDir } from 'fs-extra';
-import { getSchema } from './utils/get-schema';
-
-import * as exceptions from './exceptions';
-import * as services from './services';
+import path from 'path';
 import database from './database';
+import emitter from './emitter';
+import env from './env';
+import * as exceptions from './exceptions';
+import { ServiceUnavailableException } from './exceptions';
+import logger from './logger';
+import * as services from './services';
+import { EndpointRegisterFunction, HookRegisterFunction } from './types';
+import { getSchema } from './utils/get-schema';
+import listFolders from './utils/list-folders';
 
 export async function ensureFoldersExist(): Promise<void> {
 	const folders = ['endpoints', 'hooks', 'interfaces', 'modules', 'layouts', 'displays'];
@@ -94,7 +93,7 @@ function registerHooks(hooks: string[]) {
 			}
 		}
 
-		let events = register({ services, exceptions, env, database, getSchema });
+		const events = register({ services, exceptions, env, database, getSchema });
 		for (const [event, handler] of Object.entries(events)) {
 			emitter.on(event, handler);
 		}

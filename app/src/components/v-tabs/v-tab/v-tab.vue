@@ -50,11 +50,11 @@ body {
 
 <style lang="scss" scoped>
 .v-tab.horizontal {
-	transition: color var(--fast) var(--transition);
 	color: var(--v-tab-color);
 	font-weight: 500;
 	font-size: 14px;
 	background-color: var(--v-tab-background-color);
+	transition: color var(--fast) var(--transition);
 
 	&:hover,
 	&.active {

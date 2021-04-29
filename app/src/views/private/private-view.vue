@@ -66,7 +66,6 @@ import ModuleBar from './components/module-bar/';
 import SidebarDetailGroup from './components/sidebar-detail-group/';
 import HeaderBar from './components/header-bar';
 import ProjectInfo from './components/project-info';
-import SidebarButton from './components/sidebar-button/';
 import NotificationsGroup from './components/notifications-group/';
 import NotificationsPreview from './components/notifications-preview/';
 import NotificationDialogs from './components/notification-dialogs/';
@@ -80,7 +79,6 @@ export default defineComponent({
 		SidebarDetailGroup,
 		HeaderBar,
 		ProjectInfo,
-		SidebarButton,
 		NotificationsGroup,
 		NotificationsPreview,
 		NotificationDialogs,
@@ -115,7 +113,7 @@ export default defineComponent({
 
 		provide('main-element', contentEl);
 
-		router.afterEach(async (to, from) => {
+		router.afterEach(async () => {
 			contentEl.value?.scrollTo({ top: 0 });
 		});
 

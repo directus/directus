@@ -1,15 +1,15 @@
-import { Ref, computed, ComputedRef } from 'vue';
 import { useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, Relation } from '@/types';
-import { cloneDeep } from 'lodash';
 import { getRelationType } from '@/utils/get-relation-type';
+import { cloneDeep } from 'lodash';
+import { computed, ComputedRef, Ref } from 'vue';
 
 type FieldOption = { name: string; field: string; key: string; children?: FieldOption[] };
 
 export default function useFieldTree(
 	collection: Ref<string>,
 	/** Only allow m2o relations to be nested */
-	strict: boolean = false,
+	strict = false,
 	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
 	filter: (field: Field) => boolean = () => true
 ): Record<string, ComputedRef> {

@@ -1,13 +1,12 @@
-import { knex, Knex } from 'knex';
-import dotenv from 'dotenv';
-import path from 'path';
-import logger from '../logger';
-import env from '../env';
-import { validateEnv } from '../utils/validate-env';
-import { performance } from 'perf_hooks';
-
 import SchemaInspector from '@directus/schema';
+import dotenv from 'dotenv';
+import { knex, Knex } from 'knex';
+import path from 'path';
+import { performance } from 'perf_hooks';
+import env from '../env';
+import logger from '../logger';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
+import { validateEnv } from '../utils/validate-env';
 
 dotenv.config({ path: path.resolve(__dirname, '../../', '.env') });
 

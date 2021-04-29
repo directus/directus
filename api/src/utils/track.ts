@@ -1,13 +1,11 @@
 import axios from 'axios';
-import os from 'os';
-import { machineId } from 'node-machine-id';
 import ms from 'ms';
-
-import logger from '../logger';
-
-import env from '../env';
+import { machineId } from 'node-machine-id';
+import os from 'os';
 // @ts-ignore
 import { version } from '../../package.json';
+import env from '../env';
+import logger from '../logger';
 
 export async function track(event: string): Promise<void> {
 	if (env.TELEMETRY !== false) {

@@ -112,7 +112,7 @@ type Item = {
 export default defineComponent({
 	name: 'webhooks-collection',
 	components: { SettingsNavigation, LayoutSidebarDetail, SearchInput },
-	setup(props) {
+	setup() {
 		const layoutRef = ref<LayoutComponent | null>(null);
 
 		const selection = ref<Item[]>([]);

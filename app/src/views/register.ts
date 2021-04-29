@@ -1,5 +1,4 @@
 import { App, defineAsyncComponent } from 'vue';
-
 import PublicView from './public/';
 
 // @TODO3 Investigate manual chunking

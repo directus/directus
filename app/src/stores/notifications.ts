@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia';
 import { Notification, NotificationRaw } from '@/types';
-import { nanoid } from 'nanoid';
 import { reverse, sortBy } from 'lodash';
+import { nanoid } from 'nanoid';
+import { defineStore } from 'pinia';
 
 export const useNotificationsStore = defineStore({
 	id: 'notificationsStore',

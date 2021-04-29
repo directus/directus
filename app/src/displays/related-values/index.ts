@@ -1,11 +1,12 @@
+import useCollection from '@/composables/use-collection';
 import { defineDisplay } from '@/displays/define';
-import DisplayRelatedValues from './related-values.vue';
-import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import getRelatedCollection from '@/utils/get-related-collection';
 import useCollection from '@/composables/use-collection';
 import { ref } from 'vue';
 import options from './options.vue';
+import DisplayRelatedValues from './related-values.vue';
 
 type Options = {
 	template: string;

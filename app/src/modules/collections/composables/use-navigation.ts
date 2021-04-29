@@ -1,7 +1,6 @@
-import { computed, Ref, ref } from 'vue';
-
 import { useCollectionsStore, useUserStore } from '@/stores/';
 import { Collection } from '@/types';
+import { computed, Ref, ref } from 'vue';
 
 export type NavItem = {
 	collection: string;

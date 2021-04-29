@@ -1,7 +1,7 @@
-import { Ref, ref, computed } from 'vue';
-import { RelationInfo } from './use-relation';
-import { get } from 'lodash';
 import { Filter } from '@/types';
+import { get } from 'lodash';
+import { computed, Ref, ref } from 'vue';
+import { RelationInfo } from './use-relation';
 
 export default function useSelection(
 	value: Ref<(string | number | Record<string, any>)[] | null>,

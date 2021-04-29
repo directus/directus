@@ -1,10 +1,8 @@
-import { createI18n, TranslateResult } from 'vue-i18n';
 import { RequestError } from '@/api';
-
+import { createI18n } from 'vue-i18n';
 import availableLanguages from './available-languages.yaml';
-
-import enUSBase from './translations/en-US.yaml';
 import dateFormats from './date-formats.yaml';
+import enUSBase from './translations/en-US.yaml';
 
 export const i18n = createI18n({
 	legacy: false,

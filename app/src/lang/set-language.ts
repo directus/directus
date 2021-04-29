@@ -1,13 +1,11 @@
+import { getDisplays } from '@/displays';
+import { getInterfaces } from '@/interfaces';
+import { getLayouts } from '@/layouts';
+import { getModules } from '@/modules';
+import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { translate } from '@/utils/translate-object-values';
 import availableLanguages from './available-languages.yaml';
 import { i18n, Language, loadedLanguages } from './index';
-
-import { getModules } from '@/modules';
-import { getLayouts } from '@/layouts';
-import { getInterfaces } from '@/interfaces';
-import { getDisplays } from '@/displays';
-import { translate } from '@/utils/translate-object-values';
-
-import { useCollectionsStore, useFieldsStore } from '@/stores';
 
 const { modules, modulesRaw } = getModules();
 const { layouts, layoutsRaw } = getLayouts();

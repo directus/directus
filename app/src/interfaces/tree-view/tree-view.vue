@@ -53,7 +53,6 @@ import { useCollection } from '@/composables/use-collection';
 import { useRelationsStore } from '@/stores';
 import api from '@/api';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
-import draggable from 'vuedraggable';
 import hideDragImage from '@/utils/hide-drag-image';
 import NestedDraggable from './nested-draggable.vue';
 import { Filter } from '@/types';

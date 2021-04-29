@@ -53,7 +53,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props) {
+	setup() {
 		const { interfaces } = getInterfaces();
 
 		const selectItems = computed(() => {

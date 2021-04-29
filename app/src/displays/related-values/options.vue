@@ -37,7 +37,6 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const relationsStore = useRelationsStore();
 		const template = computed({
 			get() {
 				return props.value?.template;

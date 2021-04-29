@@ -1,4 +1,4 @@
-import { DisplayDefineParam, DisplayConfig } from './types';
+import { DisplayConfig, DisplayDefineParam } from './types';
 
 export function defineDisplay(config: DisplayDefineParam): DisplayConfig {
 	let options: DisplayConfig;

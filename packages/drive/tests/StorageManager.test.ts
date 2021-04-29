@@ -195,7 +195,7 @@ describe('Storage Manager', () => {
 		class BarDriver extends Storage {}
 		storageManager.registerDriver('bar', BarDriver);
 
-		let disks = storageManager.getDrivers().keys();
+		const disks = storageManager.getDrivers().keys();
 		expect([...disks].sort()).toStrictEqual(['bar', 'foo', 'local']);
 	});
 

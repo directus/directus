@@ -1,5 +1,5 @@
-import InterfaceNumeric from './numeric.vue';
 import { defineInterface } from '@/interfaces/define';
+import InterfaceNumeric from './numeric.vue';
 
 export default defineInterface({
 	id: 'numeric',

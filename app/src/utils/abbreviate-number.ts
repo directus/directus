@@ -10,13 +10,13 @@ export function abbreviateNumber(value: number): number | string {
 			if (dotLessShortValue.length <= 2) break;
 		}
 
-		let valueAsString: string = String(shortValue);
+		let valueAsString = String(shortValue);
 
-		if (shortValue % 1 != 0) {
+		if (shortValue % 1 !== 0) {
 			valueAsString = shortValue.toFixed(1);
 		}
 
-		return shortValue + suffixes[suffixNum];
+		return valueAsString + suffixes[suffixNum];
 	}
 
 	return value;

@@ -235,7 +235,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
+	setup(props) {
 		const typesWithLabels = computed(() => {
 			return fieldTypes;
 		});

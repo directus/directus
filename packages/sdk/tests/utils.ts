@@ -57,7 +57,7 @@ export async function timers(
 			md.set(initial + travel);
 			await Promise.resolve().then(() => jest.advanceTimersByTime(ms));
 		};
-		const skip = async (func: () => Promise<void>, date: boolean = false) => {
+		const skip = async (func: () => Promise<void>, date = false) => {
 			if (date) {
 				md.reset();
 			}

@@ -1,20 +1,19 @@
+import { Language } from '@/lang';
+import { setLanguage } from '@/lang/set-language';
+import { register as registerModules, unregister as unregisterModules } from '@/modules/register';
 import {
 	useAppStore,
 	useCollectionsStore,
 	useFieldsStore,
-	useUserStore,
-	useRequestsStore,
-	usePresetsStore,
-	useSettingsStore,
-	useServerStore,
 	useLatencyStore,
-	useRelationsStore,
 	usePermissionsStore,
+	usePresetsStore,
+	useRelationsStore,
+	useRequestsStore,
+	useServerStore,
+	useSettingsStore,
+	useUserStore,
 } from '@/stores';
-import { register as registerModules, unregister as unregisterModules } from '@/modules/register';
-
-import { Language } from '@/lang';
-import { setLanguage } from '@/lang/set-language';
 
 type GenericStore = {
 	id: string;

@@ -104,7 +104,7 @@ export default defineComponent({
 			default: false,
 		},
 	},
-	setup(props) {
+	setup() {
 		const { searchQuery, visible } = useSearch();
 		const contextMenu = ref();
 
@@ -126,8 +126,8 @@ export default defineComponent({
 					)
 					.map((preset) => {
 						let scope = 'global';
-						if (!!preset.role) scope = 'role';
-						if (!!preset.user) scope = 'user';
+						if (preset.role) scope = 'role';
+						if (preset.user) scope = 'user';
 
 						return {
 							...preset,

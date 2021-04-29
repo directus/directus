@@ -1,9 +1,6 @@
 import { computed, ComputedRef, Ref } from 'vue';
 import { isAllowed } from '../utils/is-allowed';
 import { useCollection } from './use-collection';
-import { useUserStore, usePermissionsStore } from '@/stores';
-import { cloneDeep } from 'lodash';
-import { Field } from '@/types';
 
 export function usePermissions(
 	collection: Ref<string>,

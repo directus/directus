@@ -1,7 +1,7 @@
+import { defineDisplay } from '@/displays/define';
 import readableMimeType from '@/utils/readable-mime-type';
 // @TODO3 We might want to use mime/lite here
 import mime from 'mime';
-import { defineDisplay } from '@/displays/define';
 
 export default defineDisplay({
 	id: 'mime-type',
