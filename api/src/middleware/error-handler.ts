@@ -5,7 +5,9 @@ import { BaseException, MethodNotAllowedException } from '../exceptions';
 import logger from '../logger';
 import { toArray } from '../utils/to-array';
 
-const errorHandler: ErrorRequestHandler = (err, req, res) => {
+// Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
+// we don't use next
+const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 	let payload: any = {
 		errors: [],
 	};

@@ -8,6 +8,7 @@ import { systemFieldRows } from '../database/system-data/fields/';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
 import { AbstractServiceOptions, Accountability, FieldMeta, SchemaOverview, types } from '../types';
@@ -186,7 +187,7 @@ export class FieldsService {
 		try {
 			column = await this.schemaInspector.columnInfo(collection, field);
 			column.default_value = getDefaultValue(column);
-		} finally {
+		} catch {
 			// Do nothing
 		}
 
@@ -203,7 +204,7 @@ export class FieldsService {
 
 	async createField(
 		collection: string,
-		field: Partial<Field> & { field: string; type: typeof types[number] },
+		field: Partial<Field> & { field: string; type: typeof types[number] | null },
 		table?: Knex.CreateTableBuilder // allows collection creation to
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
@@ -253,10 +254,15 @@ export class FieldsService {
 
 		if (field.schema) {
 			const existingColumn = await this.schemaInspector.columnInfo(collection, field.field);
-			await this.knex.schema.alterTable(collection, (table) => {
-				if (!field.schema) return;
-				this.addColumnToTable(table, field, existingColumn);
-			});
+
+			try {
+				await this.knex.schema.alterTable(collection, (table) => {
+					if (!field.schema) return;
+					this.addColumnToTable(table, field, existingColumn);
+				});
+			} catch (err) {
+				throw await translateDatabaseError(err);
+			}
 		}
 
 		if (field.meta) {

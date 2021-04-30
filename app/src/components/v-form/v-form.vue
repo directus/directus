@@ -18,8 +18,9 @@
 		</v-notice>
 
 		<form-field
-			v-for="field in formFields"
+			v-for="(field, index) in formFields"
 			:field="field"
+			:autofocus="index === firstEditableFieldIndex && autofocus"
 			:key="field.field"
 			:value="(edits || {})[field.field]"
 			:initial-value="(initialValues || {})[field.field]"
@@ -96,6 +97,10 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
+		autofocus: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const el = ref<Element>();
@@ -107,6 +112,15 @@ export default defineComponent({
 
 		const { formFields, gridClass } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
+
+		const firstEditableFieldIndex = computed(() => {
+			for (let i = 0; i < formFields.value.length; i++) {
+				if (formFields.value[i].meta && !formFields.value[i].meta.readonly) {
+					return i;
+				}
+			}
+			return null;
+		});
 
 		/**
 		 * The validation errors that don't apply to any visible fields. This can occur if an admin accidentally
@@ -131,6 +145,7 @@ export default defineComponent({
 			unsetValue,
 			marked,
 			unknownValidationErrors,
+			firstEditableFieldIndex,
 		};
 
 		function useForm() {

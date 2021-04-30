@@ -1,3 +1,4 @@
+import { ContainsNullValuesException } from '../contains-null-values';
 import { InvalidForeignKeyException } from '../invalid-foreign-key';
 import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
@@ -41,6 +42,16 @@ function notNullConstraint(error: SQLiteError) {
 	const [table, column] = errorParts[errorParts.length - 1].split('.');
 
 	if (table && column) {
+		// Now this gets a little finicky... SQLite doesn't have any native ALTER, so Knex implements
+		// it by creating a new table, and then copying the data over. That also means we'll never get
+		// a ContainsNullValues constraint error, as there is no ALTER. HOWEVER, we can hack around
+		// that by checking for the collection name, as Knex's alter default template name will always
+		// start with _knex_temp. The best we can do in this case is check for that, and use it to
+		// decide between NotNullViolation and ContainsNullValues
+		if (table.startsWith('_knex_temp_alter')) {
+			return new ContainsNullValuesException(column);
+		}
+
 		return new NotNullViolationException(column, {
 			collection: table,
 			field: column,

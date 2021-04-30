@@ -1,5 +1,4 @@
 import { AuthCredentials, AuthLoginOptions, AuthRefreshOptions, AuthResult, AuthToken, IAuth } from '../auth';
-import { NotAuthenticated } from '../errors';
 import { PasswordsHandler } from '../handlers/passwords';
 import { IStorage } from '../storage';
 import { ITransport } from '../transport';
@@ -57,10 +56,6 @@ export class Auth implements IAuth {
 	}
 
 	private async refreshToken(force = false): Promise<AuthResult | false> {
-		if (force && this.storage.auth_token === null) {
-			throw new NotAuthenticated();
-		}
-
 		if (!force && !this.expiring) {
 			return false;
 		}
@@ -113,8 +108,6 @@ export class Auth implements IAuth {
 		if (remaining < 0) {
 			// It's already expired, try a refresh
 			if (expiration < Date.now()) {
-				this.storage.auth_expires = null;
-				this.storage.auth_token = null;
 				return; // Don't set auto refresh
 			} else {
 				remaining = 0;

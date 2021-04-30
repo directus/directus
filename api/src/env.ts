@@ -29,6 +29,8 @@ const defaults: Record<string, any> = {
 	RATE_LIMITER_DURATION: 1,
 	RATE_LIMITER_STORE: 'memory',
 
+	SESSION_STORE: 'memory',
+
 	ACCESS_TOKEN_TTL: '15m',
 	REFRESH_TOKEN_TTL: '7d',
 	REFRESH_TOKEN_COOKIE_SECURE: false,

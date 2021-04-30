@@ -89,6 +89,9 @@ validationError:
 all_access: All Access
 no_access: No Access
 use_custom: Use Custom
+nullable: Nullable
+allow_null_value: Allow NULL value
+enter_value_to_replace_nulls: Please enter a new value to replace any NULLs currently within this field.
 field_standard: Standard
 field_presentation: Presentation & Aliases
 field_file: Single File
@@ -406,6 +409,7 @@ errors:
   ROUTE_NOT_FOUND: Not found
   RECORD_NOT_UNIQUE: Duplicate value detected
   USER_SUSPENDED: User Suspended
+  CONTAINS_NULL_VALUES: Field contains null values
   UNKNOWN: Unexpected Error
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
