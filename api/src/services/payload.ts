@@ -471,6 +471,7 @@ export class PayloadService {
 
 				const savedPrimaryKeys = await itemsService.upsertMany(relatedRecords);
 
+				// Nullify all related items that aren't included in the current payload
 				await itemsService.updateByQuery(
 					{
 						filter: {
