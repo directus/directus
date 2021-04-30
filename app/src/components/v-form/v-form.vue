@@ -118,6 +118,7 @@ export default defineComponent({
 					return i;
 				}
 			}
+			return null;
 		});
 
 		/**
