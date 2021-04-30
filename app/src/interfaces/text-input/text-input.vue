@@ -1,5 +1,6 @@
 <template>
 	<v-input
+		:autofocus="autofocus"
 		:value="value"
 		:nullable="!clear"
 		:placeholder="placeholder"
@@ -77,6 +78,10 @@ export default defineComponent({
 			default: null,
 		},
 		dbSafe: {
+			type: Boolean,
+			default: false,
+		},
+		autofocus: {
 			type: Boolean,
 			default: false,
 		},

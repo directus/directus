@@ -1,10 +1,10 @@
-import { RouteConfig } from 'vue-router';
-import { replaceRoutes } from '@/router';
-import { getModules } from './index';
-import { useUserStore, usePermissionsStore } from '@/stores';
 import api from '@/api';
+import { replaceRoutes } from '@/router';
+import { usePermissionsStore, useUserStore } from '@/stores';
 import { getRootPath } from '@/utils/get-root-path';
 import asyncPool from 'tiny-async-pool';
+import { RouteConfig } from 'vue-router';
+import { getModules } from './index';
 
 const { modulesRaw } = getModules();
 

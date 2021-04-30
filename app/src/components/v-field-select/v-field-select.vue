@@ -47,7 +47,6 @@
 <script lang="ts">
 import { defineComponent, toRefs, ref, PropType, computed } from '@vue/composition-api';
 import FieldListItem from '../v-field-template/field-list-item.vue';
-import { useFieldsStore } from '@/stores';
 import { Field, Collection, Relation } from '@/types';
 import Draggable from 'vuedraggable';
 import useFieldTree from '@/composables/use-field-tree';

@@ -1,22 +1,20 @@
+import SchemaInspector from '@directus/schema';
+import { Knex } from 'knex';
+import { Column } from 'knex-schema-inspector/dist/types/column';
+import cache from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import database, { schemaInspector } from '../database';
-import { Field } from '../types/field';
-import { Accountability, AbstractServiceOptions, FieldMeta, SchemaOverview } from '../types';
-import { ItemsService } from '../services/items';
-import { Knex } from 'knex';
-import getLocalType from '../utils/get-local-type';
-import { types } from '../types';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { PayloadService } from '../services/payload';
-import getDefaultValue from '../utils/get-default-value';
-import cache from '../cache';
-import emitter, { emitAsyncSafe } from '../emitter';
-import SchemaInspector from '@directus/schema';
-import { toArray } from '../utils/to-array';
-import env from '../env';
-import { Column } from 'knex-schema-inspector/dist/types/column';
-
 import { systemFieldRows } from '../database/system-data/fields/';
+import emitter, { emitAsyncSafe } from '../emitter';
+import env from '../env';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { ItemsService } from '../services/items';
+import { PayloadService } from '../services/payload';
+import { AbstractServiceOptions, Accountability, FieldMeta, SchemaOverview, types } from '../types';
+import { Field } from '../types/field';
+import getDefaultValue from '../utils/get-default-value';
+import getLocalType from '../utils/get-local-type';
+import { toArray } from '../utils/to-array';
 
 type RawField = Partial<Field> & { field: string; type: typeof types[number] };
 
@@ -142,12 +140,12 @@ export class FieldsService {
 				allowedFieldsInCollection[permission.collection] = permission.fields ?? [];
 			});
 
-			if (collection && allowedFieldsInCollection.hasOwnProperty(collection) === false) {
+			if (collection && collection in allowedFieldsInCollection === false) {
 				throw new ForbiddenException();
 			}
 
 			return result.filter((field) => {
-				if (allowedFieldsInCollection.hasOwnProperty(field.collection) === false) return false;
+				if (field.collection in allowedFieldsInCollection === false) return false;
 				const allowedFields = allowedFieldsInCollection[field.collection];
 				if (allowedFields[0] === '*') return true;
 				return allowedFields.includes(field.field);
@@ -188,7 +186,7 @@ export class FieldsService {
 		try {
 			column = await this.schemaInspector.columnInfo(collection, field);
 			column.default_value = getDefaultValue(column);
-		} finally {
+		} catch {
 			// Do nothing
 		}
 
@@ -205,11 +203,11 @@ export class FieldsService {
 
 	async createField(
 		collection: string,
-		field: Partial<Field> & { field: string; type: typeof types[number] },
+		field: Partial<Field> & { field: string; type: typeof types[number] | null },
 		table?: Knex.CreateTableBuilder // allows collection creation to
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException();
 		}
 
 		// Check if field already exists, either as a column, or as a row in directus_fields
@@ -250,7 +248,7 @@ export class FieldsService {
 
 	async updateField(collection: string, field: RawField): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action');
+			throw new ForbiddenException();
 		}
 
 		if (field.schema) {
@@ -293,7 +291,7 @@ export class FieldsService {
 	/** @todo save accountability */
 	async deleteField(collection: string, field: string): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException();
 		}
 
 		await emitter.emitAsync(`fields.delete.before`, {

@@ -1,6 +1,6 @@
-import { ref, Ref, watch } from '@vue/composition-api';
 import api from '@/api';
 import { Permission } from '@/types';
+import { ref, Ref, watch } from '@vue/composition-api';
 
 export default function usePermissions(role: Ref<number>): Record<string, any> {
 	const loading = ref(false);

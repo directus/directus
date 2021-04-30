@@ -1,5 +1,5 @@
-import { DocumentNode } from 'graphql';
 import { Request, Response } from 'express';
+import { DocumentNode } from 'graphql';
 
 export interface GraphQLParams {
 	query: string | null;

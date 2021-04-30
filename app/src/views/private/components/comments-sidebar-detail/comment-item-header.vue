@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref, watch } from '@vue/composition-api';
+import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
 import { Activity } from './types';
 import format from 'date-fns/format';
 import i18n from '@/lang';
@@ -68,7 +68,6 @@ import { getRootPath } from '@/utils/get-root-path';
 import { userName } from '@/utils/user-name';
 
 import api, { addTokenToURL } from '@/api';
-import localizedFormat from '@/utils/localized-format';
 import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineComponent({

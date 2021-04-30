@@ -1,9 +1,9 @@
-import { createStore } from 'pinia';
-import { Preset } from '@/types';
-import { useUserStore } from '@/stores/';
 import api from '@/api';
+import { useUserStore } from '@/stores/';
+import { Preset } from '@/types';
+import { cloneDeep, merge } from 'lodash';
 import { nanoid } from 'nanoid';
-import { merge, cloneDeep, isEqual } from 'lodash';
+import { createStore } from 'pinia';
 
 const defaultPreset: Omit<Preset, 'collection'> = {
 	bookmark: null,
@@ -93,7 +93,7 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 	},
 };
 
-let currentUpdate: Record<number, string> = {};
+const currentUpdate: Record<number, string> = {};
 
 export const usePresetsStore = createStore({
 	id: 'presetsStore',
@@ -258,7 +258,7 @@ export const usePresetsStore = createStore({
 			}
 
 			if (preset.user !== userID) {
-				if (preset.hasOwnProperty('id')) delete preset.id;
+				if ('id' in preset) delete preset.id;
 
 				return await this.create({
 					...preset,

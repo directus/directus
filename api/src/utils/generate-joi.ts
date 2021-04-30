@@ -1,5 +1,5 @@
-import { Filter } from '../types';
 import BaseJoi, { AnySchema } from 'joi';
+import { Filter } from '../types';
 
 const Joi: typeof BaseJoi = BaseJoi.extend({
 	type: 'string',
@@ -21,7 +21,7 @@ const Joi: typeof BaseJoi = BaseJoi.extend({
 			method(substring) {
 				return this.$_addRule({ name: 'contains', args: { substring } });
 			},
-			validate(value, helpers, { substring }, options) {
+			validate(value, helpers, { substring }) {
 				if (value.includes(substring) === false) {
 					return helpers.error('string.contains', { substring });
 				}
@@ -41,7 +41,7 @@ const Joi: typeof BaseJoi = BaseJoi.extend({
 			method(substring) {
 				return this.$_addRule({ name: 'ncontains', args: { substring } });
 			},
-			validate(value, helpers, { substring }, options) {
+			validate(value, helpers, { substring }) {
 				if (value.includes(substring) === true) {
 					return helpers.error('string.ncontains', { substring });
 				}

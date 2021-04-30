@@ -1,7 +1,7 @@
-import { computed, Ref, ref, watch } from '@vue/composition-api';
-import { getPublicURL } from '@/utils/get-root-path';
 import { addTokenToURL } from '@/api';
 import i18n from '@/lang';
+import { getPublicURL } from '@/utils/get-root-path';
+import { computed, Ref, ref, watch } from '@vue/composition-api';
 
 type MediaSelection = {
 	source: string;
@@ -40,7 +40,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string>): Rec
 
 			editor.value.on('NodeChange', onVideoNodeSelect);
 
-			return function (buttonApi: any) {
+			return function () {
 				editor.value.off('NodeChange', onVideoNodeSelect);
 			};
 		},

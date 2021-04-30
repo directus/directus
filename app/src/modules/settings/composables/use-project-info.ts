@@ -1,7 +1,7 @@
-import { ref, computed, Ref } from '@vue/composition-api';
-import prettyMS from 'pretty-ms';
-import bytes from 'bytes';
 import api from '@/api';
+import { computed, ref, Ref } from '@vue/composition-api';
+import bytes from 'bytes';
+import prettyMS from 'pretty-ms';
 
 type ServerInfo = {
 	directus: {

@@ -1,5 +1,5 @@
-import { Ref, ref } from '@vue/composition-api';
 import i18n from '@/lang';
+import { Ref, ref } from '@vue/composition-api';
 
 export default function useSourceCode(editor: Ref<any>): Record<string, any> {
 	const codeDrawerOpen = ref(false);
@@ -8,7 +8,7 @@ export default function useSourceCode(editor: Ref<any>): Record<string, any> {
 	const sourceCodeButton = {
 		icon: 'sourcecode',
 		tooltip: i18n.t('wysiwyg_options.source_code'),
-		onAction: (buttonApi: any) => {
+		onAction: () => {
 			codeDrawerOpen.value = true;
 
 			code.value = editor.value.getContent();

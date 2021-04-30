@@ -59,7 +59,7 @@ export default defineComponent({
 							align-self: center;
 						}
 					}
-				}	
+				}
 			}
 		}
 	}

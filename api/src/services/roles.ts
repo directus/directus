@@ -1,10 +1,9 @@
-import { ItemsService } from './items';
-import { AbstractServiceOptions, PrimaryKey } from '../types';
-import { PermissionsService } from './permissions';
-import { UsersService } from './users';
-import { PresetsService } from './presets';
 import { UnprocessableEntityException } from '../exceptions';
-import { toArray } from '../utils/to-array';
+import { AbstractServiceOptions, PrimaryKey } from '../types';
+import { ItemsService } from './items';
+import { PermissionsService } from './permissions';
+import { PresetsService } from './presets';
+import { UsersService } from './users';
 
 export class RolesService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {

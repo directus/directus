@@ -1,4 +1,4 @@
-import { transform, isPlainObject } from 'lodash';
+import { isPlainObject, transform } from 'lodash';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function deepMap(obj: Record<string, any>, iterator: Function, context?: Function): any {

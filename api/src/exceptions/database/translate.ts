@@ -1,9 +1,9 @@
 import database from '../../database';
-import { extractError as postgres } from './dialects/postgres';
-import { extractError as mysql } from './dialects/mysql';
 import { extractError as mssql } from './dialects/mssql';
-import { extractError as sqlite } from './dialects/sqlite';
+import { extractError as mysql } from './dialects/mysql';
 import { extractError as oracle } from './dialects/oracle';
+import { extractError as postgres } from './dialects/postgres';
+import { extractError as sqlite } from './dialects/sqlite';
 import { SQLError } from './dialects/types';
 
 /**

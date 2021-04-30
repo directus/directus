@@ -1,6 +1,6 @@
 import { Ref } from '@vue/composition-api';
-import { RelationInfo } from './use-relation';
 import { get, has, isEqual } from 'lodash';
+import { RelationInfo } from './use-relation';
 
 export default function useActions(
 	value: Ref<(string | number | Record<string, any>)[] | null>,

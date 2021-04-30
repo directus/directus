@@ -1,6 +1,6 @@
 import { defineInterface } from '../define';
-import InterfaceRepeater from './repeater.vue';
 import RepeaterOptions from './options.vue';
+import InterfaceRepeater from './repeater.vue';
 
 export default defineInterface({
 	id: 'repeater',

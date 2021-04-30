@@ -1,7 +1,7 @@
-import { ref, inject, Ref } from '@vue/composition-api';
 import api from '@/api';
 import { Collection, Permission } from '@/types';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { inject, ref, Ref } from '@vue/composition-api';
 
 export default function useUpdatePermissions(
 	collection: Ref<Collection>,

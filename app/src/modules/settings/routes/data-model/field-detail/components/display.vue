@@ -56,7 +56,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
+	setup() {
 		const { displays } = getDisplays();
 		const { interfaces } = getInterfaces();
 

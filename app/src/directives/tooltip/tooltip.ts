@@ -1,6 +1,6 @@
+import { nanoid } from 'nanoid';
 import { DirectiveOptions } from 'vue';
 import { DirectiveBinding } from 'vue/types/options';
-import { nanoid } from 'nanoid';
 
 const tooltipDelay = 300;
 

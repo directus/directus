@@ -1,6 +1,6 @@
-import { Filter, Accountability } from '../types';
-import { deepMap } from './deep-map';
+import { Accountability, Filter } from '../types';
 import { toArray } from '../utils/to-array';
+import { deepMap } from './deep-map';
 
 export function parseFilter(filter: Filter, accountability: Accountability | null): any {
 	return deepMap(filter, (val, key) => {

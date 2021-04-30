@@ -278,8 +278,8 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-button {
 	display: flex;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
 	min-width: 136px;
 	height: 44px;
 	padding: 0 20px 1px;

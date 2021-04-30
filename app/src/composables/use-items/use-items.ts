@@ -1,12 +1,11 @@
-import { computed, ref, Ref, watch } from '@vue/composition-api';
 import api from '@/api';
 import useCollection from '@/composables/use-collection';
-import Vue from 'vue';
-import { isEqual } from 'lodash';
 import { Filter } from '@/types/';
 import filtersToQuery from '@/utils/filters-to-query';
-import { orderBy, throttle } from 'lodash';
 import moveInArray from '@/utils/move-in-array';
+import { computed, ref, Ref, watch } from '@vue/composition-api';
+import { isEqual, orderBy, throttle } from 'lodash';
+import Vue from 'vue';
 
 type Query = {
 	limit: Ref<number>;

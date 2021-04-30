@@ -264,9 +264,6 @@ export default defineComponent({
 			if (props.value !== getInputValue()) {
 				const regex = /({{.*?}})/g;
 
-				const before = null;
-				const after = null;
-
 				const newInnerHTML = props.value
 					.split(regex)
 					.map((part) => {

@@ -1,24 +1,24 @@
-import { AuthenticationService } from './authentication';
-import { ItemsService, MutationOptions } from './items';
-import jwt from 'jsonwebtoken';
-import database from '../database';
 import argon2 from 'argon2';
-import {
-	InvalidPayloadException,
-	ForbiddenException,
-	UnprocessableEntityException,
-	FailedValidationException,
-} from '../exceptions';
-import { Accountability, PrimaryKey, Item, AbstractServiceOptions, SchemaOverview, Query } from '../types';
+import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
-import env from '../env';
+import { clone } from 'lodash';
 import cache from '../cache';
-import { toArray } from '../utils/to-array';
+import database from '../database';
+import env from '../env';
+import {
+	FailedValidationException,
+	ForbiddenException,
+	InvalidPayloadException,
+	UnprocessableEntityException,
+} from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 import logger from '../logger';
-import { clone } from 'lodash';
-import { SettingsService } from './settings';
+import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
+import { toArray } from '../utils/to-array';
+import { AuthenticationService } from './authentication';
+import { ItemsService, MutationOptions } from './items';
 import { MailService } from './mail';
+import { SettingsService } from './settings';
 
 export class UsersService extends ItemsService {
 	knex: Knex;
@@ -132,7 +132,7 @@ export class UsersService extends ItemsService {
 			await this.checkPasswordPolicy([data.password]);
 		}
 
-		if (data.hasOwnProperty('tfa_secret')) {
+		if ('tfa_secret' in data) {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
@@ -150,7 +150,7 @@ export class UsersService extends ItemsService {
 			await this.checkPasswordPolicy([data.password]);
 		}
 
-		if (data.hasOwnProperty('tfa_secret')) {
+		if ('tfa_secret' in data) {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
@@ -168,7 +168,7 @@ export class UsersService extends ItemsService {
 			await this.checkPasswordPolicy([data.password]);
 		}
 
-		if (data.hasOwnProperty('tfa_secret')) {
+		if ('tfa_secret' in data) {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 

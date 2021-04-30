@@ -94,7 +94,7 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import router from '@/router';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail';
 import useItem from '@/composables/use-item';
-import { useUserStore, usePermissionsStore } from '@/stores/';
+import { useUserStore } from '@/stores/';
 import RoleInfoSidebarDetail from './components/role-info-sidebar-detail.vue';
 import PermissionsOverview from './components/permissions-overview.vue';
 import UsersInvite from '@/views/private/components/users-invite';
@@ -114,7 +114,6 @@ export default defineComponent({
 	},
 	setup(props) {
 		const userStore = useUserStore();
-		const permissionsStore = usePermissionsStore();
 		const userInviteModalActive = ref(false);
 		const { primaryKey } = toRefs(props);
 

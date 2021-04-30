@@ -15,6 +15,7 @@
 					: `interface-${getDefaultInterfaceForType(field.type)}`
 			"
 			v-bind="(field.meta && field.meta.options) || {}"
+			:autofocus="disabled !== true && autofocus"
 			:disabled="disabled"
 			:loading="loading"
 			:value="value === undefined ? field.schema.default_value : value"
@@ -34,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { Field } from '@/types';
 import { getInterfaces } from '@/interfaces';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
@@ -67,6 +68,10 @@ export default defineComponent({
 			default: false,
 		},
 		disabled: {
+			type: Boolean,
+			default: false,
+		},
+		autofocus: {
 			type: Boolean,
 			default: false,
 		},

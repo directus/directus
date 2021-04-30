@@ -1,9 +1,8 @@
-import { usePresetsStore, useUserStore } from '@/stores';
-import { ref, Ref, computed, watch } from '@vue/composition-api';
-import { debounce, isEqual } from 'lodash';
 import { useCollection } from '@/composables/use-collection';
-
+import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@/types/';
+import { computed, ref, Ref, watch } from '@vue/composition-api';
+import { debounce, isEqual } from 'lodash';
 
 export function usePreset(
 	collection: Ref<string>,

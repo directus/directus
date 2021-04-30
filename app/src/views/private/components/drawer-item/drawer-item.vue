@@ -36,6 +36,7 @@
 					:primary-key="relatedPrimaryKey"
 					:edits="_edits[junctionField]"
 					:fields="junctionRelatedCollectionFields"
+					autofocus
 					@input="setJunctionEdits"
 				/>
 

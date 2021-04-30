@@ -1,80 +1,74 @@
-import { Knex } from 'knex';
-import database from '../database';
-import { AbstractServiceOptions, Accountability, Query, SchemaOverview, GraphQLParams, Action, Item } from '../types';
 import argon2 from 'argon2';
 import {
-	GraphQLString,
-	GraphQLList,
-	GraphQLResolveInfo,
-	ObjectFieldNode,
-	GraphQLID,
-	FieldNode,
-	InlineFragmentNode,
-	SelectionNode,
-	GraphQLInt,
-	IntValueNode,
-	StringValueNode,
-	BooleanValueNode,
 	ArgumentNode,
-	GraphQLBoolean,
-	ObjectValueNode,
-	GraphQLUnionType,
+	BooleanValueNode,
 	execute,
-	validate,
 	ExecutionResult,
-	FormattedExecutionResult,
-	specifiedRules,
+	FieldNode,
 	formatError,
-	GraphQLFloat,
-	GraphQLError,
-	GraphQLNonNull,
+	FormattedExecutionResult,
 	FragmentDefinitionNode,
-	GraphQLSchema,
+	GraphQLBoolean,
 	GraphQLEnumType,
-	GraphQLScalarType,
+	GraphQLError,
+	GraphQLFloat,
+	GraphQLID,
+	GraphQLInt,
+	GraphQLList,
+	GraphQLNonNull,
 	GraphQLObjectType,
+	GraphQLResolveInfo,
+	GraphQLScalarType,
+	GraphQLSchema,
+	GraphQLString,
+	GraphQLUnionType,
+	InlineFragmentNode,
+	IntValueNode,
+	ObjectFieldNode,
+	ObjectValueNode,
+	SelectionNode,
+	specifiedRules,
+	StringValueNode,
+	validate,
 } from 'graphql';
+import {
+	GraphQLJSON,
+	InputTypeComposer,
+	InputTypeComposerFieldConfigMapDefinition,
+	ObjectTypeComposer,
+	ObjectTypeComposerFieldConfigMapDefinition,
+	SchemaComposer,
+	toInputObjectType,
+} from 'graphql-compose';
+import { Knex } from 'knex';
+import { flatten, get, mapKeys, merge, set, uniq } from 'lodash';
+import ms from 'ms';
+import database from '../database';
+import env from '../env';
+import { BaseException, GraphQLValidationException, InvalidPayloadException } from '../exceptions';
 import { listExtensions } from '../extensions';
+import { AbstractServiceOptions, Accountability, Action, GraphQLParams, Item, Query, SchemaOverview } from '../types';
 import { getGraphQLType } from '../utils/get-graphql-type';
-import { RelationsService } from './relations';
-import { ItemsService } from './items';
-import { set, merge, get, mapKeys, uniq, flatten } from 'lodash';
+import { reduceSchema } from '../utils/reduce-schema';
 import { sanitizeQuery } from '../utils/sanitize-query';
-
 import { ActivityService } from './activity';
 import { AuthenticationService } from './authentication';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
 import { FilesService } from './files';
 import { FoldersService } from './folders';
+import { ItemsService } from './items';
 import { PermissionsService } from './permissions';
 import { PresetsService } from './presets';
+import { RelationsService } from './relations';
 import { RevisionsService } from './revisions';
 import { RolesService } from './roles';
-import { SettingsService } from './settings';
 import { ServerService } from './server';
+import { SettingsService } from './settings';
+import { SpecificationService } from './specifications';
 import { UsersService } from './users';
 import { UtilsService } from './utils';
 import { WebhooksService } from './webhooks';
-
-import { BaseException, InvalidPayloadException, GraphQLValidationException, ForbiddenException } from '../exceptions';
-import { toArray } from '../utils/to-array';
-
-import env from '../env';
-import ms from 'ms';
-
-import { reduceSchema } from '../utils/reduce-schema';
-
-import {
-	ObjectTypeComposer,
-	ObjectTypeComposerFieldConfigMapDefinition,
-	InputTypeComposerFieldConfigMapDefinition,
-	SchemaComposer,
-	InputTypeComposer,
-	toInputObjectType,
-	GraphQLJSON,
-} from 'graphql-compose';
-import { SpecificationService } from './specifications';
 
 const GraphQLVoid = new GraphQLScalarType({
 	name: 'Void',
@@ -815,7 +809,7 @@ export class GraphQLService {
 		const args: Record<string, any> = this.parseArgs(info.fieldNodes[0].arguments || [], info.variableValues);
 		const query = this.getQuery(args, selections, info.variableValues);
 
-		if (collection.endsWith('_by_id') && this.schema.collections.hasOwnProperty(collection) === false) {
+		if (collection.endsWith('_by_id') && collection in this.schema.collections === false) {
 			collection = collection.slice(0, -6);
 		}
 
@@ -861,7 +855,7 @@ export class GraphQLService {
 		const singleton =
 			collection.endsWith('_items') === false &&
 			collection.endsWith('_item') === false &&
-			this.schema.collections.hasOwnProperty(collection);
+			collection in this.schema.collections;
 
 		const single = collection.endsWith('_items') === false;
 
@@ -1149,7 +1143,6 @@ export class GraphQLService {
 		{
 			CreateCollectionTypes,
 			ReadCollectionTypes,
-			UpdateCollectionTypes,
 			DeleteCollectionTypes,
 		}: {
 			CreateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;

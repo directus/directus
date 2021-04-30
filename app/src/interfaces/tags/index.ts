@@ -1,5 +1,5 @@
-import InterfaceTags from './tags.vue';
 import { defineInterface } from '@/interfaces/define';
+import InterfaceTags from './tags.vue';
 
 export default defineInterface({
 	id: 'tags',

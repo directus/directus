@@ -1,8 +1,8 @@
 import { InvalidForeignKeyException } from '../invalid-foreign-key';
 import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
-import { ValueTooLongException } from '../value-too-long';
 import { ValueOutOfRangeException } from '../value-out-of-range';
+import { ValueTooLongException } from '../value-too-long';
 import { PostgresError } from './types';
 
 enum PostgresErrorCodes {

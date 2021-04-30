@@ -1,7 +1,7 @@
-import Vue from 'vue';
-import { computed, onBeforeUnmount, inject, ref, provide, Ref, watch } from '@vue/composition-api';
-import { notEmpty, isEmpty } from '@/utils/is-empty/';
+import { isEmpty, notEmpty } from '@/utils/is-empty/';
+import { computed, inject, onBeforeUnmount, provide, ref, Ref, watch } from '@vue/composition-api';
 import { isEqual } from 'lodash';
+import Vue from 'vue';
 
 type GroupableInstance = {
 	active: Ref<boolean>;

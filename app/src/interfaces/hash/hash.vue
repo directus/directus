@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, onMounted, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, watch } from '@vue/composition-api';
 import i18n from '@/lang';
 
 export default defineComponent({
@@ -44,9 +44,13 @@ export default defineComponent({
 			return isHashed.value ? i18n.t('value_hashed') : props.placeholder;
 		});
 
-		watch(() => props.value, () => {
-			isHashed.value = !!(props.value && props.value.length > 0);
-		}, { immediate: true });
+		watch(
+			() => props.value,
+			() => {
+				isHashed.value = !!(props.value && props.value.length > 0);
+			},
+			{ immediate: true }
+		);
 
 		return { _placeholder, isHashed, localValue, emitValue };
 

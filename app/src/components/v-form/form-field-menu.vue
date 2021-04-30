@@ -1,18 +1,10 @@
 <template>
 	<v-list>
-		<v-list-item
-			v-if="defaultValue === null || !isRequired"
-			:disabled="value === null"
-			@click="$emit('input', null)"
-		>
+		<v-list-item v-if="defaultValue === null || !isRequired" :disabled="value === null" @click="$emit('input', null)">
 			<v-list-item-icon><v-icon name="delete_outline" /></v-list-item-icon>
 			<v-list-item-content>{{ $t('clear_value') }}</v-list-item-content>
 		</v-list-item>
-		<v-list-item
-			v-if="defaultValue !== null"
-			:disabled="value === defaultValue"
-			@click="$emit('input', defaultValue)"
-		>
+		<v-list-item v-if="defaultValue !== null" :disabled="value === defaultValue" @click="$emit('input', defaultValue)">
 			<v-list-item-icon>
 				<v-icon name="settings_backup_restore" />
 			</v-list-item-icon>
@@ -36,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from '@vue/composition-api';
+import { defineComponent, PropType, computed } from '@vue/composition-api';
 import { Field } from '@/types';
 
 export default defineComponent({
