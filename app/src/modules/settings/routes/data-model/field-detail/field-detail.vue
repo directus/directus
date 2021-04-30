@@ -99,7 +99,7 @@
 
 		<v-dialog v-model="nullValuesDialog" @esc="nullValuesDialog = false">
 			<v-card>
-				<v-card-title>Please enter a new value to replace any NULLs currently within this field.</v-card-title>
+				<v-card-title>{{ $t('enter_value_to_replace_nulls') }}</v-card-title>
 				<v-card-text>
 					<v-input placeholder="NULL" v-model="nullValueOverride" />
 				</v-card-text>
