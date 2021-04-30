@@ -11,7 +11,9 @@ add_field: Dodaj pole
 role_name: Nazwa roli
 db_only_click_to_configure: 'Tylko baza danych: Kliknij, aby skonfigurować '
 show_archived_items: Pokaż zarchiwizowane elementy
+edited: Wartość zmieniona
 required: Wymagane
+required_for_app_access: Wymagane dla Dostępu Aplikacji
 requires_value: Wymaga wartości
 create_preset: Utwórz predefiniowane ustawienia
 create_role: Stwórz rolę
@@ -20,13 +22,17 @@ create_webhook: Stwórz webhook
 invite_users: Zaproś użytkowników
 email_examples: 'admin@example.com, użytkownik@example.com...'
 invite: Zaproś
+email_already_invited: E-mail "{email}" został już zaproszony
 emails: E-maile
 connection_excellent: Doskonałe połączenie
 connection_good: Dobre połączenie
 connection_fair: Niezłe połączenie
 connection_poor: Słabe połączenie
+primary: Podstawowy
 rename_folder: Zmień nazwę folderu
 delete_folder: Usuń folder
+prefix: Przedrostek
+suffix: Przyrostek
 reset_bookmark: Zresetuj zakładkę
 rename_bookmark: Zmień nazwę zakładki
 update_bookmark: Aktualizuj zakładkę
@@ -40,6 +46,8 @@ public: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
 not_allowed: Niedozwolone
 directus_version: Wersja aplikacji Directus
+node_version: Wersja Node
+node_uptime: Czas aktywności Node
 os_type: Typ Systemu
 os_version: Wersja Systemu
 os_uptime: Czas pracy systemu
@@ -48,7 +56,13 @@ archive: Archiwum
 archive_confirm: Jesteś pewien, że chcesz zarchiwizować ten element?
 archive_confirm_count: >-
   Brak zaznaczonych elementów | Czy na pewno chcesz zarchiwizować ten element? | Czy na pewno chcesz zarchiwizować te {count} elementy?
+reset_system_permissions_to: 'Resetuj uprawnienia systemowe:'
+reset_system_permissions_copy: Ta akcja nadpisze wszelkie uprawnienia niestandardowe, które mogły być zastosowane do kolekcji systemowych. Czy jesteś pewien?
+the_following_are_minimum_permissions: Poniższe uprawnienia są wymagane, gdy "Dostęp do aplikacji" jest włączony.
+app_access_minimum: Minimalny dostęp do aplikacji
+recommended_defaults: Zalecane ustawienia domyślne
 unarchive: Przywróć z archiwum
+unarchive_confirm: Jesteś pewien, że chcesz przywrócić ten element?
 nested_files_folders_will_be_moved: Zagnieżdżone pliki i foldery zostaną przeniesione o jeden poziom.
 unknown_validation_errors: 'Wystąpiły błędy walidacji dla następujących ukrytych pól:'
 validationError:
@@ -68,20 +82,35 @@ validationError:
   nnull: Wartość nie może być pusta
   required: Wartość jest wymagana
   unique: Wartość musi być unikalna
+  regex: Wartość nie ma poprawnego formatu
 all_access: Pełny Dostęp
 no_access: Brak dostępu
 use_custom: Użyj niestandardowych
+nullable: Bez wartości
+allow_null_value: Zezwalaj na wartość NULL
 field_standard: Standard
 field_presentation: Prezentacja i aliasy
 field_file: Pojedynczy plik
 field_files: Wiele plików
+field_m2o: Powiązanie M20
+field_m2a: Powiązanie M2A
+field_o2m: Powiązanie 02M
+field_m2m: Powiązanie M2M
 field_translations: Tłumaczenia
+item_permissions: Uprawnienia
+field_permissions: Uprawnienia pola
 field_validation: Walidacja pola
+field_presets: Ustawienia pól
 permissions_for_role: 'Przedmioty roli {role} mogą {action}.'
+fields_for_role: 'Pola roli {role} mogą {action}.'
+validation_for_role: 'Pole {action} zasad roli {role} musi być przestrzegane.'
 presets_for_role: 'Wartość domyślna dla roli {role}.'
 presentation_and_aliases: Prezentacja i aliasy
 revision_post_update: Oto jak wyglądał ten element po aktualizacji...
 changes_made: To są konkretne zmiany, które zostały wprowadzone...
+no_relational_data: Pamiętaj, że nie obejmuje to danych relacyjnych.
+hide_field_on_detail: Ukryj pole w szczegółach
+show_field_on_detail: Pokaż pole w szczegółach
 delete_field: Usuń pole
 fields_and_layout: Pola i układ
 field_create_success: 'Utworzono pole: "{field}"'
@@ -91,12 +120,18 @@ language: Język
 global: Globalny
 admins_have_all_permissions: Administratorzy mają wszystkie uprawnienia
 camera: Aparat
+exposure: Ekspozycja
+shutter: Migawka
 iso: ISO
+focal_length: Długość ogniskowa
+schema_setup_key: Nazwa kolumny bazy danych i klucz API
 create_field: Stwórz pole
 creating_new_field: 'Nowe pole ({collection})'
+field_in_collection: '{field} ({collection})'
 reset_page_preferences: Resetuj ustawienia strony
 hidden_field: Ukryte pole
 hidden_on_detail: Ukryte w detalu
+disabled_editing_value: Wyłącz edycję wartości
 key: Klucz
 alias: Alias
 bigInteger: Duża liczba całkowita
@@ -114,12 +149,23 @@ timestamp: Sygnatura czasowa
 uuid: UUID
 not_available_for_type: Niedostępne dla tego typu
 create_translations: Utwórz tłumaczenia
+auto_refresh: Automatyczne odświeżanie
+refresh_interval: Częstość odświeżania
+no_refresh: Nie odświeżaj
+refresh_interval_seconds: Odśwież natychmiast | Co sekundę | Co {seconds} sekund
+refresh_interval_minutes: Co minutę | Co {minutes} minut
 auto_generate: Automatycznie generuj
 this_will_auto_setup_fields_relations: Spowoduje to automatyczne ustawienie wszystkich wymaganych pól i relacji.
 click_here: Kliknij tutaj
+to_manually_setup_translations: aby ręcznie ustawić tłumaczenia.
 click_to_manage_translated_fields: >-
   Nie ma jeszcze tłumaczonych pól. Kliknij tutaj, aby je stworzyć. | Istnieje jedno tłumaczone pole. Kliknij tutaj, aby nim zarządzać. | Istnieją {count} tłumaczone pól. Kliknij tutaj, aby nimi zarządzać.
 fields_group: Grupa pól
+no_collections_found: Nie znaleziono żadnych kolekcji.
+new_data_alert: 'W modelu danych zostaną utworzone następujące elementy:'
+search_collection: Przeszukaj kolekcje...
+new_field: 'Nowe pole'
+new_collection: 'Nowa kolekcja'
 add_m2o_to_collection: 'Dodaj relację wiele do jednego do "{collection}"'
 add_o2m_to_collection: 'Dodaj relację jeden do wielu do "{collection}"'
 add_m2m_to_collection: 'Dodaj relację wiele do wielu do "{collection}"'
@@ -133,6 +179,8 @@ multiple_files: Wiele plików
 m2o_relationship: Relacja wiele do jednego
 o2m_relationship: Relacja jeden do wielu
 m2m_relationship: Relacja wiele do wielu
+m2a_relationship: Relacja wiele do wielu
+invalid_item: Niepoprawny element
 next: Następny
 field_name: Nazwa pola
 translations: Tłumaczenia
@@ -140,6 +188,7 @@ note: Notatka
 enter_a_value: Wprowadź wartość...
 enter_a_placeholder: Wprowadź tekst zastępczy...
 length: Długość
+precision_scale: Precyzja i Skala
 readonly: Tylko do odczytu
 unique: Unikalne
 primary_key: Klucz podstawowy
@@ -635,6 +684,8 @@ value: Wartość
 view_project: Zobacz projekt
 report_error: Zgłoś błąd
 interfaces:
+  button-links:
+    primary: Podstawowy
   checkboxes:
     checkboxes: Pola wyboru
     description: Wybierz pomiędzy wieloma opcjami za pomocą pól wyboru
