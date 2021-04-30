@@ -38,7 +38,7 @@
 		"normalize-path": "^3.0.0"
 	},
 	"devDependencies": {
-		"@lukeed/uuid": "^1.0.1",
+		"@lukeed/uuid": "^2.0.0",
 		"@types/fs-extra": "^9.0.11",
 		"@types/jest": "^26.0.22",
 		"@types/node": "^15.0.1",
