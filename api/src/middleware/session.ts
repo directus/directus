@@ -13,7 +13,7 @@ if (env.SESSION_STORE === 'redis') {
 }
 
 if (env.SESSION_STORE === 'memcache') {
-	const MemcachedStore = require('connect-memcache')(expressSession);
+	const MemcachedStore = require('connect-memcached')(expressSession);
 	store = new MemcachedStore(getConfigFromEnv('SESSION_MEMCACHE_'));
 }
 
