@@ -3,14 +3,13 @@
  * See example.env for all possible keys
  */
 
-import fs from 'fs';
-import path from 'path';
-import { requireYAML } from './utils/require-yaml';
-
 import dotenv from 'dotenv';
-import { clone, toString, toNumber } from 'lodash';
-import { toArray } from './utils/to-array';
+import fs from 'fs';
+import { clone, toNumber, toString } from 'lodash';
+import path from 'path';
 import logger from './logger';
+import { requireYAML } from './utils/require-yaml';
+import { toArray } from './utils/to-array';
 
 const acceptableEnvTypes = ['string', 'number', 'regex', 'array'];
 

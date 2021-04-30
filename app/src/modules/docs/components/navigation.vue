@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref } from '@vue/composition-api';
+import { defineComponent, watch, ref } from '@vue/composition-api';
 import NavigationItem from './navigation-item.vue';
 import navLinks from './links.yaml';
 

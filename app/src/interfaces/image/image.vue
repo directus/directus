@@ -52,7 +52,6 @@ import api from '@/api';
 import formatFilesize from '@/utils/format-filesize';
 import i18n from '@/lang';
 import FileLightbox from '@/views/private/components/file-lightbox';
-import ImageEditor from '@/views/private/components/image-editor';
 import { nanoid } from 'nanoid';
 import { getRootPath } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -69,7 +68,7 @@ type Image = {
 };
 
 export default defineComponent({
-	components: { FileLightbox, ImageEditor, DrawerItem },
+	components: { FileLightbox, DrawerItem },
 	props: {
 		value: {
 			type: [String, Object],
@@ -113,7 +112,7 @@ export default defineComponent({
 			if (!image.value) return null;
 			const { filesize, width, height, type } = image.value;
 
-			return `${i18n.n(width)}x${i18n.n(height)} • ${formatFilesize(filesize)} • ${type}`;
+			return `${i18n.n(width)}x${i18n.n(height)} • ${formatFilesize(filesize)} • ${type}`;
 		});
 
 		watch(

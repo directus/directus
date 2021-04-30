@@ -1,11 +1,13 @@
 import { ErrorRequestHandler } from 'express';
+import { emitAsyncSafe } from '../emitter';
+import env from '../env';
 import { BaseException, MethodNotAllowedException } from '../exceptions';
 import logger from '../logger';
-import env from '../env';
 import { toArray } from '../utils/to-array';
-import { emitAsyncSafe } from '../emitter';
 
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+// Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
+// we don't use next
+const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 	let payload: any = {
 		errors: [],
 	};

@@ -1,9 +1,9 @@
 import { ListenerFn } from 'eventemitter2';
-import * as services from '../services';
-import * as exceptions from '../exceptions';
-import env from '../env';
-import { Knex } from 'knex';
 import { Router } from 'express';
+import { Knex } from 'knex';
+import env from '../env';
+import * as exceptions from '../exceptions';
+import * as services from '../services';
 import { getSchema } from '../utils/get-schema';
 
 export type ExtensionContext = {

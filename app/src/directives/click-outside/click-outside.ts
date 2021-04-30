@@ -24,7 +24,7 @@ interface ClickOutsideElement extends HTMLElement {
 	}[];
 }
 
-const bind = (el: HTMLElement, { value }: Partial<DirectiveBinding>) => {
+const bind = (el: HTMLElement, { value }: Partial<DirectiveBinding>): void => {
 	const { handler, middleware, events, disabled } = processValue(value);
 
 	watch(
@@ -51,7 +51,7 @@ const bind = (el: HTMLElement, { value }: Partial<DirectiveBinding>) => {
 	});
 };
 
-const unbind = (el: HTMLElement) => {
+const unbind = (el: HTMLElement): void => {
 	const handlers = (el as ClickOutsideElement).$clickOutsideHandlers || [];
 
 	handlers.forEach(({ event, handler }) => {
@@ -59,7 +59,7 @@ const unbind = (el: HTMLElement) => {
 	});
 };
 
-const update = (el: HTMLElement, { value, oldValue }: Partial<DirectiveBinding>) => {
+const update = (el: HTMLElement, { value, oldValue }: Partial<DirectiveBinding>): void => {
 	if (JSON.stringify(value) === JSON.stringify(oldValue)) {
 		return;
 	}
@@ -113,7 +113,7 @@ export function onEvent({
 	event: Event;
 	handler: Handler;
 	middleware: Middleware;
-}) {
+}): void {
 	event.stopPropagation();
 	const path = event.composedPath();
 	const isClickOutside = path ? path.indexOf(el) < 0 : el.contains(event.target as Element) === false;

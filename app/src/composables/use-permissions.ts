@@ -1,11 +1,15 @@
-import { computed, Ref } from '@vue/composition-api';
+import { usePermissionsStore, useUserStore } from '@/stores';
+import { Field } from '@/types';
+import { computed, ComputedRef, Ref } from '@vue/composition-api';
+import { cloneDeep } from 'lodash';
 import { isAllowed } from '../utils/is-allowed';
 import { useCollection } from './use-collection';
-import { useUserStore, usePermissionsStore } from '@/stores';
-import { cloneDeep } from 'lodash';
-import { Field } from '@/types';
 
-export function usePermissions(collection: Ref<string>, item: Ref<any>, isNew: Ref<boolean>) {
+export function usePermissions(
+	collection: Ref<string>,
+	item: Ref<any>,
+	isNew: Ref<boolean>
+): Record<string, ComputedRef> {
 	const userStore = useUserStore();
 	const permissionsStore = usePermissionsStore();
 

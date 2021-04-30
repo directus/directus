@@ -322,7 +322,7 @@ body {
 
 	&::after {
 		background: var(--card-face-color);
-		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
+		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -331,7 +331,7 @@ body {
 
 	&::after {
 		bottom: 2px;
-		box-shadow: 2.5px 2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
+		box-shadow: 2.5px 2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -340,7 +340,7 @@ body {
 
 	&::after {
 		top: 2px;
-		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
+		box-shadow: -2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -349,7 +349,7 @@ body {
 
 	&::after {
 		left: 2px;
-		box-shadow: -2.5px 2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
+		box-shadow: -2.5px 2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -358,7 +358,7 @@ body {
 
 	&::after {
 		right: 2px;
-		box-shadow: 2.5px -2.5px 4px 0px rgba(var(--card-shadow-color),0.2);
+		box-shadow: 2.5px -2.5px 4px 0px rgba(var(--card-shadow-color), 0.2);
 	}
 }
 
@@ -367,11 +367,10 @@ body {
 	padding: 0 4px;
 	overflow-x: hidden;
 	overflow-y: auto;
-	border-radius: var(--border-radius);
-	border: none;
 	background-color: var(--card-face-color);
-	box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color),0.2),
-							0px 0px 12px 2px rgba(var(--card-shadow-color),0.05);
+	border: none;
+	border-radius: var(--border-radius);
+	box-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color), 0.2), 0px 0px 12px 2px rgba(var(--card-shadow-color), 0.05);
 	transition-timing-function: var(--transition-out);
 	transition-duration: var(--fast);
 	transition-property: opacity, transform;

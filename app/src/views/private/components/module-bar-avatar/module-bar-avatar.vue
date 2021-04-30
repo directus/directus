@@ -56,8 +56,6 @@ export default defineComponent({
 
 		const userProfileLink = computed<string>(() => {
 			const id = userStore.state.currentUser?.id;
-			const role = userStore.state.currentUser?.role?.id;
-
 			return `/users/${id}`;
 		});
 
@@ -126,8 +124,8 @@ export default defineComponent({
 		position: absolute;
 		top: 0;
 		left: 0;
-		transition: transform var(--fast) var(--transition);
 		transform: translateY(-100%);
+		transition: transform var(--fast) var(--transition);
 
 		@include breakpoint(medium) {
 			transform: translateY(0);

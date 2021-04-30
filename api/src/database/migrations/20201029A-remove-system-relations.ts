@@ -1,14 +1,14 @@
 import { Knex } from 'knex';
 import { merge } from 'lodash';
 
-export async function up(knex: Knex) {
+export async function up(knex: Knex): Promise<void> {
 	await knex('directus_relations')
 		.delete()
 		.where('many_collection', 'like', 'directus_%')
 		.andWhere('one_collection', 'like', 'directus_%');
 }
 
-export async function down(knex: Knex) {
+export async function down(knex: Knex): Promise<void> {
 	const defaults = {
 		many_collection: 'directus_users',
 		many_field: null,

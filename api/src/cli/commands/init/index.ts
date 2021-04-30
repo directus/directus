@@ -1,24 +1,21 @@
-import chalk from 'chalk';
-import inquirer from 'inquirer';
-import { databaseQuestions } from './questions';
-import { drivers, getDriverForClient } from '../../utils/drivers';
-import createEnv from '../../utils/create-env';
-import { v4 as uuidV4 } from 'uuid';
-import execa from 'execa';
-import ora from 'ora';
-
 import argon2 from 'argon2';
-
-import runSeed from '../../../database/seeds/run';
-import runMigrations from '../../../database/migrations/run';
-
-import createDBConnection, { Credentials } from '../../utils/create-db-connection';
+import chalk from 'chalk';
+import execa from 'execa';
+import inquirer from 'inquirer';
 import { Knex } from 'knex';
+import ora from 'ora';
+import { v4 as uuidV4 } from 'uuid';
+import runMigrations from '../../../database/migrations/run';
+import runSeed from '../../../database/seeds/run';
+import createDBConnection, { Credentials } from '../../utils/create-db-connection';
+import createEnv from '../../utils/create-env';
+import { drivers, getDriverForClient } from '../../utils/drivers';
+import { databaseQuestions } from './questions';
 
-export default async function init(options: Record<string, any>) {
+export default async function init(): Promise<void> {
 	const rootPath = process.cwd();
 
-	let { client } = await inquirer.prompt([
+	const { client } = await inquirer.prompt([
 		{
 			type: 'list',
 			name: 'client',
@@ -39,7 +36,7 @@ export default async function init(options: Record<string, any>) {
 
 	async function trySeed(): Promise<{ credentials: Credentials; db: Knex }> {
 		const credentials: Credentials = await inquirer.prompt(
-			(databaseQuestions[dbClient] as any[]).map((question: Function) =>
+			(databaseQuestions[dbClient] as any[]).map((question: ({ client, filepath }: any) => any) =>
 				question({ client: dbClient, filepath: rootPath })
 			)
 		);

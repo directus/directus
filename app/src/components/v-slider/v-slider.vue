@@ -75,7 +75,7 @@ export default defineComponent({
 			if (props.value === null) return { '--_v-slider-percentage': 50 };
 
 			let percentage = ((props.value - props.min) / (props.max - props.min)) * 100;
-			if (percentage === NaN) percentage = 0;
+			if (isNaN(percentage)) percentage = 0;
 			return { '--_v-slider-percentage': percentage };
 		});
 

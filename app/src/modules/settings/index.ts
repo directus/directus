@@ -1,23 +1,23 @@
-import { defineModule } from '@/modules/define';
-import Project from './routes/project/project.vue';
-import Collections from './routes/data-model/collections/collections.vue';
-import NewCollection from './routes/data-model/new-collection.vue';
-import Fields from './routes/data-model/fields/fields.vue';
-import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
-import RolesCollection from './routes/roles/collection.vue';
-import RolesPublicItem from './routes/roles/public-item.vue';
-import RolesPermissionsDetail from './routes/roles/permissions-detail/permissions-detail.vue';
-import RolesItem from './routes/roles/item/item.vue';
-import PresetsCollection from './routes/presets/collection/collection.vue';
-import PresetsItem from './routes/presets/item.vue';
-import WebhooksCollection from './routes/webhooks/collection.vue';
-import WebhooksItem from './routes/webhooks/item.vue';
-import NewRole from './routes/roles/add-new.vue';
-import NotFound from './routes/not-found.vue';
 import api from '@/api';
 import { useCollection } from '@/composables/use-collection';
-import { ref } from '@vue/composition-api';
+import { defineModule } from '@/modules/define';
 import { useCollectionsStore, useFieldsStore } from '@/stores';
+import { ref } from '@vue/composition-api';
+import Collections from './routes/data-model/collections/collections.vue';
+import FieldDetail from './routes/data-model/field-detail/field-detail.vue';
+import Fields from './routes/data-model/fields/fields.vue';
+import NewCollection from './routes/data-model/new-collection.vue';
+import NotFound from './routes/not-found.vue';
+import PresetsCollection from './routes/presets/collection/collection.vue';
+import PresetsItem from './routes/presets/item.vue';
+import Project from './routes/project/project.vue';
+import NewRole from './routes/roles/add-new.vue';
+import RolesCollection from './routes/roles/collection.vue';
+import RolesItem from './routes/roles/item/item.vue';
+import RolesPermissionsDetail from './routes/roles/permissions-detail/permissions-detail.vue';
+import RolesPublicItem from './routes/roles/public-item.vue';
+import WebhooksCollection from './routes/webhooks/collection.vue';
+import WebhooksItem from './routes/webhooks/item.vue';
 
 export default defineModule({
 	id: 'settings',

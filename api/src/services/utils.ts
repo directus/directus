@@ -1,8 +1,8 @@
-import { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
-import database from '../database';
 import { Knex } from 'knex';
-import { InvalidPayloadException, ForbiddenException } from '../exceptions';
+import database from '../database';
 import { systemCollectionRows } from '../database/system-data/collections';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { AbstractServiceOptions, Accountability, PrimaryKey, SchemaOverview } from '../types';
 
 export class UtilsService {
 	knex: Knex;
@@ -15,7 +15,7 @@ export class UtilsService {
 		this.schema = options.schema;
 	}
 
-	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }) {
+	async sort(collection: string, { item, to }: { item: PrimaryKey; to: PrimaryKey }): Promise<void> {
 		const sortFieldResponse =
 			(await this.knex.select('sort_field').from('directus_collections').where({ collection }).first()) ||
 			systemCollectionRows;

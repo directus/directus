@@ -75,7 +75,7 @@ export default defineComponent({
 
 			let markdown = body;
 
-			const rawImages = body.matchAll(/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/g) ?? [];
+			const rawImages = body.matchAll(/!\[[^\]]*\]\((?<filename>.*?)(?="|\))(?<optionalpart>".*")?\)/g) ?? [];
 			const rootPath = getRootPath();
 
 			for (const rawImage of rawImages) {

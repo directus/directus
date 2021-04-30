@@ -5,7 +5,7 @@ import { promisify } from 'util';
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
 
-export default async function listFolders(location: string) {
+export default async function listFolders(location: string): Promise<string[]> {
 	const fullPath = path.resolve(location);
 	const files = await readdir(fullPath);
 

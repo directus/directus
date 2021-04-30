@@ -329,7 +329,6 @@ export default defineComponent({
 							} else {
 								val[anyRelation.value.many_field] = cloneDeep(item);
 							}
-						} else {
 						}
 
 						return val;
@@ -338,10 +337,10 @@ export default defineComponent({
 				if (o2mRelation.value?.sort_field) {
 					return [
 						...values
-							.filter((val) => val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.filter((val) => o2mRelation.value.sort_field! in val)
 							.sort((a, b) => a[o2mRelation.value.sort_field!] - b[o2mRelation.value.sort_field!]), // sort by sort field if it exists
 						...values
-							.filter((val) => !val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.filter((val) => o2mRelation.value.sort_field! in val === false)
 							.sort((a, b) => a.$index - b.$index), // sort the rest with $index
 					];
 				} else {

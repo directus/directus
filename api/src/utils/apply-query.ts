@@ -1,9 +1,9 @@
 import { Knex } from 'knex';
-import { Query, Filter, Relation, SchemaOverview } from '../types';
-import { clone, isPlainObject, get, set } from 'lodash';
-import { systemRelationRows } from '../database/system-data/relations';
+import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
+import { systemRelationRows } from '../database/system-data/relations';
+import { Filter, Query, Relation, SchemaOverview } from '../types';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -12,8 +12,8 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	subQuery: boolean = false
-) {
+	subQuery = false
+): void {
 	if (query.sort) {
 		dbQuery.orderBy(
 			query.sort.map((sort) => ({
@@ -49,8 +49,8 @@ export function applyFilter(
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
 	collection: string,
-	subQuery: boolean = false
-) {
+	subQuery = false
+): void {
 	const relations: Relation[] = [...schema.relations, ...systemRelationRows];
 
 	const aliasMap: Record<string, string> = {};
@@ -332,7 +332,7 @@ export async function applySearch(
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string
-) {
+): Promise<void> {
 	const fields = Object.entries(schema.collections[collection].fields);
 
 	dbQuery.andWhere(function () {

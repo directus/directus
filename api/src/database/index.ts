@@ -1,13 +1,12 @@
-import { knex, Knex } from 'knex';
-import dotenv from 'dotenv';
-import path from 'path';
-import logger from '../logger';
-import env from '../env';
-import { validateEnv } from '../utils/validate-env';
-import { performance } from 'perf_hooks';
-
 import SchemaInspector from '@directus/schema';
+import dotenv from 'dotenv';
+import { knex, Knex } from 'knex';
+import path from 'path';
+import { performance } from 'perf_hooks';
+import env from '../env';
+import logger from '../logger';
 import { getConfigFromEnv } from '../utils/get-config-from-env';
+import { validateEnv } from '../utils/validate-env';
 
 dotenv.config({ path: path.resolve(__dirname, '../../', '.env') });
 
@@ -55,7 +54,7 @@ database
 		logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings.join(', ')}]`);
 	});
 
-export async function hasDatabaseConnection() {
+export async function hasDatabaseConnection(): Promise<boolean> {
 	try {
 		if (env.DB_CLIENT === 'oracledb') {
 			await database.raw('select 1 from DUAL');
@@ -68,7 +67,7 @@ export async function hasDatabaseConnection() {
 	}
 }
 
-export async function validateDBConnection() {
+export async function validateDBConnection(): Promise<void> {
 	try {
 		await hasDatabaseConnection();
 	} catch (error) {
@@ -80,7 +79,7 @@ export async function validateDBConnection() {
 
 export const schemaInspector = SchemaInspector(database);
 
-export async function isInstalled() {
+export async function isInstalled(): Promise<boolean> {
 	// The existence of a directus_collections table alone isn't a "proper" check to see if everything
 	// is installed correctly of course, but it's safe enough to assume that this collection only
 	// exists when using the installer CLI.

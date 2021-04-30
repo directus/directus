@@ -1,7 +1,7 @@
-import Vue from 'vue';
-import { computed, onBeforeUnmount, inject, ref, provide, Ref, watch } from '@vue/composition-api';
-import { notEmpty, isEmpty } from '@/utils/is-empty/';
+import { isEmpty, notEmpty } from '@/utils/is-empty/';
+import { computed, inject, onBeforeUnmount, provide, ref, Ref, watch } from '@vue/composition-api';
 import { isEqual } from 'lodash';
+import Vue from 'vue';
 
 type GroupableInstance = {
 	active: Ref<boolean>;
@@ -19,19 +19,22 @@ type GroupableOptions = {
 	watch?: boolean;
 };
 
-export function useGroupable(options?: GroupableOptions) {
+export function useGroupable(options?: GroupableOptions): Record<string, any> {
 	// Injects the registration / toggle functions from the parent scope
 	const parentFunctions = inject(options?.group || 'item-group', null);
 
 	if (isEmpty(parentFunctions)) {
 		return {
 			active: ref(false),
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			toggle: () => {},
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			activate: () => {},
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			deactivate: () => {},
+			toggle: () => {
+				// Do nothing
+			},
+			activate: () => {
+				// Do nothing
+			},
+			deactivate: () => {
+				// Do nothing
+			},
 		};
 	}
 
@@ -104,7 +107,7 @@ export function useGroupableParent(
 	state: GroupableParentState = {},
 	options: GroupableParentOptions = {},
 	group = 'item-group'
-) {
+): Record<string, any> {
 	// References to the active state and value of the individual child items
 	const items = ref<GroupableInstance[]>([]);
 

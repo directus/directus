@@ -10,12 +10,7 @@
 	>
 		<template v-if="customLogoPath">
 			<transition name="fade">
-				<v-progress-linear
-					indeterminate
-					rounded
-					v-if="showLoader"
-					@animationiteration="stopSpinnerIfQueueIsEmpty"
-				/>
+				<v-progress-linear indeterminate rounded v-if="showLoader" @animationiteration="stopSpinnerIfQueueIsEmpty" />
 			</transition>
 			<img class="custom-logo" :src="customLogoPath" alt="Project Logo" />
 		</template>

@@ -3,7 +3,7 @@ import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
 
 export default class Postgres extends KnexPostgres implements SchemaInspector {
-	async overview() {
+	async overview(): Promise<SchemaOverview> {
 		const [columnsResult, primaryKeysResult] = await Promise.all([
 			// Only select columns from BASE TABLEs to exclude views (Postgres views
 			// cannot have primary keys so they cannot be used)

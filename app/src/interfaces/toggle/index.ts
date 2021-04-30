@@ -1,5 +1,5 @@
-import InterfaceToggle from './toggle.vue';
 import { defineInterface } from '@/interfaces/define';
+import InterfaceToggle from './toggle.vue';
 
 export default defineInterface({
 	id: 'toggle',

@@ -235,7 +235,7 @@ export default defineComponent({
 			}
 		);
 
-		const { edit } = useEdit(codemirror, props.customSyntax);
+		const { edit } = useEdit(codemirror);
 
 		const html = computed(() => {
 			let md = props.value || '';
@@ -353,8 +353,8 @@ textarea {
 
 .toolbar {
 	display: flex;
-	align-items: center;
 	flex-wrap: wrap;
+	align-items: center;
 	min-height: 40px;
 	padding: 0 4px;
 	background-color: var(--background-subdued);

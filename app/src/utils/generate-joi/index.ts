@@ -25,7 +25,7 @@ const Joi = BaseJoi.extend({
 			method(substring) {
 				return this.$_addRule({ name: 'contains', args: { substring } });
 			},
-			validate(value, helpers, { substring }, options) {
+			validate(value, helpers, { substring }) {
 				if (value.includes(substring) === false) {
 					return helpers.error('string.contains', { substring });
 				}
@@ -45,7 +45,7 @@ const Joi = BaseJoi.extend({
 			method(substring) {
 				return this.$_addRule({ name: 'ncontains', args: { substring } });
 			},
-			validate(value, helpers, { substring }, options) {
+			validate(value, helpers, { substring }) {
 				if (value.includes(substring) === true) {
 					return helpers.error('string.ncontains', { substring });
 				}
@@ -64,7 +64,7 @@ const defaults: JoiOptions = {
 	allowUnknown: true,
 };
 
-export default function generateJoi(filter: Record<string, any> | null, options?: JoiOptions) {
+export default function generateJoi(filter: Record<string, any> | null, options?: JoiOptions): any {
 	filter = filter || {};
 
 	options = {

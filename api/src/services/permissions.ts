@@ -1,16 +1,15 @@
-import { AbstractServiceOptions, PermissionsAction, Query, Item, PrimaryKey } from '../types';
-import { ItemsService, MutationOptions, QueryOptions } from '../services/items';
-import { filterItems } from '../utils/filter-items';
-import logger from '../logger';
-
 import { appAccessMinimalPermissions } from '../database/system-data/app-access-permissions';
+import logger from '../logger';
+import { ItemsService, QueryOptions } from '../services/items';
+import { AbstractServiceOptions, Item, PermissionsAction, PrimaryKey, Query } from '../types';
+import { filterItems } from '../utils/filter-items';
 
 export class PermissionsService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_permissions', options);
 	}
 
-	getAllowedFields(action: PermissionsAction, collection?: string) {
+	getAllowedFields(action: PermissionsAction, collection?: string): Record<string, string[]> {
 		const results = this.schema.permissions.filter((permission) => {
 			let matchesCollection = true;
 
@@ -18,7 +17,9 @@ export class PermissionsService extends ItemsService {
 				matchesCollection = permission.collection === collection;
 			}
 
-			return permission.action === action;
+			const matchesAction = permission.action === action;
+
+			return collection ? matchesCollection && matchesAction : matchesAction;
 		});
 
 		const fieldsPerCollection: Record<string, string[]> = {};

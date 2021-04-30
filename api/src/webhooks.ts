@@ -1,13 +1,13 @@
-import { Webhook } from './types';
-import emitter from './emitter';
-import database from './database';
-import { ListenerFn } from 'eventemitter2';
 import axios from 'axios';
+import { ListenerFn } from 'eventemitter2';
+import database from './database';
+import emitter from './emitter';
 import logger from './logger';
+import { Webhook } from './types';
 
 let registered: { event: string; handler: ListenerFn }[] = [];
 
-export async function register() {
+export async function register(): Promise<void> {
 	unregister();
 
 	const webhooks = await database.select<Webhook[]>('*').from('directus_webhooks').where({ status: 'active' });
@@ -29,7 +29,7 @@ export async function register() {
 	}
 }
 
-export function unregister() {
+export function unregister(): void {
 	for (const { event, handler } of registered) {
 		emitter.off(event, handler);
 	}

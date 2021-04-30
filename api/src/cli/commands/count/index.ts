@@ -1,4 +1,4 @@
-export default async function count(collection: string) {
+export default async function count(collection: string): Promise<void> {
 	const database = require('../../../database/index').default;
 
 	if (!collection) {
