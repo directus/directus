@@ -840,6 +840,7 @@ template: Szablon
 translation: Tłumaczenia
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 interfaces:
   button-links:
@@ -1017,39 +1018,71 @@ interfaces:
     no_collection: Brak kolekcji
   tree-view:
     description: Widok drzewa dla zagnieżdżonych rekursywnych elementów od jednego do wielu
+    recursive_only: Interfejs widoku drzewa działa tylko dla relacji rekurencyjnych.
   user:
     user: Użytkownik
+    description: Wybierz istniejącego użytkownika
+    select_mode: Wybierz tryb
     modes:
+      auto: Automatycznie
       dropdown: Lista rozwijana
       modal: Okno
   wysiwyg:
     wysiwyg: WYSIWYG
+    description: Edytor zawartość HTML
     toolbar: Pasek narzędzi
     custom_formats: Niestandardowe formaty
+    options_override: Zastąp opcje
 displays:
   boolean:
     boolean: Wartość logiczna
+    description: Wyświetlaj włącz/wyłącz
     label_on: Etykieta włączona
+    label_on_placeholder: Wprowadź etykietę...
+    label_off: Etykieta włączona
+    label_off_placeholder: Wprowadź wyłączoną etykietę...
     icon_on: Ikona włączona
     icon_off: Ikona wyłączona
+    color_on: Kolor włączony
+    color_off: Kolor wyłączony
   collection:
     collection: Kolekcja
     description: Wyświetl kolekcję
     icon_label: Pokaż ikonę kolekcji
   color:
     color: Kolor
+    description: Wyświetl kolorową kropkę
+    default_color: Domyślny kolor
   datetime:
     datetime: Data i godzina
+    description: Wyświetlaj wartości związane z czasem
     format: Formatowanie
+    format_note: >-
+      Niestandardowy format akceptuje __[tabelę symboli daty w polu daty](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Długi
+    short: Krótki
+    relative: Względny
+    relative_label: 'Pokaż czas względny, np. 5 minut temu'
   file:
     file: Plik
     description: Wyświetl pliki
   filesize:
     filesize: Rozmiar pliku
+    description: Wyświetl rozmiar pliku
+  formatted-value:
+    formatted-value: Wartość sformatowana
+    description: Wyświetl sformatowaną wersję tekstu
+    format_title: Format tytułu
+    format_title_label: Automatyczny format
+    bold_label: Ustaw styl pogrubiony
+  formatted-json-value:
+    formatted-json-value: Sformatowana wartość JSON
+    description: Wyświetl sformatowaną wersję obiektu
   icon:
     icon: Ikona
     description: Wyświetl ikonę
     filled: Wypełniony
+    filled_label: Użyj wypełnionego wariantu
   image:
     image: Obraz
     description: Wyświetl mały podgląd obrazu
@@ -1057,6 +1090,9 @@ displays:
     circle_label: Wyświetl jako okrąg
   labels:
     labels: Etykiety
+    description: Wyświetlaj pojedynczą lub listę etykiet
+    default_foreground: Domyślny Foreground
+    default_background: Domyślne tło
     format_label: Formatuj każdą etykietę
     show_as_dot: Pokaż jako kropkę
     choices_value_placeholder: Wprowadź wartość...
@@ -1071,10 +1107,14 @@ displays:
     description: Wizualizuj liczbę jako gwiazdkę względem wartości maksymalnej
     simple: Prosty
     simple_label: Pokaż gwiazdki w prostym formacie
+  raw:
+    raw: Wartość surowa
   related-values:
     related-values: Powiązane wartości
+    description: Wyświetl wartości Raw
   user:
     user: Użytkownik
+    description: Wyświetl użytkownika
     avatar: Awatar
     name: Nazwa
     both: Oba
@@ -1083,7 +1123,9 @@ layouts:
   cards:
     cards: Karty
     image_source: Źródło obrazu
+    image_fit: Dopasuj obraz
     crop: Przytnij
+    contain: Zawiera
     title: Tytuł
     subtitle: Subtytuł
   tabular:
