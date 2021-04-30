@@ -408,6 +408,7 @@ errors:
   ROUTE_NOT_FOUND: Not found
   RECORD_NOT_UNIQUE: Duplicate value detected
   USER_SUSPENDED: User Suspended
+  CONTAINS_NULL_VALUES: Field contains null values
   UNKNOWN: Unexpected Error
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
