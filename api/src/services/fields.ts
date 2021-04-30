@@ -8,6 +8,7 @@ import { systemFieldRows } from '../database/system-data/fields/';
 import emitter, { emitAsyncSafe } from '../emitter';
 import env from '../env';
 import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { translateDatabaseError } from '../exceptions/database/translate';
 import { ItemsService } from '../services/items';
 import { PayloadService } from '../services/payload';
 import { AbstractServiceOptions, Accountability, FieldMeta, SchemaOverview, types } from '../types';
@@ -253,10 +254,15 @@ export class FieldsService {
 
 		if (field.schema) {
 			const existingColumn = await this.schemaInspector.columnInfo(collection, field.field);
-			await this.knex.schema.alterTable(collection, (table) => {
-				if (!field.schema) return;
-				this.addColumnToTable(table, field, existingColumn);
-			});
+
+			try {
+				await this.knex.schema.alterTable(collection, (table) => {
+					if (!field.schema) return;
+					this.addColumnToTable(table, field, existingColumn);
+				});
+			} catch (err) {
+				throw await translateDatabaseError(err);
+			}
 		}
 
 		if (field.meta) {
