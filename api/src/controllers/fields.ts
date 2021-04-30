@@ -93,7 +93,7 @@ router.post(
 			throw new InvalidPayloadException(error.message);
 		}
 
-		const field: Partial<Field> & { field: string; type: typeof types[number] } = req.body;
+		const field: Partial<Field> & { field: string; type: typeof types[number] | null } = req.body;
 
 		await service.createField(req.params.collection, field);
 

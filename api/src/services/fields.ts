@@ -186,7 +186,7 @@ export class FieldsService {
 		try {
 			column = await this.schemaInspector.columnInfo(collection, field);
 			column.default_value = getDefaultValue(column);
-		} finally {
+		} catch {
 			// Do nothing
 		}
 
@@ -203,7 +203,7 @@ export class FieldsService {
 
 	async createField(
 		collection: string,
-		field: Partial<Field> & { field: string; type: typeof types[number] },
+		field: Partial<Field> & { field: string; type: typeof types[number] | null },
 		table?: Knex.CreateTableBuilder // allows collection creation to
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
