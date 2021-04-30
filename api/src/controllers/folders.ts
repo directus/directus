@@ -95,7 +95,7 @@ router.get(
 );
 
 router.patch(
-	'/:collection',
+	'/',
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
 		const service = new FoldersService({
