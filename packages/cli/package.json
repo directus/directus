@@ -62,6 +62,7 @@
 		"marked": "^2.0.3",
 		"marked-terminal": "^4.1.1",
 		"merge-options": "^3.0.4",
+		"pretty-ms": "^7.0.1",
 		"shimmer": "^1.2.1",
 		"strip-ansi": "^6.0.0",
 		"strip-indent": "^3.0.0",
