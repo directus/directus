@@ -44,6 +44,7 @@ import schema from './middleware/schema';
 import { track } from './utils/track';
 import { validateEnv } from './utils/validate-env';
 import { register as registerWebhooks } from './webhooks';
+import { session } from './middleware/session';
 
 export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
@@ -126,6 +127,9 @@ export default async function createApp(): Promise<express.Application> {
 	if (env.RATE_LIMITER_ENABLED === true) {
 		app.use(rateLimiter);
 	}
+
+	// We only rely on cookie-sessions in the oAuth flow where it's required
+	app.use(session);
 
 	app.use(authenticate);
 
