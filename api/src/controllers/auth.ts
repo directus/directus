@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import session from 'express-session';
 import grant from 'grant';
 import Joi from 'joi';
 import ms from 'ms';
@@ -218,8 +217,6 @@ router.get(
 	}),
 	respond
 );
-
-router.use('/oauth', session({ secret: env.SECRET as string, saveUninitialized: false, resave: false }));
 
 router.get(
 	'/oauth/:provider',
