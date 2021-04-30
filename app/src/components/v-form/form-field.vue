@@ -31,6 +31,7 @@
 		<div class="label-spacer" v-else-if="['full', 'fill'].includes(field.meta && field.meta.width) === false" />
 
 		<form-field-interface
+			:autofocus="autofocus"
 			:value="_value"
 			:field="field"
 			:loading="loading"
@@ -111,6 +112,10 @@ export default defineComponent({
 		validationError: {
 			type: Object as PropType<ValidationError>,
 			default: null,
+		},
+		autofocus: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	setup(props, { emit }) {
