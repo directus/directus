@@ -20,7 +20,7 @@
 		<form-field
 			v-for="(field, index) in formFields"
 			:field="field"
-			:autofocus="index === firstEditableFieldIndex && autofocusOnFirstItem"
+			:autofocus="index === firstEditableFieldIndex && autofocus"
 			:key="field.field"
 			:value="(edits || {})[field.field]"
 			:initial-value="(initialValues || {})[field.field]"
@@ -96,7 +96,7 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
-		autofocusOnFirstItem: {
+		autofocus: {
 			type: Boolean,
 			default: false,
 		},
