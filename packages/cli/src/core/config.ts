@@ -1,9 +1,11 @@
 import * as path from 'path';
 import * as yaml from 'js-yaml';
 import fse from 'fs-extra';
+import JSON5 from 'json5';
+import { Liquid } from 'liquidjs';
 
 import { IConfiguration, IBaseConfiguration, IStaticConfiguration } from '../config';
-import { cosmiconfigSync as cosmiconfig } from 'cosmiconfig';
+import { cosmiconfigSync, defaultLoaders } from 'cosmiconfig';
 
 export type BaseConfigurationOptions<T> = {
 	defaults: T;
@@ -43,11 +45,22 @@ export type StaticConfigurationOptions<T> = BaseConfigurationOptions<T> & {
 export class StaticConfiguration<T extends object = any>
 	extends BaseConfiguration<T, StaticConfigurationOptions<T>>
 	implements IStaticConfiguration<T> {
+	private engine: Liquid;
+
 	constructor(options: StaticConfigurationOptions<T>) {
 		super(options);
+		this.engine = new Liquid();
 
-		const explorer = cosmiconfig(this._options.name, {
+		const explorer = cosmiconfigSync(this._options.name, {
 			searchPlaces: this._options.files,
+			loaders: {
+				noExt: this.loadJson.bind(this),
+				'.js': defaultLoaders['.js'],
+				'.json': this.loadJson.bind(this),
+				'.json5': this.loadJson.bind(this),
+				'.yml': this.loadYaml.bind(this),
+				'.yaml': this.loadYaml.bind(this),
+			},
 		});
 
 		const result = explorer.search();
@@ -55,6 +68,20 @@ export class StaticConfiguration<T extends object = any>
 			this._data = result.config;
 			this._path = result.filepath;
 		}
+	}
+
+	private loadJson(_: string, content: string): Object | null {
+		return JSON5.parse(this.transform(content));
+	}
+
+	private loadYaml(_: string, content: string): Object | null {
+		return yaml.load(this.transform(content)) as object;
+	}
+
+	private transform(content: string): string {
+		return this.engine.parseAndRenderSync(content, {
+			env: process.env,
+		});
 	}
 }
 

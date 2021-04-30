@@ -62,12 +62,15 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 
 	let extensionsPath = process.env.EXTENSIONS_PATH ?? './extensions';
 
-	if (config.project.data.experimental?.typescript?.tsconfig) {
-		const project = config.project.data.experimental.typescript.tsconfig;
+	if (config.project.data.experimental?.cli?.typescript?.enabled) {
+		const project = config.project.data.experimental?.cli?.typescript.tsconfig || './tsconfig.json';
 		if (fs.existsSync(project)) {
 			if (!hasTsNode()) {
 				if (!fs.existsSync('./node_modules/ts-node')) {
-					const error = new Error("Couldn't find ts-node package");
+					const error = new CLIRuntimeError(`
+						You're using experimental typescript support on the cli, but we couldn't find "ts-node" package installed.
+						Please make sure to install it before proceeding.
+					`);
 					await output.error(error);
 					return {
 						output,
@@ -79,7 +82,14 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 					project: path.resolve(project),
 				});
 			}
+		} else {
+			throw new CLIRuntimeError(`
+				You're using experimental typescript support on the cli, but we couldn't find the typescript project file.
+				Please make sure to configure it properly. The current value is "${project}"
+			`);
 		}
+
+		extensionsPath = path.resolve(config.project.data.experimental?.cli?.typescript?.source || extensionsPath);
 	}
 
 	const loading = {
@@ -147,14 +157,18 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 		runtime.addExtension(extension, require(path.join(__dirname, `core/extensions/${extension}`)))
 	);
 
-	if (config.project.data.experimental?.community_extensions) {
-		runtime.addPlugins('./node_modules', { matching: 'directus-cli-*', hidden: false });
-		runtime.addPlugins('./node_modules', { matching: 'directus-*-cli', hidden: false });
-		runtime.addPlugins('./node_modules', { matching: '@directus/*-cli', hidden: false });
-		runtime.addPlugins('./node_modules', { matching: '@directus/cli-*', hidden: false });
+	if (config.project.data.experimental?.cli?.community_extensions) {
+		// This isn't decided yet, please don't publish packages to npm until we have decided
+		// if we'll have a naming pattern and what it's going to be.
+		// TODO: Disabled to discourage usage/tests until final release and decision regarding this
+		// runtime.addPlugins('./node_modules', { matching: 'directus-cli-*', hidden: false });
+		// runtime.addPlugins('./node_modules', { matching: 'directus-*-cli', hidden: false });
+		// runtime.addPlugins('./node_modules', { matching: '@directus/*-cli', hidden: false });
+		// runtime.addPlugins('./node_modules', { matching: '@directus/cli-*', hidden: false });
 	}
 
 	const cliExtensionDir = path.resolve(extensionsPath, 'cli');
+
 	if (fs.existsSync(cliExtensionDir)) {
 		runtime.addPlugin(cliExtensionDir, {
 			name: 'directus-project',

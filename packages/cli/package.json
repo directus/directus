@@ -41,6 +41,7 @@
 	"dependencies": {
 		"@directus/format-title": "9.0.0-rc.61",
 		"@directus/sdk": "9.0.0-rc.61",
+		"@types/yargs": "^15.0.13",
 		"app-module-path": "^2.2.0",
 		"chalk": "^4.1.0",
 		"cli-highlight": "^2.1.11",
@@ -59,6 +60,7 @@
 		"joi": "^17.4.0",
 		"js-yaml": "^4.1.0",
 		"json5": "^2.2.0",
+		"liquidjs": "^9.23.4",
 		"marked": "^2.0.3",
 		"marked-terminal": "^4.1.1",
 		"merge-options": "^3.0.4",
@@ -74,7 +76,6 @@
 		"@types/jest": "^26.0.23",
 		"@types/js-yaml": "^4.0.0",
 		"@types/marked-terminal": "^3.1.1",
-		"@types/yargs": "^15.0.13",
 		"jest": "^26.6.3",
 		"nock": "^13.0.10",
 		"npm-run-all": "^4.1.5",

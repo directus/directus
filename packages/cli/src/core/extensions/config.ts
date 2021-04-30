@@ -17,27 +17,33 @@ export const system = new YamlConfiguration<SystemConfiguration>({
 export const project = new StaticConfiguration<ProjectConfiguration>({
 	name: 'directus',
 	files: [
-		'package.json',
+		'.directus',
 		'.directus.yml',
-		'.directusrc.yml',
 		'.directus.yaml',
-		'.directusrc.yaml',
-		'.directus.js',
-		'.directusrc.js',
 		'.directus.json',
+		'.directus.js',
+		'.directusrc',
+		'.directusrc.yml',
+		'.directusrc.yaml',
 		'.directusrc.json',
-		'directus.config.js',
+		'.directusrc.json5',
+		'.directusrc.js',
+		'directus.config.yml',
+		'directus.config.yaml',
 		'directus.config.json',
+		'directus.config.json5',
+		'directus.config.js',
 	],
 	defaults: {
 		instance: 'default' in system.data.instances ? 'default' : undefined,
-		dev: {
-			root: process.cwd(),
-		},
 		experimental: {
-			community_extensions: !!process.env.EXPERIMENTAL_COMMUNITY_EXTENSIONS,
-			typescript: {
-				tsconfig: undefined,
+			cli: {
+				community_extensions: !!process.env.EXPERIMENTAL_CLI_COMMUNITY_EXTENSIONS,
+				typescript: {
+					enabled: false,
+					tsconfig: './tsconfig.json',
+					source: undefined,
+				},
 			},
 		},
 	},

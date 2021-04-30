@@ -124,13 +124,22 @@ export default (toolbox: Toolbox) => {
 
 	toolbox.options.register((builder, command) => {
 		const features = Object.entries(normalizeFeatures(command.settings?.features?.stdin!));
+
 		features.forEach(([name, feature]) => {
-			builder = builder.option(name, {
-				type: 'string',
-				choices: feature.formats as string[],
-				description: feature.description,
-				demandOption: feature.required,
-			});
+			if (feature.formats.length == 1) {
+				builder = builder.option(name, {
+					type: 'boolean',
+					description: feature.description,
+					demandOption: feature.required,
+				});
+			} else {
+				builder = builder.option(name, {
+					type: 'string',
+					choices: feature.formats as string[],
+					description: feature.description,
+					demandOption: feature.required,
+				});
+			}
 		});
 		return builder;
 	});
@@ -149,29 +158,33 @@ export default (toolbox: Toolbox) => {
 
 		const key = found[0]!;
 		const feature = features[key]!;
-		const requested = options[key] as StdinFormats;
-
 		const conflicts = (feature.exclusive as string[]).filter((key) => key in options);
 		if (conflicts.length > 0) {
 			throw new CLIRuntimeError(`You can't use these options with --${key}: ${toFlags(conflicts)}`);
 		}
 
-		if (feature.formats.indexOf(requested) < 0) {
-			throw new CLIRuntimeError(`Unsupported format ${requested} on --${key}`);
+		let requested = options[key] as StdinFormats | boolean;
+		if (feature.formats.length == 1) {
+			if (typeof requested !== 'boolean' || !requested) {
+				throw new CLIRuntimeError(`Unknown stdin format "${requested}"`);
+			}
+			requested = feature.formats[0] as StdinFormats;
+		} else {
+			if (feature.formats.indexOf(`${requested}` as StdinFormats) < 0) {
+				throw new CLIRuntimeError(`Unsupported format ${requested} on --${key}`);
+			}
 		}
 
 		if (!process.stdin.readable) {
-			throw new CLIRuntimeError('Unable to open stdin stream. Did you forget a pipe?');
+			throw new CLIRuntimeError('Unable to open stdin stream.');
 		}
-
-		console.log({ key, feature, requested, conflicts });
 
 		if (requested === 'json') {
 			toolbox.stdin = parseJson((await readBuffer(process.stdin)).toString());
 		} else if (requested === 'yaml') {
 			toolbox.stdin = parseYaml((await readBuffer(process.stdin)).toString());
 		} else if (requested === 'text') {
-			toolbox.stdin = await readBuffer(process.stdin).toString();
+			toolbox.stdin = (await readBuffer(process.stdin)).toString();
 		} else if (requested === 'binary') {
 			toolbox.stdin = await readBuffer(process.stdin);
 		} else if (requested === 'stream') {

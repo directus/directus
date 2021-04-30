@@ -32,7 +32,7 @@ export default (toolbox: Toolbox) => {
 		if (instance?.auth === 'token') {
 			await sdk.auth.static(instance.data?.auth_token);
 		} else if (instance?.auth === 'credentials') {
-			await sdk.auth.refresh();
+			await sdk.auth.refresh(true);
 			toolbox.config.system.save();
 		}
 

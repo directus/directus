@@ -14,13 +14,14 @@ export type SystemConfiguration = {
 
 export type ProjectConfiguration = {
 	instance?: string;
-	dev?: {
-		root?: string;
-	};
 	experimental?: {
-		community_extensions?: boolean;
-		typescript?: {
-			tsconfig?: string;
+		cli?: {
+			community_extensions?: boolean;
+			typescript?: {
+				enabled?: boolean;
+				tsconfig?: string;
+				source?: string;
+			};
 		};
 	};
 };

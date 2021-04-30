@@ -3,16 +3,19 @@
 const fs = require('fs');
 const path = require('path');
 
+const enabledDev = !!process.env.DIRECTUS_CLI_DEV;
+
+const wantsGlobal = enabledDev && process.argv.indexOf('--use-global') >= 0;
 const entrypoint = path.resolve('./node_modules/@directus/cli/bin/directus.js');
-if (__filename !== entrypoint && fs.existsSync(entrypoint)) {
+if (__filename !== entrypoint && fs.existsSync(entrypoint) && !wantsGlobal) {
 	require(entrypoint);
 	return;
 }
 
 require('dotenv').config();
 
-const devMode = require('fs').existsSync(`${__dirname}/../src`);
-const wantsCompiled = process.argv.indexOf('--compiled-build') >= 0;
+const devMode = enabledDev && require('fs').existsSync(`${__dirname}/../src`);
+const wantsCompiled = enabledDev && process.argv.indexOf('--use-compiled') >= 0;
 
 async function main(run, ts = false) {
 	const debug = require('debug')('directus-cli');

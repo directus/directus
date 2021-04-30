@@ -89,8 +89,19 @@ export default command(
 					description: 'The user password',
 				});
 		},
+		features: {
+			stdin: {
+				'password-stdin': {
+					formats: ['text'],
+					exclusive: ['password'],
+					description: `
+						Reads the password from stdin instead of parameters
+					`,
+				},
+			},
+		},
 	},
-	async function ({ output, config }, params) {
+	async function ({ output, config, stdin }, params) {
 		if (params.name in config.system.data.instances) {
 			if (!params.force) {
 				throw new CLIRuntimeError(`Instance "${params.name}" already connected`);
@@ -104,17 +115,22 @@ export default command(
 			data: {},
 		};
 
+		let password = params.password;
+		if (stdin) {
+			password = (stdin as string).trim();
+		}
+
 		if (params.public) {
 			instance.auth = 'public';
 		} else if (params.token) {
 			instance.auth = 'token';
 			instance.data!.auth_token = params.token;
 			await sdk.auth.static(params.token);
-		} else if (params.email && params.password) {
+		} else if (params.email && password) {
 			instance.auth = 'credentials';
 			await sdk.auth.login({
 				email: params.email,
-				password: params.password,
+				password,
 			});
 			instance.data = {
 				auth_expires: sdk.storage.auth_expires,

@@ -9,3 +9,5 @@ node_modules
 /*.d.ts.map
 
 *.tgz
+
+.env
