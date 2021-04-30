@@ -1,3 +1,4 @@
+import { ContainsNullValuesException } from '../contains-null-values';
 import { InvalidForeignKeyException } from '../invalid-foreign-key';
 import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
@@ -88,8 +89,11 @@ function valueLimitViolation(error: PostgresError) {
 
 function notNullViolation(error: PostgresError) {
 	const { table, column } = error;
-
 	if (!column) return error;
+
+	if (error.message.endsWith('contains null values')) {
+		return new ContainsNullValuesException(column, { collection: table, field: column });
+	}
 
 	return new NotNullViolationException(column, {
 		collection: table,

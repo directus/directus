@@ -1,4 +1,5 @@
 import database from '../../../database';
+import { ContainsNullValuesException } from '../contains-null-values';
 import { InvalidForeignKeyException } from '../invalid-foreign-key';
 import { NotNullViolationException } from '../not-null-violation';
 import { RecordNotUniqueException } from '../record-not-unique';
@@ -133,6 +134,10 @@ function notNullViolation(error: MSSQLError) {
 
 	const collection = bracketMatches[0].slice(1, -1);
 	const field = quoteMatches[0].slice(1, -1);
+
+	if (error.message.includes('Cannot insert the value NULL into column')) {
+		return new ContainsNullValuesException(field, { collection, field });
+	}
 
 	return new NotNullViolationException(field, {
 		collection,

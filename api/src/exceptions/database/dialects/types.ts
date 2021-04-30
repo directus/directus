@@ -31,10 +31,16 @@ export type PostgresError = {
 	constraint?: string;
 };
 
+export type OracleError = {
+	message: string;
+	errorNum: number;
+	offset: number;
+};
+
 export type SQLiteError = {
 	message: string;
 	errno: number;
 	code: string;
 };
 
-export type SQLError = MSSQLError & MySQLError & PostgresError & SQLiteError & Error;
+export type SQLError = MSSQLError & MySQLError & PostgresError & SQLiteError & OracleError & Error;
