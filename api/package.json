@@ -93,7 +93,7 @@
 		"express": "^4.17.1",
 		"express-pino-logger": "^6.0.0",
 		"express-session": "^1.17.1",
-		"fs-extra": "^9.0.1",
+		"fs-extra": "^9.1.0",
 		"grant": "^5.4.5",
 		"graphql": "^15.4.0",
 		"graphql-compose": "^7.25.1",
