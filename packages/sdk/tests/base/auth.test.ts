@@ -3,7 +3,6 @@
  */
 
 import { Directus } from '../../src';
-import { NotAuthenticated } from '../../src/errors';
 import { test } from '../utils';
 
 describe('auth', function () {
@@ -17,16 +16,6 @@ describe('auth', function () {
 
 		const sdk = new Directus(url);
 		await sdk.auth.static('token');
-	});
-
-	it(`throws when refreshing without authenticating first`, async () => {
-		const sdk = new Directus('http://localhost');
-		try {
-			await sdk.auth.refresh(true);
-			fail('Should have failed');
-		} catch (err) {
-			expect(err).toBeInstanceOf(NotAuthenticated);
-		}
 	});
 
 	/*
