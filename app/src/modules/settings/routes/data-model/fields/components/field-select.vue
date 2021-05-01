@@ -54,7 +54,13 @@
 			</router-link>
 		</div>
 
-		<v-input v-else class="field" :class="{ hidden }" readonly @click="openFieldDetail">
+		<v-input
+			v-else
+			class="field"
+			:class="{ hidden, tab: field.meta.interface == 'tab' }"
+			readonly
+			@click="openFieldDetail"
+		>
 			<template #prepend>
 				<v-icon class="drag-handle" name="drag_indicator" @click.stop />
 			</template>
@@ -487,6 +493,15 @@ export default defineComponent({
 
 		&:hover {
 			background-color: var(--card-face-color);
+		}
+	}
+	&.tab {
+		::v-deep .input {
+			background-color: var(--primary-10);
+
+			&:hover {
+				background-color: var (--primary-20);
+			}
 		}
 	}
 
