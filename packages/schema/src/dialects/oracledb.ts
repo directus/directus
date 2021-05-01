@@ -5,7 +5,7 @@ import { SchemaInspector } from '../types/schema';
 import { mapKeys } from 'lodash';
 
 export default class Oracle extends KnexOracle implements SchemaInspector {
-	private static _mapColumnAutoIncrement(column: Column) {
+	private static _mapColumnAutoIncrement(column: Column): Column {
 		// Oracle doesn't support AUTO_INCREMENT. Assume all numeric primary
 		// keys without a default are AUTO_INCREMENT
 		const hasAutoIncrement = !column.default_value && column.data_type === 'NUMBER' && column.is_primary_key;
