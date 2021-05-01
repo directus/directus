@@ -3,6 +3,7 @@
 		<v-tabs class="full" v-model="currentTab" v-if="tabEnabled" horizontal>
 			<v-tab value="-1" v-if="tabUnassigned">Unassigned</v-tab>
 			<v-tab v-for="tab in tabFields" :key="tab.meta.id" :value="tab.meta.id.toString()">
+				<v-icon v-if="tab.meta.options.icon" :name="tab.meta.options.icon" small />
 				{{ tab.field }}
 			</v-tab>
 		</v-tabs>
@@ -306,6 +307,10 @@ export default defineComponent({
 
 			&.active {
 				color: var(--primary);
+			}
+
+			.v-icon {
+				margin-right: 5px;
 			}
 		}
 	}
