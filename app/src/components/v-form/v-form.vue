@@ -1,5 +1,12 @@
 <template>
 	<div class="v-form" ref="el" :class="gridClass">
+		<v-tabs class="full" v-model="currentTab" v-if="tabEnabled" horizontal>
+			<v-tab value="-1" v-if="tabUnassigned">Unassigned</v-tab>
+			<v-tab v-for="tab in tabFields" :key="tab.meta.id" :value="tab.meta.id.toString()">
+				{{ tab.field }}
+			</v-tab>
+		</v-tabs>
+
 		<v-notice type="danger" v-if="unknownValidationErrors.length > 0" class="full">
 			<div>
 				<p>{{ $t('unknown_validation_errors') }}</p>
@@ -18,7 +25,7 @@
 		</v-notice>
 
 		<form-field
-			v-for="(field, index) in formFields"
+			v-for="(field, index) in filteredFields"
 			:field="field"
 			:autofocus="index === firstEditableFieldIndex && autofocus"
 			:key="field.field"
@@ -109,7 +116,7 @@ export default defineComponent({
 			return Object.assign({}, props.initialValues, props.edits);
 		});
 
-		const { formFields, gridClass } = useForm();
+		const { formFields, filteredFields, tabFields, tabEnabled, tabUnassigned, currentTab, gridClass } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
 
 		const firstEditableFieldIndex = computed(() => {
@@ -136,6 +143,11 @@ export default defineComponent({
 		return {
 			el,
 			formFields,
+			filteredFields,
+			tabFields,
+			tabEnabled,
+			tabUnassigned,
+			currentTab,
 			gridClass,
 			values,
 			setValue,
@@ -180,6 +192,29 @@ export default defineComponent({
 				);
 			});
 
+			const tabFields = computed(() => {
+				return formFieldsParsed.value.filter((field: Field) => field.meta?.interface == 'tab');
+			});
+
+			const tabEnabled = computed<boolean>(() => {
+				return tabFields.value.length > 0;
+			});
+
+			const tabUnassigned = computed<boolean>(() => {
+				return formFieldsParsed.value.filter((field: Field) => field.meta?.group == -1).length > 0;
+			});
+
+			const currentTab = ref(['-1']);
+			if (tabEnabled.value == true && tabUnassigned.value == false && tabFields.value[0])
+				currentTab.value = [tabFields.value[0].meta.id.toString()];
+
+			const filteredFields = computed(() => {
+				return formFieldsParsed.value.filter(
+					(field: Field) =>
+						field.meta?.interface != 'tab' && field.meta?.group == parseInt(currentTab.value[0] || '-1', 10)
+				);
+			});
+
 			const { width } = useElementSize(el);
 
 			const gridClass = computed<string | null>(() => {
@@ -192,7 +227,16 @@ export default defineComponent({
 				}
 			});
 
-			return { formFields: formFieldsParsed, gridClass, isDisabled };
+			return {
+				formFields: formFieldsParsed,
+				filteredFields,
+				tabFields,
+				tabEnabled,
+				tabUnassigned,
+				currentTab,
+				gridClass,
+				isDisabled,
+			};
 
 			function isDisabled(field: Field) {
 				return (
@@ -243,5 +287,27 @@ export default defineComponent({
 
 .v-form {
 	@include form-grid;
+
+	::v-deep .v-tabs.horizontal {
+		position: sticky;
+		top: 60px;
+		z-index: 3;
+		margin-top: -50px;
+		padding-top: 20px;
+		padding-bottom: 10px;
+		background-color: var(--background-page);
+
+		.v-tab {
+			flex-grow: 0;
+			padding-right: 40px;
+			padding-left: 0;
+			font-weight: 600;
+			font-size: medium;
+
+			&.active {
+				color: var(--primary);
+			}
+		}
+	}
 }
 </style>

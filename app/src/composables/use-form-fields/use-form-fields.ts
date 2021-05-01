@@ -13,6 +13,7 @@ export default function useFormFields(fields: Ref<Field[]>): { formFields: Compu
 
 	const formFields = computed(() => {
 		let formFields = clone(fields.value);
+		let parseTab = -1;
 
 		formFields = formFields.map((field, index) => {
 			if (!field.meta) return field;
@@ -41,6 +42,9 @@ export default function useFormFields(fields: Ref<Field[]>): { formFields: Compu
 					field.meta.width = 'half-right';
 				}
 			}
+
+			if (field.meta?.interface == 'tab') parseTab = field.meta.id;
+			else field.meta.group = parseTab;
 
 			return field;
 		});
