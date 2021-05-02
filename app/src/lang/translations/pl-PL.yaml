@@ -88,6 +88,7 @@ no_access: Brak dostępu
 use_custom: Użyj niestandardowych
 nullable: Bez wartości
 allow_null_value: Zezwalaj na wartość NULL
+enter_value_to_replace_nulls: Wprowadź nową wartość, aby zastąpić wszystkie pola NULL.
 field_standard: Standard
 field_presentation: Prezentacja i aliasy
 field_file: Pojedynczy plik
@@ -404,6 +405,7 @@ errors:
   ROUTE_NOT_FOUND: Nie znaleziono
   RECORD_NOT_UNIQUE: Wykryto zduplikowaną wartość
   USER_SUSPENDED: Użytkownik zawieszony
+  CONTAINS_NULL_VALUES: Pole zawiera pustą wartość (Null)
   UNKNOWN: Nieoczekiwany błąd
 value_hashed: Wartość bezpiecznie zakodowana
 bookmark_name: Nazwa zakładki...
@@ -840,6 +842,7 @@ template: Szablon
 translation: Tłumaczenia
 value: Wartość
 view_project: Zobacz projekt
+weeks: { }
 report_error: Zgłoś błąd
 interfaces:
   button-links:
