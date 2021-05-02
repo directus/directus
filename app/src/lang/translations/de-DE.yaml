@@ -22,6 +22,7 @@ create_webhook: Webhook erstellen
 invite_users: Benutzer einladen
 email_examples: 'admin@example.com, user@example.com...'
 invite: Einladen
+email_already_invited: E-Mail "{email}" wurde bereits eingeladen
 emails: E-Mails
 connection_excellent: Ausgezeichnete Verbindung
 connection_good: Gute Verbindung
@@ -85,6 +86,7 @@ validationError:
 all_access: Zugriff auf alles
 no_access: Kein Zugriff
 use_custom: Benutzerdefiniert
+allow_null_value: NULL-Wert erlauben
 field_standard: Standard
 field_presentation: Darstellung & Aliasse
 field_file: Eine Datei
@@ -471,6 +473,7 @@ operators:
   has: Enthält einige dieser Schlüssel
 loading: Wird geladen...
 drop_to_upload: Zum Hochladen ablegen
+items: Elemente
 upload_file: Datei hochladen
 upload_file_indeterminate: Datei wird hochgeladen...
 upload_file_success: Datei wurde hochgeladen
