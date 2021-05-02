@@ -33,7 +33,7 @@ Name of the collection the field resides in.
 The identifier of the field. This matches the table column name.
 
 `type` **string**\
-The Directus data type of the field. See [/concepts/platform-overview/#types] for possible options.
+The Directus data type of the field. See [Types](/concepts/types/) for possible options.
 
 </div>
 
@@ -53,7 +53,7 @@ The name of the collection this field resides in.
 Identifier of the field. Matches the column name in the database.
 
 `special` **string**\
-Any special transform flags that apply to this field. See [/reference/field-transforms/] for more information.
+Any special transform flags that apply to this field. See [Field Transforms](/reference/field-transforms/) for more information.
 
 `interface` **string**\
 The interface used for this field.
