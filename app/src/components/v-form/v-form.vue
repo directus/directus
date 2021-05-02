@@ -312,6 +312,7 @@ export default defineComponent({
 			padding-left: 0;
 			font-weight: 600;
 			font-size: medium;
+			white-space: nowrap;
 
 			&.active {
 				color: var(--primary);
