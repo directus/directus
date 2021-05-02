@@ -293,7 +293,7 @@ export class UIBuilder implements IUIComposer {
 		}
 	}
 
-	async json(value: any, style: TableStyle = 'compact'): Promise<void> {
+	async json<T>(value: T, style: TableStyle = 'compact'): Promise<void> {
 		if (Array.isArray(value)) {
 			this.lines.push(await this.jsonArray(value, style));
 			return;
@@ -393,7 +393,7 @@ export class UIBuilder implements IUIComposer {
 		return this.lines.join('\n');
 	}
 
-	async clear() {
+	async clear(): Promise<void> {
 		this.lines = [];
 	}
 }

@@ -12,7 +12,7 @@ export type BaseConfigurationOptions<T> = {
 };
 
 export class BaseConfiguration<
-	T extends object = any,
+	T extends Record<string, unknown> = any,
 	C extends BaseConfigurationOptions<T> = BaseConfigurationOptions<T>
 > implements IBaseConfiguration<T> {
 	protected _data?: T;
@@ -42,7 +42,7 @@ export type StaticConfigurationOptions<T> = BaseConfigurationOptions<T> & {
 	files: string[];
 };
 
-export class StaticConfiguration<T extends object = any>
+export class StaticConfiguration<T extends Record<string, unknown> = any>
 	extends BaseConfiguration<T, StaticConfigurationOptions<T>>
 	implements IStaticConfiguration<T> {
 	private engine: Liquid;
@@ -70,12 +70,12 @@ export class StaticConfiguration<T extends object = any>
 		}
 	}
 
-	private loadJson(_: string, content: string): Object | null {
+	private loadJson(_: string, content: string): Record<string, unknown> | null {
 		return JSON5.parse(this.transform(content));
 	}
 
-	private loadYaml(_: string, content: string): Object | null {
-		return yaml.load(this.transform(content)) as object;
+	private loadYaml(_: string, content: string): Record<string, unknown> | null {
+		return yaml.load(this.transform(content)) as Record<string, unknown>;
 	}
 
 	private transform(content: string): string {
@@ -91,7 +91,7 @@ export type ConfigurationOptions<T> = BaseConfigurationOptions<T> & {
 	file: string;
 };
 
-export class YamlConfiguration<T extends object = any>
+export class YamlConfiguration<T extends Record<string, unknown> = any>
 	extends BaseConfiguration<T, ConfigurationOptions<T>>
 	implements IConfiguration<T> {
 	constructor(options: ConfigurationOptions<T>) {
