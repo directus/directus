@@ -1,5 +1,5 @@
 <template>
-	<div class="v-form" ref="el" :class="{ tabbed: tabEnabled }">
+	<div class="v-form" :class="{ tabbed: tabEnabled }">
 		<v-tabs class="tabs full" v-model="currentTab" v-if="tabEnabled" horizontal>
 			<v-tab value="-1" v-if="tabUnassigned">Unassigned</v-tab>
 			<v-tab v-for="tab in tabFields" :key="tab.meta.id" :value="tab.meta.id.toString()">
@@ -8,7 +8,7 @@
 			</v-tab>
 		</v-tabs>
 
-		<div class="form gridClass" ref="el">
+		<div class="form" :class="gridClass" ref="el">
 			<v-notice type="danger" v-if="unknownValidationErrors.length > 0" class="full">
 				<div>
 					<p>{{ $t('unknown_validation_errors') }}</p>
