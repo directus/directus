@@ -44,6 +44,7 @@ The user's one-time-password (if MFA is enabled).
 
 `mode`\
 Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie`.
+Defaults to `json`.
 
 </div>
 
