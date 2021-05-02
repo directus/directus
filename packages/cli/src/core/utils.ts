@@ -5,7 +5,7 @@ import mergeOptions from 'merge-options';
 
 export const tty = isatty(process.stdout.fd);
 
-export function header(indentSize: number = 0) {
+export function header(indentSize = 0) {
 	return indent(
 		stripIndent(`
 		⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣦⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀

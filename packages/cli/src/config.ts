@@ -26,13 +26,13 @@ export type ProjectConfiguration = {
 	};
 };
 
-export interface IBaseConfiguration<T extends object = any> {
+export interface IBaseConfiguration<T extends Record<string, unknown> = any> {
 	readonly data: T;
 	readonly path: string | undefined;
 }
 
-export interface IStaticConfiguration<T extends object = any> extends IBaseConfiguration<T> {}
+export type IStaticConfiguration<T extends Record<string, unknown> = any> = IBaseConfiguration<T>;
 
-export interface IConfiguration<T extends object = any> extends IBaseConfiguration<T> {
+export interface IConfiguration<T extends Record<string, unknown> = any> extends IBaseConfiguration<T> {
 	save(): void;
 }

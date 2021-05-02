@@ -7,7 +7,7 @@ import { IOutput } from './output';
 import { IHelp } from './help';
 import { IConfiguration, IStaticConfiguration, SystemConfiguration, ProjectConfiguration } from './config';
 
-export type Toolbox<T extends TypeMap = {}> = {
+export type Toolbox<T extends TypeMap = TypeMap> = {
 	command: Command;
 	help: IHelp;
 	options: IOptions;

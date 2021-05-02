@@ -34,7 +34,9 @@ function hasTsNode(): boolean {
 		if ((process as any)[Symbol.for('ts-node.register.instance')]) {
 			return true;
 		}
-	} catch {}
+	} catch {
+		//
+	}
 	return false;
 }
 
@@ -56,9 +58,9 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 		])
 		.create();
 
-	let events = new Events();
-	let options = new Options(events, process.argv);
-	let output = new Output(options);
+	const events = new Events();
+	const options = new Options(events, process.argv);
+	const output = new Output(options);
 
 	let extensionsPath = process.env.EXTENSIONS_PATH ?? './extensions';
 
@@ -100,14 +102,14 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 	// @ts-ignore
 	const list = require('fs-jetpack/lib/list');
 	const shimmer = require('shimmer');
-	shimmer.wrap(list, 'sync', (original: Function) => {
-		return function (this: any) {
-			const result = original.apply(this, arguments) as string[];
+	shimmer.wrap(list, 'sync', (original: (...args: any[]) => any) => {
+		return function (this: any, ...args: any[]) {
+			const result = original.apply(this, args) as string[];
 			if (!loading.state) {
 				return result;
 			}
 
-			const folder = arguments[0] as string;
+			const folder = args[0] as string;
 
 			const ts = hasTsNode();
 			const files = result.filter((file: string) => {
@@ -185,10 +187,17 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 			disableHelp: true,
 		},
 		async function ({ help, parameters: { array } }: Toolbox) {
-			await help.displayHelp();
 			if (array && array.length) {
-				throw new CLIRuntimeError(`Unknown command: ${array.join(' ')}`);
+				let suggestion = '';
+				const suggestions = await help.suggest(array);
+				if (suggestions.length > 0) {
+					suggestion = `\nDid you mean "${suggestions[0]}"?`;
+				}
+
+				throw new CLIRuntimeError(`Unknown command: "${array.join(' ')}"${suggestion}`);
 			}
+
+			await help.displayHelp();
 		}
 	) as any;
 
@@ -200,7 +209,9 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 		commandResult.result = result.data;
 		commandResult.error = result.error;
 		commandResult.output = output;
-	} catch (err) {}
+	} catch (err) {
+		//
+	}
 
 	return commandResult;
 }

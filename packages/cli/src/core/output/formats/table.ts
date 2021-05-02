@@ -12,7 +12,7 @@ export type TableOutputFormatOptions = {
 };
 
 export class TableOutputFormat implements IOutputFormat<TableOutputFormatOptions> {
-	registerOptions(options: Argv) {
+	registerOptions(options: Argv): Argv<TableOutputFormatOptions> {
 		return options
 			.option('ansi', {
 				type: 'boolean',
@@ -49,7 +49,7 @@ export class TableOutputFormat implements IOutputFormat<TableOutputFormatOptions
 	}
 
 	async format(data: FormatData, options: TableOutputFormatOptions): Promise<string> {
-		let output = await Promise.all([
+		const output = await Promise.all([
 			...data.text.map((line) => this.text(line, options)),
 			...data.errors.map((error) => this.error(error, options)),
 		]);

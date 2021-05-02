@@ -6,7 +6,7 @@ export class InstanceStorage implements IStorage {
 	private name: string;
 	private config: IConfiguration<SystemConfiguration>;
 
-	constructor(name: string, config: IConfiguration<SystemConfiguration>, prefix: string = '') {
+	constructor(name: string, config: IConfiguration<SystemConfiguration>, prefix = '') {
 		this.name = name;
 		this.config = config;
 		this.prefix = prefix;

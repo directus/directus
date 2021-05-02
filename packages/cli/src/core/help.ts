@@ -16,6 +16,11 @@ import { IOptions } from '../options';
 import highlight from 'cli-highlight';
 import { DefaultTheme } from './output/formats/json';
 
+type Suggestion = {
+	name: string;
+	words: string[];
+};
+
 export class Help implements IHelp {
 	private entrypoint: string;
 	private options: IOptions;
@@ -28,6 +33,88 @@ export class Help implements IHelp {
 		this.output = deps.output;
 		this.runtime = deps.runtime;
 		this.options = deps.options;
+	}
+
+	async suggest(words: string[]): Promise<string[]> {
+		if (!words) {
+			return [];
+		}
+
+		if (!Array.isArray(words)) {
+			words = [words];
+		}
+
+		if (words.length == 0) {
+			return [];
+		}
+
+		// Clone
+		words = [...words];
+
+		const suggestions = this.runtime.commands!.reduce((commands, command) => {
+			const name = (command.name ? command.commandPath!.slice(0, -1).concat(command.name) : command.commandPath!).join(
+				' '
+			);
+			const cmd = (command as any) as Command;
+			const hidden = cmd.run.$directus.settings?.hidden ?? false;
+			if (hidden) {
+				return commands;
+			}
+
+			let hints = cmd.run.$directus.settings?.hints || [];
+			if (!Array.isArray(hints)) {
+				hints = [hints];
+			}
+
+			hints = [name, ...hints];
+
+			return [
+				...commands,
+				...hints.map((command) => ({
+					name,
+					words: command.split(' ').map((part) => part.trim()),
+				})),
+			];
+		}, [] as Suggestion[]);
+
+		const jaro = require('jaro-winkler') as (a: string, b: string) => number;
+		const sort = (
+			words: string[],
+			suggestions: (Suggestion & { score: number })[],
+			index = 0
+		): (Suggestion & { score: number })[] => {
+			if (words.length <= 0) {
+				return suggestions;
+			}
+			const [currentWord, ...otherWords] = words;
+			return sort(
+				otherWords,
+				suggestions.map((suggestion) => ({
+					...suggestion,
+					score:
+						suggestion.words.length > index
+							? suggestion.score + jaro(currentWord!, suggestion.words[index]!) * (index + 1)
+							: suggestion.score,
+				})),
+				index + 1
+			);
+		};
+
+		return sort(
+			words,
+			suggestions.map((suggestion) => ({
+				...suggestion,
+				score: 1,
+			}))
+		)
+			.sort((a, b) => {
+				return a.score - b.score;
+			})
+			.filter((suggestion, index, array) => {
+				return !array.find((other, index2) => suggestion.name == other.name && index2 > index);
+			})
+			.reverse()
+			.map((suggestion) => suggestion.name);
 	}
 
 	async getHelp(): Promise<GeneralHelp> {
@@ -91,7 +178,7 @@ export class Help implements IHelp {
 
 				const groups = new Set(help.commands.map((cmd) => cmd.group));
 				for (const group of groups) {
-					const commands = help.commands.filter((cmd) => cmd.group === group);
+					const commands = help.commands.filter((cmd) => cmd.group === group && !cmd.hidden);
 					if (commands.length <= 0) {
 						continue;
 					}

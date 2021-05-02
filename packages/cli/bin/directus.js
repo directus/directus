@@ -3,24 +3,24 @@
 const fs = require('fs');
 const path = require('path');
 
-const enabledDev = !!process.env.DIRECTUS_CLI_DEV;
+require('dotenv').config();
 
-const wantsGlobal = enabledDev && process.argv.indexOf('--use-global') >= 0;
+const startupOptions = {
+	devMode: !!process.env.DIRECTUS_CLI_DEV && fs.existsSync(`${__dirname}/../src`),
+	useGlobal: !!process.env.DIRECTUS_CLI_DEV && !!process.env.DIRECTUS_CLI_DEV_USE_GLOBAL,
+	useCompiled: !!process.env.DIRECTUS_CLI_DEV && !!process.env.DIRECTUS_CLI_DEV_USE_COMPILED,
+};
+
 const entrypoint = path.resolve('./node_modules/@directus/cli/bin/directus.js');
-if (__filename !== entrypoint && fs.existsSync(entrypoint) && !wantsGlobal) {
+if (__filename !== entrypoint && fs.existsSync(entrypoint) && !startupOptions.useGlobal) {
 	require(entrypoint);
 	return;
 }
 
-require('dotenv').config();
-
-const devMode = enabledDev && require('fs').existsSync(`${__dirname}/../src`);
-const wantsCompiled = enabledDev && process.argv.indexOf('--use-compiled') >= 0;
-
-async function main(run, ts = false) {
+async function main(run) {
 	const debug = require('debug')('directus-cli');
 	try {
-		const { error, output } = await run(process.argv, ts);
+		const { error, output } = await run(process.argv);
 		if (error) {
 			debug(error);
 		}
@@ -38,7 +38,8 @@ async function main(run, ts = false) {
 }
 
 let run = () => {};
-if (wantsCompiled || !devMode) {
+
+if (!startupOptions.devMode || startupOptions.useCompiled) {
 	run = require(`${__dirname}/../dist/index`).default;
 } else {
 	process.env.DEBUG = `${process.env.DEBUG ?? ''}directus-cli`;

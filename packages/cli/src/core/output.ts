@@ -21,7 +21,7 @@ export class Output implements IOutput {
 	private _text: string[];
 	private _help?: GeneralHelp | CommandHelp;
 	private _value?: any;
-	private _errors: Error[];
+	private _errors: CLIError[];
 
 	constructor(options: IOptions) {
 		this.formats = {
@@ -65,6 +65,7 @@ export class Output implements IOutput {
 
 	async error(err: CLIError): Promise<void> {
 		this._errors.push({
+			code: err.code,
 			name: err.name,
 			message: err.message,
 			stack: err.stack,

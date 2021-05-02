@@ -25,6 +25,7 @@ export default command(
 			sdk: true,
 			query: 'many',
 		},
+		hints: ['all', 'get all', 'get many', 'ls', 'list', 'read many', 'many'],
 		options: function (builder) {
 			return builder.positional('collection', {
 				type: 'string',

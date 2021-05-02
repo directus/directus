@@ -57,6 +57,7 @@
 		"fs-extra": "^8.1.0",
 		"gluegun": "^4.6.1",
 		"indent-string": "^4.0.0",
+		"jaro-winkler": "^0.2.8",
 		"joi": "^17.4.0",
 		"js-yaml": "^4.1.0",
 		"json5": "^2.2.0",
@@ -64,11 +65,13 @@
 		"marked": "^2.0.3",
 		"marked-terminal": "^4.1.1",
 		"merge-options": "^3.0.4",
+		"open": "^8.0.7",
 		"pretty-ms": "^7.0.1",
 		"shimmer": "^1.2.1",
 		"strip-ansi": "^6.0.0",
 		"strip-indent": "^3.0.0",
-		"yargs": "^16.2.0"
+		"yargs": "^16.2.0",
+		"yargs-parser": "^20.2.7"
 	},
 	"devDependencies": {
 		"@types/figlet": "^1.5.0",

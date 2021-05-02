@@ -40,4 +40,5 @@ export interface IHelp {
 	getCommandHelp(command: Command): Promise<CommandHelp>;
 	displayHelp(): Promise<GeneralHelp>;
 	displayCommandHelp(command: Command): Promise<CommandHelp>;
+	suggest(words: string[]): Promise<string[]>;
 }

@@ -90,7 +90,7 @@ export class UIBuilder implements IUIComposer {
 				palette.quote(
 					stripAnsi(text)
 						.split('\n')
-						.map((l) => ` ${l.trim()}`)
+						.map((l) => `\xA0${l.trim()}`)
 						.join('\n')
 				),
 		});
@@ -102,7 +102,7 @@ export class UIBuilder implements IUIComposer {
 			});
 			code = code
 				.split('\n')
-				.map((line) => `${chalk.gray(' ')}${line}`)
+				.map((line) => `${chalk.gray('\xA0')}${line}`)
 				.join('\n');
 			return code + '\n\n';
 		};
@@ -115,7 +115,7 @@ export class UIBuilder implements IUIComposer {
 		options.style = options.style ?? ((s) => chalk.reset(s));
 		options.alignment = options.alignment ?? 'left';
 
-		for (var i = 0; i < 4; i++) {
+		for (let i = 0; i < 4; i++) {
 			if (i > options.padding.length - 1) {
 				options.padding[i] = 0;
 			}
@@ -168,12 +168,7 @@ export class UIBuilder implements IUIComposer {
 
 	async header(name: string, style?: (text: string) => string): Promise<void> {
 		style = style ?? palette.header;
-		this.lines.push(
-			// This is not a space and it's important that it isn't.
-			// --------------------,
-			//                     V
-			this.makeLayout(style(` ${name.toUpperCase()} `))
-		);
+		this.lines.push(this.makeLayout(style(`\xA0${name.toUpperCase()}\xA0`)));
 	}
 
 	async table(values: string[][], options?: TableOptions): Promise<void> {
@@ -230,8 +225,8 @@ export class UIBuilder implements IUIComposer {
 		}
 	}
 
-	async skip(lines: number = 1): Promise<void> {
-		for (var i = 0; i < lines /*Math.max(lines, 1)*/; i++) {
+	async skip(lines = 1): Promise<void> {
+		for (let i = 0; i < lines /*Math.max(lines, 1)*/; i++) {
 			await this.line('');
 		}
 	}
@@ -243,7 +238,7 @@ export class UIBuilder implements IUIComposer {
 	markdown(text: string): string {
 		return marked(stripIndent(text), {
 			baseUrl: 'https://docs.directus.io',
-			renderer: this.markdownRenderer,
+			renderer: this.markdownRenderer as any,
 			sanitize: false,
 		}).trim();
 	}
@@ -278,8 +273,8 @@ export class UIBuilder implements IUIComposer {
 		}
 	): Promise<void> {
 		options = options || {};
-		options.title = options.title || 'Error';
 		options.stacktrace = options.stacktrace ?? false;
+		options.title = options.title || 'Error';
 
 		await this.skip();
 		await this.header(options.title, chalk.bgRed.black);

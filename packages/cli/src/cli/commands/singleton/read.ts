@@ -1,10 +1,10 @@
-import { command } from '../../../../core/command';
+import { command } from '../../../core/command';
 
 export default command(
 	{
-		group: 'items',
+		group: 'singletons',
 		parameters: '<collection>',
-		description: 'Reads a singleton item in a collection',
+		description: 'Reads data from singleton collection',
 		usage: `
 			\`\`\`
 			$ $0 items read singleton <collection>
@@ -17,6 +17,7 @@ export default command(
 			sdk: true,
 			query: 'one',
 		},
+		hints: ['single', 'singleton', 'read single', 'get single', 'get singleton'],
 		options: function (builder) {
 			return builder.positional('collection', {
 				type: 'string',

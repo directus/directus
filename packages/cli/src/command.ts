@@ -13,7 +13,7 @@ export type Features = {
 	[feature: string]: unknown;
 };
 
-export type Settings<P = {}> = {
+export type Settings<P = unknown> = {
 	description?: string;
 	parameters?: string;
 	group?: string;
@@ -24,10 +24,14 @@ export type Settings<P = {}> = {
 	features?: Features;
 	disableHelp?: boolean;
 	hidden?: boolean;
+	hints?: string[];
 	options?(builder: Argv): Argv<P>;
 };
 
-export type Handler<T extends Toolbox = Toolbox, P = {}, R extends any = void> = (toolbox: T, params: P) => Promise<R>;
+export type Handler<T extends Toolbox = Toolbox, P = unknown, R extends any = void> = (
+	toolbox: T,
+	params: P
+) => Promise<R>;
 
 export type CommandResult<T extends any> = {
 	result?: T;
@@ -36,7 +40,7 @@ export type CommandResult<T extends any> = {
 	output?: IOutput;
 };
 
-export type Command<T extends Toolbox = Toolbox, P = {}, R extends any = void> = {
+export type Command<T extends Toolbox = Toolbox, P = unknown, R extends any = void> = {
 	settings?: Settings<P>;
 	run: {
 		/**

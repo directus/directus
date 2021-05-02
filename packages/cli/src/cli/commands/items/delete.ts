@@ -1,23 +1,22 @@
-import { command } from '../../../../core/command';
+import { command } from '../../../core/command';
 
 export default command(
 	{
 		group: 'items',
 		parameters: '<collection>',
-		description: 'Reads one item in a collection',
+		description: 'Delete one item in a collection',
 		usage: `
 			\`\`\`
-			$ $0 items read one <collection>
+			$ $0 items delete one <collection> --id <id>
 			\`\`\`
 		`,
+		hints: ['del', 'rm', 'remove', 'exclude', 'destroy', 'explode'],
 		documentation: `
-			Reads an existing item by it's primary key.
+			Delete one item by it's primary key.
 		`,
 		features: {
 			sdk: true,
-			query: 'one',
 		},
-		hints: ['get', 'one', 'read', 'read one'],
 		options: function (builder) {
 			return builder
 				.option('id', {
@@ -32,12 +31,14 @@ export default command(
 				});
 		},
 	},
-	async function ({ output, query, sdk }, params) {
-		const item = await sdk.items(params.collection).readOne(params.id, query.one);
+	async function ({ output, sdk }, params) {
+		await sdk.items(params.collection).deleteOne(params.id);
 		await output.compose(async (ui) => {
-			await ui.wrap((ui) => ui.header('Item'), 1);
-			await ui.json(item);
+			await ui.wrap((ui) => ui.text('Item successfully deleted'), 1);
 		});
-		return item;
+
+		return {
+			deleted: true,
+		};
 	}
 );
