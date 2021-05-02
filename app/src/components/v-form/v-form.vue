@@ -1,47 +1,49 @@
 <template>
-	<div class="v-form" ref="el" :class="gridClass">
-		<v-tabs class="full" v-model="currentTab" v-if="tabEnabled" horizontal>
-			<v-tab value="-1" v-if="tabUnassigned">Unassigned</v-tab>
+	<div class="v-form" ref="el" :class="{ tabbed: tabEnabled }">
+		<v-tabs class="tabs full" v-model="currentTab" v-if="tabEnabled" horizontal>
+			<v-tab value="-1" type="danger" v-if="tabUnassigned">Unassigned</v-tab>
 			<v-tab v-for="tab in tabFields" :key="tab.meta.id" :value="tab.meta.id.toString()">
 				<v-icon v-if="tab.meta.options.icon" :name="tab.meta.options.icon" small />
-				{{ tab.field }}
+				{{ $t(tab.name) }}
 			</v-tab>
 		</v-tabs>
 
-		<v-notice type="danger" v-if="unknownValidationErrors.length > 0" class="full">
-			<div>
-				<p>{{ $t('unknown_validation_errors') }}</p>
-				<ul>
-					<li v-for="(validationError, index) of unknownValidationErrors" :key="index">
-						<strong v-if="validationError.field">{{ validationError.field }}:</strong>
-						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
-							{{ $t('validationError.unique', validationError) }}
-						</template>
-						<template v-else>
-							{{ $t(`validationError.${validationError.code}`, validationError) }}
-						</template>
-					</li>
-				</ul>
-			</div>
-		</v-notice>
+		<div class="form gridClass" ref="el">
+			<v-notice type="danger" v-if="unknownValidationErrors.length > 0" class="full">
+				<div>
+					<p>{{ $t('unknown_validation_errors') }}</p>
+					<ul>
+						<li v-for="(validationError, index) of unknownValidationErrors" :key="index">
+							<strong v-if="validationError.field">{{ validationError.field }}:</strong>
+							<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
+								{{ $t('validationError.unique', validationError) }}
+							</template>
+							<template v-else>
+								{{ $t(`validationError.${validationError.code}`, validationError) }}
+							</template>
+						</li>
+					</ul>
+				</div>
+			</v-notice>
 
-		<form-field
-			v-for="(field, index) in filteredFields"
-			:field="field"
-			:autofocus="index === firstEditableFieldIndex && autofocus"
-			:key="field.field"
-			:value="(edits || {})[field.field]"
-			:initial-value="(initialValues || {})[field.field]"
-			:disabled="disabled"
-			:batch-mode="batchMode"
-			:batch-active="batchActiveFields.includes(field.field)"
-			:primary-key="primaryKey"
-			:loading="loading"
-			:validation-error="validationErrors.find((err) => err.field === field.field)"
-			@input="setValue(field, $event)"
-			@unset="unsetValue(field)"
-			@toggle-batch="toggleBatchField(field)"
-		/>
+			<form-field
+				v-for="(field, index) in filteredFields"
+				:field="field"
+				:autofocus="index === firstEditableFieldIndex && autofocus"
+				:key="field.field"
+				:value="(edits || {})[field.field]"
+				:initial-value="(initialValues || {})[field.field]"
+				:disabled="disabled"
+				:batch-mode="batchMode"
+				:batch-active="batchActiveFields.includes(field.field)"
+				:primary-key="primaryKey"
+				:loading="loading"
+				:validation-error="validationErrors.find((err) => err.field === field.field)"
+				@input="setValue(field, $event)"
+				@unset="unsetValue(field)"
+				@toggle-batch="toggleBatchField(field)"
+			/>
+		</div>
 	</div>
 </template>
 
@@ -286,16 +288,22 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/styles/mixins/form-grid';
 
-.v-form {
+.v-form .form {
 	@include form-grid;
+}
+
+.v-form.tabbed {
+	padding-top: 0;
 
 	::v-deep .v-tabs.horizontal {
 		position: sticky;
-		top: 60px;
+		top: 55px;
 		z-index: 3;
-		margin-top: -50px;
+		width: 100%;
+		margin-top: -80px;
+		margin-bottom: 20px;
 		padding-top: 20px;
-		padding-bottom: 10px;
+		padding-bottom: 20px;
 		background-color: var(--background-page);
 
 		.v-tab {
