@@ -106,7 +106,7 @@
 		"keyv": "^4.0.3",
 		"knex": "^0.95.3",
 		"knex-schema-inspector": "^1.3.0",
-		"liquidjs": "^9.16.1",
+		"liquidjs": "^9.24.1",
 		"lodash": "^4.17.21",
 		"macos-release": "^2.4.1",
 		"mime-types": "^2.1.27",
