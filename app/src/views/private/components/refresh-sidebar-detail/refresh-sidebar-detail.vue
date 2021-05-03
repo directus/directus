@@ -14,9 +14,9 @@ import { i18n } from '@/lang';
 import { computed, defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
-	emits: ['input', 'refresh'],
+	emits: ['update:modelValue', 'refresh'],
 	props: {
-		value: {
+		modelValue: {
 			type: Number,
 			default: null,
 		},
@@ -24,10 +24,10 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const interval = computed<number | null>({
 			get() {
-				return props.value;
+				return props.modelValue;
 			},
 			set(newVal) {
-				emit('input', newVal);
+				emit('update:modelValue', newVal);
 			},
 		});
 
