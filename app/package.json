@@ -54,7 +54,7 @@
 		"@vue/test-utils": "^1.1.1",
 		"axios": "^0.21.1",
 		"base-64": "^1.0.0",
-		"codemirror": "^5.60.0",
+		"codemirror": "^5.61.0",
 		"copyfiles": "^2.4.1",
 		"cropperjs": "^1.5.11",
 		"date-fns": "^2.21.1",
