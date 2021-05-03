@@ -23,7 +23,7 @@ export class YamlOutputFormat implements IOutputFormat<YamlOutputFormatOptions> 
 		this.theme = theme;
 	}
 
-	registerOptions(options: Argv) {
+	registerOptions(options: Argv): Argv<YamlOutputFormatOptions> {
 		return options
 			.option('highlight', {
 				type: 'boolean',

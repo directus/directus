@@ -13,7 +13,7 @@ export type TestSettings = {
 	fixture?: string;
 };
 
-export function test(name: string, test: Test, settings?: TestSettings) {
+export function test(name: string, test: Test, settings?: TestSettings): void {
 	it(name, async () => {
 		if (settings?.fixture) {
 			await back(settings.fixture, async () => {

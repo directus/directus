@@ -1,7 +1,7 @@
 import { Toolbox } from '../../toolbox';
 import JSON5 from 'json5';
 
-export default (toolbox: Toolbox) => {
+export default (toolbox: Toolbox): void => {
 	toolbox.query = {
 		one: {},
 		many: {},

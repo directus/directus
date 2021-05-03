@@ -72,19 +72,19 @@ export class Options implements IOptions {
 		});
 	}
 
-	failed() {
+	failed(): boolean {
 		return !!this._error;
 	}
 
-	error() {
+	error(): Error | undefined {
 		return this._error;
 	}
 
-	values() {
+	values(): any {
 		return this._parsed || {};
 	}
 
-	list() {
+	list(): Option[] {
 		const freeParser = this._parser as any;
 		const usage = freeParser.getUsageInstance();
 		const descriptions = usage.getDescriptions();

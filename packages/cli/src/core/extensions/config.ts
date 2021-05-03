@@ -49,7 +49,7 @@ export const project = new StaticConfiguration<ProjectConfiguration>({
 	},
 });
 
-export default (toolbox: Toolbox) => {
+export default (toolbox: Toolbox): void => {
 	toolbox.config = {
 		system,
 		project,

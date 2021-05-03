@@ -3,7 +3,7 @@ import { Toolbox } from '../../toolbox';
 import { CLIRuntimeError } from '../exceptions';
 import { InstanceStorage } from '../sdk/storage';
 
-export default (toolbox: Toolbox) => {
+export default (toolbox: Toolbox): void => {
 	toolbox.sdk = new Directus('http://localhost:8055');
 
 	toolbox.options.feature('sdk', (builder) => {
@@ -23,9 +23,8 @@ export default (toolbox: Toolbox) => {
 			throw new CLIRuntimeError(`Unknown instance: ${options.instance}`);
 		}
 
-		const instance = toolbox.config.system.data.instances[options.instance];
-
-		const sdk = new Directus(instance?.endpoint!, {
+		const instance = toolbox.config.system.data.instances[options.instance]!;
+		const sdk = new Directus(instance.endpoint, {
 			storage: new InstanceStorage(options.instance, toolbox.config.system),
 		});
 

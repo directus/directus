@@ -24,7 +24,7 @@ export type StdinFeatures = {
 
 export type StdinFormats = typeof SupportedFormats[number];
 
-export function normalizeFeatures(requested?: StdinFeatures) {
+export function normalizeFeatures(requested?: StdinFeatures): StdinFeatures {
 	if (!requested) {
 		return {};
 	}
@@ -119,11 +119,11 @@ async function readBuffer(stream: Readable): Promise<Buffer> {
 	});
 }
 
-export default (toolbox: Toolbox) => {
+export default (toolbox: Toolbox): void => {
 	toolbox.stdin = undefined;
 
 	toolbox.options.register((builder, command) => {
-		const features = Object.entries(normalizeFeatures(command.settings?.features?.stdin!));
+		const features = Object.entries(normalizeFeatures(command.settings?.features?.stdin));
 
 		features.forEach(([name, feature]) => {
 			if (feature.formats.length == 1) {

@@ -22,7 +22,7 @@ export class JsonOutputFormat implements IOutputFormat<JsonOutputFormatOptions> 
 		this.theme = theme;
 	}
 
-	registerOptions(options: Argv) {
+	registerOptions(options: Argv): Argv<JsonOutputFormatOptions> {
 		return options
 			.option('highlight', {
 				type: 'boolean',
