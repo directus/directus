@@ -4,7 +4,7 @@
 		<div class="modules">
 			<v-button
 				v-for="module in _modules"
-				v-tooltip.right="$t(module.name)"
+				v-tooltip.right="module.name"
 				:key="module.id"
 				icon
 				x-large
