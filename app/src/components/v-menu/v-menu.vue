@@ -135,7 +135,7 @@ export default defineComponent({
 
 		watch(isActive, (newActive) => {
 			if (newActive === true) {
-				reference.value = ((activator.value as HTMLElement)?.childNodes[0] as HTMLElement) || virtualReference.value;
+				reference.value = (activator.value?.children[0] as HTMLElement) || virtualReference.value;
 
 				nextTick(() => {
 					popper.value = document.getElementById(id.value);

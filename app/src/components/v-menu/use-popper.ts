@@ -1,9 +1,12 @@
+import { createPopper } from '@popperjs/core/lib/popper-lite';
 import { Instance, Modifier, Placement } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
 import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
 import eventListeners from '@popperjs/core/lib/modifiers/eventListeners';
 import flip from '@popperjs/core/lib/modifiers/flip';
 import offset from '@popperjs/core/lib/modifiers/offset';
+import popperOffsets from '@popperjs/core/lib/modifiers/popperOffsets';
+import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow';
 import { onUnmounted, ref, Ref, watch } from 'vue';
 
 export function usePopper(
