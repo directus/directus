@@ -14,8 +14,8 @@
 		</transition-expand>
 
 		<sidebar-button
-			:active="active"
-			@click="$emit('input', !active)"
+			:active="modelValue"
+			@click="$emit('update:modelValue', !modelValue)"
 			v-tooltip.left="$t('notifications')"
 			class="toggle"
 			icon="notifications"
@@ -32,17 +32,14 @@ import NotificationItem from '../notification-item';
 import { useNotificationsStore } from '@/stores/';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	components: { SidebarButton, NotificationItem },
-	model: {
-		prop: 'active',
-	},
 	props: {
 		sidebarOpen: {
 			type: Boolean,
 			default: false,
 		},
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: false,
 		},
