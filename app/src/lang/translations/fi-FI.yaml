@@ -22,6 +22,7 @@ create_webhook: Luo webhook
 invite_users: Kutsu käyttäjiä
 email_examples: 'yllapitaja@example.com, kayttaja@example.com...'
 invite: Kutsu
+email_already_invited: Sähköposti "{email}" on jo kutsuttu
 emails: Sähköpostit
 connection_excellent: Erinomainen yhteys
 connection_good: Hyvä yhteys
@@ -85,6 +86,9 @@ validationError:
 all_access: Täysi pääsy
 no_access: Ei pääsyä
 use_custom: Käytä mukautettua
+nullable: Nullable
+allow_null_value: Salli NULL-arvo
+enter_value_to_replace_nulls: Syötä uusi arvo korvataksesi kaikki NULL:it, jotka tällä hetkellä kuuluvat tähän kenttään.
 field_standard: Vakio
 field_presentation: Esitystapa & aliakset
 field_file: Yksittäinen tiedosto
@@ -315,6 +319,10 @@ save_and_create_new: Tallenna ja luo uusi
 save_and_stay: Tallenna ja pysy
 save_as_copy: Tallenna kopiona
 add_existing: Lisää olemassaoleva
+creating_items: Luodaan kohteita
+enable_create_button: Ota käyttöön luontinappula
+selecting_items: Valitaan kohteita
+enable_select_button: Ota käyttöön valintanappula
 comments: Kommentit
 no_comments: Ei vielä kommentteja
 click_to_expand: Klikkaa laajentaaksesi
@@ -396,6 +404,8 @@ errors:
   ITEM_NOT_FOUND: Kohdetta ei löydy
   ROUTE_NOT_FOUND: Ei löytynyt
   RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
+  USER_SUSPENDED: Käyttäjä jäädytetty
+  CONTAINS_NULL_VALUES: Kenttä sisältää null-arvoja
   UNKNOWN: Odottamaton virhe
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
@@ -472,6 +482,8 @@ operators:
   has: Sisältää joitakin näistä avaimista
 loading: Ladataan...
 drop_to_upload: Pudota ladataksesi
+item: Kohde
+items: Kohteet
 upload_file: Lähetä tiedosto
 upload_file_indeterminate: Ladataan Tiedostoa...
 upload_file_success: Tiedosto ladattu
@@ -530,6 +542,7 @@ display_text: Näyttöteksti
 display_text_placeholder: Syötä näyttöteksti...
 tooltip: Työkaluvihje
 tooltip_placeholder: Syötä työkaluvihje...
+unlimited: Rajoittamaton
 open_link_in: Avaa linkki
 new_tab: Uusi välilehti
 current_tab: Nykyinen välilehti
@@ -590,6 +603,8 @@ adding_user: Lisätään käyttäjää
 unknown_user: Tuntematon käyttäjä
 creating_in: 'Luodaan kohdetta kokoelmassa {collection}'
 editing_in: 'Muokataan kohdetta: {collection}'
+creating_unit: 'Luodaan {unit}'
+editing_unit: 'Muokataan {unit}'
 editing_in_batch: 'Muokataan {count} kohdetta erässä'
 no_options_available: Ei valintoja saatavilla
 settings_data_model: Tietorakenne
@@ -672,12 +687,14 @@ fields:
     display_template: Esitysmalli
     hidden: Piilotettu
     singleton: Singleton
+    translations: Kokoelman nimeämisten käännökset
     archive_app_filter: Arkistoi sovelluksen suodatin
     archive_value: Arkistoi arvo
     unarchive_value: Palauta arkistoitu arvo
     sort_field: Lajittelukenttä
     accountability: Tapahtumien ja versioiden seuranta
   directus_files:
+    $thumbnail: Pikkukuva
     title: Otsikko
     description: Kuvaus
     tags: Tunnisteet
@@ -825,6 +842,7 @@ template: Pohja
 translation: Käännös
 value: Arvo
 view_project: Näytä projekti
+weeks: { }
 report_error: Raportoi virhe
 interfaces:
   button-links:
@@ -956,6 +974,7 @@ interfaces:
     repeater: Toistaja
     description: Luo useita saman rakenteen merkintöjä
     edit_fields: Muokkaa kenttiä
+    add_label: '"Luo uusi" tunniste'
     field_name_placeholder: Syötä kentän nimi...
     field_note_placeholder: Syötä kentän muistiinpano...
   slider:
