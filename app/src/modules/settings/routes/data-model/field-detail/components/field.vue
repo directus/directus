@@ -19,7 +19,8 @@
 			<div class="field full">
 				<div class="label type-label">{{ $t('field_name_translations') }}</div>
 				<interface-repeater
-					v-model="fieldData.meta.translations"
+					:value="fieldData.meta.translations"
+					@input="fieldData.meta.translations = $event"
 					:template="'[{{ language }}] {{ translation }}'"
 					:fields="[
 						{

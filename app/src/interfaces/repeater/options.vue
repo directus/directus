@@ -12,7 +12,12 @@
 
 		<div class="grid-element full">
 			<p class="type-label">{{ $t('interfaces.repeater.edit_fields') }}</p>
-			<repeater v-model="repeaterValue" :template="`{{ field }} — {{ interface }}`" :fields="repeaterFields" />
+			<repeater
+				:value="repeaterValue"
+				@input="repeaterValue = $event"
+				:template="`{{ field }} — {{ interface }}`"
+				:fields="repeaterFields"
+			/>
 		</div>
 	</div>
 </template>
