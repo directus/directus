@@ -12,9 +12,9 @@
 import { defineComponent, computed, PropType } from 'vue';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
-		value: {
+		modelValue: {
 			type: Array as PropType<string[]>,
 			required: true,
 		},
@@ -22,10 +22,10 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const _value = computed({
 			get() {
-				return props.value;
+				return props.modelValue;
 			},
 			set(newVal) {
-				emit('input', newVal);
+				emit('update:modelValue', newVal);
 			},
 		});
 
