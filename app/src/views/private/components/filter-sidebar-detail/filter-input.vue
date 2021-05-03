@@ -65,9 +65,9 @@ import { defineComponent, PropType, computed } from 'vue';
 import { FilterOperator } from '@/types';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
-		value: {
+		modelValue: {
 			type: [String, Number, Boolean],
 			required: true,
 		},
@@ -87,16 +87,16 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const _value = computed<string | string[] | boolean | number>({
 			get() {
-				return props.value;
+				return props.modelValue;
 			},
 			set(newValue) {
-				emit('input', newValue);
+				emit('update:modelValue', newValue);
 			},
 		});
 
 		const csvValue = computed({
 			get() {
-				return typeof props.value === 'string' ? props.value.split(',') : [];
+				return typeof props.modelValue === 'string' ? props.modelValue.split(',') : [];
 			},
 			set(newVal: string[]) {
 				_value.value = newVal.join(',');
