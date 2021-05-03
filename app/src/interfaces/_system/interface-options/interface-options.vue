@@ -13,12 +13,12 @@
 			:fields="selectedInterface.options"
 			primary-key="+"
 			:edits="value"
-			@input="$attrs.onInput"
+			@input="$emit('input', $event)"
 		/>
 
 		<component
 			:value="value"
-			@input="$attrs.onInput"
+			@input="$emit('input', $event)"
 			:field-data="fieldData"
 			:is="`interface-options-${selectedInterface.id}`"
 			v-else
@@ -32,6 +32,7 @@ import { getInterfaces } from '@/interfaces';
 import { InterfaceConfig } from '@/interfaces/types';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: Object,

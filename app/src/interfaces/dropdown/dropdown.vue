@@ -5,7 +5,7 @@
 	<v-select
 		v-else
 		:modelValue="value"
-		@update:modelValue="$attrs.onInput"
+		@update:modelValue="$emit('input', $event)"
 		:items="choices"
 		:disabled="disabled"
 		:show-deselect="allowNone"
@@ -28,6 +28,7 @@ type Option = {
 };
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,

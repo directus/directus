@@ -7,7 +7,7 @@
 		:modelValue="value"
 		:indeterminate="value === null"
 		:disabled="disabled"
-		@update:modelValue="$attrs.onInput"
+		@update:modelValue="$emit('input', $event)"
 		:style="{
 			'--v-checkbox-color': color,
 		}"
@@ -19,6 +19,7 @@ import { defineComponent } from 'vue';
 import { i18n } from '@/lang';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: Boolean,

@@ -8,7 +8,7 @@
 	<v-select
 		v-else
 		:show-deselect="allowNone"
-		@update:modelValue="$attrs.onInput"
+		@update:modelValue="$emit('input', $event)"
 		:modelValue="value"
 		:disabled="disabled"
 		:items="selectItems"
@@ -22,6 +22,7 @@ import { useFieldsStore } from '@/stores';
 import { Field } from '@/types';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		collectionField: {
 			type: String,

@@ -8,7 +8,7 @@
 		:alwaysShowValue="alwaysShowValue"
 		show-thumb-label
 		show-ticks
-		@input="$attrs.onInput"
+		@input="$emit('input', $event)"
 	/>
 </template>
 
@@ -16,6 +16,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: Number,

@@ -8,7 +8,7 @@
 		:min="min"
 		:max="max"
 		:step="step"
-		@update:modelValue="$attrs.onInput"
+		@update:modelValue="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend>
 			<v-icon :name="iconLeft" />
@@ -23,6 +23,7 @@
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: Number,

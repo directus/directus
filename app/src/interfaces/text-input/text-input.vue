@@ -9,7 +9,7 @@
 		:type="masked ? 'password' : 'text'"
 		:class="font"
 		:db-safe="dbSafe"
-		@update:modelValue="$attrs.onInput"
+		@update:modelValue="$emit('input', $event)"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 		<template #append>
@@ -36,6 +36,7 @@
 import { defineComponent, PropType, computed } from 'vue';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: String,

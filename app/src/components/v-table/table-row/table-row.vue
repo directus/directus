@@ -2,7 +2,7 @@
 	<tr
 		class="table-row"
 		:class="{ subdued: $props.subdued, clickable: $props.hasClickListener }"
-		@click="$attrs.onClick"
+		@click="$emit('click')"
 		:style="{
 			'--table-row-height': $props.height + 2 + 'px',
 			'--table-row-line-height': 1,
@@ -13,7 +13,7 @@
 		</td>
 
 		<td v-if="$props.showSelect" class="select cell" @click.stop>
-			<v-checkbox :modelValue="$props.isSelected" @update:modelValue="$attrs['onItem-selected']" />
+			<v-checkbox :modelValue="$props.isSelected" @update:modelValue="$emit('item-selected', $event)" />
 		</td>
 
 		<td class="cell" :class="`align-${header.align}`" v-for="header in $props.headers" :key="header.value">
@@ -46,6 +46,7 @@ import { defineComponent, PropType } from 'vue';
 import { Header } from '../types';
 
 export default defineComponent({
+	emits: ['click', 'item-selected'],
 	props: {
 		headers: {
 			type: Array as PropType<Header[]>,

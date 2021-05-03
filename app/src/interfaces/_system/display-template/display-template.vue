@@ -8,7 +8,7 @@
 	<v-field-template
 		v-else
 		:collection="collection"
-		@update:modelValue="$attrs.onInput"
+		@update:modelValue="$emit('input', $event)"
 		:modelValue="value"
 		:disabled="disabled"
 	/>
@@ -19,6 +19,7 @@ import { defineComponent, inject, ref, computed } from 'vue';
 import { useCollectionsStore } from '@/stores/collections';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		disabled: {
 			type: Boolean,

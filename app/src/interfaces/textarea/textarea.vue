@@ -5,7 +5,7 @@
 		:nullable="!clear"
 		:disabled="disabled"
 		:class="font"
-		@update:modelValue="$attrs.onInput"
+		@update:modelValue="$emit('input', $event)"
 	/>
 </template>
 
@@ -13,6 +13,7 @@
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
+	emits: ['input'],
 	props: {
 		value: {
 			type: String,
