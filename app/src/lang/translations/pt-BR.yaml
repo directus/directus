@@ -769,6 +769,7 @@ fields:
     collection_list: Navegação da Coleção
 field_options:
   directus_collections:
+    track_activity_revisions: Rastrear Atividades e Revisões
     only_track_activity: Acompanhar apenas Atividade
     do_not_track_anything: Não rastreie nada
 no_fields_in_collection: 'Ainda não há campos em "{collection}"'
@@ -841,6 +842,7 @@ template: Template
 translation: Tradução
 value: Valor
 view_project: Visualizar projeto
+weeks: { }
 report_error: Relatar erro
 interfaces:
   button-links:
@@ -887,12 +889,14 @@ interfaces:
   display-template:
     display-template: Modelo de exibição
     description: Misturar texto estático e valores dos campos dinâmicos
+    collection_field: Campo da coleção
     collection_field_not_setup: A opção do campo de coleção está configurada incorretamente
     select_a_collection: Selecione uma coleção
   divider:
     divider: Divisor
     description: Rótulo e divisão de campos em seções
     title_placeholder: Insira um título...
+    inline_title: Título na linha
     inline_title_label: Mostrar título dentro da linha
     margin_top: Margem Superior
     margin_top_label: Aumentar margem superior
@@ -970,6 +974,7 @@ interfaces:
     repeater: Repetidor
     description: Criar múltiplas entradas da mesma estrutura
     edit_fields: Editar campos
+    add_label: 'Texto de "Criar Novo"'
     field_name_placeholder: Inserir nome do campo...
     field_note_placeholder: Insira uma nota pro campo...
   slider:
@@ -989,6 +994,7 @@ interfaces:
     capitalization: Capitalização
     uppercase: Converter em maiúsculas
     lowercase: Converter em minúsculas
+    auto_formatter: Utilizar auto formatação de título
     alphabetize: Alfabetizar
     alphabetize_label: Forçar ordem alfabética
     add_tags: Adicionar tags...
@@ -1053,6 +1059,8 @@ displays:
     datetime: Data e Hora
     description: Exibir valores relacionados ao tempo
     format: Formato
+    format_note: >-
+      O formato personalizado aceita __[tabela de símbolos de campo de Data](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Longo
     short: Curto
     relative: Relativo
