@@ -18,17 +18,13 @@
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
-	emits: ['change'],
-	model: {
-		prop: 'inputValue',
-		event: 'change',
-	},
+	emits: ['update:modelValue'],
 	props: {
 		value: {
 			type: String,
 			required: true,
 		},
-		inputValue: {
+		modelValue: {
 			type: String,
 			default: null,
 		},
@@ -55,7 +51,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const isChecked = computed<boolean>(() => {
-			return props.inputValue === props.value;
+			return props.modelValue === props.value;
 		});
 
 		const icon = computed<string>(() => {
@@ -65,7 +61,7 @@ export default defineComponent({
 		return { isChecked, emitValue, icon };
 
 		function emitValue(): void {
-			emit('change', props.value);
+			emit('update:modelValue', props.value);
 		}
 	},
 });
