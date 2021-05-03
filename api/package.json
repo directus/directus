@@ -130,6 +130,7 @@
 		"@keyv/redis": "^2.1.2",
 		"connect-memcached": "^1.0.0",
 		"connect-redis": "^5.2.0",
+		"connect-session-knex": "^2.0.0",
 		"ioredis": "^4.19.2",
 		"keyv-memcache": "^1.0.1",
 		"memcached": "^2.2.2",
