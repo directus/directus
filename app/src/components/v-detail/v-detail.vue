@@ -17,14 +17,9 @@ import { defineComponent, computed, ref } from 'vue';
 import { i18n } from '@/lang';
 
 export default defineComponent({
-	emits: ['toggle'],
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
-
+	emits: ['update:modelValue'],
 	props: {
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
@@ -46,14 +41,14 @@ export default defineComponent({
 		const localActive = ref(props.startOpen);
 		const _active = computed({
 			get() {
-				if (props.active !== undefined) {
-					return props.active;
+				if (props.modelValue !== undefined) {
+					return props.modelValue;
 				}
 				return localActive.value;
 			},
 			set(newActive: boolean) {
 				localActive.value = newActive;
-				emit('toggle', newActive);
+				emit('update:modelValue', newActive);
 			},
 		});
 

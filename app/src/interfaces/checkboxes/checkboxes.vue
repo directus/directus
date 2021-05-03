@@ -26,7 +26,7 @@
 			v-if="hideChoices && showAll === false"
 			:class="gridClass"
 			:label="$t(`interfaces.checkboxes.show_more`, { count: hiddenCount })"
-			@toggle="showAll = true"
+			@update:modelValue="showAll = true"
 		></v-detail>
 
 		<template v-if="allowOther">

@@ -14,11 +14,11 @@
 				</template>
 				<template v-else>
 					<v-detail
-						:active="group.accordion === 'always_open' || isActive(group.name)"
+						:modelValue="group.accordion === 'always_open' || isActive(group.name)"
 						:disabled="group.accordion === 'always_open'"
 						:start-open="group.accordion === 'start_open'"
 						:label="group.name || null"
-						@toggle="toggleActive(group.name)"
+						@update:modelValue="toggleActive(group.name)"
 					>
 						<v-list-item :exact="exact" v-for="navItem in group.items" :key="navItem.to" :to="navItem.to">
 							<v-list-item-icon><v-icon :name="navItem.icon" /></v-list-item-icon>
