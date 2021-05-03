@@ -5,8 +5,8 @@
 			<v-item-group scope="folder-picker" multiple v-model="openFolders">
 				<v-list-group
 					disable-groupable-parent
-					@click="$emit('input', null)"
-					:active="value === null"
+					@click="$emit('update:modelValue', null)"
+					:active="modelValue === null"
 					scope="folder-picker"
 					value="root"
 				>
@@ -21,8 +21,8 @@
 						v-for="folder in tree"
 						:key="folder.id"
 						:folder="folder"
-						:current-folder="value"
-						:click-handler="(id) => $emit('input', id)"
+						:current-folder="modelValue"
+						:click-handler="(id) => $emit('update:modelValue', id)"
 						:disabled="disabledFolders.includes(folder.id)"
 						:disabled-folders="disabledFolders"
 					/>
@@ -51,14 +51,14 @@ type Folder = {
 };
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	components: { FolderPickerListItem },
 	props: {
 		disabledFolders: {
 			type: Array as PropType<string[]>,
 			default: () => [],
 		},
-		value: {
+		modelValue: {
 			type: String,
 			default: null,
 		},
@@ -91,7 +91,7 @@ export default defineComponent({
 		});
 
 		const shouldBeOpen: string[] = [];
-		const folder = folders.value.find((folder) => folder.id === props.value);
+		const folder = folders.value.find((folder) => folder.id === props.modelValue);
 
 		if (folder && folder.parent) parseFolder(folder.parent);
 
@@ -103,7 +103,7 @@ export default defineComponent({
 			}
 		}
 		const selectedFolder = computed(() => {
-			return folders.value.find((folder) => folder.id === props.value) || {};
+			return folders.value.find((folder) => folder.id === props.modelValue) || {};
 		});
 
 		const openFolders = ref(startOpenFolders);
