@@ -131,6 +131,7 @@ export function useItems(collection: Ref<string>, query: Query): Record<string, 
 
 		let fieldsToFetch = [...fields.value];
 
+		// @TODO3 Should those `fields.value !== ['*']` be replaced by deep equal?
 		// Make sure the primary key is always fetched
 		if (
 			fields.value !== ['*'] &&
