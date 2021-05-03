@@ -41,18 +41,14 @@ type File = {
 };
 
 export default defineComponent({
-	emits: ['toggle'],
+	emits: ['update:modelValue'],
 	components: { FilePreview },
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
 	props: {
 		id: {
 			type: String,
 			required: true,
 		},
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
@@ -62,11 +58,11 @@ export default defineComponent({
 
 		const _active = computed({
 			get() {
-				return props.active === undefined ? localActive.value : props.active;
+				return props.modelValue === undefined ? localActive.value : props.modelValue;
 			},
 			set(newActive: boolean) {
 				localActive.value = newActive;
-				emit('toggle', newActive);
+				emit('update:modelValue', newActive);
 			},
 		});
 
