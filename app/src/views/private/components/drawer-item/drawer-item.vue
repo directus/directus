@@ -180,7 +180,7 @@ export default defineComponent({
 				null
 		);
 
-		const { file } = useFile();
+		const { file, isDirectusFiles } = useFile();
 
 		return {
 			_active,
@@ -203,25 +203,24 @@ export default defineComponent({
 			templateDataLoading,
 			collectionInfo,
 			file,
+			isDirectusFiles,
 		};
 
 		function useFile() {
-			const file = ref(null);
-
-			watch([() => item.value, () => junctionRelatedCollection.value], () => {
-				const junctionItem = item.value;
-
-				if (junctionRelatedCollection.value === 'directus_files') {
-					const item = junctionItem?.[props.junctionField];
-					const src = addTokenToURL(getRootPath() + `assets/${item.id}?key=system-large-contain`);
-
-					file.value = { ...item, src };
-				} else {
-					file.value = null;
-				}
+			const isDirectusFiles = computed(() => {
+				return junctionRelatedCollection.value === 'directus_files';
 			});
 
-			return { file };
+			const file = computed(() => {
+				if (isDirectusFiles.value === false || !item.value) return null;
+				const fileData = item.value?.[props.junctionField];
+				if (!fileData) return null;
+
+				const src = addTokenToURL(getRootPath() + `assets/${fileData.id}?key=system-large-contain`);
+				return { ...fileData, src };
+			});
+
+			return { file, isDirectusFiles };
 		}
 
 		function useActiveState() {

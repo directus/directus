@@ -96,6 +96,21 @@
 				@cancel="cancelField"
 			/>
 		</template>
+
+		<v-dialog v-model="nullValuesDialog" @esc="nullValuesDialog = false">
+			<v-card>
+				<v-card-title>{{ $t('enter_value_to_replace_nulls') }}</v-card-title>
+				<v-card-text>
+					<v-input placeholder="NULL" v-model="nullValueOverride" />
+				</v-card-text>
+				<v-card-actions>
+					<v-button secondary @click="nullValuesDialog = false">{{ $t('cancel') }}</v-button>
+					<v-button :disabled="nullValueOverride === null" @click="saveNullOverride" :loading="nullOverrideSaving">
+						{{ $t('save') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</v-drawer>
 </template>
 
@@ -161,6 +176,8 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 		const { info: collectionInfo } = useCollection(collection);
 
+		const { nullValueOverride, nullValuesDialog, nullOverrideSaving, saveNullOverride } = useContainsNull();
+
 		const existingField = computed(() => {
 			if (props.field === '+') return null;
 
@@ -207,6 +224,10 @@ export default defineComponent({
 			translationsManual,
 			currentTabInfo,
 			title,
+			nullValuesDialog,
+			nullValueOverride,
+			nullOverrideSaving,
+			saveNullOverride,
 		};
 
 		function useTabs() {
@@ -400,7 +421,12 @@ export default defineComponent({
 				router.push(`/settings/data-model/${props.collection}`);
 				clearLocalStore();
 			} catch (err) {
-				unexpectedError(err);
+				if (err?.response?.data?.errors?.[0]?.extensions?.code === 'CONTAINS_NULL_VALUES') {
+					nullValueOverride.value = state.fieldData?.schema?.default_value || null;
+					nullValuesDialog.value = true;
+				} else {
+					unexpectedError(err);
+				}
 			} finally {
 				saving.value = false;
 			}
@@ -409,6 +435,49 @@ export default defineComponent({
 		function cancelField() {
 			router.push(`/settings/data-model/${props.collection}`);
 			clearLocalStore();
+		}
+
+		/**
+		 * In case you're setting allow null to false and you have null values already stored, we need
+		 * to override those null values with a new value before you can try saving again
+		 */
+		function useContainsNull() {
+			const nullValuesDialog = ref(false);
+			const nullValueOverride = ref();
+			const nullOverrideSaving = ref(false);
+
+			return { nullValueOverride, nullValuesDialog, nullOverrideSaving, saveNullOverride };
+
+			async function saveNullOverride() {
+				nullOverrideSaving.value = true;
+
+				try {
+					const endpoint = props.collection.startsWith('directus_')
+						? `/${props.collection.substring(9)}`
+						: `/items/${props.collection}`;
+
+					await api.patch(endpoint, {
+						query: {
+							filter: {
+								[props.field]: {
+									_null: true,
+								},
+							},
+							limit: -1,
+						},
+						data: {
+							[props.field]: nullValueOverride.value,
+						},
+					});
+
+					nullValuesDialog.value = false;
+					return saveField();
+				} catch (err) {
+					unexpectedError(err);
+				} finally {
+					nullOverrideSaving.value = false;
+				}
+			}
 		}
 	},
 });
