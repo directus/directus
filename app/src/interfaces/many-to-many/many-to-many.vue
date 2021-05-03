@@ -39,7 +39,7 @@
 		</v-list>
 
 		<div class="actions" v-if="!disabled">
-			<v-button v-if="enableCreate && createAllowed" @click="editModalActive = true">{{ $t('create_new') }}</v-button>
+			<v-button v-if="enableCreate && createAllowed" @click="showEditModal">{{ $t('create_new') }}</v-button>
 			<v-button v-if="enableSelect && selectAllowed" @click="selectModalActive = true">
 				{{ $t('add_existing') }}
 			</v-button>
@@ -67,11 +67,21 @@
 			@input="stageSelection"
 			multiple
 		/>
+
+		<v-dialog v-if="!disabled" v-model="showUpload">
+			<v-card>
+				<v-card-title>{{ $t('upload_file') }}</v-card-title>
+				<v-card-text><v-upload @input="onUpload" multiple from-url /></v-card-text>
+				<v-card-actions>
+					<v-button @click="showUpload = false">{{ $t('done') }}</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, PropType, toRefs } from '@vue/composition-api';
+import { defineComponent, computed, PropType, toRefs, ref } from '@vue/composition-api';
 import DrawerItem from '@/views/private/components/drawer-item';
 import DrawerCollection from '@/views/private/components/drawer-collection';
 import { get } from 'lodash';
@@ -86,6 +96,7 @@ import useSort from './use-sort';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import adjustFieldsForDisplays from '@/utils/adjust-fields-for-displays';
 import { usePermissionsStore, useUserStore } from '@/stores';
+import { DisplayConfig } from '@/displays/types';
 
 export default defineComponent({
 	components: { DrawerItem, DrawerCollection, Draggable },
@@ -138,7 +149,7 @@ export default defineComponent({
 			let relatedDisplayTemplate = relationCollection.value.meta?.display_template;
 			if (relatedDisplayTemplate) {
 				const regex = /({{.*?}})/g;
-				const parts = relatedDisplayTemplate.split(regex).filter((p) => p);
+				const parts = relatedDisplayTemplate.split(regex).filter((p: DisplayConfig) => p);
 
 				for (const part of parts) {
 					if (part.startsWith('{{') === false) continue;
@@ -189,6 +200,8 @@ export default defineComponent({
 
 		const { createAllowed, selectAllowed } = usePermissions();
 
+		const { showUpload, onUpload } = useUpload();
+
 		return {
 			junction,
 			relation,
@@ -216,6 +229,9 @@ export default defineComponent({
 			templateWithDefaults,
 			createAllowed,
 			selectAllowed,
+			showEditModal,
+			onUpload,
+			showUpload,
 		};
 
 		function emitter(newVal: any[] | null) {
@@ -253,6 +269,33 @@ export default defineComponent({
 			});
 
 			return { createAllowed, selectAllowed };
+		}
+
+		function showEditModal() {
+			if (relationCollection.value.collection === 'directus_files') {
+				showUpload.value = true;
+			} else {
+				editModalActive.value = true;
+			}
+		}
+
+		function useUpload() {
+			const showUpload = ref(false);
+
+			return { showUpload, onUpload };
+
+			function onUpload(files: Record<string, any>[]) {
+				showUpload.value = false;
+				if (files.length === 0) return;
+				const { junctionField } = relationInfo.value;
+				const filesAsJunctionRows = files.map((file) => {
+					return {
+						[junctionField]: file.id,
+					};
+				});
+
+				emit('input', [...(props.value || []), ...filesAsJunctionRows]);
+			}
 		}
 	},
 });

@@ -1,5 +1,5 @@
-import InterfaceTextarea from './textarea.vue';
 import { defineInterface } from '@/interfaces/define';
+import InterfaceTextarea from './textarea.vue';
 
 export default defineInterface({
 	id: 'textarea',

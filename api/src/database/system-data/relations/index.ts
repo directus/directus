@@ -1,6 +1,6 @@
-import { requireYAML } from '../../../utils/require-yaml';
 import { merge } from 'lodash';
 import { Relation } from '../../../types';
+import { requireYAML } from '../../../utils/require-yaml';
 
 const systemData = requireYAML(require.resolve('./relations.yaml'));
 

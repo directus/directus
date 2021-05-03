@@ -1,9 +1,9 @@
 import express, { Router } from 'express';
-import asyncHandler from '../utils/async-handler';
+import env from '../env';
 import { RouteNotFoundException } from '../exceptions';
 import { listExtensions } from '../extensions';
-import env from '../env';
 import { respond } from '../middleware/respond';
+import asyncHandler from '../utils/async-handler';
 
 const router = Router();
 

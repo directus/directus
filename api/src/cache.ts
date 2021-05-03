@@ -1,9 +1,9 @@
-import env from './env';
 import Keyv, { Options } from 'keyv';
-import { validateEnv } from './utils/validate-env';
-import { getConfigFromEnv } from './utils/get-config-from-env';
 import ms from 'ms';
+import env from './env';
 import logger from './logger';
+import { getConfigFromEnv } from './utils/get-config-from-env';
+import { validateEnv } from './utils/validate-env';
 
 let cache: Keyv | null = null;
 

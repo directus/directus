@@ -1,4 +1,4 @@
-import { LayoutDefineParam, LayoutContext, LayoutConfig } from './types';
+import { LayoutConfig, LayoutContext, LayoutDefineParam } from './types';
 
 export function defineLayout(config: LayoutDefineParam): LayoutConfig {
 	let options: LayoutConfig;

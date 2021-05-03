@@ -2,7 +2,7 @@ export const drivers = {
 	pg: 'PostgreSQL / Redshift',
 	mysql: 'MySQL / MariaDB / Aurora',
 	sqlite3: 'SQLite',
-  mssql: 'Microsoft SQL Server',
+	mssql: 'Microsoft SQL Server',
 	oracledb: 'Oracle Database (Alpha)',
 };
 

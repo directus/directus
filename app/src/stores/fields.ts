@@ -1,14 +1,14 @@
-import { createStore } from 'pinia';
 import api from '@/api';
-import VueI18n from 'vue-i18n';
-import { notEmpty } from '@/utils/is-empty/';
 import { i18n } from '@/lang';
-import formatTitle from '@directus/format-title';
 import { useRelationsStore } from '@/stores/';
-import { Relation, FieldRaw, Field } from '@/types';
+import { Field, FieldRaw, Relation } from '@/types';
+import { notEmpty } from '@/utils/is-empty/';
+import { unexpectedError } from '@/utils/unexpected-error';
+import formatTitle from '@directus/format-title';
 import { merge, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
-import { unexpectedError } from '@/utils/unexpected-error';
+import { createStore } from 'pinia';
+import VueI18n from 'vue-i18n';
 
 /**
  * directus_files is a special case. For it to play nice with interfaces/layouts/displays, we need

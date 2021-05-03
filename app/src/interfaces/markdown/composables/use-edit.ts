@@ -32,13 +32,13 @@ export type CustomSyntax = {
 	box: 'inline' | 'block';
 };
 
-export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, customSyntaxBlocks: CustomSyntax[]) {
+export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>): Record<string, any> {
 	const alterations: AlterationFunctions = {
 		heading(selection, { cursorTo }, options) {
 			const level = options?.level || 3;
 
 			let newSelection = selection;
-			let newCursor = cursorTo;
+			const newCursor = cursorTo;
 
 			const prefix = '#'.repeat(level) + ' ';
 
@@ -53,7 +53,7 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, c
 		},
 		bold(selection, { cursorTo }) {
 			let newSelection = selection;
-			let newCursor = cursorTo;
+			const newCursor = cursorTo;
 
 			if (selection.startsWith('**') && selection.endsWith('**')) {
 				newSelection = selection.substring(2, selection.length - 2);
@@ -66,7 +66,7 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, c
 		},
 		italic(selection, { cursorTo }) {
 			let newSelection = selection;
-			let newCursor = cursorTo;
+			const newCursor = cursorTo;
 
 			if (selection.startsWith('*') && selection.endsWith('*')) {
 				newSelection = selection.substring(1, selection.length - 1);
@@ -79,7 +79,7 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, c
 		},
 		strikethrough(selection, { cursorTo }) {
 			let newSelection = selection;
-			let newCursor = cursorTo;
+			const newCursor = cursorTo;
 
 			if (selection.startsWith('~~') && selection.endsWith('~~')) {
 				newSelection = selection.substring(2, selection.length - 2);
@@ -92,7 +92,7 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, c
 		},
 		listBulleted(selection, { cursorTo }) {
 			let newSelection = selection;
-			let newCursor = cursorTo;
+			const newCursor = cursorTo;
 
 			const lines = selection.split('\n');
 
@@ -112,7 +112,7 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, c
 		},
 		listNumbered(selection, { cursorTo }) {
 			let newSelection = selection;
-			let newCursor = cursorTo;
+			const newCursor = cursorTo;
 
 			const lines = selection.split('\n');
 
@@ -132,7 +132,7 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, c
 		},
 		blockquote(selection, { cursorTo }) {
 			let newSelection = selection;
-			let newCursor = cursorTo;
+			const newCursor = cursorTo;
 
 			const lines = selection.split('\n');
 
@@ -154,7 +154,7 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, c
 			if (selection.includes('\n')) {
 				// Multiline
 				let newSelection = selection;
-				let newCursor = cursorTo;
+				const newCursor = cursorTo;
 
 				if (selection.startsWith('```') && selection.endsWith('```')) {
 					newSelection = selection.substring(3, selection.length - 3);
@@ -167,7 +167,7 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, c
 			} else {
 				// Inline
 				let newSelection = selection;
-				let newCursor = cursorTo;
+				const newCursor = cursorTo;
 
 				if (selection.startsWith('`') && selection.endsWith('`')) {
 					newSelection = selection.substring(1, selection.length - 1);
@@ -181,7 +181,7 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, c
 		},
 		link(selection, { cursorFrom, cursorTo }) {
 			let newSelection = selection;
-			let newCursor = cursorTo;
+			const newCursor = cursorTo;
 			let highlight;
 
 			if (selection.endsWith('](url)')) {
@@ -213,7 +213,7 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, c
 		table(selection, cursors, options) {
 			if (!options) return { newSelection: selection, newCursor: cursors.cursorFrom };
 
-			let table: string = '';
+			let table = '';
 
 			// Headers
 			const headers = [];
@@ -233,7 +233,7 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, c
 			if (options.box === 'block') {
 				// Multiline
 				let newSelection = selection;
-				let newCursor = cursorTo;
+				const newCursor = cursorTo;
 
 				if (selection.startsWith(options.prefix) && selection.endsWith(options.suffix)) {
 					newSelection = selection.substring(options.prefix.length, selection.length - options.suffix.length);
@@ -246,7 +246,7 @@ export function useEdit(codemirror: Ref<CodeMirror.EditorFromTextArea | null>, c
 			} else {
 				// Inline
 				let newSelection = selection;
-				let newCursor = cursorTo;
+				const newCursor = cursorTo;
 
 				if (selection.startsWith(options.prefix) && selection.endsWith(options.suffix)) {
 					newSelection = selection.substring(1, selection.length - 1);

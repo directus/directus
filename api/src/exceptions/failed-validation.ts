@@ -1,6 +1,6 @@
-import { BaseException } from './base';
 import { ValidationErrorItem } from 'joi';
 import { FilterOperator, ValidationOperator } from '../types';
+import { BaseException } from './base';
 
 type FailedValidationExtensions = {
 	field: string;

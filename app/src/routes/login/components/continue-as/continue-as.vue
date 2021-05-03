@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, watch, ref } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 
 import api from '@/api';
 import { hydrate } from '@/hydrate';

@@ -1,12 +1,12 @@
-import { Router } from 'express';
-import asyncHandler from '../utils/async-handler';
-import { nanoid } from 'nanoid';
-import { InvalidQueryException, InvalidPayloadException } from '../exceptions';
 import argon2 from 'argon2';
-import collectionExists from '../middleware/collection-exists';
-import { UtilsService, RevisionsService } from '../services';
+import { Router } from 'express';
 import Joi from 'joi';
+import { nanoid } from 'nanoid';
+import { InvalidPayloadException, InvalidQueryException } from '../exceptions';
+import collectionExists from '../middleware/collection-exists';
 import { respond } from '../middleware/respond';
+import { RevisionsService, UtilsService } from '../services';
+import asyncHandler from '../utils/async-handler';
 
 const router = Router();
 

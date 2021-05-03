@@ -73,7 +73,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
+	setup() {
 		return {
 			fieldData: state.fieldData,
 		};

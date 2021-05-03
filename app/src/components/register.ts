@@ -1,20 +1,29 @@
+import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
+import RenderDisplay from '@/views/private/components/render-display';
+import RenderTemplate from '@/views/private/components/render-template';
+import SidebarDetail from '@/views/private/components/sidebar-detail/';
+import UserPopover from '@/views/private/components/user-popover';
+import ValueNull from '@/views/private/components/value-null';
 import Vue from 'vue';
-
+import TransitionBounce from './transition/bounce';
+import TransitionDialog from './transition/dialog';
+import TransitionExpand from './transition/expand';
 import VAvatar from './v-avatar/';
 import VBadge from './v-badge/';
 import VBreadcrumb from './v-breadcrumb';
-import VButton from './v-button/';
 import VButtonGroup from './v-button-group/';
-import VCard, { VCardActions, VCardTitle, VCardSubtitle, VCardText } from './v-card';
+import VButton from './v-button/';
+import VCard, { VCardActions, VCardSubtitle, VCardText, VCardTitle } from './v-card';
 import VCheckbox from './v-checkbox/';
 import VChip from './v-chip/';
 import VDetail from './v-detail';
 import VDialog from './v-dialog';
 import VDivider from './v-divider';
+import VDrawer from './v-drawer/';
 import VError from './v-error';
 import VFancySelect from './v-fancy-select';
-import VFieldTemplate from './v-field-template';
 import VFieldSelect from './v-field-select';
+import VFieldTemplate from './v-field-template';
 import VForm from './v-form';
 import VHover from './v-hover/';
 import VIcon from './v-icon/';
@@ -23,7 +32,6 @@ import VInput from './v-input/';
 import VItemGroup, { VItem } from './v-item-group';
 import VList, { VListGroup, VListItem, VListItemContent, VListItemHint, VListItemIcon } from './v-list/';
 import VMenu from './v-menu/';
-import VDrawer from './v-drawer/';
 import VNotice from './v-notice/';
 import VOverlay from './v-overlay/';
 import VPagination from './v-pagination/';
@@ -36,9 +44,9 @@ import VSkeletonLoader from './v-skeleton-loader/';
 import VSlider from './v-slider/';
 import VSwitch from './v-switch/';
 import VTable from './v-table/';
-import VTabs, { VTab, VTabsItems, VTabItem } from './v-tabs/';
-import VTextarea from './v-textarea';
+import VTabs, { VTab, VTabItem, VTabsItems } from './v-tabs/';
 import VTextOverflow from './v-text-overflow.vue';
+import VTextarea from './v-textarea';
 import VUpload from './v-upload';
 
 Vue.component('v-avatar', VAvatar);
@@ -95,20 +103,9 @@ Vue.component('v-textarea', VTextarea);
 Vue.component('v-text-overflow', VTextOverflow);
 Vue.component('v-upload', VUpload);
 
-import TransitionBounce from './transition/bounce';
-import TransitionDialog from './transition/dialog';
-import TransitionExpand from './transition/expand';
-
 Vue.component('transition-bounce', TransitionBounce);
 Vue.component('transition-dialog', TransitionDialog);
 Vue.component('transition-expand', TransitionExpand);
-
-import RenderDisplay from '@/views/private/components/render-display';
-import RenderTemplate from '@/views/private/components/render-template';
-import SidebarDetail from '@/views/private/components/sidebar-detail/';
-import FilterSidebarDetail from '@/views/private/components/filter-sidebar-detail';
-import UserPopover from '@/views/private/components/user-popover';
-import ValueNull from '@/views/private/components/value-null';
 
 Vue.component('render-display', RenderDisplay);
 Vue.component('render-template', RenderTemplate);

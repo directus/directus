@@ -1,12 +1,12 @@
 import { Ref, ref } from '@vue/composition-api';
+import { get, isEqual } from 'lodash';
 import { RelationInfo } from './use-relation';
-import { isEqual, get } from 'lodash';
 
 export default function useEdit(
 	value: Ref<(string | number | Record<string, any>)[] | null>,
 	relation: Ref<RelationInfo>,
 	emit: (newVal: any[] | null) => void
-) {
+): Record<string, any> {
 	const editModalActive = ref(false);
 	const currentlyEditing = ref<string | number | null>(null);
 	const relatedPrimaryKey = ref<string | number | null>(null);

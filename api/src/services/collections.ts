@@ -1,5 +1,14 @@
+import SchemaInspector from '@directus/schema';
+import { Knex } from 'knex';
+import cache from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import database, { schemaInspector } from '../database';
+import { systemCollectionRows } from '../database/system-data/collections';
+import env from '../env';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import logger from '../logger';
+import { FieldsService } from '../services/fields';
+import { ItemsService, MutationOptions } from '../services/items';
 import {
 	AbstractServiceOptions,
 	Accountability,
@@ -8,23 +17,17 @@ import {
 	FieldMeta,
 	SchemaOverview,
 } from '../types';
-import { Knex } from 'knex';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { FieldsService } from '../services/fields';
-import { ItemsService, MutationOptions } from '../services/items';
-import cache from '../cache';
-import { systemCollectionRows } from '../database/system-data/collections';
-import env from '../env';
-import logger from '../logger';
 
 export class CollectionsService {
 	knex: Knex;
 	accountability: Accountability | null;
+	schemaInspector: typeof schemaInspector;
 	schema: SchemaOverview;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || database;
 		this.accountability = options.accountability || null;
+		this.schemaInspector = options.knex ? SchemaInspector(options.knex) : schemaInspector;
 		this.schema = options.schema;
 	}
 
@@ -33,7 +36,7 @@ export class CollectionsService {
 	 */
 	async createOne(payload: Partial<Collection> & { collection: string }, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException();
 		}
 
 		if (!payload.collection) throw new InvalidPayloadException(`"collection" is required`);
@@ -111,7 +114,10 @@ export class CollectionsService {
 	/**
 	 * Create multiple new collections
 	 */
-	async createMany(payloads: Partial<Collection> & { collection: string }[], opts?: MutationOptions) {
+	async createMany(
+		payloads: Partial<Collection> & { collection: string }[],
+		opts?: MutationOptions
+	): Promise<string[]> {
 		const collections = await this.knex.transaction(async (trx) => {
 			const service = new CollectionsService({
 				schema: this.schema,
@@ -146,7 +152,7 @@ export class CollectionsService {
 			accountability: this.accountability,
 		});
 
-		let tablesInDatabase = await schemaInspector.tableInfo();
+		let tablesInDatabase = await this.schemaInspector.tableInfo();
 
 		if (this.accountability && this.accountability.admin !== true) {
 			const collectionsYouHavePermissionToRead: string[] = this.schema.permissions
@@ -212,13 +218,13 @@ export class CollectionsService {
 
 				for (const collectionKey of collectionKeys) {
 					if (collectionsYouHavePermissionToRead.includes(collectionKey) === false) {
-						throw new ForbiddenException(`You don't have access to the "${collectionKey}" collection.`);
+						throw new ForbiddenException();
 					}
 				}
 			}
 		}
 
-		const tablesInDatabase = await schemaInspector.tableInfo();
+		const tablesInDatabase = await this.schemaInspector.tableInfo();
 		const tables = tablesInDatabase.filter((table) => collectionKeys.includes(table.name));
 
 		const meta = (await collectionItemsService.readByQuery({
@@ -250,7 +256,7 @@ export class CollectionsService {
 	 */
 	async updateOne(collectionKey: string, data: Partial<Collection>, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException();
 		}
 
 		const collectionItemsService = new ItemsService('directus_collections', {
@@ -285,7 +291,7 @@ export class CollectionsService {
 	 */
 	async updateMany(collectionKeys: string[], data: Partial<Collection>): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException();
 		}
 
 		await this.knex.transaction(async (trx) => {
@@ -309,7 +315,7 @@ export class CollectionsService {
 	 */
 	async deleteOne(collectionKey: string, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException();
 		}
 
 		const collectionItemsService = new ItemsService('directus_collections', {
@@ -351,7 +357,7 @@ export class CollectionsService {
 					.where({ many_collection: collectionKey, many_field: relation.many_field });
 
 				await fieldsService.deleteField(relation.one_collection!, relation.one_field!);
-			} else if (!!relation.one_collection) {
+			} else if (relation.one_collection) {
 				await this.knex('directus_relations')
 					.update({ one_field: null })
 					.where({ one_collection: collectionKey, one_field: relation.one_field });
@@ -373,7 +379,7 @@ export class CollectionsService {
 	 */
 	async deleteMany(collectionKeys: string[], opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException();
 		}
 
 		await this.knex.transaction(async (trx) => {
