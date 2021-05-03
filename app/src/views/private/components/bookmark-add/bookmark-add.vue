@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :modelValue="active" @update:modelValue="$attrs.onToggle" persistent @esc="cancel">
+	<v-dialog :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)" persistent @esc="cancel">
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
@@ -36,13 +36,9 @@
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
-	emits: ['save', 'toggle'],
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
+	emits: ['save', 'update:modelValue'],
 	props: {
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: false,
 		},
@@ -58,7 +54,7 @@ export default defineComponent({
 
 		function cancel() {
 			bookmarkName.value = null;
-			emit('toggle', false);
+			emit('update:modelValue', false);
 		}
 	},
 });
