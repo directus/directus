@@ -1,7 +1,7 @@
 <template>
 	<div class="notifications-preview">
 		<transition-expand tag="div">
-			<div v-if="active" class="inline">
+			<div v-if="modelValue" class="inline">
 				<div class="padding-box">
 					<router-link class="link" to="/activity" :class="{ 'has-items': lastFour.length > 0 }">
 						{{ $t('show_all_activity') }}
