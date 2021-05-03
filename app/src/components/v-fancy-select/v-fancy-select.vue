@@ -6,7 +6,7 @@
 				<div
 					v-else
 					class="v-fancy-select-option"
-					:class="{ active: item.value === value, disabled }"
+					:class="{ active: item.value === modelValue, disabled }"
 					:style="{
 						'--index': index,
 					}"
@@ -21,7 +21,7 @@
 						<div class="description">{{ item.description }}</div>
 					</div>
 
-					<v-icon v-if="value === item.value && disabled === false" name="cancel" @click.stop="toggle(item)" />
+					<v-icon v-if="modelValue === item.value && disabled === false" name="cancel" @click.stop="toggle(item)" />
 					<v-icon class="icon-right" v-else-if="item.iconRight" :name="item.iconRight" />
 				</div>
 			</template>
@@ -34,13 +34,13 @@ import { defineComponent, PropType, computed } from 'vue';
 import { FancySelectItem } from './types';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
 		items: {
 			type: Array as PropType<FancySelectItem[]>,
 			required: true,
 		},
-		value: {
+		modelValue: {
 			type: [String, Number],
 			default: null,
 		},
@@ -51,10 +51,10 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const visibleItems = computed(() => {
-			if (props.value === null) return props.items;
+			if (props.modelValue === null) return props.items;
 
 			return props.items.filter((item) => {
-				return item.value === props.value;
+				return item.value === props.modelValue;
 			});
 		});
 
@@ -62,8 +62,8 @@ export default defineComponent({
 
 		function toggle(item: FancySelectItem) {
 			if (props.disabled === true) return;
-			if (props.value === item.value) emit('input', null);
-			else emit('input', item.value);
+			if (props.modelValue === item.value) emit('update:modelValue', null);
+			else emit('update:modelValue', item.value);
 		}
 	},
 });
