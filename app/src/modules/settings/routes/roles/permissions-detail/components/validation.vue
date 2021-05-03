@@ -9,7 +9,7 @@
 			}}
 		</v-notice>
 
-		<interface-code v-model="validation" language="json" type="json" />
+		<interface-code :value="validation" @input="validation = $event" language="json" type="json" />
 	</div>
 </template>
 

@@ -8,7 +8,7 @@
 				})
 			}}
 		</v-notice>
-		<interface-code v-model="presets" language="json" type="json" />
+		<interface-code :value="presets" @input="presets = $event" language="json" type="json" />
 	</div>
 </template>
 
