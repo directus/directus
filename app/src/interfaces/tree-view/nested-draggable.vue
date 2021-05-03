@@ -1,5 +1,6 @@
 <template>
 	<draggable
+		v-bind="dragOptions"
 		class="drag-area"
 		:class="{ root, drag }"
 		tag="ul"
@@ -7,7 +8,6 @@
 		:group="{ name: 'g1' }"
 		item-key="id"
 		draggable=".row"
-		v-bind="dragOptions"
 		@start="drag = true"
 		@end="drag = false"
 		:set-data="hideDragImage"
