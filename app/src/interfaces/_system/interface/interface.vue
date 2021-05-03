@@ -5,8 +5,8 @@
 	<v-select
 		v-else
 		:items="items"
-		@input="$attrs.onInput"
-		:value="value"
+		@update:modelValue="$attrs.onInput"
+		:modelValue="value"
 		:placeholder="$t('interfaces.interface.placeholder')"
 	/>
 </template>

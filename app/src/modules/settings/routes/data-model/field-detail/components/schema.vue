@@ -27,10 +27,10 @@
 				<v-select
 					v-else
 					:disabled="typeDisabled || isExisting"
-					:value="fieldData.type"
+					:modelValue="fieldData.type"
 					:items="typesWithLabels"
 					:placeholder="typePlaceholder"
-					@input="fieldData.type = $event"
+					@update:modelValue="fieldData.type = $event"
 				/>
 			</div>
 

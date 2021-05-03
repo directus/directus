@@ -3,7 +3,7 @@
 		<teleport to="#target-layout-options">
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.cards.image_source') }}</div>
-				<v-select v-model="imageSource" show-deselect item-value="field" item-text="name" :items="fileFields" />
+				<v-select v-model="imageSource" show-deselect item-modelValue="field" item-text="name" :items="fileFields" />
 			</div>
 
 			<div class="field">
@@ -108,8 +108,8 @@
 				<div v-if="loading === false && items.length >= 25" class="per-page">
 					<span>{{ $t('per_page') }}</span>
 					<v-select
-						@input="limit = +$event"
-						:value="`${limit}`"
+						@update:modelValue="limit = +$event"
+						:modelValue="`${limit}`"
 						:items="['25', '50', '100', '250', '500', '1000']"
 						inline
 					/>

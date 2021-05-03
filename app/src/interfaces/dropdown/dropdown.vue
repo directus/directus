@@ -4,8 +4,8 @@
 	</v-notice>
 	<v-select
 		v-else
-		:value="value"
-		@input="$attrs.onInput"
+		:modelValue="value"
+		@update:modelValue="$attrs.onInput"
 		:items="choices"
 		:disabled="disabled"
 		:show-deselect="allowNone"

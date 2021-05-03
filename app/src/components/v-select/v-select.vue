@@ -28,7 +28,7 @@
 
 		<v-list class="list">
 			<template v-if="showDeselect">
-				<v-list-item @click="$emit('input', null)" :disabled="value === null">
+				<v-list-item @click="$emit('update:modelValue', null)" :disabled="modelValue === null">
 					<v-list-item-icon v-if="multiple === true">
 						<v-icon name="close" />
 					</v-list-item-icon>
@@ -47,9 +47,9 @@
 
 				<v-list-item
 					v-else
-					:active="multiple ? (value || []).includes(item.value) : value === item.value"
+					:active="multiple ? (modelValue || []).includes(item.value) : modelValue === item.value"
 					:disabled="item.disabled"
-					@click="multiple ? null : $emit('input', item.value)"
+					@click="multiple ? null : $emit('update:modelValue', item.value)"
 				>
 					<v-list-item-icon v-if="multiple === false && allowOther === false && itemIcon !== null && item.icon">
 						<v-icon :name="item.icon" />
@@ -58,11 +58,11 @@
 						<span v-if="multiple === false" class="item-text">{{ item.text }}</span>
 						<v-checkbox
 							v-else
-							:inputValue="value || []"
+							:inputValue="modelValue || []"
 							:label="item.text"
 							:value="item.value"
 							:disabled="item.disabled"
-							@change="$emit('input', $event.length > 0 ? $event : null)"
+							@change="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 						/>
 					</v-list-item-content>
 				</v-list-item>
@@ -72,7 +72,7 @@
 				<v-list-item-content>
 					<input
 						class="other-input"
-						@focus="otherValue ? $emit('input', otherValue) : null"
+						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
 						v-model="otherValue"
 						:placeholder="$t('other')"
 					/>
@@ -83,14 +83,14 @@
 				<v-list-item
 					v-for="otherValue in otherValues"
 					:key="otherValue.key"
-					:active="(value || []).includes(otherValue.value)"
+					:active="(modelValue || []).includes(otherValue.value)"
 					@click.stop
 				>
 					<v-list-item-icon>
 						<v-checkbox
-							:inputValue="value || []"
+							:inputValue="modelValue || []"
 							:value="otherValue.value"
-							@change="$emit('input', $event.length > 0 ? $event : null)"
+							@change="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 						/>
 					</v-list-item-icon>
 					<v-list-item-content>
@@ -127,7 +127,7 @@ type ItemsRaw = (string | any)[];
 type InputValue = string[] | string;
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
 		items: {
 			type: Array as PropType<ItemsRaw>,
@@ -149,7 +149,7 @@ export default defineComponent({
 			type: String,
 			default: 'disabled',
 		},
-		value: {
+		modelValue: {
 			type: [Array, String, Number, Boolean] as PropType<InputValue>,
 			default: null,
 		},
@@ -193,10 +193,10 @@ export default defineComponent({
 	setup(props, { emit }) {
 		const { _items } = useItems();
 		const { displayValue } = useDisplayValue();
-		const { value } = toRefs(props);
-		const { otherValue, usesOtherValue } = useCustomSelection(value as Ref<string>, _items, emit);
+		const { modelValue } = toRefs(props);
+		const { otherValue, usesOtherValue } = useCustomSelection(modelValue as Ref<string>, _items, emit);
 		const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(
-			value as Ref<string[]>,
+			modelValue as Ref<string[]>,
 			_items,
 			emit
 		);
@@ -239,16 +239,16 @@ export default defineComponent({
 
 		function useDisplayValue() {
 			const displayValue = computed(() => {
-				if (Array.isArray(props.value)) {
-					if (props.value.length < props.multiplePreviewThreshold) {
-						return props.value
+				if (Array.isArray(props.modelValue)) {
+					if (props.modelValue.length < props.multiplePreviewThreshold) {
+						return props.modelValue
 							.map((value) => {
 								return getTextForValue(value) || value;
 							})
 							.join(', ');
 					} else {
 						const itemCount = _items.value.length + otherValues.value.length;
-						const selectionCount = props.value.length;
+						const selectionCount = props.modelValue.length;
 
 						if (itemCount === selectionCount) {
 							return i18n.global.t('all_items');
@@ -258,7 +258,7 @@ export default defineComponent({
 					}
 				}
 
-				return getTextForValue(props.value) || props.value;
+				return getTextForValue(props.modelValue) || props.modelValue;
 			});
 
 			return { displayValue };

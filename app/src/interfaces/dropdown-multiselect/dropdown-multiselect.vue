@@ -5,8 +5,8 @@
 	<v-select
 		v-else
 		multiple
-		:value="value"
-		@input="$attrs.onInput"
+		:modelValue="value"
+		@update:modelValue="$attrs.onInput"
 		:items="choices"
 		:disabled="disabled"
 		:show-deselect="allowNone"

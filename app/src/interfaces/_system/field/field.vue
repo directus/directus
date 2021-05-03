@@ -8,8 +8,8 @@
 	<v-select
 		v-else
 		:show-deselect="allowNone"
-		@input="$attrs.onInput"
-		:value="value"
+		@update:modelValue="$attrs.onInput"
+		:modelValue="value"
 		:disabled="disabled"
 		:items="selectItems"
 		:placeholder="placeholder"

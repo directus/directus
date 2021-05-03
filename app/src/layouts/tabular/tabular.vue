@@ -115,8 +115,8 @@
 					<div v-if="loading === false && items.length >= 25" class="per-page">
 						<span>{{ $t('per_page') }}</span>
 						<v-select
-							@input="limit = +$event"
-							:value="`${limit}`"
+							@update:modelValue="limit = +$event"
+							:modelValue="`${limit}`"
 							:items="['25', '50', '100', '250', '500', ' 1000']"
 							inline
 						/>
