@@ -1,6 +1,6 @@
 <template>
 	<div class="wysiwyg" :class="{ disabled }">
-		<Editor
+		<editor
 			ref="editorElement"
 			:init="editorOptions"
 			:disabled="disabled"
