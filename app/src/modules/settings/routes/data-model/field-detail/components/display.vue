@@ -22,7 +22,8 @@
 			/>
 
 			<component
-				v-model="fieldData.meta.display_options"
+				:value="fieldData.meta.display_options"
+				@input="fieldData.meta.display_options = $event"
 				:collection="collection"
 				:field-data="fieldData"
 				:relations="relations"
