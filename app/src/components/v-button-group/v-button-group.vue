@@ -1,7 +1,7 @@
 <template>
 	<div class="v-button-group" :class="{ rounded, tile }">
 		<v-item-group
-			:value="value"
+			:value="modelValue"
 			:mandatory="mandatory"
 			:max="max"
 			:multiple="multiple"
@@ -17,7 +17,7 @@
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
 		mandatory: {
 			type: Boolean,
@@ -31,7 +31,7 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
-		value: {
+		modelValue: {
 			type: Array as PropType<(string | number)[]>,
 			default: undefined,
 		},
@@ -46,7 +46,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		function update(newSelection: readonly (string | number)[]) {
-			emit('input', newSelection);
+			emit('update:modelValue', newSelection);
 		}
 
 		return { update };
