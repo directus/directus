@@ -61,10 +61,6 @@ import arraysAreEqual from '@/utils/arrays-are-equal';
 
 export default defineComponent({
 	components: { NavigationFolder },
-	model: {
-		prop: 'currentFolder',
-		event: 'filter',
-	},
 	props: {
 		currentFolder: {
 			type: String,
