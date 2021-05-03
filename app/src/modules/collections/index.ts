@@ -82,7 +82,7 @@ export default defineModule({
 		},
 		{
 			name: 'collections-item-not-found',
-			path: '/:collection/*',
+			path: '/:collection/:path(.*)*',
 			component: ItemNotFound,
 			beforeEnter: checkForSystem,
 		},

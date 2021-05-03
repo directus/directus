@@ -149,7 +149,7 @@ export default defineModule({
 		},
 		{
 			name: 'settings-not-found',
-			path: '*',
+			path: '/:path(.*)*',
 			component: NotFound,
 		},
 	],
