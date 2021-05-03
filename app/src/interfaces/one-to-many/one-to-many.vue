@@ -448,19 +448,19 @@ export default defineComponent({
 
 		function usePermissions() {
 			const createAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				return !!permissionsStore.state.permissions.find(
+				return !!permissionsStore.permissions.find(
 					(permission) => permission.action === 'create' && permission.collection === relatedCollection.value.collection
 				);
 			});
 
 			const updateAllowed = computed(() => {
-				const admin = userStore.state?.currentUser?.role.admin_access === true;
+				const admin = userStore.currentUser?.role.admin_access === true;
 				if (admin) return true;
 
-				return !!permissionsStore.state.permissions.find(
+				return !!permissionsStore.permissions.find(
 					(permission) => permission.action === 'update' && permission.collection === relatedCollection.value.collection
 				);
 			});
