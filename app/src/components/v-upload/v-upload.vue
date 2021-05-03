@@ -60,9 +60,9 @@
 				/>
 
 				<v-dialog
-					:active="activeDialog === 'url'"
+					:modelValue="activeDialog === 'url'"
 					@esc="activeDialog = null"
-					@toggle="activeDialog = null"
+					@update:modelValue="activeDialog = null"
 					:persistent="urlLoading"
 				>
 					<v-card>

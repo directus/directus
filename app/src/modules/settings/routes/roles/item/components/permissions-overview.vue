@@ -46,7 +46,7 @@
 
 		<router-view name="permissionsDetail" :role-key="role" :permission-key="permission" @refresh="refreshPermission" />
 
-		<v-dialog @toggle="resetActive = false" :active="!!resetActive" @esc="resetActive = false">
+		<v-dialog @update:modelValue="resetActive = false" :modelValue="!!resetActive" @esc="resetActive = false">
 			<v-card>
 				<v-card-title>
 					{{ $t('reset_system_permissions_copy') }}

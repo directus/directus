@@ -131,7 +131,7 @@
 
 		<div v-if="view[0] === 'preview'" class="preview-box" v-html="html"></div>
 
-		<v-dialog :active="imageDialogOpen" @esc="imageDialogOpen = null" @toggle="imageDialogOpen = null">
+		<v-dialog :modelValue="imageDialogOpen" @esc="imageDialogOpen = null" @update:modelValue="imageDialogOpen = null">
 			<v-card>
 				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
 				<v-card-text>

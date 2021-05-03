@@ -79,7 +79,11 @@
 			@input="stageEdits"
 		/>
 
-		<v-dialog :active="activeDialog === 'upload'" @esc="activeDialog = null" @toggle="activeDialog = null">
+		<v-dialog
+			:modelValue="activeDialog === 'upload'"
+			@esc="activeDialog = null"
+			@update:modelValue="activeDialog = null"
+		>
 			<v-card>
 				<v-card-title>{{ $t('upload_from_device') }}</v-card-title>
 				<v-card-text>
@@ -99,8 +103,8 @@
 		/>
 
 		<v-dialog
-			:active="activeDialog === 'url'"
-			@toggle="activeDialog = null"
+			:modelValue="activeDialog === 'url'"
+			@update:modelValue="activeDialog = null"
 			@esc="activeDialog = null"
 			:persistent="urlLoading"
 		>

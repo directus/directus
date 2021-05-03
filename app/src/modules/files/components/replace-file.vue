@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :active="active" @toggle="$emit('toggle', false)" @esc="$emit('toggle', false)">
+	<v-dialog :modelValue="active" @update:modelValue="$emit('toggle', false)" @esc="$emit('toggle', false)">
 		<v-card v-if="file">
 			<v-card-title>{{ $t('replace_file') }}</v-card-title>
 			<v-card-text>

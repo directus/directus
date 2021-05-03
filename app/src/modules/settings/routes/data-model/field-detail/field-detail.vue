@@ -1,7 +1,7 @@
 <template>
 	<v-dialog
 		persistent
-		:active="true"
+		:modelValue="true"
 		@esc="cancelField"
 		v-if="localType === 'translations' && translationsManual === false && field === '+'"
 	>

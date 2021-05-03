@@ -19,13 +19,9 @@ import { nanoid } from 'nanoid';
 import useShortcut from '@/composables/use-shortcut';
 
 export default defineComponent({
-	emits: ['esc', 'toggle'],
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
+	emits: ['esc', 'update:modelValue'],
 	props: {
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
@@ -54,11 +50,11 @@ export default defineComponent({
 
 		const _active = computed({
 			get() {
-				return props.active !== undefined ? props.active : localActive.value;
+				return props.modelValue !== undefined ? props.modelValue : localActive.value;
 			},
 			set(newActive: boolean) {
 				localActive.value = newActive;
-				emit('toggle', newActive);
+				emit('update:modelValue', newActive);
 			},
 		});
 
@@ -66,7 +62,7 @@ export default defineComponent({
 
 		function emitToggle() {
 			if (props.persistent === false) {
-				emit('toggle', !props.active);
+				emit('update:modelValue', !props.modelValue);
 			} else {
 				nudge();
 			}

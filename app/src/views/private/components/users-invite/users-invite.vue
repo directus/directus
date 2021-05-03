@@ -1,5 +1,5 @@
 <template>
-	<v-dialog :active="active" @toggle="$emit('toggle', $event)" @esc="$emit('toggle', false)">
+	<v-dialog :modelValue="active" @update:modelValue="$emit('toggle', $event)" @esc="$emit('toggle', false)">
 		<v-card>
 			<v-card-title>{{ $t('invite_users') }}</v-card-title>
 
