@@ -243,7 +243,7 @@ export function useGroupableParent(
 	// of the parent
 	function updateChildren() {
 		items.value.forEach((item) => {
-			item.active.value = selection.value.includes(getValueForItem(item));
+			item.active = selection.value.includes(getValueForItem(item));
 		});
 	}
 }
