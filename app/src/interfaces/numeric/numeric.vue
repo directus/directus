@@ -2,13 +2,13 @@
 	<v-input
 		type="number"
 		:class="font"
-		:value="value"
+		:modelValue="value"
 		:placeholder="placeholder"
 		:disabled="disabled"
 		:min="min"
 		:max="max"
 		:step="step"
-		@input="$attrs.onInput"
+		@update:modelValue="$attrs.onInput"
 	>
 		<template v-if="iconLeft" #prepend>
 			<v-icon :name="iconLeft" />

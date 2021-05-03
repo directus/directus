@@ -1,6 +1,6 @@
 <template>
 	<form @submit.prevent="onSubmit">
-		<v-input :value="email" disabled />
+		<v-input :modelValue="email" disabled />
 		<v-input
 			:placeholder="$t('password')"
 			autofocus

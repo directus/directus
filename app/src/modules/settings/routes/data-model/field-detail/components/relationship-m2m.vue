@@ -3,7 +3,7 @@
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :value="relations[0].one_collection" />
+				<v-input disabled :modelValue="relations[0].one_collection" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('junction_collection') }}</div>
@@ -120,7 +120,7 @@
 					</template>
 				</v-input>
 			</div>
-			<v-input disabled :value="relations[0].one_primary" />
+			<v-input disabled :modelValue="relations[0].one_primary" />
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[0].many_field) }"
 				v-model="relations[0].many_field"

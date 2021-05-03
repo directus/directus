@@ -1,7 +1,7 @@
 <template>
 	<v-input
 		:autofocus="autofocus"
-		:value="value"
+		:modelValue="value"
 		:nullable="!clear"
 		:placeholder="placeholder"
 		:disabled="disabled"
@@ -9,7 +9,7 @@
 		:type="masked ? 'password' : 'text'"
 		:class="font"
 		:db-safe="dbSafe"
-		@input="$attrs.onInput"
+		@update:modelValue="$attrs.onInput"
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 		<template #append>

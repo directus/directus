@@ -3,7 +3,7 @@
 		<h1 class="type-title">{{ $t('create_account') }}</h1>
 
 		<form @submit.prevent="onSubmit">
-			<v-input :value="email" disabled />
+			<v-input :modelValue="email" disabled />
 
 			<v-input
 				:placeholder="$t('password')"

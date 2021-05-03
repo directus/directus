@@ -14,7 +14,7 @@
 
 		<v-menu attached :disabled="loading">
 			<template #activator="{ toggle, active }">
-				<v-input @click="toggle" :class="{ active }" readonly :value="$t('add_filter')" :disabled="loading">
+				<v-input @click="toggle" :class="{ active }" readonly :modelValue="$t('add_filter')" :disabled="loading">
 					<template #prepend><v-icon name="add" /></template>
 					<template #append><v-icon name="expand_more" /></template>
 				</v-input>

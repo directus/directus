@@ -3,7 +3,7 @@
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :value="relations[0].one_collection" />
+				<v-input disabled :modelValue="relations[0].one_collection" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('junction_collection') }}</div>
@@ -202,7 +202,7 @@
 					<v-text-overflow :text="relations[1].many_field" />
 				</template>
 			</v-input>
-			<v-input disabled :value="$t('primary_key')" />
+			<v-input disabled :modelValue="$t('primary_key')" />
 			<div class="spacer" />
 			<v-checkbox v-if="!isExisting" block v-model="autoFill" :label="$t('auto_fill')" />
 			<v-icon class="arrow" name="arrow_forward" />

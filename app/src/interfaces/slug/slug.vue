@@ -1,11 +1,11 @@
 <template>
 	<v-input
-		:value="value"
+		:modelValue="value"
 		:disabled="disabled"
 		:placeholder="placeholder"
 		:iconLeft="iconLeft"
 		:iconRight="iconRight"
-		@input="$emit('input', $event)"
+		@update:modelValue="$emit('input', $event)"
 		slug
 	>
 		<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>

@@ -10,7 +10,7 @@
 						readonly
 						:placeholder="$t('no_file_selected')"
 						:disabled="disabled"
-						:value="file && file.title"
+						:modelValue="file && file.title"
 					>
 						<template #prepend>
 							<div

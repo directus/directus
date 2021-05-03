@@ -15,7 +15,7 @@
 				v-else
 				:full-width="fullWidth"
 				readonly
-				:value="displayValue"
+				:modelValue="displayValue"
 				@click="toggle"
 				:placeholder="placeholder"
 				:disabled="disabled"

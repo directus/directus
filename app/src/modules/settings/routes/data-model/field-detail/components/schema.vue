@@ -23,7 +23,7 @@
 					{{ $t('type') }}
 					<v-icon class="required" sup name="star" />
 				</div>
-				<v-input v-if="!fieldData.schema" :value="$t('alias')" disabled />
+				<v-input v-if="!fieldData.schema" :modelValue="$t('alias')" disabled />
 				<v-select
 					v-else
 					:disabled="typeDisabled || isExisting"

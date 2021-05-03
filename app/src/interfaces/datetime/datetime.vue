@@ -5,7 +5,7 @@
 				:active="active"
 				@click="toggle"
 				readonly
-				:value="displayValue"
+				:modelValue="displayValue"
 				:disabled="disabled"
 				:placeholder="$t('enter_a_value')"
 			>

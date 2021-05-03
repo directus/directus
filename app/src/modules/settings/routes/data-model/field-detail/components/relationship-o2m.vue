@@ -3,7 +3,7 @@
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
-				<v-input disabled :value="collection" />
+				<v-input disabled :modelValue="collection" />
 			</div>
 			<div class="field">
 				<div class="type-label">{{ $t('related_collection') }}</div>
@@ -57,7 +57,7 @@
 					</template>
 				</v-input>
 			</div>
-			<v-input disabled :value="currentCollectionPrimaryKey.field">
+			<v-input disabled :modelValue="currentCollectionPrimaryKey.field">
 				<template #input>
 					<v-text-overflow :text="currentCollectionPrimaryKey.field" />
 				</template>

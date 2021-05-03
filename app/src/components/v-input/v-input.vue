@@ -5,11 +5,11 @@
 		:class="{ 'full-width': fullWidth, 'has-click': hasClick, disabled: disabled }"
 	>
 		<div v-if="$slots['prepend-outer']" class="prepend-outer">
-			<slot name="prepend-outer" :value="value" :disabled="disabled" />
+			<slot name="prepend-outer" :value="modelValue" :disabled="disabled" />
 		</div>
 		<div class="input" :class="{ disabled, active }">
 			<div v-if="$slots.prepend" class="prepend">
-				<slot name="prepend" :value="value" :disabled="disabled" />
+				<slot name="prepend" :value="modelValue" :disabled="disabled" />
 			</div>
 			<span v-if="prefix" class="prefix">{{ prefix }}</span>
 			<slot name="input">
@@ -24,7 +24,7 @@
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="value"
+					:value="modelValue"
 					ref="input"
 				/>
 			</slot>
@@ -46,11 +46,11 @@
 				/>
 			</span>
 			<div v-if="$slots.append" class="append">
-				<slot name="append" :value="value" :disabled="disabled" />
+				<slot name="append" :value="modelValue" :disabled="disabled" />
 			</div>
 		</div>
 		<div v-if="$slots['append-outer']" class="append-outer">
-			<slot name="append-outer" :value="value" :disabled="disabled" />
+			<slot name="append-outer" :value="modelValue" :disabled="disabled" />
 		</div>
 	</div>
 </template>
@@ -60,7 +60,7 @@ import { defineComponent, computed, ref } from 'vue';
 import slugify from '@sindresorhus/slugify';
 
 export default defineComponent({
-	emits: ['click', 'keydown', 'input'],
+	emits: ['click', 'keydown', 'update:modelValue'],
 	inheritAttrs: false,
 	props: {
 		autofocus: {
@@ -83,7 +83,7 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-		value: {
+		modelValue: {
 			type: [String, Number],
 			default: null,
 		},
@@ -151,11 +151,11 @@ export default defineComponent({
 		});
 
 		const isStepUpAllowed = computed(() => {
-			return props.disabled === false && (props.max === null || parseInt(String(props.value), 10) < props.max);
+			return props.disabled === false && (props.max === null || parseInt(String(props.modelValue), 10) < props.max);
 		});
 
 		const isStepDownAllowed = computed(() => {
-			return props.disabled === false && (props.min === null || parseInt(String(props.value), 10) > props.min);
+			return props.disabled === false && (props.min === null || parseInt(String(props.modelValue), 10) > props.min);
 		});
 
 		return { listeners, hasClick, stepUp, stepDown, isStepUpAllowed, isStepDownAllowed, input };
@@ -199,8 +199,8 @@ export default defineComponent({
 		}
 
 		function trimIfEnabled() {
-			if (props.value && props.trim) {
-				emit('input', String(props.value).trim());
+			if (props.modelValue && props.trim) {
+				emit('update:modelValue', String(props.modelValue).trim());
 			}
 		}
 
@@ -208,12 +208,12 @@ export default defineComponent({
 			let value = (event.target as HTMLInputElement).value;
 
 			if (props.nullable === true && !value) {
-				emit('input', null);
+				emit('update:modelValue', null);
 				return;
 			}
 
 			if (props.type === 'number') {
-				emit('input', Number(value));
+				emit('update:modelValue', Number(value));
 			} else {
 				if (props.slug === true) {
 					const endsWithSpace = value.endsWith(' ');
@@ -228,7 +228,7 @@ export default defineComponent({
 					value = value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 				}
 
-				emit('input', value);
+				emit('update:modelValue', value);
 			}
 		}
 
@@ -239,7 +239,7 @@ export default defineComponent({
 			input.value.stepUp();
 
 			if (input.value.value != null) {
-				return emit('input', Number(input.value.value));
+				return emit('update:modelValue', Number(input.value.value));
 			}
 		}
 
@@ -250,9 +250,9 @@ export default defineComponent({
 			input.value.stepDown();
 
 			if (input.value.value) {
-				return emit('input', Number(input.value.value));
+				return emit('update:modelValue', Number(input.value.value));
 			} else {
-				return emit('input', props.min || 0);
+				return emit('update:modelValue', props.min || 0);
 			}
 		}
 	},
