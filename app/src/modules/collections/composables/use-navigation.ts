@@ -55,7 +55,7 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 	});
 
 	const navItems = computed<NavItem[]>(() => {
-		return collectionsStore.visibleCollections.value
+		return collectionsStore.visibleCollections
 			.map((collection: Collection) => {
 				const navItem: NavItem = {
 					collection: collection.collection,
@@ -74,7 +74,7 @@ export default function useNavigation(searchQuery?: Ref<string | null>): Record<
 	});
 
 	const hiddenNavItems = computed<NavItem[]>(() => {
-		return collectionsStore.hiddenCollections.value
+		return collectionsStore.hiddenCollections
 			.map((collection: Collection) => {
 				const navItem: NavItem = {
 					collection: collection.collection,
