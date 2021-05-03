@@ -15,7 +15,7 @@
 			v-on="listeners"
 			:placeholder="placeholder"
 			:disabled="disabled"
-			:value="value"
+			:value="modelValue"
 		/>
 		<div class="append" v-if="$slots.append"><slot name="append" /></div>
 	</div>
@@ -25,7 +25,7 @@
 import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
 		disabled: {
 			type: Boolean,
@@ -39,7 +39,7 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
-		value: {
+		modelValue: {
 			type: String,
 			default: null,
 		},
@@ -66,7 +66,7 @@ export default defineComponent({
 			blur: trimIfEnabled,
 		}));
 
-		const hasContent = computed(() => props.value && props.value.length > 0);
+		const hasContent = computed(() => props.modelValue && props.modelValue.length > 0);
 
 		return { listeners, hasContent };
 
@@ -74,15 +74,15 @@ export default defineComponent({
 			const value = (event.target as HTMLInputElement).value;
 
 			if (props.nullable === true && value === '') {
-				emit('input', null);
+				emit('update:modelValue', null);
 			} else {
-				emit('input', value);
+				emit('update:modelValue', value);
 			}
 		}
 
 		function trimIfEnabled() {
-			if (props.value && props.trim) {
-				emit('input', props.value.trim());
+			if (props.modelValue && props.trim) {
+				emit('update:modelValue', props.modelValue.trim());
 			}
 		}
 	},

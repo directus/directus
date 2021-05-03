@@ -1,11 +1,11 @@
 <template>
 	<v-textarea
 		v-bind="{ placeholder, trim }"
-		:value="value"
+		:modelValue="value"
 		:nullable="!clear"
 		:disabled="disabled"
 		:class="font"
-		@input="$attrs.onInput"
+		@update:modelValue="$attrs.onInput"
 	/>
 </template>
 
