@@ -11,23 +11,23 @@ export default command(
 			**Inline update**
 
 			\`\`\`
-			$ $0 items update one <collection> --id <id> --item="{...}"
+			$ $0 items update one <collection> --id <id> --data="{...}"
 			\`\`\`
 
 			**Load item from stdin (JSON)**
 
 			\`\`\`
-			$ cat item.json | $0 items update one <collection> \\
+			$ cat data.json | $0 items update one <collection> \\
 				--id <id> \\
-				--item-stdin=json
+				--data-stdin=json
 			\`\`\`
 
 			**Load item from stdin (YAML)**
 
 			\`\`\`
-			$ cat item.yaml | $0 items update one <collection> \\
+			$ cat data.yaml | $0 items update one <collection> \\
 				--id <id> \\
-				--item-stdin=yaml
+				--data-stdin=yaml
 			\`\`\`
 		`,
 		documentation: `
@@ -37,9 +37,9 @@ export default command(
 			sdk: true,
 			query: 'one',
 			stdin: {
-				'item-stdin': {
+				'data-stdin': {
 					formats: ['json', 'yaml'],
-					exclusive: ['item'],
+					exclusive: ['data'],
 				},
 			},
 		},
@@ -51,7 +51,7 @@ export default command(
 					description: "The item's primary key id",
 					demandOption: true,
 				})
-				.option('item', {
+				.option('data', {
 					type: 'string',
 					description: `
 						The fields to update in the item.
@@ -68,25 +68,25 @@ export default command(
 		},
 	},
 	async function ({ output, query, sdk, stdin }, params) {
-		let item = {};
+		let data = {};
 
-		if (params.item) {
-			item = parseJson(params.item);
+		if (params.data) {
+			data = parseJson(params.data);
 		} else if (stdin) {
-			item = stdin;
+			data = stdin;
 		} else {
-			throw new CLIRuntimeError('Missing item data from --item-stdin or --item');
+			throw new CLIRuntimeError('Missing item data from --data-stdin or --data');
 		}
 
-		if (typeof item !== 'object') {
+		if (typeof data !== 'object') {
 			throw new CLIRuntimeError(`
 				Invalid item data.
-				Must be an object, received "${typeof item}".
+				Must be an object, received "${typeof data}".
 				Maybe check your quote escapes?
 			`);
 		}
 
-		const updated = await sdk.items(params.collection).updateOne(params.id, item, query.one);
+		const updated = await sdk.items(params.collection).updateOne(params.id, data, query.one);
 		await output.compose(async (ui) => {
 			if (updated) {
 				await ui.wrap((ui) => ui.header('Updated'), 1);

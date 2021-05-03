@@ -12,27 +12,43 @@ export default command(
 
 			\`\`\`
 			$ $0 items update many <collection> \\
-				--items="[{...}, {...}, ...]"
+				--id 1 2 3 4 \\
+				--data="{...}"
+			\`\`\`
+
+			\`\`\`
+			$ $0 items update many <collection> \\
+				--id 1 \\
+				--id 2 \\
+				--data="{...}"
+			\`\`\`
+
+			\`\`\`
+			$ $0 items update many <collection> \\
+				--id 4719da4c-218c-4bd5-bbc9-f7152d8fed0a \\
+				--id e0f75a9b-8282-4dab-b1b0-a5958758af67 \\
+				--data="{...}"
 			\`\`\`
 
 			**Load item from stdin (JSON)**
 
 			\`\`\`
 			$ cat items.json | $0 items update many <collection> \\
-				--items-stdin=json
+				--id 1 2 3 4 \\
+				--data-stdin=json
 			\`\`\`
 
 			**Load item from stdin (YAML)**
 
 			\`\`\`
 			$ cat items.yaml | $0 items update many <collection> \\
-				--item-stdin=yaml
+				--id 1 2 3 4 \\
+				--data-stdin=yaml
 			\`\`\`
 		`,
 		documentation: `
-			Update many items in a collection. Each entry to be updated
-			needs to contain a field with the item's primary key. This is
-			used to map which item is being updated.
+			Update many items in a collection. You have to specify all
+			the primary keys that will received the update using --id.
 		`,
 		features: {
 			sdk: true,
@@ -49,7 +65,7 @@ export default command(
 			return builder
 				.option('id', {
 					type: 'array',
-					description: 'A list of ids to be deleted',
+					description: 'A list of ids to be updated',
 					demandOption: true,
 				})
 				.option('data', {
