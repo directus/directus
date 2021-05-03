@@ -85,7 +85,7 @@ export default command(
 			throw new CLIRuntimeError(`
 				Invalid item data.
 				Must be an object, received "${typeof data}".
-				Maybe check your quote scapes?
+				Maybe check your quote escapes?
 			`);
 		}
 
