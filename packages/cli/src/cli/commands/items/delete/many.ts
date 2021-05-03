@@ -1,18 +1,30 @@
-import { command } from '../../../core/command';
+import { command } from '../../../../core/command';
 
 export default command(
 	{
 		group: 'items',
 		parameters: '<collection>',
-		description: 'Delete one item in a collection',
+		description: 'Delete many items in a collection',
 		usage: `
+			**With multiple params**
+
 			\`\`\`
-			$ $0 items delete one <collection> --id <id>
+			$ $0 items delete many <collection> \\
+				--id 1 \\
+				--id 2 \\
+				--id 3
+			\`\`\`
+
+			**With combined values**
+
+			\`\`\`
+			$ $0 items delete many <collection> \\
+				--id 1 2 3 4 5 6
 			\`\`\`
 		`,
 		hints: ['del', 'rm', 'remove', 'exclude', 'destroy', 'explode'],
 		documentation: `
-			Delete one item by it's primary key.
+			Delete many items by their primary keys.
 		`,
 		features: {
 			sdk: true,
@@ -20,8 +32,8 @@ export default command(
 		options: function (builder) {
 			return builder
 				.option('id', {
-					type: 'string',
-					description: "The item's primary key id",
+					type: 'array',
+					description: 'A list of ids to be deleted',
 					demandOption: true,
 				})
 				.positional('collection', {
@@ -32,9 +44,9 @@ export default command(
 		},
 	},
 	async function ({ output, sdk }, params) {
-		await sdk.items(params.collection).deleteOne(params.id);
+		await sdk.items(params.collection).deleteMany(params.id);
 		await output.compose(async (ui) => {
-			await ui.wrap((ui) => ui.text('Item successfully deleted'), 1);
+			await ui.wrap((ui) => ui.text('Items successfully deleted'), 1);
 		});
 
 		return {
