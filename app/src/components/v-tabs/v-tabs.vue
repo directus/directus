@@ -12,19 +12,19 @@ import { defineComponent, PropType, toRefs, provide, ref } from 'vue';
 import { useGroupableParent } from '@/composables/groupable';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
 		vertical: {
 			type: Boolean,
 			default: false,
 		},
-		value: {
+		modelValue: {
 			type: Array as PropType<(string | number)[]>,
 			default: undefined,
 		},
 	},
 	setup(props, { emit }) {
-		const { value: selection, vertical } = toRefs(props);
+		const { modelValue: selection, vertical } = toRefs(props);
 
 		provide('v-tabs-vertical', vertical);
 
@@ -41,7 +41,7 @@ export default defineComponent({
 		);
 
 		function update(newSelection: readonly (string | number)[]) {
-			emit('input', newSelection);
+			emit('update:modelValue', newSelection);
 		}
 
 		return { update, items };
