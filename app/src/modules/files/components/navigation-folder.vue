@@ -5,7 +5,7 @@
 			:to="`/files?folder=${folder.id}`"
 			:active="currentFolder === folder.id"
 			exact
-			@contextmenu.prevent.stop="$refs.contextMenu.activate"
+			@contextmenu.prevent.stop="activateContextMenu()"
 		>
 			<v-list-item-icon><v-icon name="folder" /></v-list-item-icon>
 			<v-list-item-content>
@@ -21,7 +21,7 @@
 			scope="files-navigation"
 			exact
 			disable-groupable-parent
-			@contextmenu.prevent.stop="$refs.contextMenu.activate"
+			@contextmenu.prevent.stop="activateContextMenu()"
 		>
 			<template #activator>
 				<v-list-item-icon>
@@ -143,6 +143,8 @@ export default defineComponent({
 	setup(props) {
 		const router = useRouter();
 
+		const contextMenu = ref();
+
 		const { renameActive, renameValue, renameSave, renameSaving } = useRenameFolder();
 		const { moveActive, moveValue, moveSave, moveSaving } = useMoveFolder();
 		const { deleteActive, deleteSave, deleteSaving } = useDeleteFolder();
@@ -161,6 +163,8 @@ export default defineComponent({
 			deleteActive,
 			deleteSave,
 			deleteSaving,
+			contextMenu,
+			activateContextMenu,
 		};
 
 		function useRenameFolder() {
@@ -280,6 +284,10 @@ export default defineComponent({
 					deleteSaving.value = false;
 				}
 			}
+		}
+
+		function activateContextMenu() {
+			contextMenu.value.activate();
 		}
 	},
 });

@@ -1,5 +1,5 @@
 <template>
-	<v-list large class="collections-navigation" @contextmenu.prevent.stop="$refs.contextMenu.activate">
+	<v-list large class="collections-navigation" @contextmenu.prevent.stop="activateContextMenu()">
 		<template v-if="customNavItems && customNavItems.length > 0">
 			<template v-for="(group, index) in customNavItems" :key="group.name">
 				<template
@@ -156,6 +156,7 @@ export default defineComponent({
 			hiddenShown,
 			hiddenNavItems,
 			searchQuery,
+			activateContextMenu,
 		};
 
 		function isActive(name: string) {
@@ -168,6 +169,10 @@ export default defineComponent({
 			} else {
 				activeGroups.value.push(name);
 			}
+		}
+
+		function activateContextMenu() {
+			contextMenu.value.activate();
 		}
 	},
 });
