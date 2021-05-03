@@ -6,6 +6,9 @@
 import { defineComponent, ref, onMounted, onUpdated, inject } from 'vue';
 
 import MarkdownIt from 'markdown-it';
+import markdownItTableOfContents from 'markdown-it-table-of-contents';
+import markdownItAnchor from 'markdown-it-anchor';
+import markdownItContainer from 'markdown-it-container';
 import fm from 'front-matter';
 
 import hljs from 'highlight.js';
@@ -32,8 +35,8 @@ const md = new MarkdownIt({
 	},
 });
 
-md.use(require('markdown-it-table-of-contents'), { includeLevel: [2] });
-md.use(require('markdown-it-anchor').default, { permalink: true, permalinkSymbol: '#' });
+md.use(markdownItTableOfContents, { includeLevel: [2] });
+md.use(markdownItAnchor, { permalink: true, permalinkSymbol: '#' });
 
 function hintRenderer(type: string) {
 	return (tokens: any[], idx: number) => {
@@ -50,9 +53,9 @@ function hintRenderer(type: string) {
 	};
 }
 
-md.use(require('markdown-it-container'), 'tip', { render: hintRenderer('tip') });
-md.use(require('markdown-it-container'), 'warning', { render: hintRenderer('warning') });
-md.use(require('markdown-it-container'), 'danger', { render: hintRenderer('danger') });
+md.use(markdownItContainer, 'tip', { render: hintRenderer('tip') });
+md.use(markdownItContainer, 'warning', { render: hintRenderer('warning') });
+md.use(markdownItContainer, 'danger', { render: hintRenderer('danger') });
 
 export default defineComponent({
 	setup(props, { slots }) {
