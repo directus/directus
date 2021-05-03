@@ -1,5 +1,5 @@
 <template>
-	<v-item-group class="v-tabs-items" :modelValue="value" @update:modelValue="update">
+	<v-item-group class="v-tabs-items" :modelValue="modelValue" @update:modelValue="update">
 		<slot />
 	</v-item-group>
 </template>
@@ -8,16 +8,16 @@
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
-		value: {
+		modelValue: {
 			type: Array as PropType<(string | number)[]>,
 			default: undefined,
 		},
 	},
 	setup(props, { emit }) {
 		function update(newSelection: readonly (string | number)[]) {
-			emit('input', newSelection);
+			emit('update:modelValue', newSelection);
 		}
 
 		return { update };
