@@ -34,9 +34,19 @@
 </template>
 
 <script lang="ts">
+/**
+ * @TODO
+ * - Dynamically switch between timeGrid and dayGrid based on datetime vs date
+ * - Persist view (month/week/day) in layoutOptions
+ * - Drag and Drop??
+ * - Set contentHeight to auto based on month vs week view
+ * - Make sure start_date / end_date are dynamic
+ */
+
 import '@fullcalendar/core/vdom';
 import { Calendar, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
 import {
 	defineComponent,
 	onMounted,
@@ -109,20 +119,20 @@ export default defineComponent({
 		);
 
 		const filtersWithCalendarView = computed<Filter[]>(() => {
-			if (!calendar.value) return _filters.value;
+			if (!calendar.value || !startDateField.value) return _filters.value;
 
 			return [
 				..._filters.value,
 				{
 					key: 'start_date',
-					field: 'start_date', // @TODO dynamic
+					field: startDateField.value,
 					operator: 'gte',
 					value: formatISO(calendar.value.view.currentStart),
 					hidden: true,
 				},
 				{
 					key: 'end_date',
-					field: 'start_date', // @TODO dynamic
+					field: startDateField.value,
 					operator: 'lte',
 					value: formatISO(calendar.value.view.currentEnd),
 					hidden: true,
@@ -190,12 +200,12 @@ export default defineComponent({
 
 		onMounted(() => {
 			calendar.value = new Calendar(calendarEl.value!, {
-				plugins: [dayGridPlugin],
+				plugins: [dayGridPlugin, timeGridPlugin],
 				initialView: 'dayGridMonth',
 				headerToolbar: {
 					left: 'prevYear,prev,next,nextYear today',
 					center: 'title',
-					right: 'dayGridMonth,dayGridWeek,dayGridDay',
+					right: 'dayGridMonth,timeGridWeek,dayGridDay',
 				},
 				eventClick(info) {
 					const primaryKey = info.event.id;
