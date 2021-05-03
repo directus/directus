@@ -2,34 +2,40 @@
 	<div class="calendar-layout">
 		<div ref="calendarEl" />
 
+		<portal to="sidebar">
+			<filter-sidebar-detail v-model="_filters" :collection="collection" :loading="loading" />
+		</portal>
+
+		<portal to="actions:prepend">
+			<transition name="fade">
+				<span class="item-count" v-if="itemCount">
+					{{ showingCount }}
+				</span>
+			</transition>
+		</portal>
+
 		<portal to="layout-options">
-			<!-- <div class="field">
-				<div class="type-label">{{ $t('layouts.tabular.spacing') }}</div>
-				<v-select
-					v-model="tableSpacing"
-					:items="[
-						{
-							text: $t('layouts.tabular.compact'),
-							value: 'compact',
-						},
-						{
-							text: $t('layouts.tabular.cozy'),
-							value: 'cozy',
-						},
-						{
-							text: $t('layouts.tabular.comfortable'),
-							value: 'comfortable',
-						},
-					]"
-				/>
-			</div> -->
+			<div class="field">
+				<div class="type-label">{{ $t('display_template') }}</div>
+				<v-field-template :collection="collection" v-model="template" />
+			</div>
+
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.calendar.start_date_field') }}</div>
+				<v-select show-deselect :items="dateFields" item-text="name" item-value="field" v-model="startDateField" />
+			</div>
+
+			<div class="field">
+				<div class="type-label">{{ $t('layouts.calendar.end_date_field') }}</div>
+				<v-select show-deselect :items="dateFields" item-text="name" item-value="field" v-model="endDateField" />
+			</div>
 		</portal>
 	</div>
 </template>
 
 <script lang="ts">
 import '@fullcalendar/core/vdom';
-import { Calendar, CalendarOptions, ViewApi } from '@fullcalendar/core';
+import { Calendar, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import {
 	defineComponent,
@@ -43,15 +49,21 @@ import {
 	computed,
 } from '@vue/composition-api';
 import { useAppStore } from '@/stores/app';
-import { Item, Filter } from '@/types';
+import { Item, Filter, Field } from '@/types';
 import useItems from '@/composables/use-items';
 import useSync from '@/composables/use-sync';
 import useCollection from '@/composables/use-collection';
 import { formatISO } from 'date-fns';
+import router from '@/router';
+import { renderPlainStringTemplate } from '@/utils/render-string-template';
+import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
+import { i18n } from '@/lang';
 
-type layoutOptions = {};
-
-type layoutQuery = {};
+type layoutOptions = {
+	template?: string;
+	startDateField?: string;
+	endDateField?: string;
+};
 
 export default defineComponent({
 	props: {
@@ -65,10 +77,6 @@ export default defineComponent({
 		},
 		layoutOptions: {
 			type: Object as PropType<layoutOptions>,
-			default: () => ({}),
-		},
-		layoutQuery: {
-			type: Object as PropType<layoutQuery>,
 			default: () => ({}),
 		},
 		filters: {
@@ -89,11 +97,16 @@ export default defineComponent({
 		const { collection } = toRefs(props);
 
 		const _layoutOptions: Ref<any> = useSync(props, 'layoutOptions', emit);
-		const _layoutQuery: Ref<any> = useSync(props, 'layoutQuery', emit);
 		const _filters = useSync(props, 'filters', emit);
 		const _searchQuery = useSync(props, 'searchQuery', emit);
 
-		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
+		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+
+		const dateFields = computed(() =>
+			fieldsInCollection.value.filter((field: Field) => {
+				return ['timestamp', 'dateTime', 'date'].includes(field.type);
+			})
+		);
 
 		const filtersWithCalendarView = computed<Filter[]>(() => {
 			if (!calendar.value) return _filters.value;
@@ -117,38 +130,83 @@ export default defineComponent({
 			];
 		});
 
+		const template = computed({
+			get() {
+				return _layoutOptions.value?.template;
+			},
+			set(newTemplate: string | null) {
+				_layoutOptions.value = {
+					...(_layoutOptions.value || {}),
+					template: newTemplate,
+				};
+			},
+		});
+
+		const startDateField = computed({
+			get() {
+				return _layoutOptions.value?.startDateField;
+			},
+			set(newStartDateField: string | null) {
+				_layoutOptions.value = {
+					...(_layoutOptions.value || {}),
+					startDateField: newStartDateField,
+				};
+			},
+		});
+
+		const endDateField = computed({
+			get() {
+				return _layoutOptions.value?.endDateField;
+			},
+			set(newEndDateField: string | null) {
+				_layoutOptions.value = {
+					...(_layoutOptions.value || {}),
+					endDateField: newEndDateField,
+				};
+			},
+		});
+
 		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
 			collection,
 			{
-				sort: ref('name'),
-				limit: ref(-1),
+				sort: computed(() => primaryKeyField.value.field),
 				page: ref(1),
-				// @TODO based on options
-				fields: ref(['name', 'start_date', 'end_date']),
+				limit: ref(-1),
+				fields: computed(() => {
+					const fields = [primaryKeyField.value.field, ...getFieldsFromTemplate(template.value)];
+					if (startDateField.value) fields.push(startDateField.value);
+					if (endDateField.value) fields.push(endDateField.value);
+					return fields;
+				}),
 				filters: filtersWithCalendarView,
 				searchQuery: _searchQuery,
 			},
 			false
 		);
 
-		const fullCalendarOptions = computed<CalendarOptions>(() => ({
-			plugins: [dayGridPlugin],
-			initialView: 'dayGridMonth',
-			// headerToolbar: {
-			// 	start: '',
-			// 	center: '',
-			// 	end: '',
-			// },
-			headerToolbar: {
-				left: 'prevYear,prev,next,nextYear today',
-				center: 'title',
-				right: 'dayGridMonth,dayGridWeek,dayGridDay',
-			},
-			events: items.value?.map((item: Item) => parseEvent(item)) || [],
-		}));
+		const events = computed(
+			() => items.value?.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || []
+		);
 
 		onMounted(() => {
-			calendar.value = new Calendar(calendarEl.value!, fullCalendarOptions.value);
+			calendar.value = new Calendar(calendarEl.value!, {
+				plugins: [dayGridPlugin],
+				initialView: 'dayGridMonth',
+				headerToolbar: {
+					left: 'prevYear,prev,next,nextYear today',
+					center: 'title',
+					right: 'dayGridMonth,dayGridWeek,dayGridDay',
+				},
+				eventClick(info) {
+					const primaryKey = info.event.id;
+					const endpoint = collection.value.startsWith('directus')
+						? collection.value.substring(9)
+						: `/collections/${collection.value}`;
+					router.push(`${endpoint}/${primaryKey}`);
+				},
+				events: events.value,
+			});
+
 			calendar.value.render();
 		});
 
@@ -159,10 +217,10 @@ export default defineComponent({
 			() => setTimeout(() => calendar.value?.updateSize(), 300)
 		);
 
-		watch(fullCalendarOptions, () => {
+		watch(items, () => {
 			if (calendar.value) {
 				calendar.value.pauseRendering();
-				calendar.value.resetOptions(fullCalendarOptions.value);
+				calendar.value.setOption('events', events.value);
 				calendar.value.resumeRendering();
 			}
 		});
@@ -171,14 +229,9 @@ export default defineComponent({
 			calendar.value?.destroy();
 		});
 
-		function parseEvent(item: Item) {
-			return {
-				// @TODO based on options
-				title: item.name,
-				start: item.start_date,
-				end: item.end_date,
-			};
-		}
+		const showingCount = computed(() => {
+			return i18n.tc('item_count', itemCount.value);
+		});
 
 		return {
 			calendarEl,
@@ -190,16 +243,56 @@ export default defineComponent({
 			totalCount,
 			changeManualSort,
 			getItems,
-			fullCalendarOptions,
 			filtersWithCalendarView,
+			template,
+			dateFields,
+			startDateField,
+			endDateField,
+			_filters,
+			showingCount,
 		};
+
+		function parseEvent(item: Item) {
+			if (!startDateField.value) return null;
+
+			return {
+				id: item[primaryKeyField.value.field],
+				title: renderPlainStringTemplate(template.value || `{{ ${primaryKeyField.value.field} }}`, item),
+				start: item[startDateField.value],
+				end: endDateField.value ? item[endDateField.value] : null,
+			};
+		}
 	},
 });
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/breakpoint';
+
 .calendar-layout {
 	padding: var(--content-padding);
 	padding-top: 0;
+}
+
+.item-count {
+	position: relative;
+	display: none;
+	margin: 0 8px;
+	color: var(--foreground-subdued);
+	white-space: nowrap;
+
+	@include breakpoint(small) {
+		display: inline;
+	}
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--medium) var(--transition);
+}
+
+.fade-enter,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>
