@@ -11,7 +11,7 @@ import { IOutput, OutputColumn } from '../output';
 
 import { Command } from '../command';
 import { CommandHelp, GeneralHelp, IHelp, OptionHelp } from '../help';
-import { IOptions } from '../options';
+import { IOptions, Option } from '../options';
 
 import highlight from 'cli-highlight';
 import { DefaultTheme } from './output/formats/json';
@@ -214,20 +214,20 @@ export class Help implements IHelp {
 		const description = settings.description ?? 'Description unavailable';
 		const documentation = settings.documentation ?? 'Documentation unavailable';
 		const usage = settings.usage ?? 'Usage information unavailable';
-		const options = this.options
-			.list()
-			.sort((a, b) => a.name.localeCompare(b.name))
-			.map(
-				(opt): OptionHelp => ({
-					name: opt.name,
-					group: undefined,
-					description: opt.description ?? 'Description unavailable',
-					required: opt.required,
-					choices: opt.choices,
-					default: opt.default,
-					type: opt.type,
-				})
-			);
+
+		const opts = this.options.list().sort((a, b) => a.name.localeCompare(b.name));
+		const mapOption = (opt: Option): OptionHelp => ({
+			name: opt.name,
+			group: undefined,
+			description: opt.description ?? 'Description unavailable',
+			required: opt.required,
+			choices: opt.choices,
+			default: opt.default,
+			type: opt.type,
+		});
+
+		const options = opts.filter((opt) => !opt.positional).map(mapOption);
+		const positional = opts.filter((opt) => opt.positional).map(mapOption);
 
 		const variables = (text: string) => text.replace(/\$0/g, this.entrypoint);
 
@@ -237,6 +237,7 @@ export class Help implements IHelp {
 			description: variables(stripIndent(description)),
 			documentation: variables(stripIndent(documentation)),
 			options: options,
+			positional: positional,
 		};
 	}
 
@@ -250,73 +251,92 @@ export class Help implements IHelp {
 			await ui.section('Synopsis', (ui) => ui.line(help.synopsis));
 			await ui.section('Usage', (ui) => ui.text(ui.markdown(help.usage)));
 			await ui.section('Documentation', (ui) => ui.text(ui.markdown(help.documentation)));
+
+			const makeOption = (prefix: string, option: OptionHelp): OutputColumn[][] => {
+				let defaultValue = '';
+				if (typeof option.default != 'undefined') {
+					defaultValue = `default: ${highlight(JSON.stringify(option.default), {
+						language: 'json',
+						ignoreIllegals: true,
+						theme: DefaultTheme,
+					})}`;
+				}
+
+				let type = option.type;
+				if (option.choices) {
+					type = option.choices.join(' | ');
+				}
+
+				return [
+					[
+						{
+							text: option.required ? chalk.bold(`${prefix}${option.name}`) : `${prefix}${option.name}`,
+							options: {},
+						},
+						{
+							text: type,
+							options: {
+								alignment: 'right',
+							},
+						},
+					],
+					[
+						{
+							text: chalk.italic.gray(option.required ? chalk.bold('required') : 'optional'),
+							options: {
+								padding: [0, 0, 0, 2],
+							},
+						},
+						{
+							text: defaultValue,
+							options: {
+								alignment: 'right',
+							},
+						},
+					],
+					[
+						{
+							text: ui.markdown(option.description) ?? 'Description unavailable',
+							options: {
+								padding: [1, 2, 1, 2],
+							},
+						},
+					],
+				];
+			};
+
+			await ui.section('Positional', async (ui) => {
+				if (help.positional.length <= 0) {
+					await ui.line('No positional options available');
+					return;
+				}
+
+				await ui.rows([
+					...help.positional
+						.filter((o) => o.required)
+						.map(makeOption.bind(this, '\xA0\xA0'))
+						.reduce((prev, curr) => [...prev, ...curr], []),
+					...help.positional
+						.filter((o) => !o.required)
+						.map(makeOption.bind(this, '\xA0\xA0'))
+						.reduce((prev, curr) => [...prev, ...curr], []),
+				]);
+			});
+
 			await ui.section('Options', async (ui) => {
 				if (help.options.length <= 0) {
 					await ui.line('No options available');
 					return;
 				}
 
-				const makeOption = (option: OptionHelp): OutputColumn[][] => {
-					let defaultValue = '';
-					if (typeof option.default != 'undefined') {
-						defaultValue = `default: ${highlight(JSON.stringify(option.default), {
-							language: 'json',
-							ignoreIllegals: true,
-							theme: DefaultTheme,
-						})}`;
-					}
-
-					let type = option.type;
-					if (option.choices) {
-						type = option.choices.join(' | ');
-					}
-
-					return [
-						[
-							{
-								text: option.required ? chalk.bold(`--${option.name}`) : `--${option.name}`,
-								options: {},
-							},
-							{
-								text: type,
-								options: {
-									alignment: 'right',
-								},
-							},
-						],
-						[
-							{
-								text: chalk.italic.gray(option.required ? chalk.bold('required') : 'optional'),
-								options: {
-									padding: [0, 0, 0, 2],
-								},
-							},
-							{
-								text: defaultValue,
-								options: {
-									alignment: 'right',
-								},
-							},
-						],
-						[
-							{
-								text: ui.markdown(option.description) ?? 'Description unavailable',
-								options: {
-									padding: [1, 2, 1, 2],
-								},
-							},
-						],
-					];
-				};
-
 				await ui.rows([
 					...help.options
 						.filter((o) => o.required)
-						.map(makeOption)
+						.map(makeOption.bind(this, '--'))
 						.reduce((prev, curr) => [...prev, ...curr], []),
 					...help.options
 						.filter((o) => !o.required)
-						.map(makeOption)
+						.map(makeOption.bind(this, '--'))
 						.reduce((prev, curr) => [...prev, ...curr], []),
 				]);
 			});

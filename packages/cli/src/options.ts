@@ -9,6 +9,7 @@ export type Option = {
 	type: string;
 	choices?: string[];
 	required: boolean;
+	positional: boolean;
 	default?: any;
 };
 

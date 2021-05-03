@@ -33,6 +33,7 @@ export type CommandHelp = {
 	documentation: string;
 	usage: string;
 	options: OptionHelp[];
+	positional: OptionHelp[];
 };
 
 export interface IHelp {

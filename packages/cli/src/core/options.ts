@@ -86,12 +86,12 @@ export class Options implements IOptions {
 
 	list() {
 		const freeParser = this._parser as any;
-		//const options = freeParser.getOptions();
-
-		const descriptions = freeParser.getUsageInstance().getDescriptions();
+		const usage = freeParser.getUsageInstance();
+		const descriptions = usage.getDescriptions();
 		const keys = Object.keys(descriptions);
-
 		const options = freeParser.getOptions() as any;
+		const positionalGroup = usage.getPositionalGroupName() as any;
+		const groups = freeParser.getGroups() as any;
 
 		return keys.map<Option>((key) => {
 			const name = key;
@@ -107,12 +107,18 @@ export class Options implements IOptions {
 				type = 'number';
 			}
 
+			let positional = false;
+			if (positionalGroup in groups) {
+				positional = groups[positionalGroup].indexOf(key) >= 0;
+			}
+
 			return {
 				name,
 				description,
 				type,
 				required,
 				choices,
+				positional,
 				default: value,
 			};
 		});
