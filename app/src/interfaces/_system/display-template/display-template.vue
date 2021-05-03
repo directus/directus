@@ -5,7 +5,13 @@
 	<v-notice v-else-if="collection === null" type="warning">
 		{{ $t('interfaces.display-template.select_a_collection') }}
 	</v-notice>
-	<v-field-template v-else :collection="collection" @input="$attrs.onInput" :value="value" :disabled="disabled" />
+	<v-field-template
+		v-else
+		:collection="collection"
+		@update:modelValue="$attrs.onInput"
+		:modelValue="value"
+		:disabled="disabled"
+	/>
 </template>
 
 <script lang="ts">

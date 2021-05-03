@@ -6,7 +6,7 @@
 					<span ref="contentEl" class="content" contenteditable @keydown="onKeyDown" @input="onInput" @click="onClick">
 						<span class="text" />
 					</span>
-					<span class="placeholder" v-if="placeholder && !value">{{ placeholder }}</span>
+					<span class="placeholder" v-if="placeholder && !modelValue">{{ placeholder }}</span>
 				</template>
 
 				<template #append>
@@ -29,14 +29,14 @@ import { FieldTree } from './types';
 import { Field, Relation } from '@/types';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	components: { FieldListItem },
 	props: {
 		disabled: {
 			type: Boolean,
 			default: false,
 		},
-		value: {
+		modelValue: {
 			type: String,
 			default: null,
 		},
@@ -69,7 +69,7 @@ export default defineComponent({
 		const { collection, inject } = toRefs(props);
 		const { tree } = useFieldTree(collection, true, inject);
 
-		watch(() => props.value, setContent, { immediate: true });
+		watch(() => props.modelValue, setContent, { immediate: true });
 
 		onMounted(() => {
 			if (contentEl.value) {
@@ -90,7 +90,7 @@ export default defineComponent({
 			if (!contentEl.value) return;
 
 			const valueString = getInputValue();
-			emit('input', valueString);
+			emit('update:modelValue', valueString);
 		}
 
 		function onClick(event: MouseEvent) {
@@ -99,7 +99,7 @@ export default defineComponent({
 			if (target.tagName.toLowerCase() !== 'button') return;
 
 			const field = target.dataset.field;
-			emit('input', props.value.replace(`{{${field}}}`, ''));
+			emit('update:modelValue', props.modelValue.replace(`{{${field}}}`, ''));
 
 			const before = target.previousElementSibling;
 			const after = target.nextElementSibling;
@@ -257,15 +257,15 @@ export default defineComponent({
 		function setContent() {
 			if (!contentEl.value) return;
 
-			if (props.value === null || props.value === '') {
+			if (props.modelValue === null || props.modelValue === '') {
 				contentEl.value.innerHTML = '<span class="text"></span>';
 				return;
 			}
 
-			if (props.value !== getInputValue()) {
+			if (props.modelValue !== getInputValue()) {
 				const regex = /({{.*?}})/g;
 
-				const newInnerHTML = props.value
+				const newInnerHTML = props.modelValue
 					.split(regex)
 					.map((part) => {
 						if (part.startsWith('{{') === false) {
