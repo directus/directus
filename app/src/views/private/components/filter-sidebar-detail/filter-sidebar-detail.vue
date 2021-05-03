@@ -46,10 +46,10 @@ import getAvailableOperatorsForType from './get-available-operators-for-type';
 import { useFieldTree } from '@/composables/use-field-tree';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	components: { FieldFilter, FieldListItem },
 	props: {
-		value: {
+		modelValue: {
 			type: Array as PropType<Filter[]>,
 			required: true,
 		},
@@ -73,15 +73,15 @@ export default defineComponent({
 		const localFilters = ref<Filter[]>([]);
 
 		watch(
-			() => props.value,
+			() => props.modelValue,
 			() => {
-				localFilters.value = props.value;
+				localFilters.value = props.modelValue;
 			},
 			{ immediate: true }
 		);
 
 		const syncWithProp = debounce(() => {
-			emit('input', localFilters.value);
+			emit('update:modelValue', localFilters.value);
 		}, 850);
 
 		const filters = computed<Filter[]>({
@@ -102,13 +102,15 @@ export default defineComponent({
 
 		const archived = computed({
 			get() {
-				return props.value.find((filter) => filter.locked === true && filter.key === 'hide-archived') === undefined;
+				return (
+					props.modelValue.find((filter) => filter.locked === true && filter.key === 'hide-archived') === undefined
+				);
 			},
 			set(showArchived: boolean) {
 				if (!collectionInfo.value?.meta?.archive_field) return;
 
 				if (showArchived === false) {
-					emit('input', [
+					emit('update:modelValue', [
 						...filters.value,
 						{
 							key: 'hide-archived',
@@ -120,7 +122,7 @@ export default defineComponent({
 					]);
 				} else {
 					emit(
-						'input',
+						'update:modelValue',
 						filters.value.filter((filter) => filter.key !== 'hide-archived')
 					);
 				}
@@ -133,8 +135,8 @@ export default defineComponent({
 			const field = fieldsStore.getField(props.collection, fieldKey);
 			const defaultOperator = getAvailableOperatorsForType(field.type).operators[0];
 
-			emit('input', [
-				...props.value,
+			emit('update:modelValue', [
+				...props.modelValue,
 				{
 					key: nanoid(),
 					field: fieldKey,
