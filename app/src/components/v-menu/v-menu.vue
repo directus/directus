@@ -61,13 +61,13 @@ import { Placement } from '@popperjs/core';
 import { nanoid } from 'nanoid';
 
 export default defineComponent({
-	emits: ['input'],
+	emits: ['update:modelValue'],
 	props: {
 		placement: {
 			type: String as PropType<Placement>,
 			default: 'bottom',
 		},
-		value: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
@@ -172,15 +172,15 @@ export default defineComponent({
 
 			const isActive = computed<boolean>({
 				get() {
-					if (props.value !== undefined) {
-						return props.value;
+					if (props.modelValue !== undefined) {
+						return props.modelValue;
 					}
 
 					return localIsActive.value;
 				},
 				async set(newActive) {
 					localIsActive.value = newActive;
-					emit('input', newActive);
+					emit('update:modelValue', newActive);
 				},
 			});
 
