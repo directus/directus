@@ -1,12 +1,16 @@
 <template>
-	<v-dialog :modelValue="active" @update:modelValue="$emit('toggle', false)" @esc="$emit('toggle', false)">
+	<v-dialog
+		:modelValue="modelValue"
+		@update:modelValue="$emit('update:modelValue', false)"
+		@esc="$emit('update:modelValue', false)"
+	>
 		<v-card v-if="file">
 			<v-card-title>{{ $t('replace_file') }}</v-card-title>
 			<v-card-text>
 				<v-upload :preset="preset" :file-id="file.id" @input="uploaded" from-url />
 			</v-card-text>
 			<v-card-actions>
-				<v-button secondary @click="$emit('toggle', false)">{{ $t('done') }}</v-button>
+				<v-button secondary @click="$emit('update:modelValue', false)">{{ $t('done') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -16,13 +20,9 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	emits: ['toggle', 'replaced'],
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
+	emits: ['update:modelValue', 'replaced'],
 	props: {
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: false,
 		},
@@ -38,7 +38,7 @@ export default defineComponent({
 	setup(_props, { emit }) {
 		return { uploaded };
 		function uploaded() {
-			emit('toggle', false);
+			emit('update:modelValue', false);
 			emit('replaced');
 		}
 	},
