@@ -138,7 +138,8 @@
 				:primary-key="primaryKey"
 				:disabled="updateAllowed === false"
 				:validation-errors="validationErrors"
-				v-model="edits"
+				:edits="edits"
+				@input="edits = $event"
 			/>
 		</div>
 

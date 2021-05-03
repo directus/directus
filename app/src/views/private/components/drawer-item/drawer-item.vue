@@ -43,7 +43,14 @@
 				<v-divider v-if="showDivider" />
 			</template>
 
-			<v-form :loading="loading" :initial-values="item" :primary-key="primaryKey" :fields="fields" v-model="_edits" />
+			<v-form
+				:loading="loading"
+				:initial-values="item"
+				:primary-key="primaryKey"
+				:fields="fields"
+				:edits="_edits"
+				@input="_edits = $event"
+			/>
 		</div>
 	</v-drawer>
 </template>

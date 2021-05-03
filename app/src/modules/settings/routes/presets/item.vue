@@ -53,7 +53,14 @@
 		</template>
 
 		<div class="preset-item">
-			<v-form :fields="fields" :loading="loading" :initial-values="initialValues" :primary-key="id" v-model="edits" />
+			<v-form
+				:fields="fields"
+				:loading="loading"
+				:initial-values="initialValues"
+				:primary-key="id"
+				:edits="edits"
+				@input="edits = $event"
+			/>
 
 			<div class="layout">
 				<component

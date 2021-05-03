@@ -76,7 +76,8 @@
 				:loading="loading"
 				:initial-values="item"
 				:batch-mode="isBatch"
-				v-model="edits"
+				:edits="edits"
+				@input="edits = $event"
 			/>
 		</div>
 

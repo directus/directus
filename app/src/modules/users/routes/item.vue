@@ -138,7 +138,8 @@
 				:batch-mode="isBatch"
 				:primary-key="primaryKey"
 				:validation-errors="validationErrors"
-				v-model="edits"
+				:edits="edits"
+				@input="edits = $event"
 			/>
 		</div>
 
