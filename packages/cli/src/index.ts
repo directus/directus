@@ -42,7 +42,8 @@ function hasTsNode(): boolean {
 
 export default async function <T extends any>(argv: string[]): Promise<CommandResult<T>> {
 	// create a runtime
-	const runtime = build('directusctl')
+	const brand = 'directusctl';
+	const runtime = build(brand)
 		.exclude([
 			'meta',
 			'strings',
@@ -188,13 +189,20 @@ export default async function <T extends any>(argv: string[]): Promise<CommandRe
 		},
 		async function ({ help, parameters: { array } }: Toolbox) {
 			if (array && array.length) {
-				let suggestion = '';
-				const suggestions = await help.suggest(array);
+				let suggestion = [''];
+				const suggestions = (await help.suggest(array)).filter(({ score }) => score >= 0.8);
 				if (suggestions.length > 0) {
-					suggestion = `\nDid you mean "${suggestions[0]}"?`;
+					if (suggestions[0]!.score >= 1) {
+						suggestion = [`\nDid you mean "${brand} ${suggestions[0]?.suggestion}"?`];
+					} else {
+						suggestion = [
+							`\n\nDid you mean any of the following ones?\n`,
+							...suggestions.map(({ suggestion }) => `- ${brand} ${suggestion}`),
+						];
+					}
 				}
 
-				throw new CLIRuntimeError(`Unknown command: "${array.join(' ')}"${suggestion}`);
+				throw new CLIRuntimeError(`Unknown command: "${brand} ${array.join(' ')}"${suggestion.join('\n')}`);
 			}
 
 			await help.displayHelp();

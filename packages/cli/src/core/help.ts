@@ -35,7 +35,7 @@ export class Help implements IHelp {
 		this.options = deps.options;
 	}
 
-	async suggest(words: string[]): Promise<string[]> {
+	async suggest(words: string[]): Promise<{ suggestion: string; score: number }[]> {
 		if (!words) {
 			return [];
 		}
@@ -80,22 +80,25 @@ export class Help implements IHelp {
 		const jaro = require('jaro-winkler') as (a: string, b: string) => number;
 		const sort = (
 			words: string[],
-			suggestions: (Suggestion & { score: number })[],
+			suggestions: (Suggestion & { scores: number[] })[],
 			index = 0
-		): (Suggestion & { score: number })[] => {
+		): (Suggestion & { scores: number[] })[] => {
 			if (words.length <= 0) {
 				return suggestions;
 			}
 			const [currentWord, ...otherWords] = words;
 			return sort(
 				otherWords,
-				suggestions.map((suggestion) => ({
-					...suggestion,
-					score:
-						suggestion.words.length > index
-							? suggestion.score + jaro(currentWord!, suggestion.words[index]!) * (index + 1)
-							: suggestion.score,
-				})),
+				suggestions.map((suggestion) => {
+					const scores = [...suggestion.scores];
+					if (suggestion.words.length > index) {
+						scores.push(jaro(currentWord!, suggestion.words[index]!));
+					}
+					return {
+						...suggestion,
+						scores,
+					};
+				}),
 				index + 1
 			);
 		};
@@ -104,9 +107,19 @@ export class Help implements IHelp {
 			words,
 			suggestions.map((suggestion) => ({
 				...suggestion,
-				score: 1,
+				scores: [],
 			}))
 		)
+			.map((suggestion) => {
+				let score = suggestion.scores.reduce((a, b) => a + b, 0);
+				if (suggestion.scores.length) {
+					score = score / suggestion.scores.length;
+				}
+				return {
+					...suggestion,
+					score,
+				};
+			})
 			.sort((a, b) => {
 				return a.score - b.score;
 			})
@@ -114,7 +127,12 @@ export class Help implements IHelp {
 				return !array.find((other, index2) => suggestion.name == other.name && index2 > index);
 			})
 			.reverse()
-			.map((suggestion) => suggestion.name);
+			.map((suggestion) => {
+				return {
+					suggestion: suggestion.name,
+					score: suggestion.score,
+				};
+			});
 	}
 
 	async getHelp(): Promise<GeneralHelp> {
