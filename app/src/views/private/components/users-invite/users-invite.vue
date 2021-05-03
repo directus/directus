@@ -1,5 +1,9 @@
 <template>
-	<v-dialog :modelValue="active" @update:modelValue="$emit('toggle', $event)" @esc="$emit('toggle', false)">
+	<v-dialog
+		:modelValue="modelValue"
+		@update:modelValue="$emit('update:modelValue', $event)"
+		@esc="$emit('update:modelValue', false)"
+	>
 		<v-card>
 			<v-card-title>{{ $t('invite_users') }}</v-card-title>
 
@@ -27,7 +31,7 @@
 			</v-card-text>
 
 			<v-card-actions>
-				<v-button secondary @click="$emit('toggle', false)">{{ $t('cancel') }}</v-button>
+				<v-button secondary @click="$emit('update:modelValue', false)">{{ $t('cancel') }}</v-button>
 				<v-button @click="inviteUsers" :disabled="emails === null || emails.length === 0" :loading="loading">
 					{{ $t('invite') }}
 				</v-button>
@@ -43,13 +47,9 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { APIError } from '@/types';
 
 export default defineComponent({
-	emits: ['toggle'],
-	model: {
-		prop: 'active',
-		event: 'toggle',
-	},
+	emits: ['update:modelValue'],
 	props: {
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: false,
 		},
@@ -67,7 +67,7 @@ export default defineComponent({
 		const uniqueValidationErrors = ref([]);
 
 		watch(
-			() => props.active,
+			() => props.modelValue,
 			() => {
 				loadRoles();
 			}
@@ -90,7 +90,7 @@ export default defineComponent({
 				});
 
 				emails.value = '';
-				emit('toggle', false);
+				emit('update:modelValue', false);
 			} catch (err) {
 				uniqueValidationErrors.value = err?.response?.data?.errors?.filter((error: APIError) => {
 					return error.extensions?.code === 'RECORD_NOT_UNIQUE';
