@@ -103,15 +103,19 @@ const HeaderDefaults: Header = {
 };
 
 export default defineComponent({
-	emits: ['click:row', 'update:sort', 'update:items', 'item-selected', 'select', 'manual-sort', 'update:headers'],
+	emits: [
+		'click:row',
+		'update:sort',
+		'update:items',
+		'item-selected',
+		'update:modelValue',
+		'manual-sort',
+		'update:headers',
+	],
 	components: {
 		TableHeader,
 		TableRow,
 		draggable,
-	},
-	model: {
-		prop: 'selection',
-		event: 'select',
 	},
 	props: {
 		headers: {
@@ -150,7 +154,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		selection: {
+		modelValue: {
 			type: Array as PropType<any>,
 			default: () => [],
 		},
@@ -273,11 +277,11 @@ export default defineComponent({
 		});
 
 		const allItemsSelected = computed<boolean>(() => {
-			return props.loading === false && props.selection.length === props.items.length;
+			return props.loading === false && props.modelValue.length === props.items.length;
 		});
 
 		const someItemsSelected = computed<boolean>(() => {
-			return props.selection.length > 0 && allItemsSelected.value === false;
+			return props.modelValue.length > 0 && allItemsSelected.value === false;
 		});
 
 		const hasRowClick = computed<boolean>(() => 'onClick:row' in attrs);
@@ -321,7 +325,7 @@ export default defineComponent({
 
 			emit('item-selected', event);
 
-			let selection = clone(props.selection) as any[];
+			let selection = clone(props.modelValue) as any[];
 
 			if (event.value === true) {
 				if (props.selectionUseKeys) {
@@ -339,13 +343,13 @@ export default defineComponent({
 				});
 			}
 
-			emit('select', selection);
+			emit('update:modelValue', selection);
 		}
 
 		function getSelectedState(item: Item) {
 			const selectedKeys = props.selectionUseKeys
-				? props.selection
-				: props.selection.map((item: any) => item[props.itemKey]);
+				? props.modelValue
+				: props.modelValue.map((item: any) => item[props.itemKey]);
 			return selectedKeys.includes(item[props.itemKey]);
 		}
 
@@ -355,14 +359,14 @@ export default defineComponent({
 			if (value === true) {
 				if (props.selectionUseKeys) {
 					emit(
-						'select',
+						'update:modelValue',
 						clone(props.items).map((item) => item[props.itemKey])
 					);
 				} else {
-					emit('select', clone(props.items));
+					emit('update:modelValue', clone(props.items));
 				}
 			} else {
-				emit('select', []);
+				emit('update:modelValue', []);
 			}
 		}
 
