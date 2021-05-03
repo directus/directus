@@ -1,5 +1,5 @@
 <template>
-	<v-item-group class="v-tabs-items" :value="value" @input="update">
+	<v-item-group class="v-tabs-items" :modelValue="value" @update:modelValue="update">
 		<slot />
 	</v-item-group>
 </template>

@@ -1,12 +1,12 @@
 <template>
 	<div class="v-button-group" :class="{ rounded, tile }">
 		<v-item-group
-			:value="modelValue"
+			:modelValue="modelValue"
 			:mandatory="mandatory"
 			:max="max"
 			:multiple="multiple"
 			scope="button-group"
-			@input="update"
+			@update:modelValue="update"
 		>
 			<slot />
 		</v-item-group>
