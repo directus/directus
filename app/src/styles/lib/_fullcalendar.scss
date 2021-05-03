@@ -1,0 +1,13 @@
+.fc {
+	--fc-event-bg-color: var(--primary);
+	--fc-event-border-color: var(--primary);
+	--fc-today-bg-color: var(--primary-alt);
+}
+
+.fc-daygrid-dot-event .fc-event-title {
+	text-overflow: ellipsis;
+}
+
+.fc-daygrid-event-dot {
+	display: none;
+}
