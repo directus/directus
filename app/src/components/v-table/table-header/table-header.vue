@@ -12,7 +12,11 @@
 			</th>
 
 			<th v-if="showSelect" class="select cell" scope="col">
-				<v-checkbox :inputValue="allItemsSelected" :indeterminate="someItemsSelected" @change="toggleSelectAll" />
+				<v-checkbox
+					:modelValue="allItemsSelected"
+					:indeterminate="someItemsSelected"
+					@update:modelValue="toggleSelectAll"
+				/>
 			</th>
 
 			<th v-for="header in headers" :key="header.value" :class="getClassesForHeader(header)" class="cell" scope="col">

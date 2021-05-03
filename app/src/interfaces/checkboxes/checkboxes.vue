@@ -19,8 +19,8 @@
 			:disabled="disabled"
 			:icon-on="iconOn"
 			:icon-off="iconOff"
-			:input-value="value || []"
-			@change="$emit('input', $event)"
+			:modelValue="value || []"
+			@update:modelValue="$emit('input', $event)"
 		/>
 		<v-detail
 			v-if="hideChoices && showAll === false"
@@ -39,9 +39,9 @@
 				:disabled="disabled"
 				:icon-on="iconOn"
 				:icon-off="iconOff"
-				:input-value="value || []"
+				:modelValue="value || []"
 				@update:value="setOtherValue(otherValue.key, $event)"
-				@change="$emit('input', $event)"
+				@update:modelValue="$emit('input', $event)"
 			/>
 
 			<button

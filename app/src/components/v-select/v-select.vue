@@ -58,11 +58,11 @@
 						<span v-if="multiple === false" class="item-text">{{ item.text }}</span>
 						<v-checkbox
 							v-else
-							:inputValue="modelValue || []"
+							:modelValue="modelValue || []"
 							:label="item.text"
 							:value="item.value"
 							:disabled="item.disabled"
-							@change="$emit('update:modelValue', $event.length > 0 ? $event : null)"
+							@update:modelValue="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 						/>
 					</v-list-item-content>
 				</v-list-item>
@@ -88,9 +88,9 @@
 				>
 					<v-list-item-icon>
 						<v-checkbox
-							:inputValue="modelValue || []"
+							:modelValue="modelValue || []"
 							:value="otherValue.value"
-							@change="$emit('update:modelValue', $event.length > 0 ? $event : null)"
+							@update:modelValue="$emit('update:modelValue', $event.length > 0 ? $event : null)"
 						/>
 					</v-list-item-icon>
 					<v-list-item-content>

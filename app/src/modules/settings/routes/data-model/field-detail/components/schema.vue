@@ -74,8 +74,8 @@
 				<div class="label type-label">{{ $t('unique') }}</div>
 				<v-checkbox
 					:label="$t('value_unique')"
-					:input-value="fieldData.schema.is_unique === false"
-					@change="fieldData.schema.is_unique = !$event"
+					:modelValue="fieldData.schema.is_unique === false"
+					@update:modelValue="fieldData.schema.is_unique = !$event"
 					block
 				/>
 			</div> -->
@@ -132,8 +132,8 @@
 			<div class="field half-left" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('nullable') }}</div>
 				<v-checkbox
-					:input-value="fieldData.schema.is_nullable"
-					@change="fieldData.schema.is_nullable = $event"
+					:modelValue="fieldData.schema.is_nullable"
+					@update:modelValue="fieldData.schema.is_nullable = $event"
 					:label="$t('allow_null_value')"
 					block
 				/>
@@ -142,8 +142,8 @@
 			<div class="field half-right" v-if="fieldData.schema">
 				<div class="label type-label">{{ $t('unique') }}</div>
 				<v-checkbox
-					:input-value="fieldData.schema.is_unique"
-					@change="fieldData.schema.is_unique = $event"
+					:modelValue="fieldData.schema.is_unique"
+					@update:modelValue="fieldData.schema.is_unique = $event"
 					:label="$t('value_unique')"
 					block
 				/>

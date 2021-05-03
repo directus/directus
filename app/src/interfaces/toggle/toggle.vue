@@ -4,10 +4,10 @@
 		:icon-on="iconOn"
 		:icon-off="iconOff"
 		:label="label"
-		:input-value="value"
+		:modelValue="value"
 		:indeterminate="value === null"
 		:disabled="disabled"
-		@change="$attrs.onInput"
+		@update:modelValue="$attrs.onInput"
 		:style="{
 			'--v-checkbox-color': color,
 		}"

@@ -13,7 +13,7 @@
 		</td>
 
 		<td v-if="$props.showSelect" class="select cell" @click.stop>
-			<v-checkbox :inputValue="$props.isSelected" @change="$attrs['onItem-selected']" />
+			<v-checkbox :modelValue="$props.isSelected" @update:modelValue="$attrs['onItem-selected']" />
 		</td>
 
 		<td class="cell" :class="`align-${header.align}`" v-for="header in $props.headers" :key="header.value">
