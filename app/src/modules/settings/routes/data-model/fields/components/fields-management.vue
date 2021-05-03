@@ -6,14 +6,17 @@
 
 		<draggable
 			class="field-grid"
-			:value="usableFields"
+			:modelValue="usableFields"
 			:force-fallback="true"
 			handle=".drag-handle"
 			group="fields"
 			:set-data="hideDragImage"
-			@input="setSort"
+			@update:modelValue="setSort"
+			item-key="field"
 		>
-			<field-select v-for="field in usableFields" :key="field.field" :field="field" />
+			<template #item="{ element }">
+				<field-select :field="element" />
+			</template>
 		</draggable>
 
 		<v-menu attached>

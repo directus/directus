@@ -18,23 +18,24 @@
 		<v-list v-else>
 			<draggable
 				:force-fallback="true"
-				:value="sortedItems"
-				@input="sortItems($event)"
+				:modelValue="sortedItems"
+				@update:modelValue="sortItems($event)"
+				item-key="id"
 				handler=".drag-handle"
 				:disabled="!junction.sort_field"
 			>
-				<v-list-item
-					:dense="sortedItems.length > 4"
-					v-for="item in sortedItems"
-					:key="item.id"
-					block
-					@click="editItem(item)"
-				>
-					<v-icon v-if="junction.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-					<render-template :collection="junctionCollection.collection" :item="item" :template="templateWithDefaults" />
-					<div class="spacer" />
-					<v-icon v-if="!disabled" name="close" @click.stop="deleteItem(item)" />
-				</v-list-item>
+				<template #item="{ element }">
+					<v-list-item :dense="sortedItems.length > 4" block @click="editItem(element)">
+						<v-icon v-if="junction.sort_field" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+						<render-template
+							:collection="junctionCollection.collection"
+							:item="element"
+							:template="templateWithDefaults"
+						/>
+						<div class="spacer" />
+						<v-icon v-if="!disabled" name="close" @click.stop="deleteItem(element)" />
+					</v-list-item>
+				</template>
 			</draggable>
 		</v-list>
 

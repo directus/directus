@@ -7,19 +7,16 @@
 		v-else
 		:force-fallback="true"
 		v-model="selectedFields"
+		item-key="field"
 		draggable=".draggable"
 		:set-data="hideDragImage"
 		class="v-field-select"
 	>
-		<v-chip
-			v-for="(field, index) in selectedFields"
-			:key="index"
-			class="field draggable"
-			v-tooltip="field.field"
-			@click="removeField(field.field)"
-		>
-			{{ field.name }}
-		</v-chip>
+		<template #item="{ element }">
+			<v-chip class="field draggable" v-tooltip="element.field" @click="removeField(element.field)">
+				{{ element.name }}
+			</v-chip>
+		</template>
 
 		<template #footer>
 			<v-menu show-arrow v-model="menuActive" class="add" placement="bottom">

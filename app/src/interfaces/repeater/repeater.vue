@@ -5,19 +5,21 @@
 		</v-notice>
 
 		<v-list v-if="value && value.length > 0">
-			<draggable :force-fallback="true" :value="value" @input="$emit('input', $event)" handler=".drag-handle">
-				<v-list-item
-					:dense="value.length > 4"
-					v-for="(item, index) in value"
-					:key="item.id"
-					block
-					@click="active = index"
-				>
-					<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-					<render-template :fields="fields" :item="item" :template="templateWithDefaults" />
-					<div class="spacer" />
-					<v-icon v-if="!disabled" name="close" @click.stop="removeItem(item)" />
-				</v-list-item>
+			<draggable
+				:force-fallback="true"
+				:modelValue="value"
+				@update:modelValue="$emit('input', $event)"
+				item-key="id"
+				handler=".drag-handle"
+			>
+				<template #item="{ element, index }">
+					<v-list-item :dense="value.length > 4" block @click="active = index">
+						<v-icon name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+						<render-template :fields="fields" :item="element" :template="templateWithDefaults" />
+						<div class="spacer" />
+						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
+					</v-list-item>
+				</template>
 			</draggable>
 		</v-list>
 		<v-button @click="addNew" class="add-new" v-if="showAddNew">

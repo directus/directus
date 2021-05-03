@@ -24,19 +24,21 @@
 
 			<div class="field">
 				<div class="type-label">{{ $t('layouts.tabular.fields') }}</div>
-				<draggable v-model="activeFields" handle=".drag-handle" :set-data="hideDragImage" :force-fallback="true">
-					<v-checkbox
-						v-for="field in activeFields"
-						v-model="fields"
-						:key="field.field"
-						:value="field.field"
-						:label="field.name"
-					>
-						<template #append>
-							<div class="spacer" />
-							<v-icon @click.stop name="drag_handle" class="drag-handle" />
-						</template>
-					</v-checkbox>
+				<draggable
+					v-model="activeFields"
+					item-key="field"
+					handle=".drag-handle"
+					:set-data="hideDragImage"
+					:force-fallback="true"
+				>
+					<template #item="{ element }">
+						<v-checkbox v-model="fields" :value="element.field" :label="element.name">
+							<template #append>
+								<div class="spacer" />
+								<v-icon @click.stop name="drag_handle" class="drag-handle" />
+							</template>
+						</v-checkbox>
+					</template>
 				</draggable>
 
 				<v-checkbox

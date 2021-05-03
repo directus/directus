@@ -43,40 +43,41 @@
 				:force-fallback="true"
 				v-else
 				v-model="_items"
+				:item-key="itemKey"
 				tag="tbody"
 				handle=".drag-handle"
 				:disabled="disabled || _sort.by !== manualSortKey"
 				:set-data="hideDragImage"
 				@end="onSortChange"
 			>
-				<table-row
-					v-for="item in _items"
-					:key="item[itemKey]"
-					:headers="_headers"
-					:item="item"
-					:show-select="!disabled && showSelect"
-					:show-manual-sort="!disabled && showManualSort"
-					:is-selected="getSelectedState(item)"
-					:subdued="loading"
-					:sorted-manually="_sort.by === manualSortKey"
-					:has-click-listener="!disabled && hasRowClick"
-					:height="rowHeight"
-					@click="hasRowClick ? $emit('click:row', item) : null"
-					@item-selected="
-						onItemSelected({
-							item: item,
-							value: !getSelectedState(item),
-						})
-					"
-				>
-					<template v-for="header in _headers" #[`item.${header.value}`]>
-						<slot :item="item" :name="`item.${header.value}`" />
-					</template>
+				<template #item="{ element }">
+					<table-row
+						:headers="_headers"
+						:item="element"
+						:show-select="!disabled && showSelect"
+						:show-manual-sort="!disabled && showManualSort"
+						:is-selected="getSelectedState(element)"
+						:subdued="loading"
+						:sorted-manually="_sort.by === manualSortKey"
+						:has-click-listener="!disabled && hasRowClick"
+						:height="rowHeight"
+						@click="hasRowClick ? $emit('click:row', element) : null"
+						@item-selected="
+							onItemSelected({
+								item: element,
+								value: !getSelectedState(element),
+							})
+						"
+					>
+						<template v-for="header in _headers" #[`element.${header.value}`]>
+							<slot :item="element" :name="`item.${header.value}`" />
+						</template>
 
-					<template v-if="hasItemAppendSlot" #item-append>
-						<slot name="item-append" :item="item" />
-					</template>
-				</table-row>
+						<template v-if="hasItemAppendSlot" #item-append>
+							<slot name="item-append" :item="element" />
+						</template>
+					</table-row>
+				</template>
 			</draggable>
 		</table>
 		<slot name="footer" />

@@ -11,39 +11,41 @@
 
 			<draggable
 				:force-fallback="true"
-				:value="previewValues"
-				@input="onSort"
+				:modelValue="previewValues"
+				@update:modelValue="onSort"
+				item-key="$index"
 				:set-data="hideDragImage"
 				:disabled="!o2mRelation.sort_field"
 			>
-				<template v-for="item of previewValues" :key="item.$index">
+				<template #item="{ element }">
 					<v-list-item
-						v-if="allowedCollections.includes(item[anyRelation.one_collection_field])"
+						v-if="allowedCollections.includes(element[anyRelation.one_collection_field])"
 						block
 						:dense="previewValues.length > 4"
-						@click="editExisting((value || [])[item.$index])"
+						@click="editExisting((value || [])[element.$index])"
 					>
 						<v-icon class="drag-handle" left name="drag_handle" @click.stop v-if="o2mRelation.sort_field" />
-						<span class="collection">{{ collections[item[anyRelation.one_collection_field]].name }}:</span>
+						<span class="collection">{{ collections[element[anyRelation.one_collection_field]].name }}:</span>
 						<span
 							v-if="
-								typeof item[anyRelation.many_field] === 'number' || typeof item[anyRelation.many_field] === 'string'
+								typeof element[anyRelation.many_field] === 'number' ||
+								typeof element[anyRelation.many_field] === 'string'
 							"
 						>
-							{{ item[anyRelation.many_field] }}
+							{{ element[anyRelation.many_field] }}
 						</span>
 						<render-template
 							v-else
-							:collection="item[anyRelation.one_collection_field]"
-							:template="templates[item[anyRelation.one_collection_field]]"
-							:item="item[anyRelation.many_field]"
+							:collection="element[anyRelation.one_collection_field]"
+							:template="templates[element[anyRelation.one_collection_field]]"
+							:item="element[anyRelation.many_field]"
 						/>
 						<div class="spacer" />
 						<v-icon
 							v-if="!disabled"
 							class="clear-icon"
 							name="clear"
-							@click.stop="deselect((value || [])[item.$index])"
+							@click.stop="deselect((value || [])[element.$index])"
 						/>
 					</v-list-item>
 
@@ -55,7 +57,7 @@
 							v-if="!disabled"
 							class="clear-icon"
 							name="clear"
-							@click.stop="deselect((value || [])[item.$index])"
+							@click.stop="deselect((value || [])[element.$index])"
 						/>
 					</v-list-item>
 				</template>
