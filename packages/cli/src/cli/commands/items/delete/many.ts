@@ -24,7 +24,7 @@ export default command(
 		`,
 		hints: ['del', 'rm', 'remove', 'exclude', 'destroy', 'explode'],
 		documentation: `
-			Delete many items by their primary keys.
+			Deletes many items by their primary keys.
 		`,
 		features: {
 			sdk: true,
