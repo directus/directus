@@ -1,4 +1,5 @@
 import { App } from 'vue';
+import ClickOutside from './click-outside/click-outside';
 import Focus from './focus/focus';
 import Tooltip from './tooltip/tooltip';
 
