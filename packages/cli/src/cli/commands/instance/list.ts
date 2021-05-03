@@ -17,6 +17,7 @@ export default command(
 			selected by the CLI through **.directusrc** files located in the
 			working directory.
 		`,
+		hints: ['instances', 'projects'],
 	},
 	async function ({ config, output }, _params) {
 		const instances = Object.entries(config.system.data.instances).map(([name, { endpoint, auth }]) => ({

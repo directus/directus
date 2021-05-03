@@ -18,6 +18,7 @@ export default command(
 		features: {
 			sdk: true,
 		},
+		hints: ['inf', 'info', 'project info'],
 	},
 	async function ({ output, sdk }, _params) {
 		const info = (await sdk.server.info()) as any; // TODO: remove cast when fixed in the SDK

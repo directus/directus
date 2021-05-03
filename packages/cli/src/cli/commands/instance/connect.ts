@@ -54,6 +54,7 @@ export default command(
 
 			*~/.directus/directus.yml*
 		`,
+		hints: ['connect', 'conn', 'add', 'configure', 'project connect', 'project add', 'server add', 'server connect'],
 		options: function (builder) {
 			return builder
 				.positional('url', {

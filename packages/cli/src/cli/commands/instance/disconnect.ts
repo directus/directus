@@ -30,6 +30,7 @@ export default command(
 
 			*~/.directus/directus.yml*
 		`,
+		hints: ['disconnect', 'dc', 'project disconnect', 'project disconnect', 'server disconnect', 'server disconnect'],
 		options: function (builder) {
 			return builder.positional('name', {
 				type: 'string',
