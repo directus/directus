@@ -4,7 +4,7 @@
 		:active="true"
 		class="new-collection"
 		persistent
-		@cancel="$router.push('/settings/data-model')"
+		@cancel="router.push('/settings/data-model')"
 		:sidebar-label="$t(currentTab)"
 	>
 		<template #sidebar>
@@ -198,6 +198,7 @@ export default defineComponent({
 		const saving = ref(false);
 
 		return {
+			router,
 			currentTab,
 			save,
 			systemFields,

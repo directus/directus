@@ -1,5 +1,5 @@
 <template>
-	<v-dialog active persistent @esc="$router.push('/settings/roles')">
+	<v-dialog active persistent @esc="router.push('/settings/roles')">
 		<v-card>
 			<v-card-title>
 				{{ $t('create_role') }}
@@ -46,7 +46,7 @@ export default defineComponent({
 
 		const { saving, save } = useSave();
 
-		return { roleName, saving, save, appAccess, adminAccess };
+		return { router, roleName, saving, save, appAccess, adminAccess };
 
 		function useSave() {
 			const saving = ref(false);

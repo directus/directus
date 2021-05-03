@@ -1,7 +1,7 @@
 <template>
 	<private-view :title="title">
 		<template #title-outer:prepend>
-			<v-button class="header-icon" rounded icon secondary exact @click="$router.back()">
+			<v-button class="header-icon" rounded icon secondary exact @click="router.back()">
 				<v-icon name="arrow_back" />
 			</v-button>
 		</template>
@@ -321,6 +321,7 @@ export default defineComponent({
 		useShortcut('meta+shift+s', saveAndAddNew, form);
 
 		return {
+			router,
 			title,
 			item,
 			loading,

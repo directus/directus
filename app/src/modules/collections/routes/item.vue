@@ -42,7 +42,7 @@
 				secondary
 				exact
 				v-tooltip.bottom="$t('back')"
-				@click="$router.back()"
+				@click="router.back()"
 			>
 				<v-icon name="arrow_back" />
 			</v-button>
@@ -362,6 +362,7 @@ export default defineComponent({
 		});
 
 		return {
+			router,
 			item,
 			loading,
 			error,
