@@ -1149,3 +1149,5 @@ layouts:
     comfortable: Comfortable
     compact: Compact
     cozy: Cozy
+  calendar:
+    calendar: Calendar
