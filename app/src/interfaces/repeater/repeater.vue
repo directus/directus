@@ -27,8 +27,8 @@
 		</v-button>
 
 		<v-drawer
-			:active="drawerOpen"
-			@toggle="closeDrawer()"
+			:modelValue="drawerOpen"
+			@update:modelValue="closeDrawer()"
 			:title="displayValue || headerPlaceholder"
 			persistent
 			@cancel="closeDrawer()"

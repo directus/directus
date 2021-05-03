@@ -62,13 +62,9 @@ import HeaderBar from '@/views/private/components/header-bar/header-bar.vue';
 import { i18n } from '@/lang';
 
 export default defineComponent({
-	emits: ['cancel', 'toggle'],
+	emits: ['cancel', 'update:modelValue'],
 	components: {
 		HeaderBar,
-	},
-	model: {
-		prop: 'active',
-		event: 'toggle',
 	},
 	props: {
 		title: {
@@ -79,7 +75,7 @@ export default defineComponent({
 			type: String,
 			default: null,
 		},
-		active: {
+		modelValue: {
 			type: Boolean,
 			default: undefined,
 		},
@@ -105,11 +101,11 @@ export default defineComponent({
 
 		const _active = computed({
 			get() {
-				return props.active === undefined ? localActive.value : props.active;
+				return props.modelValue === undefined ? localActive.value : props.modelValue;
 			},
 			set(newActive: boolean) {
 				localActive.value = newActive;
-				emit('toggle', newActive);
+				emit('update:modelValue', newActive);
 			},
 		});
 

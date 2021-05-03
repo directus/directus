@@ -1,7 +1,7 @@
 <template>
 	<v-drawer
 		:title="modalTitle"
-		:active="true"
+		:modelValue="true"
 		class="new-collection"
 		persistent
 		:sidebar-label="currentTabInfo && currentTabInfo.text"

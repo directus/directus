@@ -29,8 +29,8 @@
 
 	<v-drawer
 		v-else
-		:active="true"
-		@toggle="cancelField"
+		:modelValue="true"
+		@update:modelValue="cancelField"
 		@cancel="cancelField"
 		:title="title"
 		:subtitle="localType ? $t(`field_${localType}`) : null"
