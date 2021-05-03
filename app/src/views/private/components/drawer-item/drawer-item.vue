@@ -72,10 +72,6 @@ import useTemplateData from '@/composables/use-template-data';
 export default defineComponent({
 	emits: ['update:active', 'input'],
 	components: { FilePreview },
-
-	model: {
-		prop: 'edits',
-	},
 	props: {
 		active: {
 			type: Boolean,
