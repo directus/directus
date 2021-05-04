@@ -34,19 +34,11 @@
 </template>
 
 <script lang="ts">
-/**
- * @TODO
- * - Dynamically switch between timeGrid and dayGrid based on datetime vs date
- * - Persist view (month/week/day) in layoutOptions
- * - Drag and Drop??
- * - Set contentHeight to auto based on month vs week view
- * - Make sure start_date / end_date are dynamic
- */
-
 import '@fullcalendar/core/vdom';
-import { Calendar, CalendarOptions, EventInput, ViewApi } from '@fullcalendar/core';
+import { Calendar, CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 import {
 	defineComponent,
 	onMounted,
@@ -68,13 +60,17 @@ import router from '@/router';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
 import { getFieldsFromTemplate } from '@/utils/get-fields-from-template';
 import { i18n } from '@/lang';
+import api from '@/api';
+import { unexpectedError } from '@/utils/unexpected-error';
 
 type layoutOptions = {
 	template?: string;
 	startDateField?: string;
 	endDateField?: string;
-	view?: string;
-	viewDate?: string;
+	viewInfo?: {
+		type: string;
+		startDateStr: string;
+	};
 };
 
 export default defineComponent({
@@ -112,7 +108,7 @@ export default defineComponent({
 		const _filters = useSync(props, 'filters', emit);
 		const _searchQuery = useSync(props, 'searchQuery', emit);
 
-		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+		const { primaryKeyField, fields: fieldsInCollection, endpoint } = useCollection(collection);
 
 		const dateFields = computed(() =>
 			fieldsInCollection.value.filter((field: Field) => {
@@ -154,11 +150,11 @@ export default defineComponent({
 			},
 		});
 
-		const viewInfo = computed<{ type: string; startDateStr: string }>({
+		const viewInfo = computed<layoutOptions['viewInfo']>({
 			get() {
 				return _layoutOptions.value?.viewInfo || {};
 			},
-			set(newViewInfo: { type: string; startDateStr: string }) {
+			set(newViewInfo: layoutOptions['viewInfo']) {
 				_layoutOptions.value = {
 					...(_layoutOptions.value || {}),
 					viewInfo: newViewInfo,
@@ -215,13 +211,19 @@ export default defineComponent({
 
 		const fullCalendarOptions = computed<CalendarOptions>(() => {
 			const options: CalendarOptions = {
-				plugins: [dayGridPlugin, timeGridPlugin],
+				editable: true,
+				eventStartEditable: true,
+				eventResizableFromStart: true,
+				eventDurationEditable: true,
+				plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
 				initialView: viewInfo.value?.type ?? 'dayGridMonth',
 				headerToolbar: {
 					left: 'prevYear,prev,next,nextYear today',
 					center: 'title',
 					right: 'dayGridMonth,dayGridWeek,dayGridDay',
 				},
+				events: events.value,
+				initialDate: viewInfo.value?.startDateStr ?? formatISO(new Date()),
 				eventClick(info) {
 					const primaryKey = info.event.id;
 					const endpoint = collection.value.startsWith('directus')
@@ -229,8 +231,27 @@ export default defineComponent({
 						: `/collections/${collection.value}`;
 					router.push(`${endpoint}/${primaryKey}`);
 				},
-				events: events.value,
-				initialDate: viewInfo.value?.startDateStr ?? formatISO(new Date()),
+				async eventChange(info) {
+					if (!startDateField.value) return;
+
+					const itemChanges: Partial<Item> = {
+						[startDateField.value]: info.event.startStr,
+					};
+
+					if (endDateField.value && info.event.endStr) {
+						itemChanges[endDateField.value] = info.event.endStr;
+					}
+
+					const endpoint = collection.value.startsWith('directus')
+						? collection.value.substring(9)
+						: `/items/${collection.value}`;
+
+					try {
+						await api.patch(`${endpoint}/${info.event.id}`, itemChanges);
+					} catch (err) {
+						unexpectedError(err);
+					}
+				},
 			};
 
 			const startDateFieldInfo: Field | undefined = fieldsInCollection.value.find(
@@ -253,7 +274,7 @@ export default defineComponent({
 			calendar.value.on('datesSet', (args) => {
 				viewInfo.value = {
 					type: args.view.type,
-					startDateStr: args.startStr,
+					startDateStr: formatISO(args.view.currentStart),
 				};
 			});
 
@@ -267,13 +288,17 @@ export default defineComponent({
 			() => setTimeout(() => calendar.value?.updateSize(), 300)
 		);
 
-		watch(items, () => {
-			if (calendar.value) {
-				calendar.value.pauseRendering();
-				calendar.value.setOption('events', events.value);
-				calendar.value.resumeRendering();
-			}
-		});
+		watch(
+			fullCalendarOptions,
+			() => {
+				if (calendar.value) {
+					calendar.value.pauseRendering();
+					calendar.value.resetOptions(fullCalendarOptions.value);
+					calendar.value.resumeRendering();
+				}
+			},
+			{ deep: true, immediate: true }
+		);
 
 		onUnmounted(() => {
 			calendar.value?.destroy();

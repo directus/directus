@@ -23,6 +23,7 @@
 	"devDependencies": {
 		"@fullcalendar/core": "^5.6.0",
 		"@fullcalendar/daygrid": "^5.6.0",
+		"@fullcalendar/interaction": "^5.6.0",
 		"@fullcalendar/timegrid": "^5.6.0",
 		"@types/dockerode": "^3.2.3",
 		"@types/jest": "^26.0.22",
