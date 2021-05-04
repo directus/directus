@@ -74,16 +74,13 @@ export function useGroupable(options?: GroupableOptions): Record<string, any> {
 	return {
 		active,
 		toggle: () => {
-			active.value = !active.value;
 			toggle(item);
 		},
 		activate: () => {
 			if (active.value === false) toggle(item);
-			active.value = true;
 		},
 		deactivate: () => {
 			if (active.value === true) toggle(item);
-			active.value = false;
 		},
 	};
 }
@@ -152,7 +149,7 @@ export function useGroupableParent(
 			if (isEqual(newValue, oldValue)) return;
 
 			// If you're required to select a value, make sure a value is selected on first render
-			if (selection.value.length === 0 && options?.mandatory?.value === true) {
+			if (!selection.value || (selection.value.length === 0 && options?.mandatory?.value === true)) {
 				selection.value = [getValueForItem(items.value[0])];
 			}
 		}
