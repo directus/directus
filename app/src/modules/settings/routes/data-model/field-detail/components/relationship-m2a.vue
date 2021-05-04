@@ -1,6 +1,5 @@
 <template>
 	<div>
-
 		<div class="grid">
 			<div class="field">
 				<div class="type-label">{{ $t('this_collection') }}</div>
@@ -16,7 +15,7 @@
 					:disabled="autoFill || isExisting"
 					db-safe
 				>
-					<template #append>
+					<template #append v-if="!isExisting">
 						<v-menu show-arrow placement="bottom-end">
 							<template #activator="{ toggle }">
 								<v-icon
@@ -57,6 +56,10 @@
 							</v-list>
 						</v-menu>
 					</template>
+
+					<template #input v-if="isExisting">
+						<v-text-overflow :text="junctionCollection" />
+					</template>
 				</v-input>
 			</div>
 			<div class="field">
@@ -67,12 +70,17 @@
 					:items="availableCollections"
 					item-value="collection"
 					item-text="name"
+					item-disabled="meta.singleton"
 					multiple
 					v-model="relations[1].one_allowed_collections"
 					:multiple-preview-threshold="0"
 				/>
 			</div>
-			<v-input disabled :value="relations[0].one_primary" />
+			<v-input disabled>
+				<template #input>
+					<v-text-overflow :text="relations[0].one_primary" />
+				</template>
+			</v-input>
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[0].many_field) }"
 				v-model="relations[0].many_field"
@@ -81,7 +89,7 @@
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists">
+				<template #append v-if="junctionCollectionExists && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon
@@ -106,6 +114,10 @@
 							</v-list-item>
 						</v-list>
 					</v-menu>
+				</template>
+
+				<template #input v-if="isExisting">
+					<v-text-overflow :text="relations[0].many_field" />
 				</template>
 			</v-input>
 			<div class="related-collections-preview">{{ (relations[1].one_allowed_collections || []).join(', ') }}</div>
@@ -119,7 +131,7 @@
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists">
+				<template #append v-if="junctionCollectionExists && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon
@@ -145,6 +157,10 @@
 						</v-list>
 					</v-menu>
 				</template>
+
+				<template #input v-if="isExisting">
+					<v-text-overflow :text="relations[1].one_collection_field" />
+				</template>
 			</v-input>
 			<div class="spacer" />
 			<v-input
@@ -155,7 +171,7 @@
 				:disabled="autoFill || isExisting"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists">
+				<template #append v-if="junctionCollectionExists && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon
@@ -181,10 +197,14 @@
 						</v-list>
 					</v-menu>
 				</template>
+
+				<template #input v-if="isExisting">
+					<v-text-overflow :text="relations[1].many_field" />
+				</template>
 			</v-input>
 			<v-input disabled :value="$t('primary_key')" />
 			<div class="spacer" />
-			<v-checkbox :disabled="isExisting" block v-model="autoFill" :label="$t('auto_fill')" />
+			<v-checkbox v-if="!isExisting" block v-model="autoFill" :label="$t('auto_fill')" />
 			<v-icon class="arrow" name="arrow_forward" />
 			<v-icon class="arrow" name="arrow_backward" />
 			<v-icon class="arrow" name="arrow_backward" />
@@ -196,11 +216,10 @@
 			<v-input
 				:class="{ matches: junctionFieldExists(relations[0].sort_field) }"
 				v-model="relations[0].sort_field"
-				:nullable="false"
 				:placeholder="$t('add_sort_field') + '...'"
 				db-safe
 			>
-				<template #append v-if="junctionCollectionExists">
+				<template #append v-if="junctionCollectionExists && !isExisting">
 					<v-menu show-arrow placement="bottom-end">
 						<template #activator="{ toggle }">
 							<v-icon name="list_alt" @click="toggle" v-tooltip="$t('select_existing')" />
@@ -360,17 +379,17 @@ export default defineComponent({
 		pointer-events: none;
 
 		&:first-of-type {
-			top: 105px;
+			top: 117px;
 			left: 32.5%;
 		}
 
 		&:nth-of-type(2) {
-			bottom: 143px;
+			top: 190px;
 			left: 67.4%;
 		}
 
 		&:last-of-type {
-			bottom: 76px;
+			top: 261px;
 			left: 67.4%;
 		}
 	}
@@ -406,8 +425,8 @@ export default defineComponent({
 }
 
 .related-collections-preview {
-	grid-column: 3;
 	grid-row: 2 / span 2;
+	grid-column: 3;
 	padding: var(--input-padding);
 	overflow: auto;
 	color: var(--foreground-subdued);

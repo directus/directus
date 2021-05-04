@@ -1,32 +1,30 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { computed, Ref } from '@vue/composition-api';
-import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
-import { getInterfaces } from '@/interfaces';
 import { FormField } from '@/components/v-form/types';
+import { getInterfaces } from '@/interfaces';
+import { InterfaceConfig } from '@/interfaces/types';
 import { Field } from '@/types';
-import { clone, orderBy } from 'lodash';
+import getDefaultInterfaceForType from '@/utils/get-default-interface-for-type';
+import { computed, ComputedRef, Ref } from '@vue/composition-api';
+import { clone } from 'lodash';
 
-export default function useFormFields(fields: Ref<Field[]>) {
-	const interfaces = getInterfaces();
+export default function useFormFields(fields: Ref<Field[]>): { formFields: ComputedRef } {
+	const { interfaces } = getInterfaces();
 
 	const formFields = computed(() => {
 		let formFields = clone(fields.value);
 
-		// Sort the fields on the sort column value
-		formFields = orderBy(formFields, [(o) => o.meta?.sort || null, (o) => o.meta?.id]);
-
 		formFields = formFields.map((field, index) => {
 			if (!field.meta) return field;
 
-			let interfaceUsed = interfaces.value.find((int) => int.id === field.meta?.interface);
+			let interfaceUsed = interfaces.value.find((int: InterfaceConfig) => int.id === field.meta?.interface);
 			const interfaceExists = interfaceUsed !== undefined;
 
 			if (interfaceExists === false) {
 				field.meta.interface = getDefaultInterfaceForType(field.type);
 			}
 
-			interfaceUsed = interfaces.value.find((int) => int.id === field.meta?.interface);
+			interfaceUsed = interfaces.value.find((int: InterfaceConfig) => int.id === field.meta?.interface);
 
 			if (interfaceUsed?.hideLabel === true) {
 				(field as FormField).hideLabel = true;

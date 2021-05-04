@@ -1,11 +1,13 @@
 import { ErrorRequestHandler } from 'express';
-import { BaseException } from '../exceptions';
-import logger from '../logger';
-import env from '../env';
-import { toArray } from '../utils/to-array';
 import { emitAsyncSafe } from '../emitter';
+import env from '../env';
+import { BaseException, MethodNotAllowedException } from '../exceptions';
+import logger from '../logger';
+import { toArray } from '../utils/to-array';
 
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+// Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
+// we don't use next
+const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
 	let payload: any = {
 		errors: [],
 	};
@@ -44,10 +46,14 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 			payload.errors.push({
 				message: err.message,
 				extensions: {
-					...err.extensions,
 					code: err.code,
+					...err.extensions,
 				},
 			});
+
+			if (err instanceof MethodNotAllowedException) {
+				res.header('Allow', err.extensions.allow.join(', '));
+			}
 		} else {
 			logger.error(err);
 
@@ -59,8 +65,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 						{
 							message: err.message,
 							extensions: {
-								...err.extensions,
 								code: 'INTERNAL_SERVER_ERROR',
+								...err.extensions,
 							},
 						},
 					],

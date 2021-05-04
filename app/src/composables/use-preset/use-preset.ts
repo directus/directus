@@ -1,11 +1,14 @@
-import { usePresetsStore, useUserStore } from '@/stores';
-import { ref, Ref, computed, watch } from '@vue/composition-api';
-import { debounce, isEqual } from 'lodash';
 import { useCollection } from '@/composables/use-collection';
-
+import { usePresetsStore, useUserStore } from '@/stores';
 import { Filter, Preset } from '@/types/';
+import { computed, ref, Ref, watch } from '@vue/composition-api';
+import { debounce, isEqual } from 'lodash';
 
-export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> = ref(null)) {
+export function usePreset(
+	collection: Ref<string>,
+	bookmark: Ref<number | null> = ref(null),
+	temporary = false
+): Record<string, any> {
 	const presetsStore = usePresetsStore();
 	const userStore = useUserStore();
 
@@ -29,6 +32,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 	 * @param preset The preset that should be saved
 	 */
 	const savePreset = async (preset?: Partial<Preset>) => {
+		if (temporary) return;
 		busy.value = true;
 
 		const updatedValues = await presetsStore.savePreset(preset ? preset : localPreset.value);
@@ -130,6 +134,20 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		},
 	});
 
+	const refreshInterval = computed<number | null>({
+		get() {
+			return localPreset.value.refresh_interval || null;
+		},
+		set(val) {
+			localPreset.value = {
+				...localPreset.value,
+				refresh_interval: val,
+			};
+
+			handleChanges();
+		},
+	});
+
 	const searchQuery = computed<string | null>({
 		get() {
 			return localPreset.value.search || null;
@@ -166,6 +184,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 		layoutQuery,
 		filters,
 		searchQuery,
+		refreshInterval,
 		savePreset,
 		saveCurrentAsBookmark,
 		bookmarkTitle,
@@ -194,6 +213,7 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 			layout: 'tabular',
 			filters: null,
 			search: null,
+			refresh_interval: null,
 		};
 
 		await savePreset();
@@ -252,7 +272,6 @@ export function usePreset(collection: Ref<string>, bookmark: Ref<number | null> 
 
 		if (data.id) delete data.id;
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		data.user = userStore.state.currentUser!.id;
 
 		return await savePreset(data);

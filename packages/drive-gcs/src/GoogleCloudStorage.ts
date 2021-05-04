@@ -28,6 +28,8 @@ import {
 
 import path from 'path';
 
+import normalize from 'normalize-path';
+
 function handleError(err: Error & { code?: number | string }, path: string): Error {
 	switch (err.code) {
 		case 401:
@@ -55,14 +57,14 @@ export class GoogleCloudStorage extends Storage {
 		const GCSStorage = require('@google-cloud/storage').Storage;
 		this.$driver = new GCSStorage(config);
 		this.$bucket = this.$driver.bucket(config.bucket);
-		this.$root = config.root ?? '';
+		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
 	}
 
 	/**
 	 * Prefixes the given filePath with the storage root location
 	 */
-	protected _fullPath(filePath: string) {
-		return path.join(this.$root, filePath);
+	protected _fullPath(filePath: string): string {
+		return normalize(path.join(this.$root, filePath));
 	}
 
 	private _file(filePath: string): File {
@@ -92,13 +94,13 @@ export class GoogleCloudStorage extends Storage {
 			const result = await this._file(location).delete();
 			return { raw: result, wasDeleted: true };
 		} catch (e) {
-			e = handleError(e, location);
+			const error = handleError(e, location);
 
-			if (e instanceof FileNotFound) {
+			if (error instanceof FileNotFound) {
 				return { raw: undefined, wasDeleted: false };
 			}
 
-			throw e;
+			throw error;
 		}
 	}
 
@@ -234,6 +236,8 @@ export class GoogleCloudStorage extends Storage {
 	 * Iterate over all files in the bucket.
 	 */
 	public async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
+		prefix = this._fullPath(prefix);
+
 		let nextQuery: GetFilesOptions | undefined = {
 			prefix,
 			autoPaginate: false,
@@ -248,7 +252,7 @@ export class GoogleCloudStorage extends Storage {
 				for (const file of result[0]) {
 					yield {
 						raw: file.metadata,
-						path: file.name,
+						path: file.name.substring(this.$root.length),
 					};
 				}
 			} catch (e) {

@@ -116,7 +116,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch, computed } from '@vue/composition-api';
+import { defineComponent, PropType, ref } from '@vue/composition-api';
 import useFolders, { Folder } from '../composables/use-folders';
 import api from '@/api';
 import FolderPicker from './folder-picker.vue';
@@ -245,11 +245,21 @@ export default defineComponent({
 					const fileKeys = filesToUpdate.data.data.map((file: { id: string }) => file.id);
 
 					if (folderKeys.length > 0) {
-						await api.patch(`/folders/${folderKeys.join(',')}`, { parent: newParent });
+						await api.patch(`/folders`, {
+							keys: folderKeys,
+							data: {
+								parent: newParent,
+							},
+						});
 					}
 
 					if (fileKeys.length > 0) {
-						await api.patch(`/files/${fileKeys.join(',')}`, { folder: newParent });
+						await api.patch(`/files`, {
+							keys: fileKeys,
+							data: {
+								folder: newParent,
+							},
+						});
 					}
 
 					await api.delete(`/folders/${props.folder.id}`);

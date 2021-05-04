@@ -95,7 +95,7 @@ export default defineComponent({
 	align-items: center;
 	height: 48px;
 	padding: 0 12px;
-	background-color: var(--background-page);
+	background-color: var(--background-input);
 
 	.name {
 		flex-grow: 1;

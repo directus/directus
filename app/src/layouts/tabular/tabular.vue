@@ -113,7 +113,12 @@
 
 					<div v-if="loading === false && items.length >= 25" class="per-page">
 						<span>{{ $t('per_page') }}</span>
-						<v-select @input="limit = +$event" :value="`${limit}`" :items="['25', '50', '100', '250']" inline />
+						<v-select
+							@input="limit = +$event"
+							:value="`${limit}`"
+							:items="['25', '50', '100', '250', '500', ' 1000']"
+							inline
+						/>
 					</div>
 				</div>
 			</template>
@@ -273,7 +278,7 @@ export default defineComponent({
 		});
 
 		const availableFields = computed(() => {
-			return fieldsInCollection.value.filter((field) => field.meta?.special?.includes('no-data') !== true);
+			return fieldsInCollection.value.filter((field: Field) => field.meta?.special?.includes('no-data') !== true);
 		});
 
 		useShortcut(
@@ -389,14 +394,14 @@ export default defineComponent({
 					const fields =
 						_layoutQuery.value?.fields ||
 						fieldsInCollection.value
-							.filter((field) => !!field.meta?.hidden === false)
+							.filter((field: Field) => !!field.meta?.hidden === false)
 							.slice(0, 4)
-							.sort((a?: Field, b?: Field) => {
-								if (a!.field < b!.field) return -1;
-								else if (a!.field > b!.field) return 1;
+							.sort((a: Field, b: Field) => {
+								if (a.field < b.field) return -1;
+								else if (a.field > b.field) return 1;
 								else return 1;
 							})
-							.map(({ field }) => field);
+							.map(({ field }: Field) => field);
 
 					return fields;
 				},
@@ -441,7 +446,7 @@ export default defineComponent({
 			const activeFields = computed<Field[]>({
 				get() {
 					return fields.value
-						.map((key) => fieldsInCollection.value.find((field) => field.field === key))
+						.map((key) => fieldsInCollection.value.find((field: Field) => field.field === key))
 						.filter((f) => f) as Field[];
 				},
 				set(val) {
@@ -463,7 +468,10 @@ export default defineComponent({
 							type: field.type,
 							field: field.field,
 						},
-						sortable: ['json', 'o2m', 'm2o', 'file', 'files', 'alias', 'presentation'].includes(field.type) === false,
+						sortable:
+							['json', 'o2m', 'm2o', 'm2m', 'm2a', 'file', 'files', 'alias', 'presentation', 'translations'].includes(
+								field.type
+							) === false,
 					}));
 				},
 				set(val) {
@@ -529,7 +537,7 @@ export default defineComponent({
 					const primaryKey = item[primaryKeyField.value!.field];
 
 					// eslint-disable-next-line @typescript-eslint/no-empty-function
-					router.push(`/collections/${collection.value}/${primaryKey}`, () => {});
+					router.push(`/collections/${collection.value}/${encodeURIComponent(primaryKey)}`, () => {});
 				}
 			}
 
@@ -541,7 +549,7 @@ export default defineComponent({
 			}
 
 			function getFieldDisplay(fieldKey: string) {
-				const field = fieldsInCollection.value.find((field) => field.field === fieldKey);
+				const field = fieldsInCollection.value.find((field: Field) => field.field === fieldKey);
 
 				if (field === undefined) return null;
 				if (!field.meta?.display) return null;
@@ -584,8 +592,8 @@ export default defineComponent({
 	position: sticky;
 	left: 0;
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
+	justify-content: space-between;
 	width: 100%;
 	padding: 32px var(--content-padding);
 
@@ -595,8 +603,8 @@ export default defineComponent({
 
 	.per-page {
 		display: flex;
-		justify-content: flex-end;
 		align-items: center;
+		justify-content: flex-end;
 		width: 240px;
 		color: var(--foreground-subdued);
 

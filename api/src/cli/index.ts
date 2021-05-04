@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
 import program from 'commander';
-
-const pkg = require('../../package.json');
-
 import start from '../start';
-import init from './commands/init';
+import bootstrap from './commands/bootstrap';
+import count from './commands/count';
 import dbInstall from './commands/database/install';
 import dbMigrate from './commands/database/migrate';
-import usersCreate from './commands/users/create';
+import init from './commands/init';
 import rolesCreate from './commands/roles/create';
-import count from './commands/count';
-import bootstrap from './commands/bootstrap';
+import usersCreate from './commands/users/create';
+import usersPasswd from './commands/users/passwd';
+
+const pkg = require('../../package.json');
 
 program.name('directus').usage('[command] [options]');
 program.version(pkg.version, '-v, --version');
@@ -42,6 +42,12 @@ usersCommand
 	.option('--password <value>', `user's password`)
 	.option('--role <value>', `user's role`)
 	.action(usersCreate);
+usersCommand
+	.command('passwd')
+	.description('Set user password')
+	.option('--email <value>', `user's email`)
+	.option('--password <value>', `user's new password`)
+	.action(usersPasswd);
 
 const rolesCommand = program.command('roles');
 rolesCommand

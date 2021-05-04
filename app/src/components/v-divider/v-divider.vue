@@ -67,9 +67,9 @@ body {
 	}
 
 	.type-text {
-		transition: color var(--fast) var(--transition);
-		font-weight: 600;
 		color: var(--v-divider-label-color);
+		font-weight: 600;
+		transition: color var(--fast) var(--transition);
 	}
 
 	&.large .type-text {

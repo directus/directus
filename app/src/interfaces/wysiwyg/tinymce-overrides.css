@@ -5,7 +5,6 @@
 }
 
 .tox .tox-tbtn {
-	width: 36px;
 	height: 36px;
 	margin: 0;
 	color: var(--foreground-normal);
@@ -67,11 +66,11 @@
 	font-feature-settings: 'liga';
 }
 
-.tox-tbtn[aria-label='Insert/edit link'] .tox-icon svg {
+.tox-tbtn[aria-label='Add/Edit Link'] .tox-icon svg {
 	display: none;
 }
 
-.tox-tbtn[aria-label='Insert/edit link'] .tox-icon::after {
+.tox-tbtn[aria-label='Add/Edit Link'] .tox-icon::after {
 	display: inline-block;
 	margin-top: 4px;
 	color: var(--foreground-normal);
@@ -87,7 +86,7 @@
 }
 
 .tox .tox-edit-area__iframe {
-	background-color: var(--background-page);
+	background-color: var(--background-input);
 }
 
 .tox-tinymce {
@@ -265,6 +264,10 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-collection--list .tox-collection__item--active {
 	color: var(--foreground-normal) !important;
 	background-color: var(--background-normal-alt) !important;
+}
+
+.tox .tox-collection__item-label {
+	line-height: unset;
 }
 
 .tox .tox-textfield:focus,

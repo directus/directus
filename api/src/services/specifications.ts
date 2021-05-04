@@ -1,3 +1,12 @@
+import formatTitle from '@directus/format-title';
+import openapi from '@directus/specs';
+import { Knex } from 'knex';
+import { cloneDeep, mergeWith } from 'lodash';
+import { OpenAPIObject, OperationObject, PathItemObject, SchemaObject, TagObject } from 'openapi3-ts';
+// @ts-ignore
+import { version } from '../../package.json';
+import database from '../database';
+import env from '../env';
 import {
 	AbstractServiceOptions,
 	Accountability,
@@ -8,21 +17,11 @@ import {
 	SchemaOverview,
 	types,
 } from '../types';
+import { getRelationType } from '../utils/get-relation-type';
 import { CollectionsService } from './collections';
 import { FieldsService } from './fields';
-import formatTitle from '@directus/format-title';
-import { cloneDeep, mergeWith } from 'lodash';
+import { GraphQLService } from './graphql';
 import { RelationsService } from './relations';
-import env from '../env';
-import { OpenAPIObject, PathItemObject, OperationObject, TagObject, SchemaObject } from 'openapi3-ts';
-
-// @ts-ignore
-import { version } from '../../package.json';
-import openapi from '@directus/specs';
-
-import { Knex } from 'knex';
-import database from '../database';
-import { getRelationType } from '../utils/get-relation-type';
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -33,7 +32,8 @@ export class SpecificationService {
 	collectionsService: CollectionsService;
 	relationsService: RelationsService;
 
-	oas: OASService;
+	oas: OASSpecsService;
+	graphql: GraphQLSpecsService;
 
 	constructor(options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
@@ -44,22 +44,21 @@ export class SpecificationService {
 		this.collectionsService = new CollectionsService(options);
 		this.relationsService = new RelationsService(options);
 
-		this.oas = new OASService(
-			{ knex: this.knex, accountability: this.accountability, schema: this.schema },
-			{
-				fieldsService: this.fieldsService,
-				collectionsService: this.collectionsService,
-				relationsService: this.relationsService,
-			}
-		);
+		this.oas = new OASSpecsService(options, {
+			fieldsService: this.fieldsService,
+			collectionsService: this.collectionsService,
+			relationsService: this.relationsService,
+		});
+
+		this.graphql = new GraphQLSpecsService(options);
 	}
 }
 
 interface SpecificationSubService {
-	generate: () => Promise<any>;
+	generate: (_?: any) => Promise<any>;
 }
 
-class OASService implements SpecificationSubService {
+class OASSpecsService implements SpecificationSubService {
 	accountability: Accountability | null;
 	knex: Knex;
 	schema: SchemaOverview;
@@ -163,7 +162,7 @@ class OASService implements SpecificationSubService {
 		if (!tags) return paths;
 
 		for (const tag of tags) {
-			const isSystem = tag.hasOwnProperty('x-collection') === false || tag['x-collection'].startsWith('directus_');
+			const isSystem = 'x-collection' in tag === false || tag['x-collection'].startsWith('directus_');
 
 			if (isSystem) {
 				for (const [path, pathItem] of Object.entries<PathItemObject>(openapi.paths)) {
@@ -175,7 +174,7 @@ class OASService implements SpecificationSubService {
 
 							const hasPermission =
 								this.accountability?.admin === true ||
-								tag.hasOwnProperty('x-collection') === false ||
+								'x-collection' in tag === false ||
 								!!permissions.find(
 									(permission) =>
 										permission.collection === tag['x-collection'] &&
@@ -222,11 +221,11 @@ class OASService implements SpecificationSubService {
 																{
 																	type: 'array',
 																	items: {
-																		$ref: `#/components/schema/${tag.name}`,
+																		$ref: `#/components/schemas/${tag.name}`,
 																	},
 																},
 																{
-																	$ref: `#/components/schema/${tag.name}`,
+																	$ref: `#/components/schemas/${tag.name}`,
 																},
 															],
 														},
@@ -244,7 +243,7 @@ class OASService implements SpecificationSubService {
 																	properties: {
 																		data: {
 																			items: {
-																				$ref: `#/components/schema/${tag.name}`,
+																				$ref: `#/components/schemas/${tag.name}`,
 																			},
 																		},
 																	},
@@ -273,7 +272,7 @@ class OASService implements SpecificationSubService {
 												content: {
 													'application/json': {
 														schema: {
-															$ref: `#/components/schema/${tag.name}`,
+															$ref: `#/components/schemas/${tag.name}`,
 														},
 													},
 												},
@@ -289,7 +288,7 @@ class OASService implements SpecificationSubService {
 																	properties: {
 																		data: {
 																			items: {
-																				$ref: `#/components/schema/${tag.name}`,
+																				$ref: `#/components/schemas/${tag.name}`,
 																			},
 																		},
 																	},
@@ -530,4 +529,28 @@ class OASService implements SpecificationSubService {
 			type: 'string',
 		},
 	};
+}
+
+class GraphQLSpecsService implements SpecificationSubService {
+	accountability: Accountability | null;
+	knex: Knex;
+	schema: SchemaOverview;
+
+	items: GraphQLService;
+	system: GraphQLService;
+
+	constructor(options: AbstractServiceOptions) {
+		this.accountability = options.accountability || null;
+		this.knex = options.knex || database;
+		this.schema = options.schema;
+
+		this.items = new GraphQLService({ ...options, scope: 'items' });
+		this.system = new GraphQLService({ ...options, scope: 'system' });
+	}
+
+	async generate(scope: 'items' | 'system') {
+		if (scope === 'items') return this.items.getSchema('sdl');
+		if (scope === 'system') return this.system.getSchema('sdl');
+		return null;
+	}
 }

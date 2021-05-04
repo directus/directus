@@ -6,15 +6,7 @@
 			:class="{ svg: isSVG, 'max-size': inModal === false }"
 			@click="$emit('click')"
 		>
-			<img
-				:src="src"
-				:width="width"
-				:height="height"
-				:style="{
-					maxWidth: width ? width + 'px' : '100%',
-				}"
-				:alt="title"
-			/>
+			<img :src="src" :width="width" :height="height" :alt="title" />
 			<v-icon v-if="inModal === false" name="upload" />
 		</div>
 
@@ -93,8 +85,7 @@ img,
 video,
 audio {
 	width: 100%;
-	height: 100%;
-	max-height: 100%;
+	max-height: 500px;
 	object-fit: contain;
 	border-radius: var(--border-radius);
 }
@@ -113,7 +104,6 @@ audio {
 	img {
 		z-index: 1;
 		display: block;
-		max-height: inherit;
 		margin: 0 auto;
 	}
 
@@ -139,5 +129,10 @@ audio {
 	padding: 64px;
 	background-color: var(--background-normal);
 	border-radius: var(--border-radius);
+
+	&.max-size img {
+		// Max height - padding * 2
+		max-height: calc(75vh - 128px);
+	}
 }
 </style>

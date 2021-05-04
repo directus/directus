@@ -1,4 +1,7 @@
 ---
+edit_field: Sunting halaman
+item_revision: Barang semakan
+duplicate_field: Halaman salinan
 required: Diperlukan
 create_role: Buat Peranan
 delete_bookmark: Padam Penanda Buku
@@ -51,6 +54,8 @@ on_update: Apabila Dikemaskini
 read: Baca
 update: Kemaskini
 select_fields: Pilih medan-medan
+width: Lebar
+height: Tinggi
 wysiwyg_options:
   remove: Buang
 editing_in_batch: 'Menyunting Secara Kumpulan Sebanyak {count} Benda'

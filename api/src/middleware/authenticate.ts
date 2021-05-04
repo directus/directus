@@ -1,10 +1,10 @@
 import { RequestHandler } from 'express';
-import jwt, { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
-import isJWT from '../utils/is-jwt';
+import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import database from '../database';
-import asyncHandler from '../utils/async-handler';
-import { InvalidCredentialsException } from '../exceptions';
 import env from '../env';
+import { InvalidCredentialsException } from '../exceptions';
+import asyncHandler from '../utils/async-handler';
+import isJWT from '../utils/is-jwt';
 
 /**
  * Verify the passed JWT and assign the user ID and role to `req`

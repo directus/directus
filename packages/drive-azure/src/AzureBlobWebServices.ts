@@ -26,6 +26,8 @@ import path from 'path';
 
 import { PassThrough, Readable } from 'stream';
 
+import normalize from 'normalize-path';
+
 function handleError(err: Error, path: string): Error {
 	return new UnknownException(err, err.name, path);
 }
@@ -41,18 +43,18 @@ export class AzureBlobWebServicesStorage extends Storage {
 
 		this.$signedCredentials = new StorageSharedKeyCredential(config.accountName, config.accountKey);
 		this.$client = new BlobServiceClient(
-			`https://${config.accountName}.blob.core.windows.net`,
+			config.endpoint ?? `https://${config.accountName}.blob.core.windows.net`,
 			this.$signedCredentials
 		);
 		this.$containerClient = this.$client.getContainerClient(config.containerName);
-		this.$root = config.root ?? '';
+		this.$root = config.root ? normalize(config.root).replace(/^\//, '') : '';
 	}
 
 	/**
 	 * Prefixes the given filePath with the storage root location
 	 */
-	protected _fullPath(filePath: string) {
-		return path.join(this.$root, filePath);
+	protected _fullPath(filePath: string): string {
+		return normalize(path.join(this.$root, filePath));
 	}
 
 	public async copy(src: string, dest: string): Promise<Response> {
@@ -232,13 +234,17 @@ export class AzureBlobWebServicesStorage extends Storage {
 	}
 
 	public async *flatList(prefix = ''): AsyncIterable<FileListResponse> {
+		prefix = this._fullPath(prefix);
+
 		try {
-			const blobs = await this.$containerClient.listBlobsFlat();
+			const blobs = this.$containerClient.listBlobsFlat({
+				prefix,
+			});
 
 			for await (const blob of blobs) {
 				yield {
 					raw: blob,
-					path: blob.name as string,
+					path: (blob.name as string).substring(this.$root.length),
 				};
 			}
 		} catch (e) {
@@ -251,5 +257,6 @@ export interface AzureBlobWebServicesStorageConfig {
 	containerName: string;
 	accountName: string;
 	accountKey: string;
+	endpoint?: string;
 	root?: string;
 }

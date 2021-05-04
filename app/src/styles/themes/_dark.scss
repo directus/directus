@@ -16,12 +16,14 @@
 	--background-subdued: #2D3A41;
 	--background-highlight: #2D3A41;
 	--background-page: #263238;
+	--background-input: #263238;
 	--background-page-rgb: 38, 50, 56;
 	--background-inverted: #FFF;
 
 	// --card-shadow-color: 207,216,220;
 	--card-face-color: #36454D;
 	--card-shadow-color: 0,0,0;
+	--card-shadow: 0px 0px 6px 0px rgba(var(--card-shadow-color),0.2);
 	--overlay-color: rgba(19, 24, 26, 0.9);
 
 	--purple-190: #F6F4FD;

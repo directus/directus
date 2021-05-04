@@ -1,20 +1,21 @@
+import SchemaInspector from '@directus/schema';
+import { Knex } from 'knex';
+import { Column } from 'knex-schema-inspector/dist/types/column';
+import cache from '../cache';
 import { ALIAS_TYPES } from '../constants';
 import database, { schemaInspector } from '../database';
-import { Field } from '../types/field';
-import { Accountability, AbstractServiceOptions, FieldMeta, SchemaOverview } from '../types';
-import { ItemsService } from '../services/items';
-import { Knex } from 'knex';
-import getLocalType from '../utils/get-local-type';
-import { types } from '../types';
-import { ForbiddenException, InvalidPayloadException } from '../exceptions';
-import { PayloadService } from '../services/payload';
-import getDefaultValue from '../utils/get-default-value';
-import cache from '../cache';
-import SchemaInspector from '@directus/schema';
-import { toArray } from '../utils/to-array';
-import env from '../env';
-
 import { systemFieldRows } from '../database/system-data/fields/';
+import emitter, { emitAsyncSafe } from '../emitter';
+import env from '../env';
+import { ForbiddenException, InvalidPayloadException } from '../exceptions';
+import { translateDatabaseError } from '../exceptions/database/translate';
+import { ItemsService } from '../services/items';
+import { PayloadService } from '../services/payload';
+import { AbstractServiceOptions, Accountability, FieldMeta, SchemaOverview, types } from '../types';
+import { Field } from '../types/field';
+import getDefaultValue from '../utils/get-default-value';
+import getLocalType from '../utils/get-local-type';
+import { toArray } from '../utils/to-array';
 
 type RawField = Partial<Field> & { field: string; type: typeof types[number] };
 
@@ -140,12 +141,12 @@ export class FieldsService {
 				allowedFieldsInCollection[permission.collection] = permission.fields ?? [];
 			});
 
-			if (collection && allowedFieldsInCollection.hasOwnProperty(collection) === false) {
+			if (collection && collection in allowedFieldsInCollection === false) {
 				throw new ForbiddenException();
 			}
 
 			return result.filter((field) => {
-				if (allowedFieldsInCollection.hasOwnProperty(field.collection) === false) return false;
+				if (field.collection in allowedFieldsInCollection === false) return false;
 				const allowedFields = allowedFieldsInCollection[field.collection];
 				if (allowedFields[0] === '*') return true;
 				return allowedFields.includes(field.field);
@@ -155,7 +156,7 @@ export class FieldsService {
 		return result;
 	}
 
-	async readOne(collection: string, field: string) {
+	async readOne(collection: string, field: string): Promise<Record<string, any>> {
 		if (this.accountability && this.accountability.admin !== true) {
 			if (this.hasReadAccess === false) {
 				throw new ForbiddenException();
@@ -186,7 +187,9 @@ export class FieldsService {
 		try {
 			column = await this.schemaInspector.columnInfo(collection, field);
 			column.default_value = getDefaultValue(column);
-		} catch {}
+		} catch {
+			// Do nothing
+		}
 
 		const data = {
 			collection,
@@ -201,19 +204,15 @@ export class FieldsService {
 
 	async createField(
 		collection: string,
-		field: Partial<Field> & { field: string; type: typeof types[number] },
+		field: Partial<Field> & { field: string; type: typeof types[number] | null },
 		table?: Knex.CreateTableBuilder // allows collection creation to
-	) {
+	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException();
 		}
 
 		// Check if field already exists, either as a column, or as a row in directus_fields
-		if (field.field in this.schema.tables[collection].columns) {
-			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
-		} else if (
-			!!this.schema.fields.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field.field)
-		) {
+		if (field.field in this.schema.collections[collection].fields) {
 			throw new InvalidPayloadException(`Field "${field.field}" already exists in collection "${collection}"`);
 		}
 
@@ -235,7 +234,7 @@ export class FieldsService {
 			}
 
 			if (field.meta) {
-				await itemsService.create({
+				await itemsService.createOne({
 					...field.meta,
 					collection: collection,
 					field: field.field,
@@ -248,34 +247,39 @@ export class FieldsService {
 		}
 	}
 
-	async updateField(collection: string, field: RawField) {
+	async updateField(collection: string, field: RawField): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action');
+			throw new ForbiddenException();
 		}
 
 		if (field.schema) {
-			await this.knex.schema.alterTable(collection, (table) => {
-				if (!field.schema) return;
-				this.addColumnToTable(table, field, true);
-			});
+			const existingColumn = await this.schemaInspector.columnInfo(collection, field.field);
+
+			try {
+				await this.knex.schema.alterTable(collection, (table) => {
+					if (!field.schema) return;
+					this.addColumnToTable(table, field, existingColumn);
+				});
+			} catch (err) {
+				throw await translateDatabaseError(err);
+			}
 		}
 
 		if (field.meta) {
-			const record = this.schema.fields.find(
-				(fieldMeta) => fieldMeta.field === field.field && fieldMeta.collection === collection
-			);
+			const record = await this.knex
+				.select('id')
+				.from('directus_fields')
+				.where({ collection, field: field.field })
+				.first();
 
 			if (record) {
-				await this.itemsService.update(
-					{
-						...field.meta,
-						collection: collection,
-						field: field.field,
-					},
-					record.id
-				);
+				await this.itemsService.updateOne(record.id, {
+					...field.meta,
+					collection: collection,
+					field: field.field,
+				});
 			} else {
-				await this.itemsService.create({
+				await this.itemsService.createOne({
 					...field.meta,
 					collection: collection,
 					field: field.field,
@@ -291,14 +295,29 @@ export class FieldsService {
 	}
 
 	/** @todo save accountability */
-	async deleteField(collection: string, field: string) {
+	async deleteField(collection: string, field: string): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenException('Only admins can perform this action.');
+			throw new ForbiddenException();
 		}
+
+		await emitter.emitAsync(`fields.delete.before`, {
+			event: `fields.delete.before`,
+			accountability: this.accountability,
+			collection: collection,
+			item: field,
+			action: 'delete',
+			payload: null,
+			schema: this.schema,
+			database: this.knex,
+		});
 
 		await this.knex('directus_fields').delete().where({ collection, field });
 
-		if (this.schema.tables[collection] && field in this.schema.tables[collection].columns) {
+		if (
+			this.schema.collections[collection] &&
+			field in this.schema.collections[collection].fields &&
+			this.schema.collections[collection].fields[field].alias === false
+		) {
 			await this.knex.schema.table(collection, (table) => {
 				table.dropColumn(field);
 			});
@@ -326,12 +345,43 @@ export class FieldsService {
 			}
 		}
 
+		const collectionMeta = await this.knex
+			.select('archive_field', 'sort_field')
+			.from('directus_collections')
+			.where({ collection })
+			.first();
+
+		const collectionMetaUpdates: Record<string, null> = {};
+
+		if (collectionMeta?.archive_field === field) {
+			collectionMetaUpdates.archive_field = null;
+		}
+
+		if (collectionMeta?.sort_field === field) {
+			collectionMetaUpdates.sort_field = null;
+		}
+
+		if (Object.keys(collectionMetaUpdates).length > 0) {
+			await this.knex('directus_collections').update(collectionMetaUpdates).where({ collection });
+		}
+
 		if (cache && env.CACHE_AUTO_PURGE) {
 			await cache.clear();
 		}
+
+		emitAsyncSafe(`fields.delete`, {
+			event: `fields.delete`,
+			accountability: this.accountability,
+			collection: collection,
+			item: field,
+			action: 'delete',
+			payload: null,
+			schema: this.schema,
+			database: this.knex,
+		});
 	}
 
-	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: boolean = false) {
+	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null): void {
 		let column: Knex.ColumnBuilder;
 
 		if (field.schema?.has_auto_increment) {
@@ -366,6 +416,16 @@ export class FieldsService {
 			column.notNullable();
 		} else {
 			column.nullable();
+		}
+
+		if (field.schema?.is_unique === true) {
+			if (!alter || alter.is_unique === false) {
+				column.unique();
+			}
+		} else if (field.schema?.is_unique === false) {
+			if (alter && alter.is_unique === true) {
+				table.dropUnique([field.field]);
+			}
 		}
 
 		if (field.schema?.is_primary_key) {

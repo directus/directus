@@ -235,7 +235,7 @@ export default defineComponent({
 			}
 		);
 
-		const { edit } = useEdit(codemirror, props.customSyntax);
+		const { edit } = useEdit(codemirror);
 
 		const html = computed(() => {
 			let md = props.value || '';
@@ -353,8 +353,9 @@ textarea {
 
 .toolbar {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
-	height: 40px;
+	min-height: 40px;
 	padding: 0 4px;
 	background-color: var(--background-subdued);
 	border-bottom: 2px solid var(--border-normal);
@@ -403,7 +404,7 @@ textarea {
 		}
 
 		h2 {
-			margin-top: 60px;
+			margin-top: 40px;
 			margin-bottom: 0;
 			font-weight: 600;
 			font-size: 34px;
@@ -521,13 +522,7 @@ textarea {
 			margin-bottom: 56px;
 			text-align: center;
 			border: 0;
-		}
-
-		hr::after {
-			font-size: 28px;
-			line-height: 0;
-			letter-spacing: 16px;
-			content: '...';
+			border-top: 2px solid #cfd8dc;
 		}
 
 		table {

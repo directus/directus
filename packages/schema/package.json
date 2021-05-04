@@ -1,15 +1,13 @@
 {
 	"name": "@directus/schema",
-	"version": "9.0.0-rc.45",
+	"version": "9.0.0-rc.62",
 	"description": "Utility for extracting information about existing DB schema",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
 		"build": "tsc --build && echo \"Built successfully\"",
 		"prepare": "npm run build",
-		"test": "npm run lint && ts-mocha test/**/*.spec.ts",
-		"dev": "npm-watch build",
-		"lint": "eslint \"src/**/*.ts\""
+		"dev": "npm-watch build"
 	},
 	"watch": {
 		"build": {
@@ -45,6 +43,8 @@
 		"typescript": "^4.0.5"
 	},
 	"dependencies": {
-		"knex-schema-inspector": "^1.1.0"
-	}
+		"knex-schema-inspector": "^1.3.0",
+		"lodash": "^4.17.21"
+	},
+	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4"
 }

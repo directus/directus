@@ -3,21 +3,24 @@ import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
 
 export default class MySQL extends KnexMySQL implements SchemaInspector {
-	async overview() {
+	async overview(): Promise<SchemaOverview> {
 		const columns = await this.knex.raw(
 			`
 			SELECT
-				TABLE_NAME as table_name,
-				COLUMN_NAME as column_name,
-				COLUMN_DEFAULT as default_value,
-				IS_NULLABLE as is_nullable,
-				DATA_TYPE as data_type,
-				COLUMN_KEY as column_key,
-				EXTRA as extra
+				C.TABLE_NAME as table_name,
+				C.COLUMN_NAME as column_name,
+				C.COLUMN_DEFAULT as default_value,
+				C.IS_NULLABLE as is_nullable,
+				C.DATA_TYPE as data_type,
+				C.COLUMN_KEY as column_key,
+				C.EXTRA as extra
 			FROM
-				INFORMATION_SCHEMA.COLUMNS
+				INFORMATION_SCHEMA.COLUMNS AS C
+			LEFT JOIN
+				INFORMATION_SCHEMA.TABLES AS T ON C.TABLE_NAME = T.TABLE_NAME
 			WHERE
-				table_schema = ?;
+				T.TABLE_TYPE = 'BASE TABLE' AND
+				C.TABLE_SCHEMA = ?;
 			`,
 			[this.knex.client.database()]
 		);

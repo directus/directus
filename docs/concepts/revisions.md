@@ -1,4 +1,4 @@
-# Revisions
+# Revisions & Versioning
 
 > Revisions are created when an _original_ Item is updated. These alternate versions are tracked so that previous states can be recovered, or potential edits can be staged.
 

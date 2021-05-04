@@ -7,12 +7,22 @@
 				<div class="grid">
 					<div class="field">
 						<div class="type-label">{{ $t('emails') }}</div>
-						<v-textarea v-model="emails" :placeholder="$t('email_examples')" />
+						<v-textarea v-model="emails" :nullable="false" :placeholder="$t('email_examples')" />
 					</div>
 					<div class="field" v-if="role === null">
 						<div class="type-label">{{ $t('role') }}</div>
 						<v-select v-model="roleSelected" :items="roles" />
 					</div>
+					<v-notice class="field" type="danger" v-if="uniqueValidationErrors.length > 0">
+						<div v-for="(err, i) in uniqueValidationErrors" :key="i">
+							<template v-if="err.extensions.invalid">
+								{{ $t('email_already_invited', { email: err.extensions.invalid }) }}
+							</template>
+							<template v-else-if="i === 0">
+								{{ $t('validationError.unique') }}
+							</template>
+						</div>
+					</v-notice>
 				</div>
 			</v-card-text>
 
@@ -27,11 +37,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType, watch } from '@vue/composition-api';
+import { defineComponent, ref, watch } from '@vue/composition-api';
 import api from '@/api';
-import { useNotificationsStore } from '@/stores';
-import i18n from '@/lang';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { APIError } from '@/types';
 
 export default defineComponent({
 	model: {
@@ -49,11 +58,12 @@ export default defineComponent({
 		},
 	},
 	setup(props, { emit }) {
-		const notifications = useNotificationsStore();
 		const emails = ref<string>('');
 		const roles = ref<Record<string, any>[]>([]);
 		const roleSelected = ref<string | null>(props.role);
 		const loading = ref(false);
+
+		const uniqueValidationErrors = ref([]);
 
 		watch(
 			() => props.active,
@@ -62,7 +72,7 @@ export default defineComponent({
 			}
 		);
 
-		return { emails, inviteUsers, roles, roleSelected, loading };
+		return { emails, inviteUsers, roles, roleSelected, loading, uniqueValidationErrors };
 
 		async function inviteUsers() {
 			loading.value = true;
@@ -81,7 +91,17 @@ export default defineComponent({
 				emails.value = '';
 				emit('toggle', false);
 			} catch (err) {
-				unexpectedError(err);
+				uniqueValidationErrors.value = err?.response?.data?.errors?.filter((error: APIError) => {
+					return error.extensions?.code === 'RECORD_NOT_UNIQUE';
+				});
+
+				const otherErrors = err?.response?.data?.errors?.filter(
+					(err: APIError) => err?.extensions?.code !== 'RECORD_NOT_UNIQUE'
+				);
+
+				if (otherErrors.length > 0) {
+					otherErrors.forEach((err: APIError) => unexpectedError(err));
+				}
 			} finally {
 				loading.value = false;
 			}

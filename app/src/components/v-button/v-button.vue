@@ -2,6 +2,7 @@
 	<div class="v-button" :class="{ secondary, 'full-width': fullWidth }">
 		<slot name="prepend-outer" />
 		<component
+			v-focus="autofocus"
 			:is="component"
 			:active-class="to ? 'activated' : null"
 			:exact="exact"
@@ -51,6 +52,10 @@ import { notEmpty } from '@/utils/is-empty';
 
 export default defineComponent({
 	props: {
+		autofocus: {
+			type: Boolean,
+			default: false,
+		},
 		fullWidth: {
 			type: Boolean,
 			default: false,
@@ -302,6 +307,8 @@ body {
 		.content,
 		.spinner {
 			max-width: 100%;
+			margin: 0 -1px; // Fixes slightly cropped icons
+			padding: 0 1px; // Fixes slightly cropped icons
 			overflow: hidden;
 			white-space: nowrap;
 			text-overflow: ellipsis;

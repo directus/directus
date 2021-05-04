@@ -71,6 +71,7 @@ validationError:
   null: Reikšmė turi būti null
   nnull: Reikšmė negali būti null
   required: Reikšmė turi būti užpildyta
+  unique: Reikšmė turi būti unikali
 all_access: Pilna prieiga
 no_access: Jokios prieigos
 use_custom: Pasirinktinai
@@ -198,7 +199,6 @@ item_delete_success: Elementas pašalintas | Elementai pašalinti
 this_collection: Ši kolekcija
 related_collection: Susijusi kolekcija
 related_collections: Susijusios kolekcijos
-translations_collection: Vertimų kolekcija
 languages_collection: Kalbų kolekcija
 export_data: Eksportuoti duomenis
 format: Formatas
@@ -317,7 +317,6 @@ users: Vartotojai
 activity: Veiksmas
 webhooks: '„Webhook“''ai'
 field_width: Laukelio plotis
-add_a_new_item: Pridėti naują elementą...
 add_filter: Pridėti filtrą
 upper_limit: Viršutinis limitas...
 lower_limit: Apatinis limitas...
@@ -476,6 +475,8 @@ toggle: Perjungti
 icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
+width: Plotis
+height: Aukštis
 wysiwyg_options:
   aligncenter: Vidurinė lygiuotė
   alignjustify: Abipusė lygiuotė
@@ -495,10 +496,7 @@ wysiwyg_options:
   bullist: Suženklintasis sąrašas
   numlist: Numeruotasis sąrašas
   hr: Horizontali linija
-  link: Nuoroda
   unlink: Pašalinti nuorodą
-  media: Pridėti mediją
-  image: Pridėti nuotrauką
   copy: Kopijuoti
   cut: Iškirpti
   paste: Įklijuoti
@@ -520,7 +518,6 @@ wysiwyg_options:
   selectall: Pažymėti visus
   table: Lentelė
   visualaid: Peržiūrėti nematomos elementus
-  code: Peržiūrėti išeities tekstą
   fullscreen: Per visą ekraną
   directionality: Kryptingumas
 dropdown: Išskleidžiamasis meniu
@@ -543,7 +540,6 @@ settings_presets: Ruošiniai ir žymos
 scope: Apimtis
 layout: Išdėstymas
 changes_are_permanent: Pakeitimai neatstatomi
-preset_name_placeholder: Žymos pavadinimas...
 editing_preset: Redaguojamas ruošinys
 layout_preview: Išdėstymo peržiūra
 layout_setup: Išdėstymo nustatymai
@@ -611,7 +607,6 @@ fields:
     display_template: Rodymo šablonas
     hidden: Paslėptas
     singleton: Singleton objektas
-    translations: Kolekcijos pavadinimų vertimai
     sort_field: Rūšiavimo laukas
   directus_files:
     title: Pavadinmas
@@ -857,8 +852,6 @@ interfaces:
     trim_label: Apkarpyti iš pradžios ir pabaigos
     mask: Paslėptas
     mask_label: Paslėpti tikrąją reikšmę
-    nullable: Gali būti Null
-    nullable_label: Išsaugoti tuščią reikšmė kaip NULL
   textarea:
     textarea: Teksto sritis
     description: Įveskite kelių eilučių neformatuotą tesktą

@@ -1,25 +1,294 @@
 ---
+edit_field: Editar campo
+item_revision: Revisão do documento
+duplicate_field: Duplicar este campo
+half_width: Metade da largura
+full_width: Largura total
+fill_width: Ocupar a largura
+field_name_translations: Nome do campo para as traduções
+enter_password_to_enable_tfa: Coloque a password para ativar a autenticação de 2 fatores
+add_field: Adicionar Campo
+role_name: Nome do cargo
+db_only_click_to_configure: 'Apenas o banco de dados: clique para configurar '
+show_archived_items: Mostrar documentos arquivados
+edited: Valor alterado
+required: Obrigatório
+required_for_app_access: Necessário para o acesso da App
+requires_value: Valor obrigatório
+create_preset: Criar uma predefinação
+create_role: Criar estatuto
+create_user: Criar utilizador
+create_webhook: Criar webhook
+invite_users: Convidar utlizadores
+email_examples: 'admin@example.com, user@example.com...'
+invite: Convidar
+emails: Emails
+connection_excellent: Excelente Conexão
+connection_good: Boa conexão
+connection_fair: Conexão razoável
+connection_poor: Fraca conexão
+primary: Primário
+rename_folder: Mudar o nome da pasta
+delete_folder: Eliminar pasta
+prefix: Prefixo
+suffix: Sufixo
+reset_bookmark: Restaurar marcador
+rename_bookmark: Mudar o nome do marcador
+update_bookmark: Atualizar o marcador
+delete_bookmark: Eliminar o marcador
+delete_bookmark_copy: >-
+  Tem a certeza que pretende remover o marcador "{bookmark}"?
+  Esta ação não pode ser desfeita.
+logoutReason:
+  SIGN_OUT: Sessão terminada
+  SESSION_EXPIRED: Sessão expirada
+public: Público
+public_description: Controla quais dados da API estão disponíveis sem autenticação.
+not_allowed: Não permitido
+directus_version: Versão do Directus
+node_version: Versão do Node.js
+node_uptime: Tempo de atividade do Node.js
+os_type: Tipo do Sistema Operativo
+os_version: Versão do Sistema Operativo
+os_uptime: Tempo de atividade do Sistema Operativo
+os_totalmem: Memória utilizada
+archive: Arquivar
+archive_confirm: Tem a certeza que pretende arquivar este documento?
+archive_confirm_count: >-
+  Nenhum documento selecionado | Tem a certeza que pretende arquivar este documento? | Tem a certeza que pretende arquivar {count} documentos?
+reset_system_permissions_to: 'Restaurar permissões do sistema para:'
+reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que tenha aplicado às coleções do sistema. Tem certeza que pretende continuar?
+the_following_are_minimum_permissions: As permissões mínimas seguintes são necessárias para quando o "Acesso à App" está ativo. É permitido acrescentar permissões, mas não reduzir.
+app_access_minimum: Permissões mínimas para Acesso à App
+recommended_defaults: Predefinições recomendadas
+unarchive: Desarquivar
+unarchive_confirm: Tem a certeza que pretende desarquivar este item?
+nested_files_folders_will_be_moved: Ficheiros e pastas neste grupo vão ser movidos um nível acima.
+unknown_validation_errors: 'Foram encontrados erros de validação nos seguintes campos ocultos:'
+validationError:
+  eq: O valor tem de ser {valid}
+  neq: O valor não pode ser {invalid}
+  in: O valor tem de ser um de {valid}
+  nin: O valor não pode ser um de {invalid}
+  contains: O valor tem de conter {substring}
+  ncontains: O valor não pode conter {substring}
+  gt: O valor tem de ser maior que {valid}
+  gte: O valor tem de ser maior ou igual a {valid}
+  lt: O valor tem de ser menor que {valid}
+  lte: O valor deve ser menor ou igual a {valid}
+  empty: O valor tem de estar vazio
+  nempty: Valor não pode estar vazio
+  null: O valor tem de ser nulo
+  nnull: O valor não pode ser nulo
+  required: O valor é obrigatório
+all_access: Acesso Global
+no_access: Sem Acesso
+use_custom: Usar personalizado
+field_standard: Predefinido
+field_m2o: Relação Muitos para Um
+field_m2a: Relação Muitos para Alguns
+field_o2m: Relação Um para Muitos
+field_m2m: Relação Muitos para Muitos
+item_permissions: Permissões do documento
+field_permissions: Permisões do campo
+field_validation: Validação do Campo
+field_presets: Predefinições para o campo
+permissions_for_role: 'Documentos que o estatuto {role} pode {action}.'
+fields_for_role: 'Campos que o estatuto {role} pode {action}.'
+revision_post_update: Aqui está como este documento ficou após a atualização...
+changes_made: Estas são as mudanças específicas que foram feitas...
+no_relational_data: Tenha em atenção que isto não inclui dados relacionais.
+hide_field_on_detail: Ocultar campo dentro de Detalhe
+show_field_on_detail: Mostrar campo dentro de Detalhe
+delete_field: Remover campo
+fields_and_layout: Campos e Layout
+field_create_success: 'Campo criado: "{field}"'
+field_update_success: 'Campo atualizado: "{field}"'
+duplicate_where_to: Para onde gostaria de duplicar este campo?
+language: Idioma
+global: Global
+admins_have_all_permissions: Administradores têm todas as permissões
+camera: Câmara
+exposure: Exposição
+shutter: Obturador
+iso: ISO
+focal_length: Distância focal
+schema_setup_key: O nome deste campo na base de dados e a chave da API
 create_field: Criar campo
+creating_new_field: 'Novo campo ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Restaurar as preferências da página
+hidden_field: Campo oculto
+hidden_on_detail: Ocultar dentro de Detalhe
+disabled_editing_value: Desativar editar valor
+key: Chave
+alias: Nome alternativo
+bigInteger: Grande inteiro
+boolean: Boleano
+date: Data
+datetime: Data e Hora
+decimal: Decimal
+float: Ponto flutuante
+integer: Inteiro
+json: JSON
+string: String
+text: Texto
+time: Hora
+timestamp: Timestamp
+uuid: UUID
+not_available_for_type: Não disponível para este tipo
+create_translations: Criar traduções
+auto_refresh: Atualização Automática
+refresh_interval: Intervalo de atualização
+no_refresh: Não atualizar
+refresh_interval_seconds: Atualizar instantaneamente | A cada segundo | A cada {seconds} segundos
+refresh_interval_minutes: A cada minuto | a cada {minutes} minutos
 auto_generate: Geração Automatica
+click_here: Clique aqui
+no_collections_found: Nenhuma coleção encontrada.
+search_collection: Procurar coleção...
+new_collection: 'Nova coleção'
+add_m2o_to_collection: 'Adicionar muitos-para-um a "{collection}"'
+add_o2m_to_collection: 'Adicionar um-para-um a "{collection}"'
+add_m2m_to_collection: 'Adicionar muitos-para-muitos a "{collection}"'
 add_note: Adicionar uma nota para os utilizadores...
 unique: Único
 clear_value: Limpar valor
 undo_changes: Anular alterações
+confirm_revert: Confirmar a reversão
+confirm_revert_body: Isto irá reverter o documento para o estado selecionado.
+display: Visualização
+settings_update_success: Configurações atualizadas
 title: Título
+revision_delta_created: Criado
+revision_delta_created_externally: Criado externamente
+revision_delta_updated: '1 campo foi atualizado | {count} campos foram atualizados'
+revision_delta_deleted: Removido
+revision_delta_reverted: Revertido
+revision_delta_other: Revisão
+revision_delta_by: '{date} por {user}'
+private_user: Utilizador privado
+revision_preview: Pré-visualização da revisão
+updates_made: Atualizações feitas
+leave_comment: Deixe um comentário...
+post_comment_success: Comentário publicado
+item_create_success: Documento criado | Documentos criados
+item_update_success: Documento atualizado | Documentos atualizados
+item_delete_success: Documento removido | Documentos removidos
 this_collection: Esta Coleção
+related_collection: Coleção relacionada
+related_collections: Coleções relacionadas
+translations_collection: Coleção de tradução
+languages_collection: Coleção de idiomas
+export_data: Exportar dados
+format: Formatar
+use_current_filters_settings: Usar filtros e configurações atuais
+export_collection: 'Exportar {collection}'
+last_page: Última página
+last_access: Último Acesso
+fill_template: Preencher com valor do modelo
+a_unique_table_name: Um nome único para a tabela...
+a_unique_column_name: Um nome único para a coluna...
+enable_custom_values: Ativar valores personalizados
+submit: Enviar
+move_to_folder: Mover para pasta
+move: Mover
+system: Sistema
+add_field_related: Adicionar Campo à Coleção Relacionada
+interface: Interface
+today: Hoje
+yesterday: Ontem
+delete_comment: Remover comentário
+date-fns_date: dd MMM u
+date-fns_time: 'HH:mm:ss'
+date-fns_time_no_seconds: 'HH:mm'
+date-fns_date_short: 'dd MMM u'
+date-fns_time_short: 'HH:mm'
+date-fns_date_short_no_year: dd MMM
+month: Mês
+year: Ano
+created: Criado
 created_by: Criado por
 created_on: Criada em
+save_and_create_new: Guardar e criar novo
+save_and_stay: Guardar e permanecer
+save_as_copy: Guardar como cópia
+add_existing: Adicionar existente
 comments: Comentários
+no_comments: Ainda não há comentários
+click_to_expand: Clique para expandir
+select_item: Selecionar item
+no_items: Não existem documentos
+search_items: Procurar documentos...
+disabled: Desativado
+information: Informação
+report_bug: Reportar erro
+request_feature: Pedir uma funcionalidade
+interface_not_found: 'Interface "{interface}" não encontrada.'
+reset_interface: Restaurar interface
+display_not_found: 'Visualização "{display}" não encontrado.'
+reset_display: Restaurar visualização
+m2a_builder: Construtor (muitos para alguns)
+item_count: 'Não existem documentos | Um documento | {count} documentos'
+no_items_copy: Aind não existem documentos nesta coleção.
+file_count: 'Nenhum ficheiro | Um ficheiro | {count} ficheiros'
+no_files_copy: Não existem ficheiros aqui.
+user_count: 'Nenhum utilizador | Um utilizador | {count} utilizadores'
+no_users_copy: Ainda não existem utilizadores neste estatuto.
+webhooks_count: 'Nenhum webhook | Um webhook | {count} webhooks'
+no_webhooks_copy: Ainda não existem webhooks.
+all_items: Todos os documentos
+csv: CSV
+no_collections: Nenhuma coleção
+create_collection: Criar coleção
+no_collections_copy_admin: Ainda não existem coleções. Clique no botão abaixo para começar.
+no_collections_copy: Ainda não existem coleções. Por favor, entre em contacto com o administrador.
+relationship_not_setup: A relação não foi configurada corretamente
+display_template_not_setup: A opção do modelo de visualização não está configurada corretamente
+collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
+select_a_collection: Selecione uma coleção
+active: Ativar
 users: Utilizadores
 activity: Atividade
+webhooks: Webhooks
+field_width: Largura do campo
+add_filter: Adicionar filtro
+upper_limit: Limite superior...
+lower_limit: Limite inferior...
 user_directory: Diretório de Utilizadores
+documentation: Documentação
+sidebar: Barra lateral
+duration: Duração
+charset: Codificação
+second: Segundo
+file_moved: Ficheiro movido
+collection_created: Coleção criada
 bookmarks: Favoritos
 back: Voltar
+delete_collection: Remover coleção
+update_collection_success: Coleção atualizada
+delete_collection_success: Coleção removida
+start_end_of_count_items: '{start}-{end} de {count} documentos'
+start_end_of_count_filtered_items: '{start}-{end} de {count} documentos filtrados'
+one_item: '1 documento'
+one_filtered_item: '1 documento filtrado'
+delete_collection_are_you_sure: >-
+  Tem a certeza que deseja remover esta coleção? Isto irá apagar a coleção e todos os documentos associados. Esta ação é irreversível.
+collections_shown: Coleções visíveis
+visible_collections: Coleções visíveis
+hidden_collections: Coleções ocultas
+show_hidden_collections: Mostrar coleções ocultas
+hide_hidden_collections: Esconder coleções ocultas
+unmanaged_collections: Coleções não configuradas
+system_collections: Coleções do sistema
 wysiwyg_options:
   table: Tabela
 choices: Opções
+settings_webhooks: Webhooks
 unsaved_changes: Alterações por guardar
 unsaved_changes_copy: Tem certeza que deseja sair desta página?
+page_help_collections_collection: >-
+  **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
 add_new: Adicionar novo
 all: Todos
 batch_delete_confirm: >-
@@ -45,28 +314,47 @@ fields:
     location: Localização
     created_on: Criada em
     created_by: Criado por
+    charset: Codificação
+    duration: Duração
   directus_users:
     location: Localização
     title: Título
     description: Descrição
     tags: Etiquetas
+    language: Idioma
+    last_page: Última página
+    last_access: Último Acesso
+  directus_fields:
+    translation: Nome do campo para as traduções
   directus_roles:
+    name: Nome do cargo
     description: Descrição
 comment: Comentário
 continue: Continuar
 description: Descrição
 interfaces:
+  button-links:
+    primary: Primário
   checkboxes:
     checkboxes: Caixas de seleção
   collection:
     collection: Coleção
+  display-template:
+    collection_field_not_setup: A opção do campo da coleção não está configurada corretamente
+    select_a_collection: Selecione uma coleção
   files:
     files: Ficheiros
+  interface:
+    interface: Interface
   tags:
     tags: Etiquetas
 displays:
+  boolean:
+    boolean: Boleano
   collection:
     collection: Coleção
+  datetime:
+    format: Formatar
   user:
     both: Ambos
 layouts:

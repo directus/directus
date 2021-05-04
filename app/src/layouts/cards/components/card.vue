@@ -179,6 +179,7 @@ export default defineComponent({
 		}
 
 		.svg {
+			position: absolute;
 			width: 50%;
 			height: 50%;
 			object-fit: contain;
@@ -268,14 +269,11 @@ export default defineComponent({
 	align-items: center;
 	width: 100%;
 	height: 20px;
+	margin-top: 4px;
 	overflow: hidden;
 	line-height: 1.3em;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-}
-
-.title {
-	margin-top: 4px;
 }
 
 .subtitle {

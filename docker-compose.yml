@@ -1,0 +1,109 @@
+# This composer file is meant to spin up a copy of all supported database vendors + Redis and S3 (Minio).
+#
+# ONLY FOR DEBUGGING. THIS IS NOT INTENDED FOR PRODUCTION USE.
+#
+# Ports:
+#   Postgres:        5100
+#   MySQL:           5101
+#   MariaDB:         5102
+#   MS SQL:          5103
+#   Oracle:          5104
+#   Redis:           5105
+#   Minio (S3):      5106
+#   Azure            5107
+#
+# Credentials:
+#   Postgres:
+#     User:          postgres
+#     Password:      secret
+#
+#   MySQL:
+#     User:          root
+#     Password:      secret
+#
+#   MariaDB:
+#     User:          root
+#     Password:      secret
+#
+#   MS SQL:
+#     User:          sa
+#     Password:      Test@123
+#
+#   Oracle DB:
+#     User:          secretsysuser
+#     Password:      secretpassword
+#     Role:          SYSDEFAULT
+#     SID:           XE
+#
+#   Redis:
+#     n/a
+#
+#   Minio:
+#     Key:           minioadmin
+#     Secret:        minioadmin
+#     (Make sure to set S3_FORCE_PATH_STYLE to true)
+#
+#   Azure Blob Storage
+#     Name:          devstoreaccount1
+#     Key:           Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
+#     Container:     devstoreaccount1
+
+version: '3.1'
+services:
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: directus
+    ports:
+      - 5100:5432
+
+  mysql:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: directus
+    ports:
+      - 5101:3306
+
+  maria:
+    image: mariadb:10.5
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: directus
+    ports:
+      - 5102:3306
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Test@123
+    ports:
+      - 5103:1433
+
+  oracle:
+    image: quillbuilduser/oracle-18-xe-micro-sq
+    ports:
+      - 5104:1521
+    environment:
+      - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
+      - ORACLE_ALLOW_REMOTE=true
+    shm_size: '1gb' # more like smh-size ammirite 🥁
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - 5105:6379
+
+  minio:
+    image: minio/minio:latest
+    command: server /data/minio/
+    ports:
+      - 5106:9000
+
+  azure:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - 5107:10000

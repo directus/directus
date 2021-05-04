@@ -1,8 +1,10 @@
-import { Query } from '../types/query';
-import database from '../database';
-import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
 import { Knex } from 'knex';
+import database from '../database';
+import { ForbiddenException } from '../exceptions';
+import { AbstractServiceOptions, Accountability, SchemaOverview } from '../types';
+import { Query } from '../types/query';
 import { applyFilter, applySearch } from '../utils/apply-query';
+import { parseFilter } from '../utils/parse-filter';
 
 export class MetaService {
 	knex: Knex;
@@ -15,7 +17,7 @@ export class MetaService {
 		this.schema = options.schema;
 	}
 
-	async getMetaForQuery(collection: string, query: Query) {
+	async getMetaForQuery(collection: string, query: Query): Promise<Record<string, any> | undefined> {
 		if (!query || !query.meta) return;
 
 		const results = await Promise.all(
@@ -33,16 +35,49 @@ export class MetaService {
 		}, {});
 	}
 
-	async totalCount(collection: string) {
-		const records = await this.knex(collection).count('*', { as: 'count' });
-		return Number(records[0].count);
+	async totalCount(collection: string): Promise<number> {
+		const dbQuery = this.knex(collection).count('*', { as: 'count' }).first();
+
+		if (this.accountability?.admin !== true) {
+			const permissionsRecord = this.schema.permissions.find((permission) => {
+				return permission.action === 'read' && permission.collection === collection;
+			});
+
+			if (!permissionsRecord) throw new ForbiddenException();
+
+			const permissions = parseFilter(permissionsRecord.permissions, this.accountability);
+
+			applyFilter(this.schema, dbQuery, permissions, collection);
+		}
+
+		const result = await dbQuery;
+
+		return Number(result?.count ?? 0);
 	}
 
-	async filterCount(collection: string, query: Query) {
+	async filterCount(collection: string, query: Query): Promise<number> {
 		const dbQuery = this.knex(collection).count('*', { as: 'count' });
 
-		if (query.filter) {
-			applyFilter(this.schema, dbQuery, query.filter, collection);
+		let filter = query.filter || {};
+
+		if (this.accountability?.admin !== true) {
+			const permissionsRecord = this.schema.permissions.find((permission) => {
+				return permission.action === 'read' && permission.collection === collection;
+			});
+
+			if (!permissionsRecord) throw new ForbiddenException();
+
+			const permissions = parseFilter(permissionsRecord.permissions, this.accountability);
+
+			if (Object.keys(filter).length > 0) {
+				filter = { _and: [permissions, filter] };
+			} else {
+				filter = permissions;
+			}
+		}
+
+		if (Object.keys(filter).length > 0) {
+			applyFilter(this.schema, dbQuery, filter, collection);
 		}
 
 		if (query.search) {

@@ -1,12 +1,12 @@
 <template>
-	<div class="label type-label" :class="{ disabled: disabled }">
+	<div class="label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError }">
 		<v-checkbox
 			v-if="batchMode"
 			:input-value="batchActive"
 			:value="field.field"
 			@change="$emit('toggle-batch', field)"
 		/>
-		<span @click="toggle">
+		<span @click="toggle" v-tooltip="edited ? $t('edited') : null">
 			{{ field.name }}
 			<v-icon class="required" sup name="star" v-if="field.schema && field.schema.is_nullable === false" />
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
@@ -41,6 +41,14 @@ export default defineComponent({
 			required: true,
 		},
 		active: {
+			type: Boolean,
+			default: false,
+		},
+		edited: {
+			type: Boolean,
+			default: false,
+		},
+		hasError: {
 			type: Boolean,
 			default: false,
 		},
@@ -87,6 +95,25 @@ export default defineComponent({
 	&:hover {
 		.ctx-arrow {
 			opacity: 1;
+		}
+	}
+
+	&.edited {
+		&::before {
+			position: absolute;
+			top: 7px;
+			left: -7px;
+			display: block;
+			width: 4px;
+			height: 4px;
+			background-color: var(--foreground-subdued);
+			border-radius: 4px;
+			content: '';
+			pointer-events: none;
+		}
+		> span {
+			margin-left: -16px;
+			padding-left: 16px;
 		}
 	}
 }

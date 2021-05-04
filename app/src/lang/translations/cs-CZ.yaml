@@ -1,16 +1,63 @@
 ---
 edit_field: Upravit pole
+item_revision: Revize položky
+duplicate_field: Duplikovat pole
+half_width: Poloviční šířka
 full_width: Plná šířka
+fill_width: Plná šířka
+field_name_translations: Překlady názvu polí
+enter_password_to_enable_tfa: Zadejte své heslo pro zapnutí dvoufázového ověřování
+add_field: Přidat pole
+role_name: Jméno role
+db_only_click_to_configure: 'Pouze databáze: Klikněte pro nastavení '
+show_archived_items: Zobrazit archivované položky
+edited: Hodnota upravena
 required: Povinné
+required_for_app_access: Vyžadováno pro přístup k aplikacím
+requires_value: Vyžaduje hodnotu
+create_preset: Vytvořit šablonu
 create_role: Vytvořit roli
+create_user: Vytvořit uživatele
+create_webhook: Vytvořit webhook
+invite_users: Pozvat uživatele
+invite: Pozvat
+emails: E-mail
+connection_excellent: Vynikající připojení
+connection_good: Dobré připojení
+connection_fair: Zhoršené připojení
+connection_poor: Špatné připojení
+rename_folder: Přejmenovat složku
+delete_folder: Smazat složku
+reset_bookmark: Obnovit záložku
 delete_bookmark: Smazat záložku
 directus_version: Verze Directusu
+archive: Archivovat
+archive_confirm: Skutečně chcete tuto položku archivovat?
+unarchive_confirm: Skutečně chcete tuto položku obnovit z archivu?
+nested_files_folders_will_be_moved: Vnořené soubory a složky budou přesunuty o úroveň výše.
+validationError:
+  ncontains: Hodnota nesmí obsahovat {substring}
+  gt: Hodnota musí být větší než {valid}
+  gte: Hodnota musí být větší nebo rovna {valid}
+  lt: Hodnota musí být menší než {valid}
+  empty: Hodnota musí být prázdná
+  nempty: Hodnota nesmí být prázdná
+  null: Hodnota musí být null
+  nnull: Hodnota nesmí být null
+  required: Hodnota je povinná
+field_standard: Standardní
+field_validation: Validace pole
+delete_field: Smazat pole
 language: Jazyk
+global: Globální
+admins_have_all_permissions: Administrátoři mají všechna oprávnění
 create_field: Vytvořit pole
+hidden_field: Skryté pole
 hidden_on_detail: Skryté v detailu
 date: Datum
 text: Text
 auto_generate: Auto-generování
+new_field: 'Nové pole'
 add_note: Přidat užitečnou poznámku pro uživatele...
 default_value: Výchozí hodnota
 next: Další
@@ -29,7 +76,10 @@ title: Název
 leave_comment: Napsat komentář...
 this_collection: Tato kategorie
 related_collection: Související kategorie
+export_data: Exportovat data
+format: Formát
 submit: Potvrdit
+move_to_folder: Přesunout do složky
 months:
   january: Leden
   february: Únor
@@ -43,15 +93,20 @@ months:
   october: Říjen
   november: Listopad
   december: Prosinec
+modified: Upraveno
 checksum: Kontrolní součet
 owner: Vlastník
+folder: Složka
 download: Stáhnout
+download_file: Stáhnout soubor
 name: Jméno
+type: Typ
 created_by: Vytvořil/-a
 created_on: Vytvořeno
 save_and_stay: Uložit a zůstat
 save_as_copy: Uložit jako kopii
 comments: Komentáře
+no_comments: Zatím bez komentářů
 request_feature: Požadavek na funkci
 item_count: 'Bez výsledků | Jeden výsledek | Výsledků: {count}'
 create_collection: Vytvořit kategorii
@@ -60,13 +115,17 @@ activity: Aktivita
 webhooks: Webhooky
 field_width: Šířka pole
 user_directory: Uživatelé
+documentation: Dokumentace
 duration: Trvání
 modified_on: Upraveno
 status: Stav
 bookmarks: Záložky
 back: Zpět
+all_users: Všichni uživatelé
 icon_left: Ikona vlevo
 color: Barva
+advanced_filter: Rozšířený filtr
+delete_advanced_filter: Smazat filtr
 operators:
   lt: Méně než
   gt: Větší než
@@ -76,21 +135,46 @@ operators:
   ncontains: Neobsahuje
   empty: Je prázné
 loading: Nahrávám...
+upload_file: Nahrát soubor
+upload_file_indeterminate: Nahrávám soubor...
+upload_file_success: Soubor nahrán
+upload_files_indeterminate: 'Nahrávám soubory {done}/{total}'
+upload_files_success: 'Nahráno {count} souborů'
+drag_file_here: Přetáhněte sem soubor
+layout_options: Možnosti rozvržení
+all_files: Všechny soubory
+my_files: Mé soubory
+recent_files: Nedávné soubory
+create_folder: Vytvořit složku
+folder_name: Název složky...
+add_file: Přidat soubor
+replace_file: Nahradit soubor
 no_results: Bez výsledků
 role: Role
+user: Uživatel
 create: Vytořit
 on_update: Při úpravě
 read: Číst
 update: Úpravy
 select_fields: Vybrat pole
+width: Šířka
+height: Výška
 wysiwyg_options:
+  copy: Kopírovat
+  cut: Vyjmout
+  paste: Vložit
+  fontselect: Výběr písma
+  fontsizeselect: Výběr velikosti písma
   remove: Odebrat
+  table: Tabulka
 choices: Volby
 deselect: Zrušit výběr
 editing_in_batch: 'Hromadná úprava {count} položek'
 settings_permissions: Role a oprávnění
 settings_project: Nastavení projektu
 settings_webhooks: Webhooky
+layout: Rozvržení
+layout_preview: Náhled rozvržení
 unsaved_changes: Neuložené změny
 unsaved_changes_copy: Jste si jisti, že chcete opustit tuto stránku?
 discard_changes: Ano, odejít bez uložení
@@ -124,11 +208,13 @@ fields:
     location: Poloha
     metadata: Metadata
     filesize: Velikost souboru
+    modified_by: Upravil/-a
     modified_on: Upraveno
     created_on: Vytvořeno
     created_by: Vytvořil/-a
     embed: Vložení
     uploaded_by: Nahráno od
+    folder: Složka
     width: Šířka
     uploaded_on: Nahráno
     height: Výška
@@ -153,7 +239,9 @@ fields:
   directus_fields:
     note: Poznámka
     hidden: Skryté
+    translation: Překlady názvu polí
   directus_roles:
+    name: Jméno role
     description: Popis
 comment: Komentář
 continue: Pokračovat
@@ -210,31 +298,45 @@ interfaces:
     color: Barva
   file:
     file: Soubor
+    description: Vyberte nebo nahrajte soubor
   files:
     files: Soubory
+    description: Vyberte nebo nahrajte soubory
   icon:
     icon: Ikona
   numeric:
     numeric: Číselné
+  repeater:
+    edit_fields: Upravit pole
   tags:
     tags: Štítky
+  user:
+    user: Uživatel
 displays:
   collection:
     collection: Kategorie
   color:
     color: Barva
+  datetime:
+    format: Formát
   file:
     file: Soubor
+    description: Zobrazit soubory
+  filesize:
+    filesize: Velikost souboru
   icon:
     icon: Ikona
   user:
+    user: Uživatel
     avatar: Avatar
     name: Jméno
     both: Vše
 layouts:
   cards:
+    cards: Karty
     title: Název
   tabular:
+    tabular: Tabulka
     fields: Sloupce
     spacing: Odsazení
     comfortable: Komfortní

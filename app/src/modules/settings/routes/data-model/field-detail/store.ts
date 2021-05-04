@@ -5,14 +5,14 @@
  * It's reset every time the modal opens and shouldn't be used outside of the field-detail flow.
  */
 
-import { useFieldsStore, useRelationsStore, useCollectionsStore } from '@/stores/';
-import { reactive, watch, computed, ComputedRef, WatchStopHandle } from '@vue/composition-api';
-import { clone, throttle } from 'lodash';
-import { getInterfaces } from '@/interfaces';
 import { getDisplays } from '@/displays';
-import { InterfaceConfig } from '@/interfaces/types';
 import { DisplayConfig } from '@/displays/types';
+import { getInterfaces } from '@/interfaces';
+import { InterfaceConfig } from '@/interfaces/types';
+import { useCollectionsStore, useFieldsStore, useRelationsStore } from '@/stores/';
 import { Field, localTypes } from '@/types';
+import { computed, ComputedRef, reactive, watch, WatchStopHandle } from '@vue/composition-api';
+import { clone, throttle } from 'lodash';
 import Vue from 'vue';
 
 const fieldsStore = useFieldsStore();
@@ -31,9 +31,9 @@ let generationInfo: ComputedRef<GenerationInfo[]>;
 
 export { state, availableInterfaces, availableDisplays, generationInfo, initLocalStore, clearLocalStore };
 
-function initLocalStore(collection: string, field: string, type: typeof localTypes[number]) {
-	const interfaces = getInterfaces();
-	const displays = getDisplays();
+function initLocalStore(collection: string, field: string, type: typeof localTypes[number]): void {
+	const { interfaces } = getInterfaces();
+	const { displays } = getDisplays();
 
 	state = reactive<any>({
 		fieldData: {
@@ -43,6 +43,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 				default_value: undefined,
 				max_length: undefined,
 				is_nullable: true,
+				is_unique: false,
 				numeric_precision: null,
 				numeric_scale: null,
 			},
@@ -63,12 +64,12 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		updateFields: [],
 		newRows: {},
 
-		autoFillJunctionRelation: true,
+		autoFillJunctionRelation: false,
 	});
 
 	availableInterfaces = computed<InterfaceConfig[]>(() => {
 		return interfaces.value
-			.filter((inter) => {
+			.filter((inter: InterfaceConfig) => {
 				// Filter out all system interfaces
 				if (inter.system === true) return false;
 
@@ -77,18 +78,18 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 				return matchesType && matchesLocalType;
 			})
-			.sort((a, b) => (a.name > b.name ? 1 : -1));
+			.sort((a: InterfaceConfig, b: InterfaceConfig) => (a.name > b.name ? 1 : -1));
 	});
 
 	availableDisplays = computed(() => {
 		return displays.value
-			.filter((inter) => {
+			.filter((inter: InterfaceConfig) => {
 				const matchesType = inter.types.includes(state.fieldData?.type || 'alias');
 				const matchesLocalType = (inter.groups || ['standard']).includes(type) || true;
 
 				return matchesType && matchesLocalType;
 			})
-			.sort((a, b) => (a.name > b.name ? 1 : -1));
+			.sort((a: InterfaceConfig, b: InterfaceConfig) => (a.name > b.name ? 1 : -1));
 	});
 
 	generationInfo = computed(() => {
@@ -125,6 +126,8 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 
 		state.relations = relationsStore.getRelationsForField(collection, field);
 	} else {
+		state.autoFillJunctionRelation = true;
+
 		watch(
 			() => availableInterfaces.value,
 			() => {
@@ -168,6 +171,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 					one_collection: 'directus_files',
 					one_primary: fieldsStore.getPrimaryKeyFieldForCollection('directus_files')?.field,
+					sort_field: null,
 				},
 			];
 		}
@@ -216,6 +220,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					many_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
 					one_collection: '',
 					one_primary: '',
+					sort_field: null,
 				},
 			];
 		}
@@ -326,6 +331,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					one_collection: collection,
 					one_field: state.fieldData.field,
 					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+					sort_field: null,
 				},
 			];
 		}
@@ -564,6 +570,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					one_collection: collection,
 					one_field: state.fieldData.field,
 					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+					sort_field: null,
 				},
 				{
 					many_collection: '',
@@ -572,6 +579,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					one_collection: '',
 					one_field: null,
 					one_primary: '',
+					sort_field: null,
 				},
 			];
 		}
@@ -712,7 +720,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 		}
 
 		function getAutomaticJunctionCollectionName() {
-			let index: number = 0;
+			let index = 0;
 			let name = getName(index);
 
 			while (collectionExists(name)) {
@@ -839,6 +847,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					one_collection: collection,
 					one_field: state.fieldData.field,
 					one_primary: fieldsStore.getPrimaryKeyFieldForCollection(collection)?.field,
+					sort_field: null,
 				},
 				{
 					many_collection: '',
@@ -849,6 +858,7 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 					one_primary: null,
 					one_allowed_collections: [],
 					one_collection_field: '',
+					sort_field: null,
 				},
 			];
 		}
@@ -968,6 +978,6 @@ function initLocalStore(collection: string, field: string, type: typeof localTyp
 	}
 }
 
-function clearLocalStore() {
+function clearLocalStore(): void {
 	state = null;
 }

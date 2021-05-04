@@ -1,10 +1,13 @@
 # Running Locally
 
-> This guide explains how to install the _Development_ version of Directus locally so that you can work on the platform's source code. To install the _Production_ version locally, please follow to our [standard installation guides](/getting-started/installation/).
+> This guide explains how to install the _Development_ version of Directus locally so that you can work on the
+> platform's source code. To install the _Production_ version locally, please follow to our
+> [standard installation guides](/getting-started/installation/).
 
 ::: tip Minimum Requirements
 
-You will need to have [the latest version of Node](https://nodejs.org/en/download/current/) to _build_ a Development version of Directus.
+You will need to have [the latest version of Node](https://nodejs.org/en/download/current/) to _build_ a Development
+version of Directus.
 
 :::
 
@@ -26,22 +29,42 @@ git clone git@github.com:YOUR-USERNAME/directus.git
 git checkout -b YOUR-BRANCH-NAME
 ```
 
-## 4. Install the dependencies
+## 4. Install the dependencies and build the project
 
 ```bash
 npm install
+npm run build
 ```
 
-## 5. Setup the Database & Env File
+## 5. Create a `.env` file
 
-For this step, you'll need to already have a SQL database up-and-running, otherwise you can only use the SQLite driver,
-which will create the database for you. Run the following command from within root of the project:
+Create a `.env` file under the `api` folder. You can use the `example.env` file provided under `api` as a starting
+point.
 
 ```bash
-npm run cli -- init
+# To use the example file
+cp api/example.env api/.env
 ```
 
-## 6. Start the development server
+## 6. Initialize the database
+
+For this step, you'll need to already have a SQL database up-and-running, except if you're using the SQLite driver,
+which will create the database (file) for you.
+
+To start the initialization run the following command:
+
+```bash
+# From within the root of the project
+npm run cli bootstrap
+
+# For SQLite you need to be in the 'api' folder to initialize the database
+cd api
+npm run cli bootstrap
+```
+
+This will set-up the required tables for Directus and make sure all the migrations have run.
+
+## 7. Start the development server
 
 Run the following command from the root directory.
 
@@ -49,7 +72,8 @@ Run the following command from the root directory.
 npm run dev
 ```
 
-If you are only looking to work on the Documentation (public website version), you can navigate to the `docs` directory and run the following command:
+If you are only looking to work on the Documentation (public website version), you can navigate to the `docs` directory
+and run the following command:
 
 ```bash
 npm run dev:site
@@ -62,7 +86,6 @@ If you encounter errors during this installation process, make sure your node ve
 
 :::
 
-## 7. Make your fixes/changes
+## 8. Make your fixes/changes
 
-At this point you are ready to start working on Directus! Before diving in however, it's worth reading through our docs
-on [submitting a pull-request](#Submitting-a-Pull-Request).
+At this point you are ready to start working on Directus! Before diving in however, it's worth reading through the introduction to [Contributing](/contributing/introduction).

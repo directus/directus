@@ -270,6 +270,7 @@ body {
 	--arrow-color: var(--border-normal);
 	--v-icon-color: var(--foreground-subdued);
 	--v-input-color: var(--foreground-normal);
+	--v-input-background-color: var(--background-input);
 	--v-input-border-color-focus: var(--primary);
 
 	display: flex;
@@ -282,6 +283,7 @@ body {
 	}
 
 	.input {
+		position: relative;
 		display: flex;
 		flex-grow: 1;
 		align-items: center;
@@ -291,7 +293,7 @@ body {
 		padding-bottom: 0px;
 		color: var(--v-input-color);
 		font-family: var(--v-input-font-family);
-		background-color: var(--background-page);
+		background-color: var(--v-input-background-color);
 		border: var(--border-width) solid var(--border-normal);
 		border-radius: var(--border-radius);
 		transition: border-color var(--fast) var(--transition);
@@ -333,7 +335,7 @@ body {
 			--arrow-color: var(--border-normal-alt);
 
 			color: var(--v-input-color);
-			background-color: var(--background-page);
+			background-color: var(--background-input);
 			border-color: var(--border-normal-alt);
 		}
 
@@ -342,7 +344,7 @@ body {
 			--arrow-color: var(--border-normal-alt);
 
 			color: var(--v-input-color);
-			background-color: var(--background-page);
+			background-color: var(--background-input);
 			border-color: var(--v-input-border-color-focus);
 		}
 

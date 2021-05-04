@@ -62,7 +62,12 @@
 					:has-click-listener="!disabled && hasRowClick"
 					:height="rowHeight"
 					@click="hasRowClick ? $emit('click:row', item) : null"
-					@item-selected="onItemSelected"
+					@item-selected="
+						onItemSelected({
+							item: item,
+							value: !getSelectedState(item),
+						})
+					"
 				>
 					<template v-for="header in _headers" #[`item.${header.value}`]>
 						<slot :item="item" :name="`item.${header.value}`" />
@@ -79,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, PropType, onMounted, watch } from '@vue/composition-api';
+import { defineComponent, computed, ref, PropType } from '@vue/composition-api';
 import { Header, HeaderRaw, Item, ItemSelectEvent, Sort } from './types';
 import TableHeader from './table-header/';
 import TableRow from './table-row/';
@@ -260,7 +265,7 @@ export default defineComponent({
 				if (_sort.value.desc === true) return itemsSorted.reverse();
 				return itemsSorted;
 			},
-			set: (value: object[]) => {
+			set: (value: Record<string, any>) => {
 				emit('update:items', value);
 			},
 		});
@@ -273,7 +278,7 @@ export default defineComponent({
 			return props.selection.length > 0 && allItemsSelected.value === false;
 		});
 
-		const hasRowClick = computed<boolean>(() => listeners.hasOwnProperty('click:row'));
+		const hasRowClick = computed<boolean>(() => 'click:row' in listeners);
 
 		const columnStyle = computed<string>(() => {
 			let gridTemplateColumns = _headers.value
@@ -381,7 +386,7 @@ body {
 	--v-table-height: auto;
 	--v-table-sticky-offset-top: 0;
 	--v-table-color: var(--foreground-normal);
-	--v-table-background-color: var(--background-page);
+	--v-table-background-color: var(--background-input);
 }
 </style>
 
@@ -480,6 +485,7 @@ body {
 	.loading-text,
 	.no-items-text {
 		text-align: center;
+		background-color: var(--background-input);
 
 		td {
 			padding: 16px;

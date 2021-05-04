@@ -5,16 +5,22 @@
 				<p>{{ $t('unknown_validation_errors') }}</p>
 				<ul>
 					<li v-for="(validationError, index) of unknownValidationErrors" :key="index">
-						<strong>{{ validationError.field }}</strong>
-						: {{ $t(`validationError.${validationError.type}`, validationError) }}
+						<strong v-if="validationError.field">{{ validationError.field }}:</strong>
+						<template v-if="validationError.code === 'RECORD_NOT_UNIQUE'">
+							{{ $t('validationError.unique', validationError) }}
+						</template>
+						<template v-else>
+							{{ $t(`validationError.${validationError.code}`, validationError) }}
+						</template>
 					</li>
 				</ul>
 			</div>
 		</v-notice>
 
 		<form-field
-			v-for="field in formFields"
+			v-for="(field, index) in formFields"
 			:field="field"
+			:autofocus="index === firstEditableFieldIndex && autofocus"
 			:key="field.field"
 			:value="(edits || {})[field.field]"
 			:initial-value="(initialValues || {})[field.field]"
@@ -34,13 +40,14 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, provide } from '@vue/composition-api';
 import { useFieldsStore } from '@/stores/';
-import { Field } from '@/types';
+import { Field, FieldRaw } from '@/types';
 import { useElementSize } from '@/composables/use-element-size';
 import { clone, cloneDeep } from 'lodash';
 import marked from 'marked';
 import FormField from './form-field.vue';
 import useFormFields from '@/composables/use-form-fields';
 import { ValidationError } from './types';
+import { translate } from '@/utils/translate-object-values';
 
 type FieldValues = {
 	[field: string]: any;
@@ -89,6 +96,10 @@ export default defineComponent({
 			type: Array as PropType<ValidationError[]>,
 			default: () => [],
 		},
+		autofocus: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	setup(props, { emit }) {
 		const el = ref<Element>();
@@ -101,13 +112,22 @@ export default defineComponent({
 		const { formFields, gridClass } = useForm();
 		const { toggleBatchField, batchActiveFields } = useBatch();
 
+		const firstEditableFieldIndex = computed(() => {
+			for (let i = 0; i < formFields.value.length; i++) {
+				if (formFields.value[i].meta && !formFields.value[i].meta.readonly) {
+					return i;
+				}
+			}
+			return null;
+		});
+
 		/**
 		 * The validation errors that don't apply to any visible fields. This can occur if an admin accidentally
 		 * made a hidden field required for example. We want to show these errors at the top of the page, so the
 		 * admin can be made aware
 		 */
 		const unknownValidationErrors = computed(() => {
-			const fieldKeys = formFields.value.map((field) => field.field);
+			const fieldKeys = formFields.value.map((field: FieldRaw) => field.field);
 			return props.validationErrors.filter((error) => fieldKeys.includes(error.field) === false);
 		});
 
@@ -124,6 +144,7 @@ export default defineComponent({
 			unsetValue,
 			marked,
 			unknownValidationErrors,
+			firstEditableFieldIndex,
 		};
 
 		function useForm() {
@@ -142,19 +163,21 @@ export default defineComponent({
 			const { formFields } = useFormFields(fields);
 
 			const formFieldsParsed = computed(() => {
-				return formFields.value.map((field: Field) => {
-					if (
-						field.schema?.has_auto_increment === true ||
-						(field.schema?.is_primary_key === true && props.primaryKey !== '+')
-					) {
-						const fieldClone = cloneDeep(field) as any;
-						if (!fieldClone.meta) fieldClone.meta = {};
-						fieldClone.meta.readonly = true;
-						return fieldClone;
-					}
+				return translate(
+					formFields.value.map((field: Field) => {
+						if (
+							field.schema?.has_auto_increment === true ||
+							(field.schema?.is_primary_key === true && props.primaryKey !== '+')
+						) {
+							const fieldClone = cloneDeep(field) as any;
+							if (!fieldClone.meta) fieldClone.meta = {};
+							fieldClone.meta.readonly = true;
+							return fieldClone;
+						}
 
-					return field;
-				});
+						return field;
+					})
+				);
 			});
 
 			const { width } = useElementSize(el);
@@ -167,8 +190,6 @@ export default defineComponent({
 				} else {
 					return 'grid';
 				}
-
-				return null;
 			});
 
 			return { formFields: formFieldsParsed, gridClass, isDisabled };
@@ -190,7 +211,7 @@ export default defineComponent({
 		}
 
 		function unsetValue(field: Field) {
-			if (props.edits?.hasOwnProperty(field.field)) {
+			if (field.field in props.edits || {}) {
 				const newEdits = { ...props.edits };
 				delete newEdits[field.field];
 				emit('input', newEdits);

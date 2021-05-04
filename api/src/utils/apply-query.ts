@@ -1,18 +1,19 @@
 import { Knex } from 'knex';
-import { Query, Filter, Relation, SchemaOverview } from '../types';
-import { clone, isPlainObject } from 'lodash';
-import { systemRelationRows } from '../database/system-data/relations';
-import { nanoid } from 'nanoid';
-import getLocalType from './get-local-type';
+import { clone, get, isPlainObject, set } from 'lodash';
+import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
+import { systemRelationRows } from '../database/system-data/relations';
+import { Filter, Query, Relation, SchemaOverview } from '../types';
+
+const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
 export default function applyQuery(
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	subQuery: boolean = false
-) {
+	subQuery = false
+): void {
 	if (query.sort) {
 		dbQuery.orderBy(
 			query.sort.map((sort) => ({
@@ -34,10 +35,6 @@ export default function applyQuery(
 		dbQuery.offset(query.limit * (query.page - 1));
 	}
 
-	if (query.single) {
-		dbQuery.limit(1).first();
-	}
-
 	if (query.filter) {
 		applyFilter(schema, dbQuery, query.filter, collection, subQuery);
 	}
@@ -52,8 +49,8 @@ export function applyFilter(
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
 	collection: string,
-	subQuery: boolean = false
-) {
+	subQuery = false
+): void {
 	const relations: Relation[] = [...schema.relations, ...systemRelationRows];
 
 	const aliasMap: Record<string, string> = {};
@@ -100,8 +97,9 @@ export function applyFilter(
 
 				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
 
-				const alias = nanoid(8);
-				aliasMap[pathParts.join('+')] = alias;
+				const alias = generateAlias();
+
+				set(aliasMap, parentAlias ? [parentAlias, ...pathParts] : pathParts, alias);
 
 				if (isM2O) {
 					dbQuery.leftJoin(
@@ -111,7 +109,8 @@ export function applyFilter(
 					);
 				}
 
-				if (subQuery === true && isM2O === false) {
+				// Still join o2m relations when in subquery OR when the o2m relation is not at the root level
+				if ((subQuery === true || parentAlias !== undefined) && isM2O === false) {
 					dbQuery.leftJoin(
 						{ [alias]: relation.many_collection },
 						`${parentAlias || parentCollection}.${relation.one_primary}`,
@@ -166,7 +165,10 @@ export function applyFilter(
 				const pkField = `${collection}.${o2mRelation.one_primary}`;
 
 				dbQuery[logical].whereIn(pkField, (subQueryKnex) => {
-					subQueryKnex.select([o2mRelation.many_field]).from(o2mRelation.many_collection);
+					const field = o2mRelation.many_field;
+					const collection = o2mRelation.many_collection;
+					const column = `${collection}.${field}`;
+					subQueryKnex.select({ [field]: column }).from(collection);
 
 					applyQuery(
 						o2mRelation.many_collection,
@@ -181,6 +183,7 @@ export function applyFilter(
 			} else {
 				if (filterPath.length > 1) {
 					const columnName = getWhereColumn(filterPath, collection);
+					if (!columnName) continue;
 					applyFilterToQuery(columnName, filterOperator, filterValue, logical);
 				} else {
 					applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
@@ -189,6 +192,42 @@ export function applyFilter(
 		}
 
 		function applyFilterToQuery(key: string, operator: string, compareValue: any, logical: 'and' | 'or' = 'and') {
+			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
+			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
+				dbQuery[logical].whereNull(key);
+			}
+
+			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
+				dbQuery[logical].whereNotNull(key);
+			}
+
+			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
+				dbQuery[logical].andWhere((query) => {
+					query.whereNull(key);
+					query.orWhere(key, '=', '');
+				});
+			}
+
+			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
+				dbQuery[logical].andWhere((query) => {
+					query.whereNotNull(key);
+					query.orWhere(key, '!=', '');
+				});
+			}
+
+			// The following fields however, require a value to be run. If no value is passed, we
+			// ignore them. This allows easier use in GraphQL, where you wouldn't be able to
+			// conditionally build out your filter structure (#4471)
+			if (compareValue === undefined) return;
+
+			if (Array.isArray(compareValue)) {
+				// When using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
+				// reported as [undefined]. Seeing that SQL queries will fail when one or more of the
+				// bindings is undefined, we'll make sure here that invalid array values are ignored as
+				// well
+				if (compareValue.some((val) => val === undefined)) return;
+			}
+
 			if (operator === '_eq') {
 				dbQuery[logical].where({ [key]: compareValue });
 			}
@@ -235,28 +274,6 @@ export function applyFilter(
 				dbQuery[logical].whereNotIn(key, value as string[]);
 			}
 
-			if (operator === '_null' || (operator === '_nnull' && compareValue === false)) {
-				dbQuery[logical].whereNull(key);
-			}
-
-			if (operator === '_nnull' || (operator === '_null' && compareValue === false)) {
-				dbQuery[logical].whereNotNull(key);
-			}
-
-			if (operator === '_empty' || (operator === '_nempty' && compareValue === false)) {
-				dbQuery[logical].andWhere((query) => {
-					query.whereNull(key);
-					query.orWhere(key, '=', '');
-				});
-			}
-
-			if (operator === '_nempty' || (operator === '_empty' && compareValue === false)) {
-				dbQuery[logical].andWhere((query) => {
-					query.whereNotNull(key);
-					query.orWhere(key, '!=', '');
-				});
-			}
-
 			if (operator === '_between') {
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
@@ -275,13 +292,13 @@ export function applyFilter(
 		function getWhereColumn(path: string[], collection: string) {
 			path = clone(path);
 
-			let columnName = '';
+			return followRelation(path);
 
-			followRelation(path);
-
-			return columnName;
-
-			function followRelation(pathParts: string[], parentCollection: string = collection) {
+			function followRelation(
+				pathParts: string[],
+				parentCollection: string = collection,
+				parentAlias?: string
+			): string | void {
 				const relation = relations.find((relation) => {
 					return (
 						(relation.many_collection === parentCollection && relation.many_field === pathParts[0]) ||
@@ -292,18 +309,18 @@ export function applyFilter(
 				if (!relation) return;
 
 				const isM2O = relation.many_collection === parentCollection && relation.many_field === pathParts[0];
-				const alias = aliasMap[pathParts.join('+')];
+				const alias = get(aliasMap, parentAlias ? [parentAlias, ...pathParts] : pathParts);
 
-				pathParts.shift();
+				const remainingParts = pathParts.slice(1);
 
 				const parent = isM2O ? relation.one_collection! : relation.many_collection;
 
-				if (pathParts.length === 1) {
-					columnName = `${alias || parent}.${pathParts[0]}`;
+				if (remainingParts.length === 1) {
+					return `${alias || parent}.${remainingParts[0]}`;
 				}
 
-				if (pathParts.length) {
-					followRelation(pathParts, parent);
+				if (remainingParts.length) {
+					return followRelation(remainingParts, parent, alias);
 				}
 			}
 		}
@@ -315,28 +332,20 @@ export async function applySearch(
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string
-) {
-	const columns = Object.values(schema.tables[collection].columns);
+): Promise<void> {
+	const fields = Object.entries(schema.collections[collection].fields);
 
 	dbQuery.andWhere(function () {
-		columns
-			.map((column) => ({
-				...column,
-				localType: getLocalType(column),
-			}))
-			.forEach((column) => {
-				if (['text', 'string'].includes(column.localType)) {
-					this.orWhereRaw(`LOWER(??) LIKE ?`, [
-						`${column.table_name}.${column.column_name}`,
-						`%${searchQuery.toLowerCase()}%`,
-					]);
-				} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(column.localType)) {
-					const number = Number(searchQuery);
-					if (!isNaN(number)) this.orWhere({ [`${column.table_name}.${column.column_name}`]: number });
-				} else if (column.localType === 'uuid' && validate(searchQuery)) {
-					this.orWhere({ [`${column.table_name}.${column.column_name}`]: searchQuery });
-				}
-			});
+		fields.forEach(([name, field]) => {
+			if (['text', 'string'].includes(field.type)) {
+				this.orWhereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
+			} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(field.type)) {
+				const number = Number(searchQuery);
+				if (!isNaN(number)) this.orWhere({ [`${collection}.${name}`]: number });
+			} else if (field.type === 'uuid' && validate(searchQuery)) {
+				this.orWhere({ [`${collection}.${name}`]: searchQuery });
+			}
+		});
 	});
 }
 

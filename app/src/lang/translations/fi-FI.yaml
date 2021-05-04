@@ -5,12 +5,13 @@ duplicate_field: Monista kenttä
 half_width: Puolileveä
 full_width: Täysleveä
 fill_width: Täysleveä
-field_name_translations: Kentän Nimi Käännökset
+field_name_translations: Kentän nimen käännökset
 enter_password_to_enable_tfa: Anna salasanasi ottaaksesi käyttöön kaksivaiheisen todennuksen
 add_field: Lisää kenttä
 role_name: Roolin nimi
 db_only_click_to_configure: 'Vain tietokanta: Klikkaa määrittääksesi '
 show_archived_items: Näytä arkistoidut kohteet
+edited: Arvoa muokattu
 required: Vaadittu
 required_for_app_access: Vaaditaan sovelluspääsyyn
 requires_value: Vaatii arvon
@@ -21,11 +22,12 @@ create_webhook: Luo webhook
 invite_users: Kutsu käyttäjiä
 email_examples: 'yllapitaja@example.com, kayttaja@example.com...'
 invite: Kutsu
+email_already_invited: Sähköposti "{email}" on jo kutsuttu
 emails: Sähköpostit
 connection_excellent: Erinomainen yhteys
-connection_good: Hyvä Yhteys
+connection_good: Hyvä yhteys
 connection_fair: Hyvä yhteys
-connection_poor: Huono Yhteys
+connection_poor: Huono yhteys
 primary: Ensisijainen
 rename_folder: Nimeä kansio uudelleen
 delete_folder: Poista kansio
@@ -79,9 +81,14 @@ validationError:
   null: Arvon on oltava null
   nnull: Arvo ei voi olla null
   required: Arvo vaaditaan
+  unique: Arvon on oltava yksilöllinen
+  regex: Arvon muoto ei ole oikea
 all_access: Täysi pääsy
 no_access: Ei pääsyä
 use_custom: Käytä mukautettua
+nullable: Nullable
+allow_null_value: Salli NULL-arvo
+enter_value_to_replace_nulls: Syötä uusi arvo korvataksesi kaikki NULL:it, jotka tällä hetkellä kuuluvat tähän kenttään.
 field_standard: Vakio
 field_presentation: Esitystapa & aliakset
 field_file: Yksittäinen tiedosto
@@ -92,7 +99,7 @@ field_o2m: O2M-suhde
 field_m2m: M2M-suhde
 field_translations: Käännökset
 item_permissions: Kohteen oikeudet
-field_permissions: Kentän Oikeudet
+field_permissions: Kentän oikeudet
 field_validation: Kentän vahvistus
 field_presets: Kentän esiasetukset
 permissions_for_role: 'Kohteet joita {role} rooli voi {action}.'
@@ -144,6 +151,11 @@ uuid: UUID
 hash: Tiiviste
 not_available_for_type: Ei saatavilla tälle tyypille
 create_translations: Luo käännökset
+auto_refresh: Automaattinen päivitys
+refresh_interval: Päivitysväli
+no_refresh: Älä päivitä
+refresh_interval_seconds: Päivitä välittömästi | Joka sekunti | Joka {seconds} sekuntia
+refresh_interval_minutes: Joka minuutti | Joka {minutes} minuuttia
 auto_generate: Luo automaattisesti
 this_will_auto_setup_fields_relations: Tämä määrittää automaattisesti kaikki tarvittavat kentät ja suhteet.
 click_here: Klikkaa tästä
@@ -151,7 +163,9 @@ to_manually_setup_translations: käännösten manuaaliseen määrittämiseen.
 click_to_manage_translated_fields: >-
   Käännettyjä kenttiä ei vielä ole. Klikkaa tästä luodaksesi ne. | On olemassa yksi käännetty kenttä. Klikkaa tästä hallitaksesi sitä. | On {count} käännettyä kenttää. Hallinnoi niitä kikkaamalla tästä.
 fields_group: Kenttien ryhmä
+no_collections_found: Kokoelmia ei löytynyt.
 new_data_alert: 'Seuraava tullaa luomaan tietomallisi sisällä:'
+search_collection: Hae kokoelmasta...
 new_field: 'Uusi kenttä'
 new_collection: 'Uusi kokoelma'
 add_m2o_to_collection: 'Lisää moni-yhteen (M2O) kokoelmaan "{collection}"'
@@ -161,13 +175,13 @@ choose_a_type: Valitse tyyppi...
 determined_by_relationship: Suhteen määrittämä
 add_note: Lisää käyttäjälle hyödyllinen huomautus...
 default_value: Oletusarvo
-standard_field: Vakio Kenttä
+standard_field: Vakiokenttä
 single_file: Yksittäinen tiedosto
 multiple_files: Useita tiedostoja
 m2o_relationship: Moni yhteen (M2O) -suhde
 o2m_relationship: Yksi moneen (O2M) -suhde
 m2m_relationship: Moni moneen (M2M) -suhde
-m2a_relationship: Mony mihin tahansa (M2A) -suhde
+m2a_relationship: Moni mihin tahansa (M2A) -suhde
 invalid_item: Virheellinen kohde
 next: Seuraava
 field_name: Kentän nimi
@@ -207,7 +221,7 @@ revision_delta_deleted: Poistettu
 revision_delta_reverted: Palautettu
 revision_delta_other: Versio
 revision_delta_by: '{date} käyttäjältä {user}'
-private_user: Yksityinen Käyttäjä
+private_user: Yksityinen käyttäjä
 revision_preview: Version esikatselu
 updates_made: Päivitykset tehty
 leave_comment: Jätä kommentti...
@@ -218,7 +232,7 @@ item_delete_success: Kohde poistettu | Kohteet poistettu
 this_collection: Tämä kokoelma
 related_collection: Liittyvät kokoelmat
 related_collections: Liittyvät kokoelmat
-translations_collection: Käännösten kokoelma
+translations_collection: Käännöskokoelma
 languages_collection: Kielten kokoelma
 export_data: Vie tiedot
 format: Muoto
@@ -305,6 +319,10 @@ save_and_create_new: Tallenna ja luo uusi
 save_and_stay: Tallenna ja pysy
 save_as_copy: Tallenna kopiona
 add_existing: Lisää olemassaoleva
+creating_items: Luodaan kohteita
+enable_create_button: Ota käyttöön luontinappula
+selecting_items: Valitaan kohteita
+enable_select_button: Ota käyttöön valintanappula
 comments: Kommentit
 no_comments: Ei vielä kommentteja
 click_to_expand: Klikkaa laajentaaksesi
@@ -343,7 +361,6 @@ users: Käyttäjät
 activity: Tapahtuma
 webhooks: Webhookit
 field_width: Kentän leveys
-add_a_new_item: Lisää uusi kohde...
 add_filter: Lisää suodatin
 upper_limit: Yläraja...
 lower_limit: Alaraja...
@@ -386,6 +403,9 @@ errors:
   ITEM_LIMIT_REACHED: Kohteiden rajoitus saavutettu
   ITEM_NOT_FOUND: Kohdetta ei löydy
   ROUTE_NOT_FOUND: Ei löytynyt
+  RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
+  USER_SUSPENDED: Käyttäjä jäädytetty
+  CONTAINS_NULL_VALUES: Kenttä sisältää null-arvoja
   UNKNOWN: Odottamaton virhe
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
@@ -462,6 +482,8 @@ operators:
   has: Sisältää joitakin näistä avaimista
 loading: Ladataan...
 drop_to_upload: Pudota ladataksesi
+item: Kohde
+items: Kohteet
 upload_file: Lähetä tiedosto
 upload_file_indeterminate: Ladataan Tiedostoa...
 upload_file_success: Tiedosto ladattu
@@ -509,6 +531,21 @@ toggle: Vaihda
 icon_on: Päällä-kuvake
 icon_off: Pois-kuvake
 label: Tunniste
+image_url: Kuvan URL
+alt_text: Vaihtoehtoinen teksti
+media: Media
+width: Leveys
+height: Korkeus
+source: Lähde
+url_placeholder: Syötä URL...
+display_text: Näyttöteksti
+display_text_placeholder: Syötä näyttöteksti...
+tooltip: Työkaluvihje
+tooltip_placeholder: Syötä työkaluvihje...
+unlimited: Rajoittamaton
+open_link_in: Avaa linkki
+new_tab: Uusi välilehti
+current_tab: Nykyinen välilehti
 wysiwyg_options:
   aligncenter: Tasaa keskelle
   alignjustify: Tasaa tasapalstaksi
@@ -528,10 +565,10 @@ wysiwyg_options:
   bullist: Merkitty lista
   numlist: Numeroitu luettelo
   hr: Vaakaviivain
-  link: Linkki
+  link: Lisää/Muokkaa Linkki
   unlink: Poista linkki
-  media: Lisää media
-  image: Lisää kuva
+  media: Lisää/Muokkaa Mediaa
+  image: Lisää/Muokkaa kuva
   copy: Kopioi
   cut: Leikkaa
   paste: Liitä
@@ -553,7 +590,7 @@ wysiwyg_options:
   selectall: Valitse kaikki
   table: Taulukko
   visualaid: Näytä näkymättömät elementit
-  code: Näytä lähde
+  source_code: Muokkaa lähdekoodia
   fullscreen: Koko näyttö
   directionality: Suuntaus
 dropdown: Pudotusvalikko
@@ -566,6 +603,8 @@ adding_user: Lisätään käyttäjää
 unknown_user: Tuntematon käyttäjä
 creating_in: 'Luodaan kohdetta kokoelmassa {collection}'
 editing_in: 'Muokataan kohdetta: {collection}'
+creating_unit: 'Luodaan {unit}'
+editing_unit: 'Muokataan {unit}'
 editing_in_batch: 'Muokataan {count} kohdetta erässä'
 no_options_available: Ei valintoja saatavilla
 settings_data_model: Tietorakenne
@@ -574,9 +613,11 @@ settings_project: Projektin asetukset
 settings_webhooks: Webhookit
 settings_presets: Esiasetukset ja kirjanmerkit
 scope: Laajuus
+select: Valitse...
 layout: Asettelu
+tree_view: Puunäkymä
 changes_are_permanent: Muutokset ovat pysyviä
-preset_name_placeholder: Kirjanmerkin nimi...
+preset_name_placeholder: Toimii oletuksena kun tyhjä...
 preset_search_placeholder: Hakulauseke...
 editing_preset: Muokataan esiasetusta
 layout_preview: Asettelun esikatselu
@@ -646,12 +687,14 @@ fields:
     display_template: Esitysmalli
     hidden: Piilotettu
     singleton: Singleton
-    translations: Kokoelmien nimien käännökset
+    translations: Kokoelman nimeämisten käännökset
     archive_app_filter: Arkistoi sovelluksen suodatin
     archive_value: Arkistoi arvo
     unarchive_value: Palauta arkistoitu arvo
     sort_field: Lajittelukenttä
+    accountability: Tapahtumien ja versioiden seuranta
   directus_files:
+    $thumbnail: Pikkukuva
     title: Otsikko
     description: Kuvaus
     tags: Tunnisteet
@@ -711,7 +754,7 @@ fields:
     note: Muistiinpano
     hidden: Piilotettu
     singleton: Singleton
-    translation: Kentän Nimi Käännökset
+    translation: Kentän nimen käännökset
     display_template: Pohja
   directus_roles:
     name: Roolin nimi
@@ -724,6 +767,11 @@ fields:
     users: Käyttäjät roolissa
     module_list: Moduulien navigointi
     collection_list: Kokoelman navigointi
+field_options:
+  directus_collections:
+    track_activity_revisions: Seuraa tapahtumia ja versioita
+    only_track_activity: Seuraa vain tapahtumia
+    do_not_track_anything: Älä seuraa mitään
 no_fields_in_collection: 'Kokoelmassa "{collection}" ei ole vielä kenttiä'
 do_nothing: Älä tee mitään
 generate_and_save_uuid: Luo ja tallenna UUID
@@ -926,7 +974,7 @@ interfaces:
     repeater: Toistaja
     description: Luo useita saman rakenteen merkintöjä
     edit_fields: Muokkaa kenttiä
-    add_label: '"Lisää Uusi Rivi" -tunniste'
+    add_label: '"Luo uusi" tunniste'
     field_name_placeholder: Syötä kentän nimi...
     field_note_placeholder: Syötä kentän muistiinpano...
   slider:
@@ -957,8 +1005,8 @@ interfaces:
     trim_label: Leikkaa tyhjät merkit alusta ja lopusta
     mask: Maskeerattu
     mask_label: Piilota todellinen arvo
-    nullable: Nullable
-    nullable_label: Tallenna tyhjä arvo NULL:nä
+    clear: Tyhjennetty arvo
+    clear_label: Tallenna tyhjänä merkkijonona
   textarea:
     textarea: Tekstialue
     description: Syötä monirivinen tavallinen teksti
@@ -970,6 +1018,9 @@ interfaces:
   translations:
     display_template: Esitysmalli
     no_collection: Ei kokoelmaa
+  tree-view:
+    description: Puunäkymä sisäkkäisille rekursiivisille yksi-monille (O2M) -kohteille
+    recursive_only: Puunäkymäliittymä toimii vain rekursiivisille suhteille.
   user:
     user: Käyttäjänimi
     description: Valitse olemassaoleva directus-käyttäjä

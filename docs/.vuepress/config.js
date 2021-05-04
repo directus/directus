@@ -202,6 +202,14 @@ module.exports = {
 				children: [
 					{
 						type: 'page',
+						path: '/guides/migrating-from-v8',
+						title: 'Migrating from v8',
+					},
+					{
+						type: 'divider',
+					},
+					{
+						type: 'page',
 						path: '/guides/api-config',
 						title: 'API Config',
 					},
@@ -332,7 +340,7 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						path: '/reference/sdk-js',
+						path: '/reference/sdk',
 						title: 'JavaScript SDK',
 					},
 					{
@@ -673,114 +681,13 @@ module.exports = {
 					},
 					{
 						type: 'page',
-						title: 'Global Query Parameters',
+						title: 'Query Parameters',
 						path: '/reference/api/query',
 					},
 					{
-						type: 'group',
-						title: 'REST API',
-						children: [
-							{
-								type: 'page',
-								path: '/reference/api/rest/introduction',
-								title: 'Introduction',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/activity',
-								title: 'Activity',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/authentication',
-								title: 'Authentication',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/collections',
-								title: 'Collections',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/extensions',
-								title: 'Extensions',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/fields',
-								title: 'Fields',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/files',
-								title: 'Files',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/folders',
-								title: 'Folders',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/items',
-								title: 'Items',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/permissions',
-								title: 'Permissions',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/presets',
-								title: 'Presets',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/relations',
-								title: 'Relations',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/revisions',
-								title: 'Revisions',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/roles',
-								title: 'Roles',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/server',
-								title: 'Server',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/settings',
-								title: 'Settings',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/users',
-								title: 'Users',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/utilities',
-								title: 'Utilities',
-							},
-							{
-								type: 'page',
-								path: '/reference/api/rest/webhooks',
-								title: 'Webhooks',
-							},
-						],
-					},
-					{
 						type: 'page',
-						path: '/reference/api/graphql',
-						title: 'GraphQL API',
+						title: 'Data Access',
+						path: '/reference/api/items',
 					},
 					{
 						type: 'page',
@@ -788,9 +695,95 @@ module.exports = {
 						title: 'Assets',
 					},
 					{
-						type: 'page',
-						path: '/reference/api/health',
-						title: 'Health Check',
+						type: 'group',
+						title: 'System',
+						children: [
+							{
+								type: 'page',
+								path: '/reference/api/system/activity',
+								title: 'Activity',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/authentication',
+								title: 'Authentication',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/collections',
+								title: 'Collections',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/extensions',
+								title: 'Extensions',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/fields',
+								title: 'Fields',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/files',
+								title: 'Files',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/folders',
+								title: 'Folders',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/permissions',
+								title: 'Permissions',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/presets',
+								title: 'Presets',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/relations',
+								title: 'Relations',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/revisions',
+								title: 'Revisions',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/roles',
+								title: 'Roles',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/server',
+								title: 'Server',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/settings',
+								title: 'Settings',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/users',
+								title: 'Users',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/utilities',
+								title: 'Utilities',
+							},
+							{
+								type: 'page',
+								path: '/reference/api/system/webhooks',
+								title: 'Webhooks',
+							},
+						],
 					},
 				],
 			},

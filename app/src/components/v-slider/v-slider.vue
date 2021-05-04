@@ -34,7 +34,6 @@
 
 <script lang="ts">
 import { defineComponent, computed } from '@vue/composition-api';
-import { ChangeEvent } from 'react';
 
 export default defineComponent({
 	props: {
@@ -76,7 +75,7 @@ export default defineComponent({
 			if (props.value === null) return { '--_v-slider-percentage': 50 };
 
 			let percentage = ((props.value - props.min) / (props.max - props.min)) * 100;
-			if (percentage === NaN) percentage = 0;
+			if (isNaN(percentage)) percentage = 0;
 			return { '--_v-slider-percentage': percentage };
 		});
 
@@ -86,7 +85,7 @@ export default defineComponent({
 			onInput,
 		};
 
-		function onChange(event: ChangeEvent) {
+		function onChange(event: InputEvent) {
 			const target = event.target as HTMLInputElement;
 			emit('change', Number(target.value));
 		}
@@ -205,8 +204,8 @@ body {
 			left: 0;
 			z-index: 2;
 			display: flex;
-			justify-content: space-between;
 			align-items: center;
+			justify-content: space-between;
 			width: 100%;
 			height: 4px;
 			padding: 0 7px;
@@ -236,7 +235,7 @@ body {
 			position: absolute;
 			top: 0px;
 			left: calc(var(--_v-slider-percentage) * 1%);
-			width: max-content;
+			width: auto;
 			padding: 2px 6px;
 			color: var(--foreground-inverted);
 			font-weight: 600;

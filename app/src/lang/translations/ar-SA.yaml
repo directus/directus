@@ -1,50 +1,166 @@
 ---
 edit_field: تعديل الحقل
+item_revision: التعديلات على العنصر
 duplicate_field: حقل مكرر
 half_width: نصف العرض
 full_width: العرض الكامل
 fill_width: العرض الكامل
+field_name_translations: ترجمة اسم الحقل
 enter_password_to_enable_tfa: أدخل كلمة المرور الخاصة بك لتمكين المصادقة الثنائية
 add_field: إضافة حقل
 role_name: إسم الدور
+db_only_click_to_configure: 'فقط قاعدة البيانات: انقر لتعديل الإعدادات '
+show_archived_items: أظهر العناصر المؤرشفة
+edited: تم تعديل القيمة
 required: مطلوب
+required_for_app_access: مطلوب للوصول إلى التطبيق
+requires_value: قيمة مطلوبة
+create_preset: إنشاء إعدادات مسبقة
 create_role: إنشاء دور أو صلاحية
 create_user: إضافة مستخدم
+create_webhook: إنشاء Webhook
+invite_users: دعوة مستخدمين
+email_examples: 'admin@example.com, user@example.com...'
+invite: دعوة
+email_already_invited: البريد الإلكتروني {email} تم دعوته مسبقاً
+emails: البريد الإلكتروني
+connection_excellent: اتصال ممتاز
+connection_good: اتصال جيد
+connection_fair: اتصال متوسط
+connection_poor: اتصال ضعيف
+primary: الأساسي
+rename_folder: إعادة تسمية المجلد
+delete_folder: حذف المجلد
+prefix: بادئة
+suffix: لاحقة
+reset_bookmark: إعادة تعيين المفضلة
+rename_bookmark: إعادة تسمية المفضلة
+update_bookmark: تحديث المفضلة
 delete_bookmark: حذف إشارة مرجعية
+delete_bookmark_copy: >-
+  هل تريد بالتأكيد حذف ال "{bookmark} "؟ لا يمكن التراجع عن هذا الإجراء.
+logoutReason:
+  SIGN_OUT: تسجيل الخروج
+  SESSION_EXPIRED: انتهت الجلسة
+public: عام
+public_description: التحكم بتوفر البيانات على واجهة الربط البرمجي بدون تسجيل دخول.
+not_allowed: غير مسموح
 directus_version: إصدار Directus
+node_version: رقم نسخة الوحدة
+node_uptime: مدة الاستيقاظ الوحدة
+os_type: نوع نظام التشغيل
+os_version: إصدار نظام التشغيل
+os_uptime: مدة استيقاظ نظام التشغيل
+os_totalmem: ذاكرة نظام التشغيل
 archive: أرشفة
+archive_confirm: هل أنت متأكد من أنك تريد أرشفة هذا العنصر؟
+archive_confirm_count: >-
+  لا توجد عناصر محددة | هل أنت متأكد من أنك تريد أرشفة هذا العنصر؟ | هل أنت متأكد من أنك تريد أرشفة هذه العناصر {count}؟
+reset_system_permissions_to: 'إعادة تعيين صلاحيات النظام إلى:'
+reset_system_permissions_copy: سيؤدي هذا الإجراء إلى الكتابة فوق أي صلاحيات مخصصة ربما تكون قد طبقت على مجموعات النظام. هل أنت متأكد؟
+the_following_are_minimum_permissions: فيما يلي الحد الأدنى من الأذونات المطلوبة عند تمكين "الوصول إلى التطبيق". يمكنك تمديد الصلاحيات إلى ما بعد هذا، ولكن ليس أدناه.
+app_access_minimum: الحد الأدنى للوصول إلى التطبيق
+recommended_defaults: الإعدادات الافتراضية الافضل
 unarchive: إزالة من الأرشيف
 unarchive_confirm: هل أنت متأكد من أنك تريد إلغاء أرشفة هذا العنصر؟
+nested_files_folders_will_be_moved: سيتم نقل الملفات والمجلدات الداخلية إلى درجة إلى الأعلى.
+unknown_validation_errors: 'حدثت أخطاء في التحقق من صحة الحقول المخفية التالية:'
 validationError:
+  eq: القيمة يجب أن تكون {valid}
+  neq: لا يمكن أن تكون القيمة {invalid}
+  in: يجب أن تكون القيمة واحدة من {valid}
+  nin: لا يمكن أن تكون القيمة واحدة من {invalid}
+  contains: يجب أن تحتوي القيمة على {substring}
+  ncontains: يجب أن لا تحتوي القيمة على {substring}
+  gt: يجب أن تكون القيمة أكبر من {valid}
+  gte: يجب أن تكون القيمة أكبر من أو تساوي {valid}
+  lt: يجب أن تكون القيمة أقل من {valid}
   empty: يجب أن تكون القيمة فارغة
   nempty: لا يمكن أن تكون القيمة فارغة
+field_file: ملف واحد
+field_files: عدة ملفات
+field_translations: الترجمة
 delete_field: حذف الحقل
 language: لغة
 camera: الكاميرا
 create_field: إنشاء حقل
 hidden_field: حقل مخفي
 hidden_on_detail: مخفي في التفاصيل
+key: مفتاح
+bigInteger: عدد صحيح كبير
+boolean: نعم/لا
 date: التاريخ
 decimal: عشري
+float: عشري
+integer: رقم صحيح
+json: JSON
+string: نص
 text: نص
+time: الوقت
+timestamp: الطابع الزمني
+uuid: UUID
+not_available_for_type: غير متوفّر لنوع الملفات هذا
 create_translations: إنشاء ترجمات
 auto_generate: إنشاء تلقائي
+this_will_auto_setup_fields_relations: سيؤدي هذا تلقائياً إلى إعداد جميع الحقول والعلاقات المطلوبة.
+click_here: اضغط هنا
+to_manually_setup_translations: لإعداد الترجمات يدوياً.
+click_to_manage_translated_fields: >-
+  لا يوجد حقول لترجمتها بعد. أضغط هنا لإنشائها | لا يوجد حقول مترجمة. أضغط هنا لإدارتها. | هناك {count} حقول مترجمة. أضغط هنا لإدارتها.
+fields_group: مجموعة الحقول
+new_data_alert: 'سيتم إنشاء ما يلي ضمن نموذج البيانات الخاص بك:'
+new_field: 'حقل جديد'
+new_collection: 'مجموعة جديدة'
+add_m2o_to_collection: 'إضافة كثيرين إلى واحد ل "{collection}"'
+add_o2m_to_collection: 'إضافة واحد إلى كثيرين ل "{collection}"'
+add_m2m_to_collection: 'إضافة كثيرين إلى كثيرين ل "{collection}"'
+choose_a_type: اختر نوع...
+determined_by_relationship: يتم تحديده بالعلاقات
 add_note: أضف ملاحظة مفيدة للمستخدمين...
 default_value: القيمة الافتراضية
+standard_field: حقل قياسي
+single_file: ملف واحد
+multiple_files: عدة ملفات
+m2o_relationship: علاقة كثير لواحد
+o2m_relationship: علاقة واحد لكثير
+m2m_relationship: علاقة كثير لكثير
+m2a_relationship: علاقة كثيرون لأية علاقة
+invalid_item: عنصر غير صالح
 next: التالي
+field_name: إسم الحقل
+translations: الترجمة
 note: ملحوظة
+enter_a_value: أدخل قيمة...
+enter_a_placeholder: أدخل قيمة مؤقته...
 length: الطول
+precision_scale: الدقة والقياس
 readonly: يقرأ فقط
 unique: فريد
+updated_on: تم التحديث في
+updated_by: تم التحديث بواسطة
 primary_key: المفتاح الرئيسي
+foreign_key: مفتاح خارجي
+finish_setup: إنهاء التثبيت
+dismiss: تجاهل
+raw_value: قيمة خام
+edit_raw_value: تعديل القيمة الخام
+enter_raw_value: أدخل قيمة سطر...
 clear_value: إزالة القيمة
 reset_to_default: إعادة تعيين إلى الافتراضي
 undo_changes: التراجع عن التغييرات
 notifications: إشعارات
+show_all_activity: كل النشاطات
 page_not_found: الصفحة غير موجودة
 page_not_found_body: الصفحة التي تبحث عنها غير موجودة.
+confirm_revert: تأكيد الرجوع
+confirm_revert_body: سيؤدي هذا إلى إعادة العنصر إلى الحالة المحددة.
 display: عرض
+settings_update_success: تم تحديث الإعدادات
 title: العنوان
+revision_delta_created: تم الإنشاء
+revision_delta_created_externally: تم إنشاؤها خارجيا
+revision_delta_updated: 'تم تحديث حقل واحد | تحديث حقول {count}'
+revision_delta_deleted: حذف
 leave_comment: اترك تعليقا...
 this_collection: هذه المجموعة
 related_collection: المجموعات ذات الصلة
@@ -67,21 +183,47 @@ import: إستيراد
 file_details: تفاصيل الملف
 dimensions: الأبعاد
 size: حجم
+created: تم الإنشاء
 checksum: بصمة الملف
 owner: المالك
 download: تنزيل
 open: فتح
 open_in_new_window: فتح في نافذة جديدة
+choose_from_library: اختر ملف من المكتبة
+import_from_url: استيراد ملف من رابط
+replace_from_device: استبدال الملف من الجهاز
+replace_from_library: استبدال الملف من المكتبة
+replace_from_url: استبدال الملف من رابط
 no_file_selected: لم يتم تحديد ملف
 download_file: تحميل الملف
+collection_key: مفتاح المجموعة
 name: الاسم
+primary_key_field: '‮حقل المفتاح الرئيسي'
 type: النوع
+creating_new_collection: إنشاء مجموعة جديدة
 created_by: تم الإنشاء بواسطة
 created_on: تم الإنشاء بتاريخ
+creating_collection_info: اسم المجموعة وإعداد حقل "المفتاح" الفريد من نوعه...
+creating_collection_system: تفعيل وإعادة تسمية أي من هذه الحقول الاختيارية.
+auto_increment_integer: عدد صحيح متسلسل تلقائي
+generated_uuid: مولد UUID
+manual_string: نص مدخل يدوياً
+save_and_create_new: حفظ وإنشاء جديد
 save_and_stay: حفظ و إستمرار
 save_as_copy: حفظ كنسخة إضافية
+add_existing: إضافة من القائمة
 comments: تعليقات
+no_comments: لا توجد تعليقات بعد
+click_to_expand: أضغط للمزيد
+select_item: تحديد عنصر
+no_items: لا يوجد عناصر
+search_items: البحث عن عناصر...
+disabled: مُعطل
+information: معلومات
+report_bug: تبليغ عن خطأ
 request_feature: طلب ميزة
+interface_not_found: 'لم يتم العثور على واجهة "{interface}".'
+reset_interface: إعادة تعيين الواجهة
 item_count: 'لا توجد عناصر | عنصر واحد | {count} العناصر'
 create_collection: إنشاء مجموعة
 relationship_not_setup: لم يتم إعداد العلاقة بشكل صحيح
@@ -133,6 +275,8 @@ on_update: عند التحديث
 read: قراءة
 update: تحديث
 select_fields: حدد حقول
+width: العرض
+height: الارتفاع
 wysiwyg_options:
   codeblock: نص برمجي
   remove: احذف
@@ -213,6 +357,7 @@ fields:
   directus_fields:
     note: ملحوظة
     hidden: مخفي
+    translation: ترجمة اسم الحقل
     display_template: قالب
   directus_roles:
     name: إسم الدور
@@ -271,6 +416,8 @@ translation: الترجمة
 value: قيمة
 view_project: عرض المشروع
 interfaces:
+  button-links:
+    primary: الأساسي
   checkboxes:
     checkboxes: مربع الاختيار
     allow_other: السماح لآخرين
@@ -295,6 +442,7 @@ interfaces:
   dropdown:
     allow_other: السماح لآخرين
     choices_name_placeholder: أدخل اسم...
+    choices_value_placeholder: أدخل قيمة...
   file:
     file: ملف
   files:
@@ -348,6 +496,8 @@ interfaces:
     wysiwyg: ما تراه هو ما تحصل عليه
     toolbar: شريط الأدوات
 displays:
+  boolean:
+    boolean: نعم/لا
   collection:
     collection: المجموعة
   color:
@@ -367,6 +517,7 @@ displays:
     circle: دائرة
     circle_label: عرض كدائرة
   labels:
+    choices_value_placeholder: أدخل قيمة...
     choices_text_placeholder: أدخل نص...
   rating:
     rating: التقييم

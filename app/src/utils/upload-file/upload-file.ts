@@ -1,8 +1,7 @@
 import api from '@/api';
+import emitter, { Events } from '@/events';
 import i18n from '@/lang';
 import { notify } from '@/utils/notify';
-
-import emitter, { Events } from '@/events';
 import { unexpectedError } from '../unexpected-error';
 
 export default async function uploadFile(
@@ -13,7 +12,7 @@ export default async function uploadFile(
 		preset?: Record<string, any>;
 		fileId?: string;
 	}
-) {
+): Promise<any> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const formData = new FormData();
 

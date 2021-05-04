@@ -5,6 +5,7 @@
 		class="new-collection"
 		persistent
 		:sidebar-label="currentTabInfo && currentTabInfo.text"
+		@cancel="close"
 	>
 		<template #sidebar v-if="!loading">
 			<tabs :current-tab.sync="currentTab" :tabs="tabs" />
@@ -165,7 +166,11 @@ export default defineComponent({
 			);
 		});
 
-		return { permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo, appMinimal };
+		return { permission, role, loading, modalTitle, tabs, currentTab, currentTabInfo, appMinimal, close };
+
+		function close() {
+			router.push(`/settings/roles/${props.roleKey || 'public'}`);
+		}
 
 		async function load() {
 			loading.value = true;

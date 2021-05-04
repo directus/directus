@@ -1,6 +1,5 @@
 <template>
 	<div>
-
 		<div class="form">
 			<div class="field">
 				<div class="label type-label">
@@ -57,7 +56,7 @@
 				</div>
 			</template>
 
-			<template v-if="['uuid', 'date', 'time', 'datetime', 'timestamp'].includes(fieldData.type) && type !== 'file'">
+			<template v-if="['uuid', 'date', 'time', 'dateTime', 'timestamp'].includes(fieldData.type) && type !== 'file'">
 				<div class="field half-left">
 					<div class="label type-label">{{ $t('on_create') }}</div>
 					<v-select :items="onCreateOptions" v-model="onCreateValue" />
@@ -103,7 +102,7 @@
 					placeholder="NULL"
 				/>
 				<v-input
-					v-else-if="['timestamp', 'datetime', 'date', 'time'].includes(fieldData.type)"
+					v-else-if="['timestamp', 'dateTime', 'date', 'time'].includes(fieldData.type)"
 					class="monospace"
 					v-model="defaultValue"
 					placeholder="NULL"
@@ -131,11 +130,21 @@
 			</div>
 
 			<div class="field half-left" v-if="fieldData.schema">
-				<div class="label type-label">{{ $t('required') }}</div>
+				<div class="label type-label">{{ $t('nullable') }}</div>
 				<v-checkbox
-					:input-value="fieldData.schema.is_nullable === false"
-					@change="fieldData.schema.is_nullable = !$event"
-					:label="$t('requires_value')"
+					:input-value="fieldData.schema.is_nullable"
+					@change="fieldData.schema.is_nullable = $event"
+					:label="$t('allow_null_value')"
+					block
+				/>
+			</div>
+
+			<div class="field half-right" v-if="fieldData.schema">
+				<div class="label type-label">{{ $t('unique') }}</div>
+				<v-checkbox
+					:input-value="fieldData.schema.is_unique"
+					@change="fieldData.schema.is_unique = $event"
+					:label="$t('value_unique')"
 					block
 				/>
 			</div>
@@ -226,7 +235,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
+	setup(props) {
 		const typesWithLabels = computed(() => {
 			return fieldTypes;
 		});
@@ -290,7 +299,7 @@ export default defineComponent({
 							value: 'role-created',
 						},
 					];
-				} else if (['date', 'time', 'datetime', 'timestamp'].includes(state.fieldData.type)) {
+				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
 					return [
 						{
 							text: i18n.t('do_nothing'),
@@ -351,7 +360,7 @@ export default defineComponent({
 							value: 'role-updated',
 						},
 					];
-				} else if (['date', 'time', 'datetime', 'timestamp'].includes(state.fieldData.type)) {
+				} else if (['date', 'time', 'dateTime', 'timestamp'].includes(state.fieldData.type)) {
 					return [
 						{
 							text: i18n.t('do_nothing'),

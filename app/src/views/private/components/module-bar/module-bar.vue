@@ -34,6 +34,7 @@ import ModuleBarLogo from '../module-bar-logo/';
 import ModuleBarAvatar from '../module-bar-avatar/';
 import { useUserStore } from '@/stores/';
 import { orderBy } from 'lodash';
+import { ModuleConfig } from '@/modules/types';
 
 export default defineComponent({
 	components: {
@@ -42,19 +43,19 @@ export default defineComponent({
 	},
 	setup() {
 		const userStore = useUserStore();
-		const modules = getModules();
+		const { modules } = getModules();
 
 		const _modules = computed(() => {
 			const customModuleListing = userStore.state.currentUser?.role.module_list;
 
 			const registeredModules = orderBy(
 				modules.value
-					.map((module) => ({
+					.map((module: ModuleConfig) => ({
 						...module,
 						href: module.link || null,
 						to: module.link === undefined ? `/${module.id}/` : null,
 					}))
-					.filter((module) => {
+					.filter((module: ModuleConfig) => {
 						if (module.hidden !== undefined) {
 							if ((module.hidden as boolean) === true || (module.hidden as Ref<boolean>).value === true) {
 								return false;
@@ -86,7 +87,7 @@ export default defineComponent({
 			}
 			return registeredModules;
 		});
-		return { _modules };
+		return { _modules, modules };
 	},
 });
 </script>

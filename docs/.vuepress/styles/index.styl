@@ -107,6 +107,10 @@ pre
   pre,
   pre[class*="language-"]
     margin-top 0
+  div[class*="language"] + p
+    text-align right
+    margin-top -11px
+    font-size 14px
 
 @media (min-width: 1000px)
   .two-up
@@ -141,3 +145,9 @@ pre
   .navbar .home-link
     width auto
     overflow auto
+
+
+.right
+  h5 + div[class^="language-"] {
+    margin-top -16px
+  }

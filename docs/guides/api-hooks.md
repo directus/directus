@@ -72,33 +72,36 @@ module.exports = function registerHook({ exceptions }) {
 
 ### Event Format Options
 
-| Scope                | Actions                           | Before   |
-| -------------------- | --------------------------------- | -------- |
-| `server`             | `start` and `stop`                | Optional |
-| `init`               |                                   | Optional |
-| `routes.init`        | `before` and `after`              | No       |
-| `routes.custom.init` | `before` and `after`              | No       |
-| `middlewares.init`   | `before` and `after`              | No       |
-| `request`            | `not_found`                       | No       |
-| `response`           |                                   | No†      |
-| `error`              |                                   | No       |
-| `auth`               | `login`, `logout`† and `refresh`† | Optional |
-| `items`              | `create`, `update` and `delete`   | Optional |
-| `activity`           | `create`, `update` and `delete`   | Optional |
-| `collections`        | `create`, `update` and `delete`   | Optional |
-| `fields`             | `create`, `update` and `delete`   | Optional |
-| `files`              | `create`, `update` and `delete`   | Optional |
-| `folders`            | `create`, `update` and `delete`   | Optional |
-| `permissions`        | `create`, `update` and `delete`   | Optional |
-| `presets`            | `create`, `update` and `delete`   | Optional |
-| `relations`          | `create`, `update` and `delete`   | Optional |
-| `revisions`          | `create`, `update` and `delete`   | Optional |
-| `roles`              | `create`, `update` and `delete`   | Optional |
-| `settings`           | `create`, `update` and `delete`   | Optional |
-| `users`              | `create`, `update` and `delete`   | Optional |
-| `webhooks`           | `create`, `update` and `delete`   | Optional |
+| Scope                           | Actions                                                     | Before           |
+| ------------------------------- | ----------------------------------------------------------- | ---------------- |
+| `server`                        | `start` and `stop`                                          | Optional         |
+| `init`                          |                                                             | Optional         |
+| `routes.init`                   | `before` and `after`                                        | No               |
+| `routes.custom.init`            | `before` and `after`                                        | No               |
+| `middlewares.init`              | `before` and `after`                                        | No               |
+| `request`                       | `not_found`                                                 | No               |
+| `response`                      |                                                             | No<sup>[1]</sup> |
+| `error`                         |                                                             | No               |
+| `auth`                          | `login`, `logout`<sup>[1]</sup> and `refresh`<sup>[1]</sup> | Optional         |
+| `oauth.:provider`<sup>[2]</sup> | `login` and `redirect`                                      | Optional         |
+| `items`                         | `create`, `update` and `delete`                             | Optional         |
+| `activity`                      | `create`, `update` and `delete`                             | Optional         |
+| `collections`                   | `create`, `update` and `delete`                             | Optional         |
+| `fields`                        | `create`, `update` and `delete`                             | Optional         |
+| `files`                         | `upload`<sup>[3]</sup>, `create`, `update` and `delete`     | Optional         |
+| `folders`                       | `create`, `update` and `delete`                             | Optional         |
+| `permissions`                   | `create`, `update` and `delete`                             | Optional         |
+| `presets`                       | `create`, `update` and `delete`                             | Optional         |
+| `relations`                     | `create`, `update` and `delete`                             | Optional         |
+| `revisions`                     | `create`, `update` and `delete`                             | Optional         |
+| `roles`                         | `create`, `update` and `delete`                             | Optional         |
+| `settings`                      | `create`, `update` and `delete`                             | Optional         |
+| `users`                         | `create`, `update` and `delete`                             | Optional         |
+| `webhooks`                      | `create`, `update` and `delete`                             | Optional         |
 
-† Feature Coming Soon
+<sup>1</sup> Feature Coming Soon\
+<sup>2</sup> oAuth provider name can replaced with wildcard for any oauth providers `oauth.*.login`\
+<sup>3</sup> Doesn't support `.before` modifier
 
 ## 3. Register your Hook
 
@@ -126,6 +129,7 @@ The `registerHook` function receives a context parameter with the following prop
 - `services` — All API internal services
 - `exceptions` — API exception objects that can be used for throwing "proper" errors
 - `database` — Knex instance that is connected to the current database
+- `getSchema` — Async function that reads the full available schema for use in services
 - `env` — Parsed environment variables
 
 ### Event Handler Function
@@ -140,10 +144,11 @@ properties:
 - `action` — Action that is performed
 - `payload` — Payload of the request
 - `schema` - The current API schema in use
+- `database` - Current database transaction
 
 #### Auth
 
-The `auth` hooks have the following context properties:
+The `auth` and `oauth` hooks have the following context properties:
 
 - `event` — Full event string
 - `accountability` — Information about the current user
@@ -151,7 +156,9 @@ The `auth` hooks have the following context properties:
 - `payload` — Payload of the request
 - `schema` - The current API schema in use
 - `status` - One of `pending`, `success`, `fail`
-- `user` - ID of the user that tried logging in/has logged in
+- `user` <sup>†</sup> - ID of the user that tried logging in/has logged in
+
+<sup>†</sup> Not available in `oauth`
 
 ## 5. Restart the API
 
@@ -167,6 +174,7 @@ npx directus start
 // extensions/hooks/sync-with-external/index.js
 
 module.exports = function registerHook({ services, exceptions }) {
+	const { MailService } = services;
 	const { ServiceUnavailableException, ForbiddenException } = exceptions;
 
 	return {
@@ -175,11 +183,22 @@ module.exports = function registerHook({ services, exceptions }) {
 			if (accountability.admin !== true) throw new ForbiddenException();
 		},
 		// Sync with external recipes service, cancel creation on failure
-		'items.create.before': async function (input, { collection }) {
+		'items.create.before': async function (input, { collection, schema }) {
 			if (collection !== 'recipes') return input;
+
+			const mailService = new MailService({ schema });
 
 			try {
 				await axios.post('https://example.com/recipes', input);
+				await mailService.send({
+					to: 'person@example.com',
+					template: {
+						name: 'item-created',
+						data: {
+							collection: collection,
+						},
+					},
+				});
 			} catch (error) {
 				throw new ServiceUnavailableException(error);
 			}

@@ -1,6 +1,5 @@
 <template>
 	<div>
-
 		<v-fancy-select class="select" :items="selectItems" v-model="fieldData.meta.display" />
 
 		<v-notice class="not-found" type="danger" v-if="fieldData.meta.display && !selectedDisplay">
@@ -43,6 +42,8 @@ import { FancySelectItem } from '@/components/v-fancy-select/types';
 import { clone } from 'lodash';
 
 import { state, availableDisplays } from '../store';
+import { InterfaceConfig } from '@/interfaces/types';
+import { DisplayConfig } from '@/displays/types';
 
 export default defineComponent({
 	props: {
@@ -55,12 +56,12 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
-		const displays = getDisplays();
-		const interfaces = getInterfaces();
+	setup() {
+		const { displays } = getDisplays();
+		const { interfaces } = getInterfaces();
 
 		const selectedInterface = computed(() => {
-			return interfaces.value.find((inter) => inter.id === state.fieldData.meta.interface);
+			return interfaces.value.find((inter: InterfaceConfig) => inter.id === state.fieldData.meta.interface);
 		});
 
 		const selectItems = computed(() => {
@@ -86,9 +87,9 @@ export default defineComponent({
 
 			const recommendedItems: (FancySelectItem | { divider: boolean } | undefined)[] = [];
 
-			const recommendedList = recommended.map((key) => displayItems.find((item) => item.value === key));
+			const recommendedList = recommended.map((key: any) => displayItems.find((item) => item.value === key));
 			if (recommendedList !== undefined) {
-				recommendedItems.push(...recommendedList.filter((i) => i));
+				recommendedItems.push(...recommendedList.filter((i: any) => i));
 			}
 
 			if (displayItems.length >= 5 && recommended.length > 0) {
@@ -104,7 +105,7 @@ export default defineComponent({
 		});
 
 		const selectedDisplay = computed(() => {
-			return displays.value.find((display) => display.id === state.fieldData.meta.display);
+			return displays.value.find((display: DisplayConfig) => display.id === state.fieldData.meta.display);
 		});
 
 		const { fieldData, relations, newCollections, newFields } = toRefs(state);

@@ -50,22 +50,31 @@ for more info on what can go into this object.
 
 ```vue
 <template>
-	<div>My Custom Interface</div>
+	<input :value="value" @input="handleChange($event.target.value)" />
 </template>
 
 <script>
-export default {};
+export default {
+	props: {
+		value: String,
+	},
+	methods: {
+		handleChange(value) {
+			this.$emit('input', value);
+		},
+	},
+};
 </script>
 ```
 
 #### Available Props
 
-- `value` — The value of the parent field.
-- `width` — The layout width of the parent field. Either `half`, `half-left`, `half-right`, `full`, or `fill`.
-- `type` — The type of the parent field.
-- `collection` — The collection name of the parent field.
-- `field` — The key of the parent field.
-- `primary-key` — The current item's primary key.
+- `value` — The value of the field.
+- `width` — The layout width of the field. Either `half`, `half-right`, `full`, or `fill`.
+- `type` — The type of the field.
+- `collection` — The collection name of the field.
+- `field` — The key of the field.
+- `primaryKey` — The current item's primary key.
 
 ## 2. Install Dependencies and Configure the Buildchain
 
@@ -79,15 +88,15 @@ To be read by the Admin App, your custom interface's Vue component must first be
 We recommend bundling your code using Rollup. To install this and the other development dependencies, run this command:
 
 ```bash
-npm i -D rollup rollup-plugin-commonjs rollup-plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5.0.0 @vue/compiler-sfc rollup-plugin-vue@next
+npm i -D rollup @rollup/plugin-commonjs @rollup/plugin-node-resolve rollup-plugin-terser rollup-plugin-vue@5 vue-template-compiler
 ```
 
 You can then use the following Rollup configuration within `rollup.config.js`:
 
 ```js
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 import { terser } from 'rollup-plugin-terser';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
 import vue from 'rollup-plugin-vue';
 
 export default {
@@ -96,9 +105,16 @@ export default {
 		format: 'es',
 		file: 'dist/index.js',
 	},
-	plugins: [terser(), resolve(), commonjs(), vue()],
+	plugins: [vue(), nodeResolve(), commonjs(), terser()],
 };
 ```
+
+::: tip Building multiple extensions
+
+You can export an array of build configurations, so you can bundle (or even watch) multiple extensions at the same time.
+See the [Rollup configuration file documentation](https://rollupjs.org/guide/en/#configuration-files) for more info.
+
+:::
 
 ## 3. Develop your Custom Interface
 
@@ -112,5 +128,6 @@ To build the interface for use within Directus, run:
 npx rollup -c
 ```
 
-Finally, move the output from your interface's `dist` folder into your project's `/extensions/interfaces` folder. Keep
-in mind that the extensions directory is configurable within your env file, and may be located elsewhere.
+Finally, move the output from your interface's `dist` folder into your project's
+`/extensions/interfaces/my-custom-interface` folder. Keep in mind that the extensions directory is configurable within
+your env file, and may be located elsewhere.

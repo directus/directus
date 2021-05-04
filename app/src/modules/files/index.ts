@@ -1,11 +1,11 @@
 import { defineModule } from '@/modules/define';
+import AddNew from './routes/add-new.vue';
 import Collection from './routes/collection.vue';
 import Item from './routes/item.vue';
-import AddNew from './routes/add-new.vue';
 
-export default defineModule(({ i18n }) => ({
+export default defineModule({
 	id: 'files',
-	name: 'file_library',
+	name: '$t:file_library',
 	icon: 'folder',
 	routes: [
 		{
@@ -63,4 +63,4 @@ export default defineModule(({ i18n }) => ({
 		);
 		return !!permission;
 	},
-}));
+});

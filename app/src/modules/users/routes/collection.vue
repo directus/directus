@@ -112,7 +112,7 @@
 				<v-info :title="$tc('user_count', 0)" icon="people_alt" center>
 					{{ $t('no_users_copy') }}
 
-					<template #append>
+					<template v-if="canInviteUsers" #append>
 						<v-button :to="{ path: '/users/+', query: queryFilters }">{{ $t('create_user') }}</v-button>
 					</template>
 				</v-info>
@@ -151,6 +151,7 @@ import { useUserStore, usePermissionsStore } from '@/stores';
 import marked from 'marked';
 import useNavigation from '../composables/use-navigation';
 import DrawerBatch from '@/views/private/components/drawer-batch';
+import { Role } from '@/types';
 
 type Item = {
 	[field: string]: any;
@@ -303,7 +304,7 @@ export default defineComponent({
 
 			const title = computed(() => {
 				if (!props.queryFilters?.role) return i18n.t('user_directory');
-				return roles.value?.find((role) => role.id === props.queryFilters.role)?.name;
+				return roles.value?.find((role: Role) => role.id === props.queryFilters.role)?.name;
 			});
 
 			return { breadcrumb, title };

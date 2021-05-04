@@ -3,14 +3,13 @@
  * See example.env for all possible keys
  */
 
-import fs from 'fs';
-import path from 'path';
-import { requireYAML } from './utils/require-yaml';
-
 import dotenv from 'dotenv';
-import { clone, toString, toNumber } from 'lodash';
-import { toArray } from './utils/to-array';
+import fs from 'fs';
+import { clone, toNumber, toString } from 'lodash';
+import path from 'path';
 import logger from './logger';
+import { requireYAML } from './utils/require-yaml';
+import { toArray } from './utils/to-array';
 
 const acceptableEnvTypes = ['string', 'number', 'regex', 'array'];
 
@@ -30,10 +29,14 @@ const defaults: Record<string, any> = {
 	RATE_LIMITER_DURATION: 1,
 	RATE_LIMITER_STORE: 'memory',
 
+	SESSION_STORE: 'memory',
+
 	ACCESS_TOKEN_TTL: '15m',
 	REFRESH_TOKEN_TTL: '7d',
 	REFRESH_TOKEN_COOKIE_SECURE: false,
 	REFRESH_TOKEN_COOKIE_SAME_SITE: 'lax',
+
+	ROOT_REDIRECT: './admin',
 
 	CORS_ENABLED: true,
 	CORS_ORIGIN: true,
@@ -87,7 +90,7 @@ env = processValues(env);
 export default env;
 
 function getEnv() {
-	const configPath = process.env.CONFIG_PATH || defaults.CONFIG_PATH;
+	const configPath = path.resolve(process.env.CONFIG_PATH || defaults.CONFIG_PATH);
 
 	if (fs.existsSync(configPath) === false) return {};
 

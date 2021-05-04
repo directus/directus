@@ -3,7 +3,7 @@ import { SchemaOverview } from '../types/overview';
 import { SchemaInspector } from '../types/schema';
 
 export default class Postgres extends KnexPostgres implements SchemaInspector {
-	async overview() {
+	async overview(): Promise<SchemaOverview> {
 		const [columnsResult, primaryKeysResult] = await Promise.all([
 			// Only select columns from BASE TABLEs to exclude views (Postgres views
 			// cannot have primary keys so they cannot be used)
@@ -64,7 +64,9 @@ export default class Postgres extends KnexPostgres implements SchemaInspector {
 
 			overview[column.table_name].columns[column.column_name] = {
 				...column,
-				default_value: this.parseDefaultValue(column.default_value),
+				default_value: column.default_value?.startsWith('nextval(')
+					? 'AUTO_INCREMENT'
+					: this.parseDefaultValue(column.default_value),
 				is_nullable: column.is_nullable === 'YES',
 			};
 		}

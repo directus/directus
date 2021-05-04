@@ -1,12 +1,15 @@
 # Styles
 
-> **Form Follows Function** is the guiding design principle of Directus. The minimal UI allows the platform to be easily tailored to your brand. [Learn more about the App](/concepts/application/).
+> **Form Follows Function** is the guiding design principle of Directus. The minimal UI allows the platform to be easily
+> tailored to your brand. [Learn more about the App](/concepts/application/).
 
 ## App Themes
 
-The Directus App has been developed with customization and extensibility in mind. Colors and styles referenced within the codebase all use CSS variables, and therefore it is easy to make comprehensive changes to the App styling.
+The Directus App has been developed with customization and extensibility in mind. Colors and styles referenced within
+the codebase all use CSS variables, and therefore it is easy to make comprehensive changes to the App styling.
 
-There are two themes included by default: Light and Dark. You can duplicate these files to create your own themes — with no limit to customization. Below are several code resources for key SCSS files.
+There are two themes included by default: Light and Dark. You can duplicate these files to create your own themes — with
+no limit to customization. Below are several code resources for key SCSS files.
 
 - **Themes** — See the [Light Theme](https://github.com/directus/directus/blob/main/app/src/styles/themes/_light.scss)
   or [Dark Theme](https://github.com/directus/directus/blob/main/app/src/styles/themes/_dark.scss)
@@ -21,7 +24,8 @@ See [Adjusting Project Settings](/guides/projects/#adjusting-project-settings)
 
 ## Custom CSS
 
-You can also override any core CSS directly within the App through Project Settings. This makes it easy to edit the CSS variables listed in the themes above.
+You can also override any core CSS directly within the App through Project Settings. This makes it easy to edit the CSS
+variables listed in the themes above.
 
 1. Navigate to **Settings > Project Settings**
 2. Scroll to the **CSS Overrides** field
@@ -30,17 +34,22 @@ You can also override any core CSS directly within the App through Project Setti
 
 ### Example
 
-Since App styles are inserted/removed whenever a component is rendered, you'll need to be aware of CSS priority. Using `:root` or `body` likely isn't scoped enough, you'll need to define a more specific scope, such as `#app`, or use `!important`.
+Since App styles are inserted/removed whenever a component is rendered, you'll need to be aware of CSS priority. Using
+`:root` or `body` likely isn't scoped enough, you'll need to define a more specific scope, such as `#app`, or use
+`!important`.
 
 ```css
-#app {
-  --family-sans-serif: 'Comic Sans MS';
+body {
+	--family-sans-serif: 'Comic Sans MS';
+	--primary: MediumSlateBlue !important;
 }
 ```
 
 ::: warning Action Styling
 
-The `--primary` variable (and its shades) control call-to-actions and all other elements within the App using the "Directus Blue". While it may be tempting to override this variable with your brand's color, please first review the following warnings:
+The `--primary` variable (and its shades) control call-to-actions and all other elements within the App using the
+"Directus Green". While it may be tempting to override this variable with your brand's color, please first review the
+following warnings:
 
 - Avoid using yellow, orange, or red hues that give a sense of "danger"
 - Avoid low-contrast colors like yellows, grays, etc, that might not be easily visible

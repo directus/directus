@@ -42,13 +42,13 @@
 			:revisions="revisions"
 			:current.sync="modalCurrentRevision"
 			:active.sync="modalActive"
-			@revert="onRevert"
+			@revert="$emit('revert', $event)"
 		/>
 	</sidebar-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from '@vue/composition-api';
+import { defineComponent, ref } from '@vue/composition-api';
 import { Revision, RevisionsByDate } from './types';
 
 import api from '@/api';
@@ -74,7 +74,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
+	setup(props) {
 		const { revisions, revisionsByDate, loading, refresh, revisionsCount, created } = useRevisions(
 			props.collection,
 			props.primaryKey
@@ -91,7 +91,6 @@ export default defineComponent({
 			modalActive,
 			modalCurrentRevision,
 			openModal,
-			onRevert,
 			revisionsCount,
 			created,
 			abbreviateNumber,
@@ -231,11 +230,6 @@ export default defineComponent({
 			async function refresh() {
 				await getRevisions();
 			}
-		}
-
-		function onRevert() {
-			refresh();
-			emit('revert');
 		}
 	},
 });

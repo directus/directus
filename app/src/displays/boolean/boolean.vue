@@ -9,13 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from '@vue/composition-api';
-
-type Choice = {
-	value: string;
-	text: string;
-	color: string | null;
-};
+import { defineComponent, computed } from '@vue/composition-api';
 
 export default defineComponent({
 	props: {
@@ -66,7 +60,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .boolean {
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 
 	.v-icon {

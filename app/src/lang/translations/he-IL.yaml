@@ -10,6 +10,8 @@ activity: פעילות
 duration: משך זמן
 status: סטטוס
 role: תפקיד
+width: רוחב
+height: גובה
 collection: מאגר
 fields:
   directus_activity:

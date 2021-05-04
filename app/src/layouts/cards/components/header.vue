@@ -126,8 +126,8 @@ export default defineComponent({
 	top: var(--layout-offset-top);
 	z-index: 4;
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
+	justify-content: space-between;
 	width: 100%;
 	height: 52px;
 	margin-bottom: 36px;

@@ -44,7 +44,7 @@
 			</span>
 		</div>
 
-		<router-view name="permissionsDetail" :role-key="role" :permission-key="permission" @refresh="refreshPermission" />
+		<router-view name="permissionsDetail" :role-key="role" :permission-key="permission" />
 
 		<v-dialog @toggle="resetActive = false" :active="!!resetActive" @esc="resetActive = false">
 			<v-card>
@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, provide } from '@vue/composition-api';
+import { defineComponent, computed, ref, provide, watch } from '@vue/composition-api';
 import { useCollectionsStore } from '@/stores';
 import PermissionsOverviewHeader from './permissions-overview-header.vue';
 import PermissionsOverviewRow from './permissions-overview-row.vue';
@@ -107,6 +107,8 @@ export default defineComponent({
 		const { resetActive, resetSystemPermissions, resetting, resetError } = useReset();
 
 		fetchPermissions();
+
+		watch(() => props.permission, fetchPermissions, { immediate: true });
 
 		provide('refresh-permissions', fetchPermissions);
 
@@ -191,7 +193,7 @@ export default defineComponent({
 
 				try {
 					if (toBeDeleted.length > 0) {
-						await api.delete(`/permissions/${toBeDeleted.join(',')}`);
+						await api.delete(`/permissions`, { data: toBeDeleted });
 					}
 
 					if (props.role !== null && props.appAccess === true && useRecommended === true) {
@@ -234,7 +236,7 @@ export default defineComponent({
 
 .table {
 	max-width: 792px;
-	background-color: var(--background-page);
+	background-color: var(--background-input);
 	border: var(--border-width) solid var(--border-normal);
 	border-radius: var(--border-radius);
 }

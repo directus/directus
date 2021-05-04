@@ -2,7 +2,9 @@ table: directus_collections
 
 fields:
   - field: collection_divider
-    special: alias
+    special:
+      - alias
+      - no-data
     interface: divider
     options:
       icon: box
@@ -62,7 +64,23 @@ fields:
             interface: system-language
             width: half
         - field: translation
-          name: translation
+          name: Collection Name
+          type: string
+          meta:
+            interface: text-input
+            width: half
+            options:
+              placeholder: Enter a translation...
+        - field: singular
+          name: Singular Unit
+          type: string
+          meta:
+            interface: text-input
+            width: half
+            options:
+              placeholder: Enter a translation...
+        - field: plural
+          name: Plural Unit
           type: string
           meta:
             interface: text-input
@@ -72,7 +90,9 @@ fields:
     width: full
 
   - field: archive_divider
-    special: alias
+    special:
+      - alias
+      - no-data
     interface: divider
     options:
       icon: archive
@@ -111,7 +131,9 @@ fields:
     width: half
 
   - field: sort_divider
-    special: alias
+    special:
+      - alias
+      - no-data
     interface: divider
     options:
       icon: sort
@@ -128,4 +150,26 @@ fields:
         - decimal
         - integer
       allowNone: true
+    width: half
+
+  - field: accountability_divider
+    special:
+      - alias
+      - no-data
+    interface: divider
+    options:
+      icon: admin_panel_settings
+      title: Accountability
+    width: full
+
+  - field: accountability
+    interface: dropdown
+    options:
+      choices:
+        - text: '$t:field_options.directus_collections.track_activity_revisions'
+          value: all
+        - text: '$t:field_options.directus_collections.only_track_activity'
+          value: activity
+        - text: '$t:field_options.directus_collections.do_not_track_anything'
+          value: null
     width: half
