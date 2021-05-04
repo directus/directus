@@ -40,7 +40,7 @@
 	],
 	"gitHead": "71bf628955b5da15ce3070dc09478bc558f243a4",
 	"devDependencies": {
-		"npm-watch": "^0.7.0",
+		"npm-watch": "^0.9.0",
 		"swagger-cli": "^4.0.4",
 		"swagger-ui-watcher": "^2.1.11"
 	},
