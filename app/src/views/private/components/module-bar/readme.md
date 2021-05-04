@@ -9,13 +9,17 @@ The left most sidebar that holds the module navigation.
 ```
 
 ## Props
+
 n/a
 
 ## Slots
+
 n/a
 
 ## Events
+
 n/a
 
 ## CSS Variables
+
 n/a

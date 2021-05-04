@@ -1,10 +1,13 @@
 # Activity
 
-> Directus stores detailed records of all data changes made via the App and API. This gives a comprehensive accountability log of who did what, and when. This also powers the Directus versioning system, which allows storing alternate versions/revisions of items.
+> Directus stores detailed records of all data changes made via the App and API. This gives a comprehensive
+> accountability log of who did what, and when. This also powers the Directus versioning system, which allows storing
+> alternate versions/revisions of items.
 
-The Activity Log tracks all events that have occurred within the project. Activity can be accessed in two ways, via the main
-[Activity Module](/concepts/application/#activity-log), or within the sidebar of individual
-[Item Detail](/concepts/application/#item-detail) pages. The following information is stored for each event's activity item:
+The Activity Log tracks all events that have occurred within the project. Activity can be accessed in two ways, via the
+main [Activity Module](/concepts/application/#activity-log), or within the sidebar of individual
+[Item Detail](/concepts/application/#item-detail) pages. The following information is stored for each event's activity
+item:
 
 ## Activity Fields
 
@@ -26,6 +29,7 @@ this data.
 
 ::: warning External Events
 
-Directus can only track events that pass through the platform's middleware. Changes made directly to the database, or by other external means, are not included.
+Directus can only track events that pass through the platform's middleware. Changes made directly to the database, or by
+other external means, are not included.
 
 :::
