@@ -246,7 +246,7 @@ export class UsersService extends ItemsService {
 				const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
 				const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
 				const acceptURL = inviteURL + '?token=' + token;
-				const subjectLine = subject ? subject : 'You've been invited'
+				const subjectLine = subject ? subject : 'You've been invited';
 				
 				await mailService.send({
 					to: email,
@@ -307,7 +307,7 @@ export class UsersService extends ItemsService {
 		}
 
 		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
-		const subjectLine = subject ? subject : 'Password Reset Request'
+		const subjectLine = subject ? subject : 'Password Reset Request';
 		
 		await mailService.send({
 			to: email,
