@@ -18,6 +18,8 @@ export default function useUpdatePermissions(
 	}
 
 	async function setFullAccess(action: 'create' | 'read' | 'update' | 'delete') {
+		if (saving.value === true) return;
+
 		saving.value = true;
 
 		// If this collection isn't "managed" yet, make sure to add it to directus_collections first
@@ -61,6 +63,8 @@ export default function useUpdatePermissions(
 	}
 
 	async function setNoAccess(action: 'create' | 'read' | 'update' | 'delete') {
+		if (saving.value === true) return;
+
 		const permission = getPermission(action);
 
 		if (!permission) return;
@@ -78,6 +82,8 @@ export default function useUpdatePermissions(
 	}
 
 	async function setFullAccessAll() {
+		if (saving.value === true) return;
+
 		saving.value = true;
 
 		// If this collection isn't "managed" yet, make sure to add it to directus_collections first
@@ -123,6 +129,8 @@ export default function useUpdatePermissions(
 	}
 
 	async function setNoAccessAll() {
+		if (saving.value === true) return;
+
 		saving.value = true;
 
 		try {
