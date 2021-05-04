@@ -58,7 +58,7 @@
 		"copyfiles": "^2.4.1",
 		"cropperjs": "^1.5.11",
 		"date-fns": "^2.21.1",
-		"dompurify": "^2.2.7",
+		"dompurify": "^2.2.8",
 		"escape-string-regexp": "^4.0.0",
 		"front-matter": "^4.0.2",
 		"joi": "^17.4.0",
