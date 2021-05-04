@@ -1,23 +1,23 @@
-import { AuthenticationService } from './authentication';
-import { ItemsService, MutationOptions } from './items';
-import jwt from 'jsonwebtoken';
-import { sendInviteMail, sendPasswordResetMail } from '../mail';
-import database from '../database';
 import argon2 from 'argon2';
-import {
-	InvalidPayloadException,
-	ForbiddenException,
-	UnprocessableEntityException,
-	FailedValidationException,
-} from '../exceptions';
-import { Accountability, PrimaryKey, Item, AbstractServiceOptions, SchemaOverview, Query } from '../types';
+import jwt from 'jsonwebtoken';
 import { Knex } from 'knex';
-import env from '../env';
+import { clone } from 'lodash';
 import cache from '../cache';
-import { toArray } from '../utils/to-array';
+import database from '../database';
+import env from '../env';
+import {
+	FailedValidationException,
+	ForbiddenException,
+	InvalidPayloadException,
+	UnprocessableEntityException,
+} from '../exceptions';
 import { RecordNotUniqueException } from '../exceptions/database/record-not-unique';
 import logger from '../logger';
-import { clone } from 'lodash';
+import { AbstractServiceOptions, Accountability, Item, PrimaryKey, Query, SchemaOverview } from '../types';
+import { toArray } from '../utils/to-array';
+import { AuthenticationService } from './authentication';
+import { ItemsService, MutationOptions } from './items';
+import { MailService } from './mail';
 import { SettingsService } from './settings';
 
 export class UsersService extends ItemsService {
@@ -70,20 +70,22 @@ export class UsersService extends ItemsService {
 			fields: ['auth_password_policy'],
 		});
 
-		const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
+		if (policyRegExString) {
+			const wrapped = policyRegExString.startsWith('/') && policyRegExString.endsWith('/');
 
-		const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
+			const regex = new RegExp(wrapped ? policyRegExString.slice(1, -1) : policyRegExString);
 
-		for (const password of passwords) {
-			if (regex.test(password) === false) {
-				throw new FailedValidationException({
-					message: `Provided password doesn't match password policy`,
-					path: ['password'],
-					type: 'custom.pattern.base',
-					context: {
-						value: password,
-					},
-				});
+			for (const password of passwords) {
+				if (regex.test(password) === false) {
+					throw new FailedValidationException({
+						message: `Provided password doesn't match password policy`,
+						path: ['password'],
+						type: 'custom.pattern.base',
+						context: {
+							value: password,
+						},
+					});
+				}
 			}
 		}
 
@@ -130,7 +132,7 @@ export class UsersService extends ItemsService {
 			await this.checkPasswordPolicy([data.password]);
 		}
 
-		if (data.hasOwnProperty('tfa_secret')) {
+		if ('tfa_secret' in data) {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
@@ -148,7 +150,7 @@ export class UsersService extends ItemsService {
 			await this.checkPasswordPolicy([data.password]);
 		}
 
-		if (data.hasOwnProperty('tfa_secret')) {
+		if ('tfa_secret' in data) {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
@@ -166,7 +168,7 @@ export class UsersService extends ItemsService {
 			await this.checkPasswordPolicy([data.password]);
 		}
 
-		if (data.hasOwnProperty('tfa_secret')) {
+		if ('tfa_secret' in data) {
 			throw new InvalidPayloadException(`You can't change the "tfa_secret" value manually.`);
 		}
 
@@ -215,7 +217,7 @@ export class UsersService extends ItemsService {
 		return keys;
 	}
 
-	async inviteUser(email: string | string[], role: string, url: string | null) {
+	async inviteUser(email: string | string[], role: string, url: string | null): Promise<void> {
 		const emails = toArray(email);
 
 		const urlWhitelist = toArray(env.USER_INVITE_URL_ALLOW_LIST);
@@ -231,6 +233,12 @@ export class UsersService extends ItemsService {
 				knex: trx,
 			});
 
+			const mailService = new MailService({
+				schema: this.schema,
+				accountability: this.accountability,
+				knex: trx,
+			});
+
 			for (const email of emails) {
 				await service.createOne({ email, role, status: 'invited' });
 
@@ -239,12 +247,23 @@ export class UsersService extends ItemsService {
 				const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
 				const acceptURL = inviteURL + '?token=' + token;
 
-				await sendInviteMail(email, acceptURL);
+				await mailService.send({
+					to: email,
+					subject: "You've been invited",
+					template: {
+						name: 'user-invitation',
+						data: {
+							url: acceptURL,
+							email,
+						},
+						system: true,
+					},
+				});
 			}
 		});
 	}
 
-	async acceptInvite(token: string, password: string) {
+	async acceptInvite(token: string, password: string): Promise<void> {
 		const { email, scope } = jwt.verify(token, env.SECRET as string) as {
 			email: string;
 			scope: string;
@@ -267,9 +286,15 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	async requestPasswordReset(email: string, url: string | null) {
+	async requestPasswordReset(email: string, url: string | null): Promise<void> {
 		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
 		if (!user) throw new ForbiddenException();
+
+		const mailService = new MailService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
 
 		const payload = { email, scope: 'password-reset' };
 		const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '1d' });
@@ -282,10 +307,21 @@ export class UsersService extends ItemsService {
 
 		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
 
-		await sendPasswordResetMail(email, acceptURL);
+		await mailService.send({
+			to: email,
+			subject: 'Password Reset Request',
+			template: {
+				name: 'password-reset',
+				data: {
+					url: acceptURL,
+					email,
+				},
+				system: true,
+			},
+		});
 	}
 
-	async resetPassword(token: string, password: string) {
+	async resetPassword(token: string, password: string): Promise<void> {
 		const { email, scope } = jwt.verify(token, env.SECRET as string) as {
 			email: string;
 			scope: string;
@@ -308,7 +344,7 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	async enableTFA(pk: string) {
+	async enableTFA(pk: string): Promise<Record<string, string>> {
 		const user = await this.knex.select('tfa_secret').from('directus_users').where({ id: pk }).first();
 
 		if (user?.tfa_secret !== null) {
@@ -330,7 +366,7 @@ export class UsersService extends ItemsService {
 		};
 	}
 
-	async disableTFA(pk: string) {
+	async disableTFA(pk: string): Promise<void> {
 		await this.knex('directus_users').update({ tfa_secret: null }).where({ id: pk });
 	}
 

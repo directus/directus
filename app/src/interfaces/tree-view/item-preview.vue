@@ -50,7 +50,7 @@ export default defineComponent({
 			required: true,
 		},
 	},
-	setup(props, { emit }) {
+	setup() {
 		const editActive = ref(false);
 		return { editActive };
 	},

@@ -7,8 +7,11 @@
 	>
 		<template #activator="{ toggle }">
 			<span @click.stop="toggle" class="toggle" :class="{ subdued: value.length === 0 }">
-				<span class="label" v-if="value.length < 100">{{ $tc('item_count', value.length) }}</span>
-				<span class="label" v-else>{{ $tc('item_count', value.length, { count: '100+' }) }}</span>
+				<span class="label">
+					{{ value.length }}
+					<template v-if="value.length >= 100">+</template>
+					{{ unit }}
+				</span>
 			</span>
 		</template>
 
@@ -31,6 +34,7 @@ import { defineComponent, computed, PropType, Ref } from '@vue/composition-api';
 import getRelatedCollection from '@/utils/get-related-collection';
 import useCollection from '@/composables/use-collection';
 import ValueNull from '@/views/private/components/value-null';
+import { i18n } from '@/lang';
 
 export default defineComponent({
 	components: { ValueNull },
@@ -63,15 +67,36 @@ export default defineComponent({
 
 		const primaryKeyField = computed(() => {
 			if (relatedCollection.value !== null) {
-				return useCollection(relatedCollection as Ref<string>).primaryKeyField.value;
+				return useCollection((relatedCollection as unknown) as Ref<string>).primaryKeyField.value;
 			}
+			return null;
 		});
 
 		const _template = computed(() => {
 			return props.template || `{{ ${primaryKeyField.value!.field} }}`;
 		});
 
-		return { relatedCollection, primaryKeyField, getLinkForItem, _template };
+		const unit = computed(() => {
+			if (Array.isArray(props.value)) {
+				if (props.value.length === 1) {
+					if (i18n.te(`collection_names_singular.${relatedCollection.value}`)) {
+						return i18n.t(`collection_names_singular.${relatedCollection.value}`);
+					} else {
+						return i18n.t('item');
+					}
+				} else {
+					if (i18n.te(`collection_names_plural.${relatedCollection.value}`)) {
+						return i18n.t(`collection_names_plural.${relatedCollection.value}`);
+					} else {
+						return i18n.t('items');
+					}
+				}
+			}
+
+			return null;
+		});
+
+		return { relatedCollection, primaryKeyField, getLinkForItem, _template, unit };
 
 		function getLinkForItem(item: any) {
 			if (!relatedCollection.value || !primaryKeyField.value) return null;

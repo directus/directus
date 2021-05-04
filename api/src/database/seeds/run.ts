@@ -1,9 +1,9 @@
-import { Knex } from 'knex';
 import fse from 'fs-extra';
-import path from 'path';
 import yaml from 'js-yaml';
+import { Knex } from 'knex';
+import { isObject } from 'lodash';
+import path from 'path';
 import { types } from '../../types';
-import { isObject, merge } from 'lodash';
 
 type TableSeed = {
 	table: string;
@@ -25,7 +25,7 @@ type TableSeed = {
 	};
 };
 
-export default async function runSeed(database: Knex) {
+export default async function runSeed(database: Knex): Promise<void> {
 	const exists = await database.schema.hasTable('directus_collections');
 
 	if (exists) {

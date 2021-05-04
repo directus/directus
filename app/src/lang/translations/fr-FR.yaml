@@ -671,7 +671,6 @@ fields:
     display_template: Modèle d'affichage
     hidden: Caché
     singleton: Singleton
-    translations: Traductions du nom de la collection
     archive_app_filter: Filtrer les valeurs archivées dans l'application
     archive_value: Valeur pour archivage
     unarchive_value: Valeur au désarchivage

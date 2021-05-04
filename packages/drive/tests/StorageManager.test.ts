@@ -29,7 +29,7 @@ describe('Storage Manager', () => {
 		const storageManager = new StorageManager({
 			default: 'local',
 			disks: {
-				// @ts-expect-error
+				// @ts-expect-error No driver
 				local: {},
 			},
 		});
@@ -195,7 +195,7 @@ describe('Storage Manager', () => {
 		class BarDriver extends Storage {}
 		storageManager.registerDriver('bar', BarDriver);
 
-		let disks = storageManager.getDrivers().keys();
+		const disks = storageManager.getDrivers().keys();
 		expect([...disks].sort()).toStrictEqual(['bar', 'foo', 'local']);
 	});
 

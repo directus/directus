@@ -40,14 +40,24 @@
 							:item="item[anyRelation.many_field]"
 						/>
 						<div class="spacer" />
-						<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+						<v-icon
+							v-if="!disabled"
+							class="clear-icon"
+							name="clear"
+							@click.stop="deselect((value || [])[item.$index])"
+						/>
 					</v-list-item>
 
 					<v-list-item v-else :key="item.$index" block>
 						<v-icon class="invalid-icon" name="warning" left />
 						<span>{{ $t('invalid_item') }}</span>
 						<div class="spacer" />
-						<v-icon class="clear-icon" name="clear" @click.stop="deselect((value || [])[item.$index])" />
+						<v-icon
+							v-if="!disabled"
+							class="clear-icon"
+							name="clear"
+							@click.stop="deselect((value || [])[item.$index])"
+						/>
 					</v-list-item>
 				</template>
 			</draggable>
@@ -319,7 +329,6 @@ export default defineComponent({
 							} else {
 								val[anyRelation.value.many_field] = cloneDeep(item);
 							}
-						} else {
 						}
 
 						return val;
@@ -328,10 +337,10 @@ export default defineComponent({
 				if (o2mRelation.value?.sort_field) {
 					return [
 						...values
-							.filter((val) => val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.filter((val) => o2mRelation.value.sort_field! in val)
 							.sort((a, b) => a[o2mRelation.value.sort_field!] - b[o2mRelation.value.sort_field!]), // sort by sort field if it exists
 						...values
-							.filter((val) => !val.hasOwnProperty(o2mRelation.value.sort_field!))
+							.filter((val) => o2mRelation.value.sort_field! in val === false)
 							.sort((a, b) => a.$index - b.$index), // sort the rest with $index
 					];
 				} else {

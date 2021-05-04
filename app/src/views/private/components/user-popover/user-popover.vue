@@ -63,6 +63,7 @@ export default defineComponent({
 			if (data.value.avatar?.id) {
 				return addTokenToURL(`${getRootPath()}assets/${data.value.avatar.id}?key=system-medium-cover`);
 			}
+			return null;
 		});
 
 		const active = ref(false);

@@ -537,7 +537,6 @@ fields:
     note: Nota
     display_template: Display Template
     hidden: Nascosto
-    translations: Traduzioni del Nome della Raccolta
     sort_field: Ordina per
   directus_files:
     title: Titolo

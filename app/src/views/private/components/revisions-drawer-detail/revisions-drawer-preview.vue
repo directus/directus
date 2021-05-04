@@ -6,12 +6,7 @@
 			{{ $t('no_relational_data') }}
 		</v-notice>
 
-		<v-form
-			disabled
-			:collection="revision.collection"
-			:primary-key="revision.item"
-			:initial-values="revision.data"
-		/>
+		<v-form disabled :collection="revision.collection" :primary-key="revision.item" :initial-values="revision.data" />
 	</div>
 </template>
 

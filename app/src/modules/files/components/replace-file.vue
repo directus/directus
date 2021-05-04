@@ -13,10 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@vue/composition-api';
-import api from '@/api';
-import router from '@/router';
-import { PropType } from 'vue';
+import { defineComponent } from '@vue/composition-api';
 
 export default defineComponent({
 	model: {
@@ -37,7 +34,7 @@ export default defineComponent({
 			default: () => ({}),
 		},
 	},
-	setup(props, { emit }) {
+	setup(_props, { emit }) {
 		return { uploaded };
 		function uploaded() {
 			emit('toggle', false);

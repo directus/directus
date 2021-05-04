@@ -1,12 +1,12 @@
-import registerComponent from '@/utils/register-component/';
-import { getLayouts } from './index';
 import api from '@/api';
 import { getRootPath } from '@/utils/get-root-path';
+import registerComponent from '@/utils/register-component/';
 import asyncPool from 'tiny-async-pool';
+import { getLayouts } from './index';
 
 const { layoutsRaw } = getLayouts();
 
-export async function registerLayouts() {
+export async function registerLayouts(): Promise<void> {
 	const context = require.context('.', true, /^.*index\.ts$/);
 
 	const modules = context

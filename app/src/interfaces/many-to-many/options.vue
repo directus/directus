@@ -15,6 +15,16 @@
 				"
 			/>
 		</div>
+
+		<div class="field half-left">
+			<p class="type-label">{{ $t('creating_items') }}</p>
+			<v-checkbox block :label="$t('enable_create_button')" v-model="enableCreate" />
+		</div>
+
+		<div class="field half-right">
+			<p class="type-label">{{ $t('selecting_items') }}</p>
+			<v-checkbox block :label="$t('enable_select_button')" v-model="enableSelect" />
+		</div>
 	</div>
 </template>
 
@@ -65,6 +75,30 @@ export default defineComponent({
 			},
 		});
 
+		const enableCreate = computed({
+			get() {
+				return props.value?.enableCreate ?? true;
+			},
+			set(val: boolean) {
+				emit('input', {
+					...(props.value || {}),
+					enableCreate: val,
+				});
+			},
+		});
+
+		const enableSelect = computed({
+			get() {
+				return props.value?.enableSelect ?? true;
+			},
+			set(val: boolean) {
+				emit('input', {
+					...(props.value || {}),
+					enableSelect: val,
+				});
+			},
+		});
+
 		const junctionCollection = computed(() => {
 			if (!props.fieldData || !props.relations || props.relations.length === 0) return null;
 			const { field } = props.fieldData;
@@ -80,7 +114,7 @@ export default defineComponent({
 			return collectionsStore.getCollection(junctionCollection.value);
 		});
 
-		return { template, junctionCollection, junctionCollectionInfo };
+		return { template, enableCreate, enableSelect, junctionCollection, junctionCollectionInfo };
 	},
 });
 </script>

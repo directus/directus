@@ -1,6 +1,6 @@
+import { defineDisplay } from '@/displays/define';
 import readableMimeType from '@/utils/readable-mime-type';
 import { extension } from 'mime-types';
-import { defineDisplay } from '@/displays/define';
 
 export default defineDisplay({
 	id: 'mime-type',

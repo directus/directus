@@ -1,5 +1,5 @@
-import { Ref, ref } from '@vue/composition-api';
 import i18n from '@/lang';
+import { Ref, ref } from '@vue/composition-api';
 
 type LinkSelection = {
 	url: string | null;
@@ -8,7 +8,7 @@ type LinkSelection = {
 	newTab: boolean;
 };
 
-export default function useLink(editor: Ref<any>) {
+export default function useLink(editor: Ref<any>): Record<string, any> {
 	const linkDrawerOpen = ref(false);
 	const linkSelection = ref<LinkSelection>({
 		url: null,
@@ -53,7 +53,7 @@ export default function useLink(editor: Ref<any>) {
 
 			editor.value.on('NodeChange', onImageNodeSelect);
 
-			return function (buttonApi: any) {
+			return function () {
 				editor.value.off('NodeChange', onImageNodeSelect);
 			};
 		},
@@ -76,7 +76,7 @@ export default function useLink(editor: Ref<any>) {
 	}
 
 	function saveLink() {
-		let link = linkSelection.value;
+		const link = linkSelection.value;
 		if (link.url === null) return;
 		const linkHtml = `<a href="${link.url}" title="${link.title || ''}" target="${link.newTab ? '_blank' : '_self'}" >${
 			link.displayText || link.url

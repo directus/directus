@@ -1,23 +1,10 @@
-import expressLogger from 'express-pino-logger';
-import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import express from 'express';
-import logger from './logger';
+import expressLogger from 'express-pino-logger';
+import fse from 'fs-extra';
 import path from 'path';
 import qs from 'qs';
-
-import { validateDBConnection, isInstalled } from './database';
-
-import { validateEnv } from './utils/validate-env';
-import env from './env';
-import { track } from './utils/track';
-
-import errorHandler from './middleware/error-handler';
-import cors from './middleware/cors';
-import rateLimiter from './middleware/rate-limiter';
-import cache from './middleware/cache';
-import extractToken from './middleware/extract-token';
-import authenticate from './middleware/authenticate';
 import activityRouter from './controllers/activity';
 import assetsRouter from './controllers/assets';
 import authRouter from './controllers/auth';
@@ -26,7 +13,9 @@ import extensionsRouter from './controllers/extensions';
 import fieldsRouter from './controllers/fields';
 import filesRouter from './controllers/files';
 import foldersRouter from './controllers/folders';
+import graphqlRouter from './controllers/graphql';
 import itemsRouter from './controllers/items';
+import notFoundHandler from './controllers/not-found';
 import permissionsRouter from './controllers/permissions';
 import presetsRouter from './controllers/presets';
 import relationsRouter from './controllers/relations';
@@ -37,21 +26,27 @@ import settingsRouter from './controllers/settings';
 import usersRouter from './controllers/users';
 import utilsRouter from './controllers/utils';
 import webhooksRouter from './controllers/webhooks';
-import graphqlRouter from './controllers/graphql';
-import schema from './middleware/schema';
-
-import notFoundHandler from './controllers/not-found';
-import sanitizeQuery from './middleware/sanitize-query';
-import { checkIP } from './middleware/check-ip';
-import { InvalidPayloadException } from './exceptions';
-
-import { initializeExtensions, registerExtensionEndpoints, registerExtensionHooks } from './extensions';
-import { register as registerWebhooks } from './webhooks';
+import { isInstalled, validateDBConnection } from './database';
 import { emitAsyncSafe } from './emitter';
+import env from './env';
+import { InvalidPayloadException } from './exceptions';
+import { initializeExtensions, registerExtensionEndpoints, registerExtensionHooks } from './extensions';
+import logger from './logger';
+import authenticate from './middleware/authenticate';
+import cache from './middleware/cache';
+import { checkIP } from './middleware/check-ip';
+import cors from './middleware/cors';
+import errorHandler from './middleware/error-handler';
+import extractToken from './middleware/extract-token';
+import rateLimiter from './middleware/rate-limiter';
+import sanitizeQuery from './middleware/sanitize-query';
+import schema from './middleware/schema';
+import { track } from './utils/track';
+import { validateEnv } from './utils/validate-env';
+import { register as registerWebhooks } from './webhooks';
+import { session } from './middleware/session';
 
-import fse from 'fs-extra';
-
-export default async function createApp() {
+export default async function createApp(): Promise<express.Application> {
 	validateEnv(['KEY', 'SECRET']);
 
 	await validateDBConnection();
@@ -132,6 +127,9 @@ export default async function createApp() {
 	if (env.RATE_LIMITER_ENABLED === true) {
 		app.use(rateLimiter);
 	}
+
+	// We only rely on cookie-sessions in the oAuth flow where it's required
+	app.use(session);
 
 	app.use(authenticate);
 

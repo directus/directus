@@ -1,5 +1,5 @@
-import InterfaceUser from './user.vue';
 import { defineInterface } from '@/interfaces/define';
+import InterfaceUser from './user.vue';
 
 export default defineInterface({
 	id: 'user',

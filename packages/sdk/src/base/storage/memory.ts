@@ -4,7 +4,7 @@ export class MemoryStorage extends BaseStorage {
 	private prefix: string;
 	private values: Record<string, string>;
 
-	constructor(prefix: string = '') {
+	constructor(prefix = '') {
 		super();
 		this.values = {};
 		this.prefix = prefix;

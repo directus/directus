@@ -1,16 +1,16 @@
-import * as http from 'http';
-import * as https from 'https';
-import qs from 'qs';
-import url from 'url';
 import { createTerminus, TerminusOptions } from '@godaddy/terminus';
 import { Request } from 'express';
-import logger from './logger';
-import { emitAsyncSafe } from './emitter';
-import database from './database';
-import createApp from './app';
+import * as http from 'http';
+import * as https from 'https';
 import { once } from 'lodash';
+import qs from 'qs';
+import url from 'url';
+import createApp from './app';
+import database from './database';
+import { emitAsyncSafe } from './emitter';
+import logger from './logger';
 
-export default async function createServer() {
+export default async function createServer(): Promise<http.Server> {
 	const server = http.createServer(await createApp());
 
 	server.on('request', function (req: http.IncomingMessage & Request, res: http.ServerResponse) {
@@ -21,22 +21,24 @@ export default async function createServer() {
 			const elapsedNanoseconds = elapsedTime[0] * 1e9 + elapsedTime[1];
 			const elapsedMilliseconds = elapsedNanoseconds / 1e6;
 
-			const previousIn = (req.connection as any)._metrics?.in || 0;
-			const previousOut = (req.connection as any)._metrics?.out || 0;
+			const previousIn = (req.socket as any)._metrics?.in || 0;
+			const previousOut = (req.socket as any)._metrics?.out || 0;
 
 			const metrics = {
-				in: req.connection.bytesRead - previousIn,
-				out: req.connection.bytesWritten - previousOut,
+				in: req.socket.bytesRead - previousIn,
+				out: req.socket.bytesWritten - previousOut,
 			};
 
-			(req.connection as any)._metrics = {
-				in: req.connection.bytesRead,
-				out: req.connection.bytesWritten,
+			(req.socket as any)._metrics = {
+				in: req.socket.bytesRead,
+				out: req.socket.bytesWritten,
 			};
 
 			// Compatibility when supporting serving with certificates
 			const protocol = server instanceof https.Server ? 'https' : 'http';
 
+			// Rely on url.parse for path extraction
+			// Doesn't break on illegal URLs
 			const urlInfo = url.parse(req.originalUrl || req.url);
 
 			const info = {
@@ -58,7 +60,7 @@ export default async function createServer() {
 					size: metrics.out,
 					headers: res.getHeaders(),
 				},
-				ip: req.headers['x-forwarded-for'] || req.connection?.remoteAddress || req.socket?.remoteAddress,
+				ip: req.headers['x-forwarded-for'] || req.socket?.remoteAddress,
 				duration: elapsedMilliseconds.toFixed(),
 			};
 

@@ -77,7 +77,7 @@ export default defineComponent({
 			translationsLanguageField,
 		} = useRelations();
 
-		const { languages, loading: languagesLoading, error: languagesError, template: languagesTemplate } = useLanguages();
+		const { languages, loading: languagesLoading, template: languagesTemplate } = useLanguages();
 
 		const { startEditing, editing, edits, stageEdits, cancelEdit } = useEdits();
 

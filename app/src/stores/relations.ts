@@ -1,7 +1,7 @@
-import { createStore } from 'pinia';
-import { Relation } from '@/types';
 import api from '@/api';
 import { useFieldsStore } from '@/stores/';
+import { Relation } from '@/types';
+import { createStore } from 'pinia';
 
 export const useRelationsStore = createStore({
 	id: 'relationsStore',

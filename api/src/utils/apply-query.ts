@@ -1,9 +1,9 @@
 import { Knex } from 'knex';
-import { Query, Filter, Relation, SchemaOverview } from '../types';
-import { clone, isPlainObject, get, set } from 'lodash';
-import { systemRelationRows } from '../database/system-data/relations';
+import { clone, get, isPlainObject, set } from 'lodash';
 import { customAlphabet } from 'nanoid';
 import validate from 'uuid-validate';
+import { systemRelationRows } from '../database/system-data/relations';
+import { Filter, Query, Relation, SchemaOverview } from '../types';
 
 const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
@@ -12,8 +12,8 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	subQuery: boolean = false
-) {
+	subQuery = false
+): void {
 	if (query.sort) {
 		dbQuery.orderBy(
 			query.sort.map((sort) => ({
@@ -49,8 +49,8 @@ export function applyFilter(
 	rootQuery: Knex.QueryBuilder,
 	rootFilter: Filter,
 	collection: string,
-	subQuery: boolean = false
-) {
+	subQuery = false
+): void {
 	const relations: Relation[] = [...schema.relations, ...systemRelationRows];
 
 	const aliasMap: Record<string, string> = {};
@@ -109,7 +109,8 @@ export function applyFilter(
 					);
 				}
 
-				if (subQuery === true && isM2O === false) {
+				// Still join o2m relations when in subquery OR when the o2m relation is not at the root level
+				if ((subQuery === true || parentAlias !== undefined) && isM2O === false) {
 					dbQuery.leftJoin(
 						{ [alias]: relation.many_collection },
 						`${parentAlias || parentCollection}.${relation.one_primary}`,
@@ -219,6 +220,14 @@ export function applyFilter(
 			// conditionally build out your filter structure (#4471)
 			if (compareValue === undefined) return;
 
+			if (Array.isArray(compareValue)) {
+				// When using a `[Type]` type in GraphQL, but don't provide the variable, it'll be
+				// reported as [undefined]. Seeing that SQL queries will fail when one or more of the
+				// bindings is undefined, we'll make sure here that invalid array values are ignored as
+				// well
+				if (compareValue.some((val) => val === undefined)) return;
+			}
+
 			if (operator === '_eq') {
 				dbQuery[logical].where({ [key]: compareValue });
 			}
@@ -323,7 +332,7 @@ export async function applySearch(
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string
-) {
+): Promise<void> {
 	const fields = Object.entries(schema.collections[collection].fields);
 
 	dbQuery.andWhere(function () {

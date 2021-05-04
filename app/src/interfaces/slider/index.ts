@@ -1,5 +1,5 @@
-import InterfaceSlider from './slider.vue';
 import { defineInterface } from '@/interfaces/define';
+import InterfaceSlider from './slider.vue';
 
 export default defineInterface({
 	id: 'slider',

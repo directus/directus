@@ -91,10 +91,7 @@ export default defineComponent({
 				const lastPage = userStore.state.currentUser?.last_page;
 				router.push(lastPage || '/collections');
 			} catch (err) {
-				if (
-					err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' &&
-					requiresTFA.value === false
-				) {
+				if (err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 					requiresTFA.value = true;
 				} else {
 					error.value = err;

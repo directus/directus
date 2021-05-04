@@ -1,9 +1,72 @@
 ---
+edit_field: Επεξεργασία Πεδίου
+item_revision: Αναθεώρηση Αντικειμένου
+duplicate_field: Αντίγραφο Πεδίου
+half_width: Μισό Πλάτος
 full_width: Πλήρες Πλάτος
+fill_width: Πλήρες Πλάτος
+field_name_translations: Μεταφράσεις Ονόματος Πεδίου
+enter_password_to_enable_tfa: Εισάγετε τον κωδικό πρόσβασής σας για να ενεργοποιήσετε τον διπλό έλεγχο ταυτότητας
+add_field: Προσθήκη Πεδίου
+role_name: Όνομα Ρόλου
+db_only_click_to_configure: 'Βάση δεδομένων μόνο: Κάντε κλικ για ρύθμιση '
+show_archived_items: Εμφάνιση Αρχειοθετημένων Αντικειμένων
+edited: Η Τιμή Επεξεργάστηκε
 required: Υποχρεωτικό
+required_for_app_access: Απαιτείται για την πρόσβαση στην εφαρμογή
+requires_value: Απαιτεί τιμή
+create_preset: Δημιουργία προεπιλογής
 create_role: Δημιουργία ρόλου
+create_user: Δημιουργία Χρήστη
+create_webhook: Δημιουργία Webhook
+invite_users: Πρόσκληση Χρηστών
+email_examples: 'admin@example.com, user@example.com...'
+invite: Πρόσκληση
+email_already_invited: To email "{email}" έχει ήδη προσκληθεί
+emails: Emails
+connection_excellent: Εξαιρετική Σύνδεση
+connection_good: Καλή Σύνδεση
+connection_fair: Μέτρια Σύνδεση
+connection_poor: Καλή Σύνδεση
+primary: Κυρίως
+rename_folder: Μετονομασία Φακέλου
+delete_folder: Διαγραφή Φακέλου
+prefix: Πρόθεμα
+suffix: Επίθεμα
+reset_bookmark: Επαναφορά Σελιδοδείκτη
+rename_bookmark: Μετονομασία Σελιδοδείκτη
+update_bookmark: Ενημέρωση Σελιδοδείκτη
 delete_bookmark: Διαγραφή σελιδοδείκτη
+logoutReason:
+  SIGN_OUT: Αποσύνδεση
+  SESSION_EXPIRED: Η συνεδρία έληξε
+public: Δημόσιο
+public_description: Ελέγχει ποια δεδομένα API είναι διαθέσιμα χωρίς ταυτοποίηση.
+not_allowed: Δεν Επιτρέπεται
 directus_version: Έκδοση Directus
+node_version: Έκδοση Node
+os_type: Λειτουργικό
+os_version: Έκδοση Λειτουργικού
+os_totalmem: Μνήμη Λειτουργικού
+archive: Αρχειοθέτηση
+archive_confirm: Είστε βέβαιοι ότι θέλετε να αρχειοθετήσετε αυτό το στοιχείο;
+archive_confirm_count: >-
+  Δεν υπάρχουν αντικείμενα που έχουν επιλεγεί | Είστε σίγουροι ότι θέλετε να αρχειοθετήσετε αυτό το στοιχείο; | Είστε σίγουροι ότι θέλετε να αρχειοθετήσετε αυτά τα {count} στοιχεία;
+reset_system_permissions_to: 'Επαναφορά δικαιωμάτων συστήματος σε:'
+recommended_defaults: Προτεινόμενες Προεπιλογές
+unarchive: Επαναφορά
+validationError:
+  eq: Η τιμή πρέπει να είναι {valid}
+  neq: Η τιμή δεν μπορεί να είναι {invalid}
+  in: Η τιμή πρέπει να είναι μία από τις {valid}
+  nin: Η τιμή δεν μπορεί να είναι μία από τις {invalid}
+  contains: Η τιμή πρέπει να περιέχει {substring}
+  ncontains: Η τιμή δεν μπορεί να περιέχει {substring}
+  gt: Η τιμή πρέπει να είναι μεγαλύτερη από {valid}
+  gte: Η τιμή πρέπει να είναι μεγαλύτερη ή ίση με {valid}
+  lt: Η τιμή πρέπει να είναι μικρότερη από {valid}
+no_access: Καμία Πρόσβαση
+field_standard: Τυπικό
 create_field: Δημιουργία πεδίου
 hidden_on_detail: Κρυφό στις λεπτομέρειες
 text: Κείμενο
@@ -123,7 +186,9 @@ fields:
   directus_fields:
     note: Σημείωση
     hidden: Κρυφό
+    translation: Μεταφράσεις Ονόματος Πεδίου
   directus_roles:
+    name: Όνομα Ρόλου
     description: Περιγραφή
 comment: Σχόλιο
 continue: Συνέχεια
@@ -157,6 +222,8 @@ settings: Ρυθμίσεις
 translation: Μετάφραση
 value: Τιμή
 interfaces:
+  button-links:
+    primary: Κυρίως
   collection:
     collection: Συλλογή
   collections:

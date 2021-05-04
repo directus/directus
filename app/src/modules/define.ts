@@ -1,4 +1,4 @@
-import { ModuleDefineParam, ModuleConfig } from './types';
+import { ModuleConfig, ModuleDefineParam } from './types';
 
 export function defineModule(config: ModuleDefineParam): ModuleConfig {
 	let options: ModuleConfig;

@@ -10,4 +10,4 @@ module.exports = function checkRequirements() {
 		console.error('Please update your Node version and try again.');
 		process.exit(1);
 	}
-}
+};
