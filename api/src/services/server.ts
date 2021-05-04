@@ -7,7 +7,7 @@ import { performance } from 'perf_hooks';
 // @ts-ignore
 import { version } from '../../package.json';
 import cache from '../cache';
-import database from '../database';
+import database, { hasDatabaseConnection } from '../database';
 import env from '../env';
 import logger from '../logger';
 import { rateLimiter } from '../middleware/rate-limiter';
@@ -147,22 +147,21 @@ export class ServerService {
 
 			const startTime = performance.now();
 
-			try {
-				await database.raw('SELECT 1');
+			if (await hasDatabaseConnection()) {
 				checks[`${client}:responseTime`][0].status = 'ok';
-			} catch (err) {
+			} else {
 				checks[`${client}:responseTime`][0].status = 'error';
-				checks[`${client}:responseTime`][0].output = err;
-			} finally {
-				const endTime = performance.now();
-				checks[`${client}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
+				checks[`${client}:responseTime`][0].output = `Can't connect to the database.`;
+			}
 
-				if (
-					checks[`${client}:responseTime`][0].observedValue! > checks[`${client}:responseTime`][0].threshold! &&
-					checks[`${client}:responseTime`][0].status !== 'error'
-				) {
-					checks[`${client}:responseTime`][0].status = 'warn';
-				}
+			const endTime = performance.now();
+			checks[`${client}:responseTime`][0].observedValue = +(endTime - startTime).toFixed(3);
+
+			if (
+				checks[`${client}:responseTime`][0].observedValue! > checks[`${client}:responseTime`][0].threshold! &&
+				checks[`${client}:responseTime`][0].status !== 'error'
+			) {
+				checks[`${client}:responseTime`][0].status = 'warn';
 			}
 
 			checks[`${client}:connectionsAvailable`] = [
