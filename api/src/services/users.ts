@@ -247,7 +247,7 @@ export class UsersService extends ItemsService {
 				const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
 				const acceptURL = inviteURL + '?token=' + token;
 				const subjectLine = subject ? subject : "You've been invited";
-				
+
 				await mailService.send({
 					to: email,
 					subject: subjectLine,
@@ -308,7 +308,7 @@ export class UsersService extends ItemsService {
 
 		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
 		const subjectLine = subject ? subject : 'Password Reset Request';
-		
+
 		await mailService.send({
 			to: email,
 			subject: subjectLine,
