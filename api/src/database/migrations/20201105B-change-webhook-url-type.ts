@@ -1,13 +1,20 @@
 import { Knex } from 'knex';
+import env from '../../env';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_webhooks', (table) => {
-		table.text('url').alter();
+		// TODO: Temporary fix for Knex/Oracle not supporting string to text
+		if (env.DB_CLIENT !== 'oracledb') {
+			table.text('url').alter();
+		}
 	});
 }
 
 export async function down(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_webhooks', (table) => {
-		table.string('url').alter();
+		// TODO: Temporary fix for Knex/Oracle not supporting string to text
+		if (env.DB_CLIENT !== 'oracledb') {
+			table.string('url').alter();
+		}
 	});
 }
