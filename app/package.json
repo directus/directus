@@ -61,6 +61,7 @@
 		"dompurify": "^2.2.8",
 		"escape-string-regexp": "^4.0.0",
 		"front-matter": "^4.0.2",
+		"html-entities": "^2.3.2",
 		"joi": "^17.4.0",
 		"jsonlint-mod": "^1.7.6",
 		"marked": "^2.0.3",
