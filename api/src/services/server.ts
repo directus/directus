@@ -148,7 +148,7 @@ export class ServerService {
 			const startTime = performance.now();
 
 			try {
-				await database.raw('SELECT 1');
+				await database.select(1).from('directus_settings').where(1, 0);
 				checks[`${client}:responseTime`][0].status = 'ok';
 			} catch (err) {
 				checks[`${client}:responseTime`][0].status = 'error';
