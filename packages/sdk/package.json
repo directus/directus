@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "9.0.0-rc.61",
+	"version": "9.0.0-rc.62",
 	"description": "The official Directus SDK for use in JavaScript!",
 	"repository": {
 		"type": "git",
@@ -60,7 +60,7 @@
 		"nock": "^13.0.10",
 		"npm-run-all": "^4.1.5",
 		"rimraf": "^3.0.2",
-		"rollup": "^2.40.0",
+		"rollup": "^2.46.0",
 		"rollup-plugin-copy": "^3.4.0",
 		"rollup-plugin-sourcemaps": "^0.6.3",
 		"rollup-plugin-terser": "^7.0.2",
