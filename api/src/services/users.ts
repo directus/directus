@@ -217,7 +217,7 @@ export class UsersService extends ItemsService {
 		return keys;
 	}
 
-	async inviteUser(email: string | string[], role: string, url: string | null, subject: string | null): Promise<void> {
+	async inviteUser(email: string | string[], role: string, url: string | null): Promise<void> {
 		const emails = toArray(email);
 
 		const urlWhitelist = toArray(env.USER_INVITE_URL_ALLOW_LIST);
@@ -246,11 +246,10 @@ export class UsersService extends ItemsService {
 				const token = jwt.sign(payload, env.SECRET as string, { expiresIn: '7d' });
 				const inviteURL = url ?? env.PUBLIC_URL + '/admin/accept-invite';
 				const acceptURL = inviteURL + '?token=' + token;
-				const subjectLine = subject ? subject : "You've been invited";
 
 				await mailService.send({
 					to: email,
-					subject: subjectLine,
+					subject: "You've been invited",
 					template: {
 						name: 'user-invitation',
 						data: {
@@ -287,7 +286,7 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	async requestPasswordReset(email: string, url: string | null, subject: string | null): Promise<void> {
+	async requestPasswordReset(email: string, url: string | null): Promise<void> {
 		const user = await this.knex.select('id').from('directus_users').where({ email }).first();
 		if (!user) throw new ForbiddenException();
 
@@ -307,11 +306,10 @@ export class UsersService extends ItemsService {
 		}
 
 		const acceptURL = url ? `${url}?token=${token}` : `${env.PUBLIC_URL}/admin/reset-password?token=${token}`;
-		const subjectLine = subject ? subject : 'Password Reset Request';
 
 		await mailService.send({
 			to: email,
-			subject: subjectLine,
+			subject: 'Password Reset Request',
 			template: {
 				name: 'password-reset',
 				data: {
