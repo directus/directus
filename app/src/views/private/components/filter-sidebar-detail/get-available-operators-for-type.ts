@@ -26,7 +26,7 @@ export default function getAvailableOperatorsForType(type: string): OperatorType
 		case 'boolean':
 			return {
 				type: 'checkbox',
-				operators: ['eq', 'empty', 'nempty'],
+				operators: ['eq', 'neq', 'empty', 'nempty'],
 			};
 		// Numbers
 		case 'integer':
