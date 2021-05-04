@@ -44,7 +44,7 @@
  */
 
 import '@fullcalendar/core/vdom';
-import { Calendar, EventInput } from '@fullcalendar/core';
+import { Calendar, CalendarOptions, EventInput, ViewApi } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import {
@@ -73,6 +73,8 @@ type layoutOptions = {
 	template?: string;
 	startDateField?: string;
 	endDateField?: string;
+	view?: string;
+	viewDate?: string;
 };
 
 export default defineComponent({
@@ -152,6 +154,18 @@ export default defineComponent({
 			},
 		});
 
+		const viewInfo = computed<{ type: string; startDateStr: string }>({
+			get() {
+				return _layoutOptions.value?.viewInfo || {};
+			},
+			set(newViewInfo: { type: string; startDateStr: string }) {
+				_layoutOptions.value = {
+					...(_layoutOptions.value || {}),
+					viewInfo: newViewInfo,
+				};
+			},
+		});
+
 		const startDateField = computed({
 			get() {
 				return _layoutOptions.value?.startDateField;
@@ -183,7 +197,8 @@ export default defineComponent({
 				page: ref(1),
 				limit: ref(-1),
 				fields: computed(() => {
-					const fields = [primaryKeyField.value.field, ...getFieldsFromTemplate(template.value)];
+					const fields = [primaryKeyField.value.field];
+					if (template.value) fields.push(...getFieldsFromTemplate(template.value));
 					if (startDateField.value) fields.push(startDateField.value);
 					if (endDateField.value) fields.push(endDateField.value);
 					return fields;
@@ -198,14 +213,14 @@ export default defineComponent({
 			() => items.value?.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || []
 		);
 
-		onMounted(() => {
-			calendar.value = new Calendar(calendarEl.value!, {
+		const fullCalendarOptions = computed<CalendarOptions>(() => {
+			const options: CalendarOptions = {
 				plugins: [dayGridPlugin, timeGridPlugin],
-				initialView: 'dayGridMonth',
+				initialView: viewInfo.value?.type ?? 'dayGridMonth',
 				headerToolbar: {
 					left: 'prevYear,prev,next,nextYear today',
 					center: 'title',
-					right: 'dayGridMonth,timeGridWeek,dayGridDay',
+					right: 'dayGridMonth,dayGridWeek,dayGridDay',
 				},
 				eventClick(info) {
 					const primaryKey = info.event.id;
@@ -215,6 +230,31 @@ export default defineComponent({
 					router.push(`${endpoint}/${primaryKey}`);
 				},
 				events: events.value,
+				initialDate: viewInfo.value?.startDateStr ?? formatISO(new Date()),
+			};
+
+			const startDateFieldInfo: Field | undefined = fieldsInCollection.value.find(
+				(field: Field) => field.field === startDateField.value
+			);
+
+			if (startDateFieldInfo?.type === 'dateTime' || startDateFieldInfo?.type === 'timestamp') {
+				options.headerToolbar = {
+					...options.headerToolbar,
+					right: 'dayGridMonth,timeGridWeek,timeGridDay',
+				};
+			}
+
+			return options;
+		});
+
+		onMounted(() => {
+			calendar.value = new Calendar(calendarEl.value!, fullCalendarOptions.value);
+
+			calendar.value.on('datesSet', (args) => {
+				viewInfo.value = {
+					type: args.view.type,
+					startDateStr: args.startStr,
+				};
 			});
 
 			calendar.value.render();
