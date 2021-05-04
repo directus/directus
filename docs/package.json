@@ -34,7 +34,7 @@
 		"fs-extra": "^9.1.0",
 		"lodash.get": "^4.4.2",
 		"micromark": "^2.10.1",
-		"npm-watch": "^0.7.0",
+		"npm-watch": "^0.9.0",
 		"slugify": "^1.4.6",
 		"vuepress": "^1.7.1",
 		"vuepress-plugin-clean-urls": "^1.1.2"
