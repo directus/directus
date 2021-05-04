@@ -1,11 +1,14 @@
 # Backing Directus
 
-> Directus is both _premium_ and _free_ — two things that don't often go together. It takes significant resources to maintain the platform. If you'd like to help keep development active, please consider supporting Directus through one of the methods below.
+> Directus is both _premium_ and _free_ — two things that don't often go together. It takes significant resources to
+> maintain the platform. If you'd like to help keep development active, please consider supporting Directus through one
+> of the methods below.
 
 ## Financial Support
 
-Talented full-time and part-time staff, infrastructure, and third-party services are just some of our organization's many
-expenses. Below are a few ways to help us keep the lights on and move towards a self-sufficient open-source core product.
+Talented full-time and part-time staff, infrastructure, and third-party services are just some of our organization's
+many expenses. Below are a few ways to help us keep the lights on and move towards a self-sufficient open-source core
+product.
 
 ### GitHub Sponsors
 
@@ -26,11 +29,15 @@ Directus, and improve the codebase for the community.
 
 ### Merch
 
-Our merchandise is a great way to support Directus — you get some swag, and we get some financial support and advertising. Simply make an appropriate financial donation through [GitHub Sponsors](https://github.com/sponsors/directus) (or contact us for bulk pricing), and once we coordinate sizing and shipping details, we'll get it shipped!
+Our merchandise is a great way to support Directus — you get some swag, and we get some financial support and
+advertising. Simply make an appropriate financial donation through
+[GitHub Sponsors](https://github.com/sponsors/directus) (or contact us for bulk pricing), and once we coordinate sizing
+and shipping details, we'll get it shipped!
 
 ## Other Contributions
 
-Below are several ways that _anyone_ can help improve the Directus ecosystem. These are free alternatives for when financial support is not a possibility.
+Below are several ways that _anyone_ can help improve the Directus ecosystem. These are free alternatives for when
+financial support is not a possibility.
 
 ### Code Pull Requests
 
@@ -54,8 +61,8 @@ You can create _perfect_ software, but if no one knows about it, it's all for na
 expensive, but you can help us avoid these costs with the following quick options:
 
 - **GitHub Stars** — The primary metric by which we measure our success. It only takes a few seconds to head to the
-  [Directus GitHub](https://github.com/directus/directus) and click the star. Enough activity in a short period of time and
-  we get even more exposure from being featured on GitHub's trending page!
+  [Directus GitHub](https://github.com/directus/directus) and click the star. Enough activity in a short period of time
+  and we get even more exposure from being featured on GitHub's trending page!
 - **Social Posts** — A quick post mentioning [@directus](https://twitter.com/directus) goes a long way — and we re-tweet
   the team's favorite shout-outs to our 35K+ followers.
 - **Testimonials** — _One sentence._ Even that was a sentence, and it was only two words! If you're a fan of Directus,
