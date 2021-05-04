@@ -108,7 +108,7 @@ export default defineComponent({
 		const _filters = useSync(props, 'filters', emit);
 		const _searchQuery = useSync(props, 'searchQuery', emit);
 
-		const { primaryKeyField, fields: fieldsInCollection, endpoint } = useCollection(collection);
+		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
 		const dateFields = computed(() =>
 			fieldsInCollection.value.filter((field: Field) => {
