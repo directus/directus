@@ -36,6 +36,8 @@ npm install
 npm run build
 ```
 
+If you are on a node version lower than 15 or run into trouble with `npm run build` try running `lerna bootstrap`.
+
 ## 5. Create a `.env` file
 
 Create a `.env` file under the `api` folder. You can use the `example.env` file provided under `api` as a starting
