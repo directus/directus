@@ -11,7 +11,7 @@ export function isAllowed(
 	const permissionsStore = usePermissionsStore();
 	const userStore = useUserStore();
 
-	if (userStore.isAdmin.value === true) return true;
+	if (userStore.isAdmin === true) return true;
 
 	const permissions = permissionsStore.permissions;
 
