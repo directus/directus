@@ -867,7 +867,7 @@ interfaces:
     link: Linki
     button: Przyciski
     error: Nie można wykonać akcji
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Pola wyboru
     description: Wybierz pomiędzy wieloma opcjami za pomocą pól wyboru
     allow_other: Zezwól na inne

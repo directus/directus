@@ -343,7 +343,7 @@ description: Descrição
 interfaces:
   presentation-links:
     primary: Primário
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Caixas de seleção
   collection:
     collection: Coleção

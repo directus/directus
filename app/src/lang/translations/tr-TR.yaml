@@ -657,7 +657,7 @@ interfaces:
     link: Linkler
     button: Butonlar
     error: İşlem gerçekleştirilemiyor
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Onay Kutuları
     allow_other: Diğerlerine İzin Ver
   code:

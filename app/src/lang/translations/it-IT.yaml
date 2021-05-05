@@ -673,7 +673,7 @@ view_project: Visualizza Progetto
 interfaces:
   presentation-links:
     primary: Principale
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Checkbox
     allow_other: Permetti Altro
     show_more: 'Mostra altri {count}'

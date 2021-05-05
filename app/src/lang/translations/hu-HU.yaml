@@ -633,7 +633,7 @@ interfaces:
     presentation-links: Gomb hivatkozás
     primary: Elsődleges
     button: Gombok
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Jelölőnégyzetek
     show_more: '{count} további mutatása'
     items_shown: Megjelenített elemek

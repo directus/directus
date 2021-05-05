@@ -824,7 +824,7 @@ interfaces:
     link: Enlaces
     button: Botones
     error: No se puede realizar la acción
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Casillas de Selección
     description: Elegir entre múltiples opciones a través de casillas de selección
     allow_other: Permitir Otro

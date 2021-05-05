@@ -831,7 +831,7 @@ interfaces:
     primary: Первичный
     link: Ссылки
     button: Кнопки
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Флажки
     description: Выбрать из нескольких опций с помощью флажков
     allow_other: Разрешить другие

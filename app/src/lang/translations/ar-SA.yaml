@@ -423,7 +423,7 @@ view_project: عرض المشروع
 interfaces:
   presentation-links:
     primary: الأساسي
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: مربع الاختيار
     allow_other: السماح لآخرين
   code:

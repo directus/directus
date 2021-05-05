@@ -689,7 +689,7 @@ value: 值
 interfaces:
   presentation-links:
     primary: 主要的
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: 复选框
     allow_other: 允许其他选项
   code:

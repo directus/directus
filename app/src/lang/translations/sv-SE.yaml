@@ -846,7 +846,7 @@ interfaces:
     link: Länkar
     button: Knappar
     error: Kan inte utföra åtgärd
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Kryssrutor
     description: Välj mellan flera alternativ av kryssrutor
     allow_other: Tillåt annan

@@ -551,7 +551,7 @@ value: Nilai
 interfaces:
   presentation-links:
     primary: Primer
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Kotak Centang
     allow_other: Izinkan lainnya
   code:

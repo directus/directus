@@ -298,7 +298,7 @@ create_account: 建立帳號
 account_created_successfully: 帳號建立成功
 auto_fill: 自動填入
 errors:
-  COLLECTION_NOT_FOUND: "集合不存在"
+  COLLECTION_NOT_FOUND: '集合不存在'
   FIELD_NOT_FOUND: 找不到欄位
   FORBIDDEN: 被禁止
   INVALID_CREDENTIALS: 錯誤的帳號或密碼
@@ -580,7 +580,7 @@ template: 模板
 translation: 翻譯
 value: 值
 interfaces:
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: 複選框
     allow_other: 允許其他選項
   code:

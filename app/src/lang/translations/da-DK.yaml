@@ -353,7 +353,7 @@ value: Værdi
 interfaces:
   presentation-links:
     primary: Primær
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Afkrydsningsfelter
     allow_other: Tillad Andre
   code:

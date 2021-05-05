@@ -869,7 +869,7 @@ interfaces:
     link: Linkit
     button: Painikkeet
     error: Toimintoa ei voi suorittaa
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Valintaruudut
     description: Valitse useista vaihtoehdoista valintaruutujen kautta
     allow_other: Salli muut

@@ -25,7 +25,7 @@
 		<v-detail
 			v-if="hideChoices && showAll === false"
 			:class="gridClass"
-			:label="$t(`interfaces.checkboxes.show_more`, { count: hiddenCount })"
+			:label="$t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
 			@toggle="showAll = true"
 		></v-detail>
 

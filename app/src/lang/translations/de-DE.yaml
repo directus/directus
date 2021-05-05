@@ -873,7 +873,7 @@ interfaces:
     link: Links
     button: Buttons
     error: Aktion kann nicht ausgeführt werden
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Kontrollkästchen
     description: Zwischen mehreren Optionen auswählen über Kontrollkästchen
     allow_other: Andere erlauben

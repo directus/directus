@@ -869,7 +869,7 @@ interfaces:
     link: Връзки
     button: Бутони
     error: Действието не може да бъде изпълнено
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Отметки
     description: Избор измежду множество опции чрез отметки
     allow_other: Позволи други

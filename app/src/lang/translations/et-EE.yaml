@@ -704,7 +704,7 @@ value: Väärtus
 interfaces:
   presentation-links:
     primary: Peamine
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Märkeruudud
     allow_other: Luba muud
   code:

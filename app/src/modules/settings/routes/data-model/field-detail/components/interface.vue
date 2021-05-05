@@ -71,7 +71,7 @@ export default defineComponent({
 				datetime: ['datetime'],
 				date: ['datetime'],
 				time: ['datetime'],
-				json: ['checkboxes', 'tags'],
+				json: ['select-multiple-checkbox', 'tags'],
 				uuid: ['text-input'],
 				csv: ['tags'],
 			};

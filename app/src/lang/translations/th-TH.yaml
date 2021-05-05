@@ -813,7 +813,7 @@ interfaces:
     link: ลิ้งก์
     button: ปุ่ม
     error: ไม่สามารถดำเนินการได้
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: ตัวเลือกแบบกล่อง
     description: เลือกได้มากกว่าครั้งละ 1 ตัวเลือก ด้วยตัวเลือกแบบกล่อง
     allow_other: อนุญาตคนอื่น

@@ -814,7 +814,7 @@ interfaces:
     link: Koppelingen
     button: Knoppen
     error: Kan actie niet uitvoeren
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Vinkjes
     description: Kies tussen meerdere opties via selectievakjes
     allow_other: Andere toestaan

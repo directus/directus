@@ -854,7 +854,7 @@ interfaces:
     link: Liens
     button: Boutons
     error: Impossible d’effectuer cette action
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Cases à cocher
     description: Choisissez entre plusieurs options via les cases à cocher
     allow_other: Autoriser d'autres valeurs

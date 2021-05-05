@@ -583,7 +583,7 @@ value: Giá trị
 interfaces:
   presentation-links:
     primary: Khóa chính
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Ô tích
     allow_other: Cho phép những đối tượng khác
   code:

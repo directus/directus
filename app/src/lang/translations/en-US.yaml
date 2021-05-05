@@ -865,7 +865,7 @@ interfaces:
     link: Links
     button: Buttons
     error: Cannot perform action
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Checkboxes
     description: Choose between multiple options via checkboxes
     allow_other: Allow Other

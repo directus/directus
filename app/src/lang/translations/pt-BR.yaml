@@ -870,7 +870,7 @@ interfaces:
     link: Links
     button: Botões
     error: Não foi possível executar a ação
-  checkboxes:
+  select-multiple-checkbox:
     checkboxes: Caixas de Seleção
     description: Escolha entre várias opções através de caixas de seleção
     allow_other: Permitir Outros
