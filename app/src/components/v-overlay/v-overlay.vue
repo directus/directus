@@ -1,12 +1,12 @@
 <template>
-	<div class="v-overlay" :class="{ active, absolute, 'has-click': hasClick }" @click="onClick">
+	<div class="v-overlay" :class="{ active, absolute, 'has-click': clickable }" @click="onClick">
 		<div class="overlay" />
 		<div v-if="active" class="content"><slot /></div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	emits: ['click'],
@@ -19,11 +19,13 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		clickable: {
+			type: Boolean,
+			default: true,
+		},
 	},
-	setup(props, { emit, attrs }) {
-		const hasClick = computed<boolean>(() => 'onClick' in attrs);
-
-		return { hasClick, onClick };
+	setup(props, { emit }) {
+		return { onClick };
 
 		function onClick(event: MouseEvent) {
 			emit('click', event);
