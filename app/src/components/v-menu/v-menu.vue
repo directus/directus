@@ -19,7 +19,7 @@
 		</div>
 
 		<teleport to="#target-menu-outlet">
-			<transition-bounce>
+			<transition-bounce appear>
 				<div
 					v-if="isActive"
 					class="v-menu-popper"
