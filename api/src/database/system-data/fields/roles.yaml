@@ -13,7 +13,7 @@ fields:
     width: half
 
   - field: icon
-    interface: icon
+    interface: select-icon
     display: icon
     width: half
 
@@ -64,7 +64,7 @@ fields:
           field: icon
           type: string
           meta:
-            interface: icon
+            interface: select-icon
             width: half
         - name: Name
           field: name

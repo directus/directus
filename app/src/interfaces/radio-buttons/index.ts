@@ -51,7 +51,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'icon',
+				interface: 'select-icon',
 			},
 			schema: {
 				default_value: 'radio_button_checked',
@@ -63,7 +63,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'icon',
+				interface: 'select-icon',
 			},
 			schema: {
 				default_value: 'radio_button_unchecked',

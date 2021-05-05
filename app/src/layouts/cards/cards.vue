@@ -40,7 +40,7 @@
 
 					<div class="field">
 						<div class="type-label">{{ $t('fallback_icon') }}</div>
-						<interface-icon v-model="icon" />
+						<interface-select-icon v-model="icon" />
 					</div>
 				</div>
 			</v-detail>

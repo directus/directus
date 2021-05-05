@@ -81,7 +81,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'icon',
+				interface: 'select-icon',
 			},
 			schema: {
 				default_value: 'check_box',
@@ -93,7 +93,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'icon',
+				interface: 'select-icon',
 			},
 			schema: {
 				default_value: 'check_box_outline_blank',

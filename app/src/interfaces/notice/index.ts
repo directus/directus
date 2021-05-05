@@ -39,7 +39,7 @@ export default defineInterface({
 			type: 'string',
 			meta: {
 				width: 'half',
-				interface: 'icon',
+				interface: 'select-icon',
 			},
 		},
 		{

@@ -1,12 +1,12 @@
 import { defineInterface } from '../define';
-import InterfaceIcon from './icon.vue';
+import InterfaceSelectIcon from './select-icon.vue';
 
 export default defineInterface({
 	id: 'icon',
-	name: '$t:interfaces.icon.icon',
-	description: '$t:interfaces.icon.description',
+	name: '$t:interfaces.select-icon.icon',
+	description: '$t:interfaces.select-icon.description',
 	icon: 'insert_emoticon',
-	component: InterfaceIcon,
+	component: InterfaceSelectIcon,
 	types: ['string'],
 	options: [],
 	recommendedDisplays: ['icon'],

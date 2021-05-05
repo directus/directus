@@ -19,7 +19,7 @@ fields:
     width: half
 
   - field: icon
-    interface: icon
+    interface: select-icon
     options:
     width: half
 

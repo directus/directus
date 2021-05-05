@@ -47,7 +47,7 @@ export default defineInterface({
 							type: 'string',
 							name: '$t:icon',
 							meta: {
-								interface: 'icon',
+								interface: 'select-icon',
 								width: 'half',
 							},
 						},

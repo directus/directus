@@ -934,7 +934,7 @@ interfaces:
     description: Enter a value to be hashed
     masked: Masked
     masked_label: Hide the true values
-  icon:
+  select-icon:
     icon: Icon
     description: Select an icon from a dropdown
     search_for_icon: Search for icon...

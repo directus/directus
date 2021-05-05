@@ -38,7 +38,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.icon_on',
 			type: 'string',
 			meta: {
-				interface: 'icon',
+				interface: 'select-icon',
 				width: 'half',
 			},
 			schema: {
@@ -50,7 +50,7 @@ export default defineDisplay({
 			name: '$t:displays.boolean.icon_off',
 			type: 'string',
 			meta: {
-				interface: 'icon',
+				interface: 'select-icon',
 				width: 'half',
 			},
 			schema: {
