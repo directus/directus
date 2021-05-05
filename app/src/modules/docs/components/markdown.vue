@@ -71,12 +71,13 @@ export default defineComponent({
 		return { html, onClick, pageClass };
 
 		function generateHTML() {
-			if (slots.default === null || !slots.default()?.[0]?.text) {
+			const source = slots.default?.()[0].children;
+
+			if (!source || typeof source !== 'string') {
 				html.value = '';
 				return;
 			}
 
-			const source = slots.default()[0].text!;
 			const { attributes, body } = fm<{ pageClass?: string }>(source);
 
 			let markdown = body;

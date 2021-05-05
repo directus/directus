@@ -47,7 +47,7 @@ async function getMarkdownForPath(path: string) {
 		docsPath = docsPath.slice(0, -1);
 	}
 
-	const mdModule = await import(`@vite-module!@directus/docs/${docsPath}.md`);
+	const mdModule = await import(`@vite-module!@directus/docs/${docsPath}.md?raw`);
 
 	return mdModule.default;
 }
