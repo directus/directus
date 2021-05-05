@@ -5,7 +5,7 @@
 		class="new-collection"
 		persistent
 		@cancel="router.push('/settings/data-model')"
-		:sidebar-label="$t(currentTab)"
+		:sidebar-label="$t(currentTab[0])"
 	>
 		<template #sidebar>
 			<v-tabs vertical v-model="currentTab">
