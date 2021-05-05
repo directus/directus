@@ -59,9 +59,9 @@
 						:is-selected="getSelectedState(element)"
 						:subdued="loading"
 						:sorted-manually="_sort.by === manualSortKey"
-						:has-click-listener="!disabled && hasRowClick"
+						:has-click-listener="!disabled && clickable"
 						:height="rowHeight"
-						@click="hasRowClick ? $emit('click:row', element) : null"
+						@click="clickable ? $emit('click:row', element) : null"
 						@item-selected="
 							onItemSelected({
 								item: element,
@@ -194,8 +194,12 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		clickable: {
+			type: Boolean,
+			default: true,
+		},
 	},
-	setup(props, { emit, attrs, slots }) {
+	setup(props, { emit, slots }) {
 		const _headers = computed({
 			get: () => {
 				return props.headers
@@ -284,8 +288,6 @@ export default defineComponent({
 			return props.modelValue.length > 0 && allItemsSelected.value === false;
 		});
 
-		const hasRowClick = computed<boolean>(() => 'onClick:row' in attrs);
-
 		const columnStyle = computed<string>(() => {
 			let gridTemplateColumns = _headers.value
 				.map((header) => {
@@ -313,7 +315,6 @@ export default defineComponent({
 			onToggleSelectAll,
 			someItemsSelected,
 			onSortChange,
-			hasRowClick,
 			fullColSpan,
 			columnStyle,
 			hasItemAppendSlot,
