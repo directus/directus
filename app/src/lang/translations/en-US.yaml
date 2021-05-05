@@ -856,8 +856,8 @@ view_project: View Project
 weeks: {}
 report_error: Report Error
 interfaces:
-  button-links:
-    button-links: Button Links
+  presentation-links:
+    presentation-links: Button Links
     links: Links
     description: Configurable link buttons for launching dynamic URLs
     style: Style

@@ -55,9 +55,11 @@ os_totalmem: OS Hafıza
 archive: Arşiv
 archive_confirm: Bu öğeyi arşivlemek istediğinizden emin misiniz?
 archive_confirm_count: >-
-  Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin misiniz?
+  Hiçbir Öğe Seçilmedi | Bu öğeyi arşivlemek istediğinizden emin misiniz? | {count} öğeyi arşivlemek istediğinizden emin
+  misiniz?
 reset_system_permissions_to: 'Sistem Yetkilerini Sıfırla:'
-reset_system_permissions_copy: Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
+reset_system_permissions_copy:
+  Bu işlem sistem koleksiyonlarına vermiş olabileceğiniz özel izinleri ezecektir. Emin misiniz?
 the_following_are_minimum_permissions: Homm
 app_access_minimum: Minimum Uygulama Erişimi
 recommended_defaults: Önerilen Ön Tanımlı Veriler
@@ -158,7 +160,8 @@ this_will_auto_setup_fields_relations: Bu, gerekli tüm alanları ve ilişkileri
 click_here: Buraya tıklayın
 to_manually_setup_translations: çevirileri manuel olarak ayarlamak için.
 click_to_manage_translated_fields: >-
-  Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
+  Henüz çevrilmiş alan yok. Bunları oluşturmak için burayı tıklayın. | Çevrilmiş bir alan var. Yönetmek için burayı
+  tıklayın. | Çevrilmiş {count} alan var. Bunları yönetmek için burayı tıklayın.
 fields_group: Alanlar Grubu
 no_collections_found: Koleksiyon bulunamadı.
 new_data_alert: 'Veri Modelinizde aşağıdakiler oluşturulacaktır:'
@@ -407,7 +410,7 @@ operators:
   gte: Büyük veya eşittir
   in: Bunlardan biri
   nin: Bunlardan biri değil
-  null: "Null"
+  null: 'Null'
   nnull: Null değil
   contains: Şunu içerir
   ncontains: Şunu içermez
@@ -505,7 +508,8 @@ keep_editing: Düzenlemeye Devam Et
 add_new: Yeni ekle
 all: Tümü
 batch_delete_confirm: >-
-  Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count} ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+  Hiç öge seçilmedi | Seçtiğiniz ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz. | Seçtiğiniz {count}
+  ögeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
 cancel: İptal
 collection: Koleksiyon
 collections: Koleksiyonlar
@@ -645,8 +649,8 @@ value: Değer
 view_project: Projeyi görüntüle
 report_error: Hata bildir
 interfaces:
-  button-links:
-    button-links: Buton Linki
+  presentation-links:
+    presentation-links: Buton Linki
     links: Linkler
     style: Stil
     primary: Birincil

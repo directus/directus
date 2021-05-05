@@ -55,10 +55,15 @@ os_totalmem: Memória do SO
 archive: Arquivar
 archive_confirm: Tem certeza de que deseja arquivar este item?
 archive_confirm_count: >-
-  Nenhum Item Selecionado | Tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes {count} itens?
+  Nenhum Item Selecionado | Tem certeza que deseja arquivar este item? | Você tem certeza que deseja arquivar estes
+  {count} itens?
 reset_system_permissions_to: 'Redefinir permissões do sistema para:'
-reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que você pode ter aplicado às coleções do sistema. Tem certeza?
-the_following_are_minimum_permissions: As seguintes são as permissões mínimas necessárias quando o "Acesso ao Aplicativo" estiver ativado. Você pode estender as permissões além disto, mas não abaixo.
+reset_system_permissions_copy:
+  Esta ação irá sobrescrever quaisquer permissões personalizadas que você pode ter aplicado às coleções do sistema. Tem
+  certeza?
+the_following_are_minimum_permissions:
+  As seguintes são as permissões mínimas necessárias quando o "Acesso ao Aplicativo" estiver ativado. Você pode estender
+  as permissões além disto, mas não abaixo.
 app_access_minimum: Acesso ao App Mínimo
 recommended_defaults: Padrões Recomendados
 unarchive: Desarquivar
@@ -161,7 +166,8 @@ this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todo
 click_here: Clique aqui
 to_manually_setup_translations: to manually setup translations.
 click_to_manage_translated_fields: >-
-  Ainda não há campos traduzidos. Clique aqui para criá-los. | Há um campo traduzido. Clique aqui para gerenciá-lo. | Há {count} campos traduzidos. Clique aqui para gerenciá-los.
+  Ainda não há campos traduzidos. Clique aqui para criá-los. | Há um campo traduzido. Clique aqui para gerenciá-lo. | Há
+  {count} campos traduzidos. Clique aqui para gerenciá-los.
 fields_group: Grupo de Campos
 no_collections_found: Nenhuma coleção encontrada.
 new_data_alert: 'O seguinte será criado em seu modelo de dados:'
@@ -393,7 +399,7 @@ account_created_successfully: Conta criada com sucesso
 auto_fill: Preench. automático
 corresponding_field: Campo correspondente
 errors:
-  COLLECTION_NOT_FOUND: "A coleção não existe"
+  COLLECTION_NOT_FOUND: 'A coleção não existe'
   FIELD_NOT_FOUND: Campo não encontrado
   FORBIDDEN: Não permitido
   INVALID_CREDENTIALS: Nome de usuário ou senha incorreta
@@ -628,30 +634,40 @@ discard_changes: Descartar Mudanças
 keep_editing: Continuar editando
 page_help_collections_overview: '**Visão geral das coleções** — Lista de todas as coleções que você tem acesso.'
 page_help_collections_collection: >-
-  **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
+  **Navegando em itens** — Lista todos os {collection} itens que você tem acesso. Personalize o layout, os filtros e a
+  ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso
+  rápido.
 page_help_collections_item: >-
-  **Detalhes do Item** — Um formulário para visualizar e gerenciar este item. Esta barra lateral também contém um histórico completo de revisões e comentários incorporados.
+  **Detalhes do Item** — Um formulário para visualizar e gerenciar este item. Esta barra lateral também contém um
+  histórico completo de revisões e comentários incorporados.
 page_help_activity_collection: >-
   **Navegando em atividades** — Uma listagem abrangente do sistema de todos os seus usuários e atividade de conteúdo.
 page_help_docs_global: >-
   **Visão geral de documentação** — Documentação feita especificamente para esta versão e esquema deste projeto.
 page_help_files_collection: >-
-  **Biblioteca de Arquivos** - Lista todos os arquivos enviados para este projeto. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
+  **Biblioteca de Arquivos** - Lista todos os arquivos enviados para este projeto. Personalize o layout, os filtros e a
+  ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso
+  rápido.
 page_help_files_item: >-
-  **Detalhe do Arquivo** — Um formulário para gerenciar os metadados do arquivo, editar o asset original e atualizar as configurações de acesso.
-page_help_settings_project: "**Configurações do projeto** — Opções de configuração globais do seu projeto."
+  **Detalhe do Arquivo** — Um formulário para gerenciar os metadados do arquivo, editar o asset original e atualizar as
+  configurações de acesso.
+page_help_settings_project: '**Configurações do projeto** — Opções de configuração globais do seu projeto.'
 page_help_settings_datamodel_collections: >-
-  **Modelo de Dados: Coleções** — Lista todas as coleções disponíveis. Isso inclui coleções visíveis, escondidas e do sistema, bem como tabelas de banco de dados não gerenciadas que podem ser adicionadas.
+  **Modelo de Dados: Coleções** — Lista todas as coleções disponíveis. Isso inclui coleções visíveis, escondidas e do
+  sistema, bem como tabelas de banco de dados não gerenciadas que podem ser adicionadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Dados: Coleção** — Um formulário para gerenciar esta coleção e seus campos.
-page_help_settings_roles_collection: '**Navegando em cargos** - Lista os cargos de administrador, público e também personalizados.'
-page_help_settings_roles_item: "**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações."
+page_help_settings_roles_collection:
+  '**Navegando em cargos** - Lista os cargos de administrador, público e também personalizados.'
+page_help_settings_roles_item: '**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações.'
 page_help_settings_presets_collection: >-
-  **Navegando em predefinições** — Lista todas as predefinições no projeto, incluindo: usuário, cargo e marcadores globais, bem como visualizações padrão.
+  **Navegando em predefinições** — Lista todas as predefinições no projeto, incluindo: usuário, cargo e marcadores
+  globais, bem como visualizações padrão.
 page_help_settings_presets_item: >-
   **Detalhe da predefinição** — Um formulário para gerenciar marcadores e predefinições de coleção padrão.
 page_help_settings_webhooks_collection: '**Navegando em Webhooks** — Lista todos os webhooks dentro do projeto.'
-page_help_settings_webhooks_item: '**Detalhe de Webhook** — Um formulário para criar e gerenciar os webhooks do projeto.'
+page_help_settings_webhooks_item:
+  '**Detalhe de Webhook** — Um formulário para criar e gerenciar os webhooks do projeto.'
 page_help_users_collection: '**Diretório do Usuário** — Lista todos os usuários do sistema neste projeto.'
 page_help_users_item: >-
   **Detalhe do Usuário** — Gerencie as informações da sua conta, ou veja os detalhes de outros usuários.
@@ -662,7 +678,8 @@ all: Tudo
 none: Nenhum
 no_layout_collection_selected_yet: Nenhum layout/coleção selecionado ainda
 batch_delete_confirm: >-
-  Nenhum item foi selecionado | Você tem certeza que deseja deletar esse item? Essa ação não pode ser desfeita. | Você tem certeza que deseja deletar esses {count} itens? Essa ação não pode ser desfeita.
+  Nenhum item foi selecionado | Você tem certeza que deseja deletar esse item? Essa ação não pode ser desfeita. | Você
+  tem certeza que deseja deletar esses {count} itens? Essa ação não pode ser desfeita.
 cancel: Cancelar
 collection: Coleção
 collections: Coleções
@@ -844,8 +861,8 @@ value: Valor
 view_project: Visualizar projeto
 report_error: Relatar erro
 interfaces:
-  button-links:
-    button-links: Links do Botão
+  presentation-links:
+    presentation-links: Links do Botão
     links: Links
     description: Botões de link configuráveis para iniciar URLs dinâmicas
     style: Estilo
@@ -1059,7 +1076,8 @@ displays:
     description: Exibir valores relacionados ao tempo
     format: Formato
     format_note: >-
-      O formato personalizado aceita __[tabela de símbolos de campo de Data](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      O formato personalizado aceita __[tabela de símbolos de campo de
+      Data](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Longo
     short: Curto
     relative: Relativo

@@ -49,7 +49,8 @@ os_totalmem: Operációs rendszer memóriája
 archive: Archívum
 archive_confirm: Biztosan törölni szeretnéd ezt az elemet?
 archive_confirm_count: >-
-  Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count} elemet?
+  Egy elem sincs kiválasztva `| Biztosan archiválni akarod ezt az elemet? | Biztosan archiválni akarod ezt a {count}
+  elemet?
 unarchive: Archiválás visszavonása
 unarchive_confirm: Biztosan vissza akarod vonni ennek az elemnek az archiválását?
 nested_files_folders_will_be_moved: Egymás alatti fájlok és könyvtárak egy szinttel feljebb kerülnek.
@@ -108,7 +109,8 @@ this_will_auto_setup_fields_relations: Ez automatikusan létrehozza az összes s
 click_here: Kattints ide
 to_manually_setup_translations: a fordítások kézi elkészítéséhez.
 click_to_manage_translated_fields: >-
-  Ezek a mezők még nem lettek lefordítva. Kattints ide, hogy létrehozd őket. | Egy mező van lefordítva. Kattints ide a szerkesztéshez. | {count} mező van lefordítva. Kattints ide a szerkesztésükhöz.
+  Ezek a mezők még nem lettek lefordítva. Kattints ide, hogy létrehozd őket. | Egy mező van lefordítva. Kattints ide a
+  szerkesztéshez. | {count} mező van lefordítva. Kattints ide a szerkesztésükhöz.
 fields_group: Mező csoport
 new_field: 'Új mező'
 new_collection: 'Új gyűjtemény'
@@ -293,7 +295,7 @@ account_created_successfully: Fiók sikeresen létrehozva
 auto_fill: Automatikus kitöltés
 corresponding_field: Megfelelő mező
 errors:
-  COLLECTION_NOT_FOUND: "Gyűjtemény nem létezik"
+  COLLECTION_NOT_FOUND: 'Gyűjtemény nem létezik'
   FIELD_NOT_FOUND: Mező nem található
   FORBIDDEN: Tilos
   INVALID_CREDENTIALS: Hibás felhasználónév vagy jelszó
@@ -351,7 +353,7 @@ operators:
   gte: Nagyobb vagy egyenlő
   in: egy ebből
   nin: nem egy ebből
-  null: "null"
+  null: 'null'
   nnull: nem null
   contains: Tartalmaz
   ncontains: nem tartalmaz
@@ -480,7 +482,8 @@ create_new: Új létrehozása
 all: Összes
 none: Egyik sem
 batch_delete_confirm: >-
-  Nincs elem kiválasztva | Biztosan törölni szeretnéd az elemet? A művelet nem visszavonható. | Biztosan törölni szeretnéd az összes elemet ({count} db)? A művelet nem visszavonható.
+  Nincs elem kiválasztva | Biztosan törölni szeretnéd az elemet? A művelet nem visszavonható. | Biztosan törölni
+  szeretnéd az összes elemet ({count} db)? A művelet nem visszavonható.
 cancel: Mégse
 collection: Gyűjtemény
 collections: Gyűjtemények
@@ -626,8 +629,8 @@ value: Érték
 view_project: Projekt megtekintése
 report_error: Hiba jelentése
 interfaces:
-  button-links:
-    button-links: Gomb hivatkozás
+  presentation-links:
+    presentation-links: Gomb hivatkozás
     primary: Elsődleges
     button: Gombok
   checkboxes:

@@ -1,10 +1,10 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceButtonLinks from './button-links.vue';
+import InterfaceButtonLinks from './presentation-links.vue';
 
 export default defineInterface({
-	id: 'button-links',
-	name: '$t:interfaces.button-links.button-links',
-	description: '$t:interfaces.button-links.description',
+	id: 'presentation-links',
+	name: '$t:interfaces.presentation-links.presentation-links',
+	description: '$t:interfaces.presentation-links.description',
 	icon: 'smart_button',
 	component: InterfaceButtonLinks,
 	hideLabel: true,
@@ -15,7 +15,7 @@ export default defineInterface({
 		{
 			field: 'links',
 			type: 'json',
-			name: '$t:interfaces.button-links.links',
+			name: '$t:interfaces.presentation-links.links',
 			meta: {
 				width: 'full',
 				interface: 'repeater',

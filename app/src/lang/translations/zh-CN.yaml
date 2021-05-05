@@ -354,7 +354,7 @@ account_created_successfully: 账号成功创建！
 auto_fill: 自动填充
 corresponding_field: 相应字段
 errors:
-  COLLECTION_NOT_FOUND: "集合不存在"
+  COLLECTION_NOT_FOUND: '集合不存在'
   FIELD_NOT_FOUND: 空格未找到
   FORBIDDEN: 禁止
   INVALID_CREDENTIALS: 错误的用户名或密码
@@ -687,7 +687,7 @@ template: 模板
 translation: 翻译
 value: 值
 interfaces:
-  button-links:
+  presentation-links:
     primary: 主要的
   checkboxes:
     checkboxes: 复选框

@@ -54,10 +54,15 @@ os_totalmem: Memoria del SO
 archive: Archivar
 archive_confirm: '¿Está seguro que desea archivar este elemento?'
 archive_confirm_count: >-
-  Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count} elementos?
+  Sin Elementos Seleccionados | ¿Realmente desea archivar este elemento? | ¿Realmente desea archivar estos {count}
+  elementos?
 reset_system_permissions_to: 'Restablecer Permisos del Sistema:'
-reset_system_permissions_copy: Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está seguro?
-the_following_are_minimum_permissions: Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá de esto, pero no más abajo.
+reset_system_permissions_copy:
+  Esta acción sobrescribirá cualquier permiso personalizado que haya aplicado a las colecciones del sistema. ¿Está
+  seguro?
+the_following_are_minimum_permissions:
+  Los siguientes son permisos mínimos requeridos cuando "Acceso a App" está habilitado. Puede extender permisos más allá
+  de esto, pero no más abajo.
 app_access_minimum: Mínimo acceso a App
 recommended_defaults: Valores predeterminados recomendados
 unarchive: Desarchivar
@@ -156,7 +161,8 @@ this_will_auto_setup_fields_relations: Esto configurará automáticamente todos 
 click_here: Clic aquí
 to_manually_setup_translations: configurar manualmente las traducciones.
 click_to_manage_translated_fields: >-
-  Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
+  Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para
+  administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
 fields_group: Grupo de Campos
 no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
@@ -382,7 +388,7 @@ account_created_successfully: La Cuenta ha sido creada exitósamente
 auto_fill: Auto Rellenar
 corresponding_field: Campo Correspondiente
 errors:
-  COLLECTION_NOT_FOUND: "La Colección no existe"
+  COLLECTION_NOT_FOUND: 'La Colección no existe'
   FIELD_NOT_FOUND: Campo no encontrado
   FORBIDDEN: Prohibido
   INVALID_CREDENTIALS: Usuario o contraseña incorrecta
@@ -424,7 +430,8 @@ start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados
 one_item: '1 elemento'
 one_filtered_item: '1 elemento filtrado'
 delete_collection_are_you_sure: >-
-  ¿Realmente desea eliminar esta colección? Esto eliminará la colección y todos los elementos en ella. Esta acción es permanente y no reversible.
+  ¿Realmente desea eliminar esta colección? Esto eliminará la colección y todos los elementos en ella. Esta acción es
+  permanente y no reversible.
 collections_shown: Colecciones Mostradas
 visible_collections: Colecciones Visibles
 hidden_collections: Colecciones Ocultas
@@ -592,30 +599,38 @@ discard_changes: Descartar Cambios
 keep_editing: Seguir Editando
 page_help_collections_overview: '**Resumen de Colecciones** - Listas de todas las colecciones a las que tiene acceso.'
 page_help_collections_collection: >-
-  **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
+  **Navegar en Elementos** - Lista todos los elementos en {collection} a las que tiene acceso. Puede personalizar el
+  Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para
+  un rápido acceso.
 page_help_collections_item: >-
-  **Detalle de Elemento** - Una forma de visualizar y administrar este Elemento. Esta barra lateral también contiene un historial completo de revisiones y comentarios incluidos.
+  **Detalle de Elemento** - Una forma de visualizar y administrar este Elemento. Esta barra lateral también contiene un
+  historial completo de revisiones y comentarios incluidos.
 page_help_activity_collection: >-
   **Navegar en Actividad** - Una lista completa de todas las actividades del sistema y del contenido de su usuario.
 page_help_docs_global: >-
   **Resumen de la Documentación** — Documentos específicamente diseñados para la versión y esquema de este proyecto.
 page_help_files_collection: >-
-  **Biblioteca de Archivos** — Lista todos los activos subidos a este proyecto. Puede personalizar el Diseño, Filtros y Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
+  **Biblioteca de Archivos** — Lista todos los activos subidos a este proyecto. Puede personalizar el Diseño, Filtros y
+  Ordenamientos para adaptar sus vistas, incluso puede guardar Marcadores de esas configuraciones para un rápido acceso.
 page_help_files_item: >-
-  **Detalle de Archivo** — Una manera de manejar metadatos de archivos, editar el activo original, y actualizar ajustes de acceso.
-page_help_settings_project: "**Ajustes del Proyecto** — Sus opciones de ajustes globales para el proyecto."
+  **Detalle de Archivo** — Una manera de manejar metadatos de archivos, editar el activo original, y actualizar ajustes
+  de acceso.
+page_help_settings_project: '**Ajustes del Proyecto** — Sus opciones de ajustes globales para el proyecto.'
 page_help_settings_datamodel_collections: >-
-  **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
+  **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas
+  y del sistema, así como las tablas de base de datos que pueden ser agregadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
 page_help_settings_roles_collection: '**Navegar en Roles** — Lista los roles de Usuario Admin, Public y Personalizados.'
-page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
+page_help_settings_roles_item: '**Detalle de Rol** — Administra los permisos del Rol y otros ajustes.'
 page_help_settings_presets_collection: >-
-  **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
+  **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y
+  global, así como vistas por defecto.
 page_help_settings_presets_item: >-
   **Detalle de Predefinido** — Una manera de administrar Marcadores y Predefinidos por defecto de Colecciones.
 page_help_settings_webhooks_collection: '**Navegar en Webhooks** — Lista todos los webhooks en el proyecto.'
-page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
+page_help_settings_webhooks_item:
+  '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
 page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
 page_help_users_item: >-
   **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
@@ -626,7 +641,8 @@ all: Todo
 none: Nada
 no_layout_collection_selected_yet: Plantilla/Colección No seleccionada aún
 batch_delete_confirm: >-
-  No se han seleccionado entradas | ¿Está seguro de que desea eliminar esta entrada? Esta acción no puede deshacerse. | Está seguro de que desea eliminar estas {count} entradas? Esta acción no puede deshacerse.
+  No se han seleccionado entradas | ¿Está seguro de que desea eliminar esta entrada? Esta acción no puede deshacerse. |
+  Está seguro de que desea eliminar estas {count} entradas? Esta acción no puede deshacerse.
 cancel: Cancelar
 collection: Colección
 collections: Colecciones
@@ -800,8 +816,8 @@ value: Valor
 view_project: Ver Proyecto
 report_error: Reportar Error
 interfaces:
-  button-links:
-    button-links: Enlaces de botón
+  presentation-links:
+    presentation-links: Enlaces de botón
     links: Enlaces
     description: Botones de enlace configurables para lanzar URLs dinámicas
     style: Estilo
@@ -1012,7 +1028,8 @@ displays:
     description: Presentar valores relacionados a la hora
     format: Formato
     format_note: >-
-      El formato personalizado acepta el __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      El formato personalizado acepta el __[Date Field Symbol
+      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Larga
     short: Corta
     relative: Relativa

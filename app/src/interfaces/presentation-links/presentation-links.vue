@@ -1,5 +1,5 @@
 <template>
-	<div class="button-links">
+	<div class="presentation-links">
 		<v-button
 			v-for="(link, index) in linksParsed"
 			:key="index"
@@ -56,7 +56,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.button-links {
+.presentation-links {
 	display: flex;
 	flex-wrap: wrap;
 }

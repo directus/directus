@@ -54,10 +54,15 @@ os_totalmem: Mémoire de l'OS
 archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
 archive_confirm_count: >-
-  Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces {count} éléments ?
+  Aucun élément sélectionné | Êtes-vous sûr de vouloir archiver cet élément ? | Êtes-vous sûr de vouloir archiver ces
+  {count} éléments ?
 reset_system_permissions_to: 'Réinitialiser les autorisations système:'
-reset_system_permissions_copy: Cette action écrasera toutes les autorisations personnalisées que vous avez peut-être appliquées aux collections du système. Êtes-vous sûr ?
-the_following_are_minimum_permissions: Il s'agit des autorisations minimales lorsque "Accès à l'application" est activé. Vous pouvez donner davantage de permissions, mais pas les restreindre.
+reset_system_permissions_copy:
+  Cette action écrasera toutes les autorisations personnalisées que vous avez peut-être appliquées aux collections du
+  système. Êtes-vous sûr ?
+the_following_are_minimum_permissions:
+  Il s'agit des autorisations minimales lorsque "Accès à l'application" est activé. Vous pouvez donner davantage de
+  permissions, mais pas les restreindre.
 app_access_minimum: Autorisation minimale requise pour accéder à l'application
 recommended_defaults: Valeurs par défaut recommandées
 unarchive: Restaurer
@@ -157,7 +162,8 @@ this_will_auto_setup_fields_relations: Tous les champs et relations obligatoires
 click_here: Cliquer ici
 to_manually_setup_translations: pour configurer manuellement les traductions.
 click_to_manage_translated_fields: >-
-  Il n'y a pas encore de champ traduit. Cliquez-ici pour en créer un. | Il y a un champ traduit. Cliquez ici pour le gérer. | Il y a {count} champs traduits. Cliquez ici pour les gérer.
+  Il n'y a pas encore de champ traduit. Cliquez-ici pour en créer un. | Il y a un champ traduit. Cliquez ici pour le
+  gérer. | Il y a {count} champs traduits. Cliquez ici pour les gérer.
 fields_group: Groupe de champs
 no_collections_found: Aucune collection trouvée.
 new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
@@ -426,7 +432,8 @@ start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtré
 one_item: '1 élément'
 one_filtered_item: '1 élément filtré'
 delete_collection_are_you_sure: >-
-  Êtes-vous sûr de vouloir supprimer cette collection ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
+  Êtes-vous sûr de vouloir supprimer cette collection ? Cette action supprimera la collection et tous les éléments
+  qu'elle contient. Cette action est irréversible.
 collections_shown: Collections affichées
 visible_collections: Collections visibles
 hidden_collections: Collections masquées
@@ -587,8 +594,8 @@ deselect_all: Tout désélectionner
 other: Autre...
 adding_user: Ajout de l'utilisateur
 unknown_user: Utilisateur inconnu
-creating_in: 'Création de l''élément dans {collection}'
-editing_in: 'Modification de l''élément dans {collection}'
+creating_in: "Création de l'élément dans {collection}"
+editing_in: "Modification de l'élément dans {collection}"
 editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
@@ -610,28 +617,38 @@ unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
 keep_editing: Continuer l’édition
-page_help_collections_overview: '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
+page_help_collections_overview:
+  '**Aperçu des collections** — Liste de toutes les collections auxquelles vous avez accès.'
 page_help_collections_collection: >-
-  **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
+  **Parcourir les éléments** - Lister tous les éléments de {collection} auxquels vous avez accès. Personnalisez la mise
+  en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour
+  un accès rapide.
 page_help_collections_item: >-
-  **Détail de l'élément** — Un formulaire pour visualiser et gérer cet élément. Cette barre latérale contient également un historique complet des révisions et des commentaires intégrés.
+  **Détail de l'élément** — Un formulaire pour visualiser et gérer cet élément. Cette barre latérale contient également
+  un historique complet des révisions et des commentaires intégrés.
 page_help_activity_collection: >-
   **Parcourez l'activité** — Une liste complète de tous votre système et contenu de l'activité utilisateur.
 page_help_docs_global: >-
   **Aperçu de la documentation** — Documents adaptés spécifiquement à la version et au schéma de ce projet.
 page_help_files_collection: >-
-  **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
+  **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les
+  filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès
+  rapide.
 page_help_files_item: >-
-  **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et de mise à jour des paramètres d'accès.
-page_help_settings_project: "**Paramètres du projet** — Les options de configuration globale de votre projet."
+  **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et
+  de mise à jour des paramètres d'accès.
+page_help_settings_project: '**Paramètres du projet** — Les options de configuration globale de votre projet.'
 page_help_settings_datamodel_collections: >-
-  **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
+  **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles,
+  cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
 page_help_settings_datamodel_fields: >-
   **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
-page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste les rôles Administrateur, Public et les rôles utilisateurs personnalisés.'
+page_help_settings_roles_collection:
+  '**Parcourir les Rôles** — Liste les rôles Administrateur, Public et les rôles utilisateurs personnalisés.'
 page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
 page_help_settings_presets_collection: >-
-  **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris globaux et les vues par défaut.
+  **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris
+  globaux et les vues par défaut.
 page_help_settings_presets_item: >-
   **Détail du préréglage** — Un formulaire pour gérer les favoris et les préréglages de collection par défaut.
 page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste tous les webhooks du projet.'
@@ -646,7 +663,9 @@ all: Tout
 none: Aucun
 no_layout_collection_selected_yet: Aucune mise en page/collection sélectionnée pour le moment
 batch_delete_confirm: >-
-  Aucun élément n’a été sélectionné | Êtes-vous sûr de bien vouloir supprimer cet élément ? Vous ne pourrez pas revenir en arrière ! | Êtes-vous sûr de bien vouloir supprimer ces {count} éléments ?  Vous ne pourrez pas revenir en arrière !
+  Aucun élément n’a été sélectionné | Êtes-vous sûr de bien vouloir supprimer cet élément ? Vous ne pourrez pas revenir
+  en arrière ! | Êtes-vous sûr de bien vouloir supprimer ces {count} éléments ?  Vous ne pourrez pas revenir en
+  arrière !
 cancel: Annuler
 collection: Collection
 collections: Collections
@@ -826,8 +845,8 @@ value: Valeur
 view_project: Voir le projet
 report_error: Signaler l'erreur
 interfaces:
-  button-links:
-    button-links: Bouton de liens
+  presentation-links:
+    presentation-links: Bouton de liens
     links: Liens
     description: Boutons de liens configurables pour lancer des URL
     style: Style
@@ -1040,11 +1059,12 @@ displays:
     description: Afficher les valeurs liées à l'heure
     format: Format
     format_note: >-
-      Le format personnalisé accepte le __[Date Field Symbol Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+      Le format personnalisé accepte le __[Date Field Symbol
+      Table](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
     long: Long
     short: Court
     relative: Relatif
-    relative_label: 'Afficher l''heure relative, par exemple: il y a 5 minutes'
+    relative_label: "Afficher l'heure relative, par exemple: il y a 5 minutes"
   file:
     file: Fichier
     description: Afficher les fichiers
