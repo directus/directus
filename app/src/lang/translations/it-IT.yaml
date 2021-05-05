@@ -748,7 +748,7 @@ interfaces:
     one-to-many: Uno a Molti
     description: Seleziona più elementi correlati
     no_collection: Impossibile trovare la raccolta
-  radio-buttons:
+  select-radio:
     radio-buttons: Pulsanti di scelta
   repeater:
     repeater: Ripetitore

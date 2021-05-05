@@ -629,7 +629,7 @@ interfaces:
     numeric: Kiểu số
   list-o2m:
     one-to-many: Quan hệ một - nhiều
-  radio-buttons:
+  select-radio:
     radio-buttons: Ô chọn tròn
   repeater:
     repeater: Vòng lặp

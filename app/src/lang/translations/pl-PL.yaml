@@ -980,7 +980,7 @@ interfaces:
     one-to-many: Jeden do wielu
     description: Wybierz wiele powiązanych elementów
     no_collection: Kolekcja nie została znaleziona
-  radio-buttons:
+  select-radio:
     radio-buttons: Przyciski jednokrotnego wyboru
     description: Wybierz jeden lub wiele obiektów
   repeater:

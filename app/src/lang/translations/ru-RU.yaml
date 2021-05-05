@@ -940,7 +940,7 @@ interfaces:
     one-to-many: Один ко многим
     description: Выберите несколько связанных элементов
     no_collection: Коллекция не найдена
-  radio-buttons:
+  select-radio:
     radio-buttons: Радио кнопки
     description: Выберите один из нескольких вариантов
   repeater:

@@ -438,7 +438,7 @@ interfaces:
     text: 補足の内容を入力してください
   numeric:
     numeric: 数値
-  radio-buttons:
+  select-radio:
     description: 1つあるいは複数の値を選択できます
   slug:
     description: 半角英数字およびハイフンで構成される文字列を入力します（URLなどに使用するのに向いています）

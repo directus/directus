@@ -926,7 +926,7 @@ interfaces:
     one-to-many: One to Many
     description: เลือกหลายไอเท็มที่เกี่ยวข้อง
     no_collection: ไม่พบคอลเลกชัน
-  radio-buttons:
+  select-radio:
     radio-buttons: ตัวเลือกแบบเรดิโอ
     description: เลือกได้ 1 จากหลายตัวเลือก
   repeater:

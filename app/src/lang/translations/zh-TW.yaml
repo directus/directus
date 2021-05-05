@@ -653,7 +653,7 @@ interfaces:
     one-to-many: 一對多
     description: 選擇多個關聯項目
     no_collection: 找不到該集合
-  radio-buttons:
+  select-radio:
     radio-buttons: 單選按鈕
   repeater:
     repeater: 重複者

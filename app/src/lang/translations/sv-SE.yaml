@@ -959,7 +959,7 @@ interfaces:
     one-to-many: One to Many
     description: Välj flera relaterade objekt
     no_collection: Kollektionen kunde inte hittas
-  radio-buttons:
+  select-radio:
     radio-buttons: Radioknappar
     description: Välj ett av flera val
   repeater:

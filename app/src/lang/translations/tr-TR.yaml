@@ -706,7 +706,7 @@ interfaces:
     description: Bir sayı girin
   list-o2m:
     one-to-many: Bire Çok
-  radio-buttons:
+  select-radio:
     radio-buttons: Radyo Düğmeleri
   repeater:
     repeater: Tekrarlayıcı

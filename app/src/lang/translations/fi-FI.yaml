@@ -982,7 +982,7 @@ interfaces:
     one-to-many: Yksi monille
     description: Valitse useita liittyviä kohteita
     no_collection: Kokoelmaa ei löytynyt
-  radio-buttons:
+  select-radio:
     radio-buttons: Valintanapit
     description: Valitse yksi useista valinnoista
   repeater:

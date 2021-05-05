@@ -474,7 +474,7 @@ interfaces:
     maximum_value: الحد الأقصى للقيمة
   list-o2m:
     one-to-many: واحد للكثيرين
-  radio-buttons:
+  select-radio:
     radio-buttons: أزرار الراديو
   repeater:
     repeater: كرر

@@ -983,7 +983,7 @@ interfaces:
     one-to-many: Um-para-muitos (1 para N)
     description: Selecione vários itens relacionados
     no_collection: A coleção não pôde ser encontrada
-  radio-buttons:
+  select-radio:
     radio-buttons: Botões de radio
     description: Selecione uma das múltiplas escolhas
   repeater:

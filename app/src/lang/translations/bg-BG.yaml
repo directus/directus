@@ -982,7 +982,7 @@ interfaces:
     one-to-many: Един към много
     description: Избор на множество свързани записи
     no_collection: Колекцията не може да бъде намерена
-  radio-buttons:
+  select-radio:
     radio-buttons: Радио бутон
     description: Един или няколко избора
   repeater:

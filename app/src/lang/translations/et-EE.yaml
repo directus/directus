@@ -746,7 +746,7 @@ interfaces:
     markdown: Markdown
   numeric:
     numeric: Numbriline
-  radio-buttons:
+  select-radio:
     radio-buttons: Raadionupud
   repeater:
     repeater: Kordaja

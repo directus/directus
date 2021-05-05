@@ -1,12 +1,12 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceRadioButtons from './radio-buttons.vue';
+import InterfaceSelectRadio from './select-radio.vue';
 
 export default defineInterface({
-	id: 'radio-buttons',
-	name: '$t:interfaces.radio-buttons.radio-buttons',
-	description: '$t:interfaces.radio-buttons.description',
+	id: 'select-radio',
+	name: '$t:interfaces.select-radio.radio-buttons',
+	description: '$t:interfaces.select-radio.description',
 	icon: 'radio_button_checked',
-	component: InterfaceRadioButtons,
+	component: InterfaceSelectRadio,
 	types: ['string'],
 	recommendedDisplays: ['badge'],
 	options: [

@@ -967,7 +967,7 @@ interfaces:
     one-to-many: Un à plusieurs
     description: Sélectionner plusieurs éléments liés
     no_collection: La collection est introuvable
-  radio-buttons:
+  select-radio:
     radio-buttons: Boutons radio
     description: Sélectionner l'un des choix proposés
   repeater:

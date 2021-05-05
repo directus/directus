@@ -202,7 +202,7 @@ interfaces:
     display_template: Mostra la plantilla
   list-o2m:
     one-to-many: Un a Molts
-  radio-buttons:
+  select-radio:
     radio-buttons: Botons de selecció
   tags:
     tags: Etiquetes

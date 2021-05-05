@@ -701,7 +701,7 @@ interfaces:
     step_interval: Lépésköz
   list-o2m:
     no_collection: A gyűjtemény nem található
-  radio-buttons:
+  select-radio:
     radio-buttons: Választó gombok
     description: Válasszon ki egy vagy több elemet
   repeater:

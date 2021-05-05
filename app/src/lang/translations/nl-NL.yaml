@@ -927,7 +927,7 @@ interfaces:
     one-to-many: Één op veel
     description: Selecteer meerdere gerelateerde items
     no_collection: De collectie kon niet worden gevonden
-  radio-buttons:
+  select-radio:
     radio-buttons: Keuzerondjes
     description: Selecteer een van de meerdere keuzes
   repeater:

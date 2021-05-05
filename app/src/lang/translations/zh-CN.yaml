@@ -749,7 +749,7 @@ interfaces:
     numeric: 数字
   list-o2m:
     one-to-many: 一对多
-  radio-buttons:
+  select-radio:
     radio-buttons: 单选按钮
   repeater:
     repeater: 中继器

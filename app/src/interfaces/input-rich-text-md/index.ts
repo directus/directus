@@ -74,7 +74,7 @@ export default defineInterface({
 							type: 'string',
 							name: '$t:interfaces.input-rich-text-md.box',
 							meta: {
-								interface: 'radio-buttons',
+								interface: 'select-radio',
 								width: 'half',
 								options: {
 									choices: [

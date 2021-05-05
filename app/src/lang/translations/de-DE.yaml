@@ -986,7 +986,7 @@ interfaces:
     one-to-many: 1 zu n
     description: Mehrere verwandte Elemente auswählen
     no_collection: Die Sammlung konnte nicht gefunden werden
-  radio-buttons:
+  select-radio:
     radio-buttons: Radio Buttons
     description: Eine von mehreren Optionen auswählen
   repeater:
