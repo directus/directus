@@ -978,7 +978,7 @@ interfaces:
     mask: Маскированный
     mask_label: Скрыть настоящее значение
     clear_label: Сохранить как пустую строку
-  textarea:
+  input-multiline:
     textarea: Текстовое поле
     description: Введите простой текст в несколько строк
   toggle:

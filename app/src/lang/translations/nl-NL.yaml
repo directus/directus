@@ -964,7 +964,7 @@ interfaces:
     trim_label: Begin en einde bijsnijden
     mask: Gemaskeerd
     mask_label: De echte waarde verbergen
-  textarea:
+  input-multiline:
     textarea: Tekstvlak
     description: Voer multiline tekst in
   toggle:

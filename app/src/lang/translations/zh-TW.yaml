@@ -680,7 +680,7 @@ interfaces:
     description: 輸入單行文本
     trim: 去除內容前後空格
     trim_label: 修剪開頭與結尾
-  textarea:
+  input-multiline:
     textarea: 文本區
     description: 輸入多行純文本
   toggle:

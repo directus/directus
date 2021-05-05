@@ -975,7 +975,7 @@ interfaces:
     trim_label: Eliminar espacios al inicio y al final
     mask: Enmascarado
     mask_label: Ocultar el valor real
-  textarea:
+  input-multiline:
     textarea: Área de Texto
     description: Ingresar texto plano multi-línea
   toggle:

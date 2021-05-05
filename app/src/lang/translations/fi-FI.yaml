@@ -1022,7 +1022,7 @@ interfaces:
     mask_label: Piilota todellinen arvo
     clear: Tyhjennetty arvo
     clear_label: Tallenna tyhjänä merkkijonona
-  textarea:
+  input-multiline:
     textarea: Tekstialue
     description: Syötä monirivinen tavallinen teksti
   toggle:

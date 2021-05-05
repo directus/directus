@@ -963,7 +963,7 @@ interfaces:
     trim_label: ตัดช่องว่างหน้าหลัง
     mask: Masked
     mask_label: ซ่อนค่าจริง
-  textarea:
+  input-multiline:
     textarea: พื้นที่ข้อความ
     description: กรอกข้อความได้แบบหลายบรรทัด
   toggle:

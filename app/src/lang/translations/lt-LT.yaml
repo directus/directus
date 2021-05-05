@@ -864,7 +864,7 @@ interfaces:
     trim_label: Apkarpyti iš pradžios ir pabaigos
     mask: Paslėptas
     mask_label: Paslėpti tikrąją reikšmę
-  textarea:
+  input-multiline:
     textarea: Teksto sritis
     description: Įveskite kelių eilučių neformatuotą tesktą
   toggle:

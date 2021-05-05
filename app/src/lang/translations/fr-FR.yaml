@@ -1006,7 +1006,7 @@ interfaces:
     mask_label: Cacher la valeur réelle
     clear: Valeur effacée
     clear_label: Enregistrer en tant que chaîne vide
-  textarea:
+  input-multiline:
     textarea: Zone de texte
     description: Entrez le texte brut en multiligne
   toggle:

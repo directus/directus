@@ -65,7 +65,7 @@ fields:
     width: half
 
   - field: public_note
-    interface: textarea
+    interface: input-multiline
     options:
       placeholder: A short, public message that supports markdown formatting...
     width: full

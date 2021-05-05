@@ -45,7 +45,7 @@ fields:
     width: half
 
   - field: description
-    interface: textarea
+    interface: input-multiline
     width: full
 
   - field: tags

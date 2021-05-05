@@ -1026,7 +1026,7 @@ interfaces:
     mask_label: Tatsächlichen Wert ausblenden
     clear: Gelöschter Wert
     clear_label: Als leeren String abspeichern
-  textarea:
+  input-multiline:
     textarea: Textfeld
     description: Mehrzeiligen Klartext eingeben
   toggle:

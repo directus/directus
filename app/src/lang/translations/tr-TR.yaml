@@ -723,7 +723,7 @@ interfaces:
     text-input: Metin Girişi
     trim: Kırp
     mask: Maskeli
-  textarea:
+  input-multiline:
     textarea: Metin Alanı
   toggle:
     label_default: Etkin

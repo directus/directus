@@ -723,7 +723,7 @@ interfaces:
   input:
     text-input: Szövegmező
     trim: Vágás
-  textarea:
+  input-multiline:
     textarea: Szövegdoboz
   toggle:
     toggle: Váltás

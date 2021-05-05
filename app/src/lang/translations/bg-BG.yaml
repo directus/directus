@@ -1022,7 +1022,7 @@ interfaces:
     mask_label: Скриване на истинската стойност
     clear: Изчистване на стойност
     clear_label: Запазване като празен стринг
-  textarea:
+  input-multiline:
     textarea: Поле за текст
     description: Въвеждане на чист текст на няколко реда
   toggle:

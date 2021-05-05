@@ -1,12 +1,12 @@
 import { defineInterface } from '@/interfaces/define';
-import InterfaceTextarea from './textarea.vue';
+import InterfaceInputMultiline from './input-multiline.vue';
 
 export default defineInterface({
-	id: 'textarea',
-	name: '$t:interfaces.textarea.textarea',
-	description: '$t:interfaces.textarea.description',
+	id: 'input-multiline',
+	name: '$t:interfaces.input-multiline.textarea',
+	description: '$t:interfaces.input-multiline.description',
 	icon: 'text_fields',
-	component: InterfaceTextarea,
+	component: InterfaceInputMultiline,
 	types: ['text'],
 	options: [
 		{

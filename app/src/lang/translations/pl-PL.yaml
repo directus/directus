@@ -1020,7 +1020,7 @@ interfaces:
     mask_label: Ukryj rzeczywistą wartość
     clear: Wyczyść wartość
     clear_label: Zapisz jako pusty ciąg
-  textarea:
+  input-multiline:
     textarea: Obszar tekstowy
     description: Wprowadź wieloliniowy tekst
   toggle:

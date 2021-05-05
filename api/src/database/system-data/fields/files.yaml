@@ -14,7 +14,7 @@ fields:
     width: full
 
   - field: description
-    interface: textarea
+    interface: input-multiline
     width: full
     options:
       placeholder: An optional description...

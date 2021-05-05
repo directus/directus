@@ -12,7 +12,7 @@ const defaultInterfaceMap: Record<typeof types[number], string> = {
 	integer: 'numeric',
 	json: 'input-code',
 	string: 'input',
-	text: 'textarea',
+	text: 'input-multiline',
 	time: 'datetime',
 	timestamp: 'datetime',
 	uuid: 'input',

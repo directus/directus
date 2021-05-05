@@ -997,7 +997,7 @@ interfaces:
     mask: Maskerad
     mask_label: Dölj det riktiga värdet
     clear_label: Spara som tom sträng
-  textarea:
+  input-multiline:
     textarea: Textfält
     description: Ange fritext på flera rader
   toggle:

@@ -1018,7 +1018,7 @@ interfaces:
     mask_label: Hide the real value
     clear: Cleared Value
     clear_label: Save as empty string
-  textarea:
+  input-multiline:
     textarea: Textarea
     description: Enter multiline plain-text
   toggle:
